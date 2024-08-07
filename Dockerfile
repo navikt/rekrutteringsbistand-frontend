@@ -3,6 +3,7 @@ FROM gcr.io/distroless/nodejs20-debian11@sha256:f9c4cd4e417c73be8ac64032eeb08584
 # Install deps
 FROM base AS deps
 WORKDIR /app
+COPY package.json package-lock.json* ./
 RUN npm ci
 
 # Rebuild the source code only when needed
