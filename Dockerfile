@@ -1,10 +1,11 @@
-FROM gcr.io/distroless/nodejs20-debian11@sha256:f9c4cd4e417c73be8ac64032eeb08584311d82950d86590ec33b378c8523c032 AS base
-
+FROM node:20.14.0-alpine AS base
+RUN --mount=type=secret,id=NODE_AUTH_TOKEN \
+    npm config set //npm.pkg.github.com/:_authToken=$(cat /run/secrets/NODE_AUTH_TOKEN)
+RUN npm config set @navikt:registry=https://npm.pkg.github.com
 
 # Install deps
 FROM base AS deps
-RUN --mount=type=secret,id=NODE_AUTH_TOKEN \
-    echo '//npm.pkg.github.com/:_authToken='$(cat /run/secrets/NODE_AUTH_TOKEN) >> server/.npmrc
+
 WORKDIR /app
 COPY package.json package-lock.json* ./
 RUN npm ci
