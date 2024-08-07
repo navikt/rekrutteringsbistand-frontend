@@ -1,5 +1,4 @@
-FROM gcr.io/distroless/nodejs20-debian11@sha256:f9c4cd4e417c73be8ac64032eeb08584311d82950d86590ec33b378c8523c032 AS base
-
+FROM node:18-alpine AS base
 # Install deps
 FROM base AS deps
 WORKDIR /app
