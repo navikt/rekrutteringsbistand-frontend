@@ -1,13 +1,13 @@
 FROM node:20.14.0-alpine AS base
-RUN --mount=type=secret,id=NODE_AUTH_TOKEN \
-    npm config set //npm.pkg.github.com/:_authToken=$(cat /run/secrets/NODE_AUTH_TOKEN)
-RUN npm config set @navikt:registry=https://npm.pkg.github.com
+
 
 # Install deps
 FROM base AS deps
 
 WORKDIR /app
 COPY package.json package-lock.json* ./
+RUN --mount=type=secret,id=NODE_AUTH_TOKEN \
+    echo '//npm.pkg.github.com/:_authToken='$(cat /run/secrets/NODE_AUTH_TOKEN) >> .npmrc
 RUN npm ci
 
 # Rebuild the source code only when needed
