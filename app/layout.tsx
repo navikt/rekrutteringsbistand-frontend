@@ -23,7 +23,7 @@ export default function RootLayout({
 
   return (
     <html lang='no'>
-      <Script src={scriptSrc}></Script>
+      <Script src={scriptSrc} strategy='beforeInteractive'></Script>
       <link rel='stylesheet' href={linkHref} />
       <body className={inter.className}>
         <ApplikasjonContextProvider>
