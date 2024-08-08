@@ -10,12 +10,7 @@ export interface IHeader {
 const Header: React.FC<IHeader> = ({ children }) => {
   return (
     <React.Fragment>
-      <Modiadekoratør
-        navKontor={null}
-        onNavKontorChange={(navKontor) => {
-          console.log(navKontor);
-        }}
-      />
+      <Modiadekoratør />
       <Navigeringsmeny />
     </React.Fragment>
   );
