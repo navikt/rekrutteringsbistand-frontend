@@ -1,5 +1,6 @@
+'use client';
 import NAVSPA from '@navikt/navspa';
-
+import Script from 'next/script';
 export interface DecoratorProps {
   useProxy?: boolean | string; // Manuell overstyring av urlene til BFFs. Gjør alle kall til relativt path hvis true, og bruker verdien som domene om satt til en string. Default: false
   enhet?: string | undefined; // Konfigurasjon av enhet-kontekst
@@ -78,14 +79,25 @@ import * as React from 'react';
 
 export const Interndekoratør: React.FC = () => {
   return (
-    <Dekoratør
-      appName='Rekrutteringsbistand'
-      showEnheter={true}
-      showSearchArea={false}
-      showHotkeys={false}
-      environment='q2'
-      urlFormat='ANSATT'
-      onEnhetChanged={() => {}}
-    />
+    <>
+      <Script
+        src='https://cdn.nav.no/personoversikt/internarbeidsflate-decorator-v3/dev/latest/dist/bundle.js'
+        strategy='lazyOnload'
+        onLoad={() => console.log('Script loaded successfully!')}
+      />
+      <link
+        rel='stylesheet'
+        href='https://cdn.nav.no/personoversikt/internarbeidsflate-decorator-v3/dev/latest/dist/index.css'
+      />
+      <Dekoratør
+        appName='Rekrutteringsbistand'
+        showEnheter={true}
+        showSearchArea={false}
+        showHotkeys={false}
+        environment='q2'
+        urlFormat='ANSATT'
+        onEnhetChanged={() => {}}
+      />
+    </>
   );
 };
