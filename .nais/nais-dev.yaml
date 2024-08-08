@@ -7,9 +7,10 @@ metadata:
   name: rekrutteringsbistand-next
   namespace: toi
 spec:
+  image: {{ image }}
   ingresses:
     - https://rekrutteringsbistand-next.intern.dev.nav.no
-  image: { { image } }
+
   port: 3000
   resources:
     limits:
