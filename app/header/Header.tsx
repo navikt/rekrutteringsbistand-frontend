@@ -1,6 +1,6 @@
 'use client';
 import * as React from 'react';
-import { Interndekoratør } from './Interndekoratør';
+import Modiadekoratør from './Modiadekoratør';
 import { Navigeringsmeny } from './Navigasjon';
 
 export interface IHeader {
@@ -10,7 +10,12 @@ export interface IHeader {
 const Header: React.FC<IHeader> = ({ children }) => {
   return (
     <React.Fragment>
-      <Interndekoratør />
+      <Modiadekoratør
+        navKontor={null}
+        onNavKontorChange={(navKontor) => {
+          console.log(navKontor);
+        }}
+      />
       <Navigeringsmeny />
     </React.Fragment>
   );

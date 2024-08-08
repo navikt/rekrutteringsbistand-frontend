@@ -1,3 +1,4 @@
+'use client';
 import Navspa from '@navikt/navspa';
 import loadjs from 'loadjs';
 import {
@@ -7,6 +8,7 @@ import {
   useRef,
   useState,
 } from 'react';
+import { NavKontorMedNavn } from '../ApplikasjonContext';
 import { DecoratorProps, EnhetDisplay } from './Interndekoratør';
 import css from './Modiadekoratør.module.css';
 
@@ -20,12 +22,12 @@ enum Status {
 
 type Props = {
   navKontor: string | null;
-  //   onNavKontorChange: (navKontor: NavKontorMedNavn) => void;
+  onNavKontorChange: (navKontor: NavKontorMedNavn) => void;
 };
 
 const Modiadekoratør: FunctionComponent<Props> = ({
   navKontor,
-  //   onNavKontorChange,
+  onNavKontorChange,
 }) => {
   const microfrontend = useRef<ComponentType<DecoratorProps>>();
 
@@ -58,10 +60,10 @@ const Modiadekoratør: FunctionComponent<Props> = ({
   }, []);
 
   const handleNavKontorChange = (navKontor: string) => {
-    // onNavKontorChange({
-    //   navKontor,
-    //   navKontorNavn: hentNavKontoretsNavn(navKontor),
-    // });
+    onNavKontorChange({
+      navKontor,
+      navKontorNavn: hentNavKontoretsNavn(navKontor),
+    });
   };
 
   return (
