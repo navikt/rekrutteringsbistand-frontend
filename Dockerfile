@@ -24,21 +24,13 @@ RUN npm run build
 FROM base AS runner
 WORKDIR /app
 
+COPY --from=builder /app/next.config.js ./
 COPY --from=builder /app/public ./public
-RUN mkdir .next
-
-
-
-
-COPY --from=builder /app/public ./public
-RUN mkdir .next
-# Automatically leverage output traces to reduce image size
-# https://nextjs.org/docs/advanced-features/output-file-tracing
-COPY --from=builder /app/.next/standalone ./
-COPY --from=builder /app/.next/static ./.next/static
-
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./
 
 EXPOSE 3000
-ENV PORT=3000
+
 
 CMD HOSTNAME="0.0.0.0" node server.js
