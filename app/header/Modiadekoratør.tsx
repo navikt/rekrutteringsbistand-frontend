@@ -1,6 +1,7 @@
 'use client';
 import NAVSPA from '@navikt/navspa';
 import { FunctionComponent } from 'react';
+import { isLocal } from '../util/env';
 import { DecoratorProps, Enhet } from './Interndekoratør';
 
 const InternflateDecorator = NAVSPA.importer<DecoratorProps>(
@@ -8,6 +9,9 @@ const InternflateDecorator = NAVSPA.importer<DecoratorProps>(
 );
 
 const Modiadekoratør: FunctionComponent = () => {
+  if (isLocal) {
+    return <div> Ingen header lokalt gitt </div>;
+  }
   return (
     <InternflateDecorator
       onEnhetChanged={function (enhetId?: string | null, enhet?: Enhet): void {
