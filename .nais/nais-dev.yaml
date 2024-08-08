@@ -10,7 +10,6 @@ spec:
   image: {{ image }}
   ingresses:
     - https://rekrutteringsbistand-next.intern.dev.nav.no
-
   port: 3000
   resources:
     limits:

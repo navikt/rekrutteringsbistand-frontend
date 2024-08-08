@@ -11,8 +11,8 @@ jobs:
     permissions:
       contents: read
       id-token: write
-    outputs: 
-        image: ${{ steps.docker-build-push.outputs.image }}
+    outputs:
+      image: ${{ steps.docker-build-push.outputs.image }}
     steps:
       - uses: actions/checkout@v4
       - name: Push docker image to GAR
@@ -30,4 +30,4 @@ jobs:
         env:
           CLUSTER: dev-gcp
           RESOURCE: .nais/nais-dev.yaml
-          IMAGE: ${{ needs.build.outputs.image }}
+          VAR: image=${{ steps.docker-build-push.outputs.image }}
