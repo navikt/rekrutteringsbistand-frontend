@@ -1,3 +1,4 @@
+'use client';
 export enum Miljø {
   DevGcp = 'dev-gcp',
   ProdGcp = 'prod-gcp',
