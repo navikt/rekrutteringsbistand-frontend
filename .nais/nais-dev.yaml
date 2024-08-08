@@ -7,10 +7,23 @@ metadata:
   name: rekrutteringsbistand-next
   namespace: toi
 spec:
-  image: {{ image }}
+  image: { { image } }
   ingresses:
     - https://rekrutteringsbistand-next.intern.dev.nav.no
   port: 3000
+  azure:
+    application:
+      enabled: true
+      allowAllUsers: false
+      claims:
+        groups:
+          - id: { { adGruppeModiaGenerellTilgang } }
+          - id: { { adGruppeModiaOppfolging } }
+          - id: { { adGruppeRekrutteringsbistandArbeidsgiverrettet } }
+          - id: { { adGruppeRekrutteringsbistandJobbsokerrettet } }
+          - id: { { adGruppeRekrutteringsbistandUtvikler } }
+        extra:
+          - NAVident
   resources:
     limits:
       memory: 768Mi
