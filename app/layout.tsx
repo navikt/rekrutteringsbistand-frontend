@@ -17,6 +17,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='no'>
+      <head>
+        <link
+          rel='stylesheet'
+          href='https://cdn.nav.no/personoversikt/internarbeidsflate-decorator-v3/dev/latest/dist/index.css'
+        />
+        <script
+          defer
+          src='https://cdn.nav.no/personoversikt/internarbeidsflate-decorator-v3/dev/latest/dist/bundle.js'
+        />
+      </head>
       <body className={inter.className}>
         <ApplikasjonContextProvider>
           <Header />

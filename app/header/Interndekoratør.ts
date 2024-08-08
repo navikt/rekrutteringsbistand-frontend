@@ -67,8 +67,3 @@ export interface DocumentingHotKey extends HotkeyDescription {
 }
 
 export type Hotkey = ActionHotKey | DocumentingHotKey;
-
-export enum EnhetDisplay {
-  ENHET = 'ENHET',
-  ENHET_VALG = 'ENHET_VALG',
-}
