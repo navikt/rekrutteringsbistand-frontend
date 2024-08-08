@@ -1,4 +1,5 @@
 'use client';
+import Script from 'next/script';
 import React from 'react';
 import ErrorBoundary from './ErrorBoundary';
 import { Rolle } from './tilgangskontroll/Roller';
@@ -49,6 +50,10 @@ export const ApplikasjonContextProvider: React.FC<
         )
       : true;
 
+  const scriptSrc =
+    'https://cdn.nav.no/personoversikt/internarbeidsflate-decorator-v3/dev/latest/dist/bundle.js';
+  const linkHref =
+    'https://cdn.nav.no/personoversikt/internarbeidsflate-decorator-v3/dev/latest/dist/index.css';
   return (
     <ApplikasjonContext.Provider
       value={{
@@ -60,6 +65,8 @@ export const ApplikasjonContextProvider: React.FC<
         tilgangskontrollErPå,
       }}
     >
+      <Script src={scriptSrc}></Script>
+      <link rel='stylesheet' href={linkHref} />
       <ErrorBoundary> {children} </ErrorBoundary>
     </ApplikasjonContext.Provider>
   );
