@@ -14,7 +14,8 @@ const Modiadekoratør: FunctionComponent = () => {
   }
   return (
     <InternflateDecorator
-      useProxy='/api/modia-proxy'
+      useProxy={true}
+      proxy='/api/modia-proxy'
       onEnhetChanged={function (enhetId?: string | null, enhet?: Enhet): void {
         console.log('Function not implemented.');
       }}
