@@ -1,24 +1,15 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
+import { NextRequest, NextResponse } from 'next/server';
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  const { method, headers, body } = req;
-
+export async function GET(req: NextRequest) {
   const url = 'https://modiacontextholder.intern.dev.nav.no/api/decorator';
 
   try {
     const response = await fetch(url, {
-      method: method,
+      method: 'GET',
       headers: {
-        Authorization: headers['authorization'] || '',
-        'Content-Type': headers['content-type'] || 'application/json',
+        Authorization: req.headers.get('authorization') || '',
+        'Content-Type': 'application/json',
       },
-      body:
-        method !== 'GET' && method !== 'HEAD'
-          ? JSON.stringify(body)
-          : undefined,
     });
 
     if (!response.ok) {
@@ -27,11 +18,12 @@ export default async function handler(
 
     const data = await response.json();
 
-    res.status(response.status).json(data);
+    return NextResponse.json(data);
   } catch (error) {
     console.error('Error in proxying request:', error);
-    res.status(500).json({
-      error: 'An error occurred while processing the request',
-    });
+    return NextResponse.json(
+      { error: 'An error occurred while processing the request' },
+      { status: 500 }
+    );
   }
 }
