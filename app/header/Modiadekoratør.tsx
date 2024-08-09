@@ -1,4 +1,3 @@
-'use client';
 import NAVSPA from '@navikt/navspa';
 import { FunctionComponent } from 'react';
 import { isLocal } from '../util/env';
