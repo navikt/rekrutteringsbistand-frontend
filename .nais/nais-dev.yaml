@@ -7,7 +7,7 @@ metadata:
   name: rekrutteringsbistand-next
   namespace: toi
 spec:
-  image: {{ image }}
+  image: { { image } }
   ingresses:
     - https://rekrutteringsbistand-next.intern.dev.nav.no
   port: 3000
@@ -17,15 +17,20 @@ spec:
       allowAllUsers: false
       claims:
         groups:
-          - id: {{ adGruppeModiaGenerellTilgang }}
-          - id: {{ adGruppeModiaOppfolging }}
-          - id: {{ adGruppeRekrutteringsbistandArbeidsgiverrettet }}
-          - id: {{ adGruppeRekrutteringsbistandJobbsokerrettet }}
-          - id: {{ adGruppeRekrutteringsbistandUtvikler }}
+          - id: { { adGruppeModiaGenerellTilgang } }
+          - id: { { adGruppeModiaOppfolging } }
+          - id: { { adGruppeRekrutteringsbistandArbeidsgiverrettet } }
+          - id: { { adGruppeRekrutteringsbistandJobbsokerrettet } }
+          - id: { { adGruppeRekrutteringsbistandUtvikler } }
         extra:
           - NAVident
     sidecar:
       enabled: true
+  accessPolicy:
+    outbound:
+      rules:
+        - application: modiacontextholder
+          namespace: personoversikt
   resources:
     limits:
       memory: 768Mi

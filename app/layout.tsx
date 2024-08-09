@@ -4,11 +4,12 @@ import { Inter } from 'next/font/google';
 import { ApplikasjonContextProvider } from './ApplikasjonContext';
 import { verifyUserLoggedIn } from './auth/auth';
 import Header from './header/Header';
+import { isLocal } from './util/env';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Rekrutteringsbistand',
+  title: isLocal ? 'Local - Rekrutteringsbistand' : 'Rekrutteringsbistand',
 };
 
 export default async function RootLayout({

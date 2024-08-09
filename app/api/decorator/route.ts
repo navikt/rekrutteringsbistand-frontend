@@ -3,11 +3,13 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function GET(req: NextRequest) {
   const url = 'https://modiacontextholder.intern.dev.nav.no/api/decorator';
 
+  const authHeader = req.headers.get('authorization');
+
   try {
     const response = await fetch(url, {
       method: 'GET',
       headers: {
-        Authorization: req.headers.get('authorization') || '',
+        Authorization: `${authHeader}`,
         'Content-Type': 'application/json',
       },
     });
