@@ -8,7 +8,7 @@ const InternflateDecorator = NAVSPA.importer<DecoratorProps>(
   'internarbeidsflate-decorator-v3'
 );
 
-const Modiadekoratør: FunctionComponent = () => {
+const Modiadekoratør: FunctionComponent = async () => {
   if (isLocal) {
     return (
       <InternalHeader>
