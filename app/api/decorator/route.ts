@@ -2,10 +2,16 @@ import { getToken, requestOboToken } from '@navikt/oasis';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(req: NextRequest) {
-  const url = 'https://modiacontextholder.intern.dev.nav.no/api/decorator';
+  const url = process.env.MODIA_CONTEXT_HOLDER_API;
 
   const token = getToken(req);
 
+  if (!url) {
+    return NextResponse.json(
+      { error: 'Failed to retrieve MODIA_CONTEXT_HOLDER_API from env.' },
+      { status: 500 }
+    );
+  }
   if (!token) {
     return NextResponse.json(
       { error: 'Failed to retrieve token' },
@@ -52,7 +58,6 @@ export async function GET(req: NextRequest) {
     return NextResponse.json(
       {
         error: 'An error occurred while processing the request',
-        details: JSON.stringify(error),
       },
       { status: 500 }
     );
