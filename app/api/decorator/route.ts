@@ -1,6 +1,5 @@
 import { getToken, requestOboToken } from '@navikt/oasis';
 import { NextRequest, NextResponse } from 'next/server';
-import { getMiljø } from '../../util/miljø';
 
 export async function GET(req: NextRequest) {
   const url = 'https://modiacontextholder.intern.dev.nav.no/api/decorator';
@@ -13,7 +12,12 @@ export async function GET(req: NextRequest) {
       { status: 500 }
     );
   }
-  const obo = await requestOboToken(token, getMiljø());
+  const obo = await requestOboToken(token, 'dev-gcp').catch(() => {
+    return NextResponse.json(
+      { error: 'Klarte ikke å hente OBO token' },
+      { status: 500 }
+    );
+  });
 
   try {
     const response = await fetch(url, {
