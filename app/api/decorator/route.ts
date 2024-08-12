@@ -8,22 +8,34 @@ export async function GET(req: NextRequest) {
 
   if (!token) {
     return NextResponse.json(
-      { error: 'Klarte ikke hente token' },
+      { error: 'Failed to retrieve token' },
       { status: 500 }
     );
   }
-  const obo = await requestOboToken(token, 'dev-gcp').catch(() => {
+
+  let obo;
+  try {
+    obo = await requestOboToken(token, 'dev-gcp');
+  } catch (error) {
+    console.error('Error fetching OBO token:', error);
     return NextResponse.json(
-      { error: 'Klarte ikke å hente OBO token' },
+      { error: 'Failed to retrieve OBO token' },
       { status: 500 }
     );
-  });
+  }
+
+  if (!obo) {
+    return NextResponse.json(
+      { error: 'Invalid OBO token received' },
+      { status: 500 }
+    );
+  }
 
   try {
     const response = await fetch(url, {
       method: 'GET',
       headers: {
-        Authorization: `${obo}`,
+        Authorization: `Bearer ${obo}`, // Ensure the correct format is used here
         'Content-Type': 'application/json',
       },
     });
