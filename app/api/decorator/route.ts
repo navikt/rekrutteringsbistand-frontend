@@ -8,13 +8,15 @@ export async function GET(req: NextRequest) {
 
   if (!url) {
     return NextResponse.json(
-      { error: 'Failed to retrieve MODIA_CONTEXT_HOLDER_API from env.' },
+      {
+        error: 'Kunne ikke hente MODIA_CONTEXT_HOLDER_API fra miljøvariablene.',
+      },
       { status: 500 }
     );
   }
   if (!token) {
     return NextResponse.json(
-      { error: 'Failed to retrieve token' },
+      { error: 'Kunne ikke hente token' },
       { status: 500 }
     );
   }
@@ -23,16 +25,16 @@ export async function GET(req: NextRequest) {
   try {
     obo = await requestOboToken(token, 'dev-gcp');
   } catch (error) {
-    console.error('Error fetching OBO token:', error);
+    console.error('Feil ved henting av OBO-token:', error);
     return NextResponse.json(
-      { error: 'Failed to retrieve OBO token' },
+      { error: 'Kunne ikke hente OBO-token' },
       { status: 500 }
     );
   }
 
   if (!obo) {
     return NextResponse.json(
-      { error: 'Invalid OBO token received' },
+      { error: 'Ugyldig OBO-token mottatt' },
       { status: 500 }
     );
   }
@@ -54,10 +56,10 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json(data);
   } catch (error) {
-    console.error('Error in proxying request:', error);
+    console.error('Feil ved proxying av forespørselen:', error);
     return NextResponse.json(
       {
-        error: 'An error occurred while processing the request',
+        error: 'n feil oppstod under behandlingen av forespørselen',
       },
       { status: 500 }
     );
