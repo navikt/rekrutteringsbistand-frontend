@@ -50,7 +50,10 @@ export async function GET(req: NextRequest) {
   } catch (error) {
     console.error('Error in proxying request:', error);
     return NextResponse.json(
-      { error: 'An error occurred while processing the request' },
+      {
+        error: 'An error occurred while processing the request',
+        details: JSON.stringify(error),
+      },
       { status: 500 }
     );
   }
