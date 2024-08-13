@@ -27,7 +27,7 @@ export async function GET(req: NextRequest) {
     obo = await requestOboToken(
       token,
       //TODO Bytt ut dev-gcp basert på env.
-      'api://dev-gcp.personoversikt.modiacontextholder/.default'
+      'dev-gcp.personoversikt.modiacontextholder'
       // 'dev-gcp:personoversikt:modiacontextholder'
     );
   } catch (error) {
