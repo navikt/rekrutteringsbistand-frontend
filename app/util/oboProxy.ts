@@ -49,10 +49,19 @@ export const proxyWithOBO = async (
     originalHeaders.set('Authorization', `Bearer ${obo.token}`);
     originalHeaders.set('Content-Type', 'application/json');
 
-    const response = await fetch(newUrl, {
+    const fetchOptions: RequestInit = {
       method: req.method,
       headers: originalHeaders,
-    });
+    };
+
+    if (req.method === 'POST' || req.method === 'PUT') {
+      const body = req.body;
+      if (body) {
+        fetchOptions.body = body;
+      }
+    }
+
+    const response = await fetch(newUrl, fetchOptions);
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
