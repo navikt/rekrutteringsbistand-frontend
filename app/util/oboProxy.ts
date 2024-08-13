@@ -50,7 +50,7 @@ export const proxyWithOBO = async (
     originalHeaders.set('Content-Type', 'application/json');
 
     const response = await fetch(newUrl, {
-      method: 'GET',
+      method: req.method,
       headers: originalHeaders,
     });
 
