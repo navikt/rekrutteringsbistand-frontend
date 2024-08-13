@@ -32,8 +32,8 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  //@ts-ignore
-  if (!obo.ok) {
+  if (!obo.ok || !obo.token) {
+    console.log('🎺 obo', obo);
     return NextResponse.json(
       { error: 'Ugyldig OBO-token mottatt' },
       { status: 500 }
@@ -44,7 +44,6 @@ export async function GET(req: NextRequest) {
     const response = await fetch(url, {
       method: 'GET',
       headers: {
-        //@ts-ignore
         Authorization: `Bearer ${obo.token}`,
         'Content-Type': 'application/json',
       },
