@@ -1,4 +1,4 @@
-import { getToken, requestOboToken } from '@navikt/oasis';
+import { getToken, OboResult, requestOboToken } from '@navikt/oasis';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(req: NextRequest) {
@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  let obo;
+  let obo: OboResult;
   try {
     obo = await requestOboToken(token, 'dev-gcp');
   } catch (error) {
@@ -32,7 +32,8 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  if (!obo) {
+  //@ts-ignore
+  if (!obo.ok) {
     return NextResponse.json(
       { error: 'Ugyldig OBO-token mottatt' },
       { status: 500 }
@@ -43,7 +44,8 @@ export async function GET(req: NextRequest) {
     const response = await fetch(url, {
       method: 'GET',
       headers: {
-        Authorization: `Bearer ${obo}`, // Ensure the correct format is used here
+        //@ts-ignore
+        Authorization: `Bearer ${obo.token}`,
         'Content-Type': 'application/json',
       },
     });
@@ -59,7 +61,7 @@ export async function GET(req: NextRequest) {
     console.error('Feil ved proxying av forespørselen:', error);
     return NextResponse.json(
       {
-        error: 'n feil oppstod under behandlingen av forespørselen',
+        error: 'En feil oppstod under behandlingen av forespørselen',
       },
       { status: 500 }
     );

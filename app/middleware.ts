@@ -11,7 +11,6 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
   const requestUrl: URL = new URL(request.url);
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set('x-path', requestUrl.pathname + requestUrl.search);
-
   if (requestHeaders.get('authorization') == null && !isLocal) {
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.pathname = `/oauth2/login`;
@@ -28,5 +27,6 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
 }
 
 export const config = {
-  matcher: ['/'],
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
+  missing: [{ type: 'header', key: 'x-path' }],
 };
