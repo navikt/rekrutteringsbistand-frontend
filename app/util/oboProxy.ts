@@ -57,7 +57,7 @@ export const proxyWithOBO = async (
     if (req.method === 'POST' || req.method === 'PUT') {
       const body = await new Response(req.body).json();
       if (body) {
-        fetchOptions.body = body;
+        fetchOptions.body = JSON.stringify(body);
       }
     }
 
