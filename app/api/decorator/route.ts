@@ -5,7 +5,13 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function GET(req: NextRequest) {
   const url = process.env.MODIA_CONTEXT_HOLDER_API;
 
-  console.log('🎺 url', url);
+  console.log('🎺 req', req);
+
+  const path = req.nextUrl.pathname;
+
+  const fullUrl = `${url}${path}`;
+
+  console.log('🎺 fullUrl', fullUrl);
   const token = getToken(headers());
 
   if (!url) {
@@ -28,7 +34,6 @@ export async function GET(req: NextRequest) {
     obo = await requestOboToken(
       token,
       //TODO Bytt ut dev-gcp basert på env.
-      // 'dev-gcp:personoversikt:modiacontextholder'
       'api://dev-gcp.personoversikt.modiacontextholder/.default'
     );
   } catch (error) {
@@ -48,7 +53,7 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const response = await fetch(url, {
+    const response = await fetch(fullUrl, {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${obo.token}`,
