@@ -56,6 +56,8 @@ export const proxyWithOBO = async (
 
     if (req.method === 'POST' || req.method === 'PUT') {
       const body = req.body;
+      console.log('🎺 req.body', req.body);
+      console.log('🎺 req', req);
       if (body) {
         fetchOptions.body = body;
       }
