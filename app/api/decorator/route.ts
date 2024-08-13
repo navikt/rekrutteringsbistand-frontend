@@ -1,10 +1,11 @@
 import { getToken, OboResult, requestOboToken } from '@navikt/oasis';
+import { headers } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(req: NextRequest) {
   const url = process.env.MODIA_CONTEXT_HOLDER_API;
 
-  const token = getToken(req);
+  const token = getToken(headers());
 
   if (!url) {
     return NextResponse.json(
@@ -23,7 +24,11 @@ export async function GET(req: NextRequest) {
 
   let obo: OboResult;
   try {
-    obo = await requestOboToken(token, 'dev-gcp');
+    obo = await requestOboToken(
+      token,
+      //TODO Bytt ut dev-gcp basert på env.
+      'dev-gcp:personoversikt:modiacontextholder'
+    );
   } catch (error) {
     console.error('Feil ved henting av OBO-token:', error);
     return NextResponse.json(
