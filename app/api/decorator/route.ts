@@ -5,6 +5,7 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function GET(req: NextRequest) {
   const url = process.env.MODIA_CONTEXT_HOLDER_API;
 
+  console.log('🎺 url', url);
   const token = getToken(headers());
 
   if (!url) {
