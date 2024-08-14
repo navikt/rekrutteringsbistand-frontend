@@ -1,4 +1,4 @@
-name: Build
+name: Build and Deploy
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    name: Build og Push Dockerimage
+    name: Bygg og push
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -16,9 +16,9 @@ jobs:
       image: ${{ steps.docker-build-push.outputs.image }}
     steps:
       - uses: actions/checkout@v4
-      - name: Push docker image to GAR
-        uses: nais/docker-build-push@v0
+      - name: Push Docker image to GAR
         id: docker-build-push
+        uses: nais/docker-build-push@v0
         env:
           NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
         with:
@@ -27,4 +27,22 @@ jobs:
           project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
           build_secrets: 'NODE_AUTH_TOKEN=${{ secrets.READER_TOKEN }}'
       - name: Set Image Output
+        id: set-image-output
         run: echo "image=${{ steps.docker-build-push.outputs.image }}" >> $GITHUB_ENV
+
+  deploy:
+    name: Deploy til dev-gcp
+    runs-on: ubuntu-latest
+    needs: build
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy to NAIS
+        uses: nais/deploy/actions/deploy@v2
+        env:
+          CLUSTER: dev-gcp
+          RESOURCE: .nais/nais-dev.yaml
+          VARS: .nais/dev-gcp.json
+          VAR: image=${{ needs.build.outputs.image }}
