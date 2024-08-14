@@ -1,0 +1,23 @@
+name: Deploy DEV
+
+on:
+  workflow_run:
+    workflows: ["Build"]
+    types:
+      - completed
+
+jobs:
+  deploy:
+    name: Deploy to NAIS
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: Deploy to NAIS
+        uses: nais/deploy/actions/deploy@v2
+        env:
+          CLUSTER: dev-gcp
+          RESOURCE: .nais/nais-dev.yaml
+          VARS: .nais/dev-gcp.json
+          VAR: image=${{ github.event.workflow_run.outputs.image }}

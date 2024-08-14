@@ -1,12 +1,13 @@
-name: Build og deploy
+name: Build
+
 on:
   push:
     branches:
       - master
 
 jobs:
-  build_and_deploy:
-    name: Build, push and deploy
+  build:
+    name: Build and Push Docker Image
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -25,10 +26,5 @@ jobs:
           identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
           project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
           build_secrets: 'NODE_AUTH_TOKEN=${{ secrets.READER_TOKEN }}'
-      - name: Deploy to NAIS
-        uses: nais/deploy/actions/deploy@v2
-        env:
-          CLUSTER: dev-gcp
-          RESOURCE: .nais/nais-dev.yaml
-          VARS: .nais/dev-gcp.json
-          VAR: image=${{ steps.docker-build-push.outputs.image }}
+      - name: Set Image Output
+        run: echo "image=${{ steps.docker-build-push.outputs.image }}" >> $GITHUB_ENV
