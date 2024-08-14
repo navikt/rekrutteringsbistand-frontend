@@ -1,11 +1,11 @@
 import '@navikt/ds-css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import Script from 'next/script';
 import { ApplikasjonContextProvider } from './ApplikasjonContext';
 import { verifyUserLoggedIn } from './auth/auth';
 import Header from './header/Header';
 import { isLocal } from './util/env';
-
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
@@ -25,8 +25,9 @@ export default async function RootLayout({
           rel='stylesheet'
           href='https://cdn.nav.no/personoversikt/internarbeidsflate-decorator-v3/dev/latest/dist/index.css'
         />
-        <script
+        <Script
           defer
+          strategy='beforeInteractive'
           src='https://cdn.nav.no/personoversikt/internarbeidsflate-decorator-v3/dev/latest/dist/bundle.js'
         />
       </head>

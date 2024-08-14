@@ -22,6 +22,7 @@ const Modiadekoratør: FunctionComponent = async () => {
   }
   return (
     <InternflateDecorator
+    
       useProxy
       proxy='https://rekrutteringsbistand-next.intern.dev.nav.no'
       onEnhetChanged={function (enhetId?: string | null, enhet?: Enhet): void {
