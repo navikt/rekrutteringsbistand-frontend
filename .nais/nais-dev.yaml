@@ -7,6 +7,9 @@ metadata:
   name: rekrutteringsbistand-next
   namespace: toi
 spec:
+  replicas:
+    max: 1
+    min: 1
   image: {{image}}
   ingresses:
     - https://rekrutteringsbistand-next.intern.dev.nav.no
