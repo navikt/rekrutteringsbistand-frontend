@@ -17,6 +17,11 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  console.log(
+    '🎺 process.env.NEXT_PUBLIC_ENVIRONMENT',
+    process.env.NEXT_PUBLIC_ENVIRONMENT
+  );
+  console.log('🎺 process.env.NODE_ENV', process.env.NODE_ENV);
   await verifyUserLoggedIn();
   return (
     <html lang='no'>
