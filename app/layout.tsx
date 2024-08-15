@@ -4,6 +4,7 @@ import { Inter } from 'next/font/google';
 import Script from 'next/script';
 import { ApplikasjonContextProvider } from './ApplikasjonContext';
 import { verifyUserLoggedIn } from './auth/auth';
+import ErrorBoundary from './ErrorBoundary';
 import Header from './header/Header';
 import { isLocal } from './util/env';
 const inter = Inter({ subsets: ['latin'] });
@@ -32,10 +33,12 @@ export default async function RootLayout({
         />
       </head>
       <body className={inter.className}>
-        <ApplikasjonContextProvider>
-          <Header />
-          <main>{children}</main>
-        </ApplikasjonContextProvider>
+        <ErrorBoundary>
+          <ApplikasjonContextProvider>
+            <Header />
+            <main>{children}</main>
+          </ApplikasjonContextProvider>
+        </ErrorBoundary>
       </body>
     </html>
   );

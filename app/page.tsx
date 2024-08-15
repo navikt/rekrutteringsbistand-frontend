@@ -1,3 +1,5 @@
+import Forside from './forside/Forside';
+
 export default function Home() {
-  return <div>init</div>;
+  return <Forside />;
 }
