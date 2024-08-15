@@ -8,8 +8,8 @@ import SeMineStillingerIkon from '../icons/se-mine-stillinger.svg';
 // import { Rolle } from '../../felles/tilgangskontroll/Roller';
 // import { TilgangskontrollForInnhold } from '../../felles/tilgangskontroll/TilgangskontrollForInnhold';
 import Link from 'next/link';
-import { Rolle } from '../../tilgangskontroll/Roller';
-import { TilgangskontrollForInnhold } from '../../tilgangskontroll/TilgangskontrollForInnhold';
+import { Rolle } from '../../components/tilgangskontroll/Roller';
+import { TilgangskontrollForInnhold } from '../../components/tilgangskontroll/TilgangskontrollForInnhold';
 
 const Hurtiglenker: FunctionComponent = () => {
   return (

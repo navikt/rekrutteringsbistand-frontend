@@ -1,11 +1,7 @@
 import * as React from 'react';
 
-export interface Ipage {
-  children?: React.ReactNode | undefined;
-}
-
-const page: React.FC<Ipage> = ({ children }) => {
-  return <React.Fragment> Stillinger </React.Fragment>;
+const page: React.FC = () => {
+  return <React.Fragment> Hello </React.Fragment>;
 };
 
 export default page;

@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import ErrorBoundary from './ErrorBoundary';
-import { Rolle } from './tilgangskontroll/Roller';
+import { Rolle } from './components/tilgangskontroll/Roller';
 
 export type NavKontorMedNavn = {
   navKontor: string;

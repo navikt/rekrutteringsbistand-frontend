@@ -7,7 +7,7 @@ import { Rolle } from './Roller';
 import css from './TilgangskontrollForInnhold.module.css';
 
 export interface ITilgangskontrollForInnhold {
-  kreverEnAvRollene: Rolle[];
+  kreverEnAvRollene?: Rolle[];
   children: React.ReactNode;
   skjulVarsel?: boolean;
   manglerEierskap?: boolean;
@@ -34,13 +34,15 @@ export const TilgangskontrollForInnhold: React.FC<
 > = ({ kreverEnAvRollene, children, skjulVarsel, manglerEierskap }) => {
   const { roller } = React.useContext(ApplikasjonContext);
 
-  const harTilgang = kreverEnAvRollene.some((r) => {
-    return (
-      (roller?.includes(r) ||
-        roller?.includes(Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER)) &&
-      !manglerEierskap
-    );
-  });
+  const harTilgang = kreverEnAvRollene
+    ? kreverEnAvRollene.some((r) => {
+        return (
+          (roller?.includes(r) ||
+            roller?.includes(Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER)) &&
+          !manglerEierskap
+        );
+      })
+    : true;
 
   if (harTilgang) {
     return <>{children}</>;
@@ -57,16 +59,18 @@ export const TilgangskontrollForInnhold: React.FC<
           <div>
             <span>
               Hei, du trenger rollen
-              {kreverEnAvRollene
-                .filter(
-                  (r, i) => r !== Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER
-                )
-                .map((rolle, i) => (
-                  <span key={i}>
-                    {rolleTilNavn(rolle)}{' '}
-                    {i < kreverEnAvRollene.length - 1 ? 'eller' : ''}{' '}
-                  </span>
-                ))}{' '}
+              {kreverEnAvRollene &&
+                kreverEnAvRollene
+                  .filter(
+                    (r, i) =>
+                      r !== Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER
+                  )
+                  .map((rolle, i) => (
+                    <span key={i}>
+                      {rolleTilNavn(rolle)}{' '}
+                      {i < kreverEnAvRollene.length - 1 ? 'eller' : ''}{' '}
+                    </span>
+                  ))}
               for å få tilgang til innhold på denne siden. Husk at du må ha et
               tjenstlig behov for det den spesifikke rollen gir deg tilgang til.
               Snakk med din nærmeste leder.
