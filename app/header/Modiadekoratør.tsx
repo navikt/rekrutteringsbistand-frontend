@@ -22,7 +22,6 @@ const Modiadekoratør: FunctionComponent = async () => {
   }
   return (
     <InternflateDecorator
-    
       useProxy
       proxy='https://rekrutteringsbistand-next.intern.dev.nav.no'
       onEnhetChanged={function (enhetId?: string | null, enhet?: Enhet): void {
@@ -33,7 +32,7 @@ const Modiadekoratør: FunctionComponent = async () => {
       showSearchArea={false}
       showHotkeys={false}
       environment={'q0'}
-      urlFormat={'ANSATT'}
+      urlFormat={'NAV_NO'}
     />
   );
 };
