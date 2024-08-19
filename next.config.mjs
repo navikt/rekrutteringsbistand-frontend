@@ -30,6 +30,16 @@ const nextConfig = {
   experimental: {
     optimizePackageImports: ['@navikt/ds-react', '@navikt/aksel-icons'],
   },
+  // async rewrites() {
+  //   return process.env.NODE_ENV === 'development'
+  //     ? [
+  //         {
+  //           source: '/api/:path*',
+  //           destination: '/mock/api/:path*', // The new path with prefix during local development
+  //         },
+  //       ]
+  //     : [];
+  // },
 };
 
 export default nextConfig;

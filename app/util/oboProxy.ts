@@ -34,7 +34,6 @@ export const proxyWithOBO = async (
   }
 
   if (!obo.ok || !obo.token) {
-    console.log('🎺 ', obo);
     return NextResponse.json(
       { error: 'Ugyldig OBO-token mottatt' },
       { status: 500 }

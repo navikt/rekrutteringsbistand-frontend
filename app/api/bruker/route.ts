@@ -2,6 +2,8 @@ import { getToken } from '@navikt/oasis';
 import { decodeJwt } from 'jose';
 import { NextRequest, NextResponse } from 'next/server';
 import { navnForRolleId } from '../../auth/roller';
+import { isLocal } from '../../util/env';
+import { brukerMock } from './bruker';
 
 const hentNavIdent = (token: string) => {
   const claims = decodeJwt(token);
@@ -14,6 +16,10 @@ const hentRoller = (token: string): string[] => {
 };
 
 export async function GET(req: NextRequest) {
+  if (isLocal) {
+    return NextResponse.json(brukerMock);
+  }
+
   try {
     const headers = req.headers;
     const brukerensAccessToken = getToken(headers);

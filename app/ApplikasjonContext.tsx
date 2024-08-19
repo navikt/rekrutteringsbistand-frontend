@@ -1,6 +1,7 @@
 'use client';
 import React from 'react';
 import ErrorBoundary from './ErrorBoundary';
+import { useBruker } from './api/bruker/bruker';
 import { Rolle } from './components/tilgangskontroll/Roller';
 
 export type NavKontorMedNavn = {
@@ -32,7 +33,8 @@ export const ApplikasjonContextProvider: React.FC<
   IApplikasjonContextProvider
 > = ({ children }) => {
   // const { navIdent, roller, isLoading } = useMeg();
-  const navIdent = 'Z123456';
+  const { navIdent } = useBruker();
+
   const roller = [Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER];
 
   const [valgtNavKontor, setValgtNavKontor] =
