@@ -5,7 +5,7 @@ import { isLocal } from '../../util/env';
 import { Navigeringsmeny } from './components/navigasjon/Navigasjon';
 
 const Modiadekoratør = isLocal
-  ? dynamic(() => import('./components/modia/DevDekoratør'))
+  ? dynamic(() => import('../dev/DevDekoratør'))
   : dynamic(() => import('./components/modia/Modiadekoratør'));
 
 const Header: React.FC = () => {

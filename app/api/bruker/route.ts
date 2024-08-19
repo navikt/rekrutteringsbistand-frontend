@@ -2,8 +2,8 @@ import { getToken } from '@navikt/oasis';
 import { decodeJwt } from 'jose';
 import { NextRequest, NextResponse } from 'next/server';
 import { navnForRolleId } from '../../auth/roller';
+import { Rolle } from '../../components/tilgangskontroll/Roller';
 import { isLocal } from '../../util/env';
-import { brukerMock } from './bruker';
 
 const hentNavIdent = (token: string) => {
   const claims = decodeJwt(token);
@@ -17,7 +17,10 @@ const hentRoller = (token: string): string[] => {
 
 export async function GET(req: NextRequest) {
   if (isLocal) {
-    return NextResponse.json(brukerMock);
+    return NextResponse.json({
+      navIdent: 'Z123456',
+      roller: [Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER],
+    });
   }
 
   try {

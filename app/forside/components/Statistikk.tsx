@@ -1,7 +1,11 @@
 import { BodyShort, Heading, Select } from '@navikt/ds-react';
 import React, { ChangeEvent, useState } from 'react';
 import { ApplikasjonContext } from '../../ApplikasjonContext';
-import { førsteDagIMåned, sisteDagIMåned, visDato, visDatoMedMåned } from '../../util/dato';
+import {
+  førsteDagIMåned,
+  sisteDagIMåned,
+  visDatoMedMåned,
+} from '../../util/dato';
 
 // import Forespørsler from './svar-statistikk/Forespørsler';
 // import Utfallsstatistikk from './utfall-statistikk/Utfallsstatistikk';
@@ -41,7 +45,7 @@ const Statistikk: React.FC = () => {
           </Heading>
           <BodyShort>
             {valgtNavKontor?.navKontorNavn ??
-              `Enhet ${valgtNavKontor?.navKontor}`}
+              `Enhet ${valgtNavKontor?.navKontor || '-'}`}
           </BodyShort>
         </div>
         <div className='"hidden h-px bg-border-subtle flex-grow skillelinje"' />

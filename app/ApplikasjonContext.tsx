@@ -36,8 +36,6 @@ export const ApplikasjonContextProvider: React.FC<
   // const { navIdent, roller, isLoading } = useMeg();
   const { isLoading, data } = useBruker();
 
-  const roller = [Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER];
-
   const [valgtNavKontor, setValgtNavKontor] =
     React.useState<NavKontorMedNavn | null>(null);
 
@@ -47,20 +45,30 @@ export const ApplikasjonContextProvider: React.FC<
     tilgangskontrollErPå
       ? rolle.some(
           (r) =>
-            roller?.includes(r) ||
-            roller?.includes(Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER)
+            data?.roller?.includes(r) ||
+            data?.roller?.includes(
+              Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER
+            )
         )
       : true;
 
   if (isLoading) {
-    return <Loader />;
+    return (
+      <div className='flex justify-center pt-10'>
+        <Loader size='xlarge' title='Laster...' />
+      </div>
+    );
+  }
+
+  if (data?.navIdent === undefined) {
+    return <span>Feil ved innlasting av bruker</span>;
   }
   return (
     <ApplikasjonContext.Provider
       value={{
         setValgtNavKontor,
         valgtNavKontor,
-        roller,
+        roller: data?.roller,
         navIdent: data?.navIdent,
         harRolle,
         tilgangskontrollErPå,
