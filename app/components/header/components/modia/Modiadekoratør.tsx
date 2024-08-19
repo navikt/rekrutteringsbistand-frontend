@@ -1,5 +1,6 @@
 import NAVSPA from '@navikt/navspa';
-import { FunctionComponent } from 'react';
+import React, { FunctionComponent } from 'react';
+import { ApplikasjonContext } from '../../../../ApplikasjonContext';
 import { DecoratorProps, Enhet } from './Interndekoratør';
 
 const InternflateDecorator = NAVSPA.importer<DecoratorProps>(
@@ -7,13 +8,18 @@ const InternflateDecorator = NAVSPA.importer<DecoratorProps>(
 );
 
 const Modiadekoratør: FunctionComponent = async () => {
+  const { setValgtNavKontor } = React.useContext(ApplikasjonContext);
   return (
     <InternflateDecorator
       useProxy
       proxy='https://rekrutteringsbistand-next.intern.dev.nav.no'
       onEnhetChanged={function (enhetId?: string | null, enhet?: Enhet): void {
-        console.log('Function not implemented.');
+        setValgtNavKontor({
+          navKontor: enhet?.enhetId ?? 'Ukjent navkontor ID',
+          navKontorNavn: enhet?.navn ?? 'Ukjent navkontor NAVN',
+        });
       }}
+      
       appName={'Rekrutteringsbistand'}
       showEnheter={true}
       showSearchArea={false}
