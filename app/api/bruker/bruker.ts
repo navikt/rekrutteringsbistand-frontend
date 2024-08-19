@@ -13,9 +13,8 @@ const BrukerSchema = z.object({
 
 export type BrukerDTO = z.infer<typeof BrukerSchema>;
 
-export const useBruker = (): BrukerDTO => {
-  return useSWRImmutable(brukerEndepunkt, getAPIwithSchema(BrukerSchema));
-};
+export const useBruker = () =>
+  useSWRImmutable(brukerEndepunkt, getAPIwithSchema(BrukerSchema));
 
 export const brukerMock: BrukerDTO = {
   navIdent: 'Ola Mockman',

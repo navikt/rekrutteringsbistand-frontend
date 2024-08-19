@@ -1,4 +1,5 @@
 'use client';
+import { Loader } from '@navikt/ds-react';
 import React from 'react';
 import ErrorBoundary from './ErrorBoundary';
 import { useBruker } from './api/bruker/bruker';
@@ -33,7 +34,7 @@ export const ApplikasjonContextProvider: React.FC<
   IApplikasjonContextProvider
 > = ({ children }) => {
   // const { navIdent, roller, isLoading } = useMeg();
-  const { navIdent } = useBruker();
+  const { isLoading, data } = useBruker();
 
   const roller = [Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER];
 
@@ -51,13 +52,16 @@ export const ApplikasjonContextProvider: React.FC<
         )
       : true;
 
+  if (isLoading) {
+    return <Loader />;
+  }
   return (
     <ApplikasjonContext.Provider
       value={{
         setValgtNavKontor,
         valgtNavKontor,
         roller,
-        navIdent,
+        navIdent: data?.navIdent,
         harRolle,
         tilgangskontrollErPå,
       }}
