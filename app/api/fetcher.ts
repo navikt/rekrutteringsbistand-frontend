@@ -1,4 +1,5 @@
 import { z, ZodSchema } from 'zod';
+import { KastError } from '../components/feilhåndtering/KastError';
 
 const basePath = process.env.NODE_ENV === 'development' ? '' : '';
 
@@ -17,11 +18,33 @@ export const getAPI = async (url: string) => {
     credentials: 'include',
   });
 
+  if (!response.ok) {
+    let errorDetails = '';
+    const contentType = response.headers.get('content-type');
+
+    if (contentType && contentType.includes('application/json')) {
+      // Hent JSON
+      const errorData = await response.json();
+      errorDetails = JSON.stringify(errorData);
+    } else {
+      // Håndtere ikke JSON
+      errorDetails = await response.text();
+    }
+
+    console.log('🎺 response', response);
+    const error = new KastError({
+      url: response.url,
+      statuskode: response.status,
+      stack: errorDetails,
+    });
+    throw error;
+  }
+
   if (response.ok) {
     return await response.json();
   } else {
     throw new Error(
-      `Feil respons fra server (http-status: ${response.status})`
+      `Feil respons fra server: (http-status: ${response.status})`
     );
   }
 };

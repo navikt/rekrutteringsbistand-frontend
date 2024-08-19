@@ -1,4 +1,4 @@
-import { BodyShort, Heading, Select } from '@navikt/ds-react';
+import { BodyShort, Heading, Loader, Select } from '@navikt/ds-react';
 import React, { ChangeEvent, useState } from 'react';
 import { ApplikasjonContext } from '../../ApplikasjonContext';
 import {
@@ -6,6 +6,7 @@ import {
   sisteDagIMåned,
   visDatoMedMåned,
 } from '../../util/dato';
+import Utfallsstatistikk from './utfallsstatistikk/Utfallsstatistikk';
 
 // import Forespørsler from './svar-statistikk/Forespørsler';
 // import Utfallsstatistikk from './utfall-statistikk/Utfallsstatistikk';
@@ -36,6 +37,9 @@ const Statistikk: React.FC = () => {
   const fraOgMed = startDatoPeriode;
   const tilOgMed = sisteDagIMåned(new Date(startDatoPeriode));
 
+  if (!valgtNavKontor?.navKontor) {
+    return <Loader />;
+  }
   return (
     <div className='w-full'>
       <div className={'flex  mb-8 gap-6 items-center'}>
@@ -67,12 +71,12 @@ const Statistikk: React.FC = () => {
           ))}
         </Select>
       </div>
-      {/* <Utfallsstatistikk navKontor={navKontor} fraOgMed={fraOgMed} tilOgMed={tilOgMed} /> */}
-      {/* <Forespørsler
-        navKontor={navKontor}
+      <Utfallsstatistikk
+        navKontor={valgtNavKontor.navKontor}
         fraOgMed={fraOgMed}
         tilOgMed={tilOgMed}
-      /> */}
+      />
+      {/* <Forespørsler navKontor={navKontor} fraOgMed={fraOgMed} tilOgMed={tilOgMed} /> */}
     </div>
   );
 };

@@ -1,0 +1,25 @@
+{
+  "SWR Api": {
+    "prefix": "capi",
+    "body": [
+      "'use client';",
+      "/**",
+      " * Endepunkt /${TM_FILENAME_BASE}",
+      " */",
+      "import useSWRImmutable from 'swr/immutable';",
+      "import { z } from 'zod';",
+      "import { getAPIwithSchema } from '../fetcher';",
+      "",
+      "const ${TM_FILENAME_BASE}Endepunkt = '/api/${TM_FILENAME_BASE}';",
+      "",
+      "const ${TM_FILENAME_BASE/(\\\\w)([a-z]+)/${1:/capitalize}${2:/downcase}/g}Schema = z.object({});",
+      "",
+      "export type ${TM_FILENAME_BASE}DTO = z.infer<typeof ${TM_FILENAME_BASE/(\\\\w)([a-z]+)/${1:/capitalize}${2:/downcase}/g}Schema>;",
+      "",
+      "export const use${TM_FILENAME_BASE/(\\w)([a-z]+)/${1:/capitalize}${2:/downcase}/g}= () =>",
+      "  useSWRImmutable(${TM_FILENAME_BASE}Endepunkt, getAPIwithSchema(${TM_FILENAME_BASE/(\\\\w)([a-z]+)/${1:/capitalize}${2:/downcase}/g}Schema));",
+      ""
+    ],
+    "description": "SWR Api"
+  }
+}

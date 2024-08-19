@@ -19,7 +19,7 @@ const Hurtiglenker: FunctionComponent = () => {
         Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
       ]}
     >
-      <nav className='grid grid-cols-4 gap-4 w-full mb-4'>
+      <nav className='grid grid-cols-4 gap-4 w-full'>
         <LenkepanelMedIkon
           href='/kandidatsok'
           tittel='Finn kandidater'

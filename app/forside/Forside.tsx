@@ -2,16 +2,17 @@
 import * as React from 'react';
 import Hurtiglenker from './components/Hurtiglenker';
 import Statistikk from './components/Statistikk';
-export interface IForside {
-  children?: React.ReactNode | undefined;
-}
 
-const Forside: React.FC<IForside> = ({ children }) => {
+const Forside: React.FC = () => {
   return (
-    <>
-      <Hurtiglenker />
-      <Statistikk />
-    </>
+    <div>
+      <div className='mt-4'>
+        <Hurtiglenker />
+      </div>
+      <div className='mt-8'>
+        <Statistikk />
+      </div>
+    </div>
   );
 };
 
