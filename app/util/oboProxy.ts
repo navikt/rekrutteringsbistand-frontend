@@ -11,13 +11,13 @@ export const proxyWithOBO = async (
 
   if (!url) {
     return NextResponse.json(
-      { error: 'Ingen url oppgitt for proxy' },
+      { beskrivelse: 'Ingen url oppgitt for proxy' },
       { status: 500 }
     );
   }
   if (!token) {
     return NextResponse.json(
-      { error: 'Kunne ikke hente token' },
+      { beskrivelse: 'Kunne ikke hente token' },
       { status: 500 }
     );
   }
@@ -28,14 +28,15 @@ export const proxyWithOBO = async (
   } catch (error) {
     console.error('Feil ved henting av OBO-token:', error);
     return NextResponse.json(
-      { error: 'Kunne ikke hente OBO-token' },
+      { beskrivelse: 'Kunne ikke hente OBO-token' },
       { status: 500 }
     );
   }
 
   if (!obo.ok || !obo.token) {
+    console.error('Ugyldig OBO-token mottatt:', obo);
     return NextResponse.json(
-      { error: 'Ugyldig OBO-token mottatt' },
+      { beskrivelse: 'Ugyldig OBO-token mottatt' },
       { status: 500 }
     );
   }
@@ -73,7 +74,7 @@ export const proxyWithOBO = async (
     console.error('Feil ved proxying av forespørselen:', error);
     return NextResponse.json(
       {
-        error: 'En feil oppstod under behandlingen av forespørselen',
+        beskrivelse: 'En feil oppstod under behandlingen av forespørselen',
       },
       { status: 500 }
     );
