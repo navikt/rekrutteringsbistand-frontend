@@ -16,11 +16,3 @@ export const getMiljø = (): string => {
     return Miljø.Lokalt;
   }
 };
-
-export const getCluster = (onPrem?: boolean) => {
-  const cluster = process.env.NAIS_CLUSTER_NAME;
-  const clusterOnPrem = cluster === 'prod-gcp' && onPrem ? 'prod-fss' : cluster;
-  return clusterOnPrem;
-};
-
-export const erIkkeProd = getMiljø() !== Miljø.ProdGcp;

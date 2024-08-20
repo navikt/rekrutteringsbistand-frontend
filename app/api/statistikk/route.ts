@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { isLocal } from '../../util/env';
-import { getCluster } from '../../util/miljø';
+import { getCluster, isLocal } from '../../util/env';
 import { proxyWithOBO } from '../../util/oboProxy';
 
-const statistikkScope = `api://${getCluster()}.toi.rekrutteringsbistand-statistikk-api/.default`;
+const cluster = getCluster(true);
+const statistikkScope = `api://${cluster}.toi.rekrutteringsbistand-statistikk-api/.default`;
 
 export async function GET(req: NextRequest) {
   if (isLocal) {

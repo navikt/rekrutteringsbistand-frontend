@@ -1,7 +1,7 @@
 import { z, ZodSchema } from 'zod';
 import { KastError } from '../components/feilhåndtering/KastError';
 
-const basePath = process.env.NODE_ENV === 'development' ? '' : '';
+const basePath = process.env.NAIS_CLUSTER_NAME === 'local' ? '' : '';
 
 export const getAPIwithSchema = <T>(
   schema: ZodSchema<T>
