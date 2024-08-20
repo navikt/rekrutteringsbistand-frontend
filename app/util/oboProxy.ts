@@ -1,5 +1,4 @@
 import { getToken, OboResult, requestOboToken } from '@navikt/oasis';
-import { headers as nextHeaders } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
 export const proxyWithOBO = async (
@@ -7,7 +6,7 @@ export const proxyWithOBO = async (
   audience: string,
   req: NextRequest
 ) => {
-  const token = getToken(nextHeaders());
+  const token = getToken(req.headers);
 
   if (!url) {
     return NextResponse.json(
