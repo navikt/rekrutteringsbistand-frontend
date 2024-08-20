@@ -10,7 +10,7 @@ spec:
   replicas:
     max: 1
     min: 1
-  image: {{ image }}
+  image: { { image } }
   ingresses:
     - https://rekrutteringsbistand-next.intern.dev.nav.no
   port: 3000
@@ -20,11 +20,11 @@ spec:
       allowAllUsers: false
       claims:
         groups:
-          - id: {{ adGruppeModiaGenerellTilgang }}
-          - id: {{ adGruppeModiaOppfolging }}
-          - id: {{ adGruppeRekrutteringsbistandArbeidsgiverrettet }}
-          - id: {{ adGruppeRekrutteringsbistandJobbsokerrettet }}
-          - id: {{ adGruppeRekrutteringsbistandUtvikler }}
+          - id: { { adGruppeModiaGenerellTilgang } }
+          - id: { { adGruppeModiaOppfolging } }
+          - id: { { adGruppeRekrutteringsbistandArbeidsgiverrettet } }
+          - id: { { adGruppeRekrutteringsbistandJobbsokerrettet } }
+          - id: { { adGruppeRekrutteringsbistandUtvikler } }
         extra:
           - NAVident
     sidecar:
@@ -34,8 +34,8 @@ spec:
       rules:
         - application: modiacontextholder
           namespace: personoversikt
-    external:
-        - host: {{ statistikkApiHost }}
+      external:
+        - host: { { statistikkApiHost } }
   resources:
     limits:
       memory: 768Mi
@@ -44,12 +44,12 @@ spec:
       memory: 512Mi
   env:
     - name: AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET
-      value: {{ adGruppeRekrutteringsbistandArbeidsgiverrettet }}
+      value: { { adGruppeRekrutteringsbistandArbeidsgiverrettet } }
     - name: AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET
-      value: {{ adGruppeRekrutteringsbistandJobbsokerrettet }}
+      value: { { adGruppeRekrutteringsbistandJobbsokerrettet } }
     - name: AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER
-      value: {{ adGruppeRekrutteringsbistandUtvikler }}
+      value: { { adGruppeRekrutteringsbistandUtvikler } }
     - name: STATISTIKK_API_URL
-      value: {{ statistikkApiUrl}}
+      value: { { statistikkApiUrl } }
     - name: MODIA_CONTEXT_HOLDER_API
       value: http://modiacontextholder.personoversikt
