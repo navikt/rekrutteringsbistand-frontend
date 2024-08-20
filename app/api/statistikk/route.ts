@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { isLocal } from '../../util/env';
+import { getCluster } from '../../util/miljø';
 import { proxyWithOBO } from '../../util/oboProxy';
 
-const stillingssøkScope = `api://${process.env.NAIS_CLUSTER_NAME}.toi.rekrutteringsbistand-stillingssok-proxy/.default`;
+const statistikkScope = `api://${getCluster()}.toi.rekrutteringsbistand-statistikk-api/.default`;
 
 export async function GET(req: NextRequest) {
   if (isLocal) {
@@ -29,5 +30,5 @@ export async function GET(req: NextRequest) {
     url.searchParams.append(key, value);
   });
 
-  return proxyWithOBO(url.toString(), stillingssøkScope, req);
+  return proxyWithOBO(url.toString(), statistikkScope, req);
 }
