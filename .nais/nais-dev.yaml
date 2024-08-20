@@ -48,6 +48,6 @@ spec:
     - name: AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER
       value: {{ adGruppeRekrutteringsbistandUtvikler }}
     - name: STATISTIKK_API_URL
-      value: http://rekrutteringsbistand-statistikk-api
+      value: {{ statistikkApiUrl}}
     - name: MODIA_CONTEXT_HOLDER_API
       value: http://modiacontextholder.personoversikt
