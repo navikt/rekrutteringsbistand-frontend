@@ -23,10 +23,8 @@ export async function GET(req: NextRequest) {
 
   const { searchParams } = new URL(req.url);
 
-  const url = new URL(process.env.STATISTIKK_API_URL || '');
+  const url = new URL(process.env.STATISTIKK_API_URL + '/statistikk' || '');
 
-  console.log('🎺 url', url);
-  // Append all search parameters to the target URL
   searchParams.forEach((value, key) => {
     url.searchParams.append(key, value);
   });
