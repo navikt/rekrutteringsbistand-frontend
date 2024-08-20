@@ -25,10 +25,13 @@ export async function GET(req: NextRequest) {
 
   const url = new URL(process.env.STATISTIKK_API_URL || '');
 
+  console.log('🎺 url', url);
   // Append all search parameters to the target URL
   searchParams.forEach((value, key) => {
     url.searchParams.append(key, value);
   });
 
+  console.log('🎺 url.toString()', url.toString());
+  console.log('🎺 statistikkScope', statistikkScope);
   return proxyWithOBO(url.toString(), statistikkScope, req);
 }
