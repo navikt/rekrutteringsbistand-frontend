@@ -5,5 +5,6 @@
   "adGruppeRekrutteringsbistandJobbsokerrettet": "0dba8374-bf36-4d89-bbba-662447d57b94",
   "adGruppeRekrutteringsbistandUtvikler": "a1749d9a-52e0-4116-bb9f-935c38f6c74a",
 
-  "statistikkApiUrl": "https://rekrutteringsbistand-statistikk-api.dev-fss-pub.nais.io/rekrutteringsbistand-statistikk-api"
+  "statistikkApiUrl": "https://rekrutteringsbistand-statistikk-api.dev-fss-pub.nais.io/rekrutteringsbistand-statistikk-api",
+  "statistikkApiHost": "rekrutteringsbistand-statistikk-api.dev-fss-pub.nais.io"
 }

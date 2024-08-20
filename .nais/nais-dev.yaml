@@ -32,9 +32,10 @@ spec:
   accessPolicy:
     outbound:
       rules:
-        - application: rekrutteringsbistand-stilling-api
         - application: modiacontextholder
           namespace: personoversikt
+    external:
+        - host: {{ statistikkApiHost }}
   resources:
     limits:
       memory: 768Mi
