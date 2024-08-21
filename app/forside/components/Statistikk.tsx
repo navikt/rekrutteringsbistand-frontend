@@ -1,17 +1,20 @@
-import { BodyShort, Heading, Loader, Select } from '@navikt/ds-react';
+import { BodyShort, Heading, Select } from '@navikt/ds-react';
 import React, { ChangeEvent, useState } from 'react';
 import { ApplikasjonContext } from '../../ApplikasjonContext';
+import Sidelaster from '../../components/Sidelaster';
 import {
   førsteDagIMåned,
   sisteDagIMåned,
   visDatoMedMåned,
 } from '../../util/dato';
-import Utfallsstatistikk from './utfallsstatistikk/Utfallsstatistikk';
-import Sidelaster from '../../components/Sidelaster';
+import Forespørsler from './Forespørsler';
+import Utfallsstatistikk from './Utfallsstatistikk';
 
-// import Forespørsler from './svar-statistikk/Forespørsler';
-// import Utfallsstatistikk from './utfall-statistikk/Utfallsstatistikk';
-
+export interface IStatistikkValg {
+  navKontor: string;
+  fraOgMed: Date;
+  tilOgMed: Date;
+}
 const Statistikk: React.FC = () => {
   const { valgtNavKontor } = React.useContext(ApplikasjonContext);
   const [startDatoPeriode, setStartDatoPeriode] = useState<Date>(
@@ -39,7 +42,7 @@ const Statistikk: React.FC = () => {
   const tilOgMed = sisteDagIMåned(new Date(startDatoPeriode));
 
   if (!valgtNavKontor?.navKontor) {
-    return <Sidelaster/>
+    return <Sidelaster />;
   }
   return (
     <div className='w-full'>
@@ -77,7 +80,11 @@ const Statistikk: React.FC = () => {
         fraOgMed={fraOgMed}
         tilOgMed={tilOgMed}
       />
-      {/* <Forespørsler navKontor={navKontor} fraOgMed={fraOgMed} tilOgMed={tilOgMed} /> */}
+      <Forespørsler
+        navKontor={valgtNavKontor.navKontor}
+        fraOgMed={fraOgMed}
+        tilOgMed={tilOgMed}
+      />
     </div>
   );
 };

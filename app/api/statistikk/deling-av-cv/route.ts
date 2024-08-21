@@ -1,0 +1,27 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { getCluster, isLocal } from '../../../util/env';
+import { proxyWithOBO } from '../../../util/oboProxy';
+
+const cluster = getCluster(true);
+const forespørselDelingAvCVScope = `api://${cluster}.arbeidsgiver-inkludering.foresporsel-om-deling-av-cv-api/.default`;
+
+export async function GET(req: NextRequest) {
+  if (isLocal) {
+    return NextResponse.json({
+      antallSvartJa: 12,
+      antallSvartNei: 13,
+      antallVenterPåSvar: 14,
+      antallUtløpteSvar: 15,
+    });
+  }
+
+  const { searchParams } = new URL(req.url);
+
+  const url = new URL(process.env.STATISTIKK_API_URL + '/statistikk' || '');
+
+  searchParams.forEach((value, key) => {
+    url.searchParams.append(key, value);
+  });
+
+  return proxyWithOBO(url.toString(), forespørselDelingAvCVScope, req);
+}

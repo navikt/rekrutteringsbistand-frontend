@@ -36,6 +36,7 @@ spec:
           namespace: personoversikt
       external:
         - host: {{ statistikkApiHost }}
+        - host: {{ foresporselOmDelingAvCvApiHost }}
   resources:
     limits:
       memory: 768Mi
@@ -51,5 +52,7 @@ spec:
       value: {{ adGruppeRekrutteringsbistandUtvikler }}
     - name: STATISTIKK_API_URL
       value: {{ statistikkApiUrl}}
+    - name: FORESPORSEL_OM_DELING_AV_CV_API
+      value: {{ foresporselOmDelingAvCvApi }}
     - name: MODIA_CONTEXT_HOLDER_API
       value: http://modiacontextholder.personoversikt
