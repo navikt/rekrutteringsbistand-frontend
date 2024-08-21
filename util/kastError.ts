@@ -1,6 +1,6 @@
-import { IFeilmelding } from './Feilmelding';
+import { IFeilmelding } from '../types/Feilmelding';
 
-export class KastError extends Error {
+export class kastError extends Error {
   public statuskode: number;
   public tittel: string;
   public beskrivelse: string;

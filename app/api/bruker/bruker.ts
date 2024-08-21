@@ -4,8 +4,8 @@
  */
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
-import { Rolle } from '../../components/tilgangskontroll/Roller';
 import { getAPIwithSchema } from '../fetcher';
+import { Rolle } from '../../../types/Roller';
 
 const brukerEndepunkt = '/api/bruker';
 

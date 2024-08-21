@@ -1,5 +1,5 @@
 import { z, ZodSchema } from 'zod';
-import { KastError } from '../components/feilhåndtering/KastError';
+import { kastError } from '../../util/kastError';
 
 const basePath = process.env.NAIS_CLUSTER_NAME === 'local' ? '' : '';
 
@@ -31,7 +31,7 @@ export const getAPI = async (url: string) => {
       errorDetails = await response.text();
     }
 
-    const error = new KastError({
+    const error = new kastError({
       url: response.url,
       statuskode: response.status,
       stack: errorDetails,

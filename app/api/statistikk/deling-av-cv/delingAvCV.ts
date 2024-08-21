@@ -4,7 +4,7 @@
  */
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
-import { formaterDatoTilApi } from '../../../util/dato';
+import { formaterDatoTilApi } from '../../../../util/dato';
 import { getAPIwithSchema } from '../../fetcher';
 
 const delingAvCVEndepunkt = (param?: URLSearchParams) =>

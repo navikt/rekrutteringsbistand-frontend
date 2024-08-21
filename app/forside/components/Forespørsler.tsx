@@ -1,7 +1,7 @@
 import { ChatCheckmarkIcon, ChatIcon } from '@navikt/aksel-icons';
 import * as React from 'react';
 import { useDelingAvCV } from '../../api/statistikk/deling-av-cv/delingAvCV';
-import SWRLaster from '../../components/SWRLaster';
+import SWRLaster from '../../../components/SWRLaster';
 import KryssIkon from '../icons/kryss.svg';
 import Infokort from './Infokort';
 import { IStatistikkValg } from './Statistikk';

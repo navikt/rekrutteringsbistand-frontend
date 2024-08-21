@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getCluster, isLocal } from '../../../util/env';
-import { proxyWithOBO } from '../../../util/oboProxy';
+import { getCluster, isLocal } from '../../../../util/env';
+import { proxyWithOBO } from '../../../../util/oboProxy';
 
 const cluster = getCluster(true);
 const forespørselDelingAvCVScope = `api://${cluster}.arbeidsgiver-inkludering.foresporsel-om-deling-av-cv-api/.default`;

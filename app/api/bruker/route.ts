@@ -1,9 +1,9 @@
 import { getToken } from '@navikt/oasis';
 import { decodeJwt } from 'jose';
 import { NextRequest, NextResponse } from 'next/server';
-import { navnForRolleId } from '../../auth/roller';
-import { Rolle } from '../../components/tilgangskontroll/Roller';
-import { isLocal } from '../../util/env';
+import { navnForRolleId } from '../../../tilgangskontroll/roller';
+import { Rolle } from '../../../types/Roller';
+import { isLocal } from '../../../util/env';
 
 const hentNavIdent = (token: string) => {
   const claims = decodeJwt(token);

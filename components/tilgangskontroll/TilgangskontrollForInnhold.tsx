@@ -1,10 +1,10 @@
 import { Alert, Link } from '@navikt/ds-react';
 import * as React from 'react';
 
-import { ApplikasjonContext } from '../../ApplikasjonContext';
+import { Rolle } from '../../types/Roller';
 import ErrorBoundary from '../ErrorBoundary';
-import { Rolle } from './Roller';
 import css from './TilgangskontrollForInnhold.module.css';
+import { ApplikasjonContext } from '../../app/ApplikasjonContext';
 
 export interface ITilgangskontrollForInnhold {
   kreverEnAvRollene?: Rolle[];

@@ -1,7 +1,7 @@
 import { InternalHeader } from '@navikt/ds-react';
 import * as React from 'react';
-import { ApplikasjonContext } from '../../ApplikasjonContext';
-import { Rolle } from '../tilgangskontroll/Roller';
+import { ApplikasjonContext } from '../../app/ApplikasjonContext';
+import { Rolle } from '../../types/Roller';
 
 const DevDekoratør: React.FC = () => {
   const { navIdent, roller, valgtNavKontor, setValgtNavKontor } =

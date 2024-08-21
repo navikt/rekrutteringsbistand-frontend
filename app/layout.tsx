@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 import Script from 'next/script';
+import Header from '../components/header/Header';
+import { verifyUserLoggedIn } from '../tilgangskontroll/auth';
+import { isLocal } from '../util/env';
 import { ApplikasjonContextProvider } from './ApplikasjonContext';
-import { verifyUserLoggedIn } from './auth/auth';
-import Header from './components/header/Header';
-import { isLocal } from './util/env';
 
 import './globals.css';
 

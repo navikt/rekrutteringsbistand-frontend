@@ -3,7 +3,7 @@ import { FunctionComponent } from 'react';
 // import Nyheter from '../nyheter/Nyheter';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Rolle } from '../../../tilgangskontroll/Roller';
+import { Rolle } from '../../../../types/Roller';
 import { TilgangskontrollForInnhold } from '../../../tilgangskontroll/TilgangskontrollForInnhold';
 import Nyheter from '../nyheter/Nyheter';
 

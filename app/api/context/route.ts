@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { proxyWithOBO } from '../../util/oboProxy';
+import { proxyWithOBO } from '../../../util/oboProxy';
 
 export async function POST(req: NextRequest) {
   const newHostname = process.env.MODIA_CONTEXT_HOLDER_API;

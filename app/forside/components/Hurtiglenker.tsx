@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { FunctionComponent, ReactNode } from 'react';
-import { Rolle } from '../../components/tilgangskontroll/Roller';
-import { TilgangskontrollForInnhold } from '../../components/tilgangskontroll/TilgangskontrollForInnhold';
+import { TilgangskontrollForInnhold } from '../../../components/tilgangskontroll/TilgangskontrollForInnhold';
+import { Rolle } from '../../../types/Roller';
 import FinnKandidaterIkon from '../icons/finn-kandidater.svg';
 import FinnStillinger from '../icons/finn-stillinger.svg';
 import OpprettNyStillingIkon from '../icons/opprett-ny-stilling.svg';

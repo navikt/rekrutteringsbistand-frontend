@@ -1,13 +1,6 @@
 import { Alert, BodyLong, Button } from '@navikt/ds-react';
 import * as React from 'react';
-
-export interface IFeilmelding {
-  statuskode?: number;
-  tittel?: string;
-  stack?: string;
-  beskrivelse?: string;
-  url?: string;
-}
+import { IFeilmelding } from '../../types/Feilmelding';
 
 const Feilmelding: React.FC<IFeilmelding> = ({
   tittel,

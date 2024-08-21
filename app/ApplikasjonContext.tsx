@@ -1,9 +1,9 @@
 'use client';
 import React from 'react';
-import ErrorBoundary from './ErrorBoundary';
+import Sidelaster from '../components/Sidelaster';
+import { Rolle } from '../types/Roller';
+import ErrorBoundary from '../components/feilhåndtering/ErrorBoundary';
 import { useBruker } from './api/bruker/bruker';
-import Sidelaster from './components/Sidelaster';
-import { Rolle } from './components/tilgangskontroll/Roller';
 
 export type NavKontorMedNavn = {
   navKontor: string;

@@ -21,7 +21,6 @@ const SWRLaster: React.FC<ISWRLaster> = ({ swrData, children }) => {
   }
 
   return null;
-
 };
 
 export default SWRLaster;

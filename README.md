@@ -1,5 +1,7 @@
 # Rekrutteringsbistand - NEXT
 
+NextJS applikasjon m/AppRoutes, "SWR hooks" for fetching av data og zod validering av data
+
 ### Opprett API endepunkt
 
 Opprett en route.ts i ønsket path under /api

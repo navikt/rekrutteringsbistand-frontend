@@ -30,3 +30,4 @@ export const navnForRolleId = (rolleId: string): string | null => {
       return null;
   }
 };
+

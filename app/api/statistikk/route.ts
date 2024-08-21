@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getCluster, isLocal } from '../../util/env';
-import { proxyWithOBO } from '../../util/oboProxy';
+import { getCluster, isLocal } from '../../../util/env';
+import { proxyWithOBO } from '../../../util/oboProxy';
 
 const cluster = getCluster(true);
 const statistikkScope = `api://${cluster}.toi.rekrutteringsbistand-statistikk-api/.default`;

@@ -1,12 +1,12 @@
 import { BodyShort, Heading, Select } from '@navikt/ds-react';
 import React, { ChangeEvent, useState } from 'react';
-import { ApplikasjonContext } from '../../ApplikasjonContext';
-import Sidelaster from '../../components/Sidelaster';
 import {
   førsteDagIMåned,
   sisteDagIMåned,
   visDatoMedMåned,
-} from '../../util/dato';
+} from '../../../util/dato';
+import { ApplikasjonContext } from '../../ApplikasjonContext';
+import Sidelaster from '../../../components/Sidelaster';
 import Forespørsler from './Forespørsler';
 import Utfallsstatistikk from './Utfallsstatistikk';
 
