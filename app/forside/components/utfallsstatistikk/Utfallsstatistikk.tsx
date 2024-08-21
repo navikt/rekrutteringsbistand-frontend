@@ -1,10 +1,9 @@
 import { EyeIcon, HandshakeIcon } from '@navikt/aksel-icons';
-import { Loader } from '@navikt/ds-react';
 import { FunctionComponent } from 'react';
 import { useStatistikk } from '../../../api/statistikk/statistikk';
 import Feilmelding from '../../../components/feilhåndtering/Feilmelding';
-import AntallPrioriterte from './AntallPrioriterte';
-import Utfalltelling from './UtfallTelling';
+import Sidelaster from '../../../components/Sidelaster';
+import Infokort from './Infokort';
 
 type Props = {
   navKontor: string;
@@ -24,7 +23,7 @@ const Utfallsstatistikk: FunctionComponent<Props> = ({
   });
 
   if (isLoading || isValidating) {
-    return <Loader />;
+    return <Sidelaster />;
   }
 
   if (error) {
@@ -36,18 +35,35 @@ const Utfallsstatistikk: FunctionComponent<Props> = ({
   }
   return (
     <div className='flex flex-col gap-6 md:grid md:grid-cols-2'>
-      <Utfalltelling
+      <Infokort
         tall={data?.antPresentasjoner.totalt}
-        beskrivelse='Delt med arbeidsgiver'
+        beskrivelse='Antall delt med arbeidsgiver'
         ikon={<EyeIcon aria-hidden />}
-        detaljer={<AntallPrioriterte antall={data?.antPresentasjoner} />}
+        detaljer={[
+          {
+            beskrivelse: 'Antall under 30 år',
+            tall: data?.antPresentasjoner.under30år,
+          },
+          {
+            beskrivelse: 'Antall uten standardinnsats',
+            tall: data?.antPresentasjoner.innsatsgruppeIkkeStandard,
+          },
+        ]}
       />
-
-      <Utfalltelling
+      <Infokort
         tall={data?.antFåttJobben.totalt}
-        beskrivelse='Fikk jobb'
+        beskrivelse='Antall som har fått jobb'
         ikon={<HandshakeIcon aria-hidden />}
-        detaljer={<AntallPrioriterte antall={data?.antFåttJobben} />}
+        detaljer={[
+          {
+            beskrivelse: 'Antall under 30 år',
+            tall: data?.antFåttJobben.under30år,
+          },
+          {
+            beskrivelse: 'Antall uten standardinnsats',
+            tall: data?.antFåttJobben.innsatsgruppeIkkeStandard,
+          },
+        ]}
       />
     </div>
   );

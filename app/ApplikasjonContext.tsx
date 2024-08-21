@@ -1,8 +1,8 @@
 'use client';
-import { Loader } from '@navikt/ds-react';
 import React from 'react';
 import ErrorBoundary from './ErrorBoundary';
 import { useBruker } from './api/bruker/bruker';
+import Sidelaster from './components/Sidelaster';
 import { Rolle } from './components/tilgangskontroll/Roller';
 
 export type NavKontorMedNavn = {
@@ -53,11 +53,7 @@ export const ApplikasjonContextProvider: React.FC<
       : true;
 
   if (isLoading) {
-    return (
-      <div className='flex justify-center pt-10'>
-        <Loader size='xlarge' title='Laster...' />
-      </div>
-    );
+    return <Sidelaster />;
   }
 
   if (data?.navIdent === undefined) {

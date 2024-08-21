@@ -7,6 +7,7 @@ import {
   visDatoMedMåned,
 } from '../../util/dato';
 import Utfallsstatistikk from './utfallsstatistikk/Utfallsstatistikk';
+import Sidelaster from '../../components/Sidelaster';
 
 // import Forespørsler from './svar-statistikk/Forespørsler';
 // import Utfallsstatistikk from './utfall-statistikk/Utfallsstatistikk';
@@ -38,7 +39,7 @@ const Statistikk: React.FC = () => {
   const tilOgMed = sisteDagIMåned(new Date(startDatoPeriode));
 
   if (!valgtNavKontor?.navKontor) {
-    return <Loader />;
+    return <Sidelaster/>
   }
   return (
     <div className='w-full'>
