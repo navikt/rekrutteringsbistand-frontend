@@ -1,6 +1,8 @@
+import { ChatCheckmarkIcon, ChatIcon } from '@navikt/aksel-icons';
 import * as React from 'react';
 import { useDelingAvCV } from '../../api/statistikk/deling-av-cv/delingAvCV';
 import SWRLaster from '../../components/SWRLaster';
+import KryssIkon from '../icons/kryss.svg';
 import Infokort from './Infokort';
 import { IStatistikkValg } from './Statistikk';
 
@@ -23,22 +25,28 @@ const Forespørsler: React.FC<IStatistikkValg> = ({
           <Infokort
             tall={data.antallSvartJa}
             beskrivelse='Antall som har svart ja'
-            ikon={<div>N/A</div>}
+            ikon={<ChatCheckmarkIcon />}
           />
           <Infokort
             tall={data.antallSvartNei}
             beskrivelse='Antall som har svart nei'
-            ikon={<div>N/A</div>}
+            ikon={
+              <>
+                <span className='absolute'>
+                  <KryssIkon />
+                </span>
+                <ChatIcon className='relative' />
+              </>
+            }
           />
           <Infokort
             tall={data.antallVenterPåSvar}
             beskrivelse='Antall som venter på svar'
-            ikon={<div>N/A</div>}
+            ikon={<ChatIcon />}
           />
           <Infokort
             tall={data.antallUtløpteSvar}
             beskrivelse='Antall utløpte svar'
-            ikon={<div>N/A</div>}
           />
         </div>
       )}

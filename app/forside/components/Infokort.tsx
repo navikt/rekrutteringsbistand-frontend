@@ -2,7 +2,7 @@ import * as React from 'react';
 
 export interface IInfokort {
   beskrivelse: string;
-  ikon: React.ReactElement;
+  ikon?: React.ReactElement;
   tall: number;
   detaljer?: Array<{
     beskrivelse: string;
@@ -32,9 +32,9 @@ const Infokort: React.FC<IInfokort> = ({
               </div>
             </div>
           </div>
-          <div className='p-2 bg-[#e0d8e9] rounded-[100px] justify-center items-center gap-2 flex'>
+          {ikon && <div className='p-2 bg-[#e0d8e9] rounded-[100px] justify-center items-center gap-2 flex'>
             <div className='w-6 h-6 relative text-2xl'>{ikon}</div>
-          </div>
+          </div>}
         </div>
         <div className='self-stretch flex-col justify-start items-start flex'>
           {detaljer?.map((d, index) => (
