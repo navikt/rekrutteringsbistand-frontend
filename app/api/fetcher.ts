@@ -31,7 +31,6 @@ export const getAPI = async (url: string) => {
       errorDetails = await response.text();
     }
 
-    console.log('🎺 response', response);
     const error = new KastError({
       url: response.url,
       statuskode: response.status,

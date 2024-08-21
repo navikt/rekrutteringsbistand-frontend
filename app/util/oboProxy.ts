@@ -69,13 +69,11 @@ export const proxyWithOBO = async (
     const data = await response.json();
 
     return NextResponse.json(data);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Feil ved proxying av forespørselen:', error);
     return NextResponse.json(
-      {
-        beskrivelse: 'En feil oppstod under behandlingen av forespørselen',
-      },
-      { status: 500 }
+      { beskrivelse: error.message || 'Feil i proxy' },
+      { status: error.status || 500 }
     );
   }
 };
