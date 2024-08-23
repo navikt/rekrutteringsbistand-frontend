@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getCluster, isLocal } from '../../../../util/env';
+import { isLocal } from '../../../../util/env';
 import { proxyWithOBO } from '../../../../util/oboProxy';
-
-const cluster = getCluster(true);
-const forespørselDelingAvCVScope = `api://${cluster}.arbeidsgiver-inkludering.foresporsel-om-deling-av-cv-api/.default`;
+import { routeScope, routeUrl } from '../../route-env';
 
 export async function GET(req: NextRequest) {
   if (isLocal) {
@@ -17,11 +15,17 @@ export async function GET(req: NextRequest) {
 
   const { searchParams } = new URL(req.url);
 
-  const url = new URL(process.env.STATISTIKK_API_URL + '/statistikk' || '');
+  const url = new URL(
+    routeUrl.FORESPØRSEL_DELING_AV_CV_API + '/statistikk' || ''
+  );
 
   searchParams.forEach((value, key) => {
     url.searchParams.append(key, value);
   });
 
-  return proxyWithOBO(url.toString(), forespørselDelingAvCVScope, req);
+  return proxyWithOBO(
+    url.toString(),
+    routeScope.FORESPØRSEL_DELING_AV_CV_SCOPE,
+    req
+  );
 }

@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getCluster, isLocal } from '../../../util/env';
+import { isLocal } from '../../../util/env';
 import { proxyWithOBO } from '../../../util/oboProxy';
-
-const cluster = getCluster(true);
-const statistikkScope = `api://${cluster}.toi.rekrutteringsbistand-statistikk-api/.default`;
+import { routeScope } from '../route-env';
 
 export async function GET(req: NextRequest) {
   if (isLocal) {
@@ -23,11 +21,11 @@ export async function GET(req: NextRequest) {
 
   const { searchParams } = new URL(req.url);
 
-  const url = new URL(process.env.STATISTIKK_API_URL + '/statistikk' || '');
+  const url = new URL(routeScope.STATISTIKK_SCOPE + '/statistikk' || '');
 
   searchParams.forEach((value, key) => {
     url.searchParams.append(key, value);
   });
 
-  return proxyWithOBO(url.toString(), statistikkScope, req);
+  return proxyWithOBO(url.toString(), routeScope.STATISTIKK_SCOPE, req);
 }

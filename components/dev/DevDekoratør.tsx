@@ -34,7 +34,7 @@ const DevDekoratør: React.FC = () => {
         Rekrutteringsbistand - Developer
       </InternalHeader.Title>
 
-      <div className='flex justify-between items-center gap-x-4 ml-4'>
+      <div className='flex justify-between items-center gap-4 ml-4'>
         <span>
           <strong>Bruker:</strong> {navIdent}
         </span>
