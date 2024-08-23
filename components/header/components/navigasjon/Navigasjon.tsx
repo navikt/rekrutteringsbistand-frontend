@@ -37,7 +37,6 @@ const tabs = [
 
 export const Navigeringsmeny: FunctionComponent = () => {
   const pathname = usePathname();
-
   return (
     <div className='pt-2 max-w-dekstop mx-auto flex justify-between border-b items-center'>
       <Tabs defaultValue={pathname === '/' ? 'Oversikt' : pathname}>

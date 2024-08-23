@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import ErrorBoundary from '../components/feilhåndtering/ErrorBoundary';
+import Header from '../components/header/Header';
 import Sidelaster from '../components/Sidelaster';
 import { Rolle } from '../types/Roller';
 import { useBruker } from './api/bruker/bruker';
@@ -33,7 +33,6 @@ interface IApplikasjonContextProvider {
 export const ApplikasjonContextProvider: React.FC<
   IApplikasjonContextProvider
 > = ({ children }) => {
-  // const { navIdent, roller, isLoading } = useMeg();
   const { isLoading, data } = useBruker();
 
   const [valgtNavKontor, setValgtNavKontor] =
@@ -70,7 +69,10 @@ export const ApplikasjonContextProvider: React.FC<
         tilgangskontrollErPå,
       }}
     >
-      <ErrorBoundary> {children} </ErrorBoundary>
+      <Header />
+      <main>
+        <div className='max-w-dekstop mx-auto pt-4'>{children}</div>
+      </main>
     </ApplikasjonContext.Provider>
   );
 };

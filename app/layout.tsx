@@ -36,10 +36,8 @@ export default async function RootLayout({
       </head>
       <body>
         <ApplikasjonContextProvider>
-          <Header />
-          <main>
-            <div className='max-w-dekstop mx-auto pt-4'>{children}</div>
-          </main>
+         
+          {children}
         </ApplikasjonContextProvider>
       </body>
     </html>

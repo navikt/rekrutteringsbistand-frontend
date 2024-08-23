@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { isLocal } from '../../../util/env';
 import { proxyWithOBO } from '../../../util/oboProxy';
-import { routeScope } from '../route-env';
+import { routeScope, routeUrl } from '../route-env';
 
 export async function GET(req: NextRequest) {
   if (isLocal) {
@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
 
   const { searchParams } = new URL(req.url);
 
-  const url = new URL(routeScope.STATISTIKK_SCOPE + '/statistikk' || '');
+  const url = new URL(routeUrl.STATISTIKK_API + '/statistikk' || '');
 
   searchParams.forEach((value, key) => {
     url.searchParams.append(key, value);
