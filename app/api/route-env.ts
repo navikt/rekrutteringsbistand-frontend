@@ -1,11 +1,12 @@
 import { getCluster } from '../../util/env';
 
-const cluster = getCluster(true);
+const gcp = getCluster();
+const fss = getCluster(true);
 
 export const routeScope = {
-  MODIA_DECORATOR_SCOPE: `api://${cluster}.personoversikt.modiacontextholder/.default`,
-  STATISTIKK_SCOPE: `api://${cluster}.toi.rekrutteringsbistand-statistikk-api/.default`,
-  FORESPØRSEL_DELING_AV_CV_SCOPE: `api://${cluster}.arbeidsgiver-inkludering.foresporsel-om-deling-av-cv-api/.default`,
+  MODIA_DECORATOR_SCOPE: `api://${gcp}.personoversikt.modiacontextholder/.default`,
+  STATISTIKK_SCOPE: `api://${fss}.toi.rekrutteringsbistand-statistikk-api/.default`,
+  FORESPØRSEL_DELING_AV_CV_SCOPE: `api://${fss}.arbeidsgiver-inkludering.foresporsel-om-deling-av-cv-api/.default`,
 };
 
 export const routeUrl = {

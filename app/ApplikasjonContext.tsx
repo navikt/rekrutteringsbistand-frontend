@@ -1,8 +1,8 @@
 'use client';
 import React from 'react';
+import ErrorBoundary from '../components/feilhåndtering/ErrorBoundary';
 import Sidelaster from '../components/Sidelaster';
 import { Rolle } from '../types/Roller';
-import ErrorBoundary from '../components/feilhåndtering/ErrorBoundary';
 import { useBruker } from './api/bruker/bruker';
 
 export type NavKontorMedNavn = {
