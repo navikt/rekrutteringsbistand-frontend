@@ -13,13 +13,17 @@ export async function GET(req: NextRequest) {
     });
   }
 
-  const { searchParams } = new URL(req.url);
+  // const { searchParams } = new URL(req.url);
 
-  const url = new URL(`${ForespørselDelingAvCvAPI.api_url}`);
+  // const url = new URL(`${ForespørselDelingAvCvAPI.api_url}`);
 
-  searchParams.forEach((value, key) => {
-    url.searchParams.append(key, value);
-  });
+  // searchParams.forEach((value, key) => {
+  //   url.searchParams.append(key, value);
+  // });
 
-  return proxyWithOBO(url.toString(), ForespørselDelingAvCvAPI.scope, req);
+  return proxyWithOBO(
+    ForespørselDelingAvCvAPI.api_url,
+    ForespørselDelingAvCvAPI.scope,
+    req,
+  );
 }
