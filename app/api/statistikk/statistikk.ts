@@ -6,9 +6,10 @@ import useSWRImmutable from "swr/immutable";
 import { z } from "zod";
 import { formaterDatoTilApi } from "../../../util/dato";
 import { getAPIwithSchema } from "../fetcher";
+import { StatistikkAPI } from "../route-env";
 
 const statistikkEndepunkt = (param?: URLSearchParams) =>
-  `/api/statistikk${param ? `?${param}` : ""}`;
+  `${StatistikkAPI.internUrl}${param ? `?${param}` : ""}`;
 
 const antallDTOSchema = z.object({
   totalt: z.number(),

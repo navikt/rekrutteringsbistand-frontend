@@ -16,7 +16,7 @@ export const ModiaDecoratorAPI: Iroute = {
 };
 
 export const StatistikkAPI: Iroute = {
-  api_url: process.env.STATISTIKK_API_UR + "/statistikk" ?? "",
+  api_url: process.env.STATISTIKK_API_UR ?? "",
   scope: `api://${fss}.toi.rekrutteringsbistand-statistikk-api/.default`,
   internUrl: "/api/statistikk",
 };
@@ -24,13 +24,12 @@ export const StatistikkAPI: Iroute = {
 export const ForespørselDelingAvCvAPI: Iroute = {
   scope: `api://${fss}.arbeidsgiver-inkludering.foresporsel-om-deling-av-cv-api/.default`,
   api_url:
-    process.env.FORESPORSEL_OM_DELING_AV_CV_API +
-      "/statistikk/foresporsel-om-deling-av-cv" ?? "",
+    process.env.FORESPORSEL_OM_DELING_AV_CV_API ?? "",
   internUrl: "/api/statistikk/foresporsel-om-deling-av-cv",
 };
 
 export const StillingAPI: Iroute = {
-  api_url: process.env.STILLING_API_URL + "/stilling-api" ?? "",
+  api_url: process.env.STILLING_API_URL ?? "",
   scope: `api://${gcp}.toi.rekrutteringsbistand-stilling-api/.default`,
   internUrl: "/api/stilling",
 };

@@ -6,10 +6,10 @@ import useSWRImmutable from "swr/immutable";
 import { z } from "zod";
 import { formaterDatoTilApi } from "../../../../util/dato";
 import { getAPIwithSchema } from "../../fetcher";
-import { StatistikkAPI } from "../../route-env";
+import { ForespørselDelingAvCvAPI } from "../../route-env";
 
 const foresporselOmdelingAvCVEndepunkt = (param?: URLSearchParams) =>
-  `${StatistikkAPI.internUrl}/foresporselOmdelingAvCV${param ? `?${param}` : ""}`;
+  `${ForespørselDelingAvCvAPI.internUrl}${param ? `?${param}` : ""}`;
 
 const delingAvCVSchema = z.object({
   antallSvartJa: z.number(),
