@@ -65,7 +65,7 @@ export const proxyWithOBO = async (
     const response = await fetch(newUrl, fetchOptions);
 
     if (!response.ok) {
-      logger.error(`HTTP error: ${response}`);
+      logger.error({ msg: "HTTP error! Url: " + newUrl, obj: response });
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 

@@ -1,7 +1,7 @@
 import { ChatCheckmarkIcon, ChatIcon } from "@navikt/aksel-icons";
 import * as React from "react";
 import SWRLaster from "../../../components/SWRLaster";
-import { useDelingAvCV } from "../../api/statistikk/foresporsel-om-deling-av-cv/foresporselOmdelingAvCV";
+import { useForesporselOmdelingAvCV } from "../../api/statistikk/foresporsel-om-deling-av-cv/foresporselOmdelingAvCV";
 import KryssIkon from "../icons/kryss.svg";
 import Infokort, { InfokortSkeleton } from "./Infokort";
 import { IStatistikkValg } from "./Statistikk";
@@ -11,7 +11,7 @@ const Forespørsler: React.FC<IStatistikkValg> = ({
   fraOgMed,
   tilOgMed,
 }) => {
-  const swrData = useDelingAvCV({
+  const swrData = useForesporselOmdelingAvCV({
     navKontor,
     fraOgMed,
     tilOgMed,
