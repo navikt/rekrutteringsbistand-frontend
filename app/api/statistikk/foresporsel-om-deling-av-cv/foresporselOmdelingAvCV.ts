@@ -8,8 +8,8 @@ import { formaterDatoTilApi } from "../../../../util/dato";
 import { getAPIwithSchema } from "../../fetcher";
 import { StatistikkAPI } from "../../route-env";
 
-const delingAvCVEndepunkt = (param?: URLSearchParams) =>
-  `${StatistikkAPI.internUrl}/deling-av-cv${param ? `?${param}` : ""}`;
+const foresporselOmdelingAvCVEndepunkt = (param?: URLSearchParams) =>
+  `${StatistikkAPI.internUrl}/foresporselOmdelingAvCV${param ? `?${param}` : ""}`;
 
 const delingAvCVSchema = z.object({
   antallSvartJa: z.number(),
@@ -26,13 +26,13 @@ interface IuseDelingAvCV {
   tilOgMed: Date;
 }
 
-export const useDelingAvCV = ({
+export const useForesporselOmdelingAvCV = ({
   navKontor,
   fraOgMed,
   tilOgMed,
 }: IuseDelingAvCV) =>
   useSWRImmutable(
-    delingAvCVEndepunkt(
+    foresporselOmdelingAvCVEndepunkt(
       new URLSearchParams({
         fraOgMed: formaterDatoTilApi(fraOgMed),
         tilOgMed: formaterDatoTilApi(tilOgMed),

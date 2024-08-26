@@ -4,6 +4,7 @@ import { proxyWithOBO } from "../../../util/oboProxy";
 import { StatistikkAPI } from "../route-env";
 
 export async function GET(req: NextRequest) {
+  console.log('🎺 req', req);
   if (isLocal) {
     return NextResponse.json({
       antPresentasjoner: {
