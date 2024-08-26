@@ -36,7 +36,6 @@ export default async function RootLayout({
       </head>
       <body>
         <ApplikasjonContextProvider>
-         
           {children}
         </ApplikasjonContextProvider>
       </body>

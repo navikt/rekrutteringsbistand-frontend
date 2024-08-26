@@ -9,6 +9,8 @@ Bruk snippet fra snippets.json som mal.
 
 Hvis man trenger en backend komponent, legg til env variabel og inbound på gitt komponent for rekrutteringsbistand-next og outbound på gitt applikasjon i denne.
 
+### Search params
+https://nuqs.47ng.com/
 
 #TODO
 

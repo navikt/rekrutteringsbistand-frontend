@@ -1,9 +1,9 @@
 import { ChatCheckmarkIcon, ChatIcon } from '@navikt/aksel-icons';
 import * as React from 'react';
-import { useDelingAvCV } from '../../api/statistikk/deling-av-cv/delingAvCV';
 import SWRLaster from '../../../components/SWRLaster';
+import { useDelingAvCV } from '../../api/statistikk/deling-av-cv/delingAvCV';
 import KryssIkon from '../icons/kryss.svg';
-import Infokort from './Infokort';
+import Infokort, { InfokortSkeleton } from './Infokort';
 import { IStatistikkValg } from './Statistikk';
 
 const Forespørsler: React.FC<IStatistikkValg> = ({
@@ -19,7 +19,21 @@ const Forespørsler: React.FC<IStatistikkValg> = ({
 
   const { data } = swrData;
   return (
-    <SWRLaster swrData={swrData}>
+    <SWRLaster
+      swrData={swrData}
+      skeleton={
+        <>
+          <div className='flex gap-6 mt-6'>
+            <InfokortSkeleton />
+            <InfokortSkeleton />
+          </div>
+          <div className='flex gap-6 mt-6'>
+            <InfokortSkeleton />
+            <InfokortSkeleton />
+          </div>
+        </>
+      }
+    >
       {data && (
         <div className='flex flex-col gap-6 md:grid md:grid-cols-2 mt-6'>
           <Infokort

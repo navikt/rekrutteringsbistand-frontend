@@ -71,7 +71,7 @@ export const ApplikasjonContextProvider: React.FC<
     >
       <Header />
       <main>
-        <div className='max-w-dekstop mx-auto pt-4'>{children}</div>
+        <div className='max-w-desktop mx-auto pt-4'>{children}</div>
       </main>
     </ApplikasjonContext.Provider>
   );

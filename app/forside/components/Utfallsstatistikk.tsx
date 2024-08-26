@@ -1,8 +1,8 @@
 import { EyeIcon, HandshakeIcon } from '@navikt/aksel-icons';
 import { FunctionComponent } from 'react';
-import { useStatistikk } from '../../api/statistikk/statistikk';
 import SWRLaster from '../../../components/SWRLaster';
-import Infokort from './Infokort';
+import { useStatistikk } from '../../api/statistikk/statistikk';
+import Infokort, { InfokortSkeleton } from './Infokort';
 import { IStatistikkValg } from './Statistikk';
 
 const Utfallsstatistikk: FunctionComponent<IStatistikkValg> = ({
@@ -19,7 +19,15 @@ const Utfallsstatistikk: FunctionComponent<IStatistikkValg> = ({
   const { data } = swrData;
 
   return (
-    <SWRLaster swrData={swrData}>
+    <SWRLaster
+      swrData={swrData}
+      skeleton={
+        <div className='flex gap-6 '>
+          <InfokortSkeleton />
+          <InfokortSkeleton />
+        </div>
+      }
+    >
       {data && (
         <div className='flex flex-col gap-6 md:grid md:grid-cols-2'>
           <Infokort

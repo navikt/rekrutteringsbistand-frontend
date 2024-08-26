@@ -1,33 +1,32 @@
-import { Tabs } from '@navikt/ds-react/Tabs';
-import { FunctionComponent } from 'react';
-// import Nyheter from '../nyheter/Nyheter';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { Rolle } from '../../../../types/Roller';
-import { TilgangskontrollForInnhold } from '../../../tilgangskontroll/TilgangskontrollForInnhold';
-import Nyheter from '../nyheter/Nyheter';
+import { Tabs } from "@navikt/ds-react/Tabs";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { FunctionComponent } from "react";
+import { Rolle } from "../../../../types/Roller";
+import { TilgangskontrollForInnhold } from "../../../tilgangskontroll/TilgangskontrollForInnhold";
+import Nyheter from "../nyheter/Nyheter";
 
 const tabs = [
   {
-    tittel: 'Oversikt',
-    path: '/',
+    tittel: "Oversikt",
+    path: "/",
   },
   {
-    tittel: 'Stillinger',
-    path: '/stillinger',
-    queryParam: '?brukStandardsok=true',
+    tittel: "Stillinger",
+    path: "/stillinger",
+    queryParam: "?brukStandardsok=true",
   },
   {
-    tittel: 'Kandidatsøk',
-    path: '/kandidatsok',
+    tittel: "Kandidatsøk",
+    path: "/kandidatsok",
     kreverRoller: [
       Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
       Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
     ],
   },
   {
-    tittel: 'Etterregistrering formidlinger',
-    path: '/formidlinger',
+    tittel: "Etterregistrering formidlinger",
+    path: "/formidlinger",
     kreverRoller: [
       Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
       Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
@@ -38,8 +37,8 @@ const tabs = [
 export const Navigeringsmeny: FunctionComponent = () => {
   const pathname = usePathname();
   return (
-    <div className='pt-2 max-w-dekstop mx-auto flex justify-between border-b items-center'>
-      <Tabs defaultValue={pathname === '/' ? 'Oversikt' : pathname}>
+    <div className="pt-2 max-w-desktop mx-auto flex justify-between border-b items-center">
+      <Tabs defaultValue={pathname === "/" ? "Oversikt" : pathname}>
         <Tabs.List>
           {tabs.map((tab, index) => (
             <TilgangskontrollForInnhold
