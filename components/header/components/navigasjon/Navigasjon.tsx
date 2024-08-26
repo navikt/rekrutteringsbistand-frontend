@@ -13,7 +13,7 @@ const tabs = [
   },
   {
     tittel: "Stillinger",
-    path: "/stillinger",
+    path: "/stillingsok",
     queryParam: "?brukStandardsok=true",
   },
   {

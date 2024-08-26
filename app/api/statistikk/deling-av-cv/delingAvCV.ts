@@ -1,14 +1,15 @@
-'use client';
+"use client";
 /**
  * Endepunkt /delingAvCV
  */
-import useSWRImmutable from 'swr/immutable';
-import { z } from 'zod';
-import { formaterDatoTilApi } from '../../../../util/dato';
-import { getAPIwithSchema } from '../../fetcher';
+import useSWRImmutable from "swr/immutable";
+import { z } from "zod";
+import { formaterDatoTilApi } from "../../../../util/dato";
+import { getAPIwithSchema } from "../../fetcher";
+import { StatistikkAPI } from "../../route-env";
 
 const delingAvCVEndepunkt = (param?: URLSearchParams) =>
-  `/api/statistikk/deling-av-cv${param ? `?${param}` : ''}`;
+  `${StatistikkAPI.internUrl}/deling-av-cv${param ? `?${param}` : ""}`;
 
 const delingAvCVSchema = z.object({
   antallSvartJa: z.number(),
@@ -36,7 +37,7 @@ export const useDelingAvCV = ({
         fraOgMed: formaterDatoTilApi(fraOgMed),
         tilOgMed: formaterDatoTilApi(tilOgMed),
         navKontor,
-      })
+      }),
     ),
-    getAPIwithSchema(delingAvCVSchema)
+    getAPIwithSchema(delingAvCVSchema),
   );

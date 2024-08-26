@@ -1,16 +1,36 @@
-import { getCluster } from '../../util/env';
+import { getCluster } from "../../util/env";
 
 const gcp = getCluster();
 const fss = getCluster(true);
 
-export const routeScope = {
-  MODIA_DECORATOR_SCOPE: `api://${gcp}.personoversikt.modiacontextholder/.default`,
-  STATISTIKK_SCOPE: `api://${fss}.toi.rekrutteringsbistand-statistikk-api/.default`,
-  FORESPØRSEL_DELING_AV_CV_SCOPE: `api://${fss}.arbeidsgiver-inkludering.foresporsel-om-deling-av-cv-api/.default`,
+interface Iroute {
+  api_url: string;
+  scope: string;
+  internUrl: string;
+}
+
+export const ModiaDecoratorAPI: Iroute = {
+  api_url: process.env.MODIA_CONTEXT_HOLDER_API ?? "",
+  scope: `api://${gcp}.personoversikt.modiacontextholder/.default`,
+  internUrl: "",
 };
 
-export const routeUrl = {
-  MODIA_DECORATOR_API: process.env.MODIA_CONTEXT_HOLDER_API,
-  STATISTIKK_API: process.env.STATISTIKK_API_URL,
-  FORESPØRSEL_DELING_AV_CV_API: process.env.FORESPORSEL_OM_DELING_AV_CV_API,
+export const StatistikkAPI: Iroute = {
+  api_url: process.env.STATISTIKK_API_UR + "/statistikk" ?? "",
+  scope: `api://${fss}.toi.rekrutteringsbistand-statistikk-api/.default`,
+  internUrl: "/api/statistikk",
+};
+
+export const ForespørselDelingAvCvAPI: Iroute = {
+  scope: `api://${fss}.arbeidsgiver-inkludering.foresporsel-om-deling-av-cv-api/.default`,
+  api_url:
+    process.env.FORESPORSEL_OM_DELING_AV_CV_API +
+      "/statistikk/foresporsel-om-deling-av-cv" ?? "",
+  internUrl: "/api/statistikk/foresporsel-om-deling-av-cv",
+};
+
+export const StillingAPI: Iroute = {
+  api_url: process.env.STILLING_API_URL + "/stilling-api" ?? "",
+  scope: `api://${gcp}.toi.rekrutteringsbistand-stilling-api/.default`,
+  internUrl: "/api/stilling",
 };

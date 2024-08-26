@@ -1,14 +1,14 @@
-'use client';
+"use client";
 /**
  * Endepunkt /statistikk
  */
-import useSWRImmutable from 'swr/immutable';
-import { z } from 'zod';
-import { formaterDatoTilApi } from '../../../util/dato';
-import { getAPIwithSchema } from '../fetcher';
+import useSWRImmutable from "swr/immutable";
+import { z } from "zod";
+import { formaterDatoTilApi } from "../../../util/dato";
+import { getAPIwithSchema } from "../fetcher";
 
-export const statistikkEndepunkt = (param?: URLSearchParams) =>
-  `/api/statistikk${param ? `?${param}` : ''}`;
+const statistikkEndepunkt = (param?: URLSearchParams) =>
+  `/api/statistikk${param ? `?${param}` : ""}`;
 
 const antallDTOSchema = z.object({
   totalt: z.number(),
@@ -48,7 +48,7 @@ export const useStatistikk = ({
         fraOgMed: formaterDatoTilApi(fraOgMed),
         tilOgMed: formaterDatoTilApi(tilOgMed),
         navKontor,
-      })
+      }),
     ),
-    getAPIwithSchema(statistikkSchema)
+    getAPIwithSchema(statistikkSchema),
   );
