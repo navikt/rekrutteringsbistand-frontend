@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
 
   const { searchParams } = new URL(req.url);
 
-  const url = new URL(`${StatistikkAPI.api_url}${StatistikkAPI.route}`);
+  const url = new URL(`${StatistikkAPI.api_url}`);
 
   searchParams.forEach((value, key) => {
     url.searchParams.append(key, value);
