@@ -18,7 +18,7 @@ export const ModiaDecoratorAPI: Iroute = {
 };
 
 export const StatistikkAPI: Iroute = {
-  api_route: "/statistikk",
+  api_route: "/api/statistikk",
   api_url: process.env.STATISTIKK_API ?? "",
   internUrl: "/rekrutteringsbistand-statistikk-api/api/statistikk",
   scope: `api://${fss}.toi.rekrutteringsbistand-statistikk-api/.default`,
