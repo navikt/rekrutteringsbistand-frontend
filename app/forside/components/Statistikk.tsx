@@ -1,14 +1,15 @@
-import { BodyShort, Heading, Select } from '@navikt/ds-react';
-import React, { ChangeEvent, useState } from 'react';
+import { BodyShort, Heading, Select } from "@navikt/ds-react";
+import React, { ChangeEvent, useState } from "react";
+import ErrorBoundary from "../../../components/ErrorBoundary";
+import Sidelaster from "../../../components/Sidelaster";
 import {
   førsteDagIMåned,
   sisteDagIMåned,
   visDatoMedMåned,
-} from '../../../util/dato';
-import { ApplikasjonContext } from '../../ApplikasjonContext';
-import Sidelaster from '../../../components/Sidelaster';
-import Forespørsler from './Forespørsler';
-import Utfallsstatistikk from './Utfallsstatistikk';
+} from "../../../util/dato";
+import { ApplikasjonContext } from "../../ApplikasjonContext";
+import Forespørsler from "./Forespørsler";
+import Utfallsstatistikk from "./Utfallsstatistikk";
 
 export interface IStatistikkValg {
   navKontor: string;
@@ -18,7 +19,7 @@ export interface IStatistikkValg {
 const Statistikk: React.FC = () => {
   const { valgtNavKontor } = React.useContext(ApplikasjonContext);
   const [startDatoPeriode, setStartDatoPeriode] = useState<Date>(
-    førsteDagIMåned(new Date())
+    førsteDagIMåned(new Date()),
   );
 
   const onTidsperiodeChange = (event: ChangeEvent<HTMLSelectElement>) => {
@@ -45,23 +46,23 @@ const Statistikk: React.FC = () => {
     return <Sidelaster />;
   }
   return (
-    <div className='w-full'>
-      <div className={'flex  mb-8 gap-6 items-center'}>
-        <div className='flex flex-col'>
-          <Heading level='2' size='medium'>
+    <div className="w-full">
+      <div className={"flex  mb-8 gap-6 items-center"}>
+        <div className="flex flex-col">
+          <Heading level="2" size="medium">
             Ditt NAV-kontor
           </Heading>
           <BodyShort>
             {valgtNavKontor?.navKontorNavn ??
-              `Enhet ${valgtNavKontor?.navKontor || '-'}`}
+              `Enhet ${valgtNavKontor?.navKontor || "-"}`}
           </BodyShort>
         </div>
         <div className='"hidden h-px bg-border-subtle flex-grow skillelinje"' />
         <div />
         <Select
-          label='Periode'
+          label="Periode"
           onChange={onTidsperiodeChange}
-          className='flex items-center'
+          className="flex items-center"
         >
           {tidsperioder.map((tidsperiode) => (
             <option
@@ -69,22 +70,26 @@ const Statistikk: React.FC = () => {
               key={tidsperiode.getTime()}
               // className={css.periode}
             >
-              {visDatoMedMåned(tidsperiode)} til{' '}
+              {visDatoMedMåned(tidsperiode)} til{" "}
               {visDatoMedMåned(sisteDagIMåned(new Date(tidsperiode)))}
             </option>
           ))}
         </Select>
       </div>
-      <Utfallsstatistikk
-        navKontor={valgtNavKontor.navKontor}
-        fraOgMed={fraOgMed}
-        tilOgMed={tilOgMed}
-      />
-      <Forespørsler
-        navKontor={valgtNavKontor.navKontor}
-        fraOgMed={fraOgMed}
-        tilOgMed={tilOgMed}
-      />
+      <ErrorBoundary>
+        <Utfallsstatistikk
+          navKontor={valgtNavKontor.navKontor}
+          fraOgMed={fraOgMed}
+          tilOgMed={tilOgMed}
+        />
+      </ErrorBoundary>
+      <ErrorBoundary>
+        <Forespørsler
+          navKontor={valgtNavKontor.navKontor}
+          fraOgMed={fraOgMed}
+          tilOgMed={tilOgMed}
+        />
+      </ErrorBoundary>
     </div>
   );
 };

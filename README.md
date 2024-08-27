@@ -12,6 +12,7 @@ Hvis man trenger en backend komponent, legg til env variabel og inbound på gitt
 ### Search params
 https://nuqs.47ng.com/
 
-#TODO
+## Logger
 
-Implementer logger `import { logger } from '@navikt/next-logger'`
+Implementert logger `import { logger } from '@navikt/next-logger'`, se https://logs.adeo.no/
+

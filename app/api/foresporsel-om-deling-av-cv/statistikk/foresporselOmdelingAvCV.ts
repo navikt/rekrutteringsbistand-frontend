@@ -9,7 +9,7 @@ import { getAPIwithSchema } from "../../fetcher";
 import { ForespørselDelingAvCvAPI } from "../../route-env";
 
 const foresporselOmdelingAvCVEndepunkt = (param?: URLSearchParams) =>
-  `${ForespørselDelingAvCvAPI.internUrl}${param ? `?${param}` : ""}`;
+  `${ForespørselDelingAvCvAPI.internUrl}/satatistikk${param ? `?${param}` : ""}`;
 
 const delingAvCVSchema = z.object({
   antallSvartJa: z.number(),
