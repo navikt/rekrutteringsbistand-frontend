@@ -3,5 +3,5 @@ import { proxyWithOBO } from "../../../util/oboProxy";
 import { ModiaDecoratorAPI } from "../route-env";
 
 export async function POST(req: NextRequest) {
-  return proxyWithOBO(ModiaDecoratorAPI.api_url, ModiaDecoratorAPI.scope, req);
+  return proxyWithOBO(ModiaDecoratorAPI, req);
 }
