@@ -1,7 +1,14 @@
-import * as React from 'react';
+"use client";
+import * as React from "react";
+import { useMinebrukere } from "../api/kandidatsok/minebrukere/minebrukere";
 
-const page: React.FC = () => {
-  return <React.Fragment> Hello </React.Fragment>;
+const Page: React.FC = () => {
+  const { isLoading, error, data } = useMinebrukere();
+  return (
+    <React.Fragment>
+      Hello <ul>{data && data.kandidater.map((b) => <li>{b.fornavn}</li>)}</ul>
+    </React.Fragment>
+  );
 };
 
-export default page;
+export default Page;
