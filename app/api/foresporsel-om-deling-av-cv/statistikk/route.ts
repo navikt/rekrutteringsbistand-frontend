@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { isLocal } from "../../../../util/env";
 import { proxyWithOBO } from "../../../../util/oboProxy";
-import { ForespørselDelingAvCvAPI } from "../../route-env";
+import { ForespørselDelingAvCvAPI } from "../../api-routes";
 
 export async function GET(req: NextRequest) {
-  if (!isLocal) {
+  if (isLocal) {
     return NextResponse.json({
       antallSvartJa: 12,
       antallSvartNei: 13,
@@ -13,8 +13,5 @@ export async function GET(req: NextRequest) {
     });
   }
 
-  return proxyWithOBO(
-    ForespørselDelingAvCvAPI,
-    req,
-  );
+  return proxyWithOBO(ForespørselDelingAvCvAPI, req);
 }

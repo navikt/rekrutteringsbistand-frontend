@@ -5,8 +5,8 @@
 import useSWRImmutable from "swr/immutable";
 import { z } from "zod";
 import { formaterDatoTilApi } from "../../../../util/dato";
+import { ForespørselDelingAvCvAPI } from "../../api-routes";
 import { getAPIwithSchema } from "../../fetcher";
-import { ForespørselDelingAvCvAPI } from "../../route-env";
 
 const foresporselOmdelingAvCVEndepunkt = (param?: URLSearchParams) =>
   `${ForespørselDelingAvCvAPI.internUrl}/statistikk${param ? `?${param}` : ""}`;

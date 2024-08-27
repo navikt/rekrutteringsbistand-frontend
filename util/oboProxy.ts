@@ -1,7 +1,7 @@
 import { logger } from "@navikt/next-logger";
 import { getToken, OboResult, requestOboToken } from "@navikt/oasis";
 import { NextRequest, NextResponse } from "next/server";
-import { Iroute } from "../app/api/route-env";
+import { Iroute } from "../app/api/api-routes";
 
 export const proxyWithOBO = async (proxy: Iroute, req: NextRequest) => {
   const token = getToken(req.headers);

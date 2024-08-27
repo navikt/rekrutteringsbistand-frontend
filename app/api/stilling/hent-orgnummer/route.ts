@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { isLocal } from "../../../../util/env";
 import { proxyWithOBO } from "../../../../util/oboProxy";
-import { StillingAPI } from "../../route-env";
+import { StillingAPI } from "../../api-routes";
 
 export async function GET(
   req: NextRequest,

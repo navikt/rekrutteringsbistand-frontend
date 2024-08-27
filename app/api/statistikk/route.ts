@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { isLocal } from "../../../util/env";
 import { proxyWithOBO } from "../../../util/oboProxy";
-import { StatistikkAPI } from "../route-env";
+import { StatistikkAPI } from "../api-routes";
 
 export async function GET(req: NextRequest) {
   if (isLocal) {
@@ -19,5 +19,6 @@ export async function GET(req: NextRequest) {
     });
   }
 
+  console.log("🎺 Hei");
   return proxyWithOBO(StatistikkAPI, req);
 }

@@ -5,8 +5,8 @@
 import useSWRImmutable from "swr/immutable";
 import { z } from "zod";
 import { formaterDatoTilApi } from "../../../util/dato";
+import { StatistikkAPI } from "../api-routes";
 import { getAPIwithSchema } from "../fetcher";
-import { StatistikkAPI } from "../route-env";
 
 const statistikkEndepunkt = (param?: URLSearchParams) =>
   `${StatistikkAPI.internUrl}${param ? `?${param}` : ""}`;

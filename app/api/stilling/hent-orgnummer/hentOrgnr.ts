@@ -5,8 +5,8 @@
 import useSWRImmutable from "swr/immutable";
 import { z } from "zod";
 import { geografiSchema } from "../../../../types/stilling/geografi";
+import { StillingAPI } from "../../api-routes";
 import { getAPIwithSchema } from "../../fetcher";
-import { StillingAPI } from "../../route-env";
 
 const hentOrgnrEndepunkt = (orgnr: string) => {
   const utenMellomrom = orgnr.replace(/\s/g, "");
