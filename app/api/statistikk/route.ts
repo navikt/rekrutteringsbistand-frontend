@@ -1,5 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
-import { isLocal } from "../../../util/env";
+import { NextRequest } from "next/server";
 import { proxyWithOBO } from "../../../util/oboProxy";
 import { StatistikkAPI } from "../route-env";
 
@@ -21,7 +20,7 @@ export async function GET(req: NextRequest) {
 
   const { searchParams } = new URL(req.url);
 
-  const url = new URL(`${StatistikkAPI.api_url}`);
+  const url = new URL(`${StatistikkAPI.api_url}/statistikk`);
 
   searchParams.forEach((value, key) => {
     url.searchParams.append(key, value);
