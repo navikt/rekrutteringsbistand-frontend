@@ -43,8 +43,10 @@ export const proxyWithOBO = async (
     );
   }
   const originalUrl = new URL(req.url);
-  const path = `${proxy.api_route}${customRoute ? customRoute : originalUrl.pathname.replace(proxy.internUrl, "")}`;
-  const newUrl = `${proxy.api_url}${path}${originalUrl.search}`;
+  const path = ` ${proxy.api_route + originalUrl.pathname.replace(proxy.internUrl, "")}`;
+  const newUrl = customRoute
+    ? proxy.api_url + customRoute
+    : `${proxy.api_url}${path}${originalUrl.search}`;
 
   try {
     const originalHeaders = new Headers(req.headers);
