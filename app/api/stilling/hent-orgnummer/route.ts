@@ -8,17 +8,8 @@ export async function GET(
   { params }: { params: { slug: string } },
 ) {
   if (isLocal) {
-    console.log("🎺 orgnnr:", params);
     return NextResponse.json({ data: "kake" });
   }
 
-  const { searchParams } = new URL(req.url);
-  // search-api/underenhet/_search?q=organisasjonsnummer:${utenMellomrom}*
-  const url = new URL(`${StillingAPI.api_url}/search-api/underenhet/_search`);
-
-  searchParams.forEach((value, key) => {
-    url.searchParams.append(key, value);
-  });
-
-  return proxyWithOBO(url.toString() + "*", StillingAPI.scope, req);
+  return proxyWithOBO(StillingAPI, req);
 }
