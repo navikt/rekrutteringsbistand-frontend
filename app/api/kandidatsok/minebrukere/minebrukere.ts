@@ -3,12 +3,17 @@
  * Endepunkt /minebrukere
  */
 import useSWRImmutable from "swr/immutable";
-import { getAPIwithSchema } from "../../fetcher";
+import { postApiWithSchema } from "../../fetcher";
 import { kandidatSokSchema } from "../types";
 
 const minebrukereEndepunkt = "/api/kandidatsok/minebrukere";
 
 export const useMinebrukere = () =>
-  useSWRImmutable(minebrukereEndepunkt, (data) => {
-    return getAPIwithSchema(kandidatSokSchema)(data);
-  });
+  useSWRImmutable(
+    {
+      url: minebrukereEndepunkt,
+    },
+    (data) => {
+      return postApiWithSchema(kandidatSokSchema)(data);
+    },
+  );
