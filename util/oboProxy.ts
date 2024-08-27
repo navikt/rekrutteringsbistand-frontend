@@ -65,7 +65,10 @@ export const proxyWithOBO = async (
     const response = await fetch(newUrl, fetchOptions);
 
     if (!response.ok) {
-      logger.error({ msg: "HTTP error! Url: " + newUrl, obj: response });
+      logger.error({
+        msg: "HTTP error! Url: " + newUrl + " fra url: " + originalUrl,
+        obj: response,
+      });
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
@@ -74,7 +77,11 @@ export const proxyWithOBO = async (
     return NextResponse.json(data);
   } catch (error: any) {
     logger.error({
-      msg: "Feil ved proxying av forespørselen til url:" + newUrl,
+      msg:
+        "Feil ved proxying av forespørselen til url:" +
+        newUrl +
+        " fra url: " +
+        originalUrl,
       obj: error,
     });
     return NextResponse.json(
