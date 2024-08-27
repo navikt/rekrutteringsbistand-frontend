@@ -19,6 +19,5 @@ export async function GET(req: NextRequest) {
     });
   }
 
-  console.log("🎺 Hei");
   return proxyWithOBO(StatistikkAPI, req);
 }
