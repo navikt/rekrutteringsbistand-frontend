@@ -4,7 +4,7 @@ import { proxyWithOBO } from "../../../../util/oboProxy";
 import { ForespørselDelingAvCvAPI } from "../../route-env";
 
 export async function GET(req: NextRequest) {
-  if (isLocal) {
+  if (!isLocal) {
     return NextResponse.json({
       antallSvartJa: 12,
       antallSvartNei: 13,
@@ -13,15 +13,8 @@ export async function GET(req: NextRequest) {
     });
   }
 
-  const { searchParams } = new URL(req.url);
-
-  const url = new URL(
-    `${ForespørselDelingAvCvAPI.api_url}/foresporsel-om-deling-av-cv-api/statistikk`,
+  return proxyWithOBO(
+    ForespørselDelingAvCvAPI,
+    req,
   );
-
-  searchParams.forEach((value, key) => {
-    url.searchParams.append(key, value);
-  });
-
-  return proxyWithOBO(url.toString(), ForespørselDelingAvCvAPI.scope, req);
 }

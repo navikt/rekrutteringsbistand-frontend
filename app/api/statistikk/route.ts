@@ -19,13 +19,5 @@ export async function GET(req: NextRequest) {
     });
   }
 
-  const { searchParams } = new URL(req.url);
-
-  const url = new URL(`${StatistikkAPI.api_url}/statistikk`);
-
-  searchParams.forEach((value, key) => {
-    url.searchParams.append(key, value);
-  });
-
-  return proxyWithOBO(url.toString(), StatistikkAPI.scope, req);
+  return proxyWithOBO(StatistikkAPI, req);
 }

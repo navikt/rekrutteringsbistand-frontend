@@ -1,15 +1,17 @@
 import { logger } from "@navikt/next-logger";
 import { getToken, OboResult, requestOboToken } from "@navikt/oasis";
 import { NextRequest, NextResponse } from "next/server";
+import { Iroute } from "../app/api/route-env";
 
-export const proxyWithOBO = async (
-  url: string | undefined,
-  audience: string,
-  req: NextRequest,
-) => {
+export const proxyWithOBO = async (proxy: Iroute, req: NextRequest) => {
   const token = getToken(req.headers);
 
-  if (!url) {
+  const originalUrl = new URL(req.url);
+  const path =
+    proxy.api_route + originalUrl.pathname.replace(proxy.internUrl, "");
+  const newUrl = `${proxy.api_url}${path}${originalUrl.search}`;
+
+  if (!proxy.api_url) {
     return NextResponse.json(
       { beskrivelse: "Ingen url oppgitt for proxy" },
       { status: 500 },
@@ -25,7 +27,7 @@ export const proxyWithOBO = async (
 
   let obo: OboResult;
   try {
-    obo = await requestOboToken(token, audience);
+    obo = await requestOboToken(token, proxy.scope);
   } catch (error) {
     logger.error("Feil ved henting av OBO-token:", error);
     return NextResponse.json(
@@ -42,8 +44,10 @@ export const proxyWithOBO = async (
     );
   }
 
-  const originalUrl = new URL(req.url);
-  const newUrl = `${url}${originalUrl.pathname}${originalUrl.search}`;
+  // const originalUrl = new URL(req.url);
+  // const path =
+  //   proxy.api_route + originalUrl.pathname.replace(proxy.internUrl, "");
+  // const newUrl = `${proxy.api_url}${path}${originalUrl.search}`;
 
   try {
     const originalHeaders = new Headers(req.headers);
