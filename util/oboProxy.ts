@@ -3,13 +3,12 @@ import { getToken, OboResult, requestOboToken } from "@navikt/oasis";
 import { NextRequest, NextResponse } from "next/server";
 import { Iroute } from "../app/api/api-routes";
 
-export const proxyWithOBO = async (proxy: Iroute, req: NextRequest) => {
+export const proxyWithOBO = async (
+  proxy: Iroute,
+  req: NextRequest,
+  customRoute?: string,
+) => {
   const token = getToken(req.headers);
-
-  const originalUrl = new URL(req.url);
-  const path =
-    proxy.api_route + originalUrl.pathname.replace(proxy.internUrl, "");
-  const newUrl = `${proxy.api_url}${path}${originalUrl.search}`;
 
   if (!proxy.api_url) {
     return NextResponse.json(
@@ -43,11 +42,9 @@ export const proxyWithOBO = async (proxy: Iroute, req: NextRequest) => {
       { status: 500 },
     );
   }
-
-  // const originalUrl = new URL(req.url);
-  // const path =
-  //   proxy.api_route + originalUrl.pathname.replace(proxy.internUrl, "");
-  // const newUrl = `${proxy.api_url}${path}${originalUrl.search}`;
+  const originalUrl = new URL(req.url);
+  const path = `${proxy.api_route}${customRoute ? customRoute : originalUrl.pathname.replace(proxy.internUrl, "")}`;
+  const newUrl = `${proxy.api_url}${path}${originalUrl.search}`;
 
   try {
     const originalHeaders = new Headers(req.headers);
