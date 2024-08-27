@@ -9,4 +9,6 @@ import { kandidatSokSchema } from "../types";
 const minebrukereEndepunkt = "/api/kandidatsok/minebrukere";
 
 export const useMinebrukere = () =>
-  useSWRImmutable(minebrukereEndepunkt, getAPIwithSchema(kandidatSokSchema));
+  useSWRImmutable(minebrukereEndepunkt, (data) => {
+    return getAPIwithSchema(kandidatSokSchema)(data);
+  });
