@@ -23,9 +23,5 @@ export async function GET(req: NextRequest) {
     url.searchParams.append(key, value);
   });
 
-  return proxyWithOBO(
-    ForespørselDelingAvCvAPI.api_url,
-    ForespørselDelingAvCvAPI.scope,
-    req,
-  );
+  return proxyWithOBO(url.toString(), ForespørselDelingAvCvAPI.scope, req);
 }
