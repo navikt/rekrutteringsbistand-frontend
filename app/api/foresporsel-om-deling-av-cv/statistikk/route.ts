@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
 
   const url = new URL(
-    `${ForespørselDelingAvCvAPI.api_url}/statistikk/foresporsel-om-deling-av-cv`,
+    `${ForespørselDelingAvCvAPI.api_url}/foresporsel-om-deling-av-cv/statistikk`,
   );
 
   searchParams.forEach((value, key) => {

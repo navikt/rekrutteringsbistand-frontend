@@ -1,4 +1,5 @@
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { isLocal } from "../../../util/env";
 import { proxyWithOBO } from "../../../util/oboProxy";
 import { StatistikkAPI } from "../route-env";
 
