@@ -16,3 +16,21 @@ https://nuqs.47ng.com/
 
 Implementert logger `import { logger } from '@navikt/next-logger'`, se https://logs.adeo.no/
 
+## Filstruktur
+
+├── app
+│   ├── api
+│   │   ├── [endepunkter]
+│   ├── [sider]
+│   ├── middleware.ts / ApplikasjonsContext / Globale filer
+├── components               * "Felles" komponenter
+├── tilgangskontroll         * Tilgangskontroll relatert auth / roller.
+├── util                     * Hjelpefunksjoner
+└── .gitignore
+
+# Tips:
+transform tools: https://transform.tools/ 
+
+$$ TODO :>
+/api/me i kandidatsok er ikke i bruk
+
