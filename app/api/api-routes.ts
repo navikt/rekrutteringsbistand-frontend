@@ -41,6 +41,6 @@ export const StillingAPI: Iroute = {
 export const KandidatsøkAPI: Iroute = {
   api_route: '/api',
   api_url: process.env.KANDIDATSOK_API ?? '',
-  internUrl: '/api/kandidatsok',
+  internUrl: '/api',
   scope: `api://${gcp}.toi.rekrutteringsbistand-kandidatsok-api/.default`,
 };
