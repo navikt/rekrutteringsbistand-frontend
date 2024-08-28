@@ -1,15 +1,15 @@
-"use client";
+'use client';
 /**
  * Endepunkt /FinnArbeidsgiver
  */
-import useSWRImmutable from "swr/immutable";
-import { z } from "zod";
-import { geografiSchema } from "../../../../types/stilling/geografi";
-import { StillingAPI } from "../../api-routes";
-import { getAPIwithSchema } from "../../fetcher";
+import useSWRImmutable from 'swr/immutable';
+import { z } from 'zod';
+import { geografiSchema } from '../../../../types/stilling/geografi';
+import { StillingAPI } from '../../api-routes';
+import { getAPIwithSchema } from '../../fetcher';
 
 const FinnArbeidsgiverEndepunkt = (orgnr: string) => {
-  const utenMellomrom = orgnr.replace(/\s/g, "");
+  const utenMellomrom = orgnr.replace(/\s/g, '');
   return `${StillingAPI.internUrl}/finn-arbeidsgiver?organisasjonsnummer=${utenMellomrom}`;
 };
 

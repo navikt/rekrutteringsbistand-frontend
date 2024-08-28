@@ -1,17 +1,17 @@
-"use client";
-import { PlusCircleIcon } from "@navikt/aksel-icons";
-import { Button } from "@navikt/ds-react";
-import Link from "next/link";
-import * as React from "react";
-import SideLayout from "../../components/layout/SideLayout";
-import { TilgangskontrollForInnhold } from "../../components/tilgangskontroll/TilgangskontrollForInnhold";
-import { Rolle } from "../../types/Roller";
-import Piktogram from "./icons/finn-stillinger.svg";
+'use client';
+import { PlusCircleIcon } from '@navikt/aksel-icons';
+import { Button } from '@navikt/ds-react';
+import Link from 'next/link';
+import * as React from 'react';
+import SideLayout from '../../components/layout/SideLayout';
+import { TilgangskontrollForInnhold } from '../../components/tilgangskontroll/TilgangskontrollForInnhold';
+import { Rolle } from '../../types/Roller';
+import Piktogram from './icons/finn-stillinger.svg';
 
 const Page: React.FC = () => {
   return (
     <SideLayout
-      tittel="Stillinger"
+      tittel='Stillinger'
       ikon={<Piktogram />}
       knappIBanner={
         <TilgangskontrollForInnhold
@@ -21,8 +21,8 @@ const Page: React.FC = () => {
             Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
           ]}
         >
-          <Link href={"/stilling/ny-stilling"}>
-            <Button variant="secondary" icon={<PlusCircleIcon aria-hidden />}>
+          <Link href={'/stilling/ny-stilling'}>
+            <Button variant='secondary' icon={<PlusCircleIcon aria-hidden />}>
               Opprett ny
             </Button>
           </Link>
@@ -31,7 +31,7 @@ const Page: React.FC = () => {
       // banner={kandidatnr !== undefined && <KontekstAvKandidat kandidatnr={kandidatnr} />}
       // sidepanel={<Filter finnerStillingForKandidat={finnerStillingForKandidat} />}
     >
-      Stilling{" "}
+      Stilling{' '}
     </SideLayout>
   );
 };

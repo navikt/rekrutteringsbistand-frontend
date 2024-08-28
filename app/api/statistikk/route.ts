@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from "next/server";
-import { isLocal } from "../../../util/env";
-import { proxyWithOBO } from "../../../util/oboProxy";
-import { StatistikkAPI } from "../api-routes";
+import { NextRequest, NextResponse } from 'next/server';
+import { isLocal } from '../../../util/env';
+import { proxyWithOBO } from '../../../util/oboProxy';
+import { StatistikkAPI } from '../api-routes';
 
 export async function GET(req: NextRequest) {
   if (isLocal) {

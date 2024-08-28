@@ -1,15 +1,15 @@
-"use client";
+'use client';
 /**
  * Endepunkt /delingAvCV
  */
-import useSWRImmutable from "swr/immutable";
-import { z } from "zod";
-import { formaterDatoTilApi } from "../../../../util/dato";
-import { ForespørselDelingAvCvAPI } from "../../api-routes";
-import { getAPIwithSchema } from "../../fetcher";
+import useSWRImmutable from 'swr/immutable';
+import { z } from 'zod';
+import { formaterDatoTilApi } from '../../../../util/dato';
+import { ForespørselDelingAvCvAPI } from '../../api-routes';
+import { getAPIwithSchema } from '../../fetcher';
 
 const foresporselOmdelingAvCVEndepunkt = (param?: URLSearchParams) =>
-  `${ForespørselDelingAvCvAPI.internUrl}/statistikk${param ? `?${param}` : ""}`;
+  `${ForespørselDelingAvCvAPI.internUrl}/statistikk${param ? `?${param}` : ''}`;
 
 const delingAvCVSchema = z.object({
   antallSvartJa: z.number(),

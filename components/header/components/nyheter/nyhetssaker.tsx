@@ -5,7 +5,7 @@ const tilDato = (
   måned: number,
   år: number,
   timer = 0,
-  minutter = 0
+  minutter = 0,
 ) => new Date(år, måned - 1, dag, timer, minutter);
 
 const nyhetssaker: Nyhet[] = [

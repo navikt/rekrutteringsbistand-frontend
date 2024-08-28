@@ -4,7 +4,7 @@ import { kastError } from '../../util/kastError';
 const basePath = process.env.NAIS_CLUSTER_NAME === 'local' ? '' : '';
 
 export const getAPIwithSchema = <T>(
-  schema: ZodSchema<T>
+  schema: ZodSchema<T>,
 ): ((url: string) => Promise<T>) => {
   return async (url: string) => {
     const data = await getAPI(url);
@@ -43,7 +43,7 @@ export const getAPI = async (url: string) => {
     return await response.json();
   } else {
     throw new Error(
-      `Feil respons fra server: (http-status: ${response.status})`
+      `Feil respons fra server: (http-status: ${response.status})`,
     );
   }
 };
@@ -51,7 +51,7 @@ export const getAPI = async (url: string) => {
 export const postApi = async (
   url: string,
   body: any,
-  queryParams?: URLSearchParams
+  queryParams?: URLSearchParams,
 ) => {
   if (queryParams) {
     const queryString = new URLSearchParams(queryParams).toString();
@@ -66,7 +66,7 @@ export const postApi = async (
     },
     body: JSON.stringify(body, (_key, value) =>
       //@ts-ignore
-      value instanceof Set ? [...value] : value
+      value instanceof Set ? [...value] : value,
     ),
   });
 
@@ -78,7 +78,7 @@ export const postApi = async (
     throw new Error('403');
   } else {
     throw new Error(
-      `Feil respons fra server (http-status: ${response.status})`
+      `Feil respons fra server (http-status: ${response.status})`,
     );
   }
 };
@@ -104,12 +104,12 @@ const esResponseDto = z.object({
     hits: z.array(
       z.object({
         _source: z.any(),
-      })
+      }),
     ),
   }),
 });
 export const postApiWithSchemaEs = <T>(
-  schema: ZodSchema<T>
+  schema: ZodSchema<T>,
 ): ((props: postApiProps) => Promise<T>) => {
   return async (props) => {
     const data: any = await postApi(props.url, props.body);
@@ -119,12 +119,12 @@ export const postApiWithSchemaEs = <T>(
 };
 
 export const postApiWithSchema = <T>(
-  schema: ZodSchema<T>
+  schema: ZodSchema<T>,
 ): ((props: postApiProps) => Promise<T>) => {
   return async (props) => {
     const data = await postApi(
       props.queryParams ? props.url + `?${props.queryParams}` : props.url,
-      props.body
+      props.body,
     );
     return schema.parse(data);
   };

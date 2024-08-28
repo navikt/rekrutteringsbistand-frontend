@@ -47,8 +47,8 @@ export async function verifyUserLoggedIn(): Promise<{
       logger.error(
         new Error(
           `Invalid JWT token found (cause: ${validationResult.errorType} ${validationResult.error.message}, redirecting to login.`,
-          { cause: validationResult.error }
-        )
+          { cause: validationResult.error },
+        ),
       );
     }
 

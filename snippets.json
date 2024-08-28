@@ -21,34 +21,5 @@
       ""
     ],
     "description": "SWR Api"
-  },
-  "Create route": {
-    "prefix": "croute",
-    "body": [
-      "import { NextRequest, NextResponse } from \"next/server\";",
-      "import { isLocal } from \"../../../../util/env\";",
-      "import { proxyWithOBO } from \"../../../../util/oboProxy\";",
-      "",
-      "",
-      "export async function GET(req: NextRequest) {",
-      "  if (isLocal) {",
-      "    return NextResponse.json({});",
-      "  }",
-      "",
-      "  const { searchParams } = new URL(req.url);",
-      "",
-      "  const url = new URL(",
-      "    `${REPLACE.api_url}${REPLACE.route}`,",
-      "  );",
-      "",
-      "  searchParams.forEach((value, key) => {",
-      "    url.searchParams.append(key, value);",
-      "  });",
-      "",
-      "  return proxyWithOBO(url.toString(), REPLACE.scope, req);",
-      "}",
-      ""
-    ],
-    "description": "Create route"
   }
 }

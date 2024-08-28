@@ -4,7 +4,7 @@ import { ApplikasjonContext } from '../../../../app/ApplikasjonContext';
 import { DecoratorProps, Enhet } from './Interndekoratør';
 
 const InternflateDecorator = NAVSPA.importer<DecoratorProps>(
-  'internarbeidsflate-decorator-v3'
+  'internarbeidsflate-decorator-v3',
 );
 
 const Modiadekoratør: FunctionComponent = async () => {

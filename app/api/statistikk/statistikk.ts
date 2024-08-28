@@ -1,15 +1,15 @@
-"use client";
+'use client';
 /**
  * Endepunkt /statistikk
  */
-import useSWRImmutable from "swr/immutable";
-import { z } from "zod";
-import { formaterDatoTilApi } from "../../../util/dato";
-import { StatistikkAPI } from "../api-routes";
-import { getAPIwithSchema } from "../fetcher";
+import useSWRImmutable from 'swr/immutable';
+import { z } from 'zod';
+import { formaterDatoTilApi } from '../../../util/dato';
+import { StatistikkAPI } from '../api-routes';
+import { getAPIwithSchema } from '../fetcher';
 
 const statistikkEndepunkt = (param?: URLSearchParams) =>
-  `${StatistikkAPI.internUrl}${param ? `?${param}` : ""}`;
+  `${StatistikkAPI.internUrl}${param ? `?${param}` : ''}`;
 
 const antallDTOSchema = z.object({
   totalt: z.number(),

@@ -1,6 +1,6 @@
-import { Accordion, Hide, Show } from "@navikt/ds-react";
-import * as React from "react";
-import SideBanner from "./SideBanner";
+import { Accordion, Hide, Show } from '@navikt/ds-react';
+import * as React from 'react';
+import SideBanner from './SideBanner';
 
 // import { TilToppenKnapp } from "../tilToppenKnapp/TilToppenKnapp";
 
@@ -22,8 +22,8 @@ const SideLayout = ({
   children,
 }: ISideLayout) => {
   return (
-    <div className="w-full flex justify-center mx-auto">
-      <div className=" w-full max-w-desktop px-4 mb-20 md:px-10">
+    <div className='w-full flex justify-center mx-auto'>
+      <div className=' w-full max-w-desktop px-4 mb-20 md:px-10'>
         {banner ? (
           banner
         ) : (
@@ -31,11 +31,11 @@ const SideLayout = ({
             {knappIBanner}
           </SideBanner>
         )}
-        <div className=" flex flex-col gap-y-8 gap-x-[3.5rem] md:flex-row">
+        <div className=' flex flex-col gap-y-8 gap-x-[3.5rem] md:flex-row'>
           {sidepanel && (
-            <aside className="sidebar flex-grow-0 w-full md:w-[22.5rem]">
-              <Show above="md">{sidepanel}</Show>
-              <Hide above="md">
+            <aside className='sidebar flex-grow-0 w-full md:w-[22.5rem]'>
+              <Show above='md'>{sidepanel}</Show>
+              <Hide above='md'>
                 <Accordion>
                   <Accordion.Item>
                     <Accordion.Header>Filtrer</Accordion.Header>
@@ -45,7 +45,7 @@ const SideLayout = ({
               </Hide>
             </aside>
           )}
-          <main className="sideinnhold w-full">{children}</main>
+          <main className='sideinnhold w-full'>{children}</main>
         </div>
       </div>
     </div>

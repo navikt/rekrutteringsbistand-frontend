@@ -1,12 +1,12 @@
-"use client";
-import { PlusCircleIcon } from "@navikt/aksel-icons";
-import { Alert, BodyLong, Button } from "@navikt/ds-react";
-import { useRouter } from "next/navigation";
-import * as React from "react";
-import SideLayout from "../../../components/layout/SideLayout";
-import { Stillingskategori } from "../../../types/stilling/kategorier";
-import VelgArbeidsgiver from "./components/VelgArbeidsgiver";
-import VelgStillingskategori from "./components/VelgStillingskategori";
+'use client';
+import { PlusCircleIcon } from '@navikt/aksel-icons';
+import { Alert, BodyLong, Button } from '@navikt/ds-react';
+import { useRouter } from 'next/navigation';
+import * as React from 'react';
+import SideLayout from '../../../components/layout/SideLayout';
+import { Stillingskategori } from '../../../types/stilling/kategorier';
+import VelgArbeidsgiver from './components/VelgArbeidsgiver';
+import VelgStillingskategori from './components/VelgStillingskategori';
 
 const Page: React.FC = () => {
   const router = useRouter();
@@ -21,9 +21,9 @@ const Page: React.FC = () => {
   };
 
   return (
-    <SideLayout tittel="Opprett ny stilling">
+    <SideLayout tittel='Opprett ny stilling'>
       <div>
-        <Alert variant="warning" className="mb-2">
+        <Alert variant='warning' className='mb-2'>
           <BodyLong spacing>
             Det arbeides fremdeles med å avklare hva som er lov å registrere i
             Rekrutteringsbistand. Derfor kan du ikke registrere NAV-kurs,
@@ -35,22 +35,22 @@ const Page: React.FC = () => {
             stillingen er opprettet.
           </BodyLong>
         </Alert>
-        <div className="grid">
+        <div className='grid'>
           <VelgStillingskategori
             stillingskategori={stillingskategori}
             setStillingskategori={setStillingskategori}
           />
           <VelgArbeidsgiver setArbeidsgiver={setArbeidsgiver} />
         </div>
-        <div className="flex justify-end mt-4">
+        <div className='flex justify-end mt-4'>
           <Button
-            className={"mr-4"}
-            variant={"secondary"}
+            className={'mr-4'}
+            variant={'secondary'}
             onClick={handleGoBack}
           >
             Avbryt
           </Button>
-          <Button variant="primary" icon={<PlusCircleIcon aria-hidden />}>
+          <Button variant='primary' icon={<PlusCircleIcon aria-hidden />}>
             Opprett stilling
           </Button>
         </div>

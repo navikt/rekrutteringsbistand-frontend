@@ -46,8 +46,8 @@ export const ApplikasjonContextProvider: React.FC<
           (r) =>
             data?.roller?.includes(r) ||
             data?.roller?.includes(
-              Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER
-            )
+              Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER,
+            ),
         )
       : true;
 
