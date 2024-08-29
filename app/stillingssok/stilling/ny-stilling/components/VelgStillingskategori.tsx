@@ -1,9 +1,9 @@
 import { Label, Radio, RadioGroup } from '@navikt/ds-react';
 import React, { FunctionComponent, ReactNode } from 'react';
-import { Rolle } from '../../../../types/Roller';
-import { Stillingskategori } from '../../../../types/stilling/kategorier';
-import { kategoriTilVisningsnavn } from '../../../../util/stilling';
-import { ApplikasjonContext } from '../../../ApplikasjonContext';
+import { Rolle } from '../../../../../types/Roller';
+import { Stillingskategori } from '../../../../../types/stilling/kategorier';
+import { kategoriTilVisningsnavn } from '../../../../../util/stilling';
+import { ApplikasjonContext } from '../../../../ApplikasjonContext';
 
 const kategorier = [
   Stillingskategori.Stilling,

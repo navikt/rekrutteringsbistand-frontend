@@ -28,8 +28,8 @@ const Feilmelding: React.FC<IFeilmelding> = ({
         </Button>
         {showError && (
           <div>
-            {zodError?.errors?.map((e) => (
-              <div className='mb-2'>
+            {zodError?.errors?.map((e, i) => (
+              <div className='mb-2' key={i}>
                 <dd>
                   <strong>{e.code}:</strong> {e.message}
                 </dd>

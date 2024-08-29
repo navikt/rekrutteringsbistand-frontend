@@ -1,6 +1,6 @@
 import { UNSAFE_Combobox } from '@navikt/ds-react';
 import * as React from 'react';
-import { useFinnArbeidsgiver } from '../../../../api/stilling/finn-arbeidsgiver/finnArbeidsgiver';
+import { useFinnArbeidsgiver } from '../../../api/stilling/finn-arbeidsgiver/finnArbeidsgiver';
 
 export interface IVelgArbeidsgiver {
   children?: React.ReactNode | undefined;
