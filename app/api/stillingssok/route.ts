@@ -3,8 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function POST(req: NextRequest) {
   const body = await req.json();
 
-  console.log('🎺 "er er"', 'er er');
-  const response = await fetch(`${process.env.STILLING_ES_URL}`, {
+  const response = await fetch(`${process.env.STILLING_ES_URI}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

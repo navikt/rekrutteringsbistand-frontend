@@ -21,7 +21,7 @@ Implementert logger `import { logger } from '@navikt/next-logger'`, se https://l
 # Stillingssøk direkte mot ES:
 Opprett en '.env.local' fil og fyll ut:
 ```
-STILLING_ES_URL=
+STILLING_ES_URI=
 STILLING_ES_PASSWORD=
 STILLING_ES_USERNAME=
 ```
