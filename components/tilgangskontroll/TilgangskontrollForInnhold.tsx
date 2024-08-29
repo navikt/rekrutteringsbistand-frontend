@@ -55,7 +55,7 @@ export const TilgangskontrollForInnhold: React.FC<
   return (
     <ErrorBoundary>
       <div className={css.container}>
-        <Alert variant='error' className={css.alert}>
+        <Alert className={css.alert} variant='error'>
           <div>
             <span>
               Hei, du trenger rollen

@@ -18,13 +18,13 @@ const Hurtiglenker: FunctionComponent = () => {
       <div className='justify-start items-start gap-4 inline-flex w-full'>
         <LenkepanelMedIkon
           href='/kandidatsok'
-          tittel='Finn kandidater'
           ikon={<FinnKandidaterIkon />}
+          tittel='Finn kandidater'
         />
         <LenkepanelMedIkon
           href='/stillingssok'
-          tittel='Finn stillinger'
           ikon={<FinnStillinger />}
+          tittel='Finn stillinger'
         />
 
         <LenkepanelMedIkon
@@ -36,8 +36,8 @@ const Hurtiglenker: FunctionComponent = () => {
 
         <LenkepanelMedIkon
           href='/stilling/ny-stilling'
-          tittel='Opprett ny stilling'
           ikon={<OpprettNyStillingIkon />}
+          tittel='Opprett ny stilling'
         />
       </div>
     </TilgangskontrollForInnhold>
@@ -51,8 +51,8 @@ const LenkepanelMedIkon: FunctionComponent<{
   onClick?: () => void;
 }> = ({ tittel, href, ikon, onClick }) => (
   <Link
-    href={href}
     className={`h-28 bg-[#f2f3f5] rounded-xl shadow flex flex-grow`}
+    href={href}
   >
     <div className='flex grow h-28 justify-start items-center'>
       <div className='pl-6 py-6 flex justify-center items-center gap-2'>

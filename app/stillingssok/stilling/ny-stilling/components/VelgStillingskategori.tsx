@@ -56,17 +56,17 @@ const VelgStillingskategori: FunctionComponent<Props> = ({
   return (
     <RadioGroup
       className='mb-2'
-      legend={<Label as='span'>Hva skal du bruke stillingen til?</Label>}
       error={feilmelding}
+      legend={<Label as='span'>Hva skal du bruke stillingen til?</Label>}
     >
       {kategorier.map((kategori) =>
         harTilgang(kategori) ? (
           <Radio
             key={kategori}
-            name='stillingskategori'
-            onChange={onStillingskategoriChange}
             checked={stillingskategori === kategori}
+            name='stillingskategori'
             value={kategori}
+            onChange={onStillingskategoriChange}
           >
             {kategoriTilVisningsnavn(kategori)}
           </Radio>

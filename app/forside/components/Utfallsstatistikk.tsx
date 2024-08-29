@@ -29,9 +29,7 @@ const Utfallsstatistikk: FunctionComponent<IStatistikkValg> = ({
       {(data) => (
         <div className='flex flex-col gap-6 md:grid md:grid-cols-2'>
           <Infokort
-            tall={data.antPresentasjoner.totalt}
             beskrivelse='Antall delt med arbeidsgiver'
-            ikon={<EyeIcon aria-hidden />}
             detaljer={[
               {
                 beskrivelse: 'Antall under 30 år',
@@ -42,11 +40,11 @@ const Utfallsstatistikk: FunctionComponent<IStatistikkValg> = ({
                 tall: data.antPresentasjoner.innsatsgruppeIkkeStandard,
               },
             ]}
+            ikon={<EyeIcon aria-hidden />}
+            tall={data.antPresentasjoner.totalt}
           />
           <Infokort
-            tall={data.antFåttJobben.totalt}
             beskrivelse='Antall som har fått jobb'
-            ikon={<HandshakeIcon aria-hidden />}
             detaljer={[
               {
                 beskrivelse: 'Antall under 30 år',
@@ -57,6 +55,8 @@ const Utfallsstatistikk: FunctionComponent<IStatistikkValg> = ({
                 tall: data.antFåttJobben.innsatsgruppeIkkeStandard,
               },
             ]}
+            ikon={<HandshakeIcon aria-hidden />}
+            tall={data.antFåttJobben.totalt}
           />
         </div>
       )}

@@ -60,9 +60,9 @@ const Statistikk: React.FC = () => {
         <div className='"hidden h-px bg-border-subtle flex-grow skillelinje"' />
         <div />
         <Select
+          className='flex items-center'
           label='Periode'
           onChange={onTidsperiodeChange}
-          className='flex items-center'
         >
           {tidsperioder.map((tidsperiode) => (
             <option
@@ -78,15 +78,15 @@ const Statistikk: React.FC = () => {
       </div>
       <ErrorBoundary>
         <Utfallsstatistikk
-          navKontor={valgtNavKontor.navKontor}
           fraOgMed={fraOgMed}
+          navKontor={valgtNavKontor.navKontor}
           tilOgMed={tilOgMed}
         />
       </ErrorBoundary>
       <ErrorBoundary>
         <Forespørsler
-          navKontor={valgtNavKontor.navKontor}
           fraOgMed={fraOgMed}
+          navKontor={valgtNavKontor.navKontor}
           tilOgMed={tilOgMed}
         />
       </ErrorBoundary>

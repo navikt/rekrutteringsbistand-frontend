@@ -22,15 +22,15 @@ export default async function RootLayout({
       <head>
         {!isLocal && (
           <link
-            rel='stylesheet'
             href='https://cdn.nav.no/personoversikt/internarbeidsflate-decorator-v3/dev/latest/dist/index.css'
+            rel='stylesheet'
           />
         )}
         {!isLocal && (
           <Script
             defer
-            strategy='beforeInteractive'
             src='https://cdn.nav.no/personoversikt/internarbeidsflate-decorator-v3/dev/latest/dist/bundle.js'
+            strategy='beforeInteractive'
           />
         )}
       </head>

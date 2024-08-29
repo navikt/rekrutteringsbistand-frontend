@@ -17,9 +17,9 @@ const nyhetssaker: Nyhet[] = [
         <p>Det er ny tilgangsstyring for Rekrutteringsbistand fra 13. juni.</p>
         <p>
           <a
-            target='_blank'
             href='https://navno.sharepoint.com/sites/fag-og-ytelser-arbeid-markedsarbeid/SitePages/Tilgangskontroll.aspx'
             rel='noreferrer'
+            target='_blank'
           >
             Se info her
           </a>

@@ -39,26 +39,32 @@ export const Navigeringsmeny: FunctionComponent = () => {
   const tabPath = `/${pathname.split('/')[1]}`;
 
   return (
-    <div className='max-w-screen-xl pt-2 mx-auto flex justify-between border-b items-center'>
-      <Tabs
-        defaultValue={tabPath === '/' ? 'Oversikt' : tabPath}
-        value={tabPath}
-      >
-        <Tabs.List>
-          {tabs.map((tab, index) => (
-            <TilgangskontrollForInnhold
-              key={index}
-              skjulVarsel
-              kreverEnAvRollene={tab.kreverRoller}
-            >
-              <Link href={tab.path}>
-                <Tabs.Tab key={tab.path} value={tab.path} label={tab.tittel} />
-              </Link>
-            </TilgangskontrollForInnhold>
-          ))}
-        </Tabs.List>
-      </Tabs>
-      <Nyheter />
+    <div className='border-b '>
+      <div className='max-w-screen-xl pt-2 mx-auto flex justify-between items-center'>
+        <Tabs
+          defaultValue={tabPath === '/' ? 'Oversikt' : tabPath}
+          value={tabPath}
+        >
+          <Tabs.List>
+            {tabs.map((tab, index) => (
+              <TilgangskontrollForInnhold
+                key={index}
+                skjulVarsel
+                kreverEnAvRollene={tab.kreverRoller}
+              >
+                <Link href={tab.path}>
+                  <Tabs.Tab
+                    key={tab.path}
+                    label={tab.tittel}
+                    value={tab.path}
+                  />
+                </Link>
+              </TilgangskontrollForInnhold>
+            ))}
+          </Tabs.List>
+        </Tabs>
+        <Nyheter />
+      </div>
     </div>
   );
 };

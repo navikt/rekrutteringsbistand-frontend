@@ -38,33 +38,33 @@ const Nyheter: FunctionComponent = () => {
   return (
     <div className={css.nyheter}>
       <Button
-        size='small'
         ref={buttonRef}
         className={css.knapp}
-        onClick={() => setÅpen(!åpen)}
-        variant='tertiary-neutral'
         icon={<LightBulbIcon aria-hidden />}
+        size='small'
+        variant='tertiary-neutral'
+        onClick={() => setÅpen(!åpen)}
       >
         Hva er nytt
         {antallUlesteNyheter > 0 && <div className={css.notifikasjon} />}
       </Button>
 
       <Popover
-        open={åpen}
         anchorEl={buttonRef.current}
-        onClose={() => setÅpen(false)}
+        open={åpen}
         placement='bottom-end'
+        onClose={() => setÅpen(false)}
       >
         <div className={css.popover}>
-          <Heading size='xsmall' level='2' className={css.tittel}>
+          <Heading className={css.tittel} level='2' size='xsmall'>
             Nytt i Rekrutteringsbistand
           </Heading>
           <section className={css.nyhetsliste}>
             {nyhetssaker.map((nyhet, index) => (
               <Artikkel
                 key={`${nyhet.dato}-${nyhet.tittel}`}
-                ulest={index < antallUlesteVedSidelast}
                 nyhet={nyhet}
+                ulest={index < antallUlesteVedSidelast}
               />
             ))}
           </section>

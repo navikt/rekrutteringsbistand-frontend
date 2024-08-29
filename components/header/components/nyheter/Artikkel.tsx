@@ -24,7 +24,7 @@ const Artikkel: FunctionComponent<Props> = ({ nyhet, ulest }) => {
   return (
     <article className={klassenavn}>
       <Detail size='small'>{printDato(nyhet.dato)}</Detail>
-      <Heading spacing size='small' className={'mt-0'}>
+      <Heading spacing className={'mt-0'} size='small'>
         {nyhet.tittel}
       </Heading>
       <div className={'font-semibold text-base mb-1'}>{nyhet.innhold}</div>

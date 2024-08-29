@@ -15,10 +15,10 @@ const VelgArbeidsgiver: React.FC<IVelgArbeidsgiver> = ({ children }) => {
     <React.Fragment>
       <form role='search'>
         <UNSAFE_Combobox
+          isLoading={isLoading}
           label='Arbeidsgivers navn eller virksomhetsnummer'
           options={muligeValg}
           shouldAutocomplete={true}
-          isLoading={isLoading}
           onChange={(e) => setSøkeord(e?.target.value ?? '')}
           onSelect={(valg) => console.log(valg)}
         />

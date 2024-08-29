@@ -11,11 +11,11 @@ type ISideTopBanner = {
 
 const SideTopBanner = ({ tittel, nederst, ikon, children }: ISideTopBanner) => {
   return (
-    <div role='banner' id='banner'>
+    <div id='banner' role='banner'>
       <div className='flex justify-between items-center'>
         <div className='flex justify-start items-center gap-8'>
           {ikon}
-          <Heading level='2' size='large' className='my-8 ml-0 mr-auto'>
+          <Heading className='my-8 ml-0 mr-auto' level='2' size='large'>
             {tittel}
           </Heading>
         </div>

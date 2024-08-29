@@ -36,12 +36,11 @@ const Forespørsler: React.FC<IStatistikkValg> = ({
       {(data) => (
         <div className='flex flex-col gap-6 md:grid md:grid-cols-2 mt-6'>
           <Infokort
-            tall={data.antallSvartJa}
             beskrivelse='Antall som har svart ja'
             ikon={<ChatCheckmarkIcon />}
+            tall={data.antallSvartJa}
           />
           <Infokort
-            tall={data.antallSvartNei}
             beskrivelse='Antall som har svart nei'
             ikon={
               <>
@@ -51,15 +50,16 @@ const Forespørsler: React.FC<IStatistikkValg> = ({
                 <ChatIcon className='relative' />
               </>
             }
+            tall={data.antallSvartNei}
           />
           <Infokort
-            tall={data.antallVenterPåSvar}
             beskrivelse='Antall som venter på svar'
             ikon={<ChatIcon />}
+            tall={data.antallVenterPåSvar}
           />
           <Infokort
-            tall={data.antallUtløpteSvar}
             beskrivelse='Antall utløpte svar'
+            tall={data.antallUtløpteSvar}
           />
         </div>
       )}

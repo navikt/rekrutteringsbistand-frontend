@@ -12,7 +12,7 @@ export interface IInfokort {
 }
 
 export const InfokortSkeleton = () => {
-  return <Skeleton variant='rounded' width='50%' height={150} />;
+  return <Skeleton height={150} variant='rounded' width='50%' />;
 };
 
 const Infokort: React.FC<IInfokort> = ({

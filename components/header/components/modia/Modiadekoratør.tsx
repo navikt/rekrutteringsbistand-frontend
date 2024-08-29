@@ -12,19 +12,19 @@ const Modiadekoratør: FunctionComponent = async () => {
   return (
     <InternflateDecorator
       useProxy
+      appName={'Rekrutteringsbistand'}
+      environment={'q0'}
       proxy='https://rekrutteringsbistand-next.intern.dev.nav.no'
+      showEnheter={true}
+      showHotkeys={false}
+      showSearchArea={false}
+      urlFormat={'NAV_NO'}
       onEnhetChanged={function (enhetId?: string | null, enhet?: Enhet): void {
         setValgtNavKontor({
           navKontor: enhet?.enhetId ?? 'Ukjent navkontor ID',
           navKontorNavn: enhet?.navn ?? 'Ukjent navkontor NAVN',
         });
       }}
-      appName={'Rekrutteringsbistand'}
-      showEnheter={true}
-      showSearchArea={false}
-      showHotkeys={false}
-      environment={'q0'}
-      urlFormat={'NAV_NO'}
     />
   );
 };

@@ -23,7 +23,7 @@ const NyStilling: React.FC = () => {
   return (
     <SideLayout tittel='Opprett ny stilling'>
       <div>
-        <Alert variant='warning' className='mb-2'>
+        <Alert className='mb-2' variant='warning'>
           <BodyLong spacing>
             Det arbeides fremdeles med å avklare hva som er lov å registrere i
             Rekrutteringsbistand. Derfor kan du ikke registrere NAV-kurs,
@@ -37,8 +37,8 @@ const NyStilling: React.FC = () => {
         </Alert>
         <div className='grid'>
           <VelgStillingskategori
-            stillingskategori={stillingskategori}
             setStillingskategori={setStillingskategori}
+            stillingskategori={stillingskategori}
           />
           <VelgArbeidsgiver setArbeidsgiver={setArbeidsgiver} />
         </div>
@@ -50,7 +50,7 @@ const NyStilling: React.FC = () => {
           >
             Avbryt
           </Button>
-          <Button variant='primary' icon={<PlusCircleIcon aria-hidden />}>
+          <Button icon={<PlusCircleIcon aria-hidden />} variant='primary'>
             Opprett stilling
           </Button>
         </div>

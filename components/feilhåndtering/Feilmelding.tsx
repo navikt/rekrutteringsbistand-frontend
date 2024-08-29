@@ -14,14 +14,14 @@ const Feilmelding: React.FC<IFeilmelding> = ({
 
   if (zodError) {
     return (
-      <Alert variant='error' style={{ margin: '1rem' }} className='w-full'>
+      <Alert className='w-full' style={{ margin: '1rem' }} variant='error'>
         <strong>Feil ved validering av data (ZodError)</strong>
         <BodyLong>{tittel}</BodyLong>
         <p>Antall feil {zodError?.errors.length ?? 'N/A'}</p>
         <Button
           className='mt-4 mb-4'
-          variant={showError ? 'secondary-neutral' : 'secondary'}
           size='small'
+          variant={showError ? 'secondary-neutral' : 'secondary'}
           onClick={() => setShowError(!showError)}
         >
           {showError ? 'Skjul' : 'Vis'} detaljert feilmelding
@@ -29,7 +29,7 @@ const Feilmelding: React.FC<IFeilmelding> = ({
         {showError && (
           <div>
             {zodError?.errors?.map((e, i) => (
-              <div className='mb-2' key={i}>
+              <div key={i} className='mb-2'>
                 <dd>
                   <strong>{e.code}:</strong> {e.message}
                 </dd>
@@ -46,14 +46,14 @@ const Feilmelding: React.FC<IFeilmelding> = ({
   }
   return (
     <div style={{ width: '100%' }}>
-      <Alert variant='error' style={{ margin: '1rem' }}>
+      <Alert style={{ margin: '1rem' }} variant='error'>
         <strong>Noe gikk galt!</strong>
         <BodyLong>{tittel}</BodyLong>
         <p>{beskrivelse}</p>
         <Button
           className='mt-4 mb-4'
-          variant={showError ? 'secondary-neutral' : 'secondary'}
           size='small'
+          variant={showError ? 'secondary-neutral' : 'secondary'}
           onClick={() => setShowError(!showError)}
         >
           {showError ? 'Skjul' : 'Vis'} detaljert feilmelding

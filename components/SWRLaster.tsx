@@ -30,8 +30,8 @@ const SWRLaster = <T,>({
     return (
       <Feilmelding
         {...hook.error}
-        zodError={isZodError(hook.error) ? hook.error : undefined}
         tittel='Feil ved henting av data'
+        zodError={isZodError(hook.error) ? hook.error : undefined}
       />
     );
   }

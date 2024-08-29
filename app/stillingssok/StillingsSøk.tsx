@@ -101,8 +101,8 @@ const StillingsSøk: React.FC = () => {
 
   return (
     <SideLayout
-      tittel='Stillinger'
       ikon={<Piktogram />}
+      sidepanel={<div>TBD</div>}
       knappIBanner={
         <TilgangskontrollForInnhold
           skjulVarsel
@@ -119,7 +119,7 @@ const StillingsSøk: React.FC = () => {
         </TilgangskontrollForInnhold>
       }
       // banner={kandidatnr !== undefined && <KontekstAvKandidat kandidatnr={kandidatnr} />}
-      sidepanel={<div>TBD</div>}
+      tittel='Stillinger'
     >
       <SWRLaster hook={hook}>
         {(data) => (

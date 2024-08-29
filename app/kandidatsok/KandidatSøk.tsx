@@ -3,7 +3,7 @@ import * as React from 'react';
 import SideLayout from '../../components/layout/SideLayout';
 import { useMinebrukere } from '../api/kandidatsok/minebrukere/minebrukere';
 import KandidatKort from './components/KandidatKort';
-import Sidebar from './components/Sidebar';
+import Sidebar from './components/KandidatSøkSidebar';
 import Piktogram from './icons/finn-kandidater.svg';
 
 const KandidatSøk: React.FC = () => {
@@ -29,18 +29,18 @@ const KandidatSøk: React.FC = () => {
   });
   return (
     <SideLayout
-      tittel='Kandidatsøk'
       ikon={<Piktogram />}
       sidepanel={<Sidebar />}
+      tittel='Kandidatsøk'
     >
       <ul>
         {data &&
           data.kandidater.map((kandidat, i) => (
             <KandidatKort
               key={i}
-              markert={false}
               erIListen={false}
               kandidat={kandidat}
+              markert={false}
             />
           ))}
       </ul>

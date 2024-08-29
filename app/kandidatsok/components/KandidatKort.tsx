@@ -43,21 +43,21 @@ const RekBisKortKandidat: React.FC<IRekBisKortKandidat> = ({
   erIListen,
 }) => {
   return (
-    <div className='border rounded-lg mb-4 border-gray-300 p-4'>
+    <div className='border rounded-lg mb-4 border-gray-300 px-4 pb-4 pt-2'>
       <div aria-selected={markert}>
         <div className='flex justify-between items-center'>
           <div className='flex items-center '>
-            <Checkbox value='1' hideLabel className='mr-4'>
+            <Checkbox hideLabel className='mr-4' value='1'>
               Checkbox
             </Checkbox>
-            <Heading size='small' className=''>
+            <Heading className='underline' size='small'>
               <Link href={`/kandidat/${kandidat.arenaKandidatnr}`}>
                 {hentKandidatensNavn(kandidat)}
               </Link>
             </Heading>
           </div>
 
-          <div>
+          <div className='font-bold'>
             <Link href={`/stillingssok/kandidat/${kandidat.arenaKandidatnr}`}>
               Finn stilling
             </Link>
@@ -65,26 +65,29 @@ const RekBisKortKandidat: React.FC<IRekBisKortKandidat> = ({
         </div>
       </div>
       <div className='ml-10'>
-        <div title='Ønsket sted' className='flex items-center'>
-          <PinIcon />
-          <BodyLong className='ml-2'>
-            {hentKandidatensØnskedeSteder(kandidat) ?? '-'}
-          </BodyLong>
-        </div>
-        <div>
-          <div title='Ønsket yrke' className='flex items-center'>
-            <HandShakeHeartIcon />
+        <div className='flex'>
+          <div className='flex items-center mr-4' title='Ønsket sted'>
+            <PinIcon />
             <BodyLong className='ml-2'>
-              {hentKandidatensØnskedeYrker(kandidat) ?? '-'}
+              {hentKandidatensØnskedeSteder(kandidat) ?? '-'}
             </BodyLong>
           </div>
-          <div title='Bosted' className='flex items-center'>
+          <div className='flex items-center' title='Bosted'>
             <HouseIcon />
             <BodyLong className='ml-2'>
               {kandidat.postnummer ?? '-'} {kandidat.kommuneNavn ?? '-'}
             </BodyLong>
           </div>
-          <div title='Innsatsgruppe' className='flex items-center'>
+        </div>
+        <div>
+          <div className='flex items-center' title='Ønsket yrke'>
+            <HandShakeHeartIcon />
+            <BodyLong className='ml-2'>
+              {hentKandidatensØnskedeYrker(kandidat) ?? '-'}
+            </BodyLong>
+          </div>
+
+          <div className='flex items-center' title='Innsatsgruppe'>
             <HandHeartIcon />
             <BodyLong className='ml-2'>
               {

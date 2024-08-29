@@ -19,54 +19,54 @@ const StillingsTag: React.FC<IStillingTag> = (tag) => {
     <div className='flex justify-between'>
       <div>
         {tag.erJobbmesse && (
-          <Tag size='small' variant='alt2' className={'mr-2'}>
+          <Tag className={'mr-2'} size='small' variant='alt2'>
             Jobbmesse
           </Tag>
         )}
         {tag.erEier && (
-          <Tag size='small' variant='info' className={'mr-2'}>
+          <Tag className={'mr-2'} size='small' variant='info'>
             Min stilling
           </Tag>
         )}
         {tag.erUtløpt && (
-          <Tag size='small' variant='warning' className={'mr-2'}>
+          <Tag className={'mr-2'} size='small' variant='warning'>
             Utløpt
           </Tag>
         )}
         {tag.erIkkePublisert && (
-          <Tag size='small' variant='warning' className={'mr-2'}>
+          <Tag className={'mr-2'} size='small' variant='warning'>
             Ikke publisert
           </Tag>
         )}
         {tag.erUtkast && (
-          <Tag size='small' variant='alt1' className={'mr-2'}>
+          <Tag className={'mr-2'} size='small' variant='alt1'>
             Utkast
           </Tag>
         )}
         {tag.erStoppet && (
-          <Tag size='small' variant='error' className={'mr-2'}>
+          <Tag className={'mr-2'} size='small' variant='error'>
             Stoppet
           </Tag>
         )}
         {tag.erSlettet && (
-          <Tag size='small' variant='error' className={'mr-2'}>
+          <Tag className={'mr-2'} size='small' variant='error'>
             Slettet
           </Tag>
         )}
       </div>
       <div>
         {tag.registrertMedInkluderingsmulighet && (
-          <Tag size='small' variant='success' className={'mr-2'}>
+          <Tag className={'mr-2'} size='small' variant='success'>
             Inkludering
           </Tag>
         )}
         {tag.direktemeldt && (
-          <Tag size='small' variant='alt1' className={'mr-2'}>
+          <Tag className={'mr-2'} size='small' variant='alt1'>
             Intern
           </Tag>
         )}
         {tag.arbeidsplassen && (
-          <Tag size='small' variant='alt3' className={'mr-2'}>
+          <Tag className={'mr-2'} size='small' variant='alt3'>
             Arbeidsplassen
           </Tag>
         )}

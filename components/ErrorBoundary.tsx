@@ -49,15 +49,15 @@ class ErrorBoundary extends Component<Props, State> {
     if (this.state.hasError) {
       return (
         <div style={{ width: '100%' }}>
-          <Alert variant='error' style={{ margin: '1rem' }}>
+          <Alert style={{ margin: '1rem' }} variant='error'>
             <strong>Noe gikk galt!</strong>
             <BodyLong>
               Feilmelding: {this.state.error?.message ?? 'Ukjent feil'}
             </BodyLong>
             {this.state.error && (
               <Button
-                variant='tertiary'
                 size='small'
+                variant='tertiary'
                 onClick={() =>
                   this.setState({
                     ...this.state,

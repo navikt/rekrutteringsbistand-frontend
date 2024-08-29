@@ -48,19 +48,19 @@ const StillingsKort: React.FC<IStillingsKort> = ({ stillingData }) => {
       </div>
       <div className='mb-4'>
         <StillingsTag
-          erEier={true}
-          erUtløpt={true}
-          erIkkePublisert={true}
-          erUtkast={true}
-          erStoppet={true}
           arbeidsplassen={true}
           direktemeldt={true}
-          registrertMedInkluderingsmulighet={true}
+          erEier={true}
+          erIkkePublisert={true}
           erJobbmesse={
             stillingData?.stillingsinfo?.stillingskategori ===
             Stillingskategori.Jobbmesse
           }
           erSlettet={true}
+          erStoppet={true}
+          erUtkast={true}
+          erUtløpt={true}
+          registrertMedInkluderingsmulighet={true}
         />
       </div>
       <div className='flex'>
@@ -75,7 +75,7 @@ const StillingsKort: React.FC<IStillingsKort> = ({ stillingData }) => {
         </Heading>
       </Link>
       <div className='flex mt-4'>
-        <div title='Lokasjon' className='flex items-center mr-4'>
+        <div className='flex items-center mr-4' title='Lokasjon'>
           <PinIcon />
           <p className='ml-2'>
             {formaterMedStoreOgSmåBokstaver(
@@ -83,7 +83,7 @@ const StillingsKort: React.FC<IStillingsKort> = ({ stillingData }) => {
             ) || '-'}
           </p>
         </div>
-        <div title='Antall stillinger' className='flex items-center mr-4'>
+        <div className='flex items-center mr-4' title='Antall stillinger'>
           <BriefcaseIcon />
           <p className='ml-2'>
             {antallStillinger
@@ -91,7 +91,7 @@ const StillingsKort: React.FC<IStillingsKort> = ({ stillingData }) => {
               : '-'}
           </p>
         </div>
-        <div title='Lokasjon' className='flex items-center mr-4'>
+        <div className='flex items-center mr-4' title='Lokasjon'>
           <ClockIcon />
           <p className='ml-2'>
             {stillingData.stilling.properties.applicationdue
@@ -101,7 +101,7 @@ const StillingsKort: React.FC<IStillingsKort> = ({ stillingData }) => {
               : '-'}
           </p>
         </div>
-        <div title='Eier' className='flex items-center mr-4'>
+        <div className='flex items-center mr-4' title='Eier'>
           <PersonIcon />
           <p className='ml-2'>{eierNavn}</p>
         </div>
