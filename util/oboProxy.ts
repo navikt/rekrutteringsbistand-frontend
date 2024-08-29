@@ -54,7 +54,7 @@ export const proxyWithOBO = async (
     originalHeaders.set('Authorization', `Bearer ${obo.token}`);
     originalHeaders.set('Content-Type', 'application/json');
 
-    const fetchOptions: RequestInit = {
+    const fetchOptions: any = {
       method: req.method,
       headers: originalHeaders,
     };

@@ -101,8 +101,8 @@ const StillingsSøk: React.FC = () => {
 
   return (
     <SideLayout
+      // banner={kandidatnr !== undefined && <KontekstAvKandidat kandidatnr={kandidatnr} />}
       ikon={<Piktogram />}
-      sidepanel={<div>TBD</div>}
       knappIBanner={
         <TilgangskontrollForInnhold
           skjulVarsel
@@ -112,13 +112,13 @@ const StillingsSøk: React.FC = () => {
           ]}
         >
           <Link href={'/stilling/ny-stilling'}>
-            <Button variant='secondary' icon={<PlusCircleIcon aria-hidden />}>
+            <Button icon={<PlusCircleIcon aria-hidden />} variant='secondary'>
               Opprett ny
             </Button>
           </Link>
         </TilgangskontrollForInnhold>
       }
-      // banner={kandidatnr !== undefined && <KontekstAvKandidat kandidatnr={kandidatnr} />}
+      sidepanel={<div>TBD</div>}
       tittel='Stillinger'
     >
       <SWRLaster hook={hook}>

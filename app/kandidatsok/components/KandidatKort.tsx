@@ -14,7 +14,6 @@ import {
   hentKandidatensØnskedeYrker,
 } from '../util';
 import { alleInnsatsgrupper } from './innsatsgrupper';
-// import TekstlinjeMedIkon from '../TekstlinjeMedIkon';
 
 type IRekBisKortKandidat = {
   kandidat: KandidatSchemaDTO;
@@ -22,13 +21,13 @@ type IRekBisKortKandidat = {
   erIListen: boolean;
 };
 
-interface TekstlinjeMedIkon {
+interface ITekstlinjeMedIkon {
   ikon: React.ReactNode;
   tekst: string;
   label?: string;
   className?: string;
 }
-const TekstlinjeMedIkon: React.FC<TekstlinjeMedIkon> = ({
+const TekstlinjeMedIkon: React.FC<ITekstlinjeMedIkon> = ({
   ikon,
   tekst,
   label,

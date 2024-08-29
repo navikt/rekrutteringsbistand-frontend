@@ -1,5 +1,3 @@
-import formaterMedStoreOgSmåBokstaver from '../../util/tekst';
-
 export const formaterEiernavn = (eierNavn: string | null) => {
   if (eierNavn == null) return null;
   const navnDel = eierNavn.split(',');
@@ -29,7 +27,7 @@ export const hentArbeidssted = (locations: any[]): string | null => {
   return filtrerteLocations.join(', ');
 };
 
-const hentArbeidsgiversNavn = (stilling: any) =>
-  stilling.businessName && stilling.businessName.length > 0
-    ? formaterMedStoreOgSmåBokstaver(stilling.businessName)
-    : formaterMedStoreOgSmåBokstaver(stilling.employer?.name);
+// export const hentArbeidsgiversNavn = (stilling: any) =>
+//   stilling.businessName && stilling.businessName.length > 0
+//     ? formaterMedStoreOgSmåBokstaver(stilling.businessName)
+//     : formaterMedStoreOgSmåBokstaver(stilling.employer?.name);

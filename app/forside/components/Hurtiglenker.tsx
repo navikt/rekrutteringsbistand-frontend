@@ -29,9 +29,8 @@ const Hurtiglenker: FunctionComponent = () => {
 
         <LenkepanelMedIkon
           href={'/stillingssok?portefolje=visMine'}
-          tittel='Se mine stillinger'
           ikon={<SeMineStillingerIkon />}
-          // onClick={() => sendEvent('oversikt', 'vis_mine_stillinger_knapp')}
+          tittel='Se mine stillinger'
         />
 
         <LenkepanelMedIkon

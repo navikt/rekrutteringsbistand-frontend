@@ -1,10 +1,9 @@
 import type { Metadata } from 'next';
 import Script from 'next/script';
-import Header from '../components/header/Header';
+import * as React from 'react';
 import { verifyUserLoggedIn } from '../tilgangskontroll/auth';
 import { isLocal } from '../util/env';
 import { ApplikasjonContextProvider } from './ApplikasjonContext';
-
 import './globals.css';
 
 export const metadata: Metadata = {

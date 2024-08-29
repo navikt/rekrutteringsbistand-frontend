@@ -66,8 +66,9 @@ const Statistikk: React.FC = () => {
         >
           {tidsperioder.map((tidsperiode) => (
             <option
-              value={tidsperiode.getTime()}
               key={tidsperiode.getTime()}
+              value={tidsperiode.getTime()}
+
               // className={css.periode}
             >
               {visDatoMedMåned(tidsperiode)} til{' '}

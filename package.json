@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "lint-fix": "npx eslint --fix .",
     "formater-kode": "prettier --write .",
     "prepare": "husky install"
   },
@@ -31,7 +32,7 @@
   "devDependencies": {
     "@svgr/webpack": "^8.1.0",
     "@types/node": "^20",
-    "@types/react": "^18",
+    "@types/react": "^18.3.4",
     "@types/react-dom": "^18",
     "autoprefixer": "^10.4.20",
     "eslint": "^8.57.0",
@@ -52,9 +53,22 @@
     "typescript": "^5"
   },
   "lint-staged": {
-    "*.js": "eslint --fix",
-    "*.jsx": "eslint --fix",
-    "*.ts": "eslint --fix",
-    "*.tsx": "eslint --fix"
+    "*.js": [
+      "prettier --write",
+      "npx eslint --fix . --no-cache"
+    ],
+    "*.jsx": [
+      "prettier --write",
+      "npx eslint --fix . --no-cache"
+    ],
+    "*.ts": [
+      "prettier --write",
+      "npx eslint --fix . --no-cache"
+    ],
+    "*.tsx": [
+      "prettier --write",
+      "npx eslint --fix . --no-cache"
+    ],
+    "*.json": "prettier --write"
   }
 }

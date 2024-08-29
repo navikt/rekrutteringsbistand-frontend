@@ -25,8 +25,8 @@ const KandidatSøkSidebar: React.FC<IKandidatSøkSidebar> = ({ children }) => {
       </div>
       <div className='mb-4'>
         <Search
-          hideLabel={false}
           description='Hvor ønsker kandidaten å jobbe?'
+          hideLabel={false}
           label='Sted'
           variant='secondary'
         />

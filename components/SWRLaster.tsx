@@ -17,7 +17,7 @@ const SWRLaster = <T,>({
   hook,
   skeleton,
   children,
-}: ISWRLasterProps<T>): JSX.Element | null => {
+}: ISWRLasterProps<T>): React.ReactElement | null => {
   if (!hook) {
     return <>{skeleton ? skeleton : <Sidelaster />}</>;
   }
