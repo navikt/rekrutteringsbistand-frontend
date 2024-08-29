@@ -18,3 +18,22 @@ export const formaterDatoTilApi = (dato: Date): string => {
 };
 
 const medNull = (n: number) => (n < 10 ? '0' + n : n);
+
+export const konverterTilPresenterbarDato = (
+  datoString?: string | null,
+): string => {
+  if (!datoString) return '';
+  if (datoString === 'snarest') return datoString;
+
+  const presentarbarDatoString = new Date(
+    datoString as string,
+  ).toLocaleDateString('nb-NO', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  });
+
+  return presentarbarDatoString === 'Invalid Date'
+    ? datoString
+    : presentarbarDatoString;
+};

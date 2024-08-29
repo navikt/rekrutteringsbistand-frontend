@@ -10,17 +10,15 @@ const Utfallsstatistikk: FunctionComponent<IStatistikkValg> = ({
   fraOgMed,
   tilOgMed,
 }) => {
-  const swrData = useStatistikk({
+  const hook = useStatistikk({
     navKontor,
     fraOgMed,
     tilOgMed,
   });
 
-  const { data } = swrData;
-
   return (
     <SWRLaster
-      swrData={swrData}
+      hook={hook}
       skeleton={
         <div className='flex gap-6 '>
           <InfokortSkeleton />
@@ -28,7 +26,7 @@ const Utfallsstatistikk: FunctionComponent<IStatistikkValg> = ({
         </div>
       }
     >
-      {data && (
+      {(data) => (
         <div className='flex flex-col gap-6 md:grid md:grid-cols-2'>
           <Infokort
             tall={data.antPresentasjoner.totalt}
@@ -37,26 +35,26 @@ const Utfallsstatistikk: FunctionComponent<IStatistikkValg> = ({
             detaljer={[
               {
                 beskrivelse: 'Antall under 30 år',
-                tall: data?.antPresentasjoner.under30år,
+                tall: data.antPresentasjoner.under30år,
               },
               {
                 beskrivelse: 'Antall uten standardinnsats',
-                tall: data?.antPresentasjoner.innsatsgruppeIkkeStandard,
+                tall: data.antPresentasjoner.innsatsgruppeIkkeStandard,
               },
             ]}
           />
           <Infokort
-            tall={data?.antFåttJobben.totalt}
+            tall={data.antFåttJobben.totalt}
             beskrivelse='Antall som har fått jobb'
             ikon={<HandshakeIcon aria-hidden />}
             detaljer={[
               {
                 beskrivelse: 'Antall under 30 år',
-                tall: data?.antFåttJobben.under30år,
+                tall: data.antFåttJobben.under30år,
               },
               {
                 beskrivelse: 'Antall uten standardinnsats',
-                tall: data?.antFåttJobben.innsatsgruppeIkkeStandard,
+                tall: data.antFåttJobben.innsatsgruppeIkkeStandard,
               },
             ]}
           />

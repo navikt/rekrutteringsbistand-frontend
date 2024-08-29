@@ -13,7 +13,7 @@ const tabs = [
   },
   {
     tittel: 'Stillinger',
-    path: '/stillingsok',
+    path: '/stillingssok',
     queryParam: '?brukStandardsok=true',
   },
   {
@@ -36,9 +36,14 @@ const tabs = [
 
 export const Navigeringsmeny: FunctionComponent = () => {
   const pathname = usePathname();
+  const tabPath = `/${pathname.split('/')[1]}`;
+
   return (
-    <div className='pt-2 max-w-desktop mx-auto flex justify-between border-b items-center'>
-      <Tabs defaultValue={pathname === '/' ? 'Oversikt' : pathname}>
+    <div className='max-w-screen-xl pt-2 mx-auto flex justify-between border-b items-center'>
+      <Tabs
+        defaultValue={tabPath === '/' ? 'Oversikt' : tabPath}
+        value={tabPath}
+      >
         <Tabs.List>
           {tabs.map((tab, index) => (
             <TilgangskontrollForInnhold
@@ -47,11 +52,7 @@ export const Navigeringsmeny: FunctionComponent = () => {
               kreverEnAvRollene={tab.kreverRoller}
             >
               <Link href={tab.path}>
-                <Tabs.Tab
-                  key={tab.path}
-                  value={tab.tittel}
-                  label={tab.tittel}
-                />
+                <Tabs.Tab key={tab.path} value={tab.path} label={tab.tittel} />
               </Link>
             </TilgangskontrollForInnhold>
           ))}

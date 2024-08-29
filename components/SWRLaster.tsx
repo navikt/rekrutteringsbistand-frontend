@@ -1,24 +1,43 @@
 import * as React from 'react';
+import { SWRResponse } from 'swr';
+import { ZodError } from 'zod';
 import Sidelaster from './Sidelaster';
 import Feilmelding from './feilhåndtering/Feilmelding';
-
-export interface ISWRLaster {
-  children?: React.ReactNode | undefined;
-  swrData: any;
+export interface ISWRLasterProps<T> {
+  hook: SWRResponse<T, Error> | undefined;
   skeleton?: React.ReactNode;
+  children: (data: T) => React.ReactNode; // Children as a function
 }
 
-const SWRLaster: React.FC<ISWRLaster> = ({ swrData, children, skeleton }) => {
-  if (swrData.isLoading || swrData.isValidating) {
-    return skeleton ? skeleton : <Sidelaster />;
+function isZodError(error: any): error is ZodError {
+  return error instanceof ZodError;
+}
+
+const SWRLaster = <T,>({
+  hook,
+  skeleton,
+  children,
+}: ISWRLasterProps<T>): JSX.Element | null => {
+  if (!hook) {
+    return <>{skeleton ? skeleton : <Sidelaster />}</>;
   }
 
-  if (swrData.error) {
-    return <Feilmelding {...swrData.error} tittel='Feil ved henting av data' />;
+  if (hook.isLoading || hook.isValidating) {
+    return <>{skeleton ? skeleton : <Sidelaster />}</>;
   }
 
-  if (swrData.data) {
-    return children;
+  if (hook.error) {
+    return (
+      <Feilmelding
+        {...hook.error}
+        zodError={isZodError(hook.error) ? hook.error : undefined}
+        tittel='Feil ved henting av data'
+      />
+    );
+  }
+
+  if (hook.data) {
+    return <>{children(hook.data)}</>;
   }
 
   return null;

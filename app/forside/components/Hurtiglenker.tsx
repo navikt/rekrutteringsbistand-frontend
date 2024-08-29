@@ -22,13 +22,13 @@ const Hurtiglenker: FunctionComponent = () => {
           ikon={<FinnKandidaterIkon />}
         />
         <LenkepanelMedIkon
-          href='/stillingsok'
+          href='/stillingssok'
           tittel='Finn stillinger'
           ikon={<FinnStillinger />}
         />
 
         <LenkepanelMedIkon
-          href={'/stillingsok?portefolje=visMine'}
+          href={'/stillingssok?portefolje=visMine'}
           tittel='Se mine stillinger'
           ikon={<SeMineStillingerIkon />}
           // onClick={() => sendEvent('oversikt', 'vis_mine_stillinger_knapp')}

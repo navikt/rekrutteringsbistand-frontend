@@ -2,14 +2,14 @@ import { Heading } from '@navikt/ds-react';
 import { ReactNode } from 'react';
 // import Grunnbanner from '../grunnbanner/Grunnbanner';
 
-type ISideBanner = {
+type ISideTopBanner = {
   tittel: string;
   ikon: ReactNode;
   children?: ReactNode;
   nederst?: ReactNode;
 };
 
-const SideBanner = ({ tittel, nederst, ikon, children }: ISideBanner) => {
+const SideTopBanner = ({ tittel, nederst, ikon, children }: ISideTopBanner) => {
   return (
     <div role='banner' id='banner'>
       <div className='flex justify-between items-center'>
@@ -26,4 +26,4 @@ const SideBanner = ({ tittel, nederst, ikon, children }: ISideBanner) => {
   );
 };
 
-export default SideBanner;
+export default SideTopBanner;

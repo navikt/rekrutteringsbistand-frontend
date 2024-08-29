@@ -16,7 +16,7 @@ export const navigeringSchema = z.object({
   kandidatnumre: z.array(z.string()),
 });
 
-export const kandidaterSchema = z.object({
+export const kandidatSchema = z.object({
   yrkeJobbonskerObj: z.array(yrkeJobbonskerObjSchema),
   etternavn: z.string(),
   postnummer: z.string(),
@@ -28,8 +28,10 @@ export const kandidaterSchema = z.object({
   kvalifiseringsgruppekode: z.string(),
 });
 
+export type KandidatSchemaDTO = z.infer<typeof kandidatSchema>;
+
 export const kandidatSokSchema = z.object({
-  kandidater: z.array(kandidaterSchema),
+  kandidater: z.array(kandidatSchema),
   navigering: navigeringSchema,
   antallTotalt: z.number(),
 });

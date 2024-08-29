@@ -11,16 +11,15 @@ const Forespørsler: React.FC<IStatistikkValg> = ({
   fraOgMed,
   tilOgMed,
 }) => {
-  const swrData = useForesporselOmdelingAvCV({
+  const hook = useForesporselOmdelingAvCV({
     navKontor,
     fraOgMed,
     tilOgMed,
   });
 
-  const { data } = swrData;
   return (
     <SWRLaster
-      swrData={swrData}
+      hook={hook}
       skeleton={
         <>
           <div className='flex gap-6 mt-6'>
@@ -34,7 +33,7 @@ const Forespørsler: React.FC<IStatistikkValg> = ({
         </>
       }
     >
-      {data && (
+      {(data) => (
         <div className='flex flex-col gap-6 md:grid md:grid-cols-2 mt-6'>
           <Infokort
             tall={data.antallSvartJa}

@@ -17,6 +17,15 @@ Se på https://nextjs.org/docs/app/api-reference/functions/use-search-params og/
 
 Implementert logger `import { logger } from '@navikt/next-logger'`, se https://logs.adeo.no/ ( https://github.com/navikt/next-logger )
 
+
+# Stillingssøk direkte mot ES:
+Opprett en '.env.local' fil og fyll ut:
+```
+STILLING_ES_URL=
+STILLING_ES_PASSWORD=
+STILLING_ES_USERNAME=
+```
+
 ## Filstruktur
 
 ├── app

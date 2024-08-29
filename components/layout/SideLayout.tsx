@@ -1,6 +1,6 @@
 import { Accordion, Hide, Show } from '@navikt/ds-react';
 import * as React from 'react';
-import SideBanner from './SideBanner';
+import SideTopBanner from './SideTopBanner';
 
 // import { TilToppenKnapp } from "../tilToppenKnapp/TilToppenKnapp";
 
@@ -8,7 +8,7 @@ export type ISideLayout = {
   children: React.ReactNode | undefined;
   tittel: string;
   ikon?: React.ReactNode;
-  banner?: React.ReactNode;
+  customBanner?: React.ReactNode;
   sidepanel?: React.ReactNode | undefined;
   knappIBanner?: React.ReactNode | undefined;
 };
@@ -17,19 +17,19 @@ const SideLayout = ({
   tittel,
   ikon,
   sidepanel,
-  banner,
+  customBanner,
   knappIBanner,
   children,
 }: ISideLayout) => {
   return (
     <div className='w-full flex justify-center mx-auto'>
-      <div className=' w-full max-w-desktop px-4 mb-20 md:px-10'>
-        {banner ? (
-          banner
+      <div className=' w-full mb-20 px-4'>
+        {customBanner ? (
+          customBanner
         ) : (
-          <SideBanner ikon={ikon} tittel={tittel}>
+          <SideTopBanner ikon={ikon} tittel={tittel}>
             {knappIBanner}
-          </SideBanner>
+          </SideTopBanner>
         )}
         <div className=' flex flex-col gap-y-8 gap-x-[3.5rem] md:flex-row'>
           {sidepanel && (
