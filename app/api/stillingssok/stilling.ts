@@ -3,8 +3,8 @@
  * Endepunkt /stilling
  */
 import useSWRImmutable from 'swr/immutable';
-import { stillingsSøkDTOSchema } from '../../stillingssok/zod';
 import { postApiWithSchema } from '../fetcher';
+import { stillingsSøkDTOSchema } from './zod';
 
 const stillingEndepunkt = '/api/stillingssok';
 

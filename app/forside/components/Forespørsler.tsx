@@ -2,7 +2,7 @@ import { ChatCheckmarkIcon, ChatIcon } from '@navikt/aksel-icons';
 import * as React from 'react';
 import SWRLaster from '../../../components/SWRLaster';
 import { useForesporselOmdelingAvCV } from '../../api/foresporsel-om-deling-av-cv/statistikk/foresporselOmdelingAvCV';
-import KryssIkon from '../icons/kryss.svg';
+import KryssIkon from './icons/kryss.svg';
 import Infokort, { InfokortSkeleton } from './Infokort';
 import { IStatistikkValg } from './Statistikk';
 

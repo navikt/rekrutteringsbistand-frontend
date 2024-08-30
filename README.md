@@ -53,7 +53,8 @@ Får du ikke pushet, se gitlog for feilmelding...
 transform tools: https://transform.tools/
 
 #### Gjeld:
-TODO: api/me i kandidatsok er ikke i bruk
-
+TODO:
+* api/me i kandidatsok er ikke i bruk
+* Fylker map blir ikke med over dat dette håndteres backend?
 
 $$

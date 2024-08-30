@@ -7,15 +7,15 @@ export interface IKandidatSøkSidebar {
 
 const KandidatSøkSidebar: React.FC<IKandidatSøkSidebar> = ({ children }) => {
   return (
-    <React.Fragment>
-      <div className='mb-4'>
+    <div className='grid gap-4'>
+      <div>
         <Search
           hideLabel={false}
           label='Søk etter kandidat'
           variant='primary'
         />
       </div>
-      <div className='mb-4'>
+      <div>
         <Search
           description='Hva ønsker kandidaten å jobbe med?'
           hideLabel={false}
@@ -23,7 +23,7 @@ const KandidatSøkSidebar: React.FC<IKandidatSøkSidebar> = ({ children }) => {
           variant='secondary'
         />
       </div>
-      <div className='mb-4'>
+      <div>
         <Search
           description='Hvor ønsker kandidaten å jobbe?'
           hideLabel={false}
@@ -31,7 +31,7 @@ const KandidatSøkSidebar: React.FC<IKandidatSøkSidebar> = ({ children }) => {
           variant='secondary'
         />
       </div>
-    </React.Fragment>
+    </div>
   );
 };
 

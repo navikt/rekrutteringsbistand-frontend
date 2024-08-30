@@ -8,8 +8,9 @@ import SWRLaster from '../../components/SWRLaster';
 import { TilgangskontrollForInnhold } from '../../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Rolle } from '../../types/Roller';
 import { useStilling } from '../api/stillingssok/stilling';
+import Piktogram from './components/icons/finn-stillinger.svg';
 import StillingsKort from './components/StillingsKort';
-import Piktogram from './icons/finn-stillinger.svg';
+import StillingsSøkSidePanel from './components/StillingsSøkSidePanel';
 
 const mockData = {
   size: 40,
@@ -118,7 +119,7 @@ const StillingsSøk: React.FC = () => {
           </Link>
         </TilgangskontrollForInnhold>
       }
-      sidepanel={<div>TBD</div>}
+      sidepanel={<StillingsSøkSidePanel />}
       tittel='Stillinger'
     >
       <SWRLaster hook={hook}>

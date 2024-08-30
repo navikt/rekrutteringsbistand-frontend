@@ -4,7 +4,7 @@ import SideLayout from '../../components/layout/SideLayout';
 import { useMinebrukere } from '../api/kandidatsok/minebrukere/minebrukere';
 import KandidatKort from './components/KandidatKort';
 import Sidebar from './components/KandidatSøkSidebar';
-import Piktogram from './icons/finn-kandidater.svg';
+import Piktogram from './components/icons/finn-kandidater.svg';
 
 const KandidatSøk: React.FC = () => {
   const { isLoading, error, data } = useMinebrukere({
