@@ -7,7 +7,7 @@ import { z } from 'zod';
 import { getAPIwithSchema } from '../../fetcher';
 import { fylkeSchema, kommuneSchema } from './zod';
 
-const geografiEndepunkt = '/api/geografi';
+const geografiEndepunkt = '/api/stilling/geografi';
 
 const geografiSchema = z.object({
   fylker: z.array(fylkeSchema),

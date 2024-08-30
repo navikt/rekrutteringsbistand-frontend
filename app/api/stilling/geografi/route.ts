@@ -3,10 +3,15 @@ import { NextRequest, NextResponse } from 'next/server';
 import { isLocal } from '../../../../util/env';
 import { proxyWithOBO } from '../../../../util/oboProxy';
 import { StillingAPI } from '../../api-routes';
+import fylkeJson from './fylkeMock.json';
+import kommuneJson from './kommuneMock.json';
 
 export async function GET(req: NextRequest) {
   if (isLocal) {
-    return NextResponse.json({});
+    return NextResponse.json({
+      fylker: fylkeJson,
+      kommuner: kommuneJson,
+    });
   }
 
   try {
