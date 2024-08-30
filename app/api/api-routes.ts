@@ -39,7 +39,7 @@ export const StillingAPI: Iroute = {
 };
 
 export const StillingsSøkAPI: Iroute = {
-  api_route: '',
+  api_route: '/stilling/_search',
   api_url: process.env.STILLINGSSOK_PROXY_URL ?? '',
   internUrl: '/api/stillingssok',
   scope: `api://${gcp}.toi.rekrutteringsbistand-stillingssok-proxy/.default`,
