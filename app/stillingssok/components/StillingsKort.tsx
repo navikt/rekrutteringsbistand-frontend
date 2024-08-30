@@ -28,7 +28,7 @@ const StillingsKort: React.FC<IStillingsKort> = ({ stillingData }) => {
   );
   const utløpsDato = visDatoMedMåned(new Date(stillingData.stilling.expires));
   const antallStillinger = Number(
-    stillingData.stilling.properties.positioncount,
+    stillingData?.stilling?.properties?.positioncount,
   );
   const antallStillingerSuffix =
     antallStillinger === 1 ? ` stilling` : ` stillinger`;
@@ -94,7 +94,7 @@ const StillingsKort: React.FC<IStillingsKort> = ({ stillingData }) => {
         <div className='flex items-center mr-4' title='Lokasjon'>
           <ClockIcon />
           <p className='ml-2'>
-            {stillingData.stilling.properties.applicationdue
+            {stillingData.stilling.properties?.applicationdue
               ? konverterTilPresenterbarDato(
                   stillingData.stilling.properties.applicationdue,
                 )

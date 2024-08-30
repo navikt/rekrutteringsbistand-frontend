@@ -1,104 +1,26 @@
 'use client';
 import { PlusCircleIcon } from '@navikt/aksel-icons';
-import { Button, Heading } from '@navikt/ds-react';
+import { Button, Tabs } from '@navikt/ds-react';
 import Link from 'next/link';
+import { useQueryState } from 'nuqs';
 import * as React from 'react';
 import SideLayout from '../../components/layout/SideLayout';
-import SWRLaster from '../../components/SWRLaster';
 import { TilgangskontrollForInnhold } from '../../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Rolle } from '../../types/Roller';
-import { useStilling } from '../api/stillingssok/stilling';
 import Piktogram from './components/icons/finn-stillinger.svg';
-import StillingsKort from './components/StillingsKort';
+import { stillingsSøkQuery } from './components/StillingsSøkQuery';
 import StillingsSøkSidePanel from './components/StillingsSøkSidePanel';
+import StillingsSøkeresultat from './StillingsSøkeresultat';
 
-const mockData = {
-  size: 40,
-  from: 0,
-  track_total_hits: true,
-  query: {
-    bool: {
-      should: [],
-      minimum_should_match: '0',
-      filter: [
-        {
-          nested: {
-            path: 'stilling.locations',
-            query: {
-              bool: {
-                should: [
-                  {
-                    terms: {
-                      'stilling.locations.municipalCode': ['4203'],
-                    },
-                  },
-                ],
-              },
-            },
-          },
-        },
-        {
-          bool: {
-            must_not: [
-              {
-                term: {
-                  'stilling.status': 'REJECTED',
-                },
-              },
-              {
-                term: {
-                  'stilling.status': 'DELETED',
-                },
-              },
-            ],
-            must: [
-              {
-                term: {
-                  'stilling.administration.status': 'DONE',
-                },
-              },
-              {
-                exists: {
-                  field: 'stilling.publishedByAdmin',
-                },
-              },
-              {
-                range: {
-                  'stilling.published': {
-                    lte: 'now/d',
-                  },
-                },
-              },
-            ],
-          },
-        },
-        {
-          bool: {
-            must_not: [
-              {
-                term: {
-                  'stillingsinfo.stillingskategori': 'ARBEIDSTRENING',
-                },
-              },
-              {
-                term: {
-                  'stillingsinfo.stillingskategori': 'FORMIDLING',
-                },
-              },
-            ],
-          },
-        },
-      ],
-    },
-  },
-  sort: {
-    'stilling.published': {
-      order: 'desc',
-    },
-  },
-};
+enum StillingsSøkTab {
+  VIS_ALLE = 'visAlle',
+  VIS_MINE = 'visMine',
+}
+
 const StillingsSøk: React.FC = () => {
-  const hook = useStilling(mockData);
+  const [portefølje, setPortefølje] = useQueryState('portefolje', {
+    defaultValue: StillingsSøkTab.VIS_ALLE,
+  });
 
   return (
     <SideLayout
@@ -122,23 +44,42 @@ const StillingsSøk: React.FC = () => {
       sidepanel={<StillingsSøkSidePanel />}
       tittel='Stillinger'
     >
-      <SWRLaster hook={hook}>
-        {(data) => (
-          <>
-            <div className='flex justify-between'>
-              <div>Filtre TBD</div>
-              <div>Lagre TBD</div>
-            </div>
-            <div className='flex justify-between'>
-              <Heading size='medium'>{data._shards.total} annonser</Heading>
-              <>kommer</>
-            </div>
-            {data.hits.hits.map((hit) => (
-              <StillingsKort key={hit._id} stillingData={hit._source} />
-            ))}
-          </>
-        )}
-      </SWRLaster>
+      <Tabs
+        defaultValue={portefølje}
+        onChange={(e) => setPortefølje(e as StillingsSøkTab)}
+      >
+        <Tabs.List>
+          <Tabs.Tab value={StillingsSøkTab.VIS_ALLE} label='Alle' />
+          <TilgangskontrollForInnhold
+            skjulVarsel
+            kreverEnAvRollene={[
+              Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+            ]}
+          >
+            <Tabs.Tab
+              value={StillingsSøkTab.VIS_MINE}
+              label='Mine stillinger'
+            />
+          </TilgangskontrollForInnhold>
+        </Tabs.List>
+        <Tabs.Panel value={StillingsSøkTab.VIS_ALLE}>
+          <StillingsSøkeresultat søkekriterier={stillingsSøkQuery()} />
+          {/* <AlleStillinger
+            kandidatnr={kandidatnr}
+            finnerStillingForKandidat={finnerStillingForKandidat}
+          /> */}
+        </Tabs.Panel>
+        <Tabs.Panel value={StillingsSøkTab.VIS_MINE}>
+          <StillingsSøkeresultat søkekriterier={stillingsSøkQuery()} />
+          {/* {navIdent ? (
+            <MineStillinger
+              navIdent={navIdent}
+              kandidatnr={kandidatnr}
+              finnerStillingForKandidat={finnerStillingForKandidat}
+            />
+          ) : null} */}
+        </Tabs.Panel>
+      </Tabs>
     </SideLayout>
   );
 };
