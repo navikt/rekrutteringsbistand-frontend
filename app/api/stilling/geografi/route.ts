@@ -16,16 +16,8 @@ export async function GET(req: NextRequest) {
 
   try {
     const [response1, response2] = await Promise.all([
-      proxyWithOBO(
-        StillingAPI,
-        req,
-        '/stilling-api/rekrutteringsbistand/api/v1/geography/counties',
-      ),
-      proxyWithOBO(
-        StillingAPI,
-        req,
-        '/stilling-api/rekrutteringsbistand/api/v1/geography/municipals',
-      ),
+      proxyWithOBO(StillingAPI, req, '/api/v1/geography/counties'),
+      proxyWithOBO(StillingAPI, req, '/api/v1/geography/municipals'),
     ]);
 
     const fylkeData = await response1.json();
