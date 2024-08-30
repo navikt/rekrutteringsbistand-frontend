@@ -4,7 +4,7 @@ kind: Application
 metadata:
   labels:
     team: toi
-  name: rekrutteringsbistand-next
+  name: rekrutteringsbistand-frontend
   namespace: toi
 spec:
   replicas:
@@ -12,7 +12,7 @@ spec:
     min: 1
   image: {{ image }}
   ingresses:
-    - https://rekrutteringsbistand-next.intern.dev.nav.no
+    - https://rekrutteringsbistand-frontend.intern.dev.nav.no
   port: 3000
   azure:
     application:

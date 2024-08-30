@@ -14,7 +14,7 @@ const Modiadekoratør: FunctionComponent = async () => {
       useProxy
       appName={'Rekrutteringsbistand'}
       environment={'q0'}
-      proxy='https://rekrutteringsbistand-next.intern.dev.nav.no'
+      proxy='https://rekrutteringsbistand-frontend.intern.dev.nav.no'
       showEnheter={true}
       showHotkeys={false}
       showSearchArea={false}
