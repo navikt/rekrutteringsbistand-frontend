@@ -38,6 +38,13 @@ export const StillingAPI: Iroute = {
   scope: `api://${gcp}.toi.rekrutteringsbistand-stilling-api/.default`,
 };
 
+export const StillingsSøkAPI: Iroute = {
+  api_route: '',
+  api_url: process.env.STILLINGSSOK_PROXY_URL ?? '',
+  internUrl: '/api/stillingssok',
+  scope: `api://${gcp}.toi.rekrutteringsbistand-stillingssok-proxy/.default`,
+};
+
 export const KandidatsøkAPI: Iroute = {
   api_route: '/api',
   api_url: process.env.KANDIDATSOK_API ?? '',
