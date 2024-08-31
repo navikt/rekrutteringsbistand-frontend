@@ -4,12 +4,19 @@
  */
 import useSWRImmutable from 'swr/immutable';
 import { postApiWithSchema } from '../fetcher';
+import {
+  generateElasticSearchQuery,
+  StillingsSøkFilter,
+} from './stillingssøkElasticSearchQuery';
 import { stillingsSøkDTOSchema } from './zod';
 
 const stillingEndepunkt = '/api/stillingssok';
 
-export const useStilling = (payload: any) =>
-  useSWRImmutable(
+export const useStilling = (filter: StillingsSøkFilter) => {
+  const payload = generateElasticSearchQuery(filter);
+
+  console.log('🎺 payload', payload);
+  return useSWRImmutable(
     {
       url: stillingEndepunkt,
       body: payload,
@@ -18,3 +25,4 @@ export const useStilling = (payload: any) =>
       return postApiWithSchema(stillingsSøkDTOSchema)(data);
     },
   );
+};

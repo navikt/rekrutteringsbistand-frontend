@@ -64,7 +64,7 @@ export const propertiesSchema = z
     classification_esco_code: z.string().optional().nullable(),
     classification_input_source: z.string().optional().nullable(),
     sector: z.string().optional().nullable(),
-    workLanguage: z.string().optional().nullable(),
+    // workLanguage: z.string().optional().nullable(),
     employerhomepage: z.string().optional().nullable(),
     salary: z.any(),
     industry: z.string().optional().nullable(),
@@ -79,7 +79,7 @@ export const stillingSchema = z.object({
   status: z.string(),
   privacy: z.string(),
   published: z.string(),
-  publishedByAdmin: z.string(),
+  publishedByAdmin: z.string().nullable(), //TODO skal denne være nullable?
   expires: z.string(),
   created: z.string(),
   updated: z.string(),

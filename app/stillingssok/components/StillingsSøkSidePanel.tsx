@@ -1,15 +1,12 @@
 import { Button, Search } from '@navikt/ds-react';
 import * as React from 'react';
-import StatusFilter from './StillingsSøkFilter/StatusFilter';
 import GeografiFilter from './StillingsSøkFilter/GeografiFilter';
+import InkluderingFilter from './StillingsSøkFilter/InkluderingFilter';
+import KategoriFilter from './StillingsSøkFilter/KategoriFilter';
+import StatusFilter from './StillingsSøkFilter/StatusFilter';
+import SynlighetFilter from './StillingsSøkFilter/SynlighetFilter';
 
-export interface IStillingsSøkSidePanel {
-  children?: React.ReactNode | undefined;
-}
-
-const StillingsSøkSidePanel: React.FC<IStillingsSøkSidePanel> = ({
-  children,
-}) => {
+const StillingsSøkSidePanel: React.FC = () => {
   return (
     <div className='grid gap-4'>
       <Search hideLabel={false} label='Søk i stillinger' variant='primary' />
@@ -18,6 +15,9 @@ const StillingsSøkSidePanel: React.FC<IStillingsSøkSidePanel> = ({
       </Button>
       <StatusFilter />
       <GeografiFilter />
+      <InkluderingFilter />
+      <KategoriFilter />
+      <SynlighetFilter />
     </div>
   );
 };

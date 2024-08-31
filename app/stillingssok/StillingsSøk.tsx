@@ -2,14 +2,13 @@
 import { PlusCircleIcon } from '@navikt/aksel-icons';
 import { Button, Tabs } from '@navikt/ds-react';
 import Link from 'next/link';
-import { useQueryState } from 'nuqs';
 import * as React from 'react';
 import SideLayout from '../../components/layout/SideLayout';
 import { TilgangskontrollForInnhold } from '../../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Rolle } from '../../types/Roller';
 import Piktogram from './components/icons/finn-stillinger.svg';
-import { stillingsSøkQuery } from './components/StillingsSøkQuery';
 import StillingsSøkSidePanel from './components/StillingsSøkSidePanel';
+import { useStillingsSøk } from './StillingsSøkContext';
 import StillingsSøkeresultat from './StillingsSøkeresultat';
 
 enum StillingsSøkTab {
@@ -18,9 +17,7 @@ enum StillingsSøkTab {
 }
 
 const StillingsSøk: React.FC = () => {
-  const [portefølje, setPortefølje] = useQueryState('portefolje', {
-    defaultValue: StillingsSøkTab.VIS_ALLE,
-  });
+  const { portefølje, setPortefølje } = useStillingsSøk();
 
   return (
     <SideLayout
@@ -45,7 +42,7 @@ const StillingsSøk: React.FC = () => {
       tittel='Stillinger'
     >
       <Tabs
-        defaultValue={portefølje}
+        defaultValue={portefølje || StillingsSøkTab.VIS_ALLE}
         onChange={(e) => setPortefølje(e as StillingsSøkTab)}
       >
         <Tabs.List>
@@ -63,14 +60,14 @@ const StillingsSøk: React.FC = () => {
           </TilgangskontrollForInnhold>
         </Tabs.List>
         <Tabs.Panel value={StillingsSøkTab.VIS_ALLE}>
-          <StillingsSøkeresultat søkekriterier={stillingsSøkQuery()} />
+          <StillingsSøkeresultat />
           {/* <AlleStillinger
             kandidatnr={kandidatnr}
             finnerStillingForKandidat={finnerStillingForKandidat}
           /> */}
         </Tabs.Panel>
         <Tabs.Panel value={StillingsSøkTab.VIS_MINE}>
-          <StillingsSøkeresultat søkekriterier={stillingsSøkQuery()} />
+          <StillingsSøkeresultat />
           {/* {navIdent ? (
             <MineStillinger
               navIdent={navIdent}

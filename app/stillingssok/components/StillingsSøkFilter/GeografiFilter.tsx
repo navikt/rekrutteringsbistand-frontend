@@ -3,7 +3,7 @@ import { z } from 'zod';
 import SWRLaster from '../../../../components/SWRLaster';
 import { useGeografi } from '../../../api/stilling/geografi/geografi';
 import { fylkeSchema, kommuneSchema } from '../../../api/stilling/geografi/zod';
-import FylkerOgKommuner from './FylkerOgKommuner';
+import FylkerOgKommuner from './FylkerOgKommunerFilter';
 
 export interface IGeografiFilter {
   children?: React.ReactNode | undefined;

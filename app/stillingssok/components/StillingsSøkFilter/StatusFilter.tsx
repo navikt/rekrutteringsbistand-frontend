@@ -1,10 +1,9 @@
 'use client';
 
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
-import { useQueryState } from 'nuqs';
 import * as React from 'react';
 import { storForbokstav } from '../../../kandidatsok/util';
-import { parseAsArray, serializeArray } from '../../../../util/array';
+import { useStillingsSøk } from '../../StillingsSøkContext';
 
 export enum StillingsStatus {
   Publisert = 'publisert',
@@ -13,24 +12,15 @@ export enum StillingsStatus {
 }
 
 const StatusFilter: React.FC = () => {
-  const [status, setStatus] = useQueryState('status', {
-    parse: parseAsArray,
-    serialize: serializeArray,
-  });
+  const { statuser, setStatuser } = useStillingsSøk();
 
-  const setFilter = (v: string[]) => {
-    if (v.length === 0) {
-      setStatus(null);
-    }
-    setStatus(v);
-  };
   return (
     <React.Fragment>
       <CheckboxGroup
         legend='Status'
         hideLegend={false}
-        onChange={setFilter}
-        value={status || []}
+        onChange={setStatuser}
+        value={statuser ? statuser : undefined}
       >
         <Checkbox value={StillingsStatus.Publisert}>
           {storForbokstav(StillingsStatus.Publisert)}

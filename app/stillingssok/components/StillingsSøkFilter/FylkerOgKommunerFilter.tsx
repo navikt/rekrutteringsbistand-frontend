@@ -1,60 +1,34 @@
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
 import { Fragment } from 'react';
 
-import { useQueryState } from 'nuqs';
 import React from 'react';
-import { parseAsArray, serializeArray } from '../../../../util/array';
+import { useStillingsSøk } from '../../StillingsSøkContext';
 import { FylkeMedKommuneDTO, KommuneDTO } from './GeografiFilter';
 
 interface IFylkerOgKommuner {
   fylkerMedKommuner: FylkeMedKommuneDTO[] | undefined;
 }
 
-const FylkerOgKommuner: React.FC<IFylkerOgKommuner> = ({
+const FylkerOgKommunerFilter: React.FC<IFylkerOgKommuner> = ({
   fylkerMedKommuner,
 }) => {
-  const [valgteFylker, setValgteFylker] = useQueryState('fylker', {
-    parse: parseAsArray,
-    serialize: serializeArray,
-  });
-  const [valgteKommuner, setValgteKommuner] = useQueryState('kommuner', {
-    parse: parseAsArray,
-    serialize: serializeArray,
-  });
-
-  const setFylkeFilter = (v: string[]) => {
-    if (v.length === 0) {
-      setValgteFylker(null);
-    }
-    setValgteFylker(v);
-  };
-
-  const setKommuneFilter = (v: string[]) => {
-    if (v.length === 0) {
-      setValgteKommuner(null);
-    }
-    setValgteKommuner(v);
-  };
+  const { fylker, setFylker, kommuner, setKommuner } = useStillingsSøk();
 
   return (
-    <CheckboxGroup
-      legend='Område'
-      value={valgteFylker || []}
-      onChange={setFylkeFilter}
-    >
+    <CheckboxGroup legend='Område' value={fylker || []} onChange={setFylker}>
       {fylkerMedKommuner?.map((fylke: FylkeMedKommuneDTO) => (
         <Fragment key={fylke.code}>
           <Checkbox value={fylke.code}>{fylke.capitalizedName}</Checkbox>
-          {valgteFylker &&
-            valgteFylker.includes(fylke.code) &&
+          {fylker &&
+            fylker.includes(fylke.code) &&
             fylke.kommuner &&
             fylke.kommuner.length > 1 && (
               <CheckboxGroup
                 className='ml-4'
-                onChange={setKommuneFilter}
+                onChange={setKommuner}
                 hideLegend
                 legend={`Velg kommuner i ${fylke}`}
-                value={valgteKommuner || []}
+                value={kommuner || []}
               >
                 {fylke.kommuner.map((kommune: KommuneDTO) => (
                   <Checkbox key={kommune.code} value={kommune.code}>
@@ -69,4 +43,4 @@ const FylkerOgKommuner: React.FC<IFylkerOgKommuner> = ({
   );
 };
 
-export default FylkerOgKommuner;
+export default FylkerOgKommunerFilter;

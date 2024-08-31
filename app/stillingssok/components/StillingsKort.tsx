@@ -48,7 +48,10 @@ const StillingsKort: React.FC<IStillingsKort> = ({ stillingData }) => {
       </div>
       <div className='mb-4'>
         <StillingsTag
-          arbeidsplassen={true}
+          arbeidsplassen={
+            stillingData?.stillingsinfo?.stillingskategori ===
+            Stillingskategori.Jobbmesse
+          }
           direktemeldt={true}
           erEier={true}
           erIkkePublisert={true}
