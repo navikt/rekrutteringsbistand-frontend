@@ -8,21 +8,36 @@ import {
 import { Box, Heading } from '@navikt/ds-react';
 import Link from 'next/link';
 import * as React from 'react';
-import { Stillingskategori } from '../../../types/stilling/kategorier';
+import { eierStilling } from '../../../components/tilgangskontroll/erEier';
+
 import {
   konverterTilPresenterbarDato,
   visDatoMedMåned,
 } from '../../../util/dato';
 import formaterMedStoreOgSmåBokstaver from '../../../util/tekst';
-import { StillingsDTO } from '../types';
-import { formaterEiernavn, hentArbeidssted, hentEier } from '../util';
+import { ApplikasjonContext } from '../../ApplikasjonContext';
+import { Status, Stillingskategori } from '../../stilling/stilling-typer';
+import { stillingErUtløpt } from '../../stilling/stilling-util';
+import { StillingsDTO } from '../stillingssøk-typer';
+import {
+  formaterEiernavn,
+  hentArbeidssted,
+  hentEier,
+} from '../stillingssøk-util';
+import { Hovedtag } from './StillingsSøkFilter/InkluderingFilter';
 import StillingsTag from './StillingsTag';
 
 export interface IStillingsKort {
   stillingData: StillingsDTO;
 }
 
+const hentHovedtags = (): string[] => {
+  return Object.values(Hovedtag);
+};
+
 const StillingsKort: React.FC<IStillingsKort> = ({ stillingData }) => {
+  const { navIdent } = React.useContext(ApplikasjonContext);
+
   const publisertDato = visDatoMedMåned(
     new Date(stillingData.stilling.published),
   );
@@ -33,6 +48,13 @@ const StillingsKort: React.FC<IStillingsKort> = ({ stillingData }) => {
   const antallStillingerSuffix =
     antallStillinger === 1 ? ` stilling` : ` stillinger`;
   const eierNavn = formaterEiernavn(hentEier(stillingData));
+  const erUtløptStilling = stillingErUtløpt(stillingData.stilling);
+  const status = stillingData.stilling.status;
+
+  const erIkkePublisert =
+    stillingData.stilling.publishedByAdmin &&
+    status === Status.Inaktiv &&
+    !erUtløptStilling;
 
   return (
     <Box className='border rounded-lg mb-4 border-gray-300 p-4'>
@@ -52,18 +74,33 @@ const StillingsKort: React.FC<IStillingsKort> = ({ stillingData }) => {
             stillingData?.stillingsinfo?.stillingskategori ===
             Stillingskategori.Jobbmesse
           }
-          direktemeldt={true}
-          erEier={true}
-          erIkkePublisert={true}
+          direktemeldt={stillingData?.stillingsinfo?.source === 'DIR'}
+          erEier={
+            eierStilling({
+              stillingsData: stillingData.stilling,
+              navIdent: navIdent,
+            }) ||
+            eierStilling({
+              stillingsData: stillingData.stillingsinfo,
+              navIdent: navIdent,
+            })
+          }
+          erIkkePublisert={erIkkePublisert ? true : false}
           erJobbmesse={
             stillingData?.stillingsinfo?.stillingskategori ===
             Stillingskategori.Jobbmesse
           }
-          erSlettet={true}
-          erStoppet={true}
-          erUtkast={true}
-          erUtløpt={true}
-          registrertMedInkluderingsmulighet={true}
+          erSlettet={status === Status.Slettet}
+          erStoppet={status === Status.Stoppet || status === Status.Avslått}
+          erUtkast={!stillingData.stilling.publishedByAdmin}
+          erUtløpt={
+            !!stillingData.stilling.publishedByAdmin &&
+            status === Status.Inaktiv &&
+            !erUtløptStilling
+          }
+          registrertMedInkluderingsmulighet={stillingData.stilling.properties?.tags?.some(
+            (tag: any) => hentHovedtags().includes(tag),
+          )}
         />
       </div>
       <div className='flex'>

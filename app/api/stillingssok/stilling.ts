@@ -15,7 +15,6 @@ const stillingEndepunkt = '/api/stillingssok';
 export const useStilling = (filter: StillingsSøkFilter) => {
   const payload = generateElasticSearchQuery(filter);
 
-  console.log('🎺 payload', payload);
   return useSWRImmutable(
     {
       url: stillingEndepunkt,

@@ -1,7 +1,7 @@
 'use client';
 import { parseAsArrayOf, parseAsString, useQueryState } from 'nuqs';
 import * as React from 'react';
-import { StillingsSøkQueryparam } from './types';
+import { StillingsSøkQueryparam } from './stillingssøk-typer';
 
 interface IStillingsSøkContext {
   statuser: string[];

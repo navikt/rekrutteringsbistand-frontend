@@ -27,3 +27,8 @@ export enum StillingsSøkQueryparam {
   Portefølje = 'portefolje',
   Modal = 'modal',
 }
+
+export enum StillingsSøkPortefølje {
+  VIS_ALLE = 'visAlle',
+  VIS_MINE = 'visMine',
+}

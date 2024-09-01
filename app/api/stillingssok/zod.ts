@@ -69,6 +69,7 @@ export const propertiesSchema = z
     salary: z.any(),
     industry: z.string().optional().nullable(),
     starttime: z.string().optional().nullable(),
+    tags: z.any(),
   })
   .nullable();
 

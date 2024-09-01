@@ -8,13 +8,9 @@ import { TilgangskontrollForInnhold } from '../../components/tilgangskontroll/Ti
 import { Rolle } from '../../types/Roller';
 import Piktogram from './components/icons/finn-stillinger.svg';
 import StillingsSøkSidePanel from './components/StillingsSøkSidePanel';
+import { StillingsSøkPortefølje } from './stillingssøk-typer';
 import { useStillingsSøk } from './StillingsSøkContext';
 import StillingsSøkeresultat from './StillingsSøkeresultat';
-
-enum StillingsSøkTab {
-  VIS_ALLE = 'visAlle',
-  VIS_MINE = 'visMine',
-}
 
 const StillingsSøk: React.FC = () => {
   const { portefølje, setPortefølje } = useStillingsSøk();
@@ -42,11 +38,11 @@ const StillingsSøk: React.FC = () => {
       tittel='Stillinger'
     >
       <Tabs
-        defaultValue={portefølje || StillingsSøkTab.VIS_ALLE}
-        onChange={(e) => setPortefølje(e as StillingsSøkTab)}
+        defaultValue={portefølje || StillingsSøkPortefølje.VIS_ALLE}
+        onChange={(e) => setPortefølje(e as StillingsSøkPortefølje)}
       >
         <Tabs.List>
-          <Tabs.Tab value={StillingsSøkTab.VIS_ALLE} label='Alle' />
+          <Tabs.Tab value={StillingsSøkPortefølje.VIS_ALLE} label='Alle' />
           <TilgangskontrollForInnhold
             skjulVarsel
             kreverEnAvRollene={[
@@ -54,19 +50,19 @@ const StillingsSøk: React.FC = () => {
             ]}
           >
             <Tabs.Tab
-              value={StillingsSøkTab.VIS_MINE}
+              value={StillingsSøkPortefølje.VIS_MINE}
               label='Mine stillinger'
             />
           </TilgangskontrollForInnhold>
         </Tabs.List>
-        <Tabs.Panel value={StillingsSøkTab.VIS_ALLE}>
+        <Tabs.Panel value={StillingsSøkPortefølje.VIS_ALLE}>
           <StillingsSøkeresultat />
           {/* <AlleStillinger
             kandidatnr={kandidatnr}
             finnerStillingForKandidat={finnerStillingForKandidat}
           /> */}
         </Tabs.Panel>
-        <Tabs.Panel value={StillingsSøkTab.VIS_MINE}>
+        <Tabs.Panel value={StillingsSøkPortefølje.VIS_MINE}>
           <StillingsSøkeresultat />
           {/* {navIdent ? (
             <MineStillinger
