@@ -4,10 +4,9 @@ import { proxyWithOBO } from '../../../util/oboProxy';
 import { StillingsSøkAPI } from '../api-routes';
 
 export async function POST(req: NextRequest) {
-  const body = await req.json();
-
   if (isLocal) {
     if (process.env.STILLING_ES_PASSWORD) {
+      const body = await req.json();
       const response = await fetch(`${process.env.STILLING_ES_URI}`, {
         method: 'POST',
         headers: {
@@ -29,7 +28,7 @@ export async function POST(req: NextRequest) {
 
       const data = await response.json();
 
-      return Response.json(data);
+      return NextResponse.json(data);
     }
   }
 
