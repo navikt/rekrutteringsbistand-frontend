@@ -1,3 +1,4 @@
+'use client';
 import { BodyShort, Heading, Select } from '@navikt/ds-react';
 import React, { ChangeEvent, useState } from 'react';
 import ErrorBoundary from '../../../components/ErrorBoundary';

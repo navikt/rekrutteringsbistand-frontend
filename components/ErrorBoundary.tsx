@@ -1,3 +1,4 @@
+'use client';
 import { Alert, BodyLong, Button } from '@navikt/ds-react';
 import { Component, ErrorInfo, ReactNode } from 'react';
 import { ZodError } from 'zod';

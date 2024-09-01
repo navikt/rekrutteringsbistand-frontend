@@ -5,7 +5,6 @@ import { verifyUserLoggedIn } from '../components/tilgangskontroll/auth';
 import { isLocal } from '../util/env';
 import { ApplikasjonContextProvider } from './ApplikasjonContext';
 import './globals.css';
-import '../tailwind.css';
 
 export const metadata: Metadata = {
   title: isLocal ? 'Local - Rekrutteringsbistand' : 'Rekrutteringsbistand',
