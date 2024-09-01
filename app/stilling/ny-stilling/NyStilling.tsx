@@ -4,9 +4,9 @@ import { Alert, BodyLong, Button } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 import SideLayout from '../../../components/layout/SideLayout';
-import { Stillingskategori } from '../../../types/stilling/kategorier';
 import VelgArbeidsgiver from './components/VelgArbeidsgiver';
 import VelgStillingskategori from './components/VelgStillingskategori';
+import { Stillingskategori } from '../stilling-typer';
 
 const NyStilling: React.FC = () => {
   const router = useRouter();
