@@ -19,7 +19,7 @@ COPY . .
 
 # Build 
 RUN npm run build
-RUN npm run tailwind-build
+# RUN npm run tailwind-build
 
 
 # Production image
