@@ -1,4 +1,3 @@
-'use client';
 import StillingsSøk from './StillingsSøk';
 import { StillingsSøkProvider } from './StillingsSøkContext';
 
