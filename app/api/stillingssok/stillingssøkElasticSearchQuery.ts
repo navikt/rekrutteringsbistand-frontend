@@ -1,3 +1,4 @@
+import { Stillingskategori } from '../../stilling/stilling-typer';
 import { StillingsStatus } from '../../stillingssok/components/StillingsSøkFilter/StatusFilter';
 import { Publisert } from '../../stillingssok/components/StillingsSøkFilter/SynlighetFilter';
 import { StillingsSøkPortefølje } from '../../stillingssok/stillingssøk-typer';
@@ -95,7 +96,49 @@ export function generateElasticSearchQuery(filter: StillingsSøkFilter) {
     });
   }
 
-  const nested = generateElasticSearchQueryFylkerOgKommuner({
+  if (
+    filter.kategori.includes(Stillingskategori.Stilling) &&
+    filter.kategori.includes(Stillingskategori.Jobbmesse)
+  ) {
+  } else if (
+    filter.kategori.includes(Stillingskategori.Stilling) ||
+    filter.kategori.includes(Stillingskategori.Jobbmesse)
+  ) {
+    filter.kategori.includes(Stillingskategori.Jobbmesse) &&
+      should.push({
+        term: {
+          'stillingsinfo.stillingskategori': 'JOBBMESSE',
+        },
+      });
+
+    filter.kategori.includes(Stillingskategori.Stilling) &&
+      must_not.push(
+        {
+          term: {
+            'stillingsinfo.stillingskategori': 'ARBEIDSTRENING',
+          },
+        },
+        {
+          term: {
+            'stillingsinfo.stillingskategori': 'JOBBMESSE',
+          },
+        },
+        {
+          term: {
+            'stillingsinfo.stillingskategori': 'FORMIDLING',
+          },
+        },
+      );
+  }
+
+  if (filter.inkludering.length > 0) {
+    term.push({
+      terms: {
+        'stilling.properties.tags': filter.inkludering,
+      },
+    });
+  }
+  const fylkerKommuner = generateElasticSearchQueryFylkerOgKommuner({
     fylker: filter.fylker,
     kommuner: filter.kommuner,
   });
@@ -108,7 +151,8 @@ export function generateElasticSearchQuery(filter: StillingsSøkFilter) {
       bool: {
         minimum_should_match: '0',
         filter: [
-          ...nested,
+          ...term,
+          ...fylkerKommuner,
           {
             bool: {
               must: must,
