@@ -24,7 +24,7 @@ const SideLayout = ({
   return (
     <div className='w-full flex justify-center mx-auto'>
       <div className='w-full '>
-        <div className='mb-4'>
+        <div className='mb-8'>
           {customBanner ? (
             customBanner
           ) : (
