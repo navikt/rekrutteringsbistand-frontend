@@ -9,7 +9,12 @@ import SynlighetFilter from './StillingsSøkFilter/SynlighetFilter';
 const StillingsSøkSidePanel: React.FC = () => {
   return (
     <div className='grid gap-4'>
-      <Search hideLabel={false} label='Søk i stillinger' variant='primary' />
+      <Search
+        hideLabel={true}
+        label='Søk i stillinger'
+        placeholder='Søk i stillinger'
+        variant='primary'
+      />
       <Button variant='secondary' className='w-full'>
         Bruk mitt standardsøk
       </Button>
