@@ -2,7 +2,7 @@ import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
 import { Fragment } from 'react';
 
 import React from 'react';
-import { useStillingsSøk } from '../../StillingsSøkContext';
+import { useStillingsSøkFilter } from '../../StillingsSøkContext';
 import { FylkeMedKommuneDTO, KommuneDTO } from './GeografiFilter';
 
 interface IFylkerOgKommuner {
@@ -12,7 +12,7 @@ interface IFylkerOgKommuner {
 const FylkerOgKommunerFilter: React.FC<IFylkerOgKommuner> = ({
   fylkerMedKommuner,
 }) => {
-  const { fylker, setFylker, kommuner, setKommuner } = useStillingsSøk();
+  const { fylker, setFylker, kommuner, setKommuner } = useStillingsSøkFilter();
 
   return (
     <CheckboxGroup legend='Område' value={fylker || []} onChange={setFylker}>

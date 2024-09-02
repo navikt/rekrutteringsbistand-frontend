@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { z } from 'zod';
 import SWRLaster from '../../../../components/SWRLaster';
-import { useGeografi } from '../../../api/stilling/geografi/geografi';
+import { useGeografi } from '../../../api/stilling/geografi/useGeografi';
 import { fylkeSchema, kommuneSchema } from '../../../api/stilling/geografi/zod';
 import FylkerOgKommuner from './FylkerOgKommunerFilter';
 

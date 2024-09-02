@@ -3,7 +3,7 @@ import React from 'react';
 import Header from '../components/header/Header';
 import Sidelaster from '../components/Sidelaster';
 import { Rolle } from '../types/Roller';
-import { useBruker } from './api/bruker/bruker';
+import { useBruker } from './api/bruker/useBruker';
 
 export type NavKontorMedNavn = {
   navKontor: string;

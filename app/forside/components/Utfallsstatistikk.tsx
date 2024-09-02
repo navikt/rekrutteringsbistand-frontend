@@ -1,7 +1,7 @@
 import { EyeIcon, HandshakeIcon } from '@navikt/aksel-icons';
 import { FunctionComponent } from 'react';
 import SWRLaster from '../../../components/SWRLaster';
-import { useStatistikk } from '../../api/statistikk/statistikk';
+import { useStatistikk } from '../../api/statistikk/useStatistikk';
 import Infokort, { InfokortSkeleton } from './Infokort';
 import { IStatistikkValg } from './Statistikk';
 

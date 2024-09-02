@@ -9,11 +9,11 @@ import { Rolle } from '../../types/Roller';
 import Piktogram from './components/icons/finn-stillinger.svg';
 import StillingsSøkSidePanel from './components/StillingsSøkSidePanel';
 import { StillingsSøkPortefølje } from './stillingssøk-typer';
-import { useStillingsSøk } from './StillingsSøkContext';
+import { useStillingsSøkFilter } from './StillingsSøkContext';
 import StillingsSøkeresultat from './StillingsSøkeresultat';
 
 const StillingsSøk: React.FC = () => {
-  const { portefølje, setPortefølje } = useStillingsSøk();
+  const { portefølje, setPortefølje } = useStillingsSøkFilter();
 
   return (
     <SideLayout

@@ -1,7 +1,7 @@
 'use client';
 import * as React from 'react';
 import SideLayout from '../../components/layout/SideLayout';
-import { useMinebrukere } from '../api/kandidatsok/minebrukere/minebrukere';
+import { useMinebrukere } from '../api/kandidatsok/minebrukere/useMinebrukere';
 import KandidatKort from './components/KandidatKort';
 import Sidebar from './components/KandidatSøkSidebar';
 import Piktogram from './components/icons/finn-kandidater.svg';

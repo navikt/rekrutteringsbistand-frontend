@@ -1,6 +1,6 @@
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
 import * as React from 'react';
-import { useStillingsSøk } from '../../StillingsSøkContext';
+import { useStillingsSøkFilter } from '../../StillingsSøkContext';
 
 type GruppeMedTags = {
   hovedtag: Hovedtag;
@@ -101,7 +101,7 @@ const InkluderingFilter: React.FC = () => {
     setInkludering,
     inkluderingUnderkategori,
     setInkluderingUnderkategori,
-  } = useStillingsSøk();
+  } = useStillingsSøkFilter();
 
   return (
     <CheckboxGroup

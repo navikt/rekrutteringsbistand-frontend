@@ -3,7 +3,7 @@ import * as React from 'react';
 import { TilgangskontrollForInnhold } from '../../../../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Rolle } from '../../../../types/Roller';
 import { storForbokstav } from '../../../kandidatsok/util';
-import { useStillingsSøk } from '../../StillingsSøkContext';
+import { useStillingsSøkFilter } from '../../StillingsSøkContext';
 
 export enum Publisert {
   Intern = 'intern',
@@ -12,7 +12,7 @@ export enum Publisert {
 }
 
 const SynlighetFilter: React.FC = () => {
-  const { publisert, setPublisert } = useStillingsSøk();
+  const { publisert, setPublisert } = useStillingsSøkFilter();
 
   return (
     <CheckboxGroup

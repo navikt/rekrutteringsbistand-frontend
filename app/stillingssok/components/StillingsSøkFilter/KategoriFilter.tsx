@@ -1,8 +1,8 @@
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
 import * as React from 'react';
 
-import { useStillingsSøk } from '../../StillingsSøkContext';
 import { Stillingskategori } from '../../../stilling/stilling-typer';
+import { useStillingsSøkFilter } from '../../StillingsSøkContext';
 
 const kategorier = [Stillingskategori.Stilling, Stillingskategori.Jobbmesse];
 
@@ -18,7 +18,7 @@ const stillingskategoriTilVisningsnavn = (kategori: Stillingskategori) => {
 };
 
 const KategoriFilter: React.FC = () => {
-  const { kategori, setKategori } = useStillingsSøk();
+  const { kategori, setKategori } = useStillingsSøkFilter();
 
   return (
     <CheckboxGroup legend='Kategori' value={kategori} onChange={setKategori}>

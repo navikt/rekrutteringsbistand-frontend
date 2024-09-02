@@ -139,7 +139,7 @@ export const StillingsSøkProvider: React.FC<{ children: React.ReactNode }> = ({
   );
 };
 
-export const useStillingsSøk = () => {
+export const useStillingsSøkFilter = () => {
   const context = React.useContext(StillingsSøkContext);
   if (context === undefined) {
     throw new Error(

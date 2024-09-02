@@ -1,9 +1,13 @@
+import { Suspense } from 'react';
+import Loading from '../laoading';
 import StillingsSøk from './StillingsSøk';
 import { StillingsSøkProvider } from './StillingsSøkContext';
 export default function StillingsSøkIndex() {
   return (
-    <StillingsSøkProvider>
-      <StillingsSøk />
-    </StillingsSøkProvider>
+    <Suspense fallback={<Loading />}>
+      <StillingsSøkProvider>
+        <StillingsSøk />
+      </StillingsSøkProvider>
+    </Suspense>
   );
 }

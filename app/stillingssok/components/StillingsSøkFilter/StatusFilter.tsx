@@ -3,7 +3,7 @@
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
 import * as React from 'react';
 import { storForbokstav } from '../../../kandidatsok/util';
-import { useStillingsSøk } from '../../StillingsSøkContext';
+import { useStillingsSøkFilter } from '../../StillingsSøkContext';
 
 export enum StillingsStatus {
   Publisert = 'publisert',
@@ -12,7 +12,7 @@ export enum StillingsStatus {
 }
 
 const StatusFilter: React.FC = () => {
-  const { statuser, setStatuser } = useStillingsSøk();
+  const { statuser, setStatuser } = useStillingsSøkFilter();
 
   return (
     <React.Fragment>

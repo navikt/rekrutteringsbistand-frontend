@@ -2,7 +2,7 @@ import { Chips, VStack } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 import { storForbokstavString } from '../../../kandidatsok/util';
-import { useStillingsSøk } from '../../StillingsSøkContext';
+import { useStillingsSøkFilter } from '../../StillingsSøkContext';
 import {
   hierarkiAvTagsForFilter,
   Hovedtag,
@@ -24,7 +24,7 @@ const StillingsSøkTags: React.FC = () => {
     setKategori,
     publisert,
     setPublisert,
-  } = useStillingsSøk();
+  } = useStillingsSøkFilter();
 
   const filtre = {
     statuser,

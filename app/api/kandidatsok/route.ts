@@ -5,7 +5,7 @@ import { KandidatsøkAPI } from '../api-routes';
 
 export async function GET(req: NextRequest) {
   if (isLocal) {
-    return NextResponse.json({});
+    return NextResponse.json({ tbd: 'data' });
   }
 
   return proxyWithOBO(KandidatsøkAPI, req);
