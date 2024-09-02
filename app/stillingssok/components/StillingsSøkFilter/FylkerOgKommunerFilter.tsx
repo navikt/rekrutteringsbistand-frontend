@@ -25,6 +25,7 @@ const FylkerOgKommunerFilter: React.FC<IFylkerOgKommuner> = ({
             fylke.kommuner.length > 1 && (
               // <div className='ml-4'>
               <CheckboxGroup
+                className='ml-4'
                 onChange={setKommuner}
                 hideLegend
                 legend={`Velg kommuner i ${fylke}`}
