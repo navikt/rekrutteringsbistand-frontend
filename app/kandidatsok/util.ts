@@ -1,5 +1,9 @@
 import { KandidatSchemaDTO } from '../api/kandidatsok/types';
 
+export function storForbokstavString(string: string) {
+  return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+}
+
 export const storForbokstav = (s: string | null) => {
   if (s === null || s.length === 0) {
     return s;

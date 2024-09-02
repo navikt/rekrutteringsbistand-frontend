@@ -1,6 +1,10 @@
 'use client';
 import { parseAsArrayOf, parseAsString, useQueryState } from 'nuqs';
 import * as React from 'react';
+import {
+  hierarkiAvTagsForFilter,
+  Subtag,
+} from './components/StillingsSøkFilter/InkluderingFilter';
 import { StillingsSøkQueryparam } from './stillingssøk-typer';
 
 interface IStillingsSøkContext {
@@ -86,6 +90,28 @@ export const StillingsSøkProvider: React.FC<{ children: React.ReactNode }> = ({
       .withDefault([])
       .withOptions({ clearOnDefault: true }),
   );
+
+  React.useEffect(() => {
+    if (inkluderingUnderkategori.length !== 0) {
+      let newInkluderingUnderkategori = inkluderingUnderkategori;
+
+      // Fjern hovedtag hvis undertag er valgt
+      hierarkiAvTagsForFilter.forEach((gruppeMedTags) => {
+        if (!inkludering.includes(gruppeMedTags.hovedtag)) {
+          newInkluderingUnderkategori = newInkluderingUnderkategori.filter(
+            (subtag) => !gruppeMedTags.subtags.includes(subtag as Subtag),
+          );
+        }
+      });
+
+      // Bare oppdater når det er endringer
+      if (
+        newInkluderingUnderkategori.length !== inkluderingUnderkategori.length
+      ) {
+        setInkluderingUnderkategori(newInkluderingUnderkategori);
+      }
+    }
+  }, [inkludering, inkluderingUnderkategori]);
 
   return (
     <StillingsSøkContext.Provider

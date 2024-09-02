@@ -3,8 +3,8 @@ import * as React from 'react';
 import SWRLaster from '../../components/SWRLaster';
 import { useStilling } from '../api/stillingssok/stilling';
 import StillingsKort from './components/StillingsKort';
+import StillingsSøkChips from './components/StillingsSøkTags/StillingsSøkTags';
 import { useStillingsSøk } from './StillingsSøkContext';
-import StillingsSøkChips from './components/StillingsSøkChips';
 
 const StillingsSøkeresultat: React.FC = () => {
   const filter = useStillingsSøk();
