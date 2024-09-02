@@ -23,20 +23,20 @@ const FylkerOgKommunerFilter: React.FC<IFylkerOgKommuner> = ({
             fylker.includes(fylke.code) &&
             fylke.kommuner &&
             fylke.kommuner.length > 1 && (
-              <div className='ml-4'>
-                <CheckboxGroup
-                  onChange={setKommuner}
-                  hideLegend
-                  legend={`Velg kommuner i ${fylke}`}
-                  value={kommuner || []}
-                >
-                  {fylke.kommuner.map((kommune: KommuneDTO) => (
-                    <Checkbox key={kommune.code} value={kommune.code}>
-                      {kommune.capitalizedName}
-                    </Checkbox>
-                  ))}
-                </CheckboxGroup>
-              </div>
+              // <div className='ml-4'>
+              <CheckboxGroup
+                onChange={setKommuner}
+                hideLegend
+                legend={`Velg kommuner i ${fylke}`}
+                value={kommuner || []}
+              >
+                {fylke.kommuner.map((kommune: KommuneDTO) => (
+                  <Checkbox key={kommune.code} value={kommune.code}>
+                    {kommune.capitalizedName}
+                  </Checkbox>
+                ))}
+              </CheckboxGroup>
+              // </div>
             )}
         </Fragment>
       ))}

@@ -4,6 +4,7 @@ import SWRLaster from '../../components/SWRLaster';
 import { useStilling } from '../api/stillingssok/stilling';
 import StillingsKort from './components/StillingsKort';
 import { useStillingsSøk } from './StillingsSøkContext';
+import StillingsSøkChips from './components/StillingsSøkChips';
 
 const StillingsSøkeresultat: React.FC = () => {
   const filter = useStillingsSøk();
@@ -13,7 +14,7 @@ const StillingsSøkeresultat: React.FC = () => {
       {(data) => (
         <>
           <div className='flex justify-between'>
-            <div>Filtre TBD</div>
+            <StillingsSøkChips />
             <div>Lagre TBD</div>
           </div>
           <div className='flex justify-between items-center my-4'>

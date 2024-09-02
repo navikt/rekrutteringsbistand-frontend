@@ -23,14 +23,16 @@ const SideLayout = ({
 }: ISideLayout) => {
   return (
     <div className='w-full flex justify-center mx-auto'>
-      <div className=' w-full mb-20 px-4'>
-        {customBanner ? (
-          customBanner
-        ) : (
-          <SideTopBanner ikon={ikon} tittel={tittel}>
-            {knappIBanner}
-          </SideTopBanner>
-        )}
+      <div className=' w-full '>
+        <div className='mb-4'>
+          {customBanner ? (
+            customBanner
+          ) : (
+            <SideTopBanner ikon={ikon} tittel={tittel}>
+              {knappIBanner}
+            </SideTopBanner>
+          )}
+        </div>
         <div className=' flex flex-col gap-y-8 gap-x-[3.5rem] md:flex-row'>
           {sidepanel && (
             <aside className='sidebar flex-grow-0 w-full md:w-[22.5rem]'>
