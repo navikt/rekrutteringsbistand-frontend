@@ -1,4 +1,5 @@
 import { Chips, VStack } from '@navikt/ds-react';
+import { useRouter } from 'next/navigation';
 import * as React from 'react';
 import { storForbokstavString } from '../../../kandidatsok/util';
 import { useStillingsSøk } from '../../StillingsSøkContext';
@@ -39,12 +40,13 @@ const StillingsSøkTags: React.FC = () => {
     (array) => array.length > 0,
   );
 
+  const router = useRouter();
   return (
     <div className='mt-4'>
       <VStack gap='10'>
         <Chips>
           {harAktiveFilter && (
-            <Chips.Removable onClick={() => {}}>
+            <Chips.Removable onClick={() => router.push('/stillingssok')}>
               Tøm alle filtre
             </Chips.Removable>
           )}
