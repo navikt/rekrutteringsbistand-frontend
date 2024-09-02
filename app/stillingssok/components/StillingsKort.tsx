@@ -66,7 +66,7 @@ const StillingsKort: React.FC<IStillingsKort> = ({ stillingData }) => {
                 ? `${publisertDato} -
             ${utløpsDato}`
                 : `Publisert ${publisertDato}`
-              : null
+              : '-'
           }
           arbeidsplassen={stillingData?.stilling?.privacy === 'SHOW_ALL'}
           direktemeldt={stillingData?.stillingsinfo?.source === 'DIR'}
