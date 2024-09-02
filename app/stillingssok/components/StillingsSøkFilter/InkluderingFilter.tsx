@@ -117,20 +117,19 @@ const InkluderingFilter: React.FC = () => {
 
           {inkludering.includes(gruppeMedTags.hovedtag) &&
             gruppeMedTags.subtags.length > 0 && (
-              <div className='ml-4'>
-                <CheckboxGroup
-                  hideLegend
-                  legend={`Velg kategorier under ${gruppeMedTags.hovedtag}`}
-                  value={inkluderingUnderkategori}
-                  onChange={setInkluderingUnderkategori}
-                >
-                  {gruppeMedTags.subtags.map((subtag) => (
-                    <Checkbox key={subtag} value={subtag}>
-                      {visningsnavnForFilter[subtag]}
-                    </Checkbox>
-                  ))}
-                </CheckboxGroup>
-              </div>
+              <CheckboxGroup
+                className='ml-4'
+                hideLegend
+                legend={`Velg kategorier under ${gruppeMedTags.hovedtag}`}
+                value={inkluderingUnderkategori}
+                onChange={setInkluderingUnderkategori}
+              >
+                {gruppeMedTags.subtags.map((subtag) => (
+                  <Checkbox key={subtag} value={subtag}>
+                    {visningsnavnForFilter[subtag]}
+                  </Checkbox>
+                ))}
+              </CheckboxGroup>
             )}
         </React.Fragment>
       ))}

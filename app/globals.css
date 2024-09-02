@@ -1,4 +1,19 @@
-@import 'tailwindcss/base';
-@import '@navikt/ds-css';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
+/* Base Layer: Tailwind base styles */
+@layer base {
+  @import 'tailwindcss/base';
+}
+
+/* Base Layer: NAVIKT Design System base styles */
+@layer base {
+  @import '@navikt/ds-css';
+}
+
+/* Components Layer: Tailwind component styles */
+@layer components {
+  @import 'tailwindcss/components';
+}
+
+/* Utilities Layer: Tailwind utility styles */
+@layer utilities {
+  @import 'tailwindcss/utilities';
+}
