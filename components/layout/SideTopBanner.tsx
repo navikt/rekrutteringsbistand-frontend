@@ -11,7 +11,7 @@ type ISideTopBanner = {
 
 const SideTopBanner = ({ tittel, nederst, ikon, children }: ISideTopBanner) => {
   return (
-    <div id='banner' role='banner'>
+    <div>
       <div className='flex justify-between items-center'>
         <div className='flex justify-start items-center gap-8'>
           {ikon}

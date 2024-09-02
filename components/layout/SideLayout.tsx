@@ -23,7 +23,7 @@ const SideLayout = ({
 }: ISideLayout) => {
   return (
     <div className='w-full flex justify-center mx-auto'>
-      <div className=' w-full '>
+      <div className='w-full '>
         <div className='mb-4'>
           {customBanner ? (
             customBanner
