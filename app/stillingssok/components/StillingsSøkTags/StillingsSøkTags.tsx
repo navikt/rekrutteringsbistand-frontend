@@ -15,13 +15,14 @@ const StillingsSøkTags: React.FC = () => {
     setStatuser,
     fylker,
     kommuner,
-    portefølje,
     inkludering,
     setInkludering,
     inkluderingUnderkategori,
     setInkluderingUnderkategori,
     kategori,
+    setKategori,
     publisert,
+    setPublisert,
   } = useStillingsSøk();
 
   const filtre = {
@@ -96,6 +97,26 @@ const StillingsSøkTags: React.FC = () => {
               );
             }
           })}
+
+          {kategori.map((k, i) => (
+            <Chips.Removable
+              key={i}
+              variant='neutral'
+              onClick={() => setKategori(kategori.filter((i) => i !== k))}
+            >
+              {storForbokstavString(k)}
+            </Chips.Removable>
+          ))}
+
+          {publisert.map((k, i) => (
+            <Chips.Removable
+              key={i}
+              variant='neutral'
+              onClick={() => setPublisert(publisert.filter((i) => i !== k))}
+            >
+              {storForbokstavString(k)}
+            </Chips.Removable>
+          ))}
         </Chips>
       </VStack>
     </div>

@@ -68,6 +68,22 @@ export function generateElasticSearchQuery(filter: StillingsSøkFilter) {
     });
   }
 
+  if (filter?.publisert?.includes(Publisert.Intern)) {
+    term.push({
+      term: {
+        'stilling.source': 'DIR',
+      },
+    });
+  }
+
+  if (filter?.publisert?.includes(Publisert.Arbeidsplassen)) {
+    term.push({
+      term: {
+        'stilling.privacy': 'SHOW_ALL',
+      },
+    });
+  }
+
   if (filter.statuser.includes(StillingsStatus.Publisert)) {
     should.push({
       term: {
