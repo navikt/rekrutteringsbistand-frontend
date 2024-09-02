@@ -1,7 +1,6 @@
 'use client';
 import { BodyShort, Heading, Select } from '@navikt/ds-react';
 import React, { ChangeEvent, useState } from 'react';
-import ErrorBoundary from '../../../components/ErrorBoundary';
 import Sidelaster from '../../../components/Sidelaster';
 import {
   førsteDagIMåned,
@@ -11,6 +10,7 @@ import {
 import { ApplikasjonContext } from '../../ApplikasjonContext';
 import Forespørsler from './Forespørsler';
 import Utfallsstatistikk from './Utfallsstatistikk';
+import ErrorBoundary from '../../../components/feilhåndtering/ErrorBoundary';
 
 export interface IStatistikkValg {
   navKontor: string;

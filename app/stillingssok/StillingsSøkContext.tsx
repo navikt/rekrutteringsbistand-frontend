@@ -111,7 +111,7 @@ export const StillingsSøkProvider: React.FC<{ children: React.ReactNode }> = ({
         setInkluderingUnderkategori(newInkluderingUnderkategori);
       }
     }
-  }, [inkludering, inkluderingUnderkategori]);
+  }, [inkludering, inkluderingUnderkategori, setInkluderingUnderkategori]);
 
   return (
     <StillingsSøkContext.Provider
