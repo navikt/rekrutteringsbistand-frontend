@@ -1,4 +1,6 @@
-@import 'tailwindcss/base';
-@import '@navikt/ds-css';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
+@layer twreset, aksel, twcomponents, twutilities;
+
+@import 'tailwindcss/base' layer(twreset);
+@import '@navikt/ds-css' layer(aksel);
+@import 'tailwindcss/components' layer(twcomponents);
+@import 'tailwindcss/utilities' layer(twutilities);
