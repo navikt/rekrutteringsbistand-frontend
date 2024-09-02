@@ -58,22 +58,17 @@ const StillingsKort: React.FC<IStillingsKort> = ({ stillingData }) => {
 
   return (
     <Box className='border rounded-lg mb-4 border-gray-300 p-4'>
-      <div className='mb-2 text-sm '>
-        <p>
-          {stillingData.stilling.publishedByAdmin
-            ? publisertDato !== utløpsDato
-              ? `${publisertDato} -
-                ${utløpsDato}`
-              : `Publisert ${publisertDato}`
-            : null}
-        </p>
-      </div>
-      <div className='mb-4'>
+      <div>
         <StillingsTag
-          arbeidsplassen={
-            stillingData?.stillingsinfo?.stillingskategori ===
-            Stillingskategori.Jobbmesse
+          publisert={
+            stillingData.stilling.publishedByAdmin
+              ? publisertDato !== utløpsDato
+                ? `${publisertDato} -
+            ${utløpsDato}`
+                : `Publisert ${publisertDato}`
+              : null
           }
+          arbeidsplassen={stillingData?.stilling?.privacy === 'SHOW_ALL'}
           direktemeldt={stillingData?.stillingsinfo?.source === 'DIR'}
           erEier={
             eierStilling({

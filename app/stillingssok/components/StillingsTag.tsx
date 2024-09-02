@@ -2,6 +2,7 @@ import { Tag } from '@navikt/ds-react';
 import * as React from 'react';
 
 export interface IStillingTag {
+  publisert: string;
   erEier?: boolean;
   erUtløpt?: boolean;
   erIkkePublisert?: boolean;
@@ -18,45 +19,48 @@ const StillingsTag: React.FC<IStillingTag> = (tag) => {
   return (
     <div className='flex justify-between'>
       <div>
+        <div className='mb-2 mr-2 text-sm '>
+          <p>{tag.publisert}</p>
+        </div>
         {tag.erJobbmesse && (
-          <Tag className={'mr-2'} size='small' variant='alt2'>
+          <Tag className={'mr-2 mb-4'} size='small' variant='alt2'>
             Jobbmesse
           </Tag>
         )}
         {tag.erEier && (
-          <Tag className={'mr-2'} size='small' variant='info'>
+          <Tag className={'mr-2 mb-4'} size='small' variant='info'>
             Min stilling
           </Tag>
         )}
         {tag.erUtløpt && (
-          <Tag className={'mr-2'} size='small' variant='warning'>
+          <Tag className={'mr-2 mb-4'} size='small' variant='warning'>
             Utløpt
           </Tag>
         )}
         {tag.erIkkePublisert && (
-          <Tag className={'mr-2'} size='small' variant='warning'>
+          <Tag className={'mr-2 mb-4'} size='small' variant='warning'>
             Ikke publisert
           </Tag>
         )}
         {tag.erUtkast && (
-          <Tag className={'mr-2'} size='small' variant='alt1'>
+          <Tag className={'mr-2 mb-4'} size='small' variant='alt1'>
             Utkast
           </Tag>
         )}
         {tag.erStoppet && (
-          <Tag className={'mr-2'} size='small' variant='error'>
+          <Tag className={'mr-2 mb-4'} size='small' variant='error'>
             Stoppet
           </Tag>
         )}
         {tag.erSlettet && (
-          <Tag className={'mr-2'} size='small' variant='error'>
+          <Tag className={'mr-2 mb-4'} size='small' variant='error'>
             Slettet
           </Tag>
         )}
       </div>
       <div>
         {tag.registrertMedInkluderingsmulighet && (
-          <Tag className={'mr-2'} size='small' variant='success'>
+          <Tag className={'mr-2 '} size='small' variant='success'>
             Inkludering
           </Tag>
         )}
@@ -66,7 +70,7 @@ const StillingsTag: React.FC<IStillingTag> = (tag) => {
           </Tag>
         )}
         {tag.arbeidsplassen && (
-          <Tag className={'mr-2'} size='small' variant='alt3'>
+          <Tag className={'mr-2 '} size='small' variant='alt3'>
             Arbeidsplassen
           </Tag>
         )}
