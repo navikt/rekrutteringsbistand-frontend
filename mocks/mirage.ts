@@ -7,7 +7,7 @@ import {
   forespørselOmDelingAvCVStatistikkMock,
   statistikkMock,
 } from './statistikkMock';
-import { stillingMock } from './stillingMock';
+import { stillingMal } from './stillingMock';
 
 createServer({
   routes() {
@@ -22,7 +22,7 @@ createServer({
       };
     });
 
-    this.get('/stilling/*', () => stillingMock);
+    this.get('/stilling/*', () => stillingMal);
     this.get('/bruker', () => brukerMock);
     this.get('/statistikk', () => statistikkMock);
     this.get(

@@ -63,13 +63,13 @@ export const stillingSchema = z.object({
         locationList: z
           .array(
             z.object({
-              address: z.string(),
-              postalCode: z.string(),
+              address: z.string().nullable(),
+              postalCode: z.string().nullable(),
               county: z.string().nullable(),
               municipal: z.string().nullable(),
               municipalCode: z.string().nullable(),
-              city: z.string(),
-              country: z.string(),
+              city: z.string().nullable(),
+              country: z.string().nullable(),
               latitude: z.string().nullable(),
               longitude: z.string().nullable(),
             }),
@@ -88,15 +88,15 @@ export const stillingSchema = z.object({
       .nullable(),
     location: z
       .object({
-        address: z.null(),
-        postalCode: z.null(),
-        county: z.null(),
-        municipal: z.null(),
-        municipalCode: z.null(),
-        city: z.null(),
+        address: z.string().nullable(),
+        postalCode: z.string().nullable(),
+        county: z.string().nullable(),
+        municipal: z.string().nullable(),
+        municipalCode: z.string().nullable(),
+        city: z.string().nullable(),
         country: z.string(),
-        latitude: z.null(),
-        longitude: z.null(),
+        latitude: z.string().nullable(),
+        longitude: z.string().nullable(),
       })
       .nullable(),
     locationList: z.array(z.unknown()),

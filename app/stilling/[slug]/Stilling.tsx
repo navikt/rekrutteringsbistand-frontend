@@ -9,6 +9,7 @@ import { useStilling } from '../../api/stilling/rekrutteringsbistandstilling/[sl
 import capitalizeEmployerName, { navnEierAvAstilling } from '../stilling-util';
 import KopierStillingLenke from './components/KopierStillingLenke';
 import StillingsIkon from './icons/se-mine-stillinger.svg';
+import StillingInnhold from './StillingInnhold';
 export interface IStilling {
   stillingId: string;
 }
@@ -52,7 +53,7 @@ const Stilling: React.FC<IStilling> = ({ stillingId }) => {
               />
             }
           >
-            <Tabs defaultValue='logg'>
+            <Tabs defaultValue='stilling'>
               <Tabs.List>
                 <Tabs.Tab
                   value='stilling'
@@ -66,7 +67,7 @@ const Stilling: React.FC<IStilling> = ({ stillingId }) => {
                 />
               </Tabs.List>
               <Tabs.Panel value='stilling'>
-                <div className='mt-4'>side</div>
+                <StillingInnhold stilling={stillingsData} />
               </Tabs.Panel>
               <Tabs.Panel value='kandidater'>
                 <div className='mt-4'>Kandidater</div>
