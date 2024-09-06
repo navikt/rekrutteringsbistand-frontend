@@ -1,13 +1,15 @@
 import { z } from 'zod';
 
 export const stillingSchema = z.object({
-  stillingsinfo: z.object({
-    stillingsid: z.string(),
-    stillingsinfoid: z.string(),
-    eierNavident: z.null(),
-    eierNavn: z.null(),
-    stillingskategori: z.string(),
-  }),
+  stillingsinfo: z
+    .object({
+      stillingsid: z.string(),
+      stillingsinfoid: z.string(),
+      eierNavident: z.string().nullable(),
+      eierNavn: z.string().nullable(),
+      stillingskategori: z.string(),
+    })
+    .nullable(),
   stilling: z.object({
     id: z.number(),
     uuid: z.string(),
@@ -20,7 +22,7 @@ export const stillingSchema = z.object({
     administration: z.object({
       id: z.number(),
       status: z.string(),
-      comments: z.null(),
+      comments: z.string().nullable(),
       reportee: z.string(),
       remarks: z.array(z.unknown()),
       navIdent: z.string(),
@@ -42,45 +44,49 @@ export const stillingSchema = z.object({
       updatedBy: z.string(),
       mediaList: z.array(z.unknown()),
       contactList: z.array(z.unknown()),
-      location: z.object({
-        address: z.string(),
-        postalCode: z.string(),
-        county: z.null(),
-        municipal: z.null(),
-        municipalCode: z.null(),
-        city: z.string(),
-        country: z.string(),
-        latitude: z.null(),
-        longitude: z.null(),
-      }),
-      locationList: z.array(
-        z.object({
+      location: z
+        .object({
           address: z.string(),
           postalCode: z.string(),
-          county: z.null(),
-          municipal: z.null(),
-          municipalCode: z.null(),
+          county: z.string().nullable(),
+          municipal: z.string().nullable(),
+          municipalCode: z.string().nullable(),
           city: z.string(),
           country: z.string(),
-          latitude: z.null(),
-          longitude: z.null(),
-        }),
-      ),
+          latitude: z.string().nullable(),
+          longitude: z.string().nullable(),
+        })
+        .nullable(),
+      locationList: z
+        .array(
+          z.object({
+            address: z.string(),
+            postalCode: z.string(),
+            county: z.string().nullable(),
+            municipal: z.string().nullable(),
+            municipalCode: z.string().nullable(),
+            city: z.string(),
+            country: z.string(),
+            latitude: z.string().nullable(),
+            longitude: z.string().nullable(),
+          }),
+        )
+        .nullable(),
       properties: z.object({ nace2: z.string() }),
       name: z.string(),
       orgnr: z.string(),
       status: z.string(),
       parentOrgnr: z.string(),
       publicName: z.string(),
-      deactivated: z.null(),
+      deactivated: z.string().nullable(),
       orgform: z.string(),
       employees: z.number(),
     }),
-    location: z.null(),
+    location: z.string().nullable(),
     locationList: z.array(z.unknown()),
     categoryList: z.array(z.unknown()),
     properties: z.object({}),
-    publishedByAdmin: z.null(),
+    publishedByAdmin: z.string().nullable(),
     businessName: z.string(),
     firstPublished: z.boolean(),
     deactivatedByExpiry: z.boolean(),
