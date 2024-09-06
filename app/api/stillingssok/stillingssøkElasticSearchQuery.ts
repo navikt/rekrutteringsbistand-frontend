@@ -3,6 +3,7 @@ import { StillingsStatus } from '../../stillingssok/components/StillingsSøkFilt
 import { Publisert } from '../../stillingssok/components/StillingsSøkFilter/SynlighetFilter';
 import { StillingsSøkPortefølje } from '../../stillingssok/stillingssøk-typer';
 import { generateElasticSearchQueryFylkerOgKommuner } from './stillingssøkElasticSearchQueryFylkeOgKommuner';
+import { generateElasticSearchQueryInkludering } from './stillingssøkElasticSearchQueryInkludering';
 
 export type StillingsSøkFilter = {
   statuser: string[];
@@ -147,12 +148,16 @@ export function generateElasticSearchQuery(filter: StillingsSøkFilter) {
       );
   }
 
-  if (filter.inkludering.length > 0) {
-    term.push({
-      terms: {
-        'stilling.properties.tags': filter.inkludering,
-      },
-    });
+  if (
+    filter.inkludering.length > 0 ||
+    filter.inkluderingUnderkategori.length > 0
+  ) {
+    term.push(
+      ...generateElasticSearchQueryInkludering({
+        inkludering: filter.inkludering,
+        inkluderingUnderkategori: filter.inkluderingUnderkategori,
+      }),
+    );
   }
   const fylkerKommuner = generateElasticSearchQueryFylkerOgKommuner({
     fylker: filter.fylker,

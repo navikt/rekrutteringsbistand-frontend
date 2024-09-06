@@ -69,7 +69,7 @@ const StillingsSøkTags: React.FC = () => {
             const aktiveSubtags = inkluderingUnderkategori.filter((i) =>
               tagger?.subtags.includes(i as Subtag),
             );
-            if (aktiveSubtags) {
+            if (aktiveSubtags.length > 0) {
               return aktiveSubtags.map((subtag, i) => (
                 <Chips.Removable
                   key={i}
