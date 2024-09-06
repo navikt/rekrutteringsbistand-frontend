@@ -4,9 +4,10 @@ import { Alert, BodyLong, Button } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 import SideLayout from '../../../components/layout/SideLayout';
+import SideTopBanner from '../../../components/layout/SideTopBanner';
+import { Stillingskategori } from '../stilling-typer';
 import VelgArbeidsgiver from './components/VelgArbeidsgiver';
 import VelgStillingskategori from './components/VelgStillingskategori';
-import { Stillingskategori } from '../stilling-typer';
 
 const NyStilling: React.FC = () => {
   const router = useRouter();
@@ -21,7 +22,7 @@ const NyStilling: React.FC = () => {
   };
 
   return (
-    <SideLayout tittel='Opprett ny stilling'>
+    <SideLayout banner={<SideTopBanner tittel='Opprett ny stilling' />}>
       <div>
         <Alert className='mb-2' variant='warning'>
           <BodyLong spacing>

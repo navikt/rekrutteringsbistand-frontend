@@ -44,6 +44,7 @@
     "eslint-plugin-react-hooks": "^4.6.2",
     "husky": "^8.0.0",
     "lint-staged": "^15.2.9",
+    "miragejs": "^0.2.0-alpha.3",
     "msw": "^2.3.5",
     "postcss": "^8.4.41",
     "prettier": "^3.3.3",

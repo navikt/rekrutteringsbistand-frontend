@@ -15,7 +15,12 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  if (process.env.NODE_ENV === 'development') {
+    import('../mocks/mirage').then(() => console.warn('Mirage mock`s kjører!'));
+  }
+
   await verifyUserLoggedIn();
+
   return (
     <html lang='no'>
       <head>

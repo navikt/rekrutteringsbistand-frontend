@@ -4,6 +4,7 @@ import { Button, Tabs } from '@navikt/ds-react';
 import Link from 'next/link';
 import * as React from 'react';
 import SideLayout from '../../components/layout/SideLayout';
+import SideTopBanner from '../../components/layout/SideTopBanner';
 import { TilgangskontrollForInnhold } from '../../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Rolle } from '../../types/Roller';
 import Piktogram from './components/icons/finn-stillinger.svg';
@@ -18,24 +19,31 @@ const StillingsSøk: React.FC = () => {
   return (
     <SideLayout
       // banner={kandidatnr !== undefined && <KontekstAvKandidat kandidatnr={kandidatnr} />}
-      ikon={<Piktogram />}
-      knappIBanner={
-        <TilgangskontrollForInnhold
-          skjulVarsel
-          kreverEnAvRollene={[
-            Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
-            Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-          ]}
-        >
-          <Link href={'/stilling/ny-stilling'}>
-            <Button icon={<PlusCircleIcon aria-hidden />} variant='secondary'>
-              Opprett ny
-            </Button>
-          </Link>
-        </TilgangskontrollForInnhold>
+      banner={
+        <SideTopBanner
+          tittel='Stillinger'
+          ikon={<Piktogram />}
+          knappIBanner={
+            <TilgangskontrollForInnhold
+              skjulVarsel
+              kreverEnAvRollene={[
+                Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
+                Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+              ]}
+            >
+              <Link href={'/stilling/ny-stilling'}>
+                <Button
+                  icon={<PlusCircleIcon aria-hidden />}
+                  variant='secondary'
+                >
+                  Opprett ny
+                </Button>
+              </Link>
+            </TilgangskontrollForInnhold>
+          }
+        />
       }
       sidepanel={<StillingsSøkSidePanel />}
-      tittel='Stillinger'
     >
       <Tabs
         defaultValue={portefølje || StillingsSøkPortefølje.VIS_ALLE}

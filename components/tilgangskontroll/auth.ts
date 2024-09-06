@@ -23,7 +23,7 @@ export async function verifyUserLoggedIn(): Promise<{
   const requestHeaders = headers();
 
   if (isLocal) {
-    logger.warn('Is running locally, skipping RSC auth');
+    console.warn('Kjører lokalt, skipper auth og kjører med fake-local-token');
     return {
       accessToken: 'fake-local-token',
     };

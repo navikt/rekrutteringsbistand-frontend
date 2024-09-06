@@ -17,6 +17,9 @@ NextJS applikasjon m/AppRoutes, "SWR hooks" for fetching av data og zod valideri
 
 ## Utvikling
 
+### Lokal mock 
+Bruker miragejs, se mirage.ts for server og mocks mappen for mocks.
+
 ### Opprett API endepunkt
 
 Opprett en route.ts i ønsket path under /api
@@ -51,6 +54,11 @@ Får du ikke pushet, se gitlog for feilmelding...
 # Tips:
 
 transform tools: https://transform.tools/
+
+
+# Todo:
+
+https://docs.nais.io/observability/how-to/auto-instrumentation/ for nodjs
 
 #### Gjeld:
 TODO:

@@ -1,6 +1,7 @@
 'use client';
 import * as React from 'react';
 import SideLayout from '../../components/layout/SideLayout';
+import SideTopBanner from '../../components/layout/SideTopBanner';
 import { useMinebrukere } from '../api/kandidatsok/minebrukere/useMinebrukere';
 import KandidatKort from './components/KandidatKort';
 import Sidebar from './components/KandidatSøkSidebar';
@@ -29,9 +30,8 @@ const KandidatSøk: React.FC = () => {
   });
   return (
     <SideLayout
-      ikon={<Piktogram />}
+      banner={<SideTopBanner tittel='Kandidatsøk' ikon={<Piktogram />} />}
       sidepanel={<Sidebar />}
-      tittel='Kandidatsøk'
     >
       <ul>
         {data &&

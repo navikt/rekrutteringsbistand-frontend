@@ -1,3 +1,8 @@
+import { z } from 'zod';
+import { stillingSchema } from '../api/stilling/rekrutteringsbistandstilling/[slug]/zod';
+
+export type stillingsDataDTO = z.infer<typeof stillingSchema>;
+
 export enum Status {
   Aktiv = 'ACTIVE',
   Inaktiv = 'INACTIVE',

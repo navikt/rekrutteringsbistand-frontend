@@ -37,7 +37,7 @@ const nextConfig = {
   //     ? [
   //         {
   //           source: '/api/:path*',
-  //           destination: '/mock/api/:path*', // The new path with prefix during local development
+  //           destination: 'http://localhost:1338/:path*',
   //         },
   //       ]
   //     : [];

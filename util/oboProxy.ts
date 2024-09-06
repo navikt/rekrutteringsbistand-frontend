@@ -2,13 +2,14 @@ import { logger } from '@navikt/next-logger';
 import { getToken, OboResult, requestOboToken } from '@navikt/oasis';
 import { NextRequest, NextResponse } from 'next/server';
 import { Iroute } from '../app/api/api-routes';
+import { isLocal } from './env';
 
 export const proxyWithOBO = async (
   proxy: Iroute,
   req: NextRequest,
   customRoute?: string,
 ) => {
-  const token = getToken(req.headers);
+  const token = isLocal ? 'DEV' : getToken(req.headers);
 
   if (!proxy.api_url) {
     return NextResponse.json(
@@ -26,7 +27,9 @@ export const proxyWithOBO = async (
 
   let obo: OboResult;
   try {
-    obo = await requestOboToken(token, proxy.scope);
+    obo = isLocal
+      ? ({ ok: true, token: 'DEV' } as OboResult)
+      : await requestOboToken(token, proxy.scope);
   } catch (error) {
     logger.error('Feil ved henting av OBO-token:', error);
     return NextResponse.json(
@@ -43,11 +46,14 @@ export const proxyWithOBO = async (
     );
   }
   const originalUrl = new URL(req.url);
+
   const path =
     proxy.api_route + originalUrl.pathname.replace(proxy.internUrl, '');
   const newUrl = customRoute
     ? proxy.api_url + customRoute
     : `${proxy.api_url}${path}${originalUrl.search}`;
+
+  const requestUrl = isLocal ? originalUrl : newUrl;
 
   try {
     const originalHeaders = new Headers(req.headers);
@@ -66,15 +72,15 @@ export const proxyWithOBO = async (
       }
     }
 
-    const response = await fetch(newUrl, fetchOptions);
+    const response = await fetch(requestUrl, fetchOptions);
 
     if (!response.ok) {
       console.error({
-        msg: 'HTTP error! Url: ' + newUrl + ' fra url: ' + originalUrl,
+        msg: 'HTTP error! Url: ' + requestUrl + ' fra url: ' + originalUrl,
         obj: response,
       });
       logger.error({
-        msg: 'HTTP error! Url: ' + newUrl + ' fra url: ' + originalUrl,
+        msg: 'HTTP error! Url: ' + requestUrl + ' fra url: ' + originalUrl,
         obj: response,
       });
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -87,7 +93,7 @@ export const proxyWithOBO = async (
     console.error({
       msg:
         'Feil ved proxying av forespørselen til url:' +
-        newUrl +
+        requestUrl +
         ' fra url: ' +
         originalUrl,
       obj: error,
@@ -95,7 +101,7 @@ export const proxyWithOBO = async (
     logger.error({
       msg:
         'Feil ved proxying av forespørselen til url:' +
-        newUrl +
+        requestUrl +
         ' fra url: ' +
         originalUrl,
       obj: error,

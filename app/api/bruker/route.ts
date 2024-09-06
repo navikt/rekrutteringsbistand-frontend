@@ -16,13 +16,6 @@ const hentRoller = (token: string): string[] => {
 };
 
 export async function GET(req: NextRequest) {
-  if (isLocal) {
-    return NextResponse.json({
-      navIdent: 'Z123456',
-      roller: [Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER],
-    });
-  }
-
   try {
     const headers = req.headers;
     const brukerensAccessToken = getToken(headers);
