@@ -19,6 +19,7 @@ const SideTopBanner = ({
   ikon,
   children,
   tilbakeKnapp,
+  knappIBanner,
   headerInnhold,
 }: ISideTopBanner) => {
   const router = useRouter();
@@ -31,17 +32,20 @@ const SideTopBanner = ({
         </Button>
       )}
       <div className='flex justify-between items-center'>
-        <div className='flex justify-start items-center gap-8'>
-          {ikon}
-          <div>
-            <Heading className=' ml-0 mr-auto' level='2' size='large'>
-              {tittel}
-            </Heading>
-            {headerInnhold}
+        <div>
+          <div className='flex justify-start items-center gap-8'>
+            {ikon}
+            <div>
+              <Heading className=' ml-0 mr-auto' level='2' size='large'>
+                {tittel}
+              </Heading>
+              {headerInnhold}
+            </div>
           </div>
         </div>
-        <div id='knapperRad'>{children}</div>
+        <div>{knappIBanner}</div>
       </div>
+      <div id='knapperRad'>{children}</div>
     </div>
   );
 };

@@ -75,5 +75,5 @@ export const navnEierAvAstilling = (
   if (stillingsData?.stilling?.administration?.navIdent !== null) {
     return stillingsData?.stilling?.administration?.reportee ?? null;
   }
-  return stillingsData?.stillingsinfo.eierNavn ?? null;
+  return stillingsData?.stillingsinfo?.eierNavn ?? null;
 };
