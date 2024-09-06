@@ -1,7 +1,9 @@
 'use client';
 import React from 'react';
-import ErrorBoundary from './ErrorBoundary';
-import { Rolle } from './tilgangskontroll/Roller';
+import Header from '../components/header/Header';
+import Sidelaster from '../components/Sidelaster';
+import { Rolle } from '../types/Roller';
+import { useBruker } from './api/bruker/useBruker';
 
 export type NavKontorMedNavn = {
   navKontor: string;
@@ -31,9 +33,7 @@ interface IApplikasjonContextProvider {
 export const ApplikasjonContextProvider: React.FC<
   IApplikasjonContextProvider
 > = ({ children }) => {
-  // const { navIdent, roller, isLoading } = useMeg();
-  const navIdent = 'Z123456';
-  const roller = [Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER];
+  const { isLoading, data } = useBruker();
 
   const [valgtNavKontor, setValgtNavKontor] =
     React.useState<NavKontorMedNavn | null>(null);
@@ -44,23 +44,35 @@ export const ApplikasjonContextProvider: React.FC<
     tilgangskontrollErPå
       ? rolle.some(
           (r) =>
-            roller?.includes(r) ||
-            roller?.includes(Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER)
+            data?.roller?.includes(r) ||
+            data?.roller?.includes(
+              Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER,
+            ),
         )
       : true;
 
+  if (isLoading) {
+    return <Sidelaster />;
+  }
+
+  if (data?.navIdent === undefined) {
+    return <span>Feil ved innlasting av bruker</span>;
+  }
   return (
     <ApplikasjonContext.Provider
       value={{
         setValgtNavKontor,
         valgtNavKontor,
-        roller,
-        navIdent,
+        roller: data?.roller,
+        navIdent: data?.navIdent,
         harRolle,
         tilgangskontrollErPå,
       }}
     >
-      <ErrorBoundary> {children} </ErrorBoundary>
+      <Header />
+      <main>
+        <div className='mx-auto p-4 max-w-screen-xl'>{children}</div>
+      </main>
     </ApplikasjonContext.Provider>
   );
 };

@@ -1,13 +1,10 @@
-import '@navikt/ds-css';
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
 import Script from 'next/script';
+import * as React from 'react';
+import { verifyUserLoggedIn } from '../components/tilgangskontroll/auth';
+import { isLocal } from '../util/env';
 import { ApplikasjonContextProvider } from './ApplikasjonContext';
-import { verifyUserLoggedIn } from './auth/auth';
-import ErrorBoundary from './ErrorBoundary';
-import Header from './header/Header';
-import { isLocal } from './util/env';
-const inter = Inter({ subsets: ['latin'] });
+import './globals.css';
 
 export const metadata: Metadata = {
   title: isLocal ? 'Local - Rekrutteringsbistand' : 'Rekrutteringsbistand',
@@ -18,27 +15,31 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  if (process.env.NODE_ENV === 'development') {
+    import('../mocks/mirage').then(() => console.warn('Mirage mock`s kjører!'));
+  }
+
   await verifyUserLoggedIn();
+
   return (
     <html lang='no'>
       <head>
-        <link
-          rel='stylesheet'
-          href='https://cdn.nav.no/personoversikt/internarbeidsflate-decorator-v3/dev/latest/dist/index.css'
-        />
-        <Script
-          defer
-          strategy='beforeInteractive'
-          src='https://cdn.nav.no/personoversikt/internarbeidsflate-decorator-v3/dev/latest/dist/bundle.js'
-        />
+        {!isLocal && (
+          <link
+            href='https://cdn.nav.no/personoversikt/internarbeidsflate-decorator-v3/dev/latest/dist/index.css'
+            rel='stylesheet'
+          />
+        )}
+        {!isLocal && (
+          <Script
+            defer
+            src='https://cdn.nav.no/personoversikt/internarbeidsflate-decorator-v3/dev/latest/dist/bundle.js'
+            strategy='beforeInteractive'
+          />
+        )}
       </head>
-      <body className={inter.className}>
-        <ErrorBoundary>
-          <ApplikasjonContextProvider>
-            <Header />
-            <main>{children}</main>
-          </ApplikasjonContextProvider>
-        </ErrorBoundary>
+      <body>
+        <ApplikasjonContextProvider>{children}</ApplikasjonContextProvider>
       </body>
     </html>
   );

@@ -1,36 +1,68 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Rekrutteringsbistand - NEXT
 
-## Getting Started
+NextJS applikasjon m/AppRoutes, "SWR hooks" for fetching av data og zod validering av data
 
-First, run the development server:
+## Filstruktur
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```
+│ ├── api
+│ │ ├── [endepunkter]
+│ ├── [sider]
+│ ├── middleware.ts / ApplikasjonsContext / Globale filer
+├── components _ "Felles" komponenter
+├── tilgangskontroll _ Tilgangskontroll relatert auth / roller.
+├── util \* Hjelpefunksjoner
+└── .gitignore
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Utvikling
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Lokal mock 
+Bruker miragejs, se mirage.ts for server og mocks mappen for mocks.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+### Opprett API endepunkt
 
-## Learn More
+Opprett en route.ts i ønsket path under /api
+Bruk snippet fra snippets.json som mal.
 
-To learn more about Next.js, take a look at the following resources:
+Hvis man trenger en backend komponent, legg til env variabel og inbound på gitt komponent for rekrutteringsbistand-frontend og outbound på gitt applikasjon i denne.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Search params
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+Se på https://nextjs.org/docs/app/api-reference/functions/use-search-params og/vs https://nuqs.47ng.com/
 
-## Deploy on Vercel
+### Logger
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Implementert logger `import { logger } from '@navikt/next-logger'`, se https://logs.adeo.no/ ( https://github.com/navikt/next-logger )
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+### Stillingssøk direkte mot ES:
+Opprett en '.env.local' fil og fyll ut:
+
+```
+STILLING_ES_URI=
+STILLING_ES_PASSWORD=
+STILLING_ES_USERNAME=
+```
+
+### Prettier og lint med husky
+Gjerne kjør prettier on save for å formatere koden mens du utvikler.
+Det er installert eslint og husky som formaterer koden og gir evt feilmeldinger ved ubrukte variabler samt at params blir sortert alfabetisk for bedre oversikt.
+
+Får du ikke pushet, se gitlog for feilmelding...
+
+# Tips:
+
+transform tools: https://transform.tools/
+
+
+# Todo:
+
+https://docs.nais.io/observability/how-to/auto-instrumentation/ for nodjs
+
+#### Gjeld:
+TODO:
+* api/me i kandidatsok er ikke i bruk
+* Fylker map blir ikke med over dat dette håndteres backend?
+
+$$

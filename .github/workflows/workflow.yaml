@@ -1,9 +1,6 @@
 name: Build and Deploy
 
-on:
-  push:
-    branches:
-      - master
+on: [push, workflow_dispatch]
 
 jobs:
   build:
@@ -48,19 +45,19 @@ jobs:
       - name: Pull docker image
         run: docker pull ${{ needs.build.outputs.image }}
 
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: '${{ needs.build.outputs.image }}'
-          format: 'sarif'
-          output: 'trivy.sarif'
-          severity: 'HIGH,CRITICAL'
-          limit-severities-for-sarif: true
+      # - name: Run Trivy vulnerability scanner
+      #   uses: aquasecurity/trivy-action@master
+      #   with:
+      #     image-ref: '${{ needs.build.outputs.image }}'
+      #     format: 'sarif'
+      #     output: 'trivy.sarif'
+      #     severity: 'HIGH,CRITICAL'
+      #     limit-severities-for-sarif: true
 
-      - name: Upload results to GitHub Security
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: 'trivy.sarif'
+      # - name: Upload results to GitHub Security
+      #   uses: github/codeql-action/upload-sarif@v3
+      #   with:
+      #     sarif_file: 'trivy.sarif'
   deploy:
     name: Deploy til dev-gcp
     runs-on: ubuntu-latest

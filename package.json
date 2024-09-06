@@ -6,29 +6,70 @@
     "dev": "next dev -p 1337",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "lint-fix": "npx eslint --fix .",
+    "formater-kode": "prettier --write .",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@navikt/ds-css": "^6.13.0",
     "@navikt/ds-react": "^6.13.0",
+    "@navikt/ds-tailwind": "^6.16.0",
     "@navikt/navspa": "^6.1.1",
-    "@navikt/next-logger": "^1.25.0",
+    "@navikt/next-logger": "^1.31.0",
     "@navikt/oasis": "^3.3.0",
     "@types/loadjs": "^4.0.4",
-    "loadjs": "^4.3.0",
+    "date-fns": "^3.6.0",
     "next": "14.2.5",
+    "nuqs": "^1.17.8",
+    "pino": "^9.3.2",
+    "postcss-import": "^16.1.0",
     "react": "^18",
     "react-dom": "^18",
+    "swr": "^2.2.5",
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@svgr/webpack": "^8.1.0",
     "@types/node": "^20",
-    "@types/react": "^18",
+    "@types/react": "^18.3.4",
     "@types/react-dom": "^18",
-    "eslint": "^8",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^8.57.0",
     "eslint-config-next": "14.2.5",
-    "postcss": "^8",
-    "tailwindcss": "^3.4.1",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-jsx-a11y": "^6.9.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "eslint-plugin-react": "^7.35.0",
+    "eslint-plugin-react-hooks": "^4.6.2",
+    "husky": "^8.0.0",
+    "lint-staged": "^15.2.9",
+    "miragejs": "^0.2.0-alpha.3",
+    "msw": "^2.3.5",
+    "postcss": "^8.4.41",
+    "prettier": "^3.3.3",
+    "prettier-plugin-sort-json": "^4.0.0",
+    "prettier-plugin-tailwindcss": "^0.6.6",
+    "tailwindcss": "^3.4.10",
     "typescript": "^5"
+  },
+  "lint-staged": {
+    "*.js": [
+      "prettier --write",
+      "npx eslint --fix . --no-cache"
+    ],
+    "*.jsx": [
+      "prettier --write",
+      "npx eslint --fix . --no-cache"
+    ],
+    "*.ts": [
+      "prettier --write",
+      "npx eslint --fix . --no-cache"
+    ],
+    "*.tsx": [
+      "prettier --write",
+      "npx eslint --fix . --no-cache"
+    ],
+    "*.json": "prettier --write"
   }
 }

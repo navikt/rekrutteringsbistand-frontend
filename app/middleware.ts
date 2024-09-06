@@ -1,6 +1,6 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-import { isLocal } from './util/env';
+import { isLocal } from '../util/env';
 
 /**
  * This middleware is purely a hack to be able to provide the react server component auth

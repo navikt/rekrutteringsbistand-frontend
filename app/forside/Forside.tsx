@@ -1,12 +1,19 @@
 'use client';
 import * as React from 'react';
+import Hurtiglenker from './components/Hurtiglenker';
+import Statistikk from './components/Statistikk';
 
-export interface IForside {
-  children?: React.ReactNode | undefined;
-}
-
-const Forside: React.FC<IForside> = ({ children }) => {
-  return <div>forside</div>;
+const Forside: React.FC = () => {
+  return (
+    <div>
+      <div className='mt-4'>
+        <Hurtiglenker />
+      </div>
+      <div className='mt-8'>
+        <Statistikk />
+      </div>
+    </div>
+  );
 };
 
 export default Forside;
