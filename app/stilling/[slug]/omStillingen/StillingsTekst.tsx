@@ -6,7 +6,7 @@ import { useStillingsContext } from '../StillingsContext';
 const StillingsTekst: React.FC = () => {
   const { stillingsData, erEier, endrerStilling, setEndrerStilling } =
     useStillingsContext();
-  const tekst = stillingsData.stilling.properties.adtext;
+  const tekst = stillingsData.stilling.properties.adtext ?? '';
 
   if (!erEier || !endrerStilling) {
     return <>{parse(tekst)}</>;
