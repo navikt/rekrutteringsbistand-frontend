@@ -114,7 +114,7 @@ export const stillingSchema = z.object({
       positioncount: z.string().nullable(),
       engagementtype: z.string().nullable(),
       classification_styrk08_score: z.string().nullable(),
-      employerdescription: z.string().nullable(),
+      employerdescription: z.string().optional().nullable(),
       adtext: z.string().nullable(),
       classification_styrk08_code: z.string().nullable(),
       tags: z.string().nullable(),
