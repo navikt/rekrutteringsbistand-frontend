@@ -1,5 +1,5 @@
-import Stilling from './Stilling';
+import { StillingsContextProvider } from './StillingsContext';
 
 export default function StillingSide({ params }: { params: { slug: string } }) {
-  return <Stilling stillingId={params.slug} />;
+  return <StillingsContextProvider stillingsId={params.slug} />;
 }

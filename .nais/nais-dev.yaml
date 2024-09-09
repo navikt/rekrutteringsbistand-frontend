@@ -40,6 +40,7 @@ spec:
       external:
         - host: {{ statistikkApiHost }}
         - host: {{ foresporselOmDelingAvCvApiHost }}
+        - host: {{ kandidatApiHost }}
   resources:
     limits:
       memory: 768Mi
@@ -65,3 +66,5 @@ spec:
       value: http://rekrutteringsbistand-stillingssok-proxy
     - name: KANDIDATSOK_API
       value: http://rekrutteringsbistand-kandidatsok-api
+    - name: KANDIDAT_API
+      value: {{ kandidatApiUrl }}

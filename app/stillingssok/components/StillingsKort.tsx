@@ -8,14 +8,14 @@ import {
 import { Box, Heading } from '@navikt/ds-react';
 import Link from 'next/link';
 import * as React from 'react';
-import { eierStilling } from '../../../components/tilgangskontroll/erEier';
 
+import TekstMedIkon from '../../../components/TekstMedIkon';
 import {
   konverterTilPresenterbarDato,
   visDatoMedMåned,
 } from '../../../util/dato';
 import formaterMedStoreOgSmåBokstaver from '../../../util/tekst';
-import { ApplikasjonContext } from '../../ApplikasjonContext';
+import { useStillingsContext } from '../../stilling/[slug]/StillingsContext';
 import { Status, Stillingskategori } from '../../stilling/stilling-typer';
 import { stillingErUtløpt } from '../../stilling/stilling-util';
 import { StillingsDTO } from '../stillingssøk-typer';
@@ -36,7 +36,7 @@ const hentHovedtags = (): string[] => {
 };
 
 const StillingsKort: React.FC<IStillingsKort> = ({ stillingData }) => {
-  const { navIdent } = React.useContext(ApplikasjonContext);
+  const { erEier } = useStillingsContext();
 
   const publisertDato = visDatoMedMåned(
     new Date(stillingData.stilling.published),
@@ -70,16 +70,7 @@ const StillingsKort: React.FC<IStillingsKort> = ({ stillingData }) => {
           }
           arbeidsplassen={stillingData?.stilling?.privacy === 'SHOW_ALL'}
           direktemeldt={stillingData?.stillingsinfo?.source === 'DIR'}
-          erEier={
-            eierStilling({
-              stillingsData: stillingData.stilling,
-              navIdent: navIdent,
-            }) ||
-            eierStilling({
-              stillingsData: stillingData.stillingsinfo,
-              navIdent: navIdent,
-            })
-          }
+          erEier={erEier}
           erIkkePublisert={erIkkePublisert ? true : false}
           erJobbmesse={
             stillingData?.stillingsinfo?.stillingskategori ===
@@ -98,48 +89,58 @@ const StillingsKort: React.FC<IStillingsKort> = ({ stillingData }) => {
           )}
         />
       </div>
-      <div className='flex'>
-        <Buildings2Icon />
-        <span className='ml-2'>
-          {stillingData.stilling?.businessName || 'Ukjent bedrift'}
-        </span>
-      </div>
+      <TekstMedIkon
+        ikon={<Buildings2Icon />}
+        tekst={stillingData.stilling?.businessName || 'Ukjent bedrift'}
+      />
+
       <Link href={`/stilling/${stillingData.stilling.uuid}`}>
         <Heading size='small'>
           {stillingData?.stilling?.title || 'Ukjent tittel'}
         </Heading>
       </Link>
       <div className='flex mt-4'>
-        <div className='flex items-center mr-4' title='Lokasjon'>
-          <PinIcon />
-          <p className='ml-2'>
-            {formaterMedStoreOgSmåBokstaver(
+        <TekstMedIkon
+          className='mr-4'
+          ikon={<PinIcon />}
+          title='Lokasjon'
+          tekst={
+            formaterMedStoreOgSmåBokstaver(
               hentArbeidssted(stillingData.stilling.locations),
-            ) || '-'}
-          </p>
-        </div>
-        <div className='flex items-center mr-4' title='Antall stillinger'>
-          <BriefcaseIcon />
-          <p className='ml-2'>
-            {antallStillinger
+            ) || '-'
+          }
+        />
+
+        <TekstMedIkon
+          className='mr-4'
+          ikon={<BriefcaseIcon />}
+          title='Antall stillinger'
+          tekst={
+            antallStillinger
               ? `${antallStillinger} ${antallStillingerSuffix}`
-              : '-'}
-          </p>
-        </div>
-        <div className='flex items-center mr-4' title='Lokasjon'>
-          <ClockIcon />
-          <p className='ml-2'>
-            {stillingData.stilling.properties?.applicationdue
+              : '-'
+          }
+        />
+
+        <TekstMedIkon
+          className='mr-4'
+          ikon={<ClockIcon />}
+          title='Lokasjon'
+          tekst={
+            stillingData.stilling.properties?.applicationdue
               ? konverterTilPresenterbarDato(
                   stillingData.stilling.properties.applicationdue,
                 )
-              : '-'}
-          </p>
-        </div>
-        <div className='flex items-center mr-4' title='Eier'>
-          <PersonIcon />
-          <p className='ml-2'>{eierNavn}</p>
-        </div>
+              : '-'
+          }
+        />
+
+        <TekstMedIkon
+          className='mr-4'
+          ikon={<PersonIcon />}
+          title='Eier'
+          tekst={eierNavn}
+        />
       </div>
     </Box>
   );

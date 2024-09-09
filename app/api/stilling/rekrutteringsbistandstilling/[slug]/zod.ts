@@ -1,5 +1,23 @@
 import { z } from 'zod';
 
+export type stillingSchemaDTO = z.infer<typeof stillingSchema>;
+
+export const locationListSchema = z
+  .array(
+    z.object({
+      address: z.string().nullable(),
+      postalCode: z.string().nullable(),
+      county: z.string().nullable(),
+      municipal: z.string().nullable(),
+      municipalCode: z.string().nullable(),
+      city: z.string().nullable(),
+      country: z.string().nullable(),
+      latitude: z.string().nullable(),
+      longitude: z.string().nullable(),
+    }),
+  )
+  .nullable();
+
 export const stillingSchema = z.object({
   stillingsinfo: z
     .object({
@@ -60,22 +78,8 @@ export const stillingSchema = z.object({
             longitude: z.string().nullable(),
           })
           .nullable(),
-        locationList: z
-          .array(
-            z.object({
-              address: z.string().nullable(),
-              postalCode: z.string().nullable(),
-              county: z.string().nullable(),
-              municipal: z.string().nullable(),
-              municipalCode: z.string().nullable(),
-              city: z.string().nullable(),
-              country: z.string().nullable(),
-              latitude: z.string().nullable(),
-              longitude: z.string().nullable(),
-            }),
-          )
-          .nullable(),
-        properties: z.object({ nace2: z.string() }),
+        locationList: locationListSchema,
+        properties: z.any(),
         name: z.string(),
         orgnr: z.string(),
         status: z.string(),
@@ -101,7 +105,24 @@ export const stillingSchema = z.object({
       .nullable(),
     locationList: z.array(z.unknown()),
     categoryList: z.array(z.unknown()),
-    properties: z.object({}),
+    properties: z.object({
+      extent: z.string(),
+      workhours: z.string(),
+      applicationdue: z.string(),
+      workday: z.string(),
+      jobtitle: z.string(),
+      positioncount: z.string(),
+      engagementtype: z.string(),
+      classification_styrk08_score: z.string(),
+      employerdescription: z.string(),
+      adtext: z.string(),
+      classification_styrk08_code: z.string(),
+      tags: z.string(),
+      searchtags: z.string(),
+      classification_esco_code: z.string(),
+      classification_input_source: z.string(),
+      sector: z.string(),
+    }),
     publishedByAdmin: z.string().nullable(),
     businessName: z.string(),
     firstPublished: z.boolean(),

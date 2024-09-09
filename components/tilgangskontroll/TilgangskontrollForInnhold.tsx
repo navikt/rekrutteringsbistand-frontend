@@ -1,7 +1,7 @@
 import { Alert, Link } from '@navikt/ds-react';
 import * as React from 'react';
 
-import { ApplikasjonContext } from '../../app/ApplikasjonContext';
+import { useApplikasjonContext } from '../../app/ApplikasjonContext';
 import { Rolle } from '../../types/Roller';
 import ErrorBoundary from '../feilhåndtering/ErrorBoundary';
 import css from './TilgangskontrollForInnhold.module.css';
@@ -32,7 +32,7 @@ const rolleTilNavn = (rolle: Rolle): string | null => {
 export const TilgangskontrollForInnhold: React.FC<
   ITilgangskontrollForInnhold
 > = ({ kreverEnAvRollene, children, skjulVarsel, manglerEierskap }) => {
-  const { roller } = React.useContext(ApplikasjonContext);
+  const { roller } = useApplikasjonContext();
 
   const harTilgang = kreverEnAvRollene
     ? kreverEnAvRollene.some((r) => {

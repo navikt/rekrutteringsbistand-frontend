@@ -1,5 +1,5 @@
 import { Stillingskategori } from '../../stilling/stilling-typer';
-import { StillingsStatus } from '../../stillingssok/components/StillingsSøkFilter/StatusFilter';
+import { StillingsStatusTyper } from '../../stillingssok/components/StillingsSøkFilter/StatusFilter';
 import { Publisert } from '../../stillingssok/components/StillingsSøkFilter/SynlighetFilter';
 import { StillingsSøkPortefølje } from '../../stillingssok/stillingssøk-typer';
 import { generateElasticSearchQueryFylkerOgKommuner } from './stillingssøkElasticSearchQueryFylkeOgKommuner';
@@ -85,21 +85,21 @@ export function generateElasticSearchQuery(filter: StillingsSøkFilter) {
     });
   }
 
-  if (filter.statuser.includes(StillingsStatus.Publisert)) {
+  if (filter.statuser.includes(StillingsStatusTyper.Publisert)) {
     should.push({
       term: {
         'stilling.status': 'ACTIVE',
       },
     });
   }
-  if (filter.statuser.includes(StillingsStatus.Utløpt)) {
+  if (filter.statuser.includes(StillingsStatusTyper.Utløpt)) {
     should.push({
       term: {
         'stilling.status': 'INACTIVE',
       },
     });
   }
-  if (filter.statuser.includes(StillingsStatus.Stoppet)) {
+  if (filter.statuser.includes(StillingsStatusTyper.Stoppet)) {
     should.push({
       bool: {
         must: [

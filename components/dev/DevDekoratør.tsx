@@ -1,11 +1,11 @@
 import { InternalHeader } from '@navikt/ds-react';
 import * as React from 'react';
-import { ApplikasjonContext } from '../../app/ApplikasjonContext';
+import { useApplikasjonContext } from '../../app/ApplikasjonContext';
 import { Rolle } from '../../types/Roller';
 
 const DevDekoratør: React.FC = () => {
   const { navIdent, roller, valgtNavKontor, setValgtNavKontor } =
-    React.useContext(ApplikasjonContext);
+    useApplikasjonContext();
 
   React.useEffect(() => {
     if (!valgtNavKontor) {

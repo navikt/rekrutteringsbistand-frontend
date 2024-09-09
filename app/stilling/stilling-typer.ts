@@ -1,7 +1,11 @@
 import { z } from 'zod';
-import { stillingSchema } from '../api/stilling/rekrutteringsbistandstilling/[slug]/zod';
+import {
+  locationListSchema,
+  stillingSchema,
+} from '../api/stilling/rekrutteringsbistandstilling/[slug]/zod';
 
 export type stillingsDataDTO = z.infer<typeof stillingSchema>;
+export type LocationListDTO = z.infer<typeof locationListSchema>;
 
 export enum Status {
   Aktiv = 'ACTIVE',

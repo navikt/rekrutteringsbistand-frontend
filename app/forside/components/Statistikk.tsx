@@ -7,7 +7,7 @@ import {
   sisteDagIMåned,
   visDatoMedMåned,
 } from '../../../util/dato';
-import { ApplikasjonContext } from '../../ApplikasjonContext';
+import { useApplikasjonContext } from '../../ApplikasjonContext';
 import Forespørsler from './Forespørsler';
 import Utfallsstatistikk from './Utfallsstatistikk';
 import ErrorBoundary from '../../../components/feilhåndtering/ErrorBoundary';
@@ -18,7 +18,7 @@ export interface IStatistikkValg {
   tilOgMed: Date;
 }
 const Statistikk: React.FC = () => {
-  const { valgtNavKontor } = React.useContext(ApplikasjonContext);
+  const { valgtNavKontor } = useApplikasjonContext();
   const [startDatoPeriode, setStartDatoPeriode] = useState<Date>(
     førsteDagIMåned(new Date()),
   );

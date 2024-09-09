@@ -1,5 +1,5 @@
 import { LightBulbIcon } from '@navikt/aksel-icons';
-import { Button, Heading, Popover } from '@navikt/ds-react';
+import { Button, Heading, Popover, Switch } from '@navikt/ds-react';
 import {
   FunctionComponent,
   ReactNode,
@@ -7,6 +7,7 @@ import {
   useRef,
   useState,
 } from 'react';
+import { useApplikasjonContext } from '../../../../app/ApplikasjonContext';
 import Artikkel from './Artikkel';
 import css from './Nyheter.module.css';
 import nyhetssaker from './nyhetssaker';
@@ -21,6 +22,8 @@ export type Nyhet = {
 const Nyheter: FunctionComponent = () => {
   const [åpen, setÅpen] = useState<boolean>(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
+
+  const { darkMode, setDarkMode } = useApplikasjonContext();
 
   const onFørsteBesøk = () => {
     setÅpen(true);
@@ -37,18 +40,26 @@ const Nyheter: FunctionComponent = () => {
 
   return (
     <div className={css.nyheter}>
-      <Button
-        ref={buttonRef}
-        className={css.knapp}
-        icon={<LightBulbIcon aria-hidden />}
-        size='small'
-        variant='tertiary-neutral'
-        onClick={() => setÅpen(!åpen)}
-      >
-        Hva er nytt
-        {antallUlesteNyheter > 0 && <div className={css.notifikasjon} />}
-      </Button>
-
+      <div className='flex'>
+        <Switch
+          size='small'
+          checked={darkMode}
+          onChange={(e) => setDarkMode(e.target.checked)}
+        >
+          Mørk modus
+        </Switch>
+        <Button
+          ref={buttonRef}
+          className={css.knapp}
+          icon={<LightBulbIcon aria-hidden />}
+          size='small'
+          variant='tertiary-neutral'
+          onClick={() => setÅpen(!åpen)}
+        >
+          Hva er nytt
+          {antallUlesteNyheter > 0 && <div className={css.notifikasjon} />}
+        </Button>
+      </div>
       <Popover
         anchorEl={buttonRef.current}
         open={åpen}

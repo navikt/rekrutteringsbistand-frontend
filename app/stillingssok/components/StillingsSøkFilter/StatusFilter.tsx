@@ -5,7 +5,7 @@ import * as React from 'react';
 import { storForbokstav } from '../../../kandidatsok/util';
 import { useStillingsSøkFilter } from '../../StillingsSøkContext';
 
-export enum StillingsStatus {
+export enum StillingsStatusTyper {
   Publisert = 'publisert',
   Utløpt = 'utløpt',
   Stoppet = 'stoppet',
@@ -22,14 +22,14 @@ const StatusFilter: React.FC = () => {
         onChange={setStatuser}
         value={statuser ? statuser : undefined}
       >
-        <Checkbox value={StillingsStatus.Publisert}>
-          {storForbokstav(StillingsStatus.Publisert)}
+        <Checkbox value={StillingsStatusTyper.Publisert}>
+          {storForbokstav(StillingsStatusTyper.Publisert)}
         </Checkbox>
-        <Checkbox value={StillingsStatus.Utløpt}>
-          {storForbokstav(StillingsStatus.Utløpt)}
+        <Checkbox value={StillingsStatusTyper.Utløpt}>
+          {storForbokstav(StillingsStatusTyper.Utløpt)}
         </Checkbox>
-        <Checkbox value={StillingsStatus.Stoppet}>
-          {storForbokstav(StillingsStatus.Stoppet)}
+        <Checkbox value={StillingsStatusTyper.Stoppet}>
+          {storForbokstav(StillingsStatusTyper.Stoppet)}
         </Checkbox>
       </CheckboxGroup>
     </React.Fragment>

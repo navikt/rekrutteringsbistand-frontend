@@ -142,9 +142,7 @@ export const StillingsSøkProvider: React.FC<{ children: React.ReactNode }> = ({
 export const useStillingsSøkFilter = () => {
   const context = React.useContext(StillingsSøkContext);
   if (context === undefined) {
-    throw new Error(
-      'useStillingsSøk must be used within a StillingsSøkProvider',
-    );
+    throw new Error('useStillingsSøk må være i scope: StillingsSøkProvider');
   }
   return context;
 };

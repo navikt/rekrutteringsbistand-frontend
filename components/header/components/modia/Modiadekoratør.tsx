@@ -1,6 +1,6 @@
 import NAVSPA from '@navikt/navspa';
-import React, { FunctionComponent } from 'react';
-import { ApplikasjonContext } from '../../../../app/ApplikasjonContext';
+import { FunctionComponent } from 'react';
+import { useApplikasjonContext } from '../../../../app/ApplikasjonContext';
 import { DecoratorProps, Enhet } from './Interndekoratør';
 
 const InternflateDecorator = NAVSPA.importer<DecoratorProps>(
@@ -8,7 +8,7 @@ const InternflateDecorator = NAVSPA.importer<DecoratorProps>(
 );
 
 const Modiadekoratør: FunctionComponent = async () => {
-  const { setValgtNavKontor } = React.useContext(ApplikasjonContext);
+  const { setValgtNavKontor } = useApplikasjonContext();
   return (
     <InternflateDecorator
       useProxy

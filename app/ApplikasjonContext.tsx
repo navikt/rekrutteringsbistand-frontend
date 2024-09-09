@@ -11,6 +11,8 @@ export type NavKontorMedNavn = {
 };
 
 interface ApplikasjonContextType {
+  darkMode: boolean;
+  setDarkMode: (val: boolean) => void;
   roller?: Rolle[];
   navIdent?: string;
   harRolle: (rolle: Rolle[]) => boolean;
@@ -19,7 +21,9 @@ interface ApplikasjonContextType {
   setValgtNavKontor: (navKontor: NavKontorMedNavn | null) => void;
 }
 
-export const ApplikasjonContext = React.createContext<ApplikasjonContextType>({
+const ApplikasjonContext = React.createContext<ApplikasjonContextType>({
+  darkMode: true, //todo
+  setDarkMode: () => false,
   harRolle: () => false,
   tilgangskontrollErPå: false,
   setValgtNavKontor: () => null,
@@ -33,6 +37,8 @@ interface IApplikasjonContextProvider {
 export const ApplikasjonContextProvider: React.FC<
   IApplikasjonContextProvider
 > = ({ children }) => {
+  const [darkMode, setDarkMode] = React.useState<boolean>(false);
+
   const { isLoading, data } = useBruker();
 
   const [valgtNavKontor, setValgtNavKontor] =
@@ -61,6 +67,8 @@ export const ApplikasjonContextProvider: React.FC<
   return (
     <ApplikasjonContext.Provider
       value={{
+        darkMode,
+        setDarkMode,
         setValgtNavKontor,
         valgtNavKontor,
         roller: data?.roller,
@@ -75,4 +83,14 @@ export const ApplikasjonContextProvider: React.FC<
       </main>
     </ApplikasjonContext.Provider>
   );
+};
+
+export const useApplikasjonContext = () => {
+  const context = React.useContext(ApplikasjonContext);
+  if (context === undefined) {
+    throw new Error(
+      'useApplikasjonContext må være i scope: ApplikasjonContextProvider',
+    );
+  }
+  return context;
 };

@@ -1,7 +1,7 @@
 import { Label, Radio, RadioGroup } from '@navikt/ds-react';
 import React, { FunctionComponent, ReactNode } from 'react';
 import { Rolle } from '../../../../types/Roller';
-import { ApplikasjonContext } from '../../../ApplikasjonContext';
+import { useApplikasjonContext } from '../../../ApplikasjonContext';
 import { kategoriTilVisningsnavn } from '../../stilling-util';
 import { Stillingskategori } from '../../stilling-typer';
 
@@ -28,7 +28,7 @@ const VelgStillingskategori: FunctionComponent<Props> = ({
     setStillingskategori(event.target.value as Stillingskategori);
   };
 
-  const { harRolle } = React.useContext(ApplikasjonContext);
+  const { harRolle } = useApplikasjonContext();
 
   const harTilgang = (kategori: Stillingskategori): boolean => {
     switch (kategori) {
