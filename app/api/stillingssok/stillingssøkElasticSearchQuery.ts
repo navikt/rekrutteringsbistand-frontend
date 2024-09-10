@@ -16,7 +16,10 @@ export type StillingsSøkFilter = {
   publisert: string[];
 };
 
-export function generateElasticSearchQuery(filter: StillingsSøkFilter) {
+export function generateElasticSearchQuery(
+  filter: StillingsSøkFilter,
+  navIdent?: string,
+) {
   const should: any[] = [];
   const must: any[] = [];
   const must_not: any[] = [];
@@ -56,6 +59,19 @@ export function generateElasticSearchQuery(filter: StillingsSøkFilter) {
       {
         term: {
           'stilling.status': 'DELETED',
+        },
+      },
+    );
+  } else {
+    should.push(
+      {
+        term: {
+          'stilling.administration.navIdent': navIdent,
+        },
+      },
+      {
+        term: {
+          'stillingsinfo.eierNavident': navIdent,
         },
       },
     );

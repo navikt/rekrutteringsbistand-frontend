@@ -12,8 +12,11 @@ import { stillingsSøkDTOSchema } from './zod';
 
 const stillingEndepunkt = '/api/stillingssok';
 
-export const useStillingssøk = (filter: StillingsSøkFilter) => {
-  const payload = generateElasticSearchQuery(filter);
+export const useStillingssøk = (
+  filter: StillingsSøkFilter,
+  navIdent?: string,
+) => {
+  const payload = generateElasticSearchQuery(filter, navIdent);
 
   return useSWRImmutable(
     {

@@ -2,13 +2,15 @@ import { Heading, Select } from '@navikt/ds-react';
 import * as React from 'react';
 import SWRLaster from '../../components/SWRLaster';
 import { useStillingssøk } from '../api/stillingssok/useStillingssøk';
+import { useApplikasjonContext } from '../ApplikasjonContext';
 import StillingsKort from './components/StillingsKort';
 import StillingsSøkChips from './components/StillingsSøkTags/StillingsSøkTags';
 import { useStillingsSøkFilter } from './StillingsSøkContext';
 
 const StillingsSøkeresultat: React.FC = () => {
   const filter = useStillingsSøkFilter();
-  const hook = useStillingssøk(filter);
+  const { navIdent } = useApplikasjonContext();
+  const hook = useStillingssøk(filter, navIdent);
   return (
     <SWRLaster hook={hook}>
       {(data) => (
