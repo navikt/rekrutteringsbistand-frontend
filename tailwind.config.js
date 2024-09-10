@@ -7,7 +7,12 @@ module.exports = {
   ],
   // https://cdn.jsdelivr.net/npm/@navikt/ds-tailwind/tailwind.config.js
   theme: {
-    extend: {},
+    extend: {
+      screens: {
+        full: '1440px',
+        halv: '768px',
+      },
+    },
   },
   plugins: [],
 };

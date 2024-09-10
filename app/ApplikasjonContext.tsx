@@ -79,7 +79,7 @@ export const ApplikasjonContextProvider: React.FC<
     >
       <Header />
       <main>
-        <div className='mx-auto p-4 max-w-screen-xl'>{children}</div>
+        <div className='mx-auto p-4 max-w-screen-full'>{children}</div>
       </main>
     </ApplikasjonContext.Provider>
   );
