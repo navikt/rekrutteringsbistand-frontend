@@ -11,6 +11,8 @@ import { LocationListDTO, stillingsDataDTO } from '../../stilling-typer';
 
 import { Heading } from '@navikt/ds-react';
 import { getWorkLocationsAsString } from '../../../../util/locationUtil';
+import OmAnnonsen from '../components/OmAnnonsen';
+import OmBedriften from '../components/OmBedriften';
 import StillingStatus from '../components/StillingStatus';
 import StillingSidebar from './StillingSidebar/StillingSidebar';
 import StillingsTekst from './StillingsTekst';
@@ -42,11 +44,10 @@ const OmStillingen: React.FC<IOmStillingen> = ({
     <div className='mt-10'>
       <div className=' flex flex-col gap-y-8 gap-x-[3.5rem] md:flex-row'>
         <div className='w-full '>
+          <div className='mb-4'>
+            <StillingStatus />
+          </div>
           <Heading size='large'>Om stillingen</Heading>
-          <StillingStatus
-            stillingsData={stillingsData}
-            kandidatListeId={kandidatlisteId}
-          />
 
           <div className='mt-4'>
             <div className='grid grid-cols-3 gap-4'>
@@ -65,6 +66,13 @@ const OmStillingen: React.FC<IOmStillingen> = ({
           </div>
           <div className='mt-10'>
             <StillingsTekst />
+          </div>
+
+          <div className='mt-10'>
+            <OmBedriften />
+          </div>
+          <div className='mt-10'>
+            <OmAnnonsen />
           </div>
         </div>
         <StillingSidebar />

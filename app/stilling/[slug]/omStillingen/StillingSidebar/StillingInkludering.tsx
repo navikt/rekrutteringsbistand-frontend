@@ -74,9 +74,12 @@ const StillingInkludering: React.FC = () => {
 
   return (
     <div className='border-blue-200 rounded mt-4 border p-3'>
-      <Heading size='xsmall'>Inkludering</Heading>
+      <Heading size='xsmall' className='mb-4'>
+        Inkludering
+      </Heading>
       {registrerteTags.map((tag) => (
         <TekstMedIkon
+          className='mb-2'
           key={tag}
           ikon={<CheckmarkIcon />}
           tekst={visningsnavnForRegistrering[tag as InkluderingsTag]}
