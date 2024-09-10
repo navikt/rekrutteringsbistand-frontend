@@ -14,6 +14,7 @@ createServer({
     this.namespace = 'api';
 
     this.passthrough('/stillingssok');
+    this.passthrough('/kandidat-api/**');
 
     this.get('stilling/geografi', () => {
       return {

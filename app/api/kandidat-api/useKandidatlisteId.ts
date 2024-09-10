@@ -7,7 +7,7 @@ export const kandidatlisteIdSchema = z.object({ kandidatlisteId: z.string() });
 const useKandidatlisteId = (stillingsId?: string) => {
   return useSWRImmutable(
     stillingsId
-      ? `/kandidat-api/veileder/stilling/${stillingsId}/kandidatlisteid`
+      ? `/api/kandidat-api/veileder/stilling/${stillingsId}/kandidatlisteid`
       : undefined,
     getAPIwithSchema(kandidatlisteIdSchema),
   );

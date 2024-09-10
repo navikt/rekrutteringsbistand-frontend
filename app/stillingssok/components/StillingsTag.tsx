@@ -1,4 +1,4 @@
-import { Tag } from '@navikt/ds-react';
+import { BodyShort, Tag } from '@navikt/ds-react';
 import * as React from 'react';
 
 export interface IStillingTag {
@@ -20,7 +20,7 @@ const StillingsTag: React.FC<IStillingTag> = (tag) => {
     <div className='flex justify-between'>
       <div>
         <div className='mb-2 mr-2 text-sm '>
-          <p>{tag.publisert}</p>
+          <BodyShort>{tag.publisert}</BodyShort>
         </div>
         {tag.erJobbmesse && (
           <Tag className={'mr-2 mb-4'} size='small' variant='alt2'>

@@ -4,7 +4,7 @@ export const stillingMock = {
     administration: {
       comments: null,
       id: 1,
-      navIdent: 'Z11111',
+      navIdent: 'Z123456',
       remarks: [],
       reportee: 'Fornavn Etternavn',
       status: 'PENDING',
@@ -109,9 +109,9 @@ export const stillingMal = {
       id: 699678,
       status: 'DONE',
       comments: null,
-      reportee: 'F_Z994440 E_Z994440',
+      reportee: 'ForNavn EtterNavn',
       remarks: [],
-      navIdent: 'Z994440',
+      navIdent: 'Z123456',
     },
     mediaList: [],
     contactList: [

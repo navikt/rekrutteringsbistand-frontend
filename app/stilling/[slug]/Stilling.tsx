@@ -11,7 +11,7 @@ import OmStillingen from './omStillingen/OmStillingen';
 import { useStillingsContext } from './StillingsContext';
 
 const Stilling: React.FC = () => {
-  const { stillingsData, kandidatlisteId } = useStillingsContext();
+  const { stillingsData, kandidatlisteId, erEier } = useStillingsContext();
 
   const eierNavn = navnEierAvAstilling(stillingsData);
 
@@ -50,7 +50,7 @@ const Stilling: React.FC = () => {
             label='Om stillingen'
             // icon={<ClockDashedIcon aria-hidden />}
           />
-          {kandidatlisteId && (
+          {kandidatlisteId && erEier && (
             <Tabs.Tab
               value='kandidater'
               label='Kandidater'
@@ -61,7 +61,7 @@ const Stilling: React.FC = () => {
         <Tabs.Panel value='stilling'>
           <OmStillingen stillingsData={stillingsData} />
         </Tabs.Panel>
-        {kandidatlisteId && (
+        {kandidatlisteId && erEier && (
           <Tabs.Panel value='kandidater'>
             <div className='mt-4'>Kandidater</div>
           </Tabs.Panel>

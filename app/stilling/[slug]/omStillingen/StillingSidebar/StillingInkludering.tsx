@@ -58,21 +58,6 @@ const StillingInkludering: React.FC = () => {
     ? JSON.parse(stillingsData.stilling?.properties?.tags)
     : [];
 
-  const tilrettelegging = registrerteTags.some((e) =>
-    e.startsWith('INKLUDERING'),
-  );
-
-  const tiltakEllerVirkemiddel = registrerteTags.some((e) =>
-    e.startsWith('TILTAK_ELLER_VIRKEMIDDEL'),
-  );
-
-  const prioriterteMålgrupper = registrerteTags.some((e) =>
-    e.startsWith('PRIORITERT_MÅLGRUPPE'),
-  );
-  const statligInkluderingsdugnad = registrerteTags.some((e) =>
-    e.startsWith('STATLIG_INKLUDERINGSDUGNAD'),
-  );
-
   if (!registrerteTags || registrerteTags?.length === 0) {
     return null;
   }

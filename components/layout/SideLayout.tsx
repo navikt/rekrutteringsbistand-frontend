@@ -9,12 +9,7 @@ export type ISideLayout = {
   sidepanel?: React.ReactNode | undefined;
 };
 
-const SideLayout = ({
-  banner,
-  sidepanel,
-
-  children,
-}: ISideLayout) => {
+const SideLayout = ({ banner, sidepanel, children }: ISideLayout) => {
   return (
     <div className='w-full flex justify-center mx-auto'>
       <div className='w-full '>

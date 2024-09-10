@@ -1,4 +1,4 @@
-import { Alert, BodyLong, Button } from '@navikt/ds-react';
+import { Alert, BodyLong, BodyShort, Button } from '@navikt/ds-react';
 import * as React from 'react';
 import { IFeilmelding } from '../../types/Feilmelding';
 
@@ -17,7 +17,7 @@ const Feilmelding: React.FC<IFeilmelding> = ({
       <Alert className='w-full' style={{ margin: '1rem' }} variant='error'>
         <strong>Feil ved validering av data (ZodError)</strong>
         <BodyLong>{tittel}</BodyLong>
-        <p>Antall feil {zodError?.errors.length ?? 'N/A'}</p>
+        <BodyShort>Antall feil {zodError?.errors.length ?? 'N/A'}</BodyShort>
         <Button
           className='mt-4 mb-4'
           size='small'
@@ -48,8 +48,8 @@ const Feilmelding: React.FC<IFeilmelding> = ({
     <div style={{ width: '100%' }}>
       <Alert style={{ margin: '1rem' }} variant='error'>
         <strong>Noe gikk galt!</strong>
-        <BodyLong>{tittel}</BodyLong>
-        <p>{beskrivelse}</p>
+        <BodyShort>{tittel}</BodyShort>
+        <BodyLong>{beskrivelse}</BodyLong>
         <Button
           className='mt-4 mb-4'
           size='small'

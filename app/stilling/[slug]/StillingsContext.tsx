@@ -53,6 +53,10 @@ const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
     navIdent: navIdent,
   });
 
+  console.log(
+    '🎺 kandidatlisteRespons?.kandidatlisteId',
+    kandidatlisteRespons?.kandidatlisteId,
+  );
   return (
     <StillingsContext.Provider
       value={{
