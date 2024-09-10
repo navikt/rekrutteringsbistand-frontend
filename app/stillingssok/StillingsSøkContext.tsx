@@ -113,6 +113,17 @@ export const StillingsSøkProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, [inkludering, inkluderingUnderkategori, setInkluderingUnderkategori]);
 
+  React.useEffect(() => {
+    if (kommuner.length !== 0) {
+      setKommuner(
+        kommuner.filter((kommune) => {
+          const prefix = kommune.slice(0, 2);
+          return fylker.some((fylke) => fylke === prefix);
+        }),
+      );
+    }
+  }, [fylker]);
+
   return (
     <StillingsSøkContext.Provider
       value={{

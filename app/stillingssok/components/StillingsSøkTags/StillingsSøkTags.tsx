@@ -1,6 +1,7 @@
 import { Chips, VStack } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
+import { useGeografi } from '../../../api/stilling/geografi/useGeografi';
 import { storForbokstavString } from '../../../kandidatsok/util';
 import { useStillingsSøkFilter } from '../../StillingsSøkContext';
 import {
@@ -15,7 +16,9 @@ const StillingsSøkTags: React.FC = () => {
     statuser,
     setStatuser,
     fylker,
+    setFylker,
     kommuner,
+    setKommuner,
     inkludering,
     setInkludering,
     inkluderingUnderkategori,
@@ -41,6 +44,19 @@ const StillingsSøkTags: React.FC = () => {
   );
 
   const router = useRouter();
+
+  const { data } = useGeografi();
+
+  function geografiNavn(code: string): string {
+    if (code.length === 2) {
+      const region = data?.fylker.find((r) => r.code === code);
+      return region ? region.capitalizedName : '';
+    } else {
+      const region = data?.kommuner.find((r) => r.code === code);
+      return region ? region.capitalizedName : '';
+    }
+  }
+
   return (
     <div className='mt-4'>
       <VStack gap='10'>
@@ -117,6 +133,30 @@ const StillingsSøkTags: React.FC = () => {
               onClick={() => setPublisert(publisert.filter((i) => i !== k))}
             >
               {storForbokstavString(k)}
+            </Chips.Removable>
+          ))}
+
+          {fylker.map((fylke, i) => (
+            <Chips.Removable
+              key={i}
+              variant='neutral'
+              onClick={() => {
+                // setKommuner(
+                //   kommuner.filter((kommune) => kommune.slice(0, 2) !== fylke),
+                // );
+                setFylker(fylker.filter((i) => i !== fylke));
+              }}
+            >
+              {storForbokstavString(geografiNavn(fylke))}
+            </Chips.Removable>
+          ))}
+          {kommuner.map((kommune, i) => (
+            <Chips.Removable
+              key={i}
+              variant='neutral'
+              onClick={() => setKommuner(kommuner.filter((i) => i !== kommune))}
+            >
+              {storForbokstavString(geografiNavn(kommune))}
             </Chips.Removable>
           ))}
         </Chips>
