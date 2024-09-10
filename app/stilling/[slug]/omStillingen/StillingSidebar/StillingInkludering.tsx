@@ -54,7 +54,7 @@ const StillingInkludering: React.FC = () => {
   const { stillingsData } = useStillingsContext();
 
   const registrerteTags: InkluderingsTag[] = JSON.parse(
-    stillingsData.stilling.properties.tags ?? '',
+    stillingsData.stilling?.properties?.tags ?? '',
   );
 
   const tilrettelegging = registrerteTags.some((e) =>

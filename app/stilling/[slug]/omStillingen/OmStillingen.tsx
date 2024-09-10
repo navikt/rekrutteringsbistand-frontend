@@ -37,7 +37,7 @@ const OmStillingen: React.FC<IOmStillingen> = ({
     applicationdue,
     // jobarrangement,
     // starttime,
-  } = stillingsData.stilling.properties;
+  } = stillingsData.stilling.properties as any; //todo
   return (
     <div className='mt-10'>
       <div className=' flex flex-col gap-y-8 gap-x-[3.5rem] md:flex-row'>
