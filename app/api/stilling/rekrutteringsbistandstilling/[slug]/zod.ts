@@ -5,29 +5,31 @@ export type stillingSchemaDTO = z.infer<typeof stillingSchema>;
 export const locationListSchema = z
   .array(
     z.object({
-      address: z.string().nullable(),
-      postalCode: z.string().nullable(),
-      county: z.string().nullable(),
-      municipal: z.string().nullable(),
-      municipalCode: z.string().nullable(),
-      city: z.string().nullable(),
-      country: z.string().nullable(),
-      latitude: z.string().nullable(),
-      longitude: z.string().nullable(),
+      address: z.string().nullable().optional(),
+      postalCode: z.string().nullable().optional(),
+      county: z.string().nullable().optional(),
+      municipal: z.string().nullable().optional(),
+      municipalCode: z.string().nullable().optional(),
+      city: z.string().nullable().optional(),
+      country: z.string().nullable().optional(),
+      latitude: z.string().nullable().optional(),
+      longitude: z.string().nullable().optional(),
     }),
   )
-  .nullable();
+  .nullable()
+  .optional();
 
 export const stillingSchema = z.object({
   stillingsinfo: z
     .object({
       stillingsid: z.string(),
       stillingsinfoid: z.string(),
-      eierNavident: z.string().nullable(),
-      eierNavn: z.string().nullable(),
+      eierNavident: z.string().nullable().optional(),
+      eierNavn: z.string().nullable().optional(),
       stillingskategori: z.string(),
     })
-    .nullable(),
+    .nullable()
+    .optional(),
   stilling: z.object({
     id: z.number(),
     uuid: z.string(),
@@ -41,12 +43,13 @@ export const stillingSchema = z.object({
       .object({
         id: z.number(),
         status: z.string(),
-        comments: z.string().nullable(),
+        comments: z.string().nullable().optional(),
         reportee: z.string(),
         remarks: z.array(z.unknown()),
-        navIdent: z.string().nullable(),
+        navIdent: z.string().nullable().optional(),
       })
-      .nullable(),
+      .nullable()
+      .optional(),
     mediaList: z.array(z.unknown()),
     contactList: z.array(z.unknown()),
     privacy: z.string(),
@@ -69,63 +72,67 @@ export const stillingSchema = z.object({
           .object({
             address: z.string(),
             postalCode: z.string(),
-            county: z.string().nullable(),
-            municipal: z.string().nullable(),
-            municipalCode: z.string().nullable(),
+            county: z.string().nullable().optional(),
+            municipal: z.string().nullable().optional(),
+            municipalCode: z.string().nullable().optional(),
             city: z.string(),
             country: z.string(),
-            latitude: z.string().nullable(),
-            longitude: z.string().nullable(),
+            latitude: z.string().nullable().optional(),
+            longitude: z.string().nullable().optional(),
           })
-          .nullable(),
+          .nullable()
+          .optional(),
         locationList: locationListSchema,
-        properties: z.any().nullable(),
+        properties: z.any().nullable().optional(),
         name: z.string(),
         orgnr: z.string(),
         status: z.string(),
         parentOrgnr: z.string(),
         publicName: z.string(),
-        deactivated: z.string().nullable(),
+        deactivated: z.string().nullable().optional(),
         orgform: z.string(),
         employees: z.number(),
       })
-      .nullable(),
+      .nullable()
+      .optional(),
     location: z
       .object({
-        address: z.string().nullable(),
-        postalCode: z.string().nullable(),
-        county: z.string().nullable(),
-        municipal: z.string().nullable(),
-        municipalCode: z.string().nullable(),
-        city: z.string().nullable(),
+        address: z.string().nullable().optional(),
+        postalCode: z.string().nullable().optional(),
+        county: z.string().nullable().optional(),
+        municipal: z.string().nullable().optional(),
+        municipalCode: z.string().nullable().optional(),
+        city: z.string().nullable().optional(),
         country: z.string(),
-        latitude: z.string().nullable(),
-        longitude: z.string().nullable(),
+        latitude: z.string().nullable().optional(),
+        longitude: z.string().nullable().optional(),
       })
-      .nullable(),
+      .nullable()
+      .optional(),
     locationList: z.array(z.unknown()),
     categoryList: z.array(z.unknown()),
     properties: z
       .object({
-        extent: z.string().nullable(),
-        workhours: z.string().nullable(),
-        applicationdue: z.string().nullable(),
-        workday: z.string().nullable(),
-        jobtitle: z.string().nullable(),
-        positioncount: z.string().nullable(),
-        engagementtype: z.string().nullable(),
-        classification_styrk08_score: z.string().nullable(),
-        employerdescription: z.string().optional().nullable(),
-        adtext: z.string().nullable(),
-        classification_styrk08_code: z.string().nullable(),
-        tags: z.string().nullable(),
-        searchtags: z.string().nullable(),
-        classification_esco_code: z.string().nullable(),
-        classification_input_source: z.string().nullable(),
-        sector: z.string().nullable(),
+        extent: z.string().nullable().optional(),
+        workhours: z.string().nullable().optional(),
+        applicationdue: z.string().nullable().optional(),
+        workday: z.string().nullable().optional(),
+        jobtitle: z.string().nullable().optional(),
+        positioncount: z.string().nullable().optional(),
+        engagementtype: z.string().nullable().optional(),
+        classification_styrk08_score: z.string().nullable().optional(),
+        employerdescription: z.string().optional().nullable().optional(),
+        adtext: z.string().nullable().optional(),
+        classification_styrk08_code: z.string().nullable().optional(),
+        tags: z.string().nullable().optional(),
+        searchtags: z.string().nullable().optional(),
+        classification_esco_code: z.string().nullable().optional(),
+        classification_input_source: z.string().nullable().optional(),
+        sector: z.string().nullable().optional(),
       })
-      .nullable(),
-    publishedByAdmin: z.string().nullable(),
+      .nullable()
+      .optional(),
+    publishedByAdmin: z.string().nullable().optional(),
     businessName: z.string(),
     firstPublished: z.boolean(),
     deactivatedByExpiry: z.boolean(),

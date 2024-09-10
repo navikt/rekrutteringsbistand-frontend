@@ -92,7 +92,7 @@ export const stillingSchema = z.object({
   locations: z.array(locationSchema),
   reference: z.string(),
   administration: administrationSchema,
-  properties: propertiesSchema,
+  properties: propertiesSchema.nullable(),
   contacts: z.array(contactSchema),
   styrkEllerTittel: z.string(),
 });
