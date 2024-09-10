@@ -57,7 +57,7 @@ export const propertiesSchema = z
     classification_styrk08_score: z.number().optional().nullable(),
     employerdescription: z.string().optional().nullable(),
     adtext: z.string(),
-    classification_styrk08_code: z.number().optional().nullable(),
+    classification_styrk08_code: z.string().optional().nullable(),
     sourceurl: z.string().optional().nullable(),
     searchtags: z.array(searchtagSchema).optional().nullable(),
     applicationurl: z.string().optional().nullable(),
