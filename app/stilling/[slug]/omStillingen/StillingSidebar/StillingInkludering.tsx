@@ -53,9 +53,10 @@ export const visningsnavnForRegistrering: Partial<
 const StillingInkludering: React.FC = () => {
   const { stillingsData } = useStillingsContext();
 
-  const registrerteTags: InkluderingsTag[] = JSON.parse(
-    stillingsData.stilling?.properties?.tags ?? '',
-  );
+  const registrerteTags: InkluderingsTag[] = stillingsData.stilling?.properties
+    ?.tags
+    ? JSON.parse(stillingsData.stilling?.properties?.tags)
+    : '';
 
   const tilrettelegging = registrerteTags.some((e) =>
     e.startsWith('INKLUDERING'),
