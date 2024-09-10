@@ -73,6 +73,9 @@ const StillingInkludering: React.FC = () => {
     e.startsWith('STATLIG_INKLUDERINGSDUGNAD'),
   );
 
+  if (!registrerteTags || registrerteTags?.length === 0) {
+    return null;
+  }
   return (
     <div className='border-blue-200 rounded mt-4 border p-3'>
       <Heading size='xsmall' className='mb-4'>
