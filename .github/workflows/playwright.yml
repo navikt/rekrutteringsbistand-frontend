@@ -6,6 +6,8 @@ on:
     branches: [ main, master ]
 jobs:
   test:
+    permissions:
+      contents: write # to write sarif
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
