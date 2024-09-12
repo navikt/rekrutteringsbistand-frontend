@@ -99,7 +99,10 @@ jobs:
   deploy:
     name: Deploy til dev-gcp
     runs-on: ubuntu-latest
-    needs: build
+    needs: 
+      - test 
+      - trivy
+      - build
     permissions:
       contents: read
       id-token: write
