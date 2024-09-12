@@ -8,22 +8,14 @@ jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
-    permissions:
-      contents: write # to write sarif
-      security-events: write # push sarif to github security
-      id-token: write # for nais/login
-      actions: read # for private repositories
     steps:
     - uses: actions/checkout@v4
-    - uses: nais/login@v0
-      with:
-        project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
-        identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
-        team: toi
     - uses: actions/setup-node@v4
       with:
         node-version: lts/*
     - name: Install dependencies
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
       run: npm ci
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
