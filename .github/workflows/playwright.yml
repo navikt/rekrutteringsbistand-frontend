@@ -13,11 +13,10 @@ jobs:
     - uses: actions/setup-node@v4
       with:
         node-version: lts/*
-        registry-url: 'https://npm.pkg.github.com/'
-    - name: Configure npm registry authentication
-      run: |
-        echo "//npm.pkg.github.com/:_authToken=${{ secrets.NODE_AUTH_TOKEN }}" > .npmrc
+        registry-url: "https://npm.pkg.github.com"
     - name: Install dependencies
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
       run: npm ci
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
