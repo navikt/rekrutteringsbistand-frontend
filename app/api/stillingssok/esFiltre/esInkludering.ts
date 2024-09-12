@@ -3,9 +3,7 @@ export type StillingsSøkFilter = {
   inkluderingUnderkategori: string[];
 };
 
-export function generateElasticSearchQueryInkludering(
-  filter: StillingsSøkFilter,
-) {
+export function esInkludering(filter: StillingsSøkFilter) {
   return [
     {
       terms: {

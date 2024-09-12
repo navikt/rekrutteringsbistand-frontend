@@ -16,10 +16,9 @@ interface StillingsContextType {
   setEndrerStilling: (endrerStilling: boolean) => void;
 }
 
-const StillingsContext = React.createContext<StillingsContextType>({
-  stillingsData: {} as stillingSchemaDTO,
-  setEndrerStilling: () => false,
-});
+const StillingsContext = React.createContext<StillingsContextType | undefined>(
+  undefined,
+);
 
 interface StillingsContextProviderProps {
   stillingsId: string;
@@ -53,10 +52,6 @@ const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
     navIdent: navIdent,
   });
 
-  console.log(
-    '🎺 kandidatlisteRespons?.kandidatlisteId',
-    kandidatlisteRespons?.kandidatlisteId,
-  );
   return (
     <StillingsContext.Provider
       value={{
@@ -74,6 +69,7 @@ const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
 
 export const useStillingsContext = () => {
   const context = React.useContext(StillingsContext);
+
   if (context === undefined) {
     throw new Error(
       'useStillingsContext må være i scope: StillingsContextProvider',

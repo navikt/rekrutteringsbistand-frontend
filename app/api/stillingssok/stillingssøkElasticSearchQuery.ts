@@ -1,9 +1,10 @@
-import { Stillingskategori } from '../../stilling/stilling-typer';
-import { StillingsStatusTyper } from '../../stillingssok/components/StillingsSøkFilter/StatusFilter';
-import { Publisert } from '../../stillingssok/components/StillingsSøkFilter/SynlighetFilter';
 import { StillingsSøkPortefølje } from '../../stillingssok/stillingssøk-typer';
-import { generateElasticSearchQueryFylkerOgKommuner } from './stillingssøkElasticSearchQueryFylkeOgKommuner';
-import { generateElasticSearchQueryInkludering } from './stillingssøkElasticSearchQueryInkludering';
+import { esFylkerOgKommuner } from './esFiltre/esFylkerOgKommuner';
+import { esInkludering } from './esFiltre/esInkludering';
+import { esKategori } from './esFiltre/esKategori';
+import { esStatuser } from './esFiltre/esStatuser';
+import { esSynlighet } from './esFiltre/esSynlighet';
+import { esErEier, esVariabler } from './esFiltre/esVariabler';
 
 export type StillingsSøkFilter = {
   statuser: string[];
@@ -20,9 +21,7 @@ export function generateElasticSearchQuery(
   filter: StillingsSøkFilter,
   navIdent?: string,
 ) {
-  const should: any[] = [];
-  const must: any[] = [];
-  const must_not: any[] = [];
+  const valgteFilter: any[] = [];
   const term: any[] = [];
   const sort: any = {
     'stilling.published': {
@@ -30,138 +29,16 @@ export function generateElasticSearchQuery(
     },
   };
 
+  valgteFilter.push();
+
   if (!filter?.portefølje?.includes(StillingsSøkPortefølje.VIS_MINE)) {
-    must.push(
-      {
-        term: {
-          'stilling.administration.status': 'DONE',
-        },
-      },
-      {
-        exists: {
-          field: 'stilling.publishedByAdmin',
-        },
-      },
-      {
-        range: {
-          'stilling.published': {
-            lte: 'now/d',
-          },
-        },
-      },
-    );
-    must_not.push(
-      {
-        term: {
-          'stilling.status': 'REJECTED',
-        },
-      },
-      {
-        term: {
-          'stilling.status': 'DELETED',
-        },
-      },
-    );
+    valgteFilter.push(esVariabler.skjulSlettetOgRejected);
   } else {
-    should.push(
-      {
-        term: {
-          'stilling.administration.navIdent': navIdent,
-        },
-      },
-      {
-        term: {
-          'stillingsinfo.eierNavident': navIdent,
-        },
-      },
-    );
+    valgteFilter.push(esErEier(navIdent));
   }
 
-  if (!filter?.publisert?.includes(Publisert.Dev)) {
-    must.push({
-      exists: {
-        field: 'stilling.publishedByAdmin',
-      },
-    });
-  }
-
-  if (filter?.publisert?.includes(Publisert.Intern)) {
-    term.push({
-      term: {
-        'stilling.source': 'DIR',
-      },
-    });
-  }
-
-  if (filter?.publisert?.includes(Publisert.Arbeidsplassen)) {
-    term.push({
-      term: {
-        'stilling.privacy': 'SHOW_ALL',
-      },
-    });
-  }
-
-  if (filter.statuser.includes(StillingsStatusTyper.Publisert)) {
-    should.push({
-      term: {
-        'stilling.status': 'ACTIVE',
-      },
-    });
-  }
-  if (filter.statuser.includes(StillingsStatusTyper.Utløpt)) {
-    should.push({
-      term: {
-        'stilling.status': 'INACTIVE',
-      },
-    });
-  }
-  if (filter.statuser.includes(StillingsStatusTyper.Stoppet)) {
-    should.push({
-      bool: {
-        must: [
-          {
-            term: {
-              'stilling.status': 'STOPPED',
-            },
-          },
-        ],
-      },
-    });
-  }
-
-  if (
-    filter.kategori.includes(Stillingskategori.Stilling) &&
-    filter.kategori.includes(Stillingskategori.Jobbmesse)
-  ) {
-  } else if (
-    filter.kategori.includes(Stillingskategori.Stilling) ||
-    filter.kategori.includes(Stillingskategori.Jobbmesse)
-  ) {
-    filter.kategori.includes(Stillingskategori.Jobbmesse) &&
-      should.push({
-        term: {
-          'stillingsinfo.stillingskategori': 'JOBBMESSE',
-        },
-      });
-
-    filter.kategori.includes(Stillingskategori.Stilling) &&
-      must_not.push(
-        {
-          term: {
-            'stillingsinfo.stillingskategori': 'ARBEIDSTRENING',
-          },
-        },
-        {
-          term: {
-            'stillingsinfo.stillingskategori': 'JOBBMESSE',
-          },
-        },
-        {
-          term: {
-            'stillingsinfo.stillingskategori': 'FORMIDLING',
-          },
-        },
-      );
+  if (filter?.statuser) {
+    valgteFilter.push(...esStatuser(filter.statuser));
   }
 
   if (
@@ -169,16 +46,25 @@ export function generateElasticSearchQuery(
     filter.inkluderingUnderkategori.length > 0
   ) {
     term.push(
-      ...generateElasticSearchQueryInkludering({
+      ...esInkludering({
         inkludering: filter.inkludering,
         inkluderingUnderkategori: filter.inkluderingUnderkategori,
       }),
     );
   }
-  const fylkerKommuner = generateElasticSearchQueryFylkerOgKommuner({
+
+  const fylkerKommuner = esFylkerOgKommuner({
     fylker: filter.fylker,
     kommuner: filter.kommuner,
   });
+
+  if (filter.kategori.length > 0) {
+    valgteFilter.push(...esKategori(filter.kategori));
+  }
+
+  if (filter.publisert.length > 0) {
+    valgteFilter.push(...esSynlighet(filter.publisert));
+  }
 
   const byggQuery = {
     size: 40,
@@ -187,25 +73,7 @@ export function generateElasticSearchQuery(
     query: {
       bool: {
         minimum_should_match: '0',
-        filter: [
-          ...term,
-          ...fylkerKommuner,
-          {
-            bool: {
-              must: must,
-            },
-          },
-          {
-            bool: {
-              must_not: must_not,
-            },
-          },
-          {
-            bool: {
-              should: should,
-            },
-          },
-        ],
+        filter: [...term, ...fylkerKommuner, ...valgteFilter],
       },
     },
     sort: sort,

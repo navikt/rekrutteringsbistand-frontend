@@ -56,7 +56,7 @@ export const propertiesSchema = z
     engagementtype: z.string().optional().nullable(),
     classification_styrk08_score: z.number().optional().nullable(),
     employerdescription: z.string().optional().nullable(),
-    adtext: z.string(),
+    adtext: z.string().optional().nullable(),
     classification_styrk08_code: z.any().optional().nullable(),
     sourceurl: z.string().optional().nullable(),
     searchtags: z.array(searchtagSchema).optional().nullable(),

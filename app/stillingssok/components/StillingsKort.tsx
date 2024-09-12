@@ -10,12 +10,13 @@ import Link from 'next/link';
 import * as React from 'react';
 
 import TekstMedIkon from '../../../components/TekstMedIkon';
+import { eierStilling } from '../../../components/tilgangskontroll/erEier';
 import {
   konverterTilPresenterbarDato,
   visDatoMedMåned,
 } from '../../../util/dato';
 import formaterMedStoreOgSmåBokstaver from '../../../util/tekst';
-import { useStillingsContext } from '../../stilling/[slug]/StillingsContext';
+import { useApplikasjonContext } from '../../ApplikasjonContext';
 import { Status, Stillingskategori } from '../../stilling/stilling-typer';
 import { stillingErUtløpt } from '../../stilling/stilling-util';
 import { StillingsDTO } from '../stillingssøk-typer';
@@ -36,7 +37,11 @@ const hentHovedtags = (): string[] => {
 };
 
 const StillingsKort: React.FC<IStillingsKort> = ({ stillingData }) => {
-  const { erEier } = useStillingsContext();
+  const { navIdent } = useApplikasjonContext();
+  const erEier = eierStilling({
+    stillingsData: stillingData,
+    navIdent: navIdent,
+  });
 
   const publisertDato = visDatoMedMåned(
     new Date(stillingData.stilling.published),
