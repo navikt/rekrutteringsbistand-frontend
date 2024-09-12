@@ -18,6 +18,10 @@ jobs:
       env:
         NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
       run: npm ci
+    - name: Start Node application
+      run: npm start &
+    - name: Wait for application to start
+      run: sleep 10
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
     - name: Run Playwright tests
