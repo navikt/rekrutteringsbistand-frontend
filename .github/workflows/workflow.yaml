@@ -29,44 +29,44 @@ jobs:
         run: echo "image=${{ steps.docker-build-push.outputs.image }}" >> $GITHUB_ENV
 
   test:
-    name: Run Playwright Tests
-    runs-on: ubuntu-latest
-    needs: build
-    permissions:
-      contents: read
-      id-token: write 
-      actions: read 
-    steps:
-      - uses: actions/checkout@v4
-      - name: Pull Docker image
-        run: docker pull ${{ needs.build.outputs.image }}
+          name: Playwright image test
+          needs: build
+          permissions:
+            contents: write # to write sarif
+          runs-on: ubuntu-latest
+          steps:
+            - name: Pull Docker image from build
+              run: docker pull ${{ needs.build.outputs.image }}
       
-      # Start the application using the Docker image
-      - name: Start Application
-        run: docker run -d -p 8080:8080 ${{ needs.build.outputs.image }}
+            # Start the application using the Docker image
+            - name: Start Application in Docker
+              run: docker run -d -p 8080:8080 ${{ needs.build.outputs.image }}
       
-     # Run Playwright tests using the official Playwright Docker image
-      - name: Run Playwright Tests in Docker
-        uses: addnab/docker-run-action@v3
-        with:
-         image: mcr.microsoft.com/playwright:focal
-         options: --network=host
-         run: |
-           git clone ${{ github.repository }} /tests
-           cd /tests
-           npm install
-           npx playwright test
+            # Run Playwright tests using the built Docker image
+            - name: Run Playwright Tests in Docker
+              run: |
+                docker exec $(docker ps -q -f ancestor=${{ needs.build.outputs.image }}) npx playwright test
+            
+            # Upload Playwright reports as artifacts in case of failure
+            - uses: actions/upload-artifact@v4
+              if: failure()
+              with:
+                name: playwright-report
+                path: playwright-report/
+                retention-days: 30
       
-      # Upload Playwright reports as artifacts
-      - uses: actions/upload-artifact@v4
-        if: failure()
-        with:
-          name: playwright-report
-          path: playwright-report/
-          retention-days: 30
+            # Deploy Playwright report to GitHub Pages
+            - name: Deploy to GitHub Pages
+              uses: peaceiris/actions-gh-pages@v3
+              with:
+                github_token: ${{ secrets.GITHUB_TOKEN }}
+                publish_dir: ./playwright-report
+                publish_branch: gh-pages  # the target branch
+                keep_files: true
 
   trivy:
     runs-on: ubuntu-latest
+    name: Trivy vulnerability scanner
     needs: build
     permissions:
       contents: write # to write sarif
