@@ -122,7 +122,7 @@ export const StillingsSøkProvider: React.FC<{ children: React.ReactNode }> = ({
         }),
       );
     }
-  }, [fylker]);
+  }, [fylker, kommuner, setKommuner]);
 
   return (
     <StillingsSøkContext.Provider

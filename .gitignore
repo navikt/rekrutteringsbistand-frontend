@@ -37,3 +37,7 @@ next-env.d.ts
 
 #custom
 .history
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

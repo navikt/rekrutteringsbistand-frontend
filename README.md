@@ -51,6 +51,15 @@ Det er installert eslint og husky som formaterer koden og gir evt feilmeldinger 
 
 Får du ikke pushet, se gitlog for feilmelding...
 
+
+
+# Testing
+
+
+## Playwright
+`npx playwright codegen` 
+Happy hacking! 🎭
+
 # Tips:
 
 transform tools: https://transform.tools/
