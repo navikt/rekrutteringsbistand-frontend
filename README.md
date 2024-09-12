@@ -58,6 +58,9 @@ Får du ikke pushet, se gitlog for feilmelding...
 
 ## Playwright
 `npx playwright codegen` 
+
+Resultat: https://navikt.github.io/rekrutteringsbistand-frontend 
+
 Happy hacking! 🎭
 
 # Tips:
