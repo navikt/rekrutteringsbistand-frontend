@@ -1,5 +1,10 @@
 'use client';
-import { parseAsArrayOf, parseAsString, useQueryState } from 'nuqs';
+import {
+  parseAsArrayOf,
+  parseAsInteger,
+  parseAsString,
+  useQueryState,
+} from 'nuqs';
 import * as React from 'react';
 import {
   hierarkiAvTagsForFilter,
@@ -8,6 +13,8 @@ import {
 import { StillingsSøkQueryparam } from './stillingssøk-typer';
 
 interface IStillingsSøkContext {
+  side: number;
+  setSide: (val: number) => void;
   statuser: string[];
   setStatuser: (val: string[]) => void;
   fylker: string[];
@@ -51,6 +58,11 @@ export const StillingsSøkProvider: React.FC<{ children: React.ReactNode }> = ({
     parseAsArrayOf(parseAsString)
       .withDefault([])
       .withOptions({ clearOnDefault: true }),
+  );
+
+  const [side, setSide] = useQueryState(
+    StillingsSøkQueryparam.Side,
+    parseAsInteger.withDefault(1).withOptions({ clearOnDefault: true }),
   );
 
   const [portefølje, setPortefølje] = useQueryState(
@@ -129,6 +141,8 @@ export const StillingsSøkProvider: React.FC<{ children: React.ReactNode }> = ({
   return (
     <StillingsSøkContext.Provider
       value={{
+        side,
+        setSide,
         statuser,
         setStatuser,
         fylker,

@@ -7,7 +7,13 @@ import { esStatuser } from './esFiltre/esStatuser';
 import { esSynlighet } from './esFiltre/esSynlighet';
 import { esErEier, esVariabler } from './esFiltre/esVariabler';
 
+export const maksAntallTreffPerSøk = 40;
+
+const regnUtFørsteTreffFra = (side: number, antallTreffPerSide: number) =>
+  side * antallTreffPerSide - antallTreffPerSide;
+
 export type StillingsSøkFilter = {
+  side: number;
   statuser: string[];
   fylker: string[];
   kommuner: string[];
@@ -85,8 +91,8 @@ export function generateElasticSearchQuery(
   }
 
   const byggQuery = {
-    size: 40,
-    from: 0,
+    size: maksAntallTreffPerSøk,
+    from: regnUtFørsteTreffFra(filter.side, maksAntallTreffPerSøk),
     track_total_hits: true,
     query: {
       bool: {

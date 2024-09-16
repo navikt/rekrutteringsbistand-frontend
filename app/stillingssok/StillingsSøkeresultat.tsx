@@ -3,6 +3,7 @@ import * as React from 'react';
 import SWRLaster from '../../components/SWRLaster';
 import { useStillingssøk } from '../api/stillingssok/useStillingssøk';
 import { useApplikasjonContext } from '../ApplikasjonContext';
+import StillingsSøkPaginering from './components/Pagnering';
 import StillingsKort from './components/StillingsKort';
 import StillingsSøkSortering from './components/StillingsSøkSortering';
 import StillingsSøkChips from './components/StillingsSøkTags/StillingsSøkTags';
@@ -27,6 +28,9 @@ const StillingsSøkeresultat: React.FC = () => {
           {data.hits.hits.map((hit) => (
             <StillingsKort key={hit._id} stillingData={hit._source} />
           ))}
+          <StillingsSøkPaginering
+            totaltAntallTreff={data.hits.total.value ?? 0}
+          />
         </>
       )}
     </SWRLaster>
