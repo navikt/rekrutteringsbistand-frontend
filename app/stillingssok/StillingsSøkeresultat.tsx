@@ -1,6 +1,10 @@
 import { Heading } from '@navikt/ds-react';
 import * as React from 'react';
 import SWRLaster from '../../components/SWRLaster';
+import {
+  maksAntallTreffPerSøk,
+  regnUtFørsteTreffFra,
+} from '../api/stillingssok/stillingssøkElasticSearchQuery';
 import { useStillingssøk } from '../api/stillingssok/useStillingssøk';
 import { useApplikasjonContext } from '../ApplikasjonContext';
 import StillingsSøkPaginering from './components/Pagnering';
@@ -13,6 +17,20 @@ const StillingsSøkeresultat: React.FC = () => {
   const filter = useStillingsSøkFilter();
   const { navIdent } = useApplikasjonContext();
   const hook = useStillingssøk(filter, navIdent);
+
+  const antallVisning = (fra: number, til: number, total: number) => {
+    const treffFra = regnUtFørsteTreffFra(filter.side, maksAntallTreffPerSøk);
+    const fraAntall = treffFra + 1;
+
+    const tilAntall = treffFra + maksAntallTreffPerSøk;
+
+    return (
+      <Heading size='medium'>
+        Viser {fraAntall}-{tilAntall < total ? tilAntall : total} av {total}{' '}
+        treff
+      </Heading>
+    );
+  };
   return (
     <SWRLaster hook={hook}>
       {(data) => (
@@ -22,7 +40,11 @@ const StillingsSøkeresultat: React.FC = () => {
             <div>Lagre TBD</div>
           </div>
           <div className='flex justify-between items-center my-4'>
-            <Heading size='medium'>{data.hits.total.value} annonser</Heading>
+            {antallVisning(
+              data.hits.total.value ?? 1,
+              data.hits.total.value ?? 1,
+              data.hits.total.value,
+            )}
             <StillingsSøkSortering />
           </div>
           {data.hits.hits.map((hit) => (

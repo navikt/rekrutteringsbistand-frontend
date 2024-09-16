@@ -7,10 +7,12 @@ import { esStatuser } from './esFiltre/esStatuser';
 import { esSynlighet } from './esFiltre/esSynlighet';
 import { esErEier, esVariabler } from './esFiltre/esVariabler';
 
-export const maksAntallTreffPerSøk = 40;
+export const maksAntallTreffPerSøk = 20;
 
-const regnUtFørsteTreffFra = (side: number, antallTreffPerSide: number) =>
-  side * antallTreffPerSide - antallTreffPerSide;
+export const regnUtFørsteTreffFra = (
+  side: number,
+  antallTreffPerSide: number,
+) => side * antallTreffPerSide - antallTreffPerSide;
 
 export type StillingsSøkFilter = {
   side: number;
