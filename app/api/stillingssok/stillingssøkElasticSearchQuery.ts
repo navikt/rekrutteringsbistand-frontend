@@ -1,4 +1,5 @@
 import { StillingsSøkPortefølje } from '../../stillingssok/stillingssøk-typer';
+import { geografiDTO } from '../stilling/geografi/useGeografi';
 import { esFylkerOgKommuner } from './esFiltre/esFylkerOgKommuner';
 import { esInkludering } from './esFiltre/esInkludering';
 import { esKategori } from './esFiltre/esKategori';
@@ -20,6 +21,7 @@ export type StillingsSøkFilter = {
 export function generateElasticSearchQuery(
   filter: StillingsSøkFilter,
   navIdent?: string,
+  geografiData?: geografiDTO,
 ) {
   const valgteFilter: any[] = [];
   const term: any[] = [];
@@ -53,17 +55,33 @@ export function generateElasticSearchQuery(
     );
   }
 
-  const fylkerKommuner = esFylkerOgKommuner({
-    fylker: filter.fylker,
-    kommuner: filter.kommuner,
-  });
-
   if (filter.kategori.length > 0) {
     valgteFilter.push(...esKategori(filter.kategori));
   }
 
   if (filter.publisert.length > 0) {
     valgteFilter.push(...esSynlighet(filter.publisert));
+  }
+
+  if (
+    (geografiData && filter.fylker?.length > 0) ||
+    filter.kommuner?.length > 0
+  ) {
+    const valgteFylker =
+      geografiData?.fylker.filter((fylke) =>
+        filter?.fylker.includes(fylke.code),
+      ) ?? [];
+    const valgteKommuner =
+      geografiData?.kommuner.filter((kommune) =>
+        filter?.kommuner.includes(kommune.code),
+      ) ?? [];
+
+    const valgteFylkerOgKommuner: geografiDTO = {
+      fylker: valgteFylker,
+      kommuner: valgteKommuner,
+    };
+
+    valgteFilter.push(esFylkerOgKommuner(valgteFylkerOgKommuner));
   }
 
   const byggQuery = {
@@ -73,7 +91,7 @@ export function generateElasticSearchQuery(
     query: {
       bool: {
         minimum_should_match: '0',
-        filter: [...term, ...fylkerKommuner, ...valgteFilter],
+        filter: [...term, ...valgteFilter],
       },
     },
     sort: sort,

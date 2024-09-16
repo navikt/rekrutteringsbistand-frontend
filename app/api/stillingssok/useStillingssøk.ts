@@ -4,6 +4,7 @@
  */
 import useSWRImmutable from 'swr/immutable';
 import { postApiWithSchema } from '../fetcher';
+import { useGeografi } from '../stilling/geografi/useGeografi';
 import {
   generateElasticSearchQuery,
   StillingsSøkFilter,
@@ -16,7 +17,13 @@ export const useStillingssøk = (
   filter: StillingsSøkFilter,
   navIdent?: string,
 ) => {
-  const payload = generateElasticSearchQuery(filter, navIdent);
+  const geografiData = useGeografi();
+
+  const payload = generateElasticSearchQuery(
+    filter,
+    navIdent,
+    geografiData.data,
+  );
 
   return useSWRImmutable(
     {
