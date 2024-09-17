@@ -58,28 +58,28 @@ const StillingStatus: React.FC = () => {
   if (stillingenBlirPublisert) {
     return (
       <Alert fullWidth variant='warning'>
-        Stillingen blir publisert dato //todo
+        Blir publisert dato
       </Alert>
     );
   }
   if (stillingErIkkePublisert) {
     return (
       <Alert fullWidth variant='warning'>
-        Stillingen er ikke publisert
+        Ikke publisert
       </Alert>
     );
   }
   if (publisertPåNav) {
     return (
       <Alert fullWidth variant='success'>
-        Stillingen er publisert internt i NAV {dato}
+        Publisert på internt
       </Alert>
     );
   }
   if (publisertPåArbeidsplassen) {
     return (
       <Alert fullWidth variant='success'>
-        Stillingen er publisert på Arbeidsplassen {dato}
+        Publisert på Arbeidsplassen
       </Alert>
     );
   }

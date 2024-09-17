@@ -14,7 +14,6 @@ import useAntallKandidater from '../../../api/kandidat-api/useAntallKandidater';
 import { LocationListDTO } from '../../stilling-typer';
 import OmAnnonsen from '../components/OmAnnonsen';
 import OmBedriften from '../components/OmBedriften';
-import StillingStatus from '../components/StillingStatus';
 import { useStillingsContext } from '../StillingsContext';
 import StillingSidebar from './StillingSidebar/StillingSidebar';
 import StillingsTekst from './StillingsTekst';
@@ -59,9 +58,6 @@ const OmStillingen: React.FC = () => {
     <div className='mt-10'>
       <div className=' flex flex-col gap-y-8 gap-x-[3.5rem] md:flex-row'>
         <div className='w-full '>
-          <div className='mb-4'>
-            <StillingStatus />
-          </div>
           <Heading size='large'>Om stillingen</Heading>
 
           <div className='mt-4'>
