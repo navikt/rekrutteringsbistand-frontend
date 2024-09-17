@@ -1,4 +1,4 @@
-import { BodyLong, Heading } from '@navikt/ds-react';
+import { Heading } from '@navikt/ds-react';
 import * as React from 'react';
 import { useStillingsContext } from '../StillingsContext';
 
@@ -14,9 +14,9 @@ const OmBedriften: React.FC = () => {
     <div>
       <Heading size='large'>Om bedriften</Heading>
 
-      <BodyLong className='my-4'>
+      <div className='my-4'>
         {parse(stillingsData.stilling?.properties?.employerdescription ?? '')}
-      </BodyLong>
+      </div>
 
       <dl className='grid grid-cols-1 md:grid-cols-3 gap-6'>
         <Definisjon
