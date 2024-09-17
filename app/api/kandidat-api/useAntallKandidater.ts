@@ -8,7 +8,6 @@ export const antallKandidaterSchema = z.object({
 });
 
 const useAntallKandidater = (stillingsId?: string) => {
-  console.log('🎺 "er her"', 'er her');
   return useSWRImmutable(
     stillingsId
       ? `${KandidatsøkAPI.internUrl}/veileder/kandidatlister/${stillingsId}/antallKandidater`

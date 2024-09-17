@@ -28,6 +28,7 @@ const StillingStatus: React.FC = () => {
     stillingStatus === Status.Inaktiv;
 
   const stillingErUtløpt = stillingStatus === Status.Inaktiv && stillingUtgått;
+  const stillingErStoppet = stillingStatus === Status.Stoppet;
 
   const stillingenBlirPublisert =
     stillingStatus === Status.Inaktiv && stillingenBlirPubliserDato;
@@ -40,7 +41,7 @@ const StillingStatus: React.FC = () => {
     stillingStatus === Status.Aktiv &&
     stillingsData.stilling.privacy === 'SHOW_ALL';
 
-  if (stillingErUtløpt) {
+  if (stillingErStoppet) {
     return (
       <Alert fullWidth variant='error'>
         Stillingen er stoppet

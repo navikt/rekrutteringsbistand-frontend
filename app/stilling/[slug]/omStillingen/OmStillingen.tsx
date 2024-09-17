@@ -69,7 +69,7 @@ const OmStillingen: React.FC = () => {
               />
               <TekstMedIkon tekst='' ikon={<CalendarIcon />} />
               <TekstMedIkon
-                tekst={`${parseWorktime(workday)},${parseWorktime(workhours)}`}
+                tekst={`${parseWorktime(workday)}, ${parseWorktime(workhours)}`}
                 ikon={<HourglassIcon />}
               />
               <TekstMedIkon tekst={applicationdue} ikon={<TimerStartIcon />} />
