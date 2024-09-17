@@ -15,6 +15,8 @@ import { StillingsSøkQueryparam } from './stillingssøk-typer';
 interface IStillingsSøkContext {
   side: number;
   setSide: (val: number) => void;
+  sortering: string;
+  setSortering: (val: string) => void;
   statuser: string[];
   setStatuser: (val: string[]) => void;
   fylker: string[];
@@ -69,6 +71,13 @@ export const StillingsSøkProvider: React.FC<{ children: React.ReactNode }> = ({
     StillingsSøkQueryparam.Portefølje,
     {
       defaultValue: 'visAlle',
+      clearOnDefault: true,
+    },
+  );
+  const [sortering, setSortering] = useQueryState(
+    StillingsSøkQueryparam.Sortering,
+    {
+      defaultValue: 'publiseringsdato',
       clearOnDefault: true,
     },
   );
@@ -141,6 +150,8 @@ export const StillingsSøkProvider: React.FC<{ children: React.ReactNode }> = ({
   return (
     <StillingsSøkContext.Provider
       value={{
+        sortering,
+        setSortering,
         side,
         setSide,
         statuser,

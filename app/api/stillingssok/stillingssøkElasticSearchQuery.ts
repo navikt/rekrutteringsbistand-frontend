@@ -3,6 +3,7 @@ import { geografiDTO } from '../stilling/geografi/useGeografi';
 import { esFylkerOgKommuner } from './esFiltre/esFylkerOgKommuner';
 import { esInkludering } from './esFiltre/esInkludering';
 import { esKategori } from './esFiltre/esKategori';
+import { esSorter } from './esFiltre/esSorter';
 import { esStatuser } from './esFiltre/esStatuser';
 import { esSynlighet } from './esFiltre/esSynlighet';
 import { esErEier, esVariabler } from './esFiltre/esVariabler';
@@ -24,6 +25,7 @@ export type StillingsSøkFilter = {
   inkluderingUnderkategori: string[];
   kategori: string[];
   publisert: string[];
+  sortering: string;
 };
 
 export function generateElasticSearchQuery(
@@ -35,7 +37,7 @@ export function generateElasticSearchQuery(
   const term: any[] = [];
   const sort: any = {
     'stilling.published': {
-      order: 'desc',
+      order: esSorter(filter.sortering),
     },
   };
 
