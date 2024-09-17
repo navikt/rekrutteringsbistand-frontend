@@ -33,8 +33,8 @@ class ErrorBoundary extends Component<Props, State> {
         showError: false,
         hasError: true,
         error: {
-          name: error.name,
-          message: error.message,
+          name: error?.name,
+          message: error?.message,
           stack: error.stack ?? '',
         },
       };

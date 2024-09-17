@@ -8,7 +8,7 @@ import Definisjon from '../components/Definisjon';
 const OmBedriften: React.FC = () => {
   const { stillingsData } = useStillingsContext();
   const employer = stillingsData.stilling?.employer;
-  const { name, title, phone, email } = stillingsData?.stilling?.contactList[0];
+  const kontaktInfo = stillingsData?.stilling?.contactList[0];
 
   return (
     <div>
@@ -19,9 +19,12 @@ const OmBedriften: React.FC = () => {
       </BodyLong>
 
       <dl className='grid grid-cols-1 md:grid-cols-3 gap-6'>
-        <Definisjon tittel='Kontaktperson' innhold={`${name}, ${title}`} />
-        <Definisjon tittel='Epost' innhold={`${email}`} />
-        <Definisjon tittel='Telefon' innhold={`${phone}`} />
+        <Definisjon
+          tittel='Kontaktperson'
+          innhold={`${kontaktInfo?.name}, ${kontaktInfo?.title}`}
+        />
+        <Definisjon tittel='Epost' innhold={`${kontaktInfo?.email}`} />
+        <Definisjon tittel='Telefon' innhold={`${kontaktInfo?.phone}`} />
         <Definisjon tittel='Nettside' />
         <Definisjon tittel='LinkedIn' />
         <Definisjon tittel='Twitter' />
