@@ -27,7 +27,12 @@ const SideTopBanner = ({
   return (
     <div>
       {tilbakeKnapp && (
-        <Button icon={<ArrowLeftIcon />} onClick={tilbake} variant='tertiary'>
+        <Button
+          size='small'
+          icon={<ArrowLeftIcon />}
+          onClick={tilbake}
+          variant='tertiary'
+        >
           Tilbake
         </Button>
       )}
