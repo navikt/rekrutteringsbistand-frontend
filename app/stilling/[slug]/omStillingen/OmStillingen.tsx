@@ -3,28 +3,26 @@ import {
   ClockIcon,
   HourglassIcon,
   LocationPinIcon,
+  PersonGroupIcon,
   TimerStartIcon,
 } from '@navikt/aksel-icons';
+import { Heading } from '@navikt/ds-react';
 import * as React from 'react';
 import TekstMedIkon from '../../../../components/TekstMedIkon';
-import { LocationListDTO, stillingsDataDTO } from '../../stilling-typer';
-
-import { Heading } from '@navikt/ds-react';
 import { getWorkLocationsAsString } from '../../../../util/locationUtil';
+import useAntallKandidater from '../../../api/kandidat-api/useAntallKandidater';
+import { LocationListDTO } from '../../stilling-typer';
 import OmAnnonsen from '../components/OmAnnonsen';
 import OmBedriften from '../components/OmBedriften';
 import StillingStatus from '../components/StillingStatus';
+import { useStillingsContext } from '../StillingsContext';
 import StillingSidebar from './StillingSidebar/StillingSidebar';
 import StillingsTekst from './StillingsTekst';
-export interface IOmStillingen {
-  stillingsData: stillingsDataDTO;
-  kandidatlisteId?: string;
-}
 
-const OmStillingen: React.FC<IOmStillingen> = ({
-  stillingsData,
-  kandidatlisteId,
-}) => {
+const OmStillingen: React.FC = () => {
+  const { stillingsData, kandidatlisteId } = useStillingsContext();
+  const antallKandidaterSWR = useAntallKandidater(kandidatlisteId);
+
   const lokasjon = getWorkLocationsAsString(
     stillingsData.stilling.locationList as LocationListDTO,
   );
@@ -45,10 +43,6 @@ const OmStillingen: React.FC<IOmStillingen> = ({
     return arrayString;
   };
 
-  console.log(
-    '🎺 stillingsData.stilling.properties ',
-    stillingsData.stilling.properties,
-  );
   const {
     jobtitle,
     engagementtype,
@@ -79,10 +73,14 @@ const OmStillingen: React.FC<IOmStillingen> = ({
               />
               <TekstMedIkon tekst='' ikon={<CalendarIcon />} />
               <TekstMedIkon
-                tekst={`${parseWorktime(workday)}, ${parseWorktime(workhours)}`}
+                tekst={`${parseWorktime(workday)},${parseWorktime(workhours)}`}
                 ikon={<HourglassIcon />}
               />
               <TekstMedIkon tekst={applicationdue} ikon={<TimerStartIcon />} />
+              <TekstMedIkon
+                tekst={`${antallKandidaterSWR.data?.antallKandidater ?? '-'} kandidater`}
+                ikon={<PersonGroupIcon />}
+              />
             </div>
           </div>
           <div className='mt-10'>

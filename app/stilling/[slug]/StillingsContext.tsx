@@ -41,7 +41,7 @@ interface StillingsContextMedDataProps {
 const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
   data,
 }) => {
-  const { data: kandidatlisteRespons } = useKandidatlisteId(data.stilling.uuid);
+  const kandidatListeIdSWR = useKandidatlisteId(data.stilling.uuid);
   const [endrerStilling, setEndrerStilling] = React.useState<boolean>(false);
   const { navIdent } = useApplikasjonContext();
   const [stillingsData, setStillingsData] =
@@ -57,7 +57,7 @@ const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
       value={{
         stillingsData,
         erEier,
-        kandidatlisteId: kandidatlisteRespons?.kandidatlisteId,
+        kandidatlisteId: kandidatListeIdSWR.data?.kandidatlisteId,
         endrerStilling,
         setEndrerStilling,
       }}

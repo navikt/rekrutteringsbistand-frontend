@@ -7,7 +7,7 @@ import { ReactNode } from 'react';
 export type ISideTopBanner = {
   tittel: string;
   ikon?: ReactNode;
-  children?: ReactNode;
+
   headerInnhold?: ReactNode;
   knappIBanner?: ReactNode;
   nederst?: ReactNode;
@@ -17,7 +17,7 @@ export type ISideTopBanner = {
 const SideTopBanner = ({
   tittel,
   ikon,
-  children,
+
   tilbakeKnapp,
   knappIBanner,
   headerInnhold,
@@ -48,9 +48,8 @@ const SideTopBanner = ({
             </div>
           </div>
         </div>
-        <div>{knappIBanner}</div>
       </div>
-      <div id='knapperRad'>{children}</div>
+      <div id='knapperRad'>{knappIBanner}</div>
     </div>
   );
 };

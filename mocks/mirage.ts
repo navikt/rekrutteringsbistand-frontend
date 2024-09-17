@@ -14,7 +14,17 @@ createServer({
     this.namespace = 'api';
 
     this.passthrough('/stillingssok');
-    this.passthrough('/kandidat-api/**');
+
+    this.get('/kandidat-api/veileder/stilling/*/kandidatlisteid', () => {
+      return {
+        kandidatlisteId: 'test-kandidatliste-id',
+      };
+    });
+    this.get('/kandidat-api/veileder/kandidatlister/*/antallKandidater', () => {
+      return {
+        antallKandidater: 13,
+      };
+    });
 
     this.get('stilling/geografi', () => {
       return {

@@ -11,7 +11,8 @@ import OmStillingen from './omStillingen/OmStillingen';
 import { useStillingsContext } from './StillingsContext';
 
 const Stilling: React.FC = () => {
-  const { stillingsData, kandidatlisteId, erEier } = useStillingsContext();
+  const { stillingsData, erEier, kandidatlisteId } = useStillingsContext();
+  // const { kandidatlisteId } = useKandidatlisteId(stillingsData.stilling.uuid);
 
   const eierNavn = navnEierAvAstilling(stillingsData);
 
@@ -59,7 +60,7 @@ const Stilling: React.FC = () => {
           )}
         </Tabs.List>
         <Tabs.Panel value='stilling'>
-          <OmStillingen stillingsData={stillingsData} />
+          <OmStillingen />
         </Tabs.Panel>
         {kandidatlisteId && erEier && (
           <Tabs.Panel value='kandidater'>
