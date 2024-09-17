@@ -28,6 +28,27 @@ const OmStillingen: React.FC<IOmStillingen> = ({
   const lokasjon = getWorkLocationsAsString(
     stillingsData.stilling.locationList as LocationListDTO,
   );
+
+  const parseWorktime = (worktime: string) => {
+    // We need this check in case of old workhour/-day property values, formatted like 'Opt1 Opt2'
+    let arrayString = '';
+    try {
+      const jsonArray = JSON.parse(worktime);
+
+      for (let i = 0; i < jsonArray.length; i++) {
+        arrayString += `${jsonArray[i]} `;
+      }
+    } catch (e) {
+      arrayString = worktime;
+    }
+
+    return arrayString;
+  };
+
+  console.log(
+    '🎺 stillingsData.stilling.properties ',
+    stillingsData.stilling.properties,
+  );
   const {
     jobtitle,
     engagementtype,
@@ -51,17 +72,17 @@ const OmStillingen: React.FC<IOmStillingen> = ({
 
           <div className='mt-4'>
             <div className='grid grid-cols-3 gap-4'>
+              <TekstMedIkon tekst={`${lokasjon}`} ikon={<LocationPinIcon />} />
               <TekstMedIkon
-                tekst={lokasjon ?? '-'}
-                ikon={<LocationPinIcon />}
-              />
-              <TekstMedIkon
-                tekst={engagementtype ?? '-'}
+                tekst={`${engagementtype ?? '-'}, ${extent ?? '-'}`}
                 ikon={<ClockIcon />}
               />
-              <TekstMedIkon tekst={extent} ikon={<CalendarIcon />} />
-              <TekstMedIkon tekst={applicationdue} ikon={<HourglassIcon />} />
-              <TekstMedIkon tekst='TBD' ikon={<TimerStartIcon />} />
+              <TekstMedIkon tekst='' ikon={<CalendarIcon />} />
+              <TekstMedIkon
+                tekst={`${parseWorktime(workday)}, ${parseWorktime(workhours)}`}
+                ikon={<HourglassIcon />}
+              />
+              <TekstMedIkon tekst={applicationdue} ikon={<TimerStartIcon />} />
             </div>
           </div>
           <div className='mt-10'>

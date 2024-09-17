@@ -51,7 +51,7 @@ export const stillingSchema = z.object({
       .nullable()
       .optional(),
     mediaList: z.array(z.unknown()),
-    contactList: z.array(z.unknown()),
+    contactList: z.array(z.any()), //todo type
     privacy: z.string(),
     source: z.string(),
     medium: z.string(),

@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 1337",
+    "dev": "npm run open-browser && next dev -p 1337",
+    "open-browser": "open http://localhost:1337",
     "test": "npx playwright test",
     "build": "next build",
     "start": "next start",
