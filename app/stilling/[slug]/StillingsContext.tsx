@@ -6,7 +6,6 @@ import useKandidatlisteId from '../../api/kandidat-api/useKandidatlisteId';
 import { useStilling } from '../../api/stilling/rekrutteringsbistandstilling/[slug]/useStilling';
 import { stillingSchemaDTO } from '../../api/stilling/rekrutteringsbistandstilling/[slug]/zod';
 import { useApplikasjonContext } from '../../ApplikasjonContext';
-import Stilling from './Stilling';
 
 interface StillingsContextType {
   stillingsData: stillingSchemaDTO;
@@ -22,24 +21,31 @@ const StillingsContext = React.createContext<StillingsContextType | undefined>(
 
 interface StillingsContextProviderProps {
   stillingsId: string;
+  children: React.ReactNode;
 }
 export const StillingsContextProvider: React.FC<
   StillingsContextProviderProps
-> = ({ stillingsId }) => {
+> = ({ stillingsId, children }) => {
   const hook = useStilling(stillingsId);
   return (
     <SWRLaster hook={hook}>
-      {(data) => <StillingsContextMedData data={data} />}
+      {(data) => (
+        <StillingsContextMedData data={data}>
+          {children}
+        </StillingsContextMedData>
+      )}
     </SWRLaster>
   );
 };
 
 interface StillingsContextMedDataProps {
   data: stillingSchemaDTO;
+  children: React.ReactNode;
 }
 
 const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
   data,
+  children,
 }) => {
   const kandidatListeIdSWR = useKandidatlisteId(data.stilling.uuid);
   const [endrerStilling, setEndrerStilling] = React.useState<boolean>(false);
@@ -62,7 +68,7 @@ const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
         setEndrerStilling,
       }}
     >
-      <Stilling />
+      {children}
     </StillingsContext.Provider>
   );
 };

@@ -1,9 +1,9 @@
 import { Heading } from '@navikt/ds-react';
 import * as React from 'react';
-import { useStillingsContext } from '../StillingsContext';
 
 import parse from 'html-react-parser';
 import Definisjon from '../components/Definisjon';
+import { useStillingsContext } from '../StillingsContext';
 
 const OmBedriften: React.FC = () => {
   const { stillingsData } = useStillingsContext();

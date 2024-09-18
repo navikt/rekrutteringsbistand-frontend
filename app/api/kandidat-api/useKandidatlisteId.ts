@@ -12,5 +12,4 @@ const useKandidatlisteId = (stillingsId?: string) => {
     getAPIwithSchema(kandidatlisteIdSchema),
   );
 };
-
 export default useKandidatlisteId;

@@ -2,6 +2,7 @@
 import { createServer } from 'miragejs';
 import { brukerMock } from './brukerMock';
 import fylkeMock from './fylkeMock.json';
+import { kandidatlisetMock } from './kandidatlisteMock';
 import kommuneMock from './kommuneMock.json';
 import {
   forespørselOmDelingAvCVStatistikkMock,
@@ -24,6 +25,9 @@ createServer({
       return {
         antallKandidater: 13,
       };
+    });
+    this.get('/kandidat-api/veileder/stilling/*/kandidatliste', () => {
+      return kandidatlisetMock;
     });
 
     this.get('stilling/geografi', () => {

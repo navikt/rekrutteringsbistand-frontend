@@ -1,8 +1,8 @@
 import { Heading } from '@navikt/ds-react';
 import * as React from 'react';
-import { useStillingsContext } from '../StillingsContext';
 
 import { format } from 'date-fns';
+import { useStillingsContext } from '../StillingsContext';
 import Definisjon from './Definisjon';
 
 const OmAnnonsen: React.FC = () => {

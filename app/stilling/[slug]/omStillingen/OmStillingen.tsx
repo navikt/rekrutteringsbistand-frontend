@@ -1,3 +1,4 @@
+'use client';
 import {
   CalendarIcon,
   ClockIcon,
@@ -12,9 +13,9 @@ import TekstMedIkon from '../../../../components/TekstMedIkon';
 import { getWorkLocationsAsString } from '../../../../util/locationUtil';
 import useAntallKandidater from '../../../api/kandidat-api/useAntallKandidater';
 import { LocationListDTO } from '../../stilling-typer';
+import { useStillingsContext } from '../StillingsContext';
 import OmAnnonsen from '../components/OmAnnonsen';
 import OmBedriften from '../components/OmBedriften';
-import { useStillingsContext } from '../StillingsContext';
 import StillingSidebar from './StillingSidebar/StillingSidebar';
 import StillingsTekst from './StillingsTekst';
 

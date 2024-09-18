@@ -6,26 +6,25 @@ import { ReactNode } from 'react';
 
 export type ISideTopBanner = {
   tittel: string;
+  chip?: ReactNode;
   ikon?: ReactNode;
-
   headerInnhold?: ReactNode;
   knappIBanner?: ReactNode;
-  nederst?: ReactNode;
   tilbakeKnapp?: boolean;
 };
 
 const SideTopBanner = ({
   tittel,
   ikon,
-
   tilbakeKnapp,
   knappIBanner,
   headerInnhold,
+  chip,
 }: ISideTopBanner) => {
   const router = useRouter();
   const tilbake = () => router.back();
   return (
-    <div>
+    <div className='my-4'>
       {tilbakeKnapp && (
         <Button
           size='small'
@@ -37,19 +36,22 @@ const SideTopBanner = ({
         </Button>
       )}
       <div className='flex justify-between items-center'>
-        <div>
-          <div className='flex justify-start items-center gap-8'>
-            {ikon}
-            <div>
+        <div className='flex justify-start items-center gap-8'>
+          {ikon}
+          <div>
+            <div className='flex justify-between'>
               <Heading className=' ml-0 mr-auto' level='2' size='large'>
                 {tittel}
               </Heading>
-              {headerInnhold}
+              {chip}
             </div>
+            {headerInnhold}
           </div>
         </div>
       </div>
-      <div id='knapperRad'>{knappIBanner}</div>
+      <div className='flex justify-end' id='knapperRad'>
+        {knappIBanner}
+      </div>
     </div>
   );
 };

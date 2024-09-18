@@ -1,25 +1,56 @@
 'use client';
 import { Buildings2Icon, PersonIcon } from '@navikt/aksel-icons';
 import { Tabs } from '@navikt/ds-react';
+import { useQueryState } from 'nuqs';
 import * as React from 'react';
 import SideLayout from '../../../components/layout/SideLayout';
 import SideTopBanner from '../../../components/layout/SideTopBanner';
 import capitalizeEmployerName, { navnEierAvAstilling } from '../stilling-util';
+import {
+  StillingsContextProvider,
+  useStillingsContext,
+} from './StillingsContext';
 import KopierStillingLenke from './components/KopierStillingLenke';
 import StillingsIkon from './icons/se-mine-stillinger.svg';
-import OmStillingen from './omStillingen/OmStillingen';
-import { useStillingsContext } from './StillingsContext';
+import StillingsKandidater from './kandidater/StillingsKandidater';
 
-const Stilling: React.FC = () => {
+interface StillingSideRootLayoutProps {
+  children: React.ReactNode;
+  params: { slug: string };
+}
+export default function RootLayout({
+  children,
+  params,
+}: StillingSideRootLayoutProps) {
+  return (
+    <StillingsContextProvider stillingsId={params.slug}>
+      <StillingSideLayout>{children}</StillingSideLayout>
+    </StillingsContextProvider>
+  );
+}
+
+interface StillingSideLayoutProps {
+  children?: React.ReactNode;
+}
+
+const StillingSideLayout: React.FC<StillingSideLayoutProps> = ({
+  children,
+}) => {
   const { stillingsData, erEier, kandidatlisteId } = useStillingsContext();
   // const { kandidatlisteId } = useKandidatlisteId(stillingsData.stilling.uuid);
 
   const eierNavn = navnEierAvAstilling(stillingsData);
 
+  const [fane, setFane] = useQueryState('visFane', {
+    defaultValue: 'stilling',
+    clearOnDefault: true,
+  });
+
   return (
     <SideLayout
       banner={
         <SideTopBanner
+          chip={<div>chip</div>}
           headerInnhold={
             <>
               <div className='flex my-2'>
@@ -40,36 +71,23 @@ const Stilling: React.FC = () => {
           tilbakeKnapp
           ikon={<StillingsIkon />}
           tittel={stillingsData.stilling.title}
-          nederst={<div>Stillingen er opprettet av kake</div>}
         />
       }
     >
-      <Tabs defaultValue='stilling'>
+      <Tabs defaultValue={fane} onChange={(val) => setFane(val)}>
         <Tabs.List>
-          <Tabs.Tab
-            value='stilling'
-            label='Om stillingen'
-            // icon={<ClockDashedIcon aria-hidden />}
-          />
+          <Tabs.Tab value='stilling' label='Om stillingen' />
           {kandidatlisteId && erEier && (
-            <Tabs.Tab
-              value='kandidater'
-              label='Kandidater'
-              // icon={<InboxDownIcon aria-hidden />}
-            />
+            <Tabs.Tab value='kandidater' label='Kandidater' />
           )}
         </Tabs.List>
-        <Tabs.Panel value='stilling'>
-          <OmStillingen />
-        </Tabs.Panel>
+        <Tabs.Panel value='stilling'>{children}</Tabs.Panel>
         {kandidatlisteId && erEier && (
           <Tabs.Panel value='kandidater'>
-            <div className='mt-4'>Kandidater</div>
+            <StillingsKandidater />
           </Tabs.Panel>
         )}
       </Tabs>
     </SideLayout>
   );
 };
-
-export default Stilling;
