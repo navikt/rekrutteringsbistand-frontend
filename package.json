@@ -39,7 +39,7 @@
     "@types/loadjs": "^4.0.4",
     "date-fns": "^3.6.0",
     "html-react-parser": "^5.1.15",
-    "next": "14.2.5",
+    "next": "14.2.12",
     "nuqs": "^1.17.8",
     "pino": "^9.3.2",
     "postcss-import": "^16.1.0",
