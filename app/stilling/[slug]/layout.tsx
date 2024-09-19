@@ -5,6 +5,7 @@ import { useQueryState } from 'nuqs';
 import * as React from 'react';
 import SideLayout from '../../../components/layout/SideLayout';
 import SideTopBanner from '../../../components/layout/SideTopBanner';
+import StillingsTag from '../../stillingssok/components/StillingsTag';
 import capitalizeEmployerName, { navnEierAvAstilling } from '../stilling-util';
 import {
   StillingsContextProvider,
@@ -37,7 +38,6 @@ const StillingSideLayout: React.FC<StillingSideLayoutProps> = ({
   children,
 }) => {
   const { stillingsData, erEier, kandidatlisteId } = useStillingsContext();
-  // const { kandidatlisteId } = useKandidatlisteId(stillingsData.stilling.uuid);
 
   const eierNavn = navnEierAvAstilling(stillingsData);
 
@@ -50,7 +50,7 @@ const StillingSideLayout: React.FC<StillingSideLayoutProps> = ({
     <SideLayout
       banner={
         <SideTopBanner
-          chip={<div>chip</div>}
+          chip={<StillingsTag stillingsData={stillingsData} />}
           headerInnhold={
             <>
               <div className='flex my-2'>

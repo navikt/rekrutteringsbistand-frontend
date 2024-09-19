@@ -24,7 +24,7 @@ const SideTopBanner = ({
   const router = useRouter();
   const tilbake = () => router.back();
   return (
-    <div className='my-4'>
+    <div className='my-4 '>
       {tilbakeKnapp && (
         <Button
           size='small'
@@ -35,15 +35,15 @@ const SideTopBanner = ({
           Tilbake
         </Button>
       )}
-      <div className='flex justify-between items-center'>
-        <div className='flex justify-start items-center gap-8'>
+      <div className='flex justify-between items-center '>
+        <div className='flex justify-start items-center gap-8 w-full'>
           {ikon}
-          <div>
-            <div className='flex justify-between'>
+          <div className='w-full'>
+            <div className='flex justify-between '>
               <Heading className=' ml-0 mr-auto' level='2' size='large'>
                 {tittel}
               </Heading>
-              {chip}
+              <div className='flex flex-end'>{chip}</div>
             </div>
             {headerInnhold}
           </div>

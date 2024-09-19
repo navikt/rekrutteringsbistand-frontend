@@ -1,11 +1,7 @@
 {
   "jsxSingleQuote": true,
-  "pluginSearchDirs": [
-    "."
-  ],
-  "plugins": [
-    "prettier-plugin-sort-json"
-  ],
+  "pluginSearchDirs": ["."],
+  "plugins": ["prettier-plugin-sort-json"],
   "singleQuote": true,
   "trailingComma": "all"
 }
