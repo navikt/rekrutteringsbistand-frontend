@@ -147,10 +147,14 @@ const StillingsTag: React.FC<IStillingTag> = ({ stillingsData, splitTags }) => {
       )}
     </>
   );
+
   return splitTags ? (
     <div className='flex justify-between'>
-      {venstre}
-      {høyre}
+      <div>
+        <span className='mr-4'>{publisertDato} </span>
+        {venstre}
+      </div>
+      <div>{høyre}</div>
     </div>
   ) : (
     <>
