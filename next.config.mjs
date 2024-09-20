@@ -27,6 +27,9 @@ const nextConfig = {
 
     return config;
   },
+  purge: {
+    enabled: false, // Temporarily disable purging
+  },
   optimizeCss: false,
   reactStrictMode: true,
   experimental: {
