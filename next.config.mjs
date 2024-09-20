@@ -27,10 +27,7 @@ const nextConfig = {
 
     return config;
   },
-  purge: {
-    enabled: false, // Temporarily disable purging
-  },
-  optimizeCss: false,
+
   reactStrictMode: true,
   experimental: {
     optimizePackageImports: ['@navikt/ds-react', '@navikt/aksel-icons'],
