@@ -19,7 +19,7 @@ const VelgArbeidsgiver: React.FC<IVelgArbeidsgiver> = ({ children }) => {
           label='Arbeidsgivers navn eller virksomhetsnummer'
           options={muligeValg}
           shouldAutocomplete={true}
-          onChange={(e) => setSøkeord(e?.target.value ?? '')}
+          onChange={(verdi) => setSøkeord(verdi)}
           onSelect={(valg) => console.log(valg)}
         />
       </form>
