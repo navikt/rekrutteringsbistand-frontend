@@ -9,8 +9,8 @@ import { useStillingssøk } from '../api/stillingssok/useStillingssøk';
 import { useApplikasjonContext } from '../ApplikasjonContext';
 import StillingsSøkPaginering from './components/Pagnering';
 import StillingsKort from './components/StillingsKort';
+import StillingsSøkChips from './components/StillingsSøkChips';
 import StillingsSøkSortering from './components/StillingsSøkSortering';
-import StillingsSøkChips from './components/StillingsSøkTags/StillingsSøkTags';
 import { useStillingsSøkFilter } from './StillingsSøkContext';
 
 const StillingsSøkeresultat: React.FC = () => {

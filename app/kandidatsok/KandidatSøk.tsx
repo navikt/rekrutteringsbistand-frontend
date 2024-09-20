@@ -2,7 +2,7 @@
 import * as React from 'react';
 import SideLayout from '../../components/layout/SideLayout';
 import SideTopBanner from '../../components/layout/SideTopBanner';
-import { useMinebrukere } from '../api/kandidatsok/minebrukere/useMinebrukere';
+import { useMinebrukere } from '../api/kandidatsok/useMinebrukere';
 import KandidatKort from './components/KandidatKort';
 import Sidebar from './components/KandidatSøkSidebar';
 import Piktogram from './components/icons/finn-kandidater.svg';

@@ -13,7 +13,11 @@ import { StillingsSøkPortefølje } from './stillingssøk-typer';
 import { useStillingsSøkFilter } from './StillingsSøkContext';
 import StillingsSøkeresultat from './StillingsSøkeresultat';
 
-const StillingsSøk: React.FC = () => {
+interface StillingsSøkProps {
+  bareFormidling?: boolean;
+}
+
+const StillingsSøk: React.FC<StillingsSøkProps> = ({ bareFormidling }) => {
   const { portefølje, setPortefølje } = useStillingsSøkFilter();
 
   return (
@@ -21,7 +25,9 @@ const StillingsSøk: React.FC = () => {
       // banner={kandidatnr !== undefined && <KontekstAvKandidat kandidatnr={kandidatnr} />}
       banner={
         <SideTopBanner
-          tittel='Stillinger'
+          tittel={
+            bareFormidling ? 'Etterregistrering formidlinger' : 'Stillinger'
+          }
           ikon={<Piktogram />}
           knappIBanner={
             <TilgangskontrollForInnhold

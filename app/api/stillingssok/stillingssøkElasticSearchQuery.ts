@@ -1,5 +1,6 @@
 import { StillingsSøkPortefølje } from '../../stillingssok/stillingssøk-typer';
 import { geografiDTO } from '../stilling/geografi/useGeografi';
+import { esFritekstSøk } from './esFiltre/esFritekstSøk';
 import { esFylkerOgKommuner } from './esFiltre/esFylkerOgKommuner';
 import { esInkludering } from './esFiltre/esInkludering';
 import { esKategori } from './esFiltre/esKategori';
@@ -17,6 +18,7 @@ export const regnUtFørsteTreffFra = (
 
 export type StillingsSøkFilter = {
   side: number;
+  fritekst: string;
   statuser: string[];
   fylker: string[];
   kommuner: string[];
@@ -95,6 +97,7 @@ export function generateElasticSearchQuery(
   }
 
   const byggQuery = {
+    // TODO Implement AGGS
     size: maksAntallTreffPerSøk,
     from: regnUtFørsteTreffFra(filter.side, maksAntallTreffPerSøk),
     track_total_hits: true,
@@ -102,6 +105,7 @@ export function generateElasticSearchQuery(
       bool: {
         minimum_should_match: '0',
         filter: [...term, ...valgteFilter],
+        should: esFritekstSøk(filter.fritekst, valgteFilter),
       },
     },
     sort: sort,

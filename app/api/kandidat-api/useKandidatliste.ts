@@ -1,11 +1,12 @@
 import useSWRImmutable from 'swr/immutable';
 import { getAPIwithSchema } from '../../api/fetcher';
+import { KandidatAPI } from '../api-routes';
 import { kandidatlisteSchema } from './typer/kandidatliste.zod';
 
 const useKandidatliste = (stillingsId?: string) => {
   return useSWRImmutable(
     stillingsId
-      ? `/api/kandidat-api/veileder/stilling/${stillingsId}/kandidatliste`
+      ? `${KandidatAPI.internUrl}/veileder/stilling/${stillingsId}/kandidatliste`
       : undefined,
     getAPIwithSchema(kandidatlisteSchema),
   );

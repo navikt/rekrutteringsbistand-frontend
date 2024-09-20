@@ -1,7 +1,7 @@
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
-import { getAPIwithSchema } from '../../api/fetcher';
-import { KandidatsøkAPI } from '../api-routes';
+import { KandidatAPI } from '../api-routes';
+import { getAPIwithSchema } from '../fetcher';
 
 export const antallKandidaterSchema = z.object({
   antallKandidater: z.number(),
@@ -10,7 +10,7 @@ export const antallKandidaterSchema = z.object({
 const useAntallKandidater = (stillingsId?: string) => {
   return useSWRImmutable(
     stillingsId
-      ? `${KandidatsøkAPI.internUrl}/veileder/kandidatlister/${stillingsId}/antallKandidater`
+      ? `${KandidatAPI.internUrl}/veileder/kandidatlister/${stillingsId}/antallKandidater`
       : undefined,
     getAPIwithSchema(antallKandidaterSchema),
   );

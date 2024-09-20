@@ -9,7 +9,7 @@ export type StillingsSøkDTO = z.infer<typeof stillingsSøkDTOSchema>;
 
 export enum StillingsSøkQueryparam {
   // Filtre
-  Tekst = 'q',
+  Tekst = 'fritekst',
   Publisert = 'publisert',
   Side = 'side',
   Fylker = 'fylker',

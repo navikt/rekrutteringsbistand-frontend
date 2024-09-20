@@ -1,17 +1,17 @@
 import { Chips, VStack } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
-import { useGeografi } from '../../../api/stilling/geografi/useGeografi';
-import { storForbokstavString } from '../../../kandidatsok/util';
-import { useStillingsSøkFilter } from '../../StillingsSøkContext';
+import { useGeografi } from '../../api/stilling/geografi/useGeografi';
+import { storForbokstavString } from '../../kandidatsok/util';
+import { useStillingsSøkFilter } from '../StillingsSøkContext';
 import {
   hierarkiAvTagsForFilter,
   Hovedtag,
   Subtag,
   visningsnavnForFilter,
-} from '../StillingsSøkFilter/InkluderingFilter';
+} from './StillingsSøkFilter/InkluderingFilter';
 
-const StillingsSøkTags: React.FC = () => {
+const StillingsSøkChips: React.FC = () => {
   const {
     statuser,
     setStatuser,
@@ -165,4 +165,4 @@ const StillingsSøkTags: React.FC = () => {
   );
 };
 
-export default StillingsSøkTags;
+export default StillingsSøkChips;

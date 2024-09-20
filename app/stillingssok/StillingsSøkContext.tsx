@@ -33,6 +33,8 @@ interface IStillingsSøkContext {
   setKategori: (val: string[]) => void;
   publisert: string[];
   setPublisert: (val: string[]) => void;
+  fritekst: string;
+  setFritekst: (val: string) => void;
 }
 
 const StillingsSøkContext = React.createContext<
@@ -81,6 +83,10 @@ export const StillingsSøkProvider: React.FC<{ children: React.ReactNode }> = ({
       clearOnDefault: true,
     },
   );
+  const [fritekst, setFritekst] = useQueryState(StillingsSøkQueryparam.Tekst, {
+    defaultValue: '',
+    clearOnDefault: true,
+  });
 
   const [inkludering, setInkludering] = useQueryState<string[]>(
     StillingsSøkQueryparam.HovedInkluderingTags,
@@ -150,6 +156,8 @@ export const StillingsSøkProvider: React.FC<{ children: React.ReactNode }> = ({
   return (
     <StillingsSøkContext.Provider
       value={{
+        fritekst,
+        setFritekst,
         sortering,
         setSortering,
         side,

@@ -45,15 +45,15 @@ export const StillingsSøkAPI: Iroute = {
   scope: `api://${gcp}.toi.rekrutteringsbistand-stillingssok-proxy/.default`,
 };
 
-export const KandidatsøkAPI: Iroute = {
-  api_route: '/api',
+export const KandidatSøkAPI: Iroute = {
+  api_route: '/api/kandidatsok',
   api_url: process.env.KANDIDATSOK_API ?? '',
-  internUrl: '/api/kandidat-api',
+  internUrl: '/api/kandidatsok',
   scope: `api://${gcp}.toi.rekrutteringsbistand-kandidatsok-api/.default`,
 };
 
 export const KandidatAPI: Iroute = {
-  api_route: '',
+  api_route: '/api/kandidat-api',
   api_url: process.env.KANDIDAT_API ?? '',
   internUrl: '/api/kandidat-api',
   scope: `api://${fss}.toi.rekrutteringsbistand-kandidat-api/.default`,

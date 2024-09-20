@@ -3,11 +3,11 @@
  * Endepunkt /minebrukere
  */
 import useSWRImmutable from 'swr/immutable';
-import { postApiWithSchema } from '../../fetcher';
-import { kandidatSokSchema } from '../types';
+import { KandidatSøkAPI } from '../api-routes';
+import { postApiWithSchema } from '../fetcher';
+import { kandidatSokSchema } from './types';
 
-const minebrukereEndepunkt =
-  '/api/kandidatsok/minebrukere?side=1&sortering=nyeste';
+const minebrukereEndepunkt = `${KandidatSøkAPI.internUrl}/minebrukere?side=1&sortering=nyeste`;
 
 export const useMinebrukere = (payload: any) =>
   useSWRImmutable(
