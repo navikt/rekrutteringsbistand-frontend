@@ -27,6 +27,7 @@ const nextConfig = {
 
     return config;
   },
+  optimizeCss: false,
   reactStrictMode: true,
   experimental: {
     optimizePackageImports: ['@navikt/ds-react', '@navikt/aksel-icons'],

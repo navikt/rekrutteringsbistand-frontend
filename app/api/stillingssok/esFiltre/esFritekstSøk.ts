@@ -1,5 +1,4 @@
 export const esFritekstSøk = (fritekst: string, valgteFilter: any[]) => {
-  console.log('🎺 fritekst', fritekst);
   if (!fritekst || fritekst.length < 1) return [];
 
   const feltManSkalSøkeI: string[] = [];
