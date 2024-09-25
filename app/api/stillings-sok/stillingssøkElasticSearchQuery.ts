@@ -1,4 +1,4 @@
-import { StillingsSøkPortefølje } from '../../stillingssok/stillingssøk-typer';
+import { StillingsSøkPortefølje } from '../../stillings-sok/stillingssøk-typer';
 import { geografiDTO } from '../stilling/geografi/useGeografi';
 import { esFritekstSøk } from './esFiltre/esFritekstSøk';
 import { esFylkerOgKommuner } from './esFiltre/esFylkerOgKommuner';

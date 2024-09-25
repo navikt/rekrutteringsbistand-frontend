@@ -17,18 +17,18 @@ const Hurtiglenker: FunctionComponent = () => {
     >
       <div className='justify-start items-start gap-4 inline-flex w-full'>
         <LenkepanelMedIkon
-          href='/kandidatsok'
+          href='/kandidat-sok'
           ikon={<FinnKandidaterIkon />}
           tittel='Finn kandidater'
         />
         <LenkepanelMedIkon
-          href='/stillingssok'
+          href='/stillings-sok'
           ikon={<FinnStillinger />}
           tittel='Finn stillinger'
         />
 
         <LenkepanelMedIkon
-          href={'/stillingssok?portefolje=visMine'}
+          href={'/stillings-sok?portefolje=visMine'}
           ikon={<SeMineStillingerIkon />}
           tittel='Se mine stillinger'
         />

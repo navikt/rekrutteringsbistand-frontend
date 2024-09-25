@@ -1,4 +1,4 @@
-const kandidatSøkMock = {
+export const kandidatSøkMock = {
   kandidater: [
     {
       yrkeJobbonskerObj: [

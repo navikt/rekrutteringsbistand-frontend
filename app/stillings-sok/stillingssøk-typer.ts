@@ -2,7 +2,7 @@ import { z } from 'zod';
 import {
   stillingSourceSchema,
   stillingsSøkDTOSchema,
-} from '../api/stillingssok/zod';
+} from '../api/stillings-sok/zod';
 
 export type StillingsSøkStillingDTO = z.infer<typeof stillingSourceSchema>;
 export type StillingsSøkDTO = z.infer<typeof stillingsSøkDTOSchema>;

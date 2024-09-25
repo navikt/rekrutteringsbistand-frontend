@@ -13,12 +13,12 @@ const tabs = [
   },
   {
     tittel: 'Stillinger',
-    path: '/stillingssok',
+    path: '/stillings-sok',
     queryParam: '?brukStandardsok=true',
   },
   {
     tittel: 'Kandidatsøk',
-    path: '/kandidatsok',
+    path: '/kandidat-sok',
     kreverRoller: [
       Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
       Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,

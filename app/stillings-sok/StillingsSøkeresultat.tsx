@@ -4,8 +4,8 @@ import SWRLaster from '../../components/SWRLaster';
 import {
   maksAntallTreffPerSøk,
   regnUtFørsteTreffFra,
-} from '../api/stillingssok/stillingssøkElasticSearchQuery';
-import { useStillingssøk } from '../api/stillingssok/useStillingssøk';
+} from '../api/stillings-sok/stillingssøkElasticSearchQuery';
+import { useStillingssøk } from '../api/stillings-sok/useStillingssøk';
 import { useApplikasjonContext } from '../ApplikasjonContext';
 import StillingsSøkPaginering from './components/Pagnering';
 import StillingsKort from './components/StillingsKort';

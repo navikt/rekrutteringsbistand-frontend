@@ -1,4 +1,4 @@
-import { StillingsStatusTyper } from '../../../stillingssok/components/StillingsSøkFilter/StatusFilter';
+import { StillingsStatusTyper } from '../../../stillings-sok/components/StillingsSøkFilter/StatusFilter';
 
 export const esStatuser = (statuser: string[]) => {
   const statusFilter = [];

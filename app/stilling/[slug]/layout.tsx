@@ -5,7 +5,7 @@ import { useQueryState } from 'nuqs';
 import * as React from 'react';
 import SideLayout from '../../../components/layout/SideLayout';
 import SideTopBanner from '../../../components/layout/SideTopBanner';
-import StillingsTag from '../../stillingssok/components/StillingsTag';
+import StillingsTag from '../../stillings-sok/components/StillingsTag';
 import capitalizeEmployerName, { navnEierAvAstilling } from '../stilling-util';
 import {
   StillingsContextProvider,

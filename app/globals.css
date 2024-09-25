@@ -1,3 +1,4 @@
+/* Importerer decorator fra Nav først, så overstyrer vi style fra Nav med våre egne styles */
 @import url('https://cdn.nav.no/personoversikt/internarbeidsflate-decorator-v3/dev/latest/dist/index.css');
 @import 'tailwindcss/base';
 @import '@navikt/ds-css';

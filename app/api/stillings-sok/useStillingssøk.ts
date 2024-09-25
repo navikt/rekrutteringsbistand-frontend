@@ -11,7 +11,7 @@ import {
 } from './stillingssøkElasticSearchQuery';
 import { stillingsSøkDTOSchema } from './zod';
 
-const stillingEndepunkt = '/api/stillingssok';
+const stillingEndepunkt = '/api/stillings-sok';
 
 export const useStillingssøk = (
   filter: StillingsSøkFilter,

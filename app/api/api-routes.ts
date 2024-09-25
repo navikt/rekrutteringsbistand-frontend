@@ -41,19 +41,19 @@ export const StillingAPI: Iroute = {
 export const StillingsSøkAPI: Iroute = {
   api_route: '/stilling/_search',
   api_url: process.env.STILLINGSSOK_PROXY_URL ?? '',
-  internUrl: '/api/stillingssok',
+  internUrl: '/api/stillings-sok',
   scope: `api://${gcp}.toi.rekrutteringsbistand-stillingssok-proxy/.default`,
 };
 
 export const KandidatSøkAPI: Iroute = {
   api_route: '/api/kandidatsok',
   api_url: process.env.KANDIDATSOK_API ?? '',
-  internUrl: '/api/kandidatsok',
+  internUrl: '/api/kandidat-sok',
   scope: `api://${gcp}.toi.rekrutteringsbistand-kandidatsok-api/.default`,
 };
 
 export const KandidatAPI: Iroute = {
-  api_route: '/api/kandidat-api',
+  api_route: '/api/kandidat',
   api_url: process.env.KANDIDAT_API ?? '',
   internUrl: '/api/kandidat-api',
   scope: `api://${fss}.toi.rekrutteringsbistand-kandidat-api/.default`,

@@ -1,6 +1,5 @@
 import { Select } from '@navikt/ds-react';
 import * as React from 'react';
-import { useStillingssøk } from '../../api/stillingssok/useStillingssøk';
 import { useStillingsSøkFilter } from '../StillingsSøkContext';
 
 const StillingsSøkSortering: React.FC = () => {

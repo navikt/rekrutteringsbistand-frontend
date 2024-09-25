@@ -1,4 +1,4 @@
-import { KandidatSchemaDTO } from '../api/kandidatsok/types';
+import { KandidatSchemaDTO } from '../api/kandidat-sok/types';
 
 export function storForbokstavString(string: string) {
   return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();

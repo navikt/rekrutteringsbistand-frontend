@@ -5,7 +5,7 @@ import Sidelaster from '../../components/Sidelaster';
 export default function Stilling() {
   const router = useRouter();
 
-  router.push('/stillingssok');
+  router.push('/stillings-sok ');
 
   return <Sidelaster />;
 }

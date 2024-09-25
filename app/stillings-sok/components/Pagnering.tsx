@@ -1,6 +1,6 @@
 import { Pagination } from '@navikt/ds-react';
 
-import { maksAntallTreffPerSøk } from '../../api/stillingssok/stillingssøkElasticSearchQuery';
+import { maksAntallTreffPerSøk } from '../../api/stillings-sok/stillingssøkElasticSearchQuery';
 import { useStillingsSøkFilter } from '../StillingsSøkContext';
 
 type PagineringProps = {

@@ -3,6 +3,7 @@ import { createServer } from 'miragejs';
 import { brukerMock } from './brukerMock';
 import fylkeMock from './fylkeMock.json';
 import { kandidatlisetMock } from './kandidatlisteMock';
+import { kandidatSøkMock } from './kandidatsøkMock';
 import kommuneMock from './kommuneMock.json';
 import {
   forespørselOmDelingAvCVStatistikkMock,
@@ -14,27 +15,31 @@ createServer({
   routes() {
     this.namespace = 'api';
 
-    this.passthrough('/stillingssok');
+    this.passthrough('/stillings-sok');
 
-    this.get('/kandidat-api/veileder/stilling/*/kandidatlisteid', () => {
+    this.get('/kandidat/veileder/stilling/*/kandidatlisteid', () => {
       return {
         kandidatlisteId: 'test-kandidatliste-id',
       };
     });
-    this.get('/kandidat-api/veileder/kandidatlister/*/antallKandidater', () => {
+    this.get('/kandidat/veileder/kandidatlister/*/antallKandidater', () => {
       return {
         antallKandidater: 13,
       };
     });
-    this.get('/kandidat-api/veileder/stilling/*/kandidatliste', () => {
+    this.get('/kandidat/veileder/stilling/*/kandidatliste', () => {
       return kandidatlisetMock;
     });
 
-    this.get('stilling/geografi', () => {
+    this.get('/stilling/geografi', () => {
       return {
         fylker: fylkeMock,
         kommuner: kommuneMock,
       };
+    });
+
+    this.post('/kandidat-sok/minebrukere', () => {
+      return kandidatSøkMock;
     });
 
     this.get('/stilling/*', () => stillingMal);

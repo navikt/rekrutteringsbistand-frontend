@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import Loading from '../laoading';
-import StillingsSøk from '../stillingssok/StillingsSøk';
-import { StillingsSøkProvider } from '../stillingssok/StillingsSøkContext';
+import StillingsSøk from '../stillings-sok/StillingsSøk';
+import { StillingsSøkProvider } from '../stillings-sok/StillingsSøkContext';
 
 export default function FormidlingIndex() {
   return (

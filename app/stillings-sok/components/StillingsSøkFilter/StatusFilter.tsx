@@ -2,7 +2,7 @@
 
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
 import * as React from 'react';
-import { storForbokstav } from '../../../kandidatsok/util';
+import { storForbokstav } from '../../../kandidat-sok/util';
 import { useStillingsSøkFilter } from '../../StillingsSøkContext';
 
 export enum StillingsStatusTyper {

@@ -14,8 +14,8 @@ import {
 import {
   kandidaterSchemaDTO,
   kandidatlisteSchemaDTO,
-} from '../../../api/kandidat-api/typer/kandidatliste.zod';
-import useKandidatliste from '../../../api/kandidat-api/useKandidatliste';
+} from '../../../api/kandidat/typer/kandidatliste.zod';
+import useKandidatliste from '../../../api/kandidat/useKandidatliste';
 import { useStillingsContext } from '../StillingsContext';
 
 const StillingsKandidaterTabell: React.FC = () => {

@@ -7,7 +7,7 @@ import { KandidatSøkAPI } from '../api-routes';
 import { postApiWithSchema } from '../fetcher';
 import { kandidatSokSchema } from './types';
 
-const minebrukereEndepunkt = `${KandidatSøkAPI.internUrl}/minebrukere?side=1&sortering=nyeste`;
+const minebrukereEndepunkt = `${KandidatSøkAPI.internUrl}/minebrukere`;
 
 export const useMinebrukere = (payload: any) =>
   useSWRImmutable(

@@ -2,7 +2,7 @@ import { Chips, VStack } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 import { useGeografi } from '../../api/stilling/geografi/useGeografi';
-import { storForbokstavString } from '../../kandidatsok/util';
+import { storForbokstavString } from '../../kandidat-sok/util';
 import { useStillingsSøkFilter } from '../StillingsSøkContext';
 import {
   hierarkiAvTagsForFilter,
@@ -62,7 +62,7 @@ const StillingsSøkChips: React.FC = () => {
       <VStack gap='10'>
         <Chips>
           {harAktiveFilter && (
-            <Chips.Removable onClick={() => router.push('/stillingssok')}>
+            <Chips.Removable onClick={() => router.push('/stillings-sok')}>
               Tøm alle filtre
             </Chips.Removable>
           )}
