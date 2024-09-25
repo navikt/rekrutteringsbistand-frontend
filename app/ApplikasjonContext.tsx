@@ -1,5 +1,6 @@
 'use client';
 import React from 'react';
+import Header from '../components/header/Header';
 import Sidelaster from '../components/Sidelaster';
 import { Rolle } from '../types/Roller';
 import { useBruker } from './api/bruker/useBruker';
@@ -76,7 +77,7 @@ export const ApplikasjonContextProvider: React.FC<
         tilgangskontrollErPå,
       }}
     >
-      {/* <Header /> */}
+      <Header />
       <main>
         <div className='mx-auto p-4 max-w-screen-full'>{children}</div>
       </main>
