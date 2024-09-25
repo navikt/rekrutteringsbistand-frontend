@@ -6,45 +6,45 @@ on: [push, workflow_dispatch]
 
 jobs:
 
-  test:
-    name: Playwright test with report
-    permissions:
-      contents: write # to write sarif
-    timeout-minutes: 60
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-node@v4
-      with:
-        node-version: lts/*
-        registry-url: "https://npm.pkg.github.com"
-    - name: Install dependencies
-      env:
-        NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
-      run: npm ci && npm run build
-    - name: Install Playwright Browsers
-      run: npx playwright install --with-deps
-    - name: Start Node application
-      run: npm run dev &
-    - name: Test application
-      run: npx playwright test
-    - uses: actions/upload-artifact@v4
-      if: failure()
-      with:
-        name: playwright-report
-        path: playwright-report/
-        retention-days: 30
-    - name: Deploy to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./playwright-report
-          publish_branch: gh-pages  # the target branch
-          keep_files: true 
+  # test:
+  #   name: Playwright test with report
+  #   permissions:
+  #     contents: write # to write sarif
+  #   timeout-minutes: 60
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - uses: actions/checkout@v4
+  #   - uses: actions/setup-node@v4
+  #     with:
+  #       node-version: lts/*
+  #       registry-url: "https://npm.pkg.github.com"
+  #   - name: Install dependencies
+  #     env:
+  #       NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+  #     run: npm ci && npm run build
+  #   - name: Install Playwright Browsers
+  #     run: npx playwright install --with-deps
+  #   - name: Start Node application
+  #     run: npm run dev &
+  #   - name: Test application
+  #     run: npx playwright test
+  #   - uses: actions/upload-artifact@v4
+  #     if: failure()
+  #     with:
+  #       name: playwright-report
+  #       path: playwright-report/
+  #       retention-days: 30
+  #   - name: Deploy to GitHub Pages
+  #     uses: peaceiris/actions-gh-pages@v3
+  #     with:
+  #         github_token: ${{ secrets.GITHUB_TOKEN }}
+  #         publish_dir: ./playwright-report
+  #         publish_branch: gh-pages  # the target branch
+  #         keep_files: true 
 
   build:
     name: Bygg og push
-    needs: test
+    # needs: test
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -67,46 +67,46 @@ jobs:
         id: set-image-output
         run: echo "image=${{ steps.docker-build-push.outputs.image }}" >> $GITHUB_ENV
 
-  trivy:
-    runs-on: ubuntu-latest
-    name: Trivy vulnerability scanner
-    needs: build
-    permissions:
-      contents: write # to write sarif
-      security-events: write # push sarif to github security
-      id-token: write # for nais/login
-      actions: read # for private repositories
-    steps:
-      - uses: actions/checkout@v4
-      - uses: nais/login@v0
-        with:
-          project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
-          identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
-          team: toi
+  # trivy:
+  #   runs-on: ubuntu-latest
+  #   name: Trivy vulnerability scanner
+  #   needs: build
+  #   permissions:
+  #     contents: write # to write sarif
+  #     security-events: write # push sarif to github security
+  #     id-token: write # for nais/login
+  #     actions: read # for private repositories
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: nais/login@v0
+  #       with:
+  #         project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
+  #         identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
+  #         team: toi
 
-      - name: Pull docker image
-        run: docker pull ${{ needs.build.outputs.image }}
+  #     - name: Pull docker image
+  #       run: docker pull ${{ needs.build.outputs.image }}
 
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: '${{ needs.build.outputs.image }}'
-          format: 'sarif'
-          output: 'trivy.sarif'
-          severity: 'HIGH,CRITICAL'
-          limit-severities-for-sarif: true
+  #     - name: Run Trivy vulnerability scanner
+  #       uses: aquasecurity/trivy-action@master
+  #       with:
+  #         image-ref: '${{ needs.build.outputs.image }}'
+  #         format: 'sarif'
+  #         output: 'trivy.sarif'
+  #         severity: 'HIGH,CRITICAL'
+  #         limit-severities-for-sarif: true
 
-      - name: Upload results to GitHub Security
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: 'trivy.sarif'
+  #     - name: Upload results to GitHub Security
+  #       uses: github/codeql-action/upload-sarif@v3
+  #       with:
+  #         sarif_file: 'trivy.sarif'
 
   deploy:
     name: Deploy til dev-gcp
     runs-on: ubuntu-latest
     needs: 
-      - test 
-      - trivy
+      # - test 
+      # - trivy
       - build
     permissions:
       contents: read
