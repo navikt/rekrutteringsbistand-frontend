@@ -25,6 +25,7 @@ export enum KandidatSøkQueryparam {
 interface IKandidatSøkContext {
   fritekst: string | null;
   portefølje: string;
+  setPortefølje: (portefølje: string) => void;
   valgtKontor: string;
   innsatsgruppe: string;
   side: number;
@@ -108,14 +109,14 @@ export const KandidatSøkProvider: React.FC<{ children: React.ReactNode }> = ({
   return (
     <KandidatSøkContext.Provider
       //@ts-ignore
-      value={{}}
+      value={{ portefølje, setPortefølje }}
     >
       {children}
     </KandidatSøkContext.Provider>
   );
 };
 
-export const useKandidatSøkFilter = () => {
+export const useKandidatSøkFilterContext = () => {
   const context = React.useContext(KandidatSøkContext);
   if (context === undefined) {
     throw new Error('useKandidatSøk må være i scope: KandidatSøkProvider');

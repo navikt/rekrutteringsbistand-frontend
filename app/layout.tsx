@@ -23,7 +23,7 @@ export default async function RootLayout({
 
   return (
     <html lang='no'>
-      <head>
+      {/* <head>
         {!isLocal && (
           <link
             href='https://cdn.nav.no/personoversikt/internarbeidsflate-decorator-v3/dev/latest/dist/index.css'
@@ -37,7 +37,7 @@ export default async function RootLayout({
             strategy='beforeInteractive'
           />
         )}
-      </head>
+      </head> */}
       <body>
         <ApplikasjonContextProvider>{children}</ApplikasjonContextProvider>
       </body>

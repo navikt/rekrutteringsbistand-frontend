@@ -17,7 +17,7 @@ const KandidatSøkSidebar: React.FC<IKandidatSøkSidebar> = ({ children }) => {
       </div>
       <div>
         <Search
-          description='Hva ønsker kandidaten å jobbe med?'
+          placeholder='Søk i arbeidsønsker'
           hideLabel={false}
           label='Arbeidsønsker'
           variant='secondary'
@@ -25,7 +25,7 @@ const KandidatSøkSidebar: React.FC<IKandidatSøkSidebar> = ({ children }) => {
       </div>
       <div>
         <Search
-          description='Hvor ønsker kandidaten å jobbe?'
+          placeholder='Søk i sted'
           hideLabel={false}
           label='Sted'
           variant='secondary'
