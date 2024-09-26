@@ -7,6 +7,7 @@ import { z } from 'zod';
 import { formaterDatoTilApi } from '../../../../util/dato';
 import { ForespørselDelingAvCvAPI } from '../../api-routes';
 import { getAPIwithSchema } from '../../fetcher';
+import { forespørselOmDelingAvCVStatistikkMock } from '../mocks/forespørselStatistikkMock';
 
 const foresporselOmdelingAvCVEndepunkt = (param?: URLSearchParams) =>
   `${ForespørselDelingAvCvAPI.internUrl}/statistikk${param ? `?${param}` : ''}`;
@@ -40,4 +41,10 @@ export const useForesporselOmdelingAvCV = ({
       }),
     ),
     getAPIwithSchema(delingAvCVSchema),
+  );
+
+export const foresporselOmDelingAvCVStatistikkMirage = (server: any) =>
+  server.get(
+    '/api/foresporsel-om-deling-av-cv/statistikk',
+    () => forespørselOmDelingAvCVStatistikkMock,
   );

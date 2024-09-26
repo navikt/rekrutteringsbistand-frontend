@@ -7,6 +7,7 @@ import { z } from 'zod';
 import { formaterDatoTilApi } from '../../../util/dato';
 import { StatistikkAPI } from '../api-routes';
 import { getAPIwithSchema } from '../fetcher';
+import { statistikkMock } from './mocks/statistikkMock';
 
 const statistikkEndepunkt = (param?: URLSearchParams) =>
   `${StatistikkAPI.internUrl}${param ? `?${param}` : ''}`;
@@ -53,3 +54,6 @@ export const useStatistikk = ({
     ),
     getAPIwithSchema(statistikkSchema),
   );
+
+export const statistikkMirage = (server: any) =>
+  server.get('/api/statistikk', () => statistikkMock);

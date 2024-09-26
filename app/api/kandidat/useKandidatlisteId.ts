@@ -5,12 +5,20 @@ import { KandidatAPI } from '../api-routes';
 
 export const kandidatlisteIdSchema = z.object({ kandidatlisteId: z.string() });
 
-const useKandidatlisteId = (stillingsId?: string) => {
+const kandidatListeIdEndepunkt = (stillingsId?: string) =>
+  stillingsId
+    ? `${KandidatAPI.internUrl}/veileder/stilling/${stillingsId}/kandidatlisteid`
+    : undefined;
+
+export const useKandidatlisteId = (stillingsId?: string) => {
   return useSWRImmutable(
-    stillingsId
-      ? `${KandidatAPI.internUrl}/veileder/stilling/${stillingsId}/kandidatlisteid`
-      : undefined,
+    kandidatListeIdEndepunkt(stillingsId),
     getAPIwithSchema(kandidatlisteIdSchema),
   );
 };
-export default useKandidatlisteId;
+
+export const kandidatlisteIdMirage = (server: any) => {
+  return server.get(kandidatListeIdEndepunkt('*'), () => ({
+    kandidatlisteId: 'test-kandidatliste-id',
+  }));
+};

@@ -1,6 +1,7 @@
 import { Alert, BodyLong, BodyShort, Button } from '@navikt/ds-react';
 import * as React from 'react';
 import { IFeilmelding } from '../../types/Feilmelding';
+import { logger } from '@navikt/next-logger';
 
 const Feilmelding: React.FC<IFeilmelding> = ({
   zodError,
@@ -13,6 +14,7 @@ const Feilmelding: React.FC<IFeilmelding> = ({
   const [showError, setShowError] = React.useState(false);
 
   if (zodError) {
+    logger.info('ZodError', zodError);
     return (
       <Alert className='w-full' style={{ margin: '1rem' }} variant='error'>
         <strong>Feil ved validering av data (ZodError)</strong>

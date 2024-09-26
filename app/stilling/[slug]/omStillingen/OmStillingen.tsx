@@ -11,7 +11,7 @@ import { Heading } from '@navikt/ds-react';
 import * as React from 'react';
 import TekstMedIkon from '../../../../components/TekstMedIkon';
 import { getWorkLocationsAsString } from '../../../../util/locationUtil';
-import useAntallKandidater from '../../../api/kandidat/useAntallKandidater';
+import { useAntallKandidater } from '../../../api/kandidat/useAntallKandidater';
 import { LocationListDTO } from '../../stilling-typer';
 import { useStillingsContext } from '../StillingsContext';
 import OmAnnonsen from '../components/OmAnnonsen';

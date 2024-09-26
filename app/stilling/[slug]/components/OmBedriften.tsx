@@ -15,7 +15,9 @@ const OmBedriften: React.FC = () => {
       <Heading size='large'>Om bedriften</Heading>
 
       <div className='my-4'>
-        {parse(stillingsData.stilling?.properties?.employerdescription ?? '')}
+        {parse(
+          String(stillingsData.stilling?.properties?.employerdescription ?? ''),
+        )}
       </div>
 
       <dl className='grid grid-cols-1 md:grid-cols-3 gap-6'>

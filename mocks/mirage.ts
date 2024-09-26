@@ -1,57 +1,28 @@
 'use client';
 import { createServer } from 'miragejs';
-import { brukerMock } from './brukerMock';
-import fylkeMock from './fylkeMock.json';
-import { kandidatlisetMock } from './kandidatlisteMock';
-import { kandidatSøkMock } from './kandidatsøkMock';
-import kommuneMock from './kommuneMock.json';
-import {
-  forespørselOmDelingAvCVStatistikkMock,
-  statistikkMock,
-} from './statistikkMock';
+import { brukerMirage } from '../app/api/bruker/useBruker';
+import { foresporselOmDelingAvCVStatistikkMirage } from '../app/api/foresporsel-om-deling-av-cv/statistikk/useForesporselOmdelingAvCV';
+import { kandidatSokMirage } from '../app/api/kandidat-sok/useKandidatsøk';
+import { antallKandidaterMirage } from '../app/api/kandidat/useAntallKandidater';
+import { kandidatlisteMirage } from '../app/api/kandidat/useKandidatliste';
+import { kandidatlisteIdMirage } from '../app/api/kandidat/useKandidatlisteId';
+import { statistikkMirage } from '../app/api/statistikk/useStatistikk';
+import { geografiMirage } from '../app/api/stilling/geografi/useGeografi';
 import { stillingMal } from './stillingMock';
 
 createServer({
   routes() {
-    this.namespace = 'api';
+    brukerMirage(this);
+    kandidatlisteIdMirage(this);
+    geografiMirage(this);
+    kandidatlisteMirage(this);
+    antallKandidaterMirage(this);
+    kandidatSokMirage(this);
+    statistikkMirage(this);
+    foresporselOmDelingAvCVStatistikkMirage(this);
 
-    this.passthrough('/stillings-sok');
-
-    this.get('/kandidat/veileder/stilling/*/kandidatlisteid', () => {
-      return {
-        kandidatlisteId: 'test-kandidatliste-id',
-      };
-    });
-    this.get('/kandidat/veileder/kandidatlister/*/antallKandidater', () => {
-      return {
-        antallKandidater: 13,
-      };
-    });
-    this.get('/kandidat/veileder/stilling/*/kandidatliste', () => {
-      return kandidatlisetMock;
-    });
-
-    this.get('/stilling/geografi', () => {
-      return {
-        fylker: fylkeMock,
-        kommuner: kommuneMock,
-      };
-    });
-
-    this.post('/kandidat-sok/minebrukere', () => {
-      return kandidatSøkMock;
-    });
+    this.passthrough('/api/stillings-sok');
 
     this.get('/stilling/*', () => stillingMal);
-    this.get('/bruker', () => brukerMock);
-    this.get('/statistikk', () => statistikkMock);
-    this.get(
-      '/foresporsel-om-deling-av-cv/statistikk',
-      () => forespørselOmDelingAvCVStatistikkMock,
-    );
   },
 });
-
-export default function MirageServer(): null {
-  return null;
-}

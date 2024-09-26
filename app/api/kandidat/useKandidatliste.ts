@@ -1,15 +1,21 @@
 import useSWRImmutable from 'swr/immutable';
 import { getAPIwithSchema } from '../../api/fetcher';
 import { KandidatAPI } from '../api-routes';
+import { kandidatlisetMock } from './mocks/kandidatlisteMock';
 import { kandidatlisteSchema } from './typer/kandidatliste.zod';
 
-const useKandidatliste = (stillingsId?: string) => {
+const kandidatlisteEndepunkt = (stillingsId?: string) =>
+  stillingsId
+    ? `${KandidatAPI.internUrl}/veileder/stilling/${stillingsId}/kandidatliste`
+    : undefined;
+
+export const useKandidatliste = (stillingsId?: string) => {
   return useSWRImmutable(
-    stillingsId
-      ? `${KandidatAPI.internUrl}/veileder/stilling/${stillingsId}/kandidatliste`
-      : undefined,
+    kandidatlisteEndepunkt(stillingsId),
     getAPIwithSchema(kandidatlisteSchema),
   );
 };
 
-export default useKandidatliste;
+export const kandidatlisteMirage = (server: any) => {
+  return server.get(kandidatlisteEndepunkt('*'), () => kandidatlisetMock);
+};

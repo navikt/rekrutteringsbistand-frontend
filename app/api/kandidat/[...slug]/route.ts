@@ -5,3 +5,7 @@ import { KandidatAPI } from '../../api-routes';
 export async function GET(req: NextRequest) {
   return proxyWithOBO(KandidatAPI, req);
 }
+
+export async function POST(req: NextRequest) {
+  return proxyWithOBO(KandidatAPI, req);
+}

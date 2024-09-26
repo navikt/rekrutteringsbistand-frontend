@@ -4,8 +4,9 @@
  */
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
-import { getAPIwithSchema } from '../fetcher';
 import { Rolle } from '../../../types/Roller';
+import { getAPIwithSchema } from '../fetcher';
+import { brukerMock } from './mocks/useBrukerMock';
 
 const brukerEndepunkt = '/api/bruker';
 
@@ -18,3 +19,7 @@ export type BrukerDTO = z.infer<typeof BrukerSchema>;
 
 export const useBruker = () =>
   useSWRImmutable(brukerEndepunkt, getAPIwithSchema(BrukerSchema));
+
+export const brukerMirage = (server: any) => {
+  return server.get(brukerEndepunkt, () => brukerMock);
+};

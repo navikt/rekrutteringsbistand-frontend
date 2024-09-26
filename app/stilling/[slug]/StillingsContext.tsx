@@ -2,7 +2,7 @@
 import React from 'react';
 import SWRLaster from '../../../components/SWRLaster';
 import { eierStilling } from '../../../components/tilgangskontroll/erEier';
-import useKandidatlisteId from '../../api/kandidat/useKandidatlisteId';
+import { useKandidatlisteId } from '../../api/kandidat/useKandidatlisteId';
 import { useStilling } from '../../api/stilling/rekrutteringsbistandstilling/[slug]/useStilling';
 import { stillingSchemaDTO } from '../../api/stilling/rekrutteringsbistandstilling/[slug]/zod';
 import { useApplikasjonContext } from '../../ApplikasjonContext';

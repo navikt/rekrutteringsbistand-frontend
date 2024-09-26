@@ -26,7 +26,6 @@ type IRekBisKortKandidat = {
 const RekBisKortKandidat: React.FC<IRekBisKortKandidat> = ({
   kandidat,
   markert,
-  erIListen,
 }) => {
   return (
     <div className='border rounded-lg mb-4 border-gray-300 px-4 pb-4 pt-2 flex flex-row '>
@@ -41,7 +40,7 @@ const RekBisKortKandidat: React.FC<IRekBisKortKandidat> = ({
         </Heading>
         <div className='flex items-row '>
           <div className='w-full'>
-            <div className='flex flex-row gap-4'>
+            <div className='flex flex-row gap-4 mt-2'>
               <TekstMedIkon
                 ikon={<PinIcon />}
                 tekst={hentKandidatensØnskedeSteder(kandidat) ?? '-'}
@@ -52,7 +51,7 @@ const RekBisKortKandidat: React.FC<IRekBisKortKandidat> = ({
                 tekst={`${kandidat.postnummer ?? '-'} ${kandidat.kommuneNavn ?? '-'}`}
               />
             </div>
-            <div className='flex flex-row gap-4'>
+            <div className='flex flex-row gap-4 mt-2'>
               <TekstMedIkon
                 ikon={<HandShakeHeartIcon />}
                 tekst={hentKandidatensØnskedeYrker(kandidat) ?? '-'}

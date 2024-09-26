@@ -1,4 +1,4 @@
-import { Rolle } from '../types/Roller';
+import { Rolle } from '../../../../types/Roller';
 
 export const brukerMock = {
   navIdent: 'Z993141',

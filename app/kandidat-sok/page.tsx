@@ -1,5 +1,10 @@
 import KandidatSøk from './KandidatSøk';
+import { KandidatSøkProvider } from './KandidatsøkContext';
 
 export default function KandidatSøkIndex() {
-  return <KandidatSøk />;
+  return (
+    <KandidatSøkProvider>
+      <KandidatSøk />
+    </KandidatSøkProvider>
+  );
 }
