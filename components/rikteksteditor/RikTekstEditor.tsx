@@ -46,7 +46,6 @@ const RikTekstEditor: React.FC<IRikTekstEditor> = ({
   limitLengde,
 }) => {
   const [headerValue, setHeaderValue] = React.useState<number>(0);
-
   const editor = useEditor({
     immediatelyRender: false,
     extensions: [

@@ -8,7 +8,7 @@ import {
 } from '@navikt/ds-react';
 import Link from 'next/link';
 import * as React from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { SubmitHandler, useFormContext } from 'react-hook-form';
 import RikTekstEditor from '../../../../../components/rikteksteditor/RikTekstEditor';
 import { stillingsDataDTO } from '../../../stilling-typer';
 import { useStillingsContext } from '../../StillingsContext';
@@ -21,7 +21,7 @@ export const RedigerOmStillingen: React.FC<{
 }> = ({ nextStep, forrigeSteg, stegNummer }) => {
   const { stillingsData, editStillingsData } = useStillingsContext();
   const { register, setValue, handleSubmit, watch } =
-    useForm<stillingsDataDTO>();
+    useFormContext<stillingsDataDTO>();
 
   const [visAdresseFelt, setVisAdressefelt] = React.useState<boolean>(true);
   const [visKommuneFelt, setVisKommuneFelt] = React.useState<boolean>(false);
