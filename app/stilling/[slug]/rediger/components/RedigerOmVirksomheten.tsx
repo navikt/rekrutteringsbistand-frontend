@@ -36,6 +36,8 @@ export const RedigerOmVirksomheten: React.FC<{
     append({ name: '', title: '', email: '', phone: '' });
   }
 
+  const beskrivelse = watch('stilling.properties.employerdescription');
+
   return (
     <div>
       <Heading size='large' className='mb-4'>
@@ -65,7 +67,7 @@ export const RedigerOmVirksomheten: React.FC<{
           <span>Beskrivelse av bedriften (valgfritt)</span>
           <RikTekstEditor
             id='rediger-om-virksomheten'
-            tekst={watch('stilling.properties.employerdescription') ?? ''}
+            tekst={beskrivelse ?? ''}
             onChange={(e) =>
               setValue('stilling.properties.employerdescription', e)
             }

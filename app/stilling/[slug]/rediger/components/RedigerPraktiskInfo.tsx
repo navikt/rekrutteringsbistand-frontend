@@ -44,6 +44,8 @@ export const RedigerPraktiskInfo: React.FC<{
     nextStep();
   };
 
+  const sektor = watch('stilling.properties.sector');
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className='flex flex-col gap-y-8'>
@@ -51,7 +53,7 @@ export const RedigerPraktiskInfo: React.FC<{
         <BodyShort>Fyll inn praktiske detaljer om jobben.</BodyShort>
         <RadioGroup
           legend='Sektor'
-          value={watch('stilling.properties.sector')}
+          value={sektor}
           onChange={(e) => setValue('stilling.properties.sector', e)}
         >
           <Radio value='privat'>Privat</Radio>

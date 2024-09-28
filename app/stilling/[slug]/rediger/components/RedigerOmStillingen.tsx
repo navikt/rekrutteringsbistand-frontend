@@ -30,6 +30,8 @@ export const RedigerOmStillingen: React.FC<{
     nextStep();
   };
 
+  const tekst = watch('stilling.properties.adtext');
+
   return (
     <div className='space-y-8'>
       <Heading size='large'>Om stillingen</Heading>
@@ -66,7 +68,7 @@ export const RedigerOmStillingen: React.FC<{
             </BodyShort>
             <RikTekstEditor
               id='stilling-beskrivelse'
-              tekst={watch('stilling.properties.adtext') ?? ''}
+              tekst={tekst ?? ''}
               onChange={(e) => setValue('stilling.properties.adtext', e)}
               limitLengde={800}
             />

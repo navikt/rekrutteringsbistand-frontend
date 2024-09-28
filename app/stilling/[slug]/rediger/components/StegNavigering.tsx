@@ -11,7 +11,6 @@ const StegNavigering: React.FC<StegNavigeringProps> = ({
   stegNummer,
   forrigeSteg,
 }) => {
-  console.log('🎺 stegNummer', stegNummer);
   return (
     <div className='flex justify-between mb-8 mt-4 w-full'>
       {stegNummer > 1 ? (

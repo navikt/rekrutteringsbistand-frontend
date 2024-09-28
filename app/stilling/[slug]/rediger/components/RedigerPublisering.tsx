@@ -22,7 +22,7 @@ export const RedigerPublisering: React.FC<{
 
   const publiseringDato = watch('stilling.published');
   const utløpsDato = watch('stilling.expires');
-
+  const publiseringstype = watch('stilling.source');
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className='space-y-8'>
@@ -48,7 +48,7 @@ export const RedigerPublisering: React.FC<{
 
         <RadioGroup
           legend='Hvor skal stillingen publiseres?'
-          value={watch('stilling.source')}
+          value={publiseringstype}
           onChange={(val) => setValue('stilling.source', val)}
         >
           <Radio value='DIR'>NAV (Intern)</Radio>
