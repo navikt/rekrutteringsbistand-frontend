@@ -53,8 +53,12 @@ const StillingsTag: React.FC<IStillingTag> = ({ stillingsData, splitTags }) => {
 
   const stillingUløpt = stillingErUtløpt(stillingsData.stilling);
 
-  const publisertDato = format(stillingsData.stilling.published, 'dd.MM.yyyy');
-  const utløpsDato = format(stillingsData.stilling.expires, 'dd.MM.yyyy');
+  const publisertDato = stillingsData.stilling.published
+    ? format(stillingsData.stilling.published, 'dd.MM.yyyy')
+    : '-';
+  const utløpsDato = stillingsData.stilling.expires
+    ? format(stillingsData.stilling.expires, 'dd.MM.yyyy')
+    : '-';
 
   // const publisertTag = stillingsData.stilling.publishedByAdmin
   //   && publisertDato !== utløpsDato
