@@ -28,15 +28,15 @@ const OmAnnonsen: React.FC = () => {
         />
         <Definisjon
           tittel='Publisert'
-          innhold={`${format(published, 'dd.MM.yyyy')}`}
+          innhold={`${published ? format(published, 'dd.MM.yyyy') : '-'}`}
         />
         <Definisjon
           tittel='Siste visning'
-          innhold={`${format(expires, 'dd.MM.yyyy')}`}
+          innhold={`${expires ? format(expires, 'dd.MM.yyyy') : '-'}`}
         />
         <Definisjon
           tittel='Sist endret'
-          innhold={`${format(updated, 'dd.MM.yyyy')}`}
+          innhold={`${updated ? format(updated, 'dd.MM.yyyy') : '-'}`}
         />
         <Definisjon
           tittel='Kontaktperson hos NAV'

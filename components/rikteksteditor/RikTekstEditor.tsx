@@ -1,3 +1,4 @@
+'use client';
 import {
   ArrowRedoIcon,
   ArrowUndoIcon,
@@ -7,10 +8,11 @@ import {
   LinkIcon,
   NumberListIcon,
 } from '@navikt/aksel-icons';
-import { ErrorMessage, Loader } from '@navikt/ds-react';
+import { BodyShort, ErrorMessage, Loader } from '@navikt/ds-react';
 import Blockquote from '@tiptap/extension-blockquote';
 import Bold from '@tiptap/extension-bold';
 import BulletList from '@tiptap/extension-bullet-list';
+import CharacterCount from '@tiptap/extension-character-count';
 import Document from '@tiptap/extension-document';
 import HardBreak from '@tiptap/extension-hard-break';
 import Heading from '@tiptap/extension-heading';
@@ -32,6 +34,7 @@ export interface IRikTekstEditor {
   id: string;
   onChange: (tekst: string) => void;
   feilMelding?: string;
+  limitLengde?: number;
 }
 
 const RikTekstEditor: React.FC<IRikTekstEditor> = ({
@@ -40,10 +43,12 @@ const RikTekstEditor: React.FC<IRikTekstEditor> = ({
   onChange,
   skjulToolbar,
   feilMelding,
+  limitLengde,
 }) => {
   const [headerValue, setHeaderValue] = React.useState<number>(0);
 
   const editor = useEditor({
+    immediatelyRender: false,
     extensions: [
       HardBreak,
       Document,
@@ -63,6 +68,9 @@ const RikTekstEditor: React.FC<IRikTekstEditor> = ({
       Heading.configure({
         levels: [1, 2, 3, 4, 5, 6],
       }),
+      CharacterCount.configure({
+        limit: limitLengde,
+      }),
     ],
     content: tekst,
     onUpdate: ({ editor }) => onChange(editor.getHTML()),
@@ -77,7 +85,6 @@ const RikTekstEditor: React.FC<IRikTekstEditor> = ({
   if (!editor) {
     return <Loader />;
   }
-
   const setLink = () => {
     const url = prompt('Skriv inn lenke');
     if (url) {
@@ -208,6 +215,14 @@ const RikTekstEditor: React.FC<IRikTekstEditor> = ({
         )}
       </div>
       <EditorContent editor={editor} />
+      {limitLengde && (
+        <div className='mt-2 flex justify-end'>
+          <BodyShort size='small' className='text-gray-500'>
+            Maks tegn {editor.storage.characterCount.characters()} /{' '}
+            {limitLengde}
+          </BodyShort>
+        </div>
+      )}
       {feilMelding && <ErrorMessage>{feilMelding}</ErrorMessage>}
     </div>
   );

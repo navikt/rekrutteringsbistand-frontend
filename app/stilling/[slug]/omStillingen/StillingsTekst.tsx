@@ -4,8 +4,7 @@ import RikTekstEditor from '../../../../components/rikteksteditor/RikTekstEditor
 import { useStillingsContext } from '../StillingsContext';
 
 const StillingsTekst: React.FC = () => {
-  const { stillingsData, erEier, endrerStilling, setEndrerStilling } =
-    useStillingsContext();
+  const { stillingsData, erEier, endrerStilling } = useStillingsContext();
   const tekst = stillingsData.stilling?.properties?.adtext ?? '';
 
   if (!erEier || !endrerStilling) {

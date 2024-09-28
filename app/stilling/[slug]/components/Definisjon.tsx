@@ -2,7 +2,7 @@ import * as React from 'react';
 
 export interface DefinisjonProps {
   tittel: string;
-  innhold?: string;
+  innhold?: string | null;
 }
 
 const Definisjon: React.FC<DefinisjonProps> = ({ tittel, innhold }) => {

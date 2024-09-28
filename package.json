@@ -23,6 +23,7 @@
     "@tiptap/extension-blockquote": "^2.6.6",
     "@tiptap/extension-bold": "^2.6.6",
     "@tiptap/extension-bullet-list": "^2.6.6",
+    "@tiptap/extension-character-count": "^2.7.4",
     "@tiptap/extension-document": "^2.6.6",
     "@tiptap/extension-hard-break": "^2.6.6",
     "@tiptap/extension-heading": "^2.6.6",
@@ -45,6 +46,7 @@
     "postcss-import": "^16.1.0",
     "react": "^18",
     "react-dom": "^18",
+    "react-hook-form": "^7.53.0",
     "swr": "^2.2.5",
     "zod": "^3.23.8"
   },

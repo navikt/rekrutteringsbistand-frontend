@@ -55,10 +55,7 @@ export const propertiesSchema = z
     positioncount: z.number().optional().nullable(),
     engagementtype: z.string().optional().nullable(),
     classification_styrk08_score: z.number().optional().nullable(),
-    employerdescription: z
-      .union([z.string(), z.number()])
-      .nullable()
-      .optional(),
+    employerdescription: z.string().nullable().optional(),
     adtext: z.string().optional().nullable(),
     classification_styrk08_code: z.any().optional().nullable(),
     sourceurl: z.string().optional().nullable(),

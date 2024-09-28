@@ -1,3 +1,5 @@
+'use client';
+
 import {
   ArrowForwardIcon,
   PencilIcon,
@@ -5,11 +7,13 @@ import {
   TrashIcon,
 } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
+import { useRouter } from 'next/navigation';
 import * as React from 'react';
 import { useStillingsContext } from '../../StillingsContext';
 
 const StillingSidebarKnapper: React.FC = () => {
-  const { erEier, setEndrerStilling } = useStillingsContext();
+  const { erEier, stillingsData } = useStillingsContext();
+  const router = useRouter();
   return (
     <div className='grid grid-cols-2 gap-2'>
       <Button
@@ -34,7 +38,9 @@ const StillingSidebarKnapper: React.FC = () => {
           size='small'
           className='w-full h-5'
           icon={<PencilIcon />}
-          onClick={() => setEndrerStilling(true)}
+          onClick={() =>
+            router.push(`/stilling/${stillingsData.stilling.uuid}/rediger`)
+          }
         >
           Rediger
         </Button>

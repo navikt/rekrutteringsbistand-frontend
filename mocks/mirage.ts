@@ -8,7 +8,7 @@ import { kandidatlisteMirage } from '../app/api/kandidat/useKandidatliste';
 import { kandidatlisteIdMirage } from '../app/api/kandidat/useKandidatlisteId';
 import { statistikkMirage } from '../app/api/statistikk/useStatistikk';
 import { geografiMirage } from '../app/api/stilling/geografi/useGeografi';
-import { stillingMal } from './stillingMock';
+import { stillingMirage } from '../app/api/stilling/rekrutteringsbistandstilling/[slug]/useStilling';
 
 createServer({
   routes() {
@@ -20,9 +20,8 @@ createServer({
     kandidatSokMirage(this);
     statistikkMirage(this);
     foresporselOmDelingAvCVStatistikkMirage(this);
+    stillingMirage(this);
 
     this.passthrough('/api/stillings-sok');
-
-    this.get('/stilling/*', () => stillingMal);
   },
 });

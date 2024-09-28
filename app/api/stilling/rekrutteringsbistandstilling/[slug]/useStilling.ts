@@ -4,13 +4,18 @@
  */
 import useSWRImmutable from 'swr/immutable';
 import { getAPIwithSchema } from '../../../fetcher';
+import { stillingMock } from './mocks/stillingMock';
 import { stillingSchema } from './zod';
 
-const useStillingEndepunkt = (stillingsId: string) =>
+const stillingEndepunkt = (stillingsId: string) =>
   `/api/stilling/rekrutteringsbistandstilling/${stillingsId}`;
 
 export const useStilling = (stillingsId: string) =>
   useSWRImmutable(
-    useStillingEndepunkt(stillingsId),
+    stillingEndepunkt(stillingsId),
     getAPIwithSchema(stillingSchema),
   );
+
+export const stillingMirage = (server: any) => {
+  server.get(stillingEndepunkt('*'), () => stillingMock);
+};

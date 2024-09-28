@@ -11,8 +11,7 @@ interface StillingsContextType {
   stillingsData: stillingSchemaDTO;
   erEier?: boolean;
   kandidatlisteId?: string;
-  endrerStilling?: boolean;
-  setEndrerStilling: (endrerStilling: boolean) => void;
+  editStillingsData: (field: string, value: any) => void;
 }
 
 const StillingsContext = React.createContext<StillingsContextType | undefined>(
@@ -47,11 +46,37 @@ const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
   data,
   children,
 }) => {
-  const kandidatListeIdSWR = useKandidatlisteId(data.stilling.uuid);
-  const [endrerStilling, setEndrerStilling] = React.useState<boolean>(false);
+  const kandidatListeIdSWR = useKandidatlisteId(data.stilling.uuid ?? '');
   const { navIdent } = useApplikasjonContext();
   const [stillingsData, setStillingsData] =
     React.useState<stillingSchemaDTO>(data);
+
+  // edit deeply nested fields in stillingSchemaDTO
+  const editStillingsData = (field: string, value: any) => {
+    setStillingsData((prevData) => {
+      const newData = { ...prevData };
+      const fieldParts = field.split('.');
+      let current: any = newData;
+
+      for (let i = 0; i < fieldParts.length - 1; i++) {
+        const part = fieldParts[i];
+        if (part.includes('[')) {
+          const [arrayName, indexStr] = part.split('[');
+          const index = parseInt(indexStr.replace(']', ''));
+          if (!current[arrayName]) current[arrayName] = [];
+          if (!current[arrayName][index]) current[arrayName][index] = {};
+          current = current[arrayName][index];
+        } else {
+          if (!current[part]) current[part] = {};
+          current = current[part];
+        }
+      }
+
+      current[fieldParts[fieldParts.length - 1]] = value;
+      console.log('🎺 newData', newData);
+      return newData;
+    });
+  };
 
   const erEier = eierStilling({
     stillingsData: stillingsData,
@@ -64,8 +89,7 @@ const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
         stillingsData,
         erEier,
         kandidatlisteId: kandidatListeIdSWR.data?.kandidatlisteId,
-        endrerStilling,
-        setEndrerStilling,
+        editStillingsData,
       }}
     >
       {children}

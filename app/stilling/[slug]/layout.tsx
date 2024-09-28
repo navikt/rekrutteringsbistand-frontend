@@ -1,6 +1,7 @@
 'use client';
 import { Buildings2Icon, PersonIcon } from '@navikt/aksel-icons';
 import { Tabs } from '@navikt/ds-react';
+import { usePathname } from 'next/navigation';
 import { useQueryState } from 'nuqs';
 import * as React from 'react';
 import SideLayout from '../../../components/layout/SideLayout';
@@ -38,13 +39,15 @@ const StillingSideLayout: React.FC<StillingSideLayoutProps> = ({
   children,
 }) => {
   const { stillingsData, erEier, kandidatlisteId } = useStillingsContext();
-
+  const pathname = usePathname();
   const eierNavn = navnEierAvAstilling(stillingsData);
 
   const [fane, setFane] = useQueryState('visFane', {
     defaultValue: 'stilling',
     clearOnDefault: true,
   });
+
+  const redigeringsmodus = pathname.endsWith('/rediger');
 
   return (
     <SideLayout
@@ -56,7 +59,9 @@ const StillingSideLayout: React.FC<StillingSideLayoutProps> = ({
               <div className='flex my-2'>
                 <div className='flex'>
                   <Buildings2Icon className='mr-2' />
-                  {capitalizeEmployerName(stillingsData.stilling.businessName)}
+                  {capitalizeEmployerName(
+                    stillingsData.stilling.businessName ?? '',
+                  )}
                 </div>
                 {eierNavn && (
                   <div className='flex ml-4'>
@@ -65,29 +70,35 @@ const StillingSideLayout: React.FC<StillingSideLayoutProps> = ({
                   </div>
                 )}
               </div>
-              <KopierStillingLenke stillingsId={stillingsData.stilling.uuid} />
+              <KopierStillingLenke
+                stillingsId={stillingsData.stilling.uuid ?? ''}
+              />
             </>
           }
           tilbakeKnapp
           ikon={<StillingsIkon />}
-          tittel={stillingsData.stilling.title}
+          tittel={stillingsData.stilling.title ?? ''}
         />
       }
     >
-      <Tabs defaultValue={fane} onChange={(val) => setFane(val)}>
-        <Tabs.List>
-          <Tabs.Tab value='stilling' label='Om stillingen' />
+      {redigeringsmodus ? (
+        children
+      ) : (
+        <Tabs defaultValue={fane} onChange={(val) => setFane(val)}>
+          <Tabs.List>
+            <Tabs.Tab value='stilling' label='Om stillingen' />
+            {kandidatlisteId && erEier && (
+              <Tabs.Tab value='kandidater' label='Kandidater' />
+            )}
+          </Tabs.List>
+          <Tabs.Panel value='stilling'>{children}</Tabs.Panel>
           {kandidatlisteId && erEier && (
-            <Tabs.Tab value='kandidater' label='Kandidater' />
+            <Tabs.Panel value='kandidater'>
+              <StillingsKandidater />
+            </Tabs.Panel>
           )}
-        </Tabs.List>
-        <Tabs.Panel value='stilling'>{children}</Tabs.Panel>
-        {kandidatlisteId && erEier && (
-          <Tabs.Panel value='kandidater'>
-            <StillingsKandidater />
-          </Tabs.Panel>
-        )}
-      </Tabs>
+        </Tabs>
+      )}
     </SideLayout>
   );
 };
