@@ -65,12 +65,12 @@ const OmStillingen: React.FC = () => {
             <div className='grid grid-cols-3 gap-4'>
               <TekstMedIkon tekst={`${lokasjon}`} ikon={<LocationPinIcon />} />
               <TekstMedIkon
-                tekst={`${engagementtype ?? '-'}, ${extent ?? '-'}`}
+                tekst={`${engagementtype ?? '-'} ${extent ? `, ${extent}` : ''}`}
                 ikon={<ClockIcon />}
               />
               <TekstMedIkon tekst='' ikon={<CalendarIcon />} />
               <TekstMedIkon
-                tekst={`${parseWorktime(workday)}, ${parseWorktime(workhours)}`}
+                tekst={`${workday ? parseWorktime(workday) : '-'} ${workhours ? `, ${parseWorktime(workhours)}` : ''}`}
                 ikon={<HourglassIcon />}
               />
               <TekstMedIkon tekst={applicationdue} ikon={<TimerStartIcon />} />

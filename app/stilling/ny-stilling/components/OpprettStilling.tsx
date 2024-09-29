@@ -55,7 +55,7 @@ export const OpprettStillingKnapp: React.FC<OpprettStillingProps> = ({
       const response = await opprettNyStilling(stilling);
 
       if (response.stilling.uuid) {
-        router.push(`/stilling/${response.stilling.uuid}`);
+        router.push(`/stilling/${response.stilling.uuid}/rediger`);
       } else {
         alert('Feil ved opprettelse av stilling');
       }
