@@ -1,10 +1,10 @@
 import { z } from 'zod';
 import {
   locationListSchema,
-  stillingSchema,
+  stillingSchemaDTO,
 } from '../api/stilling/rekrutteringsbistandstilling/[slug]/zod';
 
-export type stillingsDataDTO = z.infer<typeof stillingSchema>;
+export type stillingsDataDTO = z.infer<typeof stillingSchemaDTO>;
 export type LocationListDTO = z.infer<typeof locationListSchema>;
 
 export enum Status {

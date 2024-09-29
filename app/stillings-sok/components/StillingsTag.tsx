@@ -2,7 +2,7 @@ import { Tag } from '@navikt/ds-react';
 import { format, startOfDay } from 'date-fns';
 import * as React from 'react';
 import { eierStilling } from '../../../components/tilgangskontroll/erEier';
-import { stillingSchemaDTO } from '../../api/stilling/rekrutteringsbistandstilling/[slug]/zod';
+import { stillingsDTO } from '../../api/stilling/rekrutteringsbistandstilling/[slug]/zod';
 import { useApplikasjonContext } from '../../ApplikasjonContext';
 import {
   AdminStatus,
@@ -13,7 +13,7 @@ import { StillingsSøkStillingDTO } from '../stillingssøk-typer';
 import { Hovedtag } from './StillingsSøkFilter/InkluderingFilter';
 
 export interface IStillingTag {
-  stillingsData: stillingSchemaDTO | StillingsSøkStillingDTO;
+  stillingsData: StillingsSøkStillingDTO | stillingsDTO;
   splitTags?: boolean;
 }
 

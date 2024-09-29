@@ -1,10 +1,11 @@
 import { z } from 'zod';
 import {
-  stillingSourceSchema,
+  stillingSøkSchema,
+  stillingSøkSourceSchema,
   stillingsSøkDTOSchema,
 } from '../api/stillings-sok/zod';
 
-export type StillingsSøkStillingDTO = z.infer<typeof stillingSourceSchema>;
+export type StillingsSøkStillingDTO = z.infer<typeof stillingSøkSourceSchema>;
 export type StillingsSøkDTO = z.infer<typeof stillingsSøkDTOSchema>;
 
 export enum StillingsSøkQueryparam {
