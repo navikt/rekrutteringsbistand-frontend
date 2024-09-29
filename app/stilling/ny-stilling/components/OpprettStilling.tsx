@@ -19,10 +19,9 @@ export const OpprettStillingKnapp: React.FC<OpprettStillingProps> = ({
 }) => {
   const { navIdent } = useApplikasjonContext();
   const router = useRouter();
-
+  const [isLoading, setIsLoading] = React.useState(false);
   const handleOpprettStilling = async () => {
-    console.log('opprett stilling', stillingskategori, arbeidsgiver);
-
+    setIsLoading(true);
     if (stillingskategori && arbeidsgiver) {
       const stilling: NyStillingDTO = {
         kategori: stillingskategori,
@@ -55,17 +54,18 @@ export const OpprettStillingKnapp: React.FC<OpprettStillingProps> = ({
 
       const response = await opprettNyStilling(stilling);
 
-      console.log('🎺 response', response);
-      if (response.stilling.id) {
-        router.push(`/stilling/${response.stilling.id}`);
+      if (response.stilling.uuid) {
+        router.push(`/stilling/${response.stilling.uuid}`);
       } else {
         alert('Feil ved opprettelse av stilling');
       }
     }
+    setIsLoading(false);
   };
 
   return (
     <Button
+      loading={isLoading}
       onClick={handleOpprettStilling}
       icon={<PlusCircleIcon aria-hidden />}
       variant='primary'
