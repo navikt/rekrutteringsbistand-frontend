@@ -5,19 +5,28 @@ import {
   Radio,
   RadioGroup,
 } from '@navikt/ds-react';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { SubmitHandler, useFormContext } from 'react-hook-form';
+import { oppdaterStilling } from '../../../../api/stilling/oppdater-stilling/oppdaterStilling';
 import { stillingsDataDTO } from '../../../stilling-typer';
 import { DatoVelger } from './DatoVelger';
 
-export const RedigerPublisering: React.FC<{
-  stegNummer: number;
-  nextStep: () => void;
-  forrigeSteg: () => void;
-}> = ({ nextStep, forrigeSteg, stegNummer }) => {
+export const RedigerPublisering: React.FC = () => {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
   const { watch, handleSubmit, setValue } = useFormContext<stillingsDataDTO>();
 
-  const onSubmit: SubmitHandler<stillingsDataDTO> = (data) => {
-    console.log(data);
+  const onSubmit: SubmitHandler<stillingsDataDTO> = async (data) => {
+    setIsLoading(true);
+    const response = await oppdaterStilling(data);
+    setIsLoading(false);
+
+    if (response.stilling.uuid) {
+      router.push(`/stilling/${response.stilling.uuid}`);
+    } else {
+      alert('Feil ved opprettelse av stilling');
+    }
   };
 
   const publiseringDato = watch('stilling.published');
@@ -56,7 +65,7 @@ export const RedigerPublisering: React.FC<{
         </RadioGroup>
 
         <div className='flex gap-4'>
-          <Button className='w-full' disabled>
+          <Button className='w-full' type='submit' loading={isLoading}>
             Lagre
           </Button>
         </div>

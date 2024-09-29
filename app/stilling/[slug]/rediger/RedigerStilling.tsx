@@ -45,7 +45,7 @@ const RedigerStilling: React.FC = () => {
 
   return (
     <FormProvider {...registerForm}>
-      {forhåndsvisData && (
+      {forhåndsvisData ? (
         <>
           <Button
             className='w-full'
@@ -58,84 +58,78 @@ const RedigerStilling: React.FC = () => {
 
           <OmStillingen />
         </>
-      )}
-      <div className='flex flex-row'>
-        <div className='sticky top-4 self-start'>
-          <Stepper
-            onStepChange={setActiveStep}
-            aria-labelledby='stepper-heading'
-            activeStep={activeStep}
-          >
-            {Object.values(Steg)
-              .filter((step): step is Steg => typeof step === 'number')
-              .map((step) => (
-                <Stepper.Step
-                  key={step}
-                  completed={activeStep > step}
-                  // interactive={activeStep > step}
-                >
-                  {stegTitler[step]}
-                </Stepper.Step>
-              ))}
-          </Stepper>
-        </div>
+      ) : (
+        <div className='flex flex-row'>
+          <div className='sticky top-4 self-start'>
+            <Stepper
+              onStepChange={setActiveStep}
+              aria-labelledby='stepper-heading'
+              activeStep={activeStep}
+            >
+              {Object.values(Steg)
+                .filter((step): step is Steg => typeof step === 'number')
+                .map((step) => (
+                  <Stepper.Step
+                    key={step}
+                    interactive={registerForm.formState.isValid}
+                  >
+                    {stegTitler[step]}
+                  </Stepper.Step>
+                ))}
+            </Stepper>
+          </div>
 
-        <div className='flex-grow mx-12 px-12'>
-          {activeStep === Steg.omVirksomheten && (
-            <RedigerOmVirksomheten
-              stegNummer={Steg.omVirksomheten}
-              nextStep={nextStep}
-              forrigeSteg={forrigeSteg}
-            />
-          )}
-          {activeStep === Steg.omTilrettelegging && (
-            <RedigerOmTilrettelegging
-              stegNummer={Steg.omTilrettelegging}
-              nextStep={nextStep}
-              forrigeSteg={forrigeSteg}
-            />
-          )}
-          {activeStep === Steg.omStillingen && (
-            <RedigerOmStillingen
-              stegNummer={Steg.omStillingen}
-              nextStep={nextStep}
-              forrigeSteg={forrigeSteg}
-            />
-          )}
-          {activeStep === Steg.praktiskInfo && (
-            <RedigerPraktiskInfo
-              stegNummer={Steg.praktiskInfo}
-              nextStep={nextStep}
-              forrigeSteg={forrigeSteg}
-            />
-          )}
-          {activeStep === Steg.publisering && (
-            <RedigerPublisering
-              stegNummer={Steg.publisering}
-              nextStep={nextStep}
-              forrigeSteg={forrigeSteg}
-            />
-          )}
+          <div className='flex-grow mx-12 px-12'>
+            {activeStep === Steg.omVirksomheten && (
+              <RedigerOmVirksomheten
+                stegNummer={Steg.omVirksomheten}
+                nextStep={nextStep}
+                forrigeSteg={forrigeSteg}
+              />
+            )}
+            {activeStep === Steg.omTilrettelegging && (
+              <RedigerOmTilrettelegging
+                stegNummer={Steg.omTilrettelegging}
+                nextStep={nextStep}
+                forrigeSteg={forrigeSteg}
+              />
+            )}
+            {activeStep === Steg.omStillingen && (
+              <RedigerOmStillingen
+                stegNummer={Steg.omStillingen}
+                nextStep={nextStep}
+                forrigeSteg={forrigeSteg}
+              />
+            )}
+            {activeStep === Steg.praktiskInfo && (
+              <RedigerPraktiskInfo
+                stegNummer={Steg.praktiskInfo}
+                nextStep={nextStep}
+                forrigeSteg={forrigeSteg}
+              />
+            )}
+            {activeStep === Steg.publisering && <RedigerPublisering />}
+          </div>
+          <div className='sticky top-4 self-start flex flex-col gap-2 items-start'>
+            <Button icon={<XMarkIcon />} variant='tertiary' disabled>
+              Avbryt
+            </Button>
+            <Button
+              icon={<EyeIcon />}
+              onClick={() => setForhåndsvisData(registerForm.getValues())}
+              variant='tertiary'
+            >
+              Forhåndsvis
+            </Button>
+            <Button icon={<StopIcon />} variant='tertiary' disabled>
+              Stopp
+            </Button>
+            <Button icon={<TrashIcon />} variant='tertiary' disabled>
+              Slett
+            </Button>
+          </div>
         </div>
-        <div className='sticky top-4 self-start flex flex-col gap-2 items-start'>
-          <Button icon={<XMarkIcon />} variant='tertiary' disabled>
-            Avbryt
-          </Button>
-          <Button
-            icon={<EyeIcon />}
-            onClick={() => setForhåndsvisData(registerForm.getValues())}
-            variant='tertiary'
-          >
-            Forhåndsvis
-          </Button>
-          <Button icon={<StopIcon />} variant='tertiary' disabled>
-            Stopp
-          </Button>
-          <Button icon={<TrashIcon />} variant='tertiary' disabled>
-            Slett
-          </Button>
-        </div>
-      </div>
+      )}
     </FormProvider>
   );
 };

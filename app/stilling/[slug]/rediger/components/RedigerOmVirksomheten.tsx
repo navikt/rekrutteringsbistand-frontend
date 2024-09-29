@@ -1,6 +1,11 @@
 import { Accordion, Button, Heading, TextField } from '@navikt/ds-react';
 import React from 'react';
-import { SubmitHandler, useFieldArray, useFormContext } from 'react-hook-form';
+import {
+  Controller,
+  SubmitHandler,
+  useFieldArray,
+  useFormContext,
+} from 'react-hook-form';
 import RikTekstEditor from '../../../../../components/rikteksteditor/RikTekstEditor';
 import { getWorkLocationsAsString } from '../../../../../util/locationUtil';
 import { LocationListDTO, stillingsDataDTO } from '../../../stilling-typer';
@@ -111,37 +116,78 @@ export const RedigerOmVirksomheten: React.FC<{
           </p>
           {fields.map((field, index) => (
             <div key={field.id} className='grid grid-cols-2 gap-4 items-start'>
-              <TextField
-                label='Navn'
-                {...(register(`stilling.contactList.${index}.name`),
-                { required: true })}
-                //TODO
-                // error={
-                //   (errors.stilling?.contactList?.[index] as any)?.name?.message
-                //     ? 'Påkrevd'
-                //     : undefined
-                // }
+              <Controller
+                control={control}
+                rules={{ required: true }}
+                name={`stilling.contactList.${index}.name`}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <TextField
+                    label='Navn'
+                    onChange={(e) => onChange(e.target.value)}
+                    value={value ?? ''}
+                    error={
+                      (errors.stilling?.contactList?.[index] as any)?.name
+                        ? 'Påkrevd felt'
+                        : null
+                    }
+                  />
+                )}
               />
-              <TextField
-                label='Tittel'
-                {...(register(`stilling.contactList.${index}.title`),
-                { required: true })}
-                // error={fields[index].title.error ? 'Påkrevd' : undefined}
+              <Controller
+                control={control}
+                rules={{ required: true }}
+                name={`stilling.contactList.${index}.title`}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <TextField
+                    label='Tittel'
+                    onChange={(e) => onChange(e.target.value)}
+                    value={value ?? ''}
+                    error={
+                      (errors.stilling?.contactList?.[index] as any)?.title
+                        ? 'Påkrevd felt'
+                        : null
+                    }
+                  />
+                )}
               />
-              <TextField
-                label='E-post'
-                {...(register(`stilling.contactList.${index}.email`),
-                { required: true })}
-                // error={fields[index].email.error ? 'Påkrevd' : undefined}
-                type='email'
+
+              <Controller
+                control={control}
+                rules={{ required: true }}
+                name={`stilling.contactList.${index}.email`}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <TextField
+                    type='email'
+                    label='E-post'
+                    onChange={(e) => onChange(e.target.value)}
+                    value={value ?? ''}
+                    error={
+                      (errors.stilling?.contactList?.[index] as any)?.email
+                        ? 'Påkrevd felt'
+                        : null
+                    }
+                  />
+                )}
               />
-              <TextField
-                label='Telefonnummer'
-                {...(register(`stilling.contactList.${index}.phone`),
-                { required: true })}
-                // error={fields[index].phone.error ? 'Påkrevd' : undefined}
-                type='tel'
+              <Controller
+                control={control}
+                rules={{ required: true }}
+                name={`stilling.contactList.${index}.phone`}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <TextField
+                    type='tel'
+                    label='Telefonnummer'
+                    onChange={(e) => onChange(e.target.value)}
+                    value={value ?? ''}
+                    error={
+                      (errors.stilling?.contactList?.[index] as any)?.phone
+                        ? 'Påkrevd felt'
+                        : null
+                    }
+                  />
+                )}
               />
+
               {index > 0 && (
                 <>
                   <div> </div>
