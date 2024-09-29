@@ -4,14 +4,16 @@ import SWRLaster from '../../../components/SWRLaster';
 import { eierStilling } from '../../../components/tilgangskontroll/erEier';
 import { useKandidatlisteId } from '../../api/kandidat/useKandidatlisteId';
 import { useStilling } from '../../api/stilling/rekrutteringsbistandstilling/[slug]/useStilling';
-import { stillingSchemaDTO } from '../../api/stilling/rekrutteringsbistandstilling/[slug]/zod';
+import { stillingsDTO } from '../../api/stilling/rekrutteringsbistandstilling/[slug]/zod';
 import { useApplikasjonContext } from '../../ApplikasjonContext';
 
 interface StillingsContextType {
-  stillingsData: stillingSchemaDTO;
+  stillingsData: stillingsDTO;
+  forhåndsvisData: stillingsDTO | null;
   erEier?: boolean;
   kandidatlisteId?: string;
   editStillingsData: (field: string, value: any) => void;
+  setForhåndsvisData: (data: stillingsDTO | null) => void;
 }
 
 const StillingsContext = React.createContext<StillingsContextType | undefined>(
@@ -38,7 +40,7 @@ export const StillingsContextProvider: React.FC<
 };
 
 interface StillingsContextMedDataProps {
-  data: stillingSchemaDTO;
+  data: stillingsDTO;
   children: React.ReactNode;
 }
 
@@ -48,10 +50,12 @@ const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
 }) => {
   const kandidatListeIdSWR = useKandidatlisteId(data.stilling.uuid ?? '');
   const { navIdent } = useApplikasjonContext();
-  const [stillingsData, setStillingsData] =
-    React.useState<stillingSchemaDTO>(data);
+  const [forhåndsvisData, setForhåndsvisData] =
+    React.useState<stillingsDTO | null>(null);
 
-  // edit deeply nested fields in stillingSchemaDTO
+  const [stillingsData, setStillingsData] = React.useState<stillingsDTO>(data);
+
+  // edit deeply nested fields in stillingsDTO
   const editStillingsData = (field: string, value: any) => {
     setStillingsData((prevData) => {
       const newData = { ...prevData };
@@ -86,10 +90,12 @@ const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
   return (
     <StillingsContext.Provider
       value={{
-        stillingsData,
+        forhåndsvisData,
+        stillingsData: forhåndsvisData ? forhåndsvisData : stillingsData,
         erEier,
         kandidatlisteId: kandidatListeIdSWR.data?.kandidatlisteId,
         editStillingsData,
+        setForhåndsvisData,
       }}
     >
       {children}

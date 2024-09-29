@@ -7,7 +7,9 @@ import { antallKandidaterMirage } from '../app/api/kandidat/useAntallKandidater'
 import { kandidatlisteMirage } from '../app/api/kandidat/useKandidatliste';
 import { kandidatlisteIdMirage } from '../app/api/kandidat/useKandidatlisteId';
 import { statistikkMirage } from '../app/api/statistikk/useStatistikk';
+import { finnArbeidsgiverMirage } from '../app/api/stilling/finn-arbeidsgiver/useFinnArbeidsgiver';
 import { geografiMirage } from '../app/api/stilling/geografi/useGeografi';
+import { opprettNyStillingMirage } from '../app/api/stilling/ny-stilling/opprettNyStilling';
 import { stillingMirage } from '../app/api/stilling/rekrutteringsbistandstilling/[slug]/useStilling';
 
 createServer({
@@ -21,7 +23,9 @@ createServer({
     statistikkMirage(this);
     foresporselOmDelingAvCVStatistikkMirage(this);
     stillingMirage(this);
+    opprettNyStillingMirage(this);
 
+    finnArbeidsgiverMirage(this);
     this.passthrough('/api/stillings-sok');
   },
 });

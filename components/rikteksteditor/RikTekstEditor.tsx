@@ -214,6 +214,7 @@ const RikTekstEditor: React.FC<IRikTekstEditor> = ({
         )}
       </div>
       <EditorContent editor={editor} />
+      <hr />
       {limitLengde && (
         <div className='mt-2 flex justify-end'>
           <BodyShort size='small' className='text-gray-500'>

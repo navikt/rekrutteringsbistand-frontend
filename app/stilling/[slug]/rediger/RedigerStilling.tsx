@@ -29,10 +29,9 @@ const stegTitler: Record<Steg, string> = {
 };
 
 const RedigerStilling: React.FC = () => {
-  const [forhåndsvis, setForhåndsvis] = React.useState(false);
-
   const [activeStep, setActiveStep] = React.useState(Steg.omVirksomheten);
-  const { stillingsData } = useStillingsContext();
+  const { stillingsData, setForhåndsvisData, forhåndsvisData } =
+    useStillingsContext();
   const registerForm = useForm<stillingsDataDTO>({
     defaultValues: stillingsData,
   });
@@ -46,12 +45,12 @@ const RedigerStilling: React.FC = () => {
 
   return (
     <FormProvider {...registerForm}>
-      {forhåndsvis && (
+      {forhåndsvisData && (
         <>
           <Button
             className='w-full'
             icon={<XMarkIcon />}
-            onClick={() => setForhåndsvis(!forhåndsvis)}
+            onClick={() => setForhåndsvisData(null)}
             variant='primary'
           >
             Avslutt forhåndsvisning
@@ -124,7 +123,7 @@ const RedigerStilling: React.FC = () => {
           </Button>
           <Button
             icon={<EyeIcon />}
-            onClick={() => setForhåndsvis(true)}
+            onClick={() => setForhåndsvisData(registerForm.getValues())}
             variant='tertiary'
           >
             Forhåndsvis

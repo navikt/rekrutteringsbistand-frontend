@@ -55,7 +55,10 @@ export const propertiesSchema = z
     positioncount: z.number().optional().nullable(),
     engagementtype: z.string().optional().nullable(),
     classification_styrk08_score: z.number().optional().nullable(),
-    employerdescription: z.string().nullable().optional(),
+    employerdescription: z.union([
+      z.string().nullable().optional(),
+      z.number().nullable().optional(),
+    ]),
     adtext: z.string().optional().nullable(),
     classification_styrk08_code: z.any().optional().nullable(),
     sourceurl: z.string().optional().nullable(),
@@ -73,7 +76,7 @@ export const propertiesSchema = z
   })
   .nullable();
 
-export const stillingSchema = z.object({
+export const stillingSøkSchema = z.object({
   title: z.string(),
   uuid: z.string(),
   annonsenr: z.string(),
@@ -97,8 +100,8 @@ export const stillingSchema = z.object({
   styrkEllerTittel: z.string(),
 });
 
-export const stillingSourceSchema = z.object({
-  stilling: stillingSchema,
+export const stillingSøkSourceSchema = z.object({
+  stilling: stillingSøkSchema,
   stillingsinfo: z.any(),
 });
 
@@ -107,7 +110,7 @@ export const hitSchema = z.object({
   _type: z.string(),
   _id: z.string(),
   _score: z.any(),
-  _source: stillingSourceSchema,
+  _source: stillingSøkSourceSchema,
   sort: z.array(z.number()),
 });
 

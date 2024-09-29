@@ -5,12 +5,13 @@
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
 import { geografiSchema } from '../../../../types/stilling/geografi';
+import { getMiljø, Miljø } from '../../../../util/miljø';
 import { StillingAPI } from '../../api-routes';
-import { getAPIwithSchema } from '../../fetcher';
+import { postApiWithSchema } from '../../fetcher';
+import devVirksomheter from './mocks/devVirksomheter';
 
-const FinnArbeidsgiverEndepunkt = (orgnr: string) => {
-  const utenMellomrom = orgnr.replace(/\s/g, '');
-  return `${StillingAPI.internUrl}/finn-arbeidsgiver?organisasjonsnummer=${utenMellomrom}`;
+const finnArbeidsgiverEndepunkt = () => {
+  return `${StillingAPI.internUrl}/finn-arbeidsgiver`;
 };
 
 const FinnArbeidsgiverSchema = z.object({
@@ -18,11 +19,26 @@ const FinnArbeidsgiverSchema = z.object({
   name: z.string(),
   orgnr: z.string().nullable(),
 });
+const FinnArbeidsgiverSchemaDTO = z.array(FinnArbeidsgiverSchema);
 
 export type FinnArbeidsgiverDTO = z.infer<typeof FinnArbeidsgiverSchema>;
 
-export const useFinnArbeidsgiver = (orgnr: string) =>
-  useSWRImmutable(
-    orgnr.length >= 3 ? FinnArbeidsgiverEndepunkt(orgnr) : null,
-    getAPIwithSchema(FinnArbeidsgiverSchema),
+const devMiljø = getMiljø() !== Miljø.ProdGcp;
+
+export const useFinnArbeidsgiver = (orgnr: string) => {
+  const søkeOrd = devMiljø ? 'dev-gcp' : orgnr;
+
+  return useSWRImmutable(
+    {
+      url: finnArbeidsgiverEndepunkt(),
+      body: søkeOrd.replace(/\s/g, ''),
+    },
+    (data) => {
+      return postApiWithSchema(FinnArbeidsgiverSchemaDTO)(data);
+    },
   );
+};
+
+export const finnArbeidsgiverMirage = (server: any) => {
+  return server.post(finnArbeidsgiverEndepunkt(), () => devVirksomheter);
+};

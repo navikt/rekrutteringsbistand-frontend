@@ -1,28 +1,44 @@
-import { UNSAFE_Combobox } from '@navikt/ds-react';
+import { Alert, UNSAFE_Combobox } from '@navikt/ds-react';
 import * as React from 'react';
-import { useFinnArbeidsgiver } from '../../../api/stilling/finn-arbeidsgiver/useFinnArbeidsgiver';
+import {
+  FinnArbeidsgiverDTO,
+  useFinnArbeidsgiver,
+} from '../../../api/stilling/finn-arbeidsgiver/useFinnArbeidsgiver';
 
 export interface IVelgArbeidsgiver {
   children?: React.ReactNode | undefined;
-  setArbeidsgiver: (arbeidsgiver: string) => void;
+  setArbeidsgiver: (arbeidsgiver: FinnArbeidsgiverDTO) => void;
 }
 
-const VelgArbeidsgiver: React.FC<IVelgArbeidsgiver> = ({ children }) => {
-  const [muligeValg, setMuligeValg] = React.useState<string[]>([]);
+const VelgArbeidsgiver: React.FC<IVelgArbeidsgiver> = ({ setArbeidsgiver }) => {
   const [søkeOrd, setSøkeord] = React.useState<string>('');
   const { isLoading, error, data } = useFinnArbeidsgiver(søkeOrd);
+
   return (
     <React.Fragment>
       <form role='search'>
         <UNSAFE_Combobox
           isLoading={isLoading}
           label='Arbeidsgivers navn eller virksomhetsnummer'
-          options={muligeValg}
+          options={
+            data?.map(
+              (arbeidsgiver) => `${arbeidsgiver.name} - ${arbeidsgiver.orgnr}`,
+            ) ?? []
+          }
           shouldAutocomplete={true}
           onChange={(verdi) => setSøkeord(verdi)}
-          onSelect={(valg) => console.log(valg)}
+          onToggleSelected={(valg) => {
+            const orgnr = valg.split(' - ')[1];
+            const selectedArbeidsgiver = data?.find(
+              (arbeidsgiver) => arbeidsgiver.orgnr === orgnr,
+            );
+            if (selectedArbeidsgiver) {
+              setArbeidsgiver(selectedArbeidsgiver);
+            }
+          }}
         />
       </form>
+      {error && <Alert variant='error'>{JSON.stringify(error)}</Alert>}
     </React.Fragment>
   );
 };

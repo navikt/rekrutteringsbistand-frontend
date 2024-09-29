@@ -36,7 +36,8 @@ export const RedigerOmVirksomheten: React.FC<{
     append({ name: '', title: '', email: '', phone: '' });
   }
 
-  const beskrivelse = watch('stilling.properties.employerdescription');
+  const beskrivelse =
+    watch('stilling.properties.employerdescription')?.toString() ?? '';
 
   return (
     <div>

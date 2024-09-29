@@ -1,11 +1,16 @@
 import { NextRequest } from 'next/server';
 import { proxyWithOBO } from '../../../../util/oboProxy';
 import { StillingAPI } from '../../api-routes';
+import devVirksomheter from './mocks/devVirksomheter';
 
-export async function GET(req: NextRequest) {
-  const { searchParams } = new URL(req.url);
+export async function POST(req: NextRequest) {
+  const body = await req.json();
 
-  const organisasjonsnummer = searchParams.get('organisasjonsnummer') ?? '';
+  const organisasjonsnummer = body ?? '';
+
+  if (organisasjonsnummer === 'dev-gcp') {
+    return new Response(JSON.stringify(devVirksomheter));
+  }
 
   const utenMellomrom = organisasjonsnummer.replace(/\s/g, '');
 

@@ -1,11 +1,12 @@
 'use client';
-import { PlusCircleIcon } from '@navikt/aksel-icons';
 import { Alert, BodyLong, Button } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 import SideLayout from '../../../components/layout/SideLayout';
 import SideTopBanner from '../../../components/layout/SideTopBanner';
+import { FinnArbeidsgiverDTO } from '../../api/stilling/finn-arbeidsgiver/useFinnArbeidsgiver';
 import { Stillingskategori } from '../stilling-typer';
+import { OpprettStillingKnapp } from './components/OpprettStilling';
 import VelgArbeidsgiver from './components/VelgArbeidsgiver';
 import VelgStillingskategori from './components/VelgStillingskategori';
 
@@ -15,7 +16,8 @@ const NyStilling: React.FC = () => {
   const [stillingskategori, setStillingskategori] =
     React.useState<Stillingskategori | null>(null);
 
-  const [arbeidsgiver, setArbeidsgiver] = React.useState<string | null>(null);
+  const [arbeidsgiver, setArbeidsgiver] =
+    React.useState<FinnArbeidsgiverDTO | null>(null);
 
   const handleGoBack = () => {
     router.back();
@@ -51,9 +53,10 @@ const NyStilling: React.FC = () => {
           >
             Avbryt
           </Button>
-          <Button icon={<PlusCircleIcon aria-hidden />} variant='primary'>
-            Opprett stilling
-          </Button>
+          <OpprettStillingKnapp
+            stillingskategori={stillingskategori}
+            arbeidsgiver={arbeidsgiver}
+          />
         </div>
       </div>
     </SideLayout>

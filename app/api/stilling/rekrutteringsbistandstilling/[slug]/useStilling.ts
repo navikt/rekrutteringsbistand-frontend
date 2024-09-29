@@ -5,7 +5,7 @@
 import useSWRImmutable from 'swr/immutable';
 import { getAPIwithSchema } from '../../../fetcher';
 import { stillingMock } from './mocks/stillingMock';
-import { stillingSchema } from './zod';
+import { stillingSchemaDTO } from './zod';
 
 const stillingEndepunkt = (stillingsId: string) =>
   `/api/stilling/rekrutteringsbistandstilling/${stillingsId}`;
@@ -13,7 +13,7 @@ const stillingEndepunkt = (stillingsId: string) =>
 export const useStilling = (stillingsId: string) =>
   useSWRImmutable(
     stillingEndepunkt(stillingsId),
-    getAPIwithSchema(stillingSchema),
+    getAPIwithSchema(stillingSchemaDTO),
   );
 
 export const stillingMirage = (server: any) => {

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export type stillingSchemaDTO = z.infer<typeof stillingSchema>;
+export type stillingsDTO = z.infer<typeof stillingSchemaDTO>;
 
 export const locationListSchema = z
   .array(
@@ -19,7 +19,7 @@ export const locationListSchema = z
   .nullable()
   .optional();
 
-export const stillingSchema = z.object({
+export const stillingSchemaDTO = z.object({
   stillingsinfo: z
     .object({
       stillingsid: z.string().nullable().optional(),
@@ -123,7 +123,10 @@ export const stillingSchema = z.object({
         positioncount: z.string().nullable().optional(),
         engagementtype: z.string().nullable().optional(),
         classification_styrk08_score: z.string().nullable().optional(),
-        employerdescription: z.string().nullable().optional(),
+        employerdescription: z.union([
+          z.string().nullable().optional(),
+          z.number().nullable().optional(),
+        ]),
         adtext: z.string().nullable().optional(),
         classification_styrk08_code: z.string().nullable().optional(),
         tags: z.string().nullable().optional(),
