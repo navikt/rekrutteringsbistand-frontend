@@ -18,7 +18,7 @@ export const RedigerOmVirksomheten: React.FC<{
   nextStep: () => void;
   forrigeSteg: () => void;
 }> = ({ nextStep, forrigeSteg, stegNummer }) => {
-  const { stillingsData, editStillingsData } = useStillingsContext();
+  const { stillingsData } = useStillingsContext();
   const {
     register,
     watch,

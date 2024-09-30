@@ -11,7 +11,6 @@ import * as React from 'react';
 import { SubmitHandler, useFormContext } from 'react-hook-form';
 import RikTekstEditor from '../../../../../components/rikteksteditor/RikTekstEditor';
 import { stillingsDataDTO } from '../../../stilling-typer';
-import { useStillingsContext } from '../../StillingsContext';
 import StegNavigering from './StegNavigering';
 
 export const RedigerOmStillingen: React.FC<{
@@ -19,7 +18,6 @@ export const RedigerOmStillingen: React.FC<{
   nextStep: () => void;
   forrigeSteg: () => void;
 }> = ({ nextStep, forrigeSteg, stegNummer }) => {
-  const { stillingsData, editStillingsData } = useStillingsContext();
   const { register, setValue, handleSubmit, watch } =
     useFormContext<stillingsDataDTO>();
 
