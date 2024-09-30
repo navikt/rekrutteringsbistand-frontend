@@ -9,7 +9,7 @@ import {
   useDatepicker,
 } from '@navikt/ds-react';
 import { SubmitHandler, useFormContext } from 'react-hook-form';
-import { stillingsDataDTO } from '../../../stilling-typer';
+import { StillingsDataDTO } from '../../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { useStillingsContext } from '../../StillingsContext';
 import { DatoVelger } from './DatoVelger';
 import StegNavigering from './StegNavigering';
@@ -21,7 +21,7 @@ export const RedigerPraktiskInfo: React.FC<{
 }> = ({ nextStep, forrigeSteg, stegNummer }) => {
   const { stillingsData } = useStillingsContext();
   const { register, handleSubmit, setValue, watch } =
-    useFormContext<stillingsDataDTO>();
+    useFormContext<StillingsDataDTO>();
 
   // defaultValues: {
   //   ansettelsesform:
@@ -39,7 +39,7 @@ export const RedigerPraktiskInfo: React.FC<{
     onDateChange: console.info,
   });
 
-  const onSubmit: SubmitHandler<stillingsDataDTO> = (data) => {
+  const onSubmit: SubmitHandler<StillingsDataDTO> = (data) => {
     console.log(data);
     nextStep();
   };

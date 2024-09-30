@@ -8,7 +8,7 @@ import {
 } from '@navikt/ds-react';
 import * as React from 'react';
 import { SubmitHandler, useFormContext } from 'react-hook-form';
-import { stillingsDataDTO } from '../../../stilling-typer';
+import { StillingsDataDTO } from '../../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import StegNavigering from './StegNavigering';
 
 export const RedigerOmTilrettelegging: React.FC<{
@@ -21,9 +21,9 @@ export const RedigerOmTilrettelegging: React.FC<{
     handleSubmit,
     setValue,
     formState: { errors },
-  } = useFormContext<stillingsDataDTO>();
+  } = useFormContext<StillingsDataDTO>();
 
-  const onSubmit: SubmitHandler<stillingsDataDTO> = (data) => {
+  const onSubmit: SubmitHandler<StillingsDataDTO> = (data) => {
     nextStep();
   };
 

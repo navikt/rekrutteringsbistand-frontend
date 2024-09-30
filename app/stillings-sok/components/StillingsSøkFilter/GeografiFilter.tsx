@@ -1,8 +1,11 @@
 import * as React from 'react';
 import { z } from 'zod';
 import SWRLaster from '../../../../components/SWRLaster';
+import {
+  fylkeSchema,
+  kommuneSchema,
+} from '../../../api/stilling/geografi/geografi.dto';
 import { useGeografi } from '../../../api/stilling/geografi/useGeografi';
-import { fylkeSchema, kommuneSchema } from '../../../api/stilling/geografi/zod';
 import FylkerOgKommuner from './FylkerOgKommunerFilter';
 
 export interface IGeografiFilter {

@@ -1,10 +1,6 @@
 import { startOfDay } from 'date-fns';
-import {
-  AdminStatus,
-  Status,
-  stillingsDataDTO,
-  Stillingskategori,
-} from './stilling-typer';
+import { StillingsDataDTO } from '../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
+import { AdminStatus, Status, Stillingskategori } from './stilling-typer';
 
 export const kategoriTilVisningsnavn = (kategori: Stillingskategori | null) => {
   switch (kategori) {
@@ -70,7 +66,7 @@ export default function capitalizeEmployerName(text: string | null) {
 }
 
 export const navnEierAvAstilling = (
-  stillingsData: stillingsDataDTO,
+  stillingsData: StillingsDataDTO,
 ): string | null => {
   if (stillingsData?.stilling?.administration?.navIdent !== null) {
     return stillingsData?.stilling?.administration?.reportee ?? null;

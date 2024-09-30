@@ -12,19 +12,19 @@ import * as React from 'react';
 import TekstMedIkon from '../../../../components/TekstMedIkon';
 import { getWorkLocationsAsString } from '../../../../util/locationUtil';
 import { useAntallKandidater } from '../../../api/kandidat/useAntallKandidater';
-import { LocationListDTO } from '../../stilling-typer';
 import { useStillingsContext } from '../StillingsContext';
 import OmAnnonsen from '../components/OmAnnonsen';
 import OmBedriften from '../components/OmBedriften';
 import StillingSidebar from './StillingSidebar/StillingSidebar';
 import StillingsTekst from './StillingsTekst';
+import { GeografiListDTO } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 
 const OmStillingen: React.FC = () => {
   const { stillingsData, kandidatlisteId } = useStillingsContext();
   const antallKandidaterSWR = useAntallKandidater(kandidatlisteId);
 
   const lokasjon = getWorkLocationsAsString(
-    stillingsData.stilling.locationList as LocationListDTO,
+    stillingsData.stilling.locationList as GeografiListDTO,
   );
 
   const parseWorktime = (worktime: string) => {

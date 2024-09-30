@@ -3,7 +3,7 @@ import { EyeIcon, StopIcon, TrashIcon, XMarkIcon } from '@navikt/aksel-icons';
 import { Button, Stepper } from '@navikt/ds-react';
 import * as React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { stillingsDataDTO } from '../../stilling-typer';
+import { StillingsDataDTO } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import OmStillingen from '../omStillingen/OmStillingen';
 import { useStillingsContext } from '../StillingsContext';
 import { RedigerOmStillingen } from './components/RedigerOmStillingen';
@@ -32,7 +32,7 @@ const RedigerStilling: React.FC = () => {
   const [activeStep, setActiveStep] = React.useState(Steg.omVirksomheten);
   const { stillingsData, setForhåndsvisData, forhåndsvisData } =
     useStillingsContext();
-  const registerForm = useForm<stillingsDataDTO>({
+  const registerForm = useForm<StillingsDataDTO>({
     defaultValues: stillingsData,
   });
 

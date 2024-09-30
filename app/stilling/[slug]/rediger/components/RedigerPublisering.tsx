@@ -9,15 +9,15 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { SubmitHandler, useFormContext } from 'react-hook-form';
 import { oppdaterStilling } from '../../../../api/stilling/oppdater-stilling/oppdaterStilling';
-import { stillingsDataDTO } from '../../../stilling-typer';
+import { StillingsDataDTO } from '../../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { DatoVelger } from './DatoVelger';
 
 export const RedigerPublisering: React.FC = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const { watch, handleSubmit, setValue } = useFormContext<stillingsDataDTO>();
+  const { watch, handleSubmit, setValue } = useFormContext<StillingsDataDTO>();
 
-  const onSubmit: SubmitHandler<stillingsDataDTO> = async (data) => {
+  const onSubmit: SubmitHandler<StillingsDataDTO> = async (data) => {
     setIsLoading(true);
     const response = await oppdaterStilling(data);
     setIsLoading(false);

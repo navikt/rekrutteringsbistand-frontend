@@ -8,7 +8,10 @@ import {
 } from 'react-hook-form';
 import RikTekstEditor from '../../../../../components/rikteksteditor/RikTekstEditor';
 import { getWorkLocationsAsString } from '../../../../../util/locationUtil';
-import { LocationListDTO, stillingsDataDTO } from '../../../stilling-typer';
+import {
+  GeografiListDTO,
+  StillingsDataDTO,
+} from '../../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import capitalizeEmployerName from '../../../stilling-util';
 import { useStillingsContext } from '../../StillingsContext';
 import StegNavigering from './StegNavigering';
@@ -26,19 +29,19 @@ export const RedigerOmVirksomheten: React.FC<{
     handleSubmit,
     control,
     formState: { errors },
-  } = useFormContext<stillingsDataDTO>();
+  } = useFormContext<StillingsDataDTO>();
 
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'stilling.contactList',
   });
 
-  const onSubmit: SubmitHandler<stillingsDataDTO> = (data) => {
+  const onSubmit: SubmitHandler<StillingsDataDTO> = (data) => {
     nextStep();
   };
 
   if (fields.length === 0) {
-    append({ name: '', title: '', email: '', phone: '' });
+    append({ name: '', title: '', email: '', phone: '', role: '' });
   }
 
   const beskrivelse =
@@ -61,13 +64,13 @@ export const RedigerOmVirksomheten: React.FC<{
             <dt className='font-bold'>Adresse</dt>
             <dd>
               {getWorkLocationsAsString(
-                stillingsData.stilling.locationList as LocationListDTO,
+                stillingsData.stilling.locationList as GeografiListDTO,
               )}
             </dd>
             <dt className='font-bold'>Organisasjonsnummer</dt>
             <dd>{stillingsData.stilling?.employer?.orgnr ?? '-'}</dd>
             <dt className='font-bold'>Annonsenummer</dt>
-            <dd>{stillingsData.stilling?.annonsenr ?? '-'}</dd>
+            <dd>{stillingsData.stilling?.id ?? '-'}</dd>
           </dl>
 
           <span>Beskrivelse av bedriften (valgfritt)</span>
@@ -209,7 +212,7 @@ export const RedigerOmVirksomheten: React.FC<{
               variant='secondary'
               type='button'
               onClick={() =>
-                append({ name: '', title: '', email: '', phone: '' })
+                append({ name: '', title: '', email: '', phone: '', role: '' })
               }
             >
               Legg til flere kontaktpersoner

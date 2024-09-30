@@ -10,21 +10,20 @@ import Link from 'next/link';
 import * as React from 'react';
 import { SubmitHandler, useFormContext } from 'react-hook-form';
 import RikTekstEditor from '../../../../../components/rikteksteditor/RikTekstEditor';
-import { stillingsDataDTO } from '../../../stilling-typer';
+import { StillingsDataDTO } from '../../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import StegNavigering from './StegNavigering';
-
 export const RedigerOmStillingen: React.FC<{
   stegNummer: number;
   nextStep: () => void;
   forrigeSteg: () => void;
 }> = ({ nextStep, forrigeSteg, stegNummer }) => {
   const { register, setValue, handleSubmit, watch } =
-    useFormContext<stillingsDataDTO>();
+    useFormContext<StillingsDataDTO>();
 
   const [visAdresseFelt, setVisAdressefelt] = React.useState<boolean>(true);
   const [visKommuneFelt, setVisKommuneFelt] = React.useState<boolean>(false);
 
-  const onSubmit: SubmitHandler<stillingsDataDTO> = (data) => {
+  const onSubmit: SubmitHandler<StillingsDataDTO> = (data) => {
     nextStep();
   };
 

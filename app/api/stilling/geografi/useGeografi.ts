@@ -6,8 +6,8 @@ import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
 import { getAPIwithSchema } from '../../fetcher';
 import fylkeMock from './fylkeMock.json';
+import { fylkeSchema, kommuneSchema } from './geografi.dto';
 import kommuneMock from './kommuneMock.json';
-import { fylkeSchema, kommuneSchema } from './zod';
 
 const geografiEndepunkt = '/api/stilling/geografi';
 

@@ -1,7 +1,7 @@
-import { LocationListDTO } from '../app/stilling/stilling-typer';
+import { GeografiListDTO } from '../app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 
 export function getWorkLocationsAsString(
-  locationList?: LocationListDTO | null,
+  locationList?: GeografiListDTO | null,
 ): string {
   const workLocations: string[] = [];
   if (!locationList) {

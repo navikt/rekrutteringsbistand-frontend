@@ -79,7 +79,6 @@ export const propertiesSchema = z
 export const stillingSøkSchema = z.object({
   title: z.string(),
   uuid: z.string(),
-  annonsenr: z.string(),
   status: z.string(),
   privacy: z.string(),
   published: z.string(),

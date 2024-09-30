@@ -3,16 +3,16 @@ import React from 'react';
 import SWRLaster from '../../../components/SWRLaster';
 import { eierStilling } from '../../../components/tilgangskontroll/erEier';
 import { useKandidatlisteId } from '../../api/kandidat/useKandidatlisteId';
+import { StillingsDataDTO } from '../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { useStilling } from '../../api/stilling/rekrutteringsbistandstilling/[slug]/useStilling';
-import { stillingsDTO } from '../../api/stilling/rekrutteringsbistandstilling/[slug]/zod';
 import { useApplikasjonContext } from '../../ApplikasjonContext';
 
 interface StillingsContextType {
-  stillingsData: stillingsDTO;
-  forhåndsvisData: stillingsDTO | null;
+  stillingsData: StillingsDataDTO;
+  forhåndsvisData: StillingsDataDTO | null;
   erEier?: boolean;
   kandidatlisteId?: string;
-  setForhåndsvisData: (data: stillingsDTO | null) => void;
+  setForhåndsvisData: (data: StillingsDataDTO | null) => void;
 }
 
 const StillingsContext = React.createContext<StillingsContextType | undefined>(
@@ -39,7 +39,7 @@ export const StillingsContextProvider: React.FC<
 };
 
 interface StillingsContextMedDataProps {
-  data: stillingsDTO;
+  data: StillingsDataDTO;
   children: React.ReactNode;
 }
 
@@ -52,9 +52,10 @@ const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
     brukerData: { ident },
   } = useApplikasjonContext();
   const [forhåndsvisData, setForhåndsvisData] =
-    React.useState<stillingsDTO | null>(null);
+    React.useState<StillingsDataDTO | null>(null);
 
-  const [stillingsData, setStillingsData] = React.useState<stillingsDTO>(data);
+  const [stillingsData, setStillingsData] =
+    React.useState<StillingsDataDTO>(data);
 
   // // edit deeply nested fields in stillingsDTO
   // const editStillingsData = (field: string, value: any) => {
