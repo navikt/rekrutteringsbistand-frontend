@@ -23,7 +23,6 @@ export const RedigerOmVirksomheten: React.FC<{
 }> = ({ nextStep, forrigeSteg, stegNummer }) => {
   const { stillingsData } = useStillingsContext();
   const {
-    register,
     watch,
     setValue,
     handleSubmit,

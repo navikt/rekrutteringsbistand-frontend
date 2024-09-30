@@ -4,6 +4,42 @@ export type StillingsDataDTO = z.infer<typeof StillingDataSchema>;
 export type GeografiDTO = z.infer<typeof GeografiSchema>;
 export type GeografiListDTO = z.infer<typeof GeografiListSchema>;
 
+// Egendefinert
+export const searchtagSchema = z.object({
+  label: z.string(),
+  score: z.number(),
+});
+
+export const propertiesSchema = z
+  .object({
+    extent: z.string().optional().nullable(),
+    applicationdue: z.string().optional().nullable(),
+    jobtitle: z.any(),
+    keywords: z.string().optional().nullable(),
+    positioncount: z.number().optional().nullable(),
+    engagementtype: z.string().optional().nullable(),
+    classification_styrk08_score: z.number().optional().nullable(),
+    employerdescription: z.union([
+      z.string().nullable().optional(),
+      z.number().nullable().optional(),
+    ]),
+    adtext: z.string().optional().nullable(),
+    classification_styrk08_code: z.any().optional().nullable(),
+    sourceurl: z.string().optional().nullable(),
+    searchtags: z.array(searchtagSchema).optional().nullable(),
+    applicationurl: z.string().optional().nullable(),
+    classification_esco_code: z.string().optional().nullable(),
+    classification_input_source: z.string().optional().nullable(),
+    sector: z.string().optional().nullable(),
+    // workLanguage: z.string().optional().nullable(),
+    employerhomepage: z.string().optional().nullable(),
+    salary: z.any(),
+    industry: z.string().optional().nullable(),
+    starttime: z.string().optional().nullable(),
+    tags: z.any().nullable(),
+  })
+  .nullable();
+
 /// ZOD Schema fra https://github.com/navikt/rekrutteringsbistand-stilling-api/blob/master/src/main/kotlin/no/nav/rekrutteringsbistand/api/stilling/domene.kt
 const LocalDateTimeSchema = z.string(); // Assuming LocalDateTime is represented as a string in JSON
 
@@ -53,7 +89,7 @@ const ArbeidsgiverSchema = z.object({
   contactList: z.array(ContactSchema).nullable(),
   location: GeografiSchema.nullable(),
   locationList: z.array(GeografiSchema).nullable(),
-  properties: z.record(z.string()).nullable(),
+  properties: propertiesSchema.nullable(),
   name: z.string().nullable(),
   orgnr: z.string().nullable(),
   status: z.string().nullable(),
@@ -92,10 +128,10 @@ export const StillingSchemaDTO = z.object({
   published: LocalDateTimeSchema.nullable(),
   expires: LocalDateTimeSchema.nullable(),
   employer: ArbeidsgiverSchema.nullable(),
-  location: GeografiSchema,
-  locationList: GeografiListSchema,
+  location: GeografiSchema.nullable(),
+  locationList: GeografiListSchema.nullable(),
   categoryList: z.array(KategoriSchema).nullable(),
-  properties: z.record(z.string()).nullable(),
+  properties: propertiesSchema.nullable(),
   publishedByAdmin: z.string().nullable(),
   businessName: z.string().nullable(),
   firstPublished: z.boolean().nullable(),
