@@ -32,7 +32,9 @@ const rolleTilNavn = (rolle: Rolle): string | null => {
 export const TilgangskontrollForInnhold: React.FC<
   ITilgangskontrollForInnhold
 > = ({ kreverEnAvRollene, children, skjulVarsel, manglerEierskap }) => {
-  const { roller } = useApplikasjonContext();
+  const {
+    brukerData: { roller },
+  } = useApplikasjonContext();
 
   const harTilgang = kreverEnAvRollene
     ? kreverEnAvRollene.some((r) => {

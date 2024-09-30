@@ -36,11 +36,13 @@ export const stillingErUtløpt = (stilling: any): boolean => {
 };
 
 const StillingsTag: React.FC<IStillingTag> = ({ stillingsData, splitTags }) => {
-  const { navIdent } = useApplikasjonContext();
+  const {
+    brukerData: { ident },
+  } = useApplikasjonContext();
 
   const erEier = eierStilling({
     stillingsData: stillingsData,
-    navIdent: navIdent,
+    navIdent: ident,
   });
 
   const stillingStatus = stillingsData.stilling.status as Status;

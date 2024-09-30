@@ -4,17 +4,22 @@ import Header from '../components/header/Header';
 import Sidelaster from '../components/Sidelaster';
 import { Rolle } from '../types/Roller';
 import { useBruker } from './api/bruker/useBruker';
+import { DecoratorDTO } from './api/decorator/decorator.dto';
+import { useDecoratorData } from './api/decorator/useDecoratorData';
 
 export type NavKontorMedNavn = {
   navKontor: string;
   navKontorNavn: string | null;
 };
 
+interface BrukerData extends DecoratorDTO {
+  roller: Rolle[];
+}
+
 interface ApplikasjonContextType {
+  brukerData: BrukerData;
   darkMode: boolean;
   setDarkMode: (val: boolean) => void;
-  roller?: Rolle[];
-  navIdent?: string;
   harRolle: (rolle: Rolle[]) => boolean;
   tilgangskontrollErPå: boolean;
   valgtNavKontor: NavKontorMedNavn | null;
@@ -22,6 +27,14 @@ interface ApplikasjonContextType {
 }
 
 const ApplikasjonContext = React.createContext<ApplikasjonContextType>({
+  brukerData: {
+    roller: [],
+    enheter: [],
+    navn: '',
+    ident: '',
+    fornavn: '',
+    etternavn: '',
+  },
   darkMode: true, //todo
   setDarkMode: () => false,
   harRolle: () => false,
@@ -40,6 +53,8 @@ export const ApplikasjonContextProvider: React.FC<
   const [darkMode, setDarkMode] = React.useState<boolean>(false);
 
   const { isLoading, data } = useBruker();
+  const { isLoading: isLoadingDecorator, data: decoratorData } =
+    useDecoratorData();
 
   const [valgtNavKontor, setValgtNavKontor] =
     React.useState<NavKontorMedNavn | null>(null);
@@ -57,22 +72,36 @@ export const ApplikasjonContextProvider: React.FC<
         )
       : true;
 
-  if (isLoading) {
+  if (isLoading || isLoadingDecorator) {
     return <Sidelaster />;
   }
 
   if (data?.navIdent === undefined) {
     return <span>Feil ved innlasting av bruker</span>;
   }
+
+  const brukerData: BrukerData = decoratorData
+    ? {
+        ...decoratorData,
+        roller: data?.roller,
+      }
+    : {
+        roller: [],
+        enheter: [],
+        navn: '',
+        ident: '',
+        fornavn: '',
+        etternavn: '',
+      };
+
   return (
     <ApplikasjonContext.Provider
       value={{
+        brukerData,
         darkMode,
         setDarkMode,
         setValgtNavKontor,
         valgtNavKontor,
-        roller: data?.roller,
-        navIdent: data?.navIdent,
         harRolle,
         tilgangskontrollErPå,
       }}

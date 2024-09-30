@@ -1,6 +1,7 @@
 'use client';
 import { createServer } from 'miragejs';
 import { brukerMirage } from '../app/api/bruker/useBruker';
+import { decoratorDataMirage } from '../app/api/decorator/useDecoratorData';
 import { foresporselOmDelingAvCVStatistikkMirage } from '../app/api/foresporsel-om-deling-av-cv/statistikk/useForesporselOmdelingAvCV';
 import { kandidatSokMirage } from '../app/api/kandidat-sok/useKandidatsøk';
 import { antallKandidaterMirage } from '../app/api/kandidat/useAntallKandidater';
@@ -26,8 +27,9 @@ createServer({
     stillingMirage(this);
     opprettNyStillingMirage(this);
     oppdaterStillingMirage(this);
-
     finnArbeidsgiverMirage(this);
+    decoratorDataMirage(this);
+    // stillingssøk
     this.passthrough('/api/stillings-sok');
   },
 });

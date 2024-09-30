@@ -17,7 +17,9 @@ export const OpprettStillingKnapp: React.FC<OpprettStillingProps> = ({
   stillingskategori,
   arbeidsgiver,
 }) => {
-  const { navIdent } = useApplikasjonContext();
+  const {
+    brukerData: { fornavn, etternavn, ident },
+  } = useApplikasjonContext();
   const router = useRouter();
   const [isLoading, setIsLoading] = React.useState(false);
   const handleOpprettStilling = async () => {
@@ -32,8 +34,8 @@ export const OpprettStillingKnapp: React.FC<OpprettStillingProps> = ({
           privacy: 'INTERNAL_NOT_SHOWN',
           administration: {
             status: 'PENDING',
-            reportee: 'TBD TBD', // TODO: Hent fra bruker
-            navIdent: navIdent ?? '',
+            reportee: `${fornavn} ${etternavn}`,
+            navIdent: ident ?? '',
           },
           employer: {
             orgnr: arbeidsgiver.orgnr ?? '',

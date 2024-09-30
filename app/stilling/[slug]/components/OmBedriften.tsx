@@ -8,7 +8,7 @@ import { useStillingsContext } from '../StillingsContext';
 const OmBedriften: React.FC = () => {
   const { stillingsData } = useStillingsContext();
   const employer = stillingsData.stilling?.employer;
-  const kontaktInfo = stillingsData?.stilling?.contactList?.[0];
+  const kontaktInfo = stillingsData?.stilling?.contactList;
 
   return (
     <div>
@@ -20,13 +20,19 @@ const OmBedriften: React.FC = () => {
         )}
       </div>
 
+      {kontaktInfo?.map((kontakt, index) => (
+        <dl className='grid grid-cols-1 md:grid-cols-3 gap-6 mb-6' key={index}>
+          <Definisjon
+            tittel='Kontaktperson'
+            innhold={`${kontakt.name ?? '-'} ${
+              kontakt.title ? `, ${kontakt.title}` : ''
+            }`}
+          />
+          <Definisjon tittel='Epost' innhold={kontakt.email ?? '-'} />
+          <Definisjon tittel='Telefon' innhold={kontakt.phone ?? '-'} />
+        </dl>
+      ))}
       <dl className='grid grid-cols-1 md:grid-cols-3 gap-6'>
-        <Definisjon
-          tittel='Kontaktperson'
-          innhold={`${kontaktInfo?.name ?? '-'} ${kontaktInfo?.title ? `, ${kontaktInfo?.title}` : ''}`}
-        />
-        <Definisjon tittel='Epost' innhold={kontaktInfo?.email ?? '-'} />
-        <Definisjon tittel='Telefon' innhold={kontaktInfo?.phone ?? '-'} />
         <Definisjon tittel='Nettside' />
         <Definisjon tittel='LinkedIn' />
         <Definisjon tittel='Twitter' />

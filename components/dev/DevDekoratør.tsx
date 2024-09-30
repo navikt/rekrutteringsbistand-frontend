@@ -4,8 +4,11 @@ import { useApplikasjonContext } from '../../app/ApplikasjonContext';
 import { Rolle } from '../../types/Roller';
 
 const DevDekoratør: React.FC = () => {
-  const { navIdent, roller, valgtNavKontor, setValgtNavKontor } =
-    useApplikasjonContext();
+  const {
+    brukerData: { ident, roller },
+    valgtNavKontor,
+    setValgtNavKontor,
+  } = useApplikasjonContext();
 
   React.useEffect(() => {
     if (!valgtNavKontor) {
@@ -36,7 +39,7 @@ const DevDekoratør: React.FC = () => {
 
       <div className='flex justify-between items-center gap-4 ml-4'>
         <span>
-          <strong>Bruker:</strong> {navIdent}
+          <strong>Bruker:</strong> {ident}
         </span>
         <span>
           <strong>Rolle:</strong> {visRolleNavn()}

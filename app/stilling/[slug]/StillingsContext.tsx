@@ -49,7 +49,9 @@ const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
   children,
 }) => {
   const kandidatListeIdSWR = useKandidatlisteId(data.stilling.uuid ?? '');
-  const { navIdent } = useApplikasjonContext();
+  const {
+    brukerData: { ident },
+  } = useApplikasjonContext();
   const [forhåndsvisData, setForhåndsvisData] =
     React.useState<stillingsDTO | null>(null);
 
@@ -84,7 +86,7 @@ const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
 
   const erEier = eierStilling({
     stillingsData: stillingsData,
-    navIdent: navIdent,
+    navIdent: ident,
   });
 
   return (
