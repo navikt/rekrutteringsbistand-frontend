@@ -41,7 +41,7 @@ export const RedigerOmVirksomheten: React.FC<{
   };
 
   if (fields.length === 0) {
-    append({ name: '', title: '', email: '', phone: '', role: '' });
+    append({ name: '', title: '', email: '', phone: '' });
   }
 
   const beskrivelse =
@@ -212,7 +212,7 @@ export const RedigerOmVirksomheten: React.FC<{
               variant='secondary'
               type='button'
               onClick={() =>
-                append({ name: '', title: '', email: '', phone: '', role: '' })
+                append({ name: '', title: '', email: '', phone: '' })
               }
             >
               Legg til flere kontaktpersoner
