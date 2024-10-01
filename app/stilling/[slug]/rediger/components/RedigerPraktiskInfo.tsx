@@ -6,11 +6,9 @@ import {
   Radio,
   RadioGroup,
   TextField,
-  useDatepicker,
 } from '@navikt/ds-react';
 import { SubmitHandler, useFormContext } from 'react-hook-form';
 import { StillingsDataDTO } from '../../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
-import { useStillingsContext } from '../../StillingsContext';
 import { DatoVelger } from './DatoVelger';
 import StegNavigering from './StegNavigering';
 
@@ -19,7 +17,6 @@ export const RedigerPraktiskInfo: React.FC<{
   nextStep: () => void;
   forrigeSteg: () => void;
 }> = ({ nextStep, forrigeSteg, stegNummer }) => {
-  const { stillingsData } = useStillingsContext();
   const { register, handleSubmit, setValue, watch } =
     useFormContext<StillingsDataDTO>();
 
@@ -34,17 +31,15 @@ export const RedigerPraktiskInfo: React.FC<{
   //   oppstart: 'snarest',
   // },
 
-  const { datepickerProps, inputProps, selectedDay } = useDatepicker({
-    fromDate: new Date('Aug 23 2019'),
-    onDateChange: console.info,
-  });
-
   const onSubmit: SubmitHandler<StillingsDataDTO> = (data) => {
     console.log(data);
     nextStep();
   };
 
   const sektor = watch('stilling.properties.sector');
+
+  const starttime = watch('stilling.properties.starttime');
+  const applicationdue = watch('stilling.properties.applicationdue');
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -67,17 +62,41 @@ export const RedigerPraktiskInfo: React.FC<{
         <div className='grid grid-cols-2 gap-4'>
           <div className='flex flex-col'>
             <Heading size='small'>Oppstart</Heading>
-            <Checkbox {...register('stilling.properties.starttime')}>
+            <Checkbox
+              checked={starttime === 'Snarest'}
+              onChange={(e) =>
+                setValue(
+                  'stilling.properties.starttime',
+                  e.target.checked ? 'Snarest' : '',
+                )
+              }
+            >
               Snarest
             </Checkbox>
-            <DatoVelger setDato={(val) => console.log(val)} />
+            <DatoVelger
+              disabled={starttime === 'Snarest'}
+              // fraDato={starttime ? new Date(starttime) : undefined}
+              setDato={(val) => console.log(val)}
+            />
           </div>
           <div className='flex flex-col'>
             <Heading size='small'>Søknadsfrist</Heading>
-            <Checkbox {...register('stilling.properties.applicationdue')}>
+            <Checkbox
+              checked={applicationdue === 'etterAvtale'}
+              onChange={(e) =>
+                setValue(
+                  'stilling.properties.applicationdue',
+                  e.target.checked ? 'etterAvtale' : '', // TODO Verifisere at dette er riktig
+                )
+              }
+            >
               Etter avtale
             </Checkbox>
-            <DatoVelger setDato={(val) => console.log(val)} />
+            <DatoVelger
+              disabled={applicationdue === 'etterAvtale'}
+              // }
+              setDato={(val) => console.log(val)}
+            />
           </div>
         </div>
         <RadioGroup

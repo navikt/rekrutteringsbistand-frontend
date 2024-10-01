@@ -13,10 +13,13 @@ export const searchtagSchema = z.object({
 export const propertiesSchema = z
   .object({
     extent: z.string().optional().nullable(),
-    applicationdue: z.string().optional().nullable(),
+    applicationdue: z.union([z.string(), z.boolean()]).optional().nullable(), // TODO Husk å endre til string?,
     jobtitle: z.any(),
     keywords: z.string().optional().nullable(),
-    positioncount: z.number().optional().nullable(),
+    positioncount: z.union([
+      z.number().optional().nullable(),
+      z.string().optional().nullable(),
+    ]),
     engagementtype: z.string().optional().nullable(),
     classification_styrk08_score: z.number().optional().nullable(),
     employerdescription: z.union([
@@ -35,7 +38,7 @@ export const propertiesSchema = z
     employerhomepage: z.string().optional().nullable(),
     salary: z.any(),
     industry: z.string().optional().nullable(),
-    starttime: z.string().optional().nullable(),
+    starttime: z.union([z.string(), z.boolean()]).optional().nullable(),
     tags: z.any().nullable(),
   })
   .nullable();

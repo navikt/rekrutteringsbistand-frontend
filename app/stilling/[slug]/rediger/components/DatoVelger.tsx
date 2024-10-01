@@ -2,12 +2,14 @@ import { DatePicker, useDatepicker } from '@navikt/ds-react';
 import React from 'react';
 
 interface DatoVelgerProps {
+  disabled?: boolean;
   fraDato?: Date;
   label?: string;
   setDato: (date: Date | undefined) => void;
 }
 
 export const DatoVelger: React.FC<DatoVelgerProps> = ({
+  disabled,
   fraDato,
   label,
   setDato,
@@ -24,7 +26,7 @@ export const DatoVelger: React.FC<DatoVelgerProps> = ({
   return (
     <>
       <DatePicker {...datepickerProps}>
-        <DatePicker.Input {...inputProps} label={label} />
+        <DatePicker.Input {...inputProps} label={label} disabled={disabled} />
       </DatePicker>
     </>
   );

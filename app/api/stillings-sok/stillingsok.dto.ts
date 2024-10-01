@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { propertiesSchema } from '../stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 
 export const shardsSchema = z.object({
   total: z.number(),
@@ -46,35 +47,35 @@ export const contactSchema = z.object({
   phone: z.string(),
 });
 
-export const propertiesSchema = z
-  .object({
-    extent: z.string().optional().nullable(),
-    applicationdue: z.string().optional().nullable(),
-    jobtitle: z.any(),
-    keywords: z.string().optional().nullable(),
-    positioncount: z.number().optional().nullable(),
-    engagementtype: z.string().optional().nullable(),
-    classification_styrk08_score: z.number().optional().nullable(),
-    employerdescription: z.union([
-      z.string().nullable().optional(),
-      z.number().nullable().optional(),
-    ]),
-    adtext: z.string().optional().nullable(),
-    classification_styrk08_code: z.any().optional().nullable(),
-    sourceurl: z.string().optional().nullable(),
-    searchtags: z.array(searchtagSchema).optional().nullable(),
-    applicationurl: z.string().optional().nullable(),
-    classification_esco_code: z.string().optional().nullable(),
-    classification_input_source: z.string().optional().nullable(),
-    sector: z.string().optional().nullable(),
-    // workLanguage: z.string().optional().nullable(),
-    employerhomepage: z.string().optional().nullable(),
-    salary: z.any(),
-    industry: z.string().optional().nullable(),
-    starttime: z.string().optional().nullable(),
-    tags: z.any().nullable(),
-  })
-  .nullable();
+// export const propertiesSchema = z
+//   .object({
+//     extent: z.string().optional().nullable(),
+//     applicationdue: z.string().optional().nullable(),
+//     jobtitle: z.any(),
+//     keywords: z.string().optional().nullable(),
+//     positioncount: z.number().optional().nullable(),
+//     engagementtype: z.string().optional().nullable(),
+//     classification_styrk08_score: z.number().optional().nullable(),
+//     employerdescription: z.union([
+//       z.string().nullable().optional(),
+//       z.number().nullable().optional(),
+//     ]),
+//     adtext: z.string().optional().nullable(),
+//     classification_styrk08_code: z.any().optional().nullable(),
+//     sourceurl: z.string().optional().nullable(),
+//     searchtags: z.array(searchtagSchema).optional().nullable(),
+//     applicationurl: z.string().optional().nullable(),
+//     classification_esco_code: z.string().optional().nullable(),
+//     classification_input_source: z.string().optional().nullable(),
+//     sector: z.string().optional().nullable(),
+//     // workLanguage: z.string().optional().nullable(),
+//     employerhomepage: z.string().optional().nullable(),
+//     salary: z.any(),
+//     industry: z.string().optional().nullable(),
+//     starttime: z.string().optional().nullable(),
+//     tags: z.any().nullable(),
+//   })
+//   .nullable();
 
 export const stillingSøkSchema = z.object({
   title: z.string(),
