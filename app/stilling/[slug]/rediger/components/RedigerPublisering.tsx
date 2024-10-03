@@ -44,13 +44,13 @@ export const RedigerPublisering: React.FC = () => {
 
         <div className='flex gap-4 mb-4'>
           <DatoVelger
-            fraDato={publiseringDato ? new Date(publiseringDato) : undefined}
+            fraDato={publiseringDato ?? undefined}
             label='Publiseres'
             setDato={(val) => console.log(val)}
           />
           <DatoVelger
             label='Avsluttes og skjules'
-            fraDato={utløpsDato ? new Date(utløpsDato) : undefined}
+            fraDato={utløpsDato ?? undefined}
             setDato={(val) => console.log(val)}
           />
         </div>
