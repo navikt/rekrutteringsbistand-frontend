@@ -1,11 +1,12 @@
 import { DatePicker, useDatepicker } from '@navikt/ds-react';
+import { format, isValid } from 'date-fns';
 import React from 'react';
 
 interface DatoVelgerProps {
   disabled?: boolean;
-  fraDato?: Date;
+  fraDato?: string;
   label?: string;
-  setDato: (date: Date | undefined) => void;
+  setDato: (date: string | undefined) => void;
 }
 
 export const DatoVelger: React.FC<DatoVelgerProps> = ({
@@ -15,13 +16,28 @@ export const DatoVelger: React.FC<DatoVelgerProps> = ({
   setDato,
 }) => {
   const { datepickerProps, inputProps, selectedDay } = useDatepicker({
-    fromDate: fraDato ? fraDato : new Date(Date.now()),
-    defaultSelected: fraDato ? fraDato : new Date(Date.now()),
+    onDateChange: (date: Date | undefined) => {
+      if (date) {
+        setDato(format(date, 'dd-MM-yyyy'));
+      } else {
+        setDato(undefined);
+      }
+    },
+    fromDate:
+      fraDato && isValid(new Date(fraDato)) ? new Date(fraDato) : new Date(),
+    defaultSelected:
+      fraDato && isValid(new Date(fraDato)) ? new Date(fraDato) : undefined,
   });
 
+  console.log('🎺 fraDato', fraDato);
   React.useEffect(() => {
-    setDato(selectedDay);
-  }, [selectedDay, setDato]);
+    if (selectedDay) {
+      const nyFraDato = format(selectedDay, 'dd-MM-yyyy');
+      if (nyFraDato !== fraDato) {
+        setDato(nyFraDato);
+      }
+    }
+  }, [selectedDay, setDato, fraDato]);
 
   return (
     <>

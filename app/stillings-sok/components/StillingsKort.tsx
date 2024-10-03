@@ -77,7 +77,10 @@ const StillingsKort: React.FC<IStillingsKort> = ({ stillingData }) => {
           tekst={
             stillingData.stilling.properties?.applicationdue
               ? konverterTilPresenterbarDato(
-                  stillingData.stilling.properties.applicationdue,
+                  typeof stillingData.stilling.properties.applicationdue ===
+                    'string'
+                    ? stillingData.stilling.properties.applicationdue
+                    : undefined,
                 )
               : '-'
           }

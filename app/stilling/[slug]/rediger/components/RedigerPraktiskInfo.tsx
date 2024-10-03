@@ -2,12 +2,13 @@ import {
   BodyShort,
   Checkbox,
   CheckboxGroup,
+  ErrorMessage,
   Heading,
   Radio,
   RadioGroup,
   TextField,
 } from '@navikt/ds-react';
-import { SubmitHandler, useFormContext } from 'react-hook-form';
+import { Controller, SubmitHandler, useFormContext } from 'react-hook-form';
 import { StillingsDataDTO } from '../../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { DatoVelger } from './DatoVelger';
 import StegNavigering from './StegNavigering';
@@ -17,19 +18,8 @@ export const RedigerPraktiskInfo: React.FC<{
   nextStep: () => void;
   forrigeSteg: () => void;
 }> = ({ nextStep, forrigeSteg, stegNummer }) => {
-  const { register, handleSubmit, setValue, watch } =
+  const { register, handleSubmit, setValue, watch, control, formState } =
     useFormContext<StillingsDataDTO>();
-
-  // defaultValues: {
-  //   ansettelsesform:
-  //     stillingsData?.stilling?.properties?.engagementtype ?? '',
-  //   dager: stillingsData?.stilling?.properties?.workday as any,
-  //   tid: stillingsData?.stilling?.properties?.workhours as any,
-  //   soknadsfrist: 'etterAvtale',
-  //   sektor: 'privat',
-  //   antallStillinger: '1',
-  //   oppstart: 'snarest',
-  // },
 
   const onSubmit: SubmitHandler<StillingsDataDTO> = (data) => {
     console.log(data);
@@ -37,9 +27,6 @@ export const RedigerPraktiskInfo: React.FC<{
   };
 
   const sektor = watch('stilling.properties.sector');
-
-  const starttime = watch('stilling.properties.starttime');
-  const applicationdue = watch('stilling.properties.applicationdue');
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -62,41 +49,71 @@ export const RedigerPraktiskInfo: React.FC<{
         <div className='grid grid-cols-2 gap-4'>
           <div className='flex flex-col'>
             <Heading size='small'>Oppstart</Heading>
-            <Checkbox
-              checked={starttime === 'Snarest'}
-              onChange={(e) =>
-                setValue(
-                  'stilling.properties.starttime',
-                  e.target.checked ? 'Snarest' : '',
-                )
-              }
-            >
-              Snarest
-            </Checkbox>
-            <DatoVelger
-              disabled={starttime === 'Snarest'}
-              // fraDato={starttime ? new Date(starttime) : undefined}
-              setDato={(val) => console.log(val)}
+            <Controller
+              name='stilling.properties.starttime'
+              control={control}
+              rules={{ required: true }}
+              render={({ field }) => (
+                <>
+                  <Checkbox
+                    checked={field.value === 'Snarest'}
+                    onChange={(e) => {
+                      field.onChange(e.target.checked ? 'Snarest' : '');
+                    }}
+                  >
+                    Snarest
+                  </Checkbox>
+                  <DatoVelger
+                    fraDato={
+                      typeof field.value === 'string' ? field.value : undefined
+                    }
+                    disabled={field.value === 'Snarest'}
+                    setDato={(val) => {
+                      if (val && field.value !== 'Snarest') {
+                        field.onChange(val);
+                      }
+                    }}
+                  />
+                </>
+              )}
             />
+            {formState.errors.stilling?.properties?.starttime && (
+              <ErrorMessage>Oppstartsdato er påkrevd</ErrorMessage>
+            )}
           </div>
           <div className='flex flex-col'>
             <Heading size='small'>Søknadsfrist</Heading>
-            <Checkbox
-              checked={applicationdue === 'etterAvtale'}
-              onChange={(e) =>
-                setValue(
-                  'stilling.properties.applicationdue',
-                  e.target.checked ? 'etterAvtale' : '', // TODO Verifisere at dette er riktig
-                )
-              }
-            >
-              Etter avtale
-            </Checkbox>
-            <DatoVelger
-              disabled={applicationdue === 'etterAvtale'}
-              // }
-              setDato={(val) => console.log(val)}
+            <Controller
+              name='stilling.properties.applicationdue'
+              control={control}
+              rules={{ required: true }}
+              render={({ field }) => (
+                <>
+                  <Checkbox
+                    checked={field.value === 'etterAvtale'}
+                    onChange={(e) =>
+                      field.onChange(e.target.checked ? 'etterAvtale' : '')
+                    }
+                  >
+                    Etter avtale
+                  </Checkbox>
+                  <DatoVelger
+                    fraDato={
+                      typeof field.value === 'string' ? field.value : undefined
+                    }
+                    disabled={field.value === 'etterAvtale'}
+                    setDato={(val) => {
+                      if (val && field.value !== 'etterAvtale') {
+                        field.onChange(val);
+                      }
+                    }}
+                  />
+                </>
+              )}
             />
+            {formState.errors.stilling?.properties?.applicationdue && (
+              <ErrorMessage>Søknadsfrist er påkrevd</ErrorMessage>
+            )}
           </div>
         </div>
         <RadioGroup

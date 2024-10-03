@@ -95,7 +95,6 @@ export const stillingMock = {
     locationList: [],
     categoryList: [],
     properties: {
-      applicationdue: 'false',
       positioncount: '2',
       starttime: 'false',
       sector: 'privat',
