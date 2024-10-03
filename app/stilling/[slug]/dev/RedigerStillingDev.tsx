@@ -3,14 +3,12 @@ import Editor from '@monaco-editor/react';
 import * as React from 'react';
 
 import { Button } from '@navikt/ds-react';
-import { useRouter } from 'next/navigation';
 import { TilgangskontrollForInnhold } from '../../../../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Rolle } from '../../../../types/Roller';
 import { oppdaterStilling } from '../../../api/stilling/oppdater-stilling/oppdaterStilling';
 import { useStillingsContext } from '../StillingsContext';
 
 const RedigerStillingDev: React.FC = () => {
-  const router = useRouter();
   const { stillingsData } = useStillingsContext();
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [editorData, setEditorData] = React.useState<string>(
@@ -25,7 +23,7 @@ const RedigerStillingDev: React.FC = () => {
     setIsLoading(true);
     await oppdaterStilling(JSON.parse(editorData));
     setIsLoading(false);
-    router.refresh();
+    window.location.reload();
   };
 
   return (
