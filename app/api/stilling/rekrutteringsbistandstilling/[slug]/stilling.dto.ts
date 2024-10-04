@@ -21,7 +21,10 @@ export const propertiesSchema = z
       z.string().optional().nullable(),
     ]),
     engagementtype: z.string().optional().nullable(),
-    classification_styrk08_score: z.number().optional().nullable(),
+    classification_styrk08_score: z.union([
+      z.number().optional().nullable(),
+      z.string().optional().nullable(),
+    ]),
     employerdescription: z.union([
       z.string().nullable().optional(),
       z.number().nullable().optional(),
@@ -29,7 +32,11 @@ export const propertiesSchema = z
     adtext: z.string().optional().nullable(),
     classification_styrk08_code: z.any().optional().nullable(),
     sourceurl: z.string().optional().nullable(),
-    searchtags: z.array(searchtagSchema).optional().nullable(),
+    searchtags: z.union([
+      z.array(searchtagSchema).optional().nullable(),
+      z.any(),
+      z.string().optional().nullable(),
+    ]),
     applicationurl: z.string().optional().nullable(),
     classification_esco_code: z.string().optional().nullable(),
     classification_input_source: z.string().optional().nullable(),

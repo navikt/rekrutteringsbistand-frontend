@@ -1,3 +1,4 @@
+// TODO Implementer for mulighet til å endre hele stilling`s objektet
 'use client';
 import Editor from '@monaco-editor/react';
 import * as React from 'react';

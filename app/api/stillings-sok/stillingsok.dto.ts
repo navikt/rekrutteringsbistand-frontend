@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { propertiesSchema } from '../stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
+import { StillingDataSchema } from '../stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 
 export const shardsSchema = z.object({
   total: z.number(),
@@ -77,40 +77,40 @@ export const contactSchema = z.object({
 //   })
 //   .nullable();
 
-export const stillingSøkSchema = z.object({
-  title: z.string(),
-  uuid: z.string(),
-  status: z.string(),
-  privacy: z.string(),
-  published: z.string(),
-  publishedByAdmin: z.string().nullable(), //TODO skal denne være nullable?
-  expires: z.string(),
-  created: z.string(),
-  updated: z.string(),
-  employer: z.any(),
-  categories: z.array(z.any()),
-  source: z.string(),
-  medium: z.string(),
-  businessName: z.string(),
-  locations: z.array(locationSchema),
-  reference: z.string(),
-  administration: administrationSchema,
-  properties: propertiesSchema.nullable(),
-  contacts: z.array(contactSchema),
-  styrkEllerTittel: z.string(),
-});
+// export const stillingSøkSchema = z.object({
+//   title: z.string(),
+//   uuid: z.string(),
+//   status: z.string(),
+//   privacy: z.string(),
+//   published: z.string(),
+//   publishedByAdmin: z.string().nullable(), //TODO skal denne være nullable?
+//   expires: z.string(),
+//   created: z.string(),
+//   updated: z.string(),
+//   employer: z.any(),
+//   categories: z.array(z.any()),
+//   source: z.string(),
+//   medium: z.string(),
+//   businessName: z.string(),
+//   locations: z.array(locationSchema),
+//   reference: z.string(),
+//   administration: administrationSchema,
+//   properties: propertiesSchema.nullable(),
+//   contacts: z.array(contactSchema),
+//   styrkEllerTittel: z.string(),
+// });
 
-export const stillingSøkSourceSchema = z.object({
-  stilling: stillingSøkSchema,
-  stillingsinfo: z.any(),
-});
+// export const stillingSøkSourceSchema = z.object({
+//   stilling: stillingSøkSchema,
+//   stillingsinfo: z.any(),
+// });
 
 export const hitSchema = z.object({
   _index: z.string(),
   _type: z.string(),
   _id: z.string(),
   _score: z.any(),
-  _source: stillingSøkSourceSchema,
+  _source: StillingDataSchema,
   sort: z.array(z.number()),
 });
 
