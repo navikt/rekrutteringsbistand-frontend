@@ -25,7 +25,7 @@ const tabs = [
     ],
   },
   {
-    tittel: 'Etterregistrering formidlinger',
+    tittel: 'Formidlinger',
     path: '/formidlinger',
     kreverRoller: [
       Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
