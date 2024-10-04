@@ -29,7 +29,6 @@ export const DatoVelger: React.FC<DatoVelgerProps> = ({
       fraDato && isValid(new Date(fraDato)) ? new Date(fraDato) : undefined,
   });
 
-  console.log('🎺 fraDato', fraDato);
   React.useEffect(() => {
     if (selectedDay) {
       const nyFraDato = format(selectedDay, 'dd-MM-yyyy');

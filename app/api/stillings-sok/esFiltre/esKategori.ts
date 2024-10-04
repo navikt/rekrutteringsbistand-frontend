@@ -1,5 +1,9 @@
 import { Stillingskategori } from '../../../stilling/stilling-typer';
 
+export const esKategoriFormidling = () => {
+  return [{ term: { 'stillingsinfo.stillingskategori': 'FORMIDLING' } }];
+};
+
 export const esKategori = (kategori: string[]) => {
   const filter = [];
 

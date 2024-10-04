@@ -7,7 +7,9 @@ import KategoriFilter from './StillingsSøkFilter/KategoriFilter';
 import StatusFilter from './StillingsSøkFilter/StatusFilter';
 import SynlighetFilter from './StillingsSøkFilter/SynlighetFilter';
 
-const StillingsSøkSidePanel: React.FC = () => {
+const StillingsSøkSidePanel: React.FC<{ formidlinger?: boolean }> = ({
+  formidlinger,
+}) => {
   const { fritekst, setFritekst } = useStillingsSøkFilter();
   const [searchValue, setSearchValue] = React.useState(fritekst);
   return (
@@ -21,14 +23,16 @@ const StillingsSøkSidePanel: React.FC = () => {
         onChange={(e) => setSearchValue(e)}
         onSearchClick={(e) => setFritekst(e)}
       />
-      <Button variant='secondary' className='w-full'>
-        Bruk mitt standardsøk
-      </Button>
+      {!formidlinger && (
+        <Button variant='secondary' className='w-full'>
+          Bruk mitt standardsøk
+        </Button>
+      )}
       <StatusFilter />
       <GeografiFilter />
-      <InkluderingFilter />
-      <KategoriFilter />
-      <SynlighetFilter />
+      {!formidlinger && <InkluderingFilter />}
+      {!formidlinger && <KategoriFilter />}
+      {!formidlinger && <SynlighetFilter />}
     </div>
   );
 };

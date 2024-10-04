@@ -3,7 +3,7 @@ import { geografiDTO } from '../stilling/geografi/useGeografi';
 import { esFritekstSøk } from './esFiltre/esFritekstSøk';
 import { esFylkerOgKommuner } from './esFiltre/esFylkerOgKommuner';
 import { esInkludering } from './esFiltre/esInkludering';
-import { esKategori } from './esFiltre/esKategori';
+import { esKategori, esKategoriFormidling } from './esFiltre/esKategori';
 import { esSorter } from './esFiltre/esSorter';
 import { esStatuser } from './esFiltre/esStatuser';
 import { esSynlighet } from './esFiltre/esSynlighet';
@@ -34,6 +34,7 @@ export function generateElasticSearchQuery(
   filter: StillingsSøkFilter,
   navIdent?: string,
   geografiData?: geografiDTO,
+  formidlinger?: boolean,
 ) {
   const valgteFilter: any[] = [];
   const term: any[] = [];
@@ -67,8 +68,11 @@ export function generateElasticSearchQuery(
     );
   }
 
-  if (filter.kategori.length > 0) {
+  if (!formidlinger && filter.kategori.length > 0) {
     valgteFilter.push(...esKategori(filter.kategori));
+  }
+  if (formidlinger) {
+    valgteFilter.push(...esKategoriFormidling());
   }
 
   if (filter.publisert.length > 0) {

@@ -14,10 +14,10 @@ import { useStillingsSøkFilter } from './StillingsSøkContext';
 import StillingsSøkeresultat from './StillingsSøkeresultat';
 
 interface StillingsSøkProps {
-  bareFormidling?: boolean;
+  formidlinger?: boolean;
 }
 
-const StillingsSøk: React.FC<StillingsSøkProps> = ({ bareFormidling }) => {
+const StillingsSøk: React.FC<StillingsSøkProps> = ({ formidlinger }) => {
   const { portefølje, setPortefølje } = useStillingsSøkFilter();
 
   return (
@@ -26,7 +26,7 @@ const StillingsSøk: React.FC<StillingsSøkProps> = ({ bareFormidling }) => {
       banner={
         <SideTopBanner
           tittel={
-            bareFormidling ? 'Etterregistrering formidlinger' : 'Stillinger'
+            formidlinger ? 'Etterregistrering formidlinger' : 'Stillinger'
           }
           ikon={<Piktogram />}
           knappIBanner={
@@ -49,7 +49,7 @@ const StillingsSøk: React.FC<StillingsSøkProps> = ({ bareFormidling }) => {
           }
         />
       }
-      sidepanel={<StillingsSøkSidePanel />}
+      sidepanel={<StillingsSøkSidePanel formidlinger={formidlinger} />}
     >
       <Tabs
         defaultValue={portefølje || StillingsSøkPortefølje.VIS_ALLE}
@@ -65,7 +65,7 @@ const StillingsSøk: React.FC<StillingsSøkProps> = ({ bareFormidling }) => {
           >
             <Tabs.Tab
               value={StillingsSøkPortefølje.VIS_MINE}
-              label='Mine stillinger'
+              label={formidlinger ? 'Mine formidlinger' : 'Mine stillinger'}
             />
           </TilgangskontrollForInnhold>
         </Tabs.List>

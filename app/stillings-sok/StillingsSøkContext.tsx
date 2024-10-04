@@ -35,15 +35,17 @@ interface IStillingsSøkContext {
   setPublisert: (val: string[]) => void;
   fritekst: string;
   setFritekst: (val: string) => void;
+  formidlinger?: boolean;
 }
 
 const StillingsSøkContext = React.createContext<
   IStillingsSøkContext | undefined
 >(undefined);
 
-export const StillingsSøkProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+export const StillingsSøkProvider: React.FC<{
+  children: React.ReactNode;
+  formidlinger?: boolean;
+}> = ({ children, formidlinger }) => {
   const [statuser, setStatuser] = useQueryState<string[]>(
     StillingsSøkQueryparam.Statuser,
     parseAsArrayOf(parseAsString)
@@ -178,6 +180,7 @@ export const StillingsSøkProvider: React.FC<{ children: React.ReactNode }> = ({
         setKategori,
         publisert,
         setPublisert,
+        formidlinger,
       }}
     >
       {children}

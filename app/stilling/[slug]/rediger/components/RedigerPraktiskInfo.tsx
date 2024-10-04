@@ -22,7 +22,6 @@ export const RedigerPraktiskInfo: React.FC<{
     useFormContext<StillingsDataDTO>();
 
   const onSubmit: SubmitHandler<StillingsDataDTO> = (data) => {
-    console.log(data);
     nextStep();
   };
 

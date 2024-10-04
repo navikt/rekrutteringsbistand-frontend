@@ -18,7 +18,7 @@ const StillingsSøkeresultat: React.FC = () => {
   const {
     brukerData: { ident },
   } = useApplikasjonContext();
-  const hook = useStillingssøk(filter, ident);
+  const hook = useStillingssøk(filter, ident, filter.formidlinger);
 
   const antallVisning = (fra: number, til: number, total: number) => {
     const treffFra = regnUtFørsteTreffFra(filter.side, maksAntallTreffPerSøk);

@@ -16,6 +16,7 @@ const stillingEndepunkt = '/api/stillings-sok';
 export const useStillingssøk = (
   filter: StillingsSøkFilter,
   navIdent?: string,
+  formidlinger?: boolean,
 ) => {
   const geografiData = useGeografi();
 
@@ -23,6 +24,7 @@ export const useStillingssøk = (
     filter,
     navIdent,
     geografiData.data,
+    formidlinger,
   );
 
   return useSWRImmutable(

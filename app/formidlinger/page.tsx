@@ -6,8 +6,8 @@ import { StillingsSøkProvider } from '../stillings-sok/StillingsSøkContext';
 export default function FormidlingIndex() {
   return (
     <Suspense fallback={<Loading />}>
-      <StillingsSøkProvider>
-        <StillingsSøk bareFormidling />
+      <StillingsSøkProvider formidlinger>
+        <StillingsSøk formidlinger />
       </StillingsSøkProvider>
     </Suspense>
   );
