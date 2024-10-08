@@ -4,7 +4,7 @@ import { KandidatSøkAPI } from '../api-routes';
 import { postApiWithSchemaEs } from '../fetcher';
 import { kandidatsammendragMock } from './mocks/kandidatsammendragMock';
 
-const kandidatsammendragEndepunkt = `${KandidatSøkAPI.internUrl}/api/kandidatsammendrag`;
+const kandidatsammendragEndepunkt = `${KandidatSøkAPI.internUrl}/kandidatsammendrag`;
 
 export const kandidatsammendragSchema = z.object({
   orgenhet: z.string().nullable(),

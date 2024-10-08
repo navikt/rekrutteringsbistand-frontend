@@ -16,7 +16,7 @@ export enum KandidatsøkTyper {
 }
 
 const kandidatSokEndepunkt = (type: KandidatsøkTyper | '*') =>
-  `${KandidatSøkAPI.internUrl}/${type}`;
+  `${KandidatSøkAPI.internUrl}/kandidatsok/${type}`;
 
 export const useKandidatsøk = (type: KandidatsøkTyper, payload: any) =>
   useSWRImmutable(

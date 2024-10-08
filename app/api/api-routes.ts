@@ -46,7 +46,7 @@ export const StillingsSøkAPI: Iroute = {
 };
 
 export const KandidatSøkAPI: Iroute = {
-  api_route: '/api/kandidatsok',
+  api_route: '/api',
   api_url: process.env.KANDIDATSOK_API ?? '',
   internUrl: '/api/kandidat-sok',
   scope: `api://${gcp}.toi.rekrutteringsbistand-kandidatsok-api/.default`,

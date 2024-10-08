@@ -4,7 +4,7 @@ import { KandidatSøkAPI } from '../api-routes';
 import { postApiWithSchemaEs } from '../fetcher';
 import { kandidatInformasjonMock } from './mocks/kandidatinformasjonMock';
 
-const kandidatinformasjonEndepunkt = `${KandidatSøkAPI.internUrl}/api/lookup-cv`;
+const kandidatinformasjonEndepunkt = `${KandidatSøkAPI.internUrl}/lookup-cv`;
 
 export const kandidatinformasjonSchema = z.object({
   aktorId: z.string(),
