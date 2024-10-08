@@ -17,16 +17,13 @@ import {
   hentKandidatensØnskedeYrker,
 } from '../util';
 import { alleInnsatsgrupper } from './innsatsgrupper';
-type IRekBisKortKandidat = {
+type IKandidatKort = {
   kandidat: KandidatSchemaDTO;
   markert: boolean;
   erIListen: boolean;
 };
 
-const RekBisKortKandidat: React.FC<IRekBisKortKandidat> = ({
-  kandidat,
-  markert,
-}) => {
+const KandidatKort: React.FC<IKandidatKort> = ({ kandidat, markert }) => {
   return (
     <div className='border rounded-lg mb-4 border-gray-300 px-4 pb-4 pt-2 flex flex-row '>
       <Checkbox aria-selected={markert} hideLabel className='mr-4' value='1'>
@@ -80,4 +77,4 @@ const RekBisKortKandidat: React.FC<IRekBisKortKandidat> = ({
   );
 };
 
-export default RekBisKortKandidat;
+export default KandidatKort;

@@ -2,9 +2,9 @@ import { Tabs } from '@navikt/ds-react';
 import { ReactNode } from 'react';
 import { TilgangskontrollForInnhold } from '../../../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Rolle } from '../../../types/Roller';
-import { useKandidatSøkFilterContext } from '../KandidatsøkContext';
+import { useKandidatSøkFilter } from '../KandidatsøkContext';
 
-export enum Portefølje {
+export enum KandidatSøkPortefølje {
   MINE_BRUKERE = 'minebrukere',
   VALGTE_KONTORER = 'valgtekontorer',
   MINE_KONTORER = 'minekontorer',
@@ -19,7 +19,7 @@ const PorteføljeTabs = ({
   children: ReactNode;
   stillingId: string | null;
 }) => {
-  const { portefølje, setPortefølje } = useKandidatSøkFilterContext();
+  const { portefølje, setPortefølje } = useKandidatSøkFilter();
   // const { søkekriterier, setSearchParam } = useSøkekriterier();
   // const { tilgangskontrollErPå, eierSjekk } = useContext(ApplikasjonContext);
   // const { data, isLoading: isDecoratorLoading } = useDecorator();
@@ -52,7 +52,7 @@ const PorteføljeTabs = ({
   };
 
   const MineBrukere = () => (
-    <Tabs.Tab value={Portefølje.MINE_BRUKERE} label='Mine brukere' />
+    <Tabs.Tab value={KandidatSøkPortefølje.MINE_BRUKERE} label='Mine brukere' />
   );
 
   const MittKontor = () => {
@@ -65,7 +65,10 @@ const PorteføljeTabs = ({
             Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
           ]}
         >
-          <Tabs.Tab value={Portefølje.MITT_KONTOR} label='Mitt kontor' />
+          <Tabs.Tab
+            value={KandidatSøkPortefølje.MITT_KONTOR}
+            label='Mitt kontor'
+          />
         </TilgangskontrollForInnhold>
       );
     }
@@ -82,7 +85,10 @@ const PorteføljeTabs = ({
             Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
           ]}
         >
-          <Tabs.Tab value={Portefølje.MINE_KONTORER} label='Mine kontorer' />
+          <Tabs.Tab
+            value={KandidatSøkPortefølje.MINE_KONTORER}
+            label='Mine kontorer'
+          />
         </TilgangskontrollForInnhold>
       );
     }
@@ -97,7 +103,7 @@ const PorteføljeTabs = ({
       ]}
       //   manglerEierskap={knyttetTilStillingOgIkkeEier}
     >
-      <Tabs.Tab value={Portefølje.ALLE} label='Alle kontorer' />
+      <Tabs.Tab value={KandidatSøkPortefølje.ALLE} label='Alle kontorer' />
     </TilgangskontrollForInnhold>
   );
 

@@ -1,6 +1,7 @@
 'use client';
 import { parseAsInteger, useQueryState } from 'nuqs';
 import * as React from 'react';
+import { KandidatSøkPortefølje } from './components/PorteføljeTabs';
 
 export enum KandidatSøkQueryparam {
   Fritekst = 'fritekst',
@@ -59,7 +60,7 @@ export const KandidatSøkProvider: React.FC<{ children: React.ReactNode }> = ({
   const [portefølje, setPortefølje] = useQueryState(
     KandidatSøkQueryparam.Portefølje,
     {
-      defaultValue: 'visAlle',
+      defaultValue: KandidatSøkPortefølje.MINE_BRUKERE,
       clearOnDefault: true,
     },
   );
@@ -116,7 +117,7 @@ export const KandidatSøkProvider: React.FC<{ children: React.ReactNode }> = ({
   );
 };
 
-export const useKandidatSøkFilterContext = () => {
+export const useKandidatSøkFilter = () => {
   const context = React.useContext(KandidatSøkContext);
   if (context === undefined) {
     throw new Error('useKandidatSøk må være i scope: KandidatSøkProvider');

@@ -3,22 +3,16 @@
  * Endepunkt /minebrukere
  */
 import useSWRImmutable from 'swr/immutable';
+import { KandidatSøkPortefølje } from '../../kandidat-sok/components/PorteføljeTabs';
 import { KandidatSøkAPI } from '../api-routes';
 import { postApiWithSchema } from '../fetcher';
 import { kandidatSøkMock } from './mocks/kandidatsøkMock';
 import { kandidatSokSchema } from './types';
 
-export enum KandidatsøkTyper {
-  MINE_BRUKERE = 'minebrukere',
-  MITT_KONTOR = 'mittkontor',
-  MINE_KONTOR = 'minekontor',
-  ALLE_KONTOR = 'allekontor',
-}
-
-const kandidatSokEndepunkt = (type: KandidatsøkTyper | '*') =>
+const kandidatSokEndepunkt = (type: KandidatSøkPortefølje | '*') =>
   `${KandidatSøkAPI.internUrl}/kandidatsok/${type}`;
 
-export const useKandidatsøk = (type: KandidatsøkTyper, payload: any) =>
+export const useKandidatsøk = (type: KandidatSøkPortefølje, payload: any) =>
   useSWRImmutable(
     {
       url: kandidatSokEndepunkt(type),

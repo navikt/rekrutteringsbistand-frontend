@@ -1,7 +1,7 @@
 import { ChevronDownIcon, ChevronUpIcon } from '@navikt/aksel-icons';
 import { Button, Popover, Tabs, UNSAFE_Combobox } from '@navikt/ds-react';
 import * as React from 'react';
-import { Portefølje } from './components/PorteføljeTabs';
+import { KandidatSøkPortefølje } from './components/PorteføljeTabs';
 
 export interface ValgteKontorerProps {
   children?: React.ReactNode | undefined;
@@ -14,7 +14,7 @@ const ValgteKontorer: React.FC<ValgteKontorerProps> = ({ children }) => {
     // <Dropdown>
     <>
       <Tabs.Tab
-        value={Portefølje.VALGTE_KONTORER}
+        value={KandidatSøkPortefølje.VALGTE_KONTORER}
         label='Valgte kontorer'
         icon={
           <Button

@@ -1,47 +1,43 @@
 'use client';
 import { Tabs } from '@navikt/ds-react';
 import * as React from 'react';
-import SWRLaster from '../../components/SWRLaster';
 import { TilgangskontrollForInnhold } from '../../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Rolle } from '../../types/Roller';
-import {
-  KandidatsøkTyper,
-  useKandidatsøk,
-} from '../api/kandidat-sok/useKandidatsøk';
-import { useKandidatSøkFilterContext } from './KandidatsøkContext';
+
+import { useKandidatSøkFilter } from './KandidatsøkContext';
+import KandidatSøkResultat from './KandidatSøkResultat';
 import ValgteKontorer from './ValgteKontorer';
-import KandidatKort from './components/KandidatKort';
-import { Portefølje } from './components/PorteføljeTabs';
+import { KandidatSøkPortefølje } from './components/PorteføljeTabs';
 
 const KandidatSøk: React.FC = () => {
-  const { portefølje, setPortefølje } = useKandidatSøkFilterContext();
-  const hook = useKandidatsøk(KandidatsøkTyper.MINE_BRUKERE, {
-    orgenhet: '0321',
-    fritekst: null,
-    portefølje: 'minebrukere',
-    valgtKontor: [],
-    innsatsgruppe: [],
-    side: 1,
-    ønsketYrke: [],
-    ønsketSted: [],
-    borPåØnsketSted: null,
-    kompetanse: [],
-    førerkort: [],
-    prioritertMålgruppe: [],
-    hovedmål: [],
-    utdanningsnivå: [],
-    arbeidserfaring: [],
-    ferskhet: null,
-    språk: [],
-    sortering: 'nyeste',
-  });
+  const { portefølje, setPortefølje } = useKandidatSøkFilter();
+  // const hook = useKandidatsøk(KandidatsøkTyper.MINE_BRUKERE, {
+  //   orgenhet: '0321',
+  //   fritekst: null,
+  //   portefølje: 'minebrukere',
+  //   valgtKontor: [],
+  //   innsatsgruppe: [],
+  //   side: 1,
+  //   ønsketYrke: [],
+  //   ønsketSted: [],
+  //   borPåØnsketSted: null,
+  //   kompetanse: [],
+  //   førerkort: [],
+  //   prioritertMålgruppe: [],
+  //   hovedmål: [],
+  //   utdanningsnivå: [],
+  //   arbeidserfaring: [],
+  //   ferskhet: null,
+  //   språk: [],
+  //   sortering: 'nyeste',
+  // });
 
   const data = {
     enheter: [],
   };
 
   const MineBrukere = () => (
-    <Tabs.Tab value={Portefølje.MINE_BRUKERE} label='Mine brukere' />
+    <Tabs.Tab value={KandidatSøkPortefølje.MINE_BRUKERE} label='Mine brukere' />
   );
 
   const MittKontor = () => {
@@ -54,7 +50,10 @@ const KandidatSøk: React.FC = () => {
             Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
           ]}
         >
-          <Tabs.Tab value={Portefølje.MITT_KONTOR} label='Mitt kontor' />
+          <Tabs.Tab
+            value={KandidatSøkPortefølje.MITT_KONTOR}
+            label='Mitt kontor'
+          />
         </TilgangskontrollForInnhold>
       );
     }
@@ -71,7 +70,10 @@ const KandidatSøk: React.FC = () => {
             Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
           ]}
         >
-          <Tabs.Tab value={Portefølje.MINE_KONTORER} label='Mine kontorer' />
+          <Tabs.Tab
+            value={KandidatSøkPortefølje.MINE_KONTORER}
+            label='Mine kontorer'
+          />
         </TilgangskontrollForInnhold>
       );
     }
@@ -86,7 +88,7 @@ const KandidatSøk: React.FC = () => {
       ]}
       // manglerEierskap={knyttetTilStillingOgIkkeEier}
     >
-      <Tabs.Tab value={Portefølje.ALLE} label='Alle kontorer' />
+      <Tabs.Tab value={KandidatSøkPortefølje.ALLE} label='Alle kontorer' />
     </TilgangskontrollForInnhold>
   );
 
@@ -113,22 +115,7 @@ const KandidatSøk: React.FC = () => {
         <VelgKontor />
       </Tabs.List>
       <Tabs.Panel value={portefølje}>
-        <SWRLaster hook={hook}>
-          {(data) => {
-            return (
-              <div>
-                {data.kandidater.map((kandidat, i) => (
-                  <KandidatKort
-                    key={i}
-                    erIListen={false}
-                    kandidat={kandidat}
-                    markert={false}
-                  />
-                ))}
-              </div>
-            );
-          }}
-        </SWRLaster>
+        <KandidatSøkResultat type={portefølje as KandidatSøkPortefølje} />
       </Tabs.Panel>
     </Tabs>
   );
