@@ -57,32 +57,6 @@ const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
   const [stillingsData, setStillingsData] =
     React.useState<StillingsDataDTO>(data);
 
-  // // edit deeply nested fields in stillingsDTO
-  // const editStillingsData = (field: string, value: any) => {
-  //   setStillingsData((prevData) => {
-  //     const newData = { ...prevData };
-  //     const fieldParts = field.split('.');
-  //     let current: any = newData;
-
-  //     for (let i = 0; i < fieldParts.length - 1; i++) {
-  //       const part = fieldParts[i];
-  //       if (part.includes('[')) {
-  //         const [arrayName, indexStr] = part.split('[');
-  //         const index = parseInt(indexStr.replace(']', ''));
-  //         if (!current[arrayName]) current[arrayName] = [];
-  //         if (!current[arrayName][index]) current[arrayName][index] = {};
-  //         current = current[arrayName][index];
-  //       } else {
-  //         if (!current[part]) current[part] = {};
-  //         current = current[part];
-  //       }
-  //     }
-
-  //     current[fieldParts[fieldParts.length - 1]] = value;
-  //     return newData;
-  //   });
-  // };
-
   const erEier = eierStilling({
     stillingsData: stillingsData,
     navIdent: ident,

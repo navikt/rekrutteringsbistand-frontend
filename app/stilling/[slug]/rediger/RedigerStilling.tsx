@@ -71,7 +71,7 @@ const RedigerStilling: React.FC = () => {
                 .map((step) => (
                   <Stepper.Step
                     key={step}
-                    interactive={registerForm.formState.isValid}
+                    // interactive={registerForm.formState.isValid}
                   >
                     {stegTitler[step]}
                   </Stepper.Step>

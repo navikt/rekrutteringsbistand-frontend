@@ -1,7 +1,7 @@
-import { ArrowLeftIcon } from '@navikt/aksel-icons';
-import { Button, Heading } from '@navikt/ds-react';
-import { useRouter } from 'next/navigation';
+import { Heading } from '@navikt/ds-react';
+
 import { ReactNode } from 'react';
+import TilbakeKnapp from './TilbakeKnapp';
 // import Grunnbanner from '../grunnbanner/Grunnbanner';
 
 export type ISideTopBanner = {
@@ -21,20 +21,9 @@ const SideTopBanner = ({
   headerInnhold,
   chip,
 }: ISideTopBanner) => {
-  const router = useRouter();
-  const tilbake = () => router.back();
   return (
     <div className='my-4 '>
-      {tilbakeKnapp && (
-        <Button
-          size='small'
-          icon={<ArrowLeftIcon />}
-          onClick={tilbake}
-          variant='tertiary'
-        >
-          Tilbake
-        </Button>
-      )}
+      {tilbakeKnapp && <TilbakeKnapp />}
       <div className='flex justify-between items-center '>
         <div className='flex justify-start items-center gap-8 w-full'>
           {ikon}

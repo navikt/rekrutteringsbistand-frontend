@@ -3,6 +3,8 @@ import { createServer } from 'miragejs';
 import { brukerMirage } from '../app/api/bruker/useBruker';
 import { decoratorDataMirage } from '../app/api/decorator/useDecoratorData';
 import { foresporselOmDelingAvCVStatistikkMirage } from '../app/api/foresporsel-om-deling-av-cv/statistikk/useForesporselOmdelingAvCV';
+import { kandidatinformasjonMirage } from '../app/api/kandidat-sok/useKandidatinformasjon';
+import { kandidagsammendragMirage } from '../app/api/kandidat-sok/useKandidatsammendrag';
 import { kandidatSokMirage } from '../app/api/kandidat-sok/useKandidatsøk';
 import { antallKandidaterMirage } from '../app/api/kandidat/useAntallKandidater';
 import { kandidatlisteMirage } from '../app/api/kandidat/useKandidatliste';
@@ -13,7 +15,6 @@ import { geografiMirage } from '../app/api/stilling/geografi/useGeografi';
 import { opprettNyStillingMirage } from '../app/api/stilling/ny-stilling/opprettNyStilling';
 import { oppdaterStillingMirage } from '../app/api/stilling/oppdater-stilling/oppdaterStilling';
 import { stillingMirage } from '../app/api/stilling/rekrutteringsbistandstilling/[slug]/useStilling';
-
 createServer({
   routes() {
     brukerMirage(this);
@@ -29,6 +30,8 @@ createServer({
     oppdaterStillingMirage(this);
     finnArbeidsgiverMirage(this);
     decoratorDataMirage(this);
+    kandidagsammendragMirage(this);
+    kandidatinformasjonMirage(this);
     // stillingssøk
     this.passthrough('/api/stillings-sok');
   },

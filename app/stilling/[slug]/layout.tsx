@@ -4,6 +4,7 @@ import { Tabs } from '@navikt/ds-react';
 import { usePathname } from 'next/navigation';
 import { useQueryState } from 'nuqs';
 import * as React from 'react';
+import TekstMedIkon from '../../../components/TekstMedIkon';
 import SideLayout from '../../../components/layout/SideLayout';
 import SideTopBanner from '../../../components/layout/SideTopBanner';
 import StillingsTag from '../../stillings-sok/components/StillingsTag';
@@ -57,17 +58,19 @@ const StillingSideLayout: React.FC<StillingSideLayoutProps> = ({
           headerInnhold={
             <>
               <div className='flex my-2'>
-                <div className='flex'>
-                  <Buildings2Icon className='mr-2' />
-                  {capitalizeEmployerName(
+                <TekstMedIkon
+                  ikon={<Buildings2Icon />}
+                  tekst={capitalizeEmployerName(
                     stillingsData.stilling.businessName ?? '',
                   )}
-                </div>
+                />
+
                 {eierNavn && (
-                  <div className='flex ml-4'>
-                    <PersonIcon className='mr-2' />
-                    Registrert av {eierNavn}
-                  </div>
+                  <TekstMedIkon
+                    className='ml-4'
+                    ikon={<PersonIcon />}
+                    tekst={`Registrert av ${eierNavn}`}
+                  />
                 )}
               </div>
               <KopierStillingLenke

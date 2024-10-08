@@ -5,6 +5,7 @@ const basePath = process.env.NAIS_CLUSTER_NAME === 'local' ? '' : '';
 
 export const getAPIwithSchema = <T>(
   schema: ZodSchema<T>,
+  destructure?: boolean,
 ): ((url: string) => Promise<T>) => {
   return async (url: string) => {
     const data = await getAPI(url);

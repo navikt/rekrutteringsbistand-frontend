@@ -85,6 +85,14 @@ export const RedigerOmStillingen: React.FC<{
             >
               Adresse
             </Checkbox>
+            <Checkbox
+              className='mt-4'
+              checked={visKommuneFelt}
+              onChange={(v) => setVisKommuneFelt(v.target.checked)}
+              value='taxi'
+            >
+              Kommune, fylke eller land
+            </Checkbox>
             {visAdresseFelt && (
               <div className='grid grid-cols-2 gap-4 mt-4'>
                 <TextField
@@ -97,17 +105,10 @@ export const RedigerOmStillingen: React.FC<{
                 />
               </div>
             )}
-            <Checkbox
-              disabled
-              className='mt-4'
-              checked={visKommuneFelt}
-              onChange={(v) => setVisKommuneFelt(v.target.checked)}
-              value='taxi'
-            >
-              Kommune, fylke eller land
-            </Checkbox>
+
             {visKommuneFelt && (
               <UNSAFE_Combobox
+                className='mt-4'
                 disabled
                 label='Kommune, fylke, eller land'
                 options={[
