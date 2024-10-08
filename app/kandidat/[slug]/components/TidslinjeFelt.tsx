@@ -1,0 +1,52 @@
+import { differenceInMonths, differenceInYears, format } from 'date-fns';
+import React from 'react';
+
+export const formatDateRange = (fraDato: string, tilDato: string) => {
+  const start = new Date(fraDato);
+  const end = new Date(tilDato);
+  return `${format(start, 'MMM. yyyy')} - ${format(end, 'MMM yyyy')}`;
+};
+
+export const calculateDuration = (fraDato: string, tilDato: string) => {
+  const start = new Date(fraDato);
+  const end = new Date(tilDato);
+  const years = differenceInYears(end, start);
+  const months = differenceInMonths(end, start) % 12;
+  return `${years} år, ${months} mnd.`;
+};
+
+interface TidslinjeFeltProps {
+  startDate?: string;
+  endDate?: string;
+  title?: string;
+  subtitle?: string;
+  description?: string;
+}
+
+const TidslinjeFelt: React.FC<TidslinjeFeltProps> = ({
+  startDate,
+  endDate,
+  title,
+  subtitle,
+  description,
+}) => {
+  return (
+    <div className='mb-6 last:mb-0 flex'>
+      <div className='w-1/3 pr-4 border-r border-gray-300'>
+        <p className='font-medium'>
+          {formatDateRange(startDate ?? '', endDate ?? '')}
+        </p>
+        <p className='text-sm text-gray-600'>
+          {calculateDuration(startDate ?? '', endDate ?? '')}
+        </p>
+      </div>
+      <div className='w-2/3 pl-4'>
+        <p className='text-s text-gray-600'>{subtitle}</p>
+        <p className='font-medium'>{title}</p>
+        {description && <p className='mt-2 text-sm'>{description}</p>}
+      </div>
+    </div>
+  );
+};
+
+export default TidslinjeFelt;

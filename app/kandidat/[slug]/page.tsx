@@ -4,6 +4,7 @@ import { useQueryState } from 'nuqs';
 import KandidatAktivitet from './KandidatAktivitet';
 import KandidatForslagTilStilling from './KandidatForslagTilStilling';
 import KandidatOversikt from './KandidatOversikt';
+
 enum Fane {
   OVERSIKT = 'oversikt',
   AKTIVITET = 'aktivitet',
