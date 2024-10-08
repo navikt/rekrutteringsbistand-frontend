@@ -1,10 +1,10 @@
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
 import { KandidatSøkAPI } from '../api-routes';
-import { postApiWithSchema, postApiWithSchemaEs } from '../fetcher';
+import { postApiWithSchemaEs } from '../fetcher';
 import { kandidatsammendragMock } from './mocks/kandidatsammendragMock';
 
-const kandidatsammendragEndepunkt = `${KandidatSøkAPI.internUrl}/kandidatsammendrag`;
+const kandidatsammendragEndepunkt = `${KandidatSøkAPI.internUrl}/api/kandidatsammendrag`;
 
 export const kandidatsammendragSchema = z.object({
   orgenhet: z.string().nullable(),
