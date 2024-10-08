@@ -45,9 +45,9 @@ interface IKandidatSøkContext {
   orgenhet: string | null;
 }
 
-const KandidatSøkContext = React.createContext<IKandidatSøkContext | undefined>(
-  undefined,
-);
+export const KandidatSøkContext = React.createContext<
+  IKandidatSøkContext | undefined
+>(undefined);
 
 export const KandidatSøkProvider: React.FC<{ children: React.ReactNode }> = ({
   children,

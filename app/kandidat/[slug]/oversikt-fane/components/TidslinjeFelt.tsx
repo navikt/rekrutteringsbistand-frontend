@@ -16,11 +16,11 @@ export const calculateDuration = (fraDato: string, tilDato: string) => {
 };
 
 interface TidslinjeFeltProps {
-  startDate?: string;
-  endDate?: string;
-  title?: string;
-  subtitle?: string;
-  description?: string;
+  startDate?: string | null;
+  endDate?: string | null;
+  title?: string | null;
+  subtitle?: string | null;
+  description?: string | null;
 }
 
 const TidslinjeFelt: React.FC<TidslinjeFeltProps> = ({

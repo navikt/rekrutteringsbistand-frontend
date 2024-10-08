@@ -11,7 +11,7 @@ import { useApplikasjonContext } from '../ApplikasjonContext';
 
 import KandidatKort from './components/KandidatKort';
 import { KandidatSøkPortefølje } from './components/PorteføljeTabs';
-import { useKandidatSøkFilter } from './KandidatsøkContext';
+import { useKandidatSøkFilter } from './KandidatSøkContext';
 
 interface KandidatSøkResultatProps {
   type: KandidatSøkPortefølje;
