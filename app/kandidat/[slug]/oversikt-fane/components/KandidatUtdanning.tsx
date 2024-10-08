@@ -1,6 +1,6 @@
 import { Heading } from '@navikt/ds-react';
 import * as React from 'react';
-import { useKandidatContext } from '../KandidatContext';
+import { useKandidatContext } from '../../KandidatContext';
 import TidslinjeFelt from './TidslinjeFelt';
 
 export interface KandidatUtdanningProps {

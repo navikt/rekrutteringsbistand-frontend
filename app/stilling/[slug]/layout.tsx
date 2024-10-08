@@ -1,8 +1,5 @@
 'use client';
 import { Buildings2Icon, PersonIcon } from '@navikt/aksel-icons';
-import { Tabs } from '@navikt/ds-react';
-import { usePathname } from 'next/navigation';
-import { useQueryState } from 'nuqs';
 import * as React from 'react';
 import TekstMedIkon from '../../../components/TekstMedIkon';
 import SideLayout from '../../../components/layout/SideLayout';
@@ -15,7 +12,6 @@ import {
 } from './StillingsContext';
 import KopierStillingLenke from './components/KopierStillingLenke';
 import StillingsIkon from './icons/se-mine-stillinger.svg';
-import StillingsKandidater from './kandidater/StillingsKandidater';
 
 interface StillingSideRootLayoutProps {
   children: React.ReactNode;
@@ -40,15 +36,7 @@ const StillingSideLayout: React.FC<StillingSideLayoutProps> = ({
   children,
 }) => {
   const { stillingsData, erEier, kandidatlisteId } = useStillingsContext();
-  const pathname = usePathname();
   const eierNavn = navnEierAvAstilling(stillingsData);
-
-  const [fane, setFane] = useQueryState('visFane', {
-    defaultValue: 'stilling',
-    clearOnDefault: true,
-  });
-
-  const redigeringsmodus = pathname.endsWith('/rediger');
 
   return (
     <SideLayout
@@ -84,24 +72,7 @@ const StillingSideLayout: React.FC<StillingSideLayoutProps> = ({
         />
       }
     >
-      {redigeringsmodus ? (
-        children
-      ) : (
-        <Tabs defaultValue={fane} onChange={(val) => setFane(val)}>
-          <Tabs.List>
-            <Tabs.Tab value='stilling' label='Om stillingen' />
-            {kandidatlisteId && erEier && (
-              <Tabs.Tab value='kandidater' label='Kandidater' />
-            )}
-          </Tabs.List>
-          <Tabs.Panel value='stilling'>{children}</Tabs.Panel>
-          {kandidatlisteId && erEier && (
-            <Tabs.Panel value='kandidater'>
-              <StillingsKandidater />
-            </Tabs.Panel>
-          )}
-        </Tabs>
-      )}
+      {children}
     </SideLayout>
   );
 };

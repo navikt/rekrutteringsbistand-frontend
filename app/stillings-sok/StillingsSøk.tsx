@@ -7,17 +7,29 @@ import SideLayout from '../../components/layout/SideLayout';
 import SideTopBanner from '../../components/layout/SideTopBanner';
 import { TilgangskontrollForInnhold } from '../../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Rolle } from '../../types/Roller';
+import Loading from '../laoading';
 import Piktogram from './components/icons/finn-stillinger.svg';
 import StillingsSøkSidePanel from './components/StillingsSøkSidePanel';
 import { StillingsSøkPortefølje } from './stillingssøk-typer';
-import { useStillingsSøkFilter } from './StillingsSøkContext';
+import {
+  StillingsSøkProvider,
+  useStillingsSøkFilter,
+} from './StillingsSøkContext';
 import StillingsSøkeresultat from './StillingsSøkeresultat';
 
 interface StillingsSøkProps {
   formidlinger?: boolean;
 }
 
-const StillingsSøk: React.FC<StillingsSøkProps> = ({ formidlinger }) => {
+const StillingsSøk = ({ formidlinger }: StillingsSøkProps) => (
+  <React.Suspense fallback={<Loading />}>
+    <StillingsSøkProvider formidlinger={formidlinger}>
+      <StillingsSøkLayout formidlinger={formidlinger} />
+    </StillingsSøkProvider>
+  </React.Suspense>
+);
+
+const StillingsSøkLayout: React.FC<StillingsSøkProps> = ({ formidlinger }) => {
   const { portefølje, setPortefølje } = useStillingsSøkFilter();
 
   return (

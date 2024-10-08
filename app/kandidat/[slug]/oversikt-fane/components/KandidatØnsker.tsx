@@ -6,7 +6,7 @@ import {
 } from '@navikt/aksel-icons';
 import { Heading } from '@navikt/ds-react';
 import * as React from 'react';
-import { useKandidatContext } from '../KandidatContext';
+import { useKandidatContext } from '../../KandidatContext';
 
 export interface KandidatØnskerProps {
   children?: React.ReactNode | undefined;

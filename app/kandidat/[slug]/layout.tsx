@@ -39,6 +39,7 @@ const KandidatSideLayout: React.FC<KandidatSideProps> = ({ children }) => {
     <SideLayout
       banner={
         <SideTopBanner
+          tilbakeKnapp
           ikon={<MineKandidater />}
           tittel={`${kandidatsammendragData.fornavn} ${kandidatsammendragData.etternavn}`}
           headerInnhold={
@@ -64,7 +65,7 @@ const KandidatSideLayout: React.FC<KandidatSideProps> = ({ children }) => {
               <div className='flex mt-2'>
                 <TekstMedIkon
                   ikon={<PersonIcon />}
-                  tekst={`Veileder: ${kandidatsammendragData.veilederVisningsnavn} (${kandidatsammendragData.veilederIdent}) ${kandidatsammendragData.veilederEpost}`}
+                  tekst={`Veileder: ${kandidatsammendragData.veilederVisningsnavn || 'Ukjent veileder'} ${kandidatsammendragData.veilederIdent ? `(${kandidatsammendragData.veilederIdent})` : 'N/A'} ${kandidatsammendragData.veilederEpost || ''}`.trim()}
                 />
               </div>
             </div>

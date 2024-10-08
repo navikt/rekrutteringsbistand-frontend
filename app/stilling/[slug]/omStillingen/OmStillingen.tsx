@@ -12,12 +12,12 @@ import * as React from 'react';
 import TekstMedIkon from '../../../../components/TekstMedIkon';
 import { getWorkLocationsAsString } from '../../../../util/locationUtil';
 import { useAntallKandidater } from '../../../api/kandidat/useAntallKandidater';
+import { GeografiListDTO } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { useStillingsContext } from '../StillingsContext';
 import OmAnnonsen from '../components/OmAnnonsen';
 import OmBedriften from '../components/OmBedriften';
 import StillingSidebar from './StillingSidebar/StillingSidebar';
 import StillingsTekst from './StillingsTekst';
-import { GeografiListDTO } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 
 const OmStillingen: React.FC = () => {
   const { stillingsData, kandidatlisteId } = useStillingsContext();
