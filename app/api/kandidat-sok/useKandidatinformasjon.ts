@@ -34,7 +34,7 @@ export const kandidatinformasjonSchema = z.object({
   kommunenummerkw: z.number(),
   kommunenummerstring: z.string(),
   fylkeNavn: z.string(),
-  kommuneNavn: z.string(),
+  kommuneNavn: z.string().nullable(),
   disponererBil: z.null(),
   tidsstempel: z.string(),
   doed: z.boolean(),

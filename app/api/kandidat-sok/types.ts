@@ -21,7 +21,7 @@ export const kandidatSchema = z.object({
   etternavn: z.string(),
   postnummer: z.string(),
   arenaKandidatnr: z.string(),
-  kommuneNavn: z.string(),
+  kommuneNavn: z.string().nullable(),
   geografiJobbonsker: z.array(geografiJobbonskerSchema),
   fornavn: z.string(),
   fodselsnummer: z.string(),
