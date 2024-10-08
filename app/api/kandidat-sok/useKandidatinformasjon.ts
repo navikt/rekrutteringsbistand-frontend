@@ -7,54 +7,53 @@ import { kandidatInformasjonMock } from './mocks/kandidatinformasjonMock';
 const kandidatinformasjonEndepunkt = `${KandidatSøkAPI.internUrl}/lookup-cv`;
 
 export const kandidatinformasjonSchema = z.object({
-  aktorId: z.string(),
-  fodselsnummer: z.string(),
-  fornavn: z.string(),
-  etternavn: z.string(),
-  fodselsdato: z.string(),
+  aktorId: z.string().nullable(),
+  fodselsnummer: z.string().nullable(),
+  fornavn: z.string().nullable(),
+  etternavn: z.string().nullable(),
+  fodselsdato: z.string().nullable(),
   fodselsdatoErDnr: z.boolean(),
-  formidlingsgruppekode: z.string(),
-  epostadresse: z.string(),
+  formidlingsgruppekode: z.string().nullable(),
+  epostadresse: z.string().nullable(),
   mobiltelefon: z.null(),
   harKontaktinformasjon: z.boolean(),
-  telefon: z.string(),
+  telefon: z.string().nullable(),
   statsborgerskap: z.null(),
-  kandidatnr: z.string(),
-  arenaKandidatnr: z.string(),
-  beskrivelse: z.string(),
-  samtykkeStatus: z.string(),
-  samtykkeDato: z.string(),
-  adresselinje1: z.string(),
-  adresselinje2: z.string(),
-  adresselinje3: z.string(),
-  postnummer: z.string(),
-  poststed: z.string(),
+  kandidatnr: z.string().nullable(),
+  arenaKandidatnr: z.string().nullable(),
+  beskrivelse: z.string().nullable(),
+  samtykkeStatus: z.string().nullable(),
+  samtykkeDato: z.string().nullable(),
+  adresselinje1: z.string().nullable(),
+  adresselinje2: z.string().nullable(),
+  adresselinje3: z.string().nullable(),
+  postnummer: z.string().nullable(),
+  poststed: z.string().nullable(),
   landkode: z.null(),
   kommunenummer: z.number(),
-  kommunenummerkw: z.number(),
-  kommunenummerstring: z.string(),
-  fylkeNavn: z.string(),
-  kommuneNavn: z.string().nullable(),
+  kommunenummerstring: z.string().nullable(),
+  fylkeNavn: z.string().nullable(),
+  kommuneNavn: z.string().nullable().nullable(),
   disponererBil: z.null(),
-  tidsstempel: z.string(),
+  tidsstempel: z.string().nullable(),
   doed: z.boolean(),
-  frKode: z.string(),
-  kvalifiseringsgruppekode: z.string(),
-  hovedmaalkode: z.string(),
-  orgenhet: z.string(),
-  navkontor: z.string(),
+  frKode: z.string().nullable(),
+  kvalifiseringsgruppekode: z.string().nullable(),
+  hovedmaalkode: z.string().nullable(),
+  orgenhet: z.string().nullable(),
+  navkontor: z.string().nullable(),
   fritattKandidatsok: z.null(),
   fritattAgKandidatsok: z.null(),
   utdanning: z.array(
     z
       .object({
-        fraDato: z.string(),
-        tilDato: z.string(),
-        utdannelsessted: z.string(),
-        nusKode: z.string(),
-        alternativGrad: z.string(),
-        yrkestatus: z.string(),
-        beskrivelse: z.string(),
+        fraDato: z.string().nullable(),
+        tilDato: z.string().nullable(),
+        utdannelsessted: z.string().nullable(),
+        nusKode: z.string().nullable(),
+        alternativGrad: z.string().nullable(),
+        yrkestatus: z.string().nullable(),
+        beskrivelse: z.string().nullable(),
       })
       .nullable(),
   ),
@@ -62,22 +61,22 @@ export const kandidatinformasjonSchema = z.object({
   yrkeserfaring: z.array(
     z
       .object({
-        fraDato: z.string(),
-        tilDato: z.string(),
-        arbeidsgiver: z.string(),
-        styrkKode: z.string(),
-        styrkKode4Siffer: z.string(),
-        styrkKode3Siffer: z.string(),
-        stillingstittel: z.string(),
-        stillingstitlerForTypeahead: z.array(z.string()),
-        alternativStillingstittel: z.string(),
-        sokeTitler: z.array(z.string()),
+        fraDato: z.string().nullable(),
+        tilDato: z.string().nullable(),
+        arbeidsgiver: z.string().nullable(),
+        styrkKode: z.string().nullable(),
+        styrkKode4Siffer: z.string().nullable(),
+        styrkKode3Siffer: z.string().nullable(),
+        stillingstittel: z.string().nullable(),
+        stillingstitlerForTypeahead: z.array(z.string().nullable()),
+        alternativStillingstittel: z.string().nullable(),
+        sokeTitler: z.array(z.string().nullable()),
         organisasjonsnummer: z.null(),
         naceKode: z.null(),
         yrkeserfaringManeder: z.number(),
         utelukketForFremtiden: z.boolean(),
-        beskrivelse: z.string(),
-        sted: z.string(),
+        beskrivelse: z.string().nullable(),
+        sted: z.string().nullable(),
       })
       .nullable(),
   ),
@@ -90,7 +89,7 @@ export const kandidatinformasjonSchema = z.object({
         fraDato: z.null(),
         tilDato: z.null(),
         forerkortKode: z.null(),
-        forerkortKodeKlasse: z.string(),
+        forerkortKodeKlasse: z.string().nullable(),
         alternativKlasse: z.null(),
         utsteder: z.null(),
       })
@@ -101,11 +100,11 @@ export const kandidatinformasjonSchema = z.object({
       .object({
         fraDato: z.null(),
         sprakKode: z.null(),
-        sprakKodeTekst: z.string(),
-        alternativTekst: z.string(),
-        beskrivelse: z.string(),
-        ferdighetMuntlig: z.string(),
-        ferdighetSkriftlig: z.string(),
+        sprakKodeTekst: z.string().nullable(),
+        alternativTekst: z.string().nullable(),
+        beskrivelse: z.string().nullable(),
+        ferdighetMuntlig: z.string().nullable(),
+        ferdighetSkriftlig: z.string().nullable(),
       })
       .nullable(),
   ),
@@ -113,27 +112,35 @@ export const kandidatinformasjonSchema = z.object({
   vervObj: z.array(z.unknown()),
   geografiJobbonsker: z
     .array(
-      z.object({ geografiKodeTekst: z.string(), geografiKode: z.string() }),
+      z.object({
+        geografiKodeTekst: z.string().nullable(),
+        geografiKode: z.string().nullable(),
+      }),
     )
     .nullable(),
   yrkeJobbonskerObj: z.array(
     z
       .object({
         styrkKode: z.null(),
-        styrkBeskrivelse: z.string(),
-        sokeTitler: z.array(z.string()),
+        styrkBeskrivelse: z.string().nullable(),
+        sokeTitler: z.array(z.string().nullable()),
         primaertJobbonske: z.boolean(),
       })
       .nullable(),
   ),
   omfangJobbonskerObj: z
-    .array(z.object({ omfangKode: z.string(), omfangKodeTekst: z.string() }))
+    .array(
+      z.object({
+        omfangKode: z.string().nullable(),
+        omfangKodeTekst: z.string().nullable(),
+      }),
+    )
     .nullable(),
   ansettelsesformJobbonskerObj: z
     .array(
       z.object({
-        ansettelsesformKode: z.string(),
-        ansettelsesformKodeTekst: z.string(),
+        ansettelsesformKode: z.string().nullable(),
+        ansettelsesformKodeTekst: z.string().nullable(),
       }),
     )
     .nullable(),
@@ -141,22 +148,27 @@ export const kandidatinformasjonSchema = z.object({
   arbeidsdagerJobbonskerObj: z.array(z.unknown()),
   arbeidstidJobbonskerObj: z.array(
     z
-      .object({ arbeidstidKode: z.string(), arbeidstidKodeTekst: z.string() })
+      .object({
+        arbeidstidKode: z.string().nullable(),
+        arbeidstidKodeTekst: z.string().nullable(),
+      })
       .nullable(),
   ),
   samletKompetanseObj: z.array(z.unknown()),
   totalLengdeYrkeserfaring: z.number(),
   synligForArbeidsgiverSok: z.boolean(),
   synligForVeilederSok: z.boolean(),
-  oppstartKode: z.string(),
-  veileder: z.string(),
-  veilederIdent: z.string(),
+  oppstartKode: z.string().nullable(),
+  veileder: z.string().nullable(),
+  veilederIdent: z.string().nullable(),
   veilederVisningsnavn: z.null(),
   veilederEpost: z.null(),
   godkjenninger: z.array(z.unknown()),
   perioderMedInaktivitet: z.object({
-    startdatoForInnevarendeInaktivePeriode: z.string(),
-    sluttdatoerForInaktivePerioderPaToArEllerMer: z.array(z.string()),
+    startdatoForInnevarendeInaktivePeriode: z.string().nullable(),
+    sluttdatoerForInaktivePerioderPaToArEllerMer: z.array(
+      z.string().nullable(),
+    ),
   }),
 });
 
