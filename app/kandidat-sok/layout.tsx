@@ -11,14 +11,12 @@ export default function KandidatSokLayout({
 }) {
   return (
     <KandidatSøkProvider>
-      <KandidatSøkProvider>
-        <SideLayout
-          banner={<SideTopBanner tittel='Kandidatsøk' ikon={<Piktogram />} />}
-          sidepanel={<KandidatSøkSidebar />}
-        >
-          {children}
-        </SideLayout>
-      </KandidatSøkProvider>
+      <SideLayout
+        banner={<SideTopBanner tittel='Kandidatsøk' ikon={<Piktogram />} />}
+        sidepanel={<KandidatSøkSidebar />}
+      >
+        {children}
+      </SideLayout>
     </KandidatSøkProvider>
   );
 }
