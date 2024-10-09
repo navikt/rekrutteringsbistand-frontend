@@ -18,6 +18,7 @@ const Modiadekoratør: FunctionComponent = async () => {
       showEnheter={true}
       showHotkeys={false}
       showSearchArea={false}
+      fetchActiveEnhetOnMount={true}
       urlFormat={'NAV_NO'}
       onEnhetChanged={function (enhetId?: string | null, enhet?: Enhet): void {
         setValgtNavKontor({
