@@ -17,7 +17,8 @@ NextJS applikasjon m/AppRoutes, "SWR hooks" for fetching av data og zod valideri
 
 ## Utvikling
 
-### Lokal mock 
+### Lokal mock
+
 Bruker miragejs, se mirage.ts for server og mocks mappen for mocks.
 
 ### Opprett API endepunkt
@@ -35,8 +36,8 @@ Se på https://nextjs.org/docs/app/api-reference/functions/use-search-params og/
 
 Implementert logger `import { logger } from '@navikt/next-logger'`, se https://logs.adeo.no/ ( https://github.com/navikt/next-logger )
 
-
 ### Stillingssøk direkte mot ES:
+
 Opprett en '.env.local' fil og fyll ut:
 
 ```
@@ -46,20 +47,19 @@ STILLING_ES_USERNAME=
 ```
 
 ### Prettier og lint med husky
+
 Gjerne kjør prettier on save for å formatere koden mens du utvikler.
 Det er installert eslint og husky som formaterer koden og gir evt feilmeldinger ved ubrukte variabler samt at params blir sortert alfabetisk for bedre oversikt.
 
 Får du ikke pushet, se gitlog for feilmelding...
 
-
-
 # Testing
 
-
 ## Playwright
-`npx playwright codegen` 
 
-Resultat: https://navikt.github.io/rekrutteringsbistand-frontend 
+`npx playwright codegen`
+
+Resultat: https://navikt.github.io/rekrutteringsbistand-frontend
 
 Happy hacking! 🎭
 
@@ -67,14 +67,16 @@ Happy hacking! 🎭
 
 transform tools: https://transform.tools/
 
-
 # Todo:
 
 https://docs.nais.io/observability/how-to/auto-instrumentation/ for nodjs
 
 #### Gjeld:
-TODO:
-* api/me i kandidatsok er ikke i bruk
-* Fylker map blir ikke med over dat dette håndteres backend?
 
+TODO:
+
+- api/me i kandidatsok er ikke i bruk
+- Fylker map blir ikke med over dat dette håndteres backend?
+
+$$
 $$
