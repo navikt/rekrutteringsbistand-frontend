@@ -2,7 +2,7 @@ import { Tabs } from '@navikt/ds-react';
 import { ReactNode } from 'react';
 import { TilgangskontrollForInnhold } from '../../../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Rolle } from '../../../types/Roller';
-import { useKandidatSøkFilter } from '../KandidatSøkContext';
+import { useKandidatSøkFilter } from '../KandidaSokContext';
 
 export enum KandidatSøkPortefølje {
   MINE_BRUKERE = 'minebrukere',

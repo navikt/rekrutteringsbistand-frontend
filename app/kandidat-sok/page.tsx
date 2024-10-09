@@ -4,7 +4,7 @@ import * as React from 'react';
 import { TilgangskontrollForInnhold } from '../../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Rolle } from '../../types/Roller';
 
-import { useKandidatSøkFilter } from './KandidatSøkContext';
+import { useKandidatSøkFilter } from './KandidaSokContext';
 import KandidatSøkResultat from './KandidatSøkResultat';
 import ValgteKontorer from './ValgteKontorer';
 import { KandidatSøkPortefølje } from './components/PorteføljeTabs';
