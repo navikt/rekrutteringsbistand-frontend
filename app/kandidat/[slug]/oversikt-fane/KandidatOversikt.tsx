@@ -1,9 +1,13 @@
-import { Button, Heading } from '@navikt/ds-react';
 import * as React from 'react';
-import GråRamme from './components/GråRamme';
 import KandidatErfaring from './components/KandidatErfaring';
+import KandidatFørerkort from './components/KandidatFørerkort';
+import KandidatGodkjenninger from './components/KandidatGodkjenninger';
+import KandidatKompetanse from './components/KandidatKompetanse';
+import KandidatKurs from './components/KandidatKurs';
+import KandidatSpråk from './components/KandidatSpråk';
 import KandidatUtdanning from './components/KandidatUtdanning';
 import KandidatØnsker from './components/KandidatØnsker';
+import KandidatOversiktSidebar from './KandidatOversiktSidebar';
 
 export interface KandidatOversiktProps {
   children?: React.ReactNode | undefined;
@@ -18,24 +22,16 @@ const KandidatOversikt: React.FC<KandidatOversiktProps> = ({ children }) => {
           <KandidatUtdanning />
           <KandidatErfaring />
         </div>
-      </div>
-      <div className='ml-8 w-[25rem] flex-shrink-0 flex flex-col gap-8'>
-        <GråRamme>
-          <Heading size='xsmall'>Profilkvalitet</Heading>
-        </GråRamme>
-        <div>
-          <Heading size='small'>Siste aktivitet</Heading>
-          <Button className='w-full mt-2' variant='secondary'>
-            Vis all aktivitet
-          </Button>
-        </div>
-        <div>
-          <Heading size='small'>Forslag til stilling</Heading>
-          <Button className='w-full mt-2' variant='secondary'>
-            Finn aktuelle stillinger
-          </Button>
+        <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mt-8'>
+          <KandidatSpråk />
+          <KandidatGodkjenninger />
+          <KandidatFørerkort />
+          <KandidatKompetanse />
+          <KandidatKurs />
         </div>
       </div>
+
+      <KandidatOversiktSidebar />
     </div>
   );
 };

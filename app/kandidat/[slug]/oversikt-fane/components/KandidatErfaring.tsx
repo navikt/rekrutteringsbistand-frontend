@@ -9,7 +9,6 @@ export interface KandidatErfaringProps {
 
 const KandidatErfaring: React.FC<KandidatErfaringProps> = ({ children }) => {
   const { kandidatData } = useKandidatContext();
-  console.log('🎺 kandidatData', kandidatData);
   return (
     <>
       <Heading size='medium'>Erfaring</Heading>

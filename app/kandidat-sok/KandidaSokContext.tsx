@@ -110,7 +110,7 @@ export const KandidatSøkProvider: React.FC<{ children: React.ReactNode }> = ({
   return (
     <KandidatSøkContext.Provider
       //@ts-ignore
-      value={{ portefølje, setPortefølje }}
+      value={{ portefølje, setPortefølje, side }}
     >
       {children}
     </KandidatSøkContext.Provider>
