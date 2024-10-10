@@ -9,25 +9,49 @@ export interface KandidatErfaringProps {
 
 const KandidatErfaring: React.FC<KandidatErfaringProps> = ({ children }) => {
   const { kandidatData } = useKandidatContext();
+  console.log('🎺 kandidatData', kandidatData);
   return (
     <>
-      <Heading size='large'>Erfaring</Heading>
+      <Heading size='medium'>Erfaring</Heading>
       <div>
-        <Heading size='medium'>Yrkeserfaring</Heading>
-        <div className='my-2'>
-          {kandidatData.yrkeserfaring && kandidatData.yrkeserfaring.length > 0
-            ? kandidatData.yrkeserfaring.map((erfaring) => (
-                <TidslinjeFelt
-                  key={erfaring?.fraDato}
-                  startDate={erfaring?.fraDato}
-                  endDate={erfaring?.tilDato}
-                  title={erfaring?.stillingstittel}
-                  subtitle={erfaring?.beskrivelse}
-                />
-              ))
-            : 'Ingen yrkeserfaring'}
-        </div>
-        <Heading size='medium'>Annen erfaring</Heading>
+        {kandidatData.yrkeserfaring &&
+          kandidatData.yrkeserfaring.length > 0 && (
+            <>
+              <Heading size='small' textColor='subtle'>
+                Yrkeserfaring
+              </Heading>
+              <div className='my-2'>
+                {kandidatData.yrkeserfaring.map((erfaring) => (
+                  <TidslinjeFelt
+                    key={erfaring?.fraDato}
+                    startDate={erfaring?.fraDato}
+                    endDate={erfaring?.tilDato}
+                    title={erfaring?.stillingstittel}
+                    subtitle={erfaring?.beskrivelse}
+                  />
+                ))}
+              </div>
+            </>
+          )}
+        {kandidatData.annenerfaringObj &&
+          kandidatData.annenerfaringObj.length > 0 && (
+            <>
+              <Heading size='small' textColor='subtle'>
+                Annen erfaring
+              </Heading>
+              <div className='my-2'>
+                {/* {kandidatData.annenerfaringObj.map((erfaring) => (
+                  <TidslinjeFelt
+                    key={erfaring?.fraDato}
+                    startDate={erfaring?.fraDato}
+                    endDate={erfaring?.tilDato}
+                    title={erfaring?.stillingstittel}
+                    subtitle={erfaring?.beskrivelse}
+                  />
+                ))} */}
+              </div>
+            </>
+          )}
       </div>
     </>
   );

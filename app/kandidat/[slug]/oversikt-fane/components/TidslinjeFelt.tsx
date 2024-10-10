@@ -16,6 +16,7 @@ export const calculateDuration = (fraDato: string, tilDato: string) => {
 };
 
 interface TidslinjeFeltProps {
+  fagDokumentasjon?: boolean;
   startDate?: string | null;
   endDate?: string | null;
   title?: string | null;
@@ -24,6 +25,7 @@ interface TidslinjeFeltProps {
 }
 
 const TidslinjeFelt: React.FC<TidslinjeFeltProps> = ({
+  fagDokumentasjon,
   startDate,
   endDate,
   title,
@@ -33,12 +35,18 @@ const TidslinjeFelt: React.FC<TidslinjeFeltProps> = ({
   return (
     <div className='mb-6 last:mb-0 flex'>
       <div className='w-1/3 pr-4 border-r border-gray-300'>
-        <p className='font-medium'>
-          {formatDateRange(startDate ?? '', endDate ?? '')}
-        </p>
-        <p className='text-sm text-gray-600'>
-          {calculateDuration(startDate ?? '', endDate ?? '')}
-        </p>
+        {fagDokumentasjon ? (
+          <p className='font-medium'>Fagdokumentasjon</p>
+        ) : (
+          <>
+            <p className='font-medium'>
+              {startDate && endDate && formatDateRange(startDate, endDate)}
+            </p>
+            <p className='text-sm text-gray-600'>
+              {startDate && endDate && calculateDuration(startDate, endDate)}
+            </p>
+          </>
+        )}
       </div>
       <div className='w-2/3 pl-4'>
         <p className='text-s text-gray-600'>{subtitle}</p>

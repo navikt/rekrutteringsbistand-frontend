@@ -1,11 +1,19 @@
 import NAVSPA from '@navikt/navspa';
 import { FunctionComponent } from 'react';
 import { useApplikasjonContext } from '../../../../app/ApplikasjonContext';
+import { getMiljø, Miljø } from '../../../../util/miljø';
 import { DecoratorProps, Enhet } from './Interndekoratør';
 
 const InternflateDecorator = NAVSPA.importer<DecoratorProps>(
   'internarbeidsflate-decorator-v3',
 );
+
+const proxyUrl =
+  getMiljø() === Miljø.ProdGcp
+    ? 'https://rekrutteringsbistand-frontend.intern.nav.no'
+    : 'https://rekrutteringsbistand-frontend.intern.dev.nav.no';
+
+const miljo = getMiljø() === Miljø.ProdGcp ? 'prod' : 'q0';
 
 const Modiadekoratør: FunctionComponent = async () => {
   const { setValgtNavKontor } = useApplikasjonContext();
@@ -13,8 +21,8 @@ const Modiadekoratør: FunctionComponent = async () => {
     <InternflateDecorator
       useProxy
       appName={'Rekrutteringsbistand'}
-      environment={'q0'}
-      proxy='https://rekrutteringsbistand-frontend.intern.dev.nav.no'
+      environment={miljo}
+      proxy={proxyUrl}
       showEnheter={true}
       showHotkeys={false}
       showSearchArea={false}

@@ -12,11 +12,26 @@ export interface KandidatØnskerProps {
   children?: React.ReactNode | undefined;
 }
 
+type Oppstartskode = {
+  key: string;
+  label: string;
+};
+
+const oppstartskoder: Record<string, Oppstartskode> = {
+  LEDIG_NAA: { key: 'LEDIG_NAA', label: 'Nå' },
+  ETTER_TRE_MND: {
+    key: 'ETTER_TRE_MND',
+    label: 'Om 3 måneder (oppsigelsestid)',
+  },
+  ETTER_AVTALE: { key: 'ETTER_AVTALE', label: 'Etter avtale' },
+};
+
 const KandidatØnsker: React.FC<KandidatØnskerProps> = ({ children }) => {
   const { kandidatData } = useKandidatContext();
+
   return (
     <div>
-      <Heading size='large'>Ønsker</Heading>
+      <Heading size='medium'>Ønsker</Heading>
       <p className='mb-4 my-4'>
         {kandidatData.yrkeJobbonskerObj
           ?.map((yrke) => yrke?.styrkBeskrivelse)
@@ -40,9 +55,9 @@ const KandidatØnsker: React.FC<KandidatØnskerProps> = ({ children }) => {
           <div>
             <p className='font-medium'>Heltid/deltid</p>
             <p>
-              {kandidatData.omfangJobbonskerObj?.map(
-                (omfang) => omfang?.omfangKodeTekst ?? '-',
-              ) ?? '-'}
+              {kandidatData.omfangJobbonskerObj
+                ?.map((omfang) => omfang?.omfangKodeTekst ?? '-')
+                .join(', ') ?? '-'}
             </p>
           </div>
         </div>
@@ -61,7 +76,11 @@ const KandidatØnsker: React.FC<KandidatØnskerProps> = ({ children }) => {
           <TimerStartIcon className='w-5 h-5 mr-2' />
           <div>
             <p className='font-medium'>Kan starte</p>
-            <p>{kandidatData.oppstartKode}</p>
+            <p>
+              {kandidatData.oppstartKode
+                ? (oppstartskoder[kandidatData.oppstartKode]?.label ?? '-')
+                : '-'}
+            </p>
           </div>
         </div>
       </div>
