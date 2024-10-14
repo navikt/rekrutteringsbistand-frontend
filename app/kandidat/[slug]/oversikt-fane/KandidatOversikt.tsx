@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useKandidatContext } from '../KandidatContext';
 import KandidatErfaring from './components/KandidatErfaring';
 import KandidatFørerkort from './components/KandidatFørerkort';
 import KandidatGodkjenninger from './components/KandidatGodkjenninger';
@@ -14,6 +15,7 @@ export interface KandidatOversiktProps {
 }
 
 const KandidatOversikt: React.FC<KandidatOversiktProps> = ({ children }) => {
+  const { kandidatData } = useKandidatContext();
   return (
     <div className='mt-10 flex'>
       <div className='flex-grow'>
@@ -23,9 +25,9 @@ const KandidatOversikt: React.FC<KandidatOversiktProps> = ({ children }) => {
           <KandidatErfaring />
         </div>
         <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mt-8'>
-          <KandidatSpråk />
-          <KandidatGodkjenninger />
-          <KandidatFørerkort />
+          <KandidatSpråk språk={kandidatData?.sprak} />
+          <KandidatGodkjenninger godkjenninger={kandidatData?.godkjenninger} />
+          <KandidatFørerkort førerkort={kandidatData?.forerkort} />
           <KandidatKompetanse />
           <KandidatKurs />
         </div>

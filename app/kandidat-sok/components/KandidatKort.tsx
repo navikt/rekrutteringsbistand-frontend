@@ -10,15 +10,17 @@ import { Checkbox, Heading } from '@navikt/ds-react';
 import Link from 'next/link';
 import * as React from 'react';
 import TekstMedIkon from '../../../components/TekstMedIkon';
-import { KandidatSchemaDTO } from '../../api/kandidat-sok/types';
+
+import { KandidatDataSchemaDTO } from '../../api/kandidat-sok/schema/cvSchema.zod';
 import {
   hentKandidatensNavn,
   hentKandidatensØnskedeSteder,
   hentKandidatensØnskedeYrker,
 } from '../util';
 import { alleInnsatsgrupper } from './innsatsgrupper';
+
 type IKandidatKort = {
-  kandidat: KandidatSchemaDTO;
+  kandidat: KandidatDataSchemaDTO;
   markert: boolean;
   erIListen: boolean;
 };

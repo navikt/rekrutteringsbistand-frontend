@@ -40,10 +40,12 @@ const TidslinjeFelt: React.FC<TidslinjeFeltProps> = ({
         ) : (
           <>
             <p className='font-medium'>
-              {startDate && endDate && formatDateRange(startDate, endDate)}
+              {startDate && endDate ? formatDateRange(startDate, endDate) : '-'}
             </p>
             <p className='text-sm text-gray-600'>
-              {startDate && endDate && calculateDuration(startDate, endDate)}
+              {startDate && endDate
+                ? calculateDuration(startDate, endDate)
+                : 'Ingen dato oppgitt'}
             </p>
           </>
         )}

@@ -1,17 +1,15 @@
 'use client';
 import React from 'react';
 import SWRLaster from '../../../components/SWRLaster';
-import {
-  KandidatinformasjonDTO,
-  useKandidatinformasjon,
-} from '../../api/kandidat-sok/useKandidatinformasjon';
+import { KandidatDataSchemaDTO } from '../../api/kandidat-sok/schema/cvSchema.zod';
+import { useKandidatinformasjon } from '../../api/kandidat-sok/useKandidatinformasjon';
 import {
   KandidatsammendragDTO,
   useKandidatsammendrag,
 } from '../../api/kandidat-sok/useKandidatsammendrag';
 
 interface KandidatContextType {
-  kandidatData: KandidatinformasjonDTO;
+  kandidatData: KandidatDataSchemaDTO;
   kandidatsammendragData: KandidatsammendragDTO;
 }
 
@@ -55,13 +53,22 @@ const KandidatContextMedData: React.FC<KandidatContextMedDataProps> = ({
   const hook = useKandidatinformasjon(kandidatId);
   return (
     <SWRLaster hook={hook}>
-      {(kandidatData) => (
-        <KandidatContext.Provider
-          value={{ kandidatData, kandidatsammendragData }}
-        >
-          {children}
-        </KandidatContext.Provider>
-      )}
+      {(kandidatData) => {
+        if (!kandidatData) {
+          return null;
+        }
+
+        return (
+          <KandidatContext.Provider
+            value={{
+              kandidatData: kandidatData as KandidatDataSchemaDTO, // todo hvorfor må vi gjøre dette?
+              kandidatsammendragData,
+            }}
+          >
+            {children}
+          </KandidatContext.Provider>
+        );
+      }}
     </SWRLaster>
   );
 };

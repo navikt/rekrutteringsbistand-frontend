@@ -14,7 +14,7 @@ import {
 import {
   kandidaterSchemaDTO,
   kandidatlisteSchemaDTO,
-} from '../../../api/kandidat/typer/kandidatliste.zod';
+} from '../../../api/kandidat/schema.zod';
 import { useKandidatliste } from '../../../api/kandidat/useKandidatliste';
 import { useStillingsContext } from '../StillingsContext';
 

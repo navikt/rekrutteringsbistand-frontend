@@ -9,6 +9,7 @@ import {
 } from '../api/stillings-sok/stillingssøkElasticSearchQuery';
 import { useApplikasjonContext } from '../ApplikasjonContext';
 
+import { KandidatDataSchemaDTO } from '../api/kandidat-sok/schema/cvSchema.zod';
 import KandidatKort from './components/KandidatKort';
 import { KandidatSøkPortefølje } from './components/PorteføljeTabs';
 import { useKandidatSøkFilter } from './KandidaSokContext';
@@ -54,12 +55,12 @@ const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({ type }) => 
             )} */}
             {/* <StillingsSøkSortering /> */}
           </div>
-          {kandidatData.kandidater.map((kandidat, index) => (
+          {kandidatData.kandidater?.map((kandidat, index) => (
             <KandidatKort
               markert={false}
               erIListen={false}
               key={kandidat.arenaKandidatnr || index}
-              kandidat={kandidat}
+              kandidat={kandidat as KandidatDataSchemaDTO}
             />
           ))}
           {/* <StillingsSøkPaginering

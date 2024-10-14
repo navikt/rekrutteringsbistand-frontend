@@ -2,7 +2,7 @@ import useSWRImmutable from 'swr/immutable';
 import { getAPIwithSchema } from '../../api/fetcher';
 import { KandidatAPI } from '../api-routes';
 import { kandidatlisetMock } from './mocks/kandidatlisteMock';
-import { kandidatlisteSchema } from './typer/kandidatliste.zod';
+import { kandidatlisteSchema } from './schema.zod';
 
 const kandidatlisteEndepunkt = (stillingsId?: string) =>
   stillingsId
