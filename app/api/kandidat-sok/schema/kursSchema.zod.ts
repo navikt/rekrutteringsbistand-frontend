@@ -10,4 +10,5 @@ const KursSchema = z.object({
   beskrivelse: z.string().nullable().optional(), // Deprecated field
 });
 
+export type KursSchemaDTO = z.infer<typeof KursSchema>;
 export { KursSchema };

@@ -9,4 +9,5 @@ const SertifikatSchema = z.object({
   utsteder: z.string().nullable().optional(),
 });
 
+export type SertifikatSchemaDTO = z.infer<typeof SertifikatSchema>;
 export { SertifikatSchema };

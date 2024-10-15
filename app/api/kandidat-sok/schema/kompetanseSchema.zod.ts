@@ -9,4 +9,5 @@ const KompetanseSchema = z.object({
   beskrivelse: z.string().nullable().optional(),
 });
 
+export type KompetanseSchemaDTO = z.infer<typeof KompetanseSchema>;
 export { KompetanseSchema };

@@ -26,10 +26,13 @@ const KandidatOversikt: React.FC<KandidatOversiktProps> = ({ children }) => {
         </div>
         <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mt-8'>
           <KandidatSpråk språk={kandidatData?.sprak} />
-          <KandidatGodkjenninger godkjenninger={kandidatData?.godkjenninger} />
+          <KandidatGodkjenninger
+            godkjenninger={kandidatData?.godkjenninger}
+            sertifikatObj={kandidatData?.sertifikatObj}
+          />
           <KandidatFørerkort førerkort={kandidatData?.forerkort} />
-          <KandidatKompetanse />
-          <KandidatKurs />
+          <KandidatKompetanse kompetanse={kandidatData?.kompetanseObj} />
+          <KandidatKurs kurs={kandidatData?.kursObj} />
         </div>
       </div>
 
