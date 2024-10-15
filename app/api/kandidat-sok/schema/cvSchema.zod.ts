@@ -101,10 +101,7 @@ const KandidatDataSchema = z.object({
   veilederVisningsnavn: z.string().nullable().optional(),
   veilederEpost: z.string().nullable().optional(),
   godkjenninger: z.array(GodkjenningSchema).nullable().optional(),
-  perioderMedInaktivitet: z
-    .array(PerioderMedInaktivitetSchema) //todo stemte ikke med backend type
-    .nullable()
-    .optional(),
+  perioderMedInaktivitet: PerioderMedInaktivitetSchema.nullable().optional(),
 });
 
 export { KandidatDataSchema };
