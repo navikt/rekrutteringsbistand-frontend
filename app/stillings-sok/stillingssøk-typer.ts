@@ -1,12 +1,3 @@
-import { z } from 'zod';
-import {
-  stillingSøkSourceSchema,
-  stillingsSøkDTOSchema,
-} from '../api/stillings-sok/stillingsok.dto';
-
-export type StillingsSøkStillingDTO = z.infer<typeof stillingSøkSourceSchema>;
-export type StillingsSøkDTO = z.infer<typeof stillingsSøkDTOSchema>;
-
 export enum StillingsSøkQueryparam {
   // Filtre
   Tekst = 'fritekst',

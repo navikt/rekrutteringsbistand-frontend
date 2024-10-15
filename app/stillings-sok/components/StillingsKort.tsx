@@ -12,7 +12,8 @@ import * as React from 'react';
 import TekstMedIkon from '../../../components/TekstMedIkon';
 import { konverterTilPresenterbarDato } from '../../../util/dato';
 import formaterMedStoreOgSmåBokstaver from '../../../util/tekst';
-import { StillingsSøkStillingDTO } from '../stillingssøk-typer';
+
+import { RekrutteringsbistandStillingSchemaDTO } from '../../api/stillings-sok/schema/rekrutteringsbistandStillingSchema.zod';
 import {
   formaterEiernavn,
   hentArbeidssted,
@@ -21,7 +22,7 @@ import {
 import StillingsTag from './StillingsTag';
 
 export interface IStillingsKort {
-  stillingData: StillingsSøkStillingDTO;
+  stillingData: RekrutteringsbistandStillingSchemaDTO;
 }
 
 const StillingsKort: React.FC<IStillingsKort> = ({ stillingData }) => {

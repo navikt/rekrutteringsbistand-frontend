@@ -5,11 +5,12 @@
 import useSWRImmutable from 'swr/immutable';
 import { postApiWithSchema } from '../fetcher';
 import { useGeografi } from '../stilling/geografi/useGeografi';
-import { stillingsSøkDTOSchema } from './stillingsok.dto';
+
 import {
   generateElasticSearchQuery,
   StillingsSøkFilter,
 } from './stillingssøkElasticSearchQuery';
+import { stillingsSøkSchema } from './schema/stillingsSøkSchema.zod';
 
 const stillingEndepunkt = '/api/stillings-sok';
 
@@ -33,7 +34,7 @@ export const useStillingssøk = (
       body: payload,
     },
     (data) => {
-      return postApiWithSchema(stillingsSøkDTOSchema)(data);
+      return postApiWithSchema(stillingsSøkSchema)(data);
     },
   );
 };

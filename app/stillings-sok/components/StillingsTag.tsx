@@ -3,17 +3,17 @@ import { format, startOfDay } from 'date-fns';
 import * as React from 'react';
 import { eierStilling } from '../../../components/tilgangskontroll/erEier';
 import { StillingsDataDTO } from '../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
+import { RekrutteringsbistandStillingSchemaDTO } from '../../api/stillings-sok/schema/rekrutteringsbistandStillingSchema.zod';
 import { useApplikasjonContext } from '../../ApplikasjonContext';
 import {
   AdminStatus,
   Status,
   Stillingskategori,
 } from '../../stilling/stilling-typer';
-import { StillingsSøkStillingDTO } from '../stillingssøk-typer';
 import { Hovedtag } from './StillingsSøkFilter/InkluderingFilter';
 
 export interface IStillingTag {
-  stillingsData: StillingsSøkStillingDTO | StillingsDataDTO;
+  stillingsData: RekrutteringsbistandStillingSchemaDTO | StillingsDataDTO;
   splitTags?: boolean;
 }
 
@@ -84,7 +84,7 @@ const StillingsTag: React.FC<IStillingTag> = ({ stillingsData, splitTags }) => {
     stillingsData?.stillingsinfo?.stillingskategori ===
     Stillingskategori.Jobbmesse;
   const erSlettetTag = stillingStatus === Status.Slettet;
-  const direktemeldtTag = stillingsData?.stillingsinfo?.source === 'DIR';
+  const direktemeldtTag = stillingsData?.stilling?.source === 'DIR';
 
   const arbeidsplassenTag = stillingsData?.stilling?.privacy === 'SHOW_ALL';
 
