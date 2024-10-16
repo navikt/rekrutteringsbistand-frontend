@@ -6,7 +6,7 @@ const SearchTagSchema = z.object({
 });
 
 const OntologyJobtitleSchema = z.object({
-  konseptId: z.string(),
+  konseptId: z.number(),
   label: z.string(),
   styrk08: z.string(),
 });
@@ -33,7 +33,7 @@ export const StillingPropertiesSchema = z.object({
   location: z.string().optional(),
   externalref: z.string().optional(),
   jobtitle: z.string().optional(),
-  keywords: z.string().optional(),
+  keywords: z.string().optional().nullable(),
   sourcecreated: z.string().optional(),
   sourceupdated: z.string().optional(),
   logomain: z.string().optional(),
@@ -46,13 +46,13 @@ export const StillingPropertiesSchema = z.object({
   searchtagsai: z.array(z.string()).optional(),
   classification_styrk08_score: z.number().optional(),
   classification_input_source: z.string().optional(),
-  classification_styrk08_code: z.string().optional(),
+  classification_styrk08_code: z.number().optional(),
   classification_esco_code: z.string().optional(),
   categories: z.array(z.any()).optional(), // Replace with specific schema if known
   euresflagg: z.union([z.string(), z.boolean()]).optional(),
   hasInterestform: z.string().optional(),
   remote: z.string().optional(),
-  workLanguage: z.string().optional(),
+  workLanguage: z.array(z.string()).optional(),
   finnSource: z.string().optional(),
   adtextFormat: z.string().optional(),
   tags: z.array(z.string()).optional(),
@@ -66,7 +66,7 @@ export const StillingPropertiesSchema = z.object({
   contactpersonemail: z.string().optional(),
   contactpersonphone: z.string().optional(),
   linkedinpage: z.string().optional(),
-  jobpercentage: z.string().optional(),
+  jobpercentage: z.union([z.string(), z.number()]).optional(),
   jobpercentagerange: z.string().optional(),
   jobarrangement: z.string().optional(),
   twitteraddress: z.string().optional(),
@@ -89,5 +89,4 @@ export const StillingPropertiesSchema = z.object({
   _versionid: z.number().optional(),
   _score: z.any().optional(),
   _scoretotal: z.number().optional(),
-  source: z.string().optional(), // TODO Manglet på dto
 });

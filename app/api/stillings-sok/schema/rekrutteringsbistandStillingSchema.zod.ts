@@ -8,5 +8,5 @@ export type RekrutteringsbistandStillingSchemaDTO = z.infer<
 
 export const RekrutteringsbistandStillingSchema = z.object({
   stilling: StillingSchema,
-  stillingsinfo: StillingsinfoSchema.optional(),
+  stillingsinfo: StillingsinfoSchema.optional().nullable(),
 });

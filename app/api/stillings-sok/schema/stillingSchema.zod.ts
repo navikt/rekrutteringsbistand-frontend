@@ -55,7 +55,7 @@ export const StillingSchema = z.object({
   expires: z.string().nullable(),
   created: z.string(),
   updated: z.string(),
-  employer: EmployerSchema.optional(),
+  employer: EmployerSchema.optional().nullable(),
   categories: z.array(StyrkCategorySchema),
   source: z.string(),
   medium: z.string(),
@@ -63,7 +63,7 @@ export const StillingSchema = z.object({
   locations: z.array(LocationSchema),
   reference: z.string(),
   administration: AdministrationSchema.optional(),
-  properties: StillingPropertiesSchema,
+  properties: StillingPropertiesSchema.optional(),
   contacts: z.array(ContactSchema),
   styrkEllerTittel: z.string(),
 });
