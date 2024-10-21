@@ -10,7 +10,7 @@ const Arbeidsønsker: React.FC<ArbeidsønskerProps> = ({ children }) => {
   const [søkeTekst, setSøkeTekst] = React.useState<string>('');
   const [valgte, setValgte] = React.useState<string[]>([]);
 
-  const { data, isLoading } = useUseSugestions();
+  const { data, isLoading } = useUseSugestions(søkeTekst);
   return (
     <React.Fragment>
       <UNSAFE_Combobox

@@ -5,16 +5,24 @@
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
 import { KandidatSøkAPI } from '../api-routes';
-import { getAPIwithSchema } from '../fetcher';
+import { postApiWithSchema } from '../fetcher';
 
-const useSugestionsEndepunkt = `${KandidatSøkAPI.internUrl}/suggest`;
+const sugestionsEndepunkt = `${KandidatSøkAPI.internUrl}/suggest`;
 
-const useSugestionsSchema = z.array(z.string());
+const SugestionsSchema = z.array(z.string());
 
-export type useSugestionsDTO = z.infer<typeof useSugestionsSchema>;
+export type SugestionsDTO = z.infer<typeof SugestionsSchema>;
 
-export const useUseSugestions = () =>
+export const useUseSugestions = (søkeTekst: string) =>
   useSWRImmutable(
-    useSugestionsEndepunkt,
-    getAPIwithSchema(useSugestionsSchema),
+    {
+      url: sugestionsEndepunkt,
+      body: {
+        query: søkeTekst,
+        type: 0,
+      },
+    },
+    (data) => {
+      return postApiWithSchema(SugestionsSchema)(data);
+    },
   );
