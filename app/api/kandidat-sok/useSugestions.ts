@@ -15,13 +15,15 @@ export type SugestionsDTO = z.infer<typeof SugestionsSchema>;
 
 export const useUseSugestions = (søkeTekst: string) =>
   useSWRImmutable(
-    {
-      url: sugestionsEndepunkt,
-      body: {
-        query: søkeTekst,
-        type: 0,
-      },
-    },
+    søkeTekst
+      ? {
+          url: sugestionsEndepunkt,
+          body: {
+            query: søkeTekst,
+            type: 0,
+          },
+        }
+      : null,
     (data) => {
       return postApiWithSchema(SugestionsSchema)(data);
     },
