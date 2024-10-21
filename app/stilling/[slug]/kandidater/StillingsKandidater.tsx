@@ -17,6 +17,20 @@ const StillingsKandidater: React.FC = () => {
           </form>
         </div>
         <div>
+          <Button
+            className='mr-2'
+            variant='secondary'
+            icon={<ArrowForwardIcon aria-hidden />}
+          >
+            Finn kandidater
+          </Button>
+          <Button
+            variant='secondary'
+            className='mr-2'
+            icon={<ArrowForwardIcon aria-hidden />}
+          >
+            Legg til kandidat
+          </Button>
           <Button variant='secondary' icon={<ArrowForwardIcon aria-hidden />}>
             Del med kandidat
           </Button>

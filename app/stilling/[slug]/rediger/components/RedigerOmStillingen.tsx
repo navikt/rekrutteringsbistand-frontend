@@ -126,7 +126,6 @@ export const RedigerOmStillingen: React.FC<{
                   'scooter',
                 ]}
                 isMultiSelect
-                onToggleSelected={(verdi, selected) => {}}
               />
             )}
           </div>

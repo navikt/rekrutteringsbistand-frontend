@@ -1,5 +1,6 @@
 import { Search } from '@navikt/ds-react';
 import * as React from 'react';
+import KandidatStedSøk from './KandidatStedSøk';
 
 export interface IKandidatSøkSidebar {
   children?: React.ReactNode | undefined;
@@ -24,12 +25,7 @@ const KandidatSøkSidebar: React.FC<IKandidatSøkSidebar> = ({ children }) => {
         />
       </div>
       <div>
-        <Search
-          placeholder='Søk i sted'
-          hideLabel={false}
-          label='Sted'
-          variant='secondary'
-        />
+        <KandidatStedSøk />
       </div>
     </div>
   );

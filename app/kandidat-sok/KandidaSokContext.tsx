@@ -1,5 +1,10 @@
 'use client';
-import { parseAsInteger, useQueryState } from 'nuqs';
+import {
+  parseAsArrayOf,
+  parseAsInteger,
+  parseAsString,
+  useQueryState,
+} from 'nuqs';
 import * as React from 'react';
 import { KandidatSøkPortefølje } from './components/PorteføljeTabs';
 
@@ -30,8 +35,10 @@ interface IKandidatSøkContext {
   valgtKontor: string;
   innsatsgruppe: string;
   side: number;
-  ønsketYrke: string;
-  ønsketSted: string;
+  ønsketYrke: string[];
+  setØnsketYrke: (ønsketYrke: string[]) => void;
+  ønsketSted: string[];
+  setØnsketSted: (ønsketSted: string[]) => void;
   borPåØnsketSted: boolean | null;
   kompetanse: string;
   førerkort: string;
@@ -72,45 +79,29 @@ export const KandidatSøkProvider: React.FC<{ children: React.ReactNode }> = ({
     },
   );
 
-  //   React.useEffect(() => {
-  //     if (inkluderingUnderkategori.length !== 0) {
-  //       let newInkluderingUnderkategori = inkluderingUnderkategori;
-
-  //       // Fjern hovedtag hvis undertag er valgt
-  //       hierarkiAvTagsForFilter.forEach((gruppeMedTags) => {
-  //         if (!inkludering.includes(gruppeMedTags.hovedtag)) {
-  //           newInkluderingUnderkategori = newInkluderingUnderkategori.filter(
-  //             (subtag) => !gruppeMedTags.subtags.includes(subtag as Subtag),
-  //           );
-  //         }
-  //       });
-
-  //       // Bare oppdater når det er endringer
-  //       if (
-  //         newInkluderingUnderkategori.length !== inkluderingUnderkategori.length
-  //       ) {
-  //         setInkluderingUnderkategori(newInkluderingUnderkategori);
-  //       }
-  //     }
-  //   }, [inkludering, inkluderingUnderkategori, setInkluderingUnderkategori]);
-
-  //   React.useEffect(() => {
-  //     if (kommuner.length !== 0) {
-  //       const filteredKommuner = kommuner.filter((kommune) => {
-  //         const prefix = kommune.slice(0, 2);
-  //         return fylker.some((fylke) => fylke === prefix);
-  //       });
-
-  //       if (filteredKommuner.length !== kommuner.length) {
-  //         setKommuner(filteredKommuner);
-  //       }
-  //     }
-  //   }, [kommuner, fylker, setKommuner]);
+  const [ønsketSted, setØnsketSted] = useQueryState<string[]>(
+    KandidatSøkQueryparam.ØnsketSted,
+    parseAsArrayOf(parseAsString)
+      .withDefault([])
+      .withOptions({ clearOnDefault: true }),
+  );
+  const [ønsketYrke, setØnsketYrke] = useQueryState<string[]>(
+    KandidatSøkQueryparam.ØnsketYrke,
+    parseAsArrayOf(parseAsString)
+      .withDefault([])
+      .withOptions({ clearOnDefault: true }),
+  );
 
   return (
     <KandidatSøkContext.Provider
       //@ts-ignore
-      value={{ portefølje, setPortefølje, side }}
+      value={{
+        portefølje,
+        setPortefølje,
+        side,
+        setØnsketSted,
+        setØnsketYrke,
+      }}
     >
       {children}
     </KandidatSøkContext.Provider>
