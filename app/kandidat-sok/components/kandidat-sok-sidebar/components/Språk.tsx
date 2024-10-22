@@ -7,7 +7,7 @@ import {
 import { useKandidatSøkFilter } from '../../../KandidaSokContext';
 
 const Språk: React.FC = () => {
-  const { ønsketYrke, setØnsketYrke } = useKandidatSøkFilter();
+  const { språk, setSpråk } = useKandidatSøkFilter();
 
   const [søkeTekst, setSøkeTekst] = React.useState<string>('');
 
@@ -15,11 +15,9 @@ const Språk: React.FC = () => {
 
   const onOptionSelected = (option: string, isSelected: boolean) => {
     if (isSelected) {
-      setØnsketYrke([...(Array.isArray(ønsketYrke) ? ønsketYrke : []), option]);
+      setSpråk([...(Array.isArray(språk) ? språk : []), option]);
     } else {
-      setØnsketYrke(
-        Array.isArray(ønsketYrke) ? ønsketYrke.filter((o) => o !== option) : [],
-      );
+      setSpråk(Array.isArray(språk) ? språk.filter((o) => o !== option) : []);
     }
   };
 
@@ -27,7 +25,7 @@ const Språk: React.FC = () => {
     <React.Fragment>
       <UNSAFE_Combobox
         isLoading={isLoading}
-        selectedOptions={ønsketYrke}
+        selectedOptions={språk}
         label='Språk'
         options={data ?? []}
         isMultiSelect
