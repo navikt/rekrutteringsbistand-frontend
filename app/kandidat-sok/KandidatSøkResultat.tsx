@@ -1,5 +1,6 @@
 'use client';
-import { Heading } from '@navikt/ds-react';
+import { PersonPlusIcon } from '@navikt/aksel-icons';
+import { Button, Heading } from '@navikt/ds-react';
 import * as React from 'react';
 import SWRLaster from '../../components/SWRLaster';
 import { useKandidatsøk } from '../api/kandidat-sok/useKandidatsøk';
@@ -27,14 +28,22 @@ const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({ type }) => 
         // const markerteKandidater = kandidatData.kandidater.mark
         return (
           <>
-            <div className='flex justify-between'>
-              {/* <StillingsSøkChips /> */}
-              <div>Lagre TBD</div>
-            </div>
             <div className='flex justify-between items-center my-4'>
               <Heading size='medium'>
                 Viser {kandidatData.antallTotalt} treff
               </Heading>
+              <div>
+                <Button
+                  size='small'
+                  variant='primary'
+                  icon={<PersonPlusIcon aria-hidden />}
+                  disabled
+                  // disabled={markerteKandidater.size === 0}
+                  // onClick={onLagreIKandidatlisteClick}
+                >
+                  Lagre i kandidatliste
+                </Button>
+              </div>
             </div>
             {kandidatData.kandidater?.map((kandidat, index) => (
               <KandidatKort
