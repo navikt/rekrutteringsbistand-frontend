@@ -4,9 +4,10 @@
  */
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
+import { KandidatSøkAPI } from '../api-routes';
 import { postApiWithSchema } from '../fetcher';
 
-const kontorSøkEndepunkt = '/api/useKontorSøk';
+const kontorSøkEndepunkt = `${KandidatSøkAPI.internUrl}/suggest/kontor`;
 
 const KontorSøkSchema = z.array(z.string());
 
