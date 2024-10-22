@@ -1,18 +1,17 @@
 import { UNSAFE_Combobox } from '@navikt/ds-react';
 import * as React from 'react';
-import { useUseSugestions } from '../../../api/kandidat-sok/useSugestions';
-import { useKandidatSøkFilter } from '../../KandidaSokContext';
+import {
+  SuggestType,
+  useUseSugestions,
+} from '../../../../api/kandidat-sok/useSugestions';
+import { useKandidatSøkFilter } from '../../../KandidaSokContext';
 
-export interface ArbeidsønskerProps {
-  children?: React.ReactNode | undefined;
-}
-
-const Arbeidsønsker: React.FC<ArbeidsønskerProps> = ({ children }) => {
+const Språk: React.FC = () => {
   const { ønsketYrke, setØnsketYrke } = useKandidatSøkFilter();
 
   const [søkeTekst, setSøkeTekst] = React.useState<string>('');
 
-  const { data, isLoading } = useUseSugestions(søkeTekst);
+  const { data, isLoading } = useUseSugestions(søkeTekst, SuggestType.Språk);
 
   const onOptionSelected = (option: string, isSelected: boolean) => {
     if (isSelected) {
@@ -29,7 +28,7 @@ const Arbeidsønsker: React.FC<ArbeidsønskerProps> = ({ children }) => {
       <UNSAFE_Combobox
         isLoading={isLoading}
         selectedOptions={ønsketYrke}
-        label='Arbeidsønsker'
+        label='Språk'
         options={data ?? []}
         isMultiSelect
         onToggleSelected={onOptionSelected}
@@ -39,4 +38,4 @@ const Arbeidsønsker: React.FC<ArbeidsønskerProps> = ({ children }) => {
   );
 };
 
-export default Arbeidsønsker;
+export default Språk;

@@ -43,14 +43,21 @@ interface IKandidatSøkContext {
   ønsketSted: string[];
   setØnsketSted: (ønsketSted: string[]) => void;
   borPåØnsketSted: boolean | null;
-  kompetanse: string;
-  førerkort: string;
-  prioritertMålgruppe: string;
-  hovedmål: string;
-  utdanningsnivå: string;
-  arbeidserfaring: string;
+  kompetanse: string[];
+  setKompetanse: (kompetanse: string[]) => void;
+  førerkort: string[];
+  setFørerkort: (førerkort: string[]) => void;
+  prioritertMålgruppe: string[];
+  setPrioritertMålgruppe: (prioritertMålgruppe: string[]) => void;
+  hovedmål: string[];
+  setHovedmål: (hovedmål: string[]) => void;
+  utdanningsnivå: string[];
+  setUtdanningsnivå: (utdanningsnivå: string[]) => void;
+  arbeidserfaring: string[];
+  setArbeidserfaring: (arbeidserfaring: string[]) => void;
   ferskhet: number | null;
-  språk: string;
+  språk: string[];
+  setSpråk: (språk: string[]) => void;
   sortering: string;
   orgenhet: string | null;
 }
@@ -108,9 +115,52 @@ export const KandidatSøkProvider: React.FC<{ children: React.ReactNode }> = ({
       .withDefault([])
       .withOptions({ clearOnDefault: true }),
   );
+  const [hovedmål, setHovedmål] = useQueryState<string[]>(
+    KandidatSøkQueryparam.Hovedmål,
+    parseAsArrayOf(parseAsString)
+      .withDefault([])
+      .withOptions({ clearOnDefault: true }),
+  );
+  const [kompetanse, setKompetanse] = useQueryState<string[]>(
+    KandidatSøkQueryparam.Kompetanse,
+    parseAsArrayOf(parseAsString)
+      .withDefault([])
+      .withOptions({ clearOnDefault: true }),
+  );
 
   const [innsatsgruppe, setInnsatsgruppe] = useQueryState<string[]>(
     KandidatSøkQueryparam.Innsatsgruppe,
+    parseAsArrayOf(parseAsString)
+      .withDefault([])
+      .withOptions({ clearOnDefault: true }),
+  );
+  const [førerkort, setFørerkort] = useQueryState<string[]>(
+    KandidatSøkQueryparam.Førerkort,
+    parseAsArrayOf(parseAsString)
+      .withDefault([])
+      .withOptions({ clearOnDefault: true }),
+  );
+  const [språk, setSpråk] = useQueryState<string[]>(
+    KandidatSøkQueryparam.Språk,
+    parseAsArrayOf(parseAsString)
+      .withDefault([])
+      .withOptions({ clearOnDefault: true }),
+  );
+  const [arbeidserfaring, setArbeidserfaring] = useQueryState<string[]>(
+    KandidatSøkQueryparam.Arbeidserfaring,
+    parseAsArrayOf(parseAsString)
+      .withDefault([])
+      .withOptions({ clearOnDefault: true }),
+  );
+
+  const [utdanningsnivå, setUtdanningsnivå] = useQueryState<string[]>(
+    KandidatSøkQueryparam.Utdanningsnivå,
+    parseAsArrayOf(parseAsString)
+      .withDefault([])
+      .withOptions({ clearOnDefault: true }),
+  );
+  const [prioritertMålgruppe, setPrioritertMålgruppe] = useQueryState<string[]>(
+    KandidatSøkQueryparam.PrioritertMålgruppe,
     parseAsArrayOf(parseAsString)
       .withDefault([])
       .withOptions({ clearOnDefault: true }),
@@ -133,6 +183,20 @@ export const KandidatSøkProvider: React.FC<{ children: React.ReactNode }> = ({
         setInnsatsgruppe,
         valgtKontor,
         setValgtKontor,
+        hovedmål,
+        setHovedmål,
+        kompetanse,
+        setKompetanse,
+        førerkort,
+        setFørerkort,
+        språk,
+        setSpråk,
+        arbeidserfaring,
+        setArbeidserfaring,
+        utdanningsnivå,
+        setUtdanningsnivå,
+        prioritertMålgruppe,
+        setPrioritertMålgruppe,
       }}
     >
       {children}

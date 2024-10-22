@@ -13,14 +13,21 @@ const SugestionsSchema = z.array(z.string());
 
 export type SugestionsDTO = z.infer<typeof SugestionsSchema>;
 
-export const useUseSugestions = (søkeTekst: string) =>
-  useSWRImmutable(
+export enum SuggestType {
+  ØnsketYrke,
+  Kompetanse,
+  Arbeidserfaring,
+  Språk,
+}
+
+export const useUseSugestions = (søkeTekst: string, type: SuggestType) => {
+  return useSWRImmutable(
     søkeTekst
       ? {
           url: sugestionsEndepunkt,
           body: {
             query: søkeTekst,
-            type: 0,
+            type: type,
           },
         }
       : null,
@@ -28,3 +35,4 @@ export const useUseSugestions = (søkeTekst: string) =>
       return postApiWithSchema(SugestionsSchema)(data);
     },
   );
+};

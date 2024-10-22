@@ -4,6 +4,7 @@ import * as React from 'react';
 import { TilgangskontrollForInnhold } from '../../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Rolle } from '../../types/Roller';
 
+import TømFiltre from '../components/TømFiltre';
 import { KandidatSøkPortefølje } from './components/PorteføljeTabs';
 import { useKandidatSøkFilter } from './KandidaSokContext';
 import KandidatSøkResultat from './KandidatSøkResultat';
@@ -108,7 +109,7 @@ const KandidatSøk: React.FC = () => {
 
   return (
     <Tabs value={portefølje} onChange={(value) => setPortefølje(value)}>
-      <Tabs.List>
+      <Tabs.List className='w-full'>
         <MineBrukere />
         <MittKontor />
         <MineKontorer />
@@ -116,6 +117,9 @@ const KandidatSøk: React.FC = () => {
         <VelgKontor />
       </Tabs.List>
       <Tabs.Panel value={portefølje}>
+        <div className='w-full flex justify-end'>
+          <TømFiltre />
+        </div>
         {portefølje === KandidatSøkPortefølje.VALGTE_KONTORER && (
           <ValgteKontorer />
         )}

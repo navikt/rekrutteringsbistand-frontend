@@ -7,6 +7,7 @@ import {
 } from '../api/stillings-sok/stillingssøkElasticSearchQuery';
 import { useStillingssøk } from '../api/stillings-sok/useStillingssøk';
 import { useApplikasjonContext } from '../ApplikasjonContext';
+import TømFiltre from '../components/TømFiltre';
 import StillingsSøkPaginering from './components/Pagnering';
 import StillingsKort from './components/StillingsKort';
 import StillingsSøkChips from './components/StillingsSøkChips';
@@ -39,7 +40,7 @@ const StillingsSøkeresultat: React.FC = () => {
         <>
           <div className='flex justify-between'>
             <StillingsSøkChips />
-            <div>Lagre TBD</div>
+            <TømFiltre />
           </div>
           <div className='flex justify-between items-center my-4'>
             {antallVisning(

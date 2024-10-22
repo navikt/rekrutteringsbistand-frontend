@@ -1,13 +1,9 @@
 import { UNSAFE_Combobox } from '@navikt/ds-react';
 import * as React from 'react';
-import { useGeografi } from '../../../api/stilling/geografi/useGeografi';
-import { useKandidatSøkFilter } from '../../KandidaSokContext';
+import { useGeografi } from '../../../../api/stilling/geografi/useGeografi';
+import { useKandidatSøkFilter } from '../../../KandidaSokContext';
 
-export interface KandidatStedSøkProps {
-  children?: React.ReactNode | undefined;
-}
-
-const KandidatStedSøk: React.FC<KandidatStedSøkProps> = ({ children }) => {
+const KandidatStedSøk: React.FC = () => {
   const { ønsketSted, setØnsketSted } = useKandidatSøkFilter();
 
   const [valg, setValg] = React.useState<string[]>([]);

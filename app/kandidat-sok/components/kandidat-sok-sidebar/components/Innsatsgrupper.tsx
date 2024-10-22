@@ -1,6 +1,6 @@
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
-import { useKandidatSøkFilter } from '../../KandidaSokContext';
-import { Innsatsgruppe, Servicegruppe } from '../innsatsgrupper';
+import { useKandidatSøkFilter } from '../../../KandidaSokContext';
+import { Innsatsgruppe, Servicegruppe } from '../../innsatsgrupper';
 
 export const LISTEPARAMETER_SEPARATOR = ';';
 export const LISTEPARAMETER_SEPARATOR_REPLACEMENT = '·';

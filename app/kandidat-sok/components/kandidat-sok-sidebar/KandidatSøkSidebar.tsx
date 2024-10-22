@@ -1,8 +1,15 @@
 import * as React from 'react';
-import Arbeidsønsker from './Arbeidsønsker';
-import FritekstSøk from './FritekstSøk';
-import Jobbmuligheter from './Innsatsgrupper';
-import KandidatStedSøk from './KandidatStedSøk';
+import Arbeidserfaring from './components/Arbeidserfaring';
+import Arbeidsønsker from './components/Arbeidsønsker';
+import FritekstSøk from './components/FritekstSøk';
+import Førerkort from './components/Førerkort';
+import Hovedmål from './components/Hovedmål';
+import Jobbmuligheter from './components/Innsatsgrupper';
+import KandidatStedSøk from './components/KandidatStedSøk';
+import Kompetanse from './components/Kompetanse';
+import PrioriterteMålgrupper from './components/PrioriterteMålgrupper';
+import Språk from './components/Språk';
+import Utdanningsnivå from './components/Utdanningsnivå';
 
 export interface IKandidatSøkSidebar {
   children?: React.ReactNode | undefined;
@@ -15,6 +22,13 @@ const KandidatSøkSidebar: React.FC<IKandidatSøkSidebar> = ({ children }) => {
       <Arbeidsønsker />
       <KandidatStedSøk />
       <Jobbmuligheter />
+      <Hovedmål />
+      <Kompetanse />
+      <Førerkort />
+      <Språk />
+      <Arbeidserfaring />
+      <Utdanningsnivå />
+      <PrioriterteMålgrupper />
     </div>
   );
 };
