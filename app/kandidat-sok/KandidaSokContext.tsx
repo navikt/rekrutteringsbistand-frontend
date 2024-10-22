@@ -33,7 +33,8 @@ interface IKandidatSøkContext {
   portefølje: string;
   setPortefølje: (portefølje: string) => void;
   valgtKontor: string;
-  innsatsgruppe: string;
+  innsatsgruppe: string[];
+  setInnsatsgruppe: (innsatsgruppe: string[]) => void;
   side: number;
   ønsketYrke: string[];
   setØnsketYrke: (ønsketYrke: string[]) => void;
@@ -92,6 +93,13 @@ export const KandidatSøkProvider: React.FC<{ children: React.ReactNode }> = ({
       .withOptions({ clearOnDefault: true }),
   );
 
+  const [innsatsgruppe, setInnsatsgruppe] = useQueryState<string[]>(
+    KandidatSøkQueryparam.Innsatsgruppe,
+    parseAsArrayOf(parseAsString)
+      .withDefault([])
+      .withOptions({ clearOnDefault: true }),
+  );
+
   return (
     <KandidatSøkContext.Provider
       //@ts-ignore
@@ -103,6 +111,8 @@ export const KandidatSøkProvider: React.FC<{ children: React.ReactNode }> = ({
         setØnsketSted,
         ønsketYrke,
         setØnsketYrke,
+        innsatsgruppe,
+        setInnsatsgruppe,
       }}
     >
       {children}
