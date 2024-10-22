@@ -3,10 +3,6 @@ import { Heading } from '@navikt/ds-react';
 import * as React from 'react';
 import SWRLaster from '../../components/SWRLaster';
 import { useKandidatsøk } from '../api/kandidat-sok/useKandidatsøk';
-import {
-  maksAntallTreffPerSøk,
-  regnUtFørsteTreffFra,
-} from '../api/stillings-sok/stillingssøkElasticSearchQuery';
 import { useApplikasjonContext } from '../ApplikasjonContext';
 
 import { KandidatDataSchemaDTO } from '../api/kandidat-sok/schema/cvSchema.zod';
@@ -25,49 +21,35 @@ const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({ type }) => 
   } = useApplikasjonContext();
   const hook = useKandidatsøk(type, filter);
 
-  const antallVisning = (fra: number, til: number, total: number) => {
-    const treffFra = regnUtFørsteTreffFra(filter.side, maksAntallTreffPerSøk);
-    const fraAntall = treffFra + 1;
-
-    const tilAntall = treffFra + maksAntallTreffPerSøk;
-
-    return (
-      <Heading size='medium'>
-        Viser {fraAntall}-{tilAntall < total ? tilAntall : total} av {total}{' '}
-        treff
-      </Heading>
-    );
-  };
   return (
     <SWRLaster hook={hook}>
-      {(kandidatData) => (
-        <>
-          <div className='flex justify-between'>
-            {/* <StillingsSøkChips /> */}
-            <div>Lagre TBD</div>
-          </div>
-          <div className='flex justify-between items-center my-4'>
-            {kandidatData.antallTotalt}
-            {/* {antallVisning(
-              data.hits.total.value ?? 1,
-              data.hits.total.value ?? 1,
-              data.hits.total.value,
-            )} */}
-            {/* <StillingsSøkSortering /> */}
-          </div>
-          {kandidatData.kandidater?.map((kandidat, index) => (
-            <KandidatKort
-              markert={false}
-              erIListen={false}
-              key={kandidat.arenaKandidatnr || index}
-              kandidat={kandidat as KandidatDataSchemaDTO}
-            />
-          ))}
-          {/* <StillingsSøkPaginering
-            totaltAntallTreff={data.hits.total.value ?? 0}
-          /> */}
-        </>
-      )}
+      {(kandidatData) => {
+        // const markerteKandidater = kandidatData.kandidater.mark
+        return (
+          <>
+            <div className='flex justify-between'>
+              {/* <StillingsSøkChips /> */}
+              <div>Lagre TBD</div>
+            </div>
+            <div className='flex justify-between items-center my-4'>
+              <Heading size='medium'>
+                Viser {kandidatData.antallTotalt} treff
+              </Heading>
+            </div>
+            {kandidatData.kandidater?.map((kandidat, index) => (
+              <KandidatKort
+                markert={false}
+                erIListen={false}
+                key={kandidat.arenaKandidatnr || index}
+                kandidat={kandidat as KandidatDataSchemaDTO}
+              />
+            ))}
+            {/* <StillingsSøkPaginering
+          totaltAntallTreff={data.hits.total.value ?? 0}
+        /> */}
+          </>
+        );
+      }}
     </SWRLaster>
   );
 };
