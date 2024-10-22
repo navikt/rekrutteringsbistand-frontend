@@ -1,59 +1,45 @@
-import { ChevronDownIcon, ChevronUpIcon } from '@navikt/aksel-icons';
-import { Button, Popover, Tabs, UNSAFE_Combobox } from '@navikt/ds-react';
+import { UNSAFE_Combobox } from '@navikt/ds-react';
 import * as React from 'react';
-import { KandidatSøkPortefølje } from './components/PorteføljeTabs';
+import { useKontorSøk } from '../api/kandidat-sok/useKontorSøk';
+import { useKandidatSøkFilter } from './KandidaSokContext';
 
 export interface ValgteKontorerProps {
   children?: React.ReactNode | undefined;
 }
 
 const ValgteKontorer: React.FC<ValgteKontorerProps> = ({ children }) => {
-  const [visKontorvelger, setVisKontorvelger] = React.useState(false);
-  const buttonRef = React.useRef<HTMLButtonElement>(null);
+  const [søkeTekst, setSøkeTekst] = React.useState<string>('');
+  const { valgtKontor, setValgtKontor } = useKandidatSøkFilter();
+
+  const { data, isLoading } = useKontorSøk(søkeTekst);
+
+  const onOptionSelected = (option: string, isSelected: boolean) => {
+    if (isSelected) {
+      setValgtKontor([
+        ...(Array.isArray(valgtKontor) ? valgtKontor : []),
+        option,
+      ]);
+    } else {
+      setValgtKontor(
+        Array.isArray(valgtKontor)
+          ? valgtKontor.filter((o) => o !== option)
+          : [],
+      );
+    }
+  };
+
   return (
-    // <Dropdown>
-    <>
-      <Tabs.Tab
-        value={KandidatSøkPortefølje.VALGTE_KONTORER}
-        label='Valgte kontorer'
-        icon={
-          <Button
-            ref={buttonRef}
-            className='p-0'
-            onClick={() => setVisKontorvelger(!visKontorvelger)}
-            variant='tertiary'
-            role='button'
-          >
-            {visKontorvelger ? (
-              <ChevronUpIcon title='Lukk kontorvelger' />
-            ) : (
-              <ChevronDownIcon title='Velg andre kontor' />
-            )}
-          </Button>
-        }
+    <div className='my-2'>
+      <UNSAFE_Combobox
+        isLoading={isLoading}
+        selectedOptions={valgtKontor}
+        onToggleSelected={onOptionSelected}
+        onChange={(val) => setSøkeTekst(val)}
+        label='Velg kontorer'
+        options={data ?? []}
+        isMultiSelect
       />
-      <Popover
-        placement='bottom'
-        open={visKontorvelger}
-        onClose={() => setVisKontorvelger(false)}
-        anchorEl={buttonRef.current}
-      >
-        <Popover.Content>
-          <div>
-            <UNSAFE_Combobox label='Søk etter kontor' options={[]} />
-          </div>
-        </Popover.Content>
-      </Popover>
-    </>
-    //   <Dropdown.Menu placement='right'>
-    //     <Dropdown.Menu.GroupedList>
-    //       <Dropdown.Menu.GroupedList.Heading>
-    //         Velg kontor
-    //       </Dropdown.Menu.GroupedList.Heading>
-    //     </Dropdown.Menu.GroupedList>
-    //     <UNSAFE_Combobox label='Søk etter kontor' options={[]} />
-    //   </Dropdown.Menu>
-    // </Dropdown>
+    </div>
   );
 };
 

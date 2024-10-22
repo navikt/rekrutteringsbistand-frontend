@@ -6,6 +6,7 @@ import { foresporselOmDelingAvCVStatistikkMirage } from '../app/api/foresporsel-
 import { kandidatinformasjonMirage } from '../app/api/kandidat-sok/useKandidatinformasjon';
 import { kandidagsammendragMirage } from '../app/api/kandidat-sok/useKandidatsammendrag';
 import { kandidatSokMirage } from '../app/api/kandidat-sok/useKandidatsøk';
+import { kontorSøkMirage } from '../app/api/kandidat-sok/useKontorSøk';
 import { antallKandidaterMirage } from '../app/api/kandidat/useAntallKandidater';
 import { kandidatlisteMirage } from '../app/api/kandidat/useKandidatliste';
 import { kandidatlisteIdMirage } from '../app/api/kandidat/useKandidatlisteId';
@@ -32,6 +33,7 @@ createServer({
     decoratorDataMirage(this);
     kandidagsammendragMirage(this);
     kandidatinformasjonMirage(this);
+    kontorSøkMirage(this);
     // stillingssøk
     this.passthrough('/api/stillings-sok');
   },

@@ -4,10 +4,10 @@ import * as React from 'react';
 import { TilgangskontrollForInnhold } from '../../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Rolle } from '../../types/Roller';
 
+import { KandidatSøkPortefølje } from './components/PorteføljeTabs';
 import { useKandidatSøkFilter } from './KandidaSokContext';
 import KandidatSøkResultat from './KandidatSøkResultat';
 import ValgteKontorer from './ValgteKontorer';
-import { KandidatSøkPortefølje } from './components/PorteføljeTabs';
 
 const KandidatSøk: React.FC = () => {
   const { portefølje, setPortefølje } = useKandidatSøkFilter();
@@ -98,10 +98,11 @@ const KandidatSøk: React.FC = () => {
       kreverEnAvRollene={[
         Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
       ]}
-      // manglerEierskap={knyttetTilStillingOgIkkeEier}
     >
-      {/* <VelgKontorTab søkekriterier={søkekriterier} /> */}
-      <ValgteKontorer />
+      <Tabs.Tab
+        value={KandidatSøkPortefølje.VALGTE_KONTORER}
+        label='Valgte kontorer'
+      />
     </TilgangskontrollForInnhold>
   );
 
@@ -115,6 +116,9 @@ const KandidatSøk: React.FC = () => {
         <VelgKontor />
       </Tabs.List>
       <Tabs.Panel value={portefølje}>
+        {portefølje === KandidatSøkPortefølje.VALGTE_KONTORER && (
+          <ValgteKontorer />
+        )}
         <KandidatSøkResultat type={portefølje as KandidatSøkPortefølje} />
       </Tabs.Panel>
     </Tabs>

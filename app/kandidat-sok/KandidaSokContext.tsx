@@ -33,7 +33,8 @@ interface IKandidatSøkContext {
   setFritekst: (tekst: string) => void;
   portefølje: string;
   setPortefølje: (portefølje: string) => void;
-  valgtKontor: string;
+  valgtKontor: string[];
+  setValgtKontor: (valgtKontor: string[]) => void;
   innsatsgruppe: string[];
   setInnsatsgruppe: (innsatsgruppe: string[]) => void;
   side: number;
@@ -101,6 +102,12 @@ export const KandidatSøkProvider: React.FC<{ children: React.ReactNode }> = ({
       .withDefault([])
       .withOptions({ clearOnDefault: true }),
   );
+  const [valgtKontor, setValgtKontor] = useQueryState<string[]>(
+    KandidatSøkQueryparam.ValgtKontor,
+    parseAsArrayOf(parseAsString)
+      .withDefault([])
+      .withOptions({ clearOnDefault: true }),
+  );
 
   const [innsatsgruppe, setInnsatsgruppe] = useQueryState<string[]>(
     KandidatSøkQueryparam.Innsatsgruppe,
@@ -124,6 +131,8 @@ export const KandidatSøkProvider: React.FC<{ children: React.ReactNode }> = ({
         setØnsketYrke,
         innsatsgruppe,
         setInnsatsgruppe,
+        valgtKontor,
+        setValgtKontor,
       }}
     >
       {children}
