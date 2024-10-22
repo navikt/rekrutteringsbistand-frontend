@@ -99,7 +99,9 @@ export const KandidatSøkProvider: React.FC<{ children: React.ReactNode }> = ({
         portefølje,
         setPortefølje,
         side,
+        ønsketSted,
         setØnsketSted,
+        ønsketYrke,
         setØnsketYrke,
       }}
     >

@@ -1,7 +1,7 @@
 import { UNSAFE_Combobox } from '@navikt/ds-react';
 import * as React from 'react';
-import { useGeografi } from '../../api/stilling/geografi/useGeografi';
-import { useKandidatSøkFilter } from '../KandidaSokContext';
+import { useGeografi } from '../../../api/stilling/geografi/useGeografi';
+import { useKandidatSøkFilter } from '../../KandidaSokContext';
 
 export interface KandidatStedSøkProps {
   children?: React.ReactNode | undefined;
@@ -24,13 +24,23 @@ const KandidatStedSøk: React.FC<KandidatStedSøkProps> = ({ children }) => {
     }
   }, [geografi.data]);
 
+  const onOptionSelected = (option: string, isSelected: boolean) => {
+    if (isSelected) {
+      setØnsketSted([...(Array.isArray(ønsketSted) ? ønsketSted : []), option]);
+    } else {
+      setØnsketSted(
+        Array.isArray(ønsketSted) ? ønsketSted.filter((o) => o !== option) : [],
+      );
+    }
+  };
+
   return (
     <UNSAFE_Combobox
       disabled={geografi.isLoading}
+      selectedOptions={ønsketSted}
       label='Søk i sted'
       options={valg.sort()}
-      selectedOptions={ønsketSted}
-      //   onChange={(val) => setØnsketSted(val)}
+      onToggleSelected={onOptionSelected}
       isMultiSelect
     />
   );
