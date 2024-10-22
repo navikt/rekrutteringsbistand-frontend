@@ -1,6 +1,6 @@
-import { Search } from '@navikt/ds-react';
 import * as React from 'react';
 import Arbeidsønsker from './Arbeidsønsker';
+import FritekstSøk from './FritekstSøk';
 import Jobbmuligheter from './Innsatsgrupper';
 import KandidatStedSøk from './KandidatStedSøk';
 
@@ -11,19 +11,9 @@ export interface IKandidatSøkSidebar {
 const KandidatSøkSidebar: React.FC<IKandidatSøkSidebar> = ({ children }) => {
   return (
     <div className='grid gap-4'>
-      <div>
-        <Search
-          hideLabel={false}
-          label='Søk etter kandidat'
-          variant='primary'
-        />
-      </div>
-      <div>
-        <Arbeidsønsker />
-      </div>
-      <div>
-        <KandidatStedSøk />
-      </div>
+      <FritekstSøk />
+      <Arbeidsønsker />
+      <KandidatStedSøk />
       <Jobbmuligheter />
     </div>
   );

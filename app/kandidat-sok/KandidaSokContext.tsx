@@ -30,6 +30,7 @@ export enum KandidatSøkQueryparam {
 
 interface IKandidatSøkContext {
   fritekst: string | null;
+  setFritekst: (tekst: string) => void;
   portefølje: string;
   setPortefølje: (portefølje: string) => void;
   valgtKontor: string;
@@ -60,6 +61,14 @@ export const KandidatSøkContext = React.createContext<
 export const KandidatSøkProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
+  const [fritekst, setFritekst] = useQueryState(
+    KandidatSøkQueryparam.Fritekst,
+    {
+      defaultValue: '',
+      clearOnDefault: true,
+    },
+  );
+
   const [side, setSide] = useQueryState(
     KandidatSøkQueryparam.Side,
     parseAsInteger.withDefault(1).withOptions({ clearOnDefault: true }),
@@ -104,6 +113,8 @@ export const KandidatSøkProvider: React.FC<{ children: React.ReactNode }> = ({
     <KandidatSøkContext.Provider
       //@ts-ignore
       value={{
+        fritekst,
+        setFritekst,
         portefølje,
         setPortefølje,
         side,
