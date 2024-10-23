@@ -5,6 +5,7 @@ import { TilgangskontrollForInnhold } from '../../components/tilgangskontroll/Ti
 import { Rolle } from '../../types/Roller';
 
 import TømFiltre from '../components/TømFiltre';
+import KandidatSøkChips from './components/KandidatSøkChips';
 import { KandidatSøkPortefølje } from './components/PorteføljeTabs';
 import { useKandidatSøkFilter } from './KandidaSokContext';
 import KandidatSøkResultat from './KandidatSøkResultat';
@@ -117,7 +118,8 @@ const KandidatSøk: React.FC = () => {
         <VelgKontor />
       </Tabs.List>
       <Tabs.Panel value={portefølje}>
-        <div className='w-full flex justify-end'>
+        <div className='w-full flex justify-between items-baseline'>
+          <KandidatSøkChips />
           <TømFiltre />
         </div>
         {portefølje === KandidatSøkPortefølje.VALGTE_KONTORER && (

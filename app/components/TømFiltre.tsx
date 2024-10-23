@@ -22,16 +22,15 @@ const TømFiltre = () => {
   };
 
   return (
-    <div>
-      <Button
-        disabled={!harFiltre}
-        icon={<TrashIcon aria-hidden />}
-        variant='tertiary'
-        onClick={handleClearAll}
-      >
-        Tøm filtre
-      </Button>
-    </div>
+    <Button
+      className='text-nowrap'
+      disabled={!harFiltre}
+      icon={<TrashIcon aria-hidden />}
+      variant='tertiary'
+      onClick={handleClearAll}
+    >
+      Tøm filtre
+    </Button>
   );
 };
 

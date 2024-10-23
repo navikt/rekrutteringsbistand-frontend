@@ -29,8 +29,8 @@ export enum KandidatSøkQueryparam {
 }
 
 interface IKandidatSøkContext {
-  fritekst: string | null;
-  setFritekst: (tekst: string) => void;
+  fritekst: string[];
+  setFritekst: (tekst: string[]) => void;
   portefølje: string;
   setPortefølje: (portefølje: string) => void;
   valgtKontor: string[];
@@ -69,13 +69,13 @@ export const KandidatSøkContext = React.createContext<
 export const KandidatSøkProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [fritekst, setFritekst] = useQueryState(
-    KandidatSøkQueryparam.Fritekst,
-    {
-      defaultValue: '',
-      clearOnDefault: true,
-    },
-  );
+  // const [fritekst, setFritekst] = useQueryState(
+  //   KandidatSøkQueryparam.Fritekst,
+  //   {
+  //     defaultValue: '',
+  //     clearOnDefault: true,
+  //   },
+  // );
 
   const [side, setSide] = useQueryState(
     KandidatSøkQueryparam.Side,
@@ -160,6 +160,12 @@ export const KandidatSøkProvider: React.FC<{ children: React.ReactNode }> = ({
       .withOptions({ clearOnDefault: true }),
   );
   const [prioritertMålgruppe, setPrioritertMålgruppe] = useQueryState<string[]>(
+    KandidatSøkQueryparam.PrioritertMålgruppe,
+    parseAsArrayOf(parseAsString)
+      .withDefault([])
+      .withOptions({ clearOnDefault: true }),
+  );
+  const [fritekst, setFritekst] = useQueryState<string[]>(
     KandidatSøkQueryparam.PrioritertMålgruppe,
     parseAsArrayOf(parseAsString)
       .withDefault([])

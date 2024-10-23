@@ -1,16 +1,16 @@
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
 import { useKandidatSøkFilter } from '../../../KandidaSokContext';
 
-export enum Mål {
+export enum HovedMålType {
   SkaffeArbeid = 'SKAFFEA',
   BeholdeArbeid = 'BEHOLDEA',
   ØkeDeltagelse = 'OKEDELT',
 }
 
-const Hovedmål = () => {
+const Hovedmål: React.FC = () => {
   const { hovedmål, setHovedmål } = useKandidatSøkFilter();
 
-  const onChange = (valgteHovedmål: Mål[]) => {
+  const onChange = (valgteHovedmål: HovedMålType[]) => {
     setHovedmål(valgteHovedmål);
   };
 
@@ -20,9 +20,9 @@ const Hovedmål = () => {
       value={hovedmål}
       onChange={onChange}
     >
-      <Checkbox value={Mål.SkaffeArbeid}>Skaffe arbeid</Checkbox>
-      <Checkbox value={Mål.BeholdeArbeid}>Beholde arbeid</Checkbox>
-      <Checkbox value={Mål.ØkeDeltagelse}>Øke deltagelse</Checkbox>
+      <Checkbox value={HovedMålType.SkaffeArbeid}>Skaffe arbeid</Checkbox>
+      <Checkbox value={HovedMålType.BeholdeArbeid}>Beholde arbeid</Checkbox>
+      <Checkbox value={HovedMålType.ØkeDeltagelse}>Øke deltagelse</Checkbox>
     </CheckboxGroup>
   );
 };

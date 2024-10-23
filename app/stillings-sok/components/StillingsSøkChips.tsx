@@ -1,5 +1,4 @@
 import { Chips, VStack } from '@navikt/ds-react';
-import { useRouter } from 'next/navigation';
 import * as React from 'react';
 import { useGeografi } from '../../api/stilling/geografi/useGeografi';
 import { storForbokstavString } from '../../kandidat-sok/util';
@@ -29,22 +28,6 @@ const StillingsSøkChips: React.FC = () => {
     setPublisert,
   } = useStillingsSøkFilter();
 
-  const filtre = {
-    statuser,
-    fylker,
-    kommuner,
-    inkludering,
-    inkluderingUnderkategori,
-    kategori,
-    publisert,
-  };
-
-  const harAktiveFilter = Object.values(filtre).some(
-    (array) => array.length > 0,
-  );
-
-  const router = useRouter();
-
   const { data } = useGeografi();
 
   function geografiNavn(code: string): string {
@@ -61,12 +44,6 @@ const StillingsSøkChips: React.FC = () => {
     <div className='mt-4'>
       <VStack gap='10'>
         <Chips>
-          {harAktiveFilter && (
-            <Chips.Removable onClick={() => router.push('/stillings-sok')}>
-              Tøm alle filtre
-            </Chips.Removable>
-          )}
-
           {statuser.map((status, i) => (
             <Chips.Removable
               key={i}
