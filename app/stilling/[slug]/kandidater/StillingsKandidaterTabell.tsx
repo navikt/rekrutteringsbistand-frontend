@@ -2,7 +2,6 @@ import { PencilIcon, TrashIcon } from '@navikt/aksel-icons';
 import { Button, Checkbox, Table } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import * as React from 'react';
-import SWRLaster from '../../../../components/SWRLaster';
 import {
   applySortDirection,
   firstOf,
@@ -15,27 +14,33 @@ import {
   kandidaterSchemaDTO,
   kandidatlisteSchemaDTO,
 } from '../../../api/kandidat/schema.zod';
-import { useKandidatliste } from '../../../api/kandidat/useKandidatliste';
-import { useStillingsContext } from '../StillingsContext';
 
-const StillingsKandidaterTabell: React.FC = () => {
-  const { kandidatlisteId } = useStillingsContext();
-  const hook = useKandidatliste(kandidatlisteId);
-  return (
-    <SWRLaster hook={hook}>
-      {(data) => <StillingsKandidaterTabellVisning data={data} />}
-    </SWRLaster>
-  );
-};
-
-const StillingsKandidaterTabellVisning: React.FC<{
-  data: kandidatlisteSchemaDTO;
-}> = ({ data }) => {
+const StillingsKandidaterTabell: React.FC<{
+  search: string;
+  kandidatliste: kandidatlisteSchemaDTO;
+}> = ({ search, kandidatliste }) => {
+  console.log('🎺 search', search);
   const [sort, setSort] = React.useState<TableSortState<kandidaterSchemaDTO>>();
   const [selectedRows, setSelectedRows] = React.useState<string[]>([]);
-  const kandidater = data.kandidater.sort(
-    applySortDirection<kandidaterSchemaDTO>(sort),
+
+  const [kandidater, setKandidater] = React.useState<kandidaterSchemaDTO[]>(
+    kandidatliste.kandidater.sort(
+      applySortDirection<kandidaterSchemaDTO>(sort),
+    ),
   );
+
+  React.useEffect(() => {
+    const nyListe = kandidatliste.kandidater
+      .filter(
+        (kandidat) =>
+          kandidat.etternavn.toLowerCase().includes(search.toLowerCase()) ||
+          kandidat.fornavn.toLowerCase().includes(search.toLowerCase()) ||
+          kandidat.fodselsnr.includes(search),
+      )
+      .sort(applySortDirection<kandidaterSchemaDTO>(sort));
+
+    setKandidater(nyListe);
+  }, [search, kandidatliste.kandidater, sort]);
 
   function tableSort(sortKey?: string) {
     if (
@@ -90,7 +95,7 @@ const StillingsKandidaterTabellVisning: React.FC<{
         </Table.Row>
       </Table.Header>
       <Table.Body>
-        {data?.kandidater.map((kandidat, i) => {
+        {kandidater.map((kandidat, i) => {
           return (
             <Table.Row
               key={i + kandidat.fodselsnr}
@@ -120,12 +125,17 @@ const StillingsKandidaterTabellVisning: React.FC<{
               </Table.DataCell>
               <Table.DataCell>
                 <Button
+                  disabled
                   variant='tertiary'
                   icon={<PencilIcon title='Rediger' />}
                 />
               </Table.DataCell>
               <Table.DataCell>
-                <Button variant='tertiary' icon={<TrashIcon title='Slett' />} />
+                <Button
+                  disabled
+                  variant='tertiary'
+                  icon={<TrashIcon title='Slett' />}
+                />
               </Table.DataCell>
             </Table.Row>
           );

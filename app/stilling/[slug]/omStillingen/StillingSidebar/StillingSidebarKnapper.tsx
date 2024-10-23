@@ -1,23 +1,27 @@
 'use client';
 
-import {
-  ArrowForwardIcon,
-  PencilIcon,
-  PrinterSmallIcon,
-  TrashIcon,
-} from '@navikt/aksel-icons';
+import { ArrowForwardIcon, PencilIcon, TrashIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 import { useStillingsContext } from '../../StillingsContext';
+import StillingPrint from './StillingPrint';
 
-const StillingSidebarKnapper: React.FC = () => {
+interface StillingSidebarKnapperProps {
+  printRef: React.RefObject<HTMLDivElement>;
+}
+
+const StillingSidebarKnapper: React.FC<StillingSidebarKnapperProps> = ({
+  printRef,
+}) => {
   const { erEier, stillingsData } = useStillingsContext();
   const router = useRouter();
+
   return (
     <>
       <div className='grid grid-cols-2 gap-2'>
         <Button
+          disabled
           variant='secondary'
           size='small'
           className='w-full h-5 '
@@ -25,14 +29,7 @@ const StillingSidebarKnapper: React.FC = () => {
         >
           Del
         </Button>
-        <Button
-          variant='secondary'
-          size='small'
-          className='w-full h-5'
-          icon={<PrinterSmallIcon />}
-        >
-          Skriv ut
-        </Button>
+        <StillingPrint printRef={printRef} />
         {erEier && (
           <Button
             variant='secondary'
@@ -48,6 +45,8 @@ const StillingSidebarKnapper: React.FC = () => {
         )}
         {erEier && (
           <Button
+            // TODO Stoppet / Slettet er eksisterende statuser
+            disabled
             variant='secondary'
             size='small'
             className='w-full h-5'

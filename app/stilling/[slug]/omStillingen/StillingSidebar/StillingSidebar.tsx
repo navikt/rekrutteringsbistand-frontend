@@ -1,14 +1,16 @@
 import * as React from 'react';
 import StillingInkludering from './StillingInkludering';
 import StillingSidebarKnapper from './StillingSidebarKnapper';
-export interface IStillingSidebar {
-  children?: React.ReactNode | undefined;
+interface StillingSidebarKnapperProps {
+  printRef: React.RefObject<HTMLDivElement>;
 }
 
-const StillingSidebar: React.FC<IStillingSidebar> = ({ children }) => {
+const StillingSidebar: React.FC<StillingSidebarKnapperProps> = ({
+  printRef,
+}) => {
   return (
     <aside className='sidebar flex-grow-0 w-full md:w-[26rem]'>
-      <StillingSidebarKnapper />
+      <StillingSidebarKnapper printRef={printRef} />
       <StillingInkludering />
     </aside>
   );

@@ -20,6 +20,8 @@ import StillingSidebar from './StillingSidebar/StillingSidebar';
 import StillingsTekst from './StillingsTekst';
 
 const OmStillingen: React.FC = () => {
+  const contentRef = React.useRef<HTMLDivElement>(null);
+
   const { stillingsData, kandidatlisteId } = useStillingsContext();
   const antallKandidaterSWR = useAntallKandidater(kandidatlisteId);
 
@@ -28,7 +30,6 @@ const OmStillingen: React.FC = () => {
   );
 
   const parseWorktime = (worktime: string) => {
-    // We need this check in case of old workhour/-day property values, formatted like 'Opt1 Opt2'
     let arrayString = '';
     try {
       const jsonArray = JSON.parse(worktime);
@@ -44,21 +45,22 @@ const OmStillingen: React.FC = () => {
   };
 
   const {
-    jobtitle,
+    // jobtitle,
     engagementtype,
     extent,
-    positioncount,
-    sector,
+    // positioncount,
+    // sector,
     workday,
     workhours,
     applicationdue,
     // jobarrangement,
     // starttime,
   } = stillingsData.stilling.properties as any; //todo
+
   return (
     <div className='mt-10'>
       <div className=' flex flex-col gap-y-8 gap-x-[3.5rem] md:flex-row'>
-        <div className='w-full '>
+        <div className='w-full' id='print-content' ref={contentRef}>
           <Heading size='large'>Om stillingen</Heading>
 
           <div className='mt-4'>
@@ -91,7 +93,7 @@ const OmStillingen: React.FC = () => {
             <OmAnnonsen />
           </div>
         </div>
-        <StillingSidebar />
+        <StillingSidebar printRef={contentRef} />
       </div>
     </div>
   );
