@@ -1,6 +1,7 @@
 import { Chips, VStack } from '@navikt/ds-react';
 import * as React from 'react';
 import { useGeografi } from '../../api/stilling/geografi/useGeografi';
+import FilterChip from '../../components/FilterChip';
 import { storForbokstavString } from '../../kandidat-sok/util';
 import { useStillingsSøkFilter } from '../StillingsSøkContext';
 import {
@@ -11,22 +12,7 @@ import {
 } from './StillingsSøkFilter/InkluderingFilter';
 
 const StillingsSøkChips: React.FC = () => {
-  const {
-    statuser,
-    setStatuser,
-    fylker,
-    setFylker,
-    kommuner,
-    setKommuner,
-    inkludering,
-    setInkludering,
-    inkluderingUnderkategori,
-    setInkluderingUnderkategori,
-    kategori,
-    setKategori,
-    publisert,
-    setPublisert,
-  } = useStillingsSøkFilter();
+  const filter = useStillingsSøkFilter();
 
   const { data } = useGeografi();
 
@@ -44,22 +30,14 @@ const StillingsSøkChips: React.FC = () => {
     <div className='mt-4'>
       <VStack gap='10'>
         <Chips>
-          {statuser.map((status, i) => (
-            <Chips.Removable
-              key={i}
-              variant='neutral'
-              onClick={() => setStatuser(statuser.filter((i) => i !== status))}
-            >
-              {storForbokstavString(status)}
-            </Chips.Removable>
-          ))}
+          <FilterChip type={filter.statuser} setVerdi={filter.setStatuser} />
 
-          {inkludering.map((hovedInkludering, i) => {
+          {filter.inkludering.map((hovedInkludering, i) => {
             const tagger = hierarkiAvTagsForFilter.find(
               (gruppe) => gruppe.hovedtag === hovedInkludering,
             );
 
-            const aktiveSubtags = inkluderingUnderkategori.filter((i) =>
+            const aktiveSubtags = filter.inkluderingUnderkategori.filter((i) =>
               tagger?.subtags.includes(i as Subtag),
             );
             if (aktiveSubtags.length > 0) {
@@ -68,8 +46,8 @@ const StillingsSøkChips: React.FC = () => {
                   key={i}
                   variant='neutral'
                   onClick={() =>
-                    setInkluderingUnderkategori(
-                      inkludering.filter((i) => i !== hovedInkludering),
+                    filter.setInkluderingUnderkategori(
+                      filter.inkludering.filter((i) => i !== hovedInkludering),
                     )
                   }
                 >
@@ -82,8 +60,8 @@ const StillingsSøkChips: React.FC = () => {
                   key={i}
                   variant='neutral'
                   onClick={() =>
-                    setInkludering(
-                      inkludering.filter((i) => i !== hovedInkludering),
+                    filter.setInkludering(
+                      filter.inkludering.filter((i) => i !== hovedInkludering),
                     )
                   }
                 >
@@ -93,27 +71,11 @@ const StillingsSøkChips: React.FC = () => {
             }
           })}
 
-          {kategori.map((k, i) => (
-            <Chips.Removable
-              key={i}
-              variant='neutral'
-              onClick={() => setKategori(kategori.filter((i) => i !== k))}
-            >
-              {storForbokstavString(k)}
-            </Chips.Removable>
-          ))}
+          <FilterChip type={filter.kategori} setVerdi={filter.setKategori} />
 
-          {publisert.map((k, i) => (
-            <Chips.Removable
-              key={i}
-              variant='neutral'
-              onClick={() => setPublisert(publisert.filter((i) => i !== k))}
-            >
-              {storForbokstavString(k)}
-            </Chips.Removable>
-          ))}
+          <FilterChip type={filter.publisert} setVerdi={filter.setPublisert} />
 
-          {fylker.map((fylke, i) => (
+          {filter.fylker.map((fylke, i) => (
             <Chips.Removable
               key={i}
               variant='neutral'
@@ -121,17 +83,19 @@ const StillingsSøkChips: React.FC = () => {
                 // setKommuner(
                 //   kommuner.filter((kommune) => kommune.slice(0, 2) !== fylke),
                 // );
-                setFylker(fylker.filter((i) => i !== fylke));
+                filter.setFylker(filter.fylker.filter((i) => i !== fylke));
               }}
             >
               {storForbokstavString(geografiNavn(fylke))}
             </Chips.Removable>
           ))}
-          {kommuner.map((kommune, i) => (
+          {filter.kommuner.map((kommune, i) => (
             <Chips.Removable
               key={i}
               variant='neutral'
-              onClick={() => setKommuner(kommuner.filter((i) => i !== kommune))}
+              onClick={() =>
+                filter.setKommuner(filter.kommuner.filter((i) => i !== kommune))
+              }
             >
               {storForbokstavString(geografiNavn(kommune))}
             </Chips.Removable>
