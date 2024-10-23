@@ -3,11 +3,11 @@ import * as React from 'react';
 import { useKandidatSøkFilter } from '../../../KandidaSokContext';
 
 const FritekstSøk: React.FC = () => {
-  const { fritekst, setFritekst } = useKandidatSøkFilter();
+  const { setFritekst } = useKandidatSøkFilter();
   const [localFritekst, setLocalFritekst] = React.useState('');
 
   const handleChange = (value: string) => {
-    setFritekst([...fritekst, value]);
+    setFritekst(value);
     setLocalFritekst('');
   };
 
