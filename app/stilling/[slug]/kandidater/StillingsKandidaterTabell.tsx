@@ -19,9 +19,15 @@ const StillingsKandidaterTabell: React.FC<{
   search: string;
   kandidatliste: kandidatlisteSchemaDTO;
 }> = ({ search, kandidatliste }) => {
-  console.log('🎺 search', search);
   const [sort, setSort] = React.useState<TableSortState<kandidaterSchemaDTO>>();
   const [selectedRows, setSelectedRows] = React.useState<string[]>([]);
+
+  const toggleSelectedRow = (value: string) =>
+    setSelectedRows((list: string[]) =>
+      list.includes(value)
+        ? list.filter((id) => id !== value)
+        : [...list, value],
+    );
 
   const [kandidater, setKandidater] = React.useState<kandidaterSchemaDTO[]>(
     kandidatliste.kandidater.sort(
@@ -105,7 +111,7 @@ const StillingsKandidaterTabell: React.FC<{
                 <Checkbox
                   hideLabel
                   checked={selectedRows.includes(kandidat.fodselsnr)}
-                  // onChange={() => toggleSelectedRow(kandidat.fodselsnr)}
+                  onChange={() => toggleSelectedRow(kandidat.fodselsnr)}
                   aria-labelledby={`id-${kandidat.fodselsnr}`}
                 >
                   {' '}

@@ -13,9 +13,6 @@ import Loading from '../../../laoading';
 import { FylkeDTO } from '../../../stillings-sok/components/StillingsSøkFilter/GeografiFilter';
 import { useKandidatSøkFilter } from '../../KandidaSokContext';
 
-const LISTEPARAMETER_SEPARATOR = ';';
-const LISTEPARAMETER_SEPARATOR_REPLACEMENT = '·';
-
 const hentØnsketStedFraStilling = (
   rekrutteringsbistandstilling: StillingsDataDTO,
   fylker: FylkeDTO[],
