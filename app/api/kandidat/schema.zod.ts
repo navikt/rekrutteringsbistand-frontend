@@ -48,7 +48,7 @@ export const kandidatlisteSchema = z.object({
     z.object({
       id: z.string(),
       fornavn: z.string(),
-      mellomnavn: z.null(),
+      mellomnavn: z.string().nullable(),
       etternavn: z.string(),
       utfall: z.string(),
       lagtTilAvIdent: z.string(),
