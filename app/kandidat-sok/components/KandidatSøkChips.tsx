@@ -1,3 +1,4 @@
+import { Chips } from '@navikt/ds-react';
 import * as React from 'react';
 import { useGeografi } from '../../api/stilling/geografi/useGeografi';
 import FilterChip from '../../components/FilterChip';
@@ -21,7 +22,17 @@ const StillingsSøkChips: React.FC = () => {
 
   return (
     <div className='flex gap-2 flex-wrap'>
-      <FilterChip type={filter.fritekst} setVerdi={filter.setFritekst} />
+      {filter.fritekst && (
+        <Chips key={filter.fritekst}>
+          <Chips.Removable
+            variant='neutral'
+            onClick={() => filter.setFritekst('')}
+          >
+            {filter.fritekst}
+          </Chips.Removable>
+        </Chips>
+      )}
+
       <FilterChip type={filter.ønsketYrke} setVerdi={filter.setØnsketYrke} />
       <FilterChip type={filter.ønsketSted} setVerdi={filter.setØnsketSted} />
       <FilterChip
