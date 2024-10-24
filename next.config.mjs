@@ -1,5 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // experimental: {
+  //   turbo: {
+  //     loaders: {
+  //       '.svg': ['@svgr/webpack'],
+  //     },
+  //   },
+  // },
   webpack(config) {
     // Grab the existing rule that handles SVG imports
     const fileLoaderRule = config.module.rules.find((rule) =>
@@ -29,10 +36,9 @@ const nextConfig = {
   },
 
   reactStrictMode: true,
-  experimental: {
-    optimizePackageImports: ['@navikt/ds-react', '@navikt/aksel-icons'],
-    serverComponentsExternalPackages: ['@navikt/next-logger'],
-  },
+
+  // optimizePackageImports: ['@navikt/ds-react', '@navikt/aksel-icons'],
+  serverExternalPackages: ['@navikt/next-logger'],
   // async rewrites() {
   //   return process.env.NODE_ENV === 'development'
   //     ? [

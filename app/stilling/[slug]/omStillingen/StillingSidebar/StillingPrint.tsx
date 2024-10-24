@@ -5,7 +5,7 @@ import { useReactToPrint } from 'react-to-print';
 import { useStillingsContext } from '../../StillingsContext';
 
 export interface StillingPrintProps {
-  printRef: React.RefObject<HTMLDivElement>;
+  printRef: React.RefObject<HTMLDivElement | null>;
 }
 
 const StillingPrint: React.FC<StillingPrintProps> = ({ printRef }) => {

@@ -16,25 +16,34 @@ import { geografiMirage } from '../app/api/stilling/geografi/useGeografi';
 import { opprettNyStillingMirage } from '../app/api/stilling/ny-stilling/opprettNyStilling';
 import { oppdaterStillingMirage } from '../app/api/stilling/oppdater-stilling/oppdaterStilling';
 import { stillingMirage } from '../app/api/stilling/rekrutteringsbistandstilling/[slug]/useStilling';
-createServer({
-  routes() {
-    brukerMirage(this);
-    kandidatlisteIdMirage(this);
-    geografiMirage(this);
-    kandidatlisteMirage(this);
-    antallKandidaterMirage(this);
-    kandidatSokMirage(this);
-    statistikkMirage(this);
-    foresporselOmDelingAvCVStatistikkMirage(this);
-    stillingMirage(this);
-    opprettNyStillingMirage(this);
-    oppdaterStillingMirage(this);
-    finnArbeidsgiverMirage(this);
-    decoratorDataMirage(this);
-    kandidagsammendragMirage(this);
-    kandidatinformasjonMirage(this);
-    kontorSøkMirage(this);
-    // stillingssøk
-    this.passthrough('/api/stillings-sok');
-  },
-});
+export function makeServer({ environment = 'development' } = {}) {
+  let server = createServer({
+    environment,
+    routes() {
+      brukerMirage(this);
+      kandidatlisteIdMirage(this);
+      geografiMirage(this);
+      kandidatlisteMirage(this);
+      antallKandidaterMirage(this);
+      kandidatSokMirage(this);
+      statistikkMirage(this);
+      foresporselOmDelingAvCVStatistikkMirage(this);
+      stillingMirage(this);
+      opprettNyStillingMirage(this);
+      oppdaterStillingMirage(this);
+      finnArbeidsgiverMirage(this);
+      decoratorDataMirage(this);
+      kandidagsammendragMirage(this);
+      kandidatinformasjonMirage(this);
+      kontorSøkMirage(this);
+      // stillingssøk
+      this.passthrough('/api/stillings-sok');
+      // Passthrough for Next.js API routes
+      this.passthrough((request) => {
+        return request.url.startsWith('/_next/');
+      });
+    },
+  });
+
+  return server;
+}

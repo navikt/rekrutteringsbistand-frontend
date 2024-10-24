@@ -8,7 +8,7 @@ import { useStillingsContext } from '../../StillingsContext';
 import StillingPrint from './StillingPrint';
 
 interface StillingSidebarKnapperProps {
-  printRef: React.RefObject<HTMLDivElement>;
+  printRef: React.RefObject<HTMLDivElement | null>;
 }
 
 const StillingSidebarKnapper: React.FC<StillingSidebarKnapperProps> = ({

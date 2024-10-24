@@ -7,7 +7,7 @@ import { isLocal } from '../../util/env';
 export async function verifyAPIAuthenticated(): Promise<boolean> {
   if (isLocal) return true;
 
-  const requestHeaders = headers();
+  const requestHeaders = await headers();
   const token = getToken(requestHeaders);
   if (!token) {
     return false;
@@ -20,7 +20,7 @@ export async function verifyAPIAuthenticated(): Promise<boolean> {
 export async function verifyUserLoggedIn(): Promise<{
   accessToken: string;
 }> {
-  const requestHeaders = headers();
+  const requestHeaders = await headers();
 
   if (isLocal) {
     console.warn('Kjører lokalt, skipper auth og kjører med fake-local-token');
