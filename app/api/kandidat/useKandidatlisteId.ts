@@ -12,7 +12,7 @@ const kandidatListeIdEndepunkt = (stillingsId?: string) =>
 
 export const useKandidatlisteId = (stillingsId?: string) => {
   return useSWRImmutable(
-    kandidatListeIdEndepunkt(stillingsId),
+    stillingsId ? kandidatListeIdEndepunkt(stillingsId) : undefined,
     getAPIwithSchema(kandidatlisteIdSchema),
   );
 };
