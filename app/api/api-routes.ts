@@ -53,8 +53,8 @@ export const KandidatSøkAPI: Iroute = {
 };
 
 export const KandidatAPI: Iroute = {
-  api_route: '/api',
+  api_route: '',
   api_url: process.env.KANDIDAT_API ?? '',
-  internUrl: '/api/kandidat-api',
+  internUrl: '/api/kandidat',
   scope: `api://${fss}.toi.rekrutteringsbistand-kandidat-api/.default`,
 };
