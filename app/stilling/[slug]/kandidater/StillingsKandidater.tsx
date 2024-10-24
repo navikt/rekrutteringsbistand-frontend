@@ -24,8 +24,8 @@ enum Hendelser {
 }
 
 const StillingsKandidater: React.FC = () => {
-  const { kandidatlisteId } = useStillingsContext();
-  const hook = useKandidatliste(kandidatlisteId);
+  const { stillingsData } = useStillingsContext();
+  const hook = useKandidatliste(stillingsData.stilling.uuid);
 
   const [search, setSearch] = React.useState('');
 
