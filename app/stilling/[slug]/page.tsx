@@ -2,8 +2,10 @@
 import { Tabs } from '@navikt/ds-react';
 import { useQueryState } from 'nuqs';
 import StillingsKandidater from './kandidater/StillingsKandidater';
+import { StillingsKandidaterFilterProvider } from './kandidater/StillingsKandidaterFilterContext';
 import OmStillingen from './omStillingen/OmStillingen';
 import { useStillingsContext } from './StillingsContext';
+
 export default function StillingSide() {
   const { erEier, kandidatlisteId } = useStillingsContext();
 
@@ -25,7 +27,9 @@ export default function StillingSide() {
       </Tabs.Panel>
       {kandidatlisteId && erEier && (
         <Tabs.Panel value='kandidater'>
-          <StillingsKandidater />
+          <StillingsKandidaterFilterProvider>
+            <StillingsKandidater />
+          </StillingsKandidaterFilterProvider>
         </Tabs.Panel>
       )}
     </Tabs>

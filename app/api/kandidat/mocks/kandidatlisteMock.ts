@@ -233,7 +233,7 @@ export const kandidatlisetMock = {
         navn: 'F_Z993141 E_Z993141',
       },
       lagtTilTidspunkt: '2024-08-19T15:11:02.591',
-      status: 'VURDERES',
+      status: 'TIL_INTERVJU',
       telefon: '+4799999999',
       utfall: 'PRESENTERT',
       utfallsendringer: [

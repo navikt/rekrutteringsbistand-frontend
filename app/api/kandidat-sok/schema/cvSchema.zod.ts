@@ -11,7 +11,6 @@ import { GodkjenningSchema } from './godkjenningSchema.zod';
 import { KompetanseSchema } from './kompetanseSchema.zod';
 import { KursSchema } from './kursSchema.zod';
 import { OmfangJobbonskerSchema } from './omfangJobbonskerSchema.zod';
-import { PerioderMedInaktivitetSchema } from './perioderMedInnaktivitetSchema.zod';
 import { SamletKompetanseSchema } from './samletKompetanseSchema.zod';
 import { SertifikatSchema } from './sertifikatSchema.zod';
 import { SprakSchema } from './sprakSchema.zod';
@@ -101,7 +100,7 @@ const KandidatDataSchema = z.object({
   veilederVisningsnavn: z.string().nullable().optional(),
   veilederEpost: z.string().nullable().optional(),
   godkjenninger: z.array(GodkjenningSchema).nullable().optional(),
-  perioderMedInaktivitet: PerioderMedInaktivitetSchema.nullable().optional(),
+  // perioderMedInaktivitet: PerioderMedInaktivitetSchema.nullable().optional(),
 });
 
 export { KandidatDataSchema };

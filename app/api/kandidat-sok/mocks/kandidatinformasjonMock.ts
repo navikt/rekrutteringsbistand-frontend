@@ -534,7 +534,7 @@ const kandidatinformasjondataMock = {
     },
   ],
   vervObj: [],
-  perioderMedInaktivitet: [],
+  // perioderMedInaktivitet: [],
   veilederIdent: 'Z994162',
   veilederVisningsnavn: 'Varg Veileder',
   veilederEpost: 'varg.veileder@dev.nav.no',

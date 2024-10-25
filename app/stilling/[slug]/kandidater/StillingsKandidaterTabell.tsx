@@ -14,6 +14,7 @@ import {
   kandidaterSchemaDTO,
   kandidatlisteSchemaDTO,
 } from '../../../api/kandidat/schema.zod';
+import { useStillingsKandidaterFilter } from './StillingsKandidaterFilterContext';
 
 const StillingsKandidaterTabell: React.FC<{
   search: string;
@@ -21,6 +22,7 @@ const StillingsKandidaterTabell: React.FC<{
 }> = ({ search, kandidatliste }) => {
   const [sort, setSort] = React.useState<TableSortState<kandidaterSchemaDTO>>();
   const [selectedRows, setSelectedRows] = React.useState<string[]>([]);
+  const { status, hendelse } = useStillingsKandidaterFilter();
 
   const toggleSelectedRow = (value: string) =>
     setSelectedRows((list: string[]) =>
@@ -35,8 +37,24 @@ const StillingsKandidaterTabell: React.FC<{
     ),
   );
 
+  console.log('🎺 kandidater', kandidater);
   React.useEffect(() => {
     const nyListe = kandidatliste.kandidater
+      .filter((kandidat) => {
+        const matchesSearch =
+          kandidat.etternavn.toLowerCase().includes(search.toLowerCase()) ||
+          kandidat.fornavn.toLowerCase().includes(search.toLowerCase()) ||
+          kandidat.fodselsnr.includes(search);
+
+        const matchesStatus =
+          status.length === 0 || status.includes(kandidat.status);
+
+        const matchesHendelse =
+          hendelse.length === 0 ||
+          kandidat.utfallsendringer.some((h) => hendelse.includes(h.utfall));
+
+        return matchesSearch && matchesStatus && matchesHendelse;
+      })
       .filter(
         (kandidat) =>
           kandidat.etternavn.toLowerCase().includes(search.toLowerCase()) ||
@@ -46,7 +64,7 @@ const StillingsKandidaterTabell: React.FC<{
       .sort(applySortDirection<kandidaterSchemaDTO>(sort));
 
     setKandidater(nyListe);
-  }, [search, kandidatliste.kandidater, sort]);
+  }, [search, kandidatliste.kandidater, sort, status, hendelse]);
 
   function tableSort(sortKey?: string) {
     if (

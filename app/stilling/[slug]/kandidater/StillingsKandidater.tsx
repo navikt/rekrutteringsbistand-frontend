@@ -4,32 +4,21 @@ import * as React from 'react';
 import SWRLaster from '../../../../components/SWRLaster';
 import { useKandidatliste } from '../../../api/kandidat/useKandidatliste';
 import { useStillingsContext } from '../StillingsContext';
+import {
+  KandidatHendelser,
+  KandidatStatus,
+  useStillingsKandidaterFilter,
+} from './StillingsKandidaterFilterContext';
 import StillingsKandidaterTabell from './StillingsKandidaterTabell';
-
-enum Kandidatstatus {
-  VURDERES = 'Vurderes',
-  KONTAKTET = 'Kontaktet',
-  AKTUELL = 'Aktuell',
-  TIL_INTERVJU = 'Til intervju',
-  UAKTUELL = 'Uaktuell',
-  UINTERESSERT = 'Uinteressert',
-}
-enum Hendelser {
-  NY_KANDIDAT = 'Ny kandidat',
-  STILLING_DELT = 'Stilling delt med kandidat',
-  SVART_JA = 'Svart ja',
-  SVART_NEI = 'Svart nei',
-  CV_DELT = 'CV delt med arbeidsgiver',
-  FÅTT_JOBB = 'Fått jobb',
-}
 
 const StillingsKandidater: React.FC = () => {
   const { stillingsData } = useStillingsContext();
+  const { status, setStatus, hendelse, setHendelse } =
+    useStillingsKandidaterFilter();
+
   const hook = useKandidatliste(stillingsData.stilling.uuid);
 
   const [search, setSearch] = React.useState('');
-
-  const handleChange = (val: string[]) => console.info(val);
 
   return (
     <SWRLaster hook={hook}>
@@ -76,33 +65,36 @@ const StillingsKandidater: React.FC = () => {
           <div className='mt-8 flex'>
             <aside className='sidebar w-full md:w-[20rem] mr-4 '>
               <CheckboxGroup
-                disabled
                 legend='Status'
-                onChange={handleChange}
+                onChange={setStatus}
+                defaultValue={status}
                 className='mb-8'
               >
-                {Object.values(Kandidatstatus).map((status) => (
-                  <Checkbox key={status} value={status}>
-                    {status}
+                {Object.entries(KandidatStatus).map(([key, value]) => (
+                  <Checkbox key={key} value={key}>
+                    {value}
                   </Checkbox>
                 ))}
               </CheckboxGroup>
               <CheckboxGroup
                 disabled
                 legend='Hendelser'
-                onChange={handleChange}
+                onChange={setHendelse}
+                defaultValue={hendelse}
               >
-                {Object.values(Hendelser).map((hendelse) => (
-                  <Checkbox key={hendelse} value={hendelse}>
-                    {hendelse}
+                {Object.entries(KandidatHendelser).map(([key, value]) => (
+                  <Checkbox key={key} value={key}>
+                    {value}
                   </Checkbox>
                 ))}
               </CheckboxGroup>
             </aside>
-            <StillingsKandidaterTabell
-              search={search}
-              kandidatliste={kandidatliste}
-            />
+            <div className='w-full'>
+              <StillingsKandidaterTabell
+                search={search}
+                kandidatliste={kandidatliste}
+              />
+            </div>
           </div>
         </div>
       )}
