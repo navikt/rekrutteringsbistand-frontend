@@ -217,7 +217,7 @@ const RikTekstEditor: React.FC<IRikTekstEditor> = ({
         className='my-2 focus:outline-none focus:ring-0 focus:border-none'
         editor={editor}
       />
-      <hr />
+
       {limitLengde && (
         <div className='mt-2 flex justify-end'>
           <BodyShort size='small' className='text-gray-500'>

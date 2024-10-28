@@ -134,8 +134,8 @@ export const stillingMock = {
     ],
     properties: {
       extent: 'Heltid',
-      workhours: '["Dagtid"]',
-      workday: '["Ukedager"]',
+      workhours: '["Dagtid","Natt","Kveld"]',
+      workday: '["Ukedager","Lørdag","Søndag"]',
       applicationdue: 'Snarest',
       jobtitle: 'Tester',
       positioncount: '1',

@@ -10,20 +10,25 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { SubmitHandler, useFormContext } from 'react-hook-form';
 import { oppdaterStilling } from '../../../../api/stilling/oppdater-stilling/oppdaterStilling';
-import { StillingsDataDTO } from '../../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
+import { useStillingsContext } from '../../StillingsContext';
+import { mapFormTilStilling, StillingsDataForm } from '../redigerUtil';
 import { DatoVelger } from './DatoVelger';
 
 export const RedigerInnspurt: React.FC<{
   stegNummer: number;
   forrigeSteg: () => void;
 }> = ({ stegNummer, forrigeSteg }) => {
+  const { stillingsData } = useStillingsContext();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const { watch, handleSubmit, setValue } = useFormContext<StillingsDataDTO>();
+  const { watch, handleSubmit, setValue } = useFormContext<StillingsDataForm>();
 
-  const onSubmit: SubmitHandler<StillingsDataDTO> = async (data) => {
+  const onSubmit: SubmitHandler<StillingsDataForm> = async (data) => {
     setIsLoading(true);
-    const response = await oppdaterStilling(data);
+
+    const nyStillingsData = mapFormTilStilling(data, stillingsData);
+
+    const response = await oppdaterStilling(nyStillingsData);
     setIsLoading(false);
 
     if (response.stilling.uuid) {
@@ -33,9 +38,6 @@ export const RedigerInnspurt: React.FC<{
     }
   };
 
-  const publiseringDato = watch('stilling.published');
-  const utløpsDato = watch('stilling.expires');
-  const publiseringstype = watch('stilling.source');
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className='space-y-8'>
@@ -48,21 +50,21 @@ export const RedigerInnspurt: React.FC<{
 
         <div className='flex gap-4 mb-4'>
           <DatoVelger
-            fraDato={publiseringDato ?? undefined}
+            fraDato={watch('innspurt.publiseres') ?? undefined}
             label='Publiseres'
             setDato={(val) => console.log(val)}
           />
           <DatoVelger
             label='Avsluttes og skjules'
-            fraDato={utløpsDato ?? undefined}
+            fraDato={watch('innspurt.avsluttes') ?? undefined}
             setDato={(val) => console.log(val)}
           />
         </div>
 
         <RadioGroup
           legend='Hvor skal stillingen publiseres?'
-          value={publiseringstype}
-          onChange={(val) => setValue('stilling.source', val)}
+          value={watch('innspurt.stillingType')}
+          onChange={(val) => setValue('innspurt.stillingType', val)}
         >
           <Radio value='DIR'>NAV (Intern)</Radio>
           <Radio value='SHOW_ALL'>arbeidsplassen.no (Ekstern)</Radio>

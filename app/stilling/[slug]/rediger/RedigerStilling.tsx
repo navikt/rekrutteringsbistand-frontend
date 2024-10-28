@@ -4,7 +4,7 @@ import { Button, Stepper } from '@navikt/ds-react';
 import { useParams, useRouter } from 'next/navigation';
 import { useQueryState } from 'nuqs';
 import * as React from 'react';
-import { FormProvider, useForm } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 import { StillingsDataDTO } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import OmStillingen from '../omStillingen/OmStillingen';
 import { useStillingsContext } from '../StillingsContext';
@@ -40,23 +40,9 @@ const RedigerStilling: React.FC = () => {
     const index = steps.indexOf(aktivtSteg as RedigerSteg);
     return index;
   };
-  const { stillingsData, setForhåndsvisData, forhåndsvisData } =
-    useStillingsContext();
-  const registerForm = useForm<StillingsDataDTO>({
-    defaultValues: {
-      stilling: {
-        ...stillingsData.stilling,
-        properties: {
-          ...stillingsData.stilling.properties,
-          // Lag array fra string
-          tags: stillingsData.stilling.properties?.tags
-            ? JSON.parse(stillingsData.stilling.properties.tags)
-            : [],
-        },
-      },
-      stillingsinfo: stillingsData.stillingsinfo,
-    },
-  });
+  const { setForhåndsvisData, forhåndsvisData } = useStillingsContext();
+
+  const { getValues } = useFormContext<StillingsDataDTO>();
 
   const nesteSteg = () => {
     const steps = Object.values(RedigerSteg);
@@ -76,8 +62,16 @@ const RedigerStilling: React.FC = () => {
     }
   };
 
+  const validerOmVirksomheten = (): boolean => {
+    const verdier = getValues();
+    const kontaktliste =
+      verdier?.stilling?.contactList &&
+      verdier?.stilling?.contactList?.length > 0;
+    return !!kontaktliste;
+  };
+
   return (
-    <FormProvider {...registerForm}>
+    <>
       {forhåndsvisData ? (
         <>
           <Button
@@ -101,7 +95,9 @@ const RedigerStilling: React.FC = () => {
               aria-labelledby='stepper-heading'
               activeStep={stegNummer() + 1}
             >
-              <Stepper.Step>Om virksomheten</Stepper.Step>
+              <Stepper.Step completed={validerOmVirksomheten()}>
+                Om virksomheten
+              </Stepper.Step>
               <Stepper.Step>Om tilrettelegging</Stepper.Step>
               <Stepper.Step>Om stillingen</Stepper.Step>
               <Stepper.Step>Praktisk info</Stepper.Step>
@@ -147,7 +143,7 @@ const RedigerStilling: React.FC = () => {
             </Button>
             <Button
               icon={<EyeIcon />}
-              onClick={() => setForhåndsvisData(registerForm.getValues())}
+              onClick={() => setForhåndsvisData(getValues())}
               variant='tertiary'
             >
               Forhåndsvis
@@ -161,7 +157,7 @@ const RedigerStilling: React.FC = () => {
           </div>
         </div>
       )}
-    </FormProvider>
+    </>
   );
 };
 

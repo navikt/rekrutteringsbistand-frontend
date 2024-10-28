@@ -10,7 +10,7 @@ import Link from 'next/link';
 import * as React from 'react';
 import { SubmitHandler, useFormContext } from 'react-hook-form';
 import RikTekstEditor from '../../../../../components/rikteksteditor/RikTekstEditor';
-import { StillingsDataDTO } from '../../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
+import { StillingsDataForm } from '../redigerUtil';
 import StegNavigering from './StegNavigering';
 export const RedigerOmStillingen: React.FC<{
   stegNummer: number;
@@ -18,16 +18,14 @@ export const RedigerOmStillingen: React.FC<{
   forrigeSteg: () => void;
 }> = ({ nextStep, forrigeSteg, stegNummer }) => {
   const { register, setValue, handleSubmit, watch } =
-    useFormContext<StillingsDataDTO>();
+    useFormContext<StillingsDataForm>();
 
   const [visAdresseFelt, setVisAdressefelt] = React.useState<boolean>(true);
   const [visKommuneFelt, setVisKommuneFelt] = React.useState<boolean>(false);
 
-  const onSubmit: SubmitHandler<StillingsDataDTO> = (data) => {
+  const onSubmit: SubmitHandler<StillingsDataForm> = (data) => {
     nextStep();
   };
-
-  const tekst = watch('stilling.properties.adtext');
 
   return (
     <div className='space-y-8'>
@@ -50,9 +48,9 @@ export const RedigerOmStillingen: React.FC<{
             <Search
               label='Finn yrkeskategori (standard for yrkesklassifisering - STYRK)'
               variant='simple'
-              {...register('stilling.title')}
+              {...register('omStillingen.tittel')}
               onChange={(e) => {
-                setValue('stilling.title', e);
+                setValue('omStillingen.tittel', e);
               }}
             />
           </div>
@@ -64,10 +62,10 @@ export const RedigerOmStillingen: React.FC<{
               personopplysninger.{' '}
             </BodyShort>
             <RikTekstEditor
-              id='stilling-beskrivelse'
-              tekst={tekst ?? ''}
-              onChange={(e) => setValue('stilling.properties.adtext', e)}
-              limitLengde={800}
+              id='rediger-stilling-beskrivelse'
+              tekst={watch('omStillingen.beskrivelse') ?? ''}
+              onChange={(e) => setValue('omStillingen.beskrivelse', e)}
+              // limitLengde={800}
             />
           </div>
 
@@ -97,11 +95,12 @@ export const RedigerOmStillingen: React.FC<{
               <div className='grid grid-cols-2 gap-4 mt-4'>
                 <TextField
                   label='Adresse'
-                  {...register('stilling.employer.location.address')}
+                  //TODO
+                  // {...register('stilling.employer.location.address')}
                 />
                 <TextField
                   label='Postnummer'
-                  {...register('stilling.employer.location.postalCode')}
+                  // {...register('stilling.employer.location.postalCode')}
                 />
               </div>
             )}

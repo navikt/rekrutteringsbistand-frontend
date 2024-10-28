@@ -8,12 +8,10 @@ import {
 } from 'react-hook-form';
 import RikTekstEditor from '../../../../../components/rikteksteditor/RikTekstEditor';
 import { getWorkLocationsAsString } from '../../../../../util/locationUtil';
-import {
-  GeografiListDTO,
-  StillingsDataDTO,
-} from '../../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
+import { GeografiListDTO } from '../../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import capitalizeEmployerName from '../../../stilling-util';
 import { useStillingsContext } from '../../StillingsContext';
+import { StillingsDataForm } from '../redigerUtil';
 import StegNavigering from './StegNavigering';
 
 export const RedigerOmVirksomheten: React.FC<{
@@ -28,23 +26,20 @@ export const RedigerOmVirksomheten: React.FC<{
     handleSubmit,
     control,
     formState: { errors },
-  } = useFormContext<StillingsDataDTO>();
+  } = useFormContext<StillingsDataForm>();
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: 'stilling.contactList',
+    name: 'omVirksomheten.kontaktPersoner',
   });
 
-  const onSubmit: SubmitHandler<StillingsDataDTO> = (data) => {
+  const onSubmit: SubmitHandler<StillingsDataForm> = (data) => {
     nextStep();
   };
 
   if (fields.length === 0) {
     append({ name: '', title: '', email: '', phone: '' });
   }
-
-  const beskrivelse =
-    watch('stilling.properties.employerdescription')?.toString() ?? '';
 
   return (
     <div>
@@ -75,10 +70,8 @@ export const RedigerOmVirksomheten: React.FC<{
           <span>Beskrivelse av bedriften (valgfritt)</span>
           <RikTekstEditor
             id='rediger-om-virksomheten'
-            tekst={beskrivelse ?? ''}
-            onChange={(e) =>
-              setValue('stilling.properties.employerdescription', e)
-            }
+            tekst={watch('omVirksomheten.beskrivelse') ?? ''}
+            onChange={(e) => setValue('omVirksomheten.beskrivelse', e)}
             limitLengde={300}
           />
 
@@ -121,14 +114,15 @@ export const RedigerOmVirksomheten: React.FC<{
               <Controller
                 control={control}
                 rules={{ required: true }}
-                name={`stilling.contactList.${index}.name`}
+                name={`omVirksomheten.kontaktPersoner.${index}.name`}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextField
                     label='Navn'
                     onChange={(e) => onChange(e.target.value)}
                     value={value ?? ''}
                     error={
-                      (errors.stilling?.contactList?.[index] as any)?.name
+                      (errors.omVirksomheten?.kontaktPersoner?.[index] as any)
+                        ?.name
                         ? 'Påkrevd felt'
                         : null
                     }
@@ -138,14 +132,15 @@ export const RedigerOmVirksomheten: React.FC<{
               <Controller
                 control={control}
                 rules={{ required: true }}
-                name={`stilling.contactList.${index}.title`}
+                name={`omVirksomheten.kontaktPersoner.${index}.title`}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextField
                     label='Tittel'
                     onChange={(e) => onChange(e.target.value)}
                     value={value ?? ''}
                     error={
-                      (errors.stilling?.contactList?.[index] as any)?.title
+                      (errors.omVirksomheten?.kontaktPersoner?.[index] as any)
+                        ?.title
                         ? 'Påkrevd felt'
                         : null
                     }
@@ -156,7 +151,7 @@ export const RedigerOmVirksomheten: React.FC<{
               <Controller
                 control={control}
                 rules={{ required: true }}
-                name={`stilling.contactList.${index}.email`}
+                name={`omVirksomheten.kontaktPersoner.${index}.email`}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextField
                     type='email'
@@ -164,7 +159,8 @@ export const RedigerOmVirksomheten: React.FC<{
                     onChange={(e) => onChange(e.target.value)}
                     value={value ?? ''}
                     error={
-                      (errors.stilling?.contactList?.[index] as any)?.email
+                      (errors.omVirksomheten?.kontaktPersoner?.[index] as any)
+                        ?.email
                         ? 'Påkrevd felt'
                         : null
                     }
@@ -174,7 +170,7 @@ export const RedigerOmVirksomheten: React.FC<{
               <Controller
                 control={control}
                 rules={{ required: true }}
-                name={`stilling.contactList.${index}.phone`}
+                name={`omVirksomheten.kontaktPersoner.${index}.phone`}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextField
                     type='tel'
@@ -182,7 +178,8 @@ export const RedigerOmVirksomheten: React.FC<{
                     onChange={(e) => onChange(e.target.value)}
                     value={value ?? ''}
                     error={
-                      (errors.stilling?.contactList?.[index] as any)?.phone
+                      (errors.omVirksomheten?.kontaktPersoner?.[index] as any)
+                        ?.phone
                         ? 'Påkrevd felt'
                         : null
                     }

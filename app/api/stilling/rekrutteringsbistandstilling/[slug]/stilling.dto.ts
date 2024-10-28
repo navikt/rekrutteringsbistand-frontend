@@ -3,6 +3,7 @@ import { z } from 'zod';
 export type StillingsDataDTO = z.infer<typeof StillingDataSchema>;
 export type GeografiDTO = z.infer<typeof GeografiSchema>;
 export type GeografiListDTO = z.infer<typeof GeografiListSchema>;
+export type ContactSchemaDTO = z.infer<typeof ContactSchema>;
 
 // Egendefinert
 export const searchtagSchema = z.object({
@@ -47,6 +48,8 @@ export const propertiesSchema = z
     industry: z.string().optional().nullable(),
     starttime: z.union([z.string(), z.boolean()]).optional().nullable(),
     tags: z.any().nullable(),
+    workhours: z.any().nullable(),
+    workday: z.any().nullable(),
   })
   .nullable();
 

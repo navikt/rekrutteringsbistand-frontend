@@ -9,7 +9,7 @@ import {
   TextField,
 } from '@navikt/ds-react';
 import { Controller, SubmitHandler, useFormContext } from 'react-hook-form';
-import { StillingsDataDTO } from '../../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
+import { StillingsDataForm } from '../redigerUtil';
 import { DatoVelger } from './DatoVelger';
 import StegNavigering from './StegNavigering';
 
@@ -19,13 +19,11 @@ export const RedigerPraktiskInfo: React.FC<{
   forrigeSteg: () => void;
 }> = ({ nextStep, forrigeSteg, stegNummer }) => {
   const { register, handleSubmit, setValue, watch, control, formState } =
-    useFormContext<StillingsDataDTO>();
+    useFormContext<StillingsDataForm>();
 
-  const onSubmit: SubmitHandler<StillingsDataDTO> = (data) => {
+  const onSubmit: SubmitHandler<StillingsDataForm> = (data) => {
     nextStep();
   };
-
-  const sektor = watch('stilling.properties.sector');
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -34,22 +32,22 @@ export const RedigerPraktiskInfo: React.FC<{
         <BodyShort>Fyll inn praktiske detaljer om jobben.</BodyShort>
         <RadioGroup
           legend='Sektor'
-          value={sektor}
-          onChange={(e) => setValue('stilling.properties.sector', e)}
+          value={watch('praktiskInfo.sektor')}
+          onChange={(e) => setValue('praktiskInfo.sektor', e)}
         >
           <Radio value='privat'>Privat</Radio>
           <Radio value='offentlig'>Offentlig</Radio>
         </RadioGroup>
         <TextField
           label='Antall stillinger'
-          {...register('stilling.properties.positioncount', { required: true })}
+          {...register('praktiskInfo.antallStillinger', { required: true })}
           type='number'
         />
         <div className='grid grid-cols-2 gap-4'>
           <div className='flex flex-col'>
             <Heading size='small'>Oppstart</Heading>
             <Controller
-              name='stilling.properties.starttime'
+              name='praktiskInfo.oppstart'
               control={control}
               rules={{ required: true }}
               render={({ field }) => (
@@ -76,14 +74,14 @@ export const RedigerPraktiskInfo: React.FC<{
                 </>
               )}
             />
-            {formState.errors.stilling?.properties?.starttime && (
+            {formState.errors.praktiskInfo?.oppstart && (
               <ErrorMessage>Oppstartsdato er påkrevd</ErrorMessage>
             )}
           </div>
           <div className='flex flex-col'>
             <Heading size='small'>Søknadsfrist</Heading>
             <Controller
-              name='stilling.properties.applicationdue'
+              name='praktiskInfo.søknadsfrist'
               control={control}
               rules={{ required: true }}
               render={({ field }) => (
@@ -110,13 +108,13 @@ export const RedigerPraktiskInfo: React.FC<{
                 </>
               )}
             />
-            {formState.errors.stilling?.properties?.applicationdue && (
+            {formState.errors.praktiskInfo?.søknadsfrist && (
               <ErrorMessage>Søknadsfrist er påkrevd</ErrorMessage>
             )}
           </div>
         </div>
         <RadioGroup
-          {...register('stilling.properties.engagementtype')}
+          {...register('praktiskInfo.ansettelsesform')}
           legend='Ansettelsesform'
         >
           <Radio value='fast'>Fast</Radio>

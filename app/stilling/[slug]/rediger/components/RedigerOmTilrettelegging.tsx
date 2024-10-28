@@ -8,8 +8,8 @@ import {
 } from '@navikt/ds-react';
 import * as React from 'react';
 import { SubmitHandler, useFormContext } from 'react-hook-form';
-import { StillingsDataDTO } from '../../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { InkluderingsTag } from '../../omStillingen/StillingSidebar/StillingInkludering';
+import { StillingsDataForm } from '../redigerUtil';
 import StegNavigering from './StegNavigering';
 
 export const RedigerOmTilrettelegging: React.FC<{
@@ -17,10 +17,9 @@ export const RedigerOmTilrettelegging: React.FC<{
   nextStep: () => void;
   forrigeSteg: () => void;
 }> = ({ nextStep, forrigeSteg, stegNummer }) => {
-  const { handleSubmit, control, watch, setValue } =
-    useFormContext<StillingsDataDTO>();
+  const { handleSubmit, watch, setValue } = useFormContext<StillingsDataForm>();
 
-  const onSubmit: SubmitHandler<StillingsDataDTO> = (data) => {
+  const onSubmit: SubmitHandler<StillingsDataForm> = (data) => {
     nextStep();
   };
 
@@ -34,16 +33,16 @@ export const RedigerOmTilrettelegging: React.FC<{
     return (
       <Checkbox
         value={tag}
-        defaultChecked={watch('stilling.properties.tags')?.includes(tag)}
+        defaultChecked={watch('omTilrettelegging.tags')?.includes(tag)}
         onChange={(e) => {
           if (e.target.checked) {
-            setValue('stilling.properties.tags', [
-              ...watch('stilling.properties.tags'),
+            setValue('omTilrettelegging.tags', [
+              ...watch('omTilrettelegging.tags'),
               tag,
             ]);
           } else {
-            setValue('stilling.properties.tags', [
-              ...watch('stilling.properties.tags').filter(
+            setValue('omTilrettelegging.tags', [
+              ...watch('omTilrettelegging.tags').filter(
                 (t: string) => t !== tag,
               ),
             ]);
@@ -183,18 +182,21 @@ export const RedigerOmTilrettelegging: React.FC<{
           <RadioGroup
             legend='Er virksomheten del av den statlige inkluderingsdugnaden?'
             required={true}
-            value={watch('stilling.properties.tags')?.includes(
-              InkluderingsTag.StatligInkluderingsdugnad,
-            )}
+            value={watch('omTilrettelegging.statligeInkluderingsdugnade')}
             onChange={(val) => {
               if (val) {
-                setValue('stilling.properties.tags', [
-                  ...watch('stilling.properties.tags'),
+                setValue('omTilrettelegging.statligeInkluderingsdugnade', true);
+                setValue('omTilrettelegging.tags', [
+                  ...watch('omTilrettelegging.tags'),
                   InkluderingsTag.StatligInkluderingsdugnad,
                 ]);
               } else {
-                setValue('stilling.properties.tags', [
-                  ...watch('stilling.properties.tags').filter(
+                setValue(
+                  'omTilrettelegging.statligeInkluderingsdugnade',
+                  false,
+                );
+                setValue('omTilrettelegging.tags', [
+                  ...watch('omTilrettelegging.tags').filter(
                     (t: string) =>
                       t !== InkluderingsTag.StatligInkluderingsdugnad,
                   ),
