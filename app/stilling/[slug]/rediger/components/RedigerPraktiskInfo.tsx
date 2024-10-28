@@ -114,7 +114,8 @@ export const RedigerPraktiskInfo: React.FC<{
           </div>
         </div>
         <RadioGroup
-          {...register('praktiskInfo.ansettelsesform')}
+          value={watch('praktiskInfo.ansettelsesform')}
+          onChange={(val) => setValue('praktiskInfo.ansettelsesform', val)}
           legend='Ansettelsesform'
         >
           <Radio value='fast'>Fast</Radio>
@@ -126,20 +127,28 @@ export const RedigerPraktiskInfo: React.FC<{
           <Heading level='3' size='small'>
             Hvilke dager skal man kunne jobbe?
           </Heading>
-          <CheckboxGroup disabled legend='arbeidsdager'>
-            <Checkbox value='ukedager'>Ukedager</Checkbox>
-            <Checkbox value='lordag'>Lørdag</Checkbox>
-            <Checkbox value='sondag'>Søndag</Checkbox>
+          <CheckboxGroup
+            legend='arbeidsdager'
+            defaultValue={watch('praktiskInfo.dager')}
+            onChange={(val) => setValue('praktiskInfo.dager', val)}
+          >
+            <Checkbox value='Ukedager'>Ukedager</Checkbox>
+            <Checkbox value='Lørdag'>Lørdag</Checkbox>
+            <Checkbox value='Søndag'>Søndag</Checkbox>
           </CheckboxGroup>
         </div>
         <div>
           <Heading level='3' size='small'>
             Hvilken tid skal man kunne jobbe?
           </Heading>
-          <CheckboxGroup disabled legend='tidspunkt'>
-            <Checkbox value='dag'>Dag</Checkbox>
-            <Checkbox value='kveld'>Kveld</Checkbox>
-            <Checkbox value='natt'>Natt</Checkbox>
+          <CheckboxGroup
+            legend='tidspunkt'
+            onChange={(val) => setValue('praktiskInfo.tid', val)}
+            defaultValue={watch('praktiskInfo.tid')}
+          >
+            <Checkbox value='Dagtid'>Dag</Checkbox>
+            <Checkbox value='Kveld'>Kveld</Checkbox>
+            <Checkbox value='Natt'>Natt</Checkbox>
           </CheckboxGroup>
         </div>
 
