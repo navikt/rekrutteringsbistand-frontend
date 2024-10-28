@@ -1,3 +1,4 @@
+import { ArrowLeftIcon, CheckmarkCircleIcon } from '@navikt/aksel-icons';
 import {
   BodyShort,
   Button,
@@ -12,7 +13,10 @@ import { oppdaterStilling } from '../../../../api/stilling/oppdater-stilling/opp
 import { StillingsDataDTO } from '../../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { DatoVelger } from './DatoVelger';
 
-export const RedigerPublisering: React.FC = () => {
+export const RedigerInnspurt: React.FC<{
+  stegNummer: number;
+  forrigeSteg: () => void;
+}> = ({ stegNummer, forrigeSteg }) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const { watch, handleSubmit, setValue } = useFormContext<StillingsDataDTO>();
@@ -64,9 +68,49 @@ export const RedigerPublisering: React.FC = () => {
           <Radio value='SHOW_ALL'>arbeidsplassen.no (Ekstern)</Radio>
         </RadioGroup>
 
-        <div className='flex gap-4'>
-          <Button className='w-full' type='submit' loading={isLoading}>
-            Lagre
+        <div>
+          <Heading size='medium'>Hva skjer når du publiserer?</Heading>
+          <BodyShort>
+            <ul className='list-disc pl-6 mt-2 space-y-2'>
+              <li>
+                Annonsen blir synlig for
+                <ul className='list-disc pl-4'>
+                  <li>
+                    Nav-ansatte i stillingssøket fra fredag 11. februar 2023.
+                  </li>
+                  <li>
+                    ansatte hos arbeidsgiveren på Min Side Arbeidsgiver på
+                    nav.no med Altinn-tilgangen “rekruttering”.
+                  </li>
+                  <li>Nav-brukere som får annonsen delt i aktivitetsplanen.</li>
+                </ul>
+              </li>
+              <li>
+                Du kan når som helst kan endre eller avpublisere annonsen.
+              </li>
+            </ul>
+          </BodyShort>
+        </div>
+
+        <div className='flex justify-between mb-8 mt-4 w-full'>
+          {stegNummer > 1 ? (
+            <Button
+              variant='tertiary'
+              onClick={forrigeSteg}
+              icon={<ArrowLeftIcon />}
+              iconPosition='left'
+            >
+              Forrige steg
+            </Button>
+          ) : (
+            <div />
+          )}
+          <Button
+            icon={<CheckmarkCircleIcon />}
+            type='submit'
+            loading={isLoading}
+          >
+            Fullfør og publiser
           </Button>
         </div>
       </div>

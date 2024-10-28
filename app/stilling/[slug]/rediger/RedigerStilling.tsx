@@ -7,18 +7,18 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { StillingsDataDTO } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import OmStillingen from '../omStillingen/OmStillingen';
 import { useStillingsContext } from '../StillingsContext';
+import { RedigerInnspurt } from './components/RedigerInnspurt';
 import { RedigerOmStillingen } from './components/RedigerOmStillingen';
 import { RedigerOmTilrettelegging } from './components/RedigerOmTilrettelegging';
 import { RedigerOmVirksomheten } from './components/RedigerOmVirksomheten';
 import { RedigerPraktiskInfo } from './components/RedigerPraktiskInfo';
-import { RedigerPublisering } from './components/RedigerPublisering';
 
 enum RedigerSteg {
   omVirksomheten = 'om-virksomheten',
   omTilrettelegging = 'om-tilrettelegging',
   omStillingen = 'om-stillingen',
   praktiskInfo = 'praktisk-info',
-  publisering = 'publisering',
+  innspurt = 'innspurt',
 }
 
 const RedigerStilling: React.FC = () => {
@@ -128,7 +128,9 @@ const RedigerStilling: React.FC = () => {
                 forrigeSteg={forrigeSteg}
               />
             )}
-            {aktivtSteg === RedigerSteg.publisering && <RedigerPublisering />}
+            {aktivtSteg === RedigerSteg.innspurt && (
+              <RedigerInnspurt stegNummer={5} forrigeSteg={forrigeSteg} />
+            )}
           </div>
           <div className='sticky top-4 self-start flex flex-col gap-2 items-start'>
             <Button icon={<XMarkIcon />} variant='tertiary' disabled>
