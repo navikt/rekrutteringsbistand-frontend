@@ -4,3 +4,9 @@
 @import '@navikt/ds-css';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
+
+/* Fjerner blå border rundt RikTekstEditor */
+.ProseMirror:focus {
+  outline: none;
+  border: none;
+}

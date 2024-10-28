@@ -9,6 +9,7 @@ import {
 import * as React from 'react';
 import { SubmitHandler, useFormContext } from 'react-hook-form';
 import { StillingsDataDTO } from '../../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
+import { InkluderingsTag } from '../../omStillingen/StillingSidebar/StillingInkludering';
 import StegNavigering from './StegNavigering';
 
 export const RedigerOmTilrettelegging: React.FC<{
@@ -16,18 +17,43 @@ export const RedigerOmTilrettelegging: React.FC<{
   nextStep: () => void;
   forrigeSteg: () => void;
 }> = ({ nextStep, forrigeSteg, stegNummer }) => {
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    formState: { errors },
-  } = useFormContext<StillingsDataDTO>();
+  const { handleSubmit, control, watch, setValue } =
+    useFormContext<StillingsDataDTO>();
 
   const onSubmit: SubmitHandler<StillingsDataDTO> = (data) => {
     nextStep();
   };
 
-  const [kanInkludere, setKanInkludere] = React.useState<string>('');
+  const TilretteleggingCheckbox = ({
+    tag,
+    children,
+  }: {
+    tag: string;
+    children: React.ReactNode;
+  }) => {
+    return (
+      <Checkbox
+        value={tag}
+        defaultChecked={watch('stilling.properties.tags')?.includes(tag)}
+        onChange={(e) => {
+          if (e.target.checked) {
+            setValue('stilling.properties.tags', [
+              ...watch('stilling.properties.tags'),
+              tag,
+            ]);
+          } else {
+            setValue('stilling.properties.tags', [
+              ...watch('stilling.properties.tags').filter(
+                (t: string) => t !== tag,
+              ),
+            ]);
+          }
+        }}
+      >
+        {children}
+      </Checkbox>
+    );
+  };
 
   return (
     <div className='space-y-8'>
@@ -35,76 +61,67 @@ export const RedigerOmTilrettelegging: React.FC<{
       <p>Vi må vite hvordan arbeidsgiver tilrettelegger for kandidater.</p>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className='flex flex-col gap-8 mb-12'>
-          <CheckboxGroup legend='Virksomheten tilrettelegger for' disabled>
-            <Checkbox
-              value='arbeidstid'
-              //  {...register('tilretteleggingFor')}
+          <CheckboxGroup legend='Virksomheten tilrettelegger for'>
+            <TilretteleggingCheckbox
+              tag={InkluderingsTag.TilretteleggingArbeidstid}
             >
-              arbeidstid
+              Arbeidstid
               <div className='text-sm text-gray-600'>
                 f.eks. kortere dager, eller gradvis økt stillingsprosent
               </div>
-            </Checkbox>
-            <Checkbox
-              value='fysiskeOmgivelser'
-              // {...register('tilretteleggingFor')}
+            </TilretteleggingCheckbox>
+
+            <TilretteleggingCheckbox
+              tag={InkluderingsTag.TilretteleggingFysisk}
             >
-              fysiske omgivelser
+              Fysiske omgivelser
               <div className='text-sm text-gray-600'>
                 f.eks. ergonomisk tilpasning, eller universell utforming
               </div>
-            </Checkbox>
-            <Checkbox
-              value='utfordringerMedNorsk'
-              // {...register('tilretteleggingFor')}
+            </TilretteleggingCheckbox>
+            <TilretteleggingCheckbox
+              tag={InkluderingsTag.TilretteleggingGrunnleggende}
             >
-              utfordringer med norsk
+              Utfordringer med norsk
               <div className='text-sm text-gray-600'>
                 f.eks. ved lese- og skrivevansker, språk- og taleforstyrrelse,
                 eller utfordringer med norsk fordi man kommer fra et annet land.
               </div>
-            </Checkbox>
-            <Checkbox
-              value='arbeidshverdagen'
-              // {...register('tilretteleggingFor')}
+            </TilretteleggingCheckbox>
+            <TilretteleggingCheckbox
+              tag={InkluderingsTag.TilretteleggingArbeidshverdagen}
             >
-              arbeidshverdagen
+              Arbeidshverdagen
               <div className='text-sm text-gray-600'>
                 f.eks. opplæring, tilpasse arbeidsoppgaver, eller ekstra tett
                 oppfølging
               </div>
-            </Checkbox>
+            </TilretteleggingCheckbox>
           </CheckboxGroup>
 
-          <CheckboxGroup
-            disabled
-            legend='Virksomheten er åpen for folk som har'
-          >
-            <Checkbox
-              value='lonnstilskudd'
-              // {...register('apenFor')}
+          <CheckboxGroup legend='Virksomheten er åpen for folk som har'>
+            <TilretteleggingCheckbox
+              tag={InkluderingsTag.VirkemiddelLønnstilskudd}
             >
-              lønnstilskudd - midlertidig, eller varig
+              Lønnstilskudd - midlertidig, eller varig
               <div className='text-sm text-gray-600'>
                 Kandidaten blir ansatt under vanlige arbeidsvilkår, men NAV
                 kompenserer en del av lønnen.
               </div>
-            </Checkbox>
-            <Checkbox
-              value='mentor'
-              // {...register('apenFor')}
+            </TilretteleggingCheckbox>
+            <TilretteleggingCheckbox
+              tag={InkluderingsTag.VirkemiddelMentortilskudd}
             >
-              mentor
+              Mentor (tilskudd)
               <div className='text-sm text-gray-600'>
                 En kollega hjelper kandidaten med å mestre jobben. NAV
                 kompenserer virksomheten med mentortilskudd.
               </div>
-            </Checkbox>
-            <Checkbox
-              value='laeringsplass'
-              // {...register('apenFor')}
+            </TilretteleggingCheckbox>
+            <TilretteleggingCheckbox
+              tag={InkluderingsTag.VirkemiddelLærlingplass}
             >
-              læringsplass
+              Læringsplass
               <div className='text-sm text-gray-600'>
                 Gir opplæring i læreplaner for fag. Virksomheten må være
                 godkjennet som lærebedrift.
@@ -112,91 +129,81 @@ export const RedigerOmTilrettelegging: React.FC<{
                   Les mer om hva bedriften må gjøre.
                 </Link>
               </div>
-            </Checkbox>
+            </TilretteleggingCheckbox>
           </CheckboxGroup>
 
-          <CheckboxGroup
-            disabled
-            legend='Arbeidsgiver er åpen for kandidater som'
-          >
-            <Checkbox
-              value='under30'
-              //  {...register('apenForKandidater')}
+          <CheckboxGroup legend='Arbeidsgiver er åpen for kandidater som'>
+            <TilretteleggingCheckbox
+              tag={InkluderingsTag.MålgruppeErUngeUnder30}
             >
               er under 30 år
               <div className='text-sm text-gray-600'>
                 Virksomheten ønsker å hindre at unge havner utenfor
                 arbeidslivet.
               </div>
-            </Checkbox>
-            <Checkbox
-              value='over50'
-              // {...register('apenForKandidater')}
+            </TilretteleggingCheckbox>
+            <TilretteleggingCheckbox
+              tag={InkluderingsTag.MålgruppeErSeniorerOver50}
             >
               er over 50 år
               <div className='text-sm text-gray-600'>
                 Virksomheten ønsker å forlenge yrkeslivet og senkarieren til
                 innbyggere.
               </div>
-            </Checkbox>
-            <Checkbox
-              value='utenforEOS'
-              // {...register('apenForKandidater')}
+            </TilretteleggingCheckbox>
+            <TilretteleggingCheckbox
+              tag={InkluderingsTag.MålgruppeKommerFraLandUtenforEØS}
             >
               er fra land utenfor EØS
               <div className='text-sm text-gray-600'>
                 Virksomheten ønsker at flere innvandrere utenfor EØS blir
                 inkludert, og får erfaring som det norske arbeidslivet trenger.
               </div>
-            </Checkbox>
-            <Checkbox
-              value='ikkeArbeidSiste5'
-              // {...register('apenForKandidater')}
+            </TilretteleggingCheckbox>
+            <TilretteleggingCheckbox tag={InkluderingsTag.MålgruppeHullICVen}>
+              har hull i CV-en
+            </TilretteleggingCheckbox>
+            <TilretteleggingCheckbox
+              tag={InkluderingsTag.MålgruppeLiteEllerIngenUtdanning}
             >
-              ikke har vært i arbeid, utdanning, eller opplæring 2 av de siste 5
-              årene.
-            </Checkbox>
-            <Checkbox
-              value='litenArbeidserfaring'
-              // {...register('apenForKandidater')}
+              har lite eller ingen utdanning
+            </TilretteleggingCheckbox>
+            <TilretteleggingCheckbox
+              tag={InkluderingsTag.MålgruppeLiteEllerIngenUtdanning}
             >
-              med 1 år, eller mindre arbeidserfaring
-              <div className='text-sm text-gray-600'>
-                Virksomheten ønsker å ansette folk som er nye i arbeidsmarkedet.
-              </div>
-            </Checkbox>
-            <Checkbox
-              value='ikkeFullfortSkole'
-              // {...register('apenForKandidater')}
+              har lite eller ingen utdanning
+            </TilretteleggingCheckbox>
+            <TilretteleggingCheckbox
+              tag={InkluderingsTag.MålgruppeLiteEllerIngenArbeidserfaring}
             >
-              ikke har fullført videregående skole.
-              <div className='text-sm text-gray-600'>
-                Virksomheten ønsker å inkludere unge uten fullført
-                grunnskoleutdanning.
-              </div>
-            </Checkbox>
+              har lite eller ingen arbeidserfaring
+            </TilretteleggingCheckbox>
           </CheckboxGroup>
 
           <RadioGroup
             legend='Er virksomheten del av den statlige inkluderingsdugnaden?'
             required={true}
-
-            // error={errors.inkluderingsdugnad ? 'Påkrevd' : undefined}
+            value={watch('stilling.properties.tags')?.includes(
+              InkluderingsTag.StatligInkluderingsdugnad,
+            )}
+            onChange={(val) => {
+              if (val) {
+                setValue('stilling.properties.tags', [
+                  ...watch('stilling.properties.tags'),
+                  InkluderingsTag.StatligInkluderingsdugnad,
+                ]);
+              } else {
+                setValue('stilling.properties.tags', [
+                  ...watch('stilling.properties.tags').filter(
+                    (t: string) =>
+                      t !== InkluderingsTag.StatligInkluderingsdugnad,
+                  ),
+                ]);
+              }
+            }}
           >
-            <Radio
-              checked={kanInkludere === 'kanInkludere'}
-              value='true'
-              onChange={() => setKanInkludere('kanInkludere')}
-            >
-              Ja
-            </Radio>
-            <Radio
-              checked={kanInkludere === 'kanIkkeInkludere'}
-              value='false'
-              onChange={() => setKanInkludere('kanIkkeInkludere')}
-            >
-              Nei
-            </Radio>
+            <Radio value={true}>Ja</Radio>
+            <Radio value={false}>Nei</Radio>
           </RadioGroup>
         </div>
         <StegNavigering stegNummer={stegNummer} forrigeSteg={forrigeSteg} />

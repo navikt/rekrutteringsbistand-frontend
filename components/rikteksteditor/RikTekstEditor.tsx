@@ -26,7 +26,6 @@ import Text from '@tiptap/extension-text';
 import Underline from '@tiptap/extension-underline';
 import { EditorContent, useEditor } from '@tiptap/react';
 import * as React from 'react';
-import style from './RikTekstEditor.module.css';
 
 export interface IRikTekstEditor {
   skjulToolbar?: boolean;
@@ -111,13 +110,15 @@ const RikTekstEditor: React.FC<IRikTekstEditor> = ({
     }
   };
 
+  const aktivKnapp = 'bg-gray-200 ';
+  const inaktivKnapp = 'bg-white ';
   return (
-    <div className={style.editor} id={id}>
+    <div className='border border-black p-2.5 rounded-md' id={id}>
       <div>
         {skjulToolbar ? (
           <div />
         ) : (
-          <div className={style.toolbar}>
+          <div className='border-b border-black pb-2.5 flex space-x-3'>
             <select
               value={headerValue}
               onChange={(e) => onSelectHeading(e.target.value)}
@@ -130,31 +131,26 @@ const RikTekstEditor: React.FC<IRikTekstEditor> = ({
               <option value={5}>H5</option>
             </select>
             <button
+              type='button'
               onClick={() => editor.chain().focus().toggleBold().run()}
-              className={
-                editor.isActive('bold') ? style.aktivKnapp : style.inaktivKnapp
-              }
+              className={editor.isActive('bold') ? aktivKnapp : inaktivKnapp}
             >
               <strong>B</strong>
             </button>
             <button
+              type='button'
               onClick={() => editor.chain().focus().toggleItalic().run()}
-              className={
-                editor.isActive('italic')
-                  ? style.aktivKnapp
-                  : style.inaktivKnapp
-              }
+              className={editor.isActive('italic') ? aktivKnapp : inaktivKnapp}
             >
               <strong>
                 <i>I</i>
               </strong>
             </button>
             <button
+              type='button'
               onClick={() => editor.chain().focus().toggleUnderline().run()}
               className={
-                editor.isActive('underline')
-                  ? style.aktivKnapp
-                  : style.inaktivKnapp
+                editor.isActive('underline') ? aktivKnapp : inaktivKnapp
               }
             >
               <strong>
@@ -162,49 +158,53 @@ const RikTekstEditor: React.FC<IRikTekstEditor> = ({
               </strong>
             </button>
             <button
+              type='button'
               onClick={() => editor.chain().focus().toggleBlockquote().run()}
-              className={style.inaktivKnapp}
+              className={inaktivKnapp}
             >
               <ChevronRightDoubleIcon />
             </button>
             <button
+              type='button'
               onClick={() => editor.chain().focus().toggleBulletList().run()}
               className={
-                editor.isActive('bulletList')
-                  ? style.aktivKnapp
-                  : style.inaktivKnapp
+                editor.isActive('bulletList') ? aktivKnapp : inaktivKnapp
               }
             >
               <BulletListIcon />
             </button>
             <button
+              type='button'
               onClick={() => editor.chain().focus().toggleOrderedList().run()}
               className={
-                editor.isActive('orderedList')
-                  ? style.aktivKnapp
-                  : style.inaktivKnapp
+                editor.isActive('orderedList') ? aktivKnapp : inaktivKnapp
               }
             >
               <NumberListIcon />
             </button>
             <button
+              type='button'
               onClick={setLink}
-              className={
-                editor.isActive('link') ? style.aktivKnapp : style.inaktivKnapp
-              }
+              className={editor.isActive('link') ? aktivKnapp : inaktivKnapp}
             >
               <LinkIcon />
             </button>
-            <button onClick={unsetLink} disabled={!editor.isActive('link')}>
+            <button
+              type='button'
+              onClick={unsetLink}
+              disabled={!editor.isActive('link')}
+            >
               <LinkBrokenIcon />
             </button>
             <button
+              type='button'
               onClick={() => editor.chain().focus().undo().run()}
               disabled={!editor.can().chain().focus().undo().run()}
             >
               <ArrowUndoIcon />
             </button>
             <button
+              type='button'
               onClick={() => editor.chain().focus().redo().run()}
               disabled={!editor.can().chain().focus().redo().run()}
             >
@@ -213,7 +213,10 @@ const RikTekstEditor: React.FC<IRikTekstEditor> = ({
           </div>
         )}
       </div>
-      <EditorContent editor={editor} />
+      <EditorContent
+        className='my-2 focus:outline-none focus:ring-0 focus:border-none'
+        editor={editor}
+      />
       <hr />
       {limitLengde && (
         <div className='mt-2 flex justify-end'>

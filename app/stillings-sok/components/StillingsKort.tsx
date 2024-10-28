@@ -5,7 +5,7 @@ import {
   PersonIcon,
   PinIcon,
 } from '@navikt/aksel-icons';
-import { Box, Heading } from '@navikt/ds-react';
+import { Box, Button, Heading } from '@navikt/ds-react';
 import Link from 'next/link';
 import * as React from 'react';
 
@@ -38,61 +38,74 @@ const StillingsKort: React.FC<IStillingsKort> = ({ stillingData }) => {
       <>
         <StillingsTag splitTags stillingsData={stillingData} />
       </>
+      <Box className='mb-2'>
+        <Link href={`/stilling/${stillingData.stilling.uuid}`}>
+          <Heading size='small'>
+            {stillingData?.stilling?.title || 'Ukjent tittel'}
+          </Heading>
+        </Link>
+      </Box>
+
       <TekstMedIkon
         ikon={<Buildings2Icon />}
         tekst={stillingData.stilling?.businessName || 'Ukjent bedrift'}
       />
 
-      <Link href={`/stilling/${stillingData.stilling.uuid}`}>
-        <Heading size='small'>
-          {stillingData?.stilling?.title || 'Ukjent tittel'}
-        </Heading>
-      </Link>
-      <div className='flex mt-4'>
-        <TekstMedIkon
-          className='mr-4'
-          ikon={<PinIcon />}
-          title='Lokasjon'
-          tekst={
-            formaterMedStoreOgSmåBokstaver(
-              hentArbeidssted(stillingData.stilling.locations),
-            ) || '-'
-          }
-        />
+      <div className='flex mt-4 justify-between'>
+        <div className='flex'>
+          <TekstMedIkon
+            className='mr-4'
+            ikon={<PinIcon />}
+            title='Lokasjon'
+            tekst={
+              formaterMedStoreOgSmåBokstaver(
+                hentArbeidssted(stillingData.stilling.locations),
+              ) || '-'
+            }
+          />
 
-        <TekstMedIkon
-          className='mr-4'
-          ikon={<BriefcaseIcon />}
-          title='Antall stillinger'
-          tekst={
-            antallStillinger
-              ? `${antallStillinger} ${antallStillingerSuffix}`
-              : '-'
-          }
-        />
+          <TekstMedIkon
+            className='mr-4'
+            ikon={<BriefcaseIcon />}
+            title='Antall stillinger'
+            tekst={
+              antallStillinger
+                ? `${antallStillinger} ${antallStillingerSuffix}`
+                : '-'
+            }
+          />
 
-        <TekstMedIkon
-          className='mr-4'
-          ikon={<ClockIcon />}
-          title='Lokasjon'
-          tekst={
-            stillingData.stilling.properties?.applicationdue
-              ? konverterTilPresenterbarDato(
-                  typeof stillingData.stilling.properties.applicationdue ===
-                    'string'
-                    ? stillingData.stilling.properties.applicationdue
-                    : undefined,
-                )
-              : '-'
-          }
-        />
+          <TekstMedIkon
+            className='mr-4'
+            ikon={<ClockIcon />}
+            title='Lokasjon'
+            tekst={
+              stillingData.stilling.properties?.applicationdue
+                ? konverterTilPresenterbarDato(
+                    typeof stillingData.stilling.properties.applicationdue ===
+                      'string'
+                      ? stillingData.stilling.properties.applicationdue
+                      : undefined,
+                  )
+                : '-'
+            }
+          />
 
-        <TekstMedIkon
-          className='mr-4'
-          ikon={<PersonIcon />}
-          title='Eier'
-          tekst={eierNavn}
-        />
+          <TekstMedIkon
+            className='mr-4'
+            ikon={<PersonIcon />}
+            title='Eier'
+            tekst={eierNavn}
+          />
+        </div>
+        <div>
+          <Button disabled variant='tertiary'>
+            Vis kandidater
+          </Button>
+          <Button disabled variant='tertiary'>
+            Finn kandidater
+          </Button>
+        </div>
       </div>
     </Box>
   );

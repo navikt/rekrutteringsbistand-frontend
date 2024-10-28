@@ -1,6 +1,7 @@
 'use client';
 import { EyeIcon, StopIcon, TrashIcon, XMarkIcon } from '@navikt/aksel-icons';
 import { Button, Stepper } from '@navikt/ds-react';
+import { useQueryState } from 'nuqs';
 import * as React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { StillingsDataDTO } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
@@ -12,35 +13,58 @@ import { RedigerOmVirksomheten } from './components/RedigerOmVirksomheten';
 import { RedigerPraktiskInfo } from './components/RedigerPraktiskInfo';
 import { RedigerPublisering } from './components/RedigerPublisering';
 
-enum Steg {
-  omVirksomheten = 1,
-  omTilrettelegging = 2,
-  omStillingen = 3,
-  praktiskInfo = 4,
-  publisering = 5,
+enum RedigerSteg {
+  omVirksomheten = 'om-virksomheten',
+  omTilrettelegging = 'om-tilrettelegging',
+  omStillingen = 'om-stillingen',
+  praktiskInfo = 'praktisk-info',
+  publisering = 'publisering',
 }
 
-const stegTitler: Record<Steg, string> = {
-  [Steg.omVirksomheten]: 'Om virksomheten',
-  [Steg.omTilrettelegging]: 'Om tilrettelegging',
-  [Steg.omStillingen]: 'Om stillingen',
-  [Steg.praktiskInfo]: 'Praktisk info',
-  [Steg.publisering]: 'Publisering',
-};
-
 const RedigerStilling: React.FC = () => {
-  const [activeStep, setActiveStep] = React.useState(Steg.omVirksomheten);
+  const [aktivtSteg, setAktivtSteg] = useQueryState('steg', {
+    defaultValue: RedigerSteg.omVirksomheten,
+  });
+
+  const stegNummer = (): number => {
+    const steps = Object.values(RedigerSteg);
+    const index = steps.indexOf(aktivtSteg as RedigerSteg);
+    return index;
+  };
   const { stillingsData, setForhåndsvisData, forhåndsvisData } =
     useStillingsContext();
   const registerForm = useForm<StillingsDataDTO>({
-    defaultValues: stillingsData,
+    defaultValues: {
+      stilling: {
+        ...stillingsData.stilling,
+        properties: {
+          ...stillingsData.stilling.properties,
+          // Lag array fra string
+          tags: stillingsData.stilling.properties?.tags
+            ? JSON.parse(stillingsData.stilling.properties.tags)
+            : [],
+        },
+      },
+      stillingsinfo: stillingsData.stillingsinfo,
+    },
   });
 
-  const nextStep = () => {
-    setActiveStep((prev) => prev + 1);
+  const nesteSteg = () => {
+    const steps = Object.values(RedigerSteg);
+    const currentIndex =
+      steps.indexOf(aktivtSteg as RedigerSteg) ?? RedigerSteg.omVirksomheten;
+    if (currentIndex < steps.length) {
+      setAktivtSteg(steps[currentIndex + 1]);
+    }
   };
+
   const forrigeSteg = () => {
-    setActiveStep((prev) => prev - 1);
+    const steps = Object.values(RedigerSteg);
+    const currentIndex =
+      steps.indexOf(aktivtSteg as RedigerSteg) ?? RedigerSteg.omVirksomheten;
+    if (currentIndex && currentIndex > 0) {
+      setAktivtSteg(steps[currentIndex - 1]);
+    }
   };
 
   return (
@@ -62,53 +86,49 @@ const RedigerStilling: React.FC = () => {
         <div className='flex flex-row'>
           <div className='sticky top-4 self-start'>
             <Stepper
-              onStepChange={setActiveStep}
+              onStepChange={(step) => {
+                setAktivtSteg(Object.values(RedigerSteg)[step - 1]);
+              }}
               aria-labelledby='stepper-heading'
-              activeStep={activeStep}
+              activeStep={stegNummer() + 1}
             >
-              {Object.values(Steg)
-                .filter((step): step is Steg => typeof step === 'number')
-                .map((step) => (
-                  <Stepper.Step
-                    key={step}
-                    // interactive={registerForm.formState.isValid}
-                  >
-                    {stegTitler[step]}
-                  </Stepper.Step>
-                ))}
+              <Stepper.Step>Om virksomheten</Stepper.Step>
+              <Stepper.Step>Om tilrettelegging</Stepper.Step>
+              <Stepper.Step>Om stillingen</Stepper.Step>
+              <Stepper.Step>Praktisk info</Stepper.Step>
+              <Stepper.Step>Publisering</Stepper.Step>
             </Stepper>
           </div>
-
           <div className='flex-grow mx-12 px-12'>
-            {activeStep === Steg.omVirksomheten && (
+            {aktivtSteg === RedigerSteg.omVirksomheten && (
               <RedigerOmVirksomheten
-                stegNummer={Steg.omVirksomheten}
-                nextStep={nextStep}
+                stegNummer={1}
+                nextStep={nesteSteg}
                 forrigeSteg={forrigeSteg}
               />
             )}
-            {activeStep === Steg.omTilrettelegging && (
+            {aktivtSteg === RedigerSteg.omTilrettelegging && (
               <RedigerOmTilrettelegging
-                stegNummer={Steg.omTilrettelegging}
-                nextStep={nextStep}
+                stegNummer={2}
+                nextStep={nesteSteg}
                 forrigeSteg={forrigeSteg}
               />
             )}
-            {activeStep === Steg.omStillingen && (
+            {aktivtSteg === RedigerSteg.omStillingen && (
               <RedigerOmStillingen
-                stegNummer={Steg.omStillingen}
-                nextStep={nextStep}
+                stegNummer={3}
+                nextStep={nesteSteg}
                 forrigeSteg={forrigeSteg}
               />
             )}
-            {activeStep === Steg.praktiskInfo && (
+            {aktivtSteg === RedigerSteg.praktiskInfo && (
               <RedigerPraktiskInfo
-                stegNummer={Steg.praktiskInfo}
-                nextStep={nextStep}
+                stegNummer={4}
+                nextStep={nesteSteg}
                 forrigeSteg={forrigeSteg}
               />
             )}
-            {activeStep === Steg.publisering && <RedigerPublisering />}
+            {aktivtSteg === RedigerSteg.publisering && <RedigerPublisering />}
           </div>
           <div className='sticky top-4 self-start flex flex-col gap-2 items-start'>
             <Button icon={<XMarkIcon />} variant='tertiary' disabled>
