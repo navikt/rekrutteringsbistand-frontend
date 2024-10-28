@@ -1,6 +1,7 @@
 'use client';
 import { EyeIcon, StopIcon, TrashIcon, XMarkIcon } from '@navikt/aksel-icons';
 import { Button, Stepper } from '@navikt/ds-react';
+import { useParams, useRouter } from 'next/navigation';
 import { useQueryState } from 'nuqs';
 import * as React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -25,6 +26,14 @@ const RedigerStilling: React.FC = () => {
   const [aktivtSteg, setAktivtSteg] = useQueryState('steg', {
     defaultValue: RedigerSteg.omVirksomheten,
   });
+
+  const router = useRouter();
+  const params = useParams();
+
+  const onLukk = () => {
+    const newPath = `/stilling/${params.slug}`;
+    router.push(newPath);
+  };
 
   const stegNummer = (): number => {
     const steps = Object.values(RedigerSteg);
@@ -133,8 +142,8 @@ const RedigerStilling: React.FC = () => {
             )}
           </div>
           <div className='sticky top-4 self-start flex flex-col gap-2 items-start'>
-            <Button icon={<XMarkIcon />} variant='tertiary' disabled>
-              Avbryt
+            <Button icon={<XMarkIcon />} variant='tertiary' onClick={onLukk}>
+              Lukk
             </Button>
             <Button
               icon={<EyeIcon />}
