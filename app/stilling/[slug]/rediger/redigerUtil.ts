@@ -1,45 +1,7 @@
 import { StillingsDataDTO } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 
-import {
-  ContactSchemaDTO,
-  GeografiDTO,
-} from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { InkluderingsTag } from '../omStillingen/StillingSidebar/StillingInkludering';
-
-export interface StillingsDataForm {
-  omVirksomheten: {
-    beskrivelse: string;
-    kontaktPersoner: ContactSchemaDTO[];
-  };
-  omTilrettelegging: {
-    statligeInkluderingsdugnade: boolean | null;
-    tags: string[];
-  };
-  omStillingen: {
-    tittel: string;
-    beskrivelse: string;
-    arbeidssted: {
-      adresse: GeografiDTO | null;
-      kommuneEllerLand: string | null;
-    };
-  };
-  praktiskInfo: {
-    sektor: string;
-    antallStillinger: number;
-    oppstart: string;
-    oppstartSnarest: boolean;
-    søknadsfrist: string;
-    søknadsfristEtterAvtale: boolean;
-    ansettelsesform: string;
-    dager: string[];
-    tid: string[];
-  };
-  innspurt: {
-    publiseres: string | null;
-    avsluttes: string | null;
-    stillingType: string | null;
-  };
-}
+import { StillingsDataForm } from './redigerFormType.zod';
 
 export const mapStillingTilForm = (
   stillingsData: StillingsDataDTO,

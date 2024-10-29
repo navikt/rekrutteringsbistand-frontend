@@ -1,4 +1,4 @@
-export enum Status {
+export enum StillingsStatus {
   Aktiv = 'ACTIVE',
   Inaktiv = 'INACTIVE',
   Stoppet = 'STOPPED',
@@ -17,4 +17,19 @@ export enum Stillingskategori {
   Arbeidstrening = 'ARBEIDSTRENING',
   Jobbmesse = 'JOBBMESSE',
   Formidling = 'FORMIDLING',
+}
+
+export enum StillingsAnsettelsesform {
+  Ingen = '',
+  Fast = 'Fast',
+  Vikariat = 'Vikariat',
+  Engasjement = 'Engasjement',
+  Prosjekt = 'Prosjekt',
+  Åremål = 'Åremål',
+  Sesong = 'Sesong',
+  Feriejobb = 'Feriejobb',
+  Trainee = 'Trainee',
+  Lærling = 'Lærling',
+  Selvstendig = 'Selvstendig næringsdrivende',
+  Annet = 'Annet',
 }

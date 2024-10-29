@@ -9,10 +9,14 @@ import {
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { SubmitHandler, useFormContext } from 'react-hook-form';
-import { oppdaterStilling } from '../../../../api/stilling/oppdater-stilling/oppdaterStilling';
-import { useStillingsContext } from '../../StillingsContext';
-import { mapFormTilStilling, StillingsDataForm } from '../redigerUtil';
-import { DatoVelger } from './DatoVelger';
+import { oppdaterStilling } from '../../../api/stilling/oppdater-stilling/oppdaterStilling';
+import { useStillingsContext } from '../StillingsContext';
+import { DatoVelger } from './components/DatoVelger';
+import {
+  StillingsDataForm,
+  StillingsDataFormSchema,
+} from './redigerFormType.zod';
+import { mapFormTilStilling } from './redigerUtil';
 
 export const RedigerInnspurt: React.FC<{
   stegNummer: number;
@@ -26,16 +30,20 @@ export const RedigerInnspurt: React.FC<{
   const onSubmit: SubmitHandler<StillingsDataForm> = async (data) => {
     setIsLoading(true);
 
-    const nyStillingsData = mapFormTilStilling(data, stillingsData);
+    const validerData = StillingsDataFormSchema.safeParse(data);
+    if (!validerData.success) {
+      const nyStillingsData = mapFormTilStilling(data, stillingsData);
 
-    const response = await oppdaterStilling(nyStillingsData);
-    setIsLoading(false);
+      const response = await oppdaterStilling(nyStillingsData);
 
-    if (response.stilling.uuid) {
-      router.push(`/stilling/${response.stilling.uuid}`);
-    } else {
-      alert('Feil ved opprettelse av stilling');
+      if (response.stilling.uuid) {
+        router.push(`/stilling/${response.stilling.uuid}`);
+      } else {
+        alert('Feil ved opprettelse av stilling');
+      }
     }
+
+    setIsLoading(false);
   };
 
   return (

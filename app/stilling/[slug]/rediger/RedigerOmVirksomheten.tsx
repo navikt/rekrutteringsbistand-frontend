@@ -6,13 +6,13 @@ import {
   useFieldArray,
   useFormContext,
 } from 'react-hook-form';
-import RikTekstEditor from '../../../../../components/rikteksteditor/RikTekstEditor';
-import { getWorkLocationsAsString } from '../../../../../util/locationUtil';
-import { GeografiListDTO } from '../../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
-import capitalizeEmployerName from '../../../stilling-util';
-import { useStillingsContext } from '../../StillingsContext';
-import { StillingsDataForm } from '../redigerUtil';
-import StegNavigering from './StegNavigering';
+import RikTekstEditor from '../../../../components/rikteksteditor/RikTekstEditor';
+import { getWorkLocationsAsString } from '../../../../util/locationUtil';
+import { GeografiListDTO } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
+import capitalizeEmployerName from '../../stilling-util';
+import { useStillingsContext } from '../StillingsContext';
+import StegNavigering from './components/StegNavigering';
+import { StillingsDataForm } from './redigerFormType.zod';
 
 export const RedigerOmVirksomheten: React.FC<{
   stegNummer: number;
@@ -113,17 +113,17 @@ export const RedigerOmVirksomheten: React.FC<{
             <div key={field.id} className='grid grid-cols-2 gap-4 items-start'>
               <Controller
                 control={control}
-                rules={{ required: true }}
                 name={`omVirksomheten.kontaktPersoner.${index}.name`}
-                render={({ field: { onChange, onBlur, value } }) => (
+                render={({ field: { onChange, value } }) => (
                   <TextField
                     label='Navn'
                     onChange={(e) => onChange(e.target.value)}
                     value={value ?? ''}
                     error={
-                      (errors.omVirksomheten?.kontaktPersoner?.[index] as any)
-                        ?.name
-                        ? 'Påkrevd felt'
+                      errors.omVirksomheten?.kontaktPersoner?.[index]?.name
+                        ?.message
+                        ? errors.omVirksomheten?.kontaktPersoner?.[index]?.name
+                            ?.message
                         : null
                     }
                   />
@@ -131,7 +131,6 @@ export const RedigerOmVirksomheten: React.FC<{
               />
               <Controller
                 control={control}
-                rules={{ required: true }}
                 name={`omVirksomheten.kontaktPersoner.${index}.title`}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextField
@@ -139,9 +138,10 @@ export const RedigerOmVirksomheten: React.FC<{
                     onChange={(e) => onChange(e.target.value)}
                     value={value ?? ''}
                     error={
-                      (errors.omVirksomheten?.kontaktPersoner?.[index] as any)
-                        ?.title
-                        ? 'Påkrevd felt'
+                      errors.omVirksomheten?.kontaktPersoner?.[index]?.title
+                        ?.message
+                        ? errors.omVirksomheten?.kontaktPersoner?.[index]?.title
+                            ?.message
                         : null
                     }
                   />
@@ -150,7 +150,6 @@ export const RedigerOmVirksomheten: React.FC<{
 
               <Controller
                 control={control}
-                rules={{ required: true }}
                 name={`omVirksomheten.kontaktPersoner.${index}.email`}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextField
@@ -159,9 +158,10 @@ export const RedigerOmVirksomheten: React.FC<{
                     onChange={(e) => onChange(e.target.value)}
                     value={value ?? ''}
                     error={
-                      (errors.omVirksomheten?.kontaktPersoner?.[index] as any)
-                        ?.email
-                        ? 'Påkrevd felt'
+                      errors.omVirksomheten?.kontaktPersoner?.[index]?.email
+                        ?.message
+                        ? errors.omVirksomheten?.kontaktPersoner?.[index]?.email
+                            ?.message
                         : null
                     }
                   />
@@ -169,7 +169,6 @@ export const RedigerOmVirksomheten: React.FC<{
               />
               <Controller
                 control={control}
-                rules={{ required: true }}
                 name={`omVirksomheten.kontaktPersoner.${index}.phone`}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextField
@@ -180,7 +179,8 @@ export const RedigerOmVirksomheten: React.FC<{
                     error={
                       (errors.omVirksomheten?.kontaktPersoner?.[index] as any)
                         ?.phone
-                        ? 'Påkrevd felt'
+                        ? errors.omVirksomheten?.kontaktPersoner?.[index]?.phone
+                            ?.message
                         : null
                     }
                   />

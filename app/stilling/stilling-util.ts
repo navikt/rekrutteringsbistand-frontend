@@ -1,6 +1,10 @@
 import { startOfDay } from 'date-fns';
 import { StillingsDataDTO } from '../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
-import { AdminStatus, Status, Stillingskategori } from './stilling-typer';
+import {
+  AdminStatus,
+  Stillingskategori,
+  StillingsStatus,
+} from './stilling-typer';
 
 export const kategoriTilVisningsnavn = (kategori: Stillingskategori | null) => {
   switch (kategori) {
@@ -29,7 +33,7 @@ const utløperFørIdag = (expires: string | null) => {
 export const stillingErUtløpt = (stilling: any): boolean => {
   return (
     stilling.publishedByAdmin !== null &&
-    stilling.status === Status.Inaktiv &&
+    stilling.status === StillingsStatus.Inaktiv &&
     utløperFørIdag(stilling.expires) &&
     stilling.administration?.status === AdminStatus.Done
   );

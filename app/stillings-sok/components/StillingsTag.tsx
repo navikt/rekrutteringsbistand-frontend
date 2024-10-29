@@ -7,7 +7,7 @@ import { RekrutteringsbistandStillingSchemaDTO } from '../../api/stillings-sok/s
 import { useApplikasjonContext } from '../../ApplikasjonContext';
 import {
   AdminStatus,
-  Status,
+  StillingsStatus,
   Stillingskategori,
 } from '../../stilling/stilling-typer';
 import { Hovedtag } from './StillingsSøkFilter/InkluderingFilter';
@@ -29,7 +29,7 @@ const utløperFørIdag = (expires: string | null) => {
 export const stillingErUtløpt = (stilling: any): boolean => {
   return (
     stilling.publishedByAdmin !== null &&
-    stilling.status === Status.Inaktiv &&
+    stilling.status === StillingsStatus.Inaktiv &&
     utløperFørIdag(stilling.expires) &&
     stilling.administration?.status === AdminStatus.Done
   );
@@ -45,7 +45,7 @@ const StillingsTag: React.FC<IStillingTag> = ({ stillingsData, splitTags }) => {
     navIdent: ident,
   });
 
-  const stillingStatus = stillingsData.stilling.status as Status;
+  const stillingStatus = stillingsData.stilling.status as StillingsStatus;
 
   const stillingenBlirPubliserDato =
     'stilling' in stillingsData &&
@@ -70,20 +70,20 @@ const StillingsTag: React.FC<IStillingTag> = ({ stillingsData, splitTags }) => {
   const erEierTag = erEier;
   const erUtløptTag =
     !!stillingsData.stilling.publishedByAdmin &&
-    status === Status.Inaktiv &&
+    status === StillingsStatus.Inaktiv &&
     !stillingUløpt;
 
   const erIkkePublisertTag =
     !stillingUløpt &&
     !stillingenBlirPubliserDato &&
-    stillingStatus === Status.Inaktiv;
+    stillingStatus === StillingsStatus.Inaktiv;
 
   const erUtkastTag = !stillingsData.stilling.publishedByAdmin;
-  const erStoppetTag = stillingStatus === Status.Stoppet;
+  const erStoppetTag = stillingStatus === StillingsStatus.Stoppet;
   const erJobbmesseTag =
     stillingsData?.stillingsinfo?.stillingskategori ===
     Stillingskategori.Jobbmesse;
-  const erSlettetTag = stillingStatus === Status.Slettet;
+  const erSlettetTag = stillingStatus === StillingsStatus.Slettet;
   const direktemeldtTag = stillingsData?.stilling?.source === 'DIR';
 
   const arbeidsplassenTag = stillingsData?.stilling?.privacy === 'SHOW_ALL';

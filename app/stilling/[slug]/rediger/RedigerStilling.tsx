@@ -5,14 +5,24 @@ import { useParams, useRouter } from 'next/navigation';
 import { useQueryState } from 'nuqs';
 import * as React from 'react';
 import { useFormContext } from 'react-hook-form';
-import { StillingsDataDTO } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
+import { StillingsStatus } from '../../stilling-typer';
 import OmStillingen from '../omStillingen/OmStillingen';
 import { useStillingsContext } from '../StillingsContext';
-import { RedigerInnspurt } from './components/RedigerInnspurt';
-import { RedigerOmStillingen } from './components/RedigerOmStillingen';
-import { RedigerOmTilrettelegging } from './components/RedigerOmTilrettelegging';
-import { RedigerOmVirksomheten } from './components/RedigerOmVirksomheten';
-import { RedigerPraktiskInfo } from './components/RedigerPraktiskInfo';
+import EndreStillingStatus from './components/EndreStillingStatus';
+import {
+  InnspurtSchema,
+  OmStillingenSchema,
+  OmTilretteleggingSchema,
+  OmVirksomhetenSchema,
+  PraktiskInfoSchema,
+  StillingsDataForm,
+} from './redigerFormType.zod';
+import { RedigerInnspurt } from './RedigerInnspurt';
+import { RedigerOmStillingen } from './RedigerOmStillingen';
+import { RedigerOmTilrettelegging } from './RedigerOmTilrettelegging';
+import { RedigerOmVirksomheten } from './RedigerOmVirksomheten';
+import { RedigerPraktiskInfo } from './RedigerPraktiskInfo';
+import { mapFormTilStilling } from './redigerUtil';
 
 enum RedigerSteg {
   omVirksomheten = 'om-virksomheten',
@@ -26,7 +36,7 @@ const RedigerStilling: React.FC = () => {
   const [aktivtSteg, setAktivtSteg] = useQueryState('steg', {
     defaultValue: RedigerSteg.omVirksomheten,
   });
-
+  const { stillingsData } = useStillingsContext();
   const router = useRouter();
   const params = useParams();
 
@@ -42,7 +52,7 @@ const RedigerStilling: React.FC = () => {
   };
   const { setForhåndsvisData, forhåndsvisData } = useStillingsContext();
 
-  const { getValues } = useFormContext<StillingsDataDTO>();
+  const { getValues } = useFormContext<StillingsDataForm>();
 
   const nesteSteg = () => {
     const steps = Object.values(RedigerSteg);
@@ -62,13 +72,32 @@ const RedigerStilling: React.FC = () => {
     }
   };
 
-  const validerOmVirksomheten = (): boolean => {
-    const verdier = getValues();
-    const kontaktliste =
-      verdier?.stilling?.contactList &&
-      verdier?.stilling?.contactList?.length > 0;
-    return !!kontaktliste;
+  const validerOmVirksomheten = () => {
+    const valider = OmVirksomhetenSchema.safeParse(getValues().omVirksomheten);
+    return valider.success;
   };
+  const validerOmTilrettelegging = () => {
+    const valider = OmTilretteleggingSchema.safeParse(
+      getValues().omTilrettelegging,
+    );
+    return valider.success;
+  };
+  const validerOmStillingen = () => {
+    const valider = OmStillingenSchema.safeParse(getValues().omStillingen);
+    return valider.success;
+  };
+  const validerPraktiskInfo = () => {
+    const valider = PraktiskInfoSchema.safeParse(getValues().praktiskInfo);
+    console.log(valider);
+    return valider.success;
+  };
+  const validerInnspurt = () => {
+    const valider = InnspurtSchema.safeParse(getValues().innspurt);
+
+    return valider.success;
+  };
+
+  validerOmVirksomheten();
 
   return (
     <>
@@ -98,10 +127,18 @@ const RedigerStilling: React.FC = () => {
               <Stepper.Step completed={validerOmVirksomheten()}>
                 Om virksomheten
               </Stepper.Step>
-              <Stepper.Step>Om tilrettelegging</Stepper.Step>
-              <Stepper.Step>Om stillingen</Stepper.Step>
-              <Stepper.Step>Praktisk info</Stepper.Step>
-              <Stepper.Step>Publisering</Stepper.Step>
+              <Stepper.Step completed={validerOmTilrettelegging()}>
+                Om tilrettelegging
+              </Stepper.Step>
+              <Stepper.Step completed={validerOmStillingen()}>
+                Om stillingen
+              </Stepper.Step>
+              <Stepper.Step completed={validerPraktiskInfo()}>
+                Praktisk info
+              </Stepper.Step>
+              <Stepper.Step completed={validerInnspurt()}>
+                Publisering
+              </Stepper.Step>
             </Stepper>
           </div>
           <div className='flex-grow mx-12 px-12'>
@@ -143,17 +180,27 @@ const RedigerStilling: React.FC = () => {
             </Button>
             <Button
               icon={<EyeIcon />}
-              onClick={() => setForhåndsvisData(getValues())}
+              onClick={() =>
+                setForhåndsvisData(
+                  mapFormTilStilling(getValues(), stillingsData),
+                )
+              }
               variant='tertiary'
             >
               Forhåndsvis
             </Button>
-            <Button icon={<StopIcon />} variant='tertiary' disabled>
-              Stopp
-            </Button>
-            <Button icon={<TrashIcon />} variant='tertiary' disabled>
-              Slett
-            </Button>
+            <EndreStillingStatus
+              nyStatus={StillingsStatus.Stoppet}
+              knappNavn='Stopp'
+              knappIkon={<StopIcon />}
+              tekst='Er du sikker på at du vil STOPPE stillingen?'
+            />
+            <EndreStillingStatus
+              nyStatus={StillingsStatus.Slettet}
+              knappNavn='Slett'
+              knappIkon={<TrashIcon />}
+              tekst='Er du sikker på at du vil SLETTE stillingen?'
+            />
           </div>
         </div>
       )}

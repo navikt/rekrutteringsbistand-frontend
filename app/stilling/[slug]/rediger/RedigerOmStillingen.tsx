@@ -9,9 +9,9 @@ import {
 import Link from 'next/link';
 import * as React from 'react';
 import { SubmitHandler, useFormContext } from 'react-hook-form';
-import RikTekstEditor from '../../../../../components/rikteksteditor/RikTekstEditor';
-import { StillingsDataForm } from '../redigerUtil';
-import StegNavigering from './StegNavigering';
+import RikTekstEditor from '../../../../components/rikteksteditor/RikTekstEditor';
+import StegNavigering from './components/StegNavigering';
+import { StillingsDataForm } from './redigerFormType.zod';
 export const RedigerOmStillingen: React.FC<{
   stegNummer: number;
   nextStep: () => void;
