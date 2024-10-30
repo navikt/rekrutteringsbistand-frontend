@@ -9,10 +9,10 @@ import {
 } from '@navikt/aksel-icons';
 import { Heading } from '@navikt/ds-react';
 import * as React from 'react';
-import TekstMedIkon from '../../../../components/TekstMedIkon';
 import { getWorkLocationsAsString } from '../../../../util/locationUtil';
 import { useAntallKandidater } from '../../../api/kandidat/useAntallKandidater';
 import { GeografiListDTO } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
+import TekstMedIkon from '../../../components/TekstMedIkon';
 import { useStillingsContext } from '../StillingsContext';
 import OmAnnonsen from '../components/OmAnnonsen';
 import OmBedriften from '../components/OmBedriften';

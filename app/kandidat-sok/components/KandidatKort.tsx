@@ -9,7 +9,7 @@ import {
 import { Checkbox, Heading } from '@navikt/ds-react';
 import Link from 'next/link';
 import * as React from 'react';
-import TekstMedIkon from '../../../components/TekstMedIkon';
+import TekstMedIkon from '../../components/TekstMedIkon';
 
 import { KandidatDataSchemaDTO } from '../../api/kandidat-sok/schema/cvSchema.zod';
 import {

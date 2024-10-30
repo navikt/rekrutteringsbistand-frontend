@@ -1,7 +1,7 @@
 import { Tabs } from '@navikt/ds-react';
 import { ReactNode } from 'react';
-import { TilgangskontrollForInnhold } from '../../../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Rolle } from '../../../types/Roller';
+import { TilgangskontrollForInnhold } from '../../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { useKandidatSøkFilter } from '../KandidaSokContext';
 
 export enum KandidatSøkPortefølje {

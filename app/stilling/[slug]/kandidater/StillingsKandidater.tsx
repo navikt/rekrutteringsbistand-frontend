@@ -1,8 +1,8 @@
 import { ArrowForwardIcon } from '@navikt/aksel-icons';
 import { Button, Checkbox, CheckboxGroup, Search } from '@navikt/ds-react';
 import * as React from 'react';
-import SWRLaster from '../../../../components/SWRLaster';
 import { useKandidatliste } from '../../../api/kandidat/useKandidatliste';
+import SWRLaster from '../../../components/SWRLaster';
 import { useStillingsContext } from '../StillingsContext';
 import {
   KandidatHendelser,

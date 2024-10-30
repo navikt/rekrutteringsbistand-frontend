@@ -7,7 +7,7 @@ import {
   useRef,
   useState,
 } from 'react';
-import { useApplikasjonContext } from '../../../../app/ApplikasjonContext';
+import { useApplikasjonContext } from '../../../../ApplikasjonContext';
 import Artikkel from './Artikkel';
 import css from './Nyheter.module.css';
 import nyhetssaker from './nyhetssaker';

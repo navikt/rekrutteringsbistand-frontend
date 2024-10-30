@@ -1,16 +1,16 @@
 'use client';
 import { BodyShort, Heading, Select } from '@navikt/ds-react';
 import React, { ChangeEvent, useState } from 'react';
-import Sidelaster from '../../../components/Sidelaster';
 import {
   førsteDagIMåned,
   sisteDagIMåned,
   visDatoMedMåned,
 } from '../../../util/dato';
 import { useApplikasjonContext } from '../../ApplikasjonContext';
+import ErrorBoundary from '../../components/feilhåndtering/ErrorBoundary';
+import Sidelaster from '../../components/Sidelaster';
 import Forespørsler from './Forespørsler';
 import Utfallsstatistikk from './Utfallsstatistikk';
-import ErrorBoundary from '../../../components/feilhåndtering/ErrorBoundary';
 
 export interface IStatistikkValg {
   navKontor: string;

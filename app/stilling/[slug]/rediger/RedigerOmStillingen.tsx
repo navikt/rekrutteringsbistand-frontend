@@ -2,14 +2,13 @@ import {
   BodyShort,
   Checkbox,
   Heading,
-  Search,
   TextField,
   UNSAFE_Combobox,
 } from '@navikt/ds-react';
 import Link from 'next/link';
 import * as React from 'react';
 import { SubmitHandler, useFormContext } from 'react-hook-form';
-import RikTekstEditor from '../../../../components/rikteksteditor/RikTekstEditor';
+import RikTekstEditor from '../../../components/rikteksteditor/RikTekstEditor';
 import StegNavigering from './components/StegNavigering';
 import { StillingsDataForm } from './redigerFormType.zod';
 export const RedigerOmStillingen: React.FC<{
@@ -44,13 +43,13 @@ export const RedigerOmStillingen: React.FC<{
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className='space-y-8'>
           <div>
-            <Heading size='small'>Yrkestittel (JANZZ)</Heading>
-            <Search
-              label='Finn yrkeskategori (standard for yrkesklassifisering - STYRK)'
-              variant='simple'
-              {...register('omStillingen.tittel')}
+            <UNSAFE_Combobox
+              options={[]}
+              disabled
+              label='Velg yrkestittel (standard for yrkesklassifisering - JANZZ)'
+              // {...register('omStillingen.tittel')}
               onChange={(e) => {
-                setValue('omStillingen.tittel', e);
+                // setValue('omStillingen.tittel', e);
               }}
             />
           </div>

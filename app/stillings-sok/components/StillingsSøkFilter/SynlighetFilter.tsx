@@ -1,7 +1,7 @@
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
 import * as React from 'react';
-import { TilgangskontrollForInnhold } from '../../../../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Rolle } from '../../../../types/Roller';
+import { TilgangskontrollForInnhold } from '../../../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { storForbokstav } from '../../../kandidat-sok/util';
 import { useStillingsSøkFilter } from '../../StillingsSøkContext';
 

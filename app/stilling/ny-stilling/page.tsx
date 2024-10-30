@@ -2,9 +2,9 @@
 import { Alert, BodyLong, Button } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
-import SideLayout from '../../../components/layout/SideLayout';
-import SideTopBanner from '../../../components/layout/SideTopBanner';
 import { FinnArbeidsgiverDTO } from '../../api/stilling/finn-arbeidsgiver/useFinnArbeidsgiver';
+import SideLayout from '../../components/layout/SideLayout';
+import SideTopBanner from '../../components/layout/SideTopBanner';
 import { Stillingskategori } from '../stilling-typer';
 import { OpprettStillingKnapp } from './components/OpprettStilling';
 import VelgArbeidsgiver from './components/VelgArbeidsgiver';

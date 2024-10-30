@@ -4,9 +4,9 @@ import Editor from '@monaco-editor/react';
 import * as React from 'react';
 
 import { Button } from '@navikt/ds-react';
-import { TilgangskontrollForInnhold } from '../../../../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Rolle } from '../../../../types/Roller';
 import { oppdaterStilling } from '../../../api/stilling/oppdater-stilling/oppdaterStilling';
+import { TilgangskontrollForInnhold } from '../../../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { useStillingsContext } from '../StillingsContext';
 
 const RedigerStillingDev: React.FC = () => {

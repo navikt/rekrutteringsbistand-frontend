@@ -9,9 +9,9 @@ import { Box, Button, Heading } from '@navikt/ds-react';
 import Link from 'next/link';
 import * as React from 'react';
 
-import TekstMedIkon from '../../../components/TekstMedIkon';
 import { konverterTilPresenterbarDato } from '../../../util/dato';
 import formaterMedStoreOgSmåBokstaver from '../../../util/tekst';
+import TekstMedIkon from '../../components/TekstMedIkon';
 
 import { RekrutteringsbistandStillingSchemaDTO } from '../../api/stillings-sok/schema/rekrutteringsbistandStillingSchema.zod';
 import {

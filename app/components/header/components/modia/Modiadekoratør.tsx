@@ -1,7 +1,7 @@
 import NAVSPA from '@navikt/navspa';
 import { FunctionComponent } from 'react';
-import { useApplikasjonContext } from '../../../../app/ApplikasjonContext';
-import { getMiljø, Miljø } from '../../../../util/miljø';
+import { getMiljø, Miljø } from '../../../../../util/miljø';
+import { useApplikasjonContext } from '../../../../ApplikasjonContext';
 import { DecoratorProps, Enhet } from './Interndekoratør';
 
 const InternflateDecorator = NAVSPA.importer<DecoratorProps>(

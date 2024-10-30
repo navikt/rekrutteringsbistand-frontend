@@ -1,8 +1,8 @@
 'use client';
 import { Tabs } from '@navikt/ds-react';
 import * as React from 'react';
-import { TilgangskontrollForInnhold } from '../../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Rolle } from '../../types/Roller';
+import { TilgangskontrollForInnhold } from '../components/tilgangskontroll/TilgangskontrollForInnhold';
 
 import TømFiltre from '../components/TømFiltre';
 import KandidatSøkChips from './components/KandidatSøkChips';

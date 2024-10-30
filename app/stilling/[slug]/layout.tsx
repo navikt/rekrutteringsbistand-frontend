@@ -1,9 +1,9 @@
 'use client';
 import { Buildings2Icon, PersonIcon } from '@navikt/aksel-icons';
 import * as React from 'react';
-import TekstMedIkon from '../../../components/TekstMedIkon';
-import SideLayout from '../../../components/layout/SideLayout';
-import SideTopBanner from '../../../components/layout/SideTopBanner';
+import TekstMedIkon from '../../components/TekstMedIkon';
+import SideLayout from '../../components/layout/SideLayout';
+import SideTopBanner from '../../components/layout/SideTopBanner';
 import StillingsTag from '../../stillings-sok/components/StillingsTag';
 import capitalizeEmployerName, { navnEierAvAstilling } from '../stilling-util';
 import {

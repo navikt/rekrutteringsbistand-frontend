@@ -1,8 +1,8 @@
 import { Alert, Link } from '@navikt/ds-react';
 import * as React from 'react';
 
-import { useApplikasjonContext } from '../../app/ApplikasjonContext';
-import { Rolle } from '../../types/Roller';
+import { Rolle } from '../../../types/Roller';
+import { useApplikasjonContext } from '../../ApplikasjonContext';
 import ErrorBoundary from '../feilhåndtering/ErrorBoundary';
 import css from './TilgangskontrollForInnhold.module.css';
 

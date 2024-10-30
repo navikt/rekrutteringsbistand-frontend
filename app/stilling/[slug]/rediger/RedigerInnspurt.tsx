@@ -203,6 +203,7 @@ export const RedigerInnspurt: React.FC<{
             <div />
           )}
           <Button
+            disabled={errors && Object.keys(errors).length > 0}
             icon={<CheckmarkCircleIcon />}
             type='submit'
             loading={isLoading}

@@ -1,11 +1,11 @@
 'use client';
 import React from 'react';
-import SWRLaster from '../../../components/SWRLaster';
-import { eierStilling } from '../../../components/tilgangskontroll/erEier';
 import { useKandidatlisteId } from '../../api/kandidat/useKandidatlisteId';
 import { StillingsDataDTO } from '../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { useStilling } from '../../api/stilling/rekrutteringsbistandstilling/[slug]/useStilling';
 import { useApplikasjonContext } from '../../ApplikasjonContext';
+import SWRLaster from '../../components/SWRLaster';
+import { eierStilling } from '../../components/tilgangskontroll/erEier';
 
 interface StillingsContextType {
   stillingsData: StillingsDataDTO;

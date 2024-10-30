@@ -1,7 +1,7 @@
 import { CheckmarkIcon } from '@navikt/aksel-icons';
 import { Heading } from '@navikt/ds-react';
 import * as React from 'react';
-import TekstMedIkon from '../../../../../components/TekstMedIkon';
+import TekstMedIkon from '../../../../components/TekstMedIkon';
 import { useStillingsContext } from '../../StillingsContext';
 
 export enum InkluderingsTag {

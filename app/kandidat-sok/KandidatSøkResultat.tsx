@@ -2,9 +2,9 @@
 import { PersonPlusIcon } from '@navikt/aksel-icons';
 import { Button, Heading } from '@navikt/ds-react';
 import * as React from 'react';
-import SWRLaster from '../../components/SWRLaster';
 import { useKandidatsøk } from '../api/kandidat-sok/useKandidatsøk';
 import { useApplikasjonContext } from '../ApplikasjonContext';
+import SWRLaster from '../components/SWRLaster';
 
 import { KandidatDataSchemaDTO } from '../api/kandidat-sok/schema/cvSchema.zod';
 import KandidatKort from './components/KandidatKort';

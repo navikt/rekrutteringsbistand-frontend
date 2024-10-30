@@ -1,10 +1,10 @@
 import { Tag } from '@navikt/ds-react';
 import { format, startOfDay } from 'date-fns';
 import * as React from 'react';
-import { eierStilling } from '../../../components/tilgangskontroll/erEier';
 import { StillingsDataDTO } from '../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { RekrutteringsbistandStillingSchemaDTO } from '../../api/stillings-sok/schema/rekrutteringsbistandStillingSchema.zod';
 import { useApplikasjonContext } from '../../ApplikasjonContext';
+import { eierStilling } from '../../components/tilgangskontroll/erEier';
 import {
   AdminStatus,
   StillingsStatus,

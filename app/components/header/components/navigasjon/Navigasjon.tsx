@@ -2,7 +2,7 @@ import { Tabs } from '@navikt/ds-react/Tabs';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { FunctionComponent } from 'react';
-import { Rolle } from '../../../../types/Roller';
+import { Rolle } from '../../../../../types/Roller';
 import { TilgangskontrollForInnhold } from '../../../tilgangskontroll/TilgangskontrollForInnhold';
 import Nyheter from '../nyheter/Nyheter';
 

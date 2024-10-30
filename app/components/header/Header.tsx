@@ -1,7 +1,7 @@
 'use client';
 import dynamic from 'next/dynamic';
 import * as React from 'react';
-import { isLocal } from '../../util/env';
+import { isLocal } from '../../../util/env';
 import { Navigeringsmeny } from './components/navigasjon/Navigasjon';
 
 const Modiadekoratør = isLocal

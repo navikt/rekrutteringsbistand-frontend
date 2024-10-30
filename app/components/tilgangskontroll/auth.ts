@@ -2,7 +2,7 @@ import { logger } from '@navikt/next-logger';
 import { getToken, validateToken } from '@navikt/oasis';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { isLocal } from '../../util/env';
+import { isLocal } from '../../../util/env';
 
 export async function verifyAPIAuthenticated(): Promise<boolean> {
   if (isLocal) return true;

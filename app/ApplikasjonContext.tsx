@@ -1,11 +1,11 @@
 'use client';
 import React from 'react';
-import Header from '../components/header/Header';
-import Sidelaster from '../components/Sidelaster';
 import { Rolle } from '../types/Roller';
 import { useBruker } from './api/bruker/useBruker';
 import { DecoratorDTO } from './api/decorator/decorator.dto';
 import { useDecoratorData } from './api/decorator/useDecoratorData';
+import Header from './components/header/Header';
+import Sidelaster from './components/Sidelaster';
 
 export type NavKontorMedNavn = {
   navKontor: string;

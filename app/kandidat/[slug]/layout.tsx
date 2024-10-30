@@ -8,9 +8,9 @@ import {
 } from '@navikt/aksel-icons';
 import { differenceInYears, format } from 'date-fns';
 import * as React from 'react';
-import SideLayout from '../../../components/layout/SideLayout';
-import SideTopBanner from '../../../components/layout/SideTopBanner';
-import TekstMedIkon from '../../../components/TekstMedIkon';
+import SideLayout from '../../components/layout/SideLayout';
+import SideTopBanner from '../../components/layout/SideTopBanner';
+import TekstMedIkon from '../../components/TekstMedIkon';
 import MineKandidater from './icons/minekandidater.svg';
 import { KandidatContextProvider, useKandidatContext } from './KandidatContext';
 interface KandidatSideRootLayoutProps {

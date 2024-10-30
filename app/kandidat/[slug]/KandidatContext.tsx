@@ -1,12 +1,12 @@
 'use client';
 import React from 'react';
-import SWRLaster from '../../../components/SWRLaster';
 import { KandidatDataSchemaDTO } from '../../api/kandidat-sok/schema/cvSchema.zod';
 import { useKandidatinformasjon } from '../../api/kandidat-sok/useKandidatinformasjon';
 import {
   KandidatsammendragDTO,
   useKandidatsammendrag,
 } from '../../api/kandidat-sok/useKandidatsammendrag';
+import SWRLaster from '../../components/SWRLaster';
 
 interface KandidatContextType {
   kandidatData: KandidatDataSchemaDTO;
