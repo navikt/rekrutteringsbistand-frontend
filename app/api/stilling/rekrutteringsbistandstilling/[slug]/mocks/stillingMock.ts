@@ -26,7 +26,7 @@ export const stillingMock = {
     mediaList: [],
     contactList: [
       {
-        name: 'rew',
+        name: '',
         email: 'q@q.com',
         phone: '12332112',
         role: null,
