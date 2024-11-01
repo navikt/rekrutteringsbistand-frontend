@@ -26,6 +26,7 @@ type IKandidatKort = {
 };
 
 const KandidatKort: React.FC<IKandidatKort> = ({ kandidat, markert }) => {
+  //TODO Fiks Finn stilling og stillinger
   return (
     <div className='border rounded-lg mb-4 border-gray-300 px-4 pb-4 pt-2 flex flex-row '>
       <Checkbox aria-selected={markert} hideLabel className='mr-4' value='1'>
@@ -68,12 +69,12 @@ const KandidatKort: React.FC<IKandidatKort> = ({ kandidat, markert }) => {
         </div>
       </div>
       <div className='flex flex-col justify-center flex-end font-bold mr-4 gap-2'>
-        <Link href={`/stillings-sok/kandidat/${kandidat.arenaKandidatnr}`}>
-          <TekstMedIkon ikon={<FileSearchIcon />} tekst='Finn stilling' />
-        </Link>
-        <Link href={`/stillings-sok/kandidat/${kandidat.arenaKandidatnr}`}>
-          <TekstMedIkon ikon={<TasklistIcon />} tekst='Stillinger' />
-        </Link>
+        {/* <Link href={`/stillings-sok/kandidat/${kandidat.arenaKandidatnr}`}> */}
+        <TekstMedIkon ikon={<FileSearchIcon />} tekst='Finn stilling' />
+        {/* </Link> */}
+        {/* <Link href={`/stillings-sok/kandidat/${kandidat.arenaKandidatnr}`}> */}
+        <TekstMedIkon ikon={<TasklistIcon />} tekst='Stillinger' />
+        {/* </Link> */}
       </div>
     </div>
   );
