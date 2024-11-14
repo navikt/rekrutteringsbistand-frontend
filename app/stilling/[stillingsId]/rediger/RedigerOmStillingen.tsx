@@ -7,7 +7,7 @@ import {
 } from '@navikt/ds-react';
 import Link from 'next/link';
 import * as React from 'react';
-import { SubmitHandler, useFormContext } from 'react-hook-form';
+import { Controller, SubmitHandler, useFormContext } from 'react-hook-form';
 import RikTekstEditor from '../../../components/rikteksteditor/RikTekstEditor';
 import StegNavigering from './components/StegNavigering';
 import { StillingsDataForm } from './redigerFormType.zod';
@@ -16,7 +16,7 @@ export const RedigerOmStillingen: React.FC<{
   nextStep: () => void;
   forrigeSteg: () => void;
 }> = ({ nextStep, forrigeSteg, stegNummer }) => {
-  const { register, setValue, handleSubmit, watch } =
+  const { register, setValue, handleSubmit, watch, control } =
     useFormContext<StillingsDataForm>();
 
   const [visAdresseFelt, setVisAdressefelt] = React.useState<boolean>(true);
@@ -29,7 +29,7 @@ export const RedigerOmStillingen: React.FC<{
   return (
     <div className='space-y-8'>
       <Heading size='large'>Om stillingen</Heading>
-      <p>
+      <span>
         Vi anbefaler å lese våre tips om hvordan du skriver en{' '}
         <Link
           target='_blank'
@@ -38,7 +38,7 @@ export const RedigerOmStillingen: React.FC<{
           skikkelig god stillingsannonse
         </Link>{' '}
         (åpnes i ny fane).
-      </p>
+      </span>
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className='space-y-8'>
@@ -82,8 +82,29 @@ export const RedigerOmStillingen: React.FC<{
             >
               Adresse
             </Checkbox>
+            {visAdresseFelt && (
+              <>
+                <Controller
+                  control={control}
+                  name={`omStillingen.arbeidssted.adresse`}
+                  render={({ field: { onChange, value } }) => (
+                    <TextField
+                      label='Navn'
+                      onChange={(e) => onChange(e.target.value)}
+                      value={value ?? ''}
+                      // error={
+                      // errors.omVirksomheten?.kontaktPersoner?.[index]?.name
+                      //   ?.message
+                      //   ? errors.omVirksomheten?.kontaktPersoner?.[index]
+                      //       ?.name?.message
+                      //   : null
+                      // }
+                    />
+                  )}
+                />
+              </>
+            )}
             <Checkbox
-              className='mt-4'
               checked={visKommuneFelt}
               onChange={(v) => setVisKommuneFelt(v.target.checked)}
               value='taxi'

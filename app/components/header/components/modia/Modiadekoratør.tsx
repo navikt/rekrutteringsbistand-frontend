@@ -15,7 +15,7 @@ const proxyUrl =
 
 const miljo = getMiljø() === Miljø.ProdGcp ? 'prod' : 'q0';
 
-const Modiadekoratør: FunctionComponent = async () => {
+const Modiadekoratør: FunctionComponent = () => {
   const { setValgtNavKontor } = useApplikasjonContext();
   return (
     <InternflateDecorator

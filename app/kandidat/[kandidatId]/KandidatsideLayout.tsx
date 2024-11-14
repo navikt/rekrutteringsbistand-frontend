@@ -7,27 +7,13 @@ import {
   PhoneIcon,
 } from '@navikt/aksel-icons';
 import { differenceInYears, format } from 'date-fns';
+import Image from 'next/image';
 import * as React from 'react';
+import MineKandidater from '../../../public/ikoner/minekandidater.svg';
 import SideLayout from '../../components/layout/SideLayout';
 import SideTopBanner from '../../components/layout/SideTopBanner';
 import TekstMedIkon from '../../components/TekstMedIkon';
-import MineKandidater from './icons/minekandidater.svg';
-import { KandidatContextProvider, useKandidatContext } from './KandidatContext';
-interface KandidatSideRootLayoutProps {
-  children: React.ReactNode;
-  params: { slug: string };
-}
-export default function KandidatSideRootLayout({
-  children,
-  params,
-}: KandidatSideRootLayoutProps) {
-  return (
-    <KandidatContextProvider kandidatId={params.slug}>
-      <KandidatSideLayout>{children}</KandidatSideLayout>
-    </KandidatContextProvider>
-  );
-}
-
+import { useKandidatContext } from './KandidatContext';
 export interface KandidatSideProps {
   children?: React.ReactNode | undefined;
 }
@@ -40,7 +26,7 @@ const KandidatSideLayout: React.FC<KandidatSideProps> = ({ children }) => {
       banner={
         <SideTopBanner
           tilbakeKnapp
-          ikon={<MineKandidater />}
+          ikon={<Image src={MineKandidater} alt='Mine kandidater' />}
           tittel={`${kandidatsammendragData.fornavn} ${kandidatsammendragData.etternavn}`}
           headerInnhold={
             <div className='mt-2'>
@@ -77,3 +63,5 @@ const KandidatSideLayout: React.FC<KandidatSideProps> = ({ children }) => {
     </SideLayout>
   );
 };
+
+export default KandidatSideLayout;

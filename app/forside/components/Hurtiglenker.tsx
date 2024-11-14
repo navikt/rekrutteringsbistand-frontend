@@ -1,11 +1,14 @@
+'use client';
+
+import Image from 'next/image';
 import Link from 'next/link';
 import { FunctionComponent, ReactNode } from 'react';
+import FinnKandidaterIkon from '../../../public/ikoner/finn-kandidater.svg';
+import FinnStillinger from '../../../public/ikoner/finn-stillinger.svg';
+import OpprettNyStillingIkon from '../../../public/ikoner/opprett-ny-stilling.svg';
+import SeMineStillingerIkon from '../../../public/ikoner/se-mine-stillinger.svg';
 import { Rolle } from '../../../types/Roller';
 import { TilgangskontrollForInnhold } from '../../components/tilgangskontroll/TilgangskontrollForInnhold';
-import FinnKandidaterIkon from './icons/finn-kandidater.svg';
-import FinnStillinger from './icons/finn-stillinger.svg';
-import OpprettNyStillingIkon from './icons/opprett-ny-stilling.svg';
-import SeMineStillingerIkon from './icons/se-mine-stillinger.svg';
 
 const Hurtiglenker: FunctionComponent = () => {
   return (
@@ -18,24 +21,24 @@ const Hurtiglenker: FunctionComponent = () => {
       <div className='justify-start items-start gap-4 inline-flex w-full'>
         <LenkepanelMedIkon
           href='/kandidat-sok'
-          ikon={<FinnKandidaterIkon />}
+          ikon={<Image src={FinnKandidaterIkon} alt='Finn kandidater' />}
           tittel='Finn kandidater'
         />
         <LenkepanelMedIkon
           href='/stillings-sok'
-          ikon={<FinnStillinger />}
+          ikon={<Image src={FinnStillinger} alt='Finn stillinger' />}
           tittel='Finn stillinger'
         />
 
         <LenkepanelMedIkon
           href={'/stillings-sok?portefolje=visMine'}
-          ikon={<SeMineStillingerIkon />}
+          ikon={<Image src={SeMineStillingerIkon} alt='Se mine stillinger' />}
           tittel='Se mine stillinger'
         />
 
         <LenkepanelMedIkon
           href='/stilling/ny-stilling'
-          ikon={<OpprettNyStillingIkon />}
+          ikon={<Image src={OpprettNyStillingIkon} alt='Opprett ny stilling' />}
           tittel='Opprett ny stilling'
         />
       </div>

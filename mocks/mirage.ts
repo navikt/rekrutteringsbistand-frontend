@@ -1,5 +1,5 @@
 'use client';
-import { createServer } from 'miragejs';
+import { createServer, Model } from 'miragejs';
 import { brukerMirage } from '../app/api/bruker/useBruker';
 import { decoratorDataMirage } from '../app/api/decorator/useDecoratorData';
 import { foresporselOmDelingAvCVStatistikkMirage } from '../app/api/foresporsel-om-deling-av-cv/statistikk/useForesporselOmdelingAvCV';
@@ -16,25 +16,36 @@ import { geografiMirage } from '../app/api/stilling/geografi/useGeografi';
 import { opprettNyStillingMirage } from '../app/api/stilling/ny-stilling/opprettNyStilling';
 import { oppdaterStillingMirage } from '../app/api/stilling/oppdater-stilling/oppdaterStilling';
 import { stillingMirage } from '../app/api/stilling/rekrutteringsbistandstilling/[slug]/useStilling';
-createServer({
-  routes() {
-    brukerMirage(this);
-    kandidatlisteIdMirage(this);
-    geografiMirage(this);
-    kandidatlisteMirage(this);
-    antallKandidaterMirage(this);
-    kandidatSokMirage(this);
-    statistikkMirage(this);
-    foresporselOmDelingAvCVStatistikkMirage(this);
-    stillingMirage(this);
-    opprettNyStillingMirage(this);
-    oppdaterStillingMirage(this);
-    finnArbeidsgiverMirage(this);
-    decoratorDataMirage(this);
-    kandidagsammendragMirage(this);
-    kandidatinformasjonMirage(this);
-    kontorSøkMirage(this);
-    // stillingssøk
-    this.passthrough('/api/stillings-sok');
-  },
-});
+
+export function makeServer({ environment = 'test' } = {}) {
+  let server = createServer({
+    environment,
+
+    models: {
+      movie: Model,
+    },
+
+    routes() {
+      brukerMirage(this);
+      kandidatlisteIdMirage(this);
+      geografiMirage(this);
+      kandidatlisteMirage(this);
+      antallKandidaterMirage(this);
+      kandidatSokMirage(this);
+      statistikkMirage(this);
+      foresporselOmDelingAvCVStatistikkMirage(this);
+      stillingMirage(this);
+      opprettNyStillingMirage(this);
+      oppdaterStillingMirage(this);
+      finnArbeidsgiverMirage(this);
+      decoratorDataMirage(this);
+      kandidagsammendragMirage(this);
+      kandidatinformasjonMirage(this);
+      kontorSøkMirage(this);
+      // stillingssøk
+      this.passthrough('*');
+    },
+  });
+
+  return server;
+}

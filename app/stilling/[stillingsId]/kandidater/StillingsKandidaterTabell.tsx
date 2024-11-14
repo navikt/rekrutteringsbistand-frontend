@@ -14,6 +14,13 @@ import {
   kandidaterSchemaDTO,
   kandidatlisteSchemaDTO,
 } from '../../../api/kandidat/schema.zod';
+import HendelseTag from './components/HendelseTag';
+import StatusTag from './components/StatusTag';
+import {
+  Kandidatstatus,
+  Kandidatutfall,
+  Utfallsendring,
+} from './KandidatIKandidatlisteTyper';
 import { useStillingsKandidaterFilter } from './StillingsKandidaterFilterContext';
 
 const StillingsKandidaterTabell: React.FC<{
@@ -148,13 +155,28 @@ const StillingsKandidaterTabell: React.FC<{
                 {format(kandidat.lagtTilTidspunkt, 'dd.MM.yyyy')}
               </Table.DataCell>
               <Table.DataCell>
+                <StatusTag status={kandidat.status as Kandidatstatus} />
+                <HendelseTag
+                  ikkeVisÅrstall
+                  utfall={kandidat.utfall as Kandidatutfall}
+                  utfallsendringer={
+                    kandidat.utfallsendringer as Utfallsendring[]
+                  }
+                  // forespørselOmDelingAvCv={
+                  //     forespørselOmDelingAvCv.kind === Nettstatus.Suksess
+                  //         ? forespørselOmDelingAvCv.data.gjeldendeForespørsel
+                  //         : undefined
+                  // }
+                  forespørselOmDelingAvCv={undefined}
+                  sms={null}
+                />
+              </Table.DataCell>
+              <Table.DataCell>
                 <Button
                   disabled
                   variant='tertiary'
                   icon={<PencilIcon title='Rediger' />}
                 />
-              </Table.DataCell>
-              <Table.DataCell>
                 <Button
                   disabled
                   variant='tertiary'

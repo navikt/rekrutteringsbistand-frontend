@@ -135,6 +135,7 @@ export const RedigerPraktiskInfo: React.FC<{
           control={control}
           render={({ field }) => (
             <>
+              DROPDOWN HER //TODO
               <RadioGroup
                 value={field.value}
                 onChange={(val) => field.onChange(val)}

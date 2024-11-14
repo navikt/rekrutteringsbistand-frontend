@@ -32,9 +32,9 @@ const EierStillingVisning: React.FC = () => {
     ikkeArkiverteKandidater.filter(
       (k) => k.utfall === Kandidatutfall.FåttJobben,
     ).length +
-      (data?.formidlingerAvUsynligKandidat?.filter(
-        (k) => k.utfall === Kandidatutfall.FåttJobben,
-      ).length ?? 0) ?? 0;
+    (data?.formidlingerAvUsynligKandidat?.filter(
+      (k) => k.utfall === Kandidatutfall.FåttJobben,
+    )?.length || 0);
 
   const antallStillinger = data?.antallStillinger;
   const besatteStillinger = antallKandidaterSomHarFåttJobb;

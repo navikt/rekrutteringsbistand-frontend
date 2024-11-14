@@ -1,4 +1,6 @@
 'use client';
+
+import { NuqsAdapter } from 'nuqs/adapters/next';
 import React from 'react';
 import { Rolle } from '../types/Roller';
 import { useBruker } from './api/bruker/useBruker';
@@ -95,22 +97,24 @@ export const ApplikasjonContextProvider: React.FC<
       };
 
   return (
-    <ApplikasjonContext.Provider
-      value={{
-        brukerData,
-        darkMode,
-        setDarkMode,
-        setValgtNavKontor,
-        valgtNavKontor,
-        harRolle,
-        tilgangskontrollErPå,
-      }}
-    >
-      <Header />
-      <main>
-        <div className='mx-auto p-4  mb-8 max-w-screen-full'>{children}</div>
-      </main>
-    </ApplikasjonContext.Provider>
+    <NuqsAdapter>
+      <ApplikasjonContext.Provider
+        value={{
+          brukerData,
+          darkMode,
+          setDarkMode,
+          setValgtNavKontor,
+          valgtNavKontor,
+          harRolle,
+          tilgangskontrollErPå,
+        }}
+      >
+        <Header />
+        <main>
+          <div className='mx-auto p-4  mb-8 max-w-screen-full'>{children}</div>
+        </main>
+      </ApplikasjonContext.Provider>
+    </NuqsAdapter>
   );
 };
 

@@ -27,7 +27,8 @@ const StillingPrint: React.FC<StillingPrintProps> = ({ printRef }) => {
   });
 
   React.useEffect(() => {
-    if (printRef.current) {
+    const currentRef = printRef.current;
+    if (currentRef) {
       const printTitle = document.createElement('h1');
       printTitle.innerText = stillingsData.stilling.title ?? '';
       printTitle.className = 'print-only';
@@ -37,20 +38,20 @@ const StillingPrint: React.FC<StillingPrintProps> = ({ printRef }) => {
       printTitle.style.padding = '10px';
       printTitle.style.borderBottom = '1px solid #000';
 
-      printRef.current.prepend(printTitle);
-      printRef.current.classList.add('print-content');
+      currentRef.prepend(printTitle);
+      currentRef.classList.add('print-content');
     }
 
     return () => {
-      if (printRef.current) {
-        const printTitle = printRef.current.querySelector('.print-only');
+      if (currentRef) {
+        const printTitle = currentRef.querySelector('.print-only');
         if (printTitle) {
           printTitle.remove();
         }
-        printRef.current.classList.remove('print-content');
+        currentRef.classList.remove('print-content');
       }
     };
-  }, [printRef]);
+  }, [printRef, stillingsData]);
 
   return (
     <Button
@@ -60,7 +61,7 @@ const StillingPrint: React.FC<StillingPrintProps> = ({ printRef }) => {
       icon={<PrinterSmallIcon />}
       onClick={() => reactToPrintFn()}
     >
-      Skriv ut
+      Skriv ut stilling
     </Button>
   );
 };

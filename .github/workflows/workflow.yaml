@@ -1,122 +1,17 @@
-name: Build, Test, and Deploy
-
-
-on: [push, workflow_dispatch]
-
+name: Bygg og Deploy Rekrutteringsbistand-frontend
+on:
+  push:
+  workflow_dispatch: # Legger til mulighet for manuell kjøring
 
 jobs:
-
-  # test:
-  #   name: Playwright test with report
-  #   permissions:
-  #     contents: write # to write sarif
-  #   timeout-minutes: 60
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #   - uses: actions/checkout@v4
-  #   - uses: actions/setup-node@v4
-  #     with:
-  #       node-version: lts/*
-  #       registry-url: "https://npm.pkg.github.com"
-  #   - name: Install dependencies
-  #     env:
-  #       NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
-  #     run: npm ci && npm run build
-  #   - name: Install Playwright Browsers
-  #     run: npx playwright install --with-deps
-  #   - name: Start Node application
-  #     run: npm run dev &
-  #   - name: Test application
-  #     run: npx playwright test
-  #   - uses: actions/upload-artifact@v4
-  #     if: failure()
-  #     with:
-  #       name: playwright-report
-  #       path: playwright-report/
-  #       retention-days: 30
-  #   - name: Deploy to GitHub Pages
-  #     uses: peaceiris/actions-gh-pages@v3
-  #     with:
-  #         github_token: ${{ secrets.GITHUB_TOKEN }}
-  #         publish_dir: ./playwright-report
-  #         publish_branch: gh-pages  # the target branch
-  #         keep_files: true 
-
-  build:
-    name: Bygg og push
-    # needs: test
-    runs-on: ubuntu-latest
+  build-and-deploy:
+    name: Next
+    uses: navikt/toi-github-actions-workflows/.github/workflows/build-and-deploy-nextjs.yaml@main
+    with:
+      app_name: 'rekrutteringsbistand-frontend'
+      deploy-to-dev-if-branch-name-is: 'deploy-script'
+    secrets: inherit
     permissions:
       contents: read
       id-token: write
-    outputs:
-      image: ${{ steps.docker-build-push.outputs.image }}
-    steps:
-      - uses: actions/checkout@v4
-      - name: Push Docker image to GAR
-        id: docker-build-push
-        uses: nais/docker-build-push@v0
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
-        with:
-          team: toi
-          identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
-          project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
-          build_secrets: 'NODE_AUTH_TOKEN=${{ secrets.READER_TOKEN }}'
-      - name: Set Image Output
-        id: set-image-output
-        run: echo "image=${{ steps.docker-build-push.outputs.image }}" >> $GITHUB_ENV
-
-  trivy:
-    runs-on: ubuntu-latest
-    name: Trivy vulnerability scanner
-    needs: build
-    permissions:
-      contents: write # to write sarif
-      security-events: write # push sarif to github security
-      id-token: write # for nais/login
-      actions: read # for private repositories
-    steps:
-      - uses: actions/checkout@v4
-      - uses: nais/login@v0
-        with:
-          project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
-          identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
-          team: toi
-
-      - name: Pull docker image
-        run: docker pull ${{ needs.build.outputs.image }}
-
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: '${{ needs.build.outputs.image }}'
-          format: 'sarif'
-          output: 'trivy.sarif'
-          severity: 'HIGH,CRITICAL'
-          limit-severities-for-sarif: true
-
-      - name: Upload results to GitHub Security
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: 'trivy.sarif'
-
-  deploy:
-    name: Deploy til dev-gcp
-    runs-on: ubuntu-latest
-    needs: 
-      # - test 
-      # - trivy
-      - build
-    permissions:
-      contents: read
-      id-token: write
-    steps:
-      - uses: actions/checkout@v4
-      - name: Deploy to NAIS
-        uses: nais/deploy/actions/deploy@v2
-        env:
-          CLUSTER: dev-gcp
-          RESOURCE: .nais/nais-dev.yaml
-          VARS: .nais/dev-gcp.json
-          VAR: image=${{ needs.build.outputs.image }}
+      security-events: write

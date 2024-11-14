@@ -20,9 +20,9 @@ const KandidatErfaring: React.FC<KandidatErfaringProps> = ({ children }) => {
                 Yrkeserfaring
               </Heading>
               <div className='my-2'>
-                {kandidatData.yrkeserfaring.map((erfaring) => (
+                {kandidatData.yrkeserfaring.map((erfaring, index) => (
                   <TidslinjeFelt
-                    key={erfaring?.fraDato}
+                    key={index}
                     startDate={erfaring?.fraDato}
                     endDate={erfaring?.tilDato}
                     title={erfaring?.stillingstittel}

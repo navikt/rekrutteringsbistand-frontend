@@ -1,14 +1,15 @@
 'use client';
 import { PlusCircleIcon } from '@navikt/aksel-icons';
 import { Button, Tabs } from '@navikt/ds-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import * as React from 'react';
+import Piktogram from '../../public/ikoner/finn-stillinger.svg';
 import { Rolle } from '../../types/Roller';
 import SideLayout from '../components/layout/SideLayout';
 import SideTopBanner from '../components/layout/SideTopBanner';
 import { TilgangskontrollForInnhold } from '../components/tilgangskontroll/TilgangskontrollForInnhold';
 import Loading from '../laoading';
-import Piktogram from './components/icons/finn-stillinger.svg';
 import StillingsSøkSidePanel from './components/StillingsSøkSidePanel';
 import { StillingsSøkPortefølje } from './stillingssøk-typer';
 import {
@@ -40,7 +41,7 @@ const StillingsSøkLayout: React.FC<StillingsSøkProps> = ({ formidlinger }) => 
           tittel={
             formidlinger ? 'Etterregistrering formidlinger' : 'Stillinger'
           }
-          ikon={<Piktogram />}
+          ikon={<Image src={Piktogram} alt='Finn stillinger' />}
           knappIBanner={
             <TilgangskontrollForInnhold
               skjulVarsel

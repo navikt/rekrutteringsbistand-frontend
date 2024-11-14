@@ -82,6 +82,7 @@ const OmStillingen: React.FC = () => {
               />
             </div>
           </div>
+
           <div className='mt-10'>
             <StillingsTekst />
           </div>
@@ -93,7 +94,11 @@ const OmStillingen: React.FC = () => {
             <OmAnnonsen />
           </div>
         </div>
-        <StillingSidebar printRef={contentRef} />
+        {contentRef.current && (
+          <StillingSidebar
+            printRef={contentRef as React.RefObject<HTMLDivElement>}
+          />
+        )}
       </div>
     </div>
   );

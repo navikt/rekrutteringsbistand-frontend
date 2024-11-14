@@ -1,6 +1,5 @@
 'use client';
 
-import { ArrowForwardIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
@@ -20,16 +19,7 @@ const StillingSidebarKnapper: React.FC<StillingSidebarKnapperProps> = ({
 
   return (
     <>
-      <div className='grid grid-cols-2 gap-2'>
-        <Button
-          disabled
-          variant='secondary'
-          size='small'
-          className='w-full h-5 '
-          icon={<ArrowForwardIcon />}
-        >
-          Del stilling
-        </Button>
+      <div className='flex'>
         <StillingPrint printRef={printRef} />
       </div>
       {erEier && <EierStillingVisning />}
