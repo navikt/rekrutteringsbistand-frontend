@@ -1,4 +1,4 @@
-name: Bygg og Deploy Rekrutteringsbistand
+name: Bygg og Deploy Rekrutteringsbistand-frontend
 on:
   push:
   workflow_dispatch: # Legger til mulighet for manuell kjøring
@@ -8,7 +8,8 @@ jobs:
     name: Next
     uses: navikt/toi-github-actions-workflows/.github/workflows/build-and-deploy-nextjs.yaml@main
     with:
-      app_name: 'rekrutteringsbistand'
+      app_name: 'rekrutteringsbistand-frontend'
+      dev-vars-path: 'nais/dev-gcp.json'
       deploy-to-dev-if-branch-name-is: 'deploy-script'
     secrets: inherit
     permissions:
