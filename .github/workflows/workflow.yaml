@@ -16,4 +16,3 @@ jobs:
       contents: read
       id-token: write
       security-events: write
-      actions: read # Nødvendig bare fordi Github-repoet ikke er public
