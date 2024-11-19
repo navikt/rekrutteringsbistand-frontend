@@ -1,8 +1,6 @@
-import { validateToken } from '@navikt/oasis';
 import type { Metadata } from 'next';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
-import * as React from 'react';
 import { isLocal } from '../util/env';
 import { ApplikasjonContextProvider } from './ApplikasjonContext';
 import MirageInitializer from './components/MirageInitializer';
@@ -26,11 +24,11 @@ export default async function RootLayout({
     redirect(`/oauth2/login?redirect=${redirectPath}`);
   }
 
-  try {
-    await validateToken(token);
-  } catch (error) {
-    redirect(`/oauth2/login?redirect=${redirectPath}`);
-  }
+  // try {
+  //   await validateToken(token);
+  // } catch (error) {
+  //   redirect(`/oauth2/login?redirect=${redirectPath}`);
+  // }
 
   return (
     <html lang='no'>
