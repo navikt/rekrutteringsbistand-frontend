@@ -78,11 +78,9 @@ export const ApplikasjonContextProvider: React.FC<
   if (isLoading || isLoadingDecorator) {
     return <Sidelaster />;
   }
-
-  if (error) {
-    if (error.status === 401) {
-      redirect(`/oauth2/login?redirect=${window.location.pathname}`);
-    }
+  console.log('🎺 error', error);
+  if (error?.status === 401) {
+    redirect(`/oauth2/login?redirect=${window.location.pathname}`);
   }
 
   if (data?.navIdent === undefined) {
