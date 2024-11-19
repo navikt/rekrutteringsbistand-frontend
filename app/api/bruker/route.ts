@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
     if (!brukerensAccessToken) {
       const redirectUrl = req.headers.get('x-path');
       return NextResponse.redirect(
-        new URL(`/oauth2/login?redirect=${redirectUrl}`, req.url),
+        new URL(`/oauth2/login?redirect=${redirectUrl ?? '/'}`, req.url),
       );
     }
 
