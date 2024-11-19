@@ -1,5 +1,6 @@
 'use client';
 
+import { redirect } from 'next/navigation';
 import { NuqsAdapter } from 'nuqs/adapters/next';
 import React from 'react';
 import { Rolle } from '../types/Roller';
@@ -54,7 +55,7 @@ export const ApplikasjonContextProvider: React.FC<
 > = ({ children }) => {
   const [darkMode, setDarkMode] = React.useState<boolean>(false);
 
-  const { isLoading, data } = useBruker();
+  const { isLoading, data, error } = useBruker();
   const { isLoading: isLoadingDecorator, data: decoratorData } =
     useDecoratorData();
 
@@ -78,9 +79,22 @@ export const ApplikasjonContextProvider: React.FC<
     return <Sidelaster />;
   }
 
+  if (error) {
+    if (error.status === 401) {
+      redirect(`/oauth2/login?redirect=${window.location.pathname}`);
+    }
+  }
+
   if (data?.navIdent === undefined) {
     return <span>Feil ved innlasting av bruker</span>;
   }
+
+  //TODO Behov for å validere token?
+  // try {
+  //   await validateToken(token);
+  // } catch (error) {
+  //   redirect(`/oauth2/login?redirect=${redirectPath}`);
+  // }
 
   const brukerData: BrukerData = decoratorData
     ? {

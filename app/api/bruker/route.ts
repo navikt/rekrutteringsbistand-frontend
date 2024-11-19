@@ -19,12 +19,11 @@ export async function GET(req: NextRequest) {
     const brukerensAccessToken = getToken(headers);
 
     if (!brukerensAccessToken) {
-      const redirectUrl = req.headers.get('x-path');
-      return NextResponse.redirect(
-        new URL(
-          `/oauth2/login?redirect=${redirectUrl ?? '/'}`,
-          process.env.NEXT_PUBLIC_BASE_URL,
-        ),
+      return NextResponse.json(
+        {
+          error: 'Bruker mangler access token',
+        },
+        { status: 401 },
       );
     }
 
