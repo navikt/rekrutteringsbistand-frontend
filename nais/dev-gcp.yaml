@@ -1,6 +1,9 @@
 apiVersion: nais.io/v1alpha1
 kind: Application
 
+.definitions: &defaults
+  baseUrl: https://rekrutteringsbistand-frontend.intern.dev.nav.no
+
 metadata:
   labels:
     team: toi
@@ -12,7 +15,7 @@ spec:
     min: 1
   image: {{ image }}
   ingresses: &base_url
-    - https://rekrutteringsbistand-frontend.intern.dev.nav.no
+     - *defaults.baseUrl
   port: 3000
   azure:
     application:
@@ -49,7 +52,7 @@ spec:
       memory: 512Mi
   env:
     - name: NEXT_PUBLIC_BASE_URL
-      value: *base_url[0]
+      value: *defaults.baseUrl
     - name: AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET
       value: {{ adGruppeRekrutteringsbistandArbeidsgiverrettet }}
     - name: AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET
