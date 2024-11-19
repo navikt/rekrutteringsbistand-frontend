@@ -7,7 +7,6 @@ import { NextResponse } from 'next/server';
 export async function middleware(request: NextRequest): Promise<NextResponse> {
   const requestUrl: URL = new URL(request.url);
   const requestHeaders = await headers();
-  requestHeaders.set('x-path', requestUrl.pathname + requestUrl.search);
 
   const token = getToken(requestHeaders);
   if (!token) {
@@ -22,6 +21,5 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
 }
 
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
-  missing: [{ type: 'header', key: 'x-path' }],
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)', '/api/bruker'],
 };
