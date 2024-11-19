@@ -1,6 +1,5 @@
 import { getToken } from '@navikt/oasis';
 import { headers } from 'next/headers';
-import { redirect } from 'next/navigation';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
@@ -10,7 +9,9 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
 
   const token = getToken(requestHeaders);
   if (!token) {
-    redirect(`/oauth2/login?redirect=${requestUrl.pathname}`);
+    return NextResponse.redirect(
+      new URL(`/oauth2/login?redirect=${requestUrl.pathname}`, request.url),
+    );
   }
 
   return NextResponse.next({
