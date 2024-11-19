@@ -1,4 +1,7 @@
+import { validateToken } from '@navikt/oasis';
 import type { Metadata } from 'next';
+import { headers } from 'next/headers';
+import { redirect } from 'next/navigation';
 import * as React from 'react';
 import { isLocal } from '../util/env';
 import { ApplikasjonContextProvider } from './ApplikasjonContext';
@@ -14,6 +17,21 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const headersList = await headers();
+  const token = headersList.get('authorization')?.replace('Bearer ', '');
+
+  const redirectPath = headersList.get('x-path');
+
+  if (!token) {
+    redirect(`/oauth2/login?redirect=${redirectPath}`);
+  }
+
+  try {
+    await validateToken(token);
+  } catch (error) {
+    redirect(`/oauth2/login?redirect=${redirectPath}`);
+  }
+
   return (
     <html lang='no'>
       <body>
