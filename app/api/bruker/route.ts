@@ -1,6 +1,5 @@
 import { getToken } from '@navikt/oasis';
 import { decodeJwt } from 'jose';
-import { redirect } from 'next/navigation';
 import { NextRequest, NextResponse } from 'next/server';
 import { navnForRolleId } from '../../components/tilgangskontroll/roller';
 
@@ -21,7 +20,9 @@ export async function GET(req: NextRequest) {
 
     if (!brukerensAccessToken) {
       const redirectUrl = req.headers.get('x-path');
-      return redirect(`/oauth2/login?redirect=${redirectUrl}`);
+      return NextResponse.redirect(
+        new URL(`/oauth2/login?redirect=${redirectUrl}`, req.url),
+      );
     }
 
     const navIdent = hentNavIdent(brukerensAccessToken);

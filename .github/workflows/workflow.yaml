@@ -10,7 +10,7 @@ jobs:
     with:
       app_name: 'rekrutteringsbistand-frontend'
       dev-vars-path: 'nais/dev-gcp.json'
-      deploy-to-dev-if-branch-name-is: 'deploy-script'
+      deploy-to-dev-if-branch-name-is: 'dev'
     secrets: inherit
     permissions:
       contents: read
