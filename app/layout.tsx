@@ -24,12 +24,6 @@ export default async function RootLayout({
     redirect(`/oauth2/login?redirect=${redirectPath}`);
   }
 
-  // try {
-  //   await validateToken(token);
-  // } catch (error) {
-  //   redirect(`/oauth2/login?redirect=${redirectPath}`);
-  // }
-
   return (
     <html lang='no'>
       <body>
