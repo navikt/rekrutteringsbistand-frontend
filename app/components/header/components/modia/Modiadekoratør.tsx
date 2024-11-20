@@ -13,6 +13,13 @@ const proxyUrl =
 
 const DynamicDecorator = dynamic(
   async () => {
+    console.log({
+      appName: 'Rekrutteringsbistand',
+      environment: miljo,
+      proxyEnv: process.env.NEXT_PUBLIC_BASE_URL,
+      proxy: proxyUrl,
+    });
+
     const NAVSPA = await import('@navikt/navspa');
     const Decorator = NAVSPA.default.importer<DecoratorProps>(
       'internarbeidsflate-decorator-v3',
