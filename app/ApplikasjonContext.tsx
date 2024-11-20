@@ -6,6 +6,7 @@ import { Rolle } from '../types/Roller';
 import { useBruker } from './api/bruker/useBruker';
 import { DecoratorDTO } from './api/decorator/decorator.dto';
 import { useDecoratorData } from './api/decorator/useDecoratorData';
+import ErrorBoundary from './components/feilhåndtering/ErrorBoundary';
 import Header from './components/header/Header';
 import Sidelaster from './components/Sidelaster';
 
@@ -97,22 +98,26 @@ export const ApplikasjonContextProvider: React.FC<
 
   return (
     <NuqsAdapter>
-      <ApplikasjonContext.Provider
-        value={{
-          brukerData,
-          darkMode,
-          setDarkMode,
-          setValgtNavKontor,
-          valgtNavKontor,
-          harRolle,
-          tilgangskontrollErPå,
-        }}
-      >
-        <Header />
-        <main>
-          <div className='mx-auto p-4  mb-8 max-w-screen-full'>{children}</div>
-        </main>
-      </ApplikasjonContext.Provider>
+      <ErrorBoundary>
+        <ApplikasjonContext.Provider
+          value={{
+            brukerData,
+            darkMode,
+            setDarkMode,
+            setValgtNavKontor,
+            valgtNavKontor,
+            harRolle,
+            tilgangskontrollErPå,
+          }}
+        >
+          <Header />
+          <main>
+            <div className='mx-auto p-4  mb-8 max-w-screen-full'>
+              {children}
+            </div>
+          </main>
+        </ApplikasjonContext.Provider>
+      </ErrorBoundary>
     </NuqsAdapter>
   );
 };
