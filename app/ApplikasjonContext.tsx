@@ -77,13 +77,6 @@ export const ApplikasjonContextProvider: React.FC<
     return <Sidelaster />;
   }
 
-  // if (brukerHook.error) {
-  //   if (typeof window !== 'undefined') {
-  //     redirect(`/oauth2/login?redirect=${window.location.pathname}`);
-  //   }
-  //   return null;
-  // }
-
   if (!brukerHook.data) {
     return <span>Feil ved innlasting av bruker</span>;
   }

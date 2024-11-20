@@ -1,22 +1,33 @@
 'use client';
 
+import { Box } from '@navikt/ds-react';
 import { useEffect } from 'react';
 
 export default function Error({
   error,
-  reset,
 }: {
   error: Error & { digest?: string };
-  reset: () => void;
 }) {
   useEffect(() => {
-    console.error(error);
+    if (error instanceof Response && error.status === 401) {
+      window.location.href = `/oauth2/login?redirect=${
+        window.location.pathname
+      }`;
+    }
   }, [error]);
 
   return (
-    <div>
-      <h2>Noe gikk galt!</h2>
-      <button onClick={() => reset()}>Prøv igjen</button>
+    <div className='space-y-4'>
+      <h2 className='text-2xl font-semibold'>Ojsann!</h2>
+      <Box
+        padding='4'
+        borderWidth='1'
+        borderRadius='small'
+        className='bg-white'
+      >
+        <p>Det skjedde en uventet feil.</p>
+        <p>Vennligst prøv igjen senere</p>
+      </Box>
     </div>
   );
 }
