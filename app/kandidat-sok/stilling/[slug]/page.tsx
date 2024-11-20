@@ -9,7 +9,7 @@ import {
   stedmappingFraGammeltNavn,
   stedmappingFraGammeltNummer,
 } from '../../../api/stillings-sok/esFiltre/fylkeOgKommuneMapping';
-import Loading from '../../../laoading';
+import Sidelaster from '../../../components/Sidelaster';
 import { FylkeDTO } from '../../../stillings-sok/components/StillingsSøkFilter/GeografiFilter';
 import { useKandidatSøkFilter } from '../../KandidaSokContext';
 
@@ -89,5 +89,5 @@ export default function KandidatSokStilling() {
     }
   }, [stillingsData.data, geografi.data, filter.ønsketYrke]);
 
-  return <Loading />;
+  return <Sidelaster />;
 }
