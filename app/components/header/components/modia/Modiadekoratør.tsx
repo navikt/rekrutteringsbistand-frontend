@@ -1,6 +1,5 @@
 'use client';
-import dynamic from 'next/dynamic';
-import { FunctionComponent, Suspense, useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { getMiljø, Miljø } from '../../../../../util/miljø';
 import { useApplikasjonContext } from '../../../../ApplikasjonContext';
 import { DecoratorProps } from './Interndekoratør';
@@ -17,39 +16,41 @@ if (typeof window !== 'undefined') {
   NAVSPA = require('@navikt/navspa');
 }
 
-const DynamicDecorator = dynamic(
-  async () => {
-    if (!NAVSPA) {
-      throw new Error('NAVSPA is not available on the server.');
-    }
-    const InternflateDecorator = NAVSPA.importer<DecoratorProps>(
-      'internarbeidsflate-decorator-v3',
-    );
-    console.log('🎺 Decorator loaded:', InternflateDecorator);
-    return InternflateDecorator;
-  },
-  { ssr: false },
-);
-
 const miljo = getMiljø() === Miljø.ProdGcp ? 'prod' : 'q0';
 
-const Modiadekoratør: FunctionComponent = () => {
+const Modiadekoratør: React.FC = () => {
   const { setValgtNavKontor } = useApplikasjonContext();
-  const [hasError, setHasError] = useState(false);
+  const [Decorator, setDecorator] =
+    useState<React.ComponentType<DecoratorProps> | null>(null);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
-    if (!NAVSPA) {
-      setHasError(true);
+    if (typeof window !== 'undefined') {
+      import('@navikt/navspa')
+        .then((NAVSPA) => {
+          const InternflateDecorator = NAVSPA.default.importer<DecoratorProps>(
+            'internarbeidsflate-decorator-v3',
+          );
+          setDecorator(() => InternflateDecorator);
+        })
+        .catch((err) => {
+          console.error('Failed to load decorator:', err);
+          setError(true);
+        });
     }
   }, []);
 
-  if (hasError) {
-    return <div>Klarte ikke å laste inn Modia dekoratør</div>;
+  if (error) {
+    return <div>Kunne ikke laste dekoratør. Vennligst prøv igjen senere.</div>;
+  }
+
+  if (!Decorator) {
+    return <div>Laster dekoratør...</div>;
   }
 
   return (
     <Suspense fallback={<div>Laster dekoratør...</div>}>
-      <DynamicDecorator
+      <Decorator
         useProxy
         appName={'Rekrutteringsbistand'}
         environment={miljo}
