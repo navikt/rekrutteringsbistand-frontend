@@ -1,10 +1,9 @@
 'use client';
 import { Tabs } from '@navikt/ds-react';
 import { useQueryState } from 'nuqs';
-import KandidatAktivitet from './aktivitet-fane/KandidatAktivitet';
 import KandidatForslagTilStilling from './forslag-fane/KandidatForslagTilStilling';
 import KandidatOversikt from './oversikt-fane/KandidatOversikt';
-
+import KandidatAktivitet from './aktivitet-fane/KandidatAktivitet';
 enum Fane {
   OVERSIKT = 'oversikt',
   AKTIVITET = 'aktivitet',

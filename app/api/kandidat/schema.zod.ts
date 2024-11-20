@@ -2,6 +2,9 @@ import { z } from 'zod';
 
 export type kandidatlisteSchemaDTO = z.infer<typeof kandidatlisteSchema>;
 export type kandidaterSchemaDTO = z.infer<typeof kandidaterSchema>;
+export type kandidatHistorikkSchemaDTO = z.infer<
+  typeof kandidatHistorikkSchema
+>;
 
 const kandidaterSchema = z.object({
   kandidatId: z.string(),
@@ -63,4 +66,33 @@ export const kandidatlisteSchema = z.object({
   status: z.string(),
   antallStillinger: z.number(),
   stillingskategori: z.string(),
+});
+
+export const kandidatHistorikkSchema = z.object({
+  kandidatnr: z.string(),
+  fornavn: z.string(),
+  etternavn: z.string(),
+  lagtTilTidspunkt: z.string(),
+  lagtTilAvIdent: z.string(),
+  lagtTilAvEpost: z.string(),
+  lagtTilAvNavn: z.string(),
+  status: z.string(),
+  utfall: z.string(),
+  uuid: z.string(),
+  tittel: z.string(),
+  organisasjonReferanse: z.null(),
+  organisasjonNavn: z.string(),
+  stillingId: z.null(),
+  slettet: z.boolean(),
+  utfallsendringer: z.array(
+    z.object({
+      utfall: z.string(),
+      registrertAvIdent: z.string(),
+      tidspunkt: z.string(),
+      sendtTilArbeidsgiversKandidatliste: z.boolean(),
+    }),
+  ),
+  stillingskategori: z.null(),
+  opprettetAvIdent: z.string(),
+  erMaskert: z.boolean(),
 });

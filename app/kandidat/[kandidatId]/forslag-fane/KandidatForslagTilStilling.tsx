@@ -1,13 +1,14 @@
 import * as React from 'react';
+import StillingsSøk from '../../../stillings-sok/StillingsSøk';
+import { useKandidatContext } from '../KandidatContext';
 
-export interface KandidatForslagTilStillingProps {
-  children?: React.ReactNode | undefined;
-}
-
-const KandidatForslagTilStilling: React.FC<KandidatForslagTilStillingProps> = ({
-  children,
-}) => {
-  return <React.Fragment> Hello Wiklem </React.Fragment>;
+const KandidatForslagTilStilling: React.FC = () => {
+  const { kandidatId } = useKandidatContext();
+  return (
+    <React.Fragment>
+      <StillingsSøk skjulBanner kandidatId={kandidatId} />
+    </React.Fragment>
+  );
 };
 
 export default KandidatForslagTilStilling;

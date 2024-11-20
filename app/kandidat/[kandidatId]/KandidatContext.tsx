@@ -9,6 +9,7 @@ import {
 import SWRLaster from '../../components/SWRLaster';
 
 interface KandidatContextType {
+  kandidatId: string;
   kandidatData: KandidatDataSchemaDTO;
   kandidatsammendragData: KandidatsammendragDTO;
 }
@@ -61,6 +62,7 @@ const KandidatContextMedData: React.FC<KandidatContextMedDataProps> = ({
         return (
           <KandidatContext.Provider
             value={{
+              kandidatId: kandidatId,
               kandidatData: kandidatData as KandidatDataSchemaDTO, // todo hvorfor må vi gjøre dette?
               kandidatsammendragData,
             }}

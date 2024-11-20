@@ -17,50 +17,69 @@ import {
   useStillingsSøkFilter,
 } from './StillingsSøkContext';
 import StillingsSøkeresultat from './StillingsSøkeresultat';
+import { setKandidatStillingssøkData } from '../kandidat/[kandidatId]/forslag-fane/setKandidatStillingssøkData';
 
 interface StillingsSøkProps {
   formidlinger?: boolean;
+  skjulBanner?: boolean;
+  kandidatId?: string;
 }
 
-const StillingsSøk = ({ formidlinger }: StillingsSøkProps) => (
+const StillingsSøk = ({
+  formidlinger,
+  skjulBanner,
+  kandidatId,
+}: StillingsSøkProps) => (
   <React.Suspense fallback={<Loading />}>
     <StillingsSøkProvider formidlinger={formidlinger}>
-      <StillingsSøkLayout formidlinger={formidlinger} />
+      <StillingsSøkLayout
+        formidlinger={formidlinger}
+        skjulBanner={skjulBanner}
+        kandidatId={kandidatId}
+      />
     </StillingsSøkProvider>
   </React.Suspense>
 );
 
-const StillingsSøkLayout: React.FC<StillingsSøkProps> = ({ formidlinger }) => {
+const StillingsSøkLayout: React.FC<StillingsSøkProps> = ({
+  formidlinger,
+  skjulBanner,
+  kandidatId,
+}) => {
   const { portefølje, setPortefølje } = useStillingsSøkFilter();
-
+  if (kandidatId) {
+    setKandidatStillingssøkData(kandidatId);
+  }
   return (
     <SideLayout
       // banner={kandidatnr !== undefined && <KontekstAvKandidat kandidatnr={kandidatnr} />}
       banner={
-        <SideTopBanner
-          tittel={
-            formidlinger ? 'Etterregistrering formidlinger' : 'Stillinger'
-          }
-          ikon={<Image src={Piktogram} alt='Finn stillinger' />}
-          knappIBanner={
-            <TilgangskontrollForInnhold
-              skjulVarsel
-              kreverEnAvRollene={[
-                Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
-                Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-              ]}
-            >
-              <Link href={'/stilling/ny-stilling'}>
-                <Button
-                  icon={<PlusCircleIcon aria-hidden />}
-                  variant='secondary'
-                >
-                  Opprett ny
-                </Button>
-              </Link>
-            </TilgangskontrollForInnhold>
-          }
-        />
+        skjulBanner ? null : (
+          <SideTopBanner
+            tittel={
+              formidlinger ? 'Etterregistrering formidlinger' : 'Stillinger'
+            }
+            ikon={<Image src={Piktogram} alt='Finn stillinger' />}
+            knappIBanner={
+              <TilgangskontrollForInnhold
+                skjulVarsel
+                kreverEnAvRollene={[
+                  Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
+                  Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+                ]}
+              >
+                <Link href={'/stilling/ny-stilling'}>
+                  <Button
+                    icon={<PlusCircleIcon aria-hidden />}
+                    variant='secondary'
+                  >
+                    Opprett ny
+                  </Button>
+                </Link>
+              </TilgangskontrollForInnhold>
+            }
+          />
+        )
       }
       sidepanel={<StillingsSøkSidePanel formidlinger={formidlinger} />}
     >

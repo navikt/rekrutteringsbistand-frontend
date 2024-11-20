@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+export type YrkeJobbonske = z.infer<typeof YrkesErfaringSchema>;
+
 const YrkesErfaringSchema = z.object({
   fraDato: z.string().nullable().optional(), // Date as ISO string
   tilDato: z.string().nullable().optional(), // Date as ISO string

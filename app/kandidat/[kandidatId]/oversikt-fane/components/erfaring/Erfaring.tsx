@@ -1,4 +1,4 @@
-import { BodyLong, Heading } from '@navikt/ds-react';
+import { Heading } from '@navikt/ds-react';
 import { ReactNode } from 'react';
 
 type Props = {
@@ -15,7 +15,7 @@ const Erfaring = ({ overskrift, beskrivelse, detaljer }: Props) => {
         </Heading>
       )}
       {detaljer}
-      {beskrivelse && <BodyLong size='small'>{beskrivelse}</BodyLong>}
+      {beskrivelse && beskrivelse}
     </div>
   );
 };

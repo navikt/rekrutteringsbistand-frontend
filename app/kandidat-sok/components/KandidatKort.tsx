@@ -3,8 +3,7 @@ import {
   HandHeartIcon,
   HandShakeHeartIcon,
   HouseIcon,
-  PinIcon,
-  TasklistIcon,
+  PinIcon
 } from '@navikt/aksel-icons';
 import { Checkbox, Heading } from '@navikt/ds-react';
 import Link from 'next/link';
@@ -73,7 +72,7 @@ const KandidatKort: React.FC<IKandidatKort> = ({ kandidat, markert }) => {
         <TekstMedIkon ikon={<FileSearchIcon />} tekst='Finn stilling' />
         {/* </Link> */}
         {/* <Link href={`/stillings-sok/kandidat/${kandidat.arenaKandidatnr}`}> */}
-        <TekstMedIkon ikon={<TasklistIcon />} tekst='Stillinger' />
+        {/* <TekstMedIkon ikon={<TasklistIcon />} tekst='Stillinger' /> */}
         {/* </Link> */}
       </div>
     </div>

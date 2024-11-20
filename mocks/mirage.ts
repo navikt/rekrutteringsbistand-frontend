@@ -10,6 +10,7 @@ import { kontorSøkMirage } from '../app/api/kandidat-sok/useKontorSøk';
 import { antallKandidaterMirage } from '../app/api/kandidat/useAntallKandidater';
 import { kandidatlisteMirage } from '../app/api/kandidat/useKandidatliste';
 import { kandidatlisteIdMirage } from '../app/api/kandidat/useKandidatlisteId';
+import { kandidatlisteoversiktMirage } from '../app/api/kandidat/useKandidatListeoversikt';
 import { statistikkMirage } from '../app/api/statistikk/useStatistikk';
 import { finnArbeidsgiverMirage } from '../app/api/stilling/finn-arbeidsgiver/useFinnArbeidsgiver';
 import { geografiMirage } from '../app/api/stilling/geografi/useGeografi';
@@ -42,6 +43,7 @@ export function makeServer({ environment = 'test' } = {}) {
       kandidagsammendragMirage(this);
       kandidatinformasjonMirage(this);
       kontorSøkMirage(this);
+      kandidatlisteoversiktMirage(this);
       // stillingssøk
       this.passthrough('*');
     },

@@ -5,7 +5,6 @@ const basePath = process.env.NAIS_CLUSTER_NAME === 'local' ? '' : '';
 
 export const getAPIwithSchema = <T>(
   schema: ZodSchema<T>,
-  destructure?: boolean,
 ): ((url: string) => Promise<T>) => {
   return async (url: string) => {
     const data = await getAPI(url);
@@ -66,7 +65,6 @@ export const postApi = async (
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(body, (_key, value) =>
-      //@ts-ignore
       value instanceof Set ? [...value] : value,
     ),
   });
@@ -101,7 +99,6 @@ export const putApi = async (
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(body, (_key, value) =>
-      //@ts-ignore
       value instanceof Set ? [...value] : value,
     ),
   });
@@ -149,6 +146,16 @@ export const postApiWithSchemaEs = <T>(
 ): ((props: postApiProps) => Promise<T>) => {
   return async (props) => {
     const data: any = await postApi(props.url, props.body);
+    const parsedData = esResponseDto.parse(data);
+    return schema.parse(parsedData.hits.hits[0]._source);
+  };
+};
+
+export const getApiWithSchemaEs = <T>(
+  schema: ZodSchema<T>,
+): ((props: postApiProps) => Promise<T>) => {
+  return async (props) => {
+    const data: any = await getAPI(props.url);
     const parsedData = esResponseDto.parse(data);
     return schema.parse(parsedData.hits.hits[0]._source);
   };
