@@ -55,10 +55,8 @@ export const ApplikasjonContextProvider: React.FC<
 > = ({ children }) => {
   const [darkMode, setDarkMode] = React.useState<boolean>(false);
 
-  const { isLoading, data, error } = useBruker();
-
-  const { isLoading: isLoadingDecorator, data: decoratorData } =
-    useDecoratorData();
+  const brukerHook = useBruker();
+  const dekoratørHook = useDecoratorData();
 
   const [valgtNavKontor, setValgtNavKontor] =
     React.useState<NavKontorMedNavn | null>(null);
@@ -69,32 +67,32 @@ export const ApplikasjonContextProvider: React.FC<
     tilgangskontrollErPå
       ? rolle.some(
           (r) =>
-            data?.roller?.includes(r) ||
-            data?.roller?.includes(
+            brukerHook?.data?.roller?.includes(r) ||
+            brukerHook?.data?.roller?.includes(
               Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER,
             ),
         )
       : true;
 
-  if (isLoading || isLoadingDecorator) {
+  if (brukerHook.isLoading || dekoratørHook.isLoading) {
     return <Sidelaster />;
   }
 
-  if (error) {
+  if (brukerHook.error) {
     if (typeof window !== 'undefined') {
       redirect(`/oauth2/login?redirect=${window.location.pathname}`);
     }
     return null;
   }
 
-  if (!data) {
+  if (!brukerHook.data) {
     return <span>Feil ved innlasting av bruker</span>;
   }
 
-  const brukerData: BrukerData = decoratorData
+  const brukerData: BrukerData = dekoratørHook?.data
     ? {
-        ...decoratorData,
-        roller: data?.roller,
+        ...dekoratørHook.data,
+        roller: brukerHook.data?.roller,
       }
     : {
         roller: [],
