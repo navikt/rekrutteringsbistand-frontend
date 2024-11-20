@@ -5,9 +5,10 @@
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
 import { KandidatSøkAPI } from '../api-routes';
-import { getApiWithSchemaEs } from '../fetcher';
+import { postApiWithSchema } from '../fetcher';
+import { mockKandidatStillingssøk } from './mocks/kandidatStillingssøk';
 
-const kandidatStillingssøkEndepunkt = `${KandidatSøkAPI}/kandidat-stillingssok`;
+const kandidatStillingssøkEndepunkt = `${KandidatSøkAPI.internUrl}/kandidat-stillingssok`;
 
 const yrkeJobbonskeSchema = z.object({
   styrkBeskrivelse: z.string(),
@@ -35,5 +36,17 @@ export type KandidatStillingssøkDTO = z.infer<
 
 export const useKandidatStillingssøk = (kandidatId: string) =>
   useSWRImmutable(kandidatStillingssøkEndepunkt, (url) =>
-    getApiWithSchemaEs(kandidatStillingssøkDTOSchema)({ url }),
+    kandidatId
+      ? postApiWithSchema(kandidatStillingssøkDTOSchema)({
+          url,
+          body: { kandidatnr: kandidatId },
+        })
+      : null,
   );
+
+export const kandidatStillingsSøkMirage = (server: any) => {
+  return server.post(
+    kandidatStillingssøkEndepunkt,
+    () => mockKandidatStillingssøk,
+  );
+};

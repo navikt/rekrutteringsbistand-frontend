@@ -1,17 +1,5 @@
-// import { sendEvent } from 'felles/amplitude';
-// import { Jobbønske } from 'felles/domene/kandidat/Jobbprofil';
-// import { useEffect, useState } from 'react';
-// import {
-//     KandidatStillingssøkDTO,
-//     useKandidatStillingssøk,
-//     GeografiØnske,
-// } from '../../../api/kandidat-søk-api/kandidatStillingssøk';
-// import { Status } from '../filter/om-annonsen/Annonsestatus';
-// import { Publisert } from '../filter/om-annonsen/HvorErAnnonsenPublisert';
-// import useNavigering from '../useNavigering';
-// import { QueryParam } from '../utils/urlUtils';
-// import { getNummerFraSted, stedmappingFraGammeltNummer } from 'felles/MappingSted';
-
+'use client';
+import React, { useRef } from 'react';
 import {
   useKandidatStillingssøk,
   YrkeJobbonskeStillingsSøkDTO,
@@ -76,17 +64,15 @@ const konverterStederTilNåværendeKoder = (
   });
 };
 
-export const setKandidatStillingssøkData = (kandidatId: string) => {
-  // const { searchParams, navigate } = useNavigering();
-
-  console.log('🎺 kandidatId', kandidatId);
-  console.log('🎺 er her');
+export const useKandidatStillingssøkData = (kandidatId: string) => {
+  const hasSetInitialData = useRef(false);
   const stillingsSøkContext = useStillingsSøkFilter();
+  const { data: kandidatStillingssøk, isLoading } =
+    useKandidatStillingssøk(kandidatId);
 
-  const swrHook = useKandidatStillingssøk(kandidatId);
+  const processedData = React.useMemo(() => {
+    if (!kandidatStillingssøk || isLoading) return null;
 
-  const kandidatStillingssøk = swrHook.data;
-  if (kandidatStillingssøk) {
     const { geografiJobbonsker, yrkeJobbonskerObj, kommunenummerstring } =
       kandidatStillingssøk;
 
@@ -100,45 +86,29 @@ export const setKandidatStillingssøkData = (kandidatId: string) => {
     const konverterteGeografikoder =
       konverterStederTilNåværendeKoder(geografikoder);
 
-    const fylker: string[] = hentFylkerFraJobbønsker(konverterteGeografikoder);
-    const kommuner = hentKommunerFraJobbønsker(konverterteGeografikoder);
-    const yrkesønsker = hentYrkerFraJobbønsker(yrkeJobbonskerObj);
+    return {
+      fylker: hentFylkerFraJobbønsker(konverterteGeografikoder),
+      kommuner: hentKommunerFraJobbønsker(konverterteGeografikoder),
+      yrkesønsker: hentYrkerFraJobbønsker(yrkeJobbonskerObj),
+    };
+  }, [kandidatStillingssøk]);
 
-    if (fylker) stillingsSøkContext.setFylker(fylker);
-    if (kommuner) stillingsSøkContext.setKommuner(kommuner);
-    if (yrkesønsker) stillingsSøkContext.setKategori(yrkesønsker);
-    stillingsSøkContext.setStatuser([StillingsStatusTyper.Publisert]);
-  }
+  React.useEffect(() => {
+    if (processedData && !hasSetInitialData.current) {
+      const { fylker, kommuner, yrkesønsker } = processedData;
+
+      stillingsSøkContext.setFylker(fylker);
+      stillingsSøkContext.setKommuner(kommuner);
+      stillingsSøkContext.setKategori(yrkesønsker);
+      stillingsSøkContext.setStatuser([StillingsStatusTyper.Publisert]);
+
+      hasSetInitialData.current = true;
+    }
+  }, [processedData, stillingsSøkContext]);
+
+  return {
+    kandidatStillingssøk,
+    isLoading:
+      (!hasSetInitialData.current && !kandidatStillingssøk) || isLoading,
+  };
 };
-
-//     if (searchParams.get(QueryParam.BrukKriterierFraKandidat) === 'true') {
-//       const søk = new URLSearchParams();
-
-//       if (fylker.length > 0) søk.set(QueryParam.Fylker, fylker.join(','));
-//       if (kommuner.length > 0)
-//         søk.set(QueryParam.Kommuner, kommuner.join(','));
-//       if (yrkesønsker.length > 0)
-//         søk.set(QueryParam.Tekst, yrkesønsker.join(','));
-
-//       søk.set(QueryParam.Statuser, Status.Publisert);
-//       søk.set(QueryParam.Publisert, Publisert.Intern);
-
-//       sendEvent('stillingssøk', 'kontekst_av_kandidat', {
-//         antallFylker: fylker.length,
-//         antallKommuner: kommuner.length,
-//         antallYrkesønsker: yrkesønsker.length,
-//       });
-
-//       navigate({ search: søk.toString() }, { replace: true });
-//     }
-//   }
-// }, [kandidatnr, navigate, searchParams, swrHook, kandidatStillingssøk]);
-
-//   return {
-//     ...swrHook,
-//     hentetGeografiFraBosted,
-//     manglerØnsketYrke,
-//     kandidatStillingssøk,
-//   };
-// };
-// };

@@ -7,9 +7,10 @@ import KategoriFilter from './StillingsSøkFilter/KategoriFilter';
 import StatusFilter from './StillingsSøkFilter/StatusFilter';
 import SynlighetFilter from './StillingsSøkFilter/SynlighetFilter';
 
-const StillingsSøkSidePanel: React.FC<{ formidlinger?: boolean }> = ({
-  formidlinger,
-}) => {
+const StillingsSøkSidePanel: React.FC<{
+  formidlinger?: boolean;
+  kandidatId?: string;
+}> = ({ formidlinger, kandidatId }) => {
   const { fritekst, setFritekst } = useStillingsSøkFilter();
   const [searchValue, setSearchValue] = React.useState(fritekst);
   return (
@@ -23,7 +24,7 @@ const StillingsSøkSidePanel: React.FC<{ formidlinger?: boolean }> = ({
         onChange={(e) => setSearchValue(e)}
         onSearchClick={(e) => setFritekst(e)}
       />
-      {!formidlinger && (
+      {!formidlinger && !kandidatId && (
         <Button variant='secondary' className='w-full'>
           Bruk mitt standardsøk
         </Button>

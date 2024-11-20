@@ -8,7 +8,9 @@ import Piktogram from '../../public/ikoner/finn-stillinger.svg';
 import { Rolle } from '../../types/Roller';
 import SideLayout from '../components/layout/SideLayout';
 import SideTopBanner from '../components/layout/SideTopBanner';
+import Sidelaster from '../components/Sidelaster';
 import { TilgangskontrollForInnhold } from '../components/tilgangskontroll/TilgangskontrollForInnhold';
+import { useKandidatStillingssøkData } from '../kandidat/[kandidatId]/forslag-fane/setKandidatStillingssøkData';
 import Loading from '../laoading';
 import StillingsSøkSidePanel from './components/StillingsSøkSidePanel';
 import { StillingsSøkPortefølje } from './stillingssøk-typer';
@@ -17,7 +19,6 @@ import {
   useStillingsSøkFilter,
 } from './StillingsSøkContext';
 import StillingsSøkeresultat from './StillingsSøkeresultat';
-import { setKandidatStillingssøkData } from '../kandidat/[kandidatId]/forslag-fane/setKandidatStillingssøkData';
 
 interface StillingsSøkProps {
   formidlinger?: boolean;
@@ -48,7 +49,11 @@ const StillingsSøkLayout: React.FC<StillingsSøkProps> = ({
 }) => {
   const { portefølje, setPortefølje } = useStillingsSøkFilter();
   if (kandidatId) {
-    setKandidatStillingssøkData(kandidatId);
+    const kandidatSøkFilter = useKandidatStillingssøkData(kandidatId);
+
+    if (kandidatSøkFilter.isLoading) {
+      return <Sidelaster />;
+    }
   }
   return (
     <SideLayout
@@ -81,7 +86,12 @@ const StillingsSøkLayout: React.FC<StillingsSøkProps> = ({
           />
         )
       }
-      sidepanel={<StillingsSøkSidePanel formidlinger={formidlinger} />}
+      sidepanel={
+        <StillingsSøkSidePanel
+          formidlinger={formidlinger}
+          kandidatId={kandidatId}
+        />
+      }
     >
       <Tabs
         defaultValue={portefølje || StillingsSøkPortefølje.VIS_ALLE}
@@ -102,14 +112,14 @@ const StillingsSøkLayout: React.FC<StillingsSøkProps> = ({
           </TilgangskontrollForInnhold>
         </Tabs.List>
         <Tabs.Panel value={StillingsSøkPortefølje.VIS_ALLE}>
-          <StillingsSøkeresultat />
+          <StillingsSøkeresultat kandidatId={kandidatId} />
           {/* <AlleStillinger
             kandidatnr={kandidatnr}
             finnerStillingForKandidat={finnerStillingForKandidat}
           /> */}
         </Tabs.Panel>
         <Tabs.Panel value={StillingsSøkPortefølje.VIS_MINE}>
-          <StillingsSøkeresultat />
+          <StillingsSøkeresultat kandidatId={kandidatId} />
           {/* {navIdent ? (
             <MineStillinger
               navIdent={navIdent}

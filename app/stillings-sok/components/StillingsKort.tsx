@@ -23,9 +23,13 @@ import StillingsTag from './StillingsTag';
 
 export interface IStillingsKort {
   stillingData: RekrutteringsbistandStillingSchemaDTO;
+  kandidatId?: string;
 }
 
-const StillingsKort: React.FC<IStillingsKort> = ({ stillingData }) => {
+const StillingsKort: React.FC<IStillingsKort> = ({
+  stillingData,
+  kandidatId,
+}) => {
   const antallStillinger = Number(
     stillingData?.stilling?.properties?.positioncount,
   );
@@ -98,14 +102,16 @@ const StillingsKort: React.FC<IStillingsKort> = ({ stillingData }) => {
             tekst={eierNavn}
           />
         </div>
-        <div>
-          <Button disabled variant='tertiary'>
-            Vis kandidater
-          </Button>
-          <Button disabled variant='tertiary'>
-            Finn kandidater
-          </Button>
-        </div>
+        {!kandidatId && (
+          <div>
+            <Button disabled variant='tertiary'>
+              Vis kandidater
+            </Button>
+            <Button disabled variant='tertiary'>
+              Finn kandidater
+            </Button>
+          </div>
+        )}
       </div>
     </Box>
   );

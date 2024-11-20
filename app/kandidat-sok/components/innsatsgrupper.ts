@@ -18,6 +18,19 @@ export enum Servicegruppe {
   SykmeldtUtenArbeidsgiver = 'VURDU',
 }
 
+export enum Kvalifiseringsgruppekode {
+  Batt = 'BATT',
+  Ikval = 'IKVAL',
+  Varig = 'VARIG',
+  Bform = 'BFORM',
+  Andre = 'ANDRE',
+  Ivurd = 'IVURD',
+  Bkart = 'BKART',
+  Oppfi = 'OPPFI',
+  Vurdi = 'VURDI',
+  Vurdu = 'VURDU',
+}
+
 const filtrerbareInnsatsgrupper = {
   [Innsatsgruppe.SpesieltTilpassetInnsats]: {
     label: 'Spesielt tilpasset innsats',

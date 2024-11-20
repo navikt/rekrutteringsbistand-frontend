@@ -5,6 +5,7 @@ import { decoratorDataMirage } from '../app/api/decorator/useDecoratorData';
 import { foresporselOmDelingAvCVStatistikkMirage } from '../app/api/foresporsel-om-deling-av-cv/statistikk/useForesporselOmdelingAvCV';
 import { kandidatinformasjonMirage } from '../app/api/kandidat-sok/useKandidatinformasjon';
 import { kandidagsammendragMirage } from '../app/api/kandidat-sok/useKandidatsammendrag';
+import { kandidatStillingsSøkMirage } from '../app/api/kandidat-sok/useKandidatStillingssøk';
 import { kandidatSokMirage } from '../app/api/kandidat-sok/useKandidatsøk';
 import { kontorSøkMirage } from '../app/api/kandidat-sok/useKontorSøk';
 import { antallKandidaterMirage } from '../app/api/kandidat/useAntallKandidater';
@@ -44,6 +45,7 @@ export function makeServer({ environment = 'test' } = {}) {
       kandidatinformasjonMirage(this);
       kontorSøkMirage(this);
       kandidatlisteoversiktMirage(this);
+      kandidatStillingsSøkMirage(this);
       // stillingssøk
       this.passthrough('*');
     },

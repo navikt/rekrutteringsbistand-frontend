@@ -1,4 +1,4 @@
-import { Chips, VStack } from '@navikt/ds-react';
+import { Chips } from '@navikt/ds-react';
 import * as React from 'react';
 import { useGeografi } from '../../api/stilling/geografi/useGeografi';
 import FilterChip from '../../components/FilterChip';
@@ -27,9 +27,9 @@ const StillingsSøkChips: React.FC = () => {
   }
 
   return (
-    <div className='mt-4'>
-      <VStack gap='10'>
-        <Chips>
+    <div className='mt-4 relative w-full'>
+      <Chips>
+        <div className='flex flex-row gap-2 flex-wrap overflow-x-auto pb-2'>
           <FilterChip type={filter.statuser} setVerdi={filter.setStatuser} />
 
           {filter.inkludering.map((hovedInkludering, i) => {
@@ -100,8 +100,8 @@ const StillingsSøkChips: React.FC = () => {
               {storForbokstavString(geografiNavn(kommune))}
             </Chips.Removable>
           ))}
-        </Chips>
-      </VStack>
+        </div>
+      </Chips>
     </div>
   );
 };

@@ -14,7 +14,9 @@ import StillingsSøkChips from './components/StillingsSøkChips';
 import StillingsSøkSortering from './components/StillingsSøkSortering';
 import { useStillingsSøkFilter } from './StillingsSøkContext';
 
-const StillingsSøkeresultat: React.FC = () => {
+const StillingsSøkeresultat: React.FC<{ kandidatId?: string }> = ({
+  kandidatId,
+}) => {
   const filter = useStillingsSøkFilter();
   const {
     brukerData: { ident },
@@ -40,7 +42,7 @@ const StillingsSøkeresultat: React.FC = () => {
         <>
           <div className='flex justify-between'>
             <StillingsSøkChips />
-            <TømFiltre />
+            {!kandidatId && <TømFiltre />}
           </div>
           <div className='flex justify-between items-center my-4'>
             {antallVisning(
@@ -51,7 +53,11 @@ const StillingsSøkeresultat: React.FC = () => {
             <StillingsSøkSortering />
           </div>
           {data.hits.hits.map((hit) => (
-            <StillingsKort key={hit._id} stillingData={hit._source} />
+            <StillingsKort
+              key={hit._id}
+              stillingData={hit._source}
+              kandidatId={kandidatId}
+            />
           ))}
           <StillingsSøkPaginering
             totaltAntallTreff={data.hits.total.value ?? 0}
