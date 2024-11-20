@@ -1,48 +1,29 @@
 'use client';
 
-import { FunctionComponent, Suspense, useEffect, useState } from 'react';
+import dynamic from 'next/dist/shared/lib/dynamic';
+import { FunctionComponent, Suspense } from 'react';
 import { getMiljø, Miljø } from '../../../../../util/miljø';
 import { useApplikasjonContext } from '../../../../ApplikasjonContext';
 import { DecoratorProps } from './Interndekoratør';
 
-const getDecorator = async () => {
-  try {
-    const navspa = await import('@navikt/navspa');
-    return navspa.default.importer<DecoratorProps>(
+const DynamicDecorator = dynamic(
+  async () => {
+    const NAVSPA = await import('@navikt/navspa');
+    return NAVSPA.default.importer<DecoratorProps>(
       'internarbeidsflate-decorator-v3',
     );
-  } catch (error) {
-    console.error('Failed to import decorator:', error);
-    throw error;
-  }
-};
+  },
+  { ssr: false },
+);
 
 const miljo = getMiljø() === Miljø.ProdGcp ? 'prod' : 'q0';
 
 const Modiadekoratør: FunctionComponent = () => {
   const { setValgtNavKontor } = useApplikasjonContext();
-  const [Decorator, setDecorator] =
-    useState<React.ComponentType<DecoratorProps> | null>(null);
-
-  useEffect(() => {
-    const loadDecorator = async () => {
-      try {
-        const InternflateDecorator = await getDecorator();
-        setDecorator(() => InternflateDecorator);
-      } catch (error) {
-        console.error('Error loading decorator:', error);
-      }
-    };
-    loadDecorator();
-  }, []);
-
-  if (!Decorator) {
-    return <div>Laster dekoratør...</div>;
-  }
 
   return (
     <Suspense fallback={<div>Laster dekoratør...</div>}>
-      <Decorator
+      <DynamicDecorator
         useProxy
         appName={'Rekrutteringsbistand'}
         environment={miljo}
