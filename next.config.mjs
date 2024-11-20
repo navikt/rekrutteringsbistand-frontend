@@ -1,8 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // TODO: For debugging under utvikling
-  productionBrowserSourceMaps: true,
-
   output: 'standalone',
   reactStrictMode: true,
   experimental: {

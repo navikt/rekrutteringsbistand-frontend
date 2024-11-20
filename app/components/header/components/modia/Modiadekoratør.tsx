@@ -1,4 +1,5 @@
 'use client';
+
 import NAVSPA from '@navikt/navspa';
 import { FunctionComponent, useEffect, useState } from 'react';
 import { getMiljø, Miljø } from '../../../../../util/miljø';
@@ -13,11 +14,6 @@ const getDecorator = () => {
     return null;
   }
 };
-
-const proxyUrl =
-  getMiljø() === Miljø.ProdGcp
-    ? 'https://rekrutteringsbistand-frontend.intern.nav.no'
-    : 'https://rekrutteringsbistand-frontend.intern.dev.nav.no';
 
 const miljo = getMiljø() === Miljø.ProdGcp ? 'prod' : 'q0';
 
@@ -39,7 +35,7 @@ const Modiadekoratør: FunctionComponent = () => {
       useProxy
       appName={'Rekrutteringsbistand'}
       environment={miljo}
-      proxy={proxyUrl}
+      proxy={process.env.NEXT_PUBLIC_BASE_URL}
       showEnheter={true}
       showHotkeys={false}
       showSearchArea={false}
