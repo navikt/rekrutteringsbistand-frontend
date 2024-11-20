@@ -56,6 +56,7 @@ export const ApplikasjonContextProvider: React.FC<
   const [darkMode, setDarkMode] = React.useState<boolean>(false);
 
   const { isLoading, data, error } = useBruker();
+
   const { isLoading: isLoadingDecorator, data: decoratorData } =
     useDecoratorData();
 
@@ -87,13 +88,6 @@ export const ApplikasjonContextProvider: React.FC<
     return <span>Feil ved innlasting av bruker</span>;
   }
 
-  //TODO Behov for å validere token?
-  // try {
-  //   await validateToken(token);
-  // } catch (error) {
-  //   redirect(`/oauth2/login?redirect=${redirectPath}`);
-  // }
-
   const brukerData: BrukerData = decoratorData
     ? {
         ...decoratorData,
@@ -123,7 +117,8 @@ export const ApplikasjonContextProvider: React.FC<
       >
         <Header />
         <main>
-          <div className='mx-auto p-4  mb-8 max-w-screen-full'>{children}</div>
+          rekBis
+          {/* <div className='mx-auto p-4  mb-8 max-w-screen-full'>{children}</div> */}
         </main>
       </ApplikasjonContext.Provider>
     </NuqsAdapter>
