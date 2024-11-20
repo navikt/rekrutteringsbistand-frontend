@@ -1,7 +1,10 @@
 'use client';
+import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import * as React from 'react';
 import { useBruker } from './api/bruker/useBruker';
 import { useDecoratorData } from './api/decorator/useDecoratorData';
+import { ApplikasjonContextProvider } from './ApplikasjonContext';
+import ErrorBoundary from './components/feilhåndtering/ErrorBoundary';
 import MirageInitializer from './components/MirageInitializer';
 import Sidelaster from './components/Sidelaster';
 
@@ -19,7 +22,26 @@ const Rekrutteringsbistand: React.FC<RekrutteringsbistandProps> = ({
     return <Sidelaster />;
   }
 
-  return <MirageInitializer>kake</MirageInitializer>;
+  if (!brukerHook.data || !dekoratørHook.data) {
+    return <div>Fant ikke brukerdata</div>;
+  }
+
+  return (
+    <MirageInitializer>
+      <ErrorBoundary>
+        <NuqsAdapter>
+          <ApplikasjonContextProvider
+            brukerData={{
+              ...dekoratørHook.data,
+              roller: brukerHook.data?.roller ?? [],
+            }}
+          >
+            {children}
+          </ApplikasjonContextProvider>
+        </NuqsAdapter>
+      </ErrorBoundary>
+    </MirageInitializer>
+  );
 };
 
 export default Rekrutteringsbistand;

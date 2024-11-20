@@ -1,10 +1,10 @@
 import { Suspense } from 'react';
+import Sidelaster from './components/Sidelaster';
 import Forside from './forside/Forside';
-import Loading from './laoading';
 
 export default function Home() {
   return (
-    <Suspense fallback={<Loading />}>
+    <Suspense fallback={<Sidelaster />}>
       <Forside />
     </Suspense>
   );

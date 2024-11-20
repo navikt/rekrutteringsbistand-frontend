@@ -1,14 +1,9 @@
 'use client';
 
-import { NuqsAdapter } from 'nuqs/adapters/next';
 import React from 'react';
 import { Rolle } from '../types/Roller';
-import { useBruker } from './api/bruker/useBruker';
 import { DecoratorDTO } from './api/decorator/decorator.dto';
-import { useDecoratorData } from './api/decorator/useDecoratorData';
-import ErrorBoundary from './components/feilhåndtering/ErrorBoundary';
 import Header from './components/header/Header';
-import Sidelaster from './components/Sidelaster';
 
 export type NavKontorMedNavn = {
   navKontor: string;
@@ -48,15 +43,13 @@ const ApplikasjonContext = React.createContext<ApplikasjonContextType>({
 
 interface IApplikasjonContextProvider {
   children: React.ReactNode;
+  brukerData: BrukerData;
 }
 
 export const ApplikasjonContextProvider: React.FC<
   IApplikasjonContextProvider
-> = ({ children }) => {
+> = ({ children, brukerData }) => {
   const [darkMode, setDarkMode] = React.useState<boolean>(false);
-
-  const brukerHook = useBruker();
-  const dekoratørHook = useDecoratorData();
 
   const [valgtNavKontor, setValgtNavKontor] =
     React.useState<NavKontorMedNavn | null>(null);
@@ -67,58 +60,30 @@ export const ApplikasjonContextProvider: React.FC<
     tilgangskontrollErPå
       ? rolle.some(
           (r) =>
-            brukerHook?.data?.roller?.includes(r) ||
-            brukerHook?.data?.roller?.includes(
+            brukerData?.roller?.includes(r) ||
+            brukerData?.roller?.includes(
               Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER,
             ),
         )
       : true;
 
-  if (brukerHook.isLoading || dekoratørHook.isLoading) {
-    return <Sidelaster />;
-  }
-
-  if (!brukerHook.data) {
-    return <span>Feil ved innlasting av bruker</span>;
-  }
-
-  const brukerData: BrukerData = dekoratørHook?.data
-    ? {
-        ...dekoratørHook.data,
-        roller: brukerHook.data?.roller,
-      }
-    : {
-        roller: [],
-        enheter: [],
-        navn: '',
-        ident: '',
-        fornavn: '',
-        etternavn: '',
-      };
-
   return (
-    <NuqsAdapter>
-      <ErrorBoundary>
-        <ApplikasjonContext.Provider
-          value={{
-            brukerData,
-            darkMode,
-            setDarkMode,
-            setValgtNavKontor,
-            valgtNavKontor,
-            harRolle,
-            tilgangskontrollErPå,
-          }}
-        >
-          <Header />
-          <main>
-            <div className='mx-auto p-4  mb-8 max-w-screen-full'>
-              {children}
-            </div>
-          </main>
-        </ApplikasjonContext.Provider>
-      </ErrorBoundary>
-    </NuqsAdapter>
+    <ApplikasjonContext.Provider
+      value={{
+        brukerData,
+        darkMode,
+        setDarkMode,
+        setValgtNavKontor,
+        valgtNavKontor,
+        harRolle,
+        tilgangskontrollErPå,
+      }}
+    >
+      <Header />
+      <main>
+        <div className='mx-auto p-4  mb-8 max-w-screen-full'>{children}</div>
+      </main>
+    </ApplikasjonContext.Provider>
   );
 };
 

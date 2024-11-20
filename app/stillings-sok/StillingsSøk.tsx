@@ -11,7 +11,6 @@ import SideTopBanner from '../components/layout/SideTopBanner';
 import Sidelaster from '../components/Sidelaster';
 import { TilgangskontrollForInnhold } from '../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { useKandidatStillingssøkData } from '../kandidat/[kandidatId]/forslag-fane/setKandidatStillingssøkData';
-import Loading from '../laoading';
 import StillingsSøkSidePanel from './components/StillingsSøkSidePanel';
 import { StillingsSøkPortefølje } from './stillingssøk-typer';
 import {
@@ -31,7 +30,7 @@ const StillingsSøk = ({
   skjulBanner,
   kandidatId,
 }: StillingsSøkProps) => (
-  <React.Suspense fallback={<Loading />}>
+  <React.Suspense fallback={<Sidelaster />}>
     <StillingsSøkProvider formidlinger={formidlinger}>
       <StillingsSøkLayout
         formidlinger={formidlinger}
