@@ -19,7 +19,6 @@ interface ApplikasjonContextType {
   darkMode: boolean;
   setDarkMode: (val: boolean) => void;
   harRolle: (rolle: Rolle[]) => boolean;
-  tilgangskontrollErPå: boolean;
   valgtNavKontor: NavKontorMedNavn | null;
   setValgtNavKontor: (navKontor: NavKontorMedNavn | null) => void;
 }
@@ -36,7 +35,6 @@ const ApplikasjonContext = React.createContext<ApplikasjonContextType>({
   darkMode: true, //todo
   setDarkMode: () => false,
   harRolle: () => false,
-  tilgangskontrollErPå: false,
   setValgtNavKontor: () => null,
   valgtNavKontor: null,
 });
@@ -54,18 +52,14 @@ export const ApplikasjonContextProvider: React.FC<
   const [valgtNavKontor, setValgtNavKontor] =
     React.useState<NavKontorMedNavn | null>(null);
 
-  const tilgangskontrollErPå = true;
-
   const harRolle = (rolle: Rolle[]) =>
-    tilgangskontrollErPå
-      ? rolle.some(
-          (r) =>
-            brukerData?.roller?.includes(r) ||
-            brukerData?.roller?.includes(
-              Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER,
-            ),
-        )
-      : true;
+    rolle.some(
+      (r) =>
+        brukerData?.roller?.includes(r) ||
+        brukerData?.roller?.includes(
+          Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER,
+        ),
+    );
 
   return (
     <ApplikasjonContext.Provider
@@ -76,12 +70,11 @@ export const ApplikasjonContextProvider: React.FC<
         setValgtNavKontor,
         valgtNavKontor,
         harRolle,
-        tilgangskontrollErPå,
       }}
     >
       <Header />
       <main>
-        <div className='mx-auto p-4  mb-8 max-w-screen-full'>{children}</div>
+        <div className='mx-auto p-4 mb-8 max-w-screen-full'>{children}</div>
       </main>
     </ApplikasjonContext.Provider>
   );

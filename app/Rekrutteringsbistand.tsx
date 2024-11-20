@@ -36,7 +36,7 @@ const Rekrutteringsbistand: React.FC<RekrutteringsbistandProps> = ({
               roller: brukerHook.data?.roller ?? [],
             }}
           >
-            {children}
+            {/* {children} */} potet
           </ApplikasjonContextProvider>
         </NuqsAdapter>
       </ErrorBoundary>
