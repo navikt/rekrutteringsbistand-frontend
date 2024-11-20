@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 import { isLocal } from '../util/env';
 import { ApplikasjonContextProvider } from './ApplikasjonContext';
-import MirageInitializer from './components/MirageInitializer';
 import './globals.css';
+import Rekrutteringsbistand from './Rekrutteringsbistand';
 
 export const metadata: Metadata = {
   title: isLocal ? 'Local - Rekrutteringsbistand' : 'Rekrutteringsbistand',
@@ -16,9 +16,8 @@ export default async function RootLayout({
   return (
     <html lang='no'>
       <body>
-        <MirageInitializer>
-          <ApplikasjonContextProvider>{children}</ApplikasjonContextProvider>
-        </MirageInitializer>
+        {/* <ApplikasjonContextProvider>{children}</ApplikasjonContextProvider> */}
+        <Rekrutteringsbistand>{children}</Rekrutteringsbistand>
       </body>
     </html>
   );
