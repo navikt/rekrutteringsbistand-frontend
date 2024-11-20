@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { isLocal } from '../util/env';
 import { ApplikasjonContextProvider } from './ApplikasjonContext';
-import MirageInitializer from './components/MirageInitializer';
+// import MirageInitializer from './components/MirageInitializer';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -16,9 +16,9 @@ export default async function RootLayout({
   return (
     <html lang='no'>
       <body>
-        <MirageInitializer>
-          <ApplikasjonContextProvider>{children}</ApplikasjonContextProvider>
-        </MirageInitializer>
+        {/* <MirageInitializer> */}
+        <ApplikasjonContextProvider>{children}</ApplikasjonContextProvider>
+        {/* </MirageInitializer> */}
       </body>
     </html>
   );
