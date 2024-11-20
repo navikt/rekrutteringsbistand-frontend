@@ -2,7 +2,7 @@
 
 import { redirect } from 'next/navigation';
 import { NuqsAdapter } from 'nuqs/adapters/next';
-import * as React from 'react';
+import React from 'react';
 import { Rolle } from '../types/Roller';
 import { useBruker } from './api/bruker/useBruker';
 import { DecoratorDTO } from './api/decorator/decorator.dto';
