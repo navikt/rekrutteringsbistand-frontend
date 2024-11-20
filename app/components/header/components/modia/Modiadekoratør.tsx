@@ -6,14 +6,13 @@ import { getMiljø, Miljø } from '../../../../../util/miljø';
 import { useApplikasjonContext } from '../../../../ApplikasjonContext';
 import { DecoratorProps } from './Interndekoratør';
 
+const proxyUrl =
+  getMiljø() === Miljø.ProdGcp
+    ? 'https://rekrutteringsbistand-frontend.intern.nav.no'
+    : 'https://rekrutteringsbistand-frontend.intern.dev.nav.no';
+
 const DynamicDecorator = dynamic(
   async () => {
-    console.log({
-      appName: 'Rekrutteringsbistand',
-      environment: miljo,
-      proxy: process.env.NEXT_PUBLIC_BASE_URL,
-    });
-
     const NAVSPA = await import('@navikt/navspa');
     const Decorator = NAVSPA.default.importer<DecoratorProps>(
       'internarbeidsflate-decorator-v3',
@@ -35,7 +34,7 @@ const Modiadekoratør: FunctionComponent = () => {
         useProxy
         appName={'Rekrutteringsbistand'}
         environment={miljo}
-        proxy={process.env.NEXT_PUBLIC_BASE_URL}
+        proxy={proxyUrl}
         showEnheter={true}
         showHotkeys={false}
         showSearchArea={false}
