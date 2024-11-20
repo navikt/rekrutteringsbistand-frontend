@@ -1,4 +1,5 @@
 'use client';
+import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import * as React from 'react';
 import { useBruker } from './api/bruker/useBruker';
 import { useDecoratorData } from './api/decorator/useDecoratorData';
@@ -28,16 +29,16 @@ const Rekrutteringsbistand: React.FC<RekrutteringsbistandProps> = ({
   return (
     <MirageInitializer>
       <ErrorBoundary>
-        {/* <NuqsAdapter> */}
-        <ApplikasjonContextProvider
-          brukerData={{
-            ...dekoratørHook.data,
-            roller: brukerHook.data?.roller ?? [],
-          }}
-        >
-          {/* {children} */} potet
-        </ApplikasjonContextProvider>
-        {/* </NuqsAdapter> */}
+        <NuqsAdapter>
+          <ApplikasjonContextProvider
+            brukerData={{
+              ...dekoratørHook.data,
+              roller: brukerHook.data?.roller ?? [],
+            }}
+          >
+            {children}
+          </ApplikasjonContextProvider>
+        </NuqsAdapter>
       </ErrorBoundary>
     </MirageInitializer>
   );
