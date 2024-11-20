@@ -1,17 +1,19 @@
 'use client';
 
-import NAVSPA from '@navikt/navspa';
-import { FunctionComponent, useEffect, useState } from 'react';
+import { FunctionComponent, Suspense, useEffect, useState } from 'react';
 import { getMiljø, Miljø } from '../../../../../util/miljø';
 import { useApplikasjonContext } from '../../../../ApplikasjonContext';
-import { DecoratorProps, Enhet } from './Interndekoratør';
+import { DecoratorProps } from './Interndekoratør';
 
-const getDecorator = () => {
+const getDecorator = async () => {
   try {
-    return NAVSPA.importer<DecoratorProps>('internarbeidsflate-decorator-v3');
+    const navspa = await import('@navikt/navspa');
+    return navspa.default.importer<DecoratorProps>(
+      'internarbeidsflate-decorator-v3',
+    );
   } catch (error) {
-    console.error('Klarte ikke å importere dekoratør:', error);
-    return null;
+    console.error('Failed to import decorator:', error);
+    throw error;
   }
 };
 
@@ -19,35 +21,45 @@ const miljo = getMiljø() === Miljø.ProdGcp ? 'prod' : 'q0';
 
 const Modiadekoratør: FunctionComponent = () => {
   const { setValgtNavKontor } = useApplikasjonContext();
-  const [Decorator, setDecorator] = useState<any>(null);
+  const [Decorator, setDecorator] =
+    useState<React.ComponentType<DecoratorProps> | null>(null);
 
   useEffect(() => {
-    const InternflateDecorator = getDecorator();
-    setDecorator(InternflateDecorator);
+    const loadDecorator = async () => {
+      try {
+        const InternflateDecorator = await getDecorator();
+        setDecorator(() => InternflateDecorator);
+      } catch (error) {
+        console.error('Error loading decorator:', error);
+      }
+    };
+    loadDecorator();
   }, []);
 
   if (!Decorator) {
-    return <div>Loading decorator...</div>;
+    return <div>Laster dekoratør...</div>;
   }
 
   return (
-    <Decorator
-      useProxy
-      appName={'Rekrutteringsbistand'}
-      environment={miljo}
-      proxy={process.env.NEXT_PUBLIC_BASE_URL}
-      showEnheter={true}
-      showHotkeys={false}
-      showSearchArea={false}
-      fetchActiveEnhetOnMount={true}
-      urlFormat={'NAV_NO'}
-      onEnhetChanged={(_: string | null, enhet?: Enhet): void => {
-        setValgtNavKontor({
-          navKontor: enhet?.enhetId ?? 'Ukjent navkontor ID',
-          navKontorNavn: enhet?.navn ?? 'Ukjent navkontor NAVN',
-        });
-      }}
-    />
+    <Suspense fallback={<div>Laster dekoratør...</div>}>
+      <Decorator
+        useProxy
+        appName={'Rekrutteringsbistand'}
+        environment={miljo}
+        proxy={process.env.NEXT_PUBLIC_BASE_URL}
+        showEnheter={true}
+        showHotkeys={false}
+        showSearchArea={false}
+        fetchActiveEnhetOnMount={true}
+        urlFormat={'NAV_NO'}
+        onEnhetChanged={(_, enhet) => {
+          setValgtNavKontor({
+            navKontor: enhet?.enhetId ?? 'Ukjent navkontor ID',
+            navKontorNavn: enhet?.navn ?? 'Ukjent navkontor NAVN',
+          });
+        }}
+      />
+    </Suspense>
   );
 };
 
