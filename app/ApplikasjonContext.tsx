@@ -81,10 +81,13 @@ export const ApplikasjonContextProvider: React.FC<
   }
 
   if (error) {
-    redirect(`/oauth2/login?redirect=${window.location.pathname}`);
+    if (typeof window !== 'undefined') {
+      redirect(`/oauth2/login?redirect=${window.location.pathname}`);
+    }
+    return null;
   }
 
-  if (data?.navIdent === undefined) {
+  if (!data) {
     return <span>Feil ved innlasting av bruker</span>;
   }
 
@@ -117,8 +120,7 @@ export const ApplikasjonContextProvider: React.FC<
       >
         <Header />
         <main>
-          rekBis
-          {/* <div className='mx-auto p-4  mb-8 max-w-screen-full'>{children}</div> */}
+          <div className='mx-auto p-4  mb-8 max-w-screen-full'>{children}</div>
         </main>
       </ApplikasjonContext.Provider>
     </NuqsAdapter>
