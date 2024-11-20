@@ -3,7 +3,7 @@
 import React from 'react';
 import { Rolle } from '../types/Roller';
 import { DecoratorDTO } from './api/decorator/decorator.dto';
-// import Header from './components/header/Header';
+import Header from './components/header/Header';
 
 export type NavKontorMedNavn = {
   navKontor: string;
@@ -72,7 +72,7 @@ export const ApplikasjonContextProvider: React.FC<
         harRolle,
       }}
     >
-      {/* <Header /> */}
+      <Header />
       <main>
         <div className='mx-auto p-4 mb-8 max-w-screen-full'>{children}</div>
       </main>
