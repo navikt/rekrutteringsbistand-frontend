@@ -1,6 +1,5 @@
 'use client';
 
-import { redirect } from 'next/navigation';
 import { NuqsAdapter } from 'nuqs/adapters/next';
 import React from 'react';
 import { Rolle } from '../types/Roller';
@@ -78,12 +77,12 @@ export const ApplikasjonContextProvider: React.FC<
     return <Sidelaster />;
   }
 
-  if (brukerHook.error) {
-    if (typeof window !== 'undefined') {
-      redirect(`/oauth2/login?redirect=${window.location.pathname}`);
-    }
-    return null;
-  }
+  // if (brukerHook.error) {
+  //   if (typeof window !== 'undefined') {
+  //     redirect(`/oauth2/login?redirect=${window.location.pathname}`);
+  //   }
+  //   return null;
+  // }
 
   if (!brukerHook.data) {
     return <span>Feil ved innlasting av bruker</span>;
