@@ -48,12 +48,11 @@ const StillingsSøkLayout: React.FC<StillingsSøkProps> = ({
   kandidatId,
 }) => {
   const { portefølje, setPortefølje } = useStillingsSøkFilter();
-  if (kandidatId) {
-    const kandidatSøkFilter = useKandidatStillingssøkData(kandidatId);
 
-    if (kandidatSøkFilter.isLoading) {
-      return <Sidelaster />;
-    }
+  const stillingssøkData = useKandidatStillingssøkData(kandidatId ?? null);
+
+  if (stillingssøkData?.isLoading) {
+    return <Sidelaster />;
   }
   return (
     <SideLayout

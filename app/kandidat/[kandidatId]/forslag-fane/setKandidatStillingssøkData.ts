@@ -64,14 +64,14 @@ const konverterStederTilNåværendeKoder = (
   });
 };
 
-export const useKandidatStillingssøkData = (kandidatId: string) => {
+export const useKandidatStillingssøkData = (kandidatId: string | null) => {
   const hasSetInitialData = useRef(false);
   const stillingsSøkContext = useStillingsSøkFilter();
   const { data: kandidatStillingssøk, isLoading } =
     useKandidatStillingssøk(kandidatId);
 
   const processedData = React.useMemo(() => {
-    if (!kandidatStillingssøk || isLoading) return null;
+    if (!kandidatStillingssøk) return null;
 
     const { geografiJobbonsker, yrkeJobbonskerObj, kommunenummerstring } =
       kandidatStillingssøk;

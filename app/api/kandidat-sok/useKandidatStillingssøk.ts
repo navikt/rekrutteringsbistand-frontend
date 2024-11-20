@@ -34,7 +34,7 @@ export type KandidatStillingssøkDTO = z.infer<
   typeof kandidatStillingssøkDTOSchema
 >;
 
-export const useKandidatStillingssøk = (kandidatId: string) =>
+export const useKandidatStillingssøk = (kandidatId: string | null) =>
   useSWRImmutable(kandidatStillingssøkEndepunkt, (url) =>
     kandidatId
       ? postApiWithSchema(kandidatStillingssøkDTOSchema)({
