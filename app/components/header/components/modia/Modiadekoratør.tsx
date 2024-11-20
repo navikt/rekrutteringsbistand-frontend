@@ -1,5 +1,6 @@
 'use client';
 
+import NAVSPA from '@navikt/navspa';
 import dynamic from 'next/dist/shared/lib/dynamic';
 import { FunctionComponent, Suspense } from 'react';
 import { getMiljø, Miljø } from '../../../../../util/miljø';
@@ -8,10 +9,7 @@ import { DecoratorProps } from './Interndekoratør';
 
 const DynamicDecorator = dynamic(
   async () => {
-    const NAVSPA = await import('@navikt/navspa');
-    return NAVSPA.default.importer<DecoratorProps>(
-      'internarbeidsflate-decorator-v3',
-    );
+    return NAVSPA.importer<DecoratorProps>('internarbeidsflate-decorator-v3');
   },
   { ssr: false },
 );
