@@ -12,13 +12,19 @@
 #       dev-vars-path: 'nais/dev-gcp.json'
 #       deploy-to-dev-if-branch-name-is: 'dev'
 #     secrets: inherit
-#     permissions:
-#       contents: read
-#       id-token: write
-#       security-events: write
+    # permissions:
+    #   contents: read
+    #   id-token: write
+    #   security-events: write
 on:
   push:
   workflow_dispatch: # Legger til mulighet for manuell kjøring
+
+permissions:
+    contents: read
+    id-token: write
+    security-events: write
+
 jobs:
   build:
     name: 🏗️ Bygg applikasjon
