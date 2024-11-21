@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Script from 'next/script';
 import { isLocal } from '../util/env';
 import MirageInitializer from './components/MirageInitializer';
 import './globals.css';
@@ -15,6 +16,11 @@ export default async function RootLayout({
 }>) {
   return (
     <html lang='no'>
+     <Script
+        src="https://cdn.nav.no/personoversikt/internarbeidsflate-decorator-v3/dev/latest/dist/bundle.js"
+        strategy="afterInteractive"
+      />
+
       <body>
         <MirageInitializer>
           <Rekrutteringsbistand>{children}</Rekrutteringsbistand>

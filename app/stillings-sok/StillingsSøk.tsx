@@ -50,12 +50,11 @@ const StillingsSøkLayout: React.FC<StillingsSøkProps> = ({
 
   const stillingssøkData = useKandidatStillingssøkData(kandidatId ?? null);
 
-  if (stillingssøkData?.isLoading) {
+  if (kandidatId && stillingssøkData?.isLoading) {
     return <Sidelaster />;
   }
   return (
     <SideLayout
-      // banner={kandidatnr !== undefined && <KontekstAvKandidat kandidatnr={kandidatnr} />}
       banner={
         skjulBanner ? null : (
           <SideTopBanner

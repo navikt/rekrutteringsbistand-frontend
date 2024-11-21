@@ -15,10 +15,11 @@
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
     "@monaco-editor/react": "^4.6.0",
+    "@navikt/aksel-icons": "^7.5.2",
     "@navikt/ds-css": "^7.5.2",
     "@navikt/ds-react": "^7.5.1",
     "@navikt/ds-tailwind": "^7.5.2",
-    "@navikt/navspa": "^6.1.4",
+    "@navikt/navspa": "^6.2.0",
     "@navikt/next-logger": "^1.35.0",
     "@navikt/oasis": "^3.4.0",
     "@tiptap/extension-blockquote": "^2.9.1",
@@ -43,12 +44,12 @@
     "@types/react-dom": "^18.3.1",
     "date-fns": "^4.1.0",
     "html-react-parser": "^5.1.18",
-    "next": "15.0.3",
+    "next": "^15.0.3",
     "nuqs": "^2.2.1",
     "pino": "^9.5.0",
     "postcss-import": "^16.1.0",
-    "react": "18.3.1",
-    "react-dom": "18.3.1",
+    "react": "^19.0.0-rc.1",
+    "react-dom": "^19.0.0-rc.1",
     "react-hook-form": "^7.53.2",
     "react-to-print": "^3.0.2",
     "swr": "^2.2.5",
@@ -60,7 +61,7 @@
     "@types/node": "^22.9.1",
     "autoprefixer": "^10.4.20",
     "eslint": "^9.15.0",
-    "eslint-config-next": "15.0.3",
+    "eslint-config-next": "^15.0.3",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-prettier": "^5.2.1",
@@ -75,10 +76,7 @@
     "tailwindcss": "^3.4.15",
     "typescript": "^5.6.3"
   },
-  "resolutions": {
-    "react": "18.3.1",
-    "react-dom": "18.3.1"
-  },
+
   "lint-staged": {
     "*.js": [
       "prettier --write",
@@ -97,9 +95,5 @@
       "npx eslint --fix . --no-cache"
     ],
     "*.json": "prettier --write"
-  },
-  "engines": {
-    "node": ">=22.11.0",
-    "npm": ">=10.9.0"
   }
 }

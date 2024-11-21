@@ -6,11 +6,42 @@ export const formaterEiernavn = (eierNavn: string | null) => {
     : navnDel[1].trim() + ' ' + navnDel[0].trim();
 };
 
-export const hentEier = (rekrutteringsbistandstilling: any) => {
+export const hentEierFraStilling = (rekrutteringsbistandstilling: any) => {
   const eierNavn = rekrutteringsbistandstilling.stillingsinfo?.eierNavn;
   const reportee =
     rekrutteringsbistandstilling.stilling.administration?.reportee;
   return eierNavn != null ? eierNavn : reportee != null ? reportee : null;
+};
+
+export const hentIdentFraStilling = (
+  rekrutteringsbistandstilling: any,
+): string => {
+  if (
+    rekrutteringsbistandstilling &&
+    'administration' in rekrutteringsbistandstilling &&
+    rekrutteringsbistandstilling?.administration?.navIdent
+  ) {
+    return rekrutteringsbistandstilling?.administration?.navIdent;
+  } else if (
+    rekrutteringsbistandstilling &&
+    'eierNavident' in rekrutteringsbistandstilling &&
+    rekrutteringsbistandstilling?.eierNavident
+  ) {
+    return rekrutteringsbistandstilling?.eierNavident;
+  } else if (
+    rekrutteringsbistandstilling &&
+    'stilling' in rekrutteringsbistandstilling &&
+    rekrutteringsbistandstilling?.stilling?.administration?.navIdent
+  ) {
+    return rekrutteringsbistandstilling?.stilling?.administration?.navIdent;
+  } else if (
+    rekrutteringsbistandstilling &&
+    'stillingsinfo' in rekrutteringsbistandstilling &&
+    rekrutteringsbistandstilling?.stillingsinfo?.eierNavident
+  ) {
+    return rekrutteringsbistandstilling?.stillingsinfo?.eierNavident;
+  }
+  return '';
 };
 
 export const hentArbeidssted = (locations: any[]): string | null => {

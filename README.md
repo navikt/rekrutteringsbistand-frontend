@@ -2,6 +2,11 @@
 
 NextJS applikasjon m/AppRoutes, "SWR hooks" for fetching av data og zod validering av data
 
+## Kom igang med utvikling
+
+`pnpm install`
+`pnpm run dev`
+
 ## Filstruktur
 
 ```

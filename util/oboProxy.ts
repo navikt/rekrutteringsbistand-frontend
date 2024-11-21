@@ -10,7 +10,6 @@ export const proxyWithOBO = async (
   customRoute?: string,
 ) => {
   const token = isLocal ? 'DEV' : getToken(req.headers);
-
   if (!proxy.api_url) {
     return NextResponse.json(
       { beskrivelse: 'Ingen url oppgitt for proxy' },

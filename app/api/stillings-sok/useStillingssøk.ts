@@ -6,13 +6,15 @@ import useSWRImmutable from 'swr/immutable';
 import { postApiWithSchema } from '../fetcher';
 import { useGeografi } from '../stilling/geografi/useGeografi';
 
+import { StillingsSøkAPI } from '../api-routes';
+import { mockStillingssøk } from './mocks/mockStillingssøk';
+import { stillingsSøkSchema } from './schema/stillingsSøkSchema.zod';
 import {
   generateElasticSearchQuery,
   StillingsSøkFilter,
 } from './stillingssøkElasticSearchQuery';
-import { stillingsSøkSchema } from './schema/stillingsSøkSchema.zod';
 
-const stillingEndepunkt = '/api/stillings-sok';
+const stillingsSøkEndepunkt = StillingsSøkAPI.internUrl;
 
 export const useStillingssøk = (
   filter: StillingsSøkFilter,
@@ -30,7 +32,7 @@ export const useStillingssøk = (
 
   return useSWRImmutable(
     {
-      url: stillingEndepunkt,
+      url: stillingsSøkEndepunkt,
       body: payload,
     },
     (data) => {
@@ -38,3 +40,6 @@ export const useStillingssøk = (
     },
   );
 };
+
+export const stillingssøkMirage = (server: any) =>
+  server.post(stillingsSøkEndepunkt, () => mockStillingssøk);

@@ -14,10 +14,12 @@ import formaterMedStoreOgSmåBokstaver from '../../../util/tekst';
 import TekstMedIkon from '../../components/TekstMedIkon';
 
 import { RekrutteringsbistandStillingSchemaDTO } from '../../api/stillings-sok/schema/rekrutteringsbistandStillingSchema.zod';
+import { useApplikasjonContext } from '../../ApplikasjonContext';
 import {
   formaterEiernavn,
   hentArbeidssted,
-  hentEier,
+  hentEierFraStilling,
+  hentIdentFraStilling,
 } from '../stillingssøk-util';
 import StillingsTag from './StillingsTag';
 
@@ -30,13 +32,19 @@ const StillingsKort: React.FC<IStillingsKort> = ({
   stillingData,
   kandidatId,
 }) => {
+  const {
+    brukerData: { ident },
+  } = useApplikasjonContext();
   const antallStillinger = Number(
     stillingData?.stilling?.properties?.positioncount,
   );
   const antallStillingerSuffix =
     antallStillinger === 1 ? ` stilling` : ` stillinger`;
-  const eierNavn = formaterEiernavn(hentEier(stillingData));
 
+  const eierNavn = formaterEiernavn(hentEierFraStilling(stillingData));
+  const erEier = hentIdentFraStilling(stillingData) === ident;
+
+  console.log('🎺 hentIdentFraStilling', hentIdentFraStilling(stillingData));
   return (
     <Box className='border rounded-lg mb-4 border-gray-300 p-4'>
       <>
@@ -104,9 +112,11 @@ const StillingsKort: React.FC<IStillingsKort> = ({
         </div>
         {!kandidatId && (
           <div>
-            <Button disabled variant='tertiary'>
-              Vis kandidater
-            </Button>
+            {erEier && (
+              <Button disabled variant='tertiary'>
+                Vis kandidater
+              </Button>
+            )}
             <Button disabled variant='tertiary'>
               Finn kandidater
             </Button>
