@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef } from 'react';
 import { StillingsDataDTO } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { useKandidatSøkFilter } from '../../KandidaSokContext';
 
-export const hentØnskerFraStilling = (stillingsData?: StillingsDataDTO) => {
+export const useHentØnskerFraStilling = (stillingsData?: StillingsDataDTO) => {
   const kandidatSøkFilter = useKandidatSøkFilter();
 
   const hasSetInitialData = useRef(false);
