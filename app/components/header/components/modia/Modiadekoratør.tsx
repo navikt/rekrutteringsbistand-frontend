@@ -1,5 +1,6 @@
 'use client';
-import { Suspense, useEffect, useState } from 'react';
+import dynamic from 'next/dynamic';
+import { Suspense } from 'react';
 import { getMiljø, Miljø } from '../../../../../util/miljø';
 import { useApplikasjonContext } from '../../../../ApplikasjonContext';
 import { DecoratorProps } from './Interndekoratør';
@@ -11,39 +12,26 @@ const proxyUrl =
 
 const miljo = getMiljø() === Miljø.ProdGcp ? 'prod' : 'q0';
 
+const InternflateDecorator = dynamic(
+  () =>
+    import('@navikt/navspa').then((NAVSPA) => {
+      return NAVSPA.default.importer<DecoratorProps>(
+        'internarbeidsflate-decorator-v3',
+      );
+    }),
+  { ssr: false },
+);
+
 const Modiadekoratør: React.FC = () => {
   const { setValgtNavKontor } = useApplikasjonContext();
-  const [Decorator, setDecorator] =
-    useState<React.ComponentType<DecoratorProps> | null>(null);
-  const [error, setError] = useState(false);
 
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      import('@navikt/navspa')
-        .then((NAVSPA) => {
-          const InternflateDecorator = NAVSPA.default.importer<DecoratorProps>(
-            'internarbeidsflate-decorator-v3',
-          );
-          setDecorator(() => InternflateDecorator);
-        })
-        .catch((err) => {
-          console.error('Failed to load decorator:', err);
-          setError(true);
-        });
-    }
-  }, []);
-
-  if (error) {
-    return <div>Kunne ikke laste dekoratør. Vennligst prøv igjen senere.</div>;
-  }
-
-  if (!Decorator) {
+  if (!InternflateDecorator) {
     return <div>Laster dekoratør...</div>;
   }
 
   return (
     <Suspense fallback={<div>Laster dekoratør...</div>}>
-      <Decorator
+      <InternflateDecorator
         useProxy
         appName={'Rekrutteringsbistand'}
         environment={miljo}

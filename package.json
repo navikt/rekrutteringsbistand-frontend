@@ -97,5 +97,9 @@
       "npx eslint --fix . --no-cache"
     ],
     "*.json": "prettier --write"
+  },
+  "engines": {
+    "node": ">=22.11.0",
+    "npm": ">=10.9.0"
   }
 }

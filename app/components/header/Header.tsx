@@ -5,13 +5,6 @@ import DevDekoratør from '../dev/DevDekoratør';
 import { Navigeringsmeny } from './components/navigasjon/Navigasjon';
 
 import Modiadekoratør from './components/modia/Modiadekoratør';
-// const Modiadekoratør = dynamic(
-//   () => import('./components/modia/Modiadekoratør'),
-//   {
-//     ssr: false,
-//     loading: () => <div>Laster Modia dekoratør...</div>,
-//   },
-// );
 
 const Header: React.FC = () => {
   return (
