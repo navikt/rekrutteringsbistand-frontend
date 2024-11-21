@@ -1,5 +1,5 @@
 import { logger } from '@navikt/next-logger';
-import { getToken, OboResult, requestOboToken } from '@navikt/oasis';
+import { getToken, requestOboToken, TokenResult } from '@navikt/oasis';
 import { NextRequest, NextResponse } from 'next/server';
 import { Iroute } from '../app/api/api-routes';
 import { isLocal } from './env';
@@ -24,10 +24,10 @@ export const proxyWithOBO = async (
     );
   }
 
-  let obo: OboResult;
+  let obo: TokenResult;
   try {
     obo = isLocal
-      ? ({ ok: true, token: 'DEV' } as OboResult)
+      ? ({ ok: true, token: 'DEV' } as TokenResult)
       : await requestOboToken(token, proxy.scope);
   } catch (error) {
     logger.error('Feil ved henting av OBO-token:', error);

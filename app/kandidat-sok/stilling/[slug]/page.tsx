@@ -1,6 +1,5 @@
 'use client';
 import { useParams } from 'next/navigation';
-import React from 'react';
 import { useGeografi } from '../../../api/stilling/geografi/useGeografi';
 import { StillingsDataDTO } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { useStilling } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/useStilling';
@@ -11,7 +10,7 @@ import {
 } from '../../../api/stillings-sok/esFiltre/fylkeOgKommuneMapping';
 import Sidelaster from '../../../components/Sidelaster';
 import { FylkeDTO } from '../../../stillings-sok/components/StillingsSøkFilter/GeografiFilter';
-import { useKandidatSøkFilter } from '../../KandidaSokContext';
+import KandidatTilStilling from './KandidatTilStilling';
 
 const hentØnsketStedFraStilling = (
   rekrutteringsbistandstilling: StillingsDataDTO,
@@ -56,38 +55,19 @@ const hentØnsketYrkeFraStilling = (
     .filter((name): name is string => name !== null);
 };
 
-export default function KandidatSokStilling() {
+export default function KandidatForStilling() {
   const params = useParams();
   const stillingsId = params.slug;
-
-  const filter = useKandidatSøkFilter();
 
   if (typeof stillingsId !== 'string') {
     throw new Error('Stillings-ID må være en streng');
   }
   const stillingsData = useStilling(stillingsId);
-  const geografi = useGeografi();
+  const geografiData = useGeografi();
 
-  React.useEffect(() => {
-    if (stillingsData.data && geografi.data) {
-      console.log('🎺 tillingsData.data', stillingsData.data);
-      //   const ønsketYrke = hentØnsketYrkeFraStilling(stillingsData.data);
-      const ønsketSted = hentØnsketStedFraStilling(
-        stillingsData.data,
-        geografi.data.fylker,
-      );
+  if (stillingsData.isLoading || geografiData.isLoading) {
+    return <Sidelaster />;
+  }
 
-      console.log('🎺 ønsketSted', ønsketSted);
-      //   if (ønsketYrke && ønsketYrke !== filter.ønsketYrke) {
-      //     filter.setØnsketYrke(ønsketYrke);
-      //   }
-
-      //   console.log('🎺 ønsketYrke', ønsketYrke);
-      //   console.log('🎺  geografi.data.fylker,', geografi.data.fylker);
-
-      //   ønsketSted && filter.setØnsketSted(ønsketSted);
-    }
-  }, [stillingsData.data, geografi.data, filter.ønsketYrke]);
-
-  return <Sidelaster />;
+  return <KandidatTilStilling stillingsData={stillingsData.data} />;
 }

@@ -113,13 +113,15 @@ const StillingsKort: React.FC<IStillingsKort> = ({
         {!kandidatId && (
           <div>
             {erEier && (
-              <Button disabled variant='tertiary'>
-                Vis kandidater
-              </Button>
+              <Link
+                href={`/stilling/${stillingData.stilling.uuid}?visFane=kandidater`}
+              >
+                <Button variant='tertiary'>Vis kandidater</Button>
+              </Link>
             )}
-            <Button disabled variant='tertiary'>
-              Finn kandidater
-            </Button>
+            <Link href={`/kandidat-sok/stilling/${stillingData.stilling.uuid}`}>
+              <Button variant='tertiary'>Finn kandidater</Button>
+            </Link>
           </div>
         )}
       </div>
