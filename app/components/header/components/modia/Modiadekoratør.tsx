@@ -9,13 +9,6 @@ const proxyUrl =
     ? 'https://rekrutteringsbistand-frontend.intern.nav.no'
     : 'https://rekrutteringsbistand-frontend.intern.dev.nav.no';
 
-let NAVSPA: {
-  importer<T>(name: string): React.ComponentType<T>;
-};
-if (typeof window !== 'undefined') {
-  NAVSPA = require('@navikt/navspa');
-}
-
 const miljo = getMiljø() === Miljø.ProdGcp ? 'prod' : 'q0';
 
 const Modiadekoratør: React.FC = () => {
