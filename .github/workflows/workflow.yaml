@@ -27,17 +27,17 @@ jobs:
       - name: 🔄 Hent Kildekode
         uses: actions/checkout@v4
 
-      - name: 📦 Sett opp Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-          cache: 'pnpm'
-          registry-url: 'https://npm.pkg.github.com'
-
       - name: 📥 Sett opp pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 9
+          version: 9.14.2
+
+      - name: 📦 Sett opp Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.11.0'
+          cache: 'pnpm'
+          registry-url: 'https://npm.pkg.github.com'
 
       - name: 📥 Installer Avhengigheter
         env:
