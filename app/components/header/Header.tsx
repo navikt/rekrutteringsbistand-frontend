@@ -1,5 +1,3 @@
-'use client';
-import * as React from 'react';
 import { isLocal } from '../../../util/env';
 import DevDekoratør from '../dev/DevDekoratør';
 import { Navigeringsmeny } from './components/navigasjon/Navigasjon';
