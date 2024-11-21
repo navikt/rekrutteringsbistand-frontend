@@ -1,5 +1,4 @@
 'use client';
-
 import dynamic from 'next/dynamic';
 import { getMiljø, Miljø } from '../../../../../util/miljø';
 import { useApplikasjonContext } from '../../../../ApplikasjonContext';

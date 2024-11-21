@@ -5,7 +5,6 @@ import { useBruker } from './api/bruker/useBruker';
 import { useDecoratorData } from './api/decorator/useDecoratorData';
 import { ApplikasjonContextProvider } from './ApplikasjonContext';
 import ErrorBoundary from './components/feilhåndtering/ErrorBoundary';
-import MirageInitializer from './components/MirageInitializer';
 import Sidelaster from './components/Sidelaster';
 
 export interface RekrutteringsbistandProps {
@@ -27,20 +26,18 @@ const Rekrutteringsbistand: React.FC<RekrutteringsbistandProps> = ({
   }
 
   return (
-    <MirageInitializer>
-      <ErrorBoundary>
-        <NuqsAdapter>
-          <ApplikasjonContextProvider
-            brukerData={{
-              ...dekoratørHook.data,
-              roller: brukerHook.data?.roller ?? [],
-            }}
-          >
-            {children}
-          </ApplikasjonContextProvider>
-        </NuqsAdapter>
-      </ErrorBoundary>
-    </MirageInitializer>
+    <ErrorBoundary>
+      <NuqsAdapter>
+        <ApplikasjonContextProvider
+          brukerData={{
+            ...dekoratørHook.data,
+            roller: brukerHook.data?.roller ?? [],
+          }}
+        >
+          {children}
+        </ApplikasjonContextProvider>
+      </NuqsAdapter>
+    </ErrorBoundary>
   );
 };
 

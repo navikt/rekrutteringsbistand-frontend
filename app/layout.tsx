@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { isLocal } from '../util/env';
+import MirageInitializer from './components/MirageInitializer';
 import './globals.css';
 import Rekrutteringsbistand from './Rekrutteringsbistand';
 
@@ -15,7 +16,9 @@ export default async function RootLayout({
   return (
     <html lang='no'>
       <body>
-        <Rekrutteringsbistand>{children}</Rekrutteringsbistand>
+        <MirageInitializer>
+          <Rekrutteringsbistand>{children}</Rekrutteringsbistand>
+        </MirageInitializer>
       </body>
     </html>
   );
