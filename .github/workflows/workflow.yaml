@@ -30,14 +30,10 @@ jobs:
       - name: 📦 Sett opp Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20.14.0'
+          node-version: '18'
+          cache: 'pnpm'
+          registry-url: 'https://npm.pkg.github.com'
 
-      - name: 🔑 Authenticate with npm
-        run: |
-          echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" > ~/.npmrc
-          env:
-            NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}    
-            
       - name: 📥 Sett opp pnpm
         uses: pnpm/action-setup@v4
         with:
