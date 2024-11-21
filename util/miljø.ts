@@ -6,10 +6,6 @@ export enum Miljø {
 }
 
 export const getMiljø = (): string => {
-  if (typeof window === 'undefined') {
-    return Miljø.Lokalt;
-  }
-
   const { hostname } = window.location;
 
   if (hostname.includes('intern.dev.nav.no')) {
