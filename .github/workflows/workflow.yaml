@@ -1,94 +1,19 @@
-# name: Bygg og Deploy Rekrutteringsbistand-frontend
-# on:
-#   push:
-#   workflow_dispatch: # Legger til mulighet for manuell kjøring
-
-# jobs:
-#   build-and-deploy:
-#     name: Next
-#     uses: navikt/toi-github-actions-workflows/.github/workflows/build-and-deploy-nextjs.yaml@main
-#     with:
-#       app_name: 'rekrutteringsbistand-frontend'
-#       dev-vars-path: 'nais/dev-gcp.json'
-#       deploy-to-dev-if-branch-name-is: 'dev'
-#     secrets: inherit
-    # permissions:
-    #   contents: read
-    #   id-token: write
-    #   security-events: write
+name: Bygg og Deploy Rekrutteringsbistand-frontend
 on:
   push:
   workflow_dispatch: # Legger til mulighet for manuell kjøring
 
-permissions:
-    contents: read
-    id-token: write
-    security-events: write
-
 jobs:
-  build:
-    name: 🏗️ Bygg applikasjon
-    runs-on: ubuntu-latest
-    steps:
-      - name: 🔄 Hent Kildekode
-        uses: actions/checkout@v4
-
-      - name: 📥 Sett opp pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9.14.2
-
-      - name: 📦 Sett opp Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22.11.0'
-          cache: 'pnpm'
-          registry-url: 'https://npm.pkg.github.com'
-
-      - name: 📥 Installer Avhengigheter
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
-        run: |
-          echo "::group::Installerer pnpm-pakker"
-          pnpm install --frozen-lockfile
-          echo "::endgroup::"
-
-      - name: 🛠️ Bygg Next.js Applikasjon
-        run: |
-          echo "::group::Bygger Next.js applikasjon"
-          pnpm run build
-          echo "::endgroup::"
-
-      - name: 🐳 Last opp Docker-image til GAR
-        id: docker-build-push
-        uses: nais/docker-build-push@v0
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
-        with:
-          team: toi
-          image_suffix: 'rekrutteringsbistand-frontend'
-          identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
-          project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
-          build_secrets: 'NODE_AUTH_TOKEN=${{ secrets.READER_TOKEN }}'
-          tag: ${{ contains(fromJSON('["refs/heads/master", "refs/heads/main"]'), github.ref) && 'latest' || github.sha }}
-    outputs:
-      image: ${{ steps.docker-build-push.outputs.image }}
-
-
-
-  deploy-til-dev:
-    name: 🚀 Deploy til dev-gcp
-    needs:
-      - build
-    runs-on: ubuntu-latest
-    steps:
-      - name: 🔄 Hent Kildekode
-        uses: actions/checkout@v4
-
-      - name: 📦 Deploy til Dev
-        uses: nais/deploy/actions/deploy@v2
-        env:
-          CLUSTER: dev-gcp
-          RESOURCE: nais/dev-gcp.yaml
-          VAR: image=${{ needs.build.outputs.image }}
-          VARS: 'nais/dev-gcp.json'
+  build-and-deploy:
+    name: Next
+    uses: navikt/toi-github-actions-workflows/.github/workflows/build-and-deploy-nextjs.yaml@main
+    with:
+      app_name: 'rekrutteringsbistand-frontend'
+      pnpm: true
+      dev-vars-path: 'nais/dev-gcp.json'
+      deploy-to-dev-if-branch-name-is: 'dev'
+    secrets: inherit
+    permissions:
+      contents: read
+      id-token: write
+      security-events: write
