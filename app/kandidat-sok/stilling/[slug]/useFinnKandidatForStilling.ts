@@ -2,10 +2,12 @@ import { useEffect, useMemo, useRef } from 'react';
 import { StillingsDataDTO } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { useKandidatSøkFilter } from '../../KandidaSokContext';
 
-export const useHentØnskerFraStilling = (stillingsData?: StillingsDataDTO) => {
+export const useFinnKandidatForStilling = (
+  stillingsData?: StillingsDataDTO,
+) => {
   const kandidatSøkFilter = useKandidatSøkFilter();
-
   const hasSetInitialData = useRef(false);
+  const isDataLoading = !stillingsData;
 
   const processedData = useMemo(() => {
     if (!stillingsData) return null;
@@ -15,26 +17,27 @@ export const useHentØnskerFraStilling = (stillingsData?: StillingsDataDTO) => {
     const fylker: string[] =
       locationList
         ?.map((location) => location.county)
-        .filter((county) => county !== null) ?? [];
+        .filter((county): county is string => county !== null) ?? [];
 
     const kommuner: string[] =
       locationList
         ?.map((location) => location.municipal)
-        .filter((municipal) => municipal !== null) ?? [];
+        .filter((municipal): municipal is string => municipal !== null) ?? [];
 
-    const arbeidsønsker = categoryList
-      ?.filter(
-        (category) =>
-          category.categoryType === 'STYRK08' ||
-          category.categoryType === 'STYRK08NAV',
-      )
-      .map((category) => category.name)
-      .filter((name): name is string => name !== null);
+    const arbeidsønsker =
+      categoryList
+        ?.filter(
+          (category) =>
+            category.categoryType === 'STYRK08' ||
+            category.categoryType === 'STYRK08NAV',
+        )
+        .map((category) => category.name)
+        .filter((name): name is string => name !== null) ?? [];
 
     return {
-      fylker: fylker,
-      kommuner: kommuner,
-      arbeidsønsker: arbeidsønsker ?? [],
+      fylker,
+      kommuner,
+      arbeidsønsker,
     };
   }, [stillingsData]);
 
@@ -43,14 +46,18 @@ export const useHentØnskerFraStilling = (stillingsData?: StillingsDataDTO) => {
       const { fylker, kommuner, arbeidsønsker } = processedData;
 
       kandidatSøkFilter.setØnsketSted([...fylker, ...kommuner]);
-      kandidatSøkFilter.setØnsketYrke([...arbeidsønsker]);
+      kandidatSøkFilter.setØnsketYrke(arbeidsønsker);
 
       hasSetInitialData.current = true;
     }
   }, [processedData, kandidatSøkFilter]);
 
+  const isLoading =
+    isDataLoading ||
+    (!hasSetInitialData.current && stillingsData !== undefined);
+
   return {
     kandidatSøkFilter,
-    isLoading: !hasSetInitialData.current && !stillingsData,
+    isLoading,
   };
 };

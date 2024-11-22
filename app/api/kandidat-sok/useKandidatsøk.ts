@@ -5,7 +5,7 @@
 import useSWRImmutable from 'swr/immutable';
 import { KandidatSøkPortefølje } from '../../kandidat-sok/components/PorteføljeTabs';
 import { IKandidatSøkContext } from '../../kandidat-sok/KandidaSokContext';
-import { konverterStederTilNåværendeKoder } from '../../kandidat/[kandidatId]/forslag-fane/setKandidatStillingssøkData';
+import { konverterStederTilNåværendeKoder } from '../../kandidat/[kandidatId]/forslag-fane/useStillingForKandidat';
 import { KandidatSøkAPI } from '../api-routes';
 import { postApiWithSchema } from '../fetcher';
 import { useGeografi } from '../stilling/geografi/useGeografi';

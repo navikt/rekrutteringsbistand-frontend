@@ -10,7 +10,7 @@ import SideLayout from '../components/layout/SideLayout';
 import SideTopBanner from '../components/layout/SideTopBanner';
 import Sidelaster from '../components/Sidelaster';
 import { TilgangskontrollForInnhold } from '../components/tilgangskontroll/TilgangskontrollForInnhold';
-import { useKandidatStillingssøkData } from '../kandidat/[kandidatId]/forslag-fane/setKandidatStillingssøkData';
+import { useStillingForKandidat } from '../kandidat/[kandidatId]/forslag-fane/useStillingForKandidat';
 import StillingsSøkSidePanel from './components/StillingsSøkSidePanel';
 import { StillingsSøkPortefølje } from './stillingssøk-typer';
 import {
@@ -48,7 +48,7 @@ const StillingsSøkLayout: React.FC<StillingsSøkProps> = ({
 }) => {
   const { portefølje, setPortefølje } = useStillingsSøkFilter();
 
-  const stillingssøkData = useKandidatStillingssøkData(kandidatId ?? null);
+  const stillingssøkData = useStillingForKandidat(kandidatId ?? null);
 
   console.log('🎺 stillingssøkData', stillingssøkData);
   if (kandidatId && stillingssøkData?.isLoading) {

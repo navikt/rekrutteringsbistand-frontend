@@ -2,7 +2,7 @@ import * as React from 'react';
 import { StillingsDataDTO } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import Sidelaster from '../../../components/Sidelaster';
 import KandidatSøk from '../../page';
-import { useHentØnskerFraStilling } from './useHentØnskerFraStilling';
+import { useFinnKandidatForStilling } from './useFinnKandidatForStilling';
 
 export interface KandidatTilStillingProps {
   stillingsData?: StillingsDataDTO;
@@ -11,7 +11,7 @@ export interface KandidatTilStillingProps {
 const KandidatTilStilling: React.FC<KandidatTilStillingProps> = ({
   stillingsData,
 }) => {
-  const { isLoading } = useHentØnskerFraStilling(stillingsData);
+  const { isLoading } = useFinnKandidatForStilling(stillingsData);
 
   if (isLoading) {
     return <Sidelaster />;

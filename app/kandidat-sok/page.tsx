@@ -13,26 +13,6 @@ import ValgteKontorer from './ValgteKontorer';
 
 const KandidatSøk: React.FC = () => {
   const { portefølje, setPortefølje } = useKandidatSøkFilter();
-  // const hook = useKandidatsøk(KandidatsøkTyper.MINE_BRUKERE, {
-  //   orgenhet: '0321',
-  //   fritekst: null,
-  //   portefølje: 'minebrukere',
-  //   valgtKontor: [],
-  //   innsatsgruppe: [],
-  //   side: 1,
-  //   ønsketYrke: [],
-  //   ønsketSted: [],
-  //   borPåØnsketSted: null,
-  //   kompetanse: [],
-  //   førerkort: [],
-  //   prioritertMålgruppe: [],
-  //   hovedmål: [],
-  //   utdanningsnivå: [],
-  //   arbeidserfaring: [],
-  //   ferskhet: null,
-  //   språk: [],
-  //   sortering: 'nyeste',
-  // });
 
   const data = {
     enheter: [],

@@ -64,7 +64,7 @@ export const konverterStederTilNåværendeKoder = (
   });
 };
 
-export const useKandidatStillingssøkData = (kandidatId: string | null) => {
+export const useStillingForKandidat = (kandidatId: string | null) => {
   const hasSetInitialData = useRef(false);
   const stillingsSøkContext = useStillingsSøkFilter();
   const { data: kandidatStillingssøk, isLoading: isKandidatLoading } =
