@@ -28,7 +28,7 @@ export enum KandidatSøkQueryparam {
   Sortering = 'sortering',
 }
 
-interface IKandidatSøkContext {
+export interface IKandidatSøkContext {
   fritekst: string;
   setFritekst: (tekst: string) => void;
   portefølje: string;

@@ -41,7 +41,7 @@ const hentYrkerFraJobbønsker = (
   ];
 };
 
-const konverterStederTilNåværendeKoder = (
+export const konverterStederTilNåværendeKoder = (
   geografikoder: (string | null)[],
 ): string[] => {
   const konverterteKoder = geografikoder

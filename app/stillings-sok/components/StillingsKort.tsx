@@ -44,7 +44,6 @@ const StillingsKort: React.FC<IStillingsKort> = ({
   const eierNavn = formaterEiernavn(hentEierFraStilling(stillingData));
   const erEier = hentIdentFraStilling(stillingData) === ident;
 
-  console.log('🎺 hentIdentFraStilling', hentIdentFraStilling(stillingData));
   return (
     <Box className='border rounded-lg mb-4 border-gray-300 p-4'>
       <>

@@ -44,7 +44,6 @@ const StillingsKandidaterTabell: React.FC<{
     ),
   );
 
-  console.log('🎺 kandidater', kandidater);
   React.useEffect(() => {
     const nyListe = kandidatliste.kandidater
       .filter((kandidat) => {
