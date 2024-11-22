@@ -67,7 +67,7 @@ export const konverterStederTilNåværendeKoder = (
 export const useKandidatStillingssøkData = (kandidatId: string | null) => {
   const hasSetInitialData = useRef(false);
   const stillingsSøkContext = useStillingsSøkFilter();
-  const { data: kandidatStillingssøk, isLoading } =
+  const { data: kandidatStillingssøk, isLoading: isKandidatLoading } =
     useKandidatStillingssøk(kandidatId);
 
   const processedData = React.useMemo(() => {
@@ -106,9 +106,12 @@ export const useKandidatStillingssøkData = (kandidatId: string | null) => {
     }
   }, [processedData, stillingsSøkContext]);
 
+  const isLoading =
+    isKandidatLoading ||
+    (!hasSetInitialData.current && kandidatStillingssøk !== null);
+
   return {
     kandidatStillingssøk,
-    isLoading:
-      (!hasSetInitialData.current && !kandidatStillingssøk) || isLoading,
+    isLoading,
   };
 };
