@@ -50,9 +50,13 @@ const StillingsSøkLayout: React.FC<StillingsSøkProps> = ({
 
   const stillingssøkData = useKandidatStillingssøkData(kandidatId ?? null);
 
+  console.log('🎺 stillingssøkData', stillingssøkData);
   if (kandidatId && stillingssøkData?.isLoading) {
+    console.log('🎺 "Sidelaster"');
     return <Sidelaster />;
   }
+
+  console.log('🎺 "StillingsSøkLayout"');
   return (
     <SideLayout
       banner={
