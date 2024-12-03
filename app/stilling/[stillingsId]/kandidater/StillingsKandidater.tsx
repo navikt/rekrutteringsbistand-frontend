@@ -1,4 +1,4 @@
-import { ArrowForwardIcon } from '@navikt/aksel-icons';
+import { ArrowForwardIcon, PencilIcon } from '@navikt/aksel-icons';
 import { Button, Checkbox, CheckboxGroup, Search } from '@navikt/ds-react';
 import * as React from 'react';
 import { useKandidatliste } from '../../../api/kandidat/useKandidatliste';
@@ -23,8 +23,33 @@ const StillingsKandidater: React.FC = () => {
   return (
     <SWRLaster hook={hook}>
       {(kandidatliste) => (
-        <div className='mt-10'>
-          <div className='flex justify-between'>
+        <div className='my-2'>
+          <div className='mb-2 flex justify-end'>
+            <Button
+              disabled
+              className='mr-2'
+              variant='secondary'
+              icon={<ArrowForwardIcon aria-hidden />}
+            >
+              Finn kandidater
+            </Button>
+            <Button
+              disabled
+              variant='secondary'
+              className='mr-2'
+              icon={<ArrowForwardIcon aria-hidden />}
+            >
+              Legg til kandidat
+            </Button>
+            <Button
+              disabled
+              variant='secondary'
+              icon={<ArrowForwardIcon aria-hidden />}
+            >
+              Del med kandidat
+            </Button>
+          </div>
+          <div className='flex justify-between mt-2'>
             <div className=' md:w-[15rem]'>
               <Search
                 placeholder='Søk i kandidatene'
@@ -38,26 +63,17 @@ const StillingsKandidater: React.FC = () => {
             <div>
               <Button
                 disabled
-                className='mr-2'
-                variant='secondary'
-                icon={<ArrowForwardIcon aria-hidden />}
+                variant='tertiary'
+                icon={<PencilIcon title='Rediger' />}
               >
-                Finn kandidater
+                Rapporter personvernsbrudd
               </Button>
               <Button
                 disabled
-                variant='secondary'
-                className='mr-2'
-                icon={<ArrowForwardIcon aria-hidden />}
+                variant='tertiary'
+                icon={<PencilIcon title='Rediger' />}
               >
-                Legg til kandidat
-              </Button>
-              <Button
-                disabled
-                variant='secondary'
-                icon={<ArrowForwardIcon aria-hidden />}
-              >
-                Del med kandidat
+                Del med kandidaten
               </Button>
             </div>
           </div>

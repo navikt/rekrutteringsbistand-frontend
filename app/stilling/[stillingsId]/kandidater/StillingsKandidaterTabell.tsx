@@ -26,6 +26,7 @@ import {
   Utfallsendring,
 } from './KandidatIKandidatlisteTyper';
 import { useStillingsKandidaterFilter } from './StillingsKandidaterFilterContext';
+import InfoOmKandidat from './components/InfoOmKandidat';
 
 const StillingsKandidaterTabell: React.FC<{
   search: string;
@@ -133,7 +134,7 @@ const StillingsKandidaterTabell: React.FC<{
         {kandidater.map((kandidat, i) => {
           return (
             <Table.ExpandableRow
-              content={<div>hei</div>}
+              content={<InfoOmKandidat kandidat={kandidat} />}
               key={i + kandidat.fodselsnr}
               selected={selectedRows.includes(kandidat.fodselsnr)}
             >
