@@ -29,7 +29,8 @@ import { useStillingsKandidaterFilter } from './StillingsKandidaterFilterContext
 const StillingsKandidaterTabell: React.FC<{
   search: string;
   kandidatliste: kandidatlisteSchemaDTO;
-}> = ({ search, kandidatliste }) => {
+  stillingsId: string;
+}> = ({ search, kandidatliste, stillingsId }) => {
   const [sort, setSort] = React.useState<TableSortState<kandidaterSchemaDTO>>();
   const [selectedRows, setSelectedRows] = React.useState<string[]>([]);
   const { status, hendelse } = useStillingsKandidaterFilter();
@@ -209,7 +210,7 @@ const StillingsKandidaterTabell: React.FC<{
                   />
                   <KandidatDropdown
                     kandidat={kandidat}
-                    kandidatlisteId={kandidatliste.stillingId}
+                    stillingsId={stillingsId}
                   />
                 </div>
               </Table.DataCell>

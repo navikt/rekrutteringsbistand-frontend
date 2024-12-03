@@ -12,19 +12,19 @@ import { kandidaterSchemaDTO } from '../../../../api/kandidat/schema.zod';
 
 export interface KandidatDropdownProps {
   kandidat: kandidaterSchemaDTO;
-  kandidatlisteId: string;
+  stillingsId: string;
 }
 
 const KandidatDropdown: React.FC<KandidatDropdownProps> = ({
   kandidat,
-  kandidatlisteId,
+  stillingsId,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const slettKandidat = async () => {
     setIsLoading(true);
     await putApi(
-      `${KandidatAPI.internUrl}/veileder/kandidatlister/${kandidatlisteId}/kandidater/${kandidat.kandidatnr}/arkivert`,
+      `${KandidatAPI.internUrl}/veileder/kandidatlister/${stillingsId}/kandidater/${kandidat.kandidatnr}/arkivert`,
       {
         arkivert: true,
       },

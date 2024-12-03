@@ -91,6 +91,7 @@ const StillingsKandidater: React.FC = () => {
               <StillingsKandidaterTabell
                 search={search}
                 kandidatliste={kandidatliste}
+                stillingsId={stillingsData.stilling.uuid}
               />
             </div>
           </div>
