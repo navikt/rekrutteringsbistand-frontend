@@ -26,7 +26,7 @@ const KandidatDropdown: React.FC<KandidatDropdownProps> = ({
     await putApi(
       `${KandidatAPI.internUrl}/veileder/kandidatlister/${kandidatlisteId}/kandidater/${kandidat.kandidatnr}/arkivert`,
       {
-        method: 'DELETE',
+        arkivert: true,
       },
     );
     setIsLoading(false);
