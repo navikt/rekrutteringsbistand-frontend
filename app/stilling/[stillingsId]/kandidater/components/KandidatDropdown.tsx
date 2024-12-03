@@ -6,6 +6,7 @@ import {
 import { BodyLong, Button, Dropdown, HStack, Modal } from '@navikt/ds-react';
 import * as React from 'react';
 import { useRef, useState } from 'react';
+import { KandidatAPI } from '../../../../api/api-routes';
 import { putApi } from '../../../../api/fetcher';
 import { kandidaterSchemaDTO } from '../../../../api/kandidat/schema.zod';
 
@@ -23,7 +24,7 @@ const KandidatDropdown: React.FC<KandidatDropdownProps> = ({
   const slettKandidat = async () => {
     setIsLoading(true);
     await putApi(
-      `/api/kandidat-api/veileder/kandidatlister/${kandidatlisteId}/kandidater/${kandidat.kandidatnr}/arkivert`,
+      `${KandidatAPI.internUrl}/veileder/kandidatlister/${kandidatlisteId}/kandidater/${kandidat.kandidatnr}/arkivert`,
       {
         method: 'DELETE',
       },
