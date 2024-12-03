@@ -7,15 +7,16 @@ import FinnKandidaterIkon from '../../../public/ikoner/finn-kandidater.svg';
 import FinnStillinger from '../../../public/ikoner/finn-stillinger.svg';
 import OpprettNyStillingIkon from '../../../public/ikoner/opprett-ny-stilling.svg';
 import SeMineStillingerIkon from '../../../public/ikoner/se-mine-stillinger.svg';
-import { Rolle } from '../../../types/Roller';
+
 import { TilgangskontrollForInnhold } from '../../components/tilgangskontroll/TilgangskontrollForInnhold';
+import { Roller } from '../../components/tilgangskontroll/roller';
 
 const Hurtiglenker: FunctionComponent = () => {
   return (
     <TilgangskontrollForInnhold
       skjulVarsel
       kreverEnAvRollene={[
-        Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+        Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
       ]}
     >
       <div className='justify-start items-start gap-4 inline-flex w-full'>

@@ -5,10 +5,10 @@ import Image from 'next/image';
 import Link from 'next/link';
 import * as React from 'react';
 import Piktogram from '../../public/ikoner/finn-stillinger.svg';
-import { Rolle } from '../../types/Roller';
 import SideLayout from '../components/layout/SideLayout';
 import SideTopBanner from '../components/layout/SideTopBanner';
 import Sidelaster from '../components/Sidelaster';
+import { Roller } from '../components/tilgangskontroll/roller';
 import { TilgangskontrollForInnhold } from '../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { useStillingForKandidat } from '../kandidat/[kandidatId]/forslag-fane/useStillingForKandidat';
 import StillingsSøkSidePanel from './components/StillingsSøkSidePanel';
@@ -50,13 +50,10 @@ const StillingsSøkLayout: React.FC<StillingsSøkProps> = ({
 
   const stillingssøkData = useStillingForKandidat(kandidatId ?? null);
 
-  console.log('🎺 stillingssøkData', stillingssøkData);
   if (kandidatId && stillingssøkData?.isLoading) {
-    console.log('🎺 "Sidelaster"');
     return <Sidelaster />;
   }
 
-  console.log('🎺 "StillingsSøkLayout"');
   return (
     <SideLayout
       banner={
@@ -70,8 +67,8 @@ const StillingsSøkLayout: React.FC<StillingsSøkProps> = ({
               <TilgangskontrollForInnhold
                 skjulVarsel
                 kreverEnAvRollene={[
-                  Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
-                  Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+                  Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
+                  Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
                 ]}
               >
                 <Link href={'/stilling/ny-stilling'}>
@@ -103,7 +100,7 @@ const StillingsSøkLayout: React.FC<StillingsSøkProps> = ({
           <TilgangskontrollForInnhold
             skjulVarsel
             kreverEnAvRollene={[
-              Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+              Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
             ]}
           >
             <Tabs.Tab

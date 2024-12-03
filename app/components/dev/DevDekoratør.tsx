@@ -1,7 +1,7 @@
-import { InternalHeader } from '@navikt/ds-react';
+import { InternalHeader, Select } from '@navikt/ds-react';
 import * as React from 'react';
-import { Rolle } from '../../../types/Roller';
 import { useApplikasjonContext } from '../../ApplikasjonContext';
+import { Roller } from '../tilgangskontroll/roller';
 
 const DevDekoratør: React.FC = () => {
   const {
@@ -10,26 +10,22 @@ const DevDekoratør: React.FC = () => {
     setValgtNavKontor,
   } = useApplikasjonContext();
 
+  const [devRolle, setDevRolle] = React.useState<Roller>(
+    (localStorage.getItem('DEV-ROLLE') as Roller) ||
+      Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER,
+  );
+
+  const setDevRolleCookie = (rolle: Roller) => {
+    localStorage.setItem('DEV-ROLLE', rolle);
+    setDevRolle(rolle);
+    window.location.reload();
+  };
+
   React.useEffect(() => {
     if (!valgtNavKontor) {
       setValgtNavKontor({ navKontor: '1234', navKontorNavn: 'NAV FYA1' });
     }
   });
-  const visRolleNavn = () => {
-    if (roller?.includes(Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER)) {
-      return 'Utvikler';
-    }
-    if (
-      roller?.includes(Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET)
-    ) {
-      return 'Arbeidsgiverrettet';
-    }
-    if (
-      roller?.includes(Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET)
-    ) {
-      return 'Jobbsøkerrettet';
-    }
-  };
 
   return (
     <InternalHeader>
@@ -41,9 +37,33 @@ const DevDekoratør: React.FC = () => {
         <span>
           <strong>Bruker:</strong> {ident}
         </span>
-        <span>
-          <strong>Rolle:</strong> {visRolleNavn()}
-        </span>
+
+        <div className='flex items-center gap-2'>
+          <span>
+            <strong>Rolle: </strong>
+          </span>
+          <Select
+            label='Velg bostedsland'
+            hideLabel
+            size='small'
+            value={devRolle}
+            onChange={(e) => setDevRolleCookie(e.target.value as Roller)}
+          >
+            <option value={Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER}>
+              Utvikler
+            </option>
+            <option
+              value={Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET}
+            >
+              Arbeidsgiverrettet
+            </option>
+            <option
+              value={Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET}
+            >
+              Jobbsøkerrettet
+            </option>
+          </Select>
+        </div>
         <span>
           <strong>NAV Kontor:</strong> {valgtNavKontor?.navKontorNavn} -{' '}
           {valgtNavKontor?.navKontor}

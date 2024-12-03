@@ -1,9 +1,9 @@
 import { Label, Radio, RadioGroup } from '@navikt/ds-react';
 import React, { FunctionComponent, ReactNode } from 'react';
-import { Rolle } from '../../../../types/Roller';
 import { useApplikasjonContext } from '../../../ApplikasjonContext';
 import { kategoriTilVisningsnavn } from '../../stilling-util';
 import { Stillingskategori } from '../../stilling-typer';
+import { Roller } from '../../../components/tilgangskontroll/roller';
 
 const kategorier = [
   Stillingskategori.Stilling,
@@ -34,18 +34,18 @@ const VelgStillingskategori: FunctionComponent<Props> = ({
     switch (kategori) {
       case Stillingskategori.Stilling:
         return harRolle([
-          Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+          Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
         ]);
 
       case Stillingskategori.Jobbmesse:
         return harRolle([
-          Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+          Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
         ]);
 
       case Stillingskategori.Formidling:
         return harRolle([
-          Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-          Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
+          Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+          Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
         ]);
 
       default:

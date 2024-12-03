@@ -1,27 +1,27 @@
 import { Alert, Link } from '@navikt/ds-react';
 import * as React from 'react';
 
-import { Rolle } from '../../../types/Roller';
 import { useApplikasjonContext } from '../../ApplikasjonContext';
 import ErrorBoundary from '../feilhåndtering/ErrorBoundary';
 import css from './TilgangskontrollForInnhold.module.css';
+import { Roller } from './roller';
 
 export interface ITilgangskontrollForInnhold {
-  kreverEnAvRollene?: Rolle[];
+  kreverEnAvRollene?: Roller[];
   children: React.ReactNode;
   skjulVarsel?: boolean;
   manglerEierskap?: boolean;
 }
 
-const rolleTilNavn = (rolle: Rolle): string | null => {
+const rolleTilNavn = (rolle: Roller): string | null => {
   switch (rolle) {
-    case Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET:
+    case Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET:
       return 'Arbeidsgiverrettet';
 
-    case Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET:
+    case Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET:
       return 'Jobbsøkerrettet';
 
-    case Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER:
+    case Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER:
       return 'Utvikler';
 
     default:
@@ -40,7 +40,7 @@ export const TilgangskontrollForInnhold: React.FC<
     ? kreverEnAvRollene.some((r) => {
         return (
           (roller?.includes(r) ||
-            roller?.includes(Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER)) &&
+            roller?.includes(Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER)) &&
           !manglerEierskap
         );
       })
@@ -65,7 +65,7 @@ export const TilgangskontrollForInnhold: React.FC<
                 kreverEnAvRollene
                   .filter(
                     (r, i) =>
-                      r !== Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER,
+                      r !== Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER,
                   )
                   .map((rolle, i) => (
                     <span key={i}>

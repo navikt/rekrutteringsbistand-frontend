@@ -45,7 +45,7 @@ const LocationSchema = z.object({
 });
 
 export const StillingSchema = z.object({
-  title: z.string(),
+  tittel: z.string(),
   uuid: z.string(),
   annonsenr: z.string().nullable(),
   status: z.string(),
@@ -65,5 +65,4 @@ export const StillingSchema = z.object({
   administration: AdministrationSchema.optional(),
   properties: StillingPropertiesSchema.optional(),
   contacts: z.array(ContactSchema),
-  styrkEllerTittel: z.string(),
 });

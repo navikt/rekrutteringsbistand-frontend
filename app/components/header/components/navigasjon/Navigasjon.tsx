@@ -2,9 +2,10 @@ import { Tabs } from '@navikt/ds-react/Tabs';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { FunctionComponent } from 'react';
-import { Rolle } from '../../../../../types/Roller';
+
 import { TilgangskontrollForInnhold } from '../../../tilgangskontroll/TilgangskontrollForInnhold';
 import Nyheter from '../nyheter/Nyheter';
+import { Roller } from '../../../tilgangskontroll/roller';
 
 const tabs = [
   {
@@ -20,16 +21,16 @@ const tabs = [
     tittel: 'Kandidatsøk',
     path: '/kandidat-sok',
     kreverRoller: [
-      Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-      Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
+      Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+      Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
     ],
   },
   {
     tittel: 'Formidlinger',
     path: '/formidlinger',
     kreverRoller: [
-      Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-      Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
+      Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+      Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
     ],
   },
 ];

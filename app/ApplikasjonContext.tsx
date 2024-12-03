@@ -1,9 +1,9 @@
 'use client';
 
 import React from 'react';
-import { Rolle } from '../types/Roller';
 import { DecoratorDTO } from './api/decorator/decorator.dto';
 import Header from './components/header/Header';
+import { Roller } from './components/tilgangskontroll/roller';
 
 export type NavKontorMedNavn = {
   navKontor: string;
@@ -11,14 +11,14 @@ export type NavKontorMedNavn = {
 };
 
 interface BrukerData extends DecoratorDTO {
-  roller: Rolle[];
+  roller: Roller[];
 }
 
 interface ApplikasjonContextType {
   brukerData: BrukerData;
   darkMode: boolean;
   setDarkMode: (val: boolean) => void;
-  harRolle: (rolle: Rolle[]) => boolean;
+  harRolle: (rolle: Roller[]) => boolean;
   valgtNavKontor: NavKontorMedNavn | null;
   setValgtNavKontor: (navKontor: NavKontorMedNavn | null) => void;
 }
@@ -48,16 +48,17 @@ export const ApplikasjonContextProvider: React.FC<
   IApplikasjonContextProvider
 > = ({ children, brukerData }) => {
   const [darkMode, setDarkMode] = React.useState<boolean>(false);
+  const [devRolle, setDevRolle] = React.useState<Roller | null>(null);
 
   const [valgtNavKontor, setValgtNavKontor] =
     React.useState<NavKontorMedNavn | null>(null);
 
-  const harRolle = (rolle: Rolle[]) =>
+  const harRolle = (rolle: Roller[]) =>
     rolle.some(
       (r) =>
         brukerData?.roller?.includes(r) ||
         brukerData?.roller?.includes(
-          Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER,
+          Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER,
         ),
     );
 

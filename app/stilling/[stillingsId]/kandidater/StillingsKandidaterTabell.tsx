@@ -1,5 +1,9 @@
-import { PencilIcon, TrashIcon } from '@navikt/aksel-icons';
-import { Button, Checkbox, Table } from '@navikt/ds-react';
+import {
+  MenuElipsisHorizontalCircleIcon,
+  PencilIcon,
+  TrashIcon,
+} from '@navikt/aksel-icons';
+import { Button, Checkbox, Dropdown, HStack, Table } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import * as React from 'react';
 import {
@@ -89,6 +93,7 @@ const StillingsKandidaterTabell: React.FC<{
     <Table zebraStripes sort={sort} onSortChange={tableSort}>
       <Table.Header>
         <Table.Row>
+          <Table.DataCell />
           <Table.DataCell>
             <Checkbox
               checked={selectedRows.length === kandidater.length}
@@ -127,7 +132,8 @@ const StillingsKandidaterTabell: React.FC<{
       <Table.Body>
         {kandidater.map((kandidat, i) => {
           return (
-            <Table.Row
+            <Table.ExpandableRow
+              content={<div>hei</div>}
               key={i + kandidat.fodselsnr}
               selected={selectedRows.includes(kandidat.fodselsnr)}
             >
@@ -154,35 +160,47 @@ const StillingsKandidaterTabell: React.FC<{
                 {format(kandidat.lagtTilTidspunkt, 'dd.MM.yyyy')}
               </Table.DataCell>
               <Table.DataCell>
-                <StatusTag status={kandidat.status as Kandidatstatus} />
-                <HendelseTag
-                  ikkeVisÅrstall
-                  utfall={kandidat.utfall as Kandidatutfall}
-                  utfallsendringer={
-                    kandidat.utfallsendringer as Utfallsendring[]
-                  }
-                  // forespørselOmDelingAvCv={
-                  //     forespørselOmDelingAvCv.kind === Nettstatus.Suksess
-                  //         ? forespørselOmDelingAvCv.data.gjeldendeForespørsel
-                  //         : undefined
-                  // }
-                  forespørselOmDelingAvCv={undefined}
-                  sms={null}
-                />
+                <div className='flex gap-2'>
+                  <StatusTag status={kandidat.status as Kandidatstatus} />
+                  <HendelseTag
+                    ikkeVisÅrstall
+                    utfall={kandidat.utfall as Kandidatutfall}
+                    utfallsendringer={
+                      kandidat.utfallsendringer as Utfallsendring[]
+                    }
+                    // forespørselOmDelingAvCv={
+                    //     forespørselOmDelingAvCv.kind === Nettstatus.Suksess
+                    //         ? forespørselOmDelingAvCv.data.gjeldendeForespørsel
+                    //         : undefined
+                    // }
+                    forespørselOmDelingAvCv={undefined}
+                    sms={null}
+                  />
+                </div>
               </Table.DataCell>
-              <Table.DataCell>
-                <Button
-                  disabled
-                  variant='tertiary'
-                  icon={<PencilIcon title='Rediger' />}
-                />
-                <Button
-                  disabled
-                  variant='tertiary'
-                  icon={<TrashIcon title='Slett' />}
-                />
+              <Table.DataCell align='right'>
+                <Dropdown defaultOpen={i === 0}>
+                  <HStack justify='end'>
+                    <Button
+                      as={Dropdown.Toggle}
+                      icon={<MenuElipsisHorizontalCircleIcon title='Meny' />}
+                      size='small'
+                      variant='tertiary'
+                    />
+                  </HStack>
+                  <Dropdown.Menu>
+                    <Dropdown.Menu.GroupedList>
+                      <Dropdown.Menu.GroupedList.Item onClick={() => {}}>
+                        <PencilIcon title='Rediger' /> Rediger
+                      </Dropdown.Menu.GroupedList.Item>
+                      <Dropdown.Menu.GroupedList.Item onClick={() => {}}>
+                        <TrashIcon title='Slett' /> Slett
+                      </Dropdown.Menu.GroupedList.Item>
+                    </Dropdown.Menu.GroupedList>
+                  </Dropdown.Menu>
+                </Dropdown>
               </Table.DataCell>
-            </Table.Row>
+            </Table.ExpandableRow>
           );
         })}
       </Table.Body>

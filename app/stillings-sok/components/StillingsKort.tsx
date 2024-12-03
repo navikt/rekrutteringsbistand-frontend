@@ -52,7 +52,7 @@ const StillingsKort: React.FC<IStillingsKort> = ({
       <Box className='mb-2'>
         <Link href={`/stilling/${stillingData.stilling.uuid}`}>
           <Heading size='small'>
-            {stillingData?.stilling?.title || 'Ukjent tittel'}
+            {stillingData?.stilling?.tittel || 'Ukjent tittel'}
           </Heading>
         </Link>
       </Box>

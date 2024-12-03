@@ -1,7 +1,7 @@
 'use client';
 import { Tabs } from '@navikt/ds-react';
 import * as React from 'react';
-import { Rolle } from '../../types/Roller';
+
 import { TilgangskontrollForInnhold } from '../components/tilgangskontroll/TilgangskontrollForInnhold';
 
 import TømFiltre from '../components/TømFiltre';
@@ -10,6 +10,7 @@ import { KandidatSøkPortefølje } from './components/PorteføljeTabs';
 import { useKandidatSøkFilter } from './KandidaSokContext';
 import KandidatSøkResultat from './KandidatSøkResultat';
 import ValgteKontorer from './ValgteKontorer';
+import { Roller } from '../components/tilgangskontroll/roller';
 
 const KandidatSøk: React.FC = () => {
   const { portefølje, setPortefølje } = useKandidatSøkFilter();
@@ -28,8 +29,8 @@ const KandidatSøk: React.FC = () => {
         <TilgangskontrollForInnhold
           skjulVarsel
           kreverEnAvRollene={[
-            Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-            Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
+            Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+            Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
           ]}
         >
           <Tabs.Tab
@@ -48,8 +49,8 @@ const KandidatSøk: React.FC = () => {
         <TilgangskontrollForInnhold
           skjulVarsel
           kreverEnAvRollene={[
-            Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-            Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
+            Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+            Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
           ]}
         >
           <Tabs.Tab
@@ -66,7 +67,7 @@ const KandidatSøk: React.FC = () => {
     <TilgangskontrollForInnhold
       skjulVarsel
       kreverEnAvRollene={[
-        Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+        Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
       ]}
       // manglerEierskap={knyttetTilStillingOgIkkeEier}
     >
@@ -78,7 +79,7 @@ const KandidatSøk: React.FC = () => {
     <TilgangskontrollForInnhold
       skjulVarsel
       kreverEnAvRollene={[
-        Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+        Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
       ]}
     >
       <Tabs.Tab

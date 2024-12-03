@@ -4,10 +4,11 @@ import Editor from '@monaco-editor/react';
 import * as React from 'react';
 
 import { Button } from '@navikt/ds-react';
-import { Rolle } from '../../../../types/Roller';
+
 import { oppdaterStilling } from '../../../api/stilling/oppdater-stilling/oppdaterStilling';
 import { TilgangskontrollForInnhold } from '../../../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { useStillingsContext } from '../StillingsContext';
+import { Roller } from '../../../components/tilgangskontroll/roller';
 
 const RedigerStillingDev: React.FC = () => {
   const { stillingsData } = useStillingsContext();
@@ -29,7 +30,7 @@ const RedigerStillingDev: React.FC = () => {
 
   return (
     <TilgangskontrollForInnhold
-      kreverEnAvRollene={[Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER]}
+      kreverEnAvRollene={[Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER]}
     >
       <span className='text-lg font-bold my-2'>Stilling utvikler editor:</span>
       <Editor

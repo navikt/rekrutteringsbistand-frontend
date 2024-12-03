@@ -172,7 +172,11 @@ const HendelseTag: React.FC<HendelseTagProps> = ({
     return null;
   }
 
-  return <Tag variant='info'>{label}</Tag>;
+  return (
+    <Tag variant='info' size='small'>
+      {label}
+    </Tag>
+  );
 };
 
 const hendelseTilLabel = (

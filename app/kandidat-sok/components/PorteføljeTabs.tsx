@@ -1,6 +1,7 @@
 import { Tabs } from '@navikt/ds-react';
 import { ReactNode } from 'react';
-import { Rolle } from '../../../types/Roller';
+
+import { Roller } from '../../components/tilgangskontroll/roller';
 import { TilgangskontrollForInnhold } from '../../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { useKandidatSøkFilter } from '../KandidaSokContext';
 
@@ -61,8 +62,8 @@ const PorteføljeTabs = ({
         <TilgangskontrollForInnhold
           skjulVarsel
           kreverEnAvRollene={[
-            Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-            Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
+            Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+            Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
           ]}
         >
           <Tabs.Tab
@@ -81,8 +82,8 @@ const PorteføljeTabs = ({
         <TilgangskontrollForInnhold
           skjulVarsel
           kreverEnAvRollene={[
-            Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-            Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
+            Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+            Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
           ]}
         >
           <Tabs.Tab
@@ -99,7 +100,7 @@ const PorteføljeTabs = ({
     <TilgangskontrollForInnhold
       skjulVarsel
       kreverEnAvRollene={[
-        Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+        Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
       ]}
       //   manglerEierskap={knyttetTilStillingOgIkkeEier}
     >
@@ -111,7 +112,7 @@ const PorteføljeTabs = ({
     <TilgangskontrollForInnhold
       skjulVarsel
       kreverEnAvRollene={[
-        Rolle.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+        Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
       ]}
       //   manglerEierskap={knyttetTilStillingOgIkkeEier}
     >
