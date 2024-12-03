@@ -63,7 +63,7 @@ const StillingsKandidaterTabell: React.FC<{
         const matchesSearch =
           kandidat.etternavn.toLowerCase().includes(search.toLowerCase()) ||
           kandidat.fornavn.toLowerCase().includes(search.toLowerCase()) ||
-          kandidat.fodselsnr.includes(search);
+          (kandidat.fodselsnr && kandidat.fodselsnr.includes(search));
 
         const matchesStatus =
           status.length === 0 || status.includes(kandidat.status);
@@ -78,7 +78,8 @@ const StillingsKandidaterTabell: React.FC<{
         (kandidat) =>
           kandidat.etternavn.toLowerCase().includes(search.toLowerCase()) ||
           kandidat.fornavn.toLowerCase().includes(search.toLowerCase()) ||
-          kandidat.fodselsnr.includes(search),
+          (kandidat.fodselsnr && kandidat.fodselsnr.includes(search)) ||
+          kandidat.fodselsnr === null,
       )
       .sort(applySortDirection<kandidaterSchemaDTO>(sort));
 
@@ -99,7 +100,7 @@ const StillingsKandidaterTabell: React.FC<{
   }
 
   return (
-    <Table zebraStripes sort={sort} onSortChange={tableSort}>
+    <Table sort={sort} onSortChange={tableSort}>
       <Table.Header>
         <Table.Row>
           <Table.DataCell />
@@ -114,9 +115,9 @@ const StillingsKandidaterTabell: React.FC<{
                 selectedRows.length
                   ? setSelectedRows([])
                   : setSelectedRows(
-                      kandidater.map(
-                        ({ fodselsnr }: { fodselsnr: string }) => fodselsnr,
-                      ),
+                      kandidater
+                        .filter((k) => k.fodselsnr !== null)
+                        .map((k) => k.fodselsnr!),
                     );
               }}
               hideLabel
@@ -140,8 +141,23 @@ const StillingsKandidaterTabell: React.FC<{
       </Table.Header>
       <Table.Body>
         {kandidater.map((kandidat, i) => {
+          if (kandidat.fodselsnr === null) {
+            return (
+              <Table.Row className='bg-red-50' key={i}>
+                <Table.DataCell colSpan={2} />
+                <Table.DataCell>
+                  {kandidat.etternavn}, {kandidat.fornavn}
+                </Table.DataCell>
+                <Table.DataCell colSpan={5}>
+                  Innaktiv / Ikke synlig i Rekrutteringsbistand
+                </Table.DataCell>
+              </Table.Row>
+            );
+          }
+
           return (
             <Table.ExpandableRow
+              className={i % 2 === 0 ? 'bg-gray-50' : ''}
               content={<InfoOmKandidat kandidat={kandidat} />}
               key={i + kandidat.fodselsnr}
               selected={selectedRows.includes(kandidat.fodselsnr)}
@@ -150,7 +166,7 @@ const StillingsKandidaterTabell: React.FC<{
                 <Checkbox
                   hideLabel
                   checked={selectedRows.includes(kandidat.fodselsnr)}
-                  onChange={() => toggleSelectedRow(kandidat.fodselsnr)}
+                  onChange={() => toggleSelectedRow(kandidat.fodselsnr!)}
                   aria-labelledby={`id-${kandidat.fodselsnr}`}
                 >
                   {' '}

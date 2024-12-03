@@ -15,7 +15,7 @@ const kandidaterSchema = z.object({
   fornavn: z.string(),
   etternavn: z.string(),
   fodselsdato: z.string(),
-  fodselsnr: z.string(),
+  fodselsnr: z.string().nullable(),
   utfall: z.string(),
   telefon: z.string().nullable(),
   epost: z.string().nullable(),

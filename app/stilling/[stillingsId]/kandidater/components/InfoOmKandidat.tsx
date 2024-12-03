@@ -17,6 +17,10 @@ const arbeidsrettetOppfølgingUrl =
 const InfoOmKandidat: FunctionComponent<InfoOmKandidatProps> = ({
   kandidat,
 }) => {
+  if (!kandidat.fodselsnr) {
+    return null;
+  }
+
   const navigerTilAktivitetsplanen = async (
     href: string,
     fødselsnummer: string,
@@ -60,7 +64,7 @@ const InfoOmKandidat: FunctionComponent<InfoOmKandidatProps> = ({
             onClick={() =>
               navigerTilAktivitetsplanen(
                 arbeidsrettetOppfølgingUrl,
-                kandidat.fodselsnr,
+                kandidat.fodselsnr!,
               )
             }
           >

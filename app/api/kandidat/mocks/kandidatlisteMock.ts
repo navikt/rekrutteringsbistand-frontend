@@ -175,7 +175,7 @@ export const kandidatlisetMock = {
       epost: 'noreply@nav.no',
       etternavn: 'Harpe',
       fodselsdato: '1989-11-19',
-      fodselsnr: '19518904453',
+      fodselsnr: null,
       fornavn: 'Allslags',
       innsatsgruppe: 'Standardinnsats',
       kandidatId: '8dfaa4a5-1272-483a-92b4-9f015daeca16',
