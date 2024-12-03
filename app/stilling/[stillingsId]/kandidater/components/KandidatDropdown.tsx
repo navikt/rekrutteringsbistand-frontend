@@ -24,7 +24,7 @@ const KandidatDropdown: React.FC<KandidatDropdownProps> = ({
   const slettKandidat = async () => {
     setIsLoading(true);
     await putApi(
-      `${KandidatAPI.internUrl}/veileder/kandidatlister/${stillingsId}/kandidater/${kandidat.kandidatnr}/arkivert`,
+      `${KandidatAPI.internUrl}/kandidat/veileder/kandidatlister/${stillingsId}/kandidater/${kandidat.kandidatnr}/arkivert`,
       {
         arkivert: true,
       },
@@ -37,7 +37,7 @@ const KandidatDropdown: React.FC<KandidatDropdownProps> = ({
 
   return (
     <div>
-      <Dropdown defaultOpen={true}>
+      <Dropdown>
         <HStack justify='end'>
           <Button
             className='color-gray-500'
