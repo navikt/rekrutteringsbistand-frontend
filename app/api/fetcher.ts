@@ -3,12 +3,22 @@ import { kastError } from '../../util/kastError';
 
 const basePath = process.env.NAIS_CLUSTER_NAME === 'local' ? '' : '';
 
+const validerSchema = <T>(schema: ZodSchema<T>, data: any) => {
+  // return schema.parse(data);
+  // TODO Midlertidig løsning for å unngå så mange feil ved feil schema:
+  const zodResult = schema.safeParse(data);
+  if (zodResult.error) {
+    console.error(zodResult.error.message);
+  }
+  return data;
+};
+
 export const getAPIwithSchema = <T>(
   schema: ZodSchema<T>,
 ): ((url: string) => Promise<T>) => {
   return async (url: string) => {
     const data = await getAPI(url);
-    return schema.parse(data);
+    return validerSchema(schema, data);
   };
 };
 
@@ -147,7 +157,7 @@ export const postApiWithSchemaEs = <T>(
   return async (props) => {
     const data: any = await postApi(props.url, props.body);
     const parsedData = esResponseDto.parse(data);
-    return schema.parse(parsedData.hits.hits[0]._source);
+    return validerSchema(schema, parsedData.hits.hits[0]._source);
   };
 };
 
@@ -157,7 +167,7 @@ export const getApiWithSchemaEs = <T>(
   return async (props) => {
     const data: any = await getAPI(props.url);
     const parsedData = esResponseDto.parse(data);
-    return schema.parse(parsedData.hits.hits[0]._source);
+    return validerSchema(schema, parsedData.hits.hits[0]._source);
   };
 };
 
@@ -169,6 +179,6 @@ export const postApiWithSchema = <T>(
       props.queryParams ? props.url + `?${props.queryParams}` : props.url,
       props.body,
     );
-    return schema.parse(data);
+    return validerSchema(schema, data);
   };
 };

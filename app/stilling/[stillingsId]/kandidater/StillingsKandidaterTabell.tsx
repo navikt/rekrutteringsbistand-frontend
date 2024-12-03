@@ -1,16 +1,5 @@
-import {
-  MenuElipsisHorizontalCircleIcon,
-  PencilIcon,
-  TrashIcon,
-} from '@navikt/aksel-icons';
-import {
-  Button,
-  Checkbox,
-  Dropdown,
-  HStack,
-  Table,
-  Tooltip,
-} from '@navikt/ds-react';
+import { MobileIcon } from '@navikt/aksel-icons';
+import { Button, Checkbox, Table, Tooltip } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import Link from 'next/link';
 import * as React from 'react';
@@ -28,6 +17,7 @@ import {
 } from '../../../api/kandidat/schema.zod';
 import HendelseTag from './components/HendelseTag';
 import InfoOmKandidat from './components/InfoOmKandidat';
+import KandidatDropdown from './components/KandidatDropdown';
 import StatusTag from './components/StatusTag';
 import {
   Kandidatstatus,
@@ -133,7 +123,7 @@ const StillingsKandidaterTabell: React.FC<{
             Lagt til av
           </Table.ColumnHeader>
           <Table.ColumnHeader sortable sortKey='lagtTilTidspunkt' scope='col'>
-            Dato lagt til
+            Dato
           </Table.ColumnHeader>
           <Table.HeaderCell scope='col'>Status og hendelser</Table.HeaderCell>
           <Table.HeaderCell scope='col'></Table.HeaderCell>
@@ -186,7 +176,7 @@ const StillingsKandidaterTabell: React.FC<{
                   <span> {kandidat.lagtTilAv?.navn}</span>
                 </Tooltip>
               </Table.DataCell>
-              <Table.DataCell>
+              <Table.DataCell align='right'>
                 {format(kandidat.lagtTilTidspunkt, 'dd.MM.yyyy')}
               </Table.DataCell>
               <Table.DataCell>
@@ -208,27 +198,20 @@ const StillingsKandidaterTabell: React.FC<{
                   />
                 </div>
               </Table.DataCell>
-              <Table.DataCell align='right'>
-                <Dropdown defaultOpen={i === 0}>
-                  <HStack justify='end'>
-                    <Button
-                      as={Dropdown.Toggle}
-                      icon={<MenuElipsisHorizontalCircleIcon title='Meny' />}
-                      size='small'
-                      variant='tertiary'
-                    />
-                  </HStack>
-                  <Dropdown.Menu>
-                    <Dropdown.Menu.GroupedList>
-                      <Dropdown.Menu.GroupedList.Item onClick={() => {}}>
-                        <PencilIcon title='Rediger' /> Rediger
-                      </Dropdown.Menu.GroupedList.Item>
-                      <Dropdown.Menu.GroupedList.Item onClick={() => {}}>
-                        <TrashIcon title='Slett' /> Slett
-                      </Dropdown.Menu.GroupedList.Item>
-                    </Dropdown.Menu.GroupedList>
-                  </Dropdown.Menu>
-                </Dropdown>
+
+              <Table.DataCell>
+                <div className='flex items-baseline flex-end'>
+                  <Button
+                    disabled
+                    icon={<MobileIcon />}
+                    size='small'
+                    variant='tertiary'
+                  />
+                  <KandidatDropdown
+                    kandidat={kandidat}
+                    kandidatlisteId={kandidatliste.stillingId}
+                  />
+                </div>
               </Table.DataCell>
             </Table.ExpandableRow>
           );
