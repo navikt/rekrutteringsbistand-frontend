@@ -3,8 +3,16 @@ import {
   PencilIcon,
   TrashIcon,
 } from '@navikt/aksel-icons';
-import { Button, Checkbox, Dropdown, HStack, Table } from '@navikt/ds-react';
+import {
+  Button,
+  Checkbox,
+  Dropdown,
+  HStack,
+  Table,
+  Tooltip,
+} from '@navikt/ds-react';
 import { format } from 'date-fns';
+import Link from 'next/link';
 import * as React from 'react';
 import {
   applySortDirection,
@@ -19,6 +27,7 @@ import {
   kandidatlisteSchemaDTO,
 } from '../../../api/kandidat/schema.zod';
 import HendelseTag from './components/HendelseTag';
+import InfoOmKandidat from './components/InfoOmKandidat';
 import StatusTag from './components/StatusTag';
 import {
   Kandidatstatus,
@@ -26,7 +35,6 @@ import {
   Utfallsendring,
 } from './KandidatIKandidatlisteTyper';
 import { useStillingsKandidaterFilter } from './StillingsKandidaterFilterContext';
-import InfoOmKandidat from './components/InfoOmKandidat';
 
 const StillingsKandidaterTabell: React.FC<{
   search: string;
@@ -149,13 +157,18 @@ const StillingsKandidaterTabell: React.FC<{
                 </Checkbox>
               </Table.DataCell>
               <Table.DataCell scope='row'>
-                <span id={`id-${kandidat.fodselsnr}`}>
+                <Link
+                  href={`/kandidat/${kandidat.kandidatId}`}
+                  id={`id-${kandidat.fodselsnr}`}
+                >
                   {kandidat.etternavn}, {kandidat.fornavn}
-                </span>
+                </Link>
               </Table.DataCell>
               <Table.DataCell>{kandidat.fodselsnr}</Table.DataCell>
               <Table.DataCell>
-                {kandidat.lagtTilAv?.navn} ({kandidat.lagtTilAv?.ident})
+                <Tooltip content={kandidat.lagtTilAv?.ident} arrow={false}>
+                  <span> {kandidat.lagtTilAv?.navn}</span>
+                </Tooltip>
               </Table.DataCell>
               <Table.DataCell>
                 {format(kandidat.lagtTilTidspunkt, 'dd.MM.yyyy')}

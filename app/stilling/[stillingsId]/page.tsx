@@ -1,5 +1,6 @@
 'use client';
-import { Tabs } from '@navikt/ds-react';
+import { ArrowForwardIcon, PencilIcon } from '@navikt/aksel-icons';
+import { Button, Tabs } from '@navikt/ds-react';
 import { useQueryState } from 'nuqs';
 import StillingsKandidater from './kandidater/StillingsKandidater';
 import { StillingsKandidaterFilterProvider } from './kandidater/StillingsKandidaterFilterContext';
@@ -30,11 +31,38 @@ export default function StillingSide() {
         </div>
       )}
       <Tabs defaultValue={fane} onChange={(val) => setFane(val)}>
-        <Tabs.List>
-          <Tabs.Tab value='stilling' label='Om stillingen' />
-          {kandidatlisteId && erEier && (
-            <Tabs.Tab value='kandidater' label='Kandidater' />
-          )}
+        <Tabs.List className='flex mb-2 w-full justify-between'>
+          <div>
+            <Tabs.Tab value='stilling' label='Om stillingen' />
+            {kandidatlisteId && erEier && (
+              <Tabs.Tab value='kandidater' label='Kandidater' />
+            )}
+          </div>
+          <div className='items-center'>
+            <Button
+              disabled
+              variant='tertiary'
+              icon={<PencilIcon title='Rediger' />}
+            >
+              Rapporter personvernsbrudd
+            </Button>
+            <Button
+              disabled
+              className='mr-2'
+              variant='secondary'
+              icon={<ArrowForwardIcon aria-hidden />}
+            >
+              Finn kandidater
+            </Button>
+            <Button
+              disabled
+              variant='secondary'
+              className='mr-2'
+              icon={<ArrowForwardIcon aria-hidden />}
+            >
+              Legg til kandidat
+            </Button>
+          </div>
         </Tabs.List>
         <Tabs.Panel value='stilling'>
           <OmStillingen />
