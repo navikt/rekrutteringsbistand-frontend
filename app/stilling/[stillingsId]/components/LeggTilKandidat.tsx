@@ -101,13 +101,12 @@ const LeggTilKandidat: React.FC<LeggTilKandidatProps> = ({
         ) : (
           <>
             <Modal.Body>
-              <form method='dialog' id='skjema' onSubmit={onLeggTilKandidat}>
-                <TextField
-                  label='Fødselsnummer på kandidat'
-                  onChange={handleFnrChange}
-                  error={feilmelding}
-                />
-              </form>
+              <TextField
+                label='Fødselsnummer på kandidat'
+                onChange={handleFnrChange}
+                error={feilmelding}
+              />
+
               {kandidatNavn.data && (
                 <div className='mt-4'>
                   <p>
@@ -129,7 +128,10 @@ const LeggTilKandidat: React.FC<LeggTilKandidatProps> = ({
               )}
             </Modal.Body>
             <Modal.Footer>
-              <Button disabled={isLoading || !fødselsnummer} form='skjema'>
+              <Button
+                disabled={isLoading || !fødselsnummer}
+                onClick={onLeggTilKandidat}
+              >
                 Legg til kandidat
               </Button>
               <Button
