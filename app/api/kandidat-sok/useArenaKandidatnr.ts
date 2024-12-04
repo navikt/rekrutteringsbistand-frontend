@@ -16,7 +16,7 @@ export const arenaKandidatnrSchema = z.object({
 });
 export type ArenaKandidatnr = z.infer<typeof arenaKandidatnrSchema>;
 
-export const useArenaKandidatnr = (fødselsnummer: String | null) => {
+export const useArenaKandidatnr = (fødselsnummer: string | null) => {
   return useSWRImmutable(
     fødselsnummer
       ? {

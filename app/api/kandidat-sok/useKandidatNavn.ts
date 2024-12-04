@@ -19,7 +19,7 @@ export const navnSchema = z.object({
 
 export type Kandidatnavn = z.infer<typeof navnSchema>;
 
-export const useKandidatNavn = (fødselsnummer: String | null) => {
+export const useKandidatNavn = (fødselsnummer: string | null) => {
   return useSWRImmutable(
     fødselsnummer
       ? {
