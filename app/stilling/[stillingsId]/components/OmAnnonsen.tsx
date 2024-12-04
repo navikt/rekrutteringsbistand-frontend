@@ -18,7 +18,7 @@ const OmAnnonsen: React.FC = () => {
         Om annonsen
       </Heading>
 
-      <dl className='grid grid-cols-1 md:grid-cols-3 gap-6'>
+      <dl className='grid grid-cols-1 md:grid-cols-3 gap-6 print:grid print:grid-cols-3 print:gap-6'>
         <Definisjon tittel='Annonsenummer' innhold={`${id}`} />
         <Definisjon tittel='Hentet fra' innhold={`${medium}`} />
         <Definisjon tittel='Referanse' innhold={`${reference}`} />

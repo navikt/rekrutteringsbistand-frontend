@@ -21,7 +21,10 @@ const OmBedriften: React.FC = () => {
       </div>
 
       {kontaktInfo?.map((kontakt, index) => (
-        <dl className='grid grid-cols-1 md:grid-cols-3 gap-6 mb-6' key={index}>
+        <dl
+          className='grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 print:grid print:grid-cols-3 print:gap-6'
+          key={index}
+        >
           <Definisjon
             tittel='Kontaktperson'
             innhold={`${kontakt.name ?? '-'} ${
@@ -32,7 +35,7 @@ const OmBedriften: React.FC = () => {
           <Definisjon tittel='Telefon' innhold={kontakt.phone ?? '-'} />
         </dl>
       ))}
-      <dl className='grid grid-cols-1 md:grid-cols-3 gap-6'>
+      <dl className='grid grid-cols-1 md:grid-cols-3 gap-6 print:grid print:grid-cols-3 print:gap-6'>
         <Definisjon tittel='Nettside' />
         <Definisjon tittel='LinkedIn' />
         <Definisjon tittel='Twitter' />
