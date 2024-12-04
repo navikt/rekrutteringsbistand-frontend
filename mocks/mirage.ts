@@ -3,7 +3,9 @@ import { createServer, Model } from 'miragejs';
 import { brukerMirage } from '../app/api/bruker/useBruker';
 import { decoratorDataMirage } from '../app/api/decorator/useDecoratorData';
 import { foresporselOmDelingAvCVStatistikkMirage } from '../app/api/foresporsel-om-deling-av-cv/statistikk/useForesporselOmdelingAvCV';
+import { arenaKandidatnrMirage } from '../app/api/kandidat-sok/useArenaKandidatnr';
 import { kandidatinformasjonMirage } from '../app/api/kandidat-sok/useKandidatinformasjon';
+import { kandidatNavnMirage } from '../app/api/kandidat-sok/useKandidatNavn';
 import { kandidagsammendragMirage } from '../app/api/kandidat-sok/useKandidatsammendrag';
 import { kandidatStillingsSøkMirage } from '../app/api/kandidat-sok/useKandidatStillingssøk';
 import { kandidatSokMirage } from '../app/api/kandidat-sok/useKandidatsøk';
@@ -49,6 +51,8 @@ export function makeServer({ environment = 'test' } = {}) {
       kandidatStillingsSøkMirage(this);
       // stillingssøk
       stillingssøkMirage(this);
+      kandidatNavnMirage(this);
+      arenaKandidatnrMirage(this);
       this.passthrough('*');
     },
   });

@@ -1,7 +1,10 @@
 'use client';
-import { ArrowForwardIcon, PencilIcon } from '@navikt/aksel-icons';
+import { ArrowForwardIcon, HikingTrailSignIcon } from '@navikt/aksel-icons';
 import { Button, Tabs } from '@navikt/ds-react';
+
+import Link from 'next/link';
 import { useQueryState } from 'nuqs';
+import LeggTilKandidat from './components/LeggTilKandidat';
 import StillingsKandidater from './kandidater/StillingsKandidater';
 import { StillingsKandidaterFilterProvider } from './kandidater/StillingsKandidaterFilterContext';
 import OmStillingen from './omStillingen/OmStillingen';
@@ -38,30 +41,29 @@ export default function StillingSide() {
               <Tabs.Tab value='kandidater' label='Kandidater' />
             )}
           </div>
-          <div className='items-center'>
+          <div className='items-center flex'>
             <Button
               disabled
               variant='tertiary'
-              icon={<PencilIcon title='Rediger' />}
+              icon={<HikingTrailSignIcon title='Rediger' />}
             >
               Rapporter personvernsbrudd
             </Button>
-            <Button
-              disabled
-              className='mr-2'
-              variant='secondary'
-              icon={<ArrowForwardIcon aria-hidden />}
+            <Link
+              href={`/kandidat-sok/stilling/${stillingsData.stilling.uuid}`}
             >
-              Finn kandidater
-            </Button>
-            <Button
-              disabled
-              variant='secondary'
-              className='mr-2'
-              icon={<ArrowForwardIcon aria-hidden />}
-            >
-              Legg til kandidat
-            </Button>
+              <Button
+                className='mr-2'
+                variant='secondary'
+                icon={<ArrowForwardIcon aria-hidden />}
+              >
+                Finn kandidater
+              </Button>
+            </Link>
+            <LeggTilKandidat
+              stillingsId={stillingsData.stilling.uuid}
+              stillingsTittel={stillingsData.stilling.title}
+            />
           </div>
         </Tabs.List>
         <Tabs.Panel value='stilling'>
