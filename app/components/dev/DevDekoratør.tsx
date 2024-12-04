@@ -1,4 +1,4 @@
-import { InternalHeader, Select } from '@navikt/ds-react';
+import { InternalHeader, Select, TextField } from '@navikt/ds-react';
 import * as React from 'react';
 import { useApplikasjonContext } from '../../ApplikasjonContext';
 import { Roller } from '../tilgangskontroll/roller';
@@ -14,10 +14,19 @@ const DevDekoratør: React.FC = () => {
     (localStorage.getItem('DEV-ROLLE') as Roller) ||
       Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER,
   );
+  const [devBruker, setDevBruker] = React.useState<string>(
+    localStorage.getItem('DEV-BRUKER') || 'Z993141',
+  );
 
   const setDevRolleCookie = (rolle: Roller) => {
     localStorage.setItem('DEV-ROLLE', rolle);
     setDevRolle(rolle);
+    window.location.reload();
+  };
+
+  const setDevBrukerCookie = (bruker: string) => {
+    localStorage.setItem('DEV-BRUKER', bruker);
+    setDevBruker(bruker);
     window.location.reload();
   };
 
@@ -34,9 +43,22 @@ const DevDekoratør: React.FC = () => {
       </InternalHeader.Title>
 
       <div className='flex justify-between items-center gap-4 ml-4'>
-        <span>
-          <strong>Bruker:</strong> {ident}
-        </span>
+        <div className='flex items-center gap-2'>
+          <span>
+            <strong>Bruker:</strong>{' '}
+          </span>
+          <TextField
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                setDevBrukerCookie(e.currentTarget.value);
+              }
+            }}
+            defaultValue={devBruker}
+            size='small'
+            label={'Dev bruker'}
+            hideLabel
+          />
+        </div>
 
         <div className='flex items-center gap-2'>
           <span>

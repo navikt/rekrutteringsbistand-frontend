@@ -48,7 +48,6 @@ export const ApplikasjonContextProvider: React.FC<
   IApplikasjonContextProvider
 > = ({ children, brukerData }) => {
   const [darkMode, setDarkMode] = React.useState<boolean>(false);
-  const [devRolle, setDevRolle] = React.useState<Roller | null>(null);
 
   const [valgtNavKontor, setValgtNavKontor] =
     React.useState<NavKontorMedNavn | null>(null);

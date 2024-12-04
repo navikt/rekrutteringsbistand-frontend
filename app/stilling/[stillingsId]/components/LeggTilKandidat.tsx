@@ -1,6 +1,6 @@
 import { ArrowForwardIcon } from '@navikt/aksel-icons';
 import { Alert, Button, Modal, TextField } from '@navikt/ds-react';
-import fnrValidator from '@navikt/fnrvalidator';
+import { idnr } from '@navikt/fnrvalidator';
 import * as React from 'react';
 import { useRef, useState } from 'react';
 import { useArenaKandidatnr } from '../../../api/kandidat-sok/useArenaKandidatnr';
@@ -11,8 +11,7 @@ export interface LeggTilKandidatProps {
   stillingsTittel: string;
 }
 
-const validerFnr = (fnr: string): boolean =>
-  fnrValidator.idnr(fnr).status === 'valid';
+const validerFnr = (fnr: string): boolean => idnr(fnr).status === 'valid';
 
 const LeggTilKandidat: React.FC<LeggTilKandidatProps> = ({
   stillingsId,
@@ -89,7 +88,7 @@ const LeggTilKandidat: React.FC<LeggTilKandidatProps> = ({
               )}
             </div>
           )}
-          {(!kandidatNavn.error || !arenaKandidatnr.error) && (
+          {(kandidatNavn.error || arenaKandidatnr.error) && (
             <Alert variant='error' className='mt-4'>
               <p>Finner ikke person knyttet til fødselsnummer</p>
             </Alert>
