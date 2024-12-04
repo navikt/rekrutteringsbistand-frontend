@@ -56,7 +56,7 @@ const LeggTilKandidat: React.FC<LeggTilKandidatProps> = ({
     setLaster(true);
     if (arenaKandidatnr.data?.arenaKandidatnr) {
       await leggTilKandidater(
-        [{ kandidatnr: arenaKandidatnr.data?.arenaKandidatnr }],
+        [arenaKandidatnr.data?.arenaKandidatnr],
         stillingsId,
       )
         .then(() => {

@@ -5,8 +5,9 @@ const leggTilKandidatEndepunkt = (stillingsId: string) =>
   `${KandidatAPI.internUrl}/veileder/stilling/${stillingsId}/kandidatliste/kandidater`;
 
 export const leggTilKandidater = (
-  kandidater: { kandidatnr: string }[],
+  kandidater: string[],
   stillingsId: string,
 ): Promise<void> => {
-  return postApi(leggTilKandidatEndepunkt(stillingsId), kandidater);
+  const kandidaterArray = kandidater.map((kandidatnr) => ({ kandidatnr }));
+  return postApi(leggTilKandidatEndepunkt(stillingsId), kandidaterArray);
 };
