@@ -74,9 +74,7 @@ export const postApi = async (
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(body, (_key, value) =>
-      value instanceof Set ? [...value] : value,
-    ),
+    body: JSON.stringify(body),
   });
 
   if (response.ok) {
