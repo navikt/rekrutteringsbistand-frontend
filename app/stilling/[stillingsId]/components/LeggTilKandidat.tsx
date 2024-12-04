@@ -54,8 +54,11 @@ const LeggTilKandidat: React.FC<LeggTilKandidatProps> = ({
 
   const onLeggTilKandidat = async () => {
     setLaster(true);
-    if (fødselsnummer) {
-      await leggTilKandidater([{ kandidatnr: fødselsnummer }], stillingsId)
+    if (arenaKandidatnr.data?.arenaKandidatnr) {
+      await leggTilKandidater(
+        [{ kandidatnr: arenaKandidatnr.data?.arenaKandidatnr }],
+        stillingsId,
+      )
         .then(() => {
           setLagtTil(true);
         })
