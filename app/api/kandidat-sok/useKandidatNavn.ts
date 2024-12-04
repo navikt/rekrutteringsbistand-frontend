@@ -24,7 +24,7 @@ export const useKandidatNavn = (fødselsnummer: String | null) => {
     fødselsnummer
       ? {
           url: hentNavnEndepunkt,
-          body: { fodselsnumme: fødselsnummer },
+          body: { fodselsnummer: fødselsnummer },
         }
       : null,
     (data) => {

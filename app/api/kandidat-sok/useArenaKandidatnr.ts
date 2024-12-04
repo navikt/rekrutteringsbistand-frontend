@@ -21,7 +21,7 @@ export const useArenaKandidatnr = (fødselsnummer: String | null) => {
     fødselsnummer
       ? {
           url: hentArenaKandidatnrEndepunkt,
-          body: { fodselsnumme: fødselsnummer },
+          body: { fodselsnummer: fødselsnummer },
         }
       : null,
     (data) => {
