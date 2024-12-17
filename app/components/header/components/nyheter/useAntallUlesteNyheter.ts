@@ -1,3 +1,4 @@
+import { logger } from '@navikt/next-logger';
 import { useEffect, useState } from 'react';
 import { Nyhet } from './Nyheter';
 
@@ -43,7 +44,7 @@ const useAntallUlesteNyheter = (
         setAntallUlesteVedSidelast(1);
       }
     } catch (error) {
-      console.error('Kunne ikke hente fra local storage:', error);
+      logger.error(error, 'Kunne ikke hente fra local storage');
     }
   }, [nyheter, onFørsteBesøk]);
 
@@ -54,7 +55,7 @@ const useAntallUlesteNyheter = (
       const antallLesteNyheter = JSON.stringify(nyheter.length);
       window.localStorage.setItem(LOCAL_STORAGE_KEY, antallLesteNyheter);
     } catch (error) {
-      console.error('Kunne ikke lagre til local storage:', error);
+      logger.error(error, 'Kunne ikke lagre til local storage');
     }
   };
 

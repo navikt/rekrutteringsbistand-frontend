@@ -1,5 +1,6 @@
 'use client';
 import { Alert, BodyLong, Button } from '@navikt/ds-react';
+import { logger } from '@navikt/next-logger';
 import { Component, ErrorInfo, ReactNode } from 'react';
 import { ZodError } from 'zod';
 interface Props {
@@ -43,7 +44,7 @@ class ErrorBoundary extends Component<Props, State> {
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('Feilmelding:', error, errorInfo);
+    logger.error(error, 'Feilmelding:', errorInfo);
   }
 
   public render() {

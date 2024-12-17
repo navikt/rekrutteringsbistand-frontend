@@ -74,37 +74,38 @@ export const proxyWithOBO = async (
     const response = await fetch(requestUrl, fetchOptions);
 
     if (!response.ok) {
-      console.error({
-        msg: 'HTTP error! Url: ' + requestUrl + ' fra url: ' + originalUrl,
-        obj: response,
-      });
-      logger.error({
-        msg: 'HTTP error! Url: ' + requestUrl + ' fra url: ' + originalUrl,
-        obj: response,
-      });
-      throw new Error(`HTTP error! status: ${response.status}`);
+      const { status, statusText, url, body, ok, headers } = response;
+
+      logger.error(
+        {
+          headers,
+          status,
+          statusText,
+          url,
+          tilUrl: requestUrl,
+          fraUrl: originalUrl,
+          body,
+          ok,
+        },
+        'Responsen er ikke OK i proxy',
+      );
     }
 
     const data = await response.json();
 
     return NextResponse.json(data);
   } catch (error: any) {
-    console.error({
-      msg:
-        'Feil ved proxying av forespørselen til url:' +
-        requestUrl +
-        ' fra url: ' +
-        originalUrl,
-      obj: error,
-    });
-    logger.error({
-      msg:
-        'Feil ved proxying av forespørselen til url:' +
-        requestUrl +
-        ' fra url: ' +
-        originalUrl,
-      obj: error,
-    });
+    if (error instanceof Error) {
+      logger.error(
+        error,
+        `Feil ved proxying av forespørselen til url: ${requestUrl} fra url: ${originalUrl}`,
+      );
+    } else {
+      logger.error(
+        { msg: 'Unknown error', error },
+        `Feil ved proxying av forespørselen til url: ${requestUrl} fra url: ${originalUrl}`,
+      );
+    }
     return NextResponse.json(
       { beskrivelse: error.message || 'Feil i proxy' },
       { status: error.status || 500 },

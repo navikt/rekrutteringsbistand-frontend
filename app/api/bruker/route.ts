@@ -1,3 +1,4 @@
+import { logger } from '@navikt/next-logger';
 import { getToken } from '@navikt/oasis';
 import { decodeJwt } from 'jose';
 import { NextRequest, NextResponse } from 'next/server';
@@ -37,7 +38,7 @@ export async function GET(req: NextRequest) {
       roller,
     });
   } catch (error) {
-    console.error(error);
+    logger.error(error, 'Feil ved henting av brukerdata');
     return NextResponse.json(
       { error: 'Internal Server Error' },
       { status: 500 },

@@ -1,3 +1,4 @@
+import { logger } from '@navikt/next-logger';
 import { z, ZodSchema } from 'zod';
 import { kastError } from '../../util/kastError';
 
@@ -8,7 +9,7 @@ const validerSchema = <T>(schema: ZodSchema<T>, data: any) => {
   // TODO Midlertidig løsning for å unngå så mange feil ved feil schema:
   const zodResult = schema.safeParse(data);
   if (zodResult.error) {
-    console.error(zodResult.error.message);
+    logger.warn(zodResult.error, 'ZodError');
   }
   return data;
 };
@@ -74,7 +75,9 @@ export const postApi = async (
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(body),
+    body: JSON.stringify(body, (_key, value) =>
+      value instanceof Set ? [...value] : value,
+    ),
   });
 
   if (response.ok) {
