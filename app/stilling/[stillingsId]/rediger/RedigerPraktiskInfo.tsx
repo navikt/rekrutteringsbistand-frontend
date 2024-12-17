@@ -5,6 +5,7 @@ import {
   Heading,
   Radio,
   RadioGroup,
+  Select,
   TextField,
 } from '@navikt/ds-react';
 import { Controller, useFormContext } from 'react-hook-form';
@@ -49,11 +50,34 @@ export const RedigerPraktiskInfo: React.FC<{
             </RadioGroup>
           )}
         />
-        <TextField
-          label='Antall stillinger'
-          {...register('praktiskInfo.antallStillinger', { required: true })}
-          type='number'
-        />
+        <div className='w-[7.5rem]'>
+          <TextField
+            label='Antall stillinger'
+            {...register('praktiskInfo.antallStillinger', { required: true })}
+            type='number'
+          />
+        </div>
+        <div className='w-[18.75rem]'>
+          <Controller
+            name='praktiskInfo.ansettelsesform'
+            control={control}
+            render={({ field }) => (
+              <Select
+                value={field.value}
+                onChange={(val) => field.onChange(val)}
+                label='Ansettelsesform'
+              >
+                {Object.entries(StillingsAnsettelsesform).map(
+                  ([key, value]) => (
+                    <option key={key} value={value}>
+                      {key}
+                    </option>
+                  ),
+                )}
+              </Select>
+            )}
+          />
+        </div>
         <div className='grid grid-cols-2 gap-4'>
           <div className='flex flex-col'>
             <Heading size='small'>Oppstart</Heading>
@@ -68,7 +92,7 @@ export const RedigerPraktiskInfo: React.FC<{
                       field.onChange(e.target.checked);
                     }}
                   >
-                    Snarest
+                    Etter avtale
                   </Checkbox>
                 </>
               )}
@@ -102,7 +126,7 @@ export const RedigerPraktiskInfo: React.FC<{
                       field.onChange(e.target.checked);
                     }}
                   >
-                    Etter avtale
+                    Snarest
                   </Checkbox>
                 </>
               )}
@@ -124,35 +148,10 @@ export const RedigerPraktiskInfo: React.FC<{
             />
           </div>
         </div>
-        <Controller
-          name='praktiskInfo.ansettelsesform'
-          control={control}
-          render={({ field }) => (
-            <>
-              DROPDOWN HER //TODO
-              <RadioGroup
-                value={field.value}
-                onChange={(val) => field.onChange(val)}
-                legend='Ansettelsesform'
-              >
-                {Object.entries(StillingsAnsettelsesform).map(
-                  ([key, value]) => (
-                    <Radio key={key} value={value}>
-                      {key}
-                    </Radio>
-                  ),
-                )}
-              </RadioGroup>
-            </>
-          )}
-        />
 
-        <div>
-          <Heading level='3' size='small'>
-            Hvilke dager skal man kunne jobbe?
-          </Heading>
+        <div className='flex gap-16'>
           <CheckboxGroup
-            legend='arbeidsdager'
+            legend='Arbeidsdager'
             defaultValue={watch('praktiskInfo.dager')}
             onChange={(val) => setValue('praktiskInfo.dager', val)}
           >
@@ -160,13 +159,9 @@ export const RedigerPraktiskInfo: React.FC<{
             <Checkbox value='Lørdag'>Lørdag</Checkbox>
             <Checkbox value='Søndag'>Søndag</Checkbox>
           </CheckboxGroup>
-        </div>
-        <div>
-          <Heading level='3' size='small'>
-            Hvilken tid skal man kunne jobbe?
-          </Heading>
+
           <CheckboxGroup
-            legend='tidspunkt'
+            legend='Arbeidstid'
             onChange={(val) => setValue('praktiskInfo.tid', val)}
             defaultValue={watch('praktiskInfo.tid')}
           >
