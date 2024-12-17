@@ -13,10 +13,7 @@ import { FieldErrors, SubmitHandler, useFormContext } from 'react-hook-form';
 import { oppdaterStilling } from '../../../api/stilling/oppdater-stilling/oppdaterStilling';
 import { useStillingsContext } from '../StillingsContext';
 import { DatoVelger } from './components/DatoVelger';
-import {
-  StillingsDataForm,
-  StillingsDataFormSchema,
-} from './redigerFormType.zod';
+import { StillingsDataForm } from './redigerFormType.zod';
 import { mapFormTilStilling } from './redigerUtil';
 
 export const RedigerInnspurt: React.FC<{
@@ -36,17 +33,14 @@ export const RedigerInnspurt: React.FC<{
   const onSubmit: SubmitHandler<StillingsDataForm> = async (data) => {
     setIsLoading(true);
 
-    const validerData = StillingsDataFormSchema.safeParse(data);
-    if (!validerData.success) {
-      const nyStillingsData = mapFormTilStilling(data, stillingsData);
+    const nyStillingsData = mapFormTilStilling(data, stillingsData);
 
-      const response = await oppdaterStilling(nyStillingsData);
+    const response = await oppdaterStilling(nyStillingsData);
 
-      if (response.stilling.uuid) {
-        router.push(`/stilling/${response.stilling.uuid}`);
-      } else {
-        alert('Feil ved opprettelse av stilling');
-      }
+    if (response.stilling.uuid) {
+      router.push(`/stilling/${response.stilling.uuid}`);
+    } else {
+      alert('Feil ved opprettelse av stilling');
     }
 
     setIsLoading(false);
@@ -117,14 +111,15 @@ export const RedigerInnspurt: React.FC<{
         </BodyShort>
         <div className='flex gap-4 mb-4'>
           <DatoVelger
+            disabled
             fraDato={watch('innspurt.publiseres') ?? undefined}
             label='Publiseres'
-            setDato={(val) => console.log(val)}
+            setDato={(val) => setValue('innspurt.publiseres', val ?? null)}
           />
           <DatoVelger
             label='Avsluttes og skjules'
             fraDato={watch('innspurt.avsluttes') ?? undefined}
-            setDato={(val) => console.log(val)}
+            setDato={(val) => setValue('innspurt.avsluttes', val ?? null)}
           />
         </div>
         <RadioGroup
