@@ -7,7 +7,7 @@ import {
   RadioGroup,
 } from '@navikt/ds-react';
 import * as React from 'react';
-import { SubmitHandler, useFormContext } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 import { InkluderingsTag } from '../omStillingen/StillingSidebar/StillingInkludering';
 import StegNavigering from './components/StegNavigering';
 import { StillingsDataForm } from './redigerFormType.zod';
@@ -17,10 +17,16 @@ export const RedigerOmTilrettelegging: React.FC<{
   nextStep: () => void;
   forrigeSteg: () => void;
 }> = ({ nextStep, forrigeSteg, stegNummer }) => {
-  const { handleSubmit, watch, setValue } = useFormContext<StillingsDataForm>();
+  const { handleSubmit, watch, setValue, trigger } =
+    useFormContext<StillingsDataForm>();
 
-  const onSubmit: SubmitHandler<StillingsDataForm> = (data) => {
-    nextStep();
+  const handleStepSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const isValid = await trigger('omTilrettelegging', { shouldFocus: true });
+
+    if (isValid) {
+      nextStep();
+    }
   };
 
   const TilretteleggingCheckbox = ({
@@ -58,7 +64,7 @@ export const RedigerOmTilrettelegging: React.FC<{
     <div className='space-y-8'>
       <Heading size='large'>Om tilrettelegging</Heading>
       <p>Vi må vite hvordan arbeidsgiver tilrettelegger for kandidater.</p>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleStepSubmit}>
         <div className='flex flex-col gap-8 mb-12'>
           <CheckboxGroup legend='Virksomheten tilrettelegger for'>
             <TilretteleggingCheckbox

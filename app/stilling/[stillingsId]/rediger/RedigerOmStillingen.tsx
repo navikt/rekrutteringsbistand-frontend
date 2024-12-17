@@ -7,7 +7,7 @@ import {
 } from '@navikt/ds-react';
 import Link from 'next/link';
 import * as React from 'react';
-import { Controller, SubmitHandler, useFormContext } from 'react-hook-form';
+import { Controller, useFormContext } from 'react-hook-form';
 import RikTekstEditor from '../../../components/rikteksteditor/RikTekstEditor';
 import StegNavigering from './components/StegNavigering';
 import { StillingsDataForm } from './redigerFormType.zod';
@@ -16,14 +16,19 @@ export const RedigerOmStillingen: React.FC<{
   nextStep: () => void;
   forrigeSteg: () => void;
 }> = ({ nextStep, forrigeSteg, stegNummer }) => {
-  const { register, setValue, handleSubmit, watch, control } =
+  const { register, setValue, watch, control, trigger } =
     useFormContext<StillingsDataForm>();
 
   const [visAdresseFelt, setVisAdressefelt] = React.useState<boolean>(true);
   const [visKommuneFelt, setVisKommuneFelt] = React.useState<boolean>(false);
 
-  const onSubmit: SubmitHandler<StillingsDataForm> = (data) => {
-    nextStep();
+  const handleStepSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const isValid = await trigger('omStillingen', { shouldFocus: true });
+
+    if (isValid) {
+      nextStep();
+    }
   };
 
   return (
@@ -40,7 +45,7 @@ export const RedigerOmStillingen: React.FC<{
         (åpnes i ny fane).
       </span>
 
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleStepSubmit}>
         <div className='space-y-8'>
           <div>
             <UNSAFE_Combobox

@@ -1,11 +1,6 @@
 import { Accordion, Button, Heading, TextField } from '@navikt/ds-react';
 import React from 'react';
-import {
-  Controller,
-  SubmitHandler,
-  useFieldArray,
-  useFormContext,
-} from 'react-hook-form';
+import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
 import { getWorkLocationsAsString } from '../../../../util/locationUtil';
 import { GeografiListDTO } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import RikTekstEditor from '../../../components/rikteksteditor/RikTekstEditor';
@@ -23,7 +18,7 @@ export const RedigerOmVirksomheten: React.FC<{
   const {
     watch,
     setValue,
-    handleSubmit,
+    trigger,
     control,
     formState: { errors },
   } = useFormContext<StillingsDataForm>();
@@ -33,8 +28,13 @@ export const RedigerOmVirksomheten: React.FC<{
     name: 'omVirksomheten.kontaktPersoner',
   });
 
-  const onSubmit: SubmitHandler<StillingsDataForm> = (data) => {
-    nextStep();
+  const handleStepSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const isValid = await trigger('omVirksomheten', { shouldFocus: true });
+
+    if (isValid) {
+      nextStep();
+    }
   };
 
   if (fields.length === 0) {
@@ -46,7 +46,7 @@ export const RedigerOmVirksomheten: React.FC<{
       <Heading size='large' className='mb-4'>
         Om virksomheten
       </Heading>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleStepSubmit}>
         <div className='flex flex-col space-y-8'>
           <dl className='grid grid-cols-2'>
             <dt className='font-bold'>Bedrift</dt>

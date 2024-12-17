@@ -88,7 +88,6 @@ const RedigerStilling: React.FC = () => {
   };
   const validerPraktiskInfo = () => {
     const valider = PraktiskInfoSchema.safeParse(getValues().praktiskInfo);
-    console.log(valider);
     return valider.success;
   };
   const validerInnspurt = () => {

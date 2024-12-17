@@ -7,37 +7,31 @@ import {
   RadioGroup,
   TextField,
 } from '@navikt/ds-react';
-import { Controller, SubmitHandler, useFormContext } from 'react-hook-form';
+import { Controller, useFormContext } from 'react-hook-form';
 import { StillingsAnsettelsesform } from '../../stilling-typer';
 import { DatoVelger } from './components/DatoVelger';
 import StegNavigering from './components/StegNavigering';
-import { PraktiskInfoSchema, StillingsDataForm } from './redigerFormType.zod';
+import { StillingsDataForm } from './redigerFormType.zod';
 
 export const RedigerPraktiskInfo: React.FC<{
   stegNummer: number;
   nextStep: () => void;
   forrigeSteg: () => void;
 }> = ({ nextStep, forrigeSteg, stegNummer }) => {
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    watch,
-    control,
-    formState,
-    getValues,
-  } = useFormContext<StillingsDataForm>();
+  const { register, handleSubmit, setValue, watch, control, trigger } =
+    useFormContext<StillingsDataForm>();
 
-  const onSubmit: SubmitHandler<StillingsDataForm> = (data) => {
-    const valider = PraktiskInfoSchema.safeParse(data.praktiskInfo);
+  const handleStepSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const isValid = await trigger('praktiskInfo', { shouldFocus: true });
 
-    if (valider.success) {
+    if (isValid) {
       nextStep();
     }
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleStepSubmit}>
       <div className='flex flex-col gap-y-8'>
         <Heading size='large'>Praktisk info</Heading>
         <BodyShort>Fyll inn praktiske detaljer om jobben.</BodyShort>
