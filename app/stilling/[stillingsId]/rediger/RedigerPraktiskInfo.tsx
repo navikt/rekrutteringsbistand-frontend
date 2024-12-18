@@ -61,7 +61,6 @@ export const RedigerPraktiskInfo: React.FC<{
             label='Antall stillinger'
             {...register('praktiskInfo.antallStillinger', {
               required: true,
-              valueAsNumber: true,
             })}
             type='number'
             error={
