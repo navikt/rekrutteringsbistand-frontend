@@ -58,3 +58,10 @@ export const KandidatAPI: Iroute = {
   internUrl: '/api/kandidat',
   scope: `api://${fss}.toi.rekrutteringsbistand-kandidat-api/.default`,
 };
+
+export const PamOntologiAPI: Iroute = {
+  api_route: '',
+  api_url: process.env.PAM_ONT_LOGI_API ?? '',
+  internUrl: '/api/pam-ontologi',
+  scope: `api://${gcp}.teampam.pam-ontologi/.default`,
+};
