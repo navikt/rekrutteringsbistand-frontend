@@ -19,8 +19,14 @@ export const RedigerPraktiskInfo: React.FC<{
   nextStep: () => void;
   forrigeSteg: () => void;
 }> = ({ nextStep, forrigeSteg, stegNummer }) => {
-  const { register, handleSubmit, setValue, watch, control, trigger } =
-    useFormContext<StillingsDataForm>();
+  const {
+    register,
+    setValue,
+    watch,
+    control,
+    trigger,
+    formState: { errors },
+  } = useFormContext<StillingsDataForm>();
 
   const handleStepSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,8 +59,14 @@ export const RedigerPraktiskInfo: React.FC<{
         <div className='w-[7.5rem]'>
           <TextField
             label='Antall stillinger'
-            {...register('praktiskInfo.antallStillinger', { required: true })}
+            {...register('praktiskInfo.antallStillinger', {
+              required: true,
+              valueAsNumber: true,
+            })}
             type='number'
+            error={
+              errors.praktiskInfo?.antallStillinger && 'Må ha minst én stilling'
+            }
           />
         </div>
         <div className='w-[18.75rem]'>
@@ -66,6 +78,7 @@ export const RedigerPraktiskInfo: React.FC<{
                 value={field.value}
                 onChange={(val) => field.onChange(val)}
                 label='Ansettelsesform'
+                error={errors.praktiskInfo?.ansettelsesform?.message}
               >
                 {Object.entries(StillingsAnsettelsesform).map(
                   ([key, value]) => (

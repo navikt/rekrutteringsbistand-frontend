@@ -19,6 +19,7 @@ const StegNavigering: React.FC<StegNavigeringProps> = ({
           onClick={forrigeSteg}
           icon={<ArrowLeftIcon />}
           iconPosition='left'
+          type='button'
         >
           Forrige steg
         </Button>

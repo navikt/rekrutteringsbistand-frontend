@@ -33,6 +33,7 @@ export const RedigerOmTilrettelegging: React.FC<{
   React.useEffect(() => {
     if (kanInkludere === false) {
       setValue('omTilrettelegging.statligeInkluderingsdugnade', false);
+      setValue('omTilrettelegging.tags', []);
     }
   }, [kanInkludere]);
 
@@ -167,11 +168,7 @@ export const RedigerOmTilrettelegging: React.FC<{
               <TilretteleggingCheckbox tag={InkluderingsTag.MålgruppeHullICVen}>
                 Har hull i CV-en
               </TilretteleggingCheckbox>
-              <TilretteleggingCheckbox
-                tag={InkluderingsTag.MålgruppeLiteEllerIngenUtdanning}
-              >
-                Har lite eller ingen utdanning
-              </TilretteleggingCheckbox>
+
               <TilretteleggingCheckbox
                 tag={InkluderingsTag.MålgruppeLiteEllerIngenUtdanning}
               >

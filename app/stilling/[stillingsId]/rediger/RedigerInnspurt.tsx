@@ -111,13 +111,12 @@ export const RedigerInnspurt: React.FC<{
         </BodyShort>
         <div className='flex gap-4 mb-4'>
           <DatoVelger
-            disabled
-            fraDato={watch('innspurt.publiseres') ?? undefined}
+            fraDato={watch('innspurt.publiseres') ?? new Date().toISOString()}
             label='Publiseres'
             setDato={(val) => setValue('innspurt.publiseres', val ?? null)}
           />
           <DatoVelger
-            label='Avsluttes og skjules'
+            label='Siste visningsdato'
             fraDato={watch('innspurt.avsluttes') ?? undefined}
             setDato={(val) => setValue('innspurt.avsluttes', val ?? null)}
           />
@@ -127,28 +126,9 @@ export const RedigerInnspurt: React.FC<{
           value={watch('innspurt.stillingType')}
           onChange={(val) => setValue('innspurt.stillingType', val)}
         >
-          <Radio value='DIR'>NAV (Intern)</Radio>
-          <Radio value='SHOW_ALL'>arbeidsplassen.no (Ekstern)</Radio>
+          <Radio value='DIR'>Rekrutteringbistand (Intern)</Radio>
+          <Radio value='SHOW_ALL'>Arbeidsplassen.no (Ekstern)</Radio>
         </RadioGroup>
-        <div>
-          <Heading size='medium'>Hva skjer når du publiserer?</Heading>
-          <ul className='list-disc pl-6 mt-2 space-y-2'>
-            <li>
-              Annonsen blir synlig for
-              <ul className='list-disc pl-4'>
-                <li>
-                  Nav-ansatte i stillingssøket fra fredag 11. februar 2023.
-                </li>
-                <li>
-                  ansatte hos arbeidsgiveren på Min Side Arbeidsgiver på nav.no
-                  med Altinn-tilgangen “rekruttering”.
-                </li>
-                <li>Nav-brukere som får annonsen delt i aktivitetsplanen.</li>
-              </ul>
-            </li>
-            <li>Du kan når som helst kan endre eller avpublisere annonsen.</li>
-          </ul>
-        </div>
 
         {errors && Object.keys(errors).length > 0 && (
           <ErrorSummary>

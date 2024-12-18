@@ -72,7 +72,7 @@ export const RedigerOmVirksomheten: React.FC<{
             id='rediger-om-virksomheten'
             tekst={watch('omVirksomheten.beskrivelse') ?? ''}
             onChange={(e) => setValue('omVirksomheten.beskrivelse', e)}
-            limitLengde={300}
+            // limitLengde={300} //TODO Maks tegn må avklares
           />
 
           <Accordion>
@@ -106,9 +106,7 @@ export const RedigerOmVirksomheten: React.FC<{
           </Accordion>
 
           <Heading size='medium'>Kontaktperson</Heading>
-          <p>
-            Vi må vite hvem som er ansvarlig for ansettelsen hos virksomheten.
-          </p>
+          <p>Vi må vite hvem som er kontaktperson for stillingen.</p>
           {fields.map((field, index) => (
             <div key={field.id} className='grid grid-cols-2 gap-4 items-start'>
               <Controller

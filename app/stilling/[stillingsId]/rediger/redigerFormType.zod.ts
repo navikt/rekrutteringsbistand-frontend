@@ -4,15 +4,36 @@ export const OmVirksomhetenSchema = z.object({
   beskrivelse: z.string(),
   kontaktPersoner: z
     .array(
-      z.object({
-        name: z.string().min(1, 'Navn er påkrevd').nullable(),
-        title: z.string().min(1, 'Tittel er påkrevd').nullable(),
-        email: z.string().email('Ugyldig e-postadresse').nullable(),
-        phone: z
-          .string()
-          .min(8, 'Telefonnummer må være minst 8 siffer')
-          .nullable(),
-      }),
+      z
+        .object({
+          name: z.string().min(1, 'Navn er påkrevd').nullable(),
+          title: z.string().min(1, 'Tittel er påkrevd').nullable(),
+          email: z
+            .string()
+            .refine(
+              (val) => !val || /^[^@]+@[^@]+\.[^@]+$/.test(val),
+              'Ugyldig e-postadresse',
+            )
+            .optional()
+            .nullable(),
+          phone: z
+            .string()
+            .refine(
+              (val) => !val || val.length >= 8,
+              'Telefonnummer må være minst 8 siffer',
+            )
+            .optional()
+            .nullable(),
+        })
+        .refine(
+          (data) => {
+            return !!(data.email || data.phone);
+          },
+          {
+            message: 'Du må fylle ut enten e-post eller telefonnummer',
+            path: ['email'],
+          },
+        ),
     )
     .min(1, 'Minst én kontaktperson er påkrevd'),
 });
@@ -27,6 +48,7 @@ export const OmStillingenSchema = z.object({
   beskrivelse: z.string().min(1, 'Beskrivelse er påkrevd'),
   arbeidssted: z.object({
     adresse: z.string().nullable(),
+    postnummer: z.string().nullable(),
     kommuneEllerLand: z.string().nullable(),
   }),
 });
@@ -38,7 +60,7 @@ export const PraktiskInfoSchema = z.object({
   oppstartSnarest: z.boolean(),
   søknadsfrist: z.string(),
   søknadsfristEtterAvtale: z.boolean(),
-  ansettelsesform: z.string(),
+  ansettelsesform: z.string().min(1, 'Ansettelsesform må velges'),
   dager: z.array(z.string()),
   tid: z.array(z.string()),
 });

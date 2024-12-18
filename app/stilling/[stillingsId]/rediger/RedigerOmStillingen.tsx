@@ -1,8 +1,8 @@
 import {
   BodyShort,
-  Checkbox,
   Heading,
   TextField,
+  ToggleGroup,
   UNSAFE_Combobox,
 } from '@navikt/ds-react';
 import Link from 'next/link';
@@ -19,8 +19,9 @@ export const RedigerOmStillingen: React.FC<{
   const { register, setValue, watch, control, trigger } =
     useFormContext<StillingsDataForm>();
 
-  const [visAdresseFelt, setVisAdressefelt] = React.useState<boolean>(true);
-  const [visKommuneFelt, setVisKommuneFelt] = React.useState<boolean>(false);
+  const [adresseValg, setAdresseValg] = React.useState<'adresse' | 'kommune'>(
+    'adresse',
+  );
 
   const handleStepSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -75,26 +76,29 @@ export const RedigerOmStillingen: React.FC<{
 
           <div>
             <h3 className='text-xl font-semibold mb-4'>Arbeidssted</h3>
-            <p>
-              Velg hvor kandidatene skal jobbe. Skriv inn en adresse eller én
-              eller flere kommuner, fylker eller land.
-            </p>
 
-            <Checkbox
-              value='adresse'
-              checked={visAdresseFelt}
-              onChange={(v) => setVisAdressefelt(v.target.checked)}
+            <ToggleGroup
+              className='my-4'
+              fill
+              defaultValue={adresseValg}
+              onChange={(e) => setAdresseValg(e as 'adresse' | 'kommune')}
+              variant='neutral'
             >
-              Adresse
-            </Checkbox>
-            {visAdresseFelt && (
-              <>
+              <ToggleGroup.Item value={'adresse'} label='Adresse' />
+              <ToggleGroup.Item
+                value={'kommune'}
+                label='Kommune, fylke eller land'
+              />
+            </ToggleGroup>
+
+            {adresseValg === 'adresse' && (
+              <div className='mt-2'>
                 <Controller
                   control={control}
                   name={`omStillingen.arbeidssted.adresse`}
                   render={({ field: { onChange, value } }) => (
                     <TextField
-                      label='Navn'
+                      label='Adresse'
                       onChange={(e) => onChange(e.target.value)}
                       value={value ?? ''}
                       // error={
@@ -107,34 +111,33 @@ export const RedigerOmStillingen: React.FC<{
                     />
                   )}
                 />
-              </>
-            )}
-            <Checkbox
-              checked={visKommuneFelt}
-              onChange={(v) => setVisKommuneFelt(v.target.checked)}
-              value='taxi'
-            >
-              Kommune, fylke eller land
-            </Checkbox>
-            {visAdresseFelt && (
-              <div className='grid grid-cols-2 gap-4 mt-4'>
-                <TextField
-                  label='Adresse'
-                  //TODO
-                  // {...register('stilling.employer.location.address')}
-                />
-                <TextField
-                  label='Postnummer'
-                  // {...register('stilling.employer.location.postalCode')}
+                <Controller
+                  control={control}
+                  name={`omStillingen.arbeidssted.postnummer`}
+                  render={({ field: { onChange, value } }) => (
+                    <TextField
+                      className='w-6'
+                      label='Postnummer'
+                      onChange={(e) => onChange(e.target.value)}
+                      value={value ?? ''}
+                      // error={
+                      // errors.omVirksomheten?.kontaktPersoner?.[index]?.name
+                      //   ?.message
+                      //   ? errors.omVirksomheten?.kontaktPersoner?.[index]
+                      //       ?.name?.message
+                      //   : null
+                      // }
+                    />
+                  )}
                 />
               </div>
             )}
 
-            {visKommuneFelt && (
+            {adresseValg === 'kommune' && (
               <UNSAFE_Combobox
                 className='mt-4'
-                disabled
-                label='Kommune, fylke, eller land'
+                label=''
+                description='Du kan velge flere kommuner, fylker eller land'
                 options={[
                   'car',
                   'bus',

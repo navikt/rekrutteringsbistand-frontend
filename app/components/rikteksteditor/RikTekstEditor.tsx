@@ -46,6 +46,11 @@ const RikTekstEditor: React.FC<IRikTekstEditor> = ({
 }) => {
   const [headerValue, setHeaderValue] = React.useState<number>(0);
   const editor = useEditor({
+    editorProps: {
+      attributes: {
+        class: 'min-h-[100px]',
+      },
+    },
     immediatelyRender: false,
     extensions: [
       HardBreak,
@@ -113,7 +118,7 @@ const RikTekstEditor: React.FC<IRikTekstEditor> = ({
   const aktivKnapp = 'bg-gray-200 ';
   const inaktivKnapp = 'bg-white ';
   return (
-    <div className='border border-black p-2.5 rounded-md' id={id}>
+    <div className='border border-black p-2.5 rounded-md ' id={id}>
       <div>
         {skjulToolbar ? (
           <div />
