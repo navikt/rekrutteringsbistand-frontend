@@ -34,8 +34,10 @@ export const mapStillingTilForm = (
       tittel: stillingsData?.stilling?.title ?? '',
       beskrivelse: stillingsData?.stilling?.properties?.adtext ?? '',
       arbeidssted: {
-        adresse: null,
+        adresse: stillingsData?.stilling?.employer?.location?.address ?? null,
         kommuneEllerLand: null,
+        postnummer:
+          stillingsData?.stilling?.employer?.location?.postalCode ?? null,
       },
     },
     praktiskInfo: {
@@ -73,7 +75,11 @@ export const mapFormTilStilling = (
     stilling: {
       ...existingData.stilling,
       title: formData.omStillingen.tittel,
-      contactList: formData.omVirksomheten.kontaktPersoner,
+      contactList: formData.omVirksomheten.kontaktPersoner.map((contact) => ({
+        ...contact,
+        email: contact.email ?? null,
+        phone: contact.phone ?? null,
+      })),
       properties: {
         ...existingData.stilling.properties,
         employerdescription: formData.omVirksomheten.beskrivelse,
@@ -90,6 +96,15 @@ export const mapFormTilStilling = (
         engagementtype: formData.praktiskInfo.ansettelsesform,
         workday: JSON.stringify(formData.praktiskInfo.dager),
         workhours: JSON.stringify(formData.praktiskInfo.tid),
+      },
+      employer: {
+        ...existingData.stilling.employer,
+        //@ts-ignore
+        location: {
+          ...existingData.stilling.employer?.location,
+          postalCode: formData.omStillingen.arbeidssted.postnummer,
+          address: formData.omStillingen.arbeidssted.adresse,
+        },
       },
       published: formData.innspurt.publiseres,
       expires: formData.innspurt.avsluttes,
