@@ -42,9 +42,8 @@ export const mapStillingTilForm = (
     },
     praktiskInfo: {
       sektor: stillingsData?.stilling?.properties?.sector ?? '',
-      antallStillinger: parseInt(
+      antallStillinger:
         stillingsData?.stilling?.properties?.positioncount?.toString() ?? '0',
-      ),
       oppstart:
         stillingsData?.stilling?.properties?.starttime?.toString() ?? '',
       oppstartSnarest:
@@ -59,9 +58,9 @@ export const mapStillingTilForm = (
       tid: workhours,
     },
     innspurt: {
-      publiseres: stillingsData?.stilling?.published ?? null,
-      avsluttes: stillingsData?.stilling?.expires ?? null,
-      stillingType: stillingsData?.stilling?.source ?? null,
+      publiseres: stillingsData?.stilling?.published ?? '',
+      avsluttes: stillingsData?.stilling?.expires ?? '',
+      stillingType: stillingsData?.stilling?.source ?? '',
     },
   };
 };
@@ -86,7 +85,7 @@ export const mapFormTilStilling = (
         tags: JSON.stringify(formData.omTilrettelegging.tags),
         adtext: formData.omStillingen.beskrivelse,
         sector: formData.praktiskInfo.sektor,
-        positioncount: formData.praktiskInfo.antallStillinger.toString(),
+        positioncount: formData.praktiskInfo.antallStillinger,
         starttime: formData.praktiskInfo.oppstartSnarest
           ? 'Snarest'
           : formData.praktiskInfo.oppstart,
@@ -106,8 +105,12 @@ export const mapFormTilStilling = (
           address: formData.omStillingen.arbeidssted.adresse,
         },
       },
-      published: formData.innspurt.publiseres,
-      expires: formData.innspurt.avsluttes,
+      published: formData.innspurt.publiseres
+        ? new Date(formData.innspurt.publiseres).toISOString()
+        : null,
+      expires: formData.innspurt.avsluttes
+        ? new Date(formData.innspurt.avsluttes).toISOString()
+        : null,
       source: formData.innspurt.stillingType,
     },
   };

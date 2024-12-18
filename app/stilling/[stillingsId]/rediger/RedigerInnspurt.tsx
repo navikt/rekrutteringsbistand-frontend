@@ -113,12 +113,16 @@ export const RedigerInnspurt: React.FC<{
           <DatoVelger
             fraDato={watch('innspurt.publiseres') ?? new Date().toISOString()}
             label='Publiseres'
-            setDato={(val) => setValue('innspurt.publiseres', val ?? null)}
+            setDato={(val) =>
+              val ? setValue('innspurt.publiseres', val) : null
+            }
           />
           <DatoVelger
             label='Siste visningsdato'
             fraDato={watch('innspurt.avsluttes') ?? undefined}
-            setDato={(val) => setValue('innspurt.avsluttes', val ?? null)}
+            setDato={(val) =>
+              val ? setValue('innspurt.avsluttes', val) : null
+            }
           />
         </div>
         <RadioGroup

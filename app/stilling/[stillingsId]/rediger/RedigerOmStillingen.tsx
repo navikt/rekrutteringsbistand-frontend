@@ -62,9 +62,8 @@ export const RedigerOmStillingen: React.FC<{
           <div>
             <Heading size='small'>Beskriv stillingen </Heading>
             <BodyShort className='mb-4'>
-              Kan sees av kandidater som mottar stillingen, og andre
-              NAV-ansatte. Unngå å skrive informasjon som kan avsløre
-              personopplysninger.{' '}
+              Kan sees av kandidater som mottar stillingen og andre Nav-ansatte.
+              Unngå å skrive informasjon som kan avsløre personopplysninger.
             </BodyShort>
             <RikTekstEditor
               id='rediger-stilling-beskrivelse'
