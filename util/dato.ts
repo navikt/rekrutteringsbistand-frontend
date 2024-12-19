@@ -10,7 +10,7 @@ import { nb } from 'date-fns/locale';
 export const formaterTilISODato = (datoString?: string) => {
   if (!datoString) return null;
   const dato = parse(datoString, 'dd-MM-yyyy', new Date());
-  return formatISO(dato);
+  return formatISO(dato, { format: 'extended' });
 };
 
 export const visDato = (dato: Date) => format(new Date(dato), 'dd.MM.yyyy');
