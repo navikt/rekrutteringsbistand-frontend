@@ -179,11 +179,28 @@ const RedigerStilling: React.FC = () => {
             </Button>
             <Button
               icon={<EyeIcon />}
-              onClick={() =>
-                setForhåndsvisData(
-                  mapFormTilStilling(getValues(), stillingsData),
-                )
-              }
+              onClick={() => {
+                const stilling = mapFormTilStilling(getValues(), stillingsData);
+                setForhåndsvisData({
+                  stillingsinfo: stillingsData?.stillingsinfo ?? null,
+                  stilling: {
+                    ...stilling.stilling,
+                    locationList: stilling.stilling.locationList.map(
+                      (location) => ({
+                        address: location.address,
+                        postalCode: location.postalCode ?? null,
+                        county: location.county ?? null,
+                        municipal: location.municipal ?? null,
+                        municipalCode: location.municipalCode ?? null,
+                        city: location.city ?? null,
+                        country: location.country ?? null,
+                        latitude: location.latitude ?? null,
+                        longitude: location.longitude ?? null,
+                      }),
+                    ),
+                  },
+                });
+              }}
               variant='tertiary'
             >
               Forhåndsvis
