@@ -1,13 +1,13 @@
 import {
   BodyShort,
   Heading,
-  TextField,
   ToggleGroup,
   UNSAFE_Combobox,
 } from '@navikt/ds-react';
 import Link from 'next/link';
 import * as React from 'react';
-import { Controller, useFormContext } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
+import Poststed from '../../../components/Poststed';
 import RikTekstEditor from '../../../components/rikteksteditor/RikTekstEditor';
 import StegNavigering from './components/StegNavigering';
 import { StillingsDataForm } from './redigerFormType.zod';
@@ -92,7 +92,19 @@ export const RedigerOmStillingen: React.FC<{
 
             {adresseValg === 'adresse' && (
               <div className='mt-2'>
-                <Controller
+                <Poststed
+                  callBack={(poststed) => {
+                    setValue(
+                      'omStillingen.arbeidssted.postnummer',
+                      poststed.postalCode,
+                    );
+                    setValue(
+                      'omStillingen.arbeidssted.adresse',
+                      poststed.capitalizedCityName,
+                    );
+                  }}
+                />
+                {/* <Controller
                   control={control}
                   name={`omStillingen.arbeidssted.adresse`}
                   render={({ field: { onChange, value } }) => (
@@ -128,7 +140,7 @@ export const RedigerOmStillingen: React.FC<{
                       // }
                     />
                   )}
-                />
+                /> */}
               </div>
             )}
 
