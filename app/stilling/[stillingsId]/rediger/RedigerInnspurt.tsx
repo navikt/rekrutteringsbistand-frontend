@@ -126,12 +126,18 @@ export const RedigerInnspurt: React.FC<{
           />
         </div>
         <RadioGroup
+          description={
+            <div>
+              Intern: Rekrutteringsbistand
+              <br /> Ekstern: Arbeidsplassen.no
+            </div>
+          }
           legend='Hvor skal stillingen publiseres?'
           value={watch('innspurt.stillingType')}
           onChange={(val) => setValue('innspurt.stillingType', val)}
         >
-          <Radio value='DIR'>Rekrutteringbistand (Intern)</Radio>
-          <Radio value='SHOW_ALL'>Arbeidsplassen.no (Ekstern)</Radio>
+          <Radio value='DIR'>Internt</Radio>
+          <Radio value='SHOW_ALL'>Internt og Eksternt</Radio>
         </RadioGroup>
 
         {errors && Object.keys(errors).length > 0 && (
