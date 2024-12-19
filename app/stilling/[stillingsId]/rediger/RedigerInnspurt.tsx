@@ -111,7 +111,7 @@ export const RedigerInnspurt: React.FC<{
         </BodyShort>
         <div className='flex gap-4 mb-4'>
           <DatoVelger
-            fraDato={watch('innspurt.publiseres') ?? new Date().toISOString()}
+            fraDato={watch('innspurt.publiseres') ?? new Date()}
             label='Publiseres'
             setDato={(val) =>
               val ? setValue('innspurt.publiseres', val) : null

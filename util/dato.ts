@@ -1,5 +1,17 @@
-import { format, lastDayOfMonth, startOfMonth } from 'date-fns';
+import {
+  format,
+  formatISO,
+  lastDayOfMonth,
+  parse,
+  startOfMonth,
+} from 'date-fns';
 import { nb } from 'date-fns/locale';
+
+export const formaterTilISODato = (datoString?: string) => {
+  if (!datoString) return null;
+  const dato = parse(datoString, 'dd-MM-yyyy', new Date());
+  return formatISO(dato);
+};
 
 export const visDato = (dato: Date) => format(new Date(dato), 'dd.MM.yyyy');
 export const visDatoMedMåned = (dato: Date) =>

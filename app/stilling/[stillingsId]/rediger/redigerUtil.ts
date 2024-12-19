@@ -1,3 +1,4 @@
+import { formaterTilISODato } from '../../../../util/dato';
 import { StillingsDataDTO } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 
 import { InkluderingsTag } from '../omStillingen/StillingSidebar/StillingInkludering';
@@ -105,12 +106,9 @@ export const mapFormTilStilling = (
           address: formData.omStillingen.arbeidssted.adresse,
         },
       },
-      published: formData.innspurt.publiseres
-        ? new Date(formData.innspurt.publiseres).toISOString()
-        : null,
-      expires: formData.innspurt.avsluttes
-        ? new Date(formData.innspurt.avsluttes).toISOString()
-        : null,
+      published: formaterTilISODato(formData.innspurt.publiseres),
+      expires: formaterTilISODato(formData.innspurt.avsluttes),
+
       source: formData.innspurt.stillingType,
     },
   };
