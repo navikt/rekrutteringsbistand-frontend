@@ -4,7 +4,6 @@ import {
   postLocationDTO,
   usePostData,
 } from '../api/stilling/geografi/postData/usePostData';
-import SWRLaster from './SWRLaster';
 
 export interface PoststedProps {
   callBack: (poststed: postLocationDTO) => void;
@@ -13,27 +12,37 @@ export interface PoststedProps {
 const Poststed: React.FC<PoststedProps> = ({ callBack }) => {
   const hook = usePostData();
 
+  const [søkeVerdi, setSøkeVerdi] = React.useState<string>('');
+
   return (
-    <SWRLaster hook={hook}>
-      {(data) => (
-        <UNSAFE_Combobox
-          label='Velg postnummer og poststed'
-          options={data.map((item) => {
-            return {
-              label: `${item.postalCode} - ${item.capitalizedCityName}`,
-              value: item.postalCode,
-            };
-          })}
-          shouldAutocomplete
-          onChange={(value) => {
-            const poststed = data.find((item) => item.postalCode === value);
-            if (poststed) {
-              callBack(poststed);
-            }
-          }}
-        />
-      )}
-    </SWRLaster>
+    <UNSAFE_Combobox
+      value={søkeVerdi}
+      label='Velg postnummer og poststed'
+      isLoading={hook.isLoading}
+      options={
+        hook.data
+          ? hook.data.map((item) => {
+              return {
+                label: `${item.postalCode} - ${item.capitalizedCityName}`,
+                value: item.postalCode,
+              };
+            })
+          : []
+      }
+      shouldAutocomplete
+      onChange={(value) => {
+        setSøkeVerdi(value);
+      }}
+      isListOpen={søkeVerdi.length > 1}
+      onToggleSelected={(value) => {
+        const poststed = hook.data
+          ? hook.data.find((item) => item.postalCode === value)
+          : null;
+        if (poststed) {
+          callBack(poststed);
+        }
+      }}
+    />
   );
 };
 
