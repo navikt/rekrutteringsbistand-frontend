@@ -71,7 +71,7 @@ export const mapFormTilStilling = (
   existingData: StillingsDataDTO,
 ): StillingsDataDTO => {
   return {
-    ...existingData,
+    stillingsinfoid: existingData.stillingsinfo?.stillingsinfoid,
     stilling: {
       ...existingData.stilling,
       title: formData.omStillingen.tittel,
