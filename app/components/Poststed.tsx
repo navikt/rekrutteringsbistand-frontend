@@ -14,21 +14,34 @@ const Poststed: React.FC<PoststedProps> = ({ callBack }) => {
 
   const [søkeVerdi, setSøkeVerdi] = React.useState<string>('');
 
+  const filteredOptions = React.useMemo(
+    () =>
+      søkeVerdi.length > 1 && hook.data
+        ? hook.data
+            .filter(
+              (item) =>
+                item.postalCode.includes(søkeVerdi) ||
+                item.capitalizedCityName
+                  .toLowerCase()
+                  .includes(søkeVerdi.toLowerCase()),
+            )
+            .slice(0, 100)
+            .map((item) => {
+              return {
+                label: `${item.postalCode} - ${item.capitalizedCityName}`,
+                value: item.postalCode,
+              };
+            }) // Begrens antall resultater
+        : [],
+    [hook.data, søkeVerdi],
+  );
+
   return (
     <UNSAFE_Combobox
       value={søkeVerdi}
       label='Velg postnummer og poststed'
       isLoading={hook.isLoading}
-      options={
-        hook.data
-          ? hook.data.map((item) => {
-              return {
-                label: `${item.postalCode} - ${item.capitalizedCityName}`,
-                value: item.postalCode,
-              };
-            })
-          : []
-      }
+      options={filteredOptions}
       shouldAutocomplete
       onChange={(value) => {
         setSøkeVerdi(value);
