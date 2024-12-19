@@ -1,10 +1,9 @@
 import { putApi } from '../../fetcher';
 import { stillingMock } from '../rekrutteringsbistandstilling/[slug]/mocks/stillingMock';
-import { StillingsDataDTO } from '../rekrutteringsbistandstilling/[slug]/stilling.dto';
 
 const opprettNyStillingEndepunkt = '/api/stilling/oppdater-stilling';
 
-export const oppdaterStilling = (stillingData: StillingsDataDTO) => {
+export const oppdaterStilling = (stillingData: any) => {
   return putApi(opprettNyStillingEndepunkt, stillingData);
 };
 

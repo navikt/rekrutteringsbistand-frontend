@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { GeografiSchema } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 
 export const OmVirksomhetenSchema = z.object({
   beskrivelse: z.string(),
@@ -46,11 +47,9 @@ export const OmTilretteleggingSchema = z.object({
 export const OmStillingenSchema = z.object({
   tittel: z.string().min(1, 'Tittel er påkrevd'),
   beskrivelse: z.string().min(1, 'Beskrivelse er påkrevd'),
-  arbeidssted: z.object({
-    adresse: z.string().nullable(),
-    postnummer: z.string().nullable(),
-    kommuneEllerLand: z.string().nullable(),
-  }),
+  adresse: z.string().nullable(),
+  location: GeografiSchema.nullable(),
+  kommuneEllerLand: z.string().nullable(),
 });
 
 export const PraktiskInfoSchema = z.object({

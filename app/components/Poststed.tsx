@@ -1,12 +1,10 @@
 import { UNSAFE_Combobox } from '@navikt/ds-react';
 import * as React from 'react';
-import {
-  postLocationDTO,
-  usePostData,
-} from '../api/stilling/geografi/postData/usePostData';
+import { usePostData } from '../api/stilling/geografi/postData/usePostData';
+import { GeografiDTO } from '../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 
 export interface PoststedProps {
-  callBack: (poststed: postLocationDTO) => void;
+  callBack: (poststed: GeografiDTO) => void;
 }
 
 const Poststed: React.FC<PoststedProps> = ({ callBack }) => {
@@ -52,7 +50,17 @@ const Poststed: React.FC<PoststedProps> = ({ callBack }) => {
           ? hook.data.find((item) => item.postalCode === value)
           : null;
         if (poststed) {
-          callBack(poststed);
+          callBack({
+            address: null,
+            postalCode: poststed.postalCode,
+            county: poststed.county.name,
+            municipal: poststed.municipality.name,
+            municipalCode: poststed.municipality.code,
+            city: poststed.city,
+            country: null,
+            latitude: null,
+            longitude: null,
+          });
         }
       }}
     />

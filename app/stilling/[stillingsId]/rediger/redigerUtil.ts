@@ -34,12 +34,10 @@ export const mapStillingTilForm = (
     omStillingen: {
       tittel: stillingsData?.stilling?.title ?? '',
       beskrivelse: stillingsData?.stilling?.properties?.adtext ?? '',
-      arbeidssted: {
-        adresse: stillingsData?.stilling?.employer?.location?.address ?? null,
-        kommuneEllerLand: null,
-        postnummer:
-          stillingsData?.stilling?.employer?.location?.postalCode ?? null,
-      },
+      kommuneEllerLand: null,
+      adresse:
+        stillingsData?.stilling?.employer?.locationList?.[0]?.address ?? null,
+      location: stillingsData?.stilling?.employer?.locationList?.[0] ?? null,
     },
     praktiskInfo: {
       sektor: stillingsData?.stilling?.properties?.sector ?? '',
@@ -69,7 +67,13 @@ export const mapStillingTilForm = (
 export const mapFormTilStilling = (
   formData: StillingsDataForm,
   existingData: StillingsDataDTO,
-): StillingsDataDTO => {
+) => {
+  const arbeidssted = [
+    {
+      ...formData.omStillingen.location,
+      address: formData.omStillingen.adresse,
+    },
+  ];
   return {
     stillingsinfoid: existingData.stillingsinfo?.stillingsinfoid,
     stilling: {
@@ -97,18 +101,12 @@ export const mapFormTilStilling = (
         workday: JSON.stringify(formData.praktiskInfo.dager),
         workhours: JSON.stringify(formData.praktiskInfo.tid),
       },
-      employer: {
-        ...existingData.stilling.employer,
-        //@ts-ignore
-        location: {
-          ...existingData.stilling.employer?.location,
-          postalCode: formData.omStillingen.arbeidssted.postnummer,
-          address: formData.omStillingen.arbeidssted.adresse,
-        },
-      },
       published: formaterTilISODato(formData.innspurt.publiseres),
       expires: formaterTilISODato(formData.innspurt.avsluttes),
-
+      locationList: [
+        ...(existingData.stilling.locationList ?? []),
+        ...arbeidssted,
+      ],
       source: formData.innspurt.stillingType,
     },
   };

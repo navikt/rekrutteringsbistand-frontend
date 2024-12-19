@@ -1,12 +1,13 @@
 import {
   BodyShort,
   Heading,
+  TextField,
   ToggleGroup,
   UNSAFE_Combobox,
 } from '@navikt/ds-react';
 import Link from 'next/link';
 import * as React from 'react';
-import { useFormContext } from 'react-hook-form';
+import { Controller, useFormContext } from 'react-hook-form';
 import Poststed from '../../../components/Poststed';
 import RikTekstEditor from '../../../components/rikteksteditor/RikTekstEditor';
 import StegNavigering from './components/StegNavigering';
@@ -91,20 +92,32 @@ export const RedigerOmStillingen: React.FC<{
             </ToggleGroup>
 
             {adresseValg === 'adresse' && (
-              <div className='mt-2'>
+              <div className='mt-2 flex flex-col gap-2'>
+                <Controller
+                  control={control}
+                  name={`omStillingen.adresse`}
+                  render={({ field: { onChange, value } }) => (
+                    <TextField
+                      label='Adresse'
+                      onChange={(e) => onChange(e.target.value)}
+                      value={value ?? ''}
+                      // error={
+                      // errors.omVirksomheten?.kontaktPersoner?.[index]?.name
+                      //   ?.message
+                      //   ? errors.omVirksomheten?.kontaktPersoner?.[index]
+                      //       ?.name?.message
+                      //   : null
+                      // }
+                    />
+                  )}
+                />
                 <Poststed
                   callBack={(poststed) => {
-                    setValue(
-                      'omStillingen.arbeidssted.postnummer',
-                      poststed.postalCode,
-                    );
-                    setValue(
-                      'omStillingen.arbeidssted.adresse',
-                      poststed.capitalizedCityName,
-                    );
+                    setValue('omStillingen.location', poststed);
                   }}
                 />
-                {/* <Controller
+                {/* 
+                <Controller
                   control={control}
                   name={`omStillingen.arbeidssted.adresse`}
                   render={({ field: { onChange, value } }) => (

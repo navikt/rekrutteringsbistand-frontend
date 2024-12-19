@@ -78,7 +78,7 @@ const ContactSchema = z.object({
   title: z.string().nullable(),
 });
 
-const GeografiSchema = z.object({
+export const GeografiSchema = z.object({
   address: z.string().nullable(),
   postalCode: z.string().nullable(),
   county: z.string().nullable(),
