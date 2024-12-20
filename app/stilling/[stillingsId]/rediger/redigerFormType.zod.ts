@@ -46,7 +46,7 @@ export const OmTilretteleggingSchema = z.object({
 });
 
 export const OmStillingenSchema = z.object({
-  jannz: stillingsTittelTreffSchema,
+  janzz: stillingsTittelTreffSchema,
   beskrivelse: z.string().min(1, 'Beskrivelse er påkrevd'),
   adresse: z.string().nullable(),
   location: GeografiSchema.nullable(),

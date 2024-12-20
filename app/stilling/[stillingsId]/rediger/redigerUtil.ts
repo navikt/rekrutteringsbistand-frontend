@@ -32,7 +32,10 @@ export const mapStillingTilForm = (
       tags: tags,
     },
     omStillingen: {
-      tittel: stillingsData?.stilling?.title ?? '',
+      janzz:
+        (stillingsData?.stilling?.categoryList?.filter(
+          (item) => item.code === 'janzz',
+        ) as any) ?? [],
       beskrivelse: stillingsData?.stilling?.properties?.adtext ?? '',
       kommuneEllerLand: null,
       adresse:
@@ -78,7 +81,10 @@ export const mapFormTilStilling = (
     stillingsinfoid: existingData.stillingsinfo?.stillingsinfoid,
     stilling: {
       ...existingData.stilling,
-      title: formData.omStillingen.tittel,
+      categoryList: [
+        ...(existingData.stilling.categoryList ?? []),
+        ...formData.omStillingen.janzz,
+      ],
       contactList: formData.omVirksomheten.kontaktPersoner.map((contact) => ({
         ...contact,
         email: contact.email ?? null,
