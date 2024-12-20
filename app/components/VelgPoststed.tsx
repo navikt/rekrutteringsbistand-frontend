@@ -3,11 +3,11 @@ import * as React from 'react';
 import { usePostData } from '../api/stilling/geografi/postData/usePostData';
 import { GeografiDTO } from '../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 
-export interface PoststedProps {
+export interface VelgPoststedProps {
   callBack: (poststed: GeografiDTO) => void;
 }
 
-const Poststed: React.FC<PoststedProps> = ({ callBack }) => {
+const VelgPoststed: React.FC<VelgPoststedProps> = ({ callBack }) => {
   const hook = usePostData();
 
   const [søkeVerdi, setSøkeVerdi] = React.useState<string>('');
@@ -67,4 +67,4 @@ const Poststed: React.FC<PoststedProps> = ({ callBack }) => {
   );
 };
 
-export default Poststed;
+export default VelgPoststed;

@@ -8,9 +8,10 @@ import {
 import Link from 'next/link';
 import * as React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
-import Poststed from '../../../components/Poststed';
+import Poststed from '../../../components/VelgPoststed';
 import RikTekstEditor from '../../../components/rikteksteditor/RikTekstEditor';
 import StegNavigering from './components/StegNavigering';
+import VelgStillingTittel from './components/VelgStillingTittel';
 import { StillingsDataForm } from './redigerFormType.zod';
 export const RedigerOmStillingen: React.FC<{
   stegNummer: number;
@@ -50,14 +51,8 @@ export const RedigerOmStillingen: React.FC<{
       <form onSubmit={handleStepSubmit}>
         <div className='space-y-8'>
           <div>
-            <UNSAFE_Combobox
-              options={[]}
-              disabled
-              label='Velg yrkestittel (standard for yrkesklassifisering - JANZZ)'
-              // {...register('omStillingen.tittel')}
-              onChange={(e) => {
-                // setValue('omStillingen.tittel', e);
-              }}
+            <VelgStillingTittel
+              callBack={(val) => setValue('omStillingen.jannz', [val])}
             />
           </div>
           <div>

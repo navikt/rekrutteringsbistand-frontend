@@ -14,6 +14,7 @@ import { antallKandidaterMirage } from '../app/api/kandidat/useAntallKandidater'
 import { kandidatlisteMirage } from '../app/api/kandidat/useKandidatliste';
 import { kandidatlisteIdMirage } from '../app/api/kandidat/useKandidatlisteId';
 import { kandidatlisteoversiktMirage } from '../app/api/kandidat/useKandidatListeoversikt';
+import { stillingsTittelMirage } from '../app/api/pam-ontologi/stillingsTittel/useStillingsTittel';
 import { statistikkMirage } from '../app/api/statistikk/useStatistikk';
 import { finnArbeidsgiverMirage } from '../app/api/stilling/finn-arbeidsgiver/useFinnArbeidsgiver';
 import { postDataMirage } from '../app/api/stilling/geografi/postData/usePostData';
@@ -55,6 +56,7 @@ export function makeServer({ environment = 'test' } = {}) {
       kandidatNavnMirage(this);
       arenaKandidatnrMirage(this);
       postDataMirage(this);
+      stillingsTittelMirage(this);
       this.passthrough('*');
     },
   });
