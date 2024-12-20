@@ -61,7 +61,7 @@ export const KandidatAPI: Iroute = {
 
 export const PamOntologiAPI: Iroute = {
   api_route: '',
-  api_url: process.env.PAM_ONT_LOGI_API ?? '',
+  api_url: process.env.PAM_ONTOLOGI_URL ?? '',
   internUrl: '/api/pam-ontologi',
   scope: `api://${gcp}.teampam.pam-ontologi/.default`,
 };

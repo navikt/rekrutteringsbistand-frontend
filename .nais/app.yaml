@@ -72,3 +72,5 @@ spec:
       value: http://rekrutteringsbistand-kandidatsok-api
     - name: KANDIDAT_API
       value: {{ kandidatApiUrl }}
+    - name: PAM_ONTOLOGI_URL
+      value: http://pam-ontologi.teampam
