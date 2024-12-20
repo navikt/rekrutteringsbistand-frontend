@@ -185,9 +185,21 @@ const RedigerStilling: React.FC = () => {
                   stillingsinfo: stillingsData?.stillingsinfo ?? null,
                   stilling: {
                     ...stilling.stilling,
-                    locationList: stilling.stilling.locationList.map(
+                    categoryList: stilling.stilling?.categoryList?.filter(
+                      (
+                        category,
+                      ): category is {
+                        code: string | null;
+                        id: number | null;
+                        name: string | null;
+                        categoryType: string | null;
+                        description: string | null;
+                        parentId: number | null;
+                      } => 'code' in category,
+                    ),
+                    locationList: stilling.stilling?.locationList?.map(
                       (location) => ({
-                        address: location.address,
+                        address: location.address ?? null,
                         postalCode: location.postalCode ?? null,
                         county: location.county ?? null,
                         municipal: location.municipal ?? null,
