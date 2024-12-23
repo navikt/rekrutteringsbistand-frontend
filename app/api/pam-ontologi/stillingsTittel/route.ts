@@ -1,13 +1,11 @@
-import { NextRequest } from 'next/server';
-import { proxyWithOBO } from '../../../../util/oboProxy';
-import { PamOntologiAPI } from '../../api-routes';
+import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(req: NextRequest) {
-  console.log('hei');
   const søkeord = req.nextUrl.searchParams.get('q');
-  return proxyWithOBO(
-    PamOntologiAPI,
-    req,
-    `/rest/typeahead/stilling?stillingstittel=${søkeord}`,
+
+  const response = await fetch(
+    `${process.env.PAM_ONTOLOGI_URL}/rest/typeahead/stilling?stillingstittel=${søkeord}`,
   );
+  const data = await response.json();
+  return NextResponse.json(data);
 }
