@@ -47,7 +47,7 @@ export const OmTilretteleggingSchema = z.object({
 
 export const OmStillingenSchema = z.object({
   janzz: stillingsTittelTreffSchema,
-  beskrivelse: z.string().min(1, 'Beskrivelse er påkrevd'),
+  beskrivelse: z.string().nullable(),
   adresse: z.string().nullable(),
   location: GeografiSchema.nullable(),
   kommuneEllerLand: z.string().nullable(),
@@ -55,7 +55,7 @@ export const OmStillingenSchema = z.object({
 
 export const PraktiskInfoSchema = z.object({
   sektor: z.string(),
-  antallStillinger: z.string().min(1, 'Må ha minst én stilling'),
+  antallStillinger: z.number().min(1, 'Må ha minst én stilling'),
   oppstart: z.string(),
   oppstartSnarest: z.boolean(),
   søknadsfrist: z.string(),

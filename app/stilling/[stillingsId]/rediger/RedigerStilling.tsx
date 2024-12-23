@@ -1,10 +1,16 @@
 'use client';
-import { EyeIcon, StopIcon, TrashIcon, XMarkIcon } from '@navikt/aksel-icons';
-import { Button, Stepper } from '@navikt/ds-react';
-import { useParams, useRouter } from 'next/navigation';
+import {
+  EyeIcon,
+  FloppydiskIcon,
+  StopIcon,
+  TrashIcon,
+  XMarkIcon,
+} from '@navikt/aksel-icons';
+import { Alert, Button, Stepper } from '@navikt/ds-react';
 import { useQueryState } from 'nuqs';
 import * as React from 'react';
 import { useFormContext } from 'react-hook-form';
+import { oppdaterStilling } from '../../../api/stilling/oppdater-stilling/oppdaterStilling';
 import { StillingsStatus } from '../../stilling-typer';
 import OmStillingen from '../omStillingen/OmStillingen';
 import { useStillingsContext } from '../StillingsContext';
@@ -23,7 +29,6 @@ import { RedigerOmTilrettelegging } from './RedigerOmTilrettelegging';
 import { RedigerOmVirksomheten } from './RedigerOmVirksomheten';
 import { RedigerPraktiskInfo } from './RedigerPraktiskInfo';
 import { mapFormTilStilling } from './redigerUtil';
-
 enum RedigerSteg {
   omVirksomheten = 'om-virksomheten',
   omTilrettelegging = 'om-tilrettelegging',
@@ -37,13 +42,35 @@ const RedigerStilling: React.FC = () => {
     defaultValue: RedigerSteg.omVirksomheten,
   });
   const { stillingsData } = useStillingsContext();
-  const router = useRouter();
-  const params = useParams();
 
-  const onLukk = () => {
-    const newPath = `/stilling/${params.slug}`;
-    router.push(newPath);
+  const [lagrer, setLagrer] = React.useState<boolean>(false);
+  const [visMelding, setVisMelding] = React.useState<React.ReactNode | null>(
+    null,
+  );
+
+  const onLagre = async () => {
+    setLagrer(true);
+
+    const nyStillingsData = mapFormTilStilling(getValues(), stillingsData);
+
+    const response = await oppdaterStilling(nyStillingsData);
+
+    if (response.stilling.uuid) {
+      setVisMelding(<Alert variant='success'>Stillingen ble lagret</Alert>);
+      setTimeout(() => setVisMelding(null), 3000);
+    } else {
+      setVisMelding(
+        <Alert variant='error'>Feil ved lagring av stilling</Alert>,
+      );
+      setTimeout(() => setVisMelding(null), 3000);
+    }
+
+    setLagrer(false);
   };
+  // const onLukk = () => {
+  //   const newPath = `/stilling/${params.slug}`;
+  //   router.push(newPath);
+  // };
 
   const stegNummer = (): number => {
     const steps = Object.values(RedigerSteg);
@@ -100,6 +127,11 @@ const RedigerStilling: React.FC = () => {
 
   return (
     <>
+      {visMelding && (
+        <div className='fixed top-10 left-1/2 transform -translate-x-1/2 z-50 w-full'>
+          {visMelding}
+        </div>
+      )}
       {forhåndsvisData ? (
         <>
           <Button
@@ -174,8 +206,13 @@ const RedigerStilling: React.FC = () => {
             )}
           </div>
           <div className='sticky top-4 self-start flex flex-col gap-2 items-start'>
-            <Button icon={<XMarkIcon />} variant='tertiary' onClick={onLukk}>
-              Lukk
+            <Button
+              loading={lagrer}
+              icon={<FloppydiskIcon />}
+              variant='tertiary'
+              onClick={onLagre}
+            >
+              Lagre
             </Button>
             <Button
               icon={<EyeIcon />}

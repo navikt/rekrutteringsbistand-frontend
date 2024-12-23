@@ -45,7 +45,7 @@ export const mapStillingTilForm = (
     praktiskInfo: {
       sektor: stillingsData?.stilling?.properties?.sector ?? '',
       antallStillinger:
-        stillingsData?.stilling?.properties?.positioncount?.toString() ?? '0',
+        Number(stillingsData?.stilling?.properties?.positioncount) || 0,
       oppstart:
         stillingsData?.stilling?.properties?.starttime?.toString() ?? '',
       oppstartSnarest:
