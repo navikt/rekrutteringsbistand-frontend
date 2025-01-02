@@ -25,15 +25,18 @@ const KommuneFylkeEllerLand: React.FC<KommuneFylkeEllerLandProps> = ({
   useEffect(() => {
     if (søkeTekst.length > 1) {
       setMuligeValg([
-        ...(geografi.data?.kommuner
-          .filter((k) => k.capitalizedName.includes(søkeTekst))
-          .map((k) => k.capitalizedName) ?? []),
-        ...(geografi.data?.fylker
-          .filter((f) => f.capitalizedName.includes(søkeTekst))
-          .map((f) => f.capitalizedName) ?? []),
-        ...(geografi.data?.land
-          ?.filter((l) => l.capitalizedName.includes(søkeTekst))
-          .map((l) => l.capitalizedName) ?? []),
+        // Bruker Set for å unngå duplikater
+        ...new Set([
+          ...(geografi.data?.kommuner
+            .filter((k) => k.capitalizedName.includes(søkeTekst))
+            .map((k) => k.capitalizedName) ?? []),
+          ...(geografi.data?.fylker
+            .filter((f) => f.capitalizedName.includes(søkeTekst))
+            .map((f) => f.capitalizedName) ?? []),
+          ...(geografi.data?.land
+            ?.filter((l) => l.capitalizedName.includes(søkeTekst))
+            .map((l) => l.capitalizedName) ?? []),
+        ]),
       ]);
     }
   }, [geografi.data, søkeTekst]);
@@ -48,6 +51,7 @@ const KommuneFylkeEllerLand: React.FC<KommuneFylkeEllerLandProps> = ({
     const land = geografi.data?.land?.filter((l) =>
       valgteVerdier.includes(l.capitalizedName),
     );
+
     return {
       kommuner,
       fylker,

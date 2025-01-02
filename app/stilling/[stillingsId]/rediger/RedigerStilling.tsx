@@ -15,6 +15,7 @@ import { StillingsStatus } from '../../stilling-typer';
 import OmStillingen from '../omStillingen/OmStillingen';
 import { useStillingsContext } from '../StillingsContext';
 import EndreStillingStatus from './components/EndreStillingStatus';
+import { mapFormTilStilling } from './mapStilling';
 import {
   InnspurtSchema,
   OmStillingenSchema,
@@ -28,7 +29,6 @@ import { RedigerOmStillingen } from './RedigerOmStillingen';
 import { RedigerOmTilrettelegging } from './RedigerOmTilrettelegging';
 import { RedigerOmVirksomheten } from './RedigerOmVirksomheten';
 import { RedigerPraktiskInfo } from './RedigerPraktiskInfo';
-import { mapFormTilStilling } from './redigerUtil';
 enum RedigerSteg {
   omVirksomheten = 'om-virksomheten',
   omTilrettelegging = 'om-tilrettelegging',

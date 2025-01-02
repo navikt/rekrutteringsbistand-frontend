@@ -47,7 +47,8 @@ export const RedigerOmStillingen: React.FC<{
         <div className='space-y-8'>
           <div>
             <VelgStillingTittel
-              callBack={(val) => setValue('omStillingen.janzz', [val])}
+              valgtTittel={watch('omStillingen.janzz')?.name ?? ''}
+              callBack={(val) => setValue('omStillingen.janzz', val)}
             />
           </div>
           <div>

@@ -18,6 +18,7 @@ export const mapStillingTilForm = (
   const workday = stillingsData.stilling.properties?.workday
     ? JSON.parse(stillingsData.stilling.properties.workday)
     : [];
+
   return {
     omVirksomheten: {
       beskrivelse:
@@ -34,7 +35,7 @@ export const mapStillingTilForm = (
     omStillingen: {
       janzz:
         (stillingsData?.stilling?.categoryList?.filter(
-          (item) => item.code === 'janzz',
+          (item) => item.code?.toUpperCase() === 'JANZZ',
         ) as any) ?? [],
       beskrivelse: stillingsData?.stilling?.properties?.adtext ?? '',
       kommuneEllerLand: null,
@@ -77,7 +78,7 @@ export const mapFormTilStilling = (
       ...existingData.stilling,
       categoryList: [
         ...(existingData.stilling.categoryList ?? []),
-        ...formData.omStillingen.janzz,
+        ...(formData.omStillingen.janzz ? [formData.omStillingen.janzz] : []),
       ],
       contactList: formData.omVirksomheten.kontaktPersoner.map((contact) => ({
         ...contact,

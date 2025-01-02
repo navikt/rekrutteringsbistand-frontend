@@ -4,6 +4,7 @@ export type StillingsDataDTO = z.infer<typeof StillingDataSchema>;
 export type GeografiDTO = z.infer<typeof GeografiSchema>;
 export type GeografiListDTO = z.infer<typeof GeografiListSchema>;
 export type ContactSchemaDTO = z.infer<typeof ContactSchema>;
+export type CategorySchemaDTO = z.infer<typeof KategoriSchema>;
 
 // Egendefinert
 export const searchtagSchema = z.object({
@@ -113,7 +114,7 @@ const ArbeidsgiverSchema = z.object({
   employees: z.number().nullable(),
 });
 
-const KategoriSchema = z.object({
+export const KategoriSchema = z.object({
   id: z.number().nullable(),
   code: z.string().nullable(),
   categoryType: z.string().nullable(),

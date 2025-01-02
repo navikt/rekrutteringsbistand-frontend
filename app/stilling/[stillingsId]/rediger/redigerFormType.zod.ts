@@ -1,6 +1,8 @@
 import { z } from 'zod';
-import { stillingsTittelTreffSchema } from '../../../api/pam-ontologi/stillingsTittel/useStillingsTittel';
-import { GeografiSchema } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
+import {
+  GeografiSchema,
+  KategoriSchema,
+} from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 
 export const OmVirksomhetenSchema = z.object({
   beskrivelse: z.string(),
@@ -46,7 +48,7 @@ export const OmTilretteleggingSchema = z.object({
 });
 
 export const OmStillingenSchema = z.object({
-  janzz: stillingsTittelTreffSchema,
+  janzz: KategoriSchema,
   beskrivelse: z.string().nullable(),
   adresse: z.string().nullable(),
   locationList: z.array(GeografiSchema).nullable(),
