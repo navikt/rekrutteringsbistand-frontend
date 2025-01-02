@@ -32,7 +32,7 @@ const KommuneFylkeEllerLand: React.FC<KommuneFylkeEllerLandProps> = ({
           .filter((f) => f.capitalizedName.includes(søkeTekst))
           .map((f) => f.capitalizedName) ?? []),
         ...(geografi.data?.land
-          .filter((l) => l.capitalizedName.includes(søkeTekst))
+          ?.filter((l) => l.capitalizedName.includes(søkeTekst))
           .map((l) => l.capitalizedName) ?? []),
       ]);
     }
@@ -45,7 +45,7 @@ const KommuneFylkeEllerLand: React.FC<KommuneFylkeEllerLandProps> = ({
     const fylker = geografi.data?.fylker.filter((f) =>
       valgteVerdier.includes(f.capitalizedName),
     );
-    const land = geografi.data?.land.filter((l) =>
+    const land = geografi.data?.land?.filter((l) =>
       valgteVerdier.includes(l.capitalizedName),
     );
     return {

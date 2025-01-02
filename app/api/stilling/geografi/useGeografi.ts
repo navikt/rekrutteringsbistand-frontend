@@ -14,7 +14,7 @@ const geografiEndepunkt = '/api/stilling/geografi';
 const geografiSchema = z.object({
   fylker: z.array(fylkeSchema),
   kommuner: z.array(kommuneSchema),
-  land: z.array(landSchema),
+  land: z.array(landSchema).optional(),
 });
 
 export type geografiDTO = z.infer<typeof geografiSchema>;
