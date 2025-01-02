@@ -14,8 +14,9 @@ const KandidatStedSøk: React.FC = () => {
     if (geografi.data) {
       const kommuner = geografi.data.kommuner.map((k) => k.capitalizedName);
       const fylker = geografi.data.fylker.map((f) => f.capitalizedName);
+      const land = geografi.data.land.map((l) => l.capitalizedName);
 
-      const uniqueValg = Array.from(new Set([...kommuner, ...fylker]));
+      const uniqueValg = Array.from(new Set([...kommuner, ...fylker, ...land]));
       setValg(uniqueValg);
     }
   }, [geografi.data]);

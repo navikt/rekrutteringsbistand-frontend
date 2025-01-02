@@ -5,7 +5,7 @@ import { StillingAPI } from '../../api-routes';
 
 export async function GET(req: NextRequest) {
   try {
-    const [response1, response2] = await Promise.all([
+    const [response1, response2, response3] = await Promise.all([
       proxyWithOBO(
         StillingAPI,
         req,
@@ -16,14 +16,21 @@ export async function GET(req: NextRequest) {
         req,
         '/rekrutteringsbistand/api/v1/geography/municipals',
       ),
+      proxyWithOBO(
+        StillingAPI,
+        req,
+        '/rekrutteringsbistand/api/v1/geography/countries',
+      ),
     ]);
 
     const fylkeData = await response1.json();
     const kommuneData = await response2.json();
+    const landData = await response3.json();
 
     const combinedData = {
       fylker: fylkeData,
       kommuner: kommuneData,
+      land: landData,
     };
 
     return NextResponse.json(combinedData);

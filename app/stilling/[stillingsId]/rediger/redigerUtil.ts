@@ -40,7 +40,7 @@ export const mapStillingTilForm = (
       kommuneEllerLand: null,
       adresse:
         stillingsData?.stilling?.employer?.locationList?.[0]?.address ?? null,
-      location: stillingsData?.stilling?.employer?.locationList?.[0] ?? null,
+      locationList: stillingsData?.stilling?.employer?.locationList ?? null,
     },
     praktiskInfo: {
       sektor: stillingsData?.stilling?.properties?.sector ?? '',
@@ -71,12 +71,6 @@ export const mapFormTilStilling = (
   formData: StillingsDataForm,
   existingData: StillingsDataDTO,
 ) => {
-  const arbeidssted = [
-    {
-      ...formData.omStillingen.location,
-      address: formData.omStillingen.adresse,
-    },
-  ];
   return {
     stillingsinfoid: existingData.stillingsinfo?.stillingsinfoid,
     stilling: {
@@ -109,10 +103,7 @@ export const mapFormTilStilling = (
       },
       published: formaterTilISODato(formData.innspurt.publiseres),
       expires: formaterTilISODato(formData.innspurt.avsluttes),
-      locationList: [
-        ...(existingData.stilling.locationList ?? []),
-        ...arbeidssted,
-      ],
+      locationList: formData.omStillingen.locationList,
       source: formData.innspurt.stillingType,
     },
   };

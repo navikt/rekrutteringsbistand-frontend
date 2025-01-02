@@ -3,6 +3,7 @@ import { z } from 'zod';
 import {
   fylkeSchema,
   kommuneSchema,
+  landSchema,
 } from '../../../api/stilling/geografi/geografi.dto';
 import { useGeografi } from '../../../api/stilling/geografi/useGeografi';
 import SWRLaster from '../../../components/SWRLaster';
@@ -14,7 +15,7 @@ export interface IGeografiFilter {
 
 export type KommuneDTO = z.infer<typeof kommuneSchema>;
 export type FylkeDTO = z.infer<typeof fylkeSchema>;
-
+export type LandDTO = z.infer<typeof landSchema>;
 export interface FylkeMedKommuneDTO extends FylkeDTO {
   kommuner: KommuneDTO[] | undefined;
 }

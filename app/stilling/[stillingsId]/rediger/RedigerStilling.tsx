@@ -67,10 +67,6 @@ const RedigerStilling: React.FC = () => {
 
     setLagrer(false);
   };
-  // const onLukk = () => {
-  //   const newPath = `/stilling/${params.slug}`;
-  //   router.push(newPath);
-  // };
 
   const stegNummer = (): number => {
     const steps = Object.values(RedigerSteg);
@@ -233,19 +229,6 @@ const RedigerStilling: React.FC = () => {
                         description: string | null;
                         parentId: number | null;
                       } => 'code' in category,
-                    ),
-                    locationList: stilling.stilling?.locationList?.map(
-                      (location) => ({
-                        address: location.address ?? null,
-                        postalCode: location.postalCode ?? null,
-                        county: location.county ?? null,
-                        municipal: location.municipal ?? null,
-                        municipalCode: location.municipalCode ?? null,
-                        city: location.city ?? null,
-                        country: location.country ?? null,
-                        latitude: location.latitude ?? null,
-                        longitude: location.longitude ?? null,
-                      }),
                     ),
                   },
                 });

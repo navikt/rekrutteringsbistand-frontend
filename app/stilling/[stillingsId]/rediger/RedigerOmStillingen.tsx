@@ -1,15 +1,10 @@
-import {
-  BodyShort,
-  Heading,
-  TextField,
-  ToggleGroup,
-  UNSAFE_Combobox,
-} from '@navikt/ds-react';
+import { BodyShort, Heading, TextField, ToggleGroup } from '@navikt/ds-react';
 import Link from 'next/link';
 import * as React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import Poststed from '../../../components/VelgPoststed';
 import RikTekstEditor from '../../../components/rikteksteditor/RikTekstEditor';
+import KommuneFylkeEllerLand from './components/KommuneFylkeEllerLand';
 import StegNavigering from './components/StegNavigering';
 import VelgStillingTittel from './components/VelgStillingTittel';
 import { StillingsDataForm } from './redigerFormType.zod';
@@ -96,82 +91,22 @@ export const RedigerOmStillingen: React.FC<{
                       label='Adresse'
                       onChange={(e) => onChange(e.target.value)}
                       value={value ?? ''}
-                      // error={
-                      // errors.omVirksomheten?.kontaktPersoner?.[index]?.name
-                      //   ?.message
-                      //   ? errors.omVirksomheten?.kontaktPersoner?.[index]
-                      //       ?.name?.message
-                      //   : null
-                      // }
                     />
                   )}
                 />
                 <Poststed
                   callBack={(poststed) => {
-                    setValue('omStillingen.location', poststed);
+                    setValue('omStillingen.locationList', [poststed]);
                   }}
                 />
-                {/* 
-                <Controller
-                  control={control}
-                  name={`omStillingen.arbeidssted.adresse`}
-                  render={({ field: { onChange, value } }) => (
-                    <TextField
-                      label='Adresse'
-                      onChange={(e) => onChange(e.target.value)}
-                      value={value ?? ''}
-                      // error={
-                      // errors.omVirksomheten?.kontaktPersoner?.[index]?.name
-                      //   ?.message
-                      //   ? errors.omVirksomheten?.kontaktPersoner?.[index]
-                      //       ?.name?.message
-                      //   : null
-                      // }
-                    />
-                  )}
-                />
-                <Controller
-                  control={control}
-                  name={`omStillingen.arbeidssted.postnummer`}
-                  render={({ field: { onChange, value } }) => (
-                    <TextField
-                      className='w-6'
-                      label='Postnummer'
-                      onChange={(e) => onChange(e.target.value)}
-                      value={value ?? ''}
-                      // error={
-                      // errors.omVirksomheten?.kontaktPersoner?.[index]?.name
-                      //   ?.message
-                      //   ? errors.omVirksomheten?.kontaktPersoner?.[index]
-                      //       ?.name?.message
-                      //   : null
-                      // }
-                    />
-                  )}
-                /> */}
               </div>
             )}
 
             {adresseValg === 'kommune' && (
-              <UNSAFE_Combobox
-                className='mt-4'
-                label=''
-                description='Du kan velge flere kommuner, fylker eller land'
-                options={[
-                  'car',
-                  'bus',
-                  'train',
-                  'skateboard',
-                  'bicycle',
-                  'motorcycle',
-                  'boat',
-                  'airplane',
-                  'helicopter',
-                  'truck',
-                  'van',
-                  'scooter',
-                ]}
-                isMultiSelect
+              <KommuneFylkeEllerLand
+                callBack={(lokasjoner) => {
+                  setValue('omStillingen.locationList', lokasjoner);
+                }}
               />
             )}
           </div>

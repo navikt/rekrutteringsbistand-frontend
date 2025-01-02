@@ -49,7 +49,7 @@ export const OmStillingenSchema = z.object({
   janzz: stillingsTittelTreffSchema,
   beskrivelse: z.string().nullable(),
   adresse: z.string().nullable(),
-  location: GeografiSchema.nullable(),
+  locationList: z.array(GeografiSchema).nullable(),
   kommuneEllerLand: z.string().nullable(),
 });
 
