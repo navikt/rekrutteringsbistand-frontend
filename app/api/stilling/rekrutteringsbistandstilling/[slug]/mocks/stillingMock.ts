@@ -29,7 +29,7 @@ export const stillingMock = {
     source: 'DIR',
     medium: 'DIR',
     reference: 'c15c90e8-5081-4026-8d11-28a23eb6cf82',
-    published: '2024-12-18T14:07:37.543102',
+    // published: '2024-12-18T14:07:37.543102',
     expires: '2024-12-18T14:07:37.54311',
     employer: null,
     location: null,

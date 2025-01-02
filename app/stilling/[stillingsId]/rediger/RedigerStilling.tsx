@@ -151,19 +151,51 @@ const RedigerStilling: React.FC = () => {
               aria-labelledby='stepper-heading'
               activeStep={stegNummer() + 1}
             >
-              <Stepper.Step completed={validerOmVirksomheten()}>
+              <Stepper.Step
+                completed={validerOmVirksomheten()}
+                interactive={validerOmVirksomheten()}
+              >
                 Om virksomheten
               </Stepper.Step>
-              <Stepper.Step completed={validerOmTilrettelegging()}>
+              <Stepper.Step
+                completed={validerOmTilrettelegging()}
+                interactive={
+                  validerOmVirksomheten() && validerOmTilrettelegging()
+                }
+              >
                 Om tilrettelegging
               </Stepper.Step>
-              <Stepper.Step completed={validerOmStillingen()}>
+              <Stepper.Step
+                completed={validerOmStillingen()}
+                interactive={
+                  validerOmVirksomheten() &&
+                  validerOmTilrettelegging() &&
+                  validerOmStillingen()
+                }
+              >
                 Om stillingen
               </Stepper.Step>
-              <Stepper.Step completed={validerPraktiskInfo()}>
+              <Stepper.Step
+                completed={validerPraktiskInfo()}
+                interactive={
+                  validerOmVirksomheten() &&
+                  validerOmTilrettelegging() &&
+                  validerOmStillingen() &&
+                  validerPraktiskInfo()
+                }
+              >
                 Praktisk info
               </Stepper.Step>
-              <Stepper.Step completed={validerInnspurt()}>
+              <Stepper.Step
+                completed={validerInnspurt()}
+                interactive={
+                  validerOmVirksomheten() &&
+                  validerOmTilrettelegging() &&
+                  validerOmStillingen() &&
+                  validerPraktiskInfo() &&
+                  validerInnspurt()
+                }
+              >
                 Publisering
               </Stepper.Step>
             </Stepper>
