@@ -48,15 +48,15 @@ export const mapStillingTilForm = (
       antallStillinger:
         Number(stillingsData?.stilling?.properties?.positioncount) || 0,
       oppstart:
-        stillingsData?.stilling?.properties?.starttime?.toString() ?? '',
+        stillingsData?.stilling?.properties?.starttime?.toString() ?? null,
       oppstartSnarest:
         stillingsData?.stilling?.properties?.starttime === 'Snarest',
       søknadsfrist:
-        stillingsData?.stilling?.properties?.applicationdue?.toString() ?? '',
+        stillingsData?.stilling?.properties?.applicationdue?.toString() ?? null,
       søknadsfristEtterAvtale:
         stillingsData?.stilling?.properties?.applicationdue === 'etterAvtale',
       ansettelsesform:
-        stillingsData?.stilling?.properties?.engagementtype ?? '',
+        stillingsData?.stilling?.properties?.engagementtype ?? null,
       dager: workday,
       tid: workhours,
     },

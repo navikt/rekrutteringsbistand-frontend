@@ -56,21 +56,21 @@ export const OmStillingenSchema = z.object({
 });
 
 export const PraktiskInfoSchema = z.object({
-  sektor: z.string(),
+  sektor: z.string().nullable(),
   antallStillinger: z.number().min(1, 'Må ha minst én stilling'),
-  oppstart: z.string(),
+  oppstart: z.string().nullable(),
   oppstartSnarest: z.boolean(),
-  søknadsfrist: z.string(),
+  søknadsfrist: z.string().nullable(),
   søknadsfristEtterAvtale: z.boolean(),
-  ansettelsesform: z.string().min(1, 'Ansettelsesform må velges'),
+  ansettelsesform: z.string().min(1, 'Ansettelsesform må velges').nullable(),
   dager: z.array(z.string()),
   tid: z.array(z.string()),
 });
 
 export const InnspurtSchema = z.object({
-  publiseres: z.string(),
-  avsluttes: z.string(),
-  stillingType: z.string(),
+  publiseres: z.string().min(1, 'Publiseringsdato er påkrevd'),
+  avsluttes: z.string().min(1, 'Avsluttingsdato er påkrevd'),
+  stillingType: z.string().min(1, 'Stillingstype er påkrevd'),
 });
 
 export const StillingsDataFormSchema = z.object({
