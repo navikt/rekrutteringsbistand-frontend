@@ -75,6 +75,7 @@ const KommuneFylkeEllerLand: React.FC<KommuneFylkeEllerLandProps> = ({
     <UNSAFE_Combobox
       disabled={geografi.isLoading}
       className='mt-4'
+      toggleListButton={false}
       selectedOptions={valgteVerdier}
       onChange={(value) => {
         setSøkeTekst(value);

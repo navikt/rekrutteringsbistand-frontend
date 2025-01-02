@@ -37,6 +37,7 @@ const VelgStillingTittel: React.FC<VelgStillingTittelProps> = ({
       label='Velg yrkestittel (standard for yrkesklassifisering - JANZZ)'
       isLoading={hook.isLoading}
       options={valg}
+      toggleListButton={false}
       shouldAutocomplete
       onChange={(value) => {
         setSøkeVerdi(value);
