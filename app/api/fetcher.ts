@@ -16,19 +16,17 @@ const validerSchema = <T>(schema: ZodSchema<T>, data: any) => {
 
 export const getAPIwithSchema = <T>(
   schema: ZodSchema<T>,
-  headers?: HeadersInit,
 ): ((url: string) => Promise<T>) => {
   return async (url: string) => {
-    const data = await getAPI(url, headers);
+    const data = await getAPI(url);
     return validerSchema(schema, data);
   };
 };
 
-export const getAPI = async (url: string, headers?: HeadersInit) => {
+export const getAPI = async (url: string) => {
   const response = await fetch(basePath + url, {
     method: 'GET',
     credentials: 'include',
-    headers: headers ?? {},
   });
 
   if (!response.ok) {

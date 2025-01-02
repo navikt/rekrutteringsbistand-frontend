@@ -24,9 +24,7 @@ export type stillingsTittelDTO = z.infer<typeof stillingsTittelSchema>;
 export const useStillingsTittel = (søkeOrd?: string) =>
   useSWRImmutable(
     søkeOrd ? pamEndepunkt(søkeOrd) : null,
-    getAPIwithSchema(stillingsTittelTreffSchema, {
-      'Nav-CallId': 'rekrutteringsbistand-frontend',
-    }),
+    getAPIwithSchema(stillingsTittelTreffSchema),
   );
 
 export const stillingsTittelMirage = (server: any) =>
