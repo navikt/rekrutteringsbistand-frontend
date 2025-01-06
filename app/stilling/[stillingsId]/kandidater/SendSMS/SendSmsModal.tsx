@@ -72,27 +72,33 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
   const onSendSms = async () => {
     const korrektLengdeFødselsnummer = 11;
     setSendSmsLoading(true);
-    const result = await postSmsTilKandidater({
-      mal: valgtMal,
-      fnr: kandidaterSomIkkeHarFåttSms.filter(
-        (fnr) => fnr && fnr.length === korrektLengdeFødselsnummer,
-      ),
-      stillingId,
-    });
 
-    setSendSmsLoading(false);
-    if (result === 'ok') {
+    try {
+      await postSmsTilKandidater({
+        mal: valgtMal,
+        fnr: kandidaterSomIkkeHarFåttSms.filter(
+          (fnr) => fnr && fnr.length === korrektLengdeFødselsnummer,
+        ),
+        stillingId,
+      });
+
       visVarsling({
         innhold: 'Beskjed er sendt',
       });
       fjernAllMarkering();
-    } else if (result === 'error') {
+      setVis(false);
+    } catch (error) {
+      console.error('Failed to send SMS:', error);
       visVarsling({
-        innhold: 'Det skjedde en feil',
+        innhold:
+          error instanceof Error
+            ? `Feil ved sending: ${error.message}`
+            : 'Det skjedde en uventet feil ved sending av beskjed',
         alertType: 'error',
       });
+    } finally {
+      setSendSmsLoading(false);
     }
-    setVis(false);
   };
 
   return (

@@ -75,14 +75,25 @@ export const postApi = async (
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(body),
-    // body: JSON.stringify(body, (_key, value) =>
-    //   value instanceof Set ? [...value] : value,
-    // ),
+    body: JSON.stringify(body, (_key, value) =>
+      value instanceof Set ? [...value] : value,
+    ),
   });
 
   if (response.ok) {
-    return await response.json();
+    const contentType = response.headers.get('content-type');
+    if (contentType?.includes('application/json')) {
+      try {
+        return await response.json();
+      } catch (e) {
+        throw new Error(
+          `Failed to parse JSON response: ${await response.text()}`,
+        );
+      }
+    } else {
+      // Handle text responses or other content types
+      return await response.text();
+    }
   } else if (response.status === 404) {
     throw new Error('404');
   } else if (response.status === 403) {
