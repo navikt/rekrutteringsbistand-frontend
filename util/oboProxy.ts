@@ -79,9 +79,17 @@ export const proxyWithOBO = async (
     };
 
     if (req.method === 'POST' || req.method === 'PUT') {
-      const body = await new Response(req.body).json();
-      if (body) {
-        fetchOptions.body = JSON.stringify(body);
+      try {
+        const body = await new Response(req.body).json();
+        if (body) {
+          fetchOptions.body = JSON.stringify(body);
+        }
+      } catch (error) {
+        logger.error('Failed to parse request body as JSON:', error);
+        return NextResponse.json(
+          { beskrivelse: 'Invalid JSON in request body' },
+          { status: 400 },
+        );
       }
     }
 
