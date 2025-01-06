@@ -116,37 +116,64 @@ type postSmsTilKandidaterRequest = {
   fnr: string[];
   stillingId: string;
 };
-
-export const usePostSmsTilKandidater = (): (({
-  mal,
-  fnr,
-  stillingId,
-}: postSmsTilKandidaterRequest) => Promise<'ok' | 'error'>) => {
+export const usePostSmsTilKandidater = () => {
   const { mutate } = useSWRConfig();
 
-  return async ({ stillingId, mal, fnr }) => {
-    let result: 'ok' | 'error' = 'ok';
+  return async ({ stillingId, mal, fnr }: postSmsTilKandidaterRequest) => {
     try {
-      await postApi(varselStillingEndepunkt(stillingId), {
+      const response = await postApi(varselStillingEndepunkt(stillingId), {
         mal,
         fnr,
       });
-    } catch (e) {
-      console.error(e);
-      result = 'error';
-    }
 
-    mutate(varselStillingEndepunkt(stillingId)).then();
-    mutate(
-      (key) =>
-        key !== null &&
-        typeof key === 'object' &&
-        'url' in key &&
-        key.url === varselQueryEndepunkt,
-    ).then();
-    return result;
+      // Oppdater cache for både stilling og kandidat-spørringer
+      await Promise.all([
+        mutate(varselStillingEndepunkt(stillingId)),
+        mutate(
+          (key) =>
+            key !== null &&
+            typeof key === 'object' &&
+            'url' in key &&
+            key.url === varselQueryEndepunkt,
+        ),
+      ]);
+
+      return response;
+    } catch (e) {
+      throw e; // La kallet som bruker hooken håndtere feilen
+    }
   };
 };
+// export const usePostSmsTilKandidater = (): (({
+//   mal,
+//   fnr,
+//   stillingId,
+// }: postSmsTilKandidaterRequest) => Promise<'ok' | 'error'>) => {
+//   const { mutate } = useSWRConfig();
+
+//   return async ({ stillingId, mal, fnr }) => {
+//     let result: 'ok' | 'error' = 'ok';
+//     try {
+//       await postApi(varselStillingEndepunkt(stillingId), {
+//         mal,
+//         fnr,
+//       });
+//     } catch (e) {
+//       console.error(e);
+//       result = 'error';
+//     }
+
+//     mutate(varselStillingEndepunkt(stillingId)).then();
+//     mutate(
+//       (key) =>
+//         key !== null &&
+//         typeof key === 'object' &&
+//         'url' in key &&
+//         key.url === varselQueryEndepunkt,
+//     ).then();
+//     return result;
+//   };
+// };
 
 export const useSendtKandidatmelding = (
   kandidatensFnr: Fødselsnummer | null,

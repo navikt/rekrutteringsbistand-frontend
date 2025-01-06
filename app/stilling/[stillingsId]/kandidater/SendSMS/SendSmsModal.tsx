@@ -194,6 +194,7 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
 
         <Modal.Footer>
           <Button
+            disabled={kandidaterSomHarFåttSms.length === markerteFnr.length}
             variant='primary'
             loading={sendSmsLoading}
             onClick={onSendSms}

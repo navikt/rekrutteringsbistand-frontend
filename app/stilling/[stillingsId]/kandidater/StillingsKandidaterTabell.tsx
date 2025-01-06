@@ -215,12 +215,6 @@ const StillingsKandidaterTabell: React.FC<{
                     stillingId={stillingsId}
                     stillingskategori={stillingskategori}
                   />
-                  {/* <Button
-                    disabled
-                    icon={<MobileIcon />}
-                    size='small'
-                    variant='tertiary'
-                  /> */}
                   <KandidatDropdown
                     kandidat={kandidat}
                     stillingsId={stillingsId}
