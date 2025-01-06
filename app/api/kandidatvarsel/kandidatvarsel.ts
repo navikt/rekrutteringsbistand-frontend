@@ -128,15 +128,15 @@ export const usePostSmsTilKandidater = (): (({
     let result: 'ok' | 'error' = 'ok';
     try {
       await fetch(varselStillingEndepunkt(stillingId), {
-        credentials: 'include',
         method: 'POST',
         body: JSON.stringify({ mal, fnr }),
         headers: {
+          Accept: 'application/json',
           'Content-Type': 'application/json',
         },
-        mode: 'cors',
       });
     } catch (e) {
+      console.error(e);
       result = 'error';
     }
 
