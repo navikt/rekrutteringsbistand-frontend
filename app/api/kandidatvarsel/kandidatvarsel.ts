@@ -2,6 +2,7 @@ import useSWR, { SWRResponse, useSWRConfig } from 'swr';
 import { z } from 'zod';
 import { getAPI, postApi } from '../fetcher';
 import { KandidatvarselAPI } from '../api-routes';
+import { Fødselsnummer } from '../../stilling/[stillingsId]/kandidater/KandidatIKandidatlisteTyper';
 // import { fetchJson, postJson } from '../../kandidat/api/fetchUtils';
 
 const varselStillingEndepunkt = (stillingId: string) => {
@@ -147,6 +148,20 @@ export const usePostSmsTilKandidater = (): (({
     ).then();
     return result;
   };
+};
+
+export const useSendtKandidatmelding = (
+  kandidatensFnr: Fødselsnummer | null,
+  stillingId: string | null,
+  stillingskategori: string | null,
+): Sms | undefined => {
+  const erFormidling = stillingskategori === 'FORMIDLING';
+  const { data: smser } = useSmserForStilling(erFormidling ? null : stillingId);
+
+  if (typeof kandidatensFnr === 'string' && smser !== undefined) {
+    return smser[kandidatensFnr];
+  }
+  return undefined;
 };
 
 // export const kandidatvarselMock = [

@@ -96,6 +96,9 @@ const StillingsKandidater: React.FC = () => {
                 search={search}
                 kandidatliste={kandidatliste}
                 stillingsId={stillingsData.stilling.uuid}
+                stillingskategori={
+                  stillingsData.stillingsinfo?.stillingskategori ?? null
+                }
               />
             </div>
           </div>

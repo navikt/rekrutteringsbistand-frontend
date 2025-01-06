@@ -1,5 +1,4 @@
-import { MobileIcon } from '@navikt/aksel-icons';
-import { Button, Checkbox, Table, Tooltip } from '@navikt/ds-react';
+import { Checkbox, Table, Tooltip } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import Link from 'next/link';
 import * as React from 'react';
@@ -24,6 +23,7 @@ import {
   Kandidatutfall,
   Utfallsendring,
 } from './KandidatIKandidatlisteTyper';
+import SmsStatusPopup from './SendSMS/SmsStatusPopup';
 import { useStillingsKandidaterFilter } from './StillingsKandidaterFilterContext';
 
 const StillingsKandidaterTabell: React.FC<{
@@ -32,7 +32,15 @@ const StillingsKandidaterTabell: React.FC<{
   search: string;
   kandidatliste: kandidatlisteSchemaDTO;
   stillingsId: string;
-}> = ({ valgteFnr, setValgteFnr, search, kandidatliste, stillingsId }) => {
+  stillingskategori: string | null;
+}> = ({
+  valgteFnr,
+  setValgteFnr,
+  search,
+  kandidatliste,
+  stillingsId,
+  stillingskategori,
+}) => {
   const [sort, setSort] = React.useState<TableSortState<kandidaterSchemaDTO>>();
 
   const { status, hendelse } = useStillingsKandidaterFilter();
@@ -202,12 +210,17 @@ const StillingsKandidaterTabell: React.FC<{
 
               <Table.DataCell>
                 <div className='flex items-baseline flex-end'>
-                  <Button
+                  <SmsStatusPopup
+                    fnr={kandidat.fodselsnr}
+                    stillingId={stillingsId}
+                    stillingskategori={stillingskategori}
+                  />
+                  {/* <Button
                     disabled
                     icon={<MobileIcon />}
                     size='small'
                     variant='tertiary'
-                  />
+                  /> */}
                   <KandidatDropdown
                     kandidat={kandidat}
                     stillingsId={stillingsId}
