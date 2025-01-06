@@ -127,9 +127,14 @@ export const usePostSmsTilKandidater = (): (({
   return async ({ stillingId, mal, fnr }) => {
     let result: 'ok' | 'error' = 'ok';
     try {
-      await postApi(varselStillingEndepunkt(stillingId), {
-        mal,
-        fnr,
+      await fetch(varselStillingEndepunkt(stillingId), {
+        credentials: 'include',
+        method: 'POST',
+        body: JSON.stringify({ mal, fnr }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        mode: 'cors',
       });
     } catch (e) {
       result = 'error';
