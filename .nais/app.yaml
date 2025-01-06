@@ -35,6 +35,7 @@ spec:
         - application: rekrutteringsbistand-stilling-api
         - application: rekrutteringsbistand-stillingssok-proxy
         - application: rekrutteringsbistand-kandidatsok-api
+        - application: rekrutteringsbistand-kandidatvarsel-api
         - application: modiacontextholder
           namespace: personoversikt
         - application: pam-ontologi
@@ -74,3 +75,5 @@ spec:
       value: {{ kandidatApiUrl }}
     - name: PAM_ONTOLOGI_URL
       value: http://pam-ontologi.teampam
+    - name: KANDIDATVARSEL_API_URL
+      value: http://rekrutteringsbistand-kandidatvarsel-api

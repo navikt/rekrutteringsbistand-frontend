@@ -75,7 +75,7 @@ export const RedigerPraktiskInfo: React.FC<{
             control={control}
             render={({ field }) => (
               <Select
-                value={field.value}
+                value={field.value ?? ''}
                 onChange={(val) => field.onChange(val)}
                 label='Ansettelsesform'
                 error={errors.praktiskInfo?.ansettelsesform?.message}

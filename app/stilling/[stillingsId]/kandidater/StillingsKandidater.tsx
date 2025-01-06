@@ -1,9 +1,10 @@
-import { ArrowForwardIcon, MobileIcon, TenancyIcon } from '@navikt/aksel-icons';
+import { ArrowForwardIcon, TenancyIcon } from '@navikt/aksel-icons';
 import { Button, Checkbox, CheckboxGroup, Search } from '@navikt/ds-react';
 import * as React from 'react';
 import { useKandidatliste } from '../../../api/kandidat/useKandidatliste';
 import SWRLaster from '../../../components/SWRLaster';
 import { useStillingsContext } from '../StillingsContext';
+import SendSmsModal from './SendSMS/SendSmsModal';
 import {
   KandidatHendelser,
   KandidatStatus,
@@ -15,7 +16,7 @@ const StillingsKandidater: React.FC = () => {
   const { stillingsData } = useStillingsContext();
   const { status, setStatus, hendelse, setHendelse } =
     useStillingsKandidaterFilter();
-
+  const [markerteFnr, setMarkerteFnr] = React.useState<string[]>([]);
   const hook = useKandidatliste(stillingsData.stilling.uuid);
 
   const [search, setSearch] = React.useState('');
@@ -36,13 +37,14 @@ const StillingsKandidater: React.FC = () => {
               />
             </div>
             <div>
-              <Button
-                disabled
-                variant='tertiary'
-                icon={<MobileIcon title='Send beskjed' />}
-              >
-                Send beskjed
-              </Button>
+              <SendSmsModal
+                markerteFnr={markerteFnr}
+                stillingId={stillingsData.stilling.uuid}
+                stillingskategori={
+                  stillingsData.stillingsinfo?.stillingskategori ?? null
+                }
+                fjernAllMarkering={() => setMarkerteFnr([])}
+              />
               <Button
                 disabled
                 variant='tertiary'
@@ -89,6 +91,8 @@ const StillingsKandidater: React.FC = () => {
             </aside>
             <div className='w-full'>
               <StillingsKandidaterTabell
+                valgteFnr={markerteFnr}
+                setValgteFnr={setMarkerteFnr}
                 search={search}
                 kandidatliste={kandidatliste}
                 stillingsId={stillingsData.stilling.uuid}

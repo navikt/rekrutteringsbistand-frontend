@@ -27,19 +27,20 @@ import {
 import { useStillingsKandidaterFilter } from './StillingsKandidaterFilterContext';
 
 const StillingsKandidaterTabell: React.FC<{
+  valgteFnr: string[];
+  setValgteFnr: (val: string[]) => void;
   search: string;
   kandidatliste: kandidatlisteSchemaDTO;
   stillingsId: string;
-}> = ({ search, kandidatliste, stillingsId }) => {
+}> = ({ valgteFnr, setValgteFnr, search, kandidatliste, stillingsId }) => {
   const [sort, setSort] = React.useState<TableSortState<kandidaterSchemaDTO>>();
-  const [selectedRows, setSelectedRows] = React.useState<string[]>([]);
-  const { status, hendelse } = useStillingsKandidaterFilter();
 
+  const { status, hendelse } = useStillingsKandidaterFilter();
   const toggleSelectedRow = (value: string) =>
-    setSelectedRows((list: string[]) =>
-      list.includes(value)
-        ? list.filter((id) => id !== value)
-        : [...list, value],
+    setValgteFnr(
+      valgteFnr.includes(value)
+        ? valgteFnr.filter((id) => id !== value)
+        : [...valgteFnr, value],
     );
 
   const [kandidater, setKandidater] = React.useState<kandidaterSchemaDTO[]>(
@@ -97,15 +98,14 @@ const StillingsKandidaterTabell: React.FC<{
           <Table.DataCell />
           <Table.DataCell>
             <Checkbox
-              checked={selectedRows.length === kandidater.length}
+              checked={valgteFnr.length === kandidater.length}
               indeterminate={
-                selectedRows.length > 0 &&
-                selectedRows.length !== kandidater.length
+                valgteFnr.length > 0 && valgteFnr.length !== kandidater.length
               }
               onChange={() => {
-                selectedRows.length
-                  ? setSelectedRows([])
-                  : setSelectedRows(
+                valgteFnr.length
+                  ? setValgteFnr([])
+                  : setValgteFnr(
                       kandidater
                         .filter((k) => k.fodselsnr !== null)
                         .map((k) => k.fodselsnr!),
@@ -151,12 +151,12 @@ const StillingsKandidaterTabell: React.FC<{
               className={i % 2 === 0 ? 'bg-gray-50' : ''}
               content={<InfoOmKandidat kandidat={kandidat} />}
               key={i + kandidat.fodselsnr}
-              selected={selectedRows.includes(kandidat.fodselsnr)}
+              selected={valgteFnr.includes(kandidat.fodselsnr)}
             >
               <Table.DataCell>
                 <Checkbox
                   hideLabel
-                  checked={selectedRows.includes(kandidat.fodselsnr)}
+                  checked={valgteFnr.includes(kandidat.fodselsnr)}
                   onChange={() => toggleSelectedRow(kandidat.fodselsnr!)}
                   aria-labelledby={`id-${kandidat.fodselsnr}`}
                 >
