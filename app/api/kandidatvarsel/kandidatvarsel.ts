@@ -1,8 +1,8 @@
 import useSWR, { SWRResponse, useSWRConfig } from 'swr';
 import { z } from 'zod';
-import { getAPI, postApi } from '../fetcher';
-import { KandidatvarselAPI } from '../api-routes';
 import { Fødselsnummer } from '../../stilling/[stillingsId]/kandidater/KandidatIKandidatlisteTyper';
+import { KandidatvarselAPI } from '../api-routes';
+import { getAPI, postApi } from '../fetcher';
 // import { fetchJson, postJson } from '../../kandidat/api/fetchUtils';
 
 const varselStillingEndepunkt = (stillingId: string) => {
@@ -127,13 +127,10 @@ export const usePostSmsTilKandidater = (): (({
   return async ({ stillingId, mal, fnr }) => {
     let result: 'ok' | 'error' = 'ok';
     try {
-      await postApi(
-        varselStillingEndepunkt(stillingId),
-        JSON.stringify({
-          mal,
-          fnr,
-        }),
-      );
+      await postApi(varselStillingEndepunkt(stillingId), {
+        mal,
+        fnr,
+      });
     } catch (e) {
       result = 'error';
     }
