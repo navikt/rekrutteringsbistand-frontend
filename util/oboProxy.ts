@@ -95,6 +95,7 @@ export const proxyWithOBO = async (
 
     const response = await fetch(requestUrl, fetchOptions);
 
+    console.log('🎺 response', response);
     if (!response.ok) {
       const { status, statusText, url, body, ok, headers } = response;
 
