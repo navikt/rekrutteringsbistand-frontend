@@ -114,9 +114,20 @@ export const proxyWithOBO = async (
       );
     }
 
-    const data = await response.json();
-
-    return NextResponse.json(data);
+    const contentType = response.headers.get('content-type');
+    if (contentType?.includes('application/json')) {
+      const data = await response.json();
+      return NextResponse.json(data);
+    } else {
+      // Handle non-JSON responses (empty body, text, etc.)
+      const text = await response.text();
+      return new NextResponse(text || '', {
+        status: response.status,
+        headers: {
+          'Content-Type': contentType || 'text/plain',
+        },
+      });
+    }
   } catch (error: any) {
     if (error instanceof Error) {
       logger.error(
