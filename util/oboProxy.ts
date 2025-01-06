@@ -59,6 +59,20 @@ export const proxyWithOBO = async (
     originalHeaders.set('Authorization', `Bearer ${obo.token}`);
     originalHeaders.set('Content-Type', 'application/json');
 
+    // Filter out AMP_ cookies
+    const cookie = originalHeaders.get('cookie');
+    if (cookie) {
+      const filteredCookies = cookie
+        .split(';')
+        .filter((c) => !c.trim().startsWith('AMP_'))
+        .join(';');
+      if (filteredCookies) {
+        originalHeaders.set('cookie', filteredCookies);
+      } else {
+        originalHeaders.delete('cookie');
+      }
+    }
+
     const fetchOptions: any = {
       method: req.method,
       headers: originalHeaders,
