@@ -2,9 +2,10 @@
  * Endepunkt /api/meldingsmal
  */
 import useSWR, { SWRResponse } from 'swr';
+import { KandidatvarselAPI } from '../api-routes';
 import { getAPI } from '../fetcher';
 
-const hentMeldingsmalerEndepunkt = '/kandidatvarsel-api/api/meldingsmal';
+const hentMeldingsmalerEndepunkt = `${KandidatvarselAPI.internUrl}/meldingsmal`;
 
 export type VurdertSomAktuell = {
   smsTekst: string;
