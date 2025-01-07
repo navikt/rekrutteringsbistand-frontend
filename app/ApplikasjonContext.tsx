@@ -4,7 +4,10 @@ import React from 'react';
 import { DecoratorDTO } from './api/decorator/decorator.dto';
 import Header from './components/header/Header';
 import { Roller } from './components/tilgangskontroll/roller';
-import { VarslingContextProvider } from './components/varsling/Varsling';
+import {
+  Varsling,
+  VarslingContextProvider,
+} from './components/varsling/Varsling';
 
 export type NavKontorMedNavn = {
   navKontor: string;
@@ -75,6 +78,7 @@ export const ApplikasjonContextProvider: React.FC<
         }}
       >
         <Header />
+        <Varsling />
         <main>
           <div className='mx-auto p-4 mb-8 max-w-screen-full'>{children}</div>
         </main>
