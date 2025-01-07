@@ -21,11 +21,7 @@ export default function Error({
   return (
     <div className='space-y-4'>
       <h2 className='text-2xl font-semibold'>Ojsann!</h2>
-      <Feilmelding
-        stack={error.stack}
-        beskrivelse={error.message}
-        tittel='Uventet feil'
-      />
+      <Feilmelding stack={error.stack} beskrivelse={error.message} />
     </div>
   );
 }
