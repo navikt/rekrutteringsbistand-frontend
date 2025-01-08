@@ -104,7 +104,7 @@ export const RedigerOmTilrettelegging: React.FC<{
               >
                 Utfordringer med norsk
                 <div className='text-sm text-gray-600'>
-                  f.eks. ved lese- og skrivevansker, språk- og taleforstyrrelse,
+                  f.eks. ved lese- og skrivevansker, språk- og taleforstyrrelse
                   eller utfordringer med norsk.
                 </div>
               </TilretteleggingCheckbox>
@@ -119,7 +119,7 @@ export const RedigerOmTilrettelegging: React.FC<{
               </TilretteleggingCheckbox>
             </CheckboxGroup>
 
-            <CheckboxGroup legend='Virksomheten er åpen for folk som har (valgfritt)'>
+            <CheckboxGroup legend='Virksomheten er åpen for folk som trenger (valgfritt)'>
               <TilretteleggingCheckbox
                 tag={InkluderingsTag.VirkemiddelLønnstilskudd}
               >

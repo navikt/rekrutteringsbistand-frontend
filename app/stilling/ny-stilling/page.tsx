@@ -28,10 +28,8 @@ const NyStilling: React.FC = () => {
       <div>
         <Alert className='mb-2' variant='warning'>
           <BodyLong spacing>
-            Det arbeides fremdeles med å avklare hva som er lov å registrere i
-            Rekrutteringsbistand. Derfor kan du ikke registrere NAV-kurs,
-            webinar, arbeidstrening og lignende. Det er kun kategoriene nedenfor
-            som skal brukes.
+            Du kan ikke registrere NAV-kurs, webinar, arbeidstrening og
+            lignende. Det er kun kategoriene nedenfor som skal brukes.
           </BodyLong>
           <BodyLong>
             Du kan ikke endre stillingskategori eller arbeidsgiver etter

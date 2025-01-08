@@ -28,7 +28,7 @@ export const ForespørselDelingAvCvAPI: Iroute = {
   api_route: '',
   api_url: process.env.FORESPORSEL_OM_DELING_AV_CV_API ?? '',
   internUrl: '/api/foresporsel-om-deling-av-cv',
-  scope: `api://${fss}.arbeidsgiver-inkludering.foresporsel-om-deling-av-cv-api/.default`,
+  scope: `api://${fss}.toi.foresporsel-om-deling-av-cv-api/.default`,
 };
 
 export const StillingAPI: Iroute = {
