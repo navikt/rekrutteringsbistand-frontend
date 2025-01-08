@@ -1,21 +1,12 @@
 'use client';
-import {
-  EyeIcon,
-  FloppydiskIcon,
-  StopIcon,
-  TrashIcon,
-  XMarkIcon,
-} from '@navikt/aksel-icons';
-import { Alert, Button, Stepper } from '@navikt/ds-react';
+import { XMarkIcon } from '@navikt/aksel-icons';
+import { Button, Stepper } from '@navikt/ds-react';
 import { useQueryState } from 'nuqs';
 import * as React from 'react';
 import { useFormContext } from 'react-hook-form';
-import { oppdaterStilling } from '../../../api/stilling/oppdater-stilling/oppdaterStilling';
-import { StillingsStatus } from '../../stilling-typer';
 import OmStillingen from '../omStillingen/OmStillingen';
 import { useStillingsContext } from '../StillingsContext';
-import EndreStillingStatus from './components/EndreStillingStatus';
-import { mapFormTilStilling } from './mapStilling';
+import AksjonsknapperSiderbarStilling from './components/AksjonsknapperSiderbarStilling';
 import {
   InnspurtSchema,
   OmStillingenSchema,
@@ -41,32 +32,6 @@ const RedigerStilling: React.FC = () => {
   const [aktivtSteg, setAktivtSteg] = useQueryState('steg', {
     defaultValue: RedigerSteg.omVirksomheten,
   });
-  const { stillingsData } = useStillingsContext();
-
-  const [lagrer, setLagrer] = React.useState<boolean>(false);
-  const [visMelding, setVisMelding] = React.useState<React.ReactNode | null>(
-    null,
-  );
-
-  const onLagre = async () => {
-    setLagrer(true);
-
-    const nyStillingsData = mapFormTilStilling(getValues(), stillingsData);
-
-    const response = await oppdaterStilling(nyStillingsData);
-
-    if (response.stilling.uuid) {
-      setVisMelding(<Alert variant='success'>Stillingen ble lagret</Alert>);
-      setTimeout(() => setVisMelding(null), 3000);
-    } else {
-      setVisMelding(
-        <Alert variant='error'>Feil ved lagring av stilling</Alert>,
-      );
-      setTimeout(() => setVisMelding(null), 3000);
-    }
-
-    setLagrer(false);
-  };
 
   const stegNummer = (): number => {
     const steps = Object.values(RedigerSteg);
@@ -123,11 +88,6 @@ const RedigerStilling: React.FC = () => {
 
   return (
     <>
-      {visMelding && (
-        <div className='fixed top-10 left-1/2 transform -translate-x-1/2 z-50 w-full'>
-          {visMelding}
-        </div>
-      )}
       {forhåndsvisData ? (
         <>
           <Button
@@ -233,55 +193,7 @@ const RedigerStilling: React.FC = () => {
               <RedigerInnspurt stegNummer={5} forrigeSteg={forrigeSteg} />
             )}
           </div>
-          <div className='sticky top-4 self-start flex flex-col gap-2 items-start'>
-            <Button
-              loading={lagrer}
-              icon={<FloppydiskIcon />}
-              variant='tertiary'
-              onClick={onLagre}
-            >
-              Lagre
-            </Button>
-            <Button
-              icon={<EyeIcon />}
-              onClick={() => {
-                const stilling = mapFormTilStilling(getValues(), stillingsData);
-                setForhåndsvisData({
-                  stillingsinfo: stillingsData?.stillingsinfo ?? null,
-                  stilling: {
-                    ...stilling.stilling,
-                    categoryList: stilling.stilling?.categoryList?.filter(
-                      (
-                        category,
-                      ): category is {
-                        code: string | null;
-                        id: number | null;
-                        name: string | null;
-                        categoryType: string | null;
-                        description: string | null;
-                        parentId: number | null;
-                      } => 'code' in category,
-                    ),
-                  },
-                });
-              }}
-              variant='tertiary'
-            >
-              Forhåndsvis
-            </Button>
-            <EndreStillingStatus
-              nyStatus={StillingsStatus.Stoppet}
-              knappNavn='Stopp'
-              knappIkon={<StopIcon />}
-              tekst='Er du sikker på at du vil STOPPE stillingen?'
-            />
-            <EndreStillingStatus
-              nyStatus={StillingsStatus.Slettet}
-              knappNavn='Slett'
-              knappIkon={<TrashIcon />}
-              tekst='Er du sikker på at du vil SLETTE stillingen?'
-            />
-          </div>
+          <AksjonsknapperSiderbarStilling formVerdier={getValues()} />
         </div>
       )}
     </>

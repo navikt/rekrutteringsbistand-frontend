@@ -1,11 +1,11 @@
 import * as React from 'react';
 
-export interface pagesProps {
+export interface RedigerFormidlingProps {
   children?: React.ReactNode | undefined;
 }
 
-const pages: React.FC<pagesProps> = ({ children }) => {
+const RedigerFormidling: React.FC<RedigerFormidlingProps> = ({ children }) => {
   return <React.Fragment> Hello Wiklem </React.Fragment>;
 };
 
-export default pages;
+export default RedigerFormidling;
