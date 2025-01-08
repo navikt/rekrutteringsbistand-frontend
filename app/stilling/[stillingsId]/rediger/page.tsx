@@ -11,6 +11,12 @@ import RedigerStilling from './RedigerStilling';
 export default function RedigerSide() {
   const { stillingsData } = useStillingsContext();
 
+  const initialValues = mapStillingTilForm(stillingsData);
+  const registerForm = useForm({
+    resolver: zodResolver(StillingsDataFormSchema),
+    defaultValues: initialValues,
+  });
+
   if (
     stillingsData.stillingsinfo?.stillingskategori ===
     Stillingskategori.Formidling
@@ -18,11 +24,6 @@ export default function RedigerSide() {
     return <RedigerFormidling />;
   }
 
-  const initialValues = mapStillingTilForm(stillingsData);
-  const registerForm = useForm({
-    resolver: zodResolver(StillingsDataFormSchema),
-    defaultValues: initialValues,
-  });
   return (
     <FormProvider {...registerForm}>
       <RedigerStilling />
