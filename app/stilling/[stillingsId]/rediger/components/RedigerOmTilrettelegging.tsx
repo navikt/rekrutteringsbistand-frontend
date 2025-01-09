@@ -7,9 +7,9 @@ import {
 } from '@navikt/ds-react';
 import * as React from 'react';
 import { useFormContext } from 'react-hook-form';
-import { InkluderingsTag } from '../omStillingen/StillingSidebar/StillingInkludering';
-import StegNavigering from './components/StegNavigering';
-import { StillingsDataForm } from './redigerFormType.zod';
+import { InkluderingsTag } from '../../omStillingen/StillingSidebar/StillingInkludering';
+import { StillingsDataForm } from '../redigerFormType.zod';
+import StegNavigering from './StegNavigering';
 
 export const RedigerOmTilrettelegging: React.FC<{
   stegNummer: number;

@@ -7,6 +7,11 @@ import { useFormContext } from 'react-hook-form';
 import OmStillingen from '../omStillingen/OmStillingen';
 import { useStillingsContext } from '../StillingsContext';
 import AksjonsknapperSiderbarStilling from './components/AksjonsknapperSiderbarStilling';
+import { RedigerInnspurt } from './components/RedigerInnspurt';
+import { RedigerOmStillingen } from './components/RedigerOmStillingen';
+import { RedigerOmTilrettelegging } from './components/RedigerOmTilrettelegging';
+import { RedigerOmVirksomheten } from './components/RedigerOmVirksomheten';
+import { RedigerPraktiskInfo } from './components/RedigerPraktiskInfo';
 import {
   InnspurtSchema,
   OmStillingenSchema,
@@ -15,11 +20,6 @@ import {
   PraktiskInfoSchema,
   StillingsDataForm,
 } from './redigerFormType.zod';
-import { RedigerInnspurt } from './RedigerInnspurt';
-import { RedigerOmStillingen } from './RedigerOmStillingen';
-import { RedigerOmTilrettelegging } from './RedigerOmTilrettelegging';
-import { RedigerOmVirksomheten } from './RedigerOmVirksomheten';
-import { RedigerPraktiskInfo } from './RedigerPraktiskInfo';
 enum RedigerSteg {
   omVirksomheten = 'om-virksomheten',
   omTilrettelegging = 'om-tilrettelegging',

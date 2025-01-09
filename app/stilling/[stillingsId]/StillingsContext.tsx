@@ -10,6 +10,7 @@ import { eierStilling } from '../../components/tilgangskontroll/erEier';
 interface StillingsContextType {
   stillingsData: StillingsDataDTO;
   forhåndsvisData: StillingsDataDTO | null;
+  erFormidling: boolean;
   erEier?: boolean;
   kandidatlisteId?: string;
   setForhåndsvisData: (data: StillingsDataDTO | null) => void;
@@ -68,6 +69,8 @@ const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
         forhåndsvisData,
         stillingsData: forhåndsvisData ? forhåndsvisData : stillingsData,
         erEier,
+        erFormidling:
+          stillingsData.stillingsinfo?.stillingskategori === 'FORMIDLING',
         kandidatlisteId: kandidatListeIdSWR.data?.kandidatlisteId,
         setForhåndsvisData,
       }}

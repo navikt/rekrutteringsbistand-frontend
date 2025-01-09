@@ -1,13 +1,13 @@
 import { Accordion, Button, Heading, TextField } from '@navikt/ds-react';
 import React from 'react';
 import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
-import { getWorkLocationsAsString } from '../../../../util/locationUtil';
-import { GeografiListDTO } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
-import RikTekstEditor from '../../../components/rikteksteditor/RikTekstEditor';
-import capitalizeEmployerName from '../../stilling-util';
-import { useStillingsContext } from '../StillingsContext';
-import StegNavigering from './components/StegNavigering';
-import { StillingsDataForm } from './redigerFormType.zod';
+import { getWorkLocationsAsString } from '../../../../../util/locationUtil';
+import { GeografiListDTO } from '../../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
+import RikTekstEditor from '../../../../components/rikteksteditor/RikTekstEditor';
+import capitalizeEmployerName from '../../../stilling-util';
+import { useStillingsContext } from '../../StillingsContext';
+import { StillingsDataForm } from '../redigerFormType.zod';
+import StegNavigering from './StegNavigering';
 
 export const RedigerOmVirksomheten: React.FC<{
   stegNummer: number;

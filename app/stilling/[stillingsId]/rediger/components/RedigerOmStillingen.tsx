@@ -1,13 +1,12 @@
-import { BodyShort, Heading, TextField, ToggleGroup } from '@navikt/ds-react';
+import { BodyShort, Heading } from '@navikt/ds-react';
 import Link from 'next/link';
 import * as React from 'react';
-import { Controller, useFormContext } from 'react-hook-form';
-import Poststed from '../../../components/VelgPoststed';
-import RikTekstEditor from '../../../components/rikteksteditor/RikTekstEditor';
-import KommuneFylkeEllerLand from './components/KommuneFylkeEllerLand';
-import StegNavigering from './components/StegNavigering';
-import VelgStillingTittel from './components/VelgStillingTittel';
-import { StillingsDataForm } from './redigerFormType.zod';
+import { useFormContext } from 'react-hook-form';
+import RikTekstEditor from '../../../../components/rikteksteditor/RikTekstEditor';
+import { StillingsDataForm } from '../redigerFormType.zod';
+import StegNavigering from './StegNavigering';
+import VelgArbeidssted from './VelgArbeidssted';
+import VelgStillingTittel from './VelgStillingTittel';
 export const RedigerOmStillingen: React.FC<{
   stegNummer: number;
   nextStep: () => void;
@@ -68,48 +67,7 @@ export const RedigerOmStillingen: React.FC<{
           <div>
             <h3 className='text-xl font-semibold mb-4'>Arbeidssted</h3>
 
-            <ToggleGroup
-              className='my-4'
-              fill
-              defaultValue={adresseValg}
-              onChange={(e) => setAdresseValg(e as 'adresse' | 'kommune')}
-              variant='neutral'
-            >
-              <ToggleGroup.Item value={'adresse'} label='Adresse' />
-              <ToggleGroup.Item
-                value={'kommune'}
-                label='Kommune, fylke eller land'
-              />
-            </ToggleGroup>
-
-            {adresseValg === 'adresse' && (
-              <div className='mt-2 flex flex-col gap-2'>
-                <Controller
-                  control={control}
-                  name={`omStillingen.adresse`}
-                  render={({ field: { onChange, value } }) => (
-                    <TextField
-                      label='Adresse'
-                      onChange={(e) => onChange(e.target.value)}
-                      value={value ?? ''}
-                    />
-                  )}
-                />
-                <Poststed
-                  callBack={(poststed) => {
-                    setValue('omStillingen.locationList', [poststed]);
-                  }}
-                />
-              </div>
-            )}
-
-            {adresseValg === 'kommune' && (
-              <KommuneFylkeEllerLand
-                callBack={(lokasjoner) => {
-                  setValue('omStillingen.locationList', lokasjoner);
-                }}
-              />
-            )}
+            <VelgArbeidssted />
           </div>
         </div>
         <StegNavigering stegNummer={stegNummer} forrigeSteg={forrigeSteg} />

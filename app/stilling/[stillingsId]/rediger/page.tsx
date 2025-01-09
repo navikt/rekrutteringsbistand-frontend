@@ -3,7 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { FormProvider, useForm } from 'react-hook-form';
 import { Stillingskategori } from '../../stilling-typer';
 import { useStillingsContext } from '../StillingsContext';
-import RedigerFormidling from './formidling/pages';
+import RedigerFormidling from './components/formidling/RedigerFormidling';
 import { mapStillingTilForm } from './mapStilling';
 import { StillingsDataFormSchema } from './redigerFormType.zod';
 import RedigerStilling from './RedigerStilling';
@@ -17,16 +17,13 @@ export default function RedigerSide() {
     defaultValues: initialValues,
   });
 
-  if (
+  const erFormidling =
     stillingsData.stillingsinfo?.stillingskategori ===
-    Stillingskategori.Formidling
-  ) {
-    return <RedigerFormidling />;
-  }
+    Stillingskategori.Formidling;
 
   return (
     <FormProvider {...registerForm}>
-      <RedigerStilling />
+      {erFormidling ? <RedigerFormidling /> : <RedigerStilling />}
     </FormProvider>
   );
 }

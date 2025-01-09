@@ -10,11 +10,11 @@ import {
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { FieldErrors, SubmitHandler, useFormContext } from 'react-hook-form';
-import { oppdaterStilling } from '../../../api/stilling/oppdater-stilling/oppdaterStilling';
-import { useStillingsContext } from '../StillingsContext';
-import { DatoVelger } from './components/DatoVelger';
-import { mapFormTilStilling } from './mapStilling';
-import { StillingsDataForm } from './redigerFormType.zod';
+import { oppdaterStilling } from '../../../../api/stilling/oppdater-stilling/oppdaterStilling';
+import { useStillingsContext } from '../../StillingsContext';
+import { mapFormTilStilling } from '../mapStilling';
+import { StillingsDataForm } from '../redigerFormType.zod';
+import { DatoVelger } from './DatoVelger';
 
 export const RedigerInnspurt: React.FC<{
   stegNummer: number;
