@@ -22,6 +22,7 @@ export const OpprettStillingKnapp: React.FC<OpprettStillingProps> = ({
   } = useApplikasjonContext();
   const router = useRouter();
   const [isLoading, setIsLoading] = React.useState(false);
+
   const handleOpprettStilling = async () => {
     setIsLoading(true);
     if (stillingskategori && arbeidsgiver) {

@@ -24,6 +24,7 @@ const VelgPoststed: React.FC<VelgPoststedProps> = ({ callBack }) => {
                   .includes(søkeVerdi.toLowerCase()),
             )
             .slice(0, 100)
+            .sort((a, b) => Number(a.postalCode) - Number(b.postalCode))
             .map((item) => {
               return {
                 label: `${item.postalCode} - ${item.capitalizedCityName}`,
@@ -36,6 +37,7 @@ const VelgPoststed: React.FC<VelgPoststedProps> = ({ callBack }) => {
 
   return (
     <UNSAFE_Combobox
+      toggleListButton={false}
       value={søkeVerdi}
       label='Velg postnummer og poststed'
       isLoading={hook.isLoading}
