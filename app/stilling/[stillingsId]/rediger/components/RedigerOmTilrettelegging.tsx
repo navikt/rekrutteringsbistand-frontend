@@ -1,10 +1,4 @@
-import {
-  Checkbox,
-  CheckboxGroup,
-  Heading,
-  Radio,
-  RadioGroup,
-} from '@navikt/ds-react';
+import { Checkbox, CheckboxGroup, Heading } from '@navikt/ds-react';
 import * as React from 'react';
 import { useFormContext } from 'react-hook-form';
 import { InkluderingsTag } from '../../omStillingen/StillingSidebar/StillingInkludering';
@@ -165,34 +159,13 @@ export const RedigerOmTilrettelegging: React.FC<{
             </TilretteleggingCheckbox>
           </CheckboxGroup>
 
-          <RadioGroup
-            legend='Er virksomheten del av den statlige inkluderingsdugnaden?'
-            required={true}
-            value={watch('omTilrettelegging.statligeInkluderingsdugnade')}
-            onChange={(val) => {
-              if (val) {
-                setValue('omTilrettelegging.statligeInkluderingsdugnade', true);
-                setValue('omTilrettelegging.tags', [
-                  ...watch('omTilrettelegging.tags'),
-                  InkluderingsTag.StatligInkluderingsdugnad,
-                ]);
-              } else {
-                setValue(
-                  'omTilrettelegging.statligeInkluderingsdugnade',
-                  false,
-                );
-                setValue('omTilrettelegging.tags', [
-                  ...watch('omTilrettelegging.tags').filter(
-                    (t: string) =>
-                      t !== InkluderingsTag.StatligInkluderingsdugnad,
-                  ),
-                ]);
-              }
-            }}
-          >
-            <Radio value={true}>Ja</Radio>
-            <Radio value={false}>Nei</Radio>
-          </RadioGroup>
+          <CheckboxGroup legend='Er virksomheten del av den statlige inkluderingsdugnaden?'>
+            <TilretteleggingCheckbox
+              tag={InkluderingsTag.StatligInkluderingsdugnad}
+            >
+              Ja
+            </TilretteleggingCheckbox>
+          </CheckboxGroup>
         </div>
         <StegNavigering stegNummer={stegNummer} forrigeSteg={forrigeSteg} />
       </form>
