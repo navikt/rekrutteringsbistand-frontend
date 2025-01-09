@@ -12,12 +12,7 @@ export const RedigerOmStillingen: React.FC<{
   nextStep: () => void;
   forrigeSteg: () => void;
 }> = ({ nextStep, forrigeSteg, stegNummer }) => {
-  const { register, setValue, watch, control, trigger } =
-    useFormContext<StillingsDataForm>();
-
-  const [adresseValg, setAdresseValg] = React.useState<'adresse' | 'kommune'>(
-    'adresse',
-  );
+  const { setValue, watch, trigger } = useFormContext<StillingsDataForm>();
 
   const handleStepSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

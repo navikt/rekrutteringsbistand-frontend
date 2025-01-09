@@ -10,8 +10,7 @@ export const RedigerOmTilrettelegging: React.FC<{
   nextStep: () => void;
   forrigeSteg: () => void;
 }> = ({ nextStep, forrigeSteg, stegNummer }) => {
-  const { handleSubmit, watch, setValue, trigger } =
-    useFormContext<StillingsDataForm>();
+  const { watch, setValue, trigger } = useFormContext<StillingsDataForm>();
 
   const handleStepSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -23,8 +23,7 @@ const VelgPoststed: React.FC<VelgPoststedProps> = ({ callBack }) => {
                   .toLowerCase()
                   .includes(søkeVerdi.toLowerCase()),
             )
-            .slice(0, 100)
-            .sort((a, b) => Number(a.postalCode) - Number(b.postalCode))
+            .slice(0, 20)
             .map((item) => {
               return {
                 label: `${item.postalCode} - ${item.capitalizedCityName}`,

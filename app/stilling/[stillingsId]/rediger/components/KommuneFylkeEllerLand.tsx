@@ -28,13 +28,19 @@ const KommuneFylkeEllerLand: React.FC<KommuneFylkeEllerLandProps> = ({
         // Bruker Set for å unngå duplikater
         ...new Set([
           ...(geografi.data?.kommuner
-            .filter((k) => k.capitalizedName.includes(søkeTekst))
+            .filter((k) =>
+              k.capitalizedName.toLowerCase().includes(søkeTekst.toLowerCase()),
+            )
             .map((k) => k.capitalizedName) ?? []),
           ...(geografi.data?.fylker
-            .filter((f) => f.capitalizedName.includes(søkeTekst))
+            .filter((f) =>
+              f.capitalizedName.toLowerCase().includes(søkeTekst.toLowerCase()),
+            )
             .map((f) => f.capitalizedName) ?? []),
           ...(geografi.data?.land
-            ?.filter((l) => l.capitalizedName.includes(søkeTekst))
+            ?.filter((l) =>
+              l.capitalizedName.toLowerCase().includes(søkeTekst.toLowerCase()),
+            )
             .map((l) => l.capitalizedName) ?? []),
         ]),
       ]);
