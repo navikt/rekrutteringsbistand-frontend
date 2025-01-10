@@ -57,6 +57,8 @@ export const OmStillingenSchema = z.object({
 
 export const PraktiskInfoSchema = z.object({
   sektor: z.string().nullable(),
+  omfang: z.string().nullable(),
+  omfangProsent: z.string().nullable(),
   antallStillinger: z.number().min(1, 'Må ha minst én stilling'),
   oppstart: z.string().nullable(),
   oppstartSnarest: z.boolean(),

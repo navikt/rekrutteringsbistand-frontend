@@ -1,6 +1,6 @@
-import { Accordion, Button, Heading, TextField } from '@navikt/ds-react';
+import { Accordion, Heading, TextField } from '@navikt/ds-react';
 import React from 'react';
-import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 import { getWorkLocationsAsString } from '../../../../../util/locationUtil';
 import { GeografiListDTO } from '../../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import RikTekstEditor from '../../../../components/rikteksteditor/RikTekstEditor';
@@ -8,6 +8,7 @@ import capitalizeEmployerName from '../../../stilling-util';
 import { useStillingsContext } from '../../StillingsContext';
 import { StillingsDataForm } from '../redigerFormType.zod';
 import StegNavigering from './StegNavigering';
+import VelgKontaktperson from './praktiskInfo/VelgKontaktperson';
 
 export const RedigerOmVirksomheten: React.FC<{
   stegNummer: number;
@@ -23,11 +24,6 @@ export const RedigerOmVirksomheten: React.FC<{
     formState: { errors },
   } = useFormContext<StillingsDataForm>();
 
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: 'omVirksomheten.kontaktPersoner',
-  });
-
   const handleStepSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const isValid = await trigger('omVirksomheten', { shouldFocus: true });
@@ -36,10 +32,6 @@ export const RedigerOmVirksomheten: React.FC<{
       nextStep();
     }
   };
-
-  if (fields.length === 0) {
-    append({ name: '', title: '', email: '', phone: '' });
-  }
 
   return (
     <div>
@@ -105,113 +97,7 @@ export const RedigerOmVirksomheten: React.FC<{
             </Accordion.Item>
           </Accordion>
 
-          <Heading size='medium'>Kontaktperson</Heading>
-          <p>Vi må vite hvem som er kontaktperson for stillingen.</p>
-          {fields.map((field, index) => (
-            <div key={field.id} className='grid grid-cols-2 gap-4 items-start'>
-              <Controller
-                control={control}
-                name={`omVirksomheten.kontaktPersoner.${index}.name`}
-                render={({ field: { onChange, value } }) => (
-                  <TextField
-                    label='Navn'
-                    onChange={(e) => onChange(e.target.value)}
-                    value={value ?? ''}
-                    error={
-                      errors.omVirksomheten?.kontaktPersoner?.[index]?.name
-                        ?.message
-                        ? errors.omVirksomheten?.kontaktPersoner?.[index]?.name
-                            ?.message
-                        : null
-                    }
-                  />
-                )}
-              />
-              <Controller
-                control={control}
-                name={`omVirksomheten.kontaktPersoner.${index}.title`}
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <TextField
-                    label='Tittel'
-                    onChange={(e) => onChange(e.target.value)}
-                    value={value ?? ''}
-                    error={
-                      errors.omVirksomheten?.kontaktPersoner?.[index]?.title
-                        ?.message
-                        ? errors.omVirksomheten?.kontaktPersoner?.[index]?.title
-                            ?.message
-                        : null
-                    }
-                  />
-                )}
-              />
-
-              <Controller
-                control={control}
-                name={`omVirksomheten.kontaktPersoner.${index}.email`}
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <TextField
-                    type='email'
-                    label='E-post'
-                    onChange={(e) => onChange(e.target.value)}
-                    value={value ?? ''}
-                    error={
-                      errors.omVirksomheten?.kontaktPersoner?.[index]?.email
-                        ?.message
-                        ? errors.omVirksomheten?.kontaktPersoner?.[index]?.email
-                            ?.message
-                        : null
-                    }
-                  />
-                )}
-              />
-              <Controller
-                control={control}
-                name={`omVirksomheten.kontaktPersoner.${index}.phone`}
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <TextField
-                    type='tel'
-                    label='Telefonnummer'
-                    onChange={(e) => onChange(e.target.value)}
-                    value={value ?? ''}
-                    error={
-                      (errors.omVirksomheten?.kontaktPersoner?.[index] as any)
-                        ?.phone
-                        ? errors.omVirksomheten?.kontaktPersoner?.[index]?.phone
-                            ?.message
-                        : null
-                    }
-                  />
-                )}
-              />
-
-              {index > 0 && (
-                <>
-                  <div> </div>
-                  <div className='flex justify-end'>
-                    <Button
-                      variant='secondary'
-                      type='button'
-                      onClick={() => remove(index)}
-                    >
-                      Fjern kontaktperson
-                    </Button>
-                  </div>
-                </>
-              )}
-            </div>
-          ))}
-          <div>
-            <Button
-              variant='secondary'
-              type='button'
-              onClick={() =>
-                append({ name: '', title: '', email: '', phone: '' })
-              }
-            >
-              Legg til flere kontaktpersoner
-            </Button>
-          </div>
+          <VelgKontaktperson />
         </div>
 
         <StegNavigering stegNummer={stegNummer} forrigeSteg={forrigeSteg} />

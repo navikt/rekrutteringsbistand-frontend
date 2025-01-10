@@ -11,7 +11,7 @@ const VelgSektor: React.FC = ({}) => {
       name='praktiskInfo.sektor'
       render={({ field: { onChange, value } }) => (
         <RadioGroup
-          legend='VelgSektor'
+          legend='Velg sektor'
           value={value}
           onChange={(e) => onChange(e)}
         >

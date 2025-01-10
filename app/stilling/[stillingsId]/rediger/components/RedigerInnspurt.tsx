@@ -104,7 +104,7 @@ export const RedigerInnspurt: React.FC<{
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className='space-y-8'>
         <Heading level='2' size='large'>
-          Innspurt
+          Publisering
         </Heading>
         <BodyShort spacing>
           Velg når, og hvor stillingen skal publiseres.
@@ -126,18 +126,12 @@ export const RedigerInnspurt: React.FC<{
           />
         </div>
         <RadioGroup
-          description={
-            <div>
-              Intern: Rekrutteringsbistand
-              <br /> Ekstern: Arbeidsplassen.no
-            </div>
-          }
           legend='Hvor skal stillingen publiseres?'
           value={watch('innspurt.stillingType')}
           onChange={(val) => setValue('innspurt.stillingType', val)}
         >
-          <Radio value='DIR'>Internt</Radio>
-          <Radio value='SHOW_ALL'>Internt og Eksternt</Radio>
+          <Radio value='DIR'>Internt på Nav</Radio>
+          <Radio value='SHOW_ALL'>Internt på Nav og arbeidsplassen.no</Radio>
         </RadioGroup>
 
         {errors && Object.keys(errors).length > 0 && (
