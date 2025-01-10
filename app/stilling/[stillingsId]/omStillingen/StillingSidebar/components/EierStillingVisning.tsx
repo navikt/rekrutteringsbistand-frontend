@@ -40,7 +40,7 @@ const EierStillingVisning: React.FC = () => {
   const besatteStillinger = antallKandidaterSomHarFåttJobb;
 
   const oppsummeringTekst = `${
-    data?.kandidater.length
+    data?.kandidater?.length ?? 0
   } kandidater (${antallAktuelleKandidater} er aktuelle${
     data?.kandidatlisteId === stillingsData.stilling.uuid
       ? ` / ${antallPresenterteKandidater} er presentert`
