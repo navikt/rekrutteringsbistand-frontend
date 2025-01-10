@@ -18,7 +18,7 @@ const EierStillingVisning: React.FC = () => {
   const ref = React.useRef<HTMLDialogElement>(null);
 
   const ikkeArkiverteKandidater =
-    data?.kandidater.filter((k) => !k.arkivert) ?? [];
+    data?.kandidater?.filter((k) => !k.arkivert) ?? [];
 
   const antallAktuelleKandidater = ikkeArkiverteKandidater.filter(
     (k) => k.status === Kandidatstatus.Aktuell,

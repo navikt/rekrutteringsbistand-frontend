@@ -15,7 +15,7 @@ const VelgStillingTittel: React.FC<VelgStillingTittelProps> = ({
   const [valg, setValg] = React.useState<{ label: string; value: string }[]>(
     [],
   );
-  const [søkeVerdi, setSøkeVerdi] = React.useState<string>(valgtTittel ?? '');
+  const [søkeVerdi, setSøkeVerdi] = React.useState<string>('');
 
   const hook = useStillingsTittel(søkeVerdi.length > 1 ? søkeVerdi : undefined);
 
@@ -33,6 +33,7 @@ const VelgStillingTittel: React.FC<VelgStillingTittelProps> = ({
 
   return (
     <UNSAFE_Combobox
+      placeholder={valgtTittel}
       value={søkeVerdi}
       label='Velg yrkestittel (standard for yrkesklassifisering - JANZZ)'
       isLoading={hook.isLoading}
