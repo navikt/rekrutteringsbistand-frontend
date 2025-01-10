@@ -1,20 +1,34 @@
-import { TextField, ToggleGroup } from '@navikt/ds-react';
+import { Button } from '@navikt/ds-react';
 import * as React from 'react';
-import { Controller, useFormContext } from 'react-hook-form';
+import { useFieldArray, useFormContext } from 'react-hook-form';
 import VelgPoststed from '../../../../components/VelgPoststed';
 import { StillingsDataForm } from '../redigerFormType.zod';
-import KommuneFylkeEllerLand from './KommuneFylkeEllerLand';
+import VelgKommuneFylkeEllerLand from './VelgKommuneFylkeEllerLand';
 
 const VelgArbeidssted: React.FC = () => {
-  const { setValue, control } = useFormContext<StillingsDataForm>();
+  const { control } = useFormContext<StillingsDataForm>();
 
-  const [adresseValg, setAdresseValg] = React.useState<'adresse' | 'kommune'>(
-    'adresse',
-  );
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: 'omStillingen.locationList',
+  });
 
   return (
     <div>
-      <ToggleGroup
+      <div className='my-4'>
+        <Button variant='secondary' onClick={() => append({ postalCode: '' })}>
+          Legg til adresse
+        </Button>
+      </div>
+      {fields
+        .filter((field) => field.postalCode !== null)
+        .map((field, index) => (
+          <VelgPoststed key={index} location={field} fieldId={field.id} />
+        ))}
+      <div className='my-4'>
+        <VelgKommuneFylkeEllerLand />
+      </div>
+      {/* <ToggleGroup
         className='my-4'
         fill
         defaultValue={adresseValg}
@@ -52,7 +66,7 @@ const VelgArbeidssted: React.FC = () => {
             setValue('omStillingen.locationList', lokasjoner);
           }}
         />
-      )}
+      )} */}
     </div>
   );
 };

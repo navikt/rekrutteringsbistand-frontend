@@ -1,24 +1,36 @@
 import { UNSAFE_Combobox } from '@navikt/ds-react';
 import * as React from 'react';
 import { useEffect, useMemo, useState } from 'react';
+import { useFieldArray, useFormContext } from 'react-hook-form';
 import {
   mapFylkeTilGeografiDTO,
   mapKommuneTilGeografiDTO,
   mapLandTilGeografiDTO,
 } from '../../../../../util/geografi';
 import { useGeografi } from '../../../../api/stilling/geografi/useGeografi';
-import { GeografiDTO } from '../../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
+import { StillingsDataForm } from '../redigerFormType.zod';
 
-export interface KommuneFylkeEllerLandProps {
-  callBack: (lokasjoner: GeografiDTO[]) => void;
-}
-
-const KommuneFylkeEllerLand: React.FC<KommuneFylkeEllerLandProps> = ({
-  callBack,
-}) => {
+const VelgKommuneFylkeEllerLand: React.FC = () => {
+  const { control, setValue } = useFormContext<StillingsDataForm>();
+  const { fields, append } = useFieldArray({
+    control,
+    name: 'omStillingen.locationList',
+  });
   const [muligeValg, setMuligeValg] = useState<string[]>([]);
   const [søkeTekst, setSøkeTekst] = useState<string>('');
-  const [valgteVerdier, setValgteVerdier] = useState<string[]>([]);
+
+  const lokasjoner = fields.filter((field) => field.postalCode === null);
+
+  const [valgteVerdier, setValgteVerdier] = useState<string[]>(() =>
+    lokasjoner
+      .map((lokasjon) => {
+        if (lokasjon.municipal) return lokasjon.municipal;
+        if (lokasjon.city) return lokasjon.city;
+        if (lokasjon.country) return lokasjon.country;
+        return '';
+      })
+      .filter(Boolean),
+  );
 
   const geografi = useGeografi();
 
@@ -67,9 +79,41 @@ const KommuneFylkeEllerLand: React.FC<KommuneFylkeEllerLandProps> = ({
         ...(valgteGeografi.fylker?.map((f) => mapFylkeTilGeografiDTO(f)) ?? []),
         ...(valgteGeografi.land?.map((l) => mapLandTilGeografiDTO(l)) ?? []),
       ];
-      callBack(mappedGeografi);
+
+      // Remove locations that are no longer selected
+      const currentLocations = fields.filter(
+        (field) => field.postalCode === null,
+      );
+      currentLocations.forEach((location, index) => {
+        const stillExists = mappedGeografi.some(
+          (geo) =>
+            geo.municipal === location.municipal &&
+            geo.city === location.city &&
+            geo.country === location.country,
+        );
+        if (!stillExists) {
+          setValue(
+            `omStillingen.locationList`,
+            fields.filter((_, i) => i !== index),
+          );
+        }
+      });
+
+      // Add new locations that don't exist yet
+      mappedGeografi.forEach((geo) => {
+        const alreadyExists = fields.some(
+          (field) =>
+            field.municipal === geo.municipal &&
+            field.city === geo.city &&
+            field.country === geo.country,
+        );
+
+        if (!alreadyExists) {
+          append(geo);
+        }
+      });
     }
-  }, [valgteGeografi]);
+  }, [valgteGeografi, fields, append, setValue]);
 
   return (
     <UNSAFE_Combobox
@@ -95,4 +139,4 @@ const KommuneFylkeEllerLand: React.FC<KommuneFylkeEllerLandProps> = ({
   );
 };
 
-export default KommuneFylkeEllerLand;
+export default VelgKommuneFylkeEllerLand;

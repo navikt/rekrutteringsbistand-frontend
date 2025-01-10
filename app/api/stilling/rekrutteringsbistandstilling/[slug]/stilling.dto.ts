@@ -82,15 +82,15 @@ const ContactSchema = z.object({
 });
 
 export const GeografiSchema = z.object({
-  address: z.string().nullable(),
-  postalCode: z.string().nullable(),
-  county: z.string().nullable(),
-  municipal: z.string().nullable(),
-  municipalCode: z.string().nullable(),
-  city: z.string().nullable(),
-  country: z.string().nullable(),
-  latitude: z.string().nullable(),
-  longitude: z.string().nullable(),
+  address: z.string().optional().nullable(),
+  postalCode: z.string().optional().nullable(),
+  county: z.string().optional().nullable(),
+  municipal: z.string().optional().nullable(),
+  municipalCode: z.string().optional().nullable(),
+  city: z.string().optional().nullable(),
+  country: z.string().optional().nullable(),
+  latitude: z.string().optional().nullable(),
+  longitude: z.string().optional().nullable(),
 });
 
 const GeografiListSchema = z.array(GeografiSchema);

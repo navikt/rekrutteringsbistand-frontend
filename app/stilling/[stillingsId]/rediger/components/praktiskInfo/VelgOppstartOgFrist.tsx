@@ -73,7 +73,6 @@ const VelgOppstartOgFrist: React.FC<VelgOppstartOgFristProps> = ({
             control={control}
             render={({ field, fieldState: { error } }) => (
               <>
-                {console.log(error)}
                 <DatoVelger
                   error={error?.message}
                   fraDato={
