@@ -44,6 +44,8 @@ export const mapStillingTilForm = (
       locationList: stillingsData?.stilling?.employer?.locationList ?? null,
     },
     praktiskInfo: {
+      omfangKode: stillingsData?.stilling?.properties?.jobpercentage ?? '',
+      omfangProsent: stillingsData?.stilling?.properties?.jobpercentage ?? null,
       sektor: stillingsData?.stilling?.properties?.sector ?? '',
       antallStillinger:
         Number(stillingsData?.stilling?.properties?.positioncount) || 0,
@@ -101,6 +103,8 @@ export const mapFormTilStilling = (
         engagementtype: formData.praktiskInfo.ansettelsesform,
         workday: JSON.stringify(formData.praktiskInfo.dager),
         workhours: JSON.stringify(formData.praktiskInfo.tid),
+        extent: formData.praktiskInfo.omfangKode,
+        jobpercentage: formData.praktiskInfo.omfangProsent,
       },
       published: formaterTilISODato(formData.innspurt.publiseres),
       expires: formaterTilISODato(formData.innspurt.avsluttes),

@@ -71,16 +71,20 @@ const VelgOppstartOgFrist: React.FC<VelgOppstartOgFristProps> = ({
           <Controller
             name='praktiskInfo.søknadsfrist'
             control={control}
-            render={({ field }) => (
-              <DatoVelger
-                fraDato={
-                  typeof field.value === 'string' ? field.value : undefined
-                }
-                disabled={watch('praktiskInfo.søknadsfristEtterAvtale')}
-                setDato={(val) => {
-                  field.onChange(val);
-                }}
-              />
+            render={({ field, fieldState: { error } }) => (
+              <>
+                {console.log(error)}
+                <DatoVelger
+                  error={error?.message}
+                  fraDato={
+                    typeof field.value === 'string' ? field.value : undefined
+                  }
+                  disabled={watch('praktiskInfo.søknadsfristEtterAvtale')}
+                  setDato={(val) => {
+                    field.onChange(val);
+                  }}
+                />
+              </>
             )}
           />
         </div>

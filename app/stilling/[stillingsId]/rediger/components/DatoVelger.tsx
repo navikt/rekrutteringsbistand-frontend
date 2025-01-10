@@ -3,6 +3,7 @@ import { format, isValid } from 'date-fns';
 import React from 'react';
 
 interface DatoVelgerProps {
+  error?: string;
   disabled?: boolean;
   fraDato?: string;
   label?: string;
@@ -10,6 +11,7 @@ interface DatoVelgerProps {
 }
 
 export const DatoVelger: React.FC<DatoVelgerProps> = ({
+  error,
   disabled,
   fraDato,
   label,
@@ -41,7 +43,12 @@ export const DatoVelger: React.FC<DatoVelgerProps> = ({
   return (
     <>
       <DatePicker {...datepickerProps}>
-        <DatePicker.Input {...inputProps} label={label} disabled={disabled} />
+        <DatePicker.Input
+          {...inputProps}
+          label={label}
+          disabled={disabled}
+          error={error}
+        />
       </DatePicker>
     </>
   );

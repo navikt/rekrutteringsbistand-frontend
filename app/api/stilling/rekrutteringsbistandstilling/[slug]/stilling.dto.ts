@@ -14,6 +14,8 @@ export const searchtagSchema = z.object({
 
 export const propertiesSchema = z
   .object({
+    jobpercentage: z.string().optional().nullable(),
+    jobpercentagerange: z.string().optional().nullable(),
     extent: z.string().optional().nullable(),
     applicationdue: z.union([z.string(), z.boolean()]).optional().nullable(), // TODO Husk å endre til string?,
     jobtitle: z.any(),

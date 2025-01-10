@@ -9,11 +9,12 @@ const VelgSektor: React.FC = ({}) => {
     <Controller
       control={control}
       name='praktiskInfo.sektor'
-      render={({ field: { onChange, value } }) => (
+      render={({ field: { onChange, value }, fieldState: { error } }) => (
         <RadioGroup
           legend='Velg sektor'
           value={value}
           onChange={(e) => onChange(e)}
+          error={error?.message}
         >
           <Radio value='Privat'>Privat</Radio>
           <Radio value='Offentlig'>Offentlig</Radio>

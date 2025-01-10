@@ -5,6 +5,7 @@ import StegNavigering from './StegNavigering';
 import VelgAnsettelsesform from './praktiskInfo/VelgAnsettelsesform';
 import VelgAntallStillinger from './praktiskInfo/VelgAntallStillinger';
 import VelgArbeidsTid from './praktiskInfo/VelgArbeidsTid';
+import VelgOmfang from './praktiskInfo/VelgOmfang';
 import VelgOppstartOgFrist from './praktiskInfo/VelgOppstartOgFrist';
 import VelgSektor from './praktiskInfo/VelgSektor';
 
@@ -38,10 +39,11 @@ export const RedigerPraktiskInfo: React.FC<{
         <BodyShort>Fyll inn praktiske detaljer om jobben.</BodyShort>
         <VelgSektor />
         <VelgAntallStillinger />
+        <VelgOmfang />
         <VelgAnsettelsesform />
-        <VelgOppstartOgFrist />
-        <VelgArbeidsTid />
 
+        <VelgArbeidsTid />
+        <VelgOppstartOgFrist />
         <StegNavigering stegNummer={stegNummer} forrigeSteg={forrigeSteg} />
       </div>
     </form>

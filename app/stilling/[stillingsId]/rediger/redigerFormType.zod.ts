@@ -55,19 +55,44 @@ export const OmStillingenSchema = z.object({
   kommuneEllerLand: z.string().nullable(),
 });
 
-export const PraktiskInfoSchema = z.object({
-  sektor: z.string().nullable(),
-  omfang: z.string().nullable(),
-  omfangProsent: z.string().nullable(),
-  antallStillinger: z.number().min(1, 'Må ha minst én stilling'),
-  oppstart: z.string().nullable(),
-  oppstartSnarest: z.boolean(),
-  søknadsfrist: z.string().nullable(),
-  søknadsfristEtterAvtale: z.boolean(),
-  ansettelsesform: z.string().min(1, 'Ansettelsesform må velges').nullable(),
-  dager: z.array(z.string()),
-  tid: z.array(z.string()),
-});
+export const PraktiskInfoSchema = z
+  .object({
+    sektor: z.string().min(1, 'Sektor må velges').nullable(),
+    omfangKode: z.string({
+      required_error: 'Omfang må velges',
+    }),
+    omfangProsent: z.string().nullable(),
+    antallStillinger: z.number().min(1, 'Må ha minst én stilling'),
+    oppstart: z.string().nullable(),
+    oppstartSnarest: z.boolean(),
+    søknadsfrist: z.string().nullable(),
+    søknadsfristEtterAvtale: z.boolean(),
+    ansettelsesform: z
+      .string()
+      .nullish()
+      .refine((val) => val !== null && val !== '', {
+        message: 'Ansettelsesform må velges',
+      }),
+    dager: z
+      .array(z.string(), {
+        required_error: 'Arbeidsdager må velges',
+      })
+      .min(1, 'Velg minst én arbeidsdag'),
+    tid: z
+      .array(z.string(), {
+        required_error: 'Arbeidstid må velges',
+      })
+      .min(1, 'Velg minst én arbeidstid'),
+  })
+  .refine(
+    (data) => {
+      return data.omfangKode === 'Deltid' ? !!data.omfangProsent : true;
+    },
+    {
+      message: 'Du må fylle ut omfang i prosent for deltid',
+      path: ['omfangProsent'],
+    },
+  );
 
 export const InnspurtSchema = z.object({
   publiseres: z.string().min(1, 'Publiseringsdato er påkrevd'),
