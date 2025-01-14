@@ -84,6 +84,9 @@ const DevDekoratør: React.FC = () => {
             >
               Jobbsøkerrettet
             </option>
+            <option value={Roller.AD_GRUPPE_MODIA_GENERELL_TILGANG}>
+              Modia generell
+            </option>
           </Select>
         </div>
         <span>

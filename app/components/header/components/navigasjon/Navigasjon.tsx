@@ -3,9 +3,9 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { FunctionComponent } from 'react';
 
+import { Roller } from '../../../tilgangskontroll/roller';
 import { TilgangskontrollForInnhold } from '../../../tilgangskontroll/TilgangskontrollForInnhold';
 import Nyheter from '../nyheter/Nyheter';
-import { Roller } from '../../../tilgangskontroll/roller';
 
 const tabs = [
   {
@@ -26,7 +26,12 @@ const tabs = [
     ],
   },
   {
-    tittel: 'Formidlinger',
+    tittel: 'Rekrutteringstreff',
+    path: '/rekrutteringstreff-sok',
+    kreverRoller: [Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER],
+  },
+  {
+    tittel: 'Etterregistrering',
     path: '/formidlinger',
     kreverRoller: [
       Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,

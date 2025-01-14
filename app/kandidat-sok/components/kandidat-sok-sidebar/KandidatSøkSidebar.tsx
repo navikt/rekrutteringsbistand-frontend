@@ -11,11 +11,7 @@ import PrioriterteMålgrupper from './components/PrioriterteMålgrupper';
 import Språk from './components/Språk';
 import Utdanningsnivå from './components/Utdanningsnivå';
 
-export interface IKandidatSøkSidebar {
-  children?: React.ReactNode | undefined;
-}
-
-const KandidatSøkSidebar: React.FC<IKandidatSøkSidebar> = ({ children }) => {
+const KandidatSøkSidebar: React.FC = () => {
   return (
     <div className='grid gap-4'>
       <FritekstSøk />

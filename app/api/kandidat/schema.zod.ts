@@ -82,7 +82,7 @@ export const kandidatHistorikkSchema = z.object({
   tittel: z.string(),
   organisasjonReferanse: z.null(),
   organisasjonNavn: z.string(),
-  stillingId: z.null(),
+  stillingId: z.string(),
   slettet: z.boolean(),
   utfallsendringer: z.array(
     z.object({

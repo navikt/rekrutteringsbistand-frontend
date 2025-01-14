@@ -3,8 +3,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { FunctionComponent, ReactNode } from 'react';
-import FinnKandidaterIkon from '../../../public/ikoner/finn-kandidater.svg';
-import FinnStillinger from '../../../public/ikoner/finn-stillinger.svg';
 import OpprettNyStillingIkon from '../../../public/ikoner/opprett-ny-stilling.svg';
 import SeMineStillingerIkon from '../../../public/ikoner/se-mine-stillinger.svg';
 
@@ -20,7 +18,7 @@ const Hurtiglenker: FunctionComponent = () => {
       ]}
     >
       <div className='justify-start items-start gap-4 inline-flex w-full'>
-        <LenkepanelMedIkon
+        {/* <LenkepanelMedIkon
           href='/kandidat-sok'
           ikon={<Image src={FinnKandidaterIkon} alt='Finn kandidater' />}
           tittel='Finn kandidater'
@@ -29,7 +27,7 @@ const Hurtiglenker: FunctionComponent = () => {
           href='/stillings-sok'
           ikon={<Image src={FinnStillinger} alt='Finn stillinger' />}
           tittel='Finn stillinger'
-        />
+        /> */}
 
         <LenkepanelMedIkon
           href={'/stillings-sok?portefolje=visMine'}

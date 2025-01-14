@@ -30,7 +30,6 @@ const VelgStillingTittel: React.FC<VelgStillingTittelProps> = ({
       setValg(nyeValg);
     }
   }, [hook.data]);
-
   return (
     <UNSAFE_Combobox
       placeholder={valgtTittel}

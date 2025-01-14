@@ -1,5 +1,5 @@
 import { LightBulbIcon } from '@navikt/aksel-icons';
-import { Button, Heading, Popover, Switch } from '@navikt/ds-react';
+import { Button, Heading, Popover } from '@navikt/ds-react';
 import {
   FunctionComponent,
   ReactNode,
@@ -7,7 +7,6 @@ import {
   useRef,
   useState,
 } from 'react';
-import { useApplikasjonContext } from '../../../../ApplikasjonContext';
 import Artikkel from './Artikkel';
 import css from './Nyheter.module.css';
 import nyhetssaker from './nyhetssaker';
@@ -23,7 +22,7 @@ const Nyheter: FunctionComponent = () => {
   const [åpen, setÅpen] = useState<boolean>(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
-  const { darkMode, setDarkMode } = useApplikasjonContext();
+  // const { darkMode, setDarkMode } = useApplikasjonContext();
 
   const onFørsteBesøk = () => {
     setÅpen(true);
@@ -41,14 +40,14 @@ const Nyheter: FunctionComponent = () => {
   return (
     <div className={css.nyheter}>
       <div className='flex'>
-        <Switch
+        {/* <Switch
           disabled
           size='small'
           checked={darkMode}
           onChange={(e) => setDarkMode(e.target.checked)}
         >
           Mørk modus
-        </Switch>
+        </Switch> */}
         <Button
           ref={buttonRef}
           className={css.knapp}
