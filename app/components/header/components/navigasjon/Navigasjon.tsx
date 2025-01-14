@@ -28,7 +28,11 @@ const tabs = [
   {
     tittel: 'Rekrutteringstreff',
     path: '/rekrutteringstreff-sok',
-    kreverRoller: [Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER],
+    // kreverRoller: [Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER],
+    kreverRoller: [
+      Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+      Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
+    ],
   },
   {
     tittel: 'Etterregistrering',
