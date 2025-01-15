@@ -4,23 +4,26 @@ import { StillingsDataDTO } from '../../../api/stilling/rekrutteringsbistandstil
 import { InkluderingsTag } from '../omStillingen/StillingSidebar/StillingInkludering';
 import { StillingsDataForm } from './redigerFormType.zod';
 
+const capitalize = (str: string) =>
+  str
+    .split(/[- ]/)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(str.includes('-') ? '-' : ' ');
+
 export const mapStillingTilForm = (
   stillingsData: StillingsDataDTO,
 ): StillingsDataForm => {
-  const tags = stillingsData.stilling.properties?.tags
+  const tags = stillingsData?.stilling?.properties?.tags
     ? JSON.parse(stillingsData.stilling.properties.tags)
     : [];
 
-  const workhours = stillingsData.stilling.properties?.workhours
+  const workhours = stillingsData?.stilling?.properties?.workhours
     ? JSON.parse(stillingsData.stilling.properties.workhours)
     : [];
 
-  const workday = stillingsData.stilling.properties?.workday
+  const workday = stillingsData?.stilling?.properties?.workday
     ? JSON.parse(stillingsData.stilling.properties.workday)
     : [];
-
-  const janzz = stillingsData.stilling.categoryList?.[0] ?? {};
-  console.log(janzz);
   return {
     omVirksomheten: {
       beskrivelse:
@@ -29,7 +32,7 @@ export const mapStillingTilForm = (
       kontaktPersoner: stillingsData?.stilling?.contactList ?? [],
     },
     omTilrettelegging: {
-      statligeInkluderingsdugnade: tags.includes(
+      statligeInkluderingsdugnade: tags?.includes(
         InkluderingsTag.StatligInkluderingsdugnad,
       ),
       tags: tags,
@@ -44,13 +47,30 @@ export const mapStillingTilForm = (
       beskrivelse: stillingsData?.stilling?.properties?.adtext ?? '',
 
       adresseLokasjoner:
-        stillingsData?.stilling?.employer?.locationList?.filter(
+        stillingsData?.stilling?.locationList?.filter(
           (item) => item.postalCode,
         ) ?? null,
+
       lokasjoner:
-        stillingsData?.stilling?.employer?.locationList?.filter(
-          (item) => !item.postalCode,
-        ) ?? null,
+        stillingsData?.stilling?.locationList
+          ?.filter((item) => !item.postalCode)
+          .map((item) => {
+            if (item.municipal) {
+              return {
+                municipal: capitalize(item.municipal),
+                municipalCode: item.municipalCode,
+              };
+            }
+            if (item.county) {
+              return { county: capitalize(item.county) };
+            }
+            if (item.country) {
+              return { country: capitalize(item.country) };
+            }
+            return null;
+          })
+          .filter((item): item is NonNullable<typeof item> => item !== null) ??
+        null,
     },
     praktiskInfo: {
       omfangKode: stillingsData?.stilling?.properties?.jobpercentage ?? '',
