@@ -29,7 +29,7 @@ const RedigerFormidling: React.FC<RedigerFormidlingProps> = ({ children }) => {
       </Heading>
 
       <VelgStillingTittel
-        valgtTittel={watch('omStillingen.janzz')?.name ?? ''}
+        valgtJanzz={watch('omStillingen.janzz')}
         callBack={(val) => setValue('omStillingen.janzz', val)}
       />
       <div>

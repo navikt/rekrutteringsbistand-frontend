@@ -1,22 +1,23 @@
-import { TextField } from '@navikt/ds-react';
+import { TrashIcon } from '@navikt/aksel-icons';
+import { Button, TextField } from '@navikt/ds-react';
 import * as React from 'react';
-import { useFieldArray, useFormContext } from 'react-hook-form';
 import { usePostData } from '../api/stilling/geografi/postData/usePostData';
 import { GeografiDTO } from '../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
-import { StillingsDataForm } from '../stilling/[stillingsId]/rediger/redigerFormType.zod';
 
 export interface VelgPoststedProps {
   location: GeografiDTO;
-  fieldId: string;
+  index: number;
+  oppdater: (index: number, data: GeografiDTO) => void;
+  fjern: () => void;
 }
 
-const VelgPoststed: React.FC<VelgPoststedProps> = ({ location, fieldId }) => {
+const VelgPoststed: React.FC<VelgPoststedProps> = ({
+  location,
+  index,
+  oppdater,
+  fjern,
+}) => {
   const hook = usePostData();
-  const { setValue } = useFormContext<StillingsDataForm>();
-
-  const { fields } = useFieldArray({
-    name: 'omStillingen.locationList',
-  });
 
   const [postNummer, setPostNummer] = React.useState<string>(
     location?.postalCode ?? '',
@@ -25,11 +26,10 @@ const VelgPoststed: React.FC<VelgPoststedProps> = ({ location, fieldId }) => {
 
   React.useEffect(() => {
     if (postNummer && postSted) {
-      const index = fields.findIndex((f) => f.id === fieldId);
-      if (index !== -1) {
-        setValue(`omStillingen.locationList.${index}.postalCode`, postNummer);
-        setValue(`omStillingen.locationList.${index}.city`, postSted);
-      }
+      oppdater(index, {
+        postalCode: postNummer,
+        city: postSted,
+      });
     }
   }, [postNummer, postSted]);
 
@@ -43,7 +43,7 @@ const VelgPoststed: React.FC<VelgPoststedProps> = ({ location, fieldId }) => {
   }, [postNummer, hook.data]);
 
   return (
-    <div className='flex gap-4'>
+    <div className='flex gap-4 '>
       <div className='w-32'>
         <TextField
           label='Postnummer'
@@ -60,6 +60,12 @@ const VelgPoststed: React.FC<VelgPoststedProps> = ({ location, fieldId }) => {
       <div className='flex-1'>
         <TextField label='Poststed' value={postSted} readOnly />
       </div>
+      <Button
+        variant='tertiary'
+        icon={<TrashIcon />}
+        onClick={fjern}
+        title={'fjern'}
+      />
     </div>
   );
 

@@ -19,6 +19,8 @@ export const mapStillingTilForm = (
     ? JSON.parse(stillingsData.stilling.properties.workday)
     : [];
 
+  const janzz = stillingsData.stilling.categoryList?.[0] ?? {};
+  console.log(janzz);
   return {
     omVirksomheten: {
       beskrivelse:
@@ -34,14 +36,21 @@ export const mapStillingTilForm = (
     },
     omStillingen: {
       janzz:
-        (stillingsData?.stilling?.categoryList?.filter(
-          (item) => item.code?.toUpperCase() === 'JANZZ',
-        ) as any) ?? [],
+        (
+          stillingsData?.stilling?.categoryList?.filter(
+            (item) => item.categoryType?.toUpperCase() === 'JANZZ',
+          ) as any
+        )[0] ?? {},
       beskrivelse: stillingsData?.stilling?.properties?.adtext ?? '',
-      kommuneEllerLand: null,
-      adresse:
-        stillingsData?.stilling?.employer?.locationList?.[0]?.address ?? null,
-      locationList: stillingsData?.stilling?.employer?.locationList ?? null,
+
+      adresseLokasjoner:
+        stillingsData?.stilling?.employer?.locationList?.filter(
+          (item) => item.postalCode,
+        ) ?? null,
+      lokasjoner:
+        stillingsData?.stilling?.employer?.locationList?.filter(
+          (item) => !item.postalCode,
+        ) ?? null,
     },
     praktiskInfo: {
       omfangKode: stillingsData?.stilling?.properties?.jobpercentage ?? '',
@@ -108,7 +117,10 @@ export const mapFormTilStilling = (
       },
       published: formaterTilISODato(formData.innspurt.publiseres),
       expires: formaterTilISODato(formData.innspurt.avsluttes),
-      locationList: formData.omStillingen.locationList,
+      locationList: [
+        ...(formData.omStillingen.adresseLokasjoner ?? []),
+        ...(formData.omStillingen.lokasjoner ?? []),
+      ],
       source: formData.innspurt.stillingType,
     },
   };

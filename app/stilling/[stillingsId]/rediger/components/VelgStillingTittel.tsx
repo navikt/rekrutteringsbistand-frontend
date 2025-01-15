@@ -4,13 +4,15 @@ import { useStillingsTittel } from '../../../../api/pam-ontologi/stillingsTittel
 import { CategorySchemaDTO } from '../../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 
 export interface VelgStillingTittelProps {
-  valgtTittel?: string;
+  valgtJanzz?: CategorySchemaDTO;
   callBack: (category: CategorySchemaDTO) => void;
+  error?: string;
 }
 
 const VelgStillingTittel: React.FC<VelgStillingTittelProps> = ({
   callBack,
-  valgtTittel,
+  valgtJanzz,
+  error,
 }) => {
   const [valg, setValg] = React.useState<{ label: string; value: string }[]>(
     [],
@@ -32,7 +34,8 @@ const VelgStillingTittel: React.FC<VelgStillingTittelProps> = ({
   }, [hook.data]);
   return (
     <UNSAFE_Combobox
-      placeholder={valgtTittel}
+      error={error}
+      placeholder={valgtJanzz?.name ?? ''}
       value={søkeVerdi}
       label='Velg yrkestittel (standard for yrkesklassifisering - JANZZ)'
       isLoading={hook.isLoading}

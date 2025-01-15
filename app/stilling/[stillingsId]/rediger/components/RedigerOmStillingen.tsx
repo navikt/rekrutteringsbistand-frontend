@@ -12,7 +12,8 @@ export const RedigerOmStillingen: React.FC<{
   nextStep: () => void;
   forrigeSteg: () => void;
 }> = ({ nextStep, forrigeSteg, stegNummer }) => {
-  const { setValue, watch, trigger } = useFormContext<StillingsDataForm>();
+  const { setValue, watch, trigger, formState } =
+    useFormContext<StillingsDataForm>();
 
   const handleStepSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,7 +34,7 @@ export const RedigerOmStillingen: React.FC<{
           href='https://arbeidsplassen.nav.no/skikkelig-bra-stillingsannonse'
         >
           skikkelig god stillingsannonse
-        </Link>{' '}
+        </Link>
         (åpnes i ny fane).
       </span>
 
@@ -41,8 +42,9 @@ export const RedigerOmStillingen: React.FC<{
         <div className='space-y-8'>
           <div>
             <VelgStillingTittel
-              valgtTittel={watch('omStillingen.janzz')?.name ?? ''}
+              valgtJanzz={watch('omStillingen.janzz')}
               callBack={(val) => setValue('omStillingen.janzz', val)}
+              error={formState.errors.omStillingen?.janzz?.message}
             />
           </div>
           <div>
