@@ -23,7 +23,6 @@ const RedigerStillingDev: React.FC = () => {
 
   const lagreData = async () => {
     setIsLoading(true);
-    await oppdaterStilling(JSON.parse(editorData));
     setIsLoading(false);
     window.location.reload();
   };
