@@ -6,7 +6,7 @@ import { useGeografi } from '../../../../api/stilling/geografi/useGeografi';
 import { StillingsDataForm } from '../redigerFormType.zod';
 
 const VelgKommuneFylkeEllerLand: React.FC = () => {
-  const { setValue, watch, getValues } = useFormContext<StillingsDataForm>();
+  const { setValue, watch } = useFormContext<StillingsDataForm>();
   const geografi = useGeografi();
   const [muligeValg, setMuligeValg] = useState<string[]>([]);
   const [søkeTekst, setSøkeTekst] = useState<string>('');
@@ -45,7 +45,7 @@ const VelgKommuneFylkeEllerLand: React.FC = () => {
             };
           }
         } else if (type === 'fylke') {
-          return { city: navn };
+          return { county: navn };
         } else if (type === 'land') {
           return { country: navn };
         }
@@ -54,8 +54,11 @@ const VelgKommuneFylkeEllerLand: React.FC = () => {
         (value): value is NonNullable<typeof value> => value !== undefined,
       );
 
-    setValue('omStillingen.lokasjoner', nyeVerdier);
-  }, [valgteVerdier]);
+    setValue('omStillingen.lokasjoner', nyeVerdier || [], {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
+  }, [valgteVerdier, setValue, geografi.data]);
 
   /**
    * Oppdater søket
