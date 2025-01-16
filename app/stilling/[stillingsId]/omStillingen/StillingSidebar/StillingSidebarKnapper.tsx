@@ -1,7 +1,6 @@
 'use client';
 
 import { Button } from '@navikt/ds-react';
-import { useRouter } from 'next/navigation';
 import * as React from 'react';
 import { useStillingsContext } from '../../StillingsContext';
 import StillingPrint from './StillingPrint';
@@ -14,8 +13,7 @@ interface StillingSidebarKnapperProps {
 const StillingSidebarKnapper: React.FC<StillingSidebarKnapperProps> = ({
   printRef,
 }) => {
-  const { erEier, stillingsData } = useStillingsContext();
-  const router = useRouter();
+  const { erEier, erDirektemeldt } = useStillingsContext();
 
   return (
     <>
@@ -23,7 +21,7 @@ const StillingSidebarKnapper: React.FC<StillingSidebarKnapperProps> = ({
         <StillingPrint printRef={printRef} />
       </div>
       {erEier && <EierStillingVisning />}
-      {!erEier && (
+      {!erEier && erDirektemeldt && (
         <Button variant='secondary' size='small' className='w-full h-5 my-2'>
           Overta stillingen
         </Button>

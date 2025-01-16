@@ -1,4 +1,4 @@
-import { Heading } from '@navikt/ds-react';
+import { Button, Heading } from '@navikt/ds-react';
 import * as React from 'react';
 import { useFormContext } from 'react-hook-form';
 import capitalizeEmployerName from '../../../../stilling-util';
@@ -41,6 +41,9 @@ const RedigerFormidling: React.FC<RedigerFormidlingProps> = ({ children }) => {
       <VelgAnsettelsesform />
       <VelgOppstartOgFrist skjulFrist />
       <VelgArbeidsTid />
+      <Button onClick={() => console.log(watch())}>
+        Etterregistrer formidling
+      </Button>
     </div>
   );
 };

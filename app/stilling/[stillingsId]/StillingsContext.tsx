@@ -14,6 +14,7 @@ interface StillingsContextType {
   erEier?: boolean;
   kandidatlisteId?: string;
   setForhåndsvisData: (data: StillingsDataDTO | null) => void;
+  erDirektemeldt: boolean;
 }
 
 const StillingsContext = React.createContext<StillingsContextType | undefined>(
@@ -66,6 +67,7 @@ const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
   return (
     <StillingsContext.Provider
       value={{
+        erDirektemeldt: stillingsData.stilling?.source === 'DIR',
         forhåndsvisData,
         stillingsData: forhåndsvisData ? forhåndsvisData : stillingsData,
         erEier,
