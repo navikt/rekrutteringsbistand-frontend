@@ -17,7 +17,8 @@ interface StillingSidebarKnapperProps {
 const StillingSidebarKnapper: React.FC<StillingSidebarKnapperProps> = ({
   printRef,
 }) => {
-  const { erEier, erDirektemeldt, stillingsData } = useStillingsContext();
+  const { erEier, erDirektemeldt, stillingsData, erFormidling } =
+    useStillingsContext();
   const { brukerData } = useApplikasjonContext();
 
   const [loading, setLoading] = useState(false);
@@ -28,13 +29,13 @@ const StillingSidebarKnapper: React.FC<StillingSidebarKnapperProps> = ({
     eierNavn: brukerData.navn,
   };
 
-  const kanOvertaStilling = erDirektemeldt && !erEier;
+  const kanOvertaStilling = !erFormidling && erDirektemeldt && !erEier;
 
   const harStillingsinfo = stillingsData.stillingsinfo !== null;
   const opprettetAvRekrutteringsbistand =
     stillingsData.stilling.createdBy === 'pam-rekrutteringsbistand';
   const kanOppretteKandidatliste =
-    harStillingsinfo && !erEier && !opprettetAvRekrutteringsbistand;
+    !harStillingsinfo && !erEier && !opprettetAvRekrutteringsbistand;
 
   const onOpprettKandidatliste = async () => {
     await setStillingsinfo(opprettStillingInfo).then(() =>
