@@ -81,11 +81,11 @@ export const mapStillingTilForm = (
       oppstart:
         stillingsData?.stilling?.properties?.starttime?.toString() ?? null,
       oppstartSnarest:
-        stillingsData?.stilling?.properties?.starttime === 'Snarest',
+        stillingsData?.stilling?.properties?.starttime === 'Etter avtale',
       søknadsfrist:
         stillingsData?.stilling?.properties?.applicationdue?.toString() ?? null,
       søknadsfristEtterAvtale:
-        stillingsData?.stilling?.properties?.applicationdue === 'etterAvtale',
+        stillingsData?.stilling?.properties?.applicationdue === 'Snarest',
       ansettelsesform:
         stillingsData?.stilling?.properties?.engagementtype ?? null,
       dager: workday,

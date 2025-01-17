@@ -82,9 +82,7 @@ export const OmStillingenSchema = z
 export const PraktiskInfoSchema = z
   .object({
     sektor: z.string().min(1, 'Sektor må velges').nullable(),
-    omfangKode: z.string({
-      required_error: 'Omfang må velges',
-    }),
+    omfangKode: z.string().min(1, 'Omfang må velges'),
     omfangProsent: z.string().nullable(),
     antallStillinger: z.number().min(1, 'Må ha minst én stilling'),
     oppstart: z.string().nullable(),

@@ -1,5 +1,5 @@
 'use client';
-import { ArrowForwardIcon, HikingTrailSignIcon } from '@navikt/aksel-icons';
+import { ArrowForwardIcon } from '@navikt/aksel-icons';
 import { Button, Tabs } from '@navikt/ds-react';
 
 import Link from 'next/link';
@@ -42,13 +42,6 @@ export default function StillingSide() {
             )}
           </div>
           <div className='items-center flex'>
-            <Button
-              disabled
-              variant='tertiary'
-              icon={<HikingTrailSignIcon title='Rediger' />}
-            >
-              Rapporter personvernsbrudd
-            </Button>
             <Link
               href={`/kandidat-sok/stilling/${stillingsData.stilling.uuid}`}
             >
