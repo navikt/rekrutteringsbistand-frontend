@@ -1,8 +1,12 @@
 import { Button, Heading } from '@navikt/ds-react';
+import router from 'next/router';
 import * as React from 'react';
+import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
+import { oppdaterStilling } from '../../../../../api/stilling/oppdater-stilling/oppdaterStilling';
 import capitalizeEmployerName from '../../../../stilling-util';
 import { useStillingsContext } from '../../../StillingsContext';
+import { mapFormTilStilling } from '../../mapStilling';
 import { StillingsDataForm } from '../../redigerFormType.zod';
 import VelgArbeidssted from '../VelgArbeidssted';
 import VelgStillingTittel from '../VelgStillingTittel';
@@ -17,8 +21,24 @@ export interface RedigerFormidlingProps {
 }
 
 const RedigerFormidling: React.FC<RedigerFormidlingProps> = ({ children }) => {
-  const { watch, setValue } = useFormContext<StillingsDataForm>();
+  const { getValues, setValue, watch } = useFormContext<StillingsDataForm>();
   const { stillingsData } = useStillingsContext();
+  const [loading, setLoading] = useState(false);
+
+  const lagreFormidling = async () => {
+    setLoading(true);
+    const nyStillingsData = mapFormTilStilling(getValues(), stillingsData);
+
+    const response = await oppdaterStilling(nyStillingsData);
+
+    if (response.stilling.uuid) {
+      router.push(`/stilling/${response.stilling.uuid}`);
+    } else {
+      alert('Feil ved opprettelse av stilling');
+    }
+
+    setLoading(false);
+  };
 
   return (
     <div className='flex flex-col mx-12 px-12 gap-8 w-[80%]'>
@@ -41,7 +61,7 @@ const RedigerFormidling: React.FC<RedigerFormidlingProps> = ({ children }) => {
       <VelgAnsettelsesform />
       <VelgOppstartOgFrist skjulFrist />
       <VelgArbeidsTid />
-      <Button onClick={() => console.log(watch())}>
+      <Button onClick={lagreFormidling} loading={loading}>
         Etterregistrer formidling
       </Button>
     </div>
