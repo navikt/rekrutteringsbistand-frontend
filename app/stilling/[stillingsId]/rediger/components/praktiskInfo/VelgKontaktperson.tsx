@@ -132,7 +132,7 @@ const VelgKontaktperson: React.FC = () => {
       <Heading size='medium'>Kontaktperson</Heading>
       <p>Vi må vite hvem som er kontaktperson for stillingen.</p>
       <p>
-        Kontaktperson er synlig for veiledere i NAV. Kandidater bes ta kontakt
+        Kontaktperson er synlig for veiledere i Nav. Kandidater bes ta kontakt
         med veileder for informasjon om stillingen.
       </p>
       {fields.map((field, index) => (

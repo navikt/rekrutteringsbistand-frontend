@@ -51,7 +51,7 @@ const Statistikk: React.FC = () => {
       <div className={'flex  mb-8 gap-6 items-center'}>
         <div className='flex flex-col'>
           <Heading level='2' size='medium'>
-            Ditt NAV-kontor
+            Ditt Nav-kontor
           </Heading>
           <BodyShort>
             {valgtNavKontor?.navKontorNavn ??

@@ -35,7 +35,19 @@ export const RedigerInnspurt: React.FC<{
 
     const nyStillingsData = mapFormTilStilling(data, stillingsData);
 
-    const response = await oppdaterStilling(nyStillingsData);
+    const publiserStillingsData = {
+      ...nyStillingsData,
+      stilling: {
+        ...nyStillingsData.stilling,
+        status: 'ACTIVE',
+        administration: {
+          ...nyStillingsData.stilling.administration,
+          status: 'DONE',
+        },
+      },
+    };
+
+    const response = await oppdaterStilling(publiserStillingsData);
 
     if (response.stilling.uuid) {
       router.push(`/stilling/${response.stilling.uuid}`);

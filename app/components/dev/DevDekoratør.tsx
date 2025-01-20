@@ -90,7 +90,7 @@ const DevDekoratør: React.FC = () => {
           </Select>
         </div>
         <span>
-          <strong>NAV Kontor:</strong> {valgtNavKontor?.navKontorNavn} -{' '}
+          <strong>Nav Kontor:</strong> {valgtNavKontor?.navKontorNavn} -{' '}
           {valgtNavKontor?.navKontor}
         </span>
       </div>

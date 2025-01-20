@@ -102,7 +102,7 @@ export const RedigerOmTilrettelegging: React.FC<{
             >
               Lønnstilskudd - midlertidig eller varig
               <div className='text-sm text-gray-600'>
-                Kandidaten blir ansatt under vanlige arbeidsvilkår, men NAV
+                Kandidaten blir ansatt under vanlige arbeidsvilkår, men Nav
                 kompenserer en del av lønnen.
               </div>
             </TilretteleggingCheckbox>
@@ -111,7 +111,7 @@ export const RedigerOmTilrettelegging: React.FC<{
             >
               Mentor (tilskudd)
               <div className='text-sm text-gray-600'>
-                En kollega hjelper kandidaten med å mestre jobben. NAV
+                En kollega hjelper kandidaten med å mestre jobben. Nav
                 kompenserer virksomheten med mentortilskudd.
               </div>
             </TilretteleggingCheckbox>
