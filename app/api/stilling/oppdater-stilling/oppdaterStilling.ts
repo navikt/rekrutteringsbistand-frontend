@@ -3,8 +3,8 @@ import { stillingMock } from '../rekrutteringsbistandstilling/[slug]/mocks/still
 
 const opprettNyStillingEndepunkt = '/api/stilling/oppdater-stilling';
 
-export const oppdaterStilling = async (stillingData: any) => {
-  return await putApi(opprettNyStillingEndepunkt, stillingData);
+export const oppdaterStilling = (stillingData: any) => {
+  return putApi(opprettNyStillingEndepunkt, stillingData);
 };
 
 export const oppdaterStillingMirage = (server: any) => {

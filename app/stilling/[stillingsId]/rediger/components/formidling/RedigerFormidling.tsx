@@ -25,27 +25,27 @@ const RedigerFormidling: React.FC<RedigerFormidlingProps> = ({ children }) => {
   const { getValues, setValue, watch } = useFormContext<StillingsDataForm>();
   const { stillingsData } = useStillingsContext();
   const [loading, setLoading] = useState(false);
-  const varsel = useVisVarsling();
+  const visVarsling = useVisVarsling();
 
   const lagreFormidling = async () => {
     setLoading(true);
     const nyStillingsData = mapFormTilStilling(getValues(), stillingsData);
 
     try {
-      const response = await oppdaterStilling(nyStillingsData);
+      await oppdaterStilling(nyStillingsData);
 
-      if (response.stilling?.uuid) {
-        router.push(`/stilling/${response.stilling.uuid}`);
-      } else {
-        throw new Error('Mangler UUID i responsen');
-      }
+      visVarsling({
+        innhold: 'Formidling ble lagret, åpner formidling.',
+        alertType: 'success',
+      });
+
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+      router.push(`/stilling/${stillingsData.stilling.uuid}`);
     } catch (error) {
-      varsel({
-        innhold: 'Feil ved oppdatering av stilling',
+      visVarsling({
+        innhold: 'Feil ved lagring av formidling',
         alertType: 'error',
       });
-    } finally {
-      setLoading(false);
     }
   };
 
