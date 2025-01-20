@@ -9,7 +9,7 @@ import { stillingMock } from './mocks/stillingMock';
 import { StillingDataSchema } from './stilling.dto';
 
 const stillingEndepunkt = (stillingsId: string) =>
-  `${StillingAPI.internUrl}/rekrutteringsbistandstilling/${stillingsId}`;
+  `${StillingAPI.internUrl}/${stillingsId}`;
 
 export const useStilling = (stillingsId: string) =>
   useSWRImmutable(
