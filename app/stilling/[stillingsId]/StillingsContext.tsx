@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useKandidatlisteId } from '../../api/kandidat/useKandidatlisteId';
 import { StillingsDataDTO } from '../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { useStilling } from '../../api/stilling/rekrutteringsbistandstilling/[slug]/useStilling';
@@ -49,7 +49,8 @@ const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
   data,
   children,
 }) => {
-  const kandidatListeIdSWR = useKandidatlisteId(data.stilling.uuid ?? '');
+  const kandidatListeIdSWR = useKandidatlisteId(data.stilling.uuid);
+
   const {
     brukerData: { ident },
   } = useApplikasjonContext();
@@ -59,10 +60,14 @@ const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
   const [stillingsData, setStillingsData] =
     React.useState<StillingsDataDTO>(data);
 
-  const erEier = eierStilling({
-    stillingsData: stillingsData,
-    navIdent: ident,
-  });
+  const erEier = useMemo(
+    () =>
+      eierStilling({
+        stillingsData: stillingsData,
+        navIdent: ident,
+      }),
+    [stillingsData, ident],
+  );
 
   return (
     <StillingsContext.Provider
