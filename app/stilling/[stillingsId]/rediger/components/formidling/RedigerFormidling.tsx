@@ -29,15 +29,20 @@ const RedigerFormidling: React.FC<RedigerFormidlingProps> = ({ children }) => {
     setLoading(true);
     const nyStillingsData = mapFormTilStilling(getValues(), stillingsData);
 
-    const response = await oppdaterStilling(nyStillingsData);
+    try {
+      const response = await oppdaterStilling(nyStillingsData);
+      const data = await response.json();
 
-    if (response.stilling.uuid) {
-      router.push(`/stilling/${response.stilling.uuid}`);
-    } else {
-      alert('Feil ved opprettelse av stilling');
+      if (data.stilling?.uuid) {
+        router.push(`/stilling/${data.stilling.uuid}`);
+      } else {
+        throw new Error('Mangler UUID i responsen');
+      }
+    } catch (error) {
+      alert('Feil ved oppdatering av stilling');
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   return (
