@@ -1,7 +1,7 @@
 import { FilesIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import * as React from 'react';
-import { kopierStilling } from '../../../../../api/stilling/rekrutteringsbistandstilling/[slug]/kopier/[slug]/kopierStilling';
+import { kopierStilling } from '../../../../../api/stilling/rekrutteringsbistandstilling/kopier/[slug]/kopierStilling';
 import { useVisVarsling } from '../../../../../components/varsling/Varsling';
 export interface KopierStillingProps {
   stillingsId: string;
