@@ -4,6 +4,7 @@ import * as React from 'react';
 import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { oppdaterStilling } from '../../../../../api/stilling/oppdater-stilling/oppdaterStilling';
+import { useVisVarsling } from '../../../../../components/varsling/Varsling';
 import capitalizeEmployerName from '../../../../stilling-util';
 import { useStillingsContext } from '../../../StillingsContext';
 import { mapFormTilStilling } from '../../mapStilling';
@@ -24,6 +25,7 @@ const RedigerFormidling: React.FC<RedigerFormidlingProps> = ({ children }) => {
   const { getValues, setValue, watch } = useFormContext<StillingsDataForm>();
   const { stillingsData } = useStillingsContext();
   const [loading, setLoading] = useState(false);
+  const varsel = useVisVarsling();
 
   const lagreFormidling = async () => {
     setLoading(true);
@@ -31,15 +33,17 @@ const RedigerFormidling: React.FC<RedigerFormidlingProps> = ({ children }) => {
 
     try {
       const response = await oppdaterStilling(nyStillingsData);
-      const data = await response.json();
 
-      if (data.stilling?.uuid) {
-        router.push(`/stilling/${data.stilling.uuid}`);
+      if (response.stilling?.uuid) {
+        router.push(`/stilling/${response.stilling.uuid}`);
       } else {
         throw new Error('Mangler UUID i responsen');
       }
     } catch (error) {
-      alert('Feil ved oppdatering av stilling');
+      varsel({
+        innhold: 'Feil ved oppdatering av stilling',
+        alertType: 'error',
+      });
     } finally {
       setLoading(false);
     }
