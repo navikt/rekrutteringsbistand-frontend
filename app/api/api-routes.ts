@@ -32,7 +32,7 @@ export const ForespørselDelingAvCvAPI: Iroute = {
 };
 
 export const StillingAPI: Iroute = {
-  api_route: '/api/stilling',
+  api_route: '',
   api_url: process.env.STILLING_API ?? '',
   internUrl: '/api/stilling',
   scope: `api://${gcp}.toi.rekrutteringsbistand-stilling-api/.default`,
