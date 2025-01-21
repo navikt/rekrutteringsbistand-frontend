@@ -71,7 +71,7 @@ export const OpprettStillingKnapp: React.FC<OpprettStillingProps> = ({
       variant='primary'
       disabled={!arbeidsgiver || !stillingskategori}
     >
-      Opprett stilling
+      Opprett
     </Button>
   );
 };

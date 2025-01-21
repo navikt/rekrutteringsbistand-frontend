@@ -6,7 +6,10 @@ import { stillingMock } from '../rekrutteringsbistandstilling/[slug]/mocks/still
 const opprettNyStillingEndepunkt = '/api/stilling/ny-stilling';
 
 export const opprettNyStilling = (stilling: OpprettNyStillingDTO) => {
-  return postApi(opprettNyStillingEndepunkt, stilling);
+  return postApi(opprettNyStillingEndepunkt, {
+    ...stilling,
+    administration: null,
+  });
 };
 
 export const opprettNyStillingMirage = (server: any) => {
