@@ -1,24 +1,6 @@
 import { format, lastDayOfMonth, startOfMonth } from 'date-fns';
 import { nb } from 'date-fns/locale';
 
-export const formaterTilISODato = (dato: string | null) => {
-  if (!dato) return null;
-  try {
-    // Handle ISO string format
-    if (dato.includes('T')) {
-      return dato; // Already in correct format
-    }
-    // Convert other date formats
-    const parsedDate = new Date(dato);
-    if (isNaN(parsedDate.getTime())) {
-      return null; // Invalid date
-    }
-    return parsedDate.toISOString();
-  } catch (e) {
-    return null; // Return null if parsing fails
-  }
-};
-
 export const visDato = (dato: Date) => format(new Date(dato), 'dd.MM.yyyy');
 export const visDatoMedMåned = (dato: Date) =>
   format(new Date(dato), 'dd.MMMM yyyy', { locale: nb });

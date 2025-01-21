@@ -10,7 +10,6 @@ import {
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { FieldErrors, SubmitHandler, useFormContext } from 'react-hook-form';
-import { oppdaterStilling } from '../../../../api/stilling/oppdater-stilling/oppdaterStilling';
 import { useStillingsContext } from '../../StillingsContext';
 import { mapFormTilStilling } from '../mapStilling';
 import { StillingsDataForm } from '../redigerFormType.zod';
@@ -47,13 +46,13 @@ export const RedigerInnspurt: React.FC<{
       },
     };
 
-    const response = await oppdaterStilling(publiserStillingsData);
+    // const response = await oppdaterStilling(publiserStillingsData);
 
-    if (response.stilling.uuid) {
-      router.push(`/stilling/${response.stilling.uuid}`);
-    } else {
-      alert('Feil ved opprettelse av stilling');
-    }
+    // if (response.stilling.uuid) {
+    //   router.push(`/stilling/${response.stilling.uuid}`);
+    // } else {
+    //   alert('Feil ved opprettelse av stilling');
+    // }
 
     setIsLoading(false);
   };
