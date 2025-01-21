@@ -47,6 +47,10 @@ const StillingsTag: React.FC<IStillingTag> = ({ stillingsData, splitTags }) => {
 
   const stillingStatus = stillingsData.stilling.status as StillingsStatus;
 
+  const erFormidling =
+    stillingsData?.stillingsinfo?.stillingskategori ===
+    Stillingskategori.Formidling;
+
   const stillingenBlirPubliserDato =
     'stilling' in stillingsData &&
     'activationOnPublishingDate' in stillingsData.stilling
@@ -143,7 +147,7 @@ const StillingsTag: React.FC<IStillingTag> = ({ stillingsData, splitTags }) => {
       )}
       {direktemeldtTag && (
         <Tag className={'mr-2 mb-4'} size='small' variant='alt1'>
-          Intern
+          Intern {erFormidling ? 'formidling' : ''}
         </Tag>
       )}
       {arbeidsplassenTag && (
