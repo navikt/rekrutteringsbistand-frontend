@@ -68,10 +68,9 @@ export function generateElasticSearchQuery(
     );
   }
 
-  if (!formidlinger && filter.kategori.length > 0) {
+  if (!formidlinger) {
     valgteFilter.push(...esKategori(filter.kategori));
-  }
-  if (formidlinger) {
+  } else if (formidlinger) {
     valgteFilter.push(...esKategoriFormidling());
   }
 

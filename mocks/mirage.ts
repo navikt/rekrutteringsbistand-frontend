@@ -22,7 +22,6 @@ import { geografiMirage } from '../app/api/stilling/geografi/useGeografi';
 import { opprettNyStillingMirage } from '../app/api/stilling/ny-stilling/opprettNyStilling';
 import { oppdaterStillingMirage } from '../app/api/stilling/oppdater-stilling/oppdaterStilling';
 import { stillingMirage } from '../app/api/stilling/rekrutteringsbistandstilling/[slug]/useStilling';
-import { stillingssøkMirage } from '../app/api/stillings-sok/useStillingssøk';
 
 export function makeServer({ environment = 'test' } = {}) {
   let server = createServer({
@@ -51,12 +50,13 @@ export function makeServer({ environment = 'test' } = {}) {
       kontorSøkMirage(this);
       kandidatlisteoversiktMirage(this);
       kandidatStillingsSøkMirage(this);
-      // stillingssøk
-      stillingssøkMirage(this);
       kandidatNavnMirage(this);
       arenaKandidatnrMirage(this);
       postDataMirage(this);
       stillingsTittelMirage(this);
+
+      // stillingssøk mock kan disables ved ES søk
+      // stillingssøkMirage(this);
       this.passthrough('*');
     },
   });
