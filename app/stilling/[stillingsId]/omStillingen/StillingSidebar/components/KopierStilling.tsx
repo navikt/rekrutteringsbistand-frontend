@@ -13,7 +13,7 @@ const KopierStilling: React.FC<KopierStillingProps> = ({ stillingsId }) => {
   const onKopierStilling = async () => {
     try {
       setLoading(true);
-      await kopierStilling(stillingsId);
+      const response = await kopierStilling(stillingsId);
 
       varsel({
         innhold: 'Stilling dupliserte',

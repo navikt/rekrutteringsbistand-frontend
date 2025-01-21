@@ -4,26 +4,27 @@ import {
   ClockIcon,
   HourglassIcon,
   LocationPinIcon,
-  PersonGroupIcon,
   TimerStartIcon,
 } from '@navikt/aksel-icons';
 import { Heading } from '@navikt/ds-react';
 import * as React from 'react';
 import { getWorkLocationsAsString } from '../../../../util/locationUtil';
-import { useAntallKandidater } from '../../../api/kandidat/useAntallKandidater';
+import { useKandidatlisteId } from '../../../api/kandidat/useKandidatlisteId';
 import { GeografiListDTO } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import TekstMedIkon from '../../../components/TekstMedIkon';
 import { useStillingsContext } from '../StillingsContext';
 import OmAnnonsen from '../components/OmAnnonsen';
 import OmBedriften from '../components/OmBedriften';
+import AntallKandidater from './AntallKandidater';
 import StillingSidebar from './StillingSidebar/StillingSidebar';
 import StillingsTekst from './StillingsTekst';
 
 const OmStillingen: React.FC = () => {
   const contentRef = React.useRef<HTMLDivElement>(null);
 
-  const { stillingsData, kandidatlisteId } = useStillingsContext();
-  const antallKandidaterSWR = useAntallKandidater(kandidatlisteId);
+  const { stillingsData } = useStillingsContext();
+
+  const kandidatlisteIdHook = useKandidatlisteId(stillingsData.stilling.uuid);
 
   const lokasjon = getWorkLocationsAsString(
     stillingsData.stilling.locationList as GeografiListDTO,
@@ -76,9 +77,8 @@ const OmStillingen: React.FC = () => {
                 ikon={<HourglassIcon />}
               />
               <TekstMedIkon tekst={applicationdue} ikon={<TimerStartIcon />} />
-              <TekstMedIkon
-                tekst={`${antallKandidaterSWR.data?.antallKandidater ?? '-'} kandidater`}
-                ikon={<PersonGroupIcon />}
+              <AntallKandidater
+                kandidatlisteId={kandidatlisteIdHook.data?.kandidatlisteId}
               />
             </div>
           </div>

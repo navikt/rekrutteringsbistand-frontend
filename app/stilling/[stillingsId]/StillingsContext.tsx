@@ -1,6 +1,5 @@
 'use client';
 import React, { useMemo } from 'react';
-import { useKandidatlisteId } from '../../api/kandidat/useKandidatlisteId';
 import { StillingsDataDTO } from '../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { useStilling } from '../../api/stilling/rekrutteringsbistandstilling/[slug]/useStilling';
 import { useApplikasjonContext } from '../../ApplikasjonContext';
@@ -12,7 +11,6 @@ interface StillingsContextType {
   forhåndsvisData: StillingsDataDTO | null;
   erFormidling: boolean;
   erEier?: boolean;
-  kandidatlisteId?: string;
   setForhåndsvisData: (data: StillingsDataDTO | null) => void;
   erDirektemeldt: boolean;
 }
@@ -49,8 +47,6 @@ const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
   data,
   children,
 }) => {
-  const kandidatListeIdSWR = useKandidatlisteId(data.stilling.uuid);
-
   const {
     brukerData: { ident },
   } = useApplikasjonContext();
@@ -78,7 +74,6 @@ const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
         erEier,
         erFormidling:
           stillingsData.stillingsinfo?.stillingskategori === 'FORMIDLING',
-        kandidatlisteId: kandidatListeIdSWR.data?.kandidatlisteId,
         setForhåndsvisData,
       }}
     >
