@@ -29,6 +29,11 @@ export const OpprettStillingKnapp: React.FC<OpprettStillingProps> = ({
       const stilling: OpprettNyStillingDTO = {
         kategori: stillingskategori,
         stilling: {
+          administration: {
+            status: 'PENDING',
+            reportee: `${fornavn} ${etternavn}`,
+            navIdent: ident ?? '',
+          },
           createdBy: 'pam-rekrutteringsbistand',
           updatedBy: 'pam-rekrutteringsbistand',
           source: 'DIR',

@@ -40,6 +40,10 @@ export const RedigerInnspurt: React.FC<{
       stilling: {
         ...nyStillingsData.stilling,
         status: 'ACTIVE',
+        administration: {
+          ...nyStillingsData.stilling.administration,
+          status: 'DONE',
+        },
       },
     };
 

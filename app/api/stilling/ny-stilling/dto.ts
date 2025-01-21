@@ -11,6 +11,13 @@ interface NyStillingStillingDTO {
   employer: NyEmployerDTO;
   medium: string;
   businessName: string;
+  administration: NyAdministrationDTO;
+}
+
+interface NyAdministrationDTO {
+  status: string;
+  reportee: string;
+  navIdent: string;
 }
 
 interface NyEmployerDTO {

@@ -52,14 +52,14 @@ const StillingSidebarKnapper: React.FC<StillingSidebarKnapperProps> = ({
         eierNavident: brukerData.ident,
         eierNavn: brukerData.navn,
       },
-      // stilling: {
-      //   ...stillingsData.stilling,
-      //   administration: {
-      //     ...stillingsData.stilling.administration,
-      //     navIdent: brukerData.ident,
-      //     reportee: brukerData.navn,
-      //   },
-      // },
+      stilling: {
+        ...stillingsData.stilling,
+        administration: {
+          ...stillingsData.stilling.administration,
+          navIdent: brukerData.ident,
+          reportee: brukerData.navn,
+        },
+      },
       //TODO Endre til å trigge refetch og error håndtering
     }).then(() => window.location.reload());
   };
