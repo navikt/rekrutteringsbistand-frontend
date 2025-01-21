@@ -35,11 +35,6 @@ export const OpprettStillingKnapp: React.FC<OpprettStillingProps> = ({
           medium: 'DIR',
           businessName: arbeidsgiver.name,
           privacy: 'INTERNAL_NOT_SHOWN',
-          administration: {
-            status: 'PENDING',
-            reportee: `${fornavn} ${etternavn}`,
-            navIdent: ident ?? '',
-          },
           employer: {
             orgnr: arbeidsgiver.orgnr ?? '',
             name: arbeidsgiver.name,

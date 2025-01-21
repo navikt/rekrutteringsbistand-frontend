@@ -8,16 +8,9 @@ interface NyStillingStillingDTO {
   updatedBy: string;
   source: string;
   privacy: string;
-  administration: NyAdministrationDTO;
   employer: NyEmployerDTO;
   medium: string;
   businessName: string;
-}
-
-interface NyAdministrationDTO {
-  status: string;
-  reportee: string;
-  navIdent: string;
 }
 
 interface NyEmployerDTO {

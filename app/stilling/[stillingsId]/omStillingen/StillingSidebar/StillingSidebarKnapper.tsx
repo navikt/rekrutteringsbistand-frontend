@@ -47,14 +47,19 @@ const StillingSidebarKnapper: React.FC<StillingSidebarKnapperProps> = ({
     setLoading(true);
     await oppdaterStilling({
       ...stillingsData,
-      stilling: {
-        ...stillingsData.stilling,
-        administration: {
-          ...stillingsData.stilling.administration,
-          navIdent: brukerData.ident,
-          reportee: brukerData.navn,
-        },
+      stillingsInfo: {
+        ...stillingsData.stillingsinfo,
+        eierNavident: brukerData.ident,
+        eierNavn: brukerData.navn,
       },
+      // stilling: {
+      //   ...stillingsData.stilling,
+      //   administration: {
+      //     ...stillingsData.stilling.administration,
+      //     navIdent: brukerData.ident,
+      //     reportee: brukerData.navn,
+      //   },
+      // },
       //TODO Endre til å trigge refetch og error håndtering
     }).then(() => window.location.reload());
   };
