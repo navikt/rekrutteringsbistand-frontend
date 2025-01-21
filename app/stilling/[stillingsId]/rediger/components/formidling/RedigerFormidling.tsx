@@ -1,5 +1,5 @@
 import { Button, Heading } from '@navikt/ds-react';
-import router from 'next/router';
+import { useRouter } from 'next/navigation';
 import * as React from 'react';
 import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
@@ -26,11 +26,10 @@ const RedigerFormidling: React.FC<RedigerFormidlingProps> = ({ children }) => {
   const { stillingsData } = useStillingsContext();
   const [loading, setLoading] = useState(false);
   const visVarsling = useVisVarsling();
-
+  const router = useRouter();
   const lagreFormidling = async () => {
     setLoading(true);
     const nyStillingsData = mapFormTilStilling(getValues(), stillingsData);
-
     try {
       await oppdaterStilling(nyStillingsData);
 
@@ -38,15 +37,16 @@ const RedigerFormidling: React.FC<RedigerFormidlingProps> = ({ children }) => {
         innhold: 'Formidling ble lagret, åpner formidling.',
         alertType: 'success',
       });
+
+      console.log(nyStillingsData);
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+      // router.push(`/stilling/${stillingsData.stilling.uuid}`);
     } catch (error) {
       visVarsling({
         innhold: 'Feil ved lagring av formidling',
         alertType: 'error',
       });
     }
-
-    await new Promise((resolve) => setTimeout(resolve, 3000));
-    router.push(`/stilling/${stillingsData.stilling.uuid}`);
   };
 
   return (

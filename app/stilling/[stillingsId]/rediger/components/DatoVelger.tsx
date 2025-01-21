@@ -5,7 +5,7 @@ import React from 'react';
 interface DatoVelgerProps {
   error?: string;
   disabled?: boolean;
-  fraDato?: string;
+  fraDato?: string | null;
   label?: string;
   setDato: (date: string | undefined) => void;
 }

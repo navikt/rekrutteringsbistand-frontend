@@ -123,7 +123,7 @@ export const RedigerInnspurt: React.FC<{
         </BodyShort>
         <div className='flex gap-4 mb-4'>
           <DatoVelger
-            fraDato={watch('innspurt.publiseres') ?? new Date()}
+            fraDato={watch('innspurt.publiseres')}
             label='Publiseres'
             setDato={(val) =>
               val ? setValue('innspurt.publiseres', val) : null
@@ -131,7 +131,7 @@ export const RedigerInnspurt: React.FC<{
           />
           <DatoVelger
             label='Siste visningsdato'
-            fraDato={watch('innspurt.avsluttes') ?? undefined}
+            fraDato={watch('innspurt.avsluttes')}
             setDato={(val) =>
               val ? setValue('innspurt.avsluttes', val) : null
             }

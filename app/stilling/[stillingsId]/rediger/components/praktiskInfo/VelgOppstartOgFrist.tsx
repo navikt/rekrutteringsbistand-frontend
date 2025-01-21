@@ -11,7 +11,7 @@ export interface VelgOppstartOgFristProps {
 const VelgOppstartOgFrist: React.FC<VelgOppstartOgFristProps> = ({
   skjulFrist,
 }) => {
-  const { watch, control } = useFormContext<StillingsDataForm>();
+  const { watch, control, setValue } = useFormContext<StillingsDataForm>();
 
   return (
     <div className='grid grid-cols-2 gap-4'>
@@ -33,25 +33,19 @@ const VelgOppstartOgFrist: React.FC<VelgOppstartOgFristProps> = ({
             </>
           )}
         />
-        <Controller
-          name='praktiskInfo.oppstart'
-          control={control}
-          render={({ field }) => (
-            <DatoVelger
-              fraDato={
-                typeof field.value === 'string' ? field.value : undefined
-              }
-              disabled={watch('praktiskInfo.oppstartSnarest')}
-              setDato={(val) => {
-                field.onChange(val);
-              }}
-            />
-          )}
+
+        <DatoVelger
+          disabled={watch('praktiskInfo.oppstartSnarest')}
+          fraDato={watch('praktiskInfo.oppstart')}
+          setDato={(val) =>
+            val ? setValue('praktiskInfo.oppstart', val) : null
+          }
         />
       </div>
       {!skjulFrist && (
         <div className='flex flex-col'>
           <Heading size='small'>Søknadsfrist</Heading>
+
           <Controller
             name='praktiskInfo.søknadsfristEtterAvtale'
             control={control}
@@ -68,23 +62,13 @@ const VelgOppstartOgFrist: React.FC<VelgOppstartOgFristProps> = ({
               </>
             )}
           />
-          <Controller
-            name='praktiskInfo.søknadsfrist'
-            control={control}
-            render={({ field, fieldState: { error } }) => (
-              <>
-                <DatoVelger
-                  error={error?.message}
-                  fraDato={
-                    typeof field.value === 'string' ? field.value : undefined
-                  }
-                  disabled={watch('praktiskInfo.søknadsfristEtterAvtale')}
-                  setDato={(val) => {
-                    field.onChange(val);
-                  }}
-                />
-              </>
-            )}
+
+          <DatoVelger
+            disabled={watch('praktiskInfo.søknadsfristEtterAvtale')}
+            fraDato={watch('praktiskInfo.søknadsfrist')}
+            setDato={(val) =>
+              val ? setValue('praktiskInfo.søknadsfrist', val) : null
+            }
           />
         </div>
       )}
