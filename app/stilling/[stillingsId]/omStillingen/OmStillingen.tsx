@@ -89,11 +89,9 @@ const OmStillingen: React.FC = () => {
             <OmAnnonsen />
           </div>
         </div>
-        {contentRef.current && (
-          <StillingSidebar
-            printRef={contentRef as React.RefObject<HTMLDivElement>}
-          />
-        )}
+        <StillingSidebar
+          printRef={contentRef as React.RefObject<HTMLDivElement>}
+        />
       </div>
     </div>
   );
