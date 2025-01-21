@@ -91,7 +91,6 @@ export const postApi = async (
         );
       }
     } else {
-      // Handle text responses or other content types
       return await response.text();
     }
   } else if (response.status === 404) {

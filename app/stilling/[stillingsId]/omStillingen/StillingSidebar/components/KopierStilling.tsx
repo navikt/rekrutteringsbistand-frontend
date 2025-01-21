@@ -11,19 +11,21 @@ const KopierStilling: React.FC<KopierStillingProps> = ({ stillingsId }) => {
   const [loading, setLoading] = React.useState(false);
   const varsel = useVisVarsling();
   const onKopierStilling = async () => {
-    setLoading(true);
-    const response = await kopierStilling(stillingsId);
+    try {
+      setLoading(true);
+      await kopierStilling(stillingsId);
 
-    if (response.status === 200) {
       varsel({
         innhold: 'Stilling dupliserte',
         alertType: 'success',
       });
-    } else {
+    } catch (error) {
       varsel({
         innhold: 'Feil ved duplisering av stilling',
         alertType: 'error',
       });
+    } finally {
+      setLoading(false);
     }
   };
 
