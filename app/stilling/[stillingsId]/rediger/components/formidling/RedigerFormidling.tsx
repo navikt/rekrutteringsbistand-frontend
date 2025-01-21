@@ -38,15 +38,15 @@ const RedigerFormidling: React.FC<RedigerFormidlingProps> = ({ children }) => {
         innhold: 'Formidling ble lagret, åpner formidling.',
         alertType: 'success',
       });
-
-      await new Promise((resolve) => setTimeout(resolve, 3000));
-      router.push(`/stilling/${stillingsData.stilling.uuid}`);
     } catch (error) {
       visVarsling({
         innhold: 'Feil ved lagring av formidling',
         alertType: 'error',
       });
     }
+
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+    router.push(`/stilling/${stillingsData.stilling.uuid}`);
   };
 
   return (
