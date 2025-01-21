@@ -1,3 +1,4 @@
+import { formaterTilISODato } from '../../../../util/dato';
 import { StillingsDataDTO } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 
 import { InkluderingsTag } from '../omStillingen/StillingSidebar/StillingInkludering';
@@ -134,8 +135,8 @@ export const mapFormTilStilling = (
         extent: formData.praktiskInfo.omfangKode,
         jobpercentage: formData.praktiskInfo.omfangProsent,
       },
-      published: formData.innspurt.publiseres,
-      expires: formData.innspurt.avsluttes,
+      published: formaterTilISODato(formData.innspurt.publiseres),
+      expires: formaterTilISODato(formData.innspurt.avsluttes),
       locationList: [
         ...(formData.omStillingen.adresseLokasjoner ?? []),
         ...(formData.omStillingen.lokasjoner ?? []),
