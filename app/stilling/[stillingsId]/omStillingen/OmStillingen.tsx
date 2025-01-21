@@ -9,7 +9,6 @@ import {
 import { Heading } from '@navikt/ds-react';
 import * as React from 'react';
 import { getWorkLocationsAsString } from '../../../../util/locationUtil';
-import { useKandidatlisteId } from '../../../api/kandidat/useKandidatlisteId';
 import { GeografiListDTO } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import TekstMedIkon from '../../../components/TekstMedIkon';
 import { useStillingsContext } from '../StillingsContext';
@@ -22,9 +21,7 @@ import StillingsTekst from './StillingsTekst';
 const OmStillingen: React.FC = () => {
   const contentRef = React.useRef<HTMLDivElement>(null);
 
-  const { stillingsData } = useStillingsContext();
-
-  const kandidatlisteIdHook = useKandidatlisteId(stillingsData.stilling.uuid);
+  const { stillingsData, kandidatlisteId } = useStillingsContext();
 
   const lokasjon = getWorkLocationsAsString(
     stillingsData.stilling.locationList as GeografiListDTO,
@@ -77,9 +74,7 @@ const OmStillingen: React.FC = () => {
                 ikon={<HourglassIcon />}
               />
               <TekstMedIkon tekst={applicationdue} ikon={<TimerStartIcon />} />
-              <AntallKandidater
-                kandidatlisteId={kandidatlisteIdHook.data?.kandidatlisteId}
-              />
+              <AntallKandidater kandidatlisteId={kandidatlisteId} />
             </div>
           </div>
 

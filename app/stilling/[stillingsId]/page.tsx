@@ -4,7 +4,6 @@ import { Button, Tabs } from '@navikt/ds-react';
 
 import Link from 'next/link';
 import { useQueryState } from 'nuqs';
-import { useKandidatlisteId } from '../../api/kandidat/useKandidatlisteId';
 import LeggTilKandidat from './components/LeggTilKandidat';
 import StillingsKandidater from './kandidater/StillingsKandidater';
 import { StillingsKandidaterFilterProvider } from './kandidater/StillingsKandidaterFilterContext';
@@ -12,9 +11,8 @@ import OmStillingen from './omStillingen/OmStillingen';
 import { useStillingsContext } from './StillingsContext';
 
 export default function StillingSide() {
-  const { erEier, stillingsData } = useStillingsContext();
+  const { erEier, stillingsData, kandidatlisteId } = useStillingsContext();
 
-  const kandidatlisteIdHook = useKandidatlisteId(stillingsData.stilling.uuid);
   const [fane, setFane] = useQueryState('visFane', {
     defaultValue: 'stilling',
     clearOnDefault: true,
@@ -39,7 +37,7 @@ export default function StillingSide() {
         <Tabs.List className='flex mb-2 w-full justify-between'>
           <div>
             <Tabs.Tab value='stilling' label='Om stillingen' />
-            {kandidatlisteIdHook.data?.kandidatlisteId && erEier && (
+            {kandidatlisteId && erEier && (
               <Tabs.Tab value='kandidater' label='Kandidater' />
             )}
           </div>
@@ -64,7 +62,7 @@ export default function StillingSide() {
         <Tabs.Panel value='stilling'>
           <OmStillingen />
         </Tabs.Panel>
-        {kandidatlisteIdHook.data?.kandidatlisteId && erEier && (
+        {kandidatlisteId && erEier && (
           <Tabs.Panel value='kandidater'>
             <StillingsKandidaterFilterProvider>
               <StillingsKandidater />

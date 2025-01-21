@@ -1,5 +1,6 @@
 'use client';
 import React, { useMemo } from 'react';
+import { useKandidatlisteId } from '../../api/kandidat/useKandidatlisteId';
 import { StillingsDataDTO } from '../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { useStilling } from '../../api/stilling/rekrutteringsbistandstilling/[slug]/useStilling';
 import { useApplikasjonContext } from '../../ApplikasjonContext';
@@ -13,6 +14,7 @@ interface StillingsContextType {
   erEier?: boolean;
   setForhåndsvisData: (data: StillingsDataDTO | null) => void;
   erDirektemeldt: boolean;
+  kandidatlisteId: string | null;
 }
 
 const StillingsContext = React.createContext<StillingsContextType | undefined>(
@@ -56,6 +58,18 @@ const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
   const [stillingsData, setStillingsData] =
     React.useState<StillingsDataDTO>(data);
 
+  const [kandidatlisteId, setKandidatlisteId] = React.useState<string | null>(
+    null,
+  );
+
+  const kandidatlisteIdHook = useKandidatlisteId(stillingsData.stilling.uuid);
+
+  React.useEffect(() => {
+    if (kandidatlisteIdHook.data) {
+      setKandidatlisteId(kandidatlisteIdHook.data.kandidatlisteId ?? null);
+    }
+  }, [kandidatlisteIdHook]);
+
   const erEier = useMemo(
     () =>
       eierStilling({
@@ -75,6 +89,7 @@ const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
         erFormidling:
           stillingsData.stillingsinfo?.stillingskategori === 'FORMIDLING',
         setForhåndsvisData,
+        kandidatlisteId,
       }}
     >
       {children}

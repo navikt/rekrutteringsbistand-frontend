@@ -5,7 +5,7 @@ import SWRLaster from '../../../components/SWRLaster';
 import TekstMedIkon from '../../../components/TekstMedIkon';
 
 export interface AntallKandidaterProps {
-  kandidatlisteId?: string;
+  kandidatlisteId: string | null;
 }
 
 const AntallKandidater: React.FC<AntallKandidaterProps> = ({
