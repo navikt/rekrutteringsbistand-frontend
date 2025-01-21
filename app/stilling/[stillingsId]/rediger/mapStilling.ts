@@ -30,6 +30,10 @@ export const mapStillingTilForm = (
         stillingsData?.stilling?.properties?.employerdescription?.toString() ??
         '',
       kontaktPersoner: stillingsData?.stilling?.contactList ?? [],
+      employerhomepage: stillingsData?.stilling?.properties?.employerhomepage,
+      facebookpage: stillingsData?.stilling?.properties?.facebookpage,
+      linkedinpage: stillingsData?.stilling?.properties?.linkedinpage,
+      twitteraddress: stillingsData?.stilling?.properties?.twitteraddress,
     },
     omTilrettelegging: {
       statligeInkluderingsdugnade: tags?.includes(
@@ -119,6 +123,10 @@ export const mapFormTilStilling = (
       properties: {
         ...existingData.stilling.properties,
         employerdescription: formData.omVirksomheten.beskrivelse,
+        employerhomepage: formData.omVirksomheten.employerhomepage,
+        facebookpage: formData.omVirksomheten.facebookpage,
+        linkedinpage: formData.omVirksomheten.linkedinpage,
+        twitteraddress: formData.omVirksomheten.twitteraddress,
         tags: JSON.stringify(formData.omTilrettelegging.tags),
         adtext: formData.omStillingen.beskrivelse,
         sector: formData.praktiskInfo.sektor,

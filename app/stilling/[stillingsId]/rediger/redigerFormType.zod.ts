@@ -6,6 +6,10 @@ import {
 
 export const OmVirksomhetenSchema = z.object({
   beskrivelse: z.string(),
+  employerhomepage: z.string().optional().nullable(),
+  facebookpage: z.string().optional().nullable(),
+  linkedinpage: z.string().optional().nullable(),
+  twitteraddress: z.string().optional().nullable(),
   kontaktPersoner: z
     .array(
       z

@@ -14,6 +14,10 @@ export const searchtagSchema = z.object({
 
 export const propertiesSchema = z
   .object({
+    employerhomepage: z.string().optional().nullable(),
+    facebookpage: z.string().optional().nullable(),
+    linkedinpage: z.string().optional().nullable(),
+    twitteraddress: z.string().optional().nullable(),
     jobpercentage: z.string().optional().nullable(),
     jobpercentagerange: z.string().optional().nullable(),
     extent: z.string().optional().nullable(),
@@ -46,7 +50,6 @@ export const propertiesSchema = z
     classification_input_source: z.string().optional().nullable(),
     sector: z.string().optional().nullable(),
     // workLanguage: z.string().optional().nullable(),
-    employerhomepage: z.string().optional().nullable(),
     salary: z.any(),
     industry: z.string().optional().nullable(),
     starttime: z.union([z.string(), z.boolean()]).optional().nullable(),
