@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useApplikasjonContext } from '../../../ApplikasjonContext';
 import { useKandidatContext } from '../KandidatContext';
 import KandidatErfaring from './components/KandidatErfaring';
 import KandidatFørerkort from './components/KandidatFørerkort';
@@ -16,6 +17,15 @@ export interface KandidatOversiktProps {
 
 const KandidatOversikt: React.FC<KandidatOversiktProps> = ({ children }) => {
   const { kandidatData } = useKandidatContext();
+  const { setValgtFnr } = useApplikasjonContext();
+
+  React.useEffect(() => {
+    if (kandidatData?.fodselsnummer) {
+      setValgtFnr(kandidatData.fodselsnummer);
+    } else {
+      setValgtFnr(null);
+    }
+  }, [kandidatData]);
 
   return (
     <div className='mt-10 flex'>
