@@ -22,30 +22,30 @@ const Profilkvalitet: React.FC = () => {
 
   React.useEffect(() => {
     if (kandidatData) {
-      let progress = 0;
+      let prosent = 0;
       let mangler: string[] = [];
       if (harØnsketJobbsted) {
-        progress += 20;
+        prosent += 20;
       } else {
         mangler.push('Ønsket jobbsted');
       }
       if (harJobbønske) {
-        progress += 20;
+        prosent += 20;
       } else {
         mangler.push('Jobbønske');
       }
       if (harKompetanse) {
-        progress += 20;
+        prosent += 20;
       } else {
         mangler.push('Kompetanse');
       }
       if (harSpråk) {
-        progress += 20;
+        prosent += 20;
       } else {
         mangler.push('Språk');
       }
       if (harBosted) {
-        progress += 20;
+        prosent += 20;
       } else {
         mangler.push('Bosted');
       }
