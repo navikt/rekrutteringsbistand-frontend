@@ -50,7 +50,7 @@ const Profilkvalitet: React.FC = () => {
         mangler.push('Bosted');
       }
 
-      setProgress(progress);
+      setProgress(prosent);
       setManglerFelt(mangler);
     }
   }, [kandidatData]);
