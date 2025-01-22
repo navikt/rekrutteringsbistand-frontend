@@ -71,8 +71,6 @@ export const ApplikasjonContextProvider: React.FC<
         ),
     );
 
-  console.log('🎺 valgtFnr', valgtFnr);
-
   return (
     <VarslingContextProvider>
       <ApplikasjonContext.Provider

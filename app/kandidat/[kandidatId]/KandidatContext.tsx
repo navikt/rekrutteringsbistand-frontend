@@ -6,6 +6,7 @@ import {
   KandidatsammendragDTO,
   useKandidatsammendrag,
 } from '../../api/kandidat-sok/useKandidatsammendrag';
+import { useApplikasjonContext } from '../../ApplikasjonContext';
 import SWRLaster from '../../components/SWRLaster';
 
 interface KandidatContextType {
@@ -52,6 +53,17 @@ const KandidatContextMedData: React.FC<KandidatContextMedDataProps> = ({
   kandidatId,
 }) => {
   const hook = useKandidatinformasjon(kandidatId);
+
+  const { setValgtFnr } = useApplikasjonContext();
+
+  React.useEffect(() => {
+    if (kandidatsammendragData?.fodselsnummer) {
+      setValgtFnr(kandidatsammendragData.fodselsnummer);
+    } else {
+      setValgtFnr(null);
+    }
+  }, [kandidatsammendragData]);
+
   return (
     <SWRLaster hook={hook}>
       {(kandidatData) => {
