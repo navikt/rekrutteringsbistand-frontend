@@ -77,19 +77,19 @@ export const useStillingForKandidat = (kandidatId: string | null) => {
       kandidatStillingssøk;
 
     const geografikoder =
-      geografiJobbonsker.length === 0
+      geografiJobbonsker?.length === 0
         ? [kommunenummerstring]
         : geografiJobbonsker
-            .map((g) => getNummerFraSted(g.geografiKode))
+            ?.map((g) => getNummerFraSted(g.geografiKode))
             .filter((kode): kode is string => kode !== null);
 
     const konverterteGeografikoder =
       konverterStederTilNåværendeKoder(geografikoder);
 
     return {
-      fylker: hentFylkerFraJobbønsker(konverterteGeografikoder),
-      kommuner: hentKommunerFraJobbønsker(konverterteGeografikoder),
-      yrkesønsker: hentYrkerFraJobbønsker(yrkeJobbonskerObj),
+      fylker: hentFylkerFraJobbønsker(konverterteGeografikoder ?? []),
+      kommuner: hentKommunerFraJobbønsker(konverterteGeografikoder ?? []),
+      yrkesønsker: hentYrkerFraJobbønsker(yrkeJobbonskerObj ?? []),
     };
   }, [kandidatStillingssøk]);
 
