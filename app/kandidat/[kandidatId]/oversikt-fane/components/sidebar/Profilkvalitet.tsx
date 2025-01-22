@@ -18,7 +18,7 @@ const Profilkvalitet: React.FC = () => {
   // Bosted
   const harBosted = kandidatData?.kommuneNavn !== null;
   // Språk
-  const harSpråk = (kandidatData?.sprak ?? []).length > 0;
+  const harSpråk = (kandidatData?.sprak?.length ?? 0) > 0;
 
   React.useEffect(() => {
     if (kandidatData) {
