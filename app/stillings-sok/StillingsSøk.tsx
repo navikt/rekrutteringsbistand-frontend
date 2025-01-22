@@ -48,9 +48,9 @@ const StillingsSøkLayout: React.FC<StillingsSøkProps> = ({
 }) => {
   const { portefølje, setPortefølje } = useStillingsSøkFilter();
 
-  const stillingssøkData = useStillingForKandidat(kandidatId ?? null);
+  const kandidatStillingssøkData = useStillingForKandidat(kandidatId ?? null);
 
-  if (kandidatId && stillingssøkData?.isLoading) {
+  if (kandidatId && kandidatStillingssøkData?.isLoading) {
     return <Sidelaster />;
   }
 

@@ -22,6 +22,7 @@ import { geografiMirage } from '../app/api/stilling/geografi/useGeografi';
 import { opprettNyStillingMirage } from '../app/api/stilling/ny-stilling/opprettNyStilling';
 import { oppdaterStillingMirage } from '../app/api/stilling/oppdater-stilling/oppdaterStilling';
 import { stillingMirage } from '../app/api/stilling/rekrutteringsbistandstilling/[slug]/useStilling';
+import { brukerStandardSøkMirage } from '../app/api/stilling/standardsok/useBrukersStandardsøk';
 
 export function makeServer({ environment = 'test' } = {}) {
   let server = createServer({
@@ -32,27 +33,28 @@ export function makeServer({ environment = 'test' } = {}) {
     },
 
     routes() {
-      brukerMirage(this);
-      kandidatlisteIdMirage(this);
-      geografiMirage(this);
-      kandidatlisteMirage(this);
       antallKandidaterMirage(this);
-      kandidatSokMirage(this);
-      statistikkMirage(this);
-      foresporselOmDelingAvCVStatistikkMirage(this);
-      stillingMirage(this);
-      opprettNyStillingMirage(this);
-      oppdaterStillingMirage(this);
-      finnArbeidsgiverMirage(this);
+      arenaKandidatnrMirage(this);
+      brukerMirage(this);
+      brukerStandardSøkMirage(this);
       decoratorDataMirage(this);
+      finnArbeidsgiverMirage(this);
+      foresporselOmDelingAvCVStatistikkMirage(this);
+      geografiMirage(this);
       kandidagsammendragMirage(this);
       kandidatinformasjonMirage(this);
-      kontorSøkMirage(this);
+      kandidatlisteIdMirage(this);
+      kandidatlisteMirage(this);
       kandidatlisteoversiktMirage(this);
-      kandidatStillingsSøkMirage(this);
       kandidatNavnMirage(this);
-      arenaKandidatnrMirage(this);
+      kandidatSokMirage(this);
+      kandidatStillingsSøkMirage(this);
+      kontorSøkMirage(this);
+      oppdaterStillingMirage(this);
+      opprettNyStillingMirage(this);
       postDataMirage(this);
+      statistikkMirage(this);
+      stillingMirage(this);
       stillingsTittelMirage(this);
 
       // stillingssøk mock kan disables ved ES søk

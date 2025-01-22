@@ -1,6 +1,7 @@
-import { Button, Search } from '@navikt/ds-react';
+import { Search } from '@navikt/ds-react';
 import * as React from 'react';
 import { useStillingsSøkFilter } from '../StillingsSøkContext';
+import StandardsøkKnapp from './StandardsøkKnapp';
 import GeografiFilter from './StillingsSøkFilter/GeografiFilter';
 import InkluderingFilter from './StillingsSøkFilter/InkluderingFilter';
 import KategoriFilter from './StillingsSøkFilter/KategoriFilter';
@@ -24,11 +25,7 @@ const StillingsSøkSidePanel: React.FC<{
         onChange={(e) => setSearchValue(e)}
         onSearchClick={(e) => setFritekst(e)}
       />
-      {!formidlinger && !kandidatId && (
-        <Button variant='secondary' className='w-full'>
-          Bruk mitt standardsøk
-        </Button>
-      )}
+      {!formidlinger && !kandidatId && <StandardsøkKnapp />}
       <StatusFilter />
       <GeografiFilter />
       {!formidlinger && <InkluderingFilter />}
