@@ -8,7 +8,7 @@ import KandidatKurs from './components/KandidatKurs';
 import KandidatSpråk from './components/KandidatSpråk';
 import KandidatUtdanning from './components/KandidatUtdanning';
 import KandidatØnsker from './components/KandidatØnsker';
-import KandidatOversiktSidebar from './KandidatOversiktSidebar';
+import KandidatOversiktSidebar from './components/sidebar/KandidatOversiktSidebar';
 
 export interface KandidatOversiktProps {
   children?: React.ReactNode | undefined;
@@ -16,6 +16,7 @@ export interface KandidatOversiktProps {
 
 const KandidatOversikt: React.FC<KandidatOversiktProps> = ({ children }) => {
   const { kandidatData } = useKandidatContext();
+
   return (
     <div className='mt-10 flex'>
       <div className='flex-grow'>

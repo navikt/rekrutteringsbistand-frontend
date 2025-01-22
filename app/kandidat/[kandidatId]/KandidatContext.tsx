@@ -63,7 +63,7 @@ const KandidatContextMedData: React.FC<KandidatContextMedDataProps> = ({
           <KandidatContext.Provider
             value={{
               kandidatId: kandidatId,
-              kandidatData: kandidatData as KandidatDataSchemaDTO, // todo hvorfor må vi gjøre dette?
+              kandidatData: kandidatData as KandidatDataSchemaDTO,
               kandidatsammendragData,
             }}
           >

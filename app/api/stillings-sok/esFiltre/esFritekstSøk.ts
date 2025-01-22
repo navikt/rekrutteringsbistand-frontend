@@ -3,7 +3,7 @@ export const esFritekstSøk = (fritekst: string, valgteFilter: any[]) => {
 
   const feltManSkalSøkeI: string[] = [];
 
-  // TODO Lag filter?
+  // TODO Se over / Lag filter?
   // feltManSkalSøkeI.push('stilling.employer.name', 'stilling.employer.orgnr');
   // feltManSkalSøkeI.push(`stilling.styrkEllerTittel`);
   // feltManSkalSøkeI.push('stilling.adtext_no');

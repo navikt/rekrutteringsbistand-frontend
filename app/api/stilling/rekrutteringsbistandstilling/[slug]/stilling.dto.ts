@@ -21,7 +21,7 @@ export const propertiesSchema = z
     jobpercentage: z.string().optional().nullable(),
     jobpercentagerange: z.string().optional().nullable(),
     extent: z.string().optional().nullable(),
-    applicationdue: z.union([z.string(), z.boolean()]).optional().nullable(), // TODO Husk å endre til string?,
+    applicationdue: z.union([z.string(), z.boolean()]).optional().nullable(),
     jobtitle: z.any(),
     keywords: z.string().optional().nullable(),
     positioncount: z.union([

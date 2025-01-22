@@ -1,4 +1,4 @@
-import { Table } from '@navikt/ds-react';
+import { Loader, Table } from '@navikt/ds-react';
 import * as React from 'react';
 import { kandidatHistorikkSchemaDTO } from '../../../api/kandidat/schema.zod';
 import { useKandidatListeoversikt } from '../../../api/kandidat/useKandidatListeoversikt';
@@ -25,27 +25,42 @@ const KandidatAktivitet: React.FC = () => {
           </Table.Row>
         </Table.Header>
         <Table.Body>
-          <SWRLaster hook={hook}>
+          <SWRLaster
+            hook={hook}
+            skeleton={
+              <Table.Row>
+                <Table.DataCell colSpan={100} className='text-center py-8'>
+                  <Loader size='xsmall' />
+                </Table.DataCell>
+              </Table.Row>
+            }
+          >
             {(data) => {
               return (
                 <>
-                  {data?.map((i: kandidatHistorikkSchemaDTO) => (
-                    <React.Fragment key={i.uuid}>
-                      {i.erMaskert ? (
-                        <TabellRad
-                          dato={i.lagtTilTidspunkt}
-                          arbeidsgiver={i.organisasjonNavn}
-                          tittel={i.tittel}
-                          stillingId={i.stillingId}
-                          lagtTilAv={i.lagtTilAvNavn}
-                          status={i.status}
-                          erMaskert
-                        />
-                      ) : i.stillingId ? (
-                        <HistoriskStillingRad historikkData={i} />
-                      ) : null}
-                    </React.Fragment>
-                  ))}
+                  {data
+                    ?.sort(
+                      (a, b) =>
+                        new Date(b.lagtTilTidspunkt).getTime() -
+                        new Date(a.lagtTilTidspunkt).getTime(),
+                    )
+                    .map((i: kandidatHistorikkSchemaDTO) => (
+                      <React.Fragment key={i.uuid}>
+                        {i.erMaskert ? (
+                          <TabellRad
+                            dato={i.lagtTilTidspunkt}
+                            arbeidsgiver={i.organisasjonNavn}
+                            tittel={i.tittel}
+                            stillingId={i.stillingId}
+                            lagtTilAv={i.lagtTilAvNavn}
+                            status={i.status}
+                            erMaskert
+                          />
+                        ) : i.stillingId ? (
+                          <HistoriskStillingRad historikkData={i} />
+                        ) : null}
+                      </React.Fragment>
+                    ))}
                 </>
               );
             }}
@@ -70,7 +85,16 @@ const HistoriskStillingRad: React.FC<{
 }> = ({ historikkData }) => {
   const hook = useStilling(historikkData.stillingId);
   return (
-    <SWRLaster hook={hook}>
+    <SWRLaster
+      hook={hook}
+      skeleton={
+        <Table.Row>
+          <Table.DataCell colSpan={100} className='text-center py-8'>
+            <Loader size='xsmall' />
+          </Table.DataCell>
+        </Table.Row>
+      }
+    >
       {(data) => {
         return (
           <TabellRad

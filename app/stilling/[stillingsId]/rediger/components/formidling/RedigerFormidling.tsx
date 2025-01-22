@@ -29,7 +29,6 @@ const RedigerFormidling: React.FC<RedigerFormidlingProps> = ({ children }) => {
   const router = useRouter();
   const lagreFormidling = async () => {
     setLoading(true);
-    console.log(getValues());
     const nyStillingsData = mapFormTilStilling(getValues(), stillingsData);
     try {
       await oppdaterStilling(nyStillingsData);
@@ -39,7 +38,6 @@ const RedigerFormidling: React.FC<RedigerFormidlingProps> = ({ children }) => {
         alertType: 'success',
       });
 
-      console.log(nyStillingsData);
       await new Promise((resolve) => setTimeout(resolve, 3000));
       router.push(`/stilling/${stillingsData.stilling.uuid}`);
     } catch (error) {

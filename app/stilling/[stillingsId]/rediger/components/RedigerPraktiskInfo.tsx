@@ -26,8 +26,6 @@ export const RedigerPraktiskInfo: React.FC<{
   const handleStepSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    console.log('Validation errors:', errors.praktiskInfo);
-
     const isValid = await trigger('praktiskInfo', { shouldFocus: true });
     if (isValid) {
       nextStep();
