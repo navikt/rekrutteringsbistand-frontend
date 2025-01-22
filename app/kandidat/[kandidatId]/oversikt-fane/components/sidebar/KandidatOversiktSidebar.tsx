@@ -6,7 +6,7 @@ import SisteAktivitet from './SisteAktivitet';
 
 const KandidatOversiktSidebar: React.FC = () => {
   return (
-    <div className='ml-8 w-[25rem] flex-shrink-0 flex flex-col gap-8'>
+    <div className='ml-8 w-[25rem] flex-shrink-0 flex flex-col gap-4'>
       <GråRamme tittel='Profilkvalitet'>
         <Profilkvalitet />
       </GråRamme>

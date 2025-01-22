@@ -1,6 +1,7 @@
 import { ExternalLinkIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button } from '@navikt/ds-react';
 import * as React from 'react';
+import { dialogUrl } from '../../../../../components/lenker-til-modia/eksterneUrler';
 import { useKandidatContext } from '../../../KandidatContext';
 
 const Profilkvalitet: React.FC = () => {
@@ -87,8 +88,7 @@ const Profilkvalitet: React.FC = () => {
             Det øker sjansen for at de finner en jobb som passer.
           </BodyShort>
           <Button
-            // se navigerMedAktivBrukerIModia.ts
-            disabled
+            onClick={() => window.open(dialogUrl, '_blank')}
             variant='secondary'
             className='w-full mt-4'
             icon={<ExternalLinkIcon />}

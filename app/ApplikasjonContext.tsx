@@ -25,6 +25,8 @@ interface ApplikasjonContextType {
   harRolle: (rolle: Roller[]) => boolean;
   valgtNavKontor: NavKontorMedNavn | null;
   setValgtNavKontor: (navKontor: NavKontorMedNavn | null) => void;
+  setValgtFnr: (fnr: string | null) => void;
+  valgtFnr: string | null;
 }
 
 const ApplikasjonContext = React.createContext<ApplikasjonContextType>({
@@ -40,7 +42,9 @@ const ApplikasjonContext = React.createContext<ApplikasjonContextType>({
   setDarkMode: () => false,
   harRolle: () => false,
   setValgtNavKontor: () => null,
+  setValgtFnr: () => null,
   valgtNavKontor: null,
+  valgtFnr: null,
 });
 
 interface IApplikasjonContextProvider {
@@ -52,6 +56,8 @@ export const ApplikasjonContextProvider: React.FC<
   IApplikasjonContextProvider
 > = ({ children, brukerData }) => {
   const [darkMode, setDarkMode] = React.useState<boolean>(false);
+
+  const [valgtFnr, setValgtFnr] = React.useState<string | null>(null);
 
   const [valgtNavKontor, setValgtNavKontor] =
     React.useState<NavKontorMedNavn | null>(null);
@@ -65,16 +71,20 @@ export const ApplikasjonContextProvider: React.FC<
         ),
     );
 
+  console.log('🎺 valgtFnr', valgtFnr);
+
   return (
     <VarslingContextProvider>
       <ApplikasjonContext.Provider
         value={{
+          setValgtFnr,
           brukerData,
           darkMode,
           setDarkMode,
           setValgtNavKontor,
           valgtNavKontor,
           harRolle,
+          valgtFnr,
         }}
       >
         <Header />

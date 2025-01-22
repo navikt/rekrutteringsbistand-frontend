@@ -58,39 +58,61 @@ const StillingForslagTilKandidat = ({ kandidatId }: { kandidatId: string }) => {
     <SWRLaster hook={hook}>
       {(data) => (
         <div className='space-y-8'>
-          {data?.hits?.hits?.slice(0, 3)?.map((rawData) => {
-            const stilling = rawData._source.stilling;
-            return (
-              <div
-                className='flex justify-between items-start'
-                key={stilling.uuid}
-              >
-                <div>
-                  <Link
-                    href={`/stilling/${stilling.uuid}`}
-                    className='underline text-text-default'
-                  >
-                    <BodyShort weight='semibold'>
-                      {stilling.tittel ?? '-'}
+          {data?.hits?.hits
+            ?.sort((a, b) => {
+              // If both have expiration dates, compare them
+              if (a._source.stilling.expires && b._source.stilling.expires) {
+                return (
+                  new Date(a._source.stilling.expires).getTime() -
+                  new Date(b._source.stilling.expires).getTime()
+                );
+              }
+              // If a has no expiration, put it last
+              if (!a._source.stilling.expires) return 1;
+              // If b has no expiration, put it last
+              if (!b._source.stilling.expires) return -1;
+              // If neither has expiration, keep original order
+              return 0;
+            })
+            ?.slice(0, 3)
+            ?.map((rawData) => {
+              const stilling = rawData._source.stilling;
+              return (
+                <div
+                  className='flex justify-between items-start'
+                  key={stilling.uuid}
+                >
+                  <div>
+                    <Link
+                      href={`/stilling/${stilling.uuid}`}
+                      className='underline text-text-default'
+                    >
+                      <BodyShort
+                        className='max-w-[250px] truncate'
+                        weight='semibold'
+                      >
+                        {stilling.tittel ?? '-'}
+                      </BodyShort>
+                    </Link>
+                    <BodyShort className='max-w-[250px] truncate' size='small'>
+                      {stilling.businessName}
                     </BodyShort>
-                  </Link>
-                  <BodyShort size='small'>{stilling.businessName}</BodyShort>
-                </div>
+                  </div>
 
-                <div className='text-right'>
-                  <BodyShort size='small'>Frist</BodyShort>
+                  <div className='text-right'>
+                    <BodyShort size='small'>Frist</BodyShort>
 
-                  <BodyShort size='small'>
-                    {stilling.expires
-                      ? format(new Date(stilling.expires), 'd. MMMM yyyy', {
-                          locale: nb,
-                        })
-                      : '-'}
-                  </BodyShort>
+                    <BodyShort size='small'>
+                      {stilling.expires
+                        ? format(new Date(stilling.expires), 'd. MMMM yyyy', {
+                            locale: nb,
+                          })
+                        : '-'}
+                    </BodyShort>
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
         </div>
       )}
     </SWRLaster>
