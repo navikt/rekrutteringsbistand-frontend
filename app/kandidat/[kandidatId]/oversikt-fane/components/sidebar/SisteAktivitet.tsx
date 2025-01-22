@@ -28,8 +28,8 @@ const SisteAktivitet: React.FC = () => {
                   new Date(b.lagtTilTidspunkt).getTime() -
                   new Date(a.lagtTilTidspunkt).getTime(),
               )
-              .slice(0, 3)
-              .map((aktivitet) => {
+              ?.slice(0, 3)
+              ?.map((aktivitet) => {
                 return (
                   <div
                     key={aktivitet.uuid}

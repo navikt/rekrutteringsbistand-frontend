@@ -58,7 +58,7 @@ const StillingForslagTilKandidat = ({ kandidatId }: { kandidatId: string }) => {
     <SWRLaster hook={hook}>
       {(data) => (
         <div className='space-y-8'>
-          {data.hits.hits?.slice(0, 3).map((rawData) => {
+          {data?.hits?.hits?.slice(0, 3)?.map((rawData) => {
             const stilling = rawData._source.stilling;
             return (
               <div
