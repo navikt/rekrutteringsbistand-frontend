@@ -14,7 +14,7 @@ const tabs = [
   },
   {
     tittel: 'Stillinger',
-    path: '/stillings-sok',
+    path: '/stillings-sok?brukStandard',
     queryParam: '?brukStandardsok=true',
   },
   {

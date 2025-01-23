@@ -3,8 +3,10 @@ import { PlusCircleIcon } from '@navikt/aksel-icons';
 import { Button, Tabs } from '@navikt/ds-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
 import * as React from 'react';
 import Piktogram from '../../public/ikoner/finn-stillinger.svg';
+import { useUseBrukerStandardSøk } from '../api/stilling/standardsok/useBrukersStandardsøk';
 import SideLayout from '../components/layout/SideLayout';
 import SideTopBanner from '../components/layout/SideTopBanner';
 import Sidelaster from '../components/Sidelaster';
@@ -29,17 +31,40 @@ const StillingsSøk = ({
   formidlinger,
   skjulBanner,
   kandidatId,
-}: StillingsSøkProps) => (
-  <React.Suspense fallback={<Sidelaster />}>
-    <StillingsSøkProvider formidlinger={formidlinger}>
-      <StillingsSøkLayout
-        formidlinger={formidlinger}
-        skjulBanner={skjulBanner}
-        kandidatId={kandidatId}
-      />
-    </StillingsSøkProvider>
-  </React.Suspense>
-);
+}: StillingsSøkProps) => {
+  const searchParams = useSearchParams();
+  const brukerStandardSøkData = useUseBrukerStandardSøk();
+  const hasInitialized = React.useRef(false);
+  const router = useRouter();
+
+  React.useEffect(() => {
+    if (searchParams.get('brukStandard') !== null) {
+      if (brukerStandardSøkData.data?.søk) {
+        router.replace(`?${brukerStandardSøkData.data.søk}`, { scroll: false });
+      } else {
+        router.replace('?publisert=intern&statuser=publisert', {
+          scroll: false,
+        });
+      }
+    }
+  }, [searchParams, brukerStandardSøkData.data, router]);
+
+  if (brukerStandardSøkData.isLoading) {
+    return <Sidelaster />;
+  }
+
+  return (
+    <React.Suspense fallback={<Sidelaster />}>
+      <StillingsSøkProvider formidlinger={formidlinger}>
+        <StillingsSøkLayout
+          formidlinger={formidlinger}
+          skjulBanner={skjulBanner}
+          kandidatId={kandidatId}
+        />
+      </StillingsSøkProvider>
+    </React.Suspense>
+  );
+};
 
 const StillingsSøkLayout: React.FC<StillingsSøkProps> = ({
   formidlinger,
