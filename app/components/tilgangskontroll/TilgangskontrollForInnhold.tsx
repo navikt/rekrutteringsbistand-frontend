@@ -1,5 +1,5 @@
 'use client';
-import { Alert, Link } from '@navikt/ds-react';
+import { Alert, Heading, Link } from '@navikt/ds-react';
 import * as React from 'react';
 
 import { useApplikasjonContext } from '../../ApplikasjonContext';
@@ -58,10 +58,14 @@ export const TilgangskontrollForInnhold: React.FC<
   return (
     <ErrorBoundary>
       <div className={css.container}>
-        <Alert className={css.alert} variant='error'>
+        <Alert className={css.alert} variant='error' title='Ikke tilgang'>
           <div>
+            <Heading spacing size='small' level='3'>
+              Ikke tilgang
+            </Heading>
             <span>
-              Hei, du trenger rollen
+              Hei, {manglerEierskap ? 'du mangler eierskap og ' : 'du '} trenger
+              rollen{' '}
               {kreverEnAvRollene &&
                 kreverEnAvRollene
                   .filter(

@@ -1,4 +1,6 @@
 import * as React from 'react';
+import { Roller } from '../../components/tilgangskontroll/roller';
+import { TilgangskontrollForInnhold } from '../../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { KandidatContextProvider } from './KandidatContext';
 import KandidatSideLayout from './KandidatsideLayout';
 
@@ -12,8 +14,15 @@ export default async function KandidatSideRootLayout({
 }: KandidatSideRootLayoutProps) {
   const kandidatId = (await params).kandidatId;
   return (
-    <KandidatContextProvider kandidatId={kandidatId}>
-      <KandidatSideLayout>{children}</KandidatSideLayout>
-    </KandidatContextProvider>
+    <TilgangskontrollForInnhold
+      kreverEnAvRollene={[
+        Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+        Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
+      ]}
+    >
+      <KandidatContextProvider kandidatId={kandidatId}>
+        <KandidatSideLayout>{children}</KandidatSideLayout>
+      </KandidatContextProvider>
+    </TilgangskontrollForInnhold>
   );
 }

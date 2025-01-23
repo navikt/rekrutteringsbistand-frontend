@@ -34,7 +34,7 @@ const StillingsSøk = ({
 }: StillingsSøkProps) => {
   const searchParams = useSearchParams();
   const brukerStandardSøkData = useUseBrukerStandardSøk();
-  const hasInitialized = React.useRef(false);
+
   const router = useRouter();
 
   React.useEffect(() => {
@@ -89,22 +89,40 @@ const StillingsSøkLayout: React.FC<StillingsSøkProps> = ({
             }
             ikon={<Image src={Piktogram} alt='Finn stillinger' />}
             knappIBanner={
-              <TilgangskontrollForInnhold
-                skjulVarsel
-                kreverEnAvRollene={[
-                  Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
-                  Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-                ]}
-              >
-                <Link href={'/stilling/ny-stilling'}>
-                  <Button
-                    icon={<PlusCircleIcon aria-hidden />}
-                    variant='secondary'
-                  >
-                    Opprett ny
-                  </Button>
-                </Link>
-              </TilgangskontrollForInnhold>
+              formidlinger ? (
+                <TilgangskontrollForInnhold
+                  skjulVarsel
+                  kreverEnAvRollene={[
+                    Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
+                    Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+                  ]}
+                >
+                  <Link href={'/formidlinger/ny-formidling'}>
+                    <Button
+                      icon={<PlusCircleIcon aria-hidden />}
+                      variant='secondary'
+                    >
+                      Etterregistrer
+                    </Button>
+                  </Link>
+                </TilgangskontrollForInnhold>
+              ) : (
+                <TilgangskontrollForInnhold
+                  skjulVarsel
+                  kreverEnAvRollene={[
+                    Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+                  ]}
+                >
+                  <Link href={'/stilling/ny-stilling'}>
+                    <Button
+                      icon={<PlusCircleIcon aria-hidden />}
+                      variant='secondary'
+                    >
+                      Opprett ny
+                    </Button>
+                  </Link>
+                </TilgangskontrollForInnhold>
+              )
             }
           />
         )

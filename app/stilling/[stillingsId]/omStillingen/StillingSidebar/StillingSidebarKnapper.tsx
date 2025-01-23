@@ -6,6 +6,8 @@ import { useState } from 'react';
 import { useApplikasjonContext } from '../../../../ApplikasjonContext';
 import { oppdaterStilling } from '../../../../api/stilling/oppdater-stilling/oppdaterStilling';
 import { setStillingsinfo } from '../../../../api/stilling/stillingsinfo/setStillingsinfo';
+import { TilgangskontrollForInnhold } from '../../../../components/tilgangskontroll/TilgangskontrollForInnhold';
+import { Roller } from '../../../../components/tilgangskontroll/roller';
 import { useStillingsContext } from '../../StillingsContext';
 import StillingPrint from './StillingPrint';
 import EierStillingVisning from './components/EierStillingVisning';
@@ -69,7 +71,16 @@ const StillingSidebarKnapper: React.FC<StillingSidebarKnapperProps> = ({
       <div className='flex'>
         <StillingPrint printRef={printRef} />
       </div>
-      {erEier && <EierStillingVisning />}
+      {erEier && (
+        <TilgangskontrollForInnhold
+          skjulVarsel
+          kreverEnAvRollene={[
+            Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+          ]}
+        >
+          <EierStillingVisning />
+        </TilgangskontrollForInnhold>
+      )}
 
       {kanOppretteKandidatliste && (
         <Button

@@ -13,7 +13,7 @@ import {
 import StillingsKandidaterTabell from './StillingsKandidaterTabell';
 
 const StillingsKandidater: React.FC = () => {
-  const { stillingsData } = useStillingsContext();
+  const { stillingsData, erEier } = useStillingsContext();
   const { status, setStatus, hendelse, setHendelse } =
     useStillingsKandidaterFilter();
   const [markerteFnr, setMarkerteFnr] = React.useState<string[]>([]);

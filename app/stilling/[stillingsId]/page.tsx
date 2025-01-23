@@ -4,6 +4,8 @@ import { Button, Tabs } from '@navikt/ds-react';
 
 import Link from 'next/link';
 import { useQueryState } from 'nuqs';
+import { Roller } from '../../components/tilgangskontroll/roller';
+import { TilgangskontrollForInnhold } from '../../components/tilgangskontroll/TilgangskontrollForInnhold';
 import LeggTilKandidat from './components/LeggTilKandidat';
 import StillingsKandidater from './kandidater/StillingsKandidater';
 import { StillingsKandidaterFilterProvider } from './kandidater/StillingsKandidaterFilterContext';
@@ -37,26 +39,48 @@ export default function StillingSide() {
         <Tabs.List className='flex mb-2 w-full justify-between'>
           <div>
             <Tabs.Tab value='stilling' label='Om stillingen' />
-            {kandidatlisteId && erEier && (
-              <Tabs.Tab value='kandidater' label='Kandidater' />
-            )}
+            <TilgangskontrollForInnhold
+              skjulVarsel
+              kreverEnAvRollene={[
+                Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+              ]}
+            >
+              {kandidatlisteId && erEier && (
+                <Tabs.Tab value='kandidater' label='Kandidater' />
+              )}
+            </TilgangskontrollForInnhold>
           </div>
           <div className='items-center flex'>
-            <Link
-              href={`/kandidat-sok/stilling/${stillingsData.stilling.uuid}`}
+            <TilgangskontrollForInnhold
+              skjulVarsel
+              kreverEnAvRollene={[
+                Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+              ]}
             >
-              <Button
-                className='mr-2'
-                variant='secondary'
-                icon={<ArrowForwardIcon aria-hidden />}
+              <Link
+                href={`/kandidat-sok/stilling/${stillingsData.stilling.uuid}`}
               >
-                Finn kandidater
-              </Button>
-            </Link>
-            <LeggTilKandidat
-              stillingsId={stillingsData.stilling.uuid}
-              stillingsTittel={stillingsData.stilling.title}
-            />
+                <Button
+                  className='mr-2'
+                  variant='secondary'
+                  icon={<ArrowForwardIcon aria-hidden />}
+                >
+                  Finn kandidater
+                </Button>
+              </Link>
+            </TilgangskontrollForInnhold>
+            <TilgangskontrollForInnhold
+              skjulVarsel
+              kreverEnAvRollene={[
+                Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+                Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
+              ]}
+            >
+              <LeggTilKandidat
+                stillingsId={stillingsData.stilling.uuid}
+                stillingsTittel={stillingsData.stilling.title}
+              />
+            </TilgangskontrollForInnhold>
           </div>
         </Tabs.List>
         <Tabs.Panel value='stilling'>
