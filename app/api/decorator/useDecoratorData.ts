@@ -9,4 +9,7 @@ export const useDecoratorData = () =>
   useSWRImmutable(decoratorEndepunkt, getAPIwithSchema(decoratorSchema));
 
 export const decoratorDataMirage = (server: any) =>
-  server.get(decoratorEndepunkt, () => decoratorMock);
+  server.get(decoratorEndepunkt, () => {
+    const bruker = localStorage.getItem('DEV-BRUKER') || 'Z993141';
+    return { ...decoratorMock, ident: bruker };
+  });

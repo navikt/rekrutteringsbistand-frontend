@@ -151,3 +151,21 @@ export const stillingMock = {
     activationOnPublishingDate: false,
   },
 };
+
+export const mockMinStilling = {
+  ...stillingMock,
+  title: 'Min intern test stilling',
+  stilling: {
+    ...stillingMock.stilling,
+    uuid: 'minInternStilling',
+    administration: {
+      ...stillingMock.stilling.administration,
+      id: 755914,
+      status: 'DONE',
+      comments: null,
+      reportee: 'ForNavn EtterNavn',
+      remarks: [],
+      navIdent: 'Z12345',
+    },
+  },
+};

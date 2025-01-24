@@ -52,6 +52,7 @@ const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
   const {
     brukerData: { ident },
   } = useApplikasjonContext();
+
   const [forhåndsvisData, setForhåndsvisData] =
     React.useState<StillingsDataDTO | null>(null);
 

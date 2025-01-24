@@ -140,9 +140,22 @@ export const testTilgangskontroll = (rolle: Roller) => {
       });
 
       //TODO Fix eier / ikke eier mock
-      test('Rediger, Dupliser og Avslutt knapp', async ({ page }) => {});
+      test('Rediger, Dupliser og Avslutt knapp', async ({ page }) => {
+        await page.goto('http://localhost:1337/stilling/minInternStilling');
+        await expect(
+          page.getByRole('button', { name: 'Rediger' }),
+        ).toBeVisible();
+        await expect(
+          page.getByRole('button', { name: 'Dupliser' }),
+        ).toBeVisible();
+        await expect(
+          page.getByRole('button', { name: 'Avslutt' }),
+        ).toBeVisible();
+      });
       test('Overta stillingen knapp', async ({ page }) => {});
-      test('Viser kandidater fane', async ({ page }) => {});
+      test('Viser kandidater fane', async ({ page }) => {
+        expect(page.getByRole('tab', { name: 'Kandidater' })).toBeVisible();
+      });
     });
   });
 
