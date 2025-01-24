@@ -23,6 +23,7 @@ const KandidatSideLayout: React.FC<KandidatSideProps> = ({ children }) => {
 
   return (
     <SideLayout
+      data-testid='kandidat-side'
       banner={
         <SideTopBanner
           tilbakeKnapp
