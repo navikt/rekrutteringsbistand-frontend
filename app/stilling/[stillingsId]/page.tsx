@@ -22,6 +22,7 @@ export default function StillingSide() {
 
   return (
     <div
+      data-testid='stilling-side'
       className={
         stillingsData?.stilling?.status === 'DELETED'
           ? 'relative opacity-50 pointer-events-none'

@@ -10,6 +10,8 @@ const DevDekoratør: React.FC = () => {
     setValgtNavKontor,
   } = useApplikasjonContext();
 
+  console.log(localStorage.getItem('DEV-ROLLE'));
+
   const [devRolle, setDevRolle] = React.useState<Roller>(
     (localStorage.getItem('DEV-ROLLE') as Roller) ||
       Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER,

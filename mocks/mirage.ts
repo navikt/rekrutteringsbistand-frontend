@@ -23,6 +23,7 @@ import { opprettNyStillingMirage } from '../app/api/stilling/ny-stilling/opprett
 import { oppdaterStillingMirage } from '../app/api/stilling/oppdater-stilling/oppdaterStilling';
 import { stillingMirage } from '../app/api/stilling/rekrutteringsbistandstilling/[slug]/useStilling';
 import { brukerStandardSøkMirage } from '../app/api/stilling/standardsok/useBrukersStandardsøk';
+import { stillingssøkMirage } from '../app/api/stillings-sok/useStillingssøk';
 
 export function makeServer({ environment = 'test' } = {}) {
   let server = createServer({
@@ -58,7 +59,7 @@ export function makeServer({ environment = 'test' } = {}) {
       stillingsTittelMirage(this);
 
       // stillingssøk mock kan disables ved ES søk
-      // stillingssøkMirage(this);
+      stillingssøkMirage(this);
       this.passthrough('*');
     },
   });

@@ -35,7 +35,10 @@ const Forespørsler: React.FC<IStatistikkValg> = ({
       }
     >
       {(data) => (
-        <div className='flex flex-col gap-6 md:grid md:grid-cols-2 mt-6'>
+        <div
+          className='flex flex-col gap-6 md:grid md:grid-cols-2 mt-6'
+          data-testid='forside-forespørsel-statistikk'
+        >
           <Infokort
             beskrivelse='Antall som har svart ja'
             ikon={<ChatCheckmarkIcon />}
