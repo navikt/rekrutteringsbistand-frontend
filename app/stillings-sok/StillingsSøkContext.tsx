@@ -6,6 +6,8 @@ import {
   useQueryState,
 } from 'nuqs';
 import * as React from 'react';
+import { useApplikasjonContext } from '../ApplikasjonContext';
+import { Roller } from '../components/tilgangskontroll/roller';
 import {
   hierarkiAvTagsForFilter,
   Subtag,
@@ -46,12 +48,36 @@ export const StillingsSøkProvider: React.FC<{
   children: React.ReactNode;
   formidlinger?: boolean;
 }> = ({ children, formidlinger }) => {
-  const [statuser, setStatuser] = useQueryState<string[]>(
+  const { harRolle } = useApplikasjonContext();
+
+  const harArbeidsgiverrettetRolle = harRolle([
+    Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+  ]);
+  const [statuser, setStatuserOriginal] = useQueryState<string[]>(
     StillingsSøkQueryparam.Statuser,
     parseAsArrayOf(parseAsString)
       .withDefault([])
       .withOptions({ clearOnDefault: true }),
   );
+
+  React.useEffect(() => {
+    if (
+      !formidlinger &&
+      !harArbeidsgiverrettetRolle &&
+      (!statuser.includes('publisert') || statuser.length > 1)
+    ) {
+      setStatuserOriginal(['publisert']);
+    }
+  }, [harArbeidsgiverrettetRolle, statuser, setStatuserOriginal]);
+
+  const setStatuser = (value: string[] | ((prev: string[]) => string[])) => {
+    if (!formidlinger && !harArbeidsgiverrettetRolle) {
+      setStatuserOriginal(['publisert']);
+    } else {
+      setStatuserOriginal(value);
+    }
+  };
+
   const [fylker, setFylker] = useQueryState<string[]>(
     StillingsSøkQueryparam.Fylker,
     parseAsArrayOf(parseAsString)
@@ -78,6 +104,7 @@ export const StillingsSøkProvider: React.FC<{
       clearOnDefault: true,
     },
   );
+
   const [sortering, setSortering] = useQueryState(
     StillingsSøkQueryparam.Sortering,
     {

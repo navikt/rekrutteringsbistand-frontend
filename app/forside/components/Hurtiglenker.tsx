@@ -17,18 +17,10 @@ const Hurtiglenker: FunctionComponent = () => {
         Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
       ]}
     >
-      <div className='justify-start items-start gap-4 inline-flex w-full'>
-        {/* <LenkepanelMedIkon
-          href='/kandidat-sok'
-          ikon={<Image src={FinnKandidaterIkon} alt='Finn kandidater' />}
-          tittel='Finn kandidater'
-        />
-        <LenkepanelMedIkon
-          href='/stillings-sok'
-          ikon={<Image src={FinnStillinger} alt='Finn stillinger' />}
-          tittel='Finn stillinger'
-        /> */}
-
+      <div
+        className='justify-start items-start gap-4 inline-flex w-full'
+        data-testid='forside-hurtiglenker'
+      >
         <LenkepanelMedIkon
           href={'/stillings-sok?portefolje=visMine'}
           ikon={<Image src={SeMineStillingerIkon} alt='Se mine stillinger' />}

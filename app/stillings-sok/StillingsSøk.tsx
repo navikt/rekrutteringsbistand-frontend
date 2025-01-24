@@ -102,7 +102,7 @@ const StillingsSøkLayout: React.FC<StillingsSøkProps> = ({
                       icon={<PlusCircleIcon aria-hidden />}
                       variant='secondary'
                     >
-                      Etterregistrer
+                      Opprett etterregistrering
                     </Button>
                   </Link>
                 </TilgangskontrollForInnhold>
@@ -148,7 +148,9 @@ const StillingsSøkLayout: React.FC<StillingsSøkProps> = ({
           >
             <Tabs.Tab
               value={StillingsSøkPortefølje.VIS_MINE}
-              label={formidlinger ? 'Mine formidlinger' : 'Mine stillinger'}
+              label={
+                formidlinger ? 'Mine etterregistreringer' : 'Mine stillinger'
+              }
             />
           </TilgangskontrollForInnhold>
         </Tabs.List>

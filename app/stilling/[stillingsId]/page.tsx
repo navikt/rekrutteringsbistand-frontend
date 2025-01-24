@@ -55,6 +55,7 @@ export default function StillingSide() {
               skjulVarsel
               kreverEnAvRollene={[
                 Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+                Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
               ]}
             >
               <Link
