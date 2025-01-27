@@ -37,7 +37,10 @@ const StillingSidebarKnapper: React.FC<StillingSidebarKnapperProps> = ({
   const opprettetAvRekrutteringsbistand =
     stillingsData.stilling.createdBy === 'pam-rekrutteringsbistand';
   const kanOppretteKandidatliste =
-    !harStillingsinfo && !erEier && !opprettetAvRekrutteringsbistand;
+    !harStillingsinfo &&
+    !erEier &&
+    !opprettetAvRekrutteringsbistand &&
+    stillingsData.stilling.employer?.orgnr;
 
   const onOpprettKandidatliste = async () => {
     await setStillingsinfo(opprettStillingInfo).then(() =>
