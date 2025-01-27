@@ -56,6 +56,10 @@ const OmStillingen: React.FC = () => {
     if (!isNaN(date.getTime())) {
       return date.toLocaleDateString('nb-NO');
     }
+
+    if (starttime === 'etterAvtale') {
+      return 'Etter avtale';
+    }
     return starttime;
   };
 
