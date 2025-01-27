@@ -1,4 +1,5 @@
 import { PersonGroupIcon } from '@navikt/aksel-icons';
+import { Loader } from '@navikt/ds-react';
 import * as React from 'react';
 import { useAntallKandidater } from '../../../api/kandidat/useAntallKandidater';
 import SWRLaster from '../../../components/SWRLaster';
@@ -14,7 +15,7 @@ const AntallKandidater: React.FC<AntallKandidaterProps> = ({
   const antallKandidaterSWR = useAntallKandidater(kandidatlisteId);
 
   return (
-    <SWRLaster hook={antallKandidaterSWR}>
+    <SWRLaster skeleton={<Loader size='xsmall' />} hook={antallKandidaterSWR}>
       {(data) => (
         <TekstMedIkon
           tekst={`${data?.antallKandidater ?? '-'} kandidater`}

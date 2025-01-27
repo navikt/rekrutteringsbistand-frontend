@@ -43,17 +43,21 @@ const OmStillingen: React.FC = () => {
   };
 
   const {
-    // jobtitle,
     engagementtype,
     extent,
-    // positioncount,
-    // sector,
     workday,
     workhours,
     applicationdue,
-    // jobarrangement,
-    // starttime,
+    starttime,
   } = stillingsData.stilling.properties as any; //todo
+
+  const formaterTid = (starttime: string) => {
+    const date = new Date(starttime);
+    if (!isNaN(date.getTime())) {
+      return date.toLocaleDateString('nb-NO');
+    }
+    return starttime;
+  };
 
   return (
     <div className='mt-10'>
@@ -63,17 +67,31 @@ const OmStillingen: React.FC = () => {
 
           <div className='mt-4'>
             <div className='grid grid-cols-3 gap-4'>
-              <TekstMedIkon tekst={`${lokasjon}`} ikon={<LocationPinIcon />} />
               <TekstMedIkon
+                // Lokasjon
+                tekst={`${lokasjon}`}
+                ikon={<LocationPinIcon />}
+              />
+              <TekstMedIkon
+                // Ansettelsesform
                 tekst={`${engagementtype ?? '-'} ${extent ? `, ${extent}` : ''}`}
                 ikon={<ClockIcon />}
               />
-              <TekstMedIkon tekst='' ikon={<CalendarIcon />} />
               <TekstMedIkon
+                // Arbeidstid
                 tekst={`${workday ? parseWorktime(workday) : '-'} ${workhours ? `, ${parseWorktime(workhours)}` : ''}`}
+                ikon={<CalendarIcon />}
+              />
+              <TekstMedIkon
+                // Søknadsfrist
+                tekst={formaterTid(applicationdue)}
                 ikon={<HourglassIcon />}
               />
-              <TekstMedIkon tekst={applicationdue} ikon={<TimerStartIcon />} />
+              <TekstMedIkon
+                // Oppstart
+                tekst={formaterTid(starttime)}
+                ikon={<TimerStartIcon />}
+              />
               <AntallKandidater kandidatlisteId={kandidatlisteId} />
             </div>
           </div>
