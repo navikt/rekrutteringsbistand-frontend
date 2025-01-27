@@ -7,7 +7,7 @@ on:
 jobs:
   test:
     permissions:
-      contents: write # to write sarif
+      contents: write 
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
@@ -19,11 +19,11 @@ jobs:
     - name: Install dependencies
       env:
         NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
-      run: npm ci && npm run build
+      run: pnpm ci && pnpm run build
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
     - name: Start Node application
-      run: npm run dev &
+      run: pnpm run dev &
     - name: Test application
       run: npx playwright test
     - uses: actions/upload-artifact@v4
