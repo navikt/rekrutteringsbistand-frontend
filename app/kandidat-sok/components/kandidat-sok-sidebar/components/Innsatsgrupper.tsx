@@ -40,7 +40,7 @@ export const alleInnsatsgrupper = {
     label: 'Behov for arbeidsevnevurdering',
   },
   [Servicegruppe.HelserelatertArbeidsrettetOppfølgingINav]: {
-    label: 'Helserelatert arbeidsrettet oppfølging i NAV',
+    label: 'Helserelatert arbeidsrettet oppfølging i Nav',
   },
   [Servicegruppe.SykmeldtMedOppfølgingPåArbeidsplassen]: {
     label: 'Sykmeldt med oppfølging på arbeidsplassen',

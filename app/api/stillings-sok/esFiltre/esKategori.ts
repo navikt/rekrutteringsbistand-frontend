@@ -8,10 +8,26 @@ export const esKategori = (kategori: string[]) => {
   const filter = [];
 
   if (
-    kategori.includes(Stillingskategori.Stilling) &&
-    kategori.includes(Stillingskategori.Jobbmesse)
+    kategori.length === 0 ||
+    (kategori.includes(Stillingskategori.Stilling) &&
+      kategori.includes(Stillingskategori.Jobbmesse))
   ) {
-    return [];
+    filter.push({
+      bool: {
+        must_not: [
+          {
+            term: {
+              'stillingsinfo.stillingskategori': 'ARBEIDSTRENING',
+            },
+          },
+          {
+            term: {
+              'stillingsinfo.stillingskategori': 'FORMIDLING',
+            },
+          },
+        ],
+      },
+    });
   }
 
   if (kategori.includes(Stillingskategori.Jobbmesse)) {

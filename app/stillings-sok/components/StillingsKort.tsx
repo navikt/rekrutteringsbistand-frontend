@@ -66,7 +66,6 @@ const StillingsKort: React.FC<IStillingsKort> = ({
         <div className='flex'>
           <TekstMedIkon
             className='mr-4'
-            ikon={<PinIcon />}
             title='Lokasjon'
             tekst={
               formaterMedStoreOgSmåBokstaver(
@@ -74,7 +73,6 @@ const StillingsKort: React.FC<IStillingsKort> = ({
               ) || '-'
             }
           />
-
           <TekstMedIkon
             className='mr-4'
             ikon={<BriefcaseIcon />}
@@ -85,7 +83,6 @@ const StillingsKort: React.FC<IStillingsKort> = ({
                 : '-'
             }
           />
-
           <TekstMedIkon
             className='mr-4'
             ikon={<ClockIcon />}
@@ -101,7 +98,6 @@ const StillingsKort: React.FC<IStillingsKort> = ({
                 : '-'
             }
           />
-
           <TekstMedIkon
             className='mr-4'
             ikon={<PersonIcon />}

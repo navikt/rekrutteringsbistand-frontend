@@ -1,0 +1,14 @@
+{
+  "cookies": [],
+  "origins": [
+    {
+      "localStorage": [
+        {
+          "name": "DEV-ROLLE",
+          "value": "AD_GRUPPE_REKRUTTERINGSBISTAND_MODIA_GENERELL"
+        }
+      ],
+      "origin": "http://localhost:1337"
+    }
+  ]
+}

@@ -27,7 +27,10 @@ const Utfallsstatistikk: FunctionComponent<IStatistikkValg> = ({
       }
     >
       {(data) => (
-        <div className='flex flex-col gap-6 md:grid md:grid-cols-2'>
+        <div
+          className='flex flex-col gap-6 md:grid md:grid-cols-2'
+          data-testid='forside-utfallsstatistikk'
+        >
           <Infokort
             beskrivelse='Antall delt med arbeidsgiver'
             detaljer={[

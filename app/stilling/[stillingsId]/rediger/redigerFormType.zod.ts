@@ -6,6 +6,10 @@ import {
 
 export const OmVirksomhetenSchema = z.object({
   beskrivelse: z.string(),
+  employerhomepage: z.string().optional().nullable(),
+  facebookpage: z.string().optional().nullable(),
+  linkedinpage: z.string().optional().nullable(),
+  twitteraddress: z.string().optional().nullable(),
   kontaktPersoner: z
     .array(
       z
@@ -47,20 +51,42 @@ export const OmTilretteleggingSchema = z.object({
   tags: z.array(z.string()),
 });
 
-export const OmStillingenSchema = z.object({
-  janzz: KategoriSchema,
-  beskrivelse: z.string().nullable(),
-  adresse: z.string().nullable(),
-  locationList: z.array(GeografiSchema).nullable(),
-  kommuneEllerLand: z.string().nullable(),
-});
+export const OmStillingenSchema = z
+  .object({
+    janzz: KategoriSchema.refine((data) => !!data.name, {
+      message: 'Yrkesklassifisering må velges',
+      path: ['name'],
+    }),
+    beskrivelse: z.string().nullable(),
+    adresseLokasjoner: z
+      .array(GeografiSchema)
+      .optional()
+      .nullable()
+      .refine(
+        (data) =>
+          !data?.length || data.every((item) => item.postalCode && item.city),
+        {
+          message: 'Alle adresser må ha både postnummer og poststed',
+        },
+      ),
+    lokasjoner: z.array(GeografiSchema).optional().nullable(),
+  })
+  .refine(
+    (data) => {
+      const hasAdresseLokasjoner = (data.adresseLokasjoner ?? []).length > 0;
+      const hasLokasjoner = (data.lokasjoner ?? []).length > 0;
+      return hasAdresseLokasjoner || hasLokasjoner;
+    },
+    {
+      message: 'Du må velge minst én lokasjon',
+      path: ['lokasjoner'], // This will show the error on the lokasjoner field
+    },
+  );
 
 export const PraktiskInfoSchema = z
   .object({
     sektor: z.string().min(1, 'Sektor må velges').nullable(),
-    omfangKode: z.string({
-      required_error: 'Omfang må velges',
-    }),
+    omfangKode: z.string().min(1, 'Omfang må velges'),
     omfangProsent: z.string().nullable(),
     antallStillinger: z.number().min(1, 'Må ha minst én stilling'),
     oppstart: z.string().nullable(),

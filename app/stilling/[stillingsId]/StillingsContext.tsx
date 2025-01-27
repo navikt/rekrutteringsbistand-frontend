@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useKandidatlisteId } from '../../api/kandidat/useKandidatlisteId';
 import { StillingsDataDTO } from '../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { useStilling } from '../../api/stilling/rekrutteringsbistandstilling/[slug]/useStilling';
@@ -12,8 +12,9 @@ interface StillingsContextType {
   forhåndsvisData: StillingsDataDTO | null;
   erFormidling: boolean;
   erEier?: boolean;
-  kandidatlisteId?: string;
   setForhåndsvisData: (data: StillingsDataDTO | null) => void;
+  erDirektemeldt: boolean;
+  kandidatlisteId: string | null;
 }
 
 const StillingsContext = React.createContext<StillingsContextType | undefined>(
@@ -48,31 +49,48 @@ const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
   data,
   children,
 }) => {
-  const kandidatListeIdSWR = useKandidatlisteId(data.stilling.uuid ?? '');
   const {
     brukerData: { ident },
   } = useApplikasjonContext();
+
   const [forhåndsvisData, setForhåndsvisData] =
     React.useState<StillingsDataDTO | null>(null);
 
   const [stillingsData, setStillingsData] =
     React.useState<StillingsDataDTO>(data);
 
-  const erEier = eierStilling({
-    stillingsData: stillingsData,
-    navIdent: ident,
-  });
+  const [kandidatlisteId, setKandidatlisteId] = React.useState<string | null>(
+    null,
+  );
+
+  const kandidatlisteIdHook = useKandidatlisteId(stillingsData.stilling.uuid);
+
+  React.useEffect(() => {
+    if (kandidatlisteIdHook.data) {
+      setKandidatlisteId(kandidatlisteIdHook.data.kandidatlisteId ?? null);
+    }
+  }, [kandidatlisteIdHook]);
+
+  const erEier = useMemo(
+    () =>
+      eierStilling({
+        stillingsData: stillingsData,
+        navIdent: ident,
+      }),
+    [stillingsData, ident],
+  );
 
   return (
     <StillingsContext.Provider
       value={{
+        erDirektemeldt: stillingsData.stilling?.source === 'DIR',
         forhåndsvisData,
         stillingsData: forhåndsvisData ? forhåndsvisData : stillingsData,
         erEier,
         erFormidling:
           stillingsData.stillingsinfo?.stillingskategori === 'FORMIDLING',
-        kandidatlisteId: kandidatListeIdSWR.data?.kandidatlisteId,
         setForhåndsvisData,
+        kandidatlisteId,
       }}
     >
       {children}

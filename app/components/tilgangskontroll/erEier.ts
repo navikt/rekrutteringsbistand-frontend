@@ -14,10 +14,10 @@ export const eierStilling = ({ stillingsData, navIdent }: IeierStilling) => {
     return true;
   }
 
-  if (stillingsData?.eierNavident?.navIdent === navIdent) {
+  if (stillingsData?.eierNavident === navIdent) {
     return true;
   }
-  if (stillingsData?.stillingsinfo?.eierNavident?.navIdent === navIdent) {
+  if (stillingsData?.stillingsinfo?.eierNavident === navIdent) {
     return true;
   }
 

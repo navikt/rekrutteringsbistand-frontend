@@ -1,14 +1,12 @@
-// TODO Implementer for mulighet til å endre hele stilling`s objektet
 'use client';
 import Editor from '@monaco-editor/react';
 import * as React from 'react';
 
 import { Button } from '@navikt/ds-react';
 
-import { oppdaterStilling } from '../../../api/stilling/oppdater-stilling/oppdaterStilling';
+import { Roller } from '../../../components/tilgangskontroll/roller';
 import { TilgangskontrollForInnhold } from '../../../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { useStillingsContext } from '../StillingsContext';
-import { Roller } from '../../../components/tilgangskontroll/roller';
 
 const RedigerStillingDev: React.FC = () => {
   const { stillingsData } = useStillingsContext();
@@ -23,7 +21,6 @@ const RedigerStillingDev: React.FC = () => {
 
   const lagreData = async () => {
     setIsLoading(true);
-    await oppdaterStilling(JSON.parse(editorData));
     setIsLoading(false);
     window.location.reload();
   };
@@ -44,7 +41,8 @@ const RedigerStillingDev: React.FC = () => {
         <Button onClick={handleReset} disabled={isLoading}>
           Reset
         </Button>
-        <Button onClick={lagreData} disabled={isLoading}>
+        {/* TODO: <Button onClick={lagreData} disabled={isLoading}> */}
+        <Button onClick={lagreData} disabled>
           Lagre
         </Button>
       </div>

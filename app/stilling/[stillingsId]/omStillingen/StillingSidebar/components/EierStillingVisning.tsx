@@ -9,6 +9,7 @@ import {
 } from '../../../kandidater/KandidatIKandidatlisteTyper';
 import { useStillingsContext } from '../../../StillingsContext';
 import AvsluttStillingKnapp from './AvsluttStillingKnapp';
+import KopierStilling from './KopierStilling';
 
 const EierStillingVisning: React.FC = () => {
   const router = useRouter();
@@ -64,6 +65,7 @@ const EierStillingVisning: React.FC = () => {
         >
           Rediger
         </Button>
+        <KopierStilling stillingsId={stillingsData.stilling.uuid} />
         <AvsluttStillingKnapp
           besatteStillinger={besatteStillinger}
           antallStillinger={antallStillinger}

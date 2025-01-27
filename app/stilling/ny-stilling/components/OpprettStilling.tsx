@@ -4,7 +4,7 @@ import { Button } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 import { FinnArbeidsgiverDTO } from '../../../api/stilling/finn-arbeidsgiver/useFinnArbeidsgiver';
-import { NyStillingDTO } from '../../../api/stilling/ny-stilling/dto';
+import { OpprettNyStillingDTO } from '../../../api/stilling/ny-stilling/dto';
 import { opprettNyStilling } from '../../../api/stilling/ny-stilling/opprettNyStilling';
 import { useApplikasjonContext } from '../../../ApplikasjonContext';
 import { Stillingskategori } from '../../stilling-typer';
@@ -26,18 +26,20 @@ export const OpprettStillingKnapp: React.FC<OpprettStillingProps> = ({
   const handleOpprettStilling = async () => {
     setIsLoading(true);
     if (stillingskategori && arbeidsgiver) {
-      const stilling: NyStillingDTO = {
+      const stilling: OpprettNyStillingDTO = {
         kategori: stillingskategori,
         stilling: {
-          createdBy: 'pam-rekrutteringsbistand',
-          updatedBy: 'pam-rekrutteringsbistand',
-          source: 'DIR',
-          privacy: 'INTERNAL_NOT_SHOWN',
           administration: {
             status: 'PENDING',
             reportee: `${fornavn} ${etternavn}`,
             navIdent: ident ?? '',
           },
+          createdBy: 'pam-rekrutteringsbistand',
+          updatedBy: 'pam-rekrutteringsbistand',
+          source: 'DIR',
+          medium: 'DIR',
+          businessName: arbeidsgiver.name,
+          privacy: 'INTERNAL_NOT_SHOWN',
           employer: {
             orgnr: arbeidsgiver.orgnr ?? '',
             name: arbeidsgiver.name,
@@ -74,7 +76,7 @@ export const OpprettStillingKnapp: React.FC<OpprettStillingProps> = ({
       variant='primary'
       disabled={!arbeidsgiver || !stillingskategori}
     >
-      Opprett stilling
+      Opprett
     </Button>
   );
 };

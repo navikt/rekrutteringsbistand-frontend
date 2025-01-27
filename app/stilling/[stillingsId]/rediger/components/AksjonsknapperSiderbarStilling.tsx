@@ -32,14 +32,14 @@ const AksjonsknapperSiderbarStilling: React.FC<
 
     const nyStillingsData = mapFormTilStilling(formVerdier, stillingsData);
 
-    const response = await oppdaterStilling(nyStillingsData);
+    try {
+      await oppdaterStilling(nyStillingsData);
 
-    if (response.stilling.uuid) {
       visVarsling({
         innhold: 'Stillingen ble lagret',
         alertType: 'success',
       });
-    } else {
+    } catch (error) {
       visVarsling({
         innhold: 'Feil ved lagring av stilling',
         alertType: 'error',

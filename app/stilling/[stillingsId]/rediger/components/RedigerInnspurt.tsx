@@ -35,7 +35,19 @@ export const RedigerInnspurt: React.FC<{
 
     const nyStillingsData = mapFormTilStilling(data, stillingsData);
 
-    const response = await oppdaterStilling(nyStillingsData);
+    const publiserStillingsData = {
+      ...nyStillingsData,
+      stilling: {
+        ...nyStillingsData.stilling,
+        status: 'ACTIVE',
+        administration: {
+          ...nyStillingsData.stilling.administration,
+          status: 'DONE',
+        },
+      },
+    };
+
+    const response = await oppdaterStilling(publiserStillingsData);
 
     if (response.stilling.uuid) {
       router.push(`/stilling/${response.stilling.uuid}`);
@@ -111,7 +123,7 @@ export const RedigerInnspurt: React.FC<{
         </BodyShort>
         <div className='flex gap-4 mb-4'>
           <DatoVelger
-            fraDato={watch('innspurt.publiseres') ?? new Date()}
+            fraDato={watch('innspurt.publiseres')}
             label='Publiseres'
             setDato={(val) =>
               val ? setValue('innspurt.publiseres', val) : null
@@ -119,7 +131,7 @@ export const RedigerInnspurt: React.FC<{
           />
           <DatoVelger
             label='Siste visningsdato'
-            fraDato={watch('innspurt.avsluttes') ?? undefined}
+            fraDato={watch('innspurt.avsluttes')}
             setDato={(val) =>
               val ? setValue('innspurt.avsluttes', val) : null
             }

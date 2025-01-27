@@ -6,7 +6,7 @@ import { getAPIwithSchema } from '../../../fetcher';
 
 const postDataEndepunkt = '/api/stilling/geografi/postData';
 
-const postLocationSchema = z.object({
+export const postLocationSchema = z.object({
   postalCode: z.string(),
   city: z.string(),
   municipality: z.object({

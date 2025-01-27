@@ -61,7 +61,7 @@ const StillingPrint: React.FC<StillingPrintProps> = ({ printRef }) => {
       icon={<PrinterSmallIcon />}
       onClick={() => reactToPrintFn()}
     >
-      Skriv ut stilling
+      Skriv ut
     </Button>
   );
 };

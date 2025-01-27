@@ -38,7 +38,7 @@ const OmBedriften: React.FC = () => {
       <dl className='grid grid-cols-1 md:grid-cols-3 gap-6 print:grid print:grid-cols-3 print:gap-6'>
         <Definisjon tittel='Nettside' />
         <Definisjon tittel='LinkedIn' />
-        <Definisjon tittel='Twitter' />
+        <Definisjon tittel='X' />
         <Definisjon
           tittel='Virksomhetsnummer'
           innhold={employer?.orgnr ?? '-'}

@@ -20,7 +20,7 @@ export const RedigerOmVirksomheten: React.FC<{
     watch,
     setValue,
     trigger,
-    control,
+    register,
     formState: { errors },
   } = useFormContext<StillingsDataForm>();
 
@@ -74,24 +74,20 @@ export const RedigerOmVirksomheten: React.FC<{
               </Accordion.Header>
               <Accordion.Content>
                 <TextField
-                  disabled
                   label='Nettside (valgfritt)'
-                  // {...register('omVirksomheten.nettside')}
+                  {...register('omVirksomheten.employerhomepage')}
                 />
                 <TextField
-                  disabled
                   label='Facebook (valgfritt)'
-                  // {...register('omVirksomheten.facebook')}
+                  {...register('omVirksomheten.facebookpage')}
                 />
                 <TextField
-                  disabled
                   label='LinkedIn (valgfritt)'
-                  // {...register('omVirksomheten.linkedin')}
+                  {...register('omVirksomheten.linkedinpage')}
                 />
                 <TextField
-                  disabled
                   label='Twitter (valgfritt)'
-                  // {...register('omVirksomheten.twitter')}
+                  {...register('omVirksomheten.linkedinpage')}
                 />
               </Accordion.Content>
             </Accordion.Item>

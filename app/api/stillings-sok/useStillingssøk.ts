@@ -31,10 +31,12 @@ export const useStillingssøk = (
   );
 
   return useSWRImmutable(
-    {
-      url: stillingsSøkEndepunkt,
-      body: payload,
-    },
+    geografiData.isLoading
+      ? null
+      : {
+          url: stillingsSøkEndepunkt,
+          body: payload,
+        },
     (data) => {
       return postApiWithSchema(stillingsSøkSchema)(data);
     },

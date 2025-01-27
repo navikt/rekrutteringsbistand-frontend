@@ -2,15 +2,14 @@
 import { Tabs } from '@navikt/ds-react';
 import * as React from 'react';
 
+import { Roller } from '../components/tilgangskontroll/roller';
 import { TilgangskontrollForInnhold } from '../components/tilgangskontroll/TilgangskontrollForInnhold';
-
 import TømFiltre from '../components/TømFiltre';
 import KandidatSøkChips from './components/KandidatSøkChips';
 import { KandidatSøkPortefølje } from './components/PorteføljeTabs';
 import { useKandidatSøkFilter } from './KandidaSokContext';
 import KandidatSøkResultat from './KandidatSøkResultat';
 import ValgteKontorer from './ValgteKontorer';
-import { Roller } from '../components/tilgangskontroll/roller';
 
 const KandidatSøk: React.FC = () => {
   const { portefølje, setPortefølje } = useKandidatSøkFilter();
@@ -26,18 +25,10 @@ const KandidatSøk: React.FC = () => {
   const MittKontor = () => {
     if (data?.enheter && data.enheter.length > 0) {
       return (
-        <TilgangskontrollForInnhold
-          skjulVarsel
-          kreverEnAvRollene={[
-            Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-            Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
-          ]}
-        >
-          <Tabs.Tab
-            value={KandidatSøkPortefølje.MITT_KONTOR}
-            label='Mitt kontor'
-          />
-        </TilgangskontrollForInnhold>
+        <Tabs.Tab
+          value={KandidatSøkPortefølje.MITT_KONTOR}
+          label='Mitt kontor'
+        />
       );
     }
     return null;
@@ -46,47 +37,24 @@ const KandidatSøk: React.FC = () => {
   const MineKontorer = () => {
     if (data?.enheter && data.enheter.length > 1) {
       return (
-        <TilgangskontrollForInnhold
-          skjulVarsel
-          kreverEnAvRollene={[
-            Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-            Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
-          ]}
-        >
-          <Tabs.Tab
-            value={KandidatSøkPortefølje.MINE_KONTORER}
-            label='Mine kontorer'
-          />
-        </TilgangskontrollForInnhold>
+        <Tabs.Tab
+          value={KandidatSøkPortefølje.MINE_KONTORER}
+          label='Mine kontorer'
+        />
       );
     }
     return null;
   };
 
   const AlleKontorer = () => (
-    <TilgangskontrollForInnhold
-      skjulVarsel
-      kreverEnAvRollene={[
-        Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-      ]}
-      // manglerEierskap={knyttetTilStillingOgIkkeEier}
-    >
-      <Tabs.Tab value={KandidatSøkPortefølje.ALLE} label='Alle kontorer' />
-    </TilgangskontrollForInnhold>
+    <Tabs.Tab value={KandidatSøkPortefølje.ALLE} label='Alle kontorer' />
   );
 
   const VelgKontor = () => (
-    <TilgangskontrollForInnhold
-      skjulVarsel
-      kreverEnAvRollene={[
-        Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-      ]}
-    >
-      <Tabs.Tab
-        value={KandidatSøkPortefølje.VALGTE_KONTORER}
-        label='Valgte kontorer'
-      />
-    </TilgangskontrollForInnhold>
+    <Tabs.Tab
+      value={KandidatSøkPortefølje.VALGTE_KONTORER}
+      label='Valgte kontorer'
+    />
   );
 
   return (
@@ -95,8 +63,15 @@ const KandidatSøk: React.FC = () => {
         <MineBrukere />
         <MittKontor />
         <MineKontorer />
-        <AlleKontorer />
-        <VelgKontor />
+        <TilgangskontrollForInnhold
+          skjulVarsel
+          kreverEnAvRollene={[
+            Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+          ]}
+        >
+          <AlleKontorer />
+          <VelgKontor />
+        </TilgangskontrollForInnhold>
       </Tabs.List>
       <Tabs.Panel value={portefølje}>
         <div className='w-full flex justify-between items-baseline'>

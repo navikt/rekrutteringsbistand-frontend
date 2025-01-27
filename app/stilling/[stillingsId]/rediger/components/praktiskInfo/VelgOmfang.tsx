@@ -5,6 +5,7 @@ import { StillingsDataForm } from '../../redigerFormType.zod';
 
 const VelgOmfang: React.FC = ({}) => {
   const { control, watch } = useFormContext<StillingsDataForm>();
+
   return (
     <div className='grid grid-cols-2 gap-4'>
       <Controller
@@ -12,10 +13,10 @@ const VelgOmfang: React.FC = ({}) => {
         name='praktiskInfo.omfangKode'
         render={({ field: { onChange, value }, fieldState: { error } }) => (
           <RadioGroup
+            error={error?.message}
             legend='Velg omfang'
             value={value}
             onChange={(e) => onChange(e)}
-            error={error?.message}
           >
             <Radio value='Heltid'>Heltid (100%)</Radio>
             <Radio value='Deltid'>Deltid</Radio>
@@ -27,11 +28,13 @@ const VelgOmfang: React.FC = ({}) => {
         <Controller
           control={control}
           name='praktiskInfo.omfangProsent'
-          render={({ field: { onChange, value } }) => (
+          render={({ field: { onChange, value }, fieldState: { error } }) => (
             <TextField
+              error={error?.message}
               className='w-[50%]'
               label='Omfang i prosent for deltid'
               description='Må fylles inn.'
+              onChange={(e) => onChange(e.target.value)}
             />
           )}
         />

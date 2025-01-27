@@ -3,12 +3,13 @@
  * Endepunkt /useStilling
  */
 import useSWRImmutable from 'swr/immutable';
+import { StillingAPI } from '../../../api-routes';
 import { getAPIwithSchema } from '../../../fetcher';
-import { stillingMock } from './mocks/stillingMock';
+import { mockMinStilling, stillingMock } from './mocks/stillingMock';
 import { StillingDataSchema } from './stilling.dto';
 
 const stillingEndepunkt = (stillingsId: string) =>
-  `/api/stilling/rekrutteringsbistandstilling/${stillingsId}`;
+  `${StillingAPI.internUrl}/rekrutteringsbistandstilling/${stillingsId}`;
 
 export const useStilling = (stillingsId: string) =>
   useSWRImmutable(
@@ -17,5 +18,6 @@ export const useStilling = (stillingsId: string) =>
   );
 
 export const stillingMirage = (server: any) => {
+  server.get(stillingEndepunkt('minInternStilling'), () => mockMinStilling);
   server.get(stillingEndepunkt('*'), () => stillingMock);
 };

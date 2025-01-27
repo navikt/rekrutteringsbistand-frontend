@@ -28,7 +28,7 @@ const NyStilling: React.FC = () => {
       <div>
         <Alert className='mb-2' variant='warning'>
           <BodyLong spacing>
-            Du kan ikke registrere NAV-kurs, webinar, arbeidstrening og
+            Du kan ikke registrere Nav-kurs, webinar, arbeidstrening og
             lignende. Det er kun kategoriene nedenfor som skal brukes.
           </BodyLong>
           <BodyLong>

@@ -2,23 +2,11 @@
 import dynamic from 'next/dynamic';
 import { getMiljø, Miljø } from '../../../../../util/miljø';
 import { useApplikasjonContext } from '../../../../ApplikasjonContext';
+import { DecoratorProps } from './Interndekoratør';
 
 interface Enhet {
   enhetId: string;
   navn: string;
-}
-
-interface DecoratorProps {
-  useProxy: boolean;
-  appName: string;
-  environment: string;
-  proxy: string;
-  showEnheter: boolean;
-  showHotkeys: boolean;
-  showSearchArea: boolean;
-  fetchActiveEnhetOnMount: boolean;
-  urlFormat: string;
-  onEnhetChanged: (oldEnhet: Enhet | null, newEnhet: Enhet | null) => void;
 }
 
 const proxyUrl =
@@ -42,11 +30,12 @@ const Decorator = dynamic<DecoratorProps>(
 );
 
 const Modiadekoratør: React.FC = () => {
-  const { setValgtNavKontor } = useApplikasjonContext();
+  const { setValgtNavKontor, setValgtFnr, valgtFnr } = useApplikasjonContext();
 
   return (
     <Decorator
-      useProxy
+      fnr={valgtFnr ?? undefined}
+      fnrSyncMode={'writeOnly'}
       appName='Rekrutteringsbistand'
       environment={miljo}
       proxy={proxyUrl}
@@ -55,6 +44,9 @@ const Modiadekoratør: React.FC = () => {
       showSearchArea={false}
       fetchActiveEnhetOnMount
       urlFormat='NAV_NO'
+      onFnrChanged={(fnr) => {
+        setValgtFnr(fnr ?? null);
+      }}
       onEnhetChanged={(_, enhet) => {
         setValgtNavKontor({
           navKontor: enhet?.enhetId ?? 'Ukjent navkontor ID',

@@ -4,18 +4,17 @@ import {
   ClockIcon,
   HourglassIcon,
   LocationPinIcon,
-  PersonGroupIcon,
   TimerStartIcon,
 } from '@navikt/aksel-icons';
 import { Heading } from '@navikt/ds-react';
 import * as React from 'react';
 import { getWorkLocationsAsString } from '../../../../util/locationUtil';
-import { useAntallKandidater } from '../../../api/kandidat/useAntallKandidater';
 import { GeografiListDTO } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import TekstMedIkon from '../../../components/TekstMedIkon';
 import { useStillingsContext } from '../StillingsContext';
 import OmAnnonsen from '../components/OmAnnonsen';
 import OmBedriften from '../components/OmBedriften';
+import AntallKandidater from './AntallKandidater';
 import StillingSidebar from './StillingSidebar/StillingSidebar';
 import StillingsTekst from './StillingsTekst';
 
@@ -23,7 +22,6 @@ const OmStillingen: React.FC = () => {
   const contentRef = React.useRef<HTMLDivElement>(null);
 
   const { stillingsData, kandidatlisteId } = useStillingsContext();
-  const antallKandidaterSWR = useAntallKandidater(kandidatlisteId);
 
   const lokasjon = getWorkLocationsAsString(
     stillingsData.stilling.locationList as GeografiListDTO,
@@ -76,10 +74,7 @@ const OmStillingen: React.FC = () => {
                 ikon={<HourglassIcon />}
               />
               <TekstMedIkon tekst={applicationdue} ikon={<TimerStartIcon />} />
-              <TekstMedIkon
-                tekst={`${antallKandidaterSWR.data?.antallKandidater ?? '-'} kandidater`}
-                ikon={<PersonGroupIcon />}
-              />
+              <AntallKandidater kandidatlisteId={kandidatlisteId} />
             </div>
           </div>
 
@@ -94,11 +89,9 @@ const OmStillingen: React.FC = () => {
             <OmAnnonsen />
           </div>
         </div>
-        {contentRef.current && (
-          <StillingSidebar
-            printRef={contentRef as React.RefObject<HTMLDivElement>}
-          />
-        )}
+        <StillingSidebar
+          printRef={contentRef as React.RefObject<HTMLDivElement>}
+        />
       </div>
     </div>
   );

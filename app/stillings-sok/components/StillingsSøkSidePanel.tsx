@@ -1,6 +1,9 @@
-import { Button, Search } from '@navikt/ds-react';
+import { Search } from '@navikt/ds-react';
 import * as React from 'react';
+import { useApplikasjonContext } from '../../ApplikasjonContext';
+import { Roller } from '../../components/tilgangskontroll/roller';
 import { useStillingsSøkFilter } from '../StillingsSøkContext';
+import StandardsøkKnapp from './StandardsøkKnapp';
 import GeografiFilter from './StillingsSøkFilter/GeografiFilter';
 import InkluderingFilter from './StillingsSøkFilter/InkluderingFilter';
 import KategoriFilter from './StillingsSøkFilter/KategoriFilter';
@@ -13,6 +16,11 @@ const StillingsSøkSidePanel: React.FC<{
 }> = ({ formidlinger, kandidatId }) => {
   const { fritekst, setFritekst } = useStillingsSøkFilter();
   const [searchValue, setSearchValue] = React.useState(fritekst);
+  const { harRolle } = useApplikasjonContext();
+
+  const harArbeidsgiverrettetRolle = harRolle([
+    Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+  ]);
   return (
     <div className='grid gap-4'>
       <Search
@@ -24,12 +32,8 @@ const StillingsSøkSidePanel: React.FC<{
         onChange={(e) => setSearchValue(e)}
         onSearchClick={(e) => setFritekst(e)}
       />
-      {!formidlinger && !kandidatId && (
-        <Button variant='secondary' className='w-full'>
-          Bruk mitt standardsøk
-        </Button>
-      )}
-      <StatusFilter />
+      {!formidlinger && !kandidatId && <StandardsøkKnapp />}
+      {(harArbeidsgiverrettetRolle || formidlinger) && <StatusFilter />}
       <GeografiFilter />
       {!formidlinger && <InkluderingFilter />}
       {!formidlinger && <KategoriFilter />}

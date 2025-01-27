@@ -17,8 +17,8 @@ const hentFylkerFraJobbønsker = (
   return Array.from(
     new Set(
       geografijobbønskenummer
-        .filter((n) => n.length === 2 || n.length === 4)
-        .map((n) => (n.length === 4 ? n.substring(0, 2) : n)),
+        ?.filter((n) => n.length === 2 || n.length === 4)
+        ?.map((n) => (n.length === 4 ? n.substring(0, 2) : n)),
     ),
   );
 };
@@ -26,7 +26,7 @@ const hentFylkerFraJobbønsker = (
 const hentKommunerFraJobbønsker = (
   geografijobbønskenummer: string[],
 ): string[] => {
-  return geografijobbønskenummer.filter((n) => n.length === 4);
+  return geografijobbønskenummer?.filter((n) => n.length === 4) ?? [];
 };
 
 const hentYrkerFraJobbønsker = (
@@ -35,8 +35,8 @@ const hentYrkerFraJobbønsker = (
   return [
     ...new Set(
       yrkesønsker
-        .flatMap((yrkesønske) => yrkesønske.sokeTitler ?? [])
-        .filter((tittel): tittel is string => tittel != null),
+        ?.flatMap((yrkesønske) => yrkesønske.sokeTitler ?? [])
+        ?.filter((tittel): tittel is string => tittel != null),
     ),
   ];
 };
@@ -45,23 +45,25 @@ export const konverterStederTilNåværendeKoder = (
   geografikoder: (string | null)[],
 ): string[] => {
   const konverterteKoder = geografikoder
-    .filter((kode): kode is string => kode !== null)
-    .map((kode) => {
+    ?.filter((kode): kode is string => kode !== null)
+    ?.map((kode) => {
       const nyekoder = stedmappingFraGammeltNummer.get(kode)?.nummer || kode;
       return nyekoder.length > 4 ? nyekoder.substring(0, 4) : nyekoder;
     });
 
   const fylkesKoder = new Set(
-    konverterteKoder.filter((kode) => kode.length === 2),
+    konverterteKoder?.filter((kode) => kode.length === 2) ?? [],
   );
 
-  return konverterteKoder.filter((kode) => {
-    return (
-      !Array.from(fylkesKoder).some(
-        (fylkesKode) => kode.startsWith(fylkesKode) && kode !== fylkesKode,
-      ) && kode.length > 0
-    );
-  });
+  return (
+    konverterteKoder?.filter((kode) => {
+      return (
+        !Array.from(fylkesKoder).some(
+          (fylkesKode) => kode.startsWith(fylkesKode) && kode !== fylkesKode,
+        ) && kode.length > 0
+      );
+    }) ?? []
+  );
 };
 
 export const useStillingForKandidat = (kandidatId: string | null) => {
@@ -77,19 +79,19 @@ export const useStillingForKandidat = (kandidatId: string | null) => {
       kandidatStillingssøk;
 
     const geografikoder =
-      geografiJobbonsker.length === 0
+      geografiJobbonsker?.length === 0
         ? [kommunenummerstring]
         : geografiJobbonsker
-            .map((g) => getNummerFraSted(g.geografiKode))
-            .filter((kode): kode is string => kode !== null);
+            ?.map((g) => getNummerFraSted(g.geografiKode))
+            ?.filter((kode): kode is string => kode !== null);
 
     const konverterteGeografikoder =
       konverterStederTilNåværendeKoder(geografikoder);
 
     return {
-      fylker: hentFylkerFraJobbønsker(konverterteGeografikoder),
-      kommuner: hentKommunerFraJobbønsker(konverterteGeografikoder),
-      yrkesønsker: hentYrkerFraJobbønsker(yrkeJobbonskerObj),
+      fylker: hentFylkerFraJobbønsker(konverterteGeografikoder ?? []),
+      kommuner: hentKommunerFraJobbønsker(konverterteGeografikoder ?? []),
+      yrkesønsker: hentYrkerFraJobbønsker(yrkeJobbonskerObj ?? []),
     };
   }, [kandidatStillingssøk]);
 

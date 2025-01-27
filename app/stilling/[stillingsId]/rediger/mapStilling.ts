@@ -4,47 +4,80 @@ import { StillingsDataDTO } from '../../../api/stilling/rekrutteringsbistandstil
 import { InkluderingsTag } from '../omStillingen/StillingSidebar/StillingInkludering';
 import { StillingsDataForm } from './redigerFormType.zod';
 
+const capitalize = (str: string) =>
+  str
+    .split(/[- ]/)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(str.includes('-') ? '-' : ' ');
+
 export const mapStillingTilForm = (
   stillingsData: StillingsDataDTO,
 ): StillingsDataForm => {
-  const tags = stillingsData.stilling.properties?.tags
+  const tags = stillingsData?.stilling?.properties?.tags
     ? JSON.parse(stillingsData.stilling.properties.tags)
     : [];
 
-  const workhours = stillingsData.stilling.properties?.workhours
+  const workhours = stillingsData?.stilling?.properties?.workhours
     ? JSON.parse(stillingsData.stilling.properties.workhours)
     : [];
 
-  const workday = stillingsData.stilling.properties?.workday
+  const workday = stillingsData?.stilling?.properties?.workday
     ? JSON.parse(stillingsData.stilling.properties.workday)
     : [];
-
   return {
     omVirksomheten: {
       beskrivelse:
         stillingsData?.stilling?.properties?.employerdescription?.toString() ??
         '',
       kontaktPersoner: stillingsData?.stilling?.contactList ?? [],
+      employerhomepage: stillingsData?.stilling?.properties?.employerhomepage,
+      facebookpage: stillingsData?.stilling?.properties?.facebookpage,
+      linkedinpage: stillingsData?.stilling?.properties?.linkedinpage,
+      twitteraddress: stillingsData?.stilling?.properties?.twitteraddress,
     },
     omTilrettelegging: {
-      statligeInkluderingsdugnade: tags.includes(
+      statligeInkluderingsdugnade: tags?.includes(
         InkluderingsTag.StatligInkluderingsdugnad,
       ),
       tags: tags,
     },
     omStillingen: {
       janzz:
-        (stillingsData?.stilling?.categoryList?.filter(
-          (item) => item.code?.toUpperCase() === 'JANZZ',
-        ) as any) ?? [],
+        (
+          stillingsData?.stilling?.categoryList?.filter(
+            (item) => item.categoryType?.toUpperCase() === 'JANZZ',
+          ) as any
+        )[0] ?? {},
       beskrivelse: stillingsData?.stilling?.properties?.adtext ?? '',
-      kommuneEllerLand: null,
-      adresse:
-        stillingsData?.stilling?.employer?.locationList?.[0]?.address ?? null,
-      locationList: stillingsData?.stilling?.employer?.locationList ?? null,
+
+      adresseLokasjoner:
+        stillingsData?.stilling?.locationList?.filter(
+          (item) => item.postalCode,
+        ) ?? null,
+
+      lokasjoner:
+        stillingsData?.stilling?.locationList
+          ?.filter((item) => !item.postalCode)
+          .map((item) => {
+            if (item.municipal) {
+              return {
+                municipal: capitalize(item.municipal),
+                municipalCode: item.municipalCode,
+              };
+            }
+            if (item.county) {
+              return { county: capitalize(item.county) };
+            }
+            if (item.country) {
+              return { country: capitalize(item.country) };
+            }
+            return null;
+          })
+          .filter((item): item is NonNullable<typeof item> => item !== null) ??
+        null,
     },
     praktiskInfo: {
-      omfangKode: stillingsData?.stilling?.properties?.jobpercentage ?? '',
+      omfangKode: stillingsData?.stilling?.properties?.extent ?? '',
       omfangProsent: stillingsData?.stilling?.properties?.jobpercentage ?? null,
       sektor: stillingsData?.stilling?.properties?.sector ?? '',
       antallStillinger:
@@ -52,11 +85,11 @@ export const mapStillingTilForm = (
       oppstart:
         stillingsData?.stilling?.properties?.starttime?.toString() ?? null,
       oppstartSnarest:
-        stillingsData?.stilling?.properties?.starttime === 'Snarest',
+        stillingsData?.stilling?.properties?.starttime === 'Etter avtale',
       søknadsfrist:
         stillingsData?.stilling?.properties?.applicationdue?.toString() ?? null,
       søknadsfristEtterAvtale:
-        stillingsData?.stilling?.properties?.applicationdue === 'etterAvtale',
+        stillingsData?.stilling?.properties?.applicationdue === 'Snarest',
       ansettelsesform:
         stillingsData?.stilling?.properties?.engagementtype ?? null,
       dager: workday,
@@ -90,6 +123,10 @@ export const mapFormTilStilling = (
       properties: {
         ...existingData.stilling.properties,
         employerdescription: formData.omVirksomheten.beskrivelse,
+        employerhomepage: formData.omVirksomheten.employerhomepage,
+        facebookpage: formData.omVirksomheten.facebookpage,
+        linkedinpage: formData.omVirksomheten.linkedinpage,
+        twitteraddress: formData.omVirksomheten.twitteraddress,
         tags: JSON.stringify(formData.omTilrettelegging.tags),
         adtext: formData.omStillingen.beskrivelse,
         sector: formData.praktiskInfo.sektor,
@@ -108,7 +145,10 @@ export const mapFormTilStilling = (
       },
       published: formaterTilISODato(formData.innspurt.publiseres),
       expires: formaterTilISODato(formData.innspurt.avsluttes),
-      locationList: formData.omStillingen.locationList,
+      locationList: [
+        ...(formData.omStillingen.adresseLokasjoner ?? []),
+        ...(formData.omStillingen.lokasjoner ?? []),
+      ],
       source: formData.innspurt.stillingType,
     },
   };

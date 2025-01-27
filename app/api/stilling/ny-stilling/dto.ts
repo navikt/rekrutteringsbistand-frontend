@@ -1,30 +1,32 @@
-export interface NyStillingDTO {
-  stilling: Stilling;
+export interface OpprettNyStillingDTO {
+  stilling: NyStillingStillingDTO;
   kategori: string;
 }
 
-interface Stilling {
+interface NyStillingStillingDTO {
   createdBy: string;
   updatedBy: string;
   source: string;
   privacy: string;
-  administration: Administration;
-  employer: Employer;
+  employer: NyEmployerDTO;
+  medium: string;
+  businessName: string;
+  administration: NyAdministrationDTO;
 }
 
-interface Administration {
+interface NyAdministrationDTO {
   status: string;
   reportee: string;
   navIdent: string;
 }
 
-interface Employer {
+interface NyEmployerDTO {
   orgnr: string;
   name: string;
-  location: Location;
+  location: NyLocationDTO;
 }
 
-interface Location {
+interface NyLocationDTO {
   address: string;
   postalCode: string;
   city: string;

@@ -7,7 +7,6 @@
     "open-browser": "open http://localhost:1337",
     "test": "npx playwright test",
     "build": "next build",
-    "start": "next start",
     "lint": "next lint",
     "lint-fix": "npx eslint --fix .",
     "formater-kode": "prettier --write ."

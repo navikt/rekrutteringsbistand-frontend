@@ -1,21 +1,22 @@
-import { format, lastDayOfMonth, startOfMonth } from 'date-fns';
+import { format, lastDayOfMonth, parse, startOfMonth } from 'date-fns';
 import { nb } from 'date-fns/locale';
 
 export const formaterTilISODato = (dato: string | null) => {
   if (!dato) return null;
+
   try {
-    // Handle ISO string format
-    if (dato.includes('T')) {
-      return dato; // Already in correct format
-    }
-    // Convert other date formats
-    const parsedDate = new Date(dato);
-    if (isNaN(parsedDate.getTime())) {
-      return null; // Invalid date
-    }
-    return parsedDate.toISOString();
+    const now = new Date();
+    const parsedDate = parse(dato, 'dd-MM-yyyy', new Date());
+
+    parsedDate.setHours(now.getHours());
+    parsedDate.setMinutes(now.getMinutes());
+    parsedDate.setSeconds(now.getSeconds());
+    parsedDate.setMilliseconds(now.getMilliseconds());
+
+    const formatertDato = format(parsedDate, "yyyy-MM-dd'T'HH:mm:ss.SSS");
+    return formatertDato;
   } catch (e) {
-    return null; // Return null if parsing fails
+    return null;
   }
 };
 

@@ -2,6 +2,7 @@ import { Table } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import Link from 'next/link';
 import * as React from 'react';
+import KandidatStatusTag from '../../../../stilling/[stillingsId]/kandidater/components/StatusTag';
 
 export interface TabellRadProps {
   erMaskert: boolean;
@@ -37,7 +38,9 @@ const TabellRad: React.FC<TabellRadProps> = ({
       </Table.DataCell>
       <Table.DataCell>{arbeidsgiver}</Table.DataCell>
       <Table.DataCell>{lagtTilAv}</Table.DataCell>
-      <Table.DataCell>{status}</Table.DataCell>
+      <Table.DataCell>
+        <KandidatStatusTag status={status ?? ''} />
+      </Table.DataCell>
     </Table.Row>
   );
 };

@@ -39,7 +39,7 @@ const OmAnnonsen: React.FC = () => {
           innhold={`${updated ? format(updated, 'dd.MM.yyyy') : '-'}`}
         />
         <Definisjon
-          tittel='Kontaktperson hos NAV'
+          tittel='Kontaktperson hos Nav'
           innhold={`${reportee} ${navIdent ? `(${navIdent})` : ''}`}
         />
       </dl>
