@@ -66,7 +66,7 @@ enum EksternStatus {
   FEIL = 'FEIL',
 }
 
-enum KandidatHendelse {
+export enum KandidatHendelse {
   NyKandidat = 'NY_KANDIDAT',
   DeltMedKandidat = 'DELT_MED_KANDIDAT',
   SvarJa = 'SVAR_JA',

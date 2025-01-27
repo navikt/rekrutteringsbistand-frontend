@@ -7,31 +7,20 @@ import {
   Select,
 } from '@navikt/ds-react';
 
+import { MobileIcon } from '@navikt/aksel-icons';
 import { ChangeEvent, FunctionComponent, useState } from 'react';
 import {
   MeldingsmalerDTO,
   useHentMeldingsmaler,
-} from '../../../../api/kandidatvarsel/hentMeldingsmaler';
-import { useVisVarsling } from '../../../../components/varsling/Varsling';
-
-// import {
-//   Meldingsmal,
-//   usePostSmsTilKandidater,
-//   useSmserForStilling,
-// } from '../../../api/kandidatvarsel-api/kandidatvarsel';
-
-import { MobileIcon } from '@navikt/aksel-icons';
+} from '../../../../../api/kandidatvarsel/hentMeldingsmaler';
 import {
   Meldingsmal,
   usePostSmsTilKandidater,
   useSmserForStilling,
-} from '../../../../api/kandidatvarsel/kandidatvarsel';
-import { Stillingskategori } from '../../../stilling-typer';
+} from '../../../../../api/kandidatvarsel/kandidatvarsel';
+import { useVisVarsling } from '../../../../../components/varsling/Varsling';
+import { Stillingskategori } from '../../../../stilling-typer';
 import css from './SendSmsModal.module.css';
-// import {
-//     MeldingsmalerDTO,
-//     useHentMeldingsmaler,
-// } from '../../../api/kandidatvarsel-api/hentMeldingsmaler';
 
 type Props = {
   markerteFnr: string[];

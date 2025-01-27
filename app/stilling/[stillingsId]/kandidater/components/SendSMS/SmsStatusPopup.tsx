@@ -5,8 +5,8 @@ import {
   EksternStatus,
   Sms,
   useSendtKandidatmelding,
-} from '../../../../api/kandidatvarsel/kandidatvarsel';
-import MedPopover from '../../../../components/popover/MedPopover';
+} from '../../../../../api/kandidatvarsel/kandidatvarsel';
+import MedPopover from '../../../../../components/popover/MedPopover';
 import css from './SmsStatusPopup.module.css';
 
 const formaterSendtDato = (dato: Date) => {

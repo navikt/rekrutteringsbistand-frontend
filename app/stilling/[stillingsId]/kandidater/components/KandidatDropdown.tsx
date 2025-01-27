@@ -1,6 +1,5 @@
 import {
   MenuElipsisHorizontalCircleIcon,
-  PencilIcon,
   TrashIcon,
 } from '@navikt/aksel-icons';
 import { BodyLong, Button, Dropdown, HStack, Modal } from '@navikt/ds-react';
@@ -49,9 +48,9 @@ const KandidatDropdown: React.FC<KandidatDropdownProps> = ({
         </HStack>
         <Dropdown.Menu>
           <Dropdown.Menu.GroupedList>
-            <Dropdown.Menu.GroupedList.Item onClick={() => {}}>
+            {/* <Dropdown.Menu.GroupedList.Item onClick={() => {}}>
               <PencilIcon title='Rediger' /> Rediger
-            </Dropdown.Menu.GroupedList.Item>
+            </Dropdown.Menu.GroupedList.Item> */}
             <Dropdown.Menu.GroupedList.Item
               onClick={() => slettModalRef.current?.showModal()}
             >

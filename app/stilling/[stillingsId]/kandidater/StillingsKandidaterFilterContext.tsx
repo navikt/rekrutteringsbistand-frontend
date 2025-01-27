@@ -16,20 +16,6 @@ export enum KandidatStatus {
   UINTERESSERT = 'Uinteressert',
 }
 
-export enum KandidatHendelser {
-  //TODO Finn riktige navn på hendelser
-  NY_KANDIDAT = 'Ny kandidat',
-  DELT_MED_KANDIDAT = 'Stilling delt med kandidat',
-  SVAR_JA = 'Svart ja',
-  SVAR_NEI = 'Svart nei',
-  CV_DELT = 'CV delt med arbeidsgiver',
-  CV_SLETTET = 'CV slettet',
-  FÅTT_JOBB = 'Fått jobb',
-  EKSTERN_VARSEL_FEILET = 'Ekstern varsel feilet',
-  SMS_SENDT = 'SMS sendt',
-  EPOST_SENDT = 'Epost sendt',
-}
-
 interface IStillingsKandidaterContext {
   status: string[];
   setStatus: (val: string[]) => void;

@@ -17,13 +17,13 @@ import {
 import HendelseTag from './components/HendelseTag';
 import InfoOmKandidat from './components/InfoOmKandidat';
 import KandidatDropdown from './components/KandidatDropdown';
+import SmsStatusPopup from './components/SendSMS/SmsStatusPopup';
 import StatusTag from './components/StatusTag';
 import {
   Kandidatstatus,
   Kandidatutfall,
   Utfallsendring,
 } from './KandidatIKandidatlisteTyper';
-import SmsStatusPopup from './SendSMS/SmsStatusPopup';
 import { useStillingsKandidaterFilter } from './StillingsKandidaterFilterContext';
 
 const StillingsKandidaterTabell: React.FC<{
@@ -70,9 +70,24 @@ const StillingsKandidaterTabell: React.FC<{
 
         const matchesHendelse =
           hendelse.length === 0 ||
-          kandidat.utfallsendringer.some((h) => hendelse.includes(h.utfall));
+          hendelse.some(
+            (utfall) =>
+              kandidat.status === utfall ||
+              kandidat.utfallsendringer.some((h) => h.utfall === utfall),
+          );
 
-        return matchesSearch && matchesStatus && matchesHendelse;
+        // Skjuler de som ikke har fnr hvis filter er valgt for å ikke utlede hendelser.
+        const aktivtFilter =
+          search.length > 0 || status.length > 0 || hendelse.length > 0;
+        const erSynlig =
+          kandidat.fodselsnr !== null && kandidat.fodselsnr !== undefined;
+
+        return (
+          matchesSearch &&
+          matchesStatus &&
+          matchesHendelse &&
+          (!aktivtFilter || erSynlig)
+        );
       })
       .filter(
         (kandidat) =>

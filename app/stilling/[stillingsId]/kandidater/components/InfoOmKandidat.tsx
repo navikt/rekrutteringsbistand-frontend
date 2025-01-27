@@ -1,6 +1,5 @@
-import { BodyShort, Button, Label, Link } from '@navikt/ds-react';
+import { BodyShort, Label, Link } from '@navikt/ds-react';
 import { FunctionComponent } from 'react';
-
 import { getMiljø, Miljø } from '../../../../../util/miljø';
 import { postApi } from '../../../../api/fetcher';
 import { kandidaterSchemaDTO } from '../../../../api/kandidat/schema.zod';
@@ -36,7 +35,7 @@ const InfoOmKandidat: FunctionComponent<InfoOmKandidatProps> = ({
   };
 
   return (
-    <div className='flex flex-row justify-between mb-4 '>
+    <div className='grid grid-cols-3 gap-4 mb-4'>
       <div>
         <Label spacing as='p'>
           Kontaktinfo:
@@ -53,24 +52,23 @@ const InfoOmKandidat: FunctionComponent<InfoOmKandidatProps> = ({
           Telefon: {kandidat.telefon ? kandidat.telefon : <span>&mdash;</span>}
         </BodyShort>
       </div>
-      <div className='flex flex-col gap-2'>
+      <div>
         <Label spacing as='p'>
           Innsatsgruppe:
         </Label>
         <div>
           <span>{kandidat.innsatsgruppe} </span>
-          <Button
-            variant='tertiary'
-            onClick={() =>
-              navigerTilAktivitetsplanen(
-                arbeidsrettetOppfølgingUrl,
-                kandidat.fodselsnr!,
-              )
-            }
-          >
-            Åpne aktivitetsplan
-          </Button>
         </div>
+        <Link
+          onClick={() =>
+            navigerTilAktivitetsplanen(
+              arbeidsrettetOppfølgingUrl,
+              kandidat.fodselsnr!,
+            )
+          }
+        >
+          Åpne aktivitetsplan
+        </Link>
       </div>
     </div>
   );
