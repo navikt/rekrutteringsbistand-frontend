@@ -71,7 +71,7 @@ const StillingSidebarKnapper: React.FC<StillingSidebarKnapperProps> = ({
       <div className='flex'>
         <StillingPrint printRef={printRef} />
       </div>
-      {erEier && (
+      {erDirektemeldt && erEier && (
         <TilgangskontrollForInnhold
           skjulVarsel
           kreverEnAvRollene={[
