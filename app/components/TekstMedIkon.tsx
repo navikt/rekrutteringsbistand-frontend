@@ -16,7 +16,7 @@ const TekstMedIkon: React.FC<ITekstMedIkon> = ({
   className,
 }) => {
   if (!tekst) {
-    return null;
+    return '-';
   }
   return (
     <div

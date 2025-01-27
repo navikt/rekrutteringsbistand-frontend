@@ -2,6 +2,7 @@ import { PencilIcon } from '@navikt/aksel-icons';
 import { Button, Heading } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
+import { useAntallKandidater } from '../../../../../api/kandidat/useAntallKandidater';
 import { useKandidatliste } from '../../../../../api/kandidat/useKandidatliste';
 import {
   Kandidatstatus,
@@ -14,7 +15,7 @@ import KopierStilling from './KopierStilling';
 const EierStillingVisning: React.FC = () => {
   const router = useRouter();
   const { erEier, stillingsData } = useStillingsContext();
-
+  const { data: antallData } = useAntallKandidater(stillingsData.stilling.uuid);
   const { data } = useKandidatliste(stillingsData.stilling.uuid);
   const ref = React.useRef<HTMLDialogElement>(null);
 
@@ -41,7 +42,7 @@ const EierStillingVisning: React.FC = () => {
   const besatteStillinger = antallKandidaterSomHarFåttJobb;
 
   const oppsummeringTekst = `${
-    data?.kandidater?.length ?? 0
+    antallData?.antallKandidater ?? 0
   } kandidater (${antallAktuelleKandidater} er aktuelle${
     data?.kandidatlisteId === stillingsData.stilling.uuid
       ? ` / ${antallPresenterteKandidater} er presentert`

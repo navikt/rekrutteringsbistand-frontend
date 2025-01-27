@@ -36,18 +36,18 @@ const SisteAktivitet: React.FC = () => {
                     className='flex justify-between items-start'
                   >
                     <div>
-                      <Link
-                        href={`/stilling/${aktivitet.stillingId}`}
-                        className=' text-text-default'
-                      >
-                        {aktivitet.erMaskert ? (
-                          <span className='text-red-600'>Ingen tilgang</span>
-                        ) : (
+                      {aktivitet.erMaskert ? (
+                        <span className='text-red-600'>Ingen tilgang</span>
+                      ) : (
+                        <Link
+                          href={`/stilling/${aktivitet.stillingId}`}
+                          className=' text-text-default'
+                        >
                           <BodyShort weight='semibold'>
                             {aktivitet.tittel ?? '-'}
                           </BodyShort>
-                        )}
-                      </Link>
+                        </Link>
+                      )}
                       <BodyShort size='small'>
                         {aktivitet.organisasjonNavn}
                       </BodyShort>
