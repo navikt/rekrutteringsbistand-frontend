@@ -1,14 +1,18 @@
 import { Button } from '@navikt/ds-react';
+import { useRouter } from 'next/navigation';
 import * as React from 'react';
 
-export interface StandardsøkProps {
-  children?: React.ReactNode | undefined;
-}
-
-const StandardsøkKnapp: React.FC<StandardsøkProps> = ({ children }) => {
+const StandardsøkKnapp: React.FC = () => {
+  const router = useRouter();
   return (
     <React.Fragment>
-      <Button variant='secondary' className='w-full'>
+      <Button
+        variant='secondary'
+        className='w-full'
+        onClick={() => {
+          router.replace('?brukStandard=true', { scroll: false });
+        }}
+      >
         Bruk mitt standardsøk
       </Button>
     </React.Fragment>
