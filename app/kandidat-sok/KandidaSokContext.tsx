@@ -29,8 +29,8 @@ export enum KandidatSøkQueryparam {
 }
 
 export interface IKandidatSøkContext {
-  fritekst: string[];
-  setFritekst: (tekst: string[]) => void;
+  fritekst: string;
+  setFritekst: (tekst: string) => void;
   portefølje: string;
   setPortefølje: (portefølje: string) => void;
   valgtKontor: string[];
@@ -69,11 +69,12 @@ export const KandidatSøkContext = React.createContext<
 export const KandidatSøkProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [fritekst, setFritekst] = useQueryState<string[]>(
+  const [fritekst, setFritekst] = useQueryState(
     KandidatSøkQueryparam.Fritekst,
-    parseAsArrayOf(parseAsString)
-      .withDefault([])
-      .withOptions({ clearOnDefault: true }),
+    {
+      defaultValue: '',
+      clearOnDefault: true,
+    },
   );
 
   const [side, setSide] = useQueryState(
