@@ -1,7 +1,7 @@
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
 import { StillingAPI } from '../../api-routes';
-import { getAPIwithSchema } from '../../fetcher';
+import { getAPIwithSchema, putApi } from '../../fetcher';
 
 const useBrukerStandardSøkEndepunkt = `${StillingAPI.internUrl}/standardsok`;
 
@@ -27,4 +27,8 @@ export const brukerStandardSøkMirage = (server: any) => {
       tidspunkt: '2025-01-22T21:35:39.691808',
     };
   });
+};
+
+export const setNyttStandardsøk = (søk: string) => {
+  return putApi(useBrukerStandardSøkEndepunkt, { søk });
 };

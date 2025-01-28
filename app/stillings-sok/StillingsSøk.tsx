@@ -38,7 +38,10 @@ const StillingsSøk = ({
   const router = useRouter();
 
   React.useEffect(() => {
-    if (searchParams.get('brukStandard') !== null) {
+    if (
+      searchParams.get('brukStandardsok') !== null &&
+      !brukerStandardSøkData.isLoading
+    ) {
       if (brukerStandardSøkData.data?.søk) {
         router.replace(`?${brukerStandardSøkData.data.søk}`, { scroll: false });
       } else {
@@ -47,7 +50,12 @@ const StillingsSøk = ({
         });
       }
     }
-  }, [searchParams, brukerStandardSøkData.data, router]);
+  }, [
+    searchParams,
+    brukerStandardSøkData.data?.søk,
+    brukerStandardSøkData.isLoading,
+    router,
+  ]);
 
   if (brukerStandardSøkData.isLoading) {
     return <Sidelaster />;
