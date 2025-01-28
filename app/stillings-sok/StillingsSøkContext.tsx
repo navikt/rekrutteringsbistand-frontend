@@ -35,8 +35,8 @@ interface IStillingsSøkContext {
   setKategori: (val: string[]) => void;
   publisert: string[];
   setPublisert: (val: string[]) => void;
-  fritekst: string;
-  setFritekst: (val: string) => void;
+  fritekst: string[];
+  setFritekst: (val: string[]) => void;
   formidlinger?: boolean;
 }
 
@@ -112,10 +112,12 @@ export const StillingsSøkProvider: React.FC<{
       clearOnDefault: true,
     },
   );
-  const [fritekst, setFritekst] = useQueryState(StillingsSøkQueryparam.Tekst, {
-    defaultValue: '',
-    clearOnDefault: true,
-  });
+  const [fritekst, setFritekst] = useQueryState<string[]>(
+    StillingsSøkQueryparam.Tekst,
+    parseAsArrayOf(parseAsString)
+      .withDefault([])
+      .withOptions({ clearOnDefault: true }),
+  );
 
   const [inkludering, setInkludering] = useQueryState<string[]>(
     StillingsSøkQueryparam.HovedInkluderingTags,

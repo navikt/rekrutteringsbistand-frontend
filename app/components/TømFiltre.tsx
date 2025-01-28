@@ -8,16 +8,16 @@ const TømFiltre = () => {
   const searchParams = useSearchParams();
 
   // Ignore portefolje parameter
-  // const params = new URLSearchParams(searchParams.toString());
-  // params.delete('portefolje');
-  // const harFiltre = params.toString();
-  const harFiltre = searchParams.toString();
+  const params = new URLSearchParams(searchParams.toString());
+  params.delete('portefolje');
+  const harFiltre = params.toString();
+  // const harFiltre = searchParams.toString();
 
   const handleClearAll = () => {
     const newSearchParams = new URLSearchParams();
-    // if (searchParams.has('portefolje')) {
-    //   newSearchParams.set('portefolje', searchParams.get('portefolje')!);
-    // }
+    if (searchParams.has('portefolje')) {
+      newSearchParams.set('portefolje', searchParams.get('portefolje')!);
+    }
     router.push(`?${newSearchParams.toString()}`);
   };
 

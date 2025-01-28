@@ -30,6 +30,7 @@ const StillingsSøkChips: React.FC = () => {
     <div className='mt-4 relative w-full'>
       <Chips>
         <div className='flex flex-row gap-2 flex-wrap overflow-x-auto pb-2'>
+          <FilterChip type={filter.fritekst} setVerdi={filter.setFritekst} />
           <FilterChip type={filter.statuser} setVerdi={filter.setStatuser} />
 
           {filter.inkludering.map((hovedInkludering, i) => {

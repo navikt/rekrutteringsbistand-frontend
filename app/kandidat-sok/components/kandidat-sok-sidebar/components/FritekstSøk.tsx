@@ -3,22 +3,17 @@ import * as React from 'react';
 import { useKandidatSøkFilter } from '../../../KandidaSokContext';
 
 const FritekstSøk: React.FC = () => {
-  const { setFritekst } = useKandidatSøkFilter();
+  const { fritekst, setFritekst } = useKandidatSøkFilter();
   const [localFritekst, setLocalFritekst] = React.useState('');
-
-  const handleChange = (value: string) => {
-    setFritekst(value);
-    setLocalFritekst('');
-  };
 
   return (
     <Search
       hideLabel={false}
       label='Søk etter kandidat'
       variant='primary'
-      onChange={setLocalFritekst}
+      onChange={(e) => setLocalFritekst(e)}
       value={localFritekst}
-      onSearchClick={handleChange}
+      onSearchClick={() => setFritekst([...fritekst, localFritekst])}
     />
   );
 };
