@@ -1,4 +1,4 @@
-import { Radio, RadioGroup, TextField } from '@navikt/ds-react';
+import { Radio, RadioGroup, Select } from '@navikt/ds-react';
 import * as React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { StillingsDataForm } from '../../redigerFormType.zod';
@@ -7,7 +7,7 @@ const VelgOmfang: React.FC = ({}) => {
   const { control, watch } = useFormContext<StillingsDataForm>();
 
   return (
-    <div className='grid grid-cols-2 gap-4'>
+    <div className='flex flex-col gap-4'>
       <Controller
         control={control}
         name='praktiskInfo.omfangKode'
@@ -29,13 +29,23 @@ const VelgOmfang: React.FC = ({}) => {
           control={control}
           name='praktiskInfo.omfangProsent'
           render={({ field: { onChange, value }, fieldState: { error } }) => (
-            <TextField
-              error={error?.message}
-              className='w-[50%]'
-              label='Omfang i prosent for deltid'
-              description='Må fylles inn.'
+            <Select
+              className='w-[200px]'
+              label='Velg omfang prosent'
+              value={value ?? undefined}
               onChange={(e) => onChange(e.target.value)}
-            />
+            >
+              <option value=''>Velg omfang prosent</option>
+              <option value='10%'>10%</option>
+              <option value='20%'>20%</option>
+              <option value='30%'>30%</option>
+              <option value='40%'>40%</option>
+              <option value='50%'>50%</option>
+              <option value='60%'>60%</option>
+              <option value='70%'>70%</option>
+              <option value='80%'>80%</option>
+              <option value='90%'>90%</option>
+            </Select>
           )}
         />
       )}

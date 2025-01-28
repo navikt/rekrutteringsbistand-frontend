@@ -197,7 +197,7 @@ const hendelseTilLabel = (
     ikkeVisÅrstall ? format(dato, 'dd.MM') : format(dato, 'dd.MM.yyyy');
   const formaterDatoUtenÅrstall = (dato: string) => format(dato, 'dd.MM');
   // ikkeVisÅrstall ? formaterDatoUtenÅrstall(dato) : formaterDato(dato);
-  // const svarfrist = forespørselOmDelingAvCv?.svarfrist; //TODO Legg inn svarfrist
+  const svarfrist = forespørselOmDelingAvCv?.svarfrist; //TODO Legg inn svarfrist
 
   const svarTidspunkt = forespørselOmDelingAvCv?.svar?.svarTidspunkt;
 

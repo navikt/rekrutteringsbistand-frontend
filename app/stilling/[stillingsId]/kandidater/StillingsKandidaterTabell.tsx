@@ -142,6 +142,7 @@ const StillingsKandidaterTabell: React.FC<{
           <Table.ColumnHeader sortable sortKey='etternavn' scope='col'>
             Navn
           </Table.ColumnHeader>
+          <Table.HeaderCell scope='col' />
           <Table.HeaderCell scope='col'>Fødselsnr.</Table.HeaderCell>
           <Table.ColumnHeader sortable sortKey='lagtTilAv.navn' scope='col'>
             Lagt til av
@@ -162,7 +163,7 @@ const StillingsKandidaterTabell: React.FC<{
                 <Table.DataCell>
                   {kandidat.etternavn}, {kandidat.fornavn}
                 </Table.DataCell>
-                <Table.DataCell colSpan={5}>
+                <Table.DataCell colSpan={6}>
                   Innaktiv / Ikke synlig i Rekrutteringsbistand
                 </Table.DataCell>
               </Table.Row>
@@ -171,7 +172,7 @@ const StillingsKandidaterTabell: React.FC<{
 
           return (
             <Table.ExpandableRow
-              className={i % 2 === 0 ? 'bg-gray-50' : ''}
+              // className={i % 2 === 0 ? 'bg-gray-50' : ''}
               content={<InfoOmKandidat kandidat={kandidat} />}
               key={i + kandidat.fodselsnr}
               selected={valgteFnr.includes(kandidat.fodselsnr)}
@@ -193,6 +194,13 @@ const StillingsKandidaterTabell: React.FC<{
                 >
                   {kandidat.etternavn}, {kandidat.fornavn}
                 </Link>
+              </Table.DataCell>
+              <Table.DataCell>
+                <SmsStatusPopup
+                  fnr={kandidat.fodselsnr}
+                  stillingId={stillingsId}
+                  stillingskategori={stillingskategori}
+                />
               </Table.DataCell>
               <Table.DataCell>{kandidat.fodselsnr}</Table.DataCell>
               <Table.DataCell>
@@ -225,11 +233,6 @@ const StillingsKandidaterTabell: React.FC<{
 
               <Table.DataCell>
                 <div className='flex items-baseline flex-end'>
-                  <SmsStatusPopup
-                    fnr={kandidat.fodselsnr}
-                    stillingId={stillingsId}
-                    stillingskategori={stillingskategori}
-                  />
                   <KandidatDropdown
                     kandidat={kandidat}
                     stillingsId={stillingsId}

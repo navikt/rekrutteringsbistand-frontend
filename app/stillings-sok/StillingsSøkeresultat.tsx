@@ -41,8 +41,8 @@ const StillingsSøkeresultat: React.FC<{ kandidatId?: string }> = ({
       {(data) => (
         <>
           <div className='flex justify-between'>
-            <StillingsSøkChips />
-            {!kandidatId && <TømFiltre />}
+            <StillingsSøkChips kandidatId={kandidatId} />
+            {/* {!kandidatId && <TømFiltre />} */}
           </div>
           <div className='flex justify-between items-center my-4'>
             {antallVisning(

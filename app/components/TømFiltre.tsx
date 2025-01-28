@@ -1,6 +1,5 @@
 'use client';
-import { TrashIcon } from '@navikt/aksel-icons';
-import { Button } from '@navikt/ds-react';
+import { Chips } from '@navikt/ds-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 const TømFiltre = () => {
   const router = useRouter();
@@ -21,16 +20,16 @@ const TømFiltre = () => {
     router.push(`?${newSearchParams.toString()}`);
   };
 
+  //TODO Tøm filtre
+
   return (
-    <Button
+    <Chips.Removable
       className='text-nowrap'
       disabled={!harFiltre}
-      icon={<TrashIcon aria-hidden />}
-      variant='tertiary'
       onClick={handleClearAll}
     >
       Tøm filtre
-    </Button>
+    </Chips.Removable>
   );
 };
 

@@ -65,7 +65,6 @@ const StillingSidebarKnapper: React.FC<StillingSidebarKnapperProps> = ({
           reportee: brukerData.navn,
         },
       },
-      //TODO Endre til å trigge refetch og error håndtering
     }).then(() => window.location.reload());
   };
 

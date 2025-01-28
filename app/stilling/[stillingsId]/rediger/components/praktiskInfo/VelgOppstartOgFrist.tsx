@@ -14,7 +14,7 @@ const VelgOppstartOgFrist: React.FC<VelgOppstartOgFristProps> = ({
   const { watch, control, setValue } = useFormContext<StillingsDataForm>();
 
   return (
-    <div className='grid grid-cols-2 gap-4'>
+    <div className='flex flex-col gap-8'>
       <div className='flex flex-col'>
         <Heading size='small'>Oppstart</Heading>
         <Controller
@@ -23,7 +23,6 @@ const VelgOppstartOgFrist: React.FC<VelgOppstartOgFristProps> = ({
           render={({ field }) => (
             <>
               <Checkbox
-                checked={field.value}
                 onChange={(e) => {
                   field.onChange(e.target.checked);
                 }}

@@ -99,7 +99,7 @@ const RedigerStilling: React.FC = () => {
             Avslutt forhåndsvisning
           </Button>
 
-          <OmStillingen />
+          <OmStillingen forhåndsvisData={forhåndsvisData !== null} />
         </>
       ) : (
         <div className='flex flex-row'>

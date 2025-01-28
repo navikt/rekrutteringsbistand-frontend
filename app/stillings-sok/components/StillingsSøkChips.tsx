@@ -2,6 +2,7 @@ import { Chips } from '@navikt/ds-react';
 import * as React from 'react';
 import { useGeografi } from '../../api/stilling/geografi/useGeografi';
 import FilterChip from '../../components/FilterChip';
+import TømFiltre from '../../components/TømFiltre';
 import { storForbokstavString } from '../../kandidat-sok/util';
 import { useStillingsSøkFilter } from '../StillingsSøkContext';
 import {
@@ -11,7 +12,9 @@ import {
   visningsnavnForFilter,
 } from './StillingsSøkFilter/InkluderingFilter';
 
-const StillingsSøkChips: React.FC = () => {
+const StillingsSøkChips: React.FC<{ kandidatId?: string }> = ({
+  kandidatId,
+}) => {
   const filter = useStillingsSøkFilter();
 
   const { data } = useGeografi();
@@ -30,6 +33,9 @@ const StillingsSøkChips: React.FC = () => {
     <div className='mt-4 relative w-full'>
       <Chips>
         <div className='flex flex-row gap-2 flex-wrap overflow-x-auto pb-2'>
+          {Object.values(filter).some(
+            (value) => Array.isArray(value) && value.length > 0,
+          ) && <TømFiltre />}
           <FilterChip type={filter.fritekst} setVerdi={filter.setFritekst} />
           <FilterChip type={filter.statuser} setVerdi={filter.setStatuser} />
 

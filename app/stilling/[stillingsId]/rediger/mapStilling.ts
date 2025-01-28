@@ -98,7 +98,7 @@ export const mapStillingTilForm = (
     innspurt: {
       publiseres: stillingsData?.stilling?.published ?? '',
       avsluttes: stillingsData?.stilling?.expires ?? '',
-      stillingType: stillingsData?.stilling?.source ?? '',
+      stillingType: stillingsData?.stilling?.source ?? 'DIR',
     },
   };
 };

@@ -130,7 +130,7 @@ export const RedigerInnspurt: React.FC<{
             }
           />
           <DatoVelger
-            label='Siste visningsdato'
+            label='Siste visning'
             fraDato={watch('innspurt.avsluttes')}
             setDato={(val) =>
               val ? setValue('innspurt.avsluttes', val) : null
@@ -138,13 +138,32 @@ export const RedigerInnspurt: React.FC<{
           />
         </div>
         <RadioGroup
-          legend='Hvor skal stillingen publiseres?'
+          legend='Skal stillingen publiseres på arbeidsplassen.no også?'
           value={watch('innspurt.stillingType')}
           onChange={(val) => setValue('innspurt.stillingType', val)}
         >
-          <Radio value='DIR'>Internt på Nav</Radio>
-          <Radio value='SHOW_ALL'>Internt på Nav og arbeidsplassen.no</Radio>
+          <Radio value='DIR'>Nei, den vises kun internt</Radio>
+          <Radio value='SHOW_ALL'>
+            Ja, publiser stillingen offentlig på arbeidsplassen.no
+          </Radio>
         </RadioGroup>
+
+        <div>
+          <Heading level='3' size='small' spacing>
+            Hva skjer når du publiserer?
+          </Heading>
+          <ul className='list-disc pl-8 space-y-2'>
+            <li>
+              Annonsen blir synlig for
+              <ul className='list-disc pl-8 space-y-2 mt-2'>
+                <li>Nav-ansatte i stillingssøket​.</li>
+                <li>Kandidater som får annonsen delt til aktivitetsplanen</li>
+                <li>Personer som får tilsendt link til stillingsannonsen</li>
+              </ul>
+            </li>
+            <li>Du kan når som helst endre eller avpublisere annonsen</li>
+          </ul>
+        </div>
 
         {errors && Object.keys(errors).length > 0 && (
           <ErrorSummary>
@@ -180,7 +199,7 @@ export const RedigerInnspurt: React.FC<{
             )}
           </ErrorSummary>
         )}
-        <div className='flex justify-between mb-8 mt-4 w-full'>
+        <div className='flex justify-between mb-8 pt-8 w-full'>
           {stegNummer > 1 ? (
             <Button
               variant='tertiary'

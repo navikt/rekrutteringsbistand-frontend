@@ -68,6 +68,7 @@ const StillingInkludering: React.FC = () => {
       </Heading>
       {registrerteTags.map((tag) => (
         <TekstMedIkon
+          hideIfEmpty
           className='mb-2'
           key={tag}
           ikon={<CheckmarkIcon />}

@@ -36,7 +36,7 @@ export default function StillingSide() {
           </span>
         </div>
       )}
-      <Tabs defaultValue={fane} onChange={(val) => setFane(val)}>
+      <Tabs defaultValue={fane} onChange={(val: any) => setFane(val)}>
         <Tabs.List className='flex mb-2 w-full justify-between'>
           <div>
             <Tabs.Tab value='stilling' label='Om stillingen' />

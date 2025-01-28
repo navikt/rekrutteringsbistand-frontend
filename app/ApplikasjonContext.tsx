@@ -38,7 +38,7 @@ const ApplikasjonContext = React.createContext<ApplikasjonContextType>({
     fornavn: '',
     etternavn: '',
   },
-  darkMode: true, //todo
+  darkMode: true,
   setDarkMode: () => false,
   harRolle: () => false,
   setValgtNavKontor: () => null,

@@ -6,6 +6,7 @@ export interface ITekstMedIkon {
   title?: string;
   ariaLabel?: string;
   className?: string;
+  hideIfEmpty?: boolean;
 }
 
 const TekstMedIkon: React.FC<ITekstMedIkon> = ({
@@ -14,7 +15,11 @@ const TekstMedIkon: React.FC<ITekstMedIkon> = ({
   title,
   ariaLabel,
   className,
+  hideIfEmpty,
 }) => {
+  if (hideIfEmpty && !tekst) {
+    return null;
+  }
   if (!tekst) {
     return '-';
   }
