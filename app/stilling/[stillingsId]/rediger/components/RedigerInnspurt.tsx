@@ -2,14 +2,22 @@ import { ArrowLeftIcon, CheckmarkCircleIcon } from '@navikt/aksel-icons';
 import {
   BodyShort,
   Button,
+  Checkbox,
+  CheckboxGroup,
   ErrorSummary,
   Heading,
   Radio,
   RadioGroup,
+  TextField,
 } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { FieldErrors, SubmitHandler, useFormContext } from 'react-hook-form';
+import {
+  Controller,
+  FieldErrors,
+  SubmitHandler,
+  useFormContext,
+} from 'react-hook-form';
 import { oppdaterStilling } from '../../../../api/stilling/oppdater-stilling/oppdaterStilling';
 import { useStillingsContext } from '../../StillingsContext';
 import { mapFormTilStilling } from '../mapStilling';
@@ -23,11 +31,16 @@ export const RedigerInnspurt: React.FC<{
   const { stillingsData } = useStillingsContext();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [sendeSoknad, setSendeSoknad] = useState<string[]>([]);
+
+  const handleChange = (val: string[]) => setSendeSoknad(val);
+
   const {
     watch,
     handleSubmit,
     setValue,
     formState: { errors },
+    control,
   } = useFormContext<StillingsDataForm>();
 
   const onSubmit: SubmitHandler<StillingsDataForm> = async (data) => {
@@ -112,6 +125,7 @@ export const RedigerInnspurt: React.FC<{
     });
   };
 
+  console.log(sendeSoknad);
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className='space-y-8'>
@@ -147,6 +161,44 @@ export const RedigerInnspurt: React.FC<{
             Ja, publiser stillingen offentlig på arbeidsplassen.no
           </Radio>
         </RadioGroup>
+
+        {watch('innspurt.stillingType') === 'SHOW_ALL' && (
+          <div>
+            <CheckboxGroup
+              legend='Hvordan sende søknad?'
+              onChange={handleChange}
+            >
+              <Checkbox value='epost'>E-post</Checkbox>
+              {sendeSoknad.includes('epost') && (
+                <Controller
+                  name='innspurt.epost'
+                  control={control}
+                  render={({ field, fieldState: { error } }) => (
+                    <TextField
+                      label='E-post'
+                      type='email'
+                      error={error?.message}
+                    />
+                  )}
+                />
+              )}
+              <Checkbox value='lenke'>Lenke til søknadsskjema</Checkbox>
+              {sendeSoknad.includes('lenke') && (
+                <Controller
+                  name='innspurt.lenke'
+                  control={control}
+                  render={({ field, fieldState: { error } }) => (
+                    <TextField
+                      label='Lenke til søknadsskjema'
+                      type='url'
+                      error={error?.message}
+                    />
+                  )}
+                />
+              )}
+            </CheckboxGroup>
+          </div>
+        )}
 
         <div>
           <Heading level='3' size='small' spacing>

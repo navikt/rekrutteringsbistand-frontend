@@ -67,6 +67,13 @@ const AksjonsknapperSiderbarStilling: React.FC<
             stillingsinfo: stillingsData?.stillingsinfo ?? null,
             stilling: {
               ...stilling.stilling,
+              properties: {
+                ...stilling.stilling?.properties,
+                applicationemail:
+                  stilling.stilling?.properties?.applicationemail ?? null,
+                applicationurl:
+                  stilling.stilling?.properties?.applicationurl ?? null,
+              },
               categoryList: stilling.stilling?.categoryList?.filter(
                 (
                   category,
