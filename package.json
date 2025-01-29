@@ -40,8 +40,8 @@
     "@tiptap/pm": "^2.11.3",
     "@tiptap/react": "^2.11.3",
     "@types/loadjs": "^4.0.4",
-    "@types/react": "^19.0.8",
-    "@types/react-dom": "^19.0.3",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
     "date-fns": "^4.1.0",
     "html-react-parser": "^5.2.2",
     "jose": "^5.9.6",
@@ -96,13 +96,5 @@
       "npx eslint --fix . --no-cache"
     ],
     "*.json": "prettier --write"
-  },
-  "pnpm": {
-    "overrides": {
-      "react": "^19.0.0",
-      "react-dom": "^19.0.0",
-      "@types/react": "^19.0.8",
-      "@types/react-dom": "^19.0.3"
-    }
   }
 }
