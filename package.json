@@ -29,10 +29,6 @@
       }
     }
   },
-  "resolutions": {
-    "react": "19.0.0",
-    "react-dom": "19.0.0"
-  },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
     "@monaco-editor/react": "^4.6.0",
@@ -62,8 +58,8 @@
     "@tiptap/pm": "^2.11.3",
     "@tiptap/react": "^2.11.3",
     "@types/loadjs": "^4.0.4",
-    "@types/react": "^19.0.0",
-    "@types/react-dom": "^19.0.0",
+    "@types/react": "^19.0.0-rc",
+    "@types/react-dom": "^19.0.0-rc",
     "date-fns": "^4.1.0",
     "html-react-parser": "^5.2.2",
     "jose": "^5.9.6",
@@ -72,8 +68,8 @@
     "nuqs": "^2.3.1",
     "pino": "^9.6.0",
     "postcss-import": "^16.1.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "react": "^19.0.0-rc",
+    "react-dom": "^19.0.0-rc",
     "react-hook-form": "^7.54.2",
     "react-to-print": "^3.0.5",
     "swr": "^2.3.0",
