@@ -11,6 +11,14 @@
     "lint-fix": "npx eslint --fix .",
     "formater-kode": "prettier --write ."
   },
+  "overrides": {
+    "@navikt/ds-react": {
+      "peerDependencies": {
+        "react": "19.0.0",
+        "@types/react": "^19.0.0"
+      }
+    }
+  },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
     "@monaco-editor/react": "^4.6.0",
