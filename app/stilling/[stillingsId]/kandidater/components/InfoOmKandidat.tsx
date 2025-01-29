@@ -1,4 +1,12 @@
-import { BodyShort, Label, Link } from '@navikt/ds-react';
+import {
+  BodyShort,
+  Button,
+  Heading,
+  Label,
+  Link,
+  Radio,
+  RadioGroup,
+} from '@navikt/ds-react';
 import { FunctionComponent } from 'react';
 import { getMiljø, Miljø } from '../../../../../util/miljø';
 import { postApi } from '../../../../api/fetcher';
@@ -35,40 +43,71 @@ const InfoOmKandidat: FunctionComponent<InfoOmKandidatProps> = ({
   };
 
   return (
-    <div className='grid grid-cols-3 gap-4 mb-4'>
-      <div>
-        <Label spacing as='p'>
-          Kontaktinfo:
-        </Label>
-        <BodyShort>
-          E-post:{' '}
-          {kandidat.epost ? (
-            <Link href={`mailto:${kandidat.epost}`}>{kandidat.epost}</Link>
-          ) : (
-            <span>&mdash;</span>
-          )}
-        </BodyShort>
-        <BodyShort>
-          Telefon: {kandidat.telefon ? kandidat.telefon : <span>&mdash;</span>}
-        </BodyShort>
-      </div>
-      <div>
-        <Label spacing as='p'>
-          Innsatsgruppe:
-        </Label>
+    <div>
+      <div className='grid grid-cols-3 gap-4 mb-4'>
         <div>
-          <span>{kandidat.innsatsgruppe} </span>
+          <Label spacing as='p'>
+            Kontaktinfo:
+          </Label>
+          <BodyShort>
+            E-post:{' '}
+            {kandidat?.epost ? (
+              <Link href={`mailto:${kandidat.epost}`}>{kandidat.epost}</Link>
+            ) : (
+              <span>-</span>
+            )}
+          </BodyShort>
+          <BodyShort>
+            Telefon: {kandidat?.telefon ? kandidat.telefon : <span>-</span>}
+          </BodyShort>
         </div>
-        <Link
-          onClick={() =>
-            navigerTilAktivitetsplanen(
-              arbeidsrettetOppfølgingUrl,
-              kandidat.fodselsnr!,
-            )
-          }
-        >
-          Åpne aktivitetsplan
-        </Link>
+        <div>
+          <Label spacing as='p'>
+            Innsatsgruppe:
+          </Label>
+          <div>
+            <span>{kandidat?.innsatsgruppe} </span>
+          </div>
+          <Link
+            onClick={() =>
+              navigerTilAktivitetsplanen(
+                arbeidsrettetOppfølgingUrl,
+                kandidat.fodselsnr!,
+              )
+            }
+          >
+            Åpne aktivitetsplan
+          </Link>
+        </div>
+      </div>
+      <hr className='border-gray-200 my-4' />
+
+      <div className='grid grid-cols-2 gap-8'>
+        <div>
+          <Heading size='small' spacing>
+            Velg status
+          </Heading>
+          <RadioGroup
+            legend=''
+            // value={selectedStatus}
+            // onChange={setSelectedStatus}
+          >
+            <Radio value='vurderes'>
+              Vurderes
+              <BodyShort size='small' className='text-gray-600'>
+                Settes automatisk når en kandidat legges i listen
+              </BodyShort>
+            </Radio>
+            <Radio value='kontaktet'>Kontaktet</Radio>
+            <Radio value='aktuell'>Aktuell</Radio>
+            <Radio value='til_intervju'>Til intervju</Radio>
+            <Radio value='ikke_aktuell'>Ikke aktuell</Radio>
+            <Radio value='ikke_interessert'>Ikke interessert</Radio>
+          </RadioGroup>
+          <Button variant='primary' size='small' className='mt-4'>
+            Lagre status
+          </Button>
+        </div>
       </div>
     </div>
   );
