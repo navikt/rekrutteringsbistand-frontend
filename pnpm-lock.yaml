@@ -33,8 +33,8 @@ importers:
         specifier: ^2.1.5
         version: 2.1.5
       '@navikt/navspa':
-        specifier: ^7.0.0
-        version: 7.0.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+        specifier: 6.2.0
+        version: 6.2.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@navikt/next-logger':
         specifier: ^1.35.0
         version: 1.35.0(next@15.1.6(@babel/core@7.26.7)(@opentelemetry/api@1.9.0)(@playwright/test@1.50.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(pino@9.6.0)
@@ -1009,11 +1009,11 @@ packages:
   '@navikt/fnrvalidator@2.1.5':
     resolution: {integrity: sha512-uHzoL3ZTYwrF7OTKaihNf9xHH6S9WnGqz420HX4lEX+yu5367l+dYxI5OIRVT5MKWEDQ4DCVSAuJhoWValv6Fw==, tarball: https://npm.pkg.github.com/download/@navikt/fnrvalidator/2.1.5/e33cbc5693b14419bbcf4d5daee2ac9eeec532e5}
 
-  '@navikt/navspa@7.0.0':
-    resolution: {integrity: sha512-ZyXEr0hweUOY92LA1QJjiSHZQSAMjb3rGpYn6WV44uj8e0lunD4sJ60hbZDny8tX6YjVVcLA7IvgXeAQ6w+gxA==, tarball: https://npm.pkg.github.com/download/@navikt/navspa/7.0.0/1dd787b54c65709657f96d0f9a62f2f864d0f29d}
+  '@navikt/navspa@6.2.0':
+    resolution: {integrity: sha512-ix3lqWZWIhIAlmFL883hbmD9kjWk9qeijEGXiQOxPzanpWZ4EeeZhEsXng+MftDurJk04y3Q9i/1x0V7l34O9w==, tarball: https://npm.pkg.github.com/download/@navikt/navspa/6.2.0/fedd207df70dff922a729cef18a28112274202c6}
     peerDependencies:
-      react: '>=19.0.0'
-      react-dom: '>=19.0.0'
+      react: '>=16.6.0 || 17 || 18'
+      react-dom: '>=16.6.0 || 17 || 18'
 
   '@navikt/next-logger@1.35.0':
     resolution: {integrity: sha512-sWQj837IhOD7pAyYtPIGCj4HJII4HmfYu4e8wpGHBn4TArXDRsEg4ndw+OWZK1pXb4PEf94RHEce42ltrWHJ1Q==, tarball: https://npm.pkg.github.com/download/@navikt/next-logger/1.35.0/d8db3f9b5719486d8b7a61e29f4c18dd1f2a5033}
@@ -4432,7 +4432,7 @@ snapshots:
 
   '@navikt/fnrvalidator@2.1.5': {}
 
-  '@navikt/navspa@7.0.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
+  '@navikt/navspa@6.2.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
     dependencies:
       loadjs: 4.3.0
       react: 19.0.0
