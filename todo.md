@@ -13,3 +13,7 @@ TODO:
 - Forklar stopp stilling knapp og slett
 
 - sjekk validering på liste av folk
+
+# Todo:
+
+https://docs.nais.io/observability/how-to/auto-instrumentation/ for nodjs

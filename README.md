@@ -71,7 +71,3 @@ Happy hacking! 🎭
 # Tips:
 
 transform tools: https://transform.tools/
-
-# Todo:
-
-https://docs.nais.io/observability/how-to/auto-instrumentation/ for nodjs
