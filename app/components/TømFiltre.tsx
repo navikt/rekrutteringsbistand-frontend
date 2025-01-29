@@ -1,32 +1,27 @@
 'use client';
 import { Chips } from '@navikt/ds-react';
-import { useRouter, useSearchParams } from 'next/navigation';
+
+const clearAllQueryParams = (exclude: string[] = []) => {
+  const searchParams = new URLSearchParams(window.location.search);
+  const preservedParams = new URLSearchParams();
+
+  exclude.forEach((param) => {
+    const value = searchParams.get(param);
+    if (value) preservedParams.set(param, value);
+  });
+
+  window.history.pushState(
+    {},
+    '',
+    `${window.location.pathname}${preservedParams.toString() ? '?' + preservedParams.toString() : ''}`,
+  );
+};
+
 const TømFiltre = () => {
-  const router = useRouter();
-
-  const searchParams = useSearchParams();
-
-  // Ignore portefolje parameter
-  const params = new URLSearchParams(searchParams.toString());
-  params.delete('portefolje');
-  const harFiltre = params.toString();
-  // const harFiltre = searchParams.toString();
-
-  const handleClearAll = () => {
-    const newSearchParams = new URLSearchParams();
-    if (searchParams.has('portefolje')) {
-      newSearchParams.set('portefolje', searchParams.get('portefolje')!);
-    }
-    router.push(`?${newSearchParams.toString()}`);
-  };
-
-  //TODO Tøm filtre
-
   return (
     <Chips.Removable
       className='text-nowrap'
-      disabled={!harFiltre}
-      onClick={handleClearAll}
+      onClick={() => clearAllQueryParams(['portefolje'])}
     >
       Tøm filtre
     </Chips.Removable>

@@ -53,22 +53,6 @@ export const StillingsSøkProvider: React.FC<{
   const harArbeidsgiverrettetRolle = harRolle([
     Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
   ]);
-  const [statuser, setStatuserOriginal] = useQueryState<string[]>(
-    StillingsSøkQueryparam.Statuser,
-    parseAsArrayOf(parseAsString)
-      .withDefault([])
-      .withOptions({ clearOnDefault: true }),
-  );
-
-  React.useEffect(() => {
-    if (
-      !formidlinger &&
-      !harArbeidsgiverrettetRolle &&
-      (!statuser.includes('publisert') || statuser.length > 1)
-    ) {
-      setStatuserOriginal(['publisert']);
-    }
-  }, [harArbeidsgiverrettetRolle, statuser, setStatuserOriginal]);
 
   const setStatuser = (value: string[] | ((prev: string[]) => string[])) => {
     if (!formidlinger && !harArbeidsgiverrettetRolle) {
@@ -77,6 +61,13 @@ export const StillingsSøkProvider: React.FC<{
       setStatuserOriginal(value);
     }
   };
+
+  const [statuser, setStatuserOriginal] = useQueryState<string[]>(
+    StillingsSøkQueryparam.Statuser,
+    parseAsArrayOf(parseAsString)
+      .withDefault([])
+      .withOptions({ clearOnDefault: true, shallow: true }),
+  );
 
   const [fylker, setFylker] = useQueryState<string[]>(
     StillingsSøkQueryparam.Fylker,
@@ -116,14 +107,14 @@ export const StillingsSøkProvider: React.FC<{
     StillingsSøkQueryparam.Tekst,
     parseAsArrayOf(parseAsString)
       .withDefault([])
-      .withOptions({ clearOnDefault: true }),
+      .withOptions({ clearOnDefault: true, shallow: true }),
   );
 
   const [inkludering, setInkludering] = useQueryState<string[]>(
     StillingsSøkQueryparam.HovedInkluderingTags,
     parseAsArrayOf(parseAsString)
       .withDefault([])
-      .withOptions({ clearOnDefault: true }),
+      .withOptions({ clearOnDefault: true, shallow: true }),
   );
 
   const [inkluderingUnderkategori, setInkluderingUnderkategori] = useQueryState<
@@ -132,14 +123,14 @@ export const StillingsSøkProvider: React.FC<{
     StillingsSøkQueryparam.SubInkluderingTags,
     parseAsArrayOf(parseAsString)
       .withDefault([])
-      .withOptions({ clearOnDefault: true }),
+      .withOptions({ clearOnDefault: true, shallow: true }),
   );
 
   const [kategori, setKategori] = useQueryState<string[]>(
     StillingsSøkQueryparam.Stillingskategorier,
     parseAsArrayOf(parseAsString)
       .withDefault([])
-      .withOptions({ clearOnDefault: true }),
+      .withOptions({ clearOnDefault: true, shallow: true }),
   );
 
   const [publisert, setPublisert] = useQueryState<string[]>(
@@ -148,6 +139,16 @@ export const StillingsSøkProvider: React.FC<{
       .withDefault([])
       .withOptions({ clearOnDefault: true }),
   );
+
+  React.useEffect(() => {
+    if (
+      !formidlinger &&
+      !harArbeidsgiverrettetRolle &&
+      (!statuser.includes('publisert') || statuser.length > 1)
+    ) {
+      setStatuserOriginal(['publisert']);
+    }
+  }, [harArbeidsgiverrettetRolle, statuser, setStatuserOriginal]);
 
   React.useEffect(() => {
     if (inkluderingUnderkategori.length !== 0) {
