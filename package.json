@@ -11,24 +11,6 @@
     "lint-fix": "npx eslint --fix .",
     "formater-kode": "prettier --write ."
   },
-  "overrides": {
-    "react": "19.0.0",
-    "react-dom": "19.0.0",
-    "@types/react": "^19.0.0",
-    "@types/react-dom": "^19.0.0",
-    "@navikt/ds-react": {
-      "peerDependencies": {
-        "react": "19.0.0",
-        "@types/react": "^19.0.0"
-      }
-    },
-    "nuqs": {
-      "peerDependencies": {
-        "react": "19.0.0",
-        "react-dom": "19.0.0"
-      }
-    }
-  },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
     "@monaco-editor/react": "^4.6.0",
