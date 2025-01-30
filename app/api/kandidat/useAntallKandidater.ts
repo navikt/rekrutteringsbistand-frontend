@@ -7,14 +7,14 @@ export const antallKandidaterSchema = z.object({
   antallKandidater: z.number(),
 });
 
-const antallKandidaterEndepunkt = (stillingsId: string | null) =>
-  stillingsId
-    ? `${KandidatAPI.internUrl}/veileder/kandidatlister/${stillingsId}/antallKandidater`
+const antallKandidaterEndepunkt = (kandidatlisteId: string | null) =>
+  kandidatlisteId
+    ? `${KandidatAPI.internUrl}/veileder/kandidatlister/${kandidatlisteId}/antallKandidater`
     : undefined;
 
-export const useAntallKandidater = (stillingsId: string | null) => {
+export const useAntallKandidater = (kandidatlisteId: string | null) => {
   return useSWRImmutable(
-    antallKandidaterEndepunkt(stillingsId),
+    antallKandidaterEndepunkt(kandidatlisteId),
     getAPIwithSchema(antallKandidaterSchema),
   );
 };

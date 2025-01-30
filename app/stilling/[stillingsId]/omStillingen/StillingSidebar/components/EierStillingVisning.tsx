@@ -14,8 +14,8 @@ import KopierStilling from './KopierStilling';
 
 const EierStillingVisning: React.FC = () => {
   const router = useRouter();
-  const { erEier, stillingsData } = useStillingsContext();
-  const antallData = useAntallKandidater(stillingsData.stilling.uuid);
+  const { erEier, stillingsData, kandidatlisteId } = useStillingsContext();
+  const antallData = useAntallKandidater(kandidatlisteId);
   const { data, isLoading } = useKandidatliste(stillingsData.stilling.uuid);
 
   if (isLoading || antallData.isLoading) {

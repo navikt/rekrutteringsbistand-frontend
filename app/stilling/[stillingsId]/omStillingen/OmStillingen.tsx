@@ -14,6 +14,7 @@ import { useStillingsContext } from '../StillingsContext';
 import OmAnnonsen from '../components/OmAnnonsen';
 import OmBedriften from '../components/OmBedriften';
 import OmStillingBoks from '../components/OmStillingBoks';
+import AntallKandidater from './AntallKandidater';
 import StillingSidebar from './StillingSidebar/StillingSidebar';
 import StillingsTekst from './StillingsTekst';
 
@@ -22,7 +23,7 @@ const OmStillingen: React.FC<{ forhåndsvisData?: boolean }> = ({
 }) => {
   const contentRef = React.useRef<HTMLDivElement>(null);
 
-  const { stillingsData } = useStillingsContext();
+  const { stillingsData, kandidatlisteId } = useStillingsContext();
 
   const lokasjon = getWorkLocationsAsString(
     stillingsData.stilling.locationList as GeografiListDTO,
@@ -100,6 +101,7 @@ const OmStillingen: React.FC<{ forhåndsvisData?: boolean }> = ({
                     tekst={`Oppstart ${formaterTid(starttime)?.toLowerCase()}`}
                     ikon={<TimerStartIcon />}
                   />
+                  <AntallKandidater kandidatlisteId={kandidatlisteId} />
                 </>
               }
             />
