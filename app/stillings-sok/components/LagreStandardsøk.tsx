@@ -20,8 +20,9 @@ const LagreStandardsøk: React.FC = () => {
       aria-describedby='lagre-standardsok-beskrivelse'
       icon={<FloppydiskIcon />}
       size='small'
-      onClick={() => {
-        setNyttStandardsøk(searchString);
+      onClick={async () => {
+        await setNyttStandardsøk(searchString);
+        await brukerStandardSøkData.mutate();
       }}
     >
       Lagre nytt standardsøk
