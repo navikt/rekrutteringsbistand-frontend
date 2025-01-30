@@ -7,7 +7,7 @@ import {
 import { useStillingssøk } from '../api/stillings-sok/useStillingssøk';
 import { useApplikasjonContext } from '../ApplikasjonContext';
 import SWRLaster from '../components/SWRLaster';
-import TømFiltre from '../components/TømFiltre';
+import LagreStandardsøk from './components/LagreStandardsøk';
 import StillingsSøkPaginering from './components/Pagnering';
 import StillingsKort from './components/StillingsKort';
 import StillingsSøkChips from './components/StillingsSøkChips';
@@ -40,9 +40,9 @@ const StillingsSøkeresultat: React.FC<{ kandidatId?: string }> = ({
     <SWRLaster hook={hook}>
       {(data) => (
         <>
-          <div className='flex justify-between'>
+          <div className='flex items-center gap-2'>
             <StillingsSøkChips kandidatId={kandidatId} />
-            {/* {!kandidatId && <TømFiltre />} */}
+            <LagreStandardsøk />
           </div>
           <div className='flex justify-between items-center my-4'>
             {antallVisning(

@@ -1,13 +1,9 @@
 import { Button } from '@navikt/ds-react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import * as React from 'react';
-import {
-  setNyttStandardsøk,
-  useUseBrukerStandardSøk,
-} from '../../api/stilling/standardsok/useBrukersStandardsøk';
+import { useUseBrukerStandardSøk } from '../../api/stilling/standardsok/useBrukersStandardsøk';
 
 const StandardsøkKnapp: React.FC = () => {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const searchString = new URLSearchParams(searchParams.toString()).toString();
 
@@ -18,22 +14,18 @@ const StandardsøkKnapp: React.FC = () => {
   return (
     <React.Fragment>
       <Button
+        disabled={brukerStandardSøk}
         variant='secondary'
         className='w-full'
         onClick={() => {
-          router.replace('?brukStandardsok=true', { scroll: false });
+          window.history.pushState(
+            {},
+            '',
+            `${window.location.pathname}?brukStandardsok=true`,
+          );
         }}
       >
         Bruk mitt standardsøk
-      </Button>
-      <Button
-        disabled={brukerStandardSøk}
-        variant='tertiary'
-        onClick={() => {
-          setNyttStandardsøk('test');
-        }}
-      >
-        Lagre nytt standardsøk
       </Button>
     </React.Fragment>
   );

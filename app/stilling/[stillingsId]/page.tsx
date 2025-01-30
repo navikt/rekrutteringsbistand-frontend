@@ -31,7 +31,7 @@ export default function StillingSide() {
       }
     >
       {erSlettet && (
-        <div className='absolute inset-0 flex justify-center bg-white/60 pointer-events-none pt-4'>
+        <div className='absolute inset-0 flex justify-center bg-white/60 pointer-events-none pt-2'>
           <span className='text-red-500 font-bold text-5xl'>
             Stillingen er slettet
           </span>
