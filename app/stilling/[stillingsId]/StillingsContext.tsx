@@ -16,6 +16,7 @@ interface StillingsContextType {
   erDirektemeldt: boolean;
   kandidatlisteId: string | null;
   refetch: () => void;
+  erSlettet: boolean;
 }
 
 const StillingsContext = React.createContext<StillingsContextType | undefined>(
@@ -86,6 +87,7 @@ const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
   return (
     <StillingsContext.Provider
       value={{
+        erSlettet: stillingsData.stilling.status === 'DELETED',
         erDirektemeldt: stillingsData.stilling?.source === 'DIR',
         forhåndsvisData,
         stillingsData: forhåndsvisData ? forhåndsvisData : stillingsData,

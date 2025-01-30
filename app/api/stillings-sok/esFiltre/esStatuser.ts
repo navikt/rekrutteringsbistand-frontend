@@ -1,12 +1,14 @@
 import { StillingsStatusTyper } from '../../../stillings-sok/components/StillingsSøkFilter/StatusFilter';
 
-export const esStatuser = (statuser: string[]) => {
+export const esStatuser = (statuser: string[], navIdent?: string) => {
   const ingenFiltreValgt = statuser.length === 0;
   const alleFiltreValgt =
     statuser.length === Object.keys(StillingsStatusTyper).length;
 
-  console.log('🎺 statuser', statuser);
   if (ingenFiltreValgt || alleFiltreValgt) {
+    if (navIdent) {
+      return [];
+    }
     return alleStillinger;
   }
   const statusSpørringer: any[] = [];

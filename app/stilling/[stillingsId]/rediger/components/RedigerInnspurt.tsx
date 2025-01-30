@@ -126,7 +126,6 @@ export const RedigerInnspurt: React.FC<{
     });
   };
 
-  console.log(sendeSoknad);
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className='space-y-8'>

@@ -53,7 +53,7 @@ export function generateElasticSearchQuery(
   }
 
   if (filter?.statuser) {
-    valgteFilter.push(...esStatuser(filter.statuser));
+    valgteFilter.push(...esStatuser(filter.statuser, navIdent));
   }
 
   if (
