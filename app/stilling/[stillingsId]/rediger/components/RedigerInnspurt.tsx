@@ -28,7 +28,7 @@ export const RedigerInnspurt: React.FC<{
   stegNummer: number;
   forrigeSteg: () => void;
 }> = ({ stegNummer, forrigeSteg }) => {
-  const { stillingsData } = useStillingsContext();
+  const { stillingsData, refetch } = useStillingsContext();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [sendeSoknad, setSendeSoknad] = useState<string[]>([]);
@@ -63,6 +63,7 @@ export const RedigerInnspurt: React.FC<{
     const response = await oppdaterStilling(publiserStillingsData);
 
     if (response.stilling.uuid) {
+      refetch();
       router.push(`/stilling/${response.stilling.uuid}`);
     } else {
       alert('Feil ved opprettelse av stilling');

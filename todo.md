@@ -13,6 +13,12 @@ TODO:
 - Forklar stopp stilling knapp og slett
 
 - sjekk validering på liste av folk
+-
+-
+- Oppdater stillingsfetch når stilling oppdateres via kall
+-
+-
+-
 
 # Todo:
 

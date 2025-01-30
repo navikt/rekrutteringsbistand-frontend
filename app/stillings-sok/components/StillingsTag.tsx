@@ -74,7 +74,7 @@ const StillingsTag: React.FC<IStillingTag> = ({ stillingsData, splitTags }) => {
   const erEierTag = erEier;
   const erUtløptTag =
     !!stillingsData.stilling.publishedByAdmin &&
-    status === StillingsStatus.Inaktiv &&
+    stillingStatus === StillingsStatus.Inaktiv &&
     !stillingUløpt;
 
   const erIkkePublisertTag =

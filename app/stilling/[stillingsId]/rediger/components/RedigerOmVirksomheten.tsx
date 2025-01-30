@@ -65,7 +65,6 @@ export const RedigerOmVirksomheten: React.FC<{
             id='rediger-om-virksomheten'
             tekst={watch('omVirksomheten.beskrivelse') ?? ''}
             onChange={(e) => setValue('omVirksomheten.beskrivelse', e)}
-            // limitLengde={300} //TODO Maks tegn må avklares
           />
 
           <Accordion>

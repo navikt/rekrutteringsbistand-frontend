@@ -15,6 +15,7 @@ interface StillingsContextType {
   setForhåndsvisData: (data: StillingsDataDTO | null) => void;
   erDirektemeldt: boolean;
   kandidatlisteId: string | null;
+  refetch: () => void;
 }
 
 const StillingsContext = React.createContext<StillingsContextType | undefined>(
@@ -32,7 +33,7 @@ export const StillingsContextProvider: React.FC<
   return (
     <SWRLaster hook={hook}>
       {(data) => (
-        <StillingsContextMedData data={data}>
+        <StillingsContextMedData data={data} refetch={hook.mutate}>
           {children}
         </StillingsContextMedData>
       )}
@@ -43,11 +44,13 @@ export const StillingsContextProvider: React.FC<
 interface StillingsContextMedDataProps {
   data: StillingsDataDTO;
   children: React.ReactNode;
+  refetch: () => void;
 }
 
 const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
   data,
   children,
+  refetch,
 }) => {
   const {
     brukerData: { ident },
@@ -91,6 +94,7 @@ const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
           stillingsData.stillingsinfo?.stillingskategori === 'FORMIDLING',
         setForhåndsvisData,
         kandidatlisteId,
+        refetch,
       }}
     >
       {children}

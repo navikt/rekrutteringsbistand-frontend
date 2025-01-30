@@ -19,7 +19,7 @@ interface StillingSidebarKnapperProps {
 const StillingSidebarKnapper: React.FC<StillingSidebarKnapperProps> = ({
   printRef,
 }) => {
-  const { erEier, erDirektemeldt, stillingsData, erFormidling } =
+  const { erEier, erDirektemeldt, stillingsData, erFormidling, refetch } =
     useStillingsContext();
   const { brukerData } = useApplikasjonContext();
 
@@ -65,7 +65,8 @@ const StillingSidebarKnapper: React.FC<StillingSidebarKnapperProps> = ({
           reportee: brukerData.navn,
         },
       },
-    }).then(() => window.location.reload());
+    });
+    refetch();
   };
 
   return (

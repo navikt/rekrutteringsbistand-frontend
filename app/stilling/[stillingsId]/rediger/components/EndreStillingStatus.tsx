@@ -19,7 +19,7 @@ const EndreStillingStatus: React.FC<EndreStillingStatusProps> = ({
   knappIkon,
 }) => {
   const [open, setOpen] = React.useState(false);
-  const { stillingsData } = useStillingsContext();
+  const { stillingsData, refetch } = useStillingsContext();
   const router = useRouter();
 
   const endreStatus = async () => {
@@ -33,6 +33,7 @@ const EndreStillingStatus: React.FC<EndreStillingStatusProps> = ({
 
     setOpen(false);
     if (response.stilling.uuid) {
+      refetch();
       router.push(`/stilling/${response.stilling.uuid}`);
     } else {
       alert('Feil ved opprettelse av stilling');
