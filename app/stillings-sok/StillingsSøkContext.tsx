@@ -148,7 +148,7 @@ export const StillingsSøkProvider: React.FC<{
     ) {
       setStatuserOriginal(['publisert']);
     }
-  }, [harArbeidsgiverrettetRolle, statuser, setStatuserOriginal]);
+  }, [harArbeidsgiverrettetRolle, statuser, setStatuserOriginal, formidlinger]);
 
   React.useEffect(() => {
     if (inkluderingUnderkategori.length !== 0) {

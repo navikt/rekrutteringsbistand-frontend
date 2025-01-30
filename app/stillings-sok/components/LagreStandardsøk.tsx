@@ -5,11 +5,7 @@ import * as React from 'react';
 import { setNyttStandardsøk } from '../../api/stilling/standardsok/settStandardsøk';
 import { useUseBrukerStandardSøk } from '../../api/stilling/standardsok/useBrukersStandardsøk';
 
-export interface LagreStandardsøkProps {
-  children?: React.ReactNode | undefined;
-}
-
-const LagreStandardsøk: React.FC<LagreStandardsøkProps> = ({ children }) => {
+const LagreStandardsøk: React.FC = () => {
   const brukerStandardSøkData = useUseBrukerStandardSøk();
   const searchParams = useSearchParams();
   const searchString = new URLSearchParams(searchParams.toString()).toString();

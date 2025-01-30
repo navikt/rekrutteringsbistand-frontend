@@ -57,7 +57,7 @@ const KommuneFylkeEllerLand: React.FC<KommuneFylkeEllerLandProps> = ({
       fylker,
       land,
     };
-  }, [valgteVerdier]);
+  }, [valgteVerdier, geografi.data]);
 
   React.useEffect(() => {
     if (valgteGeografi) {
@@ -69,7 +69,7 @@ const KommuneFylkeEllerLand: React.FC<KommuneFylkeEllerLandProps> = ({
       ];
       callBack(mappedGeografi);
     }
-  }, [valgteGeografi]);
+  }, [valgteGeografi, callBack]);
 
   return (
     <UNSAFE_Combobox

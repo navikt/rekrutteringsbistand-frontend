@@ -23,7 +23,7 @@ const StillingsSøkeresultat: React.FC<{ kandidatId?: string }> = ({
   } = useApplikasjonContext();
   const hook = useStillingssøk(filter, ident, filter.formidlinger);
 
-  const antallVisning = (fra: number, til: number, total: number) => {
+  const antallVisning = (total: number) => {
     const treffFra = regnUtFørsteTreffFra(filter.side, maksAntallTreffPerSøk);
     const fraAntall = treffFra + 1;
 
@@ -45,11 +45,7 @@ const StillingsSøkeresultat: React.FC<{ kandidatId?: string }> = ({
             <LagreStandardsøk />
           </div>
           <div className='flex justify-between items-center my-4'>
-            {antallVisning(
-              data.hits.total.value ?? 1,
-              data.hits.total.value ?? 1,
-              data.hits.total.value,
-            )}
+            {antallVisning(data.hits.total.value)}
             <StillingsSøkSortering />
           </div>
           {data.hits.hits.map((hit) => (

@@ -54,7 +54,14 @@ const Profilkvalitet: React.FC = () => {
       setProgress(prosent);
       setManglerFelt(mangler);
     }
-  }, [kandidatData]);
+  }, [
+    kandidatData,
+    harØnsketJobbsted,
+    harJobbønske,
+    harKompetanse,
+    harSpråk,
+    harBosted,
+  ]);
 
   return (
     <div>

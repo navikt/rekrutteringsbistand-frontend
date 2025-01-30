@@ -34,7 +34,7 @@ const VelgPoststed: React.FC<VelgPoststedProps> = ({
         address: adresse,
       });
     }
-  }, [postNummer, postSted, adresse]);
+  }, [postNummer, postSted, adresse, index, oppdater]);
 
   React.useEffect(() => {
     if (postNummer.length === 4 && hook.data) {

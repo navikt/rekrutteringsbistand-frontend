@@ -62,7 +62,7 @@ const KandidatContextMedData: React.FC<KandidatContextMedDataProps> = ({
     } else {
       setValgtFnr(null);
     }
-  }, [kandidatsammendragData]);
+  }, [kandidatsammendragData, setValgtFnr]);
 
   return (
     <SWRLaster hook={hook}>
