@@ -92,12 +92,12 @@ const OmStillingen: React.FC<{ forhåndsvisData?: boolean }> = ({
                   />
                   <TekstMedIkon
                     // Søknadsfrist
-                    tekst={`Søknadsfrist ${formaterTid(applicationdue).toLowerCase()}`}
+                    tekst={`Søknadsfrist ${formaterTid(applicationdue)?.toLowerCase()}`}
                     ikon={<HourglassIcon />}
                   />
                   <TekstMedIkon
                     // Oppstart
-                    tekst={`Oppstart ${formaterTid(starttime).toLowerCase()}`}
+                    tekst={`Oppstart ${formaterTid(starttime)?.toLowerCase()}`}
                     ikon={<TimerStartIcon />}
                   />
                 </>
