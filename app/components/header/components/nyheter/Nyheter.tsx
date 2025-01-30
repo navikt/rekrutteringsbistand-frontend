@@ -1,22 +1,10 @@
 import { LightBulbIcon } from '@navikt/aksel-icons';
 import { Button, Heading, Popover } from '@navikt/ds-react';
-import {
-  FunctionComponent,
-  ReactNode,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import { FunctionComponent, useEffect, useRef, useState } from 'react';
+import { nyheter } from '../../../../nyheter';
 import Artikkel from './Artikkel';
 import css from './Nyheter.module.css';
-import nyhetssaker from './nyhetssaker';
 import useAntallUlesteNyheter from './useAntallUlesteNyheter';
-
-export type Nyhet = {
-  dato: Date;
-  tittel: string;
-  innhold: ReactNode;
-};
 
 const Nyheter: FunctionComponent = () => {
   const [åpen, setÅpen] = useState<boolean>(false);
@@ -29,7 +17,7 @@ const Nyheter: FunctionComponent = () => {
   };
 
   const [antallUlesteNyheter, antallUlesteVedSidelast, markerSomLest] =
-    useAntallUlesteNyheter(nyhetssaker, onFørsteBesøk);
+    useAntallUlesteNyheter(nyheter, onFørsteBesøk);
 
   useEffect(() => {
     if (åpen) {
@@ -71,7 +59,7 @@ const Nyheter: FunctionComponent = () => {
             Nytt i Rekrutteringsbistand
           </Heading>
           <section className={css.nyhetsliste}>
-            {nyhetssaker.map((nyhet, index) => (
+            {nyheter.map((nyhet, index) => (
               <Artikkel
                 key={`${nyhet.dato}-${nyhet.tittel}`}
                 nyhet={nyhet}

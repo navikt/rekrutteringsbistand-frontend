@@ -25,7 +25,6 @@ type IKandidatKort = {
 };
 
 const KandidatKort: React.FC<IKandidatKort> = ({ kandidat, markert }) => {
-  //TODO Fiks Finn stilling og stillinger
   return (
     <div className='border rounded-lg mb-4 border-gray-300 px-4 pb-4 pt-2 flex flex-row '>
       <Checkbox aria-selected={markert} hideLabel className='mr-4' value='1'>

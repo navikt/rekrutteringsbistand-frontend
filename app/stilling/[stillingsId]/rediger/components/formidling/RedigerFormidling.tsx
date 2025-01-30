@@ -23,7 +23,7 @@ export interface RedigerFormidlingProps {
 
 const RedigerFormidling: React.FC<RedigerFormidlingProps> = ({ children }) => {
   const { getValues, setValue, watch } = useFormContext<StillingsDataForm>();
-  const { stillingsData } = useStillingsContext();
+  const { stillingsData, refetch } = useStillingsContext();
   const [loading, setLoading] = useState(false);
   const visVarsling = useVisVarsling();
   const router = useRouter();
@@ -37,7 +37,7 @@ const RedigerFormidling: React.FC<RedigerFormidlingProps> = ({ children }) => {
         innhold: 'Formidling ble lagret, åpner formidling.',
         alertType: 'success',
       });
-
+      refetch();
       await new Promise((resolve) => setTimeout(resolve, 3000));
       router.push(`/stilling/${stillingsData.stilling.uuid}`);
     } catch (error) {

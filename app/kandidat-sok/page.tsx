@@ -4,7 +4,6 @@ import * as React from 'react';
 
 import { Roller } from '../components/tilgangskontroll/roller';
 import { TilgangskontrollForInnhold } from '../components/tilgangskontroll/TilgangskontrollForInnhold';
-import TømFiltre from '../components/TømFiltre';
 import KandidatSøkChips from './components/KandidatSøkChips';
 import { KandidatSøkPortefølje } from './components/PorteføljeTabs';
 import { useKandidatSøkFilter } from './KandidaSokContext';
@@ -76,7 +75,6 @@ const KandidatSøk: React.FC = () => {
       <Tabs.Panel value={portefølje}>
         <div className='w-full flex justify-between items-baseline'>
           <KandidatSøkChips />
-          <TømFiltre />
         </div>
         {portefølje === KandidatSøkPortefølje.VALGTE_KONTORER && (
           <ValgteKontorer />

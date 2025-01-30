@@ -1,9 +1,9 @@
 import { logger } from '@navikt/next-logger';
 import { useEffect, useState } from 'react';
-import { Nyhet } from './Nyheter';
+import { NyhetDTO } from '../../../../nyheter';
 
 const hentAntallUlesteNyheter = (
-  nyheter: Nyhet[],
+  nyheter: NyhetDTO[],
   antallLesteNyheter: number,
 ) => {
   if (nyheter.length === 0) {
@@ -16,7 +16,7 @@ const hentAntallUlesteNyheter = (
 const LOCAL_STORAGE_KEY = 'antallLesteNyheter';
 
 const useAntallUlesteNyheter = (
-  nyheter: Nyhet[],
+  nyheter: NyhetDTO[],
   onFørsteBesøk: () => void,
 ): [number, number, () => void] => {
   const [antallUlesteNyheter, setAntallUlesteNyheter] = useState<number>(0);

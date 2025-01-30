@@ -139,7 +139,6 @@ export const testTilgangskontroll = (rolle: Roller) => {
         }
       });
 
-      //TODO Fix eier / ikke eier mock
       test('Rediger, Dupliser og Avslutt knapp', async ({ page }) => {
         await page.goto('http://localhost:1337/stilling/minInternStilling');
         await expect(

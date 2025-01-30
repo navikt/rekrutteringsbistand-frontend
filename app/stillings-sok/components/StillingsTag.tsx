@@ -1,5 +1,5 @@
 import { Tag } from '@navikt/ds-react';
-import { format, startOfDay } from 'date-fns';
+import { format, isBefore, startOfToday } from 'date-fns';
 import * as React from 'react';
 import { StillingsDataDTO } from '../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { RekrutteringsbistandStillingSchemaDTO } from '../../api/stillings-sok/schema/rekrutteringsbistandStillingSchema.zod';
@@ -18,12 +18,8 @@ export interface IStillingTag {
 }
 
 const utløperFørIdag = (expires: string | null) => {
-  if (expires === null) {
-    return false;
-  }
-
-  const startenAvDøgnet = startOfDay(new Date());
-  return new Date(expires) <= startenAvDøgnet;
+  if (!expires) return false;
+  return isBefore(new Date(expires), startOfToday());
 };
 
 export const stillingErUtløpt = (stilling: any): boolean => {
@@ -66,16 +62,7 @@ const StillingsTag: React.FC<IStillingTag> = ({ stillingsData, splitTags }) => {
     ? format(stillingsData.stilling.expires, 'dd.MM.yyyy')
     : '-';
 
-  // const publisertTag = stillingsData.stilling.publishedByAdmin
-  //   && publisertDato !== utløpsDato
-  //   ? true
-  //   : false;
-
   const erEierTag = erEier;
-  const erUtløptTag =
-    !!stillingsData.stilling.publishedByAdmin &&
-    status === StillingsStatus.Inaktiv &&
-    !stillingUløpt;
 
   const erIkkePublisertTag =
     !stillingUløpt &&
@@ -110,7 +97,7 @@ const StillingsTag: React.FC<IStillingTag> = ({ stillingsData, splitTags }) => {
           Min stilling
         </Tag>
       )}
-      {erUtløptTag && (
+      {stillingUløpt && (
         <Tag className={'mr-2 mb-4'} size='small' variant='warning'>
           Utløpt
         </Tag>

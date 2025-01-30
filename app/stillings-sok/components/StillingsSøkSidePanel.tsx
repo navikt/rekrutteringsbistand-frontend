@@ -15,7 +15,7 @@ const StillingsSøkSidePanel: React.FC<{
   kandidatId?: string;
 }> = ({ formidlinger, kandidatId }) => {
   const { fritekst, setFritekst } = useStillingsSøkFilter();
-  const [searchValue, setSearchValue] = React.useState(fritekst);
+  const [searchValue, setSearchValue] = React.useState<string>('');
   const { harRolle } = useApplikasjonContext();
 
   const harArbeidsgiverrettetRolle = harRolle([
@@ -30,7 +30,7 @@ const StillingsSøkSidePanel: React.FC<{
         variant='primary'
         value={searchValue}
         onChange={(e) => setSearchValue(e)}
-        onSearchClick={(e) => setFritekst(e)}
+        onSearchClick={(e) => setFritekst([...fritekst, e])}
       />
       {!formidlinger && !kandidatId && <StandardsøkKnapp />}
       {(harArbeidsgiverrettetRolle || formidlinger) && <StatusFilter />}

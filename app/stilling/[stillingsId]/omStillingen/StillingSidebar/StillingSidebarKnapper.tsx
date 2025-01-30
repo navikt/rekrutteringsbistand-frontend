@@ -19,7 +19,7 @@ interface StillingSidebarKnapperProps {
 const StillingSidebarKnapper: React.FC<StillingSidebarKnapperProps> = ({
   printRef,
 }) => {
-  const { erEier, erDirektemeldt, stillingsData, erFormidling } =
+  const { erEier, erDirektemeldt, stillingsData, erFormidling, refetch } =
     useStillingsContext();
   const { brukerData } = useApplikasjonContext();
 
@@ -37,7 +37,10 @@ const StillingSidebarKnapper: React.FC<StillingSidebarKnapperProps> = ({
   const opprettetAvRekrutteringsbistand =
     stillingsData.stilling.createdBy === 'pam-rekrutteringsbistand';
   const kanOppretteKandidatliste =
-    !harStillingsinfo && !erEier && !opprettetAvRekrutteringsbistand;
+    !harStillingsinfo &&
+    !erEier &&
+    !opprettetAvRekrutteringsbistand &&
+    stillingsData.stilling.employer?.orgnr;
 
   const onOpprettKandidatliste = async () => {
     await setStillingsinfo(opprettStillingInfo).then(() =>
@@ -62,8 +65,8 @@ const StillingSidebarKnapper: React.FC<StillingSidebarKnapperProps> = ({
           reportee: brukerData.navn,
         },
       },
-      //TODO Endre til å trigge refetch og error håndtering
-    }).then(() => window.location.reload());
+    });
+    refetch();
   };
 
   return (
@@ -71,7 +74,7 @@ const StillingSidebarKnapper: React.FC<StillingSidebarKnapperProps> = ({
       <div className='flex'>
         <StillingPrint printRef={printRef} />
       </div>
-      {erEier && (
+      {erDirektemeldt && erEier && (
         <TilgangskontrollForInnhold
           skjulVarsel
           kreverEnAvRollene={[

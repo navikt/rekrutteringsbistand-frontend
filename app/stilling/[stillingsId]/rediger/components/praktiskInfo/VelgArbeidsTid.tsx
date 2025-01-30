@@ -7,7 +7,7 @@ const VelgArbeidsTid: React.FC = () => {
   const { setValue, watch, control } = useFormContext<StillingsDataForm>();
 
   return (
-    <div className='flex gap-16'>
+    <div className='flex flex-col gap-8'>
       <Controller
         control={control}
         name='praktiskInfo.dager'

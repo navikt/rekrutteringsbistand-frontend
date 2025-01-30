@@ -50,7 +50,8 @@ export const RedigerOmVirksomheten: React.FC<{
             <dt className='font-bold'>Adresse</dt>
             <dd>
               {getWorkLocationsAsString(
-                stillingsData.stilling.locationList as GeografiListDTO,
+                stillingsData.stilling.employer
+                  ?.locationList as GeografiListDTO,
               )}
             </dd>
             <dt className='font-bold'>Organisasjonsnummer</dt>
@@ -64,7 +65,6 @@ export const RedigerOmVirksomheten: React.FC<{
             id='rediger-om-virksomheten'
             tekst={watch('omVirksomheten.beskrivelse') ?? ''}
             onChange={(e) => setValue('omVirksomheten.beskrivelse', e)}
-            // limitLengde={300} //TODO Maks tegn må avklares
           />
 
           <Accordion>

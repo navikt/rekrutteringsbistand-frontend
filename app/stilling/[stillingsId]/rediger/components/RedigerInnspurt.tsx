@@ -2,14 +2,22 @@ import { ArrowLeftIcon, CheckmarkCircleIcon } from '@navikt/aksel-icons';
 import {
   BodyShort,
   Button,
+  Checkbox,
+  CheckboxGroup,
   ErrorSummary,
   Heading,
   Radio,
   RadioGroup,
+  TextField,
 } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { FieldErrors, SubmitHandler, useFormContext } from 'react-hook-form';
+import {
+  Controller,
+  FieldErrors,
+  SubmitHandler,
+  useFormContext,
+} from 'react-hook-form';
 import { oppdaterStilling } from '../../../../api/stilling/oppdater-stilling/oppdaterStilling';
 import { useStillingsContext } from '../../StillingsContext';
 import { mapFormTilStilling } from '../mapStilling';
@@ -20,14 +28,19 @@ export const RedigerInnspurt: React.FC<{
   stegNummer: number;
   forrigeSteg: () => void;
 }> = ({ stegNummer, forrigeSteg }) => {
-  const { stillingsData } = useStillingsContext();
+  const { stillingsData, refetch } = useStillingsContext();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [sendeSoknad, setSendeSoknad] = useState<string[]>([]);
+
+  const handleChange = (val: string[]) => setSendeSoknad(val);
+
   const {
     watch,
     handleSubmit,
     setValue,
     formState: { errors },
+    control,
   } = useFormContext<StillingsDataForm>();
 
   const onSubmit: SubmitHandler<StillingsDataForm> = async (data) => {
@@ -50,6 +63,7 @@ export const RedigerInnspurt: React.FC<{
     const response = await oppdaterStilling(publiserStillingsData);
 
     if (response.stilling.uuid) {
+      refetch();
       router.push(`/stilling/${response.stilling.uuid}`);
     } else {
       alert('Feil ved opprettelse av stilling');
@@ -130,7 +144,7 @@ export const RedigerInnspurt: React.FC<{
             }
           />
           <DatoVelger
-            label='Siste visningsdato'
+            label='Siste visning'
             fraDato={watch('innspurt.avsluttes')}
             setDato={(val) =>
               val ? setValue('innspurt.avsluttes', val) : null
@@ -138,13 +152,70 @@ export const RedigerInnspurt: React.FC<{
           />
         </div>
         <RadioGroup
-          legend='Hvor skal stillingen publiseres?'
+          legend='Skal stillingen publiseres på arbeidsplassen.no også?'
           value={watch('innspurt.stillingType')}
           onChange={(val) => setValue('innspurt.stillingType', val)}
         >
-          <Radio value='DIR'>Internt på Nav</Radio>
-          <Radio value='SHOW_ALL'>Internt på Nav og arbeidsplassen.no</Radio>
+          <Radio value='DIR'>Nei, den vises kun internt</Radio>
+          <Radio value='SHOW_ALL'>
+            Ja, publiser stillingen offentlig på arbeidsplassen.no
+          </Radio>
         </RadioGroup>
+
+        {watch('innspurt.stillingType') === 'SHOW_ALL' && (
+          <div>
+            <CheckboxGroup
+              legend='Hvordan sende søknad?'
+              onChange={handleChange}
+            >
+              <Checkbox value='epost'>E-post</Checkbox>
+              {sendeSoknad.includes('epost') && (
+                <Controller
+                  name='innspurt.epost'
+                  control={control}
+                  render={({ field, fieldState: { error } }) => (
+                    <TextField
+                      label='E-post'
+                      type='email'
+                      error={error?.message}
+                    />
+                  )}
+                />
+              )}
+              <Checkbox value='lenke'>Lenke til søknadsskjema</Checkbox>
+              {sendeSoknad.includes('lenke') && (
+                <Controller
+                  name='innspurt.lenke'
+                  control={control}
+                  render={({ field, fieldState: { error } }) => (
+                    <TextField
+                      label='Lenke til søknadsskjema'
+                      type='url'
+                      error={error?.message}
+                    />
+                  )}
+                />
+              )}
+            </CheckboxGroup>
+          </div>
+        )}
+
+        <div>
+          <Heading level='3' size='small' spacing>
+            Hva skjer når du publiserer?
+          </Heading>
+          <ul className='list-disc pl-8 space-y-2'>
+            <li>
+              Annonsen blir synlig for
+              <ul className='list-disc pl-8 space-y-2 mt-2'>
+                <li>Nav-ansatte i stillingssøket​.</li>
+                <li>Kandidater som får annonsen delt til aktivitetsplanen</li>
+                <li>Personer som får tilsendt link til stillingsannonsen</li>
+              </ul>
+            </li>
+            <li>Du kan når som helst endre eller avpublisere annonsen</li>
+          </ul>
+        </div>
 
         {errors && Object.keys(errors).length > 0 && (
           <ErrorSummary>
@@ -180,7 +251,7 @@ export const RedigerInnspurt: React.FC<{
             )}
           </ErrorSummary>
         )}
-        <div className='flex justify-between mb-8 mt-4 w-full'>
+        <div className='flex justify-between mb-8 pt-8 w-full'>
           {stegNummer > 1 ? (
             <Button
               variant='tertiary'

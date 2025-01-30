@@ -18,7 +18,7 @@ export const regnUtFørsteTreffFra = (
 
 export type StillingsSøkFilter = {
   side: number;
-  fritekst: string;
+  fritekst: string[];
   statuser: string[];
   fylker: string[];
   kommuner: string[];
@@ -53,7 +53,7 @@ export function generateElasticSearchQuery(
   }
 
   if (filter?.statuser) {
-    valgteFilter.push(...esStatuser(filter.statuser));
+    valgteFilter.push(...esStatuser(filter.statuser, navIdent));
   }
 
   if (
@@ -100,18 +100,68 @@ export function generateElasticSearchQuery(
   }
 
   const byggQuery = {
-    // TODO Implement AGGS
     size: maksAntallTreffPerSøk,
     from: regnUtFørsteTreffFra(filter.side, maksAntallTreffPerSøk),
     track_total_hits: true,
     query: {
       bool: {
-        minimum_should_match: '0',
+        minimum_should_match: filter.fritekst.length ? '1' : '0',
         filter: [...term, ...valgteFilter],
-        should: esFritekstSøk(filter.fritekst, valgteFilter),
+        should: esFritekstSøk(filter.fritekst.join(' '), valgteFilter),
       },
     },
     sort: sort,
+    ...(filter.fritekst && {
+      aggs: {
+        globalAggregering: {
+          global: {},
+          aggs: {
+            felter: {
+              filters: {
+                filters: {
+                  arbeidsgiver: {
+                    bool: {
+                      should: esFritekstSøk(
+                        filter.fritekst.join(' '),
+                        valgteFilter,
+                      ),
+                      filter: [...term, ...valgteFilter],
+                    },
+                  },
+                  tittel: {
+                    bool: {
+                      should: esFritekstSøk(
+                        filter.fritekst.join(' '),
+                        valgteFilter,
+                      ),
+                      filter: [...term, ...valgteFilter],
+                    },
+                  },
+                  annonsetekst: {
+                    bool: {
+                      should: esFritekstSøk(
+                        filter.fritekst.join(' '),
+                        valgteFilter,
+                      ),
+                      filter: [...term, ...valgteFilter],
+                    },
+                  },
+                  annonsenummer: {
+                    bool: {
+                      should: esFritekstSøk(
+                        filter.fritekst.join(' '),
+                        valgteFilter,
+                      ),
+                      filter: [...term, ...valgteFilter],
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    }),
   };
 
   return byggQuery;

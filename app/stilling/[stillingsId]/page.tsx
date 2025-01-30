@@ -13,7 +13,8 @@ import OmStillingen from './omStillingen/OmStillingen';
 import { useStillingsContext } from './StillingsContext';
 
 export default function StillingSide() {
-  const { erEier, stillingsData, kandidatlisteId } = useStillingsContext();
+  const { erEier, stillingsData, kandidatlisteId, erSlettet } =
+    useStillingsContext();
 
   const [fane, setFane] = useQueryState('visFane', {
     defaultValue: 'stilling',
@@ -29,14 +30,14 @@ export default function StillingSide() {
           : ''
       }
     >
-      {stillingsData?.stilling?.status === 'DELETED' && (
-        <div className='absolute inset-0 flex justify-center bg-white/60 pointer-events-none pt-4'>
+      {erSlettet && (
+        <div className='absolute inset-0 flex justify-center bg-white/60 pointer-events-none pt-2'>
           <span className='text-red-500 font-bold text-5xl'>
             Stillingen er slettet
           </span>
         </div>
       )}
-      <Tabs defaultValue={fane} onChange={(val) => setFane(val)}>
+      <Tabs defaultValue={fane} onChange={(val: any) => setFane(val)}>
         <Tabs.List className='flex mb-2 w-full justify-between'>
           <div>
             <Tabs.Tab value='stilling' label='Om stillingen' />

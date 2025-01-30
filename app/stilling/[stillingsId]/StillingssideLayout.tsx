@@ -18,7 +18,8 @@ interface StillingSideLayoutProps {
 const StillingSideLayout: React.FC<StillingSideLayoutProps> = ({
   children,
 }) => {
-  const { stillingsData, erEier, erFormidling } = useStillingsContext();
+  const { stillingsData, erEier, erFormidling, erSlettet } =
+    useStillingsContext();
   const eierNavn = navnEierAvAstilling(stillingsData);
 
   return (
@@ -44,7 +45,7 @@ const StillingSideLayout: React.FC<StillingSideLayoutProps> = ({
                   />
                 )}
               </div>
-              {!erFormidling && (
+              {(!erFormidling || erSlettet) && (
                 <KopierStillingLenke
                   stillingsId={stillingsData.stilling.uuid ?? ''}
                 />

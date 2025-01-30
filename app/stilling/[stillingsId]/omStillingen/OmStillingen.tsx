@@ -6,7 +6,6 @@ import {
   LocationPinIcon,
   TimerStartIcon,
 } from '@navikt/aksel-icons';
-import { Heading } from '@navikt/ds-react';
 import * as React from 'react';
 import { getWorkLocationsAsString } from '../../../../util/locationUtil';
 import { GeografiListDTO } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
@@ -14,11 +13,14 @@ import TekstMedIkon from '../../../components/TekstMedIkon';
 import { useStillingsContext } from '../StillingsContext';
 import OmAnnonsen from '../components/OmAnnonsen';
 import OmBedriften from '../components/OmBedriften';
+import OmStillingBoks from '../components/OmStillingBoks';
 import AntallKandidater from './AntallKandidater';
 import StillingSidebar from './StillingSidebar/StillingSidebar';
 import StillingsTekst from './StillingsTekst';
 
-const OmStillingen: React.FC = () => {
+const OmStillingen: React.FC<{ forhåndsvisData?: boolean }> = ({
+  forhåndsvisData,
+}) => {
   const contentRef = React.useRef<HTMLDivElement>(null);
 
   const { stillingsData, kandidatlisteId } = useStillingsContext();
@@ -43,55 +45,77 @@ const OmStillingen: React.FC = () => {
   };
 
   const {
-    // jobtitle,
     engagementtype,
     extent,
-    // positioncount,
-    // sector,
     workday,
     workhours,
     applicationdue,
-    // jobarrangement,
-    // starttime,
-  } = stillingsData.stilling.properties as any; //todo
+    starttime,
+  } = stillingsData.stilling.properties as any;
+
+  const formaterTid = (starttime: string) => {
+    const date = new Date(starttime);
+    if (!isNaN(date.getTime())) {
+      return date.toLocaleDateString('nb-NO');
+    }
+
+    if (starttime === 'etterAvtale') {
+      return 'Etter avtale';
+    }
+    return starttime;
+  };
 
   return (
     <div className='mt-10'>
       <div className=' flex flex-col gap-y-8 gap-x-[3.5rem] md:flex-row'>
         <div className='w-full' id='print-content' ref={contentRef}>
-          <Heading size='large'>Om stillingen</Heading>
-
-          <div className='mt-4'>
-            <div className='grid grid-cols-3 gap-4'>
-              <TekstMedIkon tekst={`${lokasjon}`} ikon={<LocationPinIcon />} />
-              <TekstMedIkon
-                tekst={`${engagementtype ?? '-'} ${extent ? `, ${extent}` : ''}`}
-                ikon={<ClockIcon />}
-              />
-              <TekstMedIkon tekst='' ikon={<CalendarIcon />} />
-              <TekstMedIkon
-                tekst={`${workday ? parseWorktime(workday) : '-'} ${workhours ? `, ${parseWorktime(workhours)}` : ''}`}
-                ikon={<HourglassIcon />}
-              />
-              <TekstMedIkon tekst={applicationdue} ikon={<TimerStartIcon />} />
-              <AntallKandidater kandidatlisteId={kandidatlisteId} />
-            </div>
-          </div>
-
-          <div className='mt-10'>
-            <StillingsTekst />
-          </div>
-
-          <div className='mt-10'>
+          <div className='flex flex-col '>
+            <OmStillingBoks
+              tittel='Om stillingen'
+              innholdTopp
+              innhold={<StillingsTekst />}
+              gridInnhold={
+                <>
+                  <TekstMedIkon
+                    // Lokasjon
+                    tekst={`${lokasjon}`}
+                    ikon={<LocationPinIcon />}
+                  />
+                  <TekstMedIkon
+                    // Ansettelsesform
+                    tekst={`${engagementtype ?? '-'} ${extent ? `, ${extent}` : ''}`}
+                    ikon={<ClockIcon />}
+                  />
+                  <TekstMedIkon
+                    // Arbeidstid
+                    tekst={`${workday ? parseWorktime(workday) : '-'} ${workhours ? `, ${parseWorktime(workhours)}` : ''}`}
+                    ikon={<CalendarIcon />}
+                  />
+                  <TekstMedIkon
+                    // Søknadsfrist
+                    tekst={`Søknadsfrist ${formaterTid(applicationdue)?.toLowerCase()}`}
+                    ikon={<HourglassIcon />}
+                  />
+                  <TekstMedIkon
+                    // Oppstart
+                    tekst={`Oppstart ${formaterTid(starttime)?.toLowerCase()}`}
+                    ikon={<TimerStartIcon />}
+                  />
+                  <AntallKandidater kandidatlisteId={kandidatlisteId} />
+                </>
+              }
+            />
+            <hr className='border-gray-200' />
             <OmBedriften />
-          </div>
-          <div className='mt-10'>
+            <hr className='border-gray-200' />
             <OmAnnonsen />
           </div>
         </div>
-        <StillingSidebar
-          printRef={contentRef as React.RefObject<HTMLDivElement>}
-        />
+        {!forhåndsvisData && (
+          <StillingSidebar
+            printRef={contentRef as React.RefObject<HTMLDivElement>}
+          />
+        )}
       </div>
     </div>
   );

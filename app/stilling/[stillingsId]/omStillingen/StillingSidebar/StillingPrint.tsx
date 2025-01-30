@@ -18,6 +18,10 @@ const StillingPrint: React.FC<StillingPrintProps> = ({ printRef }) => {
       @media print {
         .print-only {
           display: block !important;
+          text-align: left !important;
+          margin-bottom: 20px !important;
+          padding: 10px !important;
+          border-bottom: 1px solid #000 !important;
         }
         .print-content {
           padding: 20px !important;

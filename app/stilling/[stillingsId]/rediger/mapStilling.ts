@@ -98,7 +98,9 @@ export const mapStillingTilForm = (
     innspurt: {
       publiseres: stillingsData?.stilling?.published ?? '',
       avsluttes: stillingsData?.stilling?.expires ?? '',
-      stillingType: stillingsData?.stilling?.source ?? '',
+      stillingType: stillingsData?.stilling?.source ?? 'DIR',
+      epost: stillingsData?.stilling?.properties?.applicationemail ?? null,
+      lenke: stillingsData?.stilling?.properties?.applicationurl ?? null,
     },
   };
 };
@@ -142,6 +144,8 @@ export const mapFormTilStilling = (
         workhours: JSON.stringify(formData.praktiskInfo.tid),
         extent: formData.praktiskInfo.omfangKode,
         jobpercentage: formData.praktiskInfo.omfangProsent,
+        applicationemail: formData.innspurt.epost,
+        applicationurl: formData.innspurt.lenke,
       },
       published: formaterTilISODato(formData.innspurt.publiseres),
       expires: formaterTilISODato(formData.innspurt.avsluttes),

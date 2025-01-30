@@ -124,6 +124,8 @@ export const InnspurtSchema = z.object({
   publiseres: z.string().min(1, 'Publiseringsdato er påkrevd'),
   avsluttes: z.string().min(1, 'Avsluttingsdato er påkrevd'),
   stillingType: z.string().min(1, 'Stillingstype er påkrevd'),
+  epost: z.string().email('Ugyldig e-postadresse').optional().nullable(),
+  lenke: z.string().url('Ugyldig URL').optional().nullable(),
 });
 
 export const StillingsDataFormSchema = z.object({

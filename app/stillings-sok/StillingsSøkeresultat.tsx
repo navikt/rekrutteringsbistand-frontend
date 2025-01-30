@@ -7,7 +7,7 @@ import {
 import { useStillingssøk } from '../api/stillings-sok/useStillingssøk';
 import { useApplikasjonContext } from '../ApplikasjonContext';
 import SWRLaster from '../components/SWRLaster';
-import TømFiltre from '../components/TømFiltre';
+import LagreStandardsøk from './components/LagreStandardsøk';
 import StillingsSøkPaginering from './components/Pagnering';
 import StillingsKort from './components/StillingsKort';
 import StillingsSøkChips from './components/StillingsSøkChips';
@@ -23,7 +23,7 @@ const StillingsSøkeresultat: React.FC<{ kandidatId?: string }> = ({
   } = useApplikasjonContext();
   const hook = useStillingssøk(filter, ident, filter.formidlinger);
 
-  const antallVisning = (fra: number, til: number, total: number) => {
+  const antallVisning = (total: number) => {
     const treffFra = regnUtFørsteTreffFra(filter.side, maksAntallTreffPerSøk);
     const fraAntall = treffFra + 1;
 
@@ -40,16 +40,12 @@ const StillingsSøkeresultat: React.FC<{ kandidatId?: string }> = ({
     <SWRLaster hook={hook}>
       {(data) => (
         <>
-          <div className='flex justify-between'>
-            <StillingsSøkChips />
-            {!kandidatId && <TømFiltre />}
+          <div className='flex items-center gap-2'>
+            <StillingsSøkChips kandidatId={kandidatId} />
+            <LagreStandardsøk />
           </div>
           <div className='flex justify-between items-center my-4'>
-            {antallVisning(
-              data.hits.total.value ?? 1,
-              data.hits.total.value ?? 1,
-              data.hits.total.value,
-            )}
+            {antallVisning(data.hits.total.value)}
             <StillingsSøkSortering />
           </div>
           {data.hits.hits.map((hit) => (

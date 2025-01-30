@@ -24,14 +24,17 @@ const VelgPoststed: React.FC<VelgPoststedProps> = ({
   );
   const [postSted, setPostSted] = React.useState<string>(location?.city ?? '');
 
+  const [adresse, setAdresse] = React.useState<string>('');
+
   React.useEffect(() => {
     if (postNummer && postSted) {
       oppdater(index, {
         postalCode: postNummer,
         city: postSted,
+        address: adresse,
       });
     }
-  }, [postNummer, postSted]);
+  }, [postNummer, postSted, adresse, index, oppdater]);
 
   React.useEffect(() => {
     if (postNummer.length === 4 && hook.data) {
@@ -42,31 +45,43 @@ const VelgPoststed: React.FC<VelgPoststedProps> = ({
     }
   }, [postNummer, hook.data]);
 
+  //TODO Legg til adressefelt
   return (
-    <div className='flex gap-4 '>
-      <div className='w-32'>
+    <>
+      {index > 0 && <hr className='my-4 border-gray-200' />}
+      <div className='flex flex-col gap-4 '>
         <TextField
-          label='Postnummer'
-          maxLength={4}
-          value={postNummer}
-          onChange={(e) => {
-            const value = e.target.value.replace(/\D/g, ''); // Only allow digits
-            if (value.length <= 4) {
-              setPostNummer(value);
-            }
-          }}
+          label='Adresse'
+          value={adresse}
+          onChange={(e) => setAdresse(e.target.value)}
         />
+
+        <div className='flex flex-row gap-4'>
+          <div className='w-32'>
+            <TextField
+              label='Postnummer'
+              maxLength={4}
+              value={postNummer}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, ''); // Only allow digits
+                if (value.length <= 4) {
+                  setPostNummer(value);
+                }
+              }}
+            />
+          </div>
+          <div className='flex-1'>
+            <TextField label='Poststed' value={postSted} readOnly />
+          </div>
+          <Button
+            variant='tertiary'
+            icon={<TrashIcon />}
+            onClick={fjern}
+            title={'fjern'}
+          />
+        </div>
       </div>
-      <div className='flex-1'>
-        <TextField label='Poststed' value={postSted} readOnly />
-      </div>
-      <Button
-        variant='tertiary'
-        icon={<TrashIcon />}
-        onClick={fjern}
-        title={'fjern'}
-      />
-    </div>
+    </>
   );
 
   // return (

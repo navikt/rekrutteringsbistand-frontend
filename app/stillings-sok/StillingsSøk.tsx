@@ -3,7 +3,7 @@ import { PlusCircleIcon } from '@navikt/aksel-icons';
 import { Button, Tabs } from '@navikt/ds-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import * as React from 'react';
 import Piktogram from '../../public/ikoner/finn-stillinger.svg';
 import { useUseBrukerStandardSøk } from '../api/stilling/standardsok/useBrukersStandardsøk';
@@ -35,19 +35,25 @@ const StillingsSøk = ({
   const searchParams = useSearchParams();
   const brukerStandardSøkData = useUseBrukerStandardSøk();
 
-  const router = useRouter();
-
   React.useEffect(() => {
-    if (searchParams.get('brukStandard') !== null) {
-      if (brukerStandardSøkData.data?.søk) {
-        router.replace(`?${brukerStandardSøkData.data.søk}`, { scroll: false });
-      } else {
-        router.replace('?publisert=intern&statuser=publisert', {
-          scroll: false,
-        });
-      }
+    if (
+      searchParams.get('brukStandardsok') !== null &&
+      !brukerStandardSøkData.isLoading
+    ) {
+      const newSearch =
+        brukerStandardSøkData.data?.søk ||
+        'publisert=intern&statuser=publisert';
+      window.history.pushState(
+        {},
+        '',
+        `${window.location.pathname}?${newSearch}`,
+      );
     }
-  }, [searchParams, brukerStandardSøkData.data, router]);
+  }, [
+    searchParams,
+    brukerStandardSøkData.isLoading,
+    brukerStandardSøkData.data,
+  ]);
 
   if (brukerStandardSøkData.isLoading) {
     return <Sidelaster />;

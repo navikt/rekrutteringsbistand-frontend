@@ -1,21 +1,17 @@
-import {
-  MenuElipsisHorizontalCircleIcon,
-  PencilIcon,
-  TrashIcon,
-} from '@navikt/aksel-icons';
-import { BodyLong, Button, Dropdown, HStack, Modal } from '@navikt/ds-react';
+import { TrashIcon } from '@navikt/aksel-icons';
+import { BodyLong, Button, Modal } from '@navikt/ds-react';
 import * as React from 'react';
 import { useRef, useState } from 'react';
 import { KandidatAPI } from '../../../../api/api-routes';
 import { putApi } from '../../../../api/fetcher';
 import { kandidaterSchemaDTO } from '../../../../api/kandidat/schema.zod';
 
-export interface KandidatDropdownProps {
+export interface SletteKandidatKnappProps {
   kandidat: kandidaterSchemaDTO;
   stillingsId: string;
 }
 
-const KandidatDropdown: React.FC<KandidatDropdownProps> = ({
+const SletteKandidatKnapp: React.FC<SletteKandidatKnappProps> = ({
   kandidat,
   stillingsId,
 }) => {
@@ -37,29 +33,12 @@ const KandidatDropdown: React.FC<KandidatDropdownProps> = ({
 
   return (
     <div>
-      <Dropdown>
-        <HStack justify='end'>
-          <Button
-            className='color-gray-500'
-            as={Dropdown.Toggle}
-            icon={<MenuElipsisHorizontalCircleIcon title='Meny' />}
-            size='small'
-            variant='tertiary'
-          />
-        </HStack>
-        <Dropdown.Menu>
-          <Dropdown.Menu.GroupedList>
-            <Dropdown.Menu.GroupedList.Item onClick={() => {}}>
-              <PencilIcon title='Rediger' /> Rediger
-            </Dropdown.Menu.GroupedList.Item>
-            <Dropdown.Menu.GroupedList.Item
-              onClick={() => slettModalRef.current?.showModal()}
-            >
-              <TrashIcon title='Slett' /> Slett
-            </Dropdown.Menu.GroupedList.Item>
-          </Dropdown.Menu.GroupedList>
-        </Dropdown.Menu>
-      </Dropdown>
+      <Button
+        variant='tertiary'
+        size='small'
+        onClick={() => slettModalRef.current?.showModal()}
+        icon={<TrashIcon title='Slett' />}
+      />
 
       <Modal
         ref={slettModalRef}
@@ -95,4 +74,4 @@ const KandidatDropdown: React.FC<KandidatDropdownProps> = ({
   );
 };
 
-export default KandidatDropdown;
+export default SletteKandidatKnapp;

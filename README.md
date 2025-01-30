@@ -71,17 +71,3 @@ Happy hacking! 🎭
 # Tips:
 
 transform tools: https://transform.tools/
-
-# Todo:
-
-https://docs.nais.io/observability/how-to/auto-instrumentation/ for nodjs
-
-#### Gjeld:
-
-TODO:
-
-- api/me i kandidatsok er ikke i bruk
-- Fylker map blir ikke med over dat dette håndteres backend?
-
-$$
-$$

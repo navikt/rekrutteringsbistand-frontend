@@ -158,7 +158,7 @@ export const RedigerOmTilrettelegging: React.FC<{
             </TilretteleggingCheckbox>
           </CheckboxGroup>
 
-          <CheckboxGroup legend='Er virksomheten del av den statlige inkluderingsdugnaden?'>
+          <CheckboxGroup legend='Er virksomheten del av den statlige inkluderingsdugnaden? (valgfritt)'>
             <TilretteleggingCheckbox
               tag={InkluderingsTag.StatligInkluderingsdugnad}
             >

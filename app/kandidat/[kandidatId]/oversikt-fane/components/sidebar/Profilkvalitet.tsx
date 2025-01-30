@@ -54,7 +54,14 @@ const Profilkvalitet: React.FC = () => {
       setProgress(prosent);
       setManglerFelt(mangler);
     }
-  }, [kandidatData]);
+  }, [
+    kandidatData,
+    harØnsketJobbsted,
+    harJobbønske,
+    harKompetanse,
+    harSpråk,
+    harBosted,
+  ]);
 
   return (
     <div>
@@ -82,8 +89,14 @@ const Profilkvalitet: React.FC = () => {
         <>
           <BodyShort spacing>
             Hør om kandidaten kan {progress < 60 ? 'dele' : 'oppgi'}
+            {': '}
           </BodyShort>
-          <BodyShort spacing>{manglerFelt.join(', ')}.</BodyShort>
+          <ul>
+            {manglerFelt.map((felt) => (
+              <li key={felt}>- {felt}</li>
+            ))}
+          </ul>
+          <br />
           <BodyShort spacing>
             Det øker sjansen for at de finner en jobb som passer.
           </BodyShort>

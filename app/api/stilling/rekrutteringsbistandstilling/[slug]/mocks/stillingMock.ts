@@ -4,7 +4,7 @@ export const stillingMock = {
     stillingsinfoid: '5ed0c3dc-3725-4e8f-910f-ea64c64eed9c',
     eierNavident: null,
     eierNavn: null,
-    stillingskategori: 'FORMIDLING',
+    stillingskategori: 'STILLING',
   },
   stilling: {
     id: 985771,
@@ -27,7 +27,21 @@ export const stillingMock = {
     contactList: [
       {
         name: 'Per ',
-        email: null,
+        email: 'e@post.no',
+        phone: '123344444',
+        role: null,
+        title: 'Leder',
+      },
+      {
+        name: 'Per med kort navn',
+        email: 'e@post.no',
+        phone: '123344444',
+        role: null,
+        title: 'Leder',
+      },
+      {
+        name: 'Per med veldig langt navn som bryter linjen',
+        email: 'e@post.no',
         phone: '123344444',
         role: null,
         title: 'Leder',

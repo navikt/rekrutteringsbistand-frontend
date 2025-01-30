@@ -19,7 +19,7 @@ const VelgArbeidsgiver: React.FC<IVelgArbeidsgiver> = ({ setArbeidsgiver }) => {
       <form role='search'>
         <UNSAFE_Combobox
           isLoading={isLoading}
-          label='Arbeidsgivers navn eller virksomhetsnummer'
+          label='Arbeidsgivers navn eller organisasjonsnummer'
           options={
             data?.map(
               (arbeidsgiver) => `${arbeidsgiver.name} - ${arbeidsgiver.orgnr}`,

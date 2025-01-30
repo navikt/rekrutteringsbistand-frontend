@@ -1,19 +1,26 @@
-import { ArrowForwardIcon, TenancyIcon } from '@navikt/aksel-icons';
+import { TenancyIcon } from '@navikt/aksel-icons';
 import { Button, Checkbox, CheckboxGroup, Search } from '@navikt/ds-react';
 import * as React from 'react';
 import { useKandidatliste } from '../../../api/kandidat/useKandidatliste';
 import SWRLaster from '../../../components/SWRLaster';
 import { useStillingsContext } from '../StillingsContext';
-import SendSmsModal from './SendSMS/SendSmsModal';
+import DelMedKandidatModal from './components/DelMedKandidat/DelMedKandidatModal';
+import SendSmsModal from './components/SendSMS/SendSmsModal';
 import {
-  KandidatHendelser,
   KandidatStatus,
   useStillingsKandidaterFilter,
 } from './StillingsKandidaterFilterContext';
 import StillingsKandidaterTabell from './StillingsKandidaterTabell';
 
+enum HendelseValg {
+  VURDERES = 'Vurderes',
+  PRESENTERT = 'Presentert',
+  TIL_INTERVJU = 'Til intervju',
+  FATT_JOBBEN = 'Fått jobb',
+}
+
 const StillingsKandidater: React.FC = () => {
-  const { stillingsData, erEier } = useStillingsContext();
+  const { stillingsData } = useStillingsContext();
   const { status, setStatus, hendelse, setHendelse } =
     useStillingsKandidaterFilter();
   const [markerteFnr, setMarkerteFnr] = React.useState<string[]>([]);
@@ -45,13 +52,11 @@ const StillingsKandidater: React.FC = () => {
                 }
                 fjernAllMarkering={() => setMarkerteFnr([])}
               />
-              <Button
-                disabled
-                variant='tertiary'
-                icon={<ArrowForwardIcon title='Del med kandidat' />}
-              >
-                Del med kandidat
-              </Button>
+              <DelMedKandidatModal
+                kandidatliste={kandidatliste}
+                markerteFnr={markerteFnr}
+                fjernAllMarkering={() => setMarkerteFnr([])}
+              />
               <Button
                 disabled
                 variant='tertiary'
@@ -77,12 +82,11 @@ const StillingsKandidater: React.FC = () => {
                 ))}
               </CheckboxGroup>
               <CheckboxGroup
-                disabled
                 legend='Hendelser'
                 onChange={setHendelse}
                 defaultValue={hendelse}
               >
-                {Object.entries(KandidatHendelser).map(([key, value]) => (
+                {Object.entries(HendelseValg).map(([key, value]) => (
                   <Checkbox key={key} value={key}>
                     {value}
                   </Checkbox>
