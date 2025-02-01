@@ -8,6 +8,6 @@ export const endreKandidatStatus = (
 ) => {
   putApi(
     `${KandidatAPI.internUrl}/veileder/kandidatlister/${kandidatlisteId}/kandidater/${kandidatnr}/status`,
-    JSON.stringify({ status }),
+    { status },
   );
 };
