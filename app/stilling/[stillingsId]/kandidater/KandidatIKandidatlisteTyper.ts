@@ -1,3 +1,5 @@
+import { utfallsendringerSchemaDTO } from '../../../api/kandidat/schema.zod';
+
 export type Kandidatnr = string;
 export type Fødselsnummer = string;
 export type AktørId = string;
@@ -7,6 +9,7 @@ export type KandidatIKandidatliste = AktivKandidat | InaktivKandidat;
 type AktivKandidat = Kandidatinformasjon & PersonaliaFraCv;
 type InaktivKandidat = Kandidatinformasjon & IngenPersonaliaFraCv;
 
+//TODO Verifiser vs kandidatlisteSchemaDTO
 type Kandidatinformasjon = {
   kandidatnr: string;
   fornavn: string;
@@ -14,7 +17,7 @@ type Kandidatinformasjon = {
   fodselsdato: string;
   status: Kandidatstatus;
   utfall: Kandidatutfall;
-  utfallsendringer: Utfallsendring[];
+  utfallsendringer: utfallsendringerSchemaDTO[];
   lagtTilTidspunkt: string;
   lagtTilAv: LagtTilAv;
   arkivert: boolean;
@@ -53,13 +56,6 @@ export enum Kandidatutfall {
   Presentert = 'PRESENTERT',
   FåttJobben = 'FATT_JOBBEN',
 }
-
-export type Utfallsendring = {
-  utfall: Kandidatutfall;
-  tidspunkt: string;
-  sendtTilArbeidsgiversKandidatliste: boolean;
-  registrertAvIdent: string;
-};
 
 export type LagtTilAv = {
   ident: string;

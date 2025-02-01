@@ -1,7 +1,8 @@
 import { Tag } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import * as React from 'react';
-import { Kandidatutfall, Utfallsendring } from '../KandidatIKandidatlisteTyper';
+import { utfallsendringerSchemaDTO } from '../../../../api/kandidat/schema.zod';
+import { Kandidatutfall } from '../KandidatIKandidatlisteTyper';
 
 enum IdentType {
   AktørId = 'AKTOR_ID',
@@ -68,6 +69,7 @@ enum EksternStatus {
 
 export enum KandidatHendelse {
   NyKandidat = 'NY_KANDIDAT',
+  Presentert = 'PRESENTERT',
   DeltMedKandidat = 'DELT_MED_KANDIDAT',
   SvarJa = 'SVAR_JA',
   SvarNei = 'SVAR_NEI',
@@ -79,13 +81,15 @@ export enum KandidatHendelse {
   EpostSendt = 'EPOST_SENDT',
 }
 
-const sorterUtfallmedNyesteFørst = (utfallsendringer: Utfallsendring[]) =>
+const sorterUtfallmedNyesteFørst = (
+  utfallsendringer: utfallsendringerSchemaDTO[],
+) =>
   utfallsendringer.sort(
     (u, v) => Number(new Date(v.tidspunkt)) - Number(new Date(u.tidspunkt)),
   );
 
 const cvErSendtTilArbeidsgiverOgSlettet = (
-  utfallsendringer: Utfallsendring[],
+  utfallsendringer: utfallsendringerSchemaDTO[],
 ) => {
   const utfallSortertMedNyesteFørst =
     sorterUtfallmedNyesteFørst(utfallsendringer);
@@ -103,7 +107,7 @@ const cvErSendtTilArbeidsgiverOgSlettet = (
 
 const hentKandidatensSisteHendelse = (
   utfall: Kandidatutfall,
-  utfallsendringer: Utfallsendring[],
+  utfallsendringer: utfallsendringerSchemaDTO[],
   forespørselOmDelingAvCv?: ForespørselOmDelingAvCv,
   sms?: any, //TODO To be defined
 ): KandidatHendelse => {
@@ -115,7 +119,7 @@ const hentKandidatensSisteHendelse = (
   } else if (cvErSendtOgSlettet) {
     return KandidatHendelse.CvSlettet;
   } else if (utfall === Kandidatutfall.Presentert) {
-    return KandidatHendelse.CvDelt;
+    return KandidatHendelse.Presentert;
   } else if (forespørselOmDelingAvCv) {
     if (forespørselOmDelingAvCv.tilstand === TilstandPåForespørsel.HarSvart) {
       return forespørselOmDelingAvCv.svar.harSvartJa
@@ -141,7 +145,7 @@ const hentKandidatensSisteHendelse = (
 
 export interface HendelseTagProps {
   utfall: Kandidatutfall;
-  utfallsendringer: Utfallsendring[];
+  utfallsendringer: utfallsendringerSchemaDTO[];
   forespørselOmDelingAvCv?: ForespørselOmDelingAvCv;
   ikkeVisÅrstall?: boolean;
   sms?: any;
@@ -182,7 +186,7 @@ const HendelseTag: React.FC<HendelseTagProps> = ({
 const hendelseTilLabel = (
   hendelse: KandidatHendelse,
   ikkeVisÅrstall: boolean,
-  utfallsendringer: Utfallsendring[],
+  utfallsendringer: utfallsendringerSchemaDTO[],
   forespørselOmDelingAvCv?: ForespørselOmDelingAvCv,
   sms?: any,
 ) => {
@@ -255,6 +259,9 @@ const hendelseTilLabel = (
     }
     case KandidatHendelse.EksternVarselFeilet: {
       return `SMS/epost feilet – ${sms && formaterDatoUtenÅrstall(sms.opprettet)}`;
+    }
+    case KandidatHendelse.Presentert: {
+      return `Presentert – ${cvDeltTidspunkt && formaterDatoUtenÅrstall(cvDeltTidspunkt.tidspunkt)}`;
     }
     default:
       return '';

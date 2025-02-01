@@ -19,11 +19,8 @@ import InfoOmKandidat from './components/InfoOmKandidat';
 import KandidatDropdown from './components/KandidatDropdown';
 import SmsStatusPopup from './components/SendSMS/SmsStatusPopup';
 import StatusTag from './components/StatusTag';
-import {
-  Kandidatstatus,
-  Kandidatutfall,
-  Utfallsendring,
-} from './KandidatIKandidatlisteTyper';
+import UsynligKandidatRad from './components/UsynligKandidatRad';
+import { Kandidatstatus, Kandidatutfall } from './KandidatIKandidatlisteTyper';
 import { useStillingsKandidaterFilter } from './StillingsKandidaterFilterContext';
 
 const StillingsKandidaterTabell: React.FC<{
@@ -51,6 +48,9 @@ const StillingsKandidaterTabell: React.FC<{
         : [...valgteFnr, value],
     );
 
+  const aktivtFilter =
+    search.length > 0 || status.length > 0 || hendelse.length > 0;
+
   const [kandidater, setKandidater] = React.useState<kandidaterSchemaDTO[]>(
     kandidatliste.kandidater.sort(
       applySortDirection<kandidaterSchemaDTO>(sort),
@@ -77,8 +77,7 @@ const StillingsKandidaterTabell: React.FC<{
           );
 
         // Skjuler de som ikke har fnr hvis filter er valgt for å ikke utlede hendelser.
-        const aktivtFilter =
-          search.length > 0 || status.length > 0 || hendelse.length > 0;
+
         const erSynlig =
           kandidat.fodselsnr !== null && kandidat.fodselsnr !== undefined;
 
@@ -99,7 +98,7 @@ const StillingsKandidaterTabell: React.FC<{
       .sort(applySortDirection<kandidaterSchemaDTO>(sort));
 
     setKandidater(nyListe);
-  }, [search, kandidatliste.kandidater, sort, status, hendelse]);
+  }, [search, kandidatliste.kandidater, sort, status, hendelse, aktivtFilter]);
 
   function tableSort(sortKey?: string) {
     if (
@@ -150,30 +149,41 @@ const StillingsKandidaterTabell: React.FC<{
           <Table.ColumnHeader sortable sortKey='lagtTilTidspunkt' scope='col'>
             Dato
           </Table.ColumnHeader>
-          <Table.HeaderCell scope='col'>Status og hendelser</Table.HeaderCell>
+          <Table.HeaderCell scope='col'>Intern status </Table.HeaderCell>
+          <Table.HeaderCell scope='col'>Siste hendelse</Table.HeaderCell>
           <Table.HeaderCell scope='col'></Table.HeaderCell>
         </Table.Row>
       </Table.Header>
       <Table.Body>
+        {!aktivtFilter &&
+          kandidatliste.formidlingerAvUsynligKandidat.length > 0 &&
+          kandidatliste.formidlingerAvUsynligKandidat.map((kandidat, i) => (
+            <UsynligKandidatRad
+              key={i}
+              fornavn={kandidat.fornavn}
+              etternavn={kandidat.etternavn}
+              utfall={kandidat.utfall as Kandidatutfall}
+            />
+          ))}
         {kandidater.map((kandidat, i) => {
           if (kandidat.fodselsnr === null) {
             return (
-              <Table.Row className='bg-red-50' key={i}>
-                <Table.DataCell colSpan={2} />
-                <Table.DataCell>
-                  {kandidat.etternavn}, {kandidat.fornavn}
-                </Table.DataCell>
-                <Table.DataCell colSpan={6}>
-                  Innaktiv / Ikke synlig i Rekrutteringsbistand
-                </Table.DataCell>
-              </Table.Row>
+              <UsynligKandidatRad
+                key={i}
+                fornavn={kandidat.fornavn}
+                etternavn={kandidat.etternavn}
+              />
             );
           }
 
           return (
             <Table.ExpandableRow
-              // className={i % 2 === 0 ? 'bg-gray-50' : ''}
-              content={<InfoOmKandidat kandidat={kandidat} />}
+              content={
+                <InfoOmKandidat
+                  kandidat={kandidat}
+                  kandidatlisteId={kandidatliste.kandidatlisteId}
+                />
+              }
               key={i + kandidat.fodselsnr}
               selected={valgteFnr.includes(kandidat.fodselsnr)}
             >
@@ -195,7 +205,7 @@ const StillingsKandidaterTabell: React.FC<{
                   {kandidat.etternavn}, {kandidat.fornavn}
                 </Link>
               </Table.DataCell>
-              <Table.DataCell>
+              <Table.DataCell className='align-middle'>
                 <SmsStatusPopup
                   fnr={kandidat.fodselsnr}
                   stillingId={stillingsId}
@@ -212,25 +222,22 @@ const StillingsKandidaterTabell: React.FC<{
                 {format(kandidat.lagtTilTidspunkt, 'dd.MM.yyyy')}
               </Table.DataCell>
               <Table.DataCell>
-                <div className='flex gap-2'>
-                  <StatusTag status={kandidat.status as Kandidatstatus} />
-                  <HendelseTag
-                    ikkeVisÅrstall
-                    utfall={kandidat.utfall as Kandidatutfall}
-                    utfallsendringer={
-                      kandidat.utfallsendringer as Utfallsendring[]
-                    }
-                    // forespørselOmDelingAvCv={
-                    //     forespørselOmDelingAvCv.kind === Nettstatus.Suksess
-                    //         ? forespørselOmDelingAvCv.data.gjeldendeForespørsel
-                    //         : undefined
-                    // }
-                    forespørselOmDelingAvCv={undefined}
-                    sms={null}
-                  />
-                </div>
+                <StatusTag status={kandidat.status as Kandidatstatus} />
               </Table.DataCell>
-
+              <Table.DataCell>
+                <HendelseTag
+                  ikkeVisÅrstall
+                  utfall={kandidat.utfall as Kandidatutfall}
+                  utfallsendringer={kandidat.utfallsendringer}
+                  // forespørselOmDelingAvCv={
+                  //     forespørselOmDelingAvCv.kind === Nettstatus.Suksess
+                  //         ? forespørselOmDelingAvCv.data.gjeldendeForespørsel
+                  //         : undefined
+                  // }
+                  forespørselOmDelingAvCv={undefined}
+                  sms={null}
+                />
+              </Table.DataCell>
               <Table.DataCell>
                 <div className='flex items-baseline flex-end'>
                   <KandidatDropdown

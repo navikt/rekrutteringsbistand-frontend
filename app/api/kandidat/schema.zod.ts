@@ -1,10 +1,18 @@
 import { z } from 'zod';
 
 export type kandidatlisteSchemaDTO = z.infer<typeof kandidatlisteSchema>;
+export type utfallsendringerSchemaDTO = z.infer<typeof utfallsendringerSchema>;
 export type kandidaterSchemaDTO = z.infer<typeof kandidaterSchema>;
 export type kandidatHistorikkSchemaDTO = z.infer<
   typeof kandidatHistorikkSchema
 >;
+
+const utfallsendringerSchema = z.object({
+  utfall: z.string(),
+  registrertAvIdent: z.string(),
+  tidspunkt: z.string(),
+  sendtTilArbeidsgiversKandidatliste: z.boolean(),
+});
 
 const kandidaterSchema = z.object({
   kandidatId: z.string(),
@@ -25,14 +33,7 @@ const kandidaterSchema = z.object({
   arkivertTidspunkt: z.null(),
   arkivertAv: z.null(),
   aktørid: z.string(),
-  utfallsendringer: z.array(
-    z.object({
-      utfall: z.string(),
-      registrertAvIdent: z.string(),
-      tidspunkt: z.string(),
-      sendtTilArbeidsgiversKandidatliste: z.boolean(),
-    }),
-  ),
+  utfallsendringer: z.array(utfallsendringerSchema),
 });
 
 export const kandidatlisteSchema = z.object({

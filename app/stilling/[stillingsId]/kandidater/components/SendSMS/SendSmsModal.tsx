@@ -210,11 +210,11 @@ const genererMeldingUtenLenke = (
   meldingsmaler: MeldingsmalerDTO,
 ) => {
   if (valgtMal === Meldingsmal.VurdertSomAktuell) {
-    return meldingsmaler.vurdertSomAktuell.smsTekst;
+    return meldingsmaler.vurdertSomAktuell?.smsTekst;
   } else if (valgtMal === Meldingsmal.FunnetPassendeStilling) {
-    return meldingsmaler.passendeStilling.smsTekst;
+    return meldingsmaler.passendeStilling?.smsTekst;
   } else if (valgtMal === Meldingsmal.Jobbarrangement) {
-    return meldingsmaler.passendeJobbarrangement.smsTekst;
+    return meldingsmaler.passendeJobbarrangement?.smsTekst;
   }
 };
 

@@ -239,14 +239,20 @@ export const useSendtKandidatmelding = (
 //   ),
 // ];
 
-// const smsExampleMock = {
-//   id: '1',
-//   stillingId: mockKandidatlisteMedStilling.stillingId as string,
-//   mottakerFnr: '14114536327', //mockKandidatlisteMedStilling.kandidater[0].fodselsnr,
-//   avsenderNavident: mockVeileder.navIdent,
-//   opprettet: new Date().toISOString(),
-//   minsideStatus: MinsideStatus.OPPRETTET,
-//   eksternStatus: EksternStatus.VELLYKKET_SMS,
-// };
+const smsExampleMock = [
+  {
+    id: 'A57',
+    opprettet: '2024-09-10T13:07:17.399709',
+    stillingId: '44142941-1fff-401f-8072-98889d9c41d4',
+    mottakerFnr: '16488811847',
+    avsenderNavident: 'Z993141',
+    minsideStatus: 'OPPRETTET',
+    eksternStatus: 'FEIL',
+    eksternFeilmelding: 'person_ikke_funnet',
+  },
+];
+export const kandidatvarselMirage = (server: any) => {
+  return server.get(varselStillingEndepunkt('*'), () => smsExampleMock);
+};
 
 // const mockSms: Sms[] = [smsExampleMock];

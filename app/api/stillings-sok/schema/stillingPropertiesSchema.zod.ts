@@ -1,17 +1,17 @@
 import { z } from 'zod';
 
-const SearchTagSchema = z.object({
+const ESSearchTagSchema = z.object({
   label: z.string(),
   score: z.number(),
 });
 
-const OntologyJobtitleSchema = z.object({
+const ESOntologyJobtitleSchema = z.object({
   konseptId: z.number(),
   label: z.string(),
   styrk08: z.string(),
 });
 
-export const StillingPropertiesSchema = z.object({
+export const ESStillingPropertiesSchema = z.object({
   adtext: z.string().optional(),
   sourceurl: z.string().optional(),
   applicationdue: z.string().optional(),
@@ -42,7 +42,7 @@ export const StillingPropertiesSchema = z.object({
   address: z.union([z.string(), z.number()]).optional(),
   industry: z.string().optional(),
   nace2: z.any().optional(),
-  searchtags: z.array(SearchTagSchema).optional(),
+  searchtags: z.array(ESSearchTagSchema).optional(),
   searchtagsai: z.array(z.string()).optional(),
   classification_styrk08_score: z.number().optional(),
   classification_input_source: z.string().optional(),
@@ -56,7 +56,7 @@ export const StillingPropertiesSchema = z.object({
   finnSource: z.string().optional(),
   adtextFormat: z.string().optional(),
   tags: z.array(z.string()).optional(),
-  ontologyJobtitle: OntologyJobtitleSchema.optional(),
+  ontologyJobtitle: ESOntologyJobtitleSchema.optional(),
   workschedule: z.union([z.string(), z.array(z.string())]).optional(),
   workhours: z.union([z.string(), z.array(z.string())]).optional(),
   workday: z.union([z.string(), z.array(z.string())]).optional(),

@@ -2,17 +2,16 @@ import { TenancyIcon } from '@navikt/aksel-icons';
 import { Button, Checkbox, CheckboxGroup, Search } from '@navikt/ds-react';
 import * as React from 'react';
 import { useKandidatliste } from '../../../api/kandidat/useKandidatliste';
+import { useSmserForStilling } from '../../../api/kandidatvarsel/kandidatvarsel';
 import SWRLaster from '../../../components/SWRLaster';
 import { useStillingsContext } from '../StillingsContext';
 import DelMedKandidatModal from './components/DelMedKandidat/DelMedKandidatModal';
 import SendSmsModal from './components/SendSMS/SendSmsModal';
-import {
-  KandidatStatus,
-  useStillingsKandidaterFilter,
-} from './StillingsKandidaterFilterContext';
+import { Kandidatstatus } from './KandidatIKandidatlisteTyper';
+import { useStillingsKandidaterFilter } from './StillingsKandidaterFilterContext';
 import StillingsKandidaterTabell from './StillingsKandidaterTabell';
 
-enum HendelseValg {
+export enum KandidatHendelseValg {
   VURDERES = 'Vurderes',
   PRESENTERT = 'Presentert',
   TIL_INTERVJU = 'Til intervju',
@@ -25,9 +24,10 @@ const StillingsKandidater: React.FC = () => {
     useStillingsKandidaterFilter();
   const [markerteFnr, setMarkerteFnr] = React.useState<string[]>([]);
   const hook = useKandidatliste(stillingsData.stilling.uuid);
-
+  const varsler = useSmserForStilling(stillingsData.stilling.uuid);
   const [search, setSearch] = React.useState('');
 
+  console.log('🎺 varsler', varsler);
   return (
     <SWRLaster hook={hook}>
       {(kandidatliste) => (
@@ -75,7 +75,7 @@ const StillingsKandidater: React.FC = () => {
                 defaultValue={status}
                 className='mb-8'
               >
-                {Object.entries(KandidatStatus).map(([key, value]) => (
+                {Object.entries(Kandidatstatus).map(([key, value]) => (
                   <Checkbox key={key} value={key}>
                     {value}
                   </Checkbox>
@@ -86,7 +86,7 @@ const StillingsKandidater: React.FC = () => {
                 onChange={setHendelse}
                 defaultValue={hendelse}
               >
-                {Object.entries(HendelseValg).map(([key, value]) => (
+                {Object.entries(KandidatHendelseValg).map(([key, value]) => (
                   <Checkbox key={key} value={key}>
                     {value}
                   </Checkbox>

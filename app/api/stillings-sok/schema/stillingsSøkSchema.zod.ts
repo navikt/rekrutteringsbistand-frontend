@@ -13,7 +13,7 @@ export const totalSchema = z.object({
   relation: z.string(),
 });
 
-export type StillingsSøkSchemaDTO = z.infer<typeof stillingsSøkSchema>;
+export type ESStillingsSøkSchemaDTO = z.infer<typeof ESStillingsSøkSchema>;
 
 export const hitSchema = z.object({
   _index: z.string(),
@@ -30,7 +30,7 @@ export const hitsSchema = z.object({
   hits: z.array(hitSchema),
 });
 
-export const stillingsSøkSchema = z.object({
+export const ESStillingsSøkSchema = z.object({
   took: z.number(),
   timed_out: z.boolean(),
   _shards: shardsSchema,
