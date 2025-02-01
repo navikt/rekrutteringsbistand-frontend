@@ -7,7 +7,6 @@ import {
   useSendtKandidatmelding,
 } from '../../../../../api/kandidatvarsel/kandidatvarsel';
 import MedPopover from '../../../../../components/popover/MedPopover';
-import css from './SmsStatusPopup.module.css';
 
 const formaterSendtDato = (dato: Date) => {
   return `${dato.toLocaleString('nb-NO', {
@@ -105,34 +104,16 @@ const SmsStatusPopup: FunctionComponent<Props> = ({
 }) => {
   const sms = useSendtKandidatmelding(fnr, stillingId, stillingskategori);
   return sms ? (
-    <div className='flex items-center h-full'>
-      <MedPopover
-        className={css.smsStatusPopup}
-        hjelpetekst={sms && <Popuptekst sms={sms} />}
-        visOnHover
-      >
-        <div>
-          <MobileIcon
-            className='group-hover:hidden'
-            color={
-              sms?.eksternStatus === EksternStatus.FEIL
-                ? 'var(--a-surface-danger)'
-                : 'var(--a-surface-success)'
-            }
-            fontSize='1.5rem'
-          />
-          <MobileFillIcon
-            className='hidden group-hover:block'
-            color={
-              sms?.eksternStatus === EksternStatus.FEIL
-                ? 'var(--a-surface-danger)'
-                : 'var(--a-surface-success)'
-            }
-            fontSize='1.5rem'
-          />
-        </div>
-      </MedPopover>
-    </div>
+    <MedPopover hjelpetekst={sms && <Popuptekst sms={sms} />} visOnHover>
+      <MobileFillIcon
+        color={
+          sms?.eksternStatus === EksternStatus.FEIL
+            ? 'var(--a-surface-danger)'
+            : 'var(--a-surface-success)'
+        }
+        fontSize='1.5rem'
+      />
+    </MedPopover>
   ) : (
     <MobileIcon className='opacity-50' fontSize='1.5rem' />
   );

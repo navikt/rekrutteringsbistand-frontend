@@ -27,7 +27,6 @@ const StillingsKandidater: React.FC = () => {
   const varsler = useSmserForStilling(stillingsData.stilling.uuid);
   const [search, setSearch] = React.useState('');
 
-  console.log('🎺 varsler', varsler);
   return (
     <SWRLaster hook={hook}>
       {(kandidatliste) => (
