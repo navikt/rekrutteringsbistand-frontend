@@ -2,8 +2,8 @@ import { ArrowForwardIcon } from '@navikt/aksel-icons';
 import { Alert, BodyShort, Button, Modal } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import * as React from 'react';
-import { sendForespørselOmDelingAvCv } from '../../../../../api/foresporsel-om-deling-av-cv/foresporsler/forespørselOmDelingAvCv';
-import { useForespurteOmDelingAvCv } from '../../../../../api/foresporsel-om-deling-av-cv/foresporsler/useForespurteOmDelingAvCv';
+import { sendForespørselOmDelingAvCv } from '../../../../../api/foresporsel-om-deling-av-cv/foresporsler/[slug]/forespørselOmDelingAvCv';
+import { useForespurteOmDelingAvCv } from '../../../../../api/foresporsel-om-deling-av-cv/foresporsler/[slug]/useForespurteOmDelingAvCv';
 import { kandidatlisteSchemaDTO } from '../../../../../api/kandidat/schema.zod';
 import { useApplikasjonContext } from '../../../../../ApplikasjonContext';
 import SWRLaster from '../../../../../components/SWRLaster';
@@ -44,12 +44,8 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
 
   const antallSpurtFraFør = Math.random();
   return (
-    <SWRLaster hook={forespurteKandidaterHook}>
-      {(data) => {
-        console.log(data);
-        return (
-          <React.Fragment>
-            <Button
+   <>
+       <Button
               disabled={markerteFnr.length === 0}
               onClick={() => setModalErÅpen(true)}
               variant='tertiary'
@@ -67,6 +63,10 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
                 } i aktivitetsplanen`,
               }}
             >
+              <SWRLaster hook={forespurteKandidaterHook}>
+      {(data) => {
+        return (
+          <React.Fragment>
               <Modal.Body>
                 {antallSpurtFraFør > 0 && (
                   <Alert variant='warning' size='small'>
@@ -109,11 +109,13 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
                   Avbryt
                 </Button>
               </Modal.Footer>
-            </Modal>
-          </React.Fragment>
+              </React.Fragment>
         );
       }}
     </SWRLaster>
+            </Modal>
+
+   </>
   );
 };
 

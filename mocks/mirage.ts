@@ -2,6 +2,7 @@
 import { createServer, Model } from 'miragejs';
 import { brukerMirage } from '../app/api/bruker/useBruker';
 import { decoratorDataMirage } from '../app/api/decorator/useDecoratorData';
+import { foresporselOmDelingAvCVMirage } from '../app/api/foresporsel-om-deling-av-cv/foresporsler/[slug]/useForespurteOmDelingAvCv';
 import { foresporselOmDelingAvCVStatistikkMirage } from '../app/api/foresporsel-om-deling-av-cv/statistikk/useForesporselOmdelingAvCV';
 import { arenaKandidatnrMirage } from '../app/api/kandidat-sok/useArenaKandidatnr';
 import { kandidatinformasjonMirage } from '../app/api/kandidat-sok/useKandidatinformasjon';
@@ -60,6 +61,7 @@ export function makeServer({ environment = 'test' } = {}) {
       stillingsTittelMirage(this);
       meldingsmalerMirage(this);
       kandidatvarselMirage(this);
+      foresporselOmDelingAvCVMirage(this);
 
       // stillingssøk mock kan disables ved ES søk
       // stillingssøkMirage(this);
