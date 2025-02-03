@@ -14,7 +14,7 @@ enum KandidatHendelseValg {
   //   IKKE_INTERESSERT = 'Kandidaten er ikke interessert',
   //   IKKE_AKTUELL = 'Kandidaten er ikke aktuell',
   //   AKTUELL = 'Kandidaten er aktuell',
-
+  IKKE_PRESENTERT = 'Kandidaten er ikke presenter',
   FATT_JOBBEN = 'Kandidaten har fått jobben',
   PRESENTERT = 'Kandidaten er presenter',
 }
@@ -22,6 +22,7 @@ enum KandidatHendelseValg {
 const utfallTilTittel: Record<string, string> = {
   PRESENTERT: KandidatHendelseValg.PRESENTERT,
   CV_DELT: KandidatHendelseValg.CV_DELT,
+  IKKE_PRESENTERT: KandidatHendelseValg.IKKE_PRESENTERT,
   //   STILLING_DELT: KandidatHendelseValg.STILLING_DELT,
   //   IKKE_INTERESSERT: KandidatHendelseValg.IKKE_INTERESSERT,
   //   IKKE_AKTUELL: KandidatHendelseValg.IKKE_AKTUELL,
