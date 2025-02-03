@@ -2,8 +2,8 @@ import { ArrowForwardIcon } from '@navikt/aksel-icons';
 import { Alert, BodyShort, Button, Modal } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import * as React from 'react';
-import { sendForespørselOmDelingAvCv } from '../../../../../api/foresporsel-om-deling-av-cv/foresporsler/[slug]/forespørselOmDelingAvCv';
 import { useForespurteOmDelingAvCv } from '../../../../../api/foresporsel-om-deling-av-cv/foresporsler/[slug]/useForespurteOmDelingAvCv';
+import { sendForespørselOmDelingAvCv } from '../../../../../api/foresporsel-om-deling-av-cv/foresporsler/forespørselOmDelingAvCv';
 import { kandidatlisteSchemaDTO } from '../../../../../api/kandidat/schema.zod';
 import { useApplikasjonContext } from '../../../../../ApplikasjonContext';
 import SWRLaster from '../../../../../components/SWRLaster';
@@ -28,6 +28,7 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
   );
   const { valgtNavKontor } = useApplikasjonContext();
   const [loading, setLoading] = React.useState(false);
+
   const sendForespørsel = async () => {
     if (svarfrist) {
       setLoading(true);

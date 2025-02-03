@@ -33,8 +33,8 @@ const VelgSvarfrist: FunctionComponent<Props> = ({
   setValgtSvarfrist,
 }) => {
   const [svarFrist, setSvarFrist] = useState<Date | undefined>(undefined);
-  const [valgtRadiobutton, setValgtRadiobutton] = useState<Svarfrist>(
-    Svarfrist.ToDager,
+  const [valgtRadiobutton, setValgtRadiobutton] = useState<Svarfrist | null>(
+    null,
   );
 
   const { datepickerProps, inputProps } = useDatepicker({
