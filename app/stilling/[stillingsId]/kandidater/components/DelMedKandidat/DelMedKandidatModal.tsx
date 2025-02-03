@@ -42,80 +42,84 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
     }
   };
 
-  const antallSpurtFraFør = Math.random();
   return (
-   <>
-       <Button
-              disabled={markerteFnr.length === 0}
-              onClick={() => setModalErÅpen(true)}
-              variant='tertiary'
-              icon={<ArrowForwardIcon title='Del med kandidat' />}
-            >
-              Del med kandidat
-            </Button>
-            <Modal
-              open={modalErÅpen}
-              aria-label='Del stillingen med de markerte kandidatene2'
-              onClose={() => setModalErÅpen(false)}
-              header={{
-                heading: `Del med ${markerteFnr.length} ${
-                  markerteFnr.length === 1 ? 'kandidat' : 'kandidater'
-                } i aktivitetsplanen`,
-              }}
-            >
-              <SWRLaster hook={forespurteKandidaterHook}>
-      {(data) => {
-        return (
-          <React.Fragment>
-              <Modal.Body>
-                {antallSpurtFraFør > 0 && (
-                  <Alert variant='warning' size='small'>
-                    Du har tidligere delt stillingen med {antallSpurtFraFør}{' '}
-                    {antallSpurtFraFør === 1
-                      ? 'kandidat. Denne kandidaten'
-                      : 'kandidater. De'}{' '}
-                    vil ikke motta stillingen på nytt i aktivitetsplanen.
-                  </Alert>
-                )}
-                <BodyShort className='my-8'>
-                  {`Det opprettes et stillingskort i Aktivitetsplanen. Kandidatene
+    <>
+      <Button
+        disabled={markerteFnr.length === 0}
+        onClick={() => setModalErÅpen(true)}
+        variant='tertiary'
+        icon={<ArrowForwardIcon title='Del med kandidat' />}
+      >
+        Del med kandidat
+      </Button>
+      <Modal
+        open={modalErÅpen}
+        aria-label='Del stillingen med de markerte kandidatene2'
+        onClose={() => setModalErÅpen(false)}
+        header={{
+          heading: `Del med ${markerteFnr.length} ${
+            markerteFnr.length === 1 ? 'kandidat' : 'kandidater'
+          } i aktivitetsplanen`,
+        }}
+      >
+        <SWRLaster hook={forespurteKandidaterHook}>
+          {(data) => {
+            const forespurteKandidater = Object.keys(data);
+            //todo verifiser at dette er riktig
+            const antallSpurtFraFør = markerteFnr.filter((fnr) =>
+              forespurteKandidater.includes(fnr),
+            ).length;
+
+            return (
+              <React.Fragment>
+                <Modal.Body>
+                  {antallSpurtFraFør > 0 && (
+                    <Alert variant='warning' size='small'>
+                      Du har tidligere delt stillingen med {antallSpurtFraFør}{' '}
+                      {antallSpurtFraFør === 1
+                        ? 'kandidat. Denne kandidaten'
+                        : 'kandidater. De'}{' '}
+                      vil ikke motta stillingen på nytt i aktivitetsplanen.
+                    </Alert>
+                  )}
+                  <BodyShort className='my-8'>
+                    {`Det opprettes et stillingskort i Aktivitetsplanen. Kandidatene
                   vil bli varslet på SMS, og kan svare "ja" eller "nei" til at
                   CV-en skal bli delt med arbeidsgiver. Du vil se svaret i
                   kandidatlisten.`}
-                </BodyShort>
+                  </BodyShort>
 
-                <VelgSvarfrist setValgtSvarfrist={setSvarfrist} />
-                <Alert variant='info' className={'mt-8'}>
-                  Stillingsannonsen vil bli delt med kandidaten.
-                  <br /> Det er viktig at annonseteksten er informativ og lett å
-                  forstå.
-                </Alert>
-              </Modal.Body>
+                  <VelgSvarfrist setValgtSvarfrist={setSvarfrist} />
+                  <Alert variant='info' className={'mt-8'}>
+                    Stillingsannonsen vil bli delt med kandidaten.
+                    <br /> Det er viktig at annonseteksten er informativ og lett
+                    å forstå.
+                  </Alert>
+                </Modal.Body>
 
-              <Modal.Footer>
-                <Button
-                  disabled={!svarfrist}
-                  onClick={sendForespørsel}
-                  variant='primary'
-                  loading={loading}
-                >
-                  Del stilling
-                </Button>
-                <Button
-                  disabled={loading}
-                  variant='secondary'
-                  onClick={() => setModalErÅpen(false)}
-                >
-                  Avbryt
-                </Button>
-              </Modal.Footer>
+                <Modal.Footer>
+                  <Button
+                    disabled={!svarfrist}
+                    onClick={sendForespørsel}
+                    variant='primary'
+                    loading={loading}
+                  >
+                    Del stilling
+                  </Button>
+                  <Button
+                    disabled={loading}
+                    variant='secondary'
+                    onClick={() => setModalErÅpen(false)}
+                  >
+                    Avbryt
+                  </Button>
+                </Modal.Footer>
               </React.Fragment>
-        );
-      }}
-    </SWRLaster>
-            </Modal>
-
-   </>
+            );
+          }}
+        </SWRLaster>
+      </Modal>
+    </>
   );
 };
 
