@@ -1,6 +1,7 @@
 import { TenancyIcon } from '@navikt/aksel-icons';
 import { Button, Checkbox, CheckboxGroup, Search } from '@navikt/ds-react';
 import * as React from 'react';
+import { kandidaterSchemaDTO } from '../../../api/kandidat/schema.zod';
 import { useKandidatliste } from '../../../api/kandidat/useKandidatliste';
 import { useSmserForStilling } from '../../../api/kandidatvarsel/kandidatvarsel';
 import { oppdaterStilling } from '../../../api/stilling/oppdater-stilling/oppdaterStilling';
@@ -25,7 +26,10 @@ const StillingsKandidater: React.FC = () => {
   const { stillingsData } = useStillingsContext();
   const { status, setStatus, hendelse, setHendelse } =
     useStillingsKandidaterFilter();
-  const [markerteFnr, setMarkerteFnr] = React.useState<string[]>([]);
+  const [markerteKandidater, setMarkerteKandidater] = React.useState<
+    kandidaterSchemaDTO[]
+  >([]);
+
   const hook = useKandidatliste(stillingsData.stilling.uuid);
   const varsler = useSmserForStilling(stillingsData.stilling.uuid);
   const [search, setSearch] = React.useState('');
@@ -86,17 +90,17 @@ const StillingsKandidater: React.FC = () => {
             </div>
             <div>
               <SendSmsModal
-                markerteFnr={markerteFnr}
+                markerteKandidater={markerteKandidater}
                 stillingId={stillingsData.stilling.uuid}
                 stillingskategori={
                   stillingsData.stillingsinfo?.stillingskategori ?? null
                 }
-                fjernAllMarkering={() => setMarkerteFnr([])}
+                fjernAllMarkering={() => setMarkerteKandidater([])}
               />
               <DelMedKandidatModal
                 kandidatliste={kandidatliste}
-                markerteFnr={markerteFnr}
-                fjernAllMarkering={() => setMarkerteFnr([])}
+                markerteKandidater={markerteKandidater}
+                fjernAllMarkering={() => setMarkerteKandidater([])}
               />
               <Button
                 disabled
@@ -136,8 +140,8 @@ const StillingsKandidater: React.FC = () => {
             </aside>
             <div className='w-full'>
               <StillingsKandidaterTabell
-                valgteFnr={markerteFnr}
-                setValgteFnr={setMarkerteFnr}
+                markerteKandidater={markerteKandidater}
+                setMarkerteKandidater={setMarkerteKandidater}
                 search={search}
                 kandidatliste={kandidatliste}
                 stillingsId={stillingsData.stilling.uuid}

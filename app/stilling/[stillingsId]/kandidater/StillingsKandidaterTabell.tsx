@@ -24,15 +24,15 @@ import { Kandidatstatus, Kandidatutfall } from './KandidatIKandidatlisteTyper';
 import { useStillingsKandidaterFilter } from './StillingsKandidaterFilterContext';
 
 const StillingsKandidaterTabell: React.FC<{
-  valgteFnr: string[];
-  setValgteFnr: (val: string[]) => void;
+  markerteKandidater: kandidaterSchemaDTO[];
+  setMarkerteKandidater: (val: kandidaterSchemaDTO[]) => void;
   search: string;
   kandidatliste: kandidatlisteSchemaDTO;
   stillingsId: string;
   stillingskategori: string | null;
 }> = ({
-  valgteFnr,
-  setValgteFnr,
+  markerteKandidater,
+  setMarkerteKandidater,
   search,
   kandidatliste,
   stillingsId,
@@ -41,11 +41,14 @@ const StillingsKandidaterTabell: React.FC<{
   const [sort, setSort] = React.useState<TableSortState<kandidaterSchemaDTO>>();
 
   const { status, hendelse } = useStillingsKandidaterFilter();
-  const toggleSelectedRow = (value: string) =>
-    setValgteFnr(
-      valgteFnr.includes(value)
-        ? valgteFnr.filter((id) => id !== value)
-        : [...valgteFnr, value],
+
+  const toggleSelectedRow = (kandidat: kandidaterSchemaDTO) =>
+    setMarkerteKandidater(
+      markerteKandidater.includes(kandidat)
+        ? markerteKandidater.filter(
+            (kandidat) => kandidat.fodselsnr !== kandidat.fodselsnr,
+          )
+        : [...markerteKandidater, kandidat],
     );
 
   const aktivtFilter =
@@ -120,17 +123,16 @@ const StillingsKandidaterTabell: React.FC<{
           <Table.DataCell />
           <Table.DataCell>
             <Checkbox
-              checked={valgteFnr.length === kandidater.length}
+              checked={markerteKandidater.length === kandidater.length}
               indeterminate={
-                valgteFnr.length > 0 && valgteFnr.length !== kandidater.length
+                markerteKandidater.length > 0 &&
+                markerteKandidater.length !== kandidater.length
               }
               onChange={() => {
-                valgteFnr.length
-                  ? setValgteFnr([])
-                  : setValgteFnr(
-                      kandidater
-                        .filter((k) => k.fodselsnr !== null)
-                        .map((k) => k.fodselsnr!),
+                markerteKandidater.length
+                  ? setMarkerteKandidater([])
+                  : setMarkerteKandidater(
+                      kandidater.filter((k) => k.fodselsnr !== null),
                     );
               }}
               hideLabel
@@ -185,13 +187,13 @@ const StillingsKandidaterTabell: React.FC<{
                 />
               }
               key={i + kandidat.fodselsnr}
-              selected={valgteFnr.includes(kandidat.fodselsnr)}
+              selected={markerteKandidater.includes(kandidat)}
             >
               <Table.DataCell>
                 <Checkbox
                   hideLabel
-                  checked={valgteFnr.includes(kandidat.fodselsnr)}
-                  onChange={() => toggleSelectedRow(kandidat.fodselsnr!)}
+                  checked={markerteKandidater.includes(kandidat)}
+                  onChange={() => toggleSelectedRow(kandidat)}
                   aria-labelledby={`id-${kandidat.fodselsnr}`}
                 >
                   {' '}

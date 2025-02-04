@@ -4,20 +4,23 @@ import { format } from 'date-fns';
 import * as React from 'react';
 import { useForespurteOmDelingAvCv } from '../../../../../api/foresporsel-om-deling-av-cv/foresporsler/[slug]/useForespurteOmDelingAvCv';
 import { sendForespørselOmDelingAvCv } from '../../../../../api/foresporsel-om-deling-av-cv/foresporsler/forespørselOmDelingAvCv';
-import { kandidatlisteSchemaDTO } from '../../../../../api/kandidat/schema.zod';
+import {
+  kandidaterSchemaDTO,
+  kandidatlisteSchemaDTO,
+} from '../../../../../api/kandidat/schema.zod';
 import { useApplikasjonContext } from '../../../../../ApplikasjonContext';
 import SWRLaster from '../../../../../components/SWRLaster';
 import { useVisVarsling } from '../../../../../components/varsling/Varsling';
 import VelgSvarfrist from './VelgSvarfrist';
 
 export interface DelMedKandidatModalProps {
-  markerteFnr: string[];
+  markerteKandidater: kandidaterSchemaDTO[];
   fjernAllMarkering: () => void;
   kandidatliste: kandidatlisteSchemaDTO;
 }
 
 const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
-  markerteFnr,
+  markerteKandidater,
   fjernAllMarkering,
   kandidatliste,
 }) => {
@@ -36,7 +39,7 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
       await sendForespørselOmDelingAvCv({
         stillingsId: kandidatliste.kandidatlisteId,
         svarfrist: format(svarfrist, "yyyy-MM-dd'T'HH:mm:ss.SSS"),
-        aktorIder: markerteFnr,
+        aktorIder: markerteKandidater.map((kandidat) => kandidat.aktørid),
         navKontor: valgtNavKontor?.navKontor ?? '',
       });
       fjernAllMarkering();
@@ -52,7 +55,7 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
   return (
     <>
       <Button
-        disabled={markerteFnr.length === 0}
+        disabled={markerteKandidater.length === 0}
         onClick={() => setModalErÅpen(true)}
         variant='tertiary'
         icon={<ArrowForwardIcon title='Del med kandidat' />}
@@ -64,8 +67,8 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
         aria-label='Del stillingen med de markerte kandidatene2'
         onClose={() => setModalErÅpen(false)}
         header={{
-          heading: `Del med ${markerteFnr.length} ${
-            markerteFnr.length === 1 ? 'kandidat' : 'kandidater'
+          heading: `Del med ${markerteKandidater.length} ${
+            markerteKandidater.length === 1 ? 'kandidat' : 'kandidater'
           } i aktivitetsplanen`,
         }}
       >
@@ -73,8 +76,8 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
           {(data) => {
             const forespurteKandidater = Object.keys(data);
             //todo verifiser at dette er riktig
-            const antallSpurtFraFør = markerteFnr.filter((fnr) =>
-              forespurteKandidater.includes(fnr),
+            const antallSpurtFraFør = markerteKandidater.filter((kandidat) =>
+              forespurteKandidater.includes(kandidat.aktørid),
             ).length;
 
             return (

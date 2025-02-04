@@ -1,14 +1,17 @@
 import {
+  Accordion,
   Alert,
   BodyShort,
   Button,
   Label,
   Modal,
   Select,
+  Table,
 } from '@navikt/ds-react';
 
 import { MobileIcon } from '@navikt/aksel-icons';
 import { ChangeEvent, FunctionComponent, useState } from 'react';
+import { kandidaterSchemaDTO } from '../../../../../api/kandidat/schema.zod';
 import {
   MeldingsmalerDTO,
   useHentMeldingsmaler,
@@ -23,15 +26,19 @@ import { Stillingskategori } from '../../../../stilling-typer';
 import css from './SendSmsModal.module.css';
 
 type Props = {
-  markerteFnr: string[];
+  markerteKandidater: kandidaterSchemaDTO[];
   fjernAllMarkering: () => void;
   stillingId: string;
   stillingskategori: string | null;
 };
 
 const SendSmsModal: FunctionComponent<Props> = (props) => {
-  const { stillingId, stillingskategori, fjernAllMarkering, markerteFnr } =
-    props;
+  const {
+    stillingId,
+    stillingskategori,
+    fjernAllMarkering,
+    markerteKandidater,
+  } = props;
   const visVarsling = useVisVarsling();
 
   const [vis, setVis] = useState(false);
@@ -42,13 +49,15 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
   const postSmsTilKandidater = usePostSmsTilKandidater();
   const [sendSmsLoading, setSendSmsLoading] = useState(false);
 
-  const kandidaterSomHarFåttSms = markerteFnr.filter(
-    (fnr) => fnr && smser[fnr],
+  const kandidaterSomHarFåttSms = markerteKandidater.filter(
+    (kandidat) => kandidat.fodselsnr && smser[kandidat.fodselsnr],
   );
-  const kandidaterSomIkkeHarFåttSms = markerteFnr.filter(
-    (fnr) => !(fnr && smser[fnr]),
+  const kandidaterSomIkkeHarFåttSms = markerteKandidater.filter(
+    (kandidat) => !(kandidat.fodselsnr && smser[kandidat.fodselsnr]),
   );
-  const harInaktiveKandidater = markerteFnr.some((fnr) => fnr === null);
+  const harInaktiveKandidater = markerteKandidater.some(
+    (kandidat) => kandidat.fodselsnr === null,
+  );
 
   const [valgtMal, setValgtMal] = useState<Meldingsmal>(
     stillingskategori === Stillingskategori.Jobbmesse
@@ -58,15 +67,23 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
 
   const { data: meldingsmaler } = useHentMeldingsmaler();
 
-  const onSendSms = async () => {
-    const korrektLengdeFødselsnummer = 11;
-    setSendSmsLoading(true);
+  const kandidaterSomMottarBeskjed = markerteKandidater.map(
+    (kandidat) => kandidat.fodselsnr,
+  );
 
+  const onSendSms = async () => {
+    setSendSmsLoading(true);
+    if (kandidaterSomMottarBeskjed.length === 0) {
+      visVarsling({
+        innhold: 'Ingen kandidater valgt',
+      });
+      return;
+    }
     try {
       await postSmsTilKandidater({
         mal: valgtMal,
-        fnr: kandidaterSomIkkeHarFåttSms.filter(
-          (fnr) => fnr && fnr.length === korrektLengdeFødselsnummer,
+        fnr: kandidaterSomMottarBeskjed.filter(
+          (fodselsnr) => fodselsnr !== null,
         ),
         stillingId,
       });
@@ -93,7 +110,7 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
   return (
     <>
       <Button
-        disabled={markerteFnr.length === 0}
+        disabled={markerteKandidater.length === 0}
         onClick={() => setVis(true)}
         variant='tertiary'
         icon={<MobileIcon title='Send beskjed' />}
@@ -104,20 +121,16 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
         open={vis}
         className={css.sendSmsModal}
         onClose={() => setVis(false)}
-        aria-label={`Send beskjed til ${markerteFnr.length} kandidater`}
+        aria-label={`Send beskjed til ${markerteKandidater.length} kandidater`}
         header={{
           heading: 'Send beskjed',
         }}
       >
         <Modal.Body>
           {(kandidaterSomHarFåttSms.length > 0 || harInaktiveKandidater) && (
-            <Alert
-              variant='warning'
-              size='small'
-              className={css.alleredeSendtAdvarsel}
-            >
+            <Alert variant='warning' size='small' className='my-4'>
               Ikke alle kandidatene vil motta beskjeden
-              <ul className={css.alleredeSendtAdvarselListe}>
+              {/* <ul className={css.alleredeSendtAdvarselListe}>
                 {kandidaterSomHarFåttSms.length > 0 && (
                   <li>
                     {kandidaterSomHarFåttSms.length === 1 ? (
@@ -126,7 +139,7 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
                       <>
                         Du har allerede sendt beskjed til{' '}
                         {kandidaterSomHarFåttSms.length} av de{' '}
-                        {markerteFnr.length} valgte kandidatene.
+                        {markerteKandidater.length} valgte kandidatene.
                       </>
                     )}
                   </li>
@@ -134,7 +147,7 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
                 {harInaktiveKandidater && (
                   <li>Én eller flere av kandidatene er inaktive.</li>
                 )}
-              </ul>
+              </ul> */}
             </Alert>
           )}
           <div className='send-sms-modal__innhold'>
@@ -149,6 +162,47 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
               Telefonnummerene/e-postene blir hentet fra Kontakt- og
               reservasjonsregisteret.
             </BodyShort>
+            <Accordion size='small' headingSize='xsmall' className='my-4'>
+              <Accordion.Item>
+                <Accordion.Header>Vis kandidater</Accordion.Header>
+                <Accordion.Content>
+                  <Table size='small'>
+                    <Table.Header>
+                      <Table.Row>
+                        <Table.HeaderCell scope='col'>Navn</Table.HeaderCell>
+                        <Table.HeaderCell scope='col'>
+                          Fødselsnr.
+                        </Table.HeaderCell>
+                        <Table.HeaderCell scope='col'>
+                          Kan sende beskjed
+                        </Table.HeaderCell>
+                      </Table.Row>
+                    </Table.Header>
+                    <Table.Body>
+                      {markerteKandidater?.map(
+                        ({ fornavn, etternavn, fodselsnr }, i) => {
+                          return (
+                            <Table.Row key={i}>
+                              <Table.HeaderCell scope='row'>
+                                {fornavn} {etternavn}
+                              </Table.HeaderCell>
+                              <Table.DataCell>{fodselsnr}</Table.DataCell>
+                              <Table.DataCell>
+                                {kandidaterSomHarFåttSms.some(
+                                  (k) => k.fodselsnr === fodselsnr,
+                                )
+                                  ? 'Nei'
+                                  : 'Ja'}
+                              </Table.DataCell>
+                            </Table.Row>
+                          );
+                        },
+                      )}
+                    </Table.Body>
+                  </Table>
+                </Accordion.Content>
+              </Accordion.Item>
+            </Accordion>
             <Alert variant='info' className={css.kontortidAdvarsel}>
               <Label size='small'>
                 SMS sendes ut mellom 09:00 og 17:15 hver dag. Det kan oppstå
@@ -189,7 +243,10 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
 
         <Modal.Footer>
           <Button
-            disabled={kandidaterSomHarFåttSms.length === markerteFnr.length}
+            disabled={
+              kandidaterSomHarFåttSms.length === markerteKandidater.length ||
+              kandidaterSomIkkeHarFåttSms.length === 0
+            }
             variant='primary'
             loading={sendSmsLoading}
             onClick={onSendSms}
