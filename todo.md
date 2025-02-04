@@ -23,3 +23,5 @@ TODO:
 # Todo:
 
 https://docs.nais.io/observability/how-to/auto-instrumentation/ for nodjs
+
+Refresh kandidatliste når kandidat er lagt til

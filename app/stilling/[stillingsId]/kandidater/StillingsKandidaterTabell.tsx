@@ -199,7 +199,7 @@ const StillingsKandidaterTabell: React.FC<{
               </Table.DataCell>
               <Table.DataCell scope='row'>
                 <Link
-                  href={`/kandidat/${kandidat.kandidatId}`}
+                  href={`/kandidat/${kandidat.kandidatnr}`}
                   id={`id-${kandidat.fodselsnr}`}
                 >
                   {kandidat.etternavn}, {kandidat.fornavn}
