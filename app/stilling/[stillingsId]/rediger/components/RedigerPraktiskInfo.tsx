@@ -20,6 +20,7 @@ export const RedigerPraktiskInfo: React.FC<{
     watch,
     control,
     trigger,
+    getValues,
     formState: { errors },
   } = useFormContext<StillingsDataForm>();
 
@@ -27,6 +28,8 @@ export const RedigerPraktiskInfo: React.FC<{
     e.preventDefault();
 
     const isValid = await trigger('praktiskInfo', { shouldFocus: true });
+    console.log('🎺 isValid', isValid);
+    console.log('🎺 getValue()', getValues());
     if (isValid) {
       nextStep();
     }

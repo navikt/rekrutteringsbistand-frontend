@@ -19,11 +19,12 @@ const VelgOppstartOgFrist: React.FC<VelgOppstartOgFristProps> = ({
       <div className='flex flex-col'>
         <Heading size='small'>Oppstart</Heading>
         <Controller
-          name='praktiskInfo.oppstartSnarest'
+          name='praktiskInfo.oppstartEtterAvtale'
           control={control}
           render={({ field }) => (
             <>
               <Checkbox
+                checked={field.value}
                 onChange={(e) => {
                   field.onChange(e.target.checked);
                 }}
@@ -36,9 +37,8 @@ const VelgOppstartOgFrist: React.FC<VelgOppstartOgFristProps> = ({
 
         <DatoVelger
           key='oppstart'
-          disabled={watch('praktiskInfo.oppstartSnarest')}
-          fraDato={watch('praktiskInfo.oppstart')}
-          defaultDato={getValues('praktiskInfo.oppstart')}
+          disabled={watch('praktiskInfo.oppstartEtterAvtale')}
+          valgtDato={watch('praktiskInfo.oppstart')}
           setDato={(val) =>
             val ? setValue('praktiskInfo.oppstart', val) : null
           }
@@ -50,7 +50,7 @@ const VelgOppstartOgFrist: React.FC<VelgOppstartOgFristProps> = ({
 
           <Controller
             key='søknadsfrist'
-            name='praktiskInfo.søknadsfristEtterAvtale'
+            name='praktiskInfo.søknadsfristSnarest'
             control={control}
             render={({ field }) => (
               <>
@@ -67,9 +67,8 @@ const VelgOppstartOgFrist: React.FC<VelgOppstartOgFristProps> = ({
           />
 
           <DatoVelger
-            defaultDato={getValues('praktiskInfo.søknadsfrist')}
-            disabled={watch('praktiskInfo.søknadsfristEtterAvtale')}
-            fraDato={watch('praktiskInfo.søknadsfrist')}
+            disabled={watch('praktiskInfo.søknadsfristSnarest')}
+            valgtDato={watch('praktiskInfo.søknadsfrist')}
             setDato={(val) =>
               val ? setValue('praktiskInfo.søknadsfrist', val) : null
             }

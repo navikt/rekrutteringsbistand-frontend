@@ -1,4 +1,4 @@
-import { Radio, RadioGroup, Select } from '@navikt/ds-react';
+import { ErrorMessage, Radio, RadioGroup, Select } from '@navikt/ds-react';
 import * as React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { StillingsDataForm } from '../../redigerFormType.zod';
@@ -29,23 +29,26 @@ const VelgOmfang: React.FC = ({}) => {
           control={control}
           name='praktiskInfo.omfangProsent'
           render={({ field: { onChange, value }, fieldState: { error } }) => (
-            <Select
-              className='w-[200px]'
-              label='Velg omfang prosent'
-              value={value ?? undefined}
-              onChange={(e) => onChange(e.target.value)}
-            >
-              <option value=''>Velg omfang prosent</option>
-              <option value='10%'>10%</option>
-              <option value='20%'>20%</option>
-              <option value='30%'>30%</option>
-              <option value='40%'>40%</option>
-              <option value='50%'>50%</option>
-              <option value='60%'>60%</option>
-              <option value='70%'>70%</option>
-              <option value='80%'>80%</option>
-              <option value='90%'>90%</option>
-            </Select>
+            <>
+              <Select
+                className='w-[200px]'
+                label='Velg omfang prosent'
+                value={value ?? undefined}
+                onChange={(e) => onChange(e.target.value)}
+              >
+                <option value=''>Velg omfang prosent</option>
+                <option value='10%'>10%</option>
+                <option value='20%'>20%</option>
+                <option value='30%'>30%</option>
+                <option value='40%'>40%</option>
+                <option value='50%'>50%</option>
+                <option value='60%'>60%</option>
+                <option value='70%'>70%</option>
+                <option value='80%'>80%</option>
+                <option value='90%'>90%</option>
+              </Select>
+              {error?.message && <ErrorMessage>{error?.message}</ErrorMessage>}
+            </>
           )}
         />
       )}

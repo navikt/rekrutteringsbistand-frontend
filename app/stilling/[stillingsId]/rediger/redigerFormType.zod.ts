@@ -90,9 +90,9 @@ export const PraktiskInfoSchema = z
     omfangProsent: z.string().nullable(),
     antallStillinger: z.number().min(1, 'Må ha minst én stilling'),
     oppstart: z.string().nullable(),
-    oppstartSnarest: z.boolean(),
+    oppstartEtterAvtale: z.boolean(),
     søknadsfrist: z.string().nullable(),
-    søknadsfristEtterAvtale: z.boolean(),
+    søknadsfristSnarest: z.boolean(),
     ansettelsesform: z
       .string()
       .nullish()
@@ -121,8 +121,8 @@ export const PraktiskInfoSchema = z
   );
 
 export const InnspurtSchema = z.object({
-  publiseres: z.string().min(1, 'Publiseringsdato er påkrevd'),
-  avsluttes: z.string().min(1, 'Avsluttingsdato er påkrevd'),
+  publiseres: z.string().min(1, 'Publiseringsdato er påkrevd').nullable(),
+  avsluttes: z.string().min(1, 'Avsluttingsdato er påkrevd').nullable(),
   stillingType: z.string().min(1, 'Stillingstype er påkrevd'),
   epost: z.string().email('Ugyldig e-postadresse').optional().nullable(),
   lenke: z.string().url('Ugyldig URL').optional().nullable(),
