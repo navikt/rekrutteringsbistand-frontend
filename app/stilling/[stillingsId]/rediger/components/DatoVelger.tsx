@@ -14,8 +14,11 @@ interface DatoVelgerProps {
 
 const parseDateSafely = (dateStr: string): Date | undefined => {
   try {
-    const parsed = parse(dateStr, 'dd.MM.yyyy', new Date(), { locale: nb });
-    return isValid(parsed) ? parsed : undefined;
+    if (isValid(new Date(dateStr))) {
+      const nbDate = format(new Date(dateStr), 'dd.MM.yyyy');
+      const parsed = parse(nbDate, 'dd.MM.yyyy', new Date(), { locale: nb });
+      return isValid(parsed) ? parsed : undefined;
+    }
   } catch {
     return undefined;
   }
