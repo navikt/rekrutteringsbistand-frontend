@@ -6,8 +6,10 @@ import { ZodError } from 'zod';
 import Sidelaster from './Sidelaster';
 import Feilmelding from './feilhåndtering/Feilmelding';
 export interface ISWRLasterProps<T> {
+  skjulFeilmelding?: boolean;
   hook: SWRResponse<T, Error> | undefined;
   skeleton?: React.ReactNode;
+  egenFeilmelding?: (error: Error) => React.ReactNode;
   children: (data: T) => React.ReactNode; // Children as a function
 }
 
@@ -19,6 +21,8 @@ const SWRLaster = <T,>({
   hook,
   skeleton,
   children,
+  skjulFeilmelding = false,
+  egenFeilmelding,
 }: ISWRLasterProps<T>): React.ReactElement | null => {
   if (!hook) {
     return <>{skeleton ? skeleton : <Sidelaster />}</>;
@@ -28,7 +32,11 @@ const SWRLaster = <T,>({
     return <>{skeleton ? skeleton : <Sidelaster />}</>;
   }
 
-  if (hook.error) {
+  if (hook.error && egenFeilmelding) {
+    return <>{egenFeilmelding(hook.error)}</>;
+  }
+
+  if (hook.error && !skjulFeilmelding) {
     return (
       <Feilmelding
         {...hook.error}

@@ -9,6 +9,7 @@ import {
 import { addDays, addMonths, format } from 'date-fns';
 import { nb } from 'date-fns/locale';
 import React, { FunctionComponent, useState } from 'react';
+
 export enum Svarfrist {
   ToDager = 'TO_DAGER',
   TreDager = 'TRE_DAGER',

@@ -3,6 +3,8 @@ import { Button, Checkbox, CheckboxGroup, Search } from '@navikt/ds-react';
 import * as React from 'react';
 import { useKandidatliste } from '../../../api/kandidat/useKandidatliste';
 import { useSmserForStilling } from '../../../api/kandidatvarsel/kandidatvarsel';
+import { oppdaterStilling } from '../../../api/stilling/oppdater-stilling/oppdaterStilling';
+import { useApplikasjonContext } from '../../../ApplikasjonContext';
 import SWRLaster from '../../../components/SWRLaster';
 import { useStillingsContext } from '../StillingsContext';
 import DelMedKandidatModal from './components/DelMedKandidat/DelMedKandidatModal';
@@ -19,6 +21,7 @@ export enum KandidatHendelseValg {
 }
 
 const StillingsKandidater: React.FC = () => {
+  const { brukerData } = useApplikasjonContext();
   const { stillingsData } = useStillingsContext();
   const { status, setStatus, hendelse, setHendelse } =
     useStillingsKandidaterFilter();
@@ -27,8 +30,47 @@ const StillingsKandidater: React.FC = () => {
   const varsler = useSmserForStilling(stillingsData.stilling.uuid);
   const [search, setSearch] = React.useState('');
 
+  const onOvertaStilling = async () => {
+    await oppdaterStilling({
+      ...stillingsData,
+      stillingsInfo: {
+        ...stillingsData.stillingsinfo,
+        eierNavident: brukerData.ident,
+        eierNavn: brukerData.navn,
+      },
+      stilling: {
+        ...stillingsData.stilling,
+        administration: {
+          ...stillingsData.stilling.administration,
+          navIdent: brukerData.ident,
+          reportee: brukerData.navn,
+        },
+      },
+    });
+    window.location.reload();
+  };
+
   return (
-    <SWRLaster hook={hook}>
+    <SWRLaster
+      hook={hook}
+      //TODO Midlertidig løsning for at bruker ikke får feilmelding om de ikke er eier
+      egenFeilmelding={() => (
+        <div>
+          Feil ved henting av kandidater
+          <br />
+          Du får ikke vise kandidater hvis du ikke er eier, du kan prøve å ta
+          eierskap på nytt
+          <Button
+            onClick={onOvertaStilling}
+            variant='secondary'
+            size='small'
+            className='w-full h-5 my-2'
+          >
+            Ta eierskap
+          </Button>
+        </div>
+      )}
+    >
       {(kandidatliste) => (
         <div className='my-2'>
           <div className='flex justify-between mt-2'>
