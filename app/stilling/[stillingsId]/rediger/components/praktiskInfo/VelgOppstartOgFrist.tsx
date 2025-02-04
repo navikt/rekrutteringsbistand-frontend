@@ -34,6 +34,7 @@ const VelgOppstartOgFrist: React.FC<VelgOppstartOgFristProps> = ({
         />
 
         <DatoVelger
+          key='oppstart'
           disabled={watch('praktiskInfo.oppstartSnarest')}
           fraDato={watch('praktiskInfo.oppstart')}
           setDato={(val) =>
@@ -46,6 +47,7 @@ const VelgOppstartOgFrist: React.FC<VelgOppstartOgFristProps> = ({
           <Heading size='small'>Søknadsfrist</Heading>
 
           <Controller
+            key='søknadsfrist'
             name='praktiskInfo.søknadsfristEtterAvtale'
             control={control}
             render={({ field }) => (

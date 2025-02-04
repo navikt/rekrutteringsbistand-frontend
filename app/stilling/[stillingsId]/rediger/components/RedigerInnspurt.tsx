@@ -137,6 +137,7 @@ export const RedigerInnspurt: React.FC<{
         </BodyShort>
         <div className='flex gap-4 mb-4'>
           <DatoVelger
+            key='publiseres'
             fraDato={watch('innspurt.publiseres')}
             label='Publiseres'
             setDato={(val) =>
@@ -144,6 +145,7 @@ export const RedigerInnspurt: React.FC<{
             }
           />
           <DatoVelger
+            key='avsluttes'
             label='Siste visning'
             fraDato={watch('innspurt.avsluttes')}
             setDato={(val) =>
