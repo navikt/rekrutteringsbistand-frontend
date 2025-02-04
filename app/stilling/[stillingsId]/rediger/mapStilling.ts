@@ -163,12 +163,8 @@ export const mapFormTilStilling = (
         applicationemail: formData.innspurt.epost,
         applicationurl: formData.innspurt.lenke,
       },
-      published: formData.innspurt.publiseres
-        ? formaterTilISODato(formData.innspurt.publiseres)
-        : null,
-      expires: formData.innspurt.avsluttes
-        ? formaterTilISODato(formData.innspurt.avsluttes)
-        : null,
+      published: formaterTilISODato(formData.innspurt.publiseres),
+      expires: formaterTilISODato(formData.innspurt.avsluttes),
       locationList: [
         ...(formData.omStillingen.adresseLokasjoner ?? []),
         ...(formData.omStillingen.lokasjoner ?? []),
