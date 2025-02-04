@@ -52,7 +52,7 @@ const StillingSidebarKnapper: React.FC<StillingSidebarKnapperProps> = ({
     setLoading(true);
     await oppdaterStilling({
       ...stillingsData,
-      stillingsInfo: {
+      stillingsinfo: {
         ...stillingsData.stillingsinfo,
         eierNavident: brukerData.ident,
         eierNavn: brukerData.navn,

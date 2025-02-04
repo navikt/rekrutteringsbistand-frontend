@@ -33,7 +33,7 @@ const StillingsKandidater: React.FC = () => {
   const onOvertaStilling = async () => {
     await oppdaterStilling({
       ...stillingsData,
-      stillingsInfo: {
+      stillingsinfo: {
         ...stillingsData.stillingsinfo,
         eierNavident: brukerData.ident,
         eierNavn: brukerData.navn,
