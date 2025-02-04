@@ -36,6 +36,7 @@ export const RedigerInnspurt: React.FC<{
   const handleChange = (val: string[]) => setSendeSoknad(val);
 
   const {
+    getValues,
     watch,
     handleSubmit,
     setValue,
@@ -137,6 +138,7 @@ export const RedigerInnspurt: React.FC<{
         </BodyShort>
         <div className='flex gap-4 mb-4'>
           <DatoVelger
+            defaultDato={getValues('innspurt.publiseres')}
             key='publiseres'
             fraDato={watch('innspurt.publiseres')}
             label='Publiseres'
@@ -147,6 +149,7 @@ export const RedigerInnspurt: React.FC<{
           <DatoVelger
             key='avsluttes'
             label='Siste visning'
+            defaultDato={getValues('innspurt.avsluttes')}
             fraDato={watch('innspurt.avsluttes')}
             setDato={(val) =>
               val ? setValue('innspurt.avsluttes', val) : null

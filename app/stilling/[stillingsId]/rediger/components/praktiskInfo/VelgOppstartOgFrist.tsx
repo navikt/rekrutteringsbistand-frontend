@@ -11,7 +11,8 @@ export interface VelgOppstartOgFristProps {
 const VelgOppstartOgFrist: React.FC<VelgOppstartOgFristProps> = ({
   skjulFrist,
 }) => {
-  const { watch, control, setValue } = useFormContext<StillingsDataForm>();
+  const { watch, control, setValue, getValues } =
+    useFormContext<StillingsDataForm>();
 
   return (
     <div className='flex flex-col gap-8'>
@@ -37,6 +38,7 @@ const VelgOppstartOgFrist: React.FC<VelgOppstartOgFristProps> = ({
           key='oppstart'
           disabled={watch('praktiskInfo.oppstartSnarest')}
           fraDato={watch('praktiskInfo.oppstart')}
+          defaultDato={getValues('praktiskInfo.oppstart')}
           setDato={(val) =>
             val ? setValue('praktiskInfo.oppstart', val) : null
           }
@@ -65,6 +67,7 @@ const VelgOppstartOgFrist: React.FC<VelgOppstartOgFristProps> = ({
           />
 
           <DatoVelger
+            defaultDato={getValues('praktiskInfo.søknadsfrist')}
             disabled={watch('praktiskInfo.søknadsfristEtterAvtale')}
             fraDato={watch('praktiskInfo.søknadsfrist')}
             setDato={(val) =>
