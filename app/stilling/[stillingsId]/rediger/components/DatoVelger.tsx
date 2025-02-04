@@ -14,11 +14,8 @@ interface DatoVelgerProps {
 
 const parseDateSafely = (dateStr: string): Date | undefined => {
   try {
-    if (isValid(new Date(dateStr))) {
-      const nbDate = format(new Date(dateStr), 'dd.MM.yyyy');
-      const parsed = parse(nbDate, 'dd.MM.yyyy', new Date(), { locale: nb });
-      return isValid(parsed) ? parsed : undefined;
-    }
+    const parsed = parse(dateStr, 'dd.MM.yyyy', new Date(), { locale: nb });
+    return isValid(parsed) ? parsed : undefined;
   } catch {
     return undefined;
   }
@@ -51,9 +48,7 @@ export const DatoVelger: React.FC<DatoVelgerProps> = ({
         : new Date(),
   });
 
-  const defaultValgt = defaultDato
-    ? format(defaultDato, 'dd-MM-yyyy')
-    : undefined;
+  const defaultValgt = defaultDato ? parseDateSafely(defaultDato) : undefined;
 
   React.useEffect(() => {
     if (selectedDay) {
@@ -69,7 +64,9 @@ export const DatoVelger: React.FC<DatoVelgerProps> = ({
       <DatePicker {...datepickerProps}>
         <DatePicker.Input
           {...inputProps}
-          defaultValue={defaultValgt}
+          defaultValue={
+            defaultValgt ? format(defaultValgt, 'dd-MM-yyyy') : undefined
+          }
           label={label}
           disabled={disabled}
           error={error}
