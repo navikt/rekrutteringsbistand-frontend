@@ -1,5 +1,6 @@
 import { DatePicker, useDatepicker } from '@navikt/ds-react';
-import { format, isValid } from 'date-fns';
+import { format, isValid, parse } from 'date-fns';
+import { nb } from 'date-fns/locale';
 import React from 'react';
 
 interface DatoVelgerProps {
@@ -10,6 +11,15 @@ interface DatoVelgerProps {
   setDato: (date: string | undefined) => void;
 }
 
+const parseDateSafely = (dateStr: string): Date | undefined => {
+  try {
+    const parsed = parse(dateStr, 'dd.MM.yyyy', new Date(), { locale: nb });
+    return isValid(parsed) ? parsed : undefined;
+  } catch {
+    return undefined;
+  }
+};
+
 export const DatoVelger: React.FC<DatoVelgerProps> = ({
   error,
   disabled,
@@ -18,6 +28,7 @@ export const DatoVelger: React.FC<DatoVelgerProps> = ({
   setDato,
 }) => {
   const { datepickerProps, inputProps, selectedDay } = useDatepicker({
+    locale: 'nb',
     onDateChange: (date: Date | undefined) => {
       if (date) {
         setDato(format(date, 'dd-MM-yyyy'));
@@ -26,9 +37,13 @@ export const DatoVelger: React.FC<DatoVelgerProps> = ({
       }
     },
     fromDate:
-      fraDato && isValid(new Date(fraDato)) ? new Date(fraDato) : new Date(),
+      fraDato && parseDateSafely(fraDato)
+        ? parseDateSafely(fraDato)
+        : new Date(),
     defaultSelected:
-      fraDato && isValid(new Date(fraDato)) ? new Date(fraDato) : undefined,
+      fraDato && parseDateSafely(fraDato)
+        ? parseDateSafely(fraDato)
+        : undefined,
   });
 
   React.useEffect(() => {
