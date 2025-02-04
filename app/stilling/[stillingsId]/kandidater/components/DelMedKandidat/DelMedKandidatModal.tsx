@@ -7,6 +7,7 @@ import { sendForespørselOmDelingAvCv } from '../../../../../api/foresporsel-om-
 import { kandidatlisteSchemaDTO } from '../../../../../api/kandidat/schema.zod';
 import { useApplikasjonContext } from '../../../../../ApplikasjonContext';
 import SWRLaster from '../../../../../components/SWRLaster';
+import { useVisVarsling } from '../../../../../components/varsling/Varsling';
 import VelgSvarfrist from './VelgSvarfrist';
 
 export interface DelMedKandidatModalProps {
@@ -22,7 +23,7 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
 }) => {
   const [modalErÅpen, setModalErÅpen] = React.useState(false);
   const [svarfrist, setSvarfrist] = React.useState<Date | undefined>(undefined);
-
+  const varsel = useVisVarsling();
   const forespurteKandidaterHook = useForespurteOmDelingAvCv(
     kandidatliste.stillingId,
   );
@@ -39,7 +40,12 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
         navKontor: valgtNavKontor?.navKontor ?? '',
       });
       fjernAllMarkering();
+      setModalErÅpen(false);
       setLoading(false);
+      varsel({
+        innhold: 'Stillingen er delt med kandidatene',
+        alertType: 'info',
+      });
     }
   };
 

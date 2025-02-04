@@ -65,7 +65,7 @@ const VelgSvarfrist: FunctionComponent<Props> = ({
           </>
         }
         description='Kandidatene kan ikke svare etter denne fristen'
-        defaultValue={Svarfrist.ToDager}
+        defaultValue={null}
       >
         {Object.values(Svarfrist).map((value) => (
           <Radio
