@@ -37,7 +37,7 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
     if (svarfrist) {
       setLoading(true);
       await sendForespørselOmDelingAvCv({
-        stillingsId: kandidatliste.kandidatlisteId,
+        stillingsId: kandidatliste.stillingId,
         svarfrist: format(svarfrist, "yyyy-MM-dd'T'HH:mm:ss.SSS"),
         aktorIder: markerteKandidater.map((kandidat) => kandidat.aktørid),
         navKontor: valgtNavKontor?.navKontor ?? '',

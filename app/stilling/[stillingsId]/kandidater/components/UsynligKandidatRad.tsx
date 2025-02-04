@@ -1,5 +1,6 @@
 import { Table } from '@navikt/ds-react';
 import * as React from 'react';
+import { storForbokstavString } from '../../../../kandidat-sok/util';
 import { Kandidatutfall } from '../KandidatIKandidatlisteTyper';
 import HendelseTag from './HendelseTag';
 
@@ -18,7 +19,8 @@ const UsynligKandidatRad: React.FC<UsynligKandidatRadProps> = ({
     <Table.Row className='bg-red-50'>
       <Table.DataCell colSpan={2} />
       <Table.DataCell>
-        {etternavn}, {fornavn}
+        {storForbokstavString(etternavn ?? '')},{' '}
+        {storForbokstavString(fornavn ?? '')}
       </Table.DataCell>
       <Table.DataCell colSpan={5}>
         Innaktiv / Ikke synlig i Rekrutteringsbistand
