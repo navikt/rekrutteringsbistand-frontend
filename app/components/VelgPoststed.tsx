@@ -45,7 +45,6 @@ const VelgPoststed: React.FC<VelgPoststedProps> = ({
     }
   }, [postNummer, hook.data]);
 
-  //TODO Legg til adressefelt
   return (
     <>
       {index > 0 && <hr className='my-4 border-gray-200' />}

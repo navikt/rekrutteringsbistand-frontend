@@ -39,7 +39,9 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
       await sendForespørselOmDelingAvCv({
         stillingsId: kandidatliste.stillingId,
         svarfrist: format(svarfrist, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"),
-        aktorIder: markerteKandidater.map((kandidat) => kandidat.aktørid),
+        aktorIder: markerteKandidater
+          .map((kandidat) => kandidat.aktørid)
+          .filter((id): id is string => id !== null),
         navKontor: valgtNavKontor?.navKontor ?? '',
       });
       fjernAllMarkering();
@@ -76,8 +78,10 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
           {(data) => {
             const forespurteKandidater = Object.keys(data);
             //todo verifiser at dette er riktig
-            const antallSpurtFraFør = markerteKandidater.filter((kandidat) =>
-              forespurteKandidater.includes(kandidat.aktørid),
+            const antallSpurtFraFør = markerteKandidater.filter(
+              (kandidat) =>
+                kandidat.aktørid &&
+                forespurteKandidater.includes(kandidat.aktørid),
             ).length;
 
             return (
