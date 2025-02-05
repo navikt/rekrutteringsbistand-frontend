@@ -1,7 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
 import { ArbeidsgiverNotifikasjonAPI } from '../../api-routes';
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   const response = await fetch(
     `${ArbeidsgiverNotifikasjonAPI.api_url}/template`,
     {
@@ -13,6 +12,8 @@ export async function GET(req: NextRequest) {
       },
     },
   );
-  const data = await response.json();
-  return NextResponse.json(data);
+  const html = await response.text();
+  return new Response(html, {
+    headers: { 'Content-Type': 'text/html' },
+  });
 }
