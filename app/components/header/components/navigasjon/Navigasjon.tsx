@@ -1,8 +1,8 @@
 import { Tabs } from '@navikt/ds-react/Tabs';
-import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { FunctionComponent } from 'react';
 
+import Link from 'next/link';
 import { Roller } from '../../../tilgangskontroll/roller';
 import { TilgangskontrollForInnhold } from '../../../tilgangskontroll/TilgangskontrollForInnhold';
 import Nyheter from '../nyheter/Nyheter';
@@ -14,7 +14,7 @@ const tabs = [
   },
   {
     tittel: 'Stillinger',
-    path: '/stillings-sok?brukStandardsok=true',
+    path: '/stillings-sok',
   },
   {
     tittel: 'Kandidatsøk',
@@ -45,7 +45,7 @@ const tabs = [
 
 export const Navigeringsmeny: FunctionComponent = () => {
   const pathname = usePathname();
-  const tabPath = `/${pathname.split('/')[1]}`;
+  const tabPath = `/${pathname.split('/')[1].split('?')[0]}`;
 
   return (
     <div className='border-b border-border-divider'>
@@ -61,13 +61,17 @@ export const Navigeringsmeny: FunctionComponent = () => {
                 skjulVarsel
                 kreverEnAvRollene={tab.kreverRoller}
               >
-                <Link href={tab.path}>
-                  <Tabs.Tab
-                    key={tab.path}
-                    label={tab.tittel}
-                    value={tab.path}
-                  />
-                </Link>
+                <Tabs.Tab
+                  key={tab.path}
+                  label={tab.tittel}
+                  value={tab.path}
+                  as={Link}
+                  href={
+                    tab.path === '/stillings-sok'
+                      ? '/stillings-sok?brukStandardsok=true'
+                      : tab.path
+                  }
+                />
               </TilgangskontrollForInnhold>
             ))}
           </Tabs.List>

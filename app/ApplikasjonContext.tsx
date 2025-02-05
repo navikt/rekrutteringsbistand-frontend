@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { isLocal } from '../util/env';
 import { DecoratorDTO } from './api/decorator/decorator.dto';
 import Header from './components/header/Header';
 import { Roller } from './components/tilgangskontroll/roller';
@@ -14,7 +15,7 @@ export type NavKontorMedNavn = {
   navKontorNavn: string | null;
 };
 
-interface BrukerData extends DecoratorDTO {
+export interface BrukerData extends DecoratorDTO {
   roller: Roller[];
 }
 
@@ -56,11 +57,17 @@ export const ApplikasjonContextProvider: React.FC<
   IApplikasjonContextProvider
 > = ({ children, brukerData }) => {
   const [darkMode, setDarkMode] = React.useState<boolean>(false);
-
   const [valgtFnr, setValgtFnr] = React.useState<string | null>(null);
 
   const [valgtNavKontor, setValgtNavKontor] =
-    React.useState<NavKontorMedNavn | null>(null);
+    React.useState<NavKontorMedNavn | null>(
+      isLocal
+        ? {
+            navKontor: '1337',
+            navKontorNavn: 'NAV FYA1',
+          }
+        : null,
+    );
 
   const harRolle = (rolle: Roller[]) =>
     rolle.some(

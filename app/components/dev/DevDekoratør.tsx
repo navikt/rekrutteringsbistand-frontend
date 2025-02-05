@@ -1,7 +1,6 @@
-import { InternalHeader, Select, TextField } from '@navikt/ds-react';
+import { InternalHeader } from '@navikt/ds-react';
 import * as React from 'react';
 import { useApplikasjonContext } from '../../ApplikasjonContext';
-import { Roller } from '../tilgangskontroll/roller';
 
 const DevDekoratør: React.FC = () => {
   const {
@@ -10,31 +9,31 @@ const DevDekoratør: React.FC = () => {
     setValgtNavKontor,
   } = useApplikasjonContext();
 
-  const [devRolle, setDevRolle] = React.useState<Roller>(
-    (localStorage.getItem('DEV-ROLLE') as Roller) ||
-      Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER,
-  );
-  const [devBruker, setDevBruker] = React.useState<string>(
-    localStorage.getItem('DEV-BRUKER') || 'Z993141',
-  );
+  // const [devRolle, setDevRolle] = React.useState<Roller>(
+  //   (localStorage.getItem('DEV-ROLLE') as Roller) ||
+  //     Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER,
+  // );
+  // const [devBruker, setDevBruker] = React.useState<string>(
+  //   localStorage.getItem('DEV-BRUKER') || 'Z993141',
+  // );
 
-  const setDevRolleCookie = (rolle: Roller) => {
-    localStorage.setItem('DEV-ROLLE', rolle);
-    setDevRolle(rolle);
-    window.location.reload();
-  };
+  // const setDevRolleCookie = (rolle: Roller) => {
+  //   localStorage.setItem('DEV-ROLLE', rolle);
+  //   setDevRolle(rolle);
+  //   window.location.reload();
+  // };
 
-  const setDevBrukerCookie = (bruker: string) => {
-    localStorage.setItem('DEV-BRUKER', bruker);
-    setDevBruker(bruker);
-    window.location.reload();
-  };
+  // const setDevBrukerCookie = (bruker: string) => {
+  //   localStorage.setItem('DEV-BRUKER', bruker);
+  //   setDevBruker(bruker);
+  //   window.location.reload();
+  // };
 
-  React.useEffect(() => {
-    if (!valgtNavKontor) {
-      setValgtNavKontor({ navKontor: '1234', navKontorNavn: 'NAV FYA1' });
-    }
-  });
+  // React.useEffect(() => {
+  //   if (!valgtNavKontor) {
+  //     setValgtNavKontor({ navKontor: '1337', navKontorNavn: 'NAV FYA1' });
+  //   }
+  // });
 
   return (
     <InternalHeader>
@@ -45,9 +44,9 @@ const DevDekoratør: React.FC = () => {
       <div className='flex justify-between items-center gap-4 ml-4'>
         <div className='flex items-center gap-2'>
           <span>
-            <strong>Bruker:</strong>{' '}
+            <strong>DEV-Bruker:</strong> {ident}
           </span>
-          <TextField
+          {/* <TextField
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
                 setDevBrukerCookie(e.currentTarget.value);
@@ -57,14 +56,15 @@ const DevDekoratør: React.FC = () => {
             size='small'
             label={'Dev bruker'}
             hideLabel
-          />
+          /> */}
         </div>
 
         <div className='flex items-center gap-2'>
           <span>
             <strong>Rolle: </strong>
+            {roller.map((rolle) => rolle).join(', ')}
           </span>
-          <Select
+          {/* <Select
             label='Velg bostedsland'
             hideLabel
             size='small'
@@ -87,12 +87,12 @@ const DevDekoratør: React.FC = () => {
             <option value={Roller.AD_GRUPPE_MODIA_GENERELL_TILGANG}>
               Modia generell
             </option>
-          </Select>
+          </Select> */}
         </div>
-        <span>
+        {/* <span>
           <strong>Nav Kontor:</strong> {valgtNavKontor?.navKontorNavn} -{' '}
           {valgtNavKontor?.navKontor}
-        </span>
+        </span> */}
       </div>
     </InternalHeader>
   );

@@ -1,11 +1,15 @@
-import { Suspense } from 'react';
-import Sidelaster from './components/Sidelaster';
-import Forside from './forside/Forside';
+import Hurtiglenker from './forside/components/Hurtiglenker';
+import Statistikk from './forside/components/Statistikk';
 
 export default function Home() {
   return (
-    <Suspense fallback={<Sidelaster />}>
-      <Forside />
-    </Suspense>
+    <div>
+      <div className='mt-4'>
+        <Hurtiglenker />
+      </div>
+      <div className='mt-8'>
+        <Statistikk />
+      </div>
+    </div>
   );
 }
