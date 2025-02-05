@@ -10,7 +10,6 @@ import {
   Roller,
 } from '../../components/tilgangskontroll/roller';
 import { decoratorMock } from '../decorator/mocks/dekoratørMock';
-import { getAPI } from '../fetcher';
 
 const hentRoller = (token: string): string[] => {
   const claims = decodeJwt(token);
@@ -25,7 +24,7 @@ const getDekoratørData = async () => {
       ident: devIdent,
     };
   }
-  const decoratorResponse = await getAPI(`/api/decorator`);
+  const decoratorResponse = await fetch(`/api/decorator`);
   return await decoratorResponse.json();
 };
 

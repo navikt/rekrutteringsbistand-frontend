@@ -1,3 +1,4 @@
+import { Alert, Heading } from '@navikt/ds-react';
 import type { Metadata } from 'next';
 import Script from 'next/script';
 import { isLocal } from '../util/env';
@@ -20,23 +21,39 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const brukerData = await getBrukerData();
+  try {
+    const brukerData = await getBrukerData();
 
-  const bundle =
-    process.env.NAIS_CLUSTER_NAME === 'prod-gcp' ? prodBundle : devBundle;
+    const bundle =
+      process.env.NAIS_CLUSTER_NAME === 'prod-gcp' ? prodBundle : devBundle;
 
-  return (
-    <html lang='no'>
-      <Script src={bundle} strategy='afterInteractive' />
-      <body>
-        <LokalMockService>
-          <RekrutteringsbistandProvider brukerData={brukerData}>
-            {children}
-          </RekrutteringsbistandProvider>
-        </LokalMockService>
-      </body>
-    </html>
-  );
+    return (
+      <html lang='no'>
+        <Script src={bundle} strategy='afterInteractive' />
+        <body>
+          <LokalMockService>
+            <RekrutteringsbistandProvider brukerData={brukerData}>
+              {children}
+            </RekrutteringsbistandProvider>
+          </LokalMockService>
+        </body>
+      </html>
+    );
+  } catch (error) {
+    return (
+      <html lang='nb'>
+        <body>
+          <Alert variant='error' className='m-12'>
+            <Heading spacing size='small' level='3'>
+              Kunne ikke laste Rekrutteringsbistand
+            </Heading>
+            Det oppstod en feil ved innlasting av brukerdata. Prøv å laste siden
+            på nytt.
+          </Alert>
+        </body>
+      </html>
+    );
+  }
 }
 
 async function LokalMockService({ children }: { children: React.ReactNode }) {

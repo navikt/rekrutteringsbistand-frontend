@@ -1,11 +1,5 @@
-'use client';
-import { useRouter } from 'next/navigation';
-import Sidelaster from '../components/Sidelaster';
+import { redirect } from 'next/navigation';
 
-export default function Stilling() {
-  const router = useRouter();
-
-  router.push('/stillings-sok');
-
-  return <Sidelaster />;
+export default async function StillingPage() {
+  redirect('/stillings-sok');
 }

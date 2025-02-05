@@ -1,5 +1,5 @@
 import StillingsSøk from '../stillings-sok/StillingsSøk';
 
-export default function FormidlingIndex() {
+export default async function FormidlingIndex() {
   return <StillingsSøk formidlinger />;
 }
