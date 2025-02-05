@@ -1,7 +1,7 @@
-export const isLocal = !(
-  process.env.NAIS_CLUSTER_NAME === 'prod-gcp' ||
-  process.env.NAIS_CLUSTER_NAME === 'dev-gcp'
-);
+export const isLocal =
+  typeof window !== 'undefined'
+    ? window.location.hostname === 'localhost'
+    : process.env.NODE_ENV !== 'development';
 
 const onPremCLuster = () => {
   if (process.env.NAIS_CLUSTER_NAME === 'prod-gcp') {
