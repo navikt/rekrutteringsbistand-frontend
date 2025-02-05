@@ -1,4 +1,6 @@
-export const isLocal = process.env.NEXT_PUBLIC_DEVELOPER === 'local';
+export const isLocal =
+  process.env.NAIS_CLUSTER_NAME !== 'prod-gcp' &&
+  process.env.NAIS_CLUSTER_NAME !== 'dev-gcp';
 
 const onPremCLuster = () => {
   if (process.env.NAIS_CLUSTER_NAME === 'prod-gcp') {
