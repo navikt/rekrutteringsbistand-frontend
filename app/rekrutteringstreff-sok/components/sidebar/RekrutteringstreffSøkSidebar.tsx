@@ -50,7 +50,7 @@ export const RekrutteringstreffSøkSidebar: React.FC = () => {
         variant='primary'
         value={fritekstSøkTekst}
         onChange={(e) => setFritekstSøkTekst(e)}
-        onSearchClick={(e) => console.log(e)}
+        // onSearchClick={(e) => console.log(e)}
       />
 
       <UNSAFE_Combobox

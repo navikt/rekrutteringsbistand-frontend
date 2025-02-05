@@ -1,5 +1,5 @@
 import { DatePicker, useDatepicker } from '@navikt/ds-react';
-import { parse } from 'date-fns';
+import { format, parse } from 'date-fns';
 import React from 'react';
 
 interface DatoVelgerProps {
@@ -25,7 +25,7 @@ export const DatoVelger: React.FC<DatoVelgerProps> = ({
     locale: 'nb',
     onDateChange: (date: Date | undefined) => {
       if (date) {
-        setDato(date.toLocaleString());
+        setDato(format(date, 'dd.MM.yyyy'));
       } else {
         setDato(undefined);
       }
