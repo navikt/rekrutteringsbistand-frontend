@@ -1,4 +1,3 @@
-import { TenancyIcon } from '@navikt/aksel-icons';
 import { Button, Checkbox, CheckboxGroup, Search } from '@navikt/ds-react';
 import * as React from 'react';
 import { kandidaterSchemaDTO } from '../../../api/kandidat/schema.zod';
@@ -8,6 +7,7 @@ import { oppdaterStilling } from '../../../api/stilling/oppdater-stilling/oppdat
 import { useApplikasjonContext } from '../../../ApplikasjonContext';
 import SWRLaster from '../../../components/SWRLaster';
 import { useStillingsContext } from '../StillingsContext';
+import DelMedArbeidsgiver from './components/DelMedArbeidsgiver/DelMedArbeidsgiver';
 import DelMedKandidatModal from './components/DelMedKandidat/DelMedKandidatModal';
 import SendSmsModal from './components/SendSMS/SendSmsModal';
 import { Kandidatstatus } from './KandidatIKandidatlisteTyper';
@@ -102,13 +102,11 @@ const StillingsKandidater: React.FC = () => {
                 markerteKandidater={markerteKandidater}
                 fjernAllMarkering={() => setMarkerteKandidater([])}
               />
-              <Button
-                disabled
-                variant='tertiary'
-                icon={<TenancyIcon title='Del med arbeidsgiver' />}
-              >
-                Del med arbeidsgiver
-              </Button>
+              <DelMedArbeidsgiver
+                stillingTittel={stillingsData.stilling.title}
+                markerteKandidater={markerteKandidater}
+                kandidatliste={kandidatliste}
+              />
             </div>
           </div>
 
