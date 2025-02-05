@@ -1,6 +1,14 @@
+import { isLocal } from '../../../../util/env';
 import { ArbeidsgiverNotifikasjonAPI } from '../../api-routes';
 
 export async function GET() {
+  if (isLocal) {
+    console.log('isLocal', isLocal);
+    return new Response('Template', {
+      headers: { 'Content-Type': 'text/html' },
+    });
+  }
+
   const response = await fetch(
     `${ArbeidsgiverNotifikasjonAPI.api_url}/template`,
     {

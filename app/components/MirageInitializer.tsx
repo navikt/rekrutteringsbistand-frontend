@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { makeServer } from '../../mocks/mirage';
-import { isLocal } from '../../util/env';
 import Sidelaster from './Sidelaster';
 
 export default function MirageInitializer({
@@ -13,13 +12,13 @@ export default function MirageInitializer({
   const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
-    if (isLocal && !isInitialized) {
+    if (!isInitialized) {
       makeServer({ environment: 'development' });
       setIsInitialized(true);
     }
   }, [isInitialized]);
 
-  if (!isInitialized && isLocal) {
+  if (!isInitialized) {
     return <Sidelaster />;
   }
 
