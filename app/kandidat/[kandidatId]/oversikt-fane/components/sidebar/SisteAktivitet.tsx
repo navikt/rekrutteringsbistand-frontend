@@ -11,7 +11,7 @@ import { useKandidatContext } from '../../../KandidatContext';
 
 const SisteAktivitet: React.FC = () => {
   const { kandidatId } = useKandidatContext();
-  const hook = useKandidatListeoversikt(kandidatId);
+  const kandidatListeoversiktHook = useKandidatListeoversikt(kandidatId);
   const router = useRouter();
   return (
     <div className='bg-white  rounded-lg shadow-sm'>
@@ -19,7 +19,7 @@ const SisteAktivitet: React.FC = () => {
         Siste aktivitet
       </Heading> */}
 
-      <SWRLaster hook={hook}>
+      <SWRLaster hooks={[kandidatListeoversiktHook]}>
         {(data) => (
           <div className='space-y-8'>
             {data

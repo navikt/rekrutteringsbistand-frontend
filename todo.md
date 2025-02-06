@@ -23,3 +23,7 @@ TODO:
 # Todo:
 
 https://docs.nais.io/observability/how-to/auto-instrumentation/ for nodjs
+
+Refresh kandidatliste når kandidat er lagt til
+
+Sjekke usynlige kandidater vs innaktive vs kode6/kode7

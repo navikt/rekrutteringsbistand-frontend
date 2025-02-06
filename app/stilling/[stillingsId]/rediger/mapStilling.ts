@@ -1,6 +1,6 @@
+import { format } from 'date-fns';
 import { formaterTilISODato } from '../../../../util/dato';
 import { StillingsDataDTO } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
-
 import { InkluderingsTag } from '../omStillingen/StillingSidebar/StillingInkludering';
 import { StillingsDataForm } from './redigerFormType.zod';
 
@@ -9,6 +9,10 @@ const capitalize = (str: string) =>
     .split(/[- ]/)
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
     .join(str.includes('-') ? '-' : ' ');
+
+const formaterFraISOdato = (dato: string) => {
+  return format(dato, 'dd.MM.yyyy');
+};
 
 export const mapStillingTilForm = (
   stillingsData: StillingsDataDTO,
@@ -24,6 +28,13 @@ export const mapStillingTilForm = (
   const workday = stillingsData?.stilling?.properties?.workday
     ? JSON.parse(stillingsData.stilling.properties.workday)
     : [];
+
+  const oppstartEtterAvtale =
+    stillingsData?.stilling?.properties?.starttime === 'Etter avtale';
+
+  const søknadsfristSnarest =
+    stillingsData?.stilling?.properties?.applicationdue === 'Snarest';
+
   return {
     omVirksomheten: {
       beskrivelse:
@@ -82,22 +93,27 @@ export const mapStillingTilForm = (
       sektor: stillingsData?.stilling?.properties?.sector ?? '',
       antallStillinger:
         Number(stillingsData?.stilling?.properties?.positioncount) || 0,
-      oppstart:
-        stillingsData?.stilling?.properties?.starttime?.toString() ?? null,
-      oppstartSnarest:
-        stillingsData?.stilling?.properties?.starttime === 'Etter avtale',
-      søknadsfrist:
-        stillingsData?.stilling?.properties?.applicationdue?.toString() ?? null,
-      søknadsfristEtterAvtale:
-        stillingsData?.stilling?.properties?.applicationdue === 'Snarest',
+      oppstart: oppstartEtterAvtale
+        ? null
+        : (stillingsData?.stilling?.properties?.starttime?.toString() ?? null),
+      oppstartEtterAvtale,
+      søknadsfristSnarest,
+      søknadsfrist: søknadsfristSnarest
+        ? null
+        : (stillingsData?.stilling?.properties?.applicationdue?.toString() ??
+          null),
       ansettelsesform:
         stillingsData?.stilling?.properties?.engagementtype ?? null,
       dager: workday,
       tid: workhours,
     },
     innspurt: {
-      publiseres: stillingsData?.stilling?.published ?? '',
-      avsluttes: stillingsData?.stilling?.expires ?? '',
+      publiseres: stillingsData?.stilling?.published
+        ? formaterFraISOdato(stillingsData?.stilling?.published)
+        : null,
+      avsluttes: stillingsData?.stilling?.expires
+        ? formaterFraISOdato(stillingsData?.stilling?.expires)
+        : null,
       stillingType: stillingsData?.stilling?.source ?? 'DIR',
       epost: stillingsData?.stilling?.properties?.applicationemail ?? null,
       lenke: stillingsData?.stilling?.properties?.applicationurl ?? null,
@@ -133,11 +149,11 @@ export const mapFormTilStilling = (
         adtext: formData.omStillingen.beskrivelse,
         sector: formData.praktiskInfo.sektor,
         positioncount: formData.praktiskInfo.antallStillinger,
-        starttime: formData.praktiskInfo.oppstartSnarest
-          ? 'Snarest'
+        starttime: formData.praktiskInfo.oppstartEtterAvtale
+          ? 'Etter avtale'
           : formData.praktiskInfo.oppstart,
-        applicationdue: formData.praktiskInfo.søknadsfristEtterAvtale
-          ? 'etterAvtale'
+        applicationdue: formData.praktiskInfo.søknadsfristSnarest
+          ? 'Snarest'
           : formData.praktiskInfo.søknadsfrist,
         engagementtype: formData.praktiskInfo.ansettelsesform,
         workday: JSON.stringify(formData.praktiskInfo.dager),

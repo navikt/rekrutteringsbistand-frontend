@@ -1,10 +1,18 @@
 import { z } from 'zod';
 
 export type kandidatlisteSchemaDTO = z.infer<typeof kandidatlisteSchema>;
+export type utfallsendringerSchemaDTO = z.infer<typeof utfallsendringerSchema>;
 export type kandidaterSchemaDTO = z.infer<typeof kandidaterSchema>;
 export type kandidatHistorikkSchemaDTO = z.infer<
   typeof kandidatHistorikkSchema
 >;
+
+const utfallsendringerSchema = z.object({
+  utfall: z.string(),
+  registrertAvIdent: z.string(),
+  tidspunkt: z.string(),
+  sendtTilArbeidsgiversKandidatliste: z.boolean(),
+});
 
 const kandidaterSchema = z.object({
   kandidatId: z.string(),
@@ -22,17 +30,10 @@ const kandidaterSchema = z.object({
   innsatsgruppe: z.string(),
   antallNotater: z.number(),
   arkivert: z.boolean(),
-  arkivertTidspunkt: z.null(),
-  arkivertAv: z.null(),
-  aktørid: z.string(),
-  utfallsendringer: z.array(
-    z.object({
-      utfall: z.string(),
-      registrertAvIdent: z.string(),
-      tidspunkt: z.string(),
-      sendtTilArbeidsgiversKandidatliste: z.boolean(),
-    }),
-  ),
+  arkivertTidspunkt: z.string().nullable(),
+  arkivertAv: z.object({ ident: z.string(), navn: z.string() }).nullable(),
+  aktørid: z.string().nullable(),
+  utfallsendringer: z.array(utfallsendringerSchema),
 });
 
 export const kandidatlisteSchema = z.object({
@@ -58,9 +59,9 @@ export const kandidatlisteSchema = z.object({
       lagtTilAvNavn: z.string(),
       lagtTilTidspunkt: z.string(),
       arkivert: z.boolean(),
-      arkivertAvIdent: z.null(),
-      arkivertAvNavn: z.null(),
-      arkivertTidspunkt: z.null(),
+      arkivertAvIdent: z.string().nullable(),
+      arkivertAvNavn: z.string().nullable(),
+      arkivertTidspunkt: z.string().nullable(),
     }),
   ),
   status: z.string(),

@@ -2,6 +2,7 @@
 import { createServer, Model } from 'miragejs';
 import { brukerMirage } from '../app/api/bruker/useBruker';
 import { decoratorDataMirage } from '../app/api/decorator/useDecoratorData';
+import { foresporselOmDelingAvCVMirage } from '../app/api/foresporsel-om-deling-av-cv/foresporsler/[slug]/useForespurteOmDelingAvCv';
 import { foresporselOmDelingAvCVStatistikkMirage } from '../app/api/foresporsel-om-deling-av-cv/statistikk/useForesporselOmdelingAvCV';
 import { arenaKandidatnrMirage } from '../app/api/kandidat-sok/useArenaKandidatnr';
 import { kandidatinformasjonMirage } from '../app/api/kandidat-sok/useKandidatinformasjon';
@@ -14,6 +15,8 @@ import { antallKandidaterMirage } from '../app/api/kandidat/useAntallKandidater'
 import { kandidatlisteMirage } from '../app/api/kandidat/useKandidatliste';
 import { kandidatlisteIdMirage } from '../app/api/kandidat/useKandidatlisteId';
 import { kandidatlisteoversiktMirage } from '../app/api/kandidat/useKandidatListeoversikt';
+import { meldingsmalerMirage } from '../app/api/kandidatvarsel/hentMeldingsmaler';
+import { kandidatvarselMirage } from '../app/api/kandidatvarsel/kandidatvarsel';
 import { stillingsTittelMirage } from '../app/api/pam-ontologi/stillingsTittel/useStillingsTittel';
 import { statistikkMirage } from '../app/api/statistikk/useStatistikk';
 import { finnArbeidsgiverMirage } from '../app/api/stilling/finn-arbeidsgiver/useFinnArbeidsgiver';
@@ -56,6 +59,9 @@ export function makeServer({ environment = 'test' } = {}) {
       statistikkMirage(this);
       stillingMirage(this);
       stillingsTittelMirage(this);
+      meldingsmalerMirage(this);
+      kandidatvarselMirage(this);
+      foresporselOmDelingAvCVMirage(this);
 
       // stillingssøk mock kan disables ved ES søk
       // stillingssøkMirage(this);

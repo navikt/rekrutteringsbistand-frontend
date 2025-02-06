@@ -7,13 +7,13 @@ import { ApplikasjonContextProvider } from './ApplikasjonContext';
 import ErrorBoundary from './components/feilhåndtering/ErrorBoundary';
 import Sidelaster from './components/Sidelaster';
 
-export interface RekrutteringsbistandProps {
+export interface RekrutteringsbistandProviderProps {
   children?: React.ReactNode | undefined;
 }
 
-const Rekrutteringsbistand: React.FC<RekrutteringsbistandProps> = ({
-  children,
-}) => {
+const RekrutteringsbistandProvider: React.FC<
+  RekrutteringsbistandProviderProps
+> = ({ children }) => {
   const brukerHook = useBruker();
   const dekoratørHook = useDecoratorData();
 
@@ -41,4 +41,4 @@ const Rekrutteringsbistand: React.FC<RekrutteringsbistandProps> = ({
   );
 };
 
-export default Rekrutteringsbistand;
+export default RekrutteringsbistandProvider;

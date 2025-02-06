@@ -77,3 +77,5 @@ spec:
       value: http://pam-ontologi.teampam
     - name: KANDIDATVARSEL_API_URL
       value: http://rekrutteringsbistand-kandidatvarsel-api
+    - name: ARBEIDSGIVER_NOTIFIKASJON_API
+      value: http://toi-arbeidsgiver-notifikasjon      

@@ -26,9 +26,9 @@ interface KandidatContextProviderProps {
 export const KandidatContextProvider: React.FC<
   KandidatContextProviderProps
 > = ({ kandidatId, children }) => {
-  const hook = useKandidatsammendrag(kandidatId);
+  const kandidatSammendragHook = useKandidatsammendrag(kandidatId);
   return (
-    <SWRLaster hook={hook}>
+    <SWRLaster hooks={[kandidatSammendragHook]}>
       {(data) => (
         <KandidatContextMedData
           kandidatsammendragData={data}
@@ -52,7 +52,7 @@ const KandidatContextMedData: React.FC<KandidatContextMedDataProps> = ({
   children,
   kandidatId,
 }) => {
-  const hook = useKandidatinformasjon(kandidatId);
+  const kandidatInformasjonHook = useKandidatinformasjon(kandidatId);
 
   const { setValgtFnr } = useApplikasjonContext();
 
@@ -65,7 +65,7 @@ const KandidatContextMedData: React.FC<KandidatContextMedDataProps> = ({
   }, [kandidatsammendragData, setValgtFnr]);
 
   return (
-    <SWRLaster hook={hook}>
+    <SWRLaster hooks={[kandidatInformasjonHook]}>
       {(kandidatData) => {
         if (!kandidatData) {
           return null;

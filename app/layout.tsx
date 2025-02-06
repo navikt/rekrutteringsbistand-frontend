@@ -3,10 +3,12 @@ import Script from 'next/script';
 import { isLocal } from '../util/env';
 import MirageInitializer from './components/MirageInitializer';
 import './globals.css';
-import Rekrutteringsbistand from './Rekrutteringsbistand';
+import RekrutteringsbistandProvider from './RekrutteringsbistandProvider';
 
-const devBundle = 'https://cdn.nav.no/personoversikt/internarbeidsflate-decorator-v3/dev/latest/dist/bundle.js';
-const prodBundle = 'https://cdn.nav.no/personoversikt/internarbeidsflate-decorator-v3/prod/latest/dist/bundle.js';
+const devBundle =
+  'https://cdn.nav.no/personoversikt/internarbeidsflate-decorator-v3/dev/latest/dist/bundle.js';
+const prodBundle =
+  'https://cdn.nav.no/personoversikt/internarbeidsflate-decorator-v3/prod/latest/dist/bundle.js';
 
 export const metadata: Metadata = {
   title: isLocal ? 'Local - Rekrutteringsbistand' : 'Rekrutteringsbistand',
@@ -22,12 +24,20 @@ export default async function RootLayout({
   return (
     <html lang='no'>
       <Script src={bundle} strategy='afterInteractive' />
-
       <body>
-        <MirageInitializer>
-          <Rekrutteringsbistand>{children}</Rekrutteringsbistand>
-        </MirageInitializer>
+        <BrukLokalMock>
+          <RekrutteringsbistandProvider>
+            {children}
+          </RekrutteringsbistandProvider>
+        </BrukLokalMock>
       </body>
     </html>
   );
 }
+
+const BrukLokalMock = ({ children }: { children: React.ReactNode }) => {
+  if (isLocal) {
+    return <MirageInitializer>{children}</MirageInitializer>;
+  }
+  return children;
+};

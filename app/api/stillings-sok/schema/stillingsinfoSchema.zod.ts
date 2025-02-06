@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const StillingsinfoSchema = z.object({
+export const ESStillingsinfoSchema = z.object({
   eierNavident: z.string().nullable(),
   eierNavn: z.string().nullable(),
   notat: z.string().nullable(),

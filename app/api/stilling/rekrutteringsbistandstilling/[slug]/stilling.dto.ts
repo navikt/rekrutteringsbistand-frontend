@@ -56,7 +56,7 @@ export const propertiesSchema = z
     tags: z.any().nullable(),
     workhours: z.any().nullable(),
     workday: z.any().nullable(),
-    applicationemail: z.string().nullable(),
+    applicationemail: z.string().nullish(),
   })
   .nullable();
 

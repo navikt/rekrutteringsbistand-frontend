@@ -20,10 +20,10 @@ const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({ type }) => 
   const {
     brukerData: { ident },
   } = useApplikasjonContext();
-  const hook = useKandidatsøk(type, filter);
+  const kandidatsøkHook = useKandidatsøk(type, filter);
 
   return (
-    <SWRLaster hook={hook}>
+    <SWRLaster hooks={[kandidatsøkHook]}>
       {(kandidatData) => {
         // const markerteKandidater = kandidatData.kandidater.mark
         return (

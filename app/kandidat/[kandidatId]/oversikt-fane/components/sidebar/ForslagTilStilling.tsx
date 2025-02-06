@@ -49,13 +49,13 @@ const StillingForslagTilKandidat = ({ kandidatId }: { kandidatId: string }) => {
   const {
     brukerData: { ident },
   } = useApplikasjonContext();
-  const hook = useStillingssøk(filter, ident, filter.formidlinger);
+  const stillingssøkHook = useStillingssøk(filter, ident, filter.formidlinger);
 
   if (stillingssøkData.isLoading) {
     return <Sidelaster />;
   }
   return (
-    <SWRLaster hook={hook}>
+    <SWRLaster hooks={[stillingssøkHook]}>
       {(data) => (
         <div className='space-y-8'>
           {data?.hits?.hits

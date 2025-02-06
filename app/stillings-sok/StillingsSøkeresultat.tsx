@@ -21,7 +21,7 @@ const StillingsSøkeresultat: React.FC<{ kandidatId?: string }> = ({
   const {
     brukerData: { ident },
   } = useApplikasjonContext();
-  const hook = useStillingssøk(filter, ident, filter.formidlinger);
+  const stillingssøkHook = useStillingssøk(filter, ident, filter.formidlinger);
 
   const antallVisning = (total: number) => {
     const treffFra = regnUtFørsteTreffFra(filter.side, maksAntallTreffPerSøk);
@@ -37,7 +37,7 @@ const StillingsSøkeresultat: React.FC<{ kandidatId?: string }> = ({
     );
   };
   return (
-    <SWRLaster hook={hook}>
+    <SWRLaster hooks={[stillingssøkHook]}>
       {(data) => (
         <>
           <div className='flex items-center gap-2'>

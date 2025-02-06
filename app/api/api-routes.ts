@@ -13,8 +13,15 @@ export interface Iroute {
 export const ModiaDecoratorAPI: Iroute = {
   api_route: '',
   api_url: process.env.MODIA_CONTEXT_HOLDER_API ?? '',
-  internUrl: '',
+  internUrl: '/api/foresporsel-om-deling-av-cv',
   scope: `api://${gcp}.personoversikt.modiacontextholder/.default`,
+};
+
+export const ArbeidsgiverNotifikasjonAPI: Iroute = {
+  api_route: '',
+  api_url: process.env.ARBEIDSGIVER_NOTIFIKASJON_API ?? '',
+  internUrl: '/api/arbeidsgiver-notifikasjon',
+  scope: '',
 };
 
 export const StatistikkAPI: Iroute = {
@@ -63,7 +70,7 @@ export const PamOntologiAPI: Iroute = {
   api_route: '',
   api_url: process.env.PAM_ONTOLOGI_URL ?? '',
   internUrl: '/api/pam-ontologi',
-  scope: `api://${gcp}.teampam.pam-ontologi/.default`,
+  scope: '',
 };
 
 export const KandidatvarselAPI: Iroute = {

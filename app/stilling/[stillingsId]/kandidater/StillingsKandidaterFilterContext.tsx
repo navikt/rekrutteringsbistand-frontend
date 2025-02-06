@@ -7,15 +7,6 @@ export enum KandidatFilterQueryparam {
   Hendelse = 'hendelse',
 }
 
-export enum KandidatStatus {
-  VURDERES = 'Vurderes',
-  KONTAKTET = 'Kontaktet',
-  AKTUELL = 'Aktuell',
-  TIL_INTERVJU = 'Til intervju',
-  UAKTUELL = 'Uaktuell',
-  UINTERESSERT = 'Uinteressert',
-}
-
 interface IStillingsKandidaterContext {
   status: string[];
   setStatus: (val: string[]) => void;
