@@ -8,6 +8,7 @@ import KandidatHendelser from './KandidatHendelse';
 import VelgStatus from './VelgStatus';
 
 type InfoOmKandidatProps = {
+  innaktiv: boolean;
   kandidatlisteId: string;
   kandidat: kandidaterSchemaDTO;
 };
@@ -18,13 +19,10 @@ const arbeidsrettetOppfølgingUrl =
     : 'https://veilarbpersonflate.intern.dev.nav.no';
 
 const InfoOmKandidat: FunctionComponent<InfoOmKandidatProps> = ({
+  innaktiv,
   kandidat,
   kandidatlisteId,
 }) => {
-  if (!kandidat.fodselsnr) {
-    return null;
-  }
-
   const navigerTilAktivitetsplanen = async (
     href: string,
     fødselsnummer: string,
@@ -40,42 +38,44 @@ const InfoOmKandidat: FunctionComponent<InfoOmKandidatProps> = ({
   };
   return (
     <div>
-      <div className='grid grid-cols-2 gap-8 mb-8'>
-        <div>
-          <Label spacing as='p'>
-            Kontaktinfo:
-          </Label>
-          <BodyShort>
-            E-post:{' '}
-            {kandidat?.epost ? (
-              <Link href={`mailto:${kandidat.epost}`}>{kandidat.epost}</Link>
-            ) : (
-              <span>-</span>
-            )}
-          </BodyShort>
-          <BodyShort>
-            Telefon: {kandidat?.telefon ? kandidat.telefon : <span>-</span>}
-          </BodyShort>
-        </div>
-        <div>
-          <Label spacing as='p'>
-            Innsatsgruppe:
-          </Label>
+      {!innaktiv && (
+        <div className='grid grid-cols-2 gap-8 mb-8'>
           <div>
-            <span>{kandidat?.innsatsgruppe} </span>
+            <Label spacing as='p'>
+              Kontaktinfo:
+            </Label>
+            <BodyShort>
+              E-post:{' '}
+              {kandidat?.epost ? (
+                <Link href={`mailto:${kandidat.epost}`}>{kandidat.epost}</Link>
+              ) : (
+                <span>-</span>
+              )}
+            </BodyShort>
+            <BodyShort>
+              Telefon: {kandidat?.telefon ? kandidat.telefon : <span>-</span>}
+            </BodyShort>
           </div>
-          <Link
-            onClick={() =>
-              navigerTilAktivitetsplanen(
-                arbeidsrettetOppfølgingUrl,
-                kandidat.fodselsnr!,
-              )
-            }
-          >
-            Åpne aktivitetsplan
-          </Link>
+          <div>
+            <Label spacing as='p'>
+              Innsatsgruppe:
+            </Label>
+            <div>
+              <span>{kandidat?.innsatsgruppe} </span>
+            </div>
+            <Link
+              onClick={() =>
+                navigerTilAktivitetsplanen(
+                  arbeidsrettetOppfølgingUrl,
+                  kandidat.fodselsnr!,
+                )
+              }
+            >
+              Åpne aktivitetsplan
+            </Link>
+          </div>
         </div>
-      </div>
+      )}
 
       <div className='grid grid-cols-2 gap-8 mb-8'>
         <VelgStatus
@@ -83,7 +83,7 @@ const InfoOmKandidat: FunctionComponent<InfoOmKandidatProps> = ({
           kandidatnr={kandidat.kandidatnr}
           status={kandidat.status as Kandidatstatus}
         />
-        <KandidatHendelser utfallsendringer={kandidat.utfallsendringer} />
+        <KandidatHendelser kandidat={kandidat} />
       </div>
     </div>
   );

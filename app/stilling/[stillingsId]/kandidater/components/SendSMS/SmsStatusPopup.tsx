@@ -1,4 +1,4 @@
-import { MobileFillIcon } from '@navikt/aksel-icons';
+import { MobileFillIcon, MobileIcon } from '@navikt/aksel-icons';
 import { FunctionComponent } from 'react';
 
 import {
@@ -19,7 +19,7 @@ const formaterSendtDato = (dato: Date) => {
 };
 
 type Props = {
-  fnr: string;
+  fnr: string | null;
   stillingId: string | null;
   stillingskategori: string | null;
 };
@@ -114,8 +114,10 @@ const SmsStatusPopup: FunctionComponent<Props> = ({
         fontSize='1.5rem'
       />
     </MedPopover>
-  ) : null;
-  // <MobileIcon className='opacity-50' fontSize='1.5rem' />
+  ) : (
+    <MobileIcon className='opacity-50' fontSize='1.5rem' />
+  );
+  //
 };
 
 export default SmsStatusPopup;

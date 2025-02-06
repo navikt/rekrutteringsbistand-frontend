@@ -78,6 +78,7 @@ const DelMedArbeidsgiver: React.FC<DelMedArbeidsgiverProps> = ({
             </BodyLong>
 
             <UNSAFE_Combobox
+              className='my-4'
               allowNewValues
               label='E-post til arbeidsgiver'
               options={[]}

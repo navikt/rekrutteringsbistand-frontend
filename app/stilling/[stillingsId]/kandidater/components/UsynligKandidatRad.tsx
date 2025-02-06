@@ -16,14 +16,14 @@ const UsynligKandidatRad: React.FC<UsynligKandidatRadProps> = ({
   utfall,
 }) => {
   return (
-    <Table.Row className='bg-red-50'>
+    <Table.Row className='bg-blue-50'>
       <Table.DataCell colSpan={2} />
       <Table.DataCell>
         {storForbokstavString(etternavn ?? '')},{' '}
         {storForbokstavString(fornavn ?? '')}
       </Table.DataCell>
       <Table.DataCell colSpan={5}>
-        Innaktiv / Ikke synlig i Rekrutteringsbistand
+        Ikke synlig i Rekrutteringsbistand
       </Table.DataCell>
       <Table.DataCell colSpan={2}>
         {utfall && (

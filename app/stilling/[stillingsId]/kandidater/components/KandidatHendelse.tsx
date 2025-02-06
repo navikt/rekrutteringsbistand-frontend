@@ -6,7 +6,7 @@ import {
 import { BodyLong, BodyShort, Box, Heading, VStack } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import { nb } from 'date-fns/locale';
-import { utfallsendringerSchemaDTO } from '../../../../api/kandidat/schema.zod';
+import { kandidaterSchemaDTO } from '../../../../api/kandidat/schema.zod';
 
 enum KandidatHendelseValg {
   CV_DELT = 'CV-en er delt med arbeidsgiver',
@@ -30,7 +30,7 @@ const utfallTilTittel: Record<string, string> = {
   FATT_JOBBEN: KandidatHendelseValg.FATT_JOBBEN,
 };
 
-const HendelseBok = ({
+const HendelseBoks = ({
   tittel,
   tekst,
   dato,
@@ -74,11 +74,7 @@ const HendelseBok = ({
     </Box>
   );
 };
-const KandidatHendelser = ({
-  utfallsendringer,
-}: {
-  utfallsendringer?: utfallsendringerSchemaDTO[];
-}) => {
+const KandidatHendelser = ({ kandidat }: { kandidat: kandidaterSchemaDTO }) => {
   return (
     <div>
       <Heading size='small' spacing>
@@ -86,21 +82,23 @@ const KandidatHendelser = ({
       </Heading>
 
       <VStack gap='4'>
-        {utfallsendringer?.length ? (
-          utfallsendringer?.map((utfallsendring, index) => (
-            <HendelseBok
-              key={index}
-              tittel={
-                utfallTilTittel[utfallsendring.utfall] || utfallsendring.utfall
-              }
-              tekst={`Registrert av ${utfallsendring.registrertAvIdent}`}
-              dato={utfallsendring.tidspunkt}
-              type={'success'}
-            />
-          ))
-        ) : (
-          <div>Ingen hendelser.</div>
-        )}
+        <HendelseBoks
+          tittel='Ny kandidat'
+          tekst={`Registrert av ${kandidat.lagtTilAv.navn} (${kandidat.lagtTilAv.ident})`}
+          dato={kandidat.lagtTilTidspunkt}
+          type='success'
+        />
+        {kandidat?.utfallsendringer?.map((utfallsendring, index) => (
+          <HendelseBoks
+            key={index}
+            tittel={
+              utfallTilTittel[utfallsendring.utfall] || utfallsendring.utfall
+            }
+            tekst={`Registrert av ${utfallsendring.registrertAvIdent}`}
+            dato={utfallsendring.tidspunkt}
+            type={'success'}
+          />
+        ))}
         {/* <HendelseBok
           tittel='Sending av epost/SMS feilet'
           tekst='Sendt av Ola Nordmann (Z12345)'

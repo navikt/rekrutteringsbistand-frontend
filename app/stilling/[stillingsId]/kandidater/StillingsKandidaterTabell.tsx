@@ -168,29 +168,31 @@ const StillingsKandidaterTabell: React.FC<{
             />
           ))}
         {kandidater.map((kandidat, i) => {
-          if (kandidat.fodselsnr === null) {
-            return (
-              <UsynligKandidatRad
-                key={i}
-                fornavn={kandidat.fornavn}
-                etternavn={kandidat.etternavn}
-              />
-            );
-          }
-
+          // if (kandidat.fodselsnr === null) {
+          //   return (
+          //     <UsynligKandidatRad
+          //       key={i}
+          //       fornavn={kandidat.fornavn}
+          //       etternavn={kandidat.etternavn}
+          //     />
+          //   );
+          // }
+          const innaktiv = !kandidat.fodselsnr;
           return (
             <Table.ExpandableRow
               content={
                 <InfoOmKandidat
+                  innaktiv={innaktiv}
                   kandidat={kandidat}
                   kandidatlisteId={kandidatliste.kandidatlisteId}
                 />
               }
-              key={i + kandidat.fodselsnr}
+              key={i}
               selected={markerteKandidater.includes(kandidat)}
             >
               <Table.DataCell>
                 <Checkbox
+                  disabled={innaktiv}
                   hideLabel
                   checked={markerteKandidater.includes(kandidat)}
                   onChange={() => toggleSelectedRow(kandidat)}
@@ -200,12 +202,18 @@ const StillingsKandidaterTabell: React.FC<{
                 </Checkbox>
               </Table.DataCell>
               <Table.DataCell scope='row'>
-                <Link
-                  href={`/kandidat/${kandidat.kandidatnr}`}
-                  id={`id-${kandidat.fodselsnr}`}
-                >
-                  {kandidat.etternavn}, {kandidat.fornavn}
-                </Link>
+                {innaktiv ? (
+                  <span>
+                    {kandidat.etternavn}, {kandidat.fornavn}
+                  </span>
+                ) : (
+                  <Link
+                    href={`/kandidat/${kandidat.kandidatnr}`}
+                    id={`id-${kandidat.fodselsnr}`}
+                  >
+                    {kandidat.etternavn}, {kandidat.fornavn}
+                  </Link>
+                )}
               </Table.DataCell>
               <Table.DataCell className='align-middle'>
                 <SmsStatusPopup
@@ -214,7 +222,9 @@ const StillingsKandidaterTabell: React.FC<{
                   stillingskategori={stillingskategori}
                 />
               </Table.DataCell>
-              <Table.DataCell>{kandidat.fodselsnr}</Table.DataCell>
+              <Table.DataCell>
+                {kandidat.fodselsnr ?? 'Innaktiv'}
+              </Table.DataCell>
               <Table.DataCell>
                 <Tooltip content={kandidat.lagtTilAv?.ident} arrow={false}>
                   <span> {kandidat.lagtTilAv?.navn}</span>

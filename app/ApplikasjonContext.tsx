@@ -2,6 +2,7 @@
 
 import { Alert, Heading } from '@navikt/ds-react';
 import React from 'react';
+import { getMiljø, Miljø } from '../util/miljø';
 import { DecoratorDTO } from './api/decorator/decorator.dto';
 import Header from './components/header/Header';
 import { Roller } from './components/tilgangskontroll/roller';
@@ -73,8 +74,9 @@ export const ApplikasjonContextProvider: React.FC<
     );
 
   const harTilgangTilNyApplikasjon =
-    valgtNavKontor?.navKontor === '1001' ||
-    harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER]);
+    getMiljø() !== Miljø.ProdGcp &&
+    (valgtNavKontor?.navKontor === '1001' ||
+      harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER]));
 
   console.log('🎺 applikasjonenStengt', harTilgangTilNyApplikasjon);
   return (
