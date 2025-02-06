@@ -70,7 +70,7 @@ spec:
     - name: STILLINGSSOK_PROXY_URL
       value: http://rekrutteringsbistand-stillingssok-proxy
     - name: KANDIDATSOK_API
-      value: http://rekrutteringsbistand-kandidatsok-apiw
+      value: http://rekrutteringsbistand-kandidatsok-api
     - name: KANDIDAT_API
       value: {{ kandidatApiUrl }}
     - name: PAM_ONTOLOGI_URL

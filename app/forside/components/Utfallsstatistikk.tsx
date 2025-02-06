@@ -10,7 +10,7 @@ const Utfallsstatistikk: FunctionComponent<IStatistikkValg> = ({
   fraOgMed,
   tilOgMed,
 }) => {
-  const hook = useStatistikk({
+  const statistikkHook = useStatistikk({
     navKontor,
     fraOgMed,
     tilOgMed,
@@ -18,7 +18,7 @@ const Utfallsstatistikk: FunctionComponent<IStatistikkValg> = ({
 
   return (
     <SWRLaster
-      hook={hook}
+      hooks={[statistikkHook]}
       skeleton={
         <div className='flex gap-6 '>
           <InfokortSkeleton />

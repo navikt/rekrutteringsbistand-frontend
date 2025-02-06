@@ -1,5 +1,6 @@
 'use client';
 
+import { Alert, Heading } from '@navikt/ds-react';
 import React from 'react';
 import { DecoratorDTO } from './api/decorator/decorator.dto';
 import Header from './components/header/Header';
@@ -71,6 +72,11 @@ export const ApplikasjonContextProvider: React.FC<
         ),
     );
 
+  const harTilgangTilNyApplikasjon =
+    valgtNavKontor?.navKontor === '1001' ||
+    harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER]);
+
+  console.log('🎺 applikasjonenStengt', harTilgangTilNyApplikasjon);
   return (
     <VarslingContextProvider>
       <ApplikasjonContext.Provider
@@ -88,7 +94,21 @@ export const ApplikasjonContextProvider: React.FC<
         <Header />
         <Varsling />
         <main>
-          <div className='mx-auto p-4 mb-8 max-w-screen-full'>{children}</div>
+          <div className='mx-auto p-4 mb-8 max-w-screen-full'>
+            {harTilgangTilNyApplikasjon ? (
+              children
+            ) : (
+              <div>
+                {' '}
+                <Alert variant='info'>
+                  <Heading spacing size='small' level='3'>
+                    Applikasjonen er begrenset
+                  </Heading>
+                  Kun enkelte kontor har tilgang til den nye applikasjonen
+                </Alert>
+              </div>
+            )}
+          </div>
         </main>
       </ApplikasjonContext.Provider>
     </VarslingContextProvider>

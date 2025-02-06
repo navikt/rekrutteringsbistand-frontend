@@ -30,11 +30,11 @@ interface StillingsContextProviderProps {
 export const StillingsContextProvider: React.FC<
   StillingsContextProviderProps
 > = ({ stillingsId, children }) => {
-  const hook = useStilling(stillingsId);
+  const stillingHook = useStilling(stillingsId);
   return (
-    <SWRLaster hook={hook}>
+    <SWRLaster hooks={[stillingHook]}>
       {(data) => (
-        <StillingsContextMedData data={data} refetch={hook.mutate}>
+        <StillingsContextMedData data={data} refetch={stillingHook.mutate}>
           {children}
         </StillingsContextMedData>
       )}

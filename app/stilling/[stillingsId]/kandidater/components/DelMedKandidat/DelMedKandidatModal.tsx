@@ -2,14 +2,12 @@ import { ArrowForwardIcon } from '@navikt/aksel-icons';
 import { Alert, BodyShort, Button, Modal } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import * as React from 'react';
-import { useForespurteOmDelingAvCv } from '../../../../../api/foresporsel-om-deling-av-cv/foresporsler/[slug]/useForespurteOmDelingAvCv';
 import { sendForespørselOmDelingAvCv } from '../../../../../api/foresporsel-om-deling-av-cv/foresporsler/forespørselOmDelingAvCv';
 import {
   kandidaterSchemaDTO,
   kandidatlisteSchemaDTO,
 } from '../../../../../api/kandidat/schema.zod';
 import { useApplikasjonContext } from '../../../../../ApplikasjonContext';
-import SWRLaster from '../../../../../components/SWRLaster';
 import { useVisVarsling } from '../../../../../components/varsling/Varsling';
 import VelgSvarfrist from './VelgSvarfrist';
 
@@ -17,19 +15,18 @@ export interface DelMedKandidatModalProps {
   markerteKandidater: kandidaterSchemaDTO[];
   fjernAllMarkering: () => void;
   kandidatliste: kandidatlisteSchemaDTO;
+  forespurteKandidater: string[];
 }
 
 const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
   markerteKandidater,
   fjernAllMarkering,
   kandidatliste,
+  forespurteKandidater,
 }) => {
   const [modalErÅpen, setModalErÅpen] = React.useState(false);
   const [svarfrist, setSvarfrist] = React.useState<Date | undefined>(undefined);
   const varsel = useVisVarsling();
-  const forespurteKandidaterHook = useForespurteOmDelingAvCv(
-    kandidatliste.stillingId,
-  );
   const { valgtNavKontor } = useApplikasjonContext();
   const [loading, setLoading] = React.useState(false);
 
@@ -54,6 +51,11 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
     }
   };
 
+  const antallSpurtFraFør = markerteKandidater.filter(
+    (kandidat) =>
+      kandidat.aktørid && forespurteKandidater.includes(kandidat.aktørid),
+  ).length;
+
   return (
     <>
       <Button
@@ -74,64 +76,48 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
           } i aktivitetsplanen`,
         }}
       >
-        <SWRLaster hook={forespurteKandidaterHook}>
-          {(data) => {
-            const forespurteKandidater = Object.keys(data);
-            //todo verifiser at dette er riktig
-            const antallSpurtFraFør = markerteKandidater.filter(
-              (kandidat) =>
-                kandidat.aktørid &&
-                forespurteKandidater.includes(kandidat.aktørid),
-            ).length;
-
-            return (
-              <React.Fragment>
-                <Modal.Body>
-                  {antallSpurtFraFør > 0 && (
-                    <Alert variant='warning' size='small'>
-                      Du har tidligere delt stillingen med {antallSpurtFraFør}{' '}
-                      {antallSpurtFraFør === 1
-                        ? 'kandidat. Denne kandidaten'
-                        : 'kandidater. De'}{' '}
-                      vil ikke motta stillingen på nytt i aktivitetsplanen.
-                    </Alert>
-                  )}
-                  <BodyShort className='my-8'>
-                    {`Det opprettes et stillingskort i Aktivitetsplanen. Kandidatene
+        <Modal.Body>
+          {antallSpurtFraFør > 0 && (
+            <Alert variant='warning' size='small'>
+              Du har tidligere delt stillingen med {antallSpurtFraFør}{' '}
+              {antallSpurtFraFør === 1
+                ? 'kandidat. Denne kandidaten'
+                : 'kandidater. De'}{' '}
+              vil ikke motta stillingen på nytt i aktivitetsplanen.
+            </Alert>
+          )}
+          <BodyShort className='my-8'>
+            {`Det opprettes et stillingskort i Aktivitetsplanen. Kandidatene
                   vil bli varslet på SMS, og kan svare "ja" eller "nei" til at
                   CV-en skal bli delt med arbeidsgiver. Du vil se svaret i
                   kandidatlisten.`}
-                  </BodyShort>
+          </BodyShort>
 
-                  <VelgSvarfrist setValgtSvarfrist={setSvarfrist} />
-                  <Alert variant='info' className={'mt-8'}>
-                    Stillingsannonsen vil bli delt med kandidaten.
-                    <br /> Det er viktig at annonseteksten er informativ og lett
-                    å forstå.
-                  </Alert>
-                </Modal.Body>
+          <VelgSvarfrist setValgtSvarfrist={setSvarfrist} />
+          <Alert variant='info' className={'mt-8'}>
+            Stillingsannonsen vil bli delt med kandidaten.
+            <br /> Det er viktig at annonseteksten er informativ og lett å
+            forstå.
+          </Alert>
+        </Modal.Body>
 
-                <Modal.Footer>
-                  <Button
-                    disabled={!svarfrist}
-                    onClick={sendForespørsel}
-                    variant='primary'
-                    loading={loading}
-                  >
-                    Del stilling
-                  </Button>
-                  <Button
-                    disabled={loading}
-                    variant='secondary'
-                    onClick={() => setModalErÅpen(false)}
-                  >
-                    Avbryt
-                  </Button>
-                </Modal.Footer>
-              </React.Fragment>
-            );
-          }}
-        </SWRLaster>
+        <Modal.Footer>
+          <Button
+            disabled={!svarfrist}
+            onClick={sendForespørsel}
+            variant='primary'
+            loading={loading}
+          >
+            Del stilling
+          </Button>
+          <Button
+            disabled={loading}
+            variant='secondary'
+            onClick={() => setModalErÅpen(false)}
+          >
+            Avbryt
+          </Button>
+        </Modal.Footer>
       </Modal>
     </>
   );

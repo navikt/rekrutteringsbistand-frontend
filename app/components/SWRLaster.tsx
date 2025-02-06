@@ -5,49 +5,54 @@ import { SWRResponse } from 'swr';
 import { ZodError } from 'zod';
 import Sidelaster from './Sidelaster';
 import Feilmelding from './feilhåndtering/Feilmelding';
-export interface ISWRLasterProps<T> {
+
+type SWRHookResponse<T> = SWRResponse<T, Error> | undefined;
+
+export interface ISWRLasterProps<T extends any[]> {
   skjulFeilmelding?: boolean;
-  hook: SWRResponse<T, Error> | undefined;
+  hooks: { [K in keyof T]: SWRHookResponse<T[K]> };
   skeleton?: React.ReactNode;
   egenFeilmelding?: (error: Error) => React.ReactNode;
-  children: (data: T) => React.ReactNode; // Children as a function
+  children: (...data: T) => React.ReactNode;
 }
 
 function isZodError(error: any): error is ZodError {
   return error instanceof ZodError;
 }
 
-const SWRLaster = <T,>({
-  hook,
+const SWRLaster = <T extends any[]>({
+  hooks,
   skeleton,
   children,
   skjulFeilmelding = false,
   egenFeilmelding,
 }: ISWRLasterProps<T>): React.ReactElement | null => {
-  if (!hook) {
+  if (hooks.some((hook) => !hook)) {
     return <>{skeleton ? skeleton : <Sidelaster />}</>;
   }
 
-  if (hook.isLoading || hook.isValidating) {
+  if (hooks.some((hook) => hook?.isLoading || hook?.isValidating)) {
     return <>{skeleton ? skeleton : <Sidelaster />}</>;
   }
 
-  if (hook.error && egenFeilmelding) {
-    return <>{egenFeilmelding(hook.error)}</>;
+  const error = hooks.find((hook) => hook?.error)?.error;
+  if (error && egenFeilmelding) {
+    return <>{egenFeilmelding(error)}</>;
   }
 
-  if (hook.error && !skjulFeilmelding) {
+  if (error && !skjulFeilmelding) {
     return (
       <Feilmelding
-        {...hook.error}
+        {...error}
         tittel='Feil ved henting av data'
-        zodError={isZodError(hook.error) ? hook.error : undefined}
+        zodError={isZodError(error) ? error : undefined}
       />
     );
   }
 
-  if (hook.data) {
-    return <>{children(hook.data)}</>;
+  if (hooks.every((hook) => hook?.data)) {
+    const data = hooks.map((hook) => hook?.data) as T;
+    return <>{children(...data)}</>;
   }
 
   return null;

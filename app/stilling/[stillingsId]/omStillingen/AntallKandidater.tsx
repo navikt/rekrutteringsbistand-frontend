@@ -15,7 +15,10 @@ const AntallKandidater: React.FC<AntallKandidaterProps> = ({
   const antallKandidaterSWR = useAntallKandidater(kandidatlisteId);
 
   return (
-    <SWRLaster skeleton={<Loader size='xsmall' />} hook={antallKandidaterSWR}>
+    <SWRLaster
+      skeleton={<Loader size='xsmall' />}
+      hooks={[antallKandidaterSWR]}
+    >
       {(data) => (
         <TekstMedIkon
           tekst={`${data?.antallKandidater ?? '-'} kandidater`}

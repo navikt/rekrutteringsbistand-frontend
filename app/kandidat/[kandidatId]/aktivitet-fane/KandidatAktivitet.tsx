@@ -10,7 +10,7 @@ import TabellRad from './components/TabellRad';
 const KandidatAktivitet: React.FC = () => {
   const { kandidatId } = useKandidatContext();
 
-  const hook = useKandidatListeoversikt(kandidatId);
+  const kandidatListeoversiktHook = useKandidatListeoversikt(kandidatId);
 
   return (
     <div className='mt-4'>
@@ -26,7 +26,7 @@ const KandidatAktivitet: React.FC = () => {
         </Table.Header>
         <Table.Body>
           <SWRLaster
-            hook={hook}
+            hooks={[kandidatListeoversiktHook]}
             skeleton={
               <Table.Row>
                 <Table.DataCell colSpan={100} className='text-center py-8'>
@@ -83,10 +83,10 @@ const KandidatAktivitet: React.FC = () => {
 const HistoriskStillingRad: React.FC<{
   historikkData: kandidatHistorikkSchemaDTO;
 }> = ({ historikkData }) => {
-  const hook = useStilling(historikkData.stillingId);
+  const stillingHook = useStilling(historikkData.stillingId);
   return (
     <SWRLaster
-      hook={hook}
+      hooks={[stillingHook]}
       skeleton={
         <Table.Row>
           <Table.DataCell colSpan={100} className='text-center py-8'>
@@ -103,8 +103,7 @@ const HistoriskStillingRad: React.FC<{
             stillingId={historikkData.stillingId}
             erMaskert={historikkData.erMaskert}
             arbeidsgiver={
-              hook.data?.stilling?.businessName ??
-              historikkData.organisasjonNavn
+              data?.stilling?.businessName ?? historikkData.organisasjonNavn
             }
             lagtTilAv={historikkData.lagtTilAvNavn}
             status={historikkData.status}

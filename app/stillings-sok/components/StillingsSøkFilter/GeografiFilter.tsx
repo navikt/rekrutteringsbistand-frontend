@@ -20,9 +20,9 @@ export interface FylkeMedKommuneDTO extends FylkeDTO {
   kommuner: KommuneDTO[] | undefined;
 }
 const GeografiFilter: React.FC<IGeografiFilter> = ({ children }) => {
-  const hook = useGeografi();
+  const geografiHook = useGeografi();
   return (
-    <SWRLaster hook={hook}>
+    <SWRLaster hooks={[geografiHook]}>
       {(data) => {
         const fylkerMedKommuner = data.fylker
           ?.map((fylke: FylkeDTO) => {

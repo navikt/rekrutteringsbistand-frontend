@@ -12,7 +12,7 @@ const Forespørsler: React.FC<IStatistikkValg> = ({
   fraOgMed,
   tilOgMed,
 }) => {
-  const hook = useForesporselOmdelingAvCV({
+  const forespørselHook = useForesporselOmdelingAvCV({
     navKontor,
     fraOgMed,
     tilOgMed,
@@ -20,7 +20,7 @@ const Forespørsler: React.FC<IStatistikkValg> = ({
 
   return (
     <SWRLaster
-      hook={hook}
+      hooks={[forespørselHook]}
       skeleton={
         <>
           <div className='flex gap-6 mt-6'>

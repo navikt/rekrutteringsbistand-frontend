@@ -1,5 +1,6 @@
 import { Button, Checkbox, CheckboxGroup, Search } from '@navikt/ds-react';
 import * as React from 'react';
+import { useForespurteOmDelingAvCv } from '../../../api/foresporsel-om-deling-av-cv/foresporsler/[slug]/useForespurteOmDelingAvCv';
 import { kandidaterSchemaDTO } from '../../../api/kandidat/schema.zod';
 import { useKandidatliste } from '../../../api/kandidat/useKandidatliste';
 import { useSmserForStilling } from '../../../api/kandidatvarsel/kandidatvarsel';
@@ -30,7 +31,11 @@ const StillingsKandidater: React.FC = () => {
     kandidaterSchemaDTO[]
   >([]);
 
-  const hook = useKandidatliste(stillingsData.stilling.uuid);
+  const kandidatlisteHook = useKandidatliste(stillingsData.stilling.uuid);
+  const forespurteKandidaterHook = useForespurteOmDelingAvCv(
+    stillingsData.stilling.uuid,
+  );
+
   const varsler = useSmserForStilling(stillingsData.stilling.uuid);
   const [search, setSearch] = React.useState('');
 
@@ -56,7 +61,7 @@ const StillingsKandidater: React.FC = () => {
 
   return (
     <SWRLaster
-      hook={hook}
+      hooks={[kandidatlisteHook, forespurteKandidaterHook]}
       //TODO Midlertidig løsning for at bruker ikke får feilmelding om de ikke er eier
       egenFeilmelding={() => (
         <div>
@@ -75,82 +80,87 @@ const StillingsKandidater: React.FC = () => {
         </div>
       )}
     >
-      {(kandidatliste) => (
-        <div className='my-2'>
-          <div className='flex justify-between mt-2'>
-            <div className=' md:w-[15rem]'>
-              <Search
-                placeholder='Søk i kandidatene'
-                label='Kandidatsøk'
-                hideLabel
-                variant='primary'
-                value={search}
-                onChange={(val) => setSearch(val)}
-              />
-            </div>
-            <div>
-              <SendSmsModal
-                markerteKandidater={markerteKandidater}
-                stillingId={stillingsData.stilling.uuid}
-                stillingskategori={
-                  stillingsData.stillingsinfo?.stillingskategori ?? null
-                }
-                fjernAllMarkering={() => setMarkerteKandidater([])}
-              />
-              <DelMedKandidatModal
-                kandidatliste={kandidatliste}
-                markerteKandidater={markerteKandidater}
-                fjernAllMarkering={() => setMarkerteKandidater([])}
-              />
-              <DelMedArbeidsgiver
-                stillingTittel={stillingsData.stilling.title}
-                markerteKandidater={markerteKandidater}
-                kandidatliste={kandidatliste}
-              />
-            </div>
-          </div>
+      {(kandidatliste, forespurteKandidater) => {
+        const forespurteKandidaterListe = Object.keys(forespurteKandidater);
 
-          <div className='mt-8 flex'>
-            <aside className='sidebar w-full md:w-[20rem] mr-4 '>
-              <CheckboxGroup
-                legend='Status'
-                onChange={setStatus}
-                defaultValue={status}
-                className='mb-8'
-              >
-                {Object.entries(Kandidatstatus).map(([key, value]) => (
-                  <Checkbox key={key} value={key}>
-                    {value}
-                  </Checkbox>
-                ))}
-              </CheckboxGroup>
-              <CheckboxGroup
-                legend='Hendelser'
-                onChange={setHendelse}
-                defaultValue={hendelse}
-              >
-                {Object.entries(KandidatHendelseValg).map(([key, value]) => (
-                  <Checkbox key={key} value={key}>
-                    {value}
-                  </Checkbox>
-                ))}
-              </CheckboxGroup>
-            </aside>
-            <div className='w-full'>
-              <StillingsKandidaterTabell
-                markerteKandidater={markerteKandidater}
-                setMarkerteKandidater={setMarkerteKandidater}
-                search={search}
-                kandidatliste={kandidatliste}
-                stillingsId={stillingsData.stilling.uuid}
-                stillingskategori={
-                  stillingsData.stillingsinfo?.stillingskategori ?? null
-                }
-              />
+        return (
+          <div className='my-2'>
+            <div className='flex justify-between mt-2'>
+              <div className=' md:w-[15rem]'>
+                <Search
+                  placeholder='Søk i kandidatene'
+                  label='Kandidatsøk'
+                  hideLabel
+                  variant='primary'
+                  value={search}
+                  onChange={(val) => setSearch(val)}
+                />
+              </div>
+              <div>
+                <SendSmsModal
+                  markerteKandidater={markerteKandidater}
+                  stillingId={stillingsData.stilling.uuid}
+                  stillingskategori={
+                    stillingsData.stillingsinfo?.stillingskategori ?? null
+                  }
+                  fjernAllMarkering={() => setMarkerteKandidater([])}
+                />
+                <DelMedKandidatModal
+                  forespurteKandidater={forespurteKandidaterListe}
+                  kandidatliste={kandidatliste}
+                  markerteKandidater={markerteKandidater}
+                  fjernAllMarkering={() => setMarkerteKandidater([])}
+                />
+                <DelMedArbeidsgiver
+                  stillingTittel={stillingsData.stilling.title}
+                  markerteKandidater={markerteKandidater}
+                  kandidatliste={kandidatliste}
+                />
+              </div>
+            </div>
+
+            <div className='mt-8 flex'>
+              <aside className='sidebar w-full md:w-[20rem] mr-4 '>
+                <CheckboxGroup
+                  legend='Status'
+                  onChange={setStatus}
+                  defaultValue={status}
+                  className='mb-8'
+                >
+                  {Object.entries(Kandidatstatus).map(([key, value]) => (
+                    <Checkbox key={key} value={key}>
+                      {value}
+                    </Checkbox>
+                  ))}
+                </CheckboxGroup>
+                <CheckboxGroup
+                  legend='Hendelser'
+                  onChange={setHendelse}
+                  defaultValue={hendelse}
+                >
+                  {Object.entries(KandidatHendelseValg).map(([key, value]) => (
+                    <Checkbox key={key} value={key}>
+                      {value}
+                    </Checkbox>
+                  ))}
+                </CheckboxGroup>
+              </aside>
+              <div className='w-full'>
+                <StillingsKandidaterTabell
+                  markerteKandidater={markerteKandidater}
+                  setMarkerteKandidater={setMarkerteKandidater}
+                  search={search}
+                  kandidatliste={kandidatliste}
+                  stillingsId={stillingsData.stilling.uuid}
+                  stillingskategori={
+                    stillingsData.stillingsinfo?.stillingskategori ?? null
+                  }
+                />
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        );
+      }}
     </SWRLaster>
   );
 };
