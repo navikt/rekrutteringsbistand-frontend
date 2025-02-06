@@ -53,7 +53,7 @@ const VelgSvarfrist: FunctionComponent<Props> = ({
     if (svarFrist) {
       setValgtSvarfrist(svarFrist);
     }
-  }, [svarFrist]);
+  }, [svarFrist, setValgtSvarfrist]);
 
   return (
     <div className={'my-4'}>
