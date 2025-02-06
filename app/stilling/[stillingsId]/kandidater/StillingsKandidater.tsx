@@ -7,6 +7,7 @@ import { useSmserForStilling } from '../../../api/kandidatvarsel/kandidatvarsel'
 import { oppdaterStilling } from '../../../api/stilling/oppdater-stilling/oppdaterStilling';
 import { useApplikasjonContext } from '../../../ApplikasjonContext';
 import SWRLaster from '../../../components/SWRLaster';
+import { storForbokstavString } from '../../../kandidat-sok/util';
 import { useStillingsContext } from '../StillingsContext';
 import DelMedArbeidsgiver from './components/DelMedArbeidsgiver/DelMedArbeidsgiver';
 import DelMedKandidatModal from './components/DelMedKandidat/DelMedKandidatModal';
@@ -83,7 +84,6 @@ const StillingsKandidater: React.FC = () => {
       {(kandidatliste, forespurteKandidater) => {
         const forespurteKandidaterAktørListe =
           Object.keys(forespurteKandidater);
-        console.log('🎺 forespurteKandidater', forespurteKandidater);
         return (
           <div className='my-2'>
             <div className='flex justify-between mt-2'>
@@ -132,7 +132,7 @@ const StillingsKandidater: React.FC = () => {
                 >
                   {Object.entries(Kandidatstatus).map(([key, value]) => (
                     <Checkbox key={key} value={key}>
-                      {value}
+                      {storForbokstavString(value ?? '').replace(/_/g, ' ')}
                     </Checkbox>
                   ))}
                 </CheckboxGroup>

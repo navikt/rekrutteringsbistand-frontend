@@ -31,7 +31,7 @@ const Nyheter: FunctionComponent = () => {
     <div className={css.nyheter}>
       <div className='flex'>
         <Switch
-          disabled={getMiljø() === Miljø.ProdGcp}
+          disabled={getMiljø() !== Miljø.Lokalt}
           size='small'
           checked={darkMode}
           onChange={(e) => setDarkMode(e.target.checked)}

@@ -3,7 +3,7 @@ import {
   ExclamationmarkTriangleIcon,
   XMarkOctagonIcon,
 } from '@navikt/aksel-icons';
-import { BodyLong, BodyShort, Box, Heading, VStack } from '@navikt/ds-react';
+import { BodyLong, BodyShort, Box, Heading } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import { nb } from 'date-fns/locale';
 import { KandidatForespurtOmDelingSchema } from '../../../../api/foresporsel-om-deling-av-cv/foresporsler/[slug]/useForespurteOmDelingAvCv';
@@ -44,12 +44,8 @@ const HendelseBoks = ({
   type: 'success' | 'error' | 'info';
 }) => {
   return (
-    <Box
-      background='surface-subtle'
-      padding='4'
-      borderRadius='large'
-      shadow='xsmall'
-      className={`pb-0 border-l-4 ${
+    <Box.New
+      className={`p-4 border-l-4 ${
         type === 'error'
           ? 'border-surface-danger'
           : type === 'success'
@@ -58,7 +54,7 @@ const HendelseBoks = ({
       }`}
     >
       <div className='flex justify-between'>
-        <div className='flex items-center gap-2 pb-2'>
+        <div className='flex items-center gap-2 '>
           {type === 'error' ? (
             <XMarkOctagonIcon className='text-surface-danger' />
           ) : type === 'success' ? (
@@ -73,7 +69,7 @@ const HendelseBoks = ({
         </BodyShort>
       </div>
       <BodyLong spacing>{tekst}</BodyLong>
-    </Box>
+    </Box.New>
   );
 };
 const KandidatHendelser = ({
@@ -89,7 +85,7 @@ const KandidatHendelser = ({
         Hendelser
       </Heading>
 
-      <VStack gap='4'>
+      <div className='flex flex-col gap-4'>
         <HendelseBoks
           tittel='Ny kandidat'
           tekst={`Registrert av ${kandidat.lagtTilAv.navn} (${kandidat.lagtTilAv.ident})`}
@@ -167,7 +163,7 @@ const KandidatHendelser = ({
           dato='2025-01-31'
           type='info'
         /> */}
-      </VStack>
+      </div>
     </div>
   );
 };

@@ -1,6 +1,6 @@
 'use client';
-import '@navikt/ds-css/darkside';
-import { Alert, Heading, Theme } from '@navikt/ds-react';
+// import '@navikt/ds-css/darkside';
+import { Alert, Heading } from '@navikt/ds-react';
 import React from 'react';
 import { getMiljø, Miljø } from '../util/miljø';
 import { DecoratorDTO } from './api/decorator/decorator.dto';
@@ -80,39 +80,39 @@ export const ApplikasjonContextProvider: React.FC<
 
   return (
     <VarslingContextProvider>
-      <Theme theme={darkMode ? 'dark' : 'light'}>
-        <ApplikasjonContext.Provider
-          value={{
-            setValgtFnr,
-            brukerData,
-            darkMode,
-            setDarkMode,
-            setValgtNavKontor,
-            valgtNavKontor,
-            harRolle,
-            valgtFnr,
-          }}
-        >
-          <Header />
-          <Varsling />
-          <main>
-            <div className='mx-auto p-4 mb-8 max-w-screen-full'>
-              {harTilgangTilNyApplikasjon ? (
-                children
-              ) : (
-                <div>
-                  <Alert variant='info'>
-                    <Heading spacing size='small' level='3'>
-                      Applikasjonen er begrenset
-                    </Heading>
-                    Kun enkelte kontor har tilgang til den nye applikasjonen
-                  </Alert>
-                </div>
-              )}
-            </div>
-          </main>
-        </ApplikasjonContext.Provider>
-      </Theme>
+      {/* <Theme theme={darkMode ? 'dark' : 'light'}> */}
+      <ApplikasjonContext.Provider
+        value={{
+          setValgtFnr,
+          brukerData,
+          darkMode,
+          setDarkMode,
+          setValgtNavKontor,
+          valgtNavKontor,
+          harRolle,
+          valgtFnr,
+        }}
+      >
+        <Header />
+        <Varsling />
+        <main>
+          <div className='mx-auto p-4 mb-8 max-w-screen-full'>
+            {harTilgangTilNyApplikasjon ? (
+              children
+            ) : (
+              <div>
+                <Alert variant='info'>
+                  <Heading spacing size='small' level='3'>
+                    Applikasjonen er begrenset
+                  </Heading>
+                  Kun enkelte kontor har tilgang til den nye applikasjonen
+                </Alert>
+              </div>
+            )}
+          </div>
+        </main>
+      </ApplikasjonContext.Provider>
+      {/* </Theme> */}
     </VarslingContextProvider>
   );
 };
