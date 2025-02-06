@@ -74,11 +74,10 @@ export const ApplikasjonContextProvider: React.FC<
     );
 
   const harTilgangTilNyApplikasjon =
-    getMiljø() !== Miljø.ProdGcp &&
-    (valgtNavKontor?.navKontor === '1001' ||
-      harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER]));
+    getMiljø() !== Miljø.ProdGcp ||
+    valgtNavKontor?.navKontor === '1001' ||
+    harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER]);
 
-  console.log('🎺 applikasjonenStengt', harTilgangTilNyApplikasjon);
   return (
     <VarslingContextProvider>
       <ApplikasjonContext.Provider
