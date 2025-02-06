@@ -10,13 +10,14 @@ import {
   NestedKeys,
   TableSortState,
 } from '../../../../util/tableUtils';
+import { ForespurteOmDelingAvCvDTO } from '../../../api/foresporsel-om-deling-av-cv/foresporsler/[slug]/useForespurteOmDelingAvCv';
 import {
   kandidaterSchemaDTO,
   kandidatlisteSchemaDTO,
 } from '../../../api/kandidat/schema.zod';
 import HendelseTag from './components/HendelseTag';
 import InfoOmKandidat from './components/InfoOmKandidat';
-import KandidatDropdown from './components/KandidatDropdown';
+import SletteKandidatKnapp from './components/KandidatDropdown';
 import SmsStatusPopup from './components/SendSMS/SmsStatusPopup';
 import StatusTag from './components/StatusTag';
 import UsynligKandidatRad from './components/UsynligKandidatRad';
@@ -30,6 +31,7 @@ const StillingsKandidaterTabell: React.FC<{
   kandidatliste: kandidatlisteSchemaDTO;
   stillingsId: string;
   stillingskategori: string | null;
+  forespurteKandidater: ForespurteOmDelingAvCvDTO;
 }> = ({
   markerteKandidater,
   setMarkerteKandidater,
@@ -37,11 +39,11 @@ const StillingsKandidaterTabell: React.FC<{
   kandidatliste,
   stillingsId,
   stillingskategori,
+  forespurteKandidater,
 }) => {
   const [sort, setSort] = React.useState<TableSortState<kandidaterSchemaDTO>>();
 
   const { status, hendelse } = useStillingsKandidaterFilter();
-
   const toggleSelectedRow = (kandidat: kandidaterSchemaDTO) =>
     setMarkerteKandidater(
       markerteKandidater.includes(kandidat)
@@ -168,20 +170,18 @@ const StillingsKandidaterTabell: React.FC<{
             />
           ))}
         {kandidater.map((kandidat, i) => {
-          // if (kandidat.fodselsnr === null) {
-          //   return (
-          //     <UsynligKandidatRad
-          //       key={i}
-          //       fornavn={kandidat.fornavn}
-          //       etternavn={kandidat.etternavn}
-          //     />
-          //   );
-          // }
           const innaktiv = !kandidat.fodselsnr;
+
+          const forespørselCvForKandidat =
+            kandidat.aktørid && forespurteKandidater
+              ? forespurteKandidater[kandidat.aktørid]
+              : null;
+
           return (
             <Table.ExpandableRow
               content={
                 <InfoOmKandidat
+                  forespørselCvForKandidat={forespørselCvForKandidat}
                   innaktiv={innaktiv}
                   kandidat={kandidat}
                   kandidatlisteId={kandidatliste.kandidatlisteId}
@@ -252,7 +252,7 @@ const StillingsKandidaterTabell: React.FC<{
               </Table.DataCell>
               <Table.DataCell>
                 <div className='flex items-baseline flex-end'>
-                  <KandidatDropdown
+                  <SletteKandidatKnapp
                     kandidat={kandidat}
                     stillingsId={stillingsId}
                   />

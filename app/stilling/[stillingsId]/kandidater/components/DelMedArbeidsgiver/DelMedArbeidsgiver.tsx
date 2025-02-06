@@ -103,6 +103,7 @@ const DelMedArbeidsgiver: React.FC<DelMedArbeidsgiverProps> = ({
             Avbryt
           </Button>
           <Button
+            disabled //TODO
             variant='primary'
             // disabled={delestatus === Nettstatus.SenderInn}
             // loading={delestatus === Nettstatus.SenderInn}

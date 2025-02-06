@@ -81,8 +81,9 @@ const StillingsKandidater: React.FC = () => {
       )}
     >
       {(kandidatliste, forespurteKandidater) => {
-        const forespurteKandidaterListe = Object.keys(forespurteKandidater);
-
+        const forespurteKandidaterAktørListe =
+          Object.keys(forespurteKandidater);
+        console.log('🎺 forespurteKandidater', forespurteKandidater);
         return (
           <div className='my-2'>
             <div className='flex justify-between mt-2'>
@@ -106,7 +107,9 @@ const StillingsKandidater: React.FC = () => {
                   fjernAllMarkering={() => setMarkerteKandidater([])}
                 />
                 <DelMedKandidatModal
-                  forespurteKandidater={forespurteKandidaterListe}
+                  forespurteKandidaterAktørListe={
+                    forespurteKandidaterAktørListe
+                  }
                   kandidatliste={kandidatliste}
                   markerteKandidater={markerteKandidater}
                   fjernAllMarkering={() => setMarkerteKandidater([])}
@@ -147,6 +150,7 @@ const StillingsKandidater: React.FC = () => {
               </aside>
               <div className='w-full'>
                 <StillingsKandidaterTabell
+                  forespurteKandidater={forespurteKandidater}
                   markerteKandidater={markerteKandidater}
                   setMarkerteKandidater={setMarkerteKandidater}
                   search={search}

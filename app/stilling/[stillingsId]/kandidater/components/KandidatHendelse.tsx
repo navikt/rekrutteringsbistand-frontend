@@ -6,7 +6,9 @@ import {
 import { BodyLong, BodyShort, Box, Heading, VStack } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import { nb } from 'date-fns/locale';
+import { KandidatForespurtOmDelingSchema } from '../../../../api/foresporsel-om-deling-av-cv/foresporsler/[slug]/useForespurteOmDelingAvCv';
 import { kandidaterSchemaDTO } from '../../../../api/kandidat/schema.zod';
+import { storForbokstavString } from '../../../../kandidat-sok/util';
 
 enum KandidatHendelseValg {
   CV_DELT = 'CV-en er delt med arbeidsgiver',
@@ -74,7 +76,13 @@ const HendelseBoks = ({
     </Box>
   );
 };
-const KandidatHendelser = ({ kandidat }: { kandidat: kandidaterSchemaDTO }) => {
+const KandidatHendelser = ({
+  kandidat,
+  forespørselCvForKandidat,
+}: {
+  kandidat: kandidaterSchemaDTO;
+  forespørselCvForKandidat: KandidatForespurtOmDelingSchema[] | null;
+}) => {
   return (
     <div>
       <Heading size='small' spacing>
@@ -88,6 +96,14 @@ const KandidatHendelser = ({ kandidat }: { kandidat: kandidaterSchemaDTO }) => {
           dato={kandidat.lagtTilTidspunkt}
           type='success'
         />
+        {kandidat?.utfallsendringer?.length > 0 && (
+          <>
+            <hr className='opacity-30' />
+            <Heading size='xsmall' spacing>
+              Utfallsendringer
+            </Heading>
+          </>
+        )}
         {kandidat?.utfallsendringer?.map((utfallsendring, index) => (
           <HendelseBoks
             key={index}
@@ -97,6 +113,40 @@ const KandidatHendelser = ({ kandidat }: { kandidat: kandidaterSchemaDTO }) => {
             tekst={`Registrert av ${utfallsendring.registrertAvIdent}`}
             dato={utfallsendring.tidspunkt}
             type={'success'}
+          />
+        ))}
+
+        {forespørselCvForKandidat && forespørselCvForKandidat.length > 0 && (
+          <>
+            <hr className='opacity-30' />
+            <Heading size='xsmall' spacing>
+              Forespørsler om deling av CV
+            </Heading>
+          </>
+        )}
+
+        {forespørselCvForKandidat?.map((forespørsel, index) => (
+          <HendelseBoks
+            key={index}
+            tittel={storForbokstavString(forespørsel.tilstand).replace(
+              /_/g,
+              ' ',
+            )}
+            tekst={
+              forespørsel.svar
+                ? forespørsel.svar.harSvartJa
+                  ? `Svart ja av ${forespørsel.svar.svartAv.ident}`
+                  : `Svart nei av ${forespørsel.svar.svartAv.ident}`
+                : `Svarfrist ${format(new Date(forespørsel.svarfrist), 'dd. MMMM yyyy')}`
+            }
+            dato={forespørsel.deltTidspunkt}
+            type={
+              forespørsel.svar
+                ? forespørsel.svar?.harSvartJa
+                  ? 'success'
+                  : 'error'
+                : 'info'
+            }
           />
         ))}
         {/* <HendelseBok

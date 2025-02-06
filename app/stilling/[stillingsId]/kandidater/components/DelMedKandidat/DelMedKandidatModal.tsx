@@ -15,14 +15,14 @@ export interface DelMedKandidatModalProps {
   markerteKandidater: kandidaterSchemaDTO[];
   fjernAllMarkering: () => void;
   kandidatliste: kandidatlisteSchemaDTO;
-  forespurteKandidater: string[];
+  forespurteKandidaterAktørListe: string[];
 }
 
 const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
   markerteKandidater,
   fjernAllMarkering,
   kandidatliste,
-  forespurteKandidater,
+  forespurteKandidaterAktørListe,
 }) => {
   const [modalErÅpen, setModalErÅpen] = React.useState(false);
   const [svarfrist, setSvarfrist] = React.useState<Date | undefined>(undefined);
@@ -53,7 +53,8 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
 
   const antallSpurtFraFør = markerteKandidater.filter(
     (kandidat) =>
-      kandidat.aktørid && forespurteKandidater.includes(kandidat.aktørid),
+      kandidat.aktørid &&
+      forespurteKandidaterAktørListe.includes(kandidat.aktørid),
   ).length;
 
   return (

@@ -11,6 +11,15 @@ const ForespurteOmDelingAvCvEndepunkt = (stillingsId: string) => {
   return `${ForespørselDelingAvCvAPI.internUrl}/foresporsler/${stillingsId}`;
 };
 
+const forespørselSvar = z.object({
+  harSvartJa: z.boolean(),
+  svarTidspunkt: z.string(),
+  svartAv: z.object({
+    ident: z.string(),
+    identType: z.string(),
+  }),
+});
+
 const ForespurtOmDelingSchema = z.object({
   aktørId: z.string(),
   stillingsId: z.string(),
@@ -19,7 +28,7 @@ const ForespurtOmDelingSchema = z.object({
   deltAv: z.string(),
   svarfrist: z.string(),
   tilstand: z.string(),
-  svar: z.null(),
+  svar: forespørselSvar.nullable(),
   begrunnelseForAtAktivitetIkkeBleOpprettet: z.null(),
   navKontor: z.string(),
 });
@@ -28,6 +37,10 @@ const ForespurteOmDelingAvCvSchema = z.record(
   z.string(),
   z.array(ForespurtOmDelingSchema),
 );
+
+export type KandidatForespurtOmDelingSchema = z.infer<
+  typeof ForespurtOmDelingSchema
+>;
 
 export type ForespurteOmDelingAvCvDTO = z.infer<
   typeof ForespurteOmDelingAvCvSchema
@@ -40,8 +53,8 @@ export const useForespurteOmDelingAvCv = (stillingsId: string) =>
   );
 
 export const foresporselOmDelingAvCVMirage = (server: any) => {
-  server.get(ForespurteOmDelingAvCvEndepunkt('*'), () => [
-    {
+  server.get(ForespurteOmDelingAvCvEndepunkt('*'), () => {
+    return {
       '2433932565652': [
         {
           aktørId: '2433932565652',
@@ -224,6 +237,6 @@ export const foresporselOmDelingAvCVMirage = (server: any) => {
           navKontor: '0321',
         },
       ],
-    },
-  ]);
+    };
+  });
 };

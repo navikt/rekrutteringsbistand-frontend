@@ -2,6 +2,7 @@ import { BodyShort, Label, Link } from '@navikt/ds-react';
 import { FunctionComponent } from 'react';
 import { getMiljø, Miljø } from '../../../../../util/miljø';
 import { postApi } from '../../../../api/fetcher';
+import { KandidatForespurtOmDelingSchema } from '../../../../api/foresporsel-om-deling-av-cv/foresporsler/[slug]/useForespurteOmDelingAvCv';
 import { kandidaterSchemaDTO } from '../../../../api/kandidat/schema.zod';
 import { Kandidatstatus } from '../KandidatIKandidatlisteTyper';
 import KandidatHendelser from './KandidatHendelse';
@@ -11,6 +12,7 @@ type InfoOmKandidatProps = {
   innaktiv: boolean;
   kandidatlisteId: string;
   kandidat: kandidaterSchemaDTO;
+  forespørselCvForKandidat: KandidatForespurtOmDelingSchema[] | null;
 };
 
 const arbeidsrettetOppfølgingUrl =
@@ -22,6 +24,7 @@ const InfoOmKandidat: FunctionComponent<InfoOmKandidatProps> = ({
   innaktiv,
   kandidat,
   kandidatlisteId,
+  forespørselCvForKandidat,
 }) => {
   const navigerTilAktivitetsplanen = async (
     href: string,
@@ -83,7 +86,10 @@ const InfoOmKandidat: FunctionComponent<InfoOmKandidatProps> = ({
           kandidatnr={kandidat.kandidatnr}
           status={kandidat.status as Kandidatstatus}
         />
-        <KandidatHendelser kandidat={kandidat} />
+        <KandidatHendelser
+          kandidat={kandidat}
+          forespørselCvForKandidat={forespørselCvForKandidat}
+        />
       </div>
     </div>
   );
