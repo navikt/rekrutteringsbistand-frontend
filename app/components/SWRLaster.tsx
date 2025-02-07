@@ -9,6 +9,7 @@ import Feilmelding from './feilhåndtering/Feilmelding';
 type SWRHookResponse<T> = SWRResponse<T, Error> | undefined;
 
 export interface ISWRLasterProps<T extends any[]> {
+  visLoaderUnderValidering?: boolean;
   skjulFeilmelding?: boolean;
   hooks: { [K in keyof T]: SWRHookResponse<T[K]> };
   skeleton?: React.ReactNode;
@@ -26,12 +27,18 @@ const SWRLaster = <T extends any[]>({
   children,
   skjulFeilmelding = false,
   egenFeilmelding,
+  visLoaderUnderValidering = false,
 }: ISWRLasterProps<T>): React.ReactElement | null => {
   if (hooks.some((hook) => !hook)) {
     return <>{skeleton ? skeleton : <Sidelaster />}</>;
   }
 
-  if (hooks.some((hook) => hook?.isLoading || hook?.isValidating)) {
+  if (
+    hooks.some(
+      (hook) =>
+        hook?.isLoading || (visLoaderUnderValidering && hook?.isValidating),
+    )
+  ) {
     return <>{skeleton ? skeleton : <Sidelaster />}</>;
   }
 

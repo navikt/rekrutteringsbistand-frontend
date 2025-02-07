@@ -4,6 +4,7 @@ import { getMiljø, Miljø } from '../../../../../util/miljø';
 import { postApi } from '../../../../api/fetcher';
 import { KandidatForespurtOmDelingSchema } from '../../../../api/foresporsel-om-deling-av-cv/foresporsler/[slug]/useForespurteOmDelingAvCv';
 import { kandidaterSchemaDTO } from '../../../../api/kandidat/schema.zod';
+import { Sms } from '../../../../api/kandidatvarsel/kandidatvarsel';
 import { Kandidatstatus } from '../KandidatIKandidatlisteTyper';
 import KandidatHendelser from './KandidatHendelse';
 import VelgStatus from './VelgStatus';
@@ -13,6 +14,7 @@ type InfoOmKandidatProps = {
   kandidatlisteId: string;
   kandidat: kandidaterSchemaDTO;
   forespørselCvForKandidat: KandidatForespurtOmDelingSchema[] | null;
+  beskjedForKandidat?: Sms;
 };
 
 const arbeidsrettetOppfølgingUrl =
@@ -25,6 +27,7 @@ const InfoOmKandidat: FunctionComponent<InfoOmKandidatProps> = ({
   kandidat,
   kandidatlisteId,
   forespørselCvForKandidat,
+  beskjedForKandidat,
 }) => {
   const navigerTilAktivitetsplanen = async (
     href: string,
@@ -89,6 +92,7 @@ const InfoOmKandidat: FunctionComponent<InfoOmKandidatProps> = ({
         <KandidatHendelser
           kandidat={kandidat}
           forespørselCvForKandidat={forespørselCvForKandidat}
+          beskjedForKandidat={beskjedForKandidat}
         />
       </div>
     </div>

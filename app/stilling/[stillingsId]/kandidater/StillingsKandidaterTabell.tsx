@@ -15,10 +15,10 @@ import {
   kandidaterSchemaDTO,
   kandidatlisteSchemaDTO,
 } from '../../../api/kandidat/schema.zod';
+import { Sms } from '../../../api/kandidatvarsel/kandidatvarsel';
 import HendelseTag from './components/HendelseTag';
 import InfoOmKandidat from './components/InfoOmKandidat';
 import SletteKandidatKnapp from './components/KandidatDropdown';
-import SmsStatusPopup from './components/SendSMS/SmsStatusPopup';
 import StatusTag from './components/StatusTag';
 import UsynligKandidatRad from './components/UsynligKandidatRad';
 import { Kandidatstatus, Kandidatutfall } from './KandidatIKandidatlisteTyper';
@@ -32,6 +32,7 @@ const StillingsKandidaterTabell: React.FC<{
   stillingsId: string;
   stillingskategori: string | null;
   forespurteKandidater: ForespurteOmDelingAvCvDTO;
+  beskjeder: Record<string, Sms>;
 }> = ({
   markerteKandidater,
   setMarkerteKandidater,
@@ -40,6 +41,7 @@ const StillingsKandidaterTabell: React.FC<{
   stillingsId,
   stillingskategori,
   forespurteKandidater,
+  beskjeder,
 }) => {
   const [sort, setSort] = React.useState<TableSortState<kandidaterSchemaDTO>>();
 
@@ -145,7 +147,6 @@ const StillingsKandidaterTabell: React.FC<{
           <Table.ColumnHeader sortable sortKey='etternavn' scope='col'>
             Navn
           </Table.ColumnHeader>
-          <Table.HeaderCell scope='col' />
           <Table.HeaderCell scope='col'>Fødselsnr.</Table.HeaderCell>
           <Table.ColumnHeader sortable sortKey='lagtTilAv.navn' scope='col'>
             Lagt til av
@@ -172,6 +173,8 @@ const StillingsKandidaterTabell: React.FC<{
         {kandidater.map((kandidat, i) => {
           const innaktiv = !kandidat.fodselsnr;
 
+          const beskjedForKandidat = beskjeder[kandidat.fodselsnr ?? ''];
+
           const forespørselCvForKandidat =
             kandidat.aktørid && forespurteKandidater
               ? forespurteKandidater[kandidat.aktørid]
@@ -181,6 +184,7 @@ const StillingsKandidaterTabell: React.FC<{
             <Table.ExpandableRow
               content={
                 <InfoOmKandidat
+                  beskjedForKandidat={beskjedForKandidat}
                   forespørselCvForKandidat={forespørselCvForKandidat}
                   innaktiv={innaktiv}
                   kandidat={kandidat}
@@ -215,13 +219,7 @@ const StillingsKandidaterTabell: React.FC<{
                   </Link>
                 )}
               </Table.DataCell>
-              <Table.DataCell className='align-middle'>
-                <SmsStatusPopup
-                  fnr={kandidat.fodselsnr}
-                  stillingId={stillingsId}
-                  stillingskategori={stillingskategori}
-                />
-              </Table.DataCell>
+
               <Table.DataCell>
                 {kandidat.fodselsnr ?? 'Innaktiv'}
               </Table.DataCell>

@@ -8,6 +8,7 @@ import { format } from 'date-fns';
 import { nb } from 'date-fns/locale';
 import { KandidatForespurtOmDelingSchema } from '../../../../api/foresporsel-om-deling-av-cv/foresporsler/[slug]/useForespurteOmDelingAvCv';
 import { kandidaterSchemaDTO } from '../../../../api/kandidat/schema.zod';
+import { Sms } from '../../../../api/kandidatvarsel/kandidatvarsel';
 import { storForbokstavString } from '../../../../kandidat-sok/util';
 
 enum KandidatHendelseValg {
@@ -77,9 +78,11 @@ const HendelseBoks = ({
 const KandidatHendelser = ({
   kandidat,
   forespørselCvForKandidat,
+  beskjedForKandidat,
 }: {
   kandidat: kandidaterSchemaDTO;
   forespørselCvForKandidat: KandidatForespurtOmDelingSchema[] | null;
+  beskjedForKandidat?: Sms;
 }) => {
   return (
     <div>
@@ -147,6 +150,33 @@ const KandidatHendelser = ({
             }
           />
         ))}
+
+        {beskjedForKandidat && (
+          <>
+            <hr className='opacity-30' />
+            <Heading size='xsmall' spacing>
+              Beskjed til kandidat
+            </Heading>
+
+            <HendelseBoks
+              tittel={`${storForbokstavString(
+                beskjedForKandidat.minsideStatus,
+              ).replace(/_/g, ' ')} - ${storForbokstavString(
+                beskjedForKandidat.eksternStatus,
+              ).replace(/_/g, ' ')}`}
+              tekst={`${beskjedForKandidat.eksternFeilmelding && storForbokstavString(beskjedForKandidat.eksternFeilmelding).replace(/_/g, ' ')}`}
+              dato={beskjedForKandidat.opprettet}
+              type={
+                beskjedForKandidat.eksternStatus
+                  ? beskjedForKandidat.eksternStatus.includes('FEIL')
+                    ? 'error'
+                    : 'success'
+                  : 'info'
+              }
+            />
+          </>
+        )}
+
         {/* <HendelseBok
           tittel='Sending av epost/SMS feilet'
           tekst='Sendt av Ola Nordmann (Z12345)'

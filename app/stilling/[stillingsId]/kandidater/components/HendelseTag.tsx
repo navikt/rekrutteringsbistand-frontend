@@ -44,7 +44,7 @@ export type ForespørselOmDelingAvCv = {
   svarfrist: string;
 } & (MedSvar | UtenSvar);
 
-enum TilstandPåForespørsel {
+export enum TilstandPåForespørsel {
   KanIkkeOpprette = 'KAN_IKKE_OPPRETTE',
   PrøverVarsling = 'PROVER_VARSLING',
   HarVarslet = 'HAR_VARSLET',
