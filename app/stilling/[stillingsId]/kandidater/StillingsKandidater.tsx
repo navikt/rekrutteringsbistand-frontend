@@ -169,7 +169,7 @@ const StillingsKandidater: React.FC = () => {
                   >
                     {Object.entries(TilstandPåForespørsel).map(
                       ([key, value]) => (
-                        <Checkbox key={key} value={key}>
+                        <Checkbox key={key} value={value}>
                           {storForbokstavString(value ?? '').replace(/_/g, ' ')}
                         </Checkbox>
                       ),
@@ -199,9 +199,6 @@ const StillingsKandidater: React.FC = () => {
                   search={search}
                   kandidatliste={kandidatliste}
                   stillingsId={stillingsData.stilling.uuid}
-                  stillingskategori={
-                    stillingsData.stillingsinfo?.stillingskategori ?? null
-                  }
                 />
               </div>
             </div>

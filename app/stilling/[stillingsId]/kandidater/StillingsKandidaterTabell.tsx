@@ -30,7 +30,6 @@ const StillingsKandidaterTabell: React.FC<{
   search: string;
   kandidatliste: kandidatlisteSchemaDTO;
   stillingsId: string;
-  stillingskategori: string | null;
   forespurteKandidater: ForespurteOmDelingAvCvDTO;
   beskjeder: Record<string, Sms>;
 }> = ({
@@ -39,7 +38,6 @@ const StillingsKandidaterTabell: React.FC<{
   search,
   kandidatliste,
   stillingsId,
-  stillingskategori,
   forespurteKandidater,
   beskjeder,
 }) => {
@@ -80,7 +78,13 @@ const StillingsKandidaterTabell: React.FC<{
           hendelse.some(
             (utfall) =>
               kandidat.status === utfall ||
-              kandidat.utfallsendringer.some((h) => h.utfall === utfall),
+              kandidat.utfallsendringer.some((h) => h.utfall === utfall) ||
+              (kandidat.aktørid &&
+                forespurteKandidater[kandidat.aktørid]?.some(
+                  (forespørsel) => forespørsel.tilstand === utfall,
+                )) ||
+              (kandidat.fodselsnr &&
+                beskjeder[kandidat.fodselsnr]?.eksternStatus === utfall),
           );
 
         // Skjuler de som ikke har fnr hvis filter er valgt for å ikke utlede hendelser.
