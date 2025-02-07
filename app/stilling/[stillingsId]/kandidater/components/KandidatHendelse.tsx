@@ -68,7 +68,9 @@ const HendelseBoks = ({
           {format(new Date(dato), 'dd. MMMM yyyy HH:mm', { locale: nb })}
         </BodyShort>
       </div>
-      <BodyLong spacing>{tekst}</BodyLong>
+      <BodyLong spacing className='mt-4'>
+        {tekst}
+      </BodyLong>
     </Box.New>
   );
 };

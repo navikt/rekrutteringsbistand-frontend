@@ -93,6 +93,7 @@ export const PraktiskInfoSchema = z
     oppstartEtterAvtale: z.boolean(),
     søknadsfrist: z.string().nullable(),
     søknadsfristSnarest: z.boolean(),
+    arbeidstidsordning: z.string().nullable(),
     ansettelsesform: z
       .string()
       .nullish()

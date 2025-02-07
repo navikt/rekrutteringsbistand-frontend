@@ -106,6 +106,8 @@ export const mapStillingTilForm = (
         stillingsData?.stilling?.properties?.engagementtype ?? null,
       dager: workday,
       tid: workhours,
+      arbeidstidsordning:
+        stillingsData?.stilling?.properties?.jobarrangement ?? null,
     },
     innspurt: {
       publiseres: stillingsData?.stilling?.published
@@ -162,6 +164,7 @@ export const mapFormTilStilling = (
         jobpercentage: formData.praktiskInfo.omfangProsent,
         applicationemail: formData.innspurt.epost,
         applicationurl: formData.innspurt.lenke,
+        jobarrangement: formData.praktiskInfo.arbeidstidsordning,
       },
       published: formaterTilISODato(formData.innspurt.publiseres),
       expires: formaterTilISODato(formData.innspurt.avsluttes),

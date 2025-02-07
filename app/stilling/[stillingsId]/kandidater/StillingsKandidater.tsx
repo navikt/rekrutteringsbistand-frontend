@@ -17,7 +17,6 @@ import { useStillingsKandidaterFilter } from './StillingsKandidaterFilterContext
 import StillingsKandidaterTabell from './StillingsKandidaterTabell';
 
 export enum KandidatHendelseValg {
-  VURDERES = 'Vurderes',
   PRESENTERT = 'Presentert',
   TIL_INTERVJU = 'Til intervju',
   FATT_JOBBEN = 'Fått jobb',

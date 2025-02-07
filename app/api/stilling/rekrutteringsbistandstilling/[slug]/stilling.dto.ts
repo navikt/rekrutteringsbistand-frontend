@@ -14,6 +14,7 @@ export const searchtagSchema = z.object({
 
 export const propertiesSchema = z
   .object({
+    jobarrangement: z.string().optional().nullable(),
     employerhomepage: z.string().optional().nullable(),
     facebookpage: z.string().optional().nullable(),
     linkedinpage: z.string().optional().nullable(),

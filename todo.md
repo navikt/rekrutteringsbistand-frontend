@@ -29,3 +29,19 @@ Refresh kandidatliste når kandidat er lagt til
 Sjekke usynlige kandidater vs innaktive vs kode6/kode7
 
 --ac blir borte
+
+- Bedrift adresse
+
+- Funksjonalitet for å fylle inn navansatt kontaktinfo
+
+- Fjerne SMS ikon og legg SMS hendelser under Info om kandidat
+
+FORMIDLING:
+
+Første steg: Om kandidaten
+
+- Fjern om virksomheten
+- Fjern beskriv stillingen
+- Fjern oppstart og søknadsfrist
+
+- Endre innspurt
