@@ -150,3 +150,4 @@ export interface StillingsDataForm {
   praktiskInfo: PraktiskInfoType;
   innspurt: InnspurtType;
 }
+

@@ -26,7 +26,6 @@ const Decorator = dynamic<DecoratorProps>(
 
 const Modiadekoratør: React.FC = () => {
   const { setValgtNavKontor, setValgtFnr, valgtFnr } = useApplikasjonContext();
-
   return (
     <Decorator
       fnr={valgtFnr ?? undefined}

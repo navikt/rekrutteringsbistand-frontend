@@ -57,12 +57,22 @@ export enum BeskjedEksternStatus {
   FEIL = 'FEIL',
 }
 
+export enum EksternKanal {
+  SMS = 'SMS',
+  EPOST = 'EPOST',
+}
+
 const EksternStatusSchema = z
   .literal(BeskjedEksternStatus.UNDER_UTSENDING)
   .or(z.literal(BeskjedEksternStatus.VELLYKKET_SMS))
   .or(z.literal(BeskjedEksternStatus.VELLYKKET_EPOST))
   .or(z.literal(BeskjedEksternStatus.FERDIGSTILT))
   .or(z.literal(BeskjedEksternStatus.FEIL));
+
+const EksternKanalSchema = z
+  .literal(null)
+  .or(z.literal(EksternKanal.SMS))
+  .or(z.literal(EksternKanal.EPOST));
 
 const SmsSchema = z
   .object({
@@ -74,6 +84,7 @@ const SmsSchema = z
     minsideStatus: MinsideStatusSchema,
     eksternStatus: EksternStatusSchema,
     eksternFeilmelding: z.string().nullable(),
+    eksternKanal: EksternKanalSchema,
   })
   .partial({ eksternFeilmelding: true });
 

@@ -8,12 +8,15 @@ import { format } from 'date-fns';
 import { nb } from 'date-fns/locale';
 import { KandidatForespurtOmDelingSchema } from '../../../../api/foresporsel-om-deling-av-cv/foresporsler/[slug]/useForespurteOmDelingAvCv';
 import { kandidaterSchemaDTO } from '../../../../api/kandidat/schema.zod';
-import { Sms } from '../../../../api/kandidatvarsel/kandidatvarsel';
+import {
+  EksternKanal,
+  Sms,
+} from '../../../../api/kandidatvarsel/kandidatvarsel';
 import { storForbokstavString } from '../../../../kandidat-sok/util';
 
 enum KandidatHendelseValg {
   CV_DELT = 'CV-en er delt med arbeidsgiver',
-  //   STILLING_DELT = 'Stillingen er delt med kandidaten',
+  STILLING_DELT = 'Stillingen er delt med kandidaten',
   //   IKKE_INTERESSERT = 'Kandidaten er ikke interessert',
   //   IKKE_AKTUELL = 'Kandidaten er ikke aktuell',
   //   AKTUELL = 'Kandidaten er aktuell',
@@ -26,7 +29,7 @@ const utfallTilTittel: Record<string, string> = {
   PRESENTERT: KandidatHendelseValg.PRESENTERT,
   CV_DELT: KandidatHendelseValg.CV_DELT,
   IKKE_PRESENTERT: KandidatHendelseValg.IKKE_PRESENTERT,
-  //   STILLING_DELT: KandidatHendelseValg.STILLING_DELT,
+  STILLING_DELT: KandidatHendelseValg.STILLING_DELT,
   //   IKKE_INTERESSERT: KandidatHendelseValg.IKKE_INTERESSERT,
   //   IKKE_AKTUELL: KandidatHendelseValg.IKKE_AKTUELL,
   //   AKTUELL: KandidatHendelseValg.AKTUELL,
@@ -44,24 +47,26 @@ const HendelseBoks = ({
   dato: string;
   type: 'success' | 'error' | 'info';
 }) => {
+  const borderColor =
+    type === 'error' ? 'danger' : type === 'success' ? 'success' : 'info';
   return (
     <Box.New
-      className={`p-4 border-l-4 ${
-        type === 'error'
-          ? 'border-surface-danger'
-          : type === 'success'
-            ? 'border-surface-success'
-            : 'border-surface-info'
-      }`}
+      background='raised'
+      borderColor={borderColor}
+      borderRadius='xlarge'
+      borderWidth='1'
+      paddingInline='space-16'
+      paddingBlock='space-12'
+      className={`p-4 border-l-4 `}
     >
       <div className='flex justify-between'>
         <div className='flex items-center gap-2 '>
           {type === 'error' ? (
-            <XMarkOctagonIcon className='text-surface-danger' />
+            <XMarkOctagonIcon className='text-danger' />
           ) : type === 'success' ? (
-            <CheckmarkCircleIcon className='text-surface-success' />
+            <CheckmarkCircleIcon className='text-success' />
           ) : (
-            <ExclamationmarkTriangleIcon className='text-surface-info' />
+            <ExclamationmarkTriangleIcon className='text-info' />
           )}
           <BodyShort weight='semibold'>{tittel}</BodyShort>
         </div>
@@ -136,8 +141,8 @@ const KandidatHendelser = ({
             tekst={
               forespørsel.svar
                 ? forespørsel.svar.harSvartJa
-                  ? `Svart ja av ${forespørsel.svar.svartAv.ident}`
-                  : `Svart nei av ${forespørsel.svar.svartAv.ident}`
+                  ? `Svart ja ${forespørsel.svar.svartAv.ident ? `av ${forespørsel.svar.svartAv.ident}` : ''}`
+                  : `Svart nei ${forespørsel.svar.svartAv.ident ? `av ${forespørsel.svar.svartAv.ident}` : ''}`
                 : `Svarfrist ${format(new Date(forespørsel.svarfrist), 'dd. MMMM yyyy')}`
             }
             dato={forespørsel.deltTidspunkt}
@@ -164,7 +169,17 @@ const KandidatHendelser = ({
               ).replace(/_/g, ' ')} - ${storForbokstavString(
                 beskjedForKandidat.eksternStatus,
               ).replace(/_/g, ' ')}`}
-              tekst={`${beskjedForKandidat.eksternFeilmelding && storForbokstavString(beskjedForKandidat.eksternFeilmelding).replace(/_/g, ' ')}`}
+              tekst={`${
+                beskjedForKandidat.eksternKanal
+                  ? beskjedForKandidat.eksternKanal === EksternKanal.EPOST
+                    ? 'Epost sendt'
+                    : 'SMS sendt'
+                  : beskjedForKandidat.eksternFeilmelding
+                    ? storForbokstavString(
+                        beskjedForKandidat.eksternFeilmelding,
+                      ).replace(/_/g, ' ')
+                    : ''
+              }`}
               dato={beskjedForKandidat.opprettet}
               type={
                 beskjedForKandidat.eksternStatus
@@ -176,25 +191,6 @@ const KandidatHendelser = ({
             />
           </>
         )}
-
-        {/* <HendelseBok
-          tittel='Sending av epost/SMS feilet'
-          tekst='Sendt av Ola Nordmann (Z12345)'
-          dato='2025-01-31'
-          type='error'
-        />
-        <HendelseBok
-          tittel='Stillingen er delt med kandidaten'
-          tekst='Delt av Ola Nordmann (Z12345)'
-          dato='2025-01-31'
-          type='success'
-        />
-        <HendelseBok
-          tittel='Svar fra kandidat om deling av CV'
-          tekst='Svarfrist utløpt 2025-01-31'
-          dato='2025-01-31'
-          type='info'
-        /> */}
       </div>
     </div>
   );
