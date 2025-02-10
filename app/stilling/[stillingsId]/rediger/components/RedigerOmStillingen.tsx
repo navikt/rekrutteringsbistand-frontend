@@ -1,5 +1,4 @@
-import { BodyShort, Heading } from '@navikt/ds-react';
-import Link from 'next/link';
+import { BodyShort, Heading, Link } from '@navikt/ds-react';
 import * as React from 'react';
 import { useFormContext } from 'react-hook-form';
 import RikTekstEditor from '../../../../components/rikteksteditor/RikTekstEditor';

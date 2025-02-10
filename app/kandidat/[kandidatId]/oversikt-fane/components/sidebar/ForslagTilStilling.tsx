@@ -1,7 +1,6 @@
-import { BodyShort, Button } from '@navikt/ds-react';
+import { BodyShort, Button, Link } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import { nb } from 'date-fns/locale';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 import { useStillingssøk } from '../../../../../api/stillings-sok/useStillingssøk';

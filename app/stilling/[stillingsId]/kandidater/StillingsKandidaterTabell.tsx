@@ -1,6 +1,5 @@
-import { Checkbox, Table, Tooltip } from '@navikt/ds-react';
+import { Checkbox, Link, Table, Tooltip } from '@navikt/ds-react';
 import { format } from 'date-fns';
-import Link from 'next/link';
 import * as React from 'react';
 import {
   applySortDirection,

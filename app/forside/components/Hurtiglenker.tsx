@@ -1,11 +1,10 @@
 'use client';
 
-import Link from 'next/link';
 import { FunctionComponent, ReactNode } from 'react';
 import OpprettNyStillingIkon from '../../../public/ikoner/opprett-ny-stilling.svg';
 import SeMineStillingerIkon from '../../../public/ikoner/se-mine-stillinger.svg';
 
-import { Box } from '@navikt/ds-react';
+import { Box, Link } from '@navikt/ds-react';
 import SVGDarkmode from '../../components/SVGDarkmode';
 import { TilgangskontrollForInnhold } from '../../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '../../components/tilgangskontroll/roller';

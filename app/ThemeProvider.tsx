@@ -18,7 +18,8 @@ export interface ThemeProviderProps {
 }
 
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
-  const [darkMode, setDarkMode] = React.useState<boolean>(true);
+  const [darkMode, setDarkMode] = React.useState<boolean>(false);
+
   useEffect(() => {
     document.documentElement.style.height = '100%';
     document.body.style.height = '100%';
