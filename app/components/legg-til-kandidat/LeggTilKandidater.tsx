@@ -1,29 +1,55 @@
-import { Alert, Box, Button, Heading, Search, Table } from '@navikt/ds-react';
+import {
+  CheckmarkCircleIcon,
+  PlusCircleIcon,
+  XMarkIcon,
+} from '@navikt/aksel-icons';
+import {
+  Alert,
+  Box,
+  Button,
+  Heading,
+  Loader,
+  Search,
+  Tag,
+} from '@navikt/ds-react';
 import { idnr } from '@navikt/fnrvalidator';
 import * as React from 'react';
+import { useArenaKandidatnr } from '../../api/kandidat-sok/useArenaKandidatnr';
 import {
   Kandidatnavn,
   useKandidatNavn,
 } from '../../api/kandidat-sok/useKandidatNavn';
-
+import SynlighetsModal from './SynlighetsModal';
 export interface LeggTilKandidaterProps {
-  children?: React.ReactNode | undefined;
+  måHaAktørId?: boolean;
+  callBack: (valgteKandidater: ValgtKandidatProp[]) => void;
 }
 
-interface ValgtKandidatProp extends Kandidatnavn {
+export interface ValgtKandidatProp extends Kandidatnavn {
   fødselsnummer: string;
+  aktørId?: string;
 }
 
 const validerFnr = (fnr: string): boolean => idnr(fnr).status === 'valid';
 
-const LeggTilKandidater: React.FC<LeggTilKandidaterProps> = ({ children }) => {
+const LeggTilKandidater: React.FC<LeggTilKandidaterProps> = ({
+  måHaAktørId,
+  callBack,
+}) => {
   const [feilmelding, setFeilmelding] = React.useState('');
   const [valgteKandidater, setValgteKandidater] = React.useState<
     ValgtKandidatProp[]
   >([]);
   const [fødselsnummer, setFødselsnummer] = React.useState<string | null>(null);
-  const [laster, setLaster] = React.useState(false);
-  const kandidatNavn = useKandidatNavn(fødselsnummer);
+
+  const kandidatNavnHook = useKandidatNavn(fødselsnummer);
+  const arenaKandidatnrHook = useArenaKandidatnr(
+    måHaAktørId ? fødselsnummer : null,
+  );
+
+  React.useEffect(() => {
+    callBack(valgteKandidater);
+  }, [valgteKandidater, callBack]);
 
   const handleFnrChange = (fødselsnummer: string) => {
     if (fødselsnummer.length < 11) {
@@ -44,101 +70,129 @@ const LeggTilKandidater: React.FC<LeggTilKandidaterProps> = ({ children }) => {
     }
   };
 
+  const leggTilKandidat = (fødselsnummer: string) => (
+    <Box.New
+      className='cursor-pointer'
+      onClick={() => {
+        if (!valgteKandidater.some((k) => k.fødselsnummer === fødselsnummer)) {
+          setValgteKandidater([
+            ...valgteKandidater,
+            {
+              fødselsnummer: fødselsnummer!,
+              fornavn: kandidatNavnHook.data?.fornavn!,
+              etternavn: kandidatNavnHook.data?.etternavn!,
+              kilde: kandidatNavnHook.data?.kilde!,
+            },
+          ]);
+        }
+      }}
+    >
+      <div className='flex justify-between  items-center '>
+        <div className='p-4'>
+          {kandidatNavnHook.data?.fornavn} {kandidatNavnHook.data?.etternavn} -{' '}
+          {fødselsnummer}
+        </div>
+        <div className='mr-4'>
+          {valgteKandidater.some((k) => k.fødselsnummer === fødselsnummer) ? (
+            <div className='flex items-center gap-2'>
+              <CheckmarkCircleIcon /> <strong>Lagt til</strong>
+            </div>
+          ) : (
+            <Button icon={<PlusCircleIcon />} variant='tertiary' />
+          )}
+        </div>
+      </div>
+    </Box.New>
+  );
+
+  const UsynligKandidat = (fødselsnummer: string) => (
+    <Box.New className='cursor-pointer'>
+      <div className='flex justify-between  items-center '>
+        <div className='p-4'>
+          {kandidatNavnHook.data?.fornavn} {kandidatNavnHook.data?.etternavn} -{' '}
+          {fødselsnummer}
+        </div>
+        <div className='mr-4 flex gap-2'>
+          <Tag variant='warning'>Kandidaten er ikke synlig</Tag>
+          <SynlighetsModal fødselsnummer={fødselsnummer} />
+        </div>
+      </div>
+    </Box.New>
+  );
+
   return (
     <div>
-      <Search
-        label='Fødselsnummer på kandidat'
-        onChange={handleFnrChange}
-        error={feilmelding}
-      />
+      <Heading size='xsmall' className='mb-2'>
+        Søk etter fødselsnummer
+      </Heading>
+      <Box.New
+        borderRadius='xlarge'
+        borderWidth='1'
+        borderColor='info-subtleA'
+        background='info-soft'
+      >
+        <Search
+          label='Fødselsnummer på kandidat'
+          onChange={handleFnrChange}
+          error={feilmelding}
+        />
 
-      {kandidatNavn.data && (
-        <Box.New
-          className='mt-4 flex justify-between'
-          background='raised'
-          borderColor='neutral-subtleA'
-          borderRadius='xlarge'
-          borderWidth='1'
-          paddingInline='space-16'
-          paddingBlock='space-12'
-        >
-          <div>
-            Søkeresultat:{' '}
-            <strong>
-              {kandidatNavn.data?.fornavn} {kandidatNavn.data?.etternavn} -{' '}
-              {fødselsnummer}
-            </strong>
-          </div>
-          <Button
-            disabled={!fødselsnummer}
-            variant='tertiary'
-            size='small'
-            onClick={() => {
-              setValgteKandidater([
-                ...valgteKandidater,
-                {
-                  fødselsnummer: fødselsnummer!,
-                  fornavn: kandidatNavn.data?.fornavn!,
-                  etternavn: kandidatNavn.data?.etternavn!,
-                  kilde: kandidatNavn.data?.kilde!,
-                },
-              ]);
-            }}
-          >
-            Legg til kandidat
-          </Button>
-          {/* {arenaKandidatnr.data && (
-      <p>
-        <strong>Arena kandidatnr:</strong>{' '}
-        {arenaKandidatnr.data?.arenaKandidatnr}
-      </p>
-    )} */}
-        </Box.New>
-      )}
-      {kandidatNavn.error && (
-        <Alert variant='error' className='mt-4'>
-          <p>Finner ikke person knyttet til fødselsnummer</p>
-        </Alert>
-      )}
+        {kandidatNavnHook.isLoading && (
+          <Box.New className='flex justify-center items-center h-full p-4'>
+            <Loader />
+          </Box.New>
+        )}
+        {kandidatNavnHook.data && fødselsnummer
+          ? måHaAktørId
+            ? arenaKandidatnrHook.data?.arenaKandidatnr
+              ? leggTilKandidat(fødselsnummer)
+              : UsynligKandidat(fødselsnummer)
+            : leggTilKandidat(fødselsnummer)
+          : null}
 
-      <div className='mt-8'>
-        <Heading size='medium'>Valgte kandidater</Heading>
-        <Table>
-          <Table.Header>
-            <Table.Row>
-              <Table.HeaderCell>Fødselsnummer</Table.HeaderCell>
-              <Table.HeaderCell>Navn</Table.HeaderCell>
-              <Table.HeaderCell />
-            </Table.Row>
-          </Table.Header>
-          <Table.Body>
-            {valgteKandidater.map((kandidat) => (
-              <Table.Row key={kandidat.fødselsnummer}>
-                <Table.DataCell>{kandidat.fødselsnummer}</Table.DataCell>
-                <Table.DataCell>
-                  {kandidat.fornavn} {kandidat.etternavn}
-                </Table.DataCell>
-                <Table.DataCell>
-                  <Button
-                    variant='tertiary'
-                    size='small'
-                    onClick={() =>
-                      setValgteKandidater(
-                        valgteKandidater.filter(
-                          (kandidat) =>
-                            kandidat.fødselsnummer !== kandidat.fødselsnummer,
-                        ),
-                      )
-                    }
-                  >
-                    Fjern kandidat
-                  </Button>
-                </Table.DataCell>
-              </Table.Row>
-            ))}
-          </Table.Body>
-        </Table>
-      </div>
+        {kandidatNavnHook.error && (
+          <Alert variant='error' className='mt-4'>
+            <p>Finner ikke person knyttet til fødselsnummer</p>
+          </Alert>
+        )}
+      </Box.New>
+      {valgteKandidater.length > 0 && (
+        <div className='mt-8'>
+          <Heading size='medium'>Utvalgte kandidater</Heading>
+
+          {valgteKandidater.map((kandidat) => (
+            <Box.New
+              className='flex flex-row justify-between items-center font-bold'
+              key={kandidat.fødselsnummer}
+              background='raised'
+              borderColor='neutral-subtleA'
+              borderRadius='xlarge'
+              borderWidth='1'
+              paddingInline='space-16'
+              paddingBlock='space-12'
+            >
+              <div>
+                {kandidat.fornavn} {kandidat.etternavn} (
+                {kandidat.fødselsnummer})
+              </div>
+              <Button
+                icon={<XMarkIcon />}
+                variant='tertiary'
+                onClick={() =>
+                  setValgteKandidater(
+                    valgteKandidater.filter(
+                      (kandidat) =>
+                        kandidat.fødselsnummer !== kandidat.fødselsnummer,
+                    ),
+                  )
+                }
+              >
+                Fjern
+              </Button>
+            </Box.New>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

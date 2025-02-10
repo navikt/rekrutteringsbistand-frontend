@@ -6,6 +6,7 @@ import { useStilling } from '../../api/stilling/rekrutteringsbistandstilling/[sl
 import { useApplikasjonContext } from '../../ApplikasjonContext';
 import SWRLaster from '../../components/SWRLaster';
 import { eierStilling } from '../../components/tilgangskontroll/erEier';
+import { Roller } from '../../components/tilgangskontroll/roller';
 
 interface StillingsContextType {
   stillingsData: StillingsDataDTO;
@@ -55,6 +56,7 @@ const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
 }) => {
   const {
     brukerData: { ident },
+    harRolle,
   } = useApplikasjonContext();
 
   const [forhåndsvisData, setForhåndsvisData] =
@@ -77,11 +79,12 @@ const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
 
   const erEier = useMemo(
     () =>
+      harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER]) ||
       eierStilling({
         stillingsData: stillingsData,
         navIdent: ident,
       }),
-    [stillingsData, ident],
+    [stillingsData, ident, harRolle],
   );
 
   return (

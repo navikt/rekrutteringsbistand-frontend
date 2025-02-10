@@ -27,6 +27,7 @@ import { oppdaterStillingMirage } from '../app/api/stilling/oppdater-stilling/op
 import { stillingMirage } from '../app/api/stilling/rekrutteringsbistandstilling/[slug]/useStilling';
 import { brukerStandardSøkMirage } from '../app/api/stilling/standardsok/useBrukersStandardsøk';
 import { stillingssøkMirage } from '../app/api/stillings-sok/useStillingssøk';
+import { synlighetsevalueringMirage } from '../app/api/synlighet/useSynlighetsevaluering';
 
 export function makeServer({ environment = 'test' } = {}) {
   let server = createServer({
@@ -63,6 +64,7 @@ export function makeServer({ environment = 'test' } = {}) {
       meldingsmalerMirage(this);
       kandidatvarselMirage(this);
       foresporselOmDelingAvCVMirage(this);
+      synlighetsevalueringMirage(this);
 
       // stillingssøk mock kan disables ved ES søk
       stillingssøkMirage(this);

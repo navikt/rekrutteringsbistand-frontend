@@ -78,4 +78,6 @@ spec:
     - name: KANDIDATVARSEL_API_URL
       value: http://rekrutteringsbistand-kandidatvarsel-api
     - name: ARBEIDSGIVER_NOTIFIKASJON_API
-      value: http://toi-arbeidsgiver-notifikasjon      
+      value: http://toi-arbeidsgiver-notifikasjon
+    - name: SYNLIGHETSMOTOR_API
+      value: http://toi-synlighetsmotor

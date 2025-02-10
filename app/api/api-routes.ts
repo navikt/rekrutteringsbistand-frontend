@@ -17,6 +17,13 @@ export const ModiaDecoratorAPI: Iroute = {
   scope: `api://${gcp}.personoversikt.modiacontextholder/.default`,
 };
 
+export const SynlighetsevalueringAPI: Iroute = {
+  api_route: '',
+  api_url: process.env.SYNLIGHETSMOTOR_API ?? '',
+  internUrl: '/api/synlighet',
+  scope: `api://${gcp}.toi.toi-synlighetsmotor/.default`,
+};
+
 export const ArbeidsgiverNotifikasjonAPI: Iroute = {
   api_route: '',
   api_url: process.env.ARBEIDSGIVER_NOTIFIKASJON_API ?? '',

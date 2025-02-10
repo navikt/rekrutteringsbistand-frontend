@@ -1,24 +1,31 @@
 import { ArrowForwardIcon } from '@navikt/aksel-icons';
-import { Alert, Button, Modal, TextField } from '@navikt/ds-react';
+import { Alert, Button, Modal } from '@navikt/ds-react';
 import { idnr } from '@navikt/fnrvalidator';
 import * as React from 'react';
 import { useRef, useState } from 'react';
 import { leggTilKandidater } from '../../../api/kandidat-sok/leggTilKandidat';
 import { useArenaKandidatnr } from '../../../api/kandidat-sok/useArenaKandidatnr';
 import { useKandidatNavn } from '../../../api/kandidat-sok/useKandidatNavn';
+import LeggTilKandidater, {
+  ValgtKandidatProp,
+} from '../../../components/legg-til-kandidat/LeggTilKandidater';
 
-export interface LeggTilKandidatProps {
+export interface LeggTilKandidatTilStillingProps {
   stillingsId: string;
   stillingsTittel: string;
 }
 
 const validerFnr = (fnr: string): boolean => idnr(fnr).status === 'valid';
 
-const LeggTilKandidat: React.FC<LeggTilKandidatProps> = ({
+const LeggTilKandidatTilStilling: React.FC<LeggTilKandidatTilStillingProps> = ({
   stillingsId,
   stillingsTittel,
 }) => {
   const ref = useRef<HTMLDialogElement>(null);
+
+  const [valgteKandidater, setValgteKandidater] = useState<ValgtKandidatProp[]>(
+    [],
+  );
   const [feilmelding, setFeilmelding] = useState('');
   const [fødselsnummer, setFødselsnummer] = useState<string | null>(null);
   const [laster, setLaster] = useState(false);
@@ -54,11 +61,13 @@ const LeggTilKandidat: React.FC<LeggTilKandidatProps> = ({
 
   const onLeggTilKandidat = async () => {
     setLaster(true);
-    if (arenaKandidatnr.data?.arenaKandidatnr) {
-      await leggTilKandidater(
-        [arenaKandidatnr.data?.arenaKandidatnr],
-        stillingsId,
-      )
+
+    const valgteAktørIder = valgteKandidater
+      .map((kandidat) => kandidat.aktørId)
+      .filter((aktørId) => aktørId !== undefined);
+
+    if (valgteAktørIder.length > 0) {
+      await leggTilKandidater(valgteAktørIder, stillingsId)
         .then(() => {
           setLagtTil(true);
         })
@@ -78,16 +87,16 @@ const LeggTilKandidat: React.FC<LeggTilKandidatProps> = ({
         className='mr-2'
         icon={<ArrowForwardIcon aria-hidden />}
       >
-        Legg til kandidat
+        Legg til kandidater
       </Button>
 
       <Modal
+        width='600px'
         ref={ref}
         header={{
           closeButton: false,
-          heading: `Legg til kandidat til ${stillingsTittel ?? 'stilling'}`,
+          heading: `Legg til kandidater til ${stillingsTittel ?? 'stilling'}`,
         }}
-        width={400}
       >
         {lagtTil ? (
           <>
@@ -104,38 +113,19 @@ const LeggTilKandidat: React.FC<LeggTilKandidatProps> = ({
         ) : (
           <>
             <Modal.Body>
-              <TextField
-                label='Fødselsnummer på kandidat'
-                onChange={handleFnrChange}
-                error={feilmelding}
+              <LeggTilKandidater
+                måHaAktørId
+                callBack={(valgteKandidater) => {
+                  setValgteKandidater(valgteKandidater);
+                }}
               />
-
-              {kandidatNavn.data && (
-                <div className='mt-4'>
-                  <p>
-                    <strong>Kandidatnavn:</strong> {kandidatNavn.data?.fornavn}{' '}
-                    {kandidatNavn.data?.etternavn}
-                  </p>
-                  {arenaKandidatnr.data && (
-                    <p>
-                      <strong>Arena kandidatnr:</strong>{' '}
-                      {arenaKandidatnr.data?.arenaKandidatnr}
-                    </p>
-                  )}
-                </div>
-              )}
-              {(kandidatNavn.error || arenaKandidatnr.error) && (
-                <Alert variant='error' className='mt-4'>
-                  <p>Finner ikke person knyttet til fødselsnummer</p>
-                </Alert>
-              )}
             </Modal.Body>
             <Modal.Footer>
               <Button
-                disabled={isLoading || !fødselsnummer}
+                disabled={isLoading || valgteKandidater.length === 0}
                 onClick={onLeggTilKandidat}
               >
-                Legg til kandidat
+                Legg til kandidater
               </Button>
               <Button
                 disabled={isLoading}
@@ -153,4 +143,4 @@ const LeggTilKandidat: React.FC<LeggTilKandidatProps> = ({
   );
 };
 
-export default LeggTilKandidat;
+export default LeggTilKandidatTilStilling;
