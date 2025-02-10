@@ -1,5 +1,4 @@
 'use client';
-import '@navikt/ds-css/darkside';
 import { Alert, Heading } from '@navikt/ds-react';
 import React from 'react';
 import { getMiljø, Miljø } from '../util/miljø';

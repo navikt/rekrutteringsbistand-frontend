@@ -1,7 +1,8 @@
 /* Importerer decorator fra Nav først, så overstyrer vi style fra Nav med våre egne styles */
-@layer tw-base, framework, tw-components, tw-utilities;
+@layer dekorator,tw-base, framework, tw-components, tw-utilities;
 
-@import url('https://cdn.nav.no/personoversikt/internarbeidsflate-decorator-v3/dev/latest/dist/index.css');
+@import url('https://cdn.nav.no/personoversikt/internarbeidsflate-decorator-v3/dev/latest/dist/index.css')
+layer(dekorator);
 @import '../node_modules/tailwindcss/base.css' layer(tw-base);
 @import '@navikt/ds-css/darkside' layer(framework);
 @import '../node_modules/tailwindcss/components.css' layer(tw-components);
