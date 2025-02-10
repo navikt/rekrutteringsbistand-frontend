@@ -2,8 +2,8 @@ import { LightBulbIcon } from '@navikt/aksel-icons';
 import { Button, Heading, Popover, Switch } from '@navikt/ds-react';
 import { FunctionComponent, useEffect, useRef, useState } from 'react';
 import { getMiljø, Miljø } from '../../../../../util/miljø';
-import { useApplikasjonContext } from '../../../../ApplikasjonContext';
 import { nyheter } from '../../../../nyheter';
+import { useThemeProvider } from '../../../../ThemeProvider';
 import Artikkel from './Artikkel';
 import css from './Nyheter.module.css';
 import useAntallUlesteNyheter from './useAntallUlesteNyheter';
@@ -12,7 +12,7 @@ const Nyheter: FunctionComponent = () => {
   const [åpen, setÅpen] = useState<boolean>(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
-  const { darkMode, setDarkMode } = useApplikasjonContext();
+  const { darkMode, setDarkMode } = useThemeProvider();
 
   const onFørsteBesøk = () => {
     setÅpen(true);

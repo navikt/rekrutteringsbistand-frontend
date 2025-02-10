@@ -4,6 +4,7 @@ import { isLocal } from '../util/env';
 import MirageInitializer from './components/MirageInitializer';
 import './globals.css';
 import RekrutteringsbistandProvider from './RekrutteringsbistandProvider';
+import { ThemeProvider } from './ThemeProvider';
 
 const devBundle =
   'https://cdn.nav.no/personoversikt/internarbeidsflate-decorator-v3/dev/latest/dist/bundle.js';
@@ -25,11 +26,13 @@ export default async function RootLayout({
     <html lang='no' className='h-full '>
       <Script src={bundle} strategy='afterInteractive' />
       <body>
-        <BrukLokalMock>
-          <RekrutteringsbistandProvider>
-            {children}
-          </RekrutteringsbistandProvider>
-        </BrukLokalMock>
+        <ThemeProvider>
+          <BrukLokalMock>
+            <RekrutteringsbistandProvider>
+              {children}
+            </RekrutteringsbistandProvider>
+          </BrukLokalMock>
+        </ThemeProvider>
       </body>
     </html>
   );

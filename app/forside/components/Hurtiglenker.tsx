@@ -1,15 +1,14 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { FunctionComponent, ReactNode } from 'react';
 import OpprettNyStillingIkon from '../../../public/ikoner/opprett-ny-stilling.svg';
 import SeMineStillingerIkon from '../../../public/ikoner/se-mine-stillinger.svg';
 
 import { Box } from '@navikt/ds-react';
+import SVGDarkmode from '../../components/SVGDarkmode';
 import { TilgangskontrollForInnhold } from '../../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '../../components/tilgangskontroll/roller';
-import SVGDarkmode from '../../components/SVGDarkmode';
 
 const Hurtiglenker: FunctionComponent = () => {
   return (
@@ -52,10 +51,12 @@ const LenkepanelMedIkon: FunctionComponent<{
   ikon: ReactNode;
   onClick?: () => void;
 }> = ({ tittel, href, ikon, onClick }) => (
-  <Box
-    borderRadius='large'
+  <Box.New
+    background='raised'
+    borderColor='neutral-subtleA'
+    borderRadius='xlarge'
+    borderWidth='1'
     padding='0'
-    shadow='small'
     className={`h-28  flex flex-grow`}
   >
     <Link href={href} className='w-full h-full'>
@@ -70,7 +71,7 @@ const LenkepanelMedIkon: FunctionComponent<{
         </Box>
       </div>
     </Link>
-  </Box>
+  </Box.New>
 );
 
 export default Hurtiglenker;

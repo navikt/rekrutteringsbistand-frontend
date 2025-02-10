@@ -1,4 +1,4 @@
-import { Heading } from '@navikt/ds-react';
+import { Box, Heading } from '@navikt/ds-react';
 import * as React from 'react';
 export interface GråRammeProps {
   children?: React.ReactNode | undefined;
@@ -8,17 +8,23 @@ export interface GråRammeProps {
 
 const GråRamme: React.FC<GråRammeProps> = ({ children, ikon, tittel }) => {
   return (
-    <div className='p-4 rounded-xl border border-[rgba(7,26,54,0.21)]'>
+    <Box.New
+      background='raised'
+      borderColor='neutral-subtleA'
+      borderRadius='xlarge'
+      borderWidth='1'
+      padding='4'
+    >
       <div className='flex items-center mb-4'>
         {ikon && (
-          <div className='w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-3'>
+          <div className='w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-3 text-[var(--a-gray-900)]'>
             {ikon}
           </div>
         )}
         <Heading size='small'>{tittel}</Heading>
       </div>
       {children}
-    </div>
+    </Box.New>
   );
 };
 

@@ -16,7 +16,7 @@ const UsynligKandidatRad: React.FC<UsynligKandidatRadProps> = ({
   utfall,
 }) => {
   return (
-    <Table.Row className='bg-blue-50'>
+    <Table.Row className='bg-[var(--a-surface-warning-subtle)] text-[var(--a-text-default)]'>
       <Table.DataCell colSpan={2} />
       <Table.DataCell>
         {storForbokstavString(etternavn ?? '')},{' '}

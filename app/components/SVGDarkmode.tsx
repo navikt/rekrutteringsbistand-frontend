@@ -1,6 +1,7 @@
+'use client';
 import Image from 'next/image';
 import * as React from 'react';
-import { useApplikasjonContext } from '../ApplikasjonContext';
+import { useThemeProvider } from '../ThemeProvider';
 
 export interface SVGDarkmodeProps {
   src?: string;
@@ -8,7 +9,7 @@ export interface SVGDarkmodeProps {
 }
 
 const SVGDarkmode: React.FC<SVGDarkmodeProps> = ({ src, alt = 'bilde' }) => {
-  const { darkMode } = useApplikasjonContext();
+  const { darkMode } = useThemeProvider();
   if (!src) {
     return null;
   }

@@ -49,7 +49,7 @@ export const Navigeringsmeny: FunctionComponent = () => {
 
   return (
     <div className=' border-b border-border-divider'>
-      <div className='max-w-screen-xl pt-2 mx-auto flex justify-between items-center'>
+      <div className='max-w-screen-full p-4 pb-0 mx-auto flex justify-between items-center'>
         <Tabs
           defaultValue={tabPath === '/' ? 'Oversikt' : tabPath}
           value={tabPath}

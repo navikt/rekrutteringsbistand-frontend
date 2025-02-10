@@ -109,7 +109,16 @@ const StillingsKandidaterTabell: React.FC<{
       .sort(applySortDirection<kandidaterSchemaDTO>(sort));
 
     setKandidater(nyListe);
-  }, [search, kandidatliste.kandidater, sort, status, hendelse, aktivtFilter]);
+  }, [
+    search,
+    kandidatliste.kandidater,
+    sort,
+    status,
+    hendelse,
+    aktivtFilter,
+    beskjeder,
+    forespurteKandidater,
+  ]);
 
   function tableSort(sortKey?: string) {
     if (

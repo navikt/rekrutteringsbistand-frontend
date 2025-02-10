@@ -21,7 +21,7 @@ const ForslagTilStilling: React.FC = () => {
   const router = useRouter();
 
   return (
-    <div className='bg-white  rounded-lg shadow-sm'>
+    <>
       {/* <Heading size='medium' level='2' spacing>
         Forslag til stillinger
       </Heading> */}
@@ -37,7 +37,7 @@ const ForslagTilStilling: React.FC = () => {
       >
         Finn aktuelle stillinger
       </Button>
-    </div>
+    </>
   );
 };
 

@@ -1,6 +1,6 @@
 'use client';
 import '@navikt/ds-css/darkside';
-import { Alert, Heading, Theme } from '@navikt/ds-react';
+import { Alert, Heading } from '@navikt/ds-react';
 import React from 'react';
 import { getMiljø, Miljø } from '../util/miljø';
 import { DecoratorDTO } from './api/decorator/decorator.dto';
@@ -22,8 +22,6 @@ interface BrukerData extends DecoratorDTO {
 
 interface ApplikasjonContextType {
   brukerData: BrukerData;
-  darkMode: boolean;
-  setDarkMode: (val: boolean) => void;
   harRolle: (rolle: Roller[]) => boolean;
   valgtNavKontor: NavKontorMedNavn | null;
   setValgtNavKontor: (navKontor: NavKontorMedNavn | null) => void;
@@ -40,8 +38,6 @@ const ApplikasjonContext = React.createContext<ApplikasjonContextType>({
     fornavn: '',
     etternavn: '',
   },
-  darkMode: true,
-  setDarkMode: () => false,
   harRolle: () => false,
   setValgtNavKontor: () => null,
   setValgtFnr: () => null,
@@ -57,10 +53,6 @@ interface IApplikasjonContextProvider {
 export const ApplikasjonContextProvider: React.FC<
   IApplikasjonContextProvider
 > = ({ children, brukerData }) => {
-  const [darkMode, setDarkMode] = React.useState<boolean>(
-    localStorage.getItem('darkMode') === 'true',
-  );
-
   const [valgtFnr, setValgtFnr] = React.useState<string | null>(null);
 
   const [valgtNavKontor, setValgtNavKontor] =
@@ -82,39 +74,33 @@ export const ApplikasjonContextProvider: React.FC<
 
   return (
     <VarslingContextProvider>
-      <Theme theme={darkMode ? 'dark' : 'light'}>
-        <ApplikasjonContext.Provider
-          value={{
-            setValgtFnr,
-            brukerData,
-            darkMode,
-            setDarkMode,
-            setValgtNavKontor,
-            valgtNavKontor,
-            harRolle,
-            valgtFnr,
-          }}
-        >
-          <Header />
-          <Varsling />
-          <main>
-            <div className='mx-auto p-4 mb-8 max-w-screen-full'>
-              {harTilgangTilNyApplikasjon ? (
-                children
-              ) : (
-                <div>
-                  <Alert variant='info'>
-                    <Heading spacing size='small' level='3'>
-                      Applikasjonen er begrenset
-                    </Heading>
-                    Kun enkelte kontor har tilgang til den nye applikasjonen
-                  </Alert>
-                </div>
-              )}
+      <ApplikasjonContext.Provider
+        value={{
+          setValgtFnr,
+          brukerData,
+          setValgtNavKontor,
+          valgtNavKontor,
+          harRolle,
+          valgtFnr,
+        }}
+      >
+        <Header />
+        <Varsling />
+        <main className='mx-auto p-4 mb-8 max-w-screen-full'>
+          {harTilgangTilNyApplikasjon ? (
+            children
+          ) : (
+            <div>
+              <Alert variant='info'>
+                <Heading spacing size='small' level='3'>
+                  Applikasjonen er begrenset
+                </Heading>
+                Kun enkelte kontor har tilgang til den nye applikasjonen
+              </Alert>
             </div>
-          </main>
-        </ApplikasjonContext.Provider>
-      </Theme>
+          )}
+        </main>
+      </ApplikasjonContext.Provider>
     </VarslingContextProvider>
   );
 };
