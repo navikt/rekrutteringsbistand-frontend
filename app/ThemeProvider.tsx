@@ -23,7 +23,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     document.documentElement.style.height = '100%';
     document.body.style.height = '100%';
     document.body.style.backgroundColor = darkMode ? '#0e151f' : 'white';
-  }, []);
+  }, [darkMode]);
 
   return (
     <div
@@ -36,8 +36,8 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
       <Theme theme={darkMode ? 'dark' : 'light'}>
         <ThemeContext.Provider value={{ darkMode, setDarkMode }}>
           {children}
-        </ThemeContext.Provider>{' '}
-      </Theme>{' '}
+        </ThemeContext.Provider>
+      </Theme>
     </div>
   );
 };
