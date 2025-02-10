@@ -1,13 +1,9 @@
 'use client';
+import 'https://cdn.nav.no/personoversikt/internarbeidsflate-decorator-v3/dev/latest/dist/index.css';
 import dynamic from 'next/dynamic';
 import { getMiljø, Miljø } from '../../../../../util/miljø';
 import { useApplikasjonContext } from '../../../../ApplikasjonContext';
 import { DecoratorProps } from './Interndekoratør';
-
-interface Enhet {
-  enhetId: string;
-  navn: string;
-}
 
 const proxyUrl =
   getMiljø() === Miljø.ProdGcp

@@ -1,7 +1,6 @@
 import { LightBulbIcon } from '@navikt/aksel-icons';
 import { Button, Heading, Popover, Switch } from '@navikt/ds-react';
 import { FunctionComponent, useEffect, useRef, useState } from 'react';
-import { getMiljø, Miljø } from '../../../../../util/miljø';
 import { nyheter } from '../../../../nyheter';
 import { useThemeProvider } from '../../../../ThemeProvider';
 import Artikkel from './Artikkel';
@@ -31,7 +30,6 @@ const Nyheter: FunctionComponent = () => {
     <div className={css.nyheter}>
       <div className='flex'>
         <Switch
-          disabled={getMiljø() !== Miljø.Lokalt}
           size='small'
           checked={darkMode}
           onChange={(e) => setDarkMode(e.target.checked)}
