@@ -1,8 +1,8 @@
 /* Importerer decorator fra Nav først, så overstyrer vi style fra Nav med våre egne styles */
+/* @import url('https://cdn.nav.no/personoversikt/internarbeidsflate-decorator-v3/dev/latest/dist/index.css'); */
 
-@import url('https://cdn.nav.no/personoversikt/internarbeidsflate-decorator-v3/dev/latest/dist/index.css');
 @import 'tailwindcss';
-@import '@navikt/ds-css/darkside';
+@import '@navikt/ds-css/darkside' layer(components);
 
 /* Fjerner blå border rundt RikTekstEditor */
 .ProseMirror:focus {
