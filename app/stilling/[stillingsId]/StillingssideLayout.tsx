@@ -11,6 +11,7 @@ import StillingsTag from '../../stillings-sok/components/StillingsTag';
 import capitalizeEmployerName, { navnEierAvAstilling } from '../stilling-util';
 import { useStillingsContext } from './StillingsContext';
 import KopierStillingLenke from './components/KopierStillingLenke';
+import SVGDarkmode from '../../components/SVGDarkmode';
 
 interface StillingSideLayoutProps {
   children?: React.ReactNode;
@@ -57,7 +58,7 @@ const StillingSideLayout: React.FC<StillingSideLayoutProps> = ({
             </>
           }
           tilbakeKnapp
-          ikon={<Image src={StillingsIkon} alt='Se mine stillinger' />}
+          ikon={<SVGDarkmode src={StillingsIkon} alt='Se mine stillinger' />}
           tittel={stillingsData.stilling.title ?? ''}
         />
       }

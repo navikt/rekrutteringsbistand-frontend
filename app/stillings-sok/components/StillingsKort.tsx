@@ -3,10 +3,8 @@ import {
   Buildings2Icon,
   ClockIcon,
   PersonIcon,
-  PinIcon,
 } from '@navikt/aksel-icons';
-import { Box, Button, Heading } from '@navikt/ds-react';
-import Link from 'next/link';
+import { Box, Button, Heading, Link } from '@navikt/ds-react';
 import * as React from 'react';
 
 import { konverterTilPresenterbarDato } from '../../../util/dato';

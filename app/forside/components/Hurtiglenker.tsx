@@ -6,8 +6,10 @@ import { FunctionComponent, ReactNode } from 'react';
 import OpprettNyStillingIkon from '../../../public/ikoner/opprett-ny-stilling.svg';
 import SeMineStillingerIkon from '../../../public/ikoner/se-mine-stillinger.svg';
 
+import { Box } from '@navikt/ds-react';
 import { TilgangskontrollForInnhold } from '../../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '../../components/tilgangskontroll/roller';
+import SVGDarkmode from '../../components/SVGDarkmode';
 
 const Hurtiglenker: FunctionComponent = () => {
   return (
@@ -23,13 +25,20 @@ const Hurtiglenker: FunctionComponent = () => {
       >
         <LenkepanelMedIkon
           href={'/stillings-sok?portefolje=visMine'}
-          ikon={<Image src={SeMineStillingerIkon} alt='Se mine stillinger' />}
+          ikon={
+            <SVGDarkmode src={SeMineStillingerIkon} alt='Se mine stillinger' />
+          }
           tittel='Se mine stillinger'
         />
 
         <LenkepanelMedIkon
           href='/stilling/ny-stilling'
-          ikon={<Image src={OpprettNyStillingIkon} alt='Opprett ny stilling' />}
+          ikon={
+            <SVGDarkmode
+              src={OpprettNyStillingIkon}
+              alt='Opprett ny stilling'
+            />
+          }
           tittel='Opprett ny stilling'
         />
       </div>
@@ -43,21 +52,25 @@ const LenkepanelMedIkon: FunctionComponent<{
   ikon: ReactNode;
   onClick?: () => void;
 }> = ({ tittel, href, ikon, onClick }) => (
-  <Link
-    className={`h-28 bg-[#f2f3f5] rounded-xl shadow flex flex-grow`}
-    href={href}
+  <Box
+    borderRadius='large'
+    padding='0'
+    shadow='small'
+    className={`h-28  flex flex-grow`}
   >
-    <div className='flex grow h-28 justify-start items-center'>
-      <div className='pl-6 py-6 flex justify-center items-center gap-2'>
-        <div className='w-16 h-16'>{ikon}</div>
+    <Link href={href} className='w-full h-full'>
+      <div className='flex grow h-28 justify-start items-center'>
+        <Box padding='6' className='flex justify-center items-center gap-2'>
+          <div className='w-16 h-16'>{ikon}</div>
+        </Box>
+        <Box padding='6' className='flex grow h-28 justify-start items-center'>
+          <div className='font-bold underline leading-loose text-[var(--ax-text-default)]'>
+            {tittel}
+          </div>
+        </Box>
       </div>
-      <div className='flex grow h-28 p-6 justify-start items-center'>
-        <div className='text-[#23262a] font-bold underline leading-loose'>
-          {tittel}
-        </div>
-      </div>
-    </div>
-  </Link>
+    </Link>
+  </Box>
 );
 
 export default Hurtiglenker;

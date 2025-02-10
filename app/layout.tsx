@@ -22,7 +22,7 @@ export default async function RootLayout({
   const bundle =
     process.env.NAIS_CLUSTER_NAME === 'prod-gcp' ? prodBundle : devBundle;
   return (
-    <html lang='no' className='h-full'>
+    <html lang='no' className='h-full '>
       <Script src={bundle} strategy='afterInteractive' />
       <body>
         <BrukLokalMock>

@@ -4,6 +4,7 @@ import Piktogram from '../../public/ikoner/rekrutteringstreff.svg';
 import SideLayout from '../components/layout/SideLayout';
 import SideTopBanner from '../components/layout/SideTopBanner';
 import { RekrutteringstreffSøkSidebar } from './components/sidebar/RekrutteringstreffSøkSidebar';
+import SVGDarkmode from '../components/SVGDarkmode';
 
 interface layoutProps {
   children?: React.ReactNode | undefined;
@@ -16,7 +17,7 @@ const RekrutteringstreffSøkLayout: React.FC<layoutProps> = ({ children }) => {
       banner={
         <SideTopBanner
           tittel='Rekrutteringstreff'
-          ikon={<Image src={Piktogram} alt='Rekrutteringstreff' />}
+          ikon={<SVGDarkmode src={Piktogram} alt='Rekrutteringstreff' />}
         />
       }
     >
