@@ -22,8 +22,7 @@ export interface AksjonsknapperSiderbarStillingProps {
 const AksjonsknapperSiderbarStilling: React.FC<
   AksjonsknapperSiderbarStillingProps
 > = ({ formVerdier }) => {
-  const { setForhåndsvisData, forhåndsvisData, stillingsData } =
-    useStillingsContext();
+  const { setForhåndsvisData, stillingsData } = useStillingsContext();
   const [lagrer, setLagrer] = React.useState<boolean>(false);
 
   const { mutate } = useStilling(stillingsData.stilling.uuid);

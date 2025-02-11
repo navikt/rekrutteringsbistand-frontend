@@ -36,7 +36,11 @@ export const StillingsContextProvider: React.FC<
   return (
     <SWRLaster hooks={[stillingHook]}>
       {(data) => (
-        <StillingsContextMedData data={data} refetch={stillingHook.mutate}>
+        <StillingsContextMedData
+          key={data?.stilling?.updated}
+          data={data}
+          refetch={stillingHook.mutate}
+        >
           {children}
         </StillingsContextMedData>
       )}
