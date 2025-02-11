@@ -51,24 +51,28 @@ export const OmTilretteleggingSchema = z.object({
   tags: z.array(z.string()),
 });
 
+export const AdresseLokasjonSchema = z
+  .array(GeografiSchema)
+  .optional()
+  .nullable()
+  .refine(
+    (data) =>
+      !data?.length || data.every((item) => item.postalCode && item.city),
+    {
+      message: 'Alle adresser må ha både postnummer og poststed',
+    },
+  );
+
+export const JanzzSchema = KategoriSchema.refine((data) => !!data.name, {
+  message: 'Yrkesklassifisering må velges',
+  path: ['name'],
+});
+
 export const OmStillingenSchema = z
   .object({
-    janzz: KategoriSchema.refine((data) => !!data.name, {
-      message: 'Yrkesklassifisering må velges',
-      path: ['name'],
-    }),
+    janzz: JanzzSchema,
     beskrivelse: z.string().nullable(),
-    adresseLokasjoner: z
-      .array(GeografiSchema)
-      .optional()
-      .nullable()
-      .refine(
-        (data) =>
-          !data?.length || data.every((item) => item.postalCode && item.city),
-        {
-          message: 'Alle adresser må ha både postnummer og poststed',
-        },
-      ),
+    adresseLokasjoner: AdresseLokasjonSchema,
     lokasjoner: z.array(GeografiSchema).optional().nullable(),
   })
   .refine(
@@ -150,4 +154,3 @@ export interface StillingsDataForm {
   praktiskInfo: PraktiskInfoType;
   innspurt: InnspurtType;
 }
-

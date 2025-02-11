@@ -4,11 +4,11 @@ import { useQueryState } from 'nuqs';
 import * as React from 'react';
 import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { oppdaterStilling } from '../../../../../api/stilling/oppdater-stilling/oppdaterStilling';
-import { useVisVarsling } from '../../../../../components/varsling/Varsling';
-import { useStillingsContext } from '../../../StillingsContext';
-import { mapFormTilStilling } from '../../mapStilling';
-import { StillingsDataForm } from '../../redigerFormType.zod';
+import { oppdaterStilling } from '../../../api/stilling/oppdater-stilling/oppdaterStilling';
+import { useVisVarsling } from '../../../components/varsling/Varsling';
+import { useStillingsContext } from '../../../stilling/[stillingsId]/StillingsContext';
+import { mapFormTilStilling } from '../../../stilling/[stillingsId]/rediger/mapStilling';
+import { StillingsDataForm } from '../../../stilling/[stillingsId]/rediger/redigerFormType.zod';
 import FormidlingLeggTilKandidat from './components/FormidlingLeggTilKandidat';
 
 export interface RedigerFormidlingProps {

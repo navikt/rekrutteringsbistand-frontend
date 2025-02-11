@@ -1,9 +1,9 @@
 'use client';
 import { Buildings2Icon, PersonIcon } from '@navikt/aksel-icons';
 import { Alert, Heading } from '@navikt/ds-react';
-import Image from 'next/image';
 import * as React from 'react';
 import StillingsIkon from '../../../public/ikoner/se-mine-stillinger.svg';
+import SVGDarkmode from '../../components/SVGDarkmode';
 import TekstMedIkon from '../../components/TekstMedIkon';
 import SideLayout from '../../components/layout/SideLayout';
 import SideTopBanner from '../../components/layout/SideTopBanner';
@@ -11,7 +11,6 @@ import StillingsTag from '../../stillings-sok/components/StillingsTag';
 import capitalizeEmployerName, { navnEierAvAstilling } from '../stilling-util';
 import { useStillingsContext } from './StillingsContext';
 import KopierStillingLenke from './components/KopierStillingLenke';
-import SVGDarkmode from '../../components/SVGDarkmode';
 
 interface StillingSideLayoutProps {
   children?: React.ReactNode;
@@ -50,7 +49,7 @@ const StillingSideLayout: React.FC<StillingSideLayoutProps> = ({
                   />
                 )}
               </div>
-              {(!erFormidling || erSlettet) && (
+              {!erFormidling && !erSlettet && (
                 <KopierStillingLenke
                   stillingsId={stillingsData.stilling.uuid ?? ''}
                 />

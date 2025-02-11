@@ -1,4 +1,5 @@
 'use client';
+import { useRouter } from 'next/navigation';
 import React, { useMemo } from 'react';
 import { useKandidatlisteId } from '../../api/kandidat/useKandidatlisteId';
 import { StillingsDataDTO } from '../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
@@ -54,6 +55,7 @@ const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
   children,
   refetch,
 }) => {
+  const router = useRouter();
   const {
     brukerData: { ident },
     harRolle,
@@ -76,6 +78,18 @@ const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
       setKandidatlisteId(kandidatlisteIdHook.data.kandidatlisteId ?? null);
     }
   }, [kandidatlisteIdHook]);
+
+  React.useEffect(() => {
+    const isFormidling =
+      stillingsData.stillingsinfo?.stillingskategori === 'FORMIDLING';
+    const correctPath = isFormidling
+      ? `/formidlinger/${stillingsData.stilling.uuid}`
+      : `/stilling/${stillingsData.stilling.uuid}`;
+
+    if (!window.location.pathname.includes(correctPath)) {
+      router.push(correctPath);
+    }
+  }, [stillingsData.stillingsinfo?.stillingskategori]);
 
   const erEier = useMemo(
     () =>

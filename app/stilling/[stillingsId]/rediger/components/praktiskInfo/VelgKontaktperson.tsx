@@ -1,10 +1,4 @@
-import {
-  Button,
-  Checkbox,
-  CheckboxGroup,
-  Heading,
-  TextField,
-} from '@navikt/ds-react';
+import { BodyLong, Box, Button, Heading, TextField } from '@navikt/ds-react';
 import * as React from 'react';
 import {
   Control,
@@ -53,34 +47,10 @@ const KontaktPersonInformasjon: React.FC<{
           />
         )}
       />
-      <Controller
-        control={control}
-        name={`omVirksomheten.kontaktPersoner.${index}.email`}
-        render={({ fieldState: { error } }) => (
-          <CheckboxGroup
-            legend='Velg hvor de kan nås (må ha minst en)'
-            error={error?.message}
-          >
-            <Checkbox
-              value='email'
-              checked={epostFelt}
-              onChange={(e) => setEpostFelt(e.target.checked)}
-            >
-              E-post
-            </Checkbox>
-            <Checkbox
-              value='phone'
-              checked={telefonFelt}
-              onChange={(e) => setTelefonFelt(e.target.checked)}
-            >
-              Telefon
-            </Checkbox>
-          </CheckboxGroup>
-        )}
-      />
-
+      <BodyLong className='font-bold'>
+        Velg hvor de kan nås (må ha minst en)
+      </BodyLong>
       <div />
-
       {epostFelt && (
         <Controller
           control={control}
@@ -136,7 +106,14 @@ const VelgKontaktperson: React.FC = () => {
         med veileder for informasjon om stillingen.
       </p>
       {fields.map((field, index) => (
-        <div key={field.id}>
+        <Box.New
+          background='raised'
+          borderColor='neutral-subtleA'
+          borderRadius='xlarge'
+          borderWidth='1'
+          padding='4'
+          key={field.id}
+        >
           <KontaktPersonInformasjon
             control={control}
             field={field}
@@ -144,20 +121,17 @@ const VelgKontaktperson: React.FC = () => {
           />
 
           {fields.length > 1 && (
-            <>
-              <div> </div>
-              <div className='flex justify-end'>
-                <Button
-                  variant='secondary'
-                  type='button'
-                  onClick={() => remove(index)}
-                >
-                  Fjern kontaktperson
-                </Button>
-              </div>
-            </>
+            <div className='flex justify-end mt-2'>
+              <Button
+                variant='secondary'
+                type='button'
+                onClick={() => remove(index)}
+              >
+                Fjern kontaktperson
+              </Button>
+            </div>
           )}
-        </div>
+        </Box.New>
       ))}
       <div>
         <Button

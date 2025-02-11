@@ -23,7 +23,8 @@ const OmStillingen: React.FC<{ forhåndsvisData?: boolean }> = ({
 }) => {
   const contentRef = React.useRef<HTMLDivElement>(null);
 
-  const { stillingsData, kandidatlisteId } = useStillingsContext();
+  const { stillingsData, kandidatlisteId, erFormidling } =
+    useStillingsContext();
 
   const lokasjon = getWorkLocationsAsString(
     stillingsData.stilling.locationList as GeografiListDTO,
@@ -111,7 +112,7 @@ const OmStillingen: React.FC<{ forhåndsvisData?: boolean }> = ({
             <OmAnnonsen />
           </div>
         </div>
-        {!forhåndsvisData && (
+        {!forhåndsvisData && !erFormidling && (
           <StillingSidebar
             printRef={contentRef as React.RefObject<HTMLDivElement>}
           />

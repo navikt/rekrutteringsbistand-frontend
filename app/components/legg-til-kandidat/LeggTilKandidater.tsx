@@ -20,9 +20,11 @@ import {
   useKandidatNavn,
 } from '../../api/kandidat-sok/useKandidatNavn';
 import SynlighetsModal from './SynlighetsModal';
+import Synlighetsinfo from './Synlighetsinfo';
 export interface LeggTilKandidaterProps {
   måHaAktørId?: boolean;
   callBack: (valgteKandidater: ValgtKandidatProp[]) => void;
+  synlighetSomModal?: boolean;
 }
 
 export interface ValgtKandidatProp extends Kandidatnavn {
@@ -35,6 +37,7 @@ const validerFnr = (fnr: string): boolean => idnr(fnr).status === 'valid';
 const LeggTilKandidater: React.FC<LeggTilKandidaterProps> = ({
   måHaAktørId,
   callBack,
+  synlighetSomModal,
 }) => {
   const [feilmelding, setFeilmelding] = React.useState('');
   const [valgteKandidater, setValgteKandidater] = React.useState<
@@ -114,9 +117,12 @@ const LeggTilKandidater: React.FC<LeggTilKandidaterProps> = ({
         </div>
         <div className='mr-4 flex gap-2'>
           <Tag variant='warning'>Kandidaten er ikke synlig</Tag>
-          <SynlighetsModal fødselsnummer={fødselsnummer} />
+          {synlighetSomModal && (
+            <SynlighetsModal fødselsnummer={fødselsnummer} />
+          )}
         </div>
       </div>
+      {!synlighetSomModal && <Synlighetsinfo fødselsnummer={fødselsnummer} />}
     </Box.New>
   );
 
