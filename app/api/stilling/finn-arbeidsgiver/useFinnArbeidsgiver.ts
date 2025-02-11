@@ -25,7 +25,7 @@ export type FinnArbeidsgiverDTO = z.infer<typeof FinnArbeidsgiverSchema>;
 
 const devMiljø = getMiljø() !== Miljø.ProdGcp;
 
-export const useFinnArbeidsgiver = (orgnr: string) => {
+export const useFinnArbeidsgiverOld = (orgnr: string) => {
   const søkeOrd = devMiljø ? 'dev-gcp' : orgnr;
 
   return useSWRImmutable(
@@ -39,6 +39,6 @@ export const useFinnArbeidsgiver = (orgnr: string) => {
   );
 };
 
-export const finnArbeidsgiverMirage = (server: any) => {
+export const finnArbeidsgiverMirageOld = (server: any) => {
   return server.post(finnArbeidsgiverEndepunkt(), () => devVirksomheter);
 };

@@ -1,19 +1,20 @@
 import { Alert, UNSAFE_Combobox } from '@navikt/ds-react';
 import * as React from 'react';
 import {
-  FinnArbeidsgiverDTO,
+  ArbeidsgiverDTO,
   useFinnArbeidsgiver,
-} from '../../../api/stilling/finn-arbeidsgiver/useFinnArbeidsgiver';
+} from '../../../api/pam-search/underenhet/useArbeidsgiver';
 
 export interface IVelgArbeidsgiver {
   children?: React.ReactNode | undefined;
-  setArbeidsgiver: (arbeidsgiver: FinnArbeidsgiverDTO) => void;
+  setArbeidsgiver: (arbeidsgiver: ArbeidsgiverDTO) => void;
 }
 
 const VelgArbeidsgiver: React.FC<IVelgArbeidsgiver> = ({ setArbeidsgiver }) => {
   const [søkeOrd, setSøkeord] = React.useState<string>('');
   const { isLoading, error, data } = useFinnArbeidsgiver(søkeOrd);
 
+  console.log(data);
   return (
     <React.Fragment>
       <form role='search'>
@@ -22,7 +23,8 @@ const VelgArbeidsgiver: React.FC<IVelgArbeidsgiver> = ({ setArbeidsgiver }) => {
           label='Arbeidsgivers navn eller organisasjonsnummer'
           options={
             data?.map(
-              (arbeidsgiver) => `${arbeidsgiver.name} - ${arbeidsgiver.orgnr}`,
+              (arbeidsgiver) =>
+                `${arbeidsgiver.navn} - ${arbeidsgiver.organisasjonsnummer}`,
             ) ?? []
           }
           shouldAutocomplete={true}
@@ -30,7 +32,7 @@ const VelgArbeidsgiver: React.FC<IVelgArbeidsgiver> = ({ setArbeidsgiver }) => {
           onToggleSelected={(valg) => {
             const orgnr = valg.split(' - ')[1];
             const selectedArbeidsgiver = data?.find(
-              (arbeidsgiver) => arbeidsgiver.orgnr === orgnr,
+              (arbeidsgiver) => arbeidsgiver.organisasjonsnummer === orgnr,
             );
             if (selectedArbeidsgiver) {
               setArbeidsgiver(selectedArbeidsgiver);

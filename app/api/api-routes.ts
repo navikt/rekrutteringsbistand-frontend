@@ -80,6 +80,13 @@ export const PamOntologiAPI: Iroute = {
   scope: '',
 };
 
+export const PamSearchAPI: Iroute = {
+  api_route: '',
+  api_url: process.env.PAM_SEARCH_URL ?? '',
+  internUrl: '/api/pam-search',
+  scope: '',
+};
+
 export const KandidatvarselAPI: Iroute = {
   api_route: '/api',
   api_url: process.env.KANDIDATVARSEL_API_URL ?? '',
