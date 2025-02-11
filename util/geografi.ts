@@ -14,8 +14,6 @@ export const mapKommuneTilGeografiDTO = (kommune: KommuneDTO): GeografiDTO => {
     municipalCode: kommune.code,
     city: null,
     country: null,
-    latitude: null,
-    longitude: null,
   };
 };
 
@@ -28,8 +26,6 @@ export const mapFylkeTilGeografiDTO = (fylke: FylkeDTO): GeografiDTO => {
     municipalCode: null,
     city: null,
     country: null,
-    latitude: null,
-    longitude: null,
   };
 };
 
@@ -42,7 +38,5 @@ export const mapLandTilGeografiDTO = (land: LandDTO): GeografiDTO => {
     municipalCode: null,
     city: null,
     country: land.name,
-    latitude: null,
-    longitude: null,
   };
 };

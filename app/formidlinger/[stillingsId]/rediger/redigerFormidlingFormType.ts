@@ -7,7 +7,7 @@ import {
   OmTilretteleggingSchema,
 } from '../../../stilling/[stillingsId]/rediger/redigerFormType.zod';
 
-export const FormidlingKandidaeSchema = z.object({
+export const FormidlingKandidatSchema = z.object({
   fnr: z.string(),
   navn: navnSchema,
 });
@@ -20,8 +20,12 @@ export const OmFormidlingSchema = z.object({
 });
 
 export const FormidlingFormSchema = z.object({
-  omKandiatene: z.array(FormidlingKandidaeSchema),
+  omKandiatene: z
+    .array(FormidlingKandidatSchema)
+    .min(1, { message: 'Du må velge minst én kandidat' }),
   omFormidling: OmFormidlingSchema,
   omTilrettelegging: OmTilretteleggingSchema,
   innspurt: z.string(),
 });
+
+export type FormidlingFormSchemaDTO = z.infer<typeof FormidlingFormSchema>;

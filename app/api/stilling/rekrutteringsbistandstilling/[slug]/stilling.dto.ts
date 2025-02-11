@@ -94,8 +94,6 @@ export const GeografiSchema = z.object({
   municipalCode: z.string().optional().nullable(),
   city: z.string().optional().nullable(),
   country: z.string().optional().nullable(),
-  latitude: z.string().optional().nullable(),
-  longitude: z.string().optional().nullable(),
 });
 
 const GeografiListSchema = z.array(GeografiSchema);

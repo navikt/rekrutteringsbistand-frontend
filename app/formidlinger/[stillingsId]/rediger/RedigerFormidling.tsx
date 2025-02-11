@@ -60,6 +60,26 @@ const RedigerFormidling: React.FC<RedigerFormidlingProps> = ({ children }) => {
     }
   };
 
+  const nesteSteg = () => {
+    const steps = Object.values(RedigerFormidlingSteg);
+    const currentIndex =
+      steps.indexOf(aktivtSteg as RedigerFormidlingSteg) ??
+      RedigerFormidlingSteg.omKandidatene;
+    if (currentIndex < steps.length) {
+      setAktivtSteg(steps[currentIndex + 1]);
+    }
+  };
+
+  const forrigeSteg = () => {
+    const steps = Object.values(RedigerFormidlingSteg);
+    const currentIndex =
+      steps.indexOf(aktivtSteg as RedigerFormidlingSteg) ??
+      RedigerFormidlingSteg.omKandidatene;
+    if (currentIndex && currentIndex > 0) {
+      setAktivtSteg(steps[currentIndex - 1]);
+    }
+  };
+
   return (
     <Box>
       {/* Header */}
@@ -85,7 +105,10 @@ const RedigerFormidling: React.FC<RedigerFormidlingProps> = ({ children }) => {
         </div>
         <div className='flex-grow mx-12 px-12'>
           {aktivtSteg === RedigerFormidlingSteg.omKandidatene && (
-            <FormidlingLeggTilKandidat />
+            <FormidlingLeggTilKandidat
+              nesteSteg={nesteSteg}
+              forrigeSteg={forrigeSteg}
+            />
           )}
         </div>
         <div> avslutt </div>

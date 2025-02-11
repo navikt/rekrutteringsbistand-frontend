@@ -6,8 +6,6 @@ import { PamSearchAPI } from '../../api-routes';
 import { getApiWithSchemaEs } from '../../fetcher';
 
 const finnArbeidsgiverEndepunkt = (søkeord: string) => {
-  console.log('🎺 søkeord', søkeord);
-  console.log(PamSearchAPI.internUrl + `/underenhet?q=${søkeord}`);
   return PamSearchAPI.internUrl + `/underenhet?q=${søkeord}`;
 };
 

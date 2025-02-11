@@ -7,8 +7,7 @@ export type IGeografi = {
   country: string | null;
   municipal: string | null;
   municipalCode?: string | null;
-  latitude: string | null;
-  longitude: string | null;
+
   city: string | null;
 };
 
@@ -19,7 +18,6 @@ export const geografiSchema = z.object({
   country: z.string().nullable(),
   municipal: z.string().nullable(),
   municipalCode: z.string().optional().nullable(),
-  latitude: z.string().nullable(),
-  longitude: z.string().nullable(),
+
   city: z.string().nullable(),
 });

@@ -47,6 +47,7 @@ const KontaktPersonInformasjon: React.FC<{
           />
         )}
       />
+
       <BodyLong className='font-bold'>
         Velg hvor de kan nås (må ha minst en)
       </BodyLong>

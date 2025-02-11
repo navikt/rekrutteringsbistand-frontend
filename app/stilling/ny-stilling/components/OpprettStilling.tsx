@@ -49,8 +49,6 @@ export const OpprettStillingKnapp: React.FC<OpprettStillingProps> = ({
               county: arbeidsgiver.adresse.kommune ?? '',
               country: arbeidsgiver.adresse.land ?? '',
               municipal: arbeidsgiver.adresse.kommunenummer ?? '',
-              latitude: '',
-              longitude: '',
               city: arbeidsgiver.adresse.poststed ?? '',
             },
           },

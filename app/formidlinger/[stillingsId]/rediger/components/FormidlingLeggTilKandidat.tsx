@@ -1,26 +1,47 @@
 import { BodyLong, ErrorMessage, Heading } from '@navikt/ds-react';
 import * as React from 'react';
+import { useFormContext } from 'react-hook-form';
 import LeggTilKandidater, {
   ValgtKandidatProp,
 } from '../../../../components/legg-til-kandidat/LeggTilKandidater';
 import StegNavigering from '../../../../stilling/[stillingsId]/rediger/components/StegNavigering';
+import { FormidlingFormSchemaDTO } from '../redigerFormidlingFormType';
 
 export interface FormidlingLeggTilKandidatProps {
-  children?: React.ReactNode | undefined;
+  nesteSteg: () => void;
+  forrigeSteg: () => void;
 }
 
 const FormidlingLeggTilKandidat: React.FC<FormidlingLeggTilKandidatProps> = ({
-  children,
+  nesteSteg,
+  forrigeSteg,
 }) => {
-  const [feilmelding, setFeilmelding] = React.useState('');
   const [valgteKandidater, setValgteKandidater] = React.useState<
     ValgtKandidatProp[]
   >([]);
 
+  const {
+    trigger,
+    formState: { errors },
+    setValue,
+  } = useFormContext<FormidlingFormSchemaDTO>();
+
   const handleStepSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (valgteKandidater.length === 0) {
-      setFeilmelding('Du må velge minst en kandidat');
+    setValue(
+      'omKandiatene',
+      valgteKandidater?.map((k) => ({
+        fnr: k.fødselsnummer,
+        navn: {
+          fornavn: k.fornavn,
+          etternavn: k.etternavn,
+          kilde: k.kilde,
+        },
+      })),
+    );
+    const isValid = await trigger('omKandiatene', { shouldFocus: true });
+    if (isValid) {
+      nesteSteg();
     }
   };
   return (
@@ -36,8 +57,10 @@ const FormidlingLeggTilKandidat: React.FC<FormidlingLeggTilKandidatProps> = ({
               setValgteKandidater(kandidater);
             }}
           />
-          {feilmelding && <ErrorMessage>{feilmelding}</ErrorMessage>}
-          <StegNavigering stegNummer={1} forrigeSteg={() => {}} />
+          {errors.omKandiatene && (
+            <ErrorMessage>{errors.omKandiatene.message}</ErrorMessage>
+          )}
+          <StegNavigering stegNummer={1} forrigeSteg={forrigeSteg} />
         </div>
       </form>
     </React.Fragment>

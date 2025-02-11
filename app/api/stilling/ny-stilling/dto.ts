@@ -33,6 +33,6 @@ interface NyLocationDTO {
   municipal: string;
   country: string;
   county: any;
-  latitude: any;
-  longitude: any;
 }
+
+//TODO Sjekk denne

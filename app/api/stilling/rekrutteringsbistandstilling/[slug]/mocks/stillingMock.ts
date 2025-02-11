@@ -71,8 +71,6 @@ export const stillingMock = {
         municipalCode: null,
         city: '',
         country: '',
-        latitude: null,
-        longitude: null,
       },
       locationList: [
         {
@@ -83,8 +81,6 @@ export const stillingMock = {
           municipalCode: null,
           city: '',
           country: '',
-          latitude: null,
-          longitude: null,
         },
       ],
       properties: {
@@ -109,8 +105,6 @@ export const stillingMock = {
         municipalCode: '3403',
         city: null,
         country: 'NORGE',
-        latitude: null,
-        longitude: null,
       },
     ],
     categoryList: [

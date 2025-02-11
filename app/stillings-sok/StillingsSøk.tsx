@@ -162,20 +162,9 @@ const StillingsSøkLayout: React.FC<StillingsSøkProps> = ({
         </Tabs.List>
         <Tabs.Panel value={StillingsSøkPortefølje.VIS_ALLE}>
           <StillingsSøkeresultat kandidatId={kandidatId} />
-          {/* <AlleStillinger
-            kandidatnr={kandidatnr}
-            finnerStillingForKandidat={finnerStillingForKandidat}
-          /> */}
         </Tabs.Panel>
         <Tabs.Panel value={StillingsSøkPortefølje.VIS_MINE}>
           <StillingsSøkeresultat kandidatId={kandidatId} />
-          {/* {navIdent ? (
-            <MineStillinger
-              navIdent={navIdent}
-              kandidatnr={kandidatnr}
-              finnerStillingForKandidat={finnerStillingForKandidat}
-            />
-          ) : null} */}
         </Tabs.Panel>
       </Tabs>
     </SideLayout>

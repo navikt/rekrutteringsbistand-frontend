@@ -11,8 +11,7 @@ export type EnhetsregistertreffGeografi = {
   country: string | null;
   municipal: string | null;
   municipalCode?: string | null;
-  latitude: string | null;
-  longitude: string | null;
+
   city: string | null;
 };
 
@@ -27,8 +26,6 @@ const devVirksomheter: Enhetsregistertreff[] = [
       municipal: 'NORDRE FOLLO',
       country: 'Norge',
       county: null,
-      latitude: null,
-      longitude: null,
     },
   },
   {
@@ -41,8 +38,6 @@ const devVirksomheter: Enhetsregistertreff[] = [
       municipal: 'ÅLESUND',
       country: 'Norge',
       county: null,
-      latitude: null,
-      longitude: null,
     },
   },
   {
@@ -55,8 +50,6 @@ const devVirksomheter: Enhetsregistertreff[] = [
       municipal: 'BÆRUM',
       country: 'Norge',
       county: null,
-      latitude: null,
-      longitude: null,
     },
   },
   {
@@ -69,8 +62,6 @@ const devVirksomheter: Enhetsregistertreff[] = [
       municipal: 'LILLESTRØM',
       country: 'Norge',
       county: null,
-      latitude: null,
-      longitude: null,
     },
   },
   {
@@ -83,8 +74,6 @@ const devVirksomheter: Enhetsregistertreff[] = [
       municipal: 'ÅL',
       country: 'Norge',
       county: null,
-      latitude: null,
-      longitude: null,
     },
   },
   {
@@ -97,8 +86,6 @@ const devVirksomheter: Enhetsregistertreff[] = [
       municipal: 'TRONDHEIM',
       country: 'Norge',
       county: null,
-      latitude: null,
-      longitude: null,
     },
   },
   {
@@ -111,8 +98,6 @@ const devVirksomheter: Enhetsregistertreff[] = [
       municipal: 'STRYN',
       country: 'Norge',
       county: null,
-      latitude: null,
-      longitude: null,
     },
   },
   {
@@ -125,8 +110,6 @@ const devVirksomheter: Enhetsregistertreff[] = [
       municipal: 'FROLAND',
       country: 'Norge',
       county: null,
-      latitude: null,
-      longitude: null,
     },
   },
   {
@@ -139,8 +122,6 @@ const devVirksomheter: Enhetsregistertreff[] = [
       municipal: 'BERGEN',
       country: 'Norge',
       county: null,
-      latitude: null,
-      longitude: null,
     },
   },
 ];

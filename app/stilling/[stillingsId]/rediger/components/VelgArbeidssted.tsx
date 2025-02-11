@@ -1,4 +1,4 @@
-import { Button, ErrorMessage } from '@navikt/ds-react';
+import { BodyLong, Button, ErrorMessage } from '@navikt/ds-react';
 import * as React from 'react';
 import { useFieldArray, useFormContext } from 'react-hook-form';
 import VelgPoststed from '../../../../components/VelgPoststed';
@@ -15,6 +15,10 @@ const VelgArbeidssted: React.FC = () => {
 
   return (
     <div>
+      <BodyLong>
+        Oppgi hvor jobben skal foregå. Skriv inn en adresse eller én eller flere
+        kommuner, fylker eller land.
+      </BodyLong>
       <div className='my-4'>
         <Button
           variant='secondary'
