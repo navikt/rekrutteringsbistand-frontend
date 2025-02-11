@@ -61,8 +61,6 @@ export const RedigerOmStillingen: React.FC<{
           </div>
 
           <div>
-            <h3 className='text-xl font-semibold mb-4'>Arbeidssted</h3>
-
             <VelgArbeidssted />
           </div>
         </div>

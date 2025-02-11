@@ -58,7 +58,7 @@ export const mapStillingTilForm = (
           stillingsData?.stilling?.categoryList?.filter(
             (item) => item.categoryType?.toUpperCase() === 'JANZZ',
           ) as any
-        )[0] ?? {},
+        )[0] ?? null,
       beskrivelse: stillingsData?.stilling?.properties?.adtext ?? '',
 
       adresseLokasjoner:

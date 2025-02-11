@@ -10,6 +10,7 @@ export async function GET(req: NextRequest) {
       method: 'POST',
       credentials: 'include',
       headers: {
+        'Content-Type': 'application/json',
         'X-Requested-With': 'XMLHttpRequest',
         'Cache-Control': 'no-cache, no-store',
         'Nav-CallId': id,

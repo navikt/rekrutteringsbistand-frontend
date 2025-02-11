@@ -1,4 +1,4 @@
-import { BodyLong, Button, ErrorMessage } from '@navikt/ds-react';
+import { BodyLong, Button, ErrorMessage, Heading } from '@navikt/ds-react';
 import * as React from 'react';
 import { useFieldArray, useFormContext } from 'react-hook-form';
 import VelgPoststed from '../../../../components/VelgPoststed';
@@ -15,10 +15,17 @@ const VelgArbeidssted: React.FC = () => {
 
   return (
     <div>
+      <Heading size='medium'>Arbeidssted</Heading>
       <BodyLong>
         Oppgi hvor jobben skal foregå. Skriv inn en adresse eller én eller flere
         kommuner, fylker eller land.
       </BodyLong>
+
+      {/* <CheckboxGroup onChange={() => {}} legend>
+        <Checkbox value='1'>1</Checkbox>
+        <Checkbox value='2'>2</Checkbox>
+      </CheckboxGroup> */}
+
       <div className='my-4'>
         <Button
           variant='secondary'
