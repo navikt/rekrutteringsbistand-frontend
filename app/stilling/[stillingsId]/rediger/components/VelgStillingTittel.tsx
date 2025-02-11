@@ -2,16 +2,17 @@ import { UNSAFE_Combobox } from '@navikt/ds-react';
 import * as React from 'react';
 import { useStillingsTittel } from '../../../../api/pam-ontologi/stillingsTittel/useStillingsTittel';
 import { CategorySchemaDTO } from '../../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
+import { mapJanzzTilKategori } from '../mapStilling';
 
 export interface VelgStillingTittelProps {
-  valgtJanzz?: CategorySchemaDTO;
-  callBack: (category: CategorySchemaDTO) => void;
+  categoryList?: CategorySchemaDTO[];
+  callBack: (category: CategorySchemaDTO[]) => void;
   error?: string;
 }
 
 const VelgStillingTittel: React.FC<VelgStillingTittelProps> = ({
   callBack,
-  valgtJanzz,
+  categoryList,
   error,
 }) => {
   const [valg, setValg] = React.useState<{ label: string; value: string }[]>(
@@ -35,7 +36,9 @@ const VelgStillingTittel: React.FC<VelgStillingTittelProps> = ({
   return (
     <UNSAFE_Combobox
       error={error}
-      placeholder={valgtJanzz?.name ?? ''}
+      placeholder={
+        categoryList?.find((item) => item.categoryType === 'JANZZ')?.name ?? ''
+      }
       value={søkeVerdi}
       label='Velg yrkestittel (standard for yrkesklassifisering - JANZZ)'
       isLoading={hook.isLoading}
@@ -51,14 +54,7 @@ const VelgStillingTittel: React.FC<VelgStillingTittelProps> = ({
           ? hook.data.find((item) => item.label === value)
           : null;
         if (janzz) {
-          callBack({
-            id: janzz.konseptId,
-            code: janzz.konseptId.toString(),
-            categoryType: 'JANZZ',
-            name: janzz.label,
-            description: null,
-            parentId: null,
-          });
+          callBack(mapJanzzTilKategori(janzz));
         }
       }}
     />

@@ -1,8 +1,43 @@
 import { format } from 'date-fns';
 import { formaterTilISODato } from '../../../../util/dato';
-import { StillingsDataDTO } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
+import { JanzzTittelDTO } from '../../../api/pam-ontologi/stillingsTittel/useStillingsTittel';
+import {
+  CategorySchemaDTO,
+  StillingsDataDTO,
+} from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { InkluderingsTag } from '../omStillingen/StillingSidebar/StillingInkludering';
 import { StillingsDataForm } from './redigerFormType.zod';
+
+export const mapJanzzTilKategori = (
+  janzz: JanzzTittelDTO,
+): CategorySchemaDTO[] => {
+  return [
+    {
+      id: null,
+      code: janzz?.konseptId.toString() ?? null,
+      categoryType: 'JANZZ',
+      name: janzz?.label ?? null,
+      description: null,
+      parentId: null,
+    },
+    {
+      id: null,
+      code: janzz?.esco ?? null,
+      categoryType: 'ESCO',
+      name: janzz?.escoLabel ?? null,
+      description: null,
+      parentId: null,
+    },
+    {
+      id: null,
+      code: janzz?.styrk08 ?? null,
+      categoryType: 'STYRK08',
+      name: janzz?.styrk08Label ?? null,
+      description: null,
+      parentId: null,
+    },
+  ];
+};
 
 const capitalize = (str: string) =>
   str
@@ -53,12 +88,8 @@ export const mapStillingTilForm = (
       tags: tags,
     },
     omStillingen: {
-      janzz:
-        (
-          stillingsData?.stilling?.categoryList?.filter(
-            (item) => item.categoryType?.toUpperCase() === 'JANZZ',
-          ) as any
-        )[0] ?? null,
+      categoryList: stillingsData?.stilling?.categoryList ?? [],
+
       beskrivelse: stillingsData?.stilling?.properties?.adtext ?? '',
 
       adresseLokasjoner:
@@ -127,14 +158,21 @@ export const mapFormTilStilling = (
   formData: StillingsDataForm,
   existingData: StillingsDataDTO,
 ) => {
+  const harNyJanzz = existingData.stilling.categoryList?.some(
+    (i) =>
+      i.code !==
+        formData.omStillingen.categoryList.find(
+          (j) => j.categoryType === 'JANZZ',
+        )?.code && i.categoryType === 'JANZZ',
+  );
+
   return {
     stillingsinfoid: existingData.stillingsinfo?.stillingsinfoid,
     stilling: {
       ...existingData.stilling,
-      categoryList: [
-        ...(existingData.stilling.categoryList ?? []),
-        ...(formData.omStillingen.janzz ? [formData.omStillingen.janzz] : []),
-      ],
+      categoryList: harNyJanzz
+        ? formData.omStillingen.categoryList
+        : (existingData.stilling.categoryList ?? []),
       contactList: formData.omVirksomheten.kontaktPersoner.map((contact) => ({
         ...contact,
         email: contact.email ?? null,

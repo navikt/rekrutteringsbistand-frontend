@@ -8,18 +8,19 @@ import { getAPIwithSchema } from '../../fetcher';
 const pamEndepunkt = (søkeord: string) =>
   PamOntologiAPI.internUrl + `/stillingsTittel?q=${søkeord}`;
 
-const stillingsTittelSchema = z.object({
+export const JanzzTittelSchema = z.object({
   konseptId: z.number(),
   styrk08: z.string(),
+  styrk08Label: z.string().optional(),
   esco: z.string(),
   escoLabel: z.string(),
   label: z.string(),
   undertype: z.string(),
 });
 
-export const stillingsTittelTreffSchema = z.array(stillingsTittelSchema);
+export const stillingsTittelTreffSchema = z.array(JanzzTittelSchema);
 
-export type stillingsTittelDTO = z.infer<typeof stillingsTittelSchema>;
+export type JanzzTittelDTO = z.infer<typeof JanzzTittelSchema>;
 
 export const useStillingsTittel = (søkeOrd?: string) =>
   useSWRImmutable(

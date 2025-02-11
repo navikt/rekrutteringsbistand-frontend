@@ -63,14 +63,14 @@ export const AdresseLokasjonSchema = z
     },
   );
 
-export const JanzzSchema = KategoriSchema.refine((data) => !!data.name, {
-  message: 'Yrkesklassifisering må velges',
-  path: ['name'],
-});
+// export const JanzzSchema = KategoriSchema.refine((data) => !!data.name, {
+//   message: 'Yrkesklassifisering må velges',
+//   path: ['name'],
+// });
 
 export const OmStillingenSchema = z
   .object({
-    janzz: JanzzSchema,
+    categoryList: z.array(KategoriSchema),
     beskrivelse: z.string().nullable(),
     adresseLokasjoner: AdresseLokasjonSchema,
     lokasjoner: z.array(GeografiSchema).optional().nullable(),
