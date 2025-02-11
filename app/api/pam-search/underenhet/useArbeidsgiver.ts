@@ -7,9 +7,8 @@ import { z } from 'zod';
 import { PamSearchAPI } from '../../api-routes';
 import { getApiWithSchemaEs } from '../../fetcher';
 
-const finnArbeidsgiverEndepunkt = (søkeord: string) => {
-  return `${PamSearchAPI.internUrl}/underenhet/_search?q=${søkeord}`;
-};
+const finnArbeidsgiverEndepunkt = (søkeord?: string) =>
+  PamSearchAPI.internUrl + `/underenhet?q=${søkeord}`;
 
 const ArbeidsgiverSchema = z.object({
   organisasjonsnummer: z.string(),
@@ -32,7 +31,12 @@ const ArbeidsgiverSchemaDTO = z.array(ArbeidsgiverSchema);
 
 export type ArbeidsgiverDTO = z.infer<typeof ArbeidsgiverSchema>;
 
-export const useFinnArbeidsgiver = (søkeord: string) => {
+export const useFinnArbeidsgiver = (søkeord?: string) => {
+  console.log(
+    '🎺   finnArbeidsgiverEndepunkt(søkeord)',
+    finnArbeidsgiverEndepunkt(søkeord),
+  );
+  console.log('🎺 søkeord', søkeord);
   return useSWRImmutable(
     søkeord ? finnArbeidsgiverEndepunkt(søkeord) : null,
     getApiWithSchemaEs(ArbeidsgiverSchemaDTO),
@@ -40,7 +44,8 @@ export const useFinnArbeidsgiver = (søkeord: string) => {
 };
 
 export const finnArbeidsgiverMirage = (server: any) => {
-  return server.post(finnArbeidsgiverEndepunkt('*'), () => {
+  server.get(PamSearchAPI.internUrl + `/underenhet`, () => {
+    console.log('Mirage intercepted:');
     return {
       took: 2,
       timed_out: false,

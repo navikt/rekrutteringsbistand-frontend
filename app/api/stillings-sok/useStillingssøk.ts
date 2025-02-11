@@ -8,11 +8,11 @@ import { useGeografi } from '../stilling/geografi/useGeografi';
 
 import { StillingsSøkAPI } from '../api-routes';
 import { mockStillingssøk } from './mocks/mockStillingssøk';
+import { ESStillingsSøkSchema } from './schema/stillingsSøkSchema.zod';
 import {
   generateElasticSearchQuery,
   StillingsSøkFilter,
 } from './stillingssøkElasticSearchQuery';
-import { ESStillingsSøkSchema } from './schema/stillingsSøkSchema.zod';
 
 const stillingsSøkEndepunkt = StillingsSøkAPI.internUrl;
 

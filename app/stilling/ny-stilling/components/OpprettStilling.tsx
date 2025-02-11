@@ -3,14 +3,14 @@ import { PlusCircleIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
-import { FinnArbeidsgiverDTO } from '../../../api/stilling/finn-arbeidsgiver/useFinnArbeidsgiver';
+import { ArbeidsgiverDTO } from '../../../api/pam-search/underenhet/useArbeidsgiver';
 import { OpprettNyStillingDTO } from '../../../api/stilling/ny-stilling/dto';
 import { opprettNyStilling } from '../../../api/stilling/ny-stilling/opprettNyStilling';
 import { useApplikasjonContext } from '../../../ApplikasjonContext';
 import { Stillingskategori } from '../../stilling-typer';
 export interface OpprettStillingProps {
   stillingskategori: Stillingskategori | null;
-  arbeidsgiver: FinnArbeidsgiverDTO | null;
+  arbeidsgiver: ArbeidsgiverDTO | null;
 }
 
 export const OpprettStillingKnapp: React.FC<OpprettStillingProps> = ({
@@ -38,20 +38,20 @@ export const OpprettStillingKnapp: React.FC<OpprettStillingProps> = ({
           updatedBy: 'pam-rekrutteringsbistand',
           source: 'DIR',
           medium: 'DIR',
-          businessName: arbeidsgiver.name,
+          businessName: arbeidsgiver.navn,
           privacy: 'INTERNAL_NOT_SHOWN',
           employer: {
-            orgnr: arbeidsgiver.orgnr ?? '',
-            name: arbeidsgiver.name,
+            orgnr: arbeidsgiver.organisasjonsnummer ?? '',
+            name: arbeidsgiver.navn,
             location: {
-              address: arbeidsgiver.location?.address ?? '',
-              postalCode: arbeidsgiver.location?.postalCode ?? '',
-              county: arbeidsgiver.location?.county ?? '',
-              country: arbeidsgiver.location?.country ?? '',
-              municipal: arbeidsgiver.location?.municipal ?? '',
-              latitude: arbeidsgiver.location?.latitude ?? '',
-              longitude: arbeidsgiver.location?.longitude ?? '',
-              city: arbeidsgiver.location?.city ?? '',
+              address: arbeidsgiver.adresse.adresse ?? '',
+              postalCode: arbeidsgiver.adresse.postnummer ?? '',
+              county: arbeidsgiver.adresse.kommune ?? '',
+              country: arbeidsgiver.adresse.land ?? '',
+              municipal: arbeidsgiver.adresse.kommunenummer ?? '',
+              latitude: '',
+              longitude: '',
+              city: arbeidsgiver.adresse.poststed ?? '',
             },
           },
         },

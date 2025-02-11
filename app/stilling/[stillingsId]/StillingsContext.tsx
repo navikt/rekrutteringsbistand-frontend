@@ -89,7 +89,7 @@ const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
     if (!window.location.pathname.includes(correctPath)) {
       router.push(correctPath);
     }
-  }, [stillingsData.stillingsinfo?.stillingskategori]);
+  }, [stillingsData.stillingsinfo?.stillingskategori, router]);
 
   const erEier = useMemo(
     () =>

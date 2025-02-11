@@ -14,7 +14,6 @@ const VelgArbeidsgiver: React.FC<IVelgArbeidsgiver> = ({ setArbeidsgiver }) => {
   const [søkeOrd, setSøkeord] = React.useState<string>('');
   const { isLoading, error, data } = useFinnArbeidsgiver(søkeOrd);
 
-  console.log(data);
   return (
     <React.Fragment>
       <form role='search'>
@@ -40,7 +39,11 @@ const VelgArbeidsgiver: React.FC<IVelgArbeidsgiver> = ({ setArbeidsgiver }) => {
           }}
         />
       </form>
-      {error && <Alert variant='error'>{JSON.stringify(error)}</Alert>}
+      {error && (
+        <Alert className='mt-8' variant='error'>
+          {JSON.stringify(error)}
+        </Alert>
+      )}
     </React.Fragment>
   );
 };
