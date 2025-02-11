@@ -7,6 +7,7 @@ import {
 import { Button } from '@navikt/ds-react';
 import * as React from 'react';
 import { oppdaterStilling } from '../../../../api/stilling/oppdater-stilling/oppdaterStilling';
+import { useStilling } from '../../../../api/stilling/rekrutteringsbistandstilling/[slug]/useStilling';
 import { useVisVarsling } from '../../../../components/varsling/Varsling';
 import { StillingsStatus } from '../../../stilling-typer';
 import { useStillingsContext } from '../../StillingsContext';
@@ -25,6 +26,8 @@ const AksjonsknapperSiderbarStilling: React.FC<
     useStillingsContext();
   const [lagrer, setLagrer] = React.useState<boolean>(false);
 
+  const { mutate } = useStilling(stillingsData.stilling.uuid);
+
   const visVarsling = useVisVarsling();
 
   const onLagre = async () => {
@@ -39,6 +42,7 @@ const AksjonsknapperSiderbarStilling: React.FC<
         innhold: 'Stillingen ble lagret',
         alertType: 'success',
       });
+      await mutate();
     } catch (error) {
       visVarsling({
         innhold: 'Feil ved lagring av stilling',
