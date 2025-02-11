@@ -79,7 +79,7 @@ const OmStillingen: React.FC<{ forhåndsvisData?: boolean }> = ({
                 <>
                   <TekstMedIkon
                     // Lokasjon
-                    tekst={`${lokasjon}`}
+                    tekst={lokasjon ?? '-'}
                     ikon={<LocationPinIcon />}
                   />
                   <TekstMedIkon
@@ -94,12 +94,12 @@ const OmStillingen: React.FC<{ forhåndsvisData?: boolean }> = ({
                   />
                   <TekstMedIkon
                     // Søknadsfrist
-                    tekst={`Søknadsfrist ${formaterTid(applicationdue)?.toLowerCase()}`}
+                    tekst={`Søknadsfrist ${applicationdue ? formaterTid(applicationdue)?.toLowerCase() : '-'}`}
                     ikon={<HourglassIcon />}
                   />
                   <TekstMedIkon
                     // Oppstart
-                    tekst={`Oppstart ${formaterTid(starttime)?.toLowerCase()}`}
+                    tekst={`Oppstart ${starttime ? formaterTid(starttime)?.toLowerCase() : '-'}`}
                     ikon={<TimerStartIcon />}
                   />
                   <AntallKandidater kandidatlisteId={kandidatlisteId} />

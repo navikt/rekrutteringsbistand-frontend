@@ -47,3 +47,21 @@ Første steg: Om kandidaten
 - Endre innspurt
 
 - Finn arbeidsgiver brukes ikke mere, kan fjernes backend
+
+/// TODO
+tom stilling lagres med:
+contactList
+:
+[{name: "", title: "", email: "", phone: ""}]
+0
+:
+{name: "", title: "", email: "", phone: ""}
+email
+:
+""
+name
+:
+""
+phone
+:
+""

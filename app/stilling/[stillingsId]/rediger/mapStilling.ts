@@ -158,13 +158,16 @@ export const mapFormTilStilling = (
   formData: StillingsDataForm,
   existingData: StillingsDataDTO,
 ) => {
-  const harNyJanzz = existingData.stilling.categoryList?.some(
-    (i) =>
-      i.code !==
-        formData.omStillingen.categoryList.find(
-          (j) => j.categoryType === 'JANZZ',
-        )?.code && i.categoryType === 'JANZZ',
-  );
+  const harNyJanzz =
+    !existingData.stilling.categoryList?.length ||
+    existingData.stilling.categoryList?.some(
+      (i) =>
+        i.categoryType === 'JANZZ' &&
+        i.code !==
+          formData.omStillingen.categoryList.find(
+            (j) => j.categoryType === 'JANZZ',
+          )?.code,
+    );
 
   return {
     stillingsinfoid: existingData.stillingsinfo?.stillingsinfoid,

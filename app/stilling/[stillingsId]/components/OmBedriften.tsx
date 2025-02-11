@@ -18,7 +18,7 @@ const OmBedriften: React.FC = () => {
         <>
           {parse(
             String(
-              stillingsData.stilling?.properties?.employerdescription ?? '',
+              stillingsData.stilling?.properties?.employerdescription ?? '-',
             ),
           )}
         </>
@@ -34,7 +34,7 @@ const OmBedriften: React.FC = () => {
           />
           <Definisjon
             tittel='Sektor'
-            innhold={`${stillingsData.stilling?.properties?.sector}`}
+            innhold={stillingsData.stilling?.properties?.sector ?? '-'}
           />
         </>
       }
