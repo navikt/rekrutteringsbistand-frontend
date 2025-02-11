@@ -1,14 +1,15 @@
 'use client';
-/**
- * Endepunkt /FinnArbeidsgiver
- */
+
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
 import { PamSearchAPI } from '../../api-routes';
 import { getApiWithSchemaEs } from '../../fetcher';
 
-const finnArbeidsgiverEndepunkt = (søkeord?: string) =>
-  PamSearchAPI.internUrl + `/underenhet?q=${søkeord}`;
+const finnArbeidsgiverEndepunkt = (søkeord: string) => {
+  console.log('🎺 søkeord', søkeord);
+  console.log(PamSearchAPI.internUrl + `/underenhet?q=${søkeord}`);
+  return PamSearchAPI.internUrl + `/underenhet?q=${søkeord}`;
+};
 
 const ArbeidsgiverSchema = z.object({
   organisasjonsnummer: z.string(),
@@ -31,21 +32,18 @@ const ArbeidsgiverSchemaDTO = z.array(ArbeidsgiverSchema);
 
 export type ArbeidsgiverDTO = z.infer<typeof ArbeidsgiverSchema>;
 
-export const useFinnArbeidsgiver = (søkeord?: string) => {
-  console.log(
-    '🎺   finnArbeidsgiverEndepunkt(søkeord)',
-    finnArbeidsgiverEndepunkt(søkeord),
+export const useFinnArbeidsgiver = (søkeord?: string) =>
+  useSWRImmutable(
+    søkeord
+      ? {
+          url: finnArbeidsgiverEndepunkt(søkeord),
+        }
+      : null,
+    (data) => getApiWithSchemaEs(ArbeidsgiverSchemaDTO)(data),
   );
-  console.log('🎺 søkeord', søkeord);
-  return useSWRImmutable(
-    søkeord ? finnArbeidsgiverEndepunkt(søkeord) : null,
-    getApiWithSchemaEs(ArbeidsgiverSchemaDTO),
-  );
-};
 
-export const finnArbeidsgiverMirage = (server: any) => {
+export const arbeidsgiverMirage = (server: any) => {
   server.get(PamSearchAPI.internUrl + `/underenhet`, () => {
-    console.log('Mirage intercepted:');
     return {
       took: 2,
       timed_out: false,

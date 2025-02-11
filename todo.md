@@ -45,3 +45,5 @@ Første steg: Om kandidaten
 - Fjern oppstart og søknadsfrist
 
 - Endre innspurt
+
+- Finn arbeidsgiver brukes ikke mere, kan fjernes backend

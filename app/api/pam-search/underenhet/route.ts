@@ -4,9 +4,8 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function GET(req: NextRequest) {
   const søkeord = req.nextUrl.searchParams.get('q');
   const id = nanoid();
-  const utenMellomrom = søkeord?.replace(/\s/g, '');
   const response = await fetch(
-    `${process.env.PAM_SEARCH_URL}/underenhet/_search?q=organisasjonsnummer:${utenMellomrom}*`,
+    `${process.env.PAM_SEARCH_URL}/underenhet/_search?q=organisasjonsnummer:${søkeord}`,
     {
       method: 'GET',
       credentials: 'include',

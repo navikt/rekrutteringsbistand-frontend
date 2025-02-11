@@ -22,7 +22,7 @@ const NyFormidling: React.FC = () => {
     <SideLayout banner={<SideTopBanner tittel='Etterregistrer formidling' />}>
       <div>
         <div className='grid'>
-          <VelgArbeidsgiver setArbeidsgiver={setArbeidsgiver} />
+          <VelgArbeidsgiver arbeidsgiverCallback={setArbeidsgiver} />
         </div>
         <div className='flex justify-end mt-4'>
           <Button

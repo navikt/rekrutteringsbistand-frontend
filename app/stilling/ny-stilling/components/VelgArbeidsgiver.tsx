@@ -1,4 +1,4 @@
-import { Alert, UNSAFE_Combobox } from '@navikt/ds-react';
+import { Alert, FormSummary, UNSAFE_Combobox } from '@navikt/ds-react';
 import * as React from 'react';
 import {
   ArbeidsgiverDTO,
@@ -7,12 +7,22 @@ import {
 
 export interface IVelgArbeidsgiver {
   children?: React.ReactNode | undefined;
-  setArbeidsgiver: (arbeidsgiver: ArbeidsgiverDTO) => void;
+  arbeidsgiverCallback: (arbeidsgiver: ArbeidsgiverDTO) => void;
 }
 
-const VelgArbeidsgiver: React.FC<IVelgArbeidsgiver> = ({ setArbeidsgiver }) => {
+const VelgArbeidsgiver: React.FC<IVelgArbeidsgiver> = ({
+  arbeidsgiverCallback,
+}) => {
   const [søkeOrd, setSøkeord] = React.useState<string>('');
   const { isLoading, error, data } = useFinnArbeidsgiver(søkeOrd);
+  const [arbeidsgiver, setArbeidsgiver] =
+    React.useState<ArbeidsgiverDTO | null>(null);
+
+  React.useEffect(() => {
+    if (arbeidsgiver) {
+      arbeidsgiverCallback(arbeidsgiver);
+    }
+  }, [arbeidsgiver, arbeidsgiverCallback]);
 
   return (
     <React.Fragment>
@@ -38,6 +48,44 @@ const VelgArbeidsgiver: React.FC<IVelgArbeidsgiver> = ({ setArbeidsgiver }) => {
             }
           }}
         />
+        {arbeidsgiver && (
+          <FormSummary className='mt-4'>
+            <FormSummary.Header>
+              <FormSummary.Heading level='2'>
+                Valgt arbeidsgiver
+              </FormSummary.Heading>
+            </FormSummary.Header>
+
+            <FormSummary.Answers>
+              <FormSummary.Answer>
+                <FormSummary.Label>Navn</FormSummary.Label>
+                <FormSummary.Value>{arbeidsgiver?.navn}</FormSummary.Value>
+              </FormSummary.Answer>
+
+              <FormSummary.Answer>
+                <FormSummary.Label>Organisasjonsnummer</FormSummary.Label>
+                <FormSummary.Value>
+                  {arbeidsgiver?.organisasjonsnummer}
+                </FormSummary.Value>
+              </FormSummary.Answer>
+
+              <FormSummary.Answer>
+                <FormSummary.Label>Adresse</FormSummary.Label>
+                <FormSummary.Value>
+                  {arbeidsgiver.adresse.adresse}
+                </FormSummary.Value>
+                <FormSummary.Value>
+                  {arbeidsgiver?.adresse.postnummer ?? '-'},{' '}
+                  {arbeidsgiver?.adresse.poststed ?? '-'}
+                </FormSummary.Value>
+
+                <FormSummary.Value>
+                  {arbeidsgiver.adresse.kommune}
+                </FormSummary.Value>
+              </FormSummary.Answer>
+            </FormSummary.Answers>
+          </FormSummary>
+        )}
       </form>
       {error && (
         <Alert className='mt-8' variant='error'>

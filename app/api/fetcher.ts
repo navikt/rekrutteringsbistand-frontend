@@ -179,7 +179,8 @@ export const getApiWithSchemaEs = <T>(
   return async (props) => {
     const data: any = await getAPI(props.url);
     const parsedData = esResponseDto.parse(data);
-    return validerSchema(schema, parsedData.hits.hits[0]._source);
+    const mappedData = parsedData.hits.hits.map((hit) => hit._source);
+    return validerSchema(schema, mappedData);
   };
 };
 
