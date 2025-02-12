@@ -7,21 +7,37 @@ import {
 } from '@navikt/ds-react';
 import * as React from 'react';
 import { useState } from 'react';
-import { useFieldArray, useFormContext } from 'react-hook-form';
+import { get, useFieldArray, useFormContext } from 'react-hook-form';
 import VelgPoststed from '../../../../components/VelgPoststed';
+import { FormidlingDataForm } from '../../../../formidlinger/[stillingsId]/rediger/redigerFormidlingFormType';
 import { StillingsDataForm } from '../redigerFormType.zod';
 import VelgKommuneFylkeEllerLand from './VelgKommuneFylkeEllerLand';
 
-const VelgArbeidssted: React.FC = () => {
-  const { control, formState, watch } = useFormContext<StillingsDataForm>();
+export interface VelgArbeidsstedProps {
+  lokasjonsFelt: 'omFormidling.lokasjoner' | 'omStillingen.lokasjoner';
+  adresseFelt:
+    | 'omFormidling.adresseLokasjoner'
+    | 'omStillingen.adresseLokasjoner';
+}
+
+const VelgArbeidssted: React.FC<VelgArbeidsstedProps> = ({
+  adresseFelt,
+  lokasjonsFelt,
+}) => {
+  const { control, formState, watch } = useFormContext<
+    StillingsDataForm | FormidlingDataForm
+  >();
 
   const { fields, append, update, remove } = useFieldArray({
     control,
-    name: 'omStillingen.adresseLokasjoner',
+    name: adresseFelt,
   });
 
   const [visAdresse, setVisAdresse] = useState(false);
   const [visLokasjon, setVisLokasjon] = useState(false);
+
+  const errorMessageAdresse = get(formState.errors, adresseFelt)?.message;
+  const errorMessageLokasjon = get(formState.errors, lokasjonsFelt)?.message;
 
   React.useEffect(() => {
     if (fields.length > 0) {
@@ -84,21 +100,17 @@ const VelgArbeidssted: React.FC = () => {
           </Button>
         </div>
       )}
-      {formState.errors.omStillingen?.adresseLokasjoner?.message && (
-        <ErrorMessage>
-          {formState.errors.omStillingen.adresseLokasjoner.message}
-        </ErrorMessage>
+      {errorMessageAdresse && (
+        <ErrorMessage>{errorMessageAdresse}</ErrorMessage>
       )}
       {visLokasjon && (
         <div className='my-4'>
-          <VelgKommuneFylkeEllerLand />
+          <VelgKommuneFylkeEllerLand lokasjonsFelt={lokasjonsFelt} />
         </div>
       )}
 
-      {formState.errors.omStillingen?.lokasjoner?.message && (
-        <ErrorMessage>
-          {formState.errors.omStillingen.lokasjoner.message}
-        </ErrorMessage>
+      {errorMessageLokasjon && (
+        <ErrorMessage>{errorMessageLokasjon}</ErrorMessage>
       )}
     </div>
   );

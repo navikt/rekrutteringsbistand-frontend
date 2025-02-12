@@ -15,15 +15,7 @@ export const RedigerPraktiskInfo: React.FC<{
   nextStep: () => void;
   forrigeSteg: () => void;
 }> = ({ nextStep, forrigeSteg, stegNummer }) => {
-  const {
-    register,
-    setValue,
-    watch,
-    control,
-    trigger,
-    getValues,
-    formState: { errors },
-  } = useFormContext<StillingsDataForm>();
+  const { trigger } = useFormContext<StillingsDataForm>();
 
   const handleStepSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,11 +32,14 @@ export const RedigerPraktiskInfo: React.FC<{
       <div className='flex flex-col gap-y-8'>
         <Heading size='large'>Praktisk info</Heading>
         <BodyShort>Fyll inn praktiske detaljer om jobben.</BodyShort>
-        <VelgSektor />
+        <VelgSektor sektorFelt='praktiskInfo.sektor' />
         <VelgAntallStillinger />
-        <VelgOmfang />
-        <VelgAnsettelsesform />
-        <VelgArbeidstidsordning />
+        <VelgOmfang
+          omfangFelt='praktiskInfo.omfangKode'
+          omfangProsentFelt='praktiskInfo.omfangProsent'
+        />
+        <VelgAnsettelsesform ansettelsesformFelt='praktiskInfo.ansettelsesform' />
+        <VelgArbeidstidsordning arbeidstidsordningFelt='praktiskInfo.arbeidstidsordning' />
         <VelgArbeidsTid />
         <VelgOppstartOgFrist />
         <StegNavigering stegNummer={stegNummer} forrigeSteg={forrigeSteg} />

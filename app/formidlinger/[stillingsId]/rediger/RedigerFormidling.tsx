@@ -1,4 +1,5 @@
-import { Box, Heading, Stepper } from '@navikt/ds-react';
+import { TrashIcon } from '@navikt/aksel-icons';
+import { Box, Button, Stepper } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
 import { useQueryState } from 'nuqs';
 import * as React from 'react';
@@ -7,9 +8,12 @@ import { useFormContext } from 'react-hook-form';
 import { oppdaterStilling } from '../../../api/stilling/oppdater-stilling/oppdaterStilling';
 import { useVisVarsling } from '../../../components/varsling/Varsling';
 import { useStillingsContext } from '../../../stilling/[stillingsId]/StillingsContext';
+import { RedigerOmTilrettelegging } from '../../../stilling/[stillingsId]/rediger/components/RedigerOmTilrettelegging';
 import { mapFormTilStilling } from '../../../stilling/[stillingsId]/rediger/mapStilling';
 import { StillingsDataForm } from '../../../stilling/[stillingsId]/rediger/redigerFormType.zod';
+import FormidlingInnspurt from './components/FormidlingInnspurt';
 import FormidlingLeggTilKandidat from './components/FormidlingLeggTilKandidat';
+import FormidlingOmStillingen from './components/RedigerOmFormidlingen';
 
 export interface RedigerFormidlingProps {
   children?: React.ReactNode | undefined;
@@ -17,8 +21,8 @@ export interface RedigerFormidlingProps {
 
 enum RedigerFormidlingSteg {
   omKandidatene = 'om-kandidatene',
-  omArbeidsgiveren = 'om-arbeidsgiveren',
-  dinInkludering = 'din-inkludering',
+  omFormidlingen = 'om-formidlingen',
+  omTilrettelegging = 'om-tilrettelegging',
   innspurt = 'innspurt',
 }
 
@@ -83,10 +87,7 @@ const RedigerFormidling: React.FC<RedigerFormidlingProps> = ({ children }) => {
   return (
     <Box>
       {/* Header */}
-      <Box className='flex items-center gap-4 mb-8'>
-        <div className='w-8 h-8'>{/* Your icon component */}</div>
-        <Heading size='large'>Etterregistrer formidling</Heading>
-      </Box>
+
       <div className='flex flex-row'>
         <div className='sticky top-4 self-start'>
           <Stepper
@@ -97,9 +98,9 @@ const RedigerFormidling: React.FC<RedigerFormidlingProps> = ({ children }) => {
             orientation='vertical'
             className='mb-8'
           >
-            <Stepper.Step completed>Om kandidatene</Stepper.Step>
-            <Stepper.Step> Om arbeidsgiveren</Stepper.Step>
-            <Stepper.Step>Din inkludering</Stepper.Step>
+            <Stepper.Step>Om kandidatene</Stepper.Step>
+            <Stepper.Step> Om formidlingen</Stepper.Step>
+            <Stepper.Step>Om inkludering</Stepper.Step>
             <Stepper.Step>Innspurt</Stepper.Step>
           </Stepper>
         </div>
@@ -110,8 +111,35 @@ const RedigerFormidling: React.FC<RedigerFormidlingProps> = ({ children }) => {
               forrigeSteg={forrigeSteg}
             />
           )}
+          {aktivtSteg === RedigerFormidlingSteg.omFormidlingen && (
+            <FormidlingOmStillingen
+              nesteSteg={nesteSteg}
+              forrigeSteg={forrigeSteg}
+            />
+          )}
+          {aktivtSteg === RedigerFormidlingSteg.omTilrettelegging && (
+            <RedigerOmTilrettelegging
+              omTilretteleggingFelt='omStillingen.omTilrettelegging'
+              stegNummer={2}
+              nextStep={nesteSteg}
+              forrigeSteg={forrigeSteg}
+            />
+          )}
+          {aktivtSteg === RedigerFormidlingSteg.innspurt && (
+            <FormidlingInnspurt />
+          )}
         </div>
-        <div> avslutt </div>
+        <div className='sticky bottom-4 self-top'>
+          <Button
+            disabled
+            variant='tertiary'
+            icon={<TrashIcon aria-hidden />}
+            iconPosition='left'
+            size='small'
+          >
+            Avbryt og slett
+          </Button>
+        </div>
       </div>
     </Box>
   );

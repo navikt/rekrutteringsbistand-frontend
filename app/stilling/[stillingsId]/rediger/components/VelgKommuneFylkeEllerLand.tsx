@@ -4,15 +4,24 @@ import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { useGeografi } from '../../../../api/stilling/geografi/useGeografi';
 import { StillingsDataForm } from '../redigerFormType.zod';
+import { FormidlingDataForm } from '../../../../formidlinger/[stillingsId]/rediger/redigerFormidlingFormType';
 
-const VelgKommuneFylkeEllerLand: React.FC = () => {
-  const { setValue, watch } = useFormContext<StillingsDataForm>();
+interface VelgKommuneFylkeEllerLandProps {
+  lokasjonsFelt: 'omFormidling.lokasjoner' | 'omStillingen.lokasjoner';
+}
+
+const VelgKommuneFylkeEllerLand: React.FC<VelgKommuneFylkeEllerLandProps> = ({
+  lokasjonsFelt,
+}) => {
+  const { setValue, watch } = useFormContext<
+    StillingsDataForm | FormidlingDataForm
+  >();
   const geografi = useGeografi();
   const [muligeValg, setMuligeValg] = useState<string[]>([]);
   const [søkeTekst, setSøkeTekst] = useState<string>('');
 
   const [valgteVerdier, setValgteVerdier] = useState<string[]>(() => {
-    const lokasjoner = watch('omStillingen.lokasjoner');
+    const lokasjoner = watch(lokasjonsFelt);
     return (
       lokasjoner
         ?.map((item) => {
@@ -54,7 +63,7 @@ const VelgKommuneFylkeEllerLand: React.FC = () => {
         (value): value is NonNullable<typeof value> => value !== undefined,
       );
 
-    setValue('omStillingen.lokasjoner', nyeVerdier || [], {
+    setValue(lokasjonsFelt, nyeVerdier || [], {
       shouldValidate: true,
       shouldDirty: true,
     });

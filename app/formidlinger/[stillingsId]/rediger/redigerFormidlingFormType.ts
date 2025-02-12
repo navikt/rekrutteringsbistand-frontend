@@ -15,10 +15,19 @@ export const FormidlingKandidatSchema = z.object({
 });
 
 export const OmFormidlingSchema = z.object({
-  janzz: z.array(KategoriSchema),
+  categoryList: z.array(KategoriSchema),
   adresseLokasjoner: AdresseLokasjonSchema,
   lokasjoner: z.array(GeografiSchema).optional().nullable(),
   sektor: z.string().min(1, 'Sektor må velges').nullable(),
+  arbeidstidsordning: z.string().optional(),
+  ansettelsesform: z
+    .string()
+    .nullish()
+    .refine((val) => val !== null && val !== '', {
+      message: 'Ansettelsesform må velges',
+    }),
+  omfangKode: z.string().min(1, 'Omfang må velges'),
+  omfangProsent: z.string().optional(),
 });
 
 export const FormidlingFormSchema = z.object({
@@ -30,4 +39,4 @@ export const FormidlingFormSchema = z.object({
   innspurt: z.string(),
 });
 
-export type FormidlingFormSchemaDTO = z.infer<typeof FormidlingFormSchema>;
+export type FormidlingDataForm = z.infer<typeof FormidlingFormSchema>;

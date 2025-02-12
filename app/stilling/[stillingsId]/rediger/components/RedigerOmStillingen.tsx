@@ -61,7 +61,10 @@ export const RedigerOmStillingen: React.FC<{
           </div>
 
           <div>
-            <VelgArbeidssted />
+            <VelgArbeidssted
+              lokasjonsFelt='omStillingen.lokasjoner'
+              adresseFelt='omStillingen.adresseLokasjoner'
+            />
           </div>
         </div>
         <StegNavigering stegNummer={stegNummer} forrigeSteg={forrigeSteg} />

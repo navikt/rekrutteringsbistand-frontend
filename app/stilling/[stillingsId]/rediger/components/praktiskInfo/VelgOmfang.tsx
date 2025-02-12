@@ -1,21 +1,34 @@
 import { ErrorMessage, Radio, RadioGroup, Select } from '@navikt/ds-react';
 import * as React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
+import { FormidlingDataForm } from '../../../../../formidlinger/[stillingsId]/rediger/redigerFormidlingFormType';
 import { StillingsDataForm } from '../../redigerFormType.zod';
 
-const VelgOmfang: React.FC = ({}) => {
-  const { control, watch } = useFormContext<StillingsDataForm>();
+interface VelgOmfangProps {
+  omfangFelt: 'praktiskInfo.omfangKode' | 'omFormidling.omfangKode';
+  omfangProsentFelt:
+    | 'praktiskInfo.omfangProsent'
+    | 'omFormidling.omfangProsent';
+}
+
+const VelgOmfang: React.FC<VelgOmfangProps> = ({
+  omfangFelt,
+  omfangProsentFelt,
+}) => {
+  const { control, watch } = useFormContext<
+    StillingsDataForm | FormidlingDataForm
+  >();
 
   return (
     <div className='flex flex-col gap-4'>
       <Controller
         control={control}
-        name='praktiskInfo.omfangKode'
+        name={omfangFelt}
         render={({ field: { onChange, value }, fieldState: { error } }) => (
           <RadioGroup
             error={error?.message}
             legend='Velg omfang'
-            value={value}
+            value={value ?? ''}
             onChange={(e) => onChange(e)}
           >
             <Radio value='Heltid'>Heltid (100%)</Radio>
@@ -24,10 +37,10 @@ const VelgOmfang: React.FC = ({}) => {
         )}
       />
 
-      {watch('praktiskInfo.omfangKode') === 'Deltid' && (
+      {watch(omfangFelt) === 'Deltid' && (
         <Controller
           control={control}
-          name='praktiskInfo.omfangProsent'
+          name={omfangProsentFelt}
           render={({ field: { onChange, value }, fieldState: { error } }) => (
             <>
               <Select

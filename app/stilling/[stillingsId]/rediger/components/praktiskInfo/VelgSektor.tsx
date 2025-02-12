@@ -1,18 +1,23 @@
 import { Radio, RadioGroup } from '@navikt/ds-react';
 import * as React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
+import { FormidlingDataForm } from '../../../../../formidlinger/[stillingsId]/rediger/redigerFormidlingFormType';
 import { StillingsDataForm } from '../../redigerFormType.zod';
 
-const VelgSektor: React.FC = ({}) => {
-  const { control } = useFormContext<StillingsDataForm>();
+interface VelgSektorProps {
+  sektorFelt: 'praktiskInfo.sektor' | 'omFormidling.sektor';
+}
+
+const VelgSektor: React.FC<VelgSektorProps> = ({ sektorFelt }) => {
+  const { control } = useFormContext<StillingsDataForm | FormidlingDataForm>();
   return (
     <Controller
       control={control}
-      name='praktiskInfo.sektor'
+      name={sektorFelt}
       render={({ field: { onChange, value }, fieldState: { error } }) => (
         <RadioGroup
           legend='Velg sektor'
-          value={value}
+          value={value || ''}
           onChange={(e) => onChange(e)}
           error={error?.message}
         >

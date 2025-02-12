@@ -3,20 +3,29 @@ import * as React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { StillingsArbeidstidsordning } from '../../../../stilling-typer';
 import { StillingsDataForm } from '../../redigerFormType.zod';
+import { FormidlingDataForm } from '../../../../../formidlinger/[stillingsId]/rediger/redigerFormidlingFormType';
 
-const VelgArbeidstidsordning: React.FC = ({}) => {
-  const { control } = useFormContext<StillingsDataForm>();
+interface VelgArbeidstidsordningProps {
+  arbeidstidsordningFelt:
+    | 'praktiskInfo.arbeidstidsordning'
+    | 'omFormidling.arbeidstidsordning';
+}
+
+const VelgArbeidstidsordning: React.FC<VelgArbeidstidsordningProps> = ({
+  arbeidstidsordningFelt,
+}) => {
+  const { control } = useFormContext<StillingsDataForm | FormidlingDataForm>();
 
   return (
     <div className='w-[18.75rem]'>
       <Controller
-        name='praktiskInfo.arbeidstidsordning'
+        name={arbeidstidsordningFelt}
         control={control}
         render={({ field, fieldState: { error } }) => (
           <Select
             value={field.value ?? ''}
             onChange={(val) => field.onChange(val)}
-            label='Arbeidstidsordning'
+            label='Arbeidstidsordning (valgfritt)'
             error={error?.message}
           >
             {Object.entries(StillingsArbeidstidsordning).map(([key, value]) => (
