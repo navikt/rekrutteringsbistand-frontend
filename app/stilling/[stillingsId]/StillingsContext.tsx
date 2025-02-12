@@ -84,6 +84,12 @@ const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
   }, [kandidatlisteIdHook]);
 
   React.useEffect(() => {
+    if (stillingsData.stilling.publishedByAdmin) {
+      kandidatlisteIdHook.mutate();
+    }
+  }, [stillingsData.stilling.publishedByAdmin, kandidatlisteIdHook]);
+
+  React.useEffect(() => {
     const isFormidling =
       stillingsData.stillingsinfo?.stillingskategori === 'FORMIDLING';
     const correctPath = isFormidling
