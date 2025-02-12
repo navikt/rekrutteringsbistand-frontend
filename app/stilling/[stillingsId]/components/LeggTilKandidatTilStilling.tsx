@@ -3,7 +3,7 @@ import { Button, Modal } from '@navikt/ds-react';
 import * as React from 'react';
 import { useRef, useState } from 'react';
 import { leggTilKandidater } from '../../../api/kandidat-sok/leggTilKandidat';
-import { useKandidatlisteId } from '../../../api/kandidat/useKandidatlisteId';
+import { useKandidatliste } from '../../../api/kandidat/useKandidatliste';
 import LeggTilKandidater, {
   ValgtKandidatProp,
 } from '../../../components/legg-til-kandidat/LeggTilKandidater';
@@ -24,7 +24,7 @@ const LeggTilKandidatTilStilling: React.FC<LeggTilKandidatTilStillingProps> = ({
     [],
   );
 
-  const kandidatlisteIdHook = useKandidatlisteId(stillingsId);
+  const kandidatlisteIdHook = useKandidatliste(stillingsId);
 
   const visVarsel = useVisVarsling();
 
