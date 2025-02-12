@@ -1,5 +1,5 @@
-import { format } from 'date-fns';
-import { formaterTilISODato } from '../../../../util/dato';
+import { format, parse } from 'date-fns';
+
 import { JanzzTittelDTO } from '../../../api/pam-ontologi/stillingsTittel/useStillingsTittel';
 import {
   CategorySchemaDTO,
@@ -168,6 +168,19 @@ export const mapFormTilStilling = (
             (j) => j.categoryType === 'JANZZ',
           )?.code,
     );
+  const publiseringsDato = formData.innspurt.publiseres
+    ? format(
+        parse(formData.innspurt.publiseres, 'dd.MM.yyyy', new Date()),
+        "yyyy-MM-dd'T'HH:mm:ss",
+      )
+    : null;
+
+  const avsluttesDato = formData.innspurt.avsluttes
+    ? format(
+        parse(formData.innspurt.avsluttes, 'dd.MM.yyyy', new Date()),
+        "yyyy-MM-dd'T'HH:mm:ss",
+      )
+    : null;
 
   return {
     stillingsinfoid: existingData.stillingsinfo?.stillingsinfoid,
@@ -207,8 +220,8 @@ export const mapFormTilStilling = (
         applicationurl: formData.innspurt.lenke,
         jobarrangement: formData.praktiskInfo.arbeidstidsordning,
       },
-      published: formaterTilISODato(formData.innspurt.publiseres),
-      expires: formaterTilISODato(formData.innspurt.avsluttes),
+      published: publiseringsDato,
+      expires: avsluttesDato,
       locationList: [
         ...(formData.omStillingen.adresseLokasjoner ?? []),
         ...(formData.omStillingen.lokasjoner ?? []),
