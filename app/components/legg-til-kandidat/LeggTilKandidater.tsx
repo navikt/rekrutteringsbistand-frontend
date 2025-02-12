@@ -25,11 +25,12 @@ export interface LeggTilKandidaterProps {
   måHaAktørId?: boolean;
   callBack: (valgteKandidater: ValgtKandidatProp[]) => void;
   synlighetSomModal?: boolean;
+  lukkModal?: () => void;
 }
 
 export interface ValgtKandidatProp extends Kandidatnavn {
   fødselsnummer: string;
-  aktørId?: string;
+  aktørId?: string | null;
 }
 
 const validerFnr = (fnr: string): boolean => idnr(fnr).status === 'valid';
@@ -85,6 +86,7 @@ const LeggTilKandidater: React.FC<LeggTilKandidaterProps> = ({
               fornavn: kandidatNavnHook.data?.fornavn!,
               etternavn: kandidatNavnHook.data?.etternavn!,
               kilde: kandidatNavnHook.data?.kilde!,
+              aktørId: arenaKandidatnrHook.data?.arenaKandidatnr,
             },
           ]);
         }
@@ -143,11 +145,12 @@ const LeggTilKandidater: React.FC<LeggTilKandidaterProps> = ({
           error={feilmelding}
         />
 
-        {kandidatNavnHook.isLoading && (
-          <Box.New className='flex justify-center items-center h-full p-4'>
-            <Loader />
-          </Box.New>
-        )}
+        {kandidatNavnHook.isLoading ||
+          (arenaKandidatnrHook.isLoading && (
+            <Box.New className='flex justify-center items-center h-full p-4'>
+              <Loader />
+            </Box.New>
+          ))}
         {kandidatNavnHook.data && fødselsnummer
           ? måHaAktørId
             ? arenaKandidatnrHook.data?.arenaKandidatnr

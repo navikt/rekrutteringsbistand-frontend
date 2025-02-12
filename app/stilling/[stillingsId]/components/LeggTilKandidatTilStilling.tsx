@@ -32,7 +32,7 @@ const LeggTilKandidatTilStilling: React.FC<LeggTilKandidatTilStillingProps> = ({
 
     const valgteAktørIder = valgteKandidater
       .map((kandidat) => kandidat.aktørId)
-      .filter((aktørId) => aktørId !== undefined);
+      .filter((aktørId) => aktørId !== undefined && aktørId !== null);
 
     if (valgteAktørIder.length > 0) {
       await leggTilKandidater(valgteAktørIder, stillingsId)
@@ -41,6 +41,7 @@ const LeggTilKandidatTilStilling: React.FC<LeggTilKandidatTilStillingProps> = ({
             innhold: 'Kandidater ble lagt til i stillingen',
             alertType: 'success',
           });
+          ref.current?.close();
         })
         .catch(() => {
           visVarsel({

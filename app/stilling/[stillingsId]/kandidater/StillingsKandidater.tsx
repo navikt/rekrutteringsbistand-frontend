@@ -191,6 +191,7 @@ const StillingsKandidater: React.FC = () => {
               </aside>
               <div className='w-full'>
                 <StillingsKandidaterTabell
+                  key={stillingsData.stilling.uuid}
                   beskjeder={beskjeder}
                   forespurteKandidater={forespurteKandidater}
                   markerteKandidater={markerteKandidater}
