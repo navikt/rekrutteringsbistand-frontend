@@ -118,6 +118,7 @@ const StillingsKandidater: React.FC = () => {
                   fjernAllMarkering={() => setMarkerteKandidater([])}
                 />
                 <DelMedKandidatModal
+                  stillingsId={stillingsData.stilling.uuid}
                   forespurteKandidaterAktørListe={
                     forespurteKandidaterAktørListe
                   }
@@ -126,6 +127,7 @@ const StillingsKandidater: React.FC = () => {
                   fjernAllMarkering={() => setMarkerteKandidater([])}
                 />
                 <DelMedArbeidsgiver
+                  stillingsId={stillingsData.stilling.uuid}
                   stillingTittel={stillingsData.stilling.title}
                   markerteKandidater={markerteKandidater}
                   kandidatliste={kandidatliste}

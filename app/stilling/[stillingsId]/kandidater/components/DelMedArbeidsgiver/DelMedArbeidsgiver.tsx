@@ -1,32 +1,53 @@
 import { TenancyIcon } from '@navikt/aksel-icons';
 import {
   Accordion,
+  Alert,
   BodyLong,
   Button,
   Modal,
+  Table,
   UNSAFE_Combobox,
 } from '@navikt/ds-react';
 import * as React from 'react';
+import { useForespurteOmDelingAvCv } from '../../../../../api/foresporsel-om-deling-av-cv/foresporsler/[slug]/useForespurteOmDelingAvCv';
+import { postDelMedArbeidsgiver } from '../../../../../api/kandidat/postDelMedArbeidsgiver';
 import {
   kandidaterSchemaDTO,
   kandidatlisteSchemaDTO,
 } from '../../../../../api/kandidat/schema.zod';
+import { useApplikasjonContext } from '../../../../../ApplikasjonContext';
+import SWRLaster from '../../../../../components/SWRLaster';
 import ForhåndsvisningAvEpost from './ForhåndsvisningAvEpost';
 
 export interface DelMedArbeidsgiverProps {
   markerteKandidater: kandidaterSchemaDTO[];
   kandidatliste: kandidatlisteSchemaDTO;
   stillingTittel: string;
+  stillingsId: string;
 }
 
 const DelMedArbeidsgiver: React.FC<DelMedArbeidsgiverProps> = ({
   markerteKandidater,
   kandidatliste,
   stillingTittel,
+  stillingsId,
 }) => {
   const [visModal, setVisModal] = React.useState(false);
+  const { valgtNavKontor } = useApplikasjonContext();
+  const forespurteKandidaterHook = useForespurteOmDelingAvCv(stillingsId);
 
-  const antallSomSkalDeles = markerteKandidater.length; //TODO
+  const [epost, setEpost] = React.useState<string[]>([]);
+
+  const onDelMedArbeidsgiver = (kandidatnummerListe: string[]) => {
+    //TODO Håndtere hvis valgt navkontor er null
+    postDelMedArbeidsgiver({
+      kandidatlisteId: kandidatliste.kandidatlisteId,
+      kandidatnummerListe,
+      mailadresser: epost,
+      navKontor: valgtNavKontor?.navKontor ?? '',
+    });
+  };
+
   return (
     <>
       <Button
@@ -45,78 +66,138 @@ const DelMedArbeidsgiver: React.FC<DelMedArbeidsgiverProps> = ({
           heading: `Delmed arbeidsgiver`,
         }}
       >
-        <Modal.Body>
-          <div>
-            {/* {alleKandidaterMåGodkjenneForespørselOmDelingAvCvForÅPresentere &&
-              antallKandidaterSomIkkeKanDeles > 0 && (
-                <Alert variant='warning' size='small'>
-                  <BodyLong spacing>
-                    {antallKandidaterSomIkkeKanDeles} av kandidatene har ikke
-                    svart eller svart nei på om CV-en kan deles. Du kan derfor
-                    ikke dele disse.
-                  </BodyLong>
-                  <BodyLong spacing>
-                    Har du hatt dialog med kandidaten, og fått bekreftet at NAV
-                    kan dele CV-en? Da må du registrere dette i
-                    aktivitetsplanen. Har du ikke delt stillingen med kandidaten
-                    må du gjøre det først.{' '}
-                    <Link href={rutinerForDeling}>Se rutiner</Link>.
-                  </BodyLong>
-                </Alert>
-              )}
-            {!alleKandidaterMåGodkjenneForespørselOmDelingAvCvForÅPresentere && (
-              <Alert variant='warning' size='small'>
-                <BodyLong spacing>
-                  Husk at du må kontakte kandidatene og undersøke om stillingen
-                  er aktuell før du deler med arbeidsgiver.
-                </BodyLong>
-              </Alert>
-            )} */}
-            <BodyLong>
-              Send en e-post med {antallSomSkalDeles} kandidater med
-              arbeidsgiveren.
-            </BodyLong>
+        <SWRLaster hooks={[forespurteKandidaterHook]}>
+          {(forespurteKandidater) => {
+            const harSvartJa = markerteKandidater.filter((kandidat) => {
+              const forespørselCvForKandidat =
+                (kandidat.aktørid && forespurteKandidater[kandidat.aktørid]) ??
+                null;
 
-            <UNSAFE_Combobox
-              className='my-4'
-              allowNewValues
-              label='E-post til arbeidsgiver'
-              options={[]}
-              isMultiSelect
-            />
+              const svartJa = forespørselCvForKandidat
+                ? forespørselCvForKandidat?.some(
+                    (forespurt) => forespurt.svar?.harSvartJa !== true,
+                  )
+                : null;
 
-            <Accordion>
-              <Accordion.Item>
-                <Accordion.Header>Forhåndsvis e-posten</Accordion.Header>
-                <Accordion.Content>
-                  <ForhåndsvisningAvEpost
-                    stillingstittel={stillingTittel}
-                    opprettetAvNavn={kandidatliste.opprettetAv.navn}
+              return svartJa ? kandidat : null;
+            });
+
+            const alleHarSvartJa =
+              harSvartJa.length === markerteKandidater.length;
+
+            return (
+              <>
+                <Modal.Body>
+                  {!alleHarSvartJa && (
+                    <Alert variant='warning' size='small' className='mb-4'>
+                      <BodyLong>
+                        {harSvartJa.length} av kandidatene har ikke svart eller
+                        svart nei på om CV-en kan deles.
+                      </BodyLong>
+                    </Alert>
+                  )}
+                  <Accordion size='small' headingSize='xsmall' className='my-4'>
+                    <Accordion.Item>
+                      <Accordion.Header>Vis kandidater</Accordion.Header>
+                      <Accordion.Content>
+                        <Table size='small'>
+                          <Table.Header>
+                            <Table.Row>
+                              <Table.HeaderCell scope='col'>
+                                Navn
+                              </Table.HeaderCell>
+                              <Table.HeaderCell scope='col'>
+                                Fødselsnr.
+                              </Table.HeaderCell>
+                              <Table.HeaderCell scope='col'>
+                                Kan deles
+                              </Table.HeaderCell>
+                            </Table.Row>
+                          </Table.Header>
+                          <Table.Body>
+                            {markerteKandidater?.map(
+                              ({ fornavn, etternavn, fodselsnr }, i) => {
+                                return (
+                                  <Table.Row key={i}>
+                                    <Table.HeaderCell scope='row'>
+                                      {fornavn} {etternavn}
+                                    </Table.HeaderCell>
+                                    <Table.DataCell>{fodselsnr}</Table.DataCell>
+                                    <Table.DataCell>
+                                      {fodselsnr &&
+                                      harSvartJa.some(
+                                        (kandidat) =>
+                                          kandidat.fodselsnr === fodselsnr,
+                                      )
+                                        ? 'Nei'
+                                        : 'Ja'}
+                                    </Table.DataCell>
+                                  </Table.Row>
+                                );
+                              },
+                            )}
+                          </Table.Body>
+                        </Table>
+                      </Accordion.Content>
+                    </Accordion.Item>
+                  </Accordion>
+                  <BodyLong>
+                    Send en e-post med kandidater med arbeidsgiveren.
+                  </BodyLong>
+
+                  <UNSAFE_Combobox
+                    className='my-4'
+                    allowNewValues
+                    label='E-post til arbeidsgiver'
+                    options={[]}
+                    shouldAutocomplete={false}
+                    isMultiSelect
+                    onToggleSelected={(val, selected) => {
+                      if (selected) {
+                        setEpost([...epost, val]);
+                      } else {
+                        setEpost(epost.filter((e) => e !== val));
+                      }
+                    }}
                   />
-                </Accordion.Content>
-              </Accordion.Item>
-            </Accordion>
-          </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant='secondary' onClick={() => setVisModal(false)}>
-            Avbryt
-          </Button>
-          <Button
-            disabled //TODO
-            variant='primary'
-            // disabled={delestatus === Nettstatus.SenderInn}
-            // loading={delestatus === Nettstatus.SenderInn}
-            // onClick={handleDelClick}
-          >
-            Del kandidatene
-          </Button>
-        </Modal.Footer>
-        {/* {delestatus === Nettstatus.Feil && (
-          <Alert fullWidth variant='error' size='small'>
-            Kunne ikke dele med arbeidsgiver akkurat nå
-          </Alert>
-        )} */}
+
+                  <Accordion>
+                    <Accordion.Item>
+                      <Accordion.Header>Forhåndsvis e-posten</Accordion.Header>
+                      <Accordion.Content>
+                        <ForhåndsvisningAvEpost
+                          stillingstittel={stillingTittel}
+                          opprettetAvNavn={kandidatliste.opprettetAv.navn}
+                        />
+                      </Accordion.Content>
+                    </Accordion.Item>
+                  </Accordion>
+                </Modal.Body>
+                <Modal.Footer>
+                  <Button
+                    variant='secondary'
+                    onClick={() => setVisModal(false)}
+                  >
+                    Avbryt
+                  </Button>
+                  <Button
+                    disabled={harSvartJa.length === 0}
+                    variant='primary'
+                    onClick={() =>
+                      onDelMedArbeidsgiver(
+                        harSvartJa
+                          .map((kandidat) => kandidat.aktørid)
+                          .filter((id): id is string => id !== null),
+                      )
+                    }
+                  >
+                    Del kandidatene
+                  </Button>
+                </Modal.Footer>
+              </>
+            );
+          }}
+        </SWRLaster>
       </Modal>
     </>
   );

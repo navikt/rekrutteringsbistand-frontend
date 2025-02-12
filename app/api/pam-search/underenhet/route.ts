@@ -18,10 +18,20 @@ export async function GET(req: NextRequest) {
       body: JSON.stringify({
         query: {
           bool: {
-            must: [
+            should: [
               {
                 match_phrase: {
-                  navn_ngram_completion: { query: søkeord, slop: 5 },
+                  navn_ngram_completion: {
+                    query: søkeord,
+                    slop: 5,
+                  },
+                },
+              },
+              {
+                regexp: {
+                  organisasjonsnummer: {
+                    value: `${søkeord}.*`,
+                  },
                 },
               },
             ],
