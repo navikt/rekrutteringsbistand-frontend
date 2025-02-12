@@ -1,13 +1,12 @@
 import { Table } from '@navikt/ds-react';
 import * as React from 'react';
 import { storForbokstavString } from '../../../../kandidat-sok/util';
-import { Kandidatutfall } from '../KandidatIKandidatlisteTyper';
-import HendelseTag from './HendelseTag';
+import HendelseTag, { KandidatHendelseTyper } from './HendelseTag';
 
 export interface UsynligKandidatRadProps {
   fornavn?: string;
   etternavn?: string;
-  utfall?: Kandidatutfall;
+  utfall?: string;
 }
 
 const UsynligKandidatRad: React.FC<UsynligKandidatRadProps> = ({
@@ -26,15 +25,7 @@ const UsynligKandidatRad: React.FC<UsynligKandidatRadProps> = ({
         Ikke synlig i Rekrutteringsbistand
       </Table.DataCell>
       <Table.DataCell colSpan={2}>
-        {utfall && (
-          <HendelseTag
-            ikkeVisÅrstall
-            utfall={utfall}
-            utfallsendringer={[]}
-            forespørselOmDelingAvCv={undefined}
-            sms={null}
-          />
-        )}
+        {utfall && <HendelseTag utfall={utfall} />}
       </Table.DataCell>
     </Table.Row>
   );

@@ -13,27 +13,18 @@ import {
   Sms,
 } from '../../../../api/kandidatvarsel/kandidatvarsel';
 import { storForbokstavString } from '../../../../kandidat-sok/util';
+import { UtfallsEndringTyper } from './HendelseTag';
 
-enum KandidatHendelseValg {
-  CV_DELT = 'CV-en er delt med arbeidsgiver',
-  STILLING_DELT = 'Stillingen er delt med kandidaten',
-  //   IKKE_INTERESSERT = 'Kandidaten er ikke interessert',
-  //   IKKE_AKTUELL = 'Kandidaten er ikke aktuell',
-  //   AKTUELL = 'Kandidaten er aktuell',
-  IKKE_PRESENTERT = 'Kandidaten er ikke presenter',
-  FATT_JOBBEN = 'Kandidaten har fått jobben',
-  PRESENTERT = 'Kandidaten er presenter',
-}
-
-const utfallTilTittel: Record<string, string> = {
-  PRESENTERT: KandidatHendelseValg.PRESENTERT,
-  CV_DELT: KandidatHendelseValg.CV_DELT,
-  IKKE_PRESENTERT: KandidatHendelseValg.IKKE_PRESENTERT,
-  STILLING_DELT: KandidatHendelseValg.STILLING_DELT,
-  //   IKKE_INTERESSERT: KandidatHendelseValg.IKKE_INTERESSERT,
-  //   IKKE_AKTUELL: KandidatHendelseValg.IKKE_AKTUELL,
-  //   AKTUELL: KandidatHendelseValg.AKTUELL,
-  FATT_JOBBEN: KandidatHendelseValg.FATT_JOBBEN,
+const UtfalsendringBeskrivelse = {
+  [UtfallsEndringTyper.NY_KANDIDAT]: 'Ny kandidat',
+  [UtfallsEndringTyper.DELT_MED_KANDIDAT]: 'CV-en er delt med arbeidsgiver',
+  [UtfallsEndringTyper.SVAR_JA]: 'Kandidaten har svart ja',
+  [UtfallsEndringTyper.SVAR_NEI]: 'Kandidaten har svart nei',
+  [UtfallsEndringTyper.CV_DELT]: 'CV-en er delt med arbeidsgiver',
+  [UtfallsEndringTyper.CV_SLETTET]: 'CV-en er slettet',
+  [UtfallsEndringTyper.FÅTT_JOBBEN]: 'Kandidaten har fått jobben',
+  [UtfallsEndringTyper.SMS_FEILET]: 'SMS har feilet',
+  [UtfallsEndringTyper.SMS_SENDT]: 'SMS er sendt',
 };
 
 const HendelseBoks = ({
@@ -114,7 +105,9 @@ const KandidatHendelser = ({
           <HendelseBoks
             key={index}
             tittel={
-              utfallTilTittel[utfallsendring.utfall] || utfallsendring.utfall
+              UtfalsendringBeskrivelse[
+                utfallsendring.utfall as UtfallsEndringTyper
+              ] || utfallsendring.utfall
             }
             tekst={`Registrert av ${utfallsendring.registrertAvIdent}`}
             dato={utfallsendring.tidspunkt}

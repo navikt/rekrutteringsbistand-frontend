@@ -1,5 +1,12 @@
-import { BodyLong, Button, ErrorMessage, Heading } from '@navikt/ds-react';
+import {
+  BodyLong,
+  Button,
+  Checkbox,
+  ErrorMessage,
+  Heading,
+} from '@navikt/ds-react';
 import * as React from 'react';
+import { useState } from 'react';
 import { useFieldArray, useFormContext } from 'react-hook-form';
 import VelgPoststed from '../../../../components/VelgPoststed';
 import { StillingsDataForm } from '../redigerFormType.zod';
@@ -13,6 +20,25 @@ const VelgArbeidssted: React.FC = () => {
     name: 'omStillingen.adresseLokasjoner',
   });
 
+  const [visAdresse, setVisAdresse] = useState(false);
+  const [visLokasjon, setVisLokasjon] = useState(false);
+
+  React.useEffect(() => {
+    if (fields.length > 0) {
+      setVisAdresse(true);
+    }
+  }, [fields]);
+
+  const setAdresseFelt = (adresse: boolean) => {
+    if (adresse) {
+      setVisAdresse(adresse);
+      append({ postalCode: '' });
+    } else {
+      setVisAdresse(false);
+      remove();
+    }
+  };
+
   return (
     <div>
       <Heading size='medium'>Arbeidssted</Heading>
@@ -21,37 +47,53 @@ const VelgArbeidssted: React.FC = () => {
         kommuner, fylker eller land.
       </BodyLong>
 
-      {/* <CheckboxGroup onChange={() => {}} legend>
-        <Checkbox value='1'>1</Checkbox>
-        <Checkbox value='2'>2</Checkbox>
-      </CheckboxGroup> */}
+      <Checkbox
+        value='adresse'
+        checked={visAdresse}
+        onChange={() => setAdresseFelt(!visAdresse)}
+      >
+        Adresse
+      </Checkbox>
+      <Checkbox
+        value='lokasjon'
+        checked={visLokasjon}
+        onChange={() => setVisLokasjon(!visLokasjon)}
+      >
+        Kommune, fylke eller land
+      </Checkbox>
 
-      <div className='my-4'>
-        <Button
-          variant='secondary'
-          onClick={() => append({ postalCode: '' })}
-          type='button'
-        >
-          Legg til adresse
-        </Button>
-      </div>
-      {fields.map((field, index) => (
-        <VelgPoststed
-          key={index}
-          location={field}
-          index={index}
-          oppdater={update}
-          fjern={() => remove(index)}
-        />
-      ))}
+      {visAdresse &&
+        fields.map((field, index) => (
+          <VelgPoststed
+            key={index}
+            location={field}
+            index={index}
+            oppdater={update}
+            fjern={() => remove(index)}
+          />
+        ))}
+
+      {visAdresse && (
+        <div className='my-4'>
+          <Button
+            variant='secondary'
+            onClick={() => append({ postalCode: '' })}
+            type='button'
+          >
+            Legg til adresse
+          </Button>
+        </div>
+      )}
       {formState.errors.omStillingen?.adresseLokasjoner?.message && (
         <ErrorMessage>
           {formState.errors.omStillingen.adresseLokasjoner.message}
         </ErrorMessage>
       )}
-      <div className='my-4'>
-        <VelgKommuneFylkeEllerLand />
-      </div>
+      {visLokasjon && (
+        <div className='my-4'>
+          <VelgKommuneFylkeEllerLand />
+        </div>
+      )}
 
       {formState.errors.omStillingen?.lokasjoner?.message && (
         <ErrorMessage>

@@ -15,12 +15,12 @@ import {
   kandidatlisteSchemaDTO,
 } from '../../../api/kandidat/schema.zod';
 import { Sms } from '../../../api/kandidatvarsel/kandidatvarsel';
-import HendelseTag from './components/HendelseTag';
+import HendelseTag, { KandidatHendelseTyper } from './components/HendelseTag';
 import InfoOmKandidat from './components/InfoOmKandidat';
 import SletteKandidatKnapp from './components/KandidatDropdown';
 import StatusTag from './components/StatusTag';
 import UsynligKandidatRad from './components/UsynligKandidatRad';
-import { Kandidatstatus, Kandidatutfall } from './KandidatIKandidatlisteTyper';
+import { Kandidatstatus } from './KandidatIKandidatlisteTyper';
 import { useStillingsKandidaterFilter } from './StillingsKandidaterFilterContext';
 
 const StillingsKandidaterTabell: React.FC<{
@@ -167,7 +167,7 @@ const StillingsKandidaterTabell: React.FC<{
             Dato
           </Table.ColumnHeader>
           <Table.HeaderCell scope='col'>Intern status </Table.HeaderCell>
-          <Table.HeaderCell scope='col'>Siste hendelse</Table.HeaderCell>
+          <Table.HeaderCell scope='col'>Utfall</Table.HeaderCell>
           <Table.HeaderCell scope='col'></Table.HeaderCell>
         </Table.Row>
       </Table.Header>
@@ -179,7 +179,7 @@ const StillingsKandidaterTabell: React.FC<{
               key={i}
               fornavn={kandidat.fornavn}
               etternavn={kandidat.etternavn}
-              utfall={kandidat.utfall as Kandidatutfall}
+              utfall={kandidat.utfall as KandidatHendelseTyper}
             />
           ))}
         {kandidater.map((kandidat, i) => {
@@ -248,16 +248,7 @@ const StillingsKandidaterTabell: React.FC<{
               </Table.DataCell>
               <Table.DataCell>
                 <HendelseTag
-                  ikkeVisÅrstall
-                  utfall={kandidat.utfall as Kandidatutfall}
-                  utfallsendringer={kandidat.utfallsendringer}
-                  // forespørselOmDelingAvCv={
-                  //     forespørselOmDelingAvCv.kind === Nettstatus.Suksess
-                  //         ? forespørselOmDelingAvCv.data.gjeldendeForespørsel
-                  //         : undefined
-                  // }
-                  forespørselOmDelingAvCv={undefined}
-                  sms={null}
+                  utfall={kandidat.utfall as KandidatHendelseTyper}
                 />
               </Table.DataCell>
               <Table.DataCell>

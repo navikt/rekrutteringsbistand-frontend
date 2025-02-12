@@ -1,8 +1,6 @@
 import { Tag } from '@navikt/ds-react';
-import { format } from 'date-fns';
 import * as React from 'react';
-import { utfallsendringerSchemaDTO } from '../../../../api/kandidat/schema.zod';
-import { Kandidatutfall } from '../KandidatIKandidatlisteTyper';
+import { storForbokstavString } from '../../../../kandidat-sok/util';
 
 enum IdentType {
   AktørId = 'AKTOR_ID',
@@ -53,219 +51,117 @@ export enum TilstandPåForespørsel {
   Avbrutt = 'AVBRUTT',
 }
 
-enum EksternStatus {
-  /** Vi jobber med å sende ut eksternt varsel. Status er ikke avklart enda. */
-  UNDER_UTSENDING = 'UNDER_UTSENDING',
+//TODO Bruke?
 
-  /** Vi har fått bekreftet at en SMS er sendt. */
-  VELLYKKET_SMS = 'VELLYKKET_SMS',
-
-  /** Vi har fått bekreftet at en e-post er sendt. */
-  VELLYKKET_EPOST = 'VELLYKKET_EPOST',
-
-  /** Det skjedde en feil, og vi vil ikke prøve å sende varselet igjen. */
-  FEIL = 'FEIL',
+export enum KandidatutfallTyper {
+  IKKE_PRESENTERT = 'IKKE_PRESENTERT',
+  PRESENTERT = 'PRESENTERT',
+  FATT_JOBBEN = 'FATT_JOBBEN',
 }
 
-export enum KandidatHendelse {
-  NyKandidat = 'NY_KANDIDAT',
-  Presentert = 'PRESENTERT',
-  DeltMedKandidat = 'DELT_MED_KANDIDAT',
-  SvarJa = 'SVAR_JA',
-  SvarNei = 'SVAR_NEI',
-  CvDelt = 'CV_DELT',
-  CvSlettet = 'CV_SLETTET',
-  FåttJobben = 'FÅTT_JOBBEN',
-  EksternVarselFeilet = 'EKSTERN_VARSEL_FEILET',
-  SmsSendt = 'SMS_SENDT',
-  EpostSendt = 'EPOST_SENDT',
+export enum UtfallsEndringTyper {
+  NY_KANDIDAT = 'NY_KANDIDAT',
+  DELT_MED_KANDIDAT = 'DELT_MED_KANDIDAT',
+  SVAR_JA = 'SVAR_JA',
+  SVAR_NEI = 'SVAR_NEI',
+  CV_DELT = 'CV_DELT',
+  CV_SLETTET = 'CV_SLETTET',
+  FÅTT_JOBBEN = 'FÅTT_JOBBEN',
+  SMS_FEILET = 'SMS_FEILET',
+  SMS_SENDT = 'SMS_SENDT',
 }
 
-const sorterUtfallmedNyesteFørst = (
-  utfallsendringer: utfallsendringerSchemaDTO[],
-) =>
-  utfallsendringer.sort(
-    (u, v) => Number(new Date(v.tidspunkt)) - Number(new Date(u.tidspunkt)),
-  );
+export type KandidatHendelseTyper = KandidatutfallTyper | UtfallsEndringTyper;
 
-const cvErSendtTilArbeidsgiverOgSlettet = (
-  utfallsendringer: utfallsendringerSchemaDTO[],
-) => {
-  const utfallSortertMedNyesteFørst =
-    sorterUtfallmedNyesteFørst(utfallsendringer);
+// const sorterUtfallmedNyesteFørst = (
+//   utfallsendringer: utfallsendringerSchemaDTO[],
+// ) =>
+//   utfallsendringer.sort(
+//     (u, v) => Number(new Date(v.tidspunkt)) - Number(new Date(u.tidspunkt)),
+//   );
 
-  const [sisteUtfall, nestSisteUtfall] = utfallSortertMedNyesteFørst;
-  if (nestSisteUtfall === undefined) {
-    return false;
-  }
+// const cvErSendtTilArbeidsgiverOgSlettet = (
+//   utfallsendringer: utfallsendringerSchemaDTO[],
+// ) => {
+//   const utfallSortertMedNyesteFørst =
+//     sorterUtfallmedNyesteFørst(utfallsendringer);
 
-  return (
-    nestSisteUtfall.sendtTilArbeidsgiversKandidatliste &&
-    sisteUtfall.utfall === Kandidatutfall.IkkePresentert
-  );
-};
+//   const [sisteUtfall, nestSisteUtfall] = utfallSortertMedNyesteFørst;
+//   if (nestSisteUtfall === undefined) {
+//     return false;
+//   }
 
-const hentKandidatensSisteHendelse = (
-  utfall: Kandidatutfall,
-  utfallsendringer: utfallsendringerSchemaDTO[],
-  forespørselOmDelingAvCv?: ForespørselOmDelingAvCv,
-  sms?: any, //TODO To be defined
-): KandidatHendelse => {
-  const cvErSendtOgSlettet =
-    cvErSendtTilArbeidsgiverOgSlettet(utfallsendringer);
+//   return (
+//     nestSisteUtfall.sendtTilArbeidsgiversKandidatliste &&
+//     sisteUtfall.utfall === KandidatutfallTyper.IKKE_PRESENTERT
+//   );
+// };
 
-  if (utfall === Kandidatutfall.FåttJobben) {
-    return KandidatHendelse.FåttJobben;
-  } else if (cvErSendtOgSlettet) {
-    return KandidatHendelse.CvSlettet;
-  } else if (utfall === Kandidatutfall.Presentert) {
-    return KandidatHendelse.Presentert;
-  } else if (forespørselOmDelingAvCv) {
-    if (forespørselOmDelingAvCv.tilstand === TilstandPåForespørsel.HarSvart) {
-      return forespørselOmDelingAvCv.svar.harSvartJa
-        ? KandidatHendelse.SvarJa
-        : KandidatHendelse.SvarNei;
-    } else if (
-      forespørselOmDelingAvCv.tilstand === TilstandPåForespørsel.KanIkkeOpprette
-    ) {
-      return KandidatHendelse.NyKandidat;
-    } else {
-      return KandidatHendelse.DeltMedKandidat;
-    }
-  } else if (sms?.eksternStatus === EksternStatus.VELLYKKET_SMS) {
-    return KandidatHendelse.SmsSendt;
-  } else if (sms?.eksternStatus === EksternStatus.VELLYKKET_EPOST) {
-    return KandidatHendelse.EpostSendt;
-  } else if (sms?.eksternStatus === EksternStatus.FEIL) {
-    return KandidatHendelse.EksternVarselFeilet;
-  }
+// const hentKandidatensSisteHendelse = (
+//   utfall: string,
+//   utfallsendringer: utfallsendringerSchemaDTO[],
+//   forespørselOmDelingAvCv?: ForespørselOmDelingAvCv,
+//   sms?: any, //TODO To be defined
+// ): KandidatHendelseTyper => {
+//   const cvErSendtOgSlettet =
+//     cvErSendtTilArbeidsgiverOgSlettet(utfallsendringer);
 
-  return KandidatHendelse.NyKandidat;
-};
+//   if (utfall === KandidatutfallTyper.FATT_JOBBEN) {
+//     return KandidatHendelse.FåttJobben;
+//   } else if (cvErSendtOgSlettet) {
+//     return KandidatHendelse.CvSlettet;
+//   } else if (utfall === Kandidatutfall.Presentert) {
+//     return KandidatHendelse.Presentert;
+//   } else if (forespørselOmDelingAvCv) {
+//     if (forespørselOmDelingAvCv.tilstand === TilstandPåForespørsel.HarSvart) {
+//       return forespørselOmDelingAvCv.svar.harSvartJa
+//         ? KandidatHendelse.SvarJa
+//         : KandidatHendelse.SvarNei;
+//     } else if (
+//       forespørselOmDelingAvCv.tilstand === TilstandPåForespørsel.KanIkkeOpprette
+//     ) {
+//       return KandidatHendelse.NyKandidat;
+//     } else {
+//       return KandidatHendelse.DeltMedKandidat;
+//     }
+//   } else if (sms?.eksternStatus === EksternStatus.VELLYKKET_SMS) {
+//     return KandidatHendelse.SmsSendt;
+//   } else if (sms?.eksternStatus === EksternStatus.VELLYKKET_EPOST) {
+//     return KandidatHendelse.EpostSendt;
+//   } else if (sms?.eksternStatus === EksternStatus.FEIL) {
+//     return KandidatHendelse.EksternVarselFeilet;
+//   }
+
+//   return KandidatHendelse.NyKandidat;
+// };
 
 export interface HendelseTagProps {
-  utfall: Kandidatutfall;
-  utfallsendringer: utfallsendringerSchemaDTO[];
-  forespørselOmDelingAvCv?: ForespørselOmDelingAvCv;
-  ikkeVisÅrstall?: boolean;
-  sms?: any;
+  utfall: string;
 }
 
-const HendelseTag: React.FC<HendelseTagProps> = ({
-  utfall,
-  utfallsendringer,
-  forespørselOmDelingAvCv,
-  ikkeVisÅrstall,
-  sms,
-}) => {
-  const hendelse = hentKandidatensSisteHendelse(
-    utfall,
-    utfallsendringer,
-    forespørselOmDelingAvCv,
-    sms,
-  );
-  const label = hendelseTilLabel(
-    hendelse,
-    ikkeVisÅrstall || false,
-    utfallsendringer,
-    forespørselOmDelingAvCv,
-    sms,
-  );
+const HendelseTag: React.FC<HendelseTagProps> = ({ utfall }) => {
+  const utfallTekst = utfall
+    ? storForbokstavString(utfall).replace(/_/g, ' ')
+    : null;
 
-  if (hendelse === KandidatHendelse.NyKandidat) {
-    return null;
-  }
+  const tagVariant = () => {
+    switch (utfall) {
+      case KandidatutfallTyper.IKKE_PRESENTERT:
+        return 'neutral';
+      case KandidatutfallTyper.PRESENTERT:
+        return 'info';
+      case KandidatutfallTyper.FATT_JOBBEN:
+        return 'success';
+      default:
+        return 'info';
+    }
+  };
 
-  return (
-    <Tag variant='info' size='small'>
-      {label}
+  return utfallTekst ? (
+    <Tag variant={tagVariant()} size='small'>
+      {utfallTekst}
     </Tag>
-  );
-};
-
-const hendelseTilLabel = (
-  hendelse: KandidatHendelse,
-  ikkeVisÅrstall: boolean,
-  utfallsendringer: utfallsendringerSchemaDTO[],
-  forespørselOmDelingAvCv?: ForespørselOmDelingAvCv,
-  sms?: any,
-) => {
-  const cvDeltTidspunkt = utfallsendringer.find(
-    (endring) => endring.utfall === Kandidatutfall.Presentert,
-  );
-  const fåttJobbenTidspunkt = utfallsendringer.find(
-    (endring) => endring.utfall === Kandidatutfall.FåttJobben,
-  );
-
-  const formaterMedEllerUtenÅrstall = (dato: string) =>
-    ikkeVisÅrstall ? format(dato, 'dd.MM') : format(dato, 'dd.MM.yyyy');
-  const formaterDatoUtenÅrstall = (dato: string) => format(dato, 'dd.MM');
-  // ikkeVisÅrstall ? formaterDatoUtenÅrstall(dato) : formaterDato(dato);
-  const svarfrist = forespørselOmDelingAvCv?.svarfrist; //TODO Legg inn svarfrist
-
-  const svarTidspunkt = forespørselOmDelingAvCv?.svar?.svarTidspunkt;
-
-  switch (hendelse) {
-    case KandidatHendelse.FåttJobben: {
-      const label = 'Fått jobben';
-      return fåttJobbenTidspunkt
-        ? label +
-            ` – ${formaterMedEllerUtenÅrstall(fåttJobbenTidspunkt.tidspunkt)}`
-        : label;
-    }
-    case KandidatHendelse.CvDelt: {
-      const label = 'CV delt';
-      return cvDeltTidspunkt
-        ? label + ` – ${formaterMedEllerUtenÅrstall(cvDeltTidspunkt.tidspunkt)}`
-        : label;
-    }
-    case KandidatHendelse.CvSlettet: {
-      return 'CV slettet';
-    }
-    case KandidatHendelse.DeltMedKandidat: {
-      const dagerTilSvarfrist = 1234; // todo
-      //    Math.floor(
-      //     moment(svarfrist).diff(moment(), 'days', true),
-      //   );
-      const formatertSvarfrist = 1234; //todo
-      // svarfrist &&
-      // formaterMedEllerUtenÅrstall(
-      //   moment(svarfrist).subtract(1, 'day').toISOString(),
-      // );
-
-      if (
-        dagerTilSvarfrist < 0 ||
-        forespørselOmDelingAvCv?.tilstand === TilstandPåForespørsel.Avbrutt
-      ) {
-        return 'Delt med kandidat, frist utløpt';
-        //@ts-ignore
-      } else if (dagerTilSvarfrist === 0) {
-        return `Delt med kandidat, frist i dag`;
-      } else {
-        return `Delt med kandidat, frist ${formatertSvarfrist}`;
-      }
-    }
-    case KandidatHendelse.SvarJa: {
-      return `Svar: Ja – ${svarTidspunkt && formaterMedEllerUtenÅrstall(svarTidspunkt)}`;
-    }
-    case KandidatHendelse.SvarNei: {
-      return `Svar: Nei – ${svarTidspunkt && formaterMedEllerUtenÅrstall(svarTidspunkt)}`;
-    }
-    case KandidatHendelse.SmsSendt: {
-      return `SMS sendt – ${sms && formaterDatoUtenÅrstall(sms.opprettet)}`;
-    }
-    case KandidatHendelse.EpostSendt: {
-      return `Epost sendt – ${sms && formaterDatoUtenÅrstall(sms.opprettet)}`;
-    }
-    case KandidatHendelse.EksternVarselFeilet: {
-      return `SMS/epost feilet – ${sms && formaterDatoUtenÅrstall(sms.opprettet)}`;
-    }
-    case KandidatHendelse.Presentert: {
-      return `Presentert – ${cvDeltTidspunkt && formaterDatoUtenÅrstall(cvDeltTidspunkt.tidspunkt)}`;
-    }
-    default:
-      return '';
-  }
+  ) : null;
 };
 
 export default HendelseTag;
