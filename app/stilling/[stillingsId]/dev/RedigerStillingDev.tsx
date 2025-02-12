@@ -41,8 +41,7 @@ const RedigerStillingDev: React.FC = () => {
         <Button onClick={handleReset} disabled={isLoading}>
           Reset
         </Button>
-        {/* TODO: <Button onClick={lagreData} disabled={isLoading}> */}
-        <Button onClick={lagreData} disabled>
+        <Button onClick={lagreData} disabled={isLoading}>
           Lagre
         </Button>
       </div>

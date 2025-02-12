@@ -74,7 +74,6 @@ const StillingsKandidater: React.FC = () => {
   return (
     <SWRLaster
       hooks={[kandidatlisteHook, forespurteKandidaterHook, beskjederHook]}
-      //TODO Midlertidig løsning for at bruker ikke får feilmelding om de ikke er eier
       egenFeilmelding={() => (
         <div>
           Feil ved henting av kandidater

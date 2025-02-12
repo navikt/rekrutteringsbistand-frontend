@@ -1,16 +1,17 @@
-import Image from 'next/image';
 import * as React from 'react';
 import Piktogram from '../../public/ikoner/rekrutteringstreff.svg';
 import SideLayout from '../components/layout/SideLayout';
 import SideTopBanner from '../components/layout/SideTopBanner';
-import { RekrutteringstreffSøkSidebar } from './components/sidebar/RekrutteringstreffSøkSidebar';
 import SVGDarkmode from '../components/SVGDarkmode';
+import { RekrutteringstreffSøkSidebar } from './components/sidebar/RekrutteringstreffSøkSidebar';
 
 interface layoutProps {
   children?: React.ReactNode | undefined;
 }
 
-const RekrutteringstreffSøkLayout: React.FC<layoutProps> = ({ children }) => {
+export default async function RekrutteringstreffSøkLayout({
+  children,
+}: layoutProps) {
   return (
     <SideLayout
       sidepanel={<RekrutteringstreffSøkSidebar />}
@@ -24,6 +25,4 @@ const RekrutteringstreffSøkLayout: React.FC<layoutProps> = ({ children }) => {
       {children}
     </SideLayout>
   );
-};
-
-export default RekrutteringstreffSøkLayout;
+}

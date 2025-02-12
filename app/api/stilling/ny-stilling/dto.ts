@@ -34,5 +34,3 @@ interface NyLocationDTO {
   country: string;
   county: any;
 }
-
-//TODO Sjekk denne
