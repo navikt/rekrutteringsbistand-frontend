@@ -12,6 +12,7 @@ import Sidelaster from '../../../components/Sidelaster';
 import { FylkeDTO } from '../../../stillings-sok/components/StillingsSøkFilter/GeografiFilter';
 import KandidatTilStilling from './KandidatTilStilling';
 
+//TODO
 const hentØnsketStedFraStilling = (
   rekrutteringsbistandstilling: StillingsDataDTO,
   fylker: FylkeDTO[],
@@ -36,6 +37,7 @@ const hentØnsketStedFraStilling = (
   }
 };
 
+//TODO
 const hentØnsketYrkeFraStilling = (
   rekrutteringsbistandstilling: StillingsDataDTO,
 ): string[] => {

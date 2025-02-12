@@ -1,10 +1,10 @@
 import * as React from 'react';
 import GråRamme from '../GråRamme';
-import ForslagTilStilling from './ForslagTilStilling';
 import Profilkvalitet from './Profilkvalitet';
 import SisteAktivitet from './SisteAktivitet';
 
 const KandidatOversiktSidebar: React.FC = () => {
+  //TODO Forslag til stillinger setter lang queryaram
   return (
     <div className='ml-8 w-[25rem] flex-shrink-0 flex flex-col gap-4'>
       <GråRamme tittel='Profilkvalitet'>
@@ -13,9 +13,10 @@ const KandidatOversiktSidebar: React.FC = () => {
       <GråRamme tittel='Siste aktivitet'>
         <SisteAktivitet />
       </GråRamme>
-      <GråRamme tittel='Forslag til stillinger'>
+
+      {/* <GråRamme tittel='Forslag til stillinger'>
         <ForslagTilStilling />
-      </GråRamme>
+      </GråRamme> */}
     </div>
   );
 };

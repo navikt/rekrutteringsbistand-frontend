@@ -4,11 +4,7 @@ import { useKandidatContext } from '../KandidatContext';
 
 const KandidatForslagTilStilling: React.FC = () => {
   const { kandidatId } = useKandidatContext();
-  return (
-    <React.Fragment>
-      <StillingsSøk skjulBanner kandidatId={kandidatId} />
-    </React.Fragment>
-  );
+  return <StillingsSøk skjulBanner kandidatId={kandidatId} />;
 };
 
 export default KandidatForslagTilStilling;
