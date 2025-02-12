@@ -18,13 +18,20 @@ export interface ThemeProviderProps {
 }
 
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
-  const [darkMode, setDarkMode] = React.useState<boolean>(false);
+  const [darkMode, setLocalDarkMode] = React.useState<boolean>(
+    localStorage.getItem('darkMode') === 'true',
+  );
 
   useEffect(() => {
     document.documentElement.style.height = '100%';
     document.body.style.height = '100%';
     document.body.style.backgroundColor = darkMode ? '#0e151f' : 'white';
   }, [darkMode]);
+
+  const setDarkMode = (val: boolean) => {
+    setLocalDarkMode(val);
+    localStorage.setItem('darkMode', JSON.stringify(val));
+  };
 
   return (
     <div
