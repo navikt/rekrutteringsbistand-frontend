@@ -14,17 +14,20 @@ import { storForbokstavString } from '../../../kandidat-sok/util';
 import { useStillingsContext } from '../StillingsContext';
 import DelMedArbeidsgiver from './components/DelMedArbeidsgiver/DelMedArbeidsgiver';
 import DelMedKandidatModal from './components/DelMedKandidat/DelMedKandidatModal';
-import { TilstandPåForespørsel } from './components/HendelseTag';
+import {
+  TilstandPåForespørsel,
+  UtfallsEndringTyper,
+} from './components/HendelseTag';
 import SendSmsModal from './components/SendSMS/SendSmsModal';
 import { Kandidatstatus } from './KandidatIKandidatlisteTyper';
 import { useStillingsKandidaterFilter } from './StillingsKandidaterFilterContext';
 import StillingsKandidaterTabell from './StillingsKandidaterTabell';
 
-export enum KandidatHendelseValg {
-  PRESENTERT = 'Presentert',
-  TIL_INTERVJU = 'Til intervju',
-  FATT_JOBBEN = 'Fått jobb',
-}
+// export enum KandidatHendelseValg {
+//   PRESENTERT = 'Presentert',
+//   TIL_INTERVJU = 'Til intervju',
+//   FATT_JOBBEN = 'Fått jobb',
+// }
 
 const StillingsKandidater: React.FC = () => {
   const { brukerData } = useApplikasjonContext();
@@ -155,13 +158,11 @@ const StillingsKandidater: React.FC = () => {
                     onChange={setHendelse}
                     defaultValue={hendelse}
                   >
-                    {Object.entries(KandidatHendelseValg).map(
-                      ([key, value]) => (
-                        <Checkbox key={key} value={key}>
-                          {value}
-                        </Checkbox>
-                      ),
-                    )}
+                    {Object.entries(UtfallsEndringTyper).map(([key, value]) => (
+                      <Checkbox key={key} value={key}>
+                        {storForbokstavString(value ?? '').replace(/_/g, ' ')}
+                      </Checkbox>
+                    ))}
                   </CheckboxGroup>
                   <CheckboxGroup
                     legend='Deling av CV'
