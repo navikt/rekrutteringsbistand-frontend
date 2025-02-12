@@ -1,7 +1,7 @@
 import { Table } from '@navikt/ds-react';
 import * as React from 'react';
 import { storForbokstavString } from '../../../../kandidat-sok/util';
-import HendelseTag, { KandidatHendelseTyper } from './HendelseTag';
+import HendelseTag from './HendelseTag';
 
 export interface UsynligKandidatRadProps {
   fornavn?: string;
@@ -21,7 +21,7 @@ const UsynligKandidatRad: React.FC<UsynligKandidatRadProps> = ({
         {storForbokstavString(etternavn ?? '')},{' '}
         {storForbokstavString(fornavn ?? '')}
       </Table.DataCell>
-      <Table.DataCell colSpan={5}>
+      <Table.DataCell colSpan={4}>
         Ikke synlig i Rekrutteringsbistand
       </Table.DataCell>
       <Table.DataCell colSpan={2}>
