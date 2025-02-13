@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { useQueryState } from 'nuqs';
 import { Roller } from '../../components/tilgangskontroll/roller';
 import { TilgangskontrollForInnhold } from '../../components/tilgangskontroll/TilgangskontrollForInnhold';
-import LeggTilKandidat from './components/LeggTilKandidat';
+import LeggTilKandidat from './components/LeggTilKandidatTilStilling';
 import StillingsKandidater from './kandidater/StillingsKandidater';
 import { StillingsKandidaterFilterProvider } from './kandidater/StillingsKandidaterFilterContext';
 import OmStillingen from './omStillingen/OmStillingen';

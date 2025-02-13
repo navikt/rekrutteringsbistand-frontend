@@ -17,15 +17,17 @@ import { kandidatlisteIdMirage } from '../app/api/kandidat/useKandidatlisteId';
 import { kandidatlisteoversiktMirage } from '../app/api/kandidat/useKandidatListeoversikt';
 import { meldingsmalerMirage } from '../app/api/kandidatvarsel/hentMeldingsmaler';
 import { kandidatvarselMirage } from '../app/api/kandidatvarsel/kandidatvarsel';
+import { pamPostdataMirage } from '../app/api/pam-geografi/postdata/[postnummer]/usePamPostdata';
+import { pamGeografiMirage } from '../app/api/pam-geografi/typehead/lokasjoner/usePamGeografi';
 import { stillingsTittelMirage } from '../app/api/pam-ontologi/stillingsTittel/useStillingsTittel';
+import { arbeidsgiverMirage } from '../app/api/pam-search/underenhet/useArbeidsgiver';
 import { statistikkMirage } from '../app/api/statistikk/useStatistikk';
-import { finnArbeidsgiverMirage } from '../app/api/stilling/finn-arbeidsgiver/useFinnArbeidsgiver';
-import { postDataMirage } from '../app/api/stilling/geografi/postData/usePostData';
-import { geografiMirage } from '../app/api/stilling/geografi/useGeografi';
 import { opprettNyStillingMirage } from '../app/api/stilling/ny-stilling/opprettNyStilling';
 import { oppdaterStillingMirage } from '../app/api/stilling/oppdater-stilling/oppdaterStilling';
 import { stillingMirage } from '../app/api/stilling/rekrutteringsbistandstilling/[slug]/useStilling';
 import { brukerStandardSøkMirage } from '../app/api/stilling/standardsok/useBrukersStandardsøk';
+import { stillingssøkMirage } from '../app/api/stillings-sok/useStillingssøk';
+import { synlighetsevalueringMirage } from '../app/api/synlighet/useSynlighetsevaluering';
 
 export function makeServer({ environment = 'test' } = {}) {
   let server = createServer({
@@ -41,9 +43,7 @@ export function makeServer({ environment = 'test' } = {}) {
       brukerMirage(this);
       brukerStandardSøkMirage(this);
       decoratorDataMirage(this);
-      finnArbeidsgiverMirage(this);
       foresporselOmDelingAvCVStatistikkMirage(this);
-      geografiMirage(this);
       kandidagsammendragMirage(this);
       kandidatinformasjonMirage(this);
       kandidatlisteIdMirage(this);
@@ -55,16 +55,18 @@ export function makeServer({ environment = 'test' } = {}) {
       kontorSøkMirage(this);
       oppdaterStillingMirage(this);
       opprettNyStillingMirage(this);
-      postDataMirage(this);
       statistikkMirage(this);
       stillingMirage(this);
       stillingsTittelMirage(this);
       meldingsmalerMirage(this);
       kandidatvarselMirage(this);
       foresporselOmDelingAvCVMirage(this);
-
+      synlighetsevalueringMirage(this);
+      arbeidsgiverMirage(this);
+      pamGeografiMirage(this);
+      pamPostdataMirage(this);
       // stillingssøk mock kan disables ved ES søk
-      // stillingssøkMirage(this);
+      stillingssøkMirage(this);
       this.passthrough('*');
     },
   });

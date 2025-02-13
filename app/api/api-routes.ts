@@ -17,6 +17,13 @@ export const ModiaDecoratorAPI: Iroute = {
   scope: `api://${gcp}.personoversikt.modiacontextholder/.default`,
 };
 
+export const SynlighetsevalueringAPI: Iroute = {
+  api_route: '',
+  api_url: process.env.SYNLIGHETSMOTOR_API ?? '',
+  internUrl: '/api/synlighet',
+  scope: `api://${gcp}.toi.toi-synlighetsmotor/.default`,
+};
+
 export const ArbeidsgiverNotifikasjonAPI: Iroute = {
   api_route: '',
   api_url: process.env.ARBEIDSGIVER_NOTIFIKASJON_API ?? '',
@@ -70,6 +77,20 @@ export const PamOntologiAPI: Iroute = {
   api_route: '',
   api_url: process.env.PAM_ONTOLOGI_URL ?? '',
   internUrl: '/api/pam-ontologi',
+  scope: '',
+};
+
+export const PamSearchAPI: Iroute = {
+  api_route: '',
+  api_url: process.env.PAM_SEARCH_URL ?? '',
+  internUrl: '/api/pam-search',
+  scope: '',
+};
+
+export const PamGeografiAPI: Iroute = {
+  api_route: '',
+  api_url: process.env.PAM_GEOGRAFI_URL ?? '',
+  internUrl: '/api/pam-geografi',
   scope: '',
 };
 

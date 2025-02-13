@@ -1,4 +1,4 @@
-import { Skeleton } from '@navikt/ds-react';
+import { Box, Detail, Skeleton } from '@navikt/ds-react';
 import * as React from 'react';
 
 export interface IInfokort {
@@ -22,44 +22,53 @@ const Infokort: React.FC<IInfokort> = ({
   detaljer,
 }) => {
   return (
-    <div className='bg-white rounded-lg border border-[#071936]/20 justify-start items-start inline-flex'>
-      <div className='grow shrink basis-0 self-stretch p-6 flex-col justify-center items-start inline-flex'>
-        <div className='self-stretch pb-2 justify-start items-start inline-flex'>
-          <div className='grow shrink basis-0 flex-col justify-start items-start inline-flex'>
-            <div className='self-stretch justify-start items-start gap-2 inline-flex'>
-              <div className="grow shrink basis-0 text-[#010b18]/70 text-base font-semibold font-['Source Sans Pro'] leading-tight tracking-tight">
-                {beskrivelse}
-              </div>
-            </div>
-            <div className='self-stretch justify-start items-center gap-2 inline-flex'>
-              <div className="text-[#23262a] text-[40px] font-semibold font-['Source Sans Pro'] leading-[52px]">
-                {tall}
-              </div>
-            </div>
+    <Box.New
+      background='raised'
+      borderColor='neutral-subtleA'
+      borderRadius='xlarge'
+      borderWidth='1'
+      padding='6'
+    >
+      <div className='flex flex-col'>
+        <div className='flex justify-between items-start pb-2'>
+          <div className='flex flex-col'>
+            <Detail className='text-[var(--ax-text-subtle)]'>
+              {beskrivelse}
+            </Detail>
+            <span className='text-[var(--ax-text-default)] text-[40px] font-semibold leading-[52px]'>
+              {tall}
+            </span>
           </div>
           {ikon && (
-            <div className='p-2 bg-[#e0d8e9] rounded-[100px] justify-center items-center gap-2 flex'>
-              <div className='w-6 h-6 relative text-2xl'>{ikon}</div>
-            </div>
+            <Box
+              background='surface-action-subtle'
+              padding='2'
+              borderRadius='full'
+              className='flex justify-center items-center'
+            >
+              <div className='w-6 h-6 relative text-2xl text-[var(--a-gray-900)]'>
+                {ikon}
+              </div>
+            </Box>
           )}
         </div>
-        <div className='self-stretch flex-col justify-start items-start flex'>
+        <div className='flex flex-col'>
           {detaljer?.map((d, index) => (
-            <div
+            <Box.New
               key={index}
-              className='self-stretch pt-2 pb-3 border-b border-[#071936]/20 justify-start items-start gap-3 inline-flex'
+              className='flex justify-between items-start gap-3'
             >
-              <div className="grow shrink basis-0 text-base  font-['Source Sans Pro'] leading-tight tracking-tight">
+              <span className='text-[var(--ax-text-default)]'>
                 {d.beskrivelse}
-              </div>
-              <div className="text-right  text-base font-semibold font-['Source Sans Pro'] leading-tight tracking-tight">
+              </span>
+              <span className='font-semibold text-[var(--ax-text-default)]'>
                 {d.tall}
-              </div>
-            </div>
+              </span>
+            </Box.New>
           ))}
         </div>
       </div>
-    </div>
+    </Box.New>
   );
 };
 

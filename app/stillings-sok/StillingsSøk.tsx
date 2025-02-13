@@ -1,7 +1,6 @@
 'use client';
 import { PlusCircleIcon } from '@navikt/aksel-icons';
 import { Button, Tabs } from '@navikt/ds-react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import * as React from 'react';
@@ -10,6 +9,7 @@ import { useUseBrukerStandardSøk } from '../api/stilling/standardsok/useBrukers
 import SideLayout from '../components/layout/SideLayout';
 import SideTopBanner from '../components/layout/SideTopBanner';
 import Sidelaster from '../components/Sidelaster';
+import SVGDarkmode from '../components/SVGDarkmode';
 import { Roller } from '../components/tilgangskontroll/roller';
 import { TilgangskontrollForInnhold } from '../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { useStillingForKandidat } from '../kandidat/[kandidatId]/forslag-fane/useStillingForKandidat';
@@ -93,7 +93,7 @@ const StillingsSøkLayout: React.FC<StillingsSøkProps> = ({
             tittel={
               formidlinger ? 'Etterregistrering formidlinger' : 'Stillinger'
             }
-            ikon={<Image src={Piktogram} alt='Finn stillinger' />}
+            ikon={<SVGDarkmode src={Piktogram} alt='Finn stillinger' />}
             knappIBanner={
               formidlinger ? (
                 <TilgangskontrollForInnhold
@@ -162,20 +162,9 @@ const StillingsSøkLayout: React.FC<StillingsSøkProps> = ({
         </Tabs.List>
         <Tabs.Panel value={StillingsSøkPortefølje.VIS_ALLE}>
           <StillingsSøkeresultat kandidatId={kandidatId} />
-          {/* <AlleStillinger
-            kandidatnr={kandidatnr}
-            finnerStillingForKandidat={finnerStillingForKandidat}
-          /> */}
         </Tabs.Panel>
         <Tabs.Panel value={StillingsSøkPortefølje.VIS_MINE}>
           <StillingsSøkeresultat kandidatId={kandidatId} />
-          {/* {navIdent ? (
-            <MineStillinger
-              navIdent={navIdent}
-              kandidatnr={kandidatnr}
-              finnerStillingForKandidat={finnerStillingForKandidat}
-            />
-          ) : null} */}
         </Tabs.Panel>
       </Tabs>
     </SideLayout>

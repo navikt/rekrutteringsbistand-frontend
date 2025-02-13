@@ -4,10 +4,8 @@ import { useRouter } from 'next/navigation';
 import * as React from 'react';
 import { useAntallKandidater } from '../../../../../api/kandidat/useAntallKandidater';
 import { useKandidatliste } from '../../../../../api/kandidat/useKandidatliste';
-import {
-  Kandidatstatus,
-  Kandidatutfall,
-} from '../../../kandidater/KandidatIKandidatlisteTyper';
+import { KandidatutfallTyper } from '../../../kandidater/components/HendelseTag';
+import { Kandidatstatus } from '../../../kandidater/KandidatIKandidatlisteTyper';
 import { useStillingsContext } from '../../../StillingsContext';
 import AvsluttStillingKnapp from './AvsluttStillingKnapp';
 import KopierStilling from './KopierStilling';
@@ -30,15 +28,15 @@ const EierStillingVisning: React.FC = () => {
   ).length;
 
   const antallPresenterteKandidater = ikkeArkiverteKandidater.filter(
-    (k) => k.utfall === Kandidatutfall.Presentert,
+    (k) => k.utfall === KandidatutfallTyper.PRESENTERT,
   ).length;
 
   const antallKandidaterSomHarFåttJobb =
     ikkeArkiverteKandidater.filter(
-      (k) => k.utfall === Kandidatutfall.FåttJobben,
+      (k) => k.utfall === KandidatutfallTyper.FATT_JOBBEN,
     ).length +
     (data?.formidlingerAvUsynligKandidat?.filter(
-      (k) => k.utfall === Kandidatutfall.FåttJobben,
+      (k) => k.utfall === KandidatutfallTyper.FATT_JOBBEN,
     )?.length || 0);
 
   const antallStillinger = data?.antallStillinger;

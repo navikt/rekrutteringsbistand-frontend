@@ -5,6 +5,7 @@ export const stillingMock = {
     eierNavident: null,
     eierNavn: null,
     stillingskategori: 'STILLING',
+    // stillingskategori: 'FORMIDLING',
   },
   stilling: {
     id: 985771,
@@ -51,8 +52,8 @@ export const stillingMock = {
     source: 'DIR',
     medium: 'DIR',
     reference: 'e0aa5cb7-f99d-4b3d-8799-ce3d532b748a',
-    published: '2025-01-15T18:52:01.586843',
-    expires: '2025-01-15T18:52:01.586843',
+    published: '2025-01-16T00:00:00',
+    expires: '2025-01-17T00:00:00',
     employer: {
       id: 769293,
       uuid: '31c42c49-f6bf-4152-8eda-baf57b14e7b8',
@@ -70,8 +71,6 @@ export const stillingMock = {
         municipalCode: null,
         city: '',
         country: '',
-        latitude: null,
-        longitude: null,
       },
       locationList: [
         {
@@ -82,8 +81,6 @@ export const stillingMock = {
           municipalCode: null,
           city: '',
           country: '',
-          latitude: null,
-          longitude: null,
         },
       ],
       properties: {
@@ -108,8 +105,6 @@ export const stillingMock = {
         municipalCode: '3403',
         city: null,
         country: 'NORGE',
-        latitude: null,
-        longitude: null,
       },
     ],
     categoryList: [

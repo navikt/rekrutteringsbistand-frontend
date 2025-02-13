@@ -1,53 +1,68 @@
-import { geografiDTO } from '../../stilling/geografi/useGeografi';
+import {
+  GeografiType,
+  PamGeografi,
+} from '../../pam-geografi/typehead/lokasjoner/usePamGeografi';
 import {
   formaterStedsnavn,
   stedmappingFraNyttNavn,
   stedmappingFraNyttNummer,
 } from './fylkeOgKommuneMapping';
 
-export const esFylkerOgKommuner = (valgteFylkerOgKommuner: geografiDTO) => {
+export const esFylkerOgKommuner = (valgteFylkerOgKommuner: PamGeografi[]) => {
   if (!valgteFylkerOgKommuner) return [];
   return geografi(valgteFylkerOgKommuner);
 };
 
 const beholdFylkerUtenValgteKommuner = (
-  valgteFylkerOgKommuner: geografiDTO,
+  valgteFylkerOgKommuner: PamGeografi[],
 ) => {
-  const fylkerUtenValgteKommuner = valgteFylkerOgKommuner.fylker.filter(
+  const fylkerUtenValgteKommuner = valgteFylkerOgKommuner.filter(
     (fylke) =>
-      !valgteFylkerOgKommuner.kommuner.some(
-        (kommune) => kommune.countyCode === fylke.code,
-      ),
+      !valgteFylkerOgKommuner
+        .filter((kommune) => kommune.type === GeografiType.KOMMUNE)
+        .some(
+          (kommune) =>
+            kommune.lokasjon.fylkesnummer === fylke.lokasjon.fylkesnummer,
+        ),
   );
 
   return fylkerUtenValgteKommuner;
 };
 
-const geografi = (valgteFylkerOgKommuner: geografiDTO) => {
+const geografi = (valgteFylkerOgKommuner: PamGeografi[]) => {
   const fylker = beholdFylkerUtenValgteKommuner(valgteFylkerOgKommuner);
 
-  if (fylker.length === 0 && valgteFylkerOgKommuner.kommuner.length === 0)
+  if (
+    fylker.length === 0 &&
+    valgteFylkerOgKommuner.filter(
+      (kommune) => kommune.type === GeografiType.KOMMUNE,
+    ).length === 0
+  )
     return [];
 
-  const kommunerInkludertGamleKoder = valgteFylkerOgKommuner.kommuner.flatMap(
-    (kommune) => {
-      const ekstraSteder = stedmappingFraNyttNummer
-        .get(kommune.code)
-        ?.map((sted) => {
-          return sted.nummer;
-        });
+  const kommunerInkludertGamleKoder = valgteFylkerOgKommuner
+    .filter((kommune) => kommune.type === GeografiType.KOMMUNE)
+    .flatMap((kommune) => {
+      const ekstraSteder =
+        kommune.lokasjon.kommunenummer &&
+        stedmappingFraNyttNummer
+          .get(kommune.lokasjon.kommunenummer)
+          ?.map((sted) => {
+            return sted.nummer;
+          });
 
-      return [kommune.code, ...(ekstraSteder || [])];
-    },
-  );
+      return [kommune.lokasjon.kommunenummer, ...(ekstraSteder || [])];
+    });
 
   const fylkerInkludertGamleNavn = fylker.flatMap((fylke) => {
-    const ekstraNavn = stedmappingFraNyttNavn
-      .get(formaterStedsnavn(fylke.name))
-      ?.map((sted) => {
-        return sted.navn;
-      });
-    return [fylke.name, ...(ekstraNavn || [])];
+    const ekstraNavn =
+      fylke.lokasjon.fylkesnummer &&
+      stedmappingFraNyttNavn
+        .get(formaterStedsnavn(fylke.lokasjon.fylkesnummer))
+        ?.map((sted) => {
+          return sted.navn;
+        });
+    return [fylke.lokasjon.fylkesnummer, ...(ekstraNavn || [])];
   });
 
   const shouldFylker =

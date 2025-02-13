@@ -1,9 +1,9 @@
 'use client';
 import { Buildings2Icon, PersonIcon } from '@navikt/aksel-icons';
 import { Alert, Heading } from '@navikt/ds-react';
-import Image from 'next/image';
 import * as React from 'react';
 import StillingsIkon from '../../../public/ikoner/se-mine-stillinger.svg';
+import SVGDarkmode from '../../components/SVGDarkmode';
 import TekstMedIkon from '../../components/TekstMedIkon';
 import SideLayout from '../../components/layout/SideLayout';
 import SideTopBanner from '../../components/layout/SideTopBanner';
@@ -49,7 +49,7 @@ const StillingSideLayout: React.FC<StillingSideLayoutProps> = ({
                   />
                 )}
               </div>
-              {(!erFormidling || erSlettet) && (
+              {!erFormidling && !erSlettet && (
                 <KopierStillingLenke
                   stillingsId={stillingsData.stilling.uuid ?? ''}
                 />
@@ -57,7 +57,7 @@ const StillingSideLayout: React.FC<StillingSideLayoutProps> = ({
             </>
           }
           tilbakeKnapp
-          ikon={<Image src={StillingsIkon} alt='Se mine stillinger' />}
+          ikon={<SVGDarkmode src={StillingsIkon} alt='Se mine stillinger' />}
           tittel={stillingsData.stilling.title ?? ''}
         />
       }

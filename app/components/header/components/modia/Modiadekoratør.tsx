@@ -4,11 +4,6 @@ import { getMiljø, Miljø } from '../../../../../util/miljø';
 import { useApplikasjonContext } from '../../../../ApplikasjonContext';
 import { DecoratorProps } from './Interndekoratør';
 
-interface Enhet {
-  enhetId: string;
-  navn: string;
-}
-
 const proxyUrl =
   getMiljø() === Miljø.ProdGcp
     ? 'https://rekrutteringsbistand-frontend.intern.nav.no'
@@ -31,7 +26,6 @@ const Decorator = dynamic<DecoratorProps>(
 
 const Modiadekoratør: React.FC = () => {
   const { setValgtNavKontor, setValgtFnr, valgtFnr } = useApplikasjonContext();
-
   return (
     <Decorator
       fnr={valgtFnr ?? undefined}

@@ -24,7 +24,7 @@ const VelgStatus: React.FC<VelgStatusProps> = ({
   return (
     <div>
       <Heading size='small' spacing>
-        Velg status
+        Velg intern status
       </Heading>
       <RadioGroup legend='' value={valgtStatus} onChange={setValgtStatus}>
         <Radio value={Kandidatstatus.Vurderes}>

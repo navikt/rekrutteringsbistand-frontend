@@ -1,7 +1,6 @@
-import { BodyShort, Button } from '@navikt/ds-react';
+import { BodyShort, Button, Link } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import { nb } from 'date-fns/locale';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 import { useStillingssøk } from '../../../../../api/stillings-sok/useStillingssøk';
@@ -21,7 +20,7 @@ const ForslagTilStilling: React.FC = () => {
   const router = useRouter();
 
   return (
-    <div className='bg-white  rounded-lg shadow-sm'>
+    <>
       {/* <Heading size='medium' level='2' spacing>
         Forslag til stillinger
       </Heading> */}
@@ -37,7 +36,7 @@ const ForslagTilStilling: React.FC = () => {
       >
         Finn aktuelle stillinger
       </Button>
-    </div>
+    </>
   );
 };
 

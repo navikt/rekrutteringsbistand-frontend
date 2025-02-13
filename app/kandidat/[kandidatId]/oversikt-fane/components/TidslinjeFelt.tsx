@@ -5,7 +5,7 @@ import React from 'react';
 export const formatDateRange = (fraDato: string, tilDato: string) => {
   const start = new Date(fraDato);
   const end = new Date(tilDato);
-  return `${format(start, 'MMM. yyyy', { locale: nb })} - ${format(end, 'MMM yyyy', { locale: nb })}`;
+  return `${format(start, 'MMMM yyyy', { locale: nb })} - ${format(end, 'MMMM yyyy', { locale: nb })}`;
 };
 
 export const calculateDuration = (fraDato: string, tilDato: string) => {

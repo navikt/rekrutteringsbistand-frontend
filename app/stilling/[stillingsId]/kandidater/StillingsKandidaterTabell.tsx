@@ -1,6 +1,5 @@
-import { Checkbox, Table, Tooltip } from '@navikt/ds-react';
+import { Checkbox, Link, Table, Tooltip } from '@navikt/ds-react';
 import { format } from 'date-fns';
-import Link from 'next/link';
 import * as React from 'react';
 import {
   applySortDirection,
@@ -10,17 +9,18 @@ import {
   NestedKeys,
   TableSortState,
 } from '../../../../util/tableUtils';
+import { ForespurteOmDelingAvCvDTO } from '../../../api/foresporsel-om-deling-av-cv/foresporsler/[slug]/useForespurteOmDelingAvCv';
 import {
   kandidaterSchemaDTO,
   kandidatlisteSchemaDTO,
 } from '../../../api/kandidat/schema.zod';
-import HendelseTag from './components/HendelseTag';
+import { Sms } from '../../../api/kandidatvarsel/kandidatvarsel';
+import HendelseTag, { KandidatHendelseTyper } from './components/HendelseTag';
 import InfoOmKandidat from './components/InfoOmKandidat';
-import KandidatDropdown from './components/KandidatDropdown';
-import SmsStatusPopup from './components/SendSMS/SmsStatusPopup';
+import SletteKandidatKnapp from './components/KandidatDropdown';
 import StatusTag from './components/StatusTag';
 import UsynligKandidatRad from './components/UsynligKandidatRad';
-import { Kandidatstatus, Kandidatutfall } from './KandidatIKandidatlisteTyper';
+import { Kandidatstatus } from './KandidatIKandidatlisteTyper';
 import { useStillingsKandidaterFilter } from './StillingsKandidaterFilterContext';
 
 const StillingsKandidaterTabell: React.FC<{
@@ -29,19 +29,20 @@ const StillingsKandidaterTabell: React.FC<{
   search: string;
   kandidatliste: kandidatlisteSchemaDTO;
   stillingsId: string;
-  stillingskategori: string | null;
+  forespurteKandidater: ForespurteOmDelingAvCvDTO;
+  beskjeder: Record<string, Sms>;
 }> = ({
   markerteKandidater,
   setMarkerteKandidater,
   search,
   kandidatliste,
   stillingsId,
-  stillingskategori,
+  forespurteKandidater,
+  beskjeder,
 }) => {
   const [sort, setSort] = React.useState<TableSortState<kandidaterSchemaDTO>>();
 
   const { status, hendelse } = useStillingsKandidaterFilter();
-
   const toggleSelectedRow = (kandidat: kandidaterSchemaDTO) =>
     setMarkerteKandidater(
       markerteKandidater.includes(kandidat)
@@ -76,7 +77,13 @@ const StillingsKandidaterTabell: React.FC<{
           hendelse.some(
             (utfall) =>
               kandidat.status === utfall ||
-              kandidat.utfallsendringer.some((h) => h.utfall === utfall),
+              kandidat.utfallsendringer.some((h) => h.utfall === utfall) ||
+              (kandidat.aktørid &&
+                forespurteKandidater[kandidat.aktørid]?.some(
+                  (forespørsel) => forespørsel.tilstand === utfall,
+                )) ||
+              (kandidat.fodselsnr &&
+                beskjeder[kandidat.fodselsnr]?.eksternStatus === utfall),
           );
 
         // Skjuler de som ikke har fnr hvis filter er valgt for å ikke utlede hendelser.
@@ -101,7 +108,16 @@ const StillingsKandidaterTabell: React.FC<{
       .sort(applySortDirection<kandidaterSchemaDTO>(sort));
 
     setKandidater(nyListe);
-  }, [search, kandidatliste.kandidater, sort, status, hendelse, aktivtFilter]);
+  }, [
+    search,
+    kandidatliste.kandidater,
+    sort,
+    status,
+    hendelse,
+    aktivtFilter,
+    beskjeder,
+    forespurteKandidater,
+  ]);
 
   function tableSort(sortKey?: string) {
     if (
@@ -143,7 +159,6 @@ const StillingsKandidaterTabell: React.FC<{
           <Table.ColumnHeader sortable sortKey='etternavn' scope='col'>
             Navn
           </Table.ColumnHeader>
-          <Table.HeaderCell scope='col' />
           <Table.HeaderCell scope='col'>Fødselsnr.</Table.HeaderCell>
           <Table.ColumnHeader sortable sortKey='lagtTilAv.navn' scope='col'>
             Lagt til av
@@ -164,24 +179,25 @@ const StillingsKandidaterTabell: React.FC<{
               key={i}
               fornavn={kandidat.fornavn}
               etternavn={kandidat.etternavn}
-              utfall={kandidat.utfall as Kandidatutfall}
+              utfall={kandidat.utfall as KandidatHendelseTyper}
             />
           ))}
         {kandidater.map((kandidat, i) => {
-          // if (kandidat.fodselsnr === null) {
-          //   return (
-          //     <UsynligKandidatRad
-          //       key={i}
-          //       fornavn={kandidat.fornavn}
-          //       etternavn={kandidat.etternavn}
-          //     />
-          //   );
-          // }
           const innaktiv = !kandidat.fodselsnr;
+
+          const beskjedForKandidat = beskjeder[kandidat.fodselsnr ?? ''];
+
+          const forespørselCvForKandidat =
+            kandidat.aktørid && forespurteKandidater
+              ? forespurteKandidater[kandidat.aktørid]
+              : null;
+
           return (
             <Table.ExpandableRow
               content={
                 <InfoOmKandidat
+                  beskjedForKandidat={beskjedForKandidat}
+                  forespørselCvForKandidat={forespørselCvForKandidat}
                   innaktiv={innaktiv}
                   kandidat={kandidat}
                   kandidatlisteId={kandidatliste.kandidatlisteId}
@@ -215,13 +231,7 @@ const StillingsKandidaterTabell: React.FC<{
                   </Link>
                 )}
               </Table.DataCell>
-              <Table.DataCell className='align-middle'>
-                <SmsStatusPopup
-                  fnr={kandidat.fodselsnr}
-                  stillingId={stillingsId}
-                  stillingskategori={stillingskategori}
-                />
-              </Table.DataCell>
+
               <Table.DataCell>
                 {kandidat.fodselsnr ?? 'Innaktiv'}
               </Table.DataCell>
@@ -238,21 +248,12 @@ const StillingsKandidaterTabell: React.FC<{
               </Table.DataCell>
               <Table.DataCell>
                 <HendelseTag
-                  ikkeVisÅrstall
-                  utfall={kandidat.utfall as Kandidatutfall}
-                  utfallsendringer={kandidat.utfallsendringer}
-                  // forespørselOmDelingAvCv={
-                  //     forespørselOmDelingAvCv.kind === Nettstatus.Suksess
-                  //         ? forespørselOmDelingAvCv.data.gjeldendeForespørsel
-                  //         : undefined
-                  // }
-                  forespørselOmDelingAvCv={undefined}
-                  sms={null}
+                  utfall={kandidat.utfall as KandidatHendelseTyper}
                 />
               </Table.DataCell>
               <Table.DataCell>
                 <div className='flex items-baseline flex-end'>
-                  <KandidatDropdown
+                  <SletteKandidatKnapp
                     kandidat={kandidat}
                     stillingsId={stillingsId}
                   />

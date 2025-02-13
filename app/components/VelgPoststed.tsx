@@ -1,7 +1,7 @@
 import { TrashIcon } from '@navikt/aksel-icons';
 import { Button, TextField } from '@navikt/ds-react';
 import * as React from 'react';
-import { usePostData } from '../api/stilling/geografi/postData/usePostData';
+import { usePamPostdata } from '../api/pam-geografi/postdata/[postnummer]/usePamPostdata';
 import { GeografiDTO } from '../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 
 export interface VelgPoststedProps {
@@ -17,11 +17,12 @@ const VelgPoststed: React.FC<VelgPoststedProps> = ({
   oppdater,
   fjern,
 }) => {
-  const hook = usePostData();
-
   const [postNummer, setPostNummer] = React.useState<string>(
     location?.postalCode ?? '',
   );
+
+  const hook = usePamPostdata(postNummer);
+
   const [postSted, setPostSted] = React.useState<string>(location?.city ?? '');
 
   const [adresse, setAdresse] = React.useState<string>('');
@@ -38,10 +39,8 @@ const VelgPoststed: React.FC<VelgPoststedProps> = ({
 
   React.useEffect(() => {
     if (postNummer.length === 4 && hook.data) {
-      const postSted = hook.data
-        .filter((item) => item.postalCode === postNummer)
-        .map((item) => item.capitalizedCityName);
-      setPostSted(postSted[0] ?? 'Ukjent poststed');
+      const postSted = hook.data.korrigertNavnBy;
+      setPostSted(postSted ?? 'Ukjent poststed');
     }
   }, [postNummer, hook.data]);
 

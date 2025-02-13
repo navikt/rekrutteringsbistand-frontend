@@ -8,7 +8,7 @@ import { IKandidatSøkContext } from '../../kandidat-sok/KandidaSokContext';
 import { konverterStederTilNåværendeKoder } from '../../kandidat/[kandidatId]/forslag-fane/useStillingForKandidat';
 import { KandidatSøkAPI } from '../api-routes';
 import { postApiWithSchema } from '../fetcher';
-import { useGeografi } from '../stilling/geografi/useGeografi';
+import { usePamGeografi } from '../pam-geografi/typehead/lokasjoner/usePamGeografi';
 import { kandidatSøkMock } from './mocks/kandidatsøkMock';
 import { kandidatSokSchema } from './types';
 
@@ -19,25 +19,25 @@ export const useKandidatsøk = (
   type: KandidatSøkPortefølje,
   kandidatSøkFilter: IKandidatSøkContext,
 ) => {
-  const { data: geografi, isLoading: isGeografiLoading } = useGeografi();
+  const { data: geografi, isLoading: isGeografiLoading } = usePamGeografi();
   const shouldFetch = !isGeografiLoading;
 
   const kommuneKoder = kandidatSøkFilter.ønsketSted.map((sted) => {
-    const kommuneMedKoder = geografi?.kommuner.find(
-      (g) => g.name.toUpperCase() === sted.toUpperCase(),
+    const kommuneMedKoder = geografi?.find(
+      (g) => g.lokasjon.kommune?.toUpperCase() === sted.toUpperCase(),
     );
     if (kommuneMedKoder) {
-      return `NO${kommuneMedKoder?.countyCode}.${kommuneMedKoder?.code}`;
+      return `NO${kommuneMedKoder?.lokasjon.fylkesnummer}.${kommuneMedKoder?.lokasjon.kommunenummer}`;
     }
     return null;
   });
 
   const fylkeKoder = kandidatSøkFilter.ønsketSted.map((sted) => {
-    const fylkeMedKoder = geografi?.fylker.find(
-      (g) => g.name.toUpperCase() === sted.toUpperCase(),
+    const fylkeMedKoder = geografi?.find(
+      (g) => g.lokasjon.fylke?.toUpperCase() === sted.toUpperCase(),
     );
     if (fylkeMedKoder) {
-      return `NO${fylkeMedKoder?.code}`;
+      return `NO${fylkeMedKoder?.lokasjon.fylkesnummer}`;
     }
     return null;
   });

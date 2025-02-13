@@ -3,10 +3,8 @@ import {
   Buildings2Icon,
   ClockIcon,
   PersonIcon,
-  PinIcon,
 } from '@navikt/aksel-icons';
-import { Box, Button, Heading } from '@navikt/ds-react';
-import Link from 'next/link';
+import { Box, Button, Heading, Link } from '@navikt/ds-react';
 import * as React from 'react';
 
 import { konverterTilPresenterbarDato } from '../../../util/dato';
@@ -35,6 +33,7 @@ const StillingsKort: React.FC<IStillingsKort> = ({
   const {
     brukerData: { ident },
   } = useApplikasjonContext();
+
   const antallStillinger = Number(
     stillingData?.stilling?.properties?.positioncount,
   );
@@ -44,13 +43,18 @@ const StillingsKort: React.FC<IStillingsKort> = ({
   const eierNavn = formaterEiernavn(hentEierFraStilling(stillingData));
   const erEier = hentIdentFraStilling(stillingData) === ident;
 
+  const erFormidling =
+    stillingData.stillingsinfo?.stillingskategori === 'FORMIDLING';
+
   return (
     <Box className='border rounded-lg mb-4 border-gray-300 p-4'>
       <>
         <StillingsTag splitTags stillingsData={stillingData} />
       </>
       <Box className='mb-2'>
-        <Link href={`/stilling/${stillingData.stilling.uuid}`}>
+        <Link
+          href={`${erFormidling ? 'formidlinger/' : 'stilling/'}${stillingData.stilling.uuid}`}
+        >
           <Heading size='small'>
             {stillingData?.stilling?.tittel || 'Ukjent tittel'}
           </Heading>

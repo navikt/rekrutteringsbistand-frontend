@@ -1,5 +1,4 @@
-import { BodyShort, Heading } from '@navikt/ds-react';
-import Link from 'next/link';
+import { BodyShort, Heading, Link } from '@navikt/ds-react';
 import * as React from 'react';
 import { useFormContext } from 'react-hook-form';
 import RikTekstEditor from '../../../../components/rikteksteditor/RikTekstEditor';
@@ -42,9 +41,9 @@ export const RedigerOmStillingen: React.FC<{
         <div className='space-y-8'>
           <div>
             <VelgStillingTittel
-              valgtJanzz={watch('omStillingen.janzz')}
-              callBack={(val) => setValue('omStillingen.janzz', val)}
-              error={formState.errors.omStillingen?.janzz?.message}
+              categoryList={watch('omStillingen.categoryList')}
+              callBack={(val) => setValue('omStillingen.categoryList', val)}
+              error={formState.errors.omStillingen?.categoryList?.message}
             />
           </div>
           <div>
@@ -62,9 +61,10 @@ export const RedigerOmStillingen: React.FC<{
           </div>
 
           <div>
-            <h3 className='text-xl font-semibold mb-4'>Arbeidssted</h3>
-
-            <VelgArbeidssted />
+            <VelgArbeidssted
+              lokasjonsFelt='omStillingen.lokasjoner'
+              adresseFelt='omStillingen.adresseLokasjoner'
+            />
           </div>
         </div>
         <StegNavigering stegNummer={stegNummer} forrigeSteg={forrigeSteg} />

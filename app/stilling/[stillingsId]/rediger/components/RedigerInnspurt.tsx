@@ -58,6 +58,7 @@ export const RedigerInnspurt: React.FC<{
           ...nyStillingsData.stilling.administration,
           status: 'DONE',
         },
+        firstPublished: true,
       },
     };
 

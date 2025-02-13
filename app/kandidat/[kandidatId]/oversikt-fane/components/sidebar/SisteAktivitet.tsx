@@ -1,7 +1,6 @@
-import { BodyShort, Button } from '@navikt/ds-react';
+import { BodyShort, Button, Link } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import { nb } from 'date-fns/locale';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 import { useKandidatListeoversikt } from '../../../../../api/kandidat/useKandidatListeoversikt';
@@ -14,11 +13,7 @@ const SisteAktivitet: React.FC = () => {
   const kandidatListeoversiktHook = useKandidatListeoversikt(kandidatId);
   const router = useRouter();
   return (
-    <div className='bg-white  rounded-lg shadow-sm'>
-      {/* <Heading size='medium' level='2' spacing>
-        Siste aktivitet
-      </Heading> */}
-
+    <>
       <SWRLaster hooks={[kandidatListeoversiktHook]}>
         {(data) => (
           <div className='space-y-8'>
@@ -37,11 +32,13 @@ const SisteAktivitet: React.FC = () => {
                   >
                     <div>
                       {aktivitet.erMaskert ? (
-                        <span className='text-red-600'>Ingen tilgang</span>
+                        <span className='text-[var(--a-text-error)]'>
+                          Ingen tilgang
+                        </span>
                       ) : (
                         <Link
                           href={`/stilling/${aktivitet.stillingId}`}
-                          className=' text-text-default'
+                          className=' text-[var(--ax-text-default)]'
                         >
                           <BodyShort weight='semibold'>
                             {aktivitet.tittel ?? '-'}
@@ -77,7 +74,7 @@ const SisteAktivitet: React.FC = () => {
       >
         Vis all aktivitet
       </Button>
-    </div>
+    </>
   );
 };
 

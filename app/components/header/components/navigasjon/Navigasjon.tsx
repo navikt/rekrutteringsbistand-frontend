@@ -48,8 +48,8 @@ export const Navigeringsmeny: FunctionComponent = () => {
   const tabPath = `/${pathname.split('/')[1]}`;
 
   return (
-    <div className='border-b border-border-divider'>
-      <div className='max-w-screen-xl pt-2 mx-auto flex justify-between items-center'>
+    <div className=' border-b border-border-divider'>
+      <div className='w-[var(--ax-breakpoint-2xl)] p-4 pb-0 mx-auto flex justify-between items-center'>
         <Tabs
           defaultValue={tabPath === '/' ? 'Oversikt' : tabPath}
           value={tabPath}

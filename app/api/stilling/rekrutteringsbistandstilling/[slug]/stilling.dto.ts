@@ -14,6 +14,7 @@ export const searchtagSchema = z.object({
 
 export const propertiesSchema = z
   .object({
+    jobarrangement: z.string().optional().nullable(),
     employerhomepage: z.string().optional().nullable(),
     facebookpage: z.string().optional().nullable(),
     linkedinpage: z.string().optional().nullable(),
@@ -93,8 +94,6 @@ export const GeografiSchema = z.object({
   municipalCode: z.string().optional().nullable(),
   city: z.string().optional().nullable(),
   country: z.string().optional().nullable(),
-  latitude: z.string().optional().nullable(),
-  longitude: z.string().optional().nullable(),
 });
 
 const GeografiListSchema = z.array(GeografiSchema);

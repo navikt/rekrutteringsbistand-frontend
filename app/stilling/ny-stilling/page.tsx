@@ -2,7 +2,7 @@
 import { Alert, BodyLong, Button } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
-import { FinnArbeidsgiverDTO } from '../../api/stilling/finn-arbeidsgiver/useFinnArbeidsgiver';
+import { ArbeidsgiverDTO } from '../../api/pam-search/underenhet/useArbeidsgiver';
 import SideLayout from '../../components/layout/SideLayout';
 import SideTopBanner from '../../components/layout/SideTopBanner';
 import { Stillingskategori } from '../stilling-typer';
@@ -17,7 +17,7 @@ const NyStilling: React.FC = () => {
     React.useState<Stillingskategori | null>(null);
 
   const [arbeidsgiver, setArbeidsgiver] =
-    React.useState<FinnArbeidsgiverDTO | null>(null);
+    React.useState<ArbeidsgiverDTO | null>(null);
 
   const handleGoBack = () => {
     router.back();
@@ -41,7 +41,7 @@ const NyStilling: React.FC = () => {
             setStillingskategori={setStillingskategori}
             stillingskategori={stillingskategori}
           />
-          <VelgArbeidsgiver setArbeidsgiver={setArbeidsgiver} />
+          <VelgArbeidsgiver arbeidsgiverCallback={setArbeidsgiver} />
         </div>
         <div className='flex justify-end mt-4'>
           <Button

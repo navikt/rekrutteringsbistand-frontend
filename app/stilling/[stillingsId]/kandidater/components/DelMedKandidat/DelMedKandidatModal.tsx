@@ -1,7 +1,15 @@
 import { ArrowForwardIcon } from '@navikt/aksel-icons';
-import { Alert, BodyShort, Button, Modal } from '@navikt/ds-react';
+import {
+  Accordion,
+  Alert,
+  BodyShort,
+  Button,
+  Modal,
+  Table,
+} from '@navikt/ds-react';
 import { format } from 'date-fns';
 import * as React from 'react';
+import { useForespurteOmDelingAvCv } from '../../../../../api/foresporsel-om-deling-av-cv/foresporsler/[slug]/useForespurteOmDelingAvCv';
 import { sendForespørselOmDelingAvCv } from '../../../../../api/foresporsel-om-deling-av-cv/foresporsler/forespørselOmDelingAvCv';
 import {
   kandidaterSchemaDTO,
@@ -15,14 +23,16 @@ export interface DelMedKandidatModalProps {
   markerteKandidater: kandidaterSchemaDTO[];
   fjernAllMarkering: () => void;
   kandidatliste: kandidatlisteSchemaDTO;
-  forespurteKandidater: string[];
+  forespurteKandidaterAktørListe: string[];
+  stillingsId: string;
 }
 
 const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
   markerteKandidater,
   fjernAllMarkering,
   kandidatliste,
-  forespurteKandidater,
+  forespurteKandidaterAktørListe,
+  stillingsId,
 }) => {
   const [modalErÅpen, setModalErÅpen] = React.useState(false);
   const [svarfrist, setSvarfrist] = React.useState<Date | undefined>(undefined);
@@ -30,17 +40,31 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
   const { valgtNavKontor } = useApplikasjonContext();
   const [loading, setLoading] = React.useState(false);
 
+  const forespurteKandidaterHook = useForespurteOmDelingAvCv(stillingsId);
+
+  const antallSpurtFraFør = markerteKandidater.filter(
+    (kandidat) =>
+      kandidat.aktørid &&
+      forespurteKandidaterAktørListe.includes(kandidat.aktørid),
+  );
+
+  const kandidaterSomKanDelesTil = markerteKandidater.filter(
+    (kandidat) => !antallSpurtFraFør.includes(kandidat),
+  );
+
   const sendForespørsel = async () => {
     if (svarfrist) {
       setLoading(true);
       await sendForespørselOmDelingAvCv({
         stillingsId: kandidatliste.stillingId,
         svarfrist: format(svarfrist, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"),
-        aktorIder: markerteKandidater
+        aktorIder: kandidaterSomKanDelesTil
           .map((kandidat) => kandidat.aktørid)
           .filter((id): id is string => id !== null),
         navKontor: valgtNavKontor?.navKontor ?? '',
       });
+      forespurteKandidaterHook.mutate();
+
       fjernAllMarkering();
       setModalErÅpen(false);
       setLoading(false);
@@ -50,11 +74,6 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
       });
     }
   };
-
-  const antallSpurtFraFør = markerteKandidater.filter(
-    (kandidat) =>
-      kandidat.aktørid && forespurteKandidater.includes(kandidat.aktørid),
-  ).length;
 
   return (
     <>
@@ -77,15 +96,54 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
         }}
       >
         <Modal.Body>
-          {antallSpurtFraFør > 0 && (
+          {antallSpurtFraFør.length > 0 && (
             <Alert variant='warning' size='small'>
-              Du har tidligere delt stillingen med {antallSpurtFraFør}{' '}
-              {antallSpurtFraFør === 1
+              Du har tidligere delt stillingen med {antallSpurtFraFør.length}{' '}
+              {antallSpurtFraFør.length === 1
                 ? 'kandidat. Denne kandidaten'
                 : 'kandidater. De'}{' '}
               vil ikke motta stillingen på nytt i aktivitetsplanen.
             </Alert>
           )}
+          <Accordion size='small' headingSize='xsmall' className='my-4'>
+            <Accordion.Item>
+              <Accordion.Header>Vis kandidater</Accordion.Header>
+              <Accordion.Content>
+                <Table size='small'>
+                  <Table.Header>
+                    <Table.Row>
+                      <Table.HeaderCell scope='col'>Navn</Table.HeaderCell>
+                      <Table.HeaderCell scope='col'>
+                        Fødselsnr.
+                      </Table.HeaderCell>
+                      <Table.HeaderCell scope='col'>Kan dele</Table.HeaderCell>
+                    </Table.Row>
+                  </Table.Header>
+                  <Table.Body>
+                    {markerteKandidater?.map(
+                      ({ fornavn, etternavn, fodselsnr, aktørid }, i) => {
+                        return (
+                          <Table.Row key={i}>
+                            <Table.HeaderCell scope='row'>
+                              {fornavn} {etternavn}
+                            </Table.HeaderCell>
+                            <Table.DataCell>{fodselsnr}</Table.DataCell>
+                            <Table.DataCell>
+                              {aktørid &&
+                              forespurteKandidaterAktørListe.includes(aktørid)
+                                ? 'Nei'
+                                : 'Ja'}
+                            </Table.DataCell>
+                          </Table.Row>
+                        );
+                      },
+                    )}
+                  </Table.Body>
+                </Table>
+              </Accordion.Content>
+            </Accordion.Item>
+          </Accordion>
+
           <BodyShort className='my-8'>
             {`Det opprettes et stillingskort i Aktivitetsplanen. Kandidatene
                   vil bli varslet på SMS, og kan svare "ja" eller "nei" til at

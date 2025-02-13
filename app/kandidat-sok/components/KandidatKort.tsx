@@ -5,8 +5,7 @@ import {
   HouseIcon,
   PinIcon,
 } from '@navikt/aksel-icons';
-import { Checkbox, Heading } from '@navikt/ds-react';
-import Link from 'next/link';
+import { Checkbox, Heading, Link } from '@navikt/ds-react';
 import * as React from 'react';
 import TekstMedIkon from '../../components/TekstMedIkon';
 

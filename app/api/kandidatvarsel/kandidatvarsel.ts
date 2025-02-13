@@ -40,7 +40,7 @@ const MinsideStatusSchema = z
   .or(z.literal(MinsideStatus.OPPRETTET))
   .or(z.literal(MinsideStatus.SLETTET));
 
-export enum EksternStatus {
+export enum BeskjedEksternStatus {
   /** Vi jobber med å sende ut eksternt varsel. Status er ikke avklart enda. */
   UNDER_UTSENDING = 'UNDER_UTSENDING',
 
@@ -57,12 +57,22 @@ export enum EksternStatus {
   FEIL = 'FEIL',
 }
 
+export enum EksternKanal {
+  SMS = 'SMS',
+  EPOST = 'EPOST',
+}
+
 const EksternStatusSchema = z
-  .literal(EksternStatus.UNDER_UTSENDING)
-  .or(z.literal(EksternStatus.VELLYKKET_SMS))
-  .or(z.literal(EksternStatus.VELLYKKET_EPOST))
-  .or(z.literal(EksternStatus.FERDIGSTILT))
-  .or(z.literal(EksternStatus.FEIL));
+  .literal(BeskjedEksternStatus.UNDER_UTSENDING)
+  .or(z.literal(BeskjedEksternStatus.VELLYKKET_SMS))
+  .or(z.literal(BeskjedEksternStatus.VELLYKKET_EPOST))
+  .or(z.literal(BeskjedEksternStatus.FERDIGSTILT))
+  .or(z.literal(BeskjedEksternStatus.FEIL));
+
+const EksternKanalSchema = z
+  .literal(null)
+  .or(z.literal(EksternKanal.SMS))
+  .or(z.literal(EksternKanal.EPOST));
 
 const SmsSchema = z
   .object({
@@ -74,6 +84,7 @@ const SmsSchema = z
     minsideStatus: MinsideStatusSchema,
     eksternStatus: EksternStatusSchema,
     eksternFeilmelding: z.string().nullable(),
+    eksternKanal: EksternKanalSchema,
   })
   .partial({ eksternFeilmelding: true });
 
@@ -241,14 +252,114 @@ export const useSendtKandidatmelding = (
 
 const smsExampleMock = [
   {
-    id: 'A57',
-    opprettet: '2024-09-10T13:07:17.399709',
-    stillingId: '44142941-1fff-401f-8072-98889d9c41d4',
-    mottakerFnr: '16488811847',
+    id: 'A69',
+    opprettet: '2024-11-22T15:02:25.197824',
+    stillingId: '81d763bd-5858-4479-9113-1d8bcdd4b1f4',
+    mottakerFnr: '13898799837',
+    avsenderNavident: 'Z994886',
+    minsideStatus: 'OPPRETTET',
+    eksternStatus: 'FEIL',
+    eksternFeilmelding: 'person_ikke_funnet',
+    eksternKanal: null,
+  },
+  {
+    id: 'A71',
+    opprettet: '2024-11-22T15:10:49.650041',
+    stillingId: '81d763bd-5858-4479-9113-1d8bcdd4b1f4',
+    mottakerFnr: '02518046937',
+    avsenderNavident: 'Z994886',
+    minsideStatus: 'OPPRETTET',
+    eksternStatus: 'FEIL',
+    eksternFeilmelding: 'person_ikke_funnet',
+    eksternKanal: null,
+  },
+  {
+    id: 'A68',
+    opprettet: '2024-11-22T14:58:45.995817',
+    stillingId: '81d763bd-5858-4479-9113-1d8bcdd4b1f4',
+    mottakerFnr: '16847496766',
+    avsenderNavident: 'Z994886',
+    minsideStatus: 'OPPRETTET',
+    eksternStatus: 'FEIL',
+    eksternFeilmelding: 'person_ikke_funnet',
+    eksternKanal: null,
+  },
+  {
+    id: 'A70',
+    opprettet: '2024-11-22T15:02:55.871186',
+    stillingId: '81d763bd-5858-4479-9113-1d8bcdd4b1f4',
+    mottakerFnr: '17838298621',
+    avsenderNavident: 'Z994886',
+    minsideStatus: 'OPPRETTET',
+    eksternStatus: 'FEIL',
+    eksternFeilmelding: 'person_ikke_funnet',
+    eksternKanal: null,
+  },
+  {
+    id: 'A112',
+    opprettet: '2025-02-07T13:11:03.489174',
+    stillingId: '81d763bd-5858-4479-9113-1d8bcdd4b1f4',
+    mottakerFnr: '29528910708',
+    avsenderNavident: 'Z994886',
+    minsideStatus: 'OPPRETTET',
+    eksternStatus: 'FEIL',
+    eksternFeilmelding: 'person_ikke_funnet',
+    eksternKanal: null,
+  },
+  {
+    id: 'A107',
+    opprettet: '2025-02-04T15:22:08.340198',
+    stillingId: '81d763bd-5858-4479-9113-1d8bcdd4b1f4',
+    mottakerFnr: '28869099653',
     avsenderNavident: 'Z993141',
     minsideStatus: 'OPPRETTET',
     eksternStatus: 'FEIL',
     eksternFeilmelding: 'person_ikke_funnet',
+    eksternKanal: null,
+  },
+  {
+    id: 'A113',
+    opprettet: '2025-02-07T13:11:11.095482',
+    stillingId: '81d763bd-5858-4479-9113-1d8bcdd4b1f4',
+    mottakerFnr: '04479208765',
+    avsenderNavident: 'Z994886',
+    minsideStatus: 'OPPRETTET',
+    eksternStatus: 'FEIL',
+    eksternFeilmelding: 'person_ikke_funnet',
+    eksternKanal: null,
+  },
+  {
+    id: 'A114',
+    opprettet: '2025-02-07T13:11:17.706953',
+    stillingId: '81d763bd-5858-4479-9113-1d8bcdd4b1f4',
+    mottakerFnr: '17418940123',
+    avsenderNavident: 'Z994886',
+    minsideStatus: 'OPPRETTET',
+    eksternStatus: 'FEIL',
+    eksternFeilmelding: 'person_ikke_funnet',
+    eksternKanal: null,
+  },
+  {
+    id: 'A115',
+    opprettet: '2025-02-07T13:11:28.071744',
+    stillingId: '81d763bd-5858-4479-9113-1d8bcdd4b1f4',
+    mottakerFnr: '07476508902',
+    avsenderNavident: 'Z994886',
+    minsideStatus: 'OPPRETTET',
+    eksternStatus: 'FEIL',
+    eksternFeilmelding: 'person_ikke_funnet',
+    eksternKanal: null,
+  },
+  {
+    id: 'A116',
+    opprettet: '2025-02-07T13:11:38.16235',
+    stillingId: '81d763bd-5858-4479-9113-1d8bcdd4b1f4',
+    mottakerFnr: '21506801084',
+    avsenderNavident: 'Z994886',
+    minsideStatus: 'OPPRETTET',
+    eksternStatus: 'FEIL',
+    eksternFeilmelding: 'person_ikke_funnet',
+    eksternKanal: null,
   },
 ];
 export const kandidatvarselMirage = (server: any) => {

@@ -51,24 +51,28 @@ export const OmTilretteleggingSchema = z.object({
   tags: z.array(z.string()),
 });
 
+export const AdresseLokasjonSchema = z
+  .array(GeografiSchema)
+  .optional()
+  .nullable()
+  .refine(
+    (data) =>
+      !data?.length || data.every((item) => item.postalCode && item.city),
+    {
+      message: 'Alle adresser må ha både postnummer og poststed',
+    },
+  );
+
+// export const JanzzSchema = KategoriSchema.refine((data) => !!data.name, {
+//   message: 'Yrkesklassifisering må velges',
+//   path: ['name'],
+// });
+
 export const OmStillingenSchema = z
   .object({
-    janzz: KategoriSchema.refine((data) => !!data.name, {
-      message: 'Yrkesklassifisering må velges',
-      path: ['name'],
-    }),
+    categoryList: z.array(KategoriSchema),
     beskrivelse: z.string().nullable(),
-    adresseLokasjoner: z
-      .array(GeografiSchema)
-      .optional()
-      .nullable()
-      .refine(
-        (data) =>
-          !data?.length || data.every((item) => item.postalCode && item.city),
-        {
-          message: 'Alle adresser må ha både postnummer og poststed',
-        },
-      ),
+    adresseLokasjoner: AdresseLokasjonSchema,
     lokasjoner: z.array(GeografiSchema).optional().nullable(),
   })
   .refine(
@@ -93,6 +97,7 @@ export const PraktiskInfoSchema = z
     oppstartEtterAvtale: z.boolean(),
     søknadsfrist: z.string().nullable(),
     søknadsfristSnarest: z.boolean(),
+    arbeidstidsordning: z.string().nullable(),
     ansettelsesform: z
       .string()
       .nullish()

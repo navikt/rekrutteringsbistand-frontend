@@ -1,4 +1,5 @@
 'use client';
+import { useRouter } from 'next/navigation';
 import React, { useMemo } from 'react';
 import { useKandidatlisteId } from '../../api/kandidat/useKandidatlisteId';
 import { StillingsDataDTO } from '../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
@@ -6,6 +7,7 @@ import { useStilling } from '../../api/stilling/rekrutteringsbistandstilling/[sl
 import { useApplikasjonContext } from '../../ApplikasjonContext';
 import SWRLaster from '../../components/SWRLaster';
 import { eierStilling } from '../../components/tilgangskontroll/erEier';
+import { Roller } from '../../components/tilgangskontroll/roller';
 
 interface StillingsContextType {
   stillingsData: StillingsDataDTO;
@@ -34,7 +36,11 @@ export const StillingsContextProvider: React.FC<
   return (
     <SWRLaster hooks={[stillingHook]}>
       {(data) => (
-        <StillingsContextMedData data={data} refetch={stillingHook.mutate}>
+        <StillingsContextMedData
+          key={data?.stilling?.updated}
+          data={data}
+          refetch={stillingHook.mutate}
+        >
           {children}
         </StillingsContextMedData>
       )}
@@ -53,8 +59,10 @@ const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
   children,
   refetch,
 }) => {
+  const router = useRouter();
   const {
     brukerData: { ident },
+    harRolle,
   } = useApplikasjonContext();
 
   const [forhåndsvisData, setForhåndsvisData] =
@@ -75,13 +83,36 @@ const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
     }
   }, [kandidatlisteIdHook]);
 
+  React.useEffect(() => {
+    if (stillingsData.stilling.publishedByAdmin) {
+      kandidatlisteIdHook.mutate();
+    }
+  }, [stillingsData.stilling.publishedByAdmin, kandidatlisteIdHook]);
+
+  React.useEffect(() => {
+    const isFormidling =
+      stillingsData.stillingsinfo?.stillingskategori === 'FORMIDLING';
+    const correctPath = isFormidling
+      ? `/formidlinger/${stillingsData.stilling.uuid}`
+      : `/stilling/${stillingsData.stilling.uuid}`;
+
+    if (!window.location.pathname.includes(correctPath)) {
+      router.push(correctPath);
+    }
+  }, [
+    stillingsData.stillingsinfo?.stillingskategori,
+    router,
+    stillingsData.stilling.uuid,
+  ]);
+
   const erEier = useMemo(
     () =>
+      harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER]) ||
       eierStilling({
         stillingsData: stillingsData,
         navIdent: ident,
       }),
-    [stillingsData, ident],
+    [stillingsData, ident, harRolle],
   );
 
   return (

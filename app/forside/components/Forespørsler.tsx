@@ -6,6 +6,7 @@ import { useForesporselOmdelingAvCV } from '../../api/foresporsel-om-deling-av-c
 import SWRLaster from '../../components/SWRLaster';
 import Infokort, { InfokortSkeleton } from './Infokort';
 import { IStatistikkValg } from './Statistikk';
+import SVGDarkmode from '../../components/SVGDarkmode';
 
 const Forespørsler: React.FC<IStatistikkValg> = ({
   navKontor,
@@ -49,7 +50,7 @@ const Forespørsler: React.FC<IStatistikkValg> = ({
             ikon={
               <>
                 <span className='absolute'>
-                  <Image src={KryssIkon} alt='Kryss' />
+                  <SVGDarkmode src={KryssIkon} alt='Kryss' />
                 </span>
                 <ChatIcon className='relative' />
               </>

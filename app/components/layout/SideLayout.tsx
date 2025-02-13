@@ -1,4 +1,5 @@
-import { Show } from '@navikt/ds-react';
+'use client';
+import { Accordion, Hide, Show } from '@navikt/ds-react';
 import * as React from 'react';
 
 // import { TilToppenKnapp } from "../tilToppenKnapp/TilToppenKnapp";
@@ -18,15 +19,14 @@ const SideLayout = ({ banner, sidepanel, children }: ISideLayout) => {
           {sidepanel && (
             <aside className='sidebar flex-grow-0 w-full md:w-[22.5rem]'>
               <Show above='md'>{sidepanel}</Show>
-              {/* // TODO: Gir feil i rendering for rekrutteringstreff */}
-              {/* <Hide above='md'>
+              <Hide above='md'>
                 <Accordion>
                   <Accordion.Item>
                     <Accordion.Header>Filtrer</Accordion.Header>
                     <Accordion.Content>{sidepanel}</Accordion.Content>
                   </Accordion.Item>
                 </Accordion>
-              </Hide> */}
+              </Hide>
             </aside>
           )}
           <main className='sideinnhold w-full'>{children}</main>

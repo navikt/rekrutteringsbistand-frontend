@@ -1,5 +1,4 @@
 'use client';
-
 import { Alert, Heading } from '@navikt/ds-react';
 import React from 'react';
 import { getMiljø, Miljø } from '../util/miljø';
@@ -22,8 +21,6 @@ interface BrukerData extends DecoratorDTO {
 
 interface ApplikasjonContextType {
   brukerData: BrukerData;
-  darkMode: boolean;
-  setDarkMode: (val: boolean) => void;
   harRolle: (rolle: Roller[]) => boolean;
   valgtNavKontor: NavKontorMedNavn | null;
   setValgtNavKontor: (navKontor: NavKontorMedNavn | null) => void;
@@ -40,8 +37,6 @@ const ApplikasjonContext = React.createContext<ApplikasjonContextType>({
     fornavn: '',
     etternavn: '',
   },
-  darkMode: true,
-  setDarkMode: () => false,
   harRolle: () => false,
   setValgtNavKontor: () => null,
   setValgtFnr: () => null,
@@ -57,8 +52,6 @@ interface IApplikasjonContextProvider {
 export const ApplikasjonContextProvider: React.FC<
   IApplikasjonContextProvider
 > = ({ children, brukerData }) => {
-  const [darkMode, setDarkMode] = React.useState<boolean>(false);
-
   const [valgtFnr, setValgtFnr] = React.useState<string | null>(null);
 
   const [valgtNavKontor, setValgtNavKontor] =
@@ -75,7 +68,7 @@ export const ApplikasjonContextProvider: React.FC<
 
   const harTilgangTilNyApplikasjon =
     getMiljø() !== Miljø.ProdGcp ||
-    valgtNavKontor?.navKontor === '1001' ||
+    // valgtNavKontor?.navKontor === '1001' ||
     harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER]);
 
   return (
@@ -84,8 +77,6 @@ export const ApplikasjonContextProvider: React.FC<
         value={{
           setValgtFnr,
           brukerData,
-          darkMode,
-          setDarkMode,
           setValgtNavKontor,
           valgtNavKontor,
           harRolle,
@@ -94,22 +85,19 @@ export const ApplikasjonContextProvider: React.FC<
       >
         <Header />
         <Varsling />
-        <main>
-          <div className='mx-auto p-4 mb-8 max-w-screen-full'>
-            {harTilgangTilNyApplikasjon ? (
-              children
-            ) : (
-              <div>
-                {' '}
-                <Alert variant='info'>
-                  <Heading spacing size='small' level='3'>
-                    Applikasjonen er begrenset
-                  </Heading>
-                  Kun enkelte kontor har tilgang til den nye applikasjonen
-                </Alert>
-              </div>
-            )}
-          </div>
+        <main className='mx-auto p-4 mb-8 w-[var(--ax-breakpoint-2xl)]'>
+          {harTilgangTilNyApplikasjon ? (
+            children
+          ) : (
+            <div>
+              <Alert variant='info'>
+                <Heading spacing size='small' level='3'>
+                  Applikasjonen er begrenset
+                </Heading>
+                Kun enkelte kontor har tilgang til den nye applikasjonen
+              </Alert>
+            </div>
+          )}
         </main>
       </ApplikasjonContext.Provider>
     </VarslingContextProvider>

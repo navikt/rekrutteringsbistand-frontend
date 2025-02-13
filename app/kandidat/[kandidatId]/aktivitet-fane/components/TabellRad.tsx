@@ -1,6 +1,5 @@
-import { Table } from '@navikt/ds-react';
+import { Link, Table } from '@navikt/ds-react';
 import { format } from 'date-fns';
-import Link from 'next/link';
 import * as React from 'react';
 import KandidatStatusTag from '../../../../stilling/[stillingsId]/kandidater/components/StatusTag';
 

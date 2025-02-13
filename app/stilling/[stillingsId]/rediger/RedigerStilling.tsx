@@ -170,6 +170,7 @@ const RedigerStilling: React.FC = () => {
             )}
             {aktivtSteg === RedigerSteg.omTilrettelegging && (
               <RedigerOmTilrettelegging
+                omTilretteleggingFelt='omStillingen.omTilrettelegging'
                 stegNummer={2}
                 nextStep={nesteSteg}
                 forrigeSteg={forrigeSteg}

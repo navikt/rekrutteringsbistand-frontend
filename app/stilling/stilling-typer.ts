@@ -33,3 +33,10 @@ export enum StillingsAnsettelsesform {
   Selvstendig = 'Selvstendig næringsdrivende',
   Annet = 'Annet',
 }
+
+export enum StillingsArbeidstidsordning {
+  Ingen = '',
+  Skift = 'Skift',
+  Turnus = 'Turnus',
+  Vakt = 'Vakt',
+}

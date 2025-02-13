@@ -9,20 +9,19 @@ const OmAnnonsen: React.FC = () => {
   const { stillingsData } = useStillingsContext();
   const { updated, medium, reference, id, expires, published } =
     stillingsData?.stilling;
-  //@ts-ignore TODO type this
-  const { reportee, navIdent } = stillingsData?.stilling?.administration;
+  const { reportee, navIdent } = stillingsData?.stilling?.administration ?? {};
 
   return (
     <OmStillingBoks
       tittel='Om annonsen'
       gridInnhold={
         <>
-          <Definisjon tittel='Annonsenummer' innhold={`${id}`} />
-          <Definisjon tittel='Hentet fra' innhold={`${medium}`} />
-          <Definisjon tittel='Referanse' innhold={`${reference}`} />
+          <Definisjon tittel='Annonsenummer' innhold={`${id ?? '-'}`} />
+          <Definisjon tittel='Hentet fra' innhold={`${medium ?? '-'}`} />
+          <Definisjon tittel='Referanse' innhold={`${reference ?? '-'}`} />
           <Definisjon
             tittel='Kategori'
-            innhold={`${stillingsData?.stillingsinfo?.stillingskategori}`}
+            innhold={stillingsData?.stillingsinfo?.stillingskategori ?? '-'}
           />
           <Definisjon
             tittel='Publisert'
@@ -38,7 +37,7 @@ const OmAnnonsen: React.FC = () => {
           />
           <Definisjon
             tittel='Kontaktperson hos Nav'
-            innhold={`${reportee} ${navIdent ? `(${navIdent})` : ''}`}
+            innhold={`${reportee ?? '-'} ${navIdent ? `(${navIdent})` : ''}`}
           />
         </>
       }

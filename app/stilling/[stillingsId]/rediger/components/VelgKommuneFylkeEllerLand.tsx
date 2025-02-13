@@ -2,17 +2,29 @@ import { UNSAFE_Combobox } from '@navikt/ds-react';
 import * as React from 'react';
 import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { useGeografi } from '../../../../api/stilling/geografi/useGeografi';
+import {
+  GeografiType,
+  usePamGeografi,
+} from '../../../../api/pam-geografi/typehead/lokasjoner/usePamGeografi';
+import { FormidlingDataForm } from '../../../../formidlinger/[stillingsId]/rediger/redigerFormidlingFormType';
 import { StillingsDataForm } from '../redigerFormType.zod';
 
-const VelgKommuneFylkeEllerLand: React.FC = () => {
-  const { setValue, watch } = useFormContext<StillingsDataForm>();
-  const geografi = useGeografi();
+interface VelgKommuneFylkeEllerLandProps {
+  lokasjonsFelt: 'omFormidling.lokasjoner' | 'omStillingen.lokasjoner';
+}
+
+const VelgKommuneFylkeEllerLand: React.FC<VelgKommuneFylkeEllerLandProps> = ({
+  lokasjonsFelt,
+}) => {
+  const { setValue, watch } = useFormContext<
+    StillingsDataForm | FormidlingDataForm
+  >();
+  const geografi = usePamGeografi();
   const [muligeValg, setMuligeValg] = useState<string[]>([]);
   const [søkeTekst, setSøkeTekst] = useState<string>('');
 
   const [valgteVerdier, setValgteVerdier] = useState<string[]>(() => {
-    const lokasjoner = watch('omStillingen.lokasjoner');
+    const lokasjoner = watch(lokasjonsFelt);
     return (
       lokasjoner
         ?.map((item) => {
@@ -35,13 +47,13 @@ const VelgKommuneFylkeEllerLand: React.FC = () => {
         const type = parts[1].replace(')', '');
 
         if (type === 'kommune') {
-          const kommune = geografi.data?.kommuner.find(
-            (k) => k.capitalizedName.toLowerCase() === navn.toLowerCase(),
-          );
+          const kommune = geografi.data
+            ?.filter((g) => g.type === GeografiType.KOMMUNE)
+            .find((k) => k.navn.toLowerCase() === navn.toLowerCase());
           if (kommune) {
             return {
-              municipal: kommune.capitalizedName,
-              municipalCode: kommune.code,
+              municipal: kommune.navn,
+              municipalCode: kommune.lokasjon.kommunenummer,
             };
           }
         } else if (type === 'fylke') {
@@ -54,11 +66,11 @@ const VelgKommuneFylkeEllerLand: React.FC = () => {
         (value): value is NonNullable<typeof value> => value !== undefined,
       );
 
-    setValue('omStillingen.lokasjoner', nyeVerdier || [], {
+    setValue(lokasjonsFelt, nyeVerdier || [], {
       shouldValidate: true,
       shouldDirty: true,
     });
-  }, [valgteVerdier, setValue, geografi.data]);
+  }, [valgteVerdier, setValue, geografi.data, lokasjonsFelt]);
 
   /**
    * Oppdater søket
@@ -66,30 +78,27 @@ const VelgKommuneFylkeEllerLand: React.FC = () => {
   React.useEffect(() => {
     if (søkeTekst.length > 1) {
       setMuligeValg([
-        ...(geografi.data?.kommuner
+        ...(geografi.data
+          ?.filter((g) => g.type === GeografiType.KOMMUNE)
           .filter((k) =>
-            k.capitalizedName
-              .toLowerCase()
-              .includes(søkeTekst.toLocaleLowerCase()),
+            k.navn.toLowerCase().includes(søkeTekst.toLocaleLowerCase()),
           )
-          .map((k) => `${k.capitalizedName} (kommune)`) ?? []),
-        ...(geografi.data?.fylker
+          .map((k) => `${k.navn} (kommune)`) ?? []),
+        ...(geografi.data
+          ?.filter((g) => g.type === GeografiType.FYLKE)
           .filter((f) =>
-            f.capitalizedName
-              .toLowerCase()
-              .includes(søkeTekst.toLocaleLowerCase()),
+            f.navn.toLowerCase().includes(søkeTekst.toLocaleLowerCase()),
           )
-          .map((f) => `${f.capitalizedName} (fylke)`) ?? []),
-        ...(geografi.data?.land
+          .map((f) => `${f.navn} (fylke)`) ?? []),
+        ...(geografi.data
+          ?.filter((g) => g.type === GeografiType.LAND)
           ?.filter((l) =>
-            l.capitalizedName
-              .toLowerCase()
-              .includes(søkeTekst.toLocaleLowerCase()),
+            l.navn.toLowerCase().includes(søkeTekst.toLocaleLowerCase()),
           )
-          .map((l) => `${l.capitalizedName} (land)`) ?? []),
+          .map((l) => `${l.navn} (land)`) ?? []),
       ]);
     }
-  }, [geografi.data, søkeTekst]);
+  }, [geografi.data, søkeTekst, lokasjonsFelt]);
 
   const handleValgtVerdi = (option: string, isSelected: boolean) => {
     if (!isSelected) {

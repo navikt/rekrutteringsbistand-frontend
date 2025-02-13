@@ -7,6 +7,7 @@ import { Roller } from '../components/tilgangskontroll/roller';
 import { TilgangskontrollForInnhold } from '../components/tilgangskontroll/TilgangskontrollForInnhold';
 import KandidatSøkSidebar from './components/kandidat-sok-sidebar/KandidatSøkSidebar';
 import { KandidatSøkProvider } from './KandidaSokContext';
+import SVGDarkmode from '../components/SVGDarkmode';
 
 export default function KandidatSokLayout({
   children,
@@ -25,7 +26,7 @@ export default function KandidatSokLayout({
           banner={
             <SideTopBanner
               tittel='Kandidatsøk'
-              ikon={<Image src={Piktogram} alt='Kandidatsøk' />}
+              ikon={<SVGDarkmode src={Piktogram} alt='Kandidatsøk' />}
             />
           }
           sidepanel={<KandidatSøkSidebar />}

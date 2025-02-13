@@ -34,11 +34,11 @@ export enum Kandidatstatus {
   Uinteressert = 'UINTERESSERT',
 }
 
-export enum Kandidatutfall {
-  IkkePresentert = 'IKKE_PRESENTERT',
-  Presentert = 'PRESENTERT',
-  FåttJobben = 'FATT_JOBBEN',
-}
+// export enum Kandidatutfall {
+//   IkkePresentert = 'IKKE_PRESENTERT',
+//   Presentert = 'PRESENTERT',
+//   FåttJobben = 'FATT_JOBBEN',
+// }
 
 // export type LagtTilAv = {
 //   ident: string;

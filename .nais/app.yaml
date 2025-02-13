@@ -40,6 +40,10 @@ spec:
           namespace: personoversikt
         - application: pam-ontologi
           namespace: teampam
+        - application: pam-search-api
+          namespace: teampam
+        - application: pam-geografi
+          namespace: teampam
       external:
         - host: {{ statistikkApiHost }}
         - host: {{ foresporselOmDelingAvCvApiHost }}
@@ -75,7 +79,13 @@ spec:
       value: {{ kandidatApiUrl }}
     - name: PAM_ONTOLOGI_URL
       value: http://pam-ontologi.teampam
+    - name: PAM_SEARCH_URL
+      value: http://pam-search-api.teampam
+    - name: PAM_GEOGRAFI_URL
+      value: http://pam-geografi.teampam
     - name: KANDIDATVARSEL_API_URL
       value: http://rekrutteringsbistand-kandidatvarsel-api
     - name: ARBEIDSGIVER_NOTIFIKASJON_API
-      value: http://toi-arbeidsgiver-notifikasjon      
+      value: http://toi-arbeidsgiver-notifikasjon
+    - name: SYNLIGHETSMOTOR_API
+      value: http://toi-synlighetsmotor

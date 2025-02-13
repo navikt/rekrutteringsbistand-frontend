@@ -1,5 +1,5 @@
 import RekrutteringstreffSøk from './RekrutteringstreffSøk';
 
-export default function RekrutteringstreffSøkPage() {
+export default async function RekrutteringstreffSøkPage() {
   return <RekrutteringstreffSøk />;
 }

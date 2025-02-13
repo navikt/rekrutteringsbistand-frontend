@@ -1,5 +1,8 @@
 import { StillingsSøkPortefølje } from '../../stillings-sok/stillingssøk-typer';
-import { geografiDTO } from '../stilling/geografi/useGeografi';
+import {
+  GeografiType,
+  PamGeografi,
+} from '../pam-geografi/typehead/lokasjoner/usePamGeografi';
 import { esFritekstSøk } from './esFiltre/esFritekstSøk';
 import { esFylkerOgKommuner } from './esFiltre/esFylkerOgKommuner';
 import { esInkludering } from './esFiltre/esInkludering';
@@ -33,7 +36,7 @@ export type StillingsSøkFilter = {
 export function generateElasticSearchQuery(
   filter: StillingsSøkFilter,
   navIdent?: string,
-  geografiData?: geografiDTO,
+  geografiData?: PamGeografi[],
   formidlinger?: boolean,
 ) {
   const valgteFilter: any[] = [];
@@ -83,18 +86,26 @@ export function generateElasticSearchQuery(
     filter.kommuner?.length > 0
   ) {
     const valgteFylker =
-      geografiData?.fylker.filter((fylke) =>
-        filter?.fylker.includes(fylke.code),
-      ) ?? [];
+      geografiData
+        ?.filter((geografi) => geografi.type === GeografiType.FYLKE)
+        .filter(
+          (fylke) =>
+            fylke.lokasjon.fylkesnummer &&
+            filter?.fylker.includes(fylke.lokasjon.fylkesnummer),
+        ) ?? [];
     const valgteKommuner =
-      geografiData?.kommuner.filter((kommune) =>
-        filter?.kommuner.includes(kommune.code),
-      ) ?? [];
+      geografiData
+        ?.filter((geografi) => geografi.type === GeografiType.KOMMUNE)
+        .filter(
+          (kommune) =>
+            kommune.lokasjon.kommunenummer &&
+            filter?.kommuner.includes(kommune.lokasjon.kommunenummer),
+        ) ?? [];
 
-    const valgteFylkerOgKommuner: geografiDTO = {
-      fylker: valgteFylker,
-      kommuner: valgteKommuner,
-    };
+    const valgteFylkerOgKommuner: PamGeografi[] = [
+      ...valgteFylker,
+      ...valgteKommuner,
+    ];
 
     valgteFilter.push(esFylkerOgKommuner(valgteFylkerOgKommuner));
   }

@@ -1,6 +1,5 @@
 import { Chips } from '@navikt/ds-react';
 import * as React from 'react';
-import { useGeografi } from '../../api/stilling/geografi/useGeografi';
 import FilterChip from '../../components/FilterChip';
 import TømFiltre from '../../components/TømFiltre';
 import { useKandidatSøkFilter } from '../KandidaSokContext';
@@ -9,17 +8,6 @@ import { HovedMålType } from './kandidat-sok-sidebar/components/Hovedmål';
 
 const StillingsSøkChips: React.FC = () => {
   const filter = useKandidatSøkFilter();
-  const { data } = useGeografi();
-
-  function geografiNavn(code: string): string {
-    if (code.length === 2) {
-      const region = data?.fylker.find((r) => r.code === code);
-      return region ? region.capitalizedName : '';
-    } else {
-      const region = data?.kommuner.find((r) => r.code === code);
-      return region ? region.capitalizedName : '';
-    }
-  }
 
   return (
     <div className='mt-4 relative w-full'>
