@@ -1,12 +1,12 @@
 'use client';
 import { PlusCircleIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
-import { format } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 import { ArbeidsgiverDTO } from '../../../api/pam-search/underenhet/useArbeidsgiver';
 import { OpprettNyStillingDTO } from '../../../api/stilling/ny-stilling/dto';
 import { opprettNyStilling } from '../../../api/stilling/ny-stilling/opprettNyStilling';
+import { oppdaterStilling } from '../../../api/stilling/oppdater-stilling/oppdaterStilling';
 import { useApplikasjonContext } from '../../../ApplikasjonContext';
 import { Stillingskategori } from '../../stilling-typer';
 export interface OpprettStillingProps {
@@ -58,26 +58,27 @@ export const OpprettStillingKnapp: React.FC<OpprettStillingProps> = ({
         },
       };
 
-      const formidling = {
-        ...nyStilling,
-        stilling: {
-          ...nyStilling.stilling,
-          status: 'ACTIVE',
-          administration: {
-            ...nyStilling.stilling.administration,
-            status: 'DONE',
-          },
-          firstPublished: true,
-          published: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss"),
-        },
-      };
-
-      const response = await opprettNyStilling(
-        erFormidling ? formidling : nyStilling,
-      );
+      const response = await opprettNyStilling(nyStilling);
 
       if (response.stilling.uuid) {
-        router.push(`/stilling/${response.stilling.uuid}/rediger`);
+        if (erFormidling) {
+          oppdaterStilling({
+            ...response.stilling,
+            stilling: {
+              ...response.stilling,
+              status: 'ACTIVE',
+              administration: {
+                ...response.stilling.administration,
+                status: 'DONE',
+              },
+              firstPublished: true,
+            },
+          }).then(() => {
+            router.push(`/formidlinger/${response.stilling.uuid}/rediger`);
+          });
+        } else {
+          router.push(`/stilling/${response.stilling.uuid}/rediger`);
+        }
       } else {
         alert('Feil ved opprettelse av stilling');
       }
