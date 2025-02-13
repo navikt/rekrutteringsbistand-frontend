@@ -79,6 +79,8 @@ spec:
       value: http://pam-ontologi.teampam
     - name: PAM_SEARCH_URL
       value: http://pam-search-api.teampam
+    - name: PAM_GEOGRAFI_URL
+      value: http://pam-geografi.teampam
     - name: KANDIDATVARSEL_API_URL
       value: http://rekrutteringsbistand-kandidatvarsel-api
     - name: ARBEIDSGIVER_NOTIFIKASJON_API

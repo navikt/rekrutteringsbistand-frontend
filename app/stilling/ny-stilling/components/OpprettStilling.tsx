@@ -26,7 +26,9 @@ export const OpprettStillingKnapp: React.FC<OpprettStillingProps> = ({
   const handleOpprettStilling = async () => {
     setIsLoading(true);
     if (stillingskategori && arbeidsgiver) {
-      const stilling: OpprettNyStillingDTO = {
+      const erFormidling = stillingskategori === Stillingskategori.Formidling;
+
+      const nyStilling: OpprettNyStillingDTO = {
         kategori: stillingskategori,
         stilling: {
           administration: {
@@ -55,7 +57,22 @@ export const OpprettStillingKnapp: React.FC<OpprettStillingProps> = ({
         },
       };
 
-      const response = await opprettNyStilling(stilling);
+      const formidling = {
+        ...nyStilling,
+        stilling: {
+          ...nyStilling.stilling,
+          status: 'ACTIVE',
+          administration: {
+            ...nyStilling.stilling.administration,
+            status: 'DONE',
+          },
+          firstPublished: true,
+        },
+      };
+
+      const response = await opprettNyStilling(
+        erFormidling ? formidling : nyStilling,
+      );
 
       if (response.stilling.uuid) {
         router.push(`/stilling/${response.stilling.uuid}/rediger`);

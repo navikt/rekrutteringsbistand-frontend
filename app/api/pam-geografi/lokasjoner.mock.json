@@ -1,0 +1,8766 @@
+[
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "AGDER",
+      "fylkesnummer": "42",
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "AGDER",
+    "type": "FYLKE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "AKERSHUS",
+      "fylkesnummer": "32",
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "AKERSHUS",
+    "type": "FYLKE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "NORDLAND",
+      "fylkesnummer": "18",
+      "kommune": "ALSTAHAUG",
+      "kommunenummer": "1820",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ALSTAHAUG",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "FINNMARK",
+      "fylkesnummer": "56",
+      "kommune": "ALTA",
+      "kommunenummer": "5601",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ALTA",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "INNLANDET",
+      "fylkesnummer": "34",
+      "kommune": "ALVDAL",
+      "kommunenummer": "3428",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ALVDAL",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "VESTLAND",
+      "fylkesnummer": "46",
+      "kommune": "ALVER",
+      "kommunenummer": "4631",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ALVER",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "NORDLAND",
+      "fylkesnummer": "18",
+      "kommune": "ANDØY",
+      "kommunenummer": "1871",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ANDØY",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "ØSTFOLD",
+      "fylkesnummer": "31",
+      "kommune": "AREMARK",
+      "kommunenummer": "3124",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "AREMARK",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "AGDER",
+      "fylkesnummer": "42",
+      "kommune": "ARENDAL",
+      "kommunenummer": "4203",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ARENDAL",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "AKERSHUS",
+      "fylkesnummer": "32",
+      "kommune": "ASKER",
+      "kommunenummer": "3203",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ASKER",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "VESTLAND",
+      "fylkesnummer": "46",
+      "kommune": "ASKVOLL",
+      "kommunenummer": "4645",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ASKVOLL",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "VESTLAND",
+      "fylkesnummer": "46",
+      "kommune": "ASKØY",
+      "kommunenummer": "4627",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ASKØY",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "MØRE OG ROMSDAL",
+      "fylkesnummer": "15",
+      "kommune": "AUKRA",
+      "kommunenummer": "1547",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "AUKRA",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "MØRE OG ROMSDAL",
+      "fylkesnummer": "15",
+      "kommune": "AURE",
+      "kommunenummer": "1576",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "AURE",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "VESTLAND",
+      "fylkesnummer": "46",
+      "kommune": "AURLAND",
+      "kommunenummer": "4641",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "AURLAND",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "AKERSHUS",
+      "fylkesnummer": "32",
+      "kommune": "AURSKOG-HØLAND",
+      "kommunenummer": "3226",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "AURSKOG-HØLAND",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "VESTLAND",
+      "fylkesnummer": "46",
+      "kommune": "AUSTEVOLL",
+      "kommunenummer": "4625",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "AUSTEVOLL",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "VESTLAND",
+      "fylkesnummer": "46",
+      "kommune": "AUSTRHEIM",
+      "kommunenummer": "4632",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "AUSTRHEIM",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "MØRE OG ROMSDAL",
+      "fylkesnummer": "15",
+      "kommune": "AVERØY",
+      "kommunenummer": "1554",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "AVERØY",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TROMS",
+      "fylkesnummer": "55",
+      "kommune": "BALSFJORD",
+      "kommunenummer": "5532",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "BALSFJORD",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TELEMARK",
+      "fylkesnummer": "40",
+      "kommune": "BAMBLE",
+      "kommunenummer": "4012",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "BAMBLE",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TROMS",
+      "fylkesnummer": "55",
+      "kommune": "BARDU",
+      "kommunenummer": "5520",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "BARDU",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "NORDLAND",
+      "fylkesnummer": "18",
+      "kommune": "BEIARN",
+      "kommunenummer": "1839",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "BEIARN",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "VESTLAND",
+      "fylkesnummer": "46",
+      "kommune": "BERGEN",
+      "kommunenummer": "4601",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "BERGEN",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "FINNMARK",
+      "fylkesnummer": "56",
+      "kommune": "BERLEVÅG",
+      "kommunenummer": "5630",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "BERLEVÅG",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "NORDLAND",
+      "fylkesnummer": "18",
+      "kommune": "BINDAL",
+      "kommunenummer": "1811",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "BINDAL",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "AGDER",
+      "fylkesnummer": "42",
+      "kommune": "BIRKENES",
+      "kommunenummer": "4216",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "BIRKENES",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "ROGALAND",
+      "fylkesnummer": "11",
+      "kommune": "BJERKREIM",
+      "kommunenummer": "1114",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "BJERKREIM",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "VESTLAND",
+      "fylkesnummer": "46",
+      "kommune": "BJØRNAFJORDEN",
+      "kommunenummer": "4624",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "BJØRNAFJORDEN",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "NORDLAND",
+      "fylkesnummer": "18",
+      "kommune": "BODØ",
+      "kommunenummer": "1804",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "BODØ",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "ROGALAND",
+      "fylkesnummer": "11",
+      "kommune": "BOKN",
+      "kommunenummer": "1145",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "BOKN",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "VESTLAND",
+      "fylkesnummer": "46",
+      "kommune": "BREMANGER",
+      "kommunenummer": "4648",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "BREMANGER",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "NORDLAND",
+      "fylkesnummer": "18",
+      "kommune": "BRØNNØY",
+      "kommunenummer": "1813",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "BRØNNØY",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "BUSKERUD",
+      "fylkesnummer": "33",
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "BUSKERUD",
+    "type": "FYLKE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "AGDER",
+      "fylkesnummer": "42",
+      "kommune": "BYGLAND",
+      "kommunenummer": "4220",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "BYGLAND",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "AGDER",
+      "fylkesnummer": "42",
+      "kommune": "BYKLE",
+      "kommunenummer": "4222",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "BYKLE",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "AKERSHUS",
+      "fylkesnummer": "32",
+      "kommune": "BÆRUM",
+      "kommunenummer": "3201",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "BÆRUM",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "NORDLAND",
+      "fylkesnummer": "18",
+      "kommune": "BØ (NORDLAND)",
+      "kommunenummer": "1867",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "BØ (NORDLAND)",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "VESTLAND",
+      "fylkesnummer": "46",
+      "kommune": "BØMLO",
+      "kommunenummer": "4613",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "BØMLO",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "FINNMARK",
+      "fylkesnummer": "56",
+      "kommune": "BÅTSFJORD",
+      "kommunenummer": "5632",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "BÅTSFJORD",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "FINNMARK",
+      "fylkesnummer": "56",
+      "kommune": "DEATNU TANA",
+      "kommunenummer": "5628",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "DEATNU TANA",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "INNLANDET",
+      "fylkesnummer": "34",
+      "kommune": "DOVRE",
+      "kommunenummer": "3431",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "DOVRE",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "BUSKERUD",
+      "fylkesnummer": "33",
+      "kommune": "DRAMMEN",
+      "kommunenummer": "3301",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "DRAMMEN",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TELEMARK",
+      "fylkesnummer": "40",
+      "kommune": "DRANGEDAL",
+      "kommunenummer": "4016",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "DRANGEDAL",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TROMS",
+      "fylkesnummer": "55",
+      "kommune": "DYRØY",
+      "kommunenummer": "5528",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "DYRØY",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "NORDLAND",
+      "fylkesnummer": "18",
+      "kommune": "DØNNA",
+      "kommunenummer": "1827",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "DØNNA",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "VESTLAND",
+      "fylkesnummer": "46",
+      "kommune": "EIDFJORD",
+      "kommunenummer": "4619",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "EIDFJORD",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "INNLANDET",
+      "fylkesnummer": "34",
+      "kommune": "EIDSKOG",
+      "kommunenummer": "3416",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "EIDSKOG",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "AKERSHUS",
+      "fylkesnummer": "32",
+      "kommune": "EIDSVOLL",
+      "kommunenummer": "3240",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "EIDSVOLL",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "ROGALAND",
+      "fylkesnummer": "11",
+      "kommune": "EIGERSUND",
+      "kommunenummer": "1101",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "EIGERSUND",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "INNLANDET",
+      "fylkesnummer": "34",
+      "kommune": "ELVERUM",
+      "kommunenummer": "3420",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ELVERUM",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "AKERSHUS",
+      "fylkesnummer": "32",
+      "kommune": "ENEBAKK",
+      "kommunenummer": "3220",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ENEBAKK",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "INNLANDET",
+      "fylkesnummer": "34",
+      "kommune": "ENGERDAL",
+      "kommunenummer": "3425",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ENGERDAL",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "VESTLAND",
+      "fylkesnummer": "46",
+      "kommune": "ETNE",
+      "kommunenummer": "4611",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ETNE",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "INNLANDET",
+      "fylkesnummer": "34",
+      "kommune": "ETNEDAL",
+      "kommunenummer": "3450",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ETNEDAL",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "NORDLAND",
+      "fylkesnummer": "18",
+      "kommune": "EVENES",
+      "kommunenummer": "1853",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "EVENES",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "AGDER",
+      "fylkesnummer": "42",
+      "kommune": "EVJE OG HORNNES",
+      "kommunenummer": "4219",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "EVJE OG HORNNES",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "AGDER",
+      "fylkesnummer": "42",
+      "kommune": "FARSUND",
+      "kommunenummer": "4206",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "FARSUND",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "NORDLAND",
+      "fylkesnummer": "18",
+      "kommune": "FAUSKE",
+      "kommunenummer": "1841",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "FAUSKE",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "VESTLAND",
+      "fylkesnummer": "46",
+      "kommune": "FEDJE",
+      "kommunenummer": "4633",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "FEDJE",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "FINNMARK",
+      "fylkesnummer": "56",
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "FINNMARK",
+    "type": "FYLKE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "VESTLAND",
+      "fylkesnummer": "46",
+      "kommune": "FITJAR",
+      "kommunenummer": "4615",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "FITJAR",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "VESTLAND",
+      "fylkesnummer": "46",
+      "kommune": "FJALER",
+      "kommunenummer": "4646",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "FJALER",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "MØRE OG ROMSDAL",
+      "fylkesnummer": "15",
+      "kommune": "FJORD",
+      "kommunenummer": "1578",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "FJORD",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "NORDLAND",
+      "fylkesnummer": "18",
+      "kommune": "FLAKSTAD",
+      "kommunenummer": "1859",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "FLAKSTAD",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TRØNDELAG",
+      "fylkesnummer": "50",
+      "kommune": "FLATANGER",
+      "kommunenummer": "5049",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "FLATANGER",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "AGDER",
+      "fylkesnummer": "42",
+      "kommune": "FLEKKEFJORD",
+      "kommunenummer": "4207",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "FLEKKEFJORD",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "BUSKERUD",
+      "fylkesnummer": "33",
+      "kommune": "FLESBERG",
+      "kommunenummer": "3334",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "FLESBERG",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "BUSKERUD",
+      "fylkesnummer": "33",
+      "kommune": "FLÅ",
+      "kommunenummer": "3320",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "FLÅ",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "INNLANDET",
+      "fylkesnummer": "34",
+      "kommune": "FOLLDAL",
+      "kommunenummer": "3429",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "FOLLDAL",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "ØSTFOLD",
+      "fylkesnummer": "31",
+      "kommune": "FREDRIKSTAD",
+      "kommunenummer": "3107",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "FREDRIKSTAD",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "AKERSHUS",
+      "fylkesnummer": "32",
+      "kommune": "FROGN",
+      "kommunenummer": "3214",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "FROGN",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "AGDER",
+      "fylkesnummer": "42",
+      "kommune": "FROLAND",
+      "kommunenummer": "4214",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "FROLAND",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TRØNDELAG",
+      "fylkesnummer": "50",
+      "kommune": "FROSTA",
+      "kommunenummer": "5036",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "FROSTA",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TRØNDELAG",
+      "fylkesnummer": "50",
+      "kommune": "FRØYA",
+      "kommunenummer": "5014",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "FRØYA",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TELEMARK",
+      "fylkesnummer": "40",
+      "kommune": "FYRESDAL",
+      "kommunenummer": "4032",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "FYRESDAL",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "VESTFOLD",
+      "fylkesnummer": "39",
+      "kommune": "FÆRDER",
+      "kommunenummer": "3911",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "FÆRDER",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TROMS",
+      "fylkesnummer": "55",
+      "kommune": "GÁIVUOTNA KÅFJORD",
+      "kommunenummer": "5540",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "GÁIVUOTNA KÅFJORD",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "FINNMARK",
+      "fylkesnummer": "56",
+      "kommune": "GAMVIK",
+      "kommunenummer": "5626",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "GAMVIK",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "INNLANDET",
+      "fylkesnummer": "34",
+      "kommune": "GAUSDAL",
+      "kommunenummer": "3441",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "GAUSDAL",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "NORDLAND",
+      "fylkesnummer": "18",
+      "kommune": "GILDESKÅL",
+      "kommunenummer": "1838",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "GILDESKÅL",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "MØRE OG ROMSDAL",
+      "fylkesnummer": "15",
+      "kommune": "GISKE",
+      "kommunenummer": "1532",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "GISKE",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "MØRE OG ROMSDAL",
+      "fylkesnummer": "15",
+      "kommune": "GJEMNES",
+      "kommunenummer": "1557",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "GJEMNES",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "AKERSHUS",
+      "fylkesnummer": "32",
+      "kommune": "GJERDRUM",
+      "kommunenummer": "3230",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "GJERDRUM",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "AGDER",
+      "fylkesnummer": "42",
+      "kommune": "GJERSTAD",
+      "kommunenummer": "4211",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "GJERSTAD",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "ROGALAND",
+      "fylkesnummer": "11",
+      "kommune": "GJESDAL",
+      "kommunenummer": "1122",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "GJESDAL",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "INNLANDET",
+      "fylkesnummer": "34",
+      "kommune": "GJØVIK",
+      "kommunenummer": "3407",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "GJØVIK",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "VESTLAND",
+      "fylkesnummer": "46",
+      "kommune": "GLOPPEN",
+      "kommunenummer": "4650",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "GLOPPEN",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "BUSKERUD",
+      "fylkesnummer": "33",
+      "kommune": "GOL",
+      "kommunenummer": "3324",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "GOL",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "INNLANDET",
+      "fylkesnummer": "34",
+      "kommune": "GRAN",
+      "kommunenummer": "3446",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "GRAN",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "NORDLAND",
+      "fylkesnummer": "18",
+      "kommune": "GRANE",
+      "kommunenummer": "1825",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "GRANE",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TROMS",
+      "fylkesnummer": "55",
+      "kommune": "GRATANGEN",
+      "kommunenummer": "5516",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "GRATANGEN",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "AGDER",
+      "fylkesnummer": "42",
+      "kommune": "GRIMSTAD",
+      "kommunenummer": "4202",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "GRIMSTAD",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TRØNDELAG",
+      "fylkesnummer": "50",
+      "kommune": "GRONG",
+      "kommunenummer": "5045",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "GRONG",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "INNLANDET",
+      "fylkesnummer": "34",
+      "kommune": "GRUE",
+      "kommunenummer": "3417",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "GRUE",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "VESTLAND",
+      "fylkesnummer": "46",
+      "kommune": "GULEN",
+      "kommunenummer": "4635",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "GULEN",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "FINNMARK",
+      "fylkesnummer": "56",
+      "kommune": "GUOVDAGEAIDNU KAUTOKEINO",
+      "kommunenummer": "5612",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "GUOVDAGEAIDNU KAUTOKEINO",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "NORDLAND",
+      "fylkesnummer": "18",
+      "kommune": "HADSEL",
+      "kommunenummer": "1866",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "HADSEL",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "ØSTFOLD",
+      "fylkesnummer": "31",
+      "kommune": "HALDEN",
+      "kommunenummer": "3101",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "HALDEN",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "INNLANDET",
+      "fylkesnummer": "34",
+      "kommune": "HAMAR",
+      "kommunenummer": "3403",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "HAMAR",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "NORDLAND",
+      "fylkesnummer": "18",
+      "kommune": "HAMARØY",
+      "kommunenummer": "1875",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "HAMARØY",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "FINNMARK",
+      "fylkesnummer": "56",
+      "kommune": "HAMMERFEST",
+      "kommunenummer": "5603",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "HAMMERFEST",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "MØRE OG ROMSDAL",
+      "fylkesnummer": "15",
+      "kommune": "HARAM",
+      "kommunenummer": "1580",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "HARAM",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "MØRE OG ROMSDAL",
+      "fylkesnummer": "15",
+      "kommune": "HAREID",
+      "kommunenummer": "1517",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "HAREID",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TROMS",
+      "fylkesnummer": "55",
+      "kommune": "HARSTAD",
+      "kommunenummer": "5503",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "HARSTAD",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "FINNMARK",
+      "fylkesnummer": "56",
+      "kommune": "HASVIK",
+      "kommunenummer": "5616",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "HASVIK",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "NORDLAND",
+      "fylkesnummer": "18",
+      "kommune": "HATTFJELLDAL",
+      "kommunenummer": "1826",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "HATTFJELLDAL",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "ROGALAND",
+      "fylkesnummer": "11",
+      "kommune": "HAUGESUND",
+      "kommunenummer": "1106",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "HAUGESUND",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TRØNDELAG",
+      "fylkesnummer": "50",
+      "kommune": "HEIM",
+      "kommunenummer": "5055",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "HEIM",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "NORDLAND",
+      "fylkesnummer": "18",
+      "kommune": "HEMNES",
+      "kommunenummer": "1832",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "HEMNES",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "BUSKERUD",
+      "fylkesnummer": "33",
+      "kommune": "HEMSEDAL",
+      "kommunenummer": "3326",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "HEMSEDAL",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "MØRE OG ROMSDAL",
+      "fylkesnummer": "15",
+      "kommune": "HERØY (MØRE OG ROMSDAL)",
+      "kommunenummer": "1515",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "HERØY (MØRE OG ROMSDAL)",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "NORDLAND",
+      "fylkesnummer": "18",
+      "kommune": "HERØY (NORDLAND)",
+      "kommunenummer": "1818",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "HERØY (NORDLAND)",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TRØNDELAG",
+      "fylkesnummer": "50",
+      "kommune": "HITRA",
+      "kommunenummer": "5056",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "HITRA",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TELEMARK",
+      "fylkesnummer": "40",
+      "kommune": "HJARTDAL",
+      "kommunenummer": "4024",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "HJARTDAL",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "ROGALAND",
+      "fylkesnummer": "11",
+      "kommune": "HJELMELAND",
+      "kommunenummer": "1133",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "HJELMELAND",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "BUSKERUD",
+      "fylkesnummer": "33",
+      "kommune": "HOL",
+      "kommunenummer": "3330",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "HOL",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "BUSKERUD",
+      "fylkesnummer": "33",
+      "kommune": "HOLE",
+      "kommunenummer": "3310",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "HOLE",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "VESTFOLD",
+      "fylkesnummer": "39",
+      "kommune": "HOLMESTRAND",
+      "kommunenummer": "3903",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "HOLMESTRAND",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TRØNDELAG",
+      "fylkesnummer": "50",
+      "kommune": "HOLTÅLEN",
+      "kommunenummer": "5026",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "HOLTÅLEN",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "VESTFOLD",
+      "fylkesnummer": "39",
+      "kommune": "HORTEN",
+      "kommunenummer": "3901",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "HORTEN",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "AKERSHUS",
+      "fylkesnummer": "32",
+      "kommune": "HURDAL",
+      "kommunenummer": "3242",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "HURDAL",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "MØRE OG ROMSDAL",
+      "fylkesnummer": "15",
+      "kommune": "HUSTADVIKA",
+      "kommunenummer": "1579",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "HUSTADVIKA",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "ØSTFOLD",
+      "fylkesnummer": "31",
+      "kommune": "HVALER",
+      "kommunenummer": "3110",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "HVALER",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "VESTLAND",
+      "fylkesnummer": "46",
+      "kommune": "HYLLESTAD",
+      "kommunenummer": "4637",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "HYLLESTAD",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "AGDER",
+      "fylkesnummer": "42",
+      "kommune": "HÆGEBOSTAD",
+      "kommunenummer": "4226",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "HÆGEBOSTAD",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "VESTLAND",
+      "fylkesnummer": "46",
+      "kommune": "HØYANGER",
+      "kommunenummer": "4638",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "HØYANGER",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TRØNDELAG",
+      "fylkesnummer": "50",
+      "kommune": "HØYLANDET",
+      "kommunenummer": "5046",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "HØYLANDET",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "ROGALAND",
+      "fylkesnummer": "11",
+      "kommune": "HÅ",
+      "kommunenummer": "1119",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "HÅ",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TROMS",
+      "fylkesnummer": "55",
+      "kommune": "IBESTAD",
+      "kommunenummer": "5514",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "IBESTAD",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TRØNDELAG",
+      "fylkesnummer": "50",
+      "kommune": "INDERØY",
+      "kommunenummer": "5053",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "INDERØY",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TRØNDELAG",
+      "fylkesnummer": "50",
+      "kommune": "INDRE FOSEN",
+      "kommunenummer": "5054",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "INDRE FOSEN",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "ØSTFOLD",
+      "fylkesnummer": "31",
+      "kommune": "INDRE ØSTFOLD",
+      "kommunenummer": "3118",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "INDRE ØSTFOLD",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "INNLANDET",
+      "fylkesnummer": "34",
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "INNLANDET",
+    "type": "FYLKE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "AGDER",
+      "fylkesnummer": "42",
+      "kommune": "IVELAND",
+      "kommunenummer": "4218",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "IVELAND",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "JAN MAYEN",
+      "fylkesnummer": "22",
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "JAN MAYEN",
+    "type": "FYLKE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "JAN MAYEN",
+      "fylkesnummer": "22",
+      "kommune": "JAN MAYEN",
+      "kommunenummer": "2211",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "JAN MAYEN",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "AKERSHUS",
+      "fylkesnummer": "32",
+      "kommune": "JEVNAKER",
+      "kommunenummer": "3236",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "JEVNAKER",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "FINNMARK",
+      "fylkesnummer": "56",
+      "kommune": "KARASJOHKA KARASJOK",
+      "kommunenummer": "5610",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "KARASJOHKA KARASJOK",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TROMS",
+      "fylkesnummer": "55",
+      "kommune": "KARLSØY",
+      "kommunenummer": "5534",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "KARLSØY",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "ROGALAND",
+      "fylkesnummer": "11",
+      "kommune": "KARMØY",
+      "kommunenummer": "1149",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "KARMØY",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "VESTLAND",
+      "fylkesnummer": "46",
+      "kommune": "KINN",
+      "kommunenummer": "4602",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "KINN",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "ROGALAND",
+      "fylkesnummer": "11",
+      "kommune": "KLEPP",
+      "kommunenummer": "1120",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "KLEPP",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "BUSKERUD",
+      "fylkesnummer": "33",
+      "kommune": "KONGSBERG",
+      "kommunenummer": "3303",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "KONGSBERG",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "INNLANDET",
+      "fylkesnummer": "34",
+      "kommune": "KONGSVINGER",
+      "kommunenummer": "3401",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "KONGSVINGER",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "KONTINENTALSOKKELEN",
+      "fylkesnummer": "23",
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "KONTINENTALSOKKELEN",
+    "type": "FYLKE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TELEMARK",
+      "fylkesnummer": "40",
+      "kommune": "KRAGERØ",
+      "kommunenummer": "4014",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "KRAGERØ",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "AGDER",
+      "fylkesnummer": "42",
+      "kommune": "KRISTIANSAND",
+      "kommunenummer": "4204",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "KRISTIANSAND",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "MØRE OG ROMSDAL",
+      "fylkesnummer": "15",
+      "kommune": "KRISTIANSUND",
+      "kommunenummer": "1505",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "KRISTIANSUND",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "BUSKERUD",
+      "fylkesnummer": "33",
+      "kommune": "KRØDSHERAD",
+      "kommunenummer": "3318",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "KRØDSHERAD",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "VESTLAND",
+      "fylkesnummer": "46",
+      "kommune": "KVAM",
+      "kommunenummer": "4622",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "KVAM",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "AGDER",
+      "fylkesnummer": "42",
+      "kommune": "KVINESDAL",
+      "kommunenummer": "4227",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "KVINESDAL",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "VESTLAND",
+      "fylkesnummer": "46",
+      "kommune": "KVINNHERAD",
+      "kommunenummer": "4617",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "KVINNHERAD",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TELEMARK",
+      "fylkesnummer": "40",
+      "kommune": "KVITESEID",
+      "kommunenummer": "4028",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "KVITESEID",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "ROGALAND",
+      "fylkesnummer": "11",
+      "kommune": "KVITSØY",
+      "kommunenummer": "1144",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "KVITSØY",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TROMS",
+      "fylkesnummer": "55",
+      "kommune": "KVÆFJORD",
+      "kommunenummer": "5510",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "KVÆFJORD",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TROMS",
+      "fylkesnummer": "55",
+      "kommune": "KVÆNANGEN",
+      "kommunenummer": "5546",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "KVÆNANGEN",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "VESTFOLD",
+      "fylkesnummer": "39",
+      "kommune": "LARVIK",
+      "kommunenummer": "3909",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "LARVIK",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TROMS",
+      "fylkesnummer": "55",
+      "kommune": "LAVANGEN",
+      "kommunenummer": "5518",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "LAVANGEN",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "FINNMARK",
+      "fylkesnummer": "56",
+      "kommune": "LEBESBY",
+      "kommunenummer": "5624",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "LEBESBY",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "NORDLAND",
+      "fylkesnummer": "18",
+      "kommune": "LEIRFJORD",
+      "kommunenummer": "1822",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "LEIRFJORD",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TRØNDELAG",
+      "fylkesnummer": "50",
+      "kommune": "LEKA",
+      "kommunenummer": "5052",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "LEKA",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "INNLANDET",
+      "fylkesnummer": "34",
+      "kommune": "LESJA",
+      "kommunenummer": "3432",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "LESJA",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TRØNDELAG",
+      "fylkesnummer": "50",
+      "kommune": "LEVANGER",
+      "kommunenummer": "5037",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "LEVANGER",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "BUSKERUD",
+      "fylkesnummer": "33",
+      "kommune": "LIER",
+      "kommunenummer": "3312",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "LIER",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TRØNDELAG",
+      "fylkesnummer": "50",
+      "kommune": "LIERNE",
+      "kommunenummer": "5042",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "LIERNE",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "INNLANDET",
+      "fylkesnummer": "34",
+      "kommune": "LILLEHAMMER",
+      "kommunenummer": "3405",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "LILLEHAMMER",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "AGDER",
+      "fylkesnummer": "42",
+      "kommune": "LILLESAND",
+      "kommunenummer": "4215",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "LILLESAND",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "AKERSHUS",
+      "fylkesnummer": "32",
+      "kommune": "LILLESTRØM",
+      "kommunenummer": "3205",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "LILLESTRØM",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "AGDER",
+      "fylkesnummer": "42",
+      "kommune": "LINDESNES",
+      "kommunenummer": "4205",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "LINDESNES",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "INNLANDET",
+      "fylkesnummer": "34",
+      "kommune": "LOM",
+      "kommunenummer": "3434",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "LOM",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "FINNMARK",
+      "fylkesnummer": "56",
+      "kommune": "LOPPA",
+      "kommunenummer": "5614",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "LOPPA",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "ROGALAND",
+      "fylkesnummer": "11",
+      "kommune": "LUND",
+      "kommunenummer": "1112",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "LUND",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "AKERSHUS",
+      "fylkesnummer": "32",
+      "kommune": "LUNNER",
+      "kommunenummer": "3234",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "LUNNER",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "NORDLAND",
+      "fylkesnummer": "18",
+      "kommune": "LURØY",
+      "kommunenummer": "1834",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "LURØY",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "VESTLAND",
+      "fylkesnummer": "46",
+      "kommune": "LUSTER",
+      "kommunenummer": "4644",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "LUSTER",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "AGDER",
+      "fylkesnummer": "42",
+      "kommune": "LYNGDAL",
+      "kommunenummer": "4225",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "LYNGDAL",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TROMS",
+      "fylkesnummer": "55",
+      "kommune": "LYNGEN",
+      "kommunenummer": "5536",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "LYNGEN",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "VESTLAND",
+      "fylkesnummer": "46",
+      "kommune": "LÆRDAL",
+      "kommunenummer": "4642",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "LÆRDAL",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "NORDLAND",
+      "fylkesnummer": "18",
+      "kommune": "LØDINGEN",
+      "kommunenummer": "1851",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "LØDINGEN",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "AKERSHUS",
+      "fylkesnummer": "32",
+      "kommune": "LØRENSKOG",
+      "kommunenummer": "3222",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "LØRENSKOG",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "INNLANDET",
+      "fylkesnummer": "34",
+      "kommune": "LØTEN",
+      "kommunenummer": "3412",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "LØTEN",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TRØNDELAG",
+      "fylkesnummer": "50",
+      "kommune": "MALVIK",
+      "kommunenummer": "5031",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "MALVIK",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "ØSTFOLD",
+      "fylkesnummer": "31",
+      "kommune": "MARKER",
+      "kommunenummer": "3122",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "MARKER",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "VESTLAND",
+      "fylkesnummer": "46",
+      "kommune": "MASFJORDEN",
+      "kommunenummer": "4634",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "MASFJORDEN",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TRØNDELAG",
+      "fylkesnummer": "50",
+      "kommune": "MELHUS",
+      "kommunenummer": "5028",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "MELHUS",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "NORDLAND",
+      "fylkesnummer": "18",
+      "kommune": "MELØY",
+      "kommunenummer": "1837",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "MELØY",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TRØNDELAG",
+      "fylkesnummer": "50",
+      "kommune": "MERÅKER",
+      "kommunenummer": "5034",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "MERÅKER",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TRØNDELAG",
+      "fylkesnummer": "50",
+      "kommune": "MIDTRE GAULDAL",
+      "kommunenummer": "5027",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "MIDTRE GAULDAL",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TELEMARK",
+      "fylkesnummer": "40",
+      "kommune": "MIDT-TELEMARK",
+      "kommunenummer": "4020",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "MIDT-TELEMARK",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "VESTLAND",
+      "fylkesnummer": "46",
+      "kommune": "MODALEN",
+      "kommunenummer": "4629",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "MODALEN",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "BUSKERUD",
+      "fylkesnummer": "33",
+      "kommune": "MODUM",
+      "kommunenummer": "3316",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "MODUM",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "MØRE OG ROMSDAL",
+      "fylkesnummer": "15",
+      "kommune": "MOLDE",
+      "kommunenummer": "1506",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "MOLDE",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "NORDLAND",
+      "fylkesnummer": "18",
+      "kommune": "MOSKENES",
+      "kommunenummer": "1874",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "MOSKENES",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "ØSTFOLD",
+      "fylkesnummer": "31",
+      "kommune": "MOSS",
+      "kommunenummer": "3103",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "MOSS",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "MØRE OG ROMSDAL",
+      "fylkesnummer": "15",
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "MØRE OG ROMSDAL",
+    "type": "FYLKE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TROMS",
+      "fylkesnummer": "55",
+      "kommune": "MÅLSELV",
+      "kommunenummer": "5524",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "MÅLSELV",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "FINNMARK",
+      "fylkesnummer": "56",
+      "kommune": "MÅSØY",
+      "kommunenummer": "5618",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "MÅSØY",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TRØNDELAG",
+      "fylkesnummer": "50",
+      "kommune": "NAMSOS",
+      "kommunenummer": "5007",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "NAMSOS",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TRØNDELAG",
+      "fylkesnummer": "50",
+      "kommune": "NAMSSKOGAN",
+      "kommunenummer": "5044",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "NAMSSKOGAN",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "AKERSHUS",
+      "fylkesnummer": "32",
+      "kommune": "NANNESTAD",
+      "kommunenummer": "3238",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "NANNESTAD",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "NORDLAND",
+      "fylkesnummer": "18",
+      "kommune": "NARVIK",
+      "kommunenummer": "1806",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "NARVIK",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "AKERSHUS",
+      "fylkesnummer": "32",
+      "kommune": "NES (AKERSHUS)",
+      "kommunenummer": "3228",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "NES (AKERSHUS)",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "BUSKERUD",
+      "fylkesnummer": "33",
+      "kommune": "NESBYEN",
+      "kommunenummer": "3322",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "NESBYEN",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "NORDLAND",
+      "fylkesnummer": "18",
+      "kommune": "NESNA",
+      "kommunenummer": "1828",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "NESNA",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "AKERSHUS",
+      "fylkesnummer": "32",
+      "kommune": "NESODDEN",
+      "kommunenummer": "3212",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "NESODDEN",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TELEMARK",
+      "fylkesnummer": "40",
+      "kommune": "NISSEDAL",
+      "kommunenummer": "4030",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "NISSEDAL",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "AKERSHUS",
+      "fylkesnummer": "32",
+      "kommune": "NITTEDAL",
+      "kommunenummer": "3232",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "NITTEDAL",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TELEMARK",
+      "fylkesnummer": "40",
+      "kommune": "NOME",
+      "kommunenummer": "4018",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "NOME",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "INNLANDET",
+      "fylkesnummer": "34",
+      "kommune": "NORD-AURDAL",
+      "kommunenummer": "3451",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "NORD-AURDAL",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "INNLANDET",
+      "fylkesnummer": "34",
+      "kommune": "NORD-FRON",
+      "kommunenummer": "3436",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "NORD-FRON",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "FINNMARK",
+      "fylkesnummer": "56",
+      "kommune": "NORDKAPP",
+      "kommunenummer": "5620",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "NORDKAPP",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "NORDLAND",
+      "fylkesnummer": "18",
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "NORDLAND",
+    "type": "FYLKE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "INNLANDET",
+      "fylkesnummer": "34",
+      "kommune": "NORD-ODAL",
+      "kommunenummer": "3414",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "NORD-ODAL",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "AKERSHUS",
+      "fylkesnummer": "32",
+      "kommune": "NORDRE FOLLO",
+      "kommunenummer": "3207",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "NORDRE FOLLO",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TROMS",
+      "fylkesnummer": "55",
+      "kommune": "NORDREISA",
+      "kommunenummer": "5544",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "NORDREISA",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "INNLANDET",
+      "fylkesnummer": "34",
+      "kommune": "NORDRE LAND",
+      "kommunenummer": "3448",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "NORDRE LAND",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "BUSKERUD",
+      "fylkesnummer": "33",
+      "kommune": "NORE OG UVDAL",
+      "kommunenummer": "3338",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "NORE OG UVDAL",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TELEMARK",
+      "fylkesnummer": "40",
+      "kommune": "NOTODDEN",
+      "kommunenummer": "4005",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "NOTODDEN",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TRØNDELAG",
+      "fylkesnummer": "50",
+      "kommune": "NÆRØYSUND",
+      "kommunenummer": "5060",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "NÆRØYSUND",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TRØNDELAG",
+      "fylkesnummer": "50",
+      "kommune": "OPPDAL",
+      "kommunenummer": "5021",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "OPPDAL",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TRØNDELAG",
+      "fylkesnummer": "50",
+      "kommune": "ORKLAND",
+      "kommunenummer": "5059",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ORKLAND",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "INNLANDET",
+      "fylkesnummer": "34",
+      "kommune": "OS (INNLANDET)",
+      "kommunenummer": "3430",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "OS (INNLANDET)",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TRØNDELAG",
+      "fylkesnummer": "50",
+      "kommune": "OSEN",
+      "kommunenummer": "5020",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "OSEN",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "OSLO",
+      "fylkesnummer": "03",
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "OSLO",
+    "type": "FYLKE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "OSLO",
+      "fylkesnummer": "03",
+      "kommune": "OSLO",
+      "kommunenummer": "0301",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "OSLO",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "VESTLAND",
+      "fylkesnummer": "46",
+      "kommune": "OSTERØY",
+      "kommunenummer": "4630",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "OSTERØY",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TRØNDELAG",
+      "fylkesnummer": "50",
+      "kommune": "OVERHALLA",
+      "kommunenummer": "5047",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "OVERHALLA",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "FINNMARK",
+      "fylkesnummer": "56",
+      "kommune": "PORSANGER PORSÁNGU PORSANKI",
+      "kommunenummer": "5622",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "PORSANGER PORSÁNGU PORSANKI",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TELEMARK",
+      "fylkesnummer": "40",
+      "kommune": "PORSGRUNN",
+      "kommunenummer": "4001",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "PORSGRUNN",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "ØSTFOLD",
+      "fylkesnummer": "31",
+      "kommune": "RAKKESTAD",
+      "kommunenummer": "3120",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "RAKKESTAD",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "NORDLAND",
+      "fylkesnummer": "18",
+      "kommune": "RANA",
+      "kommunenummer": "1833",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "RANA",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "ROGALAND",
+      "fylkesnummer": "11",
+      "kommune": "RANDABERG",
+      "kommunenummer": "1127",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "RANDABERG",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "MØRE OG ROMSDAL",
+      "fylkesnummer": "15",
+      "kommune": "RAUMA",
+      "kommunenummer": "1539",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "RAUMA",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "INNLANDET",
+      "fylkesnummer": "34",
+      "kommune": "RENDALEN",
+      "kommunenummer": "3424",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "RENDALEN",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TRØNDELAG",
+      "fylkesnummer": "50",
+      "kommune": "RENNEBU",
+      "kommunenummer": "5022",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "RENNEBU",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TRØNDELAG",
+      "fylkesnummer": "50",
+      "kommune": "RINDAL",
+      "kommunenummer": "5061",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "RINDAL",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "INNLANDET",
+      "fylkesnummer": "34",
+      "kommune": "RINGEBU",
+      "kommunenummer": "3439",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "RINGEBU",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "BUSKERUD",
+      "fylkesnummer": "33",
+      "kommune": "RINGERIKE",
+      "kommunenummer": "3305",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "RINGERIKE",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "INNLANDET",
+      "fylkesnummer": "34",
+      "kommune": "RINGSAKER",
+      "kommunenummer": "3411",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "RINGSAKER",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "AGDER",
+      "fylkesnummer": "42",
+      "kommune": "RISØR",
+      "kommunenummer": "4201",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "RISØR",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "ROGALAND",
+      "fylkesnummer": "11",
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ROGALAND",
+    "type": "FYLKE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "BUSKERUD",
+      "fylkesnummer": "33",
+      "kommune": "ROLLAG",
+      "kommunenummer": "3336",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ROLLAG",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "AKERSHUS",
+      "fylkesnummer": "32",
+      "kommune": "RÆLINGEN",
+      "kommunenummer": "3224",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "RÆLINGEN",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "NORDLAND",
+      "fylkesnummer": "18",
+      "kommune": "RØDØY",
+      "kommunenummer": "1836",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "RØDØY",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TRØNDELAG",
+      "fylkesnummer": "50",
+      "kommune": "RØROS",
+      "kommunenummer": "5025",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "RØROS",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "NORDLAND",
+      "fylkesnummer": "18",
+      "kommune": "RØST",
+      "kommunenummer": "1856",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "RØST",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TRØNDELAG",
+      "fylkesnummer": "50",
+      "kommune": "RØYRVIK",
+      "kommunenummer": "5043",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "RØYRVIK",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "ØSTFOLD",
+      "fylkesnummer": "31",
+      "kommune": "RÅDE",
+      "kommunenummer": "3112",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "RÅDE",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TROMS",
+      "fylkesnummer": "55",
+      "kommune": "SALANGEN",
+      "kommunenummer": "5522",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SALANGEN",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "NORDLAND",
+      "fylkesnummer": "18",
+      "kommune": "SALTDAL",
+      "kommunenummer": "1840",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SALTDAL",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "VESTLAND",
+      "fylkesnummer": "46",
+      "kommune": "SAMNANGER",
+      "kommunenummer": "4623",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SAMNANGER",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "MØRE OG ROMSDAL",
+      "fylkesnummer": "15",
+      "kommune": "SANDE (MØRE OG ROMSDAL)",
+      "kommunenummer": "1514",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SANDE (MØRE OG ROMSDAL)",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "VESTFOLD",
+      "fylkesnummer": "39",
+      "kommune": "SANDEFJORD",
+      "kommunenummer": "3907",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SANDEFJORD",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "ROGALAND",
+      "fylkesnummer": "11",
+      "kommune": "SANDNES",
+      "kommunenummer": "1108",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SANDNES",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "ØSTFOLD",
+      "fylkesnummer": "31",
+      "kommune": "SARPSBORG",
+      "kommunenummer": "3105",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SARPSBORG",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "ROGALAND",
+      "fylkesnummer": "11",
+      "kommune": "SAUDA",
+      "kommunenummer": "1135",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SAUDA",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "INNLANDET",
+      "fylkesnummer": "34",
+      "kommune": "SEL",
+      "kommunenummer": "3437",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SEL",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TRØNDELAG",
+      "fylkesnummer": "50",
+      "kommune": "SELBU",
+      "kommunenummer": "5032",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SELBU",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TELEMARK",
+      "fylkesnummer": "40",
+      "kommune": "SELJORD",
+      "kommunenummer": "4022",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SELJORD",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TROMS",
+      "fylkesnummer": "55",
+      "kommune": "SENJA",
+      "kommunenummer": "5530",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SENJA",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "BUSKERUD",
+      "fylkesnummer": "33",
+      "kommune": "SIGDAL",
+      "kommunenummer": "3332",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SIGDAL",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TELEMARK",
+      "fylkesnummer": "40",
+      "kommune": "SILJAN",
+      "kommunenummer": "4010",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SILJAN",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "AGDER",
+      "fylkesnummer": "42",
+      "kommune": "SIRDAL",
+      "kommunenummer": "4228",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SIRDAL",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TRØNDELAG",
+      "fylkesnummer": "50",
+      "kommune": "SKAUN",
+      "kommunenummer": "5029",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SKAUN",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TELEMARK",
+      "fylkesnummer": "40",
+      "kommune": "SKIEN",
+      "kommunenummer": "4003",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SKIEN",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "ØSTFOLD",
+      "fylkesnummer": "31",
+      "kommune": "SKIPTVET",
+      "kommunenummer": "3116",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SKIPTVET",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TROMS",
+      "fylkesnummer": "55",
+      "kommune": "SKJERVØY",
+      "kommunenummer": "5542",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SKJERVØY",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "INNLANDET",
+      "fylkesnummer": "34",
+      "kommune": "SKJÅK",
+      "kommunenummer": "3433",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SKJÅK",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "MØRE OG ROMSDAL",
+      "fylkesnummer": "15",
+      "kommune": "SMØLA",
+      "kommunenummer": "1573",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SMØLA",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TRØNDELAG",
+      "fylkesnummer": "50",
+      "kommune": "SNÅSA",
+      "kommunenummer": "5041",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SNÅSA",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "VESTLAND",
+      "fylkesnummer": "46",
+      "kommune": "SOGNDAL",
+      "kommunenummer": "4640",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SOGNDAL",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "ROGALAND",
+      "fylkesnummer": "11",
+      "kommune": "SOKNDAL",
+      "kommunenummer": "1111",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SOKNDAL",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "ROGALAND",
+      "fylkesnummer": "11",
+      "kommune": "SOLA",
+      "kommunenummer": "1124",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SOLA",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "VESTLAND",
+      "fylkesnummer": "46",
+      "kommune": "SOLUND",
+      "kommunenummer": "4636",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SOLUND",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "NORDLAND",
+      "fylkesnummer": "18",
+      "kommune": "SORTLAND",
+      "kommunenummer": "1870",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SORTLAND",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "VESTLAND",
+      "fylkesnummer": "46",
+      "kommune": "STAD",
+      "kommunenummer": "4649",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "STAD",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "INNLANDET",
+      "fylkesnummer": "34",
+      "kommune": "STANGE",
+      "kommunenummer": "3413",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "STANGE",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "ROGALAND",
+      "fylkesnummer": "11",
+      "kommune": "STAVANGER",
+      "kommunenummer": "1103",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "STAVANGER",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "NORDLAND",
+      "fylkesnummer": "18",
+      "kommune": "STEIGEN",
+      "kommunenummer": "1848",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "STEIGEN",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TRØNDELAG",
+      "fylkesnummer": "50",
+      "kommune": "STEINKJER",
+      "kommunenummer": "5006",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "STEINKJER",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TRØNDELAG",
+      "fylkesnummer": "50",
+      "kommune": "STJØRDAL",
+      "kommunenummer": "5035",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "STJØRDAL",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "VESTLAND",
+      "fylkesnummer": "46",
+      "kommune": "STORD",
+      "kommunenummer": "4614",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "STORD",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "INNLANDET",
+      "fylkesnummer": "34",
+      "kommune": "STOR-ELVDAL",
+      "kommunenummer": "3423",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "STOR-ELVDAL",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TROMS",
+      "fylkesnummer": "55",
+      "kommune": "STORFJORD",
+      "kommunenummer": "5538",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "STORFJORD",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "ROGALAND",
+      "fylkesnummer": "11",
+      "kommune": "STRAND",
+      "kommunenummer": "1130",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "STRAND",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "MØRE OG ROMSDAL",
+      "fylkesnummer": "15",
+      "kommune": "STRANDA",
+      "kommunenummer": "1525",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "STRANDA",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "VESTLAND",
+      "fylkesnummer": "46",
+      "kommune": "STRYN",
+      "kommunenummer": "4651",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "STRYN",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "MØRE OG ROMSDAL",
+      "fylkesnummer": "15",
+      "kommune": "SULA",
+      "kommunenummer": "1531",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SULA",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "ROGALAND",
+      "fylkesnummer": "11",
+      "kommune": "SULDAL",
+      "kommunenummer": "1134",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SULDAL",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "MØRE OG ROMSDAL",
+      "fylkesnummer": "15",
+      "kommune": "SUNNDAL",
+      "kommunenummer": "1563",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SUNNDAL",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "VESTLAND",
+      "fylkesnummer": "46",
+      "kommune": "SUNNFJORD",
+      "kommunenummer": "4647",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SUNNFJORD",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "MØRE OG ROMSDAL",
+      "fylkesnummer": "15",
+      "kommune": "SURNADAL",
+      "kommunenummer": "1566",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SURNADAL",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "SVALBARD",
+      "fylkesnummer": "21",
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SVALBARD",
+    "type": "FYLKE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "SVALBARD",
+      "fylkesnummer": "21",
+      "kommune": "SVALBARD",
+      "kommunenummer": "2100",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SVALBARD",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "VESTLAND",
+      "fylkesnummer": "46",
+      "kommune": "SVEIO",
+      "kommunenummer": "4612",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SVEIO",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "MØRE OG ROMSDAL",
+      "fylkesnummer": "15",
+      "kommune": "SYKKYLVEN",
+      "kommunenummer": "1528",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SYKKYLVEN",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "NORDLAND",
+      "fylkesnummer": "18",
+      "kommune": "SØMNA",
+      "kommunenummer": "1812",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SØMNA",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "INNLANDET",
+      "fylkesnummer": "34",
+      "kommune": "SØNDRE LAND",
+      "kommunenummer": "3447",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SØNDRE LAND",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "INNLANDET",
+      "fylkesnummer": "34",
+      "kommune": "SØR-AURDAL",
+      "kommunenummer": "3449",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SØR-AURDAL",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "NORDLAND",
+      "fylkesnummer": "18",
+      "kommune": "SØRFOLD",
+      "kommunenummer": "1845",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SØRFOLD",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "INNLANDET",
+      "fylkesnummer": "34",
+      "kommune": "SØR-FRON",
+      "kommunenummer": "3438",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SØR-FRON",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "INNLANDET",
+      "fylkesnummer": "34",
+      "kommune": "SØR-ODAL",
+      "kommunenummer": "3415",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SØR-ODAL",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TROMS",
+      "fylkesnummer": "55",
+      "kommune": "SØRREISA",
+      "kommunenummer": "5526",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SØRREISA",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "FINNMARK",
+      "fylkesnummer": "56",
+      "kommune": "SØR-VARANGER",
+      "kommunenummer": "5605",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SØR-VARANGER",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TELEMARK",
+      "fylkesnummer": "40",
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "TELEMARK",
+    "type": "FYLKE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "ROGALAND",
+      "fylkesnummer": "11",
+      "kommune": "TIME",
+      "kommunenummer": "1121",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "TIME",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "MØRE OG ROMSDAL",
+      "fylkesnummer": "15",
+      "kommune": "TINGVOLL",
+      "kommunenummer": "1560",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "TINGVOLL",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TELEMARK",
+      "fylkesnummer": "40",
+      "kommune": "TINN",
+      "kommunenummer": "4026",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "TINN",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TROMS",
+      "fylkesnummer": "55",
+      "kommune": "TJELDSUND",
+      "kommunenummer": "5512",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "TJELDSUND",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TELEMARK",
+      "fylkesnummer": "40",
+      "kommune": "TOKKE",
+      "kommunenummer": "4034",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "TOKKE",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "INNLANDET",
+      "fylkesnummer": "34",
+      "kommune": "TOLGA",
+      "kommunenummer": "3426",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "TOLGA",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TROMS",
+      "fylkesnummer": "55",
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "TROMS",
+    "type": "FYLKE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TROMS",
+      "fylkesnummer": "55",
+      "kommune": "TROMSØ",
+      "kommunenummer": "5501",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "TROMSØ",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TRØNDELAG",
+      "fylkesnummer": "50",
+      "kommune": "TRONDHEIM",
+      "kommunenummer": "5001",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "TRONDHEIM",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "INNLANDET",
+      "fylkesnummer": "34",
+      "kommune": "TRYSIL",
+      "kommunenummer": "3421",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "TRYSIL",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "NORDLAND",
+      "fylkesnummer": "18",
+      "kommune": "TRÆNA",
+      "kommunenummer": "1835",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "TRÆNA",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TRØNDELAG",
+      "fylkesnummer": "50",
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "TRØNDELAG",
+    "type": "FYLKE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "AGDER",
+      "fylkesnummer": "42",
+      "kommune": "TVEDESTRAND",
+      "kommunenummer": "4213",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "TVEDESTRAND",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TRØNDELAG",
+      "fylkesnummer": "50",
+      "kommune": "TYDAL",
+      "kommunenummer": "5033",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "TYDAL",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "INNLANDET",
+      "fylkesnummer": "34",
+      "kommune": "TYNSET",
+      "kommunenummer": "3427",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "TYNSET",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "VESTLAND",
+      "fylkesnummer": "46",
+      "kommune": "TYSNES",
+      "kommunenummer": "4616",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "TYSNES",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "ROGALAND",
+      "fylkesnummer": "11",
+      "kommune": "TYSVÆR",
+      "kommunenummer": "1146",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "TYSVÆR",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "VESTFOLD",
+      "fylkesnummer": "39",
+      "kommune": "TØNSBERG",
+      "kommunenummer": "3905",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "TØNSBERG",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "AKERSHUS",
+      "fylkesnummer": "32",
+      "kommune": "ULLENSAKER",
+      "kommunenummer": "3209",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ULLENSAKER",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "VESTLAND",
+      "fylkesnummer": "46",
+      "kommune": "ULLENSVANG",
+      "kommunenummer": "4618",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ULLENSVANG",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "MØRE OG ROMSDAL",
+      "fylkesnummer": "15",
+      "kommune": "ULSTEIN",
+      "kommunenummer": "1516",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ULSTEIN",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "VESTLAND",
+      "fylkesnummer": "46",
+      "kommune": "ULVIK",
+      "kommunenummer": "4620",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ULVIK",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "FINNMARK",
+      "fylkesnummer": "56",
+      "kommune": "UNJARGGA NESSEBY",
+      "kommunenummer": "5636",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "UNJARGGA NESSEBY",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "ROGALAND",
+      "fylkesnummer": "11",
+      "kommune": "UTSIRA",
+      "kommunenummer": "1151",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "UTSIRA",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "FINNMARK",
+      "fylkesnummer": "56",
+      "kommune": "VADSØ",
+      "kommunenummer": "5607",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "VADSØ",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "VESTLAND",
+      "fylkesnummer": "46",
+      "kommune": "VAKSDAL",
+      "kommunenummer": "4628",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "VAKSDAL",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "AGDER",
+      "fylkesnummer": "42",
+      "kommune": "VALLE",
+      "kommunenummer": "4221",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "VALLE",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "INNLANDET",
+      "fylkesnummer": "34",
+      "kommune": "VANG",
+      "kommunenummer": "3454",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "VANG",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "MØRE OG ROMSDAL",
+      "fylkesnummer": "15",
+      "kommune": "VANYLVEN",
+      "kommunenummer": "1511",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "VANYLVEN",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "FINNMARK",
+      "fylkesnummer": "56",
+      "kommune": "VARDØ",
+      "kommunenummer": "5634",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "VARDØ",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "NORDLAND",
+      "fylkesnummer": "18",
+      "kommune": "VEFSN",
+      "kommunenummer": "1824",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "VEFSN",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "NORDLAND",
+      "fylkesnummer": "18",
+      "kommune": "VEGA",
+      "kommunenummer": "1815",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "VEGA",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "AGDER",
+      "fylkesnummer": "42",
+      "kommune": "VEGÅRSHEI",
+      "kommunenummer": "4212",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "VEGÅRSHEI",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "AGDER",
+      "fylkesnummer": "42",
+      "kommune": "VENNESLA",
+      "kommunenummer": "4223",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "VENNESLA",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TRØNDELAG",
+      "fylkesnummer": "50",
+      "kommune": "VERDAL",
+      "kommunenummer": "5038",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "VERDAL",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "AKERSHUS",
+      "fylkesnummer": "32",
+      "kommune": "VESTBY",
+      "kommunenummer": "3216",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "VESTBY",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "VESTFOLD",
+      "fylkesnummer": "39",
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "VESTFOLD",
+    "type": "FYLKE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "VESTLAND",
+      "fylkesnummer": "46",
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "VESTLAND",
+    "type": "FYLKE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "MØRE OG ROMSDAL",
+      "fylkesnummer": "15",
+      "kommune": "VESTNES",
+      "kommunenummer": "1535",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "VESTNES",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "INNLANDET",
+      "fylkesnummer": "34",
+      "kommune": "VESTRE SLIDRE",
+      "kommunenummer": "3452",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "VESTRE SLIDRE",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "INNLANDET",
+      "fylkesnummer": "34",
+      "kommune": "VESTRE TOTEN",
+      "kommunenummer": "3443",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "VESTRE TOTEN",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "NORDLAND",
+      "fylkesnummer": "18",
+      "kommune": "VESTVÅGØY",
+      "kommunenummer": "1860",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "VESTVÅGØY",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "NORDLAND",
+      "fylkesnummer": "18",
+      "kommune": "VEVELSTAD",
+      "kommunenummer": "1816",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "VEVELSTAD",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "VESTLAND",
+      "fylkesnummer": "46",
+      "kommune": "VIK",
+      "kommunenummer": "4639",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "VIK",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "ROGALAND",
+      "fylkesnummer": "11",
+      "kommune": "VINDAFJORD",
+      "kommunenummer": "1160",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "VINDAFJORD",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TELEMARK",
+      "fylkesnummer": "40",
+      "kommune": "VINJE",
+      "kommunenummer": "4036",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "VINJE",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "MØRE OG ROMSDAL",
+      "fylkesnummer": "15",
+      "kommune": "VOLDA",
+      "kommunenummer": "1577",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "VOLDA",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "VESTLAND",
+      "fylkesnummer": "46",
+      "kommune": "VOSS",
+      "kommunenummer": "4621",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "VOSS",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "NORDLAND",
+      "fylkesnummer": "18",
+      "kommune": "VÆRØY",
+      "kommunenummer": "1857",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "VÆRØY",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "NORDLAND",
+      "fylkesnummer": "18",
+      "kommune": "VÅGAN",
+      "kommunenummer": "1865",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "VÅGAN",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "INNLANDET",
+      "fylkesnummer": "34",
+      "kommune": "VÅGÅ",
+      "kommunenummer": "3435",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "VÅGÅ",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "INNLANDET",
+      "fylkesnummer": "34",
+      "kommune": "VÅLER (INNLANDET)",
+      "kommunenummer": "3419",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "VÅLER (INNLANDET)",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "ØSTFOLD",
+      "fylkesnummer": "31",
+      "kommune": "VÅLER (ØSTFOLD)",
+      "kommunenummer": "3114",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "VÅLER (ØSTFOLD)",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "NORDLAND",
+      "fylkesnummer": "18",
+      "kommune": "ØKSNES",
+      "kommunenummer": "1868",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ØKSNES",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TRØNDELAG",
+      "fylkesnummer": "50",
+      "kommune": "ØRLAND",
+      "kommunenummer": "5057",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ØRLAND",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "MØRE OG ROMSDAL",
+      "fylkesnummer": "15",
+      "kommune": "ØRSTA",
+      "kommunenummer": "1520",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ØRSTA",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "ØSTFOLD",
+      "fylkesnummer": "31",
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ØSTFOLD",
+    "type": "FYLKE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "INNLANDET",
+      "fylkesnummer": "34",
+      "kommune": "ØSTRE TOTEN",
+      "kommunenummer": "3442",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ØSTRE TOTEN",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "BUSKERUD",
+      "fylkesnummer": "33",
+      "kommune": "ØVRE EIKER",
+      "kommunenummer": "3314",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ØVRE EIKER",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "INNLANDET",
+      "fylkesnummer": "34",
+      "kommune": "ØYER",
+      "kommunenummer": "3440",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ØYER",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "VESTLAND",
+      "fylkesnummer": "46",
+      "kommune": "ØYGARDEN",
+      "kommunenummer": "4626",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ØYGARDEN",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "INNLANDET",
+      "fylkesnummer": "34",
+      "kommune": "ØYSTRE SLIDRE",
+      "kommunenummer": "3453",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ØYSTRE SLIDRE",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "TRØNDELAG",
+      "fylkesnummer": "50",
+      "kommune": "ÅFJORD",
+      "kommunenummer": "5058",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ÅFJORD",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "BUSKERUD",
+      "fylkesnummer": "33",
+      "kommune": "ÅL",
+      "kommunenummer": "3328",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ÅL",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "MØRE OG ROMSDAL",
+      "fylkesnummer": "15",
+      "kommune": "ÅLESUND",
+      "kommunenummer": "1508",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ÅLESUND",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "AGDER",
+      "fylkesnummer": "42",
+      "kommune": "ÅMLI",
+      "kommunenummer": "4217",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ÅMLI",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "INNLANDET",
+      "fylkesnummer": "34",
+      "kommune": "ÅMOT",
+      "kommunenummer": "3422",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ÅMOT",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "VESTLAND",
+      "fylkesnummer": "46",
+      "kommune": "ÅRDAL",
+      "kommunenummer": "4643",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ÅRDAL",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "AKERSHUS",
+      "fylkesnummer": "32",
+      "kommune": "ÅS",
+      "kommunenummer": "3218",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ÅS",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "AGDER",
+      "fylkesnummer": "42",
+      "kommune": "ÅSERAL",
+      "kommunenummer": "4224",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ÅSERAL",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": "INNLANDET",
+      "fylkesnummer": "34",
+      "kommune": "ÅSNES",
+      "kommunenummer": "3418",
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ÅSNES",
+    "type": "KOMMUNE"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "AFGHANISTAN",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "AFGHANISTAN",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "ALBANIA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ALBANIA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "ALGERIE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ALGERIE",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "AMERIKANSK SAMOA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "AMERIKANSK SAMOA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "ANDORRA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ANDORRA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "ANGOLA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ANGOLA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "ANGUILLA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ANGUILLA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "ANTARKTIKA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ANTARKTIKA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "ANTIGUA OG BARBUDA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ANTIGUA OG BARBUDA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "ARGENTINA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ARGENTINA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "ARMENIA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ARMENIA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "ARUBA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ARUBA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "ASERBAJDSJAN",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ASERBAJDSJAN",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "AUSTRALIA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "AUSTRALIA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "BAHAMAS",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "BAHAMAS",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "BAHRAIN",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "BAHRAIN",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "BANGLADESH",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "BANGLADESH",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "BARBADOS",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "BARBADOS",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "BELARUS",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "BELARUS",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "BELGIA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "BELGIA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "BELIZE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "BELIZE",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "BENIN",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "BENIN",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "BERMUDA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "BERMUDA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "BHUTAN",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "BHUTAN",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "BOLIVIA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "BOLIVIA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "BONAIRE, SINT EUSTATIUS OG SABA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "BONAIRE, SINT EUSTATIUS OG SABA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "BOSNIA-HERCEGOVINA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "BOSNIA-HERCEGOVINA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "BOTSWANA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "BOTSWANA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "BOUVETØYA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "BOUVETØYA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "BRASIL",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "BRASIL",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "BRUNEI",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "BRUNEI",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "BULGARIA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "BULGARIA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "BURKINA FASO",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "BURKINA FASO",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "BURUNDI",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "BURUNDI",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "CANADA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "CANADA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "CAYMANØYENE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "CAYMANØYENE",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "CHILE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "CHILE",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "CHRISTMASØYA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "CHRISTMASØYA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "COLOMBIA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "COLOMBIA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "COOKØYENE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "COOKØYENE",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "COSTA RICA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "COSTA RICA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "CUBA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "CUBA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "CURAÇAO",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "CURAÇAO",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "DANMARK",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "DANMARK",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "DE FORENTE ARABISKE EMIRATER",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "DE FORENTE ARABISKE EMIRATER",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "DE FRANSKE SØRTERRITORIER",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "DE FRANSKE SØRTERRITORIER",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "DEN DOMINIKANSKE REPUBLIKK",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "DEN DOMINIKANSKE REPUBLIKK",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "DEN SENTRALAFRIKANSKE REPUBLIKK",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "DEN SENTRALAFRIKANSKE REPUBLIKK",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "DE PALESTINSKE TERRITORIENE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "DE PALESTINSKE TERRITORIENE",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "DET BRITISKE TERRITORIET I INDIAHAVET",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "DET BRITISKE TERRITORIET I INDIAHAVET",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "DJIBOUTI",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "DJIBOUTI",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "DOMINICA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "DOMINICA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "ECUADOR",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ECUADOR",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "EGYPT",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "EGYPT",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "EKVATORIAL-GUINEA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "EKVATORIAL-GUINEA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "ELFENBENSKYSTEN",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ELFENBENSKYSTEN",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "EL SALVADOR",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "EL SALVADOR",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "ERITREA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ERITREA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "ESTLAND",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ESTLAND",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "ESWATINI",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ESWATINI",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "ETIOPIA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ETIOPIA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "FALKLANDSØYENE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "FALKLANDSØYENE",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "FIJI",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "FIJI",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "FILIPPINENE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "FILIPPINENE",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "FINLAND",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "FINLAND",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "FRANKRIKE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "FRANKRIKE",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "FRANSK GUYANA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "FRANSK GUYANA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "FRANSK POLYNESIA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "FRANSK POLYNESIA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "FÆRØYENE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "FÆRØYENE",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "GABON",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "GABON",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "GAMBIA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "GAMBIA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "GEORGIA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "GEORGIA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "GHANA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "GHANA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "GIBRALTAR",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "GIBRALTAR",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "GRENADA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "GRENADA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "GRØNLAND",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "GRØNLAND",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "GUADELOUPE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "GUADELOUPE",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "GUAM",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "GUAM",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "GUATEMALA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "GUATEMALA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "GUERNSEY",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "GUERNSEY",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "GUINEA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "GUINEA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "GUINEA-BISSAU",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "GUINEA-BISSAU",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "GUYANA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "GUYANA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "HAITI",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "HAITI",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "HEARD- OG MCDONALDØYENE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "HEARD- OG MCDONALDØYENE",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "HELLAS",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "HELLAS",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "HONDURAS",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "HONDURAS",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "HONGKONG",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "HONGKONG",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "INDIA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "INDIA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "INDONESIA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "INDONESIA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "IRAK",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "IRAK",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "IRAN",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "IRAN",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "IRLAND",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "IRLAND",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "ISLAND",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ISLAND",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "ISRAEL",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ISRAEL",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "ITALIA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ITALIA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "JAMAICA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "JAMAICA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "JAPAN",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "JAPAN",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "JEMEN",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "JEMEN",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "JERSEY",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "JERSEY",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "JOMFRUØYENE, DE AMERIKANSKE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "JOMFRUØYENE, DE AMERIKANSKE",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "JOMFRUØYENE, DE BRITISKE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "JOMFRUØYENE, DE BRITISKE",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "JORDAN",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "JORDAN",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "KAMBODSJA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "KAMBODSJA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "KAMERUN",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "KAMERUN",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "KAPP VERDE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "KAPP VERDE",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "KASAKHSTAN",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "KASAKHSTAN",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "KENYA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "KENYA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "KINA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "KINA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "KIRGISISTAN",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "KIRGISISTAN",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "KIRIBATI",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "KIRIBATI",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "KOKOSØYENE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "KOKOSØYENE",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "KOMORENE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "KOMORENE",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "KONGO, DEN DEMOKRATISKE REPUBLIKKEN",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "KONGO, DEN DEMOKRATISKE REPUBLIKKEN",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "KONGO, REPUBLIKKEN",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "KONGO, REPUBLIKKEN",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "KROATIA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "KROATIA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "KUWAIT",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "KUWAIT",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "KYPROS",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "KYPROS",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "LAOS",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "LAOS",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "LATVIA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "LATVIA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "LESOTHO",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "LESOTHO",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "LIBANON",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "LIBANON",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "LIBERIA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "LIBERIA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "LIBYA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "LIBYA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "LIECHTENSTEIN",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "LIECHTENSTEIN",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "LITAUEN",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "LITAUEN",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "LUXEMBOURG",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "LUXEMBOURG",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "MACAO",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "MACAO",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "MADAGASKAR",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "MADAGASKAR",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "MALAWI",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "MALAWI",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "MALAYSIA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "MALAYSIA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "MALDIVENE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "MALDIVENE",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "MALI",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "MALI",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "MALTA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "MALTA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "MAN",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "MAN",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "MAROKKO",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "MAROKKO",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "MARSHALLØYENE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "MARSHALLØYENE",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "MARTINIQUE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "MARTINIQUE",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "MAURITANIA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "MAURITANIA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "MAURITIUS",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "MAURITIUS",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "MAYOTTE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "MAYOTTE",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "MEXICO",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "MEXICO",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "MIKRONESIAFØDERASJONEN",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "MIKRONESIAFØDERASJONEN",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "MOLDOVA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "MOLDOVA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "MONACO",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "MONACO",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "MONGOLIA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "MONGOLIA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "MONTENEGRO",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "MONTENEGRO",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "MONTSERRAT",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "MONTSERRAT",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "MOSAMBIK",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "MOSAMBIK",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "MYANMAR",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "MYANMAR",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "NAMIBIA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "NAMIBIA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "NAURU",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "NAURU",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "NEDERLAND",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "NEDERLAND",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "NEPAL",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "NEPAL",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "NEW ZEALAND",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "NEW ZEALAND",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "NICARAGUA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "NICARAGUA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "NIGER",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "NIGER",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "NIGERIA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "NIGERIA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "NIUE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "NIUE",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "NORD-KOREA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "NORD-KOREA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "NORD-MAKEDONIA, REPUBLIKKEN",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "NORD-MAKEDONIA, REPUBLIKKEN",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "NORD-MARIANENE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "NORD-MARIANENE",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "NORFOLKØYA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "NORFOLKØYA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "NORGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "NORGE",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "NY-CALEDONIA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "NY-CALEDONIA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "OMAN",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "OMAN",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "PAKISTAN",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "PAKISTAN",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "PALAU",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "PALAU",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "PANAMA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "PANAMA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "PAPUA NY-GUINEA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "PAPUA NY-GUINEA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "PARAGUAY",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "PARAGUAY",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "PERU",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "PERU",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "PITCAIRNØYENE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "PITCAIRNØYENE",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "POLEN",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "POLEN",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "PORTUGAL",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "PORTUGAL",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "PUERTO RICO",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "PUERTO RICO",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "QATAR",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "QATAR",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "RÉUNION",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "RÉUNION",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "ROMANIA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ROMANIA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "RUSSLAND",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "RUSSLAND",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "RWANDA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "RWANDA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "SAINT-BARTHÉLEMY",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SAINT-BARTHÉLEMY",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "SAINT KITTS OG NEVIS",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SAINT KITTS OG NEVIS",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "SAINT LUCIA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SAINT LUCIA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "SAINT-MARTIN",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SAINT-MARTIN",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "SAINT-PIERRE OG MIQUELON",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SAINT-PIERRE OG MIQUELON",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "SAINT VINCENT OG GRENADINENE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SAINT VINCENT OG GRENADINENE",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "SALOMONØYENE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SALOMONØYENE",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "SAMOA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SAMOA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "SAN MARINO",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SAN MARINO",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "SÃO TOMÉ OG PRÍNCIPE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SÃO TOMÉ OG PRÍNCIPE",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "SAUDI-ARABIA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SAUDI-ARABIA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "SENEGAL",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SENEGAL",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "SERBIA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SERBIA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "SEYCHELLENE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SEYCHELLENE",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "SIERRA LEONE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SIERRA LEONE",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "SINGAPORE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SINGAPORE",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "SINT MAARTEN",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SINT MAARTEN",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "SLOVAKIA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SLOVAKIA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "SLOVENIA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SLOVENIA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "SOMALIA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SOMALIA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "SPANIA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SPANIA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "SRI LANKA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SRI LANKA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "ST. HELENA, ASCENSION OG TRISTAN DA CUNHA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ST. HELENA, ASCENSION OG TRISTAN DA CUNHA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "STORBRITANNIA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "STORBRITANNIA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "SUDAN",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SUDAN",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "SURINAM",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SURINAM",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "SVALBARD OG JAN MAYEN",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SVALBARD OG JAN MAYEN",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "SVEITS",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SVEITS",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "SVERIGE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SVERIGE",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "SYRIA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SYRIA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "SØR-AFRIKA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SØR-AFRIKA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "SØR-GEORGIA OG SØR-SANDWICHØYENE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SØR-GEORGIA OG SØR-SANDWICHØYENE",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "SØR-KOREA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SØR-KOREA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "SØR-SUDAN",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "SØR-SUDAN",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "TADSJIKISTAN",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "TADSJIKISTAN",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "TAIWAN",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "TAIWAN",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "TANZANIA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "TANZANIA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "THAILAND",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "THAILAND",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "TOGO",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "TOGO",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "TOKELAU",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "TOKELAU",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "TONGA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "TONGA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "TRINIDAD OG TOBAGO",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "TRINIDAD OG TOBAGO",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "TSJAD",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "TSJAD",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "TSJEKKIA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "TSJEKKIA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "TUNISIA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "TUNISIA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "TURKMENISTAN",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "TURKMENISTAN",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "TURKS- OG CAICOSØYENE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "TURKS- OG CAICOSØYENE",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "TUVALU",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "TUVALU",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "TYRKIA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "TYRKIA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "TYSKLAND",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "TYSKLAND",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "UGANDA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "UGANDA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "UKRAINA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "UKRAINA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "UNGARN",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "UNGARN",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "URUGUAY",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "URUGUAY",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "USA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "USA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "USAS YTRE SMÅØYER",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "USAS YTRE SMÅØYER",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "USBEKISTAN",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "USBEKISTAN",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "VANUATU",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "VANUATU",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "VATIKANSTATEN",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "VATIKANSTATEN",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "VENEZUELA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "VENEZUELA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "VEST-SAHARA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "VEST-SAHARA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "VIETNAM",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "VIETNAM",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "WALLIS- OG FUTUNAØYENE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "WALLIS- OG FUTUNAØYENE",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "ZAMBIA",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ZAMBIA",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "ZIMBABWE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ZIMBABWE",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "ØSTERRIKE",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ØSTERRIKE",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "ØST-TIMOR",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ØST-TIMOR",
+    "type": "LAND"
+  },
+  {
+    "lokasjon": {
+      "adresse": null,
+      "fylke": null,
+      "fylkesnummer": null,
+      "kommune": null,
+      "kommunenummer": null,
+      "land": "ÅLAND",
+      "postnummer": null,
+      "poststed": null
+    },
+    "navn": "ÅLAND",
+    "type": "LAND"
+  }
+]

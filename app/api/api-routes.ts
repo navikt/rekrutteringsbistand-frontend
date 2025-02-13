@@ -87,6 +87,13 @@ export const PamSearchAPI: Iroute = {
   scope: '',
 };
 
+export const PamGeografiAPI: Iroute = {
+  api_route: '',
+  api_url: process.env.PAM_GEOGRAFI_URL ?? '',
+  internUrl: '/api/pam-geografi',
+  scope: '',
+};
+
 export const KandidatvarselAPI: Iroute = {
   api_route: '/api',
   api_url: process.env.KANDIDATVARSEL_API_URL ?? '',
