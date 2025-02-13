@@ -115,6 +115,7 @@ const PorteføljeTabs = ({
         Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
       ]}
       //   manglerEierskap={knyttetTilStillingOgIkkeEier}
+      //TODO
     >
       <div>tbd</div>
       {/* <VelgKontorTab søkekriterier={søkekriterier} /> */}

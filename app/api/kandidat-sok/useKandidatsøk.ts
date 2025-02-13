@@ -8,6 +8,7 @@ import { IKandidatSøkContext } from '../../kandidat-sok/KandidaSokContext';
 import { konverterStederTilNåværendeKoder } from '../../kandidat/[kandidatId]/forslag-fane/useStillingForKandidat';
 import { KandidatSøkAPI } from '../api-routes';
 import { postApiWithSchema } from '../fetcher';
+import { usePamGeografi } from '../pam-geografi/usePamGeografi';
 import { useGeografi } from '../stilling/geografi/useGeografi';
 import { kandidatSøkMock } from './mocks/kandidatsøkMock';
 import { kandidatSokSchema } from './types';
@@ -21,7 +22,8 @@ export const useKandidatsøk = (
 ) => {
   const { data: geografi, isLoading: isGeografiLoading } = useGeografi();
   const shouldFetch = !isGeografiLoading;
-
+  const geografiHook = usePamGeografi();
+  console.log('🎺 geografiHook', geografiHook);
   const kommuneKoder = kandidatSøkFilter.ønsketSted.map((sted) => {
     const kommuneMedKoder = geografi?.kommuner.find(
       (g) => g.name.toUpperCase() === sted.toUpperCase(),

@@ -1,13 +1,11 @@
 'use client';
 import { PlusCircleIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
-import { format } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 import { ArbeidsgiverDTO } from '../../../api/pam-search/underenhet/useArbeidsgiver';
 import { OpprettNyStillingDTO } from '../../../api/stilling/ny-stilling/dto';
 import { opprettNyStilling } from '../../../api/stilling/ny-stilling/opprettNyStilling';
-import { oppdaterStilling } from '../../../api/stilling/oppdater-stilling/oppdaterStilling';
 import { useApplikasjonContext } from '../../../ApplikasjonContext';
 import { Stillingskategori } from '../../stilling-typer';
 export interface OpprettStillingProps {
@@ -63,22 +61,7 @@ export const OpprettStillingKnapp: React.FC<OpprettStillingProps> = ({
 
       if (response.stilling.uuid) {
         if (erFormidling) {
-          oppdaterStilling({
-            ...response,
-            stilling: {
-              ...response.stilling,
-              status: 'ACTIVE',
-              updated: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSS"),
-              published: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSS"),
-              administration: {
-                ...response.stilling.administration,
-                status: 'DONE',
-              },
-              firstPublished: true,
-            },
-          }).then(() => {
-            router.push(`/formidlinger/${response.stilling.uuid}/rediger`);
-          });
+          router.push(`/formidlinger/${response.stilling.uuid}/rediger`);
         } else {
           router.push(`/stilling/${response.stilling.uuid}/rediger`);
         }
