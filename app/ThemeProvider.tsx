@@ -18,9 +18,13 @@ export interface ThemeProviderProps {
 }
 
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
-  const [darkMode, setLocalDarkMode] = React.useState<boolean>(
-    localStorage.getItem('darkMode') === 'true',
-  );
+  const [mounted, setMounted] = React.useState(false);
+  const [darkMode, setDarkMode] = React.useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('darkMode') === 'true';
+    }
+    return false;
+  });
 
   useEffect(() => {
     document.documentElement.style.height = '100%';
@@ -28,10 +32,16 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     document.body.style.backgroundColor = darkMode ? '#0e151f' : 'white';
   }, [darkMode]);
 
-  const setDarkMode = (val: boolean) => {
-    setLocalDarkMode(val);
-    localStorage.setItem('darkMode', JSON.stringify(val));
-  };
+  useEffect(() => {
+    localStorage.setItem('darkMode', darkMode.toString());
+    document.documentElement.classList.toggle('dark', darkMode);
+  }, [darkMode]);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
 
   return (
     <div

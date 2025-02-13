@@ -22,10 +22,18 @@ const OmStillingBoks: React.FC<OmStillingBoksProps> = ({
       <Heading size='medium' className='mb-8'>
         {tittel}
       </Heading>
-      {!innholdTopp && innhold && <div className='pb-8'>{innhold}</div>}
+      {!innholdTopp && innhold && (
+        <div className='prose max-w-none prose-ul:list-disc prose-ul:pl-6 [&_ul]:list-disc [&_ul]:pl-6 pb-8'>
+          {innhold}
+        </div>
+      )}
 
       <div className='grid grid-cols-3 gap-4 mt-4'>{gridInnhold}</div>
-      {innholdTopp && innhold && <div className='pt-14'>{innhold}</div>}
+      {innholdTopp && innhold && (
+        <div className='prose max-w-none prose-ul:list-disc prose-ul:pl-6 [&_ul]:list-disc [&_ul]:pl-6 pt-8'>
+          {innhold}
+        </div>
+      )}
       {kontaktpersoner && <Kontaktpersoner />}
     </div>
   );

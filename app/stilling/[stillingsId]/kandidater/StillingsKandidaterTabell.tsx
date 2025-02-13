@@ -167,7 +167,7 @@ const StillingsKandidaterTabell: React.FC<{
             Dato
           </Table.ColumnHeader>
           <Table.HeaderCell scope='col'>Intern status </Table.HeaderCell>
-          <Table.HeaderCell scope='col'>Utfall</Table.HeaderCell>
+          <Table.HeaderCell scope='col'>Siste hendelse</Table.HeaderCell>
           <Table.HeaderCell scope='col'></Table.HeaderCell>
         </Table.Row>
       </Table.Header>
