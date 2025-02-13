@@ -17,11 +17,11 @@ import { kandidatlisteIdMirage } from '../app/api/kandidat/useKandidatlisteId';
 import { kandidatlisteoversiktMirage } from '../app/api/kandidat/useKandidatListeoversikt';
 import { meldingsmalerMirage } from '../app/api/kandidatvarsel/hentMeldingsmaler';
 import { kandidatvarselMirage } from '../app/api/kandidatvarsel/kandidatvarsel';
+import { pamGeografiMirage } from '../app/api/pam-geografi/usePamGeografi';
 import { stillingsTittelMirage } from '../app/api/pam-ontologi/stillingsTittel/useStillingsTittel';
 import { arbeidsgiverMirage } from '../app/api/pam-search/underenhet/useArbeidsgiver';
 import { statistikkMirage } from '../app/api/statistikk/useStatistikk';
 import { postDataMirage } from '../app/api/stilling/geografi/postData/usePostData';
-import { geografiMirage } from '../app/api/stilling/geografi/useGeografi';
 import { opprettNyStillingMirage } from '../app/api/stilling/ny-stilling/opprettNyStilling';
 import { oppdaterStillingMirage } from '../app/api/stilling/oppdater-stilling/oppdaterStilling';
 import { stillingMirage } from '../app/api/stilling/rekrutteringsbistandstilling/[slug]/useStilling';
@@ -44,7 +44,6 @@ export function makeServer({ environment = 'test' } = {}) {
       brukerStandardSøkMirage(this);
       decoratorDataMirage(this);
       foresporselOmDelingAvCVStatistikkMirage(this);
-      geografiMirage(this);
       kandidagsammendragMirage(this);
       kandidatinformasjonMirage(this);
       kandidatlisteIdMirage(this);
@@ -65,7 +64,7 @@ export function makeServer({ environment = 'test' } = {}) {
       foresporselOmDelingAvCVMirage(this);
       synlighetsevalueringMirage(this);
       arbeidsgiverMirage(this);
-
+      pamGeografiMirage(this);
       // stillingssøk mock kan disables ved ES søk
       stillingssøkMirage(this);
       this.passthrough('*');

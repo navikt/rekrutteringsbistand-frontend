@@ -1,22 +1,27 @@
 import { UNSAFE_Combobox } from '@navikt/ds-react';
 import * as React from 'react';
-import { useGeografi } from '../../../../api/stilling/geografi/useGeografi';
+import { usePamGeografi } from '../../../../api/pam-geografi/usePamGeografi';
 import { useKandidatSøkFilter } from '../../../KandidaSokContext';
+import {
+  storBokstavSted,
+  storForbokstav,
+  storForbokstavString,
+} from '../../../util';
 
 const KandidatStedSøk: React.FC = () => {
   const { ønsketSted, setØnsketSted } = useKandidatSøkFilter();
 
   const [valg, setValg] = React.useState<string[]>([]);
 
-  const geografi = useGeografi();
+  const geografi = usePamGeografi();
 
   React.useEffect(() => {
     if (geografi.data) {
-      const kommuner = geografi.data.kommuner.map((k) => k.capitalizedName);
-      const fylker = geografi.data.fylker.map((f) => f.capitalizedName);
-      const land = geografi.data.land?.map((l) => l.capitalizedName) ?? [];
+      const uniqueValg = geografi.data.map(
+        (geoagrafi) =>
+          `${storBokstavSted(geoagrafi.navn)} (${storForbokstavString(geoagrafi.type)})`,
+      );
 
-      const uniqueValg = Array.from(new Set([...kommuner, ...fylker, ...land]));
       setValg(uniqueValg);
     }
   }, [geografi.data]);

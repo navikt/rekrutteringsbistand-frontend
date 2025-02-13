@@ -10,30 +10,34 @@ import lokasjonerMock from './lokasjoner.mock.json';
 
 const pamGeografiEndepunkt = '/api/pam-geografi';
 
-const PamGeografiSchema = z.array(
-  z.object({
-    navn: z.string(),
-    type: z.string(),
-    lokasjon: z.object({
-      adresse: z.string().nullable(),
-      postnummer: z.string().nullable(),
-      poststed: z.string().nullable(),
-      fylke: z.string().nullable(),
-      fylkesnummer: z.string().nullable(),
-      kommune: z.string().nullable(),
-      kommunenummer: z.string().nullable(),
-      land: z.string().nullable(),
-    }),
+export enum GeografiType {
+  KOMMUNE = 'KOMMUNE',
+  LAND = 'LAND',
+  FYLKE = 'FYLKE',
+}
+
+const PamGeografiSchema = z.object({
+  navn: z.string(),
+  type: z.nativeEnum(GeografiType),
+  lokasjon: z.object({
+    adresse: z.string().nullable(),
+    postnummer: z.string().nullable(),
+    poststed: z.string().nullable(),
+    fylke: z.string().nullable(),
+    fylkesnummer: z.string().nullable(),
+    kommune: z.string().nullable(),
+    kommunenummer: z.string().nullable(),
+    land: z.string().nullable(),
   }),
-);
+});
+const PamGeografiSchemaDTO = z.array(PamGeografiSchema);
 
-export type usePamGeografiDTO = z.infer<typeof PamGeografiSchema>;
+export type PamGeografi = z.infer<typeof PamGeografiSchema>;
 
-//TODO Ta i bruk som ny geografi hook
 export const usePamGeografi = () =>
-  useSWRImmutable(pamGeografiEndepunkt, getAPIwithSchema(PamGeografiSchema));
+  useSWRImmutable(pamGeografiEndepunkt, getAPIwithSchema(PamGeografiSchemaDTO));
 
-export const stillingsTittelMirage = (server: any) =>
+export const pamGeografiMirage = (server: any) =>
   server.get(pamGeografiEndepunkt, () => {
     return lokasjonerMock;
   });

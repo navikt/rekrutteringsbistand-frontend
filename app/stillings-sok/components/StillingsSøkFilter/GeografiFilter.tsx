@@ -1,46 +1,19 @@
 import * as React from 'react';
-import { z } from 'zod';
-import {
-  fylkeSchema,
-  kommuneSchema,
-  landSchema,
-} from '../../../api/stilling/geografi/geografi.dto';
-import { useGeografi } from '../../../api/stilling/geografi/useGeografi';
+import { usePamGeografi } from '../../../api/pam-geografi/usePamGeografi';
 import SWRLaster from '../../../components/SWRLaster';
 import FylkerOgKommuner from './FylkerOgKommunerFilter';
-
 export interface IGeografiFilter {
   children?: React.ReactNode | undefined;
 }
 
-export type KommuneDTO = z.infer<typeof kommuneSchema>;
-export type FylkeDTO = z.infer<typeof fylkeSchema>;
-export type LandDTO = z.infer<typeof landSchema>;
-export interface FylkeMedKommuneDTO extends FylkeDTO {
-  kommuner: KommuneDTO[] | undefined;
-}
 const GeografiFilter: React.FC<IGeografiFilter> = ({ children }) => {
-  const geografiHook = useGeografi();
+  const geografiHook = usePamGeografi();
   return (
     <SWRLaster hooks={[geografiHook]}>
       {(data) => {
-        const fylkerMedKommuner = data.fylker
-          ?.map((fylke: FylkeDTO) => {
-            return {
-              ...fylke,
-              kommuner: data.kommuner
-                ?.filter((kommune: KommuneDTO) => {
-                  return fylke.code === kommune.countyCode;
-                })
-                .sort((a: KommuneDTO, b: KommuneDTO) =>
-                  a.name.localeCompare(b.name),
-                ),
-            };
-          })
-          .sort((a: FylkeDTO, b: FylkeDTO) => a.name.localeCompare(b.name));
         return (
           <div>
-            <FylkerOgKommuner fylkerMedKommuner={fylkerMedKommuner} />
+            <FylkerOgKommuner geografi={data} />
           </div>
         );
       }}

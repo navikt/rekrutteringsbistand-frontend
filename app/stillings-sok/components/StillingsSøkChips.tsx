@@ -1,6 +1,9 @@
 import { Chips } from '@navikt/ds-react';
 import * as React from 'react';
-import { useGeografi } from '../../api/stilling/geografi/useGeografi';
+import {
+  GeografiType,
+  usePamGeografi,
+} from '../../api/pam-geografi/usePamGeografi';
 import FilterChip from '../../components/FilterChip';
 import TømFiltre from '../../components/TømFiltre';
 import { storForbokstavString } from '../../kandidat-sok/util';
@@ -17,15 +20,19 @@ const StillingsSøkChips: React.FC<{ kandidatId?: string }> = ({
 }) => {
   const filter = useStillingsSøkFilter();
 
-  const { data } = useGeografi();
+  const geografi = usePamGeografi();
 
   function geografiNavn(code: string): string {
     if (code.length === 2) {
-      const region = data?.fylker.find((r) => r.code === code);
-      return region ? region.capitalizedName : '';
+      const region = geografi.data
+        ?.filter((g) => g.type === GeografiType.FYLKE)
+        .find((r) => r.lokasjon.fylkesnummer === code);
+      return region ? region.navn : '';
     } else {
-      const region = data?.kommuner.find((r) => r.code === code);
-      return region ? region.capitalizedName : '';
+      const region = geografi.data
+        ?.filter((g) => g.type === GeografiType.KOMMUNE)
+        .find((r) => r.lokasjon.kommunenummer === code);
+      return region ? region.navn : '';
     }
   }
 

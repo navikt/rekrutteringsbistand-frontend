@@ -4,7 +4,6 @@
  */
 import useSWRImmutable from 'swr/immutable';
 import { postApiWithSchema } from '../fetcher';
-import { useGeografi } from '../stilling/geografi/useGeografi';
 
 import { StillingsSøkAPI } from '../api-routes';
 import { mockStillingssøk } from './mocks/mockStillingssøk';
@@ -13,7 +12,7 @@ import {
   generateElasticSearchQuery,
   StillingsSøkFilter,
 } from './stillingssøkElasticSearchQuery';
-
+import { usePamGeografi } from '../pam-geografi/usePamGeografi';
 const stillingsSøkEndepunkt = StillingsSøkAPI.internUrl;
 
 export const useStillingssøk = (
@@ -21,7 +20,7 @@ export const useStillingssøk = (
   navIdent?: string,
   formidlinger?: boolean,
 ) => {
-  const geografiData = useGeografi();
+  const geografiData = usePamGeografi();
 
   const payload = generateElasticSearchQuery(
     filter,
