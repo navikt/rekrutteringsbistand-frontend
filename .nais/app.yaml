@@ -42,6 +42,8 @@ spec:
           namespace: teampam
         - application: pam-search-api
           namespace: teampam
+        - application: pam-geografi
+          namespace: teampam
       external:
         - host: {{ statistikkApiHost }}
         - host: {{ foresporselOmDelingAvCvApiHost }}
