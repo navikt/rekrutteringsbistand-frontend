@@ -1,6 +1,6 @@
 'use client';
 import { useParams } from 'next/navigation';
-import { usePamGeografi } from '../../../api/pam-geografi/usePamGeografi';
+import { usePamGeografi } from '../../../api/pam-geografi/typehead/lokasjoner/usePamGeografi';
 import { useStilling } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/useStilling';
 import Sidelaster from '../../../components/Sidelaster';
 import KandidatTilStilling from './KandidatTilStilling';

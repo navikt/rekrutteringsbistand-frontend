@@ -5,7 +5,7 @@ import React from 'react';
 import {
   GeografiType,
   PamGeografi,
-} from '../../../api/pam-geografi/usePamGeografi';
+} from '../../../api/pam-geografi/typehead/lokasjoner/usePamGeografi';
 import { storBokstavSted } from '../../../kandidat-sok/util';
 import { useStillingsSøkFilter } from '../../StillingsSøkContext';
 

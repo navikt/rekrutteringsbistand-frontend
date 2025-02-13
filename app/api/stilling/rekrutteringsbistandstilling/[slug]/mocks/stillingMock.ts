@@ -4,8 +4,8 @@ export const stillingMock = {
     stillingsinfoid: '5ed0c3dc-3725-4e8f-910f-ea64c64eed9c',
     eierNavident: null,
     eierNavn: null,
-    // stillingskategori: 'STILLING',
-    stillingskategori: 'FORMIDLING',
+    stillingskategori: 'STILLING',
+    // stillingskategori: 'FORMIDLING',
   },
   stilling: {
     id: 985771,

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { usePamGeografi } from '../../../api/pam-geografi/usePamGeografi';
+import { usePamGeografi } from '../../../api/pam-geografi/typehead/lokasjoner/usePamGeografi';
 import SWRLaster from '../../../components/SWRLaster';
 import FylkerOgKommuner from './FylkerOgKommunerFilter';
 export interface IGeografiFilter {

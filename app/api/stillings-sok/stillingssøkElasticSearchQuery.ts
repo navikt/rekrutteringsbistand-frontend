@@ -1,5 +1,8 @@
 import { StillingsSøkPortefølje } from '../../stillings-sok/stillingssøk-typer';
-import { GeografiType, PamGeografi } from '../pam-geografi/usePamGeografi';
+import {
+  GeografiType,
+  PamGeografi,
+} from '../pam-geografi/typehead/lokasjoner/usePamGeografi';
 import { esFritekstSøk } from './esFiltre/esFritekstSøk';
 import { esFylkerOgKommuner } from './esFiltre/esFylkerOgKommuner';
 import { esInkludering } from './esFiltre/esInkludering';

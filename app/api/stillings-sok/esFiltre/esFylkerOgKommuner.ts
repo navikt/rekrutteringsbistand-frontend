@@ -1,4 +1,7 @@
-import { GeografiType, PamGeografi } from '../../pam-geografi/usePamGeografi';
+import {
+  GeografiType,
+  PamGeografi,
+} from '../../pam-geografi/typehead/lokasjoner/usePamGeografi';
 import {
   formaterStedsnavn,
   stedmappingFraNyttNavn,

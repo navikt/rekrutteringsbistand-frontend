@@ -4,11 +4,11 @@
  */
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
-import { getAPIwithSchema } from '../fetcher';
+import { getAPIwithSchema } from '../../../fetcher';
 
 import lokasjonerMock from './lokasjoner.mock.json';
 
-const pamGeografiEndepunkt = '/api/pam-geografi';
+const pamGeografiEndepunkt = '/api/pam-geografi/typehead/lokasjoner';
 
 export enum GeografiType {
   KOMMUNE = 'KOMMUNE',

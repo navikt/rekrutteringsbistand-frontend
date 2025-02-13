@@ -8,7 +8,7 @@ import { IKandidatSøkContext } from '../../kandidat-sok/KandidaSokContext';
 import { konverterStederTilNåværendeKoder } from '../../kandidat/[kandidatId]/forslag-fane/useStillingForKandidat';
 import { KandidatSøkAPI } from '../api-routes';
 import { postApiWithSchema } from '../fetcher';
-import { usePamGeografi } from '../pam-geografi/usePamGeografi';
+import { usePamGeografi } from '../pam-geografi/typehead/lokasjoner/usePamGeografi';
 import { kandidatSøkMock } from './mocks/kandidatsøkMock';
 import { kandidatSokSchema } from './types';
 

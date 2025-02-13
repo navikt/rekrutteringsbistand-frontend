@@ -46,7 +46,6 @@ const RikTekstEditor: React.FC<IRikTekstEditor> = ({
   if (!editor) {
     return null;
   }
-  console.log(editor?.getHTML());
   return (
     <Box.New
       borderColor='neutral-subtleA'

@@ -5,7 +5,7 @@ import { useFormContext } from 'react-hook-form';
 import {
   GeografiType,
   usePamGeografi,
-} from '../../../../api/pam-geografi/usePamGeografi';
+} from '../../../../api/pam-geografi/typehead/lokasjoner/usePamGeografi';
 import { FormidlingDataForm } from '../../../../formidlinger/[stillingsId]/rediger/redigerFormidlingFormType';
 import { StillingsDataForm } from '../redigerFormType.zod';
 
@@ -70,7 +70,7 @@ const VelgKommuneFylkeEllerLand: React.FC<VelgKommuneFylkeEllerLandProps> = ({
       shouldValidate: true,
       shouldDirty: true,
     });
-  }, [valgteVerdier, setValue, geografi.data]);
+  }, [valgteVerdier, setValue, geografi.data, lokasjonsFelt]);
 
   /**
    * Oppdater søket

@@ -6,7 +6,7 @@ import {
   GeografiType,
   PamGeografi,
   usePamGeografi,
-} from '../../../../api/pam-geografi/usePamGeografi';
+} from '../../../../api/pam-geografi/typehead/lokasjoner/usePamGeografi';
 import { GeografiDTO } from '../../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 
 export interface KommuneFylkeEllerLandProps {

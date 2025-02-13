@@ -3,7 +3,7 @@ import * as React from 'react';
 import {
   GeografiType,
   usePamGeografi,
-} from '../../api/pam-geografi/usePamGeografi';
+} from '../../api/pam-geografi/typehead/lokasjoner/usePamGeografi';
 import FilterChip from '../../components/FilterChip';
 import TømFiltre from '../../components/TømFiltre';
 import { storForbokstavString } from '../../kandidat-sok/util';
