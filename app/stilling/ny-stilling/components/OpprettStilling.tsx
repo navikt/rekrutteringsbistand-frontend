@@ -1,6 +1,7 @@
 'use client';
 import { PlusCircleIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
+import { format } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 import { ArbeidsgiverDTO } from '../../../api/pam-search/underenhet/useArbeidsgiver';
@@ -67,8 +68,8 @@ export const OpprettStillingKnapp: React.FC<OpprettStillingProps> = ({
             stilling: {
               ...response.stilling,
               status: 'ACTIVE',
-              // updated: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSS"),
-              // published: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSS"),
+              updated: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSS"),
+              published: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSS"),
               administration: {
                 ...response.stilling.administration,
                 status: 'DONE',
