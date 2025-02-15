@@ -17,7 +17,7 @@ const VelgInternStatus: React.FC<VelgInternStatusProps> = ({
 
   const endreStatus = (status: Kandidatstatus) => {
     setValgtStatus(status);
-    endreKandidatStatus(kandidatlisteId, kandidatnr, valgtStatus);
+    endreKandidatStatus(kandidatlisteId, kandidatnr, status);
   };
 
   return (
