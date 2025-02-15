@@ -11,6 +11,7 @@ import KandidatHendelse, { mapToHendelser } from './KandidatHendelse';
 import KandidatHendelseTag from './KandidatHendelseTag';
 import { Kandidatstatus } from './KandidatTyper';
 import VelgInternStatus from './VelgInternStatus';
+
 export interface KandidatRadProps {
   kandidat: kandidaterSchemaDTO;
   forespørselCvForKandidat: KandidatForespurtOmDelingSchema[] | null;

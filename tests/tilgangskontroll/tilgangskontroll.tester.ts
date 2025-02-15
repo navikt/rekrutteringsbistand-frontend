@@ -151,9 +151,15 @@ export const testTilgangskontroll = (rolle: Roller) => {
           page.getByRole('button', { name: 'Avslutt' }),
         ).toBeVisible();
       });
-      test('Overta stillingen knapp', async ({ page }) => {});
+      test('Overta stillingen knapp', async ({ page }) => {
+        // TODO: Implement
+      });
       test('Viser kandidater fane', async ({ page }) => {
-        expect(page.getByRole('tab', { name: 'Kandidater' })).toBeVisible();
+        if (ARBEIDSGIVERRETTET) {
+          await expect(
+            page.getByRole('tab', { name: 'Kandidater' }),
+          ).toBeVisible();
+        }
       });
     });
   });

@@ -116,7 +116,6 @@ export function generateElasticSearchQuery(
           return kommuneErValgt || fylkeErValgtUtenKommuner;
         }) ?? [];
 
-    console.log('🎺 valgteKommuner', valgteKommuner);
     const valgteFylkerOgKommuner: PamGeografi[] = [
       ...valgteFylker,
       ...valgteKommuner,

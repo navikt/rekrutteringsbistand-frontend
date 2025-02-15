@@ -6,7 +6,7 @@ import {
   useQueryState,
 } from 'nuqs';
 import * as React from 'react';
-import { KandidatSøkPortefølje } from './components/PorteføljeTabs';
+import { KandidatSøkPortefølje } from './page';
 
 export enum KandidatSøkQueryparam {
   Fritekst = 'fritekst',
