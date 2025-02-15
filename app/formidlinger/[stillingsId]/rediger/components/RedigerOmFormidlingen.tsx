@@ -8,6 +8,7 @@ import VelgSektor from '../../../../stilling/[stillingsId]/rediger/components/pr
 import StegNavigering from '../../../../stilling/[stillingsId]/rediger/components/StegNavigering';
 import VelgArbeidssted from '../../../../stilling/[stillingsId]/rediger/components/VelgArbeidssted';
 import VelgStillingTittel from '../../../../stilling/[stillingsId]/rediger/components/VelgStillingTittel';
+import VelgArbeidsgiver from '../../../../stilling/ny-stilling/components/VelgArbeidsgiver';
 import { FormidlingDataForm } from '../redigerFormidlingFormType';
 
 export interface RedigerOmFormidlingenProps {
@@ -35,6 +36,12 @@ const RedigerOmFormidlingen: React.FC<RedigerOmFormidlingenProps> = ({
   return (
     <form onSubmit={handleStepSubmit}>
       <div className='space-y-8'>
+        <Heading size='large'>Om arbeidsgiver</Heading>
+        <VelgArbeidsgiver
+          arbeidsgiverCallback={(val) =>
+            setValue('omFormidling.organisasjon', val)
+          }
+        />
         <Heading size='large'>Om stillingen</Heading>
         <VelgStillingTittel
           categoryList={watch('omFormidling.categoryList')}

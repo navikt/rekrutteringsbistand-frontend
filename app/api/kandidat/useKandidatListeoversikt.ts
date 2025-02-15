@@ -11,7 +11,7 @@ import { kandidatHistorikkSchema } from './schema.zod';
 const kandidatListeoversiktEndepunkt = (kandidatId: string) =>
   `${KandidatAPI.internUrl}/veileder/kandidater/${kandidatId}/listeoversikt`;
 
-// ?inkluderSlettede=true ?
+// ?inkluderSlettede=true ? //TODO?
 const KandidatListeoversiktSchema = z.array(kandidatHistorikkSchema);
 
 export const useKandidatListeoversikt = (kandidatId?: string) =>

@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { LocationSchema } from '../../stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { ESStillingPropertiesSchema } from './stillingPropertiesSchema.zod';
 
 export type ESStillingSchemaDTO = z.infer<typeof ESStillingSchema>;
@@ -31,19 +32,6 @@ const ESStyrkCategorySchema = z.object({
   name: z.string(),
 });
 
-const ESLocationSchema = z.object({
-  address: z.string().nullable(),
-  postalCode: z.string().nullable(),
-  city: z.string().nullable(),
-  county: z.string().nullable(),
-  countyCode: z.string().nullable(),
-  municipal: z.string().nullable(),
-  municipalCode: z.string().nullable(),
-  latitue: z.string().nullable(), // Note: 'latitue' might be a typo for 'latitude'
-  longitude: z.string().nullable(),
-  country: z.string(),
-});
-
 export const ESStillingSchema = z.object({
   tittel: z.string(),
   uuid: z.string(),
@@ -60,7 +48,7 @@ export const ESStillingSchema = z.object({
   source: z.string(),
   medium: z.string(),
   businessName: z.string().nullable(),
-  locations: z.array(ESLocationSchema),
+  locations: z.array(LocationSchema),
   reference: z.string(),
   administration: ESAdministrationSchema.optional(),
   properties: ESStillingPropertiesSchema.optional(),

@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import {
-  GeografiSchema,
   KategoriSchema,
+  LocationSchema,
 } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 
 export const OmVirksomhetenSchema = z.object({
@@ -52,7 +52,7 @@ export const OmTilretteleggingSchema = z.object({
 });
 
 export const AdresseLokasjonSchema = z
-  .array(GeografiSchema)
+  .array(LocationSchema)
   .optional()
   .nullable()
   .refine(
@@ -73,7 +73,7 @@ export const OmStillingenSchema = z
     categoryList: z.array(KategoriSchema),
     beskrivelse: z.string().nullable(),
     adresseLokasjoner: AdresseLokasjonSchema,
-    lokasjoner: z.array(GeografiSchema).optional().nullable(),
+    lokasjoner: z.array(LocationSchema).optional().nullable(),
   })
   .refine(
     (data) => {

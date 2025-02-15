@@ -32,8 +32,9 @@ export const useArenaKandidatnr = (fødselsnummer: string | null) => {
 
 export const arenaKandidatnrMirage = (server: Server) => {
   server.post(hentArenaKandidatnrEndepunkt, () => {
-    return {
-      arenaKandidatnr: '1234567890',
-    };
+    // return {
+    //   arenaKandidatnr: '1234567890',
+    // };
+    return null;
   });
 };

@@ -1,6 +1,5 @@
 import useSWR, { SWRResponse, useSWRConfig } from 'swr';
 import { z } from 'zod';
-import { Fødselsnummer } from '../../stilling/[stillingsId]/kandidater/KandidatIKandidatlisteTyper';
 import { KandidatvarselAPI } from '../api-routes';
 import { getAPI, postApi } from '../fetcher';
 // import { fetchJson, postJson } from '../../kandidat/api/fetchUtils';
@@ -155,39 +154,9 @@ export const usePostSmsTilKandidater = () => {
     }
   };
 };
-// export const usePostSmsTilKandidater = (): (({
-//   mal,
-//   fnr,
-//   stillingId,
-// }: postSmsTilKandidaterRequest) => Promise<'ok' | 'error'>) => {
-//   const { mutate } = useSWRConfig();
-
-//   return async ({ stillingId, mal, fnr }) => {
-//     let result: 'ok' | 'error' = 'ok';
-//     try {
-//       await postApi(varselStillingEndepunkt(stillingId), {
-//         mal,
-//         fnr,
-//       });
-//     } catch (e) {
-//       console.error(e);
-//       result = 'error';
-//     }
-
-//     mutate(varselStillingEndepunkt(stillingId)).then();
-//     mutate(
-//       (key) =>
-//         key !== null &&
-//         typeof key === 'object' &&
-//         'url' in key &&
-//         key.url === varselQueryEndepunkt,
-//     ).then();
-//     return result;
-//   };
-// };
 
 export const useSendtKandidatmelding = (
-  kandidatensFnr: Fødselsnummer | null,
+  kandidatensFnr: string | null,
   stillingId: string | null,
   stillingskategori: string | null,
 ): Sms | undefined => {
@@ -199,56 +168,6 @@ export const useSendtKandidatmelding = (
   }
   return undefined;
 };
-
-// export const kandidatvarselMock = [
-//   http.post<{ stillingId: string }>(
-//     varselStillingEndepunkt(':stillingId'),
-//     () => new HttpResponse(null, { status: 201 }),
-//   ),
-
-//   http.get<{ stillingId: string }>(
-//     varselStillingEndepunkt(':stillingId'),
-//     async ({ params }) => {
-//       const { stillingId } = params;
-
-//       if (stillingId === 'minIntern') {
-//         return HttpResponse.json([
-//           {
-//             id: 'minIntern',
-//             stillingId: 'minIntern',
-//             mottakerFnr: '14114536327',
-//             avsenderNavident: mockVeileder.navIdent,
-//             opprettet: new Date().toISOString(),
-//             minsideStatus: MinsideStatus.OPPRETTET,
-//             eksternStatus: EksternStatus.VELLYKKET_SMS,
-//           },
-//         ]);
-//       }
-
-//       const sms = mockSms.filter((sms) => sms.stillingId === stillingId);
-
-//       if (!sms) {
-//         return new HttpResponse(null, { status: 404 });
-//       } else {
-//         return HttpResponse.json(sms);
-//       }
-//     },
-//   ),
-
-//   http.post<object, smserForKandidatRequest>(
-//     varselQueryEndepunkt,
-//     async ({ request }) => {
-//       const { fnr } = await request.json();
-//       const sms = mockSms.filter((sms) => sms.mottakerFnr === fnr);
-
-//       if (!sms) {
-//         return new HttpResponse(null, { status: 404 });
-//       } else {
-//         return HttpResponse.json(sms);
-//       }
-//     },
-//   ),
-// ];
 
 const smsExampleMock = [
   {

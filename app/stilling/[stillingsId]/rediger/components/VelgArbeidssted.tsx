@@ -48,7 +48,16 @@ const VelgArbeidssted: React.FC<VelgArbeidsstedProps> = ({
   const setAdresseFelt = (adresse: boolean) => {
     if (adresse) {
       setVisAdresse(adresse);
-      append({ postalCode: '' });
+      append({
+        address: '',
+        postalCode: null,
+        city: null,
+        county: null,
+        countyCode: null,
+        municipal: null,
+        municipalCode: null,
+        country: null,
+      });
     } else {
       setVisAdresse(false);
       remove();
@@ -93,7 +102,18 @@ const VelgArbeidssted: React.FC<VelgArbeidsstedProps> = ({
         <div className='my-4'>
           <Button
             variant='secondary'
-            onClick={() => append({ postalCode: '' })}
+            onClick={() =>
+              append({
+                address: null,
+                postalCode: '',
+                city: null,
+                county: null,
+                countyCode: null,
+                municipal: null,
+                municipalCode: null,
+                country: null,
+              })
+            }
             type='button'
           >
             Legg til adresse

@@ -12,40 +12,6 @@ const StillingsSøkPaginering: React.FunctionComponent<PagineringProps> = ({
 }) => {
   const filter = useStillingsSøkFilter();
 
-  // const { searchParams, navigate } = useNavigering();
-
-  // const [side, setSide] = useState<number>(hentSøkekriterier(searchParams).side);
-  // const [skalScrolleTilToppen, setSkalScrolleTilToppen] = useState<boolean>(false);
-  // const enhetstype = useEnhetstype();
-
-  // useEffect(() => {
-  //     const sidetall = hentSøkekriterier(searchParams).side;
-  //     setSide(sidetall);
-  // }, [searchParams]);
-
-  // useEffect(() => {
-  //     if (skalScrolleTilToppen) {
-  //         window.scrollTo({
-  //             top: 0,
-  //         });
-  //     }
-  // }, [side, skalScrolleTilToppen]);
-
-  // const onPageChange = (valgtSide: number) => {
-  //     setSkalScrolleTilToppen(true);
-  //     setSide(valgtSide);
-
-  //     oppdaterUrlMedParam({
-  //         navigate,
-  //         searchParams,
-  //         parameter: QueryParam.Side,
-  //         verdi: valgtSide === 1 ? null : valgtSide,
-  //         state: {
-  //             harByttetSide: true,
-  //         },
-  //     });
-  // };
-
   const antallSider = regnUtAntallSider(
     totaltAntallTreff,
     maksAntallTreffPerSøk,

@@ -19,33 +19,38 @@ const Synlighetsinfo: React.FC<SynlighetsinfoProps> = ({ fødselsnummer }) => {
           <BodyShort className='font-bold mb-2'>
             Årsaken kan være en eller flere av disse:
           </BodyShort>
-          <ul className='list-disc pl-6 space-y-2'>
-            <li>Kandidaten mangler CV eller jobbprofil.</li>
+          <ol className='list-decimal pl-6 space-y-2'>
             <li>
-              Kandidaten har ikke blitt informert om NAVs behandlingsgrunnlag
+              Personbruker mangler CV. Minimum innhold er ett yrkesønske og ett
+              geografisk sted person ønsker å jobbe.
+            </li>
+            <li>
+              Personbruker har ikke blitt informert om Navs behandlingsgrunnlag
               for deling av CV.
             </li>
             <li>
-              Kandidat har ikke valgt «Del CV». Kandidaten har tidligere
-              registrert CV, men har siden vært ute av oppfølging. Kandidaten er
-              igjen under oppfølging, men har ikke godkjent deling av CV med NAV
-              i dette nye oppfølgingsløpet. Hen må logge seg inn på
-              arbeidsplassen.no og velge Del CV. Husk å be bruker om å oppdatere
-              CV.
+              Dette kravet opptrer kun i overgangs-tilfeller hvor personbruker
+              kommer under oppfølging av Nav med en CV som hen har fra en
+              tidligere oppfølgingsperiode, eller med en CV som ble opprettet
+              før hen kom under oppfølging av Nav.
             </li>
             <li>
-              Kandidaten har personforholdet «Fritatt for kandidatsøk» i Arena.
-            </li>
-            <li>
-              Kandidaten har formidlingskode «Ikke servicebehov (ISERV)» i
+              Personbruker har personforholdet «Fritatt for kandidatsøk» i
               Arena.
             </li>
-            <li>Kandidaten har status Egen ansatt.</li>
-            <li>Kandidaten har diskresjonskode (kode 6 og 7).</li>
             <li>
-              Kandidaten er deltager i kommunalt kvalifiseringsprogram (KVP)
+              Personbruker må ha formidlingsgruppe ARBS (Arena-kode som betyr
+              «arbeidssøker»).
             </li>
-          </ul>
+            <li>Personbruker har status «Egen ansatt».</li>
+            <li>
+              Personbruker har adresseskjerming (kode 6 og 7 eller strengt
+              fortrolig utland §19).
+            </li>
+            <li>
+              Personbruker er deltager i kommunalt kvalifiseringsprogram (KVP)
+            </li>
+          </ol>
           <Button
             className='mt-4'
             onClick={() => setVisSynlighetsEvaluering(true)}

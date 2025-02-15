@@ -143,32 +143,6 @@ const RedigerFormidling: React.FC<RedigerFormidlingProps> = ({ children }) => {
       </div>
     </Box>
   );
-  // return (
-  //   <div className='flex flex-col mx-12 px-12 gap-8 w-[80%]'>
-  //     <Heading size='medium'>
-  //       Etterregistrer formidling for{' '}
-  //       {capitalizeEmployerName(stillingsData.stilling.businessName ?? '-')}(
-  //       {stillingsData.stilling?.employer?.orgnr})
-  //     </Heading>
-
-  //     <VelgStillingTittel
-  //       valgtJanzz={watch('omStillingen.janzz')}
-  //       callBack={(val) => setValue('omStillingen.janzz', val)}
-  //     />
-  //     <div>
-  //       <Heading size='medium'>Arbeidssted</Heading>
-  //       <VelgArbeidssted />
-  //     </div>
-  //     <VelgSektor />
-  //     <VelgAntallStillinger />
-  //     <VelgAnsettelsesform />
-  //     <VelgOppstartOgFrist skjulFrist />
-  //     <VelgArbeidsTid />
-  //     <Button onClick={lagreFormidling} loading={loading}>
-  //       Etterregistrer formidling
-  //     </Button>
-  //   </div>
-  // );
 };
 
 export default RedigerFormidling;

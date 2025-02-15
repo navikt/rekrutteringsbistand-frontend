@@ -1,8 +1,7 @@
 import { z } from 'zod';
 
 export type StillingsDataDTO = z.infer<typeof StillingDataSchema>;
-export type GeografiDTO = z.infer<typeof GeografiSchema>;
-export type GeografiListDTO = z.infer<typeof GeografiListSchema>;
+export type GeografiDTO = z.infer<typeof LocationSchema>;
 export type ContactSchemaDTO = z.infer<typeof ContactSchema>;
 export type CategorySchemaDTO = z.infer<typeof KategoriSchema>;
 
@@ -86,17 +85,18 @@ const ContactSchema = z.object({
   title: z.string().nullable(),
 });
 
-export const GeografiSchema = z.object({
-  address: z.string().optional().nullable(),
-  postalCode: z.string().optional().nullable(),
-  county: z.string().optional().nullable(),
-  municipal: z.string().optional().nullable(),
-  municipalCode: z.string().optional().nullable(),
-  city: z.string().optional().nullable(),
-  country: z.string().optional().nullable(),
+export const LocationSchema = z.object({
+  address: z.string().nullable(),
+  postalCode: z.string().nullable(),
+  city: z.string().nullable(),
+  county: z.string().nullable(),
+  countyCode: z.string().nullable(),
+  municipal: z.string().nullable(),
+  municipalCode: z.string().nullable(),
+  country: z.string().nullable(),
 });
 
-const GeografiListSchema = z.array(GeografiSchema);
+const LocationListSchema = z.array(LocationSchema);
 const ArbeidsgiverSchema = z.object({
   id: z.number().nullable(),
   uuid: z.string().nullable(),
@@ -106,8 +106,8 @@ const ArbeidsgiverSchema = z.object({
   updatedBy: z.string().nullable(),
   mediaList: z.array(MediaSchema).nullable(),
   contactList: z.array(ContactSchema).nullable(),
-  location: GeografiSchema.nullable(),
-  locationList: z.array(GeografiSchema).nullable(),
+  location: LocationSchema.nullable(),
+  locationList: z.array(LocationSchema).nullable(),
   properties: propertiesSchema.nullable(),
   name: z.string().nullable(),
   orgnr: z.string().nullable(),
@@ -147,8 +147,8 @@ export const StillingSchemaDTO = z.object({
   published: LocalDateTimeSchema.nullable(),
   expires: LocalDateTimeSchema.nullable(),
   employer: ArbeidsgiverSchema.nullable(),
-  location: GeografiSchema.nullable(),
-  locationList: GeografiListSchema.nullable(),
+  location: LocationSchema.nullable(),
+  locationList: LocationListSchema.nullable(),
   categoryList: z.array(KategoriSchema).nullable(),
   properties: propertiesSchema.nullable(),
   publishedByAdmin: z.string().nullable(),

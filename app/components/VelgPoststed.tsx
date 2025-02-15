@@ -1,7 +1,10 @@
 import { TrashIcon } from '@navikt/aksel-icons';
 import { Button, TextField } from '@navikt/ds-react';
 import * as React from 'react';
-import { usePamPostdata } from '../api/pam-geografi/postdata/[postnummer]/usePamPostdata';
+import {
+  PamPostdataDTO,
+  usePamPostdata,
+} from '../api/pam-geografi/postdata/[postnummer]/usePamPostdata';
 import { GeografiDTO } from '../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 
 export interface VelgPoststedProps {
@@ -23,26 +26,35 @@ const VelgPoststed: React.FC<VelgPoststedProps> = ({
 
   const hook = usePamPostdata(postNummer);
 
-  const [postSted, setPostSted] = React.useState<string>(location?.city ?? '');
+  const [valgtPoststed, setValgtPoststed] =
+    React.useState<PamPostdataDTO | null>(null);
 
   const [adresse, setAdresse] = React.useState<string>('');
 
   React.useEffect(() => {
-    if (postNummer && postSted) {
+    if (
+      valgtPoststed === null ||
+      valgtPoststed.postkode !== location.postalCode
+    ) {
       oppdater(index, {
-        postalCode: postNummer,
-        city: postSted,
+        postalCode: valgtPoststed?.postkode ?? null,
+        city: valgtPoststed?.by ?? null,
         address: adresse,
+        county: valgtPoststed?.fylke.navn ?? null,
+        countyCode: valgtPoststed?.fylke.fylkesnummer ?? null,
+        municipal: valgtPoststed?.kommune.navn ?? null,
+        municipalCode: valgtPoststed?.kommune.kommunenummer ?? null,
+        country: null,
       });
     }
-  }, [postNummer, postSted, adresse, index, oppdater]);
-
-  React.useEffect(() => {
-    if (postNummer.length === 4 && hook.data) {
-      const postSted = hook.data.korrigertNavnBy;
-      setPostSted(postSted ?? 'Ukjent poststed');
-    }
-  }, [postNummer, hook.data]);
+  }, [
+    postNummer,
+    valgtPoststed,
+    adresse,
+    index,
+    oppdater,
+    location.postalCode,
+  ]);
 
   return (
     <>
@@ -69,7 +81,11 @@ const VelgPoststed: React.FC<VelgPoststedProps> = ({
             />
           </div>
           <div className='flex-1'>
-            <TextField label='Poststed' value={postSted} readOnly />
+            <TextField
+              label='Poststed'
+              value={valgtPoststed?.korrigertNavnBy ?? ''}
+              readOnly
+            />
           </div>
           <Button
             variant='tertiary'
@@ -81,39 +97,6 @@ const VelgPoststed: React.FC<VelgPoststedProps> = ({
       </div>
     </>
   );
-
-  // return (
-  //   <UNSAFE_Combobox
-  //     toggleListButton={false}
-  //     value={søkeVerdi}
-  //     label='Velg postnummer og poststed'
-  //     isLoading={hook.isLoading}
-  //     options={filteredOptions}
-  //     shouldAutocomplete
-  //     onChange={(value) => {
-  //       setSøkeVerdi(value);
-  //     }}
-  //     isListOpen={søkeVerdi.length > 1}
-  //     onToggleSelected={(value) => {
-  //       const poststed = hook.data
-  //         ? hook.data.find((item) => item.postalCode === value)
-  //         : null;
-  //       if (poststed) {
-  //         callBack({
-  //           address: null,
-  //           postalCode: poststed.postalCode,
-  //           county: poststed.county.name,
-  //           municipal: poststed.municipality.name,
-  //           municipalCode: poststed.municipality.code,
-  //           city: poststed.city,
-  //           country: null,
-  //           latitude: null,
-  //           longitude: null,
-  //         });
-  //       }
-  //     }}
-  //   />
-  // );
 };
 
 export default VelgPoststed;

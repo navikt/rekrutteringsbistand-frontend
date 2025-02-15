@@ -9,7 +9,7 @@ const finnArbeidsgiverEndepunkt = (søkeord: string) => {
   return PamSearchAPI.internUrl + `/underenhet?q=${søkeord}`;
 };
 
-const ArbeidsgiverSchema = z.object({
+export const ArbeidsgiverSchema = z.object({
   organisasjonsnummer: z.string(),
   navn: z.string(),
   organisasjonsform: z.string(),

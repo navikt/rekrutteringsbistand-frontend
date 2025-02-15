@@ -3,10 +3,7 @@ import * as React from 'react';
 import { useForespurteOmDelingAvCv } from '../../../api/foresporsel-om-deling-av-cv/foresporsler/[slug]/useForespurteOmDelingAvCv';
 import { kandidaterSchemaDTO } from '../../../api/kandidat/schema.zod';
 import { useKandidatliste } from '../../../api/kandidat/useKandidatliste';
-import {
-  BeskjedEksternStatus,
-  useSmserForStilling,
-} from '../../../api/kandidatvarsel/kandidatvarsel';
+import { useSmserForStilling } from '../../../api/kandidatvarsel/kandidatvarsel';
 import { oppdaterStilling } from '../../../api/stilling/oppdater-stilling/oppdaterStilling';
 import { useApplikasjonContext } from '../../../ApplikasjonContext';
 import SWRLaster from '../../../components/SWRLaster';
@@ -14,12 +11,13 @@ import { storForbokstavString } from '../../../kandidat-sok/util';
 import { useStillingsContext } from '../StillingsContext';
 import DelMedArbeidsgiver from './components/DelMedArbeidsgiver/DelMedArbeidsgiver';
 import DelMedKandidatModal from './components/DelMedKandidat/DelMedKandidatModal';
+
 import {
-  TilstandPåForespørsel,
-  UtfallsEndringTyper,
-} from './components/HendelseTag';
+  aktivitetTilTekst,
+  Kandidatstatus,
+  varselTilTekst,
+} from './components/KandidatTyper';
 import SendSmsModal from './components/SendSMS/SendSmsModal';
-import { Kandidatstatus } from './KandidatIKandidatlisteTyper';
 import { useStillingsKandidaterFilter } from './StillingsKandidaterFilterContext';
 import StillingsKandidaterTabell from './StillingsKandidaterTabell';
 
@@ -154,41 +152,26 @@ const StillingsKandidater: React.FC = () => {
                 </CheckboxGroup>
                 <div className='flex flex-col gap-8'>
                   <CheckboxGroup
-                    legend='Utfalsendring'
+                    legend='Aktiviteter'
                     onChange={setHendelse}
                     defaultValue={hendelse}
                   >
-                    {Object.entries(UtfallsEndringTyper).map(([key, value]) => (
+                    {Object.entries(aktivitetTilTekst).map(([key, value]) => (
                       <Checkbox key={key} value={key}>
                         {storForbokstavString(value ?? '').replace(/_/g, ' ')}
                       </Checkbox>
                     ))}
                   </CheckboxGroup>
                   <CheckboxGroup
-                    legend='Deling av CV'
+                    legend='Varsel'
                     onChange={setHendelse}
                     defaultValue={hendelse}
                   >
-                    {Object.entries(TilstandPåForespørsel).map(
-                      ([key, value]) => (
-                        <Checkbox key={key} value={value}>
-                          {storForbokstavString(value ?? '').replace(/_/g, ' ')}
-                        </Checkbox>
-                      ),
-                    )}
-                  </CheckboxGroup>
-                  <CheckboxGroup
-                    legend='Beskjed'
-                    onChange={setHendelse}
-                    defaultValue={hendelse}
-                  >
-                    {Object.entries(BeskjedEksternStatus).map(
-                      ([key, value]) => (
-                        <Checkbox key={key} value={key}>
-                          {storForbokstavString(value ?? '').replace(/_/g, ' ')}
-                        </Checkbox>
-                      ),
-                    )}
+                    {Object.entries(varselTilTekst).map(([key, value]) => (
+                      <Checkbox key={key} value={key}>
+                        {storForbokstavString(value ?? '').replace(/_/g, ' ')}
+                      </Checkbox>
+                    ))}
                   </CheckboxGroup>
                 </div>
               </aside>

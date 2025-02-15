@@ -21,32 +21,6 @@ const PorteføljeTabs = ({
   stillingId: string | null;
 }) => {
   const { portefølje, setPortefølje } = useKandidatSøkFilter();
-  // const { søkekriterier, setSearchParam } = useSøkekriterier();
-  // const { tilgangskontrollErPå, eierSjekk } = useContext(ApplikasjonContext);
-  // const { data, isLoading: isDecoratorLoading } = useDecorator();
-  // const {
-  //     stilling: rekrutteringsbistandstilling,
-  //     isLoading: isStillingLoading,
-  //     isError: isStillingError,
-  // } = useHentStilling(stillingId);
-
-  // const erEier =
-  //     eierSjekk(rekrutteringsbistandstilling?.stilling) ||
-  //     eierSjekk(rekrutteringsbistandstilling?.stillingsinfo);
-
-  // const knyttetTilStillingOgIkkeEier = !!stillingId && !erEier;
-
-  // const velgPortefølje = (portefølje: string) => {
-  //     setSearchParam(FilterParam.Portefølje, portefølje);
-  // };
-
-  // if (isDecoratorLoading || isStillingLoading) {
-  //     return <Loader />;
-  // }
-
-  // if (isStillingError) {
-  //     return <ErrorMessage>{'Feil ved lasting av stilling'}</ErrorMessage>;
-  // }
 
   const data = {
     enheter: [],

@@ -46,20 +46,44 @@ const VelgKommuneFylkeEllerLand: React.FC<VelgKommuneFylkeEllerLandProps> = ({
         const navn = parts[0];
         const type = parts[1].replace(')', '');
 
+        const baseLocation = {
+          address: null,
+          postalCode: null,
+          city: null,
+          county: null,
+          countyCode: null,
+          municipal: null,
+          municipalCode: null,
+          country: null,
+        };
+
         if (type === 'kommune') {
           const kommune = geografi.data
             ?.filter((g) => g.type === GeografiType.KOMMUNE)
             .find((k) => k.navn.toLowerCase() === navn.toLowerCase());
           if (kommune) {
             return {
-              municipal: kommune.navn,
-              municipalCode: kommune.lokasjon.kommunenummer,
+              ...baseLocation,
+              city: kommune.lokasjon.poststed ?? null,
+              county: kommune.lokasjon.fylke ?? null,
+              countyCode: kommune.lokasjon.fylkesnummer ?? null,
+              municipal: kommune.lokasjon.kommune ?? null,
+              municipalCode: kommune.lokasjon.kommunenummer ?? null,
             };
           }
         } else if (type === 'fylke') {
-          return { county: navn };
+          const fylke = geografi.data
+            ?.filter((g) => g.type === GeografiType.FYLKE)
+            .find((k) => k.navn.toLowerCase() === navn.toLowerCase());
+          if (fylke) {
+            return {
+              ...baseLocation,
+              county: fylke.lokasjon.fylke ?? null,
+              countyCode: fylke.lokasjon.fylkesnummer ?? null,
+            };
+          }
         } else if (type === 'land') {
-          return { country: navn };
+          return { ...baseLocation, country: navn };
         }
       })
       .filter(

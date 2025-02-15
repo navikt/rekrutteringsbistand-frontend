@@ -10,7 +10,18 @@ import { KandidatSøkAPI } from '../api-routes';
 import { postApiWithSchema } from '../fetcher';
 import { usePamGeografi } from '../pam-geografi/typehead/lokasjoner/usePamGeografi';
 import { kandidatSøkMock } from './mocks/kandidatsøkMock';
-import { kandidatSokSchema } from './types';
+import { z } from 'zod';
+import { KandidatDataSchema } from './schema/cvSchema.zod';
+
+export const navigeringSchema = z.object({
+  kandidatnumre: z.array(z.string()),
+});
+
+export const kandidatSokSchema = z.object({
+  kandidater: z.array(KandidatDataSchema),
+  navigering: navigeringSchema,
+  antallTotalt: z.number(),
+});
 
 const kandidatSokEndepunkt = (type: KandidatSøkPortefølje | '*') =>
   `${KandidatSøkAPI.internUrl}/kandidatsok/${type}`;

@@ -1,8 +1,9 @@
 import { z } from 'zod';
 import { navnSchema } from '../../../api/kandidat-sok/useKandidatNavn';
+import { ArbeidsgiverSchema } from '../../../api/pam-search/underenhet/useArbeidsgiver';
 import {
-  GeografiSchema,
   KategoriSchema,
+  LocationSchema,
 } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import {
   AdresseLokasjonSchema,
@@ -15,9 +16,10 @@ export const FormidlingKandidatSchema = z.object({
 });
 
 export const OmFormidlingSchema = z.object({
+  organisasjon: ArbeidsgiverSchema,
   categoryList: z.array(KategoriSchema),
   adresseLokasjoner: AdresseLokasjonSchema,
-  lokasjoner: z.array(GeografiSchema).optional().nullable(),
+  lokasjoner: z.array(LocationSchema).optional().nullable(),
   sektor: z.string().min(1, 'Sektor må velges').nullable(),
   arbeidstidsordning: z.string().optional(),
   ansettelsesform: z
@@ -37,6 +39,9 @@ export const FormidlingFormSchema = z.object({
   omFormidling: OmFormidlingSchema,
   omTilrettelegging: OmTilretteleggingSchema,
   innspurt: z.string(),
+  reportee: z.string(),
+  navIdent: z.string(),
+  navKontor: z.string(),
 });
 
 export type FormidlingDataForm = z.infer<typeof FormidlingFormSchema>;
