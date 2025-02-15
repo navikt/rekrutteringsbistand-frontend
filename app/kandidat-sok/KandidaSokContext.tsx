@@ -6,7 +6,14 @@ import {
   useQueryState,
 } from 'nuqs';
 import * as React from 'react';
-import { KandidatSøkPortefølje } from './page';
+
+export enum KandidatSøkPortefølje {
+  MINE_BRUKERE = 'minebrukere',
+  VALGTE_KONTORER = 'valgtekontorer',
+  MINE_KONTORER = 'minekontorer',
+  MITT_KONTOR = 'mittkontor',
+  ALLE = 'alle',
+}
 
 export enum KandidatSøkQueryparam {
   Fritekst = 'fritekst',

@@ -8,8 +8,10 @@ import SWRLaster from '../components/SWRLaster';
 
 import { KandidatDataSchemaDTO } from '../api/kandidat-sok/schema/cvSchema.zod';
 import KandidatKort from './components/KandidatKort';
-import { KandidatSøkPortefølje } from './components/PorteføljeTabs';
-import { useKandidatSøkFilter } from './KandidaSokContext';
+import {
+  KandidatSøkPortefølje,
+  useKandidatSøkFilter,
+} from './KandidaSokContext';
 
 interface KandidatSøkResultatProps {
   type: KandidatSøkPortefølje;
