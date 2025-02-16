@@ -141,15 +141,27 @@ export const testTilgangskontroll = (rolle: Roller) => {
 
       test('Rediger, Dupliser og Avslutt knapp', async ({ page }) => {
         await page.goto('http://localhost:1337/stilling/minInternStilling');
-        await expect(
-          page.getByRole('button', { name: 'Rediger' }),
-        ).toBeVisible();
-        await expect(
-          page.getByRole('button', { name: 'Dupliser' }),
-        ).toBeVisible();
-        await expect(
-          page.getByRole('button', { name: 'Avslutt' }),
-        ).toBeVisible();
+        if (ARBEIDSGIVERRETTET) {
+          await expect(
+            page.getByRole('button', { name: 'Rediger' }),
+          ).toBeVisible();
+          await expect(
+            page.getByRole('button', { name: 'Dupliser' }),
+          ).toBeVisible();
+          await expect(
+            page.getByRole('button', { name: 'Avslutt' }),
+          ).toBeVisible();
+        } else {
+          await expect(
+            page.getByRole('button', { name: 'Rediger' }),
+          ).toBeHidden();
+          await expect(
+            page.getByRole('button', { name: 'Dupliser' }),
+          ).toBeHidden();
+          await expect(
+            page.getByRole('button', { name: 'Avslutt' }),
+          ).toBeHidden();
+        }
       });
       test('Overta stillingen knapp', async ({ page }) => {
         // TODO: Implement
@@ -244,12 +256,12 @@ export const testTilgangskontroll = (rolle: Roller) => {
     });
 
     test('Viser kandidat side ', async ({ page }) => {
-      const kandidatSide = page.getByTestId('kandidat-side');
+      const oversiktFane = page.getByRole('tab', { name: 'Oversikt' });
       if (ARBEIDSGIVERRETTET || JOBBSOKERRETTET) {
-        await expect(kandidatSide).toBeVisible();
+        await expect(oversiktFane).toBeVisible();
       }
       if (MODIA) {
-        await expect(kandidatSide).toBeHidden();
+        await expect(oversiktFane).toBeHidden();
       }
     });
     test('Viser aktivitetfanen inne på kandidat', async ({ page }) => {
@@ -270,7 +282,9 @@ export const testTilgangskontroll = (rolle: Roller) => {
     });
 
     test('Viser formidlinger', async ({ page }) => {
-      const formidlinger = page.getByRole('tab', { name: 'Formidlinger' });
+      const formidlinger = await page.getByRole('heading', {
+        name: 'Etterregistrering formidlinger',
+      });
 
       if (ARBEIDSGIVERRETTET || JOBBSOKERRETTET) {
         await expect(formidlinger).toBeVisible();

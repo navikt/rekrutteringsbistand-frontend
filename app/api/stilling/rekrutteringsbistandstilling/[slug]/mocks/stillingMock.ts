@@ -174,7 +174,7 @@ export const mockMinStilling = {
       comments: null,
       reportee: 'ForNavn EtterNavn',
       remarks: [],
-      navIdent: 'Z12345',
+      navIdent: 'Z993141',
     },
   },
 };

@@ -2,6 +2,7 @@
 import { Tabs } from '@navikt/ds-react';
 import * as React from 'react';
 
+import { useApplikasjonContext } from '../ApplikasjonContext';
 import { Roller } from '../components/tilgangskontroll/roller';
 import { TilgangskontrollForInnhold } from '../components/tilgangskontroll/TilgangskontrollForInnhold';
 import KandidatSøkChips from './components/KandidatSøkChips';
@@ -14,17 +15,14 @@ import ValgteKontorer from './ValgteKontorer';
 
 const KandidatSøk: React.FC = () => {
   const { portefølje, setPortefølje } = useKandidatSøkFilter();
-
-  const data = {
-    enheter: [],
-  };
+  const { valgtNavKontor, brukerData } = useApplikasjonContext();
 
   const MineBrukere = () => (
     <Tabs.Tab value={KandidatSøkPortefølje.MINE_BRUKERE} label='Mine brukere' />
   );
 
   const MittKontor = () => {
-    if (data?.enheter && data.enheter.length > 0) {
+    if (valgtNavKontor) {
       return (
         <TilgangskontrollForInnhold
           skjulVarsel
@@ -44,7 +42,7 @@ const KandidatSøk: React.FC = () => {
   };
 
   const MineKontorer = () => {
-    if (data?.enheter && data.enheter.length > 1) {
+    if (brukerData?.enheter && brukerData.enheter.length > 1) {
       return (
         <TilgangskontrollForInnhold
           skjulVarsel
