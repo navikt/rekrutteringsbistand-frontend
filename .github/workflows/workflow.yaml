@@ -11,6 +11,7 @@ jobs:
       app_name: 'rekrutteringsbistand-frontend'
       pnpm: true
       playwright: true
+      playwright-github-report: true
       dev-vars-path: '.nais/dev-gcp.json'
       prod-vars-path: '.nais/prod-gcp.json'
       deploy-to-dev-if-branch-name-is: 'dev'
