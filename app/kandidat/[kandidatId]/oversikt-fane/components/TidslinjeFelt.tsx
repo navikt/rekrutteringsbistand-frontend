@@ -1,3 +1,4 @@
+import { BodyShort, Box } from '@navikt/ds-react';
 import { differenceInMonths, differenceInYears, format } from 'date-fns';
 import { nb } from 'date-fns/locale';
 import React from 'react';
@@ -34,29 +35,31 @@ const TidslinjeFelt: React.FC<TidslinjeFeltProps> = ({
   description,
 }) => {
   return (
-    <div className='mb-6 last:mb-0 flex'>
-      <div className='w-1/3 pr-4 border-r border-gray-300'>
+    <Box.New className='mb-6 last:mb-0 flex'>
+      <Box.New className='w-1/3 pr-4 border-r border-gray-300'>
         {fagDokumentasjon ? (
-          <p className='font-medium'>Fagdokumentasjon</p>
+          <BodyShort textColor='default'>Fagdokumentasjon</BodyShort>
         ) : (
           <>
-            <p className='font-medium'>
+            <BodyShort textColor='default'>
               {startDate && endDate ? formatDateRange(startDate, endDate) : '-'}
-            </p>
-            <p className='text-sm text-gray-600'>
+            </BodyShort>
+            <BodyShort textColor='subtle' size='small'>
               {startDate && endDate
                 ? calculateDuration(startDate, endDate)
                 : 'Ingen dato oppgitt'}
-            </p>
+            </BodyShort>
           </>
         )}
-      </div>
-      <div className='w-2/3 pl-4'>
-        <p className='text-s text-gray-600'>{subtitle}</p>
-        <p className='font-medium'>{title}</p>
-        {description && <p className='mt-2 text-sm'>{description}</p>}
-      </div>
-    </div>
+      </Box.New>
+      <Box.New className='w-2/3 pl-4'>
+        <BodyShort textColor='subtle'>{subtitle}</BodyShort>
+        <BodyShort textColor='default'>{title}</BodyShort>
+        {description && (
+          <BodyShort textColor='default'>{description}</BodyShort>
+        )}
+      </Box.New>
+    </Box.New>
   );
 };
 

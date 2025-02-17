@@ -32,9 +32,9 @@ const SisteAktivitet: React.FC = () => {
                   >
                     <div>
                       {aktivitet.erMaskert ? (
-                        <span className='text-[var(--a-text-error)]'>
+                        <BodyShort className='text-[var(--a-text-error)]'>
                           Ingen tilgang
-                        </span>
+                        </BodyShort>
                       ) : (
                         <Link
                           href={`/stilling/${aktivitet.stillingId}`}

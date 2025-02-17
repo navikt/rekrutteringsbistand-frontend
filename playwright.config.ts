@@ -26,7 +26,6 @@ export default defineConfig({
     [
       'html',
       {
-        // Enable attachment support in HTML reporter
         attachments: true,
         outputFolder: 'playwright-report',
       },
@@ -39,7 +38,6 @@ export default defineConfig({
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
-    // Automatically capture screenshot on test failure
     screenshot: 'on',
   },
 
