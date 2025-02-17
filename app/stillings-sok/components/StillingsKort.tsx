@@ -47,7 +47,10 @@ const StillingsKort: React.FC<IStillingsKort> = ({
     stillingData.stillingsinfo?.stillingskategori === 'FORMIDLING';
 
   return (
-    <Box className='border rounded-lg mb-4 border-gray-300 p-4'>
+    <Box
+      className='border rounded-lg mb-4 border-gray-300 p-4'
+      data-testid='stillings-kort'
+    >
       <>
         <StillingsTag splitTags stillingsData={stillingData} />
       </>
