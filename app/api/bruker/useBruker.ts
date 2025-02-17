@@ -28,7 +28,7 @@ export const brukerMirage = (server: Server) => {
       localStorage.getItem('DEV-ROLLE') ||
       Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER;
 
-    const bruker = localStorage.getItem('DEV-BRUKER') || 'Z993141';
+    const bruker = localStorage.getItem('DEV-BRUKER') || 'TestIdent';
 
     return {
       ...brukerMock,

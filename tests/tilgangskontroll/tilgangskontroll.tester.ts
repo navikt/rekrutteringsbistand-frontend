@@ -142,7 +142,7 @@ export const testTilgangskontroll = (rolle: Roller) => {
     });
 
     test('3.1 Min Stilling', async ({ page }) => {
-      await page.goto('http://localhost:1337/stilling/minInternStilling');
+      await page.goto('http://localhost:1337/stilling/minStilling');
 
       const redigerKnapp = page.getByRole('button', { name: 'Rediger' });
       const dupliserKnapp = page.getByRole('button', { name: 'Dupliser' });

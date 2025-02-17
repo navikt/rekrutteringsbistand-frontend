@@ -5,7 +5,12 @@
 import useSWRImmutable from 'swr/immutable';
 import { StillingAPI } from '../../../api-routes';
 import { getAPIwithSchema } from '../../../fetcher';
-import { mockMinStilling, stillingMock } from './mocks/stillingMock';
+import {
+  mockBaseStilling,
+  mockEksternStilling,
+  mockMinEksternStilling,
+  mockMinStilling,
+} from './mocks/stillingMock';
 import { StillingDataSchema } from './stilling.dto';
 
 const stillingEndepunkt = (stillingsId: string) =>
@@ -18,6 +23,11 @@ export const useStilling = (stillingsId: string) =>
   );
 
 export const stillingMirage = (server: any) => {
-  server.get(stillingEndepunkt('minInternStilling'), () => mockMinStilling);
-  server.get(stillingEndepunkt('*'), () => stillingMock);
+  server.get(stillingEndepunkt('minStilling'), () => mockMinStilling);
+  server.get(stillingEndepunkt('eksternStilling'), () => mockEksternStilling);
+  server.get(
+    stillingEndepunkt('minEksternStilling'),
+    () => mockMinEksternStilling,
+  );
+  server.get(stillingEndepunkt('*'), () => mockBaseStilling);
 };

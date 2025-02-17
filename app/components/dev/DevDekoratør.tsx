@@ -16,7 +16,7 @@ const DevDekoratør: React.FC = () => {
       Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER,
   );
   const [devBruker, setDevBruker] = React.useState<string>(
-    localStorage.getItem('DEV-BRUKER') || 'Z993141',
+    localStorage.getItem('DEV-BRUKER') || 'TestIdent',
   );
 
   const setDevRolleCookie = (rolle: Roller) => {

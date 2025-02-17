@@ -36,6 +36,7 @@ const StillingSidebarKnapper: React.FC<StillingSidebarKnapperProps> = ({
   const harStillingsinfo = stillingsData.stillingsinfo !== null;
   const opprettetAvRekrutteringsbistand =
     stillingsData.stilling.createdBy === 'pam-rekrutteringsbistand';
+
   const kanOppretteKandidatliste =
     !harStillingsinfo &&
     !erEier &&
