@@ -107,7 +107,11 @@ const FormidlingInnspurt = () => {
       </Box.New>
 
       <div className='mt-8'>
-        <Button disabled variant='primary' className='w-full'>
+        <Button
+          variant='primary'
+          className='w-full'
+          onClick={() => console.log('🎺 getValues', getValues())}
+        >
           Fullfør registreringen
         </Button>
       </div>

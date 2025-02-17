@@ -96,11 +96,25 @@ export function generateElasticSearchQuery(
     const valgteKommuner =
       geografiData
         ?.filter((geografi) => geografi.type === GeografiType.KOMMUNE)
-        .filter(
-          (kommune) =>
+        .filter((kommune) => {
+          const kommuneErValgt =
             kommune.lokasjon.kommunenummer &&
-            filter?.kommuner.includes(kommune.lokasjon.kommunenummer),
-        ) ?? [];
+            filter?.kommuner.includes(kommune.lokasjon.kommunenummer);
+
+          const fylkeErValgtUtenKommuner =
+            kommune.lokasjon.fylkesnummer &&
+            valgteFylker.some(
+              (fylke) =>
+                fylke.lokasjon.fylkesnummer === kommune.lokasjon.fylkesnummer &&
+                !filter?.kommuner.some(
+                  (k) =>
+                    geografiData?.find((g) => g.lokasjon.kommunenummer === k)
+                      ?.lokasjon.fylkesnummer === fylke.lokasjon.fylkesnummer,
+                ),
+            );
+
+          return kommuneErValgt || fylkeErValgtUtenKommuner;
+        }) ?? [];
 
     const valgteFylkerOgKommuner: PamGeografi[] = [
       ...valgteFylker,

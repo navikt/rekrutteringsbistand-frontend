@@ -8,7 +8,7 @@ import {
 } from '@navikt/aksel-icons';
 import * as React from 'react';
 import { getWorkLocationsAsString } from '../../../../util/locationUtil';
-import { GeografiListDTO } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
+import { GeografiDTO } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import TekstMedIkon from '../../../components/TekstMedIkon';
 import { useStillingsContext } from '../StillingsContext';
 import OmAnnonsen from '../components/OmAnnonsen';
@@ -27,7 +27,7 @@ const OmStillingen: React.FC<{ forhåndsvisData?: boolean }> = ({
     useStillingsContext();
 
   const lokasjon = getWorkLocationsAsString(
-    stillingsData.stilling.locationList as GeografiListDTO,
+    stillingsData.stilling.locationList as GeografiDTO[],
   );
 
   const parseWorktime = (worktime: string) => {

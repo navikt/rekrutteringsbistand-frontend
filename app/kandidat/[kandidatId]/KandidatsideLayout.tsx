@@ -7,14 +7,13 @@ import {
   PhoneIcon,
 } from '@navikt/aksel-icons';
 import { differenceInYears, format } from 'date-fns';
-import Image from 'next/image';
 import * as React from 'react';
 import MineKandidater from '../../../public/ikoner/minekandidater.svg';
 import SideLayout from '../../components/layout/SideLayout';
 import SideTopBanner from '../../components/layout/SideTopBanner';
+import SVGDarkmode from '../../components/SVGDarkmode';
 import TekstMedIkon from '../../components/TekstMedIkon';
 import { useKandidatContext } from './KandidatContext';
-import SVGDarkmode from '../../components/SVGDarkmode';
 export interface KandidatSideProps {
   children?: React.ReactNode | undefined;
 }
@@ -24,7 +23,6 @@ const KandidatSideLayout: React.FC<KandidatSideProps> = ({ children }) => {
 
   return (
     <SideLayout
-      data-testid='kandidat-side'
       banner={
         <SideTopBanner
           tilbakeKnapp

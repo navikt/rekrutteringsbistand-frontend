@@ -4,6 +4,8 @@ NextJS applikasjon m/AppRoutes, "SWR hooks" for fetching av data og zod valideri
 
 ## Kom igang med utvikling
 
+Applikasjonen kjører med pnpm, har du ikke pnpm installert, se https://pnpm.io/installation
+
 `pnpm install`
 `pnpm run dev`
 

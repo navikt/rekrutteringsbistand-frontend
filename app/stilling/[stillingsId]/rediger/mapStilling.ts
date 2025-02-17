@@ -100,23 +100,16 @@ export const mapStillingTilForm = (
       lokasjoner:
         stillingsData?.stilling?.locationList
           ?.filter((item) => !item.postalCode)
-          .map((item) => {
-            if (item.municipal) {
-              return {
-                municipal: capitalize(item.municipal),
-                municipalCode: item.municipalCode,
-              };
-            }
-            if (item.county) {
-              return { county: capitalize(item.county) };
-            }
-            if (item.country) {
-              return { country: capitalize(item.country) };
-            }
-            return null;
-          })
-          .filter((item): item is NonNullable<typeof item> => item !== null) ??
-        null,
+          .map((item) => ({
+            address: null,
+            postalCode: null,
+            city: null,
+            county: item.county ? capitalize(item.county) : null,
+            countyCode: null,
+            municipal: item.municipal ? capitalize(item.municipal) : null,
+            municipalCode: item.municipalCode || null,
+            country: item.country ? capitalize(item.country) : null,
+          })) ?? null,
     },
     praktiskInfo: {
       omfangKode: stillingsData?.stilling?.properties?.extent ?? '',

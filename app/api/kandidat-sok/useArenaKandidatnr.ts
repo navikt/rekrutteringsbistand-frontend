@@ -31,9 +31,16 @@ export const useArenaKandidatnr = (fødselsnummer: string | null) => {
 };
 
 export const arenaKandidatnrMirage = (server: Server) => {
-  server.post(hentArenaKandidatnrEndepunkt, () => {
-    return {
-      arenaKandidatnr: '1234567890',
-    };
+  server.post(hentArenaKandidatnrEndepunkt, (schema, request) => {
+    const body = JSON.parse(request.requestBody);
+
+    switch (body.fodselsnummer) {
+      case '30081879652':
+        return null;
+      default:
+        return {
+          arenaKandidatnr: '1234567890',
+        };
+    }
   });
 };

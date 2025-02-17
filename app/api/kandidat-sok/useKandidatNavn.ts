@@ -34,11 +34,22 @@ export const useKandidatNavn = (fødselsnummer: string | null) => {
 };
 
 export const kandidatNavnMirage = (server: Server) => {
-  server.post(hentNavnEndepunkt, () => {
-    return {
-      fornavn: 'Heldig',
-      etternavn: 'Tomat',
-      kilde: 'REKRUTTERINGSBISTAND',
-    };
+  server.post(hentNavnEndepunkt, (schema, request) => {
+    const body = JSON.parse(request.requestBody);
+
+    switch (body.fodselsnummer) {
+      case '30081879652':
+        return {
+          fornavn: 'Usynlig',
+          etternavn: 'Tomat',
+          kilde: 'PDL',
+        };
+      default:
+        return {
+          fornavn: 'Heldig',
+          etternavn: 'Tomat',
+          kilde: 'REKRUTTERINGSBISTAND',
+        };
+    }
   });
 };

@@ -3,14 +3,27 @@
  * Endepunkt /minebrukere
  */
 import useSWRImmutable from 'swr/immutable';
-import { KandidatSøkPortefølje } from '../../kandidat-sok/components/PorteføljeTabs';
-import { IKandidatSøkContext } from '../../kandidat-sok/KandidaSokContext';
+import { z } from 'zod';
+import {
+  IKandidatSøkContext,
+  KandidatSøkPortefølje,
+} from '../../kandidat-sok/KandidaSokContext';
 import { konverterStederTilNåværendeKoder } from '../../kandidat/[kandidatId]/forslag-fane/useStillingForKandidat';
 import { KandidatSøkAPI } from '../api-routes';
 import { postApiWithSchema } from '../fetcher';
 import { usePamGeografi } from '../pam-geografi/typehead/lokasjoner/usePamGeografi';
 import { kandidatSøkMock } from './mocks/kandidatsøkMock';
-import { kandidatSokSchema } from './types';
+import { KandidatDataSchema } from './schema/cvSchema.zod';
+
+export const navigeringSchema = z.object({
+  kandidatnumre: z.array(z.string()),
+});
+
+export const kandidatSokSchema = z.object({
+  kandidater: z.array(KandidatDataSchema),
+  navigering: navigeringSchema,
+  antallTotalt: z.number(),
+});
 
 const kandidatSokEndepunkt = (type: KandidatSøkPortefølje | '*') =>
   `${KandidatSøkAPI.internUrl}/kandidatsok/${type}`;

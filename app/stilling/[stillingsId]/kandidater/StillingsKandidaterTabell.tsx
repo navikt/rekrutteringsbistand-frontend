@@ -1,5 +1,4 @@
-import { Checkbox, Link, Table, Tooltip } from '@navikt/ds-react';
-import { format } from 'date-fns';
+import { Checkbox, Table } from '@navikt/ds-react';
 import * as React from 'react';
 import {
   applySortDirection,
@@ -15,13 +14,16 @@ import {
   kandidatlisteSchemaDTO,
 } from '../../../api/kandidat/schema.zod';
 import { Sms } from '../../../api/kandidatvarsel/kandidatvarsel';
-import HendelseTag, { KandidatHendelseTyper } from './components/HendelseTag';
-import InfoOmKandidat from './components/InfoOmKandidat';
-import SletteKandidatKnapp from './components/KandidatDropdown';
-import StatusTag from './components/StatusTag';
+
+import KandidatRad from './components/KandidatRad';
+import {
+  KandidatutfallTyper,
+  UtfallsEndringTyper,
+} from './components/KandidatTyper';
 import UsynligKandidatRad from './components/UsynligKandidatRad';
-import { Kandidatstatus } from './KandidatIKandidatlisteTyper';
 import { useStillingsKandidaterFilter } from './StillingsKandidaterFilterContext';
+
+export type KandidatHendelseTyper = KandidatutfallTyper | UtfallsEndringTyper;
 
 const StillingsKandidaterTabell: React.FC<{
   markerteKandidater: kandidaterSchemaDTO[];
@@ -159,15 +161,16 @@ const StillingsKandidaterTabell: React.FC<{
           <Table.ColumnHeader sortable sortKey='etternavn' scope='col'>
             Navn
           </Table.ColumnHeader>
-          <Table.HeaderCell scope='col'>Fødselsnr.</Table.HeaderCell>
-          <Table.ColumnHeader sortable sortKey='lagtTilAv.navn' scope='col'>
+          {/* <Table.HeaderCell scope='col'>Fødselsnr.</Table.HeaderCell> */}
+          {/* <Table.ColumnHeader sortable sortKey='lagtTilAv.navn' scope='col'>
             Lagt til av
-          </Table.ColumnHeader>
+          </Table.ColumnHeader> */}
           <Table.ColumnHeader sortable sortKey='lagtTilTidspunkt' scope='col'>
             Dato
           </Table.ColumnHeader>
           <Table.HeaderCell scope='col'>Intern status </Table.HeaderCell>
-          <Table.HeaderCell scope='col'>Siste hendelse</Table.HeaderCell>
+          <Table.HeaderCell scope='col'>Siste aktivitet</Table.HeaderCell>
+          <Table.HeaderCell scope='col'>Siste varsel</Table.HeaderCell>
           <Table.HeaderCell scope='col'></Table.HeaderCell>
         </Table.Row>
       </Table.Header>
@@ -193,73 +196,16 @@ const StillingsKandidaterTabell: React.FC<{
               : null;
 
           return (
-            <Table.ExpandableRow
-              content={
-                <InfoOmKandidat
-                  beskjedForKandidat={beskjedForKandidat}
-                  forespørselCvForKandidat={forespørselCvForKandidat}
-                  innaktiv={innaktiv}
-                  kandidat={kandidat}
-                  kandidatlisteId={kandidatliste.kandidatlisteId}
-                />
-              }
-              key={i}
-              selected={markerteKandidater.includes(kandidat)}
-            >
-              <Table.DataCell>
-                <Checkbox
-                  disabled={innaktiv}
-                  hideLabel
-                  checked={markerteKandidater.includes(kandidat)}
-                  onChange={() => toggleSelectedRow(kandidat)}
-                  aria-labelledby={`id-${kandidat.fodselsnr}`}
-                >
-                  {' '}
-                </Checkbox>
-              </Table.DataCell>
-              <Table.DataCell scope='row'>
-                {innaktiv ? (
-                  <span>
-                    {kandidat.etternavn}, {kandidat.fornavn}
-                  </span>
-                ) : (
-                  <Link
-                    href={`/kandidat/${kandidat.kandidatnr}`}
-                    id={`id-${kandidat.fodselsnr}`}
-                  >
-                    {kandidat.etternavn}, {kandidat.fornavn}
-                  </Link>
-                )}
-              </Table.DataCell>
-
-              <Table.DataCell>
-                {kandidat.fodselsnr ?? 'Innaktiv'}
-              </Table.DataCell>
-              <Table.DataCell>
-                <Tooltip content={kandidat.lagtTilAv?.ident} arrow={false}>
-                  <span> {kandidat.lagtTilAv?.navn}</span>
-                </Tooltip>
-              </Table.DataCell>
-              <Table.DataCell align='right'>
-                {format(kandidat.lagtTilTidspunkt, 'dd.MM.yyyy')}
-              </Table.DataCell>
-              <Table.DataCell>
-                <StatusTag status={kandidat.status as Kandidatstatus} />
-              </Table.DataCell>
-              <Table.DataCell>
-                <HendelseTag
-                  utfall={kandidat.utfall as KandidatHendelseTyper}
-                />
-              </Table.DataCell>
-              <Table.DataCell>
-                <div className='flex items-baseline flex-end'>
-                  <SletteKandidatKnapp
-                    kandidat={kandidat}
-                    stillingsId={stillingsId}
-                  />
-                </div>
-              </Table.DataCell>
-            </Table.ExpandableRow>
+            <KandidatRad
+              key={`kandidatrad-` + i}
+              kandidatlisteId={kandidatliste.kandidatlisteId}
+              stillingsId={stillingsId}
+              markerKandidat={toggleSelectedRow}
+              markerteKandidater={markerteKandidater}
+              kandidat={kandidat}
+              forespørselCvForKandidat={forespørselCvForKandidat}
+              beskjedForKandidat={beskjedForKandidat}
+            />
           );
         })}
       </Table.Body>

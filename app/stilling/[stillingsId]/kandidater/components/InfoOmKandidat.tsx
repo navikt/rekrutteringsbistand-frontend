@@ -1,20 +1,19 @@
-import { BodyShort, Label, Link } from '@navikt/ds-react';
+import {
+  EnvelopeClosedIcon,
+  ExternalLinkIcon,
+  LocationPinIcon,
+  PersonIcon,
+  PhoneIcon,
+  TasklistIcon,
+} from '@navikt/aksel-icons';
+import { BodyShort, Box, Heading, Link } from '@navikt/ds-react';
 import { FunctionComponent } from 'react';
 import { getMiljø, Miljø } from '../../../../../util/miljø';
 import { postApi } from '../../../../api/fetcher';
-import { KandidatForespurtOmDelingSchema } from '../../../../api/foresporsel-om-deling-av-cv/foresporsler/[slug]/useForespurteOmDelingAvCv';
 import { kandidaterSchemaDTO } from '../../../../api/kandidat/schema.zod';
-import { Sms } from '../../../../api/kandidatvarsel/kandidatvarsel';
-import { Kandidatstatus } from '../KandidatIKandidatlisteTyper';
-import KandidatHendelser from './KandidatHendelse';
-import VelgStatus from './VelgStatus';
 
 type InfoOmKandidatProps = {
-  innaktiv: boolean;
-  kandidatlisteId: string;
   kandidat: kandidaterSchemaDTO;
-  forespørselCvForKandidat: KandidatForespurtOmDelingSchema[] | null;
-  beskjedForKandidat?: Sms;
 };
 
 const arbeidsrettetOppfølgingUrl =
@@ -23,11 +22,7 @@ const arbeidsrettetOppfølgingUrl =
     : 'https://veilarbpersonflate.intern.dev.nav.no';
 
 const InfoOmKandidat: FunctionComponent<InfoOmKandidatProps> = ({
-  innaktiv,
   kandidat,
-  kandidatlisteId,
-  forespørselCvForKandidat,
-  beskjedForKandidat,
 }) => {
   const navigerTilAktivitetsplanen = async (
     href: string,
@@ -42,60 +37,81 @@ const InfoOmKandidat: FunctionComponent<InfoOmKandidatProps> = ({
       window.open(href, '_blank');
     }
   };
-  return (
-    <div>
-      {!innaktiv && (
-        <div className='grid grid-cols-2 gap-8 mb-8'>
-          <div>
-            <Label spacing as='p'>
-              Kontaktinfo:
-            </Label>
-            <BodyShort>
-              E-post:{' '}
-              {kandidat?.epost ? (
-                <Link href={`mailto:${kandidat.epost}`}>{kandidat.epost}</Link>
-              ) : (
-                <span>-</span>
-              )}
-            </BodyShort>
-            <BodyShort>
-              Telefon: {kandidat?.telefon ? kandidat.telefon : <span>-</span>}
-            </BodyShort>
-          </div>
-          <div>
-            <Label spacing as='p'>
-              Innsatsgruppe:
-            </Label>
-            <div>
-              <span>{kandidat?.innsatsgruppe} </span>
-            </div>
-            <Link
-              onClick={() =>
-                navigerTilAktivitetsplanen(
-                  arbeidsrettetOppfølgingUrl,
-                  kandidat.fodselsnr!,
-                )
-              }
-            >
-              Åpne aktivitetsplan
-            </Link>
-          </div>
-        </div>
-      )}
 
-      <div className='grid grid-cols-2 gap-8 mb-8'>
-        <VelgStatus
-          kandidatlisteId={kandidatlisteId}
-          kandidatnr={kandidat.kandidatnr}
-          status={kandidat.status as Kandidatstatus}
-        />
-        <KandidatHendelser
-          kandidat={kandidat}
-          forespørselCvForKandidat={forespørselCvForKandidat}
-          beskjedForKandidat={beskjedForKandidat}
-        />
+  return (
+    <Box.New
+      background='info-softA'
+      borderRadius='xlarge'
+      paddingInline='space-16'
+      paddingBlock='space-12'
+    >
+      <div className='mb-8'>
+        <Heading size='small' level='2' spacing>
+          Om kandidaten
+        </Heading>
+        <div className='flex flex-col gap-2'>
+          <BodyShort
+            size='small'
+            className='flex items-center whitespace-nowrap'
+          >
+            <PhoneIcon aria-hidden className='mr-2 shrink-0' />
+            {kandidat?.telefon}
+          </BodyShort>
+          <BodyShort
+            size='small'
+            className='flex items-center whitespace-nowrap'
+          >
+            <EnvelopeClosedIcon aria-hidden className='mr-2 shrink-0' />
+            {kandidat?.epost ? (
+              <Link href={`mailto:${kandidat.epost}`}>{kandidat.epost}</Link>
+            ) : (
+              'Ingen e-post registrert'
+            )}
+          </BodyShort>
+          <BodyShort
+            size='small'
+            className='flex items-center whitespace-nowrap'
+          >
+            <PersonIcon aria-hidden className='mr-2 shrink-0' />
+            {kandidat?.fodselsnr && (
+              <>
+                {`${kandidat.fodselsnr.slice(0, 2)}.${kandidat.fodselsnr.slice(2, 4)}.${
+                  parseInt(kandidat.fodselsnr.slice(4, 6)) > 20 ? '19' : '20'
+                }${kandidat.fodselsnr.slice(4, 6)}`}
+                {' ( '}
+                {kandidat.fodselsnr}
+                {' )'}
+              </>
+            )}
+          </BodyShort>
+          <BodyShort
+            size='small'
+            className='flex items-center whitespace-nowrap'
+          >
+            <LocationPinIcon aria-hidden className='mr-2 shrink-0' />-
+          </BodyShort>
+          <BodyShort
+            size='small'
+            className='flex items-center whitespace-nowrap'
+          >
+            <TasklistIcon aria-hidden className='mr-2 shrink-0' />
+            {kandidat?.innsatsgruppe || 'Situasjonsbestemt innsats'}
+          </BodyShort>
+          <Link
+            className='mt-4'
+            onClick={() =>
+              navigerTilAktivitetsplanen(
+                arbeidsrettetOppfølgingUrl,
+                kandidat.fodselsnr!,
+              )
+            }
+          >
+            <ExternalLinkIcon aria-hidden className='mr-2' />
+            Gå til aktivitetsplanen
+          </Link>
+        </div>
       </div>
-    </div>
+    </Box.New>
   );
 };
 

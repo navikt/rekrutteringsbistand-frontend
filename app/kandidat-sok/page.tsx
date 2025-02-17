@@ -2,58 +2,88 @@
 import { Tabs } from '@navikt/ds-react';
 import * as React from 'react';
 
+import { useApplikasjonContext } from '../ApplikasjonContext';
 import { Roller } from '../components/tilgangskontroll/roller';
 import { TilgangskontrollForInnhold } from '../components/tilgangskontroll/TilgangskontrollForInnhold';
 import KandidatSøkChips from './components/KandidatSøkChips';
-import { KandidatSøkPortefølje } from './components/PorteføljeTabs';
-import { useKandidatSøkFilter } from './KandidaSokContext';
+import {
+  KandidatSøkPortefølje,
+  useKandidatSøkFilter,
+} from './KandidaSokContext';
 import KandidatSøkResultat from './KandidatSøkResultat';
 import ValgteKontorer from './ValgteKontorer';
 
 const KandidatSøk: React.FC = () => {
   const { portefølje, setPortefølje } = useKandidatSøkFilter();
-
-  const data = {
-    enheter: [],
-  };
+  const { valgtNavKontor, brukerData } = useApplikasjonContext();
 
   const MineBrukere = () => (
     <Tabs.Tab value={KandidatSøkPortefølje.MINE_BRUKERE} label='Mine brukere' />
   );
 
   const MittKontor = () => {
-    if (data?.enheter && data.enheter.length > 0) {
+    if (valgtNavKontor) {
       return (
-        <Tabs.Tab
-          value={KandidatSøkPortefølje.MITT_KONTOR}
-          label='Mitt kontor'
-        />
+        <TilgangskontrollForInnhold
+          skjulVarsel
+          kreverEnAvRollene={[
+            Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+            Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
+          ]}
+        >
+          <Tabs.Tab
+            value={KandidatSøkPortefølje.MITT_KONTOR}
+            label='Mitt kontor'
+          />
+        </TilgangskontrollForInnhold>
       );
     }
     return null;
   };
 
   const MineKontorer = () => {
-    if (data?.enheter && data.enheter.length > 1) {
+    if (brukerData?.enheter && brukerData.enheter.length > 1) {
       return (
-        <Tabs.Tab
-          value={KandidatSøkPortefølje.MINE_KONTORER}
-          label='Mine kontorer'
-        />
+        <TilgangskontrollForInnhold
+          skjulVarsel
+          kreverEnAvRollene={[
+            Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+            Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
+          ]}
+        >
+          <Tabs.Tab
+            value={KandidatSøkPortefølje.MINE_KONTORER}
+            label='Mine kontorer'
+          />
+        </TilgangskontrollForInnhold>
       );
     }
     return null;
   };
 
   const AlleKontorer = () => (
-    <Tabs.Tab value={KandidatSøkPortefølje.ALLE} label='Alle kontorer' />
+    <TilgangskontrollForInnhold
+      skjulVarsel
+      kreverEnAvRollene={[
+        Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+      ]}
+    >
+      <Tabs.Tab value={KandidatSøkPortefølje.ALLE} label='Alle kontorer' />
+    </TilgangskontrollForInnhold>
   );
 
   const VelgKontor = () => (
-    <Tabs.Tab
-      value={KandidatSøkPortefølje.VALGTE_KONTORER}
-      label='Valgte kontorer'
-    />
+    <TilgangskontrollForInnhold
+      skjulVarsel
+      kreverEnAvRollene={[
+        Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+      ]}
+    >
+      <Tabs.Tab
+        value={KandidatSøkPortefølje.VALGTE_KONTORER}
+        label='Valgte kontorer'
+      />
+    </TilgangskontrollForInnhold>
   );
 
   return (

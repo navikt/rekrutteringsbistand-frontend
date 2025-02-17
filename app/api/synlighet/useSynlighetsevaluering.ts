@@ -57,13 +57,13 @@ export const useSynlighetsevaluering = (fødselsnummer: string) =>
 export const synlighetsevalueringMirage = (server: Server) => {
   server.post(SynlighetsevalueringEndepunkt, () => {
     return {
-      harAktivCv: true,
-      harJobbprofil: true,
-      harSettHjemmel: true,
-      maaIkkeBehandleTidligereCv: true,
-      erIkkeFritattKandidatsøk: true,
-      erUnderOppfoelging: true,
-      harRiktigFormidlingsgruppe: true,
+      harAktivCv: false,
+      harJobbprofil: false,
+      harSettHjemmel: false,
+      maaIkkeBehandleTidligereCv: false,
+      erIkkeFritattKandidatsøk: false,
+      erUnderOppfoelging: false,
+      harRiktigFormidlingsgruppe: false,
       erIkkeSperretAnsatt: true,
       erIkkeDoed: true,
       erFerdigBeregnet: true,
