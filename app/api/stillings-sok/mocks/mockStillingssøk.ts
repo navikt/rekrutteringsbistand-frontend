@@ -9,6 +9,7 @@ interface MockHit {
   expires?: string;
   privacy?: string;
   source?: string;
+  erFormidling?: boolean;
 }
 
 const createMockHit = (props: MockHit) => ({
@@ -109,7 +110,7 @@ const createMockHit = (props: MockHit) => ({
       notat: null,
       stillingsid: faker.string.uuid(),
       stillingsinfoid: faker.string.uuid(),
-      stillingskategori: 'STILLING',
+      stillingskategori: props.erFormidling ? 'FORMIDLING' : 'STILLING',
     },
   },
   sort: [faker.number.int({ min: 1000000000000, max: 9999999999999 })],
@@ -151,6 +152,8 @@ const slettet = createMockHit({
   status: 'DELETED',
 });
 
+const formidling = createMockHit({ id: 'minFormidling', erFormidling: true });
+
 const hits = [
   minStilling,
   minStillingEkstern,
@@ -158,6 +161,7 @@ const hits = [
   utløpt,
   ikkePublisert,
   slettet,
+  formidling,
 ];
 
 export const mockStillingssøk = {

@@ -87,10 +87,9 @@ const FormidlingInnspurt = () => {
     const nyStillingsData = await opprettStilling.json();
 
     setSteg('Henter opprettet formidling');
-    const hentStilling = await getAPI(
+    const hentStillingData = await getAPI(
       `/api/stilling/rekrutteringsbistandstilling/${nyStillingsData.stilling.uuid}`,
     );
-    const hentStillingData = await hentStilling.json();
 
     setSteg('Oppdaterer formidling');
     const oppdatertFormidlingData = mapFormTilFormidling(
@@ -100,15 +99,14 @@ const FormidlingInnspurt = () => {
       },
       hentStillingData,
     );
-    const publisertStilling = await oppdaterStilling(oppdatertFormidlingData);
-    const publisertStillingData = await publisertStilling.json();
-
-    setSteg('Henter kandidatliste id');
-    const kandidatListeId = await getAPI(
-      kandidatListeIdEndepunkt(publisertStillingData.stilling.uuid)!,
+    const publisertStillingData = await oppdaterStilling(
+      oppdatertFormidlingData,
     );
 
-    const kandidatListeIdData = await kandidatListeId.json();
+    setSteg('Henter kandidatliste id');
+    const kandidatListeIdData = await getAPI(
+      kandidatListeIdEndepunkt(publisertStillingData.stilling.uuid)!,
+    );
 
     setSteg('Legger til kandidater');
     await postApi(
@@ -117,10 +115,9 @@ const FormidlingInnspurt = () => {
     );
 
     setSteg('Henter kandidatliste');
-    const kandidatliste = await getAPI(
+    const kandidatlisteData = await getAPI(
       kandidatListeIdEndepunkt(publisertStillingData.stilling.uuid)!,
     );
-    const kandidatlisteData = await kandidatliste.json();
 
     setSteg('Set kandidater til fått jobben');
     await Promise.all(

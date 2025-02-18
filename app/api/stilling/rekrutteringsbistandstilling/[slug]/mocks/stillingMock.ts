@@ -185,3 +185,10 @@ export const mockEksternStilling = createMockStilling({
   utenStillingsinfo: true,
   seed: 3,
 });
+
+export const mockFormidling = createMockStilling({
+  erFormidling: true,
+  id: 'minFormidling',
+  navIdent: 'TestIdent',
+  seed: 4,
+});
