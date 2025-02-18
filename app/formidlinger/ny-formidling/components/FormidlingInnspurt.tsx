@@ -11,10 +11,12 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { getAPI, postApi } from '../../../api/fetcher';
+import { formidleUsynligKandidat } from '../../../api/kandidat/formidleUsynligKandidat';
 import { kandidatListeIdEndepunkt } from '../../../api/kandidat/useKandidatlisteId';
 import { OpprettNyStillingDTO } from '../../../api/stilling/ny-stilling/dto';
 import { oppdaterStilling } from '../../../api/stilling/oppdater-stilling/oppdaterStilling';
 import { useApplikasjonContext } from '../../../ApplikasjonContext';
+import { UtfallsEndringTyper } from '../../../stilling/[stillingsId]/kandidater/components/KandidatTyper';
 import { Stillingskategori } from '../../../stilling/stilling-typer';
 import { mapFormTilFormidling } from '../mapFormidling';
 import { FormidlingDataForm } from '../redigerFormidlingFormType';
@@ -101,7 +103,7 @@ const FormidlingInnspurt = () => {
     const publisertStilling = await oppdaterStilling(oppdatertFormidlingData);
     const publisertStillingData = await publisertStilling.json();
 
-    setSteg('Henter kandidatliste');
+    setSteg('Henter kandidatliste id');
     const kandidatListeId = await getAPI(
       kandidatListeIdEndepunkt(publisertStillingData.stilling.uuid)!,
     );
@@ -109,12 +111,35 @@ const FormidlingInnspurt = () => {
     const kandidatListeIdData = await kandidatListeId.json();
 
     setSteg('Legger til kandidater');
-    const leggTilKandidater = await postApi(
+    await postApi(
       kandidatListeIdEndepunkt(publisertStillingData.stilling.uuid)!,
       kandidatListeIdData,
     );
 
+    setSteg('Henter kandidatliste');
+    const kandidatliste = await getAPI(
+      kandidatListeIdEndepunkt(publisertStillingData.stilling.uuid)!,
+    );
+    const kandidatlisteData = await kandidatliste.json();
+
     setSteg('Set kandidater til fått jobben');
+    await Promise.all(
+      kandidatlisteData?.formidlingerAvUsynligKandidat.map(
+        async (kandidat: any) => {
+          //TODO Skal vi håndtere synlige kandidater også?
+          return formidleUsynligKandidat({
+            kandidatlisteId: kandidatListeIdData.kandidatlisteId,
+            formidlingId: kandidat.id,
+            utfall: UtfallsEndringTyper.FATT_JOBBEN,
+            navKontor: valgtNavKontor?.navKontor ?? '',
+          });
+        },
+      ),
+    );
+
+    setSteg('Fullfører formidling');
+
+    router.push(`/formidling/${publisertStillingData.stilling.uuid}`);
   };
 
   return (
