@@ -10,7 +10,6 @@ import {
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { leggTilKandidatEndepunkt } from '../../../api/kandidat-sok/leggTilKandidat';
 import { formidleUsynligKandidat } from '../../../api/kandidat/formidleUsynligKandidat';
 import { kandidatlisteEndepunkt } from '../../../api/kandidat/useKandidatliste';
 import { kandidatListeIdEndepunkt } from '../../../api/kandidat/useKandidatlisteId';
@@ -110,21 +109,18 @@ const FormidlingInnspurt = () => {
     const publisertStillingData = await publisertStilling.json();
 
     setSteg('Verifiser at kandidatliste er opprettet');
+
     await new Promise((resolve) => setTimeout(resolve, 3000));
-    const kandidatListeId = await fetch(
+
+    const kandidatListeIdFetch = await fetch(
       kandidatListeIdEndepunkt(publisertStillingData.stilling.uuid)!,
       { method: 'GET' },
     );
-    const kandidatListeIdData = await kandidatListeId.json();
+    const kandidatListeIdRespons = await kandidatListeIdFetch.json();
 
-    setSteg('Legger til kandidater');
-    await fetch(
-      leggTilKandidatEndepunkt(publisertStillingData.stilling.uuid)!,
-      {
-        method: 'POST',
-        body: JSON.stringify(kandidatListeIdData),
-      },
-    );
+    const kandidatlisteId = kandidatListeIdRespons.kandidatlisteId;
+
+    await new Promise((resolve) => setTimeout(resolve, 3000));
 
     setSteg('Henter kandidatliste');
     const kandidatliste = await fetch(
@@ -139,9 +135,11 @@ const FormidlingInnspurt = () => {
     await Promise.all(
       kandidatlisteData?.formidlingerAvUsynligKandidat.map(
         async (kandidat: any) => {
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+
           //TODO Skal vi håndtere synlige kandidater også?
           return formidleUsynligKandidat({
-            kandidatlisteId: kandidatListeIdData.kandidatlisteId,
+            kandidatlisteId: kandidatlisteId,
             formidlingId: kandidat.id,
             utfall: UtfallsEndringTyper.FATT_JOBBEN,
             navKontor: valgtNavKontor?.navKontor ?? '',
@@ -152,7 +150,7 @@ const FormidlingInnspurt = () => {
 
     setSteg('Fullfører formidling');
 
-    router.push(`/formidling/${publisertStillingData.stilling.uuid}`);
+    router.push(`/formidlinger/${publisertStillingData.stilling.uuid}`);
   };
 
   return (
