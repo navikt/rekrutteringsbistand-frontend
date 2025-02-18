@@ -5,7 +5,7 @@ import { KandidatAPI } from '../api-routes';
 
 export const kandidatlisteIdSchema = z.object({ kandidatlisteId: z.string() });
 
-const kandidatListeIdEndepunkt = (stillingsId?: string) =>
+export const kandidatListeIdEndepunkt = (stillingsId?: string) =>
   stillingsId
     ? `${KandidatAPI.internUrl}/veileder/stilling/${stillingsId}/kandidatlisteid`
     : undefined;

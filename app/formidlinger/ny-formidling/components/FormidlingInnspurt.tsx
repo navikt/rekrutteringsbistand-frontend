@@ -1,9 +1,17 @@
 import { Buildings2Icon, PencilIcon, PersonIcon } from '@navikt/aksel-icons';
-import { BodyShort, Box, Button, Detail, Heading } from '@navikt/ds-react';
+import {
+  Alert,
+  BodyShort,
+  Box,
+  Button,
+  Detail,
+  Heading,
+} from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { getAPI, postApi } from '../../../api/fetcher';
+import { kandidatListeIdEndepunkt } from '../../../api/kandidat/useKandidatlisteId';
 import { OpprettNyStillingDTO } from '../../../api/stilling/ny-stilling/dto';
 import { oppdaterStilling } from '../../../api/stilling/oppdater-stilling/oppdaterStilling';
 import { useApplikasjonContext } from '../../../ApplikasjonContext';
@@ -18,6 +26,7 @@ const FormidlingInnspurt = () => {
   const { brukerData, valgtNavKontor } = useApplikasjonContext();
 
   const [senderSkjema, setSenderSkjema] = useState(false);
+  const [steg, setSteg] = useState('Oppretter formidling');
   const formidlingsVerdier = getValues();
 
   // const onSubmit: SubmitHandler<FormidlingDataForm> = async (data) => {
@@ -73,15 +82,15 @@ const FormidlingInnspurt = () => {
       `/api/stilling/ny-stilling`,
       opprettStillingDto,
     );
-
     const nyStillingsData = await opprettStilling.json();
 
+    setSteg('Henter opprettet formidling');
     const hentStilling = await getAPI(
       `/api/stilling/rekrutteringsbistandstilling/${nyStillingsData.stilling.uuid}`,
     );
-
     const hentStillingData = await hentStilling.json();
 
+    setSteg('Oppdaterer formidling');
     const oppdatertFormidlingData = mapFormTilFormidling(
       {
         ...formidlingData,
@@ -89,10 +98,23 @@ const FormidlingInnspurt = () => {
       },
       hentStillingData,
     );
+    const publisertStilling = await oppdaterStilling(oppdatertFormidlingData);
+    const publisertStillingData = await publisertStilling.json();
 
-    oppdaterStilling(oppdatertFormidlingData).then(() => {
-      router.push(`/formidlinger/${nyStillingsData.stilling.uuid}`);
-    });
+    setSteg('Henter kandidatliste');
+    const kandidatListeId = await getAPI(
+      kandidatListeIdEndepunkt(publisertStillingData.stilling.uuid)!,
+    );
+
+    const kandidatListeIdData = await kandidatListeId.json();
+
+    setSteg('Legger til kandidater');
+    const leggTilKandidater = await postApi(
+      kandidatListeIdEndepunkt(publisertStillingData.stilling.uuid)!,
+      kandidatListeIdData,
+    );
+
+    setSteg('Set kandidater til fått jobben');
   };
 
   return (
@@ -177,6 +199,12 @@ const FormidlingInnspurt = () => {
           </div>
         </Box.New>
 
+        {senderSkjema && (
+          <Alert variant='info'>
+            Oppretter formidling, dette kan ta litt tid.
+            <ul>{steg && <li>{steg}...</li>}</ul>
+          </Alert>
+        )}
         <div className='mt-8'>
           <Button
             variant='primary'
