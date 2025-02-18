@@ -10,7 +10,9 @@ import {
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
+import { leggTilKandidatEndepunkt } from '../../../api/kandidat-sok/leggTilKandidat';
 import { formidleUsynligKandidat } from '../../../api/kandidat/formidleUsynligKandidat';
+import { kandidatlisteEndepunkt } from '../../../api/kandidat/useKandidatliste';
 import { kandidatListeIdEndepunkt } from '../../../api/kandidat/useKandidatlisteId';
 import { OpprettNyStillingDTO } from '../../../api/stilling/ny-stilling/dto';
 import { opprettNyStillingEndepunkt } from '../../../api/stilling/oppdater-stilling/oppdaterStilling';
@@ -30,7 +32,20 @@ const FormidlingInnspurt = () => {
   const [steg, setSteg] = useState('Oppretter formidling');
   const formidlingsVerdier = getValues();
 
-  // const onSubmit: SubmitHandler<FormidlingDataForm> = async (data) => {
+  const fetchWithRetry = async (url: string, options: RequestInit) => {
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      try {
+        const response = await fetch(url, options);
+        if (!response.ok)
+          throw new Error(`HTTP error! status: ${response.status}`);
+        return response;
+      } catch (error) {
+        if (attempt === 3) throw error;
+        console.log(`Attempt ${attempt} failed, retrying in 3 seconds...`);
+        await new Promise((resolve) => setTimeout(resolve, 3000));
+      }
+    }
+  };
 
   const onSubmit = async (data: FormidlingDataForm) => {
     setSenderSkjema(true);
@@ -109,18 +124,17 @@ const FormidlingInnspurt = () => {
     });
     const publisertStillingData = await publisertStilling.json();
 
-    setSteg('Henter kandidatliste id');
-    const kandidatListeId = await fetch(
+    setSteg('Verifiser at kandidatliste er opprettet');
+    const kandidatListeId = await fetchWithRetry(
       kandidatListeIdEndepunkt(publisertStillingData.stilling.uuid)!,
-      {
-        method: 'GET',
-      },
+      { method: 'GET' },
     );
-    const kandidatListeIdData = await kandidatListeId.json();
+    const kandidatListeIdData =
+      kandidatListeId && (await kandidatListeId.json());
 
     setSteg('Legger til kandidater');
     await fetch(
-      kandidatListeIdEndepunkt(publisertStillingData.stilling.uuid)!,
+      leggTilKandidatEndepunkt(publisertStillingData.stilling.uuid)!,
       {
         method: 'POST',
         body: JSON.stringify(kandidatListeIdData),
@@ -129,7 +143,7 @@ const FormidlingInnspurt = () => {
 
     setSteg('Henter kandidatliste');
     const kandidatliste = await fetch(
-      kandidatListeIdEndepunkt(publisertStillingData.stilling.uuid)!,
+      kandidatlisteEndepunkt(publisertStillingData.stilling.uuid)!,
       {
         method: 'GET',
       },
