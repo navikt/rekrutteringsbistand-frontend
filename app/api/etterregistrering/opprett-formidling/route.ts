@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 
 import { format } from 'date-fns';
 import { NextRequest } from 'next/server';
+import { mapFormTilFormidling } from '../../../formidlinger/[stillingsId]/rediger/mapFormidling';
 import { FormidlingDataForm } from '../../../formidlinger/[stillingsId]/rediger/redigerFormidlingFormType';
 import { KandidatutfallTyper } from '../../../stilling/[stillingsId]/kandidater/components/KandidatTyper';
 import { Stillingskategori } from '../../../stilling/stilling-typer';
@@ -79,16 +80,30 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     );
     const stillingDto = await stillingResponse.json();
 
+    console.log('2');
     // fetche stilling på nytt?
+    const hentStilling = await fetch(
+      `${baseUrl}/api/stilling/rekrutteringsbistandstilling/${stillingDto.stilling.uuid}`,
+    );
+    const nyStillingsData = await hentStilling.json();
+
+    // Legg på formdata til formidling:
+
+    const formidlingData = mapFormTilFormidling(
+      formidlingsDataDto,
+      nyStillingsData,
+    );
+
+    console.log('🎺 formidlingData', formidlingData);
 
     /// 2. Deretter sette stillingen til publisert ved å oppdatere stilling
     const publisertStilling = {
-      ...stillingDto,
+      ...formidlingData,
       stilling: {
-        ...stillingDto.stilling,
+        ...formidlingData.stilling,
         status: 'ACTIVE',
         administration: {
-          ...stillingDto.stilling.administration,
+          ...formidlingData.stilling.administration,
           status: 'DONE',
         },
         firstPublished: true,
@@ -104,6 +119,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         body: JSON.stringify(publisertStilling),
       },
     );
+    console.log('3');
     const publiserStillingDto = await publiserStillingResponse.json();
 
     /// 3. Hent kandidatlisteId

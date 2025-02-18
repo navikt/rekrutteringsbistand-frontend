@@ -20,7 +20,7 @@ const createMockStilling = (props?: MockStilling): StillingsDataDTO => {
           stillingsinfoid: faker.string.uuid(),
           eierNavident: props?.navIdent || null,
           eierNavn: props?.navIdent ? 'Tester' : null,
-          stillingskategori: 'STILLING',
+          stillingskategori: 'FORMIDLING',
         },
     stilling: {
       id: faker.number.int({ min: 100000, max: 999999 }),

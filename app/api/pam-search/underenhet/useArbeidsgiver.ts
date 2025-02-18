@@ -64,7 +64,7 @@ export const arbeidsgiverMirage = (server: any) => {
             _score: 10.641023,
             _source: {
               organisasjonsnummer: '315414822',
-              navn: 'ALFABETISK PLUTSELIG KATT OVERSKRIFT',
+              navn: 'TEST PLUTSELIG KATT OVERSKRIFT',
               organisasjonsform: 'BEDR',
               antallAnsatte: 3,
               overordnetEnhet: '313606333',
