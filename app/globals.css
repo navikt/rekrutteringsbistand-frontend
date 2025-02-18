@@ -9,3 +9,10 @@
   outline: none;
   border: none;
 }
+
+@layer utilities {
+  /* Sjul Next overlay, er ikke nødvendig i Playwright test */
+  [data-testmode='true'] .nextjs-portal {
+    display: none;
+  }
+}

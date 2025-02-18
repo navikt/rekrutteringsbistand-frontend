@@ -76,6 +76,7 @@ const LeggTilKandidater: React.FC<LeggTilKandidaterProps> = ({
 
   const leggTilKandidat = (fødselsnummer: string) => (
     <Box.New
+      data-testid={'velg-kandidat-resultat'}
       className='cursor-pointer'
       onClick={() => {
         if (!valgteKandidater.some((k) => k.fødselsnummer === fødselsnummer)) {

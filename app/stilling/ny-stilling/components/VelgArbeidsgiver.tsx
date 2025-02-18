@@ -26,7 +26,7 @@ const VelgArbeidsgiver: React.FC<IVelgArbeidsgiver> = ({
 
   return (
     <React.Fragment>
-      <form role='search'>
+      <div role='search'>
         <UNSAFE_Combobox
           isLoading={isLoading}
           label='Arbeidsgivers navn eller organisasjonsnummer'
@@ -86,7 +86,7 @@ const VelgArbeidsgiver: React.FC<IVelgArbeidsgiver> = ({
             </FormSummary.Answers>
           </FormSummary>
         )}
-      </form>
+      </div>
       {error && (
         <Alert className='mt-8' variant='error'>
           {JSON.stringify(error)}
