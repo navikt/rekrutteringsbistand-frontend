@@ -13,6 +13,8 @@ export const mapFormTilFormidling = (
     stilling: {
       ...stillingInfo.stilling,
       categoryList: formData.omFormidling.categoryList,
+      status: 'ACTIVE',
+      firstPublished: true,
       properties: {
         ...stillingInfo.stilling.properties,
         tags: JSON.stringify(formData.omTilrettelegging?.tags),
@@ -27,6 +29,15 @@ export const mapFormTilFormidling = (
       },
       published: datoIDag,
       expires: datoIDag,
+      administration: {
+        ...stillingInfo.stilling.administration!,
+        status: 'DONE',
+        id: stillingInfo.stilling.administration?.id ?? null,
+        reportee: stillingInfo.stilling.administration?.reportee ?? null,
+        navIdent: stillingInfo.stilling.administration?.navIdent ?? null,
+        comments: stillingInfo.stilling.administration?.comments ?? null,
+        remarks: stillingInfo.stilling.administration?.remarks ?? null,
+      },
       locationList: [
         ...(formData.omFormidling.adresseLokasjoner ?? []),
         ...(formData.omFormidling.lokasjoner ?? []),

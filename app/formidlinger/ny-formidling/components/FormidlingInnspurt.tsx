@@ -32,21 +32,6 @@ const FormidlingInnspurt = () => {
   const [steg, setSteg] = useState('Oppretter formidling');
   const formidlingsVerdier = getValues();
 
-  const fetchWithRetry = async (url: string, options: RequestInit) => {
-    for (let attempt = 1; attempt <= 3; attempt++) {
-      try {
-        const response = await fetch(url, options);
-        if (!response.ok)
-          throw new Error(`HTTP error! status: ${response.status}`);
-        return response;
-      } catch (error) {
-        if (attempt === 3) throw error;
-        console.log(`Attempt ${attempt} failed, retrying in 3 seconds...`);
-        await new Promise((resolve) => setTimeout(resolve, 3000));
-      }
-    }
-  };
-
   const onSubmit = async (data: FormidlingDataForm) => {
     setSenderSkjema(true);
     const formidlingData = {
@@ -125,12 +110,12 @@ const FormidlingInnspurt = () => {
     const publisertStillingData = await publisertStilling.json();
 
     setSteg('Verifiser at kandidatliste er opprettet');
-    const kandidatListeId = await fetchWithRetry(
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+    const kandidatListeId = await fetch(
       kandidatListeIdEndepunkt(publisertStillingData.stilling.uuid)!,
       { method: 'GET' },
     );
-    const kandidatListeIdData =
-      kandidatListeId && (await kandidatListeId.json());
+    const kandidatListeIdData = await kandidatListeId.json();
 
     setSteg('Legger til kandidater');
     await fetch(
