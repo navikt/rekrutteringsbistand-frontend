@@ -1,7 +1,16 @@
 import { Alert, BodyLong, BodyShort, Button } from '@navikt/ds-react';
 import { logger } from '@navikt/next-logger';
 import * as React from 'react';
-import { IFeilmelding } from './Feilmelding';
+import { ZodError } from 'zod';
+
+export interface IFeilmelding {
+  zodError?: ZodError;
+  statuskode?: number;
+  tittel?: string;
+  stack?: string;
+  beskrivelse?: string;
+  url?: string;
+}
 
 const Feilmelding: React.FC<IFeilmelding> = ({
   zodError,
