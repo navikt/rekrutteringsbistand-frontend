@@ -10,7 +10,7 @@ import { getAPIwithSchema } from '../fetcher';
 import { statistikkMock } from './mocks/statistikkMock';
 
 const statistikkEndepunkt = (param?: URLSearchParams) =>
-  `${StatistikkAPI.internUrl}/statistikk${param ? `?${param}` : ''}`;
+  `${StatistikkAPI.internUrl}${param ? `?${param}` : ''}`;
 
 const antallDTOSchema = z.object({
   totalt: z.number(),

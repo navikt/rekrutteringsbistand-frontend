@@ -6,6 +6,7 @@ interface MockStilling {
   seed?: number;
   ekstern?: boolean;
   utenStillingsinfo?: boolean;
+  erFormidling?: boolean;
 }
 
 const createMockStilling = (props?: MockStilling): StillingsDataDTO => {
@@ -20,7 +21,7 @@ const createMockStilling = (props?: MockStilling): StillingsDataDTO => {
           stillingsinfoid: faker.string.uuid(),
           eierNavident: props?.navIdent || null,
           eierNavn: props?.navIdent ? 'Tester' : null,
-          stillingskategori: 'FORMIDLING',
+          stillingskategori: props?.erFormidling ? 'FORMIDLING' : 'STILLING',
         },
     stilling: {
       id: faker.number.int({ min: 100000, max: 999999 }),
