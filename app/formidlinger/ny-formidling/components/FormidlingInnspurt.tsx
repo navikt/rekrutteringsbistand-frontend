@@ -10,7 +10,7 @@ import {
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { formidleUsynligKandidat } from '../../../api/kandidat/formidleUsynligKandidat';
+import { formidleUsynligKandidatEndepunkt } from '../../../api/kandidat/formidleUsynligKandidat';
 import { kandidatlisteEndepunkt } from '../../../api/kandidat/useKandidatliste';
 import { kandidatListeIdEndepunkt } from '../../../api/kandidat/useKandidatlisteId';
 import { OpprettNyStillingDTO } from '../../../api/stilling/ny-stilling/dto';
@@ -136,14 +136,17 @@ const FormidlingInnspurt = () => {
       kandidatlisteData?.formidlingerAvUsynligKandidat.map(
         async (kandidat: any) => {
           await new Promise((resolve) => setTimeout(resolve, 1000));
-
           //TODO Skal vi håndtere synlige kandidater også?
-          return formidleUsynligKandidat({
-            kandidatlisteId: kandidatlisteId,
-            formidlingId: kandidat.id,
-            utfall: UtfallsEndringTyper.FATT_JOBBEN,
-            navKontor: valgtNavKontor?.navKontor ?? '',
-          });
+          return fetch(
+            formidleUsynligKandidatEndepunkt(kandidatlisteId, kandidat.id),
+            {
+              method: 'PUT',
+              body: JSON.stringify({
+                utfall: UtfallsEndringTyper.FATT_JOBBEN,
+                navKontor: valgtNavKontor?.navKontor ?? '',
+              }),
+            },
+          );
         },
       ),
     );
