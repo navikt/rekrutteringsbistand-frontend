@@ -8,6 +8,7 @@ import { getAPIwithSchema } from '../../../fetcher';
 import {
   mockBaseStilling,
   mockEksternStilling,
+  mockFormidling,
   mockMinEksternStilling,
   mockMinStilling,
 } from './mocks/stillingMock';
@@ -24,6 +25,7 @@ export const useStilling = (stillingsId: string) =>
 
 export const stillingMirage = (server: any) => {
   server.get(stillingEndepunkt('minStilling'), () => mockMinStilling);
+  server.get(stillingEndepunkt('minFormidling'), () => mockFormidling);
   server.get(stillingEndepunkt('eksternStilling'), () => mockEksternStilling);
   server.get(
     stillingEndepunkt('minEksternStilling'),

@@ -13,18 +13,20 @@ export const ArbeidsgiverSchema = z.object({
   organisasjonsnummer: z.string(),
   navn: z.string(),
   organisasjonsform: z.string(),
-  antallAnsatte: z.number(),
-  overordnetEnhet: z.string(),
-  adresse: z.object({
-    land: z.string(),
-    landkode: z.string(),
-    kommune: z.string(),
-    kommunenummer: z.string(),
-    poststed: z.string(),
-    postnummer: z.string(),
-    adresse: z.string(),
-  }),
-  naringskoder: z.null(),
+  antallAnsatte: z.number().nullable(),
+  overordnetEnhet: z.string().nullable(),
+  adresse: z
+    .object({
+      land: z.string(),
+      landkode: z.string(),
+      kommune: z.string(),
+      kommunenummer: z.string(),
+      poststed: z.string(),
+      postnummer: z.string(),
+      adresse: z.string(),
+    })
+    .nullable(),
+  naringskoder: z.array(z.string()).nullable(),
 });
 const ArbeidsgiverSchemaDTO = z.array(ArbeidsgiverSchema);
 

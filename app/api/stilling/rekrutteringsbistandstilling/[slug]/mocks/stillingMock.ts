@@ -6,13 +6,12 @@ interface MockStilling {
   seed?: number;
   ekstern?: boolean;
   utenStillingsinfo?: boolean;
+
   erFormidling?: boolean;
 }
 
 const createMockStilling = (props?: MockStilling): StillingsDataDTO => {
-  if (props?.seed) {
-    faker.seed(props.seed);
-  }
+  faker.seed(props?.seed || 1337);
   return {
     stillingsinfo: props?.utenStillingsinfo
       ? null
@@ -163,8 +162,6 @@ const createCategories = () => [
     parentId: null,
   },
 ];
-
-faker.seed(1337);
 
 export const mockBaseStilling = createMockStilling();
 

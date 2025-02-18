@@ -1,7 +1,7 @@
 import { putApi } from '../../fetcher';
 import { mockBaseStilling } from '../rekrutteringsbistandstilling/[slug]/mocks/stillingMock';
 
-const opprettNyStillingEndepunkt = '/api/stilling/oppdater-stilling';
+export const opprettNyStillingEndepunkt = '/api/stilling/oppdater-stilling';
 
 export const oppdaterStilling = (stillingData: any) => {
   return putApi(opprettNyStillingEndepunkt, stillingData);

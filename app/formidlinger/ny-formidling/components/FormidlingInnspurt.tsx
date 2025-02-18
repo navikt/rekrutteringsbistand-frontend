@@ -10,11 +10,10 @@ import {
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { getAPI, postApi } from '../../../api/fetcher';
 import { formidleUsynligKandidat } from '../../../api/kandidat/formidleUsynligKandidat';
 import { kandidatListeIdEndepunkt } from '../../../api/kandidat/useKandidatlisteId';
 import { OpprettNyStillingDTO } from '../../../api/stilling/ny-stilling/dto';
-import { oppdaterStilling } from '../../../api/stilling/oppdater-stilling/oppdaterStilling';
+import { opprettNyStillingEndepunkt } from '../../../api/stilling/oppdater-stilling/oppdaterStilling';
 import { useApplikasjonContext } from '../../../ApplikasjonContext';
 import { UtfallsEndringTyper } from '../../../stilling/[stillingsId]/kandidater/components/KandidatTyper';
 import { Stillingskategori } from '../../../stilling/stilling-typer';
@@ -63,33 +62,38 @@ const FormidlingInnspurt = () => {
           name: formidlingData.omFormidling.organisasjon.navn,
           location: {
             address:
-              formidlingData.omFormidling.organisasjon.adresse.adresse ?? '',
+              formidlingData.omFormidling.organisasjon.adresse?.adresse ?? '',
             postalCode:
-              formidlingData.omFormidling.organisasjon.adresse.postnummer ?? '',
+              formidlingData.omFormidling.organisasjon.adresse?.postnummer ??
+              '',
             county:
-              formidlingData.omFormidling.organisasjon.adresse.kommune ?? '',
+              formidlingData.omFormidling.organisasjon.adresse?.kommune ?? '',
             country:
-              formidlingData.omFormidling.organisasjon.adresse.land ?? '',
+              formidlingData.omFormidling.organisasjon.adresse?.land ?? '',
             municipal:
-              formidlingData.omFormidling.organisasjon.adresse.kommunenummer ??
+              formidlingData.omFormidling.organisasjon.adresse?.kommunenummer ??
               '',
             city:
-              formidlingData.omFormidling.organisasjon.adresse.poststed ?? '',
+              formidlingData.omFormidling.organisasjon.adresse?.poststed ?? '',
           },
         },
       },
     };
 
-    const opprettStilling = await postApi(
-      `/api/stilling/ny-stilling`,
-      opprettStillingDto,
-    );
+    const opprettStilling = await fetch(`/api/stilling/ny-stilling`, {
+      method: 'POST',
+      body: JSON.stringify(opprettStillingDto),
+    });
     const nyStillingsData = await opprettStilling.json();
 
     setSteg('Henter opprettet formidling');
-    const hentStillingData = await getAPI(
+    const hentStilling = await fetch(
       `/api/stilling/rekrutteringsbistandstilling/${nyStillingsData.stilling.uuid}`,
+      {
+        method: 'GET',
+      },
     );
+    const hentStillingData = await hentStilling.json();
 
     setSteg('Oppdaterer formidling');
     const oppdatertFormidlingData = mapFormTilFormidling(
@@ -99,25 +103,38 @@ const FormidlingInnspurt = () => {
       },
       hentStillingData,
     );
-    const publisertStillingData = await oppdaterStilling(
-      oppdatertFormidlingData,
-    );
+    const publisertStilling = await fetch(opprettNyStillingEndepunkt, {
+      method: 'PUT',
+      body: JSON.stringify(oppdatertFormidlingData),
+    });
+    const publisertStillingData = await publisertStilling.json();
 
     setSteg('Henter kandidatliste id');
-    const kandidatListeIdData = await getAPI(
+    const kandidatListeId = await fetch(
       kandidatListeIdEndepunkt(publisertStillingData.stilling.uuid)!,
+      {
+        method: 'GET',
+      },
     );
+    const kandidatListeIdData = await kandidatListeId.json();
 
     setSteg('Legger til kandidater');
-    await postApi(
+    await fetch(
       kandidatListeIdEndepunkt(publisertStillingData.stilling.uuid)!,
-      kandidatListeIdData,
+      {
+        method: 'POST',
+        body: JSON.stringify(kandidatListeIdData),
+      },
     );
 
     setSteg('Henter kandidatliste');
-    const kandidatlisteData = await getAPI(
+    const kandidatliste = await fetch(
       kandidatListeIdEndepunkt(publisertStillingData.stilling.uuid)!,
+      {
+        method: 'GET',
+      },
     );
+    const kandidatlisteData = await kandidatliste.json();
 
     setSteg('Set kandidater til fått jobben');
     await Promise.all(
