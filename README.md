@@ -1,79 +1,140 @@
-# Rekrutteringsbistand - NEXT
+# 🎯 Rekrutteringsbistand Next.js
 
-NextJS applikasjon m/AppRoutes, "SWR hooks" for fetching av data og zod validering av data
+> Moderne rekrutteringsplattform bygget med Next.js, App Router, SWR hooks og Zod validering
 
-## Kom igang med utvikling
+[![Playwright Tester](https://github.com/navikt/rekrutteringsbistand-frontend/actions/workflows/playwright.yml/badge.svg)](https://github.com/navikt/rekrutteringsbistand-frontend/actions/workflows/playwright.yml)
 
-Applikasjonen kjører med pnpm, har du ikke pnpm installert, se https://pnpm.io/installation
+## 📚 Innholdsfortegnelse
 
-`pnpm install`
-`pnpm run dev`
+- [🚀 Kom i gang](#-kom-i-gang)
+- [🏗️ Prosjektstruktur](#-prosjektstruktur)
+- [💻 Utvikling](#-utvikling)
+- [🧪 Testing](#-testing)
+- [🔑 Miljøoppsett](#-miljøoppsett)
+- [🛠️ Verktøy og tips](#-verktøy-og-tips)
 
-## Filstruktur
+## 🚀 Kom i gang
 
-```
-│ ├── api
-│ │ ├── [endepunkter]
-│ ├── [sider]
-│ ├── middleware.ts / ApplikasjonsContext / Globale filer
-├── components _ "Felles" komponenter
-├── tilgangskontroll _ Tilgangskontroll relatert auth / roller.
-├── util \* Hjelpefunksjoner
-└── .gitignore
-```
+```bash
+# Installer pnpm hvis du ikke har det
+curl -fsSL https://get.pnpm.io/install.sh | sh -
 
-## Utvikling
+# Installer avhengigheter
+pnpm install
 
-### Lokal mock
+# Start utviklingsserver
+pnpm dev
 
-Bruker miragejs, se mirage.ts for server og mocks mappen for mocks.
-
-### Opprett API endepunkt
-
-Opprett en route.ts i ønsket path under /api
-Bruk snippet fra snippets.json som mal.
-
-Hvis man trenger en backend komponent, legg til env variabel og inbound på gitt komponent for rekrutteringsbistand-frontend og outbound på gitt applikasjon i denne.
-
-### Search params
-
-Se på https://nextjs.org/docs/app/api-reference/functions/use-search-params og/vs https://nuqs.47ng.com/
-
-### Logger
-
-Implementert logger `import { logger } from '@navikt/next-logger'`, se https://logs.adeo.no/ ( https://github.com/navikt/next-logger )
-
-### Stillingssøk direkte mot ES:
-
-Opprett en '.env.local' fil og fyll ut:
-
-```
-STILLING_ES_URI=
-STILLING_ES_PASSWORD=
-STILLING_ES_USERNAME=
+# Kjør tester (bruk pnpm test-dev)
+pnpm test
 ```
 
-### Prettier og lint med husky
+## 🏗️ Prosjektstruktur
 
-Gjerne kjør prettier on save for å formatere koden mens du utvikler.
-Det er installert eslint og husky som formaterer koden og gir evt feilmeldinger ved ubrukte variabler samt at params blir sortert alfabetisk for bedre oversikt.
+```
+src/
+├── 📁 api/          # API-ruter og endepunkter
+├── 📁 app/          # App router sider og layouts
+├── 📁 components/   # Delte komponenter
+├── 📁 util/         # Hjelpefunksjoner
+└── 📁 tests/        # Playwright tester
+```
 
-Får du ikke pushet, se gitlog for feilmelding...
+## 💻 Utvikling
 
-# Testing
+### 🔄 Lokal mock
 
-## Playwright
+Vi bruker MirageJS for API-mocking. Se `mirage.ts` og `mocks/` mappen.
 
-`npx playwright codegen`
+### 🎮 API-utvikling
 
-Resultat: https://navikt.github.io/rekrutteringsbistand-frontend
+1. Opprett en `route.ts` i ønsket sti under `/api`
+2. Bruk maler fra `snippets.json`
+3. Legg til miljøvariabler hvis backend-integrasjon er nødvendig
 
-Happy hacking! 🎭
+### 🔍 Søkeparametere
 
-# Tips:
+Vi støtter to tilnærminger:
 
-transform tools: https://transform.tools/
+- [Next.js useSearchParams](https://nextjs.org/docs/app/api-reference/functions/use-search-params)
+- [nuqs](https://nuqs.47ng.com/) for avanserte behov
 
-## Kode generert av GitHub Copilot
+### 📝 Logging
 
-Dette repoet bruker GitHub Copilot til å generere kode.
+```typescript
+import { logger } from '@navikt/next-logger';
+logger.info('Hei verden!');
+```
+
+Se logger på [logs.adeo.no](https://logs.adeo.no/)
+
+## 🧪 Testing
+
+### 🎭 Playwright
+
+```bash
+# Generer tester
+pnpm exec playwright codegen
+
+# Kjør tester
+pnpm test
+
+# Åpne UI-modus
+pnpm test --ui
+```
+
+Testresultater: [navikt.github.io/rekrutteringsbistand-frontend](https://navikt.github.io/rekrutteringsbistand-frontend/playwright-report)
+
+## 🔑 Miljøoppsett
+
+Opprett `.env.local`:
+
+```env
+STILLING_ES_URI=din_uri
+STILLING_ES_PASSWORD=ditt_passord
+STILLING_ES_USERNAME=ditt_brukernavn
+```
+
+## 🛠️ Verktøy og tips
+
+### 🎨 Kodeformatering
+
+- Prettier (anbefales på lagring)
+- ESLint med Husky pre-commit hooks
+- [transform.tools](https://transform.tools/) for raske konverteringer
+
+### 🤖 KI-assistanse
+
+Dette repoet bruker GitHub Copilot for kodegenerering og forslag.
+
+### 📦 Hovedavhengigheter
+
+- Next.js
+- SWR
+- Zod
+- Playwright
+- MirageJS
+
+### 🔧 Nyttige kommandoer
+
+```bash
+# Start utviklingsserver
+pnpm dev
+
+# Kjør tester
+pnpm test
+
+# Formater kode
+pnpm format
+
+# Lint sjekk
+pnpm lint
+```
+
+## 📝 Lisens
+
+MIT © [NAV IT](https://github.com/navikt)
+
+---
+
+Laget med ❤️ av NAVs rekrutteringsteam

@@ -1,180 +1,186 @@
-export const stillingMock = {
-  stillingsinfo: {
-    stillingsid: 'e0aa5cb7-f99d-4b3d-8799-ce3d532b748a',
-    stillingsinfoid: '5ed0c3dc-3725-4e8f-910f-ea64c64eed9c',
-    eierNavident: null,
-    eierNavn: null,
-    stillingskategori: 'STILLING',
-    // stillingskategori: 'FORMIDLING',
-  },
-  stilling: {
-    id: 985771,
-    uuid: 'e0aa5cb7-f99d-4b3d-8799-ce3d532b748a',
-    created: '2025-01-15T10:02:24.01073',
-    createdBy: 'pam-rekrutteringsbistand',
-    updated: '2025-01-16T00:00:00.115381',
-    updatedBy: 'pam-rekrutteringsbistand',
-    title: 'Førskolelærer',
-    status: 'INACTIVE',
-    administration: {
-      id: 755914,
-      status: 'DONE',
-      comments: null,
-      reportee: 'F_Z993141 E_Z993141',
-      remarks: [],
-      navIdent: 'Z993141',
-    },
-    mediaList: [],
-    contactList: [
-      {
-        name: 'Per ',
-        email: 'e@post.no',
-        phone: '123344444',
-        role: null,
-        title: 'Leder',
+import { faker } from '@faker-js/faker/locale/nb_NO';
+import { GeografiDTO, StillingsDataDTO } from '../stilling.dto';
+interface MockStilling {
+  id?: string;
+  navIdent?: string;
+  seed?: number;
+  ekstern?: boolean;
+  utenStillingsinfo?: boolean;
+}
+
+const createMockStilling = (props?: MockStilling): StillingsDataDTO => {
+  if (props?.seed) {
+    faker.seed(props.seed);
+  }
+  return {
+    stillingsinfo: props?.utenStillingsinfo
+      ? null
+      : {
+          stillingsid: props?.id || faker.string.uuid(),
+          stillingsinfoid: faker.string.uuid(),
+          eierNavident: props?.navIdent || null,
+          eierNavn: props?.navIdent ? 'Tester' : null,
+          stillingskategori: 'STILLING',
+        },
+    stilling: {
+      id: faker.number.int({ min: 100000, max: 999999 }),
+      uuid: props?.id || faker.string.uuid(),
+      created: faker.date.past().toISOString(),
+      createdBy: props?.ekstern ? 'import-api' : 'pam-rekrutteringsbistand',
+      updated: faker.date.recent().toISOString(),
+      updatedBy: props?.ekstern ? 'import-api' : 'pam-rekrutteringsbistand',
+      title: faker.person.jobTitle(),
+      status: 'ACTIVE',
+      administration: {
+        id: faker.number.int({ min: 100000, max: 999999 }),
+        status: 'DONE',
+        comments: faker.lorem.sentence(),
+        reportee: faker.person.fullName(),
+        remarks: [],
+        navIdent:
+          props?.navIdent ||
+          `Z${faker.number.int({ min: 100000, max: 999999 })}`,
       },
-      {
-        name: 'Per med kort navn',
-        email: 'e@post.no',
-        phone: '123344444',
-        role: null,
-        title: 'Leder',
-      },
-      {
-        name: 'Per med veldig langt navn som bryter linjen',
-        email: 'e@post.no',
-        phone: '123344444',
-        role: null,
-        title: 'Leder',
-      },
-    ],
-    privacy: 'INTERNAL_NOT_SHOWN',
-    source: 'DIR',
-    medium: 'DIR',
-    reference: 'e0aa5cb7-f99d-4b3d-8799-ce3d532b748a',
-    published: '2025-01-16T00:00:00',
-    expires: '2025-01-17T00:00:00',
-    employer: {
-      id: 769293,
-      uuid: '31c42c49-f6bf-4152-8eda-baf57b14e7b8',
-      created: '2022-11-30T13:24:08.526224',
-      createdBy: 'pam-rekrutteringsbistand',
-      updated: '2025-01-14T09:38:59.237833',
-      updatedBy: 'pam-ad',
       mediaList: [],
-      contactList: [],
-      location: {
-        address: '',
-        postalCode: '',
-        county: null,
-        municipal: null,
-        municipalCode: null,
-        city: '',
-        country: '',
-      },
-      locationList: [
+      contactList: [
         {
-          address: '',
-          postalCode: '',
-          county: null,
-          municipal: null,
-          municipalCode: null,
-          city: '',
-          country: '',
+          name: faker.person.fullName(),
+          email: faker.internet.email(),
+          phone: faker.phone.number(),
+          title: faker.person.jobTitle(),
         },
       ],
+      privacy: 'INTERNAL_NOT_SHOWN',
+      source: props?.ekstern ? 'EKSTERN' : 'DIR',
+      medium: props?.ekstern ? 'EKSTERN' : 'DIR',
+      reference: faker.string.alphanumeric(10),
+      published: faker.date.future().toISOString(),
+      expires: faker.date.future().toISOString(),
+      employer: {
+        id: faker.number.int({ min: 100000, max: 999999 }),
+        uuid: faker.string.uuid(),
+        created: faker.date.past().toISOString(),
+        createdBy: 'pam-rekrutteringsbistand',
+        updated: faker.date.recent().toISOString(),
+        updatedBy: 'pam-ad',
+        mediaList: [],
+        contactList: [],
+        location: createLocation(),
+        locationList: [createLocation()],
+        properties: null,
+        name: faker.company.name(),
+        orgnr: faker.number.int({ min: 100000000, max: 999999999 }).toString(),
+        status: 'ACTIVE',
+        parentOrgnr: null,
+        publicName: faker.company.name(),
+        deactivated: null,
+        orgform: 'BEDR',
+        employees: faker.number.int({ min: 1, max: 1000 }),
+      },
+      location: null,
+      locationList: [createLocation()],
+      categoryList: createCategories(),
       properties: {
-        nace2: '[]',
+        employerdescription: faker.lorem.paragraph(),
+        extent: faker.helpers.arrayElement(['Heltid', 'Deltid']),
+        workhours: JSON.stringify([
+          faker.helpers.arrayElement(['Dagtid', 'Kveld', 'Natt']),
+        ]),
+        workday: JSON.stringify(['Ukedager']),
+        applicationdue: 'Snarest',
+        jobtitle: faker.person.jobTitle(),
+        positioncount: faker.number.int({ min: 1, max: 10 }).toString(),
+        engagementtype: faker.helpers.arrayElement([
+          'Fast',
+          'Midlertidig',
+          'Vikariat',
+        ]),
+        classification_styrk08_score: faker.number
+          .float({ min: 0, max: 1 })
+          .toString(),
+        adtext: `<p>${faker.lorem.paragraphs(3)}</p>`,
+        classification_styrk08_code: faker.number
+          .int({ min: 1000, max: 9999 })
+          .toString(),
+        searchtags: JSON.stringify([
+          {
+            label: faker.person.jobType(),
+            score: 0,
+          },
+          {
+            label: faker.person.jobType(),
+            score: 0,
+          },
+        ]),
+        classification_esco_code: `http://data.europa.eu/esco/isco/c${faker.number.int({ min: 1000, max: 9999 })}`,
+        classification_input_source: 'jobtitle',
+        sector: faker.helpers.arrayElement(['Privat', 'Offentlig']),
       },
-      name: 'OMTENKSOM LOJAL STRUTS PLC',
-      orgnr: '312328712',
-      status: 'ACTIVE',
-      parentOrgnr: '310071900',
-      publicName: 'OMTENKSOM LOJAL STRUTS PLC',
-      deactivated: null,
-      orgform: 'BEDR',
-      employees: 1,
+      publishedByAdmin: faker.date.future().toISOString(),
+      businessName: faker.company.name(),
+      firstPublished: faker.datatype.boolean(),
+      deactivatedByExpiry: faker.datatype.boolean(),
+      activationOnPublishingDate: faker.datatype.boolean(),
     },
-    location: null,
-    locationList: [
-      {
-        address: null,
-        postalCode: null,
-        county: 'INNLANDET',
-        municipal: 'HAMAR',
-        municipalCode: '3403',
-        city: null,
-        country: 'NORGE',
-      },
-    ],
-    categoryList: [
-      {
-        id: 2457330,
-        code: '266998',
-        categoryType: 'JANZZ',
-        name: 'Førskolelærer',
-        description: null,
-        parentId: null,
-      },
-      {
-        id: 2457331,
-        code: 'http://data.europa.eu/esco/occupation/55d60ead-0343-4008-b9e4-fb4b5a179c83',
-        categoryType: 'ESCO',
-        name: 'førskolelærer',
-        description: null,
-        parentId: null,
-      },
-      {
-        id: 2457332,
-        code: '2342',
-        categoryType: 'STYRK08',
-        name: 'Førskolelærere',
-        description: null,
-        parentId: null,
-      },
-    ],
-    properties: {
-      workhours: '["Dagtid","Kveld"]',
-      applicationdue: 'Snarest',
-      workday: '["Ukedager","Lørdag"]',
-      jobtitle: 'Førskolelærer',
-      positioncount: '2',
-      engagementtype: 'Fast',
-      classification_styrk08_score: '0.819452998426301',
-      starttime: 'Etter avtale',
-      employerdescription: '<p>asdsa</p>',
-      adtext: '<p>asdsadsad</p>',
-      tags: '["INKLUDERING","INKLUDERING__ARBEIDSTID"]',
-      classification_styrk08_code: '2342',
-      searchtags:
-        '[{"label":"Førskolelærer","score":1.0},{"label":"Barnehagelærer","score":0.8}]',
-      classification_esco_code:
-        'http://data.europa.eu/esco/occupation/55d60ead-0343-4008-b9e4-fb4b5a179c83',
-      classification_input_source: 'jobtitle',
-      sector: 'Privat',
-    },
-    publishedByAdmin: '2025-01-15T10:09:17.241685',
-    businessName: 'OMTENKSOM LOJAL STRUTS PLC',
-    firstPublished: true,
-    deactivatedByExpiry: true,
-    activationOnPublishingDate: false,
-  },
+  };
 };
 
-export const mockMinStilling = {
-  ...stillingMock,
-  title: 'Min intern test stilling',
-  stilling: {
-    ...stillingMock.stilling,
-    uuid: 'minInternStilling',
-    administration: {
-      ...stillingMock.stilling.administration,
-      id: 755914,
-      status: 'DONE',
-      comments: null,
-      reportee: 'ForNavn EtterNavn',
-      remarks: [],
-      navIdent: 'Z993141',
-    },
+const createLocation = (): GeografiDTO => ({
+  address: faker.location.streetAddress(),
+  postalCode: faker.location.zipCode(),
+  county: faker.location.county(),
+  municipal: faker.location.state(),
+  municipalCode: '1337',
+  city: faker.location.city(),
+  country: 'NORGE',
+  countyCode: '1337',
+});
+
+const createCategories = () => [
+  {
+    id: faker.number.int({ min: 1000000, max: 9999999 }),
+    code: faker.number.int({ min: 100000, max: 999999 }).toString(),
+    categoryType: 'JANZZ',
+    name: faker.person.jobType(),
+    description: null,
+    parentId: null,
   },
-};
+  {
+    id: faker.number.int({ min: 1000000, max: 9999999 }),
+    code: `http://data.europa.eu/esco/isco/c${faker.number.int({ min: 1000, max: 9999 })}`,
+    categoryType: 'ESCO',
+    name: faker.person.jobTitle(),
+    description: null,
+    parentId: null,
+  },
+  {
+    id: faker.number.int({ min: 1000000, max: 9999999 }),
+    code: faker.number.int({ min: 1000, max: 9999 }).toString(),
+    categoryType: 'STYRK08',
+    name: faker.person.jobTitle(),
+    description: null,
+    parentId: null,
+  },
+];
+
+faker.seed(1337);
+
+export const mockBaseStilling = createMockStilling();
+
+export const mockMinStilling = createMockStilling({
+  id: 'minStilling',
+  navIdent: 'TestIdent',
+  seed: 1,
+});
+export const mockMinEksternStilling = createMockStilling({
+  id: 'minEksternStilling',
+  navIdent: 'TestIdent',
+  ekstern: true,
+  seed: 2,
+});
+export const mockEksternStilling = createMockStilling({
+  id: 'eksternStilling',
+  ekstern: true,
+  utenStillingsinfo: true,
+  seed: 3,
+});

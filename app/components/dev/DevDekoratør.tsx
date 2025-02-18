@@ -1,4 +1,5 @@
-import { InternalHeader, Select, TextField } from '@navikt/ds-react';
+import { Box, InternalHeader, Select, TextField } from '@navikt/ds-react';
+
 import * as React from 'react';
 import { useApplikasjonContext } from '../../ApplikasjonContext';
 import { Roller } from '../tilgangskontroll/roller';
@@ -15,7 +16,7 @@ const DevDekoratør: React.FC = () => {
       Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER,
   );
   const [devBruker, setDevBruker] = React.useState<string>(
-    localStorage.getItem('DEV-BRUKER') || 'Z993141',
+    localStorage.getItem('DEV-BRUKER') || 'TestIdent',
   );
 
   const setDevRolleCookie = (rolle: Roller) => {
@@ -35,6 +36,19 @@ const DevDekoratør: React.FC = () => {
       setValgtNavKontor({ navKontor: '1234', navKontorNavn: 'NAV FYA1' });
     }
   });
+
+  if (process.env.NEXT_PUBLIC_PLAYWRIGHT_TEST_MODE) {
+    return (
+      <InternalHeader>
+        <InternalHeader.Title as='h1'>
+          Rekrutteringsbistand - Playwright Test
+        </InternalHeader.Title>
+        <Box.New className='flex justify-between items-center gap-4 ml-4'>
+          Test kjøres med bruker: {devBruker} og rolle: {devRolle}
+        </Box.New>
+      </InternalHeader>
+    );
+  }
 
   return (
     <InternalHeader>

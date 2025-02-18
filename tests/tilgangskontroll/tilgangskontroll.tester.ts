@@ -8,180 +8,169 @@ export const testTilgangskontroll = (rolle: Roller) => {
     rolle === Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET;
   const MODIA = rolle === Roller.AD_GRUPPE_MODIA_GENERELL_TILGANG;
 
-  test.describe(`Tilgangskontroll for ${rolle}`, () => {
+  const rolleNavn = (rolle: Roller): string => {
+    switch (rolle) {
+      case Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET:
+        return 'Arbeidsgiverrettet';
+      case Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET:
+        return 'Jobbsøkerrettet';
+      case Roller.AD_GRUPPE_MODIA_GENERELL_TILGANG:
+        return 'Modia';
+      default:
+        return 'UKJENT ROLLE!';
+    }
+  };
+
+  test.describe(`Tilgangskontroll for ${rolleNavn(rolle)}`, () => {
     test.beforeEach(async ({ page }) => {
       await page.goto('http://localhost:1337/');
     });
 
-    test.describe('1. Forside', () => {
-      test('Ser oversikt fanen', async ({ page }) => {
-        if (ARBEIDSGIVERRETTET || JOBBSOKERRETTET || MODIA) {
-          await expect(
-            page.getByRole('link', { name: 'Oversikt' }),
-          ).toBeVisible();
-        }
-      });
-      test('Hurtiglenker', async ({ page }) => {
-        const element = page.getByTestId('forside-hurtiglenker');
-        if (ARBEIDSGIVERRETTET) {
-          await expect(element).toBeVisible();
-        }
-        if (JOBBSOKERRETTET || MODIA) {
-          await expect(element).toBeHidden();
-        }
-      });
-      test('Utfallsstatistikk', async ({ page }) => {
-        const element = page.getByTestId('forside-utfallsstatistikk');
-        if (ARBEIDSGIVERRETTET || JOBBSOKERRETTET || MODIA) {
-          await expect(element).toBeVisible();
-        }
-      });
-      test('Forespørsler statistikk', async ({ page }) => {
-        const element = page.getByTestId('forside-forespørsel-statistikk');
-        if (ARBEIDSGIVERRETTET || JOBBSOKERRETTET || MODIA) {
-          await expect(element).toBeVisible();
-        }
-      });
+    test('1. Forside', async ({ page }) => {
+      // Ser oversikt fanen
+      await expect(page.getByRole('link', { name: 'Oversikt' })).toBeVisible();
+
+      // Hurtiglenker
+      const hurtiglenker = page.getByTestId('forside-hurtiglenker');
+      if (ARBEIDSGIVERRETTET) {
+        await expect(hurtiglenker).toBeVisible();
+      }
+      if (JOBBSOKERRETTET || MODIA) {
+        await expect(hurtiglenker).toBeHidden();
+      }
+
+      // Utfallsstatistikk
+      const utfallsstatistikk = page.getByTestId('forside-utfallsstatistikk');
+      if (ARBEIDSGIVERRETTET || JOBBSOKERRETTET || MODIA) {
+        await expect(utfallsstatistikk).toBeVisible();
+      }
+
+      // Forespørsler statistikk
+      const forespørslerStatistikk = page.getByTestId(
+        'forside-forespørsel-statistikk',
+      );
+      if (ARBEIDSGIVERRETTET || JOBBSOKERRETTET || MODIA) {
+        await expect(forespørslerStatistikk).toBeVisible();
+      }
     });
 
-    test.describe('2. Stillingssøk', () => {
-      test.beforeEach(async ({ page }) => {
-        await page.getByRole('tab', { name: 'Stillinger' }).click();
-      });
+    test('2. Stillingssøk', async ({ page }) => {
+      await page.getByRole('tab', { name: 'Stillinger' }).click();
 
-      test('Stillingssøk', async ({ page }) => {
-        if (ARBEIDSGIVERRETTET || JOBBSOKERRETTET || MODIA) {
-          await expect(
-            page.getByRole('tab', { name: 'Stillinger' }),
-          ).toBeVisible();
-        }
-      });
+      await expect(page.getByRole('tab', { name: 'Stillinger' })).toBeVisible();
 
-      test('Alle stillinger fane', async ({ page }) => {
-        const element = page.getByRole('tab', { name: 'Alle' });
-        if (ARBEIDSGIVERRETTET || JOBBSOKERRETTET || MODIA) {
-          await expect(element).toBeVisible();
-        }
-      });
+      // Alle stillinger fane
+      const alleStillingerFane = page.getByRole('tab', { name: 'Alle' });
+      if (ARBEIDSGIVERRETTET || JOBBSOKERRETTET || MODIA) {
+        await expect(alleStillingerFane).toBeVisible();
+      }
 
-      test('Mine stillinger fane', async ({ page }) => {
-        const element = page.getByRole('tab', { name: 'Mine stillinger' });
-        if (ARBEIDSGIVERRETTET) {
-          await expect(element).toBeVisible();
-        }
-        if (JOBBSOKERRETTET || MODIA) {
-          await expect(element).toBeHidden();
-        }
+      // Mine stillinger fane
+      const mineStillingerFane = page.getByRole('tab', {
+        name: 'Mine stillinger',
       });
+      if (ARBEIDSGIVERRETTET) {
+        await expect(mineStillingerFane).toBeVisible();
+      }
+      if (JOBBSOKERRETTET || MODIA) {
+        await expect(mineStillingerFane).toBeHidden();
+      }
 
-      test('Opprett ny stilling knapp', async ({ page }) => {
-        const element = page.getByRole('button', { name: 'Opprett ny' });
-        if (ARBEIDSGIVERRETTET) {
-          await expect(element).toBeVisible();
-        }
-        if (JOBBSOKERRETTET || MODIA) {
-          await expect(element).toBeHidden();
-        }
+      // Opprett ny stilling knapp
+      const opprettNyStillingKnapp = page.getByRole('button', {
+        name: 'Opprett ny',
       });
+      if (ARBEIDSGIVERRETTET) {
+        await expect(opprettNyStillingKnapp).toBeVisible();
+      }
+      if (JOBBSOKERRETTET || MODIA) {
+        await expect(opprettNyStillingKnapp).toBeHidden();
+      }
 
-      test('Statuser utover publisert', async ({ page }) => {
-        const element = page.getByRole('tab', { name: 'Alle' });
-        if (ARBEIDSGIVERRETTET) {
-          await expect(element).toBeVisible();
-        }
-        if (JOBBSOKERRETTET || MODIA) {
-          await expect(element).toBeHidden();
-        }
-      });
+      // Statuser utover publisert
+      if (ARBEIDSGIVERRETTET) {
+        await expect(
+          page.getByRole('checkbox', { name: 'Utløpt' }),
+        ).toBeVisible();
+        await expect(
+          page.getByRole('checkbox', { name: 'Stoppet' }),
+        ).toBeVisible();
+      }
+      if (JOBBSOKERRETTET || MODIA) {
+        await expect(
+          page.getByRole('checkbox', { name: 'Utløpt' }),
+        ).toBeHidden();
+        await expect(
+          page.getByRole('checkbox', { name: 'Stoppet' }),
+        ).toBeHidden();
+      }
     });
 
-    test.describe('3. Stilling', () => {
-      test.beforeEach(async ({ page }) => {
-        await page.goto('http://localhost:1337/stilling/internStilling');
-      });
+    test('3. Stilling', async ({ page }) => {
+      await page.goto('http://localhost:1337/stilling/internStilling');
 
-      test('Viser stilling side', async ({ page }) => {
-        if (ARBEIDSGIVERRETTET || JOBBSOKERRETTET || MODIA) {
-          await expect(page.getByTestId('stilling-side')).toBeVisible();
-        }
-      });
+      // Viser stilling side
+      await expect(page.getByTestId('stilling-side')).toBeVisible();
 
-      test('Viser finn kandidater knapp', async ({ page }) => {
-        if (ARBEIDSGIVERRETTET || JOBBSOKERRETTET) {
-          await expect(
-            page.getByRole('button', { name: 'Finn kandidater' }),
-          ).toBeVisible();
-        }
-        if (MODIA) {
-          await expect(
-            page.getByRole('button', { name: 'Finn kandidater' }),
-          ).toBeHidden();
-        }
+      // Viser finn kandidater knapp
+      const finnKandidaterKnapp = page.getByRole('button', {
+        name: 'Finn kandidater',
       });
-      test('Viser legg til kandidate knapp', async ({ page }) => {
-        if (ARBEIDSGIVERRETTET || JOBBSOKERRETTET) {
-          await expect(
-            page.getByRole('button', { name: 'Legg til kandidat' }),
-          ).toBeVisible();
-        }
-        if (MODIA) {
-          await expect(
-            page.getByRole('button', { name: 'Legg til kandidat' }),
-          ).toBeHidden();
-        }
-      });
+      if (ARBEIDSGIVERRETTET || JOBBSOKERRETTET) {
+        await expect(finnKandidaterKnapp).toBeVisible();
+      }
+      if (MODIA) {
+        await expect(finnKandidaterKnapp).toBeHidden();
+      }
 
-      test('Viser om stillingen', async ({ page }) => {
-        if (ARBEIDSGIVERRETTET || JOBBSOKERRETTET || MODIA) {
-          await expect(
-            page.getByRole('tab', { name: 'Om stillingen' }),
-          ).toBeVisible();
-        }
+      // Viser legg til kandidate knapp
+      const leggTilKandidatKnapp = page.getByRole('button', {
+        name: 'Legg til kandidat',
       });
+      if (ARBEIDSGIVERRETTET || JOBBSOKERRETTET) {
+        await expect(leggTilKandidatKnapp).toBeVisible();
+      }
+      if (MODIA) {
+        await expect(leggTilKandidatKnapp).toBeHidden();
+      }
 
-      test('Rediger, Dupliser og Avslutt knapp', async ({ page }) => {
-        await page.goto('http://localhost:1337/stilling/minInternStilling');
-        if (ARBEIDSGIVERRETTET) {
-          await expect(
-            page.getByRole('button', { name: 'Rediger' }),
-          ).toBeVisible();
-          await expect(
-            page.getByRole('button', { name: 'Dupliser' }),
-          ).toBeVisible();
-          await expect(
-            page.getByRole('button', { name: 'Avslutt' }),
-          ).toBeVisible();
-        } else {
-          await expect(
-            page.getByRole('button', { name: 'Rediger' }),
-          ).toBeHidden();
-          await expect(
-            page.getByRole('button', { name: 'Dupliser' }),
-          ).toBeHidden();
-          await expect(
-            page.getByRole('button', { name: 'Avslutt' }),
-          ).toBeHidden();
-        }
-      });
-      test('Overta stillingen knapp', async ({ page }) => {
-        // TODO: Implement
-      });
-      test('Viser kandidater fane', async ({ page }) => {
-        if (ARBEIDSGIVERRETTET) {
-          await expect(
-            page.getByRole('tab', { name: 'Kandidater' }),
-          ).toBeVisible();
-        }
-      });
+      // Viser om stillingen
+      const omStillingFane = page.getByRole('tab', { name: 'Om stillingen' });
+      if (ARBEIDSGIVERRETTET || JOBBSOKERRETTET || MODIA) {
+        await expect(omStillingFane).toBeVisible();
+      }
     });
-  });
 
-  test.describe('4. Kandidatsøk', () => {
-    test.beforeEach(async ({ page }) => {
+    test('3.1 Min Stilling', async ({ page }) => {
+      await page.goto('http://localhost:1337/stilling/minStilling');
+
+      const redigerKnapp = page.getByRole('button', { name: 'Rediger' });
+      const dupliserKnapp = page.getByRole('button', { name: 'Dupliser' });
+      const avsluttKnapp = page.getByRole('button', { name: 'Avslutt' });
+
+      if (ARBEIDSGIVERRETTET) {
+        await expect(redigerKnapp).toBeVisible();
+        await expect(dupliserKnapp).toBeVisible();
+        await expect(avsluttKnapp).toBeVisible();
+      } else {
+        await expect(redigerKnapp).toBeHidden();
+        await expect(dupliserKnapp).toBeHidden();
+        await expect(avsluttKnapp).toBeHidden();
+      }
+
+      // TODO: Implement Overta stillingen knapp
+
+      if (ARBEIDSGIVERRETTET) {
+        await expect(
+          page.getByRole('tab', { name: 'Kandidater' }),
+        ).toBeVisible();
+      }
+    });
+
+    test('4. Kandidatsøk', async ({ page }) => {
       await page.goto('http://localhost:1337/kandidat-sok');
-    });
 
-    test('Viser kandidatsøk fane', async ({ page }) => {
+      // Viser kandidatsøk fane
       const kandidatSøkTab = page.getByRole('tab', { name: 'Kandidatsøk' });
 
       if (ARBEIDSGIVERRETTET || JOBBSOKERRETTET) {
@@ -195,28 +184,26 @@ export const testTilgangskontroll = (rolle: Roller) => {
           page.getByRole('heading', { name: 'Ikke tilgang' }),
         ).toBeVisible();
       }
-    });
-    test('Mine brukere fane', async ({ page }) => {
-      const mineBrukereTab = page.getByRole('tab', { name: 'Mine brukere' });
 
+      // Mine brukere fane
+      const mineBrukereTab = page.getByRole('tab', { name: 'Mine brukere' });
       if (ARBEIDSGIVERRETTET || JOBBSOKERRETTET) {
         await expect(mineBrukereTab).toBeVisible();
       }
       if (MODIA) {
         await expect(mineBrukereTab).toBeHidden();
       }
-    });
-    test('Mitt kontor fane', async ({ page }) => {
-      const mittKontorTab = page.getByRole('tab', { name: 'Mitt kontor' });
 
+      // Mitt kontor fane
+      const mittKontorTab = page.getByRole('tab', { name: 'Mitt kontor' });
       if (ARBEIDSGIVERRETTET || JOBBSOKERRETTET) {
         await expect(mittKontorTab).toBeVisible();
       }
       if (MODIA) {
         await expect(mittKontorTab).toBeHidden();
       }
-    });
-    test('Mine kontor fane', async ({ page }) => {
+
+      // Mine kontor fane
       const mineKontorTab = page.getByRole('tab', { name: 'Mine kontor' });
 
       if (ARBEIDSGIVERRETTET || JOBBSOKERRETTET) {
@@ -225,22 +212,20 @@ export const testTilgangskontroll = (rolle: Roller) => {
       if (MODIA) {
         await expect(mineKontorTab).toBeHidden();
       }
-    });
-    test('Valgte kontor fane', async ({ page }) => {
+
+      // Valgte kontor fane
       const valgteKontorTab = page.getByRole('tab', {
         name: 'Valgte kontor',
       });
-
       if (ARBEIDSGIVERRETTET) {
         await expect(valgteKontorTab).toBeVisible();
       }
       if (JOBBSOKERRETTET || MODIA) {
         await expect(valgteKontorTab).toBeHidden();
       }
-    });
-    test('Allefane', async ({ page }) => {
-      const alleFane = page.getByRole('tab', { name: 'Alle' });
 
+      // Alle fane
+      const alleFane = page.getByRole('tab', { name: 'Alle' });
       if (ARBEIDSGIVERRETTET) {
         await expect(alleFane).toBeVisible();
       }
@@ -248,14 +233,10 @@ export const testTilgangskontroll = (rolle: Roller) => {
         await expect(alleFane).toBeHidden();
       }
     });
-  });
 
-  test.describe('5. Kandidat', () => {
-    test.beforeEach(async ({ page }) => {
+    test('5. Kandidat', async ({ page }) => {
       await page.goto('http://localhost:1337/kandidat/PAM012t1avh27');
-    });
-
-    test('Viser kandidat side ', async ({ page }) => {
+      // Viser kandidat side
       const oversiktFane = page.getByRole('tab', { name: 'Oversikt' });
       if (ARBEIDSGIVERRETTET || JOBBSOKERRETTET) {
         await expect(oversiktFane).toBeVisible();
@@ -263,10 +244,9 @@ export const testTilgangskontroll = (rolle: Roller) => {
       if (MODIA) {
         await expect(oversiktFane).toBeHidden();
       }
-    });
-    test('Viser aktivitetfanen inne på kandidat', async ({ page }) => {
-      const aktivitetFane = page.getByRole('tab', { name: 'Aktivitet' });
 
+      // Viser aktivitetfanen inne på kandidat
+      const aktivitetFane = page.getByRole('tab', { name: 'Aktivitet' });
       if (ARBEIDSGIVERRETTET || JOBBSOKERRETTET) {
         await expect(aktivitetFane).toBeVisible();
       }
@@ -274,26 +254,22 @@ export const testTilgangskontroll = (rolle: Roller) => {
         await expect(aktivitetFane).toBeHidden();
       }
     });
-  });
 
-  test.describe('6. Formidlinger', () => {
-    test.beforeEach(async ({ page }) => {
+    test('6. Formidlinger', async ({ page }) => {
       await page.goto('http://localhost:1337/formidlinger');
-    });
 
-    test('Viser formidlinger', async ({ page }) => {
+      // Viser formidlinger
       const formidlinger = await page.getByRole('heading', {
         name: 'Etterregistrering formidlinger',
       });
-
       if (ARBEIDSGIVERRETTET || JOBBSOKERRETTET) {
         await expect(formidlinger).toBeVisible();
       }
       if (MODIA) {
         await expect(formidlinger).toBeHidden();
       }
-    });
-    test('Kan opprette formidling', async ({ page }) => {
+
+      // Kan opprette formidling
       const etterFormidlingKnapp = page.getByRole('button', {
         name: 'Opprett etterregistrering',
       });

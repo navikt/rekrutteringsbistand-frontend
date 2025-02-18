@@ -1,4 +1,4 @@
-import { IFeilmelding } from '../types/Feilmelding';
+import { IFeilmelding } from '../app/components/feilhåndtering/Feilmelding';
 
 export class kastError extends Error {
   public statuskode: number;

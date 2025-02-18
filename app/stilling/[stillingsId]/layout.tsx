@@ -15,6 +15,7 @@ export default async function StillingSideRootLayout({
   if (!stillingsId) {
     return <NotFound />;
   }
+
   return (
     <StillingsContextProvider stillingsId={stillingsId}>
       <StillingSideLayout>{children}</StillingSideLayout>

@@ -67,7 +67,7 @@ const OmStillingen: React.FC<{ forhåndsvisData?: boolean }> = ({
   };
 
   return (
-    <div className='mt-10'>
+    <div className='mt-10' data-testid='om-stillingen'>
       <div className=' flex flex-col gap-y-8 gap-x-[3.5rem] md:flex-row'>
         <div className='w-full' id='print-content' ref={contentRef}>
           <div className='flex flex-col '>
