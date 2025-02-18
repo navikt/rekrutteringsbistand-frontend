@@ -49,21 +49,21 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
           name: formidlingsDataDto.omFormidling.organisasjon.navn,
           location: {
             address:
-              formidlingsDataDto.omFormidling.organisasjon.adresse.adresse ??
+              formidlingsDataDto.omFormidling.organisasjon.adresse?.adresse ??
               '',
             postalCode:
-              formidlingsDataDto.omFormidling.organisasjon.adresse.postnummer ??
-              '',
+              formidlingsDataDto.omFormidling.organisasjon.adresse
+                ?.postnummer ?? '',
             county:
-              formidlingsDataDto.omFormidling.organisasjon.adresse.kommune ??
+              formidlingsDataDto.omFormidling.organisasjon.adresse?.kommune ??
               '',
             country:
-              formidlingsDataDto.omFormidling.organisasjon.adresse.land ?? '',
+              formidlingsDataDto.omFormidling.organisasjon.adresse?.land ?? '',
             municipal:
               formidlingsDataDto.omFormidling.organisasjon.adresse
-                .kommunenummer ?? '',
+                ?.kommunenummer ?? '',
             city:
-              formidlingsDataDto.omFormidling.organisasjon.adresse.poststed ??
+              formidlingsDataDto.omFormidling.organisasjon.adresse?.poststed ??
               '',
           },
         },
