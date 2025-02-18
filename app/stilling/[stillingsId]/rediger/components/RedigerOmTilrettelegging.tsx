@@ -28,7 +28,6 @@ export const RedigerOmTilrettelegging: React.FC<
   const handleStepSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const isValid = await trigger('omTilrettelegging', { shouldFocus: true });
-    console.log('🎺 isValid', errors);
     // Show why not valid:
 
     if (isValid) {

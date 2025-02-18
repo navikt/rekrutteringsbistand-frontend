@@ -116,7 +116,6 @@ const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
     [stillingsData, ident, harRolle],
   );
 
-  console.log('🎺 stillingsData', stillingsData);
   return (
     <StillingsContext.Provider
       value={{

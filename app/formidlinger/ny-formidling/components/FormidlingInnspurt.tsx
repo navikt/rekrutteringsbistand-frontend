@@ -11,6 +11,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { formidleUsynligKandidatEndepunkt } from '../../../api/kandidat/formidleUsynligKandidat';
+import { kandidatlisteEndepunkt } from '../../../api/kandidat/useKandidatliste';
 import { kandidatListeIdEndepunkt } from '../../../api/kandidat/useKandidatlisteId';
 import { OpprettNyStillingDTO } from '../../../api/stilling/ny-stilling/dto';
 import { opprettNyStillingEndepunkt } from '../../../api/stilling/oppdater-stilling/oppdaterStilling';
@@ -117,10 +118,6 @@ const FormidlingInnspurt = () => {
     const kandidatListeIdRespons = await kandidatListeIdFetch.json();
     const kandidatlisteId = kandidatListeIdRespons.kandidatlisteId;
 
-    console.log(
-      '🎺  formidlingData?.omKandiatene',
-      formidlingData?.omKandiatene,
-    );
     formidlingData?.omKandiatene.map(async (kandidat: any) => {
       setSteg(
         `Setter kandidat ${kandidat.navn.fornavn} ${kandidat.navn.etternavn} til fått jobben`,
@@ -135,7 +132,12 @@ const FormidlingInnspurt = () => {
           navKontor: valgtNavKontor?.navKontor ?? '',
           stillingsId: publisertStillingData.stilling.uuid,
         }),
-      }).then(() => console.log(kandidat.fnr + ' formidlet'));
+      }).then(async () => {
+        // Hent kandidatliste på nytt for å unngå låsing
+        await fetch(
+          kandidatlisteEndepunkt(publisertStillingData.stilling.uuid)!,
+        );
+      });
     });
 
     setSteg('Fullfører formidling');
