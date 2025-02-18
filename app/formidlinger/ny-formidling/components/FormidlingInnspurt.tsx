@@ -117,11 +117,16 @@ const FormidlingInnspurt = () => {
     const kandidatListeIdRespons = await kandidatListeIdFetch.json();
     const kandidatlisteId = kandidatListeIdRespons.kandidatlisteId;
 
-    setSteg('Set kandidater til fått jobben');
-
+    console.log(
+      '🎺  formidlingData?.omKandiatene',
+      formidlingData?.omKandiatene,
+    );
     formidlingData?.omKandiatene.map(async (kandidat: any) => {
+      setSteg(
+        `Setter kandidat ${kandidat.navn.fornavn} ${kandidat.navn.etternavn} til fått jobben`,
+      );
       await new Promise((resolve) => setTimeout(resolve, 500));
-      //TODO Skal vi håndtere synlige kandidater også?
+
       return fetch(formidleUsynligKandidatEndepunkt(kandidatlisteId), {
         method: 'POST',
         body: JSON.stringify({
@@ -130,12 +135,12 @@ const FormidlingInnspurt = () => {
           navKontor: valgtNavKontor?.navKontor ?? '',
           stillingsId: publisertStillingData.stilling.uuid,
         }),
-      });
+      }).then(() => console.log(kandidat.fnr + ' formidlet'));
     });
 
     setSteg('Fullfører formidling');
 
-    router.push(`/formidlinger/${publisertStillingData.stilling.uuid}`);
+    // router.push(`/formidlinger/${publisertStillingData.stilling.uuid}`);
   };
 
   return (

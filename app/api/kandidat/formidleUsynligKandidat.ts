@@ -1,4 +1,5 @@
 'use client';
+import { Server } from 'miragejs/server';
 /**
  * Endepunkt /useEndreKandidatUtfall
  */
@@ -13,6 +14,12 @@ export interface EndreKandidatUtfallProps {
   navKontor: string;
   stillingsId: string;
 }
+
+export const formidleUsynligKandidatMirage = (server: Server) => {
+  return server.post(formidleUsynligKandidatEndepunkt('*'), () => ({
+    message: 'Kandidaten er formidlet',
+  }));
+};
 
 // export const formidleUsynligKandidat = (props: EndreKandidatUtfallProps) =>
 //   putApi(

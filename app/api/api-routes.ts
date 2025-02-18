@@ -32,7 +32,7 @@ export const ArbeidsgiverNotifikasjonAPI: Iroute = {
 };
 
 export const StatistikkAPI: Iroute = {
-  api_route: '/statistikk-api/statistikk',
+  api_route: '/statistikk',
   api_url: process.env.STATISTIKK_API ?? '',
   internUrl: '/api/statistikk',
   scope: `api://${fss}.toi.rekrutteringsbistand-statistikk-api/.default`,

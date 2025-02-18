@@ -11,6 +11,7 @@ import { kandidagsammendragMirage } from '../app/api/kandidat-sok/useKandidatsam
 import { kandidatStillingsSøkMirage } from '../app/api/kandidat-sok/useKandidatStillingssøk';
 import { kandidatSokMirage } from '../app/api/kandidat-sok/useKandidatsøk';
 import { kontorSøkMirage } from '../app/api/kandidat-sok/useKontorSøk';
+import { formidleUsynligKandidatMirage } from '../app/api/kandidat/formidleUsynligKandidat';
 import { antallKandidaterMirage } from '../app/api/kandidat/useAntallKandidater';
 import { kandidatlisteMirage } from '../app/api/kandidat/useKandidatliste';
 import { kandidatlisteIdMirage } from '../app/api/kandidat/useKandidatlisteId';
@@ -65,6 +66,7 @@ export function makeServer({ environment = 'test' } = {}) {
       arbeidsgiverMirage(this);
       pamGeografiMirage(this);
       pamPostdataMirage(this);
+      formidleUsynligKandidatMirage(this);
       // stillingssøk mock kan disables ved ES søk
       stillingssøkMirage(this);
       this.passthrough('*');
