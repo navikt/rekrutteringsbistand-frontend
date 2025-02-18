@@ -1,12 +1,13 @@
 import { Buildings2Icon, PencilIcon, PersonIcon } from '@navikt/aksel-icons';
 import { BodyShort, Box, Button, Detail, Heading } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { getAPI, postApi } from '../../../../api/fetcher';
-import { OpprettNyStillingDTO } from '../../../../api/stilling/ny-stilling/dto';
-import { oppdaterStilling } from '../../../../api/stilling/oppdater-stilling/oppdaterStilling';
-import { useApplikasjonContext } from '../../../../ApplikasjonContext';
-import { Stillingskategori } from '../../../../stilling/stilling-typer';
+import { getAPI, postApi } from '../../../api/fetcher';
+import { OpprettNyStillingDTO } from '../../../api/stilling/ny-stilling/dto';
+import { oppdaterStilling } from '../../../api/stilling/oppdater-stilling/oppdaterStilling';
+import { useApplikasjonContext } from '../../../ApplikasjonContext';
+import { Stillingskategori } from '../../../stilling/stilling-typer';
 import { mapFormTilFormidling } from '../mapFormidling';
 import { FormidlingDataForm } from '../redigerFormidlingFormType';
 
@@ -16,11 +17,13 @@ const FormidlingInnspurt = () => {
   const router = useRouter();
   const { brukerData, valgtNavKontor } = useApplikasjonContext();
 
+  const [senderSkjema, setSenderSkjema] = useState(false);
   const formidlingsVerdier = getValues();
 
   // const onSubmit: SubmitHandler<FormidlingDataForm> = async (data) => {
 
   const onSubmit = async (data: FormidlingDataForm) => {
+    setSenderSkjema(true);
     const formidlingData = {
       ...data,
       reportee: `${brukerData.fornavn} ${brukerData.etternavn}`,
@@ -178,7 +181,7 @@ const FormidlingInnspurt = () => {
           <Button
             variant='primary'
             className='w-full'
-            // type='submit'
+            loading={senderSkjema}
             onClick={() => onSubmit(getValues())}
           >
             Fullfør registreringen

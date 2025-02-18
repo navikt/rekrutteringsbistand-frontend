@@ -1,14 +1,14 @@
 import { z } from 'zod';
-import { navnSchema } from '../../../api/kandidat-sok/useKandidatNavn';
-import { ArbeidsgiverSchema } from '../../../api/pam-search/underenhet/useArbeidsgiver';
+import { navnSchema } from '../../api/kandidat-sok/useKandidatNavn';
+import { ArbeidsgiverSchema } from '../../api/pam-search/underenhet/useArbeidsgiver';
 import {
   KategoriSchema,
   LocationSchema,
-} from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
+} from '../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import {
   AdresseLokasjonSchema,
   OmTilretteleggingSchema,
-} from '../../../stilling/[stillingsId]/rediger/redigerFormType.zod';
+} from '../../stilling/[stillingsId]/rediger/redigerFormType.zod';
 
 export const FormidlingKandidatSchema = z.object({
   fnr: z.string(),
@@ -37,7 +37,7 @@ export const FormidlingFormSchema = z.object({
     .array(FormidlingKandidatSchema)
     .min(1, { message: 'Du må velge minst én kandidat' }),
   omFormidling: OmFormidlingSchema,
-  omTilrettelegging: OmTilretteleggingSchema,
+  omTilrettelegging: OmTilretteleggingSchema.optional(),
   innspurt: z.string(),
   reportee: z.string(),
   navIdent: z.string(),

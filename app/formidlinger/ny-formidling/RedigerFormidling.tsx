@@ -1,16 +1,8 @@
 import { TrashIcon } from '@navikt/aksel-icons';
 import { Box, Button, Stepper } from '@navikt/ds-react';
-import { useRouter } from 'next/navigation';
 import { useQueryState } from 'nuqs';
 import * as React from 'react';
-import { useState } from 'react';
-import { useFormContext } from 'react-hook-form';
-import { oppdaterStilling } from '../../../api/stilling/oppdater-stilling/oppdaterStilling';
-import { useVisVarsling } from '../../../components/varsling/Varsling';
-import { useStillingsContext } from '../../../stilling/[stillingsId]/StillingsContext';
-import { RedigerOmTilrettelegging } from '../../../stilling/[stillingsId]/rediger/components/RedigerOmTilrettelegging';
-import { mapFormTilStilling } from '../../../stilling/[stillingsId]/rediger/mapStilling';
-import { StillingsDataForm } from '../../../stilling/[stillingsId]/rediger/redigerFormType.zod';
+import { RedigerOmTilrettelegging } from '../../stilling/[stillingsId]/rediger/components/RedigerOmTilrettelegging';
 import FormidlingInnspurt from './components/FormidlingInnspurt';
 import FormidlingLeggTilKandidat from './components/FormidlingLeggTilKandidat';
 import FormidlingOmStillingen from './components/RedigerOmFormidlingen';
@@ -27,12 +19,6 @@ enum RedigerFormidlingSteg {
 }
 
 const RedigerFormidling: React.FC<RedigerFormidlingProps> = ({ children }) => {
-  const { getValues, setValue, watch } = useFormContext<StillingsDataForm>();
-  const { stillingsData, refetch } = useStillingsContext();
-  const [loading, setLoading] = useState(false);
-  const visVarsling = useVisVarsling();
-  const router = useRouter();
-
   const [aktivtSteg, setAktivtSteg] = useQueryState('steg', {
     defaultValue: RedigerFormidlingSteg.omKandidatene,
   });
@@ -41,27 +27,6 @@ const RedigerFormidling: React.FC<RedigerFormidlingProps> = ({ children }) => {
     const steps = Object.values(RedigerFormidlingSteg);
     const index = steps.indexOf(aktivtSteg as RedigerFormidlingSteg);
     return index;
-  };
-
-  const lagreFormidling = async () => {
-    setLoading(true);
-    const nyStillingsData = mapFormTilStilling(getValues(), stillingsData);
-    try {
-      await oppdaterStilling(nyStillingsData);
-
-      visVarsling({
-        innhold: 'Formidling ble lagret, åpner formidling.',
-        alertType: 'success',
-      });
-      refetch();
-      await new Promise((resolve) => setTimeout(resolve, 3000));
-      router.push(`/stilling/${stillingsData.stilling.uuid}`);
-    } catch (error) {
-      visVarsling({
-        innhold: 'Feil ved lagring av formidling',
-        alertType: 'error',
-      });
-    }
   };
 
   const nesteSteg = () => {
@@ -86,8 +51,6 @@ const RedigerFormidling: React.FC<RedigerFormidlingProps> = ({ children }) => {
 
   return (
     <Box>
-      {/* Header */}
-
       <div className='flex flex-row'>
         <div className='sticky top-4 self-start'>
           <Stepper
@@ -119,7 +82,7 @@ const RedigerFormidling: React.FC<RedigerFormidlingProps> = ({ children }) => {
           )}
           {aktivtSteg === RedigerFormidlingSteg.omTilrettelegging && (
             <RedigerOmTilrettelegging
-              omTilretteleggingFelt='omStillingen.omTilrettelegging'
+              omTilretteleggingFelt='omFormidling.omTilrettelegging'
               stegNummer={2}
               nextStep={nesteSteg}
               forrigeSteg={forrigeSteg}

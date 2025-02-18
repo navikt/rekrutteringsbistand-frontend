@@ -3,8 +3,8 @@ import * as React from 'react';
 import { useFormContext } from 'react-hook-form';
 import LeggTilKandidater, {
   ValgtKandidatProp,
-} from '../../../../components/legg-til-kandidat/LeggTilKandidater';
-import StegNavigering from '../../../../stilling/[stillingsId]/rediger/components/StegNavigering';
+} from '../../../components/legg-til-kandidat/LeggTilKandidater';
+import StegNavigering from '../../../stilling/[stillingsId]/rediger/components/StegNavigering';
 import { FormidlingDataForm } from '../redigerFormidlingFormType';
 
 export interface FormidlingLeggTilKandidatProps {
@@ -46,7 +46,7 @@ const FormidlingLeggTilKandidat: React.FC<FormidlingLeggTilKandidatProps> = ({
   };
   return (
     <Box.New className='space-y-4'>
-      <Heading size='large'>Etterregistrer formidling</Heading>
+      <Heading size='large'>Legg til kandidater</Heading>
       <BodyLong>Vi må vite hvilke kandidater du ønsker å formidle</BodyLong>
       <form onSubmit={handleStepSubmit}>
         <div className='flex flex-col space-y-8'>

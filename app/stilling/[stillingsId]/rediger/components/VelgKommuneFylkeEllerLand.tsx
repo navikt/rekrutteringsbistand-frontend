@@ -6,7 +6,7 @@ import {
   GeografiType,
   usePamGeografi,
 } from '../../../../api/pam-geografi/typehead/lokasjoner/usePamGeografi';
-import { FormidlingDataForm } from '../../../../formidlinger/[stillingsId]/rediger/redigerFormidlingFormType';
+import { FormidlingDataForm } from '../../../../formidlinger/ny-formidling/redigerFormidlingFormType';
 import { StillingsDataForm } from '../redigerFormType.zod';
 
 interface VelgKommuneFylkeEllerLandProps {

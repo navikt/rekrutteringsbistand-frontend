@@ -2,8 +2,8 @@ import { NextResponse } from 'next/server';
 
 import { format } from 'date-fns';
 import { NextRequest } from 'next/server';
-import { mapFormTilFormidling } from '../../../formidlinger/[stillingsId]/rediger/mapFormidling';
-import { FormidlingDataForm } from '../../../formidlinger/[stillingsId]/rediger/redigerFormidlingFormType';
+import { mapFormTilFormidling } from '../../../formidlinger/ny-formidling/mapFormidling';
+import { FormidlingDataForm } from '../../../formidlinger/ny-formidling/redigerFormidlingFormType';
 import { KandidatutfallTyper } from '../../../stilling/[stillingsId]/kandidater/components/KandidatTyper';
 import { Stillingskategori } from '../../../stilling/stilling-typer';
 import { KandidatAPI } from '../../api-routes';
