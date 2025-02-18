@@ -1,5 +1,5 @@
 import { putApi } from '../../fetcher';
-import { stillingMock } from '../rekrutteringsbistandstilling/[slug]/mocks/stillingMock';
+import { mockBaseStilling } from '../rekrutteringsbistandstilling/[slug]/mocks/stillingMock';
 
 const opprettNyStillingEndepunkt = '/api/stilling/oppdater-stilling';
 
@@ -8,5 +8,5 @@ export const oppdaterStilling = (stillingData: any) => {
 };
 
 export const oppdaterStillingMirage = (server: any) => {
-  return server.put(opprettNyStillingEndepunkt, () => stillingMock);
+  return server.put(opprettNyStillingEndepunkt, () => mockBaseStilling);
 };
