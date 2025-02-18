@@ -15,7 +15,7 @@ export const mapFormTilFormidling = (
       categoryList: formData.omFormidling.categoryList,
       properties: {
         ...stillingInfo.stilling.properties,
-        tags: JSON.stringify(formData.omTilrettelegging.tags),
+        tags: JSON.stringify(formData.omTilrettelegging?.tags),
         sector: formData.omFormidling.sektor,
         positioncount: formData.omKandiatene.length,
         starttime: datoIDag,
