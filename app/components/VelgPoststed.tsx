@@ -24,6 +24,7 @@ const VelgPoststed: React.FC<VelgPoststedProps> = ({
     location?.postalCode ?? '',
   );
 
+  //TODO Verifiser at poststed blir satt :)
   const hook = usePamPostdata(postNummer);
 
   const [valgtPoststed, setValgtPoststed] =

@@ -89,6 +89,7 @@ const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
     }
   }, [stillingsData.stilling.publishedByAdmin, kandidatlisteIdHook]);
 
+  //TODO Legg inn igjen <:)
   // React.useEffect(() => {
   //   const isFormidling =
   //     stillingsData.stillingsinfo?.stillingskategori === 'FORMIDLING';

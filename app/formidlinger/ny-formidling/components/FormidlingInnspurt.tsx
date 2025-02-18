@@ -132,24 +132,29 @@ const FormidlingInnspurt = () => {
     const kandidatlisteData = await kandidatliste.json();
 
     setSteg('Set kandidater til fått jobben');
-    await Promise.all(
-      kandidatlisteData?.formidlingerAvUsynligKandidat.map(
-        async (kandidat: any) => {
-          await new Promise((resolve) => setTimeout(resolve, 1000));
-          //TODO Skal vi håndtere synlige kandidater også?
-          return fetch(
-            formidleUsynligKandidatEndepunkt(kandidatlisteId, kandidat.id),
-            {
-              method: 'PUT',
-              body: JSON.stringify({
-                utfall: UtfallsEndringTyper.FATT_JOBBEN,
-                navKontor: valgtNavKontor?.navKontor ?? '',
-              }),
-            },
-          );
-        },
-      ),
-    );
+    console.log('🎺 kandidatlisteData', kandidatlisteData);
+    kandidatlisteData?.formidlingerAvUsynligKandidat.map(
+      async (kandidat: any) => {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        //TODO Skal vi håndtere synlige kandidater også?
+        return fetch(
+          formidleUsynligKandidatEndepunkt(kandidatlisteId, kandidat.id),
+          {
+            method: 'PUT',
+            body: JSON.stringify({
+              utfall: UtfallsEndringTyper.FATT_JOBBEN,
+              navKontor: valgtNavKontor?.navKontor ?? '',
+            }),
+          },
+        );
+      },
+    ),
+      await new Promise((resolve) =>
+        setTimeout(
+          resolve,
+          kandidatlisteData.formidleUsynligKandidat.length * 1000,
+        ),
+      );
 
     setSteg('Fullfører formidling');
 
