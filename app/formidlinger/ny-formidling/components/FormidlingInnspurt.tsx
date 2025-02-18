@@ -11,12 +11,10 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { formidleUsynligKandidatEndepunkt } from '../../../api/kandidat/formidleUsynligKandidat';
-import { kandidatlisteEndepunkt } from '../../../api/kandidat/useKandidatliste';
 import { kandidatListeIdEndepunkt } from '../../../api/kandidat/useKandidatlisteId';
 import { OpprettNyStillingDTO } from '../../../api/stilling/ny-stilling/dto';
 import { opprettNyStillingEndepunkt } from '../../../api/stilling/oppdater-stilling/oppdaterStilling';
 import { useApplikasjonContext } from '../../../ApplikasjonContext';
-import { UtfallsEndringTyper } from '../../../stilling/[stillingsId]/kandidater/components/KandidatTyper';
 import { Stillingskategori } from '../../../stilling/stilling-typer';
 import { mapFormTilFormidling } from '../mapFormidling';
 import { FormidlingDataForm } from '../redigerFormidlingFormType';
@@ -117,44 +115,23 @@ const FormidlingInnspurt = () => {
       { method: 'GET' },
     );
     const kandidatListeIdRespons = await kandidatListeIdFetch.json();
-
     const kandidatlisteId = kandidatListeIdRespons.kandidatlisteId;
 
-    await new Promise((resolve) => setTimeout(resolve, 3000));
-
-    setSteg('Henter kandidatliste');
-    const kandidatliste = await fetch(
-      kandidatlisteEndepunkt(publisertStillingData.stilling.uuid)!,
-      {
-        method: 'GET',
-      },
-    );
-    const kandidatlisteData = await kandidatliste.json();
-
     setSteg('Set kandidater til fått jobben');
-    console.log('🎺 kandidatlisteData', kandidatlisteData);
-    kandidatlisteData?.formidlingerAvUsynligKandidat.map(
-      async (kandidat: any) => {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        //TODO Skal vi håndtere synlige kandidater også?
-        return fetch(
-          formidleUsynligKandidatEndepunkt(kandidatlisteId, kandidat.id),
-          {
-            method: 'PUT',
-            body: JSON.stringify({
-              utfall: UtfallsEndringTyper.FATT_JOBBEN,
-              navKontor: valgtNavKontor?.navKontor ?? '',
-            }),
-          },
-        );
-      },
-    ),
-      await new Promise((resolve) =>
-        setTimeout(
-          resolve,
-          kandidatlisteData.formidleUsynligKandidat.length * 1000,
-        ),
-      );
+
+    formidlingData?.omKandiatene.map(async (kandidat: any) => {
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      //TODO Skal vi håndtere synlige kandidater også?
+      return fetch(formidleUsynligKandidatEndepunkt(kandidatlisteId), {
+        method: 'POST',
+        body: JSON.stringify({
+          fnr: kandidat.fnr,
+          fåttJobb: true,
+          navKontor: valgtNavKontor?.navKontor ?? '',
+          stillingsId: publisertStillingData.stilling.uuid,
+        }),
+      });
+    });
 
     setSteg('Fullfører formidling');
 

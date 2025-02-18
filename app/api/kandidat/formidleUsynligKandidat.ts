@@ -3,28 +3,24 @@
  * Endepunkt /useEndreKandidatUtfall
  */
 import { KandidatAPI } from '../api-routes';
-import { putApi } from '../fetcher';
 
-export const formidleUsynligKandidatEndepunkt = (
-  kandidatlisteId: string,
-  formidlingId: string,
-) =>
-  `${KandidatAPI.internUrl}/veileder/kandidatlister/${kandidatlisteId}/formidlingeravusynligkandidat/${formidlingId}/utfall`;
+export const formidleUsynligKandidatEndepunkt = (kandidatlisteId: string) =>
+  `${KandidatAPI.internUrl}/veileder/kandidatlister/${kandidatlisteId}/formidlingeravusynligkandidat`;
 
 export interface EndreKandidatUtfallProps {
-  utfall: string;
+  fnr: string;
+  fåttJobb: boolean;
   navKontor: string;
-  kandidatlisteId: string;
-  formidlingId: string;
+  stillingsId: string;
 }
 
-export const formidleUsynligKandidat = (props: EndreKandidatUtfallProps) =>
-  putApi(
-    formidleUsynligKandidatEndepunkt(props.kandidatlisteId, props.formidlingId),
-    {
-      body: JSON.stringify({
-        utfall: props.utfall,
-        navKontor: props.navKontor,
-      }),
-    },
-  );
+// export const formidleUsynligKandidat = (props: EndreKandidatUtfallProps) =>
+//   putApi(
+//     formidleUsynligKandidatEndepunkt(props.kandidatlisteId, props.formidlingId),
+//     {
+//       body: JSON.stringify({
+//         utfall: props.utfall,
+//         navKontor: props.navKontor,
+//       }),
+//     },
+//   );
