@@ -2,9 +2,9 @@ import { expect, test } from '@playwright/test';
 // Bruker arbeidsgiverrettet tilgang
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 
-test.describe(`Etterregistrer`, () => {
-  test('📝 Opprett formidling', async ({ page }) => {
-    await page.goto('http://localhost:1337/formidlinger');
+test(`📝 Opprett formidling`, async ({ page }) => {
+  await page.goto('http://localhost:1337/formidlinger');
+  await test.step('Opprett formidling', async () => {
     await page
       .getByRole('tab', { name: 'Etterregistrering', exact: true })
       .click();
@@ -20,6 +20,9 @@ test.describe(`Etterregistrer`, () => {
     await page.getByTestId('velg-kandidat-resultat').click();
 
     await page.getByRole('button', { name: 'Neste steg' }).click();
+  });
+
+  await test.step('Om formidlingen', async () => {
     await page
       .getByRole('combobox', { name: 'Arbeidsgivers navn eller' })
       .click();
@@ -45,10 +48,16 @@ test.describe(`Etterregistrer`, () => {
       .getByText('1Om kandidatene2 Om formidlingen3Om inkludering4InnspurtOm')
       .click();
     await page.getByRole('button', { name: 'Neste steg' }).click();
+  });
+
+  await test.step('Tilrettelegging', async () => {
     await page.getByText('Arbeidstidf.eks. kortere').click();
     await page.getByText('Lønnstilskudd - midlertidig').click();
     await page.getByText('Er under 30 år').click();
     await page.getByRole('button', { name: 'Neste steg' }).click();
+  });
+
+  await test.step('Fullfør registreringen', async () => {
     await expect(
       page.getByRole('button', { name: 'Fullfør registreringen' }),
     ).toBeVisible();
