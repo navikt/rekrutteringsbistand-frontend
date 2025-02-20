@@ -14,7 +14,7 @@ import DelMedKandidatModal from './components/DelMedKandidat/DelMedKandidatModal
 
 import {
   aktivitetTilTekst,
-  Kandidatstatus,
+  InternKandidatstatus,
   varselTilTekst,
 } from './components/KandidatTyper';
 import SendSmsModal from './components/SendSMS/SendSmsModal';
@@ -144,7 +144,7 @@ const StillingsKandidater: React.FC = () => {
                   defaultValue={status}
                   className='mb-8'
                 >
-                  {Object.entries(Kandidatstatus).map(([key, value]) => (
+                  {Object.entries(InternKandidatstatus).map(([key, value]) => (
                     <Checkbox key={key} value={key}>
                       {storForbokstavString(value ?? '').replace(/_/g, ' ')}
                     </Checkbox>

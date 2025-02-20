@@ -161,10 +161,6 @@ const StillingsKandidaterTabell: React.FC<{
           <Table.ColumnHeader sortable sortKey='etternavn' scope='col'>
             Navn
           </Table.ColumnHeader>
-          {/* <Table.HeaderCell scope='col'>Fødselsnr.</Table.HeaderCell> */}
-          {/* <Table.ColumnHeader sortable sortKey='lagtTilAv.navn' scope='col'>
-            Lagt til av
-          </Table.ColumnHeader> */}
           <Table.ColumnHeader sortable sortKey='lagtTilTidspunkt' scope='col'>
             Dato
           </Table.ColumnHeader>

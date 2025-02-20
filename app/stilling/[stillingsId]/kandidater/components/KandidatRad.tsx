@@ -1,15 +1,18 @@
-import { BodyShort, Checkbox, Link, Table } from '@navikt/ds-react';
+import { PlusCircleIcon } from '@navikt/aksel-icons';
+import { BodyShort, Button, Checkbox, Link, Table } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import { nb } from 'date-fns/locale';
 import * as React from 'react';
 import { KandidatForespurtOmDelingSchema } from '../../../../api/foresporsel-om-deling-av-cv/foresporsler/[slug]/useForespurteOmDelingAvCv';
+import { endreUtfallKandidat } from '../../../../api/kandidat/endreKandidatUtfall';
 import { kandidaterSchemaDTO } from '../../../../api/kandidat/schema.zod';
 import { Sms } from '../../../../api/kandidatvarsel/kandidatvarsel';
+import { useApplikasjonContext } from '../../../../ApplikasjonContext';
 import InfoOmKandidat from './InfoOmKandidat';
 import SletteKandidatKnapp from './KandidatDropdown';
 import KandidatHendelse, { mapToHendelser } from './KandidatHendelse';
 import KandidatHendelseTag from './KandidatHendelseTag';
-import { Kandidatstatus } from './KandidatTyper';
+import { InternKandidatstatus, KandidatutfallTyper } from './KandidatTyper';
 import VelgInternStatus from './VelgInternStatus';
 
 export interface KandidatRadProps {
@@ -32,7 +35,7 @@ const KandidatRad: React.FC<KandidatRadProps> = ({
   stillingsId,
 }) => {
   const innaktiv = !kandidat.fodselsnr;
-
+  const { valgtNavKontor } = useApplikasjonContext();
   const kandidatHendelser = mapToHendelser({
     kandidat,
     forespørselCvForKandidat,
@@ -42,6 +45,20 @@ const KandidatRad: React.FC<KandidatRadProps> = ({
   const sisteAktivitet = kandidatHendelser.filter((h) => h.kilde !== 'Sms')[0];
   const sisteSms = kandidatHendelser.filter((h) => h.kilde === 'Sms')[0];
 
+  const [endrerUtfall, setEndrerUtfall] = React.useState(false);
+
+  const registrerFåttJobben = async () => {
+    setEndrerUtfall(true);
+    await endreUtfallKandidat(
+      KandidatutfallTyper.FATT_JOBBEN,
+      valgtNavKontor?.navKontor ?? '',
+      kandidatlisteId,
+      kandidat.kandidatnr,
+    );
+
+    //todo  Oppdater kandidatliste
+  };
+
   return (
     <Table.ExpandableRow
       content={
@@ -50,6 +67,14 @@ const KandidatRad: React.FC<KandidatRadProps> = ({
             <KandidatHendelse kandidatHendelser={kandidatHendelser} />
           </div>
           <div className='col-span-1'>
+            <Button
+              className=' mb-4 w-full'
+              icon={<PlusCircleIcon />}
+              onClick={registrerFåttJobben}
+              loading={endrerUtfall}
+            >
+              Registrer fått jobben
+            </Button>
             {!innaktiv && <InfoOmKandidat kandidat={kandidat} />}
           </div>
         </div>
@@ -94,7 +119,7 @@ const KandidatRad: React.FC<KandidatRadProps> = ({
         <VelgInternStatus
           kandidatlisteId={kandidatlisteId}
           kandidatnr={kandidat.kandidatnr}
-          status={kandidat.status as Kandidatstatus}
+          status={kandidat.status as InternKandidatstatus}
         />
       </Table.DataCell>
       <Table.DataCell>

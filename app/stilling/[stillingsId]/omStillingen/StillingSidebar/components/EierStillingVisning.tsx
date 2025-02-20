@@ -5,7 +5,7 @@ import * as React from 'react';
 import { useAntallKandidater } from '../../../../../api/kandidat/useAntallKandidater';
 import { useKandidatliste } from '../../../../../api/kandidat/useKandidatliste';
 import {
-  Kandidatstatus,
+  InternKandidatstatus,
   KandidatutfallTyper,
 } from '../../../kandidater/components/KandidatTyper';
 import { useStillingsContext } from '../../../StillingsContext';
@@ -26,7 +26,7 @@ const EierStillingVisning: React.FC = () => {
     data?.kandidater?.filter((k) => !k.arkivert) ?? [];
 
   const antallAktuelleKandidater = ikkeArkiverteKandidater.filter(
-    (k) => k.status === Kandidatstatus.AKTUELL,
+    (k) => k.status === InternKandidatstatus.AKTUELL,
   ).length;
 
   const antallPresenterteKandidater = ikkeArkiverteKandidater.filter(

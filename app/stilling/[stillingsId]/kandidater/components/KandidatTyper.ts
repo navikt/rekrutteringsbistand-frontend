@@ -27,7 +27,7 @@ export enum TilstandPåForespørsel {
   AVBRUTT = 'AVBRUTT',
 }
 
-export enum Kandidatstatus {
+export enum InternKandidatstatus {
   VURDERES = 'VURDERES',
   KONTAKTET = 'KONTAKTET',
   AKTUELL = 'AKTUELL',

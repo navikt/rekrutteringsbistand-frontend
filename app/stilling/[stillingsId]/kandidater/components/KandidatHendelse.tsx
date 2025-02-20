@@ -2,8 +2,10 @@ import {
   CheckmarkCircleIcon,
   ClipboardIcon,
   ExclamationmarkTriangleIcon,
-  PersonPlusIcon,
+  SparklesIcon,
   TasklistSendIcon,
+  ThumbDownIcon,
+  ThumbUpIcon,
 } from '@navikt/aksel-icons';
 import { format } from 'date-fns';
 import { nb } from 'date-fns/locale';
@@ -40,13 +42,13 @@ export const utfallsEndringPresentasjon = (
     case UtfallsEndringTyper.SVAR_JA:
       return {
         tittel: 'Svart på deling av CV: Ja',
-        ikon: <CheckmarkCircleIcon className='text-success' />,
+        ikon: <ThumbUpIcon className='text-success' />,
         type: 'success',
       };
     case UtfallsEndringTyper.SVAR_NEI:
       return {
         tittel: 'Svart på deling av CV: Nei',
-        ikon: <ExclamationmarkTriangleIcon className='text-danger' />,
+        ikon: <ThumbDownIcon className='text-danger' />,
         type: 'error',
       };
     case UtfallsEndringTyper.CV_DELT:
@@ -111,7 +113,7 @@ export const mapToHendelser = ({
       tekst: `av ${kandidat.lagtTilAv.navn}`,
       dato: kandidat.lagtTilTidspunkt,
       type: 'info',
-      ikon: <PersonPlusIcon className='text-info' />,
+      ikon: <SparklesIcon className='text-info' />,
       kilde: 'Kandidatliste',
     });
   }

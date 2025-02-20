@@ -38,14 +38,12 @@ const KandidatHendelseKort: React.FC<KandidatHendelseKortProps> = ({
             <BodyShort weight='semibold'>{tittel}</BodyShort>
             {tekst && (
               <BodyShort size='small' textColor='subtle'>
-                {tekst}
+                {tekst}{' '}
+                {format(new Date(dato), 'dd. MMMM yyyy HH:mm', { locale: nb })}
               </BodyShort>
             )}
           </div>
         </div>
-        <BodyShort size='small' textColor='subtle'>
-          {format(new Date(dato), 'dd. MMMM yyyy HH:mm', { locale: nb })}
-        </BodyShort>
       </div>
     </Box.New>
   );

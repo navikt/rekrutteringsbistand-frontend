@@ -44,19 +44,11 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   if (!mounted) return null;
 
   return (
-    <div
-      style={{
-        minHeight: '100%',
-        height: '100%',
-        backgroundColor: darkMode ? '#0e151f' : 'white',
-      }}
-    >
-      <Theme theme={darkMode ? 'dark' : 'light'}>
-        <ThemeContext.Provider value={{ darkMode, setDarkMode }}>
-          {children}
-        </ThemeContext.Provider>
-      </Theme>
-    </div>
+    <Theme theme={darkMode ? 'dark' : 'light'}>
+      <ThemeContext.Provider value={{ darkMode, setDarkMode }}>
+        {children}
+      </ThemeContext.Provider>
+    </Theme>
   );
 };
 
