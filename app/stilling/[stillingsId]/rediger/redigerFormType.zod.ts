@@ -5,7 +5,7 @@ import {
 } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 
 export const OmVirksomhetenSchema = z.object({
-  beskrivelse: z.string(),
+  beskrivelse: z.string().optional().nullable(),
   employerhomepage: z.string().optional().nullable(),
   facebookpage: z.string().optional().nullable(),
   linkedinpage: z.string().optional().nullable(),
@@ -46,10 +46,13 @@ export const OmVirksomhetenSchema = z.object({
     .min(1, 'Minst én kontaktperson er påkrevd'),
 });
 
-export const OmTilretteleggingSchema = z.object({
-  statligeInkluderingsdugnade: z.boolean().nullable(),
-  tags: z.array(z.string()),
-});
+export const OmTilretteleggingSchema = z
+  .object({
+    statligeInkluderingsdugnade: z.boolean().nullable(),
+    tags: z.array(z.string()),
+  })
+  .optional()
+  .nullable();
 
 export const AdresseLokasjonSchema = z
   .array(LocationSchema)

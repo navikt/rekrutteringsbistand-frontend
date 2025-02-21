@@ -7,9 +7,7 @@ import { StillingsDataForm } from '../redigerFormType.zod';
 import StegNavigering from './StegNavigering';
 
 interface RedigerOmTilretteleggingProps {
-  omTilretteleggingFelt:
-    | 'omStillingen.omTilrettelegging'
-    | 'omFormidling.omTilrettelegging';
+  omTilretteleggingFelt: 'omTilrettelegging';
   stegNummer: number;
   nextStep: () => void;
   forrigeSteg: () => void;
