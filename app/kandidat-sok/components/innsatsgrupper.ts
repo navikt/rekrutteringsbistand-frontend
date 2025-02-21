@@ -1,75 +1,44 @@
 export enum FiltrerbarInnsatsgruppe {
   Innsatsgruppe,
-  AndreInnsatsgrupper = 'ANDRE',
+  IkkeVurdert = 'HAR_IKKE_GJELDENDE_14A_VEDTAK',
 }
 
 export enum Innsatsgruppe {
-  SpesieltTilpassetInnsats = 'BATT',
-  SituasjonsbestemtInnsats = 'BFORM',
-  Standardinnsats = 'IKVAL',
-  VarigTilpasset = 'VARIG',
+  SPESIELT_TILPASSET_INNSATS = 'SPESIELT_TILPASSET_INNSATS',
+  SITUASJONSBESTEMT_INNSATS = 'SITUASJONSBESTEMT_INNSATS',
+  STANDARD_INNSATS = 'STANDARD_INNSATS',
+  VARIG_TILPASSET_INNSATS = 'VARIG_TILPASSET_INNSATS',
+  GRADERT_VARIG_TILPASSET_INNSATS = 'GRADERT_VARIG_TILPASSET_INNSATS',
+  HAR_IKKE_GJELDENDE_14A_VEDTAK = 'HAR_IKKE_GJELDENDE_14A_VEDTAK',
 }
 
-export enum Servicegruppe {
-  IkkeVurdert = 'IVURD',
-  BehovForArbeidsevnevurdering = 'BKART',
-  HelserelatertArbeidsrettetOppfølgingINav = 'OPPFI',
-  SykmeldtMedOppfølgingPåArbeidsplassen = 'VURDI',
-  SykmeldtUtenArbeidsgiver = 'VURDU',
-}
-
-export enum Kvalifiseringsgruppekode {
-  Batt = 'BATT',
-  Ikval = 'IKVAL',
-  Varig = 'VARIG',
-  Bform = 'BFORM',
-  Andre = 'ANDRE',
-  Ivurd = 'IVURD',
-  Bkart = 'BKART',
-  Oppfi = 'OPPFI',
-  Vurdi = 'VURDI',
-  Vurdu = 'VURDU',
-}
-
-const filtrerbareInnsatsgrupper = {
-  [Innsatsgruppe.SpesieltTilpassetInnsats]: {
-    label: 'Spesielt tilpasset innsats',
-    description: 'Har et identifisert behov for tilrettelegging',
-  },
-  [Innsatsgruppe.SituasjonsbestemtInnsats]: {
+export const filtrerbareInnsatsgrupper = {
+  [Innsatsgruppe.SITUASJONSBESTEMT_INNSATS]: {
     label: 'Situasjonsbestemt innsats',
-    description: 'Moderat bistandsbehov',
+    description: 'Trenger veiledning',
   },
-  [Innsatsgruppe.VarigTilpasset]: {
-    label: 'Varig tilpasset',
-    description: 'Varig nedsatt arbeidsevne',
+  [Innsatsgruppe.SPESIELT_TILPASSET_INNSATS]: {
+    label: 'Spesielt tilpasset innsats',
+    description: 'Trenger veiledning, nedsatt arbeidsevne',
   },
-  [Innsatsgruppe.Standardinnsats]: {
-    label: 'Standardinnsats',
-    description: 'Behov for ordinær bistand',
+  [Innsatsgruppe.GRADERT_VARIG_TILPASSET_INNSATS]: {
+    label: 'Delvis varig tilpasset innsats',
+    description: 'Jobbe delvis',
   },
-  [FiltrerbarInnsatsgruppe.AndreInnsatsgrupper]: {
-    label: 'Andre kvalifiseringsgrupper',
-    description:
-      'Ikke vurdert, helserelatert arbeidsrettet oppfølging, sykmeldt',
+  [Innsatsgruppe.VARIG_TILPASSET_INNSATS]: {
+    label: 'Varig tilpasset innsats',
+    description: 'Liten mulighet til å jobbe',
+  },
+  [Innsatsgruppe.STANDARD_INNSATS]: {
+    label: 'Standard innsats',
+    description: 'Gode muligheter',
+  },
+  [FiltrerbarInnsatsgruppe.IkkeVurdert]: {
+    label: 'Ikke vurdert',
+    description: '',
   },
 };
 
 export const alleInnsatsgrupper = {
   ...filtrerbareInnsatsgrupper,
-  [Servicegruppe.IkkeVurdert]: {
-    label: 'Ikke vurdert',
-  },
-  [Servicegruppe.BehovForArbeidsevnevurdering]: {
-    label: 'Behov for arbeidsevnevurdering',
-  },
-  [Servicegruppe.HelserelatertArbeidsrettetOppfølgingINav]: {
-    label: 'Helserelatert arbeidsrettet oppfølging i Nav',
-  },
-  [Servicegruppe.SykmeldtMedOppfølgingPåArbeidsplassen]: {
-    label: 'Sykmeldt med oppfølging på arbeidsplassen',
-  },
-  [Servicegruppe.SykmeldtUtenArbeidsgiver]: {
-    label: 'sykmeldt uten arbeidsgiver',
-  },
 };

@@ -55,11 +55,7 @@ const KandidatKort: React.FC<IKandidatKort> = ({ kandidat, markert }) => {
               />
               <TekstMedIkon
                 ikon={<HandHeartIcon />}
-                tekst={
-                  alleInnsatsgrupper[
-                    kandidat.kvalifiseringsgruppekode as keyof typeof alleInnsatsgrupper
-                  ].label
-                }
+                tekst={alleInnsatsgrupper[kandidat.innsatsgruppe].label}
               />
             </div>
           </div>

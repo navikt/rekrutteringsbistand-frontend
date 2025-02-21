@@ -194,7 +194,7 @@ export const mapFormTilStilling = (
         facebookpage: formData.omVirksomheten.facebookpage,
         linkedinpage: formData.omVirksomheten.linkedinpage,
         twitteraddress: formData.omVirksomheten.twitteraddress,
-        tags: JSON.stringify(formData.omTilrettelegging.tags),
+        tags: JSON.stringify(formData.omTilrettelegging?.tags),
         adtext: formData.omStillingen.beskrivelse,
         sector: formData.praktiskInfo.sektor,
         positioncount: formData.praktiskInfo.antallStillinger,

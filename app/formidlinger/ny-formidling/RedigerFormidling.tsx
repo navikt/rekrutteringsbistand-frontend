@@ -82,7 +82,7 @@ const RedigerFormidling: React.FC<RedigerFormidlingProps> = ({ children }) => {
           )}
           {aktivtSteg === RedigerFormidlingSteg.omTilrettelegging && (
             <RedigerOmTilrettelegging
-              omTilretteleggingFelt='omFormidling.omTilrettelegging'
+              omTilretteleggingFelt='omTilrettelegging'
               stegNummer={2}
               nextStep={nesteSteg}
               forrigeSteg={forrigeSteg}

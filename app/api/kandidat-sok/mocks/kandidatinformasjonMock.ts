@@ -17,7 +17,6 @@ const kandidatinformasjondataMock = {
   navkontor: 'NAV Lofoten',
   orgenhet: '1860',
   hovedmaalkode: 'SKAFFEA',
-  kvalifiseringsgruppekode: 'BFORM',
   formidlingsgruppekode: 'ARBS',
   veileder: 'Z123456',
   yrkeJobbonskerObj: [

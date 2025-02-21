@@ -52,7 +52,6 @@ export const kandidatSøkMock = {
       ],
       fornavn: 'Våken',
       fodselsnummer: '04479208765',
-      kvalifiseringsgruppekode: 'BATT',
     },
     {
       yrkeJobbonskerObj: [
@@ -106,7 +105,6 @@ export const kandidatSøkMock = {
       ],
       fornavn: 'Heldig',
       fodselsnummer: '17418940123',
-      kvalifiseringsgruppekode: 'BATT',
     },
     {
       yrkeJobbonskerObj: [
@@ -160,7 +158,6 @@ export const kandidatSøkMock = {
       ],
       fornavn: 'Pessimistisk',
       fodselsnummer: '27426831452',
-      kvalifiseringsgruppekode: 'BATT',
     },
     {
       yrkeJobbonskerObj: [
@@ -214,7 +211,6 @@ export const kandidatSøkMock = {
       ],
       fornavn: 'Horisontal',
       fodselsnummer: '21506801084',
-      kvalifiseringsgruppekode: 'BATT',
     },
   ],
   navigering: {
