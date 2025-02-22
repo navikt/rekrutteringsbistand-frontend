@@ -1,4 +1,4 @@
-import { BodyShort, Heading, Link } from '@navikt/ds-react';
+import { BodyShort, ErrorMessage, Heading, Link } from '@navikt/ds-react';
 import * as React from 'react';
 import { useFormContext } from 'react-hook-form';
 import RikTekstEditor from '../../../../components/rikteksteditor/RikTekstEditor';
@@ -11,7 +11,7 @@ export const RedigerOmStillingen: React.FC<{
   nextStep: () => void;
   forrigeSteg: () => void;
 }> = ({ nextStep, forrigeSteg, stegNummer }) => {
-  const { setValue, watch, trigger, formState } =
+  const { setValue, watch, trigger, formState, getValues } =
     useFormContext<StillingsDataForm>();
 
   const handleStepSubmit = async (e: React.FormEvent) => {
@@ -58,13 +58,13 @@ export const RedigerOmStillingen: React.FC<{
               onChange={(e) => setValue('omStillingen.beskrivelse', e)}
               // limitLengde={800}
             />
+            <ErrorMessage>
+              {formState.errors.omStillingen?.beskrivelse?.message}
+            </ErrorMessage>
           </div>
 
           <div>
-            <VelgArbeidssted
-              lokasjonsFelt='omStillingen.lokasjoner'
-              adresseFelt='omStillingen.adresseLokasjoner'
-            />
+            <VelgArbeidssted feltNavn='omStillingen.locationList' />
           </div>
         </div>
         <StegNavigering stegNummer={stegNummer} forrigeSteg={forrigeSteg} />

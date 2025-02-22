@@ -54,18 +54,6 @@ export const OmTilretteleggingSchema = z
   .optional()
   .nullable();
 
-export const AdresseLokasjonSchema = z
-  .array(LocationSchema)
-  .optional()
-  .nullable()
-  .refine(
-    (data) =>
-      !data?.length || data.every((item) => item.postalCode && item.city),
-    {
-      message: 'Alle adresser må ha både postnummer og poststed',
-    },
-  );
-
 // export const JanzzSchema = KategoriSchema.refine((data) => !!data.name, {
 //   message: 'Yrkesklassifisering må velges',
 //   path: ['name'],
@@ -75,14 +63,12 @@ export const OmStillingenSchema = z
   .object({
     categoryList: z.array(KategoriSchema),
     beskrivelse: z.string().nullable(),
-    adresseLokasjoner: AdresseLokasjonSchema,
-    lokasjoner: z.array(LocationSchema).optional().nullable(),
+    locationList: z.array(LocationSchema),
   })
   .refine(
     (data) => {
-      const hasAdresseLokasjoner = (data.adresseLokasjoner ?? []).length > 0;
-      const hasLokasjoner = (data.lokasjoner ?? []).length > 0;
-      return hasAdresseLokasjoner || hasLokasjoner;
+      const hasAdresseLokasjoner = (data.locationList ?? []).length > 0;
+      return hasAdresseLokasjoner;
     },
     {
       message: 'Du må velge minst én lokasjon',

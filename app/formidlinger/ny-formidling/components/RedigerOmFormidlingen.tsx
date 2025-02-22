@@ -58,10 +58,7 @@ const RedigerOmFormidlingen: React.FC<RedigerOmFormidlingenProps> = ({
           omfangFelt='omFormidling.omfangKode'
           omfangProsentFelt='omFormidling.omfangProsent'
         />
-        <VelgArbeidssted
-          lokasjonsFelt='omFormidling.lokasjoner'
-          adresseFelt='omFormidling.adresseLokasjoner'
-        />
+        <VelgArbeidssted feltNavn='omFormidling.locationList' />
 
         <StegNavigering stegNummer={2} forrigeSteg={forrigeSteg} />
       </div>

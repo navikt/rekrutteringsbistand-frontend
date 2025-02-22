@@ -5,10 +5,7 @@ import {
   KategoriSchema,
   LocationSchema,
 } from '../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
-import {
-  AdresseLokasjonSchema,
-  OmTilretteleggingSchema,
-} from '../../stilling/[stillingsId]/rediger/redigerFormType.zod';
+import { OmTilretteleggingSchema } from '../../stilling/[stillingsId]/rediger/redigerFormType.zod';
 
 export const FormidlingKandidatSchema = z.object({
   fnr: z.string(),
@@ -18,8 +15,7 @@ export const FormidlingKandidatSchema = z.object({
 export const OmFormidlingSchema = z.object({
   organisasjon: ArbeidsgiverSchema,
   categoryList: z.array(KategoriSchema),
-  adresseLokasjoner: AdresseLokasjonSchema,
-  lokasjoner: z.array(LocationSchema).optional().nullable(),
+  locationList: z.array(LocationSchema).optional().nullable(),
   sektor: z.string().min(1, 'Sektor må velges').nullable(),
   arbeidstidsordning: z.string().optional(),
   ansettelsesform: z

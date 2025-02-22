@@ -7,41 +7,44 @@ import {
 } from '@navikt/ds-react';
 import * as React from 'react';
 import { useState } from 'react';
-import { get, useFieldArray, useFormContext } from 'react-hook-form';
+import { useFieldArray, useFormContext } from 'react-hook-form';
 import VelgPoststed from '../../../../components/VelgPoststed';
 import { FormidlingDataForm } from '../../../../formidlinger/ny-formidling/redigerFormidlingFormType';
 import { StillingsDataForm } from '../redigerFormType.zod';
 import VelgKommuneFylkeEllerLand from './VelgKommuneFylkeEllerLand';
 
 export interface VelgArbeidsstedProps {
-  lokasjonsFelt: 'omFormidling.lokasjoner' | 'omStillingen.lokasjoner';
-  adresseFelt:
-    | 'omFormidling.adresseLokasjoner'
-    | 'omStillingen.adresseLokasjoner';
+  feltNavn: 'omFormidling.locationList' | 'omStillingen.locationList';
 }
 
-const VelgArbeidssted: React.FC<VelgArbeidsstedProps> = ({
-  adresseFelt,
-  lokasjonsFelt,
-}) => {
+const VelgArbeidssted: React.FC<VelgArbeidsstedProps> = ({ feltNavn }) => {
   const { control, formState, watch } = useFormContext<
     StillingsDataForm | FormidlingDataForm
   >();
 
   const { fields, append, update, remove } = useFieldArray({
     control,
-    name: adresseFelt,
+    name: feltNavn,
   });
 
   const [visAdresse, setVisAdresse] = useState(false);
   const [visLokasjon, setVisLokasjon] = useState(false);
 
-  const errorMessageAdresse = get(formState.errors, adresseFelt)?.message;
-  const errorMessageLokasjon = get(formState.errors, lokasjonsFelt)?.message;
+  const fjernId = (id: string) => {
+    const index = fields.findIndex((field) => field.id === id);
+    if (index !== -1) {
+      remove(index);
+    }
+  };
 
   React.useEffect(() => {
     if (fields.length > 0) {
-      setVisAdresse(true);
+      if (fields.some((f) => f.address !== null && f.postalCode !== null)) {
+        setVisAdresse(true);
+      }
+      if (fields.some((f) => f.postalCode === null)) {
+        setVisLokasjon(true);
+      }
     }
   }, [fields]);
 
@@ -50,8 +53,8 @@ const VelgArbeidssted: React.FC<VelgArbeidsstedProps> = ({
       setVisAdresse(adresse);
       append({
         address: '',
-        postalCode: null,
-        city: null,
+        postalCode: '',
+        city: '',
         county: null,
         countyCode: null,
         municipal: null,
@@ -60,7 +63,7 @@ const VelgArbeidssted: React.FC<VelgArbeidsstedProps> = ({
       });
     } else {
       setVisAdresse(false);
-      remove();
+      // remove();
     }
   };
 
@@ -88,15 +91,19 @@ const VelgArbeidssted: React.FC<VelgArbeidsstedProps> = ({
       </Checkbox>
 
       {visAdresse &&
-        fields.map((field, index) => (
-          <VelgPoststed
-            key={index}
-            location={field}
-            index={index}
-            oppdater={update}
-            fjern={() => remove(index)}
-          />
-        ))}
+        fields
+          .filter((l) => l.postalCode !== null)
+          .map((_, index) => (
+            <VelgPoststed
+              key={index}
+              index={index}
+              lokasjonsFelt={feltNavn}
+              control={control}
+              fjern={() => remove(index)}
+              update={update}
+              postSted={fields[index].city}
+            />
+          ))}
 
       {visAdresse && (
         <div className='my-4'>
@@ -120,18 +127,27 @@ const VelgArbeidssted: React.FC<VelgArbeidsstedProps> = ({
           </Button>
         </div>
       )}
-      {errorMessageAdresse && (
-        <ErrorMessage>{errorMessageAdresse}</ErrorMessage>
+      {!visAdresse && !visLokasjon && (
+        <ErrorMessage>
+          Velg minst én adresse eller lokasjon for stillingen.
+        </ErrorMessage>
       )}
+      {/* {errorMessageAdresse && (
+        <ErrorMessage>{errorMessageAdresse}</ErrorMessage>
+      )} */}
       {visLokasjon && (
         <div className='my-4'>
-          <VelgKommuneFylkeEllerLand lokasjonsFelt={lokasjonsFelt} />
+          <VelgKommuneFylkeEllerLand
+            lokasjoner={fields.filter((l) => l.postalCode === null)}
+            leggTilLokasjon={(lokasjon) => append(lokasjon)}
+            fjernLokasjonId={(id: string) => fjernId(id)}
+          />
         </div>
       )}
 
-      {errorMessageLokasjon && (
+      {/* {errorMessageLokasjon && (
         <ErrorMessage>{errorMessageLokasjon}</ErrorMessage>
-      )}
+      )} */}
     </div>
   );
 };

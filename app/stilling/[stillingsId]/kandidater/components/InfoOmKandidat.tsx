@@ -33,7 +33,6 @@ const InfoOmKandidat: FunctionComponent<InfoOmKandidatProps> = ({
       eventType: 'NY_AKTIV_BRUKER',
     });
 
-    console.log('🎺 response', response);
     if (response.ok) {
       window.open(href, '_blank');
     }

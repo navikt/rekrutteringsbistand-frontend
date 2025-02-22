@@ -89,27 +89,8 @@ export const mapStillingTilForm = (
     },
     omStillingen: {
       categoryList: stillingsData?.stilling?.categoryList ?? [],
-
       beskrivelse: stillingsData?.stilling?.properties?.adtext ?? '',
-
-      adresseLokasjoner:
-        stillingsData?.stilling?.locationList?.filter(
-          (item) => item.postalCode,
-        ) ?? null,
-
-      lokasjoner:
-        stillingsData?.stilling?.locationList
-          ?.filter((item) => !item.postalCode)
-          .map((item) => ({
-            address: null,
-            postalCode: null,
-            city: null,
-            county: item.county ? capitalize(item.county) : null,
-            countyCode: null,
-            municipal: item.municipal ? capitalize(item.municipal) : null,
-            municipalCode: item.municipalCode || null,
-            country: item.country ? capitalize(item.country) : null,
-          })) ?? null,
+      locationList: stillingsData?.stilling?.locationList ?? [],
     },
     praktiskInfo: {
       omfangKode: stillingsData?.stilling?.properties?.extent ?? '',
@@ -215,10 +196,7 @@ export const mapFormTilStilling = (
       },
       published: publiseringsDato,
       expires: avsluttesDato,
-      locationList: [
-        ...(formData.omStillingen.adresseLokasjoner ?? []),
-        ...(formData.omStillingen.lokasjoner ?? []),
-      ],
+      locationList: formData.omStillingen.locationList,
       source: formData.innspurt.stillingType,
     },
   };

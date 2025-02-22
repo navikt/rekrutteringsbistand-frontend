@@ -41,7 +41,6 @@ const RedigerStilling: React.FC = () => {
   const { setForhåndsvisData, forhåndsvisData } = useStillingsContext();
 
   const { getValues } = useFormContext<StillingsDataForm>();
-
   const nesteSteg = () => {
     const steps = Object.values(RedigerSteg);
     const currentIndex =
