@@ -1,7 +1,6 @@
 import { MinusCircleIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import * as React from 'react';
-import { useApplikasjonContext } from '../../../../ApplikasjonContext';
 import { KandidatutfallTyper } from './KandidatTyper';
 
 export interface FjernFåttJobbenKnappProps {

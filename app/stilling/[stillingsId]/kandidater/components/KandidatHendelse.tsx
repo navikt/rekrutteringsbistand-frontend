@@ -11,7 +11,10 @@ import { format } from 'date-fns';
 import { nb } from 'date-fns/locale';
 import React from 'react';
 import { KandidatForespurtOmDelingSchema } from '../../../../api/foresporsel-om-deling-av-cv/foresporsler/[slug]/useForespurteOmDelingAvCv';
-import { kandidaterSchemaDTO } from '../../../../api/kandidat/schema.zod';
+import {
+  kandidaterSchemaDTO,
+  utfallsendringerSchemaDTO,
+} from '../../../../api/kandidat/schema.zod';
 import { Sms } from '../../../../api/kandidatvarsel/kandidatvarsel';
 import { storForbokstavString } from '../../../../kandidat-sok/util';
 import KandidatHendelseKort from './KandidatHendelseKort';
@@ -24,8 +27,12 @@ export interface KandidatHendelse {
   type: 'success' | 'error' | 'info';
   ikon: React.ReactNode;
   kilde: string;
-  fjerneFåttJobben?: boolean;
+  raw?: utfallsendringerSchemaDTO | KandidatForespurtOmDelingSchema | Sms;
 }
+
+const isUtfallsendring = (raw: any): raw is utfallsendringerSchemaDTO => {
+  return raw && 'utfall' in raw;
+};
 
 export const utfallsEndringPresentasjon = (
   utfallsEndring: UtfallsEndringTyper,
@@ -127,19 +134,14 @@ export const mapToHendelser = ({
           endring.utfall as UtfallsEndringTyper,
         );
 
-        const isLastEvent = index === kandidat.utfallsendringer!.length - 1;
-        const isFattJobben = endring.utfall === UtfallsEndringTyper.FATT_JOBBEN;
-
         hendelser.push({
           tittel: presentasjon.tittel,
-          tekst: endring.registrertAvIdent
-            ? `av ${endring.registrertAvIdent || 'ukjent'}`
-            : '',
+          tekst: kandidat.utfallsendringer!.length.toString(),
           type: presentasjon.type,
           ikon: presentasjon.ikon,
           dato: endring.tidspunkt,
           kilde: 'Utfallsendring',
-          fjerneFåttJobben: isLastEvent && isFattJobben,
+          raw: endring,
         });
       }
     });
@@ -171,6 +173,7 @@ export const mapToHendelser = ({
           ) : (
             <ClipboardIcon className='text-info' />
           ),
+        raw: forespørsel,
       });
     });
   }
@@ -196,6 +199,7 @@ export const mapToHendelser = ({
         ) : (
           <CheckmarkCircleIcon className='text-success' />
         ),
+      raw: beskjedForKandidat,
     });
   }
 
@@ -218,6 +222,11 @@ const KandidatHendelser = ({
           key={`${hendelse.tittel}-${index}`}
           {...hendelse}
           endreUtfallForKandidat={endreUtfallForKandidat}
+          fjerneFåttJobben={
+            index === 0 &&
+            isUtfallsendring(hendelse.raw) &&
+            hendelse.raw?.utfall === UtfallsEndringTyper.FATT_JOBBEN
+          }
         />
       ))}
     </div>
