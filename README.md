@@ -133,8 +133,4 @@ pnpm lint
 
 ## 📝 Lisens
 
-MIT © [NAV IT](https://github.com/navikt)
-
----
-
-Laget med ❤️ av NAVs rekrutteringsteam
+MIT © [Nav IT](https://github.com/navikt)

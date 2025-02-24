@@ -30,6 +30,7 @@ const Nyheter: FunctionComponent = () => {
     <div className={css.nyheter}>
       <div className='flex'>
         <Switch
+          className='mr-2'
           size='small'
           checked={darkMode}
           onChange={(e) => setDarkMode(e.target.checked)}
