@@ -46,25 +46,26 @@ const VelgArbeidssted: React.FC<VelgArbeidsstedProps> = ({ feltNavn }) => {
     }
   }, [fields]);
 
-  console.log('🎺 fields', fields);
   const setAdresseFelt = (adresse: boolean) => {
     if (adresse) {
       setVisAdresse(adresse);
-      if (fields.some((f) => f.postalCode !== null)) {
+      if (fields.length === 0 || fields.some((f) => !f.postalCode)) {
         append({
           address: '',
           postalCode: '',
           city: '',
-          county: null,
-          countyCode: null,
-          municipal: null,
-          municipalCode: null,
-          country: null,
+          county: '',
+          // countyCode: '',
+          municipal: '',
+          municipalCode: '',
+          country: '',
         });
       }
     } else {
       setVisAdresse(false);
-      // remove();
+      fields
+        .filter((f) => f.postalCode !== null)
+        .forEach((_, index) => remove(index));
     }
   };
 
@@ -112,14 +113,14 @@ const VelgArbeidssted: React.FC<VelgArbeidsstedProps> = ({ feltNavn }) => {
             variant='secondary'
             onClick={() =>
               append({
-                address: null,
+                address: '',
                 postalCode: '',
-                city: null,
-                county: null,
-                countyCode: null,
-                municipal: null,
-                municipalCode: null,
-                country: null,
+                city: '',
+                county: '',
+                // countyCode: null,
+                municipal: '',
+                municipalCode: '',
+                country: '',
               })
             }
             type='button'

@@ -18,9 +18,6 @@ export const RedigerOmStillingen: React.FC<{
     e.preventDefault();
     const isValid = await trigger('omStillingen', { shouldFocus: true });
 
-    //print why not valid
-    console.log(formState.errors);
-
     if (isValid) {
       nextStep();
     }

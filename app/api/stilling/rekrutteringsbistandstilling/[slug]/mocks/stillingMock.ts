@@ -133,7 +133,7 @@ const createLocation = (): GeografiDTO => ({
   municipalCode: '1337',
   city: faker.location.city(),
   country: 'NORGE',
-  countyCode: '1337',
+  // countyCode: '1337',
 });
 
 const createCategories = () => [
@@ -343,15 +343,16 @@ export const testMockStilling = {
       },
       locationList: [
         {
-          address: 'Brynsveien 16B',
-          postalCode: '0667',
-          county: 'OSLO',
-          municipal: 'OSLO',
-          municipalCode: '0301',
-          city: 'OSLO',
+          address: null,
+          postalCode: null,
+          county: 'AGDER',
+          municipal: null,
+          municipalCode: null,
+          city: null,
           country: 'NORGE',
-          latitude: '59.912481210775105',
-          longitude: '10.809819907746563',
+          latitude: null,
+          longitude: null,
+          id: '2ccc8880-df5c-4ee5-8167-329bca537ffc',
         },
       ],
       properties: {

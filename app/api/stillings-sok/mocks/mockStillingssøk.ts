@@ -47,7 +47,7 @@ const createMockHit = (props: MockHit) => ({
           postalCode: faker.location.zipCode(),
           city: faker.location.city(),
           county: faker.location.county(),
-          countyCode: '1337',
+          // countyCode: '1337',
           municipal: faker.location.state(),
           municipalCode: '1337',
           latitue: faker.location.latitude(),
