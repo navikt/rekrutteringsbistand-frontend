@@ -18,9 +18,7 @@ export interface VelgArbeidsstedProps {
 }
 
 const VelgArbeidssted: React.FC<VelgArbeidsstedProps> = ({ feltNavn }) => {
-  const { control, formState, watch } = useFormContext<
-    StillingsDataForm | FormidlingDataForm
-  >();
+  const { control } = useFormContext<StillingsDataForm | FormidlingDataForm>();
 
   const { fields, append, update, remove } = useFieldArray({
     control,
@@ -39,7 +37,7 @@ const VelgArbeidssted: React.FC<VelgArbeidsstedProps> = ({ feltNavn }) => {
 
   React.useEffect(() => {
     if (fields.length > 0) {
-      if (fields.some((f) => f.address !== null && f.postalCode !== null)) {
+      if (fields.some((f) => f.postalCode !== null)) {
         setVisAdresse(true);
       }
       if (fields.some((f) => f.postalCode === null)) {
@@ -51,16 +49,18 @@ const VelgArbeidssted: React.FC<VelgArbeidsstedProps> = ({ feltNavn }) => {
   const setAdresseFelt = (adresse: boolean) => {
     if (adresse) {
       setVisAdresse(adresse);
-      append({
-        address: '',
-        postalCode: '',
-        city: '',
-        county: null,
-        countyCode: null,
-        municipal: null,
-        municipalCode: null,
-        country: null,
-      });
+      if (fields.some((f) => f.postalCode !== null)) {
+        append({
+          address: '',
+          postalCode: '',
+          city: '',
+          county: null,
+          countyCode: null,
+          municipal: null,
+          municipalCode: null,
+          country: null,
+        });
+      }
     } else {
       setVisAdresse(false);
       // remove();
