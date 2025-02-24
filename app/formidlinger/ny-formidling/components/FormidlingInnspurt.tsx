@@ -36,7 +36,6 @@ const FormidlingInnspurt = () => {
       ...data,
       reportee: `${brukerData.fornavn} ${brukerData.etternavn}`,
       navIdent: brukerData.ident,
-      //TODO Hvor lagrer vi navkontor??
       navKontor: valgtNavKontor,
     };
 

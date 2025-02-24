@@ -136,7 +136,9 @@ export const mapToHendelser = ({
 
         hendelser.push({
           tittel: presentasjon.tittel,
-          tekst: kandidat.utfallsendringer!.length.toString(),
+          tekst: endring.registrertAvIdent
+            ? `av ${endring.registrertAvIdent || 'ukjent'}`
+            : '',
           type: presentasjon.type,
           ikon: presentasjon.ikon,
           dato: endring.tidspunkt,
@@ -217,18 +219,27 @@ const KandidatHendelser = ({
 }) => {
   return (
     <div className='flex flex-col gap-4'>
-      {kandidatHendelser.map((hendelse, index) => (
-        <KandidatHendelseKort
-          key={`${hendelse.tittel}-${index}`}
-          {...hendelse}
-          endreUtfallForKandidat={endreUtfallForKandidat}
-          fjerneFåttJobben={
-            index === 0 &&
-            isUtfallsendring(hendelse.raw) &&
-            hendelse.raw?.utfall === UtfallsEndringTyper.FATT_JOBBEN
-          }
-        />
-      ))}
+      {kandidatHendelser.map((hendelse, index) => {
+        const visFjernFåttJobben =
+          isUtfallsendring(hendelse.raw) &&
+          hendelse.raw?.utfall === UtfallsEndringTyper.FATT_JOBBEN &&
+          !kandidatHendelser
+            .slice(0, index)
+            .some(
+              (h) =>
+                isUtfallsendring(h.raw) &&
+                h.raw?.utfall === UtfallsEndringTyper.PRESENTERT,
+            );
+
+        return (
+          <KandidatHendelseKort
+            key={`${hendelse.tittel}-${index}`}
+            {...hendelse}
+            fjerneFåttJobben={visFjernFåttJobben}
+            endreUtfallForKandidat={endreUtfallForKandidat}
+          />
+        );
+      })}
     </div>
   );
 };

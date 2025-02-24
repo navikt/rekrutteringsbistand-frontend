@@ -1,4 +1,4 @@
-import { TrashIcon } from '@navikt/aksel-icons';
+import { EyeSlashIcon, TasklistIcon } from '@navikt/aksel-icons';
 import { BodyLong, Button, Modal } from '@navikt/ds-react';
 import * as React from 'react';
 
@@ -17,16 +17,24 @@ const AvsluttStillingKnapp: React.FC<AvsluttStillingKnappProps> = ({
 
   return (
     <>
-      <Modal ref={ref} header={{ heading: 'Avslutte oppdraget?' }}>
+      <Modal
+        width={600}
+        ref={ref}
+        header={{ heading: ' Vil du ferdigstille oppdraget? ' }}
+      >
         <Modal.Body>
           <BodyLong>
             {besatteStillinger} av {antallStillinger}{' '}
-            {antallStillinger === 1 ? 'stilling' : 'stillinger'} er besatt
+            {antallStillinger === 1 ? 'stilling' : 'stillinger'} er besatt.
+          </BodyLong>
+          <BodyLong className='mt-4'>
+            Dette avpubliserer stillingen og sender melding til kandidatene som
+            er markert som "fått jobben"
           </BodyLong>
         </Modal.Body>
         <Modal.Footer>
           <Button type='button' onClick={() => ref.current?.close()}>
-            Avslutt oppdrag
+            Ferdigstill oppdrag
           </Button>
           <Button
             type='button'
@@ -37,6 +45,9 @@ const AvsluttStillingKnapp: React.FC<AvsluttStillingKnappProps> = ({
           </Button>
         </Modal.Footer>
       </Modal>
+      <Button icon={<EyeSlashIcon />} variant='secondary' size='small'>
+        Avpubliser
+      </Button>
       <Button
         // TODO Stoppet / Slettet er eksisterende statuser
         onClick={() => ref.current?.showModal()}
@@ -44,9 +55,9 @@ const AvsluttStillingKnapp: React.FC<AvsluttStillingKnappProps> = ({
         variant='secondary'
         size='small'
         className='w-full h-5'
-        icon={<TrashIcon />}
+        icon={<TasklistIcon />}
       >
-        Avslutt
+        Ferdigstill
       </Button>
     </>
   );
