@@ -36,6 +36,7 @@ spec:
         - application: rekrutteringsbistand-stillingssok-proxy
         - application: rekrutteringsbistand-kandidatsok-api
         - application: rekrutteringsbistand-kandidatvarsel-api
+        - application: toi-synlighetsmotor
         - application: modiacontextholder
           namespace: personoversikt
         - application: pam-ontologi
