@@ -29,7 +29,7 @@ const AvsluttStillingKnapp: React.FC<AvsluttStillingKnappProps> = ({
           </BodyLong>
           <BodyLong className='mt-4'>
             Dette avpubliserer stillingen og sender melding til kandidatene som
-            er markert som "fått jobben"
+            er markert som fått jobben.
           </BodyLong>
         </Modal.Body>
         <Modal.Footer>
