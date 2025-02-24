@@ -12,13 +12,13 @@ import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { formidleUsynligKandidatEndepunkt } from '../../../api/kandidat/formidleKandidat';
 import { kandidatlisteEndepunkt } from '../../../api/kandidat/useKandidatliste';
-import { kandidatListeIdEndepunkt } from '../../../api/kandidat/useKandidatlisteId';
 import { OpprettNyStillingDTO } from '../../../api/stilling/ny-stilling/dto';
 import { opprettNyStillingEndepunkt } from '../../../api/stilling/oppdater-stilling/oppdaterStilling';
 import { useApplikasjonContext } from '../../../ApplikasjonContext';
 import { Stillingskategori } from '../../../stilling/stilling-typer';
 import { mapFormTilFormidling } from '../mapFormidling';
 import { FormidlingDataForm } from '../redigerFormidlingFormType';
+import { kandidatlisteInfoEndepunkt, useKandidatlisteInfo } from '../../../api/kandidat/useKandidatlisteInfo';
 
 const FormidlingInnspurt = () => {
   const { control, formState, watch, getValues, handleSubmit } =
@@ -110,11 +110,11 @@ const FormidlingInnspurt = () => {
 
     await new Promise((resolve) => setTimeout(resolve, 3000));
 
-    const kandidatListeIdFetch = await fetch(
-      kandidatListeIdEndepunkt(publisertStillingData.stilling.uuid)!,
+    const kandidatlisteInfo = await fetch(
+      kandidatlisteInfoEndepunkt(publisertStillingData.stilling.uuid)!,
       { method: 'GET' },
     );
-    const kandidatListeIdRespons = await kandidatListeIdFetch.json();
+    const kandidatListeIdRespons = await kandidatlisteInfo.json();
     const kandidatlisteId = kandidatListeIdRespons.kandidatlisteId;
 
     formidlingData?.omKandiatene.map(async (kandidat: any) => {

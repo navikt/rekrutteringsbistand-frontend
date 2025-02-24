@@ -23,8 +23,7 @@ const OmStillingen: React.FC<{ forhåndsvisData?: boolean }> = ({
 }) => {
   const contentRef = React.useRef<HTMLDivElement>(null);
 
-  const { stillingsData, kandidatlisteId, erFormidling } =
-    useStillingsContext();
+  const { stillingsData, erFormidling } = useStillingsContext();
 
   const lokasjon = getWorkLocationsAsString(
     stillingsData.stilling.locationList as GeografiDTO[],
@@ -102,7 +101,7 @@ const OmStillingen: React.FC<{ forhåndsvisData?: boolean }> = ({
                     tekst={`Oppstart ${starttime ? formaterTid(starttime)?.toLowerCase() : '-'}`}
                     ikon={<TimerStartIcon />}
                   />
-                  <AntallKandidater kandidatlisteId={kandidatlisteId} />
+                  <AntallKandidater />
                 </>
               }
             />

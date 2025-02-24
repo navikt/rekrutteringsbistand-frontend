@@ -33,7 +33,14 @@ const AvsluttStillingKnapp: React.FC<AvsluttStillingKnappProps> = ({
           </BodyLong>
         </Modal.Body>
         <Modal.Footer>
-          <Button type='button' onClick={() => ref.current?.close()}>
+          <Button
+            type='button'
+            onClick={() =>
+              // Sett stillingstatus til STOPPET
+              // Sett kandidatlistestatus til LUKKET
+              ref.current?.close()
+            }
+          >
             Ferdigstill oppdrag
           </Button>
           <Button

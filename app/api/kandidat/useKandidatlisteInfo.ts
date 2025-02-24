@@ -7,7 +7,7 @@ import { z } from 'zod';
 import { KandidatAPI } from '../api-routes';
 import { getAPIwithSchema } from '../fetcher';
 
-const KandidatlisteInfoEndepunkt = (stillingsId: string) =>
+export const kandidatlisteInfoEndepunkt = (stillingsId: string) =>
   `${KandidatAPI.internUrl}/veileder/stilling/${stillingsId}/kandidatlisteinfo`;
 
 const KandidatlisteInfoSchema = z.object({
@@ -18,8 +18,8 @@ const KandidatlisteInfoSchema = z.object({
 
 export type KandidatlisteInfoDTO = z.infer<typeof KandidatlisteInfoSchema>;
 
-export const useUseKandidatlisteInfo = (stillingsId: string | null) =>
+export const useKandidatlisteInfo = (stillingsId: string | null) =>
   useSWRImmutable(
-    stillingsId ? KandidatlisteInfoEndepunkt(stillingsId) : null,
+    stillingsId ? kandidatlisteInfoEndepunkt(stillingsId) : null,
     getAPIwithSchema(KandidatlisteInfoSchema),
   );

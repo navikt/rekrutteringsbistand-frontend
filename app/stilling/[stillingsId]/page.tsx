@@ -13,7 +13,7 @@ import OmStillingen from './omStillingen/OmStillingen';
 import { useStillingsContext } from './StillingsContext';
 
 export default function StillingSide() {
-  const { erEier, stillingsData, kandidatlisteId, erSlettet } =
+  const { erEier, stillingsData, kandidatlisteInfo, erSlettet } =
     useStillingsContext();
 
   const [fane, setFane] = useQueryState('visFane', {
@@ -47,7 +47,7 @@ export default function StillingSide() {
                 Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
               ]}
             >
-              {kandidatlisteId && erEier && (
+              {kandidatlisteInfo?.kandidatlisteId && erEier && (
                 <Tabs.Tab value='kandidater' label='Kandidater' />
               )}
             </TilgangskontrollForInnhold>
@@ -89,7 +89,7 @@ export default function StillingSide() {
         <Tabs.Panel value='stilling'>
           <OmStillingen />
         </Tabs.Panel>
-        {kandidatlisteId && erEier && (
+        {kandidatlisteInfo?.kandidatlisteId && erEier && (
           <Tabs.Panel value='kandidater'>
             <StillingsKandidaterFilterProvider>
               <StillingsKandidater />

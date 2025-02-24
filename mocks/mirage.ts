@@ -12,9 +12,7 @@ import { kandidatStillingsSøkMirage } from '../app/api/kandidat-sok/useKandidat
 import { kandidatSokMirage } from '../app/api/kandidat-sok/useKandidatsøk';
 import { kontorSøkMirage } from '../app/api/kandidat-sok/useKontorSøk';
 import { formidleUsynligKandidatMirage } from '../app/api/kandidat/formidleKandidat';
-import { antallKandidaterMirage } from '../app/api/kandidat/useAntallKandidater';
 import { kandidatlisteMirage } from '../app/api/kandidat/useKandidatliste';
-import { kandidatlisteIdMirage } from '../app/api/kandidat/useKandidatlisteId';
 import { kandidatlisteoversiktMirage } from '../app/api/kandidat/useKandidatListeoversikt';
 import { meldingsmalerMirage } from '../app/api/kandidatvarsel/hentMeldingsmaler';
 import { kandidatvarselMirage } from '../app/api/kandidatvarsel/kandidatvarsel';
@@ -39,7 +37,6 @@ export function makeServer({ environment = 'test' } = {}) {
     },
 
     routes() {
-      antallKandidaterMirage(this);
       arenaKandidatnrMirage(this);
       brukerMirage(this);
       brukerStandardSøkMirage(this);
@@ -47,7 +44,6 @@ export function makeServer({ environment = 'test' } = {}) {
       foresporselOmDelingAvCVStatistikkMirage(this);
       kandidagsammendragMirage(this);
       kandidatinformasjonMirage(this);
-      kandidatlisteIdMirage(this);
       kandidatlisteMirage(this);
       kandidatlisteoversiktMirage(this);
       kandidatNavnMirage(this);
