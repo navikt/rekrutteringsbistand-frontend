@@ -8,6 +8,7 @@ import { endreUtfallKandidat } from '../../../../api/kandidat/endreKandidatUtfal
 import { kandidaterSchemaDTO } from '../../../../api/kandidat/schema.zod';
 import { Sms } from '../../../../api/kandidatvarsel/kandidatvarsel';
 import { useApplikasjonContext } from '../../../../ApplikasjonContext';
+import FeilDialog from '../../../../components/feilhåndtering/Feildialog';
 import InfoOmKandidat from './InfoOmKandidat';
 import SletteKandidatKnapp from './KandidatDropdown';
 import KandidatHendelse, { mapToHendelser } from './KandidatHendelse';
@@ -46,15 +47,23 @@ const KandidatRad: React.FC<KandidatRadProps> = ({
   const sisteSms = kandidatHendelser.filter((h) => h.kilde === 'Sms')[0];
 
   const [endrerUtfall, setEndrerUtfall] = React.useState(false);
-
+  const [feilDialog, setFeilDialog] = React.useState<string | null>(null);
   const registrerFåttJobben = async () => {
     setEndrerUtfall(true);
-    await endreUtfallKandidat(
-      KandidatutfallTyper.FATT_JOBBEN,
-      valgtNavKontor?.navKontor ?? '',
-      kandidatlisteId,
-      kandidat.kandidatnr,
-    );
+    try {
+      await endreUtfallKandidat(
+        KandidatutfallTyper.FATT_JOBBEN,
+        valgtNavKontor?.navKontor ?? '',
+        kandidatlisteId,
+        kandidat.kandidatnr,
+      );
+      setFeilDialog(null);
+    } catch (error) {
+      setFeilDialog(
+        error instanceof Error ? error.message : 'En ukjent feil oppstod',
+      );
+    }
+    setEndrerUtfall(false);
 
     //todo  Oppdater kandidatliste
   };
@@ -75,6 +84,11 @@ const KandidatRad: React.FC<KandidatRadProps> = ({
             >
               Registrer fått jobben
             </Button>
+            <FeilDialog
+              isOpen={!!feilDialog}
+              onRetry={() => registrerFåttJobben()}
+              errorMessage={feilDialog ?? 'Ukjent feil'}
+            />
             {!innaktiv && <InfoOmKandidat kandidat={kandidat} />}
           </div>
         </div>

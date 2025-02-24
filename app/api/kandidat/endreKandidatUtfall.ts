@@ -32,7 +32,7 @@ export const endreUtfallKandidat = async (
   kandidatlisteId: string,
   kandidatnr: string,
 ) =>
-  await putApi(
-    endreUtfallKandidatEndepunkt(kandidatlisteId, kandidatnr),
-    JSON.stringify({ utfall, navKontor }),
-  );
+  await putApi(endreUtfallKandidatEndepunkt(kandidatlisteId, kandidatnr), {
+    utfall,
+    navKontor,
+  });

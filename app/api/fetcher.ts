@@ -114,7 +114,7 @@ export const putApi = async (
     url += `?${queryString}`;
   }
 
-  const response = await fetch(basePath + url, {
+  const res = await fetch(basePath + url, {
     method: 'PUT',
     credentials: 'include',
     headers: {
@@ -125,17 +125,17 @@ export const putApi = async (
     ),
   });
 
-  if (response.ok) {
-    return await response.json();
-  } else if (response.status === 404) {
-    throw new Error('404');
-  } else if (response.status === 403) {
-    throw new Error('403');
-  } else {
-    throw new Error(
-      `Feil respons fra server (http-status: ${response.status})`,
-    );
+  if (!res.ok) {
+    const errorText = res.headers
+      .get('content-type')
+      ?.includes('application/json')
+      ? (await res.json()).beskrivelse
+      : await res.text();
+
+    throw new Error(errorText || 'Feil ved putApi');
   }
+
+  return res.json();
 };
 
 export const postApiResponse = (url: string, body: any) =>
