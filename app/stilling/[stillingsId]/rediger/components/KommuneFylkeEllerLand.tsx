@@ -18,7 +18,7 @@ const mapTilGeografiDTO = (geografi: PamGeografi) => {
     address: geografi.lokasjon.adresse,
     postalCode: geografi.lokasjon.postnummer,
     county: geografi.navn,
-    countyCode: geografi.lokasjon.fylkesnummer,
+    // countyCode: geografi.lokasjon.fylkesnummer,
     municipal: geografi.lokasjon.kommunenummer,
     municipalCode: geografi.lokasjon.kommunenummer,
     city: geografi.lokasjon.poststed,

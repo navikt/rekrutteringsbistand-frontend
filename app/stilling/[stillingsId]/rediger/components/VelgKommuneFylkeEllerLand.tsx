@@ -71,7 +71,7 @@ const VelgKommuneFylkeEllerLand: React.FC<VelgKommuneFylkeEllerLandProps> = ({
         postalCode: lokasjon.lokasjon.postnummer,
         city: lokasjon.lokasjon.poststed,
         county: lokasjon.lokasjon.fylke,
-        countyCode: lokasjon.lokasjon.fylkesnummer,
+        // countyCode: lokasjon.lokasjon.fylkesnummer,
         municipal: lokasjon.lokasjon.kommune,
         municipalCode: lokasjon.lokasjon.kommunenummer,
         country: lokasjon.lokasjon.land,
