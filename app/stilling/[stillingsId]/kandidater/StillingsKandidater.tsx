@@ -42,6 +42,7 @@ const StillingsKandidater: React.FC = () => {
   );
   const beskjederHook = useSmserForStilling(stillingsData.stilling.uuid);
 
+  const reFetchKandidatliste = () => kandidatlisteHook.mutate();
   const [search, setSearch] = React.useState('');
 
   // Mutate beskjeder every 3 second: //TODO aktuelt?
@@ -185,6 +186,7 @@ const StillingsKandidater: React.FC = () => {
                   search={search}
                   kandidatliste={kandidatliste}
                   stillingsId={stillingsData.stilling.uuid}
+                  reFetchKandidatliste={reFetchKandidatliste}
                 />
               </div>
             </div>

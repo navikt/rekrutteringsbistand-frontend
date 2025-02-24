@@ -33,6 +33,7 @@ const StillingsKandidaterTabell: React.FC<{
   stillingsId: string;
   forespurteKandidater: ForespurteOmDelingAvCvDTO;
   beskjeder: Record<string, Sms>;
+  reFetchKandidatliste: () => void;
 }> = ({
   markerteKandidater,
   setMarkerteKandidater,
@@ -41,6 +42,7 @@ const StillingsKandidaterTabell: React.FC<{
   stillingsId,
   forespurteKandidater,
   beskjeder,
+  reFetchKandidatliste,
 }) => {
   const [sort, setSort] = React.useState<TableSortState<kandidaterSchemaDTO>>();
 
@@ -201,6 +203,7 @@ const StillingsKandidaterTabell: React.FC<{
               kandidat={kandidat}
               forespørselCvForKandidat={forespørselCvForKandidat}
               beskjedForKandidat={beskjedForKandidat}
+              reFetchKandidatliste={reFetchKandidatliste}
             />
           );
         })}

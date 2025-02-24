@@ -24,6 +24,7 @@ export interface KandidatRadProps {
   markerKandidat: (kandidat: kandidaterSchemaDTO) => void;
   kandidatlisteId: string;
   stillingsId: string;
+  reFetchKandidatliste: () => void;
 }
 
 const KandidatRad: React.FC<KandidatRadProps> = ({
@@ -34,6 +35,7 @@ const KandidatRad: React.FC<KandidatRadProps> = ({
   markerKandidat,
   kandidatlisteId,
   stillingsId,
+  reFetchKandidatliste,
 }) => {
   const innaktiv = !kandidat.fodselsnr;
   const { valgtNavKontor } = useApplikasjonContext();
@@ -46,17 +48,26 @@ const KandidatRad: React.FC<KandidatRadProps> = ({
   const sisteAktivitet = kandidatHendelser.filter((h) => h.kilde !== 'Sms')[0];
   const sisteSms = kandidatHendelser.filter((h) => h.kilde === 'Sms')[0];
 
+  const sisteUtfall = kandidat.utfallsendringer.find(
+    (u) =>
+      u.tidspunkt ===
+      kandidat.utfallsendringer.sort((a, b) =>
+        a.tidspunkt.localeCompare(b.tidspunkt),
+      )[0].tidspunkt,
+  )?.utfall;
+
   const [endrerUtfall, setEndrerUtfall] = React.useState(false);
   const [feilDialog, setFeilDialog] = React.useState<string | null>(null);
-  const registrerFåttJobben = async () => {
+  const endreUtfallForKandidat = async (utfall: KandidatutfallTyper) => {
     setEndrerUtfall(true);
     try {
       await endreUtfallKandidat(
-        KandidatutfallTyper.FATT_JOBBEN,
+        utfall,
         valgtNavKontor?.navKontor ?? '',
         kandidatlisteId,
         kandidat.kandidatnr,
       );
+      reFetchKandidatliste();
       setFeilDialog(null);
     } catch (error) {
       setFeilDialog(
@@ -64,8 +75,6 @@ const KandidatRad: React.FC<KandidatRadProps> = ({
       );
     }
     setEndrerUtfall(false);
-
-    //todo  Oppdater kandidatliste
   };
 
   return (
@@ -73,20 +82,29 @@ const KandidatRad: React.FC<KandidatRadProps> = ({
       content={
         <div className='grid grid-cols-3 gap-8'>
           <div className='col-span-2'>
-            <KandidatHendelse kandidatHendelser={kandidatHendelser} />
+            <KandidatHendelse
+              kandidatHendelser={kandidatHendelser}
+              endreUtfallForKandidat={endreUtfallForKandidat}
+            />
           </div>
           <div className='col-span-1'>
-            <Button
-              className=' mb-4 w-full'
-              icon={<PlusCircleIcon />}
-              onClick={registrerFåttJobben}
-              loading={endrerUtfall}
-            >
-              Registrer fått jobben
-            </Button>
+            {sisteUtfall !== KandidatutfallTyper.FATT_JOBBEN && (
+              <Button
+                className=' mb-4 w-full'
+                icon={<PlusCircleIcon />}
+                onClick={() =>
+                  endreUtfallForKandidat(KandidatutfallTyper.FATT_JOBBEN)
+                }
+                loading={endrerUtfall}
+              >
+                Registrer fått jobben
+              </Button>
+            )}
             <FeilDialog
               isOpen={!!feilDialog}
-              onRetry={() => registrerFåttJobben()}
+              onRetry={() =>
+                endreUtfallForKandidat(KandidatutfallTyper.FATT_JOBBEN)
+              }
               errorMessage={feilDialog ?? 'Ukjent feil'}
             />
             {!innaktiv && <InfoOmKandidat kandidat={kandidat} />}

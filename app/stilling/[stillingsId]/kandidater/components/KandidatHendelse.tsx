@@ -9,12 +9,13 @@ import {
 } from '@navikt/aksel-icons';
 import { format } from 'date-fns';
 import { nb } from 'date-fns/locale';
+import React from 'react';
 import { KandidatForespurtOmDelingSchema } from '../../../../api/foresporsel-om-deling-av-cv/foresporsler/[slug]/useForespurteOmDelingAvCv';
 import { kandidaterSchemaDTO } from '../../../../api/kandidat/schema.zod';
 import { Sms } from '../../../../api/kandidatvarsel/kandidatvarsel';
 import { storForbokstavString } from '../../../../kandidat-sok/util';
 import KandidatHendelseKort from './KandidatHendelseKort';
-import { UtfallsEndringTyper } from './KandidatTyper';
+import { KandidatutfallTyper, UtfallsEndringTyper } from './KandidatTyper';
 
 export interface KandidatHendelse {
   tittel: string;
@@ -23,6 +24,7 @@ export interface KandidatHendelse {
   type: 'success' | 'error' | 'info';
   ikon: React.ReactNode;
   kilde: string;
+  fjerneFåttJobben?: boolean;
 }
 
 export const utfallsEndringPresentasjon = (
@@ -119,11 +121,15 @@ export const mapToHendelser = ({
   }
 
   if (kandidat.utfallsendringer) {
-    kandidat.utfallsendringer.forEach((endring) => {
+    kandidat.utfallsendringer.forEach((endring, index) => {
       if (endring.tidspunkt && endring.utfall) {
         const presentasjon = utfallsEndringPresentasjon(
           endring.utfall as UtfallsEndringTyper,
         );
+
+        const isLastEvent = index === kandidat.utfallsendringer!.length - 1;
+        const isFattJobben = endring.utfall === UtfallsEndringTyper.FATT_JOBBEN;
+
         hendelser.push({
           tittel: presentasjon.tittel,
           tekst: endring.registrertAvIdent
@@ -133,6 +139,7 @@ export const mapToHendelser = ({
           ikon: presentasjon.ikon,
           dato: endring.tidspunkt,
           kilde: 'Utfallsendring',
+          fjerneFåttJobben: isLastEvent && isFattJobben,
         });
       }
     });
@@ -199,8 +206,10 @@ export const mapToHendelser = ({
 
 const KandidatHendelser = ({
   kandidatHendelser,
+  endreUtfallForKandidat,
 }: {
   kandidatHendelser: KandidatHendelse[];
+  endreUtfallForKandidat: (utfall: KandidatutfallTyper) => void;
 }) => {
   return (
     <div className='flex flex-col gap-4'>
@@ -208,6 +217,7 @@ const KandidatHendelser = ({
         <KandidatHendelseKort
           key={`${hendelse.tittel}-${index}`}
           {...hendelse}
+          endreUtfallForKandidat={endreUtfallForKandidat}
         />
       ))}
     </div>

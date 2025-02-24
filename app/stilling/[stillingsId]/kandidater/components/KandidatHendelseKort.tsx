@@ -1,6 +1,8 @@
 import { BodyShort, Box } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import { nb } from 'date-fns/locale';
+import FjernFåttJobbenKnapp from './FjernFåttJobbenKnapp';
+import { KandidatutfallTyper } from './KandidatTyper';
 
 export interface KandidatHendelseKortProps {
   tittel: string;
@@ -8,6 +10,8 @@ export interface KandidatHendelseKortProps {
   dato: string;
   type: 'success' | 'error' | 'info';
   ikon: React.ReactNode;
+  fjerneFåttJobben?: boolean;
+  endreUtfallForKandidat: (utfall: KandidatutfallTyper) => void;
 }
 
 const KandidatHendelseKort: React.FC<KandidatHendelseKortProps> = ({
@@ -16,6 +20,8 @@ const KandidatHendelseKort: React.FC<KandidatHendelseKortProps> = ({
   dato,
   type,
   ikon,
+  fjerneFåttJobben,
+  endreUtfallForKandidat,
 }) => {
   const backgroundColor =
     type === 'error'
@@ -44,6 +50,11 @@ const KandidatHendelseKort: React.FC<KandidatHendelseKortProps> = ({
             )}
           </div>
         </div>
+        {fjerneFåttJobben && (
+          <FjernFåttJobbenKnapp
+            endreUtfallForKandidat={endreUtfallForKandidat}
+          />
+        )}
       </div>
     </Box.New>
   );
