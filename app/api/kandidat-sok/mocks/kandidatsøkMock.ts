@@ -1,3 +1,5 @@
+import { Innsatsgruppe } from '../../../kandidat-sok/components/innsatsgrupper';
+
 export const kandidatSøkMock = {
   kandidater: [
     {
@@ -52,6 +54,7 @@ export const kandidatSøkMock = {
       ],
       fornavn: 'Våken',
       fodselsnummer: '04479208765',
+      innsatsgruppe: Innsatsgruppe.SITUASJONSBESTEMT_INNSATS,
     },
     {
       yrkeJobbonskerObj: [
@@ -105,6 +108,7 @@ export const kandidatSøkMock = {
       ],
       fornavn: 'Heldig',
       fodselsnummer: '17418940123',
+      innsatsgruppe: Innsatsgruppe.SITUASJONSBESTEMT_INNSATS,
     },
     {
       yrkeJobbonskerObj: [
@@ -158,6 +162,7 @@ export const kandidatSøkMock = {
       ],
       fornavn: 'Pessimistisk',
       fodselsnummer: '27426831452',
+      innsatsgruppe: Innsatsgruppe.SITUASJONSBESTEMT_INNSATS,
     },
     {
       yrkeJobbonskerObj: [
@@ -211,6 +216,7 @@ export const kandidatSøkMock = {
       ],
       fornavn: 'Horisontal',
       fodselsnummer: '21506801084',
+      innsatsgruppe: Innsatsgruppe.SITUASJONSBESTEMT_INNSATS,
     },
   ],
   navigering: {

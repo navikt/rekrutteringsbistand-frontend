@@ -39,12 +39,6 @@ export const mapJanzzTilKategori = (
   ];
 };
 
-const capitalize = (str: string) =>
-  str
-    .split(/[- ]/)
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-    .join(str.includes('-') ? '-' : ' ');
-
 const formaterFraISOdato = (dato: string) => {
   return format(dato, 'dd.MM.yyyy');
 };

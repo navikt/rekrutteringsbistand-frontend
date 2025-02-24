@@ -79,13 +79,9 @@ const VelgKommuneFylkeEllerLand: React.FC<VelgKommuneFylkeEllerLandProps> = ({
     } else {
       const id = valgteVerdier.find(
         (v) =>
-          v.address === lokasjon?.lokasjon.adresse &&
-          v.postalCode === lokasjon?.lokasjon.postnummer &&
-          v.city === lokasjon?.lokasjon.poststed &&
-          v.county === lokasjon?.lokasjon.fylke &&
-          v.countyCode === lokasjon?.lokasjon.fylkesnummer &&
-          v.municipal === lokasjon?.lokasjon.kommune &&
-          v.municipalCode === lokasjon?.lokasjon.kommunenummer &&
+          // Fjern i rekkefølge kommune, fylke, land
+          v.municipal === lokasjon?.lokasjon.kommune ||
+          v.county === lokasjon?.lokasjon.fylke ||
           v.country === lokasjon?.lokasjon.land,
       )?.id;
 

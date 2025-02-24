@@ -14,7 +14,7 @@ export const FormidlingKandidatSchema = z.object({
 
 export const OmFormidlingSchema = z.object({
   organisasjon: ArbeidsgiverSchema,
-  categoryList: z.array(KategoriSchema),
+  categoryList: z.array(KategoriSchema).min(1, 'Yrkestittel må velges'),
   locationList: z.array(LocationSchema).optional().nullable(),
   sektor: z.string().min(1, 'Sektor må velges').nullable(),
   arbeidstidsordning: z.string().optional(),

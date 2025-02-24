@@ -12,6 +12,7 @@ import {
   mockMinEksternStilling,
   mockMinStilling,
   nyStillingMock,
+  testMockStilling,
 } from './mocks/stillingMock';
 import { StillingDataSchema } from './stilling.dto';
 
@@ -25,6 +26,7 @@ export const useStilling = (stillingsId: string) =>
   );
 
 export const stillingMirage = (server: any) => {
+  server.get(stillingEndepunkt('testMockStilling'), () => testMockStilling);
   server.get(stillingEndepunkt('nyStilling'), () => nyStillingMock);
   server.get(stillingEndepunkt('minStilling'), () => mockMinStilling);
   server.get(stillingEndepunkt('minFormidling'), () => mockFormidling);
