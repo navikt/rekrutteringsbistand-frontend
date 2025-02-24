@@ -18,8 +18,8 @@ const KandidatlisteInfoSchema = z.object({
 
 export type KandidatlisteInfoDTO = z.infer<typeof KandidatlisteInfoSchema>;
 
-export const useUseKandidatlisteInfo = (stillingsId: string) =>
+export const useUseKandidatlisteInfo = (stillingsId: string | null) =>
   useSWRImmutable(
-    KandidatlisteInfoEndepunkt(stillingsId),
+    stillingsId ? KandidatlisteInfoEndepunkt(stillingsId) : null,
     getAPIwithSchema(KandidatlisteInfoSchema),
   );

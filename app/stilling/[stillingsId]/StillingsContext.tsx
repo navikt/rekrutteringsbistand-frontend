@@ -2,6 +2,7 @@
 import { useRouter } from 'next/navigation';
 import React, { useMemo } from 'react';
 import { useKandidatlisteId } from '../../api/kandidat/useKandidatlisteId';
+import { useUseKandidatlisteInfo } from '../../api/kandidat/useKandidatlisteInfo';
 import { StillingsDataDTO } from '../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { useStilling } from '../../api/stilling/rekrutteringsbistandstilling/[slug]/useStilling';
 import { useApplikasjonContext } from '../../ApplikasjonContext';
@@ -32,6 +33,10 @@ interface StillingsContextProviderProps {
 export const StillingsContextProvider: React.FC<
   StillingsContextProviderProps
 > = ({ stillingsId, children }) => {
+  const hook = useUseKandidatlisteInfo(stillingsId);
+
+  console.log('🎺 hook', hook);
+
   const stillingHook = useStilling(stillingsId);
   return (
     <SWRLaster hooks={[stillingHook]}>

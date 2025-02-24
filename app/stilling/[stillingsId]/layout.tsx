@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { useUseKandidatlisteInfo } from '../../api/kandidat/useKandidatlisteInfo';
 import NotFound from '../../not-found';
 import { StillingsContextProvider } from './StillingsContext';
 import StillingSideLayout from './StillingssideLayout';
@@ -17,9 +16,6 @@ export default async function StillingSideRootLayout({
     return <NotFound />;
   }
 
-  const hook = useUseKandidatlisteInfo(stillingsId);
-
-  console.log('🎺 hook', hook);
   return (
     <StillingsContextProvider stillingsId={stillingsId}>
       <StillingSideLayout>{children}</StillingSideLayout>
