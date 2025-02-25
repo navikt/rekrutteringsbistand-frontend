@@ -12,16 +12,21 @@ const KandidatNavigering: React.FC<KandidatNavigeringProps> = ({
 }) => {
   const { navigering, setNavigering } = useKandidatNavigering();
   const router = useRouter();
+
+  React.useEffect(() => {
+    if (navigering && navigering.length > 0) {
+      const kandidatPlassering = navigering.indexOf(kandidatnr);
+      if (kandidatPlassering === -1) {
+        setNavigering([]);
+      }
+    }
+  }, [kandidatnr, navigering, setNavigering]);
+
   if (!navigering || navigering.length < 1) {
     return null;
   }
 
   const kandidatPlassering = navigering.indexOf(kandidatnr);
-
-  if (kandidatPlassering === -1) {
-    setNavigering([]);
-    return null;
-  }
 
   return (
     <div className='flex items-center'>

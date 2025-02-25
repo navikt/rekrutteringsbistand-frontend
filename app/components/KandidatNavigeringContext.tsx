@@ -1,4 +1,11 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import {
   getSessionStorage,
   setSessionStorage,
@@ -20,12 +27,22 @@ export const KandidatNavigeringProvider: React.FC<{
     getSessionStorage('kandidatNavigering') || [],
   );
 
-  const updateNavigering = (newNavigering: string[]) => {
-    if (JSON.stringify(newNavigering) !== JSON.stringify(navigering)) {
+  const prevNavigeringRef = useRef<string[]>(navigering);
+
+  useEffect(() => {
+    setSessionStorage('kandidatNavigering', navigering);
+    prevNavigeringRef.current = navigering;
+  }, [navigering]);
+
+  const updateNavigering = useCallback((newNavigering: string[]) => {
+    if (
+      JSON.stringify(newNavigering) !==
+      JSON.stringify(prevNavigeringRef.current)
+    ) {
+      prevNavigeringRef.current = newNavigering;
       setNavigering(newNavigering);
-      setSessionStorage('kandidatNavigering', newNavigering);
     }
-  };
+  }, []);
 
   return (
     <KandidatNavigeringContext.Provider
