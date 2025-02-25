@@ -13,6 +13,7 @@ import { kandidatSokMirage } from '../app/api/kandidat-sok/useKandidatsøk';
 import { kontorSøkMirage } from '../app/api/kandidat-sok/useKontorSøk';
 import { formidleUsynligKandidatMirage } from '../app/api/kandidat/formidleKandidat';
 import { kandidatlisteMirage } from '../app/api/kandidat/useKandidatliste';
+import { kandidatlisteInfoMirage } from '../app/api/kandidat/useKandidatlisteInfo';
 import { kandidatlisteoversiktMirage } from '../app/api/kandidat/useKandidatListeoversikt';
 import { meldingsmalerMirage } from '../app/api/kandidatvarsel/hentMeldingsmaler';
 import { kandidatvarselMirage } from '../app/api/kandidatvarsel/kandidatvarsel';
@@ -25,9 +26,7 @@ import { opprettNyStillingMirage } from '../app/api/stilling/ny-stilling/opprett
 import { oppdaterStillingMirage } from '../app/api/stilling/oppdater-stilling/oppdaterStilling';
 import { stillingMirage } from '../app/api/stilling/rekrutteringsbistandstilling/[slug]/useStilling';
 import { brukerStandardSøkMirage } from '../app/api/stilling/standardsok/useBrukersStandardsøk';
-import { stillingssøkMirage } from '../app/api/stillings-sok/useStillingssøk';
 import { synlighetsevalueringMirage } from '../app/api/synlighet/useSynlighetsevaluering';
-import { kandidatlisteInfoMirage } from '../app/api/kandidat/useKandidatlisteInfo';
 
 export function makeServer({ environment = 'test' } = {}) {
   let server = createServer({
@@ -66,7 +65,7 @@ export function makeServer({ environment = 'test' } = {}) {
       formidleUsynligKandidatMirage(this);
       kandidatlisteInfoMirage(this);
       // stillingssøk mock kan disables ved ES søk
-      stillingssøkMirage(this);
+      // stillingssøkMirage(this);
       this.passthrough('*');
     },
   });
