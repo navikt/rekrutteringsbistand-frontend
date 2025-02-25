@@ -102,7 +102,7 @@ export const KandidatvarselAPI: Iroute = {
 };
 
 export const RekrutteringstreffAPI: Iroute = {
-  api_route: '/api',
+  api_route: '',
   api_url: process.env.REKRUTTERINGSTREFF_API_URL ?? '',
   internUrl: '/api/rekrutteringstreff',
   scope: `api://${gcp}.toi.rekrutteringstreff-api/.default`,
