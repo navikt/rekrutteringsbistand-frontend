@@ -18,6 +18,8 @@ interface KandidatSøkResultatProps {
   type: KandidatSøkPortefølje;
 }
 
+// TODO Legg til paginering
+
 const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({ type }) => {
   const filter = useKandidatSøkFilter();
   const {
@@ -49,9 +51,6 @@ const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({ type }) => 
                 kandidat={kandidat as KandidatDataSchemaDTO}
               />
             ))}
-            {/* <StillingsSøkPaginering
-          totaltAntallTreff={data.hits.total.value ?? 0}
-        /> */}
           </>
         );
       }}
