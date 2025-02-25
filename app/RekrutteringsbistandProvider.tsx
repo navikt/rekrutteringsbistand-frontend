@@ -5,7 +5,9 @@ import { useBruker } from './api/bruker/useBruker';
 import { useDecoratorData } from './api/decorator/useDecoratorData';
 import { ApplikasjonContextProvider } from './ApplikasjonContext';
 import ErrorBoundary from './components/feilhåndtering/ErrorBoundary';
+import { KandidatNavigeringProvider } from './components/KandidatNavigeringContext';
 import Sidelaster from './components/Sidelaster';
+import { VarslingContextProvider } from './components/varsling/Varsling';
 
 export interface RekrutteringsbistandProviderProps {
   children?: React.ReactNode | undefined;
@@ -28,14 +30,16 @@ const RekrutteringsbistandProvider: React.FC<
   return (
     <ErrorBoundary>
       <NuqsAdapter>
-        <ApplikasjonContextProvider
-          brukerData={{
-            ...dekoratørHook.data,
-            roller: brukerHook.data?.roller ?? [],
-          }}
-        >
-          {children}
-        </ApplikasjonContextProvider>
+        <VarslingContextProvider>
+          <ApplikasjonContextProvider
+            brukerData={{
+              ...dekoratørHook.data,
+              roller: brukerHook.data?.roller ?? [],
+            }}
+          >
+            <KandidatNavigeringProvider>{children}</KandidatNavigeringProvider>
+          </ApplikasjonContextProvider>
+        </VarslingContextProvider>
       </NuqsAdapter>
     </ErrorBoundary>
   );
