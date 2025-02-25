@@ -221,8 +221,8 @@ export const kandidatSøkMock = {
   ],
   navigering: {
     kandidatnumre: [
-      'PAM012t1avh27',
       'PAM017xk6cpdc',
+      'PAM012t1avh27',
       'PAM0101tondtx',
       'PAM011pe2kmv9',
     ],

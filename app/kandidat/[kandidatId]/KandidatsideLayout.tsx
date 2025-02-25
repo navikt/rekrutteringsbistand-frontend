@@ -14,6 +14,7 @@ import SideTopBanner from '../../components/layout/SideTopBanner';
 import SVGDarkmode from '../../components/SVGDarkmode';
 import TekstMedIkon from '../../components/TekstMedIkon';
 import { useKandidatContext } from './KandidatContext';
+import KandidatNavigering from './KandidatNavigering';
 export interface KandidatSideProps {
   children?: React.ReactNode | undefined;
 }
@@ -25,6 +26,11 @@ const KandidatSideLayout: React.FC<KandidatSideProps> = ({ children }) => {
     <SideLayout
       banner={
         <SideTopBanner
+          chip={
+            <KandidatNavigering
+              kandidatnr={kandidatsammendragData.arenaKandidatnr}
+            />
+          }
           tilbakeKnapp
           ikon={<SVGDarkmode src={MineKandidater} alt='Mine kandidater' />}
           tittel={`${kandidatsammendragData.fornavn} ${kandidatsammendragData.etternavn}`}

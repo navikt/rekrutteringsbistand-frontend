@@ -6,6 +6,7 @@ import { useApplikasjonContext } from '../ApplikasjonContext';
 import SWRLaster from '../components/SWRLaster';
 
 import { KandidatDataSchemaDTO } from '../api/kandidat-sok/schema/cvSchema.zod';
+import { useKandidatNavigering } from '../components/KandidatNavigeringContext';
 import KandidatKort from './components/KandidatKort';
 import LagreIKandidatliste from './components/LagreIKandidatliste';
 import {
@@ -17,12 +18,19 @@ interface KandidatSøkResultatProps {
   type: KandidatSøkPortefølje;
 }
 
+// TODO Legg til paginering
+
 const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({ type }) => {
   const filter = useKandidatSøkFilter();
   const {
     brukerData: { ident },
   } = useApplikasjonContext();
   const kandidatsøkHook = useKandidatsøk(type, filter);
+  const { setNavigering } = useKandidatNavigering();
+
+  React.useEffect(() => {
+    setNavigering(kandidatsøkHook.data?.navigering.kandidatnumre ?? []);
+  }, [kandidatsøkHook.data?.navigering, setNavigering]);
 
   return (
     <SWRLaster hooks={[kandidatsøkHook]}>
@@ -43,9 +51,6 @@ const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({ type }) => 
                 kandidat={kandidat as KandidatDataSchemaDTO}
               />
             ))}
-            {/* <StillingsSøkPaginering
-          totaltAntallTreff={data.hits.total.value ?? 0}
-        /> */}
           </>
         );
       }}

@@ -3,21 +3,29 @@ import {
   Button,
   Checkbox,
   Link,
+  Loader,
   Modal,
   Pagination,
   Table,
 } from '@navikt/ds-react';
 import * as React from 'react';
+import { leggTilKandidater } from '../../api/kandidat-sok/leggTilKandidat';
 import { useMineKandidatlister } from '../../api/kandidat/useMineKandidatlister';
 import SWRLaster from '../../components/SWRLaster';
+import { useVisVarsling } from '../../components/varsling/Varsling';
 import { useKandidatSøkMarkerteContext } from '../KandidatSøkMarkerteContext';
 
 const LagreIKandidatliste: React.FC = () => {
   const ref = React.useRef<HTMLDialogElement>(null);
   const { markerteKandidater } = useKandidatSøkMarkerteContext();
   const [pageNumber, setPageNumber] = React.useState(1);
-  const mineKandidatlisterHook = useMineKandidatlister(pageNumber - 1);
+  const mineKandidatlisterHook = useMineKandidatlister(
+    pageNumber > 1 ? pageNumber - 1 : 0,
+  );
   const [selectedRows, setSelectedRows] = React.useState<string[]>([]);
+  const [laster, setLaster] = React.useState(false);
+
+  const visVarsel = useVisVarsling();
 
   const toggleSelectedRow = (stillingsId: string) =>
     setSelectedRows((list) =>
@@ -25,6 +33,35 @@ const LagreIKandidatliste: React.FC = () => {
         ? list.filter((id) => id !== stillingsId)
         : [...list, stillingsId],
     );
+
+  const lagreKandidaterIKandidatliste = async () => {
+    const kandidatnr = markerteKandidater
+      ?.map((kandidat) => kandidat.kandidatnr)
+      .filter(
+        (nr): nr is string => nr !== null && nr !== undefined && nr !== '',
+      );
+    if (kandidatnr && kandidatnr.length > 0) {
+      const promises = selectedRows.map((stillingId) =>
+        leggTilKandidater(kandidatnr, stillingId),
+      );
+
+      setLaster(true);
+      try {
+        await Promise.all(promises);
+        visVarsel({
+          alertType: 'success',
+          innhold: 'Kandidater lagret i kandidatliste',
+        });
+        ref.current?.close();
+      } catch (error) {
+        visVarsel({
+          alertType: 'error',
+          innhold: 'Feil ved lagring av kandidater i kandidatliste',
+        });
+      }
+      setLaster(false);
+    }
+  };
 
   return (
     <div>
@@ -48,7 +85,9 @@ const LagreIKandidatliste: React.FC = () => {
           <SWRLaster hooks={[mineKandidatlisterHook]}>
             {(mineKandidatlister) => {
               const pageCount = Math.floor(mineKandidatlister.antall / 8);
-              return (
+              return laster ? (
+                <Loader />
+              ) : (
                 <>
                   <Table zebraStripes>
                     <Table.Header>
@@ -143,10 +182,15 @@ const LagreIKandidatliste: React.FC = () => {
           </SWRLaster>
         </Modal.Body>
         <Modal.Footer>
-          <Button type='button' onClick={() => ref.current?.close()}>
+          <Button
+            disabled={laster || selectedRows.length === 0}
+            type='button'
+            onClick={lagreKandidaterIKandidatliste}
+          >
             Lagre
           </Button>
           <Button
+            disabled={laster}
             type='button'
             variant='secondary'
             onClick={() => ref.current?.close()}

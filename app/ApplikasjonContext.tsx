@@ -5,10 +5,7 @@ import { getMiljø, Miljø } from '../util/miljø';
 import { DecoratorDTO } from './api/decorator/decorator.dto';
 import Header from './components/header/Header';
 import { Roller } from './components/tilgangskontroll/roller';
-import {
-  Varsling,
-  VarslingContextProvider,
-} from './components/varsling/Varsling';
+import { Varsling } from './components/varsling/Varsling';
 
 export type NavKontorMedNavn = {
   navKontor: string;
@@ -72,35 +69,33 @@ export const ApplikasjonContextProvider: React.FC<
     harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER]);
 
   return (
-    <VarslingContextProvider>
-      <ApplikasjonContext.Provider
-        value={{
-          setValgtFnr,
-          brukerData,
-          setValgtNavKontor,
-          valgtNavKontor,
-          harRolle,
-          valgtFnr,
-        }}
-      >
-        <Header />
-        <Varsling />
-        <main className='mx-auto p-4 mb-8 w-[var(--ax-breakpoint-2xl)]'>
-          {harTilgangTilNyApplikasjon ? (
-            children
-          ) : (
-            <div>
-              <Alert variant='info'>
-                <Heading spacing size='small' level='3'>
-                  Applikasjonen er begrenset
-                </Heading>
-                Kun enkelte kontor har tilgang til den nye applikasjonen
-              </Alert>
-            </div>
-          )}
-        </main>
-      </ApplikasjonContext.Provider>
-    </VarslingContextProvider>
+    <ApplikasjonContext.Provider
+      value={{
+        setValgtFnr,
+        brukerData,
+        setValgtNavKontor,
+        valgtNavKontor,
+        harRolle,
+        valgtFnr,
+      }}
+    >
+      <Header />
+      <Varsling />
+      <main className='mx-auto p-4 mb-8 w-[var(--ax-breakpoint-2xl)]'>
+        {harTilgangTilNyApplikasjon ? (
+          children
+        ) : (
+          <div>
+            <Alert variant='info'>
+              <Heading spacing size='small' level='3'>
+                Applikasjonen er begrenset
+              </Heading>
+              Kun enkelte kontor har tilgang til den nye applikasjonen
+            </Alert>
+          </div>
+        )}
+      </main>
+    </ApplikasjonContext.Provider>
   );
 };
 
