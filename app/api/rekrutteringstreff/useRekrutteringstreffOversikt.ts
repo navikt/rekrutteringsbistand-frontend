@@ -31,5 +31,5 @@ export const useRekrutteringstreffOversikt = () =>
   );
 
 export const rekrutteringstreffOversiktMirage = (server: any) => {
-  return server.get(rekrutteringstreffOversiktEndepunkt, () => rekrutteringstreffOversiktMock);
+  return server.get(rekrutteringstreffOversiktEndepunkt(), () => rekrutteringstreffOversiktMock);
 };
