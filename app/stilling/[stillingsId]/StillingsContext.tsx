@@ -1,6 +1,7 @@
 'use client';
 import React, { useMemo } from 'react';
 
+import { useRouter } from 'next/navigation';
 import {
   KandidatlisteInfoDTO,
   useKandidatlisteInfo,
@@ -71,29 +72,28 @@ const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
     brukerData: { ident },
     harRolle,
   } = useApplikasjonContext();
-
+  const router = useRouter();
   const [forhåndsvisData, setForhåndsvisData] =
     React.useState<StillingsDataDTO | null>(null);
 
   const [stillingsData, setStillingsData] =
     React.useState<StillingsDataDTO>(initStillingsdata);
 
-  //TODO Legg inn igjen <:)
-  // React.useEffect(() => {
-  //   const isFormidling =
-  //     stillingsData.stillingsinfo?.stillingskategori === 'FORMIDLING';
-  //   const correctPath = isFormidling
-  //     ? `/formidlinger/${stillingsData.stilling.uuid}`
-  //     : `/stilling/${stillingsData.stilling.uuid}`;
+  React.useEffect(() => {
+    const isFormidling =
+      stillingsData.stillingsinfo?.stillingskategori === 'FORMIDLING';
+    const correctPath = isFormidling
+      ? `/formidlinger/${stillingsData.stilling.uuid}`
+      : `/stilling/${stillingsData.stilling.uuid}`;
 
-  //   if (!window.location.pathname.includes(correctPath)) {
-  //     router.push(correctPath);
-  //   }
-  // }, [
-  //   stillingsData.stillingsinfo?.stillingskategori,
-  //   router,
-  //   stillingsData.stilling.uuid,
-  // ]);
+    if (!window.location.pathname.includes(correctPath)) {
+      router.push(correctPath);
+    }
+  }, [
+    stillingsData.stillingsinfo?.stillingskategori,
+    router,
+    stillingsData.stilling.uuid,
+  ]);
 
   const erEier = useMemo(
     () =>

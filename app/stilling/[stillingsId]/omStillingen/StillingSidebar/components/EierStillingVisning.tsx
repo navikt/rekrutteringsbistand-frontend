@@ -43,7 +43,7 @@ const EierStillingVisning: React.FC = () => {
   const antallStillinger = data?.antallStillinger;
   const besatteStillinger = antallKandidaterSomHarFåttJobb;
 
-  const oppsummeringTekst = `${kandidatlisteInfo?.antallKandidater} kandidater (${antallAktuelleKandidater} er aktuelle${
+  const oppsummeringTekst = `${kandidatlisteInfo?.antallKandidater ?? '-'} kandidater (${antallAktuelleKandidater} er aktuelle${
     data?.kandidatlisteId === stillingsData.stilling.uuid
       ? ` / ${antallPresenterteKandidater} er presentert`
       : ''
@@ -68,6 +68,7 @@ const EierStillingVisning: React.FC = () => {
         </Button>
         <KopierStilling stillingsId={stillingsData.stilling.uuid} />
         <AvsluttStillingKnapp
+          kandidatlisteId={kandidatlisteInfo?.kandidatlisteId}
           besatteStillinger={besatteStillinger}
           antallStillinger={antallStillinger}
           kandidatlisteStatus={data?.status}

@@ -2,6 +2,12 @@ import { Select } from '@navikt/ds-react';
 import * as React from 'react';
 import { useStillingsSøkFilter } from '../StillingsSøkContext';
 
+export enum StillingsSøkSorteringTyper {
+  MestRelevant = 'mestRelevant',
+  Publiseringsdato = 'publiseringsdato',
+  Utløpsdato = 'utløpsdato',
+}
+
 const StillingsSøkSortering: React.FC = () => {
   const filter = useStillingsSøkFilter();
   return (
@@ -10,8 +16,15 @@ const StillingsSøkSortering: React.FC = () => {
         label='Sorter'
         onChange={(e) => filter.setSortering(e.target.value)}
       >
-        <option value='publiseringsdato'>Publiseringsdato</option>
-        <option value='utløpsdato'>Utløpsdato</option>
+        <option value={StillingsSøkSorteringTyper.Publiseringsdato}>
+          Publiseringsdato
+        </option>
+        <option value={StillingsSøkSorteringTyper.Utløpsdato}>
+          Utløpsdato
+        </option>
+        <option value={StillingsSøkSorteringTyper.MestRelevant}>
+          Mest relevant
+        </option>
       </Select>
     </React.Fragment>
   );

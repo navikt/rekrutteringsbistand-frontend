@@ -1,9 +1,13 @@
+import { StillingsSøkSorteringTyper } from '../../../stillings-sok/components/StillingsSøkSortering';
+
 export const esSorter = (sorter: string) => {
   switch (sorter) {
-    case 'utløpsdato':
+    case StillingsSøkSorteringTyper.Utløpsdato:
       return 'asc';
-    case 'publiseringsdato':
+    case StillingsSøkSorteringTyper.Publiseringsdato:
       return 'desc';
+    case StillingsSøkSorteringTyper.MestRelevant:
+      return [];
     default:
       return 'desc';
   }

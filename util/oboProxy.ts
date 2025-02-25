@@ -8,6 +8,7 @@ export const proxyWithOBO = async (
   proxy: Iroute,
   req: NextRequest,
   customRoute?: string,
+  customBody?: any,
 ) => {
   const token = isLocal ? 'DEV' : getToken(req.headers);
   if (!proxy.api_url) {
@@ -78,9 +79,9 @@ export const proxyWithOBO = async (
       headers: originalHeaders,
     };
 
-    if (req.method === 'POST' || req.method === 'PUT') {
+    if (req.method === 'POST' || req.method === 'PUT' || customBody) {
       try {
-        const body = await new Response(req.body).json();
+        const body = customBody ?? (await new Response(req.body).json());
         if (body) {
           fetchOptions.body = JSON.stringify(body);
         }
