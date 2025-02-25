@@ -1,9 +1,9 @@
 'use client';
-import * as React from 'react';
-import { format } from 'date-fns';
-import { RekrutteringstreffKort } from './components/RekrutteringstreffKort';
 import { useRekrutteringstreffOversikt } from '@/app/api/rekrutteringstreff/useRekrutteringstreffOversikt';
+import { format } from 'date-fns';
+import * as React from 'react';
 import SWRLaster from '../components/SWRLaster';
+import { RekrutteringstreffKort } from './components/RekrutteringstreffKort';
 
 export interface RekrutteringstreffSøkProps {
   children?: React.ReactNode;
@@ -41,11 +41,8 @@ const RekrutteringstreffSøk: React.FC<RekrutteringstreffSøkProps> = () => {
   );
 };
 
-const datoFormatterer = (
-  startTid: number | undefined,
-  sluttTid: number | undefined,
-): Dato => {
-  if (startTid === undefined || sluttTid === undefined) {
+const datoFormatterer = (startTid?: string, sluttTid?: string): Dato => {
+  if (!startTid || !sluttTid) {
     return {
       startDato: 'Ukjent dato',
       startTidspunkt: 'Ukjent tidspunkt',

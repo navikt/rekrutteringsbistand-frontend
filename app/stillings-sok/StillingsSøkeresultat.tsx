@@ -41,7 +41,7 @@ const StillingsSøkeresultat: React.FC<{ kandidatId?: string }> = ({
       {(data) => (
         <>
           <div className='flex items-center gap-2 min-h-[80px]'>
-            <StillingsSøkChips kandidatId={kandidatId} />
+            <StillingsSøkChips />
             <LagreStandardsøk />
           </div>
           <div className='flex justify-between items-center my-4'>
