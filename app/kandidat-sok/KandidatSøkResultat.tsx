@@ -28,7 +28,7 @@ const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({ type }) => 
 
   React.useEffect(() => {
     setNavigering(kandidatsøkHook.data?.navigering.kandidatnumre ?? []);
-  }, [kandidatsøkHook.data?.navigering]);
+  }, [kandidatsøkHook.data?.navigering, setNavigering]);
 
   return (
     <SWRLaster hooks={[kandidatsøkHook]}>
