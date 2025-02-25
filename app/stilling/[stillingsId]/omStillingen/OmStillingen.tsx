@@ -6,6 +6,7 @@ import {
   LocationPinIcon,
   TimerStartIcon,
 } from '@navikt/aksel-icons';
+import { logger } from '@navikt/next-logger';
 import * as React from 'react';
 import { getWorkLocationsAsString } from '../../../../util/locationUtil';
 import { GeografiDTO } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
@@ -37,7 +38,8 @@ const OmStillingen: React.FC<{ forhåndsvisData?: boolean }> = ({
       for (let i = 0; i < jsonArray.length; i++) {
         arrayString += `${jsonArray[i]} `;
       }
-    } catch (e) {
+    } catch (error) {
+      logger.error('Failed to parse worktime', error);
       arrayString = worktime;
     }
 

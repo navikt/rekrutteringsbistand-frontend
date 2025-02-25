@@ -7,23 +7,21 @@ import {
   Detail,
   Heading,
 } from '@navikt/ds-react';
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { formidleUsynligKandidatEndepunkt } from '../../../api/kandidat/formidleKandidat';
 import { kandidatlisteEndepunkt } from '../../../api/kandidat/useKandidatliste';
+import { kandidatlisteInfoEndepunkt } from '../../../api/kandidat/useKandidatlisteInfo';
 import { OpprettNyStillingDTO } from '../../../api/stilling/ny-stilling/dto';
 import { opprettNyStillingEndepunkt } from '../../../api/stilling/oppdater-stilling/oppdaterStilling';
 import { useApplikasjonContext } from '../../../ApplikasjonContext';
 import { Stillingskategori } from '../../../stilling/stilling-typer';
 import { mapFormTilFormidling } from '../mapFormidling';
 import { FormidlingDataForm } from '../redigerFormidlingFormType';
-import { kandidatlisteInfoEndepunkt, useKandidatlisteInfo } from '../../../api/kandidat/useKandidatlisteInfo';
 
 const FormidlingInnspurt = () => {
-  const { control, formState, watch, getValues, handleSubmit } =
-    useFormContext<FormidlingDataForm>();
-  const router = useRouter();
+  const { getValues, handleSubmit } = useFormContext<FormidlingDataForm>();
+
   const { brukerData, valgtNavKontor } = useApplikasjonContext();
 
   const [senderSkjema, setSenderSkjema] = useState(false);

@@ -7,10 +7,6 @@ import FormidlingInnspurt from './components/FormidlingInnspurt';
 import FormidlingLeggTilKandidat from './components/FormidlingLeggTilKandidat';
 import FormidlingOmStillingen from './components/RedigerOmFormidlingen';
 
-export interface RedigerFormidlingProps {
-  children?: React.ReactNode | undefined;
-}
-
 enum RedigerFormidlingSteg {
   omKandidatene = 'om-kandidatene',
   omFormidlingen = 'om-formidlingen',
@@ -18,7 +14,7 @@ enum RedigerFormidlingSteg {
   innspurt = 'innspurt',
 }
 
-const RedigerFormidling: React.FC<RedigerFormidlingProps> = ({ children }) => {
+const RedigerFormidling: React.FC = () => {
   const [aktivtSteg, setAktivtSteg] = useQueryState('steg', {
     defaultValue: RedigerFormidlingSteg.omKandidatene,
   });

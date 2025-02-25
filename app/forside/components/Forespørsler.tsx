@@ -1,12 +1,11 @@
 import { ChatCheckmarkIcon, ChatIcon } from '@navikt/aksel-icons';
-import Image from 'next/image';
 import * as React from 'react';
 import KryssIkon from '../../../public/ikoner/kryss.svg';
 import { useForesporselOmdelingAvCV } from '../../api/foresporsel-om-deling-av-cv/statistikk/useForesporselOmdelingAvCV';
+import SVGDarkmode from '../../components/SVGDarkmode';
 import SWRLaster from '../../components/SWRLaster';
 import Infokort, { InfokortSkeleton } from './Infokort';
 import { IStatistikkValg } from './Statistikk';
-import SVGDarkmode from '../../components/SVGDarkmode';
 
 const Forespørsler: React.FC<IStatistikkValg> = ({
   navKontor,

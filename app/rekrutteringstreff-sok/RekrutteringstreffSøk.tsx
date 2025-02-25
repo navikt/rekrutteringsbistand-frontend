@@ -18,7 +18,7 @@ const RekrutteringstreffSøk: React.FC<RekrutteringstreffSøkProps> = () => {
         rekrutteringstreffOversikt.map((rekrutteringstreff) => {
           const dato: Dato = datoFormatterer(
             rekrutteringstreff.fraTid,
-            rekrutteringstreff.tilTid
+            rekrutteringstreff.tilTid,
           );
           return (
             <RekrutteringstreffKort
@@ -27,10 +27,10 @@ const RekrutteringstreffSøk: React.FC<RekrutteringstreffSøkProps> = () => {
               tidspunkt={`${dato.startTidspunkt} - ${dato.sluttTidspunkt}`}
               antallArbeidsgivere={0}
               tittel={rekrutteringstreff.tittel}
-              beskrivelse="Rekrutteringstreff"
-              sted="Oslo"
+              beskrivelse='Rekrutteringstreff'
+              sted='Oslo'
               opprettetAv={rekrutteringstreff.opprettetAvPersonNavident}
-              opprettetDato="12. April"
+              opprettetDato='12. April'
               navKontor={rekrutteringstreff.opprettetAvNavkontorEnhetId}
               erPublisert={false}
             />
@@ -43,7 +43,7 @@ const RekrutteringstreffSøk: React.FC<RekrutteringstreffSøkProps> = () => {
 
 const datoFormatterer = (
   startTid: number | undefined,
-  sluttTid: number | undefined
+  sluttTid: number | undefined,
 ): Dato => {
   if (startTid === undefined || sluttTid === undefined) {
     return {

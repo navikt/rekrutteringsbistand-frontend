@@ -15,18 +15,14 @@ interface RedigerOmTilretteleggingProps {
 
 export const RedigerOmTilrettelegging: React.FC<
   RedigerOmTilretteleggingProps
-> = ({ nextStep, forrigeSteg, stegNummer, omTilretteleggingFelt }) => {
-  const {
-    watch,
-    setValue,
-    trigger,
-    formState: { errors },
-  } = useFormContext<StillingsDataForm | FormidlingDataForm>();
+> = ({ nextStep, forrigeSteg, stegNummer }) => {
+  const { watch, setValue, trigger } = useFormContext<
+    StillingsDataForm | FormidlingDataForm
+  >();
 
   const handleStepSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const isValid = await trigger('omTilrettelegging', { shouldFocus: true });
-    // Show why not valid:
 
     if (isValid) {
       nextStep();

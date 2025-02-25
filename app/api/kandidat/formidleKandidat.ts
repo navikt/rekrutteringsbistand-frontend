@@ -5,7 +5,8 @@ import { Server } from 'miragejs/server';
  */
 import { KandidatAPI } from '../api-routes';
 
-export const formidleKandidatEndepunkt = (stillingId: string) => ``;
+//TODO
+export const formidleKandidatEndepunkt = () => ``;
 
 export const formidleUsynligKandidatEndepunkt = (kandidatlisteId: string) =>
   `${KandidatAPI.internUrl}/veileder/kandidatlister/${kandidatlisteId}/formidlingeravusynligkandidat`;

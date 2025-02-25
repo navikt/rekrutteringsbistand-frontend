@@ -2,7 +2,6 @@
 import { Heading } from '@navikt/ds-react';
 import * as React from 'react';
 import { useKandidatsøk } from '../api/kandidat-sok/useKandidatsøk';
-import { useApplikasjonContext } from '../ApplikasjonContext';
 import SWRLaster from '../components/SWRLaster';
 
 import { KandidatDataSchemaDTO } from '../api/kandidat-sok/schema/cvSchema.zod';
@@ -22,9 +21,6 @@ interface KandidatSøkResultatProps {
 
 const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({ type }) => {
   const filter = useKandidatSøkFilter();
-  const {
-    brukerData: { ident },
-  } = useApplikasjonContext();
   const kandidatsøkHook = useKandidatsøk(type, filter);
   const { setNavigering } = useKandidatNavigering();
 

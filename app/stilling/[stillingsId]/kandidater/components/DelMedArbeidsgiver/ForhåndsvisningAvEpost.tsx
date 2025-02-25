@@ -20,7 +20,8 @@ const ForhåndsvisningAvEpost = ({
         const tittelElement = iframeDocument?.getElementById('tittel');
         const stillingstittelElement =
           iframeDocument?.getElementById('stillingstittel');
-        const tekstElement = iframeDocument?.getElementById('tekst');
+        //TODO Tekst er vel ikke lengre i bruk?
+        // const tekstElement = iframeDocument?.getElementById('tekst');
         const avsenderElement = iframeDocument?.getElementById('avsender');
 
         if (tittelElement)

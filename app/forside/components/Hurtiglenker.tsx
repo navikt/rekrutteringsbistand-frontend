@@ -48,8 +48,7 @@ const LenkepanelMedIkon: FunctionComponent<{
   tittel: string;
   href: string;
   ikon: ReactNode;
-  onClick?: () => void;
-}> = ({ tittel, href, ikon, onClick }) => (
+}> = ({ tittel, href, ikon }) => (
   <Box.New
     background='raised'
     borderColor='neutral-subtleA'

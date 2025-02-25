@@ -105,8 +105,8 @@ const hentKandidatensKriterierPerAnsvarsområde = (
   synlighetsevaluering: SynlighetsevalueringDTO,
 ) => {
   const ikkeTilfredsstilteKriterier = Object.entries(synlighetsevaluering)
-    .filter(([_, verdi]) => verdi === false)
-    .map(([kriterie, _]) => kriterie as Synlighetskriterie);
+    .filter(([, verdi]) => verdi === false)
+    .map(([kriterie]) => kriterie as Synlighetskriterie);
 
   return {
     utenforNoensKontroll: ikkeTilfredsstilteKriterier.filter((k) =>

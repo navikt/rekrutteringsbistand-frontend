@@ -44,7 +44,7 @@ export const StillingsContextProvider: React.FC<
       {(stillingsData) => (
         <StillingsContextMedData
           key={stillingsData?.stilling?.updated}
-          initStillingsdata={stillingsData}
+          stillingsData={stillingsData}
           refetch={stillingHook.mutate}
           kandidatlisteInfo={kandidatListeInfo.data ?? null}
         >
@@ -56,7 +56,7 @@ export const StillingsContextProvider: React.FC<
 };
 
 interface StillingsContextMedDataProps {
-  initStillingsdata: StillingsDataDTO;
+  stillingsData: StillingsDataDTO;
   kandidatlisteInfo: KandidatlisteInfoDTO | null;
   children: React.ReactNode;
   refetch: () => void;
@@ -64,7 +64,7 @@ interface StillingsContextMedDataProps {
 
 const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
   kandidatlisteInfo,
-  initStillingsdata,
+  stillingsData,
   children,
   refetch,
 }) => {
@@ -75,9 +75,6 @@ const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
   const router = useRouter();
   const [forhåndsvisData, setForhåndsvisData] =
     React.useState<StillingsDataDTO | null>(null);
-
-  const [stillingsData, setStillingsData] =
-    React.useState<StillingsDataDTO>(initStillingsdata);
 
   React.useEffect(() => {
     const isFormidling =

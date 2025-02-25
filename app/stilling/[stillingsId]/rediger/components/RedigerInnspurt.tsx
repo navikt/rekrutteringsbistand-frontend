@@ -36,7 +36,6 @@ export const RedigerInnspurt: React.FC<{
   const handleChange = (val: string[]) => setSendeSoknad(val);
 
   const {
-    getValues,
     watch,
     handleSubmit,
     setValue,
@@ -177,7 +176,7 @@ export const RedigerInnspurt: React.FC<{
                 <Controller
                   name='innspurt.epost'
                   control={control}
-                  render={({ field, fieldState: { error } }) => (
+                  render={({ fieldState: { error } }) => (
                     <TextField
                       label='E-post'
                       type='email'
@@ -191,7 +190,7 @@ export const RedigerInnspurt: React.FC<{
                 <Controller
                   name='innspurt.lenke'
                   control={control}
-                  render={({ field, fieldState: { error } }) => (
+                  render={({ fieldState: { error } }) => (
                     <TextField
                       label='Lenke til søknadsskjema'
                       type='url'

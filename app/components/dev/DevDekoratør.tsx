@@ -5,11 +5,7 @@ import { useApplikasjonContext } from '../../ApplikasjonContext';
 import { Roller } from '../tilgangskontroll/roller';
 
 const DevDekoratør: React.FC = () => {
-  const {
-    brukerData: { ident, roller },
-    valgtNavKontor,
-    setValgtNavKontor,
-  } = useApplikasjonContext();
+  const { valgtNavKontor, setValgtNavKontor } = useApplikasjonContext();
 
   const [devRolle, setDevRolle] = React.useState<Roller>(
     (localStorage.getItem('DEV-ROLLE') as Roller) ||

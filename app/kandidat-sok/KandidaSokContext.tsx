@@ -84,7 +84,8 @@ export const KandidatSøkProvider: React.FC<{ children: React.ReactNode }> = ({
     },
   );
 
-  const [side, setSide] = useQueryState(
+  //TODO legg til setSide
+  const [side] = useQueryState(
     KandidatSøkQueryparam.Side,
     parseAsInteger.withDefault(1).withOptions({ clearOnDefault: true }),
   );
@@ -96,13 +97,15 @@ export const KandidatSøkProvider: React.FC<{ children: React.ReactNode }> = ({
       clearOnDefault: true,
     },
   );
-  const [sortering, setSortering] = useQueryState(
-    KandidatSøkQueryparam.Sortering,
-    {
-      defaultValue: 'publiseringsdato',
-      clearOnDefault: true,
-    },
-  );
+
+  //TODO Legg til sortering?
+  // const [sortering, setSortering] = useQueryState(
+  //   KandidatSøkQueryparam.Sortering,
+  //   {
+  //     defaultValue: 'publiseringsdato',
+  //     clearOnDefault: true,
+  //   },
+  // );
 
   const [ønsketSted, setØnsketSted] = useQueryState<string[]>(
     KandidatSøkQueryparam.ØnsketSted,
@@ -173,9 +176,14 @@ export const KandidatSøkProvider: React.FC<{ children: React.ReactNode }> = ({
       .withOptions({ clearOnDefault: true }),
   );
 
+  //TODO er disse aktuelle?
+  const [borPåØnsketSted] = React.useState<boolean | null>(null);
+  const [ferskhet] = React.useState<number | null>(null);
+  const [sortering] = React.useState<string>('');
+  const [orgenhet] = React.useState<string | null>(null);
+
   return (
     <KandidatSøkContext.Provider
-      //@ts-ignore
       value={{
         fritekst,
         setFritekst,
@@ -204,6 +212,10 @@ export const KandidatSøkProvider: React.FC<{ children: React.ReactNode }> = ({
         setUtdanningsnivå,
         prioritertMålgruppe,
         setPrioritertMålgruppe,
+        borPåØnsketSted,
+        ferskhet,
+        sortering,
+        orgenhet,
       }}
     >
       {children}

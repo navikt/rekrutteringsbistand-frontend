@@ -15,9 +15,7 @@ import {
   visningsnavnForFilter,
 } from './StillingsSøkFilter/InkluderingFilter';
 
-const StillingsSøkChips: React.FC<{ kandidatId?: string }> = ({
-  kandidatId,
-}) => {
+const StillingsSøkChips: React.FC = () => {
   const filter = useStillingsSøkFilter();
 
   const geografi = usePamGeografi();

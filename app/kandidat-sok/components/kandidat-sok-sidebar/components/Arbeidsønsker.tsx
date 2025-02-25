@@ -6,11 +6,7 @@ import {
 } from '../../../../api/kandidat-sok/useSugestions';
 import { useKandidatSøkFilter } from '../../../KandidaSokContext';
 
-export interface ArbeidsønskerProps {
-  children?: React.ReactNode | undefined;
-}
-
-const Arbeidsønsker: React.FC<ArbeidsønskerProps> = ({ children }) => {
+const Arbeidsønsker: React.FC = () => {
   const { ønsketYrke, setØnsketYrke } = useKandidatSøkFilter();
 
   const [søkeTekst, setSøkeTekst] = React.useState<string>('');

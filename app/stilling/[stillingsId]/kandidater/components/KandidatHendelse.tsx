@@ -128,7 +128,7 @@ export const mapToHendelser = ({
   }
 
   if (kandidat.utfallsendringer) {
-    kandidat.utfallsendringer.forEach((endring, index) => {
+    kandidat.utfallsendringer.forEach((endring) => {
       if (endring.tidspunkt && endring.utfall) {
         const presentasjon = utfallsEndringPresentasjon(
           endring.utfall as UtfallsEndringTyper,

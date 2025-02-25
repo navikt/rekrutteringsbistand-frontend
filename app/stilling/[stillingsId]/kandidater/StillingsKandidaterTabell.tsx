@@ -152,11 +152,13 @@ const StillingsKandidaterTabell: React.FC<{
                 markerteKandidater.length !== kandidater.length
               }
               onChange={() => {
-                markerteKandidater.length
-                  ? setMarkerteKandidater([])
-                  : setMarkerteKandidater(
-                      kandidater.filter((k) => k.fodselsnr !== null),
-                    );
+                if (markerteKandidater.length) {
+                  setMarkerteKandidater([]);
+                } else {
+                  setMarkerteKandidater(
+                    kandidater.filter((k) => k.fodselsnr !== null),
+                  );
+                }
               }}
               hideLabel
             >
@@ -187,8 +189,6 @@ const StillingsKandidaterTabell: React.FC<{
             />
           ))}
         {kandidater.map((kandidat, i) => {
-          const innaktiv = !kandidat.fodselsnr;
-
           const beskjedForKandidat = beskjeder[kandidat.fodselsnr ?? ''];
 
           const forespørselCvForKandidat =

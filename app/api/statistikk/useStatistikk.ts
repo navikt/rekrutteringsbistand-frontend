@@ -18,13 +18,7 @@ const antallDTOSchema = z.object({
   innsatsgruppeIkkeStandard: z.number(),
 });
 
-const statistikkDTOSchema = z.object({
-  antPresentasjoner: antallDTOSchema,
-  antFåttJobben: antallDTOSchema,
-});
-
 export type AntallDTO = z.infer<typeof antallDTOSchema>;
-export type StatistikkDTO = z.infer<typeof statistikkDTOSchema>;
 
 const statistikkSchema = z.object({
   antPresentasjoner: antallDTOSchema,

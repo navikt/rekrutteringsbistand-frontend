@@ -21,7 +21,7 @@ export const DatoVelger: React.FC<DatoVelgerProps> = ({
     ? parse(valgtDato, 'dd.MM.yyyy', new Date())
     : undefined;
 
-  const { datepickerProps, inputProps, selectedDay } = useDatepicker({
+  const { datepickerProps, inputProps } = useDatepicker({
     locale: 'nb',
     onDateChange: (date: Date | undefined) => {
       if (date) {

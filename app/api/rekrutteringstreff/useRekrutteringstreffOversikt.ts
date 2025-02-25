@@ -4,7 +4,7 @@
  */
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
-import { KandidatAPI, RekrutteringstreffAPI } from '../api-routes';
+import { RekrutteringstreffAPI } from '../api-routes';
 import { getAPIwithSchema } from '../fetcher';
 import { rekrutteringstreffOversiktMock } from './mocks/rekrutteringstreffOversiktMock';
 
@@ -24,7 +24,9 @@ const RekrutteringstreffOversiktSchema = z.array(
   }),
 );
 
-export type RekrutteringstreffOversiktDTO = z.infer<typeof RekrutteringstreffOversiktSchema>;
+export type RekrutteringstreffOversiktDTO = z.infer<
+  typeof RekrutteringstreffOversiktSchema
+>;
 
 export const useRekrutteringstreffOversikt = () =>
   useSWRImmutable(
@@ -33,5 +35,8 @@ export const useRekrutteringstreffOversikt = () =>
   );
 
 export const rekrutteringstreffOversiktMirage = (server: any) => {
-  return server.get(rekrutteringstreffOversiktEndepunkt(), () => rekrutteringstreffOversiktMock);
+  return server.get(
+    rekrutteringstreffOversiktEndepunkt(),
+    () => rekrutteringstreffOversiktMock,
+  );
 };

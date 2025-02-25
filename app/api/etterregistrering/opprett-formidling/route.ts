@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 
 export interface FormidlingAvUsynligKandidatOutboundDto {
   fnr: string;
@@ -8,14 +8,14 @@ export interface FormidlingAvUsynligKandidatOutboundDto {
   stillingsId: string;
 }
 
-export async function POST(request: NextRequest): Promise<NextResponse> {
+export async function POST(): Promise<NextResponse> {
   try {
-    const protocol = request.headers.get('x-forwarded-proto') || 'http';
-    const host = request.headers.get('host');
-    const baseUrl = `${protocol}://${host}`;
+    // const protocol = request.headers.get('x-forwarded-proto') || 'http';
+    // const host = request.headers.get('host');
+    // const baseUrl = `${protocol}://${host}`;
 
     /// 1. Skal opprette en formidling ved å først kalle
-    const response = await request.json();
+    // const response = await request.json();
 
     // 5. Avslutt formidlingen <':)
     //TODO

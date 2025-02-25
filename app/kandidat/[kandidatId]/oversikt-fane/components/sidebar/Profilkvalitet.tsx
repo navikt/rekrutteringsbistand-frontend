@@ -24,7 +24,7 @@ const Profilkvalitet: React.FC = () => {
   React.useEffect(() => {
     if (kandidatData) {
       let prosent = 0;
-      let mangler: string[] = [];
+      const mangler: string[] = [];
       if (harØnsketJobbsted) {
         prosent += 20;
       } else {

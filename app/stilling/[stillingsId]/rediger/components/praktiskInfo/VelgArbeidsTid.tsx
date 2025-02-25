@@ -4,7 +4,7 @@ import { Controller, useFormContext } from 'react-hook-form';
 import { StillingsDataForm } from '../../redigerFormType.zod';
 
 const VelgArbeidsTid: React.FC = () => {
-  const { setValue, watch, control } = useFormContext<StillingsDataForm>();
+  const { control } = useFormContext<StillingsDataForm>();
 
   return (
     <div className='flex flex-col gap-8'>

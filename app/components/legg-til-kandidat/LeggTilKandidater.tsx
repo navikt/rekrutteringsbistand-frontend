@@ -79,14 +79,17 @@ const LeggTilKandidater: React.FC<LeggTilKandidaterProps> = ({
       data-testid={'velg-kandidat-resultat'}
       className='cursor-pointer'
       onClick={() => {
-        if (!valgteKandidater.some((k) => k.fødselsnummer === fødselsnummer)) {
+        if (
+          !valgteKandidater.some((k) => k.fødselsnummer === fødselsnummer) &&
+          kandidatNavnHook.data
+        ) {
           setValgteKandidater([
             ...valgteKandidater,
             {
-              fødselsnummer: fødselsnummer!,
-              fornavn: kandidatNavnHook.data?.fornavn!,
-              etternavn: kandidatNavnHook.data?.etternavn!,
-              kilde: kandidatNavnHook.data?.kilde!,
+              fødselsnummer: fødselsnummer,
+              fornavn: kandidatNavnHook.data?.fornavn,
+              etternavn: kandidatNavnHook.data?.etternavn,
+              kilde: kandidatNavnHook.data?.kilde,
               aktørId: arenaKandidatnrHook.data?.arenaKandidatnr,
             },
           ]);

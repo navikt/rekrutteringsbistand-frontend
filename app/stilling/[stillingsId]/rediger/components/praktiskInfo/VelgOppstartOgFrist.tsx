@@ -11,8 +11,7 @@ export interface VelgOppstartOgFristProps {
 const VelgOppstartOgFrist: React.FC<VelgOppstartOgFristProps> = ({
   skjulFrist,
 }) => {
-  const { watch, control, setValue, getValues } =
-    useFormContext<StillingsDataForm>();
+  const { watch, control, setValue } = useFormContext<StillingsDataForm>();
 
   return (
     <div className='flex flex-col gap-8'>

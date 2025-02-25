@@ -86,6 +86,7 @@ export const postApi = async (
       try {
         return await response.json();
       } catch (e) {
+        logger.error('Failed to parse JSON response', e);
         throw new Error(
           `Failed to parse JSON response: ${await response.text()}`,
         );

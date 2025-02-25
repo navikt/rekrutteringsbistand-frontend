@@ -11,7 +11,7 @@ export const RedigerOmStillingen: React.FC<{
   nextStep: () => void;
   forrigeSteg: () => void;
 }> = ({ nextStep, forrigeSteg, stegNummer }) => {
-  const { setValue, watch, trigger, formState, getValues } =
+  const { setValue, watch, trigger, formState } =
     useFormContext<StillingsDataForm>();
 
   const handleStepSubmit = async (e: React.FormEvent) => {

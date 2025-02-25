@@ -2,13 +2,13 @@ import { Accordion, Heading, TextField } from '@navikt/ds-react';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import { getWorkLocationsAsString } from '../../../../../util/locationUtil';
+import { GeografiDTO } from '../../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import RikTekstEditor from '../../../../components/rikteksteditor/RikTekstEditor';
 import capitalizeEmployerName from '../../../stilling-util';
 import { useStillingsContext } from '../../StillingsContext';
 import { StillingsDataForm } from '../redigerFormType.zod';
 import StegNavigering from './StegNavigering';
 import VelgKontaktperson from './praktiskInfo/VelgKontaktperson';
-import { GeografiDTO } from '../../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 
 export const RedigerOmVirksomheten: React.FC<{
   stegNummer: number;
@@ -16,13 +16,8 @@ export const RedigerOmVirksomheten: React.FC<{
   forrigeSteg: () => void;
 }> = ({ nextStep, forrigeSteg, stegNummer }) => {
   const { stillingsData } = useStillingsContext();
-  const {
-    watch,
-    setValue,
-    trigger,
-    register,
-    formState: { errors },
-  } = useFormContext<StillingsDataForm>();
+  const { watch, setValue, trigger, register } =
+    useFormContext<StillingsDataForm>();
 
   const handleStepSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -8,6 +8,7 @@ import {
   Pagination,
   Table,
 } from '@navikt/ds-react';
+import { logger } from '@navikt/next-logger';
 import * as React from 'react';
 import { leggTilKandidater } from '../../api/kandidat-sok/leggTilKandidat';
 import { useMineKandidatlister } from '../../api/kandidat/useMineKandidatlister';
@@ -54,6 +55,7 @@ const LagreIKandidatliste: React.FC = () => {
         });
         ref.current?.close();
       } catch (error) {
+        logger.error('Feil ved lagring av kandidater i kandidatliste', error);
         visVarsel({
           alertType: 'error',
           innhold: 'Feil ved lagring av kandidater i kandidatliste',
@@ -104,13 +106,15 @@ const LagreIKandidatliste: React.FC = () => {
                                 mineKandidatlister.liste.length
                             }
                             onChange={() => {
-                              selectedRows.length
-                                ? setSelectedRows([])
-                                : setSelectedRows(
-                                    mineKandidatlister.liste.map(
-                                      (stilling) => stilling.stillingId,
-                                    ),
-                                  );
+                              if (selectedRows.length) {
+                                setSelectedRows([]);
+                              } else {
+                                setSelectedRows(
+                                  mineKandidatlister.liste.map(
+                                    (stilling) => stilling.stillingId,
+                                  ),
+                                );
+                              }
                             }}
                             hideLabel
                           >
