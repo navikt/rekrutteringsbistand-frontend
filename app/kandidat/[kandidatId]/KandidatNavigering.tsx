@@ -1,5 +1,5 @@
 import { ArrowLeftIcon, ArrowRightIcon } from '@navikt/aksel-icons';
-import { Button } from '@navikt/ds-react';
+import { BodyShort, Button } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 import { useKandidatNavigering } from '../../components/KandidatNavigeringContext';
@@ -38,7 +38,9 @@ const KandidatNavigering: React.FC<KandidatNavigeringProps> = ({
       >
         forrige
       </Button>
-      {kandidatPlassering + 1} av {navigering.length}
+      <BodyShort className='mx-2'>
+        {kandidatPlassering + 1} av {navigering.length}
+      </BodyShort>
       <Button
         variant='tertiary'
         iconPosition='right'

@@ -21,8 +21,10 @@ export const KandidatNavigeringProvider: React.FC<{
   );
 
   const updateNavigering = (newNavigering: string[]) => {
-    setNavigering(newNavigering);
-    setSessionStorage('kandidatNavigering', newNavigering);
+    if (JSON.stringify(newNavigering) !== JSON.stringify(navigering)) {
+      setNavigering(newNavigering);
+      setSessionStorage('kandidatNavigering', newNavigering);
+    }
   };
 
   return (
