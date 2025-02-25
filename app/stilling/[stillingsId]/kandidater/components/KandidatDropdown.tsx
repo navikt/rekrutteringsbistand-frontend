@@ -9,11 +9,13 @@ import { kandidaterSchemaDTO } from '../../../../api/kandidat/schema.zod';
 export interface SletteKandidatKnappProps {
   kandidat: kandidaterSchemaDTO;
   stillingsId: string;
+  lukketKandidatliste: boolean;
 }
 
 const SletteKandidatKnapp: React.FC<SletteKandidatKnappProps> = ({
   kandidat,
   stillingsId,
+  lukketKandidatliste,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
 
@@ -34,6 +36,7 @@ const SletteKandidatKnapp: React.FC<SletteKandidatKnappProps> = ({
   return (
     <div>
       <Button
+        disabled={lukketKandidatliste}
         variant='tertiary'
         size='small'
         onClick={() => slettModalRef.current?.showModal()}

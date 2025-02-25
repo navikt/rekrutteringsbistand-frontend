@@ -1,7 +1,8 @@
+import { KandidatAPI } from '../api-routes';
 import { putApi } from '../fetcher';
 
 const kandidatlisteStatusEndepunkt = (kandidatlisteId: string) =>
-  `veileder/kandidatlister/${kandidatlisteId}/status`;
+  `${KandidatAPI.internUrl}/veileder/kandidatlister/${kandidatlisteId}/status`;
 
 export const setKandidatlisteStatus = async (
   kandidatlisteId: string,

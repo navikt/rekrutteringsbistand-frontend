@@ -1,9 +1,10 @@
 'use client';
 import { ArrowForwardIcon } from '@navikt/aksel-icons';
-import { Button, Tabs } from '@navikt/ds-react';
+import { Alert, Button, Tabs } from '@navikt/ds-react';
 
 import Link from 'next/link';
 import { useQueryState } from 'nuqs';
+import { Kandidatlistestatus } from '../../api/kandidat/schema.zod';
 import { Roller } from '../../components/tilgangskontroll/roller';
 import { TilgangskontrollForInnhold } from '../../components/tilgangskontroll/TilgangskontrollForInnhold';
 import LeggTilKandidat from './components/LeggTilKandidatTilStilling';
@@ -15,6 +16,9 @@ import { useStillingsContext } from './StillingsContext';
 export default function StillingSide() {
   const { erEier, stillingsData, kandidatlisteInfo, erSlettet } =
     useStillingsContext();
+
+  const kandidatlistenErLukket =
+    kandidatlisteInfo?.kandidatlisteStatus === Kandidatlistestatus.Lukket;
 
   const [fane, setFane] = useQueryState('visFane', {
     defaultValue: 'stilling',
@@ -53,37 +57,45 @@ export default function StillingSide() {
             </TilgangskontrollForInnhold>
           </div>
           <div className='items-center flex'>
-            <TilgangskontrollForInnhold
-              skjulVarsel
-              kreverEnAvRollene={[
-                Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-                Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
-              ]}
-            >
-              <Link
-                href={`/kandidat-sok/stilling/${stillingsData.stilling.uuid}`}
-              >
-                <Button
-                  className='mr-2'
-                  variant='secondary'
-                  icon={<ArrowForwardIcon aria-hidden />}
+            {kandidatlistenErLukket ? (
+              <Alert variant={'info'}>
+                Oppgradet er ferdigstilt og kandidatlisten er lukket
+              </Alert>
+            ) : (
+              <>
+                <TilgangskontrollForInnhold
+                  skjulVarsel
+                  kreverEnAvRollene={[
+                    Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+                    Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
+                  ]}
                 >
-                  Finn kandidater
-                </Button>
-              </Link>
-            </TilgangskontrollForInnhold>
-            <TilgangskontrollForInnhold
-              skjulVarsel
-              kreverEnAvRollene={[
-                Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-                Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
-              ]}
-            >
-              <LeggTilKandidat
-                stillingsId={stillingsData.stilling.uuid}
-                stillingsTittel={stillingsData.stilling.title}
-              />
-            </TilgangskontrollForInnhold>
+                  <Link
+                    href={`/kandidat-sok/stilling/${stillingsData.stilling.uuid}`}
+                  >
+                    <Button
+                      className='mr-2'
+                      variant='secondary'
+                      icon={<ArrowForwardIcon aria-hidden />}
+                    >
+                      Finn kandidater
+                    </Button>
+                  </Link>
+                </TilgangskontrollForInnhold>
+                <TilgangskontrollForInnhold
+                  skjulVarsel
+                  kreverEnAvRollene={[
+                    Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+                    Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
+                  ]}
+                >
+                  <LeggTilKandidat
+                    stillingsId={stillingsData.stilling.uuid}
+                    stillingsTittel={stillingsData.stilling.title}
+                  />
+                </TilgangskontrollForInnhold>
+              </>
+            )}
           </div>
         </Tabs.List>
         <Tabs.Panel value='stilling'>

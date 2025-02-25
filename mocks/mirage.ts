@@ -13,7 +13,9 @@ import { kandidatSokMirage } from '../app/api/kandidat-sok/useKandidatsøk';
 import { kontorSøkMirage } from '../app/api/kandidat-sok/useKontorSøk';
 import { formidleUsynligKandidatMirage } from '../app/api/kandidat/formidleKandidat';
 import { kandidatlisteMirage } from '../app/api/kandidat/useKandidatliste';
+import { kandidatlisteInfoMirage } from '../app/api/kandidat/useKandidatlisteInfo';
 import { kandidatlisteoversiktMirage } from '../app/api/kandidat/useKandidatListeoversikt';
+import { mineKandidatlisterMirage } from '../app/api/kandidat/useMineKandidatlister';
 import { meldingsmalerMirage } from '../app/api/kandidatvarsel/hentMeldingsmaler';
 import { kandidatvarselMirage } from '../app/api/kandidatvarsel/kandidatvarsel';
 import { pamPostdataMirage } from '../app/api/pam-geografi/postdata/[postnummer]/usePamPostdata';
@@ -25,7 +27,6 @@ import { opprettNyStillingMirage } from '../app/api/stilling/ny-stilling/opprett
 import { oppdaterStillingMirage } from '../app/api/stilling/oppdater-stilling/oppdaterStilling';
 import { stillingMirage } from '../app/api/stilling/rekrutteringsbistandstilling/[slug]/useStilling';
 import { brukerStandardSøkMirage } from '../app/api/stilling/standardsok/useBrukersStandardsøk';
-import { stillingssøkMirage } from '../app/api/stillings-sok/useStillingssøk';
 import { synlighetsevalueringMirage } from '../app/api/synlighet/useSynlighetsevaluering';
 import { rekrutteringstreffOversiktMirage } from '@/app/api/rekrutteringstreff/useRekrutteringstreffOversikt';
 
@@ -64,9 +65,11 @@ export function makeServer({ environment = 'test' } = {}) {
       pamGeografiMirage(this);
       pamPostdataMirage(this);
       formidleUsynligKandidatMirage(this);
-      // stillingssøk mock kan disables ved ES søk
-      stillingssøkMirage(this);
+      kandidatlisteInfoMirage(this);
+      mineKandidatlisterMirage(this);
       rekrutteringstreffOversiktMirage(this);
+      // stillingssøk mock kan disables ved ES søk
+      // stillingssøkMirage(this);
       this.passthrough('*');
     },
   });

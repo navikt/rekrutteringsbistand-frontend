@@ -24,13 +24,23 @@ const StillingsSøkSidePanel: React.FC<{
   return (
     <div className='grid gap-4'>
       <Search
+        onKeyDownCapture={(e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            setFritekst([...fritekst, searchValue]);
+            setSearchValue('');
+          }
+        }}
         hideLabel={true}
         label='Søk i stillinger'
         placeholder='Søk i stillinger'
         variant='primary'
         value={searchValue}
         onChange={(e) => setSearchValue(e)}
-        onSearchClick={(e) => setFritekst([...fritekst, e])}
+        onSearchClick={(e) => {
+          setFritekst([...fritekst, e]);
+          setSearchValue('');
+        }}
       />
       {!formidlinger && !kandidatId && <StandardsøkKnapp />}
       {(harArbeidsgiverrettetRolle || formidlinger) && <StatusFilter />}

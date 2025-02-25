@@ -10,6 +10,7 @@ import * as React from 'react';
 import TekstMedIkon from '../../components/TekstMedIkon';
 
 import { KandidatDataSchemaDTO } from '../../api/kandidat-sok/schema/cvSchema.zod';
+import { useKandidatSøkMarkerteContext } from '../KandidatSøkMarkerteContext';
 import {
   hentKandidatensNavn,
   hentKandidatensØnskedeSteder,
@@ -19,14 +20,24 @@ import { alleInnsatsgrupper } from './innsatsgrupper';
 
 type IKandidatKort = {
   kandidat: KandidatDataSchemaDTO;
-  markert: boolean;
-  erIListen: boolean;
 };
 
-const KandidatKort: React.FC<IKandidatKort> = ({ kandidat, markert }) => {
+const KandidatKort: React.FC<IKandidatKort> = ({ kandidat }) => {
+  const { markerteKandidater, setMarkert } = useKandidatSøkMarkerteContext();
+
+  const erMarkert = markerteKandidater?.some(
+    (k) => k.arenaKandidatnr === kandidat.arenaKandidatnr,
+  );
+
   return (
     <div className='border rounded-lg mb-4 border-gray-300 px-4 pb-4 pt-2 flex flex-row '>
-      <Checkbox aria-selected={markert} hideLabel className='mr-4' value='1'>
+      <Checkbox
+        aria-selected={erMarkert}
+        hideLabel
+        className='mr-4'
+        value='1'
+        onChange={() => setMarkert(kandidat)}
+      >
         Checkbox
       </Checkbox>
       <div className='flex-grow mt-2'>

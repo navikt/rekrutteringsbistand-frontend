@@ -2,6 +2,7 @@
 /**
  * Endepunkt /useKandidatlisteInfo
  */
+import { Server } from 'miragejs';
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
 import { KandidatAPI } from '../api-routes';
@@ -23,3 +24,13 @@ export const useKandidatlisteInfo = (stillingsId: string | null) =>
     stillingsId ? kandidatlisteInfoEndepunkt(stillingsId) : null,
     getAPIwithSchema(KandidatlisteInfoSchema),
   );
+
+export const kandidatlisteInfoMirage = (server: Server) => {
+  return server.get(kandidatlisteInfoEndepunkt('*'), () => {
+    return {
+      kandidatlisteId: 'kandidatlisteId',
+      antallKandidater: 10,
+      kandidatlisteStatus: 'ÅPEN',
+    };
+  });
+};

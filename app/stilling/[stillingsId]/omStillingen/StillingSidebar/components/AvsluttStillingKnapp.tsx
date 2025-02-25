@@ -3,6 +3,7 @@ import { BodyLong, Button, Modal } from '@navikt/ds-react';
 import * as React from 'react';
 import { setKandidatlisteStatus } from '../../../../../api/kandidat/setKandidatlisteStatus';
 import { oppdaterStilling } from '../../../../../api/stilling/oppdater-stilling/oppdaterStilling';
+import { StillingsStatus } from '../../../../stilling-typer';
 import { useStillingsContext } from '../../../StillingsContext';
 
 interface AvsluttStillingKnappProps {
@@ -22,6 +23,8 @@ const AvsluttStillingKnapp: React.FC<AvsluttStillingKnappProps> = ({
   const { stillingsData, refetch } = useStillingsContext();
   const [loading, setLoading] = React.useState(false);
 
+  const stillingsStatus = stillingsData.stilling.status;
+
   const avsluttStilling = async (kandidatlisteId: string) => {
     setLoading(true);
     try {
@@ -29,7 +32,7 @@ const AvsluttStillingKnapp: React.FC<AvsluttStillingKnappProps> = ({
         ...stillingsData,
         stilling: {
           ...stillingsData.stilling,
-          status: 'STOPP',
+          status: StillingsStatus.Stoppet,
         },
       });
 
@@ -49,7 +52,7 @@ const AvsluttStillingKnapp: React.FC<AvsluttStillingKnappProps> = ({
       ...stillingsData,
       stilling: {
         ...stillingsData.stilling,
-        status: 'STOPP',
+        status: StillingsStatus.Stoppet,
       },
     });
     setLoading(false);
@@ -76,7 +79,11 @@ const AvsluttStillingKnapp: React.FC<AvsluttStillingKnappProps> = ({
         <Modal.Footer>
           <Button
             type='button'
-            disabled={loading}
+            disabled={
+              loading ||
+              (kandidatlisteStatus === 'LUKKET' &&
+                stillingsStatus === StillingsStatus.Stoppet)
+            }
             onClick={() => kandidatlisteId && avsluttStilling(kandidatlisteId)}
           >
             Ferdigstill oppdrag
@@ -91,6 +98,7 @@ const AvsluttStillingKnapp: React.FC<AvsluttStillingKnappProps> = ({
         </Modal.Footer>
       </Modal>
       <Button
+        disabled={loading || stillingsStatus !== StillingsStatus.Stoppet}
         icon={<EyeSlashIcon />}
         variant='secondary'
         size='small'

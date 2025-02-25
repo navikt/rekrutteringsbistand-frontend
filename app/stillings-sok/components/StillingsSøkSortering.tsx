@@ -1,4 +1,9 @@
-import { Select } from '@navikt/ds-react';
+import {
+  MagnifyingGlassIcon,
+  SortDownIcon,
+  SortUpIcon,
+} from '@navikt/aksel-icons';
+import { ToggleGroup } from '@navikt/ds-react';
 import * as React from 'react';
 import { useStillingsSøkFilter } from '../StillingsSøkContext';
 
@@ -11,8 +16,26 @@ export enum StillingsSøkSorteringTyper {
 const StillingsSøkSortering: React.FC = () => {
   const filter = useStillingsSøkFilter();
   return (
-    <React.Fragment>
-      <Select
+    <ToggleGroup defaultValue={filter.sortering} onChange={filter.setSortering}>
+      <ToggleGroup.Item
+        value={StillingsSøkSorteringTyper.Publiseringsdato}
+        icon={<SortDownIcon aria-hidden />}
+        label='Publiseringsdato'
+      />
+      <ToggleGroup.Item
+        value={StillingsSøkSorteringTyper.Utløpsdato}
+        icon={<SortUpIcon aria-hidden />}
+        label='Utløpsdato'
+      />
+      <ToggleGroup.Item
+        value={StillingsSøkSorteringTyper.MestRelevant}
+        icon={<MagnifyingGlassIcon aria-hidden />}
+        label='Mest relevant'
+      />
+    </ToggleGroup>
+  );
+  {
+    /* <Select
         label='Sorter'
         onChange={(e) => filter.setSortering(e.target.value)}
       >
@@ -25,9 +48,8 @@ const StillingsSøkSortering: React.FC = () => {
         <option value={StillingsSøkSorteringTyper.MestRelevant}>
           Mest relevant
         </option>
-      </Select>
-    </React.Fragment>
-  );
+      </Select> */
+  }
 };
 
 export default StillingsSøkSortering;

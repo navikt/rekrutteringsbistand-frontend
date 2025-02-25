@@ -40,7 +40,7 @@ const StillingsSøkeresultat: React.FC<{ kandidatId?: string }> = ({
     <SWRLaster hooks={[stillingssøkHook]}>
       {(data) => (
         <>
-          <div className='flex items-center gap-2'>
+          <div className='flex items-center gap-2 min-h-[80px]'>
             <StillingsSøkChips kandidatId={kandidatId} />
             <LagreStandardsøk />
           </div>
