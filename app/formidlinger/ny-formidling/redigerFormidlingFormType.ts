@@ -13,19 +13,57 @@ export const FormidlingKandidatSchema = z.object({
 });
 
 export const OmFormidlingSchema = z.object({
-  organisasjon: ArbeidsgiverSchema,
-  categoryList: z.array(KategoriSchema).min(1, 'Yrkestittel må velges'),
-  locationList: z.array(LocationSchema).optional().nullable(),
-  sektor: z.string().min(1, 'Sektor må velges').nullable(),
-  arbeidstidsordning: z.string().optional(),
-  ansettelsesform: z
-    .string()
-    .nullish()
-    .refine((val) => val !== null && val !== '', {
-      message: 'Ansettelsesform må velges',
+  organisasjon: ArbeidsgiverSchema.refine((data) => !data, {
+    message: 'Du må velge en arbeidsgiver',
+  })
+    .optional()
+    .nullable()
+    .superRefine((val, ctx) => {
+      if (!val) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Du må velge en organisasjon',
+        });
+      }
     }),
-  omfangKode: z.string().min(1, 'Omfang må velges'),
-  omfangProsent: z.string().optional(),
+  categoryList: z
+    .array(KategoriSchema)
+    .optional()
+    .nullable()
+    .superRefine((val, ctx) => {
+      if (!val) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Du må velge en yrkeskategori',
+        });
+      }
+    }),
+  sektor: z
+    .string()
+    .optional()
+    .nullable()
+    .superRefine((val, ctx) => {
+      if (!val) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Du må velge sektor',
+        });
+      }
+    }),
+  ansettelsesform: z
+    .string({
+      required_error: 'Du må velge ansettelsesform',
+    })
+    .min(1, { message: 'Du må velge ansettelsesform' }),
+  //TODO verifider arbeidstidsordning
+  arbeidstidsordning: z.string().nullable(),
+  omfangKode: z
+    .string({
+      required_error: 'Du må velge omfang',
+    })
+    .min(1, { message: 'Du må velge omfang' }),
+  omfangProsent: z.string().optional().nullable(),
+  locationList: z.array(LocationSchema).min(1, 'Velg minst én lokasjon'),
 });
 
 export const FormidlingFormSchema = z.object({

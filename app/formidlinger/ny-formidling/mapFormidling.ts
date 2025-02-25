@@ -12,7 +12,7 @@ export const mapFormTilFormidling = (
     stillingsinfo: null,
     stilling: {
       ...stillingInfo.stilling,
-      categoryList: formData.omFormidlingen.categoryList,
+      categoryList: formData.omFormidlingen?.categoryList ?? [],
       status: 'ACTIVE',
       firstPublished: true,
       properties: {
@@ -25,7 +25,8 @@ export const mapFormTilFormidling = (
         engagementtype: formData.omFormidlingen.ansettelsesform,
         extent: formData.omFormidlingen.omfangKode,
         jobpercentage: formData.omFormidlingen.omfangProsent,
-        jobarrangement: formData.omFormidlingen.arbeidstidsordning,
+        //TODO
+        // jobarrangement: formData.omFormidlingen.arbeidstidsordning,
       },
       published: datoIDag,
       expires: datoIDag,

@@ -1,4 +1,4 @@
-import { Heading } from '@navikt/ds-react';
+import { ErrorMessage, Heading } from '@navikt/ds-react';
 import * as React from 'react';
 import { useFormContext } from 'react-hook-form';
 import VelgAnsettelsesform from '../../../stilling/[stillingsId]/rediger/components/praktiskInfo/VelgAnsettelsesform';
@@ -20,14 +20,20 @@ const RedigerOmFormidlingen: React.FC<RedigerOmFormidlingenProps> = ({
   nesteSteg,
   forrigeSteg,
 }) => {
-  const { setValue, watch, trigger, formState } =
-    useFormContext<FormidlingDataForm>();
+  const {
+    setValue,
+    watch,
+    trigger,
+    getValues,
+    formState: { errors },
+  } = useFormContext<FormidlingDataForm>();
 
   const handleStepSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    console.log(getValues());
     const isValid = await trigger('omFormidlingen', { shouldFocus: true });
-
+    console.log('Validation errors:', errors);
     if (isValid) {
       nesteSteg();
     }
@@ -42,11 +48,16 @@ const RedigerOmFormidlingen: React.FC<RedigerOmFormidlingenProps> = ({
             setValue('omFormidlingen.organisasjon', val)
           }
         />
+        {errors.omFormidlingen?.organisasjon && (
+          <ErrorMessage>
+            {errors.omFormidlingen?.organisasjon?.message}
+          </ErrorMessage>
+        )}
         <Heading size='large'>Om stillingen</Heading>
         <VelgStillingTittel
           categoryList={watch('omFormidlingen.categoryList')}
           callBack={(val) => setValue('omFormidlingen.categoryList', val)}
-          error={formState.errors.omFormidlingen?.categoryList?.message}
+          error={errors.omFormidlingen?.categoryList?.message}
         />
 
         <VelgSektor sektorFelt='omFormidlingen.sektor' />
@@ -59,7 +70,11 @@ const RedigerOmFormidlingen: React.FC<RedigerOmFormidlingenProps> = ({
           omfangProsentFelt='omFormidlingen.omfangProsent'
         />
         <VelgArbeidssted feltNavn='omFormidlingen.locationList' />
-
+        {errors.omFormidlingen?.locationList && (
+          <ErrorMessage>
+            {errors.omFormidlingen?.locationList?.message}
+          </ErrorMessage>
+        )}
         <StegNavigering stegNummer={2} forrigeSteg={forrigeSteg} />
       </div>
     </form>

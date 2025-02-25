@@ -49,28 +49,30 @@ const FormidlingInnspurt = () => {
         updatedBy: 'pam-rekrutteringsbistand',
         source: 'DIR',
         medium: 'DIR',
-        businessName: formidlingData.omFormidlingen.organisasjon.navn,
+        businessName: formidlingData.omFormidlingen?.organisasjon?.navn ?? '',
         privacy: 'INTERNAL_NOT_SHOWN',
         employer: {
           orgnr:
-            formidlingData.omFormidlingen.organisasjon.organisasjonsnummer ??
+            formidlingData.omFormidlingen?.organisasjon?.organisasjonsnummer ??
             '',
-          name: formidlingData.omFormidlingen.organisasjon.navn,
+          name: formidlingData.omFormidlingen?.organisasjon?.navn ?? '',
           location: {
             address:
-              formidlingData.omFormidlingen.organisasjon.adresse?.adresse ?? '',
-            postalCode:
-              formidlingData.omFormidlingen.organisasjon.adresse?.postnummer ??
+              formidlingData.omFormidlingen?.organisasjon?.adresse?.adresse ??
               '',
+            postalCode:
+              formidlingData.omFormidlingen?.organisasjon?.adresse
+                ?.postnummer ?? '',
             county:
-              formidlingData.omFormidlingen.organisasjon.adresse?.kommune ?? '',
+              formidlingData.omFormidlingen?.organisasjon?.adresse?.kommune ??
+              '',
             country:
-              formidlingData.omFormidlingen.organisasjon.adresse?.land ?? '',
+              formidlingData.omFormidlingen?.organisasjon?.adresse?.land ?? '',
             municipal:
-              formidlingData.omFormidlingen.organisasjon.adresse
+              formidlingData.omFormidlingen?.organisasjon?.adresse
                 ?.kommunenummer ?? '',
             city:
-              formidlingData.omFormidlingen.organisasjon.adresse?.poststed ??
+              formidlingData.omFormidlingen?.organisasjon?.adresse?.poststed ??
               '',
           },
         },
@@ -207,7 +209,7 @@ const FormidlingInnspurt = () => {
 
             <div className='space-y-4'>
               <BodyShort>
-                {formidlingsVerdier.omFormidlingen?.categoryList[0].name}
+                {formidlingsVerdier.omFormidlingen?.categoryList?.[0]?.name}
               </BodyShort>
               <BodyShort>{formidlingsVerdier.omFormidlingen?.sektor}</BodyShort>
               {/* <BodyShort>
@@ -216,9 +218,9 @@ const FormidlingInnspurt = () => {
               <BodyShort>
                 {formidlingsVerdier.omFormidlingen?.ansettelsesform}
               </BodyShort>
-              <BodyShort>
+              {/* <BodyShort>
                 {formidlingsVerdier.omFormidlingen?.arbeidstidsordning}
-              </BodyShort>
+              </BodyShort> */}
               <BodyShort>
                 {formidlingsVerdier.omFormidlingen?.omfangKode}
               </BodyShort>

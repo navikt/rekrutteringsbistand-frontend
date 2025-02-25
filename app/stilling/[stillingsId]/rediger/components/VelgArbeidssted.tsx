@@ -133,10 +133,6 @@ const VelgArbeidssted: React.FC<VelgArbeidsstedProps> = ({ feltNavn }) => {
           />
         </div>
       )}
-
-      {/* {errorMessageLokasjon && (
-        <ErrorMessage>{errorMessageLokasjon}</ErrorMessage>
-      )} */}
     </div>
   );
 };
