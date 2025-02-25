@@ -23,6 +23,8 @@ const AvsluttStillingKnapp: React.FC<AvsluttStillingKnappProps> = ({
   const { stillingsData, refetch } = useStillingsContext();
   const [loading, setLoading] = React.useState(false);
 
+  const stillingsStatus = stillingsData.stilling.status;
+
   const avsluttStilling = async (kandidatlisteId: string) => {
     setLoading(true);
     try {
@@ -77,7 +79,11 @@ const AvsluttStillingKnapp: React.FC<AvsluttStillingKnappProps> = ({
         <Modal.Footer>
           <Button
             type='button'
-            disabled={loading}
+            disabled={
+              loading ||
+              (kandidatlisteStatus !== 'LUKKET' &&
+                stillingsStatus !== StillingsStatus.Stoppet)
+            }
             onClick={() => kandidatlisteId && avsluttStilling(kandidatlisteId)}
           >
             Ferdigstill oppdrag
@@ -92,6 +98,7 @@ const AvsluttStillingKnapp: React.FC<AvsluttStillingKnappProps> = ({
         </Modal.Footer>
       </Modal>
       <Button
+        disabled={loading || stillingsStatus !== StillingsStatus.Stoppet}
         icon={<EyeSlashIcon />}
         variant='secondary'
         size='small'
