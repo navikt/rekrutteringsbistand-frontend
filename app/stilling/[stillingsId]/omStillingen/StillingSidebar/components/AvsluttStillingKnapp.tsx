@@ -3,6 +3,7 @@ import { BodyLong, Button, Modal } from '@navikt/ds-react';
 import * as React from 'react';
 import { setKandidatlisteStatus } from '../../../../../api/kandidat/setKandidatlisteStatus';
 import { oppdaterStilling } from '../../../../../api/stilling/oppdater-stilling/oppdaterStilling';
+import { StillingsStatus } from '../../../../stilling-typer';
 import { useStillingsContext } from '../../../StillingsContext';
 
 interface AvsluttStillingKnappProps {
@@ -29,7 +30,7 @@ const AvsluttStillingKnapp: React.FC<AvsluttStillingKnappProps> = ({
         ...stillingsData,
         stilling: {
           ...stillingsData.stilling,
-          status: 'STOPP',
+          status: StillingsStatus.Stoppet,
         },
       });
 
@@ -49,7 +50,7 @@ const AvsluttStillingKnapp: React.FC<AvsluttStillingKnappProps> = ({
       ...stillingsData,
       stilling: {
         ...stillingsData.stilling,
-        status: 'STOPP',
+        status: StillingsStatus.Stoppet,
       },
     });
     setLoading(false);
@@ -101,7 +102,7 @@ const AvsluttStillingKnapp: React.FC<AvsluttStillingKnappProps> = ({
       <Button
         onClick={() => ref.current?.show()}
         disabled={
-          loading || kandidatlisteStatus === 'LUKKET' || !kandidatlisteId
+          loading || kandidatlisteStatus !== 'LUKKET' || !kandidatlisteId
         }
         variant='secondary'
         size='small'
