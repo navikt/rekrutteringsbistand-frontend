@@ -11,16 +11,18 @@ import { rekrutteringstreffOversiktMock } from './mocks/rekrutteringstreffOversi
 export const rekrutteringstreffOversiktEndepunkt = () =>
   `${RekrutteringstreffAPI.internUrl}`;
 
-const RekrutteringstreffOversiktSchema = z.object({
-  id: z.string(),
-  tittel: z.string(),
-  fraTid: z.number(),
-  tilTid: z.number(),
-  sted: z.string(),
-  status: z.string(),
-  opprettetAvPersonNavident: z.string(),
-  opprettetAvNavkontorEnhetId: z.string(),
-});
+const RekrutteringstreffOversiktSchema = z.array(
+  z.object({
+    id: z.string(),
+    tittel: z.string(),
+    fraTid: z.number(),
+    tilTid: z.number(),
+    sted: z.string(),
+    status: z.string(),
+    opprettetAvPersonNavident: z.string(),
+    opprettetAvNavkontorEnhetId: z.string(),
+  }),
+);
 
 export type RekrutteringstreffOversiktDTO = z.infer<typeof RekrutteringstreffOversiktSchema>;
 

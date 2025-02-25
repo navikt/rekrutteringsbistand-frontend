@@ -10,34 +10,51 @@ export interface RekrutteringstreffSøkProps {
 const RekrutteringstreffSøk: React.FC<RekrutteringstreffSøkProps> = ({
   children,
 }) => {
-  const {data: rekrutteringstreffOversikt, isLoading} = useRekrutteringstreffOversikt();
-  const dato: Dato = datoFormatterer(rekrutteringstreffOversikt?.fraTid, rekrutteringstreffOversikt?.tilTid)
+  const { data: rekrutteringstreffOversikt, isLoading } =
+    useRekrutteringstreffOversikt();
+
+  if (isLoading || !rekrutteringstreffOversikt) {
+    return <div>Laster...</div>;
+  }
+
   return (
     <div>
-      <RekrutteringstreffKort
-        dato={dato.startDato}
-        tidspunkt={`${dato.startTidspunkt} - ${dato.sluttTidspunkt}`}
-        antallArbeidsgivere={0}
-        tittel={rekrutteringstreffOversikt?.tittel ? rekrutteringstreffOversikt.tittel : 'Ukjent tittel'}
-        beskrivelse={'Rekrutteringstreff'}
-        sted={'Oslo'}
-        opprettetAv={rekrutteringstreffOversikt?.opprettetAvPersonNavident ? rekrutteringstreffOversikt.opprettetAvPersonNavident : 'Ukjent Nav-ident'}
-        opprettetDato={'12. April'}
-        navKontor={rekrutteringstreffOversikt?.opprettetAvNavkontorEnhetId ? rekrutteringstreffOversikt.opprettetAvNavkontorEnhetId : 'Ukjent Nav-kontor'}
-        erPublisert={false}
-      />
+      {rekrutteringstreffOversikt.map((rekrutteringstreff) => {
+        const dato: Dato = datoFormatterer(
+          rekrutteringstreff?.fraTid,
+          rekrutteringstreff?.tilTid,
+        );
+        return (
+          <RekrutteringstreffKort
+            key={rekrutteringstreff.id}
+            dato={dato.startDato}
+            tidspunkt={`${dato.startTidspunkt} - ${dato.sluttTidspunkt}`}
+            antallArbeidsgivere={0}
+            tittel={rekrutteringstreff.tittel}
+            beskrivelse={'Rekrutteringstreff'}
+            sted={'Oslo'}
+            opprettetAv={rekrutteringstreff.opprettetAvPersonNavident}
+            opprettetDato={'12. April'}
+            navKontor={rekrutteringstreff.opprettetAvNavkontorEnhetId}
+            erPublisert={false}
+          />
+        );
+      })}
     </div>
   );
 };
 
-const datoFormatterer = (startTidspunkt: number | undefined, sluttTidspunkt: number | undefined) => {
+const datoFormatterer = (
+  startTidspunkt: number | undefined,
+  sluttTidspunkt: number | undefined,
+) => {
   if (!startTidspunkt || !sluttTidspunkt) {
     return {
       startDato: 'Ukjent dato',
       startTidspunkt: 'Ukjent tidspunkt',
       sluttDato: 'Ukjent dato',
       sluttTidspunkt: 'Ukjent tidspunkt',
-    }
+    };
   }
   const startDato = new Date(startTidspunkt * 1000); // Konverter til millisekund
   const sluttDato = new Date(sluttTidspunkt * 1000); // Konverter til millisekund
@@ -53,14 +70,14 @@ const datoFormatterer = (startTidspunkt: number | undefined, sluttTidspunkt: num
     startTidspunkt: formatertStartTid,
     sluttDato: formatertSluttDato,
     sluttTidspunkt: formatertSluttTid,
-  }
-}
+  };
+};
 
 type Dato = {
-  startDato: string,
-  startTidspunkt: string,
-  sluttDato: string,
-  sluttTidspunkt: string,
-}
+  startDato: string;
+  startTidspunkt: string;
+  sluttDato: string;
+  sluttTidspunkt: string;
+};
 
 export default RekrutteringstreffSøk;
