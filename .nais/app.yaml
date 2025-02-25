@@ -45,7 +45,7 @@ spec:
           namespace: teampam
         - application: pam-geografi
           namespace: teampam
-        - application: rekrutteringstreff-backend
+        - application: rekrutteringstreff-api
       external:
         - host: {{ statistikkApiHost }}
         - host: {{ foresporselOmDelingAvCvApiHost }}
