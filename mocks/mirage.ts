@@ -28,6 +28,8 @@ import { oppdaterStillingMirage } from '../app/api/stilling/oppdater-stilling/op
 import { stillingMirage } from '../app/api/stilling/rekrutteringsbistandstilling/[slug]/useStilling';
 import { brukerStandardSøkMirage } from '../app/api/stilling/standardsok/useBrukersStandardsøk';
 import { synlighetsevalueringMirage } from '../app/api/synlighet/useSynlighetsevaluering';
+import { rekrutteringstreffOversiktMirage } from '@/app/api/rekrutteringstreff/useRekrutteringstreffOversikt';
+import { stillingssøkMirage } from '../app/api/stillings-sok/useStillingssøk';
 
 export function makeServer({ environment = 'test' } = {}) {
   let server = createServer({
@@ -66,8 +68,9 @@ export function makeServer({ environment = 'test' } = {}) {
       formidleUsynligKandidatMirage(this);
       kandidatlisteInfoMirage(this);
       mineKandidatlisterMirage(this);
+      rekrutteringstreffOversiktMirage(this);
       // stillingssøk mock kan disables ved ES søk
-      // stillingssøkMirage(this);
+      stillingssøkMirage(this);
       this.passthrough('*');
     },
   });

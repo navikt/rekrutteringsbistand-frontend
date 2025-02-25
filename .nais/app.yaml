@@ -49,6 +49,7 @@ spec:
           namespace: teampam
         - application: pam-geografi
           namespace: teampam
+        - application: rekrutteringstreff-api
       external:
         - host: {{ statistikkApiHost }}
         - host: {{ foresporselOmDelingAvCvApiHost }}
@@ -94,3 +95,5 @@ spec:
       value: http://toi-arbeidsgiver-notifikasjon
     - name: SYNLIGHETSMOTOR_API
       value: http://toi-synlighetsmotor
+    - name: REKRUTTERINGSTREFF_API_URL
+      value: http://rekrutteringstreff-api
