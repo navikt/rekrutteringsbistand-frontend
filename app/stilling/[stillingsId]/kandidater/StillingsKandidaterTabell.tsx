@@ -34,6 +34,7 @@ const StillingsKandidaterTabell: React.FC<{
   forespurteKandidater: ForespurteOmDelingAvCvDTO;
   beskjeder: Record<string, Sms>;
   reFetchKandidatliste: () => void;
+  lukketKandidatliste: boolean;
 }> = ({
   markerteKandidater,
   setMarkerteKandidater,
@@ -43,6 +44,7 @@ const StillingsKandidaterTabell: React.FC<{
   forespurteKandidater,
   beskjeder,
   reFetchKandidatliste,
+  lukketKandidatliste,
 }) => {
   const [sort, setSort] = React.useState<TableSortState<kandidaterSchemaDTO>>();
 
@@ -143,6 +145,7 @@ const StillingsKandidaterTabell: React.FC<{
           <Table.DataCell />
           <Table.DataCell>
             <Checkbox
+              disabled={lukketKandidatliste}
               checked={markerteKandidater.length === kandidater.length}
               indeterminate={
                 markerteKandidater.length > 0 &&
@@ -195,6 +198,7 @@ const StillingsKandidaterTabell: React.FC<{
 
           return (
             <KandidatRad
+              lukketKandidatliste={lukketKandidatliste}
               key={`kandidatrad-` + i}
               kandidatlisteId={kandidatliste.kandidatlisteId}
               stillingsId={stillingsId}

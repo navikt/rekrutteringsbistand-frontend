@@ -7,11 +7,13 @@ export interface VelgInternStatusProps {
   status: InternKandidatstatus;
   kandidatlisteId: string;
   kandidatnr: string;
+  lukketKandidatliste: boolean;
 }
 const VelgInternStatus: React.FC<VelgInternStatusProps> = ({
   kandidatlisteId,
   kandidatnr,
   status,
+  lukketKandidatliste,
 }) => {
   const [valgtStatus, setValgtStatus] =
     React.useState<InternKandidatstatus>(status);
@@ -23,6 +25,7 @@ const VelgInternStatus: React.FC<VelgInternStatusProps> = ({
 
   return (
     <Select
+      disabled={lukketKandidatliste}
       label='Velg intern status'
       value={valgtStatus}
       hideLabel

@@ -13,7 +13,7 @@ import InfoOmKandidat from './InfoOmKandidat';
 import SletteKandidatKnapp from './KandidatDropdown';
 import KandidatHendelse, { mapToHendelser } from './KandidatHendelse';
 import KandidatHendelseTag from './KandidatHendelseTag';
-import { InternKandidatstatus, KandidatutfallTyper } from './KandidatTyper';
+import { KandidatutfallTyper } from './KandidatTyper';
 import VelgInternStatus from './VelgInternStatus';
 
 export interface KandidatRadProps {
@@ -25,6 +25,7 @@ export interface KandidatRadProps {
   kandidatlisteId: string;
   stillingsId: string;
   reFetchKandidatliste: () => void;
+  lukketKandidatliste: boolean;
 }
 
 const KandidatRad: React.FC<KandidatRadProps> = ({
@@ -36,6 +37,7 @@ const KandidatRad: React.FC<KandidatRadProps> = ({
   kandidatlisteId,
   stillingsId,
   reFetchKandidatliste,
+  lukketKandidatliste,
 }) => {
   const innaktiv = !kandidat.fodselsnr;
   const { valgtNavKontor } = useApplikasjonContext();
@@ -90,6 +92,7 @@ const KandidatRad: React.FC<KandidatRadProps> = ({
           <div className='col-span-1'>
             {sisteUtfall !== KandidatutfallTyper.FATT_JOBBEN && (
               <Button
+                disabled={lukketKandidatliste}
                 className=' mb-4 w-full'
                 icon={<PlusCircleIcon />}
                 onClick={() =>
@@ -115,7 +118,7 @@ const KandidatRad: React.FC<KandidatRadProps> = ({
     >
       <Table.DataCell>
         <Checkbox
-          disabled={innaktiv}
+          disabled={innaktiv || lukketKandidatliste}
           hideLabel
           checked={markerteKandidater.includes(kandidat)}
           onChange={() => markerKandidat(kandidat)}
@@ -149,9 +152,10 @@ const KandidatRad: React.FC<KandidatRadProps> = ({
       </Table.DataCell>
       <Table.DataCell>
         <VelgInternStatus
+          lukketKandidatliste={lukketKandidatliste}
           kandidatlisteId={kandidatlisteId}
           kandidatnr={kandidat.kandidatnr}
-          status={kandidat.status as InternKandidatstatus}
+          status={kandidat.status}
         />
       </Table.DataCell>
       <Table.DataCell>
@@ -162,7 +166,11 @@ const KandidatRad: React.FC<KandidatRadProps> = ({
       </Table.DataCell>
       <Table.DataCell>
         <div className='flex items-baseline flex-end'>
-          <SletteKandidatKnapp kandidat={kandidat} stillingsId={stillingsId} />
+          <SletteKandidatKnapp
+            lukketKandidatliste={lukketKandidatliste}
+            kandidat={kandidat}
+            stillingsId={stillingsId}
+          />
         </div>
       </Table.DataCell>
     </Table.ExpandableRow>
