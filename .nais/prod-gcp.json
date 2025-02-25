@@ -10,5 +10,6 @@
   "kandidatApiHost": "rekrutteringsbistand-sms.prod-fss-pub.nais.io",
   "kandidatApiUrl": "https://rekrutteringsbistand-kandidat-api.prod-fss-pub.nais.io/rekrutteringsbistand-kandidat-api/rest",
   "statistikkApiHost": "rekrutteringsbistand-statistikk-api.prod-fss-pub.nais.io",
-  "statistikkApiUrl": "https://rekrutteringsbistand-statistikk-api.prod-fss-pub.nais.io/rekrutteringsbistand-statistikk-api"
+  "statistikkApiUrl": "https://rekrutteringsbistand-statistikk-api.prod-fss-pub.nais.io/rekrutteringsbistand-statistikk-api",
+  "rekrutteringstreffApiUrl": "TODO"
 }

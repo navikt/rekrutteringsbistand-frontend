@@ -100,3 +100,10 @@ export const KandidatvarselAPI: Iroute = {
   internUrl: '/api/kandidatvarsel',
   scope: `api://${gcp}.toi.rekrutteringsbistand-kandidatvarsel-api/.default`,
 };
+
+export const RekrutteringstreffAPI: Iroute = {
+  api_route: '',
+  api_url: process.env.REKRUTTERINGSTREFF_API_URL ?? '',
+  internUrl: '/api/rekrutteringstreff',
+  scope: `api://${gcp}.toi.rekrutteringstreff-api/.default`,
+};
