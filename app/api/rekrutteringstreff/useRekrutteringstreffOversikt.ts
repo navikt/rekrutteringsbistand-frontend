@@ -9,7 +9,7 @@ import { getAPIwithSchema } from '../fetcher';
 import { rekrutteringstreffOversiktMock } from './mocks/rekrutteringstreffOversiktMock';
 
 export const rekrutteringstreffOversiktEndepunkt = () =>
-  `${RekrutteringstreffAPI.internUrl}/api/rekrutteringstreff`;
+  `${RekrutteringstreffAPI.internUrl}`;
 
 const RekrutteringstreffOversiktSchema = z.object({
   id: z.string(),
@@ -31,5 +31,5 @@ export const useRekrutteringstreffOversikt = () =>
   );
 
 export const rekrutteringstreffOversiktMirage = (server: any) => {
-  return server.post(rekrutteringstreffOversiktEndepunkt(), () => rekrutteringstreffOversiktMock);
+  return server.get(rekrutteringstreffOversiktEndepunkt, () => rekrutteringstreffOversiktMock);
 };
