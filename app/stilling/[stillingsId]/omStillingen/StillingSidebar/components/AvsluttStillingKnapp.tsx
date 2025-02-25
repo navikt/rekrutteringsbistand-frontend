@@ -81,8 +81,8 @@ const AvsluttStillingKnapp: React.FC<AvsluttStillingKnappProps> = ({
             type='button'
             disabled={
               loading ||
-              (kandidatlisteStatus !== 'LUKKET' &&
-                stillingsStatus !== StillingsStatus.Stoppet)
+              (kandidatlisteStatus === 'LUKKET' &&
+                stillingsStatus === StillingsStatus.Stoppet)
             }
             onClick={() => kandidatlisteId && avsluttStilling(kandidatlisteId)}
           >
@@ -109,7 +109,7 @@ const AvsluttStillingKnapp: React.FC<AvsluttStillingKnappProps> = ({
       <Button
         onClick={() => ref.current?.show()}
         disabled={
-          loading || kandidatlisteStatus !== 'LUKKET' || !kandidatlisteId
+          loading || kandidatlisteStatus === 'LUKKET' || !kandidatlisteId
         }
         variant='secondary'
         size='small'

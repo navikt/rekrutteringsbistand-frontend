@@ -56,6 +56,7 @@ const EierStillingVisning: React.FC = () => {
     <div className='mt-2'>
       <div className='grid grid-cols-2 gap-2'>
         <Button
+          disabled={kandidatlisteInfo?.kandidatlisteStatus === 'LUKKET'}
           variant='secondary'
           size='small'
           className='w-full h-5'
