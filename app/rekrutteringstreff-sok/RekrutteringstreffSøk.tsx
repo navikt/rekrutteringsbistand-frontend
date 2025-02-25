@@ -1,17 +1,15 @@
 'use client';
 import * as React from 'react';
+import { format } from 'date-fns';
 import { RekrutteringstreffKort } from './components/RekrutteringstreffKort';
 import { useRekrutteringstreffOversikt } from '@/app/api/rekrutteringstreff/useRekrutteringstreffOversikt';
 
 export interface RekrutteringstreffSøkProps {
-  children?: React.ReactNode | undefined;
+  children?: React.ReactNode;
 }
 
-const RekrutteringstreffSøk: React.FC<RekrutteringstreffSøkProps> = ({
-  children,
-}) => {
-  const { data: rekrutteringstreffOversikt, isLoading } =
-    useRekrutteringstreffOversikt();
+const RekrutteringstreffSøk: React.FC<RekrutteringstreffSøkProps> = ({ children }) => {
+  const { data: rekrutteringstreffOversikt, isLoading } = useRekrutteringstreffOversikt();
 
   if (isLoading || !rekrutteringstreffOversikt) {
     return <div>Laster...</div>;
@@ -31,10 +29,10 @@ const RekrutteringstreffSøk: React.FC<RekrutteringstreffSøkProps> = ({
             tidspunkt={`${dato.startTidspunkt} - ${dato.sluttTidspunkt}`}
             antallArbeidsgivere={0}
             tittel={rekrutteringstreff.tittel}
-            beskrivelse={'Rekrutteringstreff'}
-            sted={'Oslo'}
+            beskrivelse="Rekrutteringstreff"
+            sted="Oslo"
             opprettetAv={rekrutteringstreff.opprettetAvPersonNavident}
-            opprettetDato={'12. April'}
+            opprettetDato="12. April"
             navKontor={rekrutteringstreff.opprettetAvNavkontorEnhetId}
             erPublisert={false}
           />
@@ -56,20 +54,14 @@ const datoFormatterer = (
       sluttTidspunkt: 'Ukjent tidspunkt',
     };
   }
-  const startDato = new Date(startTidspunkt); // Konverter til millisekund
-  const sluttDato = new Date(sluttTidspunkt); // Konverter til millisekund
-
-  const formatertStartDato = startDato.toLocaleDateString('no-NO'); // Formater dato til norsk format
-  const formatertStartTid = startDato.toLocaleTimeString('no-NO', { hour: '2-digit', minute: '2-digit' }); // Formater dato til norsk format
-
-  const formatertSluttDato = sluttDato.toLocaleDateString('no-NO'); // Formater dato til norsk format
-  const formatertSluttTid = sluttDato.toLocaleTimeString('no-NO', { hour: '2-digit', minute: '2-digit' }); // Formater dato til norsk format
+  const startDate = new Date(startTidspunkt);
+  const sluttDate = new Date(sluttTidspunkt);
 
   return {
-    startDato: formatertStartDato,
-    startTidspunkt: formatertStartTid,
-    sluttDato: formatertSluttDato,
-    sluttTidspunkt: formatertSluttTid,
+    startDato: format(startDate, 'dd.MM.yyyy'),
+    startTidspunkt: format(startDate, 'HH:mm'),
+    sluttDato: format(sluttDate, 'dd.MM.yyyy'),
+    sluttTidspunkt: format(sluttDate, 'HH:mm'),
   };
 };
 
