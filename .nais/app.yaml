@@ -92,4 +92,4 @@ spec:
     - name: SYNLIGHETSMOTOR_API
       value: http://toi-synlighetsmotor
     - name: REKRUTTERINGSTREFF_API_URL
-      value: {{ rekrutteringstreffApiUrl }}
+      value: http://rekrutteringstreff-api
