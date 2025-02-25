@@ -90,5 +90,5 @@ spec:
       value: http://toi-arbeidsgiver-notifikasjon
     - name: SYNLIGHETSMOTOR_API
       value: http://toi-synlighetsmotor
-    - name: REKRUTTERINGSTREFF_API
+    - name: REKRUTTERINGSTREFF_API_URL
       value: {{ rekrutteringstreffApiUrl }}

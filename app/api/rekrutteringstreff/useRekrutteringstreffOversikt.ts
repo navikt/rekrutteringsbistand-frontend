@@ -6,6 +6,7 @@ import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
 import { KandidatAPI, RekrutteringstreffAPI } from '../api-routes';
 import { getAPIwithSchema } from '../fetcher';
+import { rekrutteringstreffOversiktMock } from './mocks/rekrutteringstreffOversiktMock';
 
 export const rekrutteringstreffOversiktEndepunkt = () =>
   `${RekrutteringstreffAPI.internUrl}/api/rekrutteringstreff`;
@@ -28,3 +29,7 @@ export const useRekrutteringstreffOversikt = () =>
     rekrutteringstreffOversiktEndepunkt(),
     getAPIwithSchema(RekrutteringstreffOversiktSchema),
   );
+
+export const rekrutteringstreffOversiktMirage = (server: any) => {
+  return server.post(rekrutteringstreffOversiktEndepunkt(), () => rekrutteringstreffOversiktMock);
+};

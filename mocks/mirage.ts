@@ -27,6 +27,7 @@ import { stillingMirage } from '../app/api/stilling/rekrutteringsbistandstilling
 import { brukerStandardSøkMirage } from '../app/api/stilling/standardsok/useBrukersStandardsøk';
 import { stillingssøkMirage } from '../app/api/stillings-sok/useStillingssøk';
 import { synlighetsevalueringMirage } from '../app/api/synlighet/useSynlighetsevaluering';
+import { rekrutteringstreffOversiktMirage } from '@/app/api/rekrutteringstreff/useRekrutteringstreffOversikt';
 
 export function makeServer({ environment = 'test' } = {}) {
   let server = createServer({
@@ -65,6 +66,7 @@ export function makeServer({ environment = 'test' } = {}) {
       formidleUsynligKandidatMirage(this);
       // stillingssøk mock kan disables ved ES søk
       stillingssøkMirage(this);
+      rekrutteringstreffOversiktMirage(this);
       this.passthrough('*');
     },
   });
