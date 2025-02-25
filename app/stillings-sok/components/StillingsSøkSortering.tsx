@@ -1,8 +1,4 @@
-import {
-  MagnifyingGlassIcon,
-  SortDownIcon,
-  SortUpIcon,
-} from '@navikt/aksel-icons';
+import { SortDownIcon, SortUpIcon, TagIcon } from '@navikt/aksel-icons';
 import { ToggleGroup } from '@navikt/ds-react';
 import * as React from 'react';
 import { useStillingsSøkFilter } from '../StillingsSøkContext';
@@ -29,7 +25,7 @@ const StillingsSøkSortering: React.FC = () => {
       />
       <ToggleGroup.Item
         value={StillingsSøkSorteringTyper.MestRelevant}
-        icon={<MagnifyingGlassIcon aria-hidden />}
+        icon={<TagIcon aria-hidden />}
         label='Mest relevant'
       />
     </ToggleGroup>

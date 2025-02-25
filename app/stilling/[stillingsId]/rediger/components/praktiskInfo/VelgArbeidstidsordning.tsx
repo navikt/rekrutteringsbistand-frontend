@@ -8,7 +8,7 @@ import { StillingsDataForm } from '../../redigerFormType.zod';
 interface VelgArbeidstidsordningProps {
   arbeidstidsordningFelt:
     | 'praktiskInfo.arbeidstidsordning'
-    | 'omFormidling.arbeidstidsordning';
+    | 'omFormidlingen.arbeidstidsordning';
 }
 
 const VelgArbeidstidsordning: React.FC<VelgArbeidstidsordningProps> = ({

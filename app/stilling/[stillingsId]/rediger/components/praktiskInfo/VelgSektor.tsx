@@ -5,7 +5,7 @@ import { FormidlingDataForm } from '../../../../../formidlinger/ny-formidling/re
 import { StillingsDataForm } from '../../redigerFormType.zod';
 
 interface VelgSektorProps {
-  sektorFelt: 'praktiskInfo.sektor' | 'omFormidling.sektor';
+  sektorFelt: 'praktiskInfo.sektor' | 'omFormidlingen.sektor';
 }
 
 const VelgSektor: React.FC<VelgSektorProps> = ({ sektorFelt }) => {

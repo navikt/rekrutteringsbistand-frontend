@@ -21,8 +21,8 @@ export const RedigerOmVirksomheten: React.FC<{
 
   const handleStepSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const isValid = await trigger('omVirksomheten', { shouldFocus: true });
 
+    const isValid = await trigger('omVirksomheten', { shouldFocus: true });
     if (isValid) {
       nextStep();
     }

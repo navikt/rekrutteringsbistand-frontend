@@ -59,22 +59,14 @@ export const OmTilretteleggingSchema = z
 //   path: ['name'],
 // });
 
-export const OmStillingenSchema = z
-  .object({
-    categoryList: z.array(KategoriSchema),
-    beskrivelse: z.string().nullable(),
-    locationList: z.array(LocationSchema),
-  })
-  .refine(
-    (data) => {
-      const hasAdresseLokasjoner = (data.locationList ?? []).length > 0;
-      return hasAdresseLokasjoner;
-    },
-    {
-      message: 'Du må velge minst én lokasjon',
-      path: ['lokasjoner'], // This will show the error on the lokasjoner field
-    },
-  );
+export const OmStillingenSchema = z.object({
+  categoryList: z.array(KategoriSchema).min(1, 'Velg en yrkeskategori'),
+  beskrivelse: z
+    .string()
+    .min(1, 'Beskrivelse om stillingen er påkrevd')
+    .nullable(),
+  locationList: z.array(LocationSchema).min(1, 'Velg minst én lokasjon'),
+});
 
 export const PraktiskInfoSchema = z
   .object({
@@ -87,12 +79,7 @@ export const PraktiskInfoSchema = z
     søknadsfrist: z.string().nullable(),
     søknadsfristSnarest: z.boolean(),
     arbeidstidsordning: z.string().nullable(),
-    ansettelsesform: z
-      .string()
-      .nullish()
-      .refine((val) => val !== null && val !== '', {
-        message: 'Ansettelsesform må velges',
-      }),
+    ansettelsesform: z.string().min(1, 'Ansettelsesform må velges').nullable(),
     dager: z
       .array(z.string(), {
         required_error: 'Arbeidsdager må velges',
@@ -104,15 +91,31 @@ export const PraktiskInfoSchema = z
       })
       .min(1, 'Velg minst én arbeidstid'),
   })
-  .refine(
-    (data) => {
-      return data.omfangKode === 'Deltid' ? !!data.omfangProsent : true;
-    },
-    {
-      message: 'Du må fylle ut omfang i prosent for deltid',
-      path: ['omfangProsent'],
-    },
-  );
+  .superRefine((data, ctx) => {
+    if (data.omfangKode === 'Deltid' && !data.omfangProsent) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Du må fylle ut omfang i prosent for deltid',
+        path: ['omfangProsent'],
+      });
+    }
+
+    if (!data.oppstart && !data.oppstartEtterAvtale) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Du må fylle ut enten oppstart eller oppstart etter avtale',
+        path: ['oppstart'],
+      });
+    }
+
+    if (!data.søknadsfrist && !data.søknadsfristSnarest) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Du må fylle ut enten søknadsfrist eller velge snarest',
+        path: ['søknadsfrist'],
+      });
+    }
+  });
 
 export const InnspurtSchema = z.object({
   publiseres: z.string().min(1, 'Publiseringsdato er påkrevd').nullable(),

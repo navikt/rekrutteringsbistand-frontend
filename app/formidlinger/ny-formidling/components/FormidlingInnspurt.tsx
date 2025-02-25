@@ -49,27 +49,29 @@ const FormidlingInnspurt = () => {
         updatedBy: 'pam-rekrutteringsbistand',
         source: 'DIR',
         medium: 'DIR',
-        businessName: formidlingData.omFormidling.organisasjon.navn,
+        businessName: formidlingData.omFormidlingen.organisasjon.navn,
         privacy: 'INTERNAL_NOT_SHOWN',
         employer: {
           orgnr:
-            formidlingData.omFormidling.organisasjon.organisasjonsnummer ?? '',
-          name: formidlingData.omFormidling.organisasjon.navn,
+            formidlingData.omFormidlingen.organisasjon.organisasjonsnummer ??
+            '',
+          name: formidlingData.omFormidlingen.organisasjon.navn,
           location: {
             address:
-              formidlingData.omFormidling.organisasjon.adresse?.adresse ?? '',
+              formidlingData.omFormidlingen.organisasjon.adresse?.adresse ?? '',
             postalCode:
-              formidlingData.omFormidling.organisasjon.adresse?.postnummer ??
+              formidlingData.omFormidlingen.organisasjon.adresse?.postnummer ??
               '',
             county:
-              formidlingData.omFormidling.organisasjon.adresse?.kommune ?? '',
+              formidlingData.omFormidlingen.organisasjon.adresse?.kommune ?? '',
             country:
-              formidlingData.omFormidling.organisasjon.adresse?.land ?? '',
+              formidlingData.omFormidlingen.organisasjon.adresse?.land ?? '',
             municipal:
-              formidlingData.omFormidling.organisasjon.adresse?.kommunenummer ??
-              '',
+              formidlingData.omFormidlingen.organisasjon.adresse
+                ?.kommunenummer ?? '',
             city:
-              formidlingData.omFormidling.organisasjon.adresse?.poststed ?? '',
+              formidlingData.omFormidlingen.organisasjon.adresse?.poststed ??
+              '',
           },
         },
       },
@@ -115,7 +117,7 @@ const FormidlingInnspurt = () => {
     const kandidatListeIdRespons = await kandidatlisteInfo.json();
     const kandidatlisteId = kandidatListeIdRespons.kandidatlisteId;
 
-    formidlingData?.omKandiatene.map(async (kandidat: any) => {
+    formidlingData?.omKandidatene.map(async (kandidat: any) => {
       setSteg(
         `Setter kandidat ${kandidat.navn.fornavn} ${kandidat.navn.etternavn} til fått jobben`,
       );
@@ -166,7 +168,7 @@ const FormidlingInnspurt = () => {
           </div>
           <hr />
           <div className='space-y-4'>
-            {formidlingsVerdier.omKandiatene?.map((person) => (
+            {formidlingsVerdier.omKandidatene?.map((person) => (
               <div key={person.fnr} className='flex items-center gap-2'>
                 <PersonIcon className='text-gray-600' aria-hidden />
                 <div>
@@ -205,20 +207,20 @@ const FormidlingInnspurt = () => {
 
             <div className='space-y-4'>
               <BodyShort>
-                {formidlingsVerdier.omFormidling?.categoryList[0].name}
+                {formidlingsVerdier.omFormidlingen?.categoryList[0].name}
               </BodyShort>
-              <BodyShort>{formidlingsVerdier.omFormidling?.sektor}</BodyShort>
+              <BodyShort>{formidlingsVerdier.omFormidlingen?.sektor}</BodyShort>
               {/* <BodyShort>
-              {formidlingsVerdier.omFormidling?.adresseLokasjoner[0].adresse}
+              {formidlingsVerdier.omFormidlingen?.adresseLokasjoner[0].adresse}
             </BodyShort> */}
               <BodyShort>
-                {formidlingsVerdier.omFormidling?.ansettelsesform}
+                {formidlingsVerdier.omFormidlingen?.ansettelsesform}
               </BodyShort>
               <BodyShort>
-                {formidlingsVerdier.omFormidling?.arbeidstidsordning}
+                {formidlingsVerdier.omFormidlingen?.arbeidstidsordning}
               </BodyShort>
               <BodyShort>
-                {formidlingsVerdier.omFormidling?.omfangKode}
+                {formidlingsVerdier.omFormidlingen?.omfangKode}
               </BodyShort>
             </div>
           </div>

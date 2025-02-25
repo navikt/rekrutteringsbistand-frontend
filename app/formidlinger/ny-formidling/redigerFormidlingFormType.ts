@@ -29,10 +29,10 @@ export const OmFormidlingSchema = z.object({
 });
 
 export const FormidlingFormSchema = z.object({
-  omKandiatene: z
+  omKandidatene: z
     .array(FormidlingKandidatSchema)
     .min(1, { message: 'Du må velge minst én kandidat' }),
-  omFormidling: OmFormidlingSchema,
+  omFormidlingen: OmFormidlingSchema,
   omTilrettelegging: OmTilretteleggingSchema.optional(),
   innspurt: z.string(),
   reportee: z.string(),

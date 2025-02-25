@@ -11,13 +11,17 @@ export const RedigerOmStillingen: React.FC<{
   nextStep: () => void;
   forrigeSteg: () => void;
 }> = ({ nextStep, forrigeSteg, stegNummer }) => {
-  const { setValue, watch, trigger, formState } =
-    useFormContext<StillingsDataForm>();
+  const {
+    setValue,
+    watch,
+    trigger,
+    formState: { errors },
+  } = useFormContext<StillingsDataForm>();
 
   const handleStepSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const isValid = await trigger('omStillingen', { shouldFocus: true });
-
+    console.log('🎺 errors', errors);
     if (isValid) {
       nextStep();
     }
@@ -43,7 +47,7 @@ export const RedigerOmStillingen: React.FC<{
             <VelgStillingTittel
               categoryList={watch('omStillingen.categoryList')}
               callBack={(val) => setValue('omStillingen.categoryList', val)}
-              error={formState.errors.omStillingen?.categoryList?.message}
+              error={errors.omStillingen?.categoryList?.message}
             />
           </div>
           <div>
@@ -59,12 +63,17 @@ export const RedigerOmStillingen: React.FC<{
               // limitLengde={800}
             />
             <ErrorMessage>
-              {formState.errors.omStillingen?.beskrivelse?.message}
+              {errors.omStillingen?.beskrivelse?.message}
             </ErrorMessage>
           </div>
 
           <div>
             <VelgArbeidssted feltNavn='omStillingen.locationList' />
+            {errors.omStillingen?.categoryList && (
+              <ErrorMessage>
+                Velg minst én adresse eller lokasjon for stillingen.
+              </ErrorMessage>
+            )}
           </div>
         </div>
         <StegNavigering stegNummer={stegNummer} forrigeSteg={forrigeSteg} />

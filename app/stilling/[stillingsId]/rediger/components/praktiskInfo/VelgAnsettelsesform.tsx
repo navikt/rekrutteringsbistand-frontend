@@ -8,7 +8,7 @@ import { StillingsDataForm } from '../../redigerFormType.zod';
 interface VelgAnsettelsesformProps {
   ansettelsesformFelt:
     | 'praktiskInfo.ansettelsesform'
-    | 'omFormidling.ansettelsesform';
+    | 'omFormidlingen.ansettelsesform';
 }
 
 const VelgAnsettelsesform: React.FC<VelgAnsettelsesformProps> = ({

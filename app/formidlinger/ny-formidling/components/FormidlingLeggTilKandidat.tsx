@@ -29,7 +29,7 @@ const FormidlingLeggTilKandidat: React.FC<FormidlingLeggTilKandidatProps> = ({
   const handleStepSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setValue(
-      'omKandiatene',
+      'omKandidatene',
       valgteKandidater?.map((k) => ({
         fnr: k.fødselsnummer,
         navn: {
@@ -39,7 +39,7 @@ const FormidlingLeggTilKandidat: React.FC<FormidlingLeggTilKandidatProps> = ({
         },
       })),
     );
-    const isValid = await trigger('omKandiatene', { shouldFocus: true });
+    const isValid = await trigger('omKandidatene', { shouldFocus: true });
     if (isValid) {
       nesteSteg();
     }
@@ -57,8 +57,8 @@ const FormidlingLeggTilKandidat: React.FC<FormidlingLeggTilKandidatProps> = ({
               setValgteKandidater(kandidater);
             }}
           />
-          {errors.omKandiatene && (
-            <ErrorMessage>{errors.omKandiatene.message}</ErrorMessage>
+          {errors.omKandidatene && (
+            <ErrorMessage>{errors.omKandidatene.message}</ErrorMessage>
           )}
           <StegNavigering stegNummer={1} forrigeSteg={forrigeSteg} />
         </div>

@@ -38,7 +38,6 @@ const Førerkort: React.FC = () => {
       <UNSAFE_Combobox
         selectedOptions={førerkort}
         label='Førerkort'
-        description='For eksempel fagbrev, sertifisering, ferdigheter eller programmer'
         options={Object.values(Førerkortklasse)}
         isMultiSelect
         onToggleSelected={onOptionSelected}

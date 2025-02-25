@@ -5,10 +5,10 @@ import { FormidlingDataForm } from '../../../../../formidlinger/ny-formidling/re
 import { StillingsDataForm } from '../../redigerFormType.zod';
 
 interface VelgOmfangProps {
-  omfangFelt: 'praktiskInfo.omfangKode' | 'omFormidling.omfangKode';
+  omfangFelt: 'praktiskInfo.omfangKode' | 'omFormidlingen.omfangKode';
   omfangProsentFelt:
     | 'praktiskInfo.omfangProsent'
-    | 'omFormidling.omfangProsent';
+    | 'omFormidlingen.omfangProsent';
 }
 
 const VelgOmfang: React.FC<VelgOmfangProps> = ({

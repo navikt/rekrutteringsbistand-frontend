@@ -1,10 +1,4 @@
-import {
-  BodyLong,
-  Button,
-  Checkbox,
-  ErrorMessage,
-  Heading,
-} from '@navikt/ds-react';
+import { BodyLong, Button, Checkbox, Heading } from '@navikt/ds-react';
 import * as React from 'react';
 import { useState } from 'react';
 import { useFieldArray, useFormContext } from 'react-hook-form';
@@ -14,7 +8,7 @@ import { StillingsDataForm } from '../redigerFormType.zod';
 import VelgKommuneFylkeEllerLand from './VelgKommuneFylkeEllerLand';
 
 export interface VelgArbeidsstedProps {
-  feltNavn: 'omFormidling.locationList' | 'omStillingen.locationList';
+  feltNavn: 'omFormidlingen.locationList' | 'omStillingen.locationList';
 }
 
 const VelgArbeidssted: React.FC<VelgArbeidsstedProps> = ({ feltNavn }) => {
@@ -129,14 +123,7 @@ const VelgArbeidssted: React.FC<VelgArbeidsstedProps> = ({ feltNavn }) => {
           </Button>
         </div>
       )}
-      {!visAdresse && !visLokasjon && (
-        <ErrorMessage>
-          Velg minst én adresse eller lokasjon for stillingen.
-        </ErrorMessage>
-      )}
-      {/* {errorMessageAdresse && (
-        <ErrorMessage>{errorMessageAdresse}</ErrorMessage>
-      )} */}
+
       {visLokasjon && (
         <div className='my-4'>
           <VelgKommuneFylkeEllerLand

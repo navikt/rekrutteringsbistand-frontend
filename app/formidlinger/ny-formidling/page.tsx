@@ -10,12 +10,6 @@ import { FormidlingFormSchema } from './redigerFormidlingFormType';
 export default function RedigerFormidlingSide() {
   const registerForm = useForm({
     resolver: zodResolver(FormidlingFormSchema),
-    defaultValues: {
-      omKandidatene: [],
-      omFormidlingen: {
-        stillingsId: '',
-      },
-    },
   });
 
   return (

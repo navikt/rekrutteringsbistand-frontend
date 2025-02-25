@@ -26,7 +26,7 @@ const RedigerOmFormidlingen: React.FC<RedigerOmFormidlingenProps> = ({
   const handleStepSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const isValid = await trigger('omFormidling', { shouldFocus: true });
+    const isValid = await trigger('omFormidlingen', { shouldFocus: true });
 
     if (isValid) {
       nesteSteg();
@@ -39,26 +39,26 @@ const RedigerOmFormidlingen: React.FC<RedigerOmFormidlingenProps> = ({
         <Heading size='large'>Om arbeidsgiver</Heading>
         <VelgArbeidsgiver
           arbeidsgiverCallback={(val) =>
-            setValue('omFormidling.organisasjon', val)
+            setValue('omFormidlingen.organisasjon', val)
           }
         />
         <Heading size='large'>Om stillingen</Heading>
         <VelgStillingTittel
-          categoryList={watch('omFormidling.categoryList')}
-          callBack={(val) => setValue('omFormidling.categoryList', val)}
-          error={formState.errors.omFormidling?.categoryList?.message}
+          categoryList={watch('omFormidlingen.categoryList')}
+          callBack={(val) => setValue('omFormidlingen.categoryList', val)}
+          error={formState.errors.omFormidlingen?.categoryList?.message}
         />
 
-        <VelgSektor sektorFelt='omFormidling.sektor' />
+        <VelgSektor sektorFelt='omFormidlingen.sektor' />
         <div className='flex flex-row gap-x-8'>
-          <VelgAnsettelsesform ansettelsesformFelt='omFormidling.ansettelsesform' />
-          <VelgArbeidstidsordning arbeidstidsordningFelt='omFormidling.arbeidstidsordning' />
+          <VelgAnsettelsesform ansettelsesformFelt='omFormidlingen.ansettelsesform' />
+          <VelgArbeidstidsordning arbeidstidsordningFelt='omFormidlingen.arbeidstidsordning' />
         </div>
         <VelgOmfang
-          omfangFelt='omFormidling.omfangKode'
-          omfangProsentFelt='omFormidling.omfangProsent'
+          omfangFelt='omFormidlingen.omfangKode'
+          omfangProsentFelt='omFormidlingen.omfangProsent'
         />
-        <VelgArbeidssted feltNavn='omFormidling.locationList' />
+        <VelgArbeidssted feltNavn='omFormidlingen.locationList' />
 
         <StegNavigering stegNummer={2} forrigeSteg={forrigeSteg} />
       </div>
