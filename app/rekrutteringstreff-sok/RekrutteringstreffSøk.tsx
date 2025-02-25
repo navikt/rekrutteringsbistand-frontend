@@ -3,50 +3,49 @@ import * as React from 'react';
 import { format } from 'date-fns';
 import { RekrutteringstreffKort } from './components/RekrutteringstreffKort';
 import { useRekrutteringstreffOversikt } from '@/app/api/rekrutteringstreff/useRekrutteringstreffOversikt';
+import SWRLaster from '../components/SWRLaster';
 
 export interface RekrutteringstreffSøkProps {
   children?: React.ReactNode;
 }
 
-const RekrutteringstreffSøk: React.FC<RekrutteringstreffSøkProps> = ({ children }) => {
-  const { data: rekrutteringstreffOversikt, isLoading } = useRekrutteringstreffOversikt();
-
-  if (isLoading || !rekrutteringstreffOversikt) {
-    return <div>Laster...</div>;
-  }
+const RekrutteringstreffSøk: React.FC<RekrutteringstreffSøkProps> = () => {
+  const rekrutteringstreffOversiktHook = useRekrutteringstreffOversikt();
 
   return (
-    <div>
-      {rekrutteringstreffOversikt.map((rekrutteringstreff) => {
-        const dato: Dato = datoFormatterer(
-          rekrutteringstreff?.fraTid,
-          rekrutteringstreff?.tilTid,
-        );
-        return (
-          <RekrutteringstreffKort
-            key={rekrutteringstreff.id}
-            dato={dato.startDato}
-            tidspunkt={`${dato.startTidspunkt} - ${dato.sluttTidspunkt}`}
-            antallArbeidsgivere={0}
-            tittel={rekrutteringstreff.tittel}
-            beskrivelse="Rekrutteringstreff"
-            sted="Oslo"
-            opprettetAv={rekrutteringstreff.opprettetAvPersonNavident}
-            opprettetDato="12. April"
-            navKontor={rekrutteringstreff.opprettetAvNavkontorEnhetId}
-            erPublisert={false}
-          />
-        );
-      })}
-    </div>
+    <SWRLaster hooks={[rekrutteringstreffOversiktHook]}>
+      {(rekrutteringstreffOversikt) =>
+        rekrutteringstreffOversikt.map((rekrutteringstreff) => {
+          const dato: Dato = datoFormatterer(
+            rekrutteringstreff.fraTid,
+            rekrutteringstreff.tilTid
+          );
+          return (
+            <RekrutteringstreffKort
+              key={rekrutteringstreff.id}
+              dato={dato.startDato}
+              tidspunkt={`${dato.startTidspunkt} - ${dato.sluttTidspunkt}`}
+              antallArbeidsgivere={0}
+              tittel={rekrutteringstreff.tittel}
+              beskrivelse="Rekrutteringstreff"
+              sted="Oslo"
+              opprettetAv={rekrutteringstreff.opprettetAvPersonNavident}
+              opprettetDato="12. April"
+              navKontor={rekrutteringstreff.opprettetAvNavkontorEnhetId}
+              erPublisert={false}
+            />
+          );
+        })
+      }
+    </SWRLaster>
   );
 };
 
 const datoFormatterer = (
-  startTidspunkt: string | undefined,
-  sluttTidspunkt: string | undefined,
-) => {
-  if (!startTidspunkt || !sluttTidspunkt) {
+  startTid: number | undefined,
+  sluttTid: number | undefined
+): Dato => {
+  if (startTid === undefined || sluttTid === undefined) {
     return {
       startDato: 'Ukjent dato',
       startTidspunkt: 'Ukjent tidspunkt',
@@ -54,8 +53,8 @@ const datoFormatterer = (
       sluttTidspunkt: 'Ukjent tidspunkt',
     };
   }
-  const startDate = new Date(startTidspunkt);
-  const sluttDate = new Date(sluttTidspunkt);
+  const startDate = new Date(startTid);
+  const sluttDate = new Date(sluttTid);
 
   return {
     startDato: format(startDate, 'dd.MM.yyyy'),
