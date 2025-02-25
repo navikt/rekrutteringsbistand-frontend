@@ -45,8 +45,8 @@ const RekrutteringstreffSøk: React.FC<RekrutteringstreffSøkProps> = ({
 };
 
 const datoFormatterer = (
-  startTidspunkt: number | undefined,
-  sluttTidspunkt: number | undefined,
+  startTidspunkt: string | undefined,
+  sluttTidspunkt: string | undefined,
 ) => {
   if (!startTidspunkt || !sluttTidspunkt) {
     return {
@@ -56,14 +56,14 @@ const datoFormatterer = (
       sluttTidspunkt: 'Ukjent tidspunkt',
     };
   }
-  const startDato = new Date(startTidspunkt * 1000); // Konverter til millisekund
-  const sluttDato = new Date(sluttTidspunkt * 1000); // Konverter til millisekund
+  const startDato = new Date(startTidspunkt); // Konverter til millisekund
+  const sluttDato = new Date(sluttTidspunkt); // Konverter til millisekund
 
   const formatertStartDato = startDato.toLocaleDateString('no-NO'); // Formater dato til norsk format
-  const formatertStartTid = startDato.toLocaleTimeString('no-NO'); // Formater dato til norsk format
+  const formatertStartTid = startDato.toLocaleTimeString('no-NO', { hour: '2-digit', minute: '2-digit' }); // Formater dato til norsk format
 
   const formatertSluttDato = sluttDato.toLocaleDateString('no-NO'); // Formater dato til norsk format
-  const formatertSluttTid = sluttDato.toLocaleTimeString('no-NO'); // Formater dato til norsk format
+  const formatertSluttTid = sluttDato.toLocaleTimeString('no-NO', { hour: '2-digit', minute: '2-digit' }); // Formater dato til norsk format
 
   return {
     startDato: formatertStartDato,
