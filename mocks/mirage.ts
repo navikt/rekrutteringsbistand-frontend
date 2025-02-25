@@ -15,6 +15,7 @@ import { formidleUsynligKandidatMirage } from '../app/api/kandidat/formidleKandi
 import { kandidatlisteMirage } from '../app/api/kandidat/useKandidatliste';
 import { kandidatlisteInfoMirage } from '../app/api/kandidat/useKandidatlisteInfo';
 import { kandidatlisteoversiktMirage } from '../app/api/kandidat/useKandidatListeoversikt';
+import { mineKandidatlisterMirage } from '../app/api/kandidat/useMineKandidatlister';
 import { meldingsmalerMirage } from '../app/api/kandidatvarsel/hentMeldingsmaler';
 import { kandidatvarselMirage } from '../app/api/kandidatvarsel/kandidatvarsel';
 import { pamPostdataMirage } from '../app/api/pam-geografi/postdata/[postnummer]/usePamPostdata';
@@ -64,6 +65,7 @@ export function makeServer({ environment = 'test' } = {}) {
       pamPostdataMirage(this);
       formidleUsynligKandidatMirage(this);
       kandidatlisteInfoMirage(this);
+      mineKandidatlisterMirage(this);
       // stillingssøk mock kan disables ved ES søk
       // stillingssøkMirage(this);
       this.passthrough('*');

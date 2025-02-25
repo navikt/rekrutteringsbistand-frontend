@@ -1,13 +1,13 @@
 'use client';
-import Image from 'next/image';
 import Piktogram from '../../public/ikoner/finn-kandidater.svg';
 import SideLayout from '../components/layout/SideLayout';
 import SideTopBanner from '../components/layout/SideTopBanner';
+import SVGDarkmode from '../components/SVGDarkmode';
 import { Roller } from '../components/tilgangskontroll/roller';
 import { TilgangskontrollForInnhold } from '../components/tilgangskontroll/TilgangskontrollForInnhold';
 import KandidatSøkSidebar from './components/kandidat-sok-sidebar/KandidatSøkSidebar';
 import { KandidatSøkProvider } from './KandidaSokContext';
-import SVGDarkmode from '../components/SVGDarkmode';
+import { KandidatSøkMarkerteContextProvider } from './KandidatSøkMarkerteContext';
 
 export default function KandidatSokLayout({
   children,
@@ -22,17 +22,19 @@ export default function KandidatSokLayout({
       ]}
     >
       <KandidatSøkProvider>
-        <SideLayout
-          banner={
-            <SideTopBanner
-              tittel='Kandidatsøk'
-              ikon={<SVGDarkmode src={Piktogram} alt='Kandidatsøk' />}
-            />
-          }
-          sidepanel={<KandidatSøkSidebar />}
-        >
-          {children}
-        </SideLayout>
+        <KandidatSøkMarkerteContextProvider>
+          <SideLayout
+            banner={
+              <SideTopBanner
+                tittel='Kandidatsøk'
+                ikon={<SVGDarkmode src={Piktogram} alt='Kandidatsøk' />}
+              />
+            }
+            sidepanel={<KandidatSøkSidebar />}
+          >
+            {children}
+          </SideLayout>
+        </KandidatSøkMarkerteContextProvider>
       </KandidatSøkProvider>
     </TilgangskontrollForInnhold>
   );
