@@ -1,100 +1,32 @@
 import { UNSAFE_Combobox } from '@navikt/ds-react';
 import * as React from 'react';
 import { useState } from 'react';
-import { useFormContext } from 'react-hook-form';
 import {
   GeografiType,
   usePamGeografi,
 } from '../../../../api/pam-geografi/typehead/lokasjoner/usePamGeografi';
-import { FormidlingDataForm } from '../../../../formidlinger/[stillingsId]/rediger/redigerFormidlingFormType';
-import { StillingsDataForm } from '../redigerFormType.zod';
+import { GeografiDTO } from '../../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
+import { storForbokstavString } from '../../../../kandidat-sok/util';
 
+interface GeografiDTOmedId extends GeografiDTO {
+  id: string;
+}
 interface VelgKommuneFylkeEllerLandProps {
-  lokasjonsFelt: 'omFormidling.lokasjoner' | 'omStillingen.lokasjoner';
+  lokasjoner: GeografiDTOmedId[];
+  leggTilLokasjon: (lokasjon: GeografiDTO) => void;
+  fjernLokasjonId: (id: string) => void;
 }
 
 const VelgKommuneFylkeEllerLand: React.FC<VelgKommuneFylkeEllerLandProps> = ({
-  lokasjonsFelt,
+  lokasjoner,
+  leggTilLokasjon,
+  fjernLokasjonId,
 }) => {
-  const { setValue, watch } = useFormContext<
-    StillingsDataForm | FormidlingDataForm
-  >();
   const geografi = usePamGeografi();
   const [muligeValg, setMuligeValg] = useState<string[]>([]);
   const [søkeTekst, setSøkeTekst] = useState<string>('');
 
-  const [valgteVerdier, setValgteVerdier] = useState<string[]>(() => {
-    const lokasjoner = watch(lokasjonsFelt);
-    return (
-      lokasjoner
-        ?.map((item) => {
-          if (item.municipal) return `${item.municipal} (kommune)`;
-          if (item.county) return `${item.county} (fylke)`;
-          if (item.country) return `${item.country} (land)`;
-        })
-        .filter((item): item is string => item !== undefined) ?? []
-    );
-  });
-
-  /**
-   * Oppdater valgte verdier i form
-   */
-  React.useEffect(() => {
-    const nyeVerdier = valgteVerdier
-      ?.map((verdi) => {
-        const parts = verdi.split(' (');
-        const navn = parts[0];
-        const type = parts[1].replace(')', '');
-
-        const baseLocation = {
-          address: null,
-          postalCode: null,
-          city: null,
-          county: null,
-          countyCode: null,
-          municipal: null,
-          municipalCode: null,
-          country: null,
-        };
-
-        if (type === 'kommune') {
-          const kommune = geografi.data
-            ?.filter((g) => g.type === GeografiType.KOMMUNE)
-            .find((k) => k.navn.toLowerCase() === navn.toLowerCase());
-          if (kommune) {
-            return {
-              ...baseLocation,
-              city: kommune.lokasjon.poststed ?? null,
-              county: kommune.lokasjon.fylke ?? null,
-              countyCode: kommune.lokasjon.fylkesnummer ?? null,
-              municipal: kommune.lokasjon.kommune ?? null,
-              municipalCode: kommune.lokasjon.kommunenummer ?? null,
-            };
-          }
-        } else if (type === 'fylke') {
-          const fylke = geografi.data
-            ?.filter((g) => g.type === GeografiType.FYLKE)
-            .find((k) => k.navn.toLowerCase() === navn.toLowerCase());
-          if (fylke) {
-            return {
-              ...baseLocation,
-              county: fylke.lokasjon.fylke ?? null,
-              countyCode: fylke.lokasjon.fylkesnummer ?? null,
-            };
-          }
-        } else if (type === 'land') {
-          return { ...baseLocation, country: navn };
-        }
-      })
-      .filter(
-        (value): value is NonNullable<typeof value> => value !== undefined,
-      );
-
-    setValue(lokasjonsFelt, nyeVerdier || [], {
-      shouldValidate: true,
-      shouldDirty: true,
-    });
-  }, [valgteVerdier, setValue, geografi.data, lokasjonsFelt]);
+  const valgteVerdier = lokasjoner;
 
   /**
    * Oppdater søket
@@ -107,28 +39,55 @@ const VelgKommuneFylkeEllerLand: React.FC<VelgKommuneFylkeEllerLandProps> = ({
           .filter((k) =>
             k.navn.toLowerCase().includes(søkeTekst.toLocaleLowerCase()),
           )
-          .map((k) => `${k.navn} (kommune)`) ?? []),
+          .map((k) => `${storForbokstavString(k.navn)} (kommune)`) ?? []),
         ...(geografi.data
           ?.filter((g) => g.type === GeografiType.FYLKE)
           .filter((f) =>
             f.navn.toLowerCase().includes(søkeTekst.toLocaleLowerCase()),
           )
-          .map((f) => `${f.navn} (fylke)`) ?? []),
+          .map((f) => `${storForbokstavString(f.navn)} (fylke)`) ?? []),
         ...(geografi.data
           ?.filter((g) => g.type === GeografiType.LAND)
           ?.filter((l) =>
             l.navn.toLowerCase().includes(søkeTekst.toLocaleLowerCase()),
           )
-          .map((l) => `${l.navn} (land)`) ?? []),
+          .map((l) => `${storForbokstavString(l.navn)} (land)`) ?? []),
       ]);
     }
-  }, [geografi.data, søkeTekst, lokasjonsFelt]);
+  }, [geografi.data, søkeTekst]);
 
   const handleValgtVerdi = (option: string, isSelected: boolean) => {
-    if (!isSelected) {
-      setValgteVerdier(valgteVerdier?.filter((v) => v !== option));
+    const parts = option.split(' (');
+    const navn = parts[0];
+    const type = parts[1].replace(')', '');
+
+    const lokasjon = geografi.data
+      ?.filter((g) => g.type.toLowerCase() === type.toLowerCase())
+      .find((g) => g.navn.toLowerCase() === navn.toLowerCase());
+
+    if (isSelected && lokasjon) {
+      leggTilLokasjon({
+        address: lokasjon.lokasjon.adresse,
+        postalCode: null,
+        city: lokasjon.lokasjon.poststed,
+        county: lokasjon.lokasjon.fylke,
+        // countyCode: lokasjon.lokasjon.fylkesnummer,
+        municipal: lokasjon.lokasjon.kommune,
+        municipalCode: lokasjon.lokasjon.kommunenummer,
+        country: lokasjon.lokasjon.land,
+      });
     } else {
-      setValgteVerdier([...(valgteVerdier ?? []), option]);
+      const id = valgteVerdier.find(
+        (v) =>
+          // Fjern i rekkefølge kommune, fylke, land
+          v.municipal === lokasjon?.lokasjon.kommune ||
+          v.county === lokasjon?.lokasjon.fylke ||
+          v.country === lokasjon?.lokasjon.land,
+      )?.id;
+
+      if (id) {
+        fjernLokasjonId(id);
+      }
     }
   };
 
@@ -137,7 +96,15 @@ const VelgKommuneFylkeEllerLand: React.FC<VelgKommuneFylkeEllerLandProps> = ({
       disabled={geografi.isLoading}
       className='mt-4'
       toggleListButton={false}
-      selectedOptions={valgteVerdier}
+      selectedOptions={valgteVerdier.map((v) =>
+        v.municipal
+          ? `${storForbokstavString(v.municipal)} (kommune)`
+          : v.county
+            ? `${storForbokstavString(v.county)} (fylke)`
+            : v.country
+              ? `${storForbokstavString(v.country)} (land)`
+              : '',
+      )}
       onChange={(value) => {
         setSøkeTekst(value);
       }}

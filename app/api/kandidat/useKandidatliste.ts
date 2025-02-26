@@ -4,7 +4,7 @@ import { KandidatAPI } from '../api-routes';
 import { kandidatlisetMock } from './mocks/kandidatlisteMock';
 import { kandidatlisteSchema } from './schema.zod';
 
-const kandidatlisteEndepunkt = (stillingsId?: string) =>
+export const kandidatlisteEndepunkt = (stillingsId?: string) =>
   stillingsId
     ? `${KandidatAPI.internUrl}/veileder/stilling/${stillingsId}/kandidatliste`
     : undefined;

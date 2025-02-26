@@ -41,7 +41,6 @@ const RedigerStilling: React.FC = () => {
   const { setForhåndsvisData, forhåndsvisData } = useStillingsContext();
 
   const { getValues } = useFormContext<StillingsDataForm>();
-
   const nesteSteg = () => {
     const steps = Object.values(RedigerSteg);
     const currentIndex =
@@ -170,7 +169,7 @@ const RedigerStilling: React.FC = () => {
             )}
             {aktivtSteg === RedigerSteg.omTilrettelegging && (
               <RedigerOmTilrettelegging
-                omTilretteleggingFelt='omStillingen.omTilrettelegging'
+                omTilretteleggingFelt='omTilrettelegging'
                 stegNummer={2}
                 nextStep={nesteSteg}
                 forrigeSteg={forrigeSteg}

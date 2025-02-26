@@ -5,6 +5,7 @@ import {
   TrashIcon,
 } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
+import { logger } from '@navikt/next-logger';
 import * as React from 'react';
 import { oppdaterStilling } from '../../../../api/stilling/oppdater-stilling/oppdaterStilling';
 import { useStilling } from '../../../../api/stilling/rekrutteringsbistandstilling/[slug]/useStilling';
@@ -43,6 +44,7 @@ const AksjonsknapperSiderbarStilling: React.FC<
       });
       await mutate();
     } catch (error) {
+      logger.error('Feil ved lagring av stilling', error);
       visVarsling({
         innhold: 'Feil ved lagring av stilling',
         alertType: 'error',

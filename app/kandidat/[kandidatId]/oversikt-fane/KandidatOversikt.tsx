@@ -10,11 +10,7 @@ import KandidatUtdanning from './components/KandidatUtdanning';
 import KandidatØnsker from './components/KandidatØnsker';
 import KandidatOversiktSidebar from './components/sidebar/KandidatOversiktSidebar';
 
-export interface KandidatOversiktProps {
-  children?: React.ReactNode | undefined;
-}
-
-const KandidatOversikt: React.FC<KandidatOversiktProps> = ({ children }) => {
+const KandidatOversikt: React.FC = () => {
   const { kandidatData } = useKandidatContext();
 
   return (

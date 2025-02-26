@@ -9,10 +9,10 @@ import RedigerStilling from './RedigerStilling';
 export default function RedigerSide() {
   const { stillingsData } = useStillingsContext();
 
-  const initialValues = mapStillingTilForm(stillingsData);
+  const defaultValues = mapStillingTilForm(stillingsData);
   const registerForm = useForm({
     resolver: zodResolver(StillingsDataFormSchema),
-    defaultValues: initialValues,
+    defaultValues: defaultValues,
   });
 
   return (

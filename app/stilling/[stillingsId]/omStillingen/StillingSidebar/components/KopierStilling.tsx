@@ -1,5 +1,6 @@
 import { FilesIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
+import { logger } from '@navikt/next-logger';
 import * as React from 'react';
 import { kopierStilling } from '../../../../../api/stilling/rekrutteringsbistandstilling/kopier/[slug]/kopierStilling';
 import { useVisVarsling } from '../../../../../components/varsling/Varsling';
@@ -13,13 +14,14 @@ const KopierStilling: React.FC<KopierStillingProps> = ({ stillingsId }) => {
   const onKopierStilling = async () => {
     try {
       setLoading(true);
-      const response = await kopierStilling(stillingsId);
+      await kopierStilling(stillingsId);
 
       varsel({
         innhold: 'Stilling dupliserte',
         alertType: 'success',
       });
     } catch (error) {
+      logger.error('Feil ved duplisering av stilling', error);
       varsel({
         innhold: 'Feil ved duplisering av stilling',
         alertType: 'error',

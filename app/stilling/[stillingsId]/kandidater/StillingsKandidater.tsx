@@ -14,7 +14,7 @@ import DelMedKandidatModal from './components/DelMedKandidat/DelMedKandidatModal
 
 import {
   aktivitetTilTekst,
-  Kandidatstatus,
+  InternKandidatstatus,
   varselTilTekst,
 } from './components/KandidatTyper';
 import SendSmsModal from './components/SendSMS/SendSmsModal';
@@ -29,7 +29,7 @@ import StillingsKandidaterTabell from './StillingsKandidaterTabell';
 
 const StillingsKandidater: React.FC = () => {
   const { brukerData } = useApplikasjonContext();
-  const { stillingsData } = useStillingsContext();
+  const { stillingsData, kandidatlisteInfo } = useStillingsContext();
   const { status, setStatus, hendelse, setHendelse } =
     useStillingsKandidaterFilter();
   const [markerteKandidater, setMarkerteKandidater] = React.useState<
@@ -42,6 +42,10 @@ const StillingsKandidater: React.FC = () => {
   );
   const beskjederHook = useSmserForStilling(stillingsData.stilling.uuid);
 
+  const lukketKandidatliste =
+    kandidatlisteInfo?.kandidatlisteStatus === 'LUKKET';
+
+  const reFetchKandidatliste = () => kandidatlisteHook.mutate();
   const [search, setSearch] = React.useState('');
 
   // Mutate beskjeder every 3 second: //TODO aktuelt?
@@ -109,31 +113,33 @@ const StillingsKandidater: React.FC = () => {
                   onChange={(val) => setSearch(val)}
                 />
               </div>
-              <div>
-                <SendSmsModal
-                  markerteKandidater={markerteKandidater}
-                  stillingId={stillingsData.stilling.uuid}
-                  stillingskategori={
-                    stillingsData.stillingsinfo?.stillingskategori ?? null
-                  }
-                  fjernAllMarkering={() => setMarkerteKandidater([])}
-                />
-                <DelMedKandidatModal
-                  stillingsId={stillingsData.stilling.uuid}
-                  forespurteKandidaterAktørListe={
-                    forespurteKandidaterAktørListe
-                  }
-                  kandidatliste={kandidatliste}
-                  markerteKandidater={markerteKandidater}
-                  fjernAllMarkering={() => setMarkerteKandidater([])}
-                />
-                <DelMedArbeidsgiver
-                  stillingsId={stillingsData.stilling.uuid}
-                  stillingTittel={stillingsData.stilling.title}
-                  markerteKandidater={markerteKandidater}
-                  kandidatliste={kandidatliste}
-                />
-              </div>
+              {!lukketKandidatliste && (
+                <div>
+                  <SendSmsModal
+                    markerteKandidater={markerteKandidater}
+                    stillingId={stillingsData.stilling.uuid}
+                    stillingskategori={
+                      stillingsData.stillingsinfo?.stillingskategori ?? null
+                    }
+                    fjernAllMarkering={() => setMarkerteKandidater([])}
+                  />
+                  <DelMedKandidatModal
+                    stillingsId={stillingsData.stilling.uuid}
+                    forespurteKandidaterAktørListe={
+                      forespurteKandidaterAktørListe
+                    }
+                    kandidatliste={kandidatliste}
+                    markerteKandidater={markerteKandidater}
+                    fjernAllMarkering={() => setMarkerteKandidater([])}
+                  />
+                  <DelMedArbeidsgiver
+                    stillingsId={stillingsData.stilling.uuid}
+                    stillingTittel={stillingsData.stilling.title}
+                    markerteKandidater={markerteKandidater}
+                    kandidatliste={kandidatliste}
+                  />
+                </div>
+              )}
             </div>
 
             <div className='mt-8 flex'>
@@ -144,7 +150,7 @@ const StillingsKandidater: React.FC = () => {
                   defaultValue={status}
                   className='mb-8'
                 >
-                  {Object.entries(Kandidatstatus).map(([key, value]) => (
+                  {Object.entries(InternKandidatstatus).map(([key, value]) => (
                     <Checkbox key={key} value={key}>
                       {storForbokstavString(value ?? '').replace(/_/g, ' ')}
                     </Checkbox>
@@ -175,8 +181,10 @@ const StillingsKandidater: React.FC = () => {
                   </CheckboxGroup>
                 </div>
               </aside>
+
               <div className='w-full'>
                 <StillingsKandidaterTabell
+                  lukketKandidatliste={lukketKandidatliste}
                   key={stillingsData.stilling.uuid}
                   beskjeder={beskjeder}
                   forespurteKandidater={forespurteKandidater}
@@ -185,6 +193,7 @@ const StillingsKandidater: React.FC = () => {
                   search={search}
                   kandidatliste={kandidatliste}
                   stillingsId={stillingsData.stilling.uuid}
+                  reFetchKandidatliste={reFetchKandidatliste}
                 />
               </div>
             </div>

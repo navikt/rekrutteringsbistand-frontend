@@ -1,14 +1,14 @@
 import { Select } from '@navikt/ds-react';
 import * as React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
+import { FormidlingDataForm } from '../../../../../formidlinger/ny-formidling/redigerFormidlingFormType';
 import { StillingsAnsettelsesform } from '../../../../stilling-typer';
 import { StillingsDataForm } from '../../redigerFormType.zod';
-import { FormidlingDataForm } from '../../../../../formidlinger/[stillingsId]/rediger/redigerFormidlingFormType';
 
 interface VelgAnsettelsesformProps {
   ansettelsesformFelt:
     | 'praktiskInfo.ansettelsesform'
-    | 'omFormidling.ansettelsesform';
+    | 'omFormidlingen.ansettelsesform';
 }
 
 const VelgAnsettelsesform: React.FC<VelgAnsettelsesformProps> = ({

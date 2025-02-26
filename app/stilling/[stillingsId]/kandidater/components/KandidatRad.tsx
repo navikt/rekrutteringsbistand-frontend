@@ -1,15 +1,19 @@
-import { BodyShort, Checkbox, Link, Table } from '@navikt/ds-react';
+import { PlusCircleIcon } from '@navikt/aksel-icons';
+import { BodyShort, Button, Checkbox, Link, Table } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import { nb } from 'date-fns/locale';
 import * as React from 'react';
 import { KandidatForespurtOmDelingSchema } from '../../../../api/foresporsel-om-deling-av-cv/foresporsler/[slug]/useForespurteOmDelingAvCv';
+import { endreUtfallKandidat } from '../../../../api/kandidat/endreKandidatUtfall';
 import { kandidaterSchemaDTO } from '../../../../api/kandidat/schema.zod';
 import { Sms } from '../../../../api/kandidatvarsel/kandidatvarsel';
+import { useApplikasjonContext } from '../../../../ApplikasjonContext';
+import FeilDialog from '../../../../components/feilhåndtering/Feildialog';
 import InfoOmKandidat from './InfoOmKandidat';
 import SletteKandidatKnapp from './KandidatDropdown';
 import KandidatHendelse, { mapToHendelser } from './KandidatHendelse';
 import KandidatHendelseTag from './KandidatHendelseTag';
-import { Kandidatstatus } from './KandidatTyper';
+import { KandidatutfallTyper } from './KandidatTyper';
 import VelgInternStatus from './VelgInternStatus';
 
 export interface KandidatRadProps {
@@ -20,6 +24,8 @@ export interface KandidatRadProps {
   markerKandidat: (kandidat: kandidaterSchemaDTO) => void;
   kandidatlisteId: string;
   stillingsId: string;
+  reFetchKandidatliste: () => void;
+  lukketKandidatliste: boolean;
 }
 
 const KandidatRad: React.FC<KandidatRadProps> = ({
@@ -30,9 +36,11 @@ const KandidatRad: React.FC<KandidatRadProps> = ({
   markerKandidat,
   kandidatlisteId,
   stillingsId,
+  reFetchKandidatliste,
+  lukketKandidatliste,
 }) => {
   const innaktiv = !kandidat.fodselsnr;
-
+  const { valgtNavKontor } = useApplikasjonContext();
   const kandidatHendelser = mapToHendelser({
     kandidat,
     forespørselCvForKandidat,
@@ -42,14 +50,66 @@ const KandidatRad: React.FC<KandidatRadProps> = ({
   const sisteAktivitet = kandidatHendelser.filter((h) => h.kilde !== 'Sms')[0];
   const sisteSms = kandidatHendelser.filter((h) => h.kilde === 'Sms')[0];
 
+  const sisteUtfall = kandidat.utfallsendringer.find(
+    (u) =>
+      u.tidspunkt ===
+      kandidat.utfallsendringer.sort((a, b) =>
+        a.tidspunkt.localeCompare(b.tidspunkt),
+      )[0].tidspunkt,
+  )?.utfall;
+
+  const [endrerUtfall, setEndrerUtfall] = React.useState(false);
+  const [feilDialog, setFeilDialog] = React.useState<string | null>(null);
+  const endreUtfallForKandidat = async (utfall: KandidatutfallTyper) => {
+    setEndrerUtfall(true);
+    try {
+      await endreUtfallKandidat(
+        utfall,
+        valgtNavKontor?.navKontor ?? '',
+        kandidatlisteId,
+        kandidat.kandidatnr,
+      );
+      reFetchKandidatliste();
+      setFeilDialog(null);
+    } catch (error) {
+      setFeilDialog(
+        error instanceof Error ? error.message : 'En ukjent feil oppstod',
+      );
+    }
+    setEndrerUtfall(false);
+  };
+
   return (
     <Table.ExpandableRow
       content={
         <div className='grid grid-cols-3 gap-8'>
           <div className='col-span-2'>
-            <KandidatHendelse kandidatHendelser={kandidatHendelser} />
+            <KandidatHendelse
+              kandidatHendelser={kandidatHendelser}
+              endreUtfallForKandidat={endreUtfallForKandidat}
+            />
           </div>
           <div className='col-span-1'>
+            {sisteUtfall !== KandidatutfallTyper.FATT_JOBBEN && (
+              <Button
+                disabled={lukketKandidatliste}
+                className=' mb-4 w-full'
+                icon={<PlusCircleIcon />}
+                onClick={() =>
+                  endreUtfallForKandidat(KandidatutfallTyper.FATT_JOBBEN)
+                }
+                loading={endrerUtfall}
+              >
+                Registrer fått jobben
+              </Button>
+            )}
+            <FeilDialog
+              isOpen={!!feilDialog}
+              onRetry={() =>
+                endreUtfallForKandidat(KandidatutfallTyper.FATT_JOBBEN)
+              }
+              errorMessage={feilDialog ?? 'Ukjent feil'}
+            />
             {!innaktiv && <InfoOmKandidat kandidat={kandidat} />}
           </div>
         </div>
@@ -58,7 +118,7 @@ const KandidatRad: React.FC<KandidatRadProps> = ({
     >
       <Table.DataCell>
         <Checkbox
-          disabled={innaktiv}
+          disabled={innaktiv || lukketKandidatliste}
           hideLabel
           checked={markerteKandidater.includes(kandidat)}
           onChange={() => markerKandidat(kandidat)}
@@ -92,9 +152,10 @@ const KandidatRad: React.FC<KandidatRadProps> = ({
       </Table.DataCell>
       <Table.DataCell>
         <VelgInternStatus
+          lukketKandidatliste={lukketKandidatliste}
           kandidatlisteId={kandidatlisteId}
           kandidatnr={kandidat.kandidatnr}
-          status={kandidat.status as Kandidatstatus}
+          status={kandidat.status}
         />
       </Table.DataCell>
       <Table.DataCell>
@@ -105,7 +166,11 @@ const KandidatRad: React.FC<KandidatRadProps> = ({
       </Table.DataCell>
       <Table.DataCell>
         <div className='flex items-baseline flex-end'>
-          <SletteKandidatKnapp kandidat={kandidat} stillingsId={stillingsId} />
+          <SletteKandidatKnapp
+            lukketKandidatliste={lukketKandidatliste}
+            kandidat={kandidat}
+            stillingsId={stillingsId}
+          />
         </div>
       </Table.DataCell>
     </Table.ExpandableRow>

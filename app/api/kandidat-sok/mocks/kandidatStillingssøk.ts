@@ -1,4 +1,3 @@
-import { Kvalifiseringsgruppekode } from '../../../kandidat-sok/components/innsatsgrupper';
 import { KandidatStillingssøkDTO } from '../useKandidatStillingssøk';
 
 export const mockKandidatStillingssøk: KandidatStillingssøkDTO = {
@@ -120,7 +119,6 @@ export const mockKandidatsøkKandidater = [
     ],
     fornavn: 'Patent',
     fodselsnummer: '17907096467',
-    kvalifiseringsgruppekode: Kvalifiseringsgruppekode.Batt,
   },
   {
     yrkeJobbonskerObj: [],
@@ -131,7 +129,6 @@ export const mockKandidatsøkKandidater = [
     geografiJobbonsker: [],
     fornavn: 'Kandidat',
     fodselsnummer: '17907096400',
-    kvalifiseringsgruppekode: Kvalifiseringsgruppekode.Batt,
   },
   {
     yrkeJobbonskerObj: [
@@ -185,7 +182,6 @@ export const mockKandidatsøkKandidater = [
     ],
     fornavn: 'Ufruktbar',
     fodselsnummer: '22899497590',
-    kvalifiseringsgruppekode: Kvalifiseringsgruppekode.Batt,
   },
   {
     yrkeJobbonskerObj: [
@@ -279,6 +275,5 @@ export const mockKandidatsøkKandidater = [
     ],
     fornavn: 'Selvhjulpen',
     fodselsnummer: '10870396894',
-    kvalifiseringsgruppekode: Kvalifiseringsgruppekode.Batt,
   },
 ];

@@ -18,9 +18,6 @@ const KontaktPersonInformasjon: React.FC<{
   >;
   index: number;
 }> = ({ control, field, index }) => {
-  const [epostFelt, setEpostFelt] = React.useState<boolean>(true);
-  const [telefonFelt, setTelefonFelt] = React.useState<boolean>(true);
-
   return (
     <div key={field.id} className='grid grid-cols-2 gap-4 items-start'>
       <Controller
@@ -52,36 +49,32 @@ const KontaktPersonInformasjon: React.FC<{
         Velg hvor de kan nås (må ha minst en)
       </BodyLong>
       <div />
-      {epostFelt && (
-        <Controller
-          control={control}
-          name={`omVirksomheten.kontaktPersoner.${index}.email`}
-          render={({ field: { onChange, value }, fieldState: { error } }) => (
-            <TextField
-              type='email'
-              label='E-post'
-              onChange={(e) => onChange(e.target.value)}
-              value={value ?? ''}
-              error={error?.message}
-            />
-          )}
-        />
-      )}
-      {telefonFelt && (
-        <Controller
-          control={control}
-          name={`omVirksomheten.kontaktPersoner.${index}.phone`}
-          render={({ field: { onChange, value }, fieldState: { error } }) => (
-            <TextField
-              type='tel'
-              label='Telefonnummer'
-              onChange={(e) => onChange(e.target.value)}
-              value={value ?? ''}
-              error={error?.message}
-            />
-          )}
-        />
-      )}
+      <Controller
+        control={control}
+        name={`omVirksomheten.kontaktPersoner.${index}.email`}
+        render={({ field: { onChange, value }, fieldState: { error } }) => (
+          <TextField
+            type='email'
+            label='E-post'
+            onChange={(e) => onChange(e.target.value)}
+            value={value ?? ''}
+            error={error?.message}
+          />
+        )}
+      />
+      <Controller
+        control={control}
+        name={`omVirksomheten.kontaktPersoner.${index}.phone`}
+        render={({ field: { onChange, value }, fieldState: { error } }) => (
+          <TextField
+            type='tel'
+            label='Telefonnummer'
+            onChange={(e) => onChange(e.target.value)}
+            value={value ?? ''}
+            error={error?.message}
+          />
+        )}
+      />
     </div>
   );
 };

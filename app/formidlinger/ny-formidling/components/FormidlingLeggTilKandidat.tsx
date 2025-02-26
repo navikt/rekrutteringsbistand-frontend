@@ -3,8 +3,8 @@ import * as React from 'react';
 import { useFormContext } from 'react-hook-form';
 import LeggTilKandidater, {
   ValgtKandidatProp,
-} from '../../../../components/legg-til-kandidat/LeggTilKandidater';
-import StegNavigering from '../../../../stilling/[stillingsId]/rediger/components/StegNavigering';
+} from '../../../components/legg-til-kandidat/LeggTilKandidater';
+import StegNavigering from '../../../stilling/[stillingsId]/rediger/components/StegNavigering';
 import { FormidlingDataForm } from '../redigerFormidlingFormType';
 
 export interface FormidlingLeggTilKandidatProps {
@@ -29,7 +29,7 @@ const FormidlingLeggTilKandidat: React.FC<FormidlingLeggTilKandidatProps> = ({
   const handleStepSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setValue(
-      'omKandiatene',
+      'omKandidatene',
       valgteKandidater?.map((k) => ({
         fnr: k.fødselsnummer,
         navn: {
@@ -39,14 +39,14 @@ const FormidlingLeggTilKandidat: React.FC<FormidlingLeggTilKandidatProps> = ({
         },
       })),
     );
-    const isValid = await trigger('omKandiatene', { shouldFocus: true });
+    const isValid = await trigger('omKandidatene', { shouldFocus: true });
     if (isValid) {
       nesteSteg();
     }
   };
   return (
     <Box.New className='space-y-4'>
-      <Heading size='large'>Etterregistrer formidling</Heading>
+      <Heading size='large'>Legg til kandidater</Heading>
       <BodyLong>Vi må vite hvilke kandidater du ønsker å formidle</BodyLong>
       <form onSubmit={handleStepSubmit}>
         <div className='flex flex-col space-y-8'>
@@ -57,8 +57,8 @@ const FormidlingLeggTilKandidat: React.FC<FormidlingLeggTilKandidatProps> = ({
               setValgteKandidater(kandidater);
             }}
           />
-          {errors.omKandiatene && (
-            <ErrorMessage>{errors.omKandiatene.message}</ErrorMessage>
+          {errors.omKandidatene && (
+            <ErrorMessage>{errors.omKandidatene.message}</ErrorMessage>
           )}
           <StegNavigering stegNummer={1} forrigeSteg={forrigeSteg} />
         </div>

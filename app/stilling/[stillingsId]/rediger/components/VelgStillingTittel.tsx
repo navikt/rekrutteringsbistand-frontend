@@ -5,7 +5,7 @@ import { CategorySchemaDTO } from '../../../../api/stilling/rekrutteringsbistand
 import { mapJanzzTilKategori } from '../mapStilling';
 
 export interface VelgStillingTittelProps {
-  categoryList?: CategorySchemaDTO[];
+  categoryList?: CategorySchemaDTO[] | null;
   callBack: (category: CategorySchemaDTO[]) => void;
   error?: string;
 }

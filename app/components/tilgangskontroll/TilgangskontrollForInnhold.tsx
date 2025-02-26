@@ -69,8 +69,7 @@ export const TilgangskontrollForInnhold: React.FC<
               {kreverEnAvRollene &&
                 kreverEnAvRollene
                   .filter(
-                    (r, i) =>
-                      r !== Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER,
+                    (r) => r !== Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER,
                   )
                   .map((rolle, i) => (
                     <span key={i}>

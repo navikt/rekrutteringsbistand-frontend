@@ -1,15 +1,13 @@
 import { Checkbox, CheckboxGroup, Heading } from '@navikt/ds-react';
 import * as React from 'react';
 import { useFormContext } from 'react-hook-form';
-import { FormidlingDataForm } from '../../../../formidlinger/[stillingsId]/rediger/redigerFormidlingFormType';
+import { FormidlingDataForm } from '../../../../formidlinger/ny-formidling/redigerFormidlingFormType';
 import { InkluderingsTag } from '../../omStillingen/StillingSidebar/StillingInkludering';
 import { StillingsDataForm } from '../redigerFormType.zod';
 import StegNavigering from './StegNavigering';
 
 interface RedigerOmTilretteleggingProps {
-  omTilretteleggingFelt:
-    | 'omStillingen.omTilrettelegging'
-    | 'omFormidling.omTilrettelegging';
+  omTilretteleggingFelt: 'omTilrettelegging';
   stegNummer: number;
   nextStep: () => void;
   forrigeSteg: () => void;
@@ -17,7 +15,7 @@ interface RedigerOmTilretteleggingProps {
 
 export const RedigerOmTilrettelegging: React.FC<
   RedigerOmTilretteleggingProps
-> = ({ nextStep, forrigeSteg, stegNummer, omTilretteleggingFelt }) => {
+> = ({ nextStep, forrigeSteg, stegNummer }) => {
   const { watch, setValue, trigger } = useFormContext<
     StillingsDataForm | FormidlingDataForm
   >();

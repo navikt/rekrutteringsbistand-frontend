@@ -5,7 +5,7 @@ import {
 } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 
 export const OmVirksomhetenSchema = z.object({
-  beskrivelse: z.string(),
+  beskrivelse: z.string().optional().nullable(),
   employerhomepage: z.string().optional().nullable(),
   facebookpage: z.string().optional().nullable(),
   linkedinpage: z.string().optional().nullable(),
@@ -46,46 +46,53 @@ export const OmVirksomhetenSchema = z.object({
     .min(1, 'Minst én kontaktperson er påkrevd'),
 });
 
-export const OmTilretteleggingSchema = z.object({
-  statligeInkluderingsdugnade: z.boolean().nullable(),
-  tags: z.array(z.string()),
-});
-
-export const AdresseLokasjonSchema = z
-  .array(LocationSchema)
+export const OmTilretteleggingSchema = z
+  .object({
+    statligeInkluderingsdugnade: z.boolean().nullable(),
+    tags: z.array(z.string()),
+  })
   .optional()
-  .nullable()
-  .refine(
-    (data) =>
-      !data?.length || data.every((item) => item.postalCode && item.city),
-    {
-      message: 'Alle adresser må ha både postnummer og poststed',
-    },
-  );
-
-// export const JanzzSchema = KategoriSchema.refine((data) => !!data.name, {
-//   message: 'Yrkesklassifisering må velges',
-//   path: ['name'],
-// });
+  .nullable();
 
 export const OmStillingenSchema = z
   .object({
-    categoryList: z.array(KategoriSchema),
-    beskrivelse: z.string().nullable(),
-    adresseLokasjoner: AdresseLokasjonSchema,
+    categoryList: z.array(KategoriSchema).min(1, 'Velg en yrkeskategori'),
+    beskrivelse: z
+      .string()
+      .min(1, 'Beskrivelse om stillingen er påkrevd')
+      .nullable(),
     lokasjoner: z.array(LocationSchema).optional().nullable(),
+    adresser: z
+      .array(LocationSchema)
+      .optional()
+      .nullable()
+      .superRefine((val, ctx) => {
+        if (val && val.length > 0) {
+          // Sjekk om noen av adressene mangler påkrevde felter
+          const harManglendeFelt = val.some(
+            (location) =>
+              !location.address || !location.postalCode || !location.city,
+          );
+
+          if (harManglendeFelt) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message:
+                'Alle adressefelt må fylles ut (adresse, postnummer og poststed)',
+            });
+          }
+        }
+      }),
   })
-  .refine(
-    (data) => {
-      const hasAdresseLokasjoner = (data.adresseLokasjoner ?? []).length > 0;
-      const hasLokasjoner = (data.lokasjoner ?? []).length > 0;
-      return hasAdresseLokasjoner || hasLokasjoner;
-    },
-    {
-      message: 'Du må velge minst én lokasjon',
-      path: ['lokasjoner'], // This will show the error on the lokasjoner field
-    },
-  );
+  .superRefine((data, ctx) => {
+    if (data.adresser?.length === 0 && data.lokasjoner?.length === 0) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Du må velge arbeidssted',
+        path: ['adresser'],
+      });
+    }
+  });
 
 export const PraktiskInfoSchema = z
   .object({
@@ -98,12 +105,7 @@ export const PraktiskInfoSchema = z
     søknadsfrist: z.string().nullable(),
     søknadsfristSnarest: z.boolean(),
     arbeidstidsordning: z.string().nullable(),
-    ansettelsesform: z
-      .string()
-      .nullish()
-      .refine((val) => val !== null && val !== '', {
-        message: 'Ansettelsesform må velges',
-      }),
+    ansettelsesform: z.string().min(1, 'Ansettelsesform må velges').nullable(),
     dager: z
       .array(z.string(), {
         required_error: 'Arbeidsdager må velges',
@@ -115,15 +117,31 @@ export const PraktiskInfoSchema = z
       })
       .min(1, 'Velg minst én arbeidstid'),
   })
-  .refine(
-    (data) => {
-      return data.omfangKode === 'Deltid' ? !!data.omfangProsent : true;
-    },
-    {
-      message: 'Du må fylle ut omfang i prosent for deltid',
-      path: ['omfangProsent'],
-    },
-  );
+  .superRefine((data, ctx) => {
+    if (data.omfangKode === 'Deltid' && !data.omfangProsent) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Du må fylle ut omfang i prosent for deltid',
+        path: ['omfangProsent'],
+      });
+    }
+
+    if (!data.oppstart && !data.oppstartEtterAvtale) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Du må fylle ut enten oppstart eller oppstart etter avtale',
+        path: ['oppstart'],
+      });
+    }
+
+    if (!data.søknadsfrist && !data.søknadsfristSnarest) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Du må fylle ut enten søknadsfrist eller velge snarest',
+        path: ['søknadsfrist'],
+      });
+    }
+  });
 
 export const InnspurtSchema = z.object({
   publiseres: z.string().min(1, 'Publiseringsdato er påkrevd').nullable(),

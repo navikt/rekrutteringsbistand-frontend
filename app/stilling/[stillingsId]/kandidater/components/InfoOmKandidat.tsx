@@ -6,7 +6,7 @@ import {
   PhoneIcon,
   TasklistIcon,
 } from '@navikt/aksel-icons';
-import { BodyShort, Box, Heading, Link } from '@navikt/ds-react';
+import { BodyShort, Box, Button, Heading, Link } from '@navikt/ds-react';
 import { FunctionComponent } from 'react';
 import { getMiljø, Miljø } from '../../../../../util/miljø';
 import { postApi } from '../../../../api/fetcher';
@@ -97,8 +97,10 @@ const InfoOmKandidat: FunctionComponent<InfoOmKandidatProps> = ({
             <TasklistIcon aria-hidden className='mr-2 shrink-0' />
             {kandidat?.innsatsgruppe || 'Situasjonsbestemt innsats'}
           </BodyShort>
-          <Link
+          <Button
+            variant='tertiary'
             className='mt-4'
+            icon={<ExternalLinkIcon />}
             onClick={() =>
               navigerTilAktivitetsplanen(
                 arbeidsrettetOppfølgingUrl,
@@ -106,9 +108,8 @@ const InfoOmKandidat: FunctionComponent<InfoOmKandidatProps> = ({
               )
             }
           >
-            <ExternalLinkIcon aria-hidden className='mr-2' />
             Gå til aktivitetsplanen
-          </Link>
+          </Button>
         </div>
       </div>
     </Box.New>

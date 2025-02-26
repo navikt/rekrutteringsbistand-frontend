@@ -8,10 +8,6 @@ import { Heading } from '@navikt/ds-react';
 import * as React from 'react';
 import { useKandidatContext } from '../../KandidatContext';
 
-export interface KandidatØnskerProps {
-  children?: React.ReactNode | undefined;
-}
-
 type Oppstartskode = {
   key: string;
   label: string;
@@ -26,7 +22,7 @@ const oppstartskoder: Record<string, Oppstartskode> = {
   ETTER_AVTALE: { key: 'ETTER_AVTALE', label: 'Etter avtale' },
 };
 
-const KandidatØnsker: React.FC<KandidatØnskerProps> = ({ children }) => {
+const KandidatØnsker: React.FC = () => {
   const { kandidatData } = useKandidatContext();
 
   return (

@@ -1,7 +1,11 @@
 'use client';
-import { useRouter } from 'next/navigation';
 import React, { useMemo } from 'react';
-import { useKandidatlisteId } from '../../api/kandidat/useKandidatlisteId';
+
+import { useRouter } from 'next/navigation';
+import {
+  KandidatlisteInfoDTO,
+  useKandidatlisteInfo,
+} from '../../api/kandidat/useKandidatlisteInfo';
 import { StillingsDataDTO } from '../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { useStilling } from '../../api/stilling/rekrutteringsbistandstilling/[slug]/useStilling';
 import { useApplikasjonContext } from '../../ApplikasjonContext';
@@ -11,12 +15,12 @@ import { Roller } from '../../components/tilgangskontroll/roller';
 
 interface StillingsContextType {
   stillingsData: StillingsDataDTO;
+  kandidatlisteInfo: KandidatlisteInfoDTO | null;
   forhåndsvisData: StillingsDataDTO | null;
   erFormidling: boolean;
   erEier?: boolean;
   setForhåndsvisData: (data: StillingsDataDTO | null) => void;
   erDirektemeldt: boolean;
-  kandidatlisteId: string | null;
   refetch: () => void;
   erSlettet: boolean;
 }
@@ -32,14 +36,17 @@ interface StillingsContextProviderProps {
 export const StillingsContextProvider: React.FC<
   StillingsContextProviderProps
 > = ({ stillingsId, children }) => {
+  const kandidatListeInfo = useKandidatlisteInfo(stillingsId);
   const stillingHook = useStilling(stillingsId);
+
   return (
     <SWRLaster hooks={[stillingHook]}>
-      {(data) => (
+      {(stillingsData) => (
         <StillingsContextMedData
-          key={data?.stilling?.updated}
-          data={data}
+          key={stillingsData?.stilling?.updated}
+          stillingsData={stillingsData}
           refetch={stillingHook.mutate}
+          kandidatlisteInfo={kandidatListeInfo.data ?? null}
         >
           {children}
         </StillingsContextMedData>
@@ -49,45 +56,25 @@ export const StillingsContextProvider: React.FC<
 };
 
 interface StillingsContextMedDataProps {
-  data: StillingsDataDTO;
+  stillingsData: StillingsDataDTO;
+  kandidatlisteInfo: KandidatlisteInfoDTO | null;
   children: React.ReactNode;
   refetch: () => void;
 }
 
 const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
-  data,
+  kandidatlisteInfo,
+  stillingsData,
   children,
   refetch,
 }) => {
-  const router = useRouter();
   const {
     brukerData: { ident },
     harRolle,
   } = useApplikasjonContext();
-
+  const router = useRouter();
   const [forhåndsvisData, setForhåndsvisData] =
     React.useState<StillingsDataDTO | null>(null);
-
-  const [stillingsData, setStillingsData] =
-    React.useState<StillingsDataDTO>(data);
-
-  const [kandidatlisteId, setKandidatlisteId] = React.useState<string | null>(
-    null,
-  );
-
-  const kandidatlisteIdHook = useKandidatlisteId(stillingsData.stilling.uuid);
-
-  React.useEffect(() => {
-    if (kandidatlisteIdHook.data) {
-      setKandidatlisteId(kandidatlisteIdHook.data.kandidatlisteId ?? null);
-    }
-  }, [kandidatlisteIdHook]);
-
-  React.useEffect(() => {
-    if (stillingsData.stilling.publishedByAdmin) {
-      kandidatlisteIdHook.mutate();
-    }
-  }, [stillingsData.stilling.publishedByAdmin, kandidatlisteIdHook]);
 
   React.useEffect(() => {
     const isFormidling =
@@ -126,8 +113,8 @@ const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
         erFormidling:
           stillingsData.stillingsinfo?.stillingskategori === 'FORMIDLING',
         setForhåndsvisData,
-        kandidatlisteId,
         refetch,
+        kandidatlisteInfo,
       }}
     >
       {children}

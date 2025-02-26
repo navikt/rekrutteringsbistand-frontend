@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { Innsatsgruppe } from '../../../kandidat-sok/components/innsatsgrupper';
 import { AnnenErfaringSchema } from './annenErfaringSchema.zod';
 import { AnsettelsesformJobbonskerSchema } from './ansettelsesformJobbonskerSchema.zod';
 import { ArbeidsdagerJobbonskerSchema } from './arbeidsdagerJobbonskerSchema.zod';
@@ -55,8 +56,7 @@ const KandidatDataSchema = z.object({
   tidsstempel: z.string().nullable().optional(), // Date as ISO string
   doed: z.boolean().nullable().optional(),
   frKode: z.string().nullable().optional(),
-  kvalifiseringsgruppekode: z.string().nullable().optional(),
-  hovedmaalkode: z.string().nullable().optional(),
+  innsatsgruppe: z.nativeEnum(Innsatsgruppe),
   orgenhet: z.string().nullable().optional(),
   navkontor: z.string().nullable().optional(),
   fritattKandidatsok: z.boolean().nullable().optional(),

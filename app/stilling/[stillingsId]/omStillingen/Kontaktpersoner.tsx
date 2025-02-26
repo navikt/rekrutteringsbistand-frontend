@@ -1,12 +1,9 @@
 import { BodyShort, Heading, Link } from '@navikt/ds-react';
 import * as React from 'react';
 import { useStillingsContext } from '../StillingsContext';
-export interface KontaktpersonerProps {
-  children?: React.ReactNode | undefined;
-}
 
-const Kontaktpersoner: React.FC<KontaktpersonerProps> = ({ children }) => {
-  const { stillingsData, erEier, erFormidling } = useStillingsContext();
+const Kontaktpersoner: React.FC = () => {
+  const { stillingsData } = useStillingsContext();
   const kontaktInfo = stillingsData?.stilling?.contactList;
 
   return (
@@ -28,9 +25,11 @@ const Kontaktpersoner: React.FC<KontaktpersonerProps> = ({ children }) => {
               <Link href={`mailto:${kontakt.email}`} className='block'>
                 {kontakt.email}
               </Link>
-              <BodyShort className='ml-2'>
-                Tlf {kontakt.phone?.replace(/(\d{2})/g, '$1 ').trim()}
-              </BodyShort>
+              {kontakt.phone && (
+                <BodyShort className='ml-2'>
+                  Tlf {kontakt.phone?.replace(/(\d{2})/g, '$1 ').trim()}
+                </BodyShort>
+              )}
             </div>
           </dl>
         ))}

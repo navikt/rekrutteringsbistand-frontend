@@ -15,8 +15,10 @@ export interface DelMedKandidatProps {
   navKontor: string;
 }
 
-export const postDelMedArbeidsgiver = (props: DelMedKandidatProps) =>
-  postApi(delMedArbeidsgiverEndepunkt(props.kandidatlisteId), {
+export const postDelMedArbeidsgiver = async (
+  props: DelMedKandidatProps,
+): Promise<Response> =>
+  await postApi(delMedArbeidsgiverEndepunkt(props.kandidatlisteId), {
     epostMottakere: props.mailadresser,
     epostTekst: '',
     kandidater: props.kandidatnummerListe,

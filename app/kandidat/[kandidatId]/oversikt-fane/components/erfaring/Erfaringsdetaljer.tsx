@@ -1,6 +1,5 @@
 import { BodyShort } from '@navikt/ds-react';
 import { format } from 'date-fns';
-import React from 'react';
 import Detaljer from './Detaljer';
 
 type Props = {
@@ -24,10 +23,7 @@ const Erfaringsdetaljer = ({ fradato, tildato, nåværende, sted }: Props) => {
           {nåværende && ' nå'}
         </BodyShort>
         <BodyShort size='small' spacing>
-          {
-            /*@ts-ignore: TODO: written before strict-mode enabled */
-            diffMellomToDatoer(fradato, tildato)
-          }
+          {fradato && tildato && diffMellomToDatoer(fradato, tildato)}
         </BodyShort>
       </>
     );
@@ -39,10 +35,7 @@ const Erfaringsdetaljer = ({ fradato, tildato, nåværende, sted }: Props) => {
           {nåværende && ' – nå'}
         </BodyShort>
         <BodyShort size='small' spacing>
-          {
-            /*@ts-ignore: TODO: written before strict-mode enabled */
-            diffMellomToDatoer(fradato, new Date().toString())
-          }
+          {fradato && diffMellomToDatoer(fradato, new Date().toString())}
         </BodyShort>
       </>
     );
@@ -54,10 +47,7 @@ const Erfaringsdetaljer = ({ fradato, tildato, nåværende, sted }: Props) => {
           {nåværende && ' nå'}
         </BodyShort>
         <BodyShort size='small' spacing>
-          {
-            /*@ts-ignore: TODO: written before strict-mode enabled */
-            diffMellomToDatoer(tildato, tildato)
-          }
+          {tildato && tildato && diffMellomToDatoer(tildato, tildato)}
         </BodyShort>
       </>
     );

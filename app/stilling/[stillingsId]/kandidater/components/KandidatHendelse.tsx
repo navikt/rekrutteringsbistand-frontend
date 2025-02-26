@@ -2,17 +2,23 @@ import {
   CheckmarkCircleIcon,
   ClipboardIcon,
   ExclamationmarkTriangleIcon,
-  PersonPlusIcon,
+  SparklesIcon,
   TasklistSendIcon,
+  ThumbDownIcon,
+  ThumbUpIcon,
 } from '@navikt/aksel-icons';
 import { format } from 'date-fns';
 import { nb } from 'date-fns/locale';
+import React from 'react';
 import { KandidatForespurtOmDelingSchema } from '../../../../api/foresporsel-om-deling-av-cv/foresporsler/[slug]/useForespurteOmDelingAvCv';
-import { kandidaterSchemaDTO } from '../../../../api/kandidat/schema.zod';
+import {
+  kandidaterSchemaDTO,
+  utfallsendringerSchemaDTO,
+} from '../../../../api/kandidat/schema.zod';
 import { Sms } from '../../../../api/kandidatvarsel/kandidatvarsel';
 import { storForbokstavString } from '../../../../kandidat-sok/util';
 import KandidatHendelseKort from './KandidatHendelseKort';
-import { UtfallsEndringTyper } from './KandidatTyper';
+import { KandidatutfallTyper, UtfallsEndringTyper } from './KandidatTyper';
 
 export interface KandidatHendelse {
   tittel: string;
@@ -21,7 +27,12 @@ export interface KandidatHendelse {
   type: 'success' | 'error' | 'info';
   ikon: React.ReactNode;
   kilde: string;
+  raw?: utfallsendringerSchemaDTO | KandidatForespurtOmDelingSchema | Sms;
 }
+
+const isUtfallsendring = (raw: any): raw is utfallsendringerSchemaDTO => {
+  return raw && 'utfall' in raw;
+};
 
 export const utfallsEndringPresentasjon = (
   utfallsEndring: UtfallsEndringTyper,
@@ -40,13 +51,13 @@ export const utfallsEndringPresentasjon = (
     case UtfallsEndringTyper.SVAR_JA:
       return {
         tittel: 'Svart på deling av CV: Ja',
-        ikon: <CheckmarkCircleIcon className='text-success' />,
+        ikon: <ThumbUpIcon className='text-success' />,
         type: 'success',
       };
     case UtfallsEndringTyper.SVAR_NEI:
       return {
         tittel: 'Svart på deling av CV: Nei',
-        ikon: <ExclamationmarkTriangleIcon className='text-danger' />,
+        ikon: <ThumbDownIcon className='text-danger' />,
         type: 'error',
       };
     case UtfallsEndringTyper.CV_DELT:
@@ -111,7 +122,7 @@ export const mapToHendelser = ({
       tekst: `av ${kandidat.lagtTilAv.navn}`,
       dato: kandidat.lagtTilTidspunkt,
       type: 'info',
-      ikon: <PersonPlusIcon className='text-info' />,
+      ikon: <SparklesIcon className='text-info' />,
       kilde: 'Kandidatliste',
     });
   }
@@ -122,6 +133,7 @@ export const mapToHendelser = ({
         const presentasjon = utfallsEndringPresentasjon(
           endring.utfall as UtfallsEndringTyper,
         );
+
         hendelser.push({
           tittel: presentasjon.tittel,
           tekst: endring.registrertAvIdent
@@ -131,6 +143,7 @@ export const mapToHendelser = ({
           ikon: presentasjon.ikon,
           dato: endring.tidspunkt,
           kilde: 'Utfallsendring',
+          raw: endring,
         });
       }
     });
@@ -162,6 +175,7 @@ export const mapToHendelser = ({
           ) : (
             <ClipboardIcon className='text-info' />
           ),
+        raw: forespørsel,
       });
     });
   }
@@ -187,6 +201,7 @@ export const mapToHendelser = ({
         ) : (
           <CheckmarkCircleIcon className='text-success' />
         ),
+      raw: beskjedForKandidat,
     });
   }
 
@@ -197,17 +212,34 @@ export const mapToHendelser = ({
 
 const KandidatHendelser = ({
   kandidatHendelser,
+  endreUtfallForKandidat,
 }: {
   kandidatHendelser: KandidatHendelse[];
+  endreUtfallForKandidat: (utfall: KandidatutfallTyper) => void;
 }) => {
   return (
     <div className='flex flex-col gap-4'>
-      {kandidatHendelser.map((hendelse, index) => (
-        <KandidatHendelseKort
-          key={`${hendelse.tittel}-${index}`}
-          {...hendelse}
-        />
-      ))}
+      {kandidatHendelser.map((hendelse, index) => {
+        const visFjernFåttJobben =
+          isUtfallsendring(hendelse.raw) &&
+          hendelse.raw?.utfall === UtfallsEndringTyper.FATT_JOBBEN &&
+          !kandidatHendelser
+            .slice(0, index)
+            .some(
+              (h) =>
+                isUtfallsendring(h.raw) &&
+                h.raw?.utfall === UtfallsEndringTyper.PRESENTERT,
+            );
+
+        return (
+          <KandidatHendelseKort
+            key={`${hendelse.tittel}-${index}`}
+            {...hendelse}
+            fjerneFåttJobben={visFjernFåttJobben}
+            endreUtfallForKandidat={endreUtfallForKandidat}
+          />
+        );
+      })}
     </div>
   );
 };

@@ -6,6 +6,7 @@ import {
   LocationPinIcon,
   TimerStartIcon,
 } from '@navikt/aksel-icons';
+import { logger } from '@navikt/next-logger';
 import * as React from 'react';
 import { getWorkLocationsAsString } from '../../../../util/locationUtil';
 import { GeografiDTO } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
@@ -23,8 +24,7 @@ const OmStillingen: React.FC<{ forhåndsvisData?: boolean }> = ({
 }) => {
   const contentRef = React.useRef<HTMLDivElement>(null);
 
-  const { stillingsData, kandidatlisteId, erFormidling } =
-    useStillingsContext();
+  const { stillingsData, erFormidling } = useStillingsContext();
 
   const lokasjon = getWorkLocationsAsString(
     stillingsData.stilling.locationList as GeografiDTO[],
@@ -38,7 +38,8 @@ const OmStillingen: React.FC<{ forhåndsvisData?: boolean }> = ({
       for (let i = 0; i < jsonArray.length; i++) {
         arrayString += `${jsonArray[i]} `;
       }
-    } catch (e) {
+    } catch (error) {
+      logger.error('Failed to parse worktime', error);
       arrayString = worktime;
     }
 
@@ -102,7 +103,7 @@ const OmStillingen: React.FC<{ forhåndsvisData?: boolean }> = ({
                     tekst={`Oppstart ${starttime ? formaterTid(starttime)?.toLowerCase() : '-'}`}
                     ikon={<TimerStartIcon />}
                   />
-                  <AntallKandidater kandidatlisteId={kandidatlisteId} />
+                  <AntallKandidater />
                 </>
               }
             />

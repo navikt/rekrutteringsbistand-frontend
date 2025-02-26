@@ -69,38 +69,54 @@ export const postApi = async (
     url += `?${queryString}`;
   }
 
-  const response = await fetch(basePath + url, {
-    method: 'POST',
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(body, (_key, value) =>
-      value instanceof Set ? [...value] : value,
-    ),
-  });
+  try {
+    const response = await fetch(basePath + url, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body, (_key, value) =>
+        value instanceof Set ? [...value] : value,
+      ),
+    });
 
-  if (response.ok) {
+    if (!response.ok) {
+      let errorDetails = '';
+      const contentType = response.headers.get('content-type');
+
+      if (contentType && contentType.includes('application/json')) {
+        // Get JSON error
+        const errorData = await response.json();
+        errorDetails = JSON.stringify(errorData);
+      } else {
+        // Handle non-JSON errors
+        errorDetails = await response.text();
+      }
+
+      throw new kastError({
+        url: response.url,
+        statuskode: response.status,
+        stack: errorDetails,
+      });
+    }
+
     const contentType = response.headers.get('content-type');
-    if (contentType?.includes('application/json')) {
+    if (contentType && contentType.includes('application/json')) {
+      return await response.json();
+    } else if (contentType && contentType.includes('text/plain')) {
+      return await response.text();
+    } else {
       try {
         return await response.json();
-      } catch (e) {
-        throw new Error(
-          `Failed to parse JSON response: ${await response.text()}`,
-        );
+      } catch (error) {
+        logger.error('Error in postApi:', error);
+        return await response.text();
       }
-    } else {
-      return await response.text();
     }
-  } else if (response.status === 404) {
-    throw new Error('404');
-  } else if (response.status === 403) {
-    throw new Error('403');
-  } else {
-    throw new Error(
-      `Feil respons fra server (http-status: ${response.status})`,
-    );
+  } catch (error) {
+    console.error('Error in postApi:', error);
+    throw error;
   }
 };
 
@@ -114,7 +130,7 @@ export const putApi = async (
     url += `?${queryString}`;
   }
 
-  const response = await fetch(basePath + url, {
+  const res = await fetch(basePath + url, {
     method: 'PUT',
     credentials: 'include',
     headers: {
@@ -125,17 +141,17 @@ export const putApi = async (
     ),
   });
 
-  if (response.ok) {
-    return await response.json();
-  } else if (response.status === 404) {
-    throw new Error('404');
-  } else if (response.status === 403) {
-    throw new Error('403');
-  } else {
-    throw new Error(
-      `Feil respons fra server (http-status: ${response.status})`,
-    );
+  if (!res.ok) {
+    const errorText = res.headers
+      .get('content-type')
+      ?.includes('application/json')
+      ? (await res.json()).beskrivelse
+      : await res.text();
+
+    throw new Error(errorText || 'Feil ved putApi');
   }
+
+  return res.json();
 };
 
 export const postApiResponse = (url: string, body: any) =>

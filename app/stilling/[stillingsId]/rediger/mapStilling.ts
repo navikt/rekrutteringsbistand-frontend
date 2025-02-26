@@ -39,12 +39,6 @@ export const mapJanzzTilKategori = (
   ];
 };
 
-const capitalize = (str: string) =>
-  str
-    .split(/[- ]/)
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-    .join(str.includes('-') ? '-' : ' ');
-
 const formaterFraISOdato = (dato: string) => {
   return format(dato, 'dd.MM.yyyy');
 };
@@ -89,27 +83,19 @@ export const mapStillingTilForm = (
     },
     omStillingen: {
       categoryList: stillingsData?.stilling?.categoryList ?? [],
-
       beskrivelse: stillingsData?.stilling?.properties?.adtext ?? '',
-
-      adresseLokasjoner:
-        stillingsData?.stilling?.locationList?.filter(
-          (item) => item.postalCode,
-        ) ?? null,
-
+      adresser:
+        stillingsData?.stilling?.locationList
+          ?.filter((a) => a.address !== null)
+          .map((a) => {
+            return { ...a, adresseType: true };
+          }) ?? [],
       lokasjoner:
         stillingsData?.stilling?.locationList
-          ?.filter((item) => !item.postalCode)
-          .map((item) => ({
-            address: null,
-            postalCode: null,
-            city: null,
-            county: item.county ? capitalize(item.county) : null,
-            countyCode: null,
-            municipal: item.municipal ? capitalize(item.municipal) : null,
-            municipalCode: item.municipalCode || null,
-            country: item.country ? capitalize(item.country) : null,
-          })) ?? null,
+          ?.filter((a) => a.address === null)
+          .map((a) => {
+            return { ...a, adresseType: false };
+          }) ?? [],
     },
     praktiskInfo: {
       omfangKode: stillingsData?.stilling?.properties?.extent ?? '',
@@ -194,7 +180,7 @@ export const mapFormTilStilling = (
         facebookpage: formData.omVirksomheten.facebookpage,
         linkedinpage: formData.omVirksomheten.linkedinpage,
         twitteraddress: formData.omVirksomheten.twitteraddress,
-        tags: JSON.stringify(formData.omTilrettelegging.tags),
+        tags: JSON.stringify(formData.omTilrettelegging?.tags),
         adtext: formData.omStillingen.beskrivelse,
         sector: formData.praktiskInfo.sektor,
         positioncount: formData.praktiskInfo.antallStillinger,
@@ -216,7 +202,7 @@ export const mapFormTilStilling = (
       published: publiseringsDato,
       expires: avsluttesDato,
       locationList: [
-        ...(formData.omStillingen.adresseLokasjoner ?? []),
+        ...(formData.omStillingen.adresser ?? []),
         ...(formData.omStillingen.lokasjoner ?? []),
       ],
       source: formData.innspurt.stillingType,

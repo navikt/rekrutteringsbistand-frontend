@@ -1,66 +1,66 @@
-import {
-  BodyLong,
-  Button,
-  Checkbox,
-  ErrorMessage,
-  Heading,
-} from '@navikt/ds-react';
+import { BodyLong, Button, Checkbox, Heading } from '@navikt/ds-react';
 import * as React from 'react';
 import { useState } from 'react';
-import { get, useFieldArray, useFormContext } from 'react-hook-form';
+import { useFieldArray, useFormContext } from 'react-hook-form';
 import VelgPoststed from '../../../../components/VelgPoststed';
-import { FormidlingDataForm } from '../../../../formidlinger/[stillingsId]/rediger/redigerFormidlingFormType';
+import { FormidlingDataForm } from '../../../../formidlinger/ny-formidling/redigerFormidlingFormType';
 import { StillingsDataForm } from '../redigerFormType.zod';
 import VelgKommuneFylkeEllerLand from './VelgKommuneFylkeEllerLand';
 
 export interface VelgArbeidsstedProps {
-  lokasjonsFelt: 'omFormidling.lokasjoner' | 'omStillingen.lokasjoner';
-  adresseFelt:
-    | 'omFormidling.adresseLokasjoner'
-    | 'omStillingen.adresseLokasjoner';
+  feltNavn: 'omFormidlingen' | 'omStillingen';
 }
 
-const VelgArbeidssted: React.FC<VelgArbeidsstedProps> = ({
-  adresseFelt,
-  lokasjonsFelt,
-}) => {
-  const { control, formState, watch } = useFormContext<
+const VelgArbeidssted: React.FC<VelgArbeidsstedProps> = ({ feltNavn }) => {
+  const { control, setValue } = useFormContext<
     StillingsDataForm | FormidlingDataForm
   >();
 
-  const { fields, append, update, remove } = useFieldArray({
+  const {
+    fields: lokasjoner,
+    append: leggTilLokasjon,
+    remove: fjernLokasjon,
+  } = useFieldArray({
     control,
-    name: adresseFelt,
+    name: `${feltNavn}.lokasjoner`,
   });
 
-  const [visAdresse, setVisAdresse] = useState(false);
-  const [visLokasjon, setVisLokasjon] = useState(false);
+  const {
+    fields: adresser,
+    append: leggTilAdresse,
+    remove: fjernAdresse,
+  } = useFieldArray({
+    control,
+    name: `${feltNavn}.adresser`,
+  });
 
-  const errorMessageAdresse = get(formState.errors, adresseFelt)?.message;
-  const errorMessageLokasjon = get(formState.errors, lokasjonsFelt)?.message;
+  const [visAdresse, setVisAdresse] = useState(adresser.length > 0);
+  const [visLokasjon, setVisLokasjon] = useState(lokasjoner.length > 0);
 
-  React.useEffect(() => {
-    if (fields.length > 0) {
-      setVisAdresse(true);
+  const fjernLokasjonId = (id: string) => {
+    const index = lokasjoner.findIndex((field) => field.id === id);
+    if (index !== -1) {
+      fjernLokasjon(index);
     }
-  }, [fields]);
+  };
 
   const setAdresseFelt = (adresse: boolean) => {
     if (adresse) {
       setVisAdresse(adresse);
-      append({
-        address: '',
-        postalCode: null,
-        city: null,
-        county: null,
-        countyCode: null,
-        municipal: null,
-        municipalCode: null,
-        country: null,
-      });
+      if (adresser.length === 0) {
+        leggTilAdresse({
+          address: null,
+          postalCode: null,
+          city: null,
+          county: null,
+          municipal: null,
+          municipalCode: null,
+          country: null,
+        });
+      }
     } else {
+      adresser.forEach((_, index) => fjernAdresse(index));
       setVisAdresse(false);
-      remove();
     }
   };
 
@@ -88,13 +88,17 @@ const VelgArbeidssted: React.FC<VelgArbeidsstedProps> = ({
       </Checkbox>
 
       {visAdresse &&
-        fields.map((field, index) => (
+        adresser.map((_, index) => (
           <VelgPoststed
             key={index}
-            location={field}
             index={index}
-            oppdater={update}
-            fjern={() => remove(index)}
+            lokasjonsFelt={feltNavn + '.adresser'}
+            control={control}
+            fjern={() => fjernAdresse(index)}
+            oppdaterPoststed={(postSted: string) => {
+              setValue(`${feltNavn}.adresser.${index}.city` as any, postSted);
+            }}
+            postSted={adresser[index].city}
           />
         ))}
 
@@ -102,35 +106,34 @@ const VelgArbeidssted: React.FC<VelgArbeidsstedProps> = ({
         <div className='my-4'>
           <Button
             variant='secondary'
-            onClick={() =>
-              append({
-                address: null,
-                postalCode: '',
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              leggTilAdresse({
+                address: '',
+                postalCode: null,
                 city: null,
                 county: null,
-                countyCode: null,
                 municipal: null,
                 municipalCode: null,
                 country: null,
-              })
-            }
+              });
+            }}
             type='button'
           >
             Legg til adresse
           </Button>
         </div>
       )}
-      {errorMessageAdresse && (
-        <ErrorMessage>{errorMessageAdresse}</ErrorMessage>
-      )}
+
       {visLokasjon && (
         <div className='my-4'>
-          <VelgKommuneFylkeEllerLand lokasjonsFelt={lokasjonsFelt} />
+          <VelgKommuneFylkeEllerLand
+            lokasjoner={lokasjoner}
+            leggTilLokasjon={(lokasjon) => leggTilLokasjon(lokasjon)}
+            fjernLokasjonId={(id: string) => fjernLokasjonId(id)}
+          />
         </div>
-      )}
-
-      {errorMessageLokasjon && (
-        <ErrorMessage>{errorMessageLokasjon}</ErrorMessage>
       )}
     </div>
   );

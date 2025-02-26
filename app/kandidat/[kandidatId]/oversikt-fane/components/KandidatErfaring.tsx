@@ -3,11 +3,7 @@ import * as React from 'react';
 import { useKandidatContext } from '../../KandidatContext';
 import TidslinjeFelt from './TidslinjeFelt';
 
-export interface KandidatErfaringProps {
-  children?: React.ReactNode | undefined;
-}
-
-const KandidatErfaring: React.FC<KandidatErfaringProps> = ({ children }) => {
+const KandidatErfaring: React.FC = () => {
   const { kandidatData } = useKandidatContext();
   return (
     <>

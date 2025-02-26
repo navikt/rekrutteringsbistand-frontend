@@ -7,6 +7,10 @@ metadata:
   name: rekrutteringsbistand-frontend
   namespace: toi
 spec:
+  observability:
+    autoInstrumentation:
+      enabled: true
+      runtime: nodejs
   replicas:
     max: 1
     min: 1
@@ -36,6 +40,7 @@ spec:
         - application: rekrutteringsbistand-stillingssok-proxy
         - application: rekrutteringsbistand-kandidatsok-api
         - application: rekrutteringsbistand-kandidatvarsel-api
+        - application: toi-synlighetsmotor
         - application: modiacontextholder
           namespace: personoversikt
         - application: pam-ontologi
@@ -44,6 +49,7 @@ spec:
           namespace: teampam
         - application: pam-geografi
           namespace: teampam
+        - application: rekrutteringstreff-api
       external:
         - host: {{ statistikkApiHost }}
         - host: {{ foresporselOmDelingAvCvApiHost }}
@@ -89,3 +95,5 @@ spec:
       value: http://toi-arbeidsgiver-notifikasjon
     - name: SYNLIGHETSMOTOR_API
       value: http://toi-synlighetsmotor
+    - name: REKRUTTERINGSTREFF_API_URL
+      value: http://rekrutteringstreff-api

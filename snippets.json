@@ -1,25 +1,34 @@
 {
   "SWR Api": {
-    "prefix": "capi",
     "body": [
       "'use client';",
       "/**",
       " * Endepunkt /${TM_FILENAME_BASE}",
       " */",
+      "import { Server } from 'miragejs';",
       "import useSWRImmutable from 'swr/immutable';",
       "import { z } from 'zod';",
       "import { getAPIwithSchema } from '../fetcher';",
       "",
-      "const ${TM_FILENAME_BASE}Endepunkt = '/api/${TM_FILENAME_BASE}';",
+      "const ${TM_FILENAME_BASE/^use([A-Z])(.*)/${1:/downcase}$2/}Endepunkt = '/api/${TM_FILENAME_BASE}';",
       "",
-      "const ${TM_FILENAME_BASE/(\\\\w)([a-z]+)/${1:/capitalize}${2:/downcase}/g}Schema = z.object({});",
+      "const ${TM_FILENAME_BASE/^use([A-Z])(.*)/$1$2/}Schema = z.object({});",
       "",
-      "export type ${TM_FILENAME_BASE}DTO = z.infer<typeof ${TM_FILENAME_BASE/(\\\\w)([a-z]+)/${1:/capitalize}${2:/downcase}/g}Schema>;",
+      "export type ${TM_FILENAME_BASE/^use([A-Z])(.*)/$1$2/}DTO = z.infer<typeof ${TM_FILENAME_BASE/^use([A-Z])(.*)/$1$2/}Schema>;",
       "",
-      "export const use${TM_FILENAME_BASE/(\\w)([a-z]+)/${1:/capitalize}${2:/downcase}/g}= () =>",
-      "  useSWRImmutable(${TM_FILENAME_BASE}Endepunkt, getAPIwithSchema(${TM_FILENAME_BASE/(\\\\w)([a-z]+)/${1:/capitalize}${2:/downcase}/g}Schema));",
+      "export const ${TM_FILENAME_BASE} = () =>",
+      "  useSWRImmutable(${TM_FILENAME_BASE/^use([A-Z])(.*)/${1:/downcase}$2/}Endepunkt, getAPIwithSchema(${TM_FILENAME_BASE/^use([A-Z])(.*)/$1$2/}Schema));",
+      "",
+      "export const ${TM_FILENAME_BASE/^use([A-Z])(.*)/${1:/downcase}$2/}Mirage = (server: Server) => {",
+      "  server.get(${TM_FILENAME_BASE/^use([A-Z])(.*)/${1:/downcase}$2/}Endepunkt, () => {",
+      "    return {",
+      "     ",
+      "    };",
+      "  });",
+      "};",
       ""
     ],
-    "description": "SWR Api"
+    "description": "SWR Api",
+    "prefix": "capi"
   }
 }

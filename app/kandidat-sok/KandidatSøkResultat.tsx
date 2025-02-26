@@ -1,13 +1,13 @@
 'use client';
-import { PersonPlusIcon } from '@navikt/aksel-icons';
-import { Button, Heading } from '@navikt/ds-react';
+import { Heading } from '@navikt/ds-react';
 import * as React from 'react';
 import { useKandidatsøk } from '../api/kandidat-sok/useKandidatsøk';
-import { useApplikasjonContext } from '../ApplikasjonContext';
 import SWRLaster from '../components/SWRLaster';
 
 import { KandidatDataSchemaDTO } from '../api/kandidat-sok/schema/cvSchema.zod';
+import { useKandidatNavigering } from '../components/KandidatNavigeringContext';
 import KandidatKort from './components/KandidatKort';
+import LagreIKandidatliste from './components/LagreIKandidatliste';
 import {
   KandidatSøkPortefølje,
   useKandidatSøkFilter,
@@ -15,19 +15,26 @@ import {
 
 interface KandidatSøkResultatProps {
   type: KandidatSøkPortefølje;
+  stillingsId?: string;
 }
 
-const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({ type }) => {
+// TODO Legg til paginering
+
+const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({
+  type,
+  stillingsId,
+}) => {
   const filter = useKandidatSøkFilter();
-  const {
-    brukerData: { ident },
-  } = useApplikasjonContext();
   const kandidatsøkHook = useKandidatsøk(type, filter);
+  const { setNavigering } = useKandidatNavigering();
+
+  React.useEffect(() => {
+    setNavigering(kandidatsøkHook.data?.navigering.kandidatnumre ?? []);
+  }, [kandidatsøkHook.data?.navigering, setNavigering]);
 
   return (
     <SWRLaster hooks={[kandidatsøkHook]}>
       {(kandidatData) => {
-        // const markerteKandidater = kandidatData.kandidater.mark
         return (
           <>
             <div className='flex justify-between items-center my-4'>
@@ -35,29 +42,15 @@ const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({ type }) => 
                 Viser {kandidatData.antallTotalt} treff
               </Heading>
               <div>
-                <Button
-                  size='small'
-                  variant='primary'
-                  icon={<PersonPlusIcon aria-hidden />}
-                  disabled
-                  // disabled={markerteKandidater.size === 0}
-                  // onClick={onLagreIKandidatlisteClick}
-                >
-                  Lagre i kandidatliste
-                </Button>
+                <LagreIKandidatliste stillingsId={stillingsId} />
               </div>
             </div>
             {kandidatData.kandidater?.map((kandidat, index) => (
               <KandidatKort
-                markert={false}
-                erIListen={false}
                 key={kandidat.arenaKandidatnr || index}
                 kandidat={kandidat as KandidatDataSchemaDTO}
               />
             ))}
-            {/* <StillingsSøkPaginering
-          totaltAntallTreff={data.hits.total.value ?? 0}
-        /> */}
           </>
         );
       }}

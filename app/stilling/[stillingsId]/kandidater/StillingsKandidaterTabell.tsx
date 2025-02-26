@@ -33,6 +33,8 @@ const StillingsKandidaterTabell: React.FC<{
   stillingsId: string;
   forespurteKandidater: ForespurteOmDelingAvCvDTO;
   beskjeder: Record<string, Sms>;
+  reFetchKandidatliste: () => void;
+  lukketKandidatliste: boolean;
 }> = ({
   markerteKandidater,
   setMarkerteKandidater,
@@ -41,6 +43,8 @@ const StillingsKandidaterTabell: React.FC<{
   stillingsId,
   forespurteKandidater,
   beskjeder,
+  reFetchKandidatliste,
+  lukketKandidatliste,
 }) => {
   const [sort, setSort] = React.useState<TableSortState<kandidaterSchemaDTO>>();
 
@@ -141,17 +145,20 @@ const StillingsKandidaterTabell: React.FC<{
           <Table.DataCell />
           <Table.DataCell>
             <Checkbox
+              disabled={lukketKandidatliste}
               checked={markerteKandidater.length === kandidater.length}
               indeterminate={
                 markerteKandidater.length > 0 &&
                 markerteKandidater.length !== kandidater.length
               }
               onChange={() => {
-                markerteKandidater.length
-                  ? setMarkerteKandidater([])
-                  : setMarkerteKandidater(
-                      kandidater.filter((k) => k.fodselsnr !== null),
-                    );
+                if (markerteKandidater.length) {
+                  setMarkerteKandidater([]);
+                } else {
+                  setMarkerteKandidater(
+                    kandidater.filter((k) => k.fodselsnr !== null),
+                  );
+                }
               }}
               hideLabel
             >
@@ -161,10 +168,6 @@ const StillingsKandidaterTabell: React.FC<{
           <Table.ColumnHeader sortable sortKey='etternavn' scope='col'>
             Navn
           </Table.ColumnHeader>
-          {/* <Table.HeaderCell scope='col'>Fødselsnr.</Table.HeaderCell> */}
-          {/* <Table.ColumnHeader sortable sortKey='lagtTilAv.navn' scope='col'>
-            Lagt til av
-          </Table.ColumnHeader> */}
           <Table.ColumnHeader sortable sortKey='lagtTilTidspunkt' scope='col'>
             Dato
           </Table.ColumnHeader>
@@ -186,8 +189,6 @@ const StillingsKandidaterTabell: React.FC<{
             />
           ))}
         {kandidater.map((kandidat, i) => {
-          const innaktiv = !kandidat.fodselsnr;
-
           const beskjedForKandidat = beskjeder[kandidat.fodselsnr ?? ''];
 
           const forespørselCvForKandidat =
@@ -197,6 +198,7 @@ const StillingsKandidaterTabell: React.FC<{
 
           return (
             <KandidatRad
+              lukketKandidatliste={lukketKandidatliste}
               key={`kandidatrad-` + i}
               kandidatlisteId={kandidatliste.kandidatlisteId}
               stillingsId={stillingsId}
@@ -205,6 +207,7 @@ const StillingsKandidaterTabell: React.FC<{
               kandidat={kandidat}
               forespørselCvForKandidat={forespørselCvForKandidat}
               beskjedForKandidat={beskjedForKandidat}
+              reFetchKandidatliste={reFetchKandidatliste}
             />
           );
         })}

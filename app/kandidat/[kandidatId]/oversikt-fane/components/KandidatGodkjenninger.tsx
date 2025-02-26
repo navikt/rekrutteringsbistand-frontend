@@ -7,13 +7,11 @@ import { SertifikatSchemaDTO } from '../../../../api/kandidat-sok/schema/sertifi
 import GråRamme from './GråRamme';
 import Erfaring from './erfaring/Erfaring';
 export interface KandidatGodkjenningerProps {
-  children?: React.ReactNode | undefined;
   godkjenninger?: GodkjenningSchemaDTO[] | null;
   sertifikatObj?: SertifikatSchemaDTO[] | null;
 }
 
 const KandidatGodkjenninger: React.FC<KandidatGodkjenningerProps> = ({
-  children,
   godkjenninger,
   sertifikatObj,
 }) => {

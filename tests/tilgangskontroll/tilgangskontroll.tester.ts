@@ -146,16 +146,21 @@ export const testTilgangskontroll = (rolle: Roller) => {
 
       const redigerKnapp = page.getByRole('button', { name: 'Rediger' });
       const dupliserKnapp = page.getByRole('button', { name: 'Dupliser' });
-      const avsluttKnapp = page.getByRole('button', { name: 'Avslutt' });
+      const avpubliserKnapp = page.getByRole('button', { name: 'Avpubliser' });
+      const ferdigstillKnapp = page.getByRole('button', {
+        name: 'Ferdigstill',
+      });
 
       if (ARBEIDSGIVERRETTET) {
         await expect(redigerKnapp).toBeVisible();
         await expect(dupliserKnapp).toBeVisible();
-        await expect(avsluttKnapp).toBeVisible();
+        await expect(avpubliserKnapp).toBeVisible();
+        await expect(ferdigstillKnapp).toBeVisible(); // updated to check for the new button
       } else {
         await expect(redigerKnapp).toBeHidden();
         await expect(dupliserKnapp).toBeHidden();
-        await expect(avsluttKnapp).toBeHidden();
+        await expect(avpubliserKnapp).toBeHidden();
+        await expect(ferdigstillKnapp).toBeHidden();
       }
 
       // TODO: Implement Overta stillingen knapp

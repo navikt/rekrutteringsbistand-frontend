@@ -1,14 +1,14 @@
 import { ErrorMessage, Radio, RadioGroup, Select } from '@navikt/ds-react';
 import * as React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
-import { FormidlingDataForm } from '../../../../../formidlinger/[stillingsId]/rediger/redigerFormidlingFormType';
+import { FormidlingDataForm } from '../../../../../formidlinger/ny-formidling/redigerFormidlingFormType';
 import { StillingsDataForm } from '../../redigerFormType.zod';
 
 interface VelgOmfangProps {
-  omfangFelt: 'praktiskInfo.omfangKode' | 'omFormidling.omfangKode';
+  omfangFelt: 'praktiskInfo.omfangKode' | 'omFormidlingen.omfangKode';
   omfangProsentFelt:
     | 'praktiskInfo.omfangProsent'
-    | 'omFormidling.omfangProsent';
+    | 'omFormidlingen.omfangProsent';
 }
 
 const VelgOmfang: React.FC<VelgOmfangProps> = ({

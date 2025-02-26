@@ -1,4 +1,4 @@
-import { BodyShort, Heading, Link } from '@navikt/ds-react';
+import { BodyShort, ErrorMessage, Heading, Link } from '@navikt/ds-react';
 import * as React from 'react';
 import { useFormContext } from 'react-hook-form';
 import RikTekstEditor from '../../../../components/rikteksteditor/RikTekstEditor';
@@ -11,8 +11,12 @@ export const RedigerOmStillingen: React.FC<{
   nextStep: () => void;
   forrigeSteg: () => void;
 }> = ({ nextStep, forrigeSteg, stegNummer }) => {
-  const { setValue, watch, trigger, formState } =
-    useFormContext<StillingsDataForm>();
+  const {
+    setValue,
+    watch,
+    trigger,
+    formState: { errors },
+  } = useFormContext<StillingsDataForm>();
 
   const handleStepSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,7 +47,7 @@ export const RedigerOmStillingen: React.FC<{
             <VelgStillingTittel
               categoryList={watch('omStillingen.categoryList')}
               callBack={(val) => setValue('omStillingen.categoryList', val)}
-              error={formState.errors.omStillingen?.categoryList?.message}
+              error={errors.omStillingen?.categoryList?.message}
             />
           </div>
           <div>
@@ -58,13 +62,18 @@ export const RedigerOmStillingen: React.FC<{
               onChange={(e) => setValue('omStillingen.beskrivelse', e)}
               // limitLengde={800}
             />
+            <ErrorMessage>
+              {errors.omStillingen?.beskrivelse?.message}
+            </ErrorMessage>
           </div>
 
           <div>
-            <VelgArbeidssted
-              lokasjonsFelt='omStillingen.lokasjoner'
-              adresseFelt='omStillingen.adresseLokasjoner'
-            />
+            <VelgArbeidssted feltNavn='omStillingen' />
+            {errors.omStillingen?.adresser && (
+              <ErrorMessage>
+                {errors.omStillingen?.adresser?.message}
+              </ErrorMessage>
+            )}
           </div>
         </div>
         <StegNavigering stegNummer={stegNummer} forrigeSteg={forrigeSteg} />

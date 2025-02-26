@@ -13,18 +13,20 @@ export const ArbeidsgiverSchema = z.object({
   organisasjonsnummer: z.string(),
   navn: z.string(),
   organisasjonsform: z.string(),
-  antallAnsatte: z.number(),
-  overordnetEnhet: z.string(),
-  adresse: z.object({
-    land: z.string(),
-    landkode: z.string(),
-    kommune: z.string(),
-    kommunenummer: z.string(),
-    poststed: z.string(),
-    postnummer: z.string(),
-    adresse: z.string(),
-  }),
-  naringskoder: z.null(),
+  antallAnsatte: z.number().nullable(),
+  overordnetEnhet: z.string().nullable(),
+  adresse: z
+    .object({
+      land: z.string(),
+      landkode: z.string(),
+      kommune: z.string(),
+      kommunenummer: z.string(),
+      poststed: z.string(),
+      postnummer: z.string(),
+      adresse: z.string(),
+    })
+    .nullable(),
+  naringskoder: z.array(z.string()).nullable(),
 });
 const ArbeidsgiverSchemaDTO = z.array(ArbeidsgiverSchema);
 
@@ -64,7 +66,7 @@ export const arbeidsgiverMirage = (server: any) => {
             _score: 10.641023,
             _source: {
               organisasjonsnummer: '315414822',
-              navn: 'ALFABETISK PLUTSELIG KATT OVERSKRIFT',
+              navn: 'TEST PLUTSELIG KATT OVERSKRIFT',
               organisasjonsform: 'BEDR',
               antallAnsatte: 3,
               overordnetEnhet: '313606333',

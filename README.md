@@ -15,8 +15,12 @@
 
 ## 🚀 Kom i gang
 
+Du trenger token for navikt pakke: https://github.com/navikt/frontend#github-npm-registry
+
 ```bash
 # Installer pnpm hvis du ikke har det
+brew install pnpm
+# eller
 curl -fsSL https://get.pnpm.io/install.sh | sh -
 
 # Installer avhengigheter
@@ -133,8 +137,4 @@ pnpm lint
 
 ## 📝 Lisens
 
-MIT © [NAV IT](https://github.com/navikt)
-
----
-
-Laget med ❤️ av NAVs rekrutteringsteam
+MIT © [Nav IT](https://github.com/navikt)

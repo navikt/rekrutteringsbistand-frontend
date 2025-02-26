@@ -1,31 +1,17 @@
 import { PersonGroupIcon } from '@navikt/aksel-icons';
-import { Loader } from '@navikt/ds-react';
 import * as React from 'react';
-import { useAntallKandidater } from '../../../api/kandidat/useAntallKandidater';
-import SWRLaster from '../../../components/SWRLaster';
+
 import TekstMedIkon from '../../../components/TekstMedIkon';
+import { useStillingsContext } from '../StillingsContext';
 
-export interface AntallKandidaterProps {
-  kandidatlisteId: string | null;
-}
-
-const AntallKandidater: React.FC<AntallKandidaterProps> = ({
-  kandidatlisteId,
-}) => {
-  const antallKandidaterSWR = useAntallKandidater(kandidatlisteId);
+const AntallKandidater: React.FC = () => {
+  const { kandidatlisteInfo } = useStillingsContext();
 
   return (
-    <SWRLaster
-      skeleton={<Loader size='xsmall' />}
-      hooks={[antallKandidaterSWR]}
-    >
-      {(data) => (
-        <TekstMedIkon
-          tekst={`${data?.antallKandidater ?? '-'} kandidater`}
-          ikon={<PersonGroupIcon />}
-        />
-      )}
-    </SWRLaster>
+    <TekstMedIkon
+      tekst={`${kandidatlisteInfo?.antallKandidater ?? '-'} kandidater`}
+      ikon={<PersonGroupIcon />}
+    />
   );
 };
 

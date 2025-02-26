@@ -1,4 +1,10 @@
 import { z } from 'zod';
+import { InternKandidatstatus } from '../../stilling/[stillingsId]/kandidater/components/KandidatTyper';
+
+export enum Kandidatlistestatus {
+  Åpen = 'ÅPEN',
+  Lukket = 'LUKKET',
+}
 
 export type kandidatlisteSchemaDTO = z.infer<typeof kandidatlisteSchema>;
 export type utfallsendringerSchemaDTO = z.infer<typeof utfallsendringerSchema>;
@@ -17,7 +23,7 @@ const utfallsendringerSchema = z.object({
 const kandidaterSchema = z.object({
   kandidatId: z.string(),
   kandidatnr: z.string(),
-  status: z.string(),
+  status: z.nativeEnum(InternKandidatstatus),
   lagtTilTidspunkt: z.string(),
   lagtTilAv: z.object({ ident: z.string(), navn: z.string() }),
   fornavn: z.string(),
@@ -77,7 +83,7 @@ export const kandidatHistorikkSchema = z.object({
   lagtTilAvIdent: z.string(),
   lagtTilAvEpost: z.string(),
   lagtTilAvNavn: z.string(),
-  status: z.string(),
+  status: z.nativeEnum(Kandidatlistestatus),
   utfall: z.string(),
   uuid: z.string(),
   tittel: z.string(),

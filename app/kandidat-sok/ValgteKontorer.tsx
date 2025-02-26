@@ -3,11 +3,7 @@ import * as React from 'react';
 import { useKontorSøk } from '../api/kandidat-sok/useKontorSøk';
 import { useKandidatSøkFilter } from './KandidaSokContext';
 
-export interface ValgteKontorerProps {
-  children?: React.ReactNode | undefined;
-}
-
-const ValgteKontorer: React.FC<ValgteKontorerProps> = ({ children }) => {
+const ValgteKontorer: React.FC = () => {
   const [søkeTekst, setSøkeTekst] = React.useState<string>('');
   const { valgtKontor, setValgtKontor } = useKandidatSøkFilter();
 

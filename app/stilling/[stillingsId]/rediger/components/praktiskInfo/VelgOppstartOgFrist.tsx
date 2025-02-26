@@ -1,4 +1,4 @@
-import { Checkbox, Heading } from '@navikt/ds-react';
+import { Checkbox, ErrorMessage, Heading } from '@navikt/ds-react';
 import * as React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { StillingsDataForm } from '../../redigerFormType.zod';
@@ -11,8 +11,12 @@ export interface VelgOppstartOgFristProps {
 const VelgOppstartOgFrist: React.FC<VelgOppstartOgFristProps> = ({
   skjulFrist,
 }) => {
-  const { watch, control, setValue, getValues } =
-    useFormContext<StillingsDataForm>();
+  const {
+    watch,
+    control,
+    setValue,
+    formState: { errors },
+  } = useFormContext<StillingsDataForm>();
 
   return (
     <div className='flex flex-col gap-8'>
@@ -22,16 +26,14 @@ const VelgOppstartOgFrist: React.FC<VelgOppstartOgFristProps> = ({
           name='praktiskInfo.oppstartEtterAvtale'
           control={control}
           render={({ field }) => (
-            <>
-              <Checkbox
-                checked={field.value}
-                onChange={(e) => {
-                  field.onChange(e.target.checked);
-                }}
-              >
-                Etter avtale
-              </Checkbox>
-            </>
+            <Checkbox
+              checked={field.value}
+              onChange={(e) => {
+                field.onChange(e.target.checked);
+              }}
+            >
+              Etter avtale
+            </Checkbox>
           )}
         />
 
@@ -43,6 +45,10 @@ const VelgOppstartOgFrist: React.FC<VelgOppstartOgFristProps> = ({
             val ? setValue('praktiskInfo.oppstart', val) : null
           }
         />
+
+        {errors?.praktiskInfo?.oppstart && (
+          <ErrorMessage>{errors.praktiskInfo?.oppstart?.message}</ErrorMessage>
+        )}
       </div>
       {!skjulFrist && (
         <div className='flex flex-col'>
@@ -73,6 +79,11 @@ const VelgOppstartOgFrist: React.FC<VelgOppstartOgFristProps> = ({
               val ? setValue('praktiskInfo.søknadsfrist', val) : null
             }
           />
+          {errors?.praktiskInfo?.søknadsfrist && (
+            <ErrorMessage>
+              {errors.praktiskInfo?.søknadsfrist?.message}
+            </ErrorMessage>
+          )}
         </div>
       )}
     </div>

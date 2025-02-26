@@ -2,10 +2,10 @@ import { PencilIcon } from '@navikt/aksel-icons';
 import { Button, Heading, Loader } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
-import { useAntallKandidater } from '../../../../../api/kandidat/useAntallKandidater';
+
 import { useKandidatliste } from '../../../../../api/kandidat/useKandidatliste';
 import {
-  Kandidatstatus,
+  InternKandidatstatus,
   KandidatutfallTyper,
 } from '../../../kandidater/components/KandidatTyper';
 import { useStillingsContext } from '../../../StillingsContext';
@@ -14,11 +14,10 @@ import KopierStilling from './KopierStilling';
 
 const EierStillingVisning: React.FC = () => {
   const router = useRouter();
-  const { erEier, stillingsData, kandidatlisteId } = useStillingsContext();
-  const antallData = useAntallKandidater(kandidatlisteId);
+  const { erEier, stillingsData, kandidatlisteInfo } = useStillingsContext();
   const { data, isLoading } = useKandidatliste(stillingsData.stilling.uuid);
 
-  if (isLoading || antallData.isLoading) {
+  if (isLoading) {
     return <Loader size='small' />;
   }
 
@@ -26,7 +25,7 @@ const EierStillingVisning: React.FC = () => {
     data?.kandidater?.filter((k) => !k.arkivert) ?? [];
 
   const antallAktuelleKandidater = ikkeArkiverteKandidater.filter(
-    (k) => k.status === Kandidatstatus.AKTUELL,
+    (k) => k.status === InternKandidatstatus.AKTUELL,
   ).length;
 
   const antallPresenterteKandidater = ikkeArkiverteKandidater.filter(
@@ -44,9 +43,7 @@ const EierStillingVisning: React.FC = () => {
   const antallStillinger = data?.antallStillinger;
   const besatteStillinger = antallKandidaterSomHarFåttJobb;
 
-  const oppsummeringTekst = `${
-    antallData?.data?.antallKandidater ?? 0
-  } kandidater (${antallAktuelleKandidater} er aktuelle${
+  const oppsummeringTekst = `${kandidatlisteInfo?.antallKandidater ?? '-'} kandidater (${antallAktuelleKandidater} er aktuelle${
     data?.kandidatlisteId === stillingsData.stilling.uuid
       ? ` / ${antallPresenterteKandidater} er presentert`
       : ''
@@ -59,6 +56,7 @@ const EierStillingVisning: React.FC = () => {
     <div className='mt-2'>
       <div className='grid grid-cols-2 gap-2'>
         <Button
+          disabled={kandidatlisteInfo?.kandidatlisteStatus === 'LUKKET'}
           variant='secondary'
           size='small'
           className='w-full h-5'
@@ -71,6 +69,7 @@ const EierStillingVisning: React.FC = () => {
         </Button>
         <KopierStilling stillingsId={stillingsData.stilling.uuid} />
         <AvsluttStillingKnapp
+          kandidatlisteId={kandidatlisteInfo?.kandidatlisteId}
           besatteStillinger={besatteStillinger}
           antallStillinger={antallStillinger}
           kandidatlisteStatus={data?.status}

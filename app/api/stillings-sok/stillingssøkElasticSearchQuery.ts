@@ -41,11 +41,12 @@ export function generateElasticSearchQuery(
 ) {
   const valgteFilter: any[] = [];
   const term: any[] = [];
-  const sort: any = {
-    'stilling.published': {
-      order: esSorter(filter.sortering),
-    },
-  };
+  const sort: any = esSorter(filter.sortering);
+  // const sort: any = {
+  //   'stilling.published': {
+  //     order: esSorter(filter.sortering),
+  //   },
+  // };
 
   valgteFilter.push();
 
@@ -135,7 +136,7 @@ export function generateElasticSearchQuery(
         should: esFritekstSøk(filter.fritekst.join(' '), valgteFilter),
       },
     },
-    sort: sort,
+    ...sort,
     ...(filter.fritekst && {
       aggs: {
         globalAggregering: {

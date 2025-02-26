@@ -40,7 +40,7 @@ export const usePamPostdata = (postnummer: string) => {
 export const pamPostdataMirage = (server: any) =>
   server.get(pamPostdataEndepunkt('*'), () => {
     return {
-      postkode: '4636',
+      postkode: '1234',
       by: 'KRISTIANSAND S',
       kommune: {
         kommunenummer: '4204',
