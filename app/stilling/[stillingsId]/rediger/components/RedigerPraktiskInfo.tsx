@@ -17,22 +17,12 @@ export const RedigerPraktiskInfo: React.FC<{
 }> = ({ nextStep, forrigeSteg, stegNummer }) => {
   const {
     trigger,
-    watch,
-    formState: { errors },
   } = useFormContext<StillingsDataForm>();
 
   const handleStepSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Log current form state and errors
-    console.log('Current form state:', watch());
-    console.log('Current errors:', errors);
-
     const isValid = await trigger('praktiskInfo', { shouldFocus: true });
-
-    if (!isValid) {
-      console.log('Validation failed. Errors:', errors.praktiskInfo);
-    }
 
     if (isValid) {
       nextStep();

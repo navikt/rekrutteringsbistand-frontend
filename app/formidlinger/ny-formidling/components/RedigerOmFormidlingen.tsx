@@ -24,16 +24,13 @@ const RedigerOmFormidlingen: React.FC<RedigerOmFormidlingenProps> = ({
     setValue,
     watch,
     trigger,
-    getValues,
     formState: { errors },
   } = useFormContext<FormidlingDataForm>();
 
   const handleStepSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    console.log(getValues());
     const isValid = await trigger('omFormidlingen', { shouldFocus: true });
-    console.log('Validation errors:', errors);
     if (isValid) {
       nesteSteg();
     }
