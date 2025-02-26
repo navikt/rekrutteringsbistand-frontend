@@ -15,9 +15,7 @@ export const RedigerPraktiskInfo: React.FC<{
   nextStep: () => void;
   forrigeSteg: () => void;
 }> = ({ nextStep, forrigeSteg, stegNummer }) => {
-  const {
-    trigger,
-  } = useFormContext<StillingsDataForm>();
+  const { trigger } = useFormContext<StillingsDataForm>();
 
   const handleStepSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
