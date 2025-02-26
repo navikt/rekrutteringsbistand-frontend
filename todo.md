@@ -5,3 +5,5 @@ Følg opp: https://docs.nais.io/observability/how-to/auto-instrumentation/ for n
 - Funksjonalitet for å fylle inn navansatt kontaktinfo
 
 - Muligheter for inkludering for eksterne stillinger
+
+- Tokens for pliktogrammer

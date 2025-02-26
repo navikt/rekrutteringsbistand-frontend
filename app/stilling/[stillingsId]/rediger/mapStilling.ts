@@ -84,7 +84,18 @@ export const mapStillingTilForm = (
     omStillingen: {
       categoryList: stillingsData?.stilling?.categoryList ?? [],
       beskrivelse: stillingsData?.stilling?.properties?.adtext ?? '',
-      locationList: stillingsData?.stilling?.locationList ?? [],
+      adresser:
+        stillingsData?.stilling?.locationList
+          ?.filter((a) => a.address !== null)
+          .map((a) => {
+            return { ...a, adresseType: true };
+          }) ?? [],
+      lokasjoner:
+        stillingsData?.stilling?.locationList
+          ?.filter((a) => a.address === null)
+          .map((a) => {
+            return { ...a, adresseType: false };
+          }) ?? [],
     },
     praktiskInfo: {
       omfangKode: stillingsData?.stilling?.properties?.extent ?? '',
@@ -190,7 +201,10 @@ export const mapFormTilStilling = (
       },
       published: publiseringsDato,
       expires: avsluttesDato,
-      locationList: formData.omStillingen.locationList,
+      locationList: [
+        ...(formData.omStillingen.adresser ?? []),
+        ...(formData.omStillingen.lokasjoner ?? []),
+      ],
       source: formData.innspurt.stillingType,
     },
   };

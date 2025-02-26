@@ -4,6 +4,10 @@ import {
   LocationSchema,
 } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 
+export const LocationSchemaForm = LocationSchema.extend({
+  adresseType: z.boolean(),
+});
+
 export const OmVirksomhetenSchema = z.object({
   beskrivelse: z.string().optional().nullable(),
   employerhomepage: z.string().optional().nullable(),
@@ -54,18 +58,14 @@ export const OmTilretteleggingSchema = z
   .optional()
   .nullable();
 
-// export const JanzzSchema = KategoriSchema.refine((data) => !!data.name, {
-//   message: 'Yrkesklassifisering må velges',
-//   path: ['name'],
-// });
-
 export const OmStillingenSchema = z.object({
   categoryList: z.array(KategoriSchema).min(1, 'Velg en yrkeskategori'),
   beskrivelse: z
     .string()
     .min(1, 'Beskrivelse om stillingen er påkrevd')
     .nullable(),
-  locationList: z.array(LocationSchema).min(1, 'Velg minst én lokasjon'),
+  lokasjoner: z.array(LocationSchemaForm).optional().nullable(),
+  adresser: z.array(LocationSchemaForm).optional().nullable(),
 });
 
 export const PraktiskInfoSchema = z

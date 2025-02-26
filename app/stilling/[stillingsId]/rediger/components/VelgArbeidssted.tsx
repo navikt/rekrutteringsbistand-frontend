@@ -8,58 +8,59 @@ import { StillingsDataForm } from '../redigerFormType.zod';
 import VelgKommuneFylkeEllerLand from './VelgKommuneFylkeEllerLand';
 
 export interface VelgArbeidsstedProps {
-  feltNavn: 'omFormidlingen.locationList' | 'omStillingen.locationList';
+  feltNavn: 'omFormidlingen' | 'omStillingen';
 }
 
 const VelgArbeidssted: React.FC<VelgArbeidsstedProps> = ({ feltNavn }) => {
   const { control } = useFormContext<StillingsDataForm | FormidlingDataForm>();
 
-  const { fields, append, update, remove } = useFieldArray({
+  const {
+    fields: lokasjoner,
+    append: leggTilLokasjon,
+    remove: fjernLokasjon,
+  } = useFieldArray({
     control,
-    name: feltNavn,
+    name: `${feltNavn}.lokasjoner`,
   });
 
-  const [visAdresse, setVisAdresse] = useState(false);
-  const [visLokasjon, setVisLokasjon] = useState(false);
+  const {
+    fields: adresser,
+    append: leggTilAdresse,
+    update: oppdaterAdresse,
+    remove: fjernAdresse,
+  } = useFieldArray({
+    control,
+    name: `${feltNavn}.adresser`,
+  });
 
-  const fjernId = (id: string) => {
-    const index = fields.findIndex((field) => field.id === id);
+  const [visAdresse, setVisAdresse] = useState(adresser.length > 0);
+  const [visLokasjon, setVisLokasjon] = useState(lokasjoner.length > 0);
+
+  const fjernLokasjonId = (id: string) => {
+    const index = lokasjoner.findIndex((field) => field.id === id);
     if (index !== -1) {
-      remove(index);
+      fjernLokasjon(index);
     }
   };
-
-  React.useEffect(() => {
-    if (fields.length > 0) {
-      if (fields.some((f) => f.postalCode !== null)) {
-        setVisAdresse(true);
-      }
-      if (fields.some((f) => f.postalCode === null)) {
-        setVisLokasjon(true);
-      }
-    }
-  }, [fields]);
 
   const setAdresseFelt = (adresse: boolean) => {
     if (adresse) {
       setVisAdresse(adresse);
-      if (fields.length === 0 || fields.some((f) => !f.postalCode)) {
-        append({
-          address: '',
-          postalCode: '',
-          city: '',
-          county: '',
-          // countyCode: '',
-          municipal: '',
-          municipalCode: '',
-          country: '',
+      if (adresser.length === 0) {
+        leggTilAdresse({
+          address: null,
+          postalCode: null,
+          city: null,
+          county: null,
+          municipal: null,
+          municipalCode: null,
+          country: null,
+          adresseType: true,
         });
       }
     } else {
+      adresser.forEach((_, index) => fjernAdresse(index));
       setVisAdresse(false);
-      fields
-        .filter((f) => f.postalCode !== null)
-        .forEach((_, index) => remove(index));
     }
   };
 
@@ -87,36 +88,36 @@ const VelgArbeidssted: React.FC<VelgArbeidsstedProps> = ({ feltNavn }) => {
       </Checkbox>
 
       {visAdresse &&
-        fields
-          .filter((l) => l.postalCode !== null)
-          .map((_, index) => (
-            <VelgPoststed
-              key={index}
-              index={index}
-              lokasjonsFelt={feltNavn}
-              control={control}
-              fjern={() => remove(index)}
-              update={update}
-              postSted={fields[index].city}
-            />
-          ))}
+        adresser.map((_, index) => (
+          <VelgPoststed
+            key={index}
+            index={index}
+            lokasjonsFelt={feltNavn}
+            control={control}
+            fjern={() => fjernAdresse(index)}
+            update={oppdaterAdresse}
+            postSted={adresser[index].city}
+          />
+        ))}
 
       {visAdresse && (
         <div className='my-4'>
           <Button
             variant='secondary'
-            onClick={() =>
-              append({
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              leggTilAdresse({
                 address: '',
-                postalCode: '',
-                city: '',
-                county: '',
-                // countyCode: null,
-                municipal: '',
-                municipalCode: '',
-                country: '',
-              })
-            }
+                postalCode: null,
+                city: null,
+                county: null,
+                municipal: null,
+                municipalCode: null,
+                country: null,
+                adresseType: true,
+              });
+            }}
             type='button'
           >
             Legg til adresse
@@ -127,9 +128,11 @@ const VelgArbeidssted: React.FC<VelgArbeidsstedProps> = ({ feltNavn }) => {
       {visLokasjon && (
         <div className='my-4'>
           <VelgKommuneFylkeEllerLand
-            lokasjoner={fields.filter((l) => l.postalCode === null)}
-            leggTilLokasjon={(lokasjon) => append(lokasjon)}
-            fjernLokasjonId={(id: string) => fjernId(id)}
+            lokasjoner={lokasjoner}
+            leggTilLokasjon={(lokasjon) =>
+              leggTilLokasjon({ ...lokasjon, adresseType: false })
+            }
+            fjernLokasjonId={(id: string) => fjernLokasjonId(id)}
           />
         </div>
       )}

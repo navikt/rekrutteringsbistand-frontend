@@ -68,7 +68,7 @@ const VelgKommuneFylkeEllerLand: React.FC<VelgKommuneFylkeEllerLandProps> = ({
     if (isSelected && lokasjon) {
       leggTilLokasjon({
         address: lokasjon.lokasjon.adresse,
-        postalCode: lokasjon.lokasjon.postnummer,
+        postalCode: null,
         city: lokasjon.lokasjon.poststed,
         county: lokasjon.lokasjon.fylke,
         // countyCode: lokasjon.lokasjon.fylkesnummer,

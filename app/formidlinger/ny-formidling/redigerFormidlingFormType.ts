@@ -1,11 +1,11 @@
 import { z } from 'zod';
 import { navnSchema } from '../../api/kandidat-sok/useKandidatNavn';
 import { ArbeidsgiverSchema } from '../../api/pam-search/underenhet/useArbeidsgiver';
+import { KategoriSchema } from '../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import {
-  KategoriSchema,
-  LocationSchema,
-} from '../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
-import { OmTilretteleggingSchema } from '../../stilling/[stillingsId]/rediger/redigerFormType.zod';
+  LocationSchemaForm,
+  OmTilretteleggingSchema,
+} from '../../stilling/[stillingsId]/rediger/redigerFormType.zod';
 
 export const FormidlingKandidatSchema = z.object({
   fnr: z.string(),
@@ -59,7 +59,8 @@ export const OmFormidlingSchema = z.object({
     })
     .min(1, { message: 'Du må velge omfang' }),
   omfangProsent: z.string().optional().nullable(),
-  locationList: z.array(LocationSchema).min(1, 'Velg minst én lokasjon'),
+  lokasjoner: z.array(LocationSchemaForm).optional().nullable(),
+  adresser: z.array(LocationSchemaForm).optional().nullable(),
 });
 
 export const FormidlingFormSchema = z.object({
