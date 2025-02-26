@@ -81,7 +81,7 @@ export const RedigerOmVirksomheten: React.FC<{
                 />
                 <TextField
                   label='Twitter (valgfritt)'
-                  {...register('omVirksomheten.linkedinpage')}
+                  {...register('omVirksomheten.twitteraddress')}
                 />
               </Accordion.Content>
             </Accordion.Item>
