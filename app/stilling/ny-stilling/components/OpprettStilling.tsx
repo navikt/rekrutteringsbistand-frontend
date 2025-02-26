@@ -57,7 +57,8 @@ export const OpprettStillingKnapp: React.FC<OpprettStillingProps> = ({
         },
       };
 
-      const response = await opprettNyStilling(nyStilling);
+      const response = 
+      await opprettNyStilling(nyStilling);
 
       if (response.stilling.uuid) {
         if (erFormidling) {
