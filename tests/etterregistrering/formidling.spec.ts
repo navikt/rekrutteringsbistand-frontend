@@ -12,10 +12,10 @@ test(`📝 Opprett formidling`, async ({ page }) => {
       .getByRole('button', { name: 'Opprett etterregistrering' })
       .click();
     await page
-      .getByRole('searchbox', { name: 'Fødselsnummer på kandidat' })
+      .getByRole('spinbutton', { name: 'Fødselsnummer på kandidat' })
       .click();
     await page
-      .getByRole('searchbox', { name: 'Fødselsnummer på kandidat' })
+      .getByRole('spinbutton', { name: 'Fødselsnummer på kandidat' })
       .fill('04479208765');
     await page.getByTestId('velg-kandidat-resultat').click();
 
