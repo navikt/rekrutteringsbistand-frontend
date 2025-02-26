@@ -25,8 +25,7 @@ export const mapFormTilFormidling = (
         engagementtype: formData.omFormidlingen.ansettelsesform,
         extent: formData.omFormidlingen.omfangKode,
         jobpercentage: formData.omFormidlingen.omfangProsent,
-        //TODO
-        // jobarrangement: formData.omFormidlingen.arbeidstidsordning,
+        jobarrangement: formData.omFormidlingen.arbeidstidsordning,
       },
       published: datoIDag,
       expires: datoIDag,

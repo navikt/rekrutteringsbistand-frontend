@@ -1,5 +1,6 @@
 import { TrashIcon } from '@navikt/aksel-icons';
 import { Box, Button, Stepper } from '@navikt/ds-react';
+import { useRouter } from 'next/navigation';
 import { useQueryState } from 'nuqs';
 import * as React from 'react';
 import { RedigerOmTilrettelegging } from '../../stilling/[stillingsId]/rediger/components/RedigerOmTilrettelegging';
@@ -15,6 +16,7 @@ enum RedigerFormidlingSteg {
 }
 
 const RedigerFormidling: React.FC = () => {
+  const router = useRouter();
   const [aktivtSteg, setAktivtSteg] = useQueryState('steg', {
     defaultValue: RedigerFormidlingSteg.omKandidatene,
   });
@@ -90,7 +92,7 @@ const RedigerFormidling: React.FC = () => {
         </div>
         <div className='sticky bottom-4 self-top'>
           <Button
-            disabled
+            onClick={() => router.push('/formidlinger')}
             variant='tertiary'
             icon={<TrashIcon aria-hidden />}
             iconPosition='left'

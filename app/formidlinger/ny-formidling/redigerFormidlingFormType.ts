@@ -13,16 +13,13 @@ export const FormidlingKandidatSchema = z.object({
 });
 
 export const OmFormidlingSchema = z.object({
-  organisasjon: ArbeidsgiverSchema.refine((data) => !data, {
-    message: 'Du må velge en arbeidsgiver',
-  })
-    .optional()
+  organisasjon: ArbeidsgiverSchema.optional()
     .nullable()
     .superRefine((val, ctx) => {
       if (!val) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: 'Du må velge en organisasjon',
+          message: 'Du må velge en arbeidsgiver',
         });
       }
     }),
@@ -55,8 +52,7 @@ export const OmFormidlingSchema = z.object({
       required_error: 'Du må velge ansettelsesform',
     })
     .min(1, { message: 'Du må velge ansettelsesform' }),
-  //TODO verifider arbeidstidsordning
-  arbeidstidsordning: z.string().nullable(),
+  arbeidstidsordning: z.string().optional().nullable(),
   omfangKode: z
     .string({
       required_error: 'Du må velge omfang',
