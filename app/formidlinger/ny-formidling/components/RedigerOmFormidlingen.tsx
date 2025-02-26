@@ -30,6 +30,8 @@ const RedigerOmFormidlingen: React.FC<RedigerOmFormidlingenProps> = ({
   const handleStepSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const isValid = await trigger('omFormidlingen', { shouldFocus: true });
+
+    console.log(errors);
     if (isValid) {
       nesteSteg();
     }
