@@ -1,3 +1,3 @@
 pnpm formater-kode
 pnpm lint
-git add
+git add .
