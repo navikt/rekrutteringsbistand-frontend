@@ -101,7 +101,19 @@ export const postApi = async (
       });
     }
 
-    return await response.json();
+    const contentType = response.headers.get('content-type');
+    if (contentType && contentType.includes('application/json')) {
+      return await response.json();
+    } else if (contentType && contentType.includes('text/plain')) {
+      return await response.text();
+    } else {
+      try {
+        return await response.json();
+      } catch (error) {
+        logger.error('Error in postApi:', error);
+        return await response.text();
+      }
+    }
   } catch (error) {
     console.error('Error in postApi:', error);
     throw error;

@@ -4,7 +4,6 @@ import { FunctionComponent, useEffect, useRef, useState } from 'react';
 import { nyheter } from '../../../../nyheter';
 import { useThemeProvider } from '../../../../ThemeProvider';
 import Artikkel from './Artikkel';
-import css from './Nyheter.module.css';
 import useAntallUlesteNyheter from './useAntallUlesteNyheter';
 
 const Nyheter: FunctionComponent = () => {
@@ -27,7 +26,7 @@ const Nyheter: FunctionComponent = () => {
   }, [åpen, markerSomLest]);
 
   return (
-    <div className={css.nyheter}>
+    <div className='[&_.navds-popover]:border-none [&_.navds-popover]:shadow-none [&_.navds-popover]:rounded-[0.6rem] [&_.navds-popover:focus]:shadow-[var(--nav-fokus)] [&_.navds-popover__arrow]:border-none [&_.navds-popover__arrow]:bg-[var(--a-gray-800)]'>
       <div className='flex'>
         <Switch
           className='mr-2'
@@ -39,14 +38,16 @@ const Nyheter: FunctionComponent = () => {
         </Switch>
         <Button
           ref={buttonRef}
-          className={css.knapp}
+          className='relative focus:outline-none focus:shadow-[var(--nav-fokus)]'
           icon={<LightBulbIcon aria-hidden />}
           size='small'
           variant='tertiary-neutral'
           onClick={() => setÅpen(!åpen)}
         >
           Hva er nytt
-          {antallUlesteNyheter > 0 && <div className={css.notifikasjon} />}
+          {antallUlesteNyheter > 0 && (
+            <div className='absolute top-1 right-0 h-3 w-3 rounded-full bg-[#0067c5]' />
+          )}
         </Button>
       </div>
       <Popover
@@ -55,11 +56,12 @@ const Nyheter: FunctionComponent = () => {
         placement='bottom-end'
         onClose={() => setÅpen(false)}
       >
-        <div className={css.popover}>
-          <Heading className={css.tittel} level='2' size='xsmall'>
+        <div className='rounded-lg shadow-[0_0.25rem_0.25rem_0_rgba(62,56,50,0.125)] w-[27rem] overflow-hidden'>
+          <Heading className='text-center  p-4 px-6 ' level='2' size='xsmall'>
             Nytt i Rekrutteringsbistand
           </Heading>
-          <section className={css.nyhetsliste}>
+          <hr />
+          <section className='max-h-[30rem] overflow-y-auto'>
             {nyheter.map((nyhet, index) => (
               <Artikkel
                 key={`${nyhet.dato}-${nyhet.tittel}`}

@@ -39,7 +39,6 @@ const StillingsSøkeresultat: React.FC<{ kandidatId?: string }> = ({
   return (
     <SWRLaster hooks={[stillingssøkHook]}>
       {(data) => {
-        console.log('🎺 data', data);
         return (
           <>
             <div className='flex items-center gap-2 min-h-[80px]'>

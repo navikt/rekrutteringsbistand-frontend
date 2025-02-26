@@ -31,9 +31,7 @@ const LagreIKandidatliste: React.FC<LagreIKandidatlisteProps> = ({
   );
   const [selectedRows, setSelectedRows] = React.useState<string[]>([]);
   const [laster, setLaster] = React.useState(false);
-  console.log('🎺 stillingsId', stillingsId);
   const visVarsel = useVisVarsling();
-  console.log('🎺 markerteKandidater', markerteKandidater);
   const toggleSelectedRow = (stillingsId: string) =>
     setSelectedRows((list) =>
       list.includes(stillingsId)
@@ -47,7 +45,6 @@ const LagreIKandidatliste: React.FC<LagreIKandidatlisteProps> = ({
       .filter(
         (nr): nr is string => nr !== null && nr !== undefined && nr !== '',
       );
-    console.log('🎺 "Er her"', kandidatnr);
     if (kandidatnr && kandidatnr.length > 0) {
       setLaster(true);
       if (stillingsId) {

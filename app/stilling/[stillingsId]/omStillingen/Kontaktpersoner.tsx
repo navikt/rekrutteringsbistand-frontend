@@ -25,9 +25,11 @@ const Kontaktpersoner: React.FC = () => {
               <Link href={`mailto:${kontakt.email}`} className='block'>
                 {kontakt.email}
               </Link>
-              <BodyShort className='ml-2'>
-                Tlf {kontakt.phone?.replace(/(\d{2})/g, '$1 ').trim()}
-              </BodyShort>
+              {kontakt.phone && (
+                <BodyShort className='ml-2'>
+                  Tlf {kontakt.phone?.replace(/(\d{2})/g, '$1 ').trim()}
+                </BodyShort>
+              )}
             </div>
           </dl>
         ))}
