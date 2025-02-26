@@ -98,7 +98,7 @@ const AvsluttStillingKnapp: React.FC<AvsluttStillingKnappProps> = ({
         </Modal.Footer>
       </Modal>
       <Button
-        disabled={loading || stillingsStatus !== StillingsStatus.Stoppet}
+        disabled={loading || stillingsStatus === StillingsStatus.Stoppet}
         icon={<EyeSlashIcon />}
         variant='secondary'
         size='small'
