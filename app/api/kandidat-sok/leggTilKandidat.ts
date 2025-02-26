@@ -4,10 +4,10 @@ import { postApi } from '../fetcher';
 export const leggTilKandidatEndepunkt = (stillingsId: string) =>
   `${KandidatAPI.internUrl}/veileder/stilling/${stillingsId}/kandidatliste/kandidater`;
 
-export const leggTilKandidater = (
+export const leggTilKandidater = async (
   kandidater: string[],
   stillingsId: string,
-): Promise<void> => {
+): Promise<Response> => {
   const kandidaterArray = kandidater.map((kandidatnr) => ({ kandidatnr }));
-  return postApi(leggTilKandidatEndepunkt(stillingsId), kandidaterArray);
+  return await postApi(leggTilKandidatEndepunkt(stillingsId), kandidaterArray);
 };

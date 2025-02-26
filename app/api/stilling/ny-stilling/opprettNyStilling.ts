@@ -5,8 +5,8 @@ import { mockBaseStilling } from '../rekrutteringsbistandstilling/[slug]/mocks/s
 
 const opprettNyStillingEndepunkt = '/api/stilling/ny-stilling';
 
-export const opprettNyStilling = (stilling: OpprettNyStillingDTO) => {
-  return postApi(opprettNyStillingEndepunkt, stilling);
+export const opprettNyStilling = async (stilling: OpprettNyStillingDTO) => {
+  return await postApi(opprettNyStillingEndepunkt, stilling);
 };
 
 export const opprettNyStillingMirage = (server: any) => {

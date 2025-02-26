@@ -15,11 +15,12 @@ import {
 
 interface KandidatSøkResultatProps {
   type: KandidatSøkPortefølje;
+  stillingsId?: string;
 }
 
 // TODO Legg til paginering
 
-const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({ type }) => {
+const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({ type, stillingsId }) => {
   const filter = useKandidatSøkFilter();
   const kandidatsøkHook = useKandidatsøk(type, filter);
   const { setNavigering } = useKandidatNavigering();
@@ -38,7 +39,7 @@ const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({ type }) => 
                 Viser {kandidatData.antallTotalt} treff
               </Heading>
               <div>
-                <LagreIKandidatliste />
+                <LagreIKandidatliste stillingsId={stillingsId}/>
               </div>
             </div>
             {kandidatData.kandidater?.map((kandidat, index) => (

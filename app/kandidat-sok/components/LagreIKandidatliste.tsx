@@ -16,7 +16,13 @@ import SWRLaster from '../../components/SWRLaster';
 import { useVisVarsling } from '../../components/varsling/Varsling';
 import { useKandidatSøkMarkerteContext } from '../KandidatSøkMarkerteContext';
 
-const LagreIKandidatliste: React.FC = () => {
+interface LagreIKandidatlisteProps {
+  stillingsId?: string;
+}
+
+const LagreIKandidatliste: React.FC<LagreIKandidatlisteProps> = ({
+  stillingsId,
+}) => {
   const ref = React.useRef<HTMLDialogElement>(null);
   const { markerteKandidater } = useKandidatSøkMarkerteContext();
   const [pageNumber, setPageNumber] = React.useState(1);
@@ -25,9 +31,9 @@ const LagreIKandidatliste: React.FC = () => {
   );
   const [selectedRows, setSelectedRows] = React.useState<string[]>([]);
   const [laster, setLaster] = React.useState(false);
-
+  console.log('🎺 stillingsId', stillingsId);
   const visVarsel = useVisVarsling();
-
+  console.log('🎺 markerteKandidater', markerteKandidater);
   const toggleSelectedRow = (stillingsId: string) =>
     setSelectedRows((list) =>
       list.includes(stillingsId)
@@ -37,30 +43,48 @@ const LagreIKandidatliste: React.FC = () => {
 
   const lagreKandidaterIKandidatliste = async () => {
     const kandidatnr = markerteKandidater
-      ?.map((kandidat) => kandidat.kandidatnr)
+      ?.map((kandidat) => kandidat.arenaKandidatnr)
       .filter(
         (nr): nr is string => nr !== null && nr !== undefined && nr !== '',
       );
+    console.log('🎺 "Er her"', kandidatnr);
     if (kandidatnr && kandidatnr.length > 0) {
-      const promises = selectedRows.map((stillingId) =>
-        leggTilKandidater(kandidatnr, stillingId),
-      );
-
       setLaster(true);
-      try {
-        await Promise.all(promises);
-        visVarsel({
-          alertType: 'success',
-          innhold: 'Kandidater lagret i kandidatliste',
-        });
-        ref.current?.close();
-      } catch (error) {
-        logger.error('Feil ved lagring av kandidater i kandidatliste', error);
-        visVarsel({
-          alertType: 'error',
-          innhold: 'Feil ved lagring av kandidater i kandidatliste',
-        });
+      if (stillingsId) {
+        try {
+          await leggTilKandidater(kandidatnr, stillingsId);
+          visVarsel({
+            alertType: 'success',
+            innhold: 'Kandidater lagret i kandidatliste',
+          });
+          ref.current?.close();
+        } catch (error) {
+          logger.error('Feil ved lagring av kandidater i kandidatliste', error);
+          visVarsel({
+            alertType: 'error',
+            innhold: 'Feil ved lagring av kandidater i kandidatliste',
+          });
+        }
+      } else if (selectedRows.length === 0) {
+        const promises = selectedRows.map((stillingId) =>
+          leggTilKandidater(kandidatnr, stillingId),
+        );
+        try {
+          await Promise.all(promises);
+          visVarsel({
+            alertType: 'success',
+            innhold: 'Kandidater lagret i kandidatliste',
+          });
+          ref.current?.close();
+        } catch (error) {
+          logger.error('Feil ved lagring av kandidater i kandidatliste', error);
+          visVarsel({
+            alertType: 'error',
+            innhold: 'Feil ved lagring av kandidater i kandidatliste',
+          });
+        }
       }
+
       setLaster(false);
     }
   };
@@ -68,7 +92,13 @@ const LagreIKandidatliste: React.FC = () => {
   return (
     <div>
       <Button
-        onClick={() => ref.current?.showModal()}
+        onClick={() => {
+          if (stillingsId) {
+            lagreKandidaterIKandidatliste();
+          } else {
+            ref.current?.showModal();
+          }
+        }}
         size='small'
         variant='primary'
         icon={<PersonPlusIcon aria-hidden />}

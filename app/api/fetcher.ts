@@ -69,39 +69,42 @@ export const postApi = async (
     url += `?${queryString}`;
   }
 
-  const response = await fetch(basePath + url, {
-    method: 'POST',
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(body, (_key, value) =>
-      value instanceof Set ? [...value] : value,
-    ),
-  });
+  try {
+    const response = await fetch(basePath + url, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body, (_key, value) =>
+        value instanceof Set ? [...value] : value,
+      ),
+    });
 
-  if (response.ok) {
-    const contentType = response.headers.get('content-type');
-    if (contentType?.includes('application/json')) {
-      try {
-        return await response.json();
-      } catch (e) {
-        logger.error('Failed to parse JSON response', e);
-        throw new Error(
-          `Failed to parse JSON response: ${await response.text()}`,
-        );
+    if (!response.ok) {
+      let errorDetails = '';
+      const contentType = response.headers.get('content-type');
+
+      if (contentType && contentType.includes('application/json')) {
+        // Get JSON error
+        const errorData = await response.json();
+        errorDetails = JSON.stringify(errorData);
+      } else {
+        // Handle non-JSON errors
+        errorDetails = await response.text();
       }
-    } else {
-      return await response.text();
+
+      throw new kastError({
+        url: response.url,
+        statuskode: response.status,
+        stack: errorDetails,
+      });
     }
-  } else if (response.status === 404) {
-    throw new Error('404');
-  } else if (response.status === 403) {
-    throw new Error('403');
-  } else {
-    throw new Error(
-      `Feil respons fra server (http-status: ${response.status})`,
-    );
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error in postApi:', error);
+    throw error;
   }
 };
 

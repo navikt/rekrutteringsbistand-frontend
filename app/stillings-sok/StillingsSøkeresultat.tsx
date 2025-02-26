@@ -38,28 +38,31 @@ const StillingsSøkeresultat: React.FC<{ kandidatId?: string }> = ({
   };
   return (
     <SWRLaster hooks={[stillingssøkHook]}>
-      {(data) => (
-        <>
-          <div className='flex items-center gap-2 min-h-[80px]'>
-            <StillingsSøkChips />
-            <LagreStandardsøk />
-          </div>
-          <div className='flex justify-between items-center my-4'>
-            {antallVisning(data.hits.total.value)}
-            <StillingsSøkSortering />
-          </div>
-          {data.hits.hits.map((hit) => (
-            <StillingsKort
-              key={hit._id}
-              stillingData={hit._source}
-              kandidatId={kandidatId}
+      {(data) => {
+        console.log('🎺 data', data);
+        return (
+          <>
+            <div className='flex items-center gap-2 min-h-[80px]'>
+              <StillingsSøkChips />
+              <LagreStandardsøk />
+            </div>
+            <div className='flex justify-between items-center my-4'>
+              {antallVisning(data.hits.total.value)}
+              <StillingsSøkSortering />
+            </div>
+            {data.hits.hits.map((hit) => (
+              <StillingsKort
+                key={hit._id}
+                stillingData={hit._source}
+                kandidatId={kandidatId}
+              />
+            ))}
+            <StillingsSøkPaginering
+              totaltAntallTreff={data.hits.total.value ?? 0}
             />
-          ))}
-          <StillingsSøkPaginering
-            totaltAntallTreff={data.hits.total.value ?? 0}
-          />
-        </>
-      )}
+          </>
+        );
+      }}
     </SWRLaster>
   );
 };

@@ -10,6 +10,6 @@ export type ForespørselOmDelingAvCvOutboundDto = {
 
 export const sendForespørselOmDelingAvCv = async (
   forespørsel: ForespørselOmDelingAvCvOutboundDto,
-) => {
-  postApi(`${ForespørselDelingAvCvAPI.internUrl}/foresporsler`, forespørsel);
+) : Promise<Response> => {
+  return postApi(`${ForespørselDelingAvCvAPI.internUrl}/foresporsler`, forespørsel);
 };

@@ -13,7 +13,11 @@ import {
 import KandidatSøkResultat from './KandidatSøkResultat';
 import ValgteKontorer from './ValgteKontorer';
 
-const KandidatSøk: React.FC = () => {
+interface KandidatSøkProps {
+  stillingsId?: string;
+}
+
+const KandidatSøk: React.FC<KandidatSøkProps> = ({ stillingsId }) => {
   const { portefølje, setPortefølje } = useKandidatSøkFilter();
   const { valgtNavKontor, brukerData } = useApplikasjonContext();
 
@@ -109,7 +113,10 @@ const KandidatSøk: React.FC = () => {
         {portefølje === KandidatSøkPortefølje.VALGTE_KONTORER && (
           <ValgteKontorer />
         )}
-        <KandidatSøkResultat type={portefølje as KandidatSøkPortefølje} />
+        <KandidatSøkResultat
+          type={portefølje as KandidatSøkPortefølje}
+          stillingsId={stillingsId}
+        />
       </Tabs.Panel>
     </Tabs>
   );
