@@ -9,8 +9,8 @@ import {
   Button,
   Heading,
   Loader,
-  Search,
   Tag,
+  TextField,
 } from '@navikt/ds-react';
 import { idnr } from '@navikt/fnrvalidator';
 import * as React from 'react';
@@ -45,7 +45,7 @@ const LeggTilKandidater: React.FC<LeggTilKandidaterProps> = ({
     ValgtKandidatProp[]
   >([]);
   const [fødselsnummer, setFødselsnummer] = React.useState<string | null>(null);
-
+  const [søkeString, setSøkestring] = React.useState<string>('');
   const kandidatNavnHook = useKandidatNavn(fødselsnummer);
   const arenaKandidatnrHook = useArenaKandidatnr(
     måHaAktørId ? fødselsnummer : null,
@@ -56,6 +56,7 @@ const LeggTilKandidater: React.FC<LeggTilKandidaterProps> = ({
   }, [valgteKandidater, callBack]);
 
   const handleFnrChange = (fødselsnummer: string) => {
+    setSøkestring(fødselsnummer);
     if (fødselsnummer.length < 11) {
       setFeilmelding('');
       setFødselsnummer(null);
@@ -83,6 +84,8 @@ const LeggTilKandidater: React.FC<LeggTilKandidaterProps> = ({
           !valgteKandidater.some((k) => k.fødselsnummer === fødselsnummer) &&
           kandidatNavnHook.data
         ) {
+          setFødselsnummer(null);
+          setSøkestring('');
           setValgteKandidater([
             ...valgteKandidater,
             {
@@ -143,9 +146,13 @@ const LeggTilKandidater: React.FC<LeggTilKandidaterProps> = ({
         borderColor='info-subtleA'
         background='info-soft'
       >
-        <Search
+        <TextField
+          type='number'
+          inputMode='numeric'
+          value={søkeString}
           label='Fødselsnummer på kandidat'
-          onChange={handleFnrChange}
+          hideLabel
+          onChange={(e) => handleFnrChange(e.target.value)}
           error={feilmelding}
         />
 

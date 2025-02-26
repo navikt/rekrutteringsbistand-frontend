@@ -62,7 +62,27 @@ export const OmStillingenSchema = z
       .min(1, 'Beskrivelse om stillingen er påkrevd')
       .nullable(),
     lokasjoner: z.array(LocationSchema).optional().nullable(),
-    adresser: z.array(LocationSchema).optional().nullable(),
+    adresser: z
+      .array(LocationSchema)
+      .optional()
+      .nullable()
+      .superRefine((val, ctx) => {
+        if (val && val.length > 0) {
+          // Sjekk om noen av adressene mangler påkrevde felter
+          const harManglendeFelt = val.some(
+            (location) =>
+              !location.address || !location.postalCode || !location.city,
+          );
+
+          if (harManglendeFelt) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message:
+                'Alle adressefelt må fylles ut (adresse, postnummer og poststed)',
+            });
+          }
+        }
+      }),
   })
   .superRefine((data, ctx) => {
     if (data.adresser?.length === 0 && data.lokasjoner?.length === 0) {

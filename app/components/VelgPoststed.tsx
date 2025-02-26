@@ -9,7 +9,7 @@ export interface VelgPoststedProps {
   lokasjonsFelt: string;
   index: number;
   fjern: () => void;
-  update: (index: number, value: any) => void;
+  oppdaterPoststed: (value: any) => void;
   postSted: string | null;
 }
 
@@ -18,24 +18,21 @@ const VelgPoststed: React.FC<VelgPoststedProps> = ({
   lokasjonsFelt,
   index,
   fjern,
-  update,
+  oppdaterPoststed,
   postSted,
 }) => {
-  // const [postNummer, setPostNummer] = React.useState<string>('');
+  const [postNummer, setPostNummer] = React.useState<string>('');
 
-  const postNummerHook = usePamPostdata(`${lokasjonsFelt}.${index}.postalCode`);
+  const postNummerHook = usePamPostdata(postNummer);
 
   React.useEffect(() => {
     if (!postNummerHook.isLoading) {
       const nyttPoststed = postNummerHook.data?.korrigertNavnBy;
       if (nyttPoststed !== null && nyttPoststed !== postSted) {
-        update(index, {
-          ...location, // preserve all other fields
-          city: nyttPoststed,
-        });
+        oppdaterPoststed(nyttPoststed);
       }
     }
-  }, [postNummerHook, postSted, update, index]);
+  }, [postNummerHook, postSted, oppdaterPoststed, index]);
 
   return (
     <>
@@ -44,7 +41,9 @@ const VelgPoststed: React.FC<VelgPoststedProps> = ({
         <Controller
           name={`${lokasjonsFelt}.${index}.address`}
           control={control}
-          render={({ field }) => <TextField label='Adresse' {...field} />}
+          render={({ field }) => (
+            <TextField label='Adresse' {...field} value={field.value || ''} />
+          )}
         />
 
         <div className='flex flex-row gap-4'>
@@ -55,9 +54,12 @@ const VelgPoststed: React.FC<VelgPoststedProps> = ({
               render={({ field }) => (
                 <TextField
                   label='Postnummer'
+                  type='number'
                   maxLength={4}
                   {...field}
+                  value={field.value || ''}
                   onChange={(e) => {
+                    setPostNummer(e.target.value);
                     const value = e.target.value.replace(/\D/g, '');
                     if (value.length <= 4) {
                       field.onChange(value);
@@ -76,6 +78,7 @@ const VelgPoststed: React.FC<VelgPoststedProps> = ({
                   label='Poststed'
                   readOnly
                   {...field}
+                  value={field.value || ''}
                   onChange={() => {}} // prevent onChange warning for readonly field
                 />
               )}

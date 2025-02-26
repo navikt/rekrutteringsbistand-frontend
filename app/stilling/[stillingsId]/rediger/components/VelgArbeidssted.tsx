@@ -12,7 +12,9 @@ export interface VelgArbeidsstedProps {
 }
 
 const VelgArbeidssted: React.FC<VelgArbeidsstedProps> = ({ feltNavn }) => {
-  const { control } = useFormContext<StillingsDataForm | FormidlingDataForm>();
+  const { control, setValue } = useFormContext<
+    StillingsDataForm | FormidlingDataForm
+  >();
 
   const {
     fields: lokasjoner,
@@ -26,7 +28,6 @@ const VelgArbeidssted: React.FC<VelgArbeidsstedProps> = ({ feltNavn }) => {
   const {
     fields: adresser,
     append: leggTilAdresse,
-    update: oppdaterAdresse,
     remove: fjernAdresse,
   } = useFieldArray({
     control,
@@ -91,10 +92,12 @@ const VelgArbeidssted: React.FC<VelgArbeidsstedProps> = ({ feltNavn }) => {
           <VelgPoststed
             key={index}
             index={index}
-            lokasjonsFelt={feltNavn}
+            lokasjonsFelt={feltNavn + '.adresser'}
             control={control}
             fjern={() => fjernAdresse(index)}
-            update={oppdaterAdresse}
+            oppdaterPoststed={(postSted: string) => {
+              setValue(`${feltNavn}.adresser.${index}.city` as any, postSted);
+            }}
             postSted={adresser[index].city}
           />
         ))}
