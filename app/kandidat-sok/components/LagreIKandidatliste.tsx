@@ -24,7 +24,8 @@ const LagreIKandidatliste: React.FC<LagreIKandidatlisteProps> = ({
   stillingsId,
 }) => {
   const ref = React.useRef<HTMLDialogElement>(null);
-  const { markerteKandidater } = useKandidatSøkMarkerteContext();
+  const { markerteKandidater, fjernMarkerteKandidater } =
+    useKandidatSøkMarkerteContext();
   const [pageNumber, setPageNumber] = React.useState(1);
   const mineKandidatlisterHook = useMineKandidatlister(
     pageNumber > 1 ? pageNumber - 1 : 0,
@@ -54,6 +55,7 @@ const LagreIKandidatliste: React.FC<LagreIKandidatlisteProps> = ({
             alertType: 'success',
             innhold: 'Kandidater lagret i kandidatliste',
           });
+          fjernMarkerteKandidater();
           ref.current?.close();
         } catch (error) {
           logger.error('Feil ved lagring av kandidater i kandidatliste', error);
@@ -72,6 +74,7 @@ const LagreIKandidatliste: React.FC<LagreIKandidatlisteProps> = ({
             alertType: 'success',
             innhold: 'Kandidater lagret i kandidatliste',
           });
+          fjernMarkerteKandidater();
           ref.current?.close();
         } catch (error) {
           logger.error('Feil ved lagring av kandidater i kandidatliste', error);

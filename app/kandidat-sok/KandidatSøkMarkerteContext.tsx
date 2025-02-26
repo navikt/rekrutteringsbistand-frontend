@@ -4,12 +4,14 @@ import { KandidatDataSchemaDTO } from '../api/kandidat-sok/schema/cvSchema.zod';
 interface KandidatSøkMarkerteContextProps {
   markerteKandidater?: KandidatDataSchemaDTO[] | undefined;
   setMarkert: (kandidat: KandidatDataSchemaDTO) => void;
+  fjernMarkerteKandidater: () => void;
 }
 
 const KandidatSøkMarkerteContext =
   React.createContext<KandidatSøkMarkerteContextProps>({
     markerteKandidater: [],
     setMarkert: () => {},
+    fjernMarkerteKandidater: () => {},
   });
 
 export const useKandidatSøkMarkerteContext = () => {
@@ -47,9 +49,13 @@ export const KandidatSøkMarkerteContextProvider: React.FC<
     }
   };
 
+  const fjernMarkerteKandidater = () => {
+    setMarkerteKandidater([]);
+  };
+
   return (
     <KandidatSøkMarkerteContext.Provider
-      value={{ markerteKandidater, setMarkert }}
+      value={{ markerteKandidater, setMarkert, fjernMarkerteKandidater }}
     >
       {children}
     </KandidatSøkMarkerteContext.Provider>
