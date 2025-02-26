@@ -8,15 +8,17 @@ import {
 export interface IVelgArbeidsgiver {
   children?: React.ReactNode | undefined;
   arbeidsgiverCallback: (arbeidsgiver: ArbeidsgiverDTO) => void;
+  valgtArbeidsgiver?: ArbeidsgiverDTO | null;
 }
 
 const VelgArbeidsgiver: React.FC<IVelgArbeidsgiver> = ({
   arbeidsgiverCallback,
+  valgtArbeidsgiver,
 }) => {
   const [søkeOrd, setSøkeord] = React.useState<string>('');
   const { isLoading, error, data } = useFinnArbeidsgiver(søkeOrd);
   const [arbeidsgiver, setArbeidsgiver] =
-    React.useState<ArbeidsgiverDTO | null>(null);
+    React.useState<ArbeidsgiverDTO | null>(valgtArbeidsgiver ?? null);
 
   React.useEffect(() => {
     if (arbeidsgiver) {

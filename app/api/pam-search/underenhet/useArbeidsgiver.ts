@@ -13,8 +13,8 @@ export const ArbeidsgiverSchema = z.object({
   organisasjonsnummer: z.string(),
   navn: z.string(),
   organisasjonsform: z.string(),
-  antallAnsatte: z.number().nullable(),
-  overordnetEnhet: z.string().nullable(),
+  antallAnsatte: z.number().optional().nullable(),
+  overordnetEnhet: z.string().optional().nullable(),
   adresse: z
     .object({
       land: z.string(),
