@@ -66,10 +66,10 @@ const RedigerOmFormidlingen: React.FC<RedigerOmFormidlingenProps> = ({
           omfangFelt='omFormidlingen.omfangKode'
           omfangProsentFelt='omFormidlingen.omfangProsent'
         />
-        <VelgArbeidssted feltNavn='omFormidlingen.locationList' />
-        {errors.omFormidlingen?.locationList && (
+        <VelgArbeidssted feltNavn='omFormidlingen' />
+        {errors.omFormidlingen?.adresser && (
           <ErrorMessage>
-            {errors.omFormidlingen?.locationList?.message}
+            {errors.omFormidlingen?.adresser?.message}
           </ErrorMessage>
         )}
         <StegNavigering stegNummer={2} forrigeSteg={forrigeSteg} />

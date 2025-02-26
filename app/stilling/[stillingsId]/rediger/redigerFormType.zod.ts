@@ -58,15 +58,25 @@ export const OmTilretteleggingSchema = z
   .optional()
   .nullable();
 
-export const OmStillingenSchema = z.object({
-  categoryList: z.array(KategoriSchema).min(1, 'Velg en yrkeskategori'),
-  beskrivelse: z
-    .string()
-    .min(1, 'Beskrivelse om stillingen er påkrevd')
-    .nullable(),
-  lokasjoner: z.array(LocationSchemaForm).optional().nullable(),
-  adresser: z.array(LocationSchemaForm).optional().nullable(),
-});
+export const OmStillingenSchema = z
+  .object({
+    categoryList: z.array(KategoriSchema).min(1, 'Velg en yrkeskategori'),
+    beskrivelse: z
+      .string()
+      .min(1, 'Beskrivelse om stillingen er påkrevd')
+      .nullable(),
+    lokasjoner: z.array(LocationSchemaForm).optional().nullable(),
+    adresser: z.array(LocationSchema).optional().nullable(),
+  })
+  .superRefine((data, ctx) => {
+    if (data.adresser?.length === 0 && data.lokasjoner?.length === 0) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Du må velge arbeidssted',
+        path: ['adresser'],
+      });
+    }
+  });
 
 export const PraktiskInfoSchema = z
   .object({

@@ -1,6 +1,7 @@
 'use client';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import * as React from 'react';
+import { SWRConfig } from 'swr';
 import { useBruker } from './api/bruker/useBruker';
 import { useDecoratorData } from './api/decorator/useDecoratorData';
 import { ApplikasjonContextProvider } from './ApplikasjonContext';
@@ -28,20 +29,32 @@ const RekrutteringsbistandProvider: React.FC<
   }
 
   return (
-    <ErrorBoundary>
-      <NuqsAdapter>
-        <VarslingContextProvider>
-          <ApplikasjonContextProvider
-            brukerData={{
-              ...dekoratørHook.data,
-              roller: brukerHook.data?.roller ?? [],
-            }}
-          >
-            <KandidatNavigeringProvider>{children}</KandidatNavigeringProvider>
-          </ApplikasjonContextProvider>
-        </VarslingContextProvider>
-      </NuqsAdapter>
-    </ErrorBoundary>
+    <SWRConfig
+      value={{
+        revalidateOnFocus: true,
+        revalidateOnMount: true,
+        dedupingInterval: 0,
+        refreshInterval: 0,
+        provider: () => new Map(), // Forces a new cache for each page load
+      }}
+    >
+      <ErrorBoundary>
+        <NuqsAdapter>
+          <VarslingContextProvider>
+            <ApplikasjonContextProvider
+              brukerData={{
+                ...dekoratørHook.data,
+                roller: brukerHook.data?.roller ?? [],
+              }}
+            >
+              <KandidatNavigeringProvider>
+                {children}
+              </KandidatNavigeringProvider>
+            </ApplikasjonContextProvider>
+          </VarslingContextProvider>
+        </NuqsAdapter>
+      </ErrorBoundary>
+    </SWRConfig>
   );
 };
 

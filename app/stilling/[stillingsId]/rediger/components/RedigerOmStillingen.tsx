@@ -67,10 +67,10 @@ export const RedigerOmStillingen: React.FC<{
           </div>
 
           <div>
-            <VelgArbeidssted feltNavn='omStillingen.locationList' />
-            {errors.omStillingen?.categoryList && (
+            <VelgArbeidssted feltNavn='omStillingen' />
+            {errors.omStillingen?.adresser && (
               <ErrorMessage>
-                Velg minst én adresse eller lokasjon for stillingen.
+                {errors.omStillingen?.adresser?.message}
               </ErrorMessage>
             )}
           </div>
