@@ -26,7 +26,6 @@ export const ArbeidsgiverSchema = z.object({
       adresse: z.string(),
     })
     .nullable(),
-  naringskoder: z.array(z.string()).nullable(),
 });
 const ArbeidsgiverSchemaDTO = z.array(ArbeidsgiverSchema);
 

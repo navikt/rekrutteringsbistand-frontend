@@ -7,6 +7,7 @@ import {
   Detail,
   Heading,
 } from '@navikt/ds-react';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { formidleUsynligKandidatEndepunkt } from '../../../api/kandidat/formidleKandidat';
@@ -20,6 +21,7 @@ import { mapFormTilFormidling } from '../mapFormidling';
 import { FormidlingDataForm } from '../redigerFormidlingFormType';
 
 const FormidlingInnspurt = () => {
+  const router = useRouter();
   const { getValues, handleSubmit } = useFormContext<FormidlingDataForm>();
 
   const { brukerData, valgtNavKontor } = useApplikasjonContext();
@@ -143,7 +145,7 @@ const FormidlingInnspurt = () => {
 
     setSteg('Fullfører formidling');
 
-    // router.push(`/formidlinger/${publisertStillingData.stilling.uuid}`);
+    router.push(`/formidlinger/${publisertStillingData.stilling.uuid}`);
   };
 
   return (
@@ -212,15 +214,15 @@ const FormidlingInnspurt = () => {
                 {formidlingsVerdier.omFormidlingen?.categoryList?.[0]?.name}
               </BodyShort>
               <BodyShort>{formidlingsVerdier.omFormidlingen?.sektor}</BodyShort>
-              {/* <BodyShort>
-              {formidlingsVerdier.omFormidlingen?.adresseLokasjoner[0].adresse}
-            </BodyShort> */}
+              {/* <BodyShort> */}
+              {/* {formidlingsVerdier.omFormidlingen?} */}
+              {/* </BodyShort> */}
               <BodyShort>
                 {formidlingsVerdier.omFormidlingen?.ansettelsesform}
               </BodyShort>
-              {/* <BodyShort>
+              <BodyShort>
                 {formidlingsVerdier.omFormidlingen?.arbeidstidsordning}
-              </BodyShort> */}
+              </BodyShort>
               <BodyShort>
                 {formidlingsVerdier.omFormidlingen?.omfangKode}
               </BodyShort>
