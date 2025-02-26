@@ -64,7 +64,7 @@ const LagreIKandidatliste: React.FC<LagreIKandidatlisteProps> = ({
             innhold: 'Feil ved lagring av kandidater i kandidatliste',
           });
         }
-      } else if (selectedRows.length === 0) {
+      } else if (selectedRows.length !== 0) {
         const promises = selectedRows.map((stillingId) =>
           leggTilKandidater(kandidatnr, stillingId),
         );

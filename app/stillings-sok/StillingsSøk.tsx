@@ -141,7 +141,7 @@ const StillingsSøkLayout: React.FC<StillingsSøkProps> = ({
       }
     >
       <Tabs
-        defaultValue={portefølje || StillingsSøkPortefølje.VIS_ALLE}
+        value={portefølje || StillingsSøkPortefølje.VIS_ALLE}
         onChange={(e) => setPortefølje(e as StillingsSøkPortefølje)}
       >
         <Tabs.List>
