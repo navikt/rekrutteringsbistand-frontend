@@ -55,7 +55,6 @@ const VelgArbeidssted: React.FC<VelgArbeidsstedProps> = ({ feltNavn }) => {
           municipal: null,
           municipalCode: null,
           country: null,
-          adresseType: true,
         });
       }
     } else {
@@ -115,7 +114,6 @@ const VelgArbeidssted: React.FC<VelgArbeidsstedProps> = ({ feltNavn }) => {
                 municipal: null,
                 municipalCode: null,
                 country: null,
-                adresseType: true,
               });
             }}
             type='button'
@@ -129,9 +127,7 @@ const VelgArbeidssted: React.FC<VelgArbeidsstedProps> = ({ feltNavn }) => {
         <div className='my-4'>
           <VelgKommuneFylkeEllerLand
             lokasjoner={lokasjoner}
-            leggTilLokasjon={(lokasjon) =>
-              leggTilLokasjon({ ...lokasjon, adresseType: false })
-            }
+            leggTilLokasjon={(lokasjon) => leggTilLokasjon(lokasjon)}
             fjernLokasjonId={(id: string) => fjernLokasjonId(id)}
           />
         </div>

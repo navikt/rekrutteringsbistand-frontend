@@ -38,7 +38,10 @@ export const mapFormTilFormidling = (
         comments: stillingInfo.stilling.administration?.comments ?? null,
         remarks: stillingInfo.stilling.administration?.remarks ?? null,
       },
-      locationList: formData.omFormidlingen.locationList ?? null,
+      locationList: [
+        ...(formData.omFormidlingen.adresser ?? []),
+        ...(formData.omFormidlingen.lokasjoner ?? []),
+      ],
       source: 'DIR',
     },
   };

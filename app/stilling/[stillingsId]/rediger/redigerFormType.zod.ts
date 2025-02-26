@@ -4,10 +4,6 @@ import {
   LocationSchema,
 } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 
-export const LocationSchemaForm = LocationSchema.extend({
-  adresseType: z.boolean(),
-});
-
 export const OmVirksomhetenSchema = z.object({
   beskrivelse: z.string().optional().nullable(),
   employerhomepage: z.string().optional().nullable(),
@@ -65,7 +61,7 @@ export const OmStillingenSchema = z
       .string()
       .min(1, 'Beskrivelse om stillingen er påkrevd')
       .nullable(),
-    lokasjoner: z.array(LocationSchemaForm).optional().nullable(),
+    lokasjoner: z.array(LocationSchema).optional().nullable(),
     adresser: z.array(LocationSchema).optional().nullable(),
   })
   .superRefine((data, ctx) => {
