@@ -97,6 +97,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       };
     });
 
+    console.log('🎺 kandidater', kandidater);
     const leggTilKandidater = await leggTilKandidaterPåEtterregistrering({
       kandidater: kandidater,
       kandidatlisteId: kandidatlisteId,
