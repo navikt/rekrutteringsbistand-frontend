@@ -23,11 +23,13 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     // 1. Opprett stilling for å kunne berike data:
     const opprettStillingData =
       opprettStillingForFormidlingMapper(formidlingData);
+
     const nyEtterregistrering = await opprettEtterregistrering({
       nyEtterregistreringDTO: opprettStillingData,
       reqHeaders: request.headers,
     });
 
+    console.log('🎺 nyEtterregistrering', nyEtterregistrering);
     if (!nyEtterregistrering.success) {
       return NextResponse.json(
         { error: 'Klarte ikke å opprette formidling' },
@@ -36,12 +38,15 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
 
     const stillingsId = nyEtterregistrering.data?.stilling.uuid;
+
+    console.log('🎺 stillingsId', stillingsId);
     // 2. Hent ny stilling igjen for å unngå DB-lås:
     const nyFormidling = await hentEtterregistrering({
       stillingsId,
       reqHeaders: request.headers,
     });
 
+    console.log('🎺 nyFormidling', nyFormidling);
     if (!nyFormidling.success) {
       return NextResponse.json(
         { error: 'Klarte ikke å hente formidling' },
@@ -70,6 +75,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       reqHeaders: request.headers,
     });
 
+    console.log('🎺 kandidatlisteInfo', kandidatlisteInfo);
     if (!kandidatlisteInfo.success) {
       return NextResponse.json(
         { error: 'Klarte ikke å hente kandidatliste informasjon' },
@@ -78,6 +84,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
     const kandidatlisteId = kandidatlisteInfo.data.kandidatlisteId;
 
+    console.log('🎺 kandidatlisteId', kandidatlisteId);
     // 6. Legg til kandidater i kandidatliste
     const kandidater = formidlingData?.omKandidatene.map((kandidat) => {
       return {
@@ -94,14 +101,15 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       reqHeaders: request.headers,
     });
 
+    console.log('🎺 leggTilKandidater', leggTilKandidater);
     if (!leggTilKandidater.success) {
       return NextResponse.json(
         { error: 'Klarte ikke å hente kandidatliste informasjon' },
         { status: 500 },
       );
+    } else {
+      return NextResponse.json({ stillingsId: stillingsId });
     }
-
-    return NextResponse.json({ stillingsId: stillingsId });
   } catch (error) {
     console.error('Error creating formidling:', error);
     return NextResponse.json(
