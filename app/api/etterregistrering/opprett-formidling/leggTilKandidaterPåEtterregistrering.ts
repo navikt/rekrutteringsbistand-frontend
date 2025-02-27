@@ -1,5 +1,5 @@
 import { logger } from '@navikt/next-logger';
-import { KandidatAPI, StillingAPI } from '../../api-routes';
+import { KandidatAPI } from '../../api-routes';
 import { FormidlingUsynligKandidatDTO } from '../../kandidat/formidleKandidat';
 import { hentOboToken } from '../../oboToken';
 
@@ -28,7 +28,7 @@ export const leggTilKandidaterPåEtterregistrering = async ({
   try {
     const obo = await hentOboToken({
       headers: reqHeaders,
-      scope: StillingAPI.scope,
+      scope: KandidatAPI.scope,
     });
 
     if (!obo.ok) {
@@ -44,16 +44,26 @@ export const leggTilKandidaterPåEtterregistrering = async ({
     });
 
     try {
-      kandidater.forEach(async (kandidat) => {
-        await fetch(
-          `${KandidatAPI.api_url}/veileder/kandidatlister/${kandidatlisteId}/formidlingeravusynligkandidat`,
-          {
-            method: 'POST',
-            headers: headers,
-            body: JSON.stringify(kandidat),
-          },
-        );
-      });
+      await Promise.all(
+        kandidater.map(async (kandidat) => {
+          const response = await fetch(
+            `${KandidatAPI.api_url}/veileder/kandidatlister/${kandidatlisteId}/formidlingeravusynligkandidat`,
+            {
+              method: 'POST',
+              headers: headers,
+              body: JSON.stringify(kandidat),
+            },
+          );
+
+          if (!response.ok) {
+            throw new Error(
+              `Failed to add candidate: ${await response.text()}`,
+            );
+          }
+
+          return response;
+        }),
+      );
 
       return {
         success: true,

@@ -106,12 +106,12 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     console.log('🎺 leggTilKandidater', leggTilKandidater);
     if (!leggTilKandidater.success) {
       return NextResponse.json(
-        { error: 'Klarte ikke å hente kandidatliste informasjon' },
+        { error: 'Klarte ikke å legg til kandidater' },
         { status: 500 },
       );
-    } else {
-      return NextResponse.json({ stillingsId: stillingsId });
     }
+
+    return NextResponse.json({ stillingsId: stillingsId });
   } catch (error) {
     console.error('Error creating formidling:', error);
     return NextResponse.json(
