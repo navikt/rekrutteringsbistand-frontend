@@ -40,6 +40,10 @@ export const opprettEtterregistrering = async ({
     headers: reqHeaders,
     oboToken: obo.token,
   });
+  const jsonBody = JSON.stringify(nyEtterregistreringDTO);
+  nyeHeaders.set('Content-Length', Buffer.byteLength(jsonBody).toString());
+  nyeHeaders.set('Content-Type', 'application/json');
+
   const response = await fetch(
     `${StillingAPI.api_url}/rekrutteringsbistandstilling/ny-stilling`,
     {
