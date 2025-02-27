@@ -1,4 +1,4 @@
-import { Buildings2Icon, PencilIcon, PersonIcon } from '@navikt/aksel-icons';
+import { Buildings2Icon, PersonIcon } from '@navikt/aksel-icons';
 import {
   Alert,
   BodyShort,
@@ -49,7 +49,6 @@ const FormidlingInnspurt = () => {
       if (data.stillingsId) {
         router.push(`/formidlinger/${data.stillingsId}`);
       }
-      throw new Error('Fikk ikke stillingsId tilbake fra opprettelse');
     } catch (error) {
       logger.error('Kunne ikke opprette formidling', error);
       throw new Error('Kunne ikke opprette formidling');
@@ -62,7 +61,11 @@ const FormidlingInnspurt = () => {
         Innspurt
       </Heading>
       <BodyShort>Se over at alt stemmer og fullfør registreringen.</BodyShort>
-
+      {senderSkjema && (
+        <Alert variant='info'>
+          Oppretter formidling, dette kan ta litt tid.
+        </Alert>
+      )}
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box.New>
           <div className='flex justify-between items-center w-full mb-4'>
@@ -70,13 +73,13 @@ const FormidlingInnspurt = () => {
               Om kandidatene
             </Heading>
 
-            <Button
+            {/* <Button
               variant='tertiary'
               icon={<PencilIcon aria-hidden />}
               iconPosition='right'
             >
               Endre
-            </Button>
+            </Button> */}
           </div>
           <hr />
           <div className='space-y-4'>
@@ -99,13 +102,13 @@ const FormidlingInnspurt = () => {
             <Heading size='small' level='2'>
               Om arbeidsgiver og stilling
             </Heading>
-            <Button
+            {/* <Button
               variant='tertiary'
               icon={<PencilIcon aria-hidden />}
               iconPosition='right'
             >
               Endre
-            </Button>
+            </Button> */}
           </div>
           <hr />
           <div className='space-y-4'>
@@ -138,11 +141,6 @@ const FormidlingInnspurt = () => {
           </div>
         </Box.New>
 
-        {senderSkjema && (
-          <Alert variant='info'>
-            Oppretter formidling, dette kan ta litt tid.
-          </Alert>
-        )}
         <div className='mt-8'>
           <Button
             variant='primary'
