@@ -7,6 +7,7 @@ import {
   Detail,
   Heading,
 } from '@navikt/ds-react';
+import { logger } from '@navikt/next-logger';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
@@ -44,12 +45,15 @@ const FormidlingInnspurt = () => {
       );
 
       const data = await nyFormidling.json();
-      console.log('🎺 data', data);
-      router.push(`/formidlinger/${data}`);
+
+      if (data.stillingsId) {
+        router.push(`/formidlinger/${data.stillingsId}`);
+      }
+      throw new Error('Fikk ikke stillingsId tilbake fra opprettelse');
     } catch (error) {
-      console.log('🎺 error', error);
+      logger.error('Kunne ikke opprette formidling', error);
+      throw new Error('Kunne ikke opprette formidling');
     }
-    setSenderSkjema(false);
   };
 
   return (

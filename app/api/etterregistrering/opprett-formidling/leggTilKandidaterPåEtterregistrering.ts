@@ -46,7 +46,7 @@ export const leggTilKandidaterPåEtterregistrering = async ({
     try {
       kandidater.forEach(async (kandidat) => {
         await fetch(
-          `${KandidatAPI.internUrl}/veileder/kandidatlister/${kandidatlisteId}/formidlingeravusynligkandidat`,
+          `${KandidatAPI.api_url}/veileder/kandidatlister/${kandidatlisteId}/formidlingeravusynligkandidat`,
           {
             method: 'POST',
             headers: headers,
