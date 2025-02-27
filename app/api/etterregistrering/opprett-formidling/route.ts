@@ -20,6 +20,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     const formidlingData: FormidlingDataForm = await request.json();
 
+    console.log('🎺 formidlingData', formidlingData);
     // 1. Opprett stilling for å kunne berike data:
     const opprettStillingData =
       opprettStillingForFormidlingMapper(formidlingData);
