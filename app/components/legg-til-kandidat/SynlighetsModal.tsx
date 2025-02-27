@@ -7,7 +7,11 @@ const SynlighetsModal = ({ fødselsnummer }: { fødselsnummer: string }) => {
 
   return (
     <div>
-      <Button variant='tertiary' onClick={() => ref.current?.showModal()}>
+      <Button
+        variant='tertiary'
+        onClick={() => ref.current?.showModal()}
+        type='button'
+      >
         Hvorfor er ikke kandidaten synlig?
       </Button>
 

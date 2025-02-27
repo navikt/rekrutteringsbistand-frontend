@@ -63,7 +63,6 @@ const FormidlingLeggTilKandidat: React.FC<FormidlingLeggTilKandidatProps> = ({
           <LeggTilKandidater
             initielleKandidater={initielValgt}
             synlighetSomModal
-            måHaAktørId
             callBack={(kandidater) => {
               setValgteKandidater(kandidater);
             }}

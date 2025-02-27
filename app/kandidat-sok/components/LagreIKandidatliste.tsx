@@ -104,7 +104,9 @@ const LagreIKandidatliste: React.FC<LagreIKandidatlisteProps> = ({
         icon={<PersonPlusIcon aria-hidden />}
         disabled={markerteKandidater?.length === 0}
       >
-        Lagre i kandidatliste
+        {stillingsId
+          ? 'Lagre i stillingen sin kandidatliste'
+          : 'Lagre i kandidatliste'}
       </Button>
       <Modal
         width={600}

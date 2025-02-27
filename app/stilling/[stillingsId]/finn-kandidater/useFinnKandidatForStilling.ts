@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { StillingsDataDTO } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
-import { useKandidatSøkFilter } from '../../KandidaSokContext';
+import { useKandidatSøkFilter } from '../../../kandidat-sok/KandidaSokContext';
 
 export const useFinnKandidatForStilling = (
   stillingsData?: StillingsDataDTO,
