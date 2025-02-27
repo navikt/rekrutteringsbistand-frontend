@@ -113,9 +113,10 @@ export const testTilgangskontroll = (rolle: Roller) => {
       await expect(page.getByTestId('stilling-side')).toBeVisible();
 
       // Viser finn kandidater knapp
-      const finnKandidaterKnapp = page.getByRole('button', {
+      const finnKandidaterKnapp = page.getByRole('tab', {
         name: 'Finn kandidater',
       });
+
       if (ARBEIDSGIVERRETTET || JOBBSOKERRETTET) {
         await expect(finnKandidaterKnapp).toBeVisible();
       }
@@ -167,7 +168,7 @@ export const testTilgangskontroll = (rolle: Roller) => {
 
       if (ARBEIDSGIVERRETTET) {
         await expect(
-          page.getByRole('tab', { name: 'Kandidater' }),
+          page.getByRole('tab', { name: 'Kandidater', exact: true }),
         ).toBeVisible();
       }
     });
