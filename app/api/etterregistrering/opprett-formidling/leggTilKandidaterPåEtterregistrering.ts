@@ -46,22 +46,33 @@ export const leggTilKandidaterPåEtterregistrering = async ({
     try {
       await Promise.all(
         kandidater.map(async (kandidat) => {
-          const response = await fetch(
-            `${KandidatAPI.api_url}/veileder/kandidatlister/${kandidatlisteId}/formidlingeravusynligkandidat`,
-            {
-              method: 'POST',
-              headers: headers,
-              body: JSON.stringify(kandidat),
-            },
-          );
-
-          if (!response.ok) {
-            throw new Error(
-              `Failed to add candidate: ${await response.text()}`,
+          try {
+            const response = await fetch(
+              `${KandidatAPI.api_url}/veileder/kandidatlister/${kandidatlisteId}/formidlingeravusynligkandidat`,
+              {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify(kandidat),
+                // Add timeout to avoid hanging requests
+                signal: AbortSignal.timeout(15000), // 15 seconds timeout
+              },
             );
-          }
 
-          return response;
+            if (!response.ok) {
+              const errorText = await response.text();
+              throw new Error(
+                `Klarte ikke å legge til kandidat (${response.status}): ${errorText}`,
+              );
+            }
+
+            return response;
+          } catch (fetchError) {
+            // Catch and enhance error for this specific candidate
+            logger.error(
+              `Feil ved formidling av kandidat ${kandidat.fnr?.substring(0, 6)}...: ${fetchError instanceof Error ? fetchError.message : String(fetchError)}`,
+            );
+            throw fetchError; // Re-throw to fail the Promise.all
+          }
         }),
       );
 
@@ -69,7 +80,9 @@ export const leggTilKandidaterPåEtterregistrering = async ({
         success: true,
       };
     } catch (error) {
-      logger.error('Klarte ikke å formidle kandidater ', error);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      logger.error(`Klarte ikke å formidle kandidater: ${errorMessage}`, error);
       return {
         success: false,
         error: 'Klarte ikke å formidle kandidater',
