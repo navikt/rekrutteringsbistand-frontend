@@ -1,5 +1,5 @@
 import { StillingAPI } from '../../api-routes';
-import { hentOboToken } from '../../oboToken';
+import { hentOboToken, setHeaderToken } from '../../oboToken';
 import { OpprettNyStillingDTO } from '../../stilling/ny-stilling/dto';
 import { StillingsDataDTO } from '../../stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 
@@ -36,14 +36,16 @@ export const opprettEtterregistrering = async ({
     };
   }
 
+  const nyeHeaders = setHeaderToken({
+    headers: reqHeaders,
+    oboToken: obo.token,
+  });
+
   const response = await fetch(
     `${StillingAPI.api_url}/rekrutteringsbistandstilling/ny-stilling`,
     {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${obo.token}`,
-      },
+      headers: nyeHeaders,
       body: JSON.stringify(nyEtterregistreringDTO),
     },
   );
@@ -52,7 +54,7 @@ export const opprettEtterregistrering = async ({
     const errorResponse = await response.json();
     return {
       success: false,
-      error: errorResponse.error,
+      error: errorResponse,
     };
   }
 
