@@ -1,6 +1,6 @@
 import { logger } from '@navikt/next-logger';
 import { StillingAPI } from '../../api-routes';
-import { hentOboToken, setHeaderToken } from '../../oboToken';
+import { hentOboToken } from '../../oboToken';
 import { StillingsDataDTO } from '../../stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 
 interface oppdaterEtterregistreringProps {
@@ -37,15 +37,15 @@ export const oppdaterEtterregistrering = async ({
       };
     }
 
-    const nyeHeaders = setHeaderToken({
-      headers: reqHeaders,
-      oboToken: obo.token,
+    const headers = new Headers({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${obo.token}`,
     });
     const response = await fetch(
       `${StillingAPI.api_url}/rekrutteringsbistandstilling/oppdater-stilling`,
       {
         method: 'PUT',
-        headers: nyeHeaders,
+        headers: headers,
         body: JSON.stringify(nyData),
       },
     );

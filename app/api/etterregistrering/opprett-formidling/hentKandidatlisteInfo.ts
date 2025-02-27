@@ -1,7 +1,7 @@
 import { logger } from '@navikt/next-logger';
 import { KandidatAPI } from '../../api-routes';
 import { KandidatlisteInfoDTO } from '../../kandidat/useKandidatlisteInfo';
-import { hentOboToken, setHeaderToken } from '../../oboToken';
+import { hentOboToken } from '../../oboToken';
 
 interface hentKandidatlisteInfoProps {
   stillingsId: string;
@@ -37,15 +37,15 @@ export const hentKandidatlisteInfo = async ({
       };
     }
 
-    const nyeHeaders = setHeaderToken({
-      headers: reqHeaders,
-      oboToken: obo.token,
+    const headers = new Headers({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${obo.token}`,
     });
     const response = await fetch(
       `${KandidatAPI.api_url}/veileder/stilling/${stillingsId}/kandidatlisteinfo`,
       {
         method: 'GET',
-        headers: nyeHeaders,
+        headers: headers,
       },
     );
 

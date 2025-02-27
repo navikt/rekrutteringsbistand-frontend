@@ -1,7 +1,7 @@
 import { logger } from '@navikt/next-logger';
 import { KandidatAPI, StillingAPI } from '../../api-routes';
 import { FormidlingUsynligKandidatDTO } from '../../kandidat/formidleKandidat';
-import { hentOboToken, setHeaderToken } from '../../oboToken';
+import { hentOboToken } from '../../oboToken';
 
 interface leggTilKandidaterPåEtterregistreringProps {
   kandidater: FormidlingUsynligKandidatDTO[];
@@ -38,9 +38,9 @@ export const leggTilKandidaterPåEtterregistrering = async ({
       };
     }
 
-    const nyeHeaders = setHeaderToken({
-      headers: reqHeaders,
-      oboToken: obo.token,
+    const headers = new Headers({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${obo.token}`,
     });
 
     try {
@@ -49,7 +49,7 @@ export const leggTilKandidaterPåEtterregistrering = async ({
           `${KandidatAPI.internUrl}/veileder/kandidatlister/${kandidatlisteId}/formidlingeravusynligkandidat`,
           {
             method: 'POST',
-            headers: nyeHeaders,
+            headers: headers,
             body: JSON.stringify(kandidat),
           },
         );
