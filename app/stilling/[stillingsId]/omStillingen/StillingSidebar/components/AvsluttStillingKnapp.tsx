@@ -1,5 +1,6 @@
 import { EyeSlashIcon, TasklistIcon } from '@navikt/aksel-icons';
 import { BodyLong, Button, Modal } from '@navikt/ds-react';
+import { logger } from '@navikt/next-logger';
 import * as React from 'react';
 import { setKandidatlisteStatus } from '../../../../../api/kandidat/setKandidatlisteStatus';
 import { oppdaterStilling } from '../../../../../api/stilling/oppdater-stilling/oppdaterStilling';
@@ -40,7 +41,7 @@ const AvsluttStillingKnapp: React.FC<AvsluttStillingKnappProps> = ({
 
       refetch();
     } catch (error) {
-      console.error('Error while finalizing the position:', error);
+      logger.error('Feil ved oppdatering av stilling', error);
     }
     setLoading(false);
     ref.current?.close();

@@ -32,7 +32,6 @@ const RedigerOmFormidlingen: React.FC<RedigerOmFormidlingenProps> = ({
     e.preventDefault();
     const isValid = await trigger('omFormidlingen', { shouldFocus: true });
 
-    console.log(errors);
     if (isValid) {
       nesteSteg();
     }

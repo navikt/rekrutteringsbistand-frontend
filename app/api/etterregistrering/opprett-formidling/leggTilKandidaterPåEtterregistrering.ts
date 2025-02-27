@@ -46,7 +46,6 @@ export const leggTilKandidaterPåEtterregistrering = async ({
     try {
       await Promise.all(
         kandidater.map(async (kandidat) => {
-          console.log(kandidat);
           try {
             const response = await fetch(
               `${KandidatAPI.api_url}/veileder/kandidatlister/${kandidatlisteId}/formidlingeravusynligkandidat`,

@@ -1,5 +1,6 @@
 import { format } from 'date-fns';
 import { StillingsDataDTO } from '../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
+import { StillingsStatus } from '../../stilling/stilling-typer';
 import { FormidlingDataForm } from './redigerFormidlingFormType';
 
 export const mapFormTilFormidling = (
@@ -13,7 +14,8 @@ export const mapFormTilFormidling = (
     stilling: {
       ...stillingInfo.stilling,
       categoryList: formData.omFormidlingen?.categoryList ?? [],
-      status: 'ACTIVE',
+      // status: 'ACTIVE',
+      status: StillingsStatus.Stoppet,
       firstPublished: true,
       properties: {
         ...stillingInfo.stilling.properties,

@@ -24,6 +24,7 @@ import {
 import { useVisVarsling } from '../../../../../components/varsling/Varsling';
 import { Stillingskategori } from '../../../../stilling-typer';
 import css from './SendSmsModal.module.css';
+import { logger } from '@navikt/next-logger';
 
 type Props = {
   markerteKandidater: kandidaterSchemaDTO[];
@@ -94,7 +95,7 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
       fjernAllMarkering();
       setVis(false);
     } catch (error) {
-      console.error('Failed to send SMS:', error);
+      logger.error('Klarte ikke å sende SMS:', error);
       visVarsling({
         innhold:
           error instanceof Error
