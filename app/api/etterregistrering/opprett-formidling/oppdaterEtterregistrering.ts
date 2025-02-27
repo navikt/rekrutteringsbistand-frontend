@@ -57,10 +57,10 @@ export const oppdaterEtterregistrering = async ({
         error: errorResponse.error,
       };
     }
-
+    const data = await response.json();
     return {
       success: true,
-      data: await response.json(),
+      data,
     };
   } catch (error) {
     logger.error(

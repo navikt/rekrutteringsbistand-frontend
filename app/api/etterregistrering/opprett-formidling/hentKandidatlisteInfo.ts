@@ -56,10 +56,10 @@ export const hentKandidatlisteInfo = async ({
           '[Opprett etterregistrering] Feil respons ved henting av kandidatlisteinfo',
       };
     }
-
+    const data = await response.json();
     return {
       success: true,
-      data: await response.json(),
+      data,
     };
   } catch (error) {
     logger.error(

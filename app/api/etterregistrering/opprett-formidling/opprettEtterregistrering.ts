@@ -59,9 +59,10 @@ export const opprettEtterregistrering = async ({
       };
     }
 
+    const data = await response.json();
     return {
       success: true,
-      data: await response.json(),
+      data,
     };
   } catch (error) {
     logger.error(

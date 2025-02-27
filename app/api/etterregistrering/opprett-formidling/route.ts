@@ -105,7 +105,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   } catch (error) {
     console.error('Error creating formidling:', error);
     return NextResponse.json(
-      { error: 'Failed to create formidling' },
+      { error: 'Klarte ikke å opprette etterregistrering' },
       { status: 500 },
     );
   }
