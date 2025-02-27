@@ -11,7 +11,7 @@ export const formidleKandidatEndepunkt = () => ``;
 export const formidleUsynligKandidatEndepunkt = (kandidatlisteId: string) =>
   `${KandidatAPI.internUrl}/veileder/kandidatlister/${kandidatlisteId}/formidlingeravusynligkandidat`;
 
-export interface EndreKandidatUtfallProps {
+export interface FormidlingUsynligKandidatDTO {
   fnr: string;
   fåttJobb: boolean;
   navKontor: string;

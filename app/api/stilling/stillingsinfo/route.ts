@@ -1,4 +1,4 @@
-import { proxyWithOBO } from '../../../../util/oboProxy';
+import { proxyWithOBO } from '../../oboProxy';
 
 import { NextRequest } from 'next/server';
 import { StillingAPI } from '../../api-routes';

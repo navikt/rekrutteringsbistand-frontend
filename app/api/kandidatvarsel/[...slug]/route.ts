@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
-import { proxyWithOBO } from '../../../../util/oboProxy';
 import { KandidatvarselAPI } from '../../api-routes';
+import { proxyWithOBO } from '../../oboProxy';
 
 export async function GET(req: NextRequest) {
   return proxyWithOBO(KandidatvarselAPI, req);

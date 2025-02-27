@@ -35,6 +35,9 @@ importers:
       '@navikt/navspa':
         specifier: 6.2.0
         version: 6.2.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      '@navikt/next-api-proxy':
+        specifier: ^4.1.3
+        version: 4.1.3(next@15.1.7(@babel/core@7.26.9)(@opentelemetry/api@1.9.0)(@playwright/test@1.50.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))
       '@navikt/next-logger':
         specifier: ^2.0.0
         version: 2.0.0(next@15.1.7(@babel/core@7.26.9)(@opentelemetry/api@1.9.0)(@playwright/test@1.50.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(pino@9.6.0)
@@ -976,6 +979,11 @@ packages:
     peerDependencies:
       react: '>=16.6.0 || 17 || 18'
       react-dom: '>=16.6.0 || 17 || 18'
+
+  '@navikt/next-api-proxy@4.1.3':
+    resolution: {integrity: sha512-aHd+nebE1nNk4nrujF2J738rPHVLzFXhp6pR1kjIYEp6x0C+nNzs/956vAF8xPzpDdcTJZT1Irffy0PJyPA9Zw==, tarball: https://npm.pkg.github.com/download/@navikt/next-api-proxy/4.1.3/fa684c85163b5d04ffe47ae13b46cea60a667286}
+    peerDependencies:
+      next: 14 || 15
 
   '@navikt/next-logger@2.0.0':
     resolution: {integrity: sha512-XKHmsN/UwuM4C/pQY9Dl+v9ju0hT6y/MDTLL5qtCz1guBHxhRbUCuFTk2ysT/AppbiK6BpFZUALYs+kVonLfxQ==, tarball: https://npm.pkg.github.com/download/@navikt/next-logger/2.0.0/2635e5dce4180196bfeb61ad6fd51f63b7dc1670}
@@ -4380,6 +4388,10 @@ snapshots:
       loadjs: 4.3.0
       react: 19.0.0
       react-dom: 19.0.0(react@19.0.0)
+
+  '@navikt/next-api-proxy@4.1.3(next@15.1.7(@babel/core@7.26.9)(@opentelemetry/api@1.9.0)(@playwright/test@1.50.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))':
+    dependencies:
+      next: 15.1.7(@babel/core@7.26.9)(@opentelemetry/api@1.9.0)(@playwright/test@1.50.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
 
   '@navikt/next-logger@2.0.0(next@15.1.7(@babel/core@7.26.9)(@opentelemetry/api@1.9.0)(@playwright/test@1.50.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(pino@9.6.0)':
     dependencies:

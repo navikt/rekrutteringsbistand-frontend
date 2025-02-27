@@ -24,6 +24,7 @@
     "@navikt/ds-tailwind": "^7.14.2",
     "@navikt/fnrvalidator": "^2.1.5",
     "@navikt/navspa": "6.2.0",
+    "@navikt/next-api-proxy": "^4.1.3",
     "@navikt/next-logger": "^2.0.0",
     "@navikt/oasis": "^3.7.0",
     "@tailwindcss/postcss": "^4.0.9",

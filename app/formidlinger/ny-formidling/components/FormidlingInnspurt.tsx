@@ -10,14 +10,7 @@ import {
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { formidleUsynligKandidatEndepunkt } from '../../../api/kandidat/formidleKandidat';
-import { kandidatlisteEndepunkt } from '../../../api/kandidat/useKandidatliste';
-import { kandidatlisteInfoEndepunkt } from '../../../api/kandidat/useKandidatlisteInfo';
-import { OpprettNyStillingDTO } from '../../../api/stilling/ny-stilling/dto';
-import { opprettNyStillingEndepunkt } from '../../../api/stilling/oppdater-stilling/oppdaterStilling';
 import { useApplikasjonContext } from '../../../ApplikasjonContext';
-import { Stillingskategori } from '../../../stilling/stilling-typer';
-import { mapFormTilFormidling } from '../mapFormidling';
 import { FormidlingDataForm } from '../redigerFormidlingFormType';
 
 const FormidlingInnspurt = () => {
@@ -27,7 +20,6 @@ const FormidlingInnspurt = () => {
   const { brukerData, valgtNavKontor } = useApplikasjonContext();
 
   const [senderSkjema, setSenderSkjema] = useState(false);
-  const [steg, setSteg] = useState('Oppretter formidling');
   const formidlingsVerdier = getValues();
 
   const onSubmit = async (data: FormidlingDataForm) => {
@@ -39,113 +31,25 @@ const FormidlingInnspurt = () => {
       navKontor: valgtNavKontor,
     };
 
-    const opprettStillingDto: OpprettNyStillingDTO = {
-      kategori: Stillingskategori.Formidling,
-      stilling: {
-        administration: {
-          status: 'PENDING',
-          reportee: formidlingData.reportee,
-          navIdent: formidlingData.navIdent,
-        },
-        createdBy: 'pam-rekrutteringsbistand',
-        updatedBy: 'pam-rekrutteringsbistand',
-        source: 'DIR',
-        medium: 'DIR',
-        businessName: formidlingData.omFormidlingen?.organisasjon?.navn ?? '',
-        privacy: 'INTERNAL_NOT_SHOWN',
-        employer: {
-          orgnr:
-            formidlingData.omFormidlingen?.organisasjon?.organisasjonsnummer ??
-            '',
-          name: formidlingData.omFormidlingen?.organisasjon?.navn ?? '',
-          location: {
-            address:
-              formidlingData.omFormidlingen?.organisasjon?.adresse?.adresse ??
-              '',
-            postalCode:
-              formidlingData.omFormidlingen?.organisasjon?.adresse
-                ?.postnummer ?? '',
-            county:
-              formidlingData.omFormidlingen?.organisasjon?.adresse?.kommune ??
-              '',
-            country:
-              formidlingData.omFormidlingen?.organisasjon?.adresse?.land ?? '',
-            municipal:
-              formidlingData.omFormidlingen?.organisasjon?.adresse
-                ?.kommunenummer ?? '',
-            city:
-              formidlingData.omFormidlingen?.organisasjon?.adresse?.poststed ??
-              '',
+    try {
+      const nyFormidling = await fetch(
+        '/api/etterregistrering/opprett-formidling',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
           },
+          body: JSON.stringify(formidlingData),
         },
-      },
-    };
-
-    const opprettStilling = await fetch(`/api/stilling/ny-stilling`, {
-      method: 'POST',
-      body: JSON.stringify(opprettStillingDto),
-    });
-    const nyStillingsData = await opprettStilling.json();
-
-    setSteg('Henter opprettet formidling');
-    const hentStilling = await fetch(
-      `/api/stilling/rekrutteringsbistandstilling/${nyStillingsData.stilling.uuid}`,
-      {
-        method: 'GET',
-      },
-    );
-    const hentStillingData = await hentStilling.json();
-
-    setSteg('Oppdaterer formidling');
-    const oppdatertFormidlingData = mapFormTilFormidling(
-      {
-        ...formidlingData,
-        navKontor: formidlingData.navKontor?.navKontor ?? '',
-      },
-      hentStillingData,
-    );
-    const publisertStilling = await fetch(opprettNyStillingEndepunkt, {
-      method: 'PUT',
-      body: JSON.stringify(oppdatertFormidlingData),
-    });
-    const publisertStillingData = await publisertStilling.json();
-
-    setSteg('Verifiser at kandidatliste er opprettet');
-
-    await new Promise((resolve) => setTimeout(resolve, 3000));
-
-    const kandidatlisteInfo = await fetch(
-      kandidatlisteInfoEndepunkt(publisertStillingData.stilling.uuid)!,
-      { method: 'GET' },
-    );
-    const kandidatListeIdRespons = await kandidatlisteInfo.json();
-    const kandidatlisteId = kandidatListeIdRespons.kandidatlisteId;
-
-    formidlingData?.omKandidatene.map(async (kandidat: any) => {
-      setSteg(
-        `Setter kandidat ${kandidat.navn.fornavn} ${kandidat.navn.etternavn} til fått jobben`,
       );
-      await new Promise((resolve) => setTimeout(resolve, 500));
 
-      return fetch(formidleUsynligKandidatEndepunkt(kandidatlisteId), {
-        method: 'POST',
-        body: JSON.stringify({
-          fnr: kandidat.fnr,
-          fåttJobb: true,
-          navKontor: valgtNavKontor?.navKontor ?? '',
-          stillingsId: publisertStillingData.stilling.uuid,
-        }),
-      }).then(async () => {
-        // Hent kandidatliste på nytt for å unngå låsing
-        await fetch(
-          kandidatlisteEndepunkt(publisertStillingData.stilling.uuid)!,
-        );
-      });
-    });
-
-    setSteg('Fullfører formidling');
-
-    router.push(`/formidlinger/${publisertStillingData.stilling.uuid}`);
+      const data = await nyFormidling.json();
+      console.log('🎺 data', data);
+      router.push(`/formidlinger/${data}`);
+    } catch (error) {
+      console.log('🎺 error', error);
+    }
+    setSenderSkjema(false);
   };
 
   return (
@@ -233,7 +137,6 @@ const FormidlingInnspurt = () => {
         {senderSkjema && (
           <Alert variant='info'>
             Oppretter formidling, dette kan ta litt tid.
-            <ul>{steg && <li>{steg}...</li>}</ul>
           </Alert>
         )}
         <div className='mt-8'>
