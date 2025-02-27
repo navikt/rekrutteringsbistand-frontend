@@ -42,7 +42,7 @@ export const opprettEtterregistrering = async ({
   });
 
   const response = await fetch(
-    `${StillingAPI.api_url}/rekrutteringsbistandstilling/ny-stilling`,
+    `${StillingAPI.api_url}/rekrutteringsbistandstilling`,
     {
       method: 'POST',
       headers: headers,
