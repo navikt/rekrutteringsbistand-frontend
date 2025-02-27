@@ -64,7 +64,7 @@ export const leggTilKandidaterPåEtterregistrering = async ({
                 `Klarte ikke å legge til kandidat (${response.status}): ${errorText}`,
               );
             }
-
+            await new Promise((resolve) => setTimeout(resolve, 500));
             return response;
           } catch (fetchError) {
             // Catch and enhance error for this specific candidate
