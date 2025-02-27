@@ -25,6 +25,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const opprettStillingData =
       opprettStillingForFormidlingMapper(formidlingData);
 
+    console.log('🎺 opprettStillingData', opprettStillingData);
     const nyEtterregistrering = await opprettEtterregistrering({
       nyEtterregistreringDTO: opprettStillingData,
       reqHeaders: request.headers,
