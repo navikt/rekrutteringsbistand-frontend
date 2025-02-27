@@ -42,7 +42,7 @@ export const oppdaterEtterregistrering = async ({
       Authorization: `Bearer ${obo.token}`,
     });
     const response = await fetch(
-      `${StillingAPI.api_url}/rekrutteringsbistandstilling/oppdater-stilling`,
+      `${StillingAPI.api_url}/rekrutteringsbistandstilling`,
       {
         method: 'PUT',
         headers: headers,
