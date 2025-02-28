@@ -146,30 +146,32 @@ const StillingsKandidaterTabell: React.FC<{
     <Table sort={sort} onSortChange={tableSort}>
       <Table.Header>
         <Table.Row>
-          <Table.DataCell />
           {markerteKandidater && setMarkerteKandidater && (
-            <Table.DataCell>
-              <Checkbox
-                disabled={lukketKandidatliste}
-                checked={markerteKandidater.length === kandidater.length}
-                indeterminate={
-                  markerteKandidater.length > 0 &&
-                  markerteKandidater.length !== kandidater.length
-                }
-                onChange={() => {
-                  if (markerteKandidater.length) {
-                    setMarkerteKandidater([]);
-                  } else {
-                    setMarkerteKandidater(
-                      kandidater.filter((k) => k.fodselsnr !== null),
-                    );
+            <>
+              <Table.DataCell />
+              <Table.DataCell>
+                <Checkbox
+                  disabled={lukketKandidatliste}
+                  checked={markerteKandidater.length === kandidater.length}
+                  indeterminate={
+                    markerteKandidater.length > 0 &&
+                    markerteKandidater.length !== kandidater.length
                   }
-                }}
-                hideLabel
-              >
-                Velg alle rader
-              </Checkbox>
-            </Table.DataCell>
+                  onChange={() => {
+                    if (markerteKandidater.length) {
+                      setMarkerteKandidater([]);
+                    } else {
+                      setMarkerteKandidater(
+                        kandidater.filter((k) => k.fodselsnr !== null),
+                      );
+                    }
+                  }}
+                  hideLabel
+                >
+                  Velg alle rader
+                </Checkbox>
+              </Table.DataCell>
+            </>
           )}
           <Table.ColumnHeader sortable sortKey='etternavn' scope='col'>
             Navn
