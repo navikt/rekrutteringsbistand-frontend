@@ -262,7 +262,7 @@ export const testTilgangskontroll = (rolle: Roller) => {
     });
 
     test('6. Formidlinger', async ({ page }) => {
-      await page.goto('http://localhost:1337/formidlinger');
+      await page.goto('http://localhost:1337/formidling');
 
       // Viser formidlinger
       const formidlinger = await page.getByRole('heading', {

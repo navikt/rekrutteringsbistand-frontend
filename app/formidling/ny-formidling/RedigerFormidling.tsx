@@ -116,7 +116,7 @@ const RedigerFormidling: React.FC = () => {
         </div>
         <div className='sticky bottom-4 self-top'>
           <Button
-            onClick={() => router.push('/formidlinger')}
+            onClick={() => router.push('/formidling')}
             variant='tertiary'
             icon={<TrashIcon aria-hidden />}
             iconPosition='left'

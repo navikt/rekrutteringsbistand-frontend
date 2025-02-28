@@ -103,7 +103,7 @@ const StillingsSøkLayout: React.FC<StillingsSøkProps> = ({
                     Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
                   ]}
                 >
-                  <Link href={'/formidlinger/ny-formidling'}>
+                  <Link href={'/formidling/ny-formidling'}>
                     <Button
                       icon={<PlusCircleIcon aria-hidden />}
                       variant='secondary'
