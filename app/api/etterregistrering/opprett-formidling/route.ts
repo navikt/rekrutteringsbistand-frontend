@@ -93,7 +93,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       kandidater: kandidater,
       kandidatlisteId: kandidatlisteId,
       reqHeaders: request.headers,
-      stillingsId: stillingsId,
     });
 
     if (!leggTilKandidater.success) {

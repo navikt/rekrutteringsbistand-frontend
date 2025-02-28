@@ -7,7 +7,6 @@ interface leggTilKandidaterPåEtterregistreringProps {
   kandidater: FormidlingUsynligKandidatDTO[];
   kandidatlisteId: string;
   reqHeaders: Headers;
-  stillingsId: string;
 }
 
 interface Success {
@@ -64,7 +63,7 @@ export const leggTilKandidaterPåEtterregistrering = async ({
             );
           }
 
-          await new Promise((resolve) => setTimeout(resolve, 500));
+          // await new Promise((resolve) => setTimeout(resolve, 500));
 
           // Refresh candidate list info to avoid concurrent modification errors
           // await hentKandidatlisteInfo({

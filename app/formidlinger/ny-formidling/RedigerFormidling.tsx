@@ -51,7 +51,6 @@ const RedigerFormidling: React.FC = () => {
     aktivtSteg as RedigerFormidlingSteg,
   );
 
-  console.log('🎺 aktivtStegIndex', aktivtStegIndex);
   return (
     <Box>
       <div className='flex flex-row'>
