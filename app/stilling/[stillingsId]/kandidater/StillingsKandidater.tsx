@@ -21,12 +21,6 @@ import SendSmsModal from './components/SendSMS/SendSmsModal';
 import { useStillingsKandidaterFilter } from './StillingsKandidaterFilterContext';
 import StillingsKandidaterTabell from './StillingsKandidaterTabell';
 
-// export enum KandidatHendelseValg {
-//   PRESENTERT = 'Presentert',
-//   TIL_INTERVJU = 'Til intervju',
-//   FATT_JOBBEN = 'Fått jobb',
-// }
-
 const StillingsKandidater: React.FC = () => {
   const { brukerData } = useApplikasjonContext();
   const { stillingsData, kandidatlisteInfo } = useStillingsContext();
@@ -47,14 +41,6 @@ const StillingsKandidater: React.FC = () => {
 
   const reFetchKandidatliste = () => kandidatlisteHook.mutate();
   const [search, setSearch] = React.useState('');
-
-  // Mutate beskjeder every 3 second: //TODO aktuelt?
-  // React.useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     beskjeder.mutate();
-  //   }, 3000);
-  //   return () => clearInterval(interval);
-  // }, [beskjeder]);
 
   const onOvertaStilling = async () => {
     await oppdaterStilling({

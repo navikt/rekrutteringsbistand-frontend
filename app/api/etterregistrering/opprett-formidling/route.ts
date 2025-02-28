@@ -1,7 +1,7 @@
 import { logger } from '@navikt/next-logger';
 import { NextRequest, NextResponse } from 'next/server';
-import { mapFormTilFormidling } from '../../../formidlinger/ny-formidling/mapFormidling';
-import { FormidlingDataForm } from '../../../formidlinger/ny-formidling/redigerFormidlingFormType';
+import { mapFormTilFormidling } from '../../../formidling/ny-formidling/mapFormidling';
+import { FormidlingDataForm } from '../../../formidling/ny-formidling/redigerFormidlingFormType';
 import { hentEtterregistrering } from './hentEtterregistrering';
 import { hentKandidatlisteInfo } from './hentKandidatlisteInfo';
 import { leggTilKandidaterPåEtterregistrering } from './leggTilKandidaterPåEtterregistrering';

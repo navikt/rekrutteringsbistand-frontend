@@ -26,13 +26,13 @@ import { useStillingsKandidaterFilter } from './StillingsKandidaterFilterContext
 export type KandidatHendelseTyper = KandidatutfallTyper | UtfallsEndringTyper;
 
 const StillingsKandidaterTabell: React.FC<{
-  markerteKandidater: kandidaterSchemaDTO[];
-  setMarkerteKandidater: (val: kandidaterSchemaDTO[]) => void;
+  markerteKandidater?: kandidaterSchemaDTO[];
+  setMarkerteKandidater?: (val: kandidaterSchemaDTO[]) => void;
   search: string;
   kandidatliste: kandidatlisteSchemaDTO;
   stillingsId: string;
-  forespurteKandidater: ForespurteOmDelingAvCvDTO;
-  beskjeder: Record<string, Sms>;
+  forespurteKandidater?: ForespurteOmDelingAvCvDTO;
+  beskjeder?: Record<string, Sms>;
   reFetchKandidatliste: () => void;
   lukketKandidatliste: boolean;
 }> = ({
@@ -49,14 +49,16 @@ const StillingsKandidaterTabell: React.FC<{
   const [sort, setSort] = React.useState<TableSortState<kandidaterSchemaDTO>>();
 
   const { status, hendelse } = useStillingsKandidaterFilter();
-  const toggleSelectedRow = (kandidat: kandidaterSchemaDTO) =>
-    setMarkerteKandidater(
-      markerteKandidater.includes(kandidat)
-        ? markerteKandidater.filter(
-            (kandidat) => kandidat.fodselsnr !== kandidat.fodselsnr,
-          )
-        : [...markerteKandidater, kandidat],
-    );
+  const toggleSelectedRow = (kandidat: kandidaterSchemaDTO) => {
+    if (setMarkerteKandidater && markerteKandidater)
+      setMarkerteKandidater(
+        markerteKandidater.includes(kandidat)
+          ? markerteKandidater.filter(
+              (kandidat) => kandidat.fodselsnr !== kandidat.fodselsnr,
+            )
+          : [...markerteKandidater, kandidat],
+      );
+  };
 
   const aktivtFilter =
     search.length > 0 || status.length > 0 || hendelse.length > 0;
@@ -85,10 +87,12 @@ const StillingsKandidaterTabell: React.FC<{
               kandidat.status === utfall ||
               kandidat.utfallsendringer.some((h) => h.utfall === utfall) ||
               (kandidat.aktørid &&
+                forespurteKandidater &&
                 forespurteKandidater[kandidat.aktørid]?.some(
                   (forespørsel) => forespørsel.tilstand === utfall,
                 )) ||
               (kandidat.fodselsnr &&
+                beskjeder &&
                 beskjeder[kandidat.fodselsnr]?.eksternStatus === utfall),
           );
 
@@ -143,28 +147,30 @@ const StillingsKandidaterTabell: React.FC<{
       <Table.Header>
         <Table.Row>
           <Table.DataCell />
-          <Table.DataCell>
-            <Checkbox
-              disabled={lukketKandidatliste}
-              checked={markerteKandidater.length === kandidater.length}
-              indeterminate={
-                markerteKandidater.length > 0 &&
-                markerteKandidater.length !== kandidater.length
-              }
-              onChange={() => {
-                if (markerteKandidater.length) {
-                  setMarkerteKandidater([]);
-                } else {
-                  setMarkerteKandidater(
-                    kandidater.filter((k) => k.fodselsnr !== null),
-                  );
+          {markerteKandidater && setMarkerteKandidater && (
+            <Table.DataCell>
+              <Checkbox
+                disabled={lukketKandidatliste}
+                checked={markerteKandidater.length === kandidater.length}
+                indeterminate={
+                  markerteKandidater.length > 0 &&
+                  markerteKandidater.length !== kandidater.length
                 }
-              }}
-              hideLabel
-            >
-              Velg alle rader
-            </Checkbox>
-          </Table.DataCell>
+                onChange={() => {
+                  if (markerteKandidater.length) {
+                    setMarkerteKandidater([]);
+                  } else {
+                    setMarkerteKandidater(
+                      kandidater.filter((k) => k.fodselsnr !== null),
+                    );
+                  }
+                }}
+                hideLabel
+              >
+                Velg alle rader
+              </Checkbox>
+            </Table.DataCell>
+          )}
           <Table.ColumnHeader sortable sortKey='etternavn' scope='col'>
             Navn
           </Table.ColumnHeader>
@@ -189,7 +195,8 @@ const StillingsKandidaterTabell: React.FC<{
             />
           ))}
         {kandidater.map((kandidat, i) => {
-          const beskjedForKandidat = beskjeder[kandidat.fodselsnr ?? ''];
+          const beskjedForKandidat =
+            beskjeder && beskjeder[kandidat.fodselsnr ?? ''];
 
           const forespørselCvForKandidat =
             kandidat.aktørid && forespurteKandidater
@@ -206,7 +213,7 @@ const StillingsKandidaterTabell: React.FC<{
               markerteKandidater={markerteKandidater}
               kandidat={kandidat}
               forespørselCvForKandidat={forespørselCvForKandidat}
-              beskjedForKandidat={beskjedForKandidat}
+              beskjedForKandidat={beskjedForKandidat ?? null}
               reFetchKandidatliste={reFetchKandidatliste}
             />
           );

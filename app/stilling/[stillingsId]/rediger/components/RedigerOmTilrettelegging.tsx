@@ -1,7 +1,7 @@
 import { Checkbox, CheckboxGroup, Heading } from '@navikt/ds-react';
 import * as React from 'react';
 import { useFormContext } from 'react-hook-form';
-import { FormidlingDataForm } from '../../../../formidlinger/ny-formidling/redigerFormidlingFormType';
+import { FormidlingDataForm } from '../../../../formidling/ny-formidling/redigerFormidlingFormType';
 import { InkluderingsTag } from '../../omStillingen/StillingSidebar/StillingInkludering';
 import { StillingsDataForm } from '../redigerFormType.zod';
 import StegNavigering from './StegNavigering';

@@ -30,14 +30,14 @@ export const RedigerOmStillingen: React.FC<{
   return (
     <div className='space-y-8'>
       <Heading size='large'>Om stillingen</Heading>
-      <span>
+      <span className='mb-4'>
         Vi anbefaler å lese våre tips om hvordan du skriver en{' '}
         <Link
           target='_blank'
           href='https://arbeidsplassen.nav.no/skikkelig-bra-stillingsannonse'
         >
           skikkelig god stillingsannonse
-        </Link>
+        </Link>{' '}
         (åpnes i ny fane).
       </span>
 

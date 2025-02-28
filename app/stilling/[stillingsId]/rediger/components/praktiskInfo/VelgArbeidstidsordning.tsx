@@ -1,7 +1,7 @@
 import { Select } from '@navikt/ds-react';
 import * as React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
-import { FormidlingDataForm } from '../../../../../formidlinger/ny-formidling/redigerFormidlingFormType';
+import { FormidlingDataForm } from '../../../../../formidling/ny-formidling/redigerFormidlingFormType';
 import { StillingsArbeidstidsordning } from '../../../../stilling-typer';
 import { StillingsDataForm } from '../../redigerFormType.zod';
 

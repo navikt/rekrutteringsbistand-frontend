@@ -1,4 +1,4 @@
-import { FormidlingDataForm } from '../../../formidlinger/ny-formidling/redigerFormidlingFormType';
+import { FormidlingDataForm } from '../../../formidling/ny-formidling/redigerFormidlingFormType';
 import { Stillingskategori } from '../../../stilling/stilling-typer';
 import { OpprettNyStillingDTO } from '../../stilling/ny-stilling/dto';
 
