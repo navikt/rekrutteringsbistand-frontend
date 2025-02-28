@@ -64,7 +64,7 @@ const LagreIKandidatliste: React.FC<LagreIKandidatlisteProps> = ({
             innhold: 'Feil ved lagring av kandidater i kandidatliste',
           });
         }
-      } else if (selectedRows.length === 0) {
+      } else if (selectedRows.length !== 0) {
         const promises = selectedRows.map((stillingId) =>
           leggTilKandidater(kandidatnr, stillingId),
         );
@@ -104,7 +104,9 @@ const LagreIKandidatliste: React.FC<LagreIKandidatlisteProps> = ({
         icon={<PersonPlusIcon aria-hidden />}
         disabled={markerteKandidater?.length === 0}
       >
-        Lagre i kandidatliste
+        {stillingsId
+          ? 'Lagre i stillingen sin kandidatliste'
+          : 'Lagre i kandidatliste'}
       </Button>
       <Modal
         width={600}

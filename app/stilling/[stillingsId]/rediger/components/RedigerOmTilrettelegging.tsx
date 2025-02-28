@@ -1,7 +1,7 @@
 import { Checkbox, CheckboxGroup, Heading } from '@navikt/ds-react';
 import * as React from 'react';
 import { useFormContext } from 'react-hook-form';
-import { FormidlingDataForm } from '../../../../formidlinger/ny-formidling/redigerFormidlingFormType';
+import { FormidlingDataForm } from '../../../../formidling/ny-formidling/redigerFormidlingFormType';
 import { InkluderingsTag } from '../../omStillingen/StillingSidebar/StillingInkludering';
 import { StillingsDataForm } from '../redigerFormType.zod';
 import StegNavigering from './StegNavigering';
@@ -71,7 +71,7 @@ export const RedigerOmTilrettelegging: React.FC<
               tag={InkluderingsTag.TilretteleggingArbeidstid}
             >
               Arbeidstid
-              <div className='text-sm text-gray-600'>
+              <div className='text-sm'>
                 f.eks. kortere dager eller gradvis økt stillingsprosent
               </div>
             </TilretteleggingCheckbox>
@@ -80,7 +80,7 @@ export const RedigerOmTilrettelegging: React.FC<
               tag={InkluderingsTag.TilretteleggingFysisk}
             >
               Fysiske omgivelser
-              <div className='text-sm text-gray-600'>
+              <div className='text-sm'>
                 f.eks. ergonomisk tilpasning eller universell utforming
               </div>
             </TilretteleggingCheckbox>
@@ -88,7 +88,7 @@ export const RedigerOmTilrettelegging: React.FC<
               tag={InkluderingsTag.TilretteleggingGrunnleggende}
             >
               Utfordringer med norsk
-              <div className='text-sm text-gray-600'>
+              <div className='text-sm'>
                 f.eks. ved lese- og skrivevansker, språk- og taleforstyrrelse
                 eller utfordringer med norsk.
               </div>
@@ -97,7 +97,7 @@ export const RedigerOmTilrettelegging: React.FC<
               tag={InkluderingsTag.TilretteleggingArbeidshverdagen}
             >
               Arbeidshverdagen
-              <div className='text-sm text-gray-600'>
+              <div className='text-sm'>
                 f.eks. opplæring, tilpasse arbeidsoppgaver eller ekstra tett
                 oppfølging
               </div>
@@ -109,7 +109,7 @@ export const RedigerOmTilrettelegging: React.FC<
               tag={InkluderingsTag.VirkemiddelLønnstilskudd}
             >
               Lønnstilskudd - midlertidig eller varig
-              <div className='text-sm text-gray-600'>
+              <div className='text-sm'>
                 Kandidaten blir ansatt under vanlige arbeidsvilkår, men Nav
                 kompenserer en del av lønnen.
               </div>
@@ -118,7 +118,7 @@ export const RedigerOmTilrettelegging: React.FC<
               tag={InkluderingsTag.VirkemiddelMentortilskudd}
             >
               Mentor (tilskudd)
-              <div className='text-sm text-gray-600'>
+              <div className='text-sm'>
                 En kollega hjelper kandidaten med å mestre jobben. Nav
                 kompenserer virksomheten med mentortilskudd.
               </div>
@@ -127,7 +127,7 @@ export const RedigerOmTilrettelegging: React.FC<
               tag={InkluderingsTag.VirkemiddelLærlingplass}
             >
               Lærlingplass
-              <div className='text-sm text-gray-600'>
+              <div className='text-sm'>
                 Gir opplæring i læreplaner for fag. Virksomheten må være
                 godkjent som lærebedrift.
               </div>

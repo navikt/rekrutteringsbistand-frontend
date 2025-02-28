@@ -30,13 +30,8 @@ test.describe(`Stillingssøk test`, () => {
     await expect(
       page.getByRole('button', { name: 'Lagre nytt standardsøk' }),
     ).toBeVisible();
-    await expect(
-      page.getByRole('radio', { name: 'Publiseringsdato' }),
-    ).toBeVisible();
-    await expect(page.getByRole('radio', { name: 'Utløpsdato' })).toBeVisible();
-    await expect(
-      page.getByRole('radio', { name: 'Mest relevant' }),
-    ).toBeVisible();
+    await expect(page.getByLabel('Sorter')).toBeVisible();
+
     await expect(page.getByTestId('stillings-kort').first()).toBeVisible();
   });
   visMørkModus('stillings-kort');

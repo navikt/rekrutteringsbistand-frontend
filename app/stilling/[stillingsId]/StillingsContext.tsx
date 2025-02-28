@@ -1,6 +1,7 @@
 'use client';
 import React, { useMemo } from 'react';
 
+// import { useRouter } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import {
   KandidatlisteInfoDTO,
@@ -68,11 +69,11 @@ const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
   children,
   refetch,
 }) => {
+  const router = useRouter();
   const {
     brukerData: { ident },
     harRolle,
   } = useApplikasjonContext();
-  const router = useRouter();
   const [forhåndsvisData, setForhåndsvisData] =
     React.useState<StillingsDataDTO | null>(null);
 
@@ -80,7 +81,7 @@ const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
     const isFormidling =
       stillingsData.stillingsinfo?.stillingskategori === 'FORMIDLING';
     const correctPath = isFormidling
-      ? `/formidlinger/${stillingsData.stilling.uuid}`
+      ? `/formidling/${stillingsData.stilling.uuid}`
       : `/stilling/${stillingsData.stilling.uuid}`;
 
     if (!window.location.pathname.includes(correctPath)) {

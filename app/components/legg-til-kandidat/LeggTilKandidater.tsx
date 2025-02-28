@@ -24,6 +24,7 @@ import Synlighetsinfo from './Synlighetsinfo';
 export interface LeggTilKandidaterProps {
   måHaAktørId?: boolean;
   callBack: (valgteKandidater: ValgtKandidatProp[]) => void;
+  initielleKandidater?: ValgtKandidatProp[];
   synlighetSomModal?: boolean;
   lukkModal?: () => void;
 }
@@ -39,11 +40,12 @@ const LeggTilKandidater: React.FC<LeggTilKandidaterProps> = ({
   måHaAktørId,
   callBack,
   synlighetSomModal,
+  initielleKandidater,
 }) => {
   const [feilmelding, setFeilmelding] = React.useState('');
   const [valgteKandidater, setValgteKandidater] = React.useState<
     ValgtKandidatProp[]
-  >([]);
+  >(initielleKandidater ?? []);
   const [fødselsnummer, setFødselsnummer] = React.useState<string | null>(null);
   const [søkeString, setSøkestring] = React.useState<string>('');
   const kandidatNavnHook = useKandidatNavn(fødselsnummer);

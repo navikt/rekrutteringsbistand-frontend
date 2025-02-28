@@ -4,7 +4,8 @@ import { FunctionComponent, ReactNode } from 'react';
 import OpprettNyStillingIkon from '../../../public/ikoner/opprett-ny-stilling.svg';
 import SeMineStillingerIkon from '../../../public/ikoner/se-mine-stillinger.svg';
 
-import { Box, Link } from '@navikt/ds-react';
+import { Box } from '@navikt/ds-react';
+import { useRouter } from 'next/navigation';
 import SVGDarkmode from '../../components/SVGDarkmode';
 import { TilgangskontrollForInnhold } from '../../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '../../components/tilgangskontroll/roller';
@@ -48,17 +49,19 @@ const LenkepanelMedIkon: FunctionComponent<{
   tittel: string;
   href: string;
   ikon: ReactNode;
-}> = ({ tittel, href, ikon }) => (
-  <Box.New
-    background='raised'
-    borderColor='neutral-subtleA'
-    borderRadius='xlarge'
-    borderWidth='1'
-    padding='0'
-    className={`h-28  flex flex-grow`}
-  >
-    <Link href={href} className='w-full h-full'>
-      <div className='flex grow h-28 justify-start items-center'>
+}> = ({ tittel, href, ikon }) => {
+  const router = useRouter();
+
+  return (
+    <Box.New
+      onClick={() => router.push(href)}
+      background='sunken'
+      borderColor='neutral-subtleA'
+      borderRadius='xlarge'
+      padding='0'
+      className={`h-20  flex flex-grow cursor-pointer`}
+    >
+      <Box.New className='flex grow h-20 justify-start items-center'>
         <Box padding='6' className='flex justify-center items-center gap-2'>
           <div className='w-16 h-16'>{ikon}</div>
         </Box>
@@ -67,9 +70,9 @@ const LenkepanelMedIkon: FunctionComponent<{
             {tittel}
           </div>
         </Box>
-      </div>
-    </Link>
-  </Box.New>
-);
+      </Box.New>
+    </Box.New>
+  );
+};
 
 export default Hurtiglenker;

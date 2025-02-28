@@ -13,10 +13,12 @@ test.describe(`Stilling test`, () => {
     await expect(
       page.getByRole('tab', { name: 'Om stillingen' }),
     ).toBeVisible();
-    await expect(page.getByRole('tab', { name: 'Kandidater' })).toBeVisible();
+    await expect(
+      page.getByRole('tab', { name: 'Kandidater', exact: true }),
+    ).toBeVisible();
     await expect(page.getByRole('button', { name: 'Kopier' })).toBeVisible();
     await expect(
-      page.getByRole('button', { name: 'Finn kandidater' }),
+      page.getByRole('tab', { name: 'Finn kandidater' }),
     ).toBeVisible();
     await expect(
       page.getByRole('button', { name: 'Legg til kandidater' }),
@@ -55,7 +57,7 @@ test.describe(`Stilling test`, () => {
 
     await expect(page.getByRole('button', { name: 'Kopier' })).toBeVisible();
     await expect(
-      page.getByRole('button', { name: 'Finn kandidater' }),
+      page.getByRole('tab', { name: 'Finn kandidater' }),
     ).toBeVisible();
     await expect(
       page.getByRole('button', { name: 'Legg til kandidater' }),
@@ -72,7 +74,9 @@ test.describe(`Stilling test`, () => {
     await expect(
       page.getByRole('heading', { name: 'Oppsummering' }),
     ).toBeHidden();
-    await expect(page.getByRole('tab', { name: 'Kandidater' })).toBeHidden();
+    await expect(
+      page.getByRole('tab', { name: 'Kandidater', exact: true }),
+    ).toBeHidden();
     await expect(page.getByRole('button', { name: 'Rediger' })).toBeHidden();
     await expect(page.getByRole('button', { name: 'Dupliser' })).toBeHidden();
     await expect(page.getByRole('button', { name: 'Avslutt' })).toBeHidden();

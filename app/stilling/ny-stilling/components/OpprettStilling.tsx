@@ -61,7 +61,7 @@ export const OpprettStillingKnapp: React.FC<OpprettStillingProps> = ({
 
       if (response.stilling.uuid) {
         if (erFormidling) {
-          router.push(`/formidlinger/${response.stilling.uuid}/rediger`);
+          router.push(`/formidling/${response.stilling.uuid}/rediger`);
         } else {
           router.push(`/stilling/${response.stilling.uuid}/rediger`);
         }

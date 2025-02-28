@@ -1,5 +1,4 @@
-import { SortDownIcon, SortUpIcon, TagIcon } from '@navikt/aksel-icons';
-import { ToggleGroup } from '@navikt/ds-react';
+import { Select } from '@navikt/ds-react';
 import * as React from 'react';
 import { useStillingsSøkFilter } from '../StillingsSøkContext';
 
@@ -12,40 +11,20 @@ export enum StillingsSøkSorteringTyper {
 const StillingsSøkSortering: React.FC = () => {
   const filter = useStillingsSøkFilter();
   return (
-    <ToggleGroup defaultValue={filter.sortering} onChange={filter.setSortering}>
-      <ToggleGroup.Item
-        value={StillingsSøkSorteringTyper.Publiseringsdato}
-        icon={<SortDownIcon aria-hidden />}
-        label='Publiseringsdato'
-      />
-      <ToggleGroup.Item
-        value={StillingsSøkSorteringTyper.Utløpsdato}
-        icon={<SortUpIcon aria-hidden />}
-        label='Utløpsdato'
-      />
-      <ToggleGroup.Item
-        value={StillingsSøkSorteringTyper.MestRelevant}
-        icon={<TagIcon aria-hidden />}
-        label='Mest relevant'
-      />
-    </ToggleGroup>
+    <Select
+      label='Sorter'
+      value={filter.sortering}
+      onChange={(e) => filter.setSortering(e.target.value)}
+    >
+      <option value={StillingsSøkSorteringTyper.Publiseringsdato}>
+        Publiseringsdato
+      </option>
+      <option value={StillingsSøkSorteringTyper.Utløpsdato}>Utløpsdato</option>
+      <option value={StillingsSøkSorteringTyper.MestRelevant}>
+        Mest relevant
+      </option>
+    </Select>
   );
-  {
-    /* <Select
-        label='Sorter'
-        onChange={(e) => filter.setSortering(e.target.value)}
-      >
-        <option value={StillingsSøkSorteringTyper.Publiseringsdato}>
-          Publiseringsdato
-        </option>
-        <option value={StillingsSøkSorteringTyper.Utløpsdato}>
-          Utløpsdato
-        </option>
-        <option value={StillingsSøkSorteringTyper.MestRelevant}>
-          Mest relevant
-        </option>
-      </Select> */
-  }
 };
 
 export default StillingsSøkSortering;

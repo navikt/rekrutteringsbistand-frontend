@@ -1,8 +1,8 @@
 import { logger } from '@navikt/next-logger';
-import { getToken, requestOboToken, TokenResult } from '@navikt/oasis';
 import { NextRequest, NextResponse } from 'next/server';
-import { Iroute } from '../app/api/api-routes';
-import { isLocal } from './env';
+import { isLocal } from '../../util/env';
+import { Iroute } from './api-routes';
+import { hentOboToken, setHeaderToken } from './oboToken';
 
 export const proxyWithOBO = async (
   proxy: Iroute,
@@ -10,41 +10,7 @@ export const proxyWithOBO = async (
   customRoute?: string,
   customBody?: any,
 ) => {
-  const token = isLocal ? 'DEV' : getToken(req.headers);
-  if (!proxy.api_url) {
-    return NextResponse.json(
-      { beskrivelse: 'Ingen url oppgitt for proxy' },
-      { status: 500 },
-    );
-  }
-  if (!token) {
-    logger.warn('Kunne ikke hente token');
-    return NextResponse.json(
-      { beskrivelse: 'Kunne ikke hente token' },
-      { status: 500 },
-    );
-  }
-
-  let obo: TokenResult;
-  try {
-    obo = isLocal
-      ? ({ ok: true, token: 'DEV' } as TokenResult)
-      : await requestOboToken(token, proxy.scope);
-  } catch (error) {
-    logger.error('Feil ved henting av OBO-token:', error);
-    return NextResponse.json(
-      { beskrivelse: 'Kunne ikke hente OBO-token' },
-      { status: 500 },
-    );
-  }
-
-  if (!obo.ok || !obo.token) {
-    logger.error('Ugyldig OBO-token mottatt:', obo);
-    return NextResponse.json(
-      { beskrivelse: 'Ugyldig OBO-token mottatt' },
-      { status: 500 },
-    );
-  }
+  const obo = await hentOboToken({ headers: req.headers, scope: proxy.scope });
   const originalUrl = new URL(req.url);
 
   const path =
@@ -55,28 +21,22 @@ export const proxyWithOBO = async (
 
   const requestUrl = isLocal ? originalUrl : newUrl;
 
-  try {
-    const originalHeaders = new Headers(req.headers);
-    originalHeaders.set('Authorization', `Bearer ${obo.token}`);
-    originalHeaders.set('Content-Type', 'application/json');
+  if (!obo.ok) {
+    return NextResponse.json(
+      { beskrivelse: 'Kunne ikke hente OBO-token' },
+      { status: 500 },
+    );
+  }
 
-    // Filter out AMP_ cookies
-    const cookie = originalHeaders.get('cookie');
-    if (cookie) {
-      const filteredCookies = cookie
-        .split(';')
-        .filter((c) => !c.trim().startsWith('AMP_'))
-        .join(';');
-      if (filteredCookies) {
-        originalHeaders.set('cookie', filteredCookies);
-      } else {
-        originalHeaders.delete('cookie');
-      }
-    }
+  try {
+    const nyHeader = setHeaderToken({
+      headers: req.headers,
+      oboToken: obo.token,
+    });
 
     const fetchOptions: any = {
       method: req.method,
-      headers: originalHeaders,
+      headers: nyHeader,
     };
 
     if (req.method === 'POST' || req.method === 'PUT' || customBody) {

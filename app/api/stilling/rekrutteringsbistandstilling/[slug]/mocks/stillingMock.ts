@@ -303,7 +303,7 @@ export const testMockStilling = {
       comments: null,
       reportee: 'F_993141 E_993141',
       remarks: [],
-      navIdent: 'Z993141',
+      navIdent: 'TestIdent',
     },
     mediaList: [],
     contactList: [],

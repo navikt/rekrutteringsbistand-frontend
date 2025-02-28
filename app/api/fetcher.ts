@@ -115,7 +115,7 @@ export const postApi = async (
       }
     }
   } catch (error) {
-    console.error('Error in postApi:', error);
+    logger.error('Error in postApi:', error);
     throw error;
   }
 };

@@ -103,7 +103,7 @@ const StillingsSøkLayout: React.FC<StillingsSøkProps> = ({
                     Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
                   ]}
                 >
-                  <Link href={'/formidlinger/ny-formidling'}>
+                  <Link href={'/formidling/ny-formidling'}>
                     <Button
                       icon={<PlusCircleIcon aria-hidden />}
                       variant='secondary'
@@ -141,7 +141,7 @@ const StillingsSøkLayout: React.FC<StillingsSøkProps> = ({
       }
     >
       <Tabs
-        defaultValue={portefølje || StillingsSøkPortefølje.VIS_ALLE}
+        value={portefølje || StillingsSøkPortefølje.VIS_ALLE}
         onChange={(e) => setPortefølje(e as StillingsSøkPortefølje)}
       >
         <Tabs.List>

@@ -3,7 +3,7 @@ import * as React from 'react';
 import { useState } from 'react';
 import { useFieldArray, useFormContext } from 'react-hook-form';
 import VelgPoststed from '../../../../components/VelgPoststed';
-import { FormidlingDataForm } from '../../../../formidlinger/ny-formidling/redigerFormidlingFormType';
+import { FormidlingDataForm } from '../../../../formidling/ny-formidling/redigerFormidlingFormType';
 import { StillingsDataForm } from '../redigerFormType.zod';
 import VelgKommuneFylkeEllerLand from './VelgKommuneFylkeEllerLand';
 

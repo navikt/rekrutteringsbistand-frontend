@@ -1,4 +1,5 @@
 import { Alert, type AlertProps } from '@navikt/ds-react';
+import { logger } from '@navikt/next-logger';
 import React, {
   createContext,
   Dispatch,
@@ -35,7 +36,7 @@ type Context = [
 const VarslingContext = createContext<Context>([
   undefined,
   () => {
-    console.error('VarslingContext has no provider');
+    logger.error('VarslingContext has no provider');
   },
 ]);
 

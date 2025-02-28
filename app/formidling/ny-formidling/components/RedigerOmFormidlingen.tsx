@@ -22,6 +22,7 @@ const RedigerOmFormidlingen: React.FC<RedigerOmFormidlingenProps> = ({
 }) => {
   const {
     setValue,
+    getValues,
     watch,
     trigger,
     formState: { errors },
@@ -30,6 +31,7 @@ const RedigerOmFormidlingen: React.FC<RedigerOmFormidlingenProps> = ({
   const handleStepSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const isValid = await trigger('omFormidlingen', { shouldFocus: true });
+
     if (isValid) {
       nesteSteg();
     }
@@ -40,6 +42,7 @@ const RedigerOmFormidlingen: React.FC<RedigerOmFormidlingenProps> = ({
       <div className='space-y-8'>
         <Heading size='large'>Om arbeidsgiver</Heading>
         <VelgArbeidsgiver
+          valgtArbeidsgiver={getValues('omFormidlingen.organisasjon')}
           arbeidsgiverCallback={(val) =>
             setValue('omFormidlingen.organisasjon', val)
           }

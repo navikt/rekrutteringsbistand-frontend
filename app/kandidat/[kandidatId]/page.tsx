@@ -17,7 +17,7 @@ export default function KandidatIndex() {
   });
 
   return (
-    <Tabs defaultValue={fane} onChange={(val) => setFane(val)}>
+    <Tabs value={fane} onChange={(val) => setFane(val)}>
       <Tabs.List>
         <Tabs.Tab value={Fane.OVERSIKT} label='Oversikt' />
         <Tabs.Tab value={Fane.AKTIVITET} label='Aktivitet' disabled />

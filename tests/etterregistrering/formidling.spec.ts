@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test';
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 
 test(`📝 Opprett formidling`, async ({ page }) => {
-  await page.goto('http://localhost:1337/formidlinger');
+  await page.goto('http://localhost:1337/formidling');
   await test.step('Opprett formidling', async () => {
     await page
       .getByRole('tab', { name: 'Etterregistrering', exact: true })
@@ -26,26 +26,31 @@ test(`📝 Opprett formidling`, async ({ page }) => {
     await page
       .getByRole('combobox', { name: 'Arbeidsgivers navn eller' })
       .click();
+
     await page
       .getByRole('combobox', { name: 'Arbeidsgivers navn eller' })
       .fill('TEST');
-    await page.getByRole('option', { name: 'TEST PLUTSELIG KATT' }).click();
+    await page.getByLabel('TEST PLUTSELIG KATT').click();
     await page
       .getByRole('combobox', { name: 'Velg yrkestittel (standard' })
       .click();
     await page
       .getByRole('combobox', { name: 'Velg yrkestittel (standard' })
-      .fill('TEST');
-    await page.getByRole('option', { name: 'Tester', exact: true }).click();
-    await page.getByText('Privat', { exact: true }).click();
-    await page.getByLabel('Ansettelsesform').selectOption('Fast');
-    await page.getByText('Heltid (100%)').click();
-    await page.getByText('Kommune, fylke eller land').click();
-    await page.getByLabel('', { exact: true }).click();
-    await page.getByLabel('', { exact: true }).fill('Kristi');
-    await page.getByRole('option', { name: 'KRISTIANSAND (kommune)' }).click();
+      .fill('Test');
     await page
-      .getByText('1Om kandidatene2 Om formidlingen3Om inkludering4InnspurtOm')
+      .getByRole('option', { name: 'Testamentåpningsrepresentant' })
+      .click();
+    await page.getByRole('radio', { name: 'Privat' }).check();
+    await page.getByLabel('Ansettelsesform').selectOption('Fast');
+    await page.getByRole('radio', { name: 'Heltid (100%)' }).check();
+    await page
+      .getByRole('checkbox', { name: 'Kommune, fylke eller land' })
+      .check();
+    await page.getByLabel('', { exact: true }).click();
+    await page.getByLabel('', { exact: true }).fill('Krist');
+    await page.getByLabel('Kristiansand (kommune)').click();
+    await page
+      .getByText('Om kandidatene2Om formidlingen3Om inkludering4InnspurtOm')
       .click();
     await page.getByRole('button', { name: 'Neste steg' }).click();
   });

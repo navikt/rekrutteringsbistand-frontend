@@ -24,6 +24,7 @@ const FormidlingLeggTilKandidat: React.FC<FormidlingLeggTilKandidatProps> = ({
     trigger,
     formState: { errors },
     setValue,
+    getValues,
   } = useFormContext<FormidlingDataForm>();
 
   const handleStepSubmit = async (e: React.FormEvent) => {
@@ -44,6 +45,15 @@ const FormidlingLeggTilKandidat: React.FC<FormidlingLeggTilKandidatProps> = ({
       nesteSteg();
     }
   };
+
+  const omKandidatene = getValues('omKandidatene');
+  const initielValgt = omKandidatene?.map((k) => ({
+    fødselsnummer: k.fnr,
+    fornavn: k.navn.fornavn || '',
+    etternavn: k.navn.etternavn || '',
+    kilde: k.navn.kilde,
+  }));
+
   return (
     <Box.New className='space-y-4'>
       <Heading size='large'>Legg til kandidater</Heading>
@@ -51,8 +61,8 @@ const FormidlingLeggTilKandidat: React.FC<FormidlingLeggTilKandidatProps> = ({
       <form onSubmit={handleStepSubmit}>
         <div className='flex flex-col space-y-8'>
           <LeggTilKandidater
+            initielleKandidater={initielValgt}
             synlighetSomModal
-            måHaAktørId
             callBack={(kandidater) => {
               setValgteKandidater(kandidater);
             }}

@@ -20,7 +20,7 @@ export interface KandidatRadProps {
   kandidat: kandidaterSchemaDTO;
   forespørselCvForKandidat: KandidatForespurtOmDelingSchema[] | null;
   beskjedForKandidat: Sms | null;
-  markerteKandidater: kandidaterSchemaDTO[];
+  markerteKandidater?: kandidaterSchemaDTO[];
   markerKandidat: (kandidat: kandidaterSchemaDTO) => void;
   kandidatlisteId: string;
   stillingsId: string;
@@ -114,19 +114,21 @@ const KandidatRad: React.FC<KandidatRadProps> = ({
           </div>
         </div>
       }
-      selected={markerteKandidater.includes(kandidat)}
+      selected={markerteKandidater && markerteKandidater.includes(kandidat)}
     >
-      <Table.DataCell>
-        <Checkbox
-          disabled={innaktiv || lukketKandidatliste}
-          hideLabel
-          checked={markerteKandidater.includes(kandidat)}
-          onChange={() => markerKandidat(kandidat)}
-          aria-labelledby={`id-${kandidat.fodselsnr}`}
-        >
-          {' '}
-        </Checkbox>
-      </Table.DataCell>
+      {markerteKandidater && (
+        <Table.DataCell>
+          <Checkbox
+            disabled={innaktiv || lukketKandidatliste}
+            hideLabel
+            checked={markerteKandidater.includes(kandidat)}
+            onChange={() => markerKandidat(kandidat)}
+            aria-labelledby={`id-${kandidat.fodselsnr}`}
+          >
+            {' '}
+          </Checkbox>
+        </Table.DataCell>
+      )}
       <Table.DataCell scope='row'>
         <div>
           {innaktiv ? (
