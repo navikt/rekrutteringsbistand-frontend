@@ -56,10 +56,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     // 3. Oppdatter formidling med ny data og sett som publisert
 
     const oppdatertFormidlingData = mapFormTilFormidling(
-      {
-        ...formidlingData,
-        navKontor: formidlingData.navKontor ?? '',
-      },
+      { ...formidlingData, navKontor: formidlingData.navKontor ?? '' },
       nyFormidling.data,
     );
 
