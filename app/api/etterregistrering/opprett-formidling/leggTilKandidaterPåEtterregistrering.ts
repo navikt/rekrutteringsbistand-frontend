@@ -2,11 +2,13 @@ import { logger } from '@navikt/next-logger';
 import { KandidatAPI } from '../../api-routes';
 import { FormidlingUsynligKandidatDTO } from '../../kandidat/formidleKandidat';
 import { hentOboToken } from '../../oboToken';
+import { hentKandidatlisteInfo } from './hentKandidatlisteInfo';
 
 interface leggTilKandidaterPåEtterregistreringProps {
   kandidater: FormidlingUsynligKandidatDTO[];
   kandidatlisteId: string;
   reqHeaders: Headers;
+  stillingsId: string;
 }
 
 interface Success {
@@ -24,6 +26,7 @@ export const leggTilKandidaterPåEtterregistrering = async ({
   kandidater,
   kandidatlisteId,
   reqHeaders,
+  stillingsId,
 }: leggTilKandidaterPåEtterregistreringProps): Promise<Result> => {
   try {
     const obo = await hentOboToken({
@@ -65,6 +68,14 @@ export const leggTilKandidaterPåEtterregistrering = async ({
               );
             }
             await new Promise((resolve) => setTimeout(resolve, 500));
+            // Henter kandidatliste etter hver person er lagt til for å unngå:
+            // Row was updated or deleted by another transaction (or unsaved-value mapping was incorrect)
+
+            await hentKandidatlisteInfo({
+              stillingsId,
+              reqHeaders,
+            });
+
             return response;
           } catch (fetchError) {
             // Catch and enhance error for this specific candidate

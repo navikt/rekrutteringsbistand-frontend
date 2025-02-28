@@ -47,6 +47,11 @@ const RedigerFormidling: React.FC = () => {
     }
   };
 
+  const aktivtStegIndex = Object.values(RedigerFormidlingSteg).indexOf(
+    aktivtSteg as RedigerFormidlingSteg,
+  );
+
+  console.log('🎺 aktivtStegIndex', aktivtStegIndex);
   return (
     <Box>
       <div className='flex flex-row'>
@@ -59,10 +64,30 @@ const RedigerFormidling: React.FC = () => {
             orientation='vertical'
             className='mb-8'
           >
-            <Stepper.Step>Om kandidatene</Stepper.Step>
-            <Stepper.Step> Om formidlingen</Stepper.Step>
-            <Stepper.Step>Om inkludering</Stepper.Step>
-            <Stepper.Step>Innspurt</Stepper.Step>
+            <Stepper.Step
+              completed={aktivtStegIndex > 0}
+              interactive={aktivtStegIndex > 0}
+            >
+              Om kandidatene
+            </Stepper.Step>
+            <Stepper.Step
+              completed={aktivtStegIndex > 1}
+              interactive={aktivtStegIndex > 1}
+            >
+              Om formidlingen
+            </Stepper.Step>
+            <Stepper.Step
+              completed={aktivtStegIndex > 2}
+              interactive={aktivtStegIndex > 2}
+            >
+              Om inkludering
+            </Stepper.Step>
+            <Stepper.Step
+              completed={aktivtStegIndex > 3}
+              interactive={aktivtStegIndex > 3}
+            >
+              Innspurt
+            </Stepper.Step>
           </Stepper>
         </div>
         <div className='flex-grow mx-12 px-12'>
