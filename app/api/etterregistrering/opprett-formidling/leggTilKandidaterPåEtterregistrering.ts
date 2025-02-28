@@ -2,7 +2,6 @@ import { logger } from '@navikt/next-logger';
 import { KandidatAPI } from '../../api-routes';
 import { FormidlingUsynligKandidatDTO } from '../../kandidat/formidleKandidat';
 import { hentOboToken } from '../../oboToken';
-import { hentKandidatlisteInfo } from './hentKandidatlisteInfo';
 
 interface leggTilKandidaterPåEtterregistreringProps {
   kandidater: FormidlingUsynligKandidatDTO[];
@@ -26,7 +25,6 @@ export const leggTilKandidaterPåEtterregistrering = async ({
   kandidater,
   kandidatlisteId,
   reqHeaders,
-  stillingsId,
 }: leggTilKandidaterPåEtterregistreringProps): Promise<Result> => {
   try {
     const obo = await hentOboToken({
@@ -47,45 +45,43 @@ export const leggTilKandidaterPåEtterregistrering = async ({
     });
 
     try {
-      await Promise.all(
-        kandidater.map(async (kandidat) => {
-          try {
-            const response = await fetch(
-              `${KandidatAPI.api_url}/veileder/kandidatlister/${kandidatlisteId}/formidlingeravusynligkandidat`,
-              {
-                method: 'POST',
-                headers: headers,
-                body: JSON.stringify(kandidat),
-                // Add timeout to avoid hanging requests
-                signal: AbortSignal.timeout(15000), // 15 seconds timeout
-              },
+      for (const kandidat of kandidater) {
+        try {
+          const response = await fetch(
+            `${KandidatAPI.api_url}/veileder/kandidatlister/${kandidatlisteId}/formidlingeravusynligkandidat`,
+            {
+              method: 'POST',
+              headers: headers,
+              body: JSON.stringify(kandidat),
+              signal: AbortSignal.timeout(15000), // 15 seconds timeout
+            },
+          );
+
+          if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(
+              `Klarte ikke å legge til kandidat (${response.status}): ${errorText}`,
             );
-
-            if (!response.ok) {
-              const errorText = await response.text();
-              throw new Error(
-                `Klarte ikke å legge til kandidat (${response.status}): ${errorText}`,
-              );
-            }
-            await new Promise((resolve) => setTimeout(resolve, 500));
-            // Henter kandidatliste etter hver person er lagt til for å unngå:
-            // Row was updated or deleted by another transaction (or unsaved-value mapping was incorrect)
-
-            await hentKandidatlisteInfo({
-              stillingsId,
-              reqHeaders,
-            });
-
-            return response;
-          } catch (fetchError) {
-            // Catch and enhance error for this specific candidate
-            logger.error(
-              `Feil ved formidling av kandidat ${kandidat.fnr?.substring(0, 6)}...: ${fetchError instanceof Error ? fetchError.message : String(fetchError)}`,
-            );
-            throw fetchError; // Re-throw to fail the Promise.all
           }
-        }),
-      );
+
+          await new Promise((resolve) => setTimeout(resolve, 500));
+
+          // Refresh candidate list info to avoid concurrent modification errors
+          // await hentKandidatlisteInfo({
+          //   stillingsId,
+          //   reqHeaders,
+          // });
+        } catch (fetchError) {
+          logger.error(
+            `Feil ved formidling av kandidat...: ${fetchError instanceof Error ? fetchError.message : String(fetchError)}`,
+          );
+
+          return {
+            success: false,
+            error: `Klarte ikke å formidle alle kandidater.`,
+          };
+        }
+      }
 
       return {
         success: true,
