@@ -1,3 +1,4 @@
+import { logger } from '@navikt/next-logger';
 import { IFeilmelding } from '../app/components/feilhåndtering/Feilmelding';
 
 export class kastError extends Error {
@@ -14,6 +15,12 @@ export class kastError extends Error {
     this.stack = stack || this.stack;
     this.beskrivelse = beskrivelse ?? '';
     this.url = url ?? '';
+
+    logger.error(`Kastet Error: ${this.tittel} (${this.statuskode})`, {
+      beskrivelse: this.beskrivelse,
+      url: this.url,
+      stack: this.stack,
+    });
   }
 
   toJSON() {
