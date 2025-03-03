@@ -1,4 +1,5 @@
 'use client';
+import { rekrutteringstreffOversiktMirage } from '@/app/api/rekrutteringstreff/useRekrutteringstreffOversikt';
 import { createServer, Model } from 'miragejs';
 import { brukerMirage } from '../app/api/bruker/useBruker';
 import { decoratorDataMirage } from '../app/api/decorator/useDecoratorData';
@@ -27,9 +28,8 @@ import { opprettNyStillingMirage } from '../app/api/stilling/ny-stilling/opprett
 import { oppdaterStillingMirage } from '../app/api/stilling/oppdater-stilling/oppdaterStilling';
 import { stillingMirage } from '../app/api/stilling/rekrutteringsbistandstilling/[slug]/useStilling';
 import { brukerStandardSøkMirage } from '../app/api/stilling/standardsok/useBrukersStandardsøk';
-import { synlighetsevalueringMirage } from '../app/api/synlighet/useSynlighetsevaluering';
-import { rekrutteringstreffOversiktMirage } from '@/app/api/rekrutteringstreff/useRekrutteringstreffOversikt';
 import { stillingssøkMirage } from '../app/api/stillings-sok/useStillingssøk';
+import { synlighetsevalueringMirage } from '../app/api/synlighet/evaluering/useSynlighetsevaluering';
 
 export function makeServer({ environment = 'test' } = {}) {
   let server = createServer({

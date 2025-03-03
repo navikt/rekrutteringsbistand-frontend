@@ -6,7 +6,7 @@ import {
   KriterieUtenforNoensKontroll,
   SynlighetsevalueringDTO,
   useSynlighetsevaluering,
-} from '../../api/synlighet/useSynlighetsevaluering';
+} from '../../api/synlighet/evaluering/useSynlighetsevaluering';
 import SWRLaster from '../SWRLaster';
 
 export interface SynlighetsEvalueringProps {
