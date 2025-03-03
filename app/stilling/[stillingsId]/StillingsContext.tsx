@@ -3,6 +3,7 @@ import React, { useMemo } from 'react';
 
 // import { useRouter } from 'next/navigation';
 import { useRouter } from 'next/navigation';
+import { rekbisError } from '../../../util/rekbisError';
 import {
   KandidatlisteInfoDTO,
   useKandidatlisteInfo,
@@ -44,7 +45,7 @@ export const StillingsContextProvider: React.FC<
     if (stillingHook.data?.stilling?.updated) {
       kandidatListeInfo.mutate();
     }
-  }, [stillingHook.data?.stilling?.updated]);
+  }, [stillingHook.data?.stilling?.updated, kandidatListeInfo]);
 
   return (
     <SWRLaster hooks={[stillingHook]}>
@@ -135,9 +136,10 @@ export const useStillingsContext = () => {
   const context = React.useContext(StillingsContext);
 
   if (context === undefined) {
-    throw new Error(
-      'useStillingsContext må være i scope: StillingsContextProvider',
-    );
+    throw new rekbisError({
+      beskrivelse:
+        'useStillingsContext må være i scope: StillingsContextProvider',
+    });
   }
   return context;
 };

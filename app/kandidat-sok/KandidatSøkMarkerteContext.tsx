@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { rekbisError } from '../../util/rekbisError';
 import { KandidatDataSchemaDTO } from '../api/kandidat-sok/schema/cvSchema.zod';
 
 interface KandidatSøkMarkerteContextProps {
@@ -17,7 +18,9 @@ const KandidatSøkMarkerteContext =
 export const useKandidatSøkMarkerteContext = () => {
   const context = React.useContext(KandidatSøkMarkerteContext);
   if (context === undefined) {
-    throw new Error('useKandidatSøk må være i scope: KandidatSøkProvider');
+    throw new rekbisError({
+      beskrivelse: 'useKandidatSøk må være i scope: KandidatSøkProvider',
+    });
   }
   return context;
 };

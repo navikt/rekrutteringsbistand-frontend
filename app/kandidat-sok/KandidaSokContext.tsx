@@ -6,6 +6,7 @@ import {
   useQueryState,
 } from 'nuqs';
 import * as React from 'react';
+import { rekbisError } from '../../util/rekbisError';
 
 export enum KandidatSøkPortefølje {
   MINE_BRUKERE = 'minebrukere',
@@ -226,7 +227,9 @@ export const KandidatSøkProvider: React.FC<{ children: React.ReactNode }> = ({
 export const useKandidatSøkFilter = () => {
   const context = React.useContext(KandidatSøkContext);
   if (context === undefined) {
-    throw new Error('useKandidatSøk må være i scope: KandidatSøkProvider');
+    throw new rekbisError({
+      beskrivelse: 'useKandidatSøk må være i scope: KandidatSøkProvider',
+    });
   }
   return context;
 };

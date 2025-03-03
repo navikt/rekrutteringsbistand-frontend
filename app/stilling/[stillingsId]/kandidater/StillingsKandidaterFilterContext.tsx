@@ -1,6 +1,7 @@
 'use client';
 import { parseAsArrayOf, parseAsString, useQueryState } from 'nuqs';
 import * as React from 'react';
+import { rekbisError } from '../../../../util/rekbisError';
 
 export enum KandidatFilterQueryparam {
   Status = 'status',
@@ -52,9 +53,10 @@ export const StillingsKandidaterFilterProvider: React.FC<{
 export const useStillingsKandidaterFilter = () => {
   const context = React.useContext(StillingsKandidaterFilterContext);
   if (context === undefined) {
-    throw new Error(
-      'useStillingsKandidater må være i scope: StillingsKandidaterProvider',
-    );
+    throw new rekbisError({
+      beskrivelse:
+        'Context cannot be undefined. Ensure that useStillingsKandidaterFilter is used within StillingsKandidaterFilterProvider.',
+    });
   }
   return context;
 };

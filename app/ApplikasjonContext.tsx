@@ -2,6 +2,7 @@
 import { Alert, Heading } from '@navikt/ds-react';
 import React from 'react';
 import { getMiljø, Miljø } from '../util/miljø';
+import { rekbisError } from '../util/rekbisError';
 import { DecoratorDTO } from './api/decorator/decorator.dto';
 import Header from './components/header/Header';
 import { Roller } from './components/tilgangskontroll/roller';
@@ -102,9 +103,10 @@ export const ApplikasjonContextProvider: React.FC<
 export const useApplikasjonContext = () => {
   const context = React.useContext(ApplikasjonContext);
   if (context === undefined) {
-    throw new Error(
-      'useApplikasjonContext må være i scope: ApplikasjonContextProvider',
-    );
+    throw new rekbisError({
+      beskrivelse:
+        'useApplikasjonContext må være i scope: ApplikasjonContextProvider',
+    });
   }
   return context;
 };

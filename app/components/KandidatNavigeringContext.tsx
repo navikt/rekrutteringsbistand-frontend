@@ -6,6 +6,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
+import { rekbisError } from '../../util/rekbisError';
 import {
   getSessionStorage,
   setSessionStorage,
@@ -56,9 +57,10 @@ export const KandidatNavigeringProvider: React.FC<{
 export const useKandidatNavigering = () => {
   const context = useContext(KandidatNavigeringContext);
   if (!context) {
-    throw new Error(
-      'useKandidatNavigering must be used within a KandidatNavigeringProvider',
-    );
+    throw new rekbisError({
+      beskrivelse:
+        'useKandidatNavigering must be used within a KandidatNavigeringProvider',
+    });
   }
   return context;
 };

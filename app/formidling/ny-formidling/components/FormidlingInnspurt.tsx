@@ -11,6 +11,7 @@ import { logger } from '@navikt/next-logger';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
+import { rekbisError } from '../../../../util/rekbisError';
 import { useApplikasjonContext } from '../../../ApplikasjonContext';
 import { FormidlingDataForm } from '../redigerFormidlingFormType';
 
@@ -51,7 +52,7 @@ const FormidlingInnspurt = () => {
       }
     } catch (error) {
       logger.error('Kunne ikke opprette formidling', error);
-      throw new Error('Kunne ikke opprette formidling');
+      throw new rekbisError({ beskrivelse: 'Kunne ikke opprette formidling' });
     }
   };
 

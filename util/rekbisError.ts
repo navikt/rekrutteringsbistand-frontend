@@ -1,7 +1,7 @@
 import { logger } from '@navikt/next-logger';
 import { IFeilmelding } from '../app/components/feilhåndtering/Feilmelding';
 
-export class kastError extends Error {
+export class rekbisError extends Error {
   public statuskode: number;
   public tittel: string;
   public beskrivelse: string;
@@ -16,7 +16,7 @@ export class kastError extends Error {
     this.beskrivelse = beskrivelse ?? '';
     this.url = url ?? '';
 
-    logger.error(`Kastet Error: ${this.tittel} (${this.statuskode})`, {
+    logger.error(`RekBis Error: ${this.tittel} (${this.statuskode})`, {
       beskrivelse: this.beskrivelse,
       url: this.url,
       stack: this.stack,

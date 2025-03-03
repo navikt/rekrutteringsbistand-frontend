@@ -6,6 +6,7 @@ import {
   useQueryState,
 } from 'nuqs';
 import * as React from 'react';
+import { rekbisError } from '../../util/rekbisError';
 import { useApplikasjonContext } from '../ApplikasjonContext';
 import { Roller } from '../components/tilgangskontroll/roller';
 import {
@@ -221,7 +222,9 @@ export const StillingsSøkProvider: React.FC<{
 export const useStillingsSøkFilter = () => {
   const context = React.useContext(StillingsSøkContext);
   if (context === undefined) {
-    throw new Error('useStillingsSøk må være i scope: StillingsSøkProvider');
+    throw new rekbisError({
+      beskrivelse: 'useStillingsSøk må være i scope: StillingsSøkProvider',
+    });
   }
   return context;
 };
