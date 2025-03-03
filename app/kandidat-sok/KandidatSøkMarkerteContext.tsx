@@ -1,6 +1,6 @@
-import * as React from 'react';
 import { rekbisError } from '../../util/rekbisError';
 import { KandidatDataSchemaDTO } from '../api/kandidat-sok/schema/cvSchema.zod';
+import * as React from 'react';
 
 interface KandidatSøkMarkerteContextProps {
   markerteKandidater?: KandidatDataSchemaDTO[] | undefined;

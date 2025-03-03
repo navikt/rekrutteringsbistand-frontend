@@ -1,5 +1,5 @@
-import { z } from 'zod';
 import { InternKandidatstatus } from '../../stilling/[stillingsId]/kandidater/components/KandidatTyper';
+import { z } from 'zod';
 
 export enum Kandidatlistestatus {
   Åpen = 'ÅPEN',

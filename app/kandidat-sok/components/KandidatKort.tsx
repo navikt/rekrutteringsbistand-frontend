@@ -1,3 +1,12 @@
+import { KandidatDataSchemaDTO } from '../../api/kandidat-sok/schema/cvSchema.zod';
+import TekstMedIkon from '../../components/TekstMedIkon';
+import { useKandidatSøkMarkerteContext } from '../KandidatSøkMarkerteContext';
+import {
+  hentKandidatensNavn,
+  hentKandidatensØnskedeSteder,
+  hentKandidatensØnskedeYrker,
+} from '../util';
+import { alleInnsatsgrupper } from './innsatsgrupper';
 import {
   FileSearchIcon,
   HandHeartIcon,
@@ -7,16 +16,6 @@ import {
 } from '@navikt/aksel-icons';
 import { Checkbox, Heading, Link } from '@navikt/ds-react';
 import * as React from 'react';
-import TekstMedIkon from '../../components/TekstMedIkon';
-
-import { KandidatDataSchemaDTO } from '../../api/kandidat-sok/schema/cvSchema.zod';
-import { useKandidatSøkMarkerteContext } from '../KandidatSøkMarkerteContext';
-import {
-  hentKandidatensNavn,
-  hentKandidatensØnskedeSteder,
-  hentKandidatensØnskedeYrker,
-} from '../util';
-import { alleInnsatsgrupper } from './innsatsgrupper';
 
 type IKandidatKort = {
   kandidat: KandidatDataSchemaDTO;
@@ -30,7 +29,7 @@ const KandidatKort: React.FC<IKandidatKort> = ({ kandidat }) => {
   );
 
   return (
-    <div className='border rounded-lg mb-4 border-gray-300 px-4 pb-4 pt-2 flex flex-row '>
+    <div className='mb-4 flex flex-row rounded-lg border border-gray-300 px-4 pt-2 pb-4'>
       <Checkbox
         aria-selected={erMarkert}
         hideLabel
@@ -40,15 +39,15 @@ const KandidatKort: React.FC<IKandidatKort> = ({ kandidat }) => {
       >
         Checkbox
       </Checkbox>
-      <div className='flex-grow mt-2'>
+      <div className='mt-2 flex-grow'>
         <Heading className='underline' size='small'>
           <Link href={`/kandidat/${kandidat.arenaKandidatnr}`}>
             {hentKandidatensNavn(kandidat)}
           </Link>
         </Heading>
-        <div className='flex items-row '>
+        <div className='items-row flex'>
           <div className='w-full'>
-            <div className='flex flex-row gap-4 mt-2'>
+            <div className='mt-2 flex flex-row gap-4'>
               <TekstMedIkon
                 ikon={<PinIcon />}
                 tekst={hentKandidatensØnskedeSteder(kandidat) ?? '-'}
@@ -59,7 +58,7 @@ const KandidatKort: React.FC<IKandidatKort> = ({ kandidat }) => {
                 tekst={`${kandidat.postnummer ?? '-'} ${kandidat.kommuneNavn ?? '-'}`}
               />
             </div>
-            <div className='flex flex-row gap-4 mt-2'>
+            <div className='mt-2 flex flex-row gap-4'>
               <TekstMedIkon
                 ikon={<HandShakeHeartIcon />}
                 tekst={hentKandidatensØnskedeYrker(kandidat) ?? '-'}
@@ -72,7 +71,7 @@ const KandidatKort: React.FC<IKandidatKort> = ({ kandidat }) => {
           </div>
         </div>
       </div>
-      <div className='flex flex-col justify-center flex-end font-bold mr-4 gap-2'>
+      <div className='flex-end mr-4 flex flex-col justify-center gap-2 font-bold'>
         {/* <Link href={`/stillings-sok/kandidat/${kandidat.arenaKandidatnr}`}> */}
         <Link
           href={`/kandidat/${kandidat.arenaKandidatnr}?visFane=forslagTilStilling`}

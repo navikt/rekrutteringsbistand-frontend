@@ -1,9 +1,9 @@
 'use client';
 
-import useSWRImmutable from 'swr/immutable';
-import { z } from 'zod';
 import { PamOntologiAPI } from '../../api-routes';
 import { getAPIwithSchema } from '../../fetcher';
+import useSWRImmutable from 'swr/immutable';
+import { z } from 'zod';
 
 const pamEndepunkt = (søkeord: string) =>
   PamOntologiAPI.internUrl + `/stillingsTittel?q=${søkeord}`;

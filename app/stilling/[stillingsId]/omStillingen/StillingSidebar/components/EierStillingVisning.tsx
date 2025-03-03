@@ -1,16 +1,15 @@
-import { PencilIcon } from '@navikt/aksel-icons';
-import { Button, Heading, Loader } from '@navikt/ds-react';
-import { useRouter } from 'next/navigation';
-import * as React from 'react';
-
 import { useKandidatliste } from '../../../../../api/kandidat/useKandidatliste';
+import { useStillingsContext } from '../../../StillingsContext';
 import {
   InternKandidatstatus,
   KandidatutfallTyper,
 } from '../../../kandidater/components/KandidatTyper';
-import { useStillingsContext } from '../../../StillingsContext';
 import AvsluttStillingKnapp from './AvsluttStillingKnapp';
 import KopierStilling from './KopierStilling';
+import { PencilIcon } from '@navikt/aksel-icons';
+import { Button, Heading, Loader } from '@navikt/ds-react';
+import { useRouter } from 'next/navigation';
+import * as React from 'react';
 
 const EierStillingVisning: React.FC = () => {
   const router = useRouter();
@@ -59,7 +58,7 @@ const EierStillingVisning: React.FC = () => {
           disabled={kandidatlisteInfo?.kandidatlisteStatus === 'LUKKET'}
           variant='secondary'
           size='small'
-          className='w-full h-5'
+          className='h-5 w-full'
           icon={<PencilIcon />}
           onClick={() =>
             router.push(`/stilling/${stillingsData.stilling.uuid}/rediger`)
@@ -75,7 +74,7 @@ const EierStillingVisning: React.FC = () => {
           kandidatlisteStatus={data?.status}
         />
       </div>
-      <div className='border-blue-200 rounded mt-4 border p-3'>
+      <div className='mt-4 rounded border border-blue-200 p-3'>
         <Heading size='xsmall' className='mb-4'>
           Oppsummering
         </Heading>

@@ -1,8 +1,7 @@
-import { PersonGroupIcon } from '@navikt/aksel-icons';
-import * as React from 'react';
-
 import TekstMedIkon from '../../../components/TekstMedIkon';
 import { useStillingsContext } from '../StillingsContext';
+import { PersonGroupIcon } from '@navikt/aksel-icons';
+import * as React from 'react';
 
 const AntallKandidater: React.FC = () => {
   const { kandidatlisteInfo } = useStillingsContext();

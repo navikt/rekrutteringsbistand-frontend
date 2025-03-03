@@ -1,8 +1,8 @@
 'use client';
+
 /**
  * Endepunkt /useStilling
  */
-import useSWRImmutable from 'swr/immutable';
 import { StillingAPI } from '../../../api-routes';
 import { getAPIwithSchema } from '../../../fetcher';
 import {
@@ -15,6 +15,7 @@ import {
   testMockStilling,
 } from './mocks/stillingMock';
 import { StillingDataSchema } from './stilling.dto';
+import useSWRImmutable from 'swr/immutable';
 
 const stillingEndepunkt = (stillingsId: string) =>
   `${StillingAPI.internUrl}/rekrutteringsbistandstilling/${stillingsId}`;

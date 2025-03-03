@@ -1,9 +1,9 @@
 'use client';
 
-import useSWRImmutable from 'swr/immutable';
-import { z } from 'zod';
 import { PamSearchAPI } from '../../api-routes';
 import { getApiWithSchemaEs } from '../../fetcher';
+import useSWRImmutable from 'swr/immutable';
+import { z } from 'zod';
 
 const finnArbeidsgiverEndepunkt = (søkeord: string) => {
   return PamSearchAPI.internUrl + `/underenhet?q=${søkeord}`;

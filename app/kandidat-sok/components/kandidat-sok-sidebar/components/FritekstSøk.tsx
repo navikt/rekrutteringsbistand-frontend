@@ -1,6 +1,6 @@
+import { useKandidatSøkFilter } from '../../../KandidaSokContext';
 import { Search } from '@navikt/ds-react';
 import * as React from 'react';
-import { useKandidatSøkFilter } from '../../../KandidaSokContext';
 
 const FritekstSøk: React.FC = () => {
   const { fritekst, setFritekst } = useKandidatSøkFilter();

@@ -1,12 +1,12 @@
+import { useKandidatListeoversikt } from '../../../../../api/kandidat/useKandidatListeoversikt';
+import SWRLaster from '../../../../../components/SWRLaster';
+import KandidatStatusTag from '../../../../../stilling/[stillingsId]/kandidater/components/StatusTag';
+import { useKandidatContext } from '../../../KandidatContext';
 import { BodyShort, Button, Link } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import { nb } from 'date-fns/locale';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
-import { useKandidatListeoversikt } from '../../../../../api/kandidat/useKandidatListeoversikt';
-import SWRLaster from '../../../../../components/SWRLaster';
-import KandidatStatusTag from '../../../../../stilling/[stillingsId]/kandidater/components/StatusTag';
-import { useKandidatContext } from '../../../KandidatContext';
 
 const SisteAktivitet: React.FC = () => {
   const { kandidatId } = useKandidatContext();
@@ -28,7 +28,7 @@ const SisteAktivitet: React.FC = () => {
                 return (
                   <div
                     key={aktivitet.uuid}
-                    className='flex justify-between items-start'
+                    className='flex items-start justify-between'
                   >
                     <div>
                       {aktivitet.erMaskert ? (
@@ -38,7 +38,7 @@ const SisteAktivitet: React.FC = () => {
                       ) : (
                         <Link
                           href={`/stilling/${aktivitet.stillingId}`}
-                          className=' text-[var(--ax-text-default)]'
+                          className='text-[var(--ax-text-default)]'
                         >
                           <BodyShort weight='semibold'>
                             {aktivitet.tittel ?? '-'}
@@ -69,7 +69,7 @@ const SisteAktivitet: React.FC = () => {
 
       <Button
         variant='secondary'
-        className='w-full mt-6'
+        className='mt-6 w-full'
         onClick={() => router.push(`/kandidat/${kandidatId}?visFane=aktivitet`)}
       >
         Vis all aktivitet

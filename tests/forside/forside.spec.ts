@@ -1,5 +1,5 @@
-import { expect, test } from '@playwright/test';
 import { visMørkModus } from '../visMørkModus';
+import { expect, test } from '@playwright/test';
 
 // Bruker arbeidsgiverrettet tilgang for å teste forsiden
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });

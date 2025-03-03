@@ -1,5 +1,5 @@
-import { logger } from '@navikt/next-logger';
 import { IFeilmelding } from '../app/components/feilhåndtering/Feilmelding';
+import { logger } from '@navikt/next-logger';
 
 export class rekbisError extends Error {
   public statuskode: number;

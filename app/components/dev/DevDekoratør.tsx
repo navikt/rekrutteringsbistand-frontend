@@ -1,8 +1,7 @@
-import { Box, InternalHeader, Select, TextField } from '@navikt/ds-react';
-
-import * as React from 'react';
 import { useApplikasjonContext } from '../../ApplikasjonContext';
 import { Roller } from '../tilgangskontroll/roller';
+import { Box, InternalHeader, Select, TextField } from '@navikt/ds-react';
+import * as React from 'react';
 
 const DevDekoratør: React.FC = () => {
   const { valgtNavKontor, setValgtNavKontor } = useApplikasjonContext();
@@ -39,7 +38,7 @@ const DevDekoratør: React.FC = () => {
         <InternalHeader.Title as='h1'>
           Rekrutteringsbistand - Playwright Test
         </InternalHeader.Title>
-        <Box.New className='flex justify-between items-center gap-4 ml-4'>
+        <Box.New className='ml-4 flex items-center justify-between gap-4'>
           Test kjøres med bruker: {devBruker} og rolle: {devRolle}
         </Box.New>
       </InternalHeader>
@@ -52,7 +51,7 @@ const DevDekoratør: React.FC = () => {
         Rekrutteringsbistand - Developer
       </InternalHeader.Title>
 
-      <div className='flex justify-between items-center gap-4 ml-4'>
+      <div className='ml-4 flex items-center justify-between gap-4'>
         <div className='flex items-center gap-2'>
           <span>
             <strong>Bruker:</strong>{' '}

@@ -1,6 +1,6 @@
+import Kontaktpersoner from '../omStillingen/Kontaktpersoner';
 import { Heading } from '@navikt/ds-react';
 import * as React from 'react';
-import Kontaktpersoner from '../omStillingen/Kontaktpersoner';
 
 export interface OmStillingBoksProps {
   tittel: string;
@@ -23,14 +23,14 @@ const OmStillingBoks: React.FC<OmStillingBoksProps> = ({
         {tittel}
       </Heading>
       {!innholdTopp && innhold && (
-        <div className='prose max-w-none prose-ul:list-disc prose-ul:pl-6 [&_ul]:list-disc [&_ul]:pl-6 pb-8'>
+        <div className='prose prose-ul:list-disc prose-ul:pl-6 max-w-none pb-8 [&_ul]:list-disc [&_ul]:pl-6'>
           {innhold}
         </div>
       )}
 
-      <div className='grid grid-cols-3 gap-4 mt-4'>{gridInnhold}</div>
+      <div className='mt-4 grid grid-cols-3 gap-4'>{gridInnhold}</div>
       {innholdTopp && innhold && (
-        <div className='prose max-w-none prose-ul:list-disc prose-ul:pl-6 [&_ul]:list-disc [&_ul]:pl-6 pt-8'>
+        <div className='prose prose-ul:list-disc prose-ul:pl-6 max-w-none pt-8 [&_ul]:list-disc [&_ul]:pl-6'>
           {innhold}
         </div>
       )}

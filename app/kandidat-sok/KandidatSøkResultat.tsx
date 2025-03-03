@@ -1,17 +1,17 @@
 'use client';
-import { Heading } from '@navikt/ds-react';
-import * as React from 'react';
-import { useKandidatsøk } from '../api/kandidat-sok/useKandidatsøk';
-import SWRLaster from '../components/SWRLaster';
 
 import { KandidatDataSchemaDTO } from '../api/kandidat-sok/schema/cvSchema.zod';
+import { useKandidatsøk } from '../api/kandidat-sok/useKandidatsøk';
 import { useKandidatNavigering } from '../components/KandidatNavigeringContext';
-import KandidatKort from './components/KandidatKort';
-import LagreIKandidatliste from './components/LagreIKandidatliste';
+import SWRLaster from '../components/SWRLaster';
 import {
   KandidatSøkPortefølje,
   useKandidatSøkFilter,
 } from './KandidaSokContext';
+import KandidatKort from './components/KandidatKort';
+import LagreIKandidatliste from './components/LagreIKandidatliste';
+import { Heading } from '@navikt/ds-react';
+import * as React from 'react';
 
 interface KandidatSøkResultatProps {
   type: KandidatSøkPortefølje;
@@ -37,7 +37,7 @@ const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({
       {(kandidatData) => {
         return (
           <>
-            <div className='flex justify-between items-center my-4'>
+            <div className='my-4 flex items-center justify-between'>
               <Heading size='medium'>
                 Viser {kandidatData.antallTotalt} treff
               </Heading>

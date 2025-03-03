@@ -1,9 +1,9 @@
 'use client';
 
-import { logger } from '@navikt/next-logger';
-import { useEffect } from 'react';
 import Feilmelding from './components/feilhåndtering/Feilmelding';
 import TilbakeKnapp from './components/layout/TilbakeKnapp';
+import { logger } from '@navikt/next-logger';
+import { useEffect } from 'react';
 
 export default function Error({
   error,

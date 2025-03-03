@@ -1,11 +1,11 @@
-import { Loader, Table } from '@navikt/ds-react';
-import * as React from 'react';
 import { kandidatHistorikkSchemaDTO } from '../../../api/kandidat/schema.zod';
 import { useKandidatListeoversikt } from '../../../api/kandidat/useKandidatListeoversikt';
 import { useStilling } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/useStilling';
 import SWRLaster from '../../../components/SWRLaster';
 import { useKandidatContext } from '../KandidatContext';
 import TabellRad from './components/TabellRad';
+import { Loader, Table } from '@navikt/ds-react';
+import * as React from 'react';
 
 const KandidatAktivitet: React.FC = () => {
   const { kandidatId } = useKandidatContext();
@@ -29,7 +29,7 @@ const KandidatAktivitet: React.FC = () => {
             hooks={[kandidatListeoversiktHook]}
             skeleton={
               <Table.Row>
-                <Table.DataCell colSpan={100} className='text-center py-8'>
+                <Table.DataCell colSpan={100} className='py-8 text-center'>
                   <Loader size='xsmall' />
                 </Table.DataCell>
               </Table.Row>
@@ -89,7 +89,7 @@ const HistoriskStillingRad: React.FC<{
       hooks={[stillingHook]}
       skeleton={
         <Table.Row>
-          <Table.DataCell colSpan={100} className='text-center py-8'>
+          <Table.DataCell colSpan={100} className='py-8 text-center'>
             <Loader size='xsmall' />
           </Table.DataCell>
         </Table.Row>

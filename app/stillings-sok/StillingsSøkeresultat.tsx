@@ -1,18 +1,18 @@
-import { Heading } from '@navikt/ds-react';
-import * as React from 'react';
+import { useApplikasjonContext } from '../ApplikasjonContext';
 import {
   maksAntallTreffPerSøk,
   regnUtFørsteTreffFra,
 } from '../api/stillings-sok/stillingssøkElasticSearchQuery';
 import { useStillingssøk } from '../api/stillings-sok/useStillingssøk';
-import { useApplikasjonContext } from '../ApplikasjonContext';
 import SWRLaster from '../components/SWRLaster';
+import { useStillingsSøkFilter } from './StillingsSøkContext';
 import LagreStandardsøk from './components/LagreStandardsøk';
 import StillingsSøkPaginering from './components/Pagnering';
 import StillingsKort from './components/StillingsKort';
 import StillingsSøkChips from './components/StillingsSøkChips';
 import StillingsSøkSortering from './components/StillingsSøkSortering';
-import { useStillingsSøkFilter } from './StillingsSøkContext';
+import { Heading } from '@navikt/ds-react';
+import * as React from 'react';
 
 const StillingsSøkeresultat: React.FC<{ kandidatId?: string }> = ({
   kandidatId,
@@ -41,11 +41,11 @@ const StillingsSøkeresultat: React.FC<{ kandidatId?: string }> = ({
       {(data) => {
         return (
           <>
-            <div className='flex items-center gap-2 min-h-[80px]'>
+            <div className='flex min-h-[80px] items-center gap-2'>
               <StillingsSøkChips />
               <LagreStandardsøk />
             </div>
-            <div className='flex justify-between items-center my-4'>
+            <div className='my-4 flex items-center justify-between'>
               {antallVisning(data.hits.total.value)}
               <StillingsSøkSortering />
             </div>

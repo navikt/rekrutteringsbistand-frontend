@@ -35,8 +35,8 @@ const TidslinjeFelt: React.FC<TidslinjeFeltProps> = ({
   description,
 }) => {
   return (
-    <Box.New className='mb-6 last:mb-0 flex'>
-      <Box.New className='w-1/3 pr-4 border-r border-gray-300'>
+    <Box.New className='mb-6 flex last:mb-0'>
+      <Box.New className='w-1/3 border-r border-gray-300 pr-4'>
         {fagDokumentasjon ? (
           <BodyShort textColor='default'>Fagdokumentasjon</BodyShort>
         ) : (

@@ -1,9 +1,10 @@
+import { kopierStilling } from '../../../../../api/stilling/rekrutteringsbistandstilling/kopier/[slug]/kopierStilling';
+import { useVisVarsling } from '../../../../../components/varsling/Varsling';
 import { FilesIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import { logger } from '@navikt/next-logger';
 import * as React from 'react';
-import { kopierStilling } from '../../../../../api/stilling/rekrutteringsbistandstilling/kopier/[slug]/kopierStilling';
-import { useVisVarsling } from '../../../../../components/varsling/Varsling';
+
 export interface KopierStillingProps {
   stillingsId: string;
 }

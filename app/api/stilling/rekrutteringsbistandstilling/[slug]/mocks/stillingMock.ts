@@ -1,5 +1,6 @@
-import { faker } from '@faker-js/faker/locale/nb_NO';
 import { GeografiDTO, StillingsDataDTO } from '../stilling.dto';
+import { faker } from '@faker-js/faker/locale/nb_NO';
+
 interface MockStilling {
   id?: string;
   navIdent?: string;

@@ -1,25 +1,24 @@
-import { Button, Checkbox, CheckboxGroup, Search } from '@navikt/ds-react';
-import * as React from 'react';
+import { useApplikasjonContext } from '../../../ApplikasjonContext';
 import { useForespurteOmDelingAvCv } from '../../../api/foresporsel-om-deling-av-cv/foresporsler/[slug]/useForespurteOmDelingAvCv';
 import { kandidaterSchemaDTO } from '../../../api/kandidat/schema.zod';
 import { useKandidatliste } from '../../../api/kandidat/useKandidatliste';
 import { useSmserForStilling } from '../../../api/kandidatvarsel/kandidatvarsel';
 import { oppdaterStilling } from '../../../api/stilling/oppdater-stilling/oppdaterStilling';
-import { useApplikasjonContext } from '../../../ApplikasjonContext';
 import SWRLaster from '../../../components/SWRLaster';
 import { storForbokstavString } from '../../../kandidat-sok/util';
 import { useStillingsContext } from '../StillingsContext';
+import { useStillingsKandidaterFilter } from './StillingsKandidaterFilterContext';
+import StillingsKandidaterTabell from './StillingsKandidaterTabell';
 import DelMedArbeidsgiver from './components/DelMedArbeidsgiver/DelMedArbeidsgiver';
 import DelMedKandidatModal from './components/DelMedKandidat/DelMedKandidatModal';
-
 import {
   aktivitetTilTekst,
   InternKandidatstatus,
   varselTilTekst,
 } from './components/KandidatTyper';
 import SendSmsModal from './components/SendSMS/SendSmsModal';
-import { useStillingsKandidaterFilter } from './StillingsKandidaterFilterContext';
-import StillingsKandidaterTabell from './StillingsKandidaterTabell';
+import { Button, Checkbox, CheckboxGroup, Search } from '@navikt/ds-react';
+import * as React from 'react';
 
 const StillingsKandidater: React.FC = () => {
   const { brukerData } = useApplikasjonContext();
@@ -75,7 +74,7 @@ const StillingsKandidater: React.FC = () => {
             onClick={onOvertaStilling}
             variant='secondary'
             size='small'
-            className='w-full h-5 my-2'
+            className='my-2 h-5 w-full'
           >
             Ta eierskap
           </Button>
@@ -88,8 +87,8 @@ const StillingsKandidater: React.FC = () => {
 
         return (
           <div className='my-2'>
-            <div className='flex justify-between mt-2'>
-              <div className=' md:w-[15rem]'>
+            <div className='mt-2 flex justify-between'>
+              <div className='md:w-[15rem]'>
                 <Search
                   placeholder='Søk i kandidatene'
                   label='Kandidatsøk'
@@ -129,7 +128,7 @@ const StillingsKandidater: React.FC = () => {
             </div>
 
             <div className='mt-8 flex'>
-              <aside className='sidebar w-full md:w-[20rem] mr-4 '>
+              <aside className='sidebar mr-4 w-full md:w-[20rem]'>
                 <CheckboxGroup
                   legend='Intern status'
                   onChange={setStatus}

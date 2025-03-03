@@ -1,3 +1,8 @@
+import { rekbisError } from '../../util/rekbisError';
+import {
+  getSessionStorage,
+  setSessionStorage,
+} from '../../util/sessionStorage';
 import React, {
   createContext,
   useCallback,
@@ -6,11 +11,6 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { rekbisError } from '../../util/rekbisError';
-import {
-  getSessionStorage,
-  setSessionStorage,
-} from '../../util/sessionStorage';
 
 interface KandidatNavigeringContextProps {
   navigering: string[];

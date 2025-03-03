@@ -1,6 +1,3 @@
-import { Accordion, Heading, TextField } from '@navikt/ds-react';
-import React from 'react';
-import { useFormContext } from 'react-hook-form';
 import { getWorkLocationsAsString } from '../../../../../util/locationUtil';
 import { GeografiDTO } from '../../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import RikTekstEditor from '../../../../components/rikteksteditor/RikTekstEditor';
@@ -9,6 +6,9 @@ import { useStillingsContext } from '../../StillingsContext';
 import { StillingsDataForm } from '../redigerFormType.zod';
 import StegNavigering from './StegNavigering';
 import VelgKontaktperson from './praktiskInfo/VelgKontaktperson';
+import { Accordion, Heading, TextField } from '@navikt/ds-react';
+import React from 'react';
+import { useFormContext } from 'react-hook-form';
 
 export const RedigerOmVirksomheten: React.FC<{
   stegNummer: number;

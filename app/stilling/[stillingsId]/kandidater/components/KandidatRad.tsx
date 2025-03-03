@@ -1,13 +1,8 @@
-import { PlusCircleIcon } from '@navikt/aksel-icons';
-import { BodyShort, Button, Checkbox, Link, Table } from '@navikt/ds-react';
-import { format } from 'date-fns';
-import { nb } from 'date-fns/locale';
-import * as React from 'react';
+import { useApplikasjonContext } from '../../../../ApplikasjonContext';
 import { KandidatForespurtOmDelingSchema } from '../../../../api/foresporsel-om-deling-av-cv/foresporsler/[slug]/useForespurteOmDelingAvCv';
 import { endreUtfallKandidat } from '../../../../api/kandidat/endreKandidatUtfall';
 import { kandidaterSchemaDTO } from '../../../../api/kandidat/schema.zod';
 import { Sms } from '../../../../api/kandidatvarsel/kandidatvarsel';
-import { useApplikasjonContext } from '../../../../ApplikasjonContext';
 import FeilDialog from '../../../../components/feilhåndtering/Feildialog';
 import InfoOmKandidat from './InfoOmKandidat';
 import SletteKandidatKnapp from './KandidatDropdown';
@@ -15,6 +10,11 @@ import KandidatHendelse, { mapToHendelser } from './KandidatHendelse';
 import KandidatHendelseTag from './KandidatHendelseTag';
 import { KandidatutfallTyper } from './KandidatTyper';
 import VelgInternStatus from './VelgInternStatus';
+import { PlusCircleIcon } from '@navikt/aksel-icons';
+import { BodyShort, Button, Checkbox, Link, Table } from '@navikt/ds-react';
+import { format } from 'date-fns';
+import { nb } from 'date-fns/locale';
+import * as React from 'react';
 
 export interface KandidatRadProps {
   kandidat: kandidaterSchemaDTO;
@@ -93,7 +93,7 @@ const KandidatRad: React.FC<KandidatRadProps> = ({
             {sisteUtfall !== KandidatutfallTyper.FATT_JOBBEN && (
               <Button
                 disabled={lukketKandidatliste}
-                className=' mb-4 w-full'
+                className='mb-4 w-full'
                 icon={<PlusCircleIcon />}
                 onClick={() =>
                   endreUtfallForKandidat(KandidatutfallTyper.FATT_JOBBEN)
@@ -167,7 +167,7 @@ const KandidatRad: React.FC<KandidatRadProps> = ({
         <KandidatHendelseTag kandidatHendelse={sisteSms} />
       </Table.DataCell>
       <Table.DataCell>
-        <div className='flex items-baseline flex-end'>
+        <div className='flex-end flex items-baseline'>
           <SletteKandidatKnapp
             lukketKandidatliste={lukketKandidatliste}
             kandidat={kandidat}

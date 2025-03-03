@@ -1,12 +1,13 @@
 'use client';
+
 /**
  * Endepunkt /useRekrutteringstreffOversikt
  */
-import useSWRImmutable from 'swr/immutable';
-import { z } from 'zod';
 import { RekrutteringstreffAPI } from '../api-routes';
 import { getAPIwithSchema } from '../fetcher';
 import { rekrutteringstreffOversiktMock } from './mocks/rekrutteringstreffOversiktMock';
+import useSWRImmutable from 'swr/immutable';
+import { z } from 'zod';
 
 export const rekrutteringstreffOversiktEndepunkt = () =>
   `${RekrutteringstreffAPI.internUrl}`;

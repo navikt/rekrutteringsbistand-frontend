@@ -1,21 +1,20 @@
 'use client';
-import { rekrutteringstreffOversiktMirage } from '@/app/api/rekrutteringstreff/useRekrutteringstreffOversikt';
-import { createServer, Model } from 'miragejs';
+
 import { brukerMirage } from '../app/api/bruker/useBruker';
 import { decoratorDataMirage } from '../app/api/decorator/useDecoratorData';
 import { foresporselOmDelingAvCVMirage } from '../app/api/foresporsel-om-deling-av-cv/foresporsler/[slug]/useForespurteOmDelingAvCv';
 import { foresporselOmDelingAvCVStatistikkMirage } from '../app/api/foresporsel-om-deling-av-cv/statistikk/useForesporselOmdelingAvCV';
 import { arenaKandidatnrMirage } from '../app/api/kandidat-sok/useArenaKandidatnr';
-import { kandidatinformasjonMirage } from '../app/api/kandidat-sok/useKandidatinformasjon';
 import { kandidatNavnMirage } from '../app/api/kandidat-sok/useKandidatNavn';
-import { kandidagsammendragMirage } from '../app/api/kandidat-sok/useKandidatsammendrag';
 import { kandidatStillingsSøkMirage } from '../app/api/kandidat-sok/useKandidatStillingssøk';
+import { kandidatinformasjonMirage } from '../app/api/kandidat-sok/useKandidatinformasjon';
+import { kandidagsammendragMirage } from '../app/api/kandidat-sok/useKandidatsammendrag';
 import { kandidatSokMirage } from '../app/api/kandidat-sok/useKandidatsøk';
 import { kontorSøkMirage } from '../app/api/kandidat-sok/useKontorSøk';
 import { formidleUsynligKandidatMirage } from '../app/api/kandidat/formidleKandidat';
+import { kandidatlisteoversiktMirage } from '../app/api/kandidat/useKandidatListeoversikt';
 import { kandidatlisteMirage } from '../app/api/kandidat/useKandidatliste';
 import { kandidatlisteInfoMirage } from '../app/api/kandidat/useKandidatlisteInfo';
-import { kandidatlisteoversiktMirage } from '../app/api/kandidat/useKandidatListeoversikt';
 import { mineKandidatlisterMirage } from '../app/api/kandidat/useMineKandidatlister';
 import { meldingsmalerMirage } from '../app/api/kandidatvarsel/hentMeldingsmaler';
 import { kandidatvarselMirage } from '../app/api/kandidatvarsel/kandidatvarsel';
@@ -30,6 +29,8 @@ import { stillingMirage } from '../app/api/stilling/rekrutteringsbistandstilling
 import { brukerStandardSøkMirage } from '../app/api/stilling/standardsok/useBrukersStandardsøk';
 import { stillingssøkMirage } from '../app/api/stillings-sok/useStillingssøk';
 import { synlighetsevalueringMirage } from '../app/api/synlighet/evaluering/useSynlighetsevaluering';
+import { rekrutteringstreffOversiktMirage } from '@/app/api/rekrutteringstreff/useRekrutteringstreffOversikt';
+import { createServer, Model } from 'miragejs';
 
 export function makeServer({ environment = 'test' } = {}) {
   let server = createServer({

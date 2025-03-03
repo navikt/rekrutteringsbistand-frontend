@@ -11,7 +11,7 @@ const Detaljer: React.FC<DetaljerProps> = ({ children }) => {
         <React.Fragment key={index}>
           {child}
           {index < React.Children.count(children) - 1 && (
-            <span className='text-4xl text-gray-300 px-2 last:hidden'>·</span>
+            <span className='px-2 text-4xl text-gray-300 last:hidden'>·</span>
           )}
         </React.Fragment>
       ))}

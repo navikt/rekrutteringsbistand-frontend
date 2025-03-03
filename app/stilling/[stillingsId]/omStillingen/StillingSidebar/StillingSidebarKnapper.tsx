@@ -1,8 +1,5 @@
 'use client';
 
-import { Button } from '@navikt/ds-react';
-import * as React from 'react';
-import { useState } from 'react';
 import { useApplikasjonContext } from '../../../../ApplikasjonContext';
 import { oppdaterStilling } from '../../../../api/stilling/oppdater-stilling/oppdaterStilling';
 import { setStillingsinfo } from '../../../../api/stilling/stillingsinfo/setStillingsinfo';
@@ -11,6 +8,9 @@ import { Roller } from '../../../../components/tilgangskontroll/roller';
 import { useStillingsContext } from '../../StillingsContext';
 import StillingPrint from './StillingPrint';
 import EierStillingVisning from './components/EierStillingVisning';
+import { Button } from '@navikt/ds-react';
+import * as React from 'react';
+import { useState } from 'react';
 
 interface StillingSidebarKnapperProps {
   printRef: React.RefObject<HTMLDivElement>;
@@ -91,7 +91,7 @@ const StillingSidebarKnapper: React.FC<StillingSidebarKnapperProps> = ({
           loading={loading}
           variant='primary'
           size='small'
-          className='w-full h-5 my-2'
+          className='my-2 h-5 w-full'
           onClick={onOpprettKandidatliste}
         >
           Opprett kandidatliste
@@ -104,7 +104,7 @@ const StillingSidebarKnapper: React.FC<StillingSidebarKnapperProps> = ({
           loading={loading}
           variant='secondary'
           size='small'
-          className='w-full h-5 my-2'
+          className='my-2 h-5 w-full'
         >
           Overta stillingen
         </Button>

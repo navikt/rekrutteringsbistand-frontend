@@ -1,4 +1,3 @@
-import * as React from 'react';
 import Arbeidserfaring from './components/Arbeidserfaring';
 import Arbeidsønsker from './components/Arbeidsønsker';
 import FritekstSøk from './components/FritekstSøk';
@@ -10,6 +9,7 @@ import Kompetanse from './components/Kompetanse';
 import PrioriterteMålgrupper from './components/PrioriterteMålgrupper';
 import Språk from './components/Språk';
 import Utdanningsnivå from './components/Utdanningsnivå';
+import * as React from 'react';
 
 const KandidatSøkSidebar: React.FC = () => {
   return (

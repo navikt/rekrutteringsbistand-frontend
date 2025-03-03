@@ -1,7 +1,7 @@
-import { logger } from '@navikt/next-logger';
 import { KandidatAPI } from '../../api-routes';
 import { KandidatlisteInfoDTO } from '../../kandidat/useKandidatlisteInfo';
 import { hentOboToken } from '../../oboToken';
+import { logger } from '@navikt/next-logger';
 
 interface hentKandidatlisteInfoProps {
   stillingsId: string;

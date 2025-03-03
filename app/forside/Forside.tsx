@@ -1,7 +1,8 @@
 'use client';
-import * as React from 'react';
+
 import Hurtiglenker from './components/Hurtiglenker';
 import Statistikk from './components/Statistikk';
+import * as React from 'react';
 
 const Forside: React.FC = () => {
   return (

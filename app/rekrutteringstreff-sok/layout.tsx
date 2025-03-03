@@ -1,9 +1,9 @@
-import * as React from 'react';
 import Piktogram from '../../public/ikoner/rekrutteringstreff.svg';
+import SVGDarkmode from '../components/SVGDarkmode';
 import SideLayout from '../components/layout/SideLayout';
 import SideTopBanner from '../components/layout/SideTopBanner';
-import SVGDarkmode from '../components/SVGDarkmode';
 import { RekrutteringstreffSøkSidebar } from './components/sidebar/RekrutteringstreffSøkSidebar';
+import * as React from 'react';
 
 interface layoutProps {
   children?: React.ReactNode | undefined;

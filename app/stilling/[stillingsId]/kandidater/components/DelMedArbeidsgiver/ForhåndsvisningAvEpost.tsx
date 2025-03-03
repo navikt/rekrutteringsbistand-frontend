@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useRef } from 'react';
 import { ArbeidsgiverNotifikasjonAPI } from '../../../../../api/api-routes';
+import { useCallback, useEffect, useRef } from 'react';
 
 type Props = {
   opprettetAvNavn: string;
@@ -47,7 +47,7 @@ const ForhåndsvisningAvEpost = ({
   return (
     <iframe
       title='forhåndsvisning'
-      className={` w-full h-[30rem] max-h-full border border-border-divider rounded-lg`}
+      className={`border-border-divider h-[30rem] max-h-full w-full rounded-lg border`}
       onLoad={(event) => handleFerdigLastet(event.currentTarget)}
       src={`${ArbeidsgiverNotifikasjonAPI.internUrl}/template`}
     />

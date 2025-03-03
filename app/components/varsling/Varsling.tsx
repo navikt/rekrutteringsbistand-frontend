@@ -91,7 +91,7 @@ export const Varsling: FunctionComponent = () => {
   return (
     <Alert
       fullWidth
-      className='fixed top-0 flex justify-center w-full z-100'
+      className='fixed top-0 z-100 flex w-full justify-center'
       variant={state.alertType}
       aria-live='assertive'
     >

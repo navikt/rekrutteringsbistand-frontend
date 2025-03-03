@@ -1,9 +1,10 @@
 'use client';
+
+import SWRLaster from '../components/SWRLaster';
+import { RekrutteringstreffKort } from './components/RekrutteringstreffKort';
 import { useRekrutteringstreffOversikt } from '@/app/api/rekrutteringstreff/useRekrutteringstreffOversikt';
 import { format } from 'date-fns';
 import * as React from 'react';
-import SWRLaster from '../components/SWRLaster';
-import { RekrutteringstreffKort } from './components/RekrutteringstreffKort';
 
 export interface RekrutteringstreffSøkProps {
   children?: React.ReactNode;

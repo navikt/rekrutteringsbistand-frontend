@@ -1,11 +1,11 @@
-import { BodyLong, Box, ErrorMessage, Heading } from '@navikt/ds-react';
-import * as React from 'react';
-import { useFormContext } from 'react-hook-form';
 import LeggTilKandidater, {
   ValgtKandidatProp,
 } from '../../../components/legg-til-kandidat/LeggTilKandidater';
 import StegNavigering from '../../../stilling/[stillingsId]/rediger/components/StegNavigering';
 import { FormidlingDataForm } from '../redigerFormidlingFormType';
+import { BodyLong, Box, ErrorMessage, Heading } from '@navikt/ds-react';
+import * as React from 'react';
+import { useFormContext } from 'react-hook-form';
 
 export interface FormidlingLeggTilKandidatProps {
   nesteSteg: () => void;

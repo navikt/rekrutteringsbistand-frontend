@@ -1,18 +1,18 @@
-import { Chips } from '@navikt/ds-react';
-import * as React from 'react';
 import FilterChip from '../../components/FilterChip';
 import TømFiltre from '../../components/TømFiltre';
 import { useKandidatSøkFilter } from '../KandidaSokContext';
 import { Innsatsgruppe } from './innsatsgrupper';
 import { HovedMålType } from './kandidat-sok-sidebar/components/Hovedmål';
+import { Chips } from '@navikt/ds-react';
+import * as React from 'react';
 
 const StillingsSøkChips: React.FC = () => {
   const filter = useKandidatSøkFilter();
 
   return (
-    <div className='mt-4 relative w-full'>
+    <div className='relative mt-4 w-full'>
       <Chips>
-        <div className='flex flex-row gap-2 flex-wrap overflow-x-auto pb-2'>
+        <div className='flex flex-row flex-wrap gap-2 overflow-x-auto pb-2'>
           {Object.values(filter).some(
             (value) => Array.isArray(value) && value.length > 0,
           ) && <TømFiltre />}

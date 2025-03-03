@@ -1,6 +1,6 @@
+import { isLocal } from './util/env';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-import { isLocal } from './util/env';
 
 export async function middleware(request: NextRequest): Promise<NextResponse> {
   const requestUrl: URL = new URL(request.url);

@@ -1,5 +1,3 @@
-import { logger } from '@navikt/next-logger';
-import { NextRequest, NextResponse } from 'next/server';
 import { mapFormTilFormidling } from '../../../formidling/ny-formidling/mapFormidling';
 import { FormidlingDataForm } from '../../../formidling/ny-formidling/redigerFormidlingFormType';
 import { hentEtterregistrering } from './hentEtterregistrering';
@@ -9,6 +7,8 @@ import { lukkKandidatliste } from './lukkKandidatliste';
 import { oppdaterEtterregistrering } from './oppdaterEtterregistrering';
 import { opprettEtterregistrering } from './opprettEtterregistrering';
 import { opprettStillingForFormidlingMapper } from './opprettStillingForFormidlingMapper';
+import { logger } from '@navikt/next-logger';
+import { NextRequest, NextResponse } from 'next/server';
 
 export interface FormidlingAvUsynligKandidatOutboundDto {
   fnr: string;

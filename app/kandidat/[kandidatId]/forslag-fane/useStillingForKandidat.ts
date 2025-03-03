@@ -1,5 +1,5 @@
 'use client';
-import React, { useRef } from 'react';
+
 import {
   useKandidatStillingssøk,
   YrkeJobbonskeStillingsSøkDTO,
@@ -10,6 +10,7 @@ import {
 } from '../../../api/stillings-sok/esFiltre/fylkeOgKommuneMapping';
 import { useStillingsSøkFilter } from '../../../stillings-sok/StillingsSøkContext';
 import { StillingsStatusTyper } from '../../../stillings-sok/components/StillingsSøkFilter/StatusFilter';
+import React, { useRef } from 'react';
 
 const hentFylkerFraJobbønsker = (
   geografijobbønskenummer: string[],

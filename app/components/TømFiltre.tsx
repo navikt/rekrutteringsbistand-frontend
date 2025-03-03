@@ -1,4 +1,5 @@
 'use client';
+
 import { Chips } from '@navikt/ds-react';
 
 const clearAllQueryParams = (exclude: string[] = []) => {

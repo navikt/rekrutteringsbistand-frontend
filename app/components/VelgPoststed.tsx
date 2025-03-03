@@ -1,8 +1,8 @@
+import { usePamPostdata } from '../api/pam-geografi/postdata/[postnummer]/usePamPostdata';
 import { TrashIcon } from '@navikt/aksel-icons';
 import { Button, TextField } from '@navikt/ds-react';
 import * as React from 'react';
 import { Control, Controller } from 'react-hook-form';
-import { usePamPostdata } from '../api/pam-geografi/postdata/[postnummer]/usePamPostdata';
 
 export interface VelgPoststedProps {
   control: Control<any>;
@@ -37,7 +37,7 @@ const VelgPoststed: React.FC<VelgPoststedProps> = ({
   return (
     <>
       {/* {index > 0 && <hr className='my-4 border-gray-200' />} */}
-      <div className='flex flex-col gap-4 '>
+      <div className='flex flex-col gap-4'>
         <Controller
           name={`${lokasjonsFelt}.${index}.address`}
           control={control}

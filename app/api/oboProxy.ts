@@ -1,8 +1,8 @@
-import { logger } from '@navikt/next-logger';
-import { NextRequest, NextResponse } from 'next/server';
 import { isLocal } from '../../util/env';
 import { Iroute } from './api-routes';
 import { hentOboToken, setHeaderToken } from './oboToken';
+import { logger } from '@navikt/next-logger';
+import { NextRequest, NextResponse } from 'next/server';
 
 export const proxyWithOBO = async (
   proxy: Iroute,

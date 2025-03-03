@@ -1,6 +1,6 @@
+import { rekbisError } from '../../util/rekbisError';
 import { logger } from '@navikt/next-logger';
 import { z, ZodSchema } from 'zod';
-import { rekbisError } from '../../util/rekbisError';
 
 const basePath = process.env.NAIS_CLUSTER_NAME === 'local' ? '' : '';
 

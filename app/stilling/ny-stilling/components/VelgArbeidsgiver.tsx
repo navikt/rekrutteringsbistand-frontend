@@ -1,9 +1,9 @@
-import { Alert, FormSummary, UNSAFE_Combobox } from '@navikt/ds-react';
-import * as React from 'react';
 import {
   ArbeidsgiverDTO,
   useFinnArbeidsgiver,
 } from '../../../api/pam-search/underenhet/useArbeidsgiver';
+import { Alert, FormSummary, UNSAFE_Combobox } from '@navikt/ds-react';
+import * as React from 'react';
 
 export interface IVelgArbeidsgiver {
   children?: React.ReactNode | undefined;

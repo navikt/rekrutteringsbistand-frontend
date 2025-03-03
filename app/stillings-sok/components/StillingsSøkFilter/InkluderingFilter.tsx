@@ -1,6 +1,6 @@
+import { useStillingsSøkFilter } from '../../StillingsSøkContext';
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
 import * as React from 'react';
-import { useStillingsSøkFilter } from '../../StillingsSøkContext';
 
 type GruppeMedTags = {
   hovedtag: Hovedtag;

@@ -1,11 +1,11 @@
 'use client';
-import { Alert, Heading, Link } from '@navikt/ds-react';
-import * as React from 'react';
 
 import { useApplikasjonContext } from '../../ApplikasjonContext';
 import ErrorBoundary from '../feilhåndtering/ErrorBoundary';
 import css from './TilgangskontrollForInnhold.module.css';
 import { Roller } from './roller';
+import { Alert, Heading, Link } from '@navikt/ds-react';
+import * as React from 'react';
 
 export interface ITilgangskontrollForInnhold {
   kreverEnAvRollene?: Roller[];

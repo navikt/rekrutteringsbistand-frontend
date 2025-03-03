@@ -1,9 +1,9 @@
-import { EyeIcon, HandshakeIcon } from '@navikt/aksel-icons';
-import { FunctionComponent } from 'react';
 import { useStatistikk } from '../../api/statistikk/useStatistikk';
 import SWRLaster from '../../components/SWRLaster';
 import Infokort, { InfokortSkeleton } from './Infokort';
 import { IStatistikkValg } from './Statistikk';
+import { EyeIcon, HandshakeIcon } from '@navikt/aksel-icons';
+import { FunctionComponent } from 'react';
 
 const Utfallsstatistikk: FunctionComponent<IStatistikkValg> = ({
   navKontor,
@@ -20,7 +20,7 @@ const Utfallsstatistikk: FunctionComponent<IStatistikkValg> = ({
     <SWRLaster
       hooks={[statistikkHook]}
       skeleton={
-        <div className='flex gap-6 '>
+        <div className='flex gap-6'>
           <InfokortSkeleton />
           <InfokortSkeleton />
         </div>

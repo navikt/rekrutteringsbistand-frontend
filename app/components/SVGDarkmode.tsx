@@ -1,7 +1,8 @@
 'use client';
+
+import { useThemeProvider } from '../ThemeProvider';
 import Image from 'next/image';
 import * as React from 'react';
-import { useThemeProvider } from '../ThemeProvider';
 
 export interface SVGDarkmodeProps {
   src?: string;

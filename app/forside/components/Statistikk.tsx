@@ -1,16 +1,17 @@
 'use client';
-import { BodyShort, Heading, Select } from '@navikt/ds-react';
-import React, { ChangeEvent, useState } from 'react';
+
 import {
   førsteDagIMåned,
   sisteDagIMåned,
   visDatoMedMåned,
 } from '../../../util/dato';
 import { useApplikasjonContext } from '../../ApplikasjonContext';
-import ErrorBoundary from '../../components/feilhåndtering/ErrorBoundary';
 import Sidelaster from '../../components/Sidelaster';
+import ErrorBoundary from '../../components/feilhåndtering/ErrorBoundary';
 import Forespørsler from './Forespørsler';
 import Utfallsstatistikk from './Utfallsstatistikk';
+import { BodyShort, Heading, Select } from '@navikt/ds-react';
+import React, { ChangeEvent, useState } from 'react';
 
 export interface IStatistikkValg {
   navKontor: string;
@@ -48,7 +49,7 @@ const Statistikk: React.FC = () => {
   }
   return (
     <div className='w-full'>
-      <div className={'flex  mb-8 gap-6 items-center'}>
+      <div className={'mb-8 flex items-center gap-6'}>
         <div className='flex flex-col'>
           <Heading level='2' size='medium'>
             Ditt Nav-kontor
@@ -58,7 +59,7 @@ const Statistikk: React.FC = () => {
               `Enhet ${valgtNavKontor?.navKontor || '-'}`}
           </BodyShort>
         </div>
-        <div className='"hidden h-px bg-border-subtle flex-grow skillelinje"' />
+        <div className='"hidden bg-border-subtle skillelinje" h-px flex-grow' />
         <div />
         <Select
           className='flex items-center'

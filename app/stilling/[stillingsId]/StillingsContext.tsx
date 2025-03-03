@@ -1,19 +1,19 @@
 'use client';
-import React, { useMemo } from 'react';
 
-// import { useRouter } from 'next/navigation';
-import { useRouter } from 'next/navigation';
 import { rekbisError } from '../../../util/rekbisError';
+import { useApplikasjonContext } from '../../ApplikasjonContext';
 import {
   KandidatlisteInfoDTO,
   useKandidatlisteInfo,
 } from '../../api/kandidat/useKandidatlisteInfo';
 import { StillingsDataDTO } from '../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { useStilling } from '../../api/stilling/rekrutteringsbistandstilling/[slug]/useStilling';
-import { useApplikasjonContext } from '../../ApplikasjonContext';
 import SWRLaster from '../../components/SWRLaster';
 import { eierStilling } from '../../components/tilgangskontroll/erEier';
 import { Roller } from '../../components/tilgangskontroll/roller';
+// import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
+import React, { useMemo } from 'react';
 
 interface StillingsContextType {
   stillingsData: StillingsDataDTO;

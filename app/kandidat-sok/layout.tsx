@@ -1,13 +1,14 @@
 'use client';
+
 import Piktogram from '../../public/ikoner/finn-kandidater.svg';
+import SVGDarkmode from '../components/SVGDarkmode';
 import SideLayout from '../components/layout/SideLayout';
 import SideTopBanner from '../components/layout/SideTopBanner';
-import SVGDarkmode from '../components/SVGDarkmode';
-import { Roller } from '../components/tilgangskontroll/roller';
 import { TilgangskontrollForInnhold } from '../components/tilgangskontroll/TilgangskontrollForInnhold';
-import KandidatSøkSidebar from './components/kandidat-sok-sidebar/KandidatSøkSidebar';
+import { Roller } from '../components/tilgangskontroll/roller';
 import { KandidatSøkProvider } from './KandidaSokContext';
 import { KandidatSøkMarkerteContextProvider } from './KandidatSøkMarkerteContext';
+import KandidatSøkSidebar from './components/kandidat-sok-sidebar/KandidatSøkSidebar';
 
 export default function KandidatSokLayout({
   children,

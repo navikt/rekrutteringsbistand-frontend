@@ -1,8 +1,8 @@
+import { KandidatSøkAPI } from '../api-routes';
+import { postApiWithSchema } from '../fetcher';
 import { Server } from 'miragejs';
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
-import { KandidatSøkAPI } from '../api-routes';
-import { postApiWithSchema } from '../fetcher';
 
 export enum KandidatKilde {
   REKRUTTERINGSBISTAND = 'REKRUTTERINGSBISTAND',

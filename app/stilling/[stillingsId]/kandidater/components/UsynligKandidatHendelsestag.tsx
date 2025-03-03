@@ -1,6 +1,6 @@
-import { Tag } from '@navikt/ds-react';
 import { storForbokstavString } from '../../../../kandidat-sok/util';
 import { KandidatutfallTyper } from './KandidatTyper';
+import { Tag } from '@navikt/ds-react';
 
 export interface UsynligKandidatHendelseTagProps {
   utfall: string;

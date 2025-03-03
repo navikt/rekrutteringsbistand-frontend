@@ -1,8 +1,8 @@
+import { StillingsDataForm } from '../../redigerFormType.zod';
+import { DatoVelger } from '../DatoVelger';
 import { Checkbox, ErrorMessage, Heading } from '@navikt/ds-react';
 import * as React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
-import { StillingsDataForm } from '../../redigerFormType.zod';
-import { DatoVelger } from '../DatoVelger';
 
 export interface VelgOppstartOgFristProps {
   skjulFrist?: boolean;

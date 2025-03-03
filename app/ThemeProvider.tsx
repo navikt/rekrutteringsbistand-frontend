@@ -1,8 +1,9 @@
 'use client';
+
+import { rekbisError } from '../util/rekbisError';
 import { Theme } from '@navikt/ds-react';
 import * as React from 'react';
 import { useEffect } from 'react';
-import { rekbisError } from '../util/rekbisError';
 
 interface ApplikasjonContextType {
   darkMode: boolean;

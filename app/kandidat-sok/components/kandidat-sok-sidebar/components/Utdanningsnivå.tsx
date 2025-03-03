@@ -1,5 +1,5 @@
-import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
 import { useKandidatSøkFilter } from '../../../KandidaSokContext';
+import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
 
 export enum Nivå {
   Videregående = 'videregaende',

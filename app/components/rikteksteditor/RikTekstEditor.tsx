@@ -1,14 +1,15 @@
 'use client';
-import { Box, Button, ErrorMessage } from '@navikt/ds-react';
 
-import { EditorContent, useEditor } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
 import IconBold from '../../../public/editor/iconbold.svg';
 import IconItalic from '../../../public/editor/iconitalic.svg';
 import IconList from '../../../public/editor/iconlist.svg';
 import IconRedo from '../../../public/editor/iconredo.svg';
 import IconUndo from '../../../public/editor/iconundo.svg';
 import SVGDarkmode from '../SVGDarkmode';
+import { Box, Button, ErrorMessage } from '@navikt/ds-react';
+import { EditorContent, useEditor } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
+
 export interface IRikTekstEditor {
   skjulToolbar?: boolean;
   tekst?: string;
@@ -109,7 +110,7 @@ const RikTekstEditor: React.FC<IRikTekstEditor> = ({
       <EditorContent
         id={id}
         editor={editor}
-        className='prose max-w-none prose-ul:list-disc prose-ul:pl-6 [&_ul]:list-disc [&_ul]:pl-6'
+        className='prose prose-ul:list-disc prose-ul:pl-6 max-w-none [&_ul]:list-disc [&_ul]:pl-6'
       />
       {feilMelding && <ErrorMessage>{feilMelding}</ErrorMessage>}
     </Box.New>

@@ -1,9 +1,9 @@
 /**
  * Endepunkt /api/meldingsmal
  */
-import useSWR, { SWRResponse } from 'swr';
 import { KandidatvarselAPI } from '../api-routes';
 import { getAPI } from '../fetcher';
+import useSWR, { SWRResponse } from 'swr';
 
 const hentMeldingsmalerEndepunkt = `${KandidatvarselAPI.internUrl}/meldingsmal`;
 

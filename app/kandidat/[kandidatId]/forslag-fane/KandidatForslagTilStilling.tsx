@@ -1,6 +1,6 @@
-import * as React from 'react';
 import StillingsSøk from '../../../stillings-sok/StillingsSøk';
 import { useKandidatContext } from '../KandidatContext';
+import * as React from 'react';
 
 const KandidatForslagTilStilling: React.FC = () => {
   const { kandidatId } = useKandidatContext();

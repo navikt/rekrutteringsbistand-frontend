@@ -1,6 +1,6 @@
+import Detaljer from './Detaljer';
 import { BodyShort } from '@navikt/ds-react';
 import { format } from 'date-fns';
-import Detaljer from './Detaljer';
 
 type Props = {
   fradato?: string | null;

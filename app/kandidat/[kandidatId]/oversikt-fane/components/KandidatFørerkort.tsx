@@ -1,10 +1,11 @@
+import { FørerkortSchemaDTO } from '../../../../api/kandidat-sok/schema/forerkortSchema.zod';
+import GråRamme from './GråRamme';
+import Erfaring from './erfaring/Erfaring';
 import { CarIcon } from '@navikt/aksel-icons';
 import { BodyShort } from '@navikt/ds-react';
 import { compareAsc, format, parseISO } from 'date-fns';
 import * as React from 'react';
-import { FørerkortSchemaDTO } from '../../../../api/kandidat-sok/schema/forerkortSchema.zod';
-import GråRamme from './GråRamme';
-import Erfaring from './erfaring/Erfaring';
+
 const FørerkortTidsperiode = ({
   førerkort,
 }: {

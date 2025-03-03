@@ -1,6 +1,6 @@
-import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
 import { useKandidatSøkFilter } from '../../../KandidaSokContext';
 import { filtrerbareInnsatsgrupper, Innsatsgruppe } from '../../innsatsgrupper';
+import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
 
 const Innsatsgrupper = () => {
   const { innsatsgruppe, setInnsatsgruppe } = useKandidatSøkFilter();

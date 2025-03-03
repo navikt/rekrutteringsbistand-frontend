@@ -1,9 +1,9 @@
-import { BodyLong, Button, Modal } from '@navikt/ds-react';
-import { useRouter } from 'next/navigation';
-import * as React from 'react';
 import { oppdaterStilling } from '../../../../api/stilling/oppdater-stilling/oppdaterStilling';
 import { StillingsStatus } from '../../../stilling-typer';
 import { useStillingsContext } from '../../StillingsContext';
+import { BodyLong, Button, Modal } from '@navikt/ds-react';
+import { useRouter } from 'next/navigation';
+import * as React from 'react';
 
 export interface EndreStillingStatusProps {
   nyStatus: StillingsStatus;

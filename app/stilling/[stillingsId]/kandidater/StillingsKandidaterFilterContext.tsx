@@ -1,7 +1,8 @@
 'use client';
+
+import { rekbisError } from '../../../../util/rekbisError';
 import { parseAsArrayOf, parseAsString, useQueryState } from 'nuqs';
 import * as React from 'react';
-import { rekbisError } from '../../../../util/rekbisError';
 
 export enum KandidatFilterQueryparam {
   Status = 'status',

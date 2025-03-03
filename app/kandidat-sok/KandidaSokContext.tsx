@@ -1,4 +1,6 @@
 'use client';
+
+import { rekbisError } from '../../util/rekbisError';
 import {
   parseAsArrayOf,
   parseAsInteger,
@@ -6,7 +8,6 @@ import {
   useQueryState,
 } from 'nuqs';
 import * as React from 'react';
-import { rekbisError } from '../../util/rekbisError';
 
 export enum KandidatSøkPortefølje {
   MINE_BRUKERE = 'minebrukere',

@@ -1,13 +1,5 @@
 'use client';
-import {
-  CalendarIcon,
-  ClockIcon,
-  HourglassIcon,
-  LocationPinIcon,
-  TimerStartIcon,
-} from '@navikt/aksel-icons';
-import { logger } from '@navikt/next-logger';
-import * as React from 'react';
+
 import { getWorkLocationsAsString } from '../../../../util/locationUtil';
 import { GeografiDTO } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import TekstMedIkon from '../../../components/TekstMedIkon';
@@ -18,6 +10,15 @@ import OmStillingBoks from '../components/OmStillingBoks';
 import AntallKandidater from './AntallKandidater';
 import StillingSidebar from './StillingSidebar/StillingSidebar';
 import StillingsTekst from './StillingsTekst';
+import {
+  CalendarIcon,
+  ClockIcon,
+  HourglassIcon,
+  LocationPinIcon,
+  TimerStartIcon,
+} from '@navikt/aksel-icons';
+import { logger } from '@navikt/next-logger';
+import * as React from 'react';
 
 const OmStillingen: React.FC<{ forhåndsvisData?: boolean }> = ({
   forhåndsvisData,
@@ -69,9 +70,9 @@ const OmStillingen: React.FC<{ forhåndsvisData?: boolean }> = ({
 
   return (
     <div className='mt-10' data-testid='om-stillingen'>
-      <div className=' flex flex-col gap-y-8 gap-x-[3.5rem] md:flex-row'>
+      <div className='flex flex-col gap-x-[3.5rem] gap-y-8 md:flex-row'>
         <div className='w-full' id='print-content' ref={contentRef}>
-          <div className='flex flex-col '>
+          <div className='flex flex-col'>
             <OmStillingBoks
               tittel='Om stillingen'
               innholdTopp

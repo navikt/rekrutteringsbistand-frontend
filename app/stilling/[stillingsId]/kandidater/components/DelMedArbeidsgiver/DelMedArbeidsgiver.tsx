@@ -1,3 +1,12 @@
+import { useApplikasjonContext } from '../../../../../ApplikasjonContext';
+import { useForespurteOmDelingAvCv } from '../../../../../api/foresporsel-om-deling-av-cv/foresporsler/[slug]/useForespurteOmDelingAvCv';
+import { postDelMedArbeidsgiver } from '../../../../../api/kandidat/postDelMedArbeidsgiver';
+import {
+  kandidaterSchemaDTO,
+  kandidatlisteSchemaDTO,
+} from '../../../../../api/kandidat/schema.zod';
+import SWRLaster from '../../../../../components/SWRLaster';
+import ForhåndsvisningAvEpost from './ForhåndsvisningAvEpost';
 import { TenancyIcon } from '@navikt/aksel-icons';
 import {
   Accordion,
@@ -9,15 +18,6 @@ import {
   UNSAFE_Combobox,
 } from '@navikt/ds-react';
 import * as React from 'react';
-import { useForespurteOmDelingAvCv } from '../../../../../api/foresporsel-om-deling-av-cv/foresporsler/[slug]/useForespurteOmDelingAvCv';
-import { postDelMedArbeidsgiver } from '../../../../../api/kandidat/postDelMedArbeidsgiver';
-import {
-  kandidaterSchemaDTO,
-  kandidatlisteSchemaDTO,
-} from '../../../../../api/kandidat/schema.zod';
-import { useApplikasjonContext } from '../../../../../ApplikasjonContext';
-import SWRLaster from '../../../../../components/SWRLaster';
-import ForhåndsvisningAvEpost from './ForhåndsvisningAvEpost';
 
 export interface DelMedArbeidsgiverProps {
   markerteKandidater: kandidaterSchemaDTO[];

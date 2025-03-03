@@ -1,7 +1,7 @@
-import * as React from 'react';
 import NotFound from '../../not-found';
 import { StillingsContextProvider } from '../../stilling/[stillingsId]/StillingsContext';
 import StillingSideLayout from '../../stilling/[stillingsId]/StillingssideLayout';
+import * as React from 'react';
 
 interface FormidlingSideRootLayoutProps {
   children: React.ReactNode;

@@ -1,3 +1,10 @@
+import { useArenaKandidatnr } from '../../api/kandidat-sok/useArenaKandidatnr';
+import {
+  Kandidatnavn,
+  useKandidatNavn,
+} from '../../api/kandidat-sok/useKandidatNavn';
+import SynlighetsModal from './SynlighetsModal';
+import Synlighetsinfo from './Synlighetsinfo';
 import {
   CheckmarkCircleIcon,
   PlusCircleIcon,
@@ -14,13 +21,7 @@ import {
 } from '@navikt/ds-react';
 import { idnr } from '@navikt/fnrvalidator';
 import * as React from 'react';
-import { useArenaKandidatnr } from '../../api/kandidat-sok/useArenaKandidatnr';
-import {
-  Kandidatnavn,
-  useKandidatNavn,
-} from '../../api/kandidat-sok/useKandidatNavn';
-import SynlighetsModal from './SynlighetsModal';
-import Synlighetsinfo from './Synlighetsinfo';
+
 export interface LeggTilKandidaterProps {
   måHaAktørId?: boolean;
   callBack: (valgteKandidater: ValgtKandidatProp[]) => void;
@@ -101,7 +102,7 @@ const LeggTilKandidater: React.FC<LeggTilKandidaterProps> = ({
         }
       }}
     >
-      <div className='flex justify-between  items-center '>
+      <div className='flex items-center justify-between'>
         <div className='p-4'>
           {kandidatNavnHook.data?.fornavn} {kandidatNavnHook.data?.etternavn} -{' '}
           {fødselsnummer}
@@ -121,7 +122,7 @@ const LeggTilKandidater: React.FC<LeggTilKandidaterProps> = ({
 
   const UsynligKandidat = (fødselsnummer: string) => (
     <Box.New className='cursor-pointer'>
-      <div className='flex justify-between  items-center '>
+      <div className='flex items-center justify-between'>
         <div className='p-4'>
           {kandidatNavnHook.data?.fornavn} {kandidatNavnHook.data?.etternavn} -{' '}
           {fødselsnummer}
@@ -160,7 +161,7 @@ const LeggTilKandidater: React.FC<LeggTilKandidaterProps> = ({
 
         {kandidatNavnHook.isLoading ||
           (arenaKandidatnrHook.isLoading && (
-            <Box.New className='flex justify-center items-center h-full p-4'>
+            <Box.New className='flex h-full items-center justify-center p-4'>
               <Loader />
             </Box.New>
           ))}
@@ -184,7 +185,7 @@ const LeggTilKandidater: React.FC<LeggTilKandidaterProps> = ({
 
           {valgteKandidater.map((kandidat) => (
             <Box.New
-              className='flex flex-row justify-between items-center font-bold'
+              className='flex flex-row items-center justify-between font-bold'
               key={kandidat.fødselsnummer}
               background='raised'
               borderColor='neutral-subtleA'

@@ -1,12 +1,13 @@
 'use client';
+
 /**
  * Endepunkt /useSynlighetsevaluering
  */
+import { SynlighetsevalueringAPI } from '../../api-routes';
+import { postApiWithSchema } from '../../fetcher';
 import { Server } from 'miragejs/server';
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
-import { SynlighetsevalueringAPI } from '../../api-routes';
-import { postApiWithSchema } from '../../fetcher';
 
 const SynlighetsevalueringEndepunkt = `${SynlighetsevalueringAPI.internUrl}/evaluering`;
 

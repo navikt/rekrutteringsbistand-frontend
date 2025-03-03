@@ -1,11 +1,12 @@
-import { BodyShort, ErrorMessage, Heading, Link } from '@navikt/ds-react';
-import * as React from 'react';
-import { useFormContext } from 'react-hook-form';
 import RikTekstEditor from '../../../../components/rikteksteditor/RikTekstEditor';
 import { StillingsDataForm } from '../redigerFormType.zod';
 import StegNavigering from './StegNavigering';
 import VelgArbeidssted from './VelgArbeidssted';
 import VelgStillingTittel from './VelgStillingTittel';
+import { BodyShort, ErrorMessage, Heading, Link } from '@navikt/ds-react';
+import * as React from 'react';
+import { useFormContext } from 'react-hook-form';
+
 export const RedigerOmStillingen: React.FC<{
   stegNummer: number;
   nextStep: () => void;

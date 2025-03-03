@@ -1,12 +1,13 @@
 'use client';
+
 /**
  * Endepunkt /useKandidatlisteInfo
  */
+import { KandidatAPI } from '../api-routes';
+import { getAPIwithSchema } from '../fetcher';
 import { Server } from 'miragejs';
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
-import { KandidatAPI } from '../api-routes';
-import { getAPIwithSchema } from '../fetcher';
 
 export const kandidatlisteInfoEndepunkt = (stillingsId: string) =>
   `${KandidatAPI.internUrl}/veileder/stilling/${stillingsId}/kandidatlisteinfo`;

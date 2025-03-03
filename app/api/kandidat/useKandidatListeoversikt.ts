@@ -1,12 +1,13 @@
 'use client';
+
 /**
  * Endepunkt /useKandidatListeoversikt
  */
-import useSWRImmutable from 'swr/immutable';
-import { z } from 'zod';
 import { KandidatAPI } from '../api-routes';
 import { getAPIwithSchema } from '../fetcher';
 import { kandidatHistorikkSchema } from './schema.zod';
+import useSWRImmutable from 'swr/immutable';
+import { z } from 'zod';
 
 const kandidatListeoversiktEndepunkt = (kandidatId: string) =>
   `${KandidatAPI.internUrl}/veileder/kandidater/${kandidatId}/listeoversikt`;

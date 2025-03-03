@@ -1,6 +1,6 @@
+import { getMiljø, Miljø } from '../../../../util/miljø';
 import { CopyButton, Link } from '@navikt/ds-react';
 import * as React from 'react';
-import { getMiljø, Miljø } from '../../../../util/miljø';
 
 export interface IKopierStillingLenke {
   stillingsId: string;

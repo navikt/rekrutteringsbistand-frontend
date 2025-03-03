@@ -1,10 +1,10 @@
 'use client';
 
+import Sidelaster from './Sidelaster';
+import Feilmelding from './feilhåndtering/Feilmelding';
 import * as React from 'react';
 import { SWRResponse } from 'swr';
 import { ZodError } from 'zod';
-import Sidelaster from './Sidelaster';
-import Feilmelding from './feilhåndtering/Feilmelding';
 
 type SWRHookResponse<T> = SWRResponse<T, Error> | undefined;
 

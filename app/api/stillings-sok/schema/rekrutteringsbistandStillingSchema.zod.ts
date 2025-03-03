@@ -1,6 +1,6 @@
-import { z } from 'zod';
 import { ESStillingSchema } from './stillingSchema.zod';
 import { ESStillingsinfoSchema } from './stillingsinfoSchema.zod';
+import { z } from 'zod';
 
 export type RekrutteringsbistandStillingSchemaDTO = z.infer<
   typeof RekrutteringsbistandStillingSchema

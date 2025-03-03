@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { useKandidatContext } from '../KandidatContext';
 import KandidatErfaring from './components/KandidatErfaring';
 import KandidatFørerkort from './components/KandidatFørerkort';
@@ -9,6 +8,7 @@ import KandidatSpråk from './components/KandidatSpråk';
 import KandidatUtdanning from './components/KandidatUtdanning';
 import KandidatØnsker from './components/KandidatØnsker';
 import KandidatOversiktSidebar from './components/sidebar/KandidatOversiktSidebar';
+import * as React from 'react';
 
 const KandidatOversikt: React.FC = () => {
   const { kandidatData } = useKandidatContext();
@@ -16,12 +16,12 @@ const KandidatOversikt: React.FC = () => {
   return (
     <div className='mt-10 flex'>
       <div className='flex-grow'>
-        <div className='grid gap-y-8 gap-x-[3.5rem] md:flex-row'>
+        <div className='grid gap-x-[3.5rem] gap-y-8 md:flex-row'>
           <KandidatØnsker />
           <KandidatUtdanning />
           <KandidatErfaring />
         </div>
-        <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mt-8'>
+        <div className='mt-8 grid grid-cols-1 gap-4 md:grid-cols-2'>
           <KandidatSpråk språk={kandidatData?.sprak} />
           <KandidatGodkjenninger
             godkjenninger={kandidatData?.godkjenninger}

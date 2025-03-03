@@ -1,9 +1,6 @@
-import { Tag } from '@navikt/ds-react';
-import { format, isBefore, startOfToday } from 'date-fns';
-import * as React from 'react';
+import { useApplikasjonContext } from '../../ApplikasjonContext';
 import { StillingsDataDTO } from '../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { RekrutteringsbistandStillingSchemaDTO } from '../../api/stillings-sok/schema/rekrutteringsbistandStillingSchema.zod';
-import { useApplikasjonContext } from '../../ApplikasjonContext';
 import { eierStilling } from '../../components/tilgangskontroll/erEier';
 import {
   AdminStatus,
@@ -11,6 +8,9 @@ import {
   Stillingskategori,
 } from '../../stilling/stilling-typer';
 import { Hovedtag } from './StillingsSøkFilter/InkluderingFilter';
+import { Tag } from '@navikt/ds-react';
+import { format, isBefore, startOfToday } from 'date-fns';
+import * as React from 'react';
 
 export interface IStillingTag {
   stillingsData: RekrutteringsbistandStillingSchemaDTO | StillingsDataDTO;

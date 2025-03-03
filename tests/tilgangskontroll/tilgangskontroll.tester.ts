@@ -1,5 +1,5 @@
-import { expect, test } from '@playwright/test';
 import { Roller } from '../../app/components/tilgangskontroll/roller';
+import { expect, test } from '@playwright/test';
 
 export const testTilgangskontroll = (rolle: Roller) => {
   const ARBEIDSGIVERRETTET =

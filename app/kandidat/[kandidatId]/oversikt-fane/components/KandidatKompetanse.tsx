@@ -1,8 +1,9 @@
-import { ClipboardIcon } from '@navikt/aksel-icons';
-import * as React from 'react';
 import { KompetanseSchemaDTO } from '../../../../api/kandidat-sok/schema/kompetanseSchema.zod';
 import GråRamme from './GråRamme';
 import Erfaring from './erfaring/Erfaring';
+import { ClipboardIcon } from '@navikt/aksel-icons';
+import * as React from 'react';
+
 export interface KandidatKompetanseProps {
   kompetanse?: KompetanseSchemaDTO[] | null;
 }

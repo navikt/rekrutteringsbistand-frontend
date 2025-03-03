@@ -1,10 +1,10 @@
-import type { Metadata } from 'next';
-import Script from 'next/script';
 import { isLocal } from '../util/env';
-import MirageInitializer from './components/MirageInitializer';
-import './globals.css';
 import RekrutteringsbistandProvider from './RekrutteringsbistandProvider';
 import { ThemeProvider } from './ThemeProvider';
+import MirageInitializer from './components/MirageInitializer';
+import './globals.css';
+import type { Metadata } from 'next';
+import Script from 'next/script';
 
 const devBundle =
   'https://cdn.nav.no/personoversikt/internarbeidsflate-decorator-v3/dev/latest/dist/bundle.js';

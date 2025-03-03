@@ -1,11 +1,10 @@
+import { TilgangskontrollForInnhold } from '../../../tilgangskontroll/TilgangskontrollForInnhold';
+import { Roller } from '../../../tilgangskontroll/roller';
+import Nyheter from '../nyheter/Nyheter';
 import { Tabs } from '@navikt/ds-react/Tabs';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { FunctionComponent } from 'react';
-
-import { Roller } from '../../../tilgangskontroll/roller';
-import { TilgangskontrollForInnhold } from '../../../tilgangskontroll/TilgangskontrollForInnhold';
-import Nyheter from '../nyheter/Nyheter';
 
 const tabs = [
   {
@@ -48,8 +47,8 @@ export const Navigeringsmeny: FunctionComponent = () => {
   const tabPath = `/${pathname.split('/')[1]}`;
 
   return (
-    <div className=' border-b border-border-divider'>
-      <div className='w-[var(--ax-breakpoint-2xl)] p-4 pb-0 mx-auto flex justify-between items-center'>
+    <div className='border-border-divider border-b'>
+      <div className='mx-auto flex w-[var(--ax-breakpoint-2xl)] items-center justify-between p-4 pb-0'>
         <Tabs
           defaultValue={tabPath === '/' ? 'Oversikt' : tabPath}
           value={tabPath}

@@ -1,11 +1,11 @@
-import { Alert } from '@navikt/ds-react';
-import * as React from 'react';
 import { Kandidatlistestatus } from '../../../api/kandidat/schema.zod';
 import { useKandidatlisteInfo } from '../../../api/kandidat/useKandidatlisteInfo';
 import { StillingsDataDTO } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import Sidelaster from '../../../components/Sidelaster';
 import KandidatSøk from '../../../kandidat-sok/page';
 import { useFinnKandidatForStilling } from './useFinnKandidatForStilling';
+import { Alert } from '@navikt/ds-react';
+import * as React from 'react';
 
 export interface KandidatTilStillingProps {
   stillingsData?: StillingsDataDTO;

@@ -1,8 +1,8 @@
+import { useKandidatNavigering } from '../../components/KandidatNavigeringContext';
 import { ArrowLeftIcon, ArrowRightIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
-import { useKandidatNavigering } from '../../components/KandidatNavigeringContext';
 
 interface KandidatNavigeringProps {
   kandidatnr: string;

@@ -1,7 +1,6 @@
-import { Pagination } from '@navikt/ds-react';
-
 import { maksAntallTreffPerSøk } from '../../api/stillings-sok/stillingssøkElasticSearchQuery';
 import { useStillingsSøkFilter } from '../StillingsSøkContext';
+import { Pagination } from '@navikt/ds-react';
 
 type PagineringProps = {
   totaltAntallTreff: number;
@@ -23,7 +22,7 @@ const StillingsSøkPaginering: React.FunctionComponent<PagineringProps> = ({
 
   return (
     <Pagination
-      className={'flex justify-center my-4'}
+      className={'my-4 flex justify-center'}
       page={filter.side}
       count={antallSider}
       onPageChange={(page) => filter.setSide(page)}

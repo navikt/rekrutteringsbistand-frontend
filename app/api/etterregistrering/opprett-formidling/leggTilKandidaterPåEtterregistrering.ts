@@ -1,8 +1,8 @@
-import { logger } from '@navikt/next-logger';
 import { rekbisError } from '../../../../util/rekbisError';
 import { KandidatAPI } from '../../api-routes';
 import { FormidlingUsynligKandidatDTO } from '../../kandidat/formidleKandidat';
 import { hentOboToken } from '../../oboToken';
+import { logger } from '@navikt/next-logger';
 
 interface leggTilKandidaterPåEtterregistreringProps {
   kandidater: FormidlingUsynligKandidatDTO[];

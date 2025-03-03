@@ -1,16 +1,3 @@
-import {
-  Accordion,
-  Alert,
-  BodyShort,
-  Button,
-  Label,
-  Modal,
-  Select,
-  Table,
-} from '@navikt/ds-react';
-
-import { MobileIcon } from '@navikt/aksel-icons';
-import { ChangeEvent, FunctionComponent, useState } from 'react';
 import { kandidaterSchemaDTO } from '../../../../../api/kandidat/schema.zod';
 import {
   MeldingsmalerDTO,
@@ -24,7 +11,19 @@ import {
 import { useVisVarsling } from '../../../../../components/varsling/Varsling';
 import { Stillingskategori } from '../../../../stilling-typer';
 import css from './SendSmsModal.module.css';
+import { MobileIcon } from '@navikt/aksel-icons';
+import {
+  Accordion,
+  Alert,
+  BodyShort,
+  Button,
+  Label,
+  Modal,
+  Select,
+  Table,
+} from '@navikt/ds-react';
 import { logger } from '@navikt/next-logger';
+import { ChangeEvent, FunctionComponent, useState } from 'react';
 
 type Props = {
   markerteKandidater: kandidaterSchemaDTO[];

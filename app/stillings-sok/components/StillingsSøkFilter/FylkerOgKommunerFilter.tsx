@@ -1,13 +1,12 @@
-import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
-import { Fragment } from 'react';
-
-import React from 'react';
 import {
   GeografiType,
   PamGeografi,
 } from '../../../api/pam-geografi/typehead/lokasjoner/usePamGeografi';
 import { storBokstavSted } from '../../../kandidat-sok/util';
 import { useStillingsSøkFilter } from '../../StillingsSøkContext';
+import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
+import { Fragment } from 'react';
+import React from 'react';
 
 interface IFylkerOgKommuner {
   geografi: PamGeografi[];

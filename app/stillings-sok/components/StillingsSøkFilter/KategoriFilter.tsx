@@ -1,8 +1,7 @@
-import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
-import * as React from 'react';
-
 import { Stillingskategori } from '../../../stilling/stilling-typer';
 import { useStillingsSøkFilter } from '../../StillingsSøkContext';
+import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
+import * as React from 'react';
 
 const kategorier = [Stillingskategori.Stilling, Stillingskategori.Jobbmesse];
 

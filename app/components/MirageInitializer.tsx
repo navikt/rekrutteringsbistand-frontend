@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { makeServer } from '../../mocks/mirage';
 import Sidelaster from './Sidelaster';
+import { useEffect, useState } from 'react';
 
 export default function MirageInitializer({
   children,

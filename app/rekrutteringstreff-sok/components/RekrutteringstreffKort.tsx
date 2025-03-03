@@ -30,8 +30,8 @@ export const RekrutteringstreffKort: FunctionComponent<Props> = ({
   erPublisert,
 }) => {
   return (
-    <Box className='border rounded-lg mb-4 border-gray-300 p-4'>
-      <div className='flex justify-between items-start mb-4'>
+    <Box className='mb-4 rounded-lg border border-gray-300 p-4'>
+      <div className='mb-4 flex items-start justify-between'>
         <div className='flex items-center gap-2'>
           <CalendarIcon aria-hidden />
           <Detail>{dato}</Detail>
@@ -50,7 +50,7 @@ export const RekrutteringstreffKort: FunctionComponent<Props> = ({
       </Heading>
       <BodyShort className='mb-4'>{beskrivelse}</BodyShort>
 
-      <div className='flex items-center gap-2 mb-4'>
+      <div className='mb-4 flex items-center gap-2'>
         <LocationPinIcon aria-hidden />
         {stedUrl ? (
           <Link href={stedUrl} target='_blank'>

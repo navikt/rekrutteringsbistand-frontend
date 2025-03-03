@@ -1,9 +1,11 @@
 'use client';
+
+import { useStillingsContext } from '../../stilling/[stillingsId]/StillingsContext';
+import OmStillingen from '../../stilling/[stillingsId]/omStillingen/OmStillingen';
+import FormidlingKandidater from './FormidlingKandidater';
 import { Tabs } from '@navikt/ds-react';
 import * as React from 'react';
-import OmStillingen from '../../stilling/[stillingsId]/omStillingen/OmStillingen';
-import { useStillingsContext } from '../../stilling/[stillingsId]/StillingsContext';
-import FormidlingKandidater from './FormidlingKandidater';
+
 // import OmStillingen from '../../stilling/[stillingsId]/omStillingen/OmStillingen';
 
 const VisFormidling: React.FC = () => {

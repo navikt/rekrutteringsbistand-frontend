@@ -1,11 +1,5 @@
 'use client';
-import {
-  parseAsArrayOf,
-  parseAsInteger,
-  parseAsString,
-  useQueryState,
-} from 'nuqs';
-import * as React from 'react';
+
 import { rekbisError } from '../../util/rekbisError';
 import { useApplikasjonContext } from '../ApplikasjonContext';
 import { Roller } from '../components/tilgangskontroll/roller';
@@ -14,6 +8,13 @@ import {
   Subtag,
 } from './components/StillingsSøkFilter/InkluderingFilter';
 import { StillingsSøkQueryparam } from './stillingssøk-typer';
+import {
+  parseAsArrayOf,
+  parseAsInteger,
+  parseAsString,
+  useQueryState,
+} from 'nuqs';
+import * as React from 'react';
 
 interface IStillingsSøkContext {
   side: number;

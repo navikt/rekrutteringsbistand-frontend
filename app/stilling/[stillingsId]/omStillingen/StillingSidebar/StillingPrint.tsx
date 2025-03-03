@@ -1,8 +1,8 @@
+import { useStillingsContext } from '../../StillingsContext';
 import { PrinterSmallIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import * as React from 'react';
 import { useReactToPrint } from 'react-to-print';
-import { useStillingsContext } from '../../StillingsContext';
 
 export interface StillingPrintProps {
   printRef: React.RefObject<HTMLDivElement>;
@@ -61,7 +61,7 @@ const StillingPrint: React.FC<StillingPrintProps> = ({ printRef }) => {
     <Button
       variant='secondary'
       size='small'
-      className='w-full h-5'
+      className='h-5 w-full'
       icon={<PrinterSmallIcon />}
       onClick={() => reactToPrintFn()}
     >

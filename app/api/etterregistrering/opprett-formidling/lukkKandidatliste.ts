@@ -1,6 +1,6 @@
-import { logger } from '@navikt/next-logger';
 import { KandidatAPI } from '../../api-routes';
 import { hentOboToken } from '../../oboToken';
+import { logger } from '@navikt/next-logger';
 
 interface lukkKandidatlisteProps {
   kandidatlisteId: string;

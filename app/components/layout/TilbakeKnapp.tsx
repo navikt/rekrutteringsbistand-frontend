@@ -1,9 +1,9 @@
 'use client';
-import * as React from 'react';
-import { useRouter } from 'next/navigation';
 
 import { ArrowLeftIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
+import { useRouter } from 'next/navigation';
+import * as React from 'react';
 
 const TilbakeKnapp: React.FC = () => {
   const router = useRouter();

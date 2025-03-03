@@ -1,8 +1,8 @@
-import * as React from 'react';
-import { Roller } from '../../components/tilgangskontroll/roller';
 import { TilgangskontrollForInnhold } from '../../components/tilgangskontroll/TilgangskontrollForInnhold';
+import { Roller } from '../../components/tilgangskontroll/roller';
 import { KandidatContextProvider } from './KandidatContext';
 import KandidatSideLayout from './KandidatsideLayout';
+import * as React from 'react';
 
 interface KandidatSideRootLayoutProps {
   children: React.ReactNode;

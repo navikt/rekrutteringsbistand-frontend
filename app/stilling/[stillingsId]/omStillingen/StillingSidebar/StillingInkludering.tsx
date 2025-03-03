@@ -1,8 +1,8 @@
+import TekstMedIkon from '../../../../components/TekstMedIkon';
+import { useStillingsContext } from '../../StillingsContext';
 import { CheckmarkIcon } from '@navikt/aksel-icons';
 import { Heading } from '@navikt/ds-react';
 import * as React from 'react';
-import TekstMedIkon from '../../../../components/TekstMedIkon';
-import { useStillingsContext } from '../../StillingsContext';
 
 export enum InkluderingsTag {
   Tilrettelegging = 'INKLUDERING',
@@ -47,7 +47,7 @@ export const visningsnavnForRegistrering: Partial<
   [InkluderingsTag.MålgruppeLiteEllerIngenArbeidserfaring]:
     'har lite eller ingen arbeidserfaring',
   [InkluderingsTag.StatligInkluderingsdugnad]:
-    'den statlige inkluderingsdugnaden \n(gjelder kun statlige virksomheter med avtale)',
+    'inkluderingssamarbeid med offentlig virksomhet',
 };
 
 const StillingInkludering: React.FC = () => {
@@ -62,7 +62,7 @@ const StillingInkludering: React.FC = () => {
     return null;
   }
   return (
-    <div className='border-blue-200 rounded mt-4 border p-3'>
+    <div className='mt-4 rounded border border-blue-200 p-3'>
       <Heading size='xsmall' className='mb-4'>
         Inkludering
       </Heading>

@@ -1,6 +1,6 @@
+import { useStillingsSøkFilter } from '../StillingsSøkContext';
 import { Select } from '@navikt/ds-react';
 import * as React from 'react';
-import { useStillingsSøkFilter } from '../StillingsSøkContext';
 
 export enum StillingsSøkSorteringTyper {
   MestRelevant = 'mestRelevant',

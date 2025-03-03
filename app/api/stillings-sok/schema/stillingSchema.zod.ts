@@ -1,6 +1,6 @@
-import { z } from 'zod';
 import { LocationSchema } from '../../stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { ESStillingPropertiesSchema } from './stillingPropertiesSchema.zod';
+import { z } from 'zod';
 
 export type ESStillingSchemaDTO = z.infer<typeof ESStillingSchema>;
 const ContactSchema = z.object({

@@ -1,7 +1,7 @@
+import { useUseBrukerStandardSøk } from '../../api/stilling/standardsok/useBrukersStandardsøk';
 import { Button } from '@navikt/ds-react';
 import { useSearchParams } from 'next/navigation';
 import * as React from 'react';
-import { useUseBrukerStandardSøk } from '../../api/stilling/standardsok/useBrukersStandardsøk';
 
 const StandardsøkKnapp: React.FC = () => {
   const searchParams = useSearchParams();

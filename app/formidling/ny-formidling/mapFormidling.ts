@@ -1,7 +1,7 @@
-import { format } from 'date-fns';
 import { StillingsDataDTO } from '../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { StillingsStatus } from '../../stilling/stilling-typer';
 import { FormidlingDataForm } from './redigerFormidlingFormType';
+import { format } from 'date-fns';
 
 export const mapFormTilFormidling = (
   formData: FormidlingDataForm,

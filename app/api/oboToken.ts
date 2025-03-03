@@ -1,6 +1,6 @@
-import { getToken, requestOboToken, TokenResult } from '@navikt/oasis';
 import { isLocal } from '../../util/env';
 import { rekbisError } from '../../util/rekbisError';
+import { getToken, requestOboToken, TokenResult } from '@navikt/oasis';
 
 interface hentOboTokenProps {
   headers: Headers;

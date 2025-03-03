@@ -1,3 +1,12 @@
+import { KandidatForespurtOmDelingSchema } from '../../../../api/foresporsel-om-deling-av-cv/foresporsler/[slug]/useForespurteOmDelingAvCv';
+import {
+  kandidaterSchemaDTO,
+  utfallsendringerSchemaDTO,
+} from '../../../../api/kandidat/schema.zod';
+import { Sms } from '../../../../api/kandidatvarsel/kandidatvarsel';
+import { storForbokstavString } from '../../../../kandidat-sok/util';
+import KandidatHendelseKort from './KandidatHendelseKort';
+import { KandidatutfallTyper, UtfallsEndringTyper } from './KandidatTyper';
 import {
   CheckmarkCircleIcon,
   ClipboardIcon,
@@ -10,15 +19,6 @@ import {
 import { format } from 'date-fns';
 import { nb } from 'date-fns/locale';
 import React from 'react';
-import { KandidatForespurtOmDelingSchema } from '../../../../api/foresporsel-om-deling-av-cv/foresporsler/[slug]/useForespurteOmDelingAvCv';
-import {
-  kandidaterSchemaDTO,
-  utfallsendringerSchemaDTO,
-} from '../../../../api/kandidat/schema.zod';
-import { Sms } from '../../../../api/kandidatvarsel/kandidatvarsel';
-import { storForbokstavString } from '../../../../kandidat-sok/util';
-import KandidatHendelseKort from './KandidatHendelseKort';
-import { KandidatutfallTyper, UtfallsEndringTyper } from './KandidatTyper';
 
 export interface KandidatHendelse {
   tittel: string;
