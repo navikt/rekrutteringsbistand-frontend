@@ -1,6 +1,6 @@
+import Synlighetsinfo from './Synlighetsinfo';
 import { Button, Modal } from '@navikt/ds-react';
 import { useRef } from 'react';
-import Synlighetsinfo from './Synlighetsinfo';
 
 const SynlighetsModal = ({ fødselsnummer }: { fødselsnummer: string }) => {
   const ref = useRef<HTMLDialogElement>(null);

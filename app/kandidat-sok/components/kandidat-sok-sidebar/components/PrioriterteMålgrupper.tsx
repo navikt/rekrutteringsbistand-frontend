@@ -1,6 +1,6 @@
+import { useKandidatSøkFilter } from '../../../KandidaSokContext';
 import { Checkbox, CheckboxGroup, HelpText, useId } from '@navikt/ds-react';
 import { FunctionComponent } from 'react';
-import { useKandidatSøkFilter } from '../../../KandidaSokContext';
 
 export enum PrioritertMålgruppe {
   UngeUnderTrettiÅr = 'unge',

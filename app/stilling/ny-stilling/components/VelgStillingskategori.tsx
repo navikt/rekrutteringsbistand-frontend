@@ -1,7 +1,7 @@
-import { Label, Radio, RadioGroup } from '@navikt/ds-react';
-import React, { FunctionComponent, ReactNode } from 'react';
 import { Stillingskategori } from '../../stilling-typer';
 import { kategoriTilVisningsnavn } from '../../stilling-util';
+import { Label, Radio, RadioGroup } from '@navikt/ds-react';
+import React, { FunctionComponent, ReactNode } from 'react';
 
 const kategorier = [Stillingskategori.Stilling, Stillingskategori.Jobbmesse];
 

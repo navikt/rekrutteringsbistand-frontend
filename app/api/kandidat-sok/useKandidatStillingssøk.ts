@@ -1,12 +1,13 @@
 'use client';
+
 /**
  * Endepunkt /useKandidatStillingssøk
  */
-import useSWRImmutable from 'swr/immutable';
-import { z } from 'zod';
 import { KandidatSøkAPI } from '../api-routes';
 import { postApiWithSchema } from '../fetcher';
 import { mockKandidatStillingssøk } from './mocks/kandidatStillingssøk';
+import useSWRImmutable from 'swr/immutable';
+import { z } from 'zod';
 
 const kandidatStillingssøkEndepunkt = `${KandidatSøkAPI.internUrl}/kandidat-stillingssok`;
 

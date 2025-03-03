@@ -1,3 +1,8 @@
+import { leggTilKandidater } from '../../api/kandidat-sok/leggTilKandidat';
+import { useMineKandidatlister } from '../../api/kandidat/useMineKandidatlister';
+import SWRLaster from '../../components/SWRLaster';
+import { useVisVarsling } from '../../components/varsling/Varsling';
+import { useKandidatSøkMarkerteContext } from '../KandidatSøkMarkerteContext';
 import { PersonPlusIcon } from '@navikt/aksel-icons';
 import {
   Button,
@@ -10,11 +15,6 @@ import {
 } from '@navikt/ds-react';
 import { logger } from '@navikt/next-logger';
 import * as React from 'react';
-import { leggTilKandidater } from '../../api/kandidat-sok/leggTilKandidat';
-import { useMineKandidatlister } from '../../api/kandidat/useMineKandidatlister';
-import SWRLaster from '../../components/SWRLaster';
-import { useVisVarsling } from '../../components/varsling/Varsling';
-import { useKandidatSøkMarkerteContext } from '../KandidatSøkMarkerteContext';
 
 interface LagreIKandidatlisteProps {
   stillingsId?: string;
@@ -206,7 +206,7 @@ const LagreIKandidatliste: React.FC<LagreIKandidatlisteProps> = ({
                     </Table.Body>
                   </Table>
                   <Pagination
-                    className='flex justify-center my-8'
+                    className='my-8 flex justify-center'
                     size='small'
                     page={pageNumber}
                     onPageChange={setPageNumber}

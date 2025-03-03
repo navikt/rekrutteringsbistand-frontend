@@ -1,11 +1,7 @@
 'use client';
-import { XMarkIcon } from '@navikt/aksel-icons';
-import { Button, Stepper } from '@navikt/ds-react';
-import { useQueryState } from 'nuqs';
-import * as React from 'react';
-import { useFormContext } from 'react-hook-form';
-import OmStillingen from '../omStillingen/OmStillingen';
+
 import { useStillingsContext } from '../StillingsContext';
+import OmStillingen from '../omStillingen/OmStillingen';
 import AksjonsknapperSiderbarStilling from './components/AksjonsknapperSiderbarStilling';
 import { RedigerInnspurt } from './components/RedigerInnspurt';
 import { RedigerOmStillingen } from './components/RedigerOmStillingen';
@@ -20,6 +16,12 @@ import {
   PraktiskInfoSchema,
   StillingsDataForm,
 } from './redigerFormType.zod';
+import { XMarkIcon } from '@navikt/aksel-icons';
+import { Button, Stepper } from '@navikt/ds-react';
+import { useQueryState } from 'nuqs';
+import * as React from 'react';
+import { useFormContext } from 'react-hook-form';
+
 enum RedigerSteg {
   omVirksomheten = 'om-virksomheten',
   omTilrettelegging = 'om-tilrettelegging',
@@ -159,7 +161,7 @@ const RedigerStilling: React.FC = () => {
               </Stepper.Step>
             </Stepper>
           </div>
-          <div className='flex-grow mx-12 px-12'>
+          <div className='mx-12 flex-grow px-12'>
             {aktivtSteg === RedigerSteg.omVirksomheten && (
               <RedigerOmVirksomheten
                 stegNummer={1}

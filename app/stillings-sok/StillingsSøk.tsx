@@ -1,25 +1,26 @@
 'use client';
-import { PlusCircleIcon } from '@navikt/aksel-icons';
-import { Button, Tabs } from '@navikt/ds-react';
-import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
-import * as React from 'react';
+
 import Piktogram from '../../public/ikoner/finn-stillinger.svg';
 import { useUseBrukerStandardSøk } from '../api/stilling/standardsok/useBrukersStandardsøk';
+import SVGDarkmode from '../components/SVGDarkmode';
+import Sidelaster from '../components/Sidelaster';
 import SideLayout from '../components/layout/SideLayout';
 import SideTopBanner from '../components/layout/SideTopBanner';
-import Sidelaster from '../components/Sidelaster';
-import SVGDarkmode from '../components/SVGDarkmode';
-import { Roller } from '../components/tilgangskontroll/roller';
 import { TilgangskontrollForInnhold } from '../components/tilgangskontroll/TilgangskontrollForInnhold';
+import { Roller } from '../components/tilgangskontroll/roller';
 import { useStillingForKandidat } from '../kandidat/[kandidatId]/forslag-fane/useStillingForKandidat';
-import StillingsSøkSidePanel from './components/StillingsSøkSidePanel';
-import { StillingsSøkPortefølje } from './stillingssøk-typer';
 import {
   StillingsSøkProvider,
   useStillingsSøkFilter,
 } from './StillingsSøkContext';
 import StillingsSøkeresultat from './StillingsSøkeresultat';
+import StillingsSøkSidePanel from './components/StillingsSøkSidePanel';
+import { StillingsSøkPortefølje } from './stillingssøk-typer';
+import { PlusCircleIcon } from '@navikt/aksel-icons';
+import { Button, Tabs } from '@navikt/ds-react';
+import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
+import * as React from 'react';
 
 interface StillingsSøkProps {
   formidlinger?: boolean;

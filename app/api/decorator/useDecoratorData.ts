@@ -1,7 +1,7 @@
-import useSWRImmutable from 'swr/immutable';
 import { getAPIwithSchema } from '../fetcher';
 import { decoratorSchema } from './decorator.dto';
 import { decoratorMock } from './mocks/dekoratørMock';
+import useSWRImmutable from 'swr/immutable';
 
 const decoratorEndepunkt = '/api/decorator';
 

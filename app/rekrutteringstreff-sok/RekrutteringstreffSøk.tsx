@@ -1,9 +1,10 @@
 'use client';
+
+import SWRLaster from '../components/SWRLaster';
+import { RekrutteringstreffKort } from './components/RekrutteringstreffKort';
 import { useRekrutteringstreffOversikt } from '@/app/api/rekrutteringstreff/useRekrutteringstreffOversikt';
 import { format } from 'date-fns';
 import * as React from 'react';
-import SWRLaster from '../components/SWRLaster';
-import { RekrutteringstreffKort } from './components/RekrutteringstreffKort';
 
 export interface RekrutteringstreffSøkProps {
   children?: React.ReactNode;
@@ -27,7 +28,7 @@ const RekrutteringstreffSøk: React.FC<RekrutteringstreffSøkProps> = () => {
               tidspunkt={`${dato.startTidspunkt} - ${dato.sluttTidspunkt}`}
               antallArbeidsgivere={0}
               tittel={rekrutteringstreff.tittel}
-              beskrivelse='Rekrutteringstreff'
+              beskrivelse={rekrutteringstreff.beskrivelse}
               sted='Oslo'
               opprettetAv={rekrutteringstreff.opprettetAvPersonNavident}
               opprettetDato='12. April'

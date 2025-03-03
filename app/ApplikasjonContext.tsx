@@ -1,11 +1,13 @@
 'use client';
-import { Alert, Heading } from '@navikt/ds-react';
-import React from 'react';
+
 import { getMiljø, Miljø } from '../util/miljø';
+import { rekbisError } from '../util/rekbisError';
 import { DecoratorDTO } from './api/decorator/decorator.dto';
 import Header from './components/header/Header';
 import { Roller } from './components/tilgangskontroll/roller';
 import { Varsling } from './components/varsling/Varsling';
+import { Alert, Heading } from '@navikt/ds-react';
+import React from 'react';
 
 export type NavKontorMedNavn = {
   navKontor: string;
@@ -81,7 +83,7 @@ export const ApplikasjonContextProvider: React.FC<
     >
       <Header />
       <Varsling />
-      <main className='mx-auto p-4 mb-8 w-[var(--ax-breakpoint-2xl)]'>
+      <main className='mx-auto mb-8 w-[var(--ax-breakpoint-2xl)] p-4'>
         {harTilgangTilNyApplikasjon ? (
           children
         ) : (
@@ -102,9 +104,10 @@ export const ApplikasjonContextProvider: React.FC<
 export const useApplikasjonContext = () => {
   const context = React.useContext(ApplikasjonContext);
   if (context === undefined) {
-    throw new Error(
-      'useApplikasjonContext må være i scope: ApplikasjonContextProvider',
-    );
+    throw new rekbisError({
+      beskrivelse:
+        'useApplikasjonContext må være i scope: ApplikasjonContextProvider',
+    });
   }
   return context;
 };

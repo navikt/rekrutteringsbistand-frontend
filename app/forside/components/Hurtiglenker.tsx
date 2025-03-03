@@ -1,14 +1,13 @@
 'use client';
 
-import { FunctionComponent, ReactNode } from 'react';
 import OpprettNyStillingIkon from '../../../public/ikoner/opprett-ny-stilling.svg';
 import SeMineStillingerIkon from '../../../public/ikoner/se-mine-stillinger.svg';
-
-import { Box } from '@navikt/ds-react';
-import { useRouter } from 'next/navigation';
 import SVGDarkmode from '../../components/SVGDarkmode';
 import { TilgangskontrollForInnhold } from '../../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '../../components/tilgangskontroll/roller';
+import { Box } from '@navikt/ds-react';
+import { useRouter } from 'next/navigation';
+import { FunctionComponent, ReactNode } from 'react';
 
 const Hurtiglenker: FunctionComponent = () => {
   return (
@@ -19,7 +18,7 @@ const Hurtiglenker: FunctionComponent = () => {
       ]}
     >
       <div
-        className='justify-start items-start gap-4 inline-flex w-full'
+        className='inline-flex w-full items-start justify-start gap-4'
         data-testid='forside-hurtiglenker'
       >
         <LenkepanelMedIkon
@@ -59,14 +58,14 @@ const LenkepanelMedIkon: FunctionComponent<{
       borderColor='neutral-subtleA'
       borderRadius='xlarge'
       padding='0'
-      className={`h-20  flex flex-grow cursor-pointer`}
+      className={`flex h-20 flex-grow cursor-pointer`}
     >
-      <Box.New className='flex grow h-20 justify-start items-center'>
-        <Box padding='6' className='flex justify-center items-center gap-2'>
-          <div className='w-16 h-16'>{ikon}</div>
+      <Box.New className='flex h-20 grow items-center justify-start'>
+        <Box padding='6' className='flex items-center justify-center gap-2'>
+          <div className='h-16 w-16'>{ikon}</div>
         </Box>
-        <Box padding='6' className='flex grow h-28 justify-start items-center'>
-          <div className='font-bold underline leading-loose text-[var(--ax-text-default)]'>
+        <Box padding='6' className='flex h-28 grow items-center justify-start'>
+          <div className='leading-loose font-bold text-[var(--ax-text-default)] underline'>
             {tittel}
           </div>
         </Box>

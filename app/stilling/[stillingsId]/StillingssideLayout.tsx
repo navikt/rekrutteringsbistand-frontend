@@ -1,7 +1,5 @@
 'use client';
-import { Buildings2Icon, PersonIcon } from '@navikt/aksel-icons';
-import { Alert, Heading } from '@navikt/ds-react';
-import * as React from 'react';
+
 import StillingsIkon from '../../../public/ikoner/se-mine-stillinger.svg';
 import SVGDarkmode from '../../components/SVGDarkmode';
 import TekstMedIkon from '../../components/TekstMedIkon';
@@ -11,6 +9,9 @@ import StillingsTag from '../../stillings-sok/components/StillingsTag';
 import capitalizeEmployerName, { navnEierAvAstilling } from '../stilling-util';
 import { useStillingsContext } from './StillingsContext';
 import KopierStillingLenke from './components/KopierStillingLenke';
+import { Buildings2Icon, PersonIcon } from '@navikt/aksel-icons';
+import { Alert, Heading } from '@navikt/ds-react';
+import * as React from 'react';
 
 interface StillingSideLayoutProps {
   children?: React.ReactNode;
@@ -33,7 +34,7 @@ const StillingSideLayout: React.FC<StillingSideLayoutProps> = ({
           chip={<StillingsTag stillingsData={stillingsData} />}
           headerInnhold={
             <>
-              <div className='flex my-2'>
+              <div className='my-2 flex'>
                 <TekstMedIkon
                   ikon={<Buildings2Icon />}
                   tekst={capitalizeEmployerName(

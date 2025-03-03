@@ -1,9 +1,9 @@
+import { setNyttStandardsøk } from '../../api/stilling/standardsok/settStandardsøk';
+import { useUseBrukerStandardSøk } from '../../api/stilling/standardsok/useBrukersStandardsøk';
 import { FloppydiskIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import { useSearchParams } from 'next/navigation';
 import * as React from 'react';
-import { setNyttStandardsøk } from '../../api/stilling/standardsok/settStandardsøk';
-import { useUseBrukerStandardSøk } from '../../api/stilling/standardsok/useBrukersStandardsøk';
 
 const LagreStandardsøk: React.FC = () => {
   const brukerStandardSøkData = useUseBrukerStandardSøk();

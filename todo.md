@@ -7,3 +7,7 @@ Følg opp: https://docs.nais.io/observability/how-to/auto-instrumentation/ for n
 - Muligheter for inkludering for eksterne stillinger
 
 - Tokens for pliktogrammer
+
+// Dialog for avpubliser og ferdigstill
+
+// Avklare ifht etterregistrering på eksisterende stilling / reåpne prosess

@@ -1,10 +1,9 @@
-import * as React from 'react';
-
-import { format } from 'date-fns';
 import { useStillingsContext } from '../StillingsContext';
 import Definisjon from './Definisjon';
-
 import OmStillingBoks from './OmStillingBoks';
+import { format } from 'date-fns';
+import * as React from 'react';
+
 const OmAnnonsen: React.FC = () => {
   const { stillingsData } = useStillingsContext();
   const { updated, medium, reference, id, expires, published } =

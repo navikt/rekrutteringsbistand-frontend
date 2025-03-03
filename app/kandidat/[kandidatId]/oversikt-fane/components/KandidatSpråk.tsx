@@ -1,10 +1,10 @@
-import { LanguageIcon } from '@navikt/aksel-icons';
-import { BodyShort } from '@navikt/ds-react';
-import * as React from 'react';
+import { SprakSchemaDTO } from '../../../../api/kandidat-sok/schema/sprakSchema.zod';
 import GråRamme from './GråRamme';
 import Detaljer from './erfaring/Detaljer';
 import Erfaring from './erfaring/Erfaring';
-import { SprakSchemaDTO } from '../../../../api/kandidat-sok/schema/sprakSchema.zod';
+import { LanguageIcon } from '@navikt/aksel-icons';
+import { BodyShort } from '@navikt/ds-react';
+import * as React from 'react';
 
 export enum Språkferdighetsnivå {
   IkkeOppgitt = 'IKKEOPPGITT',

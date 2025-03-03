@@ -1,6 +1,6 @@
+import { NyhetDTO } from '../../../../nyheter';
 import { logger } from '@navikt/next-logger';
 import { useEffect, useState } from 'react';
-import { NyhetDTO } from '../../../../nyheter';
 
 const hentAntallUlesteNyheter = (
   nyheter: NyhetDTO[],

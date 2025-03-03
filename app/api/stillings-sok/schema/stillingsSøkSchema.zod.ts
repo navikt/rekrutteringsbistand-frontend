@@ -1,5 +1,5 @@
-import { z } from 'zod';
 import { RekrutteringsbistandStillingSchema } from './rekrutteringsbistandStillingSchema.zod';
+import { z } from 'zod';
 
 export const shardsSchema = z.object({
   total: z.number(),

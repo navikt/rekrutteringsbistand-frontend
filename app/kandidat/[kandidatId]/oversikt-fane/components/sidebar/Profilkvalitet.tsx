@@ -1,8 +1,8 @@
+import { dialogUrl } from '../../../../../components/lenker-til-modia/eksterneUrler';
+import { useKandidatContext } from '../../../KandidatContext';
 import { ExternalLinkIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button } from '@navikt/ds-react';
 import * as React from 'react';
-import { dialogUrl } from '../../../../../components/lenker-til-modia/eksterneUrler';
-import { useKandidatContext } from '../../../KandidatContext';
 
 const Profilkvalitet: React.FC = () => {
   const { kandidatData } = useKandidatContext();
@@ -66,11 +66,11 @@ const Profilkvalitet: React.FC = () => {
   return (
     <div>
       {/* Progress bar */}
-      <div className='flex w-full h-2 mb-4'>
+      <div className='mb-4 flex h-2 w-full'>
         {[...Array(5)].map((_, i) => (
           <div
             key={i}
-            className={`flex-1 mr-0.5 last:mr-0 rounded-sm ${
+            className={`mr-0.5 flex-1 rounded-sm last:mr-0 ${
               i * 20 < progress ? 'bg-blue-500' : 'bg-gray-200'
             }`}
           />
@@ -103,7 +103,7 @@ const Profilkvalitet: React.FC = () => {
           <Button
             onClick={() => window.open(dialogUrl, '_blank')}
             variant='secondary'
-            className='w-full mt-4'
+            className='mt-4 w-full'
             icon={<ExternalLinkIcon />}
           >
             Gå til dialogen i Modia

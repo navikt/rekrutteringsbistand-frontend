@@ -1,4 +1,6 @@
 'use client';
+
+import { rekbisError } from '../util/rekbisError';
 import { Theme } from '@navikt/ds-react';
 import * as React from 'react';
 import { useEffect } from 'react';
@@ -55,7 +57,9 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
 export const useThemeProvider = () => {
   const context = React.useContext(ThemeContext);
   if (context === undefined) {
-    throw new Error('useThemeProvider må være i scope: ThemeProvider');
+    throw new rekbisError({
+      beskrivelse: 'useThemeProvider må være i scope: ThemeProvider',
+    });
   }
   return context;
 };

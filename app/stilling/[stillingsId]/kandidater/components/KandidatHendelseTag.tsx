@@ -1,5 +1,5 @@
-import { Tag } from '@navikt/ds-react';
 import { KandidatHendelse } from './KandidatHendelse';
+import { Tag } from '@navikt/ds-react';
 
 export interface KandidatHendelseTagProps {
   kandidatHendelse: KandidatHendelse;

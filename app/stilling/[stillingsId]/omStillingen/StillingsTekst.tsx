@@ -1,6 +1,6 @@
+import { useStillingsContext } from '../StillingsContext';
 import parse from 'html-react-parser';
 import * as React from 'react';
-import { useStillingsContext } from '../StillingsContext';
 
 const StillingsTekst: React.FC = () => {
   const { stillingsData } = useStillingsContext();

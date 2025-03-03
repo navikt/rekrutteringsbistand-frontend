@@ -1,3 +1,15 @@
+import { konverterTilPresenterbarDato } from '../../../util/dato';
+import formaterMedStoreOgSmåBokstaver from '../../../util/tekst';
+import { useApplikasjonContext } from '../../ApplikasjonContext';
+import { RekrutteringsbistandStillingSchemaDTO } from '../../api/stillings-sok/schema/rekrutteringsbistandStillingSchema.zod';
+import TekstMedIkon from '../../components/TekstMedIkon';
+import {
+  formaterEiernavn,
+  hentArbeidssted,
+  hentEierFraStilling,
+  hentIdentFraStilling,
+} from '../stillingssøk-util';
+import StillingsTag from './StillingsTag';
 import {
   BriefcaseIcon,
   Buildings2Icon,
@@ -6,20 +18,6 @@ import {
 } from '@navikt/aksel-icons';
 import { Box, Button, Heading, Link } from '@navikt/ds-react';
 import * as React from 'react';
-
-import { konverterTilPresenterbarDato } from '../../../util/dato';
-import formaterMedStoreOgSmåBokstaver from '../../../util/tekst';
-import TekstMedIkon from '../../components/TekstMedIkon';
-
-import { RekrutteringsbistandStillingSchemaDTO } from '../../api/stillings-sok/schema/rekrutteringsbistandStillingSchema.zod';
-import { useApplikasjonContext } from '../../ApplikasjonContext';
-import {
-  formaterEiernavn,
-  hentArbeidssted,
-  hentEierFraStilling,
-  hentIdentFraStilling,
-} from '../stillingssøk-util';
-import StillingsTag from './StillingsTag';
 
 export interface IStillingsKort {
   stillingData: RekrutteringsbistandStillingSchemaDTO;
@@ -48,7 +46,7 @@ const StillingsKort: React.FC<IStillingsKort> = ({
 
   return (
     <Box
-      className='border rounded-lg mb-4 border-gray-300 p-4'
+      className='mb-4 rounded-lg border border-gray-300 p-4'
       data-testid='stillings-kort'
     >
       <>
@@ -69,7 +67,7 @@ const StillingsKort: React.FC<IStillingsKort> = ({
         tekst={stillingData.stilling?.businessName || 'Ukjent bedrift'}
       />
 
-      <div className='flex mt-4 justify-between'>
+      <div className='mt-4 flex justify-between'>
         <div className='flex'>
           <TekstMedIkon
             className='mr-4'

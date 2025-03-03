@@ -1,6 +1,6 @@
+import SynlighetsEvaluering from './SynlighetsEvaluering';
 import { BodyShort, Box, Button } from '@navikt/ds-react';
 import * as React from 'react';
-import SynlighetsEvaluering from './SynlighetsEvaluering';
 
 export interface SynlighetsinfoProps {
   fødselsnummer: string;
@@ -16,10 +16,10 @@ const Synlighetsinfo: React.FC<SynlighetsinfoProps> = ({ fødselsnummer }) => {
         <SynlighetsEvaluering fødselsnummer={fødselsnummer} />
       ) : (
         <div>
-          <BodyShort className='font-bold mb-2'>
+          <BodyShort className='mb-2 font-bold'>
             Årsaken kan være en eller flere av disse:
           </BodyShort>
-          <ol className='list-decimal pl-6 space-y-2'>
+          <ol className='list-decimal space-y-2 pl-6'>
             <li>
               Personbruker mangler CV. Minimum innhold er ett yrkesønske og ett
               geografisk sted person ønsker å jobbe.

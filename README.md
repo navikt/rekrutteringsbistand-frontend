@@ -67,6 +67,7 @@ Vi støtter to tilnærminger:
 
 ```typescript
 import { logger } from '@navikt/next-logger';
+
 logger.info('Hei verden!');
 ```
 

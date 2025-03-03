@@ -1,7 +1,7 @@
-import { Heading } from '@navikt/ds-react';
-import * as React from 'react';
 import { useKandidatContext } from '../../KandidatContext';
 import TidslinjeFelt from './TidslinjeFelt';
+import { Heading } from '@navikt/ds-react';
+import * as React from 'react';
 
 const KandidatErfaring: React.FC = () => {
   const { kandidatData } = useKandidatContext();
@@ -21,8 +21,13 @@ const KandidatErfaring: React.FC = () => {
                     key={index}
                     startDate={erfaring?.fraDato}
                     endDate={erfaring?.tilDato}
-                    title={erfaring?.stillingstittel}
-                    subtitle={erfaring?.beskrivelse}
+                    title={
+                      erfaring?.stillingstittel ??
+                      erfaring?.styrkKodeStillingstittel ??
+                      erfaring.alternativStillingstittel
+                    }
+                    subtitle={erfaring?.arbeidsgiver}
+                    description={erfaring?.beskrivelse}
                   />
                 ))}
               </div>

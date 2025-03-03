@@ -1,11 +1,11 @@
-import { HatSchoolIcon } from '@navikt/aksel-icons';
-import { BodyShort } from '@navikt/ds-react';
-import { compareAsc, format, parseISO } from 'date-fns';
-import * as React from 'react';
 import { KursSchemaDTO } from '../../../../api/kandidat-sok/schema/kursSchema.zod';
 import GråRamme from './GråRamme';
 import Detaljer from './erfaring/Detaljer';
 import Erfaring from './erfaring/Erfaring';
+import { HatSchoolIcon } from '@navikt/aksel-icons';
+import { BodyShort } from '@navikt/ds-react';
+import { compareAsc, format, parseISO } from 'date-fns';
+import * as React from 'react';
 
 enum Omfangenhet {
   Time = 'TIME',

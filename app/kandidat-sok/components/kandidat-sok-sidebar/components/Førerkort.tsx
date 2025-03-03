@@ -1,6 +1,6 @@
+import { useKandidatSøkFilter } from '../../../KandidaSokContext';
 import { UNSAFE_Combobox } from '@navikt/ds-react';
 import * as React from 'react';
-import { useKandidatSøkFilter } from '../../../KandidaSokContext';
 
 export enum Førerkortklasse {
   LettMotorsykkel = 'A1 - Lett motorsykkel',

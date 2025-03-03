@@ -1,11 +1,14 @@
-import useSWR, { SWRResponse, useSWRConfig } from 'swr';
-import { z } from 'zod';
+import { rekbisError } from '../../../util/rekbisError';
 import { KandidatvarselAPI } from '../api-routes';
 import { getAPI, postApi } from '../fetcher';
+import useSWR, { SWRResponse, useSWRConfig } from 'swr';
+import { z } from 'zod';
+
 // import { fetchJson, postJson } from '../../kandidat/api/fetchUtils';
 
 const varselStillingEndepunkt = (stillingId: string) => {
-  if (stillingId === undefined) throw new Error('stillingId === undefined');
+  if (stillingId === undefined)
+    throw new rekbisError({ beskrivelse: 'stillingId === undefined' });
   return `${KandidatvarselAPI.internUrl}/varsler/stilling/${stillingId}`;
 };
 const varselQueryEndepunkt = `${KandidatvarselAPI.internUrl}/varsler/query`;

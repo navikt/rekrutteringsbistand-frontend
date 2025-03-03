@@ -1,10 +1,10 @@
-import { startOfDay } from 'date-fns';
 import { StillingsDataDTO } from '../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import {
   AdminStatus,
   Stillingskategori,
   StillingsStatus,
 } from './stilling-typer';
+import { startOfDay } from 'date-fns';
 
 export const kategoriTilVisningsnavn = (kategori: Stillingskategori | null) => {
   switch (kategori) {
@@ -15,7 +15,7 @@ export const kategoriTilVisningsnavn = (kategori: Stillingskategori | null) => {
     case Stillingskategori.Arbeidstrening:
       return 'Arbeidstrening';
     case Stillingskategori.Jobbmesse:
-      return 'Jobbmesse/jobbtreff';
+      return 'Jobbmesse';
     default:
       return 'Stilling';
   }

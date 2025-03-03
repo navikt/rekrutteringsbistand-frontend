@@ -1,13 +1,14 @@
 'use client';
+
 /**
  * Endepunkt /delingAvCV
  */
-import useSWRImmutable from 'swr/immutable';
-import { z } from 'zod';
 import { formaterDatoTilApi } from '../../../../util/dato';
 import { ForespørselDelingAvCvAPI } from '../../api-routes';
 import { getAPIwithSchema } from '../../fetcher';
 import { forespørselOmDelingAvCVStatistikkMock } from '../mocks/forespørselStatistikkMock';
+import useSWRImmutable from 'swr/immutable';
+import { z } from 'zod';
 
 const foresporselOmdelingAvCVEndepunkt = (param?: URLSearchParams) =>
   `${ForespørselDelingAvCvAPI.internUrl}/statistikk${param ? `?${param}` : ''}`;

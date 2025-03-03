@@ -1,9 +1,10 @@
 'use client';
-import { Server } from 'miragejs/server';
+
 /**
  * Endepunkt /useEndreKandidatUtfall
  */
 import { KandidatAPI } from '../api-routes';
+import { Server } from 'miragejs/server';
 
 //TODO
 export const formidleKandidatEndepunkt = () => ``;

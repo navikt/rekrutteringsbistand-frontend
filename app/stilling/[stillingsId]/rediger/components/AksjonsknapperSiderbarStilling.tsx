@@ -1,12 +1,3 @@
-import {
-  EyeIcon,
-  FloppydiskIcon,
-  StopIcon,
-  TrashIcon,
-} from '@navikt/aksel-icons';
-import { Button } from '@navikt/ds-react';
-import { logger } from '@navikt/next-logger';
-import * as React from 'react';
 import { oppdaterStilling } from '../../../../api/stilling/oppdater-stilling/oppdaterStilling';
 import { useStilling } from '../../../../api/stilling/rekrutteringsbistandstilling/[slug]/useStilling';
 import { useVisVarsling } from '../../../../components/varsling/Varsling';
@@ -15,6 +6,10 @@ import { useStillingsContext } from '../../StillingsContext';
 import { mapFormTilStilling } from '../mapStilling';
 import { StillingsDataForm } from '../redigerFormType.zod';
 import EndreStillingStatus from './EndreStillingStatus';
+import { EyeIcon, FloppydiskIcon, TrashIcon } from '@navikt/aksel-icons';
+import { Button } from '@navikt/ds-react';
+import { logger } from '@navikt/next-logger';
+import * as React from 'react';
 
 export interface AksjonsknapperSiderbarStillingProps {
   formVerdier: StillingsDataForm;
@@ -55,7 +50,7 @@ const AksjonsknapperSiderbarStilling: React.FC<
   };
 
   return (
-    <div className='sticky top-4 self-start flex flex-col gap-2 items-start'>
+    <div className='sticky top-4 flex flex-col items-start gap-2 self-start'>
       <Button
         loading={lagrer}
         icon={<FloppydiskIcon />}
@@ -99,16 +94,10 @@ const AksjonsknapperSiderbarStilling: React.FC<
         Forhåndsvis
       </Button>
       <EndreStillingStatus
-        nyStatus={StillingsStatus.Stoppet}
-        knappNavn='Stopp'
-        knappIkon={<StopIcon />}
-        tekst='Er du sikker på at du vil STOPPE stillingen?'
-      />
-      <EndreStillingStatus
         nyStatus={StillingsStatus.Slettet}
         knappNavn='Slett'
         knappIkon={<TrashIcon />}
-        tekst='Er du sikker på at du vil SLETTE stillingen?'
+        tekst={''}
       />
     </div>
   );

@@ -1,3 +1,12 @@
+import { useApplikasjonContext } from '../../../../../ApplikasjonContext';
+import { useForespurteOmDelingAvCv } from '../../../../../api/foresporsel-om-deling-av-cv/foresporsler/[slug]/useForespurteOmDelingAvCv';
+import { sendForespørselOmDelingAvCv } from '../../../../../api/foresporsel-om-deling-av-cv/foresporsler/forespørselOmDelingAvCv';
+import {
+  kandidaterSchemaDTO,
+  kandidatlisteSchemaDTO,
+} from '../../../../../api/kandidat/schema.zod';
+import { useVisVarsling } from '../../../../../components/varsling/Varsling';
+import VelgSvarfrist from './VelgSvarfrist';
 import { ArrowForwardIcon } from '@navikt/aksel-icons';
 import {
   Accordion,
@@ -9,15 +18,6 @@ import {
 } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import * as React from 'react';
-import { useForespurteOmDelingAvCv } from '../../../../../api/foresporsel-om-deling-av-cv/foresporsler/[slug]/useForespurteOmDelingAvCv';
-import { sendForespørselOmDelingAvCv } from '../../../../../api/foresporsel-om-deling-av-cv/foresporsler/forespørselOmDelingAvCv';
-import {
-  kandidaterSchemaDTO,
-  kandidatlisteSchemaDTO,
-} from '../../../../../api/kandidat/schema.zod';
-import { useApplikasjonContext } from '../../../../../ApplikasjonContext';
-import { useVisVarsling } from '../../../../../components/varsling/Varsling';
-import VelgSvarfrist from './VelgSvarfrist';
 
 export interface DelMedKandidatModalProps {
   markerteKandidater: kandidaterSchemaDTO[];

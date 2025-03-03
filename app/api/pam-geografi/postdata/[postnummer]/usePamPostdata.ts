@@ -1,10 +1,11 @@
 'use client';
+
 /**
  * Endepunkt /usePamPostdata
  */
+import { getAPIwithSchema } from '../../../fetcher';
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
-import { getAPIwithSchema } from '../../../fetcher';
 
 const pamPostdataEndepunkt = (postnummer: string | null) =>
   postnummer ? `/api/pam-geografi/postdata/${postnummer}` : null;

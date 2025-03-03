@@ -1,13 +1,13 @@
-import { BodyShort } from '@navikt/ds-react';
-import * as React from 'react';
 import {
   KravTilKandidaten,
   KravTilVeileder,
   KriterieUtenforNoensKontroll,
   SynlighetsevalueringDTO,
   useSynlighetsevaluering,
-} from '../../api/synlighet/useSynlighetsevaluering';
+} from '../../api/synlighet/evaluering/useSynlighetsevaluering';
 import SWRLaster from '../SWRLaster';
+import { BodyShort } from '@navikt/ds-react';
+import * as React from 'react';
 
 export interface SynlighetsEvalueringProps {
   fødselsnummer: string;
@@ -67,7 +67,7 @@ const KandidatenFinnesIkke: React.FC<SynlighetsevalueringDTO> = (
       <>
         {kandidatensKriterierPerAnsvarsområde.kandidat.length > 0 && (
           <>
-            <ul className='list-disc pl-6 space-y-2 mt-4'>
+            <ul className='mt-4 list-disc space-y-2 pl-6'>
               {kandidatensKriterierPerAnsvarsområde.kandidat.map((kriterie) => (
                 <li key={kriterie}>{kriterieTilForklaring(kriterie)}</li>
               ))}
@@ -76,7 +76,7 @@ const KandidatenFinnesIkke: React.FC<SynlighetsevalueringDTO> = (
         )}
         {kandidatensKriterierPerAnsvarsområde.veileder.length > 0 && (
           <>
-            <ul className='list-disc pl-6 space-y-2 mt-4'>
+            <ul className='mt-4 list-disc space-y-2 pl-6'>
               {kandidatensKriterierPerAnsvarsområde.veileder.map((kriterie) => (
                 <li key={kriterie}>{kriterieTilForklaring(kriterie)}</li>
               ))}

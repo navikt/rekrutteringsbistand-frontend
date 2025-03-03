@@ -1,7 +1,7 @@
-import { Heading } from '@navikt/ds-react';
-
-import { ReactNode } from 'react';
 import TilbakeKnapp from './TilbakeKnapp';
+import { Heading } from '@navikt/ds-react';
+import { ReactNode } from 'react';
+
 // import Grunnbanner from '../grunnbanner/Grunnbanner';
 
 export type ISideTopBanner = {
@@ -22,17 +22,17 @@ const SideTopBanner = ({
   chip,
 }: ISideTopBanner) => {
   return (
-    <div className='my-4 '>
+    <div className='my-4'>
       {tilbakeKnapp && <TilbakeKnapp />}
-      <div className='flex justify-between items-center '>
-        <div className='flex justify-start items-center gap-8 w-full'>
+      <div className='flex items-center justify-between'>
+        <div className='flex w-full items-center justify-start gap-8'>
           {ikon}
           <div className='w-full'>
-            <div className='flex justify-between '>
-              <Heading className=' ml-0 mr-auto' level='2' size='large'>
+            <div className='flex justify-between'>
+              <Heading className='mr-auto ml-0' level='2' size='large'>
                 {tittel}
               </Heading>
-              <div className='flex flex-end'>{chip}</div>
+              <div className='flex-end flex'>{chip}</div>
             </div>
             {headerInnhold}
           </div>

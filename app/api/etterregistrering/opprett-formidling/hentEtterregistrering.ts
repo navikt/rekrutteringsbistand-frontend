@@ -1,7 +1,7 @@
-import { logger } from '@navikt/next-logger';
 import { StillingAPI } from '../../api-routes';
 import { hentOboToken } from '../../oboToken';
 import { StillingsDataDTO } from '../../stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
+import { logger } from '@navikt/next-logger';
 
 interface hentEtterregistreringProps {
   stillingsId: string;

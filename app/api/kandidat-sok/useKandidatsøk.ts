@@ -1,9 +1,8 @@
 'use client';
+
 /**
  * Endepunkt /minebrukere
  */
-import useSWRImmutable from 'swr/immutable';
-import { z } from 'zod';
 import {
   IKandidatSøkContext,
   KandidatSøkPortefølje,
@@ -14,6 +13,8 @@ import { postApiWithSchema } from '../fetcher';
 import { usePamGeografi } from '../pam-geografi/typehead/lokasjoner/usePamGeografi';
 import { kandidatSøkMock } from './mocks/kandidatsøkMock';
 import { KandidatDataSchema } from './schema/cvSchema.zod';
+import useSWRImmutable from 'swr/immutable';
+import { z } from 'zod';
 
 export const navigeringSchema = z.object({
   kandidatnumre: z.array(z.string()),

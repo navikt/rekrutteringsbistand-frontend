@@ -1,14 +1,14 @@
 'use client';
+
 /**
  * Endepunkt /bruker
  */
-import useSWRImmutable from 'swr/immutable';
-import { z } from 'zod';
-
-import { Server } from 'miragejs';
 import { Roller } from '../../components/tilgangskontroll/roller';
 import { getAPIwithSchema } from '../fetcher';
 import { brukerMock } from './mocks/useBrukerMock';
+import { Server } from 'miragejs';
+import useSWRImmutable from 'swr/immutable';
+import { z } from 'zod';
 
 const brukerEndepunkt = '/api/bruker';
 

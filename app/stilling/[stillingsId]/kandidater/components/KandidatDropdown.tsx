@@ -1,10 +1,10 @@
+import { KandidatAPI } from '../../../../api/api-routes';
+import { putApi } from '../../../../api/fetcher';
+import { kandidaterSchemaDTO } from '../../../../api/kandidat/schema.zod';
 import { TrashIcon } from '@navikt/aksel-icons';
 import { BodyLong, Button, Modal } from '@navikt/ds-react';
 import * as React from 'react';
 import { useRef, useState } from 'react';
-import { KandidatAPI } from '../../../../api/api-routes';
-import { putApi } from '../../../../api/fetcher';
-import { kandidaterSchemaDTO } from '../../../../api/kandidat/schema.zod';
 
 export interface SletteKandidatKnappProps {
   kandidat: kandidaterSchemaDTO;

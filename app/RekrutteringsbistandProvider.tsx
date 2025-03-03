@@ -1,14 +1,15 @@
 'use client';
+
+import { ApplikasjonContextProvider } from './ApplikasjonContext';
+import { useBruker } from './api/bruker/useBruker';
+import { useDecoratorData } from './api/decorator/useDecoratorData';
+import { KandidatNavigeringProvider } from './components/KandidatNavigeringContext';
+import Sidelaster from './components/Sidelaster';
+import ErrorBoundary from './components/feilhåndtering/ErrorBoundary';
+import { VarslingContextProvider } from './components/varsling/Varsling';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import * as React from 'react';
 import { SWRConfig } from 'swr';
-import { useBruker } from './api/bruker/useBruker';
-import { useDecoratorData } from './api/decorator/useDecoratorData';
-import { ApplikasjonContextProvider } from './ApplikasjonContext';
-import ErrorBoundary from './components/feilhåndtering/ErrorBoundary';
-import { KandidatNavigeringProvider } from './components/KandidatNavigeringContext';
-import Sidelaster from './components/Sidelaster';
-import { VarslingContextProvider } from './components/varsling/Varsling';
 
 export interface RekrutteringsbistandProviderProps {
   children?: React.ReactNode | undefined;

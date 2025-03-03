@@ -1,8 +1,9 @@
 'use client';
-import dynamic from 'next/dynamic';
+
 import { getMiljø, Miljø } from '../../../../../util/miljø';
 import { useApplikasjonContext } from '../../../../ApplikasjonContext';
 import { DecoratorProps } from './Interndekoratør';
+import dynamic from 'next/dynamic';
 
 const proxyUrl =
   getMiljø() === Miljø.ProdGcp

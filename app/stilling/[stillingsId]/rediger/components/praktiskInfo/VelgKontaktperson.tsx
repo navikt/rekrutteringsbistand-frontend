@@ -1,3 +1,4 @@
+import { StillingsDataForm } from '../../redigerFormType.zod';
 import { BodyLong, Box, Button, Heading, TextField } from '@navikt/ds-react';
 import * as React from 'react';
 import {
@@ -7,7 +8,6 @@ import {
   useFieldArray,
   useFormContext,
 } from 'react-hook-form';
-import { StillingsDataForm } from '../../redigerFormType.zod';
 
 const KontaktPersonInformasjon: React.FC<{
   control: Control<StillingsDataForm, any>;
@@ -19,7 +19,7 @@ const KontaktPersonInformasjon: React.FC<{
   index: number;
 }> = ({ control, field, index }) => {
   return (
-    <div key={field.id} className='grid grid-cols-2 gap-4 items-start'>
+    <div key={field.id} className='grid grid-cols-2 items-start gap-4'>
       <Controller
         control={control}
         name={`omVirksomheten.kontaktPersoner.${index}.name`}
@@ -115,7 +115,7 @@ const VelgKontaktperson: React.FC = () => {
           />
 
           {fields.length > 1 && (
-            <div className='flex justify-end mt-2'>
+            <div className='mt-2 flex justify-end'>
               <Button
                 variant='secondary'
                 type='button'

@@ -1,17 +1,17 @@
 'use client';
-import { Tabs } from '@navikt/ds-react';
-import * as React from 'react';
 
 import { useApplikasjonContext } from '../ApplikasjonContext';
-import { Roller } from '../components/tilgangskontroll/roller';
 import { TilgangskontrollForInnhold } from '../components/tilgangskontroll/TilgangskontrollForInnhold';
-import KandidatSøkChips from './components/KandidatSøkChips';
+import { Roller } from '../components/tilgangskontroll/roller';
 import {
   KandidatSøkPortefølje,
   useKandidatSøkFilter,
 } from './KandidaSokContext';
 import KandidatSøkResultat from './KandidatSøkResultat';
 import ValgteKontorer from './ValgteKontorer';
+import KandidatSøkChips from './components/KandidatSøkChips';
+import { Tabs } from '@navikt/ds-react';
+import * as React from 'react';
 
 interface KandidatSøkProps {
   stillingsId?: string;
@@ -107,7 +107,7 @@ const KandidatSøk: React.FC<KandidatSøkProps> = ({ stillingsId }) => {
         </TilgangskontrollForInnhold>
       </Tabs.List>
       <Tabs.Panel value={portefølje}>
-        <div className='w-full flex justify-between items-baseline'>
+        <div className='flex w-full items-baseline justify-between'>
           <KandidatSøkChips />
         </div>
         {portefølje === KandidatSøkPortefølje.VALGTE_KONTORER && (

@@ -1,3 +1,6 @@
+import { getMiljø, Miljø } from '../../../../../util/miljø';
+import { postApi } from '../../../../api/fetcher';
+import { kandidaterSchemaDTO } from '../../../../api/kandidat/schema.zod';
 import {
   EnvelopeClosedIcon,
   ExternalLinkIcon,
@@ -8,9 +11,6 @@ import {
 } from '@navikt/aksel-icons';
 import { BodyShort, Box, Button, Heading, Link } from '@navikt/ds-react';
 import { FunctionComponent } from 'react';
-import { getMiljø, Miljø } from '../../../../../util/miljø';
-import { postApi } from '../../../../api/fetcher';
-import { kandidaterSchemaDTO } from '../../../../api/kandidat/schema.zod';
 
 type InfoOmKandidatProps = {
   kandidat: kandidaterSchemaDTO;

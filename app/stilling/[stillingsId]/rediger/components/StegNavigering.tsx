@@ -12,7 +12,7 @@ const StegNavigering: React.FC<StegNavigeringProps> = ({
   forrigeSteg,
 }) => {
   return (
-    <div className='flex justify-between mb-8 mt-4 w-full'>
+    <div className='mt-4 mb-8 flex w-full justify-between'>
       {stegNummer > 1 ? (
         <Button
           variant='tertiary'

@@ -1,6 +1,6 @@
+import { InternKandidatstatus } from './KandidatTyper';
 import { Tag } from '@navikt/ds-react';
 import * as React from 'react';
-import { InternKandidatstatus } from './KandidatTyper';
 
 const mapStatusTilTag = (
   status: InternKandidatstatus | string,

@@ -1,13 +1,15 @@
 'use client';
+
+import { useApplikasjonContext } from '../../../ApplikasjonContext';
+import { ArbeidsgiverDTO } from '../../../api/pam-search/underenhet/useArbeidsgiver';
+import { OpprettNyStillingDTO } from '../../../api/stilling/ny-stilling/dto';
+import { opprettNyStilling } from '../../../api/stilling/ny-stilling/opprettNyStilling';
+import { Stillingskategori } from '../../stilling-typer';
 import { PlusCircleIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
-import { ArbeidsgiverDTO } from '../../../api/pam-search/underenhet/useArbeidsgiver';
-import { OpprettNyStillingDTO } from '../../../api/stilling/ny-stilling/dto';
-import { opprettNyStilling } from '../../../api/stilling/ny-stilling/opprettNyStilling';
-import { useApplikasjonContext } from '../../../ApplikasjonContext';
-import { Stillingskategori } from '../../stilling-typer';
+
 export interface OpprettStillingProps {
   stillingskategori: Stillingskategori | null;
   arbeidsgiver: ArbeidsgiverDTO | null;

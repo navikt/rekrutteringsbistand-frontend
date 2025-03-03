@@ -1,12 +1,12 @@
-import { UNSAFE_Combobox } from '@navikt/ds-react';
-import * as React from 'react';
-import { useState } from 'react';
 import {
   GeografiType,
   usePamGeografi,
 } from '../../../../api/pam-geografi/typehead/lokasjoner/usePamGeografi';
 import { GeografiDTO } from '../../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { storForbokstavString } from '../../../../kandidat-sok/util';
+import { UNSAFE_Combobox } from '@navikt/ds-react';
+import * as React from 'react';
+import { useState } from 'react';
 
 interface GeografiDTOmedId extends GeografiDTO {
   id: string;

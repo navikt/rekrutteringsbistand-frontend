@@ -1,8 +1,8 @@
+import FjernFåttJobbenKnapp from './FjernFåttJobbenKnapp';
+import { KandidatutfallTyper } from './KandidatTyper';
 import { BodyShort, Box } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import { nb } from 'date-fns/locale';
-import FjernFåttJobbenKnapp from './FjernFåttJobbenKnapp';
-import { KandidatutfallTyper } from './KandidatTyper';
 
 export interface KandidatHendelseKortProps {
   tittel: string;
@@ -37,7 +37,7 @@ const KandidatHendelseKort: React.FC<KandidatHendelseKortProps> = ({
       paddingInline='space-16'
       paddingBlock='space-12'
     >
-      <div className='flex justify-between items-start'>
+      <div className='flex items-start justify-between'>
         <div className='flex gap-2'>
           <div className='mt-0.5'>{ikon}</div>
           <div>

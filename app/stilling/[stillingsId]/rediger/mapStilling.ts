@@ -1,5 +1,3 @@
-import { format, parse } from 'date-fns';
-
 import { JanzzTittelDTO } from '../../../api/pam-ontologi/stillingsTittel/useStillingsTittel';
 import {
   CategorySchemaDTO,
@@ -7,6 +5,7 @@ import {
 } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { InkluderingsTag } from '../omStillingen/StillingSidebar/StillingInkludering';
 import { StillingsDataForm } from './redigerFormType.zod';
+import { format, parse } from 'date-fns';
 
 export const mapJanzzTilKategori = (
   janzz: JanzzTittelDTO,

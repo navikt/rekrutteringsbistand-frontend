@@ -30,12 +30,12 @@ const Infokort: React.FC<IInfokort> = ({
       padding='6'
     >
       <div className='flex flex-col'>
-        <div className='flex justify-between items-start pb-2'>
+        <div className='flex items-start justify-between pb-2'>
           <div className='flex flex-col'>
             <Detail className='text-[var(--ax-text-subtle)]'>
               {beskrivelse}
             </Detail>
-            <span className='text-[var(--ax-text-default)] text-[40px] font-semibold leading-[52px]'>
+            <span className='text-[40px] leading-[52px] font-semibold text-[var(--ax-text-default)]'>
               {tall}
             </span>
           </div>
@@ -44,9 +44,9 @@ const Infokort: React.FC<IInfokort> = ({
               background='surface-action-subtle'
               padding='2'
               borderRadius='full'
-              className='flex justify-center items-center'
+              className='flex items-center justify-center'
             >
-              <div className='w-6 h-6 relative text-2xl text-[var(--a-gray-900)]'>
+              <div className='relative h-6 w-6 text-2xl text-[var(--a-gray-900)]'>
                 {ikon}
               </div>
             </Box>
@@ -56,7 +56,7 @@ const Infokort: React.FC<IInfokort> = ({
           {detaljer?.map((d, index) => (
             <Box.New
               key={index}
-              className='flex justify-between items-start gap-3'
+              className='flex items-start justify-between gap-3'
             >
               <span className='text-[var(--ax-text-default)]'>
                 {d.beskrivelse}

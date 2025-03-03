@@ -1,3 +1,4 @@
+import { rekbisError } from '../../../util/rekbisError';
 import { KandidatAPI } from '../api-routes';
 import { putApi } from '../fetcher';
 
@@ -14,7 +15,9 @@ export const setKandidatlisteStatus = async (
       { status },
     );
     return response.data;
-  } catch (error) {
-    throw error;
+  } catch {
+    throw new rekbisError({
+      beskrivelse: 'Klarte ikke å sette kandidatliste status',
+    });
   }
 };

@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server';
 import { isLocal } from '../../../util/env';
 import { StillingsSøkAPI } from '../api-routes';
 import { proxyWithOBO } from '../oboProxy';
+import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(req: NextRequest) {
   // Brukes for å gå rett mot stillingssøk lokalt

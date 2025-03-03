@@ -1,10 +1,10 @@
-import { Checkbox, CheckboxGroup, Heading } from '@navikt/ds-react';
-import * as React from 'react';
-import { useFormContext } from 'react-hook-form';
 import { FormidlingDataForm } from '../../../../formidling/ny-formidling/redigerFormidlingFormType';
 import { InkluderingsTag } from '../../omStillingen/StillingSidebar/StillingInkludering';
 import { StillingsDataForm } from '../redigerFormType.zod';
 import StegNavigering from './StegNavigering';
+import { Checkbox, CheckboxGroup, Heading } from '@navikt/ds-react';
+import * as React from 'react';
+import { useFormContext } from 'react-hook-form';
 
 interface RedigerOmTilretteleggingProps {
   omTilretteleggingFelt: 'omTilrettelegging';
@@ -65,7 +65,7 @@ export const RedigerOmTilrettelegging: React.FC<
       <Heading size='large'>Om tilrettelegging</Heading>
 
       <form onSubmit={handleStepSubmit}>
-        <div className='flex flex-col gap-8 mb-12'>
+        <div className='mb-12 flex flex-col gap-8'>
           <CheckboxGroup legend='Virksomheten kan tilrettelegge for (valgfritt)'>
             <TilretteleggingCheckbox
               tag={InkluderingsTag.TilretteleggingArbeidstid}
@@ -166,7 +166,7 @@ export const RedigerOmTilrettelegging: React.FC<
             </TilretteleggingCheckbox>
           </CheckboxGroup>
 
-          <CheckboxGroup legend='Er virksomheten del av den statlige inkluderingsdugnaden? (valgfritt)'>
+          <CheckboxGroup legend='Inkluderingssamarbeid med offentlig virksomhet? (valgfritt)'>
             <TilretteleggingCheckbox
               tag={InkluderingsTag.StatligInkluderingsdugnad}
             >

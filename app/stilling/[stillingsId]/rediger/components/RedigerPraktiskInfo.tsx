@@ -1,5 +1,3 @@
-import { BodyShort, Heading } from '@navikt/ds-react';
-import { useFormContext } from 'react-hook-form';
 import { StillingsDataForm } from '../redigerFormType.zod';
 import StegNavigering from './StegNavigering';
 import VelgAnsettelsesform from './praktiskInfo/VelgAnsettelsesform';
@@ -9,6 +7,8 @@ import VelgArbeidstidsordning from './praktiskInfo/VelgArbeidstidsordning';
 import VelgOmfang from './praktiskInfo/VelgOmfang';
 import VelgOppstartOgFrist from './praktiskInfo/VelgOppstartOgFrist';
 import VelgSektor from './praktiskInfo/VelgSektor';
+import { BodyShort, Heading } from '@navikt/ds-react';
+import { useFormContext } from 'react-hook-form';
 
 export const RedigerPraktiskInfo: React.FC<{
   stegNummer: number;

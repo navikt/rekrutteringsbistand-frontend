@@ -1,10 +1,10 @@
-import { UNSAFE_Combobox } from '@navikt/ds-react';
-import * as React from 'react';
 import {
   SuggestType,
   useUseSugestions,
 } from '../../../../api/kandidat-sok/useSugestions';
 import { useKandidatSøkFilter } from '../../../KandidaSokContext';
+import { UNSAFE_Combobox } from '@navikt/ds-react';
+import * as React from 'react';
 
 const Arbeidserfaring: React.FC = () => {
   const { arbeidserfaring, setArbeidserfaring } = useKandidatSøkFilter();

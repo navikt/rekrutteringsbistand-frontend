@@ -1,7 +1,7 @@
+import KandidatStatusTag from '../../../../stilling/[stillingsId]/kandidater/components/StatusTag';
 import { Link, Table } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import * as React from 'react';
-import KandidatStatusTag from '../../../../stilling/[stillingsId]/kandidater/components/StatusTag';
 
 export interface TabellRadProps {
   erMaskert: boolean;

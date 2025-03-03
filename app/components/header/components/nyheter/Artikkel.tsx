@@ -1,8 +1,8 @@
+import { NyhetDTO } from '../../../../nyheter';
 import { Detail, Heading } from '@navikt/ds-react';
 import { format, parse } from 'date-fns';
 import { nb } from 'date-fns/locale';
 import { FunctionComponent } from 'react';
-import { NyhetDTO } from '../../../../nyheter';
 
 interface Props {
   nyhet: NyhetDTO;
@@ -23,7 +23,7 @@ const Artikkel: FunctionComponent<Props> = ({ nyhet, ulest }) => {
       <Heading spacing className={'mt-0'} size='small'>
         {nyhet.tittel}
       </Heading>
-      <div className={'font-semibold text-base mb-1'}>{nyhet.innhold}</div>
+      <div className={'mb-1 text-base font-semibold'}>{nyhet.innhold}</div>
     </article>
   );
 };

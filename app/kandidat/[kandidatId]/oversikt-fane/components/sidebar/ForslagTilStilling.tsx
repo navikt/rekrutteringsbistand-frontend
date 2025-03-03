@@ -1,18 +1,18 @@
+import { useApplikasjonContext } from '../../../../../ApplikasjonContext';
+import { useStillingssøk } from '../../../../../api/stillings-sok/useStillingssøk';
+import SWRLaster from '../../../../../components/SWRLaster';
+import Sidelaster from '../../../../../components/Sidelaster';
+import {
+  StillingsSøkProvider,
+  useStillingsSøkFilter,
+} from '../../../../../stillings-sok/StillingsSøkContext';
+import { useKandidatContext } from '../../../KandidatContext';
+import { useStillingForKandidat } from '../../../forslag-fane/useStillingForKandidat';
 import { BodyShort, Button, Link } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import { nb } from 'date-fns/locale';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
-import { useStillingssøk } from '../../../../../api/stillings-sok/useStillingssøk';
-import { useApplikasjonContext } from '../../../../../ApplikasjonContext';
-import Sidelaster from '../../../../../components/Sidelaster';
-import SWRLaster from '../../../../../components/SWRLaster';
-import {
-  StillingsSøkProvider,
-  useStillingsSøkFilter,
-} from '../../../../../stillings-sok/StillingsSøkContext';
-import { useStillingForKandidat } from '../../../forslag-fane/useStillingForKandidat';
-import { useKandidatContext } from '../../../KandidatContext';
 
 const ForslagTilStilling: React.FC = () => {
   const { kandidatId } = useKandidatContext();
@@ -29,7 +29,7 @@ const ForslagTilStilling: React.FC = () => {
       </StillingsSøkProvider>
       <Button
         variant='secondary'
-        className='w-full mt-6'
+        className='mt-6 w-full'
         onClick={() =>
           router.push(`/kandidat/${kandidatId}?visFane=forslagTilStilling`)
         }
@@ -78,13 +78,13 @@ const StillingForslagTilKandidat = ({ kandidatId }: { kandidatId: string }) => {
               const stilling = rawData._source.stilling;
               return (
                 <div
-                  className='flex justify-between items-start'
+                  className='flex items-start justify-between'
                   key={stilling.uuid}
                 >
                   <div>
                     <Link
                       href={`/stilling/${stilling.uuid}`}
-                      className='underline text-text-default'
+                      className='text-text-default underline'
                     >
                       <BodyShort
                         className='max-w-[250px] truncate'

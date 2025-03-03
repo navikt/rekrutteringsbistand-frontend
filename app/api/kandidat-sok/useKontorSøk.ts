@@ -1,11 +1,12 @@
 'use client';
+
 /**
  * Endepunkt /useKontorSøk
  */
-import useSWRImmutable from 'swr/immutable';
-import { z } from 'zod';
 import { KandidatSøkAPI } from '../api-routes';
 import { postApiWithSchema } from '../fetcher';
+import useSWRImmutable from 'swr/immutable';
+import { z } from 'zod';
 
 const kontorSøkEndepunkt = `${KandidatSøkAPI.internUrl}/suggest/kontor`;
 

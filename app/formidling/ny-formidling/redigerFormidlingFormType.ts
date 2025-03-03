@@ -1,4 +1,3 @@
-import { z } from 'zod';
 import { navnSchema } from '../../api/kandidat-sok/useKandidatNavn';
 import { ArbeidsgiverSchema } from '../../api/pam-search/underenhet/useArbeidsgiver';
 import {
@@ -6,6 +5,7 @@ import {
   LocationSchema,
 } from '../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { OmTilretteleggingSchema } from '../../stilling/[stillingsId]/rediger/redigerFormType.zod';
+import { z } from 'zod';
 
 export const FormidlingKandidatSchema = z.object({
   fnr: z.string(),

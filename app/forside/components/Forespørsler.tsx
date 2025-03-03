@@ -1,11 +1,11 @@
-import { ChatCheckmarkIcon, ChatIcon } from '@navikt/aksel-icons';
-import * as React from 'react';
 import KryssIkon from '../../../public/ikoner/kryss.svg';
 import { useForesporselOmdelingAvCV } from '../../api/foresporsel-om-deling-av-cv/statistikk/useForesporselOmdelingAvCV';
 import SVGDarkmode from '../../components/SVGDarkmode';
 import SWRLaster from '../../components/SWRLaster';
 import Infokort, { InfokortSkeleton } from './Infokort';
 import { IStatistikkValg } from './Statistikk';
+import { ChatCheckmarkIcon, ChatIcon } from '@navikt/aksel-icons';
+import * as React from 'react';
 
 const Forespørsler: React.FC<IStatistikkValg> = ({
   navKontor,
@@ -23,11 +23,11 @@ const Forespørsler: React.FC<IStatistikkValg> = ({
       hooks={[forespørselHook]}
       skeleton={
         <>
-          <div className='flex gap-6 mt-6'>
+          <div className='mt-6 flex gap-6'>
             <InfokortSkeleton />
             <InfokortSkeleton />
           </div>
-          <div className='flex gap-6 mt-6'>
+          <div className='mt-6 flex gap-6'>
             <InfokortSkeleton />
             <InfokortSkeleton />
           </div>
@@ -36,7 +36,7 @@ const Forespørsler: React.FC<IStatistikkValg> = ({
     >
       {(data) => (
         <div
-          className='flex flex-col gap-6 md:grid md:grid-cols-2 mt-6'
+          className='mt-6 flex flex-col gap-6 md:grid md:grid-cols-2'
           data-testid='forside-forespørsel-statistikk'
         >
           <Infokort

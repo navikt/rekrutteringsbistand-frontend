@@ -1,3 +1,4 @@
+import { useKandidatContext } from '../../KandidatContext';
 import {
   BriefcaseClockIcon,
   ClockIcon,
@@ -6,7 +7,6 @@ import {
 } from '@navikt/aksel-icons';
 import { Heading } from '@navikt/ds-react';
 import * as React from 'react';
-import { useKandidatContext } from '../../KandidatContext';
 
 type Oppstartskode = {
   key: string;
@@ -28,7 +28,7 @@ const KandidatØnsker: React.FC = () => {
   return (
     <div>
       <Heading size='medium'>Ønsker</Heading>
-      <p className='mb-4 my-4'>
+      <p className='my-4 mb-4'>
         {kandidatData.yrkeJobbonskerObj
           ?.map((yrke) => yrke?.styrkBeskrivelse)
           .join(', ') ?? '-'}
@@ -36,7 +36,7 @@ const KandidatØnsker: React.FC = () => {
 
       <div className='grid grid-cols-2 gap-4'>
         <div className='flex items-center'>
-          <LocationPinIcon className='w-5 h-5 mr-2' />
+          <LocationPinIcon className='mr-2 h-5 w-5' />
           <div>
             <p className='font-medium'>Sted</p>
             <p>
@@ -47,7 +47,7 @@ const KandidatØnsker: React.FC = () => {
           </div>
         </div>
         <div className='flex items-center'>
-          <BriefcaseClockIcon className='w-5 h-5 mr-2' />
+          <BriefcaseClockIcon className='mr-2 h-5 w-5' />
           <div>
             <p className='font-medium'>Heltid/deltid</p>
             <p>
@@ -58,7 +58,7 @@ const KandidatØnsker: React.FC = () => {
           </div>
         </div>
         <div className='flex items-center'>
-          <ClockIcon className='w-5 h-5 mr-2' />
+          <ClockIcon className='mr-2 h-5 w-5' />
           <div>
             <p className='font-medium'>Arbeidstid</p>
             <p>
@@ -69,7 +69,7 @@ const KandidatØnsker: React.FC = () => {
           </div>
         </div>
         <div className='flex items-center'>
-          <TimerStartIcon className='w-5 h-5 mr-2' />
+          <TimerStartIcon className='mr-2 h-5 w-5' />
           <div>
             <p className='font-medium'>Kan starte</p>
             <p>

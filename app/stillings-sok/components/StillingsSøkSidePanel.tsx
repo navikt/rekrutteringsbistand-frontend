@@ -1,5 +1,3 @@
-import { Search } from '@navikt/ds-react';
-import * as React from 'react';
 import { useApplikasjonContext } from '../../ApplikasjonContext';
 import { Roller } from '../../components/tilgangskontroll/roller';
 import { useStillingsSøkFilter } from '../StillingsSøkContext';
@@ -9,6 +7,8 @@ import InkluderingFilter from './StillingsSøkFilter/InkluderingFilter';
 import KategoriFilter from './StillingsSøkFilter/KategoriFilter';
 import StatusFilter from './StillingsSøkFilter/StatusFilter';
 import SynlighetFilter from './StillingsSøkFilter/SynlighetFilter';
+import { Search } from '@navikt/ds-react';
+import * as React from 'react';
 
 const StillingsSøkSidePanel: React.FC<{
   formidlinger?: boolean;

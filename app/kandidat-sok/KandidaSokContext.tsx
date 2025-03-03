@@ -1,4 +1,6 @@
 'use client';
+
+import { rekbisError } from '../../util/rekbisError';
 import {
   parseAsArrayOf,
   parseAsInteger,
@@ -226,7 +228,9 @@ export const KandidatSøkProvider: React.FC<{ children: React.ReactNode }> = ({
 export const useKandidatSøkFilter = () => {
   const context = React.useContext(KandidatSøkContext);
   if (context === undefined) {
-    throw new Error('useKandidatSøk må være i scope: KandidatSøkProvider');
+    throw new rekbisError({
+      beskrivelse: 'useKandidatSøk må være i scope: KandidatSøkProvider',
+    });
   }
   return context;
 };

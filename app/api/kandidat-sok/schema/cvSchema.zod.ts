@@ -1,4 +1,3 @@
-import { z } from 'zod';
 import { Innsatsgruppe } from '../../../kandidat-sok/components/innsatsgrupper';
 import { AnnenErfaringSchema } from './annenErfaringSchema.zod';
 import { AnsettelsesformJobbonskerSchema } from './ansettelsesformJobbonskerSchema.zod';
@@ -19,6 +18,7 @@ import { UtdanningSchema } from './utdanningSchema.zod';
 import { VervSchema } from './vervSchema.zod';
 import { YrkejobbOnskerSchema } from './yrkejobbOnskerSchema.zod';
 import { YrkesErfaringSchema } from './yrkesErfaringSchema.zod';
+import { z } from 'zod';
 
 export type KandidatDataSchemaDTO = z.infer<typeof KandidatDataSchema>;
 

@@ -1,10 +1,9 @@
-import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
-import * as React from 'react';
-
-import { Roller } from '../../../components/tilgangskontroll/roller';
 import { TilgangskontrollForInnhold } from '../../../components/tilgangskontroll/TilgangskontrollForInnhold';
+import { Roller } from '../../../components/tilgangskontroll/roller';
 import { storForbokstav } from '../../../kandidat-sok/util';
 import { useStillingsSøkFilter } from '../../StillingsSøkContext';
+import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
+import * as React from 'react';
 
 export enum Publisert {
   Intern = 'intern',

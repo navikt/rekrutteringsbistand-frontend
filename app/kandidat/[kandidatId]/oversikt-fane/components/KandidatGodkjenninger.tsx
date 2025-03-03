@@ -1,11 +1,12 @@
-import { SealCheckmarkIcon } from '@navikt/aksel-icons';
-import { BodyShort } from '@navikt/ds-react';
-import { compareAsc, format, parseISO } from 'date-fns';
-import * as React from 'react';
 import { GodkjenningSchemaDTO } from '../../../../api/kandidat-sok/schema/godkjenningSchema.zod';
 import { SertifikatSchemaDTO } from '../../../../api/kandidat-sok/schema/sertifikatSchema.zod';
 import GråRamme from './GråRamme';
 import Erfaring from './erfaring/Erfaring';
+import { SealCheckmarkIcon } from '@navikt/aksel-icons';
+import { BodyShort } from '@navikt/ds-react';
+import { compareAsc, format, parseISO } from 'date-fns';
+import * as React from 'react';
+
 export interface KandidatGodkjenningerProps {
   godkjenninger?: GodkjenningSchemaDTO[] | null;
   sertifikatObj?: SertifikatSchemaDTO[] | null;

@@ -1,11 +1,12 @@
 'use client';
+
 /**
  * Endepunkt /useForespurteOmDelingAvCv
  */
-import useSWRImmutable from 'swr/immutable';
-import { z } from 'zod';
 import { ForespørselDelingAvCvAPI } from '../../../api-routes';
 import { getAPIwithSchema } from '../../../fetcher';
+import useSWRImmutable from 'swr/immutable';
+import { z } from 'zod';
 
 const ForespurteOmDelingAvCvEndepunkt = (stillingsId: string) => {
   return `${ForespørselDelingAvCvAPI.internUrl}/foresporsler/${stillingsId}`;

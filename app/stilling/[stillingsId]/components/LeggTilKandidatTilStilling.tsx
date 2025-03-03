@@ -1,13 +1,13 @@
-import { ArrowForwardIcon } from '@navikt/aksel-icons';
-import { Button, Modal } from '@navikt/ds-react';
-import * as React from 'react';
-import { useRef, useState } from 'react';
 import { leggTilKandidater } from '../../../api/kandidat-sok/leggTilKandidat';
 import { useKandidatliste } from '../../../api/kandidat/useKandidatliste';
 import LeggTilKandidater, {
   ValgtKandidatProp,
 } from '../../../components/legg-til-kandidat/LeggTilKandidater';
 import { useVisVarsling } from '../../../components/varsling/Varsling';
+import { ArrowForwardIcon } from '@navikt/aksel-icons';
+import { Button, Modal } from '@navikt/ds-react';
+import * as React from 'react';
+import { useRef, useState } from 'react';
 
 export interface LeggTilKandidatTilStillingProps {
   stillingsId: string;

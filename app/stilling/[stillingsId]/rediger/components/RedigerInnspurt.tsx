@@ -1,3 +1,8 @@
+import { oppdaterStilling } from '../../../../api/stilling/oppdater-stilling/oppdaterStilling';
+import { useStillingsContext } from '../../StillingsContext';
+import { mapFormTilStilling } from '../mapStilling';
+import { StillingsDataForm } from '../redigerFormType.zod';
+import { DatoVelger } from './DatoVelger';
 import { ArrowLeftIcon, CheckmarkCircleIcon } from '@navikt/aksel-icons';
 import {
   BodyShort,
@@ -18,11 +23,6 @@ import {
   SubmitHandler,
   useFormContext,
 } from 'react-hook-form';
-import { oppdaterStilling } from '../../../../api/stilling/oppdater-stilling/oppdaterStilling';
-import { useStillingsContext } from '../../StillingsContext';
-import { mapFormTilStilling } from '../mapStilling';
-import { StillingsDataForm } from '../redigerFormType.zod';
-import { DatoVelger } from './DatoVelger';
 
 export const RedigerInnspurt: React.FC<{
   stegNummer: number;
@@ -136,7 +136,7 @@ export const RedigerInnspurt: React.FC<{
         <BodyShort spacing>
           Velg når, og hvor stillingen skal publiseres.
         </BodyShort>
-        <div className='flex gap-4 mb-4'>
+        <div className='mb-4 flex gap-4'>
           <DatoVelger
             key='publiseres'
             valgtDato={watch('innspurt.publiseres')}
@@ -207,10 +207,10 @@ export const RedigerInnspurt: React.FC<{
           <Heading level='3' size='small' spacing>
             Hva skjer når du publiserer?
           </Heading>
-          <ul className='list-disc pl-8 space-y-2'>
+          <ul className='list-disc space-y-2 pl-8'>
             <li>
               Annonsen blir synlig for
-              <ul className='list-disc pl-8 space-y-2 mt-2'>
+              <ul className='mt-2 list-disc space-y-2 pl-8'>
                 <li>Nav-ansatte i stillingssøket​.</li>
                 <li>Kandidater som får annonsen delt til aktivitetsplanen</li>
                 <li>Personer som får tilsendt link til stillingsannonsen</li>
@@ -254,7 +254,7 @@ export const RedigerInnspurt: React.FC<{
             )}
           </ErrorSummary>
         )}
-        <div className='flex justify-between mb-8 pt-8 w-full'>
+        <div className='mb-8 flex w-full justify-between pt-8'>
           {stegNummer > 1 ? (
             <Button
               variant='tertiary'

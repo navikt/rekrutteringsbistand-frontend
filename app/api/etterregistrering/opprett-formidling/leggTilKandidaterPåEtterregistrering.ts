@@ -1,7 +1,8 @@
-import { logger } from '@navikt/next-logger';
+import { rekbisError } from '../../../../util/rekbisError';
 import { KandidatAPI } from '../../api-routes';
 import { FormidlingUsynligKandidatDTO } from '../../kandidat/formidleKandidat';
 import { hentOboToken } from '../../oboToken';
+import { logger } from '@navikt/next-logger';
 
 interface leggTilKandidaterPåEtterregistreringProps {
   kandidater: FormidlingUsynligKandidatDTO[];
@@ -58,9 +59,9 @@ export const leggTilKandidaterPåEtterregistrering = async ({
 
           if (!response.ok) {
             const errorText = await response.text();
-            throw new Error(
-              `Klarte ikke å legge til kandidat (${response.status}): ${errorText}`,
-            );
+            throw new rekbisError({
+              beskrivelse: `Klarte ikke å legge til kandidat (${response.status}): ${errorText}`,
+            });
           }
 
           // await new Promise((resolve) => setTimeout(resolve, 500));

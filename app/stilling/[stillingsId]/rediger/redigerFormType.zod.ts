@@ -1,8 +1,8 @@
-import { z } from 'zod';
 import {
   KategoriSchema,
   LocationSchema,
 } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
+import { z } from 'zod';
 
 export const OmVirksomhetenSchema = z.object({
   beskrivelse: z.string().optional().nullable(),

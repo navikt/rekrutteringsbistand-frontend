@@ -1,12 +1,12 @@
+import { RedigerOmTilrettelegging } from '../../stilling/[stillingsId]/rediger/components/RedigerOmTilrettelegging';
+import FormidlingInnspurt from './components/FormidlingInnspurt';
+import FormidlingLeggTilKandidat from './components/FormidlingLeggTilKandidat';
+import FormidlingOmStillingen from './components/RedigerOmFormidlingen';
 import { TrashIcon } from '@navikt/aksel-icons';
 import { Box, Button, Stepper } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
 import { useQueryState } from 'nuqs';
 import * as React from 'react';
-import { RedigerOmTilrettelegging } from '../../stilling/[stillingsId]/rediger/components/RedigerOmTilrettelegging';
-import FormidlingInnspurt from './components/FormidlingInnspurt';
-import FormidlingLeggTilKandidat from './components/FormidlingLeggTilKandidat';
-import FormidlingOmStillingen from './components/RedigerOmFormidlingen';
 
 enum RedigerFormidlingSteg {
   omKandidatene = 'om-kandidatene',
@@ -89,7 +89,7 @@ const RedigerFormidling: React.FC = () => {
             </Stepper.Step>
           </Stepper>
         </div>
-        <div className='flex-grow mx-12 px-12'>
+        <div className='mx-12 flex-grow px-12'>
           {aktivtSteg === RedigerFormidlingSteg.omKandidatene && (
             <FormidlingLeggTilKandidat
               nesteSteg={nesteSteg}
@@ -114,7 +114,7 @@ const RedigerFormidling: React.FC = () => {
             <FormidlingInnspurt />
           )}
         </div>
-        <div className='sticky bottom-4 self-top'>
+        <div className='self-top sticky bottom-4'>
           <Button
             onClick={() => router.push('/formidling')}
             variant='tertiary'

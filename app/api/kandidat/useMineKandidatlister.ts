@@ -1,12 +1,13 @@
 'use client';
+
 /**
  * Endepunkt /useMineKandidatlister
  */
+import { KandidatAPI } from '../api-routes';
+import { getAPIwithSchema } from '../fetcher';
 import { Server } from 'miragejs';
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
-import { KandidatAPI } from '../api-routes';
-import { getAPIwithSchema } from '../fetcher';
 
 const mineKandidatlisterEndepunkt = (pageNumber?: number) =>
   `${KandidatAPI.internUrl}/veileder/kandidatlister?pagesize=8${pageNumber && pageNumber > 1 ? `&pagenumber=${pageNumber}` : ''}`;

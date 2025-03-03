@@ -1,8 +1,10 @@
 'use client';
+
 import { Alert, BodyLong, Button } from '@navikt/ds-react';
 import { logger } from '@navikt/next-logger';
 import { Component, ErrorInfo, ReactNode } from 'react';
 import { ZodError } from 'zod';
+
 interface Props {
   children?: ReactNode;
 }

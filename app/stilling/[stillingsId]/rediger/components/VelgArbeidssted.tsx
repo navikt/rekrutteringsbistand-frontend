@@ -1,11 +1,11 @@
-import { BodyLong, Button, Checkbox, Heading } from '@navikt/ds-react';
-import * as React from 'react';
-import { useState } from 'react';
-import { useFieldArray, useFormContext } from 'react-hook-form';
 import VelgPoststed from '../../../../components/VelgPoststed';
 import { FormidlingDataForm } from '../../../../formidling/ny-formidling/redigerFormidlingFormType';
 import { StillingsDataForm } from '../redigerFormType.zod';
 import VelgKommuneFylkeEllerLand from './VelgKommuneFylkeEllerLand';
+import { BodyLong, Button, Checkbox, Heading } from '@navikt/ds-react';
+import * as React from 'react';
+import { useState } from 'react';
+import { useFieldArray, useFormContext } from 'react-hook-form';
 
 export interface VelgArbeidsstedProps {
   feltNavn: 'omFormidlingen' | 'omStillingen';

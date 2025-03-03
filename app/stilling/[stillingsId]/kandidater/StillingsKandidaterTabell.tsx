@@ -1,5 +1,3 @@
-import { Checkbox, Table } from '@navikt/ds-react';
-import * as React from 'react';
 import {
   applySortDirection,
   firstOf,
@@ -14,14 +12,15 @@ import {
   kandidatlisteSchemaDTO,
 } from '../../../api/kandidat/schema.zod';
 import { Sms } from '../../../api/kandidatvarsel/kandidatvarsel';
-
+import { useStillingsKandidaterFilter } from './StillingsKandidaterFilterContext';
 import KandidatRad from './components/KandidatRad';
 import {
   KandidatutfallTyper,
   UtfallsEndringTyper,
 } from './components/KandidatTyper';
 import UsynligKandidatRad from './components/UsynligKandidatRad';
-import { useStillingsKandidaterFilter } from './StillingsKandidaterFilterContext';
+import { Checkbox, Table } from '@navikt/ds-react';
+import * as React from 'react';
 
 export type KandidatHendelseTyper = KandidatutfallTyper | UtfallsEndringTyper;
 

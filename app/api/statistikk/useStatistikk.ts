@@ -1,13 +1,14 @@
 'use client';
+
 /**
  * Endepunkt /statistikk
  */
-import useSWRImmutable from 'swr/immutable';
-import { z } from 'zod';
 import { formaterDatoTilApi } from '../../../util/dato';
 import { StatistikkAPI } from '../api-routes';
 import { getAPIwithSchema } from '../fetcher';
 import { statistikkMock } from './mocks/statistikkMock';
+import useSWRImmutable from 'swr/immutable';
+import { z } from 'zod';
 
 const statistikkEndepunkt = (param?: URLSearchParams) =>
   `${StatistikkAPI.internUrl}${param ? `?${param}` : ''}`;

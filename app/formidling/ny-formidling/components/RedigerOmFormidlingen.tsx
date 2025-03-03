@@ -1,15 +1,15 @@
-import { ErrorMessage, Heading } from '@navikt/ds-react';
-import * as React from 'react';
-import { useFormContext } from 'react-hook-form';
+import StegNavigering from '../../../stilling/[stillingsId]/rediger/components/StegNavigering';
+import VelgArbeidssted from '../../../stilling/[stillingsId]/rediger/components/VelgArbeidssted';
+import VelgStillingTittel from '../../../stilling/[stillingsId]/rediger/components/VelgStillingTittel';
 import VelgAnsettelsesform from '../../../stilling/[stillingsId]/rediger/components/praktiskInfo/VelgAnsettelsesform';
 import VelgArbeidstidsordning from '../../../stilling/[stillingsId]/rediger/components/praktiskInfo/VelgArbeidstidsordning';
 import VelgOmfang from '../../../stilling/[stillingsId]/rediger/components/praktiskInfo/VelgOmfang';
 import VelgSektor from '../../../stilling/[stillingsId]/rediger/components/praktiskInfo/VelgSektor';
-import StegNavigering from '../../../stilling/[stillingsId]/rediger/components/StegNavigering';
-import VelgArbeidssted from '../../../stilling/[stillingsId]/rediger/components/VelgArbeidssted';
-import VelgStillingTittel from '../../../stilling/[stillingsId]/rediger/components/VelgStillingTittel';
 import VelgArbeidsgiver from '../../../stilling/ny-stilling/components/VelgArbeidsgiver';
 import { FormidlingDataForm } from '../redigerFormidlingFormType';
+import { ErrorMessage, Heading } from '@navikt/ds-react';
+import * as React from 'react';
+import { useFormContext } from 'react-hook-form';
 
 export interface RedigerOmFormidlingenProps {
   nesteSteg: () => void;

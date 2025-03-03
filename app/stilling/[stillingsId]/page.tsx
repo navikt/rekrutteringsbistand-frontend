@@ -1,17 +1,17 @@
 'use client';
-import { Alert, Tabs } from '@navikt/ds-react';
 
-import { useQueryState } from 'nuqs';
 import { Kandidatlistestatus } from '../../api/kandidat/schema.zod';
-import { Roller } from '../../components/tilgangskontroll/roller';
 import { TilgangskontrollForInnhold } from '../../components/tilgangskontroll/TilgangskontrollForInnhold';
+import { Roller } from '../../components/tilgangskontroll/roller';
 import { KandidatSøkMarkerteContextProvider } from '../../kandidat-sok/KandidatSøkMarkerteContext';
+import { useStillingsContext } from './StillingsContext';
 import LeggTilKandidat from './components/LeggTilKandidatTilStilling';
 import FinnKandidaterFane from './finn-kandidater/FinnKandidaterFane';
 import StillingsKandidater from './kandidater/StillingsKandidater';
 import { StillingsKandidaterFilterProvider } from './kandidater/StillingsKandidaterFilterContext';
 import OmStillingen from './omStillingen/OmStillingen';
-import { useStillingsContext } from './StillingsContext';
+import { Alert, Tabs } from '@navikt/ds-react';
+import { useQueryState } from 'nuqs';
 
 enum StillingFane {
   STILLING = 'stilling',
@@ -37,19 +37,19 @@ export default function StillingSide() {
         data-testid='stilling-side'
         className={
           stillingsData?.stilling?.status === 'DELETED'
-            ? 'relative opacity-50 pointer-events-none'
+            ? 'pointer-events-none relative opacity-50'
             : ''
         }
       >
         {erSlettet && (
-          <div className='absolute inset-0 flex justify-center bg-white/60 pointer-events-none pt-2'>
-            <span className='text-red-500 font-bold text-5xl'>
+          <div className='pointer-events-none absolute inset-0 flex justify-center bg-white/60 pt-2'>
+            <span className='text-5xl font-bold text-red-500'>
               Stillingen er slettet
             </span>
           </div>
         )}
         <Tabs defaultValue={fane} onChange={(val: any) => setFane(val)}>
-          <Tabs.List className='flex mb-2 w-full justify-between'>
+          <Tabs.List className='mb-2 flex w-full justify-between'>
             <div>
               <Tabs.Tab value={StillingFane.STILLING} label='Om stillingen' />
               <TilgangskontrollForInnhold
@@ -78,7 +78,7 @@ export default function StillingSide() {
                 />
               </TilgangskontrollForInnhold>
             </div>
-            <div className='items-center flex'>
+            <div className='flex items-center'>
               {kandidatlistenErLukket ? (
                 <Alert variant={'info'}>
                   Oppgradet er ferdigstilt og kandidatlisten er lukket

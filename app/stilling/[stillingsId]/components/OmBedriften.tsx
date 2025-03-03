@@ -1,10 +1,9 @@
-import * as React from 'react';
-
-import parse from 'html-react-parser';
 import capitalizeEmployerName from '../../stilling-util';
-import Definisjon from '../components/Definisjon';
 import { useStillingsContext } from '../StillingsContext';
+import Definisjon from '../components/Definisjon';
 import OmStillingBoks from './OmStillingBoks';
+import parse from 'html-react-parser';
+import * as React from 'react';
 
 const OmBedriften: React.FC = () => {
   const { stillingsData } = useStillingsContext();

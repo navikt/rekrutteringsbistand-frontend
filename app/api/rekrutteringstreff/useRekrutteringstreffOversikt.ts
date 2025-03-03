@@ -1,12 +1,13 @@
 'use client';
+
 /**
  * Endepunkt /useRekrutteringstreffOversikt
  */
-import useSWRImmutable from 'swr/immutable';
-import { z } from 'zod';
 import { RekrutteringstreffAPI } from '../api-routes';
 import { getAPIwithSchema } from '../fetcher';
 import { rekrutteringstreffOversiktMock } from './mocks/rekrutteringstreffOversiktMock';
+import useSWRImmutable from 'swr/immutable';
+import { z } from 'zod';
 
 export const rekrutteringstreffOversiktEndepunkt = () =>
   `${RekrutteringstreffAPI.internUrl}`;
@@ -15,6 +16,7 @@ const RekrutteringstreffOversiktSchema = z.array(
   z.object({
     id: z.string(),
     tittel: z.string(),
+    beskrivelse: z.string(),
     fraTid: z.string(),
     tilTid: z.string(),
     sted: z.string(),

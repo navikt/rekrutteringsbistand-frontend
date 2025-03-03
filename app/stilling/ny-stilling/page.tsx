@@ -1,7 +1,5 @@
 'use client';
-import { Alert, BodyLong, Button } from '@navikt/ds-react';
-import { useRouter } from 'next/navigation';
-import * as React from 'react';
+
 import { ArbeidsgiverDTO } from '../../api/pam-search/underenhet/useArbeidsgiver';
 import SideLayout from '../../components/layout/SideLayout';
 import SideTopBanner from '../../components/layout/SideTopBanner';
@@ -9,6 +7,9 @@ import { Stillingskategori } from '../stilling-typer';
 import { OpprettStillingKnapp } from './components/OpprettStilling';
 import VelgArbeidsgiver from './components/VelgArbeidsgiver';
 import VelgStillingskategori from './components/VelgStillingskategori';
+import { Alert, BodyLong, Button } from '@navikt/ds-react';
+import { useRouter } from 'next/navigation';
+import * as React from 'react';
 
 const NyStilling: React.FC = () => {
   const router = useRouter();
@@ -43,7 +44,7 @@ const NyStilling: React.FC = () => {
           />
           <VelgArbeidsgiver arbeidsgiverCallback={setArbeidsgiver} />
         </div>
-        <div className='flex justify-end mt-4'>
+        <div className='mt-4 flex justify-end'>
           <Button
             className={'mr-4'}
             variant={'secondary'}

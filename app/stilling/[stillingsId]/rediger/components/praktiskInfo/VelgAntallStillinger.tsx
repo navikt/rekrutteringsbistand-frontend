@@ -1,7 +1,7 @@
+import { StillingsDataForm } from '../../redigerFormType.zod';
 import { TextField } from '@navikt/ds-react';
 import * as React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
-import { StillingsDataForm } from '../../redigerFormType.zod';
 
 const VelgAntallStillinger: React.FC = ({}) => {
   const { control } = useFormContext<StillingsDataForm>();

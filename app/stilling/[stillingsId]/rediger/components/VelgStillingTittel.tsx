@@ -1,8 +1,8 @@
-import { UNSAFE_Combobox } from '@navikt/ds-react';
-import * as React from 'react';
 import { useStillingsTittel } from '../../../../api/pam-ontologi/stillingsTittel/useStillingsTittel';
 import { CategorySchemaDTO } from '../../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { mapJanzzTilKategori } from '../mapStilling';
+import { UNSAFE_Combobox } from '@navikt/ds-react';
+import * as React from 'react';
 
 export interface VelgStillingTittelProps {
   categoryList?: CategorySchemaDTO[] | null;

@@ -1,8 +1,8 @@
-import useSWRImmutable from 'swr/immutable';
-import { z } from 'zod';
 import { KandidatSøkAPI } from '../api-routes';
 import { postApiWithSchemaEs } from '../fetcher';
 import { kandidatsammendragMock } from './mocks/kandidatsammendragMock';
+import useSWRImmutable from 'swr/immutable';
+import { z } from 'zod';
 
 const kandidatsammendragEndepunkt = `${KandidatSøkAPI.internUrl}/kandidatsammendrag`;
 

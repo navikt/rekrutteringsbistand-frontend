@@ -1,3 +1,6 @@
+import { rekbisError } from '../../../../util/rekbisError';
+import { useApplikasjonContext } from '../../../ApplikasjonContext';
+import { FormidlingDataForm } from '../redigerFormidlingFormType';
 import { Buildings2Icon, PersonIcon } from '@navikt/aksel-icons';
 import {
   Alert,
@@ -11,8 +14,6 @@ import { logger } from '@navikt/next-logger';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { useApplikasjonContext } from '../../../ApplikasjonContext';
-import { FormidlingDataForm } from '../redigerFormidlingFormType';
 
 const FormidlingInnspurt = () => {
   const router = useRouter();
@@ -51,7 +52,7 @@ const FormidlingInnspurt = () => {
       }
     } catch (error) {
       logger.error('Kunne ikke opprette formidling', error);
-      throw new Error('Kunne ikke opprette formidling');
+      throw new rekbisError({ beskrivelse: 'Kunne ikke opprette formidling' });
     }
   };
 
@@ -68,7 +69,7 @@ const FormidlingInnspurt = () => {
       )}
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box.New>
-          <div className='flex justify-between items-center w-full mb-4'>
+          <div className='mb-4 flex w-full items-center justify-between'>
             <Heading size='small' level='2'>
               Om kandidatene
             </Heading>
@@ -98,7 +99,7 @@ const FormidlingInnspurt = () => {
         </Box.New>
 
         <Box.New className='mt-8'>
-          <div className='flex justify-between items-center w-full mb-4'>
+          <div className='mb-4 flex w-full items-center justify-between'>
             <Heading size='small' level='2'>
               Om arbeidsgiver og stilling
             </Heading>
@@ -113,7 +114,7 @@ const FormidlingInnspurt = () => {
           <hr />
           <div className='space-y-4'>
             <div className='flex items-start gap-2'>
-              <Buildings2Icon className='text-gray-600 mt-1' aria-hidden />
+              <Buildings2Icon className='mt-1 text-gray-600' aria-hidden />
               <div>
                 <BodyShort>Ordknapp Blomstrete Tiger AS</BodyShort>
                 <Detail>Organisasjonsnummer: 974652277</Detail>

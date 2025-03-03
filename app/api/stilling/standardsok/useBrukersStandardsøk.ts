@@ -1,7 +1,7 @@
-import useSWRImmutable from 'swr/immutable';
-import { z } from 'zod';
 import { StillingAPI } from '../../api-routes';
 import { getAPIwithSchema } from '../../fetcher';
+import useSWRImmutable from 'swr/immutable';
+import { z } from 'zod';
 
 export const brukerStandardSøkEndepunkt = `${StillingAPI.internUrl}/standardsok`;
 

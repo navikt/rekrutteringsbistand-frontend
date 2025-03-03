@@ -1,11 +1,11 @@
-import { EyeSlashIcon, TasklistIcon } from '@navikt/aksel-icons';
-import { BodyLong, Button, Modal } from '@navikt/ds-react';
-import { logger } from '@navikt/next-logger';
-import * as React from 'react';
 import { setKandidatlisteStatus } from '../../../../../api/kandidat/setKandidatlisteStatus';
 import { oppdaterStilling } from '../../../../../api/stilling/oppdater-stilling/oppdaterStilling';
 import { StillingsStatus } from '../../../../stilling-typer';
 import { useStillingsContext } from '../../../StillingsContext';
+import { EyeSlashIcon, TasklistIcon } from '@navikt/aksel-icons';
+import { BodyLong, Button, Modal } from '@navikt/ds-react';
+import { logger } from '@navikt/next-logger';
+import * as React from 'react';
 
 interface AvsluttStillingKnappProps {
   kandidatlisteId?: string;
@@ -114,7 +114,7 @@ const AvsluttStillingKnapp: React.FC<AvsluttStillingKnappProps> = ({
         }
         variant='secondary'
         size='small'
-        className='w-full h-5'
+        className='h-5 w-full'
         icon={<TasklistIcon />}
       >
         Ferdigstill

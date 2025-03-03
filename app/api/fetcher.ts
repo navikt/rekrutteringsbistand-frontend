@@ -1,6 +1,6 @@
+import { rekbisError } from '../../util/rekbisError';
 import { logger } from '@navikt/next-logger';
 import { z, ZodSchema } from 'zod';
-import { kastError } from '../../util/kastError';
 
 const basePath = process.env.NAIS_CLUSTER_NAME === 'local' ? '' : '';
 
@@ -42,7 +42,7 @@ export const getAPI = async (url: string) => {
       errorDetails = await response.text();
     }
 
-    const error = new kastError({
+    const error = new rekbisError({
       url: response.url,
       statuskode: response.status,
       stack: errorDetails,
@@ -53,9 +53,9 @@ export const getAPI = async (url: string) => {
   if (response.ok) {
     return await response.json();
   } else {
-    throw new Error(
-      `Feil respons fra server: (http-status: ${response.status})`,
-    );
+    throw new rekbisError({
+      beskrivelse: `Feil respons fra server: (http-status: ${response.status})`,
+    });
   }
 };
 
@@ -94,7 +94,7 @@ export const postApi = async (
         errorDetails = await response.text();
       }
 
-      throw new kastError({
+      throw new rekbisError({
         url: response.url,
         statuskode: response.status,
         stack: errorDetails,
@@ -148,7 +148,7 @@ export const putApi = async (
       ? (await res.json()).beskrivelse
       : await res.text();
 
-    throw new Error(errorText || 'Feil ved putApi');
+    throw new rekbisError(errorText || 'Feil ved putApi');
   }
 
   return res.json();

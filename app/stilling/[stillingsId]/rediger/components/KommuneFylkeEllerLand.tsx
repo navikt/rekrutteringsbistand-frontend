@@ -1,13 +1,12 @@
-import { UNSAFE_Combobox } from '@navikt/ds-react';
-import * as React from 'react';
-import { useEffect, useMemo, useState } from 'react';
-
 import {
   GeografiType,
   PamGeografi,
   usePamGeografi,
 } from '../../../../api/pam-geografi/typehead/lokasjoner/usePamGeografi';
 import { GeografiDTO } from '../../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
+import { UNSAFE_Combobox } from '@navikt/ds-react';
+import * as React from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 export interface KommuneFylkeEllerLandProps {
   callBack: (lokasjoner: GeografiDTO[]) => void;

@@ -1,12 +1,11 @@
 'use client';
-import Editor from '@monaco-editor/react';
-import * as React from 'react';
 
-import { Button } from '@navikt/ds-react';
-
-import { Roller } from '../../../components/tilgangskontroll/roller';
 import { TilgangskontrollForInnhold } from '../../../components/tilgangskontroll/TilgangskontrollForInnhold';
+import { Roller } from '../../../components/tilgangskontroll/roller';
 import { useStillingsContext } from '../StillingsContext';
+import Editor from '@monaco-editor/react';
+import { Button } from '@navikt/ds-react';
+import * as React from 'react';
 
 const RedigerStillingDev: React.FC = () => {
   const { stillingsData } = useStillingsContext();
@@ -29,7 +28,7 @@ const RedigerStillingDev: React.FC = () => {
     <TilgangskontrollForInnhold
       kreverEnAvRollene={[Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER]}
     >
-      <span className='text-lg font-bold my-2'>Stilling utvikler editor:</span>
+      <span className='my-2 text-lg font-bold'>Stilling utvikler editor:</span>
       <Editor
         height='50vh'
         defaultLanguage='json'

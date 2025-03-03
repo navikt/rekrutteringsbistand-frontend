@@ -1,7 +1,7 @@
-import { Select } from '@navikt/ds-react';
-import * as React from 'react';
 import { endreKandidatStatus } from '../../../../api/kandidat/endreKandidatStatus';
 import { InternKandidatstatus } from './KandidatTyper';
+import { Select } from '@navikt/ds-react';
+import * as React from 'react';
 
 export interface VelgInternStatusProps {
   status: InternKandidatstatus;

@@ -1,6 +1,6 @@
-import { logger } from '@navikt/next-logger';
-import { getToken, requestOboToken, TokenResult } from '@navikt/oasis';
 import { isLocal } from '../../util/env';
+import { rekbisError } from '../../util/rekbisError';
+import { getToken, requestOboToken, TokenResult } from '@navikt/oasis';
 
 interface hentOboTokenProps {
   headers: Headers;
@@ -12,10 +12,9 @@ export const hentOboToken = async (
 ): Promise<TokenResult> => {
   const token = isLocal ? 'DEV' : getToken(props.headers);
   if (!token) {
-    logger.warn('Kunne ikke hente token');
     return {
       ok: false,
-      error: new Error('Kunne ikke hente token'),
+      error: new rekbisError({ beskrivelse: 'Kunne ikke hente token' }),
     };
   }
   let obo: TokenResult;
@@ -25,19 +24,17 @@ export const hentOboToken = async (
       : await requestOboToken(token, props.scope);
 
     if (!obo.ok || !obo.token) {
-      logger.error('Ugyldig OBO-token mottatt:', obo);
       return {
         ok: false,
-        error: new Error('Ugyldig OBO-token mottatt'),
+        error: new rekbisError({ beskrivelse: 'Ugyldig OBO-token mottatt' }),
       };
     }
 
     return obo;
-  } catch (error) {
-    logger.error('Feil ved henting av OBO-token:', error);
+  } catch {
     return {
       ok: false,
-      error: new Error('Kunne ikke hente OBO-token'),
+      error: new rekbisError({ beskrivelse: 'Kunne ikke hente OBO-token' }),
     };
   }
 };
