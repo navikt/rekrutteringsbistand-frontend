@@ -1,10 +1,11 @@
 'use client';
 
+import { getAPIwithSchema } from '../../../fetcher';
+import lokasjonerMock from './lokasjoner.mock.json';
+import { useMemo } from 'react';
 /**
  * Endepunkt /usePamGeografi
  */
-import { getAPIwithSchema } from '../../../fetcher';
-import lokasjonerMock from './lokasjoner.mock.json';
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
 
@@ -34,8 +35,23 @@ const PamGeografiSchemaDTO = z.array(PamGeografiSchema);
 
 export type PamGeografi = z.infer<typeof PamGeografiSchema>;
 
-export const usePamGeografi = () =>
-  useSWRImmutable(pamGeografiEndepunkt, getAPIwithSchema(PamGeografiSchemaDTO));
+export const usePamGeografi = () => {
+  const hook = useSWRImmutable(
+    pamGeografiEndepunkt,
+    getAPIwithSchema(PamGeografiSchemaDTO),
+  );
+
+  const filteredData = useMemo(() => {
+    return hook.data?.filter(
+      (pamGeografi) => pamGeografi.type !== GeografiType.LAND,
+    );
+  }, [hook.data]);
+
+  return {
+    ...hook,
+    data: filteredData,
+  };
+};
 
 export const pamGeografiMirage = (server: any) =>
   server.get(pamGeografiEndepunkt, () => {
