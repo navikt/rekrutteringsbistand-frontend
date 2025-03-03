@@ -40,18 +40,26 @@ export const StillingsContextProvider: React.FC<
   const kandidatListeInfo = useKandidatlisteInfo(stillingsId);
   const stillingHook = useStilling(stillingsId);
 
+  React.useEffect(() => {
+    if (stillingHook.data?.stilling?.updated) {
+      kandidatListeInfo.mutate();
+    }
+  }, [stillingHook.data?.stilling?.updated]);
+
   return (
     <SWRLaster hooks={[stillingHook]}>
-      {(stillingsData) => (
-        <StillingsContextMedData
-          key={stillingsData?.stilling?.updated}
-          stillingsData={stillingsData}
-          refetch={stillingHook.mutate}
-          kandidatlisteInfo={kandidatListeInfo.data ?? null}
-        >
-          {children}
-        </StillingsContextMedData>
-      )}
+      {(stillingsData) => {
+        return (
+          <StillingsContextMedData
+            key={stillingsData?.stilling?.updated}
+            stillingsData={stillingsData}
+            refetch={stillingHook.mutate}
+            kandidatlisteInfo={kandidatListeInfo.data ?? null}
+          >
+            {children}
+          </StillingsContextMedData>
+        );
+      }}
     </SWRLaster>
   );
 };
