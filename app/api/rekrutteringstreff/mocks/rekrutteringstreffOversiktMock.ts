@@ -2,6 +2,7 @@ export const rekrutteringstreffOversiktMock = [
   {
     id: 'd6a587cd-8797-4b9a-a68b-575373f16d65',
     tittel: 'Sommerjobbtreff',
+    beskrivelse: 'Testbeskrivelse',
     fraTid: '2025-06-15T09:00:00+02:00',
     tilTid: '2025-06-15T11:00:00+02:00',
     sted: 'NAV Oslo',
@@ -12,6 +13,7 @@ export const rekrutteringstreffOversiktMock = [
   {
     id: 'a7f2387c-4354-4a2e-90a2-fff1a1d83dc6',
     tittel: 'Høstjobbtreff',
+    beskrivelse: 'Testbeskrivelse2',
     fraTid: '2025-09-10T10:00:00+02:00',
     tilTid: '2025-09-10T12:00:00+02:00',
     sted: 'NAV Bergen',

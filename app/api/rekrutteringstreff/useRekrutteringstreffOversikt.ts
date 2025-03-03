@@ -16,6 +16,7 @@ const RekrutteringstreffOversiktSchema = z.array(
   z.object({
     id: z.string(),
     tittel: z.string(),
+    beskrivelse: z.string(),
     fraTid: z.string(),
     tilTid: z.string(),
     sted: z.string(),

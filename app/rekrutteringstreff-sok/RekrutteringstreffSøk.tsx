@@ -28,7 +28,7 @@ const RekrutteringstreffSøk: React.FC<RekrutteringstreffSøkProps> = () => {
               tidspunkt={`${dato.startTidspunkt} - ${dato.sluttTidspunkt}`}
               antallArbeidsgivere={0}
               tittel={rekrutteringstreff.tittel}
-              beskrivelse='Rekrutteringstreff'
+              beskrivelse={rekrutteringstreff.beskrivelse}
               sted='Oslo'
               opprettetAv={rekrutteringstreff.opprettetAvPersonNavident}
               opprettetDato='12. April'
