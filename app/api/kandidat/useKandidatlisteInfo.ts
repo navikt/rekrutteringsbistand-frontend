@@ -23,6 +23,10 @@ export const useKandidatlisteInfo = (stillingsId: string | null) =>
   useSWRImmutable(
     stillingsId ? kandidatlisteInfoEndepunkt(stillingsId) : null,
     getAPIwithSchema(KandidatlisteInfoSchema),
+    {
+      errorRetryCount: 3,
+      errorRetryInterval: 3000,
+    },
   );
 
 export const kandidatlisteInfoMirage = (server: Server) => {

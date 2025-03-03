@@ -21,8 +21,13 @@ const KandidatErfaring: React.FC = () => {
                     key={index}
                     startDate={erfaring?.fraDato}
                     endDate={erfaring?.tilDato}
-                    title={erfaring?.stillingstittel}
-                    subtitle={erfaring?.beskrivelse}
+                    title={
+                      erfaring?.stillingstittel ??
+                      erfaring?.styrkKodeStillingstittel ??
+                      erfaring.alternativStillingstittel
+                    }
+                    subtitle={erfaring?.arbeidsgiver}
+                    description={erfaring?.beskrivelse}
                   />
                 ))}
               </div>

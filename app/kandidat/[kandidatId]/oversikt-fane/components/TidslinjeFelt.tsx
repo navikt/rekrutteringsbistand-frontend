@@ -56,7 +56,9 @@ const TidslinjeFelt: React.FC<TidslinjeFeltProps> = ({
         <BodyShort textColor='subtle'>{subtitle}</BodyShort>
         <BodyShort textColor='default'>{title}</BodyShort>
         {description && (
-          <BodyShort textColor='default'>{description}</BodyShort>
+          <BodyShort className='mt-2' textColor='subtle'>
+            {description}
+          </BodyShort>
         )}
       </Box.New>
     </Box.New>

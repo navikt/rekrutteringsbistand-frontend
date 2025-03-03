@@ -12,6 +12,7 @@ const YrkesErfaringSchema = z.object({
   stillingstittel: z.string().nullable().optional(),
   stillingstitlerForTypeahead: z.array(z.string()).nullable().optional(),
   alternativStillingstittel: z.string().nullable().optional(),
+  styrkKodeStillingstittel: z.string().nullable().optional(),
   sokeTitler: z.array(z.string()).nullable().optional(),
   organisasjonsnummer: z.string().nullable().optional(),
   naceKode: z.string().nullable().optional(),
