@@ -23,7 +23,6 @@ export interface KandidatRadProps {
   markerteKandidater?: kandidaterSchemaDTO[];
   markerKandidat: (kandidat: kandidaterSchemaDTO) => void;
   kandidatlisteId: string;
-  stillingsId: string;
   reFetchKandidatliste: () => void;
   lukketKandidatliste: boolean;
 }
@@ -35,7 +34,6 @@ const KandidatRad: React.FC<KandidatRadProps> = ({
   markerteKandidater,
   markerKandidat,
   kandidatlisteId,
-  stillingsId,
   reFetchKandidatliste,
   lukketKandidatliste,
 }) => {
@@ -171,7 +169,7 @@ const KandidatRad: React.FC<KandidatRadProps> = ({
           <SletteKandidatKnapp
             lukketKandidatliste={lukketKandidatliste}
             kandidat={kandidat}
-            stillingsId={stillingsId}
+            kandidatlisteId={kandidatlisteId}
           />
         </div>
       </Table.DataCell>

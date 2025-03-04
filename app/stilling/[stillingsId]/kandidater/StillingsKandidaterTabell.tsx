@@ -29,7 +29,6 @@ const StillingsKandidaterTabell: React.FC<{
   setMarkerteKandidater?: (val: kandidaterSchemaDTO[]) => void;
   search: string;
   kandidatliste: kandidatlisteSchemaDTO;
-  stillingsId: string;
   forespurteKandidater?: ForespurteOmDelingAvCvDTO;
   beskjeder?: Record<string, Sms>;
   reFetchKandidatliste: () => void;
@@ -39,7 +38,6 @@ const StillingsKandidaterTabell: React.FC<{
   setMarkerteKandidater,
   search,
   kandidatliste,
-  stillingsId,
   forespurteKandidater,
   beskjeder,
   reFetchKandidatliste,
@@ -213,7 +211,6 @@ const StillingsKandidaterTabell: React.FC<{
               lukketKandidatliste={lukketKandidatliste}
               key={`kandidatrad-` + i}
               kandidatlisteId={kandidatliste.kandidatlisteId}
-              stillingsId={stillingsId}
               markerKandidat={toggleSelectedRow}
               markerteKandidater={markerteKandidater}
               kandidat={kandidat}

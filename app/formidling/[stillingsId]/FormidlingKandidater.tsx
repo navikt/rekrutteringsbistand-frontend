@@ -21,7 +21,6 @@ const FormidlingKandidater: React.FC = () => {
                 key={stillingsData.stilling.uuid}
                 search={''}
                 kandidatliste={kandidatliste}
-                stillingsId={stillingsData.stilling.uuid}
                 reFetchKandidatliste={() => kandidatlisteHook.mutate()}
               />
             </div>

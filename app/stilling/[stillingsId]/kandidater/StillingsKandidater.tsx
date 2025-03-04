@@ -177,7 +177,6 @@ const StillingsKandidater: React.FC = () => {
                   setMarkerteKandidater={setMarkerteKandidater}
                   search={search}
                   kandidatliste={kandidatliste}
-                  stillingsId={stillingsData.stilling.uuid}
                   reFetchKandidatliste={reFetchKandidatliste}
                 />
               </div>

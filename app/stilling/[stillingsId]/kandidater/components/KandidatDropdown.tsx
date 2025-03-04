@@ -9,13 +9,13 @@ import { useRef, useState } from 'react';
 
 export interface SletteKandidatKnappProps {
   kandidat: kandidaterSchemaDTO;
-  stillingsId: string;
+  kandidatlisteId: string;
   lukketKandidatliste: boolean;
 }
 
 const SletteKandidatKnapp: React.FC<SletteKandidatKnappProps> = ({
   kandidat,
-  stillingsId,
+  kandidatlisteId,
   lukketKandidatliste,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -24,7 +24,7 @@ const SletteKandidatKnapp: React.FC<SletteKandidatKnappProps> = ({
     setIsLoading(true);
     try {
       await putApi(
-        `${KandidatAPI.internUrl}/veileder/kandidatlister/${stillingsId}/kandidater/${kandidat.kandidatnr}/arkivert`,
+        `${KandidatAPI.internUrl}/veileder/kandidatlister/${kandidatlisteId}/kandidater/${kandidat.kandidatnr}/arkivert`,
         {
           arkivert: true,
         },
