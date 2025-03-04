@@ -81,7 +81,7 @@ export default function StillingSide() {
             <div className='flex items-center'>
               {kandidatlistenErLukket ? (
                 <Alert variant={'info'}>
-                  Oppgradet er ferdigstilt og kandidatlisten er lukket
+                  Oppdraget er ferdigstilt og kandidatlisten er lukket
                 </Alert>
               ) : (
                 <>

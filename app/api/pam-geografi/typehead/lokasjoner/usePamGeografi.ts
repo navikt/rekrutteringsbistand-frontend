@@ -43,7 +43,11 @@ export const usePamGeografi = () => {
 
   const filteredData = useMemo(() => {
     return hook.data?.filter(
-      (pamGeografi) => pamGeografi.type !== GeografiType.LAND,
+      (pamGeografi) =>
+        pamGeografi.type !== GeografiType.LAND ||
+        // Behold Norge i listen
+        (pamGeografi.type === GeografiType.LAND &&
+          pamGeografi.navn?.toUpperCase() === 'NORGE'),
     );
   }, [hook.data]);
 
