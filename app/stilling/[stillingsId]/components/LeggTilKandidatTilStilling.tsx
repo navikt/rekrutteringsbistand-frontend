@@ -51,20 +51,17 @@ const LeggTilKandidatTilStilling: React.FC<LeggTilKandidatTilStillingProps> = ({
       try {
         await leggTilKandidater(synligeKandidater, stillingsId);
 
-        const formidleUsynligeKandidater = async () => {
-          for (const kandidat of usynligFåttJobben) {
-            await formidleUsynligKandidat(
-              kandidatlisteIdHook.data?.kandidatlisteId ?? '',
-              {
-                fnr: kandidat.fødselsnummer,
-                fåttJobb: false,
-                navKontor: valgtNavKontor?.navKontor ?? '',
-                stillingsId: stillingsId,
-              },
-            );
-          }
-        };
-        await formidleUsynligeKandidater();
+        for (const kandidat of usynligFåttJobben) {
+          await formidleUsynligKandidat(
+            kandidatlisteIdHook.data?.kandidatlisteId,
+            {
+              fnr: kandidat.fødselsnummer,
+              fåttJobb: true,
+              navKontor: valgtNavKontor?.navKontor ?? '',
+              stillingsId: stillingsId,
+            },
+          );
+        }
 
         visVarsel({
           innhold: 'Kandidater ble lagt til i stillingen',
