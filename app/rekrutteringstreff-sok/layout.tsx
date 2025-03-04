@@ -9,10 +9,17 @@ import { RekrutteringstreffSøkSidebar } from './components/sidebar/Rekruttering
 import { PlusIcon } from '@navikt/aksel-icons';
 import * as React from 'react';
 import { useRouter } from 'next/navigation';
+import { opprettNyStilling } from '../api/stilling/ny-stilling/opprettNyStilling';
+import { opprettNyttRekrutteringstreff } from '../rekrutteringstreff/nytt-rekrutteringstreff/opprettNyttRekrutteringstreff';
+import { OpprettNyttRekrutteringstreffDTO } from '../rekrutteringstreff/nytt-rekrutteringstreff/dto';
 
 interface layoutProps {
   children?: React.ReactNode | undefined;
 }
+
+  const nyTreff: OpprettNyttRekrutteringstreffDTO = {
+    tittel: 'Nytt rekrutteringstreff',
+  };
 
 export default function RekrutteringstreffSøkLayout({
   children,
@@ -20,7 +27,15 @@ export default function RekrutteringstreffSøkLayout({
   const router = useRouter();
 
   const handleButtonClick = () => {
-    router.push('/rekrutteringstreff');
+    /*opprettNyttRekrutteringstreff(nyTreff)
+      .then((response) => {
+        const id = response.id;
+        router.push(`/rekrutteringstreff/${id}`);
+      })
+      .catch((error) => {
+        console.error('Error while creating rekrutteringstreff:', error);
+      });*/
+      router.push(`/rekrutteringstreff`);
   };
 
   return (
