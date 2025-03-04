@@ -1,3 +1,4 @@
+import { rekbisError } from '../../../../../util/rekbisError';
 import { KandidatAPI } from '../../../../api/api-routes';
 import { putApi } from '../../../../api/fetcher';
 import { kandidaterSchemaDTO } from '../../../../api/kandidat/schema.zod';
@@ -21,14 +22,19 @@ const SletteKandidatKnapp: React.FC<SletteKandidatKnappProps> = ({
 
   const slettKandidat = async () => {
     setIsLoading(true);
-    await putApi(
-      `${KandidatAPI.internUrl}/kandidat/veileder/kandidatlister/${stillingsId}/kandidater/${kandidat.kandidatnr}/arkivert`,
-      {
-        arkivert: true,
-      },
-    );
-    setIsLoading(false);
-    slettModalRef.current?.close();
+    try {
+      await putApi(
+        `${KandidatAPI.api_route}/kandidat/veileder/kandidatlister/${stillingsId}/kandidater/${kandidat.kandidatnr}/arkivert`,
+        {
+          arkivert: true,
+        },
+      );
+      slettModalRef.current?.close();
+    } catch {
+      throw new rekbisError({ beskrivelse: 'Feil ved sletting av kandidat' });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const slettModalRef = useRef<HTMLDialogElement>(null);
