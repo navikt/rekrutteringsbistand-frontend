@@ -8,35 +8,16 @@ import SideTopBanner from '../components/layout/SideTopBanner';
 import { RekrutteringstreffSøkSidebar } from './components/sidebar/RekrutteringstreffSøkSidebar';
 import { PlusIcon } from '@navikt/aksel-icons';
 import * as React from 'react';
-import { useRouter } from 'next/navigation';
-import { opprettNyStilling } from '../api/stilling/ny-stilling/opprettNyStilling';
-import { opprettNyttRekrutteringstreff } from '../rekrutteringstreff/nytt-rekrutteringstreff/opprettNyttRekrutteringstreff';
-import { OpprettNyttRekrutteringstreffDTO } from '../rekrutteringstreff/nytt-rekrutteringstreff/dto';
+import OpprettRekrutteringstreffKnapp from './components/OpprettRekrutteringstreffKnapp';
 
 interface layoutProps {
   children?: React.ReactNode | undefined;
 }
 
-  const nyTreff: OpprettNyttRekrutteringstreffDTO = {
-    tittel: 'Nytt rekrutteringstreff',
-  };
-
 export default function RekrutteringstreffSøkLayout({
   children,
 }: layoutProps) {
-  const router = useRouter();
 
-  const handleButtonClick = () => {
-    /*opprettNyttRekrutteringstreff(nyTreff)
-      .then((response) => {
-        const id = response.id;
-        router.push(`/rekrutteringstreff/${id}`);
-      })
-      .catch((error) => {
-        console.error('Error while creating rekrutteringstreff:', error);
-      });*/
-      router.push(`/rekrutteringstreff`);
-  };
 
   return (
     <SideLayout
@@ -47,7 +28,7 @@ export default function RekrutteringstreffSøkLayout({
             tittel='Rekrutteringstreff'
             ikon={<SVGDarkmode src={Piktogram} alt='Rekrutteringstreff' />}
           />
-          <Button variant="primary" icon={<PlusIcon />} onClick={handleButtonClick}>Opprett treff</Button>
+          <OpprettRekrutteringstreffKnapp />
         </div>
       }
     >
