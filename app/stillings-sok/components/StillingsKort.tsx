@@ -43,10 +43,6 @@ const StillingsKort: React.FC<IStillingsKort> = ({
   const erFormidling =
     stillingData.stillingsinfo?.stillingskategori === 'FORMIDLING';
 
-  console.log(
-    '🎺 stillingData.stilling.properties.applicationdue',
-    stillingData?.stilling,
-  );
   return (
     <Box
       className='mb-4 rounded-lg border border-gray-300 p-4'
