@@ -20,7 +20,7 @@ export default function RekrutteringstreffSøkLayout({
   const router = useRouter();
 
   const handleButtonClick = () => {
-    router.push('/rekrutteringstreff-opprett');
+    router.push('/rekrutteringstreff');
   };
 
   return (
