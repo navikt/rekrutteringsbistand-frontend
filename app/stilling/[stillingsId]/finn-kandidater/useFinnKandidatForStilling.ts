@@ -26,11 +26,7 @@ export const useFinnKandidatForStilling = (
 
     const arbeidsønsker =
       categoryList
-        ?.filter(
-          (category) =>
-            category.categoryType === 'STYRK08' ||
-            category.categoryType === 'STYRK08NAV',
-        )
+        ?.filter((category) => category.categoryType === 'JANZZ')
         .map((category) => category.name)
         .filter((name): name is string => name !== null) ?? [];
 
