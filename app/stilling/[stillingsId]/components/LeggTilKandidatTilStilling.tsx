@@ -44,7 +44,7 @@ const LeggTilKandidatTilStilling: React.FC<LeggTilKandidatTilStillingProps> = ({
       .map((kandidat) => kandidat.aktørId)
       .filter((aktørId) => aktørId !== undefined && aktørId !== null);
 
-    if (synligeKandidater.length > 0) {
+    if (synligeKandidater.length > 0 || usynligFåttJobben.length > 0) {
       try {
         await leggTilKandidater(synligeKandidater, stillingsId);
 
