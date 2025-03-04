@@ -2,6 +2,7 @@ import { rekbisError } from '../../../../../util/rekbisError';
 import { KandidatAPI } from '../../../../api/api-routes';
 import { putApi } from '../../../../api/fetcher';
 import { kandidaterSchemaDTO } from '../../../../api/kandidat/schema.zod';
+import { useKandidatliste } from '../../../../api/kandidat/useKandidatliste';
 import { TrashIcon } from '@navikt/aksel-icons';
 import { BodyLong, Button, Modal } from '@navikt/ds-react';
 import * as React from 'react';
@@ -19,6 +20,7 @@ const SletteKandidatKnapp: React.FC<SletteKandidatKnappProps> = ({
   lukketKandidatliste,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const kandidatListeHook = useKandidatliste(kandidatlisteId);
 
   const slettKandidat = async () => {
     setIsLoading(true);
@@ -29,6 +31,7 @@ const SletteKandidatKnapp: React.FC<SletteKandidatKnappProps> = ({
           arkivert: true,
         },
       );
+      kandidatListeHook.mutate();
       slettModalRef.current?.close();
     } catch {
       throw new rekbisError({ beskrivelse: 'Feil ved sletting av kandidat' });
