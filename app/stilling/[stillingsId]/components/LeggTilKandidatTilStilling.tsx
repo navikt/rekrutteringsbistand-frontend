@@ -67,6 +67,7 @@ const LeggTilKandidatTilStilling: React.FC<LeggTilKandidatTilStillingProps> = ({
           innhold: 'Kandidater ble lagt til i stillingen',
           alertType: 'success',
         });
+        setValgteKandidater([]);
         kandidatlisteIdHook.mutate();
         ref.current?.close();
       } catch (error) {

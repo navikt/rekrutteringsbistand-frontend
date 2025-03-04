@@ -222,23 +222,25 @@ const LeggTilKandidater: React.FC<LeggTilKandidaterProps> = ({
                 {kandidat.fornavn} {kandidat.etternavn} (
                 {kandidat.fødselsnummer})
               </div>
-              {(!kandidat.aktørId || tilFormidling) && (
-                <Tag variant='success'>Fått jobben</Tag>
-              )}
-              <Button
-                icon={<XMarkIcon />}
-                variant='tertiary'
-                onClick={() =>
-                  setValgteKandidater(
-                    valgteKandidater.filter(
-                      (valgKandidat) =>
-                        valgKandidat.fødselsnummer !== kandidat.fødselsnummer,
-                    ),
-                  )
-                }
-              >
-                Fjern
-              </Button>
+              <div>
+                {(!kandidat.aktørId || tilFormidling) && (
+                  <Tag variant='success'>Fått jobben</Tag>
+                )}
+                <Button
+                  icon={<XMarkIcon />}
+                  variant='tertiary'
+                  onClick={() =>
+                    setValgteKandidater(
+                      valgteKandidater.filter(
+                        (valgKandidat) =>
+                          valgKandidat.fødselsnummer !== kandidat.fødselsnummer,
+                      ),
+                    )
+                  }
+                >
+                  Fjern
+                </Button>
+              </div>
             </Box.New>
           ))}
         </div>
