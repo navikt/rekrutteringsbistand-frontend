@@ -24,7 +24,7 @@ const SletteKandidatKnapp: React.FC<SletteKandidatKnappProps> = ({
     setIsLoading(true);
     try {
       await putApi(
-        `${KandidatAPI.api_route}/kandidat/veileder/kandidatlister/${stillingsId}/kandidater/${kandidat.kandidatnr}/arkivert`,
+        `${KandidatAPI.internUrl}/veileder/kandidatlister/${stillingsId}/kandidater/${kandidat.kandidatnr}/arkivert`,
         {
           arkivert: true,
         },
