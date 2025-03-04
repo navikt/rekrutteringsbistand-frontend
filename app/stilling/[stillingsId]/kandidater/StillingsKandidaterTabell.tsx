@@ -13,6 +13,7 @@ import {
 } from '../../../api/kandidat/schema.zod';
 import { Sms } from '../../../api/kandidatvarsel/kandidatvarsel';
 import { useStillingsKandidaterFilter } from './StillingsKandidaterFilterContext';
+import ArkivertKandidat from './components/ArkivertKandidat';
 import KandidatRad from './components/KandidatRad';
 import {
   KandidatutfallTyper,
@@ -205,6 +206,12 @@ const StillingsKandidaterTabell: React.FC<{
             kandidat.aktørid && forespurteKandidater
               ? forespurteKandidater[kandidat.aktørid]
               : null;
+
+          if (kandidat.arkivert) {
+            return (
+              <ArkivertKandidat key={`arkivert-` + i} kandidat={kandidat} />
+            );
+          }
 
           return (
             <KandidatRad

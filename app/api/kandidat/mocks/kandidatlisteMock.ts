@@ -28,7 +28,7 @@ export const kandidatlisetMock = {
       epost: null,
       innsatsgruppe: 'Spesielt tilpasset innsats',
       antallNotater: 0,
-      arkivert: false,
+      arkivert: true,
       arkivertTidspunkt: null,
       arkivertAv: null,
       aktørid: '2043300676293',
