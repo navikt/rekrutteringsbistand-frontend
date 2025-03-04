@@ -24,14 +24,3 @@ export const formidleUsynligKandidatMirage = (server: Server) => {
     message: 'Kandidaten er formidlet',
   }));
 };
-
-// export const formidleUsynligKandidat = (props: EndreKandidatUtfallProps) =>
-//   putApi(
-//     formidleUsynligKandidatEndepunkt(props.kandidatlisteId, props.formidlingId),
-//     {
-//       body: JSON.stringify({
-//         utfall: props.utfall,
-//         navKontor: props.navKontor,
-//       }),
-//     },
-//   );

@@ -74,28 +74,41 @@ const LeggTilKandidater: React.FC<LeggTilKandidaterProps> = ({
     }
   };
 
+  const velgKandidat = (
+    fnr: string,
+    kandidat: Kandidatnavn,
+    aktørId: string | null,
+  ) => {
+    if (
+      !valgteKandidater.some((k) => k.fødselsnummer === fnr) &&
+      kandidatNavnHook.data
+    ) {
+      setFødselsnummer(null);
+      setSøkestring('');
+      setValgteKandidater([
+        ...valgteKandidater,
+        {
+          fødselsnummer: fnr,
+          fornavn: kandidat.fornavn,
+          etternavn: kandidat.etternavn,
+          kilde: kandidat.kilde,
+          aktørId: aktørId ?? null,
+        },
+      ]);
+    }
+  };
+
   const leggTilKandidat = (fødselsnummer: string) => (
     <Box.New
       data-testid={'velg-kandidat-resultat'}
       className='cursor-pointer'
       onClick={() => {
-        if (
-          !valgteKandidater.some((k) => k.fødselsnummer === fødselsnummer) &&
-          kandidatNavnHook.data
-        ) {
-          setFødselsnummer(null);
-          setSøkestring('');
-          setValgteKandidater([
-            ...valgteKandidater,
-            {
-              fødselsnummer: fødselsnummer,
-              fornavn: kandidatNavnHook.data?.fornavn,
-              etternavn: kandidatNavnHook.data?.etternavn,
-              kilde: kandidatNavnHook.data?.kilde,
-              aktørId: arenaKandidatnrHook.data?.arenaKandidatnr,
-            },
-          ]);
-        }
+        if (kandidatNavnHook.data)
+          velgKandidat(
+            fødselsnummer,
+            kandidatNavnHook.data,
+            arenaKandidatnrHook.data?.arenaKandidatnr ?? null,
+          );
       }}
     >
       <div className='flex items-center justify-between'>
@@ -136,7 +149,14 @@ const LeggTilKandidater: React.FC<LeggTilKandidaterProps> = ({
       {!synlighetSomModal && <Synlighetsinfo fødselsnummer={fødselsnummer} />}{' '}
       <hr />
       <div className='flex justify-end '>
-        <Button icon={<PlusCircleIcon />} variant='tertiary'>
+        <Button
+          icon={<PlusCircleIcon />}
+          variant='tertiary'
+          onClick={() => {
+            if (kandidatNavnHook?.data)
+              velgKandidat(fødselsnummer, kandidatNavnHook?.data, null);
+          }}
+        >
           Legg til som usynlig kandidat (Registrer som fått jobben)
         </Button>
       </div>

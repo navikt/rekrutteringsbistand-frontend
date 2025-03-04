@@ -1,4 +1,21 @@
 {
+  "React Typescript component": {
+    "body": [
+      "import * as React from 'react';",
+      "",
+      "export interface ${TM_FILENAME_BASE}Props {",
+      "  children?: React.ReactNode | undefined;",
+      "}",
+      "",
+      "const $TM_FILENAME_BASE: React.FC<${TM_FILENAME_BASE}Props> = ({ children }) => {",
+      "  return <React.Fragment> Hello Wiklem </React.Fragment>;",
+      "};",
+      "",
+      "export default $TM_FILENAME_BASE;"
+    ],
+    "description": "",
+    "prefix": "rfc"
+  },
   "SWR Api": {
     "body": [
       "'use client';",
