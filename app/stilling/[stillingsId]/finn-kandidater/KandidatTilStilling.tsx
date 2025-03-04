@@ -19,19 +19,19 @@ const KandidatTilStilling: React.FC<KandidatTilStillingProps> = ({
     stillingsData?.stilling.uuid ?? null,
   );
 
-  if (kandidatListeInformasjonHook.isLoading) {
+  if (kandidatListeInformasjonHook?.isLoading) {
     return <Sidelaster />;
   }
 
   return (
     <>
-      {!kandidatListeInformasjonHook.data?.kandidatlisteId && (
+      {!kandidatListeInformasjonHook?.data?.kandidatlisteId && (
         <Alert variant='error'>
           Det er ingen kandidatlister knyttet til stillingen, så du kan ikke
           legge til kandidater.
         </Alert>
       )}
-      {kandidatListeInformasjonHook.data?.kandidatlisteStatus ===
+      {kandidatListeInformasjonHook?.data?.kandidatlisteStatus ===
         Kandidatlistestatus.Lukket && (
         <Alert variant='error'>
           Kandidatliste er lukket, så du kan ikke legge til kandidater.
