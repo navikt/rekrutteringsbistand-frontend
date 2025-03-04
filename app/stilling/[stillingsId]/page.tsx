@@ -5,7 +5,7 @@ import { TilgangskontrollForInnhold } from '../../components/tilgangskontroll/Ti
 import { Roller } from '../../components/tilgangskontroll/roller';
 import { KandidatSøkMarkerteContextProvider } from '../../kandidat-sok/KandidatSøkMarkerteContext';
 import { useStillingsContext } from './StillingsContext';
-import LeggTilKandidat from './components/LeggTilKandidatTilStilling';
+import LeggTilKandidatTilStilling from './components/LeggTilKandidatTilStilling';
 import FinnKandidaterFane from './finn-kandidater/FinnKandidaterFane';
 import StillingsKandidater from './kandidater/StillingsKandidater';
 import { StillingsKandidaterFilterProvider } from './kandidater/StillingsKandidaterFilterContext';
@@ -104,18 +104,20 @@ export default function StillingSide() {
                     </Button>
                   </Link>
                 </TilgangskontrollForInnhold> */}
-                  <TilgangskontrollForInnhold
-                    skjulVarsel
-                    kreverEnAvRollene={[
-                      Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-                      Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
-                    ]}
-                  >
-                    <LeggTilKandidat
-                      stillingsId={stillingsData.stilling.uuid}
-                      stillingsTittel={stillingsData.stilling.title}
-                    />
-                  </TilgangskontrollForInnhold>
+                  {kandidatlisteInfo?.kandidatlisteId && (
+                    <TilgangskontrollForInnhold
+                      skjulVarsel
+                      kreverEnAvRollene={[
+                        Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+                        Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
+                      ]}
+                    >
+                      <LeggTilKandidatTilStilling
+                        stillingsId={stillingsData.stilling.uuid}
+                        stillingsTittel={stillingsData.stilling.title}
+                      />
+                    </TilgangskontrollForInnhold>
+                  )}
                 </>
               )}
             </div>
