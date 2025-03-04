@@ -23,7 +23,6 @@ import { idnr } from '@navikt/fnrvalidator';
 import * as React from 'react';
 
 export interface LeggTilKandidaterProps {
-  måHaAktørId?: boolean;
   callBack: (valgteKandidater: ValgtKandidatProp[]) => void;
   initielleKandidater?: ValgtKandidatProp[];
   synlighetSomModal?: boolean;
@@ -38,7 +37,6 @@ export interface ValgtKandidatProp extends Kandidatnavn {
 const validerFnr = (fnr: string): boolean => idnr(fnr).status === 'valid';
 
 const LeggTilKandidater: React.FC<LeggTilKandidaterProps> = ({
-  måHaAktørId,
   callBack,
   synlighetSomModal,
   initielleKandidater,
@@ -50,9 +48,7 @@ const LeggTilKandidater: React.FC<LeggTilKandidaterProps> = ({
   const [fødselsnummer, setFødselsnummer] = React.useState<string | null>(null);
   const [søkeString, setSøkestring] = React.useState<string>('');
   const kandidatNavnHook = useKandidatNavn(fødselsnummer);
-  const arenaKandidatnrHook = useArenaKandidatnr(
-    måHaAktørId ? fødselsnummer : null,
-  );
+  const arenaKandidatnrHook = useArenaKandidatnr(fødselsnummer);
 
   React.useEffect(() => {
     callBack(valgteKandidater);
@@ -113,7 +109,9 @@ const LeggTilKandidater: React.FC<LeggTilKandidaterProps> = ({
               <CheckmarkCircleIcon /> <strong>Lagt til</strong>
             </div>
           ) : (
-            <Button icon={<PlusCircleIcon />} variant='tertiary' />
+            <Button icon={<PlusCircleIcon />} variant='tertiary'>
+              Legg til
+            </Button>
           )}
         </div>
       </div>
@@ -121,12 +119,13 @@ const LeggTilKandidater: React.FC<LeggTilKandidaterProps> = ({
   );
 
   const UsynligKandidat = (fødselsnummer: string) => (
-    <Box.New className='cursor-pointer'>
+    <Box.New>
       <div className='flex items-center justify-between'>
         <div className='p-4'>
           {kandidatNavnHook.data?.fornavn} {kandidatNavnHook.data?.etternavn} -{' '}
           {fødselsnummer}
         </div>
+
         <div className='mr-4 flex gap-2'>
           <Tag variant='warning'>Kandidaten er ikke synlig</Tag>
           {synlighetSomModal && (
@@ -134,7 +133,13 @@ const LeggTilKandidater: React.FC<LeggTilKandidaterProps> = ({
           )}
         </div>
       </div>
-      {!synlighetSomModal && <Synlighetsinfo fødselsnummer={fødselsnummer} />}
+      {!synlighetSomModal && <Synlighetsinfo fødselsnummer={fødselsnummer} />}{' '}
+      <hr />
+      <div className='flex justify-end '>
+        <Button icon={<PlusCircleIcon />} variant='tertiary'>
+          Legg til som usynlig kandidat (Registrer som fått jobben)
+        </Button>
+      </div>
     </Box.New>
   );
 
@@ -166,11 +171,9 @@ const LeggTilKandidater: React.FC<LeggTilKandidaterProps> = ({
             </Box.New>
           ))}
         {kandidatNavnHook.data && fødselsnummer
-          ? måHaAktørId
-            ? arenaKandidatnrHook.data?.arenaKandidatnr
-              ? leggTilKandidat(fødselsnummer)
-              : UsynligKandidat(fødselsnummer)
-            : leggTilKandidat(fødselsnummer)
+          ? arenaKandidatnrHook.data?.arenaKandidatnr
+            ? leggTilKandidat(fødselsnummer)
+            : UsynligKandidat(fødselsnummer)
           : null}
 
         {kandidatNavnHook.error && (

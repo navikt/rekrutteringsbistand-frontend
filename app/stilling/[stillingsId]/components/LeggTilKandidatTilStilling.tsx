@@ -80,14 +80,20 @@ const LeggTilKandidatTilStilling: React.FC<LeggTilKandidatTilStillingProps> = ({
       >
         <Modal.Body>
           <LeggTilKandidater
-            måHaAktørId
+            //TODO Alternativ
+            // måHaAktørId
             callBack={(valgteKandidater) => {
               setValgteKandidater(valgteKandidater);
             }}
           />
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={onLeggTilKandidat}>Legg til kandidater</Button>
+          <Button
+            disabled={valgteKandidater.length === 0}
+            onClick={onLeggTilKandidat}
+          >
+            Legg til kandidater
+          </Button>
           <Button
             loading={laster}
             type='button'

@@ -1,6 +1,6 @@
 import { oppdaterStilling } from '../../../../api/stilling/oppdater-stilling/oppdaterStilling';
 import { useStillingsContext } from '../../StillingsContext';
-import { mapFormTilStilling } from '../mapStilling';
+import { mapFormTilStilling, StillingSynlighet } from '../mapStilling';
 import { StillingsDataForm } from '../redigerFormType.zod';
 import { DatoVelger } from './DatoVelger';
 import { ArrowLeftIcon, CheckmarkCircleIcon } from '@navikt/aksel-icons';
@@ -159,13 +159,15 @@ export const RedigerInnspurt: React.FC<{
           value={watch('innspurt.stillingType')}
           onChange={(val) => setValue('innspurt.stillingType', val)}
         >
-          <Radio value='DIR'>Nei, den vises kun internt</Radio>
-          <Radio value='SHOW_ALL'>
+          <Radio value={StillingSynlighet.INTERN}>
+            Nei, den vises kun internt
+          </Radio>
+          <Radio value={StillingSynlighet.EKSTERN}>
             Ja, publiser stillingen offentlig på arbeidsplassen.no
           </Radio>
         </RadioGroup>
 
-        {watch('innspurt.stillingType') === 'SHOW_ALL' && (
+        {watch('innspurt.stillingType') === StillingSynlighet.EKSTERN && (
           <div>
             <CheckboxGroup
               legend='Hvordan sende søknad?'

@@ -3,6 +3,7 @@
 /**
  * Endepunkt /useKandidatlisteInfo
  */
+import { rekbisError } from '../../../util/rekbisError';
 import { KandidatAPI } from '../api-routes';
 import { getAPIwithSchema } from '../fetcher';
 import { Server } from 'miragejs';
@@ -20,8 +21,8 @@ const KandidatlisteInfoSchema = z.object({
 
 export type KandidatlisteInfoDTO = z.infer<typeof KandidatlisteInfoSchema>;
 
-export const useKandidatlisteInfo = (stillingsId: string | null) =>
-  useSWRImmutable(
+export const useKandidatlisteInfo = (stillingsId: string | null) => {
+  const kandidatlisteHook = useSWRImmutable(
     stillingsId ? kandidatlisteInfoEndepunkt(stillingsId) : null,
     getAPIwithSchema(KandidatlisteInfoSchema),
     {
@@ -29,6 +30,20 @@ export const useKandidatlisteInfo = (stillingsId: string | null) =>
       errorRetryInterval: 3000,
     },
   );
+
+  if (
+    //@ts-expect-error fordi dette skal fikses backend
+    kandidatlisteHook.data?.status &&
+    //@ts-expect-error fordi dette skal fikses backend
+    kandidatlisteHook.data?.status === 404
+  ) {
+    throw new rekbisError({
+      beskrivelse: 'Feil svar fra kandidatlisteInfo endepunkt.',
+    });
+  }
+
+  return kandidatlisteHook;
+};
 
 export const kandidatlisteInfoMirage = (server: Server) => {
   return server.get(kandidatlisteInfoEndepunkt('*'), () => {
