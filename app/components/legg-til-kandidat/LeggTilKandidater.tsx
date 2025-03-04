@@ -27,6 +27,7 @@ export interface LeggTilKandidaterProps {
   initielleKandidater?: ValgtKandidatProp[];
   synlighetSomModal?: boolean;
   lukkModal?: () => void;
+  tilFormidling?: boolean;
 }
 
 export interface ValgtKandidatProp extends Kandidatnavn {
@@ -40,6 +41,7 @@ const LeggTilKandidater: React.FC<LeggTilKandidaterProps> = ({
   callBack,
   synlighetSomModal,
   initielleKandidater,
+  tilFormidling,
 }) => {
   const [feilmelding, setFeilmelding] = React.useState('');
   const [valgteKandidater, setValgteKandidater] = React.useState<
@@ -221,6 +223,9 @@ const LeggTilKandidater: React.FC<LeggTilKandidaterProps> = ({
                 {kandidat.fornavn} {kandidat.etternavn} (
                 {kandidat.fødselsnummer})
               </div>
+              {(!kandidat.aktørId || tilFormidling) && (
+                <Tag variant='success'>Fått jobben</Tag>
+              )}
               <Button
                 icon={<XMarkIcon />}
                 variant='tertiary'

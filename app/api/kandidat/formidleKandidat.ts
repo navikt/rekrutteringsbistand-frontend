@@ -4,6 +4,7 @@
  * Endepunkt /useEndreKandidatUtfall
  */
 import { KandidatAPI } from '../api-routes';
+import { postApi } from '../fetcher';
 import { Server } from 'miragejs/server';
 
 //TODO
@@ -18,6 +19,16 @@ export interface FormidlingUsynligKandidatDTO {
   navKontor: string;
   stillingsId: string;
 }
+
+export const formidleUsynligKandidat = (
+  kandidatlisteId: string,
+  formidletKandidat: FormidlingUsynligKandidatDTO,
+) => {
+  return postApi(
+    formidleUsynligKandidatEndepunkt(kandidatlisteId),
+    formidletKandidat,
+  );
+};
 
 export const formidleUsynligKandidatMirage = (server: Server) => {
   return server.post(formidleUsynligKandidatEndepunkt('*'), () => ({
