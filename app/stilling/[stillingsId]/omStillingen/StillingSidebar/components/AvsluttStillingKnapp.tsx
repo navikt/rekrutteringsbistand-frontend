@@ -110,7 +110,7 @@ const AvsluttStillingKnapp: React.FC<AvsluttStillingKnappProps> = ({
       <Button
         onClick={() => ref.current?.show()}
         disabled={
-          loading || kandidatlisteStatus === 'LUKKET' || !kandidatlisteId
+          loading || kandidatlisteStatus !== 'ACTIVE' || !kandidatlisteId
         }
         variant='secondary'
         size='small'
