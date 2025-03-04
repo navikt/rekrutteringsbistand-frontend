@@ -204,8 +204,8 @@ const LeggTilKandidater: React.FC<LeggTilKandidaterProps> = ({
                 onClick={() =>
                   setValgteKandidater(
                     valgteKandidater.filter(
-                      (kandidat) =>
-                        kandidat.fødselsnummer !== kandidat.fødselsnummer,
+                      (valgKandidat) =>
+                        valgKandidat.fødselsnummer !== kandidat.fødselsnummer,
                     ),
                   )
                 }
