@@ -44,21 +44,12 @@ const LeggTilKandidatTilStilling: React.FC<LeggTilKandidatTilStillingProps> = ({
       .map((kandidat) => kandidat.aktørId)
       .filter((aktørId) => aktørId !== undefined && aktørId !== null);
 
-    if (synligeKandidater.length > 0 || usynligFåttJobben.length > 0) {
+    if (
+      kandidatlisteIdHook.data?.kandidatlisteId &&
+      (synligeKandidater.length > 0 || usynligFåttJobben.length > 0)
+    ) {
       try {
         await leggTilKandidater(synligeKandidater, stillingsId);
-
-        for (const kandidat of usynligFåttJobben) {
-          await formidleUsynligKandidat(
-            kandidatlisteIdHook.data?.kandidatlisteId ?? '',
-            {
-              fnr: kandidat.fødselsnummer,
-              fåttJobb: true,
-              navKontor: valgtNavKontor?.navKontor ?? '',
-              stillingsId: stillingsId,
-            },
-          );
-        }
 
         const formidleUsynligeKandidater = async () => {
           for (const kandidat of usynligFåttJobben) {
