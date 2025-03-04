@@ -41,16 +41,11 @@ const LagreIKandidatliste: React.FC<LagreIKandidatlisteProps> = ({
     );
 
   const lagreKandidaterIKandidatliste = async () => {
-    const kandidatnr = markerteKandidater
-      ?.map((kandidat) => kandidat.arenaKandidatnr)
-      .filter(
-        (nr): nr is string => nr !== null && nr !== undefined && nr !== '',
-      );
-    if (kandidatnr && kandidatnr.length > 0) {
+    if (markerteKandidater && markerteKandidater.length > 0) {
       setLaster(true);
       if (stillingsId) {
         try {
-          await leggTilKandidater(kandidatnr, stillingsId);
+          await leggTilKandidater(markerteKandidater, stillingsId);
           visVarsel({
             alertType: 'success',
             innhold: 'Kandidater lagret i kandidatliste',
@@ -66,7 +61,7 @@ const LagreIKandidatliste: React.FC<LagreIKandidatlisteProps> = ({
         }
       } else if (selectedRows.length !== 0) {
         const promises = selectedRows.map((stillingId) =>
-          leggTilKandidater(kandidatnr, stillingId),
+          leggTilKandidater(markerteKandidater, stillingId),
         );
         try {
           await Promise.all(promises);

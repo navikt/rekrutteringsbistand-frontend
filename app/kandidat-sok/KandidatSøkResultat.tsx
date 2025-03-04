@@ -8,9 +8,10 @@ import {
   KandidatSøkPortefølje,
   useKandidatSøkFilter,
 } from './KandidaSokContext';
+import { useKandidatSøkMarkerteContext } from './KandidatSøkMarkerteContext';
 import KandidatKort from './components/KandidatKort';
 import LagreIKandidatliste from './components/LagreIKandidatliste';
-import { Heading, Pagination } from '@navikt/ds-react';
+import { Checkbox, Heading, Pagination } from '@navikt/ds-react';
 import * as React from 'react';
 
 interface KandidatSøkResultatProps {
@@ -32,6 +33,9 @@ const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({
     setNavigering(kandidatsøkHook.data?.navigering.kandidatnumre ?? []);
   }, [kandidatsøkHook.data?.navigering, setNavigering]);
 
+  const { markerteKandidater, setMarkertListe, fjernMarkerteKandidater } =
+    useKandidatSøkMarkerteContext();
+
   return (
     <SWRLaster hooks={[kandidatsøkHook]}>
       {(kandidatData) => {
@@ -39,12 +43,39 @@ const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({
         // Elasticsearch takler ikke mer enn 10000 element i pagineringen uten å endre max result i es, som kan ha konsekvenser for minne og ytelse.
         // I tillegg så må vi trekke fra 10 elementer på grunn av next og previous blading i kandidater.
         const siderTilPaginering = antallSider > 390 ? 390 : antallSider;
+
+        const markerAlle = () => {
+          if (markerteKandidater && markerteKandidater?.length > 0) {
+            fjernMarkerteKandidater();
+          } else if (kandidatData.kandidater) {
+            const kandidatnumre = kandidatData.kandidater
+              .map((kandidat) => kandidat.arenaKandidatnr)
+              .filter(
+                (nr): nr is string =>
+                  nr !== null && nr !== undefined && nr !== '',
+              );
+            setMarkertListe(kandidatnumre);
+          }
+        };
+
         return (
           <>
+            <Heading size='medium'>
+              Viser {kandidatData.antallTotalt} treff
+            </Heading>
             <div className='my-4 flex items-center justify-between'>
-              <Heading size='medium'>
-                Viser {kandidatData.antallTotalt} treff
-              </Heading>
+              <div>
+                <Checkbox
+                  checked={
+                    markerteKandidater &&
+                    markerteKandidater.length == kandidatData.kandidater.length
+                  }
+                  value='markerAlle'
+                  onClick={markerAlle}
+                >
+                  Marker alle på siden
+                </Checkbox>
+              </div>
               <div>
                 <LagreIKandidatliste stillingsId={stillingsId} />
               </div>

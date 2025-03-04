@@ -25,17 +25,21 @@ const KandidatKort: React.FC<IKandidatKort> = ({ kandidat }) => {
   const { markerteKandidater, setMarkert } = useKandidatSøkMarkerteContext();
 
   const erMarkert = markerteKandidater?.some(
-    (k) => k.arenaKandidatnr === kandidat.arenaKandidatnr,
+    (k) => k === kandidat.arenaKandidatnr,
   );
 
   return (
     <div className='mb-4 flex flex-row rounded-lg border border-gray-300 px-4 pt-2 pb-4'>
       <Checkbox
+        disabled={!kandidat.arenaKandidatnr}
+        checked={erMarkert}
         aria-selected={erMarkert}
         hideLabel
         className='mr-4'
         value='1'
-        onChange={() => setMarkert(kandidat)}
+        onChange={() =>
+          kandidat.arenaKandidatnr && setMarkert(kandidat.arenaKandidatnr)
+        }
       >
         Checkbox
       </Checkbox>

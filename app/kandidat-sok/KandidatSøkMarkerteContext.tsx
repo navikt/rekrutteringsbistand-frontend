@@ -1,10 +1,10 @@
 import { rekbisError } from '../../util/rekbisError';
-import { KandidatDataSchemaDTO } from '../api/kandidat-sok/schema/cvSchema.zod';
 import * as React from 'react';
 
 interface KandidatSøkMarkerteContextProps {
-  markerteKandidater?: KandidatDataSchemaDTO[] | undefined;
-  setMarkert: (kandidat: KandidatDataSchemaDTO) => void;
+  markerteKandidater?: string[] | undefined;
+  setMarkert: (arenaKandidatnr: string) => void;
+  setMarkertListe: (arenaKandidatnr: string[]) => void;
   fjernMarkerteKandidater: () => void;
 }
 
@@ -12,6 +12,7 @@ const KandidatSøkMarkerteContext =
   React.createContext<KandidatSøkMarkerteContextProps>({
     markerteKandidater: [],
     setMarkert: () => {},
+    setMarkertListe: () => {},
     fjernMarkerteKandidater: () => {},
   });
 
@@ -32,23 +33,19 @@ export interface KandidatSøkMarkerteContextProviderProps {
 export const KandidatSøkMarkerteContextProvider: React.FC<
   KandidatSøkMarkerteContextProviderProps
 > = ({ children }) => {
-  const [markerteKandidater, setMarkerteKandidater] = React.useState<
-    KandidatDataSchemaDTO[]
-  >([]);
+  const [markerteKandidater, setMarkerteKandidater] = React.useState<string[]>(
+    [],
+  );
 
-  const setMarkert = (kandidat: KandidatDataSchemaDTO) => {
+  const setMarkert = (arenaKandidatnr: string) => {
     if (
-      markerteKandidater.some(
-        (k) => kandidat.arenaKandidatnr === k.arenaKandidatnr,
-      )
+      markerteKandidater.some((kandidatNr) => arenaKandidatnr === kandidatNr)
     ) {
       setMarkerteKandidater(
-        markerteKandidater.filter(
-          (k) => k.arenaKandidatnr !== kandidat.arenaKandidatnr,
-        ),
+        markerteKandidater.filter((k) => k !== arenaKandidatnr),
       );
     } else {
-      setMarkerteKandidater([...markerteKandidater, kandidat]);
+      setMarkerteKandidater([...markerteKandidater, arenaKandidatnr]);
     }
   };
 
@@ -58,7 +55,12 @@ export const KandidatSøkMarkerteContextProvider: React.FC<
 
   return (
     <KandidatSøkMarkerteContext.Provider
-      value={{ markerteKandidater, setMarkert, fjernMarkerteKandidater }}
+      value={{
+        markerteKandidater,
+        setMarkert,
+        fjernMarkerteKandidater,
+        setMarkertListe: setMarkerteKandidater,
+      }}
     >
       {children}
     </KandidatSøkMarkerteContext.Provider>
