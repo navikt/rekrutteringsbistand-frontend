@@ -1,4 +1,3 @@
 export interface OpprettNyttRekrutteringstreffDTO {
-  tittel: String;
+  tittel: string;
 }
-
