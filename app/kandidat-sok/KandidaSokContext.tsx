@@ -47,6 +47,7 @@ export interface IKandidatSøkContext {
   innsatsgruppe: string[];
   setInnsatsgruppe: (innsatsgruppe: string[]) => void;
   side: number;
+  setSide: (number: number) => void;
   ønsketYrke: string[];
   setØnsketYrke: (ønsketYrke: string[]) => void;
   ønsketSted: string[];
@@ -86,8 +87,7 @@ export const KandidatSøkProvider: React.FC<{ children: React.ReactNode }> = ({
     },
   );
 
-  //TODO legg til setSide
-  const [side] = useQueryState(
+  const [side, setSide] = useQueryState(
     KandidatSøkQueryparam.Side,
     parseAsInteger.withDefault(1).withOptions({ clearOnDefault: true }),
   );
@@ -218,6 +218,7 @@ export const KandidatSøkProvider: React.FC<{ children: React.ReactNode }> = ({
         ferskhet,
         sortering,
         orgenhet,
+        setSide,
       }}
     >
       {children}

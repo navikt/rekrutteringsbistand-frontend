@@ -10,7 +10,7 @@ import {
 } from './KandidaSokContext';
 import KandidatKort from './components/KandidatKort';
 import LagreIKandidatliste from './components/LagreIKandidatliste';
-import { Heading } from '@navikt/ds-react';
+import { Heading, Pagination } from '@navikt/ds-react';
 import * as React from 'react';
 
 interface KandidatSøkResultatProps {
@@ -35,6 +35,10 @@ const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({
   return (
     <SWRLaster hooks={[kandidatsøkHook]}>
       {(kandidatData) => {
+        const antallSider = Math.ceil(kandidatData.antallTotalt / 25);
+        // Elasticsearch takler ikke mer enn 10000 element i pagineringen uten å endre max result i es, som kan ha konsekvenser for minne og ytelse.
+        // I tillegg så må vi trekke fra 10 elementer på grunn av next og previous blading i kandidater.
+        const siderTilPaginering = antallSider > 390 ? 390 : antallSider;
         return (
           <>
             <div className='my-4 flex items-center justify-between'>
@@ -51,6 +55,15 @@ const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({
                 kandidat={kandidat as KandidatDataSchemaDTO}
               />
             ))}
+            {antallSider > 2 && (
+              <Pagination
+                className='mt-4 flex justify-center'
+                size='medium'
+                page={filter.side}
+                onPageChange={filter.setSide}
+                count={siderTilPaginering}
+              />
+            )}
           </>
         );
       }}
