@@ -3,6 +3,7 @@ import { KandidatAPI } from '../../../../api/api-routes';
 import { putApi } from '../../../../api/fetcher';
 import { kandidaterSchemaDTO } from '../../../../api/kandidat/schema.zod';
 import { useKandidatliste } from '../../../../api/kandidat/useKandidatliste';
+import { useStillingsContext } from '../../StillingsContext';
 import { TrashIcon } from '@navikt/aksel-icons';
 import { BodyLong, Button, Modal } from '@navikt/ds-react';
 import * as React from 'react';
@@ -19,8 +20,9 @@ const SletteKandidatKnapp: React.FC<SletteKandidatKnappProps> = ({
   kandidatlisteId,
   lukketKandidatliste,
 }) => {
+  const { stillingsData } = useStillingsContext();
   const [isLoading, setIsLoading] = useState(false);
-  const kandidatListeHook = useKandidatliste(kandidatlisteId);
+  const kandidatListeHook = useKandidatliste(stillingsData.stilling.uuid);
 
   const slettKandidat = async () => {
     setIsLoading(true);
