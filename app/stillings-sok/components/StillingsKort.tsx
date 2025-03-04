@@ -1,4 +1,3 @@
-import { konverterTilPresenterbarDato } from '../../../util/dato';
 import formaterMedStoreOgSmåBokstaver from '../../../util/tekst';
 import { useApplikasjonContext } from '../../ApplikasjonContext';
 import { RekrutteringsbistandStillingSchemaDTO } from '../../api/stillings-sok/schema/rekrutteringsbistandStillingSchema.zod';
@@ -17,6 +16,7 @@ import {
   PersonIcon,
 } from '@navikt/aksel-icons';
 import { Box, Button, Heading, Link } from '@navikt/ds-react';
+import { format } from 'date-fns';
 import * as React from 'react';
 
 export interface IStillingsKort {
@@ -93,12 +93,12 @@ const StillingsKort: React.FC<IStillingsKort> = ({
             ikon={<ClockIcon />}
             title='Lokasjon'
             tekst={
-              stillingData.stilling.properties?.applicationdue
-                ? konverterTilPresenterbarDato(
-                    typeof stillingData.stilling.properties.applicationdue ===
-                      'string'
-                      ? stillingData.stilling.properties.applicationdue
-                      : undefined,
+              stillingData.stilling.properties?.applicationdue &&
+              typeof stillingData.stilling.properties.applicationdue ===
+                'string'
+                ? format(
+                    new Date(stillingData.stilling.properties.applicationdue),
+                    'dd.MM.yyyy',
                   )
                 : '-'
             }

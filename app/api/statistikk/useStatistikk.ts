@@ -3,9 +3,9 @@
 /**
  * Endepunkt /statistikk
  */
-import { formaterDatoTilApi } from '../../../util/dato';
 import { StatistikkAPI } from '../api-routes';
 import { getAPIwithSchema } from '../fetcher';
+import { formaterDatoTilApi } from '../foresporsel-om-deling-av-cv/statistikk/useForesporselOmdelingAvCV';
 import { statistikkMock } from './mocks/statistikkMock';
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
