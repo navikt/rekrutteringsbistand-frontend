@@ -24,6 +24,7 @@ const RekrutteringstreffSøk: React.FC<RekrutteringstreffSøkProps> = () => {
           return (
             <RekrutteringstreffKort
               key={rekrutteringstreff.id}
+              id={rekrutteringstreff.id}
               dato={dato.startDato}
               tidspunkt={`${dato.startTidspunkt} - ${dato.sluttTidspunkt}`}
               antallArbeidsgivere={0}
