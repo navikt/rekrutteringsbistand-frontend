@@ -106,7 +106,7 @@ export const mapStillingTilForm = (
       omfangProsent: stillingsData?.stilling?.properties?.jobpercentage ?? null,
       sektor: stillingsData?.stilling?.properties?.sector ?? '',
       antallStillinger:
-        Number(stillingsData?.stilling?.properties?.positioncount) || 0,
+        Number(stillingsData?.stilling?.properties?.positioncount) ?? null,
       oppstart: oppstartEtterAvtale
         ? null
         : (stillingsData?.stilling?.properties?.starttime?.toString() ?? null),

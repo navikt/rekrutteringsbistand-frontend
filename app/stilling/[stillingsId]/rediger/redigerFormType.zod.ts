@@ -99,7 +99,21 @@ export const PraktiskInfoSchema = z
     sektor: z.string().min(1, 'Sektor må velges').nullable(),
     omfangKode: z.string().min(1, 'Omfang må velges'),
     omfangProsent: z.string().nullable(),
-    antallStillinger: z.number().min(1, 'Må ha minst én stilling'),
+    antallStillinger: z
+      .preprocess((val) => {
+        if (val === null || val === undefined) return val;
+
+        if (typeof val === 'string' && val === '') return null;
+
+        if (typeof val === 'number' && !isNaN(val)) return val;
+
+        const num = typeof val === 'string' ? Number(val) : NaN;
+
+        return isNaN(num) ? null : num;
+      }, z.number().nullable().optional())
+      .refine((val) => val !== null && val !== undefined, {
+        message: 'Antall stillinger må fylles ut',
+      }),
     oppstart: z.string().nullable(),
     oppstartEtterAvtale: z.boolean(),
     søknadsfrist: z.string().nullable(),

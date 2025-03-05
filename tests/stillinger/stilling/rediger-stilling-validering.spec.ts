@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 test('🚫 Rediger stilling Validering', async ({ page }) => {
   await page.goto('http://localhost:1337/stilling/nyStilling/rediger');
@@ -21,7 +21,7 @@ test('🚫 Rediger stilling Validering', async ({ page }) => {
   );
   await page.getByRole('button', { name: 'Neste steg' }).click();
   await expect(page.getByText('Sektor må velges')).toBeVisible();
-  await expect(page.getByText('Må ha minst én stilling')).toBeVisible();
+  await expect(page.getByText('Antall stillinger må fylles ut')).toBeVisible();
   await expect(page.getByText('Omfang må velges')).toBeVisible();
   await expect(page.getByText('Ansettelsesform må velges')).toBeVisible();
   await expect(page.getByText('Velg minst én arbeidsdag')).toBeVisible();

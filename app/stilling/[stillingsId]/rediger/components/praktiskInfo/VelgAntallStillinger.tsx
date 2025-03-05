@@ -14,7 +14,7 @@ const VelgAntallStillinger: React.FC = ({}) => {
           <TextField
             label='Antall stillinger'
             onChange={(e) => onChange(Number(e.target.value))}
-            value={value}
+            value={value ?? ''}
             type='number'
             error={error?.message}
           />
