@@ -70,10 +70,9 @@ export const OmStillingenSchema = z
       .superRefine((val, ctx) => {
         if (val && val.length > 0) {
           // Sjekk om noen av adressene mangler påkrevde felter
-          const harManglendeFelt = val.some(
-            (location) =>
-              !location.address || !location.postalCode || !location.city,
-          );
+          const harManglendeFelt = val.some((location) => {
+            return !location.address || !location.postalCode || !location.city;
+          });
 
           if (harManglendeFelt) {
             ctx.addIssue({
