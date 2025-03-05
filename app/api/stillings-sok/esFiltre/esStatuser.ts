@@ -1,4 +1,4 @@
-import { StillingsStatusTyper } from '../../../stillings-sok/components/StillingsSøkFilter/StatusFilter';
+import { StillingsStatusTyper } from '../../../stilling/components/StillingsSøkFilter/StatusFilter';
 
 export const esStatuser = (statuser: string[], navIdent?: string) => {
   const ingenFiltreValgt = statuser.length === 0;

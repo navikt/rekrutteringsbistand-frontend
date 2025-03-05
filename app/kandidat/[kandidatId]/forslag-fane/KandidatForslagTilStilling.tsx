@@ -1,4 +1,4 @@
-import StillingsSøk from '../../../stillings-sok/StillingsSøk';
+import StillingsSøk from '../../../stilling/StillingsSøk';
 import { useKandidatContext } from '../KandidatContext';
 import * as React from 'react';
 

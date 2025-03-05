@@ -1,6 +1,6 @@
 'use client';
 
-import { storForbokstav } from '../../../kandidat-sok/util';
+import { storForbokstav } from '../../../kandidat/util';
 import { useStillingsSøkFilter } from '../../StillingsSøkContext';
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
 import * as React from 'react';

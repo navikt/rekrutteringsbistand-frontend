@@ -5,7 +5,7 @@ import Sidelaster from '../../../../../components/Sidelaster';
 import {
   StillingsSøkProvider,
   useStillingsSøkFilter,
-} from '../../../../../stillings-sok/StillingsSøkContext';
+} from '../../../../../stilling/StillingsSøkContext';
 import { useKandidatContext } from '../../../KandidatContext';
 import { useStillingForKandidat } from '../../../forslag-fane/useStillingForKandidat';
 import { BodyShort, Button, Link } from '@navikt/ds-react';

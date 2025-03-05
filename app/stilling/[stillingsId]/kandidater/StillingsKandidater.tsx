@@ -5,7 +5,7 @@ import { useKandidatliste } from '../../../api/kandidat/useKandidatliste';
 import { useSmserForStilling } from '../../../api/kandidatvarsel/kandidatvarsel';
 import { oppdaterStilling } from '../../../api/stilling/oppdater-stilling/oppdaterStilling';
 import SWRLaster from '../../../components/SWRLaster';
-import { storForbokstavString } from '../../../kandidat-sok/util';
+import { storForbokstavString } from '../../../kandidat/util';
 import { Stillingskategori } from '../../stilling-typer';
 import { useStillingsContext } from '../StillingsContext';
 import { useStillingsKandidaterFilter } from './StillingsKandidaterFilterContext';

@@ -1,4 +1,4 @@
-import { Innsatsgruppe } from '../../../kandidat-sok/components/innsatsgrupper';
+import { Innsatsgruppe } from '../../../kandidat/components/innsatsgrupper';
 
 export const kandidatSøkMock = {
   kandidater: [

@@ -4,7 +4,7 @@ import {
   utfallsendringerSchemaDTO,
 } from '../../../../api/kandidat/schema.zod';
 import { Sms } from '../../../../api/kandidatvarsel/kandidatvarsel';
-import { storForbokstavString } from '../../../../kandidat-sok/util';
+import { storForbokstavString } from '../../../../kandidat/util';
 import KandidatHendelseKort from './KandidatHendelseKort';
 import { KandidatutfallTyper, UtfallsEndringTyper } from './KandidatTyper';
 import {

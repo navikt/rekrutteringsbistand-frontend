@@ -1,5 +1,5 @@
 import { kandidaterSchemaDTO } from '../../../../api/kandidat/schema.zod';
-import { storForbokstavString } from '../../../../kandidat-sok/util';
+import { storForbokstavString } from '../../../../kandidat/util';
 import { Table, Tag } from '@navikt/ds-react';
 import * as React from 'react';
 

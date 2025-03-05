@@ -1,4 +1,4 @@
-import { storForbokstavString } from '../../../../kandidat-sok/util';
+import { storForbokstavString } from '../../../../kandidat/util';
 import { KandidatutfallTyper } from './KandidatTyper';
 import { Tag } from '@navikt/ds-react';
 

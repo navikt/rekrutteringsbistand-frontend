@@ -4,7 +4,7 @@ import {
 } from '../../api/pam-geografi/typehead/lokasjoner/usePamGeografi';
 import FilterChip from '../../components/FilterChip';
 import TømFiltre from '../../components/TømFiltre';
-import { storForbokstavString } from '../../kandidat-sok/util';
+import { storForbokstavString } from '../../kandidat/util';
 import { useStillingsSøkFilter } from '../StillingsSøkContext';
 import {
   hierarkiAvTagsForFilter,

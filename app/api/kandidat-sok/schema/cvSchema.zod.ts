@@ -1,4 +1,4 @@
-import { Innsatsgruppe } from '../../../kandidat-sok/components/innsatsgrupper';
+import { Innsatsgruppe } from '../../../kandidat/components/innsatsgrupper';
 import { AnnenErfaringSchema } from './annenErfaringSchema.zod';
 import { AnsettelsesformJobbonskerSchema } from './ansettelsesformJobbonskerSchema.zod';
 import { ArbeidsdagerJobbonskerSchema } from './arbeidsdagerJobbonskerSchema.zod';

@@ -1,4 +1,4 @@
-import { storForbokstavString } from '../../../../kandidat-sok/util';
+import { storForbokstavString } from '../../../../kandidat/util';
 import UsynligKandidatHendelseTag from './UsynligKandidatHendelsestag';
 import { Table } from '@navikt/ds-react';
 import * as React from 'react';

@@ -120,7 +120,9 @@ const StillingsKort: React.FC<IStillingsKort> = ({
                 <Button variant='tertiary'>Vis kandidater</Button>
               </Link>
             )}
-            <Link href={`/kandidat-sok/stilling/${stillingData.stilling.uuid}`}>
+            <Link
+              href={`/stilling/${stillingData.stilling.uuid}?visFane=finn-kandidater`}
+            >
               <Button variant='tertiary'>Finn kandidater</Button>
             </Link>
           </div>

@@ -13,11 +13,11 @@ const tabs = [
   },
   {
     tittel: 'Stillinger',
-    path: '/stillings-sok?brukStandardsok=true',
+    path: '/stilling?brukStandardsok=true',
   },
   {
     tittel: 'Kandidatsøk',
-    path: '/kandidat-sok',
+    path: '/kandidat',
     kreverRoller: [
       Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
       Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
@@ -46,6 +46,31 @@ export const Navigeringsmeny: FunctionComponent = () => {
   const pathname = usePathname();
   const tabPath = `/${pathname.split('/')[1]}`;
 
+  console.log('🎺 tabPath', tabPath);
+  // const getActiveTabValue = () => {
+  //   // First check if pathname exactly matches a tab path
+  //   if (tabPath === '/') return '/';
+
+  //   // Then check for tabs with visAktivPaths
+  //   for (const tab of tabs) {
+  //     // If tab has visAktivPaths property
+  //     if (tab.visAktivPaths) {
+  //       // Check if current pathname starts with any path in visAktivPaths
+  //       if (
+  //         tab.visAktivPaths.some((activePath) =>
+  //           pathname.startsWith(activePath),
+  //         )
+  //       ) {
+  //         return tab.path;
+  //       }
+  //     }
+  //   }
+
+  //   // Default to the tabPath (first segment)
+  //   return tabPath;
+  // };
+
+  // const activeTabValue = getActiveTabValue();
   return (
     <div className='border-border-divider border-b'>
       <div className='mx-auto flex w-[var(--ax-breakpoint-2xl)] items-center justify-between p-4 pb-0'>
@@ -64,7 +89,8 @@ export const Navigeringsmeny: FunctionComponent = () => {
                   <Tabs.Tab
                     key={tab.path}
                     label={tab.tittel}
-                    value={tab.path}
+                    // remove query from path
+                    value={tab.path.split('?')[0]}
                   />
                 </Link>
               </TilgangskontrollForInnhold>

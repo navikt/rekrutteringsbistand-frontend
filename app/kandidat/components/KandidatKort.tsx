@@ -76,16 +76,11 @@ const KandidatKort: React.FC<IKandidatKort> = ({ kandidat }) => {
         </div>
       </div>
       <div className='flex-end mr-4 flex flex-col justify-center gap-2 font-bold'>
-        {/* <Link href={`/stillings-sok/kandidat/${kandidat.arenaKandidatnr}`}> */}
         <Link
           href={`/kandidat/${kandidat.arenaKandidatnr}?visFane=forslagTilStilling`}
         >
           <TekstMedIkon ikon={<FileSearchIcon />} tekst='Finn stilling' />
         </Link>
-        {/* </Link> */}
-        {/* <Link href={`/stillings-sok/kandidat/${kandidat.arenaKandidatnr}`}> */}
-        {/* <TekstMedIkon ikon={<TasklistIcon />} tekst='Stillinger' /> */}
-        {/* </Link> */}
       </div>
     </div>
   );
