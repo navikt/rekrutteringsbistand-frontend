@@ -1,3 +1,4 @@
+import { useApplikasjonContext } from '@/app/ApplikasjonContext';
 import { OpprettNyttRekrutteringstreffDTO } from '@/app/api/rekrutteringstreff/nytt-rekrutteringstreff/dto';
 import { opprettNyttRekrutteringstreff } from '@/app/api/rekrutteringstreff/nytt-rekrutteringstreff/opprettNyttRekrutteringstreff';
 import { PlusIcon } from '@navikt/aksel-icons';
@@ -16,11 +17,11 @@ const OpprettRekrutteringstreffKnapp: React.FC<
     /*children*/
   },
 ) => {
-  //const { valgtNavKontor, brukerData } = useApplikasjonContext();
+  const { valgtNavKontor } = useApplikasjonContext();
   const router = useRouter();
 
   const nyTreff: OpprettNyttRekrutteringstreffDTO = {
-    tittel: 'Nytt rekrutteringstreff',
+    opprettetAvNavkontorEnhetId: valgtNavKontor?.navKontor || null,
   };
   const handleButtonClick = () => {
     opprettNyttRekrutteringstreff(nyTreff)

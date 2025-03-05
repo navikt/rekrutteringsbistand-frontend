@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const OpprettNyttRekrutteringstreffSchema = z.object({
-  tittel: z.string(),
+  opprettetAvNavkontorEnhetId: z.string().nullable(),
 });
 
 export type OpprettNyttRekrutteringstreffDTO = z.infer<
