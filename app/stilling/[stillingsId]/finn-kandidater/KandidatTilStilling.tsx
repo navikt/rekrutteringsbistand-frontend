@@ -2,7 +2,7 @@ import { Kandidatlistestatus } from '../../../api/kandidat/schema.zod';
 import { useKandidatlisteInfo } from '../../../api/kandidat/useKandidatlisteInfo';
 import { StillingsDataDTO } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import Sidelaster from '../../../components/Sidelaster';
-import KandidatSøk from '../../../kandidat/page';
+import KandidatSøk from '../../../kandidat/KandidatSøkSide';
 import { useFinnKandidatForStilling } from './useFinnKandidatForStilling';
 import { Alert } from '@navikt/ds-react';
 import * as React from 'react';

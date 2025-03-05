@@ -10,11 +10,11 @@ import { KandidatSøkProvider } from './KandidaSokContext';
 import { KandidatSøkMarkerteContextProvider } from './KandidatSøkMarkerteContext';
 import KandidatSøkSidebar from './components/kandidat-sok-sidebar/KandidatSøkSidebar';
 
-export default function KandidatSokLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export interface KandidatSokLayoutProps {
+  children?: React.ReactNode | undefined;
+}
+
+const KandidatSokLayout: React.FC<KandidatSokLayoutProps> = ({ children }) => {
   return (
     <TilgangskontrollForInnhold
       kreverEnAvRollene={[
@@ -39,4 +39,6 @@ export default function KandidatSokLayout({
       </KandidatSøkProvider>
     </TilgangskontrollForInnhold>
   );
-}
+};
+
+export default KandidatSokLayout;
