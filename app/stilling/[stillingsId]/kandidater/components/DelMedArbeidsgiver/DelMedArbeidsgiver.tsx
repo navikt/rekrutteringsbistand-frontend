@@ -93,7 +93,7 @@ const DelMedArbeidsgiver: React.FC<DelMedArbeidsgiverProps> = ({
                         {harSvartJa.length === 0
                           ? 'Kandidaten '
                           : `${harSvartJa.length} av kandidatene har `}
-                        ikke svart eller svart nei på om CV-en kan deles.
+                        har ikke svart eller svart nei på om CV-en kan deles.
                       </BodyLong>
                     </Alert>
                   )}
