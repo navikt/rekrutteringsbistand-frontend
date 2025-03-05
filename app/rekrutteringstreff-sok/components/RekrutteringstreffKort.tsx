@@ -48,9 +48,7 @@ export const RekrutteringstreffKort: FunctionComponent<Props> = ({
       </div>
 
       <Heading size='small' level='2' className='mb-2'>
-        <Link href={`/rekrutteringstreff/${id}`} target='_blank'>
-          {tittel}
-        </Link>
+        <Link href={`/rekrutteringstreff/${id}`}>{tittel}</Link>
       </Heading>
       <BodyShort className='mb-4'>{beskrivelse}</BodyShort>
 
