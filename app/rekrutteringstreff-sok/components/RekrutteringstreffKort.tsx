@@ -3,6 +3,7 @@ import { BodyShort, Box, Detail, Heading, Link, Tag } from '@navikt/ds-react';
 import { FunctionComponent } from 'react';
 
 interface Props {
+  id: string;
   dato: string;
   tidspunkt: string;
   antallArbeidsgivere: number;
@@ -17,6 +18,7 @@ interface Props {
 }
 
 export const RekrutteringstreffKort: FunctionComponent<Props> = ({
+  id,
   dato,
   tidspunkt,
   antallArbeidsgivere,
@@ -46,7 +48,9 @@ export const RekrutteringstreffKort: FunctionComponent<Props> = ({
       </div>
 
       <Heading size='small' level='2' className='mb-2'>
-        {tittel}
+        <Link href={`/rekrutteringstreff/${id}`} target='_blank'>
+          {tittel}
+        </Link>
       </Heading>
       <BodyShort className='mb-4'>{beskrivelse}</BodyShort>
 
