@@ -87,8 +87,7 @@ const LeggTilKandidatTilStilling: React.FC<LeggTilKandidatTilStillingProps> = ({
       <Button
         loading={laster}
         onClick={() => ref.current?.showModal()}
-        variant='secondary'
-        className='mr-2'
+        variant='tertiary'
         icon={<ArrowForwardIcon aria-hidden />}
       >
         Legg til kandidater

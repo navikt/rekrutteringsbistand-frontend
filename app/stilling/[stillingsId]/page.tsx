@@ -49,7 +49,7 @@ export default function StillingSide() {
           </div>
         )}
         <Tabs defaultValue={fane} onChange={(val: any) => setFane(val)}>
-          <Tabs.List className='mb-2 flex w-full justify-between'>
+          <Tabs.List className='flex w-full justify-between'>
             <div>
               <Tabs.Tab value={StillingFane.STILLING} label='Om stillingen' />
               <TilgangskontrollForInnhold
@@ -84,7 +84,7 @@ export default function StillingSide() {
                   Oppdraget er ferdigstilt og kandidatlisten er lukket
                 </Alert>
               ) : (
-                <>
+                <div>
                   {kandidatlisteInfo?.kandidatlisteId && (
                     <TilgangskontrollForInnhold
                       skjulVarsel
@@ -99,7 +99,7 @@ export default function StillingSide() {
                       />
                     </TilgangskontrollForInnhold>
                   )}
-                </>
+                </div>
               )}
             </div>
           </Tabs.List>
