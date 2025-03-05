@@ -45,7 +45,10 @@ const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({
         const siderTilPaginering = antallSider > 390 ? 390 : antallSider;
 
         const markerAlle = () => {
-          if (markerteKandidater && markerteKandidater?.length > 0) {
+          if (
+            markerteKandidater &&
+            markerteKandidater.length == kandidatData.kandidater.length
+          ) {
             fjernMarkerteKandidater();
           } else if (kandidatData.kandidater) {
             const kandidatnumre = kandidatData.kandidater
