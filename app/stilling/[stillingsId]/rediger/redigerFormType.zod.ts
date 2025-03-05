@@ -2,6 +2,7 @@ import {
   KategoriSchema,
   LocationSchema,
 } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
+import { StillingSynlighet } from './mapStilling';
 import { z } from 'zod';
 
 export const OmVirksomhetenSchema = z.object({
@@ -105,7 +106,12 @@ export const PraktiskInfoSchema = z
     søknadsfrist: z.string().nullable(),
     søknadsfristSnarest: z.boolean(),
     arbeidstidsordning: z.string().nullable(),
-    ansettelsesform: z.string().min(1, 'Ansettelsesform må velges').nullable(),
+    ansettelsesform: z
+      .string()
+      .nullable()
+      .refine((val) => val !== null && val !== '', {
+        message: 'Ansettelsesform må velges',
+      }),
     dager: z
       .array(z.string(), {
         required_error: 'Arbeidsdager må velges',
@@ -143,13 +149,27 @@ export const PraktiskInfoSchema = z
     }
   });
 
-export const InnspurtSchema = z.object({
-  publiseres: z.string().min(1, 'Publiseringsdato er påkrevd').nullable(),
-  avsluttes: z.string().min(1, 'Avsluttingsdato er påkrevd').nullable(),
-  stillingType: z.string().min(1, 'Stillingstype er påkrevd'),
-  epost: z.string().email('Ugyldig e-postadresse').optional().nullable(),
-  lenke: z.string().url('Ugyldig URL').optional().nullable(),
-});
+export const InnspurtSchema = z
+  .object({
+    publiseres: z.string().min(1, 'Publiseringsdato er påkrevd').nullable(),
+    avsluttes: z.string().min(1, 'Avsluttingsdato er påkrevd').nullable(),
+    stillingType: z.string().min(1, 'Stillingstype er påkrevd'),
+    epost: z.string().email('Ugyldig e-postadresse').optional().nullable(),
+    lenke: z.string().url('Ugyldig URL').optional().nullable(),
+  })
+  .superRefine((data, ctx) => {
+    if (
+      data.stillingType === StillingSynlighet.EKSTERN &&
+      !data.epost &&
+      !data.lenke
+    ) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Du må fylle ut enten e-post eller lenke',
+        path: ['epost'],
+      });
+    }
+  });
 
 export const StillingsDataFormSchema = z.object({
   omVirksomheten: OmVirksomhetenSchema,
