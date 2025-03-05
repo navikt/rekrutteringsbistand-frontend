@@ -28,7 +28,7 @@ const KandidatTilStilling: React.FC<KandidatTilStillingProps> = ({
   React.useEffect(() => {
     if (kandidatlisteHook?.data?.kandidater) {
       const listeOverValgteKandidater = kandidatlisteHook.data.kandidater
-        .map((kandidat) => kandidat.aktørid)
+        .map((kandidat) => kandidat.kandidatnr)
         .filter((id): id is string => id !== null);
 
       setAlleredeLagtTil(listeOverValgteKandidater);
