@@ -1,7 +1,6 @@
 import FilterChip from '../../components/FilterChip';
 import TømFiltre from '../../components/TømFiltre';
 import { useKandidatSøkFilter } from '../KandidaSokContext';
-import { Innsatsgruppe } from './innsatsgrupper';
 import { HovedMålType } from './kandidat-sok-sidebar/components/Hovedmål';
 import { Chips } from '@navikt/ds-react';
 import * as React from 'react';
@@ -38,12 +37,12 @@ const StillingsSøkChips: React.FC = () => {
           <FilterChip
             type={filter.innsatsgruppe}
             setVerdi={filter.setInnsatsgruppe}
-            mapVerdiNavn={(navn: string) =>
-              Object.keys(Innsatsgruppe).find(
-                (key) =>
-                  Innsatsgruppe[key as keyof typeof Innsatsgruppe] === navn,
-              ) || navn
-            }
+            // mapVerdiNavn={(navn: string) =>
+            //   Object.keys(Innsatsgruppe).find(
+            //     (key) =>
+            //       Innsatsgruppe[key as keyof typeof Innsatsgruppe] === navn,
+            //   ) || navn
+            // }
           />
           <FilterChip
             type={filter.hovedmål}
