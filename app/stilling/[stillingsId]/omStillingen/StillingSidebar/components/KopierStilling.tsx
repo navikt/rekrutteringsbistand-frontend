@@ -18,7 +18,7 @@ const KopierStilling: React.FC<KopierStillingProps> = ({ stillingsId }) => {
       await kopierStilling(stillingsId);
 
       varsel({
-        innhold: 'Stilling dupliserte',
+        innhold: 'Stilling er duplisert',
         alertType: 'success',
       });
     } catch (error) {
