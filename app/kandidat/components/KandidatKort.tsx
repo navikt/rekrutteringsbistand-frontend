@@ -34,25 +34,27 @@ const KandidatKort: React.FC<IKandidatKort> = ({
 
   return (
     <div className='mb-4 flex flex-row rounded-lg border border-gray-300 px-4 pt-2 pb-4'>
-      <Checkbox
-        disabled={
-          !kandidat.arenaKandidatnr ||
-          alleredeLagtTil?.some((k) => k === kandidat.arenaKandidatnr)
-        }
-        checked={
-          erMarkert ||
-          alleredeLagtTil?.some((k) => k === kandidat.arenaKandidatnr)
-        }
-        aria-selected={erMarkert}
-        hideLabel
-        className='mr-4'
-        value='1'
-        onChange={() =>
-          kandidat.arenaKandidatnr && setMarkert(kandidat.arenaKandidatnr)
-        }
-      >
-        Checkbox
-      </Checkbox>
+      <div>
+        <Checkbox
+          disabled={
+            !kandidat.arenaKandidatnr ||
+            alleredeLagtTil?.some((k) => k === kandidat.arenaKandidatnr)
+          }
+          checked={
+            erMarkert ||
+            alleredeLagtTil?.some((k) => k === kandidat.arenaKandidatnr)
+          }
+          aria-selected={erMarkert}
+          hideLabel
+          className='mr-4'
+          value='1'
+          onChange={() =>
+            kandidat.arenaKandidatnr && setMarkert(kandidat.arenaKandidatnr)
+          }
+        >
+          Checkbox
+        </Checkbox>
+      </div>
       <div className='mt-2 flex-grow'>
         <Heading className='underline' size='small'>
           <Link href={`/kandidat/${kandidat.arenaKandidatnr}`}>
