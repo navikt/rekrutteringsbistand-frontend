@@ -20,11 +20,13 @@ import * as React from 'react';
 type IKandidatKort = {
   kandidat: KandidatDataSchemaDTO;
   alleredeLagtTil?: string[];
+  stillingsId?: string;
 };
 
 const KandidatKort: React.FC<IKandidatKort> = ({
   kandidat,
   alleredeLagtTil,
+  stillingsId,
 }) => {
   const { markerteKandidater, setMarkert } = useKandidatSøkMarkerteContext();
 
@@ -87,13 +89,15 @@ const KandidatKort: React.FC<IKandidatKort> = ({
           </div>
         </div>
       </div>
-      <div className='flex-end mr-4 flex flex-col justify-center gap-2 font-bold'>
-        <Link
-          href={`/kandidat/${kandidat.arenaKandidatnr}?visFane=forslagTilStilling`}
-        >
-          <TekstMedIkon ikon={<FileSearchIcon />} tekst='Finn stilling' />
-        </Link>
-      </div>
+      {!stillingsId && (
+        <div className='flex-end mr-4 flex flex-col justify-center gap-2 font-bold'>
+          <Link
+            href={`/kandidat/${kandidat.arenaKandidatnr}?visFane=forslagTilStilling`}
+          >
+            <TekstMedIkon ikon={<FileSearchIcon />} tekst='Finn stilling' />
+          </Link>
+        </div>
+      )}
     </div>
   );
 };

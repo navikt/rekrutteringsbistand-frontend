@@ -86,6 +86,7 @@ const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({
             </div>
             {kandidatData.kandidater?.map((kandidat, index) => (
               <KandidatKort
+                stillingsId={stillingsId}
                 alleredeLagtTil={alleredeLagtTil}
                 key={kandidat.arenaKandidatnr || index}
                 kandidat={kandidat as KandidatDataSchemaDTO}
