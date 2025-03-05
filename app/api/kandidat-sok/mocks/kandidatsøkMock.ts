@@ -90,7 +90,7 @@ export const kandidatSøkMock = {
       ],
       etternavn: 'Tomat',
       postnummer: '4628',
-      arenaKandidatnr: 'PAM017xk6cpdc',
+      arenaKandidatnr: '2043300676293',
       kommuneNavn: 'Kristiansand',
       geografiJobbonsker: [
         {

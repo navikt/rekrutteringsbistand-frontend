@@ -17,6 +17,7 @@ const FinnKandidaterFane: React.FC<FinnKandidaterFaneProps> = ({
   stillingsId,
 }) => {
   const stillingsDataHook = useStilling(stillingsId);
+
   return (
     <TilgangskontrollForInnhold
       kreverEnAvRollene={[

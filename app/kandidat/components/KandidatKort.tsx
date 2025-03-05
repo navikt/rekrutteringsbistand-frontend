@@ -19,9 +19,13 @@ import * as React from 'react';
 
 type IKandidatKort = {
   kandidat: KandidatDataSchemaDTO;
+  alleredeLagtTil?: string[];
 };
 
-const KandidatKort: React.FC<IKandidatKort> = ({ kandidat }) => {
+const KandidatKort: React.FC<IKandidatKort> = ({
+  kandidat,
+  alleredeLagtTil,
+}) => {
   const { markerteKandidater, setMarkert } = useKandidatSøkMarkerteContext();
 
   const erMarkert = markerteKandidater?.some(
@@ -31,8 +35,14 @@ const KandidatKort: React.FC<IKandidatKort> = ({ kandidat }) => {
   return (
     <div className='mb-4 flex flex-row rounded-lg border border-gray-300 px-4 pt-2 pb-4'>
       <Checkbox
-        disabled={!kandidat.arenaKandidatnr}
-        checked={erMarkert}
+        disabled={
+          !kandidat.arenaKandidatnr ||
+          alleredeLagtTil?.some((k) => k === kandidat.arenaKandidatnr)
+        }
+        checked={
+          erMarkert ||
+          alleredeLagtTil?.some((k) => k === kandidat.arenaKandidatnr)
+        }
         aria-selected={erMarkert}
         hideLabel
         className='mr-4'

@@ -17,13 +17,13 @@ import * as React from 'react';
 interface KandidatSøkResultatProps {
   type: KandidatSøkPortefølje;
   stillingsId?: string;
+  alleredeLagtTil?: string[];
 }
-
-// TODO Legg til paginering
 
 const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({
   type,
   stillingsId,
+  alleredeLagtTil,
 }) => {
   const filter = useKandidatSøkFilter();
   const kandidatsøkHook = useKandidatsøk(type, filter);
@@ -86,6 +86,7 @@ const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({
             </div>
             {kandidatData.kandidater?.map((kandidat, index) => (
               <KandidatKort
+                alleredeLagtTil={alleredeLagtTil}
                 key={kandidat.arenaKandidatnr || index}
                 kandidat={kandidat as KandidatDataSchemaDTO}
               />
