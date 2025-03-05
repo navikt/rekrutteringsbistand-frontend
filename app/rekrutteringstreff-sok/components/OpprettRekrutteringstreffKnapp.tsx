@@ -1,4 +1,3 @@
-//import { useApplikasjonContext } from '@/app/ApplikasjonContext';
 import { OpprettNyttRekrutteringstreffDTO } from '@/app/api/rekrutteringstreff/nytt-rekrutteringstreff/dto';
 import { opprettNyttRekrutteringstreff } from '@/app/api/rekrutteringstreff/nytt-rekrutteringstreff/opprettNyttRekrutteringstreff';
 import { PlusIcon } from '@navikt/aksel-icons';
@@ -28,12 +27,10 @@ const OpprettRekrutteringstreffKnapp: React.FC<
       .then((response) => {
         const id = response.id;
         router.push(`/rekrutteringstreff/${id}`);
-        //router.push(`/rekrutteringstreff`);
       })
       .catch((error) => {
         console.error('Error while creating rekrutteringstreff:', error);
       });
-    //router.push(`/rekrutteringstreff`);
   };
 
   return (
