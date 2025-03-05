@@ -13,8 +13,20 @@ const VelgAntallStillinger: React.FC = ({}) => {
         render={({ field: { onChange, value }, fieldState: { error } }) => (
           <TextField
             label='Antall stillinger'
-            onChange={(e) => onChange(Number(e.target.value))}
-            value={value ?? ''}
+            onChange={(e) => {
+              const inputValue = e.target.value;
+              if (inputValue === '') {
+                onChange(null);
+              } else {
+                const numValue = Number(inputValue);
+                onChange(isNaN(numValue) ? null : numValue);
+              }
+            }}
+            value={
+              value === null || value === undefined || isNaN(value)
+                ? ''
+                : String(value)
+            }
             type='number'
             error={error?.message}
           />

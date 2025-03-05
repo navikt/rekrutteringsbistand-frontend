@@ -120,19 +120,13 @@ const RedigerStilling: React.FC = () => {
               </Stepper.Step>
               <Stepper.Step
                 completed={validerOmTilrettelegging()}
-                interactive={
-                  validerOmVirksomheten() && validerOmTilrettelegging()
-                }
+                interactive={validerOmVirksomheten()}
               >
                 Om tilrettelegging
               </Stepper.Step>
               <Stepper.Step
                 completed={validerOmStillingen()}
-                interactive={
-                  validerOmVirksomheten() &&
-                  validerOmTilrettelegging() &&
-                  validerOmStillingen()
-                }
+                interactive={validerOmVirksomheten()}
               >
                 Om stillingen
               </Stepper.Step>
@@ -141,8 +135,7 @@ const RedigerStilling: React.FC = () => {
                 interactive={
                   validerOmVirksomheten() &&
                   validerOmTilrettelegging() &&
-                  validerOmStillingen() &&
-                  validerPraktiskInfo()
+                  validerOmStillingen()
                 }
               >
                 Praktisk info
@@ -153,8 +146,7 @@ const RedigerStilling: React.FC = () => {
                   validerOmVirksomheten() &&
                   validerOmTilrettelegging() &&
                   validerOmStillingen() &&
-                  validerPraktiskInfo() &&
-                  validerInnspurt()
+                  validerPraktiskInfo()
                 }
               >
                 Publisering
