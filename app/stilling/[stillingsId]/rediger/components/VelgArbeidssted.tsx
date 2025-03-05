@@ -12,7 +12,7 @@ export interface VelgArbeidsstedProps {
 }
 
 const VelgArbeidssted: React.FC<VelgArbeidsstedProps> = ({ feltNavn }) => {
-  const { control, setValue } = useFormContext<
+  const { control, setValue, watch } = useFormContext<
     StillingsDataForm | FormidlingDataForm
   >();
 
@@ -98,7 +98,7 @@ const VelgArbeidssted: React.FC<VelgArbeidsstedProps> = ({ feltNavn }) => {
             oppdaterPoststed={(postSted: string) => {
               setValue(`${feltNavn}.adresser.${index}.city` as any, postSted);
             }}
-            postSted={adresser[index].city ?? ''}
+            postSted={watch(`${feltNavn}.adresser.${index}.city`) || null}
           />
         ))}
 
