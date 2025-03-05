@@ -1,6 +1,7 @@
 import { setKandidatlisteStatus } from '../../../../../api/kandidat/setKandidatlisteStatus';
 import { oppdaterStilling } from '../../../../../api/stilling/oppdater-stilling/oppdaterStilling';
 import { StillingsStatus } from '../../../../stilling-typer';
+import { stillingErUtløpt } from '../../../../stilling-util';
 import { useStillingsContext } from '../../../StillingsContext';
 import { EyeSlashIcon, TasklistIcon } from '@navikt/aksel-icons';
 import { BodyLong, Button, Modal } from '@navikt/ds-react';
@@ -25,6 +26,8 @@ const AvsluttStillingKnapp: React.FC<AvsluttStillingKnappProps> = ({
   const [loading, setLoading] = React.useState(false);
 
   const stillingsStatus = stillingsData.stilling.status;
+
+  const erUtløpt = stillingErUtløpt(stillingsData.stilling);
 
   const avsluttStilling = async (kandidatlisteId: string) => {
     setLoading(true);
@@ -99,7 +102,9 @@ const AvsluttStillingKnapp: React.FC<AvsluttStillingKnappProps> = ({
         </Modal.Footer>
       </Modal>
       <Button
-        disabled={loading || stillingsStatus === StillingsStatus.Stoppet}
+        disabled={
+          erUtløpt || loading || stillingsStatus === StillingsStatus.Stoppet
+        }
         icon={<EyeSlashIcon />}
         variant='secondary'
         size='small'

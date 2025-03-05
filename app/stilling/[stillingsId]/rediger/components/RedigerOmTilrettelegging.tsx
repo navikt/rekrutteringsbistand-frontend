@@ -2,7 +2,13 @@ import { FormidlingDataForm } from '../../../../formidling/ny-formidling/rediger
 import { InkluderingsTag } from '../../omStillingen/StillingSidebar/StillingInkludering';
 import { StillingsDataForm } from '../redigerFormType.zod';
 import StegNavigering from './StegNavigering';
-import { Checkbox, CheckboxGroup, Heading } from '@navikt/ds-react';
+import {
+  BodyShort,
+  Checkbox,
+  CheckboxGroup,
+  Heading,
+  HelpText,
+} from '@navikt/ds-react';
 import * as React from 'react';
 import { useFormContext } from 'react-hook-form';
 
@@ -166,7 +172,19 @@ export const RedigerOmTilrettelegging: React.FC<
             </TilretteleggingCheckbox>
           </CheckboxGroup>
 
-          <CheckboxGroup legend='Inkluderingssamarbeid med offentlig virksomhet? (valgfritt)'>
+          <CheckboxGroup
+            hideLegend
+            legend='Inkluderingssamarbeid med offentlig virksomhet? (valgfritt)'
+          >
+            <div className='flex'>
+              <BodyShort weight='semibold'>
+                Inkluderingssamarbeid med offentlig virksomhet? (valgfritt)
+              </BodyShort>
+              <HelpText title='Hvor kommer dette fra?'>
+                Dette gjelder offentlige virksomheter med samarbeidsavtale eller
+                strategisk partneravtale
+              </HelpText>
+            </div>
             <TilretteleggingCheckbox
               tag={InkluderingsTag.StatligInkluderingsdugnad}
             >
