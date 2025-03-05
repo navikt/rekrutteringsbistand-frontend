@@ -1,4 +1,4 @@
-import { StillingsSøkSorteringTyper } from '../../../stillings-sok/components/StillingsSøkSortering';
+import { StillingsSøkSorteringTyper } from '../../../stilling/components/StillingsSøkSortering';
 
 export const esSorter = (sorter: string) => {
   switch (sorter) {

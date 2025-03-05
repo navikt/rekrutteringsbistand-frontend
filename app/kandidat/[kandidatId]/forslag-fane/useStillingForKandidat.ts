@@ -8,8 +8,8 @@ import {
   getNummerFraSted,
   stedmappingFraGammeltNummer,
 } from '../../../api/stillings-sok/esFiltre/fylkeOgKommuneMapping';
-import { useStillingsSøkFilter } from '../../../stillings-sok/StillingsSøkContext';
-import { StillingsStatusTyper } from '../../../stillings-sok/components/StillingsSøkFilter/StatusFilter';
+import { useStillingsSøkFilter } from '../../../stilling/StillingsSøkContext';
+import { StillingsStatusTyper } from '../../../stilling/components/StillingsSøkFilter/StatusFilter';
 import React, { useRef } from 'react';
 
 const hentFylkerFraJobbønsker = (

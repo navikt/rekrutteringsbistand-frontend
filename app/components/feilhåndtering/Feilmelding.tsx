@@ -10,6 +10,7 @@ export interface IFeilmelding {
   stack?: string;
   beskrivelse?: string;
   url?: string;
+  error?: unknown;
 }
 
 const Feilmelding: React.FC<IFeilmelding> = ({

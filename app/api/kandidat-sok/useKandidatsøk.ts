@@ -6,7 +6,7 @@
 import {
   IKandidatSøkContext,
   KandidatSøkPortefølje,
-} from '../../kandidat-sok/KandidaSokContext';
+} from '../../kandidat/KandidaSokContext';
 import { konverterStederTilNåværendeKoder } from '../../kandidat/[kandidatId]/forslag-fane/useStillingForKandidat';
 import { KandidatSøkAPI } from '../api-routes';
 import { postApiWithSchema } from '../fetcher';

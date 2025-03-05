@@ -1,4 +1,4 @@
-import { storForbokstavString } from '../kandidat-sok/util';
+import { storForbokstavString } from '../kandidat/util';
 import { Chips } from '@navikt/ds-react';
 import * as React from 'react';
 

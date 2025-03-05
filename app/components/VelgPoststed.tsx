@@ -28,7 +28,7 @@ const VelgPoststed: React.FC<VelgPoststedProps> = ({
   React.useEffect(() => {
     if (!postNummerHook.isLoading) {
       const nyttPoststed = postNummerHook.data?.korrigertNavnBy;
-      if (nyttPoststed !== null && nyttPoststed !== postSted) {
+      if (nyttPoststed && nyttPoststed !== postSted) {
         oppdaterPoststed(nyttPoststed);
       }
     }
@@ -77,9 +77,7 @@ const VelgPoststed: React.FC<VelgPoststedProps> = ({
                 <TextField
                   label='Poststed'
                   readOnly
-                  {...field}
                   value={field.value || ''}
-                  onChange={() => {}} // prevent onChange warning for readonly field
                 />
               )}
             />

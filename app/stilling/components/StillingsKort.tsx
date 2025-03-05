@@ -43,10 +43,6 @@ const StillingsKort: React.FC<IStillingsKort> = ({
   const erFormidling =
     stillingData.stillingsinfo?.stillingskategori === 'FORMIDLING';
 
-  console.log(
-    '🎺 stillingData.stilling.properties.applicationdue',
-    stillingData?.stilling,
-  );
   return (
     <Box
       className='mb-4 rounded-lg border border-gray-300 p-4'
@@ -124,7 +120,9 @@ const StillingsKort: React.FC<IStillingsKort> = ({
                 <Button variant='tertiary'>Vis kandidater</Button>
               </Link>
             )}
-            <Link href={`/kandidat-sok/stilling/${stillingData.stilling.uuid}`}>
+            <Link
+              href={`/stilling/${stillingData.stilling.uuid}?visFane=finn-kandidater`}
+            >
               <Button variant='tertiary'>Finn kandidater</Button>
             </Link>
           </div>

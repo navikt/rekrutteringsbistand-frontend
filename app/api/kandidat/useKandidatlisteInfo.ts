@@ -3,7 +3,6 @@
 /**
  * Endepunkt /useKandidatlisteInfo
  */
-import { rekbisError } from '../../../util/rekbisError';
 import { KandidatAPI } from '../api-routes';
 import { getAPIwithSchema } from '../fetcher';
 import { Server } from 'miragejs';
@@ -37,9 +36,7 @@ export const useKandidatlisteInfo = (stillingsId: string | null) => {
     //@ts-expect-error fordi dette skal fikses backend
     kandidatlisteHook.data?.status === 404
   ) {
-    throw new rekbisError({
-      beskrivelse: 'Feil svar fra kandidatlisteInfo endepunkt.',
-    });
+    return null;
   }
 
   return kandidatlisteHook;

@@ -5,7 +5,7 @@ import SVGDarkmode from '../../components/SVGDarkmode';
 import TekstMedIkon from '../../components/TekstMedIkon';
 import SideLayout from '../../components/layout/SideLayout';
 import SideTopBanner from '../../components/layout/SideTopBanner';
-import StillingsTag from '../../stillings-sok/components/StillingsTag';
+import StillingsTag from '../components/StillingsTag';
 import capitalizeEmployerName, { navnEierAvAstilling } from '../stilling-util';
 import { useStillingsContext } from './StillingsContext';
 import KopierStillingLenke from './components/KopierStillingLenke';

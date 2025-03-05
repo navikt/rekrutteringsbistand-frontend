@@ -18,6 +18,12 @@ const VelgOppstartOgFrist: React.FC<VelgOppstartOgFristProps> = ({
     formState: { errors },
   } = useFormContext<StillingsDataForm>();
 
+  React.useEffect(() => {
+    if (watch('praktiskInfo.søknadsfrist') && !watch('innspurt.avsluttes')) {
+      setValue('innspurt.avsluttes', watch('praktiskInfo.søknadsfrist'));
+    }
+  }, [watch, setValue]);
+
   return (
     <div className='flex flex-col gap-8'>
       <div className='flex flex-col'>

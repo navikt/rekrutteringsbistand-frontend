@@ -12,7 +12,8 @@
     "lint": "next lint",
     "lint-fix": "npx eslint --fix .",
     "formater-kode": "prettier --write .",
-    "prepare": "husky"
+    "prepare": "husky",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@hookform/resolvers": "^4.1.2",

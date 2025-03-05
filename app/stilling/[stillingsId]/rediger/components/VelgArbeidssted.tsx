@@ -98,7 +98,7 @@ const VelgArbeidssted: React.FC<VelgArbeidsstedProps> = ({ feltNavn }) => {
             oppdaterPoststed={(postSted: string) => {
               setValue(`${feltNavn}.adresser.${index}.city` as any, postSted);
             }}
-            postSted={adresser[index].city}
+            postSted={adresser[index].city ?? ''}
           />
         ))}
 

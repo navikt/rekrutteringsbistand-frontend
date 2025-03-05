@@ -68,6 +68,7 @@ const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({
                 <Checkbox
                   checked={
                     markerteKandidater &&
+                    markerteKandidater.length > 0 &&
                     markerteKandidater.length == kandidatData.kandidater.length
                   }
                   value='markerAlle'

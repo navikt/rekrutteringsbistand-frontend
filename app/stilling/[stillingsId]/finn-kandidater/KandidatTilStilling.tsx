@@ -2,7 +2,7 @@ import { Kandidatlistestatus } from '../../../api/kandidat/schema.zod';
 import { useKandidatlisteInfo } from '../../../api/kandidat/useKandidatlisteInfo';
 import { StillingsDataDTO } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import Sidelaster from '../../../components/Sidelaster';
-import KandidatSøk from '../../../kandidat-sok/page';
+import KandidatSøk from '../../../kandidat/page';
 import { useFinnKandidatForStilling } from './useFinnKandidatForStilling';
 import { Alert } from '@navikt/ds-react';
 import * as React from 'react';
@@ -19,19 +19,19 @@ const KandidatTilStilling: React.FC<KandidatTilStillingProps> = ({
     stillingsData?.stilling.uuid ?? null,
   );
 
-  if (kandidatListeInformasjonHook.isLoading) {
+  if (kandidatListeInformasjonHook?.isLoading) {
     return <Sidelaster />;
   }
 
   return (
     <>
-      {!kandidatListeInformasjonHook.data?.kandidatlisteId && (
+      {!kandidatListeInformasjonHook?.data?.kandidatlisteId && (
         <Alert variant='error'>
           Det er ingen kandidatlister knyttet til stillingen, så du kan ikke
           legge til kandidater.
         </Alert>
       )}
-      {kandidatListeInformasjonHook.data?.kandidatlisteStatus ===
+      {kandidatListeInformasjonHook?.data?.kandidatlisteStatus ===
         Kandidatlistestatus.Lukket && (
         <Alert variant='error'>
           Kandidatliste er lukket, så du kan ikke legge til kandidater.

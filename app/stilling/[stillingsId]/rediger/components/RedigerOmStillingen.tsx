@@ -22,7 +22,6 @@ export const RedigerOmStillingen: React.FC<{
   const handleStepSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const isValid = await trigger('omStillingen', { shouldFocus: true });
-
     if (isValid) {
       nextStep();
     }

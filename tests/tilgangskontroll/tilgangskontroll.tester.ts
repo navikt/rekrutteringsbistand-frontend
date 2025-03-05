@@ -174,7 +174,7 @@ export const testTilgangskontroll = (rolle: Roller) => {
     });
 
     test('4. Kandidatsøk', async ({ page }) => {
-      await page.goto('http://localhost:1337/kandidat-sok');
+      await page.goto('http://localhost:1337/kandidat');
 
       // Viser kandidatsøk fane
       const kandidatSøkTab = page.getByRole('tab', { name: 'Kandidatsøk' });

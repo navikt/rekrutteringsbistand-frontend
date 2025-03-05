@@ -1,12 +1,5 @@
-'use client';
+import StillingsSøk from './StillingsSøk';
 
-import Sidelaster from '../components/Sidelaster';
-import { useRouter } from 'next/navigation';
-
-export default function Stilling() {
-  const router = useRouter();
-
-  router.push('/stillings-sok');
-
-  return <Sidelaster />;
+export default function StillingsSøkIndex() {
+  return <StillingsSøk />;
 }

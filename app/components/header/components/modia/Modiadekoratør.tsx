@@ -3,6 +3,7 @@
 import { getMiljø, Miljø } from '../../../../../util/miljø';
 import { useApplikasjonContext } from '../../../../ApplikasjonContext';
 import { DecoratorProps } from './Interndekoratør';
+import { InternalHeader, Loader } from '@navikt/ds-react';
 import dynamic from 'next/dynamic';
 
 const proxyUrl =
@@ -21,7 +22,13 @@ const Decorator = dynamic<DecoratorProps>(
     ),
   {
     ssr: false,
-    loading: () => <div>Laster dekoratør...</div>,
+    loading: () => (
+      <InternalHeader>
+        <div className='flex justify-center'>
+          <Loader />
+        </div>
+      </InternalHeader>
+    ),
   },
 );
 

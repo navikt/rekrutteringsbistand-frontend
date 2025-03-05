@@ -61,6 +61,7 @@ const FormidlingLeggTilKandidat: React.FC<FormidlingLeggTilKandidatProps> = ({
       <form onSubmit={handleStepSubmit}>
         <div className='flex flex-col space-y-8'>
           <LeggTilKandidater
+            tilFormidling
             initielleKandidater={initielValgt}
             synlighetSomModal
             callBack={(kandidater) => {

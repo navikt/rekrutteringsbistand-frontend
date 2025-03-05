@@ -39,7 +39,6 @@ const DelMedArbeidsgiver: React.FC<DelMedArbeidsgiverProps> = ({
   const [epost, setEpost] = React.useState<string[]>([]);
 
   const onDelMedArbeidsgiver = (kandidatnummerListe: string[]) => {
-    //TODO Håndtere hvis valgt navkontor er null
     postDelMedArbeidsgiver({
       kandidatlisteId: kandidatliste.kandidatlisteId,
       kandidatnummerListe,

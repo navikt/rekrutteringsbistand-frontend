@@ -9,6 +9,7 @@ import {
   Button,
   Checkbox,
   CheckboxGroup,
+  ErrorMessage,
   ErrorSummary,
   Heading,
   Radio,
@@ -178,11 +179,11 @@ export const RedigerInnspurt: React.FC<{
                 <Controller
                   name='innspurt.epost'
                   control={control}
-                  render={({ fieldState: { error } }) => (
+                  render={({ field }) => (
                     <TextField
                       label='E-post'
                       type='email'
-                      error={error?.message}
+                      onChange={(e) => field.onChange(e.target.value)}
                     />
                   )}
                 />
@@ -192,16 +193,19 @@ export const RedigerInnspurt: React.FC<{
                 <Controller
                   name='innspurt.lenke'
                   control={control}
-                  render={({ fieldState: { error } }) => (
+                  render={({ field }) => (
                     <TextField
                       label='Lenke til søknadsskjema'
                       type='url'
-                      error={error?.message}
+                      onChange={(e) => field.onChange(e.target.value)}
                     />
                   )}
                 />
               )}
             </CheckboxGroup>
+            {errors?.innspurt?.epost && (
+              <ErrorMessage>{errors.innspurt?.epost?.message}</ErrorMessage>
+            )}
           </div>
         )}
 
