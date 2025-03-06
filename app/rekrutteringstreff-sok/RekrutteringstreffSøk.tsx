@@ -43,7 +43,7 @@ const RekrutteringstreffSøk: React.FC<RekrutteringstreffSøkProps> = () => {
   );
 };
 
-const datoFormatterer = (startTid?: string, sluttTid?: string): Dato => {
+export const datoFormatterer = (startTid?: string, sluttTid?: string): Dato => {
   if (!startTid || !sluttTid) {
     return {
       startDato: 'Ukjent dato',
@@ -63,7 +63,7 @@ const datoFormatterer = (startTid?: string, sluttTid?: string): Dato => {
   };
 };
 
-type Dato = {
+export type Dato = {
   startDato: string;
   startTidspunkt: string;
   sluttDato: string;

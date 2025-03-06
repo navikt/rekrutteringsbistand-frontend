@@ -1,6 +1,7 @@
 import { useApplikasjonContext } from '@/app/ApplikasjonContext';
 import { OpprettNyttRekrutteringstreffDTO } from '@/app/api/rekrutteringstreff/nytt-rekrutteringstreff/dto';
 import { opprettNyttRekrutteringstreff } from '@/app/api/rekrutteringstreff/nytt-rekrutteringstreff/opprettNyttRekrutteringstreff';
+import { rekbisError } from '@/util/rekbisError';
 import { PlusIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
@@ -12,17 +13,14 @@ export interface OpprettRekrutteringstreffKnappProps {
 
 const OpprettRekrutteringstreffKnapp: React.FC<
   OpprettRekrutteringstreffKnappProps
-> = (
-  {
-    /*children*/
-  },
-) => {
+> = () => {
   const { valgtNavKontor } = useApplikasjonContext();
   const router = useRouter();
 
   const nyTreff: OpprettNyttRekrutteringstreffDTO = {
     opprettetAvNavkontorEnhetId: valgtNavKontor?.navKontor || null,
   };
+
   const handleButtonClick = () => {
     opprettNyttRekrutteringstreff(nyTreff)
       .then((response) => {
@@ -30,16 +28,17 @@ const OpprettRekrutteringstreffKnapp: React.FC<
         router.push(`/rekrutteringstreff/${id}`);
       })
       .catch((error) => {
-        console.error('Error while creating rekrutteringstreff:', error);
+        throw new rekbisError({
+          beskrivelse: 'Error while creating rekrutteringstreff:',
+          error,
+        });
       });
   };
 
   return (
-    <React.Fragment>
-      <Button variant='primary' icon={<PlusIcon />} onClick={handleButtonClick}>
-        Opprett treff
-      </Button>
-    </React.Fragment>
+    <Button variant='primary' icon={<PlusIcon />} onClick={handleButtonClick}>
+      Opprett treff
+    </Button>
   );
 };
 
