@@ -1,4 +1,5 @@
 import { leggTilKandidater } from '../../api/kandidat-sok/leggTilKandidat';
+import { useKandidatlisteInfo } from '../../api/kandidat/useKandidatlisteInfo';
 import { useMineKandidatlister } from '../../api/kandidat/useMineKandidatlister';
 import SWRLaster from '../../components/SWRLaster';
 import { useVisVarsling } from '../../components/varsling/Varsling';
@@ -30,6 +31,8 @@ const LagreIKandidatliste: React.FC<LagreIKandidatlisteProps> = ({
   const mineKandidatlisterHook = useMineKandidatlister(
     pageNumber > 1 ? pageNumber - 1 : 0,
   );
+
+  const kandidatlisteInfoHook = useKandidatlisteInfo(stillingsId ?? null);
   const [selectedRows, setSelectedRows] = React.useState<string[]>([]);
   const [laster, setLaster] = React.useState(false);
   const visVarsel = useVisVarsling();
@@ -79,7 +82,7 @@ const LagreIKandidatliste: React.FC<LagreIKandidatlisteProps> = ({
           });
         }
       }
-
+      kandidatlisteInfoHook?.mutate();
       setLaster(false);
     }
   };
