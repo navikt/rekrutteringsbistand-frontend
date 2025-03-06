@@ -30,6 +30,13 @@ export default async function RootLayout({
       data-testmode={process.env.NEXT_PUBLIC_PLAYWRIGHT_TEST_MODE}
     >
       <Script src={bundle} strategy='afterInteractive' />
+      <Script
+        defer
+        src={process.env.UMAMI_SRC}
+        data-host-url={process.env.UMAMI_URL}
+        data-website-id={process.env.UMAMI_ID}
+        data-domains={process.env.UMAMI_DOMAIN}
+      />
       <body>
         <ThemeProvider>
           <BrukLokalMock>

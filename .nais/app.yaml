@@ -97,3 +97,11 @@ spec:
       value: http://toi-synlighetsmotor
     - name: REKRUTTERINGSTREFF_API_URL
       value: http://rekrutteringstreff-api
+    - name: UMAMI_DOMAIN
+      value: {{ umamiDomain }}
+    - name: UMAMI_ID
+      value: {{ umamiId }}      
+    - name: UMAMI_SRC
+      value: {{ umamiSrc }}
+    - name: UMAMI_URL
+      value: {{ umamiUrl }}
