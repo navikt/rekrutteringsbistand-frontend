@@ -111,7 +111,7 @@ export const PraktiskInfoSchema = z
 
         return isNaN(num) ? null : num;
       }, z.number().nullable().optional())
-      .refine((val) => val !== null && val !== undefined, {
+      .refine((val) => val !== null && val !== undefined && val !== 0, {
         message: 'Antall stillinger må fylles ut',
       }),
     oppstart: z.string().nullable(),

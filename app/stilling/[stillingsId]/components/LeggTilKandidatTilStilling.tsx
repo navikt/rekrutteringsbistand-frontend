@@ -83,7 +83,7 @@ const LeggTilKandidatTilStilling: React.FC<LeggTilKandidatTilStillingProps> = ({
   };
 
   return (
-    <div>
+    <div key={stillingsId}>
       <Button
         loading={laster}
         onClick={() => ref.current?.showModal()}
@@ -103,8 +103,6 @@ const LeggTilKandidatTilStilling: React.FC<LeggTilKandidatTilStillingProps> = ({
       >
         <Modal.Body>
           <LeggTilKandidater
-            //TODO Alternativ
-            // måHaAktørId
             callBack={(valgteKandidater) => {
               setValgteKandidater(valgteKandidater);
             }}
