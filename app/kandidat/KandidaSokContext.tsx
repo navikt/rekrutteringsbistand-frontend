@@ -1,6 +1,7 @@
 'use client';
 
 import { rekbisError } from '../../util/rekbisError';
+import { useApplikasjonContext } from '../ApplikasjonContext';
 import {
   parseAsArrayOf,
   parseAsInteger,
@@ -79,6 +80,7 @@ export const KandidatSøkContext = React.createContext<
 export const KandidatSøkProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
+  const { valgtNavKontor } = useApplikasjonContext();
   const [fritekst, setFritekst] = useQueryState(
     KandidatSøkQueryparam.Fritekst,
     {
@@ -182,7 +184,7 @@ export const KandidatSøkProvider: React.FC<{ children: React.ReactNode }> = ({
   const [borPåØnsketSted] = React.useState<boolean | null>(null);
   const [ferskhet] = React.useState<number | null>(null);
   const [sortering] = React.useState<string>('');
-  const [orgenhet] = React.useState<string | null>(null);
+  // const [orgenhet] = React.useState<string | null>(null); // Settes til valgt kontor
 
   const wrapWithPageReset = <T,>(
     setter: (value: T | ((prevValue: T) => T) | null) => Promise<any>,
@@ -229,7 +231,10 @@ export const KandidatSøkProvider: React.FC<{ children: React.ReactNode }> = ({
         borPåØnsketSted,
         ferskhet,
         sortering,
-        orgenhet,
+        orgenhet:
+          portefølje === KandidatSøkPortefølje.MITT_KONTOR
+            ? (valgtNavKontor?.navKontor ?? null)
+            : null,
         setSide,
       }}
     >
