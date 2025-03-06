@@ -27,12 +27,17 @@ const LeggTilKandidatTilStilling: React.FC<LeggTilKandidatTilStillingProps> = ({
   const [valgteKandidater, setValgteKandidater] = useState<ValgtKandidatProp[]>(
     [],
   );
-
+  const [modalKey, setModalKey] = useState(0);
   const kandidatlisteIdHook = useKandidatliste(stillingsId);
 
   const visVarsel = useVisVarsling();
 
   const [laster, setLaster] = useState(false);
+
+  const handleOpenModal = () => {
+    setModalKey((prevKey) => prevKey + 1);
+    ref.current?.showModal();
+  };
 
   const onLeggTilKandidat = async () => {
     setLaster(true);
@@ -86,7 +91,7 @@ const LeggTilKandidatTilStilling: React.FC<LeggTilKandidatTilStillingProps> = ({
     <div key={stillingsId}>
       <Button
         loading={laster}
-        onClick={() => ref.current?.showModal()}
+        onClick={handleOpenModal}
         variant='tertiary'
         icon={<ArrowForwardIcon aria-hidden />}
       >
@@ -103,6 +108,7 @@ const LeggTilKandidatTilStilling: React.FC<LeggTilKandidatTilStillingProps> = ({
       >
         <Modal.Body>
           <LeggTilKandidater
+            key={modalKey}
             callBack={(valgteKandidater) => {
               setValgteKandidater(valgteKandidater);
             }}
@@ -111,9 +117,7 @@ const LeggTilKandidatTilStilling: React.FC<LeggTilKandidatTilStillingProps> = ({
         <Modal.Footer>
           <Button
             disabled={valgteKandidater.length === 0}
-            onClick={async () => {
-              await onLeggTilKandidat().then(() => setValgteKandidater([]));
-            }}
+            onClick={onLeggTilKandidat}
           >
             Legg til kandidater
           </Button>

@@ -186,16 +186,17 @@ const LeggTilKandidater: React.FC<LeggTilKandidaterProps> = ({
           error={feilmelding}
         />
 
-        {(kandidatNavnHook.isLoading || arenaKandidatnrHook.isLoading) && (
+        {kandidatNavnHook.isLoading || arenaKandidatnrHook.isLoading ? (
           <Box.New className='flex h-full items-center justify-center p-4'>
             <Loader />
           </Box.New>
-        )}
-        {kandidatNavnHook.data && fødselsnummer
-          ? arenaKandidatnrHook.data?.arenaKandidatnr
-            ? leggTilKandidat(fødselsnummer)
-            : UsynligKandidat(fødselsnummer)
-          : null}
+        ) : kandidatNavnHook.data && fødselsnummer ? (
+          arenaKandidatnrHook.data?.arenaKandidatnr ? (
+            leggTilKandidat(fødselsnummer)
+          ) : (
+            UsynligKandidat(fødselsnummer)
+          )
+        ) : null}
 
         {kandidatNavnHook.error && (
           <Alert variant='error' className='mt-4'>
