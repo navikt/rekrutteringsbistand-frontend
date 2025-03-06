@@ -82,8 +82,8 @@ const createMockStilling = (props?: MockStilling): StillingsDataDTO => {
       locationList: [createLocation()],
       categoryList: createCategories(),
       properties: {
-        starttime: '05.03.2025',
-        applicationdue: 'EtterAvtale',
+        applicationdue: 'Snarest',
+        starttime: 'Etter avtale',
         employerdescription: faker.lorem.paragraph(),
         extent: faker.helpers.arrayElement(['Heltid', 'Deltid']),
         workhours: JSON.stringify([
