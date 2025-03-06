@@ -111,7 +111,9 @@ const LeggTilKandidatTilStilling: React.FC<LeggTilKandidatTilStillingProps> = ({
         <Modal.Footer>
           <Button
             disabled={valgteKandidater.length === 0}
-            onClick={onLeggTilKandidat}
+            onClick={async () => {
+              await onLeggTilKandidat().then(() => setValgteKandidater([]));
+            }}
           >
             Legg til kandidater
           </Button>
