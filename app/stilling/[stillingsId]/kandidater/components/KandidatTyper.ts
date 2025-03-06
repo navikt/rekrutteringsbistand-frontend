@@ -47,7 +47,7 @@ export const aktivitetTilTekst = {
 } as const;
 
 export const varselTilTekst = {
-  [UtfallsEndringTyper.SMS_SENDT]: 'Mottatt SMS',
-  [UtfallsEndringTyper.SMS_FEILET]: 'Ikke mottatt SMS',
+  [UtfallsEndringTyper.SMS_SENDT]: 'Sendt varsel på SMS',
+  [UtfallsEndringTyper.SMS_FEILET]: 'Varsling på SMS feilet',
   [TilstandPåForespørsel.KAN_IKKE_VARSLE]: 'Kan ikke varsles',
 } as const;
