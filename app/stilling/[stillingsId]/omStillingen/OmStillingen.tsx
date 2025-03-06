@@ -87,12 +87,12 @@ const OmStillingen: React.FC<{ forhåndsvisData?: boolean }> = ({
                   />
                   <TekstMedIkon
                     // Ansettelsesform
-                    tekst={`${engagementtype ?? '-'} ${extent ? `, ${extent}` : ''}`}
+                    tekst={`${engagementtype ?? '-'} ${extent ? `- ${extent}` : ''}`}
                     ikon={<ClockIcon />}
                   />
                   <TekstMedIkon
                     // Arbeidstid
-                    tekst={`${workday ? parseWorktime(workday) : '-'} ${workhours ? `, ${parseWorktime(workhours)}` : ''}`}
+                    tekst={`${workday ? parseWorktime(workday) : '-'} ${workhours ? `- ${parseWorktime(workhours)}` : ''}`}
                     ikon={<CalendarIcon />}
                   />
                   <TekstMedIkon
