@@ -90,7 +90,7 @@ export const RedigerOmVirksomheten: React.FC<{
                   error={errors.omVirksomheten?.linkedinpage?.message}
                 />
                 <TextField
-                  label='Twitter (valgfritt)'
+                  label='X (Tidligere twitter) (valgfritt)'
                   {...register('omVirksomheten.twitteraddress')}
                   error={errors.omVirksomheten?.twitteraddress?.message}
                 />
