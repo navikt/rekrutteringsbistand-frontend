@@ -25,7 +25,7 @@ const VelgKommuneFylkeEllerLand: React.FC<VelgKommuneFylkeEllerLandProps> = ({
   const geografi = usePamGeografi();
   const [muligeValg, setMuligeValg] = useState<string[]>([]);
   const [søkeTekst, setSøkeTekst] = useState<string>('');
-
+  const [isListOpen, setIsListOpen] = useState<boolean>(false);
   const valgteVerdier = lokasjoner;
 
   /**
@@ -93,6 +93,7 @@ const VelgKommuneFylkeEllerLand: React.FC<VelgKommuneFylkeEllerLandProps> = ({
 
   return (
     <UNSAFE_Combobox
+      isListOpen={isListOpen}
       disabled={geografi.isLoading}
       className='mt-4'
       toggleListButton={false}
@@ -106,6 +107,7 @@ const VelgKommuneFylkeEllerLand: React.FC<VelgKommuneFylkeEllerLandProps> = ({
               : '',
       )}
       onChange={(value) => {
+        setIsListOpen(value.length > 0);
         setSøkeTekst(value);
       }}
       onToggleSelected={(option, isSelected) => {
