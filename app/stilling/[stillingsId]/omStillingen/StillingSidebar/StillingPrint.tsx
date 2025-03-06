@@ -20,8 +20,10 @@ const StillingPrint: React.FC<StillingPrintProps> = ({ printRef }) => {
           display: block !important;
           text-align: left !important;
           margin-bottom: 20px !important;
-          padding: 10px !important;
+          padding: 10px 0 !important;
           border-bottom: 1px solid #000 !important;
+          font-size: 24px !important;
+          font-weight: bold !important;
         }
         .print-content {
           padding: 20px !important;
@@ -34,13 +36,15 @@ const StillingPrint: React.FC<StillingPrintProps> = ({ printRef }) => {
     const currentRef = printRef.current;
     if (currentRef) {
       const printTitle = document.createElement('h1');
-      printTitle.innerText = stillingsData.stilling.title ?? '';
+      printTitle.innerText = stillingsData?.stilling?.title || 'Stilling';
       printTitle.className = 'print-only';
       printTitle.style.display = 'none';
-      printTitle.style.textAlign = 'center';
+      printTitle.style.textAlign = 'left';
       printTitle.style.marginBottom = '20px';
-      printTitle.style.padding = '10px';
+      printTitle.style.padding = '10px 0';
       printTitle.style.borderBottom = '1px solid #000';
+      printTitle.style.fontSize = '24px';
+      printTitle.style.fontWeight = 'bold';
 
       currentRef.prepend(printTitle);
       currentRef.classList.add('print-content');

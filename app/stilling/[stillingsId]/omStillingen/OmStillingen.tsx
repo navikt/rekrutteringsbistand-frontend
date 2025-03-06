@@ -131,9 +131,9 @@ const OmStillingen: React.FC<{ forhåndsvisData?: boolean }> = ({
                 </>
               }
             />
-            <hr className='border-gray-200' />
+            <hr className='border-gray-200 pb-8' />
             <OmBedriften />
-            <hr className='border-gray-200' />
+            <hr className='border-gray-200 pb-8' />
             <OmAnnonsen />
           </div>
         </div>
