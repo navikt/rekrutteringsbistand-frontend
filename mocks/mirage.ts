@@ -43,6 +43,7 @@ export function makeServer({ environment = 'test' } = {}) {
     },
 
     routes() {
+      this.logging = false;
       arenaKandidatnrMirage(this);
       brukerMirage(this);
       brukerStandardSøkMirage(this);

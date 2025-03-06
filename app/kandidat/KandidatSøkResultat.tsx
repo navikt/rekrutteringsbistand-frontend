@@ -72,9 +72,8 @@ const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({
                   checked={
                     markerteKandidater &&
                     markerteKandidater.length > 0 &&
-                    markerteKandidater.length == kandidatData.kandidater.length
+                    markerteKandidater.length === kandidatData.kandidater.length
                   }
-                  value='markerAlle'
                   onClick={markerAlle}
                 >
                   Marker alle på siden

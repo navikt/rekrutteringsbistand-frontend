@@ -40,16 +40,19 @@ const KandidatKort: React.FC<IKandidatKort> = ({
         <Checkbox
           disabled={
             !kandidat.arenaKandidatnr ||
-            alleredeLagtTil?.some((k) => k === kandidat.arenaKandidatnr)
+            Boolean(
+              alleredeLagtTil?.some((k) => k === kandidat.arenaKandidatnr),
+            )
           }
           checked={
-            erMarkert ||
-            alleredeLagtTil?.some((k) => k === kandidat.arenaKandidatnr)
+            Boolean(erMarkert) ||
+            Boolean(
+              alleredeLagtTil?.some((k) => k === kandidat.arenaKandidatnr),
+            )
           }
-          aria-selected={erMarkert}
+          aria-selected={Boolean(erMarkert)}
           hideLabel
           className='mr-4'
-          value='1'
           onChange={() =>
             kandidat.arenaKandidatnr && setMarkert(kandidat.arenaKandidatnr)
           }
