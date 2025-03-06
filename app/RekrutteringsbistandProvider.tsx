@@ -1,5 +1,6 @@
 'use client';
 
+import { rekbisError } from '../util/rekbisError';
 import { ApplikasjonContextProvider } from './ApplikasjonContext';
 import { useBruker } from './api/bruker/useBruker';
 import { useDecoratorData } from './api/decorator/useDecoratorData';
@@ -26,7 +27,7 @@ const RekrutteringsbistandProvider: React.FC<
   }
 
   if (!brukerHook.data || !dekoratørHook.data) {
-    return <div>Fant ikke brukerdata</div>;
+    throw new rekbisError({ beskrivelse: 'Fant ikke bruker eller dekoratør' });
   }
 
   return (

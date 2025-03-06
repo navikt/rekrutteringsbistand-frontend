@@ -3,5 +3,5 @@ import { proxyWithOBO } from '../oboProxy';
 import { NextRequest } from 'next/server';
 
 export async function POST(req: NextRequest) {
-  return proxyWithOBO(ModiaDecoratorAPI, req);
+  return proxyWithOBO(ModiaDecoratorAPI, req, '/api/context');
 }
