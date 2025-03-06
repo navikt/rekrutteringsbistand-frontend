@@ -217,12 +217,15 @@ export const RedigerInnspurt: React.FC<{
             <li>
               Annonsen blir synlig for
               <ul className='mt-2 list-disc space-y-2 pl-8'>
-                <li>Nav-ansatte i stillingssøket​.</li>
-                <li>Kandidater som får annonsen delt til aktivitetsplanen</li>
-                <li>Personer som får tilsendt link til stillingsannonsen</li>
+                <li>Nav-ansatte i stillingssøket i rekrutteringsbistand​.</li>
+                <li>
+                  Ansatte hos arbeidsgiveren på Min Side Arbeidsgiver på nav.no
+                  med Altinn-tilgang.
+                </li>
+                <li>Nav brukere som får stillingen delt i aktivitetsplanen.</li>
               </ul>
             </li>
-            <li>Du kan når som helst endre eller avpublisere annonsen</li>
+            <li>Du kan når som helst endre eller avpublisere annonsen.</li>
           </ul>
         </div>
 
