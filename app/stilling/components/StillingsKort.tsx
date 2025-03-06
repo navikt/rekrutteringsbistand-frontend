@@ -53,7 +53,7 @@ const StillingsKort: React.FC<IStillingsKort> = ({
       </>
       <Box className='mb-2'>
         <Link
-          href={`${erFormidling ? 'formidling/' : 'stilling/'}${stillingData.stilling.uuid}`}
+          href={`${erFormidling ? '/formidling/' : '/stilling/'}${stillingData.stilling.uuid}`}
         >
           <Heading size='small'>
             {stillingData?.stilling?.tittel || 'Ukjent tittel'}
