@@ -184,36 +184,48 @@ export const KandidatSøkProvider: React.FC<{ children: React.ReactNode }> = ({
   const [sortering] = React.useState<string>('');
   const [orgenhet] = React.useState<string | null>(null);
 
+  const wrapWithPageReset = <T,>(
+    setter: (value: T | ((prevValue: T) => T) | null) => Promise<any>,
+  ): ((value: T | ((prevValue: T) => T)) => Promise<void>) => {
+    return async (value) => {
+      await setter(value);
+
+      if (side !== 1) {
+        await setSide(1);
+      }
+    };
+  };
+
   return (
     <KandidatSøkContext.Provider
       value={{
         fritekst,
-        setFritekst,
+        setFritekst: wrapWithPageReset(setFritekst),
         portefølje,
-        setPortefølje,
+        setPortefølje: wrapWithPageReset(setPortefølje),
         side,
         ønsketSted,
-        setØnsketSted,
+        setØnsketSted: wrapWithPageReset(setØnsketSted),
         ønsketYrke,
-        setØnsketYrke,
+        setØnsketYrke: wrapWithPageReset(setØnsketYrke),
         innsatsgruppe,
-        setInnsatsgruppe,
+        setInnsatsgruppe: wrapWithPageReset(setInnsatsgruppe),
         valgtKontor,
-        setValgtKontor,
+        setValgtKontor: wrapWithPageReset(setValgtKontor),
         hovedmål,
-        setHovedmål,
+        setHovedmål: wrapWithPageReset(setHovedmål),
         kompetanse,
-        setKompetanse,
+        setKompetanse: wrapWithPageReset(setKompetanse),
         førerkort,
-        setFørerkort,
+        setFørerkort: wrapWithPageReset(setFørerkort),
         språk,
-        setSpråk,
+        setSpråk: wrapWithPageReset(setSpråk),
         arbeidserfaring,
-        setArbeidserfaring,
+        setArbeidserfaring: wrapWithPageReset(setArbeidserfaring),
         utdanningsnivå,
-        setUtdanningsnivå,
+        setUtdanningsnivå: wrapWithPageReset(setUtdanningsnivå),
         prioritertMålgruppe,
-        setPrioritertMålgruppe,
+        setPrioritertMålgruppe: wrapWithPageReset(setPrioritertMålgruppe),
         borPåØnsketSted,
         ferskhet,
         sortering,
