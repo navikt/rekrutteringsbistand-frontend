@@ -59,8 +59,10 @@ export const StillingsSøkProvider: React.FC<{
   const setStatuser = (value: string[] | ((prev: string[]) => string[])) => {
     if (!formidlinger && !harArbeidsgiverrettetRolle) {
       setStatuserOriginal(['publisert']);
+      setSide(1);
     } else {
       setStatuserOriginal(value);
+      setSide(1);
     }
   };
 
@@ -187,11 +189,23 @@ export const StillingsSøkProvider: React.FC<{
     }
   }, [kommuner, fylker, setKommuner]);
 
+  const wrapWithPageReset = <T,>(
+    setter: (value: T | ((prevValue: T) => T) | null) => Promise<any>,
+  ): ((value: T | ((prevValue: T) => T)) => Promise<void>) => {
+    return async (value) => {
+      await setter(value);
+
+      if (side !== 1) {
+        await setSide(1);
+      }
+    };
+  };
+
   return (
     <StillingsSøkContext.Provider
       value={{
         fritekst,
-        setFritekst,
+        setFritekst: wrapWithPageReset(setFritekst),
         sortering,
         setSortering,
         side,
@@ -199,19 +213,21 @@ export const StillingsSøkProvider: React.FC<{
         statuser,
         setStatuser,
         fylker,
-        setFylker,
+        setFylker: wrapWithPageReset(setFylker),
         kommuner,
-        setKommuner,
+        setKommuner: wrapWithPageReset(setKommuner),
         portefølje,
-        setPortefølje,
+        setPortefølje: wrapWithPageReset(setPortefølje),
         inkludering,
-        setInkludering,
+        setInkludering: wrapWithPageReset(setInkludering),
         inkluderingUnderkategori,
-        setInkluderingUnderkategori,
+        setInkluderingUnderkategori: wrapWithPageReset(
+          setInkluderingUnderkategori,
+        ),
         kategori,
-        setKategori,
+        setKategori: wrapWithPageReset(setKategori),
         publisert,
-        setPublisert,
+        setPublisert: wrapWithPageReset(setPublisert),
         formidlinger,
       }}
     >

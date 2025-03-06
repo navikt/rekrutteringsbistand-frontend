@@ -27,7 +27,6 @@ import { opprettNyStillingMirage } from '../app/api/stilling/ny-stilling/opprett
 import { oppdaterStillingMirage } from '../app/api/stilling/oppdater-stilling/oppdaterStilling';
 import { stillingMirage } from '../app/api/stilling/rekrutteringsbistandstilling/[slug]/useStilling';
 import { brukerStandardSøkMirage } from '../app/api/stilling/standardsok/useBrukersStandardsøk';
-import { stillingssøkMirage } from '../app/api/stillings-sok/useStillingssøk';
 import { synlighetsevalueringMirage } from '../app/api/synlighet/evaluering/useSynlighetsevaluering';
 import { opprettNyttRekrutteringstreffMirage } from '@/app/api/rekrutteringstreff/nytt-rekrutteringstreff/opprettNyttRekrutteringstreff';
 import { rekrutteringstreffMirage } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
@@ -76,7 +75,7 @@ export function makeServer({ environment = 'test' } = {}) {
       rekrutteringstreffMirage(this);
       opprettNyttRekrutteringstreffMirage(this);
       // stillingssøk mock kan disables ved ES søk
-      stillingssøkMirage(this);
+      // stillingssøkMirage(this);
       this.passthrough('*');
     },
   });
