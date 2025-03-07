@@ -19,6 +19,7 @@ const RedigerFormidling: React.FC = () => {
   const router = useRouter();
   const [aktivtSteg, setAktivtSteg] = useQueryState('steg', {
     defaultValue: RedigerFormidlingSteg.omKandidatene,
+    history: 'push',
   });
 
   const stegNummer = (): number => {

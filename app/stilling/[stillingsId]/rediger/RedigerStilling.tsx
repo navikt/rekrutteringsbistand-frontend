@@ -33,6 +33,7 @@ enum RedigerSteg {
 const RedigerStilling: React.FC = () => {
   const [aktivtSteg, setAktivtSteg] = useQueryState('steg', {
     defaultValue: RedigerSteg.omVirksomheten,
+    history: 'push',
   });
 
   const stegNummer = (): number => {

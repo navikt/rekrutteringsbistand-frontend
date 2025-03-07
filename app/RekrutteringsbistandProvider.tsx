@@ -2,6 +2,7 @@
 
 import { rekbisError } from '../util/rekbisError';
 import { ApplikasjonContextProvider } from './ApplikasjonContext';
+import NavigasjonsBlockerProvider from './NavigasjonsBlockerProvider';
 import { useBruker } from './api/bruker/useBruker';
 import { useDecoratorData } from './api/decorator/useDecoratorData';
 import { KandidatNavigeringProvider } from './components/KandidatNavigeringContext';
@@ -41,20 +42,22 @@ const RekrutteringsbistandProvider: React.FC<
       }}
     >
       <ErrorBoundary>
-        <NuqsAdapter>
-          <VarslingContextProvider>
-            <ApplikasjonContextProvider
-              brukerData={{
-                ...dekoratørHook.data,
-                roller: brukerHook.data?.roller ?? [],
-              }}
-            >
-              <KandidatNavigeringProvider>
-                {children}
-              </KandidatNavigeringProvider>
-            </ApplikasjonContextProvider>
-          </VarslingContextProvider>
-        </NuqsAdapter>
+        <NavigasjonsBlockerProvider>
+          <NuqsAdapter>
+            <VarslingContextProvider>
+              <ApplikasjonContextProvider
+                brukerData={{
+                  ...dekoratørHook.data,
+                  roller: brukerHook.data?.roller ?? [],
+                }}
+              >
+                <KandidatNavigeringProvider>
+                  {children}
+                </KandidatNavigeringProvider>
+              </ApplikasjonContextProvider>
+            </VarslingContextProvider>
+          </NuqsAdapter>
+        </NavigasjonsBlockerProvider>
       </ErrorBoundary>
     </SWRConfig>
   );
