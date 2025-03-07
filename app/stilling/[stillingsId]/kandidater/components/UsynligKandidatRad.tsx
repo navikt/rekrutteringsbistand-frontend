@@ -1,4 +1,6 @@
 import { storForbokstavString } from '../../../../kandidat/util';
+import { utfallsEndringPresentasjon } from './KandidatHendelse';
+import { UtfallsEndringTyper } from './KandidatTyper';
 import UsynligKandidatHendelseTag from './UsynligKandidatHendelsestag';
 import { Table } from '@navikt/ds-react';
 import * as React from 'react';
@@ -14,6 +16,9 @@ const UsynligKandidatRad: React.FC<UsynligKandidatRadProps> = ({
   etternavn,
   utfall,
 }) => {
+  const utfallVisning = utfallsEndringPresentasjon(
+    utfall as UtfallsEndringTyper,
+  );
   return (
     <Table.Row>
       <Table.DataCell colSpan={2} />
@@ -25,7 +30,7 @@ const UsynligKandidatRad: React.FC<UsynligKandidatRadProps> = ({
         Ikke synlig i Rekrutteringsbistand
       </Table.DataCell>
       <Table.DataCell colSpan={3}>
-        {utfall && <UsynligKandidatHendelseTag utfall={utfall} />}
+        {utfall && <UsynligKandidatHendelseTag utfall={utfallVisning} />}
       </Table.DataCell>
     </Table.Row>
   );

@@ -195,7 +195,7 @@ const StillingsKandidaterTabell: React.FC<{
               key={i}
               fornavn={kandidat.fornavn}
               etternavn={kandidat.etternavn}
-              utfall={kandidat.utfall as KandidatHendelseTyper}
+              utfall={kandidat.utfall}
             />
           ))}
         {kandidater.map((kandidat, i) => {
