@@ -1,5 +1,5 @@
 /* Importerer decorator fra Nav først, så overstyrer vi style fra Nav med våre egne styles */
-@import url(process.env.MODA_CSS_URL);
+@import url('https://cdn.nav.no/personoversikt/internarbeidsflate-decorator-v3/prod/latest/dist/index.css');
 
 @import 'tailwindcss';
 @import '@navikt/ds-css/darkside' layer(components);
