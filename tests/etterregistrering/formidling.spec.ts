@@ -13,10 +13,10 @@ test(`📝 Opprett formidling`, async ({ page }) => {
       .getByRole('button', { name: 'Opprett etterregistrering' })
       .click();
     await page
-      .getByRole('spinbutton', { name: 'Fødselsnummer på kandidat' })
+      .getByRole('textbox', { name: 'Fødselsnummer på kandidat' })
       .click();
     await page
-      .getByRole('spinbutton', { name: 'Fødselsnummer på kandidat' })
+      .getByRole('textbox', { name: 'Fødselsnummer på kandidat' })
       .fill('04479208765');
     await page.getByTestId('velg-kandidat-resultat').click();
 
@@ -33,10 +33,10 @@ test(`📝 Opprett formidling`, async ({ page }) => {
       .fill('TEST');
     await page.getByLabel('TEST PLUTSELIG KATT').click();
     await page
-      .getByRole('combobox', { name: 'Velg yrkestittel (standard' })
+      .getByRole('combobox', { name: 'Velg yrkestittel (Janzz yrkesontologi)' })
       .click();
     await page
-      .getByRole('combobox', { name: 'Velg yrkestittel (standard' })
+      .getByRole('combobox', { name: 'Velg yrkestittel (Janzz yrkesontologi)' })
       .fill('Test');
     await page
       .getByRole('option', { name: 'Testamentåpningsrepresentant' })

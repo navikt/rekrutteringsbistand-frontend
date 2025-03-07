@@ -28,7 +28,7 @@ const NavigasjonsBlockerProvider: React.FC<NavigasjonsBlockerProviderProps> = ({
       return pathRegex.test(pathname);
     });
 
-    if (isBlockedPath) {
+    if (!process.env.NEXT_PUBLIC_PLAYWRIGHT_TEST_MODE && isBlockedPath) {
       // Lytt etter når brukeren forlater siden
       const handleBeforeUnload = () => {
         // Bestem hvilken side brukeren skal omdirigeres til basert på gjeldende sti
