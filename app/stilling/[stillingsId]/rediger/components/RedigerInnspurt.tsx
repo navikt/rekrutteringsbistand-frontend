@@ -1,6 +1,6 @@
 import { oppdaterStilling } from '../../../../api/stilling/oppdater-stilling/oppdaterStilling';
 import { useStillingsContext } from '../../StillingsContext';
-import { mapFormTilStilling } from '../mapStilling';
+import { mapFormTilStilling, StillingSynlighet } from '../mapStilling';
 import { StillingsDataForm } from '../redigerFormType.zod';
 import { DatoVelger } from './DatoVelger';
 import { ArrowLeftIcon, CheckmarkCircleIcon } from '@navikt/aksel-icons';
@@ -9,6 +9,7 @@ import {
   Button,
   Checkbox,
   CheckboxGroup,
+  ErrorMessage,
   ErrorSummary,
   Heading,
   Radio,
@@ -159,13 +160,15 @@ export const RedigerInnspurt: React.FC<{
           value={watch('innspurt.stillingType')}
           onChange={(val) => setValue('innspurt.stillingType', val)}
         >
-          <Radio value='DIR'>Nei, den vises kun internt</Radio>
-          <Radio value='SHOW_ALL'>
+          <Radio value={StillingSynlighet.INTERN}>
+            Nei, den vises kun internt
+          </Radio>
+          <Radio value={StillingSynlighet.EKSTERN}>
             Ja, publiser stillingen offentlig på arbeidsplassen.no
           </Radio>
         </RadioGroup>
 
-        {watch('innspurt.stillingType') === 'SHOW_ALL' && (
+        {watch('innspurt.stillingType') === StillingSynlighet.EKSTERN && (
           <div>
             <CheckboxGroup
               legend='Hvordan sende søknad?'
@@ -176,11 +179,11 @@ export const RedigerInnspurt: React.FC<{
                 <Controller
                   name='innspurt.epost'
                   control={control}
-                  render={({ fieldState: { error } }) => (
+                  render={({ field }) => (
                     <TextField
                       label='E-post'
                       type='email'
-                      error={error?.message}
+                      onChange={(e) => field.onChange(e.target.value)}
                     />
                   )}
                 />
@@ -190,16 +193,19 @@ export const RedigerInnspurt: React.FC<{
                 <Controller
                   name='innspurt.lenke'
                   control={control}
-                  render={({ fieldState: { error } }) => (
+                  render={({ field }) => (
                     <TextField
                       label='Lenke til søknadsskjema'
                       type='url'
-                      error={error?.message}
+                      onChange={(e) => field.onChange(e.target.value)}
                     />
                   )}
                 />
               )}
             </CheckboxGroup>
+            {errors?.innspurt?.epost && (
+              <ErrorMessage>{errors.innspurt?.epost?.message}</ErrorMessage>
+            )}
           </div>
         )}
 
@@ -211,12 +217,15 @@ export const RedigerInnspurt: React.FC<{
             <li>
               Annonsen blir synlig for
               <ul className='mt-2 list-disc space-y-2 pl-8'>
-                <li>Nav-ansatte i stillingssøket​.</li>
-                <li>Kandidater som får annonsen delt til aktivitetsplanen</li>
-                <li>Personer som får tilsendt link til stillingsannonsen</li>
+                <li>Nav-ansatte i stillingssøket i rekrutteringsbistand​.</li>
+                <li>
+                  Ansatte hos arbeidsgiveren på Min Side Arbeidsgiver på nav.no
+                  med Altinn-tilgang.
+                </li>
+                <li>Nav brukere som får stillingen delt i aktivitetsplanen.</li>
               </ul>
             </li>
-            <li>Du kan når som helst endre eller avpublisere annonsen</li>
+            <li>Du kan når som helst endre eller avpublisere annonsen.</li>
           </ul>
         </div>
 

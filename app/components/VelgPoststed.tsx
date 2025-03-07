@@ -1,6 +1,6 @@
 import { usePamPostdata } from '../api/pam-geografi/postdata/[postnummer]/usePamPostdata';
 import { TrashIcon } from '@navikt/aksel-icons';
-import { Button, TextField } from '@navikt/ds-react';
+import { BodyLong, BodyShort, Button, TextField } from '@navikt/ds-react';
 import * as React from 'react';
 import { Control, Controller } from 'react-hook-form';
 
@@ -28,7 +28,7 @@ const VelgPoststed: React.FC<VelgPoststedProps> = ({
   React.useEffect(() => {
     if (!postNummerHook.isLoading) {
       const nyttPoststed = postNummerHook.data?.korrigertNavnBy;
-      if (nyttPoststed !== null && nyttPoststed !== postSted) {
+      if (nyttPoststed && nyttPoststed !== postSted) {
         oppdaterPoststed(nyttPoststed);
       }
     }
@@ -46,7 +46,7 @@ const VelgPoststed: React.FC<VelgPoststedProps> = ({
           )}
         />
 
-        <div className='flex flex-row gap-4'>
+        <div className='flex flex-row gap-4 justify-baseline'>
           <div className='w-32'>
             <Controller
               name={`${lokasjonsFelt}.${index}.postalCode`}
@@ -70,27 +70,20 @@ const VelgPoststed: React.FC<VelgPoststedProps> = ({
             />
           </div>
           <div className='flex-1'>
-            <Controller
-              name={`${lokasjonsFelt}.${index}.city`}
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  label='Poststed'
-                  readOnly
-                  {...field}
-                  value={field.value || ''}
-                  onChange={() => {}} // prevent onChange warning for readonly field
-                />
-              )}
+            <BodyShort weight='semibold'>Poststed</BodyShort>
+            <div className='mt-4'>
+              <BodyLong>{postSted}</BodyLong>
+            </div>
+          </div>
+          <div>
+            <Button
+              type='button'
+              variant='tertiary'
+              icon={<TrashIcon />}
+              onClick={() => fjern()}
+              title={'fjern'}
             />
           </div>
-          <Button
-            type='button'
-            variant='tertiary'
-            icon={<TrashIcon />}
-            onClick={() => fjern()}
-            title={'fjern'}
-          />
         </div>
       </div>
     </>

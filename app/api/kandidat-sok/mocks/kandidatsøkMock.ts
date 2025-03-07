@@ -1,231 +1,101 @@
-import { Innsatsgruppe } from '../../../kandidat-sok/components/innsatsgrupper';
+import { Innsatsgruppe } from '../../../kandidat/components/innsatsgrupper';
+import { faker } from '@faker-js/faker/locale/nb_NO';
+
+faker.seed(123);
+
+const createCandidate = () => {
+  const firstName = faker.person.firstName();
+  const lastName = faker.person.lastName();
+  const fnr = faker.string.numeric(11);
+
+  const arenaKandidatnr = faker.helpers.arrayElement([
+    `PAM${faker.string.numeric(3)}${faker.string.alphanumeric(6).toLowerCase()}`,
+    faker.string.numeric(13),
+  ]);
+
+  const jobInterests = [
+    {
+      styrkBeskrivelse: 'Sykepleier',
+      sokeTitler: ['Sykepleier', 'Hjemmesykepleier', 'Spesialsykepleier'],
+      primaertJobbonske: faker.datatype.boolean(),
+      styrkKode: null,
+    },
+    {
+      styrkBeskrivelse: 'Butikkmedarbeider',
+      sokeTitler: ['Butikkmedarbeider', 'Salgsmedarbeider', 'Butikkbetjent'],
+      primaertJobbonske: faker.datatype.boolean(),
+      styrkKode: null,
+    },
+    {
+      styrkBeskrivelse: 'Lærer',
+      sokeTitler: ['Lærer', 'Grunnskolelærer', 'Barneskole'],
+      primaertJobbonske: faker.datatype.boolean(),
+      styrkKode: null,
+    },
+  ];
+
+  const numberOfInterests = faker.number.int({ min: 1, max: 3 });
+  const selectedInterests = faker.helpers.arrayElements(
+    jobInterests,
+    numberOfInterests,
+  );
+
+  const geoInterests = [
+    {
+      geografiKodeTekst: 'Oslo',
+      geografiKode: 'NO03.0301',
+    },
+    {
+      geografiKodeTekst: 'Bergen',
+      geografiKode: 'NO46.4601',
+    },
+    {
+      geografiKodeTekst: 'Trondheim',
+      geografiKode: 'NO50.5001',
+    },
+    {
+      geografiKodeTekst: 'Stavanger',
+      geografiKode: 'NO11.1103',
+    },
+    {
+      geografiKodeTekst: 'Tromsø',
+      geografiKode: 'NO54.5401',
+    },
+  ];
+
+  // Pick random geo interests (1-3)
+  const numberOfGeoInterests = faker.number.int({ min: 1, max: 3 });
+  const selectedGeoInterests = faker.helpers.arrayElements(
+    geoInterests,
+    numberOfGeoInterests,
+  );
+
+  return {
+    yrkeJobbonskerObj: selectedInterests,
+    etternavn: lastName,
+    postnummer: faker.location.zipCode('#####'),
+    arenaKandidatnr,
+    kommuneNavn: faker.location.city(),
+    geografiJobbonsker: selectedGeoInterests,
+    fornavn: firstName,
+    fodselsnummer: fnr,
+    innsatsgruppe: faker.helpers.arrayElement([
+      Innsatsgruppe.STANDARD_INNSATS,
+      Innsatsgruppe.SITUASJONSBESTEMT_INNSATS,
+      Innsatsgruppe.SPESIELT_TILPASSET_INNSATS,
+      Innsatsgruppe.VARIG_TILPASSET_INNSATS,
+    ]),
+  };
+};
+
+const candidates = Array.from({ length: 25 }, createCandidate);
+
+const kandidatnumre = candidates.map((candidate) => candidate.arenaKandidatnr);
 
 export const kandidatSøkMock = {
-  kandidater: [
-    {
-      yrkeJobbonskerObj: [
-        {
-          styrkBeskrivelse: 'Frisør',
-          sokeTitler: ['Frisør', 'Frisør', 'Frisørsvenn'],
-          primaertJobbonske: false,
-          styrkKode: null,
-        },
-        {
-          styrkBeskrivelse: 'Sauegjeter',
-          sokeTitler: ['Sauegjeter', 'Sauegjeter', 'Gjeter'],
-          primaertJobbonske: false,
-          styrkKode: null,
-        },
-        {
-          styrkBeskrivelse: 'Saueklipper',
-          sokeTitler: ['Saueklipper', 'Saueklipper', 'Sauegjeter'],
-          primaertJobbonske: false,
-          styrkKode: null,
-        },
-        {
-          styrkBeskrivelse: 'Ullklassifisør',
-          sokeTitler: [
-            'Ullklassifisør',
-            'Ullklassifisør',
-            'Ullpresser',
-            'Ullklassifisør, Ullpresse',
-          ],
-          primaertJobbonske: false,
-          styrkKode: null,
-        },
-      ],
-      etternavn: 'Gravemaskin',
-      postnummer: '4616',
-      arenaKandidatnr: 'PAM012t1avh27',
-      kommuneNavn: 'Kristiansand',
-      geografiJobbonsker: [
-        {
-          geografiKodeTekst: 'Hamar',
-          geografiKode: 'NO04.0403',
-        },
-        {
-          geografiKodeTekst: 'Råde',
-          geografiKode: 'NO30.3017',
-        },
-        {
-          geografiKodeTekst: 'Vestby',
-          geografiKode: 'NO02.0211',
-        },
-      ],
-      fornavn: 'Våken',
-      fodselsnummer: '04479208765',
-      innsatsgruppe: Innsatsgruppe.SITUASJONSBESTEMT_INNSATS,
-    },
-    {
-      yrkeJobbonskerObj: [
-        {
-          styrkBeskrivelse: 'Frisør',
-          sokeTitler: ['Frisør', 'Frisør', 'Frisørsvenn'],
-          primaertJobbonske: false,
-          styrkKode: null,
-        },
-        {
-          styrkBeskrivelse: 'Sauegjeter',
-          sokeTitler: ['Sauegjeter', 'Sauegjeter', 'Gjeter'],
-          primaertJobbonske: false,
-          styrkKode: null,
-        },
-        {
-          styrkBeskrivelse: 'Saueklipper',
-          sokeTitler: ['Saueklipper', 'Saueklipper', 'Sauegjeter'],
-          primaertJobbonske: false,
-          styrkKode: null,
-        },
-        {
-          styrkBeskrivelse: 'Ullklassifisør',
-          sokeTitler: [
-            'Ullklassifisør',
-            'Ullklassifisør',
-            'Ullpresser',
-            'Ullklassifisør, Ullpresse',
-          ],
-          primaertJobbonske: false,
-          styrkKode: null,
-        },
-      ],
-      etternavn: 'Tomat',
-      postnummer: '4628',
-      arenaKandidatnr: 'PAM017xk6cpdc',
-      kommuneNavn: 'Kristiansand',
-      geografiJobbonsker: [
-        {
-          geografiKodeTekst: 'Hamar',
-          geografiKode: 'NO04.0403',
-        },
-        {
-          geografiKodeTekst: 'Råde',
-          geografiKode: 'NO30.3017',
-        },
-        {
-          geografiKodeTekst: 'Vestby',
-          geografiKode: 'NO02.0211',
-        },
-      ],
-      fornavn: 'Heldig',
-      fodselsnummer: '17418940123',
-      innsatsgruppe: Innsatsgruppe.SITUASJONSBESTEMT_INNSATS,
-    },
-    {
-      yrkeJobbonskerObj: [
-        {
-          styrkBeskrivelse: 'Frisør',
-          sokeTitler: ['Frisør', 'Frisør', 'Frisørsvenn'],
-          primaertJobbonske: false,
-          styrkKode: null,
-        },
-        {
-          styrkBeskrivelse: 'Sauegjeter',
-          sokeTitler: ['Sauegjeter', 'Sauegjeter', 'Gjeter'],
-          primaertJobbonske: false,
-          styrkKode: null,
-        },
-        {
-          styrkBeskrivelse: 'Saueklipper',
-          sokeTitler: ['Saueklipper', 'Saueklipper', 'Sauegjeter'],
-          primaertJobbonske: false,
-          styrkKode: null,
-        },
-        {
-          styrkBeskrivelse: 'Ullklassifisør',
-          sokeTitler: [
-            'Ullklassifisør',
-            'Ullklassifisør',
-            'Ullpresser',
-            'Ullklassifisør, Ullpresse',
-          ],
-          primaertJobbonske: false,
-          styrkKode: null,
-        },
-      ],
-      etternavn: 'Tannbørste',
-      postnummer: '4643',
-      arenaKandidatnr: 'PAM0101tondtx',
-      kommuneNavn: 'Kristiansand',
-      geografiJobbonsker: [
-        {
-          geografiKodeTekst: 'Hamar',
-          geografiKode: 'NO04.0403',
-        },
-        {
-          geografiKodeTekst: 'Råde',
-          geografiKode: 'NO30.3017',
-        },
-        {
-          geografiKodeTekst: 'Vestby',
-          geografiKode: 'NO02.0211',
-        },
-      ],
-      fornavn: 'Pessimistisk',
-      fodselsnummer: '27426831452',
-      innsatsgruppe: Innsatsgruppe.SITUASJONSBESTEMT_INNSATS,
-    },
-    {
-      yrkeJobbonskerObj: [
-        {
-          styrkBeskrivelse: 'Frisør',
-          sokeTitler: ['Frisør', 'Frisør', 'Frisørsvenn'],
-          primaertJobbonske: false,
-          styrkKode: null,
-        },
-        {
-          styrkBeskrivelse: 'Sauegjeter',
-          sokeTitler: ['Sauegjeter', 'Sauegjeter', 'Gjeter'],
-          primaertJobbonske: false,
-          styrkKode: null,
-        },
-        {
-          styrkBeskrivelse: 'Saueklipper',
-          sokeTitler: ['Saueklipper', 'Saueklipper', 'Sauegjeter'],
-          primaertJobbonske: false,
-          styrkKode: null,
-        },
-        {
-          styrkBeskrivelse: 'Ullklassifisør',
-          sokeTitler: [
-            'Ullklassifisør',
-            'Ullklassifisør',
-            'Ullpresser',
-            'Ullklassifisør, Ullpresse',
-          ],
-          primaertJobbonske: false,
-          styrkKode: null,
-        },
-      ],
-      etternavn: 'Bensinstasjon',
-      postnummer: '4639',
-      arenaKandidatnr: 'PAM011pe2kmv9',
-      kommuneNavn: 'Kristiansand',
-      geografiJobbonsker: [
-        {
-          geografiKodeTekst: 'Hamar',
-          geografiKode: 'NO04.0403',
-        },
-        {
-          geografiKodeTekst: 'Råde',
-          geografiKode: 'NO30.3017',
-        },
-        {
-          geografiKodeTekst: 'Vestby',
-          geografiKode: 'NO02.0211',
-        },
-      ],
-      fornavn: 'Horisontal',
-      fodselsnummer: '21506801084',
-      innsatsgruppe: Innsatsgruppe.SITUASJONSBESTEMT_INNSATS,
-    },
-  ],
+  kandidater: candidates,
   navigering: {
-    kandidatnumre: [
-      'PAM017xk6cpdc',
-      'PAM012t1avh27',
-      'PAM0101tondtx',
-      'PAM011pe2kmv9',
-    ],
+    kandidatnumre,
   },
-  antallTotalt: 4,
+  antallTotalt: 1335,
 };

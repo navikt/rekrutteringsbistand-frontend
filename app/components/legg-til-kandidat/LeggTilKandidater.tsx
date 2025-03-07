@@ -23,11 +23,11 @@ import { idnr } from '@navikt/fnrvalidator';
 import * as React from 'react';
 
 export interface LeggTilKandidaterProps {
-  måHaAktørId?: boolean;
   callBack: (valgteKandidater: ValgtKandidatProp[]) => void;
   initielleKandidater?: ValgtKandidatProp[];
   synlighetSomModal?: boolean;
   lukkModal?: () => void;
+  tilFormidling?: boolean;
 }
 
 export interface ValgtKandidatProp extends Kandidatnavn {
@@ -38,10 +38,10 @@ export interface ValgtKandidatProp extends Kandidatnavn {
 const validerFnr = (fnr: string): boolean => idnr(fnr).status === 'valid';
 
 const LeggTilKandidater: React.FC<LeggTilKandidaterProps> = ({
-  måHaAktørId,
   callBack,
   synlighetSomModal,
   initielleKandidater,
+  tilFormidling,
 }) => {
   const [feilmelding, setFeilmelding] = React.useState('');
   const [valgteKandidater, setValgteKandidater] = React.useState<
@@ -50,9 +50,7 @@ const LeggTilKandidater: React.FC<LeggTilKandidaterProps> = ({
   const [fødselsnummer, setFødselsnummer] = React.useState<string | null>(null);
   const [søkeString, setSøkestring] = React.useState<string>('');
   const kandidatNavnHook = useKandidatNavn(fødselsnummer);
-  const arenaKandidatnrHook = useArenaKandidatnr(
-    måHaAktørId ? fødselsnummer : null,
-  );
+  const arenaKandidatnrHook = useArenaKandidatnr(fødselsnummer);
 
   React.useEffect(() => {
     callBack(valgteKandidater);
@@ -78,28 +76,41 @@ const LeggTilKandidater: React.FC<LeggTilKandidaterProps> = ({
     }
   };
 
+  const velgKandidat = (
+    fnr: string,
+    kandidat: Kandidatnavn,
+    aktørId: string | null,
+  ) => {
+    if (
+      !valgteKandidater.some((k) => k.fødselsnummer === fnr) &&
+      kandidatNavnHook.data
+    ) {
+      setFødselsnummer(null);
+      setSøkestring('');
+      setValgteKandidater([
+        ...valgteKandidater,
+        {
+          fødselsnummer: fnr,
+          fornavn: kandidat.fornavn,
+          etternavn: kandidat.etternavn,
+          kilde: kandidat.kilde,
+          aktørId: aktørId ?? null,
+        },
+      ]);
+    }
+  };
+
   const leggTilKandidat = (fødselsnummer: string) => (
     <Box.New
       data-testid={'velg-kandidat-resultat'}
       className='cursor-pointer'
       onClick={() => {
-        if (
-          !valgteKandidater.some((k) => k.fødselsnummer === fødselsnummer) &&
-          kandidatNavnHook.data
-        ) {
-          setFødselsnummer(null);
-          setSøkestring('');
-          setValgteKandidater([
-            ...valgteKandidater,
-            {
-              fødselsnummer: fødselsnummer,
-              fornavn: kandidatNavnHook.data?.fornavn,
-              etternavn: kandidatNavnHook.data?.etternavn,
-              kilde: kandidatNavnHook.data?.kilde,
-              aktørId: arenaKandidatnrHook.data?.arenaKandidatnr,
-            },
-          ]);
-        }
+        if (kandidatNavnHook.data)
+          velgKandidat(
+            fødselsnummer,
+            kandidatNavnHook.data,
+            arenaKandidatnrHook.data?.arenaKandidatnr ?? null,
+          );
       }}
     >
       <div className='flex items-center justify-between'>
@@ -113,7 +124,9 @@ const LeggTilKandidater: React.FC<LeggTilKandidaterProps> = ({
               <CheckmarkCircleIcon /> <strong>Lagt til</strong>
             </div>
           ) : (
-            <Button icon={<PlusCircleIcon />} variant='tertiary' />
+            <Button icon={<PlusCircleIcon />} variant='tertiary'>
+              Legg til
+            </Button>
           )}
         </div>
       </div>
@@ -121,12 +134,13 @@ const LeggTilKandidater: React.FC<LeggTilKandidaterProps> = ({
   );
 
   const UsynligKandidat = (fødselsnummer: string) => (
-    <Box.New className='cursor-pointer'>
+    <Box.New>
       <div className='flex items-center justify-between'>
         <div className='p-4'>
           {kandidatNavnHook.data?.fornavn} {kandidatNavnHook.data?.etternavn} -{' '}
           {fødselsnummer}
         </div>
+
         <div className='mr-4 flex gap-2'>
           <Tag variant='warning'>Kandidaten er ikke synlig</Tag>
           {synlighetSomModal && (
@@ -134,7 +148,20 @@ const LeggTilKandidater: React.FC<LeggTilKandidaterProps> = ({
           )}
         </div>
       </div>
-      {!synlighetSomModal && <Synlighetsinfo fødselsnummer={fødselsnummer} />}
+      {!synlighetSomModal && <Synlighetsinfo fødselsnummer={fødselsnummer} />}{' '}
+      <hr />
+      <div className='flex justify-end '>
+        <Button
+          icon={<PlusCircleIcon />}
+          variant='tertiary'
+          onClick={() => {
+            if (kandidatNavnHook?.data)
+              velgKandidat(fødselsnummer, kandidatNavnHook?.data, null);
+          }}
+        >
+          Legg til som usynlig kandidat (Registrer som fått jobben)
+        </Button>
+      </div>
     </Box.New>
   );
 
@@ -159,19 +186,17 @@ const LeggTilKandidater: React.FC<LeggTilKandidaterProps> = ({
           error={feilmelding}
         />
 
-        {kandidatNavnHook.isLoading ||
-          (arenaKandidatnrHook.isLoading && (
-            <Box.New className='flex h-full items-center justify-center p-4'>
-              <Loader />
-            </Box.New>
-          ))}
-        {kandidatNavnHook.data && fødselsnummer
-          ? måHaAktørId
-            ? arenaKandidatnrHook.data?.arenaKandidatnr
-              ? leggTilKandidat(fødselsnummer)
-              : UsynligKandidat(fødselsnummer)
-            : leggTilKandidat(fødselsnummer)
-          : null}
+        {kandidatNavnHook.isLoading || arenaKandidatnrHook.isLoading ? (
+          <Box.New className='flex h-full items-center justify-center p-4'>
+            <Loader />
+          </Box.New>
+        ) : kandidatNavnHook.data && fødselsnummer ? (
+          arenaKandidatnrHook.data?.arenaKandidatnr ? (
+            leggTilKandidat(fødselsnummer)
+          ) : (
+            UsynligKandidat(fødselsnummer)
+          )
+        ) : null}
 
         {kandidatNavnHook.error && (
           <Alert variant='error' className='mt-4'>
@@ -198,20 +223,25 @@ const LeggTilKandidater: React.FC<LeggTilKandidaterProps> = ({
                 {kandidat.fornavn} {kandidat.etternavn} (
                 {kandidat.fødselsnummer})
               </div>
-              <Button
-                icon={<XMarkIcon />}
-                variant='tertiary'
-                onClick={() =>
-                  setValgteKandidater(
-                    valgteKandidater.filter(
-                      (kandidat) =>
-                        kandidat.fødselsnummer !== kandidat.fødselsnummer,
-                    ),
-                  )
-                }
-              >
-                Fjern
-              </Button>
+              <div>
+                {(!kandidat.aktørId || tilFormidling) && (
+                  <Tag variant='success'>Fått jobben</Tag>
+                )}
+                <Button
+                  icon={<XMarkIcon />}
+                  variant='tertiary'
+                  onClick={() =>
+                    setValgteKandidater(
+                      valgteKandidater.filter(
+                        (valgKandidat) =>
+                          valgKandidat.fødselsnummer !== kandidat.fødselsnummer,
+                      ),
+                    )
+                  }
+                >
+                  Fjern
+                </Button>
+              </div>
             </Box.New>
           ))}
         </div>

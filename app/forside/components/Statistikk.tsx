@@ -1,16 +1,13 @@
 'use client';
 
-import {
-  førsteDagIMåned,
-  sisteDagIMåned,
-  visDatoMedMåned,
-} from '../../../util/dato';
 import { useApplikasjonContext } from '../../ApplikasjonContext';
 import Sidelaster from '../../components/Sidelaster';
 import ErrorBoundary from '../../components/feilhåndtering/ErrorBoundary';
 import Forespørsler from './Forespørsler';
 import Utfallsstatistikk from './Utfallsstatistikk';
 import { BodyShort, Heading, Select } from '@navikt/ds-react';
+import { format, lastDayOfMonth, startOfMonth } from 'date-fns';
+import { nb } from 'date-fns/locale';
 import React, { ChangeEvent, useState } from 'react';
 
 export interface IStatistikkValg {
@@ -21,7 +18,7 @@ export interface IStatistikkValg {
 const Statistikk: React.FC = () => {
   const { valgtNavKontor } = useApplikasjonContext();
   const [startDatoPeriode, setStartDatoPeriode] = useState<Date>(
-    førsteDagIMåned(new Date()),
+    startOfMonth(new Date()),
   );
 
   const onTidsperiodeChange = (event: ChangeEvent<HTMLSelectElement>) => {
@@ -37,12 +34,12 @@ const Statistikk: React.FC = () => {
       statistikkTidspunkt.setDate(1);
       statistikkTidspunkt.setMonth(statistikkTidspunkt.getMonth() - i);
 
-      const fraOgMed = førsteDagIMåned(new Date(statistikkTidspunkt));
+      const fraOgMed = startOfMonth(new Date(statistikkTidspunkt));
       return fraOgMed;
     });
 
   const fraOgMed = startDatoPeriode;
-  const tilOgMed = sisteDagIMåned(new Date(startDatoPeriode));
+  const tilOgMed = lastDayOfMonth(new Date(startDatoPeriode));
 
   if (!valgtNavKontor?.navKontor) {
     return <Sidelaster />;
@@ -67,14 +64,16 @@ const Statistikk: React.FC = () => {
           onChange={onTidsperiodeChange}
         >
           {tidsperioder.map((tidsperiode) => (
-            <option
-              key={tidsperiode.getTime()}
-              value={tidsperiode.getTime()}
-
-              // className={css.periode}
-            >
-              {visDatoMedMåned(tidsperiode)} til{' '}
-              {visDatoMedMåned(sisteDagIMåned(new Date(tidsperiode)))}
+            <option key={tidsperiode.getTime()} value={tidsperiode.getTime()}>
+              {`${format(new Date(tidsperiode), 'd. MMMM yyyy', { locale: nb })}
+              - ${format(
+                lastDayOfMonth(new Date(tidsperiode)),
+                'd. MMMM yyyy',
+                {
+                  locale: nb,
+                },
+              )}
+              `}
             </option>
           ))}
         </Select>

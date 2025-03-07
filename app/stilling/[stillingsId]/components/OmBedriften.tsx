@@ -24,24 +24,31 @@ const OmBedriften: React.FC = () => {
       }
       gridInnhold={
         <>
-          <Definisjon
-            tittel='Facebook'
-            innhold={stillingsData?.stilling?.properties?.facebookpage ?? ''}
-          />
-          <Definisjon
-            tittel='LinkedIn'
-            innhold={stillingsData?.stilling?.properties?.linkedinpage ?? ''}
-          />
-          <Definisjon
-            tittel='X (Twitter)'
-            innhold={stillingsData?.stilling?.properties?.twitteraddress ?? ''}
-          />
-          <Definisjon
-            tittel='Nettside'
-            innhold={
-              stillingsData?.stilling?.properties?.employerhomepage ?? ''
-            }
-          />
+          {stillingsData?.stilling?.properties?.facebookpage && (
+            <Definisjon
+              tittel='Facebook'
+              innhold={stillingsData?.stilling?.properties?.facebookpage}
+            />
+          )}
+          {stillingsData?.stilling?.properties?.linkedinpage && (
+            <Definisjon
+              tittel='LinkedIn'
+              innhold={stillingsData?.stilling?.properties?.linkedinpage}
+            />
+          )}
+          {stillingsData?.stilling?.properties?.twitteraddress && (
+            <Definisjon
+              tittel='X (Twitter)'
+              innhold={stillingsData?.stilling?.properties?.twitteraddress}
+            />
+          )}
+          {stillingsData?.stilling?.properties?.employerhomepage && (
+            <Definisjon
+              tittel='Nettside'
+              innhold={stillingsData?.stilling?.properties?.employerhomepage}
+            />
+          )}
+
           <Definisjon
             tittel='Organisasjonsnummer'
             innhold={employer?.orgnr ?? '-'}

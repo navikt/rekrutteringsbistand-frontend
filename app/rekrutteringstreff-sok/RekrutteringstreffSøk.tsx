@@ -24,6 +24,7 @@ const RekrutteringstreffSøk: React.FC<RekrutteringstreffSøkProps> = () => {
           return (
             <RekrutteringstreffKort
               key={rekrutteringstreff.id}
+              id={rekrutteringstreff.id}
               dato={dato.startDato}
               tidspunkt={`${dato.startTidspunkt} - ${dato.sluttTidspunkt}`}
               antallArbeidsgivere={0}
@@ -42,7 +43,7 @@ const RekrutteringstreffSøk: React.FC<RekrutteringstreffSøkProps> = () => {
   );
 };
 
-const datoFormatterer = (startTid?: string, sluttTid?: string): Dato => {
+export const datoFormatterer = (startTid?: string, sluttTid?: string): Dato => {
   if (!startTid || !sluttTid) {
     return {
       startDato: 'Ukjent dato',
@@ -62,7 +63,7 @@ const datoFormatterer = (startTid?: string, sluttTid?: string): Dato => {
   };
 };
 
-type Dato = {
+export type Dato = {
   startDato: string;
   startTidspunkt: string;
   sluttDato: string;

@@ -5,7 +5,8 @@ import { useKandidatliste } from '../../../api/kandidat/useKandidatliste';
 import { useSmserForStilling } from '../../../api/kandidatvarsel/kandidatvarsel';
 import { oppdaterStilling } from '../../../api/stilling/oppdater-stilling/oppdaterStilling';
 import SWRLaster from '../../../components/SWRLaster';
-import { storForbokstavString } from '../../../kandidat-sok/util';
+import { storForbokstavString } from '../../../kandidat/util';
+import { Stillingskategori } from '../../stilling-typer';
 import { useStillingsContext } from '../StillingsContext';
 import { useStillingsKandidaterFilter } from './StillingsKandidaterFilterContext';
 import StillingsKandidaterTabell from './StillingsKandidaterTabell';
@@ -40,6 +41,10 @@ const StillingsKandidater: React.FC = () => {
 
   const reFetchKandidatliste = () => kandidatlisteHook.mutate();
   const [search, setSearch] = React.useState('');
+
+  const erJobbmesse =
+    stillingsData?.stillingsinfo?.stillingskategori ===
+    Stillingskategori.Jobbmesse;
 
   const onOvertaStilling = async () => {
     await oppdaterStilling({
@@ -108,21 +113,26 @@ const StillingsKandidater: React.FC = () => {
                     }
                     fjernAllMarkering={() => setMarkerteKandidater([])}
                   />
-                  <DelMedKandidatModal
-                    stillingsId={stillingsData.stilling.uuid}
-                    forespurteKandidaterAktørListe={
-                      forespurteKandidaterAktørListe
-                    }
-                    kandidatliste={kandidatliste}
-                    markerteKandidater={markerteKandidater}
-                    fjernAllMarkering={() => setMarkerteKandidater([])}
-                  />
-                  <DelMedArbeidsgiver
-                    stillingsId={stillingsData.stilling.uuid}
-                    stillingTittel={stillingsData.stilling.title}
-                    markerteKandidater={markerteKandidater}
-                    kandidatliste={kandidatliste}
-                  />
+
+                  {!erJobbmesse && (
+                    <>
+                      <DelMedKandidatModal
+                        stillingsId={stillingsData.stilling.uuid}
+                        forespurteKandidaterAktørListe={
+                          forespurteKandidaterAktørListe
+                        }
+                        kandidatliste={kandidatliste}
+                        markerteKandidater={markerteKandidater}
+                        fjernAllMarkering={() => setMarkerteKandidater([])}
+                      />
+                      <DelMedArbeidsgiver
+                        stillingsId={stillingsData.stilling.uuid}
+                        stillingTittel={stillingsData.stilling.title}
+                        markerteKandidater={markerteKandidater}
+                        kandidatliste={kandidatliste}
+                      />
+                    </>
+                  )}
                 </div>
               )}
             </div>
@@ -177,7 +187,6 @@ const StillingsKandidater: React.FC = () => {
                   setMarkerteKandidater={setMarkerteKandidater}
                   search={search}
                   kandidatliste={kandidatliste}
-                  stillingsId={stillingsData.stilling.uuid}
                   reFetchKandidatliste={reFetchKandidatliste}
                 />
               </div>

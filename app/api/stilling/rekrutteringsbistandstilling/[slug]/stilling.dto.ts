@@ -86,15 +86,15 @@ const ContactSchema = z.object({
 });
 
 export const LocationSchema = z.object({
-  address: z.string().nullable(),
-  postalCode: z.string().nullable(),
-  city: z.string().nullable(),
-  county: z.string().nullable(),
+  address: z.string().optional().nullable(),
+  postalCode: z.string().optional().nullable(),
+  city: z.string().optional().nullable(),
+  county: z.string().optional().nullable(),
   //TODO Filtreres bort backend
   // countyCode: z.string().nullable(),
-  municipal: z.string().nullable(),
-  municipalCode: z.string().nullable(),
-  country: z.string().nullable(),
+  municipal: z.string().optional().nullable(),
+  municipalCode: z.string().optional().nullable(),
+  country: z.string().optional().nullable(),
 });
 
 const LocationListSchema = z.array(LocationSchema);

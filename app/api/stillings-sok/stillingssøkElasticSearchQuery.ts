@@ -1,4 +1,4 @@
-import { StillingsSøkPortefølje } from '../../stillings-sok/stillingssøk-typer';
+import { StillingsSøkPortefølje } from '../../stilling/stillingssøk-typer';
 import {
   GeografiType,
   PamGeografi,

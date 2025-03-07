@@ -99,15 +99,22 @@ const StillingSidebarKnapper: React.FC<StillingSidebarKnapperProps> = ({
       )}
 
       {kanOvertaStilling && (
-        <Button
-          onClick={onOvertaStilling}
-          loading={loading}
-          variant='secondary'
-          size='small'
-          className='my-2 h-5 w-full'
+        <TilgangskontrollForInnhold
+          skjulVarsel
+          kreverEnAvRollene={[
+            Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+          ]}
         >
-          Overta stillingen
-        </Button>
+          <Button
+            onClick={onOvertaStilling}
+            loading={loading}
+            variant='secondary'
+            size='small'
+            className='my-2 h-5 w-full'
+          >
+            Overta stillingen
+          </Button>
+        </TilgangskontrollForInnhold>
       )}
     </>
   );

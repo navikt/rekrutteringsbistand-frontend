@@ -18,6 +18,8 @@ import {
   TimerStartIcon,
 } from '@navikt/aksel-icons';
 import { logger } from '@navikt/next-logger';
+import { format, isValid, parse } from 'date-fns';
+import { nb } from 'date-fns/locale';
 import * as React from 'react';
 
 const OmStillingen: React.FC<{ forhåndsvisData?: boolean }> = ({
@@ -56,16 +58,15 @@ const OmStillingen: React.FC<{ forhåndsvisData?: boolean }> = ({
     starttime,
   } = stillingsData.stilling.properties as any;
 
-  const formaterTid = (starttime: string) => {
-    const date = new Date(starttime);
-    if (!isNaN(date.getTime())) {
-      return date.toLocaleDateString('nb-NO');
-    }
+  const parseNorskDato = (dateString: string | undefined | null) => {
+    if (!dateString) return null;
 
-    if (starttime === 'etterAvtale') {
-      return 'Etter avtale';
+    try {
+      const parsedDate = parse(dateString, 'dd.MM.yyyy', new Date());
+      return isValid(parsedDate) ? parsedDate : null;
+    } catch {
+      return null;
     }
-    return starttime;
   };
 
   return (
@@ -86,31 +87,53 @@ const OmStillingen: React.FC<{ forhåndsvisData?: boolean }> = ({
                   />
                   <TekstMedIkon
                     // Ansettelsesform
-                    tekst={`${engagementtype ?? '-'} ${extent ? `, ${extent}` : ''}`}
+                    tekst={`${engagementtype ?? '-'} ${extent ? `- ${extent}` : ''}`}
                     ikon={<ClockIcon />}
                   />
                   <TekstMedIkon
                     // Arbeidstid
-                    tekst={`${workday ? parseWorktime(workday) : '-'} ${workhours ? `, ${parseWorktime(workhours)}` : ''}`}
+                    tekst={`${workday ? parseWorktime(workday) : '-'} ${workhours ? `- ${parseWorktime(workhours)}` : ''}`}
                     ikon={<CalendarIcon />}
                   />
                   <TekstMedIkon
                     // Søknadsfrist
-                    tekst={`Søknadsfrist ${applicationdue ? formaterTid(applicationdue)?.toLowerCase() : '-'}`}
+                    tekst={`Søknadsfrist ${
+                      applicationdue
+                        ? (() => {
+                            const parsedDate = parseNorskDato(applicationdue);
+                            return parsedDate
+                              ? format(parsedDate, 'd. MMMM yyyy', {
+                                  locale: nb,
+                                })
+                              : applicationdue.toLowerCase();
+                          })()
+                        : '-'
+                    }`}
                     ikon={<HourglassIcon />}
                   />
                   <TekstMedIkon
                     // Oppstart
-                    tekst={`Oppstart ${starttime ? formaterTid(starttime)?.toLowerCase() : '-'}`}
+                    tekst={`Oppstart ${
+                      starttime
+                        ? (() => {
+                            const parsedDate = parseNorskDato(starttime);
+                            return parsedDate
+                              ? format(parsedDate, 'd. MMMM yyyy', {
+                                  locale: nb,
+                                })
+                              : starttime.toLowerCase();
+                          })()
+                        : '-'
+                    }`}
                     ikon={<TimerStartIcon />}
                   />
                   <AntallKandidater />
                 </>
               }
             />
-            <hr className='border-gray-200' />
+            <hr className='border-gray-200 pb-8' />
             <OmBedriften />
-            <hr className='border-gray-200' />
+            <hr className='border-gray-200 pb-8' />
             <OmAnnonsen />
           </div>
         </div>

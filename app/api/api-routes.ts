@@ -13,7 +13,7 @@ export interface Iroute {
 export const ModiaDecoratorAPI: Iroute = {
   api_route: '',
   api_url: process.env.MODIA_CONTEXT_HOLDER_API ?? '',
-  internUrl: '/api/foresporsel-om-deling-av-cv',
+  internUrl: '',
   scope: `api://${gcp}.personoversikt.modiacontextholder/.default`,
 };
 

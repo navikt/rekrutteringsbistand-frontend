@@ -57,10 +57,13 @@ const FormidlingLeggTilKandidat: React.FC<FormidlingLeggTilKandidatProps> = ({
   return (
     <Box.New className='space-y-4'>
       <Heading size='large'>Legg til kandidater</Heading>
-      <BodyLong>Vi må vite hvilke kandidater du ønsker å formidle</BodyLong>
+      <BodyLong>
+        Vi må vite hvilke kandidater du ønsker å formidle til samme arbeidsgiver
+      </BodyLong>
       <form onSubmit={handleStepSubmit}>
         <div className='flex flex-col space-y-8'>
           <LeggTilKandidater
+            tilFormidling
             initielleKandidater={initielValgt}
             synlighetSomModal
             callBack={(kandidater) => {

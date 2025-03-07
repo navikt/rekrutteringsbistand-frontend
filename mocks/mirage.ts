@@ -29,6 +29,8 @@ import { stillingMirage } from '../app/api/stilling/rekrutteringsbistandstilling
 import { brukerStandardSøkMirage } from '../app/api/stilling/standardsok/useBrukersStandardsøk';
 import { stillingssøkMirage } from '../app/api/stillings-sok/useStillingssøk';
 import { synlighetsevalueringMirage } from '../app/api/synlighet/evaluering/useSynlighetsevaluering';
+import { opprettNyttRekrutteringstreffMirage } from '@/app/api/rekrutteringstreff/nytt-rekrutteringstreff/opprettNyttRekrutteringstreff';
+import { rekrutteringstreffMirage } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { rekrutteringstreffOversiktMirage } from '@/app/api/rekrutteringstreff/useRekrutteringstreffOversikt';
 import { createServer, Model } from 'miragejs';
 
@@ -41,6 +43,7 @@ export function makeServer({ environment = 'test' } = {}) {
     },
 
     routes() {
+      this.logging = false;
       arenaKandidatnrMirage(this);
       brukerMirage(this);
       brukerStandardSøkMirage(this);
@@ -70,6 +73,8 @@ export function makeServer({ environment = 'test' } = {}) {
       kandidatlisteInfoMirage(this);
       mineKandidatlisterMirage(this);
       rekrutteringstreffOversiktMirage(this);
+      rekrutteringstreffMirage(this);
+      opprettNyttRekrutteringstreffMirage(this);
       // stillingssøk mock kan disables ved ES søk
       stillingssøkMirage(this);
       this.passthrough('*');

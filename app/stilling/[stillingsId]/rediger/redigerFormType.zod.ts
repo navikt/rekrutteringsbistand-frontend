@@ -2,6 +2,7 @@ import {
   KategoriSchema,
   LocationSchema,
 } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
+import { StillingSynlighet } from './mapStilling';
 import { z } from 'zod';
 
 export const OmVirksomhetenSchema = z.object({
@@ -69,10 +70,9 @@ export const OmStillingenSchema = z
       .superRefine((val, ctx) => {
         if (val && val.length > 0) {
           // Sjekk om noen av adressene mangler påkrevde felter
-          const harManglendeFelt = val.some(
-            (location) =>
-              !location.address || !location.postalCode || !location.city,
-          );
+          const harManglendeFelt = val.some((location) => {
+            return !location.address || !location.postalCode || !location.city;
+          });
 
           if (harManglendeFelt) {
             ctx.addIssue({
@@ -99,13 +99,32 @@ export const PraktiskInfoSchema = z
     sektor: z.string().min(1, 'Sektor må velges').nullable(),
     omfangKode: z.string().min(1, 'Omfang må velges'),
     omfangProsent: z.string().nullable(),
-    antallStillinger: z.number().min(1, 'Må ha minst én stilling'),
+    antallStillinger: z
+      .preprocess((val) => {
+        if (val === null || val === undefined) return val;
+
+        if (typeof val === 'string' && val === '') return null;
+
+        if (typeof val === 'number' && !isNaN(val)) return val;
+
+        const num = typeof val === 'string' ? Number(val) : NaN;
+
+        return isNaN(num) ? null : num;
+      }, z.number().nullable().optional())
+      .refine((val) => val !== null && val !== undefined && val !== 0, {
+        message: 'Antall stillinger må fylles ut',
+      }),
     oppstart: z.string().nullable(),
     oppstartEtterAvtale: z.boolean(),
     søknadsfrist: z.string().nullable(),
     søknadsfristSnarest: z.boolean(),
     arbeidstidsordning: z.string().nullable(),
-    ansettelsesform: z.string().min(1, 'Ansettelsesform må velges').nullable(),
+    ansettelsesform: z
+      .string()
+      .nullable()
+      .refine((val) => val !== null && val !== '', {
+        message: 'Ansettelsesform må velges',
+      }),
     dager: z
       .array(z.string(), {
         required_error: 'Arbeidsdager må velges',
@@ -143,13 +162,27 @@ export const PraktiskInfoSchema = z
     }
   });
 
-export const InnspurtSchema = z.object({
-  publiseres: z.string().min(1, 'Publiseringsdato er påkrevd').nullable(),
-  avsluttes: z.string().min(1, 'Avsluttingsdato er påkrevd').nullable(),
-  stillingType: z.string().min(1, 'Stillingstype er påkrevd'),
-  epost: z.string().email('Ugyldig e-postadresse').optional().nullable(),
-  lenke: z.string().url('Ugyldig URL').optional().nullable(),
-});
+export const InnspurtSchema = z
+  .object({
+    publiseres: z.string().min(1, 'Publiseringsdato er påkrevd').nullable(),
+    avsluttes: z.string().min(1, 'Avsluttingsdato er påkrevd').nullable(),
+    stillingType: z.string().min(1, 'Stillingstype er påkrevd'),
+    epost: z.string().email('Ugyldig e-postadresse').optional().nullable(),
+    lenke: z.string().url('Ugyldig URL').optional().nullable(),
+  })
+  .superRefine((data, ctx) => {
+    if (
+      data.stillingType === StillingSynlighet.EKSTERN &&
+      !data.epost &&
+      !data.lenke
+    ) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Du må fylle ut enten e-post eller lenke',
+        path: ['epost'],
+      });
+    }
+  });
 
 export const StillingsDataFormSchema = z.object({
   omVirksomheten: OmVirksomhetenSchema,

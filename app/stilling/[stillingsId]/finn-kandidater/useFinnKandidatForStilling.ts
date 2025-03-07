@@ -1,11 +1,11 @@
 import { StillingsDataDTO } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
-import { useKandidatSøkFilter } from '../../../kandidat-sok/KandidaSokContext';
+import { useKandidatSøkFilterContext } from '../../../kandidat/KandidaSokFilterContext';
 import { useEffect, useMemo, useRef } from 'react';
 
 export const useFinnKandidatForStilling = (
   stillingsData?: StillingsDataDTO,
 ) => {
-  const kandidatSøkFilter = useKandidatSøkFilter();
+  const kandidatSøkFilter = useKandidatSøkFilterContext();
   const hasSetInitialData = useRef(false);
   const isDataLoading = !stillingsData;
 
@@ -26,11 +26,7 @@ export const useFinnKandidatForStilling = (
 
     const arbeidsønsker =
       categoryList
-        ?.filter(
-          (category) =>
-            category.categoryType === 'STYRK08' ||
-            category.categoryType === 'STYRK08NAV',
-        )
+        ?.filter((category) => category.categoryType === 'JANZZ')
         .map((category) => category.name)
         .filter((name): name is string => name !== null) ?? [];
 

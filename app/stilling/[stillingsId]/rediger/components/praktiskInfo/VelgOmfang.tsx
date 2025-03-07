@@ -44,7 +44,7 @@ const VelgOmfang: React.FC<VelgOmfangProps> = ({
           render={({ field: { onChange, value }, fieldState: { error } }) => (
             <>
               <Select
-                className='w-[200px]'
+                className='w-[300px]'
                 label='Velg omfang prosent'
                 value={value ?? undefined}
                 onChange={(e) => onChange(e.target.value)}

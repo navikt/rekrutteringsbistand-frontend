@@ -4,9 +4,9 @@
  * Endepunkt /minebrukere
  */
 import {
-  IKandidatSøkContext,
+  IKandidaSokFilterContext,
   KandidatSøkPortefølje,
-} from '../../kandidat-sok/KandidaSokContext';
+} from '../../kandidat/KandidaSokFilterContext';
 import { konverterStederTilNåværendeKoder } from '../../kandidat/[kandidatId]/forslag-fane/useStillingForKandidat';
 import { KandidatSøkAPI } from '../api-routes';
 import { postApiWithSchema } from '../fetcher';
@@ -26,12 +26,16 @@ export const kandidatSokSchema = z.object({
   antallTotalt: z.number(),
 });
 
-const kandidatSokEndepunkt = (type: KandidatSøkPortefølje | '*') =>
-  `${KandidatSøkAPI.internUrl}/kandidatsok/${type}`;
+const kandidatSokEndepunkt = (
+  type: KandidatSøkPortefølje | '*',
+  side: number = 1,
+  sortering: string = 'nyeste',
+) =>
+  `${KandidatSøkAPI.internUrl}/kandidatsok/${type}?side=${side}&sortering=${sortering}`;
 
 export const useKandidatsøk = (
   type: KandidatSøkPortefølje,
-  kandidatSøkFilter: IKandidatSøkContext,
+  kandidatSøkFilter: IKandidaSokFilterContext,
 ) => {
   const { data: geografi, isLoading: isGeografiLoading } = usePamGeografi();
   const shouldFetch = !isGeografiLoading;
@@ -84,7 +88,11 @@ export const useKandidatsøk = (
   return useSWRImmutable(
     shouldFetch
       ? {
-          url: kandidatSokEndepunkt(type),
+          url: kandidatSokEndepunkt(
+            type,
+            kandidatSøkFilter.side,
+            kandidatSøkFilter.sortering,
+          ),
           body: mapFilterTilpayload,
         }
       : null,

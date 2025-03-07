@@ -1,6 +1,7 @@
 import { setKandidatlisteStatus } from '../../../../../api/kandidat/setKandidatlisteStatus';
 import { oppdaterStilling } from '../../../../../api/stilling/oppdater-stilling/oppdaterStilling';
 import { StillingsStatus } from '../../../../stilling-typer';
+import { stillingErUtløpt } from '../../../../stilling-util';
 import { useStillingsContext } from '../../../StillingsContext';
 import { EyeSlashIcon, TasklistIcon } from '@navikt/aksel-icons';
 import { BodyLong, Button, Modal } from '@navikt/ds-react';
@@ -25,6 +26,8 @@ const AvsluttStillingKnapp: React.FC<AvsluttStillingKnappProps> = ({
   const [loading, setLoading] = React.useState(false);
 
   const stillingsStatus = stillingsData.stilling.status;
+
+  const erUtløpt = stillingErUtløpt(stillingsData.stilling);
 
   const avsluttStilling = async (kandidatlisteId: string) => {
     setLoading(true);
@@ -74,7 +77,7 @@ const AvsluttStillingKnapp: React.FC<AvsluttStillingKnappProps> = ({
           </BodyLong>
           <BodyLong className='mt-4'>
             Dette avpubliserer stillingen og sender melding til kandidatene som
-            er markert som fått jobben.
+            har delt sin CV og ikke fått jobb.
           </BodyLong>
         </Modal.Body>
         <Modal.Footer>
@@ -99,7 +102,9 @@ const AvsluttStillingKnapp: React.FC<AvsluttStillingKnappProps> = ({
         </Modal.Footer>
       </Modal>
       <Button
-        disabled={loading || stillingsStatus === StillingsStatus.Stoppet}
+        disabled={
+          erUtløpt || loading || stillingsStatus === StillingsStatus.Stoppet
+        }
         icon={<EyeSlashIcon />}
         variant='secondary'
         size='small'
@@ -110,7 +115,7 @@ const AvsluttStillingKnapp: React.FC<AvsluttStillingKnappProps> = ({
       <Button
         onClick={() => ref.current?.show()}
         disabled={
-          loading || kandidatlisteStatus === 'LUKKET' || !kandidatlisteId
+          loading || kandidatlisteStatus !== 'ACTIVE' || !kandidatlisteId
         }
         variant='secondary'
         size='small'

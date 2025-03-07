@@ -3,9 +3,9 @@
 import { Kandidatlistestatus } from '../../api/kandidat/schema.zod';
 import { TilgangskontrollForInnhold } from '../../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '../../components/tilgangskontroll/roller';
-import { KandidatSøkMarkerteContextProvider } from '../../kandidat-sok/KandidatSøkMarkerteContext';
+import { KandidatSøkMarkerteContextProvider } from '../../kandidat/KandidatSøkMarkerteContext';
 import { useStillingsContext } from './StillingsContext';
-import LeggTilKandidat from './components/LeggTilKandidatTilStilling';
+import LeggTilKandidatTilStilling from './components/LeggTilKandidatTilStilling';
 import FinnKandidaterFane from './finn-kandidater/FinnKandidaterFane';
 import StillingsKandidater from './kandidater/StillingsKandidater';
 import { StillingsKandidaterFilterProvider } from './kandidater/StillingsKandidaterFilterContext';
@@ -49,7 +49,7 @@ export default function StillingSide() {
           </div>
         )}
         <Tabs defaultValue={fane} onChange={(val: any) => setFane(val)}>
-          <Tabs.List className='mb-2 flex w-full justify-between'>
+          <Tabs.List className='flex w-full justify-between'>
             <div>
               <Tabs.Tab value={StillingFane.STILLING} label='Om stillingen' />
               <TilgangskontrollForInnhold
@@ -81,42 +81,25 @@ export default function StillingSide() {
             <div className='flex items-center'>
               {kandidatlistenErLukket ? (
                 <Alert variant={'info'}>
-                  Oppgradet er ferdigstilt og kandidatlisten er lukket
+                  Oppdraget er ferdigstilt og kandidatlisten er lukket
                 </Alert>
               ) : (
-                <>
-                  {/* <TilgangskontrollForInnhold
-                  skjulVarsel
-                  kreverEnAvRollene={[
-                    Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-                    Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
-                  ]}
-                >
-                  <Link
-                    href={`/kandidat-sok/stilling/${stillingsData.stilling.uuid}`}
-                  >
-                    <Button
-                      className='mr-2'
-                      variant='secondary'
-                      icon={<ArrowForwardIcon aria-hidden />}
+                <div>
+                  {kandidatlisteInfo?.kandidatlisteId && (
+                    <TilgangskontrollForInnhold
+                      skjulVarsel
+                      kreverEnAvRollene={[
+                        Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+                        Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
+                      ]}
                     >
-                      Finn kandidater
-                    </Button>
-                  </Link>
-                </TilgangskontrollForInnhold> */}
-                  <TilgangskontrollForInnhold
-                    skjulVarsel
-                    kreverEnAvRollene={[
-                      Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-                      Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
-                    ]}
-                  >
-                    <LeggTilKandidat
-                      stillingsId={stillingsData.stilling.uuid}
-                      stillingsTittel={stillingsData.stilling.title}
-                    />
-                  </TilgangskontrollForInnhold>
-                </>
+                      <LeggTilKandidatTilStilling
+                        stillingsId={stillingsData.stilling.uuid}
+                        stillingsTittel={stillingsData.stilling.title}
+                      />
+                    </TilgangskontrollForInnhold>
+                  )}
+                </div>
               )}
             </div>
           </Tabs.List>

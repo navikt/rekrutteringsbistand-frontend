@@ -16,13 +16,20 @@ export const RedigerOmVirksomheten: React.FC<{
   forrigeSteg: () => void;
 }> = ({ nextStep, forrigeSteg, stegNummer }) => {
   const { stillingsData } = useStillingsContext();
-  const { watch, setValue, trigger, register } =
-    useFormContext<StillingsDataForm>();
+
+  const {
+    watch,
+    setValue,
+    trigger,
+    register,
+    formState: { errors },
+  } = useFormContext<StillingsDataForm>();
 
   const handleStepSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const isValid = await trigger('omVirksomheten', { shouldFocus: true });
+
     if (isValid) {
       nextStep();
     }
@@ -70,18 +77,22 @@ export const RedigerOmVirksomheten: React.FC<{
                 <TextField
                   label='Nettside (valgfritt)'
                   {...register('omVirksomheten.employerhomepage')}
+                  error={errors.omVirksomheten?.employerhomepage?.message}
                 />
                 <TextField
                   label='Facebook (valgfritt)'
                   {...register('omVirksomheten.facebookpage')}
+                  error={errors.omVirksomheten?.facebookpage?.message}
                 />
                 <TextField
                   label='LinkedIn (valgfritt)'
                   {...register('omVirksomheten.linkedinpage')}
+                  error={errors.omVirksomheten?.linkedinpage?.message}
                 />
                 <TextField
-                  label='Twitter (valgfritt)'
+                  label='X (Tidligere twitter) (valgfritt)'
                   {...register('omVirksomheten.twitteraddress')}
+                  error={errors.omVirksomheten?.twitteraddress?.message}
                 />
               </Accordion.Content>
             </Accordion.Item>

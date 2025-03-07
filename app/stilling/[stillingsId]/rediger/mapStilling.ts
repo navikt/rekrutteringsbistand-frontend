@@ -7,6 +7,11 @@ import { InkluderingsTag } from '../omStillingen/StillingSidebar/StillingInklude
 import { StillingsDataForm } from './redigerFormType.zod';
 import { format, parse } from 'date-fns';
 
+export enum StillingSynlighet {
+  INTERN = 'INTERNAL_NOT_SHOWN',
+  EKSTERN = 'SHOW_ALL',
+}
+
 export const mapJanzzTilKategori = (
   janzz: JanzzTittelDTO,
 ): CategorySchemaDTO[] => {
@@ -101,7 +106,7 @@ export const mapStillingTilForm = (
       omfangProsent: stillingsData?.stilling?.properties?.jobpercentage ?? null,
       sektor: stillingsData?.stilling?.properties?.sector ?? '',
       antallStillinger:
-        Number(stillingsData?.stilling?.properties?.positioncount) || 0,
+        Number(stillingsData?.stilling?.properties?.positioncount) ?? null,
       oppstart: oppstartEtterAvtale
         ? null
         : (stillingsData?.stilling?.properties?.starttime?.toString() ?? null),
@@ -125,7 +130,7 @@ export const mapStillingTilForm = (
       avsluttes: stillingsData?.stilling?.expires
         ? formaterFraISOdato(stillingsData?.stilling?.expires)
         : null,
-      stillingType: stillingsData?.stilling?.source ?? 'DIR',
+      stillingType: stillingsData?.stilling?.privacy ?? 'INTERNAL_NOT_SHOWN',
       epost: stillingsData?.stilling?.properties?.applicationemail ?? null,
       lenke: stillingsData?.stilling?.properties?.applicationurl ?? null,
     },
@@ -204,7 +209,7 @@ export const mapFormTilStilling = (
         ...(formData.omStillingen.adresser ?? []),
         ...(formData.omStillingen.lokasjoner ?? []),
       ],
-      source: formData.innspurt.stillingType,
+      privacy: formData.innspurt.stillingType,
     },
   };
 };

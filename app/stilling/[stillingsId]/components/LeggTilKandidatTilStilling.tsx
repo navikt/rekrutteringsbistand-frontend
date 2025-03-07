@@ -1,4 +1,7 @@
+import { rekbisError } from '../../../../util/rekbisError';
+import { useApplikasjonContext } from '../../../ApplikasjonContext';
 import { leggTilKandidater } from '../../../api/kandidat-sok/leggTilKandidat';
+import { formidleUsynligKandidat } from '../../../api/kandidat/formidleKandidat';
 import { useKandidatliste } from '../../../api/kandidat/useKandidatliste';
 import LeggTilKandidater, {
   ValgtKandidatProp,
@@ -20,51 +23,76 @@ const LeggTilKandidatTilStilling: React.FC<LeggTilKandidatTilStillingProps> = ({
 }) => {
   const ref = useRef<HTMLDialogElement>(null);
 
+  const { valgtNavKontor } = useApplikasjonContext();
   const [valgteKandidater, setValgteKandidater] = useState<ValgtKandidatProp[]>(
     [],
   );
-
+  const [modalKey, setModalKey] = useState(0);
   const kandidatlisteIdHook = useKandidatliste(stillingsId);
 
   const visVarsel = useVisVarsling();
 
   const [laster, setLaster] = useState(false);
 
+  const handleOpenModal = () => {
+    setModalKey((prevKey) => prevKey + 1);
+    ref.current?.showModal();
+  };
+
   const onLeggTilKandidat = async () => {
     setLaster(true);
 
-    const valgteAktørIder = valgteKandidater
+    const usynligFåttJobben = valgteKandidater.filter(
+      (k) => k.aktørId === null,
+    );
+    const synligeKandidater = valgteKandidater
       .map((kandidat) => kandidat.aktørId)
       .filter((aktørId) => aktørId !== undefined && aktørId !== null);
 
-    if (valgteAktørIder.length > 0) {
-      await leggTilKandidater(valgteAktørIder, stillingsId)
-        .then(() => {
-          kandidatlisteIdHook.mutate();
-          visVarsel({
-            innhold: 'Kandidater ble lagt til i stillingen',
-            alertType: 'success',
-          });
+    if (
+      kandidatlisteIdHook.data?.kandidatlisteId &&
+      (synligeKandidater.length > 0 || usynligFåttJobben.length > 0)
+    ) {
+      try {
+        await leggTilKandidater(synligeKandidater, stillingsId);
 
-          ref.current?.close();
-        })
-        .catch(() => {
-          visVarsel({
-            innhold: 'Noe gikk galt ved lagring av kandidat',
-            alertType: 'error',
-          });
+        for (const kandidat of usynligFåttJobben) {
+          await formidleUsynligKandidat(
+            kandidatlisteIdHook.data?.kandidatlisteId,
+            {
+              fnr: kandidat.fødselsnummer,
+              fåttJobb: true,
+              navKontor: valgtNavKontor?.navKontor ?? '',
+              stillingsId: stillingsId,
+            },
+          );
+        }
+
+        visVarsel({
+          innhold: 'Kandidater ble lagt til i stillingen',
+          alertType: 'success',
         });
+        setValgteKandidater([]);
+        kandidatlisteIdHook.mutate();
+        ref.current?.close();
+      } catch (error) {
+        visVarsel({
+          innhold: 'Noe gikk galt ved lagring av kandidater',
+          alertType: 'error',
+        });
+        throw new rekbisError({ error: error });
+      }
     }
+
     setLaster(false);
   };
 
   return (
-    <div>
+    <div key={stillingsId}>
       <Button
         loading={laster}
-        onClick={() => ref.current?.showModal()}
-        variant='secondary'
-        className='mr-2'
+        onClick={handleOpenModal}
+        variant='tertiary'
         icon={<ArrowForwardIcon aria-hidden />}
       >
         Legg til kandidater
@@ -80,14 +108,19 @@ const LeggTilKandidatTilStilling: React.FC<LeggTilKandidatTilStillingProps> = ({
       >
         <Modal.Body>
           <LeggTilKandidater
-            måHaAktørId
+            key={modalKey}
             callBack={(valgteKandidater) => {
               setValgteKandidater(valgteKandidater);
             }}
           />
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={onLeggTilKandidat}>Legg til kandidater</Button>
+          <Button
+            disabled={valgteKandidater.length === 0}
+            onClick={onLeggTilKandidat}
+          >
+            Legg til kandidater
+          </Button>
           <Button
             loading={laster}
             type='button'

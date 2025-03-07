@@ -3,12 +3,20 @@
 /**
  * Endepunkt /delingAvCV
  */
-import { formaterDatoTilApi } from '../../../../util/dato';
 import { ForespørselDelingAvCvAPI } from '../../api-routes';
 import { getAPIwithSchema } from '../../fetcher';
 import { forespørselOmDelingAvCVStatistikkMock } from '../mocks/forespørselStatistikkMock';
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
+
+const medNull = (n: number) => (n < 10 ? '0' + n : n);
+export const formaterDatoTilApi = (dato: Date): string => {
+  const dag = medNull(dato.getDate());
+  const måned = medNull(dato.getMonth() + 1);
+  const år = dato.getFullYear();
+
+  return `${år}-${måned}-${dag}`;
+};
 
 const foresporselOmdelingAvCVEndepunkt = (param?: URLSearchParams) =>
   `${ForespørselDelingAvCvAPI.internUrl}/statistikk${param ? `?${param}` : ''}`;

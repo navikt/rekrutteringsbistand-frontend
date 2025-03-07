@@ -20,8 +20,8 @@ const KandidatlisteInfoSchema = z.object({
 
 export type KandidatlisteInfoDTO = z.infer<typeof KandidatlisteInfoSchema>;
 
-export const useKandidatlisteInfo = (stillingsId: string | null) =>
-  useSWRImmutable(
+export const useKandidatlisteInfo = (stillingsId: string | null) => {
+  const kandidatlisteHook = useSWRImmutable(
     stillingsId ? kandidatlisteInfoEndepunkt(stillingsId) : null,
     getAPIwithSchema(KandidatlisteInfoSchema),
     {
@@ -29,6 +29,18 @@ export const useKandidatlisteInfo = (stillingsId: string | null) =>
       errorRetryInterval: 3000,
     },
   );
+
+  if (
+    //@ts-expect-error fordi dette skal fikses backend
+    kandidatlisteHook.data?.status &&
+    //@ts-expect-error fordi dette skal fikses backend
+    kandidatlisteHook.data?.status === 404
+  ) {
+    return null;
+  }
+
+  return kandidatlisteHook;
+};
 
 export const kandidatlisteInfoMirage = (server: Server) => {
   return server.get(kandidatlisteInfoEndepunkt('*'), () => {

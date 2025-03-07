@@ -43,7 +43,7 @@ export const StillingsContextProvider: React.FC<
 
   React.useEffect(() => {
     if (stillingHook.data?.stilling?.updated) {
-      kandidatListeInfo.mutate();
+      kandidatListeInfo?.mutate();
     }
   }, [stillingHook.data?.stilling?.updated, kandidatListeInfo]);
 
@@ -55,7 +55,7 @@ export const StillingsContextProvider: React.FC<
             key={stillingsData?.stilling?.updated}
             stillingsData={stillingsData}
             refetch={stillingHook.mutate}
-            kandidatlisteInfo={kandidatListeInfo.data ?? null}
+            kandidatlisteInfo={kandidatListeInfo?.data ?? null}
           >
             {children}
           </StillingsContextMedData>

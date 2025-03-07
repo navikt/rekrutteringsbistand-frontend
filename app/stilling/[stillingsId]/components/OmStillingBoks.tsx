@@ -18,7 +18,7 @@ const OmStillingBoks: React.FC<OmStillingBoksProps> = ({
   kontaktpersoner,
 }) => {
   return (
-    <div className='pt-14 pb-14'>
+    <div className='pb-14'>
       <Heading size='medium' className='mb-8'>
         {tittel}
       </Heading>

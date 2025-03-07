@@ -13,11 +13,11 @@ const tabs = [
   },
   {
     tittel: 'Stillinger',
-    path: '/stillings-sok?brukStandardsok=true',
+    path: '/stilling?brukStandardsok=true',
   },
   {
     tittel: 'Kandidatsøk',
-    path: '/kandidat-sok',
+    path: '/kandidat',
     kreverRoller: [
       Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
       Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
@@ -64,7 +64,8 @@ export const Navigeringsmeny: FunctionComponent = () => {
                   <Tabs.Tab
                     key={tab.path}
                     label={tab.tittel}
-                    value={tab.path}
+                    // remove query from path
+                    value={tab.path.split('?')[0]}
                   />
                 </Link>
               </TilgangskontrollForInnhold>
