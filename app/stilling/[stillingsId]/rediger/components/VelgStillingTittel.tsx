@@ -40,7 +40,7 @@ const VelgStillingTittel: React.FC<VelgStillingTittelProps> = ({
         categoryList?.find((item) => item.categoryType === 'JANZZ')?.name ?? ''
       }
       value={søkeVerdi}
-      label='Velg yrkestittel (standard for yrkesklassifisering - JANZZ)'
+      label='Velg yrkestittel (Janzz yrkesontologi)'
       isLoading={hook.isLoading}
       options={valg}
       toggleListButton={false}

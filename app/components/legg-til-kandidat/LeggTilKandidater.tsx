@@ -177,12 +177,16 @@ const LeggTilKandidater: React.FC<LeggTilKandidaterProps> = ({
         background='info-soft'
       >
         <TextField
-          type='number'
+          type='text'
           inputMode='numeric'
           value={søkeString}
           label='Fødselsnummer på kandidat'
           hideLabel
-          onChange={(e) => handleFnrChange(e.target.value)}
+          onChange={(e) => {
+            // Bare nummer (ikke type numeric for å ikke ha piltaster)
+            const value = e.target.value.replace(/[^0-9]/g, '');
+            handleFnrChange(value);
+          }}
           error={feilmelding}
         />
 
