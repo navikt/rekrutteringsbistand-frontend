@@ -22,6 +22,33 @@ import { format, isValid, parse } from 'date-fns';
 import { nb } from 'date-fns/locale';
 import * as React from 'react';
 
+export const parseNorskDato = (dateString: string | undefined | null) => {
+  if (!dateString) return null;
+
+  try {
+    const parsedDate = parse(dateString, 'dd.MM.yyyy', new Date());
+    return isValid(parsedDate) ? parsedDate : null;
+  } catch {
+    return null;
+  }
+};
+
+export const parseWorktime = (worktime: string) => {
+  let arrayString = '';
+  try {
+    const jsonArray = JSON.parse(worktime);
+
+    for (let i = 0; i < jsonArray.length; i++) {
+      arrayString += `${jsonArray[i]} `;
+    }
+  } catch (error) {
+    logger.error('Failed to parse worktime', error);
+    arrayString = worktime;
+  }
+
+  return arrayString;
+};
+
 const OmStillingen: React.FC<{ forhåndsvisData?: boolean }> = ({
   forhåndsvisData,
 }) => {
@@ -33,22 +60,6 @@ const OmStillingen: React.FC<{ forhåndsvisData?: boolean }> = ({
     stillingsData.stilling.locationList as GeografiDTO[],
   );
 
-  const parseWorktime = (worktime: string) => {
-    let arrayString = '';
-    try {
-      const jsonArray = JSON.parse(worktime);
-
-      for (let i = 0; i < jsonArray.length; i++) {
-        arrayString += `${jsonArray[i]} `;
-      }
-    } catch (error) {
-      logger.error('Failed to parse worktime', error);
-      arrayString = worktime;
-    }
-
-    return arrayString;
-  };
-
   const {
     engagementtype,
     extent,
@@ -57,17 +68,6 @@ const OmStillingen: React.FC<{ forhåndsvisData?: boolean }> = ({
     applicationdue,
     starttime,
   } = stillingsData.stilling.properties as any;
-
-  const parseNorskDato = (dateString: string | undefined | null) => {
-    if (!dateString) return null;
-
-    try {
-      const parsedDate = parse(dateString, 'dd.MM.yyyy', new Date());
-      return isValid(parsedDate) ? parsedDate : null;
-    } catch {
-      return null;
-    }
-  };
 
   return (
     <div className='mt-10' data-testid='om-stillingen'>

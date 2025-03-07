@@ -16,6 +16,8 @@ import {
   PersonIcon,
 } from '@navikt/aksel-icons';
 import { Box, Button, Heading, Link } from '@navikt/ds-react';
+import { format } from 'date-fns';
+import { nb } from 'date-fns/locale';
 import * as React from 'react';
 
 export interface IStillingsKort {
@@ -42,6 +44,17 @@ const StillingsKort: React.FC<IStillingsKort> = ({
 
   const erFormidling =
     stillingData.stillingsinfo?.stillingskategori === 'FORMIDLING';
+
+  function parseNorskDato(dateString: string | undefined | null) {
+    if (!dateString) return null;
+
+    try {
+      const parsedDate = new Date(dateString);
+      return isNaN(parsedDate.getTime()) ? null : parsedDate;
+    } catch {
+      return null;
+    }
+  }
 
   return (
     <Box
@@ -91,18 +104,20 @@ const StillingsKort: React.FC<IStillingsKort> = ({
             className='mr-4'
             ikon={<ClockIcon />}
             title='Frist'
-            tekst={'TODO'}
-            //   stillingData.stilling.properties?.applicationdue &&
-            //   typeof stillingData.stilling.properties.applicationdue ===
-            //     'string'
-            //     ? stillingData.stilling.properties?.applicationdu === 'Snarest'
-            //       ? 'Snarest'
-            //       : format(
-            //           new Date(stillingData.stilling.properties.applicationdue),
-            //           'dd.MM.yyyy',
-            //         )
-            //     : '-'
-            // }
+            tekst={` ${
+              stillingData.stilling.properties?.applicationdue
+                ? (() => {
+                    const parsedDate = parseNorskDato(
+                      stillingData.stilling?.properties?.applicationdue,
+                    );
+                    return parsedDate
+                      ? format(parsedDate, 'd. MMMM yyyy', {
+                          locale: nb,
+                        })
+                      : stillingData.stilling.properties.applicationdue;
+                  })()
+                : '-'
+            }`}
           />
           <TekstMedIkon
             className='mr-4'
