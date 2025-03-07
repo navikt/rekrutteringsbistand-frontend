@@ -13,13 +13,17 @@ const NavigasjonsBlockerProvider: React.FC<NavigasjonsBlockerProviderProps> = ({
 }) => {
   const pathname = usePathname();
 
+  const testMode = process.env.NEXT_PUBLIC_PLAYWRIGHT_TEST_MODE;
+
   useEffect(() => {
     // Liste over stier som ikke skal være mulig å navigere tilbake til
-    const blockedPaths = [
-      '/stilling/[stillingsId]/rediger',
-      '/formidling/ny-formidling',
-      '/stilling/ny-stilling',
-    ];
+    const blockedPaths = testMode
+      ? []
+      : [
+          '/stilling/[stillingsId]/rediger',
+          '/formidling/ny-formidling',
+          '/stilling/ny-stilling',
+        ];
 
     // Sjekk om nåværende sti matcher en blokkert sti
     const isBlockedPath = blockedPaths.some((path) => {
@@ -28,7 +32,7 @@ const NavigasjonsBlockerProvider: React.FC<NavigasjonsBlockerProviderProps> = ({
       return pathRegex.test(pathname);
     });
 
-    if (!process.env.NEXT_PUBLIC_PLAYWRIGHT_TEST_MODE && isBlockedPath) {
+    if (isBlockedPath) {
       // Lytt etter når brukeren forlater siden
       const handleBeforeUnload = () => {
         // Bestem hvilken side brukeren skal omdirigeres til basert på gjeldende sti
