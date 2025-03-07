@@ -38,7 +38,7 @@ export enum KandidatSøkQueryparam {
   Sortering = 'sortering',
 }
 
-export interface IKandidatSøkContext {
+export interface IKandidaSokFilterContext {
   fritekst: string;
   setFritekst: (tekst: string) => void;
   portefølje: string;
@@ -73,8 +73,8 @@ export interface IKandidatSøkContext {
   orgenhet: string | null;
 }
 
-export const KandidatSøkContext = React.createContext<
-  IKandidatSøkContext | undefined
+export const KandidaSøkFilterContext = React.createContext<
+  IKandidaSokFilterContext | undefined
 >(undefined);
 
 export const KandidatSøkProvider: React.FC<{ children: React.ReactNode }> = ({
@@ -102,14 +102,10 @@ export const KandidatSøkProvider: React.FC<{ children: React.ReactNode }> = ({
     },
   );
 
-  //TODO Legg til sortering?
-  // const [sortering, setSortering] = useQueryState(
-  //   KandidatSøkQueryparam.Sortering,
-  //   {
-  //     defaultValue: 'publiseringsdato',
-  //     clearOnDefault: true,
-  //   },
-  // );
+  const [sortering] = useQueryState(KandidatSøkQueryparam.Sortering, {
+    defaultValue: 'nyeste',
+    clearOnDefault: true,
+  });
 
   const [ønsketSted, setØnsketSted] = useQueryState<string[]>(
     KandidatSøkQueryparam.ØnsketSted,
@@ -183,7 +179,6 @@ export const KandidatSøkProvider: React.FC<{ children: React.ReactNode }> = ({
   //TODO er disse aktuelle?
   const [borPåØnsketSted] = React.useState<boolean | null>(null);
   const [ferskhet] = React.useState<number | null>(null);
-  const [sortering] = React.useState<string>('');
   // const [orgenhet] = React.useState<string | null>(null); // Settes til valgt kontor
 
   const wrapWithPageReset = <T,>(
@@ -199,7 +194,7 @@ export const KandidatSøkProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   return (
-    <KandidatSøkContext.Provider
+    <KandidaSøkFilterContext.Provider
       value={{
         fritekst,
         setFritekst: wrapWithPageReset(setFritekst),
@@ -239,15 +234,15 @@ export const KandidatSøkProvider: React.FC<{ children: React.ReactNode }> = ({
       }}
     >
       {children}
-    </KandidatSøkContext.Provider>
+    </KandidaSøkFilterContext.Provider>
   );
 };
 
-export const useKandidatSøkFilter = () => {
-  const context = React.useContext(KandidatSøkContext);
+export const useKandidatSøkFilterContext = () => {
+  const context = React.useContext(KandidaSøkFilterContext);
   if (context === undefined) {
     throw new rekbisError({
-      beskrivelse: 'useKandidatSøk må være i scope: KandidatSøkProvider',
+      beskrivelse: 'useKandidaSokFilterContext må være i scope',
     });
   }
   return context;

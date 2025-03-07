@@ -1,11 +1,11 @@
 import { usePamGeografi } from '../../../../api/pam-geografi/typehead/lokasjoner/usePamGeografi';
-import { useKandidatSøkFilter } from '../../../KandidaSokContext';
+import { useKandidatSøkFilterContext } from '../../../KandidaSokFilterContext';
 import { storBokstavSted, storForbokstavString } from '../../../util';
 import { UNSAFE_Combobox } from '@navikt/ds-react';
 import * as React from 'react';
 
 const KandidatStedSøk: React.FC = () => {
-  const { ønsketSted, setØnsketSted } = useKandidatSøkFilter();
+  const { ønsketSted, setØnsketSted } = useKandidatSøkFilterContext();
 
   const [valg, setValg] = React.useState<string[]>([]);
 

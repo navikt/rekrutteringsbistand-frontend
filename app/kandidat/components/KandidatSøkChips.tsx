@@ -1,12 +1,12 @@
 import FilterChip from '../../components/FilterChip';
 import TømFiltre from '../../components/TømFiltre';
-import { useKandidatSøkFilter } from '../KandidaSokContext';
+import { useKandidatSøkFilterContext } from '../KandidaSokFilterContext';
 import { HovedMålType } from './kandidat-sok-sidebar/components/Hovedmål';
 import { Chips } from '@navikt/ds-react';
 import * as React from 'react';
 
 const StillingsSøkChips: React.FC = () => {
-  const filter = useKandidatSøkFilter();
+  const filter = useKandidatSøkFilterContext();
 
   return (
     <div className=' mt-4 w-full'>

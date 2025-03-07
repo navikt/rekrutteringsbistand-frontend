@@ -1,4 +1,4 @@
-import { useKandidatSøkFilter } from '../../../KandidaSokContext';
+import { useKandidatSøkFilterContext } from '../../../KandidaSokFilterContext';
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
 
 export enum HovedMålType {
@@ -8,7 +8,7 @@ export enum HovedMålType {
 }
 
 const Hovedmål: React.FC = () => {
-  const { hovedmål, setHovedmål } = useKandidatSøkFilter();
+  const { hovedmål, setHovedmål } = useKandidatSøkFilterContext();
 
   const onChange = (valgteHovedmål: HovedMålType[]) => {
     setHovedmål(valgteHovedmål);

@@ -1,11 +1,11 @@
 import { StillingsDataDTO } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
-import { useKandidatSøkFilter } from '../../../kandidat/KandidaSokContext';
+import { useKandidatSøkFilterContext } from '../../../kandidat/KandidaSokFilterContext';
 import { useEffect, useMemo, useRef } from 'react';
 
 export const useFinnKandidatForStilling = (
   stillingsData?: StillingsDataDTO,
 ) => {
-  const kandidatSøkFilter = useKandidatSøkFilter();
+  const kandidatSøkFilter = useKandidatSøkFilterContext();
   const hasSetInitialData = useRef(false);
   const isDataLoading = !stillingsData;
 

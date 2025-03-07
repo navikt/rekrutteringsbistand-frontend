@@ -2,12 +2,12 @@ import {
   SuggestType,
   useUseSugestions,
 } from '../../../../api/kandidat-sok/useSugestions';
-import { useKandidatSøkFilter } from '../../../KandidaSokContext';
+import { useKandidatSøkFilterContext } from '../../../KandidaSokFilterContext';
 import { UNSAFE_Combobox } from '@navikt/ds-react';
 import * as React from 'react';
 
 const Språk: React.FC = () => {
-  const { språk, setSpråk } = useKandidatSøkFilter();
+  const { språk, setSpråk } = useKandidatSøkFilterContext();
 
   const [søkeTekst, setSøkeTekst] = React.useState<string>('');
 

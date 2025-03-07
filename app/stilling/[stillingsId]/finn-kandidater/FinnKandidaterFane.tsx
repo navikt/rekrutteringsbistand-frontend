@@ -3,7 +3,7 @@ import SWRLaster from '../../../components/SWRLaster';
 import SideLayout from '../../../components/layout/SideLayout';
 import { TilgangskontrollForInnhold } from '../../../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '../../../components/tilgangskontroll/roller';
-import { KandidatSøkProvider } from '../../../kandidat/KandidaSokContext';
+import { KandidatSøkProvider } from '../../../kandidat/KandidaSokFilterContext';
 import { KandidatSøkMarkerteContextProvider } from '../../../kandidat/KandidatSøkMarkerteContext';
 import KandidatSøkSidebar from '../../../kandidat/components/kandidat-sok-sidebar/KandidatSøkSidebar';
 import KandidatTilStilling from './KandidatTilStilling';

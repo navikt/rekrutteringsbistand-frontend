@@ -1,4 +1,4 @@
-import { useKandidatSøkFilter } from '../../../KandidaSokContext';
+import { useKandidatSøkFilterContext } from '../../../KandidaSokFilterContext';
 import { UNSAFE_Combobox } from '@navikt/ds-react';
 import * as React from 'react';
 
@@ -21,7 +21,7 @@ export enum Førerkortklasse {
 }
 
 const Førerkort: React.FC = () => {
-  const { førerkort, setFørerkort } = useKandidatSøkFilter();
+  const { førerkort, setFørerkort } = useKandidatSøkFilterContext();
 
   const onOptionSelected = (option: string, isSelected: boolean) => {
     if (isSelected) {

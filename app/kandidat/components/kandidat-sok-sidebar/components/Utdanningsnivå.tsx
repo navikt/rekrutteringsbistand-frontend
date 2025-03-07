@@ -1,4 +1,4 @@
-import { useKandidatSøkFilter } from '../../../KandidaSokContext';
+import { useKandidatSøkFilterContext } from '../../../KandidaSokFilterContext';
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
 
 export enum Nivå {
@@ -10,7 +10,7 @@ export enum Nivå {
 }
 
 const Utdanningsnivå = () => {
-  const { utdanningsnivå, setUtdanningsnivå } = useKandidatSøkFilter();
+  const { utdanningsnivå, setUtdanningsnivå } = useKandidatSøkFilterContext();
   const onChange = (valgtNivå: Nivå[]) => {
     setUtdanningsnivå(valgtNivå);
   };

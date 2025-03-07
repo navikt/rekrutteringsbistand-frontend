@@ -1,11 +1,11 @@
 import { useKontorSøk } from '../api/kandidat-sok/useKontorSøk';
-import { useKandidatSøkFilter } from './KandidaSokContext';
+import { useKandidatSøkFilterContext } from './KandidaSokFilterContext';
 import { UNSAFE_Combobox } from '@navikt/ds-react';
 import * as React from 'react';
 
 const ValgteKontorer: React.FC = () => {
   const [søkeTekst, setSøkeTekst] = React.useState<string>('');
-  const { valgtKontor, setValgtKontor } = useKandidatSøkFilter();
+  const { valgtKontor, setValgtKontor } = useKandidatSøkFilterContext();
 
   const { data, isLoading } = useKontorSøk(søkeTekst);
 

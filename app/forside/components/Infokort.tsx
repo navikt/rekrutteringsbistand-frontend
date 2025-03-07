@@ -40,8 +40,7 @@ const Infokort: React.FC<IInfokort> = ({
             </span>
           </div>
           {ikon && (
-            <Box
-              background='surface-action-subtle'
+            <Box.New
               padding='2'
               borderRadius='full'
               className='flex items-center justify-center'
@@ -49,7 +48,7 @@ const Infokort: React.FC<IInfokort> = ({
               <div className='relative h-6 w-6 text-2xl text-[var(--a-gray-900)]'>
                 {ikon}
               </div>
-            </Box>
+            </Box.New>
           )}
         </div>
         <div className='flex flex-col'>

@@ -5,8 +5,8 @@ import { TilgangskontrollForInnhold } from '../components/tilgangskontroll/Tilga
 import { Roller } from '../components/tilgangskontroll/roller';
 import {
   KandidatSøkPortefølje,
-  useKandidatSøkFilter,
-} from './KandidaSokContext';
+  useKandidatSøkFilterContext,
+} from './KandidaSokFilterContext';
 import KandidatSøkResultat from './KandidatSøkResultat';
 import ValgteKontorer from './ValgteKontorer';
 import KandidatSøkChips from './components/KandidatSøkChips';
@@ -22,7 +22,7 @@ const KandidatSøk: React.FC<KandidatSøkProps> = ({
   stillingsId,
   alleredeLagtTil,
 }) => {
-  const { portefølje, setPortefølje } = useKandidatSøkFilter();
+  const { portefølje, setPortefølje } = useKandidatSøkFilterContext();
   const { valgtNavKontor, brukerData } = useApplikasjonContext();
 
   const MineBrukere = () => (

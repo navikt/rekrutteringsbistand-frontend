@@ -1,4 +1,4 @@
-import { useKandidatSøkFilter } from '../../../KandidaSokContext';
+import { useKandidatSøkFilterContext } from '../../../KandidaSokFilterContext';
 import { Checkbox, CheckboxGroup, HelpText, useId } from '@navikt/ds-react';
 import { FunctionComponent } from 'react';
 
@@ -11,7 +11,7 @@ export enum PrioritertMålgruppe {
 const PrioriterteMålgrupper: FunctionComponent = () => {
   const hjelpetekstId = useId();
   const { prioritertMålgruppe, setPrioritertMålgruppe } =
-    useKandidatSøkFilter();
+    useKandidatSøkFilterContext();
   const onChange = (valgteMålgrupper: PrioritertMålgruppe[]) => {
     setPrioritertMålgruppe(valgteMålgrupper);
   };

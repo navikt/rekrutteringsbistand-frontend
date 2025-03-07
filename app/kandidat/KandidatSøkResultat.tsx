@@ -6,8 +6,8 @@ import { useKandidatNavigering } from '../components/KandidatNavigeringContext';
 import SWRLaster from '../components/SWRLaster';
 import {
   KandidatSøkPortefølje,
-  useKandidatSøkFilter,
-} from './KandidaSokContext';
+  useKandidatSøkFilterContext,
+} from './KandidaSokFilterContext';
 import { useKandidatSøkMarkerteContext } from './KandidatSøkMarkerteContext';
 import KandidatKort from './components/KandidatKort';
 import LagreIKandidatliste from './components/LagreIKandidatliste';
@@ -25,7 +25,7 @@ const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({
   stillingsId,
   alleredeLagtTil,
 }) => {
-  const filter = useKandidatSøkFilter();
+  const filter = useKandidatSøkFilterContext();
   const kandidatsøkHook = useKandidatsøk(type, filter);
   const { setNavigering } = useKandidatNavigering();
 

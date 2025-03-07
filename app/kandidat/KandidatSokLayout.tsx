@@ -6,7 +6,7 @@ import SideLayout from '../components/layout/SideLayout';
 import SideTopBanner from '../components/layout/SideTopBanner';
 import { TilgangskontrollForInnhold } from '../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '../components/tilgangskontroll/roller';
-import { KandidatSøkProvider } from './KandidaSokContext';
+import { KandidatSøkProvider } from './KandidaSokFilterContext';
 import { KandidatSøkMarkerteContextProvider } from './KandidatSøkMarkerteContext';
 import KandidatSøkSidebar from './components/kandidat-sok-sidebar/KandidatSøkSidebar';
 
