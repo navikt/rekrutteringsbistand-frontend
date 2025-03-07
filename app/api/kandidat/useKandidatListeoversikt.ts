@@ -12,7 +12,7 @@ import { z } from 'zod';
 const kandidatListeoversiktEndepunkt = (kandidatId: string) =>
   `${KandidatAPI.internUrl}/veileder/kandidater/${kandidatId}/listeoversikt`;
 
-// ?inkluderSlettede=true ? //TODO?
+// ?inkluderSlettede=true er et valg som ikke er tatt hensyn til her.
 const KandidatListeoversiktSchema = z.array(kandidatHistorikkSchema);
 
 export const useKandidatListeoversikt = (kandidatId?: string) =>

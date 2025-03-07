@@ -164,8 +164,6 @@ export const testTilgangskontroll = (rolle: Roller) => {
         await expect(ferdigstillKnapp).toBeHidden();
       }
 
-      // TODO: Implement Overta stillingen knapp
-
       if (ARBEIDSGIVERRETTET) {
         await expect(
           page.getByRole('tab', { name: 'Kandidater', exact: true }),

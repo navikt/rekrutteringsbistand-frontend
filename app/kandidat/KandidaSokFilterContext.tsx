@@ -179,7 +179,6 @@ export const KandidatSøkProvider: React.FC<{ children: React.ReactNode }> = ({
   //TODO er disse aktuelle?
   const [borPåØnsketSted] = React.useState<boolean | null>(null);
   const [ferskhet] = React.useState<number | null>(null);
-  // const [orgenhet] = React.useState<string | null>(null); // Settes til valgt kontor
 
   const wrapWithPageReset = <T,>(
     setter: (value: T | ((prevValue: T) => T) | null) => Promise<any>,

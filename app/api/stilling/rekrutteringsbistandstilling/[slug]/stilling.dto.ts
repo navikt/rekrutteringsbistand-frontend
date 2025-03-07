@@ -90,8 +90,7 @@ export const LocationSchema = z.object({
   postalCode: z.string().optional().nullable(),
   city: z.string().optional().nullable(),
   county: z.string().optional().nullable(),
-  //TODO Filtreres bort backend
-  // countyCode: z.string().nullable(),
+  // countyCode: z.string().nullable(), // Filtreres bort backend
   municipal: z.string().optional().nullable(),
   municipalCode: z.string().optional().nullable(),
   country: z.string().optional().nullable(),
