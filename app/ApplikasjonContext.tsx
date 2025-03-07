@@ -67,7 +67,7 @@ export const ApplikasjonContextProvider: React.FC<
 
   const harTilgangTilNyApplikasjon =
     getMiljø() !== Miljø.ProdGcp ||
-    // valgtNavKontor?.navKontor === '1001' ||
+    valgtNavKontor?.navKontor === '1001' ||
     harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER]);
 
   return (
