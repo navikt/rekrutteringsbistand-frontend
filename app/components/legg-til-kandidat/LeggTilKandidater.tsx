@@ -186,7 +186,7 @@ const LeggTilKandidater: React.FC<LeggTilKandidaterProps> = ({
           error={feilmelding}
         />
 
-        {kandidatNavnHook.isLoading || arenaKandidatnrHook.isLoading ? (
+        {kandidatNavnHook.isLoading ? (
           <Box.New className='flex h-full items-center justify-center p-4'>
             <Loader />
           </Box.New>
