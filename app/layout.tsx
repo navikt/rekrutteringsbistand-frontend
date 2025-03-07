@@ -8,9 +8,8 @@ import Script from 'next/script';
 
 const devBundle =
   'https://cdn.nav.no/personoversikt/internarbeidsflate-decorator-v3/dev/latest/dist/bundle.js';
-const prodBundle = devBundle;
-// TODO Prod ikke oppdatert.
-// 'https://cdn.nav.no/personoversikt/internarbeidsflate-decorator-v3/prod/latest/dist/bundle.js';
+const prodBundle =
+  'https://cdn.nav.no/personoversikt/internarbeidsflate-decorator-v3/prod/latest/dist/bundle.js';
 
 export const metadata: Metadata = {
   title: isLocal ? 'Local - Rekrutteringsbistand' : 'Rekrutteringsbistand',

@@ -105,3 +105,5 @@ spec:
       value: {{ umamiSrc }}
     - name: UMAMI_URL
       value: {{ umamiUrl }}
+    - name: MODIA_CSS_URL
+      value: {{ modiaCssUrl }}
