@@ -1,4 +1,3 @@
-import { useApplikasjonContext } from '../../../../../ApplikasjonContext';
 import { useForespurteOmDelingAvCv } from '../../../../../api/foresporsel-om-deling-av-cv/foresporsler/[slug]/useForespurteOmDelingAvCv';
 import { sendForespørselOmDelingAvCv } from '../../../../../api/foresporsel-om-deling-av-cv/foresporsler/forespørselOmDelingAvCv';
 import {
@@ -6,6 +5,7 @@ import {
   kandidatlisteSchemaDTO,
 } from '../../../../../api/kandidat/schema.zod';
 import { useVisVarsling } from '../../../../../components/varsling/Varsling';
+import { useApplikasjonContext } from '../../../../../providers/ApplikasjonContext';
 import VelgSvarfrist from './VelgSvarfrist';
 import { ArrowForwardIcon } from '@navikt/aksel-icons';
 import {

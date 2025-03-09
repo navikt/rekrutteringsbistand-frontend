@@ -1,7 +1,6 @@
 'use client';
 
 import { rekbisError } from '../../../util/rekbisError';
-import { useApplikasjonContext } from '../../ApplikasjonContext';
 import { KandidatDataSchemaDTO } from '../../api/kandidat-sok/schema/cvSchema.zod';
 import { useKandidatinformasjon } from '../../api/kandidat-sok/useKandidatinformasjon';
 import {
@@ -9,6 +8,7 @@ import {
   useKandidatsammendrag,
 } from '../../api/kandidat-sok/useKandidatsammendrag';
 import SWRLaster from '../../components/SWRLaster';
+import { useApplikasjonContext } from '../../providers/ApplikasjonContext';
 import React from 'react';
 
 interface KandidatContextType {

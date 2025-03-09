@@ -1,10 +1,10 @@
 'use client';
 
-import { useApplikasjonContext } from '../../../../ApplikasjonContext';
 import { oppdaterStilling } from '../../../../api/stilling/oppdater-stilling/oppdaterStilling';
 import { setStillingsinfo } from '../../../../api/stilling/stillingsinfo/setStillingsinfo';
 import { TilgangskontrollForInnhold } from '../../../../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '../../../../components/tilgangskontroll/roller';
+import { useApplikasjonContext } from '../../../../providers/ApplikasjonContext';
 import { useStillingsContext } from '../../StillingsContext';
 import StillingPrint from './StillingPrint';
 import EierStillingVisning from './components/EierStillingVisning';

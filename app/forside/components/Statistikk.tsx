@@ -1,8 +1,8 @@
 'use client';
 
-import { useApplikasjonContext } from '../../ApplikasjonContext';
 import Sidelaster from '../../components/Sidelaster';
 import ErrorBoundary from '../../components/feilhåndtering/ErrorBoundary';
+import { useApplikasjonContext } from '../../providers/ApplikasjonContext';
 import Forespørsler from './Forespørsler';
 import Utfallsstatistikk from './Utfallsstatistikk';
 import { BodyShort, Heading, Select } from '@navikt/ds-react';

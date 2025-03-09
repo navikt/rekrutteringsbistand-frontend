@@ -1,7 +1,7 @@
 'use client';
 
 import { getMiljø, Miljø } from '../../../../../util/miljø';
-import { useApplikasjonContext } from '../../../../ApplikasjonContext';
+import { useApplikasjonContext } from '../../../../providers/ApplikasjonContext';
 import { DecoratorProps } from './Interndekoratør';
 import { InternalHeader, Loader } from '@navikt/ds-react';
 import dynamic from 'next/dynamic';

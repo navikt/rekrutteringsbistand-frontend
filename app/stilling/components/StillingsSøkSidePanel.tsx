@@ -1,5 +1,5 @@
-import { useApplikasjonContext } from '../../ApplikasjonContext';
 import { Roller } from '../../components/tilgangskontroll/roller';
+import { useApplikasjonContext } from '../../providers/ApplikasjonContext';
 import { useStillingsSøkFilter } from '../StillingsSøkContext';
 import StandardsøkKnapp from './StandardsøkKnapp';
 import GeografiFilter from './StillingsSøkFilter/GeografiFilter';

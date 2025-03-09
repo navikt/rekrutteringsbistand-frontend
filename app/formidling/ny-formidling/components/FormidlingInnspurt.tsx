@@ -1,5 +1,5 @@
 import { rekbisError } from '../../../../util/rekbisError';
-import { useApplikasjonContext } from '../../../ApplikasjonContext';
+import { useApplikasjonContext } from '../../../providers/ApplikasjonContext';
 import { FormidlingDataForm } from '../redigerFormidlingFormType';
 import { Buildings2Icon, PersonIcon } from '@navikt/aksel-icons';
 import {

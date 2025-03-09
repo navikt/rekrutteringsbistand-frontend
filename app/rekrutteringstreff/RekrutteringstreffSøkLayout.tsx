@@ -8,11 +8,13 @@ import OpprettRekrutteringstreffKnapp from './components/OpprettRekrutteringstre
 import { RekrutteringstreffSøkSidebar } from './components/sidebar/RekrutteringstreffSøkSidebar';
 import * as React from 'react';
 
-interface layoutProps {
+export interface RekrutteringstreffSøkLayoutProps {
   children?: React.ReactNode | undefined;
 }
 
-export default function RekrutteringstreffSøkLayout({ children }: layoutProps) {
+const RekrutteringstreffSøkLayout: React.FC<
+  RekrutteringstreffSøkLayoutProps
+> = ({ children }) => {
   return (
     <SideLayout
       sidepanel={<RekrutteringstreffSøkSidebar />}
@@ -29,4 +31,6 @@ export default function RekrutteringstreffSøkLayout({ children }: layoutProps) 
       {children}
     </SideLayout>
   );
-}
+};
+
+export default RekrutteringstreffSøkLayout;

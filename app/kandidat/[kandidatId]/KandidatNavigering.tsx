@@ -1,4 +1,4 @@
-import { useKandidatNavigering } from '../../components/KandidatNavigeringContext';
+import { useKandidatNavigering } from '../../providers/KandidatNavigeringContext';
 import { ArrowLeftIcon, ArrowRightIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';

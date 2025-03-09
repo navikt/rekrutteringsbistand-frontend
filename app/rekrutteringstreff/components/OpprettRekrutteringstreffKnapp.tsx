@@ -1,4 +1,4 @@
-import { useApplikasjonContext } from '@/app/ApplikasjonContext';
+import { useApplikasjonContext } from '../../providers/ApplikasjonContext';
 import { OpprettNyttRekrutteringstreffDTO } from '@/app/api/rekrutteringstreff/nytt-rekrutteringstreff/dto';
 import { opprettNyttRekrutteringstreff } from '@/app/api/rekrutteringstreff/nytt-rekrutteringstreff/opprettNyttRekrutteringstreff';
 import { rekbisError } from '@/util/rekbisError';

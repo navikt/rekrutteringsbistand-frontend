@@ -1,9 +1,9 @@
-import { useApplikasjonContext } from '../../../../ApplikasjonContext';
 import { KandidatForespurtOmDelingSchema } from '../../../../api/foresporsel-om-deling-av-cv/foresporsler/[slug]/useForespurteOmDelingAvCv';
 import { endreUtfallKandidat } from '../../../../api/kandidat/endreKandidatUtfall';
 import { kandidaterSchemaDTO } from '../../../../api/kandidat/schema.zod';
 import { Sms } from '../../../../api/kandidatvarsel/kandidatvarsel';
 import FeilDialog from '../../../../components/feilhåndtering/Feildialog';
+import { useApplikasjonContext } from '../../../../providers/ApplikasjonContext';
 import InfoOmKandidat from './InfoOmKandidat';
 import SletteKandidatKnapp from './KandidatDropdown';
 import KandidatHendelse, { mapToHendelser } from './KandidatHendelse';

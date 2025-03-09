@@ -1,6 +1,6 @@
 'use client';
 
-import { useThemeProvider } from '../ThemeProvider';
+import { useThemeProvider } from '../providers/ThemeProvider';
 import Image from 'next/image';
 import * as React from 'react';
 

@@ -1,7 +1,7 @@
 import formaterMedStoreOgSmåBokstaver from '../../../util/tekst';
-import { useApplikasjonContext } from '../../ApplikasjonContext';
 import { RekrutteringsbistandStillingSchemaDTO } from '../../api/stillings-sok/schema/rekrutteringsbistandStillingSchema.zod';
 import TekstMedIkon from '../../components/TekstMedIkon';
+import { useApplikasjonContext } from '../../providers/ApplikasjonContext';
 import {
   formaterEiernavn,
   hentArbeidssted,
