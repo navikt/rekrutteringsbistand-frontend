@@ -1,11 +1,8 @@
 'use client';
 
+import { Dato, datoFormatterer } from '../RekrutteringstreffSøk';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import SWRLaster from '@/app/components/SWRLaster';
-import {
-  Dato,
-  datoFormatterer,
-} from '@/app/rekrutteringstreff-sok/RekrutteringstreffSøk';
 import { Table } from '@navikt/ds-react';
 import { useParams } from 'next/navigation';
 import * as React from 'react';

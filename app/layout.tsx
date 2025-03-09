@@ -1,8 +1,7 @@
 import { isLocal } from '../util/env';
-import RekrutteringsbistandProvider from './RekrutteringsbistandProvider';
-import { ThemeProvider } from './ThemeProvider';
 import MirageInitializer from './components/MirageInitializer';
 import './globals.css';
+import RekrutteringsbistandProvider from './providers/RekrutteringsbistandProvider';
 import type { Metadata } from 'next';
 import Script from 'next/script';
 
@@ -37,13 +36,11 @@ export default async function RootLayout({
         data-domains={process.env.UMAMI_DOMAIN}
       />
       <body>
-        <ThemeProvider>
-          <BrukLokalMock>
-            <RekrutteringsbistandProvider>
-              {children}
-            </RekrutteringsbistandProvider>
-          </BrukLokalMock>
-        </ThemeProvider>
+        <BrukLokalMock>
+          <RekrutteringsbistandProvider>
+            {children}
+          </RekrutteringsbistandProvider>
+        </BrukLokalMock>
       </body>
     </html>
   );

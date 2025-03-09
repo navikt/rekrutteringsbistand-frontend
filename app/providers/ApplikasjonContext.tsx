@@ -1,11 +1,11 @@
 'use client';
 
-import { getMiljø, Miljø } from '../util/miljø';
-import { rekbisError } from '../util/rekbisError';
-import { DecoratorDTO } from './api/decorator/decorator.dto';
-import Header from './components/header/Header';
-import { Roller } from './components/tilgangskontroll/roller';
-import { Varsling } from './components/varsling/Varsling';
+import { getMiljø, Miljø } from '../../util/miljø';
+import { rekbisError } from '../../util/rekbisError';
+import { DecoratorDTO } from '../api/decorator/decorator.dto';
+import Header from '../components/header/Header';
+import { Roller } from '../components/tilgangskontroll/roller';
+import { Varsling } from '../components/varsling/Varsling';
 import { Alert, Heading } from '@navikt/ds-react';
 import React from 'react';
 

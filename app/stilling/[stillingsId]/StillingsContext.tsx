@@ -1,7 +1,6 @@
 'use client';
 
 import { rekbisError } from '../../../util/rekbisError';
-import { useApplikasjonContext } from '../../ApplikasjonContext';
 import {
   KandidatlisteInfoDTO,
   useKandidatlisteInfo,
@@ -11,6 +10,7 @@ import { useStilling } from '../../api/stilling/rekrutteringsbistandstilling/[sl
 import SWRLaster from '../../components/SWRLaster';
 import { eierStilling } from '../../components/tilgangskontroll/erEier';
 import { Roller } from '../../components/tilgangskontroll/roller';
+import { useApplikasjonContext } from '../../providers/ApplikasjonContext';
 // import { useRouter } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import React, { useMemo } from 'react';

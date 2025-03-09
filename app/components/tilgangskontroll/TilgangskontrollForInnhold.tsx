@@ -1,6 +1,6 @@
 'use client';
 
-import { useApplikasjonContext } from '../../ApplikasjonContext';
+import { useApplikasjonContext } from '../../providers/ApplikasjonContext';
 import ErrorBoundary from '../feilhåndtering/ErrorBoundary';
 import css from './TilgangskontrollForInnhold.module.css';
 import { Roller } from './roller';

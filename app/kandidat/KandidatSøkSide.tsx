@@ -1,8 +1,8 @@
 'use client';
 
-import { useApplikasjonContext } from '../ApplikasjonContext';
 import { TilgangskontrollForInnhold } from '../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '../components/tilgangskontroll/roller';
+import { useApplikasjonContext } from '../providers/ApplikasjonContext';
 import {
   KandidatSøkPortefølje,
   useKandidatSøkFilterContext,

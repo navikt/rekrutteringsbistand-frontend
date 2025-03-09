@@ -1,7 +1,7 @@
-import { useApplikasjonContext } from '../../../../../ApplikasjonContext';
 import { useStillingssøk } from '../../../../../api/stillings-sok/useStillingssøk';
 import SWRLaster from '../../../../../components/SWRLaster';
 import Sidelaster from '../../../../../components/Sidelaster';
+import { useApplikasjonContext } from '../../../../../providers/ApplikasjonContext';
 import {
   StillingsSøkProvider,
   useStillingsSøkFilter,

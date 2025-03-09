@@ -2,8 +2,8 @@
 
 import { KandidatDataSchemaDTO } from '../api/kandidat-sok/schema/cvSchema.zod';
 import { useKandidatsøk } from '../api/kandidat-sok/useKandidatsøk';
-import { useKandidatNavigering } from '../components/KandidatNavigeringContext';
 import SWRLaster from '../components/SWRLaster';
+import { useKandidatNavigering } from '../providers/KandidatNavigeringContext';
 import {
   KandidatSøkPortefølje,
   useKandidatSøkFilterContext,

@@ -1,8 +1,8 @@
 'use client';
 
 import { rekbisError } from '../../util/rekbisError';
-import { useApplikasjonContext } from '../ApplikasjonContext';
 import { Roller } from '../components/tilgangskontroll/roller';
+import { useApplikasjonContext } from '../providers/ApplikasjonContext';
 import {
   hierarkiAvTagsForFilter,
   Subtag,

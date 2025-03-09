@@ -1,7 +1,7 @@
 'use client';
 
 import { rekbisError } from '../../util/rekbisError';
-import { useApplikasjonContext } from '../ApplikasjonContext';
+import { useApplikasjonContext } from '../providers/ApplikasjonContext';
 import {
   parseAsArrayOf,
   parseAsInteger,

@@ -1,10 +1,10 @@
-import { useApplikasjonContext } from '../ApplikasjonContext';
 import {
   maksAntallTreffPerSøk,
   regnUtFørsteTreffFra,
 } from '../api/stillings-sok/stillingssøkElasticSearchQuery';
 import { useStillingssøk } from '../api/stillings-sok/useStillingssøk';
 import SWRLaster from '../components/SWRLaster';
+import { useApplikasjonContext } from '../providers/ApplikasjonContext';
 import { useStillingsSøkFilter } from './StillingsSøkContext';
 import LagreStandardsøk from './components/LagreStandardsøk';
 import StillingsSøkPaginering from './components/Pagnering';
@@ -14,8 +14,14 @@ import StillingsSøkSortering from './components/StillingsSøkSortering';
 import { Heading } from '@navikt/ds-react';
 import * as React from 'react';
 
-const StillingsSøkeresultat: React.FC<{ kandidatId?: string }> = ({
+interface StillingsSøkeresultatProps {
+  kandidatId?: string;
+  erFormidling?: boolean;
+}
+
+const StillingsSøkeresultat: React.FC<StillingsSøkeresultatProps> = ({
   kandidatId,
+  erFormidling,
 }) => {
   const filter = useStillingsSøkFilter();
   const {
@@ -43,7 +49,7 @@ const StillingsSøkeresultat: React.FC<{ kandidatId?: string }> = ({
           <>
             <div className='flex min-h-[80px] items-center gap-2'>
               <StillingsSøkChips />
-              <LagreStandardsøk />
+              {!erFormidling && <LagreStandardsøk />}
             </div>
             <div className='my-4 flex items-center justify-between'>
               {antallVisning(data.hits.total.value)}

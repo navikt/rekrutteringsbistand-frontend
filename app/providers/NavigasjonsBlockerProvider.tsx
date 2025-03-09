@@ -59,7 +59,7 @@ const NavigasjonsBlockerProvider: React.FC<NavigasjonsBlockerProviderProps> = ({
       return () =>
         window.removeEventListener('beforeunload', handleBeforeUnload);
     }
-  }, [pathname]);
+  }, [pathname, testMode]);
 
   return children;
 };

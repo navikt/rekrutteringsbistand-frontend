@@ -1,4 +1,3 @@
-import { useApplikasjonContext } from '../../../../../ApplikasjonContext';
 import { useForespurteOmDelingAvCv } from '../../../../../api/foresporsel-om-deling-av-cv/foresporsler/[slug]/useForespurteOmDelingAvCv';
 import { postDelMedArbeidsgiver } from '../../../../../api/kandidat/postDelMedArbeidsgiver';
 import {
@@ -6,6 +5,7 @@ import {
   kandidatlisteSchemaDTO,
 } from '../../../../../api/kandidat/schema.zod';
 import SWRLaster from '../../../../../components/SWRLaster';
+import { useApplikasjonContext } from '../../../../../providers/ApplikasjonContext';
 import ForhåndsvisningAvEpost from './ForhåndsvisningAvEpost';
 import { TenancyIcon } from '@navikt/aksel-icons';
 import {

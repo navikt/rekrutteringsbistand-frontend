@@ -1,5 +1,5 @@
-import { useThemeProvider } from '../../../../ThemeProvider';
 import { nyheter } from '../../../../nyheter';
+import { useThemeProvider } from '../../../../providers/ThemeProvider';
 import Artikkel from './Artikkel';
 import useAntallUlesteNyheter from './useAntallUlesteNyheter';
 import { LightBulbIcon } from '@navikt/aksel-icons';

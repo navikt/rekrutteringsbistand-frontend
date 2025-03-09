@@ -1,5 +1,4 @@
 import { rekbisError } from '../../../../util/rekbisError';
-import { useApplikasjonContext } from '../../../ApplikasjonContext';
 import { leggTilKandidater } from '../../../api/kandidat-sok/leggTilKandidat';
 import { formidleUsynligKandidat } from '../../../api/kandidat/formidleKandidat';
 import { useKandidatliste } from '../../../api/kandidat/useKandidatliste';
@@ -7,6 +6,7 @@ import LeggTilKandidater, {
   ValgtKandidatProp,
 } from '../../../components/legg-til-kandidat/LeggTilKandidater';
 import { useVisVarsling } from '../../../components/varsling/Varsling';
+import { useApplikasjonContext } from '../../../providers/ApplikasjonContext';
 import { ArrowForwardIcon } from '@navikt/aksel-icons';
 import { Button, Modal } from '@navikt/ds-react';
 import * as React from 'react';

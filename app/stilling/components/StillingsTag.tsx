@@ -1,7 +1,7 @@
-import { useApplikasjonContext } from '../../ApplikasjonContext';
 import { StillingsDataDTO } from '../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { RekrutteringsbistandStillingSchemaDTO } from '../../api/stillings-sok/schema/rekrutteringsbistandStillingSchema.zod';
 import { eierStilling } from '../../components/tilgangskontroll/erEier';
+import { useApplikasjonContext } from '../../providers/ApplikasjonContext';
 import {
   AdminStatus,
   StillingsStatus,
