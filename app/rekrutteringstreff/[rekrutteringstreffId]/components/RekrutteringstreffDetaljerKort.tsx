@@ -1,4 +1,4 @@
-import { BriefcaseIcon, PlusIcon } from '@navikt/aksel-icons';
+import { PlusIcon } from '@navikt/aksel-icons';
 import { BodyShort, Box, Button, Heading } from '@navikt/ds-react';
 import * as React from 'react';
 
@@ -10,22 +10,23 @@ export interface RekrutteringstreffDetaljerKortProps {
   onLeggTil?: () => void;
 }
 
-const RekrutteringstreffDetaljerKort: React.FC<RekrutteringstreffDetaljerKortProps> = ({
-  overskrift,
-  tittel,
-  beskrivelse,
-  ikon,
-  onLeggTil,
-}) => {
+const RekrutteringstreffDetaljerKort: React.FC<
+  RekrutteringstreffDetaljerKortProps
+> = ({ overskrift, tittel, beskrivelse, ikon, onLeggTil }) => {
   return (
     <div>
       <Heading level='2' size='medium' className='mb-4'>
         {overskrift}
       </Heading>
-      <Box.New background='raised' className='mb-4 p-6 rounded-lg border border-gray-900'>
+      <Box.New
+        background='raised'
+        className='mb-4 p-6 rounded-lg border border-gray-900'
+      >
         <div className='flex items-center justify-between mb-2'>
           <div className='flex items-center justify-start'>
-            {ikon}
+            <Box.New background='raised' className='rounded-full'>
+              {ikon}
+            </Box.New>
             <div className='mx-4 justify-start'>
               <Heading level='3' size='small'>
                 {tittel}

@@ -1,14 +1,13 @@
 'use client';
 
 import { Dato, datoFormatterer } from '../RekrutteringstreffSøk';
-import ArbeidsgiverKort from './components/ArbeidsgiverKort';
+import RekrutteringstreffDetaljerKort from './components/RekrutteringstreffDetaljerKort';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import SWRLaster from '@/app/components/SWRLaster';
 import { BriefcaseIcon } from '@navikt/aksel-icons';
-import { Table } from '@navikt/ds-react';
+import { Box, Table } from '@navikt/ds-react';
 import { useParams } from 'next/navigation';
 import * as React from 'react';
-import RekrutteringstreffDetaljerKort from './components/RekrutteringstreffDetaljerKort';
 
 const Rekrutteringstreff: React.FC = () => {
   const { rekrutteringstreffId } = useParams();
@@ -17,7 +16,7 @@ const Rekrutteringstreff: React.FC = () => {
   );
 
   return (
-    <>
+    <Box.New>
       <SWRLaster hooks={[rekrutteringstreffHook]}>
         {(rekrutteringstreff) => {
           const dato: Dato = datoFormatterer(
@@ -66,9 +65,16 @@ const Rekrutteringstreff: React.FC = () => {
         }}
       </SWRLaster>
       <div className='mt-4'>
-        <RekrutteringstreffDetaljerKort overskrift='Arbeidsgiver' tittel='WinWin AS' beskrivelse='lalala' ikon={<BriefcaseIcon className='w-8 h-8 text-gray-600 m-2 rounded-[100px]' />} />
+        <RekrutteringstreffDetaljerKort
+          overskrift='Arbeidsgiver'
+          tittel='WinWin AS'
+          beskrivelse='lalala'
+          ikon={
+            <BriefcaseIcon className='w-8 h-8 text-gray-600 m-2 rounded-[100px]' />
+          }
+        />
       </div>
-    </>
+    </Box.New>
   );
 };
 
