@@ -17,6 +17,12 @@ export const useUseBrukerStandardSøk = () =>
   useSWRImmutable(
     brukerStandardSøkEndepunkt,
     getAPIwithSchema(BrukerStandardSøkSchema),
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+      refreshInterval: 0,
+      dedupingInterval: 0,
+    },
   );
 
 export const brukerStandardSøkMirage = (server: any) => {

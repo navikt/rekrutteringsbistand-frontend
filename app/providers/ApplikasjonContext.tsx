@@ -7,6 +7,7 @@ import Header from '../components/header/Header';
 import { Roller } from '../components/tilgangskontroll/roller';
 import { Varsling } from '../components/varsling/Varsling';
 import { Alert, Heading } from '@navikt/ds-react';
+import { logger } from '@navikt/next-logger';
 import React from 'react';
 
 export type NavKontorMedNavn = {
@@ -25,6 +26,7 @@ interface ApplikasjonContextType {
   setValgtNavKontor: (navKontor: NavKontorMedNavn | null) => void;
   setValgtFnr: (fnr: string | null) => void;
   valgtFnr: string | null;
+  tilUmami: (event: string, data: Record<string, string>) => void;
 }
 
 const ApplikasjonContext = React.createContext<ApplikasjonContextType>({
@@ -41,6 +43,7 @@ const ApplikasjonContext = React.createContext<ApplikasjonContextType>({
   setValgtFnr: () => null,
   valgtNavKontor: null,
   valgtFnr: null,
+  tilUmami: () => null,
 });
 
 interface IApplikasjonContextProvider {
@@ -55,6 +58,14 @@ export const ApplikasjonContextProvider: React.FC<
 
   const [valgtNavKontor, setValgtNavKontor] =
     React.useState<NavKontorMedNavn | null>(null);
+
+  const tilUmami = (event: string, data: Record<string, string>) => {
+    if (window.umami) {
+      window.umami.track(event, data);
+    } else {
+      logger.warn('Fant ikke umami', { url: window.location.href });
+    }
+  };
 
   const harRolle = (rolle: Roller[]) =>
     rolle.some(
@@ -79,6 +90,7 @@ export const ApplikasjonContextProvider: React.FC<
         valgtNavKontor,
         harRolle,
         valgtFnr,
+        tilUmami,
       }}
     >
       <Header />
