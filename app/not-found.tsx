@@ -1,3 +1,5 @@
+'use client';
+
 import { useApplikasjonContext } from './providers/ApplikasjonContext';
 import { NextPage } from 'next';
 
