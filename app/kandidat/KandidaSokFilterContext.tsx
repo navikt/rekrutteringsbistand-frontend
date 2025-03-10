@@ -39,9 +39,8 @@ export enum KandidatSøkQueryparam {
 }
 
 export interface IKandidaSokFilterContext {
-  fritekst: string[];
+  fritekst: string;
   setFritekst: (tekst: string) => void;
-  setFritekstListe: (tekst: string[]) => void;
   portefølje: string;
   setPortefølje: (portefølje: string) => void;
   valgtKontor: string[];
@@ -83,17 +82,7 @@ export const KandidatSøkProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const { valgtNavKontor } = useApplikasjonContext();
 
-  const [fritekst, setFritekst] = React.useState<string[]>([]);
-
-  const setFritekstListe = (tekst: string[]) => {
-    setFritekst(tekst);
-    setSide(1);
-  };
-
-  const endreFritekst = (tekst: string) => {
-    setFritekst([...fritekst, tekst]);
-    setSide(1);
-  };
+  const [fritekst, setFritekst] = React.useState<string>('');
 
   const [side, setSide] = useQueryState(
     KandidatSøkQueryparam.Side,
@@ -202,8 +191,7 @@ export const KandidatSøkProvider: React.FC<{ children: React.ReactNode }> = ({
     <KandidaSøkFilterContext.Provider
       value={{
         fritekst,
-        setFritekst: endreFritekst,
-        setFritekstListe,
+        setFritekst,
         portefølje,
         setPortefølje: wrapWithPageReset(setPortefølje),
         side,
