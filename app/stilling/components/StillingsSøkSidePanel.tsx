@@ -14,7 +14,7 @@ const StillingsSøkSidePanel: React.FC<{
   formidlinger?: boolean;
   kandidatId?: string;
 }> = ({ formidlinger, kandidatId }) => {
-  const { fritekst, setFritekst } = useStillingsSøkFilter();
+  const { fritekst, setFritekstListe } = useStillingsSøkFilter();
   const [searchValue, setSearchValue] = React.useState<string>('');
   const { harRolle } = useApplikasjonContext();
 
@@ -27,7 +27,8 @@ const StillingsSøkSidePanel: React.FC<{
         onKeyDownCapture={(e) => {
           if (e.key === 'Enter') {
             e.preventDefault();
-            setFritekst([...fritekst, searchValue]);
+            const nyListe = [...fritekst, searchValue];
+            setFritekstListe(nyListe);
             setSearchValue('');
           }
         }}
@@ -37,8 +38,9 @@ const StillingsSøkSidePanel: React.FC<{
         variant='primary'
         value={searchValue}
         onChange={(e) => setSearchValue(e)}
-        onSearchClick={(e) => {
-          setFritekst([...fritekst, e]);
+        onSearchClick={() => {
+          const nyListe = [...fritekst, searchValue];
+          setFritekstListe(nyListe);
           setSearchValue('');
         }}
       />

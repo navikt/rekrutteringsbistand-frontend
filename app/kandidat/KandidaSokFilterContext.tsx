@@ -81,13 +81,9 @@ export const KandidatSøkProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const { valgtNavKontor } = useApplikasjonContext();
-  const [fritekst, setFritekst] = useQueryState(
-    KandidatSøkQueryparam.Fritekst,
-    {
-      defaultValue: '',
-      clearOnDefault: true,
-    },
-  );
+
+  // Unngå fritekst i serachparam
+  const [fritekst, setFritekst] = React.useState<string>('');
 
   const [side, setSide] = useQueryState(
     KandidatSøkQueryparam.Side,
@@ -196,7 +192,7 @@ export const KandidatSøkProvider: React.FC<{ children: React.ReactNode }> = ({
     <KandidaSøkFilterContext.Provider
       value={{
         fritekst,
-        setFritekst: wrapWithPageReset(setFritekst),
+        setFritekst,
         portefølje,
         setPortefølje: wrapWithPageReset(setPortefølje),
         side,

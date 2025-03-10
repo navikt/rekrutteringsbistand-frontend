@@ -4,7 +4,7 @@ import * as React from 'react';
 
 const FritekstSøk: React.FC = () => {
   const { fritekst, setFritekst } = useKandidatSøkFilterContext();
-  const [localFritekst, setLocalFritekst] = React.useState(fritekst);
+  const [localFritekst, setLocalFritekst] = React.useState<string>(fritekst);
 
   return (
     <Search

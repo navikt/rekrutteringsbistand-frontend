@@ -19,7 +19,9 @@ const StillingsSøkChips: React.FC = () => {
             <Chips key={filter.fritekst}>
               <Chips.Removable
                 variant='neutral'
-                onClick={() => filter.setFritekst('')}
+                onClick={() => {
+                  filter.setFritekst('');
+                }}
               >
                 {filter.fritekst}
               </Chips.Removable>
@@ -37,12 +39,6 @@ const StillingsSøkChips: React.FC = () => {
           <FilterChip
             type={filter.innsatsgruppe}
             setVerdi={filter.setInnsatsgruppe}
-            // mapVerdiNavn={(navn: string) =>
-            //   Object.keys(Innsatsgruppe).find(
-            //     (key) =>
-            //       Innsatsgruppe[key as keyof typeof Innsatsgruppe] === navn,
-            //   ) || navn
-            // }
           />
           <FilterChip
             type={filter.hovedmål}
