@@ -15,16 +15,22 @@ const StillingsSøkChips: React.FC = () => {
           {Object.values(filter).some(
             (value) => Array.isArray(value) && value.length > 0,
           ) && <TømFiltre />}
-          {filter.fritekst && (
-            <Chips key={filter.fritekst}>
-              <Chips.Removable
-                variant='neutral'
-                onClick={() => filter.setFritekst('')}
-              >
-                {filter.fritekst}
-              </Chips.Removable>
-            </Chips>
-          )}
+          {filter.fritekst &&
+            filter.fritekst.map((fritekst) => (
+              <Chips key={fritekst}>
+                <Chips.Removable
+                  variant='neutral'
+                  onClick={() => {
+                    const nyListe = filter.fritekst.filter(
+                      (f) => f !== fritekst,
+                    );
+                    filter.setFritekstListe(nyListe);
+                  }}
+                >
+                  {fritekst}
+                </Chips.Removable>
+              </Chips>
+            ))}
 
           <FilterChip
             type={filter.ønsketYrke}
@@ -37,12 +43,6 @@ const StillingsSøkChips: React.FC = () => {
           <FilterChip
             type={filter.innsatsgruppe}
             setVerdi={filter.setInnsatsgruppe}
-            // mapVerdiNavn={(navn: string) =>
-            //   Object.keys(Innsatsgruppe).find(
-            //     (key) =>
-            //       Innsatsgruppe[key as keyof typeof Innsatsgruppe] === navn,
-            //   ) || navn
-            // }
           />
           <FilterChip
             type={filter.hovedmål}
