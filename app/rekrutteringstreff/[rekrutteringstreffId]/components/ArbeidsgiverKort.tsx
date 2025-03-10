@@ -1,5 +1,5 @@
 import { BriefcaseIcon, PlusIcon } from '@navikt/aksel-icons';
-import { Box, Button, Heading, BodyShort } from '@navikt/ds-react';
+import { BodyShort, Box, Button, Heading } from '@navikt/ds-react';
 import * as React from 'react';
 
 export interface ArbeidsgiverKortProps {
@@ -18,7 +18,7 @@ const ArbeidsgiverKort: React.FC<ArbeidsgiverKortProps> = ({
       <Heading level='2' size='medium' className='mb-4'>
         Arbeidsgivere
       </Heading>
-      <Box.New className='mb-4 p-6 bg-[#1C232F] rounded-lg'>
+      <Box.New background='raised' className='mb-4 p-6 rounded-lg'>
         <div className='flex items-center justify-between mb-2'>
           <div className='flex items-center justify-start'>
             <BriefcaseIcon className='w-8 h-8 text-gray-600 m-2 rounded-[100px]' />
