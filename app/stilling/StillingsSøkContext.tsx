@@ -38,7 +38,8 @@ interface IStillingsSøkContext {
   publisert: string[];
   setPublisert: (val: string[]) => void;
   fritekst: string[];
-  setFritekst: (val: string[]) => void;
+  setFritekst: (val: string) => void;
+  setFritekstListe: (val: string[]) => void;
   formidlinger?: boolean;
 }
 
@@ -55,6 +56,13 @@ export const StillingsSøkProvider: React.FC<{
   const harArbeidsgiverrettetRolle = harRolle([
     Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
   ]);
+
+  // Set fritekst som lokal state for å hindre fritekst i searchparam
+  const [fritekst, setFritekstListe] = React.useState<string[]>([]);
+
+  const setFritekst = (val: string) => {
+    setFritekstListe((prevFritekst) => [...prevFritekst, val]);
+  };
 
   const setStatuser = (value: string[] | ((prev: string[]) => string[])) => {
     if (!formidlinger && !harArbeidsgiverrettetRolle) {
@@ -106,12 +114,6 @@ export const StillingsSøkProvider: React.FC<{
       defaultValue: 'publiseringsdato',
       clearOnDefault: true,
     },
-  );
-  const [fritekst, setFritekst] = useQueryState<string[]>(
-    StillingsSøkQueryparam.Tekst,
-    parseAsArrayOf(parseAsString)
-      .withDefault([])
-      .withOptions({ clearOnDefault: true, shallow: true }),
   );
 
   const [inkludering, setInkludering] = useQueryState<string[]>(
@@ -205,7 +207,8 @@ export const StillingsSøkProvider: React.FC<{
     <StillingsSøkContext.Provider
       value={{
         fritekst,
-        setFritekst: wrapWithPageReset(setFritekst),
+        setFritekst: setFritekst,
+        setFritekstListe,
         sortering,
         setSortering,
         side,

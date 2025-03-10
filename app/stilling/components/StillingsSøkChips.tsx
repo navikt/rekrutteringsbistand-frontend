@@ -41,7 +41,15 @@ const StillingsSøkChips: React.FC = () => {
           {Object.values(filter).some(
             (value) => Array.isArray(value) && value.length > 0,
           ) && <TømFiltre />}
-          <FilterChip type={filter.fritekst} setVerdi={filter.setFritekst} />
+
+          {filter.fritekst &&
+            filter.fritekst.map((fritekst, i) => (
+              <FilterChip
+                key={i}
+                type={filter.fritekst}
+                setVerdi={filter.setFritekstListe}
+              />
+            ))}
           <FilterChip type={filter.statuser} setVerdi={filter.setStatuser} />
 
           {filter.inkludering.map((hovedInkludering, i) => {

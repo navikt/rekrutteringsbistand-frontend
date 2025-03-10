@@ -3,14 +3,8 @@ import { Search } from '@navikt/ds-react';
 import * as React from 'react';
 
 const FritekstSøk: React.FC = () => {
-  const { setFritekst } = useKandidatSøkFilterContext();
-  const [localFritekst, setLocalFritekst] = React.useState<string>('');
-
-  const handleSearchChange = (e: string) => {
-    setFritekst(e);
-
-    setLocalFritekst('');
-  };
+  const { fritekst, setFritekst } = useKandidatSøkFilterContext();
+  const [localFritekst, setLocalFritekst] = React.useState<string>(fritekst);
 
   return (
     <Search
@@ -19,7 +13,7 @@ const FritekstSøk: React.FC = () => {
       variant='primary'
       onChange={(e) => setLocalFritekst(e)}
       value={localFritekst}
-      onSearchClick={() => handleSearchChange(localFritekst)}
+      onSearchClick={() => setFritekst(localFritekst)}
     />
   );
 };

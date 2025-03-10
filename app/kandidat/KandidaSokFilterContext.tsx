@@ -82,6 +82,7 @@ export const KandidatSøkProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const { valgtNavKontor } = useApplikasjonContext();
 
+  // Unngå fritekst i serachparam
   const [fritekst, setFritekst] = React.useState<string>('');
 
   const [side, setSide] = useQueryState(
