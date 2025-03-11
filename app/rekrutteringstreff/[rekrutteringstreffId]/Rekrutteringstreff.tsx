@@ -44,7 +44,7 @@ const Rekrutteringstreff: React.FC = () => {
                   <Table.DataCell>{dato.sluttTidspunkt}</Table.DataCell>
                 </Table.Row>
                 <Table.Row>
-                  <Table.DataCell>Opprettet av NAV-kontor</Table.DataCell>
+                  <Table.DataCell>Opprettet av Nav-kontor</Table.DataCell>
                   <Table.DataCell>
                     {rekrutteringstreff.opprettetAvNavkontorEnhetId}
                   </Table.DataCell>
