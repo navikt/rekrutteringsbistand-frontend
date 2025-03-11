@@ -1,6 +1,7 @@
 'use client';
 
 import { datoFormatterer } from '../RekrutteringstreffSøk';
+import LeggTilArbeidsgiverModal from './LeggTilArbeidsgiverModal';
 import RekrutteringstreffDetaljerKort from './components/RekrutteringstreffDetaljerKort';
 import { ArbeidsgiverDTO } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
@@ -129,10 +130,16 @@ const Rekrutteringstreff: React.FC = () => {
         </Tabs.Panel>
 
         <Tabs.Panel value={RekrutteringstreffTabs.ARBEIDSGIVERE}>
-          <div className='p-4'>
-            <Heading level='2' size='medium' className='mb-2'>
-              Arbeidsgivere
-            </Heading>
+          <div className='p-4 flex flex-col gap-4'>
+            <div className='flex items-center justify-between'>
+              <Heading level='2' size='medium'>
+                Arbeidsgivere
+              </Heading>
+              <LeggTilArbeidsgiverModal
+                onLeggTilArbeidsgiver={handleLeggTilArbeidsgiver}
+                onCloseModal={() => {}}
+              />
+            </div>
             {arbeidsgivere.length === 0 ? (
               <BodyShort>Ingen arbeidsgivere lagt til</BodyShort>
             ) : (
