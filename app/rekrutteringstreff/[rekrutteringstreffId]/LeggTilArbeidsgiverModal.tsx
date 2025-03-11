@@ -1,7 +1,7 @@
 import { ArbeidsgiverDTO } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
 import VelgArbeidsgiver from '@/app/stilling/ny-stilling/components/VelgArbeidsgiver';
 import { PlusIcon } from '@navikt/aksel-icons';
-import { BodyLong, Button, Modal } from '@navikt/ds-react';
+import { Button, Modal } from '@navikt/ds-react';
 import * as React from 'react';
 
 const LeggTilArbeidsgiverModal: React.FC = () => {
@@ -10,13 +10,22 @@ const LeggTilArbeidsgiverModal: React.FC = () => {
   const [arbeidsgiver, setArbeidsgiver] =
     React.useState<ArbeidsgiverDTO | null>(null);
 
+  console.log('arbeidsgiver', arbeidsgiver);
+
   return (
-    <div className='py-16'>
-      <Button icon={<PlusIcon />} type='button' variant='tertiary' onClick={() => ref.current?.showModal()}>Legg til</Button>
+    <div>
+      <Button
+        icon={<PlusIcon />}
+        type='button'
+        variant='tertiary'
+        onClick={() => ref.current?.showModal()}
+      >
+        Legg til
+      </Button>
 
       <Modal ref={ref} header={{ heading: 'Legg til arbeidsgiver' }}>
         <Modal.Body>
-        <VelgArbeidsgiver arbeidsgiverCallback={setArbeidsgiver} />
+          <VelgArbeidsgiver arbeidsgiverCallback={setArbeidsgiver} />
         </Modal.Body>
         <Modal.Footer>
           <Button type='button' onClick={() => ref.current?.close()}>
