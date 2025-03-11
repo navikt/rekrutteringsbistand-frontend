@@ -11,7 +11,6 @@
   "kandidatApiUrl": "https://rekrutteringsbistand-kandidat-api.dev-fss-pub.nais.io/rekrutteringsbistand-kandidat-api/rest",
   "statistikkApiHost": "rekrutteringsbistand-statistikk-api.dev-fss-pub.nais.io",
   "statistikkApiUrl": "https://rekrutteringsbistand-statistikk-api.dev-fss-pub.nais.io/rekrutteringsbistand-statistikk-api",
-  "umamiDomain": "rekrutteringsbistand-frontend.intern.dev.nav.no",
   "umamiId": "65e956ff-6712-47eb-8f78-a0002031496f",
   "umamiSrc": "https://cdn.nav.no/team-researchops/sporing/sporing.js",
   "umamiUrl": "https://umami.nav.no"

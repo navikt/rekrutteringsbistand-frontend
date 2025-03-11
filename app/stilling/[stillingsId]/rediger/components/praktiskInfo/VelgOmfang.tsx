@@ -1,4 +1,4 @@
-import { FormidlingDataForm } from '../../../../../formidling/ny-formidling/redigerFormidlingFormType';
+import { FormidlingDataForm } from '../../../../../etterregistrering/ny-etterregistrering/redigerFormidlingFormType';
 import { StillingsDataForm } from '../../redigerFormType.zod';
 import { ErrorMessage, Radio, RadioGroup, Select } from '@navikt/ds-react';
 import * as React from 'react';

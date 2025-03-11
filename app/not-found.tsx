@@ -7,13 +7,13 @@ import { useEffect } from 'react';
 const NotFound: NextPage = () => {
   useEffect(() => {
     tilUmami({
-      domene: UmamiDomene.App,
+      domene: UmamiDomene.Generell,
       event: 'Fant ikke side (404)',
       data: {
         path: window.location.pathname,
       },
     });
-  }, [tilUmami]);
+  }, []);
 
   return (
     <div style={{ textAlign: 'center', marginTop: '50px' }}>

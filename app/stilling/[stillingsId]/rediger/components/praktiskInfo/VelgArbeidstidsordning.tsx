@@ -1,4 +1,4 @@
-import { FormidlingDataForm } from '../../../../../formidling/ny-formidling/redigerFormidlingFormType';
+import { FormidlingDataForm } from '../../../../../etterregistrering/ny-etterregistrering/redigerFormidlingFormType';
 import { StillingsArbeidstidsordning } from '../../../../stilling-typer';
 import { StillingsDataForm } from '../../redigerFormType.zod';
 import { Select } from '@navikt/ds-react';
