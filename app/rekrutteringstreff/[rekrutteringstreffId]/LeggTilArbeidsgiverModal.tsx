@@ -4,13 +4,23 @@ import { PlusIcon } from '@navikt/aksel-icons';
 import { Button, Modal } from '@navikt/ds-react';
 import * as React from 'react';
 
-const LeggTilArbeidsgiverModal: React.FC = () => {
-  const ref = React.useRef<HTMLDialogElement>(null);
+interface LeggTilArbeidsgiverModalProps {
+  onLeggTilArbeidsgiver: (arbeidsgiver: ArbeidsgiverDTO) => void;
+}
 
+const LeggTilArbeidsgiverModal: React.FC<LeggTilArbeidsgiverModalProps> = ({
+  onLeggTilArbeidsgiver,
+}) => {
+  const ref = React.useRef<HTMLDialogElement>(null);
   const [arbeidsgiver, setArbeidsgiver] =
     React.useState<ArbeidsgiverDTO | null>(null);
 
-  console.log('arbeidsgiver', arbeidsgiver);
+  const handleLeggTil = () => {
+    if (arbeidsgiver) {
+      onLeggTilArbeidsgiver(arbeidsgiver);
+      ref.current?.close();
+    }
+  };
 
   return (
     <div>
@@ -28,7 +38,7 @@ const LeggTilArbeidsgiverModal: React.FC = () => {
           <VelgArbeidsgiver arbeidsgiverCallback={setArbeidsgiver} />
         </Modal.Body>
         <Modal.Footer>
-          <Button type='button' onClick={() => ref.current?.close()}>
+          <Button type='button' onClick={handleLeggTil}>
             Legg til
           </Button>
           <Button

@@ -1,4 +1,5 @@
 import LeggTilArbeidsgiverModal from '../LeggTilArbeidsgiverModal';
+import { ArbeidsgiverDTO } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
 import { BodyShort, Box, Heading } from '@navikt/ds-react';
 import * as React from 'react';
 
@@ -7,11 +8,12 @@ export interface RekrutteringstreffDetaljerKortProps {
   tittel: string;
   beskrivelse: string;
   ikon: React.ReactNode;
+  onLeggTilArbeidsgiver: (arbeidsgiver: ArbeidsgiverDTO) => void;
 }
 
 const RekrutteringstreffDetaljerKort: React.FC<
   RekrutteringstreffDetaljerKortProps
-> = ({ overskrift, tittel, beskrivelse, ikon }) => {
+> = ({ overskrift, tittel, beskrivelse, ikon, onLeggTilArbeidsgiver }) => {
   return (
     <div>
       <Heading level='2' size='medium' className='mb-4'>
@@ -33,7 +35,9 @@ const RekrutteringstreffDetaljerKort: React.FC<
               <BodyShort>{beskrivelse}</BodyShort>
             </div>
           </div>
-          <LeggTilArbeidsgiverModal />
+          <LeggTilArbeidsgiverModal
+            onLeggTilArbeidsgiver={onLeggTilArbeidsgiver}
+          />
         </div>
       </Box.New>
     </div>

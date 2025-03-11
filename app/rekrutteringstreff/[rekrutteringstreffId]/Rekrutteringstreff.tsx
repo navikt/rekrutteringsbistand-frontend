@@ -2,6 +2,7 @@
 
 import { Dato, datoFormatterer } from '../RekrutteringstreffSøk';
 import RekrutteringstreffDetaljerKort from './components/RekrutteringstreffDetaljerKort';
+import { ArbeidsgiverDTO } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import SWRLaster from '@/app/components/SWRLaster';
 import { BriefcaseIcon } from '@navikt/aksel-icons';
@@ -9,22 +10,55 @@ import { BodyShort, Box, Heading, Table, Tabs } from '@navikt/ds-react';
 import { useParams } from 'next/navigation';
 import * as React from 'react';
 
+export enum RekrutteringstreffTabs {
+  OM_TREFFET = 'om_treffet',
+  DELTAKERE = 'deltakere',
+  ARBEIDSGIVERE = 'arbeidsgivere',
+}
+
 const Rekrutteringstreff: React.FC = () => {
   const { rekrutteringstreffId } = useParams();
   const rekrutteringstreffHook = useRekrutteringstreff(
     rekrutteringstreffId as string,
   );
-  const [activeTab, setActiveTab] = React.useState<string>('om_treffet');
+  const [activeTab, setActiveTab] = React.useState<RekrutteringstreffTabs>(
+    RekrutteringstreffTabs.OM_TREFFET,
+  );
+
+  const [arbeidsgivere, setArbeidsgivere] = React.useState<ArbeidsgiverDTO[]>(
+    [],
+  );
+
+  const handleLeggTilArbeidsgiver = (arbeidsgiver: ArbeidsgiverDTO) => {
+    setArbeidsgivere((arbeidsgiverliste) => [
+      ...arbeidsgiverliste,
+      arbeidsgiver,
+    ]);
+    setActiveTab(RekrutteringstreffTabs.ARBEIDSGIVERE);
+  };
 
   return (
     <Box.New>
-      <Tabs value={activeTab} onChange={(value) => setActiveTab(value)}>
+      <Tabs
+        value={activeTab}
+        onChange={(value) => setActiveTab(value as RekrutteringstreffTabs)}
+      >
         <Tabs.List className='w-full'>
-          <Tabs.Tab value='om_treffet' label='Om treffet' />
-          <Tabs.Tab value='deltakere' label='Deltakere' />
-          <Tabs.Tab value='arbeidsgivere' label='Arbeidsgivere' />
+          <Tabs.Tab
+            value={RekrutteringstreffTabs.OM_TREFFET}
+            label='Om treffet'
+          />
+          <Tabs.Tab
+            value={RekrutteringstreffTabs.DELTAKERE}
+            label='Deltakere'
+          />
+          <Tabs.Tab
+            value={RekrutteringstreffTabs.ARBEIDSGIVERE}
+            label='Arbeidsgivere'
+          />
         </Tabs.List>
-        <Tabs.Panel value='om_treffet'>
+
+        <Tabs.Panel value={RekrutteringstreffTabs.OM_TREFFET} className='my-4'>
           <SWRLaster hooks={[rekrutteringstreffHook]}>
             {(rekrutteringstreff) => {
               const dato: Dato = datoFormatterer(
@@ -84,10 +118,12 @@ const Rekrutteringstreff: React.FC = () => {
               ikon={
                 <BriefcaseIcon className='w-8 h-8 text-gray-600 m-2 rounded-[100px]' />
               }
+              onLeggTilArbeidsgiver={handleLeggTilArbeidsgiver}
             />
           </div>
         </Tabs.Panel>
-        <Tabs.Panel value='deltakere'>
+
+        <Tabs.Panel value={RekrutteringstreffTabs.DELTAKERE}>
           <div className='p-4'>
             <Heading level='2' size='medium' className='mb-2'>
               Deltakere
@@ -95,8 +131,22 @@ const Rekrutteringstreff: React.FC = () => {
             <BodyShort>TODO</BodyShort>
           </div>
         </Tabs.Panel>
-        <Tabs.Panel value='arbeidsgivere'>
-          <div className='p-4'></div>
+
+        <Tabs.Panel value={RekrutteringstreffTabs.ARBEIDSGIVERE}>
+          <div className='p-4'>
+            <Heading level='2' size='medium' className='mb-2'>
+              Arbeidsgivere
+            </Heading>
+            {arbeidsgivere.length === 0 ? (
+              <BodyShort>Ingen arbeidsgivere lagt til</BodyShort>
+            ) : (
+              <ul>
+                {arbeidsgivere.map((a, index) => (
+                  <li key={index}>{JSON.stringify(a)}</li>
+                ))}
+              </ul>
+            )}
+          </div>
         </Tabs.Panel>
       </Tabs>
     </Box.New>
