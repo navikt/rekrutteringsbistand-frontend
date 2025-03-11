@@ -6,20 +6,30 @@ import * as React from 'react';
 
 interface LeggTilArbeidsgiverModalProps {
   onLeggTilArbeidsgiver: (arbeidsgiver: ArbeidsgiverDTO) => void;
+  onCloseModal?: () => void;
 }
 
 const LeggTilArbeidsgiverModal: React.FC<LeggTilArbeidsgiverModalProps> = ({
   onLeggTilArbeidsgiver,
+  onCloseModal = () => {}, // standardverdi her
 }) => {
-  const ref = React.useRef<HTMLDialogElement>(null);
+  const [open, setOpen] = React.useState(false);
   const [arbeidsgiver, setArbeidsgiver] =
     React.useState<ArbeidsgiverDTO | null>(null);
 
   const handleLeggTil = () => {
     if (arbeidsgiver) {
       onLeggTilArbeidsgiver(arbeidsgiver);
-      ref.current?.close();
+      setOpen(false);
+      onCloseModal();
+    } else {
+      console.error('Arbeidsgiver mangler');
     }
+  };
+
+  const handleAvbryt = () => {
+    setOpen(false);
+    onCloseModal();
   };
 
   return (
@@ -28,24 +38,28 @@ const LeggTilArbeidsgiverModal: React.FC<LeggTilArbeidsgiverModalProps> = ({
         icon={<PlusIcon />}
         type='button'
         variant='tertiary'
-        onClick={() => ref.current?.showModal()}
+        onClick={() => setOpen(true)}
       >
         Legg til
       </Button>
 
-      <Modal ref={ref} header={{ heading: 'Legg til arbeidsgiver' }}>
+      <Modal
+        open={open}
+        onClose={handleAvbryt}
+        header={{ heading: 'Legg til arbeidsgiver' }}
+      >
         <Modal.Body>
           <VelgArbeidsgiver arbeidsgiverCallback={setArbeidsgiver} />
         </Modal.Body>
         <Modal.Footer>
-          <Button type='button' onClick={handleLeggTil}>
-            Legg til
-          </Button>
           <Button
             type='button'
-            variant='secondary'
-            onClick={() => ref.current?.close()}
+            onClick={handleLeggTil}
+            disabled={!arbeidsgiver}
           >
+            Legg til
+          </Button>
+          <Button type='button' variant='secondary' onClick={handleAvbryt}>
             Avbryt
           </Button>
         </Modal.Footer>

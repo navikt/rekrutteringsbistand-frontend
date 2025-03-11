@@ -29,6 +29,8 @@ const Rekrutteringstreff: React.FC = () => {
     [],
   );
 
+  const [, setIsModalOpen] = React.useState(false);
+
   const handleLeggTilArbeidsgiver = (arbeidsgiver: ArbeidsgiverDTO) => {
     setArbeidsgivere((arbeidsgiverliste) => [
       ...arbeidsgiverliste,
@@ -119,6 +121,7 @@ const Rekrutteringstreff: React.FC = () => {
                 <BriefcaseIcon className='w-8 h-8 text-gray-600 m-2 rounded-[100px]' />
               }
               onLeggTilArbeidsgiver={handleLeggTilArbeidsgiver}
+              onCloseModal={() => setIsModalOpen(false)}
             />
           </div>
         </Tabs.Panel>
