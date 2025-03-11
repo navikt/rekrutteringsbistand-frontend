@@ -11,7 +11,7 @@ interface LeggTilArbeidsgiverModalProps {
 
 const LeggTilArbeidsgiverModal: React.FC<LeggTilArbeidsgiverModalProps> = ({
   onLeggTilArbeidsgiver,
-  onCloseModal = () => {}, // standardverdi her
+  onCloseModal = () => {},
 }) => {
   const [open, setOpen] = React.useState(false);
   const [arbeidsgiver, setArbeidsgiver] =
@@ -22,8 +22,6 @@ const LeggTilArbeidsgiverModal: React.FC<LeggTilArbeidsgiverModalProps> = ({
       onLeggTilArbeidsgiver(arbeidsgiver);
       setOpen(false);
       onCloseModal();
-    } else {
-      console.error('Arbeidsgiver mangler');
     }
   };
 

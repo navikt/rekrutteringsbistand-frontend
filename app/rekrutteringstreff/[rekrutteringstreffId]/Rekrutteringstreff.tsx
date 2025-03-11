@@ -1,6 +1,6 @@
 'use client';
 
-import { Dato, datoFormatterer } from '../RekrutteringstreffSøk';
+import { datoFormatterer } from '../RekrutteringstreffSøk';
 import RekrutteringstreffDetaljerKort from './components/RekrutteringstreffDetaljerKort';
 import { ArbeidsgiverDTO } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
@@ -21,21 +21,15 @@ const Rekrutteringstreff: React.FC = () => {
   const rekrutteringstreffHook = useRekrutteringstreff(
     rekrutteringstreffId as string,
   );
-  const [activeTab, setActiveTab] = React.useState<RekrutteringstreffTabs>(
+  const [activeTab, setActiveTab] = React.useState(
     RekrutteringstreffTabs.OM_TREFFET,
   );
-
   const [arbeidsgivere, setArbeidsgivere] = React.useState<ArbeidsgiverDTO[]>(
     [],
   );
 
-  const [, setIsModalOpen] = React.useState(false);
-
   const handleLeggTilArbeidsgiver = (arbeidsgiver: ArbeidsgiverDTO) => {
-    setArbeidsgivere((arbeidsgiverliste) => [
-      ...arbeidsgiverliste,
-      arbeidsgiver,
-    ]);
+    setArbeidsgivere((prev) => [...prev, arbeidsgiver]);
     setActiveTab(RekrutteringstreffTabs.ARBEIDSGIVERE);
   };
 
@@ -63,7 +57,7 @@ const Rekrutteringstreff: React.FC = () => {
         <Tabs.Panel value={RekrutteringstreffTabs.OM_TREFFET} className='my-4'>
           <SWRLaster hooks={[rekrutteringstreffHook]}>
             {(rekrutteringstreff) => {
-              const dato: Dato = datoFormatterer(
+              const dato = datoFormatterer(
                 rekrutteringstreff.fraTid,
                 rekrutteringstreff.tilTid,
               );
@@ -118,10 +112,9 @@ const Rekrutteringstreff: React.FC = () => {
               tittel='WinWin AS'
               beskrivelse='lalala'
               ikon={
-                <BriefcaseIcon className='w-8 h-8 text-gray-600 m-2 rounded-[100px]' />
+                <BriefcaseIcon className='w-8 h-8 text-gray-600 m-2 rounded-full' />
               }
               onLeggTilArbeidsgiver={handleLeggTilArbeidsgiver}
-              onCloseModal={() => setIsModalOpen(false)}
             />
           </div>
         </Tabs.Panel>
