@@ -1,11 +1,11 @@
 import { logger } from '@navikt/next-logger';
 
 export enum UmamiDomene {
-  App = 'App',
+  Generell = 'Generell',
   Forside = 'Forside',
   Stilling = 'Stilling',
   Kandidat = 'Kandidat',
-  Formidling = 'Formidling',
+  Etterregistrering = 'Etterregistrering',
   Rekrutteringstreff = 'Rekrutteringstreff',
 }
 

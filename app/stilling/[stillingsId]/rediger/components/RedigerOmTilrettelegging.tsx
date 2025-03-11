@@ -1,4 +1,4 @@
-import { FormidlingDataForm } from '../../../../formidling/ny-formidling/redigerFormidlingFormType';
+import { FormidlingDataForm } from '../../../../etterregistrering/ny-etterregistrering/redigerFormidlingFormType';
 import { InkluderingsTag } from '../../omStillingen/StillingSidebar/StillingInkludering';
 import { StillingsDataForm } from '../redigerFormType.zod';
 import StegNavigering from './StegNavigering';

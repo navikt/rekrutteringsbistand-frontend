@@ -21,7 +21,7 @@ const NavigasjonsBlockerProvider: React.FC<NavigasjonsBlockerProviderProps> = ({
       ? []
       : [
           '/stilling/[stillingsId]/rediger',
-          '/formidling/ny-formidling',
+          '/etterregistrering/ny-etterregistrering',
           '/stilling/ny-stilling',
         ];
 
@@ -42,9 +42,9 @@ const NavigasjonsBlockerProvider: React.FC<NavigasjonsBlockerProviderProps> = ({
         if (/\/stilling\/[^/]+\/rediger/.test(pathname)) {
           redirectPath = pathname.replace('/rediger', '');
         }
-        // For formidling/ny-formidling - redirect til /formidling
-        else if (pathname.includes('/formidling/ny-formidling')) {
-          redirectPath = '/formidling';
+        // For formidling/ny-etterregistrering - redirect til /etterregistrering
+        else if (pathname.includes('/etterregistrering/ny-etterregistrering')) {
+          redirectPath = '/etterregistrering';
         }
         // For stilling/ny-stilling - redirect til /stilling
         else if (pathname.includes('/stilling/ny-stilling')) {

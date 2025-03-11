@@ -44,7 +44,7 @@ const Hurtiglenker: FunctionComponent = () => {
           }
           tittel='Opprett ny stilling'
           umamiProps={{
-            domene: UmamiDomene.Forside,
+            domene: UmamiDomene.Generell,
             event: 'Opprett ny stilling knapp',
           }}
         />
