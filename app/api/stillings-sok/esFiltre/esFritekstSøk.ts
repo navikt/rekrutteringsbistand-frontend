@@ -12,6 +12,7 @@ export const esFritekstSøk = (
   } else if (felt === 'tittel') {
     feltManSkalSøkeI.push(
       'stilling.styrkEllerTittel',
+      'stilling.tittel',
       'stilling.properties.jobtitle',
     );
   } else if (felt === 'annonsetekst') {
@@ -21,6 +22,7 @@ export const esFritekstSøk = (
   } else {
     feltManSkalSøkeI.push(
       'stilling.adtext_no^0.5',
+      'stilling.tittel',
       'stilling.styrkEllerTittel',
       'stilling.annonsenr',
       'stilling.employer.name',
