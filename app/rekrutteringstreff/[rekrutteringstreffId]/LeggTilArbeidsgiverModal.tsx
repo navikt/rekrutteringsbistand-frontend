@@ -1,3 +1,5 @@
+import { ArbeidsgiverDTO } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
+import VelgArbeidsgiver from '@/app/stilling/ny-stilling/components/VelgArbeidsgiver';
 import { PlusIcon } from '@navikt/aksel-icons';
 import { BodyLong, Button, Modal } from '@navikt/ds-react';
 import * as React from 'react';
@@ -5,38 +7,27 @@ import * as React from 'react';
 const LeggTilArbeidsgiverModal: React.FC = () => {
   const ref = React.useRef<HTMLDialogElement>(null);
 
+  const [arbeidsgiver, setArbeidsgiver] =
+    React.useState<ArbeidsgiverDTO | null>(null);
+
   return (
     <div className='py-16'>
       <Button icon={<PlusIcon />} type='button' variant='tertiary' onClick={() => ref.current?.showModal()}>Legg til</Button>
 
-      <Modal ref={ref} header={{ heading: 'Overskrift' }}>
+      <Modal ref={ref} header={{ heading: 'Legg til arbeidsgiver' }}>
         <Modal.Body>
-          <BodyLong>
-            Culpa aliquip ut cupidatat laborum minim quis ex in aliqua. Qui
-            incididunt dolor do ad ut. Incididunt eiusmod nostrud deserunt duis
-            laborum. Proident aute culpa qui nostrud velit adipisicing minim.
-            Consequat aliqua aute dolor do sit Lorem nisi mollit velit. Aliqua
-            exercitation non minim minim pariatur sunt laborum ipsum.
-            Exercitation nostrud est laborum magna non non aliqua qui esse.
-          </BodyLong>
+        <VelgArbeidsgiver arbeidsgiverCallback={setArbeidsgiver} />
         </Modal.Body>
         <Modal.Footer>
           <Button type='button' onClick={() => ref.current?.close()}>
-            Primær
+            Legg til
           </Button>
           <Button
             type='button'
             variant='secondary'
             onClick={() => ref.current?.close()}
           >
-            Sekundær
-          </Button>
-          <Button
-            type='button'
-            variant='tertiary'
-            onClick={() => ref.current?.close()}
-          >
-            Tertiær
+            Avbryt
           </Button>
         </Modal.Footer>
       </Modal>
