@@ -1,15 +1,17 @@
 'use client';
 
-import { useApplikasjonContext } from './providers/ApplikasjonContext';
+import { tilUmami, UmamiDomene } from './umami';
 import { NextPage } from 'next';
 import { useEffect } from 'react';
 
 const NotFound: NextPage = () => {
-  const { tilUmami } = useApplikasjonContext();
-
   useEffect(() => {
-    tilUmami('Fant ikke side (404)', {
-      path: window.location.pathname,
+    tilUmami({
+      domene: UmamiDomene.App,
+      event: 'Fant ikke side (404)',
+      data: {
+        path: window.location.pathname,
+      },
     });
   }, [tilUmami]);
 
