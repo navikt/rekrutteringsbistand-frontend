@@ -1,5 +1,5 @@
-import { PlusIcon } from '@navikt/aksel-icons';
-import { BodyShort, Box, Button, Heading } from '@navikt/ds-react';
+import LeggTilArbeidsgiverModal from '../LeggTilArbeidsgiverModal';
+import { BodyShort, Box, Heading } from '@navikt/ds-react';
 import * as React from 'react';
 
 export interface RekrutteringstreffDetaljerKortProps {
@@ -7,12 +7,11 @@ export interface RekrutteringstreffDetaljerKortProps {
   tittel: string;
   beskrivelse: string;
   ikon: React.ReactNode;
-  onLeggTil?: () => void;
 }
 
 const RekrutteringstreffDetaljerKort: React.FC<
   RekrutteringstreffDetaljerKortProps
-> = ({ overskrift, tittel, beskrivelse, ikon, onLeggTil }) => {
+> = ({ overskrift, tittel, beskrivelse, ikon }) => {
   return (
     <div>
       <Heading level='2' size='medium' className='mb-4'>
@@ -34,9 +33,7 @@ const RekrutteringstreffDetaljerKort: React.FC<
               <BodyShort>{beskrivelse}</BodyShort>
             </div>
           </div>
-          <Button variant='tertiary' icon={<PlusIcon />} onClick={onLeggTil}>
-            Legg til
-          </Button>
+          <LeggTilArbeidsgiverModal />
         </div>
       </Box.New>
     </div>
