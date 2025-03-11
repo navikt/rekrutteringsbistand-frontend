@@ -1,18 +1,13 @@
+import { PlusIcon } from '@navikt/aksel-icons';
 import { BodyLong, Button, Modal } from '@navikt/ds-react';
 import * as React from 'react';
 
-export interface LeggTilArbeidsgiverModalProps {
-  children?: React.ReactNode | undefined;
-}
-
-const LeggTilArbeidsgiverModal: React.FC<
-  LeggTilArbeidsgiverModalProps
-> = ({}) => {
+const LeggTilArbeidsgiverModal: React.FC = () => {
   const ref = React.useRef<HTMLDialogElement>(null);
 
   return (
     <div className='py-16'>
-      <Button onClick={() => ref.current?.showModal()}>Åpne modal</Button>
+      <Button icon={<PlusIcon />} type='button' variant='tertiary' onClick={() => ref.current?.showModal()}>Legg til</Button>
 
       <Modal ref={ref} header={{ heading: 'Overskrift' }}>
         <Modal.Body>
