@@ -111,8 +111,8 @@ const Rekrutteringstreff: React.FC = () => {
           <div className='mt-4'>
             <RekrutteringstreffDetaljerKort
               overskrift='Arbeidsgiver'
-              tittel='WinWin AS'
-              beskrivelse='lalala'
+              tittel='Ny arbeidsgiver'
+              beskrivelse='Finn arbeidsgivere til å delta på treffet'
               ikon={
                 <BriefcaseIcon className='w-8 h-8 text-gray-600 m-2 rounded-full' />
               }
