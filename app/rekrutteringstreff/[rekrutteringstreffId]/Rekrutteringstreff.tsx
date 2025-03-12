@@ -1,7 +1,7 @@
 'use client';
 
 import { datoFormatterer } from '../RekrutteringstreffSøk';
-import LeggTilArbeidsgiverModal from './LeggTilArbeidsgiverModal';
+import LeggTilArbeidsgiverModal from './components/LeggTilArbeidsgiverModal';
 import RekrutteringstreffDetaljerKort from './components/RekrutteringstreffDetaljerKort';
 import { ArbeidsgiverDTO } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
@@ -10,6 +10,7 @@ import { BriefcaseIcon } from '@navikt/aksel-icons';
 import { BodyShort, Box, Heading, Table, Tabs } from '@navikt/ds-react';
 import { useParams } from 'next/navigation';
 import * as React from 'react';
+import ArbeidsgiverKort from './components/ArbeidsgiverKort';
 
 export enum RekrutteringstreffTabs {
   OM_TREFFET = 'om_treffet',
@@ -145,7 +146,7 @@ const Rekrutteringstreff: React.FC = () => {
             ) : (
               <ul>
                 {arbeidsgivere.map((a, index) => (
-                  <li key={index}>{JSON.stringify(a)}</li>
+                  <li key={index}>{<ArbeidsgiverKort navn={a.navn} adresse={a.adresse} />}</li>
                 ))}
               </ul>
             )}

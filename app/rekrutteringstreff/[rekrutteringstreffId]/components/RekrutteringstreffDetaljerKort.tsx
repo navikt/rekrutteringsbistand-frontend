@@ -1,4 +1,4 @@
-import LeggTilArbeidsgiverModal from '../LeggTilArbeidsgiverModal';
+import LeggTilArbeidsgiverModal from './LeggTilArbeidsgiverModal';
 import { ArbeidsgiverDTO } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
 import { BodyShort, Box, Heading } from '@navikt/ds-react';
 import * as React from 'react';
