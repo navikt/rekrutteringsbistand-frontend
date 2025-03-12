@@ -28,7 +28,6 @@ const LeggTilArbeidsgiverModal: React.FC<LeggTilArbeidsgiverModalProps> = ({
 
   const handleAvbryt = () => {
     setArbeidsgiver(null);
-    onLeggTilArbeidsgiver(null);
     setOpen(false);
     onCloseModal();
   };
@@ -52,6 +51,7 @@ const LeggTilArbeidsgiverModal: React.FC<LeggTilArbeidsgiverModalProps> = ({
       >
         <Modal.Body className='overflow-visible'>
           <VelgArbeidsgiver
+            key={open ? 'open-arbeidsgiver' : 'closed-arbeidsgiver'}
             arbeidsgiverCallback={setArbeidsgiver}
             valgtArbeidsgiver={arbeidsgiver}
           />
