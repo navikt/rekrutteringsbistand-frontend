@@ -133,7 +133,7 @@ export function generateElasticSearchQuery(
       bool: {
         minimum_should_match: filter.fritekst.length ? '1' : '0',
         filter: [...term, ...valgteFilter],
-        should: esFritekstSøk(filter.fritekst.join(' '), valgteFilter),
+        should: esFritekstSøk(filter.fritekst.join(' ')),
       },
     },
     ...sort,
@@ -147,37 +147,25 @@ export function generateElasticSearchQuery(
                 filters: {
                   arbeidsgiver: {
                     bool: {
-                      should: esFritekstSøk(
-                        filter.fritekst.join(' '),
-                        valgteFilter,
-                      ),
+                      should: esFritekstSøk(filter.fritekst.join(' ')),
                       filter: [...term, ...valgteFilter],
                     },
                   },
                   tittel: {
                     bool: {
-                      should: esFritekstSøk(
-                        filter.fritekst.join(' '),
-                        valgteFilter,
-                      ),
+                      should: esFritekstSøk(filter.fritekst.join(' ')),
                       filter: [...term, ...valgteFilter],
                     },
                   },
                   annonsetekst: {
                     bool: {
-                      should: esFritekstSøk(
-                        filter.fritekst.join(' '),
-                        valgteFilter,
-                      ),
+                      should: esFritekstSøk(filter.fritekst.join(' ')),
                       filter: [...term, ...valgteFilter],
                     },
                   },
                   annonsenummer: {
                     bool: {
-                      should: esFritekstSøk(
-                        filter.fritekst.join(' '),
-                        valgteFilter,
-                      ),
+                      should: esFritekstSøk(filter.fritekst.join(' ')),
                       filter: [...term, ...valgteFilter],
                     },
                   },

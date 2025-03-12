@@ -1,6 +1,6 @@
 'use client';
 
-import { datoFormatterer } from '../RekrutteringstreffSøk';
+import { Dato, datoFormatterer } from '../RekrutteringstreffSøk';
 import LeggTilArbeidsgiverModal from './components/LeggTilArbeidsgiverModal';
 import RekrutteringstreffDetaljerKort from './components/RekrutteringstreffDetaljerKort';
 import { ArbeidsgiverDTO } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
@@ -59,7 +59,7 @@ const Rekrutteringstreff: React.FC = () => {
         <Tabs.Panel value={RekrutteringstreffTabs.OM_TREFFET} className='my-4'>
           <SWRLaster hooks={[rekrutteringstreffHook]}>
             {(rekrutteringstreff) => {
-              const dato = datoFormatterer(
+              const dato: Dato = datoFormatterer(
                 rekrutteringstreff.fraTid,
                 rekrutteringstreff.tilTid,
               );
@@ -91,7 +91,7 @@ const Rekrutteringstreff: React.FC = () => {
                         <Table.DataCell>{dato.sluttTidspunkt}</Table.DataCell>
                       </Table.Row>
                       <Table.Row>
-                        <Table.DataCell>Opprettet av NAV-kontor</Table.DataCell>
+                        <Table.DataCell>Opprettet av Nav-kontor</Table.DataCell>
                         <Table.DataCell>
                           {rekrutteringstreff.opprettetAvNavkontorEnhetId}
                         </Table.DataCell>

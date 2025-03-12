@@ -34,7 +34,7 @@ const tabs = [
   },
   {
     tittel: 'Etterregistrering',
-    path: '/formidling',
+    path: '/etterregistrering',
     kreverRoller: [
       Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
       Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,

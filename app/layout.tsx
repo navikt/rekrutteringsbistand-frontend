@@ -33,7 +33,6 @@ export default async function RootLayout({
         src={process.env.UMAMI_SRC}
         data-host-url={process.env.UMAMI_URL}
         data-website-id={process.env.UMAMI_ID}
-        data-domains={process.env.UMAMI_DOMAIN}
       />
       <body>
         <BrukLokalMock>

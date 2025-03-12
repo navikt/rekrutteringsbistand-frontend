@@ -48,7 +48,7 @@ const FormidlingInnspurt = () => {
       const data = await nyFormidling.json();
 
       if (data.stillingsId) {
-        router.push(`/formidling/${data.stillingsId}`);
+        router.push(`/etterregistrering/${data.stillingsId}`);
       }
     } catch (error) {
       logger.error('Kunne ikke opprette formidling', error);

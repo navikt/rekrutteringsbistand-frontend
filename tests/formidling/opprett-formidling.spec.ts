@@ -4,7 +4,7 @@ import { expect, test } from '@playwright/test';
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 
 test(`📝 Opprett formidling`, async ({ page }) => {
-  await page.goto('http://localhost:1337/formidling');
+  await page.goto('http://localhost:1337/etterregistrering');
   await test.step('Opprett formidling', async () => {
     await page
       .getByRole('tab', { name: 'Etterregistrering', exact: true })

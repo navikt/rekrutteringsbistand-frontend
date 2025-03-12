@@ -1,8 +1,4 @@
-export const esFritekstSøk = (
-  fritekst: string,
-  valgteFilter: any[],
-  felt?: string,
-) => {
+export const esFritekstSøk = (fritekst: string, felt?: string) => {
   if (!fritekst || fritekst.length < 1) return [];
 
   const feltManSkalSøkeI: string[] = [];
@@ -12,6 +8,7 @@ export const esFritekstSøk = (
   } else if (felt === 'tittel') {
     feltManSkalSøkeI.push(
       'stilling.styrkEllerTittel',
+      'stilling.tittel',
       'stilling.properties.jobtitle',
     );
   } else if (felt === 'annonsetekst') {
@@ -21,6 +18,7 @@ export const esFritekstSøk = (
   } else {
     feltManSkalSøkeI.push(
       'stilling.adtext_no^0.5',
+      'stilling.tittel',
       'stilling.styrkEllerTittel',
       'stilling.annonsenr',
       'stilling.employer.name',

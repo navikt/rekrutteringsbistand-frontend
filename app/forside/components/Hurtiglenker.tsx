@@ -5,6 +5,7 @@ import SeMineStillingerIkon from '../../../public/ikoner/se-mine-stillinger.svg'
 import SVGDarkmode from '../../components/SVGDarkmode';
 import { TilgangskontrollForInnhold } from '../../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '../../components/tilgangskontroll/roller';
+import { tilUmami, UmamiDomene, UmamiProps } from '../../umami';
 import { Box } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
 import { FunctionComponent, ReactNode } from 'react';
@@ -22,11 +23,15 @@ const Hurtiglenker: FunctionComponent = () => {
         data-testid='forside-hurtiglenker'
       >
         <LenkepanelMedIkon
-          href={'/stillings?portefolje=visMine'}
+          href={'/stilling?portefolje=visMine'}
           ikon={
             <SVGDarkmode src={SeMineStillingerIkon} alt='Se mine stillinger' />
           }
           tittel='Se mine stillinger'
+          umamiProps={{
+            domene: UmamiDomene.Forside,
+            event: 'Se mine stillinger knapp',
+          }}
         />
 
         <LenkepanelMedIkon
@@ -38,6 +43,10 @@ const Hurtiglenker: FunctionComponent = () => {
             />
           }
           tittel='Opprett ny stilling'
+          umamiProps={{
+            domene: UmamiDomene.Generell,
+            event: 'Opprett ny stilling knapp',
+          }}
         />
       </div>
     </TilgangskontrollForInnhold>
@@ -48,12 +57,18 @@ const LenkepanelMedIkon: FunctionComponent<{
   tittel: string;
   href: string;
   ikon: ReactNode;
-}> = ({ tittel, href, ikon }) => {
+  umamiProps?: UmamiProps;
+}> = ({ tittel, href, ikon, umamiProps }) => {
   const router = useRouter();
 
   return (
     <Box.New
-      onClick={() => router.push(href)}
+      onClick={() => {
+        if (umamiProps) {
+          tilUmami(umamiProps);
+        }
+        router.push(href);
+      }}
       background='sunken'
       borderColor='neutral-subtleA'
       borderRadius='xlarge'

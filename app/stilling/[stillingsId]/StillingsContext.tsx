@@ -90,7 +90,7 @@ const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
     const isFormidling =
       stillingsData.stillingsinfo?.stillingskategori === 'FORMIDLING';
     const correctPath = isFormidling
-      ? `/formidling/${stillingsData.stilling.uuid}`
+      ? `/etterregistrering/${stillingsData.stilling.uuid}`
       : `/stilling/${stillingsData.stilling.uuid}`;
 
     if (!window.location.pathname.includes(correctPath)) {

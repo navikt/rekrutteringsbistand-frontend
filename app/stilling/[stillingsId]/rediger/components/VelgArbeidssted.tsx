@@ -1,5 +1,5 @@
 import VelgPoststed from '../../../../components/VelgPoststed';
-import { FormidlingDataForm } from '../../../../formidling/ny-formidling/redigerFormidlingFormType';
+import { FormidlingDataForm } from '../../../../etterregistrering/ny-etterregistrering/redigerFormidlingFormType';
 import { StillingsDataForm } from '../redigerFormType.zod';
 import VelgKommuneFylkeEllerLand from './VelgKommuneFylkeEllerLand';
 import { BodyLong, Button, Checkbox, Heading } from '@navikt/ds-react';
