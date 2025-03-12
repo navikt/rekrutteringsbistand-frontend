@@ -42,11 +42,12 @@ const LeggTilArbeidsgiverModal: React.FC<LeggTilArbeidsgiverModalProps> = ({
       </Button>
 
       <Modal
+      className='overflow-visible'
         open={open}
         onClose={handleAvbryt}
         header={{ heading: 'Legg til arbeidsgiver' }}
       >
-        <Modal.Body>
+        <Modal.Body className='overflow-visible'>
           <VelgArbeidsgiver arbeidsgiverCallback={setArbeidsgiver} />
         </Modal.Body>
         <Modal.Footer>
