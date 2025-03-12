@@ -15,11 +15,25 @@ export interface UmamiProps {
   data?: Record<string, string>;
 }
 
+const getScreenInfo = (): Record<string, string> => {
+  if (typeof window === 'undefined') return {};
+
+  return {
+    screenWidth: window.innerWidth.toString(),
+    screenHeight: window.innerHeight.toString(),
+  };
+};
+
 export const tilUmami = (props: UmamiProps) => {
   const { domene, event, data } = props;
 
   if (window.umami) {
-    window.umami.track(`[${domene}] ${event}`, { ...data, domene });
+    const screenInfo = getScreenInfo();
+    window.umami.track(`[${domene}] ${event}`, {
+      ...data,
+      ...screenInfo,
+      domene,
+    });
   } else {
     logger.warn('Fant ikke umami i window', { url: window.location.href });
   }
