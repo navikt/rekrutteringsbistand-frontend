@@ -12,8 +12,11 @@ export const UmamiTracker = ({
   children,
   className,
 }: UmamiTrackerProps) => {
+  const handleClick = () => {
+    tilUmami(umamiProps);
+  };
   return (
-    <div className={className} onClick={() => tilUmami(umamiProps)}>
+    <div className={className} onClickCapture={handleClick}>
       {children}
     </div>
   );
