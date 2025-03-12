@@ -1,6 +1,7 @@
 'use client';
 
 import { Dato, datoFormatterer } from '../RekrutteringstreffSøk';
+import ArbeidsgiverKort from './components/ArbeidsgiverKort';
 import LeggTilArbeidsgiverModal from './components/LeggTilArbeidsgiverModal';
 import RekrutteringstreffDetaljerKort from './components/RekrutteringstreffDetaljerKort';
 import { ArbeidsgiverDTO } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
@@ -10,7 +11,6 @@ import { BriefcaseIcon } from '@navikt/aksel-icons';
 import { BodyShort, Box, Heading, Table, Tabs } from '@navikt/ds-react';
 import { useParams } from 'next/navigation';
 import * as React from 'react';
-import ArbeidsgiverKort from './components/ArbeidsgiverKort';
 
 export enum RekrutteringstreffTabs {
   OM_TREFFET = 'om_treffet',
@@ -30,8 +30,8 @@ const Rekrutteringstreff: React.FC = () => {
     [],
   );
 
-  const handleLeggTilArbeidsgiver = (arbeidsgiver: ArbeidsgiverDTO) => {
-    setArbeidsgivere((prev) => [...prev, arbeidsgiver]);
+  const handleLeggTilArbeidsgiver = (arbeidsgiver: ArbeidsgiverDTO | null) => {
+    setArbeidsgivere((prev) => (arbeidsgiver ? [...prev, arbeidsgiver] : prev));
     setActiveTab(RekrutteringstreffTabs.ARBEIDSGIVERE);
   };
 
@@ -146,7 +146,9 @@ const Rekrutteringstreff: React.FC = () => {
             ) : (
               <ul>
                 {arbeidsgivere.map((a, index) => (
-                  <li key={index}>{<ArbeidsgiverKort navn={a.navn} adresse={a.adresse} />}</li>
+                  <li key={index}>
+                    {<ArbeidsgiverKort navn={a.navn} adresse={a.adresse} />}
+                  </li>
                 ))}
               </ul>
             )}

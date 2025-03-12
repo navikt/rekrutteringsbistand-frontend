@@ -5,7 +5,7 @@ import { Button, Modal } from '@navikt/ds-react';
 import * as React from 'react';
 
 interface LeggTilArbeidsgiverModalProps {
-  onLeggTilArbeidsgiver: (arbeidsgiver: ArbeidsgiverDTO) => void;
+  onLeggTilArbeidsgiver: (arbeidsgiver: ArbeidsgiverDTO | null) => void;
   onCloseModal?: () => void;
 }
 
@@ -20,12 +20,15 @@ const LeggTilArbeidsgiverModal: React.FC<LeggTilArbeidsgiverModalProps> = ({
   const handleLeggTil = () => {
     if (arbeidsgiver) {
       onLeggTilArbeidsgiver(arbeidsgiver);
+      setArbeidsgiver(null);
       setOpen(false);
       onCloseModal();
     }
   };
 
   const handleAvbryt = () => {
+    setArbeidsgiver(null);
+    onLeggTilArbeidsgiver(null);
     setOpen(false);
     onCloseModal();
   };
@@ -42,13 +45,16 @@ const LeggTilArbeidsgiverModal: React.FC<LeggTilArbeidsgiverModalProps> = ({
       </Button>
 
       <Modal
-      className='overflow-visible'
+        className='overflow-visible'
         open={open}
         onClose={handleAvbryt}
         header={{ heading: 'Legg til arbeidsgiver' }}
       >
         <Modal.Body className='overflow-visible'>
-          <VelgArbeidsgiver arbeidsgiverCallback={setArbeidsgiver} />
+          <VelgArbeidsgiver
+            arbeidsgiverCallback={setArbeidsgiver}
+            valgtArbeidsgiver={arbeidsgiver}
+          />
         </Modal.Body>
         <Modal.Footer>
           <Button

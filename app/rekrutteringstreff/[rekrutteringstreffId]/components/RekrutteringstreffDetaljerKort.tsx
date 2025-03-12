@@ -8,7 +8,7 @@ export interface RekrutteringstreffDetaljerKortProps {
   tittel: string;
   beskrivelse: string;
   ikon: React.ReactNode;
-  onLeggTilArbeidsgiver: (arbeidsgiver: ArbeidsgiverDTO) => void;
+  onLeggTilArbeidsgiver: (arbeidsgiver: ArbeidsgiverDTO | null) => void;
 }
 
 const RekrutteringstreffDetaljerKort: React.FC<
