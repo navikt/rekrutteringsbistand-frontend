@@ -1,12 +1,17 @@
 import { UmamiProps } from './umami';
-import { ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 
 interface UmamiTrackerProps {
   umamiProps: UmamiProps;
   children: ReactNode;
+  className?: string;
 }
 
-export const UmamiTracker = ({ umamiProps, children }: UmamiTrackerProps) => {
+export const UmamiTracker = ({
+  umamiProps,
+  children,
+  className,
+}: UmamiTrackerProps) => {
   const { domene, event, data } = umamiProps;
   const eventName = `[${domene}] ${event}`;
 
@@ -20,8 +25,17 @@ export const UmamiTracker = ({ umamiProps, children }: UmamiTrackerProps) => {
   dataAttributes['data-umami-event-domene'] = domene;
 
   return (
-    <div data-umami-event={eventName} {...dataAttributes}>
-      {children}
+    <div className={className}>
+      {React.Children.map(children, (child) =>
+        React.isValidElement(child)
+          ? React.cloneElement(child, {
+              ...({
+                'data-umami-event': eventName,
+                ...dataAttributes,
+              } as React.HTMLAttributes<HTMLElement>),
+            })
+          : child,
+      )}
     </div>
   );
 };

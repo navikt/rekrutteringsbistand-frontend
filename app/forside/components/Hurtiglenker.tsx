@@ -24,6 +24,7 @@ const Hurtiglenker: FunctionComponent = () => {
         data-testid='forside-hurtiglenker'
       >
         <UmamiTracker
+          className={'flex-grow'}
           umamiProps={{
             domene: UmamiDomene.Forside,
             event: 'Se mine stillinger knapp',
@@ -41,6 +42,7 @@ const Hurtiglenker: FunctionComponent = () => {
           />
         </UmamiTracker>
         <UmamiTracker
+          className={'flex-grow'}
           umamiProps={{
             domene: UmamiDomene.Generell,
             event: 'Opprett ny stilling knapp',
