@@ -23,7 +23,7 @@ const Hurtiglenker: FunctionComponent = () => {
         data-testid='forside-hurtiglenker'
       >
         <LenkepanelMedIkon
-          href={'/stillings?portefolje=visMine'}
+          href={'/stilling?portefolje=visMine'}
           ikon={
             <SVGDarkmode src={SeMineStillingerIkon} alt='Se mine stillinger' />
           }
