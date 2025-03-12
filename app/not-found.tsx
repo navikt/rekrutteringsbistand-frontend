@@ -1,6 +1,6 @@
 'use client';
 
-import { tilUmami, UmamiDomene } from './umami';
+import { tilUmami, UmamiDomene } from './components/umami/umami';
 import { NextPage } from 'next';
 import { useEffect } from 'react';
 
