@@ -12,7 +12,7 @@ export enum UmamiDomene {
   Rekrutteringstreff = 'Rekrutteringstreff',
 }
 
-const getScreenInfo = (): Record<string, string> => {
+export const getScreenInfo = (): Record<string, string> => {
   if (typeof window === 'undefined') return {};
 
   return {
