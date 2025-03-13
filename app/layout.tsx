@@ -3,6 +3,7 @@ import MirageInitializer from './components/MirageInitializer';
 import './globals.css';
 import RekrutteringsbistandProvider from './providers/RekrutteringsbistandProvider';
 import { UmamiProvider } from './providers/UmamiContext';
+import UmamiAnalytics from './providers/UmamiScript';
 import type { Metadata } from 'next';
 import Script from 'next/script';
 
@@ -34,14 +35,7 @@ export default async function RootLayout({
       data-testmode={process.env.NEXT_PUBLIC_PLAYWRIGHT_TEST_MODE}
     >
       <Script src={bundle} strategy='afterInteractive' />
-      <Script
-        defer
-        id='umami-analytics'
-        strategy='afterInteractive'
-        src={process.env.NEXT_PUBLIC_UMAMI_SRC}
-        data-host-url={process.env.NEXT_PUBLIC_UMAMI_URL}
-        data-website-id={process.env.NEXT_PUBLIC_UMAMI_ID}
-      />
+      <UmamiAnalytics />
       <body>
         <UmamiProvider>
           <BrukLokalMock>
