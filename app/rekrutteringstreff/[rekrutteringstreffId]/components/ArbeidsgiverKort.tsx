@@ -24,12 +24,15 @@ const ArbeidsgiverKort: React.FC<ArbeidsgiverKortProps> = ({
   adresse,
 }) => {
   return (
-    <Box>
+    <Box.New
+      background='raised'
+      className='mb-4 p-6 rounded-lg border border-gray-900'
+    >
       <BodyShort>{navn}</BodyShort>
       <BodyShort>
         {adresse?.adresse}, {adresse?.postnummer} {adresse?.poststed}
       </BodyShort>
-    </Box>
+    </Box.New>
   );
 };
 
