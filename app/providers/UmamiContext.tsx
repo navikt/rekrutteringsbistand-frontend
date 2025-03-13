@@ -1,7 +1,14 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { createContext, ReactNode, useContext } from 'react';
+import Script from 'next/script';
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 
 export enum UmamiDomene {
   Generell = 'Generell',
@@ -43,6 +50,50 @@ interface UmamiProviderProps {
 
 export const UmamiProvider = ({ children }: UmamiProviderProps) => {
   const router = useRouter();
+  const [isScriptLoaded, setIsScriptLoaded] = useState(false);
+  const [scriptError, setScriptError] = useState<Error | null>(null);
+
+  const handleScriptLoad = () => {
+    console.log('Umami script loaded successfully');
+    setIsScriptLoaded(true);
+  };
+
+  const handleScriptError = (e: Error) => {
+    console.error('Failed to load Umami script:', e);
+    setScriptError(e);
+  };
+
+  // Check if window.umami exists periodically as a fallback
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    // If script is already loaded via other means, set the state
+    if (window.umami) {
+      setIsScriptLoaded(true);
+      return;
+    }
+
+    const checkInterval = setInterval(() => {
+      if (window.umami) {
+        console.log('Umami detected through polling');
+        setIsScriptLoaded(true);
+        clearInterval(checkInterval);
+      }
+    }, 500);
+
+    // Clear interval after 10 seconds to avoid infinite checking
+    const timeoutId = setTimeout(() => {
+      clearInterval(checkInterval);
+      if (!isScriptLoaded && !scriptError) {
+        console.warn('Umami failed to load after timeout');
+      }
+    }, 10000);
+
+    return () => {
+      clearInterval(checkInterval);
+      clearTimeout(timeoutId);
+    };
+  }, [isScriptLoaded, scriptError]);
 
   const track = (
     eventName: string,
@@ -81,9 +132,20 @@ export const UmamiProvider = ({ children }: UmamiProviderProps) => {
   };
 
   return (
-    <UmamiContext.Provider value={{ track, trackAndNavigate }}>
-      {children}
-    </UmamiContext.Provider>
+    <>
+      <Script
+        id='umami-analytics'
+        strategy='afterInteractive'
+        src={process.env.NEXT_PUBLIC_UMAMI_SRC || ''}
+        data-host-url={process.env.NEXT_PUBLIC_UMAMI_URL || ''}
+        data-website-id={process.env.NEXT_PUBLIC_UMAMI_ID || ''}
+        onLoad={handleScriptLoad}
+        onError={handleScriptError}
+      />
+      <UmamiContext.Provider value={{ track, trackAndNavigate }}>
+        {children}
+      </UmamiContext.Provider>
+    </>
   );
 };
 
