@@ -23,6 +23,9 @@ export default async function RootLayout({
   const bundle =
     process.env.NAIS_CLUSTER_NAME === 'prod-gcp' ? prodBundle : devBundle;
 
+  console.log(process.env.NEXT_PUBLIC_UMAMI_SRC);
+  console.log(process.env.NEXT_PUBLIC_UMAMI_URL);
+  console.log(process.env.NEXT_PUBLIC_UMAMI_ID);
   return (
     <html
       lang='no'
@@ -30,7 +33,14 @@ export default async function RootLayout({
       data-testmode={process.env.NEXT_PUBLIC_PLAYWRIGHT_TEST_MODE}
     >
       <Script src={bundle} strategy='afterInteractive' />
-
+      <Script
+        defer
+        id='umami-analytics'
+        strategy='afterInteractive'
+        src={process.env.NEXT_PUBLIC_UMAMI_SRC}
+        data-host-url={process.env.NEXT_PUBLIC_UMAMI_URL}
+        data-website-id={process.env.NEXT_PUBLIC_UMAMI_ID}
+      />
       <body>
         <UmamiProvider>
           <BrukLokalMock>
