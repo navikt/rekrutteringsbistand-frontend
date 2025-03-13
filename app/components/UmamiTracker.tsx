@@ -1,9 +1,14 @@
 'use client';
 
-import { UmamiProps } from './umami';
+import { UmamiDomene } from '../providers/UmamiContext';
 import { Link } from '@navikt/ds-react';
 import { ReactNode } from 'react';
 
+export interface UmamiProps {
+  domene: UmamiDomene;
+  event: string;
+  data?: Record<string, string>;
+}
 interface UmamiTrackerProps {
   umamiProps: UmamiProps;
   children: ReactNode;

@@ -77,7 +77,7 @@ export const UmamiProvider = ({ children }: UmamiProviderProps) => {
       } else {
         router.push(url);
       }
-    }, 500);
+    }, 150);
   };
 
   return (

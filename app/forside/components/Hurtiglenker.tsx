@@ -3,11 +3,10 @@
 import OpprettNyStillingIkon from '../../../public/ikoner/opprett-ny-stilling.svg';
 import SeMineStillingerIkon from '../../../public/ikoner/se-mine-stillinger.svg';
 import SVGDarkmode from '../../components/SVGDarkmode';
+import { UmamiTracker } from '../../components/UmamiTracker';
 import { TilgangskontrollForInnhold } from '../../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '../../components/tilgangskontroll/roller';
-import { UmamiTracker } from '../../components/umami/UmamiTracker';
-import { UmamiDomene } from '../../components/umami/umami';
-import { useUmami } from '../../providers/UmamiContext';
+import { UmamiDomene, useUmami } from '../../providers/UmamiContext';
 import { Box, Link } from '@navikt/ds-react';
 import { FunctionComponent, ReactNode } from 'react';
 
