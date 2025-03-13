@@ -24,10 +24,6 @@ export default async function RootLayout({
   const bundle =
     process.env.NAIS_CLUSTER_NAME === 'prod-gcp' ? prodBundle : devBundle;
 
-  console.log('KAKE');
-  console.log('umami_src', process.env.NEXT_PUBLIC_UMAMI_SRC);
-  console.log('umami_url', process.env.NEXT_PUBLIC_UMAMI_URL);
-  console.log('umami_id', process.env.NEXT_PUBLIC_UMAMI_ID);
   return (
     <html
       lang='no'
