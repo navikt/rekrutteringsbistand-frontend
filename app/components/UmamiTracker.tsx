@@ -27,8 +27,8 @@ export const UmamiTracker = ({
   const screenInfo = getScreenInfo();
   const dataAttributes: Record<string, string> = {
     'data-umami-event': event,
-    'data-umami-event-screenWidth': String(screenInfo.width),
-    'data-umami-event-screenHeight': String(screenInfo.height),
+    'data-umami-event-screenWidth': screenInfo.width,
+    'data-umami-event-screenHeight': screenInfo.height,
     'data-umami-event-domene': domene,
     'data-umami-event-path': window.location.pathname,
   };
