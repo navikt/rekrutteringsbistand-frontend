@@ -3,7 +3,6 @@
 import OpprettNyStillingIkon from '../../../public/ikoner/opprett-ny-stilling.svg';
 import SeMineStillingerIkon from '../../../public/ikoner/se-mine-stillinger.svg';
 import SVGDarkmode from '../../components/SVGDarkmode';
-import { UmamiTracker } from '../../components/UmamiTracker';
 import { TilgangskontrollForInnhold } from '../../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '../../components/tilgangskontroll/roller';
 import { UmamiDomene, useUmami } from '../../providers/UmamiContext';
@@ -24,6 +23,7 @@ const Hurtiglenker: FunctionComponent = () => {
         data-testid='forside-hurtiglenker'
       >
         <Link
+          className='flex-grow'
           onClick={() =>
             trackAndNavigate(
               'Se mine stillinger knapp',
@@ -42,13 +42,15 @@ const Hurtiglenker: FunctionComponent = () => {
             tittel='Se mine stillinger'
           />
         </Link>
-        <UmamiTracker
-          href='/stilling/ny-stilling'
-          className={'flex-grow'}
-          umamiProps={{
-            domene: UmamiDomene.Generell,
-            event: 'Opprett ny stilling knapp',
-          }}
+        <Link
+          className='flex-grow'
+          onClick={() =>
+            trackAndNavigate(
+              'Opprett ny stilling knapp',
+              UmamiDomene.Forside,
+              '/stilling/ny-stilling',
+            )
+          }
         >
           <LenkepanelMedIkon
             ikon={
@@ -59,7 +61,7 @@ const Hurtiglenker: FunctionComponent = () => {
             }
             tittel='Opprett ny stilling'
           />
-        </UmamiTracker>
+        </Link>
       </div>
     </TilgangskontrollForInnhold>
   );
