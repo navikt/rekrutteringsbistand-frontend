@@ -22,6 +22,13 @@ export default async function RootLayout({
 }>) {
   const bundle =
     process.env.NAIS_CLUSTER_NAME === 'prod-gcp' ? prodBundle : devBundle;
+
+  console.log(
+    '🎺 src:',
+    process.env.NEXT_PUBLIC_UMAMI_SRC,
+    'data-host-url:',
+    process.env.NEXT_PUBLIC_UMAMI_URL,
+  );
   return (
     <html
       lang='no'
@@ -31,9 +38,9 @@ export default async function RootLayout({
       <Script
         defer
         strategy='beforeInteractive'
-        src={process.env.UMAMI_SRC}
-        data-host-url={process.env.UMAMI_URL}
-        data-website-id={process.env.UMAMI_ID}
+        src={process.env.NEXT_PUBLIC_UMAMI_SRC}
+        data-host-url={process.env.NEXT_PUBLIC_UMAMI_URL}
+        data-website-id={process.env.NEXT_PUBLIC_UMAMI_ID}
       />
 
       <Script src={bundle} strategy='afterInteractive' />
