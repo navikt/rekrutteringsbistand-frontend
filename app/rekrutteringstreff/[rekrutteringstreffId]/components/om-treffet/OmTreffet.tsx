@@ -1,4 +1,3 @@
-import { RekrutteringstreffTabs } from '../../Rekrutteringstreff';
 import RekrutteringstreffDetaljerKort from '../RekrutteringstreffDetaljerKort';
 import { ArbeidsgiverDTO } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
@@ -8,7 +7,7 @@ import {
   datoFormatterer,
 } from '@/app/rekrutteringstreff/RekrutteringstreffSøk';
 import { BriefcaseIcon } from '@navikt/aksel-icons';
-import { Heading, Table, Tabs } from '@navikt/ds-react';
+import { Heading, Table } from '@navikt/ds-react';
 import { useParams } from 'next/navigation';
 import * as React from 'react';
 
@@ -24,7 +23,7 @@ const OmTreffet: React.FC<OmTreffetProps> = ({ handleLeggTilArbeidsgiver }) => {
   );
 
   return (
-    <Tabs.Panel value={RekrutteringstreffTabs.OM_TREFFET} className='my-4'>
+    <div>
       <SWRLaster hooks={[rekrutteringstreffHook]}>
         {(rekrutteringstreff) => {
           const dato: Dato = datoFormatterer(
@@ -74,6 +73,7 @@ const OmTreffet: React.FC<OmTreffetProps> = ({ handleLeggTilArbeidsgiver }) => {
           );
         }}
       </SWRLaster>
+
       <div className='mt-4'>
         <RekrutteringstreffDetaljerKort
           overskrift='Arbeidsgiver'
@@ -85,7 +85,7 @@ const OmTreffet: React.FC<OmTreffetProps> = ({ handleLeggTilArbeidsgiver }) => {
           onLeggTilArbeidsgiver={handleLeggTilArbeidsgiver}
         />
       </div>
-    </Tabs.Panel>
+    </div>
   );
 };
 

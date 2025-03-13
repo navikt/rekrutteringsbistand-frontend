@@ -1,10 +1,10 @@
 'use client';
 
-import LeggTilArbeidsgiverModal from './components/LeggTilArbeidsgiverModal';
-import ArbeidsgiverKort from './components/arbeidsgivere/components/ArbeidsgiverKort';
+import Arbeidsgivere from './components/arbeidsgivere/Arbeidsgivere';
+import Deltakere from './components/deltakere/Deltakere';
 import OmTreffet from './components/om-treffet/OmTreffet';
 import { ArbeidsgiverDTO } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
-import { BodyShort, Box, Heading, Table, Tabs } from '@navikt/ds-react';
+import { Box, Tabs } from '@navikt/ds-react';
 import * as React from 'react';
 
 export enum RekrutteringstreffTabs {
@@ -47,41 +47,19 @@ const Rekrutteringstreff: React.FC = () => {
           />
         </Tabs.List>
 
-        <OmTreffet handleLeggTilArbeidsgiver={handleLeggTilArbeidsgiver} />
+        <Tabs.Panel value={RekrutteringstreffTabs.OM_TREFFET} className='my-4'>
+          <OmTreffet handleLeggTilArbeidsgiver={handleLeggTilArbeidsgiver} />
+        </Tabs.Panel>
 
         <Tabs.Panel value={RekrutteringstreffTabs.DELTAKERE}>
-          <div className='p-4'>
-            <Heading level='2' size='medium' className='mb-2'>
-              Deltakere
-            </Heading>
-            <BodyShort>TODO</BodyShort>
-          </div>
+          <Deltakere />
         </Tabs.Panel>
 
         <Tabs.Panel value={RekrutteringstreffTabs.ARBEIDSGIVERE}>
-          <div className='p-4 flex flex-col gap-4'>
-            <div className='flex items-center justify-between'>
-              <Heading level='2' size='medium'>
-                Arbeidsgivere
-              </Heading>
-              <LeggTilArbeidsgiverModal
-                onLeggTilArbeidsgiver={handleLeggTilArbeidsgiver}
-                onCloseModal={() => {}}
-                leggTilKnappTekst='Legg til arbeidsgiver'
-              />
-            </div>
-            {arbeidsgivere.length === 0 ? (
-              <BodyShort>Ingen arbeidsgivere lagt til</BodyShort>
-            ) : (
-              <ul>
-                {arbeidsgivere.map((a, index) => (
-                  <li key={index}>
-                    {<ArbeidsgiverKort navn={a.navn} adresse={a.adresse} />}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
+          <Arbeidsgivere
+            handleLeggTilArbeidsgiver={handleLeggTilArbeidsgiver}
+            arbeidsgivere={arbeidsgivere}
+          />
         </Tabs.Panel>
       </Tabs>
     </Box.New>
