@@ -11,6 +11,8 @@ const devBundle =
 const prodBundle =
   'https://cdn.nav.no/personoversikt/internarbeidsflate-decorator-v3/prod/latest/dist/bundle.js';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: isLocal ? 'Local - Rekrutteringsbistand' : 'Rekrutteringsbistand',
 };
