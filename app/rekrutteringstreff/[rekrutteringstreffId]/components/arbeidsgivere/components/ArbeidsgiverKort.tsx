@@ -1,4 +1,5 @@
-import { BodyShort, Box } from '@navikt/ds-react';
+import capitalizeEmployerName from '@/app/stilling/stilling-util';
+import { BodyShort, Box, Heading } from '@navikt/ds-react';
 import * as React from 'react';
 
 interface ArbeidsgiverKortProps {
@@ -28,8 +29,10 @@ const ArbeidsgiverKort: React.FC<ArbeidsgiverKortProps> = ({
       background='raised'
       className='mb-4 p-6 rounded-lg border border-gray-900'
     >
-      <BodyShort>{navn}</BodyShort>
-      <BodyShort>
+      <Heading level='3' size='xsmall'>
+        {capitalizeEmployerName(navn || '')}
+      </Heading>
+      <BodyShort size='small'>
         {adresse?.adresse}, {adresse?.postnummer} {adresse?.poststed}
       </BodyShort>
     </Box.New>
