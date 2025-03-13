@@ -17,32 +17,29 @@ export const UmamiTracker = ({
   className,
   href,
 }: UmamiTrackerProps) => {
-  const { domene, event, data } = umamiProps;
-  const eventName = `[${domene}] ${event}`;
+  // Extract the event name and domain from umamiProps
+  const { event, domene, ...restProps } = umamiProps;
 
-  const dataAttributes: { [key: string]: string } = {};
-  if (data) {
-    Object.entries(data).forEach(([key, value]) => {
-      dataAttributes[`data-umami-event-${key}`] = value;
-    });
-  }
+  // Prepare data attributes
+  const dataAttributes: Record<string, string> = {
+    'data-umami-event': event,
+    'data-umami-event-domene': domene,
+  };
 
-  dataAttributes['data-umami-event-domene'] = domene;
+  // Add any additional props as data attributes
+  Object.entries(restProps).forEach(([key, value]) => {
+    if (value !== undefined) {
+      dataAttributes[`data-umami-${key}`] = String(value);
+    }
+  });
 
-  console.log(window.umami);
-  console.log(dataAttributes);
+  console.log('🎺 umamiProps', umamiProps);
+  console.log('🎺 dataAttributes', dataAttributes);
   return href ? (
-    <Link
-      className={className}
-      href={href}
-      data-umami-event={eventName}
-      {...dataAttributes}
-    >
+    <Link className={className} href={href} {...dataAttributes}>
       {children}
     </Link>
   ) : (
-    <div data-umami-event={eventName} {...dataAttributes}>
-      {children}
-    </div>
+    <div {...dataAttributes}>{children}</div>
   );
 };
