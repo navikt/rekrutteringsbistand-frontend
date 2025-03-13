@@ -6,11 +6,13 @@ import SVGDarkmode from '../../components/SVGDarkmode';
 import { TilgangskontrollForInnhold } from '../../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '../../components/tilgangskontroll/roller';
 import { UmamiTracker } from '../../components/umami/UmamiTracker';
-import { UmamiDomene } from '../../components/umami/umami';
-import { Box } from '@navikt/ds-react';
+import { tilUmamiNavigate, UmamiDomene } from '../../components/umami/umami';
+import { Box, Link } from '@navikt/ds-react';
+import { useRouter } from 'next/navigation';
 import { FunctionComponent, ReactNode } from 'react';
 
 const Hurtiglenker: FunctionComponent = () => {
+  const router = useRouter();
   return (
     <TilgangskontrollForInnhold
       skjulVarsel
@@ -22,13 +24,17 @@ const Hurtiglenker: FunctionComponent = () => {
         className='inline-flex w-full items-start justify-start gap-4'
         data-testid='forside-hurtiglenker'
       >
-        <UmamiTracker
-          className={'flex-grow'}
-          href={'/stilling?portefolje=visMine'}
-          umamiProps={{
-            domene: UmamiDomene.Forside,
-            event: 'Se mine stillinger knapp',
-          }}
+        <Link
+          onClick={() =>
+            tilUmamiNavigate(
+              {
+                domene: UmamiDomene.Forside,
+                event: 'Se mine stillinger knapp',
+              },
+              '/stilling?portefolje=visMine',
+              router,
+            )
+          }
         >
           <LenkepanelMedIkon
             ikon={
@@ -39,7 +45,7 @@ const Hurtiglenker: FunctionComponent = () => {
             }
             tittel='Se mine stillinger'
           />
-        </UmamiTracker>
+        </Link>
         <UmamiTracker
           href='/stilling/ny-stilling'
           className={'flex-grow'}

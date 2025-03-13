@@ -1,4 +1,5 @@
 import { logger } from '@navikt/next-logger';
+import { useRouter } from 'next/navigation';
 
 export enum UmamiDomene {
   Generell = 'Generell',
@@ -24,6 +25,21 @@ const getScreenInfo = (): Record<string, string> => {
   };
 };
 
+export const tilUmamiNavigate = async (
+  props: UmamiProps,
+  url: string,
+  router: ReturnType<typeof useRouter>,
+) => {
+  tilUmami(props);
+  setTimeout(() => {
+    if (url.startsWith('http')) {
+      window.location.href = url;
+    } else {
+      router.push(url);
+    }
+  }, 150);
+};
+
 export const tilUmami = async (props: UmamiProps): Promise<void> => {
   const { domene, event, data } = props;
 
@@ -31,13 +47,11 @@ export const tilUmami = async (props: UmamiProps): Promise<void> => {
     const screenInfo = getScreenInfo();
     return new Promise<void>((resolve, reject) => {
       try {
-        // Create a timeout to ensure we don't hang indefinitely
         const timeoutId = setTimeout(() => {
           console.warn('Umami tracking timed out');
           resolve();
-        }, 300);
+        }, 150);
 
-        // Call umami.track and resolve when complete
         if (window.umami)
           window.umami.track(event, {
             ...data,
