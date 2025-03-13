@@ -2,6 +2,7 @@ import { isLocal } from '../util/env';
 import MirageInitializer from './components/MirageInitializer';
 import './globals.css';
 import RekrutteringsbistandProvider from './providers/RekrutteringsbistandProvider';
+import { UmamiProvider } from './providers/UmamiContext';
 import type { Metadata } from 'next';
 import Script from 'next/script';
 
@@ -28,19 +29,24 @@ export default async function RootLayout({
       data-testmode={process.env.NEXT_PUBLIC_PLAYWRIGHT_TEST_MODE}
     >
       <Script src={bundle} strategy='afterInteractive' />
-      <Script
+      {/* <Script
         defer
         strategy='afterInteractive'
         src={process.env.UMAMI_SRC}
         data-host-url={process.env.UMAMI_URL}
         data-website-id={process.env.UMAMI_ID}
-      />
+      /> */}
       <body>
-        <BrukLokalMock>
-          <RekrutteringsbistandProvider>
-            {children}
-          </RekrutteringsbistandProvider>
-        </BrukLokalMock>
+        <UmamiProvider
+          websiteId={process.env.UMAMI_ID}
+          hostUrl={process.env.UMAMI_URL}
+        >
+          <BrukLokalMock>
+            <RekrutteringsbistandProvider>
+              {children}
+            </RekrutteringsbistandProvider>
+          </BrukLokalMock>
+        </UmamiProvider>
       </body>
     </html>
   );

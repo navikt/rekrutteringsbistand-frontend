@@ -6,13 +6,13 @@ import SVGDarkmode from '../../components/SVGDarkmode';
 import { TilgangskontrollForInnhold } from '../../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '../../components/tilgangskontroll/roller';
 import { UmamiTracker } from '../../components/umami/UmamiTracker';
-import { tilUmamiNavigate, UmamiDomene } from '../../components/umami/umami';
+import { UmamiDomene } from '../../components/umami/umami';
+import { useUmami } from '../../providers/UmamiContext';
 import { Box, Link } from '@navikt/ds-react';
-import { useRouter } from 'next/navigation';
 import { FunctionComponent, ReactNode } from 'react';
 
 const Hurtiglenker: FunctionComponent = () => {
-  const router = useRouter();
+  const { trackAndNavigate } = useUmami();
   return (
     <TilgangskontrollForInnhold
       skjulVarsel
@@ -26,13 +26,10 @@ const Hurtiglenker: FunctionComponent = () => {
       >
         <Link
           onClick={() =>
-            tilUmamiNavigate(
-              {
-                domene: UmamiDomene.Forside,
-                event: 'Se mine stillinger knapp',
-              },
+            trackAndNavigate(
+              'Se mine stillinger knapp',
               '/stilling?portefolje=visMine',
-              router,
+              { domene: UmamiDomene.Forside },
             )
           }
         >
