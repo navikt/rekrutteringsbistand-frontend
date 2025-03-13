@@ -3,7 +3,6 @@ import MirageInitializer from './components/MirageInitializer';
 import './globals.css';
 import RekrutteringsbistandProvider from './providers/RekrutteringsbistandProvider';
 import { UmamiProvider } from './providers/UmamiContext';
-import UmamiAnalytics from './providers/UmamiScript';
 import type { Metadata } from 'next';
 import Script from 'next/script';
 
@@ -24,6 +23,14 @@ export default async function RootLayout({
   const bundle =
     process.env.NAIS_CLUSTER_NAME === 'prod-gcp' ? prodBundle : devBundle;
 
+  console.log(
+    '🎺 process.env.NAIS_CLUSTER_NAME',
+    process.env.NAIS_CLUSTER_NAME,
+  );
+  console.log('1umami_src', process.env.NEXT_PUBLIC_UMAMI_SRC);
+  console.log('2umami_url', process.env.NEXT_PUBLIC_UMAMI_URL);
+  console.log('3umami_id', process.env.NEXT_PUBLIC_UMAMI_ID);
+
   return (
     <html
       lang='no'
@@ -31,7 +38,15 @@ export default async function RootLayout({
       data-testmode={process.env.NEXT_PUBLIC_PLAYWRIGHT_TEST_MODE}
     >
       <Script src={bundle} strategy='afterInteractive' />
-      <UmamiAnalytics />
+      {/* <UmamiAnalytics /> */}
+      <Script
+        defer
+        id='umami-analytics'
+        strategy='afterInteractive'
+        src={process.env.NEXT_PUBLIC_UMAMI_SRC}
+        data-host-url={process.env.NEXT_PUBLIC_UMAMI_URL}
+        data-website-id={process.env.NEXT_PUBLIC_UMAMI_ID}
+      />
       <body>
         <UmamiProvider>
           <BrukLokalMock>
