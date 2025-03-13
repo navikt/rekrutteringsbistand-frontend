@@ -7,11 +7,13 @@ import * as React from 'react';
 interface LeggTilArbeidsgiverModalProps {
   onLeggTilArbeidsgiver: (arbeidsgiver: ArbeidsgiverDTO | null) => void;
   onCloseModal?: () => void;
+  leggTilKnappTekst?: string;
 }
 
 const LeggTilArbeidsgiverModal: React.FC<LeggTilArbeidsgiverModalProps> = ({
   onLeggTilArbeidsgiver,
   onCloseModal = () => {},
+  leggTilKnappTekst = 'Legg til',
 }) => {
   const [open, setOpen] = React.useState(false);
   const [arbeidsgiver, setArbeidsgiver] =
@@ -40,7 +42,7 @@ const LeggTilArbeidsgiverModal: React.FC<LeggTilArbeidsgiverModalProps> = ({
         variant='tertiary'
         onClick={() => setOpen(true)}
       >
-        Legg til
+        {leggTilKnappTekst}
       </Button>
 
       <Modal

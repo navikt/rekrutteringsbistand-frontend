@@ -139,6 +139,7 @@ const Rekrutteringstreff: React.FC = () => {
               <LeggTilArbeidsgiverModal
                 onLeggTilArbeidsgiver={handleLeggTilArbeidsgiver}
                 onCloseModal={() => {}}
+                leggTilKnappTekst='Legg til arbeidsgiver'
               />
             </div>
             {arbeidsgivere.length === 0 ? (
