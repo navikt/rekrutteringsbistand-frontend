@@ -39,7 +39,7 @@ export const tilUmami = async (props: UmamiProps): Promise<void> => {
 
         // Call umami.track and resolve when complete
         if (window.umami)
-          window.umami.track(`[${domene}] ${event}`, {
+          window.umami.track(event, {
             ...data,
             ...screenInfo,
             domene,
