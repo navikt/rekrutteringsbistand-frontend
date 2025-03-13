@@ -8,7 +8,6 @@ import { Roller } from '../../components/tilgangskontroll/roller';
 import { UmamiTracker } from '../../components/umami/UmamiTracker';
 import { UmamiDomene } from '../../components/umami/umami';
 import { Box } from '@navikt/ds-react';
-import { useRouter } from 'next/navigation';
 import { FunctionComponent, ReactNode } from 'react';
 
 const Hurtiglenker: FunctionComponent = () => {
@@ -25,13 +24,13 @@ const Hurtiglenker: FunctionComponent = () => {
       >
         <UmamiTracker
           className={'flex-grow'}
+          href={'/stilling?portefolje=visMine'}
           umamiProps={{
             domene: UmamiDomene.Forside,
             event: 'Se mine stillinger knapp',
           }}
         >
           <LenkepanelMedIkon
-            href={'/stilling?portefolje=visMine'}
             ikon={
               <SVGDarkmode
                 src={SeMineStillingerIkon}
@@ -42,6 +41,7 @@ const Hurtiglenker: FunctionComponent = () => {
           />
         </UmamiTracker>
         <UmamiTracker
+          href='/stilling/ny-stilling'
           className={'flex-grow'}
           umamiProps={{
             domene: UmamiDomene.Generell,
@@ -49,7 +49,6 @@ const Hurtiglenker: FunctionComponent = () => {
           }}
         >
           <LenkepanelMedIkon
-            href='/stilling/ny-stilling'
             ikon={
               <SVGDarkmode
                 src={OpprettNyStillingIkon}
@@ -66,16 +65,10 @@ const Hurtiglenker: FunctionComponent = () => {
 
 const LenkepanelMedIkon: FunctionComponent<{
   tittel: string;
-  href: string;
   ikon: ReactNode;
-}> = ({ tittel, href, ikon }) => {
-  const router = useRouter();
-
+}> = ({ tittel, ikon }) => {
   return (
     <Box.New
-      onClick={() => {
-        router.push(href);
-      }}
       background='sunken'
       borderColor='neutral-subtleA'
       borderRadius='xlarge'
