@@ -1,7 +1,6 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import Script from 'next/script';
 import { createContext, ReactNode, useContext } from 'react';
 
 export enum UmamiDomene {
@@ -82,19 +81,9 @@ export const UmamiProvider = ({ children }: UmamiProviderProps) => {
   };
 
   return (
-    <>
-      <Script
-        id='umami-analytics'
-        defer
-        strategy='afterInteractive'
-        src={process.env.NEXT_PUBLIC_UMAMI_SRC}
-        data-host-url={process.env.NEXT_PUBLIC_UMAMI_URL}
-        data-website-id={process.env.NEXT_PUBLIC_UMAMI_ID}
-      />
-      <UmamiContext.Provider value={{ track, trackAndNavigate }}>
-        {children}
-      </UmamiContext.Provider>
-    </>
+    <UmamiContext.Provider value={{ track, trackAndNavigate }}>
+      {children}
+    </UmamiContext.Provider>
   );
 };
 

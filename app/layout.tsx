@@ -28,6 +28,14 @@ export default async function RootLayout({
       className='h-full'
       data-testmode={process.env.NEXT_PUBLIC_PLAYWRIGHT_TEST_MODE}
     >
+      <Script
+        defer
+        strategy='afterInteractive'
+        src={process.env.UMAMI_SRC}
+        data-host-url={process.env.UMAMI_URL}
+        data-website-id={process.env.UMAMI_ID}
+      />
+
       <Script src={bundle} strategy='afterInteractive' />
 
       <body>
