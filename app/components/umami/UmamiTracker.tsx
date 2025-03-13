@@ -1,3 +1,5 @@
+'use client';
+
 import { UmamiProps } from './umami';
 import { Link } from '@navikt/ds-react';
 import { ReactNode } from 'react';
@@ -27,6 +29,8 @@ export const UmamiTracker = ({
 
   dataAttributes['data-umami-event-domene'] = domene;
 
+  console.log(window.umami);
+  console.log(dataAttributes);
   return href ? (
     <Link
       className={className}
