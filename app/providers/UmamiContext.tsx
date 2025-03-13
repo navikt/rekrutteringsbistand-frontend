@@ -63,6 +63,14 @@ export const UmamiProvider = ({ children }: UmamiProviderProps) => {
     setScriptError(e);
   };
 
+  useEffect(() => {
+    console.log('Umami environment variables:', {
+      src: process.env.NEXT_PUBLIC_UMAMI_SRC,
+      url: process.env.NEXT_PUBLIC_UMAMI_URL,
+      id: process.env.NEXT_PUBLIC_UMAMI_ID,
+    });
+  }, []);
+
   // Check if window.umami exists periodically as a fallback
   useEffect(() => {
     if (typeof window === 'undefined') return;
