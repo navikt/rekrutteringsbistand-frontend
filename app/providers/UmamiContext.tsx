@@ -1,13 +1,8 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import {
-  createContext,
-  ReactNode,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import Script from 'next/script';
+import { createContext, ReactNode, useContext } from 'react';
 
 export enum UmamiDomene {
   Generell = 'Generell',
@@ -48,52 +43,14 @@ interface UmamiProviderProps {
 }
 
 export const UmamiProvider = ({ children }: UmamiProviderProps) => {
-  const [isScriptLoaded, setIsScriptLoaded] = useState(false);
   const router = useRouter();
-
-  useEffect(() => {
-    if (typeof window !== 'undefined' && window.umami) {
-      setIsScriptLoaded(true);
-      return;
-    }
-
-    const handleUmamiLoaded = () => {
-      setIsScriptLoaded(true);
-      console.log('Umami script detected as loaded');
-    };
-
-    const checkInterval = setInterval(() => {
-      if (typeof window !== 'undefined' && window.umami) {
-        setIsScriptLoaded(true);
-        clearInterval(checkInterval);
-        console.log('Umami script detected as loaded through polling');
-      }
-    }, 100);
-
-    setTimeout(() => clearInterval(checkInterval), 5000);
-
-    window.addEventListener('umamiLoaded', handleUmamiLoaded);
-
-    return () => {
-      clearInterval(checkInterval);
-      window.removeEventListener('umamiLoaded', handleUmamiLoaded);
-    };
-  }, []);
 
   const track = (
     eventName: string,
     domene: UmamiDomene,
     eventData?: Record<string, any>,
   ) => {
-    if (!isScriptLoaded) {
-      console.warn(
-        'Umami script not loaded yet, queueing event for later',
-        eventName,
-      );
-      return;
-    }
-
-    if (isScriptLoaded && window.umami) {
+    if (window.umami) {
       const screenInfo = getScreenInfo();
       window.umami.track(eventName, {
         ...eventData,
@@ -101,6 +58,8 @@ export const UmamiProvider = ({ children }: UmamiProviderProps) => {
         path: window.location.pathname,
         domene,
       });
+    } else {
+      console.warn('Umami script er ikke lastet', eventName);
     }
   };
 
@@ -123,9 +82,19 @@ export const UmamiProvider = ({ children }: UmamiProviderProps) => {
   };
 
   return (
-    <UmamiContext.Provider value={{ track, trackAndNavigate }}>
-      {children}
-    </UmamiContext.Provider>
+    <>
+      <Script
+        id='umami-analytics'
+        defer
+        strategy='afterInteractive'
+        src={process.env.NEXT_PUBLIC_UMAMI_SRC}
+        data-host-url={process.env.NEXT_PUBLIC_UMAMI_URL}
+        data-website-id={process.env.NEXT_PUBLIC_UMAMI_ID}
+      />
+      <UmamiContext.Provider value={{ track, trackAndNavigate }}>
+        {children}
+      </UmamiContext.Provider>
+    </>
   );
 };
 
