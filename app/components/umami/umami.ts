@@ -37,7 +37,7 @@ export const tilUmamiNavigate = async (
     } else {
       router.push(url);
     }
-  }, 150);
+  }, 500);
 };
 
 export const tilUmami = async (props: UmamiProps): Promise<void> => {
