@@ -30,6 +30,9 @@ export default async function RootLayout({
       <Script src={bundle} strategy='afterInteractive' />
       <Script
         defer
+        async
+        data-auto-track='true'
+        data-track-events='true'
         src={process.env.UMAMI_SRC}
         data-host-url={process.env.UMAMI_URL}
         data-website-id={process.env.UMAMI_ID}
