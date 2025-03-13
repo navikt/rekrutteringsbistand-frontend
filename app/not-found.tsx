@@ -9,10 +9,7 @@ const NotFound: NextPage = () => {
   const { track } = useUmami();
 
   useEffect(() => {
-    track('Fant ikke side (404)', {
-      domene: UmamiDomene.Generell,
-      path: window.location.pathname,
-    });
+    track('Fant ikke side (404)', UmamiDomene.Generell);
   }, [track]);
 
   return (

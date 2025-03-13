@@ -28,8 +28,8 @@ const Hurtiglenker: FunctionComponent = () => {
           onClick={() =>
             trackAndNavigate(
               'Se mine stillinger knapp',
+              UmamiDomene.Forside,
               '/stilling?portefolje=visMine',
-              { domene: UmamiDomene.Forside },
             )
           }
         >
