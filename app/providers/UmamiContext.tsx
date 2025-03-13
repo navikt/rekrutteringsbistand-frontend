@@ -1,7 +1,13 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { createContext, ReactNode, useContext } from 'react';
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 
 export enum UmamiDomene {
   Generell = 'Generell',
@@ -42,14 +48,52 @@ interface UmamiProviderProps {
 }
 
 export const UmamiProvider = ({ children }: UmamiProviderProps) => {
+  const [isScriptLoaded, setIsScriptLoaded] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.umami) {
+      setIsScriptLoaded(true);
+      return;
+    }
+
+    const handleUmamiLoaded = () => {
+      setIsScriptLoaded(true);
+      console.log('Umami script detected as loaded');
+    };
+
+    const checkInterval = setInterval(() => {
+      if (typeof window !== 'undefined' && window.umami) {
+        setIsScriptLoaded(true);
+        clearInterval(checkInterval);
+        console.log('Umami script detected as loaded through polling');
+      }
+    }, 100);
+
+    setTimeout(() => clearInterval(checkInterval), 5000);
+
+    window.addEventListener('umamiLoaded', handleUmamiLoaded);
+
+    return () => {
+      clearInterval(checkInterval);
+      window.removeEventListener('umamiLoaded', handleUmamiLoaded);
+    };
+  }, []);
 
   const track = (
     eventName: string,
     domene: UmamiDomene,
     eventData?: Record<string, any>,
   ) => {
-    if (window.umami) {
+    if (!isScriptLoaded) {
+      console.warn(
+        'Umami script not loaded yet, queueing event for later',
+        eventName,
+      );
+      return;
+    }
+
+    if (isScriptLoaded && window.umami) {
       const screenInfo = getScreenInfo();
       window.umami.track(eventName, {
         ...eventData,

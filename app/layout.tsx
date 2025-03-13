@@ -35,6 +35,9 @@ export default async function RootLayout({
         src={process.env.UMAMI_SRC}
         data-host-url={process.env.UMAMI_URL}
         data-website-id={process.env.UMAMI_ID}
+        onLoad={() => {
+          console.log('Umami script has loaded successfully');
+        }}
       />
       <body>
         <UmamiProvider>
