@@ -9,13 +9,11 @@ import { useRouter } from 'next/navigation';
 import * as React from 'react';
 
 interface LeggTilArbeidsgiverModalProps {
-  onLeggTilArbeidsgiver: (arbeidsgiver: ArbeidsgiverDTO | null) => void;
   onCloseModal?: () => void;
   leggTilKnappTekst?: string;
 }
 
 const LeggTilArbeidsgiverModal: React.FC<LeggTilArbeidsgiverModalProps> = ({
-  onLeggTilArbeidsgiver,
   onCloseModal = () => {},
   leggTilKnappTekst = 'Legg til',
 }) => {
@@ -44,7 +42,9 @@ const LeggTilArbeidsgiverModal: React.FC<LeggTilArbeidsgiverModalProps> = ({
         rekrutteringstreffId,
       )
         .then(() => {
-          router.push(`/rekrutteringstreff/${rekrutteringstreffId}`);
+          router.push(
+            `/rekrutteringstreff/${rekrutteringstreffId}?tab=arbeidsgivere`,
+          );
         })
         .catch((error) => {
           throw new rekbisError({
@@ -52,7 +52,6 @@ const LeggTilArbeidsgiverModal: React.FC<LeggTilArbeidsgiverModalProps> = ({
             error,
           });
         });
-      onLeggTilArbeidsgiver(arbeidsgiver);
       setArbeidsgiver(null);
       setOpen(false);
       onCloseModal();

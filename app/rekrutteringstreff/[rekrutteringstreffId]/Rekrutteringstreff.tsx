@@ -3,8 +3,8 @@
 import RekrutteringstreffArbeidsgivere from './components/arbeidsgivere/Arbeidsgivere';
 import Deltakere from './components/deltakere/Deltakere';
 import OmTreffet from './components/om-treffet/OmTreffet';
-import { ArbeidsgiverDTO } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
 import { Box, Tabs } from '@navikt/ds-react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import * as React from 'react';
 
 export enum RekrutteringstreffTabs {
@@ -14,24 +14,20 @@ export enum RekrutteringstreffTabs {
 }
 
 const Rekrutteringstreff: React.FC = () => {
-  const [activeTab, setActiveTab] = React.useState(
-    RekrutteringstreffTabs.OM_TREFFET,
-  );
-  const [arbeidsgivere, setArbeidsgivere] = React.useState<ArbeidsgiverDTO[]>(
-    [],
-  );
+  const searchParams = useSearchParams();
+  const router = useRouter();
 
-  const handleLeggTilArbeidsgiver = (arbeidsgiver: ArbeidsgiverDTO | null) => {
-    setArbeidsgivere((prev) => (arbeidsgiver ? [...prev, arbeidsgiver] : prev));
-    setActiveTab(RekrutteringstreffTabs.ARBEIDSGIVERE);
+  const currentTab =
+    (searchParams.get('tab') as RekrutteringstreffTabs) ||
+    RekrutteringstreffTabs.OM_TREFFET;
+
+  const handleTabChange = (value: string) => {
+    router.push(`?tab=${value}`);
   };
 
   return (
     <Box.New>
-      <Tabs
-        value={activeTab}
-        onChange={(value) => setActiveTab(value as RekrutteringstreffTabs)}
-      >
+      <Tabs value={currentTab} onChange={handleTabChange}>
         <Tabs.List className='w-full'>
           <Tabs.Tab
             value={RekrutteringstreffTabs.OM_TREFFET}
@@ -48,7 +44,7 @@ const Rekrutteringstreff: React.FC = () => {
         </Tabs.List>
 
         <Tabs.Panel value={RekrutteringstreffTabs.OM_TREFFET} className='my-4'>
-          <OmTreffet handleLeggTilArbeidsgiver={handleLeggTilArbeidsgiver} />
+          <OmTreffet />
         </Tabs.Panel>
 
         <Tabs.Panel value={RekrutteringstreffTabs.DELTAKERE}>
@@ -56,10 +52,7 @@ const Rekrutteringstreff: React.FC = () => {
         </Tabs.Panel>
 
         <Tabs.Panel value={RekrutteringstreffTabs.ARBEIDSGIVERE}>
-          <RekrutteringstreffArbeidsgivere
-            handleLeggTilArbeidsgiver={handleLeggTilArbeidsgiver}
-            arbeidsgivere={arbeidsgivere}
-          />
+          <RekrutteringstreffArbeidsgivere />
         </Tabs.Panel>
       </Tabs>
     </Box.New>

@@ -11,11 +11,7 @@ import { Heading, Table } from '@navikt/ds-react';
 import { useParams } from 'next/navigation';
 import * as React from 'react';
 
-export interface OmTreffetProps {
-  handleLeggTilArbeidsgiver: (arbeidsgiver: ArbeidsgiverDTO | null) => void;
-}
-
-const OmTreffet: React.FC<OmTreffetProps> = ({ handleLeggTilArbeidsgiver }) => {
+const OmTreffet = () => {
   const { rekrutteringstreffId } = useParams();
 
   const rekrutteringstreffHook = useRekrutteringstreff(
@@ -82,7 +78,6 @@ const OmTreffet: React.FC<OmTreffetProps> = ({ handleLeggTilArbeidsgiver }) => {
           ikon={
             <BriefcaseIcon className='w-8 h-8 text-gray-600 m-2 rounded-full' />
           }
-          onLeggTilArbeidsgiver={handleLeggTilArbeidsgiver}
         />
       </div>
     </div>

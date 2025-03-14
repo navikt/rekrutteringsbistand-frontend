@@ -8,14 +8,7 @@ import { rekbisError } from '@/util/rekbisError';
 import { BodyShort } from '@navikt/ds-react';
 import * as React from 'react';
 
-export interface ArbeidsgivereProps {
-  handleLeggTilArbeidsgiver: (arbeidsgiver: ArbeidsgiverDTO | null) => void;
-  arbeidsgivere: ArbeidsgiverDTO[];
-}
-
-const RekrutteringstreffArbeidsgivere: React.FC<ArbeidsgivereProps> = ({
-  handleLeggTilArbeidsgiver,
-}) => {
+const RekrutteringstreffArbeidsgivere = () => {
   const context = useRekrutteringstreffContext();
   if (!context.rekrutteringstreffId) {
     throw new rekbisError({
@@ -25,7 +18,6 @@ const RekrutteringstreffArbeidsgivere: React.FC<ArbeidsgivereProps> = ({
   const rekrutteringstreffId = context.rekrutteringstreffId;
   const arbeidsgivereHook =
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
-  console.log('arbeidsgivereHook', arbeidsgivereHook);
 
   return (
     <SWRLaster hooks={[arbeidsgivereHook]}>
@@ -33,7 +25,6 @@ const RekrutteringstreffArbeidsgivere: React.FC<ArbeidsgivereProps> = ({
         <div className='p-4 flex flex-col gap-4'>
           <div className='flex items-center justify-between'>
             <LeggTilArbeidsgiverModal
-              onLeggTilArbeidsgiver={handleLeggTilArbeidsgiver}
               onCloseModal={() => {}}
               leggTilKnappTekst='Legg til arbeidsgiver'
             />
