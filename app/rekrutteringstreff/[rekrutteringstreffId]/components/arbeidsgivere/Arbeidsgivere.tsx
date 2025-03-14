@@ -4,6 +4,7 @@ import ArbeidsgiverKort from './components/ArbeidsgiverKort';
 import { ArbeidsgiverDTO } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
 import SWRLaster from '@/app/components/SWRLaster';
+import { rekbisError } from '@/util/rekbisError';
 import { BodyShort } from '@navikt/ds-react';
 import * as React from 'react';
 
@@ -15,8 +16,13 @@ export interface ArbeidsgivereProps {
 const RekrutteringstreffArbeidsgivere: React.FC<ArbeidsgivereProps> = ({
   handleLeggTilArbeidsgiver,
 }) => {
-  const rekrutteringstreffId =
-    useRekrutteringstreffContext().rekrutteringstreffId!!;
+  const context = useRekrutteringstreffContext();
+  if (!context.rekrutteringstreffId) {
+    throw new rekbisError({
+      beskrivelse: 'RekrutteringstreffId mangler i konteksten!',
+    });
+  }
+  const rekrutteringstreffId = context.rekrutteringstreffId;
   const arbeidsgivereHook =
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
   console.log('arbeidsgivereHook', arbeidsgivereHook);

@@ -23,8 +23,13 @@ const LeggTilArbeidsgiverModal: React.FC<LeggTilArbeidsgiverModalProps> = ({
   const [arbeidsgiver, setArbeidsgiver] =
     React.useState<ArbeidsgiverDTO | null>(null);
 
-  const rekrutteringstreffId =
-    useRekrutteringstreffContext().rekrutteringstreffId!!;
+  const context = useRekrutteringstreffContext();
+  if (!context.rekrutteringstreffId) {
+    throw new rekbisError({
+      beskrivelse: 'RekrutteringstreffId mangler i konteksten!',
+    });
+  }
+  const rekrutteringstreffId = context.rekrutteringstreffId;
 
   const router = useRouter();
 
