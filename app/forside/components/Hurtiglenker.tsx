@@ -2,10 +2,11 @@
 
 import OpprettNyStillingIkon from '../../../public/ikoner/opprett-ny-stilling.svg';
 import SeMineStillingerIkon from '../../../public/ikoner/se-mine-stillinger.svg';
+import { UmamiEvent } from '../../../util/umamiEvents';
 import SVGDarkmode from '../../components/SVGDarkmode';
 import { TilgangskontrollForInnhold } from '../../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '../../components/tilgangskontroll/roller';
-import { UmamiDomene, useUmami } from '../../providers/UmamiContext';
+import { useUmami } from '../../providers/UmamiContext';
 import { Box, Link } from '@navikt/ds-react';
 import { FunctionComponent, ReactNode } from 'react';
 
@@ -26,8 +27,7 @@ const Hurtiglenker: FunctionComponent = () => {
           className='flex-grow'
           onClick={() =>
             trackAndNavigate(
-              'Se mine stillinger knapp',
-              UmamiDomene.Forside,
+              UmamiEvent.Forside.se_mine_stillinger_knapp,
               '/stilling?portefolje=visMine',
             )
           }
@@ -46,8 +46,7 @@ const Hurtiglenker: FunctionComponent = () => {
           className='flex-grow'
           onClick={() =>
             trackAndNavigate(
-              'Opprett ny stilling knapp',
-              UmamiDomene.Forside,
+              UmamiEvent.Forside.opprett_ny_stilling_knapp,
               '/stilling/ny-stilling',
             )
           }

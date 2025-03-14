@@ -1,5 +1,6 @@
 'use client';
 
+import { UmamiEventObject } from '../../util/umamiEvents';
 import { useRouter } from 'next/navigation';
 import { createContext, ReactNode, useContext } from 'react';
 
@@ -22,14 +23,9 @@ export const getScreenInfo = (): Record<string, string> => {
 };
 
 interface UmamiContextType {
-  track: (
-    eventName: string,
-    domene: UmamiDomene,
-    eventData?: Record<string, any>,
-  ) => void;
+  track: (event: UmamiEventObject, eventData?: Record<string, any>) => void;
   trackAndNavigate: (
-    eventName: string,
-    domene: UmamiDomene,
+    event: UmamiEventObject,
     url: string,
     eventData?: Record<string, any>,
   ) => void;
@@ -44,32 +40,27 @@ interface UmamiProviderProps {
 export const UmamiProvider = ({ children }: UmamiProviderProps) => {
   const router = useRouter();
 
-  const track = (
-    eventName: string,
-    domene: UmamiDomene,
-    eventData?: Record<string, any>,
-  ) => {
+  const track = (event: UmamiEventObject, eventData?: Record<string, any>) => {
     if (window.umami) {
       const screenInfo = getScreenInfo();
-      window.umami.track(eventName, {
+      window.umami.track(event.navn, {
         ...eventData,
         ...screenInfo,
         path: window.location.pathname,
-        domene,
+        domene: event.domene,
       });
     } else {
-      console.warn('Umami script er ikke lastet', eventName);
+      console.warn('Umami script er ikke lastet', event);
     }
   };
 
   // Track and navigate function
   const trackAndNavigate = (
-    eventName: string,
-    domene: UmamiDomene,
+    event: UmamiEventObject,
     url: string,
     eventData?: Record<string, any>,
   ) => {
-    track(eventName, domene, eventData);
+    track(event, eventData);
 
     setTimeout(() => {
       if (url.startsWith('http')) {
