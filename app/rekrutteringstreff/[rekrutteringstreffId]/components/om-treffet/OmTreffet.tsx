@@ -1,5 +1,4 @@
 import RekrutteringstreffDetaljerKort from '../RekrutteringstreffDetaljerKort';
-import { ArbeidsgiverDTO } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import SWRLaster from '@/app/components/SWRLaster';
 import {

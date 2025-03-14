@@ -1,7 +1,6 @@
 import { useRekrutteringstreffContext } from '../../RekrutteringstreffContext';
 import LeggTilArbeidsgiverModal from '../LeggTilArbeidsgiverModal';
 import ArbeidsgiverKort from './components/ArbeidsgiverKort';
-import { ArbeidsgiverDTO } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
 import SWRLaster from '@/app/components/SWRLaster';
 import { rekbisError } from '@/util/rekbisError';
