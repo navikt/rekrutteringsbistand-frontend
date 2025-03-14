@@ -1,9 +1,11 @@
 'use client';
 
+import { UmamiEvent } from '../../../util/umamiEvents';
 import { Kandidatlistestatus } from '../../api/kandidat/schema.zod';
 import { TilgangskontrollForInnhold } from '../../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '../../components/tilgangskontroll/roller';
 import { KandidatSøkMarkerteContextProvider } from '../../kandidat/KandidatSøkMarkerteContext';
+import { useUmami } from '../../providers/UmamiContext';
 import { useStillingsContext } from './StillingsContext';
 import LeggTilKandidatTilStilling from './components/LeggTilKandidatTilStilling';
 import FinnKandidaterFane from './finn-kandidater/FinnKandidaterFane';
@@ -22,6 +24,7 @@ enum StillingFane {
 export default function StillingSide() {
   const { erEier, stillingsData, kandidatlisteInfo, erSlettet } =
     useStillingsContext();
+  const { track } = useUmami();
 
   const kandidatlistenErLukket =
     kandidatlisteInfo?.kandidatlisteStatus === Kandidatlistestatus.Lukket;
@@ -75,6 +78,7 @@ export default function StillingSide() {
                 <Tabs.Tab
                   value={StillingFane.FINN_KANDIDATER}
                   label='Finn kandidater'
+                  onClick={() => track(UmamiEvent.Stilling.tab_finn_kandidater)}
                 />
               </TilgangskontrollForInnhold>
             </div>

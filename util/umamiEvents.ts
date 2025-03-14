@@ -1,4 +1,11 @@
-import { UmamiDomene } from '../app/providers/UmamiContext';
+export enum UmamiDomene {
+  Generell = 'Generell',
+  Forside = 'Forside',
+  Stilling = 'Stilling',
+  Kandidat = 'Kandidat',
+  Etterregistrering = 'Etterregistrering',
+  Rekrutteringstreff = 'Rekrutteringstreff',
+}
 
 export interface UmamiEventObject {
   domene: UmamiDomene;
@@ -30,7 +37,12 @@ const Forside = lagEventPrefix(UmamiDomene.Forside, {
   opprett_ny_stilling_knapp: 'Opprett ny stilling knapp',
 });
 
+const Stilling = lagEventPrefix(UmamiDomene.Stilling, {
+  tab_finn_kandidater: 'Finn kandidater for stilling',
+});
+
 export const UmamiEvent = {
   [UmamiDomene.Generell]: Generell,
   [UmamiDomene.Forside]: Forside,
+  [UmamiDomene.Stilling]: Stilling,
 };

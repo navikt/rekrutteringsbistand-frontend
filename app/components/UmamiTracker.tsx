@@ -1,12 +1,12 @@
 'use client';
 
-import { getScreenInfo, UmamiDomene } from '../providers/UmamiContext';
+import { UmamiEventObject } from '../../util/umamiEvents';
+import { getScreenInfo } from '../providers/UmamiContext';
 import { Link } from '@navikt/ds-react';
 import { ReactNode } from 'react';
 
 export interface UmamiProps {
-  domene: UmamiDomene;
-  event: string;
+  event: UmamiEventObject;
   data?: Record<string, string>;
 }
 interface UmamiTrackerProps {
@@ -22,14 +22,14 @@ export const UmamiTracker = ({
   className,
   href,
 }: UmamiTrackerProps) => {
-  const { event, domene, ...restProps } = umamiProps;
+  const { event, ...restProps } = umamiProps;
 
   const screenInfo = getScreenInfo();
   const dataAttributes: Record<string, string> = {
-    'data-umami-event': event,
+    'data-umami-event': event.navn,
     'data-umami-event-screenWidth': screenInfo.width.toString(),
     'data-umami-event-screenHeight': screenInfo.height.toString(),
-    'data-umami-event-domene': domene,
+    'data-umami-event-domene': event.domene,
     'data-umami-event-path': window.location.pathname,
   };
 

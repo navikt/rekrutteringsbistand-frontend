@@ -4,15 +4,6 @@ import { UmamiEventObject } from '../../util/umamiEvents';
 import { useRouter } from 'next/navigation';
 import { createContext, ReactNode, useContext } from 'react';
 
-export enum UmamiDomene {
-  Generell = 'Generell',
-  Forside = 'Forside',
-  Stilling = 'Stilling',
-  Kandidat = 'Kandidat',
-  Etterregistrering = 'Etterregistrering',
-  Rekrutteringstreff = 'Rekrutteringstreff',
-}
-
 export const getScreenInfo = (): Record<string, string> => {
   if (typeof window === 'undefined') return {};
 
