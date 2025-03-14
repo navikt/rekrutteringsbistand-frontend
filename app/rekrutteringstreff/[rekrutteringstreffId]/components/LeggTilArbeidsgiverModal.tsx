@@ -39,10 +39,10 @@ const LeggTilArbeidsgiverModal: React.FC<LeggTilArbeidsgiverModalProps> = ({
         },
         rekrutteringstreffId,
       )
-        .then((response) => {
-          console.log('response', response);
-          const id = response.id;
-          router.push(`/rekrutteringstreff/${id}/arbeidsgiver`);
+        .then(() => {
+          router.push(
+            `/rekrutteringstreff/${rekrutteringstreffId}/arbeidsgiver`,
+          );
         })
         .catch((error) => {
           throw new rekbisError({
