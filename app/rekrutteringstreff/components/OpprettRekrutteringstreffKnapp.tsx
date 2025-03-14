@@ -29,7 +29,7 @@ const OpprettRekrutteringstreffKnapp: React.FC<
       })
       .catch((error) => {
         throw new rekbisError({
-          beskrivelse: 'Error while creating rekrutteringstreff:',
+          beskrivelse: 'Feil ved opprettelse av nytt rekrutteringstreff:',
           error,
         });
       });
