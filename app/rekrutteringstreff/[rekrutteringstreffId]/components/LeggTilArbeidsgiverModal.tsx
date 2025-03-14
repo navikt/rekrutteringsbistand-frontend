@@ -1,6 +1,6 @@
 import { useRekrutteringstreffContext } from '../RekrutteringstreffContext';
 import { ArbeidsgiverDTO } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
-import { leggtilNyArbeidsgiver } from '@/app/api/rekrutteringstreff/ny-arbeidsgiver/leggTilNyArbeidsgiver';
+import { leggtilNyArbeidsgiver } from '@/app/api/rekrutteringstreff/[...slug]/ny-arbeidsgiver/leggTilNyArbeidsgiver';
 import VelgArbeidsgiver from '@/app/stilling/ny-stilling/components/VelgArbeidsgiver';
 import { rekbisError } from '@/util/rekbisError';
 import { PlusIcon } from '@navikt/aksel-icons';
@@ -29,7 +29,6 @@ const LeggTilArbeidsgiverModal: React.FC<LeggTilArbeidsgiverModalProps> = ({
   const router = useRouter();
 
   const handleLeggTil = () => {
-    console.log('arbeidsgiver', arbeidsgiver);
     if (arbeidsgiver) {
       leggtilNyArbeidsgiver(
         {

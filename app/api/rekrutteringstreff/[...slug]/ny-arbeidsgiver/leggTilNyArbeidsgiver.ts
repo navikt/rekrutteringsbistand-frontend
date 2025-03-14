@@ -9,7 +9,6 @@ export const leggtilNyArbeidsgiver = async (
   leggTilNyArbeidsgiver: LeggTilNyArbeidsgiverDTO,
   id: string,
 ) => {
-  console.log('leggTilNyArbeidsgiver', leggTilNyArbeidsgiver, 'id', id);
   return await postApi(
     leggtilNyArbeidsgiverEndepunkt(id),
     leggTilNyArbeidsgiver,
