@@ -6,7 +6,7 @@ import { UmamiProvider } from './providers/UmamiContext';
 import type { Metadata } from 'next';
 import Script from 'next/script';
 
-// export const dynamic = 'force-dynamic';
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: isLocal ? 'Local - Rekrutteringsbistand' : 'Rekrutteringsbistand',
