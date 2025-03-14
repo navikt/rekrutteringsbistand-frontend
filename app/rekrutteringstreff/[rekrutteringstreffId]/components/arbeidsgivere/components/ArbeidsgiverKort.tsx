@@ -10,7 +10,7 @@ interface ArbeidsgiverKortProps {
   adresse?: ArbeidsgiverAdresse | null;
 }
 
-type ArbeidsgiverAdresse = {
+export type ArbeidsgiverAdresse = {
   adresse?: string;
   postnummer?: string;
   poststed?: string;
