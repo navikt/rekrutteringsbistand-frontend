@@ -1,7 +1,10 @@
 import { ArbeidsgiverDTO } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
+import { leggtilNyArbeidsgiver } from '@/app/api/rekrutteringstreff/ny-arbeidsgiver/leggTilNyArbeidsgiver';
 import VelgArbeidsgiver from '@/app/stilling/ny-stilling/components/VelgArbeidsgiver';
+import { rekbisError } from '@/util/rekbisError';
 import { PlusIcon } from '@navikt/aksel-icons';
 import { Button, Modal } from '@navikt/ds-react';
+import router from 'next/router';
 import * as React from 'react';
 
 interface LeggTilArbeidsgiverModalProps {
@@ -21,6 +24,21 @@ const LeggTilArbeidsgiverModal: React.FC<LeggTilArbeidsgiverModalProps> = ({
 
   const handleLeggTil = () => {
     if (arbeidsgiver) {
+      leggtilNyArbeidsgiver({
+        organisasjonsnummer: arbeidsgiver.organisasjonsnummer,
+        navn: arbeidsgiver.navn,
+        status: 'Foreslått',
+      })
+        .then((response) => {
+          const id = response.id;
+          router.push(`/rekrutteringstreff/${id}/arbeidsgiver`);
+        })
+        .catch((error) => {
+          throw new rekbisError({
+            beskrivelse: 'Feiler når prøver å legge til ny arbeidsgiver:',
+            error,
+          });
+        });
       onLeggTilArbeidsgiver(arbeidsgiver);
       setArbeidsgiver(null);
       setOpen(false);

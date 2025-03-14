@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const LeggTilNyArbeidsgiverSchema = z.object({
-  organisasjonsnummer: z.number(),
+  organisasjonsnummer: z.string(),
   navn: z.string(),
   status: z.string(),
 });
