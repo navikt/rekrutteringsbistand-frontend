@@ -1,7 +1,7 @@
 'use client';
 
 /**
- * Endepunkt /useArbeidsgivere
+ * Endepunkt /useRekrutteringstreffArbeidsgivere
  */
 import { RekrutteringstreffAPI } from '../../api-routes';
 import { getAPIwithSchema } from '../../fetcher';
@@ -9,10 +9,10 @@ import { arbeidsgivereMock } from './mocks/arbeidsgivereMock';
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
 
-export const arbeidsgivereEndepunkt = () =>
-  `${RekrutteringstreffAPI.internUrl}`;
+export const rekrutteringstreffArbeidsgivereEndepunkt = (id: string) =>
+  `${RekrutteringstreffAPI.internUrl}/${id}/arbeidsgivere}`;
 
-const ArbeidsgivereSchema = z.array(
+const RekrutteringstreffArbeidsgivereSchema = z.array(
   z.object({
     organisasjonsnummer: z.string(),
     navn: z.string(),
@@ -20,14 +20,21 @@ const ArbeidsgivereSchema = z.array(
   }),
 );
 
-export type ArbeidsgivereDTO = z.infer<typeof ArbeidsgivereSchema>;
+export type ArbeidsgivereDTO = z.infer<
+  typeof RekrutteringstreffArbeidsgivereSchema
+>;
 
-export const useArbeidsgivere = () =>
+export const useRekrutteringstreffArbeidsgivere = (id: string) =>
   useSWRImmutable(
-    arbeidsgivereEndepunkt(),
-    getAPIwithSchema(ArbeidsgivereSchema),
+    rekrutteringstreffArbeidsgivereEndepunkt(id),
+    getAPIwithSchema(RekrutteringstreffArbeidsgivereSchema),
   );
 
-export const arbeidsgivereMirage = (server: any) => {
-  return server.get(arbeidsgivereEndepunkt(), () => arbeidsgivereMock);
+export const rekruteringstreffArbeidsgivereMirage = (server: any) => {
+  return server.get(
+    rekrutteringstreffArbeidsgivereEndepunkt(
+      'd6a587cd-8797-4b9a-a68b-575373f16d65',
+    ),
+    () => arbeidsgivereMock,
+  );
 };

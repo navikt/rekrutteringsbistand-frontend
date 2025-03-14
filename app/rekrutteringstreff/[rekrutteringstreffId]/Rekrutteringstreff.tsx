@@ -1,6 +1,6 @@
 'use client';
 
-import Arbeidsgivere from './components/arbeidsgivere/Arbeidsgivere';
+import RekrutteringstreffArbeidsgivere from './components/arbeidsgivere/Arbeidsgivere';
 import Deltakere from './components/deltakere/Deltakere';
 import OmTreffet from './components/om-treffet/OmTreffet';
 import { ArbeidsgiverDTO } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
@@ -56,7 +56,7 @@ const Rekrutteringstreff: React.FC = () => {
         </Tabs.Panel>
 
         <Tabs.Panel value={RekrutteringstreffTabs.ARBEIDSGIVERE}>
-          <Arbeidsgivere
+          <RekrutteringstreffArbeidsgivere
             handleLeggTilArbeidsgiver={handleLeggTilArbeidsgiver}
             arbeidsgivere={arbeidsgivere}
           />

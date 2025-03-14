@@ -1,7 +1,8 @@
+import { useRekrutteringstreffContext } from '../../RekrutteringstreffContext';
 import LeggTilArbeidsgiverModal from '../LeggTilArbeidsgiverModal';
 import ArbeidsgiverKort from './components/ArbeidsgiverKort';
 import { ArbeidsgiverDTO } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
-import { useArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
+import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
 import SWRLaster from '@/app/components/SWRLaster';
 import { BodyShort } from '@navikt/ds-react';
 import * as React from 'react';
@@ -11,11 +12,14 @@ export interface ArbeidsgivereProps {
   arbeidsgivere: ArbeidsgiverDTO[];
 }
 
-const Arbeidsgivere: React.FC<ArbeidsgivereProps> = ({
+const RekrutteringstreffArbeidsgivere: React.FC<ArbeidsgivereProps> = ({
   handleLeggTilArbeidsgiver,
-  arbeidsgivere,
 }) => {
-  const arbeidsgivereHook = useArbeidsgivere();
+  const rekrutteringstreffId =
+    useRekrutteringstreffContext().rekrutteringstreffId!!;
+  const arbeidsgivereHook =
+    useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
+  console.log('arbeidsgivereHook', arbeidsgivereHook);
 
   return (
     <SWRLaster hooks={[arbeidsgivereHook]}>
@@ -50,4 +54,4 @@ const Arbeidsgivere: React.FC<ArbeidsgivereProps> = ({
   );
 };
 
-export default Arbeidsgivere;
+export default RekrutteringstreffArbeidsgivere;
