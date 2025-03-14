@@ -1,10 +1,11 @@
+import { useRekrutteringstreffContext } from '../RekrutteringstreffContext';
 import { ArbeidsgiverDTO } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
 import { leggtilNyArbeidsgiver } from '@/app/api/rekrutteringstreff/ny-arbeidsgiver/leggTilNyArbeidsgiver';
 import VelgArbeidsgiver from '@/app/stilling/ny-stilling/components/VelgArbeidsgiver';
 import { rekbisError } from '@/util/rekbisError';
 import { PlusIcon } from '@navikt/aksel-icons';
 import { Button, Modal } from '@navikt/ds-react';
-import router from 'next/router';
+import { useRouter } from 'next/navigation';
 import * as React from 'react';
 
 interface LeggTilArbeidsgiverModalProps {
@@ -22,14 +23,24 @@ const LeggTilArbeidsgiverModal: React.FC<LeggTilArbeidsgiverModalProps> = ({
   const [arbeidsgiver, setArbeidsgiver] =
     React.useState<ArbeidsgiverDTO | null>(null);
 
+  const rekrutteringstreffId =
+    useRekrutteringstreffContext().rekrutteringstreffId!!;
+
+  const router = useRouter();
+
   const handleLeggTil = () => {
+    console.log('arbeidsgiver', arbeidsgiver);
     if (arbeidsgiver) {
-      leggtilNyArbeidsgiver({
-        organisasjonsnummer: arbeidsgiver.organisasjonsnummer,
-        navn: arbeidsgiver.navn,
-        status: 'Foreslått',
-      })
+      leggtilNyArbeidsgiver(
+        {
+          organisasjonsnummer: arbeidsgiver.organisasjonsnummer,
+          navn: arbeidsgiver.navn,
+          status: 'Foreslått',
+        },
+        rekrutteringstreffId,
+      )
         .then((response) => {
+          console.log('response', response);
           const id = response.id;
           router.push(`/rekrutteringstreff/${id}/arbeidsgiver`);
         })
