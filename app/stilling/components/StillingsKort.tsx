@@ -56,6 +56,8 @@ const StillingsKort: React.FC<IStillingsKort> = ({
     }
   }
 
+  const stillingUrl = `${erFormidling ? '/etterregistrering/' : '/stilling/'}${stillingData.stilling.uuid}`;
+
   return (
     <Box
       className='mb-4 rounded-lg border border-gray-300 p-4'
@@ -66,7 +68,9 @@ const StillingsKort: React.FC<IStillingsKort> = ({
       </>
       <Box className='mb-2'>
         <Link
-          href={`${erFormidling ? '/etterregistrering/' : '/stilling/'}${stillingData.stilling.uuid}`}
+          href={
+            kandidatId ? `${stillingUrl}/kandidat/${kandidatId}` : stillingUrl
+          }
         >
           <Heading size='small'>
             {stillingData?.stilling?.tittel || 'Ukjent tittel'}
@@ -126,7 +130,9 @@ const StillingsKort: React.FC<IStillingsKort> = ({
             tekst={eierNavn}
           />
         </div>
-        {!kandidatId && (
+        {kandidatId ? (
+          <Button variant='tertiary'>Legg til kandidat</Button>
+        ) : (
           <div>
             {erEier && (
               <Link
@@ -136,7 +142,7 @@ const StillingsKort: React.FC<IStillingsKort> = ({
               </Link>
             )}
             <Link
-              href={`/stilling/${stillingData.stilling.uuid}?visFane=finn-kandidater`}
+              href={`/stilling/${stillingData.stilling.uuid}/finn-kandidater`}
             >
               <Button variant='tertiary'>Finn kandidater</Button>
             </Link>

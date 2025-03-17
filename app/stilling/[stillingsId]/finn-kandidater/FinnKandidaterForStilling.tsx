@@ -1,22 +1,21 @@
-import { useStilling } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/useStilling';
-import SWRLaster from '../../../components/SWRLaster';
+'use client';
+
 import SideLayout from '../../../components/layout/SideLayout';
 import { TilgangskontrollForInnhold } from '../../../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '../../../components/tilgangskontroll/roller';
 import { KandidatSøkProvider } from '../../../kandidat/KandidaSokFilterContext';
 import { KandidatSøkMarkerteContextProvider } from '../../../kandidat/KandidatSøkMarkerteContext';
 import KandidatSøkSidebar from '../../../kandidat/components/kandidat-sok-sidebar/KandidatSøkSidebar';
+import { useStillingsContext } from '../StillingsContext';
 import KandidatTilStilling from './KandidatTilStilling';
 import * as React from 'react';
 
-export interface FinnKandidaterFaneProps {
-  stillingsId: string;
-}
+// export interface FinnKandidaterForStillingProps {
+//   stillingsId: string;
+// }
 
-const FinnKandidaterFane: React.FC<FinnKandidaterFaneProps> = ({
-  stillingsId,
-}) => {
-  const stillingsDataHook = useStilling(stillingsId);
+const FinnKandidaterForStilling: React.FC = ({}) => {
+  const { stillingsData } = useStillingsContext();
 
   return (
     <TilgangskontrollForInnhold
@@ -27,19 +26,13 @@ const FinnKandidaterFane: React.FC<FinnKandidaterFaneProps> = ({
     >
       <KandidatSøkProvider>
         <KandidatSøkMarkerteContextProvider>
-          <SWRLaster hooks={[stillingsDataHook]}>
-            {(stillingsData) => {
-              return (
-                <SideLayout sidepanel={<KandidatSøkSidebar />}>
-                  <KandidatTilStilling stillingsData={stillingsData} />
-                </SideLayout>
-              );
-            }}
-          </SWRLaster>
+          <SideLayout sidepanel={<KandidatSøkSidebar />}>
+            <KandidatTilStilling stillingsData={stillingsData} />
+          </SideLayout>
         </KandidatSøkMarkerteContextProvider>
       </KandidatSøkProvider>
     </TilgangskontrollForInnhold>
   );
 };
 
-export default FinnKandidaterFane;
+export default FinnKandidaterForStilling;

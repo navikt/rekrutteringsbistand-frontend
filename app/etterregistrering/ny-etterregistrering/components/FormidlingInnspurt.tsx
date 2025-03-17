@@ -1,5 +1,7 @@
 import { rekbisError } from '../../../../util/rekbisError';
+import { UmamiEvent } from '../../../../util/umamiEvents';
 import { useApplikasjonContext } from '../../../providers/ApplikasjonContext';
+import { useUmami } from '../../../providers/UmamiContext';
 import { FormidlingDataForm } from '../redigerFormidlingFormType';
 import { Buildings2Icon, PersonIcon } from '@navikt/aksel-icons';
 import {
@@ -17,6 +19,8 @@ import { useFormContext } from 'react-hook-form';
 
 const FormidlingInnspurt = () => {
   const router = useRouter();
+
+  const { track } = useUmami();
   const { getValues, handleSubmit } = useFormContext<FormidlingDataForm>();
 
   const { brukerData, valgtNavKontor } = useApplikasjonContext();
@@ -43,6 +47,10 @@ const FormidlingInnspurt = () => {
           },
           body: JSON.stringify(formidlingData),
         },
+      );
+
+      track(
+        UmamiEvent.Etterregistrering.fullført_etterregistrering_av_formidling,
       );
 
       const data = await nyFormidling.json();
@@ -73,14 +81,6 @@ const FormidlingInnspurt = () => {
             <Heading size='small' level='2'>
               Om kandidatene
             </Heading>
-
-            {/* <Button
-              variant='tertiary'
-              icon={<PencilIcon aria-hidden />}
-              iconPosition='right'
-            >
-              Endre
-            </Button> */}
           </div>
           <hr />
           <div className='space-y-4'>
@@ -103,13 +103,6 @@ const FormidlingInnspurt = () => {
             <Heading size='small' level='2'>
               Om arbeidsgiver og stilling
             </Heading>
-            {/* <Button
-              variant='tertiary'
-              icon={<PencilIcon aria-hidden />}
-              iconPosition='right'
-            >
-              Endre
-            </Button> */}
           </div>
           <hr />
           <div className='space-y-4'>
@@ -126,9 +119,7 @@ const FormidlingInnspurt = () => {
                 {formidlingsVerdier.omFormidlingen?.categoryList?.[0]?.name}
               </BodyShort>
               <BodyShort>{formidlingsVerdier.omFormidlingen?.sektor}</BodyShort>
-              {/* <BodyShort> */}
-              {/* {formidlingsVerdier.omFormidlingen?} */}
-              {/* </BodyShort> */}
+
               <BodyShort>
                 {formidlingsVerdier.omFormidlingen?.ansettelsesform}
               </BodyShort>

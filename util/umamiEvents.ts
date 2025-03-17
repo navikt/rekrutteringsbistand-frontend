@@ -39,10 +39,27 @@ const Forside = lagEventPrefix(UmamiDomene.Forside, {
 
 const Stilling = lagEventPrefix(UmamiDomene.Stilling, {
   tab_finn_kandidater: 'Finn kandidater for stilling',
+  antall_yrkesjobbønsker_fra_kandidat: 'Antall yrkesjobbønsker fra kandidat',
+});
+
+const Kandidat = lagEventPrefix(UmamiDomene.Kandidat, {
+  tab_oversikt: 'Kandidatliste oversikt',
+});
+
+const Etterregistrering = lagEventPrefix(UmamiDomene.Etterregistrering, {
+  fullført_etterregistrering_av_formidling:
+    'Fullført etterregistrering av formidling',
+});
+
+const Rekrutteringstreff = lagEventPrefix(UmamiDomene.Rekrutteringstreff, {
+  registrering: 'Registrering til rekrutteringstreff',
 });
 
 export const UmamiEvent = {
   [UmamiDomene.Generell]: Generell,
   [UmamiDomene.Forside]: Forside,
   [UmamiDomene.Stilling]: Stilling,
+  [UmamiDomene.Kandidat]: Kandidat,
+  [UmamiDomene.Etterregistrering]: Etterregistrering,
+  [UmamiDomene.Rekrutteringstreff]: Rekrutteringstreff,
 };

@@ -1,14 +1,12 @@
 'use client';
 
-import { UmamiEvent } from '../../../util/umamiEvents';
 import { Kandidatlistestatus } from '../../api/kandidat/schema.zod';
 import { TilgangskontrollForInnhold } from '../../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '../../components/tilgangskontroll/roller';
 import { KandidatSøkMarkerteContextProvider } from '../../kandidat/KandidatSøkMarkerteContext';
-import { useUmami } from '../../providers/UmamiContext';
 import { useStillingsContext } from './StillingsContext';
+import FinnKandidaterKnapp from './components/FinnKandidaterKnapp';
 import LeggTilKandidatTilStilling from './components/LeggTilKandidatTilStilling';
-import FinnKandidaterFane from './finn-kandidater/FinnKandidaterFane';
 import StillingsKandidater from './kandidater/StillingsKandidater';
 import { StillingsKandidaterFilterProvider } from './kandidater/StillingsKandidaterFilterContext';
 import OmStillingen from './omStillingen/OmStillingen';
@@ -18,13 +16,11 @@ import { useQueryState } from 'nuqs';
 enum StillingFane {
   STILLING = 'stilling',
   KANDIDATER = 'kandidater',
-  FINN_KANDIDATER = 'finn-kandidater',
 }
 
 export default function StillingSide() {
   const { erEier, stillingsData, kandidatlisteInfo, erSlettet } =
     useStillingsContext();
-  const { track } = useUmami();
 
   const kandidatlistenErLukket =
     kandidatlisteInfo?.kandidatlisteStatus === Kandidatlistestatus.Lukket;
@@ -68,19 +64,6 @@ export default function StillingSide() {
                   />
                 )}
               </TilgangskontrollForInnhold>
-              <TilgangskontrollForInnhold
-                skjulVarsel
-                kreverEnAvRollene={[
-                  Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-                  Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
-                ]}
-              >
-                <Tabs.Tab
-                  value={StillingFane.FINN_KANDIDATER}
-                  label='Finn kandidater'
-                  onClick={() => track(UmamiEvent.Stilling.tab_finn_kandidater)}
-                />
-              </TilgangskontrollForInnhold>
             </div>
             <div className='flex items-center'>
               {kandidatlistenErLukket ? (
@@ -88,7 +71,7 @@ export default function StillingSide() {
                   Oppdraget er ferdigstilt og kandidatlisten er lukket
                 </Alert>
               ) : (
-                <div>
+                <div className='flex'>
                   {kandidatlisteInfo?.kandidatlisteId && (
                     <TilgangskontrollForInnhold
                       skjulVarsel
@@ -97,6 +80,7 @@ export default function StillingSide() {
                         Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
                       ]}
                     >
+                      <FinnKandidaterKnapp />
                       <LeggTilKandidatTilStilling
                         stillingsId={stillingsData.stilling.uuid}
                         stillingsTittel={stillingsData.stilling.title}
@@ -119,17 +103,6 @@ export default function StillingSide() {
               </Tabs.Panel>
             </>
           )}
-          <TilgangskontrollForInnhold
-            skjulVarsel
-            kreverEnAvRollene={[
-              Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-              Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
-            ]}
-          >
-            <Tabs.Panel value={StillingFane.FINN_KANDIDATER}>
-              <FinnKandidaterFane stillingsId={stillingsData.stilling.uuid} />
-            </Tabs.Panel>
-          </TilgangskontrollForInnhold>
         </Tabs>
       </div>
     </KandidatSøkMarkerteContextProvider>
