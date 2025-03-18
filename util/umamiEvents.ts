@@ -40,6 +40,12 @@ const Forside = lagEventPrefix(UmamiDomene.Forside, {
 const Stilling = lagEventPrefix(UmamiDomene.Stilling, {
   tab_finn_kandidater: 'Finn kandidater for stilling',
   antall_yrkesjobbønsker_fra_kandidat: 'Antall yrkesjobbønsker fra kandidat',
+  åpne_legg_til_kandidat_modal: 'Åpne legg til kandidat modal',
+  legg_til_kandidat: 'Legg til kandidat (antall)',
+  send_beskjed_til_kandidat: 'Send beskjed til kandidat (antall)',
+  del_stilling_med_kandidat: 'Del stilling med kandidat (antall)',
+  del_kandidat_med_arbeidsgiver: 'Del kandidat med arbeidsgiver (antall)',
+  opprettet_stilling: 'Opprettet stilling',
 });
 
 const Kandidat = lagEventPrefix(UmamiDomene.Kandidat, {
