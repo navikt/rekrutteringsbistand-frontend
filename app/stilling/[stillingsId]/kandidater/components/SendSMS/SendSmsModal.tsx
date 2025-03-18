@@ -1,3 +1,4 @@
+import { UmamiEvent } from '../../../../../../util/umamiEvents';
 import { kandidaterSchemaDTO } from '../../../../../api/kandidat/schema.zod';
 import {
   MeldingsmalerDTO,
@@ -9,6 +10,7 @@ import {
   useSmserForStilling,
 } from '../../../../../api/kandidatvarsel/kandidatvarsel';
 import { useVisVarsling } from '../../../../../components/varsling/Varsling';
+import { useUmami } from '../../../../../providers/UmamiContext';
 import { Stillingskategori } from '../../../../stilling-typer';
 import css from './SendSmsModal.module.css';
 import { MobileIcon } from '@navikt/aksel-icons';
@@ -40,7 +42,7 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
     markerteKandidater,
   } = props;
   const visVarsling = useVisVarsling();
-
+  const { track } = useUmami();
   const [vis, setVis] = useState(false);
   const { data: smser = {} } = useSmserForStilling(
     stillingskategori === 'FORMIDLING' ? null : stillingId,
@@ -87,7 +89,9 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
         ),
         stillingId,
       });
-
+      track(UmamiEvent.Stilling.send_beskjed_til_kandidat, {
+        antall: kandidaterSomMottarBeskjed.length,
+      });
       visVarsling({
         innhold: 'Beskjed er sendt',
       });

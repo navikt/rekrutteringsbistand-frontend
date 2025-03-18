@@ -113,7 +113,7 @@ export const testTilgangskontroll = (rolle: Roller) => {
       await expect(page.getByTestId('stilling-side')).toBeVisible();
 
       // Viser finn kandidater knapp
-      const finnKandidaterKnapp = page.getByRole('tab', {
+      const finnKandidaterKnapp = page.getByRole('button', {
         name: 'Finn kandidater',
       });
 

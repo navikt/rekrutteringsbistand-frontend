@@ -1,6 +1,7 @@
 'use client';
 
-import { UmamiDomene, useUmami } from './providers/UmamiContext';
+import { UmamiEvent } from '../util/umamiEvents';
+import { useUmami } from './providers/UmamiContext';
 import { NextPage } from 'next';
 import { useEffect } from 'react';
 
@@ -8,7 +9,7 @@ const NotFound: NextPage = () => {
   const { track } = useUmami();
 
   useEffect(() => {
-    track('Fant ikke side (404)', UmamiDomene.Generell);
+    track(UmamiEvent.Generell.fant_ikke_side);
   }, [track]);
 
   return (

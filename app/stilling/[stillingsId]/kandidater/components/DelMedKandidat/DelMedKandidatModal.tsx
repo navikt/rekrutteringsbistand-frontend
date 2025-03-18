@@ -1,3 +1,4 @@
+import { UmamiEvent } from '../../../../../../util/umamiEvents';
 import { useForespurteOmDelingAvCv } from '../../../../../api/foresporsel-om-deling-av-cv/foresporsler/[slug]/useForespurteOmDelingAvCv';
 import { sendForespørselOmDelingAvCv } from '../../../../../api/foresporsel-om-deling-av-cv/foresporsler/forespørselOmDelingAvCv';
 import {
@@ -6,6 +7,7 @@ import {
 } from '../../../../../api/kandidat/schema.zod';
 import { useVisVarsling } from '../../../../../components/varsling/Varsling';
 import { useApplikasjonContext } from '../../../../../providers/ApplikasjonContext';
+import { useUmami } from '../../../../../providers/UmamiContext';
 import VelgSvarfrist from './VelgSvarfrist';
 import { ArrowForwardIcon } from '@navikt/aksel-icons';
 import {
@@ -34,6 +36,7 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
   forespurteKandidaterAktørListe,
   stillingsId,
 }) => {
+  const { track } = useUmami();
   const [modalErÅpen, setModalErÅpen] = React.useState(false);
   const [svarfrist, setSvarfrist] = React.useState<Date | undefined>(undefined);
   const varsel = useVisVarsling();
@@ -64,7 +67,9 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
         navKontor: valgtNavKontor?.navKontor ?? '',
       });
       forespurteKandidaterHook.mutate();
-
+      track(UmamiEvent.Stilling.del_stilling_med_kandidat, {
+        antall: kandidaterSomKanDelesTil.length,
+      });
       fjernAllMarkering();
       setModalErÅpen(false);
       setLoading(false);

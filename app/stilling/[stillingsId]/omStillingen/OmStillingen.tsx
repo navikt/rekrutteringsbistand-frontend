@@ -9,7 +9,7 @@ import OmBedriften from '../components/OmBedriften';
 import OmStillingBoks from '../components/OmStillingBoks';
 import AntallKandidater from './AntallKandidater';
 import StillingSidebar from './StillingSidebar/StillingSidebar';
-import StillingsTekst from './StillingsTekst';
+import VisEditorTekst from './VisEditorTekst';
 import {
   CalendarIcon,
   ClockIcon,
@@ -77,7 +77,11 @@ const OmStillingen: React.FC<{ forhåndsvisData?: boolean }> = ({
             <OmStillingBoks
               tittel='Om stillingen'
               innholdTopp
-              innhold={<StillingsTekst />}
+              innhold={
+                <VisEditorTekst
+                  htmlTekst={stillingsData.stilling.properties?.adtext}
+                />
+              }
               gridInnhold={
                 <>
                   <TekstMedIkon

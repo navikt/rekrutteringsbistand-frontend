@@ -5,6 +5,7 @@
   "adGruppeRekrutteringsbistandArbeidsgiverrettet": "46c8e3b2-0469-4740-983f-d8cd2b6e4fee",
   "adGruppeRekrutteringsbistandJobbsokerrettet": "66b70a6a-3d05-47b3-8b5a-47c681dcd1d5",
   "adGruppeRekrutteringsbistandUtvikler": "41080368-439f-4128-858a-afbef876431e",
+  "decoratorSrc": "https://cdn.nav.no/personoversikt/internarbeidsflate-decorator-v3/prod/latest/dist/bundle.js",
   "foresporselOmDelingAvCvApi": "https://foresporsel-om-deling-av-cv-api.prod-fss-pub.nais.io",
   "foresporselOmDelingAvCvApiHost": "foresporsel-om-deling-av-cv-api.prod-fss-pub.nais.io",
   "kandidatApiHost": "rekrutteringsbistand-sms.prod-fss-pub.nais.io",
@@ -15,5 +16,3 @@
   "umamiSrc": "https://cdn.nav.no/team-researchops/sporing/sporing.js",
   "umamiUrl": "https://umami.nav.no"
 }
-
-

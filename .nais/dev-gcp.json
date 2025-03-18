@@ -5,6 +5,7 @@
   "adGruppeRekrutteringsbistandArbeidsgiverrettet": "52bc2af7-38d1-468b-b68d-0f3a4de45af2",
   "adGruppeRekrutteringsbistandJobbsokerrettet": "0dba8374-bf36-4d89-bbba-662447d57b94",
   "adGruppeRekrutteringsbistandUtvikler": "a1749d9a-52e0-4116-bb9f-935c38f6c74a",
+  "decoratorSrc": "https://cdn.nav.no/personoversikt/internarbeidsflate-decorator-v3/dev/latest/dist/bundle.js",
   "foresporselOmDelingAvCvApi": "https://foresporsel-om-deling-av-cv-api.dev-fss-pub.nais.io",
   "foresporselOmDelingAvCvApiHost": "foresporsel-om-deling-av-cv-api.dev-fss-pub.nais.io",
   "kandidatApiHost": "rekrutteringsbistand-kandidat-api.dev-fss-pub.nais.io",

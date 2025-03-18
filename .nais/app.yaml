@@ -103,3 +103,5 @@ spec:
       value: {{ umamiSrc }}
     - name: NEXT_PUBLIC_UMAMI_URL
       value: {{ umamiUrl }}
+    - name: NEXT_PUBLIC_DECORATOR_SRC
+      value: {{ decoratorSrc }}
