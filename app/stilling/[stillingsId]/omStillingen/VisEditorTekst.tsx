@@ -1,10 +1,17 @@
-import { useStillingsContext } from '../StillingsContext';
 import parse from 'html-react-parser';
 import * as React from 'react';
 
-const StillingsTekst: React.FC = () => {
-  const { stillingsData } = useStillingsContext();
-  const tekst = stillingsData.stilling?.properties?.adtext ?? '';
+interface VisEditorTekstProps {
+  htmlTekst?: string | null | number;
+}
+
+const VisEditorTekst: React.FC<VisEditorTekstProps> = ({ htmlTekst }) => {
+  // If number, parse to string:
+  if (typeof htmlTekst === 'number') {
+    htmlTekst = htmlTekst.toString();
+  }
+  const formatertTekst = htmlTekst ?? '';
+
   const options = {
     replace: (domNode: any) => {
       if (domNode.type === 'tag') {
@@ -28,9 +35,9 @@ const StillingsTekst: React.FC = () => {
 
   return (
     <div className='adText prose prose-slate max-w-none'>
-      {parse(tekst, options)}
+      {parse(formatertTekst, options)}
     </div>
   );
 };
 
-export default StillingsTekst;
+export default VisEditorTekst;

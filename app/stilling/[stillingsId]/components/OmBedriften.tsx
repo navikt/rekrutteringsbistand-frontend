@@ -1,8 +1,8 @@
 import capitalizeEmployerName from '../../stilling-util';
 import { useStillingsContext } from '../StillingsContext';
 import Definisjon from '../components/Definisjon';
+import VisEditorTekst from '../omStillingen/VisEditorTekst';
 import OmStillingBoks from './OmStillingBoks';
-import parse from 'html-react-parser';
 import * as React from 'react';
 
 const OmBedriften: React.FC = () => {
@@ -14,13 +14,9 @@ const OmBedriften: React.FC = () => {
       tittel={`Om ${capitalizeEmployerName(employer?.name ?? '-')}`}
       kontaktpersoner
       innhold={
-        <>
-          {parse(
-            String(
-              stillingsData.stilling?.properties?.employerdescription ?? '-',
-            ),
-          )}
-        </>
+        <VisEditorTekst
+          htmlTekst={stillingsData.stilling?.properties?.employerdescription}
+        />
       }
       gridInnhold={
         <>
