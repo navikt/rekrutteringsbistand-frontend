@@ -1,3 +1,5 @@
+import { UmamiEvent } from '../../../../../util/umamiEvents';
+import { useUmami } from '../../../../providers/UmamiContext';
 import { useStillingsContext } from '../../StillingsContext';
 import { PrinterSmallIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
@@ -10,26 +12,27 @@ export interface StillingPrintProps {
 
 const StillingPrint: React.FC<StillingPrintProps> = ({ printRef }) => {
   const { stillingsData } = useStillingsContext();
+  const { track } = useUmami();
 
   const reactToPrintFn = useReactToPrint({
     contentRef: printRef,
     documentTitle: `${stillingsData?.stilling?.title ?? 'Stilling'}`,
     pageStyle: `
-      @media print {
-        .print-only {
-          display: block !important;
-          text-align: left !important;
-          margin-bottom: 20px !important;
-          padding: 10px 0 !important;
-          border-bottom: 1px solid #000 !important;
-          font-size: 24px !important;
-          font-weight: bold !important;
+        @media print {
+          .print-only {
+            display: block !important;
+            text-align: left !important;
+            margin-bottom: 20px !important;
+            padding: 10px 0 !important;
+            border-bottom: 1px solid #000 !important;
+            font-size: 24px !important;
+            font-weight: bold !important;
+          }
+          .print-content {
+            padding: 20px !important;
+          }
         }
-        .print-content {
-          padding: 20px !important;
-        }
-      }
-    `,
+      `,
   });
 
   React.useEffect(() => {
@@ -67,7 +70,10 @@ const StillingPrint: React.FC<StillingPrintProps> = ({ printRef }) => {
       size='small'
       className='h-5 w-full'
       icon={<PrinterSmallIcon />}
-      onClick={() => reactToPrintFn()}
+      onClick={() => {
+        reactToPrintFn();
+        track(UmamiEvent.Stilling.skriv_ut_stilling);
+      }}
     >
       Skriv ut
     </Button>

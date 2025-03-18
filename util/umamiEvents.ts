@@ -46,6 +46,8 @@ const Stilling = lagEventPrefix(UmamiDomene.Stilling, {
   del_stilling_med_kandidat: 'Del stilling med kandidat (antall)',
   del_kandidat_med_arbeidsgiver: 'Del kandidat med arbeidsgiver (antall)',
   opprettet_stilling: 'Opprettet stilling',
+  skriv_ut_stilling: 'Skriv ut stilling',
+  ny_stilling_info: 'Ny stilling info',
 });
 
 const Kandidat = lagEventPrefix(UmamiDomene.Kandidat, {
@@ -55,6 +57,7 @@ const Kandidat = lagEventPrefix(UmamiDomene.Kandidat, {
 const Etterregistrering = lagEventPrefix(UmamiDomene.Etterregistrering, {
   fullført_etterregistrering_av_formidling:
     'Fullført etterregistrering av formidling',
+  yrkestittel_etterregistrering: 'Yrkestittel etterregistrering',
 });
 
 const Rekrutteringstreff = lagEventPrefix(UmamiDomene.Rekrutteringstreff, {

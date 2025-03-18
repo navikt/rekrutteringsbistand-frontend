@@ -52,6 +52,9 @@ const FormidlingInnspurt = () => {
       track(
         UmamiEvent.Etterregistrering.fullført_etterregistrering_av_formidling,
       );
+      track(UmamiEvent.Etterregistrering.yrkestittel_etterregistrering, {
+        yrkestittel: formidlingData.omFormidlingen?.categoryList?.[0]?.name,
+      });
 
       const data = await nyFormidling.json();
 
