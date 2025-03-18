@@ -7,7 +7,7 @@
     "open-browser": "open http://localhost:1337",
     "test": "NEXT_PUBLIC_PLAYWRIGHT_TEST_MODE=true pnpm exec playwright test --reporter=html",
     "test-dev": "NEXT_PUBLIC_PLAYWRIGHT_TEST_MODE=true next dev -p 1337",
-    "test-codegen": "pnpm exec playwright codegen",
+    "test-codegen": "pnpm exec playwright codegen --viewport-size=1920,1080",
     "build": "next build",
     "lint": "next lint",
     "lint-fix": "npx eslint --fix .",
