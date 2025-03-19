@@ -6,12 +6,14 @@ import { UmamiEvent } from '../../../util/umamiEvents';
 import SVGDarkmode from '../../components/SVGDarkmode';
 import { TilgangskontrollForInnhold } from '../../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '../../components/tilgangskontroll/roller';
+import { useThemeProvider } from '../../providers/ThemeProvider';
 import { useUmami } from '../../providers/UmamiContext';
 import { Box, Link } from '@navikt/ds-react';
 import { FunctionComponent, ReactNode } from 'react';
 
 const Hurtiglenker: FunctionComponent = () => {
   const { trackAndNavigate } = useUmami();
+
   return (
     <TilgangskontrollForInnhold
       skjulVarsel
@@ -70,9 +72,10 @@ const LenkepanelMedIkon: FunctionComponent<{
   tittel: string;
   ikon: ReactNode;
 }> = ({ tittel, ikon }) => {
+  const { darkMode } = useThemeProvider();
   return (
     <Box.New
-      background='sunken'
+      background={darkMode ? 'raised' : 'sunken'}
       borderColor='neutral-subtleA'
       borderRadius='xlarge'
       padding='0'
