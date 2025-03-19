@@ -1,7 +1,11 @@
 import formaterMedStoreOgSmåBokstaver from '../../../util/tekst';
+import { UmamiEvent } from '../../../util/umamiEvents';
+import { leggTilKandidater } from '../../api/kandidat-sok/leggTilKandidat';
 import { RekrutteringsbistandStillingSchemaDTO } from '../../api/stillings-sok/schema/rekrutteringsbistandStillingSchema.zod';
 import TekstMedIkon from '../../components/TekstMedIkon';
+import { useVisVarsling } from '../../components/varsling/Varsling';
 import { useApplikasjonContext } from '../../providers/ApplikasjonContext';
+import { useUmami } from '../../providers/UmamiContext';
 import {
   formaterEiernavn,
   hentArbeidssted,
@@ -33,6 +37,8 @@ const StillingsKort: React.FC<IStillingsKort> = ({
     brukerData: { ident },
   } = useApplikasjonContext();
 
+  const { track } = useUmami();
+  const visVarsel = useVisVarsling();
   const antallStillinger = Number(
     stillingData?.stilling?.properties?.positioncount,
   );
@@ -57,6 +63,22 @@ const StillingsKort: React.FC<IStillingsKort> = ({
   }
 
   const stillingUrl = `${erFormidling ? '/etterregistrering/' : '/stilling/'}${stillingData.stilling.uuid}`;
+
+  const leggTilKandidat = async (kandidatId: string) => {
+    track(UmamiEvent.Stilling.forslag_til_stilling_legg_til_kandidat);
+    try {
+      await leggTilKandidater([kandidatId], stillingData.stilling.uuid);
+      visVarsel({
+        innhold: 'Kandidat er lagt til i kandidatliste',
+        alertType: 'success',
+      });
+    } catch {
+      visVarsel({
+        innhold: 'Kandidat kunne ikke legges til i kandidatliste',
+        alertType: 'error',
+      });
+    }
+  };
 
   return (
     <Box
@@ -131,7 +153,12 @@ const StillingsKort: React.FC<IStillingsKort> = ({
           />
         </div>
         {kandidatId ? (
-          <Button variant='tertiary'>Legg til kandidat</Button>
+          <Button
+            variant='tertiary'
+            onClick={() => leggTilKandidat(kandidatId)}
+          >
+            Legg til kandidat
+          </Button>
         ) : (
           <div>
             {erEier && (
