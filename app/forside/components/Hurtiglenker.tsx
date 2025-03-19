@@ -6,7 +6,6 @@ import { UmamiEvent } from '../../../util/umamiEvents';
 import SVGDarkmode from '../../components/SVGDarkmode';
 import { TilgangskontrollForInnhold } from '../../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '../../components/tilgangskontroll/roller';
-import { useThemeProvider } from '../../providers/ThemeProvider';
 import { useUmami } from '../../providers/UmamiContext';
 import { Box, Link } from '@navikt/ds-react';
 import { FunctionComponent, ReactNode } from 'react';
@@ -72,10 +71,9 @@ const LenkepanelMedIkon: FunctionComponent<{
   tittel: string;
   ikon: ReactNode;
 }> = ({ tittel, ikon }) => {
-  const { darkMode } = useThemeProvider();
   return (
     <Box.New
-      background={darkMode ? 'raised' : 'sunken'}
+      background={'neutral-softA'}
       borderColor='neutral-subtleA'
       borderRadius='xlarge'
       padding='0'
