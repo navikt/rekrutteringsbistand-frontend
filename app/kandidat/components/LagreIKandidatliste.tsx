@@ -1,8 +1,10 @@
+import { UmamiEvent } from '../../../util/umamiEvents';
 import { leggTilKandidater } from '../../api/kandidat-sok/leggTilKandidat';
 import { useKandidatliste } from '../../api/kandidat/useKandidatliste';
 import { useMineKandidatlister } from '../../api/kandidat/useMineKandidatlister';
 import SWRLaster from '../../components/SWRLaster';
 import { useVisVarsling } from '../../components/varsling/Varsling';
+import { useUmami } from '../../providers/UmamiContext';
 import { useKandidatSøkMarkerteContext } from '../KandidatSøkMarkerteContext';
 import { PersonPlusIcon } from '@navikt/aksel-icons';
 import {
@@ -24,6 +26,7 @@ interface LagreIKandidatlisteProps {
 const LagreIKandidatliste: React.FC<LagreIKandidatlisteProps> = ({
   stillingsId,
 }) => {
+  const { track } = useUmami();
   const ref = React.useRef<HTMLDialogElement>(null);
   const { markerteKandidater, fjernMarkerteKandidater } =
     useKandidatSøkMarkerteContext();
@@ -47,6 +50,10 @@ const LagreIKandidatliste: React.FC<LagreIKandidatlisteProps> = ({
     if (markerteKandidater && markerteKandidater.length > 0) {
       setLaster(true);
       if (stillingsId) {
+        track(UmamiEvent.Stilling.legg_til_markerte_kandidater, {
+          antallKandidater: markerteKandidater?.length,
+          kilde: 'Finn kandidater',
+        });
         try {
           await leggTilKandidater(markerteKandidater, stillingsId);
           visVarsel({
@@ -63,9 +70,15 @@ const LagreIKandidatliste: React.FC<LagreIKandidatlisteProps> = ({
           });
         }
       } else if (selectedRows.length !== 0) {
+        track(UmamiEvent.Stilling.legg_til_markerte_kandidater, {
+          antallKandidater: markerteKandidater?.length,
+          kilde: 'Kandidatsøk',
+          antallStillinger: selectedRows.length,
+        });
         const promises = selectedRows.map((stillingId) =>
           leggTilKandidater(markerteKandidater, stillingId),
         );
+
         try {
           await Promise.all(promises);
           visVarsel({

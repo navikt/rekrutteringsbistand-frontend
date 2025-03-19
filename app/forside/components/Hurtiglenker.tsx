@@ -24,7 +24,7 @@ const Hurtiglenker: FunctionComponent = () => {
         data-testid='forside-hurtiglenker'
       >
         <Link
-          className='flex-grow'
+          className='flex-grow text-inherit'
           onClick={() =>
             trackAndNavigate(
               UmamiEvent.Forside.se_mine_stillinger_knapp,
@@ -43,7 +43,7 @@ const Hurtiglenker: FunctionComponent = () => {
           />
         </Link>
         <Link
-          className='flex-grow'
+          className='flex-grow text-inherit'
           onClick={() =>
             trackAndNavigate(
               UmamiEvent.Forside.opprett_ny_stilling_knapp,
