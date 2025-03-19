@@ -83,7 +83,7 @@ export const ApplikasjonContextProvider: React.FC<
     >
       <Header />
       <Varsling />
-      <main className='mx-auto mb-8 w-[var(--ax-breakpoint-2xl)] p-4'>
+      <main className='mx-auto mb-8 w-full max-w-[1440px]  p-8 '>
         {harTilgangTilNyApplikasjon ? (
           children
         ) : (

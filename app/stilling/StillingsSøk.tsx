@@ -37,6 +37,7 @@ const StillingsSøk = ({
 }: StillingsSøkProps) => {
   const searchParams = useSearchParams();
   const brukerStandardSøkData = useUseBrukerStandardSøk();
+  const { track } = useUmami();
 
   React.useEffect(() => {
     if (
@@ -62,6 +63,9 @@ const StillingsSøk = ({
     return <Sidelaster />;
   }
 
+  if (kandidatId) {
+    track(UmamiEvent.Stilling.forslag_til_stilling_fane);
+  }
   return (
     <React.Suspense fallback={<Sidelaster />}>
       <StillingsSøkProvider formidlinger={formidlinger}>

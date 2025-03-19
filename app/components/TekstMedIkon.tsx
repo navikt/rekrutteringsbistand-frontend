@@ -30,9 +30,7 @@ const TekstMedIkon: React.FC<ITekstMedIkon> = ({
       aria-label={title || ariaLabel}
     >
       {ikon}
-      <span className='ml-2 break-all break-words overflow-wrap-anywhere'>
-        {tekst}
-      </span>
+      <span className='ml-2 '>{tekst}</span>
     </div>
   );
 };

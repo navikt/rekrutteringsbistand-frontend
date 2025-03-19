@@ -1,6 +1,6 @@
 import { TilgangskontrollForInnhold } from '../../../tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '../../../tilgangskontroll/roller';
-import Nyheter from '../nyheter/Nyheter';
+import NavigasjonKnapper from '../nyheter/NavigasjonKnapper';
 import { Tabs } from '@navikt/ds-react/Tabs';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -48,31 +48,42 @@ export const Navigeringsmeny: FunctionComponent = () => {
 
   return (
     <div className='border-border-divider border-b'>
-      <div className='mx-auto flex w-[var(--ax-breakpoint-2xl)] items-center justify-between p-4 pb-0'>
-        <Tabs
-          defaultValue={tabPath === '/' ? 'Oversikt' : tabPath}
-          value={tabPath}
-        >
-          <Tabs.List>
-            {tabs.map((tab, index) => (
-              <TilgangskontrollForInnhold
-                key={index}
-                skjulVarsel
-                kreverEnAvRollene={tab.kreverRoller}
-              >
-                <Link href={tab.path}>
-                  <Tabs.Tab
-                    key={tab.path}
-                    label={tab.tittel}
-                    // remove query from path
-                    value={tab.path.split('?')[0]}
-                  />
-                </Link>
-              </TilgangskontrollForInnhold>
-            ))}
-          </Tabs.List>
-        </Tabs>
-        <Nyheter />
+      <div className='mx-auto w-full max-w-[1440px] pl-8  pt-2 pr-8 pb-0'>
+        <div className='mb-4 w-full flex justify-end lg:hidden'>
+          <NavigasjonKnapper />
+        </div>
+
+        <div className='flex w-full flex-row items-center justify-between gap-4 md:gap-6'>
+          <div className='w-full md:flex-grow'>
+            <Tabs
+              defaultValue={tabPath === '/' ? 'Oversikt' : tabPath}
+              value={tabPath}
+              className='w-full'
+            >
+              <Tabs.List className='flex flex-nowrap md:flex-wrap overflow-x-auto md:overflow-visible'>
+                {tabs.map((tab, index) => (
+                  <TilgangskontrollForInnhold
+                    key={index}
+                    skjulVarsel
+                    kreverEnAvRollene={tab.kreverRoller}
+                  >
+                    <Link href={tab.path}>
+                      <Tabs.Tab
+                        key={tab.path}
+                        label={tab.tittel}
+                        value={tab.path.split('?')[0]}
+                        className='whitespace-nowrap md:whitespace-normal text-sm md:text-base'
+                      />
+                    </Link>
+                  </TilgangskontrollForInnhold>
+                ))}
+              </Tabs.List>
+            </Tabs>
+          </div>
+          <div className='hidden lg:block'>
+            <NavigasjonKnapper />
+          </div>
+        </div>
       </div>
     </div>
   );

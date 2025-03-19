@@ -45,9 +45,7 @@ const Infokort: React.FC<IInfokort> = ({
               borderRadius='full'
               className='flex items-center justify-center'
             >
-              <div className='relative h-6 w-6 text-2xl text-[var(--a-gray-900)]'>
-                {ikon}
-              </div>
+              <div className='relative h-6 w-6 text-2xl '>{ikon}</div>
             </Box.New>
           )}
         </div>

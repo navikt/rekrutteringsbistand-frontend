@@ -14,7 +14,7 @@ const KandidatOversikt: React.FC = () => {
   const { kandidatData } = useKandidatContext();
 
   return (
-    <div className='mt-10 flex'>
+    <div className='mt-10 lg:flex'>
       <div className='flex-grow'>
         <div className='grid gap-x-[3.5rem] gap-y-8 md:flex-row'>
           <KandidatØnsker />

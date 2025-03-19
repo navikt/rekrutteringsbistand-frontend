@@ -6,7 +6,7 @@ import { LightBulbIcon } from '@navikt/aksel-icons';
 import { Button, Heading, Popover, Switch } from '@navikt/ds-react';
 import { FunctionComponent, useEffect, useRef, useState } from 'react';
 
-const Nyheter: FunctionComponent = () => {
+const NavigasjonKnapper: FunctionComponent = () => {
   const [åpen, setÅpen] = useState<boolean>(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
@@ -27,24 +27,24 @@ const Nyheter: FunctionComponent = () => {
 
   return (
     <div className='[&_.navds-popover]:rounded-[0.6rem] [&_.navds-popover]:border-none [&_.navds-popover]:shadow-none [&_.navds-popover__arrow]:border-none [&_.navds-popover__arrow]:bg-[var(--a-gray-800)] [&_.navds-popover:focus]:shadow-[var(--nav-fokus)]'>
-      <div className='flex'>
+      <div className='flex flex-nowrap items-center whitespace-nowrap'>
         <Switch
-          className='mr-2'
+          className='mr-2 flex-shrink-0'
           size='small'
           checked={darkMode}
           onChange={(e) => setDarkMode(e.target.checked)}
         >
-          Mørk modus
+          <span className='whitespace-nowrap'>Mørk modus</span>
         </Switch>
         <Button
           ref={buttonRef}
-          className='relative focus:shadow-[var(--nav-fokus)] focus:outline-none'
+          className='relative flex-shrink-0 whitespace-nowrap focus:shadow-[var(--nav-fokus)] focus:outline-none'
           icon={<LightBulbIcon aria-hidden />}
           size='small'
           variant='tertiary-neutral'
           onClick={() => setÅpen(!åpen)}
         >
-          Hva er nytt
+          <span className='whitespace-nowrap'>Hva er nytt</span>
           {antallUlesteNyheter > 0 && (
             <div className='absolute top-1 right-0 h-3 w-3 rounded-full bg-[#0067c5]' />
           )}
@@ -56,7 +56,7 @@ const Nyheter: FunctionComponent = () => {
         placement='bottom-end'
         onClose={() => setÅpen(false)}
       >
-        <div className='w-[27rem] overflow-hidden rounded-lg shadow-[0_0.25rem_0.25rem_0_rgba(62,56,50,0.125)]'>
+        <div className='w-[27rem] max-w-[90vw] overflow-hidden rounded-lg shadow-[0_0.25rem_0.25rem_0_rgba(62,56,50,0.125)]'>
           <Heading className='p-4 px-6 text-center' level='2' size='xsmall'>
             Nytt i Rekrutteringsbistand
           </Heading>
@@ -76,4 +76,4 @@ const Nyheter: FunctionComponent = () => {
   );
 };
 
-export default Nyheter;
+export default NavigasjonKnapper;
