@@ -6,7 +6,7 @@ import * as React from 'react';
 const KandidatOversiktSidebar: React.FC = () => {
   //TODO Forslag til stillinger setter lang queryaram
   return (
-    <div className='ml-8 flex w-[25rem] flex-shrink-0 flex-col gap-4'>
+    <div className='lg:ml-8 flex lg:w-[25rem] flex-shrink-0 lg:flex-col gap-4 flex-row mt-4 lg:mt-0'>
       <GråRamme tittel='Profilkvalitet'>
         <Profilkvalitet />
       </GråRamme>

@@ -20,11 +20,11 @@ const Hurtiglenker: FunctionComponent = () => {
       ]}
     >
       <div
-        className='inline-flex w-full items-start justify-start gap-4'
+        className='flex flex-col md:flex-row w-full items-start justify-start gap-4'
         data-testid='forside-hurtiglenker'
       >
         <Link
-          className='flex-grow text-inherit'
+          className='w-full md:flex-1 text-inherit'
           onClick={() =>
             trackAndNavigate(
               UmamiEvent.Forside.se_mine_stillinger_knapp,
@@ -43,7 +43,7 @@ const Hurtiglenker: FunctionComponent = () => {
           />
         </Link>
         <Link
-          className='flex-grow text-inherit'
+          className='w-full md:flex-1 text-inherit'
           onClick={() =>
             trackAndNavigate(
               UmamiEvent.Forside.opprett_ny_stilling_knapp,

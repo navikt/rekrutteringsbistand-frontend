@@ -80,6 +80,47 @@ const StillingsKort: React.FC<IStillingsKort> = ({
     }
   };
 
+  const Knapper = (
+    <>
+      {kandidatId ? (
+        <Button
+          variant='tertiary'
+          onClick={() => leggTilKandidat(kandidatId)}
+          className='self-start sm:self-center'
+        >
+          Legg til kandidat
+        </Button>
+      ) : (
+        <div className='flex flex-col sm:flex-row whitespace-nowrap gap-2'>
+          {erEier && (
+            <Link
+              className='w-full sm:w-auto'
+              href={`/stilling/${stillingData.stilling.uuid}?visFane=kandidater`}
+            >
+              <Button
+                className='w-full sm:w-auto whitespace-nowrap'
+                variant='tertiary'
+              >
+                Vis kandidater
+              </Button>
+            </Link>
+          )}
+          <Link
+            className='w-full sm:w-auto'
+            href={`/stilling/${stillingData.stilling.uuid}/finn-kandidater`}
+          >
+            <Button
+              className='w-full sm:w-auto whitespace-nowrap'
+              variant='tertiary'
+            >
+              Finn kandidater
+            </Button>
+          </Link>
+        </div>
+      )}
+    </>
+  );
+
   return (
     <Box
       className='mb-4 rounded-lg border border-gray-300 p-4'
@@ -105,10 +146,10 @@ const StillingsKort: React.FC<IStillingsKort> = ({
         tekst={stillingData.stilling?.businessName || 'Ukjent bedrift'}
       />
 
-      <div className='mt-4 flex justify-between'>
-        <div className='flex'>
+      <div className='mt-4 flex justify-between flex-col sm:flex-row gap-4 sm:gap-2'>
+        <div className='flex flex-col sm:flex-row flex-wrap gap-4'>
           <TekstMedIkon
-            className='mr-4'
+            className='sm:mr-4'
             title='Lokasjon'
             tekst={
               formaterMedStoreOgSmåBokstaver(
@@ -117,7 +158,7 @@ const StillingsKort: React.FC<IStillingsKort> = ({
             }
           />
           <TekstMedIkon
-            className='mr-4'
+            className='sm:mr-4'
             ikon={<BriefcaseIcon />}
             title='Antall stillinger'
             tekst={
@@ -127,7 +168,7 @@ const StillingsKort: React.FC<IStillingsKort> = ({
             }
           />
           <TekstMedIkon
-            className='mr-4'
+            className='sm:mr-4'
             ikon={<ClockIcon />}
             title='Frist'
             tekst={` ${
@@ -146,36 +187,15 @@ const StillingsKort: React.FC<IStillingsKort> = ({
             }`}
           />
           <TekstMedIkon
-            className='mr-4'
+            className='sm:mr-4'
             ikon={<PersonIcon />}
             title='Eier'
             tekst={eierNavn}
           />
         </div>
-        {kandidatId ? (
-          <Button
-            variant='tertiary'
-            onClick={() => leggTilKandidat(kandidatId)}
-          >
-            Legg til kandidat
-          </Button>
-        ) : (
-          <div>
-            {erEier && (
-              <Link
-                href={`/stilling/${stillingData.stilling.uuid}?visFane=kandidater`}
-              >
-                <Button variant='tertiary'>Vis kandidater</Button>
-              </Link>
-            )}
-            <Link
-              href={`/stilling/${stillingData.stilling.uuid}/finn-kandidater`}
-            >
-              <Button variant='tertiary'>Finn kandidater</Button>
-            </Link>
-          </div>
-        )}
+        <div className='hidden xl:block'>{Knapper}</div>
       </div>
+      <div className='xl:hidden flex justify-end'>{Knapper}</div>
     </Box>
   );
 };

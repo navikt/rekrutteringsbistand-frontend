@@ -40,6 +40,7 @@ const KandidatSøk: React.FC<KandidatSøkProps> = ({
           ]}
         >
           <Tabs.Tab
+            className='whitespace-nowrap'
             value={KandidatSøkPortefølje.MITT_KONTOR}
             label='Mitt kontor'
           />
@@ -60,6 +61,7 @@ const KandidatSøk: React.FC<KandidatSøkProps> = ({
           ]}
         >
           <Tabs.Tab
+            className='whitespace-nowrap'
             value={KandidatSøkPortefølje.MINE_KONTORER}
             label='Mine kontorer'
           />
@@ -76,7 +78,11 @@ const KandidatSøk: React.FC<KandidatSøkProps> = ({
         Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
       ]}
     >
-      <Tabs.Tab value={KandidatSøkPortefølje.ALLE} label='Alle kontorer' />
+      <Tabs.Tab
+        className='whitespace-nowrap'
+        value={KandidatSøkPortefølje.ALLE}
+        label='Alle kontorer'
+      />
     </TilgangskontrollForInnhold>
   );
 
@@ -88,6 +94,7 @@ const KandidatSøk: React.FC<KandidatSøkProps> = ({
       ]}
     >
       <Tabs.Tab
+        className='whitespace-nowrap'
         value={KandidatSøkPortefølje.VALGTE_KONTORER}
         label='Valgte kontorer'
       />
