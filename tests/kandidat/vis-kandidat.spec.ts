@@ -7,7 +7,7 @@ test('Vis kandidat', async ({ page }) => {
   await page.goto('http://localhost:1337');
   await page.getByRole('tab', { name: 'Kandidatsøk' }).click();
   await page.getByRole('link', { name: 'Eriksen, Mikkel' }).click();
-  await expect(page.locator('#tabs-rf--tab-oversikt')).toBeVisible();
+  await expect(page.locator('#tabs-ri--tab-oversikt')).toBeVisible();
   await expect(page.getByRole('tab', { name: 'Aktivitet' })).toBeVisible();
   await expect(
     page.getByRole('tab', { name: 'Forslag til stilling' }),

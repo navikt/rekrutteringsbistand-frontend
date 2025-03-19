@@ -45,7 +45,7 @@ const KandidatForStilling: React.FC<KandidatForStillingProps> = ({
         {(kandidat) => {
           return (
             <Box.New
-              background={'neutral-softA'}
+              background='raised'
               borderColor='neutral-subtleA'
               borderWidth='1'
               padding='4'

@@ -23,7 +23,7 @@ const Infokort: React.FC<IInfokort> = ({
 }) => {
   return (
     <Box.New
-      background={'neutral-softA'}
+      background='raised'
       borderColor='neutral-subtleA'
       borderRadius='xlarge'
       borderWidth='1'

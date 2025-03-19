@@ -10,7 +10,7 @@ export interface GråRammeProps {
 const GråRamme: React.FC<GråRammeProps> = ({ children, ikon, tittel }) => {
   return (
     <Box.New
-      background={'neutral-softA'}
+      background='raised'
       borderColor='neutral-subtleA'
       borderRadius='xlarge'
       borderWidth='1'
