@@ -14,7 +14,7 @@ import {
   HouseIcon,
   PinIcon,
 } from '@navikt/aksel-icons';
-import { Checkbox, Heading, Link } from '@navikt/ds-react';
+import { Box, Checkbox, Heading, Link } from '@navikt/ds-react';
 import * as React from 'react';
 
 type IKandidatKort = {
@@ -49,7 +49,12 @@ const KandidatKort: React.FC<IKandidatKort> = ({
   );
 
   return (
-    <div className='mb-4 rounded-lg border border-gray-300 px-4 pt-2 pb-4 flex flex-col'>
+    <Box.New
+      className='mb-4 flex flex-col pl-4 pb-4 pr-4'
+      background='neutral-softA'
+      borderRadius='xlarge'
+      data-testid='stillings-kort'
+    >
       <div className='flex flex-row'>
         <div>
           <Checkbox
@@ -110,7 +115,7 @@ const KandidatKort: React.FC<IKandidatKort> = ({
         <div className='hidden lg:flex flex-end self-end'>{Knapp}</div>
       </div>
       <div className=' lg:hidden flex justify-end'> {Knapp}</div>
-    </div>
+    </Box.New>
   );
 };
 

@@ -122,8 +122,11 @@ const StillingsKort: React.FC<IStillingsKort> = ({
   );
 
   return (
-    <Box
-      className='mb-4 rounded-lg border border-gray-300 p-4'
+    <Box.New
+      padding='4'
+      className='mb-4'
+      background='neutral-softA'
+      borderRadius='xlarge'
       data-testid='stillings-kort'
     >
       <>
@@ -196,7 +199,7 @@ const StillingsKort: React.FC<IStillingsKort> = ({
         <div className='hidden xl:block'>{Knapper}</div>
       </div>
       <div className='xl:hidden flex justify-end'>{Knapper}</div>
-    </Box>
+    </Box.New>
   );
 };
 

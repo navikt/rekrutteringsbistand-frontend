@@ -1,5 +1,5 @@
 import { KursSchemaDTO } from '../../../../api/kandidat-sok/schema/kursSchema.zod';
-import GråRamme from './GråRamme';
+import GråBoks from './GråBoks';
 import Detaljer from './erfaring/Detaljer';
 import Erfaring from './erfaring/Erfaring';
 import { HatSchoolIcon } from '@navikt/aksel-icons';
@@ -22,7 +22,7 @@ const KandidatKurs: React.FC<KandidatKursProps> = ({ kurs }) => {
     return null;
   }
   return (
-    <GråRamme tittel='Kurs' ikon={<HatSchoolIcon />}>
+    <GråBoks tittel='Kurs' ikon={<HatSchoolIcon />}>
       {kurs
         .sort((a, b) =>
           compareAsc(parseISO(a.fraDato ?? ''), parseISO(b.fraDato ?? '')),
@@ -34,7 +34,7 @@ const KandidatKurs: React.FC<KandidatKursProps> = ({ kurs }) => {
             detaljer={<TidsperiodeKurs kurs={kurs} />}
           />
         ))}
-    </GråRamme>
+    </GråBoks>
   );
 };
 

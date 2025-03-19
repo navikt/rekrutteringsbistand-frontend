@@ -1,20 +1,25 @@
 import { Box, Heading } from '@navikt/ds-react';
 import * as React from 'react';
 
-export interface GråRammeProps {
+export interface GråBoksProps {
   children?: React.ReactNode | undefined;
   ikon?: React.ReactNode | undefined;
   tittel: string;
+  className?: string;
 }
 
-const GråRamme: React.FC<GråRammeProps> = ({ children, ikon, tittel }) => {
+const GråBoks: React.FC<GråBoksProps> = ({
+  children,
+  ikon,
+  tittel,
+  className,
+}) => {
   return (
     <Box.New
-      background='raised'
-      borderColor='neutral-subtleA'
+      background='neutral-softA'
       borderRadius='xlarge'
-      borderWidth='1'
       padding='4'
+      className={className}
     >
       <div className='mb-4 flex items-center'>
         {ikon && (
@@ -29,4 +34,4 @@ const GråRamme: React.FC<GråRammeProps> = ({ children, ikon, tittel }) => {
   );
 };
 
-export default GråRamme;
+export default GråBoks;
