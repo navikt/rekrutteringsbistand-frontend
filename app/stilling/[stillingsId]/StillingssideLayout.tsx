@@ -57,7 +57,7 @@ const StillingSideLayout: React.FC<StillingSideLayoutProps> = ({
               )}
             </>
           }
-          tilbakeKnapp
+          tilbakeKnapp={{ href: '/stilling' }}
           ikon={<SVGDarkmode src={StillingsIkon} alt='Se mine stillinger' />}
           tittel={stillingsData.stilling.title ?? ''}
         />

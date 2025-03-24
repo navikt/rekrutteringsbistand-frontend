@@ -7,7 +7,7 @@ import {
   useStillingsSøkFilter,
 } from '../../../../../stilling/StillingsSøkContext';
 import { useKandidatContext } from '../../../KandidatContext';
-import { useStillingForKandidat } from '../../../forslag-fane/useStillingForKandidat';
+import { useStillingForKandidat } from '../../../forslag-til-stilling/useStillingForKandidat';
 import { BodyShort, Button, Link } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import { nb } from 'date-fns/locale';
@@ -31,7 +31,7 @@ const ForslagTilStilling: React.FC = () => {
         variant='secondary'
         className='mt-6 w-full'
         onClick={() =>
-          router.push(`/kandidat/${kandidatId}?visFane=forslagTilStilling`)
+          router.push(`/kandidat/${kandidatId}/forslag-til-stilling`)
         }
       >
         Finn aktuelle stillinger

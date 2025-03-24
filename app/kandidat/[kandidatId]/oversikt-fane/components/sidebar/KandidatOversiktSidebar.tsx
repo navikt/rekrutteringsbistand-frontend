@@ -1,4 +1,5 @@
 import GråBoks from '../GråBoks';
+import ForslagTilStilling from './ForslagTilStilling';
 import Profilkvalitet from './Profilkvalitet';
 import SisteAktivitet from './SisteAktivitet';
 import * as React from 'react';
@@ -14,9 +15,9 @@ const KandidatOversiktSidebar: React.FC = () => {
         <SisteAktivitet />
       </GråBoks>
 
-      {/* <GråRamme tittel='Forslag til stillinger'>
+      <GråBoks tittel='Forslag til stillinger'>
         <ForslagTilStilling />
-      </GråRamme> */}
+      </GråBoks>
     </div>
   );
 };

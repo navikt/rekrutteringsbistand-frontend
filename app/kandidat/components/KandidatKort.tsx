@@ -39,7 +39,7 @@ const KandidatKort: React.FC<IKandidatKort> = ({
       {!stillingsId && (
         <div className='flex-end flex flex-col justify-center gap-2 font-bold'>
           <Link
-            href={`/kandidat/${kandidat.arenaKandidatnr}?visFane=forslagTilStilling`}
+            href={`/kandidat/${kandidat.arenaKandidatnr}/forslag-til-stilling`}
           >
             <TekstMedIkon ikon={<FileSearchIcon />} tekst='Finn stilling' />
           </Link>
