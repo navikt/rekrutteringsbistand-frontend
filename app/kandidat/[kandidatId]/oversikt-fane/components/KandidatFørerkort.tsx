@@ -1,5 +1,5 @@
 import { FørerkortSchemaDTO } from '../../../../api/kandidat-sok/schema/forerkortSchema.zod';
-import GråRamme from './GråRamme';
+import GråBoks from './GråBoks';
 import Erfaring from './erfaring/Erfaring';
 import { CarIcon } from '@navikt/aksel-icons';
 import { BodyShort } from '@navikt/ds-react';
@@ -36,7 +36,7 @@ const KandidatFørerkort: React.FC<KandidatFørerkortProps> = ({ førerkort }) =
     compareAsc(parseISO(a?.fraDato ?? ''), parseISO(b?.fraDato ?? '')),
   );
   return (
-    <GråRamme tittel='Førerkort' ikon={<CarIcon />}>
+    <GråBoks tittel='Førerkort' ikon={<CarIcon />}>
       {fjernetDuplikater.map((kort) => (
         <Erfaring
           key={`${kort?.forerkortKode}-${kort?.fraDato}`}
@@ -45,7 +45,7 @@ const KandidatFørerkort: React.FC<KandidatFørerkortProps> = ({ førerkort }) =
           detaljer={<FørerkortTidsperiode førerkort={kort} />}
         />
       ))}
-    </GråRamme>
+    </GråBoks>
   );
 };
 

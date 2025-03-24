@@ -1,7 +1,8 @@
 'use client';
 
+import NavigerTilAktivitetsplanenKnapp from '../../components/NavigerTilAktivitetsplanenKnapp';
 import KandidatAktivitet from './aktivitet-fane/KandidatAktivitet';
-import KandidatForslagTilStilling from './forslag-fane/KandidatForslagTilStilling';
+import FinnStillingForKandidatKnapp from './components/FinnStillingForKandidatKnapp';
 import KandidatOversikt from './oversikt-fane/KandidatOversikt';
 import { Tabs } from '@navikt/ds-react';
 import { useQueryState } from 'nuqs';
@@ -9,7 +10,6 @@ import { useQueryState } from 'nuqs';
 enum Fane {
   OVERSIKT = 'oversikt',
   AKTIVITET = 'aktivitet',
-  FORSLAG = 'forslagTilStilling',
 }
 
 export default function KandidatIndex() {
@@ -20,19 +20,21 @@ export default function KandidatIndex() {
 
   return (
     <Tabs value={fane} onChange={(val) => setFane(val)}>
-      <Tabs.List>
-        <Tabs.Tab value={Fane.OVERSIKT} label='Oversikt' />
-        <Tabs.Tab value={Fane.AKTIVITET} label='Aktivitet' disabled />
-        <Tabs.Tab value={Fane.FORSLAG} label='Forslag til stilling' disabled />
+      <Tabs.List className='flex w-full justify-between'>
+        <div>
+          <Tabs.Tab value={Fane.OVERSIKT} label='Oversikt' />
+          <Tabs.Tab value={Fane.AKTIVITET} label='Aktivitet' />
+        </div>
+        <div>
+          <FinnStillingForKandidatKnapp />
+          <NavigerTilAktivitetsplanenKnapp />
+        </div>
       </Tabs.List>
       <Tabs.Panel value={Fane.OVERSIKT}>
         <KandidatOversikt />
       </Tabs.Panel>
       <Tabs.Panel value={Fane.AKTIVITET}>
         <KandidatAktivitet />
-      </Tabs.Panel>
-      <Tabs.Panel value={Fane.FORSLAG}>
-        <KandidatForslagTilStilling />
       </Tabs.Panel>
     </Tabs>
   );

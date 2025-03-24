@@ -22,13 +22,7 @@ const Infokort: React.FC<IInfokort> = ({
   detaljer,
 }) => {
   return (
-    <Box.New
-      background='raised'
-      borderColor='neutral-subtleA'
-      borderRadius='xlarge'
-      borderWidth='1'
-      padding='6'
-    >
+    <Box.New background='neutral-softA' borderRadius='xlarge' padding='6'>
       <div className='flex flex-col'>
         <div className='flex items-start justify-between pb-2'>
           <div className='flex flex-col'>

@@ -1,3 +1,5 @@
+'use client';
+
 import StillingsSøk from '../../../stilling/StillingsSøk';
 import { useKandidatContext } from '../KandidatContext';
 import * as React from 'react';

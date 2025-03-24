@@ -9,7 +9,7 @@ import SideLayout from '../components/layout/SideLayout';
 import SideTopBanner from '../components/layout/SideTopBanner';
 import { TilgangskontrollForInnhold } from '../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '../components/tilgangskontroll/roller';
-import { useStillingForKandidat } from '../kandidat/[kandidatId]/forslag-fane/useStillingForKandidat';
+import { useStillingForKandidat } from '../kandidat/[kandidatId]/forslag-til-stilling/useStillingForKandidat';
 import { useUmami } from '../providers/UmamiContext';
 import {
   StillingsSøkProvider,

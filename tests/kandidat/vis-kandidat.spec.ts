@@ -7,11 +7,13 @@ test('Vis kandidat', async ({ page }) => {
   await page.goto('http://localhost:1337');
   await page.getByRole('tab', { name: 'Kandidatsøk' }).click();
   await page.getByRole('link', { name: 'Eriksen, Mikkel' }).click();
-  await expect(page.locator('#tabs-ri--tab-oversikt')).toBeVisible();
-  await expect(page.getByRole('tab', { name: 'Aktivitet' })).toBeVisible();
   await expect(
-    page.getByRole('tab', { name: 'Forslag til stilling' }),
+    page.getByRole('button', { name: 'Finn stilling' }),
   ).toBeVisible();
+  await expect(
+    page.getByRole('button', { name: 'Gå til aktivitetsplanen' }),
+  ).toBeVisible();
+  await expect(page.getByRole('tab', { name: 'Aktivitet' })).toBeVisible();
   await expect(
     page.getByRole('heading', { name: 'Profilkvalitet' }),
   ).toBeVisible();
@@ -47,10 +49,5 @@ test('Vis kandidat', async ({ page }) => {
   ).toBeVisible();
   await expect(
     page.getByRole('columnheader', { name: 'Status/hendelse' }),
-  ).toBeVisible();
-  await page.getByRole('tab', { name: 'Forslag til stilling' }).click();
-  await expect(page.getByRole('tab', { name: 'Alle' })).toBeVisible();
-  await expect(
-    page.getByRole('tab', { name: 'Mine stillinger' }),
   ).toBeVisible();
 });
