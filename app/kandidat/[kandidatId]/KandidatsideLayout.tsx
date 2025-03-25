@@ -5,6 +5,7 @@ import SVGDarkmode from '../../components/SVGDarkmode';
 import TekstMedIkon from '../../components/TekstMedIkon';
 import SideLayout from '../../components/layout/SideLayout';
 import SideTopBanner from '../../components/layout/SideTopBanner';
+import { TilbakeKnappProps } from '../../components/layout/TilbakeKnapp';
 import { useKandidatContext } from './KandidatContext';
 import KandidatNavigering from './KandidatNavigering';
 import {
@@ -15,14 +16,21 @@ import {
   PhoneIcon,
 } from '@navikt/aksel-icons';
 import { differenceInYears, format } from 'date-fns';
+import { usePathname } from 'next/navigation';
 import * as React from 'react';
 
 export interface KandidatSideProps {
   children?: React.ReactNode | undefined;
+  tilbakeKnapp?: TilbakeKnappProps;
 }
 
-const KandidatSideLayout: React.FC<KandidatSideProps> = ({ children }) => {
-  const { kandidatsammendragData } = useKandidatContext();
+const KandidatSideLayout: React.FC<KandidatSideProps> = ({
+  children,
+  tilbakeKnapp,
+}) => {
+  const { kandidatsammendragData, kandidatId } = useKandidatContext();
+
+  const pathname = usePathname();
 
   return (
     <SideLayout
@@ -33,7 +41,18 @@ const KandidatSideLayout: React.FC<KandidatSideProps> = ({ children }) => {
               kandidatnr={kandidatsammendragData.arenaKandidatnr}
             />
           }
-          tilbakeKnapp
+          tilbakeKnapp={
+            tilbakeKnapp
+              ? tilbakeKnapp
+              : pathname.includes('forslag-til-stilling')
+                ? {
+                    href: `/kandidat/${kandidatId}`,
+                    navn: 'Tilbake til kandidat',
+                  }
+                : {
+                    href: '/kandidat',
+                  }
+          }
           ikon={<SVGDarkmode src={MineKandidater} alt='Mine kandidater' />}
           tittel={`${kandidatsammendragData.fornavn} ${kandidatsammendragData.etternavn}`}
           headerInnhold={

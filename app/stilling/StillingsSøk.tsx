@@ -1,6 +1,7 @@
 'use client';
 
 import Piktogram from '../../public/ikoner/finn-stillinger.svg';
+import { UmamiEvent } from '../../util/umamiEvents';
 import { useUseBrukerStandardSøk } from '../api/stilling/standardsok/useBrukersStandardsøk';
 import SVGDarkmode from '../components/SVGDarkmode';
 import Sidelaster from '../components/Sidelaster';
@@ -8,7 +9,8 @@ import SideLayout from '../components/layout/SideLayout';
 import SideTopBanner from '../components/layout/SideTopBanner';
 import { TilgangskontrollForInnhold } from '../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '../components/tilgangskontroll/roller';
-import { useStillingForKandidat } from '../kandidat/[kandidatId]/forslag-fane/useStillingForKandidat';
+import { useStillingForKandidat } from '../kandidat/[kandidatId]/forslag-til-stilling/useStillingForKandidat';
+import { useUmami } from '../providers/UmamiContext';
 import {
   StillingsSøkProvider,
   useStillingsSøkFilter,
@@ -35,6 +37,7 @@ const StillingsSøk = ({
 }: StillingsSøkProps) => {
   const searchParams = useSearchParams();
   const brukerStandardSøkData = useUseBrukerStandardSøk();
+  const { track } = useUmami();
 
   React.useEffect(() => {
     if (
@@ -60,6 +63,9 @@ const StillingsSøk = ({
     return <Sidelaster />;
   }
 
+  if (kandidatId) {
+    track(UmamiEvent.Stilling.forslag_til_stilling_fane);
+  }
   return (
     <React.Suspense fallback={<Sidelaster />}>
       <StillingsSøkProvider formidlinger={formidlinger}>
@@ -79,11 +85,25 @@ const StillingsSøkLayout: React.FC<StillingsSøkProps> = ({
   kandidatId,
 }) => {
   const { portefølje, setPortefølje } = useStillingsSøkFilter();
-
+  const { track } = useUmami();
   const kandidatStillingssøkData = useStillingForKandidat(kandidatId ?? null);
 
   if (kandidatId && kandidatStillingssøkData?.isLoading) {
     return <Sidelaster />;
+  }
+
+  if (
+    kandidatStillingssøkData &&
+    kandidatStillingssøkData.kandidatStillingssøk?.yrkeJobbonskerObj?.length
+  ) {
+    const antallYrkesJobbØnsker =
+      kandidatStillingssøkData.kandidatStillingssøk?.yrkeJobbonskerObj[0]
+        ?.sokeTitler?.length;
+    if (antallYrkesJobbØnsker > 0) {
+      track(UmamiEvent.Stilling.antall_yrkesjobbønsker_fra_kandidat, {
+        antall: antallYrkesJobbØnsker,
+      });
+    }
   }
 
   return (

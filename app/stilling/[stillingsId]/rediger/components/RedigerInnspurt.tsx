@@ -1,4 +1,6 @@
+import { UmamiEvent } from '../../../../../util/umamiEvents';
 import { oppdaterStilling } from '../../../../api/stilling/oppdater-stilling/oppdaterStilling';
+import { useUmami } from '../../../../providers/UmamiContext';
 import { useStillingsContext } from '../../StillingsContext';
 import { mapFormTilStilling, StillingSynlighet } from '../mapStilling';
 import { StillingsDataForm } from '../redigerFormType.zod';
@@ -29,6 +31,7 @@ export const RedigerInnspurt: React.FC<{
   stegNummer: number;
   forrigeSteg: () => void;
 }> = ({ stegNummer, forrigeSteg }) => {
+  const { track } = useUmami();
   const { stillingsData, refetch } = useStillingsContext();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -61,7 +64,16 @@ export const RedigerInnspurt: React.FC<{
         firstPublished: true,
       },
     };
-
+    track(UmamiEvent.Stilling.ny_stilling_info, {
+      yrkestittel: publiserStillingsData.stilling.categoryList?.[0]?.name,
+      sektor: publiserStillingsData.stilling.properties?.sector,
+      ansettelsesform:
+        publiserStillingsData.stilling.properties?.engagementtype,
+      arbeidstidsordning:
+        publiserStillingsData.stilling?.properties?.jobarrangement,
+      omfangIProsent: publiserStillingsData.stilling.properties?.jobpercentage,
+      arbeidssted: publiserStillingsData.stilling.locationList,
+    });
     const response = await oppdaterStilling(publiserStillingsData);
 
     if (response.stilling.uuid) {

@@ -1,5 +1,5 @@
 import { SprakSchemaDTO } from '../../../../api/kandidat-sok/schema/sprakSchema.zod';
-import GråRamme from './GråRamme';
+import GråBoks from './GråBoks';
 import Detaljer from './erfaring/Detaljer';
 import Erfaring from './erfaring/Erfaring';
 import { LanguageIcon } from '@navikt/aksel-icons';
@@ -39,7 +39,7 @@ const KandidatSpråk: React.FC<KandidatSpråkProps> = ({ språk }) => {
     return null;
   }
   return (
-    <GråRamme tittel='Språk' ikon={<LanguageIcon />}>
+    <GråBoks tittel='Språk' ikon={<LanguageIcon />}>
       {språk.map((ferdighet) => {
         return (
           <Erfaring
@@ -64,7 +64,7 @@ const KandidatSpråk: React.FC<KandidatSpråkProps> = ({ språk }) => {
           />
         );
       })}
-    </GråRamme>
+    </GråBoks>
   );
 };
 

@@ -1,4 +1,5 @@
 import { useKandidatliste } from '../../../../../api/kandidat/useKandidatliste';
+import GråBoks from '../../../../../kandidat/[kandidatId]/oversikt-fane/components/GråBoks';
 import { useStillingsContext } from '../../../StillingsContext';
 import {
   InternKandidatstatus,
@@ -7,7 +8,7 @@ import {
 import AvsluttStillingKnapp from './AvsluttStillingKnapp';
 import KopierStilling from './KopierStilling';
 import { PencilIcon } from '@navikt/aksel-icons';
-import { Button, Heading, Loader } from '@navikt/ds-react';
+import { Button, Loader } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 
@@ -74,16 +75,13 @@ const EierStillingVisning: React.FC = () => {
           kandidatlisteStatus={data?.status}
         />
       </div>
-      <div className='mt-4 rounded border border-blue-200 p-3'>
-        <Heading size='xsmall' className='mb-4'>
-          Oppsummering
-        </Heading>
+      <GråBoks tittel='Oppsummering' className='mt-4'>
         <div className='ml-4'>
           {besatteStillinger} av {antallStillinger}{' '}
           {antallStillinger === 1 ? 'stilling' : 'stillinger'} er besatt
           <div className='mt-2'>{oppsummeringTekst}</div>
         </div>
-      </div>
+      </GråBoks>
     </div>
   );
 };

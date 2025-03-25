@@ -1,3 +1,4 @@
+import { UmamiEvent } from '../../../../../../util/umamiEvents';
 import { useForespurteOmDelingAvCv } from '../../../../../api/foresporsel-om-deling-av-cv/foresporsler/[slug]/useForespurteOmDelingAvCv';
 import { postDelMedArbeidsgiver } from '../../../../../api/kandidat/postDelMedArbeidsgiver';
 import {
@@ -6,6 +7,7 @@ import {
 } from '../../../../../api/kandidat/schema.zod';
 import SWRLaster from '../../../../../components/SWRLaster';
 import { useApplikasjonContext } from '../../../../../providers/ApplikasjonContext';
+import { useUmami } from '../../../../../providers/UmamiContext';
 import ForhåndsvisningAvEpost from './ForhåndsvisningAvEpost';
 import { TenancyIcon } from '@navikt/aksel-icons';
 import {
@@ -32,6 +34,7 @@ const DelMedArbeidsgiver: React.FC<DelMedArbeidsgiverProps> = ({
   stillingTittel,
   stillingsId,
 }) => {
+  const { track } = useUmami();
   const [visModal, setVisModal] = React.useState(false);
   const { valgtNavKontor } = useApplikasjonContext();
   const forespurteKandidaterHook = useForespurteOmDelingAvCv(stillingsId);
@@ -44,6 +47,9 @@ const DelMedArbeidsgiver: React.FC<DelMedArbeidsgiverProps> = ({
       kandidatnummerListe,
       mailadresser: epost,
       navKontor: valgtNavKontor?.navKontor ?? '',
+    });
+    track(UmamiEvent.Stilling.del_kandidat_med_arbeidsgiver, {
+      antall: kandidatnummerListe.length,
     });
   };
 

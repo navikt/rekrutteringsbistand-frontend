@@ -1,4 +1,5 @@
 import { rekbisError } from '../../../../util/rekbisError';
+import { UmamiEvent } from '../../../../util/umamiEvents';
 import { leggTilKandidater } from '../../../api/kandidat-sok/leggTilKandidat';
 import { formidleUsynligKandidat } from '../../../api/kandidat/formidleKandidat';
 import { useKandidatliste } from '../../../api/kandidat/useKandidatliste';
@@ -7,6 +8,7 @@ import LeggTilKandidater, {
 } from '../../../components/legg-til-kandidat/LeggTilKandidater';
 import { useVisVarsling } from '../../../components/varsling/Varsling';
 import { useApplikasjonContext } from '../../../providers/ApplikasjonContext';
+import { useUmami } from '../../../providers/UmamiContext';
 import { ArrowForwardIcon } from '@navikt/aksel-icons';
 import { Button, Modal } from '@navikt/ds-react';
 import * as React from 'react';
@@ -22,7 +24,7 @@ const LeggTilKandidatTilStilling: React.FC<LeggTilKandidatTilStillingProps> = ({
   stillingsTittel,
 }) => {
   const ref = useRef<HTMLDialogElement>(null);
-
+  const { track } = useUmami();
   const { valgtNavKontor } = useApplikasjonContext();
   const [valgteKandidater, setValgteKandidater] = useState<ValgtKandidatProp[]>(
     [],
@@ -36,6 +38,7 @@ const LeggTilKandidatTilStilling: React.FC<LeggTilKandidatTilStillingProps> = ({
 
   const handleOpenModal = () => {
     setModalKey((prevKey) => prevKey + 1);
+    track(UmamiEvent.Stilling.åpne_legg_til_kandidat_modal);
     ref.current?.showModal();
   };
 
@@ -67,6 +70,10 @@ const LeggTilKandidatTilStilling: React.FC<LeggTilKandidatTilStillingProps> = ({
             },
           );
         }
+
+        track(UmamiEvent.Stilling.legg_til_kandidat, {
+          antall: valgteKandidater.length,
+        });
 
         visVarsel({
           innhold: 'Kandidater ble lagt til i stillingen',

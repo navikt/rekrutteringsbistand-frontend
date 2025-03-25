@@ -1,5 +1,5 @@
 import { KompetanseSchemaDTO } from '../../../../api/kandidat-sok/schema/kompetanseSchema.zod';
-import GråRamme from './GråRamme';
+import GråBoks from './GråBoks';
 import Erfaring from './erfaring/Erfaring';
 import { ClipboardIcon } from '@navikt/aksel-icons';
 import * as React from 'react';
@@ -15,7 +15,7 @@ const KandidatKompetanse: React.FC<KandidatKompetanseProps> = ({
     return null;
   }
   return (
-    <GråRamme tittel='Kompetanse' ikon={<ClipboardIcon />}>
+    <GråBoks tittel='Kompetanse' ikon={<ClipboardIcon />}>
       <Erfaring
         beskrivelse={
           kompetanse
@@ -27,7 +27,7 @@ const KandidatKompetanse: React.FC<KandidatKompetanseProps> = ({
           // />
         }
       />
-    </GråRamme>
+    </GråBoks>
   );
 };
 

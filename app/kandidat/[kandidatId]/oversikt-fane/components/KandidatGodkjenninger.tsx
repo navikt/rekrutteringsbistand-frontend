@@ -1,6 +1,6 @@
 import { GodkjenningSchemaDTO } from '../../../../api/kandidat-sok/schema/godkjenningSchema.zod';
 import { SertifikatSchemaDTO } from '../../../../api/kandidat-sok/schema/sertifikatSchema.zod';
-import GråRamme from './GråRamme';
+import GråBoks from './GråBoks';
 import Erfaring from './erfaring/Erfaring';
 import { SealCheckmarkIcon } from '@navikt/aksel-icons';
 import { BodyShort } from '@navikt/ds-react';
@@ -25,7 +25,7 @@ const KandidatGodkjenninger: React.FC<KandidatGodkjenningerProps> = ({
     return null;
   }
   return (
-    <GråRamme tittel='Godkjenninger' ikon={<SealCheckmarkIcon />}>
+    <GråBoks tittel='Godkjenninger' ikon={<SealCheckmarkIcon />}>
       {godkjenninger
         .sort((a, b) =>
           compareAsc(
@@ -61,7 +61,7 @@ const KandidatGodkjenninger: React.FC<KandidatGodkjenningerProps> = ({
               />
             );
           })}
-    </GråRamme>
+    </GråBoks>
   );
 };
 

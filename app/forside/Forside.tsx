@@ -6,7 +6,7 @@ import * as React from 'react';
 
 const Forside: React.FC = () => {
   return (
-    <div>
+    <div className='w-full'>
       <div className='mt-4'>
         <Hurtiglenker />
       </div>

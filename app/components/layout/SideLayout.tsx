@@ -30,7 +30,7 @@ const SideLayout = ({ banner, sidepanel, children }: ISideLayout) => {
               </Hide>
             </aside>
           )}
-          <main className='sideinnhold w-full'>{children}</main>
+          <div className='sideinnhold w-full'>{children}</div>
         </div>
       </div>
     </div>

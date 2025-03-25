@@ -2,15 +2,17 @@
 
 import OpprettNyStillingIkon from '../../../public/ikoner/opprett-ny-stilling.svg';
 import SeMineStillingerIkon from '../../../public/ikoner/se-mine-stillinger.svg';
+import { UmamiEvent } from '../../../util/umamiEvents';
 import SVGDarkmode from '../../components/SVGDarkmode';
 import { TilgangskontrollForInnhold } from '../../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '../../components/tilgangskontroll/roller';
-import { tilUmami, UmamiDomene, UmamiProps } from '../../umami';
-import { Box } from '@navikt/ds-react';
-import { useRouter } from 'next/navigation';
+import { useUmami } from '../../providers/UmamiContext';
+import { Box, Link } from '@navikt/ds-react';
 import { FunctionComponent, ReactNode } from 'react';
 
 const Hurtiglenker: FunctionComponent = () => {
+  const { trackAndNavigate } = useUmami();
+
   return (
     <TilgangskontrollForInnhold
       skjulVarsel
@@ -19,35 +21,47 @@ const Hurtiglenker: FunctionComponent = () => {
       ]}
     >
       <div
-        className='inline-flex w-full items-start justify-start gap-4'
+        className='flex flex-col md:flex-row w-full items-start justify-start gap-4'
         data-testid='forside-hurtiglenker'
       >
-        <LenkepanelMedIkon
-          href={'/stilling?portefolje=visMine'}
-          ikon={
-            <SVGDarkmode src={SeMineStillingerIkon} alt='Se mine stillinger' />
+        <Link
+          className='w-full md:flex-1 text-inherit'
+          onClick={() =>
+            trackAndNavigate(
+              UmamiEvent.Forside.se_mine_stillinger_knapp,
+              '/stilling?portefolje=visMine',
+            )
           }
-          tittel='Se mine stillinger'
-          umamiProps={{
-            domene: UmamiDomene.Forside,
-            event: 'Se mine stillinger knapp',
-          }}
-        />
-
-        <LenkepanelMedIkon
-          href='/stilling/ny-stilling'
-          ikon={
-            <SVGDarkmode
-              src={OpprettNyStillingIkon}
-              alt='Opprett ny stilling'
-            />
+        >
+          <LenkepanelMedIkon
+            ikon={
+              <SVGDarkmode
+                src={SeMineStillingerIkon}
+                alt='Se mine stillinger'
+              />
+            }
+            tittel='Se mine stillinger'
+          />
+        </Link>
+        <Link
+          className='w-full md:flex-1 text-inherit'
+          onClick={() =>
+            trackAndNavigate(
+              UmamiEvent.Forside.opprett_ny_stilling_knapp,
+              '/stilling/ny-stilling',
+            )
           }
-          tittel='Opprett ny stilling'
-          umamiProps={{
-            domene: UmamiDomene.Generell,
-            event: 'Opprett ny stilling knapp',
-          }}
-        />
+        >
+          <LenkepanelMedIkon
+            ikon={
+              <SVGDarkmode
+                src={OpprettNyStillingIkon}
+                alt='Opprett ny stilling'
+              />
+            }
+            tittel='Opprett ny stilling'
+          />
+        </Link>
       </div>
     </TilgangskontrollForInnhold>
   );
@@ -55,21 +69,11 @@ const Hurtiglenker: FunctionComponent = () => {
 
 const LenkepanelMedIkon: FunctionComponent<{
   tittel: string;
-  href: string;
   ikon: ReactNode;
-  umamiProps?: UmamiProps;
-}> = ({ tittel, href, ikon, umamiProps }) => {
-  const router = useRouter();
-
+}> = ({ tittel, ikon }) => {
   return (
     <Box.New
-      onClick={() => {
-        if (umamiProps) {
-          tilUmami(umamiProps);
-        }
-        router.push(href);
-      }}
-      background='sunken'
+      background={'neutral-softA'}
       borderColor='neutral-subtleA'
       borderRadius='xlarge'
       padding='0'

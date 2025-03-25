@@ -18,7 +18,7 @@ test.describe(`Stilling test`, () => {
     ).toBeVisible();
     await expect(page.getByRole('button', { name: 'Kopier' })).toBeVisible();
     await expect(
-      page.getByRole('tab', { name: 'Finn kandidater' }),
+      page.getByRole('button', { name: 'Finn kandidater' }),
     ).toBeVisible();
     await expect(
       page.getByRole('button', { name: 'Legg til kandidater' }),
@@ -57,7 +57,7 @@ test.describe(`Stilling test`, () => {
 
     await expect(page.getByRole('button', { name: 'Kopier' })).toBeVisible();
     await expect(
-      page.getByRole('tab', { name: 'Finn kandidater' }),
+      page.getByRole('button', { name: 'Finn kandidater' }),
     ).toBeVisible();
     await expect(
       page.getByRole('button', { name: 'Legg til kandidater' }),

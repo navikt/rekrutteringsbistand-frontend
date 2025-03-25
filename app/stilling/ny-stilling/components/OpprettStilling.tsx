@@ -1,9 +1,11 @@
 'use client';
 
+import { UmamiEvent } from '../../../../util/umamiEvents';
 import { ArbeidsgiverDTO } from '../../../api/pam-search/underenhet/useArbeidsgiver';
 import { OpprettNyStillingDTO } from '../../../api/stilling/ny-stilling/dto';
 import { opprettNyStilling } from '../../../api/stilling/ny-stilling/opprettNyStilling';
 import { useApplikasjonContext } from '../../../providers/ApplikasjonContext';
+import { useUmami } from '../../../providers/UmamiContext';
 import { Stillingskategori } from '../../stilling-typer';
 import { PlusCircleIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
@@ -22,6 +24,7 @@ export const OpprettStillingKnapp: React.FC<OpprettStillingProps> = ({
   const {
     brukerData: { fornavn, etternavn, ident },
   } = useApplikasjonContext();
+  const { track } = useUmami();
   const router = useRouter();
   const [isLoading, setIsLoading] = React.useState(false);
 
@@ -62,6 +65,7 @@ export const OpprettStillingKnapp: React.FC<OpprettStillingProps> = ({
       const response = await opprettNyStilling(nyStilling);
 
       if (response.stilling.uuid) {
+        track(UmamiEvent.Stilling.opprettet_stilling);
         if (erFormidling) {
           router.push(`/etterregistrering/${response.stilling.uuid}/rediger`);
         } else {
