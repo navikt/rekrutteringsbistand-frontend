@@ -17,6 +17,7 @@ import {
   InternKandidatstatus,
   varselTilTekst,
 } from './components/KandidatTyper';
+import OrganisasjonsnummerAlert from './components/OrganisasjonsnummerAlert';
 import SendSmsModal from './components/SendSMS/SendSmsModal';
 import { Button, Checkbox, CheckboxGroup, Search } from '@navikt/ds-react';
 import * as React from 'react';
@@ -66,6 +67,17 @@ const StillingsKandidater: React.FC = () => {
     window.location.reload();
   };
 
+  const organisasjonsnummerFraKandidatliste =
+    kandidatlisteHook?.data?.organisasjonReferanse;
+  const organisasjonsnummerFraStilling =
+    stillingsData?.stilling?.employer?.orgnr;
+
+  const orgnummerDivergererMellomStillingOgKandidatliste: boolean = Boolean(
+    organisasjonsnummerFraKandidatliste &&
+      organisasjonsnummerFraStilling &&
+      organisasjonsnummerFraKandidatliste !== organisasjonsnummerFraStilling,
+  );
+
   return (
     <SWRLaster
       hooks={[kandidatlisteHook, forespurteKandidaterHook, beskjederHook]}
@@ -92,6 +104,9 @@ const StillingsKandidater: React.FC = () => {
 
         return (
           <div className='my-2'>
+            {orgnummerDivergererMellomStillingOgKandidatliste && (
+              <OrganisasjonsnummerAlert />
+            )}
             <div className='mt-2 flex justify-between'>
               <div className='md:w-[15rem]'>
                 <Search
