@@ -70,7 +70,7 @@ const createMockStilling = (props?: MockStilling): StillingsDataDTO => {
         locationList: [createLocation()],
         properties: null,
         name: faker.company.name(),
-        orgnr: faker.number.int({ min: 100000000, max: 999999999 }).toString(),
+        orgnr: '312113341',
         status: 'ACTIVE',
         parentOrgnr: null,
         publicName: faker.company.name(),
