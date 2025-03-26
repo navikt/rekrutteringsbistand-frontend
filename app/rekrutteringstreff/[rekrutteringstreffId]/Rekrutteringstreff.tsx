@@ -4,7 +4,7 @@ import RekrutteringstreffArbeidsgivere from './components/arbeidsgivere/Arbeidsg
 import Deltakere from './components/deltakere/Deltakere';
 import OmTreffet from './components/om-treffet/OmTreffet';
 import { Box, Tabs } from '@navikt/ds-react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useQueryState } from 'nuqs';
 import * as React from 'react';
 
 export enum RekrutteringstreffTabs {
@@ -14,20 +14,14 @@ export enum RekrutteringstreffTabs {
 }
 
 const Rekrutteringstreff: React.FC = () => {
-  const searchParams = useSearchParams();
-  const router = useRouter();
-
-  const currentTab =
-    (searchParams.get('tab') as RekrutteringstreffTabs) ||
-    RekrutteringstreffTabs.OM_TREFFET;
-
-  const handleTabChange = (value: string) => {
-    router.push(`?tab=${value}`);
-  };
+  const [fane, setFane] = useQueryState('visFane', {
+    defaultValue: RekrutteringstreffTabs.OM_TREFFET,
+    clearOnDefault: true,
+  });
 
   return (
     <Box.New>
-      <Tabs value={currentTab} onChange={handleTabChange}>
+      <Tabs value={fane} onChange={(val) => setFane(val)}>
         <Tabs.List className='w-full'>
           <Tabs.Tab
             value={RekrutteringstreffTabs.OM_TREFFET}
