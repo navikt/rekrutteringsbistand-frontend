@@ -28,7 +28,7 @@ const ArbeidsgiverKort: React.FC<ArbeidsgiverKortProps> = ({
     <Box.New
       background='raised'
       borderColor='neutral-subtleA'
-      borderRadius='large'
+      borderRadius='xlarge'
       borderWidth='1'
     >
       <Heading level='3' size='xsmall'>
