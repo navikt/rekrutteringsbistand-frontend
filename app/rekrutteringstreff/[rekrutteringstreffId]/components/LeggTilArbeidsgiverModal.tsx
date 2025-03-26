@@ -15,7 +15,8 @@ interface LeggTilArbeidsgiverModalProps {
 const LeggTilArbeidsgiverModal: React.FC<LeggTilArbeidsgiverModalProps> = ({
   leggTilKnappTekst = 'Legg til',
 }) => {
-  const [open, setOpen] = React.useState(false);
+  const ref = React.useRef<HTMLDialogElement>(null);
+
   const [arbeidsgiver, setArbeidsgiver] =
     React.useState<ArbeidsgiverDTO | null>(null);
 
@@ -51,13 +52,13 @@ const LeggTilArbeidsgiverModal: React.FC<LeggTilArbeidsgiverModalProps> = ({
           });
         });
       setArbeidsgiver(null);
-      setOpen(false);
+      ref.current?.close();
     }
   };
 
   const handleAvbryt = () => {
     setArbeidsgiver(null);
-    setOpen(false);
+    ref.current?.close();
   };
 
   return (
@@ -66,20 +67,19 @@ const LeggTilArbeidsgiverModal: React.FC<LeggTilArbeidsgiverModalProps> = ({
         icon={<PlusIcon />}
         type='button'
         variant='tertiary'
-        onClick={() => setOpen(true)}
+        onClick={() => ref.current?.showModal()}
       >
         {leggTilKnappTekst}
       </Button>
 
       <Modal
         className='overflow-visible'
-        open={open}
+        ref={ref}
         onClose={handleAvbryt}
         header={{ heading: 'Legg til arbeidsgiver' }}
       >
         <Modal.Body className='overflow-visible'>
           <VelgArbeidsgiver
-            key={open ? 'open-arbeidsgiver' : 'closed-arbeidsgiver'}
             arbeidsgiverCallback={setArbeidsgiver}
             valgtArbeidsgiver={arbeidsgiver}
           />
