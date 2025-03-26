@@ -30,6 +30,7 @@ const ArbeidsgiverKort: React.FC<ArbeidsgiverKortProps> = ({
       borderColor='neutral-subtleA'
       borderRadius='xlarge'
       borderWidth='1'
+      padding='4'
     >
       <Heading level='3' size='xsmall'>
         {capitalizeEmployerName(navn || '')}
