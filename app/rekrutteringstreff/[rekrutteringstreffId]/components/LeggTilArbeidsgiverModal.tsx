@@ -15,8 +15,7 @@ interface LeggTilArbeidsgiverModalProps {
 const LeggTilArbeidsgiverModal: React.FC<LeggTilArbeidsgiverModalProps> = ({
   leggTilKnappTekst = 'Legg til',
 }) => {
-  const ref = React.useRef<HTMLDialogElement>(null);
-
+  const [open, setOpen] = React.useState(false);
   const [arbeidsgiver, setArbeidsgiver] =
     React.useState<ArbeidsgiverDTO | null>(null);
 
@@ -42,7 +41,7 @@ const LeggTilArbeidsgiverModal: React.FC<LeggTilArbeidsgiverModalProps> = ({
       )
         .then(() => {
           router.push(
-            `/rekrutteringstreff/${rekrutteringstreffId}?tab=arbeidsgivere`,
+            `/rekrutteringstreff/${rekrutteringstreffId}?visFane=arbeidsgivere`,
           );
         })
         .catch((error) => {
@@ -52,13 +51,13 @@ const LeggTilArbeidsgiverModal: React.FC<LeggTilArbeidsgiverModalProps> = ({
           });
         });
       setArbeidsgiver(null);
-      ref.current?.close();
+      setOpen(false);
     }
   };
 
   const handleAvbryt = () => {
     setArbeidsgiver(null);
-    ref.current?.close();
+    setOpen(false);
   };
 
   return (
@@ -67,19 +66,20 @@ const LeggTilArbeidsgiverModal: React.FC<LeggTilArbeidsgiverModalProps> = ({
         icon={<PlusIcon />}
         type='button'
         variant='tertiary'
-        onClick={() => ref.current?.showModal()}
+        onClick={() => setOpen(true)}
       >
         {leggTilKnappTekst}
       </Button>
 
       <Modal
         className='overflow-visible'
-        ref={ref}
+        open={open}
         onClose={handleAvbryt}
         header={{ heading: 'Legg til arbeidsgiver' }}
       >
         <Modal.Body className='overflow-visible'>
           <VelgArbeidsgiver
+            key={open ? 'open-arbeidsgiver' : 'closed-arbeidsgiver'}
             arbeidsgiverCallback={setArbeidsgiver}
             valgtArbeidsgiver={arbeidsgiver}
           />
