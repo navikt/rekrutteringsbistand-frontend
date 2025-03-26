@@ -27,7 +27,9 @@ const ArbeidsgiverKort: React.FC<ArbeidsgiverKortProps> = ({
   return (
     <Box.New
       background='raised'
-      className='mb-4 p-6 rounded-lg border border-[var(--a-border-default)'
+      borderColor='neutral-subtleA'
+      borderRadius='large'
+      borderWidth='1'
     >
       <Heading level='3' size='xsmall'>
         {capitalizeEmployerName(navn || '')}
