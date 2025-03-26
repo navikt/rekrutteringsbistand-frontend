@@ -19,7 +19,7 @@ const RekrutteringstreffDetaljerKort: React.FC<
       </Heading>
       <Box.New
         background='raised'
-        className='mb-4 p-6 rounded-lg border border-gray-900'
+        className='mb-4 p-6 rounded-lg border border-[var(--a-border-default)] '
       >
         <div className='flex items-center justify-between mb-2'>
           <div className='flex items-center justify-start'>

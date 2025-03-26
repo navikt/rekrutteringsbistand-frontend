@@ -32,7 +32,7 @@ export const RekrutteringstreffKort: FunctionComponent<Props> = ({
   erPublisert,
 }) => {
   return (
-    <Box className='mb-4 rounded-lg border border-gray-300 p-4'>
+    <Box className='mb-4 rounded-lg border border-[var(--a-border-default) p-4'>
       <div className='mb-4 flex items-start justify-between'>
         <div className='flex items-center gap-2'>
           <CalendarIcon aria-hidden />
