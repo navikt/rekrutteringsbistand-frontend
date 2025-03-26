@@ -3,18 +3,12 @@ import LeggTilArbeidsgiverModal from '../LeggTilArbeidsgiverModal';
 import ArbeidsgiverKort from './components/ArbeidsgiverKort';
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
 import SWRLaster from '@/app/components/SWRLaster';
-import { rekbisError } from '@/util/rekbisError';
 import { BodyShort } from '@navikt/ds-react';
 import * as React from 'react';
 
 const RekrutteringstreffArbeidsgivere = () => {
-  const context = useRekrutteringstreffContext();
-  if (!context.rekrutteringstreffId) {
-    throw new rekbisError({
-      beskrivelse: 'RekrutteringstreffId mangler i konteksten!',
-    });
-  }
-  const rekrutteringstreffId = context.rekrutteringstreffId;
+  const { rekrutteringstreffId } = useRekrutteringstreffContext();
+
   const arbeidsgivereHook =
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
 

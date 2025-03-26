@@ -4,11 +4,12 @@ import { rekbisError } from '../../../util/rekbisError';
 import * as React from 'react';
 
 export interface RekrutteringstreffContextProps {
-  rekrutteringstreffId?: string;
+  rekrutteringstreffId: string;
 }
 
-const RekrutteringstreffContext =
-  React.createContext<RekrutteringstreffContextProps>({});
+const RekrutteringstreffContext = React.createContext<
+  RekrutteringstreffContextProps | undefined
+>(undefined);
 
 export interface RekrutteringstreffContextProviderProps {
   children?: React.ReactNode | undefined;
@@ -31,6 +32,11 @@ export const useRekrutteringstreffContext = () => {
     throw new rekbisError({
       beskrivelse:
         'useRekrutteringstreffContext må være i scope: RekrutteringstreffContextProvider',
+    });
+  }
+  if (!context.rekrutteringstreffId) {
+    throw new rekbisError({
+      beskrivelse: 'RekrutteringstreffId mangler i konteksten!',
     });
   }
   return context;
