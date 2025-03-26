@@ -2,6 +2,7 @@
 
 import { PamSearchAPI } from '../../api-routes';
 import { getApiWithSchemaEs } from '../../fetcher';
+import { faker } from '@faker-js/faker/locale/nb_NO';
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
 
@@ -42,6 +43,7 @@ export const useFinnArbeidsgiver = (søkeord?: string) =>
   );
 
 export const arbeidsgiverMirage = (server: any) => {
+  faker.seed(1337);
   server.get(PamSearchAPI.internUrl + `/underenhet`, () => {
     return {
       took: 2,
@@ -64,63 +66,63 @@ export const arbeidsgiverMirage = (server: any) => {
             _id: '315414822',
             _score: 10.641023,
             _source: {
-              organisasjonsnummer: '315414822',
-              navn: 'TEST PLUTSELIG KATT OVERSKRIFT',
+              organisasjonsnummer: faker.string.numeric(9),
+              navn: faker.company.name(),
               organisasjonsform: 'BEDR',
               antallAnsatte: 3,
-              overordnetEnhet: '313606333',
+              overordnetEnhet: faker.string.numeric(9),
               adresse: {
                 land: 'Norge',
                 landkode: 'NO',
-                kommune: 'TRONDHEIM',
-                kommunenummer: '5001',
-                poststed: 'TILLER',
-                postnummer: '7075',
-                adresse: 'Okstadbrinken 18',
+                kommune: faker.location.county(),
+                kommunenummer: faker.string.numeric(4),
+                poststed: faker.location.street(),
+                postnummer: faker.location.zipCode(),
+                adresse: faker.location.streetAddress(),
               },
               naringskoder: null,
             },
           },
           {
             _index: 'underenhet20250211',
-            _id: '785414822',
+            _id: '315414822',
             _score: 10.641023,
             _source: {
-              organisasjonsnummer: '465414822',
-              navn: 'BLOMSTER KATT OVERSKRIFT',
+              organisasjonsnummer: faker.string.numeric(9),
+              navn: faker.company.name(),
               organisasjonsform: 'BEDR',
               antallAnsatte: 3,
-              overordnetEnhet: '312606333',
+              overordnetEnhet: faker.string.numeric(9),
               adresse: {
                 land: 'Norge',
                 landkode: 'NO',
-                kommune: 'TRONDHEIM',
-                kommunenummer: '5001',
-                poststed: 'TILLER',
-                postnummer: '7075',
-                adresse: 'Okstadbrinken 18',
+                kommune: faker.location.county(),
+                kommunenummer: faker.string.numeric(4),
+                poststed: faker.location.street(),
+                postnummer: faker.location.zipCode(),
+                adresse: faker.location.streetAddress(),
               },
               naringskoder: null,
             },
           },
           {
             _index: 'underenhet20250211',
-            _id: '545414822',
+            _id: '315414822',
             _score: 10.641023,
             _source: {
-              organisasjonsnummer: '015414822',
-              navn: 'SERIØS OVERSKRIFT',
+              organisasjonsnummer: faker.string.numeric(9),
+              navn: faker.company.name(),
               organisasjonsform: 'BEDR',
               antallAnsatte: 3,
-              overordnetEnhet: '314606333',
+              overordnetEnhet: faker.string.numeric(9),
               adresse: {
                 land: 'Norge',
                 landkode: 'NO',
-                kommune: 'TRONDHEIM',
-                kommunenummer: '5001',
-                poststed: 'TILLER',
-                postnummer: '7075',
-                adresse: 'Okstadbrinken 18',
+                kommune: faker.location.county(),
+                kommunenummer: faker.string.numeric(4),
+                poststed: faker.location.street(),
+                postnummer: faker.location.zipCode(),
+                adresse: faker.location.streetAddress(),
               },
               naringskoder: null,
             },

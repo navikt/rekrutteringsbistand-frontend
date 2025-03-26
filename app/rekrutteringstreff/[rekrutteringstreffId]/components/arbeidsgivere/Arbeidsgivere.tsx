@@ -23,10 +23,7 @@ const RekrutteringstreffArbeidsgivere = () => {
       {(arbeidsgivere) => (
         <div className='p-4 flex flex-col gap-4'>
           <div className='flex items-center justify-between'>
-            <LeggTilArbeidsgiverModal
-              onCloseModal={() => {}}
-              leggTilKnappTekst='Legg til arbeidsgiver'
-            />
+            <LeggTilArbeidsgiverModal leggTilKnappTekst='Legg til arbeidsgiver' />
           </div>
           {arbeidsgivere.length === 0 ? (
             <BodyShort>Ingen arbeidsgivere lagt til</BodyShort>
@@ -37,7 +34,7 @@ const RekrutteringstreffArbeidsgivere = () => {
                   {
                     <ArbeidsgiverKort
                       navn={a.navn}
-                      adresse={{ adresse: 'Kirkeveien 50, 0368 Oslo' }}
+                      adresse={{ adresse: 'Kirkeveien 50, 0368 Oslo' }} //TODO: Byttes ut når vi får implemetert adresse
                     />
                   }
                 </li>

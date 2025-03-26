@@ -9,12 +9,10 @@ import { useRouter } from 'next/navigation';
 import * as React from 'react';
 
 interface LeggTilArbeidsgiverModalProps {
-  onCloseModal?: () => void;
   leggTilKnappTekst?: string;
 }
 
 const LeggTilArbeidsgiverModal: React.FC<LeggTilArbeidsgiverModalProps> = ({
-  onCloseModal = () => {},
   leggTilKnappTekst = 'Legg til',
 }) => {
   const [open, setOpen] = React.useState(false);
@@ -54,14 +52,12 @@ const LeggTilArbeidsgiverModal: React.FC<LeggTilArbeidsgiverModalProps> = ({
         });
       setArbeidsgiver(null);
       setOpen(false);
-      onCloseModal();
     }
   };
 
   const handleAvbryt = () => {
     setArbeidsgiver(null);
     setOpen(false);
-    onCloseModal();
   };
 
   return (
