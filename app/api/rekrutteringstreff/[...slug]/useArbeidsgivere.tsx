@@ -32,9 +32,7 @@ export const useRekrutteringstreffArbeidsgivere = (id: string) =>
 
 export const rekruteringstreffArbeidsgivereMirage = (server: any) => {
   return server.get(
-    rekrutteringstreffArbeidsgivereEndepunkt(
-      'd6a587cd-8797-4b9a-a68b-575373f16d65',
-    ),
+    rekrutteringstreffArbeidsgivereEndepunkt('*'),
     () => arbeidsgivereMock,
   );
 };
