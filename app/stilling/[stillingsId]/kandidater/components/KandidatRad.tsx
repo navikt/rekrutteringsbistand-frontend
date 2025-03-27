@@ -146,12 +146,10 @@ const KandidatRad: React.FC<KandidatRadProps> = ({
       </Table.DataCell>
 
       <Table.DataCell>
-        <div>
-          {format(kandidat.lagtTilTidspunkt, 'dd. MMM yyyy', {
-            locale: nb,
-          })}
-          <BodyShort textColor='subtle'>av {kandidat.lagtTilAv.navn}</BodyShort>
-        </div>
+        {format(kandidat.lagtTilTidspunkt, 'dd. MMM yyyy', {
+          locale: nb,
+        })}
+        <BodyShort textColor='subtle'>av {kandidat.lagtTilAv.navn}</BodyShort>
       </Table.DataCell>
       <Table.DataCell>
         <VelgInternStatus

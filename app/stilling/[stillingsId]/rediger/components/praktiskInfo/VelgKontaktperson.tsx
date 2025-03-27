@@ -101,7 +101,7 @@ const VelgKontaktperson: React.FC = () => {
       </p>
       {fields.map((field, index) => (
         <Box.New
-          background='neutral-softA'
+          background='raised'
           borderColor='neutral-subtleA'
           borderRadius='xlarge'
           borderWidth='1'

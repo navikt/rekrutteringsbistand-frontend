@@ -216,7 +216,7 @@ const LeggTilKandidater: React.FC<LeggTilKandidaterProps> = ({
             <Box.New
               className='flex flex-row items-center justify-between font-bold'
               key={kandidat.fødselsnummer}
-              background='neutral-softA'
+              background='raised'
               borderColor='neutral-subtleA'
               borderRadius='xlarge'
               borderWidth='1'
