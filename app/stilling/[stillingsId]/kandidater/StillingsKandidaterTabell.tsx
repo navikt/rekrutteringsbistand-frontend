@@ -179,7 +179,7 @@ const StillingsKandidaterTabell: React.FC<{
             Navn
           </Table.ColumnHeader>
           <Table.ColumnHeader sortable sortKey='lagtTilTidspunkt' scope='col'>
-            Dato
+            Lagt til
           </Table.ColumnHeader>
           <Table.HeaderCell scope='col'>Intern status </Table.HeaderCell>
           <Table.HeaderCell scope='col'>Siste aktivitet</Table.HeaderCell>
