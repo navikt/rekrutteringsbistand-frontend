@@ -19,7 +19,15 @@ import {
 } from './components/KandidatTyper';
 import OrganisasjonsnummerAlert from './components/OrganisasjonsnummerAlert';
 import SendSmsModal from './components/SendSMS/SendSmsModal';
-import { Button, Checkbox, CheckboxGroup, Search } from '@navikt/ds-react';
+import {
+  Accordion,
+  Button,
+  Checkbox,
+  CheckboxGroup,
+  Hide,
+  Search,
+  Show,
+} from '@navikt/ds-react';
 import * as React from 'react';
 
 const StillingsKandidater: React.FC = () => {
@@ -76,6 +84,47 @@ const StillingsKandidater: React.FC = () => {
     organisasjonsnummerFraKandidatliste &&
       organisasjonsnummerFraStilling &&
       organisasjonsnummerFraKandidatliste !== organisasjonsnummerFraStilling,
+  );
+
+  const sidePanel = (
+    <>
+      <CheckboxGroup
+        legend='Intern status'
+        onChange={setStatus}
+        defaultValue={status}
+        className='mb-8'
+      >
+        {Object.entries(InternKandidatstatus).map(([key, value]) => (
+          <Checkbox key={key} value={key}>
+            {storForbokstavString(value ?? '').replace(/_/g, ' ')}
+          </Checkbox>
+        ))}
+      </CheckboxGroup>
+      <div className='flex flex-col gap-8'>
+        <CheckboxGroup
+          legend='Aktiviteter'
+          onChange={setHendelse}
+          defaultValue={hendelse}
+        >
+          {Object.entries(aktivitetTilTekst).map(([key, value]) => (
+            <Checkbox key={key} value={key}>
+              {storForbokstavString(value ?? '').replace(/_/g, ' ')}
+            </Checkbox>
+          ))}
+        </CheckboxGroup>
+        <CheckboxGroup
+          legend='Varsel'
+          onChange={setHendelse}
+          defaultValue={hendelse}
+        >
+          {Object.entries(varselTilTekst).map(([key, value]) => (
+            <Checkbox key={key} value={key}>
+              {storForbokstavString(value ?? '').replace(/_/g, ' ')}
+            </Checkbox>
+          ))}
+        </CheckboxGroup>
+      </div>
+    </>
   );
 
   return (
@@ -152,46 +201,18 @@ const StillingsKandidater: React.FC = () => {
               )}
             </div>
 
-            <div className='mt-8 flex'>
-              <aside className='sidebar mr-4 w-full md:w-[20rem]'>
-                <CheckboxGroup
-                  legend='Intern status'
-                  onChange={setStatus}
-                  defaultValue={status}
-                  className='mb-8'
-                >
-                  {Object.entries(InternKandidatstatus).map(([key, value]) => (
-                    <Checkbox key={key} value={key}>
-                      {storForbokstavString(value ?? '').replace(/_/g, ' ')}
-                    </Checkbox>
-                  ))}
-                </CheckboxGroup>
-                <div className='flex flex-col gap-8'>
-                  <CheckboxGroup
-                    legend='Aktiviteter'
-                    onChange={setHendelse}
-                    defaultValue={hendelse}
-                  >
-                    {Object.entries(aktivitetTilTekst).map(([key, value]) => (
-                      <Checkbox key={key} value={key}>
-                        {storForbokstavString(value ?? '').replace(/_/g, ' ')}
-                      </Checkbox>
-                    ))}
-                  </CheckboxGroup>
-                  <CheckboxGroup
-                    legend='Varsel'
-                    onChange={setHendelse}
-                    defaultValue={hendelse}
-                  >
-                    {Object.entries(varselTilTekst).map(([key, value]) => (
-                      <Checkbox key={key} value={key}>
-                        {storForbokstavString(value ?? '').replace(/_/g, ' ')}
-                      </Checkbox>
-                    ))}
-                  </CheckboxGroup>
-                </div>
+            <div className='mt-8 flex flex-col lg:flex-row'>
+              <aside className='sidebar mr-4 w-full lg:w-[20rem]'>
+                <Show above='lg'>{sidePanel}</Show>
+                <Hide above='lg'>
+                  <Accordion className='w-full'>
+                    <Accordion.Item>
+                      <Accordion.Header>Filtrer</Accordion.Header>
+                      <Accordion.Content>{sidePanel}</Accordion.Content>
+                    </Accordion.Item>
+                  </Accordion>
+                </Hide>
               </aside>
-
               <div className='w-full'>
                 <StillingsKandidaterTabell
                   lukketKandidatliste={lukketKandidatliste}

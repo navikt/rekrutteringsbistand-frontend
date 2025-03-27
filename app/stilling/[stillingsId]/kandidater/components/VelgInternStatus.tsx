@@ -18,6 +18,10 @@ const VelgInternStatus: React.FC<VelgInternStatusProps> = ({
   const [valgtStatus, setValgtStatus] =
     React.useState<InternKandidatstatus>(status);
 
+  React.useEffect(() => {
+    setValgtStatus(status);
+  }, [status]);
+
   const endreStatus = (status: InternKandidatstatus) => {
     setValgtStatus(status);
     endreKandidatStatus(kandidatlisteId, kandidatnr, status);

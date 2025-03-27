@@ -175,18 +175,15 @@ const StillingsKandidaterTabell: React.FC<{
               Velg alle rader
             </Checkbox>
           </Table.DataCell>
-          <Table.HeaderCell scope='col'>
-            {/* <Table.ColumnHeader sortable sortKey='etternavn' scope='col'> */}
+          <Table.ColumnHeader sortable sortKey='etternavn' scope='col'>
             Navn
-          </Table.HeaderCell>
-          <Table.HeaderCell scope='col'>
-            {/* <Table.ColumnHeader sortable sortKey='lagtTilTidspunkt' scope='col'> */}
+          </Table.ColumnHeader>
+          <Table.ColumnHeader sortable sortKey='lagtTilTidspunkt' scope='col'>
             Lagt til
-          </Table.HeaderCell>
-          <Table.HeaderCell scope='col'>
-            {/* <Table.ColumnHeader sortable sortKey='status' scope='col'> */}
+          </Table.ColumnHeader>
+          <Table.ColumnHeader sortable sortKey='status' scope='col'>
             Intern status{' '}
-          </Table.HeaderCell>
+          </Table.ColumnHeader>
           <Table.HeaderCell scope='col'>Siste aktivitet</Table.HeaderCell>
           <Table.HeaderCell scope='col'>Siste varsel</Table.HeaderCell>
           <Table.HeaderCell scope='col'></Table.HeaderCell>
