@@ -1,66 +1,55 @@
 'use client';
 
-import { Dato, datoFormatterer } from '../RekrutteringstreffSøk';
-import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
-import SWRLaster from '@/app/components/SWRLaster';
-import { Table } from '@navikt/ds-react';
-import { useParams } from 'next/navigation';
+import RekrutteringstreffArbeidsgivere from './components/arbeidsgivere/Arbeidsgivere';
+import Deltakere from './components/deltakere/Deltakere';
+import OmTreffet from './components/om-treffet/OmTreffet';
+import { Box, Tabs } from '@navikt/ds-react';
+import { useQueryState } from 'nuqs';
 import * as React from 'react';
 
+export enum RekrutteringstreffTabs {
+  OM_TREFFET = 'om_treffet',
+  DELTAKERE = 'deltakere',
+  ARBEIDSGIVERE = 'arbeidsgivere',
+}
+
 const Rekrutteringstreff: React.FC = () => {
-  const { rekrutteringstreffId } = useParams();
-  const rekrutteringstreffHook = useRekrutteringstreff(
-    rekrutteringstreffId as string,
-  );
+  const [fane, setFane] = useQueryState('visFane', {
+    defaultValue: RekrutteringstreffTabs.OM_TREFFET,
+    clearOnDefault: true,
+  });
 
   return (
-    <SWRLaster hooks={[rekrutteringstreffHook]}>
-      {(rekrutteringstreff) => {
-        const dato: Dato = datoFormatterer(
-          rekrutteringstreff.fraTid,
-          rekrutteringstreff.tilTid,
-        );
-        return (
-          <div>
-            <h1>{rekrutteringstreff.tittel}</h1>
-            <Table>
-              <Table.Header>
-                <Table.Row>
-                  <Table.HeaderCell>Felt</Table.HeaderCell>
-                  <Table.HeaderCell>Verdi</Table.HeaderCell>
-                </Table.Row>
-              </Table.Header>
-              <Table.Body>
-                <Table.Row>
-                  <Table.DataCell>Tittel</Table.DataCell>
-                  <Table.DataCell>{rekrutteringstreff.tittel}</Table.DataCell>
-                </Table.Row>
-                <Table.Row>
-                  <Table.DataCell>Startdato</Table.DataCell>
-                  <Table.DataCell>{dato.startDato}</Table.DataCell>
-                </Table.Row>
-                <Table.Row>
-                  <Table.DataCell>Sluttidspunkt</Table.DataCell>
-                  <Table.DataCell>{dato.sluttTidspunkt}</Table.DataCell>
-                </Table.Row>
-                <Table.Row>
-                  <Table.DataCell>Opprettet av Nav-kontor</Table.DataCell>
-                  <Table.DataCell>
-                    {rekrutteringstreff.opprettetAvNavkontorEnhetId}
-                  </Table.DataCell>
-                </Table.Row>
-                <Table.Row>
-                  <Table.DataCell>Opprettet av person</Table.DataCell>
-                  <Table.DataCell>
-                    {rekrutteringstreff.opprettetAvPersonNavident}
-                  </Table.DataCell>
-                </Table.Row>
-              </Table.Body>
-            </Table>
-          </div>
-        );
-      }}
-    </SWRLaster>
+    <Box.New>
+      <Tabs value={fane} onChange={(val) => setFane(val)}>
+        <Tabs.List className='w-full'>
+          <Tabs.Tab
+            value={RekrutteringstreffTabs.OM_TREFFET}
+            label='Om treffet'
+          />
+          <Tabs.Tab
+            value={RekrutteringstreffTabs.DELTAKERE}
+            label='Deltakere'
+          />
+          <Tabs.Tab
+            value={RekrutteringstreffTabs.ARBEIDSGIVERE}
+            label='Arbeidsgivere'
+          />
+        </Tabs.List>
+
+        <Tabs.Panel value={RekrutteringstreffTabs.OM_TREFFET} className='my-4'>
+          <OmTreffet />
+        </Tabs.Panel>
+
+        <Tabs.Panel value={RekrutteringstreffTabs.DELTAKERE}>
+          <Deltakere />
+        </Tabs.Panel>
+
+        <Tabs.Panel value={RekrutteringstreffTabs.ARBEIDSGIVERE}>
+          <RekrutteringstreffArbeidsgivere />
+        </Tabs.Panel>
+      </Tabs>
+    </Box.New>
   );
 };
 
