@@ -152,7 +152,6 @@ const KandidatRad: React.FC<KandidatRadProps> = ({
           })}
           <BodyShort textColor='subtle'>av {kandidat.lagtTilAv.navn}</BodyShort>
         </div>
-        <BodyShort textColor='subtle'>av {kandidat.lagtTilAv.navn}</BodyShort>
       </Table.DataCell>
       <Table.DataCell>
         <VelgInternStatus
