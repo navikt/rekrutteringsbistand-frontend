@@ -112,8 +112,16 @@ const FormidlingInnspurt = () => {
             <div className='flex items-start gap-2'>
               <Buildings2Icon className='mt-1 text-gray-600' aria-hidden />
               <div>
-                <BodyShort>Ordknapp Blomstrete Tiger AS</BodyShort>
-                <Detail>Organisasjonsnummer: 974652277</Detail>
+                <BodyShort>
+                  {formidlingsVerdier.omFormidlingen.organisasjon?.navn}
+                </BodyShort>
+                <Detail>
+                  Organisasjonsnummer:{' '}
+                  {
+                    formidlingsVerdier.omFormidlingen.organisasjon
+                      ?.organisasjonsnummer
+                  }
+                </Detail>
               </div>
             </div>
 
