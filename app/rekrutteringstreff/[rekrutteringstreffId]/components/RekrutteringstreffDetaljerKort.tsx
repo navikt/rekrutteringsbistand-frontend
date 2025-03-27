@@ -23,6 +23,7 @@ const RekrutteringstreffDetaljerKort: React.FC<
         borderColor='neutral-subtleA'
         borderRadius='xlarge'
         borderWidth='1'
+        padding='4'
       >
         <div className='flex items-center justify-between mb-2'>
           <div className='flex items-center justify-start'>
