@@ -127,6 +127,28 @@ export const arbeidsgiverMirage = (server: any) => {
               naringskoder: null,
             },
           },
+          {
+            _index: 'underenhet20250211',
+            _id: '315414822',
+            _score: 10.641023,
+            _source: {
+              organisasjonsnummer: faker.string.numeric(9),
+              navn: 'TEST PLUTSELIG KATT',
+              organisasjonsform: 'BEDR',
+              antallAnsatte: 3,
+              overordnetEnhet: faker.string.numeric(9),
+              adresse: {
+                land: 'Norge',
+                landkode: 'NO',
+                kommune: faker.location.county(),
+                kommunenummer: faker.string.numeric(4),
+                poststed: faker.location.street(),
+                postnummer: faker.location.zipCode(),
+                adresse: faker.location.streetAddress(),
+              },
+              naringskoder: null,
+            },
+          },
         ],
       },
     };
