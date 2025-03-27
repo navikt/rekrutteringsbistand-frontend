@@ -88,8 +88,7 @@ const VelgInternStatus: React.FC<VelgInternStatusProps> = ({
         <div className='flex justify-center'>
           <Tag
             variant={tagVariant(valgtStatus)}
-            className='flex justify-center gap-2
-            '
+            className='flex justify-center gap-2 w-full'
           >
             {formIcon(valgtStatus)} {formatStatus(valgtStatus)}
           </Tag>
