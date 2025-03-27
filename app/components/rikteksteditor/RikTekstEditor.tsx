@@ -6,6 +6,7 @@ import IconList from '../../../public/editor/iconlist.svg';
 import IconRedo from '../../../public/editor/iconredo.svg';
 import IconUndo from '../../../public/editor/iconundo.svg';
 import SVGDarkmode from '../SVGDarkmode';
+import './RikTekstEditor.css';
 import { Box, Button, ErrorMessage } from '@navikt/ds-react';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
@@ -107,11 +108,7 @@ const RikTekstEditor: React.FC<IRikTekstEditor> = ({
         </Box.New>
       )}
       <hr className='my-4' />
-      <EditorContent
-        id={id}
-        editor={editor}
-        className='prose prose-ul:list-disc prose-ul:pl-6 max-w-none [&_ul]:list-disc [&_ul]:pl-6'
-      />
+      <EditorContent id={id} editor={editor} />
       {feilMelding && <ErrorMessage>{feilMelding}</ErrorMessage>}
     </Box.New>
   );

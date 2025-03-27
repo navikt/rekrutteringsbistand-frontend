@@ -3,13 +3,13 @@
 import { getWorkLocationsAsString } from '../../../../util/locationUtil';
 import { GeografiDTO } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import TekstMedIkon from '../../../components/TekstMedIkon';
+import VisEditorTekst from '../../../components/rikteksteditor/VisEditorTekst';
 import { useStillingsContext } from '../StillingsContext';
 import OmAnnonsen from '../components/OmAnnonsen';
 import OmBedriften from '../components/OmBedriften';
 import OmStillingBoks from '../components/OmStillingBoks';
 import AntallKandidater from './AntallKandidater';
 import StillingSidebar from './StillingSidebar/StillingSidebar';
-import VisEditorTekst from './VisEditorTekst';
 import {
   CalendarIcon,
   ClockIcon,

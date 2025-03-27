@@ -1,7 +1,7 @@
+import VisEditorTekst from '../../../components/rikteksteditor/VisEditorTekst';
 import capitalizeEmployerName from '../../stilling-util';
 import { useStillingsContext } from '../StillingsContext';
 import Definisjon from '../components/Definisjon';
-import VisEditorTekst from '../omStillingen/VisEditorTekst';
 import OmStillingBoks from './OmStillingBoks';
 import * as React from 'react';
 

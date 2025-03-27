@@ -1,0 +1,77 @@
+/* Editor content spacing fixes */
+.ProseMirror {
+  min-height: 150px;
+  font-size: 1.125rem; /* text-lg */
+  line-height: 1.8; /* match the line-height from arb-rich-text */
+}
+
+.ProseMirror > * {
+  margin-bottom: 1.25rem; /* --a-spacing-5 equivalent */
+}
+
+.ProseMirror > *:last-child {
+  margin-bottom: 0;
+}
+
+.ProseMirror h1 {
+  margin: 1rem 0 1.25rem; /* --a-spacing-4 0 --a-spacing-5 */
+  letter-spacing: -0.03em;
+  font-weight: 700;
+  font-size: 1.875rem;
+  line-height: 1.2;
+}
+
+.ProseMirror h2 {
+  margin: 1.75rem 0 1rem; /* --a-spacing-7 0 --a-spacing-4 */
+  letter-spacing: -0.022em;
+  font-weight: 700;
+  font-size: 1.5rem;
+  line-height: 1.2;
+}
+
+.ProseMirror h3 {
+  margin: 1.75rem 0 0.75rem; /* --a-spacing-7 0 --a-spacing-3 */
+  letter-spacing: -0.019em;
+  font-weight: 700;
+  font-size: 1.25rem;
+  line-height: 1.375;
+}
+
+.ProseMirror h4 {
+  margin: 1.75rem 0 0.75rem; /* --a-spacing-7 0 --a-spacing-3 */
+  letter-spacing: -0.017em;
+  font-weight: 700;
+  font-size: 1.125rem;
+  line-height: 1.375;
+}
+
+.ProseMirror p {
+  margin: 0.75rem 0 1.25rem; /* --a-spacing-3 0 --a-spacing-5 */
+  font-size: 1.125rem;
+  line-height: 1.8;
+  letter-spacing: -0.011em;
+}
+
+.ProseMirror ul,
+.ProseMirror ol {
+  padding-left: 1.5rem;
+  margin-bottom: 1.25rem; /* --a-spacing-5 */
+}
+
+.ProseMirror ul {
+  list-style-type: disc;
+}
+
+.ProseMirror ol {
+  list-style-type: decimal;
+}
+
+.ProseMirror li {
+  margin-bottom: 0.75rem; /* --a-spacing-3 */
+  font-size: 1.125rem;
+  line-height: 1.625;
+}
+
+.ProseMirror li p {
+  margin: 0 0 0.5rem; /* 0 0 --a-spacing-2 */
+}
