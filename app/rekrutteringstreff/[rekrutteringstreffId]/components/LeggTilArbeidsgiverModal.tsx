@@ -35,7 +35,6 @@ const LeggTilArbeidsgiverModal: React.FC<LeggTilArbeidsgiverModalProps> = ({
         {
           organisasjonsnummer: arbeidsgiver.organisasjonsnummer,
           navn: arbeidsgiver.navn,
-          status: 'Foreslått',
         },
         rekrutteringstreffId,
       )

@@ -5,6 +5,5 @@ export const arbeidsgivereMock = [
   {
     organisasjonsnummer: faker.string.numeric(9),
     navn: faker.company.name(),
-    status: 'Foreslått',
   },
 ];
