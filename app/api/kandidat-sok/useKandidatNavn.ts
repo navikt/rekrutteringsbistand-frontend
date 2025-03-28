@@ -1,6 +1,6 @@
 import { KandidatSøkAPI } from '../api-routes';
 import { postApiWithSchema } from '../fetcher';
-import { Server } from 'miragejs';
+import { Response as MirageResponse, Server } from 'miragejs';
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
 
@@ -44,6 +44,10 @@ export const kandidatNavnMirage = (server: Server) => {
           etternavn: 'Tomat',
           kilde: 'PDL',
         };
+      case '26040282334':
+        return new MirageResponse(403, {});
+      case '22034609946':
+        return new MirageResponse(404, {});
       default:
         return {
           fornavn: 'Heldig',
