@@ -69,6 +69,8 @@ export const ApplikasjonContextProvider: React.FC<
     getMiljø() !== Miljø.ProdGcp ||
     valgtNavKontor?.navKontor === '1001' || // Kristiansand
     valgtNavKontor?.navKontor === '1621' || // Ørland
+    valgtNavKontor?.navKontor === '0316' || // Gamle Oslo
+    valgtNavKontor?.navKontor === '0521' || // Ørland
     harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER]);
 
   return (
