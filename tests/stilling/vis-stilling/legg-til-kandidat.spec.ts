@@ -43,7 +43,11 @@ test.describe(`Legg til kandidat knapp `, () => {
       .getByRole('textbox', { name: 'Fødselsnummer på kandidat' })
       .fill('26040282334');
     await page.getByRole('dialog', { name: 'Legg til kandidater til' }).click();
-    await expect(page.getByText('Har ikke tilgang til')).toBeVisible();
+    await expect(
+      page.getByText(
+        'Tilgangen ble avvist fordi brukeren har adressebeskyttelse',
+      ),
+    ).toBeVisible();
   });
 
   test('Finner ikke kandidat', async ({ page }) => {

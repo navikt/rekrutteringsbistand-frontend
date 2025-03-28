@@ -205,7 +205,7 @@ const LeggTilKandidater: React.FC<LeggTilKandidaterProps> = ({
           <Alert variant='error' className='mt-4'>
             <p>
               {kandidatNavnHook.error?.statuskode === 403
-                ? 'Har ikke tilgang til kandidaten'
+                ? 'Tilgangen ble avvist fordi brukeren har adressebeskyttelse'
                 : 'Finner ikke person knyttet til fødselsnummer'}
             </p>
           </Alert>
