@@ -115,8 +115,13 @@ export const postApi = async (
       }
     }
   } catch (error) {
-    logger.error('Error in postApi:', error);
-    throw error;
+    if (error && typeof (error as any).toJSON === 'function') {
+      logger.error('Error in postApi:', (error as any).toJSON());
+      throw (error as any).toJSON();
+    } else {
+      logger.error('Error in postApi:', error);
+      throw error;
+    }
   }
 };
 

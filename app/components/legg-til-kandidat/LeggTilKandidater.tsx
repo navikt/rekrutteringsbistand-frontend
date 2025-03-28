@@ -189,7 +189,6 @@ const LeggTilKandidater: React.FC<LeggTilKandidaterProps> = ({
           }}
           error={feilmelding}
         />
-
         {kandidatNavnHook.isLoading ? (
           <Box.New className='flex h-full items-center justify-center p-4'>
             <Loader />
@@ -204,7 +203,11 @@ const LeggTilKandidater: React.FC<LeggTilKandidaterProps> = ({
 
         {kandidatNavnHook.error && (
           <Alert variant='error' className='mt-4'>
-            <p>Finner ikke person knyttet til fødselsnummer</p>
+            <p>
+              {kandidatNavnHook.error?.statuskode === 403
+                ? 'Har ikke tilgang til kandidaten'
+                : 'Finner ikke person knyttet til fødselsnummer'}
+            </p>
           </Alert>
         )}
       </Box.New>
