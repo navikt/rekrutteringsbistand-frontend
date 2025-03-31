@@ -13,7 +13,7 @@ interface LeggTilArbeidsgiverModalProps {
 }
 
 const LeggTilArbeidsgiverModal: React.FC<LeggTilArbeidsgiverModalProps> = ({
-  leggTilKnappTekst = 'Legg til',
+  leggTilKnappTekst = 'Legg til arbeidsgiver',
 }) => {
   const [open, setOpen] = React.useState(false);
   const [arbeidsgiver, setArbeidsgiver] =
@@ -64,8 +64,9 @@ const LeggTilArbeidsgiverModal: React.FC<LeggTilArbeidsgiverModalProps> = ({
       <Button
         icon={<PlusIcon />}
         type='button'
-        variant='tertiary'
+        variant='secondary'
         onClick={() => setOpen(true)}
+        className='w-full max-w-2xl'
       >
         {leggTilKnappTekst}
       </Button>

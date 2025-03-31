@@ -1,11 +1,10 @@
-import RekrutteringstreffDetaljerKort from '../RekrutteringstreffDetaljerKort';
+import ArbeidsgivereOversiktKort from '../ArbeidsgivereOversiktKort';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import SWRLaster from '@/app/components/SWRLaster';
 import {
   Dato,
   datoFormatterer,
 } from '@/app/rekrutteringstreff/RekrutteringstreffSøk';
-import { BriefcaseIcon } from '@navikt/aksel-icons';
 import { Heading, Table } from '@navikt/ds-react';
 import { useParams } from 'next/navigation';
 import * as React from 'react';
@@ -70,14 +69,7 @@ const OmTreffet = () => {
       </SWRLaster>
 
       <div className='mt-4'>
-        <RekrutteringstreffDetaljerKort
-          overskrift='Arbeidsgiver'
-          tittel='Ny arbeidsgiver'
-          beskrivelse='Finn arbeidsgivere til å delta på treffet'
-          ikon={
-            <BriefcaseIcon className='w-8 h-8 text-gray-600 m-2 rounded-full' />
-          }
-        />
+        <ArbeidsgivereOversiktKort />
       </div>
     </div>
   );
