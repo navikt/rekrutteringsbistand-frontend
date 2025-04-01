@@ -22,8 +22,6 @@ const JobbsøkerOpprettelseKort = () => {
       etternavn: faker.person.lastName(),
     };
 
-    console.log('jobbsøker', jobbsøker);
-
     if (jobbsøker) {
       leggtilNyJobbsøker(jobbsøker, rekrutteringstreffId)
         .then(() => {
