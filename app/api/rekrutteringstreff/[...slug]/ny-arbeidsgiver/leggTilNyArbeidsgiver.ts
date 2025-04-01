@@ -16,7 +16,7 @@ export const leggtilNyArbeidsgiver = async (
   );
 };
 
-export const leggtilNyArbeidsgiverMirage = (server: any) => {
+export const leggTilNyArbeidsgiverMirage = (server: any) => {
   return server.post(
     leggtilNyArbeidsgiverEndepunkt('d6a587cd-8797-4b9a-a68b-575373f16d65'),
     () => arbeidsgivereMock[0],

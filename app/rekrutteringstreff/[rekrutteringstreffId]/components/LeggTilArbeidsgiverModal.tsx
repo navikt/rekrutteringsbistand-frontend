@@ -1,3 +1,4 @@
+import { RekrutteringstreffTabs } from '../Rekrutteringstreff';
 import { useRekrutteringstreffContext } from '../RekrutteringstreffContext';
 import { ArbeidsgiverDTO } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
 import { leggtilNyArbeidsgiver } from '@/app/api/rekrutteringstreff/[...slug]/ny-arbeidsgiver/leggTilNyArbeidsgiver';
@@ -19,13 +20,8 @@ const LeggTilArbeidsgiverModal: React.FC<LeggTilArbeidsgiverModalProps> = ({
   const [arbeidsgiver, setArbeidsgiver] =
     React.useState<ArbeidsgiverDTO | null>(null);
 
-  const context = useRekrutteringstreffContext();
-  if (!context.rekrutteringstreffId) {
-    throw new rekbisError({
-      beskrivelse: 'RekrutteringstreffId mangler i konteksten!',
-    });
-  }
-  const rekrutteringstreffId = context.rekrutteringstreffId;
+  const rekrutteringstreffId =
+    useRekrutteringstreffContext().rekrutteringstreffId;
 
   const router = useRouter();
 
@@ -40,7 +36,7 @@ const LeggTilArbeidsgiverModal: React.FC<LeggTilArbeidsgiverModalProps> = ({
       )
         .then(() => {
           router.push(
-            `/rekrutteringstreff/${rekrutteringstreffId}?visFane=arbeidsgivere`,
+            `/rekrutteringstreff/${rekrutteringstreffId}?visFane=${RekrutteringstreffTabs.ARBEIDSGIVERE}}`,
           );
         })
         .catch((error) => {

@@ -150,6 +150,9 @@ importers:
       miragejs:
         specifier: 0.2.0-alpha.3
         version: 0.2.0-alpha.3
+      nav-faker:
+        specifier: ^3.2.4
+        version: 3.2.4
       prettier:
         specifier: ^3.5.2
         version: 3.5.2
@@ -2531,6 +2534,9 @@ packages:
   natural-compare@1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
 
+  nav-faker@3.2.4:
+    resolution: {integrity: sha512-XnpyF0iPMgDaFToussR8AyRSj1lrnQvsswdeG9tCstR2cqj2FhBO9udKyhXnbuxTbG9lXzGswpVexQhtl0H0Ag==}
+
   next@15.1.7:
     resolution: {integrity: sha512-GNeINPGS9c6OZKCvKypbL8GTsT5GhWPp4DM0fzkXJuXMilOO2EeFxuAY6JZbtk6XIl6Ws10ag3xRINDjSO5+wg==}
     engines: {node: ^18.18.0 || ^19.8.0 || >= 20.0.0}
@@ -2988,6 +2994,9 @@ packages:
 
   scheduler@0.25.0:
     resolution: {integrity: sha512-xFVuu11jh+xcO7JOAGJNOXld8/TcEHK/4CituBUeUb5hqxJLj9YuemAEuvm9gQ/+pgXYfbQuqAkiYu+u7YEsNA==}
+
+  seedrandom@2.4.4:
+    resolution: {integrity: sha512-9A+PDmgm+2du77B5i0Ip2cxOqqHjgNxnBgglxLcX78A2D6c2rTo61z4jnVABpF4cKeDMDG+cmXXvdnqse2VqMA==}
 
   semver@6.3.1:
     resolution: {integrity: sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA==}
@@ -5940,6 +5949,10 @@ snapshots:
 
   natural-compare@1.4.0: {}
 
+  nav-faker@3.2.4:
+    dependencies:
+      seedrandom: 2.4.4
+
   next@15.1.7(@babel/core@7.26.9)(@opentelemetry/api@1.9.0)(@playwright/test@1.50.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0):
     dependencies:
       '@next/env': 15.1.7
@@ -6407,6 +6420,8 @@ snapshots:
   safe-stable-stringify@2.5.0: {}
 
   scheduler@0.25.0: {}
+
+  seedrandom@2.4.4: {}
 
   semver@6.3.1: {}
 
