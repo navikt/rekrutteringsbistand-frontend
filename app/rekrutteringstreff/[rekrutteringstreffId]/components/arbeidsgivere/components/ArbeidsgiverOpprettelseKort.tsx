@@ -1,9 +1,9 @@
-import LeggTilArbeidsgiverModal from './LeggTilArbeidsgiverModal';
-import { BriefcaseIcon } from '@navikt/aksel-icons';
+import LeggTilArbeidsgiverModal from '../../LeggTilArbeidsgiverModal';
+import ArbeidsgiverIcon from './ArbeidsgiverIcon';
 import { BodyShort, Box, Heading } from '@navikt/ds-react';
 import * as React from 'react';
 
-const ArbeidsgivereOversiktKort = () => {
+const ArbeidsgiverOpprettelseKort = () => {
   return (
     <div>
       <Box.New
@@ -23,7 +23,7 @@ const ArbeidsgivereOversiktKort = () => {
               background='raised'
               className='rounded-full mb-2 flex items-center justify-center'
             >
-              <BriefcaseIcon className='w-8 h-8 text-gray-600 m-2' />
+              <ArbeidsgiverIcon />
             </Box.New>
             <BodyShort className='text-center'>
               <span className='block'>
@@ -39,4 +39,4 @@ const ArbeidsgivereOversiktKort = () => {
   );
 };
 
-export default ArbeidsgivereOversiktKort;
+export default ArbeidsgiverOpprettelseKort;

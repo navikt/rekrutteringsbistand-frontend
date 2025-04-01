@@ -1,4 +1,5 @@
-import ArbeidsgivereOversiktKort from '../ArbeidsgivereOversiktKort';
+import ArbeidsgiverOpprettelseKort from '../arbeidsgivere/components/ArbeidsgiverOpprettelseKort';
+import JobbsøkerOpprettelseKort from '../jobbsøkere/components/JobbsøkerOpprettelseKort';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import SWRLaster from '@/app/components/SWRLaster';
 import {
@@ -68,8 +69,9 @@ const OmTreffet = () => {
         }}
       </SWRLaster>
 
-      <div className='mt-4'>
-        <ArbeidsgivereOversiktKort />
+      <div className='mt-4 flex flex-col gap-16 md:flex-row'>
+        <ArbeidsgiverOpprettelseKort />
+        <JobbsøkerOpprettelseKort />
       </div>
     </div>
   );

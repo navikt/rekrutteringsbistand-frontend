@@ -5,7 +5,7 @@ export interface DeltakereProps {
   children?: React.ReactNode | undefined;
 }
 
-const Deltakere: React.FC<DeltakereProps> = () => {
+const Jobbsøkere: React.FC<DeltakereProps> = () => {
   return (
     <div className='p-4'>
       <Heading level='2' size='medium' className='mb-2'>
@@ -16,4 +16,4 @@ const Deltakere: React.FC<DeltakereProps> = () => {
   );
 };
 
-export default Deltakere;
+export default Jobbsøkere;

@@ -1,7 +1,7 @@
 'use client';
 
 import RekrutteringstreffArbeidsgivere from './components/arbeidsgivere/Arbeidsgivere';
-import Deltakere from './components/deltakere/Deltakere';
+import Jobbsøkere from './components/jobbsøkere/Jobbsøkere';
 import OmTreffet from './components/om-treffet/OmTreffet';
 import { Box, Tabs } from '@navikt/ds-react';
 import { useQueryState } from 'nuqs';
@@ -9,7 +9,7 @@ import * as React from 'react';
 
 export enum RekrutteringstreffTabs {
   OM_TREFFET = 'om_treffet',
-  DELTAKERE = 'deltakere',
+  JOBBSØKERE = 'jobbsøkere',
   ARBEIDSGIVERE = 'arbeidsgivere',
 }
 
@@ -28,7 +28,7 @@ const Rekrutteringstreff: React.FC = () => {
             label='Om treffet'
           />
           <Tabs.Tab
-            value={RekrutteringstreffTabs.DELTAKERE}
+            value={RekrutteringstreffTabs.JOBBSØKERE}
             label='Deltakere'
           />
           <Tabs.Tab
@@ -41,8 +41,8 @@ const Rekrutteringstreff: React.FC = () => {
           <OmTreffet />
         </Tabs.Panel>
 
-        <Tabs.Panel value={RekrutteringstreffTabs.DELTAKERE}>
-          <Deltakere />
+        <Tabs.Panel value={RekrutteringstreffTabs.JOBBSØKERE}>
+          <Jobbsøkere />
         </Tabs.Panel>
 
         <Tabs.Panel value={RekrutteringstreffTabs.ARBEIDSGIVERE}>
