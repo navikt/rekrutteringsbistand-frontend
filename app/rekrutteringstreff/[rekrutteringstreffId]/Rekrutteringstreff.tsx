@@ -29,7 +29,7 @@ const Rekrutteringstreff: React.FC = () => {
           />
           <Tabs.Tab
             value={RekrutteringstreffTabs.JOBBSØKERE}
-            label='Deltakere'
+            label='Jobbsøkere'
           />
           <Tabs.Tab
             value={RekrutteringstreffTabs.ARBEIDSGIVERE}
