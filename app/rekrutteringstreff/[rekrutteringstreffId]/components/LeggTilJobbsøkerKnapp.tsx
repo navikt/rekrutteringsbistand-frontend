@@ -35,22 +35,19 @@ const LeggTilJobbsøkerKnapp: React.FC<LeggTilJobbsøkerKnappProps> = ({
     console.log('LeggTilJobbsøkerKnapp mutateId:', mutateId);
 
     try {
-      // Kall API for å legge til jobbsøker
       await leggtilNyJobbsøker(jobbsøker, rekrutteringstreffId);
       console.log('Jobbsøker lagt til:', jobbsøker);
 
-      // Sjekk hvilken fane brukeren er i
       const currentTab = new URLSearchParams(window.location.search).get(
         'visFane',
       );
       console.log('Nåværende fane:', currentTab);
 
       if (currentTab === RekrutteringstreffTabs.JOBBSØKERE) {
-        // Hvis brukeren er i "JOBBSØKERE"-fanen, oppdater listen med mutate
+        await new Promise((resolve) => setTimeout(resolve, 100));
         await mutate(mutateId, true);
         console.log('Mutate fullført, data oppdatert');
       } else {
-        // Hvis brukeren ikke er i "JOBBSØKERE"-fanen, naviger til den
         router.push(
           `/rekrutteringstreff/${rekrutteringstreffId}?visFane=${RekrutteringstreffTabs.JOBBSØKERE}`,
         );
