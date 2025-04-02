@@ -22,11 +22,13 @@ const LeggTilJobbsøkerKnapp: React.FC<LeggTilJobbsøkerKnappProps> = ({
   const rekrutteringstreffId =
     useRekrutteringstreffContext().rekrutteringstreffId;
 
+  // TODO: Bytt ut med kandidatsøket
   const handleLeggTil = () => {
     const jobbsøker = {
       fødselsnummer: navfaker.personIdentifikator.fødselsnummer(),
       fornavn: faker.person.firstName(),
       etternavn: faker.person.lastName(),
+      kandidatnummer: 'PAM016jg9faeo',
     };
 
     const mutateId = jobbsøkereEndepunkt(rekrutteringstreffId);

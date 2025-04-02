@@ -26,7 +26,7 @@ export const LeggTilNyJobbsøkerSchema = z.object({
   fødselsnummer: z.string(),
   fornavn: z.string(),
   etternavn: z.string(),
-  kandidatnummer: z.string().optional(),
+  kandidatnummer: z.string().nullable(),
 });
 
 export type LeggTilNyJobbsøkerDTO = z.infer<typeof LeggTilNyJobbsøkerSchema>;

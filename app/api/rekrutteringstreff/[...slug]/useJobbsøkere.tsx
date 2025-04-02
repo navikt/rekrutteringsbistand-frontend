@@ -15,7 +15,7 @@ export const jobbsøkereEndepunkt = (id: string) =>
 const JobbsøkereSchema = z.array(
   z.object({
     fødselsnummer: z.string(),
-    kandidatnummer: z.string().optional(),
+    kandidatnummer: z.string().nullable(),
     fornavn: z.string(),
     etternavn: z.string(),
     /*navKontor: z.string(),
