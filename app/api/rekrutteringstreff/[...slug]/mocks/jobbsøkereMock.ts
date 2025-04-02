@@ -9,6 +9,7 @@ export const jobbsøkerMock = (): LeggTilNyJobbsøkerDTO => {
     fødselsnummer: navfaker.personIdentifikator.fødselsnummer(),
     fornavn: faker.person.firstName(),
     etternavn: faker.person.lastName(),
+    kandidatnummer: 'PAM016jg9faeo',
   };
 };
 
