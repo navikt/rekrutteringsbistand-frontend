@@ -10,7 +10,7 @@ import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
 
 export const jobbsøkereEndepunkt = (id: string) =>
-  `${RekrutteringstreffAPI.internUrl}/${id}/jobbsøkere`;
+  `${RekrutteringstreffAPI.internUrl}/${id}/jobbsoker`;
 
 const JobbsøkereSchema = z.array(
   z.object({
