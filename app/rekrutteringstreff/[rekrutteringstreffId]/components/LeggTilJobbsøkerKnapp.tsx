@@ -23,7 +23,7 @@ const LeggTilJobbsøkerKnapp: React.FC<LeggTilJobbsøkerKnappProps> = ({
     useRekrutteringstreffContext().rekrutteringstreffId;
 
   // TODO: Bytt ut med kandidatsøket
-  const handleLeggTil = () => {
+  const handleLeggTil = async () => {
     const jobbsøker = {
       fødselsnummer: navfaker.personIdentifikator.fødselsnummer(),
       fornavn: faker.person.firstName(),
@@ -32,40 +32,36 @@ const LeggTilJobbsøkerKnapp: React.FC<LeggTilJobbsøkerKnappProps> = ({
     };
 
     const mutateId = jobbsøkereEndepunkt(rekrutteringstreffId);
-    console.log('LeggTilJobbsøkerKnapp mutateId', mutateId);
+    console.log('LeggTilJobbsøkerKnapp mutateId:', mutateId);
 
-    if (jobbsøker) {
-      leggtilNyJobbsøker(jobbsøker, rekrutteringstreffId)
-        .then(() => {
-          console.log('Legg til jobbsøker', jobbsøker);
+    try {
+      // Kall API for å legge til jobbsøker
+      await leggtilNyJobbsøker(jobbsøker, rekrutteringstreffId);
+      console.log('Jobbsøker lagt til:', jobbsøker);
 
-          const currentTab = new URLSearchParams(window.location.search).get(
-            'visFane',
-          );
-          console.log('Nåværende fane:', currentTab);
+      // Sjekk hvilken fane brukeren er i
+      const currentTab = new URLSearchParams(window.location.search).get(
+        'visFane',
+      );
+      console.log('Nåværende fane:', currentTab);
 
-          if (currentTab === RekrutteringstreffTabs.JOBBSØKERE) {
-            mutate(mutateId, true);
-            console.log(
-              'Er i jobbsæker fane, mutate kjørt for oppdatering av jobbsøkere',
-            );
-          } else {
-            router.push(
-              `/rekrutteringstreff/${rekrutteringstreffId}?visFane=${RekrutteringstreffTabs.JOBBSØKERE}`,
-            );
-            console.log(
-              'Navigerer til fanen:',
-              RekrutteringstreffTabs.JOBBSØKERE,
-            );
-          }
-        })
-        .catch((error) => {
-          console.error('Feil ved leggtilNyJobbsøker:', error);
-          throw new rekbisError({
-            beskrivelse: 'Feiler når prøver å legge til ny jobbsøker:',
-            error,
-          });
-        });
+      if (currentTab === RekrutteringstreffTabs.JOBBSØKERE) {
+        // Hvis brukeren er i "JOBBSØKERE"-fanen, oppdater listen med mutate
+        await mutate(mutateId, true);
+        console.log('Mutate fullført, data oppdatert');
+      } else {
+        // Hvis brukeren ikke er i "JOBBSØKERE"-fanen, naviger til den
+        router.push(
+          `/rekrutteringstreff/${rekrutteringstreffId}?visFane=${RekrutteringstreffTabs.JOBBSØKERE}`,
+        );
+        console.log('Navigerer til fanen:', RekrutteringstreffTabs.JOBBSØKERE);
+      }
+    } catch (error) {
+      console.error('Feil ved leggtilNyJobbsøker:', error);
+      throw new rekbisError({
+        beskrivelse: 'Feiler når prøver å legge til ny jobbsøker:',
+        error,
+      });
     }
   };
 
