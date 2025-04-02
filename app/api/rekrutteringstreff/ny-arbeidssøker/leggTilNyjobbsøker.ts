@@ -3,7 +3,7 @@ import { postApi } from '@/app/api/fetcher';
 import { z } from 'zod';
 
 const leggtilNyJobbsøkerEndepunkt = (id: string) => {
-  return `/api/rekrutteringstreff/${id}/jobbsøker`;
+  return `/api/rekrutteringstreff/${id}/jobbsoker`;
 };
 
 export const leggtilNyJobbsøker = async (
