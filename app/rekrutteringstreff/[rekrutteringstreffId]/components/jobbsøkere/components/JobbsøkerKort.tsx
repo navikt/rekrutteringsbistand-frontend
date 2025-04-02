@@ -4,25 +4,24 @@ import * as React from 'react';
 
 interface JobbsøkerKortProps {
   fødselsnummer?: string;
+  kandidatnummer?: string;
   fornavn?: string;
   etternavn?: string;
-  adresse?: JobbsøkerAdresse | null;
+  navKontor?: string;
+  veileder?: Veileder | null;
 }
 
-export type JobbsøkerAdresse = {
-  adresse?: string;
-  postnummer?: string;
-  poststed?: string;
-  kommune?: string;
-  kommunenummer?: string;
-  land?: string;
-  landkode?: string;
+export type Veileder = {
+  navn?: string;
+  navIdent?: string;
+  navKontor?: string;
 };
 
 const JobbsøkerKort: React.FC<JobbsøkerKortProps> = ({
   fornavn,
   etternavn,
-  adresse,
+  navKontor,
+  veileder,
 }) => {
   return (
     <Box.New
@@ -37,7 +36,9 @@ const JobbsøkerKort: React.FC<JobbsøkerKortProps> = ({
         {storForbokstavString(fornavn ?? '')}
       </Heading>
       <BodyShort size='small'>
-        {adresse?.adresse}, {adresse?.postnummer} {adresse?.poststed}
+        {navKontor && `${navKontor}`}{' '}
+        {veileder?.navn &&
+          `${veileder.navn} (${veileder.navIdent ? veileder.navIdent : 'Ukjent nav-ident'})`}
       </BodyShort>
     </Box.New>
   );
