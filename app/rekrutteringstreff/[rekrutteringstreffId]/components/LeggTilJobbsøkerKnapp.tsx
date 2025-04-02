@@ -32,7 +32,7 @@ const LeggTilJobbsøkerKnapp: React.FC<LeggTilJobbsøkerKnappProps> = ({
     if (jobbsøker) {
       leggtilNyJobbsøker(jobbsøker, rekrutteringstreffId)
         .then(() => {
-          mutate(jobbsøkereEndepunkt(rekrutteringstreffId));
+          mutate(jobbsøkereEndepunkt(rekrutteringstreffId), true);
           router.push(
             `/rekrutteringstreff/${rekrutteringstreffId}?visFane=${RekrutteringstreffTabs.JOBBSØKERE}`,
           );
