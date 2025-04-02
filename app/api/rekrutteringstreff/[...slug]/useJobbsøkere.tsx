@@ -5,7 +5,6 @@
  */
 import { RekrutteringstreffAPI } from '../../api-routes';
 import { getAPIwithSchema } from '../../fetcher';
-import { arbeidsgivereMock } from './mocks/arbeidsgivereMock';
 import { jobbsøkereMock } from './mocks/jobbsøkereMock';
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
