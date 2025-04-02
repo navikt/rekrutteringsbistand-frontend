@@ -6,7 +6,7 @@
 import { RekrutteringstreffAPI } from '../../api-routes';
 import { getAPIwithSchema } from '../../fetcher';
 import { jobbsøkereMock } from './mocks/jobbsøkereMock';
-import useSWRImmutable from 'swr/immutable';
+import useSWR from 'swr';
 import { z } from 'zod';
 
 export const jobbsøkereEndepunkt = (id: string) =>
@@ -31,7 +31,7 @@ const JobbsøkereSchema = z.array(
 export type JobbsøkereDTO = z.infer<typeof JobbsøkereSchema>;
 
 export const useJobbsøkere = (id: string) =>
-  useSWRImmutable(jobbsøkereEndepunkt(id), getAPIwithSchema(JobbsøkereSchema));
+  useSWR(jobbsøkereEndepunkt(id), getAPIwithSchema(JobbsøkereSchema));
 
 export const jobbsøkereMirage = (server: any) => {
   return server.get(jobbsøkereEndepunkt('*'), () => jobbsøkereMock);
