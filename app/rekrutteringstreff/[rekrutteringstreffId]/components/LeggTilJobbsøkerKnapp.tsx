@@ -29,15 +29,36 @@ const LeggTilJobbsøkerKnapp: React.FC<LeggTilJobbsøkerKnappProps> = ({
       etternavn: faker.person.lastName(),
     };
 
+    const mutateId = jobbsøkereEndepunkt(rekrutteringstreffId);
+    console.log('LeggTilJobbsøkerKnapp mutateId', mutateId);
+
     if (jobbsøker) {
       leggtilNyJobbsøker(jobbsøker, rekrutteringstreffId)
         .then(() => {
-          mutate(jobbsøkereEndepunkt(rekrutteringstreffId), true);
-          router.push(
-            `/rekrutteringstreff/${rekrutteringstreffId}?visFane=${RekrutteringstreffTabs.JOBBSØKERE}`,
+          console.log('Legg til jobbsøker', jobbsøker);
+
+          const currentTab = new URLSearchParams(window.location.search).get(
+            'visFane',
           );
+          console.log('Nåværende fane:', currentTab);
+
+          if (currentTab === RekrutteringstreffTabs.JOBBSØKERE) {
+            mutate(mutateId, true);
+            console.log(
+              'Er i jobbsæker fane, mutate kjørt for oppdatering av jobbsøkere',
+            );
+          } else {
+            router.push(
+              `/rekrutteringstreff/${rekrutteringstreffId}?visFane=${RekrutteringstreffTabs.JOBBSØKERE}`,
+            );
+            console.log(
+              'Navigerer til fanen:',
+              RekrutteringstreffTabs.JOBBSØKERE,
+            );
+          }
         })
         .catch((error) => {
+          console.error('Feil ved leggtilNyJobbsøker:', error);
           throw new rekbisError({
             beskrivelse: 'Feiler når prøver å legge til ny jobbsøker:',
             error,
