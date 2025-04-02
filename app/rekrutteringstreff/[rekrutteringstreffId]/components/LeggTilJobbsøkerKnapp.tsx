@@ -9,7 +9,13 @@ import navfaker from 'nav-faker/dist/index';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 
-const LeggTilJobbsøkerKnapp = () => {
+interface LeggTilJobbsøkerKnappProps {
+  className?: string;
+}
+
+const LeggTilJobbsøkerKnapp: React.FC<LeggTilJobbsøkerKnappProps> = ({
+  className,
+}) => {
   const router = useRouter();
   const rekrutteringstreffId =
     useRekrutteringstreffContext().rekrutteringstreffId;
@@ -43,7 +49,7 @@ const LeggTilJobbsøkerKnapp = () => {
       type='button'
       variant='secondary'
       onClick={handleLeggTil}
-      className='w-full max-w-2xl'
+      className={className}
     >
       Legg til jobbsøker
     </Button>

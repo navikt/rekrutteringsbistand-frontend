@@ -33,7 +33,7 @@ const JobbsøkerOpprettelseKort = () => {
             </BodyShort>
           </div>
           <div>
-            <LeggTilJobbsøkerKnapp />
+            <LeggTilJobbsøkerKnapp className='w-full max-w-2xl' />
           </div>
         </div>
       </Box.New>
