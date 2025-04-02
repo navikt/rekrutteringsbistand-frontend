@@ -10,7 +10,9 @@ export const leggtilNyJobbsøker = async (
   leggTilNyJobbsøker: LeggTilNyJobbsøkerDTO,
   id: string,
 ) => {
-  return await postApi(leggtilNyJobbsøkerEndepunkt(id), leggTilNyJobbsøker);
+  const endepunkt = leggtilNyJobbsøkerEndepunkt(id);
+  console.log('leggtilNyJobbsøker mutateid', endepunkt);
+  return await postApi(endepunkt, leggTilNyJobbsøker);
 };
 
 export const leggTilNyJobbsøkerMirage = (server: any) => {
