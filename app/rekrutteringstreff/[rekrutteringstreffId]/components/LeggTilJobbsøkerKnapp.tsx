@@ -45,6 +45,7 @@ const LeggTilJobbsøkerKnapp: React.FC<LeggTilJobbsøkerKnappProps> = ({
       console.log('Nåværende fane:', currentTab);
 
       if (currentTab === RekrutteringstreffTabs.JOBBSØKERE) {
+        await new Promise((resolve) => setTimeout(resolve, 1500));
         await mutate(mutateId, true);
         console.log('Mutate fullført, data oppdatert');
       } else {
