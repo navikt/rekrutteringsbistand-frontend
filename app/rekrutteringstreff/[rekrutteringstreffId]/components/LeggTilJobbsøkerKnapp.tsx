@@ -42,6 +42,7 @@ const LeggTilJobbsøkerKnapp: React.FC<LeggTilJobbsøkerKnappProps> = ({
 
     try {
       await leggtilNyJobbsøker(jobbsøker, rekrutteringstreffId);
+      router.refresh();
 
       if (currentTab === RekrutteringstreffTabs.JOBBSØKERE) {
         await mutate(
