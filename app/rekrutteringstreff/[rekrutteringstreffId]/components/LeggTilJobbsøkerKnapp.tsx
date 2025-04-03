@@ -1,9 +1,5 @@
 import { RekrutteringstreffTabs } from '../Rekrutteringstreff';
 import { useRekrutteringstreffContext } from '../RekrutteringstreffContext';
-import {
-  fetchJobbsøkere,
-  jobbsøkereEndepunkt,
-} from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
 import { leggtilNyJobbsøker } from '@/app/api/rekrutteringstreff/ny-arbeidssøker/leggTilNyjobbsøker';
 import { rekbisError } from '@/util/rekbisError';
 import { faker } from '@faker-js/faker/locale/nb_NO';
@@ -12,7 +8,6 @@ import { Button } from '@navikt/ds-react';
 import navfaker from 'nav-faker/dist/index';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
-import { mutate } from 'swr';
 
 interface LeggTilJobbsøkerKnappProps {
   className?: string;
@@ -34,27 +29,21 @@ const LeggTilJobbsøkerKnapp: React.FC<LeggTilJobbsøkerKnappProps> = ({
       kandidatnummer: 'PAM016jg9faeo',
     };
 
-    const mutateId = jobbsøkereEndepunkt(rekrutteringstreffId);
     const currentTab = new URLSearchParams(window.location.search).get(
       'visFane',
     );
 
     try {
+      await leggtilNyJobbsøker(jobbsøker, rekrutteringstreffId);
+
       if (currentTab === RekrutteringstreffTabs.JOBBSØKERE) {
-        await mutate(
-          mutateId,
-          async () => {
-            await leggtilNyJobbsøker(jobbsøker, rekrutteringstreffId);
-            const data = await fetchJobbsøkere(mutateId);
-            return [...data];
-          },
-          { revalidate: false },
-        );
-      } else {
         router.push(
-          `/rekrutteringstreff/${rekrutteringstreffId}?visFane=${RekrutteringstreffTabs.JOBBSØKERE}`,
+          `/rekrutteringstreff/${rekrutteringstreffId}?visFane=${RekrutteringstreffTabs.OM_TREFFET}`,
         );
       }
+      router.push(
+        `/rekrutteringstreff/${rekrutteringstreffId}?visFane=${RekrutteringstreffTabs.JOBBSØKERE}`,
+      );
     } catch (error) {
       console.error('Feil ved leggtilNyJobbsøker:', error);
       throw new rekbisError({
