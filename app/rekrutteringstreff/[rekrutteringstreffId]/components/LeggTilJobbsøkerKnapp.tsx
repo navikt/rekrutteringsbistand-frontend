@@ -42,9 +42,15 @@ const LeggTilJobbsøkerKnapp: React.FC<LeggTilJobbsøkerKnappProps> = ({
       await leggtilNyJobbsøker(jobbsøker, rekrutteringstreffId);
 
       if (currentTab === RekrutteringstreffTabs.JOBBSØKERE) {
-        await mutate(mutateId, fetchJobbsøkere(mutateId), {
-          revalidate: false,
-        });
+        await mutate(
+          // For å sikre get av jobbsøkere kommer etter post
+          mutateId,
+          async () => {
+            const data = await fetchJobbsøkere(mutateId);
+            return [...data]; // For å sikre rerender
+          },
+          { revalidate: false },
+        );
       } else {
         router.push(
           `/rekrutteringstreff/${rekrutteringstreffId}?visFane=${RekrutteringstreffTabs.JOBBSØKERE}`,
