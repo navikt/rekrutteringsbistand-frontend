@@ -45,7 +45,8 @@ const LeggTilJobbsøkerKnapp: React.FC<LeggTilJobbsøkerKnappProps> = ({
 
       if (currentTab === RekrutteringstreffTabs.JOBBSØKERE) {
         await mutate(mutateId, async () => {
-          return await fetchJobbsøkere(mutateId);
+          const list = await fetchJobbsøkere(mutateId);
+          return [...list];
         });
       } else {
         router.push(
