@@ -1,4 +1,4 @@
-'usde client';
+'use client';
 
 import { useRekrutteringstreffContext } from '../../RekrutteringstreffContext';
 import LeggTilArbeidsgiverModal from '../LeggTilArbeidsgiverModal';
