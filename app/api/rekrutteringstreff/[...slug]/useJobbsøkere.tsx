@@ -4,7 +4,7 @@
  * Endepunkt /useJobbsøkere
  */
 import { RekrutteringstreffAPI } from '../../api-routes';
-import { getAPIwithSchemaNoStore } from '../../fetcher';
+import { getAPIwithSchema } from '../../fetcher';
 import { jobbsøkereMock } from './mocks/jobbsøkereMock';
 import useSWR from 'swr';
 import { z } from 'zod';
@@ -30,7 +30,7 @@ const JobbsøkereSchema = z.array(
 
 export type JobbsøkereDTO = z.infer<typeof JobbsøkereSchema>;
 
-export const fetchJobbsøkere = getAPIwithSchemaNoStore(JobbsøkereSchema);
+export const fetchJobbsøkere = getAPIwithSchema(JobbsøkereSchema);
 
 export const useJobbsøkere = (id: string) => {
   return useSWR(jobbsøkereEndepunkt(id), fetchJobbsøkere);

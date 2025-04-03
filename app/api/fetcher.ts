@@ -23,14 +23,6 @@ export const getAPIwithSchema = <T>(
   };
 };
 
-export const getAPIwithSchemaNoStore =
-  <T>(schema: z.Schema<T>) =>
-  async (url: string) => {
-    const response = await fetch(url, { cache: 'no-store' }); // 👈 cache: 'no-store'
-    const json = await response.json();
-    return schema.parse(json);
-  };
-
 export const getAPI = async (url: string) => {
   const response = await fetch(basePath + url, {
     method: 'GET',
