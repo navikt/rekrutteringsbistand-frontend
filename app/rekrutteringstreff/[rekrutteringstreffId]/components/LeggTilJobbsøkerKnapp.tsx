@@ -37,17 +37,9 @@ const LeggTilJobbsøkerKnapp: React.FC<LeggTilJobbsøkerKnappProps> = ({
     try {
       await leggtilNyJobbsøker(jobbsøker, rekrutteringstreffId);
       if (currentTab === RekrutteringstreffTabs.JOBBSØKERE) {
-        mutate(
-          jobbsøkereEndepunkt(rekrutteringstreffId),
-          (existing: any[] = []) => [...existing, jobbsøker],
-          false,
-        ).then(() => {
-          mutate(jobbsøkereEndepunkt(rekrutteringstreffId));
+        await mutate(jobbsøkereEndepunkt(rekrutteringstreffId), undefined, {
+          revalidate: true,
         });
-        setTimeout(() => {
-          mutate(jobbsøkereEndepunkt(rekrutteringstreffId));
-        }, 600);
-        router.refresh();
       } else {
         router.push(
           `/rekrutteringstreff/${rekrutteringstreffId}?visFane=${RekrutteringstreffTabs.JOBBSØKERE}`,
