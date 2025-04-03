@@ -9,7 +9,6 @@ import { Button } from '@navikt/ds-react';
 import navfaker from 'nav-faker/dist/index';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
-import { mutate } from 'swr';
 
 interface LeggTilJobbsøkerKnappProps {
   className?: string;
@@ -45,8 +44,8 @@ const LeggTilJobbsøkerKnapp: React.FC<LeggTilJobbsøkerKnappProps> = ({
       console.log('Nåværende fane:', currentTab);
 
       if (currentTab === RekrutteringstreffTabs.JOBBSØKERE) {
-        await new Promise((resolve) => setTimeout(resolve, 1500));
-        await mutate(mutateId, true);
+        //await new Promise((resolve) => setTimeout(resolve, 1500));
+        //await mutate(mutateId, true);
         console.log('Mutate fullført, data oppdatert');
       } else {
         router.push(
