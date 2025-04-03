@@ -45,7 +45,8 @@ const LeggTilJobbsøkerKnapp: React.FC<LeggTilJobbsøkerKnappProps> = ({
           mutateId,
           async () => {
             await leggtilNyJobbsøker(jobbsøker, rekrutteringstreffId);
-            return await fetchJobbsøkere(mutateId);
+            const data = await fetchJobbsøkere(mutateId);
+            return [...data];
           },
           { revalidate: false },
         );
