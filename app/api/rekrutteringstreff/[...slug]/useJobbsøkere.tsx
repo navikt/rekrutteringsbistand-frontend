@@ -30,10 +30,10 @@ const JobbsøkereSchema = z.array(
 
 export type JobbsøkereDTO = z.infer<typeof JobbsøkereSchema>;
 
+export const fetchJobbsøkere = getAPIwithSchema(JobbsøkereSchema);
+
 export const useJobbsøkere = (id: string) => {
-  const mutateId = jobbsøkereEndepunkt(id);
-  console.log('useJobbsøkere mutateid', mutateId);
-  return useSWR(jobbsøkereEndepunkt(id), getAPIwithSchema(JobbsøkereSchema));
+  return useSWR(jobbsøkereEndepunkt(id), fetchJobbsøkere);
 };
 
 export const jobbsøkereMirage = (server: any) => {

@@ -1,6 +1,9 @@
 import { RekrutteringstreffTabs } from '../Rekrutteringstreff';
 import { useRekrutteringstreffContext } from '../RekrutteringstreffContext';
-import { jobbsøkereEndepunkt } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
+import {
+  fetchJobbsøkere,
+  jobbsøkereEndepunkt,
+} from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
 import { leggtilNyJobbsøker } from '@/app/api/rekrutteringstreff/ny-arbeidssøker/leggTilNyjobbsøker';
 import { rekbisError } from '@/util/rekbisError';
 import { faker } from '@faker-js/faker/locale/nb_NO';
@@ -9,6 +12,7 @@ import { Button } from '@navikt/ds-react';
 import navfaker from 'nav-faker/dist/index';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
+import { mutate } from 'swr';
 
 interface LeggTilJobbsøkerKnappProps {
   className?: string;
@@ -31,27 +35,26 @@ const LeggTilJobbsøkerKnapp: React.FC<LeggTilJobbsøkerKnappProps> = ({
     };
 
     const mutateId = jobbsøkereEndepunkt(rekrutteringstreffId);
-    console.log('LeggTilJobbsøkerKnapp mutateId:', mutateId);
+    const currentTab = new URLSearchParams(window.location.search).get(
+      'visFane',
+    );
 
     try {
-      // Vent til POST-kallet er fullført før vi fortsetter
       await leggtilNyJobbsøker(jobbsøker, rekrutteringstreffId);
-      console.log('Jobbsøker lagt til:', jobbsøker);
-
-      const currentTab = new URLSearchParams(window.location.search).get(
-        'visFane',
-      );
-      console.log('Nåværende fane:', currentTab);
 
       if (currentTab === RekrutteringstreffTabs.JOBBSØKERE) {
-        //await new Promise((resolve) => setTimeout(resolve, 1500));
-        //await mutate(mutateId, true);
-        console.log('Mutate fullført, data oppdatert');
+        await mutate(
+          mutateId,
+          async () => {
+            await leggtilNyJobbsøker(jobbsøker, rekrutteringstreffId);
+            return await fetchJobbsøkere(mutateId);
+          },
+          { revalidate: false },
+        );
       } else {
         router.push(
           `/rekrutteringstreff/${rekrutteringstreffId}?visFane=${RekrutteringstreffTabs.JOBBSØKERE}`,
         );
-        console.log('Navigerer til fanen:', RekrutteringstreffTabs.JOBBSØKERE);
       }
     } catch (error) {
       console.error('Feil ved leggtilNyJobbsøker:', error);
