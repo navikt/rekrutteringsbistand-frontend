@@ -2,10 +2,7 @@
 
 import { RekrutteringstreffTabs } from '../Rekrutteringstreff';
 import { useRekrutteringstreffContext } from '../RekrutteringstreffContext';
-import {
-  fetchJobbsøkere,
-  jobbsøkereEndepunkt,
-} from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
+import { jobbsøkereEndepunkt } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
 import { leggtilNyJobbsøker } from '@/app/api/rekrutteringstreff/ny-arbeidssøker/leggTilNyjobbsøker';
 import { rekbisError } from '@/util/rekbisError';
 import { faker } from '@faker-js/faker/locale/nb_NO';
@@ -42,16 +39,9 @@ const LeggTilJobbsøkerKnapp: React.FC<LeggTilJobbsøkerKnappProps> = ({
 
     try {
       await leggtilNyJobbsøker(jobbsøker, rekrutteringstreffId);
-      router.refresh();
 
       if (currentTab === RekrutteringstreffTabs.JOBBSØKERE) {
-        await mutate(
-          mutateId,
-          async () => {
-            return await fetchJobbsøkere(mutateId);
-          },
-          { revalidate: true },
-        );
+        await mutate(mutateId);
       } else {
         router.push(
           `/rekrutteringstreff/${rekrutteringstreffId}?visFane=${RekrutteringstreffTabs.JOBBSØKERE}`,
