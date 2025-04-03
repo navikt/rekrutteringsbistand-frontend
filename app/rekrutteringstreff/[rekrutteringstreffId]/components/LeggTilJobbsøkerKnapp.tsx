@@ -48,10 +48,9 @@ const LeggTilJobbsøkerKnapp: React.FC<LeggTilJobbsøkerKnappProps> = ({
         await mutate(
           mutateId,
           async () => {
-            const data = await fetchJobbsøkere(mutateId); // 👈 samme nøkkel som hooken
-            return [...data]; // ny referanse sikrer rerender
+            return await fetchJobbsøkere(mutateId);
           },
-          { revalidate: false },
+          { revalidate: true },
         );
       } else {
         router.push(
