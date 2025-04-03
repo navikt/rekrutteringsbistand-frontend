@@ -6,13 +6,13 @@ const leggtilNyJobbsøkerEndepunkt = (id: string) => {
   return `/api/rekrutteringstreff/${id}/jobbsoker`;
 };
 
-export const leggtilNyJobbsøker = async (
+export const leggtilNyJobbsøker = (
   leggTilNyJobbsøker: LeggTilNyJobbsøkerDTO,
   id: string,
 ) => {
   const endepunkt = leggtilNyJobbsøkerEndepunkt(id);
   console.log('leggtilNyJobbsøker mutateid', endepunkt);
-  return await postApi(endepunkt, leggTilNyJobbsøker);
+  return postApi(endepunkt, leggTilNyJobbsøker);
 };
 
 export const leggTilNyJobbsøkerMirage = (server: any) => {

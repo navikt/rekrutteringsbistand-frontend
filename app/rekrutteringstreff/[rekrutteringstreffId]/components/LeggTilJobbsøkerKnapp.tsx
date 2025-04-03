@@ -35,6 +35,7 @@ const LeggTilJobbsøkerKnapp: React.FC<LeggTilJobbsøkerKnappProps> = ({
     console.log('LeggTilJobbsøkerKnapp mutateId:', mutateId);
 
     try {
+      // Vent til POST-kallet er fullført før vi fortsetter
       await leggtilNyJobbsøker(jobbsøker, rekrutteringstreffId);
       console.log('Jobbsøker lagt til:', jobbsøker);
 
@@ -44,7 +45,6 @@ const LeggTilJobbsøkerKnapp: React.FC<LeggTilJobbsøkerKnappProps> = ({
       console.log('Nåværende fane:', currentTab);
 
       if (currentTab === RekrutteringstreffTabs.JOBBSØKERE) {
-        await new Promise((resolve) => setTimeout(resolve, 100));
         await mutate(mutateId, true);
         console.log('Mutate fullført, data oppdatert');
       } else {
