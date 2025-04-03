@@ -43,11 +43,12 @@ const LeggTilJobbsøkerKnapp: React.FC<LeggTilJobbsøkerKnappProps> = ({
 
       if (currentTab === RekrutteringstreffTabs.JOBBSØKERE) {
         await mutate(
-          // For å sikre get av jobbsøkere kommer etter post
           mutateId,
           async () => {
-            const data = await fetchJobbsøkere(mutateId);
-            return [...data]; // For å sikre rerender
+            const data = await fetchJobbsøkere(
+              `${mutateId}?timestamp=${Date.now()}`,
+            );
+            return [...data];
           },
           { revalidate: false },
         );
