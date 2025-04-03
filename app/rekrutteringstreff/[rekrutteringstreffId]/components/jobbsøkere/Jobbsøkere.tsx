@@ -1,3 +1,5 @@
+'use client';
+
 import { useRekrutteringstreffContext } from '../../RekrutteringstreffContext';
 import LeggTilJobbsøkerKnapp from '../LeggTilJobbsøkerKnapp';
 import JobbsøkerKort from './components/JobbsøkerKort';
