@@ -45,10 +45,8 @@ const LeggTilJobbsøkerKnapp: React.FC<LeggTilJobbsøkerKnappProps> = ({
         await mutate(
           mutateId,
           async () => {
-            const data = await fetchJobbsøkere(
-              `${mutateId}?timestamp=${Date.now()}`,
-            );
-            return [...data];
+            const data = await fetchJobbsøkere(mutateId); // 👈 samme nøkkel som hooken
+            return [...data]; // ny referanse sikrer rerender
           },
           { revalidate: false },
         );
