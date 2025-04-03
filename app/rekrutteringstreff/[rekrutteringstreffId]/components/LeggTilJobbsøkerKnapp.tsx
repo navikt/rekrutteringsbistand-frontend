@@ -1,5 +1,6 @@
 import { RekrutteringstreffTabs } from '../Rekrutteringstreff';
 import { useRekrutteringstreffContext } from '../RekrutteringstreffContext';
+import { jobbsøkereEndepunkt } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
 import { leggtilNyJobbsøker } from '@/app/api/rekrutteringstreff/ny-arbeidssøker/leggTilNyjobbsøker';
 import { rekbisError } from '@/util/rekbisError';
 import { faker } from '@faker-js/faker/locale/nb_NO';
@@ -8,6 +9,7 @@ import { Button } from '@navikt/ds-react';
 import navfaker from 'nav-faker/dist/index';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
+import { mutate } from 'swr';
 
 interface LeggTilJobbsøkerKnappProps {
   className?: string;
@@ -35,6 +37,16 @@ const LeggTilJobbsøkerKnapp: React.FC<LeggTilJobbsøkerKnappProps> = ({
     try {
       await leggtilNyJobbsøker(jobbsøker, rekrutteringstreffId);
       if (currentTab === RekrutteringstreffTabs.JOBBSØKERE) {
+        mutate(
+          jobbsøkereEndepunkt(rekrutteringstreffId),
+          (existing: any[] = []) => [...existing, jobbsøker],
+          false,
+        ).then(() => {
+          mutate(jobbsøkereEndepunkt(rekrutteringstreffId));
+        });
+        setTimeout(() => {
+          mutate(jobbsøkereEndepunkt(rekrutteringstreffId));
+        }, 600);
         router.refresh();
       } else {
         router.push(
