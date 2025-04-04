@@ -4,24 +4,21 @@ import { RekrutteringstreffTabs } from '../Rekrutteringstreff';
 import { useRekrutteringstreffContext } from '../RekrutteringstreffContext';
 import { ArbeidsgiverDTO } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
 import { leggtilNyArbeidsgiver } from '@/app/api/rekrutteringstreff/[...slug]/ny-arbeidsgiver/leggTilNyArbeidsgiver';
-import {
-  fetchRekrutteringstreffArbeidsgivere,
-  rekrutteringstreffArbeidsgivereEndepunkt,
-} from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
 import VelgArbeidsgiver from '@/app/stilling/ny-stilling/components/VelgArbeidsgiver';
 import { rekbisError } from '@/util/rekbisError';
 import { PlusIcon } from '@navikt/aksel-icons';
 import { Button, Modal } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
-import { mutate } from 'swr';
 
 interface LeggTilArbeidsgiverModalProps {
   leggTilKnappTekst?: string;
+  onLagtTil?: () => void;
 }
 
 const LeggTilArbeidsgiverModal: React.FC<LeggTilArbeidsgiverModalProps> = ({
   leggTilKnappTekst = 'Legg til arbeidsgiver',
+  onLagtTil,
 }) => {
   const [open, setOpen] = React.useState(false);
   const [arbeidsgiver, setArbeidsgiver] =
@@ -31,9 +28,6 @@ const LeggTilArbeidsgiverModal: React.FC<LeggTilArbeidsgiverModalProps> = ({
     useRekrutteringstreffContext().rekrutteringstreffId;
 
   const router = useRouter();
-
-  const mutateId =
-    rekrutteringstreffArbeidsgivereEndepunkt(rekrutteringstreffId);
 
   const handleLeggTil = async () => {
     if (arbeidsgiver) {
@@ -46,9 +40,7 @@ const LeggTilArbeidsgiverModal: React.FC<LeggTilArbeidsgiverModalProps> = ({
           rekrutteringstreffId,
         );
 
-        await mutate(mutateId, async () => {
-          return await fetchRekrutteringstreffArbeidsgivere(mutateId);
-        });
+        onLagtTil?.();
 
         router.push(
           `/rekrutteringstreff/${rekrutteringstreffId}?visFane=${RekrutteringstreffTabs.ARBEIDSGIVERE}`,
