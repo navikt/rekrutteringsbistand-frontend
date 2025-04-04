@@ -10,7 +10,6 @@ import * as React from 'react';
 
 const Jobbsøkere = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
-
   const jobbsøkerHook = useJobbsøkere(rekrutteringstreffId);
 
   return (
