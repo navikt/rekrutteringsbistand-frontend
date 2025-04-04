@@ -30,6 +30,7 @@ const JobbsøkerKort: React.FC<JobbsøkerKortProps> = ({
       borderRadius='xlarge'
       borderWidth='1'
       padding='4'
+      marginBlock='2'
     >
       <Heading level='3' size='xsmall'>
         {storForbokstavString(etternavn ?? '')},{' '}

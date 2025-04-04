@@ -1,48 +1,42 @@
-import { RekrutteringstreffTabs } from '../Rekrutteringstreff';
+'use client';
+
 import { useRekrutteringstreffContext } from '../RekrutteringstreffContext';
-import { jobbsøkereEndepunkt } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
-import { leggtilNyJobbsøker } from '@/app/api/rekrutteringstreff/ny-arbeidssøker/leggTilNyjobbsøker';
+import { leggtilNyJobbsøker } from '@/app/api/rekrutteringstreff/ny-jobbsøker/leggTilNyjobbsøker';
 import { rekbisError } from '@/util/rekbisError';
 import { faker } from '@faker-js/faker/locale/nb_NO';
 import { PlusIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import navfaker from 'nav-faker/dist/index';
-import { useRouter } from 'next/navigation';
 import * as React from 'react';
-import { mutate } from 'swr';
 
 interface LeggTilJobbsøkerKnappProps {
   className?: string;
+  onNyJobbsøkerLagtTil?: () => void;
 }
 
 const LeggTilJobbsøkerKnapp: React.FC<LeggTilJobbsøkerKnappProps> = ({
   className,
+  onNyJobbsøkerLagtTil,
 }) => {
-  const router = useRouter();
-  const rekrutteringstreffId =
-    useRekrutteringstreffContext().rekrutteringstreffId;
+  const { rekrutteringstreffId } = useRekrutteringstreffContext();
 
-  const handleLeggTil = () => {
+  const handleLeggTil = async () => {
     const jobbsøker = {
       fødselsnummer: navfaker.personIdentifikator.fødselsnummer(),
       fornavn: faker.person.firstName(),
       etternavn: faker.person.lastName(),
+      kandidatnummer: 'PAM016jg9faeo',
     };
 
-    if (jobbsøker) {
-      leggtilNyJobbsøker(jobbsøker, rekrutteringstreffId)
-        .then(() => {
-          mutate(jobbsøkereEndepunkt(rekrutteringstreffId), true);
-          router.push(
-            `/rekrutteringstreff/${rekrutteringstreffId}?visFane=${RekrutteringstreffTabs.JOBBSØKERE}`,
-          );
-        })
-        .catch((error) => {
-          throw new rekbisError({
-            beskrivelse: 'Feiler når prøver å legge til ny jobbsøker:',
-            error,
-          });
-        });
+    try {
+      await leggtilNyJobbsøker(jobbsøker, rekrutteringstreffId);
+      console.log('[Knapp] POST ferdig, refresher liste...');
+      onNyJobbsøkerLagtTil?.();
+    } catch (error) {
+      throw new rekbisError({
+        beskrivelse: 'Feiler når prøver å legge til ny jobbsøker:',
+        error,
+      });
     }
   };
 

@@ -1,3 +1,5 @@
+'use client';
+
 import { useRekrutteringstreffContext } from '../../RekrutteringstreffContext';
 import LeggTilJobbsøkerKnapp from '../LeggTilJobbsøkerKnapp';
 import JobbsøkerKort from './components/JobbsøkerKort';
@@ -8,7 +10,6 @@ import * as React from 'react';
 
 const Jobbsøkere = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
-
   const jobbsøkerHook = useJobbsøkere(rekrutteringstreffId);
 
   return (
@@ -16,27 +17,28 @@ const Jobbsøkere = () => {
       {(jobbsøkere) => (
         <div className='p-4 flex flex-col gap-4'>
           <div className='flex items-center justify-between'>
-            <LeggTilJobbsøkerKnapp />
+            <LeggTilJobbsøkerKnapp
+              onNyJobbsøkerLagtTil={jobbsøkerHook.refresh}
+            />
           </div>
+
           {jobbsøkere.length === 0 ? (
             <BodyShort>Ingen jobbsøkere lagt til</BodyShort>
           ) : (
             <ul>
               {jobbsøkere.map((j, index) => (
                 <li key={index}>
-                  {
-                    <JobbsøkerKort
-                      fornavn={j.fornavn}
-                      etternavn={j.etternavn}
-                      fødselsnummer={j.fødselsnummer}
-                      navKontor='Nav Grorud' // TODO byttes ut når vi får lagt til Nav kontor i backend
-                      veileder={{
-                        navn: 'Veileder Navn',
-                        navIdent: 'Z123456',
-                        navKontor: 'Nav Grorud',
-                      }} // TODO byttes ut når vi får lagt til veileder i backend
-                    />
-                  }
+                  <JobbsøkerKort
+                    fornavn={j.fornavn}
+                    etternavn={j.etternavn}
+                    fødselsnummer={j.fødselsnummer}
+                    navKontor='Nav Grorud' // TODO: Bytt når backend støtter det
+                    veileder={{
+                      navn: 'Veileder Navn',
+                      navIdent: 'Z123456',
+                      navKontor: 'Nav Grorud',
+                    }}
+                  />
                 </li>
               ))}
             </ul>

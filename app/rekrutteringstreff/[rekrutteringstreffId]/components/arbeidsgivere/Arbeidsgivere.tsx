@@ -1,3 +1,5 @@
+'use client';
+
 import { useRekrutteringstreffContext } from '../../RekrutteringstreffContext';
 import LeggTilArbeidsgiverModal from '../LeggTilArbeidsgiverModal';
 import ArbeidsgiverKort from './components/ArbeidsgiverKort';
@@ -17,7 +19,10 @@ const RekrutteringstreffArbeidsgivere = () => {
       {(arbeidsgivere) => (
         <div className='p-4 flex flex-col gap-4'>
           <div className='flex items-center justify-between'>
-            <LeggTilArbeidsgiverModal leggTilKnappTekst='Legg til arbeidsgiver' />
+            <LeggTilArbeidsgiverModal
+              leggTilKnappTekst='Legg til arbeidsgiver'
+              onLagtTil={arbeidsgivereHook.refresh}
+            />
           </div>
           {arbeidsgivere.length === 0 ? (
             <BodyShort>Ingen arbeidsgivere lagt til</BodyShort>

@@ -1,3 +1,5 @@
+'use client';
+
 import { RekrutteringstreffTabs } from '../Rekrutteringstreff';
 import { useRekrutteringstreffContext } from '../RekrutteringstreffContext';
 import { ArbeidsgiverDTO } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
@@ -11,10 +13,12 @@ import * as React from 'react';
 
 interface LeggTilArbeidsgiverModalProps {
   leggTilKnappTekst?: string;
+  onLagtTil?: () => void;
 }
 
 const LeggTilArbeidsgiverModal: React.FC<LeggTilArbeidsgiverModalProps> = ({
   leggTilKnappTekst = 'Legg til arbeidsgiver',
+  onLagtTil,
 }) => {
   const [open, setOpen] = React.useState(false);
   const [arbeidsgiver, setArbeidsgiver] =
@@ -25,26 +29,28 @@ const LeggTilArbeidsgiverModal: React.FC<LeggTilArbeidsgiverModalProps> = ({
 
   const router = useRouter();
 
-  const handleLeggTil = () => {
+  const handleLeggTil = async () => {
     if (arbeidsgiver) {
-      leggtilNyArbeidsgiver(
-        {
-          organisasjonsnummer: arbeidsgiver.organisasjonsnummer,
-          navn: arbeidsgiver.navn,
-        },
-        rekrutteringstreffId,
-      )
-        .then(() => {
-          router.push(
-            `/rekrutteringstreff/${rekrutteringstreffId}?visFane=${RekrutteringstreffTabs.ARBEIDSGIVERE}`,
-          );
-        })
-        .catch((error) => {
-          throw new rekbisError({
-            beskrivelse: 'Feiler når prøver å legge til ny arbeidsgiver:',
-            error,
-          });
+      try {
+        await leggtilNyArbeidsgiver(
+          {
+            organisasjonsnummer: arbeidsgiver.organisasjonsnummer,
+            navn: arbeidsgiver.navn,
+          },
+          rekrutteringstreffId,
+        );
+
+        onLagtTil?.();
+
+        router.push(
+          `/rekrutteringstreff/${rekrutteringstreffId}?visFane=${RekrutteringstreffTabs.ARBEIDSGIVERE}`,
+        );
+      } catch (error) {
+        throw new rekbisError({
+          beskrivelse: 'Feiler når prøver å legge til ny arbeidsgiver:',
+          error,
         });
+      }
       setArbeidsgiver(null);
       setOpen(false);
     }

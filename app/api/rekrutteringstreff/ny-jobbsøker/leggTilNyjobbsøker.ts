@@ -6,11 +6,13 @@ const leggtilNyJobbsøkerEndepunkt = (id: string) => {
   return `/api/rekrutteringstreff/${id}/jobbsoker`;
 };
 
-export const leggtilNyJobbsøker = async (
+export const leggtilNyJobbsøker = (
   leggTilNyJobbsøker: LeggTilNyJobbsøkerDTO,
   id: string,
 ) => {
-  return await postApi(leggtilNyJobbsøkerEndepunkt(id), leggTilNyJobbsøker);
+  const endepunkt = leggtilNyJobbsøkerEndepunkt(id);
+  console.log('leggtilNyJobbsøker mutateid', endepunkt);
+  return postApi(endepunkt, leggTilNyJobbsøker);
 };
 
 export const leggTilNyJobbsøkerMirage = (server: any) => {
@@ -24,7 +26,7 @@ export const LeggTilNyJobbsøkerSchema = z.object({
   fødselsnummer: z.string(),
   fornavn: z.string(),
   etternavn: z.string(),
-  kandidatnummer: z.string().optional(),
+  kandidatnummer: z.string().nullable(),
 });
 
 export type LeggTilNyJobbsøkerDTO = z.infer<typeof LeggTilNyJobbsøkerSchema>;
