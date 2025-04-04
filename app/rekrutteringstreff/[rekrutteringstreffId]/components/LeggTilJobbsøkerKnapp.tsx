@@ -32,9 +32,7 @@ const LeggTilJobbsøkerKnapp: React.FC<LeggTilJobbsøkerKnappProps> = ({
       console.log('[Knapp] Poster ny jobbsøker...');
       await leggtilNyJobbsøker(jobbsøker, rekrutteringstreffId);
       console.log('[Knapp] POST ferdig, refresher liste...');
-      setTimeout(() => {
-        onNyJobbsøkerLagtTil?.();
-      }, 500);
+      await onNyJobbsøkerLagtTil?.();
     } catch (error) {
       throw new rekbisError({
         beskrivelse: 'Feiler når prøver å legge til ny jobbsøker:',

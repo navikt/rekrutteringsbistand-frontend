@@ -29,22 +29,22 @@ const JobbsøkereSchema = z.array(
 );
 
 export type JobbsøkereDTO = z.infer<typeof JobbsøkereSchema>;
-
-const fetchJobbsøkere = getAPIwithSchema(JobbsøkereSchema);
-
+export const fetchJobbsøkere = getAPIwithSchema(JobbsøkereSchema);
 export const useJobbsøkere = (id: string) => {
   const endpoint = jobbsøkereEndepunkt(id);
 
   const swr = useSWR(endpoint, fetchJobbsøkere);
 
   const refresh = async () => {
-    console.log('[useJobbsøkere] Kjører refresh');
-    await mutate(endpoint, undefined, { revalidate: true });
+    console.log('[useJobbsøkere] Revalidating...');
+    await mutate(endpoint, () => fetchJobbsøkere(endpoint), {
+      revalidate: true,
+    });
   };
 
   return {
     ...swr,
-    refresh,
+    refresh, // dette eksponeres som ferdig-innpakket mutate
   };
 };
 
