@@ -30,13 +30,23 @@ const JobbsøkereSchema = z.array(
 
 export type JobbsøkereDTO = z.infer<typeof JobbsøkereSchema>;
 
+const fetchJobbsøkere = getAPIwithSchema(JobbsøkereSchema);
+
 export const useJobbsøkere = (id: string) => {
   const endpoint = jobbsøkereEndepunkt(id);
-  const hook = useSWR(endpoint, getAPIwithSchema(JobbsøkereSchema));
+
+  const swr = useSWR(endpoint, fetchJobbsøkere);
+
+  const refresh = async () => {
+    console.log('[useJobbsøkere] Revalidating...');
+    await mutate(endpoint, () => fetchJobbsøkere(endpoint), {
+      revalidate: true,
+    });
+  };
 
   return {
-    ...hook,
-    mutate: () => mutate(endpoint),
+    ...swr,
+    refresh,
   };
 };
 

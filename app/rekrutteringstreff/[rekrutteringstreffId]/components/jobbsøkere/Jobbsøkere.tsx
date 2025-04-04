@@ -11,7 +11,6 @@ import * as React from 'react';
 const Jobbsøkere = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
 
-  // Hent hele hook-objektet med mutate osv.
   const jobbsøkerHook = useJobbsøkere(rekrutteringstreffId);
 
   return (
@@ -20,7 +19,7 @@ const Jobbsøkere = () => {
         <div className='p-4 flex flex-col gap-4'>
           <div className='flex items-center justify-between'>
             <LeggTilJobbsøkerKnapp
-              onNyJobbsøkerLagtTil={jobbsøkerHook.mutate}
+              onNyJobbsøkerLagtTil={jobbsøkerHook.refresh}
             />
           </div>
 
