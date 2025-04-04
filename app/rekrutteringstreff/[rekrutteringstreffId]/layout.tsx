@@ -1,3 +1,5 @@
+'use client';
+
 import { RekrutteringstreffContextProvider } from './RekrutteringstreffContext';
 
 interface RekrutteringsTreffLayoutProps {
