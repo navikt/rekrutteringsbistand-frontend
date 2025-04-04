@@ -18,6 +18,8 @@ const Jobbsøkere = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const jobbsøkerHook = useJobbsøkere(rekrutteringstreffId);
 
+  console.log('[DEBUG] jobbsøkerHook i jobbsøkere', jobbsøkerHook);
+
   return (
     <div key={jobbsøkerHook.data?.length}>
       <SWRLaster hooks={[jobbsøkerHook]}>
