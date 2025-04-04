@@ -29,7 +29,10 @@ const JobbsøkereSchema = z.array(
 );
 
 export type JobbsøkereDTO = z.infer<typeof JobbsøkereSchema>;
-export const fetchJobbsøkere = getAPIwithSchema(JobbsøkereSchema);
+export const fetchJobbsøkere = async (url: string) => {
+  const data = await getAPIwithSchema(JobbsøkereSchema)(url);
+  return [...data];
+};
 export const useJobbsøkere = (id: string) => {
   const endpoint = jobbsøkereEndepunkt(id);
 
