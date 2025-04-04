@@ -37,7 +37,7 @@ export const useJobbsøkere = (id: string) => {
 
   const refresh = async () => {
     console.log('refresh jobbsøkere', endpoint);
-    await mutate(endpoint);
+    await mutate(endpoint, undefined, { revalidate: true });
     console.log('refresh jobbsøkere ferdig', endpoint);
   };
 
