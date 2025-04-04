@@ -1,3 +1,5 @@
+'use client';
+
 import { RekrutteringstreffTabs } from '../Rekrutteringstreff';
 import { useRekrutteringstreffContext } from '../RekrutteringstreffContext';
 import { ArbeidsgiverDTO } from '@/app/api/pam-search/underenhet/useArbeidsgiver';

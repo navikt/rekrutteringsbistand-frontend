@@ -1,3 +1,5 @@
+'use client';
+
 import ArbeidsgiverOpprettelseKort from '../arbeidsgivere/components/ArbeidsgiverOpprettelseKort';
 import JobbsøkerOpprettelseKort from '../jobbsøkere/components/JobbsøkerOpprettelseKort';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
