@@ -11,6 +11,7 @@ import * as React from 'react';
 const Jobbsøkere = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
 
+  // Hent hele hook-objektet med mutate osv.
   const jobbsøkerHook = useJobbsøkere(rekrutteringstreffId);
 
   return (
@@ -22,25 +23,24 @@ const Jobbsøkere = () => {
               onNyJobbsøkerLagtTil={jobbsøkerHook.mutate}
             />
           </div>
+
           {jobbsøkere.length === 0 ? (
             <BodyShort>Ingen jobbsøkere lagt til</BodyShort>
           ) : (
             <ul>
               {jobbsøkere.map((j, index) => (
                 <li key={index}>
-                  {
-                    <JobbsøkerKort
-                      fornavn={j.fornavn}
-                      etternavn={j.etternavn}
-                      fødselsnummer={j.fødselsnummer}
-                      navKontor='Nav Grorud' // TODO byttes ut når vi får lagt til Nav kontor i backend
-                      veileder={{
-                        navn: 'Veileder Navn',
-                        navIdent: 'Z123456',
-                        navKontor: 'Nav Grorud',
-                      }} // TODO byttes ut når vi får lagt til veileder i backend
-                    />
-                  }
+                  <JobbsøkerKort
+                    fornavn={j.fornavn}
+                    etternavn={j.etternavn}
+                    fødselsnummer={j.fødselsnummer}
+                    navKontor='Nav Grorud' // TODO: Bytt når backend støtter det
+                    veileder={{
+                      navn: 'Veileder Navn',
+                      navIdent: 'Z123456',
+                      navKontor: 'Nav Grorud',
+                    }}
+                  />
                 </li>
               ))}
             </ul>

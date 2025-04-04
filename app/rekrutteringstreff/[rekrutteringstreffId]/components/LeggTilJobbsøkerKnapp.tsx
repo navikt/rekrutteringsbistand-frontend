@@ -18,8 +18,7 @@ const LeggTilJobbsøkerKnapp: React.FC<LeggTilJobbsøkerKnappProps> = ({
   className,
   onNyJobbsøkerLagtTil,
 }) => {
-  const rekrutteringstreffId =
-    useRekrutteringstreffContext().rekrutteringstreffId;
+  const { rekrutteringstreffId } = useRekrutteringstreffContext();
 
   const handleLeggTil = async () => {
     const jobbsøker = {
@@ -31,7 +30,6 @@ const LeggTilJobbsøkerKnapp: React.FC<LeggTilJobbsøkerKnappProps> = ({
 
     try {
       await leggtilNyJobbsøker(jobbsøker, rekrutteringstreffId);
-
       onNyJobbsøkerLagtTil?.();
     } catch (error) {
       throw new rekbisError({
