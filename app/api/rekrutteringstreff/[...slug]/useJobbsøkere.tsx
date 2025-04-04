@@ -36,10 +36,7 @@ export const useJobbsøkere = (id: string) => {
   const swr = useSWR(endpoint, fetchJobbsøkere);
 
   const refresh = async () => {
-    console.log('[useJobbsøkere] Revalidating...');
-    await mutate(endpoint, () => fetchJobbsøkere(endpoint), {
-      revalidate: true,
-    });
+    await mutate(endpoint);
   };
 
   return {
