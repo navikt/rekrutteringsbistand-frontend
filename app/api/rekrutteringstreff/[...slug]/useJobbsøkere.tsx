@@ -35,9 +35,7 @@ export const useJobbsøkere = (id: string) => {
 
   const swr = useSWR(endpoint, fetchJobbsøkere);
 
-  const refresh = async () => {
-    await mutate(endpoint);
-  };
+  const refresh = () => mutate(endpoint);
 
   return {
     ...swr,

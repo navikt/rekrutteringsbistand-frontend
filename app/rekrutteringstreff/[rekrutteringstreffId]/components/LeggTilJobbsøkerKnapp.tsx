@@ -29,7 +29,6 @@ const LeggTilJobbsøkerKnapp: React.FC<LeggTilJobbsøkerKnappProps> = ({
     };
 
     try {
-      console.log('[Knapp] Poster ny jobbsøker...');
       await leggtilNyJobbsøker(jobbsøker, rekrutteringstreffId);
       console.log('[Knapp] POST ferdig, refresher liste...');
       await onNyJobbsøkerLagtTil?.();
