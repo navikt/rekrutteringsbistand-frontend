@@ -43,6 +43,7 @@ export const useFinnArbeidsgiver = (søkeord?: string) =>
   );
 
 export const arbeidsgiverMirage = (server: any) => {
+  faker.seed(1337);
   server.get(PamSearchAPI.internUrl + `/underenhet`, () => {
     return {
       took: 2,
