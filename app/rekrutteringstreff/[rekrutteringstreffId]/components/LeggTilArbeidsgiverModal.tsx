@@ -37,28 +37,28 @@ const LeggTilArbeidsgiverModal: React.FC<LeggTilArbeidsgiverModalProps> = ({
 
   const handleLeggTil = async () => {
     if (arbeidsgiver) {
-      await leggtilNyArbeidsgiver(
-        {
-          organisasjonsnummer: arbeidsgiver.organisasjonsnummer,
-          navn: arbeidsgiver.navn,
-        },
-        rekrutteringstreffId,
-      )
-        .then(async () => {
-          await mutate(mutateId, async () => {
-            return await fetchRekrutteringstreffArbeidsgivere(mutateId);
-          });
+      try {
+        await leggtilNyArbeidsgiver(
+          {
+            organisasjonsnummer: arbeidsgiver.organisasjonsnummer,
+            navn: arbeidsgiver.navn,
+          },
+          rekrutteringstreffId,
+        );
 
-          router.push(
-            `/rekrutteringstreff/${rekrutteringstreffId}?visFane=${RekrutteringstreffTabs.ARBEIDSGIVERE}`,
-          );
-        })
-        .catch((error) => {
-          throw new rekbisError({
-            beskrivelse: 'Feiler når prøver å legge til ny arbeidsgiver:',
-            error,
-          });
+        await mutate(mutateId, async () => {
+          return await fetchRekrutteringstreffArbeidsgivere(mutateId);
         });
+
+        router.push(
+          `/rekrutteringstreff/${rekrutteringstreffId}?visFane=${RekrutteringstreffTabs.ARBEIDSGIVERE}`,
+        );
+      } catch (error) {
+        throw new rekbisError({
+          beskrivelse: 'Feiler når prøver å legge til ny arbeidsgiver:',
+          error,
+        });
+      }
       setArbeidsgiver(null);
       setOpen(false);
     }
