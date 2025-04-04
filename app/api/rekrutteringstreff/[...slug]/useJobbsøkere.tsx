@@ -43,6 +43,7 @@ export const useJobbsøkere = (id: string) => {
     await mutate(endpoint, async () => {
       return await fetchJobbsøkere(endpoint);
     });
+
     console.log('refresh jobbsøkere ferdig', endpoint);
   };
 
