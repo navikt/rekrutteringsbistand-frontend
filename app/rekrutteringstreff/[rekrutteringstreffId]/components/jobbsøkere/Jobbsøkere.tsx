@@ -9,6 +9,12 @@ import { BodyShort } from '@navikt/ds-react';
 import * as React from 'react';
 
 const Jobbsøkere = () => {
+  console.log('[DEBUG] Jobbsøkere kjører som klient – tidspunkt:', new Date());
+
+  React.useEffect(() => {
+    console.log('[DEBUG] Jobbsøkere useEffect – kjører kun på klient');
+  }, []);
+
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const jobbsøkerHook = useJobbsøkere(rekrutteringstreffId);
 

@@ -41,7 +41,7 @@ export const useJobbsøkere = (id: string) => {
 
   return {
     ...swr,
-    refresh, // dette eksponeres som ferdig-innpakket mutate
+    refresh,
   };
 };
 
