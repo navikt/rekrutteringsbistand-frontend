@@ -29,11 +29,11 @@ const LeggTilJobbsøkerKnapp: React.FC<LeggTilJobbsøkerKnappProps> = ({
     };
 
     try {
+      console.log('[Knapp] Poster ny jobbsøker...');
       await leggtilNyJobbsøker(jobbsøker, rekrutteringstreffId);
-      console.log('Ny jobbsøker lagt til – kjører mutate!');
-      onNyJobbsøkerLagtTil?.();
+      console.log('[Knapp] POST ferdig, refresher liste...');
+      await onNyJobbsøkerLagtTil?.();
     } catch (error) {
-      console.error('Feil ved post:', error);
       throw new rekbisError({
         beskrivelse: 'Feiler når prøver å legge til ny jobbsøker:',
         error,
