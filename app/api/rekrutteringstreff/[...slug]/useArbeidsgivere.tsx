@@ -24,10 +24,14 @@ export type ArbeidsgivereDTO = z.infer<
   typeof RekrutteringstreffArbeidsgivereSchema
 >;
 
+export const fetchRekrutteringstreffArbeidsgivere = getAPIwithSchema(
+  RekrutteringstreffArbeidsgivereSchema,
+);
+
 export const useRekrutteringstreffArbeidsgivere = (id: string) =>
   useSWRImmutable(
     rekrutteringstreffArbeidsgivereEndepunkt(id),
-    getAPIwithSchema(RekrutteringstreffArbeidsgivereSchema),
+    fetchRekrutteringstreffArbeidsgivere,
   );
 
 export const rekruteringstreffArbeidsgivereMirage = (server: any) => {

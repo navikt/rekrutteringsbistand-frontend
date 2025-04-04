@@ -32,6 +32,8 @@ const ArbeidsgiverSchemaDTO = z.array(ArbeidsgiverSchema);
 
 export type ArbeidsgiverDTO = z.infer<typeof ArbeidsgiverSchema>;
 
+export const fetchArbeidsgivere = getApiWithSchemaEs(ArbeidsgiverSchemaDTO);
+
 export const useFinnArbeidsgiver = (søkeord?: string) =>
   useSWRImmutable(
     søkeord
@@ -39,7 +41,7 @@ export const useFinnArbeidsgiver = (søkeord?: string) =>
           url: finnArbeidsgiverEndepunkt(søkeord),
         }
       : null,
-    (data) => getApiWithSchemaEs(ArbeidsgiverSchemaDTO)(data),
+    (data) => fetchArbeidsgivere(data),
   );
 
 export const arbeidsgiverMirage = (server: any) => {

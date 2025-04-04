@@ -53,7 +53,6 @@ const LeggTilJobbsøkerKnapp: React.FC<LeggTilJobbsøkerKnappProps> = ({
         );
       }
     } catch (error) {
-      console.error('Feil ved leggtilNyJobbsøker:', error);
       throw new rekbisError({
         beskrivelse: 'Feiler når prøver å legge til ny jobbsøker:',
         error,

@@ -4,7 +4,10 @@ import { RekrutteringstreffTabs } from '../Rekrutteringstreff';
 import { useRekrutteringstreffContext } from '../RekrutteringstreffContext';
 import { ArbeidsgiverDTO } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
 import { leggtilNyArbeidsgiver } from '@/app/api/rekrutteringstreff/[...slug]/ny-arbeidsgiver/leggTilNyArbeidsgiver';
-import { rekrutteringstreffArbeidsgivereEndepunkt } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
+import {
+  fetchRekrutteringstreffArbeidsgivere,
+  rekrutteringstreffArbeidsgivereEndepunkt,
+} from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
 import VelgArbeidsgiver from '@/app/stilling/ny-stilling/components/VelgArbeidsgiver';
 import { rekbisError } from '@/util/rekbisError';
 import { PlusIcon } from '@navikt/aksel-icons';
@@ -29,9 +32,12 @@ const LeggTilArbeidsgiverModal: React.FC<LeggTilArbeidsgiverModalProps> = ({
 
   const router = useRouter();
 
-  const handleLeggTil = () => {
+  const mutateId =
+    rekrutteringstreffArbeidsgivereEndepunkt(rekrutteringstreffId);
+
+  const handleLeggTil = async () => {
     if (arbeidsgiver) {
-      leggtilNyArbeidsgiver(
+      await leggtilNyArbeidsgiver(
         {
           organisasjonsnummer: arbeidsgiver.organisasjonsnummer,
           navn: arbeidsgiver.navn,
@@ -39,13 +45,10 @@ const LeggTilArbeidsgiverModal: React.FC<LeggTilArbeidsgiverModalProps> = ({
         rekrutteringstreffId,
       )
         .then(async () => {
-          await mutate(
-            rekrutteringstreffArbeidsgivereEndepunkt(rekrutteringstreffId),
-            null,
-            {
-              revalidate: true,
-            },
-          );
+          await mutate(mutateId, async () => {
+            return await fetchRekrutteringstreffArbeidsgivere(mutateId);
+          });
+
           router.push(
             `/rekrutteringstreff/${rekrutteringstreffId}?visFane=${RekrutteringstreffTabs.ARBEIDSGIVERE}`,
           );
