@@ -40,7 +40,6 @@ const RekrutteringsbistandProvider: React.FC<
           revalidateOnMount: true,
           dedupingInterval: 0,
           refreshInterval: 0,
-          provider: () => new Map(), // Forces a new cache for each page load
         }}
       >
         <ErrorBoundary>
