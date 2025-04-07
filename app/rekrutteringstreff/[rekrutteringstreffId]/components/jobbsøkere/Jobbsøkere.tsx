@@ -18,7 +18,7 @@ const Jobbsøkere = () => {
         <div className='p-4 flex flex-col gap-4'>
           <div className='flex items-center justify-between'>
             <LeggTilJobbsøkerKnapp
-              onNyJobbsøkerLagtTil={jobbsøkerHook.refresh}
+              onNyJobbsøkerLagtTil={jobbsøkerHook.mutate}
             />
           </div>
 
