@@ -6,7 +6,7 @@
 import { RekrutteringstreffAPI } from '../../api-routes';
 import { getAPIwithSchema } from '../../fetcher';
 import { jobbsøkereMock } from './mocks/jobbsøkereMock';
-import useSWR, { mutate } from 'swr';
+import useSWR from 'swr';
 import { z } from 'zod';
 
 export const jobbsøkereEndepunkt = (id: string) =>
@@ -29,22 +29,9 @@ const JobbsøkereSchema = z.array(
 );
 
 export type JobbsøkereDTO = z.infer<typeof JobbsøkereSchema>;
-export const fetchJobbsøkere = async (url: string) => {
-  return await getAPIwithSchema(JobbsøkereSchema)(url);
-};
+
 export const useJobbsøkere = (id: string) => {
-  const endpoint = jobbsøkereEndepunkt(id);
-
-  const swr = useSWR(endpoint, fetchJobbsøkere);
-
-  const refresh = async () => {
-    await mutate(endpoint, fetchJobbsøkere(endpoint));
-  };
-
-  return {
-    ...swr,
-    refresh,
-  };
+  return useSWR(jobbsøkereEndepunkt(id), getAPIwithSchema(JobbsøkereSchema));
 };
 
 export const jobbsøkereMirage = (server: any) => {

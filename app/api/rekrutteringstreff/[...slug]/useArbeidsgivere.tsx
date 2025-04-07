@@ -24,10 +24,6 @@ export type ArbeidsgivereDTO = z.infer<
   typeof RekrutteringstreffArbeidsgivereSchema
 >;
 
-export const fetchRekrutteringstreffArbeidsgivere = async (url: string) => {
-  return await getAPIwithSchema(RekrutteringstreffArbeidsgivereSchema)(url);
-};
-
 export const useRekrutteringstreffArbeidsgivere = (id: string) => {
   return useSWR(
     rekrutteringstreffArbeidsgivereEndepunkt(id),
