@@ -31,6 +31,7 @@ const Jobbsøkere = () => {
                   <JobbsøkerKort
                     fornavn={j.fornavn}
                     etternavn={j.etternavn}
+                    kandidatnummer={j.kandidatnummer}
                     fødselsnummer={j.fødselsnummer}
                     navKontor='Nav Grorud' // TODO: Bytt når backend støtter det
                     veileder={{
