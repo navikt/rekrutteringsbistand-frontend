@@ -6,7 +6,7 @@
 import { RekrutteringstreffAPI } from '../../api-routes';
 import { getAPIwithSchema } from '../../fetcher';
 import { arbeidsgivereMock } from './mocks/arbeidsgivereMock';
-import useSWR, { mutate } from 'swr';
+import useSWR from 'swr';
 import { z } from 'zod';
 
 export const rekrutteringstreffArbeidsgivereEndepunkt = (id: string) =>
@@ -29,18 +29,10 @@ export const fetchRekrutteringstreffArbeidsgivere = async (url: string) => {
 };
 
 export const useRekrutteringstreffArbeidsgivere = (id: string) => {
-  const endpoint = rekrutteringstreffArbeidsgivereEndepunkt(id);
-
-  const swr = useSWR(endpoint, fetchRekrutteringstreffArbeidsgivere);
-
-  const refresh = async () => {
-    await mutate(endpoint, fetchRekrutteringstreffArbeidsgivere(endpoint));
-  };
-
-  return {
-    ...swr,
-    refresh,
-  };
+  return useSWR(
+    rekrutteringstreffArbeidsgivereEndepunkt(id),
+    getAPIwithSchema(RekrutteringstreffArbeidsgivereSchema),
+  );
 };
 
 export const rekruteringstreffArbeidsgivereMirage = (server: any) => {

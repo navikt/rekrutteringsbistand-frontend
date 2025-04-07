@@ -21,7 +21,7 @@ const RekrutteringstreffArbeidsgivere = () => {
           <div className='flex items-center justify-between'>
             <LeggTilArbeidsgiverModal
               leggTilKnappTekst='Legg til arbeidsgiver'
-              onLagtTil={arbeidsgivereHook.refresh}
+              onLagtTil={arbeidsgivereHook.mutate}
             />
           </div>
           {arbeidsgivere.length === 0 ? (
