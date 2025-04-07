@@ -25,10 +25,7 @@ export type ArbeidsgivereDTO = z.infer<
 >;
 
 export const fetchRekrutteringstreffArbeidsgivere = async (url: string) => {
-  const data = await getAPIwithSchema(RekrutteringstreffArbeidsgivereSchema)(
-    url,
-  );
-  return [...data];
+  return await getAPIwithSchema(RekrutteringstreffArbeidsgivereSchema)(url);
 };
 
 export const useRekrutteringstreffArbeidsgivere = (id: string) => {
@@ -37,11 +34,7 @@ export const useRekrutteringstreffArbeidsgivere = (id: string) => {
   const swr = useSWR(endpoint, fetchRekrutteringstreffArbeidsgivere);
 
   const refresh = async () => {
-    console.log('refresh arbeidsgivere', endpoint);
-    await mutate(endpoint, async () => {
-      return await fetchRekrutteringstreffArbeidsgivere(endpoint);
-    });
-    console.log('refresh arbeidsgivere ferdig', endpoint);
+    await mutate(endpoint, fetchRekrutteringstreffArbeidsgivere(endpoint));
   };
 
   return {
