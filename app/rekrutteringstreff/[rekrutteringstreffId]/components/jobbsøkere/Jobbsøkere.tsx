@@ -3,7 +3,6 @@
 import { useRekrutteringstreffContext } from '../../RekrutteringstreffContext';
 import LeggTilJobbsøkerKnapp from '../LeggTilJobbsøkerKnapp';
 import JobbsøkerKort from './components/JobbsøkerKort';
-import JobbsøkerTeller from './components/jobbsøkerTeller';
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
 import SWRLaster from '@/app/components/SWRLaster';
 import { BodyShort } from '@navikt/ds-react';
@@ -15,7 +14,6 @@ const Jobbsøkere = () => {
 
   return (
     <div>
-      <JobbsøkerTeller />
       <SWRLaster hooks={[jobbsøkerHook]}>
         {(jobbsøkere) => (
           <div className='p-4 flex flex-col gap-4'>
