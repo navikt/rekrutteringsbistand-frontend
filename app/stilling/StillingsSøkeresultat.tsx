@@ -30,7 +30,13 @@ const StillingsSøkeresultat: React.FC<StillingsSøkeresultatProps> = ({
   const stillingssøkHook = useStillingssøk(filter, ident, filter.formidlinger);
 
   const antallVisning = (total: number) => {
-    const treffFra = regnUtFørsteTreffFra(filter.side, maksAntallTreffPerSøk);
+    if (!total) {
+      return null;
+    }
+    const treffFra = regnUtFørsteTreffFra(
+      filter.side ?? 0,
+      maksAntallTreffPerSøk ?? 0,
+    );
     const fraAntall = treffFra + 1;
 
     const tilAntall = treffFra + maksAntallTreffPerSøk;
@@ -42,6 +48,7 @@ const StillingsSøkeresultat: React.FC<StillingsSøkeresultatProps> = ({
       </Heading>
     );
   };
+
   return (
     <SWRLaster hooks={[stillingssøkHook]}>
       {(data) => {
