@@ -122,7 +122,9 @@ export function generateElasticSearchQuery(
       ...valgteKommuner,
     ];
 
-    valgteFilter.push(esFylkerOgKommuner(valgteFylkerOgKommuner));
+    if (valgteFylkerOgKommuner?.length) {
+      valgteFilter.push(esFylkerOgKommuner(valgteFylkerOgKommuner));
+    }
   }
 
   const byggQuery = {

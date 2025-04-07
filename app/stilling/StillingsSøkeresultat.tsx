@@ -59,7 +59,7 @@ const StillingsSøkeresultat: React.FC<StillingsSøkeresultatProps> = ({
               {!erFormidling && <LagreStandardsøk />}
             </div>
             <div className='my-4 flex items-center justify-between'>
-              {antallVisning(data.hits.total.value)}
+              {antallVisning(data.hits.total?.value)}
               <StillingsSøkSortering />
             </div>
             {data.hits.hits.map((hit) => (
@@ -70,7 +70,7 @@ const StillingsSøkeresultat: React.FC<StillingsSøkeresultatProps> = ({
               />
             ))}
             <StillingsSøkPaginering
-              totaltAntallTreff={data.hits.total.value ?? 0}
+              totaltAntallTreff={data.hits.total?.value ?? 0}
             />
           </>
         );
