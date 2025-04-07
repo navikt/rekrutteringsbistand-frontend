@@ -1,8 +1,11 @@
 'use client';
 
+import { useRekrutteringstreffContext } from './RekrutteringstreffContext';
 import RekrutteringstreffArbeidsgivere from './components/arbeidsgivere/Arbeidsgivere';
 import Jobbsøkere from './components/jobbsøkere/Jobbsøkere';
 import OmTreffet from './components/om-treffet/OmTreffet';
+import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
+import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
 import { Box, Tabs } from '@navikt/ds-react';
 import { useQueryState } from 'nuqs';
 import * as React from 'react';
@@ -18,6 +21,12 @@ const Rekrutteringstreff: React.FC = () => {
     defaultValue: RekrutteringstreffTabs.OM_TREFFET,
     clearOnDefault: true,
   });
+  const { rekrutteringstreffId } = useRekrutteringstreffContext();
+
+  const { data: jobbsøkere } = useJobbsøkere(rekrutteringstreffId);
+
+  const { data: arbeidsgivere } =
+    useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
 
   return (
     <Box.New>
@@ -29,11 +38,11 @@ const Rekrutteringstreff: React.FC = () => {
           />
           <Tabs.Tab
             value={RekrutteringstreffTabs.JOBBSØKERE}
-            label='Jobbsøkere'
+            label={`Jobbsøkere(${jobbsøkere?.length ?? 0})`}
           />
           <Tabs.Tab
             value={RekrutteringstreffTabs.ARBEIDSGIVERE}
-            label='Arbeidsgivere'
+            label={`Arbeidsgivere(${arbeidsgivere?.length ?? 0})`}
           />
         </Tabs.List>
 

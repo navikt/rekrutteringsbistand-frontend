@@ -11,7 +11,6 @@ export const leggtilNyJobbsøker = (
   id: string,
 ) => {
   const endepunkt = leggtilNyJobbsøkerEndepunkt(id);
-  console.log('leggtilNyJobbsøker mutateid', endepunkt);
   return postApi(endepunkt, leggTilNyJobbsøker);
 };
 
