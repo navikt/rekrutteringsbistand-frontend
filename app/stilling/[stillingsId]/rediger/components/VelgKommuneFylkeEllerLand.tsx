@@ -106,34 +106,31 @@ const VelgKommuneFylkeEllerLand: React.FC<VelgKommuneFylkeEllerLandProps> = ({
   };
 
   return (
-    <div>
-      <UNSAFE_Combobox
-        isListOpen={isListOpen}
-        className='w-fit'
-        disabled={geografi.isLoading}
-        toggleListButton={false}
-        selectedOptions={valgteVerdier.map((v) =>
-          v.municipal
-            ? `${storForbokstavString(v.municipal)} (kommune)`
-            : v.county
-              ? `${storForbokstavString(v.county)} (fylke)`
-              : v.country
-                ? `${storForbokstavString(v.country)} (land)`
-                : '',
-        )}
-        onChange={(value) => {
-          setIsListOpen(value.length > 0);
-          setSøkeTekst(value);
-        }}
-        onToggleSelected={(option, isSelected) => {
-          handleValgtVerdi(option, isSelected);
-        }}
-        label=''
-        description='Du kan velge flere kommuner, fylker eller land'
-        options={muligeValg}
-        isMultiSelect
-      />
-    </div>
+    <UNSAFE_Combobox
+      isListOpen={isListOpen}
+      disabled={geografi.isLoading}
+      toggleListButton={false}
+      selectedOptions={valgteVerdier.map((v) =>
+        v.municipal
+          ? `${storForbokstavString(v.municipal)} (kommune)`
+          : v.county
+            ? `${storForbokstavString(v.county)} (fylke)`
+            : v.country
+              ? `${storForbokstavString(v.country)} (land)`
+              : '',
+      )}
+      onChange={(value) => {
+        setIsListOpen(value.length > 0);
+        setSøkeTekst(value);
+      }}
+      onToggleSelected={(option, isSelected) => {
+        handleValgtVerdi(option, isSelected);
+      }}
+      label=''
+      description='Du kan velge flere kommuner, fylker eller land'
+      options={muligeValg}
+      isMultiSelect
+    />
   );
 };
 

@@ -2,7 +2,7 @@
 
 import { getMiljø, Miljø } from '../../util/miljø';
 import { rekbisError } from '../../util/rekbisError';
-import { DecoratorDTO } from '../api/decorator/decorator.dto';
+import { DecoratorDTO } from '../api/decorator/useDecoratorData';
 import Header from '../components/header/Header';
 import { Roller } from '../components/tilgangskontroll/roller';
 import { Varsling } from '../components/varsling/Varsling';

@@ -1,6 +1,7 @@
 'use client';
 
 import { brukerMirage } from '../app/api/bruker/useBruker';
+import { mirageContext } from '../app/api/context/mirageContext';
 import { decoratorDataMirage } from '../app/api/decorator/useDecoratorData';
 import { foresporselOmDelingAvCVMirage } from '../app/api/foresporsel-om-deling-av-cv/foresporsler/[slug]/useForespurteOmDelingAvCv';
 import { foresporselOmDelingAvCVStatistikkMirage } from '../app/api/foresporsel-om-deling-av-cv/statistikk/useForesporselOmdelingAvCV';
@@ -48,6 +49,7 @@ export function makeServer({ environment = 'test' } = {}) {
 
     routes() {
       this.logging = false;
+      mirageContext(this);
       arenaKandidatnrMirage(this);
       brukerMirage(this);
       brukerStandardSøkMirage(this);

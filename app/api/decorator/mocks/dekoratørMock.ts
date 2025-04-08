@@ -1,4 +1,4 @@
-import { DecoratorDTO } from '../decorator.dto';
+import { DecoratorDTO } from '../useDecoratorData';
 
 export const decoratorMock: DecoratorDTO = {
   enheter: [

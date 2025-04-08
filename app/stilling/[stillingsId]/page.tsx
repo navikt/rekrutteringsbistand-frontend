@@ -60,7 +60,7 @@ export default function StillingSide() {
                 {kandidatlisteInfo?.kandidatlisteId && erEier && (
                   <Tabs.Tab
                     value={StillingFane.KANDIDATER}
-                    label='Kandidater'
+                    label={`Kandidater (${kandidatlisteInfo?.antallKandidater ?? '-'})`}
                   />
                 )}
               </TilgangskontrollForInnhold>
