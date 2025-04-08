@@ -34,6 +34,7 @@ import { rekruteringstreffArbeidsgivereMirage } from '@/app/api/rekrutteringstre
 import { jobbsøkereMirage } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
 import { leggTilNyJobbsøkerMirage } from '@/app/api/rekrutteringstreff/ny-jobbsøker/leggTilNyjobbsøker';
 import { opprettNyttRekrutteringstreffMirage } from '@/app/api/rekrutteringstreff/nytt-rekrutteringstreff/opprettNyttRekrutteringstreff';
+import { slettRekrutteringstreffMirage } from '@/app/api/rekrutteringstreff/slett-rekrutteringstreff/slettRekrutteringstreff';
 import { rekrutteringstreffMirage } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { rekrutteringstreffOversiktMirage } from '@/app/api/rekrutteringstreff/useRekrutteringstreffOversikt';
 import { createServer, Model } from 'miragejs';
@@ -83,6 +84,7 @@ export function makeServer({ environment = 'test' } = {}) {
       leggTilNyJobbsøkerMirage(this);
       jobbsøkereMirage(this);
       rekruteringstreffArbeidsgivereMirage(this);
+      slettRekrutteringstreffMirage(this);
       // stillingssøk mock kan disables ved ES søk
       stillingssøkMirage(this);
       this.passthrough('*');

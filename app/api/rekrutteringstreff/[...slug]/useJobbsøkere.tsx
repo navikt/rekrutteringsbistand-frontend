@@ -21,7 +21,6 @@ const JobbsøkereSchema = z.array(
     navkontor: z.string(),
     veilederNavn: z.string(),
     veilederNavIdent: z.string(),
-    status: z.string(),
   }),
 );
 

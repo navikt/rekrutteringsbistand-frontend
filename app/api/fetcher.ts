@@ -216,3 +216,30 @@ export const postApiWithSchema = <T>(
     return validerSchema(schema, data);
   };
 };
+
+export const deleteApi = async (url: string) => {
+  const response = await fetch(basePath + url, {
+    method: 'DELETE',
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    const contentType = response.headers.get('content-type');
+    let errorDetails;
+
+    if (contentType?.includes('application/json')) {
+      const errorData = await response.json();
+      errorDetails = JSON.stringify(errorData);
+    } else {
+      errorDetails = await response.text();
+    }
+
+    throw new rekbisError({
+      url: response.url,
+      statuskode: response.status,
+      stack: errorDetails,
+    });
+  }
+
+  return response.ok;
+};

@@ -1,5 +1,7 @@
 'use client';
 
+import { useRekrutteringstreffContext } from '../../RekrutteringstreffContext';
+import SlettRekrutteringstreffModal from '../SlettRekrutteringstreffModal';
 import ArbeidsgiverOpprettelseKort from '../arbeidsgivere/components/ArbeidsgiverOpprettelseKort';
 import JobbsøkerOpprettelseKort from '../jobbsøkere/components/JobbsøkerOpprettelseKort';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
@@ -9,11 +11,10 @@ import {
   datoFormatterer,
 } from '@/app/rekrutteringstreff/RekrutteringstreffSøk';
 import { Heading, Table } from '@navikt/ds-react';
-import { useParams } from 'next/navigation';
 import * as React from 'react';
 
 const OmTreffet = () => {
-  const { rekrutteringstreffId } = useParams();
+  const { rekrutteringstreffId } = useRekrutteringstreffContext();
 
   const rekrutteringstreffHook = useRekrutteringstreff(
     rekrutteringstreffId as string,
@@ -70,6 +71,10 @@ const OmTreffet = () => {
           );
         }}
       </SWRLaster>
+
+      <div className='mt-4'>
+        <SlettRekrutteringstreffModal />
+      </div>
 
       <div className='mt-4 flex flex-col gap-16 md:flex-row'>
         <ArbeidsgiverOpprettelseKort />
