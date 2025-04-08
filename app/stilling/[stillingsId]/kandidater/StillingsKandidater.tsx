@@ -108,7 +108,7 @@ const StillingsKandidater: React.FC = () => {
         >
           {Object.entries(aktivitetTilTekst).map(([key, value]) => (
             <Checkbox key={key} value={key}>
-              {storForbokstavString(value ?? '').replace(/_/g, ' ')}
+              {value}
             </Checkbox>
           ))}
         </CheckboxGroup>
@@ -119,7 +119,7 @@ const StillingsKandidater: React.FC = () => {
         >
           {Object.entries(varselTilTekst).map(([key, value]) => (
             <Checkbox key={key} value={key}>
-              {storForbokstavString(value ?? '').replace(/_/g, ' ')}
+              {value}
             </Checkbox>
           ))}
         </CheckboxGroup>
@@ -190,6 +190,13 @@ const StillingsKandidater: React.FC = () => {
                         fjernAllMarkering={() => setMarkerteKandidater([])}
                       />
                       <DelMedArbeidsgiver
+                        eposter={
+                          stillingsData.stilling.contactList
+                            ?.map((kontakt) => kontakt.email)
+                            .filter(
+                              (email): email is string => email !== null,
+                            ) || []
+                        }
                         stillingsId={stillingsData.stilling.uuid}
                         stillingTittel={stillingsData.stilling.title}
                         markerteKandidater={markerteKandidater}

@@ -127,7 +127,7 @@ const VelgArbeidssted: React.FC<VelgArbeidsstedProps> = ({ feltNavn }) => {
       )}
 
       {visLokasjon && (
-        <div className='my-4'>
+        <div className='my-4 '>
           <VelgKommuneFylkeEllerLand
             lokasjoner={lokasjoner}
             leggTilLokasjon={(lokasjon) => leggTilLokasjon(lokasjon)}

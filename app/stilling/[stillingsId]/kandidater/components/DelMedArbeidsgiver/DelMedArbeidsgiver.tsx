@@ -26,6 +26,7 @@ export interface DelMedArbeidsgiverProps {
   kandidatliste: kandidatlisteSchemaDTO;
   stillingTittel: string;
   stillingsId: string;
+  eposter: string[];
 }
 
 const DelMedArbeidsgiver: React.FC<DelMedArbeidsgiverProps> = ({
@@ -33,13 +34,14 @@ const DelMedArbeidsgiver: React.FC<DelMedArbeidsgiverProps> = ({
   kandidatliste,
   stillingTittel,
   stillingsId,
+  eposter,
 }) => {
   const { track } = useUmami();
   const [visModal, setVisModal] = React.useState(false);
   const { valgtNavKontor } = useApplikasjonContext();
   const forespurteKandidaterHook = useForespurteOmDelingAvCv(stillingsId);
 
-  const [epost, setEpost] = React.useState<string[]>([]);
+  const [epost, setEpost] = React.useState<string[]>(eposter);
 
   const onDelMedArbeidsgiver = (kandidatnummerListe: string[]) => {
     postDelMedArbeidsgiver({
@@ -68,7 +70,7 @@ const DelMedArbeidsgiver: React.FC<DelMedArbeidsgiverProps> = ({
         onClose={() => setVisModal(false)}
         aria-label='Del kandidater med arbeidsgiver'
         header={{
-          heading: `Delmed arbeidsgiver`,
+          heading: `Del med arbeidsgiver`,
         }}
       >
         <SWRLaster hooks={[forespurteKandidaterHook]}>
@@ -80,7 +82,7 @@ const DelMedArbeidsgiver: React.FC<DelMedArbeidsgiverProps> = ({
 
               const svartJa = forespørselCvForKandidat
                 ? forespørselCvForKandidat?.some(
-                    (forespurt) => forespurt.svar?.harSvartJa !== true,
+                    (forespurt) => forespurt.svar?.harSvartJa === true,
                   )
                 : null;
 
@@ -97,8 +99,8 @@ const DelMedArbeidsgiver: React.FC<DelMedArbeidsgiverProps> = ({
                     <Alert variant='warning' size='small' className='mb-4'>
                       <BodyLong>
                         {harSvartJa.length === 0
-                          ? 'Kandidaten '
-                          : `${harSvartJa.length} av kandidatene har `}
+                          ? 'Kandidaten(e) '
+                          : `${markerteKandidater.length - harSvartJa.length} av kandidatene har `}
                         har ikke svart eller svart nei på om CV-en kan deles.
                       </BodyLong>
                     </Alert>
@@ -136,8 +138,8 @@ const DelMedArbeidsgiver: React.FC<DelMedArbeidsgiverProps> = ({
                                         (kandidat) =>
                                           kandidat.fodselsnr === fodselsnr,
                                       )
-                                        ? 'Nei'
-                                        : 'Ja'}
+                                        ? 'Ja'
+                                        : 'Nei'}
                                     </Table.DataCell>
                                   </Table.Row>
                                 );
@@ -156,7 +158,7 @@ const DelMedArbeidsgiver: React.FC<DelMedArbeidsgiverProps> = ({
                     className='my-4'
                     allowNewValues
                     label='E-post til arbeidsgiver'
-                    options={[]}
+                    options={eposter}
                     shouldAutocomplete={false}
                     isMultiSelect
                     onToggleSelected={(val, selected) => {
