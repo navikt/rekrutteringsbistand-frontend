@@ -1,6 +1,7 @@
 import { StillingsDataForm } from '../../redigerFormType.zod';
 import { DatoVelger } from '../DatoVelger';
 import { Checkbox, ErrorMessage, Heading } from '@navikt/ds-react';
+import { addWeeks, format } from 'date-fns';
 import * as React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
@@ -65,9 +66,12 @@ const VelgOppstartOgFrist: React.FC<VelgOppstartOgFristProps> = ({
             <DatoVelger
               disabled={watch('praktiskInfo.søknadsfristSnarest')}
               valgtDato={watch('praktiskInfo.søknadsfrist')}
-              setDato={(val) =>
-                val ? setValue('praktiskInfo.søknadsfrist', val) : null
-              }
+              setDato={(val) => {
+                if (val) {
+                  setValue('praktiskInfo.søknadsfrist', val);
+                  setValue('innspurt.avsluttes', val);
+                }
+              }}
             />
             <Controller
               key='søknadsfrist'
@@ -79,6 +83,12 @@ const VelgOppstartOgFrist: React.FC<VelgOppstartOgFristProps> = ({
                     checked={field.value}
                     onChange={(e) => {
                       field.onChange(e.target.checked);
+                      if (e.target.checked) {
+                        setValue(
+                          'innspurt.avsluttes',
+                          format(addWeeks(new Date(), 3), 'dd.MM.yyyy'),
+                        );
+                      }
                     }}
                   >
                     Snarest
