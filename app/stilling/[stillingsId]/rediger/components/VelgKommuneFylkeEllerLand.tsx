@@ -57,9 +57,10 @@ const VelgKommuneFylkeEllerLand: React.FC<VelgKommuneFylkeEllerLandProps> = ({
   }, [geografi.data, søkeTekst]);
 
   const handleValgtVerdi = (option: string, isSelected: boolean) => {
-    const parts = option.split(' (');
-    const navn = parts[0];
-    const type = parts[1].replace(')', '');
+    const typeMatch = option.match(/\(([^)]+)\)$/);
+    const type = typeMatch ? typeMatch[1] : '';
+
+    const navn = option.replace(/\s*\([^)]*\)$/, '').trim();
 
     const lokasjon = geografi.data
       ?.filter((g) => g.type.toLowerCase() === type.toLowerCase())
@@ -77,47 +78,62 @@ const VelgKommuneFylkeEllerLand: React.FC<VelgKommuneFylkeEllerLandProps> = ({
         country: lokasjon.lokasjon.land,
       });
     } else {
-      const id = valgteVerdier.find(
-        (v) =>
-          // Fjern i rekkefølge kommune, fylke, land
-          v.municipal === lokasjon?.lokasjon.kommune ||
-          v.county === lokasjon?.lokasjon.fylke ||
-          v.country === lokasjon?.lokasjon.land,
-      )?.id;
+      const valgtVerdi = valgteVerdier.find((v) => {
+        const isMunicipal =
+          lokasjon?.lokasjon.kommune &&
+          v.municipal === lokasjon.lokasjon.kommune;
+        const isCounty =
+          lokasjon?.lokasjon.fylke && v.county === lokasjon.lokasjon.fylke;
+        const isCountry =
+          lokasjon?.lokasjon.land && v.country === lokasjon.lokasjon.land;
 
-      if (id) {
-        fjernLokasjonId(id);
+        // Match based on the specific type found in the option
+        if (type.toLowerCase() === 'kommune') {
+          return isMunicipal;
+        } else if (type.toLowerCase() === 'fylke') {
+          return isCounty;
+        } else if (type.toLowerCase() === 'land') {
+          return isCountry;
+        }
+
+        return false;
+      });
+
+      if (valgtVerdi?.id) {
+        fjernLokasjonId(valgtVerdi.id);
       }
     }
   };
 
   return (
-    <UNSAFE_Combobox
-      isListOpen={isListOpen}
-      disabled={geografi.isLoading}
-      className='mt-4'
-      toggleListButton={false}
-      selectedOptions={valgteVerdier.map((v) =>
-        v.municipal
-          ? `${storForbokstavString(v.municipal)} (kommune)`
-          : v.county
-            ? `${storForbokstavString(v.county)} (fylke)`
-            : v.country
-              ? `${storForbokstavString(v.country)} (land)`
-              : '',
-      )}
-      onChange={(value) => {
-        setIsListOpen(value.length > 0);
-        setSøkeTekst(value);
-      }}
-      onToggleSelected={(option, isSelected) => {
-        handleValgtVerdi(option, isSelected);
-      }}
-      label=''
-      description='Du kan velge flere kommuner, fylker eller land'
-      options={muligeValg}
-      isMultiSelect
-    />
+    <div>
+      <UNSAFE_Combobox
+        isListOpen={isListOpen}
+        className='w-fit'
+        disabled={geografi.isLoading}
+        toggleListButton={false}
+        selectedOptions={valgteVerdier.map((v) =>
+          v.municipal
+            ? `${storForbokstavString(v.municipal)} (kommune)`
+            : v.county
+              ? `${storForbokstavString(v.county)} (fylke)`
+              : v.country
+                ? `${storForbokstavString(v.country)} (land)`
+                : '',
+        )}
+        onChange={(value) => {
+          setIsListOpen(value.length > 0);
+          setSøkeTekst(value);
+        }}
+        onToggleSelected={(option, isSelected) => {
+          handleValgtVerdi(option, isSelected);
+        }}
+        label=''
+        description='Du kan velge flere kommuner, fylker eller land'
+        options={muligeValg}
+        isMultiSelect
+      />
+    </div>
   );
 };
 
