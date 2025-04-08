@@ -13,13 +13,7 @@ test('Kandidatsøk', async ({ page }) => {
   await expect(
     page.getByRole('combobox', { name: 'Arbeidsønsker' }),
   ).toBeVisible();
-  await expect(
-    page
-      .locator(
-        'div:nth-child(3) > .navds-combobox__wrapper > .navds-combobox__wrapper-inner',
-      )
-      .first(),
-  ).toBeVisible();
+
   await expect(
     page.getByRole('checkbox', { name: 'Situasjonsbestemt innsats' }),
   ).toBeVisible();

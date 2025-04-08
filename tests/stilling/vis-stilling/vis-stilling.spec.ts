@@ -14,7 +14,7 @@ test.describe(`Stilling test`, () => {
       page.getByRole('tab', { name: 'Om stillingen' }),
     ).toBeVisible();
     await expect(
-      page.getByRole('tab', { name: 'Kandidater', exact: true }),
+      page.getByRole('tab', { name: 'Kandidater (10)' }),
     ).toBeVisible();
     await expect(page.getByRole('button', { name: 'Kopier' })).toBeVisible();
     await expect(

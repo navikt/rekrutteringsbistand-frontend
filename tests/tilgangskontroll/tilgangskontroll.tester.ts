@@ -166,7 +166,7 @@ export const testTilgangskontroll = (rolle: Roller) => {
 
       if (ARBEIDSGIVERRETTET) {
         await expect(
-          page.getByRole('tab', { name: 'Kandidater', exact: true }),
+          page.getByRole('tab', { name: 'Kandidater (10)' }),
         ).toBeVisible();
       }
     });

@@ -18,9 +18,9 @@
   "dependencies": {
     "@hookform/resolvers": "^4.1.2",
     "@monaco-editor/react": "^4.7.0",
-    "@navikt/aksel-icons": "^7.18.0",
-    "@navikt/ds-css": "^7.18.0",
-    "@navikt/ds-react": "^7.18.0",
+    "@navikt/aksel-icons": "^7.19.0",
+    "@navikt/ds-css": "^7.19.0",
+    "@navikt/ds-react": "^7.19.0",
     "@navikt/ds-tailwind": "^7.18.0",
     "@navikt/fnrvalidator": "^2.1.5",
     "@navikt/navspa": "6.2.0",

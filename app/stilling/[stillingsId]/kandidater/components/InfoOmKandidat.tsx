@@ -28,14 +28,10 @@ const InfoOmKandidat: FunctionComponent<InfoOmKandidatProps> = ({
     href: string,
     fødselsnummer: string,
   ) => {
-    const response = await postApi(`/api/context`, {
+    await postApi(`/api/context`, {
       verdi: fødselsnummer,
       eventType: 'NY_AKTIV_BRUKER',
-    });
-
-    if (response.ok) {
-      window.open(href, '_blank');
-    }
+    }).then(() => window.open(href, '_blank'));
   };
 
   return (
