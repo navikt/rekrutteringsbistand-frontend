@@ -27,6 +27,7 @@ export interface DelMedArbeidsgiverProps {
   stillingTittel: string;
   stillingsId: string;
   eposter: string[];
+  reFetchKandidatliste: () => void;
 }
 
 const DelMedArbeidsgiver: React.FC<DelMedArbeidsgiverProps> = ({
@@ -35,23 +36,28 @@ const DelMedArbeidsgiver: React.FC<DelMedArbeidsgiverProps> = ({
   stillingTittel,
   stillingsId,
   eposter,
+  reFetchKandidatliste,
 }) => {
   const { track } = useUmami();
   const [visModal, setVisModal] = React.useState(false);
   const { valgtNavKontor } = useApplikasjonContext();
   const forespurteKandidaterHook = useForespurteOmDelingAvCv(stillingsId);
 
-  const [epost, setEpost] = React.useState<string[]>(eposter);
+  const [epost, setEpost] = React.useState<string[]>([]);
 
-  const onDelMedArbeidsgiver = (kandidatnummerListe: string[]) => {
-    postDelMedArbeidsgiver({
+  const onDelMedArbeidsgiver = async (kandidatnummerListe: string[]) => {
+    track(UmamiEvent.Stilling.del_kandidat_med_arbeidsgiver, {
+      antall: kandidatnummerListe.length,
+    });
+    await postDelMedArbeidsgiver({
       kandidatlisteId: kandidatliste.kandidatlisteId,
       kandidatnummerListe,
       mailadresser: epost,
       navKontor: valgtNavKontor?.navKontor ?? '',
-    });
-    track(UmamiEvent.Stilling.del_kandidat_med_arbeidsgiver, {
-      antall: kandidatnummerListe.length,
+    }).then(() => {
+      setEpost([]);
+      setVisModal(false);
+      reFetchKandidatliste();
     });
   };
 

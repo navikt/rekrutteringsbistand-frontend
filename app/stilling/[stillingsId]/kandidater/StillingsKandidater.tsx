@@ -201,6 +201,7 @@ const StillingsKandidater: React.FC = () => {
                         stillingTittel={stillingsData.stilling.title}
                         markerteKandidater={markerteKandidater}
                         kandidatliste={kandidatliste}
+                        reFetchKandidatliste={reFetchKandidatliste}
                       />
                     </>
                   )}

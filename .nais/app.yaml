@@ -40,6 +40,7 @@ spec:
         - application: rekrutteringsbistand-stillingssok-proxy
         - application: rekrutteringsbistand-kandidatsok-api
         - application: rekrutteringsbistand-kandidatvarsel-api
+        - application: toi-arbeidsgiver-notifikasjon
         - application: toi-synlighetsmotor
         - application: modiacontextholder
           namespace: personoversikt
