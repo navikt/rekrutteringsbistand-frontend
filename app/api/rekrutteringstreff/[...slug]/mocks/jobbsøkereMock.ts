@@ -11,9 +11,14 @@ export const jobbsøkerMock = (): LeggTilNyJobbsøkerDTO => {
     fornavn: faker.person.firstName(),
     etternavn: faker.person.lastName(),
     kandidatnummer: 'PAM016jg9faeo',
-    navkontor: 'Nav Grorud',
+    navkontor: faker.helpers.arrayElement([
+      'Nav Grorud',
+      'Nav Bærum',
+      'Nav Kongsberg',
+    ]),
     veilederNavn: faker.person.firstName() + ' ' + fakerEN.person.lastName(),
-    veilederNavIdent: faker.string.alpha(1) + faker.string.numeric(6),
+    veilederNavIdent:
+      faker.string.alpha(1).toUpperCase() + faker.string.numeric(6),
   };
 };
 
