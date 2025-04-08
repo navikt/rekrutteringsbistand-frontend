@@ -13,7 +13,6 @@ interface JobbsøkerKortProps {
 export type Veileder = {
   navn?: string;
   navIdent?: string;
-  navKontor?: string;
 };
 
 const JobbsøkerKort: React.FC<JobbsøkerKortProps> = ({

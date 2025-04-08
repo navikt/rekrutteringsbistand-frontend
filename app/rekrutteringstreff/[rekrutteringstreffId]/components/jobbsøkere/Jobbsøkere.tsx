@@ -33,11 +33,10 @@ const Jobbsøkere = () => {
                     etternavn={j.etternavn}
                     kandidatnummer={j.kandidatnummer}
                     fødselsnummer={j.fødselsnummer}
-                    navKontor='Nav Grorud' // TODO: Bytt når backend støtter det
+                    navKontor={j.navkontor}
                     veileder={{
-                      navn: 'Veileder Navn',
-                      navIdent: 'Z123456',
-                      navKontor: 'Nav Grorud',
+                      navn: j.veilederNavn,
+                      navIdent: j.veilederNavIdent,
                     }}
                   />
                 </li>

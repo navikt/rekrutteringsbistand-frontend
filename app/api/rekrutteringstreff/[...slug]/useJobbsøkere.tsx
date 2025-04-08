@@ -18,13 +18,10 @@ const JobbsøkereSchema = z.array(
     kandidatnummer: z.string().nullable(),
     fornavn: z.string(),
     etternavn: z.string(),
-    /*navKontor: z.string(),
-    veileder: z.object({
-      navn: z.string(),
-      navIdent: z.string(),
-      navKontor: z.string(),
-    }),
-    status: z.string(),*/
+    navkontor: z.string(),
+    veilederNavn: z.string(),
+    veilederNavIdent: z.string(),
+    status: z.string(),
   }),
 );
 
