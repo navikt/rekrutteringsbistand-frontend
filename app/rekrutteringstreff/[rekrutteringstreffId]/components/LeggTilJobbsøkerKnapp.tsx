@@ -1,7 +1,10 @@
 'use client';
 
 import { useRekrutteringstreffContext } from '../RekrutteringstreffContext';
-import { leggtilNyJobbsøker } from '@/app/api/rekrutteringstreff/ny-jobbsøker/leggTilNyjobbsøker';
+import {
+  leggtilNyJobbsøker,
+  LeggTilNyJobbsøkerDTO,
+} from '@/app/api/rekrutteringstreff/ny-jobbsøker/leggTilNyjobbsøker';
 import { rekbisError } from '@/util/rekbisError';
 import { faker } from '@faker-js/faker/locale/nb_NO';
 import { PlusIcon } from '@navikt/aksel-icons';
@@ -21,11 +24,14 @@ const LeggTilJobbsøkerKnapp: React.FC<LeggTilJobbsøkerKnappProps> = ({
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
 
   const handleLeggTil = async () => {
-    const jobbsøker = {
+    const jobbsøker: LeggTilNyJobbsøkerDTO = {
       fødselsnummer: navfaker.personIdentifikator.fødselsnummer(),
       fornavn: faker.person.firstName(),
       etternavn: faker.person.lastName(),
       kandidatnummer: 'PAM016jg9faeo',
+      navkontor: 'NAV Asker',
+      veilederNavn: 'Jens Jensen',
+      veilederNavIdent: 'A123123',
     };
 
     try {
