@@ -38,6 +38,8 @@ const Jobbsøkere = () => {
                       navn: j.veilederNavn,
                       navIdent: j.veilederNavIdent,
                     }}
+                    datoLagtTil='20.mai.2025'
+                    lagtTilAv='Kari Nordmann'
                   />
                 </li>
               ))}
