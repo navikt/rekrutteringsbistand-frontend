@@ -72,6 +72,7 @@ const DelMedArbeidsgiver: React.FC<DelMedArbeidsgiverProps> = ({
         Del med arbeidsgiver
       </Button>
       <Modal
+        width={'medium'}
         open={visModal}
         onClose={() => setVisModal(false)}
         aria-label='Del kandidater med arbeidsgiver'
@@ -201,7 +202,7 @@ const DelMedArbeidsgiver: React.FC<DelMedArbeidsgiverProps> = ({
                     onClick={() =>
                       onDelMedArbeidsgiver(
                         harSvartJa
-                          .map((kandidat) => kandidat.aktørid)
+                          .map((kandidat) => kandidat.fodselsnr)
                           .filter((id): id is string => id !== null),
                       )
                     }
