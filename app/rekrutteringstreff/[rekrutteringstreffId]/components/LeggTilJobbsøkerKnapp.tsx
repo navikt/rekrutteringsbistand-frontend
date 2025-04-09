@@ -1,6 +1,7 @@
 'use client';
 
 import { useRekrutteringstreffContext } from '../RekrutteringstreffContext';
+import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
 import {
   leggtilNyJobbsøker,
   LeggTilNyJobbsøkerDTO,
@@ -14,14 +15,13 @@ import * as React from 'react';
 
 interface LeggTilJobbsøkerKnappProps {
   className?: string;
-  onNyJobbsøkerLagtTil?: () => void;
 }
 
 const LeggTilJobbsøkerKnapp: React.FC<LeggTilJobbsøkerKnappProps> = ({
   className,
-  onNyJobbsøkerLagtTil,
 }) => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
+  const jobbsøkerHook = useJobbsøkere(rekrutteringstreffId);
 
   const handleLeggTil = async () => {
     const jobbsøker: LeggTilNyJobbsøkerDTO = {
@@ -36,7 +36,7 @@ const LeggTilJobbsøkerKnapp: React.FC<LeggTilJobbsøkerKnappProps> = ({
 
     try {
       await leggtilNyJobbsøker(jobbsøker, rekrutteringstreffId);
-      onNyJobbsøkerLagtTil?.();
+      jobbsøkerHook.mutate();
     } catch (error) {
       throw new rekbisError({
         beskrivelse: 'Feiler når prøver å legge til ny jobbsøker:',
