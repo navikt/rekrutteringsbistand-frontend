@@ -1,6 +1,7 @@
 'use client';
 
-import Piktogram from '../../public/ikoner/rekrutteringstreff.svg';
+import RekrutteringstreffDark from '../../public/ikoner/rekrutteringstreff-dark.svg';
+import Rekrutteringstreff from '../../public/ikoner/rekrutteringstreff.svg';
 import SVGDarkmode from '../components/SVGDarkmode';
 import SideLayout from '../components/layout/SideLayout';
 import SideTopBanner from '../components/layout/SideTopBanner';
@@ -22,7 +23,13 @@ const RekrutteringstreffSøkLayout: React.FC<
         <div className='flex justify-between items-center'>
           <SideTopBanner
             tittel='Rekrutteringstreff'
-            ikon={<SVGDarkmode src={Piktogram} alt='Rekrutteringstreff' />}
+            ikon={
+              <SVGDarkmode
+                light={Rekrutteringstreff}
+                dark={RekrutteringstreffDark}
+                alt='Rekrutteringstreff'
+              />
+            }
           />
           <OpprettRekrutteringstreffKnapp />
         </div>

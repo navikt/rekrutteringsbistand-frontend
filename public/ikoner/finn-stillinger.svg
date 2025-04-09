@@ -1,1 +1,23 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="none"><g clip-path="url(#a)"><path fill="#E0D8E9" d="M36.89 21.9 56 41.02 41.35 55.66 22.24 36.55l-8.31 8.31L8 7.66l37.2 5.93-8.31 8.31Z"/><path stroke="#262626" stroke-width="2" d="M64 63.9c-1.87-7.46-8.47-12.97-16.32-12.97s-14.45 5.5-16.32 12.96M57.92 36.34c0 5.71-4.66 10.35-10.42 10.35a10.38 10.38 0 0 1-10.43-10.35c0-5.7 4.66-10.34 10.43-10.34 5.76 0 10.42 4.64 10.42 10.34ZM19.33 19.66V20c0-3.3-2.09-5.33-4.66-5.33C12.09 14.67 10 16.7 10 20v-.34"/><circle cx="14.67" cy="10" r="3.67" stroke="#262626" stroke-width="2"/><path stroke="#262626" stroke-width="2" d="M1 1h27.33v37.33H1zM6.67 24.67H18M6.67 31.33h5.66"/></g><defs><clipPath id="a"><path fill="#fff" d="M0 0h64v64H0z"/></clipPath></defs></svg>
+<svg width="96" height="96" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="state=enabled, mini card=false" clip-path="url(#clip0_6735_122990)">
+<path id="running" d="M76 48C76 32.536 63.464 20 48 20C32.536 20 20 32.536 20 48C20 63.464 32.536 76 48 76" stroke="#F0EDF4" stroke-width="12" stroke-linecap="round"/>
+<g id="search">
+<circle id="Ellipse 2" cx="86" cy="10" r="8.5" stroke="#202733" stroke-width="3"/>
+<circle id="Ellipse 4" cx="2" cy="2" r="2" transform="matrix(1 0 0 -1 70 8)" stroke="#202733" stroke-width="3"/>
+<circle id="Ellipse 3" cx="58" cy="10" r="8.5" stroke="#202733" stroke-width="3"/>
+<path id="Ellipse 5" d="M65.3643 8C67.2649 6.73631 69.5464 6 71.9998 6C74.4533 6 76.7348 6.73631 78.6354 8" stroke="#202733" stroke-width="3"/>
+</g>
+<g id="registrering">
+<path id="Ellipse 48" d="M31 67.488V68C31 63.0515 27.866 60 24 60C20.134 60 17 63.0515 17 68V67.488" stroke="#202733" stroke-width="3"/>
+<circle id="Ellipse 45" cx="24" cy="53" r="5.5" stroke="#202733" stroke-width="3"/>
+<rect id="Rectangle 22" x="3.5" y="39.5" width="41" height="56" stroke="#202733" stroke-width="3"/>
+<path id="Line 7" d="M12 75H29" stroke="#202733" stroke-width="3"/>
+<path id="Line 8" d="M12 85H20.5" stroke="#202733" stroke-width="3"/>
+</g>
+</g>
+<defs>
+<clipPath id="clip0_6735_122990">
+<rect width="96" height="96" fill="white"/>
+</clipPath>
+</defs>
+</svg>

@@ -48,14 +48,15 @@ const StillingsKandidaterTabell: React.FC<{
 
   const { status, hendelse } = useStillingsKandidaterFilter();
   const toggleSelectedRow = (kandidat: kandidaterSchemaDTO) => {
-    if (setMarkerteKandidater && markerteKandidater)
-      setMarkerteKandidater(
-        markerteKandidater.includes(kandidat)
-          ? markerteKandidater.filter(
-              (kandidat) => kandidat.fodselsnr !== kandidat.fodselsnr,
-            )
-          : [...markerteKandidater, kandidat],
-      );
+    if (setMarkerteKandidater && markerteKandidater) {
+      const nyListe = markerteKandidater.some(
+        (k) => k.fodselsnr === kandidat.fodselsnr,
+      )
+        ? markerteKandidater.filter((k) => k.fodselsnr !== kandidat.fodselsnr)
+        : [...markerteKandidater, kandidat];
+
+      setMarkerteKandidater(nyListe);
+    }
   };
 
   const aktivtFilter =

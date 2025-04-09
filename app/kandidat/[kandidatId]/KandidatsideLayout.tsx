@@ -1,7 +1,5 @@
 'use client';
 
-import MineKandidater from '../../../public/ikoner/minekandidater.svg';
-import SVGDarkmode from '../../components/SVGDarkmode';
 import TekstMedIkon from '../../components/TekstMedIkon';
 import SideLayout from '../../components/layout/SideLayout';
 import SideTopBanner from '../../components/layout/SideTopBanner';
@@ -53,7 +51,6 @@ const KandidatSideLayout: React.FC<KandidatSideProps> = ({
                     href: '/kandidat',
                   }
           }
-          ikon={<SVGDarkmode src={MineKandidater} alt='Mine kandidater' />}
           tittel={`${kandidatsammendragData.fornavn} ${kandidatsammendragData.etternavn}`}
           headerInnhold={
             <div className='mt-2'>

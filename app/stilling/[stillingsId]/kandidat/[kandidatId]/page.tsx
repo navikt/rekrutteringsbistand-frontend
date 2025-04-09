@@ -1,3 +1,4 @@
+import { KandidatContextProvider } from '../../../../kandidat/[kandidatId]/KandidatContext';
 import KandidatForStilling from './KandidatForStilling';
 
 export default async function KandidatIKontekstAvStilling(
@@ -5,8 +6,8 @@ export default async function KandidatIKontekstAvStilling(
 ) {
   const kandidatId = (await params).kandidatId;
   return (
-    <>
+    <KandidatContextProvider kandidatId={kandidatId}>
       <KandidatForStilling kandidatId={kandidatId} />
-    </>
+    </KandidatContextProvider>
   );
 }
