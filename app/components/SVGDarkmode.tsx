@@ -15,7 +15,7 @@ const SVGDarkmode: React.FC<SVGDarkmodeProps> = ({
   src,
   light,
   dark,
-  alt = 'pliktogram',
+  alt = 'pictogram',
 }) => {
   const { darkMode } = useThemeProvider();
 
