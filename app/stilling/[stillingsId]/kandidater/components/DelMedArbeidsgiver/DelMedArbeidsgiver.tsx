@@ -43,7 +43,7 @@ const DelMedArbeidsgiver: React.FC<DelMedArbeidsgiverProps> = ({
   const { valgtNavKontor } = useApplikasjonContext();
   const forespurteKandidaterHook = useForespurteOmDelingAvCv(stillingsId);
 
-  const [epost, setEpost] = React.useState<string[]>([]);
+  const [epost, setEpost] = React.useState<string[]>(eposter);
 
   const onDelMedArbeidsgiver = async (kandidatnummerListe: string[]) => {
     track(UmamiEvent.Stilling.del_kandidat_med_arbeidsgiver, {
@@ -166,6 +166,7 @@ const DelMedArbeidsgiver: React.FC<DelMedArbeidsgiverProps> = ({
                     allowNewValues
                     label='E-post til arbeidsgiver'
                     options={eposter}
+                    selectedOptions={epost}
                     shouldAutocomplete={false}
                     isMultiSelect
                     onToggleSelected={(val, selected) => {

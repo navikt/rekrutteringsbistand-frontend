@@ -1,7 +1,9 @@
 'use client';
 
-import OpprettNyStillingIkon from '../../../public/ikoner/opprett-ny-stilling.svg';
-import SeMineStillingerIkon from '../../../public/ikoner/se-mine-stillinger.svg';
+import StillingsIkonDark from '../../../public/ikoner/finn-stillinger-dark.svg';
+import StillingsIkon from '../../../public/ikoner/finn-stillinger.svg';
+import OpprettNyStillingIkonDark from '../../../public/ikoner/neutral-dark.svg';
+import OpprettNyStillingIkon from '../../../public/ikoner/neutral.svg';
 import { UmamiEvent } from '../../../util/umamiEvents';
 import SVGDarkmode from '../../components/SVGDarkmode';
 import { TilgangskontrollForInnhold } from '../../components/tilgangskontroll/TilgangskontrollForInnhold';
@@ -36,7 +38,8 @@ const Hurtiglenker: FunctionComponent = () => {
           <LenkepanelMedIkon
             ikon={
               <SVGDarkmode
-                src={SeMineStillingerIkon}
+                light={StillingsIkon}
+                dark={StillingsIkonDark}
                 alt='Se mine stillinger'
               />
             }
@@ -55,7 +58,8 @@ const Hurtiglenker: FunctionComponent = () => {
           <LenkepanelMedIkon
             ikon={
               <SVGDarkmode
-                src={OpprettNyStillingIkon}
+                light={OpprettNyStillingIkon}
+                dark={OpprettNyStillingIkonDark}
                 alt='Opprett ny stilling'
               />
             }

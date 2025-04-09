@@ -1,7 +1,7 @@
 import { kandidatlisteSchemaDTO } from '../../../../api/kandidat/schema.zod';
 import { useStillingsContext } from '../../StillingsContext';
 import { ArrowLeftIcon, ArrowRightIcon } from '@navikt/aksel-icons';
-import { BodyShort, Button, Link } from '@navikt/ds-react';
+import { BodyShort, Box, Button, Link } from '@navikt/ds-react';
 import * as React from 'react';
 
 export interface KandidatNavigeringProps {
@@ -33,7 +33,14 @@ const KandidatNavigering: React.FC<KandidatNavigeringProps> = ({
   }
 
   return (
-    <div className='w-full mb-4'>
+    <Box.New
+      background='raised'
+      borderColor='neutral-subtleA'
+      borderWidth='1'
+      padding='4'
+      borderRadius='xlarge'
+    >
+      Naviger mellom kandidater i kandidatliste
       <div className='grid grid-cols-[auto_1fr_auto] w-full items-center'>
         {/* Previous button */}
         <div className='justify-self-start'>
@@ -80,7 +87,7 @@ const KandidatNavigering: React.FC<KandidatNavigeringProps> = ({
           )}
         </div>
       </div>
-    </div>
+    </Box.New>
   );
 };
 

@@ -1,6 +1,9 @@
 'use client';
 
-import Piktogram from '../../public/ikoner/finn-stillinger.svg';
+import EtterregistreringIkonDark from '../../public/ikoner/etterregistrering-dark.svg';
+import EtterregistreringIkon from '../../public/ikoner/etterregistrering.svg';
+import FinnStillingerIkonDark from '../../public/ikoner/finn-stillinger-dark.svg';
+import FinnStillingerIkon from '../../public/ikoner/finn-stillinger.svg';
 import { UmamiEvent } from '../../util/umamiEvents';
 import { useUseBrukerStandardSøk } from '../api/stilling/standardsok/useBrukersStandardsøk';
 import SVGDarkmode from '../components/SVGDarkmode';
@@ -114,7 +117,21 @@ const StillingsSøkLayout: React.FC<StillingsSøkProps> = ({
             tittel={
               formidlinger ? 'Etterregistrering formidlinger' : 'Stillinger'
             }
-            ikon={<SVGDarkmode src={Piktogram} alt='Finn stillinger' />}
+            ikon={
+              formidlinger ? (
+                <SVGDarkmode
+                  light={EtterregistreringIkon}
+                  dark={EtterregistreringIkonDark}
+                  alt='Finn stillinger'
+                />
+              ) : (
+                <SVGDarkmode
+                  light={FinnStillingerIkon}
+                  dark={FinnStillingerIkonDark}
+                  alt='Finn stillinger'
+                />
+              )
+            }
             knappIBanner={
               formidlinger ? (
                 <TilgangskontrollForInnhold

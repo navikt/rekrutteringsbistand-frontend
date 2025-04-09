@@ -1,7 +1,5 @@
 'use client';
 
-import StillingsIkon from '../../../public/ikoner/se-mine-stillinger.svg';
-import SVGDarkmode from '../../components/SVGDarkmode';
 import TekstMedIkon from '../../components/TekstMedIkon';
 import SideLayout from '../../components/layout/SideLayout';
 import SideTopBanner from '../../components/layout/SideTopBanner';
@@ -58,7 +56,6 @@ const StillingSideLayout: React.FC<StillingSideLayoutProps> = ({
             </>
           }
           tilbakeKnapp={{ href: '/stilling' }}
-          ikon={<SVGDarkmode src={StillingsIkon} alt='Se mine stillinger' />}
           tittel={stillingsData.stilling.title ?? ''}
         />
       }
