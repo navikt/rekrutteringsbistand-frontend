@@ -16,7 +16,7 @@ const RekrutteringstreffArbeidsgivereSchema = z.array(
   z.object({
     organisasjonsnummer: z.string(),
     navn: z.string(),
-    status: z.string(),
+    status: z.string().optional(),
   }),
 );
 

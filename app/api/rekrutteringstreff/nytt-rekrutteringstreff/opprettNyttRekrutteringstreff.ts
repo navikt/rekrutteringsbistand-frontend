@@ -1,5 +1,5 @@
-import { OpprettNyttRekrutteringstreffDTO } from './dto';
 import { postApi } from '@/app/api/fetcher';
+import { z } from 'zod';
 
 const opprettNyttRekrutteringstreffEndepunkt = '/api/rekrutteringstreff';
 
@@ -17,3 +17,11 @@ export const opprettNyttRekrutteringstreffMirage = (server: any) => {
     id: '1231-1234-1234-1234',
   }));
 };
+
+export const OpprettNyttRekrutteringstreffSchema = z.object({
+  opprettetAvNavkontorEnhetId: z.string().nullable(),
+});
+
+export type OpprettNyttRekrutteringstreffDTO = z.infer<
+  typeof OpprettNyttRekrutteringstreffSchema
+>;

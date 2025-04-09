@@ -1,6 +1,8 @@
 import { useApplikasjonContext } from '../../providers/ApplikasjonContext';
-import { OpprettNyttRekrutteringstreffDTO } from '@/app/api/rekrutteringstreff/nytt-rekrutteringstreff/dto';
-import { opprettNyttRekrutteringstreff } from '@/app/api/rekrutteringstreff/nytt-rekrutteringstreff/opprettNyttRekrutteringstreff';
+import {
+  opprettNyttRekrutteringstreff,
+  OpprettNyttRekrutteringstreffDTO,
+} from '@/app/api/rekrutteringstreff/nytt-rekrutteringstreff/opprettNyttRekrutteringstreff';
 import { rekbisError } from '@/util/rekbisError';
 import { PlusIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
