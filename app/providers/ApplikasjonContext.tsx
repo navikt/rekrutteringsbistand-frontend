@@ -71,6 +71,8 @@ export const ApplikasjonContextProvider: React.FC<
     valgtNavKontor?.navKontor === '1621' || // Ørland
     valgtNavKontor?.navKontor === '0316' || // Gamle Oslo
     valgtNavKontor?.navKontor === '0521' || // Ørland
+    valgtNavKontor?.navKontor === '5701' || // FALKENBORG
+    valgtNavKontor?.navKontor === '1002' || // LINDESNES
     harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER]);
 
   return (

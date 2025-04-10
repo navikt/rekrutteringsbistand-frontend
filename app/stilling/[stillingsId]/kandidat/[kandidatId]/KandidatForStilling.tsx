@@ -104,10 +104,8 @@ const KandidatForStilling: React.FC<KandidatForStillingProps> = ({
                 </div>
                 {kandidatliste?.kandidater.some(
                   (k) => kandidatSammendrag.arenaKandidatnr === k.kandidatnr,
-                ) ? (
-                  // TODO Legg til funksjonalitet for de på listen
-                  null
-                ) : (
+                ) ? // TODO Legg til funksjonalitet for de på listen
+                null : (
                   <Button loading={loading} onClick={leggTilKandidatiListe}>
                     Legg til kandidat
                   </Button>
