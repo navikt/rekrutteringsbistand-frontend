@@ -1,16 +1,21 @@
 import { useKandidatContext } from '../KandidatContext';
-import { MagnifyingGlassIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import Link from 'next/link';
 import * as React from 'react';
 
-const FinnStillingForKandidatKnapp: React.FC = () => {
+export interface FinnStillingForKandidatKnappProps {
+  sidebar?: boolean;
+}
+
+const FinnStillingForKandidatKnapp: React.FC<
+  FinnStillingForKandidatKnappProps
+> = ({ sidebar }) => {
   const { kandidatId } = useKandidatContext();
   return (
     <Link href={`/kandidat/${kandidatId}/forslag-til-stilling`}>
       <Button
-        variant='tertiary'
-        icon={<MagnifyingGlassIcon />}
+        size={sidebar ? 'small' : 'medium'}
+        variant='primary'
         //   onClick={() => {
         // trackAndNavigate(
         //   UmamiEvent.Stilling.finn_stilling_knapp,
@@ -18,7 +23,7 @@ const FinnStillingForKandidatKnapp: React.FC = () => {
         // );
         //   }}
       >
-        Finn stilling
+        Finn stillinger
       </Button>
     </Link>
   );

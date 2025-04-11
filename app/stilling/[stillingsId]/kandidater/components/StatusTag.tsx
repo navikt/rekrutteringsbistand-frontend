@@ -1,4 +1,4 @@
-import { InternKandidatstatus } from './KandidatTyper';
+import { InternKandidatstatus } from '../KandidatTyper';
 import { Tag } from '@navikt/ds-react';
 import * as React from 'react';
 

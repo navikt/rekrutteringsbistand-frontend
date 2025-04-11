@@ -1,4 +1,4 @@
-import { InternKandidatstatus } from '../../stilling/[stillingsId]/kandidater/components/KandidatTyper';
+import { InternKandidatstatus } from '../../stilling/[stillingsId]/kandidater/KandidatTyper';
 import { z } from 'zod';
 
 export enum Kandidatlistestatus {
@@ -6,9 +6,18 @@ export enum Kandidatlistestatus {
   Lukket = 'LUKKET',
 }
 
+type FiltrerteKandidater = {
+  kandidater: kandidaterSchemaDTO[];
+  usynligeKandidater: usynligKandidaterSchemaDTO[];
+  totaltAntallKandidater: number;
+};
+
 export type kandidatlisteSchemaDTO = z.infer<typeof kandidatlisteSchema>;
 export type utfallsendringerSchemaDTO = z.infer<typeof utfallsendringerSchema>;
 export type kandidaterSchemaDTO = z.infer<typeof kandidaterSchema>;
+export type usynligKandidaterSchemaDTO = z.infer<
+  typeof usynligKandidaterSchema
+>;
 export type kandidatHistorikkSchemaDTO = z.infer<
   typeof kandidatHistorikkSchema
 >;
@@ -18,6 +27,21 @@ const utfallsendringerSchema = z.object({
   registrertAvIdent: z.string(),
   tidspunkt: z.string(),
   sendtTilArbeidsgiversKandidatliste: z.boolean(),
+});
+
+const usynligKandidaterSchema = z.object({
+  id: z.string(),
+  fornavn: z.string(),
+  mellomnavn: z.string().nullable(),
+  etternavn: z.string(),
+  utfall: z.string(),
+  lagtTilAvIdent: z.string(),
+  lagtTilAvNavn: z.string(),
+  lagtTilTidspunkt: z.string(),
+  arkivert: z.boolean(),
+  arkivertAvIdent: z.string().nullable(),
+  arkivertAvNavn: z.string().nullable(),
+  arkivertTidspunkt: z.string().nullable(),
 });
 
 const kandidaterSchema = z.object({
@@ -54,22 +78,7 @@ export const kandidatlisteSchema = z.object({
   kanEditere: z.boolean(),
   erEier: z.boolean(),
   kanSlette: z.string(),
-  formidlingerAvUsynligKandidat: z.array(
-    z.object({
-      id: z.string(),
-      fornavn: z.string(),
-      mellomnavn: z.string().nullable(),
-      etternavn: z.string(),
-      utfall: z.string(),
-      lagtTilAvIdent: z.string(),
-      lagtTilAvNavn: z.string(),
-      lagtTilTidspunkt: z.string(),
-      arkivert: z.boolean(),
-      arkivertAvIdent: z.string().nullable(),
-      arkivertAvNavn: z.string().nullable(),
-      arkivertTidspunkt: z.string().nullable(),
-    }),
-  ),
+  formidlingerAvUsynligKandidat: z.array(usynligKandidaterSchema),
   status: z.string(),
   antallStillinger: z.number(),
   stillingskategori: z.string(),

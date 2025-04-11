@@ -37,11 +37,11 @@ export enum InternKandidatstatus {
 }
 
 export const aktivitetTilTekst = {
-  [UtfallsEndringTyper.DELT_MED_KANDIDAT]: 'Stilling delt med kandidat',
-  [UtfallsEndringTyper.SVAR_JA]: 'CV-deling: Svart ja',
-  [UtfallsEndringTyper.SVAR_NEI]: 'CV-deling: Svart nei',
+  // [UtfallsEndringTyper.DELT_MED_KANDIDAT]: 'Stilling delt med kandidat', //TODO Sjekk opp denne i prod/dev
+  [UtfallsEndringTyper.SVAR_JA]: 'Deling av CV',
+  [UtfallsEndringTyper.SVAR_NEI]: 'Deling av CV',
   [UtfallsEndringTyper.CV_DELT]: 'CV delt med arbeidsgiver',
-  [UtfallsEndringTyper.CV_SLETTET]: 'CV er slettet',
+  // [UtfallsEndringTyper.CV_SLETTET]: 'CV er slettet',
   [UtfallsEndringTyper.FATT_JOBBEN]: 'Fått jobben',
   // INGEN_AKTIVITET: 'Ingen aktivitet',
 } as const;

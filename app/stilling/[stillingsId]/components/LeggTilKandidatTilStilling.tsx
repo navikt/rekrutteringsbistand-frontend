@@ -9,7 +9,7 @@ import LeggTilKandidater, {
 import { useVisVarsling } from '../../../components/varsling/Varsling';
 import { useApplikasjonContext } from '../../../providers/ApplikasjonContext';
 import { useUmami } from '../../../providers/UmamiContext';
-import { ArrowForwardIcon } from '@navikt/aksel-icons';
+import { PersonPlusIcon } from '@navikt/aksel-icons';
 import { Button, Modal } from '@navikt/ds-react';
 import * as React from 'react';
 import { useRef, useState } from 'react';
@@ -95,12 +95,13 @@ const LeggTilKandidatTilStilling: React.FC<LeggTilKandidatTilStillingProps> = ({
   };
 
   return (
-    <div key={stillingsId}>
+    <React.Fragment key={stillingsId}>
       <Button
         loading={laster}
         onClick={handleOpenModal}
-        variant='tertiary'
-        icon={<ArrowForwardIcon aria-hidden />}
+        variant='secondary'
+        size='small'
+        icon={<PersonPlusIcon aria-hidden />}
       >
         Legg til kandidater
       </Button>
@@ -138,7 +139,7 @@ const LeggTilKandidatTilStilling: React.FC<LeggTilKandidatTilStillingProps> = ({
           </Button>
         </Modal.Footer>
       </Modal>
-    </div>
+    </React.Fragment>
   );
 };
 

@@ -1,5 +1,5 @@
 import { endreKandidatStatus } from '../../../../api/kandidat/endreKandidatStatus';
-import { InternKandidatstatus } from './KandidatTyper';
+import { InternKandidatstatus } from '../KandidatTyper';
 import {
   CircleSlashIcon,
   ClipboardCheckmarkIcon,
@@ -85,12 +85,11 @@ const VelgInternStatus: React.FC<VelgInternStatusProps> = ({
   return (
     <>
       <Dropdown>
-        <div className='flex justify-center'>
-          <Tag
-            variant={tagVariant(valgtStatus)}
-            className='flex justify-center gap-2 w-full'
-          >
-            {formIcon(valgtStatus)} {formatStatus(valgtStatus)}
+        <div className='flex justify-left'>
+          <Tag size='small' variant={tagVariant(valgtStatus)}>
+            <div className='flex gap-1'>
+              {formIcon(valgtStatus)} {formatStatus(valgtStatus)}
+            </div>
           </Tag>
           <Button
             disabled={lukketKandidatliste}

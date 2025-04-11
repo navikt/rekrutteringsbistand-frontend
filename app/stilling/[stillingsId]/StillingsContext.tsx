@@ -11,6 +11,7 @@ import SWRLaster from '../../components/SWRLaster';
 import { eierStilling } from '../../components/tilgangskontroll/erEier';
 import { Roller } from '../../components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '../../providers/ApplikasjonContext';
+import { Stillingskategori } from '../stilling-typer';
 // import { useRouter } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import React, { useMemo } from 'react';
@@ -25,6 +26,7 @@ interface StillingsContextType {
   erDirektemeldt: boolean;
   refetch: () => void;
   erSlettet: boolean;
+  erJobbmesse: boolean;
 }
 
 const StillingsContext = React.createContext<StillingsContextType | undefined>(
@@ -102,6 +104,10 @@ const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
     stillingsData.stilling?.uuid,
   ]);
 
+  const erJobbmesse =
+    stillingsData?.stillingsinfo?.stillingskategori ===
+    Stillingskategori.Jobbmesse;
+
   const erEier = useMemo(
     () =>
       harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER]) ||
@@ -125,6 +131,7 @@ const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
         setForhåndsvisData,
         refetch,
         kandidatlisteInfo,
+        erJobbmesse,
       }}
     >
       {children}

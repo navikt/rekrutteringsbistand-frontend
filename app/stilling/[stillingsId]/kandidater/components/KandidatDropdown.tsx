@@ -1,91 +1,77 @@
-import { rekbisError } from '../../../../../util/rekbisError';
-import { KandidatAPI } from '../../../../api/api-routes';
-import { putApi } from '../../../../api/fetcher';
-import { kandidaterSchemaDTO } from '../../../../api/kandidat/schema.zod';
-import { useKandidatliste } from '../../../../api/kandidat/useKandidatliste';
-import { useStillingsContext } from '../../StillingsContext';
-import { TrashIcon } from '@navikt/aksel-icons';
-import { BodyLong, Button, Modal } from '@navikt/ds-react';
+import { MenuElipsisVerticalIcon } from '@navikt/aksel-icons';
+import { ActionMenu, Button } from '@navikt/ds-react';
 import * as React from 'react';
-import { useRef, useState } from 'react';
 
-export interface SletteKandidatKnappProps {
-  kandidat: kandidaterSchemaDTO;
-  kandidatlisteId: string;
-  lukketKandidatliste: boolean;
-}
+// export interface KandidatDropdownProps {
+//   children?: React.ReactNode | undefined;
+// }
 
-const SletteKandidatKnapp: React.FC<SletteKandidatKnappProps> = ({
-  kandidat,
-  kandidatlisteId,
-  lukketKandidatliste,
-}) => {
-  const { stillingsData } = useStillingsContext();
-  const [isLoading, setIsLoading] = useState(false);
-  const kandidatListeHook = useKandidatliste(stillingsData.stilling.uuid);
-
-  const slettKandidat = async () => {
-    setIsLoading(true);
-    try {
-      await putApi(
-        `${KandidatAPI.internUrl}/veileder/kandidatlister/${kandidatlisteId}/kandidater/${kandidat.kandidatnr}/arkivert`,
-        {
-          arkivert: true,
-        },
-      );
-      kandidatListeHook.mutate();
-      slettModalRef.current?.close();
-    } catch {
-      throw new rekbisError({ beskrivelse: 'Feil ved sletting av kandidat' });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const slettModalRef = useRef<HTMLDialogElement>(null);
-
+const KandidatDropdown: React.FC = ({}) => {
   return (
-    <div>
-      <Button
-        disabled={lukketKandidatliste}
-        variant='tertiary'
-        size='small'
-        onClick={() => slettModalRef.current?.showModal()}
-        icon={<TrashIcon title='Slett' />}
-      />
+    <ActionMenu>
+      <ActionMenu.Trigger>
+        <Button
+          variant='tertiary-neutral'
+          icon={<MenuElipsisVerticalIcon title='Saksmeny' />}
+          size='small'
+        />
+      </ActionMenu.Trigger>
+      <ActionMenu.Content>
+        <ActionMenu.Item onSelect={console.info}>Ta sak</ActionMenu.Item>
+        <ActionMenu.Sub>
+          <ActionMenu.SubTrigger>Endre status</ActionMenu.SubTrigger>
+          <ActionMenu.SubContent>
+            <ActionMenu.Item onSelect={console.info}>Avslått</ActionMenu.Item>
+            <ActionMenu.Item onSelect={console.info}>Godkjent</ActionMenu.Item>
+            <ActionMenu.Sub>
+              <ActionMenu.SubTrigger>Andre valg</ActionMenu.SubTrigger>
+              <ActionMenu.SubContent>
+                <ActionMenu.Item onSelect={console.info}>
+                  Til godkjenning
+                </ActionMenu.Item>
+                <ActionMenu.Item onSelect={console.info}>
+                  Under behandling
+                </ActionMenu.Item>
+                <ActionMenu.Item onSelect={console.info}>
+                  Under kontroll
+                </ActionMenu.Item>
+              </ActionMenu.SubContent>
+            </ActionMenu.Sub>
+          </ActionMenu.SubContent>
+        </ActionMenu.Sub>
+        <ActionMenu.Sub>
+          <ActionMenu.SubTrigger>Tildel saksbehandler</ActionMenu.SubTrigger>
+          <ActionMenu.SubContent>
+            <ActionMenu.Group label='Saksbehandlere'>
+              <ActionMenu.Item onSelect={console.info}>
+                Ola Normann
+              </ActionMenu.Item>
+              <ActionMenu.Item onSelect={console.info}>
+                Bo Ramberg
+              </ActionMenu.Item>
+              <ActionMenu.Item onSelect={console.info} disabled>
+                Ole Olsen
+              </ActionMenu.Item>
+              <ActionMenu.Item onSelect={console.info} disabled>
+                Janne Nilssen
+              </ActionMenu.Item>
+              <ActionMenu.Item onSelect={console.info}>
+                Karin Jakobsen
+              </ActionMenu.Item>
+              <ActionMenu.Item onSelect={console.info}>
+                Kari Nordmann
+              </ActionMenu.Item>
+            </ActionMenu.Group>
+          </ActionMenu.SubContent>
+        </ActionMenu.Sub>
 
-      <Modal
-        ref={slettModalRef}
-        header={{ heading: 'Bekreft sletting', closeButton: false }}
-      >
-        <Modal.Body>
-          <BodyLong>
-            Er du sikker på at du vil slette kandidaten {kandidat.fornavn}{' '}
-            {kandidat.etternavn}?
-          </BodyLong>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button
-            loading={isLoading}
-            type='button'
-            onClick={slettKandidat}
-            variant='danger'
-          >
-            Slett kandidat
-          </Button>
-
-          <Button
-            disabled={isLoading}
-            type='button'
-            variant='tertiary'
-            onClick={() => slettModalRef.current?.close()}
-          >
-            Avbryt
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    </div>
+        <ActionMenu.Divider />
+        <ActionMenu.Item variant='danger' onSelect={console.info}>
+          Slett kandidat
+        </ActionMenu.Item>
+      </ActionMenu.Content>
+    </ActionMenu>
   );
 };
 
-export default SletteKandidatKnapp;
+export default KandidatDropdown;

@@ -5,8 +5,8 @@ import {
 } from '../../../../api/kandidat/schema.zod';
 import { Sms } from '../../../../api/kandidatvarsel/kandidatvarsel';
 import { storForbokstavString } from '../../../../kandidat/util';
+import { UtfallsEndringTyper } from '../KandidatTyper';
 import KandidatHendelseKort from './KandidatHendelseKort';
-import { KandidatutfallTyper, UtfallsEndringTyper } from './KandidatTyper';
 import {
   CheckmarkCircleIcon,
   ClipboardIcon,
@@ -29,10 +29,6 @@ export interface KandidatHendelse {
   kilde: string;
   raw?: utfallsendringerSchemaDTO | KandidatForespurtOmDelingSchema | Sms;
 }
-
-const isUtfallsendring = (raw: any): raw is utfallsendringerSchemaDTO => {
-  return raw && 'utfall' in raw;
-};
 
 export const utfallsEndringPresentasjon = (
   utfallsEndring: UtfallsEndringTyper,
@@ -62,7 +58,7 @@ export const utfallsEndringPresentasjon = (
       };
     case UtfallsEndringTyper.CV_DELT:
       return {
-        tittel: 'CV delt med arbeidsgiver',
+        tittel: 'Delt med arbeidsgiver',
         ikon: <TasklistSendIcon className='text-success' />,
         type: 'success',
       };
@@ -86,13 +82,13 @@ export const utfallsEndringPresentasjon = (
       };
     case UtfallsEndringTyper.PRESENTERT:
       return {
-        tittel: 'Kandidaten er presentert',
+        tittel: 'Presentert',
         ikon: <CheckmarkCircleIcon className='text-success' />,
         type: 'success',
       };
     case UtfallsEndringTyper.IKKE_PRESENTERT:
       return {
-        tittel: 'Kandidaten er ikke presentert',
+        tittel: 'Ikke presentert',
         ikon: <ExclamationmarkTriangleIcon className='text-danger' />,
         type: 'error',
       };
@@ -165,7 +161,7 @@ export const mapToHendelser = ({
 
       hendelser.push({
         kilde: 'ForespørselOmDelingAvCv',
-        tittel: 'Spurt om deling av CV',
+        tittel: 'Deling av CV',
         tekst: tekst,
         dato: forespørsel.deltTidspunkt,
         type,
@@ -212,31 +208,16 @@ export const mapToHendelser = ({
 
 const KandidatHendelser = ({
   kandidatHendelser,
-  endreUtfallForKandidat,
 }: {
   kandidatHendelser: KandidatHendelse[];
-  endreUtfallForKandidat: (utfall: KandidatutfallTyper) => void;
 }) => {
   return (
     <div className='flex flex-col gap-4'>
       {kandidatHendelser.map((hendelse, index) => {
-        const visFjernFåttJobben =
-          isUtfallsendring(hendelse.raw) &&
-          hendelse.raw?.utfall === UtfallsEndringTyper.FATT_JOBBEN &&
-          !kandidatHendelser
-            .slice(0, index)
-            .some(
-              (h) =>
-                isUtfallsendring(h.raw) &&
-                h.raw?.utfall === UtfallsEndringTyper.PRESENTERT,
-            );
-
         return (
           <KandidatHendelseKort
             key={`${hendelse.tittel}-${index}`}
             {...hendelse}
-            fjerneFåttJobben={visFjernFåttJobben}
-            endreUtfallForKandidat={endreUtfallForKandidat}
           />
         );
       })}

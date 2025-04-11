@@ -10,7 +10,8 @@ const FinnKandidaterKnapp: React.FC = () => {
   const { stillingsData } = useStillingsContext();
   return (
     <Button
-      variant='tertiary'
+      variant='primary'
+      size='small'
       icon={<MagnifyingGlassIcon />}
       onClick={() => {
         trackAndNavigate(
