@@ -1,4 +1,5 @@
 import { useKandidatContext } from '../KandidatContext';
+import KandidatBeskrivelse from './components/KandidatBeskrivelse';
 import KandidatErfaring from './components/KandidatErfaring';
 import KandidatFørerkort from './components/KandidatFørerkort';
 import KandidatGodkjenninger from './components/KandidatGodkjenninger';
@@ -18,6 +19,7 @@ const KandidatOversikt: React.FC = () => {
       <div className='flex-grow'>
         <div className='grid gap-x-[3.5rem] gap-y-8 md:flex-row'>
           <KandidatØnsker />
+          <KandidatBeskrivelse kandidatSammendrag={kandidatData.beskrivelse} />
           <KandidatUtdanning />
           <KandidatErfaring />
         </div>
