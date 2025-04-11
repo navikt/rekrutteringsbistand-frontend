@@ -1,10 +1,10 @@
-import { KandidatHendelse } from './KandidatHendelse';
+import { KandidatHendelseInformasjon } from './KandidatHendelser/KandidatHendelser';
 import { BodyShort, Tag } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import { nb } from 'date-fns/locale/nb';
 
 export interface KandidatHendelseTagProps {
-  kandidatHendelse: KandidatHendelse;
+  kandidatHendelse?: KandidatHendelseInformasjon | null;
   sidebar?: boolean;
 }
 
@@ -24,19 +24,21 @@ const KandidatHendelseTag: React.FC<KandidatHendelseTagProps> = ({
       }
     >
       <Tag
-        variant={kandidatHendelse.type}
+        variant={
+          kandidatHendelse.fargeKode as 'error' | 'info' | 'success' | 'alt1'
+        }
         size='small'
         className='inline-flex '
       >
         <div className='flex gap-2 items-center'>
-          {kandidatHendelse.ikon}{' '}
-          {kandidatHendelse.kilde === 'Sms' ? 'SMS' : kandidatHendelse.tittel}
+          {kandidatHendelse.ikon} {kandidatHendelse.tittel}
         </div>
       </Tag>
       <BodyShort textColor='subtle' size='small' className='mt-1'>
-        {format(kandidatHendelse.dato, 'dd MMM yyyy', {
-          locale: nb,
-        })}
+        {kandidatHendelse.dato &&
+          format(kandidatHendelse.dato, 'dd MMM yyyy', {
+            locale: nb,
+          })}
       </BodyShort>
     </div>
   );

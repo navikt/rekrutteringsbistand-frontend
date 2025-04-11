@@ -4,13 +4,7 @@ import { ChevronDownIcon } from '@navikt/aksel-icons';
 import { ActionMenu, Button, Checkbox, CheckboxGroup } from '@navikt/ds-react';
 import * as React from 'react';
 
-export interface InternStatusFilterProps {
-  children?: React.ReactNode | undefined;
-}
-
-const InternStatusFilter: React.FC<InternStatusFilterProps> = ({
-  children,
-}) => {
+const InternStatusFilter: React.FC = () => {
   const [open, setOpen] = React.useState(false);
   return (
     <ActionMenu open={open} onOpenChange={setOpen}>

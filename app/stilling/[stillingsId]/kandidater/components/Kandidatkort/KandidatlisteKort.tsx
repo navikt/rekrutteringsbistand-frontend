@@ -1,7 +1,6 @@
 import { usynligKandidaterSchemaDTO } from '../../../../../api/kandidat/schema.zod';
 import { KANDIDATLISTE_COLUMN_LAYOUT } from '../../FiltrertKandidatListeVisning';
 import { useKandidatlisteContext } from '../../KandidatlisteContext';
-import { mapToHendelser } from '../KandidatHendelse';
 import KandidatHendelseTag from '../KandidatHendelseTag';
 import { KandidatVisningProps } from '../KandidatlisteFilter/useFiltrerteKandidater';
 import SletteKandidatKnapp from '../SlettKandidatModal';
@@ -26,12 +25,7 @@ const KandidatListeKort: React.FC<KandidatListeKortProps> = ({
 
   <div className={kolonneStyling}></div>;
 
-  const {
-    forespurteKandidater,
-    beskjeder,
-    lukketKandidatliste,
-    kandidatliste,
-  } = useKandidatlisteContext();
+  const { lukketKandidatliste, kandidatlisteId } = useKandidatlisteContext();
 
   if (usynligKandidat) {
     return (
@@ -66,24 +60,6 @@ const KandidatListeKort: React.FC<KandidatListeKortProps> = ({
   }
 
   if (kandidat) {
-    const forespørselCvForKandidat =
-      kandidat.aktørid && forespurteKandidater
-        ? forespurteKandidater[kandidat.aktørid]
-        : null;
-
-    const beskjedForKandidat = beskjeder && beskjeder[kandidat.fodselsnr ?? ''];
-
-    const kandidatHendelser = mapToHendelser({
-      kandidat,
-      forespørselCvForKandidat,
-      beskjedForKandidat,
-    });
-
-    const sisteAktivitet = kandidatHendelser.filter(
-      (h) => h.kilde !== 'Sms',
-    )[0];
-    const sisteSms = kandidatHendelser.filter((h) => h.kilde === 'Sms')[0];
-
     return (
       <Box.New
         padding='4'
@@ -111,15 +87,19 @@ const KandidatListeKort: React.FC<KandidatListeKortProps> = ({
             </div>
           </div>
           <div className={kolonneStyling}>
-            <KandidatHendelseTag kandidatHendelse={sisteAktivitet} />
+            <KandidatHendelseTag
+              kandidatHendelse={kandidat.kandidatHendelser.sisteAktivitet}
+            />
           </div>
           <div className={kolonneStyling}>
-            <KandidatHendelseTag kandidatHendelse={sisteSms} />
+            <KandidatHendelseTag
+              kandidatHendelse={kandidat.kandidatHendelser.sisteSms}
+            />
           </div>
           <div className={kolonneStyling}>
             <VelgInternStatus
               lukketKandidatliste={lukketKandidatliste}
-              kandidatlisteId={kandidatliste.kandidatlisteId}
+              kandidatlisteId={kandidatlisteId}
               kandidatnr={kandidat.kandidatnr}
               status={kandidat.status}
             />
@@ -128,7 +108,7 @@ const KandidatListeKort: React.FC<KandidatListeKortProps> = ({
             <SletteKandidatKnapp
               lukketKandidatliste={lukketKandidatliste}
               kandidat={kandidat}
-              kandidatlisteId={kandidatliste.kandidatlisteId}
+              kandidatlisteId={kandidatlisteId}
             />
           </div>
         </div>

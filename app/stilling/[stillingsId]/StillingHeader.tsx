@@ -8,7 +8,6 @@ import KopierStillingLenke from './components/KopierStillingLenke';
 import {
   InternKandidatstatus,
   KandidatutfallTyper,
-  UtfallsEndringTyper,
 } from './kandidater/KandidatTyper';
 import { Buildings2Icon, PersonIcon } from '@navikt/aksel-icons';
 import { BodyShort } from '@navikt/ds-react';
@@ -30,7 +29,7 @@ const StillingHeader: React.FC = () => {
   const antallPresenterte =
     kandidatlisteHook.data?.kandidater.filter((kandidat) =>
       kandidat.utfallsendringer.some(
-        (u) => u.utfall === UtfallsEndringTyper.PRESENTERT,
+        (u) => u.utfall === KandidatutfallTyper.PRESENTERT,
       ),
     )?.length ?? '-';
 

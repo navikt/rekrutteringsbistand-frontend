@@ -1,14 +1,14 @@
 import { endreUtfallKandidat } from '../../../../../api/kandidat/endreKandidatUtfall';
-import { kandidaterSchemaDTO } from '../../../../../api/kandidat/schema.zod';
 import { useApplikasjonContext } from '../../../../../providers/ApplikasjonContext';
 import { useStillingsContext } from '../../../StillingsContext';
-import { KandidatutfallTyper, UtfallsEndringTyper } from '../../KandidatTyper';
+import { KandidatutfallTyper } from '../../KandidatTyper';
 import { useKandidatlisteContext } from '../../KandidatlisteContext';
 import DelMedArbeidsgiver from '../DelMedArbeidsgiver/DelMedArbeidsgiver';
 import DelMedKandidatModal from '../DelMedKandidat/DelMedKandidatModal';
 import FjernFåttJobbenKnapp from '../FjernFåttJobbenKnapp';
-import KandidatHendelse, { mapToHendelser } from '../KandidatHendelse';
 import KandidatHendelseTag from '../KandidatHendelseTag';
+import KandidatHendelser from '../KandidatHendelser/KandidatHendelser';
+import { KandidatVisningProps } from '../KandidatlisteFilter/useFiltrerteKandidater';
 import RegistrerFåttJobbenKnapp from '../RegistrerFåttJobbenKnapp';
 import SendSmsModal from '../SendSMS/SendSmsModal';
 import SletteKandidatKnapp from '../SlettKandidatModal';
@@ -18,7 +18,7 @@ import { logger } from '@navikt/next-logger';
 import * as React from 'react';
 
 export interface KandidatHandlingerForStillingProps {
-  kandidat: kandidaterSchemaDTO;
+  kandidat: KandidatVisningProps;
 }
 
 const KandidatHandlingerForStilling: React.FC<
@@ -26,28 +26,9 @@ const KandidatHandlingerForStilling: React.FC<
 > = ({ kandidat }) => {
   const { valgtNavKontor } = useApplikasjonContext();
   const { stillingsData, kandidatlisteInfo } = useStillingsContext();
-  const {
-    forespurteKandidater,
-    beskjeder,
-    reFetchKandidatliste,
-    kandidatliste,
-    lukketKandidatliste,
-  } = useKandidatlisteContext();
+  const { reFetchKandidatliste, lukketKandidatliste, kandidatlisteId } =
+    useKandidatlisteContext();
   const [loading, setLoading] = React.useState<boolean>(false);
-  const beskjedForKandidat = beskjeder && beskjeder[kandidat.fodselsnr ?? ''];
-
-  const forespørselCvForKandidat =
-    kandidat.aktørid && forespurteKandidater
-      ? forespurteKandidater[kandidat.aktørid]
-      : null;
-
-  const kandidatHendelser = mapToHendelser({
-    kandidat,
-    forespørselCvForKandidat,
-    beskjedForKandidat,
-  });
-
-  const sisteAktivitet = kandidatHendelser.filter((h) => h.kilde !== 'Sms')[0];
 
   const endreUtfallForKandidat = async (utfall: KandidatutfallTyper) => {
     setLoading(true);
@@ -55,7 +36,7 @@ const KandidatHandlingerForStilling: React.FC<
       await endreUtfallKandidat(
         utfall,
         valgtNavKontor?.navKontor ?? '',
-        kandidatliste.kandidatlisteId,
+        kandidatlisteId,
         kandidat.kandidatnr,
       );
       reFetchKandidatliste();
@@ -79,7 +60,10 @@ const KandidatHandlingerForStilling: React.FC<
         <div className='flex justify-between'>
           <div>
             <div className='mb-2'>{stillingsData.stilling.title}</div>
-            <KandidatHendelseTag sidebar kandidatHendelse={sisteAktivitet} />
+            <KandidatHendelseTag
+              sidebar
+              kandidatHendelse={kandidat.kandidatHendelser.sisteAktivitet}
+            />
           </div>
           <div>
             {kandidatlisteInfo && (
@@ -111,7 +95,7 @@ const KandidatHandlingerForStilling: React.FC<
             sidebar
           />
           <div>
-            {kandidat.utfall !== UtfallsEndringTyper.FATT_JOBBEN ? (
+            {kandidat.utfall !== KandidatutfallTyper.FATT_JOBBEN ? (
               <RegistrerFåttJobbenKnapp
                 loading={loading}
                 endreUtfallForKandidat={endreUtfallForKandidat}
@@ -129,7 +113,7 @@ const KandidatHandlingerForStilling: React.FC<
             <SletteKandidatKnapp
               tittel={'Slett'}
               kandidat={kandidat}
-              kandidatlisteId={kandidatliste.kandidatlisteId}
+              kandidatlisteId={kandidatlisteId}
               lukketKandidatliste={lukketKandidatliste}
             />
           </div>
@@ -137,9 +121,11 @@ const KandidatHandlingerForStilling: React.FC<
 
         <Accordion>
           <Accordion.Item>
-            <Accordion.Header>Vis alle aktiviteter og varsler</Accordion.Header>
+            <Accordion.Header>Vis alle hendelser og varsler</Accordion.Header>
             <Accordion.Content>
-              <KandidatHendelse kandidatHendelser={kandidatHendelser} />
+              <KandidatHendelser
+                kandidatHendelser={kandidat.kandidatHendelser}
+              />
             </Accordion.Content>
           </Accordion.Item>
         </Accordion>

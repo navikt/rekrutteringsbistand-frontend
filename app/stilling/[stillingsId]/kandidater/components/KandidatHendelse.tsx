@@ -1,228 +1,189 @@
-import { KandidatForespurtOmDelingSchema } from '../../../../api/foresporsel-om-deling-av-cv/foresporsler/[slug]/useForespurteOmDelingAvCv';
-import {
-  kandidaterSchemaDTO,
-  utfallsendringerSchemaDTO,
-} from '../../../../api/kandidat/schema.zod';
-import { Sms } from '../../../../api/kandidatvarsel/kandidatvarsel';
-import { storForbokstavString } from '../../../../kandidat/util';
-import { UtfallsEndringTyper } from '../KandidatTyper';
-import KandidatHendelseKort from './KandidatHendelseKort';
-import {
-  CheckmarkCircleIcon,
-  ClipboardIcon,
-  ExclamationmarkTriangleIcon,
-  SparklesIcon,
-  TasklistSendIcon,
-  ThumbDownIcon,
-  ThumbUpIcon,
-} from '@navikt/aksel-icons';
-import { format } from 'date-fns';
-import { nb } from 'date-fns/locale';
-import React from 'react';
+// import { KandidatForespurtOmDelingSchema } from '../../../../api/foresporsel-om-deling-av-cv/foresporsler/[slug]/useForespurteOmDelingAvCv';
+// import {
+//   kandidaterSchemaDTO,
+//   utfallsendringerSchemaDTO,
+// } from '../../../../api/kandidat/schema.zod';
+// import { Sms } from '../../../../api/kandidatvarsel/kandidatvarsel';
+// import { storForbokstavString } from '../../../../kandidat/util';
+// import { KandidatutfallTyper } from '../KandidatTyper';
+// import KandidatHendelseKort from './KandidatHendelseKort';
+// import {
+//   CheckmarkCircleIcon,
+//   ClipboardIcon,
+//   ExclamationmarkTriangleIcon,
+//   SparklesIcon,
+// } from '@navikt/aksel-icons';
+// import { format } from 'date-fns';
+// import { nb } from 'date-fns/locale';
+// import React from 'react';
 
-export interface KandidatHendelse {
-  tittel: string;
-  tekst: string;
-  dato: string;
-  type: 'success' | 'error' | 'info';
-  ikon: React.ReactNode;
-  kilde: string;
-  raw?: utfallsendringerSchemaDTO | KandidatForespurtOmDelingSchema | Sms;
-}
+// export interface KandidatHendelse {
+//   tittel: string;
+//   tekst: string;
+//   dato: Date;
+//   frist?: Date | null;
+//   type: 'success' | 'error' | 'info' | 'alt1';
+//   ikon: React.ReactNode;
+//   raw?: utfallsendringerSchemaDTO | KandidatForespurtOmDelingSchema | Sms;
+// }
 
-export const utfallsEndringPresentasjon = (
-  utfallsEndring: UtfallsEndringTyper,
-): {
-  tittel: string;
-  ikon: React.ReactNode;
-  type: 'success' | 'error' | 'info';
-} => {
-  switch (utfallsEndring) {
-    case UtfallsEndringTyper.DELT_MED_KANDIDAT:
-      return {
-        tittel: 'Stillingen er delt med kandidaten',
-        ikon: <CheckmarkCircleIcon className='text-success' />,
-        type: 'success',
-      };
-    case UtfallsEndringTyper.SVAR_JA:
-      return {
-        tittel: 'Svart på deling av CV: Ja',
-        ikon: <ThumbUpIcon className='text-success' />,
-        type: 'success',
-      };
-    case UtfallsEndringTyper.SVAR_NEI:
-      return {
-        tittel: 'Svart på deling av CV: Nei',
-        ikon: <ThumbDownIcon className='text-danger' />,
-        type: 'error',
-      };
-    case UtfallsEndringTyper.CV_DELT:
-      return {
-        tittel: 'Delt med arbeidsgiver',
-        ikon: <TasklistSendIcon className='text-success' />,
-        type: 'success',
-      };
-    case UtfallsEndringTyper.CV_SLETTET:
-      return {
-        tittel: 'CV er slettet',
-        ikon: <ExclamationmarkTriangleIcon className='text-danger' />,
-        type: 'error',
-      };
-    case UtfallsEndringTyper.FATT_JOBBEN:
-      return {
-        tittel: 'Fått jobben',
-        ikon: <CheckmarkCircleIcon className='text-success' />,
-        type: 'success',
-      };
-    case UtfallsEndringTyper.SMS_SENDT:
-      return {
-        tittel: 'Sendt varsel på SMS',
-        ikon: <CheckmarkCircleIcon className='text-success' />,
-        type: 'success',
-      };
-    case UtfallsEndringTyper.PRESENTERT:
-      return {
-        tittel: 'Presentert',
-        ikon: <CheckmarkCircleIcon className='text-success' />,
-        type: 'success',
-      };
-    case UtfallsEndringTyper.IKKE_PRESENTERT:
-      return {
-        tittel: 'Ikke presentert',
-        ikon: <ExclamationmarkTriangleIcon className='text-danger' />,
-        type: 'error',
-      };
-    default:
-      return {
-        tittel: utfallsEndring + ' (ukjent)',
-        ikon: null,
-        type: 'error',
-      };
-  }
-};
+// export const utfallsEndringPresentasjon = (
+//   utfallType: KandidatutfallTyper,
+// ): {
+//   tittel: string;
+//   ikon: React.ReactNode;
+//   type: 'success' | 'error' | 'info' | 'alt1';
+// } => {
+//   switch (utfallType) {
+//     case KandidatutfallTyper.FATT_JOBBEN:
+//       return {
+//         tittel: 'Fått jobben',
+//         ikon: <CheckmarkCircleIcon className='text-success' />,
+//         type: 'success',
+//       };
 
-export const mapToHendelser = ({
-  kandidat,
-  forespørselCvForKandidat,
-  beskjedForKandidat,
-}: {
-  kandidat: kandidaterSchemaDTO;
-  forespørselCvForKandidat: KandidatForespurtOmDelingSchema[] | null;
-  beskjedForKandidat: Sms | null;
-}): KandidatHendelse[] => {
-  const hendelser: KandidatHendelse[] = [];
+//     case KandidatutfallTyper.PRESENTERT:
+//       return {
+//         tittel: 'Presentert',
+//         ikon: <CheckmarkCircleIcon className='text-success' />,
+//         type: 'success',
+//       };
+//     case KandidatutfallTyper.IKKE_PRESENTERT:
+//       return {
+//         tittel: 'Ikke presentert',
+//         ikon: <ExclamationmarkTriangleIcon className='text-danger' />,
+//         type: 'error',
+//       };
+//     default:
+//       return {
+//         tittel: 'Ukjent utfall',
+//         ikon: null,
+//         type: 'error',
+//       };
+//   }
+// };
 
-  if (kandidat.lagtTilAv?.navn && kandidat.lagtTilTidspunkt) {
-    hendelser.push({
-      tittel: 'Lagt til i listen',
-      tekst: `av ${kandidat.lagtTilAv.navn}`,
-      dato: kandidat.lagtTilTidspunkt,
-      type: 'info',
-      ikon: <SparklesIcon className='text-info' />,
-      kilde: 'Kandidatliste',
-    });
-  }
+// export const mapToHendelser = ({
+//   kandidat,
+//   forespørselCvForKandidat,
+//   beskjedForKandidat,
+// }: {
+//   kandidat: kandidaterSchemaDTO;
+//   forespørselCvForKandidat: KandidatForespurtOmDelingSchema[] | null;
+//   beskjedForKandidat: Sms | null;
+// }): KandidatHendelse[] => {
+//   const hendelser: KandidatHendelse[] = [];
 
-  if (kandidat.utfallsendringer) {
-    kandidat.utfallsendringer.forEach((endring) => {
-      if (endring.tidspunkt && endring.utfall) {
-        const presentasjon = utfallsEndringPresentasjon(
-          endring.utfall as UtfallsEndringTyper,
-        );
+//   if (kandidat.lagtTilAv?.navn && kandidat.lagtTilTidspunkt) {
+//     hendelser.push({
+//       tittel: 'Lagt til i listen',
+//       tekst: `av ${kandidat.lagtTilAv.navn}`,
+//       dato: new Date(kandidat.lagtTilTidspunkt),
+//       type: 'info',
+//       ikon: <SparklesIcon className='text-info' />,
+//     });
+//   }
 
-        hendelser.push({
-          tittel: presentasjon.tittel,
-          tekst: endring.registrertAvIdent
-            ? `av ${endring.registrertAvIdent || 'ukjent'}`
-            : '',
-          type: presentasjon.type,
-          ikon: presentasjon.ikon,
-          dato: endring.tidspunkt,
-          kilde: 'Utfallsendring',
-          raw: endring,
-        });
-      }
-    });
-  }
+//   if (kandidat.utfallsendringer) {
+//     kandidat.utfallsendringer.forEach((endring) => {
+//       if (endring.tidspunkt && endring.utfall) {
+//         const presentasjon = utfallsEndringPresentasjon(
+//           endring.utfall as KandidatutfallTyper,
+//         );
 
-  if (forespørselCvForKandidat) {
-    forespørselCvForKandidat.forEach((forespørsel) => {
-      const type = forespørsel.svar
-        ? forespørsel.svar.harSvartJa
-          ? 'success'
-          : 'error'
-        : 'info';
+//         hendelser.push({
+//           tittel: presentasjon.tittel,
+//           tekst: endring.registrertAvIdent
+//             ? `av ${endring.registrertAvIdent || 'ukjent'}`
+//             : '',
+//           type: presentasjon.type,
+//           ikon: presentasjon.ikon,
+//           dato: new Date(endring.tidspunkt),
+//           kilde: 'Utfallsendring',
+//           raw: endring,
+//         });
+//       }
+//     });
+//   }
 
-      const tekst = forespørsel.svar
-        ? forespørsel.svar.harSvartJa
-          ? `Svart ja  ${forespørsel.svar.svartAv?.ident ? `av ${forespørsel.svar.svartAv.ident}` : ''}`
-          : `Svart nei ${forespørsel.svar.svartAv?.ident ? `av ${forespørsel.svar.svartAv.ident}` : ''}`
-        : `Svarfrist ${format(new Date(forespørsel.svarfrist), 'dd. MMMM yyyy', { locale: nb })}`;
+//   if (forespørselCvForKandidat) {
+//     forespørselCvForKandidat.forEach((forespørsel) => {
+//       const type = forespørsel.svar
+//         ? forespørsel.svar.harSvartJa
+//           ? 'success'
+//           : 'error'
+//         : 'info';
 
-      hendelser.push({
-        kilde: 'ForespørselOmDelingAvCv',
-        tittel: 'Deling av CV',
-        tekst: tekst,
-        dato: forespørsel.deltTidspunkt,
-        type,
-        ikon:
-          type === 'error' ? (
-            <ExclamationmarkTriangleIcon className='text-danger' />
-          ) : (
-            <ClipboardIcon className='text-info' />
-          ),
-        raw: forespørsel,
-      });
-    });
-  }
+//       const tekst = forespørsel.svar
+//         ? forespørsel.svar.harSvartJa
+//           ? `Svart ja  ${forespørsel.svar.svartAv?.ident ? `av ${forespørsel.svar.svartAv.ident}` : ''}`
+//           : `Svart nei ${forespørsel.svar.svartAv?.ident ? `av ${forespørsel.svar.svartAv.ident}` : ''}`
+//         : `Svarfrist ${format(new Date(forespørsel.svarfrist), 'dd. MMMM yyyy', { locale: nb })}`;
 
-  if (beskjedForKandidat?.opprettet) {
-    const type = beskjedForKandidat.eksternStatus?.includes('FEIL')
-      ? 'error'
-      : 'success';
+//       hendelser.push({
+//         kilde: 'ForespørselOmDelingAvCv',
+//         tittel: 'Deling av CV',
+//         tekst: tekst,
+//         dato: new Date(forespørsel.deltTidspunkt),
+//         type,
+//         ikon:
+//           type === 'error' ? (
+//             <ExclamationmarkTriangleIcon className='text-danger' />
+//           ) : (
+//             <ClipboardIcon className='text-info' />
+//           ),
+//         raw: forespørsel,
+//       });
+//     });
+//   }
 
-    hendelser.push({
-      kilde: 'Sms',
-      tittel: beskjedForKandidat.eksternStatus?.includes('FEIL')
-        ? 'Varsling på SMS feilet'
-        : 'Sendt varsel på SMS',
-      tekst: storForbokstavString(
-        (beskjedForKandidat.eksternFeilmelding || '').replace(/[_-]/g, ' '),
-      ),
-      dato: beskjedForKandidat.opprettet,
-      type,
-      ikon:
-        type === 'error' ? (
-          <ExclamationmarkTriangleIcon className='text-danger' />
-        ) : (
-          <CheckmarkCircleIcon className='text-success' />
-        ),
-      raw: beskjedForKandidat,
-    });
-  }
+//   if (beskjedForKandidat?.opprettet) {
+//     const type = beskjedForKandidat.eksternStatus?.includes('FEIL')
+//       ? 'error'
+//       : 'success';
 
-  return hendelser.sort(
-    (a, b) => new Date(b.dato).getTime() - new Date(a.dato).getTime(),
-  );
-};
+//     hendelser.push({
+//       kilde: 'Sms',
+//       tittel: beskjedForKandidat.eksternStatus?.includes('FEIL')
+//         ? 'Varsling på SMS feilet'
+//         : 'Sendt varsel på SMS',
+//       tekst: storForbokstavString(
+//         (beskjedForKandidat.eksternFeilmelding || '').replace(/[_-]/g, ' '),
+//       ),
+//       dato: new Date(beskjedForKandidat.opprettet),
+//       type,
+//       ikon:
+//         type === 'error' ? (
+//           <ExclamationmarkTriangleIcon className='text-danger' />
+//         ) : (
+//           <CheckmarkCircleIcon className='text-success' />
+//         ),
+//       raw: beskjedForKandidat,
+//     });
+//   }
 
-const KandidatHendelser = ({
-  kandidatHendelser,
-}: {
-  kandidatHendelser: KandidatHendelse[];
-}) => {
-  return (
-    <div className='flex flex-col gap-4'>
-      {kandidatHendelser.map((hendelse, index) => {
-        return (
-          <KandidatHendelseKort
-            key={`${hendelse.tittel}-${index}`}
-            {...hendelse}
-          />
-        );
-      })}
-    </div>
-  );
-};
+//   return hendelser;
+// };
 
-export default KandidatHendelser;
+// const KandidatHendelser = ({
+//   kandidatHendelser,
+// }: {
+//   kandidatHendelser: KandidatHendelse[];
+// }) => {
+//   return (
+//     <div className='flex flex-col gap-4'>
+//       {kandidatHendelser
+//         .sort((h1, h2) => h2.dato.getTime() - h1.dato.getTime())
+//         .map((hendelse, index) => {
+//           return (
+//             <KandidatHendelseKort
+//               key={`${hendelse.tittel}-${index}`}
+//               {...hendelse}
+//             />
+//           );
+//         })}
+//     </div>
+//   );
+// };
+
+// export default KandidatHendelser;

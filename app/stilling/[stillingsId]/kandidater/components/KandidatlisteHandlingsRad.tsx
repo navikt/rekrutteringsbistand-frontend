@@ -8,7 +8,7 @@ import * as React from 'react';
 
 const KandidatlisteHandlingsRad: React.FC = () => {
   const {
-    kandidatliste,
+    kandidater,
     lukketKandidatliste,
     markerteKandidater,
     setMarkerteKandidater,
@@ -20,24 +20,19 @@ const KandidatlisteHandlingsRad: React.FC = () => {
       <Checkbox
         disabled={lukketKandidatliste}
         checked={
-          markerteKandidater &&
-          markerteKandidater.length === kandidatliste.kandidater.length
+          markerteKandidater && markerteKandidater.length === kandidater.length
         }
         indeterminate={
           markerteKandidater &&
           markerteKandidater.length > 0 &&
-          markerteKandidater.length !== kandidatliste.kandidater.length
+          markerteKandidater.length !== kandidater.length
         }
         onChange={() => {
-          if (
-            markerteKandidater &&
-            setMarkerteKandidater &&
-            markerteKandidater.length
-          ) {
+          if (markerteKandidater.length) {
             setMarkerteKandidater([]);
-          } else if (setMarkerteKandidater) {
+          } else {
             setMarkerteKandidater(
-              kandidatliste.kandidater.filter((k) => k.fodselsnr !== null),
+              kandidater.filter((k) => k.fodselsnr !== null),
             );
           }
         }}

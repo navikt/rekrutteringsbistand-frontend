@@ -17,6 +17,7 @@ import { useRouter } from 'next/navigation';
 import React, { useMemo } from 'react';
 
 interface StillingsContextType {
+  stillingsId: string;
   stillingsData: StillingsDataDTO;
   kandidatlisteInfo: KandidatlisteInfoDTO | null;
   forhåndsvisData: StillingsDataDTO | null;
@@ -132,6 +133,7 @@ const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
         refetch,
         kandidatlisteInfo,
         erJobbmesse,
+        stillingsId: stillingsData.stilling.uuid,
       }}
     >
       {children}

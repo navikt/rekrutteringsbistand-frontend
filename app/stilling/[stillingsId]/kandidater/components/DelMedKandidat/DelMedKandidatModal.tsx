@@ -6,7 +6,7 @@ import SWRLaster from '../../../../../components/SWRLaster';
 import { useVisVarsling } from '../../../../../components/varsling/Varsling';
 import { useApplikasjonContext } from '../../../../../providers/ApplikasjonContext';
 import { useUmami } from '../../../../../providers/UmamiContext';
-import { useKandidatlisteContext } from '../../KandidatlisteContext';
+import { useStillingsContext } from '../../../StillingsContext';
 import VelgSvarfrist from './VelgSvarfrist';
 import { TasklistIcon } from '@navikt/aksel-icons';
 import {
@@ -32,16 +32,14 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
   sidebar,
 }) => {
   const { track } = useUmami();
-  const { kandidatliste } = useKandidatlisteContext();
+  const { stillingsId } = useStillingsContext();
   const [modalErÅpen, setModalErÅpen] = React.useState(false);
   const [svarfrist, setSvarfrist] = React.useState<Date | undefined>(undefined);
   const varsel = useVisVarsling();
   const { valgtNavKontor } = useApplikasjonContext();
   const [loading, setLoading] = React.useState(false);
 
-  const forespurteKandidaterHook = useForespurteOmDelingAvCv(
-    kandidatliste.stillingId,
-  );
+  const forespurteKandidaterHook = useForespurteOmDelingAvCv(stillingsId);
 
   return (
     <>
@@ -81,7 +79,7 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
               if (svarfrist) {
                 setLoading(true);
                 await sendForespørselOmDelingAvCv({
-                  stillingsId: kandidatliste.stillingId,
+                  stillingsId: stillingsId,
                   svarfrist: format(svarfrist, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"),
                   aktorIder: kandidaterSomKanDelesTil
                     .map((kandidat) => kandidat.aktørid)

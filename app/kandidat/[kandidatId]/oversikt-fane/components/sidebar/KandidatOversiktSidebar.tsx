@@ -19,7 +19,7 @@ const KandidatOversiktSidebar: React.FC<KandidatOversiktSidebarProps> = ({
           : 'lg:ml-8 flex lg:w-[25rem] flex-shrink-0 lg:flex-col gap-4 flex-row mt-4 lg:mt-0'
       }
     >
-      <GråBoks className={sidebar ? 'hidden' : ''} tittel='Profilkvalitet'>
+      <GråBoks tittel='Profilkvalitet'>
         <Profilkvalitet />
       </GråBoks>
       <GråBoks tittel='Siste aktivitet'>

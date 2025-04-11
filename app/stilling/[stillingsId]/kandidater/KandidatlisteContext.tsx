@@ -1,24 +1,28 @@
 import { rekbisError } from '../../../../util/rekbisError';
 import { ForespurteOmDelingAvCvDTO } from '../../../api/foresporsel-om-deling-av-cv/foresporsler/[slug]/useForespurteOmDelingAvCv';
 import {
-  kandidaterSchemaDTO,
   kandidatlisteSchemaDTO,
+  usynligKandidaterSchemaDTO,
 } from '../../../api/kandidat/schema.zod';
 import { Sms } from '../../../api/kandidatvarsel/kandidatvarsel';
 import { useStillingsContext } from '../StillingsContext';
+import { KandidatVisningProps } from './components/KandidatlisteFilter/useFiltrerteKandidater';
 import OrganisasjonsnummerAlert from './components/OrganisasjonsnummerAlert';
+import { mapKandidatListeKandidatTilVisning } from './util';
 import * as React from 'react';
 
 interface KandidatlisteContextProps {
   forespurteKandidater: ForespurteOmDelingAvCvDTO;
   beskjeder: Record<string, Sms>;
   lukketKandidatliste: boolean;
-  kandidatliste: kandidatlisteSchemaDTO;
-  markerteKandidater: kandidaterSchemaDTO[];
-  setMarkerteKandidater: (val: kandidaterSchemaDTO[]) => void;
-  toggleMarkerKandidat: (val: kandidaterSchemaDTO) => void;
+  markerteKandidater: KandidatVisningProps[];
+  setMarkerteKandidater: (val: KandidatVisningProps[]) => void;
+  toggleMarkerKandidat: (val: KandidatVisningProps) => void;
   reFetchKandidatliste: () => void;
-  filtrerteKandidater?: kandidaterSchemaDTO[];
+  kandidatlisteId: string;
+  kandidater: KandidatVisningProps[];
+  usynligeKandidater: usynligKandidaterSchemaDTO[];
+  kandidatlisteRawData: kandidatlisteSchemaDTO;
 }
 
 const KandidatListeContext = React.createContext<
@@ -44,7 +48,7 @@ export const KandidatlisteContextProvider: React.FC<
 }) => {
   const { stillingsData, kandidatlisteInfo } = useStillingsContext();
   const [markerteKandidater, setMarkerteKandidater] = React.useState<
-    kandidaterSchemaDTO[]
+    KandidatVisningProps[]
   >([]);
 
   const lukketKandidatliste =
@@ -61,7 +65,7 @@ export const KandidatlisteContextProvider: React.FC<
       organisasjonsnummerFraKandidatliste !== organisasjonsnummerFraStilling,
   );
 
-  const toggleMarkerKandidat = (kandidat: kandidaterSchemaDTO) => {
+  const toggleMarkerKandidat = (kandidat: KandidatVisningProps) => {
     if (setMarkerteKandidater && markerteKandidater) {
       const nyListe = markerteKandidater.some(
         (k) => k.fodselsnr === kandidat.fodselsnr,
@@ -73,9 +77,15 @@ export const KandidatlisteContextProvider: React.FC<
     }
   };
 
-  const [filterteKandidater, setFilterKandidater] = React.useState([]);
-
-
+  const kandidater = kandidatliste.kandidater
+    ? kandidatliste.kandidater.map((kandidat) =>
+        mapKandidatListeKandidatTilVisning(
+          kandidat,
+          forespurteKandidater,
+          beskjeder,
+        ),
+      )
+    : [];
 
   return (
     <KandidatListeContext.Provider
@@ -84,10 +94,13 @@ export const KandidatlisteContextProvider: React.FC<
         beskjeder,
         markerteKandidater,
         setMarkerteKandidater,
-        kandidatliste,
         lukketKandidatliste,
         reFetchKandidatliste,
         toggleMarkerKandidat,
+        kandidatlisteId: kandidatliste.kandidatlisteId,
+        usynligeKandidater: kandidatliste.formidlingerAvUsynligKandidat,
+        kandidater,
+        kandidatlisteRawData: kandidatliste,
       }}
     >
       {orgnummerDivergererMellomStillingOgKandidatliste && (

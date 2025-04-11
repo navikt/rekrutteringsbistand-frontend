@@ -1,14 +1,12 @@
-import {
-  kandidaterSchemaDTO,
-  usynligKandidaterSchemaDTO,
-} from '../../../../../../api/kandidat/schema.zod';
+import { usynligKandidaterSchemaDTO } from '../../../../../../api/kandidat/schema.zod';
 import { storForbokstav } from '../../../../../../kandidat/util';
 import KandidatVisningSidebar from '../../KandidatVisningSidebar/KandidatVisningSidebar';
+import { KandidatVisningProps } from '../../KandidatlisteFilter/useFiltrerteKandidater';
 import { BodyShort } from '@navikt/ds-react';
 import * as React from 'react';
 
 export interface KandidatlisteNavnProps {
-  kandidat?: kandidaterSchemaDTO;
+  kandidat?: KandidatVisningProps;
   usynligKandidat?: usynligKandidaterSchemaDTO;
 }
 

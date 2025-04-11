@@ -5,8 +5,8 @@ import { nb } from 'date-fns/locale';
 export interface KandidatHendelseKortProps {
   tittel: string;
   tekst: string;
-  dato: string;
-  type: 'success' | 'error' | 'info';
+  dato?: Date;
+  fargeKode: string;
   ikon: React.ReactNode;
 }
 
@@ -14,13 +14,13 @@ const KandidatHendelseKort: React.FC<KandidatHendelseKortProps> = ({
   tittel,
   tekst,
   dato,
-  type,
+  fargeKode,
   ikon,
 }) => {
   const backgroundColor =
-    type === 'error'
+    fargeKode === 'error'
       ? 'danger-softA'
-      : type === 'success'
+      : fargeKode === 'success'
         ? 'success-softA'
         : 'info-softA';
 
@@ -39,7 +39,7 @@ const KandidatHendelseKort: React.FC<KandidatHendelseKortProps> = ({
             {tekst && (
               <BodyShort size='small' textColor='subtle'>
                 {tekst}{' '}
-                {format(new Date(dato), 'dd. MMMM yyyy HH:mm', { locale: nb })}
+                {dato && format(dato, 'dd. MMMM yyyy HH:mm', { locale: nb })}
               </BodyShort>
             )}
           </div>

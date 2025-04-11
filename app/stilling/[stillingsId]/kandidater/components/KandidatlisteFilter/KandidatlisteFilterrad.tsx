@@ -1,9 +1,9 @@
-import InternStatusFilter from './InternStatusFilter';
+import { useKandidatlisteFilterContext } from './KandidatlisteFilterContext';
 import { Search } from '@navikt/ds-react';
 import * as React from 'react';
 
 const KandidatlisteFilterrad: React.FC = () => {
-  const [search, setSearch] = React.useState('');
+  const { fritekstSøk, setFritekstSøk } = useKandidatlisteFilterContext();
   return (
     <div className='mt-2 flex gap-4 items-center'>
       <div className='md:w-[15rem]'>
@@ -13,11 +13,11 @@ const KandidatlisteFilterrad: React.FC = () => {
           hideLabel
           variant='secondary'
           size='small'
-          value={search}
-          onChange={(val) => setSearch(val)}
+          value={fritekstSøk}
+          onChange={(val) => setFritekstSøk(val)}
         />
       </div>
-      <InternStatusFilter />
+      {/* <InternStatusFilter /> */}
     </div>
   );
 };

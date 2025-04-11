@@ -11,15 +11,9 @@ import { Button } from '@navikt/ds-react';
 import * as React from 'react';
 
 export const KANDIDATLISTE_COLUMN_LAYOUT =
-  'grid-cols-1 md:grid-cols-[20rem_repeat(4,minmax(6rem,1fr))_5rem]';
+  'grid-cols-1 md:grid-cols-[minmax(10rem,30%)_minmax(6rem,20%)_minmax(10rem,20%)_minmax(5rem,10%)_minmax(10rem,15%)_minmax(2rem,5%)]';
 
-export interface FiltrertKandidatListeProps {
-  children?: React.ReactNode | undefined;
-}
-
-const FiltrertKandidatListeVisning: React.FC<FiltrertKandidatListeProps> = ({
-  children,
-}) => {
+const FiltrertKandidatListeVisning: React.FC = () => {
   const filtrerteKandidater = useFiltrerteKandidater();
   const { setSortering, sortering } = useKandidatlisteFilterContext();
 
@@ -32,10 +26,7 @@ const FiltrertKandidatListeVisning: React.FC<FiltrertKandidatListeProps> = ({
     }
     return null;
   };
-  console.log(
-    '🎺 filtrerteKandidater?.kandidater',
-    filtrerteKandidater?.kandidater,
-  );
+
   return (
     <div className='mt-6'>
       <KandidatlisteFilterrad />

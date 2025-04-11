@@ -6,12 +6,6 @@ export enum Kandidatlistestatus {
   Lukket = 'LUKKET',
 }
 
-type FiltrerteKandidater = {
-  kandidater: kandidaterSchemaDTO[];
-  usynligeKandidater: usynligKandidaterSchemaDTO[];
-  totaltAntallKandidater: number;
-};
-
 export type kandidatlisteSchemaDTO = z.infer<typeof kandidatlisteSchema>;
 export type utfallsendringerSchemaDTO = z.infer<typeof utfallsendringerSchema>;
 export type kandidaterSchemaDTO = z.infer<typeof kandidaterSchema>;

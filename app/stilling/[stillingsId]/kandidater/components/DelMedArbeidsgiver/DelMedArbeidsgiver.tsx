@@ -33,7 +33,8 @@ const DelMedArbeidsgiver: React.FC<DelMedArbeidsgiverProps> = ({
   const [visModal, setVisModal] = React.useState(false);
   const { valgtNavKontor } = useApplikasjonContext();
   const { stillingsData } = useStillingsContext();
-  const { kandidatliste, reFetchKandidatliste } = useKandidatlisteContext();
+  const { kandidatlisteId, reFetchKandidatliste, kandidatlisteRawData } =
+    useKandidatlisteContext();
 
   const forespurteKandidaterHook = useForespurteOmDelingAvCv(
     stillingsData.stilling.uuid,
@@ -51,7 +52,7 @@ const DelMedArbeidsgiver: React.FC<DelMedArbeidsgiverProps> = ({
       antall: kandidatnummerListe.length,
     });
     await postDelMedArbeidsgiver({
-      kandidatlisteId: kandidatliste.kandidatlisteId,
+      kandidatlisteId: kandidatlisteId,
       kandidatnummerListe,
       mailadresser: epost,
       navKontor: valgtNavKontor?.navKontor ?? '',
@@ -186,7 +187,9 @@ const DelMedArbeidsgiver: React.FC<DelMedArbeidsgiverProps> = ({
                       <Accordion.Content>
                         <ForhåndsvisningAvEpost
                           stillingstittel={stillingsData.stilling.title}
-                          opprettetAvNavn={kandidatliste.opprettetAv.navn}
+                          opprettetAvNavn={
+                            kandidatlisteRawData.opprettetAv.navn
+                          }
                         />
                       </Accordion.Content>
                     </Accordion.Item>

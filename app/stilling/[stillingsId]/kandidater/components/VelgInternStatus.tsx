@@ -70,13 +70,13 @@ const VelgInternStatus: React.FC<VelgInternStatusProps> = ({
       case InternKandidatstatus.KONTAKTET:
         return 'neutral';
       case InternKandidatstatus.AKTUELL:
-        return 'info';
+        return 'success';
       case InternKandidatstatus.TIL_INTERVJU:
         return 'info';
       case InternKandidatstatus.UAKTUELL:
-        return 'alt1';
+        return 'neutral';
       case InternKandidatstatus.UINTERESSERT:
-        return 'alt1';
+        return 'error';
       default:
         return 'neutral';
     }
