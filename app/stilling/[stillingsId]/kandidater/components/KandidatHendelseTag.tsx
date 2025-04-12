@@ -35,7 +35,16 @@ const KandidatHendelseTag: React.FC<KandidatHendelseTagProps> = ({
         </div>
       </Tag>
       <BodyShort textColor='subtle' size='small' className='mt-1'>
-        {kandidatHendelse.dato &&
+        {kandidatHendelse.frist && (
+          <BodyShort size='small' textColor='subtle'>
+            Frist{' '}
+            {format(kandidatHendelse.frist, 'dd. MMM yyyy', {
+              locale: nb,
+            })}
+          </BodyShort>
+        )}
+        {!kandidatHendelse.frist &&
+          kandidatHendelse.dato &&
           format(kandidatHendelse.dato, 'dd MMM yyyy', {
             locale: nb,
           })}

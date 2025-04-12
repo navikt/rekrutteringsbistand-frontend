@@ -6,6 +6,7 @@ export interface KandidatHendelseKortProps {
   tittel: string;
   tekst: string;
   dato?: Date;
+  frist?: Date;
   fargeKode: string;
   ikon: React.ReactNode;
 }
@@ -16,6 +17,7 @@ const KandidatHendelseKort: React.FC<KandidatHendelseKortProps> = ({
   dato,
   fargeKode,
   ikon,
+  frist,
 }) => {
   const backgroundColor =
     fargeKode === 'error'
@@ -36,7 +38,12 @@ const KandidatHendelseKort: React.FC<KandidatHendelseKortProps> = ({
           <div className='mt-0.5'>{ikon}</div>
           <div>
             <BodyShort weight='semibold'>{tittel}</BodyShort>
-            {tekst && (
+            {frist && (
+              <BodyShort size='small' textColor='subtle'>
+                Frist {format(frist, 'dd. MMMM yyyy HH:mm', { locale: nb })}
+              </BodyShort>
+            )}
+            {!frist && tekst && (
               <BodyShort size='small' textColor='subtle'>
                 {tekst}{' '}
                 {dato && format(dato, 'dd. MMMM yyyy HH:mm', { locale: nb })}

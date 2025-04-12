@@ -14,6 +14,7 @@ export interface KandidatHendelseInformasjon {
     svarfrist?: Date;
     svarTidspunkt?: Date;
   };
+  frist?: Date;
   raw?: utfallsendringerSchemaDTO | KandidatForespurtOmDelingSchema | Sms;
 }
 

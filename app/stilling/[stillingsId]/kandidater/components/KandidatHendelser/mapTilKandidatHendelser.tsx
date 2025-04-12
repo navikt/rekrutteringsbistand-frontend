@@ -67,6 +67,7 @@ const cvHendelsePresentasjon = (
   ikon: React.ReactNode;
   fargeKode: string;
   svarTidspunkt?: string;
+  frist?: Date;
 } => {
   switch (forespørsel.tilstand) {
     case TilstandPåForespørsel.PrøverVarsling:
@@ -82,6 +83,7 @@ const cvHendelsePresentasjon = (
         tekst: 'Spurt om deling av CV',
         ikon: <HourglassIcon className='text-info' />,
         fargeKode: 'info',
+        frist: new Date(forespørsel.svarfrist),
       };
     case TilstandPåForespørsel.KanIkkeVarsle:
       return {
@@ -183,16 +185,9 @@ export const mapTilKandidatHendelser = ({
             svarTidspunkt: forespørsel.svar?.svarTidspunkt,
           },
           fargeKode: presentasjon.fargeKode,
-          ikon: forespørsel.svar ? (
-            forespørsel.svar.harSvartJa ? (
-              <ThumbUpIcon className='text-info' />
-            ) : (
-              <ThumbDownIcon className='text-danger' />
-            )
-          ) : (
-            <HourglassIcon className='text-info' />
-          ),
+          ikon: presentasjon.ikon,
           raw: forespørsel,
+          frist: presentasjon.frist,
         };
       }
     })
