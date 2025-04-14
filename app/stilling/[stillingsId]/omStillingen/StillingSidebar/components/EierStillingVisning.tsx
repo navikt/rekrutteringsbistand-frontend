@@ -20,14 +20,6 @@ const EierStillingVisning: React.FC = () => {
   const ikkeArkiverteKandidater =
     data?.kandidater?.filter((k) => !k.arkivert) ?? [];
 
-  // const antallAktuelleKandidater = ikkeArkiverteKandidater.filter(
-  //   (k) => k.status === InternKandidatstatus.AKTUELL,
-  // ).length;
-
-  // const antallPresenterteKandidater = ikkeArkiverteKandidater.filter(
-  //   (k) => k.utfall === KandidatutfallTyper.PRESENTERT,
-  // ).length;
-
   const antallKandidaterSomHarFåttJobb =
     ikkeArkiverteKandidater.filter(
       (k) => k.utfall === KandidatutfallTyper.FATT_JOBBEN,
@@ -38,12 +30,6 @@ const EierStillingVisning: React.FC = () => {
 
   const antallStillinger = data?.antallStillinger;
   const besatteStillinger = antallKandidaterSomHarFåttJobb;
-
-  // const oppsummeringTekst = `${kandidatlisteInfo?.antallKandidater ?? '-'} kandidater (${antallAktuelleKandidater} er aktuelle${
-  //   data?.kandidatlisteId === stillingsData.stilling.uuid
-  //     ? ` / ${antallPresenterteKandidater} er presentert`
-  //     : ''
-  // })`;
 
   if (!erEier) {
     return null;
@@ -71,13 +57,6 @@ const EierStillingVisning: React.FC = () => {
           kandidatlisteStatus={data?.status}
         />
       </div>
-      {/* <GråBoks tittel='Oppsummering' className='mt-4'>
-        <div className='ml-4'>
-          {besatteStillinger} av {antallStillinger}{' '}
-          {antallStillinger === 1 ? 'stilling' : 'stillinger'} er besatt
-          <div className='mt-2'>{oppsummeringTekst}</div>
-        </div>
-      </GråBoks> */}
     </div>
   );
 };

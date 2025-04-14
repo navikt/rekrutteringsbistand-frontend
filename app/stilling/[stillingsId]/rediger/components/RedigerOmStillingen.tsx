@@ -1,5 +1,6 @@
 import RikTekstEditor from '../../../../components/rikteksteditor/RikTekstEditor';
 import { StillingsDataForm } from '../redigerFormType.zod';
+import OppsummerValidering from './OppsummerValidering';
 import StegNavigering from './StegNavigering';
 import VelgArbeidssted from './VelgArbeidssted';
 import VelgStillingTittel from './VelgStillingTittel';
@@ -19,9 +20,15 @@ export const RedigerOmStillingen: React.FC<{
     formState: { errors },
   } = useFormContext<StillingsDataForm>();
 
+  const [oppsummerValidering, setOppsummerValidering] =
+    React.useState<boolean>(false);
+
   const handleStepSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const isValid = await trigger('omStillingen', { shouldFocus: true });
+
+    setOppsummerValidering(!isValid);
+
     if (isValid) {
       nextStep();
     }
@@ -76,6 +83,7 @@ export const RedigerOmStillingen: React.FC<{
             )}
           </div>
         </div>
+        {oppsummerValidering && <OppsummerValidering feltNavn='omStillingen' />}
         <StegNavigering stegNummer={stegNummer} forrigeSteg={forrigeSteg} />
       </form>
     </div>

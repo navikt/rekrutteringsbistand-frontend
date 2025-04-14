@@ -8,7 +8,6 @@ import { useStillingsContext } from '../StillingsContext';
 import OmAnnonsen from '../components/OmAnnonsen';
 import OmBedriften from '../components/OmBedriften';
 import OmStillingBoks from '../components/OmStillingBoks';
-import AntallKandidater from './AntallKandidater';
 import StillingSidebar from './StillingSidebar/StillingSidebar';
 import {
   CalendarIcon,
@@ -131,7 +130,6 @@ const OmStillingen: React.FC<{ forhåndsvisData?: boolean }> = ({
                     }`}
                     ikon={<TimerStartIcon />}
                   />
-                  <AntallKandidater />
                 </>
               }
             />

@@ -34,21 +34,22 @@ const KandidatHendelseTag: React.FC<KandidatHendelseTagProps> = ({
           {kandidatHendelse.ikon} {kandidatHendelse.tittel}
         </div>
       </Tag>
-      <BodyShort textColor='subtle' size='small' className='mt-1'>
-        {kandidatHendelse.frist && (
-          <BodyShort size='small' textColor='subtle'>
-            Frist{' '}
-            {format(kandidatHendelse.frist, 'dd. MMM yyyy', {
-              locale: nb,
-            })}
-          </BodyShort>
-        )}
-        {!kandidatHendelse.frist &&
-          kandidatHendelse.dato &&
-          format(kandidatHendelse.dato, 'dd MMM yyyy', {
+
+      {kandidatHendelse.frist && (
+        <BodyShort textColor='subtle' size='small' className='mt-1'>
+          Frist{' '}
+          {format(kandidatHendelse.frist, 'dd. MMM yyyy', {
             locale: nb,
           })}
-      </BodyShort>
+        </BodyShort>
+      )}
+      {!kandidatHendelse.frist && kandidatHendelse.dato && (
+        <BodyShort textColor='subtle' size='small' className='mt-1'>
+          {format(kandidatHendelse.dato, 'dd MMM yyyy', {
+            locale: nb,
+          })}
+        </BodyShort>
+      )}
     </div>
   );
 };

@@ -58,10 +58,6 @@ const StillingsTag: React.FC<IStillingTag> = ({ stillingsData, splitTags }) => {
   const publisertDato = stillingsData.stilling.published
     ? format(stillingsData.stilling.published, 'dd.MM.yyyy')
     : '-';
-  // TODO
-  // const utløpsDato = stillingsData.stilling.expires
-  //   ? format(stillingsData.stilling.expires, 'dd.MM.yyyy')
-  //   : '-';
 
   const erEierTag = erEier;
 

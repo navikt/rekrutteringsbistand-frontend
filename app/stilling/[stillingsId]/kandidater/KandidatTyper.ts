@@ -33,19 +33,3 @@ export enum InternKandidatstatus {
   UAKTUELL = 'UAKTUELL',
   UINTERESSERT = 'UINTERESSERT',
 }
-
-// export const aktivitetTilTekst = {
-//   // [UtfallsEndringTyper.DELT_MED_KANDIDAT]: 'Stilling delt med kandidat', //TODO Sjekk opp denne i prod/dev
-//   [UtfallsEndringTyper.SVAR_JA]: 'Deling av CV',
-//   [UtfallsEndringTyper.SVAR_NEI]: 'Deling av CV',
-//   [UtfallsEndringTyper.CV_DELT]: 'CV delt med arbeidsgiver',
-//   // [UtfallsEndringTyper.CV_SLETTET]: 'CV er slettet',
-//   [UtfallsEndringTyper.FATT_JOBBEN]: 'Fått jobben',
-//   // INGEN_AKTIVITET: 'Ingen aktivitet',
-// } as const;
-
-// export const varselTilTekst = {
-//   [UtfallsEndringTyper.SMS_SENDT]: 'Sendt varsel på SMS',
-//   [UtfallsEndringTyper.SMS_FEILET]: 'Varsling på SMS feilet',
-//   [TilstandPåForespørsel.KAN_IKKE_VARSLE]: 'Kan ikke varsles',
-// } as const;

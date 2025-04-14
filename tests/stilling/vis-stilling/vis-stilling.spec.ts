@@ -33,9 +33,6 @@ test.describe(`Stilling test`, () => {
     await expect(
       page.getByRole('heading', { name: 'Om annonsen' }),
     ).toBeVisible();
-    await expect(
-      page.getByRole('heading', { name: 'Oppsummering' }),
-    ).toBeVisible();
     await expect(page.getByRole('button', { name: 'Rediger' })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Dupliser' })).toBeVisible();
     await expect(
@@ -71,9 +68,6 @@ test.describe(`Stilling test`, () => {
       page.getByRole('heading', { name: 'Om annonsen' }),
     ).toBeVisible();
 
-    await expect(
-      page.getByRole('heading', { name: 'Oppsummering' }),
-    ).toBeHidden();
     await expect(
       page.getByRole('tab', { name: 'Kandidater', exact: true }),
     ).toBeHidden();
