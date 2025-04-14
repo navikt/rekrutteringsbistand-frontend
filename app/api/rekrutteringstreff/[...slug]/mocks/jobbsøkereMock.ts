@@ -1,11 +1,11 @@
-import { LeggTilNyJobbsøkerDTO } from '../../ny-jobbsøker/leggTilNyjobbsøker';
+import { JobbsøkerDTO } from '../useJobbsøkere';
 import { Faker, en_NG, nb_NO } from '@faker-js/faker';
 import navfaker from 'nav-faker/dist/index';
 
 const faker = new Faker({ locale: [nb_NO] });
 const fakerEN = new Faker({ locale: [en_NG] });
 
-export const jobbsøkerMock = (): LeggTilNyJobbsøkerDTO => {
+export const jobbsøkerMock = (): JobbsøkerDTO => {
   return {
     fødselsnummer: navfaker.personIdentifikator.fødselsnummer(),
     fornavn: faker.person.firstName(),
@@ -19,6 +19,15 @@ export const jobbsøkerMock = (): LeggTilNyJobbsøkerDTO => {
     veilederNavn: faker.person.firstName() + ' ' + fakerEN.person.lastName(),
     veilederNavIdent:
       faker.string.alpha(1).toUpperCase() + faker.string.numeric(6),
+    hendelser: [
+      {
+        id: faker.string.uuid(),
+        tidspunkt: new Date().toISOString(),
+        hendelsestype: 'LEGG_TIL',
+        opprettetAvAktørType: 'ARRANGØR',
+        aktørIdentifikasjon: 'testperson',
+      },
+    ],
   };
 };
 

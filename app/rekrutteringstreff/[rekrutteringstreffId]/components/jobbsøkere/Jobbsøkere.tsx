@@ -3,7 +3,10 @@
 import { useRekrutteringstreffContext } from '../../RekrutteringstreffContext';
 import LeggTilJobbsøkerKnapp from '../LeggTilJobbsøkerKnapp';
 import JobbsøkerKort from './components/JobbsøkerKort';
-import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
+import {
+  JobbsøkerDTO,
+  useJobbsøkere,
+} from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
 import SWRLaster from '@/app/components/SWRLaster';
 import { BodyShort } from '@navikt/ds-react';
 import * as React from 'react';
@@ -11,6 +14,11 @@ import * as React from 'react';
 const Jobbsøkere = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const jobbsøkerHook = useJobbsøkere(rekrutteringstreffId);
+
+  const jobbsøkerstatus = ({ hendelser }: JobbsøkerDTO) =>
+    hendelser.some(({ hendelsestype }) => hendelsestype === 'LEGG_TIL')
+      ? 'Lagt til'
+      : undefined;
 
   return (
     <SWRLaster hooks={[jobbsøkerHook]}>
@@ -38,6 +46,7 @@ const Jobbsøkere = () => {
                     }}
                     datoLagtTil='20.mai.2025'
                     lagtTilAv='Kari Nordmann'
+                    status={jobbsøkerstatus(j)}
                   />
                 </li>
               ))}

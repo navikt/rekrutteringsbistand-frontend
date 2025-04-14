@@ -11,6 +11,7 @@ interface JobbsøkerKortProps {
   veileder?: Veileder | null;
   datoLagtTil?: string;
   lagtTilAv?: string;
+  status?: string;
 }
 
 export type Veileder = {
@@ -26,6 +27,7 @@ const JobbsøkerKort: React.FC<JobbsøkerKortProps> = ({
   veileder,
   datoLagtTil,
   lagtTilAv,
+  status,
 }) => {
   const storForbokstavFlereOrd = (s: string | null | undefined) => {
     if (!s || s.length === 0) return s;
@@ -77,9 +79,11 @@ const JobbsøkerKort: React.FC<JobbsøkerKortProps> = ({
         </BodyShort>
       </div>
 
-      <Tag className={'mr-2'} size='medium' variant='info'>
-        Lagt til
-      </Tag>
+      {status && (
+        <Tag className={'mr-2'} size='medium' variant='info'>
+          {status}
+        </Tag>
+      )}
     </Box.New>
   );
 };

@@ -12,19 +12,29 @@ import { z } from 'zod';
 export const jobbsøkereEndepunkt = (id: string) =>
   `${RekrutteringstreffAPI.internUrl}/${id}/jobbsoker`;
 
-const JobbsøkereSchema = z.array(
-  z.object({
-    fødselsnummer: z.string(),
-    kandidatnummer: z.string().nullable(),
-    fornavn: z.string(),
-    etternavn: z.string(),
-    navkontor: z.string(),
-    veilederNavn: z.string(),
-    veilederNavIdent: z.string(),
-  }),
-);
+const HendelseSchema = z.object({
+  id: z.string(),
+  tidspunkt: z.string(),
+  hendelsestype: z.string(),
+  opprettetAvAktørType: z.string(),
+  aktørIdentifikasjon: z.string(),
+});
+
+const JobbsøkerSchema = z.object({
+  fødselsnummer: z.string(),
+  kandidatnummer: z.string().nullable(),
+  fornavn: z.string(),
+  etternavn: z.string(),
+  navkontor: z.string(),
+  veilederNavn: z.string(),
+  veilederNavIdent: z.string(),
+  hendelser: z.array(HendelseSchema),
+});
+
+const JobbsøkereSchema = z.array(JobbsøkerSchema);
 
 export type JobbsøkereDTO = z.infer<typeof JobbsøkereSchema>;
+export type JobbsøkerDTO = z.infer<typeof JobbsøkerSchema>;
 
 export const useJobbsøkere = (id: string) => {
   return useSWR(jobbsøkereEndepunkt(id), getAPIwithSchema(JobbsøkereSchema));
