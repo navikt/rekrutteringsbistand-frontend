@@ -1,9 +1,9 @@
 import { usynligKandidaterSchemaDTO } from '../../../../../api/kandidat/schema.zod';
 import { KANDIDATLISTE_COLUMN_LAYOUT } from '../../FiltrertKandidatListeVisning';
 import { useKandidatlisteContext } from '../../KandidatlisteContext';
-import KandidatHendelseTag from '../KandidatHendelseTag';
+import EndreArkivertStatusModal from '../EndreArkivertStatusModal';
+import KandidatHendelseTag, { SlettetTag } from '../KandidatHendelseTag';
 import { KandidatVisningProps } from '../KandidatlisteFilter/useFiltrerteKandidater';
-import SletteKandidatKnapp from '../SlettKandidatModal';
 import VelgInternStatus from '../VelgInternStatus';
 import KandidatCheckbox from './components/KandidatCheckbox';
 import KandidatlisteNavn from './components/KandidatlisteNavn';
@@ -59,6 +59,7 @@ const KandidatListeKort: React.FC<KandidatListeKortProps> = ({
     );
   }
 
+  const slettet = kandidat?.arkivert;
   if (kandidat) {
     return (
       <Box.New
@@ -72,8 +73,8 @@ const KandidatListeKort: React.FC<KandidatListeKortProps> = ({
         >
           <div className={kolonneStyling}>
             <div className='flex gap-4'>
-              <KandidatCheckbox kandidat={kandidat} />
-              <KandidatlisteNavn kandidat={kandidat} />
+              <KandidatCheckbox kandidat={kandidat} slettet={slettet} />
+              <KandidatlisteNavn kandidat={kandidat} slettet={slettet} />
             </div>
           </div>
           <div className={kolonneStyling}>
@@ -87,9 +88,13 @@ const KandidatListeKort: React.FC<KandidatListeKortProps> = ({
             </div>
           </div>
           <div className={kolonneStyling}>
-            <KandidatHendelseTag
-              kandidatHendelse={kandidat.kandidatHendelser.sisteAktivitet}
-            />
+            {slettet ? (
+              <SlettetTag kandidat={kandidat} />
+            ) : (
+              <KandidatHendelseTag
+                kandidatHendelse={kandidat.kandidatHendelser.sisteAktivitet}
+              />
+            )}
           </div>
           <div className={kolonneStyling}>
             <KandidatHendelseTag
@@ -105,7 +110,7 @@ const KandidatListeKort: React.FC<KandidatListeKortProps> = ({
             />
           </div>
           <div className={`${kolonneStyling} flex items-center justify-center`}>
-            <SletteKandidatKnapp
+            <EndreArkivertStatusModal
               lukketKandidatliste={lukketKandidatliste}
               kandidat={kandidat}
               kandidatlisteId={kandidatlisteId}

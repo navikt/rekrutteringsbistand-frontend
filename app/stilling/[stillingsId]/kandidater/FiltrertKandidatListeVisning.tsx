@@ -135,8 +135,8 @@ const FiltrertKandidatListeVisning: React.FC = () => {
         {filtrerteKandidater?.usynligeKandidater?.map((kandidat, index) => (
           <KandidatListeKort usynligKandidat={kandidat} key={index} />
         ))}
-        {filtrerteKandidater?.kandidater?.map((kandidat, index) => (
-          <KandidatListeKort kandidat={kandidat} key={index} />
+        {filtrerteKandidater?.kandidater?.map((kandidat) => (
+          <KandidatListeKort kandidat={kandidat} key={kandidat.kandidatnr} />
         ))}
       </div>
     </div>

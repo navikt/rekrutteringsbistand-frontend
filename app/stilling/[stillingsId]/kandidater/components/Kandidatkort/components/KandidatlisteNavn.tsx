@@ -8,11 +8,13 @@ import * as React from 'react';
 export interface KandidatlisteNavnProps {
   kandidat?: KandidatVisningProps;
   usynligKandidat?: usynligKandidaterSchemaDTO;
+  slettet?: boolean;
 }
 
 const KandidatlisteNavn: React.FC<KandidatlisteNavnProps> = ({
   kandidat,
   usynligKandidat,
+  slettet,
 }) => {
   if (usynligKandidat) {
     return (
@@ -41,7 +43,7 @@ const KandidatlisteNavn: React.FC<KandidatlisteNavnProps> = ({
     );
   }
 
-  if (kandidat.arkivert) {
+  if (slettet) {
     return (
       <div className='flex flex-col items-start'>
         <KandidatVisningSidebar kandidat={kandidat} />

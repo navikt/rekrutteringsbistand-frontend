@@ -5,13 +5,13 @@ import { KandidatutfallTyper } from '../../KandidatTyper';
 import { useKandidatlisteContext } from '../../KandidatlisteContext';
 import DelMedArbeidsgiver from '../DelMedArbeidsgiver/DelMedArbeidsgiver';
 import DelMedKandidatModal from '../DelMedKandidat/DelMedKandidatModal';
+import EndreArkivertStatusKnapp from '../EndreArkivertStatusModal';
 import FjernFåttJobbenKnapp from '../FjernFåttJobbenKnapp';
-import KandidatHendelseTag from '../KandidatHendelseTag';
+import KandidatHendelseTag, { SlettetTag } from '../KandidatHendelseTag';
 import KandidatHendelser from '../KandidatHendelser/KandidatHendelser';
 import { KandidatVisningProps } from '../KandidatlisteFilter/useFiltrerteKandidater';
 import RegistrerFåttJobbenKnapp from '../RegistrerFåttJobbenKnapp';
 import SendSmsModal from '../SendSMS/SendSmsModal';
-import SletteKandidatKnapp from '../SlettKandidatModal';
 import VelgInternStatus from '../VelgInternStatus';
 import { Accordion, Box } from '@navikt/ds-react';
 import { logger } from '@navikt/next-logger';
@@ -60,10 +60,14 @@ const KandidatHandlingerForStilling: React.FC<
         <div className='flex justify-between'>
           <div>
             <div className='mb-2'>{stillingsData.stilling.title}</div>
-            <KandidatHendelseTag
-              sidebar
-              kandidatHendelse={kandidat.kandidatHendelser.sisteAktivitet}
-            />
+            {kandidat.arkivert ? (
+              <SlettetTag kandidat={kandidat} sidebar />
+            ) : (
+              <KandidatHendelseTag
+                sidebar
+                kandidatHendelse={kandidat.kandidatHendelser.sisteAktivitet}
+              />
+            )}
           </div>
           <div>
             {kandidatlisteInfo && (
@@ -78,46 +82,50 @@ const KandidatHandlingerForStilling: React.FC<
             )}
           </div>
         </div>
-        <div className='grid grid-cols-2 gap-2'>
-          <DelMedKandidatModal
-            markerteKandidater={[kandidat]}
-            fjernAllMarkering={() => {}}
-            sidebar
-          />
-
-          <DelMedArbeidsgiver markerteKandidater={[kandidat]} sidebar />
-        </div>
-
-        <div className='flex gap-2 border-t-2 pt-4'>
-          <SendSmsModal
-            markerteKandidater={[kandidat]}
-            fjernAllMarkering={() => {}}
-            sidebar
-          />
-          <div>
-            {kandidat.utfall !== KandidatutfallTyper.FATT_JOBBEN ? (
-              <RegistrerFåttJobbenKnapp
-                loading={loading}
-                endreUtfallForKandidat={endreUtfallForKandidat}
-                lukketKandidatliste={lukketKandidatliste}
-              />
-            ) : (
-              <FjernFåttJobbenKnapp
-                loading={loading}
-                endreUtfallForKandidat={endreUtfallForKandidat}
-                lukketKandidatliste={lukketKandidatliste}
-              />
-            )}
-          </div>
-          <div className='flex flex-1 justify-end'>
-            <SletteKandidatKnapp
-              tittel={'Slett'}
-              kandidat={kandidat}
-              kandidatlisteId={kandidatlisteId}
-              lukketKandidatliste={lukketKandidatliste}
+        {!kandidat.arkivert && (
+          <div className='grid grid-cols-2 gap-2'>
+            <DelMedKandidatModal
+              markerteKandidater={[kandidat]}
+              fjernAllMarkering={() => {}}
+              sidebar
             />
+
+            <DelMedArbeidsgiver markerteKandidater={[kandidat]} sidebar />
           </div>
-        </div>
+        )}
+
+        {!kandidat.arkivert && (
+          <div className='flex gap-2 border-t-2 pt-4'>
+            <SendSmsModal
+              markerteKandidater={[kandidat]}
+              fjernAllMarkering={() => {}}
+              sidebar
+            />
+            <div>
+              {kandidat.utfall !== KandidatutfallTyper.FATT_JOBBEN ? (
+                <RegistrerFåttJobbenKnapp
+                  loading={loading}
+                  endreUtfallForKandidat={endreUtfallForKandidat}
+                  lukketKandidatliste={lukketKandidatliste}
+                />
+              ) : (
+                <FjernFåttJobbenKnapp
+                  loading={loading}
+                  endreUtfallForKandidat={endreUtfallForKandidat}
+                  lukketKandidatliste={lukketKandidatliste}
+                />
+              )}
+            </div>
+            <div className='flex flex-1 justify-end'>
+              <EndreArkivertStatusKnapp
+                tittel={'Slett'}
+                kandidat={kandidat}
+                kandidatlisteId={kandidatlisteId}
+                lukketKandidatliste={lukketKandidatliste}
+              />
+            </div>
+          </div>
+        )}
 
         <Accordion>
           <Accordion.Item>

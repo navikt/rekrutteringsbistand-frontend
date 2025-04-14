@@ -235,7 +235,7 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
             <Label htmlFor='forhåndsvisning'>
               Meldingen som vil bli sendt til kandidatene
             </Label>
-            <div id='forhåndsvisning' className={css.forhåndsvisning}>
+            <div id='forhåndsvisning' className={'p-4'}>
               <BodyShort>
                 <span>
                   {meldingsmaler

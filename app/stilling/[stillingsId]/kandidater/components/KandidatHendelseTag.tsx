@@ -1,4 +1,6 @@
 import { KandidatHendelseInformasjon } from './KandidatHendelser/KandidatHendelser';
+import { KandidatVisningProps } from './KandidatlisteFilter/useFiltrerteKandidater';
+import { TrashIcon } from '@navikt/aksel-icons';
 import { BodyShort, Tag } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import { nb } from 'date-fns/locale/nb';
@@ -7,6 +9,37 @@ export interface KandidatHendelseTagProps {
   kandidatHendelse?: KandidatHendelseInformasjon | null;
   sidebar?: boolean;
 }
+
+export const SlettetTag = ({
+  kandidat,
+  sidebar,
+}: {
+  kandidat: KandidatVisningProps;
+  sidebar?: boolean;
+}) => {
+  return (
+    <div
+      className={
+        sidebar
+          ? 'flex flex-row gap-2 items-center'
+          : 'flex flex-col items-start'
+      }
+    >
+      <Tag variant={'alt2'} size='small' className='inline-flex '>
+        <div className='flex gap-2 items-center'>
+          <TrashIcon /> Slettet
+        </div>
+      </Tag>
+
+      <BodyShort textColor='subtle' size='small' className='mt-1'>
+        {kandidat.arkivertTidspunkt &&
+          format(new Date(kandidat.arkivertTidspunkt), 'dd. MMM yyyy', {
+            locale: nb,
+          })}
+      </BodyShort>
+    </div>
+  );
+};
 
 const KandidatHendelseTag: React.FC<KandidatHendelseTagProps> = ({
   kandidatHendelse,

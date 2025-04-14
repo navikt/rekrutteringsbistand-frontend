@@ -5,13 +5,17 @@ import * as React from 'react';
 
 export interface KandidatCheckboxProps {
   kandidat?: KandidatVisningProps;
+  slettet?: boolean;
 }
 
-const KandidatCheckbox: React.FC<KandidatCheckboxProps> = ({ kandidat }) => {
+const KandidatCheckbox: React.FC<KandidatCheckboxProps> = ({
+  kandidat,
+  slettet,
+}) => {
   const { markerteKandidater, toggleMarkerKandidat, lukketKandidatliste } =
     useKandidatlisteContext();
 
-  if (!kandidat) {
+  if (!kandidat || slettet) {
     return (
       <Checkbox hideLabel disabled>
         {' '}

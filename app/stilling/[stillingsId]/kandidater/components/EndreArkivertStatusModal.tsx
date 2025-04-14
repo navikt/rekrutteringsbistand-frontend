@@ -4,19 +4,19 @@ import { putApi } from '../../../../api/fetcher';
 import { kandidaterSchemaDTO } from '../../../../api/kandidat/schema.zod';
 import { useKandidatliste } from '../../../../api/kandidat/useKandidatliste';
 import { useStillingsContext } from '../../StillingsContext';
-import { TrashIcon } from '@navikt/aksel-icons';
+import { ArrowUndoIcon, TrashIcon } from '@navikt/aksel-icons';
 import { BodyLong, Button, Modal } from '@navikt/ds-react';
 import * as React from 'react';
 import { useRef, useState } from 'react';
 
-export interface SletteKandidatKnappProps {
+export interface EndreArkivertStatusKnappProps {
   kandidat: kandidaterSchemaDTO;
   kandidatlisteId: string;
   lukketKandidatliste: boolean;
   tittel?: string;
 }
 
-const SletteKandidatKnapp: React.FC<SletteKandidatKnappProps> = ({
+const EndreArkivertStatusKnapp: React.FC<EndreArkivertStatusKnappProps> = ({
   kandidat,
   kandidatlisteId,
   lukketKandidatliste,
@@ -26,17 +26,19 @@ const SletteKandidatKnapp: React.FC<SletteKandidatKnappProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const kandidatListeHook = useKandidatliste(stillingsData.stilling.uuid);
 
-  const slettKandidat = async () => {
+  const slettet = kandidat.arkivert;
+
+  const setArkivertStatus = async (status: boolean) => {
     setIsLoading(true);
     try {
       await putApi(
         `${KandidatAPI.internUrl}/veileder/kandidatlister/${kandidatlisteId}/kandidater/${kandidat.kandidatnr}/arkivert`,
         {
-          arkivert: true,
+          arkivert: status,
         },
       );
       kandidatListeHook.mutate();
-      slettModalRef.current?.close();
+      modalRef.current?.close();
     } catch {
       throw new rekbisError({ beskrivelse: 'Feil ved sletting av kandidat' });
     } finally {
@@ -44,7 +46,7 @@ const SletteKandidatKnapp: React.FC<SletteKandidatKnappProps> = ({
     }
   };
 
-  const slettModalRef = useRef<HTMLDialogElement>(null);
+  const modalRef = useRef<HTMLDialogElement>(null);
 
   return (
     <>
@@ -52,37 +54,43 @@ const SletteKandidatKnapp: React.FC<SletteKandidatKnappProps> = ({
         disabled={lukketKandidatliste}
         variant='tertiary'
         size='small'
-        onClick={() => slettModalRef.current?.showModal()}
-        icon={<TrashIcon title='Slett' />}
+        onClick={() => modalRef.current?.showModal()}
+        icon={
+          slettet ? (
+            <ArrowUndoIcon title='Angre sletting' />
+          ) : (
+            <TrashIcon title='Slett' />
+          )
+        }
       >
         {tittel}
       </Button>
 
       <Modal
-        ref={slettModalRef}
+        ref={modalRef}
         header={{ heading: 'Bekreft sletting', closeButton: false }}
       >
         <Modal.Body>
           <BodyLong>
-            Er du sikker på at du vil slette kandidaten {kandidat.fornavn}{' '}
-            {kandidat.etternavn}?
+            Er du sikker på at du vil {slettet ? 'gjenopprette' : 'slette'}{' '}
+            kandidaten {kandidat.fornavn} {kandidat.etternavn}?
           </BodyLong>
         </Modal.Body>
         <Modal.Footer>
           <Button
             loading={isLoading}
             type='button'
-            onClick={slettKandidat}
-            variant='danger'
+            onClick={() => setArkivertStatus(slettet ? false : true)}
+            variant={slettet ? 'primary' : 'danger'}
           >
-            Slett kandidat
+            {slettet ? 'Gjenopprett' : 'Slett'} kandidat
           </Button>
 
           <Button
             disabled={isLoading}
             type='button'
             variant='tertiary'
-            onClick={() => slettModalRef.current?.close()}
+            onClick={() => modalRef.current?.close()}
           >
             Avbryt
           </Button>
@@ -92,4 +100,4 @@ const SletteKandidatKnapp: React.FC<SletteKandidatKnappProps> = ({
   );
 };
 
-export default SletteKandidatKnapp;
+export default EndreArkivertStatusKnapp;
