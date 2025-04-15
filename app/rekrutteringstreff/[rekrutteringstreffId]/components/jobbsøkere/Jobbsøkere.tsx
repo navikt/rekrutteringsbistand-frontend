@@ -24,7 +24,7 @@ const Jobbsøkere = () => {
       return {
         status: 'Lagt til',
         datoLagtTil: leggTilHendelse.tidspunkt,
-        lagtTilAv: leggTilHendelse.aktørIdentifikasjon, // Change to desired field if needed
+        lagtTilAv: leggTilHendelse.aktørIdentifikasjon,
       };
     }
     return {

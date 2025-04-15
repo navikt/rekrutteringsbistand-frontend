@@ -1,5 +1,5 @@
 import LeggTilJobbsøkerKnapp from '../../LeggTilJobbsøkerKnapp';
-import JobbsøkerHendelseLabel from './JobbsøkerHendelseLabel2';
+import JobbsøkerHendelseLabel from './JobbsøkerHendelseLabel';
 import JobbsøkerIcon from './JobbsøkerIcon';
 import NavnLenke from './NavnLenke';
 import { JobbsøkerHendelserDTO } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkerHendelser';
