@@ -22,12 +22,12 @@ const StillingHeader: React.FC = () => {
   const eierNavn = navnEierAvAstilling(stillingsData);
 
   const antallAktuelle =
-    kandidatlisteHook.data?.kandidater.filter(
+    kandidatlisteHook.data?.kandidater?.filter(
       (kandidat) => kandidat.status === InternKandidatstatus.AKTUELL,
     )?.length ?? '-';
 
   const antallPresenterte =
-    kandidatlisteHook.data?.kandidater.filter((kandidat) =>
+    kandidatlisteHook.data?.kandidater?.filter((kandidat) =>
       kandidat.utfallsendringer.some(
         (u) => u.utfall === KandidatutfallTyper.PRESENTERT,
       ),
@@ -37,7 +37,7 @@ const StillingHeader: React.FC = () => {
     kandidatlisteHook.data?.kandidater?.filter((k) => !k.arkivert) ?? [];
 
   const antallFåttJobben =
-    ikkeArkiverteKandidater.filter(
+    ikkeArkiverteKandidater?.filter(
       (k) => k.utfall === KandidatutfallTyper.FATT_JOBBEN,
     ).length +
     (kandidatlisteHook.data?.formidlingerAvUsynligKandidat?.filter(

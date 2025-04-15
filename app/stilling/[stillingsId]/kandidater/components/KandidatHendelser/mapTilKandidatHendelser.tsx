@@ -9,7 +9,6 @@ import {
   ExclamationmarkTriangleIcon,
   HourglassIcon,
   SparklesIcon,
-  TasklistSendIcon,
   ThumbDownIcon,
   ThumbUpIcon,
 } from '@navikt/aksel-icons';
@@ -38,18 +37,18 @@ const utfallsEndringPresentasjon = (
         fargeKode: 'success',
       };
 
-    case KandidatutfallTyper.PRESENTERT:
-      return {
-        tittel: 'CV delt med arbeidsgiver',
-        ikon: <TasklistSendIcon className='text-success' />,
-        fargeKode: 'alt1',
-      };
-    case KandidatutfallTyper.IKKE_PRESENTERT:
-      return {
-        tittel: 'CV delt med arbeidsgiver',
-        ikon: <ExclamationmarkTriangleIcon className='text-danger' />,
-        fargeKode: 'error',
-      };
+    // case KandidatutfallTyper.PRESENTERT:
+    //   return {
+    //     tittel: 'CV delt med arbeidsgiver',
+    //     ikon: <TasklistSendIcon className='text-success' />,
+    //     fargeKode: 'alt1',
+    //   };
+    // case KandidatutfallTyper.IKKE_PRESENTERT:
+    //   return {
+    //     tittel: 'CV delt med arbeidsgiver',
+    //     ikon: <ExclamationmarkTriangleIcon className='text-danger' />,
+    //     fargeKode: 'error',
+    //   };
     default:
       return {
         tittel: 'Ukjent utfall',

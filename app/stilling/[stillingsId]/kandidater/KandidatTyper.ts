@@ -4,18 +4,6 @@ export enum KandidatutfallTyper {
   FATT_JOBBEN = 'FATT_JOBBEN',
 }
 
-// export enum UtfallsEndringTyper {
-//   SVAR_JA = 'SVAR_JA',
-//   SVAR_NEI = 'SVAR_NEI',
-//   CV_DELT = 'CV_DELT',
-//   CV_SLETTET = 'CV_SLETTET',
-//   SMS_FEILET = 'SMS_FEILET',
-//   SMS_SENDT = 'SMS_SENDT',
-//   IKKE_PRESENTERT = 'IKKE_PRESENTERT',
-//   PRESENTERT = 'PRESENTERT',
-//   FATT_JOBBEN = 'FATT_JOBBEN',
-// }
-
 export enum TilstandPåForespørsel {
   KAN_IKKE_OPPRETTE = 'KAN_IKKE_OPPRETTE',
   PROVER_VARSLING = 'PROVER_VARSLING',

@@ -208,7 +208,7 @@ const DelMedArbeidsgiver: React.FC<DelMedArbeidsgiverProps> = ({
                     onClick={() =>
                       onDelMedArbeidsgiver(
                         harSvartJa
-                          .map((kandidat) => kandidat.fodselsnr)
+                          .map((kandidat) => kandidat.kandidatnr)
                           .filter((id): id is string => id !== null),
                       )
                     }
