@@ -2,8 +2,9 @@
 
 import { useRekrutteringstreffContext } from '../../RekrutteringstreffContext';
 import SlettRekrutteringstreffModal from '../SlettRekrutteringstreffModal';
-import ArbeidsgiverOpprettelseKort from '../arbeidsgivere/components/ArbeidsgiverOpprettelseKort';
-import JobbsøkerOpprettelseKort from '../jobbsøkere/components/JobbsøkerOpprettelseKort';
+import ArbeidsgiverHendelserKort from '../arbeidsgivere/components/ArbeidsgiverHendelserKort';
+import JobbsøkerHendelserKort from '../jobbsøkere/components/JobbsøkerHendelserKort';
+import { useJobbsøkerHendelser } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkerHendelser';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import SWRLaster from '@/app/components/SWRLaster';
 import {
@@ -17,6 +18,10 @@ const OmTreffet = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
 
   const rekrutteringstreffHook = useRekrutteringstreff(
+    rekrutteringstreffId as string,
+  );
+
+  const jobbsøkerHendelserHook = useJobbsøkerHendelser(
     rekrutteringstreffId as string,
   );
 
@@ -77,8 +82,15 @@ const OmTreffet = () => {
       </div>
 
       <div className='mt-4 flex flex-col gap-16 md:flex-row'>
-        <ArbeidsgiverOpprettelseKort />
-        <JobbsøkerOpprettelseKort />
+        <ArbeidsgiverHendelserKort />
+
+        <SWRLaster hooks={[jobbsøkerHendelserHook]}>
+          {(jobbsøkerHendelser) => (
+            <JobbsøkerHendelserKort
+              jobbsøkerHendelserDTO={jobbsøkerHendelser || []}
+            />
+          )}
+        </SWRLaster>
       </div>
     </div>
   );
