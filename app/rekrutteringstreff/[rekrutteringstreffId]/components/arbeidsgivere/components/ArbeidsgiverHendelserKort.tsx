@@ -15,22 +15,24 @@ const ArbeidsgiverHendelserKort = () => {
         padding='6'
       >
         <div>
-          <Heading level='2' size='small' className='mb-4 text-left'>
-            Arbeidsgivere
-          </Heading>
-          <div className='p-4 mb-12 flex flex-col items-center'>
-            <Box.New
-              background='raised'
-              className='rounded-full mb-2 flex items-center justify-center'
-            >
-              <ArbeidsgiverIcon />
-            </Box.New>
-            <BodyShort className='text-center'>
-              <span className='block'>
-                Finn og legg til en arbeidsgiver så dukker aktivitetene deres
-                opp her.
-              </span>
-            </BodyShort>
+          <div>
+            <Heading level='2' size='small' className='mb-4 text-left'>
+              Arbeidsgivere
+            </Heading>
+            <div className='p-4 mb-12 flex flex-col items-center min-h-[18rem]'>
+              <Box.New
+                background='raised'
+                className='rounded-full mb-2 flex items-center justify-center'
+              >
+                <ArbeidsgiverIcon />
+              </Box.New>
+              <BodyShort className='text-center'>
+                <span className='block'>
+                  Finn og legg til en arbeidsgiver så dukker aktivitetene deres
+                  opp her.
+                </span>
+              </BodyShort>
+            </div>
           </div>
           <LeggTilArbeidsgiverModal />
         </div>

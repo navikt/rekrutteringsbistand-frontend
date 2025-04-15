@@ -1,6 +1,7 @@
 import LeggTilJobbsøkerKnapp from '../../LeggTilJobbsøkerKnapp';
 import JobbsøkerHendelseLabel from './JobbsøkerHendelseLabel2';
 import JobbsøkerIcon from './JobbsøkerIcon';
+import NavnLenke from './NavnLenke';
 import { JobbsøkerHendelserDTO } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkerHendelser';
 import {
   CheckmarkCircleIcon,
@@ -10,6 +11,8 @@ import {
   EnvelopeClosedIcon,
 } from '@navikt/aksel-icons';
 import { BodyShort, Box, Heading } from '@navikt/ds-react';
+import { format } from 'date-fns';
+import { nb } from 'date-fns/locale/nb';
 import * as React from 'react';
 
 interface JobbsøkerHendelserKortProps {
@@ -38,7 +41,7 @@ const JobbsøkerHendelserKort: React.FC<JobbsøkerHendelserKortProps> = ({
           <Heading level='2' size='small' className='mb-4 text-left'>
             Jobbsøkere
           </Heading>
-          <div>
+          <div className='min-h-[18rem] mb-12 '>
             {antallHendelser === 0 ? (
               <div className='p-4 mb-12 flex flex-col items-center'>
                 <Box.New
@@ -55,7 +58,7 @@ const JobbsøkerHendelserKort: React.FC<JobbsøkerHendelserKortProps> = ({
                 </BodyShort>
               </div>
             ) : (
-              <>
+              <div>
                 <div className='flex flex-wrap gap-2'>
                   <JobbsøkerHendelseLabel
                     icon={<PlusCircleIcon className='text-white' />}
@@ -91,14 +94,44 @@ const JobbsøkerHendelserKort: React.FC<JobbsøkerHendelserKortProps> = ({
 
                 <div className='mt-4'>
                   {siste5Hendelser.map((hendelse) => (
-                    <JobbsøkerHendelseLabel
+                    <div
                       key={hendelse.id}
-                      icon={<PlusCircleIcon className='text-white' />}
-                      hendelseType={hendelse.hendelsestype}
-                    />
+                      className='flex flex-wrap gap-2 mb-4'
+                    >
+                      <div className='mb-2  min-w-[10rem]'>
+                        <JobbsøkerHendelseLabel
+                          key={hendelse.id}
+                          icon={<PlusCircleIcon className='text-white' />}
+                          hendelseType={hendelse.hendelsestype}
+                        />
+                        <BodyShort className='ml-6'>
+                          {format(
+                            new Date(hendelse.tidspunkt),
+                            'dd. MMMM yyyy',
+                            { locale: nb },
+                          )}
+                        </BodyShort>
+                      </div>
+                      <div>
+                        {hendelse.fornavn &&
+                          hendelse.etternavn &&
+                          hendelse.kandidatnummer && (
+                            <BodyShort>
+                              <NavnLenke
+                                fornavn={hendelse.fornavn}
+                                etternavn={hendelse.etternavn}
+                                kandidatnummer={hendelse.kandidatnummer}
+                              />
+                            </BodyShort>
+                          )}
+                        {hendelse.fødselsnummer && (
+                          <BodyShort>{hendelse.fødselsnummer}</BodyShort>
+                        )}
+                      </div>
+                    </div>
                   ))}
                 </div>
-              </>
+              </div>
             )}
           </div>
           <div>

@@ -15,6 +15,10 @@ const JobbsøkerHendelseSchema = z.object({
   hendelsestype: z.string(),
   opprettetAvAktørType: z.string(),
   aktørIdentifikasjon: z.string().optional(),
+  fødselsnummer: z.string().optional(),
+  kandidatnummer: z.string().optional(),
+  fornavn: z.string().optional(),
+  etternavn: z.string().optional(),
 });
 
 const JobbsøkerHendelserSchema = z.array(JobbsøkerHendelseSchema);
