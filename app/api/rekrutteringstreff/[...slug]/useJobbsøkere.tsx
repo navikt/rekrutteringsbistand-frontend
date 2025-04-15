@@ -1,8 +1,5 @@
 'use client';
 
-/**
- * Endepunkt /useJobbsøkere
- */
 import { RekrutteringstreffAPI } from '../../api-routes';
 import { getAPIwithSchema } from '../../fetcher';
 import { jobbsøkereMock } from './mocks/jobbsøkereMock';

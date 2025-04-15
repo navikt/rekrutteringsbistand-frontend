@@ -1,9 +1,9 @@
-import LeggTilJobbsøkerKnapp from '../../LeggTilJobbsøkerKnapp';
-import JobbsøkerIcon from './JobbsøkerIcon';
+import LeggTilArbeidsgiverModal from '../../LeggTilArbeidsgiverModal';
+import ArbeidsgiverIcon from './ArbeidsgiverIcon';
 import { BodyShort, Box, Heading } from '@navikt/ds-react';
 import * as React from 'react';
 
-const JobbsøkerOpprettelseKort = () => {
+const ArbeidsgiverHendelserKort = () => {
   return (
     <div>
       <Box.New
@@ -15,30 +15,28 @@ const JobbsøkerOpprettelseKort = () => {
         padding='6'
       >
         <div>
-          <Heading level='2' size='medium' className='mb-4 text-left'>
-            Jobbsøker
+          <Heading level='2' size='small' className='mb-4 text-left'>
+            Arbeidsgivere
           </Heading>
           <div className='p-4 mb-12 flex flex-col items-center'>
             <Box.New
               background='raised'
               className='rounded-full mb-2 flex items-center justify-center'
             >
-              <JobbsøkerIcon />
+              <ArbeidsgiverIcon />
             </Box.New>
             <BodyShort className='text-center'>
               <span className='block'>
-                Finn og legg til en jobbsøker så dukker aktivitetene deres opp
-                her.
+                Finn og legg til en arbeidsgiver så dukker aktivitetene deres
+                opp her.
               </span>
             </BodyShort>
           </div>
-          <div>
-            <LeggTilJobbsøkerKnapp className='w-full max-w-2xl' />
-          </div>
+          <LeggTilArbeidsgiverModal />
         </div>
       </Box.New>
     </div>
   );
 };
 
-export default JobbsøkerOpprettelseKort;
+export default ArbeidsgiverHendelserKort;
