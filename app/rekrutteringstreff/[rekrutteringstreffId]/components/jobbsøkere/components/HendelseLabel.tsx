@@ -1,7 +1,7 @@
 import { BodyShort } from '@navikt/ds-react';
 import * as React from 'react';
 
-interface JobbsøkerHendelseLabelProps {
+interface HendelseLabelProps {
   icon: React.ReactNode;
   hendelseType: string;
   antall?: number;
@@ -27,7 +27,7 @@ export const labelTekst = (hendelsetype: string) => {
 const capitalizeFirstLetter = (str: string) =>
   str.charAt(0).toUpperCase() + str.slice(1);
 
-const JobbsøkerHendelseLabel: React.FC<JobbsøkerHendelseLabelProps> = ({
+const HendelseLabel: React.FC<HendelseLabelProps> = ({
   icon,
   hendelseType,
   antall,
@@ -45,4 +45,4 @@ const JobbsøkerHendelseLabel: React.FC<JobbsøkerHendelseLabelProps> = ({
   );
 };
 
-export default JobbsøkerHendelseLabel;
+export default HendelseLabel;
