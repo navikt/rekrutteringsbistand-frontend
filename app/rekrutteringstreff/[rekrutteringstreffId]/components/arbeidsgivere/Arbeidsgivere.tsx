@@ -48,7 +48,7 @@ const RekrutteringstreffArbeidsgivere = () => {
                   <li key={index}>
                     <ArbeidsgiverKort
                       navn={a.navn}
-                      adresse={{ adresse: '' }} //TODO: Byttes ut når vi får implemetert adresse
+                      //adresse={{ adresse: '' }} //TODO: Byttes ut når vi får implemetert adresse
                       status={status}
                     />
                   </li>
