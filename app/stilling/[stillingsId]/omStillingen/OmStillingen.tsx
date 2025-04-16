@@ -4,6 +4,7 @@ import { getWorkLocationsAsString } from '../../../../util/locationUtil';
 import { GeografiDTO } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import TekstMedIkon from '../../../components/TekstMedIkon';
 import VisEditorTekst from '../../../components/rikteksteditor/VisEditorTekst';
+import { formaterNorskDato } from '../../../components/util';
 import { useStillingsContext } from '../StillingsContext';
 import OmAnnonsen from '../components/OmAnnonsen';
 import OmBedriften from '../components/OmBedriften';
@@ -17,20 +18,7 @@ import {
   TimerStartIcon,
 } from '@navikt/aksel-icons';
 import { logger } from '@navikt/next-logger';
-import { format, isValid, parse } from 'date-fns';
-import { nb } from 'date-fns/locale';
 import * as React from 'react';
-
-export const parseNorskDato = (dateString: string | undefined | null) => {
-  if (!dateString) return null;
-
-  try {
-    const parsedDate = parse(dateString, 'dd.MM.yyyy', new Date());
-    return isValid(parsedDate) ? parsedDate : null;
-  } catch {
-    return null;
-  }
-};
 
 export const parseWorktime = (worktime: string) => {
   let arrayString = '';
@@ -103,11 +91,10 @@ const OmStillingen: React.FC<{ forhåndsvisData?: boolean }> = ({
                     tekst={`Søknadsfrist ${
                       applicationdue
                         ? (() => {
-                            const parsedDate = parseNorskDato(applicationdue);
+                            const parsedDate =
+                              formaterNorskDato(applicationdue);
                             return parsedDate
-                              ? format(parsedDate, 'd. MMMM yyyy', {
-                                  locale: nb,
-                                })
+                              ? parsedDate
                               : applicationdue.toLowerCase();
                           })()
                         : '-'
@@ -119,11 +106,9 @@ const OmStillingen: React.FC<{ forhåndsvisData?: boolean }> = ({
                     tekst={`Oppstart ${
                       starttime
                         ? (() => {
-                            const parsedDate = parseNorskDato(starttime);
+                            const parsedDate = formaterNorskDato(starttime);
                             return parsedDate
-                              ? format(parsedDate, 'd. MMMM yyyy', {
-                                  locale: nb,
-                                })
+                              ? parsedDate
                               : starttime.toLowerCase();
                           })()
                         : '-'
