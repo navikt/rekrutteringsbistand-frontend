@@ -1,5 +1,5 @@
 import LeggTilJobbsøkerKnapp from '../../LeggTilJobbsøkerKnapp';
-import JobbsøkerHendelseLabel from './JobbsøkerHendelseLabel';
+import HendelseLabel from './HendelseLabel';
 import JobbsøkerIcon from './JobbsøkerIcon';
 import NavnLenke from './NavnLenke';
 import { JobbsøkerHendelserDTO } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkerHendelser';
@@ -60,28 +60,28 @@ const JobbsøkerHendelserKort: React.FC<JobbsøkerHendelserKortProps> = ({
             ) : (
               <div>
                 <div className='flex flex-wrap gap-2'>
-                  <JobbsøkerHendelseLabel
+                  <HendelseLabel
                     icon={<PlusCircleIcon className='text-white' />}
                     hendelseType='LEGG_TIL'
                     antall={antallLagtTilHendelser}
                   />
 
-                  <JobbsøkerHendelseLabel
+                  <HendelseLabel
                     icon={<CheckmarkCircleIcon className='text-green-500' />}
                     hendelseType='DELTA'
                     antall={0}
                   />
-                  <JobbsøkerHendelseLabel
+                  <HendelseLabel
                     icon={<QuestionmarkDiamondIcon className='text-sky-300' />}
                     hendelseType='UBESVART'
                     antall={0}
                   />
-                  <JobbsøkerHendelseLabel
+                  <HendelseLabel
                     icon={<XMarkOctagonIcon className='text-violet-300' />}
                     hendelseType='IKKE_INTERESSERT'
                     antall={0}
                   />
-                  <JobbsøkerHendelseLabel
+                  <HendelseLabel
                     icon={<EnvelopeClosedIcon className='text-blue-400' />}
                     hendelseType='INVITER'
                     antall={0}
@@ -99,7 +99,7 @@ const JobbsøkerHendelserKort: React.FC<JobbsøkerHendelserKortProps> = ({
                       className='flex flex-wrap gap-2 mb-4'
                     >
                       <div className='mb-2  min-w-[10rem]'>
-                        <JobbsøkerHendelseLabel
+                        <HendelseLabel
                           key={hendelse.id}
                           icon={<PlusCircleIcon className='text-white' />}
                           hendelseType={hendelse.hendelsestype}

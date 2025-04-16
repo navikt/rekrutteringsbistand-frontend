@@ -36,10 +36,7 @@ const RekrutteringstreffArbeidsgivere = () => {
       {(arbeidsgivere) => (
         <div className='p-4 flex flex-col gap-4'>
           <div className='flex items-center justify-between'>
-            <LeggTilArbeidsgiverModal
-              leggTilKnappTekst='Legg til arbeidsgiver'
-              onLagtTil={arbeidsgivereHook.mutate}
-            />
+            <LeggTilArbeidsgiverModal leggTilKnappTekst='Legg til arbeidsgiver' />
           </div>
           {arbeidsgivere.length === 0 ? (
             <BodyShort>Ingen arbeidsgivere lagt til</BodyShort>
