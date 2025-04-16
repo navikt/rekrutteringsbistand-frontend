@@ -1,8 +1,5 @@
 'use client';
 
-/**
- * Endepunkt /useRekrutteringstreffArbeidsgivere
- */
 import { RekrutteringstreffAPI } from '../../api-routes';
 import { getAPIwithSchema } from '../../fetcher';
 import { arbeidsgivereMock } from './mocks/arbeidsgivereMock';
@@ -12,14 +9,31 @@ import { z } from 'zod';
 export const rekrutteringstreffArbeidsgivereEndepunkt = (id: string) =>
   `${RekrutteringstreffAPI.internUrl}/${id}/arbeidsgiver`;
 
+const ArbeidsgiverHendelseSchema = z.object({
+  id: z.string(),
+  tidspunkt: z.string(),
+  hendelsestype: z.string(),
+  opprettetAvAktørType: z.string(),
+  aktøridentifikasjon: z.string(),
+  orgnr: z.string(),
+  orgnavn: z.string(),
+});
+
+const RekrutteringstreffArbeidsgiverSchema = z.object({
+  organisasjonsnummer: z.string(),
+  navn: z.string(),
+  status: z.string().optional(),
+  // Legger til hendelser (array med hendelseobjekter)
+  hendelser: z.array(ArbeidsgiverHendelseSchema),
+});
+
 const RekrutteringstreffArbeidsgivereSchema = z.array(
-  z.object({
-    organisasjonsnummer: z.string(),
-    navn: z.string(),
-    status: z.string().optional(),
-  }),
+  RekrutteringstreffArbeidsgiverSchema,
 );
 
+export type ArbeidsgiverDTO = z.infer<
+  typeof RekrutteringstreffArbeidsgiverSchema
+>;
 export type ArbeidsgivereDTO = z.infer<
   typeof RekrutteringstreffArbeidsgivereSchema
 >;
@@ -32,8 +46,7 @@ export const useRekrutteringstreffArbeidsgivere = (id: string) => {
 };
 
 export const rekruteringstreffArbeidsgivereMirage = (server: any) => {
-  return server.get(
-    rekrutteringstreffArbeidsgivereEndepunkt('*'),
-    () => arbeidsgivereMock,
+  return server.get(rekrutteringstreffArbeidsgivereEndepunkt('*'), () =>
+    arbeidsgivereMock(),
   );
 };
