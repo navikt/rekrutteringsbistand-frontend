@@ -53,9 +53,9 @@ const KandidatVisningSidebarContent = ({
     null,
   );
 
-  const kandidaIndex = kandidater.findIndex(
-    (kandidat) => kandidat.kandidatnr === currentKandidatnr,
-  );
+  const kandidaIndex = kandidater
+    .filter((k) => k.fodselsnr !== null)
+    .findIndex((kandidat) => kandidat.kandidatnr === currentKandidatnr);
 
   const forrigeKandidatIndex = kandidaIndex > 0 ? kandidaIndex - 1 : null;
 
