@@ -43,7 +43,7 @@ const KandidatHendelseKort: React.FC<KandidatHendelseKortProps> = ({
                 Frist {format(frist, 'dd. MMMM yyyy HH:mm', { locale: nb })}
               </BodyShort>
             )}
-            {!frist && tekst && (
+            {!frist && (
               <BodyShort size='small' textColor='subtle'>
                 {tekst}{' '}
                 {dato && format(dato, 'dd. MMMM yyyy HH:mm', { locale: nb })}
