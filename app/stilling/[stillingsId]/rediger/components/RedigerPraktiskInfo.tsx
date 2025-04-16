@@ -46,9 +46,7 @@ export const RedigerPraktiskInfo: React.FC<{
         <VelgArbeidstidsordning arbeidstidsordningFelt='praktiskInfo.arbeidstidsordning' />
         <VelgArbeidsTid />
         <VelgOppstartOgFrist />
-        {oppsummerValidering && (
-          <OppsummerValidering feltNavn='omVirksomheten' />
-        )}
+        {oppsummerValidering && <OppsummerValidering feltNavn='praktiskInfo' />}
         <StegNavigering stegNummer={stegNummer} forrigeSteg={forrigeSteg} />
       </div>
     </form>
