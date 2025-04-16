@@ -23,7 +23,6 @@ const RekrutteringstreffArbeidsgiverSchema = z.object({
   organisasjonsnummer: z.string(),
   navn: z.string(),
   status: z.string().optional(),
-  // Legger til hendelser (array med hendelseobjekter)
   hendelser: z.array(ArbeidsgiverHendelseSchema),
 });
 
