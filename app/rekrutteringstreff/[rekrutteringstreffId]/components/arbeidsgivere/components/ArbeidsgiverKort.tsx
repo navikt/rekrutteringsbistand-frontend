@@ -1,5 +1,5 @@
 import capitalizeEmployerName from '@/app/stilling/stilling-util';
-import { BodyShort, Box, Heading } from '@navikt/ds-react';
+import { BodyShort, Box, Heading, Tag } from '@navikt/ds-react';
 import * as React from 'react';
 
 interface ArbeidsgiverKortProps {
@@ -8,6 +8,7 @@ interface ArbeidsgiverKortProps {
   organisasjonsform?: string;
   antallAnsatte?: number;
   adresse?: ArbeidsgiverAdresse | null;
+  status?: string;
 }
 
 export type ArbeidsgiverAdresse = {
@@ -23,6 +24,7 @@ export type ArbeidsgiverAdresse = {
 const ArbeidsgiverKort: React.FC<ArbeidsgiverKortProps> = ({
   navn,
   adresse,
+  status,
 }) => {
   return (
     <Box.New
@@ -32,6 +34,7 @@ const ArbeidsgiverKort: React.FC<ArbeidsgiverKortProps> = ({
       borderWidth='1'
       padding='4'
       marginBlock='2'
+      className='flex items-center justify-between'
     >
       <Heading level='3' size='xsmall'>
         {capitalizeEmployerName(navn || '')}
@@ -39,6 +42,11 @@ const ArbeidsgiverKort: React.FC<ArbeidsgiverKortProps> = ({
       <BodyShort size='small'>
         {adresse?.adresse}, {adresse?.postnummer} {adresse?.poststed}
       </BodyShort>
+      {status && (
+        <Tag className={'mr-2'} size='medium' variant='info'>
+          {status}
+        </Tag>
+      )}
     </Box.New>
   );
 };
