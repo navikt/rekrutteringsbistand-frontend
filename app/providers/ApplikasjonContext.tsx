@@ -73,6 +73,7 @@ export const ApplikasjonContextProvider: React.FC<
     valgtNavKontor?.navKontor === '0521' || // Ørland
     valgtNavKontor?.navKontor === '5701' || // FALKENBORG
     valgtNavKontor?.navKontor === '1002' || // LINDESNES
+    valgtNavKontor?.navKontor === '0334' || // VESTRE AKER
     harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER]);
 
   return (

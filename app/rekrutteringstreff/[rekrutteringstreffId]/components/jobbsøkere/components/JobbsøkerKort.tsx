@@ -1,5 +1,6 @@
+import NavnLink from './NavnLenke';
 import { Buildings3Icon, PersonIcon } from '@navikt/aksel-icons';
-import { BodyShort, Box, Heading, Link, Tag } from '@navikt/ds-react';
+import { BodyShort, Box, Heading, Tag } from '@navikt/ds-react';
 import * as React from 'react';
 
 interface JobbsøkerKortProps {
@@ -11,6 +12,7 @@ interface JobbsøkerKortProps {
   veileder?: Veileder | null;
   datoLagtTil?: string;
   lagtTilAv?: string;
+  status?: string;
 }
 
 export type Veileder = {
@@ -26,15 +28,8 @@ const JobbsøkerKort: React.FC<JobbsøkerKortProps> = ({
   veileder,
   datoLagtTil,
   lagtTilAv,
+  status,
 }) => {
-  const storForbokstavFlereOrd = (s: string | null | undefined) => {
-    if (!s || s.length === 0) return s;
-    return s
-      .split(' ')
-      .map((o) => (o ? o[0].toUpperCase() + o.substring(1).toLowerCase() : o))
-      .join(' ');
-  };
-
   return (
     <Box.New
       background='raised'
@@ -47,10 +42,11 @@ const JobbsøkerKort: React.FC<JobbsøkerKortProps> = ({
     >
       <div>
         <Heading size='small'>
-          <Link href={`/kandidat/${kandidatnummer}`}>
-            {storForbokstavFlereOrd(etternavn)},{' '}
-            {storForbokstavFlereOrd(fornavn)}
-          </Link>
+          <NavnLink
+            fornavn={fornavn}
+            etternavn={etternavn}
+            kandidatnummer={kandidatnummer}
+          />
         </Heading>
         <BodyShort
           size='small'
@@ -77,9 +73,11 @@ const JobbsøkerKort: React.FC<JobbsøkerKortProps> = ({
         </BodyShort>
       </div>
 
-      <Tag className={'mr-2'} size='medium' variant='info'>
-        Lagt til
-      </Tag>
+      {status && (
+        <Tag className={'mr-2'} size='medium' variant='info'>
+          {status}
+        </Tag>
+      )}
     </Box.New>
   );
 };
