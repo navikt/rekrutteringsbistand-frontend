@@ -9,7 +9,7 @@ import SWRLaster from '@/app/components/SWRLaster';
 import SideLayout from '@/app/components/layout/SideLayout';
 import SideTopBanner from '@/app/components/layout/SideTopBanner';
 import { PencilIcon } from '@navikt/aksel-icons';
-import { BodyShort } from '@navikt/ds-react';
+import { BodyShort, Detail } from '@navikt/ds-react';
 import * as React from 'react';
 
 const TreffHeader = ({}) => {
@@ -38,10 +38,10 @@ const TreffHeader = ({}) => {
                         />
                       }
                       headerInnhold={
-                        <BodyShort>
+                        <Detail className='text-gray-400'>
                           Opprettet av{' '}
                           {rekrutteringstreff.opprettetAvPersonNavident}
-                        </BodyShort>
+                        </Detail>
                       }
                     />
                   </div>
