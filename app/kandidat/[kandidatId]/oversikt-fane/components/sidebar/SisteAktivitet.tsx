@@ -70,7 +70,9 @@ const SisteAktivitet: React.FC = () => {
       <Button
         variant='secondary'
         className='mt-6 w-full'
-        onClick={() => router.push(`/kandidat/${kandidatId}?visFane=aktivitet`)}
+        onClick={() =>
+          router.push(`/kandidat/${kandidatId}?kandidatFane=aktivitet`)
+        }
       >
         Vis all aktivitet
       </Button>

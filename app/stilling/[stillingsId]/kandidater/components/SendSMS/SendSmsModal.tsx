@@ -12,8 +12,9 @@ import {
 import { useVisVarsling } from '../../../../../components/varsling/Varsling';
 import { useUmami } from '../../../../../providers/UmamiContext';
 import { Stillingskategori } from '../../../../stilling-typer';
+import { useStillingsContext } from '../../../StillingsContext';
 import css from './SendSmsModal.module.css';
-import { MobileIcon } from '@navikt/aksel-icons';
+import { ArrowForwardIcon } from '@navikt/aksel-icons';
 import {
   Accordion,
   Alert,
@@ -30,22 +31,21 @@ import { ChangeEvent, FunctionComponent, useState } from 'react';
 type Props = {
   markerteKandidater: kandidaterSchemaDTO[];
   fjernAllMarkering: () => void;
-  stillingId: string;
-  stillingskategori: string | null;
+  sidebar?: boolean;
 };
 
 const SendSmsModal: FunctionComponent<Props> = (props) => {
-  const {
-    stillingId,
-    stillingskategori,
-    fjernAllMarkering,
-    markerteKandidater,
-  } = props;
+  const { fjernAllMarkering, markerteKandidater } = props;
   const visVarsling = useVisVarsling();
   const { track } = useUmami();
+
+  const { stillingsData } = useStillingsContext();
+  const stillingskategori = stillingsData?.stillingsinfo?.stillingskategori;
+  const stillingId = stillingsData.stilling.uuid;
   const [vis, setVis] = useState(false);
+
   const { data: smser = {} } = useSmserForStilling(
-    stillingskategori === 'FORMIDLING' ? null : stillingId,
+    stillingskategori === 'FORMIDLING' ? null : stillingsData.stilling.uuid,
   );
 
   const postSmsTilKandidater = usePostSmsTilKandidater();
@@ -75,6 +75,7 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
 
   const onSendSms = async () => {
     setSendSmsLoading(true);
+
     if (kandidaterSomMottarBeskjed.length === 0) {
       visVarsling({
         innhold: 'Ingen kandidater valgt',
@@ -116,10 +117,11 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
       <Button
         disabled={markerteKandidater.length === 0}
         onClick={() => setVis(true)}
-        variant='tertiary'
-        icon={<MobileIcon title='Send beskjed' />}
+        size={props.sidebar ? 'small' : 'medium'}
+        variant={props.sidebar ? 'secondary' : 'tertiary'}
+        icon={<ArrowForwardIcon title='Send beskjed' />}
       >
-        Send beskjed
+        Del stillingen
       </Button>
       <Modal
         open={vis}
@@ -233,7 +235,7 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
             <Label htmlFor='forhåndsvisning'>
               Meldingen som vil bli sendt til kandidatene
             </Label>
-            <div id='forhåndsvisning' className={css.forhåndsvisning}>
+            <div id='forhåndsvisning' className={'p-4'}>
               <BodyShort>
                 <span>
                   {meldingsmaler

@@ -1,15 +1,14 @@
 import { UmamiEvent } from '../../../../../../util/umamiEvents';
 import { useForespurteOmDelingAvCv } from '../../../../../api/foresporsel-om-deling-av-cv/foresporsler/[slug]/useForespurteOmDelingAvCv';
 import { postDelMedArbeidsgiver } from '../../../../../api/kandidat/postDelMedArbeidsgiver';
-import {
-  kandidaterSchemaDTO,
-  kandidatlisteSchemaDTO,
-} from '../../../../../api/kandidat/schema.zod';
+import { kandidaterSchemaDTO } from '../../../../../api/kandidat/schema.zod';
 import SWRLaster from '../../../../../components/SWRLaster';
 import { useApplikasjonContext } from '../../../../../providers/ApplikasjonContext';
 import { useUmami } from '../../../../../providers/UmamiContext';
+import { useStillingsContext } from '../../../StillingsContext';
+import { useKandidatlisteContext } from '../../KandidatlisteContext';
 import ForhåndsvisningAvEpost from './ForhåndsvisningAvEpost';
-import { TenancyIcon } from '@navikt/aksel-icons';
+import { TasklistSendIcon } from '@navikt/aksel-icons';
 import {
   Accordion,
   Alert,
@@ -23,25 +22,28 @@ import * as React from 'react';
 
 export interface DelMedArbeidsgiverProps {
   markerteKandidater: kandidaterSchemaDTO[];
-  kandidatliste: kandidatlisteSchemaDTO;
-  stillingTittel: string;
-  stillingsId: string;
-  eposter: string[];
-  reFetchKandidatliste: () => void;
+  sidebar?: boolean;
 }
 
 const DelMedArbeidsgiver: React.FC<DelMedArbeidsgiverProps> = ({
   markerteKandidater,
-  kandidatliste,
-  stillingTittel,
-  stillingsId,
-  eposter,
-  reFetchKandidatliste,
+  sidebar,
 }) => {
   const { track } = useUmami();
   const [visModal, setVisModal] = React.useState(false);
   const { valgtNavKontor } = useApplikasjonContext();
-  const forespurteKandidaterHook = useForespurteOmDelingAvCv(stillingsId);
+  const { stillingsData } = useStillingsContext();
+  const { kandidatlisteId, reFetchKandidatliste, kandidatlisteRawData } =
+    useKandidatlisteContext();
+
+  const forespurteKandidaterHook = useForespurteOmDelingAvCv(
+    stillingsData.stilling.uuid,
+  );
+
+  const eposter =
+    stillingsData.stilling.contactList
+      ?.map((kontakt) => kontakt.email)
+      .filter((email): email is string => email !== null) || [];
 
   const [epost, setEpost] = React.useState<string[]>(eposter);
 
@@ -50,7 +52,7 @@ const DelMedArbeidsgiver: React.FC<DelMedArbeidsgiverProps> = ({
       antall: kandidatnummerListe.length,
     });
     await postDelMedArbeidsgiver({
-      kandidatlisteId: kandidatliste.kandidatlisteId,
+      kandidatlisteId: kandidatlisteId,
       kandidatnummerListe,
       mailadresser: epost,
       navKontor: valgtNavKontor?.navKontor ?? '',
@@ -64,12 +66,13 @@ const DelMedArbeidsgiver: React.FC<DelMedArbeidsgiverProps> = ({
   return (
     <>
       <Button
+        className='text-nowrap'
         onClick={() => setVisModal(true)}
         disabled={markerteKandidater.length === 0}
-        variant='tertiary'
-        icon={<TenancyIcon title='Del med arbeidsgiver' />}
+        variant={sidebar ? 'primary' : 'tertiary'}
+        icon={<TasklistSendIcon title='Del med arbeidsgiver' />}
       >
-        Del med arbeidsgiver
+        Del CV med arbeidsgiver
       </Button>
       <Modal
         width={'medium'}
@@ -183,8 +186,10 @@ const DelMedArbeidsgiver: React.FC<DelMedArbeidsgiverProps> = ({
                       <Accordion.Header>Forhåndsvis e-posten</Accordion.Header>
                       <Accordion.Content>
                         <ForhåndsvisningAvEpost
-                          stillingstittel={stillingTittel}
-                          opprettetAvNavn={kandidatliste.opprettetAv.navn}
+                          stillingstittel={stillingsData.stilling.title}
+                          opprettetAvNavn={
+                            kandidatlisteRawData.opprettetAv.navn
+                          }
                         />
                       </Accordion.Content>
                     </Accordion.Item>
@@ -203,7 +208,7 @@ const DelMedArbeidsgiver: React.FC<DelMedArbeidsgiverProps> = ({
                     onClick={() =>
                       onDelMedArbeidsgiver(
                         harSvartJa
-                          .map((kandidat) => kandidat.fodselsnr)
+                          .map((kandidat) => kandidat.kandidatnr)
                           .filter((id): id is string => id !== null),
                       )
                     }

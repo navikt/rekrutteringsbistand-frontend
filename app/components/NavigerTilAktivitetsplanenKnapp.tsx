@@ -12,7 +12,13 @@ const arbeidsrettetOppfølgingUrl =
     ? 'https://veilarbpersonflate.intern.nav.no'
     : 'https://veilarbpersonflate.intern.dev.nav.no';
 
-const NavigerTilAktivitetsplanenKnapp: React.FC = () => {
+export interface NavigerTilAktivitetsplanenKnappProps {
+  sidebar?: boolean;
+}
+
+const NavigerTilAktivitetsplanenKnapp: React.FC<
+  NavigerTilAktivitetsplanenKnappProps
+> = ({ sidebar }) => {
   const { kandidatData } = useKandidatContext();
   const navigerTilAktivitetsplanen = async (
     href: string,
@@ -27,8 +33,8 @@ const NavigerTilAktivitetsplanenKnapp: React.FC = () => {
   if (kandidatData.fodselsnummer) {
     return (
       <Button
-        variant='tertiary'
-        className='mt-4'
+        size={sidebar ? 'small' : 'medium'}
+        variant={'secondary'}
         icon={<ExternalLinkIcon />}
         onClick={() =>
           navigerTilAktivitetsplanen(

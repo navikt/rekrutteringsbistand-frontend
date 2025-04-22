@@ -11,19 +11,27 @@ import KandidatØnsker from './components/KandidatØnsker';
 import KandidatOversiktSidebar from './components/sidebar/KandidatOversiktSidebar';
 import * as React from 'react';
 
-const KandidatOversikt: React.FC = () => {
+export interface KandidatOversiktProps {
+  sidebar?: boolean;
+}
+
+const KandidatOversikt: React.FC<KandidatOversiktProps> = ({ sidebar }) => {
   const { kandidatData } = useKandidatContext();
 
   return (
-    <div className='mt-10 lg:flex'>
+    <div className={`mt-10   ${sidebar ? '' : 'flex'}`}>
       <div className='flex-grow'>
-        <div className='grid gap-x-[3.5rem] gap-y-8 md:flex-row'>
+        <div
+          className={`grid gap-x-[3.5rem] gap-y-8 md:flex-row  ${sidebar ? 'flex-row' : ''}`}
+        >
           <KandidatØnsker />
           <KandidatBeskrivelse kandidatSammendrag={kandidatData.beskrivelse} />
           <KandidatUtdanning />
           <KandidatErfaring />
         </div>
-        <div className='mt-8 grid grid-cols-1 gap-4 md:grid-cols-2'>
+        <div
+          className={`mt-8 grid grid-cols-1 gap-4 ${sidebar ? 'grid-cols-1' : 'md:grid-cols-2'}`}
+        >
           <KandidatSpråk språk={kandidatData?.sprak} />
           <KandidatGodkjenninger
             godkjenninger={kandidatData?.godkjenninger}
@@ -35,7 +43,7 @@ const KandidatOversikt: React.FC = () => {
         </div>
       </div>
 
-      <KandidatOversiktSidebar />
+      <KandidatOversiktSidebar sidebar={sidebar} />
     </div>
   );
 };

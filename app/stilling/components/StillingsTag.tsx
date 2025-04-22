@@ -1,6 +1,7 @@
 import { StillingsDataDTO } from '../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { RekrutteringsbistandStillingSchemaDTO } from '../../api/stillings-sok/schema/rekrutteringsbistandStillingSchema.zod';
 import { eierStilling } from '../../components/tilgangskontroll/erEier';
+import { formaterNorskDato } from '../../components/util';
 import { useApplikasjonContext } from '../../providers/ApplikasjonContext';
 import {
   AdminStatus,
@@ -9,7 +10,7 @@ import {
 } from '../../stilling/stilling-typer';
 import { Hovedtag } from './StillingsSøkFilter/InkluderingFilter';
 import { Tag } from '@navikt/ds-react';
-import { format, isBefore, startOfToday } from 'date-fns';
+import { isBefore, startOfToday } from 'date-fns';
 import * as React from 'react';
 
 export interface IStillingTag {
@@ -56,12 +57,8 @@ const StillingsTag: React.FC<IStillingTag> = ({ stillingsData, splitTags }) => {
   const stillingUløpt = stillingErUtløpt(stillingsData.stilling);
 
   const publisertDato = stillingsData.stilling.published
-    ? format(stillingsData.stilling.published, 'dd.MM.yyyy')
+    ? formaterNorskDato(stillingsData.stilling.published)
     : '-';
-  // TODO
-  // const utløpsDato = stillingsData.stilling.expires
-  //   ? format(stillingsData.stilling.expires, 'dd.MM.yyyy')
-  //   : '-';
 
   const erEierTag = erEier;
 

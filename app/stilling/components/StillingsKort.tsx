@@ -3,6 +3,7 @@ import { UmamiEvent } from '../../../util/umamiEvents';
 import { leggTilKandidater } from '../../api/kandidat-sok/leggTilKandidat';
 import { RekrutteringsbistandStillingSchemaDTO } from '../../api/stillings-sok/schema/rekrutteringsbistandStillingSchema.zod';
 import TekstMedIkon from '../../components/TekstMedIkon';
+import { formaterNorskDato } from '../../components/util';
 import { useVisVarsling } from '../../components/varsling/Varsling';
 import { useApplikasjonContext } from '../../providers/ApplikasjonContext';
 import { useUmami } from '../../providers/UmamiContext';
@@ -20,8 +21,6 @@ import {
   PersonIcon,
 } from '@navikt/aksel-icons';
 import { Box, Button, Heading, Link } from '@navikt/ds-react';
-import { format } from 'date-fns';
-import { nb } from 'date-fns/locale';
 import * as React from 'react';
 
 export interface IStillingsKort {
@@ -51,16 +50,16 @@ const StillingsKort: React.FC<IStillingsKort> = ({
   const erFormidling =
     stillingData.stillingsinfo?.stillingskategori === 'FORMIDLING';
 
-  function parseNorskDato(dateString: string | undefined | null) {
-    if (!dateString) return null;
+  // function parseNorskDato(dateString: string | undefined | null) {
+  //   if (!dateString) return null;
 
-    try {
-      const parsedDate = new Date(dateString);
-      return isNaN(parsedDate.getTime()) ? null : parsedDate;
-    } catch {
-      return null;
-    }
-  }
+  //   try {
+  //     const parsedDate = new Date(dateString);
+  //     return isNaN(parsedDate.getTime()) ? null : parsedDate;
+  //   } catch {
+  //     return null;
+  //   }
+  // }
 
   const stillingUrl = `${erFormidling ? '/etterregistrering/' : '/stilling/'}${stillingData.stilling.uuid}`;
 
@@ -95,7 +94,7 @@ const StillingsKort: React.FC<IStillingsKort> = ({
           {erEier && (
             <Link
               className='w-full sm:w-auto'
-              href={`/stilling/${stillingData.stilling.uuid}?visFane=kandidater`}
+              href={`/stilling/${stillingData.stilling.uuid}?stillingFane=kandidater`}
             >
               <Button
                 className='w-full sm:w-auto whitespace-nowrap'
@@ -176,16 +175,9 @@ const StillingsKort: React.FC<IStillingsKort> = ({
             title='Frist'
             tekst={` ${
               stillingData.stilling.properties?.applicationdue
-                ? (() => {
-                    const parsedDate = parseNorskDato(
-                      stillingData.stilling?.properties?.applicationdue,
-                    );
-                    return parsedDate
-                      ? format(parsedDate, 'd. MMMM yyyy', {
-                          locale: nb,
-                        })
-                      : stillingData.stilling.properties.applicationdue;
-                  })()
+                ? formaterNorskDato(
+                    stillingData.stilling.properties.applicationdue,
+                  )
                 : '-'
             }`}
           />

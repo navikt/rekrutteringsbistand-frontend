@@ -5,12 +5,12 @@ import { ReactNode } from 'react';
 // import Grunnbanner from '../grunnbanner/Grunnbanner';
 
 export type ISideTopBanner = {
-  tittel: string;
+  tittel: string | null;
   chip?: ReactNode;
   ikon?: ReactNode;
   headerInnhold?: ReactNode;
   knappIBanner?: ReactNode;
-  tilbakeKnapp?: TilbakeKnappProps;
+  tilbakeKnapp?: TilbakeKnappProps | null;
 };
 
 const SideTopBanner = ({
@@ -28,12 +28,14 @@ const SideTopBanner = ({
         <div className='flex w-full items-center justify-start gap-8'>
           {ikon}
           <div className='w-full'>
-            <div className='flex justify-between'>
-              <Heading className='mr-auto ml-0' level='2' size='large'>
-                {tittel}
-              </Heading>
-              <div className='flex-end flex'>{chip}</div>
-            </div>
+            {tittel && (
+              <div className='flex justify-between'>
+                <Heading className='mr-auto ml-0' level='2' size='large'>
+                  {tittel}
+                </Heading>
+                <div className='flex-end flex'>{chip}</div>
+              </div>
+            )}
             {headerInnhold}
           </div>
         </div>

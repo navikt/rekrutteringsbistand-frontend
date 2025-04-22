@@ -7,8 +7,7 @@ import { KandidatSøkMarkerteContextProvider } from '../../kandidat/KandidatSøk
 import { useStillingsContext } from './StillingsContext';
 import FinnKandidaterKnapp from './components/FinnKandidaterKnapp';
 import LeggTilKandidatTilStilling from './components/LeggTilKandidatTilStilling';
-import StillingsKandidater from './kandidater/StillingsKandidater';
-import { StillingsKandidaterFilterProvider } from './kandidater/StillingsKandidaterFilterContext';
+import KandidatlisteForStilling from './kandidater/KandidatlisteForStilling';
 import OmStillingen from './omStillingen/OmStillingen';
 import { Alert, Tabs } from '@navikt/ds-react';
 import { useQueryState } from 'nuqs';
@@ -25,7 +24,7 @@ export default function StillingSide() {
   const kandidatlistenErLukket =
     kandidatlisteInfo?.kandidatlisteStatus === Kandidatlistestatus.Lukket;
 
-  const [fane, setFane] = useQueryState('visFane', {
+  const [fane, setFane] = useQueryState('stillingFane', {
     defaultValue: StillingFane.STILLING,
     clearOnDefault: true,
   });
@@ -71,7 +70,7 @@ export default function StillingSide() {
                   Oppdraget er ferdigstilt og kandidatlisten er lukket
                 </Alert>
               ) : (
-                <div className='flex'>
+                <>
                   {kandidatlisteInfo?.kandidatlisteId && (
                     <TilgangskontrollForInnhold
                       skjulVarsel
@@ -80,14 +79,16 @@ export default function StillingSide() {
                         Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
                       ]}
                     >
-                      <FinnKandidaterKnapp />
-                      <LeggTilKandidatTilStilling
-                        stillingsId={stillingsData.stilling.uuid}
-                        stillingsTittel={stillingsData.stilling.title}
-                      />
+                      <div className='flex items-center justify-center gap-2'>
+                        <FinnKandidaterKnapp />
+                        <LeggTilKandidatTilStilling
+                          stillingsId={stillingsData.stilling.uuid}
+                          stillingsTittel={stillingsData.stilling.title}
+                        />
+                      </div>
                     </TilgangskontrollForInnhold>
                   )}
-                </div>
+                </>
               )}
             </div>
           </Tabs.List>
@@ -97,9 +98,7 @@ export default function StillingSide() {
           {kandidatlisteInfo?.kandidatlisteId && erEier && (
             <>
               <Tabs.Panel value={StillingFane.KANDIDATER}>
-                <StillingsKandidaterFilterProvider>
-                  <StillingsKandidater />
-                </StillingsKandidaterFilterProvider>
+                <KandidatlisteForStilling />
               </Tabs.Panel>
             </>
           )}

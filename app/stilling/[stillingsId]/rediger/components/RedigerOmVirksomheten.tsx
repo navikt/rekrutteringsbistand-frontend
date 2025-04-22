@@ -4,6 +4,7 @@ import RikTekstEditor from '../../../../components/rikteksteditor/RikTekstEditor
 import capitalizeEmployerName from '../../../stilling-util';
 import { useStillingsContext } from '../../StillingsContext';
 import { StillingsDataForm } from '../redigerFormType.zod';
+import OppsummerValidering from './OppsummerValidering';
 import StegNavigering from './StegNavigering';
 import VelgKontaktperson from './praktiskInfo/VelgKontaktperson';
 import { Accordion, Heading, TextField } from '@navikt/ds-react';
@@ -17,6 +18,9 @@ export const RedigerOmVirksomheten: React.FC<{
 }> = ({ nextStep, forrigeSteg, stegNummer }) => {
   const { stillingsData } = useStillingsContext();
 
+  const [oppsummerValidering, setOppsummerValidering] =
+    React.useState<boolean>(false);
+
   const {
     watch,
     setValue,
@@ -29,6 +33,8 @@ export const RedigerOmVirksomheten: React.FC<{
     e.preventDefault();
 
     const isValid = await trigger('omVirksomheten', { shouldFocus: true });
+
+    setOppsummerValidering(!isValid);
 
     if (isValid) {
       nextStep();
@@ -100,7 +106,9 @@ export const RedigerOmVirksomheten: React.FC<{
 
           <VelgKontaktperson />
         </div>
-
+        {oppsummerValidering && (
+          <OppsummerValidering feltNavn='omVirksomheten' />
+        )}
         <StegNavigering stegNummer={stegNummer} forrigeSteg={forrigeSteg} />
       </form>
     </div>

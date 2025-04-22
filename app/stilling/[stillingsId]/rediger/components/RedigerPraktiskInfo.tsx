@@ -1,4 +1,5 @@
 import { StillingsDataForm } from '../redigerFormType.zod';
+import OppsummerValidering from './OppsummerValidering';
 import StegNavigering from './StegNavigering';
 import VelgAnsettelsesform from './praktiskInfo/VelgAnsettelsesform';
 import VelgAntallStillinger from './praktiskInfo/VelgAntallStillinger';
@@ -8,6 +9,7 @@ import VelgOmfang from './praktiskInfo/VelgOmfang';
 import VelgOppstartOgFrist from './praktiskInfo/VelgOppstartOgFrist';
 import VelgSektor from './praktiskInfo/VelgSektor';
 import { BodyShort, Heading } from '@navikt/ds-react';
+import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 export const RedigerPraktiskInfo: React.FC<{
@@ -16,12 +18,14 @@ export const RedigerPraktiskInfo: React.FC<{
   forrigeSteg: () => void;
 }> = ({ nextStep, forrigeSteg, stegNummer }) => {
   const { trigger } = useFormContext<StillingsDataForm>();
+  const [oppsummerValidering, setOppsummerValidering] =
+    useState<boolean>(false);
 
   const handleStepSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const isValid = await trigger('praktiskInfo', { shouldFocus: true });
-
+    setOppsummerValidering(!isValid);
     if (isValid) {
       nextStep();
     }
@@ -42,6 +46,7 @@ export const RedigerPraktiskInfo: React.FC<{
         <VelgArbeidstidsordning arbeidstidsordningFelt='praktiskInfo.arbeidstidsordning' />
         <VelgArbeidsTid />
         <VelgOppstartOgFrist />
+        {oppsummerValidering && <OppsummerValidering feltNavn='praktiskInfo' />}
         <StegNavigering stegNummer={stegNummer} forrigeSteg={forrigeSteg} />
       </div>
     </form>

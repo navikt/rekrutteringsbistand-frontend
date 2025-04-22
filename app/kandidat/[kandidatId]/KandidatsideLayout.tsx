@@ -14,21 +14,20 @@ import {
   PhoneIcon,
 } from '@navikt/aksel-icons';
 import { differenceInYears, format } from 'date-fns';
-import { usePathname } from 'next/navigation';
 import * as React from 'react';
 
 export interface KandidatSideProps {
   children?: React.ReactNode | undefined;
-  tilbakeKnapp?: TilbakeKnappProps;
+  tilbakeKnapp?: TilbakeKnappProps | null;
+  sidebar?: boolean;
 }
 
 const KandidatSideLayout: React.FC<KandidatSideProps> = ({
   children,
   tilbakeKnapp,
+  sidebar,
 }) => {
-  const { kandidatsammendragData, kandidatId } = useKandidatContext();
-
-  const pathname = usePathname();
+  const { kandidatsammendragData } = useKandidatContext();
 
   return (
     <SideLayout
@@ -39,26 +38,27 @@ const KandidatSideLayout: React.FC<KandidatSideProps> = ({
               kandidatnr={kandidatsammendragData.arenaKandidatnr}
             />
           }
-          tilbakeKnapp={
-            tilbakeKnapp
-              ? tilbakeKnapp
-              : pathname.includes('forslag-til-stilling')
-                ? {
-                    href: `/kandidat/${kandidatId}`,
-                    navn: 'Tilbake til kandidat',
-                  }
-                : {
-                    href: '/kandidat',
-                  }
+          tilbakeKnapp={tilbakeKnapp ? tilbakeKnapp : null}
+          tittel={
+            sidebar
+              ? null
+              : `${kandidatsammendragData.fornavn} ${kandidatsammendragData.etternavn}`
           }
-          tittel={`${kandidatsammendragData.fornavn} ${kandidatsammendragData.etternavn}`}
           headerInnhold={
-            <div className='mt-2'>
-              <div className='flex gap-4'>
-                <TekstMedIkon
-                  ikon={<CandleIcon />}
-                  tekst={`Født ${format(kandidatsammendragData.fodselsdato, 'dd.MM.yyyy')} (${differenceInYears(new Date(), kandidatsammendragData.fodselsdato)}år) (${kandidatsammendragData.fodselsnummer})`}
-                />
+            <div className={sidebar ? '' : 'mt-2'}>
+              <div
+                className={
+                  sidebar ? 'grid grid-cols-2 gap-4 mb-4' : 'flex gap-4'
+                }
+              >
+                <div>
+                  <TekstMedIkon
+                    ikon={<CandleIcon />}
+                    tekst={`Født ${format(kandidatsammendragData.fodselsdato, 'dd.MM.yyyy')} (${differenceInYears(new Date(), kandidatsammendragData.fodselsdato)}år)`}
+                    splitSubtle={sidebar}
+                    subtle={`f.nr. ${kandidatsammendragData.fodselsnummer}`}
+                  />
+                </div>
                 <TekstMedIkon
                   ikon={<LocationPinIcon />}
                   tekst={`${kandidatsammendragData.adresselinje1}, ${kandidatsammendragData.postnummer} ${kandidatsammendragData.poststed}`}

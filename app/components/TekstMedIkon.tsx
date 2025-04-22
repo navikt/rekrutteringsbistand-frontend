@@ -1,3 +1,4 @@
+import { BodyShort } from '@navikt/ds-react';
 import * as React from 'react';
 
 export interface ITekstMedIkon {
@@ -7,6 +8,8 @@ export interface ITekstMedIkon {
   ariaLabel?: string;
   className?: string;
   hideIfEmpty?: boolean;
+  splitSubtle?: boolean;
+  subtle?: string;
 }
 
 const TekstMedIkon: React.FC<ITekstMedIkon> = ({
@@ -16,6 +19,8 @@ const TekstMedIkon: React.FC<ITekstMedIkon> = ({
   ariaLabel,
   className,
   hideIfEmpty,
+  subtle,
+  splitSubtle,
 }) => {
   if (hideIfEmpty && !tekst) {
     return null;
@@ -30,7 +35,10 @@ const TekstMedIkon: React.FC<ITekstMedIkon> = ({
       aria-label={title || ariaLabel}
     >
       {ikon}
-      <span className='ml-2 '>{tekst}</span>
+      <div className={splitSubtle ? 'flex flex-col ml-2' : 'flex ml-2 gap-2'}>
+        <span>{tekst}</span>
+        {subtle && <BodyShort textColor='subtle'>{subtle}</BodyShort>}
+      </div>
     </div>
   );
 };

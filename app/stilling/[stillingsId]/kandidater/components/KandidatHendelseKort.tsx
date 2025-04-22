@@ -1,5 +1,3 @@
-import FjernFåttJobbenKnapp from './FjernFåttJobbenKnapp';
-import { KandidatutfallTyper } from './KandidatTyper';
 import { BodyShort, Box } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import { nb } from 'date-fns/locale';
@@ -7,26 +5,24 @@ import { nb } from 'date-fns/locale';
 export interface KandidatHendelseKortProps {
   tittel: string;
   tekst: string;
-  dato: string;
-  type: 'success' | 'error' | 'info';
+  dato?: Date;
+  frist?: Date;
+  fargeKode: string;
   ikon: React.ReactNode;
-  fjerneFåttJobben?: boolean;
-  endreUtfallForKandidat: (utfall: KandidatutfallTyper) => void;
 }
 
 const KandidatHendelseKort: React.FC<KandidatHendelseKortProps> = ({
   tittel,
   tekst,
   dato,
-  type,
+  fargeKode,
   ikon,
-  fjerneFåttJobben,
-  endreUtfallForKandidat,
+  frist,
 }) => {
   const backgroundColor =
-    type === 'error'
+    fargeKode === 'error'
       ? 'danger-softA'
-      : type === 'success'
+      : fargeKode === 'success'
         ? 'success-softA'
         : 'info-softA';
 
@@ -42,19 +38,19 @@ const KandidatHendelseKort: React.FC<KandidatHendelseKortProps> = ({
           <div className='mt-0.5'>{ikon}</div>
           <div>
             <BodyShort weight='semibold'>{tittel}</BodyShort>
-            {tekst && (
+            {frist && (
+              <BodyShort size='small' textColor='subtle'>
+                Frist {format(frist, 'dd. MMMM yyyy HH:mm', { locale: nb })}
+              </BodyShort>
+            )}
+            {!frist && (
               <BodyShort size='small' textColor='subtle'>
                 {tekst}{' '}
-                {format(new Date(dato), 'dd. MMMM yyyy HH:mm', { locale: nb })}
+                {dato && format(dato, 'dd. MMMM yyyy HH:mm', { locale: nb })}
               </BodyShort>
             )}
           </div>
         </div>
-        {fjerneFåttJobben && (
-          <FjernFåttJobbenKnapp
-            endreUtfallForKandidat={endreUtfallForKandidat}
-          />
-        )}
       </div>
     </Box.New>
   );

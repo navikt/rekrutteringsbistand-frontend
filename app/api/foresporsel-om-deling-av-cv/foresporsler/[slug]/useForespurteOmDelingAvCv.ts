@@ -200,11 +200,11 @@ export const foresporselOmDelingAvCVMirage = (server: any) => {
         {
           aktørId: '2656264140912',
           stillingsId: '81d763bd-5858-4479-9113-1d8bcdd4b1f4',
-          deltStatus: 'SENDT',
+          deltStatus: 'HarVarslet',
           deltTidspunkt: '2024-11-18T13:29:42.124',
           deltAv: 'Z994440',
           svarfrist: '2024-11-21T00:00:00+01:00',
-          tilstand: 'AVBRUTT',
+          tilstand: 'HAR_VARSLET',
           svar: null,
           begrunnelseForAtAktivitetIkkeBleOpprettet: null,
           navKontor: '0403',
