@@ -38,12 +38,12 @@ export const RedigerOmStillingen: React.FC<{
     <div className='space-y-8'>
       <Heading size='large'>Om stillingen</Heading>
       <span className='mb-4'>
-        Vi anbefaler å lese våre tips om hvordan du skriver en{' '}
+        Vi anbefaler å lese våre tips{' '}
         <Link
           target='_blank'
-          href='https://arbeidsplassen.nav.no/skikkelig-bra-stillingsannonse'
+          href='https://navno.sharepoint.com/sites/fag-og-ytelser-arbeid-markedsarbeid/SitePages/Slik-skriver-du-gode-stillingsannonser-for-direktemeldte-stillinger.aspx'
         >
-          skikkelig god stillingsannonse
+          slik skriver du gode stillingsannonser for direktemeldte stillinger
         </Link>{' '}
         (åpnes i ny fane).
       </span>
