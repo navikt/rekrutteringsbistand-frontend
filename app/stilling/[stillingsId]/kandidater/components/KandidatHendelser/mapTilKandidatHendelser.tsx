@@ -25,6 +25,7 @@ export enum TilstandPåForespørsel {
 
 const utfallsEndringPresentasjon = (
   utfallType: KandidatutfallTyper,
+  sendtTilArbeidsgiversKandidatliste: boolean = false,
 ): {
   tittel: string;
   ikon: React.ReactNode;
@@ -37,19 +38,26 @@ const utfallsEndringPresentasjon = (
         ikon: <CheckmarkCircleIcon className='text-success' />,
         fargeKode: 'success',
       };
+    case KandidatutfallTyper.IKKE_PRESENTERT:
+      return {
+        tittel: 'Ikke presentert',
+        ikon: <ExclamationmarkTriangleIcon className='text-warning' />,
+        fargeKode: 'warning',
+      };
 
     case KandidatutfallTyper.PRESENTERT:
+      if (sendtTilArbeidsgiversKandidatliste) {
+        return {
+          tittel: 'CV delt med arbeidsgiver',
+          ikon: <TasklistSendIcon className='text-success' />,
+          fargeKode: 'alt1',
+        };
+      }
       return {
         tittel: 'Presentert',
         ikon: <TasklistSendIcon className='text-success' />,
         fargeKode: 'alt1',
       };
-    // case KandidatutfallTyper.IKKE_PRESENTERT:
-    //   return {
-    //     tittel: 'CV delt med arbeidsgiver',
-    //     ikon: <ExclamationmarkTriangleIcon className='text-danger' />,
-    //     fargeKode: 'error',
-    //   };
     default:
       return {
         tittel: 'Ukjent utfall',
@@ -154,6 +162,7 @@ export const mapTilKandidatHendelser = ({
   const utfallsendringer = kandidat.utfallsendringer?.map((endring) => {
     const presentasjon = utfallsEndringPresentasjon(
       endring.utfall as KandidatutfallTyper,
+      endring.sendtTilArbeidsgiversKandidatliste,
     );
     return {
       tittel: presentasjon.tittel,
