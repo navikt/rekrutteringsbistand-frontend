@@ -8,7 +8,7 @@ export default async function StillingForKandidat({
 }) {
   const kandidatId = params.kandidatId;
   return (
-    <KandidatSideLayout tilbakeKnapp={{ href: `/kandidat/${kandidatId}` }}>
+    <KandidatSideLayout tilbakeKnapp>
       <StillingsSøk skjulBanner kandidatId={kandidatId} />
     </KandidatSideLayout>
   );

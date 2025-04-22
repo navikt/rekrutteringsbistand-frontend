@@ -3,7 +3,6 @@
 import TekstMedIkon from '../../components/TekstMedIkon';
 import SideLayout from '../../components/layout/SideLayout';
 import SideTopBanner from '../../components/layout/SideTopBanner';
-import { TilbakeKnappProps } from '../../components/layout/TilbakeKnapp';
 import { useKandidatContext } from './KandidatContext';
 import KandidatNavigering from './KandidatNavigering';
 import {
@@ -18,7 +17,7 @@ import * as React from 'react';
 
 export interface KandidatSideProps {
   children?: React.ReactNode | undefined;
-  tilbakeKnapp?: TilbakeKnappProps | null;
+  tilbakeKnapp?: boolean;
   sidebar?: boolean;
 }
 
@@ -38,7 +37,7 @@ const KandidatSideLayout: React.FC<KandidatSideProps> = ({
               kandidatnr={kandidatsammendragData.arenaKandidatnr}
             />
           }
-          tilbakeKnapp={tilbakeKnapp ? tilbakeKnapp : null}
+          tilbakeKnapp={tilbakeKnapp}
           tittel={
             sidebar
               ? null

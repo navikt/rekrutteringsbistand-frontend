@@ -95,7 +95,7 @@ const StillingHeader: React.FC = () => {
           </div>
         </div>
       }
-      tilbakeKnapp={{ href: '/stilling' }}
+      tilbakeKnapp
       tittel={stillingsData.stilling.title ?? ''}
     />
   );

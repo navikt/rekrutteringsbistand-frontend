@@ -1,4 +1,4 @@
-import TilbakeKnapp, { TilbakeKnappProps } from './TilbakeKnapp';
+import TilbakeKnapp from './TilbakeKnapp';
 import { Heading } from '@navikt/ds-react';
 import { ReactNode } from 'react';
 
@@ -10,7 +10,7 @@ export type ISideTopBanner = {
   ikon?: ReactNode;
   headerInnhold?: ReactNode;
   knappIBanner?: ReactNode;
-  tilbakeKnapp?: TilbakeKnappProps | null;
+  tilbakeKnapp?: boolean;
 };
 
 const SideTopBanner = ({
@@ -23,7 +23,7 @@ const SideTopBanner = ({
 }: ISideTopBanner) => {
   return (
     <div className='my-4'>
-      {tilbakeKnapp && <TilbakeKnapp {...tilbakeKnapp} />}
+      {tilbakeKnapp && <TilbakeKnapp />}
       <div className='flex items-center justify-between'>
         <div className='flex w-full items-center justify-start gap-8'>
           {ikon}
