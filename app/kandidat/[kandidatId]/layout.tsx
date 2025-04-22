@@ -21,7 +21,7 @@ export default async function KandidatSideRootLayout({
       ]}
     >
       <KandidatContextProvider kandidatId={kandidatId}>
-        <KandidatSideLayout>{children}</KandidatSideLayout>
+        <KandidatSideLayout tilbakeKnapp>{children}</KandidatSideLayout>
       </KandidatContextProvider>
     </TilgangskontrollForInnhold>
   );
