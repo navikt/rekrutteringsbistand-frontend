@@ -6,21 +6,16 @@ import ArbeidsgiverHendelserKort from '../arbeidsgivere/components/ArbeidsgiverH
 import JobbsøkerHendelserKort from '../jobbsøkere/components/JobbsøkerHendelserKort';
 import { useArbeidsgiverHendelser } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgiverHendelser';
 import { useJobbsøkerHendelser } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkerHendelser';
-import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import SWRLaster from '@/app/components/SWRLaster';
-import {
+/*import {
   Dato,
   datoFormatterer,
 } from '@/app/rekrutteringstreff/RekrutteringstreffSøk';
-import { Heading, Table } from '@navikt/ds-react';
+import { Heading, Table } from '@navikt/ds-react';*/
 import * as React from 'react';
 
 const OmTreffet = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
-
-  const rekrutteringstreffHook = useRekrutteringstreff(
-    rekrutteringstreffId as string,
-  );
 
   const jobbsøkerHendelserHook = useJobbsøkerHendelser(
     rekrutteringstreffId as string,
@@ -32,7 +27,7 @@ const OmTreffet = () => {
 
   return (
     <div>
-      <SWRLaster hooks={[rekrutteringstreffHook]}>
+      {/*<SWRLaster hooks={[rekrutteringstreffHook]}>
         {(rekrutteringstreff) => {
           const dato: Dato = datoFormatterer(
             rekrutteringstreff.fraTid,
@@ -80,7 +75,7 @@ const OmTreffet = () => {
             </div>
           );
         }}
-      </SWRLaster>
+      </SWRLaster>*/}
 
       <div className='mt-4'>
         <SlettRekrutteringstreffModal />

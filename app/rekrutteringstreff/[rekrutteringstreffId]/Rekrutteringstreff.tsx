@@ -1,6 +1,7 @@
 'use client';
 
 import { useRekrutteringstreffContext } from './RekrutteringstreffContext';
+import TreffHeader from './components/TreffHeader';
 import RekrutteringstreffArbeidsgivere from './components/arbeidsgivere/Arbeidsgivere';
 import Jobbsøkere from './components/jobbsøkere/Jobbsøkere';
 import OmTreffet from './components/om-treffet/OmTreffet';
@@ -30,6 +31,7 @@ const Rekrutteringstreff: React.FC = () => {
 
   return (
     <Box.New>
+      <TreffHeader />
       <Tabs value={fane} onChange={(val) => setFane(val)}>
         <Tabs.List className='w-full'>
           <Tabs.Tab
