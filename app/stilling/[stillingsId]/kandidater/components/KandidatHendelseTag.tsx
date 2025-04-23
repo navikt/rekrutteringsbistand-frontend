@@ -1,7 +1,7 @@
 import { KandidatHendelseInformasjon } from './KandidatHendelser/KandidatHendelser';
 import { KandidatVisningProps } from './KandidatlisteFilter/useFiltrerteKandidater';
 import { TrashIcon } from '@navikt/aksel-icons';
-import { BodyShort, Tag } from '@navikt/ds-react';
+import { BodyShort, Tag, Tooltip } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import { nb } from 'date-fns/locale/nb';
 
@@ -49,41 +49,43 @@ const KandidatHendelseTag: React.FC<KandidatHendelseTagProps> = ({
     return null;
   }
   return (
-    <div
-      className={
-        sidebar
-          ? 'flex flex-row gap-2 items-center'
-          : 'flex flex-col items-start'
-      }
-    >
-      <Tag
-        variant={
-          kandidatHendelse.fargeKode as 'error' | 'info' | 'success' | 'alt1'
+    <Tooltip content={kandidatHendelse.tekst}>
+      <div
+        className={
+          sidebar
+            ? 'flex flex-row gap-2 items-center'
+            : 'flex flex-col items-start'
         }
-        size='small'
-        className='inline-flex '
       >
-        <div className='flex gap-2 items-center'>
-          {kandidatHendelse.ikon} {kandidatHendelse.tittel}
-        </div>
-      </Tag>
+        <Tag
+          variant={
+            kandidatHendelse.fargeKode as 'error' | 'info' | 'success' | 'alt1'
+          }
+          size='small'
+          className='inline-flex '
+        >
+          <div className='flex gap-2 items-center'>
+            {kandidatHendelse.ikon} {kandidatHendelse.tittel}
+          </div>
+        </Tag>
 
-      {kandidatHendelse.frist && (
-        <BodyShort textColor='subtle' size='small' className='mt-1'>
-          Frist{' '}
-          {format(kandidatHendelse.frist, 'dd. MMM yyyy', {
-            locale: nb,
-          })}
-        </BodyShort>
-      )}
-      {!kandidatHendelse.frist && kandidatHendelse.dato && (
-        <BodyShort textColor='subtle' size='small' className='mt-1'>
-          {format(kandidatHendelse.dato, 'dd MMM yyyy', {
-            locale: nb,
-          })}
-        </BodyShort>
-      )}
-    </div>
+        {kandidatHendelse.frist && (
+          <BodyShort textColor='subtle' size='small' className='mt-1'>
+            Frist{' '}
+            {format(kandidatHendelse.frist, 'dd. MMM yyyy', {
+              locale: nb,
+            })}
+          </BodyShort>
+        )}
+        {!kandidatHendelse.frist && kandidatHendelse.dato && (
+          <BodyShort textColor='subtle' size='small' className='mt-1'>
+            {format(kandidatHendelse.dato, 'dd MMM yyyy', {
+              locale: nb,
+            })}
+          </BodyShort>
+        )}
+      </div>
+    </Tooltip>
   );
 };
 

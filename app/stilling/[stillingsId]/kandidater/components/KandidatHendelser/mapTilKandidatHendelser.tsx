@@ -9,6 +9,7 @@ import {
   ExclamationmarkTriangleIcon,
   HourglassIcon,
   SparklesIcon,
+  TasklistIcon,
   TasklistSendIcon,
   ThumbDownIcon,
   ThumbUpIcon,
@@ -80,36 +81,36 @@ const cvHendelsePresentasjon = (
   switch (forespørsel.tilstand) {
     case TilstandPåForespørsel.PrøverVarsling:
       return {
-        tittel: 'Deling av CV',
+        tittel: 'Spurt om deling av CV',
         tekst: 'Prøver varsling',
         ikon: <HourglassIcon className='text-info' />,
         fargeKode: 'info',
       };
     case TilstandPåForespørsel.HarVarslet:
       return {
-        tittel: 'Deling av CV',
-        tekst: 'Spurt om deling av CV',
-        ikon: <HourglassIcon className='text-info' />,
+        tittel: 'Spurt om deling av CV',
+        tekst: `av ${forespørsel.deltAv}`,
+        ikon: <TasklistIcon className='text-info' />,
         fargeKode: 'info',
         frist: new Date(forespørsel.svarfrist),
       };
     case TilstandPåForespørsel.KanIkkeVarsle:
       return {
-        tittel: 'Deling av CV',
+        tittel: 'Deling av CV feilet',
         tekst: 'Kan ikke varsle',
         ikon: <ExclamationmarkTriangleIcon className='text-danger' />,
         fargeKode: 'warning',
       };
     case TilstandPåForespørsel.KanIkkeOpprette:
       return {
-        tittel: 'Deling av CV',
+        tittel: 'Deling av CV feilet',
         tekst: 'Kan ikke opprette forespørsel',
         ikon: <ExclamationmarkTriangleIcon className='text-danger' />,
         fargeKode: 'warning',
       };
     case TilstandPåForespørsel.Avbrutt:
       return {
-        tittel: 'Deling av CV',
+        tittel: 'Deling av CV feilet',
         tekst: 'Avbrutt',
         ikon: <ExclamationmarkTriangleIcon className='text-danger' />,
         fargeKode: 'warning',
@@ -117,16 +118,16 @@ const cvHendelsePresentasjon = (
     case TilstandPåForespørsel.HarSvart:
       if (forespørsel.svar?.harSvartJa) {
         return {
-          tittel: 'Deling av CV',
-          tekst: 'Svart på deling av CV: Ja',
+          tittel: 'Deling av CV: Ja',
+          tekst: `${forespørsel.svar?.svartAv.ident && `svart av ${forespørsel.svar?.svartAv.ident}`}`,
           ikon: <ThumbUpIcon className='text-info' />,
           fargeKode: 'success',
           svarTidspunkt: forespørsel.svar?.svarTidspunkt,
         };
       } else {
         return {
-          tittel: 'Deling av CV',
-          tekst: 'Svart på deling av CV: Nei',
+          tittel: 'Deling av CV: Nei',
+          tekst: `${forespørsel.svar?.svartAv.ident && `svart av ${forespørsel.svar?.svartAv.ident}`}`,
           ikon: <ThumbDownIcon className='text-danger' />,
           fargeKode: 'error',
           svarTidspunkt: forespørsel.svar?.svarTidspunkt,
@@ -183,7 +184,7 @@ export const mapTilKandidatHendelser = ({
 
       if (presentasjon) {
         return {
-          tittel: 'Deling av CV',
+          tittel: presentasjon.tittel,
           tekst: presentasjon.tekst,
           dato: forespørsel.svar?.svarTidspunkt
             ? new Date(forespørsel.svar?.svarTidspunkt)
