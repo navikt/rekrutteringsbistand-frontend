@@ -7,11 +7,6 @@ import JobbsøkerHendelserKort from '../../jobbsøkere/components/JobbsøkerHend
 import { useArbeidsgiverHendelser } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgiverHendelser';
 import { useJobbsøkerHendelser } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkerHendelser';
 import SWRLaster from '@/app/components/SWRLaster';
-/*import {
-  Dato,
-  datoFormatterer,
-} from '@/app/rekrutteringstreff/RekrutteringstreffSøk';
-import { Heading, Table } from '@navikt/ds-react';*/
 import * as React from 'react';
 
 const OmTreffet = () => {
