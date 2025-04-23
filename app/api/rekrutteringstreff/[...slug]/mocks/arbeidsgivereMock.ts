@@ -10,7 +10,7 @@ export const arbeidsgivereMock = (): ArbeidsgivereDTO => {
         {
           id: faker.string.uuid(),
           tidspunkt: new Date().toISOString(),
-          hendelsestype: 'LEGG_TIL',
+          hendelsestype: 'OPPRETT',
           opprettetAvAktørType: 'ARRANGØR',
           aktøridentifikasjon: 'testperson',
           orgnr: faker.string.numeric(9),
@@ -19,7 +19,7 @@ export const arbeidsgivereMock = (): ArbeidsgivereDTO => {
         {
           id: faker.string.uuid(),
           tidspunkt: new Date().toISOString(),
-          hendelsestype: 'LEGG_TIL',
+          hendelsestype: 'OPPRETT',
           opprettetAvAktørType: 'ARRANGØR',
           aktøridentifikasjon: 'testperson',
           orgnr: faker.string.numeric(9),

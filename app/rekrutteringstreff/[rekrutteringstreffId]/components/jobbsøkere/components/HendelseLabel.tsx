@@ -9,7 +9,7 @@ interface HendelseLabelProps {
 
 export const labelTekst = (hendelsetype: string) => {
   switch (hendelsetype) {
-    case 'LEGG_TIL':
+    case 'OPPRETT':
       return 'lagt til';
     case 'DELTA':
       return 'deltar';

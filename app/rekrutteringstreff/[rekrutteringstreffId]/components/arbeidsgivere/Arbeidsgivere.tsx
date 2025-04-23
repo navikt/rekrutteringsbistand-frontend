@@ -19,7 +19,7 @@ const RekrutteringstreffArbeidsgivere = () => {
 
   const getLagtTilData = (arbeidsgiver: ArbeidsgiverDTO) => {
     const leggTilHendelse = arbeidsgiver.hendelser.find(
-      ({ hendelsestype }) => hendelsestype === 'LEGG_TIL',
+      ({ hendelsestype }) => hendelsestype === 'OPPRETT',
     );
     if (leggTilHendelse) {
       return {
