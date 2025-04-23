@@ -1,12 +1,19 @@
 import { RedigerOmTilrettelegging } from '../../stilling/[stillingsId]/rediger/components/RedigerOmTilrettelegging';
+import { OmTilretteleggingSchema } from '../../stilling/[stillingsId]/rediger/redigerFormType.zod';
 import FormidlingInnspurt from './components/FormidlingInnspurt';
 import FormidlingLeggTilKandidat from './components/FormidlingLeggTilKandidat';
 import FormidlingOmStillingen from './components/RedigerOmFormidlingen';
+import {
+  FormidlingDataForm,
+  OmFormidlingSchema,
+  OmKandidateneSchema,
+} from './redigerFormidlingFormType';
 import { TrashIcon } from '@navikt/aksel-icons';
 import { Box, Button, Stepper } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
 import { useQueryState } from 'nuqs';
 import * as React from 'react';
+import { useFormContext } from 'react-hook-form';
 
 enum RedigerFormidlingSteg {
   omKandidatene = 'om-kandidatene',
@@ -16,6 +23,8 @@ enum RedigerFormidlingSteg {
 }
 
 const RedigerFormidling: React.FC = () => {
+  const { getValues } = useFormContext<FormidlingDataForm>();
+
   const router = useRouter();
   const [aktivtSteg, setAktivtSteg] = useQueryState('steg', {
     defaultValue: RedigerFormidlingSteg.omKandidatene,
@@ -48,9 +57,20 @@ const RedigerFormidling: React.FC = () => {
     }
   };
 
-  const aktivtStegIndex = Object.values(RedigerFormidlingSteg).indexOf(
-    aktivtSteg as RedigerFormidlingSteg,
-  );
+  const validerOmKandidatene = () => {
+    const valider = OmKandidateneSchema.safeParse(getValues().omKandidatene);
+    return valider.success;
+  };
+  const validerOmFormidlingen = () => {
+    const valider = OmFormidlingSchema.safeParse(getValues().omFormidlingen);
+    return valider.success;
+  };
+  const validerOmTilrettelegging = () => {
+    const valider = OmTilretteleggingSchema.safeParse(
+      getValues().omTilrettelegging,
+    );
+    return valider.success;
+  };
 
   return (
     <Box>
@@ -65,26 +85,29 @@ const RedigerFormidling: React.FC = () => {
             className='mb-8'
           >
             <Stepper.Step
-              completed={aktivtStegIndex > 0}
-              interactive={aktivtStegIndex > 0}
+              completed={validerOmKandidatene()}
+              interactive={validerOmKandidatene()}
             >
               Om kandidatene
             </Stepper.Step>
             <Stepper.Step
-              completed={aktivtStegIndex > 1}
-              interactive={aktivtStegIndex > 1}
+              completed={validerOmFormidlingen()}
+              interactive={validerOmKandidatene()}
             >
               Om formidlingen
             </Stepper.Step>
             <Stepper.Step
-              completed={aktivtStegIndex > 2}
-              interactive={aktivtStegIndex > 2}
+              completed={validerOmTilrettelegging()}
+              interactive={validerOmFormidlingen()}
             >
               Om inkludering
             </Stepper.Step>
             <Stepper.Step
-              completed={aktivtStegIndex > 3}
-              interactive={aktivtStegIndex > 3}
+              interactive={
+                validerOmKandidatene() &&
+                validerOmFormidlingen() &&
+                validerOmTilrettelegging()
+              }
             >
               Innspurt
             </Stepper.Step>

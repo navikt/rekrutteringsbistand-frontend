@@ -93,10 +93,12 @@ export const OmFormidlingSchema = z
     }
   });
 
+export const OmKandidateneSchema = z
+  .array(FormidlingKandidatSchema)
+  .min(1, { message: 'Du må velge minst én kandidat' });
+
 export const FormidlingFormSchema = z.object({
-  omKandidatene: z
-    .array(FormidlingKandidatSchema)
-    .min(1, { message: 'Du må velge minst én kandidat' }),
+  omKandidatene: OmKandidateneSchema,
   omFormidlingen: OmFormidlingSchema,
   omTilrettelegging: OmTilretteleggingSchema.optional(),
   innspurt: z.string(),
