@@ -23,7 +23,7 @@ export const jobbsøkerMock = (): JobbsøkerDTO => {
       {
         id: faker.string.uuid(),
         tidspunkt: new Date().toISOString(),
-        hendelsestype: 'LEGG_TIL',
+        hendelsestype: 'OPPRETT',
         opprettetAvAktørType: 'ARRANGØR',
         aktørIdentifikasjon: 'testperson',
       },

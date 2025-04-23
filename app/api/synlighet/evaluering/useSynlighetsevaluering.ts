@@ -26,7 +26,7 @@ export enum KravTilKandidaten {
 
 export enum KravTilVeileder {
   ErIkkeFritattKandidatsøk = 'erIkkeFritattKandidatsøk',
-  HarRiktigFormidlingsgruppe = 'harRiktigFormidlingsgruppe',
+  ErArbeidssøker = 'erArbeidssøker',
 }
 
 export const SynlighetskriterieSchema = z.union([
@@ -64,7 +64,7 @@ export const synlighetsevalueringMirage = (server: Server) => {
       maaIkkeBehandleTidligereCv: false,
       erIkkeFritattKandidatsøk: false,
       erUnderOppfoelging: false,
-      harRiktigFormidlingsgruppe: false,
+      erArbeidssøker: false,
       erIkkeSperretAnsatt: true,
       erIkkeDoed: true,
       erFerdigBeregnet: true,

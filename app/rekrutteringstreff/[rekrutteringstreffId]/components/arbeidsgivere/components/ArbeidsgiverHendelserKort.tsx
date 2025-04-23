@@ -23,7 +23,7 @@ const ArbeidsgiverHendelserKort: React.FC<ArbeidsgiverHendelserKortProps> = ({
 }) => {
   const antallHendelser = arbeidsgiverHendelserDTO.length;
   const antallLagtTilHendelser = arbeidsgiverHendelserDTO.filter(
-    (h) => h.hendelsestype === 'LEGG_TIL',
+    (h) => h.hendelsestype === 'OPPRETT',
   ).length;
   const siste5Hendelser = arbeidsgiverHendelserDTO.slice(-5);
 
@@ -62,7 +62,7 @@ const ArbeidsgiverHendelserKort: React.FC<ArbeidsgiverHendelserKortProps> = ({
                 <div className='flex flex-wrap gap-2'>
                   <HendelseLabel
                     icon={<PlusCircleIcon className='text-white' />}
-                    hendelseType='LEGG_TIL'
+                    hendelseType='OPPRETT'
                     antall={antallLagtTilHendelser}
                   />
                   <HendelseLabel

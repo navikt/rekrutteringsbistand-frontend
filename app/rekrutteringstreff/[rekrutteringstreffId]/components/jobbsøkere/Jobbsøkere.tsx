@@ -18,7 +18,7 @@ const Jobbsøkere = () => {
 
   const getLagtTilData = (jobbsøker: JobbsøkerDTO) => {
     const leggTilHendelse = jobbsøker.hendelser.find(
-      ({ hendelsestype }) => hendelsestype === 'LEGG_TIL',
+      ({ hendelsestype }) => hendelsestype === 'OPPRETT',
     );
     if (leggTilHendelse) {
       return {

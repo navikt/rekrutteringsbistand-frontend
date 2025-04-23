@@ -39,10 +39,7 @@ const Synlighetsinfo: React.FC<SynlighetsinfoProps> = ({ fødselsnummer }) => {
               Personbruker har personforholdet «Fritatt for kandidatsøk» i
               Arena.
             </li>
-            <li>
-              Personbruker må ha formidlingsgruppe ARBS (Arena-kode som betyr
-              «arbeidssøker»).
-            </li>
+            <li>Personbruker må være i Navs Arbeidssøkerregister.</li>
             <li>Personbruker har status «Egen ansatt».</li>
             <li>
               Personbruker har adresseskjerming (kode 6 og 7 eller strengt
