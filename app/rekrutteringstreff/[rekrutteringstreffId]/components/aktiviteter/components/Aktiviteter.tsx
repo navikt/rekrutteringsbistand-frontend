@@ -16,6 +16,9 @@ const Aktiviteter: React.FC = () => {
 
   if (!hendelser) return null;
 
+  const lowercaseStorBokstavFørst = (txt: string) =>
+    txt.length === 0 ? '' : txt[0].toUpperCase() + txt.slice(1).toLowerCase();
+
   return (
     <section className='flex flex-col gap-4 mt-4'>
       <div className={`${GRID} font-semibold text-lg`}>
@@ -38,7 +41,9 @@ const Aktiviteter: React.FC = () => {
             }
           />
 
-          <BodyShort className='whitespace-nowrap'>{h.ressurs}</BodyShort>
+          <BodyShort className='whitespace-nowrap'>
+            {lowercaseStorBokstavFørst(h.ressurs)}
+          </BodyShort>
 
           <BodyShort className='whitespace-nowrap'>
             {format(new Date(h.tidspunkt), 'dd.MM.yyyy HH:mm')}
