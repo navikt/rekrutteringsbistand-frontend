@@ -31,6 +31,7 @@ import { brukerStandardSøkMirage } from '../app/api/stilling/standardsok/useBru
 import { stillingssøkMirage } from '../app/api/stillings-sok/useStillingssøk';
 import { synlighetsevalueringMirage } from '../app/api/synlighet/evaluering/useSynlighetsevaluering';
 import { leggTilNyArbeidsgiverMirage } from '@/app/api/rekrutteringstreff/[...slug]/ny-arbeidsgiver/leggTilNyArbeidsgiver';
+import { alleHendelserMirage } from '@/app/api/rekrutteringstreff/[...slug]/useAlleHendelser';
 import { arbeidsgiverHendelserMirage } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgiverHendelser';
 import { rekruteringstreffArbeidsgivereMirage } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
 import { jobbsøkerHendelserMirage } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkerHendelser';
@@ -88,6 +89,7 @@ export function makeServer({ environment = 'test' } = {}) {
       leggTilNyJobbsøkerMirage(this);
       jobbsøkerHendelserMirage(this);
       arbeidsgiverHendelserMirage(this);
+      alleHendelserMirage(this);
       jobbsøkereMirage(this);
       rekruteringstreffArbeidsgivereMirage(this);
       slettRekrutteringstreffMirage(this);
