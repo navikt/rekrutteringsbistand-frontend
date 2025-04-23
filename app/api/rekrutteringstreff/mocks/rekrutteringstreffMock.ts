@@ -8,4 +8,14 @@ export const rekrutteringstreffMock = {
   status: 'Utkast',
   opprettetAvPersonNavident: 'A123456',
   opprettetAvNavkontorEnhetId: '0318',
+  opprettetAvTidspunkt: '2025-06-01T08:00:00+02:00',
+  hendelser: [
+    {
+      id: '11111111-2222-3333-4444-555555555555',
+      tidspunkt: '2025-06-01T08:00:00+02:00',
+      hendelsestype: 'OPPRETT',
+      opprettetAvAktørType: 'ARRANGØR',
+      aktørIdentifikasjon: 'A123456',
+    },
+  ],
 };
