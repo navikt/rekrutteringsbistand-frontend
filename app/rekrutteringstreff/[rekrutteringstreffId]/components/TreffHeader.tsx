@@ -10,6 +10,8 @@ import SideLayout from '@/app/components/layout/SideLayout';
 import SideTopBanner from '@/app/components/layout/SideTopBanner';
 import { PencilIcon } from '@navikt/aksel-icons';
 import { BodyShort, Detail } from '@navikt/ds-react';
+import { format } from 'date-fns';
+import { nb } from 'date-fns/locale/nb';
 import * as React from 'react';
 
 const TreffHeader = ({}) => {
@@ -23,6 +25,10 @@ const TreffHeader = ({}) => {
     <div>
       <SWRLaster hooks={[rekrutteringstreffHook]}>
         {(rekrutteringstreff) => {
+          const oppretthendelse = rekrutteringstreff.hendelser.find(
+            (h) => h.hendelsestype === 'OPPRETT',
+          );
+
           return (
             <SideLayout
               banner={
@@ -39,8 +45,15 @@ const TreffHeader = ({}) => {
                       }
                       headerInnhold={
                         <Detail className='text-gray-400'>
-                          Opprettet av{' '}
-                          {rekrutteringstreff.opprettetAvPersonNavident}
+                          Opprettet av {oppretthendelse?.aktørIdentifikasjon}
+                          {', '}
+                          {oppretthendelse?.tidspunkt
+                            ? format(
+                                new Date(oppretthendelse.tidspunkt),
+                                'd. MMMM yyyy',
+                                { locale: nb },
+                              )
+                            : ''}
                         </Detail>
                       }
                     />

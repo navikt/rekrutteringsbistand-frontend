@@ -9,12 +9,16 @@ import { rekrutteringstreffMock } from './mocks/rekrutteringstreffMock';
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
 
-export const rekrutteringstreffEndepunkt = () =>
-  `${RekrutteringstreffAPI.internUrl}`;
+const rekrutteringstreffEndepunkt = (id: string) =>
+  `${RekrutteringstreffAPI.internUrl}/${id}`;
 
-const RekrutteringstreffEndepunkt = (id: string) => {
-  return `${RekrutteringstreffAPI.internUrl}/${id}`;
-};
+const HendelseSchema = z.object({
+  id: z.string(),
+  tidspunkt: z.string(),
+  hendelsestype: z.string(),
+  opprettetAvAktørType: z.string(),
+  aktørIdentifikasjon: z.string().nullable(),
+});
 
 const RekrutteringstreffSchema = z.object({
   id: z.string(),
@@ -26,17 +30,19 @@ const RekrutteringstreffSchema = z.object({
   status: z.string(),
   opprettetAvPersonNavident: z.string(),
   opprettetAvNavkontorEnhetId: z.string(),
+  hendelser: z.array(HendelseSchema),
 });
 
 export type RekrutteringstreffDTO = z.infer<typeof RekrutteringstreffSchema>;
+export type HendelseDTO = z.infer<typeof HendelseSchema>;
 
 export const useRekrutteringstreff = (id: string) => {
   if (!id) {
-    throw new Error('ID må være definert for å hente rekrutteringstreff');
+    throw new Error('ID må være definert');
   }
 
   return useSWRImmutable(
-    RekrutteringstreffEndepunkt(id),
+    rekrutteringstreffEndepunkt(id),
     getAPIwithSchema(RekrutteringstreffSchema),
   );
 };
