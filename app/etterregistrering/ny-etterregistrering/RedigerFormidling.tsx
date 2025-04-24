@@ -31,6 +31,10 @@ const RedigerFormidling: React.FC = () => {
     history: 'push',
   });
 
+  React.useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [aktivtSteg]);
+
   const stegNummer = (): number => {
     const steps = Object.values(RedigerFormidlingSteg);
     const index = steps.indexOf(aktivtSteg as RedigerFormidlingSteg);
