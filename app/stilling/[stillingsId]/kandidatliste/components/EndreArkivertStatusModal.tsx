@@ -4,6 +4,7 @@ import { putApi } from '../../../../api/fetcher';
 import { kandidaterSchemaDTO } from '../../../../api/kandidat/schema.zod';
 import { useKandidatliste } from '../../../../api/kandidat/useKandidatliste';
 import { useStillingsContext } from '../../StillingsContext';
+import { useApplikasjonContext } from '@/app/providers/ApplikasjonContext';
 import { ArrowUndoIcon, TrashIcon } from '@navikt/aksel-icons';
 import { BodyLong, Button, Modal } from '@navikt/ds-react';
 import * as React from 'react';
@@ -23,6 +24,7 @@ const EndreArkivertStatusKnapp: React.FC<EndreArkivertStatusKnappProps> = ({
   tittel,
 }) => {
   const { stillingsData } = useStillingsContext();
+  const { valgtNavKontor } = useApplikasjonContext();
   const [isLoading, setIsLoading] = useState(false);
   const kandidatListeHook = useKandidatliste(stillingsData.stilling.uuid);
 
@@ -35,6 +37,7 @@ const EndreArkivertStatusKnapp: React.FC<EndreArkivertStatusKnappProps> = ({
         `${KandidatAPI.internUrl}/veileder/kandidatlister/${kandidatlisteId}/kandidater/${kandidat.kandidatnr}/arkivert`,
         {
           arkivert: status,
+          navKontor: valgtNavKontor?.navKontor,
         },
       );
       kandidatListeHook.mutate();
