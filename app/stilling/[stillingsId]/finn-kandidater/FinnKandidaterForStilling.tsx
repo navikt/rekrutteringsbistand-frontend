@@ -10,11 +10,7 @@ import { useStillingsContext } from '../StillingsContext';
 import KandidatTilStilling from './KandidatTilStilling';
 import * as React from 'react';
 
-// export interface FinnKandidaterForStillingProps {
-//   stillingsId: string;
-// }
-
-const FinnKandidaterForStilling: React.FC = ({}) => {
+const FinnKandidaterForStilling: React.FC = () => {
   const { stillingsData } = useStillingsContext();
 
   return (

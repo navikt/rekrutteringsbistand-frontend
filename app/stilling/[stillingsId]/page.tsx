@@ -7,7 +7,7 @@ import { KandidatSøkMarkerteContextProvider } from '../../kandidat/KandidatSøk
 import { useStillingsContext } from './StillingsContext';
 import FinnKandidaterKnapp from './components/FinnKandidaterKnapp';
 import LeggTilKandidatTilStilling from './components/LeggTilKandidatTilStilling';
-import KandidatlisteForStilling from './kandidater/KandidatlisteForStilling';
+import KandidatlisteForStilling from './kandidatliste/KandidatlisteForStilling';
 import OmStillingen from './omStillingen/OmStillingen';
 import { Alert, Tabs } from '@navikt/ds-react';
 import { useQueryState } from 'nuqs';

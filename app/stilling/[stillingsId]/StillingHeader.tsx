@@ -8,7 +8,7 @@ import KopierStillingLenke from './components/KopierStillingLenke';
 import {
   InternKandidatstatus,
   KandidatutfallTyper,
-} from './kandidater/KandidatTyper';
+} from './kandidatliste/KandidatTyper';
 import { Buildings2Icon, PersonIcon } from '@navikt/aksel-icons';
 import { BodyShort } from '@navikt/ds-react';
 import * as React from 'react';

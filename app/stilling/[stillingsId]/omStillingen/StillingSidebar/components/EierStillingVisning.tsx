@@ -1,6 +1,6 @@
 import { useKandidatliste } from '../../../../../api/kandidat/useKandidatliste';
 import { useStillingsContext } from '../../../StillingsContext';
-import { KandidatutfallTyper } from '../../../kandidater/KandidatTyper';
+import { KandidatutfallTyper } from '../../../kandidatliste/KandidatTyper';
 import AvsluttStillingKnapp from './AvsluttStillingKnapp';
 import KopierStilling from './KopierStilling';
 import { PencilIcon } from '@navikt/aksel-icons';

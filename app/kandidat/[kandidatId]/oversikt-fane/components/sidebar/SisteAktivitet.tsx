@@ -1,6 +1,6 @@
 import { useKandidatListeoversikt } from '../../../../../api/kandidat/useKandidatListeoversikt';
 import SWRLaster from '../../../../../components/SWRLaster';
-import KandidatStatusTag from '../../../../../stilling/[stillingsId]/kandidater/components/StatusTag';
+import KandidatStatusTag from '../../../../../stilling/[stillingsId]/kandidatliste/components/StatusTag';
 import { useKandidatContext } from '../../../KandidatContext';
 import { BodyShort, Button, Link } from '@navikt/ds-react';
 import { format } from 'date-fns';

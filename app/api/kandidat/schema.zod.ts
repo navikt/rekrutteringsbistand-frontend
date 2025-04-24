@@ -1,4 +1,4 @@
-import { InternKandidatstatus } from '../../stilling/[stillingsId]/kandidater/KandidatTyper';
+import { InternKandidatstatus } from '../../stilling/[stillingsId]/kandidatliste/KandidatTyper';
 import { z } from 'zod';
 
 export enum Kandidatlistestatus {

@@ -1,4 +1,4 @@
-import KandidatStatusTag from '../../../../stilling/[stillingsId]/kandidater/components/StatusTag';
+import KandidatStatusTag from '../../../../stilling/[stillingsId]/kandidatliste/components/StatusTag';
 import { Link, Table } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import * as React from 'react';

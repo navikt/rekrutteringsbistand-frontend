@@ -1,4 +1,4 @@
-import KandidatlisteForStilling from '../../stilling/[stillingsId]/kandidater/KandidatlisteForStilling';
+import KandidatlisteForStilling from '../../stilling/[stillingsId]/kandidatliste/KandidatlisteForStilling';
 import * as React from 'react';
 
 const FormidlingKandidater: React.FC = () => {
