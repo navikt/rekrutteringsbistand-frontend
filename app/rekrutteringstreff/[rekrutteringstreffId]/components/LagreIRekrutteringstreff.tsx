@@ -45,31 +45,36 @@ const LagreIRekrutteringstreff: React.FC<LagreIRekrutteringstreffProps> = ({
   const lagreKandidaterIRekrutteringstreff = async () => {
     if (markerteKandidater && markerteKandidater.length > 0) {
       setLaster(true);
+      const feil: string[] = [];
       const dto: LeggTilNyJobbsøkereDTO = markerteKandidater
-        .map((kandidatnummer) =>
-          kandidatsokKandidater.find((k) => k.kandidatnr === kandidatnummer),
-        )
+        .map((kandidatnummer) => {
+          const kandidat = kandidatsokKandidater.find(
+            (k) => k.arenaKandidatnr === kandidatnummer,
+          );
+
+          if (!kandidat) {
+            feil.push(
+              `Fant ikke kandidat med kandidatnummer: ${kandidatnummer}`,
+            );
+            return null;
+          }
+          if (!kandidat.fodselsnummer) {
+            feil.push(`Kandidat mangler fødselsnummer (${kandidatnummer})`);
+          }
+
+          return {
+            fødselsnummer: kandidat.fodselsnummer,
+            fornavn: kandidat.fornavn ?? null,
+            etternavn: kandidat.etternavn ?? null,
+            kandidatnummer: kandidat.arenaKandidatnr ?? null,
+            navkontor: kandidat.navkontor ?? null,
+            veilederNavn: kandidat.veilederVisningsnavn ?? 'UKJENT',
+            veilederNavIdent: kandidat.veilederIdent ?? 'UKJENT',
+          };
+        })
         .filter(
-          // sørg for at både fødselsnummer og veilederIdent finnes
-          (
-            k,
-          ): k is KandidatsokKandidat & {
-            fodselsnummer: string;
-            veilederIdent: string;
-          } =>
-            !!k &&
-            typeof k.fodselsnummer === 'string' &&
-            typeof k.veilederIdent === 'string',
-        )
-        .map((k) => ({
-          fødselsnummer: k.fodselsnummer,
-          fornavn: k.fornavn ?? null,
-          etternavn: k.etternavn ?? null,
-          kandidatnummer: k.kandidatnr ?? null,
-          navkontor: k.navkontor ?? null,
-          veilederNavn: k.veilederVisningsnavn ?? null,
-          veilederNavIdent: k.veilederIdent,
-        }));
+          (kandidat) => kandidat && kandidat.fødselsnummer,
+        ) as LeggTilNyJobbsøkereDTO;
 
       if (rekrutteringstreffId) {
         //TODO: track(UmamiEvent...)
