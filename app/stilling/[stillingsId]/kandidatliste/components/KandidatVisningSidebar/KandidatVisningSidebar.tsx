@@ -2,9 +2,9 @@ import { useForespurteOmDelingAvCv } from '../../../../../api/foresporsel-om-del
 import { useKandidatliste } from '../../../../../api/kandidat/useKandidatliste';
 import { useSmserForStilling } from '../../../../../api/kandidatvarsel/kandidatvarsel';
 import SWRLaster from '../../../../../components/SWRLaster';
-import { KandidatContextProvider } from '../../../../../kandidat/components/VisKandidat/KandidatContext';
-import KandidatSide from '../../../../../kandidat/components/VisKandidat/KandidatSide';
-import KandidatSideLayout from '../../../../../kandidat/components/VisKandidat/KandidatsideLayout';
+import { KandidatContextProvider } from '../../../../../kandidat/VisKandidat/KandidatContext';
+import KandidatSide from '../../../../../kandidat/VisKandidat/KandidatSide';
+import KandidatSideLayout from '../../../../../kandidat/VisKandidat/KandidatsideLayout';
 import { useStillingsContext } from '../../../StillingsContext';
 import {
   KandidatlisteContextProvider,

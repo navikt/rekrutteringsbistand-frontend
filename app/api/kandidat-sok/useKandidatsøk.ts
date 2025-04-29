@@ -7,7 +7,7 @@ import {
   IKandidaSokFilterContext,
   KandidatSøkPortefølje,
 } from '../../kandidat/KandidaSokFilterContext';
-import { konverterStederTilNåværendeKoder } from '../../kandidat/components/VisKandidat/forslag-til-stilling/useStillingForKandidat';
+import { konverterStederTilNåværendeKoder } from '../../kandidat/VisKandidat/forslag-til-stilling/useStillingForKandidat';
 import { KandidatSøkAPI } from '../api-routes';
 import { postApiWithSchema } from '../fetcher';
 import { usePamGeografi } from '../pam-geografi/typehead/lokasjoner/usePamGeografi';

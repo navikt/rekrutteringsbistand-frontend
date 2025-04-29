@@ -3,7 +3,7 @@
 import HovedInnholdKort from '../../components/layout/HovedInnholdKort';
 import LayoutMedSidebar from '../../components/layout/LayoutMedSidebar';
 import SideLayout from '../../components/layout/SideLayout';
-import VisKandidat from '../../kandidat/components/VisKandidat/VisKandidat';
+import VisKandidat from '../../kandidat/VisKandidat/VisKandidat';
 import StillingHeader from './StillingHeader';
 import { useStillingsContext } from './StillingsContext';
 import { Alert, Heading } from '@navikt/ds-react';

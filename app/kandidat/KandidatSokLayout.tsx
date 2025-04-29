@@ -8,9 +8,9 @@ import SideTopBanner from '../components/layout/SideTopBanner';
 import { TilgangskontrollForInnhold } from '../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '../components/tilgangskontroll/roller';
 import { KandidatSøkProvider } from './KandidaSokFilterContext';
+import KandidatSøkFilter from './KandidatSøkFilter/KandidatSøkFilter';
 import { KandidatSøkMarkerteContextProvider } from './KandidatSøkMarkerteContext';
-import KandidatSøkFilter from './components/KandidatSøkFilter/KandidatSøkFilter';
-import VisKandidat from './components/VisKandidat/VisKandidat';
+import VisKandidat from './VisKandidat/VisKandidat';
 import { useQueryState } from 'nuqs';
 
 export interface KandidatSokLayoutProps {

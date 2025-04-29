@@ -5,7 +5,7 @@ import {
   ModiaEventType,
   setModiaContext,
 } from '../api/modia/context/setModiaContext';
-import { useKandidatContext } from '../kandidat/components/VisKandidat/KandidatContext';
+import { useKandidatContext } from '../kandidat/VisKandidat/KandidatContext';
 import { ExternalLinkIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import * as React from 'react';
