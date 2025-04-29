@@ -1,33 +1,33 @@
 import { useKandidatliste } from '../../../api/kandidat/useKandidatliste';
 import KandidatSøk from '../../../kandidat/KandidatSøkSide';
-import { RekrutteringstreffDTO } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
+import { useRekrutteringstreffContext } from '../RekrutteringstreffContext';
+import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
 import * as React from 'react';
 
-export interface KandidatTilRekrutteringstreffProps {
-  rekrutteringstreff?: RekrutteringstreffDTO;
-}
-
-const KandidatTilRekrutteringstreff: React.FC<
-  KandidatTilRekrutteringstreffProps
-> = ({ rekrutteringstreff }) => {
+const KandidatTilRekrutteringstreff: React.FC = () => {
   const [alleredeLagtTil, setAlleredeLagtTil] = React.useState<string[]>([]);
 
-  const kandidatlisteHook = useKandidatliste(rekrutteringstreff?.id);
+  const rekrutteringstreff = useRekrutteringstreffContext();
+  rekrutteringstreff.rekrutteringstreffId;
+
+  const { data: jobbsøkere } = useJobbsøkere(
+    rekrutteringstreff.rekrutteringstreffId as string,
+  );
 
   React.useEffect(() => {
-    if (kandidatlisteHook?.data?.kandidater) {
-      const listeOverValgteKandidater = kandidatlisteHook.data.kandidater
-        .map((kandidat) => kandidat.kandidatnr)
+    if (jobbsøkere) {
+      const listeOverValgteJobbsøkere = jobbsøkere
+        .map((jobbsøker) => jobbsøker.kandidatnummer)
         .filter((id): id is string => id !== null);
 
-      setAlleredeLagtTil(listeOverValgteKandidater);
+      setAlleredeLagtTil(listeOverValgteJobbsøkere);
     }
-  }, [kandidatlisteHook?.data?.kandidater]);
+  }, [jobbsøkere]);
 
   return (
     <>
       <KandidatSøk
-        rekrutteringstreffId={rekrutteringstreff?.id}
+        rekrutteringstreffId={rekrutteringstreff?.rekrutteringstreffId}
         alleredeLagtTil={alleredeLagtTil}
       />
     </>
