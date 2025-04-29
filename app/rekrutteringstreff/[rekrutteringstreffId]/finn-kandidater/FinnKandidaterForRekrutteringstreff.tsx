@@ -6,12 +6,7 @@ import { Roller } from '../../../components/tilgangskontroll/roller';
 import { KandidatSøkProvider } from '../../../kandidat/KandidaSokFilterContext';
 import { KandidatSøkMarkerteContextProvider } from '../../../kandidat/KandidatSøkMarkerteContext';
 import KandidatSøkSidebar from '../../../kandidat/components/kandidat-sok-sidebar/KandidatSøkSidebar';
-import { useRekrutteringstreffContext } from '../RekrutteringstreffContext';
 import KandidatTilRekrutteringstreff from './KandidatTilRekrutteringstreff';
-import {
-  RekrutteringstreffDTO,
-  useRekrutteringstreff,
-} from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import * as React from 'react';
 
 const FinnKandidaterForRekrutteringstreff: React.FC = () => {

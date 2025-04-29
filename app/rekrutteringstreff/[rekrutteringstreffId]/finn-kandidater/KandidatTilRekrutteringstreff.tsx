@@ -1,4 +1,3 @@
-import { useKandidatliste } from '../../../api/kandidat/useKandidatliste';
 import KandidatSøk from '../../../kandidat/KandidatSøkSide';
 import { useRekrutteringstreffContext } from '../RekrutteringstreffContext';
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
@@ -8,7 +7,6 @@ const KandidatTilRekrutteringstreff: React.FC = () => {
   const [alleredeLagtTil, setAlleredeLagtTil] = React.useState<string[]>([]);
 
   const rekrutteringstreff = useRekrutteringstreffContext();
-  rekrutteringstreff.rekrutteringstreffId;
 
   const { data: jobbsøkere } = useJobbsøkere(
     rekrutteringstreff.rekrutteringstreffId as string,

@@ -6,18 +6,9 @@ import {
   leggtilNyeJobbsøkere,
   LeggTilNyJobbsøkereDTO,
 } from '@/app/api/rekrutteringstreff/ny-jobbsøker/leggTilNyjobbsøker';
-import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { useRekrutteringstreffOversikt } from '@/app/api/rekrutteringstreff/useRekrutteringstreffOversikt';
 import { PersonPlusIcon } from '@navikt/aksel-icons';
-import {
-  Button,
-  Checkbox,
-  Link,
-  Loader,
-  Modal,
-  Pagination,
-  Table,
-} from '@navikt/ds-react';
+import { Button, Checkbox, Link, Loader, Modal, Table } from '@navikt/ds-react';
 import { logger } from '@navikt/next-logger';
 import * as React from 'react';
 
@@ -36,7 +27,6 @@ const LagreIRekrutteringstreff: React.FC<LagreIRekrutteringstreffProps> = ({
   const ref = React.useRef<HTMLDialogElement>(null);
   const { markerteKandidater, fjernMarkerteKandidater } =
     useKandidatSøkMarkerteContext();
-  const [pageNumber, setPageNumber] = React.useState(1);
   /*const mineKandidatlisterHook = useMineKandidatlister(
     pageNumber > 1 ? pageNumber - 1 : 0,
   );*/
