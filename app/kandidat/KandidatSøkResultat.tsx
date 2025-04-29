@@ -1,9 +1,13 @@
 'use client';
 
 import { KandidatDataSchemaDTO } from '../api/kandidat-sok/schema/cvSchema.zod';
-import { useKandidatsøk } from '../api/kandidat-sok/useKandidatsøk';
+import {
+  KandidatsokKandidat,
+  useKandidatsøk,
+} from '../api/kandidat-sok/useKandidatsøk';
 import SWRLaster from '../components/SWRLaster';
 import { useKandidatNavigering } from '../providers/KandidatNavigeringContext';
+import LagreIRekrutteringstreff from '../rekrutteringstreff/[rekrutteringstreffId]/components/LagreIRekrutteringstreff';
 import {
   KandidatSøkPortefølje,
   useKandidatSøkFilterContext,
@@ -17,12 +21,14 @@ import * as React from 'react';
 interface KandidatSøkResultatProps {
   type: KandidatSøkPortefølje;
   stillingsId?: string;
+  rekrutteringstreffId?: string;
   alleredeLagtTil?: string[];
 }
 
 const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({
   type,
   stillingsId,
+  rekrutteringstreffId,
   alleredeLagtTil,
 }) => {
   const filter = useKandidatSøkFilterContext();
@@ -81,6 +87,12 @@ const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({
               </div>
               <div>
                 <LagreIKandidatliste stillingsId={stillingsId} />
+                <LagreIRekrutteringstreff
+                  rekrutteringstreffId={rekrutteringstreffId}
+                  kandidatsokKandidater={
+                    kandidatData.kandidater as KandidatsokKandidat[]
+                  }
+                />
               </div>
             </div>
             {kandidatData.kandidater?.map((kandidat, index) => (

@@ -15,11 +15,13 @@ import * as React from 'react';
 
 interface KandidatSøkProps {
   stillingsId?: string;
+  rekrutteringstreffId?: string;
   alleredeLagtTil?: string[];
 }
 
 const KandidatSøk: React.FC<KandidatSøkProps> = ({
   stillingsId,
+  rekrutteringstreffId,
   alleredeLagtTil,
 }) => {
   const { portefølje, setPortefølje } = useKandidatSøkFilterContext();
@@ -128,6 +130,7 @@ const KandidatSøk: React.FC<KandidatSøkProps> = ({
           alleredeLagtTil={alleredeLagtTil}
           type={portefølje as KandidatSøkPortefølje}
           stillingsId={stillingsId}
+          rekrutteringstreffId={rekrutteringstreffId}
         />
       </Tabs.Panel>
     </Tabs>

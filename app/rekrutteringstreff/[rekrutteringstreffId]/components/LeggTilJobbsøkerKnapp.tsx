@@ -5,7 +5,7 @@ import { useJobbsøkerHendelser } from '@/app/api/rekrutteringstreff/[...slug]/u
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
 import {
   leggtilNyJobbsøker,
-  LeggTilNyJobbsøkerDTO,
+  LeggTilNyJobbsøkereDTO,
 } from '@/app/api/rekrutteringstreff/ny-jobbsøker/leggTilNyjobbsøker';
 import { rekbisError } from '@/util/rekbisError';
 import { faker } from '@faker-js/faker/locale/nb_NO';
@@ -26,7 +26,7 @@ const LeggTilJobbsøkerKnapp: React.FC<LeggTilJobbsøkerKnappProps> = ({
   const hendelseHook = useJobbsøkerHendelser(rekrutteringstreffId);
 
   const handleLeggTil = async () => {
-    const jobbsøker: LeggTilNyJobbsøkerDTO = {
+    /*const jobbsøker: LeggTilNyJobbsøkereDTO = {
       fødselsnummer: navfaker.personIdentifikator.fødselsnummer(),
       fornavn: faker.person.firstName(),
       etternavn: faker.person.lastName(),
@@ -34,7 +34,8 @@ const LeggTilJobbsøkerKnapp: React.FC<LeggTilJobbsøkerKnappProps> = ({
       navkontor: 'NAV Asker',
       veilederNavn: 'Jens Jensen',
       veilederNavIdent: 'A123123',
-    };
+    };*/
+    <KandidatsøkRekrutteringstreff />;
 
     try {
       await leggtilNyJobbsøker(jobbsøker, rekrutteringstreffId);
