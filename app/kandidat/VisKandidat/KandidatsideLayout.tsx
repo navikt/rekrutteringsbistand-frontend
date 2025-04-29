@@ -8,6 +8,7 @@ import KandidatNavigering from './KandidatNavigering';
 import {
   CandleIcon,
   EnvelopeClosedIcon,
+  HandHeartIcon,
   LocationPinIcon,
   PersonIcon,
   PhoneIcon,
@@ -20,7 +21,7 @@ export interface KandidatSideProps {
 }
 
 const KandidatSideLayout: React.FC<KandidatSideProps> = ({ children }) => {
-  const { kandidatsammendragData } = useKandidatContext();
+  const { kandidatsammendragData, kandidatData } = useKandidatContext();
 
   return (
     <SideLayout
@@ -59,8 +60,10 @@ const KandidatSideLayout: React.FC<KandidatSideProps> = ({ children }) => {
                   ikon={<PhoneIcon />}
                   tekst={kandidatsammendragData.telefon}
                 />
-              </div>
-              <div className='mt-2 flex'>
+                <TekstMedIkon
+                  ikon={<HandHeartIcon />}
+                  tekst={kandidatData.innsatsgruppe}
+                />
                 <TekstMedIkon
                   ikon={<PersonIcon />}
                   tekst={`Veileder: ${kandidatsammendragData.veilederVisningsnavn || 'Ukjent veileder'} ${kandidatsammendragData.veilederIdent ? `(${kandidatsammendragData.veilederIdent})` : 'N/A'} ${kandidatsammendragData.veilederEpost || ''}`.trim()}

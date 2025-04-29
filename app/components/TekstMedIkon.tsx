@@ -25,7 +25,7 @@ const TekstMedIkon: React.FC<ITekstMedIkon> = ({
   if (hideIfEmpty && !tekst) {
     return null;
   }
-  if (!tekst) {
+  if (!tekst && !ikon) {
     return '-';
   }
   return (
@@ -36,7 +36,7 @@ const TekstMedIkon: React.FC<ITekstMedIkon> = ({
     >
       {ikon}
       <div className={splitSubtle ? 'flex flex-col ml-2' : 'flex ml-2 gap-2'}>
-        <span>{tekst}</span>
+        <span>{tekst ?? '-'}</span>
         {subtle && <BodyShort textColor='subtle'>{subtle}</BodyShort>}
       </div>
     </div>

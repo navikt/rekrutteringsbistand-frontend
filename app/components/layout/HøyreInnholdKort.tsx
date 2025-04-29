@@ -75,9 +75,7 @@ const HøyreInnholdKort: React.FC<HøyreInnholdKortProps> = ({
           </div>
         </div>
       </div>
-      <div className='mx-auto h-full min-w-[320px] max-w-[1440px]'>
-        {children}
-      </div>
+      <div className='h-full min-w-[320px] '>{children}</div>
     </HvitKort>
   );
 };

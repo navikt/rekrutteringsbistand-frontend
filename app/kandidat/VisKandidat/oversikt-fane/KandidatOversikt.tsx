@@ -16,7 +16,7 @@ const KandidatOversikt: React.FC = () => {
 
   return (
     <div className={`mt-10 `}>
-      <div className='flex-grow'>
+      <div>
         <div className={`grid gap-x-[3.5rem] gap-y-8 md:flex-row flex-row`}>
           <KandidatØnsker />
           <KandidatBeskrivelse kandidatSammendrag={kandidatData.beskrivelse} />

@@ -4,14 +4,19 @@ import { nb } from 'date-fns/locale';
 const parseNorskDato = (dateString: string | undefined | null) => {
   if (!dateString) return null;
 
-  if (isValid(new Date(dateString))) {
-    return new Date(dateString);
-  }
   try {
+    // Prøv først norsk format
     const parsedDate = parse(dateString, 'dd.MM.yyyy', new Date(), {
       locale: nb,
     });
-    return isValid(parsedDate) ? parsedDate : null;
+
+    if (isValid(parsedDate)) {
+      return parsedDate;
+    }
+
+    // prøv standard ISO hvis det feiler
+    const isoDate = new Date(dateString);
+    return isValid(isoDate) ? isoDate : null;
   } catch {
     return dateString;
   }
@@ -37,5 +42,5 @@ export const formaterNorskDato = (
     return parsedDato;
   }
 
-  return '-';
+  return dato;
 };

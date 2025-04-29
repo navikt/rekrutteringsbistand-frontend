@@ -12,9 +12,9 @@ const HvitKort: React.FC<HvitKortProps> = ({ children, className }) => {
       borderRadius='xlarge'
       borderColor='info-subtleA'
       background='default'
-      className={`min-w-[320px] flex flex-col p-3 m-3 ${className}`}
+      className={`min-w-[320px] flex flex-col p-3 m-3 ${className} `}
     >
-      {children}
+      <div className=' max-w-[1440px] mx-auto w-full'>{children}</div>
     </Box.New>
   );
 };

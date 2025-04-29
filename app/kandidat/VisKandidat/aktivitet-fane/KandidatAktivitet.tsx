@@ -13,7 +13,7 @@ const KandidatAktivitet: React.FC = () => {
   const kandidatListeoversiktHook = useKandidatListeoversikt(kandidatId);
 
   return (
-    <div className='mt-4'>
+    <div className='mt-4 w-full'>
       <Table zebraStripes>
         <Table.Header>
           <Table.Row>

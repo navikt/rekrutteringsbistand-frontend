@@ -4,7 +4,7 @@ import Piktogram from '../../public/ikoner/finn-kandidater.svg';
 import SVGDarkmode from '../components/SVGDarkmode';
 import SideLayout from '../components/layout/SideLayout';
 import SideTopBanner from '../components/layout/SideTopBanner';
-import LayoutMedSidebar from '../components/layout/SplitScreenLayout';
+import SplitScreenLayout from '../components/layout/SplitScreenLayout';
 import { TilgangskontrollForInnhold } from '../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '../components/tilgangskontroll/roller';
 import { KandidatSøkProvider } from './KandidaSokFilterContext';
@@ -31,7 +31,7 @@ const KandidatSokLayout: React.FC<KandidatSokLayoutProps> = ({ children }) => {
     >
       <KandidatSøkProvider>
         <KandidatSøkMarkerteContextProvider>
-          <LayoutMedSidebar
+          <SplitScreenLayout
             lukkSidebar={() => settKandidatnr('')}
             sidebar={
               visKandidatnr && <VisKandidat kandidatnr={visKandidatnr} />
@@ -48,7 +48,7 @@ const KandidatSokLayout: React.FC<KandidatSokLayoutProps> = ({ children }) => {
               <KandidatSøkFilter />
               {children}
             </SideLayout>
-          </LayoutMedSidebar>
+          </SplitScreenLayout>
         </KandidatSøkMarkerteContextProvider>
       </KandidatSøkProvider>
     </TilgangskontrollForInnhold>

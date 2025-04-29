@@ -38,10 +38,14 @@ const KandidatSide: React.FC = () => {
         </Tabs.List>
       </div>
       <Tabs.Panel value={Fane.OVERSIKT}>
-        <KandidatOversikt />
+        <div className='w-full'>
+          <KandidatOversikt />
+        </div>
       </Tabs.Panel>
       <Tabs.Panel value={Fane.AKTIVITET}>
-        <KandidatAktivitet />
+        <div className='w-full'>
+          <KandidatAktivitet />
+        </div>
       </Tabs.Panel>
     </Tabs>
   );
