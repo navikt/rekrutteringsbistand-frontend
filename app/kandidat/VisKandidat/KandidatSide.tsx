@@ -19,19 +19,22 @@ const KandidatSide: React.FC = () => {
     clearOnDefault: true,
   });
 
+  const Knapper = (
+    <div className={'flex items-center gap-2'}>
+      <FinnStillingForKandidatKnapp />
+      <NavigerTilAktivitetsplanenKnapp />
+    </div>
+  );
   return (
-    <Tabs value={fane} onChange={(val) => setFane(val)} className='w-full'>
-      <div className={'w-full'}>
+    <Tabs value={fane} onChange={(val) => setFane(val)} className=' w-full'>
+      <div className={'w-full @container/kandidattabs'}>
+        <div className={' @xl/kandidattabs:hidden'}>{Knapper}</div>
         <Tabs.List className='flex w-full justify-between'>
           <div className='flex whitespace-nowrap'>
             <Tabs.Tab value={Fane.OVERSIKT} label='Oversikt' />
             <Tabs.Tab value={Fane.AKTIVITET} label='Aktivitet' />
           </div>
-
-          <div className={'flex items-center gap-2'}>
-            <FinnStillingForKandidatKnapp />
-            <NavigerTilAktivitetsplanenKnapp />
-          </div>
+          <div className='hidden @xl/kandidattabs:block'>{Knapper}</div>
         </Tabs.List>
       </div>
       <Tabs.Panel value={Fane.OVERSIKT}>

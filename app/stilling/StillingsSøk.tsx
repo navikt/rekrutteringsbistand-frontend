@@ -116,26 +116,29 @@ const StillingsSøkLayout: React.FC<StillingsSøkProps> = ({
       <SideLayout
         banner={
           skjulBanner ? null : (
-            <SideTopBanner
-              tittel={
-                formidlinger ? 'Etterregistrering formidlinger' : 'Stillinger'
-              }
-              ikon={
-                formidlinger ? (
-                  <SVGDarkmode
-                    light={EtterregistreringIkon}
-                    dark={EtterregistreringIkonDark}
-                    alt='Finn stillinger'
-                  />
-                ) : (
-                  <SVGDarkmode
-                    light={FinnStillingerIkon}
-                    dark={FinnStillingerIkonDark}
-                    alt='Finn stillinger'
-                  />
-                )
-              }
-            />
+            <>
+              <SideTopBanner
+                tittel={
+                  formidlinger ? 'Etterregistrering formidlinger' : 'Stillinger'
+                }
+                ikon={
+                  formidlinger ? (
+                    <SVGDarkmode
+                      light={EtterregistreringIkon}
+                      dark={EtterregistreringIkonDark}
+                      alt='Finn stillinger'
+                    />
+                  ) : (
+                    <SVGDarkmode
+                      light={FinnStillingerIkon}
+                      dark={FinnStillingerIkonDark}
+                      alt='Finn stillinger'
+                    />
+                  )
+                }
+              />
+              {stillingForKandidat && <div> Stilling for kandidat: </div>}
+            </>
           )
         }
       >

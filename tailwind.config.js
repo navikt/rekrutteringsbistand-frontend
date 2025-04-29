@@ -6,6 +6,12 @@ module.exports = {
     './components/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   // https://cdn.jsdelivr.net/npm/@navikt/ds-tailwind/tailwind.config.js
-
-  plugins: [],
+  theme: {
+    extend: {
+      screens: {
+        xs: '320px',
+      },
+    },
+  },
+  plugins: [require('@tailwindcss/container-queries')],
 };

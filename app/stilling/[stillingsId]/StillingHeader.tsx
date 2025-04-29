@@ -48,49 +48,51 @@ const StillingHeader: React.FC = () => {
     <SideTopBanner
       chip={<StillingsTag stillingsData={stillingsData} />}
       headerInnhold={
-        <div className='flex justify-between'>
-          <div>
-            <div className='my-2 flex'>
-              <TekstMedIkon
-                ikon={<Buildings2Icon />}
-                tekst={capitalizeEmployerName(
-                  stillingsData.stilling.businessName ?? '',
-                )}
-              />
-
-              {eierNavn && (
+        <div className='@container/sideheader'>
+          <div className='flex justify-between flex-col gap-2 @5xl/sideheader:flex-row @5xl/sideheader:gap-0  '>
+            <div>
+              <div className='my-2 flex'>
                 <TekstMedIkon
-                  className='ml-4'
-                  ikon={<PersonIcon />}
-                  tekst={`Registrert av ${eierNavn}`}
+                  ikon={<Buildings2Icon />}
+                  tekst={capitalizeEmployerName(
+                    stillingsData.stilling.businessName ?? '',
+                  )}
+                />
+
+                {eierNavn && (
+                  <TekstMedIkon
+                    className='ml-4'
+                    ikon={<PersonIcon />}
+                    tekst={`Registrert av ${eierNavn}`}
+                  />
+                )}
+              </div>
+              {!erFormidling && !erSlettet && (
+                <KopierStillingLenke
+                  stillingsId={stillingsData.stilling.uuid ?? ''}
                 />
               )}
             </div>
-            {!erFormidling && !erSlettet && (
-              <KopierStillingLenke
-                stillingsId={stillingsData.stilling.uuid ?? ''}
-              />
-            )}
-          </div>
-          <div className='flex flex-row gap-8'>
-            <div>
-              <BodyShort textColor='subtle'>Kandidater</BodyShort>
-              <BodyShort>{kandidatlisteInfo?.antallKandidater}</BodyShort>
-            </div>
-            <div>
-              <BodyShort textColor='subtle'>Aktuelle</BodyShort>
-              <BodyShort>{antallAktuelle ?? '-'}</BodyShort>
-            </div>
-            <div>
-              <BodyShort textColor='subtle'>Presentert</BodyShort>
-              <BodyShort>{antallPresenterte}</BodyShort>
-            </div>
-            <div>
-              <BodyShort textColor='subtle'>Ansatt</BodyShort>
-              <BodyShort>
-                {antallFåttJobben} av{' '}
-                {stillingsData?.stilling?.properties?.positioncount}
-              </BodyShort>
+            <div className='flex flex-row gap-8 '>
+              <div>
+                <BodyShort textColor='subtle'>Kandidater</BodyShort>
+                <BodyShort>{kandidatlisteInfo?.antallKandidater}</BodyShort>
+              </div>
+              <div>
+                <BodyShort textColor='subtle'>Aktuelle</BodyShort>
+                <BodyShort>{antallAktuelle ?? '-'}</BodyShort>
+              </div>
+              <div>
+                <BodyShort textColor='subtle'>Presentert</BodyShort>
+                <BodyShort>{antallPresenterte}</BodyShort>
+              </div>
+              <div>
+                <BodyShort textColor='subtle'>Ansatt</BodyShort>
+                <BodyShort>
+                  {antallFåttJobben} av{' '}
+                  {stillingsData?.stilling?.properties?.positioncount}
+                </BodyShort>
+              </div>
             </div>
           </div>
         </div>

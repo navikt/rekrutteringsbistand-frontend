@@ -2,9 +2,9 @@
 
 import Piktogram from '../../public/ikoner/finn-kandidater.svg';
 import SVGDarkmode from '../components/SVGDarkmode';
-import LayoutMedSidebar from '../components/layout/LayoutMedSidebar';
 import SideLayout from '../components/layout/SideLayout';
 import SideTopBanner from '../components/layout/SideTopBanner';
+import LayoutMedSidebar from '../components/layout/SplitScreenLayout';
 import { TilgangskontrollForInnhold } from '../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '../components/tilgangskontroll/roller';
 import { KandidatSøkProvider } from './KandidaSokFilterContext';

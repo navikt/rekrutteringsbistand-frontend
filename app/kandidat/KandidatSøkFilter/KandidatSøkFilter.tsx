@@ -15,31 +15,33 @@ import * as React from 'react';
 
 const KandidatSøkFilter: React.FC = () => {
   return (
-    <div className='flex gap-4 items-center'>
-      <div>
-        <FritekstSøk />
+    <div className='@container/kandidatsokfilter'>
+      <div className='flex gap-4 items-center flex-wrap '>
+        <div>
+          <FritekstSøk />
+        </div>
+        <FilterKomponent tittel='Innsatsgruppe'>
+          <Jobbmuligheter />
+        </FilterKomponent>
+        <FilterKomponent tittel='Kandidatens mål'>
+          <Hovedmål />
+        </FilterKomponent>
+        <FilterKomponent tittel='Utdanningsnivå'>
+          <Utdanningsnivå />
+        </FilterKomponent>
+        <FilterKomponent tittel='Prioriterte målgrupper'>
+          <PrioriterteMålgrupper />
+        </FilterKomponent>
+        <AlleFilterKomponent>
+          <Arbeidsønsker />
+          <KandidatStedSøk />
+          <Kompetanse />
+          <Førerkort />
+          <Språk />
+          <Arbeidserfaring /> <Jobbmuligheter /> <Hovedmål /> <Utdanningsnivå />{' '}
+          <PrioriterteMålgrupper />
+        </AlleFilterKomponent>
       </div>
-      <FilterKomponent tittel='Innsatsgruppe'>
-        <Jobbmuligheter />
-      </FilterKomponent>
-      <FilterKomponent tittel='Kandidatens mål'>
-        <Hovedmål />
-      </FilterKomponent>
-      <FilterKomponent tittel='Utdanningsnivå'>
-        <Utdanningsnivå />
-      </FilterKomponent>
-      <FilterKomponent tittel='Prioriterte målgrupper'>
-        <PrioriterteMålgrupper />
-      </FilterKomponent>
-      <AlleFilterKomponent>
-        <Arbeidsønsker />
-        <KandidatStedSøk />
-        <Kompetanse />
-        <Førerkort />
-        <Språk />
-        <Arbeidserfaring /> <Jobbmuligheter /> <Hovedmål /> <Utdanningsnivå />{' '}
-        <PrioriterteMålgrupper />
-      </AlleFilterKomponent>
     </div>
   );
 };

@@ -54,12 +54,12 @@ const KandidatKort: React.FC<IKandidatKort> = ({
 
   return (
     <Box.New
-      className='mb-4 flex flex-col pl-4 pb-4 pr-4'
+      className='@container/kandidatlistekort mb-4 flex flex-col pl-4 pb-4 pr-4 min-w-fit'
       background='neutral-softA'
       borderRadius='xlarge'
       data-testid='stillings-kort'
     >
-      <div className='flex flex-row'>
+      <div className=' flex flex-row'>
         <div>
           <Checkbox
             disabled={
@@ -124,9 +124,13 @@ const KandidatKort: React.FC<IKandidatKort> = ({
             </div>
           </div>
         </div>
-        <div className='hidden lg:flex flex-end self-end'>{Knapp}</div>
+        <div className='hidden @xl/kandidatlistekort:block  flex-end self-end '>
+          {Knapp}
+        </div>
       </div>
-      <div className=' lg:hidden flex justify-end'> {Knapp}</div>
+      <div className=' @xl/kandidatlistekort:hidden flex justify-end'>
+        {Knapp}
+      </div>
     </Box.New>
   );
 };

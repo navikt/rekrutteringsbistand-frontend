@@ -22,14 +22,14 @@ const SideTopBanner = ({
   chip,
 }: ISideTopBanner) => {
   return (
-    <div className='my-4'>
+    <div className='@container/topBanner my-4'>
       {tilbakeKnapp && <TilbakeKnapp />}
-      <div className='flex items-center justify-between'>
+      <div className='flex items-center justify-between flex-col'>
         <div className='flex w-full items-center justify-start gap-8'>
           {ikon}
           <div className='w-full'>
             {tittel && (
-              <div className='flex justify-between'>
+              <div className='flex justify-between @2xl/topBanner:flex-row flex-col'>
                 <Heading className='mr-auto ml-0' level='2' size='large'>
                   {tittel}
                 </Heading>

@@ -132,7 +132,7 @@ const KandidatVisningSidebar: React.FC<KandidatVisningSidebarProps> = ({
 
               <div className='px-5 pb-5'>
                 <KandidatContextProvider kandidatId={kandidat.kandidatnr}>
-                  <KandidatSideLayout sidebar>
+                  <KandidatSideLayout>
                     <KandidatHandlingerForStilling kandidat={kandidat} />
                     <KandidatSide />
                   </KandidatSideLayout>

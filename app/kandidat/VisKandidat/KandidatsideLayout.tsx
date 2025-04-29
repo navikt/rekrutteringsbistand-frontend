@@ -17,13 +17,9 @@ import * as React from 'react';
 
 export interface KandidatSideProps {
   children?: React.ReactNode | undefined;
-  sidebar?: boolean;
 }
 
-const KandidatSideLayout: React.FC<KandidatSideProps> = ({
-  children,
-  sidebar,
-}) => {
+const KandidatSideLayout: React.FC<KandidatSideProps> = ({ children }) => {
   const { kandidatsammendragData } = useKandidatContext();
 
   return (
@@ -35,23 +31,19 @@ const KandidatSideLayout: React.FC<KandidatSideProps> = ({
               kandidatnr={kandidatsammendragData.arenaKandidatnr}
             />
           }
-          tittel={
-            sidebar
-              ? null
-              : `${kandidatsammendragData.fornavn} ${kandidatsammendragData.etternavn}`
-          }
+          tittel={`${kandidatsammendragData.fornavn} ${kandidatsammendragData.etternavn}`}
           headerInnhold={
-            <div className={sidebar ? '' : 'mt-2'}>
+            <div className='@container/kandidatside'>
               <div
                 className={
-                  sidebar ? 'grid grid-cols-2 gap-4 mb-4' : 'flex gap-4'
+                  'grid @xl/kandidatside:grid-cols-2 grid-cols-1 gap-4 mb-4'
                 }
               >
                 <div>
                   <TekstMedIkon
                     ikon={<CandleIcon />}
                     tekst={`Født ${format(kandidatsammendragData.fodselsdato, 'dd.MM.yyyy')} (${differenceInYears(new Date(), kandidatsammendragData.fodselsdato)}år)`}
-                    splitSubtle={sidebar}
+                    splitSubtle={true}
                     subtle={`f.nr. ${kandidatsammendragData.fodselsnummer}`}
                   />
                 </div>

@@ -8,15 +8,15 @@ import HovedInnholdKort from './HovedInnholdKort';
 import HøyreInnholdKort from './HøyreInnholdKort';
 import * as React from 'react';
 
-export interface LayoutMedSidebarProps {
+export interface SplitScreenLayoutProps {
   children: React.ReactNode;
   sidebar?: React.ReactNode | undefined;
-  lukkSidebar?: () => void;
+  lukkSidebar: () => void;
   nesteSide?: () => void;
   forrigeSide?: () => void;
 }
 
-const LayoutMedSidebar: React.FC<LayoutMedSidebarProps> = ({
+const SplitScreenLayout: React.FC<SplitScreenLayoutProps> = ({
   children,
   sidebar,
   lukkSidebar,
@@ -25,12 +25,14 @@ const LayoutMedSidebar: React.FC<LayoutMedSidebarProps> = ({
 }) => {
   // Fjerner standard scroll
   React.useEffect(() => {
-    const originalStyle = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-    return () => {
-      document.body.style.overflow = originalStyle;
-    };
-  }, []);
+    if (sidebar) {
+      const originalStyle = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = originalStyle;
+      };
+    }
+  }, [sidebar]);
 
   if (!sidebar) {
     return (
@@ -42,8 +44,8 @@ const LayoutMedSidebar: React.FC<LayoutMedSidebarProps> = ({
 
   return (
     <SidebarProvider>
-      <ResizablePanelGroup direction='horizontal'>
-        <ResizablePanel>
+      <ResizablePanelGroup direction='horizontal' className='@container'>
+        <ResizablePanel style={{ minWidth: '550px' }}>
           <HovedInnholdKort className='h-[98vh] overflow-auto '>
             {children}
           </HovedInnholdKort>
@@ -51,9 +53,9 @@ const LayoutMedSidebar: React.FC<LayoutMedSidebarProps> = ({
 
         <ResizableHandle className='z-20' />
 
-        <ResizablePanel defaultSize={35} minSize={25}>
+        <ResizablePanel style={{ minWidth: '550px' }}>
           <HøyreInnholdKort
-            className='h-[98vh] overflow-auto '
+            className='h-[98vh] overflow-auto min-w-[344px]'
             lukkSidebar={lukkSidebar}
             nesteSide={nesteSide}
             forrigeSide={forrigeSide}
@@ -66,4 +68,4 @@ const LayoutMedSidebar: React.FC<LayoutMedSidebarProps> = ({
   );
 };
 
-export default LayoutMedSidebar;
+export default SplitScreenLayout;
