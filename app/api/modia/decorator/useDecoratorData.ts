@@ -14,7 +14,7 @@ export const decoratorSchema = z.object({
   etternavn: z.string(),
 });
 
-const decoratorEndepunkt = `${ModiaDecoratorAPI.internUrl}/dekorator`;
+const decoratorEndepunkt = `${ModiaDecoratorAPI.internUrl}/decorator`;
 
 export const useDecoratorData = () =>
   useSWRImmutable(decoratorEndepunkt, getAPIwithSchema(decoratorSchema));

@@ -11,7 +11,7 @@ export interface Iroute {
 }
 
 export const ModiaDecoratorAPI: Iroute = {
-  api_route: '',
+  api_route: '/api',
   api_url: process.env.MODIA_CONTEXT_HOLDER_API ?? '',
   internUrl: '/api/modia',
   scope: `api://${gcp}.personoversikt.modiacontextholder/.default`,
