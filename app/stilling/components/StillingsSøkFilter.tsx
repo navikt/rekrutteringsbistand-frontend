@@ -24,38 +24,40 @@ const StillingsSøkFilter: React.FC<{
     Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
   ]);
   return (
-    <div className='flex gap-4'>
-      <div>
-        <Search
-          onKeyDownCapture={(e) => {
-            if (e.key === 'Enter') {
-              e.preventDefault();
+    <div className='flex flex-row gap-4'>
+      <div className='flex gap-4 items-center'>
+        <div>
+          <Search
+            onKeyDownCapture={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                const nyListe = [...fritekst, searchValue];
+                setFritekstListe(nyListe);
+                setSearchValue('');
+              }
+            }}
+            size='small'
+            hideLabel={true}
+            label='Søk i stillinger'
+            placeholder='Søk i stillinger'
+            variant='secondary'
+            value={searchValue}
+            onChange={(e) => setSearchValue(e)}
+            onSearchClick={() => {
               const nyListe = [...fritekst, searchValue];
               setFritekstListe(nyListe);
               setSearchValue('');
-            }
-          }}
-          size='small'
-          hideLabel={true}
-          label='Søk i stillinger'
-          placeholder='Søk i stillinger'
-          variant='secondary'
-          value={searchValue}
-          onChange={(e) => setSearchValue(e)}
-          onSearchClick={() => {
-            const nyListe = [...fritekst, searchValue];
-            setFritekstListe(nyListe);
-            setSearchValue('');
-          }}
-        />
+            }}
+          />
+        </div>
 
         {!formidlinger && !stillingForKandidat && (
-          <div className='mt-2'>
+          <div>
             <StandardsøkKnapp />
           </div>
         )}
       </div>
-      <div className='flex '>
+      <div className='flex flex-wrap '>
         {(harArbeidsgiverrettetRolle || formidlinger) && (
           <FilterKomponent tittel='Status'>
             <StatusFilter />
