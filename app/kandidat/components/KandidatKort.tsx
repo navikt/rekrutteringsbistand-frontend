@@ -30,7 +30,7 @@ const KandidatKort: React.FC<IKandidatKort> = ({
   stillingsId,
 }) => {
   const { markerteKandidater, setMarkert } = useKandidatSøkMarkerteContext();
-  const [, setVisKandidatnr] = useQueryState('visKandidat', {
+  const [, setVisKandidatnr] = useQueryState('visKandidatnr', {
     defaultValue: '',
     clearOnDefault: true,
   });

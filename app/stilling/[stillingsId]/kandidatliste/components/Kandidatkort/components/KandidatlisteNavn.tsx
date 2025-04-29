@@ -16,7 +16,7 @@ const KandidatlisteNavn: React.FC<KandidatlisteNavnProps> = ({
   usynligKandidat,
   slettet,
 }) => {
-  const [, setVisKandidatnr] = useQueryState('visKandidat', {
+  const [, setVisKandidatnr] = useQueryState('visKandidatnr', {
     defaultValue: '',
     clearOnDefault: true,
   });

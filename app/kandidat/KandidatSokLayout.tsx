@@ -18,7 +18,7 @@ export interface KandidatSokLayoutProps {
 }
 
 const KandidatSokLayout: React.FC<KandidatSokLayoutProps> = ({ children }) => {
-  const [visKandidatnr, settKandidatnr] = useQueryState('visKandidat', {
+  const [visKandidatnr, settKandidatnr] = useQueryState('visKandidatnr', {
     defaultValue: '',
     clearOnDefault: true,
   });

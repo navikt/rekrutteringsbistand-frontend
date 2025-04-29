@@ -2,7 +2,7 @@
 
 import HovedInnholdKort from '../../components/layout/HovedInnholdKort';
 import SideLayout from '../../components/layout/SideLayout';
-import LayoutMedSidebar from '../../components/layout/SplitScreenLayout';
+import SplitScreenLayout from '../../components/layout/SplitScreenLayout';
 import VisKandidat from '../../kandidat/VisKandidat/VisKandidat';
 import StillingHeader from './StillingHeader';
 import { useStillingsContext } from './StillingsContext';
@@ -19,7 +19,7 @@ const StillingSideLayout: React.FC<StillingSideLayoutProps> = ({
 }) => {
   const { stillingsData } = useStillingsContext();
 
-  const [visKandidatnr, setVisKandidatnr] = useQueryState('visKandidat', {
+  const [visKandidatnr, setVisKandidatnr] = useQueryState('visKandidatnr', {
     defaultValue: '',
     clearOnDefault: true,
   });
@@ -29,7 +29,7 @@ const StillingSideLayout: React.FC<StillingSideLayoutProps> = ({
     (stillingsData?.stilling?.employer?.orgnr ?? null) === null;
 
   return (
-    <LayoutMedSidebar
+    <SplitScreenLayout
       lukkSidebar={() => setVisKandidatnr('')}
       sidebar={visKandidatnr && <VisKandidat kandidatnr={visKandidatnr} />}
     >
@@ -51,7 +51,7 @@ const StillingSideLayout: React.FC<StillingSideLayoutProps> = ({
           )}
         </SideLayout>
       </HovedInnholdKort>
-    </LayoutMedSidebar>
+    </SplitScreenLayout>
   );
 };
 
