@@ -23,7 +23,8 @@ const SplitScreenLayout: React.FC<SplitScreenLayoutProps> = ({
   nesteSide,
   forrigeSide,
 }) => {
-  // Fjerner standard scroll
+  const [ekspanderHøyre, setEkspanderHøyre] = React.useState(false);
+
   React.useEffect(() => {
     if (sidebar) {
       const originalStyle = document.body.style.overflow;
@@ -45,7 +46,10 @@ const SplitScreenLayout: React.FC<SplitScreenLayoutProps> = ({
   return (
     <SidebarProvider>
       <ResizablePanelGroup direction='horizontal' className='@container'>
-        <ResizablePanel style={{ minWidth: '550px' }}>
+        <ResizablePanel
+          className={ekspanderHøyre ? 'hidden' : ''}
+          style={{ minWidth: '550px' }}
+        >
           <HovedInnholdKort className='h-[98vh] overflow-auto '>
             {children}
           </HovedInnholdKort>
@@ -59,6 +63,8 @@ const SplitScreenLayout: React.FC<SplitScreenLayoutProps> = ({
             lukkSidebar={lukkSidebar}
             nesteSide={nesteSide}
             forrigeSide={forrigeSide}
+            ekspanderHøyre={ekspanderHøyre}
+            ekspanderSidebar={() => setEkspanderHøyre(!ekspanderHøyre)}
           >
             {sidebar}
           </HøyreInnholdKort>

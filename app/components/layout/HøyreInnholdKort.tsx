@@ -3,6 +3,8 @@ import {
   ChevronDownIcon,
   ChevronRightDoubleIcon,
   ChevronUpIcon,
+  ExpandIcon,
+  ShrinkIcon,
 } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import * as React from 'react';
@@ -10,9 +12,11 @@ import * as React from 'react';
 export interface HøyreInnholdKortProps {
   children?: React.ReactNode | undefined;
   className?: string;
-  lukkSidebar?: () => void;
+  lukkSidebar: () => void;
   nesteSide?: () => void;
   forrigeSide?: () => void;
+  ekspanderSidebar: () => void;
+  ekspanderHøyre?: boolean;
 }
 
 const HøyreInnholdKort: React.FC<HøyreInnholdKortProps> = ({
@@ -21,6 +25,8 @@ const HøyreInnholdKort: React.FC<HøyreInnholdKortProps> = ({
   lukkSidebar,
   nesteSide,
   forrigeSide,
+  ekspanderSidebar,
+  ekspanderHøyre,
 }) => {
   return (
     <HvitKort className={className}>
@@ -28,12 +34,24 @@ const HøyreInnholdKort: React.FC<HøyreInnholdKortProps> = ({
         <div className='flex items-center'>
           <div>
             <Button
-              disabled={!lukkSidebar}
               size='small'
               variant='tertiary'
               icon={<ChevronRightDoubleIcon aria-hidden />}
               onClick={lukkSidebar}
               title='Lukk sidebar'
+            />
+            <Button
+              size='small'
+              variant='tertiary'
+              icon={
+                ekspanderHøyre ? (
+                  <ShrinkIcon aria-hidden />
+                ) : (
+                  <ExpandIcon aria-hidden />
+                )
+              }
+              onClick={ekspanderSidebar}
+              title='Ekspander sidebar'
             />
           </div>
           <div className='w-0 h-4 outline outline-offset-[-0.50px] outline-Border-Accent-Accent-Subtle mx-1' />
