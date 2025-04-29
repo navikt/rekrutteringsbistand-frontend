@@ -2,6 +2,7 @@ import { FormidlingDataForm } from '../../../../etterregistrering/ny-etterregist
 import { InkluderingsTag } from '../../omStillingen/StillingSidebar/StillingInkludering';
 import { StillingsDataForm } from '../redigerFormType.zod';
 import StegNavigering from './StegNavigering';
+import { getInkluderingsInfo } from './praktiskInfo/inkluderingsTagTekst';
 import {
   BodyShort,
   Checkbox,
@@ -26,6 +27,15 @@ export const RedigerOmTilrettelegging: React.FC<
     StillingsDataForm | FormidlingDataForm
   >();
 
+  React.useEffect(() => {
+    if (!watch('omTilrettelegging.statligeInkluderingsdugnade')) {
+      setValue('omTilrettelegging.statligeInkluderingsdugnade', false);
+    }
+    if (!watch('omTilrettelegging.tags')) {
+      setValue('omTilrettelegging.tags', []);
+    }
+  }, [watch, setValue]);
+
   const handleStepSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const isValid = await trigger('omTilrettelegging', { shouldFocus: true });
@@ -40,28 +50,33 @@ export const RedigerOmTilrettelegging: React.FC<
     children,
   }: {
     tag: string;
-    children: React.ReactNode;
+    children?: React.ReactNode;
   }) => {
+    const info = getInkluderingsInfo(tag);
+
     return (
       <Checkbox
         value={tag}
-        defaultChecked={watch('omTilrettelegging.tags')?.includes(tag)}
+        defaultChecked={(watch('omTilrettelegging.tags') || []).includes(tag)}
         onChange={(e) => {
+          const currentTags = watch('omTilrettelegging.tags') || [];
           if (e.target.checked) {
-            setValue('omTilrettelegging.tags', [
-              ...watch('omTilrettelegging.tags'),
-              tag,
-            ]);
+            setValue('omTilrettelegging.tags', [...currentTags, tag]);
           } else {
             setValue('omTilrettelegging.tags', [
-              ...watch('omTilrettelegging.tags').filter(
-                (t: string) => t !== tag,
-              ),
+              ...currentTags.filter((t: string) => t !== tag),
             ]);
           }
         }}
       >
-        {children}
+        {children || (
+          <>
+            {info.tittel}
+            {info.beskrivelse && (
+              <div className='text-sm'>{info.beskrivelse}</div>
+            )}
+          </>
+        )}
       </Checkbox>
     );
   };
@@ -75,101 +90,48 @@ export const RedigerOmTilrettelegging: React.FC<
           <CheckboxGroup legend='Virksomheten kan tilrettelegge for (valgfritt)'>
             <TilretteleggingCheckbox
               tag={InkluderingsTag.TilretteleggingArbeidstid}
-            >
-              Arbeidstid
-              <div className='text-sm'>
-                f.eks. kortere dager eller gradvis økt stillingsprosent
-              </div>
-            </TilretteleggingCheckbox>
-
+            />
             <TilretteleggingCheckbox
               tag={InkluderingsTag.TilretteleggingFysisk}
-            >
-              Fysiske omgivelser
-              <div className='text-sm'>
-                f.eks. ergonomisk tilpasning eller universell utforming
-              </div>
-            </TilretteleggingCheckbox>
+            />
             <TilretteleggingCheckbox
               tag={InkluderingsTag.TilretteleggingGrunnleggende}
-            >
-              Utfordringer med norsk
-              <div className='text-sm'>
-                f.eks. ved lese- og skrivevansker, språk- og taleforstyrrelse
-                eller utfordringer med norsk.
-              </div>
-            </TilretteleggingCheckbox>
+            />
             <TilretteleggingCheckbox
               tag={InkluderingsTag.TilretteleggingArbeidshverdagen}
-            >
-              Arbeidshverdagen
-              <div className='text-sm'>
-                f.eks. opplæring, tilpasse arbeidsoppgaver eller ekstra tett
-                oppfølging
-              </div>
-            </TilretteleggingCheckbox>
+            />
           </CheckboxGroup>
 
           <CheckboxGroup legend='Virksomheten er åpen for folk som trenger (valgfritt)'>
             <TilretteleggingCheckbox
               tag={InkluderingsTag.VirkemiddelLønnstilskudd}
-            >
-              Lønnstilskudd - midlertidig eller varig
-              <div className='text-sm'>
-                Kandidaten blir ansatt under vanlige arbeidsvilkår, men Nav
-                kompenserer en del av lønnen.
-              </div>
-            </TilretteleggingCheckbox>
+            />
             <TilretteleggingCheckbox
               tag={InkluderingsTag.VirkemiddelMentortilskudd}
-            >
-              Mentor (tilskudd)
-              <div className='text-sm'>
-                En kollega hjelper kandidaten med å mestre jobben. Nav
-                kompenserer virksomheten med mentortilskudd.
-              </div>
-            </TilretteleggingCheckbox>
+            />
             <TilretteleggingCheckbox
               tag={InkluderingsTag.VirkemiddelLærlingplass}
-            >
-              Lærlingplass
-              <div className='text-sm'>
-                Gir opplæring i læreplaner for fag. Virksomheten må være
-                godkjent som lærebedrift.
-              </div>
-            </TilretteleggingCheckbox>
+            />
           </CheckboxGroup>
 
           <CheckboxGroup legend='Arbeidsgiver er åpen for kandidater som (valgfritt)'>
             <TilretteleggingCheckbox
               tag={InkluderingsTag.MålgruppeErUngeUnder30}
-            >
-              Er under 30 år
-            </TilretteleggingCheckbox>
+            />
             <TilretteleggingCheckbox
               tag={InkluderingsTag.MålgruppeErSeniorerOver50}
-            >
-              Er over 50 år
-            </TilretteleggingCheckbox>
+            />
             <TilretteleggingCheckbox
               tag={InkluderingsTag.MålgruppeKommerFraLandUtenforEØS}
-            >
-              Er fra land utenfor EØS
-            </TilretteleggingCheckbox>
-            <TilretteleggingCheckbox tag={InkluderingsTag.MålgruppeHullICVen}>
-              Har hull i CV-en
-            </TilretteleggingCheckbox>
+            />
+            <TilretteleggingCheckbox tag={InkluderingsTag.MålgruppeHullICVen} />
 
             <TilretteleggingCheckbox
               tag={InkluderingsTag.MålgruppeLiteEllerIngenUtdanning}
-            >
-              Har lite eller ingen utdanning
-            </TilretteleggingCheckbox>
+            />
             <TilretteleggingCheckbox
               tag={InkluderingsTag.MålgruppeLiteEllerIngenArbeidserfaring}
-            >
-              Har lite eller ingen arbeidserfaring
-            </TilretteleggingCheckbox>
+            />
           </CheckboxGroup>
 
           <CheckboxGroup

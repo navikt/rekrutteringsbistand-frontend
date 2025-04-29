@@ -2,14 +2,14 @@ import { rekbisError } from '../../../../util/rekbisError';
 import { UmamiEvent } from '../../../../util/umamiEvents';
 import { useApplikasjonContext } from '../../../providers/ApplikasjonContext';
 import { useUmami } from '../../../providers/UmamiContext';
+import { InkluderingsTag } from '../../../stilling/[stillingsId]/omStillingen/StillingSidebar/StillingInkludering';
+import { getInkluderingsInfo } from '../../../stilling/[stillingsId]/rediger/components/praktiskInfo/inkluderingsTagTekst';
 import { FormidlingDataForm } from '../redigerFormidlingFormType';
-import { Buildings2Icon, PersonIcon } from '@navikt/aksel-icons';
 import {
   Alert,
   BodyShort,
-  Box,
   Button,
-  Detail,
+  FormSummary,
   Heading,
 } from '@navikt/ds-react';
 import { logger } from '@navikt/next-logger';
@@ -79,51 +79,10 @@ const FormidlingInnspurt = () => {
         </Alert>
       )}
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Box.New>
-          <div className='mb-4 flex w-full items-center justify-between'>
-            <Heading size='small' level='2'>
-              Om kandidatene
-            </Heading>
-          </div>
-          <hr />
-          <div className='space-y-4'>
-            {formidlingsVerdier.omKandidatene?.map((person) => (
-              <div key={person.fnr} className='flex items-center gap-2'>
-                <PersonIcon className='text-gray-600' aria-hidden />
-                <div>
-                  <BodyShort>
-                    {person.navn.fornavn} {person.navn.etternavn}
-                  </BodyShort>
-                  <Detail>{person.fnr}</Detail>
-                </div>
-              </div>
-            ))}
-          </div>
-        </Box.New>
+        {/* <Box.New>
 
-        <Box.New className='mt-8'>
-          <div className='mb-4 flex w-full items-center justify-between'>
-            <Heading size='small' level='2'>
-              Om arbeidsgiver og stilling
-            </Heading>
-          </div>
-          <hr />
-          <div className='space-y-4'>
-            <div className='flex items-start gap-2'>
-              <Buildings2Icon className='mt-1 text-gray-600' aria-hidden />
-              <div>
-                <BodyShort>
-                  {formidlingsVerdier.omFormidlingen.organisasjon?.navn}
-                </BodyShort>
-                <Detail>
-                  Organisasjonsnummer:{' '}
-                  {
-                    formidlingsVerdier.omFormidlingen.organisasjon
-                      ?.organisasjonsnummer
-                  }
-                </Detail>
-              </div>
-            </div>
+
+
 
             <div className='space-y-4'>
               <BodyShort>
@@ -142,8 +101,132 @@ const FormidlingInnspurt = () => {
               </BodyShort>
             </div>
           </div>
-        </Box.New>
+        </Box.New> */}
+        <FormSummary>
+          <FormSummary.Header>
+            <FormSummary.Heading level='2'>
+              Etterregistrering
+            </FormSummary.Heading>
+          </FormSummary.Header>
+          <FormSummary.Answers>
+            <FormSummary.Answer>
+              <FormSummary.Label>Kandidater</FormSummary.Label>
+              {formidlingsVerdier.omKandidatene?.map((person) => (
+                <FormSummary.Value key={person.fnr}>
+                  {person.navn.fornavn} {person.navn.etternavn}
+                  <br />
+                  {person.fnr}
+                </FormSummary.Value>
+              ))}
+            </FormSummary.Answer>
 
+            <FormSummary.Answer>
+              <FormSummary.Label>Arbeidsgiver</FormSummary.Label>
+              <FormSummary.Value>
+                {formidlingsVerdier.omFormidlingen.organisasjon?.navn}
+                <br />
+                Organisasjonsnummer:{' '}
+                {
+                  formidlingsVerdier.omFormidlingen.organisasjon
+                    ?.organisasjonsnummer
+                }
+              </FormSummary.Value>
+            </FormSummary.Answer>
+
+            <FormSummary.Answer>
+              <FormSummary.Label>Yrkestittel</FormSummary.Label>
+              <FormSummary.Value>
+                {formidlingsVerdier.omFormidlingen?.categoryList?.[0]?.name}
+              </FormSummary.Value>
+            </FormSummary.Answer>
+
+            <FormSummary.Answer>
+              <FormSummary.Label>Sektor</FormSummary.Label>
+              <FormSummary.Value>
+                {formidlingsVerdier.omFormidlingen?.sektor}
+              </FormSummary.Value>
+            </FormSummary.Answer>
+
+            <FormSummary.Answer>
+              <FormSummary.Label>Ansettelsesform</FormSummary.Label>
+              <FormSummary.Value>
+                {formidlingsVerdier.omFormidlingen?.ansettelsesform}
+              </FormSummary.Value>
+            </FormSummary.Answer>
+
+            <FormSummary.Answer>
+              <FormSummary.Label>Arbeidstidsordning</FormSummary.Label>
+              <FormSummary.Value>
+                {formidlingsVerdier.omFormidlingen?.arbeidstidsordning ?? '-'}
+              </FormSummary.Value>
+            </FormSummary.Answer>
+
+            <FormSummary.Answer>
+              <FormSummary.Label>Omfang</FormSummary.Label>
+              <FormSummary.Value>
+                {formidlingsVerdier.omFormidlingen?.omfangKode}
+                {formidlingsVerdier.omFormidlingen?.omfangProsent && (
+                  <div>
+                    <br />
+                    {formidlingsVerdier.omFormidlingen?.omfangProsent}%
+                  </div>
+                )}
+              </FormSummary.Value>
+            </FormSummary.Answer>
+
+            <FormSummary.Answer>
+              <FormSummary.Label>Arbeidssted</FormSummary.Label>
+              <FormSummary.Value>
+                {formidlingsVerdier.omFormidlingen?.adresser?.map(
+                  (adresse, index) => {
+                    return (
+                      <div key={index}>
+                        {adresse.address}, {adresse.postalCode} {adresse.city}
+                      </div>
+                    );
+                  },
+                )}
+                {formidlingsVerdier.omFormidlingen?.lokasjoner?.map(
+                  (lokasjon, index) => {
+                    return (
+                      <div key={index}>
+                        {lokasjon.county}, {lokasjon.municipal}
+                      </div>
+                    );
+                  },
+                )}
+              </FormSummary.Value>
+            </FormSummary.Answer>
+
+            <FormSummary.Answer>
+              <FormSummary.Label>Inkludering</FormSummary.Label>
+              <FormSummary.Value>
+                {formidlingsVerdier.omTilrettelegging?.tags?.map(
+                  (tag, index) => {
+                    const info = getInkluderingsInfo(tag);
+
+                    if (tag == InkluderingsTag.StatligInkluderingsdugnad) {
+                      return 'Inkluderingssamarbeid med offentlig virksomhet';
+                    }
+
+                    return (
+                      <div key={index}>
+                        {info.tittel}
+                        {info.beskrivelse && (
+                          <div className='text-sm'>{info.beskrivelse}</div>
+                        )}
+                      </div>
+                    );
+                  },
+                )}
+                {formidlingsVerdier.omTilrettelegging
+                  ?.statligeInkluderingsdugnade
+                  ? 'Inkluderingssamarbeid med offentlig virksomhet'
+                  : ''}
+              </FormSummary.Value>
+            </FormSummary.Answer>
+          </FormSummary.Answers>
+        </FormSummary>
         <div className='mt-8'>
           <Button
             variant='primary'
