@@ -87,12 +87,14 @@ const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({
               </div>
               <div>
                 <LagreIKandidatliste stillingsId={stillingsId} />
-                <LagreIRekrutteringstreff
-                  rekrutteringstreffId={rekrutteringstreffId}
-                  kandidatsokKandidater={
-                    kandidatData.kandidater as KandidatsokKandidat[]
-                  }
-                />
+                <div className='mt-1'>
+                  <LagreIRekrutteringstreff
+                    rekrutteringstreffId={rekrutteringstreffId}
+                    kandidatsokKandidater={
+                      kandidatData.kandidater as KandidatsokKandidat[]
+                    }
+                  />
+                </div>
               </div>
             </div>
             {kandidatData.kandidater?.map((kandidat, index) => (

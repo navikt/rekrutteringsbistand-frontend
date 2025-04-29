@@ -78,15 +78,18 @@ const LagreIRekrutteringstreff: React.FC<LagreIRekrutteringstreffProps> = ({
           await leggtilNyeJobbsøkere(dto, rekrutteringstreffId);
           visVarsel({
             alertType: 'success',
-            innhold: 'Kandidater lagret i kandidatliste',
+            innhold: 'Kandidater lagret i rekrutteringstreff',
           });
           fjernMarkerteKandidater();
           ref.current?.close();
         } catch (error) {
-          logger.error('Feil ved lagring av kandidater i kandidatliste', error);
+          logger.error(
+            'Feil ved lagring av kandidater i rekrutteringstreff',
+            error,
+          );
           visVarsel({
             alertType: 'error',
-            innhold: 'Feil ved lagring av kandidater i kandidatliste',
+            innhold: 'Feil ved lagring av kandidater i rekrutteringstreff',
           });
         }
       } else if (selectedRows.length !== 0) {
@@ -99,15 +102,18 @@ const LagreIRekrutteringstreff: React.FC<LagreIRekrutteringstreffProps> = ({
           await Promise.all(promises);
           visVarsel({
             alertType: 'success',
-            innhold: 'Kandidater lagret i kandidatliste',
+            innhold: 'Kandidater lagret i rekrutteringstreff',
           });
           fjernMarkerteKandidater();
           ref.current?.close();
         } catch (error) {
-          logger.error('Feil ved lagring av kandidater i kandidatliste', error);
+          logger.error(
+            'Feil ved lagring av kandidater i rekrutteringstreff',
+            error,
+          );
           visVarsel({
             alertType: 'error',
-            innhold: 'Feil ved lagring av kandidater i kandidatliste',
+            innhold: 'Feil ved lagring av kandidater i rekrutteringstreff',
           });
         }
       }
@@ -131,7 +137,7 @@ const LagreIRekrutteringstreff: React.FC<LagreIRekrutteringstreffProps> = ({
         disabled={markerteKandidater?.length === 0}
       >
         {rekrutteringstreffId
-          ? 'Legg til markerte kandidater'
+          ? 'Legg til markerte kandidater i rekrutteringstreffet'
           : 'Lagre i rekrutteringstreff'}
       </Button>
       <Modal
