@@ -1,16 +1,15 @@
+import { useForespurteOmDelingAvCv } from '../../../../../api/foresporsel-om-deling-av-cv/foresporsler/[slug]/useForespurteOmDelingAvCv';
+import { useKandidatliste } from '../../../../../api/kandidat/useKandidatliste';
+import { useSmserForStilling } from '../../../../../api/kandidatvarsel/kandidatvarsel';
+import SWRLaster from '../../../../../components/SWRLaster';
+import { KandidatContextProvider } from '../../../../../kandidat/components/VisKandidat/KandidatContext';
+import KandidatSide from '../../../../../kandidat/components/VisKandidat/KandidatSide';
+import KandidatSideLayout from '../../../../../kandidat/components/VisKandidat/KandidatsideLayout';
+import { useStillingsContext } from '../../../StillingsContext';
 import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from '../../../../../../components/ui/sheet';
-import { KandidatContextProvider } from '../../../../../kandidat/[kandidatId]/KandidatContext';
-import KandidatSide from '../../../../../kandidat/[kandidatId]/KandidatSide';
-import KandidatSideLayout from '../../../../../kandidat/[kandidatId]/KandidatsideLayout';
-import { useKandidatlisteContext } from '../../KandidatlisteContext';
+  KandidatlisteContextProvider,
+  useKandidatlisteContext,
+} from '../../KandidatlisteContext';
 import { KandidatVisningProps } from '../KandidatlisteFilter/useFiltrerteKandidater';
 import KandidatHandlingerForStilling from './KandidatHandlingerForStilling';
 import {
@@ -22,30 +21,20 @@ import { Button } from '@navikt/ds-react';
 import * as React from 'react';
 
 export interface KandidatVisningSidebarProps {
-  kandidat: KandidatVisningProps;
+  kandidatnr: string;
 }
 
 const KandidatVisningSidebar: React.FC<KandidatVisningSidebarProps> = ({
-  kandidat,
-}) => {
-  return (
-    <Sheet>
-      <SheetTrigger>
-        <span className='aksel-link aksel-link--action'>
-          {kandidat.etternavn}, {kandidat.fornavn}
-        </span>
-      </SheetTrigger>
-      <KandidatVisningSidebarContent kandidatnr={kandidat.kandidatnr} />
-    </Sheet>
-  );
-};
-
-const KandidatVisningSidebarContent = ({
   kandidatnr,
-}: {
-  kandidatnr: string;
 }) => {
   const { kandidater } = useKandidatlisteContext();
+  const { stillingsData } = useStillingsContext();
+
+  const forespurteKandidaterHook = useForespurteOmDelingAvCv(
+    stillingsData.stilling.uuid,
+  );
+  const beskjederHook = useSmserForStilling(stillingsData.stilling.uuid);
+  const kandidatlisteHook = useKandidatliste(stillingsData.stilling.uuid);
 
   const [currentKandidatnr, setCurrentKandidatnr] =
     React.useState<string>(kandidatnr);
@@ -89,55 +78,71 @@ const KandidatVisningSidebarContent = ({
   }
 
   return (
-    <SheetContent className='w-[600px] overflow-y-auto max-h-screen'>
-      <div className='sticky top-0 z-10 flex items-center justify-between bg-background p-3 '>
-        <div className='flex items-center'>
-          <SheetClose>
-            <div className='aksel-button aksel-button--tertiary aksel-button--small aksel-button--icon-only '>
-              <ChevronRightDoubleIcon />
-            </div>
-          </SheetClose>
-          <div className='w-0 h-4 outline outline-offset-[-0.50px] outline-Border-Accent-Accent-Subtle mx-1' />
-          <div>
-            <Button
-              variant='tertiary'
-              size='small'
-              disabled={!forrigeKandidatIndex}
-              onClick={handlePreviousClick}
-              icon={<ChevronUpIcon />}
-            />
-          </div>
-          <div>
-            <Button
-              size='small'
-              variant='tertiary'
-              disabled={!nesteKandidatIndex}
-              onClick={handleNextClick}
-              icon={<ChevronDownIcon />}
-            />
-          </div>
-        </div>
-      </div>
-      <SheetHeader>
-        <SheetTitle>
-          <div className='pl-5 pt-6 text-3xl'>
-            {kandidat.fornavn} {kandidat.etternavn}
-          </div>
-        </SheetTitle>
-        <SheetDescription className='sr-only'>
-          Kandidatinformasjon for {kandidat.fornavn} {kandidat.etternavn}
-        </SheetDescription>
-      </SheetHeader>
+    <SWRLaster
+      hooks={[kandidatlisteHook, forespurteKandidaterHook, beskjederHook]}
+    >
+      {(kandidatliste, forespurteKandidater, beskjeder) => {
+        return (
+          <KandidatlisteContextProvider
+            kandidatliste={kandidatliste}
+            forespurteKandidater={forespurteKandidater}
+            beskjeder={beskjeder}
+            reFetchKandidatliste={() => kandidatlisteHook.mutate()}
+          >
+            <div className='w-[600px] overflow-y-auto max-h-screen'>
+              <div className='sticky top-0 z-10 flex items-center justify-between bg-background p-3 '>
+                <div className='flex items-center'>
+                  <div>
+                    <div className='aksel-button aksel-button--tertiary aksel-button--small aksel-button--icon-only '>
+                      <ChevronRightDoubleIcon />
+                    </div>
+                  </div>
+                  <div className='w-0 h-4 outline outline-offset-[-0.50px] outline-Border-Accent-Accent-Subtle mx-1' />
+                  <div>
+                    <Button
+                      variant='tertiary'
+                      size='small'
+                      disabled={!forrigeKandidatIndex}
+                      onClick={handlePreviousClick}
+                      icon={<ChevronUpIcon />}
+                    />
+                  </div>
+                  <div>
+                    <Button
+                      size='small'
+                      variant='tertiary'
+                      disabled={!nesteKandidatIndex}
+                      onClick={handleNextClick}
+                      icon={<ChevronDownIcon />}
+                    />
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div>
+                  <div className='pl-5 pt-6 text-3xl'>
+                    {kandidat.fornavn} {kandidat.etternavn}
+                  </div>
+                </div>
+                <div className='sr-only'>
+                  Kandidatinformasjon for {kandidat.fornavn}{' '}
+                  {kandidat.etternavn}
+                </div>
+              </div>
 
-      <div className='px-5 pb-5'>
-        <KandidatContextProvider kandidatId={kandidat.kandidatnr}>
-          <KandidatSideLayout sidebar>
-            <KandidatHandlingerForStilling kandidat={kandidat} />
-            <KandidatSide sidebar />
-          </KandidatSideLayout>
-        </KandidatContextProvider>
-      </div>
-    </SheetContent>
+              <div className='px-5 pb-5'>
+                <KandidatContextProvider kandidatId={kandidat.kandidatnr}>
+                  <KandidatSideLayout sidebar>
+                    <KandidatHandlingerForStilling kandidat={kandidat} />
+                    <KandidatSide />
+                  </KandidatSideLayout>
+                </KandidatContextProvider>
+              </div>
+            </div>
+          </KandidatlisteContextProvider>
+        );
+      }}
+    </SWRLaster>
   );
 };
 

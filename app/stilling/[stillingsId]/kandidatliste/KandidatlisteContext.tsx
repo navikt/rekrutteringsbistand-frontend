@@ -116,7 +116,7 @@ export const useKandidatlisteContext = () => {
   if (context === undefined) {
     throw new rekbisError({
       beskrivelse:
-        'Context er undefined, må være children av KandidatlisteContextProvier.',
+        'Context er undefined, må være children av KandidatlisteContextProvider.',
     });
   }
   return context;

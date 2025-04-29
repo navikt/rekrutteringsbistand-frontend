@@ -12,7 +12,6 @@ import { PencilIcon } from '@navikt/aksel-icons';
 import { BodyShort, Detail } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import { nb } from 'date-fns/locale/nb';
-import * as React from 'react';
 
 const TreffHeader = ({}) => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();

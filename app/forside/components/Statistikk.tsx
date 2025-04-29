@@ -1,6 +1,5 @@
 'use client';
 
-import Sidelaster from '../../components/Sidelaster';
 import ErrorBoundary from '../../components/feilhåndtering/ErrorBoundary';
 import { useApplikasjonContext } from '../../providers/ApplikasjonContext';
 import Forespørsler from './Forespørsler';
@@ -42,7 +41,7 @@ const Statistikk: React.FC = () => {
   const tilOgMed = lastDayOfMonth(new Date(startDatoPeriode));
 
   if (!valgtNavKontor?.navKontor) {
-    return <Sidelaster />;
+    return null;
   }
   return (
     <div className='w-full'>

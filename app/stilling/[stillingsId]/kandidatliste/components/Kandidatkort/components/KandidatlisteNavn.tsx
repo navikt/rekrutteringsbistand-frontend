@@ -1,8 +1,8 @@
 import { usynligKandidaterSchemaDTO } from '../../../../../../api/kandidat/schema.zod';
 import { storForbokstav } from '../../../../../../kandidat/util';
-import KandidatVisningSidebar from '../../KandidatVisningSidebar/KandidatVisningSidebar';
 import { KandidatVisningProps } from '../../KandidatlisteFilter/useFiltrerteKandidater';
 import { BodyShort } from '@navikt/ds-react';
+import { useQueryState } from 'nuqs';
 import * as React from 'react';
 
 export interface KandidatlisteNavnProps {
@@ -16,6 +16,15 @@ const KandidatlisteNavn: React.FC<KandidatlisteNavnProps> = ({
   usynligKandidat,
   slettet,
 }) => {
+  const [, setVisKandidatnr] = useQueryState('visKandidat', {
+    defaultValue: '',
+    clearOnDefault: true,
+  });
+
+  const onKandidatKlikk = () => {
+    setVisKandidatnr(kandidat?.kandidatnr ?? '');
+  };
+
   if (usynligKandidat) {
     return (
       <div className='flex flex-col items-start'>
@@ -46,7 +55,12 @@ const KandidatlisteNavn: React.FC<KandidatlisteNavnProps> = ({
   if (slettet) {
     return (
       <div className='flex flex-col items-start'>
-        <KandidatVisningSidebar kandidat={kandidat} />
+        <span
+          className='aksel-link aksel-link--action cursor-pointer'
+          onClick={onKandidatKlikk}
+        >
+          {kandidat.etternavn}, {kandidat.fornavn}
+        </span>
         <span>Slettet av {kandidat.arkivertAv?.navn}</span>
       </div>
     );
@@ -54,7 +68,12 @@ const KandidatlisteNavn: React.FC<KandidatlisteNavnProps> = ({
 
   return (
     <div className='flex flex-col items-start'>
-      <KandidatVisningSidebar kandidat={kandidat} />
+      <span
+        className='aksel-link aksel-link--action cursor-pointer'
+        onClick={onKandidatKlikk}
+      >
+        {kandidat.etternavn}, {kandidat.fornavn}
+      </span>
       <span>f.nr. {kandidat.fodselsnr}</span>
     </div>
   );

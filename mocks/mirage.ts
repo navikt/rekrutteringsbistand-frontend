@@ -1,8 +1,6 @@
 'use client';
 
 import { brukerMirage } from '../app/api/bruker/useBruker';
-import { mirageContext } from '../app/api/context/mirageContext';
-import { decoratorDataMirage } from '../app/api/decorator/useDecoratorData';
 import { foresporselOmDelingAvCVMirage } from '../app/api/foresporsel-om-deling-av-cv/foresporsler/[slug]/useForespurteOmDelingAvCv';
 import { foresporselOmDelingAvCVStatistikkMirage } from '../app/api/foresporsel-om-deling-av-cv/statistikk/useForesporselOmdelingAvCV';
 import { arenaKandidatnrMirage } from '../app/api/kandidat-sok/useArenaKandidatnr';
@@ -19,6 +17,8 @@ import { kandidatlisteInfoMirage } from '../app/api/kandidat/useKandidatlisteInf
 import { mineKandidatlisterMirage } from '../app/api/kandidat/useMineKandidatlister';
 import { meldingsmalerMirage } from '../app/api/kandidatvarsel/hentMeldingsmaler';
 import { kandidatvarselMirage } from '../app/api/kandidatvarsel/kandidatvarsel';
+import { modiaAktivEnhetMirage } from '../app/api/modia/context/useModiaAktivEnhet';
+import { decoratorDataMirage } from '../app/api/modia/decorator/useDecoratorData';
 import { pamPostdataMirage } from '../app/api/pam-geografi/postdata/[postnummer]/usePamPostdata';
 import { pamGeografiMirage } from '../app/api/pam-geografi/typehead/lokasjoner/usePamGeografi';
 import { stillingsTittelMirage } from '../app/api/pam-ontologi/stillingsTittel/useStillingsTittel';
@@ -53,7 +53,6 @@ export function makeServer({ environment = 'test' } = {}) {
 
     routes() {
       this.logging = false;
-      mirageContext(this);
       arenaKandidatnrMirage(this);
       brukerMirage(this);
       brukerStandardSøkMirage(this);
@@ -93,6 +92,7 @@ export function makeServer({ environment = 'test' } = {}) {
       jobbsøkereMirage(this);
       rekruteringstreffArbeidsgivereMirage(this);
       slettRekrutteringstreffMirage(this);
+      modiaAktivEnhetMirage(this);
       // stillingssøk mock kan disables ved ES søk
       stillingssøkMirage(this);
       this.passthrough('*');

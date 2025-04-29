@@ -8,7 +8,7 @@ import { Alert, Heading, Link } from '@navikt/ds-react';
 import * as React from 'react';
 
 export interface ITilgangskontrollForInnhold {
-  kreverEnAvRollene?: Roller[];
+  kreverEnAvRollene?: Roller[] | null;
   children: React.ReactNode;
   skjulVarsel?: boolean;
   manglerEierskap?: boolean;

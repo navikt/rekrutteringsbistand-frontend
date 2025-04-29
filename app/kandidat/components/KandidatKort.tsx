@@ -15,6 +15,7 @@ import {
   PinIcon,
 } from '@navikt/aksel-icons';
 import { Box, Checkbox, Heading, Link } from '@navikt/ds-react';
+import { useQueryState } from 'nuqs';
 import * as React from 'react';
 
 type IKandidatKort = {
@@ -29,7 +30,10 @@ const KandidatKort: React.FC<IKandidatKort> = ({
   stillingsId,
 }) => {
   const { markerteKandidater, setMarkert } = useKandidatSøkMarkerteContext();
-
+  const [, setVisKandidatnr] = useQueryState('visKandidat', {
+    defaultValue: '',
+    clearOnDefault: true,
+  });
   const erMarkert = markerteKandidater?.some(
     (k) => k === kandidat.arenaKandidatnr,
   );
@@ -81,10 +85,18 @@ const KandidatKort: React.FC<IKandidatKort> = ({
           </Checkbox>
         </div>
         <div className='mt-2 flex-grow'>
-          <Heading className='underline' size='small'>
-            <Link href={`/kandidat/${kandidat.arenaKandidatnr}`}>
+          <Heading
+            className='underline aksel-link aksel-link--action cursor-pointer'
+            size='small'
+          >
+            <div
+              onClick={() =>
+                kandidat.arenaKandidatnr &&
+                setVisKandidatnr(kandidat.arenaKandidatnr)
+              }
+            >
               {hentKandidatensNavn(kandidat)}
-            </Link>
+            </div>
           </Heading>
           <div className='items-row flex'>
             <div className='w-full'>

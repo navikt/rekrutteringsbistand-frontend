@@ -3,7 +3,7 @@ import { useKandidatliste } from '../../../api/kandidat/useKandidatliste';
 import { useKandidatlisteInfo } from '../../../api/kandidat/useKandidatlisteInfo';
 import { StillingsDataDTO } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import Sidelaster from '../../../components/Sidelaster';
-import KandidatSøk from '../../../kandidat/KandidatSøkSide';
+import KandidatSøkTabs from '../../../kandidat/KandidatSøkTabs';
 import { useFinnKandidatForStilling } from './useFinnKandidatForStilling';
 import { Alert } from '@navikt/ds-react';
 import * as React from 'react';
@@ -53,7 +53,7 @@ const KandidatTilStilling: React.FC<KandidatTilStillingProps> = ({
           Kandidatliste er lukket, så du kan ikke legge til kandidater.
         </Alert>
       )}
-      <KandidatSøk
+      <KandidatSøkTabs
         stillingsId={stillingsData?.stilling.uuid}
         alleredeLagtTil={alleredeLagtTil}
       />

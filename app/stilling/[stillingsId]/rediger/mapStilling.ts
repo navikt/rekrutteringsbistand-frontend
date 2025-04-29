@@ -151,6 +151,7 @@ export const mapFormTilStilling = (
             (j) => j.categoryType === 'JANZZ',
           )?.code,
     );
+
   const publiseringsDato = formData.innspurt.publiseres
     ? format(
         parse(formData.innspurt.publiseres, 'dd.MM.yyyy', new Date()),

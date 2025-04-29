@@ -1,8 +1,11 @@
 'use client';
 
 import { getMiljø, Miljø } from '../../util/miljø';
-import { postApi } from '../api/fetcher';
-import { useKandidatContext } from '../kandidat/[kandidatId]/KandidatContext';
+import {
+  ModiaEventType,
+  setModiaContext,
+} from '../api/modia/context/setModiaContext';
+import { useKandidatContext } from '../kandidat/components/VisKandidat/KandidatContext';
 import { ExternalLinkIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import * as React from 'react';
@@ -12,28 +15,21 @@ const arbeidsrettetOppfølgingUrl =
     ? 'https://veilarbpersonflate.intern.nav.no'
     : 'https://veilarbpersonflate.intern.dev.nav.no';
 
-export interface NavigerTilAktivitetsplanenKnappProps {
-  sidebar?: boolean;
-}
-
-const NavigerTilAktivitetsplanenKnapp: React.FC<
-  NavigerTilAktivitetsplanenKnappProps
-> = ({ sidebar }) => {
+const NavigerTilAktivitetsplanenKnapp: React.FC = () => {
   const { kandidatData } = useKandidatContext();
   const navigerTilAktivitetsplanen = async (
     href: string,
     fødselsnummer: string,
   ) => {
-    await postApi(`/api/context`, {
-      verdi: fødselsnummer,
-      eventType: 'NY_AKTIV_BRUKER',
-    }).then(() => window.open(href, '_blank'));
+    await setModiaContext(ModiaEventType.NY_AKTIV_BRUKER, fødselsnummer).then(
+      () => window.open(href, '_blank'),
+    );
   };
 
   if (kandidatData.fodselsnummer) {
     return (
       <Button
-        size={sidebar ? 'small' : 'medium'}
+        size={'small'}
         variant={'secondary'}
         icon={<ExternalLinkIcon />}
         onClick={() =>

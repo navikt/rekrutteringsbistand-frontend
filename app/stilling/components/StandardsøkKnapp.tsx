@@ -12,22 +12,21 @@ const StandardsøkKnapp: React.FC = () => {
   const brukerStandardSøk = searchString === brukerStandardSøkData.data?.søk;
 
   return (
-    <React.Fragment>
-      <Button
-        disabled={brukerStandardSøk}
-        variant='secondary'
-        className='w-full'
-        onClick={() => {
-          window.history.pushState(
-            {},
-            '',
-            `${window.location.pathname}?brukStandardsok=true`,
-          );
-        }}
-      >
-        Bruk mitt standardsøk
-      </Button>
-    </React.Fragment>
+    <Button
+      disabled={brukerStandardSøk}
+      variant='secondary'
+      size='small'
+      className='w-full'
+      onClick={() => {
+        window.history.pushState(
+          {},
+          '',
+          `${window.location.pathname}?brukStandardsok=true`,
+        );
+      }}
+    >
+      Bruk mitt standardsøk
+    </Button>
   );
 };
 

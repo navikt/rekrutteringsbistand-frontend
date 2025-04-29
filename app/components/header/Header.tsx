@@ -1,15 +1,16 @@
-import { isLocal } from '../../../util/env';
-import DevDekoratør from '../dev/DevDekoratør';
-import Modiadekoratør from './components/modia/Modiadekoratør';
-import { Navigeringsmeny } from './components/navigasjon/Navigasjon';
+// 'use client';
 
-const Header: React.FC = () => {
-  return (
-    <>
-      {isLocal ? <DevDekoratør /> : <Modiadekoratør />}
-      <Navigeringsmeny />
-    </>
-  );
-};
+// import { isLocal } from '../../../util/env';
+// import DevDekoratør from '../dev/DevDekoratør';
+// import Modiadekoratør from './components/modia/Modiadekoratør';
 
-export default Header;
+// const Header: React.FC = () => {
+//   return (
+//     <>
+//       {isLocal ? <DevDekoratør /> : <Modiadekoratør />}
+//       {/* <Navigeringsmeny /> */}
+//     </>
+//   );
+// };
+
+// export default Header;

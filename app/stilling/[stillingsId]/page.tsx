@@ -7,7 +7,8 @@ import { KandidatSøkMarkerteContextProvider } from '../../kandidat/KandidatSøk
 import { useStillingsContext } from './StillingsContext';
 import FinnKandidaterKnapp from './components/FinnKandidaterKnapp';
 import LeggTilKandidatTilStilling from './components/LeggTilKandidatTilStilling';
-import KandidatlisteForStilling from './kandidatliste/KandidatlisteForStilling';
+import FiltrertKandidatListeVisning from './kandidatliste/FiltrertKandidatListeVisning';
+import KandidatlisteWrapper from './kandidatliste/KandidatlisteWrapper';
 import OmStillingen from './omStillingen/OmStillingen';
 import { Alert, Tabs } from '@navikt/ds-react';
 import { useQueryState } from 'nuqs';
@@ -98,7 +99,9 @@ export default function StillingSide() {
           {kandidatlisteInfo?.kandidatlisteId && erEier && (
             <>
               <Tabs.Panel value={StillingFane.KANDIDATER}>
-                <KandidatlisteForStilling />
+                <KandidatlisteWrapper>
+                  <FiltrertKandidatListeVisning />
+                </KandidatlisteWrapper>
               </Tabs.Panel>
             </>
           )}

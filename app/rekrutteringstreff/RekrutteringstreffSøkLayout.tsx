@@ -18,7 +18,6 @@ const RekrutteringstreffSøkLayout: React.FC<
 > = ({ children }) => {
   return (
     <SideLayout
-      sidepanel={<RekrutteringstreffSøkSidebar />}
       banner={
         <div className='flex justify-between items-center'>
           <SideTopBanner
@@ -35,6 +34,7 @@ const RekrutteringstreffSøkLayout: React.FC<
         </div>
       }
     >
+      <RekrutteringstreffSøkSidebar />
       {children}
     </SideLayout>
   );
