@@ -8,7 +8,6 @@ import SideTopBanner from '../components/layout/SideTopBanner';
 import { TilgangskontrollForInnhold } from '../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '../components/tilgangskontroll/roller';
 import { KandidatSøkProvider } from './KandidaSokFilterContext';
-import KandidatSøkFilter from './KandidatSøkFilter/KandidatSøkFilter';
 import { KandidatSøkMarkerteContextProvider } from './KandidatSøkMarkerteContext';
 import VisKandidat from './VisKandidat/VisKandidat';
 import { useQueryState } from 'nuqs';
@@ -44,7 +43,6 @@ const KandidatSokLayout: React.FC<KandidatSokLayoutProps> = ({ children }) => {
                 />
               }
             >
-              <KandidatSøkFilter />
               {children}
             </SideLayout>
           </KandidatSplitScreenLayout>

@@ -24,7 +24,7 @@ import StillingsSøkeresultat from './StillingsSøkeresultat';
 import StillingForKandidat from './components/StillingForKandidat';
 import StillingsSøkFilter from './components/StillingsSøkFilter';
 import { StillingsSøkPortefølje } from './stillingssøk-typer';
-import { Tabs } from '@navikt/ds-react';
+import { ToggleGroup } from '@navikt/ds-react';
 import { useSearchParams } from 'next/navigation';
 import { useQueryState } from 'nuqs';
 import * as React from 'react';
@@ -148,43 +148,39 @@ const StillingsSøkLayout: React.FC<StillingsSøkProps> = ({
           )
         }
       >
-        <StillingsSøkFilter
-          formidlinger={formidlinger}
-          stillingForKandidat={visKandidatnr}
-        />
-        <Tabs
-          value={portefølje || StillingsSøkPortefølje.VIS_ALLE}
-          onChange={(e) => setPortefølje(e as StillingsSøkPortefølje)}
-        >
-          <Tabs.List>
-            <Tabs.Tab value={StillingsSøkPortefølje.VIS_ALLE} label='Alle' />
+        <div className='grid gap-4 mb-2'>
+          <ToggleGroup
+            size='small'
+            value={portefølje || StillingsSøkPortefølje.VIS_ALLE}
+            onChange={(e) => setPortefølje(e as StillingsSøkPortefølje)}
+          >
+            <ToggleGroup.Item
+              value={StillingsSøkPortefølje.VIS_ALLE}
+              label='Alle stillinger'
+            />
             <TilgangskontrollForInnhold
               skjulVarsel
               kreverEnAvRollene={[
                 Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
               ]}
             >
-              <Tabs.Tab
+              <ToggleGroup.Item
                 value={StillingsSøkPortefølje.VIS_MINE}
                 label={
                   formidlinger ? 'Mine etterregistreringer' : 'Mine stillinger'
                 }
               />
             </TilgangskontrollForInnhold>
-          </Tabs.List>
-          <Tabs.Panel value={StillingsSøkPortefølje.VIS_ALLE}>
-            <StillingsSøkeresultat
-              kandidatId={visKandidatnr}
-              erFormidling={formidlinger}
-            />
-          </Tabs.Panel>
-          <Tabs.Panel value={StillingsSøkPortefølje.VIS_MINE}>
-            <StillingsSøkeresultat
-              kandidatId={visKandidatnr}
-              erFormidling={formidlinger}
-            />
-          </Tabs.Panel>
-        </Tabs>
+          </ToggleGroup>
+        </div>
+        <StillingsSøkFilter
+          formidlinger={formidlinger}
+          stillingForKandidat={visKandidatnr}
+        />
+        <StillingsSøkeresultat
+          kandidatId={visKandidatnr}
+          erFormidling={formidlinger}
+        />
       </SideLayout>
     </KandidatSplitScreenLayout>
   );

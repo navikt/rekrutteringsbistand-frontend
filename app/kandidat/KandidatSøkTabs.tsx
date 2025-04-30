@@ -7,10 +7,11 @@ import {
   KandidatSøkPortefølje,
   useKandidatSøkFilterContext,
 } from './KandidaSokFilterContext';
+import KandidatSøkFilter from './KandidatSøkFilter/KandidatSøkFilter';
 import KandidatSøkResultat from './KandidatSøkResultat';
 import KandidatSøkChips from './components/KandidatSøkChips';
 import ValgteKontorer from './components/ValgteKontorer';
-import { Tabs } from '@navikt/ds-react';
+import { ToggleGroup } from '@navikt/ds-react';
 import * as React from 'react';
 
 interface KandidatSøkTabsProps {
@@ -28,7 +29,10 @@ const KandidatSøkTabs: React.FC<KandidatSøkTabsProps> = ({
   const { valgtNavKontor, brukerData } = useApplikasjonContext();
 
   const MineBrukere = () => (
-    <Tabs.Tab value={KandidatSøkPortefølje.MINE_BRUKERE} label='Mine brukere' />
+    <ToggleGroup.Item
+      value={KandidatSøkPortefølje.MINE_BRUKERE}
+      label='Mine brukere'
+    />
   );
 
   const MittKontor = () => {
@@ -41,7 +45,7 @@ const KandidatSøkTabs: React.FC<KandidatSøkTabsProps> = ({
             Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
           ]}
         >
-          <Tabs.Tab
+          <ToggleGroup.Item
             className='whitespace-nowrap'
             value={KandidatSøkPortefølje.MITT_KONTOR}
             label='Mitt kontor'
@@ -62,7 +66,7 @@ const KandidatSøkTabs: React.FC<KandidatSøkTabsProps> = ({
             Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
           ]}
         >
-          <Tabs.Tab
+          <ToggleGroup.Item
             className='whitespace-nowrap'
             value={KandidatSøkPortefølje.MINE_KONTORER}
             label='Mine kontorer'
@@ -80,7 +84,7 @@ const KandidatSøkTabs: React.FC<KandidatSøkTabsProps> = ({
         Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
       ]}
     >
-      <Tabs.Tab
+      <ToggleGroup.Item
         className='whitespace-nowrap'
         value={KandidatSøkPortefølje.ALLE}
         label='Alle kontorer'
@@ -95,7 +99,7 @@ const KandidatSøkTabs: React.FC<KandidatSøkTabsProps> = ({
         Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
       ]}
     >
-      <Tabs.Tab
+      <ToggleGroup.Item
         className='whitespace-nowrap'
         value={KandidatSøkPortefølje.VALGTE_KONTORER}
         label='Valgte kontorer'
@@ -104,8 +108,12 @@ const KandidatSøkTabs: React.FC<KandidatSøkTabsProps> = ({
   );
 
   return (
-    <Tabs value={portefølje} onChange={(value) => setPortefølje(value)}>
-      <Tabs.List className='w-full'>
+    <div className='grid gap-4 mb-2'>
+      <ToggleGroup
+        size='small'
+        value={portefølje}
+        onChange={(value) => setPortefølje(value)}
+      >
         <MineBrukere />
         <MittKontor />
         <MineKontorer />
@@ -118,22 +126,22 @@ const KandidatSøkTabs: React.FC<KandidatSøkTabsProps> = ({
           <AlleKontorer />
           <VelgKontor />
         </TilgangskontrollForInnhold>
-      </Tabs.List>
-      <Tabs.Panel value={portefølje}>
-        <div className='flex w-full items-baseline justify-between'>
-          <KandidatSøkChips />
-        </div>
+
         {portefølje === KandidatSøkPortefølje.VALGTE_KONTORER && (
           <ValgteKontorer />
         )}
-        <KandidatSøkResultat
-          alleredeLagtTil={alleredeLagtTil}
-          type={portefølje as KandidatSøkPortefølje}
-          stillingsId={stillingsId}
-          rekrutteringstreffId={rekrutteringstreffId}
-        />
-      </Tabs.Panel>
-    </Tabs>
+      </ToggleGroup>
+      <KandidatSøkFilter />
+      <div className='flex w-full items-baseline justify-between'>
+        <KandidatSøkChips />
+      </div>
+      <KandidatSøkResultat
+        alleredeLagtTil={alleredeLagtTil}
+        type={portefølje as KandidatSøkPortefølje}
+        stillingsId={stillingsId}
+        rekrutteringstreffId={rekrutteringstreffId}
+      />
+    </div>
   );
 };
 
