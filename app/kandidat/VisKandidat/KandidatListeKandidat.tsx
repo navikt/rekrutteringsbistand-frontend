@@ -20,7 +20,7 @@ const KandidatListeKandidat: React.FC<KandidatListeKandidatProps> = ({
     <SWRLaster hooks={[kandidatlisteHook]}>
       {(kandidatliste) => {
         if (!kandidatliste) {
-          return <div> ingen kandidatliste</div>;
+          return null;
         }
 
         if (
@@ -29,12 +29,14 @@ const KandidatListeKandidat: React.FC<KandidatListeKandidatProps> = ({
           )
         ) {
           return (
-            <KandidatlisteWrapper>
-              <KandidatVisningSidebar kandidatnr={kandidatnr} />
-            </KandidatlisteWrapper>
+            <div className='mb-4'>
+              <KandidatlisteWrapper>
+                <KandidatVisningSidebar kandidatnr={kandidatnr} />
+              </KandidatlisteWrapper>
+            </div>
           );
         }
-        return <div> Kandidat ikke i liste </div>;
+        return null;
       }}
     </SWRLaster>
   );
