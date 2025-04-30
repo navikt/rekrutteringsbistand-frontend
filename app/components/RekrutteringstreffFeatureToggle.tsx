@@ -11,6 +11,7 @@ const RekrutteringstreffFeatureToggle: React.FC<
 > = ({ children }) => {
   return (
     <TilgangskontrollForInnhold
+      skjulVarsel
       kreverEnAvRollene={[Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER]}
     >
       {children}
