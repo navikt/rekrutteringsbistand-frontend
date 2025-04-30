@@ -155,7 +155,9 @@ export function AppNavigasjon() {
         <SidebarGroup>
           <OpprettKnapp />
         </SidebarGroup>
-        <SidebarGroup className='flex flex-col items-start w-full gap-3'>
+        <SidebarGroup
+          className={`flex flex-col w-full gap-3 ${open ? 'items-start' : 'items-center'}`}
+        >
           {navigasjonListe.map((item) => (
             <SideLenke key={item.tekst} {...item} />
           ))}
