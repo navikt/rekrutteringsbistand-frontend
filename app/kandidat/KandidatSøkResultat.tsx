@@ -7,14 +7,13 @@ import {
 } from '../api/kandidat-sok/useKandidatsøk';
 import SWRLaster from '../components/SWRLaster';
 import { useKandidatNavigeringContext } from '../providers/KandidatNavigeringContext';
-import LagreIRekrutteringstreff from '../rekrutteringstreff/[rekrutteringstreffId]/components/LagreIRekrutteringstreff';
 import {
   KandidatSøkPortefølje,
   useKandidatSøkFilterContext,
 } from './KandidaSokFilterContext';
 import { useKandidatSøkMarkerteContext } from './KandidatSøkMarkerteContext';
 import KandidatKort from './components/KandidatKort';
-import LagreIKandidatliste from './components/LagreIKandidatliste';
+import LagreKandidatActionMenu from './components/LagreKandidaterActionMeny';
 import { Checkbox, Heading, Pagination } from '@navikt/ds-react';
 import * as React from 'react';
 
@@ -85,17 +84,13 @@ const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({
                   Marker alle på siden
                 </Checkbox>
               </div>
-              <div>
-                <LagreIKandidatliste stillingsId={stillingsId} />
-                <div className='mt-1'>
-                  <LagreIRekrutteringstreff
-                    rekrutteringstreffId={rekrutteringstreffId}
-                    kandidatsokKandidater={
-                      kandidatData.kandidater as KandidatsokKandidat[]
-                    }
-                  />
-                </div>
-              </div>
+              <LagreKandidatActionMenu
+                stillingsId={stillingsId}
+                rekrutteringstreffId={rekrutteringstreffId}
+                kandidatsokKandidater={
+                  kandidatData.kandidater as KandidatsokKandidat[]
+                }
+              />
             </div>
             {kandidatData.kandidater?.map((kandidat, index) => (
               <KandidatKort

@@ -17,10 +17,12 @@ interface LagreIRekrutteringstreffProps {
   kandidatsokKandidater: KandidatsokKandidat[];
 }
 
-const LagreIRekrutteringstreff: React.FC<LagreIRekrutteringstreffProps> = ({
-  rekrutteringstreffId,
-  kandidatsokKandidater,
-}) => {
+const LagreIRekrutteringstreff = React.forwardRef<
+  HTMLButtonElement,
+  LagreIRekrutteringstreffProps
+>(({ rekrutteringstreffId, kandidatsokKandidater }, triggerRef) => {
+  const dialogRef = React.useRef<HTMLDialogElement>(null);
+
   const rekrutteringstreffOversiktHook = useRekrutteringstreffOversikt();
 
   //const { track } = useUmami();
@@ -129,6 +131,7 @@ const LagreIRekrutteringstreff: React.FC<LagreIRekrutteringstreffProps> = ({
   return (
     <div>
       <Button
+        ref={triggerRef}
         onClick={() => {
           if (rekrutteringstreffId) {
             lagreKandidaterIRekrutteringstreff();
@@ -147,7 +150,7 @@ const LagreIRekrutteringstreff: React.FC<LagreIRekrutteringstreffProps> = ({
       </Button>
       <Modal
         width={600}
-        ref={ref}
+        ref={dialogRef}
         header={{
           heading: `Lagre ${markerteKandidater?.length || 0} kandidat i kandidatlister`,
         }}
@@ -272,6 +275,7 @@ const LagreIRekrutteringstreff: React.FC<LagreIRekrutteringstreffProps> = ({
       </Modal>
     </div>
   );
-};
+});
 
+LagreIRekrutteringstreff.displayName = 'LagreIRekrutteringstreff';
 export default LagreIRekrutteringstreff;

@@ -23,9 +23,12 @@ interface LagreIKandidatlisteProps {
   stillingsId?: string;
 }
 
-const LagreIKandidatliste: React.FC<LagreIKandidatlisteProps> = ({
-  stillingsId,
-}) => {
+const LagreIKandidatliste = React.forwardRef<
+  HTMLButtonElement,
+  LagreIKandidatlisteProps
+>(({ stillingsId }, triggerRef) => {
+  const dialogRef = React.useRef<HTMLDialogElement>(null);
+
   const { track } = useUmami();
   const ref = React.useRef<HTMLDialogElement>(null);
   const { markerteKandidater, fjernMarkerteKandidater } =
@@ -103,6 +106,7 @@ const LagreIKandidatliste: React.FC<LagreIKandidatlisteProps> = ({
   return (
     <div>
       <Button
+        ref={triggerRef}
         onClick={() => {
           if (stillingsId) {
             lagreKandidaterIKandidatliste();
@@ -119,7 +123,7 @@ const LagreIKandidatliste: React.FC<LagreIKandidatlisteProps> = ({
       </Button>
       <Modal
         width={600}
-        ref={ref}
+        ref={dialogRef}
         header={{
           heading: `Lagre ${markerteKandidater?.length || 0} kandidat i kandidatlister`,
         }}
@@ -246,6 +250,8 @@ const LagreIKandidatliste: React.FC<LagreIKandidatlisteProps> = ({
       </Modal>
     </div>
   );
-};
+});
+
+LagreIKandidatliste.displayName = 'LagreIKandidatliste';
 
 export default LagreIKandidatliste;
