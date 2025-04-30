@@ -17,7 +17,7 @@ export const KANDIDATLISTE_COLUMN_LAYOUT =
 const FiltrertKandidatListeVisning: React.FC = () => {
   const filtrerteKandidater = useFiltrerteKandidater();
   const { setSortering, sortering } = useKandidatlisteFilterContext();
-  const kandidatNavigering = useKandidatNavigeringContext();
+  const { setKandidatNavigering } = useKandidatNavigeringContext();
 
   const sortIcon = (asc: boolean, desc: boolean) => {
     if (asc) {
@@ -29,13 +29,15 @@ const FiltrertKandidatListeVisning: React.FC = () => {
     return null;
   };
 
-  if (filtrerteKandidater?.kandidater) {
-    kandidatNavigering.setKandidatNavigering(
-      filtrerteKandidater.kandidater.map((kandidat) => kandidat.kandidatnr),
-    );
-  } else {
-    kandidatNavigering.setKandidatNavigering([]);
-  }
+  React.useEffect(() => {
+    if (filtrerteKandidater?.kandidater) {
+      setKandidatNavigering(
+        filtrerteKandidater.kandidater.map((kandidat) => kandidat.kandidatnr),
+      );
+    } else {
+      setKandidatNavigering([]);
+    }
+  }, [setKandidatNavigering, filtrerteKandidater?.kandidater]);
 
   return (
     <div className='mt-6'>

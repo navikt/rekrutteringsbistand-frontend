@@ -17,6 +17,7 @@ import { kandidatlisteInfoMirage } from '../app/api/kandidat/useKandidatlisteInf
 import { mineKandidatlisterMirage } from '../app/api/kandidat/useMineKandidatlister';
 import { meldingsmalerMirage } from '../app/api/kandidatvarsel/hentMeldingsmaler';
 import { kandidatvarselMirage } from '../app/api/kandidatvarsel/kandidatvarsel';
+import { mockModiaContext } from '../app/api/modia/context/setModiaContext';
 import { modiaAktivEnhetMirage } from '../app/api/modia/context/useModiaAktivEnhet';
 import { decoratorDataMirage } from '../app/api/modia/decorator/useDecoratorData';
 import { pamPostdataMirage } from '../app/api/pam-geografi/postdata/[postnummer]/usePamPostdata';
@@ -93,6 +94,7 @@ export function makeServer({ environment = 'test' } = {}) {
       rekruteringstreffArbeidsgivereMirage(this);
       slettRekrutteringstreffMirage(this);
       modiaAktivEnhetMirage(this);
+      mockModiaContext(this);
       // stillingssøk mock kan disables ved ES søk
       stillingssøkMirage(this);
       this.passthrough('*');
