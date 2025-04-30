@@ -5,7 +5,7 @@ import { AlertType, useVisVarsling } from '../../components/varsling/Varsling';
 import { useUmami } from '../../providers/UmamiContext';
 import { useKandidatSøkMarkerteContext } from '../KandidatSøkMarkerteContext';
 import { PersonPlusIcon } from '@navikt/aksel-icons';
-import { ActionMenu } from '@navikt/ds-react';
+import { Button } from '@navikt/ds-react';
 import { logger } from '@navikt/next-logger';
 import * as React from 'react';
 
@@ -27,7 +27,8 @@ const LagreIKandidatliste: React.FC<LagreIKandidatlisteProps> = ({
 
   return (
     <div>
-      <ActionMenu.Item
+      <Button
+        variant='tertiary'
         onSelect={() => {
           if (stillingsId) {
             lagreKandidaterIKandidatliste({
@@ -50,7 +51,7 @@ const LagreIKandidatliste: React.FC<LagreIKandidatlisteProps> = ({
         disabled={markerteKandidater?.length === 0}
       >
         {stillingsId ? 'Legg til markerte kandidater' : 'Lagre i kandidatliste'}
-      </ActionMenu.Item>
+      </Button>
     </div>
   );
 };

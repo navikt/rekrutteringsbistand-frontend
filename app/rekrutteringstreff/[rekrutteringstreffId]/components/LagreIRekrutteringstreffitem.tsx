@@ -9,7 +9,7 @@ import {
   LeggTilNyJobbsøkereDTO,
 } from '@/app/api/rekrutteringstreff/ny-jobbsøker/leggTilNyjobbsøker';
 import { PersonPlusIcon } from '@navikt/aksel-icons';
-import { ActionMenu } from '@navikt/ds-react';
+import { Button } from '@navikt/ds-react';
 import { logger } from '@navikt/next-logger';
 import * as React from 'react';
 
@@ -36,7 +36,8 @@ const LagreIRekrutteringstreff: React.FC<LagreIRekrutteringstreffProps> = ({
   const visVarsel = useVisVarsling();
 
   return (
-    <ActionMenu.Item
+    <Button
+      variant='tertiary'
       onSelect={() => {
         console.log(
           'klikker i rekrutteringstreff med id',
@@ -65,7 +66,7 @@ const LagreIRekrutteringstreff: React.FC<LagreIRekrutteringstreffProps> = ({
       {rekrutteringstreffId
         ? 'Legg til markerte kandidater i rekrutteringstreffet'
         : 'Lagre i rekrutteringstreff'}
-    </ActionMenu.Item>
+    </Button>
   );
 };
 

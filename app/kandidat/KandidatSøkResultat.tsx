@@ -5,6 +5,7 @@ import {
   KandidatsokKandidat,
   useKandidatsøk,
 } from '../api/kandidat-sok/useKandidatsøk';
+import RekrutteringstreffFeatureToggle from '../components/RekrutteringstreffFeatureToggle';
 import SWRLaster from '../components/SWRLaster';
 import { useKandidatNavigeringContext } from '../providers/KandidatNavigeringContext';
 import LagreIRekrutteringstreffModal from '../rekrutteringstreff/[rekrutteringstreffId]/components/LagreIRekrutteringstreffModal';
@@ -17,14 +18,7 @@ import { useKandidatSøkMarkerteContext } from './KandidatSøkMarkerteContext';
 import KandidatKort from './components/KandidatKort';
 import LagreIKandidatliste from './components/LagreIKandidatlisteItem';
 import LagreIKandidatlisteModal from './components/LagreIKandidatlisteModal';
-import {
-  ActionMenu,
-  Button,
-  Checkbox,
-  Heading,
-  Pagination,
-} from '@navikt/ds-react';
-import { ChevronDownIcon } from 'lucide-react';
+import { Checkbox, Heading, Pagination } from '@navikt/ds-react';
 import * as React from 'react';
 
 interface KandidatSøkResultatProps {
@@ -97,42 +91,31 @@ const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({
                   Marker alle på siden
                 </Checkbox>
               </div>
-              <div>
-                <ActionMenu>
-                  <ActionMenu.Trigger>
-                    <Button
-                      variant='secondary-neutral'
-                      icon={<ChevronDownIcon aria-hidden />}
-                      iconPosition='right'
-                    >
-                      Lagre
-                    </Button>
-                  </ActionMenu.Trigger>
-                  <ActionMenu.Content>
-                    <LagreIKandidatliste
-                      stillingsId={stillingsId}
-                      ref={kandidatlisteModalRef}
-                    />
-                    <LagreIRekrutteringstreff
-                      rekrutteringstreffId={rekrutteringstreffId}
-                      kandidatsokKandidater={
-                        kandidatData.kandidater as KandidatsokKandidat[]
-                      }
-                      ref={rekrutteringstreffModalRef}
-                    />
-                  </ActionMenu.Content>
-                </ActionMenu>
-                <LagreIRekrutteringstreffModal
-                  rekrutteringstreffId={rekrutteringstreffId}
-                  kandidatsokKandidater={
-                    kandidatData.kandidater as KandidatsokKandidat[]
-                  }
-                  ref={rekrutteringstreffModalRef}
+              <div className='flex gap-2'>
+                <LagreIKandidatliste
+                  stillingsId={stillingsId}
+                  ref={kandidatlisteModalRef}
                 />
                 <LagreIKandidatlisteModal
                   stillingsId={stillingsId}
                   ref={kandidatlisteModalRef}
                 />
+                <RekrutteringstreffFeatureToggle>
+                  <LagreIRekrutteringstreff
+                    rekrutteringstreffId={rekrutteringstreffId}
+                    kandidatsokKandidater={
+                      kandidatData.kandidater as KandidatsokKandidat[]
+                    }
+                    ref={rekrutteringstreffModalRef}
+                  />
+                  <LagreIRekrutteringstreffModal
+                    rekrutteringstreffId={rekrutteringstreffId}
+                    kandidatsokKandidater={
+                      kandidatData.kandidater as KandidatsokKandidat[]
+                    }
+                    ref={rekrutteringstreffModalRef}
+                  />
+                </RekrutteringstreffFeatureToggle>
               </div>
             </div>
             {kandidatData.kandidater?.map((kandidat, index) => (
