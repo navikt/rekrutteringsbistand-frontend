@@ -8,6 +8,6 @@ export const slettCvFraArbeidsgiversKandidatliste = async (
 ) => {
   return await putApi(
     `${KandidatAPI.internUrl}/veileder/kandidat/arbeidsgiverliste/${kandidatlisteId}/${kandidatnummer}`,
-    navKontor,
+    { navKontor: navKontor },
   );
 };
