@@ -7,15 +7,24 @@ import {
 } from '../api/kandidat-sok/useKandidatsøk';
 import SWRLaster from '../components/SWRLaster';
 import { useKandidatNavigeringContext } from '../providers/KandidatNavigeringContext';
-import LagreIRekrutteringstreff from '../rekrutteringstreff/[rekrutteringstreffId]/components/LagreIRekrutteringstreff';
+import LagreIRekrutteringstreffModal from '../rekrutteringstreff/[rekrutteringstreffId]/components/LagreIRekrutteringstreffModal';
+import LagreIRekrutteringstreff from '../rekrutteringstreff/[rekrutteringstreffId]/components/LagreIRekrutteringstreffitem';
 import {
   KandidatSøkPortefølje,
   useKandidatSøkFilterContext,
 } from './KandidaSokFilterContext';
 import { useKandidatSøkMarkerteContext } from './KandidatSøkMarkerteContext';
 import KandidatKort from './components/KandidatKort';
-import LagreIKandidatliste from './components/LagreIKandidatliste';
-import { Checkbox, Heading, Pagination } from '@navikt/ds-react';
+import LagreIKandidatliste from './components/LagreIKandidatlisteItem';
+import LagreIKandidatlisteModal from './components/LagreIKandidatlisteModal';
+import {
+  ActionMenu,
+  Button,
+  Checkbox,
+  Heading,
+  Pagination,
+} from '@navikt/ds-react';
+import { ChevronDownIcon } from 'lucide-react';
 import * as React from 'react';
 
 interface KandidatSøkResultatProps {
@@ -41,6 +50,9 @@ const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({
 
   const { markerteKandidater, setMarkertListe, fjernMarkerteKandidater } =
     useKandidatSøkMarkerteContext();
+
+  const rekrutteringstreffModalRef = React.useRef<HTMLDialogElement>(null!);
+  const kandidatlisteModalRef = React.useRef<HTMLDialogElement>(null!);
 
   return (
     <SWRLaster hooks={[kandidatsøkHook]}>
@@ -86,15 +98,41 @@ const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({
                 </Checkbox>
               </div>
               <div>
-                <LagreIKandidatliste stillingsId={stillingsId} />
-                <div className='mt-1'>
-                  <LagreIRekrutteringstreff
-                    rekrutteringstreffId={rekrutteringstreffId}
-                    kandidatsokKandidater={
-                      kandidatData.kandidater as KandidatsokKandidat[]
-                    }
-                  />
-                </div>
+                <ActionMenu>
+                  <ActionMenu.Trigger>
+                    <Button
+                      variant='secondary-neutral'
+                      icon={<ChevronDownIcon aria-hidden />}
+                      iconPosition='right'
+                    >
+                      Lagre
+                    </Button>
+                  </ActionMenu.Trigger>
+                  <ActionMenu.Content>
+                    <LagreIKandidatliste
+                      stillingsId={stillingsId}
+                      ref={kandidatlisteModalRef}
+                    />
+                    <LagreIRekrutteringstreff
+                      rekrutteringstreffId={rekrutteringstreffId}
+                      kandidatsokKandidater={
+                        kandidatData.kandidater as KandidatsokKandidat[]
+                      }
+                      ref={rekrutteringstreffModalRef}
+                    />
+                  </ActionMenu.Content>
+                </ActionMenu>
+                <LagreIRekrutteringstreffModal
+                  rekrutteringstreffId={rekrutteringstreffId}
+                  kandidatsokKandidater={
+                    kandidatData.kandidater as KandidatsokKandidat[]
+                  }
+                  ref={rekrutteringstreffModalRef}
+                />
+                <LagreIKandidatlisteModal
+                  stillingsId={stillingsId}
+                  ref={kandidatlisteModalRef}
+                />
               </div>
             </div>
             {kandidatData.kandidater?.map((kandidat, index) => (

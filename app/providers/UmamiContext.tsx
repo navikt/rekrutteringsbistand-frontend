@@ -13,7 +13,7 @@ export const getScreenInfo = (): Record<string, string> => {
   };
 };
 
-interface UmamiContextType {
+export interface UmamiContextType {
   track: (event: UmamiEventObject, eventData?: Record<string, any>) => void;
   trackAndNavigate: (
     event: UmamiEventObject,

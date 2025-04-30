@@ -1,30 +1,25 @@
 import SWRLaster from '../../../components/SWRLaster';
 import { useVisVarsling } from '../../../components/varsling/Varsling';
 import { useKandidatSøkMarkerteContext } from '../../../kandidat/KandidatSøkMarkerteContext';
+import { lagreKandidaterIRekrutteringstreff } from './LagreIRekrutteringstreffitem';
 import { KandidatsokKandidat } from '@/app/api/kandidat-sok/useKandidatsøk';
-import {
-  leggtilNyeJobbsøkere,
-  LeggTilNyJobbsøkereDTO,
-} from '@/app/api/rekrutteringstreff/ny-jobbsøker/leggTilNyjobbsøker';
 import { useRekrutteringstreffOversikt } from '@/app/api/rekrutteringstreff/useRekrutteringstreffOversikt';
-import { PersonPlusIcon } from '@navikt/aksel-icons';
 import { Button, Checkbox, Link, Loader, Modal, Table } from '@navikt/ds-react';
 import { logger } from '@navikt/next-logger';
 import * as React from 'react';
 
-interface LagreIRekrutteringstreffProps {
+interface LagreIRekrutteringstreffModalProps {
   rekrutteringstreffId?: string;
   kandidatsokKandidater: KandidatsokKandidat[];
+  ref: React.RefObject<HTMLDialogElement>;
 }
 
-const LagreIRekrutteringstreff: React.FC<LagreIRekrutteringstreffProps> = ({
-  rekrutteringstreffId,
-  kandidatsokKandidater,
-}) => {
+const LagreIRekrutteringstreffModal: React.FC<
+  LagreIRekrutteringstreffModalProps
+> = ({ rekrutteringstreffId, kandidatsokKandidater, ref }) => {
   const rekrutteringstreffOversiktHook = useRekrutteringstreffOversikt();
 
   //const { track } = useUmami();
-  const ref = React.useRef<HTMLDialogElement>(null);
   const { markerteKandidater, fjernMarkerteKandidater } =
     useKandidatSøkMarkerteContext();
   /*const mineKandidatlisterHook = useMineKandidatlister(
@@ -42,109 +37,8 @@ const LagreIRekrutteringstreff: React.FC<LagreIRekrutteringstreffProps> = ({
         : [...list, stillingsId],
     );
 
-  const lagreKandidaterIRekrutteringstreff = async () => {
-    if (markerteKandidater && markerteKandidater.length > 0) {
-      setLaster(true);
-      const feil: string[] = [];
-      const dto: LeggTilNyJobbsøkereDTO = markerteKandidater
-        .map((kandidatnummer) => {
-          const kandidat = kandidatsokKandidater.find(
-            (k) => k.arenaKandidatnr === kandidatnummer,
-          );
-
-          if (!kandidat) {
-            feil.push(
-              `Fant ikke kandidat med kandidatnummer: ${kandidatnummer}`,
-            );
-            return null;
-          }
-          if (!kandidat.fodselsnummer) {
-            feil.push(`Kandidat mangler fødselsnummer (${kandidatnummer})`);
-          }
-
-          return {
-            fødselsnummer: kandidat.fodselsnummer,
-            fornavn: kandidat.fornavn ?? null,
-            etternavn: kandidat.etternavn ?? null,
-            kandidatnummer: kandidat.arenaKandidatnr ?? null,
-            navkontor: kandidat.navkontor ?? null,
-            veilederNavn: kandidat.veilederVisningsnavn ?? 'UKJENT',
-            veilederNavIdent: kandidat.veilederIdent ?? 'UKJENT',
-          };
-        })
-        .filter(
-          (kandidat) => kandidat && kandidat.fødselsnummer,
-        ) as LeggTilNyJobbsøkereDTO;
-
-      if (rekrutteringstreffId) {
-        //TODO: track(UmamiEvent...)
-
-        try {
-          await leggtilNyeJobbsøkere(dto, rekrutteringstreffId);
-          visVarsel({
-            alertType: 'success',
-            innhold: 'Kandidater lagret i rekrutteringstreff',
-          });
-          fjernMarkerteKandidater();
-          ref.current?.close();
-        } catch (error) {
-          logger.error(
-            'Feil ved lagring av kandidater i rekrutteringstreff',
-            error,
-          );
-          visVarsel({
-            alertType: 'error',
-            innhold: 'Feil ved lagring av kandidater i rekrutteringstreff',
-          });
-        }
-      } else if (selectedRows.length !== 0) {
-        // TODO unami
-        const promises = selectedRows.map((rekrutteringstreffId) =>
-          leggtilNyeJobbsøkere(dto, rekrutteringstreffId),
-        );
-
-        try {
-          await Promise.all(promises);
-          visVarsel({
-            alertType: 'success',
-            innhold: 'Kandidater lagret i rekrutteringstreff',
-          });
-          fjernMarkerteKandidater();
-          ref.current?.close();
-        } catch (error) {
-          logger.error(
-            'Feil ved lagring av kandidater i rekrutteringstreff',
-            error,
-          );
-          visVarsel({
-            alertType: 'error',
-            innhold: 'Feil ved lagring av kandidater i rekrutteringstreff',
-          });
-        }
-      }
-      setLaster(false);
-    }
-  };
-
   return (
     <div>
-      <Button
-        onClick={() => {
-          if (rekrutteringstreffId) {
-            lagreKandidaterIRekrutteringstreff();
-          } else {
-            ref.current?.showModal();
-          }
-        }}
-        size='small'
-        variant='primary'
-        icon={<PersonPlusIcon aria-hidden />}
-        disabled={markerteKandidater?.length === 0}
-      >
-        {rekrutteringstreffId
-          ? 'Legg til markerte kandidater i rekrutteringstreffet'
-          : 'Lagre i rekrutteringstreff'}
-      </Button>
       <Modal
         width={600}
         ref={ref}
@@ -256,7 +150,19 @@ const LagreIRekrutteringstreff: React.FC<LagreIRekrutteringstreffProps> = ({
           <Button
             disabled={laster || selectedRows.length === 0}
             type='button'
-            onClick={lagreKandidaterIRekrutteringstreff}
+            onClick={() =>
+              lagreKandidaterIRekrutteringstreff({
+                markerteKandidater,
+                kandidatsokKandidater,
+                rekrutteringstreffId,
+                selectedRows,
+                visVarsel,
+                fjernMarkerteKandidater,
+                closeModal: () => ref.current?.close(),
+                setLaster,
+                logger,
+              })
+            }
           >
             Lagre
           </Button>
@@ -274,4 +180,4 @@ const LagreIRekrutteringstreff: React.FC<LagreIRekrutteringstreffProps> = ({
   );
 };
 
-export default LagreIRekrutteringstreff;
+export default LagreIRekrutteringstreffModal;
