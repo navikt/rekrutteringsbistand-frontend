@@ -31,6 +31,18 @@ const KandidatHandlingerForStilling: React.FC<
     useKandidatlisteContext();
   const [loading, setLoading] = React.useState<boolean>(false);
 
+  const cvDeltMedArbeidsgiver =
+    kandidat.kandidatHendelser.utfallsendringer?.some(
+      (cv) => cv.tittel === 'CV delt med arbeidsgiver',
+    );
+
+  const fåttJobben = kandidat.utfall === KandidatutfallTyper.FATT_JOBBEN;
+
+  const cvFjernetFraArbeidsgiver =
+    kandidat.kandidatHendelser.utfallsendringer?.some(
+      (cv) => cv.tittel === 'CV fjernet fra arbeidsgiver',
+    );
+
   const endreUtfallForKandidat = async (utfall: KandidatutfallTyper) => {
     setLoading(true);
     try {
@@ -83,17 +95,20 @@ const KandidatHandlingerForStilling: React.FC<
             )}
           </div>
         </div>
-        {!kandidat.arkivert && (
-          <div className='grid grid-cols-2 gap-2'>
-            <DelMedKandidatModal
-              markerteKandidater={[kandidat]}
-              fjernAllMarkering={() => {}}
-              sidebar
-            />
+        {!kandidat.arkivert &&
+          !fåttJobben &&
+          !cvDeltMedArbeidsgiver &&
+          !cvFjernetFraArbeidsgiver && (
+            <div className='grid grid-cols-2 gap-2'>
+              <DelMedKandidatModal
+                markerteKandidater={[kandidat]}
+                fjernAllMarkering={() => {}}
+                sidebar
+              />
 
-            <DelMedArbeidsgiver markerteKandidater={[kandidat]} sidebar />
-          </div>
-        )}
+              <DelMedArbeidsgiver markerteKandidater={[kandidat]} sidebar />
+            </div>
+          )}
 
         {!kandidat.arkivert && (
           <div className='flex gap-2 border-t-2 pt-4'>
@@ -117,11 +132,12 @@ const KandidatHandlingerForStilling: React.FC<
                 />
               )}
             </div>
-            <FjernDelingMedArbeidsgiver
-              kandidatlisteId={kandidatlisteId}
-              kandidatnummer={kandidat.kandidatnr}
-              navKontor={valgtNavKontor?.navKontor ?? null}
-            />
+            {cvDeltMedArbeidsgiver && (
+              <FjernDelingMedArbeidsgiver
+                kandidatnummer={kandidat.kandidatnr}
+                navKontor={valgtNavKontor?.navKontor ?? null}
+              />
+            )}
             <div className='flex flex-1 justify-end'>
               <EndreArkivertStatusKnapp
                 tittel={'Slett'}

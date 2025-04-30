@@ -1,20 +1,20 @@
 import { slettCvFraArbeidsgiversKandidatliste } from '../../../../api/kandidat/slettCvFraArbeidsgiver';
+import { useKandidatlisteContext } from '../KandidatlisteContext';
 import { MinusCircleIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import * as React from 'react';
 
 export interface FjernDelingMedArbeidsgiverProps {
-  kandidatlisteId: string;
   kandidatnummer: string;
   navKontor: string | null;
 }
 
 const FjernDelingMedArbeidsgiver: React.FC<FjernDelingMedArbeidsgiverProps> = ({
-  kandidatlisteId,
   kandidatnummer,
   navKontor,
 }) => {
   const [loading, setLoading] = React.useState(false);
+  const { reFetchKandidatliste, kandidatlisteId } = useKandidatlisteContext();
 
   const slettCv = async () => {
     setLoading(true);
@@ -24,6 +24,7 @@ const FjernDelingMedArbeidsgiver: React.FC<FjernDelingMedArbeidsgiverProps> = ({
       navKontor,
     ).finally(() => {
       setLoading(false);
+      reFetchKandidatliste();
     });
   };
   return (
