@@ -3,7 +3,7 @@
 import { KandidatDataSchemaDTO } from '../api/kandidat-sok/schema/cvSchema.zod';
 import { useKandidatsøk } from '../api/kandidat-sok/useKandidatsøk';
 import SWRLaster from '../components/SWRLaster';
-import { useKandidatNavigering } from '../providers/KandidatNavigeringContext';
+import { useKandidatNavigeringContext } from '../providers/KandidatNavigeringContext';
 import {
   KandidatSøkPortefølje,
   useKandidatSøkFilterContext,
@@ -27,11 +27,11 @@ const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({
 }) => {
   const filter = useKandidatSøkFilterContext();
   const kandidatsøkHook = useKandidatsøk(type, filter);
-  const { setNavigering } = useKandidatNavigering();
+  const { setKandidatNavigering } = useKandidatNavigeringContext();
 
   React.useEffect(() => {
-    setNavigering(kandidatsøkHook.data?.navigering.kandidatnumre ?? []);
-  }, [kandidatsøkHook.data?.navigering, setNavigering]);
+    setKandidatNavigering(kandidatsøkHook.data?.navigering.kandidatnumre ?? []);
+  }, [kandidatsøkHook.data?.navigering, setKandidatNavigering]);
 
   const { markerteKandidater, setMarkertListe, fjernMarkerteKandidater } =
     useKandidatSøkMarkerteContext();

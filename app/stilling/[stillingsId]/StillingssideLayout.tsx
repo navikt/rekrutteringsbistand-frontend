@@ -1,8 +1,8 @@
 'use client';
 
 import HovedInnholdKort from '../../components/layout/HovedInnholdKort';
+import SplitScreenLayout from '../../components/layout/KandidatSplitScreenLayout';
 import SideLayout from '../../components/layout/SideLayout';
-import SplitScreenLayout from '../../components/layout/SplitScreenLayout';
 import VisKandidat from '../../kandidat/VisKandidat/VisKandidat';
 import StillingHeader from './StillingHeader';
 import { useStillingsContext } from './StillingsContext';
@@ -19,7 +19,7 @@ const StillingSideLayout: React.FC<StillingSideLayoutProps> = ({
 }) => {
   const { stillingsData } = useStillingsContext();
 
-  const [visKandidatnr, setVisKandidatnr] = useQueryState('visKandidatnr', {
+  const [visKandidatnr] = useQueryState('visKandidatnr', {
     defaultValue: '',
     clearOnDefault: true,
   });
@@ -30,7 +30,6 @@ const StillingSideLayout: React.FC<StillingSideLayoutProps> = ({
 
   return (
     <SplitScreenLayout
-      lukkSidebar={() => setVisKandidatnr('')}
       sidebar={visKandidatnr && <VisKandidat kandidatnr={visKandidatnr} />}
     >
       <HovedInnholdKort>

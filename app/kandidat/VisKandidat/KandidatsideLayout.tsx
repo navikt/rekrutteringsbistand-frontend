@@ -4,7 +4,6 @@ import TekstMedIkon from '../../components/TekstMedIkon';
 import SideLayout from '../../components/layout/SideLayout';
 import SideTopBanner from '../../components/layout/SideTopBanner';
 import { useKandidatContext } from './KandidatContext';
-import KandidatNavigering from './KandidatNavigering';
 import {
   CandleIcon,
   EnvelopeClosedIcon,
@@ -27,11 +26,6 @@ const KandidatSideLayout: React.FC<KandidatSideProps> = ({ children }) => {
     <SideLayout
       banner={
         <SideTopBanner
-          chip={
-            <KandidatNavigering
-              kandidatnr={kandidatsammendragData.arenaKandidatnr}
-            />
-          }
           tittel={`${kandidatsammendragData.fornavn} ${kandidatsammendragData.etternavn}`}
           headerInnhold={
             <div className='@container/kandidatside'>

@@ -13,8 +13,8 @@ export interface HøyreInnholdKortProps {
   children?: React.ReactNode | undefined;
   className?: string;
   lukkSidebar: () => void;
-  nesteSide?: () => void;
-  forrigeSide?: () => void;
+  nesteSide: () => Promise<URLSearchParams> | null;
+  forrigeSide: () => Promise<URLSearchParams> | null;
   ekspanderSidebar: () => void;
   ekspanderHøyre?: boolean;
 }

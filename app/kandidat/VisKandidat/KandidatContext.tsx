@@ -29,6 +29,7 @@ export const KandidatContextProvider: React.FC<
   KandidatContextProviderProps
 > = ({ kandidatId, children }) => {
   const kandidatSammendragHook = useKandidatsammendrag(kandidatId);
+
   return (
     <SWRLaster hooks={[kandidatSammendragHook]}>
       {(data) => (

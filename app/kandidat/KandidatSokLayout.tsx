@@ -2,9 +2,9 @@
 
 import Piktogram from '../../public/ikoner/finn-kandidater.svg';
 import SVGDarkmode from '../components/SVGDarkmode';
+import KandidatSplitScreenLayout from '../components/layout/KandidatSplitScreenLayout';
 import SideLayout from '../components/layout/SideLayout';
 import SideTopBanner from '../components/layout/SideTopBanner';
-import SplitScreenLayout from '../components/layout/SplitScreenLayout';
 import { TilgangskontrollForInnhold } from '../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '../components/tilgangskontroll/roller';
 import { KandidatSøkProvider } from './KandidaSokFilterContext';
@@ -18,7 +18,7 @@ export interface KandidatSokLayoutProps {
 }
 
 const KandidatSokLayout: React.FC<KandidatSokLayoutProps> = ({ children }) => {
-  const [visKandidatnr, settKandidatnr] = useQueryState('visKandidatnr', {
+  const [visKandidatnr] = useQueryState('visKandidatnr', {
     defaultValue: '',
     clearOnDefault: true,
   });
@@ -31,8 +31,7 @@ const KandidatSokLayout: React.FC<KandidatSokLayoutProps> = ({ children }) => {
     >
       <KandidatSøkProvider>
         <KandidatSøkMarkerteContextProvider>
-          <SplitScreenLayout
-            lukkSidebar={() => settKandidatnr('')}
+          <KandidatSplitScreenLayout
             sidebar={
               visKandidatnr && <VisKandidat kandidatnr={visKandidatnr} />
             }
@@ -48,7 +47,7 @@ const KandidatSokLayout: React.FC<KandidatSokLayoutProps> = ({ children }) => {
               <KandidatSøkFilter />
               {children}
             </SideLayout>
-          </SplitScreenLayout>
+          </KandidatSplitScreenLayout>
         </KandidatSøkMarkerteContextProvider>
       </KandidatSøkProvider>
     </TilgangskontrollForInnhold>

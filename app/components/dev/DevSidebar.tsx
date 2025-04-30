@@ -1,7 +1,22 @@
 import { useApplikasjonContext } from '../../providers/ApplikasjonContext';
 import { Roller } from '../tilgangskontroll/roller';
-import { Box, InternalHeader, Select, TextField } from '@navikt/ds-react';
+import { Box, Select, TextField } from '@navikt/ds-react';
 import * as React from 'react';
+
+const rolleTilnavn = (rolle: Roller) => {
+  switch (rolle) {
+    case Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER:
+      return 'Utvikler';
+    case Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET:
+      return 'Arbeidsgiverrettet';
+    case Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET:
+      return 'Jobbsøkerrettet';
+    case Roller.AD_GRUPPE_MODIA_GENERELL_TILGANG:
+      return 'Modia generell';
+    default:
+      return 'Ukjent rolle';
+  }
+};
 
 const DevSidebar: React.FC = () => {
   const { valgtNavKontor, setValgtNavKontor } = useApplikasjonContext();
@@ -34,80 +49,67 @@ const DevSidebar: React.FC = () => {
 
   if (process.env.NEXT_PUBLIC_PLAYWRIGHT_TEST_MODE) {
     return (
-      <div className='flex h-full w-full items-center justify-center'>
-        <InternalHeader>
-          <InternalHeader.Title as='h1'>
-            Rekrutteringsbistand - Playwright Test
-          </InternalHeader.Title>
-          <Box.New className='ml-4 flex items-center justify-between gap-4'>
-            Test kjøres med bruker: {devBruker} og rolle: {devRolle}
-          </Box.New>
-        </InternalHeader>
-      </div>
+      <Box.New background='raised' className='flex flex-col px-2'>
+        <strong>Playwright Test</strong>
+        <span>Bruker: {devBruker} </span>
+        <span>Rolle: {rolleTilnavn(devRolle)}</span>
+      </Box.New>
     );
   }
 
   return (
-    <div className='flex h-full w-full items-center justify-center'>
-      <InternalHeader>
-        <InternalHeader.Title as='h1'>
-          Rekrutteringsbistand - Developer
-        </InternalHeader.Title>
+    <Box.New background='raised' className='flex flex-col px-2 gap-2'>
+      <strong>Dev:</strong>
 
-        <div className='ml-4 flex items-center justify-between gap-4'>
-          <div className='flex items-center gap-2'>
-            <span>
-              <strong>Bruker:</strong>{' '}
-            </span>
-            <TextField
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  setDevBrukerCookie(e.currentTarget.value);
-                }
-              }}
-              defaultValue={devBruker}
-              size='small'
-              label={'Dev bruker'}
-              hideLabel
-            />
-          </div>
+      <div className='flex items-center gap-2'>
+        <span>
+          <strong>Bruker:</strong>{' '}
+        </span>
+        <TextField
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              setDevBrukerCookie(e.currentTarget.value);
+            }
+          }}
+          defaultValue={devBruker}
+          size='small'
+          label={'Dev bruker'}
+          hideLabel
+        />
+      </div>
 
-          <div className='flex items-center gap-2'>
-            <span>
-              <strong>Rolle: </strong>
-            </span>
-            <Select
-              label='Velg bostedsland'
-              hideLabel
-              size='small'
-              value={devRolle}
-              onChange={(e) => setDevRolleCookie(e.target.value as Roller)}
-            >
-              <option value={Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER}>
-                Utvikler
-              </option>
-              <option
-                value={Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET}
-              >
-                Arbeidsgiverrettet
-              </option>
-              <option
-                value={Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET}
-              >
-                Jobbsøkerrettet
-              </option>
-              <option value={Roller.AD_GRUPPE_MODIA_GENERELL_TILGANG}>
-                Modia generell
-              </option>
-            </Select>
-          </div>
-          <span>
-            <strong>Nav Kontor:</strong> {valgtNavKontor?.navKontorNavn} -{' '}
-            {valgtNavKontor?.navKontor}
-          </span>
-        </div>
-      </InternalHeader>
-    </div>
+      <div className='flex items-center gap-2'>
+        <span>
+          <strong>Rolle: </strong>
+        </span>
+        <Select
+          label='Velg bostedsland'
+          hideLabel
+          size='small'
+          value={devRolle}
+          onChange={(e) => setDevRolleCookie(e.target.value as Roller)}
+        >
+          <option value={Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER}>
+            Utvikler
+          </option>
+          <option
+            value={Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET}
+          >
+            Arbeidsgiverrettet
+          </option>
+          <option value={Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET}>
+            Jobbsøkerrettet
+          </option>
+          <option value={Roller.AD_GRUPPE_MODIA_GENERELL_TILGANG}>
+            Modia generell
+          </option>
+        </Select>
+      </div>
+      <span>
+        <strong>Nav Kontor:</strong> {valgtNavKontor?.navKontorNavn} -{' '}
+        {valgtNavKontor?.navKontor}
+      </span>
+    </Box.New>
   );
 };
 

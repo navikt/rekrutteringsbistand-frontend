@@ -4,26 +4,23 @@ import {
   ResizablePanelGroup,
 } from '../../../components/ui/resizable';
 import { SidebarProvider } from '../../../components/ui/sidebar';
+import { useKandidatNavigeringContext } from '../../providers/KandidatNavigeringContext';
 import HovedInnholdKort from './HovedInnholdKort';
 import HøyreInnholdKort from './HøyreInnholdKort';
 import * as React from 'react';
 
-export interface SplitScreenLayoutProps {
+export interface KandidatSplitScreenLayoutProps {
   children: React.ReactNode;
   sidebar?: React.ReactNode | undefined;
-  lukkSidebar: () => void;
-  nesteSide?: () => void;
-  forrigeSide?: () => void;
 }
 
-const SplitScreenLayout: React.FC<SplitScreenLayoutProps> = ({
+const KandidatSplitScreenLayout: React.FC<KandidatSplitScreenLayoutProps> = ({
   children,
   sidebar,
-  lukkSidebar,
-  nesteSide,
-  forrigeSide,
 }) => {
   const [ekspanderHøyre, setEkspanderHøyre] = React.useState(false);
+  const { nesteKandidat, forrigeKandidat, lukkSidebar } =
+    useKandidatNavigeringContext();
 
   React.useEffect(() => {
     if (sidebar) {
@@ -59,10 +56,10 @@ const SplitScreenLayout: React.FC<SplitScreenLayoutProps> = ({
 
         <ResizablePanel style={{ minWidth: '550px' }}>
           <HøyreInnholdKort
-            className='h-[98vh] overflow-auto min-w-[344px]'
             lukkSidebar={lukkSidebar}
-            nesteSide={nesteSide}
-            forrigeSide={forrigeSide}
+            nesteSide={nesteKandidat}
+            forrigeSide={forrigeKandidat}
+            className='h-[98vh] overflow-auto min-w-[344px]'
             ekspanderHøyre={ekspanderHøyre}
             ekspanderSidebar={() => setEkspanderHøyre(!ekspanderHøyre)}
           >
@@ -74,4 +71,4 @@ const SplitScreenLayout: React.FC<SplitScreenLayoutProps> = ({
   );
 };
 
-export default SplitScreenLayout;
+export default KandidatSplitScreenLayout;

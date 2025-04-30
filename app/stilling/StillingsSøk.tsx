@@ -9,9 +9,9 @@ import { useUseBrukerStandardSøk } from '../api/stilling/standardsok/useBrukers
 import SVGDarkmode from '../components/SVGDarkmode';
 import Sidelaster from '../components/Sidelaster';
 import HovedInnholdKort from '../components/layout/HovedInnholdKort';
+import KandidatSplitScreenLayout from '../components/layout/KandidatSplitScreenLayout';
 import SideLayout from '../components/layout/SideLayout';
 import SideTopBanner from '../components/layout/SideTopBanner';
-import SplitScreenLayout from '../components/layout/SplitScreenLayout';
 import { TilgangskontrollForInnhold } from '../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '../components/tilgangskontroll/roller';
 import VisKandidat from '../kandidat/VisKandidat/VisKandidat';
@@ -83,7 +83,7 @@ const StillingsSøkLayout: React.FC<StillingsSøkProps> = ({
   const { portefølje, setPortefølje } = useStillingsSøkFilter();
   const { track } = useUmami();
 
-  const [visKandidatnr, setVisKandidatnr] = useQueryState('visKandidatnr', {
+  const [visKandidatnr] = useQueryState('visKandidatnr', {
     defaultValue: '',
     clearOnDefault: true,
   });
@@ -115,8 +115,7 @@ const StillingsSøkLayout: React.FC<StillingsSøkProps> = ({
   }
 
   return (
-    <SplitScreenLayout
-      lukkSidebar={() => setVisKandidatnr('')}
+    <KandidatSplitScreenLayout
       sidebar={visKandidatnr && <VisKandidat kandidatnr={visKandidatnr} />}
     >
       <HovedInnholdKort className='w-full'>
@@ -194,7 +193,7 @@ const StillingsSøkLayout: React.FC<StillingsSøkProps> = ({
           </Tabs>
         </SideLayout>
       </HovedInnholdKort>{' '}
-    </SplitScreenLayout>
+    </KandidatSplitScreenLayout>
   );
 };
 

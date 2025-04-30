@@ -1,8 +1,10 @@
 'use client';
 
+import { isLocal } from '../../../util/env';
 import { nyheter } from '../../nyheter';
 import { useApplikasjonContext } from '../../providers/ApplikasjonContext';
 import { useThemeProvider } from '../../providers/ThemeProvider';
+import DevSidebar from '../dev/DevSidebar';
 import useAntallUlesteNyheter from '../header/components/nyheter/useAntallUlesteNyheter';
 import { TilgangskontrollForInnhold } from '../tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '../tilgangskontroll/roller';
@@ -158,6 +160,12 @@ export function AppNavigasjon() {
             <SideLenke key={item.tekst} {...item} />
           ))}
         </SidebarGroup>
+
+        {isLocal && (
+          <SidebarGroup>
+            <DevSidebar />
+          </SidebarGroup>
+        )}
       </SidebarContent>
       <SidebarFooter>
         <SidebarGroup
