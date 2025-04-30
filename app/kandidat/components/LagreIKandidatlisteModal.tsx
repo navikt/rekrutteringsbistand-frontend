@@ -1,12 +1,10 @@
-import { UmamiEvent } from '../../../util/umamiEvents';
-import { leggTilKandidater } from '../../api/kandidat-sok/leggTilKandidat';
 import { useKandidatliste } from '../../api/kandidat/useKandidatliste';
 import { useMineKandidatlister } from '../../api/kandidat/useMineKandidatlister';
 import SWRLaster from '../../components/SWRLaster';
 import { useVisVarsling } from '../../components/varsling/Varsling';
 import { useUmami } from '../../providers/UmamiContext';
 import { useKandidatSøkMarkerteContext } from '../KandidatSøkMarkerteContext';
-import { PersonPlusIcon } from '@navikt/aksel-icons';
+import { lagreKandidaterIKandidatliste } from './LagreIKandidatlisteItem';
 import {
   Button,
   Checkbox,
@@ -21,13 +19,14 @@ import * as React from 'react';
 
 interface LagreIKandidatlisteProps {
   stillingsId?: string;
+  ref: React.RefObject<HTMLDialogElement>;
 }
 
-const LagreIKandidatliste: React.FC<LagreIKandidatlisteProps> = ({
+const LagreIKandidatlisteModal: React.FC<LagreIKandidatlisteProps> = ({
   stillingsId,
+  ref,
 }) => {
   const { track } = useUmami();
-  const ref = React.useRef<HTMLDialogElement>(null);
   const { markerteKandidater, fjernMarkerteKandidater } =
     useKandidatSøkMarkerteContext();
   const [pageNumber, setPageNumber] = React.useState(1);
@@ -46,77 +45,8 @@ const LagreIKandidatliste: React.FC<LagreIKandidatlisteProps> = ({
         : [...list, stillingsId],
     );
 
-  const lagreKandidaterIKandidatliste = async () => {
-    if (markerteKandidater && markerteKandidater.length > 0) {
-      setLaster(true);
-      if (stillingsId) {
-        track(UmamiEvent.Stilling.legg_til_markerte_kandidater, {
-          antallKandidater: markerteKandidater?.length,
-          kilde: 'Finn kandidater',
-        });
-        try {
-          await leggTilKandidater(markerteKandidater, stillingsId);
-          visVarsel({
-            alertType: 'success',
-            innhold: 'Kandidater lagret i kandidatliste',
-          });
-          fjernMarkerteKandidater();
-          ref.current?.close();
-        } catch (error) {
-          logger.error('Feil ved lagring av kandidater i kandidatliste', error);
-          visVarsel({
-            alertType: 'error',
-            innhold: 'Feil ved lagring av kandidater i kandidatliste',
-          });
-        }
-      } else if (selectedRows.length !== 0) {
-        track(UmamiEvent.Stilling.legg_til_markerte_kandidater, {
-          antallKandidater: markerteKandidater?.length,
-          kilde: 'Kandidatsøk',
-          antallStillinger: selectedRows.length,
-        });
-        const promises = selectedRows.map((stillingId) =>
-          leggTilKandidater(markerteKandidater, stillingId),
-        );
-
-        try {
-          await Promise.all(promises);
-          visVarsel({
-            alertType: 'success',
-            innhold: 'Kandidater lagret i kandidatliste',
-          });
-          fjernMarkerteKandidater();
-          ref.current?.close();
-        } catch (error) {
-          logger.error('Feil ved lagring av kandidater i kandidatliste', error);
-          visVarsel({
-            alertType: 'error',
-            innhold: 'Feil ved lagring av kandidater i kandidatliste',
-          });
-        }
-      }
-      kandidatlisteHook?.mutate();
-      setLaster(false);
-    }
-  };
-
   return (
     <div>
-      <Button
-        onClick={() => {
-          if (stillingsId) {
-            lagreKandidaterIKandidatliste();
-          } else {
-            ref.current?.showModal();
-          }
-        }}
-        size='small'
-        variant='primary'
-        icon={<PersonPlusIcon aria-hidden />}
-        disabled={markerteKandidater?.length === 0}
-      >
-        {stillingsId ? 'Legg til markerte kandidater' : 'Lagre i kandidatliste'}
-      </Button>
       <Modal
         width={600}
         ref={ref}
@@ -230,7 +160,20 @@ const LagreIKandidatliste: React.FC<LagreIKandidatlisteProps> = ({
           <Button
             disabled={laster || selectedRows.length === 0}
             type='button'
-            onClick={lagreKandidaterIKandidatliste}
+            onClick={() => {
+              lagreKandidaterIKandidatliste({
+                markerteKandidater: markerteKandidater ?? [],
+                stillingsId,
+                selectedRows,
+                visVarsel,
+                fjernMarkerteKandidater,
+                closeModal: () => ref.current?.close(),
+                setLaster,
+                logger,
+                track,
+                kandidatlisteHook,
+              });
+            }}
           >
             Lagre
           </Button>
@@ -248,4 +191,4 @@ const LagreIKandidatliste: React.FC<LagreIKandidatlisteProps> = ({
   );
 };
 
-export default LagreIKandidatliste;
+export default LagreIKandidatlisteModal;
