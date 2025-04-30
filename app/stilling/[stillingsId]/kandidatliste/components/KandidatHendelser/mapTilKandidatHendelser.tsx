@@ -41,6 +41,13 @@ const utfallsEndringPresentasjon = (
         fargeKode: 'success',
       };
     case KandidatutfallTyper.IKKE_PRESENTERT:
+      if (sendtTilArbeidsgiversKandidatliste === false) {
+        return {
+          tittel: 'CV fjernet fra arbeidsgiver',
+          ikon: <ExclamationmarkTriangleIcon className='text-warning' />,
+          fargeKode: 'error',
+        };
+      }
       return {
         tittel: 'Ikke presentert',
         ikon: <ExclamationmarkTriangleIcon className='text-warning' />,
