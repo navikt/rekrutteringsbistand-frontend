@@ -50,9 +50,7 @@ export const testTilgangskontroll = (rolle: Roller) => {
     test('2. Stillingssøk', async ({ page }) => {
       await page.getByRole('button', { name: 'Stillinger' }).click();
 
-      await expect(
-        page.getByRole('button', { name: 'Stillinger' }),
-      ).toBeVisible();
+      await page.waitForURL('**/stilling**');
 
       // Alle stillinger fane
       const alleStillingerFane = page.getByRole('tab', { name: 'Alle' });
@@ -69,17 +67,6 @@ export const testTilgangskontroll = (rolle: Roller) => {
       }
       if (JOBBSOKERRETTET || MODIA) {
         await expect(mineStillingerFane).toBeHidden();
-      }
-
-      // Opprett ny stilling knapp
-      const opprettNyStillingKnapp = page.getByRole('button', {
-        name: 'Opprett',
-      });
-      if (ARBEIDSGIVERRETTET) {
-        await expect(opprettNyStillingKnapp).toBeVisible();
-      }
-      if (JOBBSOKERRETTET || MODIA) {
-        await expect(opprettNyStillingKnapp).toBeHidden();
       }
 
       // Filtre

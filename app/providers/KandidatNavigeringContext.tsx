@@ -32,7 +32,6 @@ export const KandidatNavigeringProvider: React.FC<{
     getSessionStorage('kandidatNavigering') || [],
   );
 
-  console.log('🎺 kandidatNavigering', kandidatNavigering);
   const [kandidatNr, settKandidatnr] = useQueryState('visKandidatnr', {
     defaultValue: '',
     clearOnDefault: true,

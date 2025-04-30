@@ -111,6 +111,14 @@ export const KandidatlisteContextProvider: React.FC<
   );
 };
 
+export const useNullableKandidatlisteContext = () => {
+  const context = React.useContext(KandidatListeContext);
+  if (context === undefined) {
+    return null;
+  }
+  return context;
+};
+
 export const useKandidatlisteContext = () => {
   const context = React.useContext(KandidatListeContext);
   if (context === undefined) {

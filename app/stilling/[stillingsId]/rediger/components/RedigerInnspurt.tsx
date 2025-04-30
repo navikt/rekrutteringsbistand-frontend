@@ -65,7 +65,6 @@ export const RedigerInnspurt: React.FC<{
       },
     };
 
-    console.log(publiserStillingsData);
     track(UmamiEvent.Stilling.ny_stilling_info, {
       yrkestittel: publiserStillingsData.stilling.categoryList?.[0]?.name,
       sektor: publiserStillingsData.stilling.properties?.sector,
