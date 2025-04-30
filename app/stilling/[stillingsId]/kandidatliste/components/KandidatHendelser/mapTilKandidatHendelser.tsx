@@ -21,6 +21,7 @@ export enum TilstandPåForespørsel {
   HarVarslet = 'HAR_VARSLET',
   KanIkkeVarsle = 'KAN_IKKE_VARSLE',
   HarSvart = 'HAR_SVART',
+  IKKE_SENDT = 'IKKE_SENDT',
   Avbrutt = 'AVBRUTT',
 }
 
@@ -80,6 +81,7 @@ const cvHendelsePresentasjon = (
 } => {
   switch (forespørsel.tilstand) {
     case TilstandPåForespørsel.PrøverVarsling:
+    case TilstandPåForespørsel.IKKE_SENDT:
       return {
         tittel: 'Spurt om deling av CV',
         tekst: 'Prøver varsling',
@@ -105,6 +107,13 @@ const cvHendelsePresentasjon = (
       return {
         tittel: 'Deling av CV feilet',
         tekst: 'Kan ikke opprette forespørsel',
+        ikon: <ExclamationmarkTriangleIcon className='text-danger' />,
+        fargeKode: 'warning',
+      };
+    case TilstandPåForespørsel.Avbrutt:
+      return {
+        tittel: 'Deling av CV feilet',
+        tekst: 'Avbrutt',
         ikon: <ExclamationmarkTriangleIcon className='text-danger' />,
         fargeKode: 'warning',
       };

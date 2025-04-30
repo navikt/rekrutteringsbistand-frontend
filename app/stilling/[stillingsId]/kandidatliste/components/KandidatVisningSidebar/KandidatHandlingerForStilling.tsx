@@ -6,6 +6,7 @@ import { useKandidatlisteContext } from '../../KandidatlisteContext';
 import DelMedArbeidsgiver from '../DelMedArbeidsgiver/DelMedArbeidsgiver';
 import DelMedKandidatModal from '../DelMedKandidat/DelMedKandidatModal';
 import EndreArkivertStatusKnapp from '../EndreArkivertStatusModal';
+import FjernDelingMedArbeidsgiver from '../FjernDelingMedArbeidsgiver';
 import FjernFåttJobbenKnapp from '../FjernFåttJobbenKnapp';
 import KandidatHendelseTag, { SlettetTag } from '../KandidatHendelseTag';
 import KandidatHendelser from '../KandidatHendelser/KandidatHendelser';
@@ -116,6 +117,11 @@ const KandidatHandlingerForStilling: React.FC<
                 />
               )}
             </div>
+            <FjernDelingMedArbeidsgiver
+              kandidatlisteId={kandidatlisteId}
+              kandidatnummer={kandidat.kandidatnr}
+              navKontor={valgtNavKontor?.navKontor ?? null}
+            />
             <div className='flex flex-1 justify-end'>
               <EndreArkivertStatusKnapp
                 tittel={'Slett'}
