@@ -5,7 +5,6 @@ import Rekrutteringstreff from '../../public/ikoner/rekrutteringstreff.svg';
 import SVGDarkmode from '../components/SVGDarkmode';
 import SideLayout from '../components/layout/SideLayout';
 import SideTopBanner from '../components/layout/SideTopBanner';
-import OpprettRekrutteringstreffKnapp from './components/OpprettRekrutteringstreffKnapp';
 import { RekrutteringstreffFilter } from './components/RekrutteringstreffFilter';
 import * as React from 'react';
 
@@ -30,7 +29,6 @@ const RekrutteringstreffSøkLayout: React.FC<
               />
             }
           />
-          <OpprettRekrutteringstreffKnapp />
         </div>
       }
     >
