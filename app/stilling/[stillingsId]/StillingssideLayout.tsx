@@ -1,8 +1,8 @@
 'use client';
 
-import HovedInnholdKort from '../../components/layout/HovedInnholdKort';
 import SplitScreenLayout from '../../components/layout/KandidatSplitScreenLayout';
 import SideLayout from '../../components/layout/SideLayout';
+import SideNavigasjon from '../../components/layout/SideNavigasjon';
 import VisKandidat from '../../kandidat/VisKandidat/VisKandidat';
 import StillingHeader from './StillingHeader';
 import { useStillingsContext } from './StillingsContext';
@@ -32,24 +32,25 @@ const StillingSideLayout: React.FC<StillingSideLayoutProps> = ({
     <SplitScreenLayout
       sidebar={visKandidatnr && <VisKandidat kandidatnr={visKandidatnr} />}
     >
-      <HovedInnholdKort>
-        <SideLayout banner={<StillingHeader />}>
-          {ugyldigStilling ? (
-            <Alert variant='error'>
-              <Heading spacing size='small' level='3'>
-                Ugyldig stilling
-              </Heading>
-              <p>
-                Denne stillingen er ikke gyldig da det er en intern stilling som
-                mangler organisasjonsnummer.
-              </p>
-              <p> Stillingen er derfor ikke tilgjengelig for rekruttering.</p>
-            </Alert>
-          ) : (
-            children
-          )}
-        </SideLayout>
-      </HovedInnholdKort>
+      <SideLayout
+        banner={<StillingHeader />}
+        navigasjon={<SideNavigasjon tilbakeurl='/stilling' />}
+      >
+        {ugyldigStilling ? (
+          <Alert variant='error'>
+            <Heading spacing size='small' level='3'>
+              Ugyldig stilling
+            </Heading>
+            <p>
+              Denne stillingen er ikke gyldig da det er en intern stilling som
+              mangler organisasjonsnummer.
+            </p>
+            <p> Stillingen er derfor ikke tilgjengelig for rekruttering.</p>
+          </Alert>
+        ) : (
+          children
+        )}
+      </SideLayout>
     </SplitScreenLayout>
   );
 };

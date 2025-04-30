@@ -45,7 +45,7 @@ import { rekrutteringstreffOversiktMirage } from '@/app/api/rekrutteringstreff/u
 import { createServer, Model } from 'miragejs';
 
 export function makeServer({ environment = 'test' } = {}) {
-  let server = createServer({
+  const server = createServer({
     environment,
 
     models: {

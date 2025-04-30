@@ -1,4 +1,3 @@
-import TilbakeKnapp from './TilbakeKnapp';
 import { Heading } from '@navikt/ds-react';
 import { ReactNode } from 'react';
 
@@ -16,21 +15,19 @@ export type ISideTopBanner = {
 const SideTopBanner = ({
   tittel,
   ikon,
-  tilbakeKnapp,
   knappIBanner,
   headerInnhold,
   chip,
 }: ISideTopBanner) => {
   return (
-    <div className='@container/topBanner my-4'>
-      {tilbakeKnapp && <TilbakeKnapp />}
+    <div className='@container/topBanner pt-[32px] pb-10'>
       <div className='flex items-center justify-between flex-col'>
         <div className='flex w-full items-center justify-start gap-8'>
-          {ikon}
+          {ikon && <div className='w-[64px] h-[64px]'>{ikon}</div>}
           <div className='w-full'>
             {tittel && (
               <div className='flex justify-between @2xl/topBanner:flex-row flex-col'>
-                <Heading className='mr-auto ml-0' level='2' size='large'>
+                <Heading className='mr-auto ml-0' level='2' size='xlarge'>
                   {tittel}
                 </Heading>
                 <div className='flex-end flex'>{chip}</div>
