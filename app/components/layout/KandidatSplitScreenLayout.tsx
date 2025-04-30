@@ -19,8 +19,13 @@ const KandidatSplitScreenLayout: React.FC<KandidatSplitScreenLayoutProps> = ({
   sidebar,
 }) => {
   const [ekspanderHøyre, setEkspanderHøyre] = React.useState(false);
-  const { nesteKandidat, forrigeKandidat, lukkSidebar } =
-    useKandidatNavigeringContext();
+  const {
+    nesteKandidat,
+    forrigeKandidat,
+    lukkSidebar,
+    harNesteKandidat,
+    harForrigeKandidat,
+  } = useKandidatNavigeringContext();
 
   React.useEffect(() => {
     if (sidebar) {
@@ -57,8 +62,8 @@ const KandidatSplitScreenLayout: React.FC<KandidatSplitScreenLayoutProps> = ({
         <ResizablePanel style={{ minWidth: '550px' }}>
           <HøyreInnholdKort
             lukkSidebar={lukkSidebar}
-            nesteSide={nesteKandidat}
-            forrigeSide={forrigeKandidat}
+            nesteSide={harNesteKandidat ? nesteKandidat : null}
+            forrigeSide={harForrigeKandidat ? forrigeKandidat : null}
             className='h-[98vh] overflow-auto min-w-[344px]'
             ekspanderHøyre={ekspanderHøyre}
             ekspanderSidebar={() => setEkspanderHøyre(!ekspanderHøyre)}

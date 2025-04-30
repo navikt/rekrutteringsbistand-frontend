@@ -1,3 +1,4 @@
+import { useKandidatNavigeringContext } from '../../../providers/KandidatNavigeringContext';
 import KandidatListeKort from './components/Kandidatkort/KandidatlisteKort';
 import {
   KandidatlisteSortering,
@@ -16,6 +17,7 @@ export const KANDIDATLISTE_COLUMN_LAYOUT =
 const FiltrertKandidatListeVisning: React.FC = () => {
   const filtrerteKandidater = useFiltrerteKandidater();
   const { setSortering, sortering } = useKandidatlisteFilterContext();
+  const kandidatNavigering = useKandidatNavigeringContext();
 
   const sortIcon = (asc: boolean, desc: boolean) => {
     if (asc) {
@@ -26,6 +28,14 @@ const FiltrertKandidatListeVisning: React.FC = () => {
     }
     return null;
   };
+
+  if (filtrerteKandidater?.kandidater) {
+    kandidatNavigering.setKandidatNavigering(
+      filtrerteKandidater.kandidater.map((kandidat) => kandidat.kandidatnr),
+    );
+  } else {
+    kandidatNavigering.setKandidatNavigering([]);
+  }
 
   return (
     <div className='mt-6'>

@@ -13,8 +13,8 @@ export interface HøyreInnholdKortProps {
   children?: React.ReactNode | undefined;
   className?: string;
   lukkSidebar: () => void;
-  nesteSide: () => Promise<URLSearchParams> | null;
-  forrigeSide: () => Promise<URLSearchParams> | null;
+  nesteSide: (() => void) | null;
+  forrigeSide: (() => void) | null;
   ekspanderSidebar: () => void;
   ekspanderHøyre?: boolean;
 }
@@ -60,7 +60,7 @@ const HøyreInnholdKort: React.FC<HøyreInnholdKortProps> = ({
               variant='tertiary'
               size='small'
               disabled={!forrigeSide}
-              onClick={forrigeSide}
+              onClick={() => (forrigeSide ? forrigeSide() : null)}
               icon={<ChevronUpIcon />}
             />
           </div>
@@ -69,7 +69,7 @@ const HøyreInnholdKort: React.FC<HøyreInnholdKortProps> = ({
               size='small'
               variant='tertiary'
               disabled={!nesteSide}
-              onClick={nesteSide}
+              onClick={() => (nesteSide ? nesteSide() : null)}
               icon={<ChevronDownIcon />}
             />
           </div>

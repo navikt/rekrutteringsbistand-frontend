@@ -16,9 +16,11 @@ import React, {
 interface KandidatNavigeringContextProps {
   kandidatNavigering: string[];
   setKandidatNavigering: (navigering: string[]) => void;
-  nesteKandidat: () => Promise<URLSearchParams> | null;
-  forrigeKandidat: () => Promise<URLSearchParams> | null;
+  nesteKandidat: () => void;
+  forrigeKandidat: () => void;
   lukkSidebar: () => void;
+  harNesteKandidat: boolean;
+  harForrigeKandidat: boolean;
 }
 
 const KandidatNavigeringContext = createContext<
@@ -31,6 +33,8 @@ export const KandidatNavigeringProvider: React.FC<{
   const [kandidatNavigering, setKandidatNavigering] = useState<string[]>(
     getSessionStorage('kandidatNavigering') || [],
   );
+  const [harNesteKandidat, setHarNesteKandidat] = useState<boolean>(false);
+  const [harForrigeKandidat, setHarForrigeKandidat] = useState<boolean>(false);
 
   const [kandidatNr, settKandidatnr] = useQueryState('visKandidatnr', {
     defaultValue: '',
@@ -38,6 +42,12 @@ export const KandidatNavigeringProvider: React.FC<{
   });
 
   const prevNavigeringRef = useRef<string[]>(kandidatNavigering);
+
+  useEffect(() => {
+    const index = kandidatNavigering.indexOf(kandidatNr);
+    setHarNesteKandidat(index !== -1 && index < kandidatNavigering.length - 1);
+    setHarForrigeKandidat(index > 0);
+  }, [kandidatNr, kandidatNavigering]);
 
   useEffect(() => {
     setSessionStorage('kandidatNavigering', kandidatNavigering);
@@ -57,21 +67,19 @@ export const KandidatNavigeringProvider: React.FC<{
   const nesteKandidat = () => {
     const index = kandidatNavigering.indexOf(kandidatNr);
     if (index !== -1 && index < kandidatNavigering.length - 1) {
-      return settKandidatnr(kandidatNavigering[index + 1]);
+      settKandidatnr(kandidatNavigering[index + 1]);
     } else if (index === -1 && kandidatNavigering.length > 0) {
-      return settKandidatnr(kandidatNavigering[0]);
+      settKandidatnr(kandidatNavigering[0]);
     }
-    return null;
   };
 
   const forrigeKandidat = () => {
     const index = kandidatNavigering.indexOf(kandidatNr);
     if (index > 0) {
-      return settKandidatnr(kandidatNavigering[index - 1]);
+      settKandidatnr(kandidatNavigering[index - 1]);
     } else if (index === -1 && kandidatNavigering.length > 0) {
-      return settKandidatnr(kandidatNavigering[0]);
+      settKandidatnr(kandidatNavigering[0]);
     }
-    return null;
   };
 
   const lukkSidebar = () => {
@@ -87,6 +95,8 @@ export const KandidatNavigeringProvider: React.FC<{
         nesteKandidat,
         forrigeKandidat,
         lukkSidebar,
+        harNesteKandidat,
+        harForrigeKandidat,
       }}
     >
       {children}
