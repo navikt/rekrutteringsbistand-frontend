@@ -3,11 +3,12 @@
 import {
   SuggestType,
   useUseSugestions,
-} from '../../../api/kandidat-sok/useSugestions';
+} from '../../api/kandidat-sok/useSugestions';
+import AlleFilterKomponent from '../../components/AlleFilterKomponent';
 import { Search, UNSAFE_Combobox } from '@navikt/ds-react';
 import * as React from 'react';
 
-export const RekrutteringstreffSøkSidebar: React.FC = () => {
+export const RekrutteringstreffFilter: React.FC = () => {
   const [fritekstSøkTekst, setFritekstSøkTekst] = React.useState('');
 
   const [kompetanse, setKompetanse] = React.useState<string[]>([]);
@@ -43,36 +44,39 @@ export const RekrutteringstreffSøkSidebar: React.FC = () => {
   const yrkeHook = useUseSugestions(yrkeSøkeTekst, SuggestType.ØnsketYrke);
 
   return (
-    <div className='grid gap-4'>
-      <Search
-        hideLabel={true}
-        label='Søk i stillinger'
-        placeholder='Søk i stillinger'
-        variant='primary'
-        value={fritekstSøkTekst}
-        onChange={(e) => setFritekstSøkTekst(e)}
-        // onSearchClick={(e) => console.log(e)}
-      />
+    <div className='flex mb-4'>
+      <div>
+        <Search
+          hideLabel={true}
+          label='Søk i rekrutteringstreff'
+          placeholder='Søk i rekrutteringstreff'
+          variant='primary'
+          value={fritekstSøkTekst}
+          onChange={(e) => setFritekstSøkTekst(e)}
+          // onSearchClick={(e) => console.log(e)}
+        />
+      </div>
+      <AlleFilterKomponent>
+        <UNSAFE_Combobox
+          isLoading={kompetanseHook.isLoading}
+          selectedOptions={kompetanse}
+          label='Kompetanse'
+          options={kompetanseHook?.data ?? []}
+          isMultiSelect
+          onToggleSelected={onKompetanseSelected}
+          onChange={(val) => setKompetanseSøkeTekst(val)}
+        />
 
-      <UNSAFE_Combobox
-        isLoading={kompetanseHook.isLoading}
-        selectedOptions={kompetanse}
-        label='Kompetanse'
-        options={kompetanseHook?.data ?? []}
-        isMultiSelect
-        onToggleSelected={onKompetanseSelected}
-        onChange={(val) => setKompetanseSøkeTekst(val)}
-      />
-
-      <UNSAFE_Combobox
-        isLoading={yrkeHook.isLoading}
-        selectedOptions={yrke}
-        label='Yrke'
-        options={yrkeHook?.data ?? []}
-        isMultiSelect
-        onToggleSelected={onYrkeSelected}
-        onChange={(val) => setYrkeSøkeTekst(val)}
-      />
+        <UNSAFE_Combobox
+          isLoading={yrkeHook.isLoading}
+          selectedOptions={yrke}
+          label='Yrke'
+          options={yrkeHook?.data ?? []}
+          isMultiSelect
+          onToggleSelected={onYrkeSelected}
+          onChange={(val) => setYrkeSøkeTekst(val)}
+        />
+      </AlleFilterKomponent>
     </div>
   );
 };

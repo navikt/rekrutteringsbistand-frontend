@@ -6,7 +6,7 @@ import SVGDarkmode from '../components/SVGDarkmode';
 import SideLayout from '../components/layout/SideLayout';
 import SideTopBanner from '../components/layout/SideTopBanner';
 import OpprettRekrutteringstreffKnapp from './components/OpprettRekrutteringstreffKnapp';
-import { RekrutteringstreffSøkSidebar } from './components/sidebar/RekrutteringstreffSøkSidebar';
+import { RekrutteringstreffFilter } from './components/RekrutteringstreffFilter';
 import * as React from 'react';
 
 export interface RekrutteringstreffSøkLayoutProps {
@@ -34,7 +34,7 @@ const RekrutteringstreffSøkLayout: React.FC<
         </div>
       }
     >
-      <RekrutteringstreffSøkSidebar />
+      <RekrutteringstreffFilter />
       {children}
     </SideLayout>
   );

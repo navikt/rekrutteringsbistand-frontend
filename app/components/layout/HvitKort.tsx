@@ -6,7 +6,7 @@ export interface HvitKortProps {
   className?: string;
 }
 
-const HvitKort: React.FC<HvitKortProps> = ({ children, className }) => {
+const HvitKort: React.FC<HvitKortProps> = ({ children, className = '' }) => {
   return (
     <Box.New
       borderRadius='xlarge'
