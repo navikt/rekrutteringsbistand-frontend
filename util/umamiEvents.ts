@@ -64,6 +64,7 @@ const Kandidat = lagEventPrefix(UmamiDomene.Kandidat, {
 const Sidebar = lagEventPrefix(UmamiDomene.Sidebar, {
   opprettet_stilling: 'Opprettet stilling',
   opprettet_etterregistrering: 'Opprettet etterregistrering',
+  opprettet_rekrutteringstreff: 'Opprettet rekrutteringstreff',
 });
 
 const Etterregistrering = lagEventPrefix(UmamiDomene.Etterregistrering, {
