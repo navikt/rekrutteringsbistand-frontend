@@ -26,6 +26,8 @@ export const kandidatSokSchema = z.object({
   antallTotalt: z.number(),
 });
 
+export type KandidatsokKandidat = z.infer<typeof KandidatDataSchema>;
+
 const kandidatSokEndepunkt = (
   type: KandidatSøkPortefølje | '*',
   side: number = 1,

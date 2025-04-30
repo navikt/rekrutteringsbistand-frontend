@@ -134,6 +134,7 @@ pnpm format
 
 # Lint sjekk
 pnpm lint
+
 ```
 
 ## 📝 Lisens
