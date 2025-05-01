@@ -5,7 +5,8 @@ import { nyheter } from '../../nyheter';
 import { useApplikasjonContext } from '../../providers/ApplikasjonContext';
 import { useThemeProvider } from '../../providers/ThemeProvider';
 import DevSidebar from '../dev/DevSidebar';
-import useAntallUlesteNyheter from '../header/components/nyheter/useAntallUlesteNyheter';
+import Nyheter from '../nyheter/Nyheter';
+import useAntallUlesteNyheter from '../nyheter/useAntallUlesteNyheter';
 import { TilgangskontrollForInnhold } from '../tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '../tilgangskontroll/roller';
 import OpprettKnapp from './components/OpprettKnapp';
@@ -22,7 +23,6 @@ import {
 import {
   BriefcaseIcon,
   HouseIcon,
-  MegaphoneIcon,
   MenuGridIcon,
   MoonIcon,
   PersonTallShortIcon,
@@ -188,13 +188,9 @@ export function AppNavigasjon() {
               tekst={'Mørk modus'}
             />
           )}
+
           <div className='flex'>
-            <SideHandling
-              ikon={<MegaphoneIcon />}
-              kreverRoller={null}
-              onClick={() => {}}
-              tekst='Nyheter'
-            />
+            <Nyheter />
             <div
               className={`${antallUlesteNyheter > 0 ? '  top-1 right-0 h-3 w-3 rounded-full bg-[#0067c5]' : ''}`}
             />

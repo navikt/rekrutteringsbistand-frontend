@@ -1,5 +1,5 @@
-import { NyhetDTO } from '../../../../nyheter';
-import { formaterNorskDato } from '../../../util';
+import { NyhetDTO } from '../../nyheter';
+import { formaterNorskDato } from '../util';
 import { Detail, Heading } from '@navikt/ds-react';
 import { FunctionComponent } from 'react';
 

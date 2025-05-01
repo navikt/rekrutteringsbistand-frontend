@@ -1,4 +1,4 @@
-import { NyhetDTO } from '../../../../nyheter';
+import { NyhetDTO } from '../../nyheter';
 import { logger } from '@navikt/next-logger';
 import { useEffect, useState } from 'react';
 

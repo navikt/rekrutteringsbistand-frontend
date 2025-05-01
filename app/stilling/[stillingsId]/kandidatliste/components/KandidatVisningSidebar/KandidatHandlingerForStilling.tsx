@@ -56,7 +56,7 @@ const KandidatHandlingerForStilling: React.FC<
     } catch (error) {
       logger.error(error);
       // setFeilDialog(
-      //   error instanceof Error ? error.message : 'En ukjent feil oppstod',
+      //   error ivgnstanceof Error ? error.message : 'En ukjent feil oppstod',
       // );
     }
     setLoading(false);
