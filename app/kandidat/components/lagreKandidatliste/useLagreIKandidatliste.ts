@@ -17,18 +17,14 @@ export const useLagreKandidaterIKandidatliste = (stillingsId?: string) => {
   const { markerteKandidater, fjernMarkerteKandidater } =
     useKandidatSøkMarkerteContext();
 
-  return async ({
-    selectedRows,
-    closeModal,
-    setLaster,
-  }: {
+  return async (modalparametere?: {
     selectedRows: string[];
     closeModal: () => void;
     setLaster: (val: boolean) => void;
   }) => {
     if (!markerteKandidater || markerteKandidater.length === 0) return;
 
-    setLaster(true);
+    modalparametere?.setLaster(true);
     if (stillingsId) {
       track(UmamiEvent.Stilling.legg_til_markerte_kandidater, {
         antallKandidater: markerteKandidater?.length,
@@ -41,7 +37,7 @@ export const useLagreKandidaterIKandidatliste = (stillingsId?: string) => {
           innhold: 'Kandidater lagret i kandidatliste',
         });
         fjernMarkerteKandidater();
-        closeModal();
+        modalparametere?.closeModal();
       } catch (error) {
         logger.error('Feil ved lagring av kandidater i kandidatliste', error);
         visVarsel({
@@ -49,13 +45,15 @@ export const useLagreKandidaterIKandidatliste = (stillingsId?: string) => {
           innhold: 'Feil ved lagring av kandidater i kandidatliste',
         });
       }
-    } else if (selectedRows.length !== 0) {
+    } else if (modalparametere && modalparametere.selectedRows.length !== 0) {
       track(UmamiEvent.Stilling.legg_til_markerte_kandidater, {
         antallKandidater: markerteKandidater?.length,
         kilde: 'Kandidatsøk',
-        antallStillinger: selectedRows.length,
+        antallStillinger: modalparametere
+          ? modalparametere.selectedRows.length
+          : 1,
       });
-      const promises = selectedRows.map((stillingId) =>
+      const promises = modalparametere.selectedRows.map((stillingId) =>
         leggTilKandidater(markerteKandidater, stillingId),
       );
       try {
@@ -65,7 +63,7 @@ export const useLagreKandidaterIKandidatliste = (stillingsId?: string) => {
           innhold: 'Kandidater lagret i kandidatliste',
         });
         fjernMarkerteKandidater();
-        closeModal();
+        modalparametere.closeModal();
       } catch (error) {
         logger.error('Feil ved lagring av kandidater i kandidatliste', error);
         visVarsel({
@@ -75,6 +73,6 @@ export const useLagreKandidaterIKandidatliste = (stillingsId?: string) => {
       }
     }
     kandidatlisteHook?.mutate();
-    setLaster(false);
+    modalparametere?.setLaster(false);
   };
 };

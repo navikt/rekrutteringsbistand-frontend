@@ -27,11 +27,7 @@ const LagreIKandidatlisteButton: React.FC<LagreIKandidatlisteButtonProps> = ({
         variant='tertiary'
         onClick={() => {
           if (stillingsId) {
-            lagreIKandidatliste({
-              selectedRows: [],
-              closeModal: () => modalRef.current?.close(),
-              setLaster: () => {},
-            });
+            lagreIKandidatliste(undefined);
           } else {
             modalRef.current?.showModal();
           }

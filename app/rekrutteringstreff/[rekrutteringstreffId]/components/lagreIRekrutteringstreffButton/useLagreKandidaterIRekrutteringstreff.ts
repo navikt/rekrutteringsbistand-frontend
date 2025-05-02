@@ -8,26 +8,21 @@ import { useKandidatSøkMarkerteContext } from '@/app/kandidat/KandidatSøkMarke
 import { logger } from '@navikt/next-logger';
 
 export const useLagreKandidaterIRekrutteringstreff = (
+  kandidatsokKandidater: KandidatsokKandidat[],
   rekrutteringstreffId?: string,
 ) => {
   const visVarsel = useVisVarsling();
   const { markerteKandidater, fjernMarkerteKandidater } =
     useKandidatSøkMarkerteContext();
 
-  return async ({
-    kandidatsokKandidater,
-    selectedRows,
-    closeModal,
-    setLaster,
-  }: {
-    kandidatsokKandidater: KandidatsokKandidat[];
+  return async (modalparametere?: {
     selectedRows: string[];
     closeModal: () => void;
     setLaster: (val: boolean) => void;
   }) => {
     if (!markerteKandidater || markerteKandidater.length === 0) return;
 
-    setLaster(true);
+    modalparametere?.setLaster(true);
     const feil: string[] = [];
     const dto: LeggTilNyJobbsøkereDTO = markerteKandidater
       .map((kandidatnummer) => {
@@ -58,16 +53,18 @@ export const useLagreKandidaterIRekrutteringstreff = (
     try {
       if (rekrutteringstreffId) {
         await leggtilNyeJobbsøkere(dto, rekrutteringstreffId);
-      } else if (selectedRows.length !== 0) {
+      } else if (modalparametere && modalparametere.selectedRows.length !== 0) {
         await Promise.all(
-          selectedRows.map((id) => leggtilNyeJobbsøkere(dto, id)),
+          modalparametere.selectedRows.map((id) =>
+            leggtilNyeJobbsøkere(dto, id),
+          ),
         );
       } else {
         visVarsel({
           alertType: 'info',
           innhold: 'Velg minst ett rekrutteringstreff',
         });
-        setLaster(false);
+        modalparametere?.setLaster(false);
         return;
       }
       visVarsel({
@@ -75,7 +72,7 @@ export const useLagreKandidaterIRekrutteringstreff = (
         innhold: 'Kandidater lagret i rekrutteringstreff',
       });
       fjernMarkerteKandidater();
-      closeModal();
+      modalparametere?.closeModal();
     } catch (error) {
       logger.error(
         'Feil ved lagring av kandidater i rekrutteringstreff',
@@ -86,6 +83,6 @@ export const useLagreKandidaterIRekrutteringstreff = (
         innhold: 'Feil ved lagring av kandidater i rekrutteringstreff',
       });
     }
-    setLaster(false);
+    modalparametere?.setLaster(false);
   };
 };

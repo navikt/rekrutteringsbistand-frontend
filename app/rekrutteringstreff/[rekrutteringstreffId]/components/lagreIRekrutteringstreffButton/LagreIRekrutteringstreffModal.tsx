@@ -15,8 +15,10 @@ interface LagreIRekrutteringstreffModalProps {
 const LagreIRekrutteringstreffModal: React.FC<
   LagreIRekrutteringstreffModalProps
 > = ({ rekrutteringstreffId, kandidatsokKandidater, modalRef }) => {
-  const lagreKandidater =
-    useLagreKandidaterIRekrutteringstreff(rekrutteringstreffId);
+  const lagreKandidater = useLagreKandidaterIRekrutteringstreff(
+    kandidatsokKandidater,
+    rekrutteringstreffId,
+  );
   const rekrutteringstreffOversiktHook = useRekrutteringstreffOversikt();
 
   //const { track } = useUmami();
@@ -150,7 +152,6 @@ const LagreIRekrutteringstreffModal: React.FC<
             type='button'
             onClick={() =>
               lagreKandidater({
-                kandidatsokKandidater,
                 selectedRows,
                 closeModal: () => modalRef.current?.close(),
                 setLaster,
