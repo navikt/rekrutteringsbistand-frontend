@@ -50,17 +50,6 @@ const StillingsKort: React.FC<IStillingsKort> = ({
   const erFormidling =
     stillingData.stillingsinfo?.stillingskategori === 'FORMIDLING';
 
-  // function parseNorskDato(dateString: string | undefined | null) {
-  //   if (!dateString) return null;
-
-  //   try {
-  //     const parsedDate = new Date(dateString);
-  //     return isNaN(parsedDate.getTime()) ? null : parsedDate;
-  //   } catch {
-  //     return null;
-  //   }
-  // }
-
   const stillingUrl = `${erFormidling ? '/etterregistrering/' : '/stilling/'}${stillingData.stilling.uuid}`;
 
   const leggTilKandidat = async (kandidatId: string) => {
