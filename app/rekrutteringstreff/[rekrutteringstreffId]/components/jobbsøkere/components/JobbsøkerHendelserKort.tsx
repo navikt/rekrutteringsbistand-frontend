@@ -116,13 +116,11 @@ const JobbsøkerHendelserKort: React.FC<JobbsøkerHendelserKortProps> = ({
                         {hendelse.fornavn &&
                           hendelse.etternavn &&
                           hendelse.kandidatnummer && (
-                            <BodyShort>
-                              <NavnLenke
-                                fornavn={hendelse.fornavn}
-                                etternavn={hendelse.etternavn}
-                                kandidatnummer={hendelse.kandidatnummer}
-                              />
-                            </BodyShort>
+                            <NavnLenke
+                              fornavn={hendelse.fornavn}
+                              etternavn={hendelse.etternavn}
+                              kandidatnummer={hendelse.kandidatnummer}
+                            />
                           )}
                         {hendelse.fødselsnummer && (
                           <BodyShort>{hendelse.fødselsnummer}</BodyShort>
