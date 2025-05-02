@@ -4,6 +4,7 @@ import { useKandidatliste } from '../../api/kandidat/useKandidatliste';
 import { AlertType, useVisVarsling } from '../../components/varsling/Varsling';
 import { useUmami } from '../../providers/UmamiContext';
 import { useKandidatSøkMarkerteContext } from '../KandidatSøkMarkerteContext';
+import LagreIKandidatlisteModal from './LagreIKandidatlisteModal';
 import { PersonPlusIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import { logger } from '@navikt/next-logger';
@@ -11,13 +12,13 @@ import * as React from 'react';
 
 interface LagreIKandidatlisteButtonProps {
   stillingsId?: string;
-  ref: React.RefObject<HTMLDialogElement>;
 }
 
 const LagreIKandidatlisteButton: React.FC<LagreIKandidatlisteButtonProps> = ({
   stillingsId,
-  ref,
 }) => {
+  const modalRef = React.useRef<HTMLDialogElement>(null!);
+
   const { track } = useUmami();
   const { markerteKandidater, fjernMarkerteKandidater } =
     useKandidatSøkMarkerteContext();
@@ -37,14 +38,14 @@ const LagreIKandidatlisteButton: React.FC<LagreIKandidatlisteButtonProps> = ({
               selectedRows: [],
               visVarsel,
               fjernMarkerteKandidater,
-              closeModal: () => ref.current?.close(),
+              closeModal: () => modalRef.current?.close(),
               setLaster: () => {},
               logger,
               track,
               kandidatlisteHook,
             });
           } else {
-            ref.current?.showModal();
+            modalRef.current?.showModal();
           }
         }}
         icon={<PersonPlusIcon aria-hidden />}
@@ -52,6 +53,7 @@ const LagreIKandidatlisteButton: React.FC<LagreIKandidatlisteButtonProps> = ({
       >
         {stillingsId ? 'Legg til markerte kandidater' : 'Lagre i kandidatliste'}
       </Button>
+      <LagreIKandidatlisteModal stillingsId={stillingsId} ref={modalRef} />
     </div>
   );
 };

@@ -3,6 +3,7 @@ import {
   useVisVarsling,
 } from '../../../components/varsling/Varsling';
 import { useKandidatSøkMarkerteContext } from '../../../kandidat/KandidatSøkMarkerteContext';
+import LagreIRekrutteringstreffModal from './LagreIRekrutteringstreffModal';
 import { KandidatsokKandidat } from '@/app/api/kandidat-sok/useKandidatsøk';
 import {
   leggtilNyeJobbsøkere,
@@ -16,12 +17,12 @@ import * as React from 'react';
 interface LagreIRekrutteringstreffButtonProps {
   rekrutteringstreffId?: string;
   kandidatsokKandidater: KandidatsokKandidat[];
-  ref: React.RefObject<HTMLDialogElement>;
 }
 
 const LagreIRekrutteringstreffButton: React.FC<
   LagreIRekrutteringstreffButtonProps
-> = ({ rekrutteringstreffId, kandidatsokKandidater, ref }) => {
+> = ({ rekrutteringstreffId, kandidatsokKandidater }) => {
+  const modalRef = React.useRef<HTMLDialogElement>(null!);
   //const { track } = useUmami();
 
   const { markerteKandidater, fjernMarkerteKandidater } =
@@ -34,37 +35,44 @@ const LagreIRekrutteringstreffButton: React.FC<
   const visVarsel = useVisVarsling();
 
   return (
-    <Button
-      variant='tertiary'
-      onClick={() => {
-        console.log(
-          'klikker i rekrutteringstreff med id',
-          rekrutteringstreffId,
-        );
-        if (rekrutteringstreffId) {
-          lagreKandidaterIRekrutteringstreff({
-            markerteKandidater,
-            kandidatsokKandidater,
+    <div>
+      <Button
+        variant='tertiary'
+        onClick={() => {
+          console.log(
+            'klikker i rekrutteringstreff med id',
             rekrutteringstreffId,
-            selectedRows: [],
-            visVarsel,
-            fjernMarkerteKandidater,
-            closeModal: () => ref.current?.close(),
-            setLaster: () => {},
-            logger,
-          });
-        } else {
-          console.log('viser modal');
-          ref.current?.showModal();
-        }
-      }}
-      icon={<PersonPlusIcon aria-hidden />}
-      disabled={markerteKandidater?.length === 0}
-    >
-      {rekrutteringstreffId
-        ? 'Legg til markerte kandidater i rekrutteringstreffet'
-        : 'Lagre i rekrutteringstreff'}
-    </Button>
+          );
+          if (rekrutteringstreffId) {
+            lagreKandidaterIRekrutteringstreff({
+              markerteKandidater,
+              kandidatsokKandidater,
+              rekrutteringstreffId,
+              selectedRows: [],
+              visVarsel,
+              fjernMarkerteKandidater,
+              closeModal: () => modalRef.current?.close(),
+              setLaster: () => {},
+              logger,
+            });
+          } else {
+            console.log('viser modal');
+            modalRef.current?.showModal();
+          }
+        }}
+        icon={<PersonPlusIcon aria-hidden />}
+        disabled={markerteKandidater?.length === 0}
+      >
+        {rekrutteringstreffId
+          ? 'Legg til markerte kandidater i rekrutteringstreffet'
+          : 'Lagre i rekrutteringstreff'}
+      </Button>
+      <LagreIRekrutteringstreffModal
+        rekrutteringstreffId={rekrutteringstreffId}
+        kandidatsokKandidater={kandidatsokKandidater}
+        ref={modalRef}
+      />
+    </div>
   );
 };
 
