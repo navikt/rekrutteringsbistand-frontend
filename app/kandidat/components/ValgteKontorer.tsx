@@ -25,17 +25,15 @@ const ValgteKontorer: React.FC = () => {
   };
 
   return (
-    <div className='my-2'>
-      <UNSAFE_Combobox
-        isLoading={isLoading}
-        selectedOptions={valgtKontor}
-        onToggleSelected={onOptionSelected}
-        onChange={(val) => setSøkeTekst(val)}
-        label='Velg kontorer'
-        options={data ?? []}
-        isMultiSelect
-      />
-    </div>
+    <UNSAFE_Combobox
+      isLoading={isLoading}
+      selectedOptions={valgtKontor}
+      onToggleSelected={onOptionSelected}
+      onChange={(val) => setSøkeTekst(val)}
+      label='Velg kontorer'
+      options={data ?? []}
+      isMultiSelect
+    />
   );
 };
 

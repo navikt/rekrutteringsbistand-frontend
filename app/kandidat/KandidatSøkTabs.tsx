@@ -126,12 +126,12 @@ const KandidatSøkTabs: React.FC<KandidatSøkTabsProps> = ({
           <AlleKontorer />
           <VelgKontor />
         </TilgangskontrollForInnhold>
-
-        {portefølje === KandidatSøkPortefølje.VALGTE_KONTORER && (
-          <ValgteKontorer />
-        )}
       </ToggleGroup>
+      {portefølje === KandidatSøkPortefølje.VALGTE_KONTORER && (
+        <ValgteKontorer />
+      )}
       <KandidatSøkFilter />
+
       <div className='flex w-full items-baseline justify-between'>
         <KandidatSøkChips />
       </div>

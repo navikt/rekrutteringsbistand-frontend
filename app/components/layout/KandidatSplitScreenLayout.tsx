@@ -52,9 +52,7 @@ const KandidatSplitScreenLayout: React.FC<KandidatSplitScreenLayoutProps> = ({
           className={ekspanderHøyre ? 'hidden' : ''}
           style={{ minWidth: '550px' }}
         >
-          <HovedInnholdKort className='h-[98vh] overflow-auto '>
-            {children}
-          </HovedInnholdKort>
+          <HovedInnholdKort className='h-[98vh]  '>{children}</HovedInnholdKort>
         </ResizablePanel>
 
         <ResizableHandle className='z-20' />
