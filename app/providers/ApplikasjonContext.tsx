@@ -8,8 +8,7 @@ import {
 } from '../api/modia/context/setModiaContext';
 import { DecoratorDTO } from '../api/modia/decorator/useDecoratorData';
 import { Roller } from '../components/tilgangskontroll/roller';
-import { Varsling } from '../components/varsling/Varsling';
-import { Alert, Heading } from '@navikt/ds-react';
+import { Alert, AlertProps, Heading } from '@navikt/ds-react';
 import React from 'react';
 
 export type NavKontorMedNavn = {
@@ -21,6 +20,11 @@ interface BrukerData extends DecoratorDTO {
   roller: Roller[];
 }
 
+export interface ApplikasjonsVarsel {
+  type: AlertProps['variant'];
+  tekst: string;
+}
+
 interface ApplikasjonContextType {
   brukerData: BrukerData;
   harRolle: (rolle: Roller[]) => boolean;
@@ -28,6 +32,7 @@ interface ApplikasjonContextType {
   setValgtNavKontor: (navKontor: NavKontorMedNavn | null) => void;
   setValgtFnr: (fnr: string | null) => void;
   valgtFnr: string | null;
+  visVarsel: (varsel: ApplikasjonsVarsel) => void;
 }
 
 const ApplikasjonContext = React.createContext<
@@ -44,9 +49,22 @@ export const ApplikasjonContextProvider: React.FC<
   IApplikasjonContextProvider
 > = ({ children, brukerData, aktivEnhet }) => {
   const [valgtFnr, setValgtFnr] = React.useState<string | null>(null);
+  const [varsel, setVisVarsel] = React.useState<ApplikasjonsVarsel | null>(
+    null,
+  );
 
   const [valgtNavKontor, setValgStatetNavKontor] =
     React.useState<NavKontorMedNavn | null>(null);
+
+  const visVarsel = React.useCallback(
+    (varsel: ApplikasjonsVarsel) => {
+      setVisVarsel(varsel);
+      setTimeout(() => {
+        setVisVarsel(null);
+      }, 5000);
+    },
+    [setVisVarsel],
+  );
 
   const setValgtNavKontor = async (navKontor: NavKontorMedNavn | null) => {
     await setModiaContext(
@@ -99,6 +117,7 @@ export const ApplikasjonContextProvider: React.FC<
   return (
     <ApplikasjonContext.Provider
       value={{
+        visVarsel,
         setValgtFnr,
         brukerData,
         setValgtNavKontor,
@@ -108,7 +127,16 @@ export const ApplikasjonContextProvider: React.FC<
       }}
     >
       <>
-        <Varsling />
+        {varsel && (
+          <Alert
+            fullWidth
+            className='fixed top-0 z-100 flex w-full justify-center'
+            variant={varsel?.type}
+            aria-live='assertive'
+          >
+            {varsel.tekst}
+          </Alert>
+        )}
 
         {harTilgangTilNyApplikasjon ? (
           children

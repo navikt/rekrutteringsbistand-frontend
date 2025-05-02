@@ -3,7 +3,6 @@ import { useForespurteOmDelingAvCv } from '../../../../../api/foresporsel-om-del
 import { sendForespørselOmDelingAvCv } from '../../../../../api/foresporsel-om-deling-av-cv/foresporsler/forespørselOmDelingAvCv';
 import { kandidaterSchemaDTO } from '../../../../../api/kandidat/schema.zod';
 import SWRLaster from '../../../../../components/SWRLaster';
-import { useVisVarsling } from '../../../../../components/varsling/Varsling';
 import { useApplikasjonContext } from '../../../../../providers/ApplikasjonContext';
 import { useUmami } from '../../../../../providers/UmamiContext';
 import { useStillingsContext } from '../../../StillingsContext';
@@ -35,8 +34,7 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
   const { stillingsId } = useStillingsContext();
   const [modalErÅpen, setModalErÅpen] = React.useState(false);
   const [svarfrist, setSvarfrist] = React.useState<Date | undefined>(undefined);
-  const varsel = useVisVarsling();
-  const { valgtNavKontor } = useApplikasjonContext();
+  const { valgtNavKontor, visVarsel } = useApplikasjonContext();
   const [loading, setLoading] = React.useState(false);
 
   const forespurteKandidaterHook = useForespurteOmDelingAvCv(stillingsId);
@@ -93,9 +91,9 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
                 fjernAllMarkering();
                 setModalErÅpen(false);
                 setLoading(false);
-                varsel({
-                  innhold: 'Stillingen er delt med kandidatene',
-                  alertType: 'info',
+                visVarsel({
+                  tekst: 'Stillingen er delt med kandidatene',
+                  type: 'info',
                 });
               }
             };

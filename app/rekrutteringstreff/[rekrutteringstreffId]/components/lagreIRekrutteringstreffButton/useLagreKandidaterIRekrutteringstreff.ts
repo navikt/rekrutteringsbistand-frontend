@@ -1,9 +1,9 @@
+import { useApplikasjonContext } from '../../../../providers/ApplikasjonContext';
 import { KandidatsokKandidat } from '@/app/api/kandidat-sok/useKandidatsøk';
 import {
   leggtilNyeJobbsøkere,
   LeggTilNyJobbsøkereDTO,
 } from '@/app/api/rekrutteringstreff/ny-jobbsøker/leggTilNyjobbsøker';
-import { useVisVarsling } from '@/app/components/varsling/Varsling';
 import { useKandidatSøkMarkerteContext } from '@/app/kandidat/KandidatSøkMarkerteContext';
 import { logger } from '@navikt/next-logger';
 
@@ -11,7 +11,7 @@ export const useLagreKandidaterIRekrutteringstreff = (
   kandidatsokKandidater: KandidatsokKandidat[],
   rekrutteringstreffId?: string,
 ) => {
-  const visVarsel = useVisVarsling();
+  const { visVarsel } = useApplikasjonContext();
   const { markerteKandidater, fjernMarkerteKandidater } =
     useKandidatSøkMarkerteContext();
 
@@ -61,15 +61,15 @@ export const useLagreKandidaterIRekrutteringstreff = (
         );
       } else {
         visVarsel({
-          alertType: 'info',
-          innhold: 'Velg minst ett rekrutteringstreff',
+          type: 'info',
+          tekst: 'Velg minst ett rekrutteringstreff',
         });
         modalparametere?.setLaster(false);
         return;
       }
       visVarsel({
-        alertType: 'success',
-        innhold: 'Kandidater lagret i rekrutteringstreff',
+        type: 'success',
+        tekst: 'Kandidater lagret i rekrutteringstreff',
       });
       fjernMarkerteKandidater();
       modalparametere?.closeModal();
@@ -79,8 +79,8 @@ export const useLagreKandidaterIRekrutteringstreff = (
         error,
       );
       visVarsel({
-        alertType: 'error',
-        innhold: 'Feil ved lagring av kandidater i rekrutteringstreff',
+        type: 'error',
+        tekst: 'Feil ved lagring av kandidater i rekrutteringstreff',
       });
     }
     modalparametere?.setLaster(false);

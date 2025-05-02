@@ -1,5 +1,6 @@
 import { useMineKandidatlister } from '../../../api/kandidat/useMineKandidatlister';
 import SWRLaster from '../../../components/SWRLaster';
+import { useApplikasjonContext } from '../../../providers/ApplikasjonContext';
 import { useKandidatSøkMarkerteContext } from '../../KandidatSøkMarkerteContext';
 import { useLagreKandidaterIKandidatliste } from './useLagreIKandidatliste';
 import {
@@ -22,6 +23,7 @@ const LagreIKandidatlisteModal: React.FC<LagreIKandidatlisteProps> = ({
   stillingsId,
   ref,
 }) => {
+  const { visVarsel } = useApplikasjonContext();
   const { markerteKandidater } = useKandidatSøkMarkerteContext();
   const [pageNumber, setPageNumber] = React.useState(1);
   const mineKandidatlisterHook = useMineKandidatlister(
@@ -37,7 +39,10 @@ const LagreIKandidatlisteModal: React.FC<LagreIKandidatlisteProps> = ({
         : [...list, stillingsId],
     );
 
-  const lagreIKandidatliste = useLagreKandidaterIKandidatliste(stillingsId);
+  const lagreIKandidatliste = useLagreKandidaterIKandidatliste(
+    visVarsel,
+    stillingsId,
+  );
 
   return (
     <div>

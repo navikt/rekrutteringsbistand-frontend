@@ -1,6 +1,9 @@
 import { UmamiEvent, UmamiEventObject } from '../../../../util/umamiEvents';
 import { leggTilKandidater } from '../../../api/kandidat-sok/leggTilKandidat';
-import { AlertType } from '../../../components/varsling/Varsling';
+import {
+  ApplikasjonsVarsel,
+  useApplikasjonContext,
+} from '../../../providers/ApplikasjonContext';
 import { useKandidatSøkMarkerteContext } from '../../KandidatSøkMarkerteContext';
 import LagreIKandidatlisteModal from './LagreIKandidatlisteModal';
 import { useLagreKandidaterIKandidatliste } from './useLagreIKandidatliste';
@@ -16,10 +19,13 @@ const LagreIKandidatlisteButton: React.FC<LagreIKandidatlisteButtonProps> = ({
   stillingsId,
 }) => {
   const modalRef = React.useRef<HTMLDialogElement>(null!);
-
+  const { visVarsel } = useApplikasjonContext();
   const { markerteKandidater } = useKandidatSøkMarkerteContext();
 
-  const lagreIKandidatliste = useLagreKandidaterIKandidatliste(stillingsId);
+  const lagreIKandidatliste = useLagreKandidaterIKandidatliste(
+    visVarsel,
+    stillingsId,
+  );
 
   return (
     <div>
@@ -48,24 +54,24 @@ export async function lagreKandidaterIKandidatliste({
   markerteKandidater,
   stillingsId,
   selectedRows,
-  visVarsel,
   fjernMarkerteKandidater,
   closeModal,
   setLaster,
   logger,
   track,
   kandidatlisteHook,
+  visVarsel,
 }: {
   markerteKandidater: string[];
   stillingsId?: string;
   selectedRows: string[];
-  visVarsel: (args: { alertType: AlertType; innhold: string }) => void;
   fjernMarkerteKandidater: () => void;
   closeModal: () => void;
   setLaster: (val: boolean) => void;
   logger: any;
   track: (event: UmamiEventObject, eventData?: Record<string, any>) => void;
   kandidatlisteHook?: { mutate: () => void };
+  visVarsel: (varsel: ApplikasjonsVarsel) => void;
 }) {
   if (!markerteKandidater || markerteKandidater.length === 0) return;
 
@@ -78,16 +84,16 @@ export async function lagreKandidaterIKandidatliste({
     try {
       await leggTilKandidater(markerteKandidater, stillingsId);
       visVarsel({
-        alertType: 'success',
-        innhold: 'Kandidater lagret i kandidatliste',
+        type: 'success',
+        tekst: 'Kandidater lagret i kandidatliste',
       });
       fjernMarkerteKandidater();
       closeModal();
     } catch (error) {
       logger.error('Feil ved lagring av kandidater i kandidatliste', error);
       visVarsel({
-        alertType: 'error',
-        innhold: 'Feil ved lagring av kandidater i kandidatliste',
+        type: 'error',
+        tekst: 'Feil ved lagring av kandidater i kandidatliste',
       });
     }
   } else if (selectedRows.length !== 0) {
@@ -102,16 +108,16 @@ export async function lagreKandidaterIKandidatliste({
     try {
       await Promise.all(promises);
       visVarsel({
-        alertType: 'success',
-        innhold: 'Kandidater lagret i kandidatliste',
+        type: 'success',
+        tekst: 'Kandidater lagret i kandidatliste',
       });
       fjernMarkerteKandidater();
       closeModal();
     } catch (error) {
       logger.error('Feil ved lagring av kandidater i kandidatliste', error);
       visVarsel({
-        alertType: 'error',
-        innhold: 'Feil ved lagring av kandidater i kandidatliste',
+        type: 'error',
+        tekst: 'Feil ved lagring av kandidater i kandidatliste',
       });
     }
   }

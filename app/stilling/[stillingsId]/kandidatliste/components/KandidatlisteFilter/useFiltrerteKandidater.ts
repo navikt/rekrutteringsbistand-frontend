@@ -200,7 +200,14 @@ const useFiltrerteKandidater = (): FiltrerteKandidater | null => {
           fritekstKandidater.length + (fritekstUsynlige?.length || 0),
       });
     }
-  }, [sortering, kandidater, usynligeKandidater, fritekstSøk]);
+  }, [
+    sortering,
+    kandidater,
+    usynligeKandidater,
+    fritekstSøk,
+    internStatus,
+    visSlettede,
+  ]);
 
   return filtrerteKandidater;
 };

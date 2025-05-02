@@ -8,7 +8,6 @@ import { useDecoratorData } from '../api/modia/decorator/useDecoratorData';
 import SWRLaster from '../components/SWRLaster';
 import ErrorBoundary from '../components/feilhåndtering/ErrorBoundary';
 import { AppNavigasjon } from '../components/layout/AppNavigasjon';
-import { VarslingContextProvider } from '../components/varsling/Varsling';
 import { ApplikasjonContextProvider } from './ApplikasjonContext';
 import { KandidatNavigeringProvider } from './KandidatNavigeringContext';
 import NavigasjonsBlockerProvider from './NavigasjonsBlockerProvider';
@@ -59,14 +58,12 @@ const RekrutteringsbistandProvider: React.FC<
                 <ErrorBoundary>
                   <NavigasjonsBlockerProvider>
                     <NuqsAdapter>
-                      <VarslingContextProvider>
-                        <SidebarProvider>
-                          <AppNavigasjon />
-                          <KandidatNavigeringProvider>
-                            {children}
-                          </KandidatNavigeringProvider>
-                        </SidebarProvider>
-                      </VarslingContextProvider>
+                      <SidebarProvider>
+                        <AppNavigasjon />
+                        <KandidatNavigeringProvider>
+                          {children}
+                        </KandidatNavigeringProvider>
+                      </SidebarProvider>
                     </NuqsAdapter>
                   </NavigasjonsBlockerProvider>
                 </ErrorBoundary>

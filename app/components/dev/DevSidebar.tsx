@@ -19,7 +19,8 @@ const rolleTilnavn = (rolle: Roller) => {
 };
 
 const DevSidebar: React.FC = () => {
-  const { valgtNavKontor, setValgtNavKontor } = useApplikasjonContext();
+  const { valgtNavKontor, setValgtNavKontor, visVarsel } =
+    useApplikasjonContext();
 
   const [devRolle, setDevRolle] = React.useState<Roller>(
     (localStorage.getItem('DEV-ROLLE') as Roller) ||
@@ -105,10 +106,9 @@ const DevSidebar: React.FC = () => {
           </option>
         </Select>
       </div>
-      <span>
-        <strong>Nav Kontor:</strong> {valgtNavKontor?.navKontorNavn} -{' '}
-        {valgtNavKontor?.navKontor}
-      </span>
+      <button onClick={() => visVarsel({ tekst: 'Test', type: 'info' })}>
+        Vis varsel
+      </button>
     </Box.New>
   );
 };

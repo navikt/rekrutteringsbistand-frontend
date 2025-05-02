@@ -4,7 +4,6 @@ import { leggTilKandidater } from '../../api/kandidat-sok/leggTilKandidat';
 import { RekrutteringsbistandStillingSchemaDTO } from '../../api/stillings-sok/schema/rekrutteringsbistandStillingSchema.zod';
 import TekstMedIkon from '../../components/TekstMedIkon';
 import { formaterNorskDato } from '../../components/util';
-import { useVisVarsling } from '../../components/varsling/Varsling';
 import { useApplikasjonContext } from '../../providers/ApplikasjonContext';
 import { useUmami } from '../../providers/UmamiContext';
 import {
@@ -33,11 +32,11 @@ const StillingsKort: React.FC<IStillingsKort> = ({
   kandidatId,
 }) => {
   const {
+    visVarsel,
     brukerData: { ident },
   } = useApplikasjonContext();
 
   const { track } = useUmami();
-  const visVarsel = useVisVarsling();
   const antallStillinger = Number(
     stillingData?.stilling?.properties?.positioncount,
   );
@@ -57,13 +56,13 @@ const StillingsKort: React.FC<IStillingsKort> = ({
     try {
       await leggTilKandidater([kandidatId], stillingData.stilling.uuid);
       visVarsel({
-        innhold: 'Kandidat er lagt til i kandidatliste',
-        alertType: 'success',
+        tekst: 'Kandidat er lagt til i kandidatliste',
+        type: 'success',
       });
     } catch {
       visVarsel({
-        innhold: 'Kandidat kunne ikke legges til i kandidatliste',
-        alertType: 'error',
+        tekst: 'Kandidat kunne ikke legges til i kandidatliste',
+        type: 'error',
       });
     }
   };

@@ -1,18 +1,19 @@
+import { ApplikasjonsVarsel } from '../../../providers/ApplikasjonContext';
 import { leggTilKandidater } from '@/app/api/kandidat-sok/leggTilKandidat';
 import { useKandidatliste } from '@/app/api/kandidat/useKandidatliste';
-import { useVisVarsling } from '@/app/components/varsling/Varsling';
 import { useKandidatSøkMarkerteContext } from '@/app/kandidat/KandidatSøkMarkerteContext';
 import { useUmami } from '@/app/providers/UmamiContext';
 import { UmamiEvent } from '@/util/umamiEvents';
 import { logger } from '@navikt/next-logger';
 
-export const useLagreKandidaterIKandidatliste = (stillingsId?: string) => {
+export const useLagreKandidaterIKandidatliste = (
+  visVarsel: (varsel: ApplikasjonsVarsel) => void,
+  stillingsId?: string,
+) => {
   const { track } = useUmami();
   useKandidatSøkMarkerteContext();
 
   const kandidatlisteHook = useKandidatliste(stillingsId);
-
-  const visVarsel = useVisVarsling();
 
   const { markerteKandidater, fjernMarkerteKandidater } =
     useKandidatSøkMarkerteContext();
@@ -33,16 +34,16 @@ export const useLagreKandidaterIKandidatliste = (stillingsId?: string) => {
       try {
         await leggTilKandidater(markerteKandidater, stillingsId);
         visVarsel({
-          alertType: 'success',
-          innhold: 'Kandidater lagret i kandidatliste',
+          type: 'success',
+          tekst: 'Kandidater lagret i kandidatliste',
         });
         fjernMarkerteKandidater();
         modalparametere?.closeModal();
       } catch (error) {
         logger.error('Feil ved lagring av kandidater i kandidatliste', error);
         visVarsel({
-          alertType: 'error',
-          innhold: 'Feil ved lagring av kandidater i kandidatliste',
+          type: 'error',
+          tekst: 'Feil ved lagring av kandidater i kandidatliste',
         });
       }
     } else if (modalparametere && modalparametere.selectedRows.length !== 0) {
@@ -59,16 +60,16 @@ export const useLagreKandidaterIKandidatliste = (stillingsId?: string) => {
       try {
         await Promise.all(promises);
         visVarsel({
-          alertType: 'success',
-          innhold: 'Kandidater lagret i kandidatliste',
+          type: 'success',
+          tekst: 'Kandidater lagret i kandidatliste',
         });
         fjernMarkerteKandidater();
         modalparametere.closeModal();
       } catch (error) {
         logger.error('Feil ved lagring av kandidater i kandidatliste', error);
         visVarsel({
-          alertType: 'error',
-          innhold: 'Feil ved lagring av kandidater i kandidatliste',
+          type: 'error',
+          tekst: 'Feil ved lagring av kandidater i kandidatliste',
         });
       }
     }
