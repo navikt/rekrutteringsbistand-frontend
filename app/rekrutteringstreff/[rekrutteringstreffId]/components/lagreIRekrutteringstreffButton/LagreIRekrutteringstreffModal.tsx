@@ -1,27 +1,28 @@
-import SWRLaster from '../../../components/SWRLaster';
-import { useVisVarsling } from '../../../components/varsling/Varsling';
-import { useKandidatSøkMarkerteContext } from '../../../kandidat/KandidatSøkMarkerteContext';
-import { lagreKandidaterIRekrutteringstreff } from './LagreIRekrutteringstreffButton';
+import SWRLaster from '../../../../components/SWRLaster';
+import { useKandidatSøkMarkerteContext } from '../../../../kandidat/KandidatSøkMarkerteContext';
+import { useLagreKandidaterIRekrutteringstreff } from './useLagreKandidaterIRekrutteringstreff';
 import { KandidatsokKandidat } from '@/app/api/kandidat-sok/useKandidatsøk';
 import { useRekrutteringstreffOversikt } from '@/app/api/rekrutteringstreff/useRekrutteringstreffOversikt';
 import { Button, Checkbox, Link, Loader, Modal, Table } from '@navikt/ds-react';
-import { logger } from '@navikt/next-logger';
 import * as React from 'react';
 
 interface LagreIRekrutteringstreffModalProps {
   rekrutteringstreffId?: string;
   kandidatsokKandidater: KandidatsokKandidat[];
-  ref: React.RefObject<HTMLDialogElement>;
+  modalRef: React.RefObject<HTMLDialogElement>;
 }
 
 const LagreIRekrutteringstreffModal: React.FC<
   LagreIRekrutteringstreffModalProps
-> = ({ rekrutteringstreffId, kandidatsokKandidater, ref }) => {
+> = ({ rekrutteringstreffId, kandidatsokKandidater, modalRef }) => {
+  const lagreKandidater = useLagreKandidaterIRekrutteringstreff(
+    kandidatsokKandidater,
+    rekrutteringstreffId,
+  );
   const rekrutteringstreffOversiktHook = useRekrutteringstreffOversikt();
 
   //const { track } = useUmami();
-  const { markerteKandidater, fjernMarkerteKandidater } =
-    useKandidatSøkMarkerteContext();
+  const { markerteKandidater } = useKandidatSøkMarkerteContext();
   /*const mineKandidatlisterHook = useMineKandidatlister(
     pageNumber > 1 ? pageNumber - 1 : 0,
   );*/
@@ -29,7 +30,6 @@ const LagreIRekrutteringstreffModal: React.FC<
   //const kandidatlisteHook = useKandidatliste(stillingsId);
   const [selectedRows, setSelectedRows] = React.useState<string[]>([]);
   const [laster, setLaster] = React.useState(false);
-  const visVarsel = useVisVarsling();
   const toggleSelectedRow = (stillingsId: string) =>
     setSelectedRows((list) =>
       list.includes(stillingsId)
@@ -41,9 +41,9 @@ const LagreIRekrutteringstreffModal: React.FC<
     <div>
       <Modal
         width={600}
-        ref={ref}
+        ref={modalRef}
         header={{
-          heading: `Lagre ${markerteKandidater?.length || 0} kandidat i kandidatlister`,
+          heading: `Lagre ${markerteKandidater?.length || 0} kandidat i rekrutteringstreff`,
         }}
       >
         <Modal.Body>
@@ -151,16 +151,10 @@ const LagreIRekrutteringstreffModal: React.FC<
             disabled={laster || selectedRows.length === 0}
             type='button'
             onClick={() =>
-              lagreKandidaterIRekrutteringstreff({
-                markerteKandidater,
-                kandidatsokKandidater,
-                rekrutteringstreffId,
+              lagreKandidater({
                 selectedRows,
-                visVarsel,
-                fjernMarkerteKandidater,
-                closeModal: () => ref.current?.close(),
+                closeModal: () => modalRef.current?.close(),
                 setLaster,
-                logger,
               })
             }
           >
@@ -170,7 +164,7 @@ const LagreIRekrutteringstreffModal: React.FC<
             disabled={laster}
             type='button'
             variant='secondary'
-            onClick={() => ref.current?.close()}
+            onClick={() => modalRef.current?.close()}
           >
             Avbryt
           </Button>

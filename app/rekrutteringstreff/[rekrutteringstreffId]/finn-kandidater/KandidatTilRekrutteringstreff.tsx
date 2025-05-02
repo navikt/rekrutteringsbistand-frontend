@@ -1,9 +1,10 @@
 import { useRekrutteringstreffContext } from '../RekrutteringstreffContext';
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
+import KandidatSøkTabs from '@/app/kandidat/KandidatSøkTabs';
 import * as React from 'react';
 
 const KandidatTilRekrutteringstreff: React.FC = () => {
-  const [, setAlleredeLagtTil] = React.useState<string[]>([]);
+  const [alleredeLagtTil, setAlleredeLagtTil] = React.useState<string[]>([]);
 
   const rekrutteringstreff = useRekrutteringstreffContext();
 
@@ -23,11 +24,10 @@ const KandidatTilRekrutteringstreff: React.FC = () => {
 
   return (
     <>
-      Her må vi fjerne denne
-      {/* <KandidatSøk
+      <KandidatSøkTabs
         rekrutteringstreffId={rekrutteringstreff?.rekrutteringstreffId}
         alleredeLagtTil={alleredeLagtTil}
-      /> */}
+      />
     </>
   );
 };

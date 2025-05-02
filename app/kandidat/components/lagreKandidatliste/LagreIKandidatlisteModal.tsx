@@ -1,10 +1,7 @@
-import { useKandidatliste } from '../../api/kandidat/useKandidatliste';
-import { useMineKandidatlister } from '../../api/kandidat/useMineKandidatlister';
-import SWRLaster from '../../components/SWRLaster';
-import { useVisVarsling } from '../../components/varsling/Varsling';
-import { useUmami } from '../../providers/UmamiContext';
-import { useKandidatSøkMarkerteContext } from '../KandidatSøkMarkerteContext';
-import { lagreKandidaterIKandidatliste } from './LagreIKandidatlisteButton';
+import { useMineKandidatlister } from '../../../api/kandidat/useMineKandidatlister';
+import SWRLaster from '../../../components/SWRLaster';
+import { useKandidatSøkMarkerteContext } from '../../KandidatSøkMarkerteContext';
+import { useLagreKandidaterIKandidatliste } from './useLagreIKandidatliste';
 import {
   Button,
   Checkbox,
@@ -14,7 +11,6 @@ import {
   Pagination,
   Table,
 } from '@navikt/ds-react';
-import { logger } from '@navikt/next-logger';
 import * as React from 'react';
 
 interface LagreIKandidatlisteProps {
@@ -26,24 +22,22 @@ const LagreIKandidatlisteModal: React.FC<LagreIKandidatlisteProps> = ({
   stillingsId,
   ref,
 }) => {
-  const { track } = useUmami();
-  const { markerteKandidater, fjernMarkerteKandidater } =
-    useKandidatSøkMarkerteContext();
+  const { markerteKandidater } = useKandidatSøkMarkerteContext();
   const [pageNumber, setPageNumber] = React.useState(1);
   const mineKandidatlisterHook = useMineKandidatlister(
     pageNumber > 1 ? pageNumber - 1 : 0,
   );
 
-  const kandidatlisteHook = useKandidatliste(stillingsId);
   const [selectedRows, setSelectedRows] = React.useState<string[]>([]);
   const [laster, setLaster] = React.useState(false);
-  const visVarsel = useVisVarsling();
   const toggleSelectedRow = (stillingsId: string) =>
     setSelectedRows((list) =>
       list.includes(stillingsId)
         ? list.filter((id) => id !== stillingsId)
         : [...list, stillingsId],
     );
+
+  const lagreIKandidatliste = useLagreKandidaterIKandidatliste(stillingsId);
 
   return (
     <div>
@@ -161,17 +155,10 @@ const LagreIKandidatlisteModal: React.FC<LagreIKandidatlisteProps> = ({
             disabled={laster || selectedRows.length === 0}
             type='button'
             onClick={() => {
-              lagreKandidaterIKandidatliste({
-                markerteKandidater: markerteKandidater ?? [],
-                stillingsId,
+              lagreIKandidatliste({
                 selectedRows,
-                visVarsel,
-                fjernMarkerteKandidater,
                 closeModal: () => ref.current?.close(),
                 setLaster,
-                logger,
-                track,
-                kandidatlisteHook,
               });
             }}
           >
