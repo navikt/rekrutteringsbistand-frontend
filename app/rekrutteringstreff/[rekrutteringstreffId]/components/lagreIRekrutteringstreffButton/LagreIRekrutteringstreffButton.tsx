@@ -38,7 +38,7 @@ const LagreIRekrutteringstreffButton: React.FC<
             rekrutteringstreffId,
           );
           if (rekrutteringstreffId) {
-            lagreKandidater(undefined);
+            lagreKandidater();
           } else {
             console.log('viser modal');
             modalRef.current?.showModal();
@@ -48,7 +48,7 @@ const LagreIRekrutteringstreffButton: React.FC<
         disabled={markerteKandidater?.length === 0}
       >
         {rekrutteringstreffId
-          ? 'Legg til markerte kandidater i rekrutteringstreffet'
+          ? 'Legg til markerte kandidater'
           : 'Lagre i rekrutteringstreff'}
       </Button>
       <LagreIRekrutteringstreffModal

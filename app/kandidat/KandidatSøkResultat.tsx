@@ -87,14 +87,18 @@ const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({
                 </Checkbox>
               </div>
               <div className='flex gap-2'>
-                <LagreIKandidatlisteButton stillingsId={stillingsId} />
+                {!rekrutteringstreffId && (
+                  <LagreIKandidatlisteButton stillingsId={stillingsId} />
+                )}
                 <RekrutteringstreffFeatureToggle>
-                  <LagreIRekrutteringstreffButton
-                    rekrutteringstreffId={rekrutteringstreffId}
-                    kandidatsokKandidater={
-                      kandidatData.kandidater as KandidatsokKandidat[]
-                    }
-                  />
+                  {!stillingsId && (
+                    <LagreIRekrutteringstreffButton
+                      rekrutteringstreffId={rekrutteringstreffId}
+                      kandidatsokKandidater={
+                        kandidatData.kandidater as KandidatsokKandidat[]
+                      }
+                    />
+                  )}
                 </RekrutteringstreffFeatureToggle>
               </div>
             </div>

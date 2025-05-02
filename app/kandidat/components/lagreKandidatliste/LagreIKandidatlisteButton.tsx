@@ -27,7 +27,7 @@ const LagreIKandidatlisteButton: React.FC<LagreIKandidatlisteButtonProps> = ({
         variant='tertiary'
         onClick={() => {
           if (stillingsId) {
-            lagreIKandidatliste(undefined);
+            lagreIKandidatliste();
           } else {
             modalRef.current?.showModal();
           }
