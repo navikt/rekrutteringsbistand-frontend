@@ -13,17 +13,15 @@ import { Button } from '@navikt/ds-react';
 import { logger } from '@navikt/next-logger';
 import * as React from 'react';
 
-interface LagreIRekrutteringstreffProps {
+interface LagreIRekrutteringstreffButtonProps {
   rekrutteringstreffId?: string;
   kandidatsokKandidater: KandidatsokKandidat[];
   ref: React.RefObject<HTMLDialogElement>;
 }
 
-const LagreIRekrutteringstreff: React.FC<LagreIRekrutteringstreffProps> = ({
-  rekrutteringstreffId,
-  kandidatsokKandidater,
-  ref,
-}) => {
+const LagreIRekrutteringstreffButton: React.FC<
+  LagreIRekrutteringstreffButtonProps
+> = ({ rekrutteringstreffId, kandidatsokKandidater, ref }) => {
   //const { track } = useUmami();
 
   const { markerteKandidater, fjernMarkerteKandidater } =
@@ -70,7 +68,7 @@ const LagreIRekrutteringstreff: React.FC<LagreIRekrutteringstreffProps> = ({
   );
 };
 
-export default LagreIRekrutteringstreff;
+export default LagreIRekrutteringstreffButton;
 
 export async function lagreKandidaterIRekrutteringstreff({
   markerteKandidater,

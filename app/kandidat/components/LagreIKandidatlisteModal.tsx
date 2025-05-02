@@ -4,7 +4,7 @@ import SWRLaster from '../../components/SWRLaster';
 import { useVisVarsling } from '../../components/varsling/Varsling';
 import { useUmami } from '../../providers/UmamiContext';
 import { useKandidatSøkMarkerteContext } from '../KandidatSøkMarkerteContext';
-import { lagreKandidaterIKandidatliste } from './LagreIKandidatlisteItem';
+import { lagreKandidaterIKandidatliste } from './LagreIKandidatlisteButton';
 import {
   Button,
   Checkbox,

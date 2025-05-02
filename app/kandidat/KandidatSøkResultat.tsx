@@ -8,15 +8,15 @@ import {
 import RekrutteringstreffFeatureToggle from '../components/RekrutteringstreffFeatureToggle';
 import SWRLaster from '../components/SWRLaster';
 import { useKandidatNavigeringContext } from '../providers/KandidatNavigeringContext';
+import LagreIRekrutteringstreff from '../rekrutteringstreff/[rekrutteringstreffId]/components/LagreIRekrutteringstreffButton';
 import LagreIRekrutteringstreffModal from '../rekrutteringstreff/[rekrutteringstreffId]/components/LagreIRekrutteringstreffModal';
-import LagreIRekrutteringstreff from '../rekrutteringstreff/[rekrutteringstreffId]/components/LagreIRekrutteringstreffitem';
 import {
   KandidatSøkPortefølje,
   useKandidatSøkFilterContext,
 } from './KandidaSokFilterContext';
 import { useKandidatSøkMarkerteContext } from './KandidatSøkMarkerteContext';
 import KandidatKort from './components/KandidatKort';
-import LagreIKandidatliste from './components/LagreIKandidatlisteItem';
+import LagreIKandidatliste from './components/LagreIKandidatlisteButton';
 import LagreIKandidatlisteModal from './components/LagreIKandidatlisteModal';
 import { Checkbox, Heading, Pagination } from '@navikt/ds-react';
 import * as React from 'react';

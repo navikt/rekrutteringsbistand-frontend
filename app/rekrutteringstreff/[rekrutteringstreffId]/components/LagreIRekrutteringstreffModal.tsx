@@ -1,7 +1,7 @@
 import SWRLaster from '../../../components/SWRLaster';
 import { useVisVarsling } from '../../../components/varsling/Varsling';
 import { useKandidatSøkMarkerteContext } from '../../../kandidat/KandidatSøkMarkerteContext';
-import { lagreKandidaterIRekrutteringstreff } from './LagreIRekrutteringstreffitem';
+import { lagreKandidaterIRekrutteringstreff } from './LagreIRekrutteringstreffButton';
 import { KandidatsokKandidat } from '@/app/api/kandidat-sok/useKandidatsøk';
 import { useRekrutteringstreffOversikt } from '@/app/api/rekrutteringstreff/useRekrutteringstreffOversikt';
 import { Button, Checkbox, Link, Loader, Modal, Table } from '@navikt/ds-react';

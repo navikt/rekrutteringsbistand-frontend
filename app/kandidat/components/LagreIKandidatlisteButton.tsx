@@ -9,12 +9,12 @@ import { Button } from '@navikt/ds-react';
 import { logger } from '@navikt/next-logger';
 import * as React from 'react';
 
-interface LagreIKandidatlisteProps {
+interface LagreIKandidatlisteButtonProps {
   stillingsId?: string;
   ref: React.RefObject<HTMLDialogElement>;
 }
 
-const LagreIKandidatliste: React.FC<LagreIKandidatlisteProps> = ({
+const LagreIKandidatlisteButton: React.FC<LagreIKandidatlisteButtonProps> = ({
   stillingsId,
   ref,
 }) => {
@@ -56,7 +56,7 @@ const LagreIKandidatliste: React.FC<LagreIKandidatlisteProps> = ({
   );
 };
 
-export default LagreIKandidatliste;
+export default LagreIKandidatlisteButton;
 
 export async function lagreKandidaterIKandidatliste({
   markerteKandidater,
