@@ -8,16 +8,14 @@ import {
 import RekrutteringstreffFeatureToggle from '../components/RekrutteringstreffFeatureToggle';
 import SWRLaster from '../components/SWRLaster';
 import { useKandidatNavigeringContext } from '../providers/KandidatNavigeringContext';
-import LagreIRekrutteringstreffModal from '../rekrutteringstreff/[rekrutteringstreffId]/components/LagreIRekrutteringstreffModal';
-import LagreIRekrutteringstreff from '../rekrutteringstreff/[rekrutteringstreffId]/components/LagreIRekrutteringstreffitem';
+import LagreIRekrutteringstreffButton from '../rekrutteringstreff/[rekrutteringstreffId]/components/LagreIRekrutteringstreffButton';
 import {
   KandidatSøkPortefølje,
   useKandidatSøkFilterContext,
 } from './KandidaSokFilterContext';
 import { useKandidatSøkMarkerteContext } from './KandidatSøkMarkerteContext';
 import KandidatKort from './components/KandidatKort';
-import LagreIKandidatliste from './components/LagreIKandidatlisteItem';
-import LagreIKandidatlisteModal from './components/LagreIKandidatlisteModal';
+import LagreIKandidatlisteButton from './components/LagreIKandidatlisteButton';
 import { Checkbox, Heading, Pagination } from '@navikt/ds-react';
 import * as React from 'react';
 
@@ -44,9 +42,6 @@ const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({
 
   const { markerteKandidater, setMarkertListe, fjernMarkerteKandidater } =
     useKandidatSøkMarkerteContext();
-
-  const rekrutteringstreffModalRef = React.useRef<HTMLDialogElement>(null!);
-  const kandidatlisteModalRef = React.useRef<HTMLDialogElement>(null!);
 
   return (
     <SWRLaster hooks={[kandidatsøkHook]}>
@@ -92,28 +87,13 @@ const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({
                 </Checkbox>
               </div>
               <div className='flex gap-2'>
-                <LagreIKandidatliste
-                  stillingsId={stillingsId}
-                  ref={kandidatlisteModalRef}
-                />
-                <LagreIKandidatlisteModal
-                  stillingsId={stillingsId}
-                  ref={kandidatlisteModalRef}
-                />
+                <LagreIKandidatlisteButton stillingsId={stillingsId} />
                 <RekrutteringstreffFeatureToggle>
-                  <LagreIRekrutteringstreff
+                  <LagreIRekrutteringstreffButton
                     rekrutteringstreffId={rekrutteringstreffId}
                     kandidatsokKandidater={
                       kandidatData.kandidater as KandidatsokKandidat[]
                     }
-                    ref={rekrutteringstreffModalRef}
-                  />
-                  <LagreIRekrutteringstreffModal
-                    rekrutteringstreffId={rekrutteringstreffId}
-                    kandidatsokKandidater={
-                      kandidatData.kandidater as KandidatsokKandidat[]
-                    }
-                    ref={rekrutteringstreffModalRef}
                   />
                 </RekrutteringstreffFeatureToggle>
               </div>

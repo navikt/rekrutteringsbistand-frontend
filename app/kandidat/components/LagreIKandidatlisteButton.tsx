@@ -4,20 +4,21 @@ import { useKandidatliste } from '../../api/kandidat/useKandidatliste';
 import { AlertType, useVisVarsling } from '../../components/varsling/Varsling';
 import { useUmami } from '../../providers/UmamiContext';
 import { useKandidatSøkMarkerteContext } from '../KandidatSøkMarkerteContext';
+import LagreIKandidatlisteModal from './LagreIKandidatlisteModal';
 import { PersonPlusIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import { logger } from '@navikt/next-logger';
 import * as React from 'react';
 
-interface LagreIKandidatlisteProps {
+interface LagreIKandidatlisteButtonProps {
   stillingsId?: string;
-  ref: React.RefObject<HTMLDialogElement>;
 }
 
-const LagreIKandidatliste: React.FC<LagreIKandidatlisteProps> = ({
+const LagreIKandidatlisteButton: React.FC<LagreIKandidatlisteButtonProps> = ({
   stillingsId,
-  ref,
 }) => {
+  const modalRef = React.useRef<HTMLDialogElement>(null!);
+
   const { track } = useUmami();
   const { markerteKandidater, fjernMarkerteKandidater } =
     useKandidatSøkMarkerteContext();
@@ -29,7 +30,7 @@ const LagreIKandidatliste: React.FC<LagreIKandidatlisteProps> = ({
     <div>
       <Button
         variant='tertiary'
-        onSelect={() => {
+        onClick={() => {
           if (stillingsId) {
             lagreKandidaterIKandidatliste({
               markerteKandidater: markerteKandidater ?? [],
@@ -37,14 +38,14 @@ const LagreIKandidatliste: React.FC<LagreIKandidatlisteProps> = ({
               selectedRows: [],
               visVarsel,
               fjernMarkerteKandidater,
-              closeModal: () => ref.current?.close(),
+              closeModal: () => modalRef.current?.close(),
               setLaster: () => {},
               logger,
               track,
               kandidatlisteHook,
             });
           } else {
-            ref.current?.showModal();
+            modalRef.current?.showModal();
           }
         }}
         icon={<PersonPlusIcon aria-hidden />}
@@ -52,11 +53,12 @@ const LagreIKandidatliste: React.FC<LagreIKandidatlisteProps> = ({
       >
         {stillingsId ? 'Legg til markerte kandidater' : 'Lagre i kandidatliste'}
       </Button>
+      <LagreIKandidatlisteModal stillingsId={stillingsId} ref={modalRef} />
     </div>
   );
 };
 
-export default LagreIKandidatliste;
+export default LagreIKandidatlisteButton;
 
 export async function lagreKandidaterIKandidatliste({
   markerteKandidater,
