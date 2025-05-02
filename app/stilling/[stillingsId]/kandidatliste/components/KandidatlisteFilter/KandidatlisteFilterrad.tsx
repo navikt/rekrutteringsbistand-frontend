@@ -1,9 +1,12 @@
+import FilterKomponent from '../../../../../components/FilterKomponent';
+import InternStatusFilter from './InternStatusFilter';
 import { useKandidatlisteFilterContext } from './KandidatlisteFilterContext';
-import { Search } from '@navikt/ds-react';
+import { Search, Switch } from '@navikt/ds-react';
 import * as React from 'react';
 
 const KandidatlisteFilterrad: React.FC = () => {
-  const { fritekstSøk, setFritekstSøk } = useKandidatlisteFilterContext();
+  const { fritekstSøk, setFritekstSøk, visSlettede, setVisSlettede } =
+    useKandidatlisteFilterContext();
   return (
     <div className='mt-2 flex gap-4 items-center'>
       <div className='md:w-[15rem]'>
@@ -17,7 +20,18 @@ const KandidatlisteFilterrad: React.FC = () => {
           onChange={(val) => setFritekstSøk(val)}
         />
       </div>
-      {/* <InternStatusFilter /> */}
+      <Switch
+        value={visSlettede}
+        checked={visSlettede === 'true'}
+        onChange={() =>
+          setVisSlettede(visSlettede === 'true' ? 'false' : 'true')
+        }
+      >
+        Vis slettede kandidater
+      </Switch>
+      <FilterKomponent tittel='Intern status'>
+        <InternStatusFilter />
+      </FilterKomponent>
     </div>
   );
 };
