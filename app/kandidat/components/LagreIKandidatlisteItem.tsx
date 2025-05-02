@@ -29,7 +29,7 @@ const LagreIKandidatliste: React.FC<LagreIKandidatlisteProps> = ({
     <div>
       <Button
         variant='tertiary'
-        onSelect={() => {
+        onClick={() => {
           if (stillingsId) {
             lagreKandidaterIKandidatliste({
               markerteKandidater: markerteKandidater ?? [],

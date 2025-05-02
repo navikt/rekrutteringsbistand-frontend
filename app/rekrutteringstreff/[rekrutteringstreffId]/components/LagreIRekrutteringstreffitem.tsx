@@ -38,7 +38,7 @@ const LagreIRekrutteringstreff: React.FC<LagreIRekrutteringstreffProps> = ({
   return (
     <Button
       variant='tertiary'
-      onSelect={() => {
+      onClick={() => {
         console.log(
           'klikker i rekrutteringstreff med id',
           rekrutteringstreffId,
