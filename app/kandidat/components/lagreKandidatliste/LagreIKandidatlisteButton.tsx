@@ -1,13 +1,11 @@
-import { UmamiEvent, UmamiEventObject } from '../../../util/umamiEvents';
-import { leggTilKandidater } from '../../api/kandidat-sok/leggTilKandidat';
-import { useKandidatliste } from '../../api/kandidat/useKandidatliste';
-import { AlertType, useVisVarsling } from '../../components/varsling/Varsling';
-import { useUmami } from '../../providers/UmamiContext';
-import { useKandidatSøkMarkerteContext } from '../KandidatSøkMarkerteContext';
+import { UmamiEvent, UmamiEventObject } from '../../../../util/umamiEvents';
+import { leggTilKandidater } from '../../../api/kandidat-sok/leggTilKandidat';
+import { AlertType } from '../../../components/varsling/Varsling';
+import { useKandidatSøkMarkerteContext } from '../../KandidatSøkMarkerteContext';
 import LagreIKandidatlisteModal from './LagreIKandidatlisteModal';
+import { useLagreKandidaterIKandidatliste } from './useLagreIKandidatliste';
 import { PersonPlusIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
-import { logger } from '@navikt/next-logger';
 import * as React from 'react';
 
 interface LagreIKandidatlisteButtonProps {
@@ -19,12 +17,9 @@ const LagreIKandidatlisteButton: React.FC<LagreIKandidatlisteButtonProps> = ({
 }) => {
   const modalRef = React.useRef<HTMLDialogElement>(null!);
 
-  const { track } = useUmami();
-  const { markerteKandidater, fjernMarkerteKandidater } =
-    useKandidatSøkMarkerteContext();
+  const { markerteKandidater } = useKandidatSøkMarkerteContext();
 
-  const kandidatlisteHook = useKandidatliste(stillingsId);
-  const visVarsel = useVisVarsling();
+  const lagreIKandidatliste = useLagreKandidaterIKandidatliste(stillingsId);
 
   return (
     <div>
@@ -32,17 +27,10 @@ const LagreIKandidatlisteButton: React.FC<LagreIKandidatlisteButtonProps> = ({
         variant='tertiary'
         onClick={() => {
           if (stillingsId) {
-            lagreKandidaterIKandidatliste({
-              markerteKandidater: markerteKandidater ?? [],
-              stillingsId,
+            lagreIKandidatliste({
               selectedRows: [],
-              visVarsel,
-              fjernMarkerteKandidater,
               closeModal: () => modalRef.current?.close(),
               setLaster: () => {},
-              logger,
-              track,
-              kandidatlisteHook,
             });
           } else {
             modalRef.current?.showModal();

@@ -8,14 +8,14 @@ import {
 import RekrutteringstreffFeatureToggle from '../components/RekrutteringstreffFeatureToggle';
 import SWRLaster from '../components/SWRLaster';
 import { useKandidatNavigeringContext } from '../providers/KandidatNavigeringContext';
-import LagreIRekrutteringstreffButton from '../rekrutteringstreff/[rekrutteringstreffId]/components/LagreIRekrutteringstreffButton';
+import LagreIRekrutteringstreffButton from '../rekrutteringstreff/[rekrutteringstreffId]/components/lagreIRekrutteringstreffButton/LagreIRekrutteringstreffButton';
 import {
   KandidatSøkPortefølje,
   useKandidatSøkFilterContext,
 } from './KandidaSokFilterContext';
 import { useKandidatSøkMarkerteContext } from './KandidatSøkMarkerteContext';
 import KandidatKort from './components/KandidatKort';
-import LagreIKandidatlisteButton from './components/LagreIKandidatlisteButton';
+import LagreIKandidatlisteButton from './components/lagreKandidatliste/LagreIKandidatlisteButton';
 import { Checkbox, Heading, Pagination } from '@navikt/ds-react';
 import * as React from 'react';
 
