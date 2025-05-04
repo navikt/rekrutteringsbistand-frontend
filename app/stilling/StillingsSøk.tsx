@@ -24,7 +24,8 @@ import StillingsSøkeresultat from './StillingsSøkeresultat';
 import StillingForKandidat from './components/StillingForKandidat';
 import StillingsSøkFilter from './components/StillingsSøkFilter';
 import { StillingsSøkPortefølje } from './stillingssøk-typer';
-import { ToggleGroup } from '@navikt/ds-react';
+import { Button, ToggleGroup } from '@navikt/ds-react';
+import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useQueryState } from 'nuqs';
 import * as React from 'react';
@@ -124,6 +125,21 @@ const StillingsSøkLayout: React.FC<StillingsSøkProps> = ({
               <SideTopBanner
                 tittel={
                   formidlinger ? 'Etterregistrering formidlinger' : 'Stillinger'
+                }
+                knappIBanner={
+                  <div>
+                    <Link
+                      href={
+                        formidlinger
+                          ? '/etterregistrering/ny-etterregistrering'
+                          : '/stilling/ny-stilling'
+                      }
+                    >
+                      <Button>
+                        {formidlinger ? 'Ny etterregistrering' : 'Ny stilling'}
+                      </Button>
+                    </Link>
+                  </div>
                 }
                 ikon={
                   formidlinger ? (
