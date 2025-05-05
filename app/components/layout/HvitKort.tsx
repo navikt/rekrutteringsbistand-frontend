@@ -8,14 +8,16 @@ export interface HvitKortProps {
 
 const HvitKort: React.FC<HvitKortProps> = ({ children, className = '' }) => {
   return (
-    <Box.New
-      borderRadius='xlarge'
-      borderColor='info-subtleA'
-      background='default'
-      className={`min-w-[320px] flex flex-col p-3 px-8 pb-8 mt-3 w-full h-[98vh] overflow-auto ${className} `}
-    >
-      <div className='max-w-[1440px] mx-auto w-full'>{children}</div>
-    </Box.New>
+    <div className='m-3'>
+      <Box.New
+        borderRadius='xlarge'
+        borderColor='info-subtleA'
+        background='default'
+        className={`min-w-[320px] flex flex-col p-3 px-8 pb-8  w-full h-[98vh] overflow-auto  ${className} `}
+      >
+        <div className='max-w-[1440px] mx-auto w-full'>{children}</div>
+      </Box.New>
+    </div>
   );
 };
 

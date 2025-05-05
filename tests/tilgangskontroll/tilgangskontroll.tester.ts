@@ -91,17 +91,13 @@ export const testTilgangskontroll = (rolle: Roller) => {
         page.getByRole('button', { name: 'Alle filtre' }),
       ).toBeVisible();
       await page.getByRole('button', { name: 'Alle filtre' }).click();
-      await expect(
-        page.getByRole('heading', { name: 'Alle filtre' }),
-      ).toBeVisible();
+      await expect(page.getByRole('heading', { name: 'Filter' })).toBeVisible();
       await page
         .locator('.data-\\[state\\=open\\]\\:animate-in')
         .first()
         .click();
       await page.getByRole('button', { name: 'Alle filtre' }).click();
-      await expect(
-        page.getByRole('heading', { name: 'Alle filtre' }),
-      ).toBeVisible();
+      await expect(page.getByRole('heading', { name: 'Filter' })).toBeVisible();
       await page.getByRole('button', { name: 'Close' }).click();
     });
 

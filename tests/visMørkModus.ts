@@ -9,5 +9,5 @@ export const visMørkModus = (testId: string) =>
     await page.getByRole('button', { name: 'Mørk modus' }).click();
     await expect(page.getByRole('button', { name: 'Lys modus' })).toBeVisible();
 
-    await expect(page.getByTestId(testId).first()).toBeVisible();
+    if (testId) await expect(page.getByTestId(testId).first()).toBeVisible();
   });

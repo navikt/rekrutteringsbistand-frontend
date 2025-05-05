@@ -46,10 +46,11 @@ const RedigerOmFormidlingen: React.FC<RedigerOmFormidlingenProps> = ({
           valgtArbeidsgiver={getValues('omFormidlingen.organisasjon')}
           arbeidsgiverCallback={(val) => {
             setValue('omFormidlingen.organisasjon', val);
-
-            const mapLokasjon = arbeidsgiverLokasjonTilLokasjon(val.adresse);
-            const lokasjoner = getValues('omFormidlingen.lokasjoner') ?? [];
-            setValue('omFormidlingen.adresser', [mapLokasjon, ...lokasjoner]);
+            if (getValues('omFormidlingen.adresser')?.length === 0) {
+              const mapLokasjon = arbeidsgiverLokasjonTilLokasjon(val.adresse);
+              const lokasjoner = getValues('omFormidlingen.lokasjoner') ?? [];
+              setValue('omFormidlingen.adresser', [mapLokasjon, ...lokasjoner]);
+            }
           }}
         />
         {errors.omFormidlingen?.organisasjon && (

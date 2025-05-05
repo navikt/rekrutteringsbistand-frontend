@@ -245,19 +245,7 @@ export const nyStillingMock = {
         latitude: null,
         longitude: null,
       },
-      locationList: [
-        {
-          address: 'Nordre Kvervet',
-          postalCode: '1410',
-          county: 'AKERSHUS',
-          municipal: 'NORDRE FOLLO',
-          municipalCode: '3207',
-          city: 'KOLBOTN',
-          country: 'NORGE',
-          latitude: null,
-          longitude: null,
-        },
-      ],
+
       properties: {
         nace2: '[]',
       },

@@ -173,6 +173,12 @@ export function AppNavigasjon() {
         <SidebarGroup
           className={`flex flex-col w-full gap-3 ${open ? 'items-start' : 'items-center'}`}
         >
+          <div className='flex'>
+            <Nyheter />
+            <div
+              className={`${antallUlesteNyheter > 0 ? '  top-1 right-0 h-3 w-3 rounded-full bg-[#0067c5]' : ''}`}
+            />
+          </div>
           {darkMode ? (
             <SideHandling
               onClick={() => setDarkMode(!darkMode)}
@@ -189,12 +195,6 @@ export function AppNavigasjon() {
             />
           )}
 
-          <div className='flex'>
-            <Nyheter />
-            <div
-              className={`${antallUlesteNyheter > 0 ? '  top-1 right-0 h-3 w-3 rounded-full bg-[#0067c5]' : ''}`}
-            />
-          </div>
           <VelgKontor />
           <SideHandling
             ikon={<MenuGridIcon />}

@@ -30,9 +30,7 @@ test.describe(`Stillingssøk test`, () => {
       page.getByRole('button', { name: 'Ny stilling' }),
     ).toBeVisible();
     await page.getByRole('button', { name: 'Alle filtre' }).click();
-    await expect(
-      page.getByRole('heading', { name: 'Alle filtre' }),
-    ).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Filter' })).toBeVisible();
     await page.locator('.data-\\[state\\=open\\]\\:animate-in').first().click();
     await page.getByRole('searchbox', { name: 'Søk i stillinger' }).click();
     await page

@@ -37,6 +37,12 @@ const VelgArbeidssted: React.FC<VelgArbeidsstedProps> = ({ feltNavn }) => {
   const [visAdresse, setVisAdresse] = useState(adresser.length > 0);
   const [visLokasjon, setVisLokasjon] = useState(lokasjoner.length > 0);
 
+  React.useEffect(() => {
+    if (!visAdresse && adresser.length > 0) {
+      setVisAdresse(true);
+    }
+  }, [adresser]);
+
   const fjernLokasjonId = (id: string) => {
     const index = lokasjoner.findIndex((field) => field.id === id);
     if (index !== -1) {

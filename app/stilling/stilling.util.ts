@@ -10,6 +10,7 @@ export const arbeidsgiverLokasjonTilLokasjon = (
     municipal: arbeidsgiverLokasjon?.kommune,
     municipalCode: arbeidsgiverLokasjon?.kommunenummer,
     country: arbeidsgiverLokasjon?.land,
+    city: arbeidsgiverLokasjon?.poststed,
   };
 
   return geografi;
