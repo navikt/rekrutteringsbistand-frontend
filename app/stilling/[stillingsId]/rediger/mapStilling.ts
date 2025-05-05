@@ -170,6 +170,9 @@ export const mapFormTilStilling = (
     stillingsinfoid: existingData.stillingsinfo?.stillingsinfoid,
     stilling: {
       ...existingData.stilling,
+      location: existingData.stilling.location
+        ? existingData.stilling.location
+        : (existingData?.stilling?.employer?.location ?? null),
       categoryList: harNyJanzz
         ? formData.omStillingen.categoryList
         : (existingData.stilling.categoryList ?? []),
