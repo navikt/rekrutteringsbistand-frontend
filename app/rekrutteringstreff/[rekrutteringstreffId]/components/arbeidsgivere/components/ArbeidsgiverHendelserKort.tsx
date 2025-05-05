@@ -1,7 +1,9 @@
+import ArbeidsgiverDarkIkon from '../../../../../../public/ikoner/arbeidsgiver-dark.svg';
+import ArbeidsgiverIkon from '../../../../../../public/ikoner/arbeidsgiver.svg';
 import LeggTilArbeidsgiverModal from '../../LeggTilArbeidsgiverModal';
 import HendelseLabel from '../../jobbsøkere/components/HendelseLabel';
-import ArbeidsgiverIcon from './ArbeidsgiverIcon';
 import { ArbeidsgiverHendelserDTO } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgiverHendelser';
+import SVGDarkmode from '@/app/components/SVGDarkmode';
 import {
   CheckmarkCircleIcon,
   PlusCircleIcon,
@@ -48,7 +50,11 @@ const ArbeidsgiverHendelserKort: React.FC<ArbeidsgiverHendelserKortProps> = ({
                   background='raised'
                   className='rounded-full mb-2 flex items-center justify-center'
                 >
-                  <ArbeidsgiverIcon />
+                  <SVGDarkmode
+                    light={ArbeidsgiverIkon}
+                    dark={ArbeidsgiverDarkIkon}
+                    alt='legg_til_jobbsøker'
+                  />
                 </Box.New>
                 <BodyShort className='text-center'>
                   <span className='block'>
