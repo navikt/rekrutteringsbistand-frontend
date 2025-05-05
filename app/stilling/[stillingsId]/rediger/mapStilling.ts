@@ -89,11 +89,17 @@ export const mapStillingTilForm = (
       categoryList: stillingsData?.stilling?.categoryList ?? [],
       beskrivelse: stillingsData?.stilling?.properties?.adtext ?? '',
       adresser:
-        stillingsData?.stilling?.locationList
+        (stillingsData?.stilling?.locationList
           ?.filter((a) => a.address !== null)
           .map((a) => {
             return { ...a, adresseType: true };
-          }) ?? [],
+          }) ?? stillingsData?.stilling?.employer?.location)
+          ? [
+              {
+                ...stillingsData?.stilling?.employer?.location,
+              },
+            ]
+          : [],
       lokasjoner:
         stillingsData?.stilling?.locationList
           ?.filter((a) => a.address === null)
@@ -170,9 +176,7 @@ export const mapFormTilStilling = (
     stillingsinfoid: existingData.stillingsinfo?.stillingsinfoid,
     stilling: {
       ...existingData.stilling,
-      location: existingData.stilling.location
-        ? existingData.stilling.location
-        : (existingData?.stilling?.employer?.location ?? null),
+
       categoryList: harNyJanzz
         ? formData.omStillingen.categoryList
         : (existingData.stilling.categoryList ?? []),
