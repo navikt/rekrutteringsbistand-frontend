@@ -32,31 +32,29 @@ const TreffHeader = ({}) => {
             <SideLayout
               banner={
                 <div className='flex items-center gap-4'>
-                  <div>
-                    <SideTopBanner
-                      tittel={rekrutteringstreff.tittel}
-                      ikon={
-                        <SVGDarkmode
-                          light={Rekrutteringstreff}
-                          dark={RekrutteringstreffDark}
-                          alt='Rekrutteringstreff'
-                        />
-                      }
-                      headerInnhold={
-                        <Detail className='text-gray-400'>
-                          Opprettet av {oppretthendelse?.aktørIdentifikasjon}
-                          {', '}
-                          {oppretthendelse?.tidspunkt
-                            ? format(
-                                new Date(oppretthendelse.tidspunkt),
-                                'd. MMMM yyyy',
-                                { locale: nb },
-                              )
-                            : ''}
-                        </Detail>
-                      }
-                    />
-                  </div>
+                  <SideTopBanner
+                    tittel={rekrutteringstreff.tittel}
+                    ikon={
+                      <SVGDarkmode
+                        light={Rekrutteringstreff}
+                        dark={RekrutteringstreffDark}
+                        alt='Rekrutteringstreff'
+                      />
+                    }
+                    headerInnhold={
+                      <Detail className='text-gray-400'>
+                        Opprettet av {oppretthendelse?.aktørIdentifikasjon}
+                        {', '}
+                        {oppretthendelse?.tidspunkt
+                          ? format(
+                              new Date(oppretthendelse.tidspunkt),
+                              'd. MMMM yyyy',
+                              { locale: nb },
+                            )
+                          : ''}
+                      </Detail>
+                    }
+                  />
                   <div className='mb-6'>
                     <PencilIcon />
                   </div>
