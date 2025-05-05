@@ -14,7 +14,6 @@ export const RedigerOmStillingen: React.FC<{
   forrigeSteg: () => void;
 }> = ({ nextStep, forrigeSteg, stegNummer }) => {
   const {
-    getValues,
     setValue,
     watch,
     trigger,
@@ -24,7 +23,6 @@ export const RedigerOmStillingen: React.FC<{
   const [oppsummerValidering, setOppsummerValidering] =
     React.useState<boolean>(false);
 
-  console.log('🎺 getValues()', getValues());
   const handleStepSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const isValid = await trigger('omStillingen', { shouldFocus: true });

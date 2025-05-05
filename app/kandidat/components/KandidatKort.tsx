@@ -108,7 +108,7 @@ const KandidatKort: React.FC<IKandidatKort> = ({
 
                 <TekstMedIkon
                   ikon={<HouseIcon />}
-                  tekst={`${kandidat.postnummer ?? '-'} ${kandidat.kommuneNavn ?? '-'}`}
+                  tekst={`${kandidat.postnummer ?? '-'} ${kandidat.poststed ?? '-'} ${kandidat.kommuneNavn ? `(${kandidat.kommuneNavn})` : ''}`}
                 />
               </div>
               <div className='mt-2 flex flex-row gap-4'>
