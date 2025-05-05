@@ -19,6 +19,7 @@ export const opprettStillingForFormidlingMapper = (
       medium: 'DIR',
       businessName: formidlingData.omFormidlingen?.organisasjon?.navn ?? '',
       privacy: 'INTERNAL_NOT_SHOWN',
+      location: formidlingData.omFormidlingen.adresser ?? [],
       employer: {
         orgnr:
           formidlingData.omFormidlingen?.organisasjon?.organisasjonsnummer ??

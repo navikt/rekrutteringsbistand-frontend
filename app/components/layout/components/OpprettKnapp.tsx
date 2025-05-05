@@ -21,80 +21,88 @@ const OpprettKnapp: React.FC = () => {
   const { valgtNavKontor } = useApplikasjonContext();
 
   return (
-    <ActionMenu>
-      <ActionMenu.Trigger>
-        <Button variant={open ? 'secondary' : 'tertiary'} icon={<PlusIcon />}>
-          {open && 'Opprett'}
-        </Button>
-      </ActionMenu.Trigger>
-      <ActionMenu.Content>
-        <ActionMenu.Group label={`Opprett ny`}>
-          <TilgangskontrollForInnhold
-            skjulVarsel
-            kreverEnAvRollene={[
-              Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-            ]}
-          >
-            <ActionMenu.Item
-              onSelect={() =>
-                trackAndNavigate(
-                  UmamiEvent.Sidebar.opprettet_stilling,
-                  '/stilling/ny-stilling',
-                )
-              }
+    <TilgangskontrollForInnhold
+      skjulVarsel
+      kreverEnAvRollene={[
+        Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
+        Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+      ]}
+    >
+      <ActionMenu>
+        <ActionMenu.Trigger>
+          <Button variant={open ? 'secondary' : 'tertiary'} icon={<PlusIcon />}>
+            {open && 'Opprett'}
+          </Button>
+        </ActionMenu.Trigger>
+        <ActionMenu.Content>
+          <ActionMenu.Group label={`Opprett ny`}>
+            <TilgangskontrollForInnhold
+              skjulVarsel
+              kreverEnAvRollene={[
+                Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+              ]}
             >
-              Stilling
-            </ActionMenu.Item>
-          </TilgangskontrollForInnhold>
-          <TilgangskontrollForInnhold
-            skjulVarsel
-            kreverEnAvRollene={[
-              Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
-              Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-            ]}
-          >
-            <ActionMenu.Item
-              onSelect={() =>
-                trackAndNavigate(
-                  UmamiEvent.Sidebar.opprettet_etterregistrering,
-                  '/etterregistrering/ny-etterregistrering',
-                )
-              }
-            >
-              Etterregistrering
-            </ActionMenu.Item>
-            <RekrutteringstreffFeatureToggle>
               <ActionMenu.Item
-                onSelect={() => {
-                  const nyTreff: OpprettNyttRekrutteringstreffDTO = {
-                    opprettetAvNavkontorEnhetId:
-                      valgtNavKontor?.navKontor || null,
-                  };
-
-                  opprettNyttRekrutteringstreff(nyTreff)
-                    .then((response) => {
-                      const id = response.id;
-                      trackAndNavigate(
-                        UmamiEvent.Sidebar.opprettet_rekrutteringstreff,
-                        `/rekrutteringstreff/${id}`,
-                      );
-                    })
-                    .catch((error) => {
-                      throw new rekbisError({
-                        beskrivelse:
-                          'Feil ved opprettelse av nytt rekrutteringstreff:',
-                        error,
-                      });
-                    });
-                }}
+                onSelect={() =>
+                  trackAndNavigate(
+                    UmamiEvent.Sidebar.opprettet_stilling,
+                    '/stilling/ny-stilling',
+                  )
+                }
               >
-                Rekrutteringstreff
+                Stilling
               </ActionMenu.Item>
-            </RekrutteringstreffFeatureToggle>
-          </TilgangskontrollForInnhold>
-        </ActionMenu.Group>
-      </ActionMenu.Content>
-    </ActionMenu>
+            </TilgangskontrollForInnhold>
+            <TilgangskontrollForInnhold
+              skjulVarsel
+              kreverEnAvRollene={[
+                Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
+                Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+              ]}
+            >
+              <ActionMenu.Item
+                onSelect={() =>
+                  trackAndNavigate(
+                    UmamiEvent.Sidebar.opprettet_etterregistrering,
+                    '/etterregistrering/ny-etterregistrering',
+                  )
+                }
+              >
+                Etterregistrering
+              </ActionMenu.Item>
+              <RekrutteringstreffFeatureToggle>
+                <ActionMenu.Item
+                  onSelect={() => {
+                    const nyTreff: OpprettNyttRekrutteringstreffDTO = {
+                      opprettetAvNavkontorEnhetId:
+                        valgtNavKontor?.navKontor || null,
+                    };
+
+                    opprettNyttRekrutteringstreff(nyTreff)
+                      .then((response) => {
+                        const id = response.id;
+                        trackAndNavigate(
+                          UmamiEvent.Sidebar.opprettet_rekrutteringstreff,
+                          `/rekrutteringstreff/${id}`,
+                        );
+                      })
+                      .catch((error) => {
+                        throw new rekbisError({
+                          beskrivelse:
+                            'Feil ved opprettelse av nytt rekrutteringstreff:',
+                          error,
+                        });
+                      });
+                  }}
+                >
+                  Rekrutteringstreff
+                </ActionMenu.Item>
+              </RekrutteringstreffFeatureToggle>
+            </TilgangskontrollForInnhold>
+          </ActionMenu.Group>
+        </ActionMenu.Content>
+      </ActionMenu>
+    </TilgangskontrollForInnhold>
   );
 };
 

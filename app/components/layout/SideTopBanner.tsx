@@ -20,8 +20,8 @@ const SideTopBanner = ({
   chip,
 }: ISideTopBanner) => {
   return (
-    <div className='@container/topBanner flex justify-between pt-[32px] pb-10'>
-      <div className='flex items-center justify-between flex-col'>
+    <div className='@container/topBanner w-full flex justify-between pt-[32px] pb-10'>
+      <div className='flex items-center  w-full justify-between flex-col'>
         <div className='flex w-full items-center justify-start gap-8'>
           {ikon && <div className='w-[64px] h-[64px]'>{ikon}</div>}
           <div className='w-full'>
@@ -33,13 +33,15 @@ const SideTopBanner = ({
                 <div className='flex-end flex'>{chip}</div>
               </div>
             )}
-            {headerInnhold}
+            <div className='w-full'>{headerInnhold}</div>
           </div>
         </div>
       </div>
-      <div className='flex justify-end' id='knapperRad'>
-        {knappIBanner}
-      </div>
+      {knappIBanner && (
+        <div className='flex justify-end' id='knapperRad'>
+          {knappIBanner}
+        </div>
+      )}
     </div>
   );
 };

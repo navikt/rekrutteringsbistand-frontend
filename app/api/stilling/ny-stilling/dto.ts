@@ -1,3 +1,5 @@
+import { GeografiDTO } from '../rekrutteringsbistandstilling/[slug]/stilling.dto';
+
 export interface OpprettNyStillingDTO {
   stilling: NyStillingStillingDTO;
   kategori: string;
@@ -12,6 +14,7 @@ interface NyStillingStillingDTO {
   medium: string;
   businessName: string;
   administration: NyAdministrationDTO;
+  location: GeografiDTO[];
 }
 
 interface NyAdministrationDTO {

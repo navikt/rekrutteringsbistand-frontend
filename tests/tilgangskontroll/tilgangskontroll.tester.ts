@@ -53,13 +53,15 @@ export const testTilgangskontroll = (rolle: Roller) => {
       await page.waitForURL('**/stilling**');
 
       // Alle stillinger fane
-      const alleStillingerFane = page.getByRole('tab', { name: 'Alle' });
+      const alleStillingerFane = page.getByRole('radio', {
+        name: 'Alle stillinger',
+      });
       if (ARBEIDSGIVERRETTET || JOBBSOKERRETTET || MODIA) {
         await expect(alleStillingerFane).toBeVisible();
       }
 
       // Mine stillinger fane
-      const mineStillingerFane = page.getByRole('tab', {
+      const mineStillingerFane = page.getByRole('radio', {
         name: 'Mine stillinger',
       });
       if (ARBEIDSGIVERRETTET) {
@@ -187,7 +189,7 @@ export const testTilgangskontroll = (rolle: Roller) => {
       }
 
       // Mine brukere fane
-      const mineBrukereTab = page.getByRole('tab', { name: 'Mine brukere' });
+      const mineBrukereTab = page.getByRole('radio', { name: 'Mine brukere' });
       if (ARBEIDSGIVERRETTET || JOBBSOKERRETTET) {
         await expect(mineBrukereTab).toBeVisible();
       }
@@ -196,7 +198,7 @@ export const testTilgangskontroll = (rolle: Roller) => {
       }
 
       // Mitt kontor fane
-      const mittKontorTab = page.getByRole('tab', { name: 'Mitt kontor' });
+      const mittKontorTab = page.getByRole('radio', { name: 'Mitt kontor' });
       if (ARBEIDSGIVERRETTET || JOBBSOKERRETTET) {
         await expect(mittKontorTab).toBeVisible();
       }
@@ -205,7 +207,7 @@ export const testTilgangskontroll = (rolle: Roller) => {
       }
 
       // Mine kontor fane
-      const mineKontorTab = page.getByRole('tab', { name: 'Mine kontor' });
+      const mineKontorTab = page.getByRole('radio', { name: 'Mine kontor' });
 
       if (ARBEIDSGIVERRETTET || JOBBSOKERRETTET) {
         await expect(mineKontorTab).toBeVisible();
@@ -215,7 +217,7 @@ export const testTilgangskontroll = (rolle: Roller) => {
       }
 
       // Valgte kontor fane
-      const valgteKontorTab = page.getByRole('tab', {
+      const valgteKontorTab = page.getByRole('radio', {
         name: 'Valgte kontor',
       });
       if (ARBEIDSGIVERRETTET) {
@@ -226,7 +228,7 @@ export const testTilgangskontroll = (rolle: Roller) => {
       }
 
       // Alle fane
-      const alleFane = page.getByRole('tab', { name: 'Alle' });
+      const alleFane = page.getByRole('radio', { name: 'Alle' });
       if (ARBEIDSGIVERRETTET) {
         await expect(alleFane).toBeVisible();
       }

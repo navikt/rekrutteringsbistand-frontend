@@ -7,6 +7,7 @@ import { opprettNyStilling } from '../../../api/stilling/ny-stilling/opprettNySt
 import { useApplikasjonContext } from '../../../providers/ApplikasjonContext';
 import { useUmami } from '../../../providers/UmamiContext';
 import { Stillingskategori } from '../../stilling-typer';
+import { arbeidsgiverLokasjonTilLokasjon } from '../../stilling.util';
 import { PlusCircleIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
@@ -47,6 +48,7 @@ export const OpprettStillingKnapp: React.FC<OpprettStillingProps> = ({
           medium: 'DIR',
           businessName: arbeidsgiver.navn,
           privacy: 'INTERNAL_NOT_SHOWN',
+          location: [arbeidsgiverLokasjonTilLokasjon(arbeidsgiver.adresse)],
           employer: {
             orgnr: arbeidsgiver.organisasjonsnummer ?? '',
             name: arbeidsgiver.navn,

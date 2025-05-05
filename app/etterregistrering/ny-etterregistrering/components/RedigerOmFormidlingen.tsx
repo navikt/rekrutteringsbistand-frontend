@@ -6,6 +6,7 @@ import VelgArbeidstidsordning from '../../../stilling/[stillingsId]/rediger/comp
 import VelgOmfang from '../../../stilling/[stillingsId]/rediger/components/praktiskInfo/VelgOmfang';
 import VelgSektor from '../../../stilling/[stillingsId]/rediger/components/praktiskInfo/VelgSektor';
 import VelgArbeidsgiver from '../../../stilling/ny-stilling/components/VelgArbeidsgiver';
+import { arbeidsgiverLokasjonTilLokasjon } from '../../../stilling/stilling.util';
 import { FormidlingDataForm } from '../redigerFormidlingFormType';
 import { ErrorMessage, Heading } from '@navikt/ds-react';
 import * as React from 'react';
@@ -43,9 +44,13 @@ const RedigerOmFormidlingen: React.FC<RedigerOmFormidlingenProps> = ({
         <Heading size='large'>Om arbeidsgiver</Heading>
         <VelgArbeidsgiver
           valgtArbeidsgiver={getValues('omFormidlingen.organisasjon')}
-          arbeidsgiverCallback={(val) =>
-            setValue('omFormidlingen.organisasjon', val)
-          }
+          arbeidsgiverCallback={(val) => {
+            setValue('omFormidlingen.organisasjon', val);
+
+            const mapLokasjon = arbeidsgiverLokasjonTilLokasjon(val.adresse);
+            const lokasjoner = getValues('omFormidlingen.lokasjoner') ?? [];
+            setValue('omFormidlingen.adresser', [mapLokasjon, ...lokasjoner]);
+          }}
         />
         {errors.omFormidlingen?.organisasjon && (
           <ErrorMessage>
