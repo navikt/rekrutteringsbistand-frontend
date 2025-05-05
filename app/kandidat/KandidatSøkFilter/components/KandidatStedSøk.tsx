@@ -38,7 +38,7 @@ const KandidatStedSøk: React.FC = () => {
     <UNSAFE_Combobox
       disabled={geografi.isLoading}
       selectedOptions={ønsketSted}
-      label='Søk i sted'
+      label='Ønsket sted'
       options={valg.sort()}
       onToggleSelected={onOptionSelected}
       isMultiSelect

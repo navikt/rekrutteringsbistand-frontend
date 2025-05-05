@@ -25,7 +25,7 @@ const AlleFilterKomponent: React.FC<AlleFilterKomponentProps> = ({
       </SheetTrigger>
       <SheetContent className='flex flex-col'>
         <SheetHeader className='flex-shrink-0'>
-          <SheetTitle>Alle filtre</SheetTitle>
+          <SheetTitle>Filter</SheetTitle>
         </SheetHeader>
         <div className='flex-grow overflow-y-auto p-4'>
           <div className='flex flex-col gap-4'>{children}</div>
