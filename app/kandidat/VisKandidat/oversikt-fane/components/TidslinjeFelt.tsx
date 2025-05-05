@@ -1,3 +1,4 @@
+import { formaterNorskDato } from '../../../../components/util';
 import { BodyShort, Box } from '@navikt/ds-react';
 import { differenceInMonths, differenceInYears, format } from 'date-fns';
 import { nb } from 'date-fns/locale';
@@ -42,12 +43,18 @@ const TidslinjeFelt: React.FC<TidslinjeFeltProps> = ({
         ) : (
           <>
             <BodyShort textColor='default'>
-              {startDate && endDate ? formatDateRange(startDate, endDate) : '-'}
+              {startDate && endDate
+                ? formatDateRange(startDate, endDate)
+                : startDate
+                  ? `${formaterNorskDato(startDate)} - nå`
+                  : 'Ingen dato oppgitt'}
             </BodyShort>
             <BodyShort textColor='subtle' size='small'>
               {startDate && endDate
                 ? calculateDuration(startDate, endDate)
-                : 'Ingen dato oppgitt'}
+                : startDate
+                  ? calculateDuration(startDate, new Date().toISOString())
+                  : 'Ingen dato oppgitt'}
             </BodyShort>
           </>
         )}
