@@ -1,9 +1,14 @@
 import { useKandidatSøkMarkerteContext } from '../../../../kandidat/KandidatSøkMarkerteContext';
 import LagreIRekrutteringstreffModal from './LagreIRekrutteringstreffModal';
-import { useLagreKandidaterIRekrutteringstreff } from './useLagreKandidaterIRekrutteringstreff';
 import { KandidatsokKandidat } from '@/app/api/kandidat-sok/useKandidatsøk';
+import {
+  leggtilNyeJobbsøkere,
+  LeggTilNyJobbsøkereDTO,
+} from '@/app/api/rekrutteringstreff/ny-jobbsøker/leggTilNyjobbsøker';
+import { useApplikasjonContext } from '@/app/providers/ApplikasjonContext';
 import { PersonPlusIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
+import { logger } from '@navikt/next-logger';
 import * as React from 'react';
 
 interface LagreIRekrutteringstreffButtonProps {
@@ -14,14 +19,12 @@ interface LagreIRekrutteringstreffButtonProps {
 const LagreIRekrutteringstreffButton: React.FC<
   LagreIRekrutteringstreffButtonProps
 > = ({ rekrutteringstreffId, kandidatsokKandidater }) => {
-  const lagreKandidater = useLagreKandidaterIRekrutteringstreff(
-    kandidatsokKandidater,
-    rekrutteringstreffId,
-  );
   const modalRef = React.useRef<HTMLDialogElement>(null!);
+  const { visVarsel } = useApplikasjonContext();
   //const { track } = useUmami();
 
-  const { markerteKandidater } = useKandidatSøkMarkerteContext();
+  const { markerteKandidater, fjernMarkerteKandidater } =
+    useKandidatSøkMarkerteContext();
   /*const mineKandidatlisterHook = useMineKandidatlister(
     pageNumber > 1 ? pageNumber - 1 : 0,
   );*/
@@ -52,12 +55,62 @@ const LagreIRekrutteringstreffButton: React.FC<
           : 'Lagre i rekrutteringstreff'}
       </Button>
       <LagreIRekrutteringstreffModal
-        rekrutteringstreffId={rekrutteringstreffId}
         kandidatsokKandidater={kandidatsokKandidater}
         modalRef={modalRef}
       />
     </div>
   );
+
+  async function lagreKandidater() {
+    if (!markerteKandidater || markerteKandidater.length === 0) return;
+
+    const feil: string[] = [];
+    const dto: LeggTilNyJobbsøkereDTO = markerteKandidater
+      .map((kandidatnummer) => {
+        const kandidat = kandidatsokKandidater.find(
+          (k) => k.arenaKandidatnr === kandidatnummer,
+        );
+        if (!kandidat) {
+          feil.push(`Fant ikke kandidat med kandidatnummer: ${kandidatnummer}`);
+          return null;
+        }
+        if (!kandidat.fodselsnummer) {
+          feil.push(`Kandidat mangler fødselsnummer (${kandidatnummer})`);
+        }
+        return {
+          fødselsnummer: kandidat.fodselsnummer,
+          fornavn: kandidat.fornavn ?? null,
+          etternavn: kandidat.etternavn ?? null,
+          kandidatnummer: kandidat.arenaKandidatnr ?? null,
+          navkontor: kandidat.navkontor ?? null,
+          veilederNavn: kandidat.veilederVisningsnavn ?? 'UKJENT',
+          veilederNavIdent: kandidat.veilederIdent ?? 'UKJENT',
+        };
+      })
+      .filter(
+        (kandidat) => kandidat && kandidat.fødselsnummer,
+      ) as LeggTilNyJobbsøkereDTO;
+
+    try {
+      if (rekrutteringstreffId) {
+        await leggtilNyeJobbsøkere(dto, rekrutteringstreffId);
+      }
+      visVarsel({
+        type: 'success',
+        tekst: 'Kandidater lagret i rekrutteringstreff',
+      });
+      fjernMarkerteKandidater();
+    } catch (error) {
+      logger.error(
+        'Feil ved lagring av kandidater i rekrutteringstreff',
+        error,
+      );
+      visVarsel({
+        type: 'error',
+        tekst: 'Feil ved lagring av kandidater i rekrutteringstreff',
+      });
+    }
+  }
 };
 
 export default LagreIRekrutteringstreffButton;

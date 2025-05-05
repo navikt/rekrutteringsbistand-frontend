@@ -2,7 +2,10 @@ import { useMineKandidatlister } from '../../../api/kandidat/useMineKandidatlist
 import SWRLaster from '../../../components/SWRLaster';
 import { useApplikasjonContext } from '../../../providers/ApplikasjonContext';
 import { useKandidatSøkMarkerteContext } from '../../KandidatSøkMarkerteContext';
-import { useLagreKandidaterIKandidatliste } from './useLagreIKandidatliste';
+import { leggTilKandidater } from '@/app/api/kandidat-sok/leggTilKandidat';
+import { useKandidatliste } from '@/app/api/kandidat/useKandidatliste';
+import { useUmami } from '@/app/providers/UmamiContext';
+import { UmamiEvent } from '@/util/umamiEvents';
 import {
   Button,
   Checkbox,
@@ -12,6 +15,7 @@ import {
   Pagination,
   Table,
 } from '@navikt/ds-react';
+import { logger } from '@navikt/next-logger';
 import * as React from 'react';
 
 interface LagreIKandidatlisteProps {
@@ -23,8 +27,12 @@ const LagreIKandidatlisteModal: React.FC<LagreIKandidatlisteProps> = ({
   stillingsId,
   ref,
 }) => {
+  const { track } = useUmami();
+  const kandidatlisteHook = useKandidatliste(stillingsId);
+
   const { visVarsel } = useApplikasjonContext();
-  const { markerteKandidater } = useKandidatSøkMarkerteContext();
+  const { markerteKandidater, fjernMarkerteKandidater } =
+    useKandidatSøkMarkerteContext();
   const [pageNumber, setPageNumber] = React.useState(1);
   const mineKandidatlisterHook = useMineKandidatlister(
     pageNumber > 1 ? pageNumber - 1 : 0,
@@ -38,11 +46,6 @@ const LagreIKandidatlisteModal: React.FC<LagreIKandidatlisteProps> = ({
         ? list.filter((id) => id !== stillingsId)
         : [...list, stillingsId],
     );
-
-  const lagreIKandidatliste = useLagreKandidaterIKandidatliste(
-    visVarsel,
-    stillingsId,
-  );
 
   return (
     <div>
@@ -160,11 +163,11 @@ const LagreIKandidatlisteModal: React.FC<LagreIKandidatlisteProps> = ({
             disabled={laster || selectedRows.length === 0}
             type='button'
             onClick={() => {
-              lagreIKandidatliste({
+              lagreKandidater(
                 selectedRows,
-                closeModal: () => ref.current?.close(),
+                () => ref.current?.close(),
                 setLaster,
-              });
+              );
             }}
           >
             Lagre
@@ -181,6 +184,43 @@ const LagreIKandidatlisteModal: React.FC<LagreIKandidatlisteProps> = ({
       </Modal>
     </div>
   );
+
+  async function lagreKandidater(
+    selectedRows: string[],
+    closeModal: () => void,
+    setLaster: (val: boolean) => void,
+  ) {
+    if (!markerteKandidater || markerteKandidater.length === 0) return;
+
+    setLaster(true);
+    if (selectedRows.length !== 0) {
+      track(UmamiEvent.Stilling.legg_til_markerte_kandidater, {
+        antallKandidater: markerteKandidater?.length,
+        kilde: 'Kandidatsøk',
+        antallStillinger: selectedRows.length,
+      });
+      const promises = selectedRows.map((stillingId) =>
+        leggTilKandidater(markerteKandidater, stillingId),
+      );
+      try {
+        await Promise.all(promises);
+        visVarsel({
+          type: 'success',
+          tekst: 'Kandidater lagret i kandidatliste',
+        });
+        fjernMarkerteKandidater();
+        closeModal();
+      } catch (error) {
+        logger.error('Feil ved lagring av kandidater i kandidatliste', error);
+        visVarsel({
+          type: 'error',
+          tekst: 'Feil ved lagring av kandidater i kandidatliste',
+        });
+      }
+    }
+    kandidatlisteHook?.mutate();
+    setLaster(false);
+  }
 };
 
 export default LagreIKandidatlisteModal;
