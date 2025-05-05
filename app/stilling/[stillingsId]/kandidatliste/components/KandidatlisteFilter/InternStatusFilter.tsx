@@ -8,7 +8,7 @@ const InternStatusFilter: React.FC = () => {
   const { internStatus, setInternStatus } = useKandidatlisteFilterContext();
 
   return (
-    <CheckboxGroup legend='Intern status' hideLegend onChange={console.log}>
+    <CheckboxGroup legend='Intern status' hideLegend>
       {Object.entries(InternKandidatstatus).map(([key, value]) => (
         <Checkbox
           key={key}

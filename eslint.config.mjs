@@ -15,6 +15,7 @@ const eslintConfig = [
     rules: {
       //TODO Temp rule
       '@typescript-eslint/no-explicit-any': 'off',
+      'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'warn',
     },
   },
 ];

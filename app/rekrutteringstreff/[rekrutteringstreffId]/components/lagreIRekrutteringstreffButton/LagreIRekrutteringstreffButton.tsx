@@ -36,14 +36,9 @@ const LagreIRekrutteringstreffButton: React.FC<
       <Button
         variant='tertiary'
         onClick={() => {
-          console.log(
-            'klikker i rekrutteringstreff med id',
-            rekrutteringstreffId,
-          );
           if (rekrutteringstreffId) {
             lagreKandidater();
           } else {
-            console.log('viser modal');
             modalRef.current?.showModal();
           }
         }}
