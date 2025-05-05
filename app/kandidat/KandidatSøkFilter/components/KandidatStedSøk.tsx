@@ -14,7 +14,7 @@ const KandidatStedSøk: React.FC = () => {
   React.useEffect(() => {
     if (geografi.data) {
       const uniqueValg = geografi.data
-        .filter((geo) => geo.type === 'KOMMUNE')
+        .filter((geo) => geo.type !== 'LAND')
         .map(
           (geoagrafi) =>
             `${storBokstavSted(geoagrafi.navn)} (${storForbokstavString(geoagrafi.type)})`,
