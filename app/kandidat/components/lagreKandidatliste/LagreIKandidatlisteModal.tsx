@@ -206,7 +206,7 @@ const LagreIKandidatlisteModal: React.FC<LagreIKandidatlisteProps> = ({
         await Promise.all(promises);
         visVarsel({
           type: 'success',
-          tekst: 'Kandidater lagret i kandidatliste',
+          tekst: `${markerteKandidater.length}  kandidat${markerteKandidater.length > 1 ? 'er' : ''} lagret i rekrutteringstreff`,
         });
         fjernMarkerteKandidater();
         closeModal();

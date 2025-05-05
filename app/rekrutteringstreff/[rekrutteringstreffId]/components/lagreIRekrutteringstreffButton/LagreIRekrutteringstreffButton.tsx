@@ -92,7 +92,7 @@ const LagreIRekrutteringstreffButton: React.FC<
       }
       visVarsel({
         type: 'success',
-        tekst: 'Kandidater lagret i rekrutteringstreff',
+        tekst: `${markerteKandidater.length}  kandidat${markerteKandidater.length > 1 ? 'er' : ''} lagret i rekrutteringstreff`,
       });
       fjernMarkerteKandidater();
     } catch (error) {

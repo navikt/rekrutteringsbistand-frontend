@@ -55,7 +55,7 @@ const LagreIKandidatlisteButton: React.FC<LagreIKandidatlisteButtonProps> = ({
         await leggTilKandidater(markerteKandidater, stillingsId);
         visVarsel({
           type: 'success',
-          tekst: 'Kandidater lagret i kandidatliste',
+          tekst: `${markerteKandidater.length}  kandidat${markerteKandidater.length > 1 ? 'er' : ''} lagret i kandiatliste`,
         });
         fjernMarkerteKandidater();
       } catch (error) {
