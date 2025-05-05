@@ -43,11 +43,14 @@ export const useKandidatsøk = (
   const shouldFetch = !isGeografiLoading;
 
   const kommuneKoder = kandidatSøkFilter.ønsketSted.map((sted) => {
-    const kommuneMedKoder = geografi?.find(
-      (g) => g.lokasjon.kommune?.toUpperCase() === sted.toUpperCase(),
-    );
-    if (kommuneMedKoder) {
-      return `NO${kommuneMedKoder?.lokasjon.fylkesnummer}.${kommuneMedKoder?.lokasjon.kommunenummer}`;
+    if (sted.includes('(Kommune)')) {
+      sted = sted.split('(Kommune)')[0].trim();
+      const stedMedKode = geografi?.find(
+        (g) => g.lokasjon.kommune?.toUpperCase() === sted.toUpperCase(),
+      );
+      if (stedMedKode) {
+        return `${sted}.NO${stedMedKode?.lokasjon.fylkesnummer}.${stedMedKode?.lokasjon.kommunenummer}`;
+      }
     }
     return null;
   });
