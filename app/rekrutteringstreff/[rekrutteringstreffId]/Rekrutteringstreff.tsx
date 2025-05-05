@@ -33,7 +33,7 @@ const Rekrutteringstreff: React.FC = () => {
 
   return (
     <Box.New>
-      <TreffHeader />
+      <TreffHeader tilbakeurl='/rekrutteringstreff' />
       <Tabs value={fane} onChange={(val) => setFane(val)}>
         <Tabs.List className='w-full'>
           <Tabs.Tab
