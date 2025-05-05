@@ -14,8 +14,7 @@ import {
   ErrorMessage,
   ErrorSummary,
   Heading,
-  Radio,
-  RadioGroup,
+  Label,
   TextField,
 } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
@@ -168,18 +167,24 @@ export const RedigerInnspurt: React.FC<{
             }
           />
         </div>
-        <RadioGroup
-          legend='Skal stillingen publiseres på arbeidsplassen.no også?'
-          value={watch('innspurt.stillingType')}
-          onChange={(val) => setValue('innspurt.stillingType', val)}
-        >
-          <Radio value={StillingSynlighet.INTERN}>
-            Nei, den vises kun internt
-          </Radio>
-          <Radio value={StillingSynlighet.EKSTERN}>
+        <div className='pt-8'>
+          <Label>Skal stillingen publiseres på arbeidsplassen.no også?</Label>
+          <Checkbox
+            checked={
+              watch('innspurt.stillingType') === StillingSynlighet.EKSTERN
+            }
+            onChange={(e) => {
+              setValue(
+                'innspurt.stillingType',
+                e.target.checked
+                  ? StillingSynlighet.EKSTERN
+                  : StillingSynlighet.INTERN,
+              );
+            }}
+          >
             Ja, publiser stillingen offentlig på arbeidsplassen.no
-          </Radio>
-        </RadioGroup>
+          </Checkbox>
+        </div>
 
         {watch('innspurt.stillingType') === StillingSynlighet.EKSTERN && (
           <div>
