@@ -1,28 +1,27 @@
 import SWRLaster from '../../../../components/SWRLaster';
 import { useKandidatSøkMarkerteContext } from '../../../../kandidat/KandidatSøkMarkerteContext';
-import { useLagreKandidaterIRekrutteringstreff } from './useLagreKandidaterIRekrutteringstreff';
 import { KandidatsokKandidat } from '@/app/api/kandidat-sok/useKandidatsøk';
+import {
+  leggtilNyeJobbsøkere,
+  LeggTilNyJobbsøkereDTO,
+} from '@/app/api/rekrutteringstreff/ny-jobbsøker/leggTilNyjobbsøker';
 import { useRekrutteringstreffOversikt } from '@/app/api/rekrutteringstreff/useRekrutteringstreffOversikt';
+import { useApplikasjonContext } from '@/app/providers/ApplikasjonContext';
 import { Button, Checkbox, Link, Loader, Modal, Table } from '@navikt/ds-react';
+import { logger } from '@navikt/next-logger';
 import * as React from 'react';
 
 interface LagreIRekrutteringstreffModalProps {
-  rekrutteringstreffId?: string;
   kandidatsokKandidater: KandidatsokKandidat[];
   modalRef: React.RefObject<HTMLDialogElement>;
 }
 
 const LagreIRekrutteringstreffModal: React.FC<
   LagreIRekrutteringstreffModalProps
-> = ({ rekrutteringstreffId, kandidatsokKandidater, modalRef }) => {
-  const lagreKandidater = useLagreKandidaterIRekrutteringstreff(
-    kandidatsokKandidater,
-    rekrutteringstreffId,
-  );
+> = ({ kandidatsokKandidater, modalRef }) => {
   const rekrutteringstreffOversiktHook = useRekrutteringstreffOversikt();
 
   //const { track } = useUmami();
-  const { markerteKandidater } = useKandidatSøkMarkerteContext();
   /*const mineKandidatlisterHook = useMineKandidatlister(
     pageNumber > 1 ? pageNumber - 1 : 0,
   );*/
@@ -36,6 +35,10 @@ const LagreIRekrutteringstreffModal: React.FC<
         ? list.filter((id) => id !== stillingsId)
         : [...list, stillingsId],
     );
+
+  const { visVarsel } = useApplikasjonContext();
+  const { markerteKandidater, fjernMarkerteKandidater } =
+    useKandidatSøkMarkerteContext();
 
   return (
     <div>
@@ -151,11 +154,11 @@ const LagreIRekrutteringstreffModal: React.FC<
             disabled={laster || selectedRows.length === 0}
             type='button'
             onClick={() =>
-              lagreKandidater({
+              lagreKandidater(
                 selectedRows,
-                closeModal: () => modalRef.current?.close(),
+                () => modalRef.current?.close(),
                 setLaster,
-              })
+              )
             }
           >
             Lagre
@@ -172,6 +175,73 @@ const LagreIRekrutteringstreffModal: React.FC<
       </Modal>
     </div>
   );
+
+  async function lagreKandidater(
+    selectedRows: string[],
+    closeModal: () => void,
+    setLaster: (val: boolean) => void,
+  ) {
+    if (!markerteKandidater || markerteKandidater.length === 0) return;
+
+    setLaster(true);
+    const feil: string[] = [];
+    const dto: LeggTilNyJobbsøkereDTO = markerteKandidater
+      .map((kandidatnummer) => {
+        const kandidat = kandidatsokKandidater.find(
+          (k) => k.arenaKandidatnr === kandidatnummer,
+        );
+        if (!kandidat) {
+          feil.push(`Fant ikke kandidat med kandidatnummer: ${kandidatnummer}`);
+          return null;
+        }
+        if (!kandidat.fodselsnummer) {
+          feil.push(`Kandidat mangler fødselsnummer (${kandidatnummer})`);
+        }
+        return {
+          fødselsnummer: kandidat.fodselsnummer,
+          fornavn: kandidat.fornavn ?? null,
+          etternavn: kandidat.etternavn ?? null,
+          kandidatnummer: kandidat.arenaKandidatnr ?? null,
+          navkontor: kandidat.navkontor ?? null,
+          veilederNavn: kandidat.veilederVisningsnavn ?? 'UKJENT',
+          veilederNavIdent: kandidat.veilederIdent ?? 'UKJENT',
+        };
+      })
+      .filter(
+        (kandidat) => kandidat && kandidat.fødselsnummer,
+      ) as LeggTilNyJobbsøkereDTO;
+
+    try {
+      if (selectedRows.length !== 0) {
+        await Promise.all(
+          selectedRows.map((id) => leggtilNyeJobbsøkere(dto, id)),
+        );
+      } else {
+        visVarsel({
+          type: 'info',
+          tekst: 'Velg minst ett rekrutteringstreff',
+        });
+        setLaster(false);
+        return;
+      }
+      visVarsel({
+        type: 'success',
+        tekst: 'Kandidater lagret i rekrutteringstreff',
+      });
+      fjernMarkerteKandidater();
+      closeModal();
+    } catch (error) {
+      logger.error(
+        'Feil ved lagring av kandidater i rekrutteringstreff',
+        error,
+      );
+      visVarsel({
+        type: 'error',
+        tekst: 'Feil ved lagring av kandidater i rekrutteringstreff',
+      });
+    }
+    setLaster(false);
+  }
 };
 
 export default LagreIRekrutteringstreffModal;
