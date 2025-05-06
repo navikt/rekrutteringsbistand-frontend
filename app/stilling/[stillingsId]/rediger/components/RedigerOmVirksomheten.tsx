@@ -58,7 +58,7 @@ export const RedigerOmVirksomheten: React.FC<{
             <dt className='font-bold'>Adresse</dt>
             <dd>
               {getWorkLocationsAsString(
-                stillingsData.stilling.employer?.locationList as GeografiDTO[],
+                stillingsData.stilling.employer?.location as GeografiDTO[],
               )}
             </dd>
             <dt className='font-bold'>Organisasjonsnummer</dt>
