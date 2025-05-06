@@ -1,10 +1,8 @@
-import KryssIkon from '../../../public/ikoner/kryss.svg';
 import { useForesporselOmdelingAvCV } from '../../api/foresporsel-om-deling-av-cv/statistikk/useForesporselOmdelingAvCV';
-import SVGDarkmode from '../../components/SVGDarkmode';
 import SWRLaster from '../../components/SWRLaster';
 import Infokort, { InfokortSkeleton } from './Infokort';
 import { IStatistikkValg } from './Statistikk';
-import { ChatCheckmarkIcon, ChatIcon } from '@navikt/aksel-icons';
+import { ArrowForwardIcon } from '@navikt/aksel-icons';
 import * as React from 'react';
 
 const Forespørsler: React.FC<IStatistikkValg> = ({
@@ -23,12 +21,7 @@ const Forespørsler: React.FC<IStatistikkValg> = ({
       hooks={[forespørselHook]}
       skeleton={
         <>
-          <div className='mt-6 flex gap-6'>
-            <InfokortSkeleton />
-            <InfokortSkeleton />
-          </div>
-          <div className='mt-6 flex gap-6'>
-            <InfokortSkeleton />
+          <div className='mt-6 flex '>
             <InfokortSkeleton />
           </div>
         </>
@@ -40,30 +33,35 @@ const Forespørsler: React.FC<IStatistikkValg> = ({
           data-testid='forside-forespørsel-statistikk'
         >
           <Infokort
-            beskrivelse='Antall som har svart ja'
-            ikon={<ChatCheckmarkIcon />}
-            tall={data.antallSvartJa}
-          />
-          <Infokort
-            beskrivelse='Antall som har svart nei'
-            ikon={
-              <>
-                <span className='absolute'>
-                  <SVGDarkmode src={KryssIkon} alt='Kryss' />
-                </span>
-                <ChatIcon className='relative' />
-              </>
-            }
-            tall={data.antallSvartNei}
-          />
-          <Infokort
-            beskrivelse='Antall som venter på svar'
-            ikon={<ChatIcon />}
-            tall={data.antallVenterPåSvar}
-          />
-          <Infokort
-            beskrivelse='Antall utløpte svar'
-            tall={data.antallUtløpteSvar}
+            ikonFront
+            tittel='CV-er godkjent for deling med arbeidsgiver'
+            ikon={<ArrowForwardIcon />}
+            detaljer={[
+              {
+                beskrivelse: 'Kandidater spurt om å dele',
+                tall:
+                  data.antallSvartJa +
+                  data.antallSvartNei +
+                  data.antallVenterPåSvar +
+                  data.antallUtløpteSvar,
+              },
+              {
+                beskrivelse: 'Godkjent',
+                tall: data.antallSvartJa,
+              },
+              {
+                beskrivelse: 'Avslått',
+                tall: data.antallSvartNei,
+              },
+              {
+                beskrivelse: 'Ikke svart',
+                tall: data.antallVenterPåSvar,
+              },
+              {
+                beskrivelse: 'Utløpt',
+                tall: data.antallUtløpteSvar,
+              },
+            ]}
           />
         </div>
       )}
