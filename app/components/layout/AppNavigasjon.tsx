@@ -9,6 +9,7 @@ import Nyheter from '../nyheter/Nyheter';
 import useAntallUlesteNyheter from '../nyheter/useAntallUlesteNyheter';
 import { TilgangskontrollForInnhold } from '../tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '../tilgangskontroll/roller';
+import ModiaKnapp from './components/ModiaKnapp';
 import OpprettKnapp from './components/OpprettKnapp';
 import VelgKontor from './components/VelgKontor';
 import {
@@ -23,7 +24,6 @@ import {
 import {
   BriefcaseIcon,
   HouseIcon,
-  MenuGridIcon,
   MoonIcon,
   PersonTallShortIcon,
   ReceptionIcon,
@@ -196,12 +196,7 @@ export function AppNavigasjon() {
           )}
 
           <VelgKontor />
-          <SideHandling
-            ikon={<MenuGridIcon />}
-            tekst='Modia'
-            kreverRoller={null}
-            onClick={() => {}}
-          />
+          <ModiaKnapp />
         </SidebarGroup>
       </SidebarFooter>
       <SidebarRail />
