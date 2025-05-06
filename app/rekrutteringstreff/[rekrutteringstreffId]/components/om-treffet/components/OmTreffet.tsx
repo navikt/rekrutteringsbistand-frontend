@@ -5,18 +5,13 @@ import RekrutteringstreffDetalj from '../../RekrutteringstreffDetalj';
 import SlettRekrutteringstreffModal from '../../SlettRekrutteringstreffModal';
 import ArbeidsgiverHendelserKort from '../../arbeidsgivere/components/ArbeidsgiverHendelserKort';
 import JobbsøkerHendelserKort from '../../jobbsøkere/components/JobbsøkerHendelserKort';
+import Tidspunkt from '../Tidspunkt';
 import { useArbeidsgiverHendelser } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgiverHendelser';
 import { useJobbsøkerHendelser } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkerHendelser';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import SWRLaster from '@/app/components/SWRLaster';
-import {
-  CalendarIcon,
-  LocationPinIcon,
-  PencilIcon,
-  PlusIcon,
-} from '@navikt/aksel-icons';
+import { LocationPinIcon, PlusIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button } from '@navikt/ds-react';
-import { format } from 'date-fns';
 import { TimerIcon } from 'lucide-react';
 import * as React from 'react';
 
@@ -44,69 +39,12 @@ const OmTreffet = () => {
       <div>
         <SWRLaster hooks={[rekrutteringstreffHook]}>
           {(rekrutteringstreff) => {
-            const startTidDato = format(
-              rekrutteringstreff.fraTid,
-              'dd.MM.yyyy',
-            );
-            const startTidKlokken = format(rekrutteringstreff.fraTid, 'HH:mm');
-
-            const sluttTidDato = format(
-              rekrutteringstreff.tilTid,
-              'dd.MM.yyyy ',
-            );
-            const sluttTidKlokken = format(rekrutteringstreff.tilTid, 'HH:mm');
-
             return (
               <div className='mt-4 flex flex-col gap-4 md:flex-row max-w-[64rem]'>
-                <RekrutteringstreffDetalj
-                  tittelIkon={<CalendarIcon fontSize='1.5rem' />}
-                  tittel='Tidspunkt'
-                  knapp={
-                    rekrutteringstreff.fraTid ? (
-                      <Button
-                        icon={<PencilIcon />}
-                        variant='tertiary'
-                        size='small'
-                      >
-                        Endre
-                      </Button>
-                    ) : (
-                      <Button
-                        icon={<PlusIcon />}
-                        variant='tertiary'
-                        size='small'
-                      >
-                        Legg til
-                      </Button>
-                    )
-                  }
+                <Tidspunkt
+                  rekrutteringstreff={rekrutteringstreff}
                   className='flex-1'
-                >
-                  {startTidDato === sluttTidDato ? (
-                    <BodyShort size='small'>
-                      {startTidDato}{' '}
-                      <BodyShort as='span' size='small' textColor='subtle'>
-                        kl {startTidKlokken}-{sluttTidKlokken}
-                      </BodyShort>
-                    </BodyShort>
-                  ) : (
-                    <>
-                      <BodyShort size='small'>
-                        {startTidDato}{' '}
-                        <BodyShort as='span' size='small' textColor='subtle'>
-                          kl {startTidKlokken}
-                        </BodyShort>{' '}
-                        til
-                      </BodyShort>
-                      <BodyShort size='small'>
-                        {sluttTidDato}{' '}
-                        <BodyShort as='span' size='small' textColor='subtle'>
-                          kl {sluttTidKlokken}
-                        </BodyShort>
-                      </BodyShort>
-                    </>
-                  )}
-                </RekrutteringstreffDetalj>
+                />
                 <RekrutteringstreffDetalj
                   tittelIkon={<LocationPinIcon fontSize='1.5rem' />}
                   tittel='Sted'
