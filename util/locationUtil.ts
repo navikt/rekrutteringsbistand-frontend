@@ -1,26 +1,24 @@
 import { GeografiDTO } from '../app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 
 export function getWorkLocationsAsString(
-  locationList?: GeografiDTO[] | null,
+  location?: GeografiDTO | null,
 ): string {
   const workLocations: string[] = [];
-  if (!locationList) {
+  if (!location) {
     return '';
   }
 
-  locationList.forEach((location) => {
-    if (location.postalCode) {
-      let tmp = location.address ? `${location.address}, ` : '';
-      tmp += `${location.postalCode} ${capitalizeLocation(location.city ?? '')}`;
-      workLocations.push(tmp);
-    } else if (location.municipal) {
-      workLocations.push(capitalizeLocation(location.municipal));
-    } else if (location.county) {
-      workLocations.push(capitalizeLocation(location.county));
-    } else if (location.country) {
-      workLocations.push(capitalizeLocation(location.country));
-    }
-  });
+  if (location.postalCode) {
+    let tmp = location.address ? `${location.address}, ` : '';
+    tmp += `${location.postalCode} ${capitalizeLocation(location.city ?? '')}`;
+    workLocations.push(tmp);
+  } else if (location.municipal) {
+    workLocations.push(capitalizeLocation(location.municipal));
+  } else if (location.county) {
+    workLocations.push(capitalizeLocation(location.county));
+  } else if (location.country) {
+    workLocations.push(capitalizeLocation(location.country));
+  }
 
   const arbeidsSteder = workLocations.join(', ');
   return arbeidsSteder;

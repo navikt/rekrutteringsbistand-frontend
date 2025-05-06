@@ -48,7 +48,7 @@ export const RedigerOmVirksomheten: React.FC<{
       </Heading>
       <form onSubmit={handleStepSubmit}>
         <div className='flex flex-col space-y-8'>
-          <dl className='grid grid-cols-2'>
+          <dl className=' flex xl:grid xl:grid-cols-2 flex-col'>
             <dt className='font-bold'>Bedrift</dt>
             <dd>
               {capitalizeEmployerName(
@@ -58,7 +58,7 @@ export const RedigerOmVirksomheten: React.FC<{
             <dt className='font-bold'>Adresse</dt>
             <dd>
               {getWorkLocationsAsString(
-                stillingsData.stilling.employer?.location as GeografiDTO[],
+                stillingsData.stilling.employer?.location as GeografiDTO,
               )}
             </dd>
             <dt className='font-bold'>Organisasjonsnummer</dt>
