@@ -57,7 +57,7 @@ const OmTreffet = () => {
             const sluttTidKlokken = format(rekrutteringstreff.tilTid, 'HH:mm');
 
             return (
-              <div className='mt-4 flex flex-col gap-4 md:flex-row w-full'>
+              <div className='mt-4 flex flex-col gap-4 md:flex-row max-w-[64rem]'>
                 <RekrutteringstreffDetalj
                   tittelIkon={<CalendarIcon fontSize='1.5rem' />}
                   tittel='Tidspunkt'
