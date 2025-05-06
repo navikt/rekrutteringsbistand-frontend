@@ -30,9 +30,7 @@ const ForslagTilStilling: React.FC = () => {
       <Button
         variant='secondary'
         className='mt-6 w-full'
-        onClick={() =>
-          router.push(`/kandidat/${kandidatId}/forslag-til-stilling`)
-        }
+        onClick={() => router.push(`/stilling/?visKandidatnr=${kandidatId}`)}
       >
         Finn aktuelle stillinger
       </Button>

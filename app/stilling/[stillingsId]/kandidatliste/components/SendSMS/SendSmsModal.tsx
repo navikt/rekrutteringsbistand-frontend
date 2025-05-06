@@ -121,7 +121,7 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
         onClick={() => setVis(true)}
         size={props.sidebar ? 'small' : 'medium'}
         variant={props.sidebar ? 'secondary' : 'tertiary'}
-        icon={<ArrowForwardIcon title='Send beskjed' />}
+        icon={<ArrowForwardIcon title='Del stilling' />}
       >
         Del stillingen
       </Button>
@@ -129,9 +129,9 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
         open={vis}
         className={css.sendSmsModal}
         onClose={() => setVis(false)}
-        aria-label={`Send beskjed til ${markerteKandidater.length} kandidater`}
+        aria-label={`Del stillingen med ${markerteKandidater.length} kandidater`}
         header={{
-          heading: 'Send beskjed',
+          heading: 'Del stillingen',
         }}
       >
         <Modal.Body>

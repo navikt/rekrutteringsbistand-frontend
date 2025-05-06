@@ -32,7 +32,7 @@ const KandidatSide: React.FC = () => {
         <Tabs.List className='flex w-full justify-between'>
           <div className='flex whitespace-nowrap'>
             <Tabs.Tab value={Fane.OVERSIKT} label='Oversikt' />
-            <Tabs.Tab value={Fane.AKTIVITET} label='Aktivitet' />
+            <Tabs.Tab value={Fane.AKTIVITET} label='Aktiviteter' />
           </div>
           <div className='hidden @xl/kandidattabs:block'>{Knapper}</div>
         </Tabs.List>
