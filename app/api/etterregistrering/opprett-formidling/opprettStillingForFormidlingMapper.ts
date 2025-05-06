@@ -24,6 +24,12 @@ export const opprettStillingForFormidlingMapper = (
           formidlingData.omFormidlingen?.organisasjon?.organisasjonsnummer ??
           '',
         name: formidlingData.omFormidlingen?.organisasjon?.navn ?? '',
+        parentOrgnr:
+          formidlingData.omFormidlingen?.organisasjon?.overordnetEnhet ?? '',
+        orgform:
+          formidlingData.omFormidlingen?.organisasjon?.organisasjonsform ?? '',
+        employees:
+          formidlingData.omFormidlingen?.organisasjon?.antallAnsatte ?? null,
         location: {
           address:
             formidlingData.omFormidlingen?.organisasjon?.adresse?.adresse ?? '',

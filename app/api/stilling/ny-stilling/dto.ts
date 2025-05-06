@@ -23,6 +23,9 @@ interface NyAdministrationDTO {
 interface NyEmployerDTO {
   orgnr: string;
   name: string;
+  parentOrgnr: string;
+  orgform: string;
+  employees: number | null;
   location: NyLocationDTO;
 }
 
