@@ -15,7 +15,7 @@ export const calculateDuration = (fraDato: string, tilDato: string) => {
   const end = new Date(tilDato);
   const years = differenceInYears(end, start);
   const months = differenceInMonths(end, start) % 12;
-  return `${years} år, ${months} mnd.`;
+  return `${years ? `${years} år,` : ''} ${months} mnd.`;
 };
 
 interface TidslinjeFeltProps {

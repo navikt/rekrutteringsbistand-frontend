@@ -28,7 +28,7 @@ export const formaterNorskDato = (
   visTid: boolean | undefined | null = false,
 ) => {
   const parsedDato = parseNorskDato(dato);
-  const datoFormat = kortDato ? 'dd MMM yyyy' : 'dd MMMM yyyy';
+  const datoFormat = kortDato ? 'd MMM yyyy' : 'd MMMM yyyy';
 
   if (parsedDato && isValid(parsedDato)) {
     const formattedDate = format(parsedDato, datoFormat, { locale: nb });

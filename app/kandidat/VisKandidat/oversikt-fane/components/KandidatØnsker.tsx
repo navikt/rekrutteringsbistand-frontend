@@ -62,9 +62,9 @@ const KandidatØnsker: React.FC = () => {
           <div>
             <p className='font-medium'>Arbeidstid</p>
             <p>
-              {kandidatData.arbeidstidJobbonskerObj?.map(
-                (arbeidstid) => arbeidstid?.arbeidstidKodeTekst ?? '-',
-              ) ?? '-'}
+              {kandidatData.arbeidstidJobbonskerObj
+                ?.map((arbeidstid) => arbeidstid?.arbeidstidKodeTekst ?? '-')
+                .join(', ') ?? '-'}
             </p>
           </div>
         </div>
