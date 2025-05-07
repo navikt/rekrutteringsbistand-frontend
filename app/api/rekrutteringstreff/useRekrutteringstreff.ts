@@ -20,7 +20,7 @@ const HendelseSchema = z.object({
   aktørIdentifikasjon: z.string().nullable(),
 });
 
-const RekrutteringstreffSchema = z.object({
+export const RekrutteringstreffSchema = z.object({
   id: z.string(),
   tittel: z.string(),
   beskrivelse: z.string(),
