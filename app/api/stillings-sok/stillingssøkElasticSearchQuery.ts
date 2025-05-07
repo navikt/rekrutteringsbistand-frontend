@@ -135,7 +135,7 @@ export function generateElasticSearchQuery(
       bool: {
         minimum_should_match: filter.fritekst.length ? '1' : '0',
         filter: [...term, ...valgteFilter],
-        should: esFritekstSøk(filter.fritekst.join(' ')),
+        should: filter.fritekst.map((fritekst) => esFritekstSøk(fritekst)),
       },
     },
     ...sort,
@@ -149,25 +149,33 @@ export function generateElasticSearchQuery(
                 filters: {
                   arbeidsgiver: {
                     bool: {
-                      should: esFritekstSøk(filter.fritekst.join(' ')),
+                      should: filter.fritekst.map((fritekst) =>
+                        esFritekstSøk(fritekst),
+                      ),
                       filter: [...term, ...valgteFilter],
                     },
                   },
                   tittel: {
                     bool: {
-                      should: esFritekstSøk(filter.fritekst.join(' ')),
+                      should: filter.fritekst.map((fritekst) =>
+                        esFritekstSøk(fritekst),
+                      ),
                       filter: [...term, ...valgteFilter],
                     },
                   },
                   annonsetekst: {
                     bool: {
-                      should: esFritekstSøk(filter.fritekst.join(' ')),
+                      should: filter.fritekst.map((fritekst) =>
+                        esFritekstSøk(fritekst),
+                      ),
                       filter: [...term, ...valgteFilter],
                     },
                   },
                   annonsenummer: {
                     bool: {
-                      should: esFritekstSøk(filter.fritekst.join(' ')),
+                      should: filter.fritekst.map((fritekst) =>
+                        esFritekstSøk(fritekst),
+                      ),
                       filter: [...term, ...valgteFilter],
                     },
                   },
