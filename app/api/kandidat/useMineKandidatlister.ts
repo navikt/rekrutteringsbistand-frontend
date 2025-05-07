@@ -14,7 +14,7 @@ const mineKandidatlisterEndepunkt = (pageNumber?: number) =>
 
 const MinKandidatListeSchema = z.object({
   kandidatlisteId: z.string(),
-  tittel: z.null(),
+  tittel: z.string().nullable(),
   organisasjonReferanse: z.string(),
   organisasjonNavn: z.string(),
   stillingId: z.string(),

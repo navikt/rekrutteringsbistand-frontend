@@ -34,6 +34,7 @@ interface NyLocationDTO {
   postalCode: string;
   city: string;
   municipal: string;
+  municipalCode: string;
   country: string;
   county: any;
 }

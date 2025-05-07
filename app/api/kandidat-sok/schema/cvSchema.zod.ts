@@ -56,7 +56,7 @@ const KandidatDataSchema = z.object({
   tidsstempel: z.string().nullable().optional(), // Date as ISO string
   doed: z.boolean().nullable().optional(),
   frKode: z.string().nullable().optional(),
-  innsatsgruppe: z.nativeEnum(Innsatsgruppe),
+  innsatsgruppe: z.nativeEnum(Innsatsgruppe).optional(),
   orgenhet: z.string().nullable().optional(),
   navkontor: z.string().nullable().optional(),
   fritattKandidatsok: z.boolean().nullable().optional(),

@@ -116,7 +116,10 @@ const KandidatKort: React.FC<IKandidatKort> = ({
                 />
                 <TekstMedIkon
                   ikon={<HandHeartIcon />}
-                  tekst={alleInnsatsgrupper[kandidat.innsatsgruppe].label}
+                  tekst={
+                    kandidat.innsatsgruppe &&
+                    alleInnsatsgrupper[kandidat.innsatsgruppe].label
+                  }
                 />
               </div>
             </div>

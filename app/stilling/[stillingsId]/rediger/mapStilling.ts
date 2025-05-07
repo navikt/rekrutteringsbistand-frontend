@@ -68,6 +68,14 @@ export const mapStillingTilForm = (
   const søknadsfristSnarest =
     stillingsData?.stilling?.properties?.applicationdue === 'Snarest';
 
+  const harIkkeLokasjon = stillingsData?.stilling?.locationList?.length === 0;
+
+  const employerLokasjon = [
+    {
+      ...stillingsData?.stilling?.employer?.location,
+    },
+  ];
+
   return {
     omVirksomheten: {
       beskrivelse:
@@ -88,18 +96,13 @@ export const mapStillingTilForm = (
     omStillingen: {
       categoryList: stillingsData?.stilling?.categoryList ?? [],
       beskrivelse: stillingsData?.stilling?.properties?.adtext ?? '',
-      adresser:
-        (stillingsData?.stilling?.locationList
-          ?.filter((a) => a.address !== null)
-          .map((a) => {
-            return { ...a, adresseType: true };
-          }) ?? stillingsData?.stilling?.employer?.location)
-          ? [
-              {
-                ...stillingsData?.stilling?.employer?.location,
-              },
-            ]
-          : [],
+      adresser: harIkkeLokasjon
+        ? employerLokasjon
+        : (stillingsData?.stilling?.locationList
+            ?.filter((a) => a.address !== null)
+            .map((a) => {
+              return { ...a, adresseType: true };
+            }) ?? []),
       lokasjoner:
         stillingsData?.stilling?.locationList
           ?.filter((a) => a.address === null)

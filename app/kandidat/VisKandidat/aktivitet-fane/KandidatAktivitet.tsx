@@ -49,10 +49,10 @@ const KandidatAktivitet: React.FC = () => {
                         {i.erMaskert ? (
                           <TabellRad
                             dato={i.lagtTilTidspunkt}
-                            arbeidsgiver={i.organisasjonNavn}
-                            tittel={i.tittel}
+                            arbeidsgiver={i.organisasjonNavn ?? '-'}
+                            tittel={i.tittel ?? '-'}
                             stillingId={i.stillingId}
-                            lagtTilAv={i.lagtTilAvNavn}
+                            lagtTilAv={i.lagtTilAvNavn ?? '-'}
                             status={i.status}
                             erMaskert
                           />
@@ -101,9 +101,11 @@ const HistoriskStillingRad: React.FC<{
             dato={historikkData.lagtTilTidspunkt}
             tittel={data.stilling.title}
             stillingId={historikkData.stillingId}
-            erMaskert={historikkData.erMaskert}
+            erMaskert={historikkData.erMaskert ?? false}
             arbeidsgiver={
-              data?.stilling?.businessName ?? historikkData.organisasjonNavn
+              data?.stilling?.businessName ??
+              historikkData.organisasjonNavn ??
+              '-'
             }
             lagtTilAv={historikkData.lagtTilAvNavn}
             status={historikkData.status}

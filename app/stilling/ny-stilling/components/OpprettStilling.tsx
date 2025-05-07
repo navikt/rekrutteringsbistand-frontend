@@ -54,6 +54,7 @@ export const OpprettStillingKnapp: React.FC<OpprettStillingProps> = ({
             orgform: arbeidsgiver.organisasjonsform ?? '',
             employees: arbeidsgiver.antallAnsatte ?? null,
             location: {
+              municipalCode: arbeidsgiver.adresse?.kommunenummer ?? '',
               address: arbeidsgiver.adresse?.adresse ?? '',
               postalCode: arbeidsgiver.adresse?.postnummer ?? '',
               county: '',

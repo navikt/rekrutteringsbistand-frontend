@@ -11,7 +11,7 @@ export interface TabellRadProps {
   lagtTilAv?: string;
   status?: string;
   stilling?: string;
-  stillingId?: string;
+  stillingId?: string | null;
 }
 
 const TabellRad: React.FC<TabellRadProps> = ({

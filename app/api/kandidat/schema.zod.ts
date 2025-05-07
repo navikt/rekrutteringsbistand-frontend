@@ -62,9 +62,9 @@ const kandidaterSchema = z.object({
 
 export const kandidatlisteSchema = z.object({
   kandidatlisteId: z.string(),
-  tittel: z.null(),
+  tittel: z.string().nullable(),
   organisasjonReferanse: z.string(),
-  organisasjonNavn: z.string(),
+  organisasjonNavn: z.string().nullable(),
   stillingId: z.string(),
   opprettetAv: z.object({ ident: z.string(), navn: z.string() }),
   opprettetTidspunkt: z.string(),
@@ -86,13 +86,13 @@ export const kandidatHistorikkSchema = z.object({
   lagtTilAvIdent: z.string(),
   lagtTilAvEpost: z.string(),
   lagtTilAvNavn: z.string(),
-  status: z.nativeEnum(Kandidatlistestatus),
+  status: z.nativeEnum(InternKandidatstatus),
   utfall: z.string(),
   uuid: z.string(),
-  tittel: z.string(),
-  organisasjonReferanse: z.null(),
-  organisasjonNavn: z.string(),
-  stillingId: z.string(),
+  tittel: z.string().nullable(),
+  organisasjonReferanse: z.string().nullable(),
+  organisasjonNavn: z.string().nullable(),
+  stillingId: z.string().nullable(),
   slettet: z.boolean(),
   utfallsendringer: z.array(
     z.object({
@@ -102,7 +102,7 @@ export const kandidatHistorikkSchema = z.object({
       sendtTilArbeidsgiversKandidatliste: z.boolean(),
     }),
   ),
-  stillingskategori: z.null(),
+  stillingskategori: z.string().nullable(),
   opprettetAvIdent: z.string(),
-  erMaskert: z.boolean(),
+  erMaskert: z.boolean().optional().nullable(),
 });

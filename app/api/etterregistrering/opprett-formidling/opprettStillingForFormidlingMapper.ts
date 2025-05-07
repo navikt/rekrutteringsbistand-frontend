@@ -40,9 +40,11 @@ export const opprettStillingForFormidlingMapper = (
             formidlingData.omFormidlingen?.organisasjon?.adresse?.kommune ?? '',
           country:
             formidlingData.omFormidlingen?.organisasjon?.adresse?.land ?? '',
-          municipal:
+          municipalCode:
             formidlingData.omFormidlingen?.organisasjon?.adresse
               ?.kommunenummer ?? '',
+          municipal:
+            formidlingData.omFormidlingen?.organisasjon?.adresse?.kommune ?? '',
           city:
             formidlingData.omFormidlingen?.organisasjon?.adresse?.poststed ??
             '',

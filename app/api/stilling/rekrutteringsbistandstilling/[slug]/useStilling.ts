@@ -19,9 +19,9 @@ import useSWRImmutable from 'swr/immutable';
 const stillingEndepunkt = (stillingsId: string) =>
   `${StillingAPI.internUrl}/rekrutteringsbistandstilling/${stillingsId}`;
 
-export const useStilling = (stillingsId: string) =>
+export const useStilling = (stillingsId?: string | null) =>
   useSWRImmutable(
-    stillingEndepunkt(stillingsId),
+    stillingsId ? stillingEndepunkt(stillingsId) : null,
     getAPIwithSchema(StillingDataSchema),
   );
 
