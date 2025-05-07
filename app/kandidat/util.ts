@@ -24,9 +24,11 @@ export const storForbokstav = (s: string | null | undefined) => {
   }
 
   const ord = s.split(' ');
-  return ord.map((o) =>
-    o.length === 0 ? o : o[0].toUpperCase() + o.substring(1).toLowerCase(),
-  );
+  return ord
+    .map((o) =>
+      o.length === 0 ? o : o[0].toUpperCase() + o.substring(1).toLowerCase(),
+    )
+    .join(' ');
 };
 
 export const hentKandidatensNavn = (kandidat: KandidatDataSchemaDTO) =>
