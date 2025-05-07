@@ -73,7 +73,7 @@ const StillingsKort: React.FC<IStillingsKort> = ({
         <Button
           variant='tertiary'
           onClick={() => leggTilKandidat(kandidatId)}
-          className='self-start sm:self-center'
+          className='self-start sm:self-center whitespace-nowrap'
         >
           Legg til kandidat
         </Button>
