@@ -1,8 +1,10 @@
+import JobbsokerHeartUpDarkIkon from '../../../../../../public/ikoner/jobbsoker_heart-up-dark.svg';
+import JobbsokerHeartUpIkon from '../../../../../../public/ikoner/jobbsoker_heart-up.svg';
 import LeggTilJobbsøkerKnapp from '../../LeggTilJobbsøkerKnapp';
 import HendelseLabel from './HendelseLabel';
-import JobbsøkerIcon from './JobbsøkerIcon';
 import NavnLenke from './NavnLenke';
 import { JobbsøkerHendelserDTO } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkerHendelser';
+import SVGDarkmode from '@/app/components/SVGDarkmode';
 import {
   CheckmarkCircleIcon,
   PlusCircleIcon,
@@ -48,7 +50,11 @@ const JobbsøkerHendelserKort: React.FC<JobbsøkerHendelserKortProps> = ({
                   background='raised'
                   className='rounded-full mb-2 flex items-center justify-center'
                 >
-                  <JobbsøkerIcon />
+                  <SVGDarkmode
+                    light={JobbsokerHeartUpIkon}
+                    dark={JobbsokerHeartUpDarkIkon}
+                    alt='legg_til_jobbsøker'
+                  />
                 </Box.New>
                 <BodyShort className='text-center'>
                   <span className='block'>
@@ -116,13 +122,11 @@ const JobbsøkerHendelserKort: React.FC<JobbsøkerHendelserKortProps> = ({
                         {hendelse.fornavn &&
                           hendelse.etternavn &&
                           hendelse.kandidatnummer && (
-                            <BodyShort>
-                              <NavnLenke
-                                fornavn={hendelse.fornavn}
-                                etternavn={hendelse.etternavn}
-                                kandidatnummer={hendelse.kandidatnummer}
-                              />
-                            </BodyShort>
+                            <NavnLenke
+                              fornavn={hendelse.fornavn}
+                              etternavn={hendelse.etternavn}
+                              kandidatnummer={hendelse.kandidatnummer}
+                            />
                           )}
                         {hendelse.fødselsnummer && (
                           <BodyShort>{hendelse.fødselsnummer}</BodyShort>

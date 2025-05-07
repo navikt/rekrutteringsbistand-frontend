@@ -1,4 +1,4 @@
-import { getWorkLocationsAsString } from '../../../../../util/locationUtil';
+import { getWorkLocationAsString } from '../../../../../util/locationUtil';
 import { GeografiDTO } from '../../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import RikTekstEditor from '../../../../components/rikteksteditor/RikTekstEditor';
 import capitalizeEmployerName from '../../../stilling-util';
@@ -48,7 +48,7 @@ export const RedigerOmVirksomheten: React.FC<{
       </Heading>
       <form onSubmit={handleStepSubmit}>
         <div className='flex flex-col space-y-8'>
-          <dl className='grid grid-cols-2'>
+          <dl className=' flex xl:grid xl:grid-cols-2 flex-col'>
             <dt className='font-bold'>Bedrift</dt>
             <dd>
               {capitalizeEmployerName(
@@ -57,8 +57,8 @@ export const RedigerOmVirksomheten: React.FC<{
             </dd>
             <dt className='font-bold'>Adresse</dt>
             <dd>
-              {getWorkLocationsAsString(
-                stillingsData.stilling.employer?.locationList as GeografiDTO[],
+              {getWorkLocationAsString(
+                stillingsData.stilling.employer?.location as GeografiDTO,
               )}
             </dd>
             <dt className='font-bold'>Organisasjonsnummer</dt>

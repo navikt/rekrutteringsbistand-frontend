@@ -12,6 +12,7 @@ enum KandidatlisteFilterParam {
   SORTERING = 'kandidatlisteSortering',
   INTERN_STATUS = 'kandidatlsiteInternStatus',
   FRITEKST_SØK = 'kandidatlisteFritekstSøk',
+  VIS_SLETTEDE = 'visSlettedeKanidater',
 }
 
 export enum KandidatlisteSortering {
@@ -36,6 +37,8 @@ export interface KandidatlisteFilterContextProps {
   setSortering: (val: string) => void;
   internStatus: string[];
   setInternStatus: (val: string[]) => void;
+  visSlettede: string;
+  setVisSlettede: (val: string) => void;
 }
 
 const KandidatlisteFilterContext = React.createContext<
@@ -71,7 +74,12 @@ export const KandidatlisteFilterContextProvider: React.FC<
 
   const [fritekstSøk, setFritekstSøk] = useQueryState<string>(
     KandidatlisteFilterParam.FRITEKST_SØK,
-    parseAsString.withDefault(''),
+    parseAsString.withDefault('').withOptions({ clearOnDefault: true }),
+  );
+
+  const [visSlettede, setVisSlettede] = useQueryState<string>(
+    KandidatlisteFilterParam.VIS_SLETTEDE,
+    parseAsString.withDefault('').withOptions({ clearOnDefault: true }),
   );
 
   return (
@@ -85,6 +93,8 @@ export const KandidatlisteFilterContextProvider: React.FC<
         setInternStatus,
         fritekstSøk,
         setFritekstSøk,
+        visSlettede,
+        setVisSlettede,
       }}
     >
       {children}

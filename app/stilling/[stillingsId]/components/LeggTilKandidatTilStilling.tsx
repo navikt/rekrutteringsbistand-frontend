@@ -6,7 +6,6 @@ import { useKandidatliste } from '../../../api/kandidat/useKandidatliste';
 import LeggTilKandidater, {
   ValgtKandidatProp,
 } from '../../../components/legg-til-kandidat/LeggTilKandidater';
-import { useVisVarsling } from '../../../components/varsling/Varsling';
 import { useApplikasjonContext } from '../../../providers/ApplikasjonContext';
 import { useUmami } from '../../../providers/UmamiContext';
 import { PersonPlusIcon } from '@navikt/aksel-icons';
@@ -25,14 +24,12 @@ const LeggTilKandidatTilStilling: React.FC<LeggTilKandidatTilStillingProps> = ({
 }) => {
   const ref = useRef<HTMLDialogElement>(null);
   const { track } = useUmami();
-  const { valgtNavKontor } = useApplikasjonContext();
+  const { valgtNavKontor, visVarsel } = useApplikasjonContext();
   const [valgteKandidater, setValgteKandidater] = useState<ValgtKandidatProp[]>(
     [],
   );
   const [modalKey, setModalKey] = useState(0);
   const kandidatlisteIdHook = useKandidatliste(stillingsId);
-
-  const visVarsel = useVisVarsling();
 
   const [laster, setLaster] = useState(false);
 
@@ -76,16 +73,16 @@ const LeggTilKandidatTilStilling: React.FC<LeggTilKandidatTilStillingProps> = ({
         });
 
         visVarsel({
-          innhold: 'Kandidater ble lagt til i stillingen',
-          alertType: 'success',
+          tekst: 'Kandidater ble lagt til i stillingen',
+          type: 'success',
         });
         setValgteKandidater([]);
         kandidatlisteIdHook.mutate();
         ref.current?.close();
       } catch (error) {
         visVarsel({
-          innhold: 'Noe gikk galt ved lagring av kandidater',
-          alertType: 'error',
+          tekst: 'Noe gikk galt ved lagring av kandidater',
+          type: 'error',
         });
         throw new rekbisError({ error: error });
       }

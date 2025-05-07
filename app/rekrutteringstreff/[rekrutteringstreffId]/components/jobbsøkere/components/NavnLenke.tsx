@@ -1,4 +1,4 @@
-import { Link } from '@navikt/ds-react';
+import { useQueryState } from 'nuqs';
 import * as React from 'react';
 
 interface NavnLenkeProps {
@@ -20,10 +20,15 @@ const NavnLenke: React.FC<NavnLenkeProps> = ({
   etternavn,
   kandidatnummer,
 }) => {
+  const [, settKandidatnr] = useQueryState('visKandidatnr', {
+    defaultValue: '',
+    clearOnDefault: true,
+  });
+
   return (
-    <Link href={`/kandidat/${kandidatnummer}`}>
+    <div className='aksel-link' onClick={() => settKandidatnr(kandidatnummer)}>
       {storForbokstavFlereOrd(etternavn)}, {storForbokstavFlereOrd(fornavn)}
-    </Link>
+    </div>
   );
 };
 

@@ -1,6 +1,6 @@
 import { oppdaterStilling } from '../../../../api/stilling/oppdater-stilling/oppdaterStilling';
 import { useStilling } from '../../../../api/stilling/rekrutteringsbistandstilling/[slug]/useStilling';
-import { useVisVarsling } from '../../../../components/varsling/Varsling';
+import { useApplikasjonContext } from '../../../../providers/ApplikasjonContext';
 import { StillingsStatus } from '../../../stilling-typer';
 import { useStillingsContext } from '../../StillingsContext';
 import { mapFormTilStilling } from '../mapStilling';
@@ -20,10 +20,8 @@ const AksjonsknapperSiderbarStilling: React.FC<
 > = ({ formVerdier }) => {
   const { setForhåndsvisData, stillingsData } = useStillingsContext();
   const [lagrer, setLagrer] = React.useState<boolean>(false);
-
+  const { visVarsel } = useApplikasjonContext();
   const { mutate } = useStilling(stillingsData.stilling.uuid);
-
-  const visVarsling = useVisVarsling();
 
   const onLagre = async () => {
     setLagrer(true);
@@ -33,16 +31,16 @@ const AksjonsknapperSiderbarStilling: React.FC<
     try {
       await oppdaterStilling(nyStillingsData);
 
-      visVarsling({
-        innhold: 'Stillingen ble lagret',
-        alertType: 'success',
+      visVarsel({
+        tekst: 'Stillingen ble lagret',
+        type: 'success',
       });
       await mutate();
     } catch (error) {
       logger.error('Feil ved lagring av stilling', error);
-      visVarsling({
-        innhold: 'Feil ved lagring av stilling',
-        alertType: 'error',
+      visVarsel({
+        tekst: 'Feil ved lagring av stilling',
+        type: 'error',
       });
     }
 

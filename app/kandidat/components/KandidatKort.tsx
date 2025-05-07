@@ -15,6 +15,7 @@ import {
   PinIcon,
 } from '@navikt/aksel-icons';
 import { Box, Checkbox, Heading, Link } from '@navikt/ds-react';
+import { useQueryState } from 'nuqs';
 import * as React from 'react';
 
 type IKandidatKort = {
@@ -29,7 +30,10 @@ const KandidatKort: React.FC<IKandidatKort> = ({
   stillingsId,
 }) => {
   const { markerteKandidater, setMarkert } = useKandidatSøkMarkerteContext();
-
+  const [, setVisKandidatnr] = useQueryState('visKandidatnr', {
+    defaultValue: '',
+    clearOnDefault: true,
+  });
   const erMarkert = markerteKandidater?.some(
     (k) => k === kandidat.arenaKandidatnr,
   );
@@ -38,9 +42,7 @@ const KandidatKort: React.FC<IKandidatKort> = ({
     <div className='mt-2 flex justify-end self-end'>
       {!stillingsId && (
         <div className='flex-end flex flex-col justify-center gap-2 font-bold'>
-          <Link
-            href={`/kandidat/${kandidat.arenaKandidatnr}/forslag-til-stilling`}
-          >
+          <Link href={`//stilling/?visKandidatnr=${kandidat.arenaKandidatnr}`}>
             <TekstMedIkon ikon={<FileSearchIcon />} tekst='Finn stilling' />
           </Link>
         </div>
@@ -50,12 +52,12 @@ const KandidatKort: React.FC<IKandidatKort> = ({
 
   return (
     <Box.New
-      className='mb-4 flex flex-col pl-4 pb-4 pr-4'
+      className='@container/kandidatlistekort mb-4 flex flex-col pl-4 pb-4 pr-4 min-w-fit'
       background='neutral-softA'
       borderRadius='xlarge'
       data-testid='stillings-kort'
     >
-      <div className='flex flex-row'>
+      <div className=' flex flex-row'>
         <div>
           <Checkbox
             disabled={
@@ -81,10 +83,18 @@ const KandidatKort: React.FC<IKandidatKort> = ({
           </Checkbox>
         </div>
         <div className='mt-2 flex-grow'>
-          <Heading className='underline' size='small'>
-            <Link href={`/kandidat/${kandidat.arenaKandidatnr}`}>
+          <Heading
+            className='underline aksel-link aksel-link--action cursor-pointer'
+            size='small'
+          >
+            <div
+              onClick={() =>
+                kandidat.arenaKandidatnr &&
+                setVisKandidatnr(kandidat.arenaKandidatnr)
+              }
+            >
               {hentKandidatensNavn(kandidat)}
-            </Link>
+            </div>
           </Heading>
           <div className='items-row flex'>
             <div className='w-full'>
@@ -96,7 +106,7 @@ const KandidatKort: React.FC<IKandidatKort> = ({
 
                 <TekstMedIkon
                   ikon={<HouseIcon />}
-                  tekst={`${kandidat.postnummer ?? '-'} ${kandidat.kommuneNavn ?? '-'}`}
+                  tekst={`${kandidat.postnummer ?? '-'} ${kandidat.poststed ?? '-'} ${kandidat.kommuneNavn ? `(${kandidat.kommuneNavn})` : ''}`}
                 />
               </div>
               <div className='mt-2 flex flex-row gap-4'>
@@ -112,9 +122,13 @@ const KandidatKort: React.FC<IKandidatKort> = ({
             </div>
           </div>
         </div>
-        <div className='hidden lg:flex flex-end self-end'>{Knapp}</div>
+        <div className='hidden @xl/kandidatlistekort:block  flex-end self-end '>
+          {Knapp}
+        </div>
       </div>
-      <div className=' lg:hidden flex justify-end'> {Knapp}</div>
+      <div className=' @xl/kandidatlistekort:hidden flex justify-end'>
+        {Knapp}
+      </div>
     </Box.New>
   );
 };

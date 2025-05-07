@@ -9,7 +9,7 @@ import {
   usePostSmsTilKandidater,
   useSmserForStilling,
 } from '../../../../../api/kandidatvarsel/kandidatvarsel';
-import { useVisVarsling } from '../../../../../components/varsling/Varsling';
+import { useApplikasjonContext } from '../../../../../providers/ApplikasjonContext';
 import { useUmami } from '../../../../../providers/UmamiContext';
 import { Stillingskategori } from '../../../../stilling-typer';
 import { useStillingsContext } from '../../../StillingsContext';
@@ -35,8 +35,8 @@ type Props = {
 };
 
 const SendSmsModal: FunctionComponent<Props> = (props) => {
+  const { visVarsel } = useApplikasjonContext();
   const { fjernAllMarkering, markerteKandidater } = props;
-  const visVarsling = useVisVarsling();
   const { track } = useUmami();
 
   const { stillingsData } = useStillingsContext();
@@ -77,8 +77,9 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
     setSendSmsLoading(true);
 
     if (kandidaterSomMottarBeskjed.length === 0) {
-      visVarsling({
-        innhold: 'Ingen kandidater valgt',
+      visVarsel({
+        tekst: 'Ingen kandidater valgt',
+        type: 'warning',
       });
       return;
     }
@@ -93,19 +94,20 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
       track(UmamiEvent.Stilling.send_beskjed_til_kandidat, {
         antall: kandidaterSomMottarBeskjed.length,
       });
-      visVarsling({
-        innhold: 'Beskjed er sendt',
+      visVarsel({
+        tekst: 'Beskjed er sendt',
+        type: 'success',
       });
       fjernAllMarkering();
       setVis(false);
     } catch (error) {
       logger.error('Klarte ikke å sende SMS:', error);
-      visVarsling({
-        innhold:
+      visVarsel({
+        tekst:
           error instanceof Error
             ? `Feil ved sending: ${error.message}`
             : 'Det skjedde en uventet feil ved sending av beskjed',
-        alertType: 'error',
+        type: 'error',
       });
     } finally {
       setSendSmsLoading(false);
@@ -119,7 +121,7 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
         onClick={() => setVis(true)}
         size={props.sidebar ? 'small' : 'medium'}
         variant={props.sidebar ? 'secondary' : 'tertiary'}
-        icon={<ArrowForwardIcon title='Send beskjed' />}
+        icon={<ArrowForwardIcon title='Del stilling' />}
       >
         Del stillingen
       </Button>
@@ -127,9 +129,9 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
         open={vis}
         className={css.sendSmsModal}
         onClose={() => setVis(false)}
-        aria-label={`Send beskjed til ${markerteKandidater.length} kandidater`}
+        aria-label={`Del stillingen med ${markerteKandidater.length} kandidater`}
         header={{
-          heading: 'Send beskjed',
+          heading: 'Del stillingen',
         }}
       >
         <Modal.Body>

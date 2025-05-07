@@ -32,32 +32,14 @@ const Utfallsstatistikk: FunctionComponent<IStatistikkValg> = ({
           data-testid='forside-utfallsstatistikk'
         >
           <Infokort
-            beskrivelse='Antall delt med arbeidsgiver'
-            detaljer={[
-              {
-                beskrivelse: 'Antall under 30 år',
-                tall: data.antPresentasjoner.under30år,
-              },
-              {
-                beskrivelse: 'Antall uten standardinnsats',
-                tall: data.antPresentasjoner.innsatsgruppeIkkeStandard,
-              },
-            ]}
+            tittel='Antall delt med arbeidsgiver'
             ikon={<EyeIcon aria-hidden />}
             tall={data.antPresentasjoner.totalt}
+            beskrivelse={`${data.antPresentasjoner.under30år} under 30 år · ${data.antPresentasjoner.innsatsgruppeIkkeStandard} utenom standardinnsats`}
           />
           <Infokort
-            beskrivelse='Antall som har fått jobb'
-            detaljer={[
-              {
-                beskrivelse: 'Antall under 30 år',
-                tall: data.antFåttJobben.under30år,
-              },
-              {
-                beskrivelse: 'Antall uten standardinnsats',
-                tall: data.antFåttJobben.innsatsgruppeIkkeStandard,
-              },
-            ]}
+            tittel='Antall som har fått jobb'
+            beskrivelse={`${data.antFåttJobben.under30år} under 30 år · ${data.antFåttJobben.innsatsgruppeIkkeStandard} utenom standardinnsats`}
             ikon={<HandshakeIcon aria-hidden />}
             tall={data.antFåttJobben.totalt}
           />

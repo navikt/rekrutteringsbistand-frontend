@@ -3,6 +3,7 @@ import {
   getSessionStorage,
   setSessionStorage,
 } from '../../util/sessionStorage';
+import { useQueryState } from 'nuqs';
 import React, {
   createContext,
   useCallback,
@@ -13,8 +14,13 @@ import React, {
 } from 'react';
 
 interface KandidatNavigeringContextProps {
-  navigering: string[];
-  setNavigering: (navigering: string[]) => void;
+  kandidatNavigering: string[];
+  setKandidatNavigering: (navigering: string[]) => void;
+  nesteKandidat: () => void;
+  forrigeKandidat: () => void;
+  lukkSidebar: () => void;
+  harNesteKandidat: boolean;
+  harForrigeKandidat: boolean;
 }
 
 const KandidatNavigeringContext = createContext<
@@ -24,16 +30,29 @@ const KandidatNavigeringContext = createContext<
 export const KandidatNavigeringProvider: React.FC<{
   children: React.ReactNode;
 }> = ({ children }) => {
-  const [navigering, setNavigering] = useState<string[]>(
+  const [kandidatNavigering, setKandidatNavigering] = useState<string[]>(
     getSessionStorage('kandidatNavigering') || [],
   );
+  const [harNesteKandidat, setHarNesteKandidat] = useState<boolean>(false);
+  const [harForrigeKandidat, setHarForrigeKandidat] = useState<boolean>(false);
 
-  const prevNavigeringRef = useRef<string[]>(navigering);
+  const [kandidatNr, settKandidatnr] = useQueryState('visKandidatnr', {
+    defaultValue: '',
+    clearOnDefault: true,
+  });
+
+  const prevNavigeringRef = useRef<string[]>(kandidatNavigering);
 
   useEffect(() => {
-    setSessionStorage('kandidatNavigering', navigering);
-    prevNavigeringRef.current = navigering;
-  }, [navigering]);
+    const index = kandidatNavigering.indexOf(kandidatNr);
+    setHarNesteKandidat(index !== -1 && index < kandidatNavigering.length - 1);
+    setHarForrigeKandidat(index > 0);
+  }, [kandidatNr, kandidatNavigering]);
+
+  useEffect(() => {
+    setSessionStorage('kandidatNavigering', kandidatNavigering);
+    prevNavigeringRef.current = kandidatNavigering;
+  }, [kandidatNavigering]);
 
   const updateNavigering = useCallback((newNavigering: string[]) => {
     if (
@@ -41,20 +60,51 @@ export const KandidatNavigeringProvider: React.FC<{
       JSON.stringify(prevNavigeringRef.current)
     ) {
       prevNavigeringRef.current = newNavigering;
-      setNavigering(newNavigering);
+      setKandidatNavigering(newNavigering);
     }
   }, []);
 
+  const nesteKandidat = () => {
+    const index = kandidatNavigering.indexOf(kandidatNr);
+    if (index !== -1 && index < kandidatNavigering.length - 1) {
+      settKandidatnr(kandidatNavigering[index + 1]);
+    } else if (index === -1 && kandidatNavigering.length > 0) {
+      settKandidatnr(kandidatNavigering[0]);
+    }
+  };
+
+  const forrigeKandidat = () => {
+    const index = kandidatNavigering.indexOf(kandidatNr);
+    if (index > 0) {
+      settKandidatnr(kandidatNavigering[index - 1]);
+    } else if (index === -1 && kandidatNavigering.length > 0) {
+      settKandidatnr(kandidatNavigering[0]);
+    }
+  };
+
+  const lukkSidebar = () => {
+    setKandidatNavigering([]);
+    settKandidatnr('');
+  };
+
   return (
     <KandidatNavigeringContext.Provider
-      value={{ navigering, setNavigering: updateNavigering }}
+      value={{
+        kandidatNavigering,
+        setKandidatNavigering: updateNavigering,
+        nesteKandidat,
+        forrigeKandidat,
+        lukkSidebar,
+        harNesteKandidat,
+        harForrigeKandidat,
+      }}
     >
       {children}
     </KandidatNavigeringContext.Provider>
   );
 };
 
-export const useKandidatNavigering = () => {
+export const useKandidatNavigeringContext = () => {
   const context = useContext(KandidatNavigeringContext);
   if (!context) {
     throw new rekbisError({

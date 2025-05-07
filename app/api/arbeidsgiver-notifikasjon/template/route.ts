@@ -3,6 +3,7 @@ import { ArbeidsgiverNotifikasjonAPI } from '../../api-routes';
 
 export async function GET() {
   if (isLocal) {
+    // eslint-disable-next-line no-console
     console.log('isLocal', isLocal);
     return new Response('Template', {
       headers: { 'Content-Type': 'text/html' },

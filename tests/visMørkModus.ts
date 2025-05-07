@@ -3,13 +3,11 @@ import { expect, test } from '@playwright/test';
 export const visMørkModus = (testId: string) =>
   test('Viser mørk modus', async ({ page }) => {
     await expect(
-      page.getByRole('checkbox', { name: 'Mørk modus' }),
+      page.getByRole('button', { name: 'Mørk modus' }),
     ).toBeVisible();
 
-    await page.getByRole('checkbox', { name: 'Mørk modus' }).click();
-    await expect(
-      page.getByRole('checkbox', { name: 'Mørk modus' }),
-    ).toBeChecked();
+    await page.getByRole('button', { name: 'Mørk modus' }).click();
+    await expect(page.getByRole('button', { name: 'Lys modus' })).toBeVisible();
 
-    await expect(page.getByTestId(testId).first()).toBeVisible();
+    if (testId) await expect(page.getByTestId(testId).first()).toBeVisible();
   });

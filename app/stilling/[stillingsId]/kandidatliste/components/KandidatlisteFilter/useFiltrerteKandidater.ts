@@ -22,7 +22,8 @@ type FiltrerteKandidater = {
 
 const useFiltrerteKandidater = (): FiltrerteKandidater | null => {
   const { kandidater, usynligeKandidater } = useKandidatlisteContext();
-  const { fritekstSøk, sortering } = useKandidatlisteFilterContext();
+  const { fritekstSøk, sortering, internStatus, visSlettede } =
+    useKandidatlisteFilterContext();
 
   const [filtrerteKandidater, setFiltrerteKandidater] =
     React.useState<FiltrerteKandidater | null>(null);
@@ -170,10 +171,22 @@ const useFiltrerteKandidater = (): FiltrerteKandidater | null => {
           break;
       }
 
-      const fritekstKandidater = nyKandidatliste.filter((kandidat) => {
-        const fullNavn = `${kandidat.fornavn} ${kandidat.etternavn}`;
-        return fullNavn.toLowerCase().includes(fritekstSøk.toLowerCase());
-      });
+      const fritekstKandidater = nyKandidatliste
+        .filter((kandidat) => {
+          const fullNavn = `${kandidat.fornavn} ${kandidat.etternavn}`;
+          return fullNavn.toLowerCase().includes(fritekstSøk.toLowerCase());
+        })
+        .filter((kandidat) => {
+          if (internStatus.length === 0) return true;
+          return internStatus.includes(kandidat.status);
+        })
+        .filter((kandidat) => {
+          if (visSlettede === 'false') {
+            return !kandidat.arkivert;
+          } else {
+            return true;
+          }
+        });
 
       const fritekstUsynlige = nyUsynligListe.filter((kandidat) => {
         const fullNavn = `${kandidat.fornavn} ${kandidat.etternavn}`;
@@ -187,7 +200,14 @@ const useFiltrerteKandidater = (): FiltrerteKandidater | null => {
           fritekstKandidater.length + (fritekstUsynlige?.length || 0),
       });
     }
-  }, [sortering, kandidater, usynligeKandidater, fritekstSøk]);
+  }, [
+    sortering,
+    kandidater,
+    usynligeKandidater,
+    fritekstSøk,
+    internStatus,
+    visSlettede,
+  ]);
 
   return filtrerteKandidater;
 };

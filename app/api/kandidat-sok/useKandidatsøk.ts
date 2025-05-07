@@ -7,7 +7,6 @@ import {
   IKandidaSokFilterContext,
   KandidatSøkPortefølje,
 } from '../../kandidat/KandidaSokFilterContext';
-import { konverterStederTilNåværendeKoder } from '../../kandidat/[kandidatId]/forslag-til-stilling/useStillingForKandidat';
 import { KandidatSøkAPI } from '../api-routes';
 import { postApiWithSchema } from '../fetcher';
 import { usePamGeografi } from '../pam-geografi/typehead/lokasjoner/usePamGeografi';
@@ -26,6 +25,8 @@ export const kandidatSokSchema = z.object({
   antallTotalt: z.number(),
 });
 
+export type KandidatsokKandidat = z.infer<typeof KandidatDataSchema>;
+
 const kandidatSokEndepunkt = (
   type: KandidatSøkPortefølje | '*',
   side: number = 1,
@@ -40,30 +41,30 @@ export const useKandidatsøk = (
   const { data: geografi, isLoading: isGeografiLoading } = usePamGeografi();
   const shouldFetch = !isGeografiLoading;
 
-  const kommuneKoder = kandidatSøkFilter.ønsketSted.map((sted) => {
-    const kommuneMedKoder = geografi?.find(
-      (g) => g.lokasjon.kommune?.toUpperCase() === sted.toUpperCase(),
-    );
-    if (kommuneMedKoder) {
-      return `NO${kommuneMedKoder?.lokasjon.fylkesnummer}.${kommuneMedKoder?.lokasjon.kommunenummer}`;
+  const stedKoder = kandidatSøkFilter.ønsketSted.map((sted) => {
+    if (sted.includes('(Kommune)')) {
+      const kommuneSted = sted.split('(Kommune)')[0].trim();
+      const kommunekode = geografi?.find(
+        (g) => g.lokasjon.kommune?.toUpperCase() === kommuneSted.toUpperCase(),
+      );
+
+      if (kommunekode) {
+        return `${kommuneSted}.NO${kommunekode?.lokasjon.fylkesnummer}.${kommunekode?.lokasjon.kommunenummer}`;
+      }
     }
+    if (sted.includes('(Fylke)')) {
+      const fylkeSted = sted.split('(Fylke)')[0].trim();
+      const fylkeMedKoder = geografi?.find(
+        (g) => g.lokasjon.fylke?.toUpperCase() === fylkeSted.toUpperCase(),
+      );
+
+      if (fylkeMedKoder) {
+        return `${fylkeSted}.NO${fylkeMedKoder?.lokasjon.fylkesnummer}`;
+      }
+    }
+
     return null;
   });
-
-  const fylkeKoder = kandidatSøkFilter.ønsketSted.map((sted) => {
-    const fylkeMedKoder = geografi?.find(
-      (g) => g.lokasjon.fylke?.toUpperCase() === sted.toUpperCase(),
-    );
-    if (fylkeMedKoder) {
-      return `NO${fylkeMedKoder?.lokasjon.fylkesnummer}`;
-    }
-    return null;
-  });
-
-  const ønsketSted = konverterStederTilNåværendeKoder([
-    ...fylkeKoder,
-    ...kommuneKoder,
-  ]);
 
   const mapFilterTilpayload = {
     orgenhet: kandidatSøkFilter.orgenhet,
@@ -73,7 +74,7 @@ export const useKandidatsøk = (
     innsatsgruppe: kandidatSøkFilter.innsatsgruppe,
     side: kandidatSøkFilter.side,
     ønsketYrke: kandidatSøkFilter.ønsketYrke,
-    ønsketSted: ønsketSted,
+    ønsketSted: stedKoder,
     borPåØnsketSted: kandidatSøkFilter.borPåØnsketSted,
     kompetanse: kandidatSøkFilter.kompetanse,
     førerkort: kandidatSøkFilter.førerkort,

@@ -1,6 +1,7 @@
 'use client';
 
 import { UmamiEventObject } from '../../util/umamiEvents';
+import { logger } from '@navikt/next-logger';
 import { useRouter } from 'next/navigation';
 import { createContext, ReactNode, useContext } from 'react';
 
@@ -13,7 +14,7 @@ export const getScreenInfo = (): Record<string, string> => {
   };
 };
 
-interface UmamiContextType {
+export interface UmamiContextType {
   track: (event: UmamiEventObject, eventData?: Record<string, any>) => void;
   trackAndNavigate: (
     event: UmamiEventObject,
@@ -41,7 +42,7 @@ export const UmamiProvider = ({ children }: UmamiProviderProps) => {
         domene: event.domene,
       });
     } else {
-      console.warn('Umami script er ikke lastet', event);
+      logger.error('Umami script er ikke lastet', event);
     }
   };
 

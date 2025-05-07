@@ -7,5 +7,4 @@ test('Vis min etterregistrering', async ({ page }) => {
   await page.goto('http://localhost:1337/etterregistrering/minFormidling');
   await expect(page.getByRole('tab', { name: 'Om stillingen' })).toBeVisible();
   await expect(page.getByRole('tab', { name: 'Kandidater' })).toBeVisible();
-  await expect(page.getByRole('tab', { name: 'Kandidater' })).toBeVisible();
 });

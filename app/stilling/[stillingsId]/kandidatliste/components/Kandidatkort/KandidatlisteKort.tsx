@@ -34,6 +34,7 @@ const KandidatListeKort: React.FC<KandidatListeKortProps> = ({
         background='neutral-moderate'
         borderRadius='xlarge'
         data-testid='stillings-kort'
+        className='min-w-fit'
       >
         <div
           className={`grid ${KANDIDATLISTE_COLUMN_LAYOUT} gap-x-3 items-center `}
@@ -67,6 +68,7 @@ const KandidatListeKort: React.FC<KandidatListeKortProps> = ({
         background='neutral-softA'
         borderRadius='xlarge'
         data-testid='stillings-kort'
+        className='min-w-fit'
       >
         <div
           className={`grid ${KANDIDATLISTE_COLUMN_LAYOUT} gap-x-3 items-center `}

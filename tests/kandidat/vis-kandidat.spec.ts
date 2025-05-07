@@ -5,8 +5,8 @@ test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 
 test('Vis kandidat', async ({ page }) => {
   await page.goto('http://localhost:1337');
-  await page.getByRole('tab', { name: 'Kandidatsøk' }).click();
-  await page.getByRole('link', { name: 'Eriksen, Mikkel' }).click();
+  await page.getByRole('button', { name: 'Kandidater' }).click();
+  await page.getByText('Eriksen, Mikkel').click();
   await expect(
     page.getByRole('button', { name: 'Finn stilling' }),
   ).toBeVisible();

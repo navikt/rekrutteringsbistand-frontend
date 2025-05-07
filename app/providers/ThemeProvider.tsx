@@ -46,7 +46,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   if (!mounted) return null;
 
   return (
-    <Theme theme={darkMode ? 'dark' : 'light'}>
+    <Theme theme={darkMode ? 'dark' : 'light'} hasBackground={false}>
       <ThemeContext.Provider value={{ darkMode, setDarkMode }}>
         {children}
       </ThemeContext.Provider>

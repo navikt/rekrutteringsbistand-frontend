@@ -1,5 +1,27 @@
 import { GeografiDTO } from '../app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 
+export function getWorkLocationAsString(location?: GeografiDTO | null): string {
+  const workLocations: string[] = [];
+  if (!location) {
+    return '';
+  }
+
+  if (location.postalCode) {
+    let tmp = location.address ? `${location.address}, ` : '';
+    tmp += `${location.postalCode} ${capitalizeLocation(location.city ?? '')}`;
+    workLocations.push(tmp);
+  } else if (location.municipal) {
+    workLocations.push(capitalizeLocation(location.municipal));
+  } else if (location.county) {
+    workLocations.push(capitalizeLocation(location.county));
+  } else if (location.country) {
+    workLocations.push(capitalizeLocation(location.country));
+  }
+
+  const arbeidsSteder = workLocations.join(', ');
+  return arbeidsSteder;
+}
+
 export function getWorkLocationsAsString(
   locationList?: GeografiDTO[] | null,
 ): string {
@@ -9,17 +31,7 @@ export function getWorkLocationsAsString(
   }
 
   locationList.forEach((location) => {
-    if (location.postalCode) {
-      let tmp = location.address ? `${location.address}, ` : '';
-      tmp += `${location.postalCode} ${capitalizeLocation(location.city ?? '')}`;
-      workLocations.push(tmp);
-    } else if (location.municipal) {
-      workLocations.push(capitalizeLocation(location.municipal));
-    } else if (location.county) {
-      workLocations.push(capitalizeLocation(location.county));
-    } else if (location.country) {
-      workLocations.push(capitalizeLocation(location.country));
-    }
+    workLocations.push(getWorkLocationAsString(location));
   });
 
   const arbeidsSteder = workLocations.join(', ');

@@ -141,6 +141,15 @@ const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
   );
 };
 
+export const useNullableStillingsContext = () => {
+  const context = React.useContext(StillingsContext);
+
+  if (context === undefined) {
+    return null;
+  }
+  return context;
+};
+
 export const useStillingsContext = () => {
   const context = React.useContext(StillingsContext);
 

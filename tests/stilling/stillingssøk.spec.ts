@@ -11,25 +11,34 @@ test.describe(`Stillingssøk test`, () => {
   });
 
   test('Viser riktig innhold i stillingssøk', async ({ page }) => {
-    await expect(page.getByText('Stillinger')).toBeVisible();
     await expect(
-      page.getByRole('button', { name: 'Søk', exact: true }),
+      page.getByRole('heading', { name: 'Stillinger' }),
+    ).toBeVisible();
+
+    await expect(
+      page.getByRole('searchbox', { name: 'Søk i stillinger' }),
+    ).toBeVisible();
+    await expect(page.getByText('Status')).toBeVisible();
+    await expect(page.getByText('Område')).toBeVisible();
+    await expect(page.getByText('Inkludering')).toBeVisible();
+    await expect(page.getByText('Kategori')).toBeVisible();
+    await expect(page.getByText('Synlighet')).toBeVisible();
+    await expect(
+      page.getByRole('button', { name: 'Alle filtre' }),
     ).toBeVisible();
     await expect(
-      page.getByRole('checkbox', { name: 'Publisert' }),
+      page.getByRole('button', { name: 'Ny stilling' }),
     ).toBeVisible();
-    await expect(page.getByRole('checkbox', { name: 'Utløpt' })).toBeVisible();
-    await expect(page.getByRole('checkbox', { name: 'Stoppet' })).toBeVisible();
+    await page.getByRole('button', { name: 'Alle filtre' }).click();
+    await expect(page.getByRole('heading', { name: 'Filter' })).toBeVisible();
+    await page.locator('.data-\\[state\\=open\\]\\:animate-in').first().click();
+    await page.getByRole('searchbox', { name: 'Søk i stillinger' }).click();
     await page
       .getByRole('searchbox', { name: 'Søk i stillinger' })
-      .fill('Søketekst');
-    await page.getByRole('button', { name: 'Søk', exact: true }).click();
-    await expect(
-      page.getByRole('button', { name: 'Bruk mitt standardsøk' }),
-    ).toBeVisible();
-    await expect(
-      page.getByRole('button', { name: 'Lagre nytt standardsøk' }),
-    ).toBeVisible();
+      .fill('takk test');
+    await page
+      .getByRole('searchbox', { name: 'Søk i stillinger' })
+      .press('Enter');
     await expect(page.getByLabel('Sorter')).toBeVisible();
 
     await expect(page.getByTestId('stillings-kort').first()).toBeVisible();

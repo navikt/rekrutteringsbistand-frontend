@@ -10,27 +10,30 @@ const finnArbeidsgiverEndepunkt = (søkeord: string) => {
   return PamSearchAPI.internUrl + `/underenhet?q=${søkeord}`;
 };
 
+const ArbeidsgiverAdresseSchema = z
+  .object({
+    land: z.string(),
+    landkode: z.string(),
+    kommune: z.string(),
+    kommunenummer: z.string(),
+    poststed: z.string(),
+    postnummer: z.string(),
+    adresse: z.string(),
+  })
+  .nullable();
+
 export const ArbeidsgiverSchema = z.object({
   organisasjonsnummer: z.string(),
   navn: z.string(),
   organisasjonsform: z.string(),
   antallAnsatte: z.number().optional().nullable(),
   overordnetEnhet: z.string().optional().nullable(),
-  adresse: z
-    .object({
-      land: z.string(),
-      landkode: z.string(),
-      kommune: z.string(),
-      kommunenummer: z.string(),
-      poststed: z.string(),
-      postnummer: z.string(),
-      adresse: z.string(),
-    })
-    .nullable(),
+  adresse: ArbeidsgiverAdresseSchema,
 });
 const ArbeidsgiverSchemaDTO = z.array(ArbeidsgiverSchema);
 
 export type ArbeidsgiverDTO = z.infer<typeof ArbeidsgiverSchema>;
+export type ArbeidsgiverAdresseDTO = z.infer<typeof ArbeidsgiverAdresseSchema>;
 
 export const useFinnArbeidsgiver = (søkeord?: string) =>
   useSWRImmutable(

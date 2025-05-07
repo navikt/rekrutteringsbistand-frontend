@@ -83,7 +83,7 @@ const createMockStilling = (props?: MockStilling): StillingsDataDTO => {
       categoryList: createCategories(),
       properties: {
         applicationdue: 'Snarest',
-        starttime: 'Etter avtale',
+        starttime: '10.04.2025',
         employerdescription: faker.lorem.paragraph(),
         extent: faker.helpers.arrayElement(['Heltid', 'Deltid']),
         workhours: JSON.stringify([
@@ -245,19 +245,7 @@ export const nyStillingMock = {
         latitude: null,
         longitude: null,
       },
-      locationList: [
-        {
-          address: 'Nordre Kvervet',
-          postalCode: '1410',
-          county: 'AKERSHUS',
-          municipal: 'NORDRE FOLLO',
-          municipalCode: '3207',
-          city: 'KOLBOTN',
-          country: 'NORGE',
-          latitude: null,
-          longitude: null,
-        },
-      ],
+
       properties: {
         nace2: '[]',
       },

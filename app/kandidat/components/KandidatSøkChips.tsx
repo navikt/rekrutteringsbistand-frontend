@@ -1,7 +1,7 @@
 import FilterChip from '../../components/FilterChip';
 import TømFiltre from '../../components/TømFiltre';
 import { useKandidatSøkFilterContext } from '../KandidaSokFilterContext';
-import { HovedMålType } from './kandidat-sok-sidebar/components/Hovedmål';
+import { HovedMålType } from '../KandidatSøkFilter/components/Hovedmål';
 import { Chips } from '@navikt/ds-react';
 import * as React from 'react';
 
@@ -9,9 +9,9 @@ const StillingsSøkChips: React.FC = () => {
   const filter = useKandidatSøkFilterContext();
 
   return (
-    <div className=' mt-4 w-full'>
+    <div className='mt-4 w-full'>
       <Chips>
-        <div className='flex flex-row flex-wrap gap-2  pb-2'>
+        <div className='flex flex-row flex-wrap gap-2 pb-2'>
           {Object.values(filter).some(
             (value) => Array.isArray(value) && value.length > 0,
           ) && <TømFiltre />}

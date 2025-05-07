@@ -7,14 +7,18 @@ import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutter
 import SVGDarkmode from '@/app/components/SVGDarkmode';
 import SWRLaster from '@/app/components/SWRLaster';
 import SideLayout from '@/app/components/layout/SideLayout';
+import SideNavigasjon from '@/app/components/layout/SideNavigasjon';
 import SideTopBanner from '@/app/components/layout/SideTopBanner';
 import { PencilIcon } from '@navikt/aksel-icons';
 import { BodyShort, Detail } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import { nb } from 'date-fns/locale/nb';
-import * as React from 'react';
 
-const TreffHeader = ({}) => {
+export interface TreffHeaderProps {
+  tilbakeurl?: string;
+}
+
+const TreffHeader: React.FC<TreffHeaderProps> = ({ tilbakeurl }) => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
 
   const rekrutteringstreffHook = useRekrutteringstreff(
@@ -32,8 +36,9 @@ const TreffHeader = ({}) => {
           return (
             <SideLayout
               banner={
-                <div className='flex items-center gap-4'>
-                  <div>
+                <div>
+                  {tilbakeurl && <SideNavigasjon tilbakeurl={tilbakeurl} />}
+                  <div className='flex items-center gap-4'>
                     <SideTopBanner
                       tittel={rekrutteringstreff.tittel}
                       ikon={
@@ -57,14 +62,14 @@ const TreffHeader = ({}) => {
                         </Detail>
                       }
                     />
-                  </div>
-                  <div className='mb-6'>
-                    <PencilIcon />
-                  </div>
+                    <div className='mb-6'>
+                      <PencilIcon />
+                    </div>
 
-                  <BodyShort className='mb-6'>
-                    {rekrutteringstreff.status}
-                  </BodyShort>
+                    <BodyShort className='mb-6'>
+                      {rekrutteringstreff.status}
+                    </BodyShort>
+                  </div>
                 </div>
               }
             >

@@ -24,7 +24,7 @@ const FjernFåttJobbenKnapp: React.FC<FjernFåttJobbenKnappProps> = ({
       loading={loading}
       onClick={() => endreUtfallForKandidat(KandidatutfallTyper.PRESENTERT)}
     >
-      Fjern registreringen
+      Fjern fått jobben registreringen
     </Button>
   );
 };

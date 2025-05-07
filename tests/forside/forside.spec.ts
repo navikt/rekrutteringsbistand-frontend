@@ -11,13 +11,16 @@ test.describe(`Forside test`, () => {
   });
 
   test('Viser riktig innhold på forsiden', async ({ page }) => {
-    await expect(page.getByRole('tab', { name: 'Oversikt' })).toBeVisible();
-    await expect(page.getByRole('tab', { name: 'Stillinger' })).toBeVisible();
-    await expect(page.getByRole('tab', { name: 'Kandidatsøk' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Oversikt' })).toBeVisible();
     await expect(
-      page.getByRole('tab', { name: 'Etterregistrering' }),
+      page.getByRole('button', { name: 'Stillinger' }),
     ).toBeVisible();
-    await expect(page.getByTestId('forside-hurtiglenker')).toBeVisible();
+    await expect(
+      page.getByRole('button', { name: 'Kandidater' }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole('button', { name: 'Etterregistrering' }),
+    ).toBeVisible();
     await expect(page.getByLabel('Periode')).toBeVisible();
     await expect(page.getByTestId('forside-utfallsstatistikk')).toBeVisible();
     await expect(

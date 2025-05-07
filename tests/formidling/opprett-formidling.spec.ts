@@ -7,11 +7,9 @@ test(`📝 Opprett formidling`, async ({ page }) => {
   await page.goto('http://localhost:1337/etterregistrering');
   await test.step('Opprett formidling', async () => {
     await page
-      .getByRole('tab', { name: 'Etterregistrering', exact: true })
+      .getByRole('button', { name: 'Etterregistrering', exact: true })
       .click();
-    await page
-      .getByRole('button', { name: 'Opprett etterregistrering' })
-      .click();
+    await page.getByRole('button', { name: 'Ny etterregistrering' }).click();
     await page
       .getByRole('textbox', { name: 'Fødselsnummer på kandidat' })
       .click();
@@ -50,9 +48,7 @@ test(`📝 Opprett formidling`, async ({ page }) => {
     await page.getByLabel('', { exact: true }).click();
     await page.getByLabel('', { exact: true }).fill('Krist');
     await page.getByLabel('Kristiansand (kommune)').click();
-    await page
-      .getByText('Om kandidatene2Om formidlingen3Om inkludering4InnspurtOm')
-      .click();
+
     await page.getByRole('button', { name: 'Neste steg' }).click();
   });
 

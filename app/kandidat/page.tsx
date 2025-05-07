@@ -1,10 +1,10 @@
 import KandidatSokLayout from './KandidatSokLayout';
-import KandidatSøk from './KandidatSøkSide';
+import KandidatSøkTabs from './KandidatSøkTabs';
 
 export default function KandidatPage() {
   return (
     <KandidatSokLayout>
-      <KandidatSøk />
+      <KandidatSøkTabs />
     </KandidatSokLayout>
   );
 }

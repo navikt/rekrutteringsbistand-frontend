@@ -5,8 +5,7 @@ import Rekrutteringstreff from '../../public/ikoner/rekrutteringstreff.svg';
 import SVGDarkmode from '../components/SVGDarkmode';
 import SideLayout from '../components/layout/SideLayout';
 import SideTopBanner from '../components/layout/SideTopBanner';
-import OpprettRekrutteringstreffKnapp from './components/OpprettRekrutteringstreffKnapp';
-import { RekrutteringstreffSøkSidebar } from './components/sidebar/RekrutteringstreffSøkSidebar';
+import { RekrutteringstreffFilter } from './components/RekrutteringstreffFilter';
 import * as React from 'react';
 
 export interface RekrutteringstreffSøkLayoutProps {
@@ -18,7 +17,6 @@ const RekrutteringstreffSøkLayout: React.FC<
 > = ({ children }) => {
   return (
     <SideLayout
-      sidepanel={<RekrutteringstreffSøkSidebar />}
       banner={
         <div className='flex justify-between items-center'>
           <SideTopBanner
@@ -31,10 +29,10 @@ const RekrutteringstreffSøkLayout: React.FC<
               />
             }
           />
-          <OpprettRekrutteringstreffKnapp />
         </div>
       }
     >
+      <RekrutteringstreffFilter />
       {children}
     </SideLayout>
   );

@@ -3,6 +3,7 @@ export enum UmamiDomene {
   Forside = 'Forside',
   Stilling = 'Stilling',
   Kandidat = 'Kandidat',
+  Sidebar = 'Sidebar',
   Etterregistrering = 'Etterregistrering',
   Rekrutteringstreff = 'Rekrutteringstreff',
 }
@@ -57,6 +58,13 @@ const Stilling = lagEventPrefix(UmamiDomene.Stilling, {
 
 const Kandidat = lagEventPrefix(UmamiDomene.Kandidat, {
   tab_oversikt: 'Kandidatliste oversikt',
+  finn_stilling_knapp: 'Finn stilling knapp',
+});
+
+const Sidebar = lagEventPrefix(UmamiDomene.Sidebar, {
+  opprettet_stilling: 'Opprettet stilling',
+  opprettet_etterregistrering: 'Opprettet etterregistrering',
+  opprettet_rekrutteringstreff: 'Opprettet rekrutteringstreff',
 });
 
 const Etterregistrering = lagEventPrefix(UmamiDomene.Etterregistrering, {
@@ -70,6 +78,7 @@ const Rekrutteringstreff = lagEventPrefix(UmamiDomene.Rekrutteringstreff, {
 });
 
 export const UmamiEvent = {
+  [UmamiDomene.Sidebar]: Sidebar,
   [UmamiDomene.Generell]: Generell,
   [UmamiDomene.Forside]: Forside,
   [UmamiDomene.Stilling]: Stilling,

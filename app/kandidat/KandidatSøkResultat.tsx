@@ -1,37 +1,44 @@
 'use client';
 
 import { KandidatDataSchemaDTO } from '../api/kandidat-sok/schema/cvSchema.zod';
-import { useKandidatsøk } from '../api/kandidat-sok/useKandidatsøk';
+import {
+  KandidatsokKandidat,
+  useKandidatsøk,
+} from '../api/kandidat-sok/useKandidatsøk';
+import RekrutteringstreffFeatureToggle from '../components/RekrutteringstreffFeatureToggle';
 import SWRLaster from '../components/SWRLaster';
-import { useKandidatNavigering } from '../providers/KandidatNavigeringContext';
+import { useKandidatNavigeringContext } from '../providers/KandidatNavigeringContext';
+import LagreIRekrutteringstreffButton from '../rekrutteringstreff/[rekrutteringstreffId]/components/lagreIRekrutteringstreffButton/LagreIRekrutteringstreffButton';
 import {
   KandidatSøkPortefølje,
   useKandidatSøkFilterContext,
 } from './KandidaSokFilterContext';
 import { useKandidatSøkMarkerteContext } from './KandidatSøkMarkerteContext';
 import KandidatKort from './components/KandidatKort';
-import LagreIKandidatliste from './components/LagreIKandidatliste';
+import LagreIKandidatlisteButton from './components/lagreKandidatliste/LagreIKandidatlisteButton';
 import { Checkbox, Heading, Pagination } from '@navikt/ds-react';
 import * as React from 'react';
 
 interface KandidatSøkResultatProps {
   type: KandidatSøkPortefølje;
   stillingsId?: string;
+  rekrutteringstreffId?: string;
   alleredeLagtTil?: string[];
 }
 
 const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({
   type,
   stillingsId,
+  rekrutteringstreffId,
   alleredeLagtTil,
 }) => {
   const filter = useKandidatSøkFilterContext();
   const kandidatsøkHook = useKandidatsøk(type, filter);
-  const { setNavigering } = useKandidatNavigering();
+  const { setKandidatNavigering } = useKandidatNavigeringContext();
 
   React.useEffect(() => {
-    setNavigering(kandidatsøkHook.data?.navigering.kandidatnumre ?? []);
-  }, [kandidatsøkHook.data?.navigering, setNavigering]);
+    setKandidatNavigering(kandidatsøkHook.data?.navigering.kandidatnumre ?? []);
+  }, [kandidatsøkHook.data?.navigering, setKandidatNavigering]);
 
   const { markerteKandidater, setMarkertListe, fjernMarkerteKandidater } =
     useKandidatSøkMarkerteContext();
@@ -79,8 +86,20 @@ const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({
                   Marker alle på siden
                 </Checkbox>
               </div>
-              <div>
-                <LagreIKandidatliste stillingsId={stillingsId} />
+              <div className='flex gap-2'>
+                {!rekrutteringstreffId && (
+                  <LagreIKandidatlisteButton stillingsId={stillingsId} />
+                )}
+                <RekrutteringstreffFeatureToggle>
+                  {!stillingsId && (
+                    <LagreIRekrutteringstreffButton
+                      rekrutteringstreffId={rekrutteringstreffId}
+                      kandidatsokKandidater={
+                        kandidatData.kandidater as KandidatsokKandidat[]
+                      }
+                    />
+                  )}
+                </RekrutteringstreffFeatureToggle>
               </div>
             </div>
             {kandidatData.kandidater?.map((kandidat, index) => (

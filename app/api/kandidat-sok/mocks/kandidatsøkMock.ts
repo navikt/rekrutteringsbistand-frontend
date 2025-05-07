@@ -73,7 +73,7 @@ const createCandidate = () => {
   return {
     yrkeJobbonskerObj: selectedInterests,
     etternavn: lastName,
-    postnummer: faker.location.zipCode('#####'),
+    postnummer: faker.location.zipCode('####'),
     arenaKandidatnr,
     kommuneNavn: faker.location.city(),
     geografiJobbonsker: selectedGeoInterests,

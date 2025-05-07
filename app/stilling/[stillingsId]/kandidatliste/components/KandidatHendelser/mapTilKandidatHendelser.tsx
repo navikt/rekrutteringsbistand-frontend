@@ -21,6 +21,7 @@ export enum TilstandPåForespørsel {
   HarVarslet = 'HAR_VARSLET',
   KanIkkeVarsle = 'KAN_IKKE_VARSLE',
   HarSvart = 'HAR_SVART',
+  IKKE_SENDT = 'IKKE_SENDT',
   Avbrutt = 'AVBRUTT',
 }
 
@@ -40,6 +41,13 @@ const utfallsEndringPresentasjon = (
         fargeKode: 'success',
       };
     case KandidatutfallTyper.IKKE_PRESENTERT:
+      if (sendtTilArbeidsgiversKandidatliste === false) {
+        return {
+          tittel: 'CV fjernet fra arbeidsgiver',
+          ikon: <ExclamationmarkTriangleIcon className='text-warning' />,
+          fargeKode: 'error',
+        };
+      }
       return {
         tittel: 'Ikke presentert',
         ikon: <ExclamationmarkTriangleIcon className='text-warning' />,
@@ -80,6 +88,7 @@ const cvHendelsePresentasjon = (
 } => {
   switch (forespørsel.tilstand) {
     case TilstandPåForespørsel.PrøverVarsling:
+    case TilstandPåForespørsel.IKKE_SENDT:
       return {
         tittel: 'Spurt om deling av CV',
         tekst: 'Prøver varsling',
@@ -105,6 +114,13 @@ const cvHendelsePresentasjon = (
       return {
         tittel: 'Deling av CV feilet',
         tekst: 'Kan ikke opprette forespørsel',
+        ikon: <ExclamationmarkTriangleIcon className='text-danger' />,
+        fargeKode: 'warning',
+      };
+    case TilstandPåForespørsel.Avbrutt:
+      return {
+        tittel: 'Deling av CV feilet',
+        tekst: 'Avbrutt',
         ikon: <ExclamationmarkTriangleIcon className='text-danger' />,
         fargeKode: 'warning',
       };
