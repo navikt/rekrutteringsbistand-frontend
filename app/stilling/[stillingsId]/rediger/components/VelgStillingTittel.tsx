@@ -24,12 +24,17 @@ const VelgStillingTittel: React.FC<VelgStillingTittelProps> = ({
 
   React.useEffect(() => {
     if (hook.data) {
-      const nyeValg = hook.data.map((item) => {
-        return {
-          label: item.label,
-          value: item.label,
-        };
-      });
+      const nyeValg =
+        hook.data
+          .filter(
+            (f) => f.styrk08 && f.styrk08.trim() !== '' && f.styrk08 !== '9999',
+          )
+          .map((item) => {
+            return {
+              label: item.label,
+              value: item.label,
+            };
+          }) ?? [];
       setValg(nyeValg);
     }
   }, [hook.data]);
