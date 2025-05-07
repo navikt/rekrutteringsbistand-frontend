@@ -18,7 +18,7 @@ interface TidspunktProps {
 }
 
 const klokkeslett = Array.from({ length: 24 }, (_, h) =>
-  [0, 30].map(
+  [0, 15, 30, 45].map(
     (m) => `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`,
   ),
 ).flat();
