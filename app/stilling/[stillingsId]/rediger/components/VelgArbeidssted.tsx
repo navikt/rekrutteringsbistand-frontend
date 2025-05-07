@@ -1,3 +1,4 @@
+import { PamPostdataDTO } from '../../../../api/pam-geografi/postdata/[postnummer]/usePamPostdata';
 import VelgPoststed from '../../../../components/VelgPoststed';
 import { FormidlingDataForm } from '../../../../etterregistrering/ny-etterregistrering/redigerFormidlingFormType';
 import { StillingsDataForm } from '../redigerFormType.zod';
@@ -101,8 +102,28 @@ const VelgArbeidssted: React.FC<VelgArbeidsstedProps> = ({ feltNavn }) => {
             lokasjonsFelt={feltNavn + '.adresser'}
             control={control}
             fjern={() => fjernAdresse(index)}
-            oppdaterPoststed={(postSted: string) => {
-              setValue(`${feltNavn}.adresser.${index}.city` as any, postSted);
+            oppdaterPoststed={(postSted: PamPostdataDTO) => {
+              setValue(
+                `${feltNavn}.adresser.${index}.city`,
+                postSted.korrigertNavnBy,
+              );
+              setValue(
+                `${feltNavn}.adresser.${index}.county`,
+                postSted.fylke.korrigertNavn,
+              );
+              setValue(
+                `${feltNavn}.adresser.${index}.municipal`,
+                postSted.kommune.korrigertNavn,
+              );
+              setValue(
+                `${feltNavn}.adresser.${index}.municipalCode`,
+                postSted.kommune.kommunenummer,
+              );
+              setValue(
+                `${feltNavn}.adresser.${index}.postalCode`,
+                postSted.postkode,
+              );
+              setValue(`${feltNavn}.adresser.${index}.country`, 'Norge');
             }}
             postSted={watch(`${feltNavn}.adresser.${index}.city`) || null}
           />

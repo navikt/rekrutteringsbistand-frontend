@@ -1,4 +1,7 @@
-import { usePamPostdata } from '../api/pam-geografi/postdata/[postnummer]/usePamPostdata';
+import {
+  PamPostdataDTO,
+  usePamPostdata,
+} from '../api/pam-geografi/postdata/[postnummer]/usePamPostdata';
 import { TrashIcon } from '@navikt/aksel-icons';
 import { BodyLong, BodyShort, Button, TextField } from '@navikt/ds-react';
 import * as React from 'react';
@@ -9,7 +12,7 @@ export interface VelgPoststedProps {
   lokasjonsFelt: string;
   index: number;
   fjern: () => void;
-  oppdaterPoststed: (value: any) => void;
+  oppdaterPoststed: (value: PamPostdataDTO) => void;
   postSted: string | null;
 }
 
@@ -28,8 +31,8 @@ const VelgPoststed: React.FC<VelgPoststedProps> = ({
   React.useEffect(() => {
     if (!postNummerHook.isLoading) {
       const nyttPoststed = postNummerHook.data?.korrigertNavnBy;
-      if (nyttPoststed && nyttPoststed !== postSted) {
-        oppdaterPoststed(nyttPoststed);
+      if (postNummerHook.data && nyttPoststed && nyttPoststed !== postSted) {
+        oppdaterPoststed(postNummerHook.data);
       }
     }
   }, [postNummerHook, postSted, oppdaterPoststed, index]);
