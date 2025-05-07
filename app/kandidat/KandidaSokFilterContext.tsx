@@ -53,7 +53,8 @@ export interface IKandidaSokFilterContext {
   setØnsketYrke: (ønsketYrke: string[]) => void;
   ønsketSted: string[];
   setØnsketSted: (ønsketSted: string[]) => void;
-  borPåØnsketSted: boolean | null;
+  borPåØnsketSted: string | null;
+  setBorPåØnsketSted: (borPåØnsketSted: string) => void;
   kompetanse: string[];
   setKompetanse: (kompetanse: string[]) => void;
   førerkort: string[];
@@ -172,8 +173,16 @@ export const KandidatSøkProvider: React.FC<{ children: React.ReactNode }> = ({
       .withOptions({ clearOnDefault: true }),
   );
 
-  //TODO er disse aktuelle?
-  const [borPåØnsketSted] = React.useState<boolean | null>(null);
+  const [borPåØnsketSted, setBorPåØnsketSted] = useQueryState(
+    KandidatSøkQueryparam.BorPåØnsketSted,
+    {
+      defaultValue: 'nei',
+      clearOnDefault: true,
+    },
+  );
+
+  //TODO er denne aktuell?
+
   const [ferskhet] = React.useState<number | null>(null);
 
   const wrapWithPageReset = <T,>(
@@ -219,6 +228,7 @@ export const KandidatSøkProvider: React.FC<{ children: React.ReactNode }> = ({
         prioritertMålgruppe,
         setPrioritertMålgruppe: wrapWithPageReset(setPrioritertMålgruppe),
         borPåØnsketSted,
+        setBorPåØnsketSted,
         ferskhet,
         sortering,
         orgenhet:

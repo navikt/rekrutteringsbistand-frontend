@@ -1,7 +1,7 @@
 import { usePamGeografi } from '../../../api/pam-geografi/typehead/lokasjoner/usePamGeografi';
 import { useKandidatSøkFilterContext } from '../../KandidaSokFilterContext';
 import { storBokstavSted, storForbokstavString } from '../../util';
-import { UNSAFE_Combobox } from '@navikt/ds-react';
+import { Checkbox, UNSAFE_Combobox } from '@navikt/ds-react';
 import * as React from 'react';
 
 const KandidatStedSøk: React.FC = () => {
@@ -35,14 +35,29 @@ const KandidatStedSøk: React.FC = () => {
   };
 
   return (
-    <UNSAFE_Combobox
-      disabled={geografi.isLoading}
-      selectedOptions={ønsketSted}
-      label='Ønsket sted'
-      options={valg.sort()}
-      onToggleSelected={onOptionSelected}
-      isMultiSelect
-    />
+    <>
+      <UNSAFE_Combobox
+        disabled={geografi.isLoading}
+        selectedOptions={ønsketSted}
+        label='Ønsket sted'
+        options={valg.sort()}
+        onToggleSelected={onOptionSelected}
+        isMultiSelect
+      />
+      <BorPåØnsketSted />
+    </>
+  );
+};
+
+const BorPåØnsketSted: React.FC = () => {
+  const { setBorPåØnsketSted, borPåØnsketSted } = useKandidatSøkFilterContext();
+  return (
+    <Checkbox
+      checked={borPåØnsketSted === 'ja'}
+      onChange={(e) => setBorPåØnsketSted(e.target.checked ? 'ja' : 'nei')}
+    >
+      Kandidaten må også bo på ønsket sted
+    </Checkbox>
   );
 };
 

@@ -75,7 +75,7 @@ export const useKandidatsøk = (
     side: kandidatSøkFilter.side,
     ønsketYrke: kandidatSøkFilter.ønsketYrke,
     ønsketSted: stedKoder,
-    borPåØnsketSted: kandidatSøkFilter.borPåØnsketSted,
+    borPåØnsketSted: kandidatSøkFilter.borPåØnsketSted === 'ja',
     kompetanse: kandidatSøkFilter.kompetanse,
     førerkort: kandidatSøkFilter.førerkort,
     prioritertMålgruppe: kandidatSøkFilter.prioritertMålgruppe,
@@ -86,6 +86,7 @@ export const useKandidatsøk = (
     språk: kandidatSøkFilter.språk,
     sortering: kandidatSøkFilter.sortering,
   };
+
   return useSWRImmutable(
     shouldFetch
       ? {
