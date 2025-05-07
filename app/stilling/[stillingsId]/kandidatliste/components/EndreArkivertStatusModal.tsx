@@ -6,7 +6,7 @@ import { useKandidatliste } from '../../../../api/kandidat/useKandidatliste';
 import { useStillingsContext } from '../../StillingsContext';
 import { useApplikasjonContext } from '@/app/providers/ApplikasjonContext';
 import { ArrowUndoIcon, TrashIcon } from '@navikt/aksel-icons';
-import { BodyLong, Button, Modal } from '@navikt/ds-react';
+import { ActionMenu, BodyLong, Button, Modal } from '@navikt/ds-react';
 import * as React from 'react';
 import { useRef, useState } from 'react';
 
@@ -15,6 +15,7 @@ export interface EndreArkivertStatusKnappProps {
   kandidatlisteId: string;
   lukketKandidatliste: boolean;
   tittel?: string;
+  actionMenu?: boolean;
 }
 
 const EndreArkivertStatusKnapp: React.FC<EndreArkivertStatusKnappProps> = ({
@@ -22,6 +23,7 @@ const EndreArkivertStatusKnapp: React.FC<EndreArkivertStatusKnappProps> = ({
   kandidatlisteId,
   lukketKandidatliste,
   tittel,
+  actionMenu,
 }) => {
   const { stillingsData } = useStillingsContext();
   const { valgtNavKontor } = useApplikasjonContext();
@@ -53,21 +55,35 @@ const EndreArkivertStatusKnapp: React.FC<EndreArkivertStatusKnappProps> = ({
 
   return (
     <>
-      <Button
-        disabled={lukketKandidatliste}
-        variant='tertiary'
-        size='small'
-        onClick={() => modalRef.current?.showModal()}
-        icon={
-          slettet ? (
+      {actionMenu ? (
+        <ActionMenu.Item
+          variant='danger'
+          onSelect={() => modalRef.current?.showModal()}
+        >
+          {slettet ? (
             <ArrowUndoIcon title='Angre sletting' />
           ) : (
             <TrashIcon title='Slett' />
-          )
-        }
-      >
-        {tittel}
-      </Button>
+          )}{' '}
+          {slettet ? 'Gjenopprett' : 'Slett'}
+        </ActionMenu.Item>
+      ) : (
+        <Button
+          disabled={lukketKandidatliste}
+          variant='tertiary'
+          size='small'
+          onClick={() => modalRef.current?.showModal()}
+          icon={
+            slettet ? (
+              <ArrowUndoIcon title='Angre sletting' />
+            ) : (
+              <TrashIcon title='Slett' />
+            )
+          }
+        >
+          {tittel}
+        </Button>
+      )}
 
       <Modal
         ref={modalRef}

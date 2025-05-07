@@ -1,19 +1,35 @@
 import { KandidatutfallTyper } from '../KandidatTyper';
 import { MinusCircleIcon } from '@navikt/aksel-icons';
-import { Button } from '@navikt/ds-react';
+import { ActionMenu, Button } from '@navikt/ds-react';
 import * as React from 'react';
 
 export interface FjernFåttJobbenKnappProps {
   endreUtfallForKandidat: (utfall: KandidatutfallTyper) => void;
   loading: boolean;
   lukketKandidatliste?: boolean;
+  actionMenu?: boolean;
 }
 
 const FjernFåttJobbenKnapp: React.FC<FjernFåttJobbenKnappProps> = ({
   endreUtfallForKandidat,
   loading,
   lukketKandidatliste,
+  actionMenu,
 }) => {
+  if (actionMenu) {
+    if (actionMenu) {
+      return (
+        <ActionMenu.Item
+          onSelect={() =>
+            endreUtfallForKandidat(KandidatutfallTyper.FATT_JOBBEN)
+          }
+        >
+          <MinusCircleIcon /> Fjern registrer fått jobben
+        </ActionMenu.Item>
+      );
+    }
+  }
+
   return (
     <Button
       disabled={lukketKandidatliste}

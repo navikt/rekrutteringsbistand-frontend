@@ -1,11 +1,11 @@
 import { usynligKandidaterSchemaDTO } from '../../../../../api/kandidat/schema.zod';
 import { KANDIDATLISTE_COLUMN_LAYOUT } from '../../FiltrertKandidatListeVisning';
 import { useKandidatlisteContext } from '../../KandidatlisteContext';
-import EndreArkivertStatusModal from '../EndreArkivertStatusModal';
 import KandidatHendelseTag, { SlettetTag } from '../KandidatHendelseTag';
 import { KandidatVisningProps } from '../KandidatlisteFilter/useFiltrerteKandidater';
 import VelgInternStatus from '../VelgInternStatus';
 import KandidatCheckbox from './components/KandidatCheckbox';
+import KandidatListeKortValg from './components/KandidatListeKortValg';
 import KandidatlisteNavn from './components/KandidatlisteNavn';
 import { BodyShort, Box } from '@navikt/ds-react';
 import { format } from 'date-fns';
@@ -112,8 +112,7 @@ const KandidatListeKort: React.FC<KandidatListeKortProps> = ({
             />
           </div>
           <div className={`${kolonneStyling} flex items-center justify-center`}>
-            <EndreArkivertStatusModal
-              lukketKandidatliste={lukketKandidatliste}
+            <KandidatListeKortValg
               kandidat={kandidat}
               kandidatlisteId={kandidatlisteId}
             />
