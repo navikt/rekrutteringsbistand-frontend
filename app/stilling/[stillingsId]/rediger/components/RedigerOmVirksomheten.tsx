@@ -1,4 +1,4 @@
-import { getWorkLocationsAsString } from '../../../../../util/locationUtil';
+import { getWorkLocationAsString } from '../../../../../util/locationUtil';
 import { GeografiDTO } from '../../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import RikTekstEditor from '../../../../components/rikteksteditor/RikTekstEditor';
 import capitalizeEmployerName from '../../../stilling-util';
@@ -57,7 +57,7 @@ export const RedigerOmVirksomheten: React.FC<{
             </dd>
             <dt className='font-bold'>Adresse</dt>
             <dd>
-              {getWorkLocationsAsString(
+              {getWorkLocationAsString(
                 stillingsData.stilling.employer?.location as GeografiDTO,
               )}
             </dd>

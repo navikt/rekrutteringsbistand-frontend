@@ -44,7 +44,7 @@ const OmStillingen: React.FC<{ forhåndsvisData?: boolean }> = ({
   const { stillingsData, erFormidling } = useStillingsContext();
 
   const lokasjon = getWorkLocationsAsString(
-    stillingsData.stilling.location as GeografiDTO,
+    stillingsData.stilling.locationList as GeografiDTO[],
   );
 
   const {
