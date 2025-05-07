@@ -5,13 +5,17 @@ import { useKandidatContext } from '../../../KandidatContext';
 import { BodyShort, Button, Link } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import { nb } from 'date-fns/locale';
-import { useRouter } from 'next/navigation';
+import { useQueryState } from 'nuqs';
 import * as React from 'react';
 
 const SisteAktivitet: React.FC = () => {
   const { kandidatId } = useKandidatContext();
+  const [, setFane] = useQueryState('kandidatFane', {
+    defaultValue: 'oversikt',
+    clearOnDefault: true,
+  });
   const kandidatListeoversiktHook = useKandidatListeoversikt(kandidatId);
-  const router = useRouter();
+
   return (
     <>
       <SWRLaster hooks={[kandidatListeoversiktHook]}>
@@ -70,9 +74,9 @@ const SisteAktivitet: React.FC = () => {
       <Button
         variant='secondary'
         className='mt-6 w-full'
-        onClick={() =>
-          router.push(`/kandidat/${kandidatId}?kandidatFane=aktivitet`)
-        }
+        onClick={() => {
+          setFane(`aktivitet`);
+        }}
       >
         Vis all aktivitet
       </Button>

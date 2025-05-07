@@ -4,12 +4,18 @@ import * as React from 'react';
 export interface HvitKortProps {
   children?: React.ReactNode | undefined;
   className?: string;
+  id?: string;
 }
 
-const HvitKort: React.FC<HvitKortProps> = ({ children, className = '' }) => {
+const HvitKort: React.FC<HvitKortProps> = ({
+  id,
+  children,
+  className = '',
+}) => {
   return (
     <div className='m-3'>
       <Box.New
+        id={id}
         borderRadius='xlarge'
         borderColor='info-subtleA'
         background='default'

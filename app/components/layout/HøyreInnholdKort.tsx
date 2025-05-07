@@ -29,7 +29,7 @@ const HøyreInnholdKort: React.FC<HøyreInnholdKortProps> = ({
   ekspanderHøyre,
 }) => {
   return (
-    <HvitKort className={className}>
+    <HvitKort className={className} id='høyreinnhold'>
       <div className='top-0 z-10 flex items-center justify-between bg-background p-2'>
         <div className='flex items-center'>
           <div>
@@ -75,7 +75,7 @@ const HøyreInnholdKort: React.FC<HøyreInnholdKortProps> = ({
           </div>
         </div>
       </div>
-      <div className='h-full min-w-[320px] '>{children}</div>
+      <div className='h-full min-w-[320px]'>{children}</div>
     </HvitKort>
   );
 };

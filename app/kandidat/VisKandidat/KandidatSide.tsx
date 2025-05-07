@@ -19,6 +19,14 @@ const KandidatSide: React.FC = () => {
     clearOnDefault: true,
   });
 
+  React.useEffect(() => {
+    const contentElement = document.getElementById('høyreinnhold');
+
+    if (contentElement) {
+      contentElement.scrollTop = 0;
+    }
+  }, [fane]);
+
   const Knapper = (
     <div className={'flex items-center gap-2'}>
       <FinnStillingForKandidatKnapp />
