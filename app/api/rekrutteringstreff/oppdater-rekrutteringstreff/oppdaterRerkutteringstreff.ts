@@ -8,9 +8,9 @@ import { z } from 'zod';
 export const OppdaterRekrutteringstreffSchema = z.object({
   tittel: z.string(),
   beskrivelse: z.string().nullable().optional(),
-  fraTid: z.string(), // ISO8601 string
-  tilTid: z.string(),
-  sted: z.string(),
+  fraTid: z.string().nullable().nullable().optional(),
+  tilTid: z.string().nullable().optional(),
+  sted: z.string().nullable().optional(),
 });
 
 export type OppdaterRekrutteringstreffDTO = z.infer<

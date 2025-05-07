@@ -23,10 +23,11 @@ const HendelseSchema = z.object({
 export const RekrutteringstreffSchema = z.object({
   id: z.string(),
   tittel: z.string(),
-  beskrivelse: z.string(),
-  fraTid: z.string(),
-  tilTid: z.string(),
-  sted: z.string(),
+  beskrivelse: z.string().nullable(),
+  fraTid: z.string().nullable(),
+
+  tilTid: z.string().nullable(),
+  sted: z.string().nullable(),
   status: z.string(),
   opprettetAvPersonNavident: z.string(),
   opprettetAvNavkontorEnhetId: z.string(),
