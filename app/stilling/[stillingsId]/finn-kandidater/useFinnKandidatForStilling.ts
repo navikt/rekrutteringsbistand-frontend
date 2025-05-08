@@ -16,13 +16,15 @@ export const useFinnKandidatForStilling = (
 
     const fylker: string[] =
       locationList
-        ?.map((location) => location.county)
-        .filter((county): county is string => county !== null) ?? [];
+        ?.filter((location) => location.county && location.county !== null)
+        ?.map((location) => `${location.county} (Fylke)`) ?? [];
 
     const kommuner: string[] =
       locationList
-        ?.map((location) => location.municipal)
-        .filter((municipal): municipal is string => municipal !== null) ?? [];
+        ?.filter(
+          (location) => location.municipal && location.municipal !== null,
+        )
+        ?.map((location) => `${location.municipal} (Kommune)`) ?? [];
 
     const arbeidsønsker =
       categoryList
