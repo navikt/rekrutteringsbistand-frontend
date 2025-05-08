@@ -18,6 +18,7 @@ const kandidatinformasjondataMock = {
   orgenhet: '1860',
   hovedmaalkode: 'SKAFFEA',
   formidlingsgruppekode: 'ARBS',
+  innsatsgruppe: 'SPESIELT_TILPASSET_INNSATS',
   veileder: 'Z123456',
   yrkeJobbonskerObj: [
     {

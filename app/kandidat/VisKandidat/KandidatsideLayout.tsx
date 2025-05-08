@@ -3,6 +3,7 @@
 import TekstMedIkon from '../../components/TekstMedIkon';
 import SideLayout from '../../components/layout/SideLayout';
 import SideTopBanner from '../../components/layout/SideTopBanner';
+import { filtrerbareInnsatsgrupper } from '../components/innsatsgrupper';
 import { useKandidatContext } from './KandidatContext';
 import {
   CandleIcon,
@@ -56,7 +57,12 @@ const KandidatSideLayout: React.FC<KandidatSideProps> = ({ children }) => {
                 />
                 <TekstMedIkon
                   ikon={<HandHeartIcon />}
-                  tekst={kandidatData.innsatsgruppe}
+                  tekst={
+                    kandidatData.innsatsgruppe
+                      ? filtrerbareInnsatsgrupper[kandidatData.innsatsgruppe]
+                          ?.label
+                      : ''
+                  }
                 />
                 <TekstMedIkon
                   ikon={<PersonIcon />}
