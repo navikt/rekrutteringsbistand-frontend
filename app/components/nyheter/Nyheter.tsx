@@ -46,7 +46,6 @@ const Nyheter: FunctionComponent = () => {
       <Popover
         anchorEl={buttonRef.current}
         open={åpen}
-        placement='bottom-end'
         onClose={() => setÅpen(false)}
       >
         <div className='w-[27rem] max-w-[90vw] overflow-hidden rounded-lg shadow-[0_0.25rem_0.25rem_0_rgba(62,56,50,0.125)]'>
