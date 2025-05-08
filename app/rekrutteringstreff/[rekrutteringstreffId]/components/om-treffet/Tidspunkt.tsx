@@ -1,267 +1,277 @@
+// app/rekrutteringstreff/[rekrutteringstreffId]/components/om-treffet/Tidspunkt.tsx
 import RekrutteringstreffDetalj from '../RekrutteringstreffDetalj';
+import ControlledDatePicker from './components/ControlledDatepicker';
 import {
   oppdaterRekrutteringstreff,
   OppdaterRekrutteringstreffDTO,
 } from '@/app/api/rekrutteringstreff/oppdater-rekrutteringstreff/oppdaterRerkutteringstreff';
 import { RekrutteringstreffDTO } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
-import { useUmami } from '@/app/providers/UmamiContext';
-import { rekbisError } from '@/util/rekbisError';
-import { UmamiEvent } from '@/util/umamiEvents';
 import { CalendarIcon, PencilIcon, PlusIcon } from '@navikt/aksel-icons';
-import {
-  BodyShort,
-  Button,
-  Popover,
-  DatePicker,
-  Select,
-  useDatepicker,
-} from '@navikt/ds-react';
+import { Popover, Select, Button, BodyShort } from '@navikt/ds-react';
 import { format, isSameDay, startOfDay, parseISO } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
-import { useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
+import {
+  useForm,
+  Controller,
+  SubmitHandler,
+  useWatch,
+  FieldErrors,
+} from 'react-hook-form';
+import type { FieldError } from 'react-hook-form';
+
+type FormData = {
+  fraDato: Date | null;
+  fraTid: string;
+  tilDato: Date | null;
+  tilTid: string;
+  root?: string;
+};
+
+const klokkeslett = Array.from({ length: 24 }, (_, h) =>
+  [0, 15, 30, 45].map(
+    (m) => `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`,
+  ),
+).flat();
 
 interface Props {
   rekrutteringstreff: RekrutteringstreffDTO;
   className?: string;
 }
 
-const klokkeslettListe = Array.from({ length: 24 }, (_, time) =>
-  [0, 30].map(
-    (minutt) =>
-      `${time.toString().padStart(2, '0')}:${minutt
-        .toString()
-        .padStart(2, '0')}`,
-  ),
-).flat();
+export default function Tidspunkt({ rekrutteringstreff, className }: Props) {
+  const anchorRef = useRef<HTMLDivElement>(null);
+  const [open, setOpen] = useState(false);
 
-const Tidspunkt = ({ rekrutteringstreff, className }: Props) => {
-  const { track } = useUmami();
-  const { fraTid, tilTid } = rekrutteringstreff;
+  const initialFra = rekrutteringstreff.fraTid
+    ? toZonedTime(parseISO(rekrutteringstreff.fraTid), 'Europe/Oslo')
+    : null;
+  const initialTil = rekrutteringstreff.tilTid
+    ? toZonedTime(parseISO(rekrutteringstreff.tilTid), 'Europe/Oslo')
+    : null;
 
-  const popoverAnchorRef = useRef<HTMLDivElement>(null);
-  const [popoverErÅpen, settPopoverErÅpen] = useState(false);
+  const {
+    control,
+    handleSubmit,
+    setError,
+    formState: { errors },
+  } = useForm<FormData>({
+    defaultValues: {
+      fraDato: initialFra,
+      fraTid: initialFra ? format(initialFra, 'HH:mm') : '08:00',
+      tilDato: initialTil,
+      tilTid: initialTil ? format(initialTil, 'HH:mm') : '10:00',
+    },
+  });
 
-  const initialFraTid = fraTid
-    ? toZonedTime(parseISO(fraTid), 'Europe/Oslo')
-    : undefined;
-  const initialTilTid = tilTid
-    ? toZonedTime(parseISO(tilTid), 'Europe/Oslo')
-    : undefined;
+  const watched = useWatch({ control });
 
-  const [valgtFraDato, settValgtFraDato] = useState<Date | undefined>(
-    initialFraTid,
-  );
-  const [valgtFraKlokkeslett, settValgtFraKlokkeslett] = useState(
-    initialFraTid ? format(initialFraTid, 'HH:mm') : '08:00',
-  );
-  const [valgtTilDato, settValgtTilDato] = useState<Date | undefined>(
-    initialTilTid,
-  );
-  const [valgtTilKlokkeslett, settValgtTilKlokkeslett] = useState(
-    initialTilTid ? format(initialTilTid, 'HH:mm') : '10:00',
-  );
+  const duration = useMemo(() => {
+    const { fraDato, tilDato, fraTid, tilTid } = watched;
+    if (!fraDato || !tilDato || !fraTid || !tilTid) return '';
 
-  const { inputProps: fraInputProps, datepickerProps: fraDatepickerProps } =
-    useDatepicker({
-      defaultSelected: valgtFraDato,
-      onDateChange: settValgtFraDato,
-      fromDate: new Date('2025-01-01'),
-      toDate: new Date('2040-12-31'),
-    });
-
-  const { inputProps: tilInputProps, datepickerProps: tilDatepickerProps } =
-    useDatepicker({
-      defaultSelected: valgtTilDato,
-      onDateChange: settValgtTilDato,
-      fromDate: new Date('2025-01-01'),
-      toDate: new Date('2040-12-31'),
-    });
-
-  const tidspunktErSammeDag =
-    valgtFraDato && valgtTilDato && isSameDay(valgtFraDato, valgtTilDato);
-
-  const beregnVarighet = () => {
-    if (!valgtFraDato || !valgtTilDato) return 'Velg tid';
-
-    if (tidspunktErSammeDag) {
-      const [fraTimer, fraMinutter] = valgtFraKlokkeslett
-        .split(':')
-        .map(Number);
-      const [tilTimer, tilMinutter] = valgtTilKlokkeslett
-        .split(':')
-        .map(Number);
-      const fraTidspunkt = new Date(valgtFraDato);
-      fraTidspunkt.setHours(fraTimer, fraMinutter);
-      const tilTidspunkt = new Date(valgtTilDato);
-      tilTidspunkt.setHours(tilTimer, tilMinutter);
-      const antallTimer =
-        (tilTidspunkt.getTime() - fraTidspunkt.getTime()) / 3_600_000;
-
-      return `${Number.isInteger(antallTimer) ? antallTimer : antallTimer.toFixed(1)} timer`;
+    if (isSameDay(fraDato, tilDato)) {
+      const [fh, fm] = fraTid.split(':').map(Number);
+      const [th, tm] = tilTid.split(':').map(Number);
+      const start = new Date(fraDato);
+      start.setHours(fh, fm);
+      const end = new Date(tilDato);
+      end.setHours(th, tm);
+      const diff = (end.getTime() - start.getTime()) / 3_600_000;
+      return diff >= 0
+        ? `${Number.isInteger(diff) ? diff : diff.toFixed(1)} timer`
+        : '';
     }
 
-    const antallDager =
-      (startOfDay(valgtTilDato).getTime() -
-        startOfDay(valgtFraDato).getTime()) /
+    const days =
+      (startOfDay(tilDato).getTime() - startOfDay(fraDato).getTime()) /
         86_400_000 +
       1;
+    return days > 0 ? `${days} dager` : '';
+  }, [watched]);
 
-    return `${antallDager} dager`;
-  };
+  const onSubmit: SubmitHandler<FormData> = async ({
+    fraDato,
+    fraTid,
+    tilDato,
+    tilTid,
+  }) => {
+    if (!fraDato || !tilDato) {
+      setError('fraDato', { message: 'Obligatorisk' });
+      setError('tilDato', { message: 'Obligatorisk' });
+      return;
+    }
+    if (!duration) {
+      setError('root', { type: 'manual', message: 'Vrengt periode' });
+      return;
+    }
 
-  const tilIsoTid = (dato: Date, klokkeslett: string) => {
-    const [timer, minutter] = klokkeslett.split(':').map(Number);
-    const kopiAvDato = new Date(dato);
-    kopiAvDato.setHours(timer, minutter, 0, 0);
-    return kopiAvDato.toISOString();
-  };
+    setOpen(false);
 
-  const lagreTidspunkt = () => {
-    if (!valgtFraDato || !valgtTilDato) return;
-
-    const oppdatering: OppdaterRekrutteringstreffDTO = {
-      tittel: rekrutteringstreff.tittel,
-      beskrivelse: rekrutteringstreff.beskrivelse,
-      sted: rekrutteringstreff.sted,
-      fraTid: tilIsoTid(valgtFraDato, valgtFraKlokkeslett),
-      tilTid: tilIsoTid(valgtTilDato, valgtTilKlokkeslett),
+    const dto: OppdaterRekrutteringstreffDTO = {
+      ...rekrutteringstreff,
+      fraTid: toIso(fraDato, fraTid),
+      tilTid: toIso(tilDato, tilTid),
     };
-
-    oppdaterRekrutteringstreff(rekrutteringstreff.id, oppdatering)
-      .then(() => {
-        track(UmamiEvent.Rekrutteringstreff.oppdatert_tidspunkt);
-        settPopoverErÅpen(false);
-      })
-      .catch((error) => {
-        throw new rekbisError({
-          beskrivelse: 'Feil ved oppdatering av tidspunkt:',
-          error,
-        });
-      });
+    await oppdaterRekrutteringstreff(rekrutteringstreff.id, dto);
   };
 
   return (
-    <div ref={popoverAnchorRef} className={className}>
+    <div ref={anchorRef} className={className}>
       <RekrutteringstreffDetalj
         tittelIkon={<CalendarIcon fontSize='1.5rem' />}
         tittel='Tidspunkt'
         knapp={
           <Button
-            icon={fraTid ? <PencilIcon /> : <PlusIcon />}
             variant='tertiary'
             size='small'
-            onClick={() => settPopoverErÅpen((erÅpen) => !erÅpen)}
-            aria-expanded={popoverErÅpen}
+            icon={rekrutteringstreff.fraTid ? <PencilIcon /> : <PlusIcon />}
+            onClick={() => setOpen((o) => !o)}
+            aria-expanded={open}
           >
-            {fraTid ? 'Endre' : 'Legg til'}
+            {rekrutteringstreff.fraTid ? 'Endre' : 'Legg til'}
           </Button>
         }
       >
-        {fraTid &&
-          tilTid &&
-          (tidspunktErSammeDag ? (
+        {initialFra && initialTil ? (
+          isSameDay(initialFra, initialTil) ? (
             <BodyShort size='small'>
-              {format(initialFraTid!, 'dd.MM.yyyy')}{' '}
+              {format(initialFra, 'dd.MM.yyyy')}{' '}
               <BodyShort as='span' size='small' textColor='subtle'>
-                kl {format(initialFraTid!, 'HH:mm')}-
-                {format(initialTilTid!, 'HH:mm')}
+                kl {format(initialFra, 'HH:mm')}-{format(initialTil, 'HH:mm')}
               </BodyShort>
             </BodyShort>
           ) : (
             <>
               <BodyShort size='small'>
-                {format(initialFraTid!, 'dd.MM.yyyy')}{' '}
+                {format(initialFra, 'dd.MM.yyyy')}{' '}
                 <BodyShort as='span' size='small' textColor='subtle'>
-                  kl {format(initialFraTid!, 'HH:mm')}
+                  kl {format(initialFra, 'HH:mm')}
                 </BodyShort>{' '}
                 til
               </BodyShort>
               <BodyShort size='small'>
-                {format(initialTilTid!, 'dd.MM.yyyy')}{' '}
+                {format(initialTil, 'dd.MM.yyyy')}{' '}
                 <BodyShort as='span' size='small' textColor='subtle'>
-                  kl {format(initialTilTid!, 'HH:mm')}
+                  kl {format(initialTil, 'HH:mm')}
                 </BodyShort>
               </BodyShort>
             </>
-          ))}
+          )
+        ) : (
+          <BodyShort size='small' textColor='subtle'>
+            Ikke satt
+          </BodyShort>
+        )}
       </RekrutteringstreffDetalj>
 
       <Popover
-        open={popoverErÅpen}
-        onClose={() => settPopoverErÅpen(false)}
-        anchorEl={popoverAnchorRef.current}
+        open={open}
+        anchorEl={anchorRef.current}
+        onClose={() => setOpen(false)}
+        placement='bottom-start'
         offset={0}
         arrow={false}
-        placement='bottom-start'
       >
         <Popover.Content>
-          <div className='flex flex-col gap-4 p-2 min-w-[22rem]'>
-            <div className='flex justify-between items-center mb-2'>
-              <span className='font-bold flex items-center gap-2'>
-                <CalendarIcon fontSize='1.5rem' />
-                Tidspunkt
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className='flex flex-col gap-4 p-2 min-w-[22rem]'
+          >
+            <div className='flex justify-between items-center'>
+              <span className='font-bold flex gap-2 items-center'>
+                <CalendarIcon /> Tidspunkt
               </span>
-              <Button size='small' variant='tertiary' onClick={lagreTidspunkt}>
+              <Button type='submit' size='small' variant='tertiary'>
                 Lagre
               </Button>
             </div>
 
-            <div className='flex gap-4 items-center'>
-              <span className='w-10'>Fra</span>
-              <DatePicker {...fraDatepickerProps}>
-                <DatePicker.Input
-                  {...fraInputProps}
-                  hideLabel
-                  label='Fra dato'
-                />
-              </DatePicker>
-              <Select
-                label='Fra tidspunkt'
-                hideLabel
-                size='small'
-                value={valgtFraKlokkeslett}
-                onChange={(event) =>
-                  settValgtFraKlokkeslett(event.target.value)
-                }
-              >
-                {klokkeslettListe.map((tidspunkt) => (
-                  <option key={tidspunkt}>{tidspunkt}</option>
-                ))}
-              </Select>
-            </div>
+            <Rad
+              label='Fra'
+              nameDato='fraDato'
+              nameTid='fraTid'
+              control={control}
+              errors={errors}
+            />
+            <Rad
+              label='Til'
+              nameDato='tilDato'
+              nameTid='tilTid'
+              control={control}
+              errors={errors}
+            />
 
-            <div className='flex gap-4 items-center'>
-              <span className='w-10'>Til</span>
-              <DatePicker {...tilDatepickerProps}>
-                <DatePicker.Input
-                  {...tilInputProps}
-                  hideLabel
-                  label='Til dato'
-                />
-              </DatePicker>
-              <Select
-                label='Til tidspunkt'
-                hideLabel
-                size='small'
-                value={valgtTilKlokkeslett}
-                onChange={(event) =>
-                  settValgtTilKlokkeslett(event.target.value)
-                }
-              >
-                {klokkeslettListe.map((tidspunkt) => (
-                  <option key={tidspunkt}>{tidspunkt}</option>
-                ))}
-              </Select>
-            </div>
-
-            <BodyShort size='small' textColor='subtle'>
-              {beregnVarighet()}
-            </BodyShort>
-          </div>
+            {errors.root ? (
+              <BodyShort size='small'>{errors.root.message}</BodyShort>
+            ) : (
+              <BodyShort size='small' textColor='subtle'>
+                {duration || 'Velg tid'}
+              </BodyShort>
+            )}
+          </form>
         </Popover.Content>
       </Popover>
     </div>
   );
-};
+}
 
-export default Tidspunkt;
+function Rad({
+  label,
+  nameDato,
+  nameTid,
+  control,
+  errors,
+}: {
+  label: string;
+  nameDato: keyof FormData;
+  nameTid: keyof FormData;
+  control: any;
+  errors: FieldErrors<FormData>;
+}) {
+  return (
+    <div className='flex gap-4 items-start'>
+      <span className='w-10 pt-3'>{label}</span>
+
+      <Controller
+        name={nameDato}
+        control={control}
+        rules={{ required: 'Obligatorisk' }}
+        render={({ field }) => (
+          <ControlledDatePicker
+            label={label}
+            value={field.value}
+            onChange={field.onChange}
+            error={errors[nameDato] as FieldError | undefined}
+          />
+        )}
+      />
+
+      <Controller
+        name={nameTid}
+        control={control}
+        rules={{ required: 'Obligatorisk' }}
+        render={({ field }) => (
+          <Select
+            {...field}
+            hideLabel
+            label='Tid'
+            size='medium'
+            className='h-[48px] min-w-[6rem]'
+          >
+            {klokkeslett.map((t) => (
+              <option key={t}>{t}</option>
+            ))}
+          </Select>
+        )}
+      />
+    </div>
+  );
+}
+
+const toIso = (d: Date, t: string) => {
+  const [h, m] = t.split(':').map(Number);
+  const copy = new Date(d);
+  copy.setHours(h, m, 0, 0);
+  return copy.toISOString();
+};
