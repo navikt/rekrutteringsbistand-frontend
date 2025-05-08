@@ -4,7 +4,10 @@ import {
   oppdaterRekrutteringstreff,
   OppdaterRekrutteringstreffDTO,
 } from '@/app/api/rekrutteringstreff/oppdater-rekrutteringstreff/oppdaterRerkutteringstreff';
-import { RekrutteringstreffDTO } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
+import {
+  RekrutteringstreffDTO,
+  useRekrutteringstreff,
+} from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { CalendarIcon, PencilIcon, PlusIcon } from '@navikt/aksel-icons';
 import { Popover, Select, Button, BodyShort } from '@navikt/ds-react';
 import { format, isSameDay, startOfDay, parseISO } from 'date-fns';
@@ -41,6 +44,8 @@ interface Props {
 export default function Tidspunkt({ rekrutteringstreff, className }: Props) {
   const anchorRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
+
+  const rekrutteringstreffHook = useRekrutteringstreff(rekrutteringstreff.id);
 
   const initialFra = rekrutteringstreff.fraTid
     ? toZonedTime(parseISO(rekrutteringstreff.fraTid), 'Europe/Oslo')
@@ -116,6 +121,7 @@ export default function Tidspunkt({ rekrutteringstreff, className }: Props) {
       tilTid: toIso(tilDato, tilTid),
     };
     await oppdaterRekrutteringstreff(rekrutteringstreff.id, dto);
+    rekrutteringstreffHook.mutate();
   };
 
   return (
