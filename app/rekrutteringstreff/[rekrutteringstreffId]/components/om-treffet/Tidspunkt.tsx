@@ -1,4 +1,3 @@
-// app/rekrutteringstreff/[rekrutteringstreffId]/components/om-treffet/Tidspunkt.tsx
 import RekrutteringstreffDetalj from '../RekrutteringstreffDetalj';
 import ControlledDatePicker from './components/ControlledDatepicker';
 import {
@@ -17,8 +16,8 @@ import {
   SubmitHandler,
   useWatch,
   FieldErrors,
+  FieldError,
 } from 'react-hook-form';
-import type { FieldError } from 'react-hook-form';
 
 type FormData = {
   fraDato: Date | null;
@@ -108,8 +107,11 @@ export default function Tidspunkt({ rekrutteringstreff, className }: Props) {
 
     setOpen(false);
 
+    const { tittel, beskrivelse, sted } = rekrutteringstreff;
     const dto: OppdaterRekrutteringstreffDTO = {
-      ...rekrutteringstreff,
+      tittel,
+      beskrivelse,
+      sted,
       fraTid: toIso(fraDato, fraTid),
       tilTid: toIso(tilDato, tilTid),
     };

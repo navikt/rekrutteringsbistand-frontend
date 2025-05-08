@@ -1,4 +1,3 @@
-// components/om-treffet/ControlledDatePicker.tsx
 import { DatePicker, useDatepicker } from '@navikt/ds-react';
 import type { FieldError } from 'react-hook-form';
 
