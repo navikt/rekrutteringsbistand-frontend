@@ -74,7 +74,7 @@ export const useKandidatsøk = (
     innsatsgruppe: kandidatSøkFilter.innsatsgruppe,
     side: kandidatSøkFilter.side,
     ønsketYrke: kandidatSøkFilter.ønsketYrke,
-    ønsketSted: stedKoder,
+    ønsketSted: stedKoder.filter((sted) => sted !== null) ?? [],
     borPåØnsketSted: kandidatSøkFilter.borPåØnsketSted === 'ja',
     kompetanse: kandidatSøkFilter.kompetanse,
     førerkort: kandidatSøkFilter.førerkort,
