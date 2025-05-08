@@ -13,7 +13,6 @@ import ModiaKnapp from './components/ModiaKnapp';
 import OpprettKnapp from './components/OpprettKnapp';
 import VelgKontor from './components/VelgKontor';
 import {
-  MenySidebarTrigger,
   Sidebar,
   SidebarContent,
   SidebarFooter,
@@ -27,6 +26,7 @@ import {
   MoonIcon,
   PersonTallShortIcon,
   ReceptionIcon,
+  SidebarLeftIcon,
   SunIcon,
 } from '@navikt/aksel-icons';
 import { BodyShort, Button } from '@navikt/ds-react';
@@ -120,7 +120,7 @@ const SideHandling = (item: NavigasjonHandlingProps) => {
 export function AppNavigasjon() {
   const { brukerData } = useApplikasjonContext();
   const { darkMode, setDarkMode } = useThemeProvider();
-  const { open } = useSidebar();
+  const { open, toggleSidebar } = useSidebar();
   const [åpenNyheter, setÅpenNyheter] = useState<boolean>(false);
 
   const onFørsteBesøk = () => {
@@ -140,19 +140,14 @@ export function AppNavigasjon() {
 
   return (
     <Sidebar collapsible='icon'>
-      <div
-        className={`flex justify-between py-2 ${open ? 'items-start px-4 ' : 'items-base px-2 '}`}
-      >
-        {open && (
-          <BodyShort className='truncate '>
-            {brukerData.fornavn} {brukerData.etternavn}
-          </BodyShort>
-        )}
-        <MenySidebarTrigger />
-      </div>
-
-      <SidebarContent>
-        <SidebarGroup>
+      <SidebarContent className='py-3'>
+        <SideHandling
+          kreverRoller={null}
+          onClick={toggleSidebar}
+          tekst='Rekrutteringsbistand'
+          ikon={<SidebarLeftIcon style={{ color: 'var(--ax-text-accent)' }} />}
+        />
+        <SidebarGroup className='py-8'>
           <OpprettKnapp />
         </SidebarGroup>
         <SidebarGroup
@@ -197,6 +192,11 @@ export function AppNavigasjon() {
 
           <VelgKontor />
           <ModiaKnapp />
+          {open && (
+            <BodyShort className='truncate '>
+              {brukerData.fornavn} {brukerData.etternavn}
+            </BodyShort>
+          )}
         </SidebarGroup>
       </SidebarFooter>
       <SidebarRail />
