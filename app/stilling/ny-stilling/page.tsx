@@ -11,13 +11,17 @@ import VelgArbeidsgiver from './components/VelgArbeidsgiver';
 import VelgStillingskategori from './components/VelgStillingskategori';
 import { Alert, BodyLong, Button } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
+import { useQueryState } from 'nuqs';
 import * as React from 'react';
 
 const NyStilling: React.FC = () => {
   const router = useRouter();
 
   const [stillingskategori, setStillingskategori] =
-    React.useState<Stillingskategori | null>(null);
+    useQueryState<Stillingskategori | null>('stillingskategori', {
+      parse: (value) => value as Stillingskategori | null,
+      defaultValue: null,
+    });
 
   const [arbeidsgiver, setArbeidsgiver] =
     React.useState<ArbeidsgiverDTO | null>(null);

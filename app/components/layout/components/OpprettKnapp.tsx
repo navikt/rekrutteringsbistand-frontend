@@ -46,11 +46,28 @@ const OpprettKnapp: React.FC = () => {
                 onSelect={() =>
                   trackAndNavigate(
                     UmamiEvent.Sidebar.opprettet_stilling,
-                    '/stilling/ny-stilling',
+                    '/stilling/ny-stilling?stillingskategori=STILLING',
                   )
                 }
               >
                 Stilling
+              </ActionMenu.Item>
+            </TilgangskontrollForInnhold>
+            <TilgangskontrollForInnhold
+              skjulVarsel
+              kreverEnAvRollene={[
+                Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+              ]}
+            >
+              <ActionMenu.Item
+                onSelect={() =>
+                  trackAndNavigate(
+                    UmamiEvent.Sidebar.opprettet_stilling,
+                    '/stilling/ny-stilling?stillingskategori=JOBBMESSE',
+                  )
+                }
+              >
+                Jobbmesse
               </ActionMenu.Item>
             </TilgangskontrollForInnhold>
             <TilgangskontrollForInnhold
