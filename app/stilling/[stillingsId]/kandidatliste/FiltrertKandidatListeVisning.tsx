@@ -39,6 +39,7 @@ const FiltrertKandidatListeVisning: React.FC = () => {
     }
   }, [setKandidatNavigering, filtrerteKandidater?.kandidater]);
 
+  const knappStyling = 'p-0';
   return (
     <div className='mt-6'>
       <KandidatlisteFilterrad />
@@ -54,7 +55,7 @@ const FiltrertKandidatListeVisning: React.FC = () => {
                 sortering === KandidatlisteSortering.NAVN_ASC,
                 sortering === KandidatlisteSortering.NAVN_DESC,
               )}
-              className=''
+              className={knappStyling}
               variant='tertiary'
               size='small'
               onClick={() => {
@@ -73,7 +74,7 @@ const FiltrertKandidatListeVisning: React.FC = () => {
                 sortering === KandidatlisteSortering.LAGT_TIL_ASC,
                 sortering === KandidatlisteSortering.LAGT_TIL_DESC,
               )}
-              className=''
+              className={knappStyling}
               variant='tertiary'
               size='small'
               onClick={() => {
@@ -92,7 +93,7 @@ const FiltrertKandidatListeVisning: React.FC = () => {
                 sortering === KandidatlisteSortering.HENDELSE_ASC,
                 sortering === KandidatlisteSortering.HENDELSE_DESC,
               )}
-              className=''
+              className={knappStyling}
               variant='tertiary'
               size='small'
               onClick={() => {
@@ -111,7 +112,7 @@ const FiltrertKandidatListeVisning: React.FC = () => {
                 sortering === KandidatlisteSortering.VARSEL_ASC,
                 sortering === KandidatlisteSortering.VARSEL_DESC,
               )}
-              className=''
+              className={knappStyling}
               variant='tertiary'
               size='small'
               onClick={() => {
@@ -130,7 +131,7 @@ const FiltrertKandidatListeVisning: React.FC = () => {
                 sortering === KandidatlisteSortering.INTERN_STATUS_ASC,
                 sortering === KandidatlisteSortering.INTERN_STATUS_DESC,
               )}
-              className=''
+              className={knappStyling}
               variant='tertiary'
               size='small'
               onClick={() => {
