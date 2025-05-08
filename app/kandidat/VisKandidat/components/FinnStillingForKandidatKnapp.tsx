@@ -15,7 +15,7 @@ const FinnStillingForKandidatKnapp: React.FC = () => {
       onClick={() => {
         trackAndNavigate(
           UmamiEvent.Kandidat.finn_stilling_knapp,
-          `/stilling/?visKandidatnr=${kandidatId}`,
+          `/stilling?visKandidatnr=${kandidatId}`,
         );
       }}
     >

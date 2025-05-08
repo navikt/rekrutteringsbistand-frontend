@@ -122,7 +122,9 @@ const StillingsKort: React.FC<IStillingsKort> = ({
       <Box className='mb-2'>
         <Link
           href={
-            kandidatId ? `${stillingUrl}/kandidat/${kandidatId}` : stillingUrl
+            kandidatId
+              ? `${stillingUrl}?visKandidatnr=${kandidatId}`
+              : stillingUrl
           }
         >
           <Heading size='small'>

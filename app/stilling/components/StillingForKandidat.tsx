@@ -15,7 +15,7 @@ const StillingForKandidat: React.FC<StillingForKandidatProps> = ({
   return (
     <SWRLaster hooks={[kandidatSammendragHook]}>
       {(data) => (
-        <div>
+        <div className='mb-4'>
           <Heading size='medium'>
             Finner stilling for: {data.fornavn}, {data.etternavn}
           </Heading>
