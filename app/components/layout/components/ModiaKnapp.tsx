@@ -31,6 +31,7 @@ const ModiaKnapp: React.FC = () => {
         onClick={() => setOpenState(!openState)}
         variant='tertiary-neutral'
         icon={<MenuGridIcon />}
+        className={open ? 'w-full text-left justify-start' : ''}
       >
         {open && 'Modia'}
       </Button>

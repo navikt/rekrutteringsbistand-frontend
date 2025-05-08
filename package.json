@@ -27,6 +27,7 @@
     "@navikt/next-api-proxy": "^4.1.3",
     "@navikt/next-logger": "^2.0.0",
     "@navikt/oasis": "^3.7.0",
+    "@radix-ui/react-avatar": "^1.1.9",
     "@radix-ui/react-collapsible": "^1.1.8",
     "@radix-ui/react-dialog": "^1.1.7",
     "@radix-ui/react-scroll-area": "^1.2.6",

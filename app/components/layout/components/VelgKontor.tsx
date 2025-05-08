@@ -16,6 +16,7 @@ const VelgKontor: React.FC = () => {
           variant='tertiary-neutral'
           iconPosition='left'
           icon={<Buildings3Icon title='Nav kontor' />}
+          className={open ? 'w-full text-left justify-start' : ''}
         >
           {open && (
             <div className='flex items-center gap-2 '>

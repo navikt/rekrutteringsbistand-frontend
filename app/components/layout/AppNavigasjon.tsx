@@ -1,5 +1,6 @@
 'use client';
 
+import { Avatar, AvatarFallback } from '../../../components/ui/avatar';
 import { isLocal } from '../../../util/env';
 import { nyheter } from '../../nyheter';
 import { useApplikasjonContext } from '../../providers/ApplikasjonContext';
@@ -89,8 +90,12 @@ const SideLenke = (item: NavigasjonItemProps) => {
       skjulVarsel
       kreverEnAvRollene={item.kreverRoller}
     >
-      <Link href={item.path}>
-        <Button variant='tertiary-neutral' icon={item.ikon}>
+      <Link href={item.path} className={open ? 'w-full' : ''}>
+        <Button
+          variant='tertiary-neutral'
+          icon={item.ikon}
+          className={open ? 'w-full text-left justify-start' : ''}
+        >
           {open && item.tekst}
         </Button>
       </Link>
@@ -110,6 +115,7 @@ const SideHandling = (item: NavigasjonHandlingProps) => {
         onClick={item.onClick}
         variant='tertiary-neutral'
         icon={item.ikon}
+        className={open ? 'w-full text-left justify-start' : ''}
       >
         {open && item.tekst}
       </Button>
@@ -168,7 +174,7 @@ export function AppNavigasjon() {
         <SidebarGroup
           className={`flex flex-col w-full gap-3 ${open ? 'items-start' : 'items-center'}`}
         >
-          <div className='flex'>
+          <div className={open ? ' w-full' : ''}>
             <Nyheter />
             <div
               className={`${antallUlesteNyheter > 0 ? '  top-1 right-0 h-3 w-3 rounded-full bg-[#0067c5]' : ''}`}
@@ -192,11 +198,20 @@ export function AppNavigasjon() {
 
           <VelgKontor />
           <ModiaKnapp />
-          {open && (
-            <BodyShort className='truncate '>
-              {brukerData.fornavn} {brukerData.etternavn}
-            </BodyShort>
-          )}
+
+          <div className='flex items-baseline w-full'>
+            <Avatar className='pt-4 mr-2'>
+              <AvatarFallback>
+                {brukerData.fornavn.charAt(0)}
+                {brukerData.etternavn.charAt(0)}
+              </AvatarFallback>
+            </Avatar>
+            {open && (
+              <BodyShort className='truncate max-w-[80%]'>
+                {brukerData.fornavn} {brukerData.etternavn}
+              </BodyShort>
+            )}
+          </div>
         </SidebarGroup>
       </SidebarFooter>
       <SidebarRail />

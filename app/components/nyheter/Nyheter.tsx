@@ -25,12 +25,13 @@ const Nyheter: FunctionComponent = () => {
   }, [åpen, markerSomLest]);
 
   return (
-    <div>
+    <div className='w-full'>
       <Button
         ref={buttonRef}
         icon={<MegaphoneIcon aria-hidden />}
         variant='tertiary-neutral'
         onClick={() => setÅpen(!åpen)}
+        className='w-full text-left justify-start'
       >
         {open && (
           <div className='whitespace-nowrap flex'>
