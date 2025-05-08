@@ -10,6 +10,10 @@ export async function POST(req: NextRequest) {
   return proxyWithOBO(RekrutteringstreffAPI, req);
 }
 
+export async function PUT(req: NextRequest) {
+  return proxyWithOBO(RekrutteringstreffAPI, req);
+}
+
 export async function DELETE(req: NextRequest) {
   return proxyWithOBO(RekrutteringstreffAPI, req);
 }

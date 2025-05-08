@@ -75,6 +75,7 @@ const Etterregistrering = lagEventPrefix(UmamiDomene.Etterregistrering, {
 
 const Rekrutteringstreff = lagEventPrefix(UmamiDomene.Rekrutteringstreff, {
   registrering: 'Registrering til rekrutteringstreff',
+  oppdatert_tidspunkt: 'Oppdatering av rekrutteringstreff tidspunkt fra til',
 });
 
 export const UmamiEvent = {

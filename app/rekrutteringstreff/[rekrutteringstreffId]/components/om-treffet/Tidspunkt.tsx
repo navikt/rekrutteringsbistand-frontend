@@ -1,5 +1,12 @@
 import RekrutteringstreffDetalj from '../RekrutteringstreffDetalj';
+import {
+  oppdaterRekrutteringstreff,
+  OppdaterRekrutteringstreffDTO,
+} from '@/app/api/rekrutteringstreff/oppdater-rekrutteringstreff/oppdaterRerkutteringstreff';
 import { RekrutteringstreffDTO } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
+import { useUmami } from '@/app/providers/UmamiContext';
+import { rekbisError } from '@/util/rekbisError';
+import { UmamiEvent } from '@/util/umamiEvents';
 import { CalendarIcon, PencilIcon, PlusIcon } from '@navikt/aksel-icons';
 import {
   BodyShort,
@@ -9,80 +16,132 @@ import {
   Select,
   useDatepicker,
 } from '@navikt/ds-react';
-import { format, isSameDay, startOfDay } from 'date-fns';
+import { format, isSameDay, startOfDay, parseISO } from 'date-fns';
+import { toZonedTime } from 'date-fns-tz';
 import { useRef, useState } from 'react';
 
-interface TidspunktProps {
+interface Props {
   rekrutteringstreff: RekrutteringstreffDTO;
   className?: string;
 }
 
-const klokkeslett = Array.from({ length: 24 }, (_, h) =>
-  [0, 15, 30, 45].map(
-    (m) => `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`,
+const klokkeslettListe = Array.from({ length: 24 }, (_, time) =>
+  [0, 30].map(
+    (minutt) =>
+      `${time.toString().padStart(2, '0')}:${minutt
+        .toString()
+        .padStart(2, '0')}`,
   ),
 ).flat();
 
-const Tidspunkt: React.FC<TidspunktProps> = ({
-  rekrutteringstreff,
-  className,
-}) => {
+const Tidspunkt = ({ rekrutteringstreff, className }: Props) => {
+  const { track } = useUmami();
   const { fraTid, tilTid } = rekrutteringstreff;
 
-  const anchorRef = useRef<HTMLDivElement>(null);
-  const [open, setOpen] = useState(false);
+  const popoverAnchorRef = useRef<HTMLDivElement>(null);
+  const [popoverErÅpen, settPopoverErÅpen] = useState(false);
 
-  const initFra = fraTid ? new Date(fraTid) : undefined;
-  const initTil = tilTid ? new Date(tilTid) : undefined;
+  const initialFraTid = fraTid
+    ? toZonedTime(parseISO(fraTid), 'Europe/Oslo')
+    : undefined;
+  const initialTilTid = tilTid
+    ? toZonedTime(parseISO(tilTid), 'Europe/Oslo')
+    : undefined;
 
-  const [fraDato, setFraDato] = useState<Date | undefined>(initFra);
-  const [fraKlokke, setFraKlokke] = useState<string>(
-    initFra ? format(initFra, 'HH:mm') : '08:00',
+  const [valgtFraDato, settValgtFraDato] = useState<Date | undefined>(
+    initialFraTid,
   );
-  const [tilDato, setTilDato] = useState<Date | undefined>(initTil);
-  const [tilKlokke, setTilKlokke] = useState<string>(
-    initTil ? format(initTil, 'HH:mm') : '10:00',
+  const [valgtFraKlokkeslett, settValgtFraKlokkeslett] = useState(
+    initialFraTid ? format(initialFraTid, 'HH:mm') : '08:00',
+  );
+  const [valgtTilDato, settValgtTilDato] = useState<Date | undefined>(
+    initialTilTid,
+  );
+  const [valgtTilKlokkeslett, settValgtTilKlokkeslett] = useState(
+    initialTilTid ? format(initialTilTid, 'HH:mm') : '10:00',
   );
 
-  const { inputProps: fraInputProps, datepickerProps: fraPickerProps } =
+  const { inputProps: fraInputProps, datepickerProps: fraDatepickerProps } =
     useDatepicker({
-      fromDate: new Date('2020-01-01'),
-      toDate: new Date('2030-12-31'),
-      defaultSelected: fraDato,
-      onDateChange: setFraDato,
+      defaultSelected: valgtFraDato,
+      onDateChange: settValgtFraDato,
+      fromDate: new Date('2025-01-01'),
+      toDate: new Date('2040-12-31'),
     });
 
-  const { inputProps: tilInputProps, datepickerProps: tilPickerProps } =
+  const { inputProps: tilInputProps, datepickerProps: tilDatepickerProps } =
     useDatepicker({
-      fromDate: new Date('2020-01-01'),
-      toDate: new Date('2030-12-31'),
-      defaultSelected: tilDato,
-      onDateChange: setTilDato,
+      defaultSelected: valgtTilDato,
+      onDateChange: settValgtTilDato,
+      fromDate: new Date('2025-01-01'),
+      toDate: new Date('2040-12-31'),
     });
 
-  const sammeDag = fraDato && tilDato && isSameDay(fraDato, tilDato);
+  const tidspunktErSammeDag =
+    valgtFraDato && valgtTilDato && isSameDay(valgtFraDato, valgtTilDato);
 
-  const varighet = () => {
-    if (!fraDato || !tilDato) return 'Velg tid';
-    if (sammeDag) {
-      const [fraTimer, fraMinutt] = fraKlokke.split(':').map(Number);
-      const [tilTimer, tilminutt] = tilKlokke.split(':').map(Number);
-      const fra = new Date(fraDato);
-      fra.setHours(fraTimer, fraMinutt, 0, 0);
-      const til = new Date(tilDato);
-      til.setHours(tilTimer, tilminutt, 0, 0);
-      const diff = (til.getTime() - fra.getTime()) / 3_600_000;
-      return `${Number.isInteger(diff) ? diff : diff.toFixed(1)} timer`;
+  const beregnVarighet = () => {
+    if (!valgtFraDato || !valgtTilDato) return 'Velg tid';
+
+    if (tidspunktErSammeDag) {
+      const [fraTimer, fraMinutter] = valgtFraKlokkeslett
+        .split(':')
+        .map(Number);
+      const [tilTimer, tilMinutter] = valgtTilKlokkeslett
+        .split(':')
+        .map(Number);
+      const fraTidspunkt = new Date(valgtFraDato);
+      fraTidspunkt.setHours(fraTimer, fraMinutter);
+      const tilTidspunkt = new Date(valgtTilDato);
+      tilTidspunkt.setHours(tilTimer, tilMinutter);
+      const antallTimer =
+        (tilTidspunkt.getTime() - fraTidspunkt.getTime()) / 3_600_000;
+
+      return `${Number.isInteger(antallTimer) ? antallTimer : antallTimer.toFixed(1)} timer`;
     }
-    const days =
-      (startOfDay(tilDato).getTime() - startOfDay(fraDato).getTime()) /
+
+    const antallDager =
+      (startOfDay(valgtTilDato).getTime() -
+        startOfDay(valgtFraDato).getTime()) /
         86_400_000 +
       1;
-    return `${days} dager`;
+
+    return `${antallDager} dager`;
+  };
+
+  const tilIsoTid = (dato: Date, klokkeslett: string) => {
+    const [timer, minutter] = klokkeslett.split(':').map(Number);
+    const kopiAvDato = new Date(dato);
+    kopiAvDato.setHours(timer, minutter, 0, 0);
+    return kopiAvDato.toISOString();
+  };
+
+  const lagreTidspunkt = () => {
+    if (!valgtFraDato || !valgtTilDato) return;
+
+    const oppdatering: OppdaterRekrutteringstreffDTO = {
+      tittel: rekrutteringstreff.tittel,
+      beskrivelse: rekrutteringstreff.beskrivelse,
+      sted: rekrutteringstreff.sted,
+      fraTid: tilIsoTid(valgtFraDato, valgtFraKlokkeslett),
+      tilTid: tilIsoTid(valgtTilDato, valgtTilKlokkeslett),
+    };
+
+    oppdaterRekrutteringstreff(rekrutteringstreff.id, oppdatering)
+      .then(() => {
+        track(UmamiEvent.Rekrutteringstreff.oppdatert_tidspunkt);
+        settPopoverErÅpen(false);
+      })
+      .catch((error) => {
+        throw new rekbisError({
+          beskrivelse: 'Feil ved oppdatering av tidspunkt:',
+          error,
+        });
+      });
   };
 
   return (
-    <div ref={anchorRef} className={className}>
+    <div ref={popoverAnchorRef} className={className}>
       <RekrutteringstreffDetalj
         tittelIkon={<CalendarIcon fontSize='1.5rem' />}
         tittel='Tidspunkt'
@@ -91,8 +150,8 @@ const Tidspunkt: React.FC<TidspunktProps> = ({
             icon={fraTid ? <PencilIcon /> : <PlusIcon />}
             variant='tertiary'
             size='small'
-            onClick={() => setOpen((v) => !v)}
-            aria-expanded={open}
+            onClick={() => settPopoverErÅpen((erÅpen) => !erÅpen)}
+            aria-expanded={popoverErÅpen}
           >
             {fraTid ? 'Endre' : 'Legg til'}
           </Button>
@@ -100,26 +159,27 @@ const Tidspunkt: React.FC<TidspunktProps> = ({
       >
         {fraTid &&
           tilTid &&
-          (sammeDag ? (
+          (tidspunktErSammeDag ? (
             <BodyShort size='small'>
-              {format(initFra!, 'dd.MM.yyyy')}{' '}
+              {format(initialFraTid!, 'dd.MM.yyyy')}{' '}
               <BodyShort as='span' size='small' textColor='subtle'>
-                kl {format(initFra!, 'HH:mm')}-{format(initTil!, 'HH:mm')}
+                kl {format(initialFraTid!, 'HH:mm')}-
+                {format(initialTilTid!, 'HH:mm')}
               </BodyShort>
             </BodyShort>
           ) : (
             <>
               <BodyShort size='small'>
-                {format(initFra!, 'dd.MM.yyyy')}{' '}
+                {format(initialFraTid!, 'dd.MM.yyyy')}{' '}
                 <BodyShort as='span' size='small' textColor='subtle'>
-                  kl {format(initFra!, 'HH:mm')}
+                  kl {format(initialFraTid!, 'HH:mm')}
                 </BodyShort>{' '}
                 til
               </BodyShort>
               <BodyShort size='small'>
-                {format(initTil!, 'dd.MM.yyyy')}{' '}
+                {format(initialTilTid!, 'dd.MM.yyyy')}{' '}
                 <BodyShort as='span' size='small' textColor='subtle'>
-                  kl {format(initTil!, 'HH:mm')}
+                  kl {format(initialTilTid!, 'HH:mm')}
                 </BodyShort>
               </BodyShort>
             </>
@@ -127,9 +187,9 @@ const Tidspunkt: React.FC<TidspunktProps> = ({
       </RekrutteringstreffDetalj>
 
       <Popover
-        open={open}
-        onClose={() => setOpen(false)}
-        anchorEl={anchorRef.current}
+        open={popoverErÅpen}
+        onClose={() => settPopoverErÅpen(false)}
+        anchorEl={popoverAnchorRef.current}
         offset={0}
         arrow={false}
         placement='bottom-start'
@@ -141,19 +201,14 @@ const Tidspunkt: React.FC<TidspunktProps> = ({
                 <CalendarIcon fontSize='1.5rem' />
                 Tidspunkt
               </span>
-              <Button
-                size='small'
-                variant='tertiary'
-                onClick={() => setOpen(false)}
-                className='text-text-action'
-              >
+              <Button size='small' variant='tertiary' onClick={lagreTidspunkt}>
                 Lagre
               </Button>
             </div>
 
             <div className='flex gap-4 items-center'>
               <span className='w-10'>Fra</span>
-              <DatePicker {...fraPickerProps}>
+              <DatePicker {...fraDatepickerProps}>
                 <DatePicker.Input
                   {...fraInputProps}
                   hideLabel
@@ -161,21 +216,23 @@ const Tidspunkt: React.FC<TidspunktProps> = ({
                 />
               </DatePicker>
               <Select
-                label='Fra klokke'
+                label='Fra tidspunkt'
                 hideLabel
                 size='small'
-                value={fraKlokke}
-                onChange={(e) => setFraKlokke(e.target.value)}
+                value={valgtFraKlokkeslett}
+                onChange={(event) =>
+                  settValgtFraKlokkeslett(event.target.value)
+                }
               >
-                {klokkeslett.map((t) => (
-                  <option key={t}>{t}</option>
+                {klokkeslettListe.map((tidspunkt) => (
+                  <option key={tidspunkt}>{tidspunkt}</option>
                 ))}
               </Select>
             </div>
 
             <div className='flex gap-4 items-center'>
               <span className='w-10'>Til</span>
-              <DatePicker {...tilPickerProps}>
+              <DatePicker {...tilDatepickerProps}>
                 <DatePicker.Input
                   {...tilInputProps}
                   hideLabel
@@ -183,20 +240,22 @@ const Tidspunkt: React.FC<TidspunktProps> = ({
                 />
               </DatePicker>
               <Select
-                label='Til klokke'
+                label='Til tidspunkt'
                 hideLabel
                 size='small'
-                value={tilKlokke}
-                onChange={(e) => setTilKlokke(e.target.value)}
+                value={valgtTilKlokkeslett}
+                onChange={(event) =>
+                  settValgtTilKlokkeslett(event.target.value)
+                }
               >
-                {klokkeslett.map((t) => (
-                  <option key={t}>{t}</option>
+                {klokkeslettListe.map((tidspunkt) => (
+                  <option key={tidspunkt}>{tidspunkt}</option>
                 ))}
               </Select>
             </div>
 
             <BodyShort size='small' textColor='subtle'>
-              {varighet()}
+              {beregnVarighet()}
             </BodyShort>
           </div>
         </Popover.Content>
