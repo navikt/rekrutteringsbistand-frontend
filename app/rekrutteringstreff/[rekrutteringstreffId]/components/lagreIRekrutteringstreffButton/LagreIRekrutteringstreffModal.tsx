@@ -89,10 +89,7 @@ const LagreIRekrutteringstreffModal: React.FC<
                           </Checkbox>
                         </Table.DataCell>
                         <Table.HeaderCell scope='col'>
-                          Stilling
-                        </Table.HeaderCell>
-                        <Table.HeaderCell scope='col'>
-                          Antall rekrutteringstreff
+                          Rekrutteringstreff
                         </Table.HeaderCell>
                       </Table.Row>
                     </Table.Header>
@@ -106,7 +103,7 @@ const LagreIRekrutteringstreffModal: React.FC<
                                 rekrutteringstreffOversikt.id,
                               )}
                             >
-                              <Table.DataCell>
+                              <Table.DataCell className='w-3'>
                                 <Checkbox
                                   hideLabel
                                   checked={selectedRows.includes(
@@ -130,7 +127,6 @@ const LagreIRekrutteringstreffModal: React.FC<
                                     'Ukjent tittel'}
                                 </Link>
                               </Table.HeaderCell>
-                              <Table.DataCell>TODO</Table.DataCell>
                             </Table.Row>
                           );
                         },
