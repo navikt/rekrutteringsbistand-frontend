@@ -1,7 +1,10 @@
 import { usynligKandidaterSchemaDTO } from '../../../../../api/kandidat/schema.zod';
+import { formaterNorskDato } from '../../../../../components/util';
 import { KANDIDATLISTE_COLUMN_LAYOUT } from '../../FiltrertKandidatListeVisning';
+import { KandidatutfallTyper } from '../../KandidatTyper';
 import { useKandidatlisteContext } from '../../KandidatlisteContext';
 import KandidatHendelseTag, { SlettetTag } from '../KandidatHendelseTag';
+import { KandidatHendelseInformasjon } from '../KandidatHendelser/KandidatHendelser';
 import { KandidatVisningProps } from '../KandidatlisteFilter/useFiltrerteKandidater';
 import VelgInternStatus from '../VelgInternStatus';
 import KandidatCheckbox from './components/KandidatCheckbox';
@@ -28,6 +31,22 @@ const KandidatListeKort: React.FC<KandidatListeKortProps> = ({
   const { lukketKandidatliste, kandidatlisteId } = useKandidatlisteContext();
 
   if (usynligKandidat) {
+    const fåttJobben =
+      usynligKandidat.utfall === KandidatutfallTyper.FATT_JOBBEN;
+
+    const usynligHendelse: KandidatHendelseInformasjon = fåttJobben
+      ? {
+          tittel: 'Fått jobben',
+          tekst: formaterNorskDato(usynligKandidat.lagtTilTidspunkt) ?? '',
+          fargeKode: 'success',
+          ikon: undefined,
+        }
+      : {
+          tittel: 'Fjernet fått jobben registrering',
+          tekst: formaterNorskDato(usynligKandidat.lagtTilTidspunkt) ?? '',
+          fargeKode: 'warning',
+          ikon: undefined,
+        };
     return (
       <Box.New
         padding='4'
@@ -54,6 +73,9 @@ const KandidatListeKort: React.FC<KandidatListeKortProps> = ({
                 })}
               </BodyShort>
             </div>
+          </div>
+          <div>
+            <KandidatHendelseTag kandidatHendelse={usynligHendelse} />
           </div>
         </div>
       </Box.New>
