@@ -5,7 +5,10 @@ import { KandidatutfallTyper } from '../../KandidatTyper';
 import { useKandidatlisteContext } from '../../KandidatlisteContext';
 import DelMedArbeidsgiver from '../DelMedArbeidsgiver/DelMedArbeidsgiver';
 import DelMedKandidatModal from '../DelMedKandidat/DelMedKandidatModal';
-import EndreArkivertStatusKnapp from '../EndreArkivertStatusModal';
+import {
+  EndreArkivertStatusKnapp,
+  EndreArkivertStatusModal,
+} from '../EndreArkivertStatusModal';
 import FjernDelingMedArbeidsgiver from '../FjernDelingMedArbeidsgiver';
 import FjernFåttJobbenKnapp from '../FjernFåttJobbenKnapp';
 import KandidatHendelseTag, { SlettetTag } from '../KandidatHendelseTag';
@@ -30,7 +33,7 @@ const KandidatHandlingerForStilling: React.FC<
   const { reFetchKandidatliste, lukketKandidatliste, kandidatlisteId } =
     useKandidatlisteContext();
   const [loading, setLoading] = React.useState<boolean>(false);
-
+  const modalRef = React.useRef<HTMLDialogElement>(null!);
   const cvDeltMedArbeidsgiver =
     kandidat.kandidatHendelser.utfallsendringer?.some(
       (cv) => cv.tittel === 'CV delt med arbeidsgiver',
@@ -110,7 +113,13 @@ const KandidatHandlingerForStilling: React.FC<
             </div>
           )}
 
-        {!kandidat.arkivert && (
+        {kandidat.arkivert ? (
+          <EndreArkivertStatusKnapp
+            lukketKandidatliste={lukketKandidatliste}
+            slettet={kandidat.arkivert}
+            modalRef={modalRef}
+          />
+        ) : (
           <div className='flex gap-2 border-t-2 pt-4'>
             <SendSmsModal
               markerteKandidater={[kandidat]}
@@ -140,15 +149,18 @@ const KandidatHandlingerForStilling: React.FC<
             )}
             <div className='flex flex-1 justify-end'>
               <EndreArkivertStatusKnapp
-                tittel={'Slett'}
-                kandidat={kandidat}
-                kandidatlisteId={kandidatlisteId}
                 lukketKandidatliste={lukketKandidatliste}
+                slettet={kandidat.arkivert}
+                modalRef={modalRef}
               />
             </div>
           </div>
         )}
-
+        <EndreArkivertStatusModal
+          modalRef={modalRef}
+          kandidat={kandidat}
+          kandidatlisteId={kandidatlisteId}
+        />
         <Accordion>
           <Accordion.Item>
             <Accordion.Header>Vis alle hendelser og varsler</Accordion.Header>

@@ -30,7 +30,7 @@ const HøyreInnholdKort: React.FC<HøyreInnholdKortProps> = ({
 }) => {
   return (
     <HvitKort className={className} id='høyreinnhold'>
-      <div className='top-0 z-10 flex items-center justify-between bg-background p-2'>
+      <div className='top-0 z-10 flex items-center justify-between  p-2'>
         <div className='flex items-center'>
           <div>
             <Button

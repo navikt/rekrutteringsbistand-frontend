@@ -3,7 +3,10 @@ import { kandidaterSchemaDTO } from '../../../../../../api/kandidat/schema.zod';
 import { useApplikasjonContext } from '../../../../../../providers/ApplikasjonContext';
 import { KandidatutfallTyper } from '../../../KandidatTyper';
 import { useKandidatlisteContext } from '../../../KandidatlisteContext';
-import EndreArkivertStatusModal from '../../EndreArkivertStatusModal';
+import {
+  EndreArkivertStatusKnapp,
+  EndreArkivertStatusModal,
+} from '../../EndreArkivertStatusModal';
 import FjernFåttJobbenKnapp from '../../FjernFåttJobbenKnapp';
 import RegistrerFåttJobbenKnapp from '../../RegistrerFåttJobbenKnapp';
 import { MenuElipsisVerticalIcon } from '@navikt/aksel-icons';
@@ -24,6 +27,7 @@ const KandidatListeKortValg: React.FC<KandidatListeKortValgProps> = ({
   const { reFetchKandidatliste, lukketKandidatliste } =
     useKandidatlisteContext();
   const [loading, setLoading] = React.useState<boolean>(false);
+  const modalRef = React.useRef<HTMLDialogElement>(null!);
 
   const endreUtfallForKandidat = async (utfall: KandidatutfallTyper) => {
     setLoading(true);
@@ -45,43 +49,50 @@ const KandidatListeKortValg: React.FC<KandidatListeKortValgProps> = ({
     return null;
   }
   return (
-    <ActionMenu>
-      <ActionMenu.Trigger>
-        <Button
-          variant='tertiary-neutral'
-          icon={<MenuElipsisVerticalIcon title='Saksmeny' />}
-          size='small'
-        />
-      </ActionMenu.Trigger>
-      <ActionMenu.Content>
-        <ActionMenu.Group label={''}>
-          {kandidat.utfall !== KandidatutfallTyper.FATT_JOBBEN ? (
-            <RegistrerFåttJobbenKnapp
-              actionMenu
-              loading={loading}
-              endreUtfallForKandidat={endreUtfallForKandidat}
-              lukketKandidatliste={lukketKandidatliste}
-            />
-          ) : (
-            <FjernFåttJobbenKnapp
-              actionMenu
-              loading={loading}
-              endreUtfallForKandidat={endreUtfallForKandidat}
-              lukketKandidatliste={lukketKandidatliste}
-            />
-          )}
-
-          <ActionMenu.Divider />
-
-          <EndreArkivertStatusModal
-            actionMenu
-            kandidat={kandidat}
-            kandidatlisteId={kandidatlisteId}
-            lukketKandidatliste={lukketKandidatliste}
+    <>
+      <ActionMenu>
+        <ActionMenu.Trigger>
+          <Button
+            variant='tertiary-neutral'
+            icon={<MenuElipsisVerticalIcon title='Saksmeny' />}
+            size='small'
           />
-        </ActionMenu.Group>
-      </ActionMenu.Content>
-    </ActionMenu>
+        </ActionMenu.Trigger>
+        <ActionMenu.Content>
+          <ActionMenu.Group label={''}>
+            {kandidat.utfall !== KandidatutfallTyper.FATT_JOBBEN ? (
+              <RegistrerFåttJobbenKnapp
+                actionMenu
+                loading={loading}
+                endreUtfallForKandidat={endreUtfallForKandidat}
+                lukketKandidatliste={lukketKandidatliste}
+              />
+            ) : (
+              <FjernFåttJobbenKnapp
+                actionMenu
+                loading={loading}
+                endreUtfallForKandidat={endreUtfallForKandidat}
+                lukketKandidatliste={lukketKandidatliste}
+              />
+            )}
+
+            <ActionMenu.Divider />
+
+            <EndreArkivertStatusKnapp
+              actionMenu
+              lukketKandidatliste={lukketKandidatliste}
+              slettet={kandidat.arkivert}
+              modalRef={modalRef}
+            />
+          </ActionMenu.Group>
+        </ActionMenu.Content>
+      </ActionMenu>
+      <EndreArkivertStatusModal
+        modalRef={modalRef}
+        kandidat={kandidat}
+        kandidatlisteId={kandidatlisteId}
+      />
+    </>
   );
 };
 
