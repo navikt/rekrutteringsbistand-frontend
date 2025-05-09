@@ -6,8 +6,13 @@ import {
   RekrutteringstreffDTO,
   useRekrutteringstreff,
 } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
-import { CalendarIcon, PencilIcon, PlusIcon } from '@navikt/aksel-icons';
-import { Popover, Button, BodyShort } from '@navikt/ds-react';
+import {
+  CalendarIcon,
+  ExclamationmarkTriangleIcon,
+  PencilIcon,
+  PlusIcon,
+} from '@navikt/aksel-icons';
+import { Popover, Button, BodyShort, ErrorMessage } from '@navikt/ds-react';
 import { format, isSameDay, parseISO } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
 import { useEffect, useRef, useState } from 'react';
@@ -53,7 +58,8 @@ export default function Tidspunkt({ rekrutteringstreff, className }: Props) {
     },
   });
 
-  const { handleSubmit, watch, setError, formState, reset } = formMethods;
+  const { handleSubmit, watch, setError, formState, reset, clearErrors } =
+    formMethods;
 
   useEffect(() => {
     const newInitialFra = rekrutteringstreff.fraTid
@@ -78,16 +84,26 @@ export default function Tidspunkt({ rekrutteringstreff, className }: Props) {
     if (!data.fraDato || !data.tilDato) {
       return;
     }
-    const innsendtVarighet = rekrutteringstreffVarighet(
+
+    const innsendtVarighetString = rekrutteringstreffVarighet(
       data.fraDato,
       data.fraTid,
       data.tilDato,
       data.tilTid,
     );
-    if (!innsendtVarighet) {
+
+    if (
+      innsendtVarighetString.startsWith('-') ||
+      (innsendtVarighetString === '' && data.fraDato && data.tilDato)
+    ) {
       setError('root', { type: 'manual', message: 'Vrengt periode' });
       return;
     }
+
+    if (formState.errors.root) {
+      clearErrors('root');
+    }
+
     setOpen(false);
 
     const { tittel, beskrivelse, sted } = rekrutteringstreff;
@@ -180,9 +196,16 @@ export default function Tidspunkt({ rekrutteringstreff, className }: Props) {
               <Tidspunktrad label='Til' nameDato='tilDato' nameTid='tilTid' />
 
               {formState.errors.root ? (
-                <BodyShort size='small' className='aksel-error-message'>
-                  {formState.errors.root.message}
-                </BodyShort>
+                <div className='flex gap-2 items-center'>
+                  <ExclamationmarkTriangleIcon
+                    aria-hidden='true'
+                    fontSize='1.25rem'
+                    className='aksel-error-message'
+                  />
+                  <ErrorMessage size='medium'>
+                    {formState.errors.root.message}
+                  </ErrorMessage>
+                </div>
               ) : (
                 <BodyShort size='small' textColor='subtle'>
                   {varighet || 'Velg tid'}
