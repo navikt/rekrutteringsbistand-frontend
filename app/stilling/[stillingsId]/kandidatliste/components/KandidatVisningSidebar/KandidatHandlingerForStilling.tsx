@@ -11,7 +11,7 @@ import {
 } from '../EndreArkivertStatusModal';
 import FjernDelingMedArbeidsgiver from '../FjernDelingMedArbeidsgiver';
 import FjernFåttJobbenKnapp from '../FjernFåttJobbenKnapp';
-import KandidatHendelseTag, { SlettetTag } from '../KandidatHendelseTag';
+import KandidatHendelseTag, { SlettetTag } from '../KandidatHendelseTagVisning';
 import KandidatHendelser from '../KandidatHendelser/KandidatHendelser';
 import { KandidatVisningProps } from '../KandidatlisteFilter/useFiltrerteKandidater';
 import RegistrerFåttJobbenKnapp from '../RegistrerFåttJobbenKnapp';
@@ -34,17 +34,19 @@ const KandidatHandlingerForStilling: React.FC<
     useKandidatlisteContext();
   const [loading, setLoading] = React.useState<boolean>(false);
   const modalRef = React.useRef<HTMLDialogElement>(null!);
-  const cvDeltMedArbeidsgiver =
-    kandidat.kandidatHendelser.utfallsendringer?.some(
-      (cv) => cv.tittel === 'CV delt med arbeidsgiver',
-    );
+
+  const cvDeltMedArbeidsgiver = kandidat.kandidatHendelser.cvHendelser?.some(
+    (cv) =>
+      'sendtTilArbeidsgiversKandidatliste' in cv.raw &&
+      cv.raw.sendtTilArbeidsgiversKandidatliste,
+  );
 
   const fåttJobben = kandidat.utfall === KandidatutfallTyper.FATT_JOBBEN;
 
-  const cvFjernetFraArbeidsgiver =
-    kandidat.kandidatHendelser.utfallsendringer?.some(
-      (cv) => cv.tittel === 'CV fjernet fra arbeidsgiver',
-    );
+  // const cvFjernetFraArbeidsgiver =
+  //   kandidat.kandidatHendelser.utfallsendringer?.some(
+  //     (cv) => cv.tekst === 'CV fjernet fra arbeidsgiver',
+  //   );
 
   const endreUtfallForKandidat = async (utfall: KandidatutfallTyper) => {
     setLoading(true);
@@ -77,11 +79,11 @@ const KandidatHandlingerForStilling: React.FC<
           <div>
             <div className='mb-2'>{stillingsData.stilling.title}</div>
             {kandidat.arkivert ? (
-              <SlettetTag kandidat={kandidat} sidebar />
+              <SlettetTag kandidat={kandidat} />
             ) : (
               <KandidatHendelseTag
                 sidebar
-                kandidatHendelse={kandidat.kandidatHendelser.sisteAktivitet}
+                kandidatHendelse={kandidat.kandidatHendelser.sisteHendelse}
               />
             )}
           </div>
@@ -97,20 +99,17 @@ const KandidatHandlingerForStilling: React.FC<
             )}
           </div>
         </div>
-        {!kandidat.arkivert &&
-          !fåttJobben &&
-          !cvDeltMedArbeidsgiver &&
-          !cvFjernetFraArbeidsgiver && (
-            <div className='grid grid-cols-2 gap-2'>
-              <DelMedKandidatModal
-                markerteKandidater={[kandidat]}
-                fjernAllMarkering={() => {}}
-                sidebar
-              />
+        {!kandidat.arkivert && !fåttJobben && !cvDeltMedArbeidsgiver && (
+          <div className='grid grid-cols-2 gap-2'>
+            <DelMedKandidatModal
+              markerteKandidater={[kandidat]}
+              fjernAllMarkering={() => {}}
+              sidebar
+            />
 
-              <DelMedArbeidsgiver markerteKandidater={[kandidat]} sidebar />
-            </div>
-          )}
+            <DelMedArbeidsgiver markerteKandidater={[kandidat]} sidebar />
+          </div>
+        )}
 
         {kandidat.arkivert ? (
           <EndreArkivertStatusKnapp

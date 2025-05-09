@@ -1,9 +1,12 @@
 import { format, isValid, parse } from 'date-fns';
 import { nb } from 'date-fns/locale';
 
-const parseNorskDato = (dateString: string | undefined | null) => {
+const parseNorskDato = (dateString: string | Date | undefined | null) => {
   if (!dateString) return null;
 
+  if (dateString instanceof Date) {
+    return format(dateString, 'dd.MM.yyyy', { locale: nb });
+  }
   try {
     // Prøv først norsk format
     const parsedDate = parse(dateString, 'dd.MM.yyyy', new Date(), {
@@ -23,12 +26,14 @@ const parseNorskDato = (dateString: string | undefined | null) => {
 };
 
 type FormaterNorskDatoProps = {
-  dato: string | undefined | null;
+  dato: string | Date | undefined | null;
   visning?: 'kortMåned' | 'tall';
   visTid?: boolean;
 };
 
-export const formaterNorskDato = (props: FormaterNorskDatoProps) => {
+export const formaterNorskDato = (
+  props: FormaterNorskDatoProps,
+): string | null | undefined => {
   const { dato, visning, visTid } = props;
   const parsedDato = parseNorskDato(dato);
   const datoFormat = () => {
@@ -51,6 +56,10 @@ export const formaterNorskDato = (props: FormaterNorskDatoProps) => {
   // if parsedDato is string, return it directly
   if (typeof parsedDato === 'string') {
     return parsedDato;
+  }
+
+  if (dato instanceof Date) {
+    return null;
   }
 
   return dato;

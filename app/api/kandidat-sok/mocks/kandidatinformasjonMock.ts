@@ -1,571 +1,404 @@
-const kandidatinformasjondataMock = {
-  fornavn: 'Jarle',
-  etternavn: 'Jobbsøker',
-  fodselsdato: '1961-08-25T22:00:00.000+00:00',
-  epostadresse: 'jarle.jobbsoker@dev.nav.no',
-  telefon: '91333532',
-  aktorId: '1000102960567',
-  fodselsnummer: '14114536327',
-  arenaKandidatnr: 'AB123456',
-  kandidatnr: 'AB123456',
-  kommunenummer: 301,
-  kommunenummerstring: '0301',
-  kommuneNavn: 'Vestvågøy',
-  postnummer: '0662',
-  poststed: 'OSLO',
-  adresselinje1: 'Sannergata 2',
-  navkontor: 'NAV Lofoten',
-  orgenhet: '1860',
-  hovedmaalkode: 'SKAFFEA',
-  formidlingsgruppekode: 'ARBS',
-  innsatsgruppe: 'SPESIELT_TILPASSET_INNSATS',
-  veileder: 'Z123456',
-  yrkeJobbonskerObj: [
-    {
-      primaertJobbonske: true,
-      sokeTitler: ['Gartner'],
-      styrkBeskrivelse: 'Gartner',
-      styrkKode: '01',
-    },
-    {
-      primaertJobbonske: false,
-      sokeTitler: [],
-      styrkBeskrivelse: 'Lærer',
-      styrkKode: null,
-    },
-    {
-      primaertJobbonske: false,
-      sokeTitler: [],
-      styrkBeskrivelse: 'Slakter',
-      styrkKode: null,
-    },
-  ],
-  geografiJobbonsker: [],
-  arbeidsdagerJobbonskerObj: [],
-  oppstartKode: 'ETTER_AVTALE',
-  arbeidstidsordningJobbonskerObj: [],
-  arbeidstidJobbonskerObj: [
-    {
-      arbeidstidKode: 'DAGTID',
-      arbeidstidKodeTekst: 'Dagtid',
-    },
-    {
-      arbeidstidKode: 'KVELD',
-      arbeidstidKodeTekst: 'Kveld',
-    },
-  ],
-  ansettelsesformJobbonskerObj: [
-    {
-      ansettelsesformKode: 'FAST',
-      ansettelsesformKodeTekst: 'Fast',
-    },
-    {
-      ansettelsesformKode: 'VIKARIAT',
-      ansettelsesformKodeTekst: 'Vikariat',
-    },
-  ],
-  omfangJobbonskerObj: [
-    {
-      omfangKode: 'HELTID',
-      omfangKodeTekst: 'Heltid',
-    },
-    {
-      omfangKode: 'DELTID',
-      omfangKodeTekst: 'Deltid',
-    },
-  ],
-  beskrivelse:
-    'Som en dyktig urmaker med 12 års erfaring, har jeg opparbeidet meg omfattende kunnskap og ferdigheter innen reparasjon, vedlikehold og produksjon av ur. Jeg har erfaring med å håndtere en rekke forskjellige typer ur, fra mekaniske klokker til moderne smartklokker. I mitt tidligere arbeid som urmaker har jeg opparbeidet meg en god forståelse av kundens behov, og jeg er alltid forberedt på å yte den beste servicen og kvalitetsarbeidet for å sikre kundetilfredshet. Jeg er også vant til å arbeide effektivt og nøyaktig for å møte stramme tidsfrister.',
-  sprak: [
-    {
-      fraDato: null,
-      sprakKode: null,
-      sprakKodeTekst: 'Engelsk',
-      alternativTekst: 'Engelsk',
-      beskrivelse: 'Muntlig: FOERSTESPRAAK Skriftlig: FOERSTESPRAAK',
-      ferdighetSkriftlig: 'FOERSTESPRAAK',
-      ferdighetMuntlig: 'FOERSTESPRAAK',
-    },
-    {
-      fraDato: null,
-      sprakKode: null,
-      sprakKodeTekst: 'Norsk',
-      alternativTekst: 'Norsk',
-      beskrivelse: 'Muntlig: FOERSTESPRAAK Skriftlig: FOERSTESPRAAK',
-      ferdighetSkriftlig: 'FOERSTESPRAAK',
-      ferdighetMuntlig: 'FOERSTESPRAAK',
-    },
-  ],
-  yrkeserfaring: [
-    {
-      arbeidsgiver: 'Vestfold Anlegg',
-      alternativStillingstittel: 'Anleggsmaskinfører/Grunnarbeider lærling',
-      styrkKode: '8342.01',
-      styrkKodeStillingstittel: 'Anleggsmaskinfører',
-      utelukketForFremtiden: false,
-      fraDato: '2012-08-02',
-      tilDato: null,
-      beskrivelse:
-        'Jeg har tidligere jobbet som kassadame på Kiwi Supermarked, der jeg betjente kunder på en effektiv og vennlig måte, og behandlet kassatransaksjoner nøyaktig og i samsvar med selskapets retningslinjer. Jeg fulgte sikkerhetsprosedyrer for å beskytte selskapets eiendom og ansatte, og varslet ledelsen om eventuelle avvik eller problemer.',
-    },
-    {
-      arbeidsgiver: 'Meny Larvik sentrum',
-      alternativStillingstittel: 'Butikkmedarbeider',
-      styrkKode: '5223.02',
-      styrkKodeStillingstittel: 'Butikkmedarbeider',
-      utelukketForFremtiden: false,
-      fraDato: null,
-      tilDato: '2012-06-02',
-      beskrivelse:
-        'Som kassadame var jeg ansvarlig for å utføre kassarelaterte oppgaver som å håndtere vekslepenger, administrere kreditt- og debetkortbetalinger, og opprettholde en ren og organisert kassestasjon. Jeg bidro til å skape et positivt arbeidsmiljø ved å samarbeide med andre ansatte for å sikre at butikken var velorganisert og ren til enhver tid.',
-    },
-    {
-      arbeidsgiver: 'Lars Grimstad, Møbelringen, Larvik',
-      alternativStillingstittel: 'lagermedarbeider/sjåfør',
-      styrkKode: '4321.01',
-      styrkKodeStillingstittel: 'Lagerarbeider',
-      utelukketForFremtiden: false,
-      fraDato: null,
-      tilDato: null,
-      beskrivelse: '',
-    },
-    {
-      arbeidsgiver: 'ISAK Norge AS',
-      alternativStillingstittel: 'Lager ansvarlig/sjåfør',
-      styrkKode: '4322.01',
-      styrkKodeStillingstittel: 'Logistiker',
-      utelukketForFremtiden: false,
-      fraDato: '2008-08-02',
-      tilDato: '2009-03-02',
-      beskrivelse: '',
-    },
-    {
-      arbeidsgiver: 'Proffice/Ringnes Bryggerier',
-      alternativStillingstittel: 'salgsfremmer',
-      styrkKode: '5223.02',
-      styrkKodeStillingstittel: 'Butikkmedarbeider',
-      utelukketForFremtiden: false,
-      fraDato: '2001-09-02',
-      tilDato: '2002-02-02',
-      beskrivelse: '',
-    },
-    {
-      arbeidsgiver: 'Selektiv, Porsgrunn',
-      alternativStillingstittel: 'Telefonselger',
-      styrkKode: '5223.04',
-      styrkKodeStillingstittel: 'Selger detalj non-food',
-      utelukketForFremtiden: false,
-      fraDato: '2001-12-02',
-      tilDato: '2001-12-02',
-      beskrivelse: '',
-    },
-    {
-      arbeidsgiver: 'Beha Fabrikker, Porsgrunn',
-      alternativStillingstittel: 'Produksjonsmedarbeider',
-      styrkKode: '8121.03',
-      styrkKodeStillingstittel: 'Operatør metallvareproduksjon',
-      utelukketForFremtiden: false,
-      fraDato: '2001-11-02',
-      tilDato: '2001-11-02',
-      beskrivelse: '',
-    },
-    {
-      arbeidsgiver: 'Expert, Porsgrunn',
-      alternativStillingstittel: 'lager/truck',
-      styrkKode: '4321.01',
-      styrkKodeStillingstittel: 'Lagerarbeider',
-      utelukketForFremtiden: false,
-      fraDato: '2001-07-02',
-      tilDato: '2001-09-02',
-      beskrivelse: '',
-    },
-    {
-      arbeidsgiver: 'ATG Bergen',
-      alternativStillingstittel: 'snekkerarbeid',
-      styrkKode: '9313.01',
-      styrkKodeStillingstittel: 'Hjelpearbeider bygg',
-      utelukketForFremtiden: false,
-      fraDato: '1997-04-02',
-      tilDato: '1997-08-02',
-      beskrivelse: '',
-    },
-    {
-      arbeidsgiver: 'ATG Bergen',
-      alternativStillingstittel: 'snekkerarbeid',
-      styrkKode: '9313.01',
-      styrkKodeStillingstittel: 'Hjelpearbeider bygg',
-      utelukketForFremtiden: false,
-      fraDato: '1996-12-02',
-      tilDato: '1997-03-02',
-      beskrivelse: '',
-    },
-    {
-      arbeidsgiver: 'ATG Bergen',
-      alternativStillingstittel: 'snekkerarbeid',
-      styrkKode: '9313.01',
-      styrkKodeStillingstittel: 'Hjelpearbeider bygg',
-      utelukketForFremtiden: false,
-      fraDato: '1996-05-02',
-      tilDato: '1996-09-02',
-      beskrivelse: '',
-    },
-    {
-      arbeidsgiver: 'ATG Åsane bydel',
-      alternativStillingstittel: 'hjelpearbeider',
-      styrkKode: '9313.01',
-      styrkKodeStillingstittel: 'Hjelpearbeider bygg',
-      utelukketForFremtiden: false,
-      fraDato: '1995-08-02',
-      tilDato: '1995-10-02',
-      beskrivelse: '',
-    },
-    {
-      arbeidsgiver: 'Åsane Hagesenter',
-      alternativStillingstittel: 'gartneriassistent',
-      styrkKode: '9211.01',
-      styrkKodeStillingstittel: 'Innhøstingsarbeider',
-      utelukketForFremtiden: false,
-      fraDato: '1993-04-02',
-      tilDato: '1993-07-02',
-      beskrivelse: '',
-    },
-    {
-      arbeidsgiver: 'Flaktveit skole',
-      alternativStillingstittel: 'vaktmesterassistent',
-      styrkKode: '5153.03',
-      styrkKodeStillingstittel: 'Vaktmester',
-      utelukketForFremtiden: false,
-      fraDato: '1992-10-02',
-      tilDato: '1993-01-02',
-      beskrivelse: '',
-    },
-  ],
-  utdanning: [
-    {
-      fraDato: '2013-08-02',
-      tilDato: null,
-      utdannelsessted: 'Universitetet i Oslo',
-      nusKode: '2',
-      alternativGrad: 'Universitet',
-      yrkestatus: 'INGEN',
-      beskrivelse: 'Generisk utdanning fra Blindern',
-    },
-    {
-      fraDato: '1993-08-02',
-      tilDato: '1994-06-02',
-      utdannelsessted: 'Åsane vgs',
-      nusKode: '6',
-      alternativGrad: 'Mekaniske fag, grunnkurs',
-      yrkestatus: 'INGEN',
-      beskrivelse: 'En beskrivelse av Åsage vgs.',
-    },
-    {
-      fraDato: '1989-08-02',
-      tilDato: '1992-06-02',
-      utdannelsessted: 'Blokkhauen ungdomskole, Bergen',
-      nusKode: '2',
-      alternativGrad: 'Ungdomskole',
-      yrkestatus: 'INGEN',
-      beskrivelse: '',
-    },
-    {
-      fraDato: '1970-08-02',
-      tilDato: '1979-06-02',
-      utdannelsessted: '',
-      nusKode: '2',
-      alternativGrad: 'Barne og ungdomsskolen i Berlevåg',
-      yrkestatus: 'INGEN',
-      beskrivelse: '',
-    },
-  ],
-  forerkort: [
-    {
-      utsteder: null,
-      forerkortKode: null,
-      forerkortKodeKlasse: 'B - Personbil',
-      alternativtNavn: null,
-      fraDato: null,
-      tilDato: null,
-    },
-    {
-      utsteder: null,
-      forerkortKode: null,
-      forerkortKodeKlasse: 'B - Personbil',
-      alternativtNavn: null,
-      fraDato: '2006-02-01',
-      tilDato: null,
-    },
-    {
-      utsteder: null,
-      forerkortKode: null,
-      forerkortKodeKlasse: 'BE - Personbil med tilhenger',
-      alternativtNavn: null,
-      fraDato: '2012-09-01',
-      tilDato: '2112-09-01',
-    },
-    {
-      utsteder: null,
-      forerkortKode: null,
-      forerkortKodeKlasse: 'C - Lastebil',
-      alternativtNavn: null,
-      fraDato: '2013-05-01',
-      tilDato: '2013-09-01',
-    },
-  ],
-  fagdokumentasjon: [
-    {
-      tittel: 'Fagbrev maritime fag',
-      type: 'Fagbrev/svennebrev',
-      beskrivelse: null,
-    },
-    {
-      tittel: 'Enda noen greier',
-      type: 'Fagbrev/svennebrev',
-      beskrivelse: 'ssas',
-    },
-    {
-      tittel: 'Fagbrev sky',
-      type: 'Fagbrev/svennebrev',
-      beskrivelse: 'ssas',
-    },
-  ],
-  godkjenninger: [
-    {
-      tittel: 'Førerbevis anleggsmaskinførere: Gravemaskin',
-      utsteder: 'testutsteder',
-      gjennomfoert: '2010-12-02',
-      utloeper: '2118-12-02',
-      konseptId: '381828',
-    },
-    {
-      tittel: 'Førerbevis test: test',
-      utsteder: 'testutsteder',
-      gjennomfoert: '2011-12-02',
-      utloeper: '',
-      konseptId: '3818',
-    },
-  ],
-  kursObj: [
-    {
-      arrangor: 'M.E.F',
-      tittel: 'Sikkerhetskurs for Maskinfører',
-      omfangEnhet: '',
-      omfangVerdi: 1,
-      fraDato: '2012-09-02',
-      tilDato: '2012-10-02',
-    },
-    {
-      arrangor: 'Ifokus',
-      tittel: 'Avklaringskurs ',
-      omfangEnhet: 'DAG',
-      omfangVerdi: 8,
-      fraDato: '2011-08-02',
-      tilDato: null,
-    },
-    {
-      arrangor: 'ifokus',
-      tittel: 'avklaringskurs',
-      omfangEnhet: 'TIME',
-      omfangVerdi: 12,
-      fraDato: '2008-06-02',
-      tilDato: null,
-    },
-    {
-      arrangor: 'ssaass',
-      tittel: 'ss',
-      omfangEnhet: 'MND',
-      omfangVerdi: 5,
-      fraDato: '2004-01-02',
-      tilDato: null,
-    },
-    {
-      arrangor: 'Horten vgs',
-      tittel: 'Datakortet',
-      omfangEnhet: 'UKE',
-      omfangVerdi: 0,
-      fraDato: '2002-08-02',
-      tilDato: null,
-    },
-    {
-      arrangor: 'aetat',
-      tittel: 'Jobbsøkerkurs',
-      omfangEnhet: '',
-      omfangVerdi: 0,
-      fraDato: '1999-10-02',
-      tilDato: null,
-    },
-    {
-      arrangor: 'Bmv laksevåg',
-      tittel: 'Sveis',
-      omfangEnhet: 'UKE',
-      omfangVerdi: 3,
-      fraDato: '1997-08-02',
-      tilDato: null,
-    },
-  ],
-  annenerfaringObj: [
-    {
-      fraDato: '2004-01-02',
-      tilDato: '2006-06-06',
-      rolle: 'Erfaring som selger',
-      beskrivelse:
-        'Drev med salg fra tid til annen da jeg gikk på ungdomsskolen.',
-    },
-  ],
-  kompetanseObj: [
-    {
-      fraDato: null,
-      kompKode: null,
-      kompKodeNavn: 'Altmuligarbeid langs slakteprosedyren',
-      sokeNavn: ['Slakting', 'Flåing'],
-      alternativtNavn: 'Altmuligarbeid langs slakteprosedyren',
-      beskrivelse: '',
-    },
-    {
-      fraDato: null,
-      kompKode: null,
-      kompKodeNavn:
-        'I stand til å legge til, subtrahere, multiplisere og dividere for kassering',
-      sokeNavn: ['Matematikk', 'Summering'],
-      alternativtNavn:
-        'I stand til å legge til, subtrahere, multiplisere og dividere for kassering',
-      beskrivelse: '',
-    },
-  ],
-  samletKompetanseObj: [],
-  sertifikatObj: [
-    {
-      utsteder: 'testutsteder',
-      sertifikatKode: '382068',
-      sertifikatKodeNavn: 'Truckførerbevis T4',
-      alternativtNavn: null,
-      fraDato: '2018-02-02',
-      tilDato: null,
-    },
-    {
-      utsteder: '',
-      sertifikatKode: '404866',
-      sertifikatKodeNavn: 'Bevis for yrkessjåførkompetanse (YSK)',
-      alternativtNavn: null,
-      fraDato: '2013-08-02',
-      tilDato: null,
-    },
-    {
-      utsteder: '',
-      sertifikatKode: '381872',
-      sertifikatKodeNavn: 'Førerbevis anleggsmaskinførere: Anleggsdumper',
-      alternativtNavn: null,
-      fraDato: '2013-05-02',
-      tilDato: null,
-    },
-    {
-      utsteder: '',
-      sertifikatKode: '381891',
-      sertifikatKodeNavn: 'Førerbevis anleggsmaskinførere: Hjullaster',
-      alternativtNavn: null,
-      fraDato: '2013-05-02',
-      tilDato: null,
-    },
-    {
-      utsteder: '',
-      sertifikatKode: '381828',
-      sertifikatKodeNavn: 'Førerbevis anleggsmaskinførere: Gravemaskin',
-      alternativtNavn: null,
-      fraDato: '2013-05-02',
-      tilDato: null,
-    },
-    {
-      utsteder: 'asss',
-      sertifikatKode: '382060',
-      sertifikatKodeNavn: 'Truckførerbevis',
-      alternativtNavn: null,
-      fraDato: '2005-02-02',
-      tilDato: null,
-    },
-    {
-      utsteder: '',
-      sertifikatKode: '416798',
-      sertifikatKodeNavn: 'Truckførerbevis: Klasse 10 (tilleggsutstyr)',
-      alternativtNavn: null,
-      fraDato: '1998-09-02',
-      tilDato: null,
-    },
-    {
-      utsteder: '',
-      sertifikatKode: null,
-      sertifikatKodeNavn: null,
-      alternativtNavn:
-        'Truckførerbevis T3 Svinggaffel og høytløftende plukktruck, sidestablende og førerløftende truck',
-      fraDato: '1998-09-02',
-      tilDato: null,
-    },
-    {
-      utsteder: '',
-      sertifikatKode: null,
-      sertifikatKodeNavn: null,
-      alternativtNavn: 'Truckførerbevis T2 Skyvemasttruck, støttebenstruck',
-      fraDato: '1998-09-02',
-      tilDato: null,
-    },
-    {
-      utsteder: '',
-      sertifikatKode: null,
-      sertifikatKodeNavn: null,
-      alternativtNavn:
-        'Truckførerbevis T1 Lavtløftende plukktruck, palletruck m/perm. førerplass',
-      fraDato: '1998-09-02',
-      tilDato: null,
-    },
-    {
-      utsteder: '',
-      sertifikatKode: null,
-      sertifikatKodeNavn: null,
-      alternativtNavn: 'Truckførerbevis T4 Motvektstruck',
-      fraDato: '1998-09-02',
-      tilDato: null,
-    },
-    {
-      utsteder: '',
-      sertifikatKode: '382283',
-      sertifikatKodeNavn: 'Truckførerbevis T3',
-      alternativtNavn: null,
-      fraDato: '2017-06-02',
-      tilDato: '2017-06-02',
-    },
-  ],
-  vervObj: [],
-  // perioderMedInaktivitet: [],
-  veilederIdent: 'Z994162',
-  veilederVisningsnavn: 'Varg Veileder',
-  veilederEpost: 'varg.veileder@dev.nav.no',
-  totalLengdeYrkeserfaring: 0,
-  samtykkeStatus: 'G',
-  samtykkeDato: '2019-01-29T15:19:28.361+00:00',
-  harKontaktinformasjon: true,
-  tidsstempel: '2024-10-11T17:39:09.315Z',
-  adresselinje2: '',
-  adresselinje3: '',
-  doed: false,
-  frKode: '0',
-  fylkeNavn: 'Nordland',
-  kommunenummerkw: 301,
-  fodselsdatoErDnr: false,
-  synligForArbeidsgiverSok: true,
-  synligForVeilederSok: true,
-  mobiltelefon: null,
-  statsborgerskap: null,
-  disponererBil: null,
-  landkode: null,
-  fritattAgKandidatsok: null,
-  fritattKandidatsok: null,
-};
+import { faker } from '@faker-js/faker';
 
-export const kandidatInformasjonMock = {
-  hits: {
-    hits: [
+// Set seed for consistent results
+faker.seed(123);
+
+/**
+ * Generate a mock candidate profile with faker.js
+ */
+export function generateMockKandidatinformation() {
+  const fornavn = faker.person.firstName();
+  const etternavn = faker.person.lastName();
+  const birthDate = faker.date.birthdate({ min: 18, max: 65, mode: 'age' });
+
+  // Format birthdate as ISO string
+  const fodselsdato = new Date(
+    birthDate.getFullYear(),
+    birthDate.getMonth(),
+    birthDate.getDate(),
+    22,
+    0,
+    0,
+  ).toISOString();
+
+  const navIdent = faker.helpers.arrayElement([
+    'Z994162',
+    'Z993141',
+    'Z994440',
+  ]);
+
+  const mockData = {
+    fornavn,
+    etternavn,
+    fodselsdato,
+    epostadresse: faker.internet.email({
+      firstName: fornavn,
+      lastName: etternavn,
+    }),
+    telefon: '12345678',
+    aktorId: faker.helpers.replaceSymbols('##########'),
+    fodselsnummer: faker.helpers.replaceSymbols('###########'),
+    arenaKandidatnr: `AB${faker.string.numeric(6)}`,
+    kandidatnr: `AB${faker.string.numeric(6)}`,
+    kommunenummer: faker.number.int({ min: 100, max: 5000 }),
+    kommunenummerstring: faker.helpers.replaceSymbols('0###'),
+    kommuneNavn: faker.location.city(),
+    postnummer: faker.location.zipCode('####'),
+    poststed: faker.location.city().toUpperCase(),
+    adresselinje1: `${faker.location.street()} ${faker.number.int({ min: 1, max: 100 })}`,
+    navkontor: `NAV ${faker.location.city()}`,
+    orgenhet: faker.string.numeric(4),
+    hovedmaalkode: faker.helpers.arrayElement([
+      'SKAFFEA',
+      'BEHOLDEA',
+      'OKEDELT',
+    ]),
+    formidlingsgruppekode: faker.helpers.arrayElement([
+      'ARBS',
+      'IARBS',
+      'PARBS',
+    ]),
+    innsatsgruppe: faker.helpers.arrayElement([
+      'STANDARD_INNSATS',
+      'SITUASJONSBESTEMT_INNSATS',
+      'SPESIELT_TILPASSET_INNSATS',
+      'VARIG_TILPASSET_INNSATS',
+    ]),
+    veileder: navIdent,
+
+    yrkeJobbonskerObj: [
       {
-        _source: kandidatinformasjondataMock,
+        primaertJobbonske: true,
+        sokeTitler: [faker.person.jobTitle()],
+        styrkBeskrivelse: faker.person.jobTitle(),
+        styrkKode: faker.string.numeric(2),
+      },
+      {
+        primaertJobbonske: false,
+        sokeTitler: [],
+        styrkBeskrivelse: faker.person.jobTitle(),
+        styrkKode: null,
       },
     ],
-  },
-};
+
+    geografiJobbonsker: [],
+    arbeidsdagerJobbonskerObj: [],
+    oppstartKode: faker.helpers.arrayElement(['ETTER_AVTALE', 'LEDIG_NAA']),
+
+    arbeidstidsordningJobbonskerObj: [],
+    arbeidstidJobbonskerObj: [
+      {
+        arbeidstidKode: 'DAGTID',
+        arbeidstidKodeTekst: 'Dagtid',
+      },
+      {
+        arbeidstidKode: 'KVELD',
+        arbeidstidKodeTekst: 'Kveld',
+      },
+    ],
+
+    ansettelsesformJobbonskerObj: [
+      {
+        ansettelsesformKode: 'FAST',
+        ansettelsesformKodeTekst: 'Fast',
+      },
+      {
+        ansettelsesformKode: faker.helpers.arrayElement([
+          'VIKARIAT',
+          'SESONG',
+          'ENGASJEMENT',
+        ]),
+        ansettelsesformKodeTekst: faker.helpers.arrayElement([
+          'Vikariat',
+          'Sesong',
+          'Engasjement',
+        ]),
+      },
+    ],
+
+    omfangJobbonskerObj: [
+      {
+        omfangKode: 'HELTID',
+        omfangKodeTekst: 'Heltid',
+      },
+      {
+        omfangKode: 'DELTID',
+        omfangKodeTekst: 'Deltid',
+      },
+    ],
+
+    beskrivelse: faker.lorem.paragraphs(2),
+
+    sprak: [
+      {
+        fraDato: null,
+        sprakKode: null,
+        sprakKodeTekst: 'Engelsk',
+        alternativTekst: 'Engelsk',
+        beskrivelse: 'Muntlig: FOERSTESPRAAK Skriftlig: FOERSTESPRAAK',
+        ferdighetSkriftlig: 'FOERSTESPRAAK',
+        ferdighetMuntlig: 'FOERSTESPRAAK',
+      },
+      {
+        fraDato: null,
+        sprakKode: null,
+        sprakKodeTekst: 'Norsk',
+        alternativTekst: 'Norsk',
+        beskrivelse: 'Muntlig: FOERSTESPRAAK Skriftlig: FOERSTESPRAAK',
+        ferdighetSkriftlig: 'FOERSTESPRAAK',
+        ferdighetMuntlig: 'FOERSTESPRAAK',
+      },
+    ],
+
+    yrkeserfaring: Array.from(
+      { length: faker.number.int({ min: 3, max: 8 }) },
+      () => {
+        const fromDate = faker.date.past({ years: 15 });
+        const toDate = faker.datatype.boolean()
+          ? faker.date.between({ from: fromDate, to: new Date() })
+          : null;
+
+        return {
+          arbeidsgiver: faker.company.name(),
+          alternativStillingstittel: faker.person.jobTitle(),
+          styrkKode: `${faker.string.numeric(4)}.${faker.string.numeric(2)}`,
+          styrkKodeStillingstittel: faker.person.jobTitle(),
+          utelukketForFremtiden: faker.datatype.boolean({ probability: 0.1 }),
+          fraDato: fromDate.toISOString().split('T')[0],
+          tilDato: toDate ? toDate.toISOString().split('T')[0] : null,
+          beskrivelse: faker.datatype.boolean({ probability: 0.7 })
+            ? faker.lorem.paragraph()
+            : '',
+        };
+      },
+    ),
+
+    utdanning: Array.from(
+      { length: faker.number.int({ min: 1, max: 4 }) },
+      () => {
+        const fromDate = faker.date.past({ years: 20 });
+        const toDate = faker.datatype.boolean()
+          ? faker.date
+              .between({ from: fromDate, to: new Date() })
+              .toISOString()
+              .split('T')[0]
+          : null;
+
+        return {
+          fraDato: fromDate.toISOString().split('T')[0],
+          tilDato: toDate,
+          utdannelsessted: faker.company.name(),
+          nusKode: faker.helpers.arrayElement(['1', '2', '3', '4', '5', '6']),
+          alternativGrad: faker.helpers.arrayElement([
+            'Grunnskole',
+            'Videregående skole',
+            'Bachelor',
+            'Master',
+            'Doktorgrad',
+          ]),
+          yrkestatus: 'INGEN',
+          beskrivelse: faker.datatype.boolean() ? faker.lorem.sentence() : '',
+        };
+      },
+    ),
+
+    forerkort: Array.from(
+      { length: faker.number.int({ min: 0, max: 3 }) },
+      () => {
+        const fromDate = faker.date.past({ years: 10 });
+        const toDate = faker.datatype.boolean({ probability: 0.3 })
+          ? faker.date.future({ years: 10 }).toISOString().split('T')[0]
+          : null;
+
+        return {
+          utsteder: null,
+          forerkortKode: null,
+          forerkortKodeKlasse: faker.helpers.arrayElement([
+            'B - Personbil',
+            'BE - Personbil med tilhenger',
+            'C - Lastebil',
+            'CE - Lastebil med tilhenger',
+            'D - Buss',
+          ]),
+          alternativtNavn: null,
+          fraDato: fromDate.toISOString().split('T')[0],
+          tilDato: toDate,
+        };
+      },
+    ),
+
+    fagdokumentasjon: Array.from(
+      { length: faker.number.int({ min: 0, max: 3 }) },
+      () => {
+        return {
+          tittel: `${faker.helpers.arrayElement(['Fagbrev', 'Sertifisering', 'Kurs'])} ${faker.commerce.department()}`,
+          type: faker.helpers.arrayElement([
+            'Fagbrev/svennebrev',
+            'Kursbevis',
+            'Sertifikat',
+          ]),
+          beskrivelse: faker.datatype.boolean() ? faker.lorem.sentence() : null,
+        };
+      },
+    ),
+
+    godkjenninger: Array.from(
+      { length: faker.number.int({ min: 0, max: 3 }) },
+      () => {
+        const gjennomfoert = faker.date
+          .past({ years: 5 })
+          .toISOString()
+          .split('T')[0];
+        const utloeper = faker.datatype.boolean()
+          ? faker.date.future({ years: 5 }).toISOString().split('T')[0]
+          : '';
+
+        return {
+          tittel: `${faker.helpers.arrayElement(['Godkjenning', 'Sertifisering'])} ${faker.commerce.product()}`,
+          utsteder: faker.company.name(),
+          gjennomfoert,
+          utloeper,
+          konseptId: faker.string.numeric(6),
+        };
+      },
+    ),
+
+    kursObj: Array.from(
+      { length: faker.number.int({ min: 0, max: 5 }) },
+      () => {
+        const fromDate = faker.date
+          .past({ years: 8 })
+          .toISOString()
+          .split('T')[0];
+        const toDate = faker.datatype.boolean()
+          ? faker.date.past({ years: 7 }).toISOString().split('T')[0]
+          : null;
+
+        return {
+          arrangor: faker.company.name(),
+          tittel: `${faker.commerce.productAdjective()} ${faker.helpers.arrayElement(['Kurs', 'Seminar', 'Workshop'])}`,
+          omfangEnhet: faker.helpers.arrayElement([
+            'DAG',
+            'UKE',
+            'MND',
+            'TIME',
+            '',
+          ]),
+          omfangVerdi: faker.datatype.boolean()
+            ? faker.number.int({ min: 1, max: 12 })
+            : 0,
+          fraDato: fromDate,
+          tilDato: toDate,
+        };
+      },
+    ),
+
+    annenerfaringObj: Array.from(
+      { length: faker.number.int({ min: 0, max: 2 }) },
+      () => {
+        const fromDate = faker.date
+          .past({ years: 10 })
+          .toISOString()
+          .split('T')[0];
+        const toDate = faker.date
+          .past({ years: 5 })
+          .toISOString()
+          .split('T')[0];
+
+        return {
+          fraDato: fromDate,
+          tilDato: toDate,
+          rolle: `${faker.helpers.arrayElement(['Erfaring som', 'Frivillig', 'Verv som'])} ${faker.person.jobTitle()}`,
+          beskrivelse: faker.lorem.sentence(),
+        };
+      },
+    ),
+
+    kompetanseObj: Array.from(
+      { length: faker.number.int({ min: 0, max: 3 }) },
+      () => {
+        return {
+          fraDato: null,
+          kompKode: null,
+          kompKodeNavn: faker.word.words({ count: { min: 3, max: 8 } }),
+          sokeNavn: [faker.word.noun(), faker.word.noun()],
+          alternativtNavn: faker.word.words({ count: { min: 3, max: 8 } }),
+          beskrivelse: faker.datatype.boolean() ? faker.lorem.sentence() : '',
+        };
+      },
+    ),
+
+    samletKompetanseObj: [],
+    sertifikatObj: Array.from(
+      { length: faker.number.int({ min: 0, max: 4 }) },
+      () => {
+        const fraDato = faker.date
+          .past({ years: 5 })
+          .toISOString()
+          .split('T')[0];
+        const tilDato = faker.datatype.boolean({ probability: 0.2 })
+          ? faker.date.future({ years: 5 }).toISOString().split('T')[0]
+          : null;
+
+        return {
+          utsteder: faker.datatype.boolean() ? faker.company.name() : '',
+          sertifikatKode: faker.datatype.boolean()
+            ? faker.string.numeric(6)
+            : null,
+          sertifikatKodeNavn: faker.datatype.boolean()
+            ? `${faker.commerce.productName()} Sertifikat`
+            : null,
+          alternativtNavn: faker.datatype.boolean()
+            ? faker.commerce.productName()
+            : null,
+          fraDato,
+          tilDato,
+        };
+      },
+    ),
+
+    vervObj: [],
+    veilederIdent: navIdent,
+    veilederVisningsnavn: `${faker.person.firstName()} ${faker.person.lastName()}`,
+    veilederEpost: faker.internet.email(),
+    totalLengdeYrkeserfaring: faker.number.int({ min: 0, max: 15 }),
+    samtykkeStatus: 'G',
+    samtykkeDato: faker.date.past().toISOString(),
+    harKontaktinformasjon: faker.datatype.boolean({ probability: 0.9 }),
+    tidsstempel: new Date().toISOString(),
+    adresselinje2: '',
+    adresselinje3: '',
+    doed: false,
+    frKode: '0',
+    fylkeNavn: faker.location.county(),
+    kommunenummerkw: faker.number.int({ min: 100, max: 5000 }),
+    fodselsdatoErDnr: false,
+    synligForArbeidsgiverSok: faker.datatype.boolean({ probability: 0.9 }),
+    synligForVeilederSok: true,
+    mobiltelefon: '12345678',
+    statsborgerskap: faker.datatype.boolean({ probability: 0.8 })
+      ? 'Norsk'
+      : null,
+    disponererBil: faker.datatype.boolean({ probability: 0.5 }) ? true : null,
+    landkode: faker.datatype.boolean({ probability: 0.8 }) ? 'NO' : null,
+    fritattAgKandidatsok: faker.datatype.boolean({ probability: 0.1 })
+      ? true
+      : null,
+    fritattKandidatsok: faker.datatype.boolean({ probability: 0.1 })
+      ? true
+      : null,
+  };
+
+  return {
+    hits: {
+      hits: [
+        {
+          _source: mockData,
+        },
+      ],
+    },
+  };
+}
+
+// Export the mock data
+export const kandidatInformasjonMock = generateMockKandidatinformation();

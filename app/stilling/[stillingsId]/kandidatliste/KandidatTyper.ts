@@ -11,6 +11,7 @@ export enum TilstandPåForespørsel {
   KAN_IKKE_VARSLE = 'KAN_IKKE_VARSLE',
   HAR_SVART = 'HAR_SVART',
   AVBRUTT = 'AVBRUTT',
+  IKKE_SENDT = 'IKKE_SENDT',
 }
 
 export enum InternKandidatstatus {

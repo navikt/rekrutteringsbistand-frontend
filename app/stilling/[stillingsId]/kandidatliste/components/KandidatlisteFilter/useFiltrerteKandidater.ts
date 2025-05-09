@@ -76,8 +76,8 @@ const useFiltrerteKandidater = (): FiltrerteKandidater | null => {
         case KandidatlisteSortering.HENDELSE_DESC:
           nyKandidatliste?.sort((a, b) => {
             // Sorter først på tittel
-            const aTittel = a.kandidatHendelser.sisteAktivitet?.tittel || '';
-            const bTittel = b.kandidatHendelser.sisteAktivitet?.tittel || '';
+            const aTittel = a.kandidatHendelser.sisteHendelse?.tekst || '';
+            const bTittel = b.kandidatHendelser.sisteHendelse?.tekst || '';
             const tittelSammenligning = aTittel.localeCompare(bTittel, 'nb');
 
             if (tittelSammenligning !== 0) {
@@ -87,8 +87,8 @@ const useFiltrerteKandidater = (): FiltrerteKandidater | null => {
             }
 
             // Sorter deretter på type
-            const aType = a.kandidatHendelser.sisteAktivitet?.fargeKode || '';
-            const bType = b.kandidatHendelser.sisteAktivitet?.fargeKode || '';
+            const aType = a.kandidatHendelser.sisteHendelse?.tekst || '';
+            const bType = b.kandidatHendelser.sisteHendelse?.tekst || '';
             const typeSammenligning = aType.localeCompare(bType, 'nb');
 
             if (typeSammenligning !== 0) {
@@ -99,9 +99,9 @@ const useFiltrerteKandidater = (): FiltrerteKandidater | null => {
 
             // Siste sortering på dato
             const aDato =
-              a.kandidatHendelser.sisteAktivitet?.dato?.getTime() || 0;
+              a.kandidatHendelser.sisteHendelse?.dato?.getTime() || 0;
             const bDato =
-              b.kandidatHendelser.sisteAktivitet?.dato?.getTime() || 0;
+              b.kandidatHendelser.sisteHendelse?.dato?.getTime() || 0;
             const datoSammenligning = bDato - aDato;
 
             return sortering === KandidatlisteSortering.HENDELSE_ASC
@@ -127,8 +127,8 @@ const useFiltrerteKandidater = (): FiltrerteKandidater | null => {
               return sortering === KandidatlisteSortering.VARSEL_ASC ? -1 : 1;
 
             // Sorter først på tittel
-            const aTittel = a.kandidatHendelser.sisteSms?.tittel || '';
-            const bTittel = b.kandidatHendelser.sisteSms?.tittel || '';
+            const aTittel = a.kandidatHendelser.sisteSms?.tekst || '';
+            const bTittel = b.kandidatHendelser.sisteSms?.tekst || '';
             const tittelSammenligning = aTittel.localeCompare(bTittel, 'nb');
 
             if (tittelSammenligning !== 0) {
@@ -137,16 +137,16 @@ const useFiltrerteKandidater = (): FiltrerteKandidater | null => {
                 : -tittelSammenligning;
             }
 
-            // Sorter deretter på type
-            const aType = a.kandidatHendelser.sisteSms?.fargeKode || '';
-            const bType = b.kandidatHendelser.sisteSms?.fargeKode || '';
-            const typeSammenligning = aType.localeCompare(bType, 'nb');
+            // // Sorter deretter på type
+            // const aType = a.kandidatHendelser.sisteSms?.fargeKode || '';
+            // const bType = b.kandidatHendelser.sisteSms?.fargeKode || '';
+            // const typeSammenligning = aType.localeCompare(bType, 'nb');
 
-            if (typeSammenligning !== 0) {
-              return sortering === KandidatlisteSortering.VARSEL_ASC
-                ? typeSammenligning
-                : -typeSammenligning;
-            }
+            // if (typeSammenligning !== 0) {
+            //   return sortering === KandidatlisteSortering.VARSEL_ASC
+            //     ? typeSammenligning
+            //     : -typeSammenligning;
+            // }
 
             // Siste sortering på dato
             const aDato = a.kandidatHendelser.sisteSms?.dato?.getTime() || 0;
@@ -172,15 +172,15 @@ const useFiltrerteKandidater = (): FiltrerteKandidater | null => {
       }
 
       const fritekstKandidater = nyKandidatliste
-        .filter((kandidat) => {
+        ?.filter((kandidat) => {
           const fullNavn = `${kandidat.fornavn} ${kandidat.etternavn}`;
           return fullNavn.toLowerCase().includes(fritekstSøk.toLowerCase());
         })
-        .filter((kandidat) => {
+        ?.filter((kandidat) => {
           if (internStatus.length === 0) return true;
           return internStatus.includes(kandidat.status);
         })
-        .filter((kandidat) => {
+        ?.filter((kandidat) => {
           if (visSlettede === 'false') {
             return !kandidat.arkivert;
           } else {
@@ -188,7 +188,7 @@ const useFiltrerteKandidater = (): FiltrerteKandidater | null => {
           }
         });
 
-      const fritekstUsynlige = nyUsynligListe.filter((kandidat) => {
+      const fritekstUsynlige = nyUsynligListe?.filter((kandidat) => {
         const fullNavn = `${kandidat.fornavn} ${kandidat.etternavn}`;
         return fullNavn.toLowerCase().includes(fritekstSøk.toLowerCase());
       });
