@@ -5,7 +5,7 @@ import RekrutteringstreffDetalj from '../../RekrutteringstreffDetalj';
 import SlettRekrutteringstreffModal from '../../SlettRekrutteringstreffModal';
 import ArbeidsgiverHendelserKort from '../../arbeidsgivere/components/ArbeidsgiverHendelserKort';
 import JobbsøkerHendelserKort from '../../jobbsøkere/components/JobbsøkerHendelserKort';
-import Tidspunkt from '../Tidspunkt';
+import Tidspunkt from './tidspunkt/Tidspunkt';
 import { useArbeidsgiverHendelser } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgiverHendelser';
 import { useJobbsøkerHendelser } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkerHendelser';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
