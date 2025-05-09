@@ -16,20 +16,27 @@ const KandidatErfaring: React.FC = () => {
                 Yrkeserfaring
               </Heading>
               <div className='my-2'>
-                {kandidatData.yrkeserfaring.map((erfaring, index) => (
-                  <TidslinjeFelt
-                    key={index}
-                    startDate={erfaring?.fraDato}
-                    endDate={erfaring?.tilDato}
-                    title={
-                      erfaring?.stillingstittel ??
-                      erfaring?.styrkKodeStillingstittel ??
-                      erfaring.alternativStillingstittel
-                    }
-                    subtitle={erfaring?.arbeidsgiver}
-                    description={erfaring?.beskrivelse}
-                  />
-                ))}
+                {kandidatData.yrkeserfaring
+                  .slice() // Create a copy of the array to avoid mutating the original
+                  .sort((a, b) => {
+                    const dateA = a.fraDato ? new Date(a.fraDato).getTime() : 0;
+                    const dateB = b.fraDato ? new Date(b.fraDato).getTime() : 0;
+                    return dateB - dateA;
+                  })
+                  ?.map((erfaring, index) => (
+                    <TidslinjeFelt
+                      key={index}
+                      startDate={erfaring?.fraDato}
+                      endDate={erfaring?.tilDato}
+                      title={
+                        erfaring?.stillingstittel ??
+                        erfaring?.styrkKodeStillingstittel ??
+                        erfaring.alternativStillingstittel
+                      }
+                      subtitle={erfaring?.arbeidsgiver}
+                      description={erfaring?.beskrivelse}
+                    />
+                  ))}
               </div>
             </>
           )}
@@ -40,15 +47,21 @@ const KandidatErfaring: React.FC = () => {
                 Annen erfaring
               </Heading>
               <div className='my-2'>
-                {/* {kandidatData.annenerfaringObj.map((erfaring) => (
-                  <TidslinjeFelt
-                    key={erfaring?.fraDato}
-                    startDate={erfaring?.fraDato}
-                    endDate={erfaring?.tilDato}
-                    title={erfaring?.stillingstittel}
-                    subtitle={erfaring?.beskrivelse}
-                  />
-                ))} */}
+                {kandidatData.annenerfaringObj
+                  .slice() // Create a copy of the array to avoid mutating the original
+                  .sort((a, b) => {
+                    const dateA = a.fraDato ? new Date(a.fraDato).getTime() : 0;
+                    const dateB = b.fraDato ? new Date(b.fraDato).getTime() : 0;
+                    return dateB - dateA; // Descending order (newest first)
+                  })
+                  ?.map((erfaring) => (
+                    <TidslinjeFelt
+                      key={erfaring?.fraDato}
+                      startDate={erfaring?.fraDato}
+                      endDate={erfaring?.tilDato}
+                      subtitle={erfaring?.beskrivelse}
+                    />
+                  ))}
               </div>
             </>
           )}

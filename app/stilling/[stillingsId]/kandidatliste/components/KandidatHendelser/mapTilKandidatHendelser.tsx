@@ -1,6 +1,7 @@
 import { KandidatForespurtOmDelingSchema } from '../../../../../api/foresporsel-om-deling-av-cv/foresporsler/[slug]/useForespurteOmDelingAvCv';
 import { kandidaterSchemaDTO } from '../../../../../api/kandidat/schema.zod';
 import { Sms } from '../../../../../api/kandidatvarsel/kandidatvarsel';
+import { formaterNorskDato } from '../../../../../components/util';
 import { storForbokstavString } from '../../../../../kandidat/util';
 import { KandidatutfallTyper } from '../../KandidatTyper';
 import { KandidatHendelser } from './KandidatHendelser';
@@ -14,6 +15,7 @@ import {
   ThumbDownIcon,
   ThumbUpIcon,
 } from '@navikt/aksel-icons';
+import { differenceInDays } from 'date-fns';
 
 export enum TilstandPåForespørsel {
   KanIkkeOpprette = 'KAN_IKKE_OPPRETTE',
@@ -28,6 +30,7 @@ export enum TilstandPåForespørsel {
 const utfallsEndringPresentasjon = (
   utfallType: KandidatutfallTyper,
   sendtTilArbeidsgiversKandidatliste: boolean = false,
+  cvErBlittDelt: boolean = false,
 ): {
   tittel: string;
   ikon: React.ReactNode;
@@ -41,11 +44,11 @@ const utfallsEndringPresentasjon = (
         fargeKode: 'success',
       };
     case KandidatutfallTyper.IKKE_PRESENTERT:
-      if (sendtTilArbeidsgiversKandidatliste === false) {
+      if (sendtTilArbeidsgiversKandidatliste === false && cvErBlittDelt) {
         return {
-          tittel: 'CV fjernet fra arbeidsgiver',
+          tittel: 'CV slettet hos arbeidsgiver',
           ikon: <ExclamationmarkTriangleIcon className='text-warning' />,
-          fargeKode: 'error',
+          fargeKode: 'alt2',
         };
       }
       return {
@@ -59,13 +62,13 @@ const utfallsEndringPresentasjon = (
         return {
           tittel: 'CV delt med arbeidsgiver',
           ikon: <TasklistSendIcon className='text-success' />,
-          fargeKode: 'alt1',
+          fargeKode: 'info',
         };
       }
       return {
         tittel: 'Presentert',
         ikon: <TasklistSendIcon className='text-success' />,
-        fargeKode: 'alt1',
+        fargeKode: 'info',
       };
     default:
       return {
@@ -84,24 +87,30 @@ const cvHendelsePresentasjon = (
   ikon: React.ReactNode;
   fargeKode: string;
   svarTidspunkt?: string;
-  frist?: Date;
 } => {
+  const svarFrist = formaterNorskDato({
+    dato: forespørsel.svarfrist,
+    visning: 'tall',
+  });
+  const dagerTilSvarfrist = forespørsel.svarfrist
+    ? differenceInDays(new Date(forespørsel.svarfrist), new Date())
+    : null;
+
   switch (forespørsel.tilstand) {
     case TilstandPåForespørsel.PrøverVarsling:
     case TilstandPåForespørsel.IKKE_SENDT:
       return {
-        tittel: 'Spurt om deling av CV',
+        tittel: `Spurt om deling av CV: Frist ${svarFrist}`,
         tekst: 'Prøver varsling',
         ikon: <HourglassIcon className='text-info' />,
-        fargeKode: 'info',
+        fargeKode: 'info-soft',
       };
     case TilstandPåForespørsel.HarVarslet:
       return {
-        tittel: 'Spurt om deling av CV',
+        tittel: `Spurt om deling av CV: Frist ${svarFrist}`,
         tekst: `av ${forespørsel.deltAv}`,
         ikon: <TasklistIcon className='text-info' />,
-        fargeKode: 'info',
-        frist: new Date(forespørsel.svarfrist),
+        fargeKode: 'info-soft',
       };
     case TilstandPåForespørsel.KanIkkeVarsle:
       return {
@@ -118,18 +127,23 @@ const cvHendelsePresentasjon = (
         fargeKode: 'warning',
       };
     case TilstandPåForespørsel.Avbrutt:
+      if (
+        forespørsel.deltStatus === 'SENDT' &&
+        dagerTilSvarfrist !== null &&
+        dagerTilSvarfrist < 0
+      ) {
+        return {
+          tittel: `Frist for deling av CV utløpt ${svarFrist}`,
+          tekst: ``,
+          ikon: <ExclamationmarkTriangleIcon className='text-danger' />,
+          fargeKode: 'warning',
+        };
+      }
       return {
-        tittel: 'Deling av CV feilet',
+        tittel: 'Avbrut i aktivitetsplanen',
         tekst: 'Avbrutt',
         ikon: <ExclamationmarkTriangleIcon className='text-danger' />,
-        fargeKode: 'warning',
-      };
-    case TilstandPåForespørsel.Avbrutt:
-      return {
-        tittel: 'Deling av CV feilet',
-        tekst: 'Avbrutt',
-        ikon: <ExclamationmarkTriangleIcon className='text-danger' />,
-        fargeKode: 'warning',
+        fargeKode: 'error',
       };
     case TilstandPåForespørsel.HarSvart:
       if (forespørsel.svar?.harSvartJa) {
@@ -176,10 +190,17 @@ export const mapTilKandidatHendelser = ({
     ikon: <SparklesIcon className='text-info' />,
   };
 
+  const cvErBlittDelt = kandidat.utfallsendringer?.some(
+    (endring) =>
+      endring.utfall === KandidatutfallTyper.PRESENTERT &&
+      endring.sendtTilArbeidsgiversKandidatliste,
+  );
+
   const utfallsendringer = kandidat.utfallsendringer?.map((endring) => {
     const presentasjon = utfallsEndringPresentasjon(
       endring.utfall as KandidatutfallTyper,
       endring.sendtTilArbeidsgiversKandidatliste,
+      cvErBlittDelt,
     );
     return {
       tittel: presentasjon.tittel,
@@ -213,7 +234,6 @@ export const mapTilKandidatHendelser = ({
           fargeKode: presentasjon.fargeKode,
           ikon: presentasjon.ikon,
           raw: forespørsel,
-          frist: presentasjon.frist,
         };
       }
     })

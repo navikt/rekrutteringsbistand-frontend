@@ -46,7 +46,7 @@ const TidslinjeFelt: React.FC<TidslinjeFeltProps> = ({
               {startDate && endDate
                 ? formatDateRange(startDate, endDate)
                 : startDate
-                  ? `${formaterNorskDato(startDate)} - nå`
+                  ? `${formaterNorskDato({ dato: startDate })} - nå`
                   : 'Ingen dato oppgitt'}
             </BodyShort>
             <BodyShort textColor='subtle' size='small'>

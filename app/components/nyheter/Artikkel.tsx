@@ -19,7 +19,7 @@ const Artikkel: FunctionComponent<Props> = ({ nyhet, ulest }) => {
   const dato = nyhet.dato;
   return (
     <article className={klassenavn}>
-      <Detail>{formaterNorskDato(dato)}</Detail>
+      <Detail>{formaterNorskDato({ dato: dato })}</Detail>
       <Heading spacing className={'mt-0'} size='small'>
         {nyhet.tittel}
       </Heading>

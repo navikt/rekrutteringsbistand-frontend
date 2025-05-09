@@ -106,7 +106,9 @@ const OmStillingen: React.FC<{ forhåndsvisData?: boolean }> = ({
                     tekst={`Oppstart ${
                       starttime
                         ? (() => {
-                            const parsedDate = formaterNorskDato(starttime);
+                            const parsedDate = formaterNorskDato({
+                              dato: starttime,
+                            });
                             return parsedDate
                               ? parsedDate
                               : starttime.toLowerCase();

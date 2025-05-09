@@ -165,9 +165,9 @@ const StillingsKort: React.FC<IStillingsKort> = ({
             title='Frist'
             tekst={` ${
               stillingData.stilling.properties?.applicationdue
-                ? formaterNorskDato(
-                    stillingData.stilling.properties.applicationdue,
-                  )
+                ? formaterNorskDato({
+                    dato: stillingData.stilling.properties.applicationdue,
+                  })
                 : '-'
             }`}
           />

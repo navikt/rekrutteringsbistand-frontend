@@ -57,7 +57,7 @@ const StillingsTag: React.FC<IStillingTag> = ({ stillingsData, splitTags }) => {
   const stillingUløpt = stillingErUtløpt(stillingsData.stilling);
 
   const publisertDato = stillingsData.stilling.published
-    ? formaterNorskDato(stillingsData.stilling.published)
+    ? formaterNorskDato({ dato: stillingsData.stilling.published })
     : '-';
 
   const erEierTag = erEier;

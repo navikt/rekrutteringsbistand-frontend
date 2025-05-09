@@ -22,16 +22,27 @@ const parseNorskDato = (dateString: string | undefined | null) => {
   }
 };
 
-export const formaterNorskDato = (
-  dato: string | undefined | null,
-  kortDato: boolean | undefined | null = false,
-  visTid: boolean | undefined | null = false,
-) => {
+type FormaterNorskDatoProps = {
+  dato: string | undefined | null;
+  visning?: 'kortMåned' | 'tall';
+  visTid?: boolean;
+};
+
+export const formaterNorskDato = (props: FormaterNorskDatoProps) => {
+  const { dato, visning, visTid } = props;
   const parsedDato = parseNorskDato(dato);
-  const datoFormat = kortDato ? 'd MMM yyyy' : 'd MMMM yyyy';
+  const datoFormat = () => {
+    if (visning === 'kortMåned') {
+      return 'd MMM yyyy';
+    }
+    if (visning === 'tall') {
+      return 'dd.MM.yy';
+    }
+    return 'd MMMM yyyy';
+  };
 
   if (parsedDato && isValid(parsedDato)) {
-    const formattedDate = format(parsedDato, datoFormat, { locale: nb });
+    const formattedDate = format(parsedDato, datoFormat(), { locale: nb });
     return visTid
       ? `${formattedDate} ${format(parsedDato, 'dd MMMM yyyy HH:mm', { locale: nb })}`
       : formattedDate;

@@ -10,9 +10,11 @@ import VelgInternStatus from '../VelgInternStatus';
 import KandidatCheckbox from './components/KandidatCheckbox';
 import KandidatListeKortValg from './components/KandidatListeKortValg';
 import KandidatlisteNavn from './components/KandidatlisteNavn';
+import { ArrowUndoIcon } from '@navikt/aksel-icons';
 import { BodyShort, Box } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import { nb } from 'date-fns/locale/nb';
+import { HeartHandshakeIcon } from 'lucide-react';
 import * as React from 'react';
 
 export interface KandidatListeKortProps {
@@ -37,15 +39,23 @@ const KandidatListeKort: React.FC<KandidatListeKortProps> = ({
     const usynligHendelse: KandidatHendelseInformasjon = fåttJobben
       ? {
           tittel: 'Fått jobben',
-          tekst: formaterNorskDato(usynligKandidat.lagtTilTidspunkt) ?? '',
+          tekst:
+            formaterNorskDato({
+              dato: usynligKandidat.lagtTilTidspunkt,
+              visning: 'kortMåned',
+            }) ?? '',
           fargeKode: 'success',
-          ikon: undefined,
+          ikon: <HeartHandshakeIcon />,
         }
       : {
-          tittel: 'Fjernet fått jobben registrering',
-          tekst: formaterNorskDato(usynligKandidat.lagtTilTidspunkt) ?? '',
+          tittel: 'Fjernet fått jobben',
+          tekst:
+            formaterNorskDato({
+              dato: usynligKandidat.lagtTilTidspunkt,
+              visning: 'kortMåned',
+            }) ?? '',
           fargeKode: 'warning',
-          ikon: undefined,
+          ikon: <ArrowUndoIcon />,
         };
     return (
       <Box.New
@@ -105,8 +115,9 @@ const KandidatListeKort: React.FC<KandidatListeKortProps> = ({
             <div>
               <BodyShort> {kandidat.lagtTilAv.navn}</BodyShort>
               <BodyShort textColor='subtle'>
-                {format(kandidat.lagtTilTidspunkt, 'dd. MMM yyyy', {
-                  locale: nb,
+                {formaterNorskDato({
+                  dato: kandidat.lagtTilTidspunkt,
+                  visning: 'kortMåned',
                 })}
               </BodyShort>
             </div>
