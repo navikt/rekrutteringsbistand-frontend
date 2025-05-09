@@ -1,5 +1,6 @@
 import { endreKandidatStatus } from '../../../../api/kandidat/endreKandidatStatus';
 import { InternKandidatstatus } from '../KandidatTyper';
+import { useKandidatlisteContext } from '../KandidatlisteContext';
 import {
   CircleSlashIcon,
   ClipboardCheckmarkIcon,
@@ -14,16 +15,15 @@ import * as React from 'react';
 
 export interface VelgInternStatusProps {
   status: InternKandidatstatus;
-  kandidatlisteId: string;
   kandidatnr: string;
   lukketKandidatliste: boolean;
 }
 const VelgInternStatus: React.FC<VelgInternStatusProps> = ({
-  kandidatlisteId,
   kandidatnr,
   status,
   lukketKandidatliste,
 }) => {
+  const { reFetchKandidatliste, kandidatlisteId } = useKandidatlisteContext();
   const [valgtStatus, setValgtStatus] =
     React.useState<InternKandidatstatus>(status);
 
@@ -34,6 +34,7 @@ const VelgInternStatus: React.FC<VelgInternStatusProps> = ({
   const endreStatus = (status: InternKandidatstatus) => {
     setValgtStatus(status);
     endreKandidatStatus(kandidatlisteId, kandidatnr, status);
+    reFetchKandidatliste();
   };
 
   const formatStatus = (status: string): string => {

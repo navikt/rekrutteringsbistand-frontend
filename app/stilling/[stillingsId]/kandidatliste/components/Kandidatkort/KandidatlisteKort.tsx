@@ -139,7 +139,6 @@ const KandidatListeKort: React.FC<KandidatListeKortProps> = ({
           <div className={kolonneStyling}>
             <VelgInternStatus
               lukketKandidatliste={lukketKandidatliste}
-              kandidatlisteId={kandidatlisteId}
               kandidatnr={kandidat.kandidatnr}
               status={kandidat.status}
             />

@@ -91,7 +91,6 @@ const KandidatHandlingerForStilling: React.FC<
                 lukketKandidatliste={
                   kandidatlisteInfo.kandidatlisteStatus === 'LUKKET'
                 }
-                kandidatlisteId={kandidatlisteInfo?.kandidatlisteId}
                 kandidatnr={kandidat.kandidatnr}
                 status={kandidat.status}
               />
