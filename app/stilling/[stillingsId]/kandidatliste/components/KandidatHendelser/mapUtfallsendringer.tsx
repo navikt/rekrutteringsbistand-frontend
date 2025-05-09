@@ -30,6 +30,7 @@ export const mapUtfallsendringer = (
               type={KandidatHendelseType.CV_slettet_hos_arbeidsgiver}
             />
           ),
+          tekst: KandidatHendelseType.CV_slettet_hos_arbeidsgiver,
         };
       }
       return {
