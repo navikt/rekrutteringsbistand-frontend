@@ -1,10 +1,7 @@
 import RekrutteringstreffDetalj from '../../../RekrutteringstreffDetalj';
 import Tidspunktrad from './tidspunktrad';
 import { rekrutteringstreffVarighet } from './varighet';
-import {
-  oppdaterRekrutteringstreff,
-  OppdaterRekrutteringstreffDTO,
-} from '@/app/api/rekrutteringstreff/oppdater-rekrutteringstreff/oppdaterRerkutteringstreff';
+import { oppdaterRekrutteringstreff } from '@/app/api/rekrutteringstreff/oppdater-rekrutteringstreff/oppdaterRerkutteringstreff';
 import {
   RekrutteringstreffDTO,
   useRekrutteringstreff,
@@ -13,14 +10,17 @@ import { CalendarIcon, PencilIcon, PlusIcon } from '@navikt/aksel-icons';
 import { Popover, Button, BodyShort } from '@navikt/ds-react';
 import { format, isSameDay, parseISO } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 
-type FormData = {
+export type TidspunktFormFields = {
   fraDato: Date | null;
   fraTid: string;
   tilDato: Date | null;
   tilTid: string;
+};
+
+export type FormData = TidspunktFormFields & {
   root?: string;
 };
 
@@ -28,6 +28,9 @@ interface Props {
   rekrutteringstreff: RekrutteringstreffDTO;
   className?: string;
 }
+
+const formaterKlokkeslett = (dato: Date | null): string =>
+  dato ? format(dato, 'HH:mm') : '';
 
 export default function Tidspunkt({ rekrutteringstreff, className }: Props) {
   const anchorRef = useRef<HTMLDivElement>(null);
@@ -41,45 +44,62 @@ export default function Tidspunkt({ rekrutteringstreff, className }: Props) {
     ? toZonedTime(parseISO(rekrutteringstreff.tilTid), 'Europe/Oslo')
     : null;
 
-  const methods = useForm<FormData>({
+  const formMethods = useForm<FormData>({
     defaultValues: {
       fraDato: initialFra,
-      fraTid: initialFra ? format(initialFra, 'HH:mm') : '08:00',
+      fraTid: formaterKlokkeslett(initialFra) || '08:00',
       tilDato: initialTil,
-      tilTid: initialTil ? format(initialTil, 'HH:mm') : '10:00',
+      tilTid: formaterKlokkeslett(initialTil) || '10:00',
     },
   });
 
-  const { handleSubmit, setError, watch, formState } = methods;
-  const w = watch();
-  const varighet = rekrutteringstreffVarighet(
-    w.fraDato,
-    w.fraTid,
-    w.tilDato,
-    w.tilTid,
-  );
+  const { handleSubmit, watch, setError, formState, reset } = formMethods;
 
-  const onSubmit = async ({ fraDato, fraTid, tilDato, tilTid }: FormData) => {
-    if (!fraDato || !tilDato) {
-      setError('fraDato', { message: 'Obligatorisk' });
-      setError('tilDato', { message: 'Obligatorisk' });
+  useEffect(() => {
+    const newInitialFra = rekrutteringstreff.fraTid
+      ? toZonedTime(parseISO(rekrutteringstreff.fraTid), 'Europe/Oslo')
+      : null;
+    const newInitialTil = rekrutteringstreff.tilTid
+      ? toZonedTime(parseISO(rekrutteringstreff.tilTid), 'Europe/Oslo')
+      : null;
+
+    reset({
+      fraDato: newInitialFra,
+      fraTid: formaterKlokkeslett(newInitialFra) || '08:00',
+      tilDato: newInitialTil,
+      tilTid: formaterKlokkeslett(newInitialTil) || '10:00',
+    });
+  }, [rekrutteringstreff.fraTid, rekrutteringstreff.tilTid, reset]);
+
+  const { fraDato, fraTid, tilDato, tilTid } = watch();
+  const varighet = rekrutteringstreffVarighet(fraDato, fraTid, tilDato, tilTid);
+
+  const onSubmit = async (data: FormData) => {
+    if (!data.fraDato || !data.tilDato) {
       return;
     }
-    if (!varighet) {
+    const innsendtVarighet = rekrutteringstreffVarighet(
+      data.fraDato,
+      data.fraTid,
+      data.tilDato,
+      data.tilTid,
+    );
+    if (!innsendtVarighet) {
       setError('root', { type: 'manual', message: 'Vrengt periode' });
       return;
     }
     setOpen(false);
 
     const { tittel, beskrivelse, sted } = rekrutteringstreff;
-    const dto: OppdaterRekrutteringstreffDTO = {
+
+    await oppdaterRekrutteringstreff(rekrutteringstreff.id, {
       tittel,
       beskrivelse,
       sted,
-      fraTid: toIso(fraDato, fraTid),
-      tilTid: toIso(tilDato, tilTid),
-    };
-    await oppdaterRekrutteringstreff(rekrutteringstreff.id, dto);
+      fraTid: toIso(data.fraDato, data.fraTid),
+      tilTid: toIso(data.tilDato, data.tilTid),
+    });
+
     treff.mutate();
   };
 
@@ -105,7 +125,8 @@ export default function Tidspunkt({ rekrutteringstreff, className }: Props) {
             <BodyShort size='small'>
               {format(initialFra, 'dd.MM.yyyy')}{' '}
               <BodyShort as='span' size='small' textColor='subtle'>
-                kl {format(initialFra, 'HH:mm')}-{format(initialTil, 'HH:mm')}
+                kl {formaterKlokkeslett(initialFra)}-
+                {formaterKlokkeslett(initialTil)}
               </BodyShort>
             </BodyShort>
           ) : (
@@ -113,14 +134,14 @@ export default function Tidspunkt({ rekrutteringstreff, className }: Props) {
               <BodyShort size='small'>
                 {format(initialFra, 'dd.MM.yyyy')}{' '}
                 <BodyShort as='span' size='small' textColor='subtle'>
-                  kl {format(initialFra, 'HH:mm')}
+                  kl {formaterKlokkeslett(initialFra)}
                 </BodyShort>{' '}
                 til
               </BodyShort>
               <BodyShort size='small'>
                 {format(initialTil, 'dd.MM.yyyy')}{' '}
                 <BodyShort as='span' size='small' textColor='subtle'>
-                  kl {format(initialTil, 'HH:mm')}
+                  kl {formaterKlokkeslett(initialTil)}
                 </BodyShort>
               </BodyShort>
             </>
@@ -141,7 +162,7 @@ export default function Tidspunkt({ rekrutteringstreff, className }: Props) {
         arrow={false}
       >
         <Popover.Content>
-          <FormProvider {...methods}>
+          <FormProvider {...formMethods}>
             <form
               onSubmit={handleSubmit(onSubmit)}
               className='flex flex-col gap-4 p-2 min-w-[22rem]'
