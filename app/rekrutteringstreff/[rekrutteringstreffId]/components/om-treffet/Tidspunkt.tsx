@@ -10,9 +10,16 @@ import {
 } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { CalendarIcon, PencilIcon, PlusIcon } from '@navikt/aksel-icons';
 import { Popover, Select, Button, BodyShort } from '@navikt/ds-react';
-import { format, isSameDay, startOfDay, parseISO } from 'date-fns';
+import {
+  format,
+  isSameDay,
+  parseISO,
+  differenceInMinutes,
+  differenceInCalendarDays,
+  set as setTime,
+} from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
-import { useMemo, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import {
   useForm,
   Controller,
@@ -70,29 +77,30 @@ export default function Tidspunkt({ rekrutteringstreff, className }: Props) {
 
   const watched = useWatch({ control });
 
-  const duration = useMemo(() => {
+  const duration = (() => {
     const { fraDato, tilDato, fraTid, tilTid } = watched;
-    if (!fraDato || !tilDato || !fraTid || !tilTid) return '';
+    if (!(fraDato && tilDato && fraTid && tilTid)) return '';
 
-    if (isSameDay(fraDato, tilDato)) {
-      const [fh, fm] = fraTid.split(':').map(Number);
-      const [th, tm] = tilTid.split(':').map(Number);
-      const start = new Date(fraDato);
-      start.setHours(fh, fm);
-      const end = new Date(tilDato);
-      end.setHours(th, tm);
-      const diff = (end.getTime() - start.getTime()) / 3_600_000;
-      return diff >= 0
-        ? `${Number.isInteger(diff) ? diff : diff.toFixed(1)} timer`
-        : '';
+    const start = setTime(new Date(fraDato), {
+      hours: +fraTid.slice(0, 2),
+      minutes: +fraTid.slice(3),
+    });
+    const end = setTime(new Date(tilDato), {
+      hours: +tilTid.slice(0, 2),
+      minutes: +tilTid.slice(3),
+    });
+
+    if (isSameDay(start, end)) {
+      const totaltMin = differenceInMinutes(end, start);
+      if (totaltMin < 0) return '';
+      const h = Math.floor(totaltMin / 60);
+      const m = totaltMin % 60;
+      return h ? `${h} t${m ? ` ${m} min` : ''}` : `${m} min`;
     }
 
-    const days =
-      (startOfDay(tilDato).getTime() - startOfDay(fraDato).getTime()) /
-        86_400_000 +
-      1;
-    return days > 0 ? `${days} dager` : '';
-  }, [watched]);
+    const d = differenceInCalendarDays(end, start) + 1;
+    return d > 0 ? `${d} dager` : '';
+  })();
 
   const onSubmit: SubmitHandler<FormData> = async ({
     fraDato,
@@ -211,7 +219,9 @@ export default function Tidspunkt({ rekrutteringstreff, className }: Props) {
             />
 
             {errors.root ? (
-              <BodyShort size='small'>{errors.root.message}</BodyShort>
+              <BodyShort size='small' className='aksel-error-message'>
+                {errors.root.message}
+              </BodyShort>
             ) : (
               <BodyShort size='small' textColor='subtle'>
                 {duration || 'Velg tid'}
