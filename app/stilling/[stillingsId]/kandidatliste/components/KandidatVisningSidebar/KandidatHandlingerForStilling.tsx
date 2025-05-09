@@ -35,11 +35,12 @@ const KandidatHandlingerForStilling: React.FC<
   const [loading, setLoading] = React.useState<boolean>(false);
   const modalRef = React.useRef<HTMLDialogElement>(null!);
 
-  const cvDeltMedArbeidsgiver = kandidat.kandidatHendelser.cvHendelser?.some(
-    (cv) =>
-      'sendtTilArbeidsgiversKandidatliste' in cv.raw &&
-      cv.raw.sendtTilArbeidsgiversKandidatliste,
-  );
+  const cvDeltMedArbeidsgiver =
+    kandidat.kandidatHendelser.utfallsendringer?.some(
+      (endring) =>
+        'sendtTilArbeidsgiversKandidatliste' in endring.raw &&
+        endring.raw.sendtTilArbeidsgiversKandidatliste,
+    );
 
   const fåttJobben = kandidat.utfall === KandidatutfallTyper.FATT_JOBBEN;
 
