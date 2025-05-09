@@ -1,7 +1,7 @@
+import { formaterNorskDato } from '../../../components/util';
 import { useStillingsContext } from '../StillingsContext';
 import Definisjon from './Definisjon';
 import OmStillingBoks from './OmStillingBoks';
-import { format } from 'date-fns';
 import * as React from 'react';
 
 const OmAnnonsen: React.FC = () => {
@@ -24,15 +24,15 @@ const OmAnnonsen: React.FC = () => {
           />
           <Definisjon
             tittel='Publisert'
-            innhold={`${published ? format(published, 'dd.MM.yyyy') : '-'}`}
+            innhold={`${published ? formaterNorskDato({ dato: published, visning: 'tall' }) : '-'}`}
           />
           <Definisjon
             tittel='Siste visning'
-            innhold={`${expires ? format(expires, 'dd.MM.yyyy') : '-'}`}
+            innhold={`${expires ? formaterNorskDato({ dato: expires, visning: 'tall' }) : '-'}`}
           />
           <Definisjon
             tittel='Sist endret'
-            innhold={`${updated ? format(updated, 'dd.MM.yyyy') : '-'}`}
+            innhold={`${updated ? formaterNorskDato({ dato: updated, visning: 'tall' }) : '-'}`}
           />
           <Definisjon
             tittel='Kontaktperson hos Nav'

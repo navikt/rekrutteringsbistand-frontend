@@ -3,6 +3,7 @@
 import TekstMedIkon from '../../components/TekstMedIkon';
 import SideLayout from '../../components/layout/SideLayout';
 import SideTopBanner from '../../components/layout/SideTopBanner';
+import { formaterNorskDato } from '../../components/util';
 import { filtrerbareInnsatsgrupper } from '../components/innsatsgrupper';
 import { useKandidatContext } from './KandidatContext';
 import {
@@ -13,7 +14,7 @@ import {
   PersonIcon,
   PhoneIcon,
 } from '@navikt/aksel-icons';
-import { differenceInYears, format } from 'date-fns';
+import { differenceInYears } from 'date-fns';
 import * as React from 'react';
 
 export interface KandidatSideProps {
@@ -38,7 +39,7 @@ const KandidatSideLayout: React.FC<KandidatSideProps> = ({ children }) => {
                 <div>
                   <TekstMedIkon
                     ikon={<CandleIcon />}
-                    tekst={`Født ${format(kandidatsammendragData.fodselsdato, 'dd.MM.yyyy')} (${differenceInYears(new Date(), kandidatsammendragData.fodselsdato)}år)`}
+                    tekst={`Født ${formaterNorskDato({ dato: kandidatsammendragData.fodselsdato, visning: 'kortMåned' })} (${differenceInYears(new Date(), kandidatsammendragData.fodselsdato)}år)`}
                     splitSubtle={true}
                     subtle={`f.nr. ${kandidatsammendragData.fodselsnummer}`}
                   />

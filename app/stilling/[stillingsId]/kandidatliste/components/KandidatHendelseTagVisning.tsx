@@ -3,8 +3,6 @@ import { KandidatHendelseInformasjon } from './KandidatHendelser/KandidatHendels
 import { KandidatVisningProps } from './KandidatlisteFilter/useFiltrerteKandidater';
 import { TrashIcon } from '@navikt/aksel-icons';
 import { BodyShort, Tag, Tooltip } from '@navikt/ds-react';
-import { format } from 'date-fns';
-import { nb } from 'date-fns/locale/nb';
 
 export interface KandidatHendelseTagProps {
   kandidatHendelse?: KandidatHendelseInformasjon | null;
@@ -26,8 +24,9 @@ export const SlettetTag = ({
 
       <BodyShort textColor='subtle' size='small' className='mt-1'>
         {kandidat.arkivertTidspunkt &&
-          format(new Date(kandidat.arkivertTidspunkt), 'dd. MMM yyyy', {
-            locale: nb,
+          formaterNorskDato({
+            dato: kandidat.arkivertTidspunkt,
+            visning: 'kortMåned',
           })}
       </BodyShort>
     </div>

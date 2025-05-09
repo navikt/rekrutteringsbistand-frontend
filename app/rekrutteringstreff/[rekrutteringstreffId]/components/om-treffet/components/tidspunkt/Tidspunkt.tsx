@@ -1,3 +1,4 @@
+import { formaterNorskDato } from '../../../../../../components/util';
 import RekrutteringstreffDetalj from '../../../RekrutteringstreffDetalj';
 import Tidspunktrad from './tidspunktrad';
 import { rekrutteringstreffVarighet } from './varighet';
@@ -10,11 +11,11 @@ import {
   useRekrutteringstreff,
 } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { CalendarIcon, PencilIcon, PlusIcon } from '@navikt/aksel-icons';
-import { Popover, Button, BodyShort } from '@navikt/ds-react';
+import { BodyShort, Button, Popover } from '@navikt/ds-react';
 import { format, isSameDay, parseISO } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
 import { useRef, useState } from 'react';
-import { useForm, FormProvider } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 
 type FormData = {
   fraDato: Date | null;
@@ -103,7 +104,7 @@ export default function Tidspunkt({ rekrutteringstreff, className }: Props) {
         {initialFra && initialTil ? (
           isSameDay(initialFra, initialTil) ? (
             <BodyShort size='small'>
-              {format(initialFra, 'dd.MM.yyyy')}{' '}
+              {formaterNorskDato({ dato: initialFra, visning: 'tall' })}{' '}
               <BodyShort as='span' size='small' textColor='subtle'>
                 kl {format(initialFra, 'HH:mm')}-{format(initialTil, 'HH:mm')}
               </BodyShort>
@@ -111,14 +112,14 @@ export default function Tidspunkt({ rekrutteringstreff, className }: Props) {
           ) : (
             <>
               <BodyShort size='small'>
-                {format(initialFra, 'dd.MM.yyyy')}{' '}
+                {formaterNorskDato({ dato: initialFra, visning: 'tall' })}{' '}
                 <BodyShort as='span' size='small' textColor='subtle'>
                   kl {format(initialFra, 'HH:mm')}
                 </BodyShort>{' '}
                 til
               </BodyShort>
               <BodyShort size='small'>
-                {format(initialTil, 'dd.MM.yyyy')}{' '}
+                {formaterNorskDato({ dato: initialTil, visning: 'tall' })}{' '}
                 <BodyShort as='span' size='small' textColor='subtle'>
                   kl {format(initialTil, 'HH:mm')}
                 </BodyShort>
