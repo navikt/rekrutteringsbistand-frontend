@@ -25,6 +25,7 @@ export const mapCVHendele = (
   };
   switch (forespørsel.tilstand) {
     case TilstandPåForespørsel.IKKE_SENDT:
+    case TilstandPåForespørsel.PROVER_VARSLING:
       return {
         tag: (
           <KandidatHendelseTag
