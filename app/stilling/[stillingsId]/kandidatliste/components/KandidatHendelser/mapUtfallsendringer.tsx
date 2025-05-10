@@ -8,7 +8,6 @@ import { KandidatHendelseInformasjon } from './KandidatHendelser';
 
 export const mapUtfallsendringer = (
   utfallseendring: utfallsendringerSchemaDTO,
-  sendtTilArbeidsgiversKandidatliste: boolean = false,
   cvErBlittDelt: boolean = false,
 ): KandidatHendelseInformasjon => {
   const defaultData = {
@@ -22,7 +21,10 @@ export const mapUtfallsendringer = (
         tag: <KandidatHendelseTag type={KandidatHendelseType.Fått_jobben} />,
       };
     case KandidatutfallTyper.IKKE_PRESENTERT:
-      if (sendtTilArbeidsgiversKandidatliste === false && cvErBlittDelt) {
+      if (
+        utfallseendring.sendtTilArbeidsgiversKandidatliste === false &&
+        cvErBlittDelt
+      ) {
         return {
           ...defaultData,
           tag: (
@@ -37,7 +39,7 @@ export const mapUtfallsendringer = (
         ...defaultData,
       };
     case KandidatutfallTyper.PRESENTERT:
-      if (sendtTilArbeidsgiversKandidatliste) {
+      if (utfallseendring.sendtTilArbeidsgiversKandidatliste) {
         return {
           ...defaultData,
           tag: (

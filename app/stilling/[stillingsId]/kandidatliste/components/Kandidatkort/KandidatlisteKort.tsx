@@ -98,6 +98,7 @@ const KandidatListeKort: React.FC<KandidatListeKortProps> = ({
   }
 
   const slettet = kandidat?.arkivert;
+
   if (kandidat) {
     return (
       <Box.New

@@ -28,6 +28,7 @@ export const mapTilKandidatHendelser = ({
       endring.utfall === KandidatutfallTyper.PRESENTERT &&
       endring.sendtTilArbeidsgiversKandidatliste,
   );
+
   const utfallsendringer = kandidat.utfallsendringer?.map((endring) =>
     mapUtfallsendringer(endring, cvErBlittDelt),
   );
