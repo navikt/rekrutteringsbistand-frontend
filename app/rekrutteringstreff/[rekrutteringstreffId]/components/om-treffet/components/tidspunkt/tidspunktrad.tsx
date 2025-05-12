@@ -1,7 +1,12 @@
 import ControlledDatePicker from './ControlledDatepicker';
 import type { FormData } from './Tidspunkt';
 import { Select } from '@navikt/ds-react';
-import { Controller, FieldError, useFormContext } from 'react-hook-form';
+import {
+  Controller,
+  FieldError,
+  useFormContext,
+  FieldPath,
+} from 'react-hook-form';
 
 const KLOKKESLETT_OPTIONS = Array.from({ length: 24 }, (_, h) =>
   [0, 15, 30, 45].map(
