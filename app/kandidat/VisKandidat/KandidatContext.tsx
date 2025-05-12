@@ -3,10 +3,6 @@
 import { rekbisError } from '../../../util/rekbisError';
 import { KandidatDataSchemaDTO } from '../../api/kandidat-sok/schema/cvSchema.zod';
 import { useKandidatinformasjon } from '../../api/kandidat-sok/useKandidatinformasjon';
-import {
-  KandidatsammendragDTO,
-  useKandidatsammendrag,
-} from '../../api/kandidat-sok/useKandidatsammendrag';
 import SWRLaster from '../../components/SWRLaster';
 import { useApplikasjonContext } from '../../providers/ApplikasjonContext';
 import React from 'react';
@@ -14,7 +10,6 @@ import React from 'react';
 interface KandidatContextType {
   kandidatId: string;
   kandidatData: KandidatDataSchemaDTO;
-  kandidatsammendragData: KandidatsammendragDTO;
 }
 
 const KandidatContext = React.createContext<KandidatContextType | undefined>(
@@ -28,44 +23,17 @@ interface KandidatContextProviderProps {
 export const KandidatContextProvider: React.FC<
   KandidatContextProviderProps
 > = ({ kandidatId, children }) => {
-  const kandidatSammendragHook = useKandidatsammendrag(kandidatId);
-
-  return (
-    <SWRLaster hooks={[kandidatSammendragHook]}>
-      {(data) => (
-        <KandidatContextMedData
-          kandidatsammendragData={data}
-          kandidatId={kandidatId}
-        >
-          {children}
-        </KandidatContextMedData>
-      )}
-    </SWRLaster>
-  );
-};
-
-interface KandidatContextMedDataProps {
-  kandidatsammendragData: KandidatsammendragDTO;
-  children: React.ReactNode;
-  kandidatId: string;
-}
-
-const KandidatContextMedData: React.FC<KandidatContextMedDataProps> = ({
-  kandidatsammendragData,
-  children,
-  kandidatId,
-}) => {
   const kandidatInformasjonHook = useKandidatinformasjon(kandidatId);
 
   const { setValgtFnr } = useApplikasjonContext();
 
   React.useEffect(() => {
-    if (kandidatsammendragData?.fodselsnummer) {
-      setValgtFnr(kandidatsammendragData.fodselsnummer);
+    if (kandidatInformasjonHook?.data?.fodselsnummer) {
+      setValgtFnr(kandidatInformasjonHook?.data?.fodselsnummer);
     } else {
       setValgtFnr(null);
     }
-  }, [kandidatsammendragData, setValgtFnr]);
+  }, [setValgtFnr]);
 
   return (
     <SWRLaster hooks={[kandidatInformasjonHook]}>
@@ -79,7 +47,6 @@ const KandidatContextMedData: React.FC<KandidatContextMedDataProps> = ({
             value={{
               kandidatId: kandidatId,
               kandidatData: kandidatData as KandidatDataSchemaDTO,
-              kandidatsammendragData,
             }}
           >
             {children}

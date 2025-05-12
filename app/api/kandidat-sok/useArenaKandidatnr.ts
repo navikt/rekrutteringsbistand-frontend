@@ -35,7 +35,7 @@ export const arenaKandidatnrMirage = (server: Server) => {
     const body = JSON.parse(request.requestBody);
 
     switch (body.fodselsnummer) {
-      case '30081879652':
+      case 'testKandidat-Frn-1':
         return null;
       default:
         return {

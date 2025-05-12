@@ -1,6 +1,6 @@
+import { getSingleKandidatDataSchema } from '../../../mocks/kandidat/kandidat.mock';
 import { KandidatSøkAPI } from '../api-routes';
 import { postApiWithSchemaEs } from '../fetcher';
-import { kandidatInformasjonMock } from './mocks/kandidatinformasjonMock';
 import { KandidatDataSchema } from './schema/cvSchema.zod';
 import useSWRImmutable from 'swr/immutable';
 
@@ -22,8 +22,24 @@ export const useKandidatinformasjon = (kandidatnr: string) =>
   );
 
 export const kandidatinformasjonMirage = (server: any) => {
-  return server.post(
-    kandidatinformasjonEndepunkt,
-    () => kandidatInformasjonMock,
-  );
+  return server.post(kandidatinformasjonEndepunkt, (_: any, request: any) => {
+    const body = JSON.parse(request.requestBody);
+    const arenaKandidatnrFromRequest = body.kandidatnr;
+
+    const parts = arenaKandidatnrFromRequest.split('-');
+    const seedString = parts[parts.length - 1];
+    const seed = parseInt(seedString, 10);
+
+    const kandidatData = getSingleKandidatDataSchema(seed);
+
+    return {
+      hits: {
+        hits: [
+          {
+            _source: kandidatData,
+          },
+        ],
+      },
+    };
+  });
 };

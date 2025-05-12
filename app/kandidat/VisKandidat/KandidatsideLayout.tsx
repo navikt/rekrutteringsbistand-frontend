@@ -22,13 +22,13 @@ export interface KandidatSideProps {
 }
 
 const KandidatSideLayout: React.FC<KandidatSideProps> = ({ children }) => {
-  const { kandidatsammendragData, kandidatData } = useKandidatContext();
+  const { kandidatData } = useKandidatContext();
 
   return (
     <SideLayout
       banner={
         <SideTopBanner
-          tittel={`${kandidatsammendragData.fornavn} ${kandidatsammendragData.etternavn}`}
+          tittel={`${kandidatData.fornavn} ${kandidatData.etternavn}`}
           headerInnhold={
             <div className='@container/kandidatside'>
               <div
@@ -39,22 +39,22 @@ const KandidatSideLayout: React.FC<KandidatSideProps> = ({ children }) => {
                 <div>
                   <TekstMedIkon
                     ikon={<CandleIcon />}
-                    tekst={`Født ${formaterNorskDato({ dato: kandidatsammendragData.fodselsdato, visning: 'kortMåned' })} (${differenceInYears(new Date(), kandidatsammendragData.fodselsdato)}år)`}
+                    tekst={`Født ${formaterNorskDato({ dato: kandidatData.fodselsdato, visning: 'kortMåned' })} (${kandidatData.fodselsdato && differenceInYears(new Date(), kandidatData.fodselsdato)}år)`}
                     splitSubtle={true}
-                    subtle={`f.nr. ${kandidatsammendragData.fodselsnummer}`}
+                    subtle={`f.nr. ${kandidatData.fodselsnummer}`}
                   />
                 </div>
                 <TekstMedIkon
                   ikon={<LocationPinIcon />}
-                  tekst={`${kandidatsammendragData.adresselinje1}, ${kandidatsammendragData.postnummer} ${kandidatsammendragData.poststed}`}
+                  tekst={`${kandidatData.adresselinje1 && `${kandidatData.adresselinje1}, `} ${kandidatData.postnummer && kandidatData.postnummer} ${kandidatData.poststed && kandidatData.poststed}`}
                 />
                 <TekstMedIkon
                   ikon={<EnvelopeClosedIcon />}
-                  tekst={kandidatsammendragData.epostadresse}
+                  tekst={kandidatData.epostadresse}
                 />
                 <TekstMedIkon
                   ikon={<PhoneIcon />}
-                  tekst={kandidatsammendragData.telefon}
+                  tekst={kandidatData.telefon}
                 />
                 <TekstMedIkon
                   ikon={<HandHeartIcon />}
@@ -67,7 +67,7 @@ const KandidatSideLayout: React.FC<KandidatSideProps> = ({ children }) => {
                 />
                 <TekstMedIkon
                   ikon={<PersonIcon />}
-                  tekst={`Veileder: ${kandidatsammendragData.veilederVisningsnavn || 'Ukjent veileder'} ${kandidatsammendragData.veilederIdent ? `(${kandidatsammendragData.veilederIdent})` : 'N/A'} ${kandidatsammendragData.veilederEpost || ''}`.trim()}
+                  tekst={`Veileder: ${kandidatData.veilederVisningsnavn || 'Ukjent veileder'} ${kandidatData.veilederIdent ? `(${kandidatData.veilederIdent})` : 'N/A'} ${kandidatData.veilederEpost || ''}`.trim()}
                 />
               </div>
             </div>

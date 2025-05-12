@@ -54,9 +54,9 @@ const KandidatErfaring: React.FC = () => {
                     const dateB = b.fraDato ? new Date(b.fraDato).getTime() : 0;
                     return dateB - dateA; // Descending order (newest first)
                   })
-                  ?.map((erfaring) => (
+                  ?.map((erfaring, index) => (
                     <TidslinjeFelt
-                      key={erfaring?.fraDato}
+                      key={index}
                       startDate={erfaring?.fraDato}
                       endDate={erfaring?.tilDato}
                       subtitle={erfaring?.beskrivelse}
