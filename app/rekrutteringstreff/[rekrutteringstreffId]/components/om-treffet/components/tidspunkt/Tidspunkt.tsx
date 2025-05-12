@@ -24,8 +24,6 @@ export type TidspunktFormFields = {
 
 export type FormData = TidspunktFormFields & {
   root?: FieldError;
-  tilDato?: FieldError;
-  tilTid?: FieldError;
 };
 
 interface Props {
