@@ -1,3 +1,4 @@
+import { getSingleKandidatDataSchema } from '../../../mocks/kandidat.mock';
 import { KandidatSøkAPI } from '../api-routes';
 import { postApiWithSchema } from '../fetcher';
 import { Response as MirageResponse, Server } from 'miragejs';
@@ -36,23 +37,46 @@ export const useKandidatNavn = (fødselsnummer: string | null) => {
 export const kandidatNavnMirage = (server: Server) => {
   server.post(hentNavnEndepunkt, (schema, request) => {
     const body = JSON.parse(request.requestBody);
+    const fodselsnummer = body.fodselsnummer;
 
-    switch (body.fodselsnummer) {
-      case '30081879652':
+    // Keep special test cases
+    switch (fodselsnummer) {
+      case 'kandidat-fnr-usynlig':
         return {
           fornavn: 'Usynlig',
-          etternavn: 'Tomat',
-          kilde: 'PDL',
+          etternavn: 'Kandidat',
+          kilde: KandidatKilde.PDL,
         };
-      case '26040282334':
+      case 'kandidat-fnr-kode403':
         return new MirageResponse(403, {});
-      case '22034609946':
+      case 'kandidat-fnr-kode404':
         return new MirageResponse(404, {});
       default:
+        // For normal cases, use the mock generator
+        // Parse seed from fodselsnummer format 'kandidat-fnr-{seed}'
+        const parts = fodselsnummer?.split('-');
+
+        if (parts && parts.length >= 3) {
+          const seedString = parts[parts.length - 1];
+          const seed = parseInt(seedString, 10);
+
+          if (!isNaN(seed)) {
+            // Get mock data with this seed for consistent values
+            const kandidatData = getSingleKandidatDataSchema(seed);
+
+            // Return the name data from our mock
+            return {
+              fornavn: kandidatData.fornavn,
+              etternavn: kandidatData.etternavn,
+              kilde: KandidatKilde.REKRUTTERINGSBISTAND,
+            };
+          }
+        }
+
         return {
           fornavn: 'Heldig',
           etternavn: 'Tomat',
-          kilde: 'REKRUTTERINGSBISTAND',
+          kilde: KandidatKilde.REKRUTTERINGSBISTAND,
         };
     }
   });

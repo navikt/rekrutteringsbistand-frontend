@@ -1,11 +1,11 @@
 import { ForespurteOmDelingAvCvDTO } from '../../../api/foresporsel-om-deling-av-cv/foresporsler/[slug]/useForespurteOmDelingAvCv';
-import { kandidaterSchemaDTO } from '../../../api/kandidat/schema.zod';
+import { KandidatListeKandidatDTO } from '../../../api/kandidat/schema.zod';
 import { Sms } from '../../../api/kandidatvarsel/kandidatvarsel';
 import { mapTilKandidatHendelser } from './components/KandidatHendelser/mapTilKandidatHendelser';
 import { KandidatVisningProps } from './components/KandidatlisteFilter/useFiltrerteKandidater';
 
 export const mapKandidatListeKandidatTilVisning = (
-  kandidat: kandidaterSchemaDTO,
+  kandidat: KandidatListeKandidatDTO,
   forespurteKandidater: ForespurteOmDelingAvCvDTO,
   beskjeder: Record<string, Sms>,
 ): KandidatVisningProps => {

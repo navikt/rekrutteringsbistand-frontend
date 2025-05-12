@@ -1,11 +1,12 @@
-import { KandidatDataSchemaDTO } from '../../app/api/kandidat-sok/schema/cvSchema.zod';
-import { GeografiJobbonskerSchemaDTO } from '../../app/api/kandidat-sok/schema/geografiJobbonskerSchema.zod';
-import { YrkejobbOnskerSchemaDTO } from '../../app/api/kandidat-sok/schema/yrkejobbOnskerSchema.zod';
-import { KandidatsammendragDTO } from '../../app/api/kandidat-sok/useKandidatsammendrag';
-import { KandidatsokKandidat } from '../../app/api/kandidat-sok/useKandidatsøk';
-import { Innsatsgruppe } from '../../app/kandidat/components/innsatsgrupper';
 // Make sure these specific DTOs are correctly defined and imported if they are distinct
 // For now, I'll assume they are part of KandidatDataSchemaDTO's array definitions
+import { KandidatDataSchemaDTO } from '../app/api/kandidat-sok/schema/cvSchema.zod';
+import { GeografiJobbonskerSchemaDTO } from '../app/api/kandidat-sok/schema/geografiJobbonskerSchema.zod';
+import { YrkejobbOnskerSchemaDTO } from '../app/api/kandidat-sok/schema/yrkejobbOnskerSchema.zod';
+import { KandidatStillingssøkDTO } from '../app/api/kandidat-sok/useKandidatStillingssøk';
+import { KandidatsammendragDTO } from '../app/api/kandidat-sok/useKandidatsammendrag';
+import { KandidatsokKandidat } from '../app/api/kandidat-sok/useKandidatsøk';
+import { Innsatsgruppe } from '../app/kandidat/components/innsatsgrupper';
 import { en, Faker, nb_NO } from '@faker-js/faker';
 
 // import * as fs from 'fs'; // Removed as per previous instructions to not save to JSON
@@ -15,7 +16,7 @@ import { en, Faker, nb_NO } from '@faker-js/faker';
 const coreDataFaker = new Faker({ locale: [nb_NO, en] });
 const coreDecisionFaker = new Faker({ locale: [nb_NO, en] });
 
-let kandidatSeedCounter = 0;
+export let kandidatSeedCounter = 0;
 
 // --- Helper functions using coreDecisionFaker ---
 function optionalNullable<T>(
@@ -374,4 +375,34 @@ export function getSingleKandidatSammendrag(
   coreDecisionFaker.seed(seed);
   const kandidatData = generateKandidatData(seed);
   return mapToKandidatSammendrag(kandidatData);
+}
+
+// Add this function near the other mapping functions
+export function mapToKandidatStillingssøk(
+  fullKandidat: KandidatDataSchemaDTO,
+): KandidatStillingssøkDTO {
+  return {
+    yrkeJobbonskerObj:
+      fullKandidat.yrkeJobbonskerObj?.map((yrke) => ({
+        styrkBeskrivelse: yrke.styrkBeskrivelse || '',
+        sokeTitler: yrke.sokeTitler || [],
+        primaertJobbonske: yrke.primaertJobbonske || false,
+        styrkKode: yrke.styrkKode ?? null,
+      })) || [],
+    geografiJobbonsker:
+      fullKandidat.geografiJobbonsker?.map((geo) => ({
+        geografiKodeTekst: geo.geografiKodeTekst || '',
+        geografiKode: geo.geografiKode || '',
+      })) || [],
+    kommunenummerstring: fullKandidat.kommunenummerstring ?? null,
+    kommuneNavn: fullKandidat.kommuneNavn ?? null,
+  };
+}
+
+// Add a convenience function to get stillingssøk data directly by seed
+export function getSingleKandidatStillingssøk(
+  seed: number,
+): KandidatStillingssøkDTO {
+  const kandidatData = getSingleKandidatDataSchema(seed);
+  return mapToKandidatStillingssøk(kandidatData);
 }

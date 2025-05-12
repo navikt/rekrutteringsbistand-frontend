@@ -1,5 +1,5 @@
 import { endreUtfallKandidat } from '../../../../../../api/kandidat/endreKandidatUtfall';
-import { kandidaterSchemaDTO } from '../../../../../../api/kandidat/schema.zod';
+import { KandidatListeKandidatDTO } from '../../../../../../api/kandidat/schema.zod';
 import { useApplikasjonContext } from '../../../../../../providers/ApplikasjonContext';
 import { KandidatutfallTyper } from '../../../KandidatTyper';
 import { useKandidatlisteContext } from '../../../KandidatlisteContext';
@@ -15,7 +15,7 @@ import { logger } from '@navikt/next-logger';
 import * as React from 'react';
 
 export interface KandidatListeKortValgProps {
-  kandidat: kandidaterSchemaDTO;
+  kandidat: KandidatListeKandidatDTO;
   kandidatlisteId: string;
 }
 

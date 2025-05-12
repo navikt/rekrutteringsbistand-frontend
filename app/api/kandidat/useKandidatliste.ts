@@ -1,6 +1,6 @@
+import { mockKandidatliste } from '../../../mocks/kandidatliste.mock';
 import { getAPIwithSchema } from '../../api/fetcher';
 import { KandidatAPI } from '../api-routes';
-import { kandidatlisetMock } from './mocks/kandidatlisteMock';
 import { kandidatlisteSchema } from './schema.zod';
 import useSWRImmutable from 'swr/immutable';
 
@@ -17,5 +17,7 @@ export const useKandidatliste = (stillingsId?: string) => {
 };
 
 export const kandidatlisteMirage = (server: any) => {
-  return server.get(kandidatlisteEndepunkt('*'), () => kandidatlisetMock);
+  return server.get(kandidatlisteEndepunkt('*'), () => {
+    return mockKandidatliste;
+  });
 };

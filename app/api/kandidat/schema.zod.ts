@@ -8,7 +8,7 @@ export enum Kandidatlistestatus {
 
 export type kandidatlisteSchemaDTO = z.infer<typeof kandidatlisteSchema>;
 export type utfallsendringerSchemaDTO = z.infer<typeof utfallsendringerSchema>;
-export type kandidaterSchemaDTO = z.infer<typeof kandidaterSchema>;
+export type KandidatListeKandidatDTO = z.infer<typeof kandidaterSchema>;
 export type usynligKandidaterSchemaDTO = z.infer<
   typeof usynligKandidaterSchema
 >;

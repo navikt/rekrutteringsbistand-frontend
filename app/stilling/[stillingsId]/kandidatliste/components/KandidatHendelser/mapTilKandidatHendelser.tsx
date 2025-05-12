@@ -1,5 +1,5 @@
 import { KandidatForespurtOmDelingSchema } from '../../../../../api/foresporsel-om-deling-av-cv/foresporsler/[slug]/useForespurteOmDelingAvCv';
-import { kandidaterSchemaDTO } from '../../../../../api/kandidat/schema.zod';
+import { KandidatListeKandidatDTO } from '../../../../../api/kandidat/schema.zod';
 import { Sms } from '../../../../../api/kandidatvarsel/kandidatvarsel';
 import { storForbokstavString } from '../../../../../kandidat/util';
 import { KandidatutfallTyper } from '../../KandidatTyper';
@@ -19,7 +19,7 @@ export const mapTilKandidatHendelser = ({
   forespørselCvForKandidat,
   beskjedForKandidat,
 }: {
-  kandidat: kandidaterSchemaDTO;
+  kandidat: KandidatListeKandidatDTO;
   forespørselCvForKandidat: KandidatForespurtOmDelingSchema[] | null;
   beskjedForKandidat: Sms | null;
 }): KandidatHendelser => {

@@ -5,12 +5,12 @@ import {
   useKandidatlisteFilterContext,
 } from './KandidatlisteFilterContext';
 import {
-  kandidaterSchemaDTO,
+  KandidatListeKandidatDTO,
   usynligKandidaterSchemaDTO,
 } from '@/app/api/kandidat/schema.zod';
 import React from 'react';
 
-export interface KandidatVisningProps extends kandidaterSchemaDTO {
+export interface KandidatVisningProps extends KandidatListeKandidatDTO {
   kandidatHendelser: KandidatHendelser;
 }
 

@@ -3,7 +3,7 @@
 import {
   mapToKandidatSokKandidat,
   mockKandidatDataList,
-} from '../../../mocks/kandidat/kandidat.mock';
+} from '../../../mocks/kandidat.mock';
 import {
   IKandidaSokFilterContext,
   KandidatSøkPortefølje,

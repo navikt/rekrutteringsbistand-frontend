@@ -1,4 +1,4 @@
-import { getSingleKandidatSammendrag } from '../../../mocks/kandidat/kandidat.mock';
+import { getSingleKandidatSammendrag } from '../../../mocks/kandidat.mock';
 import { KandidatSøkAPI } from '../api-routes';
 import { postApiWithSchemaEs } from '../fetcher';
 import useSWRImmutable from 'swr/immutable';

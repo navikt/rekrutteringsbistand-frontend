@@ -1,4 +1,4 @@
-import { getSingleKandidatDataSchema } from '../../../mocks/kandidat/kandidat.mock';
+import { getSingleKandidatDataSchema } from '../../../mocks/kandidat.mock';
 import { KandidatSøkAPI } from '../api-routes';
 import { postApiWithSchemaEs } from '../fetcher';
 import { KandidatDataSchema } from './schema/cvSchema.zod';

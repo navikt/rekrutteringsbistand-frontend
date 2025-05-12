@@ -1,7 +1,7 @@
 import { UmamiEvent } from '../../../../../../util/umamiEvents';
 import { useForespurteOmDelingAvCv } from '../../../../../api/foresporsel-om-deling-av-cv/foresporsler/[slug]/useForespurteOmDelingAvCv';
 import { sendForespørselOmDelingAvCv } from '../../../../../api/foresporsel-om-deling-av-cv/foresporsler/forespørselOmDelingAvCv';
-import { kandidaterSchemaDTO } from '../../../../../api/kandidat/schema.zod';
+import { KandidatListeKandidatDTO } from '../../../../../api/kandidat/schema.zod';
 import SWRLaster from '../../../../../components/SWRLaster';
 import { useApplikasjonContext } from '../../../../../providers/ApplikasjonContext';
 import { useUmami } from '../../../../../providers/UmamiContext';
@@ -20,7 +20,7 @@ import { format } from 'date-fns';
 import * as React from 'react';
 
 export interface DelMedKandidatModalProps {
-  markerteKandidater: kandidaterSchemaDTO[];
+  markerteKandidater: KandidatListeKandidatDTO[];
   fjernAllMarkering: () => void;
   sidebar?: boolean;
 }
