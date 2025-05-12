@@ -12,10 +12,10 @@ import {
   PencilIcon,
   PlusIcon,
 } from '@navikt/aksel-icons';
-import { Popover, Button, BodyShort, ErrorMessage } from '@navikt/ds-react';
+import { Modal, Button, BodyShort, ErrorMessage } from '@navikt/ds-react';
 import { format, isSameDay, parseISO } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 
 export type TidspunktFormFields = {
@@ -25,9 +25,7 @@ export type TidspunktFormFields = {
   tilTid: string;
 };
 
-export type FormData = TidspunktFormFields & {
-  root?: string;
-};
+export type FormData = TidspunktFormFields & { root?: string };
 
 interface Props {
   rekrutteringstreff: RekrutteringstreffDTO;
@@ -38,8 +36,7 @@ const formaterKlokkeslett = (dato: Date | null): string =>
   dato ? format(dato, 'HH:mm') : '';
 
 export default function Tidspunkt({ rekrutteringstreff, className }: Props) {
-  const anchorRef = useRef<HTMLDivElement>(null);
-  const [open, setOpen] = useState(false); // Denne state-variabelen styrer Popover
+  const [open, setOpen] = useState(false);
   const treff = useRekrutteringstreff(rekrutteringstreff.id);
 
   const initialFra = rekrutteringstreff.fraTid
@@ -81,11 +78,9 @@ export default function Tidspunkt({ rekrutteringstreff, className }: Props) {
   const varighet = rekrutteringstreffVarighet(fraDato, fraTid, tilDato, tilTid);
 
   const onSubmit = async (data: FormData) => {
-    if (!data.fraDato || !data.tilDato) {
-      return;
-    }
+    if (!data.fraDato || !data.tilDato) return;
 
-    const innsendtVarighetString = rekrutteringstreffVarighet(
+    const innsendt = rekrutteringstreffVarighet(
       data.fraDato,
       data.fraTid,
       data.tilDato,
@@ -93,16 +88,14 @@ export default function Tidspunkt({ rekrutteringstreff, className }: Props) {
     );
 
     if (
-      innsendtVarighetString.startsWith('-') ||
-      (innsendtVarighetString === '' && data.fraDato && data.tilDato)
+      innsendt.startsWith('-') ||
+      (innsendt === '' && data.fraDato && data.tilDato)
     ) {
       setError('root', { type: 'manual', message: 'Vrengt periode' });
       return;
     }
 
-    if (formState.errors.root) {
-      clearErrors('root');
-    }
+    if (formState.errors.root) clearErrors('root');
 
     setOpen(false);
 
@@ -119,13 +112,15 @@ export default function Tidspunkt({ rekrutteringstreff, className }: Props) {
     treff.mutate();
   };
 
+  const formId = 'tidspunktForm';
+
   return (
-    <div ref={anchorRef} className={className}>
+    <div className={className}>
       <RekrutteringstreffDetalj
         tittelIkon={<CalendarIcon fontSize='1.5rem' />}
         tittel='Tidspunkt'
         knapp={
-          !open ? (
+          !open && (
             <Button
               variant='tertiary'
               size='small'
@@ -135,7 +130,7 @@ export default function Tidspunkt({ rekrutteringstreff, className }: Props) {
             >
               {rekrutteringstreff.fraTid ? 'Endre' : 'Legg til'}
             </Button>
-          ) : null
+          )
         }
       >
         {initialFra && initialTil ? (
@@ -171,34 +166,22 @@ export default function Tidspunkt({ rekrutteringstreff, className }: Props) {
         )}
       </RekrutteringstreffDetalj>
 
-      <Popover
+      <Modal
         open={open}
-        anchorEl={anchorRef.current}
+        width={420}
         onClose={() => {
           setOpen(false);
-          if (formState.errors.root) {
-            clearErrors('root');
-          }
+          if (formState.errors.root) clearErrors('root');
         }}
-        placement='bottom-start'
-        offset={0}
-        arrow={false}
+        header={{ heading: 'Tidspunkt' }}
       >
-        <Popover.Content>
+        <Modal.Body>
           <FormProvider {...formMethods}>
             <form
+              id={formId}
               onSubmit={handleSubmit(onSubmit)}
-              className='flex flex-col gap-4 p-2 min-w-[22rem]'
+              className='flex flex-col gap-4 p-2'
             >
-              <div className='flex justify-between items-center'>
-                <span className='font-bold flex gap-2 items-center'>
-                  <CalendarIcon /> Tidspunkt
-                </span>
-                <Button type='submit' size='small' variant='tertiary'>
-                  Lagre
-                </Button>
-              </div>
-
               <Tidspunktrad label='Fra' nameDato='fraDato' nameTid='fraTid' />
               <Tidspunktrad label='Til' nameDato='tilDato' nameTid='tilTid' />
 
@@ -207,11 +190,7 @@ export default function Tidspunkt({ rekrutteringstreff, className }: Props) {
                   className='flex items-center gap-1'
                   style={{ color: 'var(--a-text-danger)' }}
                 >
-                  <ExclamationmarkTriangleIcon
-                    aria-hidden='true'
-                    fontSize='1.25rem'
-                    className='aksel-error-message'
-                  />
+                  <ExclamationmarkTriangleIcon aria-hidden fontSize='1.25rem' />
                   <ErrorMessage size='medium'>
                     {formState.errors.root.message}
                   </ErrorMessage>
@@ -231,8 +210,23 @@ export default function Tidspunkt({ rekrutteringstreff, className }: Props) {
               )}
             </form>
           </FormProvider>
-        </Popover.Content>
-      </Popover>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button form={formId} type='submit'>
+            Lagre
+          </Button>
+          <Button
+            variant='secondary'
+            type='button'
+            onClick={() => {
+              setOpen(false);
+              if (formState.errors.root) clearErrors('root');
+            }}
+          >
+            Avbryt
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 }
