@@ -210,7 +210,7 @@ export default function Tidspunkt({
           )
         ) : (
           <BodyShort size='small' textColor='subtle'>
-            Ikke satt
+            &nbsp;
           </BodyShort>
         )}
       </RekrutteringstreffDetalj>

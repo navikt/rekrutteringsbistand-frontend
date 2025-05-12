@@ -11,8 +11,8 @@ const KLOKKESLETT_OPTIONS = Array.from({ length: 24 }, (_, h) =>
 
 interface TidspunktradProps {
   label: string;
-  nameDato: keyof TidspunktFormFields;
-  nameTid: keyof TidspunktFormFields;
+  nameDato: FieldPath<FormData>;
+  nameTid: FieldPath<FormData>;
 }
 
 export default function Tidspunktrad({
