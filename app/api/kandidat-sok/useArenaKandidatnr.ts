@@ -36,6 +36,10 @@ export const arenaKandidatnrMirage = (server: Server) => {
     const body = JSON.parse(request.requestBody);
     const fodselsnummer = body.fodselsnummer;
 
+    if (fodselsnummer === '16828397900') {
+      return { arenaKandidatnr: 'test-arena-kandidatnr' };
+    }
+
     const parts = fodselsnummer?.split('-');
 
     // Check if the format is as expected

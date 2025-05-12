@@ -41,15 +41,21 @@ export const kandidatNavnMirage = (server: Server) => {
 
     // Keep special test cases
     switch (fodselsnummer) {
-      case 'kandidat-fnr-usynlig':
+      case '16828397900':
+        return {
+          fornavn: 'TestFornavn',
+          etternavn: 'TestEtternavn',
+          kilde: KandidatKilde.REKRUTTERINGSBISTAND,
+        };
+      case '30081879652':
         return {
           fornavn: 'Usynlig',
           etternavn: 'Kandidat',
           kilde: KandidatKilde.PDL,
         };
-      case 'kandidat-fnr-kode403':
+      case '26040282334':
         return new MirageResponse(403, {});
-      case 'kandidat-fnr-kode404':
+      case '22034609946':
         return new MirageResponse(404, {});
       default:
         // For normal cases, use the mock generator

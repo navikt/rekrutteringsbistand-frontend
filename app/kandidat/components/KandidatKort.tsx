@@ -87,6 +87,7 @@ const KandidatKort: React.FC<IKandidatKort> = ({
             size='small'
           >
             <div
+              data-testid={`kandidatkort-lenke-${kandidat.arenaKandidatnr}`}
               onClick={() =>
                 kandidat.arenaKandidatnr &&
                 setVisKandidatnr(kandidat.arenaKandidatnr)
