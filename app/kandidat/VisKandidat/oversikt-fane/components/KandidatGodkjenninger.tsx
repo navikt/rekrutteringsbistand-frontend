@@ -33,10 +33,12 @@ const KandidatGodkjenninger: React.FC<KandidatGodkjenningerProps> = ({
             parseISO(b?.gjennomfoert ?? ''),
           ),
         )
-        .map((godkjenning) => {
+        .map((godkjenning, index) => {
           return (
             <Erfaring
-              key={`${godkjenning.konseptId}-${godkjenning.gjennomfoert}`}
+              key={
+                index + `${godkjenning.konseptId}-${godkjenning.gjennomfoert}`
+              }
               overskrift={godkjenning.tittel}
               detaljer={<TidsperiodeGodkjenning godkjenning={godkjenning} />}
             />
@@ -48,10 +50,12 @@ const KandidatGodkjenninger: React.FC<KandidatGodkjenningerProps> = ({
           .sort((a, b) =>
             compareAsc(parseISO(a?.fraDato ?? ''), parseISO(b?.fraDato ?? '')),
           )
-          .map((sertifikat) => {
+          .map((sertifikat, index) => {
             return (
               <Erfaring
-                key={`${sertifikat.sertifikatKode}-${sertifikat.alternativtNavn}-${sertifikat.fraDato}`}
+                key={
+                  index + `${sertifikat.sertifikatKode}-${sertifikat.fraDato}`
+                }
                 overskrift={
                   sertifikat.alternativtNavn
                     ? sertifikat.alternativtNavn

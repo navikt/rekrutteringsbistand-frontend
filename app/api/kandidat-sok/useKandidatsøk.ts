@@ -1,8 +1,9 @@
 'use client';
 
-/**
- * Endepunkt /minebrukere
- */
+import {
+  mapToKandidatSokKandidat,
+  mockKandidatDataList,
+} from '../../../mocks/kandidat.mock';
 import {
   IKandidaSokFilterContext,
   KandidatSøkPortefølje,
@@ -10,8 +11,9 @@ import {
 import { KandidatSøkAPI } from '../api-routes';
 import { postApiWithSchema } from '../fetcher';
 import { usePamGeografi } from '../pam-geografi/typehead/lokasjoner/usePamGeografi';
-import { kandidatSøkMock } from './mocks/kandidatsøkMock';
-import { KandidatDataSchema } from './schema/cvSchema.zod';
+/**
+ * Endepunkt /minebrukere
+ */
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
 
@@ -19,13 +21,35 @@ export const navigeringSchema = z.object({
   kandidatnumre: z.array(z.string()),
 });
 
+export const KandidatSøkKandidatSchema = z.object({
+  yrkeJobbonskerObj: z.array(
+    z.object({
+      styrkBeskrivelse: z.string().optional(),
+      sokeTitler: z.array(z.string()).optional(),
+      primaertJobbonske: z.boolean().optional(),
+      styrkKode: z.string().optional(),
+    }),
+  ),
+  etternavn: z.string(),
+  postnummer: z.string(),
+  arenaKandidatnr: z.string(),
+  kommuneNavn: z.string(),
+  geografiJobbonsker: z.array(
+    z.object({ geografiKodeTekst: z.string(), geografiKode: z.string() }),
+  ),
+  innsatsgruppe: z.string(),
+  fornavn: z.string(),
+  fodselsnummer: z.string(),
+  poststed: z.string(),
+});
+
 export const kandidatSokSchema = z.object({
-  kandidater: z.array(KandidatDataSchema),
+  kandidater: z.array(KandidatSøkKandidatSchema),
   navigering: navigeringSchema,
   antallTotalt: z.number(),
 });
 
-export type KandidatsokKandidat = z.infer<typeof KandidatDataSchema>;
+export type KandidatsokKandidat = z.infer<typeof KandidatSøkKandidatSchema>;
 
 const kandidatSokEndepunkt = (
   type: KandidatSøkPortefølje | '*',
@@ -105,5 +129,24 @@ export const useKandidatsøk = (
 };
 
 export const kandidatSokMirage = (server: any) => {
-  return server.post(kandidatSokEndepunkt('*'), () => kandidatSøkMock);
+  return server.post(kandidatSokEndepunkt('*'), () => {
+    const mappedKandidater = mockKandidatDataList.map(mapToKandidatSokKandidat);
+
+    const antallTotalt = mappedKandidater.length;
+
+    const kandidatnumreForNavigering = mappedKandidater
+      .map((k) => k.arenaKandidatnr) // arenaKandidatnr is guaranteed here
+      .filter(
+        (arenaKandidatnr): arenaKandidatnr is string =>
+          typeof arenaKandidatnr === 'string',
+      ); // Filter still good practice
+
+    return {
+      kandidater: mappedKandidater, // Return the array of mapped (slimmer) candidate objects
+      navigering: {
+        kandidatnumre: kandidatnumreForNavigering,
+      },
+      antallTotalt: antallTotalt,
+    };
+  });
 };

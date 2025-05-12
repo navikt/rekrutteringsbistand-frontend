@@ -1,7 +1,7 @@
 import { rekbisError } from '../../../../../util/rekbisError';
 import { KandidatAPI } from '../../../../api/api-routes';
 import { putApi } from '../../../../api/fetcher';
-import { kandidaterSchemaDTO } from '../../../../api/kandidat/schema.zod';
+import { KandidatListeKandidatDTO } from '../../../../api/kandidat/schema.zod';
 import { useKandidatlisteContext } from '../KandidatlisteContext';
 import { useApplikasjonContext } from '@/app/providers/ApplikasjonContext';
 import { ArrowUndoIcon, TrashIcon } from '@navikt/aksel-icons';
@@ -56,7 +56,7 @@ export const EndreArkivertStatusKnapp: React.FC<
 
 export interface EndreArkivertStatusModalProps {
   modalRef: React.RefObject<HTMLDialogElement>;
-  kandidat: kandidaterSchemaDTO;
+  kandidat: KandidatListeKandidatDTO;
   kandidatlisteId: string;
 }
 

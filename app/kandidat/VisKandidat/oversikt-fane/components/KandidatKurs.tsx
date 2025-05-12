@@ -27,9 +27,9 @@ const KandidatKurs: React.FC<KandidatKursProps> = ({ kurs }) => {
         .sort((a, b) =>
           compareAsc(parseISO(a.fraDato ?? ''), parseISO(b.fraDato ?? '')),
         )
-        .map((kurs) => (
+        .map((kurs, index) => (
           <Erfaring
-            key={`${kurs.tittel}-${kurs.fraDato}`}
+            key={index + `${kurs?.arrangor}-${kurs?.fraDato}`}
             overskrift={kurs.tittel}
             detaljer={<TidsperiodeKurs kurs={kurs} />}
           />

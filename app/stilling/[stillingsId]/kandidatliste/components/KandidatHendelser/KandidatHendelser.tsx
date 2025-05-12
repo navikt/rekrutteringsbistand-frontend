@@ -1,26 +1,26 @@
 import { KandidatForespurtOmDelingSchema } from '../../../../../api/foresporsel-om-deling-av-cv/foresporsler/[slug]/useForespurteOmDelingAvCv';
-import { utfallsendringerSchemaDTO } from '../../../../../api/kandidat/schema.zod';
+import {
+  usynligKandidaterSchemaDTO,
+  utfallsendringerSchemaDTO,
+} from '../../../../../api/kandidat/schema.zod';
 import { Sms } from '../../../../../api/kandidatvarsel/kandidatvarsel';
-import KandidatHendelseKort from '../KandidatHendelseKort';
+import KandidatHendelseTagVisning from '../KandidatHendelseTagVisning';
+import { JSX } from 'react';
 
 export interface KandidatHendelseInformasjon {
-  tittel: string;
-  tekst: string;
-  dato?: Date;
-  fargeKode: string;
-  ikon: React.ReactNode;
-  cvDatoer?: {
-    deltTidspunkt?: Date;
-    svarfrist?: Date;
-    svarTidspunkt?: Date;
-  };
-  frist?: Date;
-  raw?: utfallsendringerSchemaDTO | KandidatForespurtOmDelingSchema | Sms;
+  tag?: JSX.Element;
+  tekst?: string;
+  dato: Date | null;
+  raw:
+    | utfallsendringerSchemaDTO
+    | KandidatForespurtOmDelingSchema
+    | Sms
+    | usynligKandidaterSchemaDTO;
 }
 
 export interface KandidatHendelser {
-  opprettet: KandidatHendelseInformasjon;
-  sisteAktivitet: KandidatHendelseInformasjon;
+  // opprettet: KandidatHendelseInformasjon;
+  sisteHendelse: KandidatHendelseInformasjon;
   sisteSms?: KandidatHendelseInformasjon | null;
   cvHendelser?: KandidatHendelseInformasjon[];
   utfallsendringer?: KandidatHendelseInformasjon[];
@@ -34,7 +34,7 @@ const KandidatHendelser = ({
 }) => {
   // Flatten kandidatHendelser
   const flatKandidatHendelser = [
-    kandidatHendelser.opprettet,
+    // kandidatHendelser.opprettet,
     ...(kandidatHendelser.cvHendelser ?? []),
     ...(kandidatHendelser.utfallsendringer ?? []),
     ...(kandidatHendelser.varsler ?? []),
@@ -47,10 +47,7 @@ const KandidatHendelser = ({
     <div className='flex flex-col gap-4'>
       {sortedKandidatHendelser.map((hendelse, index) => {
         return (
-          <KandidatHendelseKort
-            key={`${hendelse.tittel}-${index}`}
-            {...hendelse}
-          />
+          <KandidatHendelseTagVisning kandidatHendelse={hendelse} key={index} />
         );
       })}
     </div>

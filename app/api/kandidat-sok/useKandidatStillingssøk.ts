@@ -1,11 +1,12 @@
 'use client';
 
+import { getSingleKandidatStillingssøk } from '../../../mocks/kandidat.mock';
+import { KandidatSøkAPI } from '../api-routes';
+import { postApiWithSchema } from '../fetcher';
+import { Server } from 'miragejs';
 /**
  * Endepunkt /useKandidatStillingssøk
  */
-import { KandidatSøkAPI } from '../api-routes';
-import { postApiWithSchema } from '../fetcher';
-import { mockKandidatStillingssøk } from './mocks/kandidatStillingssøk';
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
 
@@ -45,9 +46,29 @@ export const useKandidatStillingssøk = (kandidatId: string | null) =>
       : null,
   );
 
-export const kandidatStillingsSøkMirage = (server: any) => {
-  return server.post(
-    kandidatStillingssøkEndepunkt,
-    () => mockKandidatStillingssøk,
-  );
+export const kandidatStillingsSøkMirage = (server: Server) => {
+  return server.post(kandidatStillingssøkEndepunkt, (_, request) => {
+    const body = JSON.parse(request.requestBody);
+    const arenaKandidatnrFromRequest = body.kandidatnr;
+
+    // Handle special test cases if needed
+    if (arenaKandidatnrFromRequest === 'utenTilgang') {
+      return {
+        yrkeJobbonskerObj: [],
+        geografiJobbonsker: [],
+        kommunenummerstring: null,
+        kommuneNavn: null,
+      };
+    }
+
+    // Extract seed from arenaKandidatnr
+    const parts = arenaKandidatnrFromRequest.split('-');
+    const seedString = parts[parts.length - 1];
+    const seed = parseInt(seedString, 10);
+
+    // Get stillingssøk data using the seed
+    const stillingssøkData = getSingleKandidatStillingssøk(seed);
+
+    return stillingssøkData;
+  });
 };

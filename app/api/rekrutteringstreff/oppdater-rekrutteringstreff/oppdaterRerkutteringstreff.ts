@@ -32,7 +32,7 @@ export const oppdaterRekrutteringstreff = async (
 export const oppdaterRekrutteringstreffMirage = (server: any) => {
   return server.put(
     oppdaterRekrutteringstreffEndepunkt(':id'),
-    (schema: any, request: any) => {
+    (_: any, request: any) => {
       const { id } = request.params;
       return {
         id,

@@ -28,6 +28,7 @@ const TekstMedIkon: React.FC<ITekstMedIkon> = ({
   if (!tekst && !ikon) {
     return '-';
   }
+
   return (
     <div
       className={`flex items-center ${className}`}

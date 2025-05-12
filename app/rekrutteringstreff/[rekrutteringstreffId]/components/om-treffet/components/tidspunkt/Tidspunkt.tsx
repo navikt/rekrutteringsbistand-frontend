@@ -1,3 +1,4 @@
+import { formaterNorskDato } from '../../../../../../components/util';
 import RekrutteringstreffDetalj from '../../../RekrutteringstreffDetalj';
 import Tidspunktrad from './tidspunktrad';
 import { rekrutteringstreffVarighet } from './varighet';
@@ -9,21 +10,17 @@ import {
   PencilIcon,
   PlusIcon,
 } from '@navikt/aksel-icons';
-import { Modal, Button, BodyShort, ErrorMessage } from '@navikt/ds-react';
+import { BodyShort, Button, ErrorMessage, Modal } from '@navikt/ds-react';
 import { addWeeks, format, isSameDay, parseISO } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
 import { useEffect, useState } from 'react';
-import { useForm, FormProvider, FieldError } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 
 export type TidspunktFormFields = {
   fraDato: Date | null;
   fraTid: string;
   tilDato: Date | null;
   tilTid: string;
-};
-
-export type FormData = TidspunktFormFields & {
-  root?: FieldError;
 };
 
 interface Props {
@@ -49,7 +46,7 @@ export default function Tidspunkt({
     ? toZonedTime(parseISO(rekrutteringstreff.tilTid), 'Europe/Oslo')
     : null;
 
-  const formMethods = useForm<FormData>({
+  const formMethods = useForm<TidspunktFormFields>({
     defaultValues: {
       fraDato: initialFra ?? addWeeks(new Date(), 2),
       fraTid: formaterKlokkeslett(initialFra) || '08:00',
@@ -100,7 +97,7 @@ export default function Tidspunkt({
     formState.errors.tilTid,
   ]);
 
-  const onSubmit = async (data: FormData) => {
+  const onSubmit = async (data: TidspunktFormFields) => {
     if (!data.fraDato || !data.tilDato) return;
 
     const innsendt = rekrutteringstreffVarighet(
@@ -185,7 +182,7 @@ export default function Tidspunkt({
         {initialFra && initialTil ? (
           isSameDay(initialFra, initialTil) ? (
             <BodyShort size='small'>
-              {format(initialFra, 'dd.MM.yyyy')}{' '}
+              {formaterNorskDato({ dato: initialFra, visning: 'tall' })}{' '}
               <BodyShort as='span' size='small' textColor='subtle'>
                 kl {formaterKlokkeslett(initialFra)}-
                 {formaterKlokkeslett(initialTil)}
@@ -194,14 +191,14 @@ export default function Tidspunkt({
           ) : (
             <>
               <BodyShort size='small'>
-                {format(initialFra, 'dd.MM.yyyy')}{' '}
+                {formaterNorskDato({ dato: initialFra, visning: 'tall' })}{' '}
                 <BodyShort as='span' size='small' textColor='subtle'>
                   kl {formaterKlokkeslett(initialFra)}
                 </BodyShort>{' '}
                 til
               </BodyShort>
               <BodyShort size='small'>
-                {format(initialTil, 'dd.MM.yyyy')}{' '}
+                {formaterNorskDato({ dato: initialTil, visning: 'tall' })}{' '}
                 <BodyShort as='span' size='small' textColor='subtle'>
                   kl {formaterKlokkeslett(initialTil)}
                 </BodyShort>

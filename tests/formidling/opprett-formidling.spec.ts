@@ -15,7 +15,7 @@ test(`📝 Opprett formidling`, async ({ page }) => {
       .click();
     await page
       .getByRole('textbox', { name: 'Fødselsnummer på kandidat' })
-      .fill('04479208765');
+      .fill('16828397900');
     await page.getByTestId('velg-kandidat-resultat').click();
 
     await page.getByRole('button', { name: 'Neste steg' }).click();

@@ -37,7 +37,6 @@ const KandidatKort: React.FC<IKandidatKort> = ({
   const erMarkert = markerteKandidater?.some(
     (k) => k === kandidat.arenaKandidatnr,
   );
-
   const Knapp = (
     <div className='mt-2 flex justify-end self-end'>
       {!stillingsId && (
@@ -88,6 +87,7 @@ const KandidatKort: React.FC<IKandidatKort> = ({
             size='small'
           >
             <div
+              data-testid={`kandidatkort-lenke-${kandidat.arenaKandidatnr}`}
               onClick={() =>
                 kandidat.arenaKandidatnr &&
                 setVisKandidatnr(kandidat.arenaKandidatnr)

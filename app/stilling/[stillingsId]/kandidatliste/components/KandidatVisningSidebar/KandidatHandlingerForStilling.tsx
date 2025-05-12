@@ -11,7 +11,8 @@ import {
 } from '../EndreArkivertStatusModal';
 import FjernDelingMedArbeidsgiver from '../FjernDelingMedArbeidsgiver';
 import FjernFåttJobbenKnapp from '../FjernFåttJobbenKnapp';
-import KandidatHendelseTag, { SlettetTag } from '../KandidatHendelseTag';
+import KandidatHendelseTag, { SlettetTag } from '../KandidatHendelseTagVisning';
+import { KandidatHendelseType } from '../KandidatHendelser/KandidatHendelseTag';
 import KandidatHendelser from '../KandidatHendelser/KandidatHendelser';
 import { KandidatVisningProps } from '../KandidatlisteFilter/useFiltrerteKandidater';
 import RegistrerFåttJobbenKnapp from '../RegistrerFåttJobbenKnapp';
@@ -34,16 +35,19 @@ const KandidatHandlingerForStilling: React.FC<
     useKandidatlisteContext();
   const [loading, setLoading] = React.useState<boolean>(false);
   const modalRef = React.useRef<HTMLDialogElement>(null!);
+
   const cvDeltMedArbeidsgiver =
     kandidat.kandidatHendelser.utfallsendringer?.some(
-      (cv) => cv.tittel === 'CV delt med arbeidsgiver',
+      (endring) =>
+        'sendtTilArbeidsgiversKandidatliste' in endring.raw &&
+        endring.raw.sendtTilArbeidsgiversKandidatliste,
     );
 
   const fåttJobben = kandidat.utfall === KandidatutfallTyper.FATT_JOBBEN;
 
   const cvFjernetFraArbeidsgiver =
     kandidat.kandidatHendelser.utfallsendringer?.some(
-      (cv) => cv.tittel === 'CV fjernet fra arbeidsgiver',
+      (cv) => cv.tekst === KandidatHendelseType.CV_slettet_hos_arbeidsgiver,
     );
 
   const endreUtfallForKandidat = async (utfall: KandidatutfallTyper) => {
@@ -77,11 +81,11 @@ const KandidatHandlingerForStilling: React.FC<
           <div>
             <div className='mb-2'>{stillingsData.stilling.title}</div>
             {kandidat.arkivert ? (
-              <SlettetTag kandidat={kandidat} sidebar />
+              <SlettetTag kandidat={kandidat} />
             ) : (
               <KandidatHendelseTag
                 sidebar
-                kandidatHendelse={kandidat.kandidatHendelser.sisteAktivitet}
+                kandidatHendelse={kandidat.kandidatHendelser.sisteHendelse}
               />
             )}
           </div>

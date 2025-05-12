@@ -1,5 +1,5 @@
 import { UmamiEvent } from '../../../../../../util/umamiEvents';
-import { kandidaterSchemaDTO } from '../../../../../api/kandidat/schema.zod';
+import { KandidatListeKandidatDTO } from '../../../../../api/kandidat/schema.zod';
 import {
   MeldingsmalerDTO,
   useHentMeldingsmaler,
@@ -29,7 +29,7 @@ import { logger } from '@navikt/next-logger';
 import { ChangeEvent, FunctionComponent, useState } from 'react';
 
 type Props = {
-  markerteKandidater: kandidaterSchemaDTO[];
+  markerteKandidater: KandidatListeKandidatDTO[];
   fjernAllMarkering: () => void;
   sidebar?: boolean;
 };

@@ -12,7 +12,7 @@ import { Button } from '@navikt/ds-react';
 import * as React from 'react';
 
 export const KANDIDATLISTE_COLUMN_LAYOUT =
-  'grid-cols-1 md:grid-cols-[minmax(10rem,30%)_minmax(6rem,20%)_minmax(10rem,20%)_minmax(5rem,10%)_minmax(10rem,15%)_minmax(2rem,5%)]';
+  'grid-cols-1 md:grid-cols-[minmax(10rem,30%)_minmax(6rem,20%)_minmax(10rem,20%)_minmax(5rem,10%)_minmax(10rem,10%)_minmax(2rem,5%)]';
 
 const FiltrertKandidatListeVisning: React.FC = () => {
   const filtrerteKandidater = useFiltrerteKandidater();

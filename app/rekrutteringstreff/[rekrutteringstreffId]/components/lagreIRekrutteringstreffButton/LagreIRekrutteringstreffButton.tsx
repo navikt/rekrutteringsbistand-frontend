@@ -77,9 +77,9 @@ const LagreIRekrutteringstreffButton: React.FC<
           fornavn: kandidat.fornavn ?? null,
           etternavn: kandidat.etternavn ?? null,
           kandidatnummer: kandidat.arenaKandidatnr ?? null,
-          navkontor: kandidat.navkontor ?? null,
-          veilederNavn: kandidat.veilederVisningsnavn ?? 'UKJENT',
-          veilederNavIdent: kandidat.veilederIdent ?? 'UKJENT',
+          // navkontor: kandidat.navkontor ?? null,
+          // veilederNavn: kandidat.veilederVisningsnavn ?? 'UKJENT',
+          // veilederNavIdent: kandidat.veilederIdent ?? 'UKJENT',
         };
       })
       .filter(

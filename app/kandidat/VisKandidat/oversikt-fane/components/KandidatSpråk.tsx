@@ -40,10 +40,10 @@ const KandidatSpråk: React.FC<KandidatSpråkProps> = ({ språk }) => {
   }
   return (
     <GråBoks tittel='Språk' ikon={<LanguageIcon />}>
-      {språk.map((ferdighet) => {
+      {språk.map((ferdighet, index) => {
         return (
           <Erfaring
-            key={`${ferdighet?.sprakKodeTekst}${ferdighet?.ferdighetMuntlig}${ferdighet?.ferdighetSkriftlig}`}
+            key={index}
             overskrift={ferdighet?.sprakKodeTekst ?? '-'}
             beskrivelse={
               <Detaljer>

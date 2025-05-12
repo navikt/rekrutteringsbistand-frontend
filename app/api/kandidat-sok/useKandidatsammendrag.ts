@@ -1,6 +1,6 @@
+import { getSingleKandidatSammendrag } from '../../../mocks/kandidat.mock';
 import { KandidatSøkAPI } from '../api-routes';
 import { postApiWithSchemaEs } from '../fetcher';
-import { kandidatsammendragMock } from './mocks/kandidatsammendragMock';
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
 
@@ -41,5 +41,25 @@ export const useKandidatsammendrag = (kandidatnr: string) =>
   );
 
 export const kandidagsammendragMirage = (server: any) => {
-  return server.post(kandidatsammendragEndepunkt, () => kandidatsammendragMock);
+  return server.post(kandidatsammendragEndepunkt, (_: any, request: any) => {
+    const body = JSON.parse(request.requestBody);
+    const arenaKandidatnrFromRequest = body.kandidatnr;
+
+    // Extract seed from arenaKandidatnr
+    const parts = arenaKandidatnrFromRequest.split('-');
+    const seedString = parts[parts.length - 1];
+    const seed = parseInt(seedString, 10);
+
+    const sammendrag = getSingleKandidatSammendrag(seed);
+
+    return {
+      hits: {
+        hits: [
+          {
+            _source: sammendrag,
+          },
+        ],
+      },
+    };
+  });
 };
