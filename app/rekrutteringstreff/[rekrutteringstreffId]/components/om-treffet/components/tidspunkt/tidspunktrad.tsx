@@ -1,5 +1,5 @@
 import ControlledDatePicker from './ControlledDatepicker';
-import type { FormData, TidspunktFormFields } from './Tidspunkt';
+import type { FormData } from './Tidspunkt';
 import { Select } from '@navikt/ds-react';
 import { Controller, FieldError, useFormContext } from 'react-hook-form';
 
