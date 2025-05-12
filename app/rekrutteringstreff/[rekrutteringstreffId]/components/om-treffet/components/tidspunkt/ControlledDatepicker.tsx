@@ -34,7 +34,7 @@ export default function ControlledDatePicker({
         {...inputProps}
         hideLabel
         label={label}
-        error={error?.message}
+        error={error ? error.message || true : undefined}
       />
     </DatePicker>
   );

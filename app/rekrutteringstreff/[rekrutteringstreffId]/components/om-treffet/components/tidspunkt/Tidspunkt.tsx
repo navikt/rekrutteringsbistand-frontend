@@ -13,7 +13,7 @@ import { Modal, Button, BodyShort, ErrorMessage } from '@navikt/ds-react';
 import { addWeeks, format, isSameDay, parseISO } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
 import { useEffect, useState } from 'react';
-import { useForm, FormProvider } from 'react-hook-form';
+import { useForm, FormProvider, FieldError } from 'react-hook-form';
 
 export type TidspunktFormFields = {
   fraDato: Date | null;
@@ -22,7 +22,11 @@ export type TidspunktFormFields = {
   tilTid: string;
 };
 
-export type FormData = TidspunktFormFields & { root?: string };
+export type FormData = TidspunktFormFields & {
+  root?: FieldError;
+  tilDato?: FieldError;
+  tilTid?: FieldError;
+};
 
 interface Props {
   rekrutteringstreff: RekrutteringstreffDTO;
@@ -56,27 +60,47 @@ export default function Tidspunkt({
     },
   });
 
-  const { handleSubmit, watch, setError, formState, reset, clearErrors } =
-    formMethods;
-
-  useEffect(() => {
-    const newInitialFra = rekrutteringstreff.fraTid
-      ? toZonedTime(parseISO(rekrutteringstreff.fraTid), 'Europe/Oslo')
-      : null;
-    const newInitialTil = rekrutteringstreff.tilTid
-      ? toZonedTime(parseISO(rekrutteringstreff.tilTid), 'Europe/Oslo')
-      : null;
-
-    reset({
-      fraDato: newInitialFra,
-      fraTid: formaterKlokkeslett(newInitialFra) || '08:00',
-      tilDato: newInitialTil,
-      tilTid: formaterKlokkeslett(newInitialTil) || '10:00',
-    });
-  }, [rekrutteringstreff.fraTid, rekrutteringstreff.tilTid, reset]);
+  const { handleSubmit, watch, setError, formState, clearErrors } = formMethods;
 
   const { fraDato, fraTid, tilDato, tilTid } = watch();
   const varighet = rekrutteringstreffVarighet(fraDato, fraTid, tilDato, tilTid);
+
+  useEffect(() => {
+    const erUgyldigPeriode =
+      varighet && (varighet.startsWith('-') || varighet === '0 min');
+
+    if (erUgyldigPeriode) {
+      if (formState.errors.root?.type !== 'manualPeriod') {
+        setError('root', {
+          type: 'manualPeriod',
+          message: 'Sluttidspunkt kan ikke være før eller lik starttidspunkt.',
+        });
+      }
+      if (formState.errors.tilDato?.type !== 'visualCueOnly') {
+        setError('tilDato', { type: 'visualCueOnly' });
+      }
+      if (formState.errors.tilTid?.type !== 'visualCueOnly') {
+        setError('tilTid', { type: 'visualCueOnly' });
+      }
+    } else {
+      if (formState.errors.root?.type === 'manualPeriod') {
+        clearErrors('root');
+      }
+      if (formState.errors.tilDato?.type === 'visualCueOnly') {
+        clearErrors('tilDato');
+      }
+      if (formState.errors.tilTid?.type === 'visualCueOnly') {
+        clearErrors('tilTid');
+      }
+    }
+  }, [
+    varighet,
+    setError,
+    clearErrors,
+    formState.errors.root,
+    formState.errors.tilDato,
+    formState.errors.tilTid,
+  ]);
 
   const onSubmit = async (data: FormData) => {
     if (!data.fraDato || !data.tilDato) return;
@@ -92,25 +116,53 @@ export default function Tidspunkt({
       innsendt.startsWith('-') ||
       (innsendt === '' && data.fraDato && data.tilDato)
     ) {
-      setError('root', { type: 'manual', message: 'Vrengt periode' });
+      if (formState.errors.root?.type !== 'manualPeriod') {
+        setError('root', {
+          type: 'manualPeriod',
+          message: 'Sluttidspunkt kan ikke være før eller lik starttidspunkt.',
+        });
+      }
+      if (formState.errors.tilDato?.type !== 'visualCueOnly') {
+        setError('tilDato', { type: 'visualCueOnly' });
+      }
+
+      if (formState.errors.tilTid?.type !== 'visualCueOnly') {
+        setError('tilTid', { type: 'visualCueOnly' });
+      }
       return;
     }
 
-    if (formState.errors.root) clearErrors('root');
+    if (formState.errors.root?.type === 'manualPeriod') {
+      clearErrors('root');
+    }
+    if (formState.errors.tilDato?.type === 'visualCueOnly') {
+      clearErrors('tilDato');
+    }
+    if (formState.errors.tilTid?.type === 'visualCueOnly') {
+      clearErrors('tilTid');
+    }
 
     setOpen(false);
 
     const { tittel, beskrivelse, sted } = rekrutteringstreff;
 
-    await oppdaterRekrutteringstreff(rekrutteringstreff.id, {
-      tittel,
-      beskrivelse,
-      sted,
-      fraTid: toIso(data.fraDato, data.fraTid),
-      tilTid: toIso(data.tilDato, data.tilTid),
-    });
-
-    onUpdated();
+    try {
+      await oppdaterRekrutteringstreff(rekrutteringstreff.id, {
+        tittel,
+        beskrivelse,
+        sted,
+        fraTid: toIso(data.fraDato, data.fraTid),
+        tilTid: toIso(data.tilDato, data.tilTid),
+      });
+      onUpdated();
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      setError('root', {
+        type: 'api',
+        message: 'Lagring feilet. Prøv igjen senere.',
+      });
+      setOpen(true);
+    }
   };
 
   const formId = 'tidspunktForm';
@@ -170,7 +222,12 @@ export default function Tidspunkt({
         width={420}
         onClose={() => {
           setOpen(false);
-          if (formState.errors.root) clearErrors('root');
+          if (formState.errors.root?.type === 'manualPeriod')
+            clearErrors('root');
+          if (formState.errors.tilDato?.type === 'visualCueOnly')
+            clearErrors('tilDato');
+          if (formState.errors.tilTid?.type === 'visualCueOnly')
+            clearErrors('tilTid');
         }}
         header={{ heading: 'Tidspunkt' }}
       >
@@ -184,29 +241,32 @@ export default function Tidspunkt({
               <Tidspunktrad label='Fra' nameDato='fraDato' nameTid='fraTid' />
               <Tidspunktrad label='Til' nameDato='tilDato' nameTid='tilTid' />
 
-              {formState.errors.root ? (
-                <div
-                  className='flex items-center gap-1'
-                  style={{ color: 'var(--a-text-danger)' }}
-                >
-                  <ExclamationmarkTriangleIcon aria-hidden fontSize='1.25rem' />
+              {formState.errors.root && formState.errors.root.message && (
+                <div className='flex items-center gap-1 mt-2'>
+                  <ExclamationmarkTriangleIcon
+                    aria-hidden
+                    fontSize='1.5rem'
+                    className='aksel-error-message mr-2'
+                  />
                   <ErrorMessage size='medium'>
                     {formState.errors.root.message}
                   </ErrorMessage>
                 </div>
-              ) : varighet &&
-                (varighet.startsWith('-') || varighet === '0 min') ? (
-                <BodyShort
-                  size='small'
-                  style={{ color: 'var(--a-text-danger)' }}
-                >
-                  {varighet}
-                </BodyShort>
-              ) : (
-                <BodyShort size='small' textColor='subtle'>
-                  {varighet || 'Velg tid'}
-                </BodyShort>
               )}
+
+              {(!formState.errors.root ||
+                formState.errors.root.type !== 'manualPeriod') &&
+                (varighet &&
+                !varighet.startsWith('-') &&
+                varighet !== '0 min' ? (
+                  <BodyShort size='small' textColor='subtle' className='mt-2'>
+                    {varighet}
+                  </BodyShort>
+                ) : (
+                  <BodyShort size='small' textColor='subtle' className='mt-2'>
+                    Velg tid
+                  </BodyShort>
+                ))}
             </form>
           </FormProvider>
         </Modal.Body>
@@ -214,7 +274,7 @@ export default function Tidspunkt({
           <Button
             form={formId}
             type='submit'
-            disabled={varighet.startsWith('-')}
+            disabled={varighet.startsWith('-') || varighet === '0 min'}
           >
             Lagre
           </Button>
@@ -223,7 +283,12 @@ export default function Tidspunkt({
             type='button'
             onClick={() => {
               setOpen(false);
-              if (formState.errors.root) clearErrors('root');
+              if (formState.errors.root?.type === 'manualPeriod')
+                clearErrors('root');
+              if (formState.errors.tilDato?.type === 'visualCueOnly')
+                clearErrors('tilDato');
+              if (formState.errors.tilTid?.type === 'visualCueOnly')
+                clearErrors('tilTid');
             }}
           >
             Avbryt
