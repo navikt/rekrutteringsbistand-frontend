@@ -2,10 +2,7 @@ import RekrutteringstreffDetalj from '../../../RekrutteringstreffDetalj';
 import Tidspunktrad from './tidspunktrad';
 import { rekrutteringstreffVarighet } from './varighet';
 import { oppdaterRekrutteringstreff } from '@/app/api/rekrutteringstreff/oppdater-rekrutteringstreff/oppdaterRerkutteringstreff';
-import {
-  RekrutteringstreffDTO,
-  useRekrutteringstreff,
-} from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
+import { RekrutteringstreffDTO } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import {
   CalendarIcon,
   ExclamationmarkTriangleIcon,
@@ -13,7 +10,7 @@ import {
   PlusIcon,
 } from '@navikt/aksel-icons';
 import { Modal, Button, BodyShort, ErrorMessage } from '@navikt/ds-react';
-import { format, isSameDay, parseISO } from 'date-fns';
+import { addWeeks, format, isSameDay, parseISO } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
 import { useEffect, useState } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
@@ -29,15 +26,19 @@ export type FormData = TidspunktFormFields & { root?: string };
 
 interface Props {
   rekrutteringstreff: RekrutteringstreffDTO;
+  onUpdated: () => void;
   className?: string;
 }
 
 const formaterKlokkeslett = (dato: Date | null): string =>
   dato ? format(dato, 'HH:mm') : '';
 
-export default function Tidspunkt({ rekrutteringstreff, className }: Props) {
+export default function Tidspunkt({
+  rekrutteringstreff,
+  onUpdated,
+  className,
+}: Props) {
   const [open, setOpen] = useState(false);
-  const treff = useRekrutteringstreff(rekrutteringstreff.id);
 
   const initialFra = rekrutteringstreff.fraTid
     ? toZonedTime(parseISO(rekrutteringstreff.fraTid), 'Europe/Oslo')
@@ -48,9 +49,9 @@ export default function Tidspunkt({ rekrutteringstreff, className }: Props) {
 
   const formMethods = useForm<FormData>({
     defaultValues: {
-      fraDato: initialFra,
+      fraDato: initialFra ?? addWeeks(new Date(), 2),
       fraTid: formaterKlokkeslett(initialFra) || '08:00',
-      tilDato: initialTil,
+      tilDato: initialTil ?? addWeeks(new Date(), 2),
       tilTid: formaterKlokkeslett(initialTil) || '10:00',
     },
   });
@@ -109,7 +110,7 @@ export default function Tidspunkt({ rekrutteringstreff, className }: Props) {
       tilTid: toIso(data.tilDato, data.tilTid),
     });
 
-    treff.mutate();
+    onUpdated();
   };
 
   const formId = 'tidspunktForm';
@@ -120,17 +121,15 @@ export default function Tidspunkt({ rekrutteringstreff, className }: Props) {
         tittelIkon={<CalendarIcon fontSize='1.5rem' />}
         tittel='Tidspunkt'
         knapp={
-          !open && (
-            <Button
-              variant='tertiary'
-              size='small'
-              icon={rekrutteringstreff.fraTid ? <PencilIcon /> : <PlusIcon />}
-              onClick={() => setOpen(true)}
-              aria-expanded={open}
-            >
-              {rekrutteringstreff.fraTid ? 'Endre' : 'Legg til'}
-            </Button>
-          )
+          <Button
+            variant='tertiary'
+            size='small'
+            icon={rekrutteringstreff.fraTid ? <PencilIcon /> : <PlusIcon />}
+            onClick={() => setOpen(true)}
+            aria-expanded={open}
+          >
+            {rekrutteringstreff.fraTid ? 'Endre' : 'Legg til'}
+          </Button>
         }
       >
         {initialFra && initialTil ? (
@@ -212,7 +211,11 @@ export default function Tidspunkt({ rekrutteringstreff, className }: Props) {
           </FormProvider>
         </Modal.Body>
         <Modal.Footer>
-          <Button form={formId} type='submit'>
+          <Button
+            form={formId}
+            type='submit'
+            disabled={varighet.startsWith('-')}
+          >
             Lagre
           </Button>
           <Button
