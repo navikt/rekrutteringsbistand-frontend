@@ -1,4 +1,5 @@
 import { DatePicker, useDatepicker } from '@navikt/ds-react';
+import { addWeeks } from 'date-fns';
 import type { FieldError } from 'react-hook-form';
 
 type Props = {
@@ -15,11 +16,11 @@ export default function ControlledDatePicker({
   value,
   onChange,
   error,
-  from = new Date('2025-01-01'),
+  from = new Date(),
   to = new Date('2040-12-31'),
 }: Props) {
   const { inputProps, datepickerProps } = useDatepicker({
-    defaultSelected: value ?? undefined,
+    defaultSelected: value ?? addWeeks(new Date(), 2),
     fromDate: from,
     toDate: to,
     onDateChange: (d) => onChange(d ?? null),
@@ -33,7 +34,7 @@ export default function ControlledDatePicker({
         {...inputProps}
         hideLabel
         label={label}
-        error={error?.message}
+        error={error ? error.message || true : undefined}
       />
     </DatePicker>
   );

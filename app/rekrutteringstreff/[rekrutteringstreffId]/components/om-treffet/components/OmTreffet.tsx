@@ -43,6 +43,7 @@ const OmTreffet = () => {
               <div className='mt-4 flex flex-col gap-4 md:flex-row max-w-[64rem]'>
                 <Tidspunkt
                   rekrutteringstreff={rekrutteringstreff}
+                  onUpdated={rekrutteringstreffHook.mutate}
                   className='flex-1'
                 />
                 <RekrutteringstreffDetalj

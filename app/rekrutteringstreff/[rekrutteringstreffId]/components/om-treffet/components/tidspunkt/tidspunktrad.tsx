@@ -1,57 +1,71 @@
 import ControlledDatePicker from './ControlledDatepicker';
+import type { TidspunktFormFields } from './Tidspunkt';
 import { Select } from '@navikt/ds-react';
-import { Controller, FieldError, useFormContext } from 'react-hook-form';
+import { Controller, useFormContext } from 'react-hook-form';
 
-const klokkeslett = Array.from({ length: 24 }, (_, h) =>
+const KLOKKESLETT_OPTIONS = Array.from({ length: 24 }, (_, h) =>
   [0, 15, 30, 45].map(
     (m) => `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`,
   ),
 ).flat();
 
+interface TidspunktradProps {
+  label: string;
+  nameDato: 'fraDato' | 'fraTid' | 'tilDato' | 'tilTid';
+  nameTid: 'fraDato' | 'fraTid' | 'tilDato' | 'tilTid';
+}
+
 export default function Tidspunktrad({
   label,
   nameDato,
   nameTid,
-}: {
-  label: string;
-  nameDato: string;
-  nameTid: string;
-}) {
-  const {
-    control,
-    register,
-    formState: { errors },
-  } = useFormContext();
+}: TidspunktradProps) {
+  const { control } = useFormContext<TidspunktFormFields>();
+
+  // const dateError = errors[nameDato] as FieldError | undefined;
+  // const timeError = errors[nameTid] as FieldError | undefined;
 
   return (
     <div className='flex gap-4 items-start'>
-      <span className='w-10 pt-3'>{label}</span>
-
+      <span className='w-10 pt-3'>{label}</span>{' '}
       <Controller
         name={nameDato}
         control={control}
         rules={{ required: 'Obligatorisk' }}
-        render={({ field }) => (
+        render={({ field, fieldState }) => (
           <ControlledDatePicker
             label={label}
-            value={field.value}
+            value={field.value as Date | null}
             onChange={field.onChange}
-            error={errors[nameDato] as FieldError | undefined}
+            error={fieldState.error}
           />
         )}
       />
-
-      <Select
-        {...register(nameTid, { required: 'Obligatorisk' })}
-        hideLabel
-        label='Tid'
-        size='medium'
-        className='h-[48px] min-w-[6rem]'
-      >
-        {klokkeslett.map((t) => (
-          <option key={t}>{t}</option>
-        ))}
-      </Select>
+      <Controller
+        name={nameTid}
+        control={control}
+        rules={{ required: 'Obligatorisk' }}
+        render={({ field, fieldState }) => (
+          <Select
+            onChange={(e) => {
+              field.onChange(e);
+            }}
+            label={`${label} tid`}
+            hideLabel
+            size='medium'
+            className='h-[48px] min-w-[6rem]'
+            error={
+              fieldState.error ? fieldState.error.message || true : undefined
+            }
+          >
+            {KLOKKESLETT_OPTIONS.map((t) => (
+              <option key={t} value={t}>
+                {t}
+              </option>
+            ))}
+          </Select>
+        )}
+      />
     </div>
   );
 }
