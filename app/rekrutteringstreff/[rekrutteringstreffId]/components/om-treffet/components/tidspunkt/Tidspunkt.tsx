@@ -39,7 +39,7 @@ const formaterKlokkeslett = (dato: Date | null): string =>
 
 export default function Tidspunkt({ rekrutteringstreff, className }: Props) {
   const anchorRef = useRef<HTMLDivElement>(null);
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false); // Denne state-variabelen styrer Popover
   const treff = useRekrutteringstreff(rekrutteringstreff.id);
 
   const initialFra = rekrutteringstreff.fraTid
@@ -125,15 +125,17 @@ export default function Tidspunkt({ rekrutteringstreff, className }: Props) {
         tittelIkon={<CalendarIcon fontSize='1.5rem' />}
         tittel='Tidspunkt'
         knapp={
-          <Button
-            variant='tertiary'
-            size='small'
-            icon={rekrutteringstreff.fraTid ? <PencilIcon /> : <PlusIcon />}
-            onClick={() => setOpen((o) => !o)}
-            aria-expanded={open}
-          >
-            {rekrutteringstreff.fraTid ? 'Endre' : 'Legg til'}
-          </Button>
+          !open ? (
+            <Button
+              variant='tertiary'
+              size='small'
+              icon={rekrutteringstreff.fraTid ? <PencilIcon /> : <PlusIcon />}
+              onClick={() => setOpen(true)}
+              aria-expanded={open}
+            >
+              {rekrutteringstreff.fraTid ? 'Endre' : 'Legg til'}
+            </Button>
+          ) : null
         }
       >
         {initialFra && initialTil ? (
@@ -172,7 +174,12 @@ export default function Tidspunkt({ rekrutteringstreff, className }: Props) {
       <Popover
         open={open}
         anchorEl={anchorRef.current}
-        onClose={() => setOpen(false)}
+        onClose={() => {
+          setOpen(false);
+          if (formState.errors.root) {
+            clearErrors('root');
+          }
+        }}
         placement='bottom-start'
         offset={0}
         arrow={false}
@@ -196,7 +203,10 @@ export default function Tidspunkt({ rekrutteringstreff, className }: Props) {
               <Tidspunktrad label='Til' nameDato='tilDato' nameTid='tilTid' />
 
               {formState.errors.root ? (
-                <div className='flex gap-2 items-center'>
+                <div
+                  className='flex items-center gap-1'
+                  style={{ color: 'var(--a-text-danger)' }}
+                >
                   <ExclamationmarkTriangleIcon
                     aria-hidden='true'
                     fontSize='1.25rem'
@@ -206,6 +216,14 @@ export default function Tidspunkt({ rekrutteringstreff, className }: Props) {
                     {formState.errors.root.message}
                   </ErrorMessage>
                 </div>
+              ) : varighet &&
+                (varighet.startsWith('-') || varighet === '0 min') ? (
+                <BodyShort
+                  size='small'
+                  style={{ color: 'var(--a-text-danger)' }}
+                >
+                  {varighet}
+                </BodyShort>
               ) : (
                 <BodyShort size='small' textColor='subtle'>
                   {varighet || 'Velg tid'}
