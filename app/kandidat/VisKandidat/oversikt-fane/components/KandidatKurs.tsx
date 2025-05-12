@@ -29,7 +29,7 @@ const KandidatKurs: React.FC<KandidatKursProps> = ({ kurs }) => {
         )
         .map((kurs, index) => (
           <Erfaring
-            key={index}
+            key={index + `${kurs?.arrangor}-${kurs?.fraDato}`}
             overskrift={kurs.tittel}
             detaljer={<TidsperiodeKurs kurs={kurs} />}
           />

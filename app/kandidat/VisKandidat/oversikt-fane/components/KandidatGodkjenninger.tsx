@@ -36,7 +36,9 @@ const KandidatGodkjenninger: React.FC<KandidatGodkjenningerProps> = ({
         .map((godkjenning, index) => {
           return (
             <Erfaring
-              key={index}
+              key={
+                index + `${godkjenning.konseptId}-${godkjenning.gjennomfoert}`
+              }
               overskrift={godkjenning.tittel}
               detaljer={<TidsperiodeGodkjenning godkjenning={godkjenning} />}
             />
@@ -51,7 +53,9 @@ const KandidatGodkjenninger: React.FC<KandidatGodkjenningerProps> = ({
           .map((sertifikat, index) => {
             return (
               <Erfaring
-                key={index}
+                key={
+                  index + `${sertifikat.sertifikatKode}-${sertifikat.fraDato}`
+                }
                 overskrift={
                   sertifikat.alternativtNavn
                     ? sertifikat.alternativtNavn

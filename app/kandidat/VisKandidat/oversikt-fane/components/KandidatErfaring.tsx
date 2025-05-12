@@ -25,7 +25,7 @@ const KandidatErfaring: React.FC = () => {
                   })
                   ?.map((erfaring, index) => (
                     <TidslinjeFelt
-                      key={index}
+                      key={index + `${erfaring?.fraDato}`}
                       startDate={erfaring?.fraDato}
                       endDate={erfaring?.tilDato}
                       title={

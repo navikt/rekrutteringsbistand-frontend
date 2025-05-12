@@ -39,7 +39,7 @@ const KandidatFørerkort: React.FC<KandidatFørerkortProps> = ({ førerkort }) =
     <GråBoks tittel='Førerkort' ikon={<CarIcon />}>
       {fjernetDuplikater.map((kort, index) => (
         <Erfaring
-          key={index}
+          key={index + `${kort?.forerkortKode}-${kort?.fraDato}`}
           overskrift={kort?.forerkortKodeKlasse}
           beskrivelse={kort?.forerkortKode}
           detaljer={<FørerkortTidsperiode førerkort={kort} />}
