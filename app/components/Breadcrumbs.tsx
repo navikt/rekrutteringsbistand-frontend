@@ -13,7 +13,8 @@ const generateBreadcrumbs = (pathname: string) => {
     return { href, label };
   });
   // Add a "Home" breadcrumb at the beginning
-  return [{ href: '/', label: 'Hjem' }, ...breadcrumbs];
+  // return [{ href: '/', label: 'Hjem' }, ...breadcrumbs];
+  return breadcrumbs;
 };
 
 const Breadcrumbs: React.FC = () => {
