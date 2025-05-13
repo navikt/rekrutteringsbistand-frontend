@@ -7,18 +7,13 @@ import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutter
 import SVGDarkmode from '@/app/components/SVGDarkmode';
 import SWRLaster from '@/app/components/SWRLaster';
 import SideLayout from '@/app/components/layout/SideLayout';
-import SideNavigasjon from '@/app/components/layout/SideNavigasjon';
 import SideTopBanner from '@/app/components/layout/SideTopBanner';
 import { PencilIcon } from '@navikt/aksel-icons';
 import { BodyShort, Detail } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import { nb } from 'date-fns/locale/nb';
 
-export interface TreffHeaderProps {
-  tilbakeurl?: string;
-}
-
-const TreffHeader: React.FC<TreffHeaderProps> = ({ tilbakeurl }) => {
+const TreffHeader: React.FC = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
 
   const rekrutteringstreffHook = useRekrutteringstreff(
@@ -37,7 +32,6 @@ const TreffHeader: React.FC<TreffHeaderProps> = ({ tilbakeurl }) => {
             <SideLayout
               banner={
                 <div>
-                  {tilbakeurl && <SideNavigasjon tilbakeurl={tilbakeurl} />}
                   <div className='flex items-center gap-4'>
                     <SideTopBanner
                       tittel={rekrutteringstreff.tittel}

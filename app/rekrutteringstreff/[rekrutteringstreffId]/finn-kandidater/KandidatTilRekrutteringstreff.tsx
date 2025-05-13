@@ -23,11 +23,9 @@ const KandidatTilRekrutteringstreff: React.FC = () => {
     }
   }, [jobbsøkere]);
 
-  const tilbakeUrl = `/rekrutteringstreff/${rekrutteringstreff.rekrutteringstreffId}`;
-
   return (
     <>
-      <TreffHeader tilbakeurl={tilbakeUrl} />
+      <TreffHeader />
       <KandidatSøkTabs
         rekrutteringstreffId={rekrutteringstreff?.rekrutteringstreffId}
         alleredeLagtTil={alleredeLagtTil}

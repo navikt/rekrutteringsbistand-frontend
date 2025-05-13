@@ -3,7 +3,6 @@
 import { ArbeidsgiverDTO } from '../../api/pam-search/underenhet/useArbeidsgiver';
 import HovedInnholdKort from '../../components/layout/HovedInnholdKort';
 import SideLayout from '../../components/layout/SideLayout';
-import SideNavigasjon from '../../components/layout/SideNavigasjon';
 import SideTopBanner from '../../components/layout/SideTopBanner';
 import { Stillingskategori } from '../stilling-typer';
 import { OpprettStillingKnapp } from './components/OpprettStilling';
@@ -32,10 +31,7 @@ const NyStilling: React.FC = () => {
 
   return (
     <HovedInnholdKort>
-      <SideLayout
-        banner={<SideTopBanner tittel='Opprett ny stilling' />}
-        navigasjon={<SideNavigasjon />}
-      >
+      <SideLayout banner={<SideTopBanner tittel='Opprett ny stilling' />}>
         <div>
           <Alert className='mb-2' variant='warning'>
             <BodyLong spacing>

@@ -26,6 +26,7 @@ const KandidatSideLayout: React.FC<KandidatSideProps> = ({ children }) => {
 
   return (
     <SideLayout
+      navigasjon={<div />}
       banner={
         <SideTopBanner
           tittel={`${kandidatData.fornavn} ${kandidatData.etternavn}`}
