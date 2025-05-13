@@ -29,9 +29,7 @@ const KandidatListeKort: React.FC<KandidatListeKortProps> = ({
   usynligKandidat,
 }) => {
   const kolonneStyling = 'break-words';
-
   <div className={kolonneStyling}></div>;
-
   const { lukketKandidatliste, kandidatlisteId } = useKandidatlisteContext();
 
   if (usynligKandidat) {

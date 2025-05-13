@@ -6,6 +6,7 @@ import SWRLaster from '../../../../../components/SWRLaster';
 import { useApplikasjonContext } from '../../../../../providers/ApplikasjonContext';
 import { useUmami } from '../../../../../providers/UmamiContext';
 import { useStillingsContext } from '../../../StillingsContext';
+import { TilstandPåForespørsel } from '../../KandidatTyper';
 import VelgSvarfrist from './VelgSvarfrist';
 import { TasklistIcon } from '@navikt/aksel-icons';
 import {
@@ -16,7 +17,7 @@ import {
   Modal,
   Table,
 } from '@navikt/ds-react';
-import { format } from 'date-fns';
+import { differenceInDays, format } from 'date-fns';
 import * as React from 'react';
 
 export interface DelMedKandidatModalProps {
@@ -61,17 +62,47 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
       >
         <SWRLaster hooks={[forespurteKandidaterHook]}>
           {(forespurteKandidater) => {
-            const forespurteKandidaterAktørListe =
-              Object.keys(forespurteKandidater);
-            const antallSpurtFraFør = markerteKandidater.filter(
+            // const forespurteKandidaterAktørListe =
+            //   Object.keys(forespurteKandidater);
+            // const antallSpurtFraFør = markerteKandidater.filter(
+            //   (kandidat) =>
+            //     kandidat.aktørid &&
+            //     forespurteKandidaterAktørListe.includes(kandidat.aktørid),
+            // );
+
+            const harSvartNei = markerteKandidater.filter(
               (kandidat) =>
                 kandidat.aktørid &&
-                forespurteKandidaterAktørListe.includes(kandidat.aktørid),
+                forespurteKandidater[kandidat.aktørid]?.[0]?.svar
+                  ?.harSvartJa === false,
             );
 
-            const kandidaterSomKanDelesTil = markerteKandidater.filter(
-              (kandidat) => !antallSpurtFraFør.includes(kandidat),
-            );
+            const fristUtløpt = markerteKandidater.filter((kandidat) => {
+              const dagerTilSvarfrist =
+                kandidat.aktørid &&
+                forespurteKandidater[kandidat.aktørid]?.[0]?.svarfrist
+                  ? differenceInDays(
+                      new Date(
+                        forespurteKandidater[kandidat.aktørid]?.[0]?.svarfrist,
+                      ),
+                      new Date(),
+                    )
+                  : null;
+
+              return (
+                kandidat.aktørid &&
+                forespurteKandidater[kandidat.aktørid]?.[0]?.tilstand ===
+                  TilstandPåForespørsel.AVBRUTT &&
+                forespurteKandidater[kandidat.aktørid]?.[0]?.deltStatus ===
+                  'SENDT' &&
+                dagerTilSvarfrist !== null &&
+                dagerTilSvarfrist < 0
+              );
+            });
+
+            // const kandidaterSomKanDelesTil = markerteKandidater.filter(
+            //   (kandidat) => !antallSpurtFraFør.includes(kandidat),
+            // );
 
             const sendForespørsel = async () => {
               if (svarfrist) {
@@ -79,14 +110,14 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
                 await sendForespørselOmDelingAvCv({
                   stillingsId: stillingsId,
                   svarfrist: format(svarfrist, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"),
-                  aktorIder: kandidaterSomKanDelesTil
+                  aktorIder: markerteKandidater
                     .map((kandidat) => kandidat.aktørid)
                     .filter((id): id is string => id !== null),
                   navKontor: valgtNavKontor?.navKontor ?? '',
                 });
                 forespurteKandidaterHook.mutate();
                 track(UmamiEvent.Stilling.del_stilling_med_kandidat, {
-                  antall: kandidaterSomKanDelesTil.length,
+                  antall: markerteKandidater.length,
                 });
                 fjernAllMarkering();
                 setModalErÅpen(false);
@@ -100,14 +131,18 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
             return (
               <>
                 <Modal.Body>
-                  {antallSpurtFraFør.length > 0 && (
+                  {harSvartNei.length > 0 && (
+                    <Alert variant='error' size='small'>
+                      {harSvartNei.length}{' '}
+                      {harSvartNei.length === 1 ? 'kandidat ' : 'kandidater'}
+                      har tidliger svart nei til å dele CV-en.
+                    </Alert>
+                  )}
+                  {fristUtløpt.length > 0 && (
                     <Alert variant='warning' size='small'>
-                      Du har tidligere delt stillingen med{' '}
-                      {antallSpurtFraFør.length}{' '}
-                      {antallSpurtFraFør.length === 1
-                        ? 'kandidat. Denne kandidaten'
-                        : 'kandidater. De'}{' '}
-                      vil ikke motta stillingen på nytt i aktivitetsplanen.
+                      {fristUtløpt.length}{' '}
+                      {fristUtløpt.length === 1 ? 'kandidat ' : 'kandidater'}
+                      har tidligere fått spørsmål, men ikke svart innen fristen.
                     </Alert>
                   )}
                   <Accordion size='small' headingSize='xsmall' className='my-4'>
@@ -124,7 +159,7 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
                                 Fødselsnr.
                               </Table.HeaderCell>
                               <Table.HeaderCell scope='col'>
-                                Kan dele
+                                Status
                               </Table.HeaderCell>
                             </Table.Row>
                           </Table.Header>
@@ -142,11 +177,16 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
                                     <Table.DataCell>{fodselsnr}</Table.DataCell>
                                     <Table.DataCell>
                                       {aktørid &&
-                                      forespurteKandidaterAktørListe.includes(
-                                        aktørid,
+                                      harSvartNei.some(
+                                        (k) => k.aktørid === aktørid,
                                       )
-                                        ? 'Nei'
-                                        : 'Ja'}
+                                        ? 'Har svart nei'
+                                        : aktørid &&
+                                            fristUtløpt.some(
+                                              (k) => k.aktørid === aktørid,
+                                            )
+                                          ? 'Frist utløpt'
+                                          : 'Ikke spurt'}
                                     </Table.DataCell>
                                   </Table.Row>
                                 );
@@ -174,9 +214,7 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
                 </Modal.Body>
                 <Modal.Footer>
                   <Button
-                    disabled={
-                      !svarfrist || kandidaterSomKanDelesTil.length === 0
-                    }
+                    disabled={!svarfrist || markerteKandidater.length === 0}
                     onClick={sendForespørsel}
                     variant='primary'
                     loading={loading}
