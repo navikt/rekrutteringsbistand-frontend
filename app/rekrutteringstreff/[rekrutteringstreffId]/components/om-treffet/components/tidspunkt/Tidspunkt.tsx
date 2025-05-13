@@ -138,8 +138,9 @@ export default function Tidspunkt({
   const formId = 'tidspunktForm';
 
   return (
-    <div className={className}>
+    <>
       <RekrutteringstreffDetalj
+        className={className}
         tittelIkon={<CalendarIcon fontSize='1.5rem' />}
         tittel='Tidspunkt'
         knapp={
@@ -232,7 +233,7 @@ export default function Tidspunkt({
           </Button>
         </Modal.Footer>
       </Modal>
-    </div>
+    </>
   );
 }
 
