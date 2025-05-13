@@ -11,6 +11,7 @@ import {
   PlusIcon,
 } from '@navikt/aksel-icons';
 import { BodyShort, Button, ErrorMessage, Modal } from '@navikt/ds-react';
+import { logger } from '@navikt/next-logger';
 import { addWeeks, format, isSameDay, parseISO } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
 import { useEffect, useState } from 'react';
@@ -152,6 +153,7 @@ export default function Tidspunkt({
       onUpdated();
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
+      logger.error('Feil ved lagring av tidspunkt', error);
       setError('root', {
         type: 'api',
         message: 'Lagring feilet. Prøv igjen senere.',

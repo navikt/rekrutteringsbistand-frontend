@@ -22,9 +22,6 @@ export default function Tidspunktrad({
 }: TidspunktradProps) {
   const { control } = useFormContext<TidspunktFormFields>();
 
-  // const dateError = errors[nameDato] as FieldError | undefined;
-  // const timeError = errors[nameTid] as FieldError | undefined;
-
   return (
     <div className='flex gap-4 items-start'>
       <span className='w-10 pt-3'>{label}</span>{' '}
