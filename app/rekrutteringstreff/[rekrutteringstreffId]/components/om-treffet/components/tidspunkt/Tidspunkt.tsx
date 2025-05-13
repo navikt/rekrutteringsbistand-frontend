@@ -1,7 +1,7 @@
 'use client';
 
 import RekrutteringstreffDetalj from '../../../RekrutteringstreffDetalj';
-import Tidspunktrad from './Tidspunktrad';
+import Tidspunktrad from './Tidspunktrad2';
 import { rekrutteringstreffVarighet } from './varighet';
 import { oppdaterRekrutteringstreff } from '@/app/api/rekrutteringstreff/oppdater-rekrutteringstreff/oppdaterRerkutteringstreff';
 import type { RekrutteringstreffDTO } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
