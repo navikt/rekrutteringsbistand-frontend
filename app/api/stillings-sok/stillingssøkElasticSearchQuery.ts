@@ -42,11 +42,6 @@ export function generateElasticSearchQuery(
   const valgteFilter: any[] = [];
   const term: any[] = [];
   const sort: any = esSorter(filter.sortering);
-  // const sort: any = {
-  //   'stilling.published': {
-  //     order: esSorter(filter.sortering),
-  //   },
-  // };
 
   valgteFilter.push();
 
@@ -94,6 +89,7 @@ export function generateElasticSearchQuery(
             fylke.lokasjon.fylkesnummer &&
             filter?.fylker.includes(fylke.lokasjon.fylkesnummer),
         ) ?? [];
+
     const valgteKommuner =
       geografiData
         ?.filter((geografi) => geografi.type === GeografiType.KOMMUNE)
@@ -102,24 +98,39 @@ export function generateElasticSearchQuery(
             kommune.lokasjon.kommunenummer &&
             filter?.kommuner.includes(kommune.lokasjon.kommunenummer);
 
-          const fylkeErValgtUtenKommuner =
-            kommune.lokasjon.fylkesnummer &&
-            valgteFylker.some(
-              (fylke) =>
-                fylke.lokasjon.fylkesnummer === kommune.lokasjon.fylkesnummer &&
-                !filter?.kommuner.some(
-                  (k) =>
-                    geografiData?.find((g) => g.lokasjon.kommunenummer === k)
-                      ?.lokasjon.fylkesnummer === fylke.lokasjon.fylkesnummer,
-                ),
-            );
-
-          return kommuneErValgt || fylkeErValgtUtenKommuner;
+          return kommuneErValgt;
         }) ?? [];
 
+    const kommunerDerKunFylkeErValgt = valgteFylker
+      .filter(
+        (fylke) =>
+          fylke.type === GeografiType.FYLKE &&
+          fylke.lokasjon.fylkesnummer &&
+          !valgteKommuner.some(
+            (k) => k.lokasjon.fylkesnummer === fylke.lokasjon.fylkesnummer,
+          ),
+      )
+      .flatMap(
+        (fylke) =>
+          geografiData?.filter(
+            (g) =>
+              g.lokasjon.fylkesnummer === fylke.lokasjon.fylkesnummer &&
+              g.type === GeografiType.KOMMUNE,
+          ) ?? [],
+      );
+
+    const fylkerUtenValgteKommuner = valgteFylker.filter(
+      (fylke) =>
+        fylke.lokasjon.fylkesnummer &&
+        !valgteKommuner.some(
+          (k) => k.lokasjon.fylkesnummer === fylke.lokasjon.fylkesnummer,
+        ),
+    );
+
     const valgteFylkerOgKommuner: PamGeografi[] = [
-      ...valgteFylker,
+      ...fylkerUtenValgteKommuner,
       ...valgteKommuner,
+      ...kommunerDerKunFylkeErValgt,
     ];
 
     if (valgteFylkerOgKommuner?.length) {

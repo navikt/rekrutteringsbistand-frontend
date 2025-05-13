@@ -13,24 +13,14 @@ export const esFylkerOgKommuner = (valgteFylkerOgKommuner: PamGeografi[]) => {
   return geografi(valgteFylkerOgKommuner);
 };
 
-const beholdFylkerUtenValgteKommuner = (
-  valgteFylkerOgKommuner: PamGeografi[],
-) => {
-  const fylkerUtenValgteKommuner = valgteFylkerOgKommuner.filter(
-    (fylke) =>
-      !valgteFylkerOgKommuner
-        .filter((kommune) => kommune.type === GeografiType.KOMMUNE)
-        .some(
-          (kommune) =>
-            kommune.lokasjon.fylkesnummer === fylke.lokasjon.fylkesnummer,
-        ),
+const geografi = (valgteFylkerOgKommuner: PamGeografi[]) => {
+  const fylkeSøk = valgteFylkerOgKommuner.filter(
+    (fylke) => fylke.type === GeografiType.FYLKE,
   );
 
-  return fylkerUtenValgteKommuner;
-};
-
-const geografi = (valgteFylkerOgKommuner: PamGeografi[]) => {
-  const fylker = beholdFylkerUtenValgteKommuner(valgteFylkerOgKommuner);
+  const fylker = valgteFylkerOgKommuner.filter(
+    (f) => f.type === GeografiType.FYLKE,
+  );
 
   if (
     fylker.length === 0 &&
@@ -54,24 +44,25 @@ const geografi = (valgteFylkerOgKommuner: PamGeografi[]) => {
       return [kommune.lokasjon.kommunenummer, ...(ekstraSteder || [])];
     });
 
-  const fylkerInkludertGamleNavn = fylker.flatMap((fylke) => {
-    const ekstraNavn =
-      fylke.lokasjon.fylkesnummer &&
-      stedmappingFraNyttNavn
-        .get(formaterStedsnavn(fylke.lokasjon.fylkesnummer))
-        ?.map((sted) => {
-          return sted.navn;
-        });
-    return [fylke.lokasjon.fylkesnummer, ...(ekstraNavn || [])];
-  });
+  const fylkerInkludertGamleNavn = new Set(
+    [...fylkeSøk].flatMap((fylke) => {
+      const ekstraNavn =
+        stedmappingFraNyttNavn
+          .get(formaterStedsnavn(fylke.navn))
+          ?.map((sted) => sted.navn.toUpperCase()) || [];
+      return [fylke.navn, ...ekstraNavn];
+    }),
+  );
 
   const shouldFylker =
-    fylkerInkludertGamleNavn.length === 0
+    fylkerInkludertGamleNavn.size === 0
       ? []
       : [
           {
             terms: {
-              'stilling.locations.county.keyword': fylkerInkludertGamleNavn,
+              'stilling.locations.county.keyword': Array.from(
+                fylkerInkludertGamleNavn,
+              ).map((fylke) => fylke.toUpperCase()),
             },
           },
         ];
