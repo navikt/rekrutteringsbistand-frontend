@@ -11,8 +11,8 @@ const KLOKKESLETT_OPTIONS = Array.from({ length: 24 }, (_, h) =>
 
 interface TidspunktradProps {
   label: string;
-  nameDato: 'fraDato' | 'fraTid' | 'tilDato' | 'tilTid';
-  nameTid: 'fraDato' | 'fraTid' | 'tilDato' | 'tilTid';
+  nameDato: 'fraDato' | 'tilDato';
+  nameTid: 'fraTid' | 'tilTid';
 }
 
 export default function Tidspunktrad({
@@ -44,6 +44,7 @@ export default function Tidspunktrad({
         rules={{ required: 'Obligatorisk' }}
         render={({ field, fieldState }) => (
           <Select
+            value={field.value}
             onChange={(e) => {
               field.onChange(e);
             }}
