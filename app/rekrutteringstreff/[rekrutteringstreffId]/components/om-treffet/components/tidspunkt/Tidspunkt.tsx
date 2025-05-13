@@ -190,7 +190,7 @@ export default function Tidspunkt({
         open={open}
         width={420}
         onClose={close}
-        header={{ heading: 'Tidspunkt' }}
+        header={{ heading: 'Velg tidspunkt' }}
       >
         <Modal.Body>
           <FormProvider {...methods}>
@@ -223,7 +223,7 @@ export default function Tidspunkt({
             </form>
           </FormProvider>
         </Modal.Body>
-        <Modal.Footer>
+        <Modal.Footer className='pt-0'>
           <Button type='submit' form={formId} disabled={periodUgyldig}>
             Lagre
           </Button>
