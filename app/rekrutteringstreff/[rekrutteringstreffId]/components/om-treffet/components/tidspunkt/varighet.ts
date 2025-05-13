@@ -24,12 +24,11 @@ export const rekrutteringstreffVarighet = (
 
   if (isSameDay(start, end)) {
     const min = differenceInMinutes(end, start);
-    // if (min < 0) return ''; // Fjern denne for å tillate negativ tid
-    const h = Math.floor(Math.abs(min) / 60); // Bruk Math.abs for positiv visning av timer/minutter
+    const h = Math.floor(Math.abs(min) / 60);
     const m = Math.abs(min) % 60;
     const sign = min < 0 ? '-' : '';
 
-    if (min === 0) return '0 min'; // Håndter 0 minutter spesifikt hvis ønskelig
+    if (min === 0) return '0 min';
 
     let durationString = '';
     if (h > 0) {
@@ -42,9 +41,9 @@ export const rekrutteringstreffVarighet = (
   }
 
   const d = differenceInCalendarDays(end, start);
-  const daysDisplay = d >= 0 ? d + 1 : d; // Juster for "inkludert" dager hvis positiv, ellers bruk negativ direkte
+  const daysDisplay = d >= 0 ? d + 1 : d;
 
-  if (daysDisplay === 0 && !isSameDay(start, end)) return ''; // Hvis det er 0 dager, men ikke samme dag (kan skje med tidssone etc.)
+  if (daysDisplay === 0 && !isSameDay(start, end)) return '';
 
   return `${daysDisplay} dag${Math.abs(daysDisplay) !== 1 ? 'er' : ''}`;
 };
