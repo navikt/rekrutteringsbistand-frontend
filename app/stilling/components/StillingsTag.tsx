@@ -147,15 +147,15 @@ const StillingsTag: React.FC<IStillingTag> = ({ stillingsData, splitTags }) => {
     <div className='flex justify-between'>
       <div>
         <span className='mr-4'>{publisertDato} </span>
-        {venstre}
+        <div className='max-h-16'>{venstre}</div>
       </div>
-      <div>{høyre}</div>
+      <div className='max-h-16'>{høyre}</div>
     </div>
   ) : (
-    <>
+    <div className='max-h-16 whitespace-nowrap '>
       {venstre}
       {høyre}
-    </>
+    </div>
   );
 };
 
