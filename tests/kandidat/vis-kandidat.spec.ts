@@ -7,7 +7,7 @@ test('Vis kandidat', async ({ page }) => {
   await page.goto('http://localhost:1337');
   await page.getByRole('button', { name: 'Kandidater' }).click();
   await page
-    .getByTestId('kandidatkort-lenke-kandidat-arenaKandidatnr-1')
+    .getByTestId('kandidatkort-lenke-kandidat-arenaKandidatnr-2')
     .click();
   await expect(
     page.getByRole('button', { name: 'Finn stilling' }),
