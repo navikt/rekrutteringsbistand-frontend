@@ -1,8 +1,7 @@
 import {
+  isSameDay,
   differenceInMinutes,
   differenceInCalendarDays,
-  isSameDay,
-  set as setTime,
 } from 'date-fns';
 
 export const rekrutteringstreffVarighet = (
@@ -11,39 +10,43 @@ export const rekrutteringstreffVarighet = (
   tilDato: Date | null,
   tilTid: string,
 ): string => {
-  if (!(fraDato && tilDato)) return '';
+  if (!fraDato || !tilDato) return '';
 
-  const start = setTime(new Date(fraDato), {
-    hours: parseInt(fraTid.slice(0, 2), 10),
-    minutes: parseInt(fraTid.slice(3), 10),
-  });
-  const end = setTime(new Date(tilDato), {
-    hours: parseInt(tilTid.slice(0, 2), 10),
-    minutes: parseInt(tilTid.slice(3), 10),
-  });
+  const lagFullDatoTid = (dato: Date, tid: string): Date => {
+    const [timer, minutter] = tid.split(':').map(Number);
+    const nyDato = new Date(dato);
+    nyDato.setHours(timer, minutter, 0, 0);
+    return nyDato;
+  };
 
-  if (isSameDay(start, end)) {
-    const min = differenceInMinutes(end, start);
-    const h = Math.floor(Math.abs(min) / 60);
-    const m = Math.abs(min) % 60;
-    const sign = min < 0 ? '-' : '';
+  const startTidspunkt = lagFullDatoTid(fraDato, fraTid);
+  const sluttTidspunkt = lagFullDatoTid(tilDato, tilTid);
 
-    if (min === 0) return '0 min';
+  if (isSameDay(startTidspunkt, sluttTidspunkt)) {
+    const minuttForskjell = differenceInMinutes(sluttTidspunkt, startTidspunkt);
+    if (minuttForskjell === 0) return '0 min';
 
-    let durationString = '';
-    if (h > 0) {
-      durationString += `${h} t`;
-    }
-    if (m > 0) {
-      durationString += `${h > 0 ? ' ' : ''}${m} min`;
-    }
-    return `${sign}${durationString}`;
+    const absolutteMinutter = Math.abs(minuttForskjell);
+    const timer = Math.floor(absolutteMinutter / 60);
+    const minutter = absolutteMinutter % 60;
+
+    const fortegn = minuttForskjell < 0 ? '-' : '';
+    const tidsdeler = [];
+    if (timer > 0) tidsdeler.push(`${timer} t`);
+    if (minutter > 0) tidsdeler.push(`${minutter} min`);
+
+    return `${fortegn}${tidsdeler.join(' ')}`;
+  } else {
+    const kalenderdagForskjell = differenceInCalendarDays(
+      sluttTidspunkt,
+      startTidspunkt,
+    );
+
+    const antallDager =
+      kalenderdagForskjell >= 0
+        ? kalenderdagForskjell + 1
+        : kalenderdagForskjell;
+
+    return `${antallDager} dag${Math.abs(antallDager) !== 1 ? 'er' : ''}`;
   }
-
-  const d = differenceInCalendarDays(end, start);
-  const daysDisplay = d >= 0 ? d + 1 : d;
-
-  if (daysDisplay === 0 && !isSameDay(start, end)) return '';
-
-  return `${daysDisplay} dag${Math.abs(daysDisplay) !== 1 ? 'er' : ''}`;
 };
