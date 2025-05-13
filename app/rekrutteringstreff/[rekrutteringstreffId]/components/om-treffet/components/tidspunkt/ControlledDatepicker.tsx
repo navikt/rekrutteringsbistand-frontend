@@ -26,10 +26,8 @@ export default function ControlledDatePicker({
     onDateChange: (d) => onChange(d ?? null),
   });
 
-  const rest = datepickerProps as any;
-
   return (
-    <DatePicker mode='single' selected={value ? [value] : undefined} {...rest}>
+    <DatePicker mode='single' {...datepickerProps}>
       <DatePicker.Input
         {...inputProps}
         hideLabel
