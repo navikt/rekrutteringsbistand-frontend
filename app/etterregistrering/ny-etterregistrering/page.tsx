@@ -2,7 +2,6 @@
 
 import HovedInnholdKort from '../../components/layout/HovedInnholdKort';
 import SideLayout from '../../components/layout/SideLayout';
-import SideNavigasjon from '../../components/layout/SideNavigasjon';
 import SideTopBanner from '../../components/layout/SideTopBanner';
 import RedigerFormidling from './RedigerFormidling';
 import { FormidlingFormSchema } from './redigerFormidlingFormType';
@@ -16,10 +15,7 @@ export default function RedigerFormidlingSide() {
 
   return (
     <HovedInnholdKort>
-      <SideLayout
-        banner={<SideTopBanner tittel='Ny etterregistrering' />}
-        navigasjon={<SideNavigasjon />}
-      >
+      <SideLayout banner={<SideTopBanner tittel='Ny etterregistrering' />}>
         <FormProvider {...registerForm}>
           <RedigerFormidling />
         </FormProvider>

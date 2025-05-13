@@ -2,7 +2,6 @@
 
 import SplitScreenLayout from '../../components/layout/KandidatSplitScreenLayout';
 import SideLayout from '../../components/layout/SideLayout';
-import SideNavigasjon from '../../components/layout/SideNavigasjon';
 import VisKandidat from '../../kandidat/VisKandidat/VisKandidat';
 import StillingHeader from './StillingHeader';
 import { useStillingsContext } from './StillingsContext';
@@ -32,10 +31,7 @@ const StillingSideLayout: React.FC<StillingSideLayoutProps> = ({
     <SplitScreenLayout
       sidebar={visKandidatnr && <VisKandidat kandidatnr={visKandidatnr} />}
     >
-      <SideLayout
-        banner={<StillingHeader />}
-        navigasjon={<SideNavigasjon tilbakeurl='/stilling' />}
-      >
+      <SideLayout banner={<StillingHeader />}>
         {ugyldigStilling ? (
           <Alert variant='error'>
             <Heading spacing size='small' level='3'>
