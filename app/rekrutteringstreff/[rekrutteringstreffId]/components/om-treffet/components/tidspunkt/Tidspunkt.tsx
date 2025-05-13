@@ -58,8 +58,12 @@ export default function Tidspunkt({
     mode: 'onChange',
   });
 
-  const { handleSubmit, setError, clearErrors, formState } = methods;
-  const { errors } = formState;
+  const {
+    handleSubmit,
+    setError,
+    clearErrors,
+    formState: { errors },
+  } = methods;
 
   const [fraDato, fraTid, tilDato, tilTid] = useWatch({
     control: methods.control,
@@ -81,26 +85,26 @@ export default function Tidspunkt({
       varighet && (varighet.startsWith('-') || varighet === '0 min');
 
     if (erUgyldigPeriode) {
-      if (formState.errors.root?.type !== 'manualPeriod') {
+      if (errors.root?.type !== 'manualPeriod') {
         setError('root', {
           type: 'manualPeriod',
           message: 'Sluttidspunkt kan ikke være før eller lik starttidspunkt.',
         });
       }
-      if (formState.errors.tilDato?.type !== 'visualCueOnly') {
+      if (errors.tilDato?.type !== 'visualCueOnly') {
         setError('tilDato', { type: 'visualCueOnly' });
       }
-      if (formState.errors.tilTid?.type !== 'visualCueOnly') {
+      if (errors.tilTid?.type !== 'visualCueOnly') {
         setError('tilTid', { type: 'visualCueOnly' });
       }
     } else {
-      if (formState.errors.root?.type === 'manualPeriod') {
+      if (errors.root?.type === 'manualPeriod') {
         clearErrors('root');
       }
-      if (formState.errors.tilDato?.type === 'visualCueOnly') {
+      if (errors.tilDato?.type === 'visualCueOnly') {
         clearErrors('tilDato');
       }
-      if (formState.errors.tilTid?.type === 'visualCueOnly') {
+      if (errors.tilTid?.type === 'visualCueOnly') {
         clearErrors('tilTid');
       }
     }
@@ -108,9 +112,9 @@ export default function Tidspunkt({
     varighet,
     setError,
     clearErrors,
-    formState.errors.root,
-    formState.errors.tilDato,
-    formState.errors.tilTid,
+    errors.root,
+    errors.tilDato,
+    errors.tilTid,
   ]);
 
   const onSubmit = async (data: TidspunktFormFields) => {
