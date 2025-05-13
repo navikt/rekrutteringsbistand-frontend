@@ -68,7 +68,7 @@ function generateKandidatData(seed: number): KandidatDataSchemaDTO {
   return {
     fritekst: optionalNullable(() => coreDataFaker.lorem.paragraph()),
     aktorId: optionalNullable(() => `kandidat-aktorId-${seed}`),
-    fodselsnummer: `kandidat-fnr-${seed}`,
+    fodselsnummer: optionalNullable(() => `kandidat-fnr-${seed}`),
     fornavn: rawFornavn,
     etternavn: rawEtternavn,
     fodselsdato: optionalNullable(() => rawFodselsdato.toISOString()),
@@ -258,10 +258,14 @@ function generateKandidatData(seed: number): KandidatDataSchemaDTO {
 
 export function mapToKandidatSokKandidat(
   fullKandidat: KandidatDataSchemaDTO,
-): KandidatsokKandidat {
+): KandidatsokKandidat | null {
   const arenaKandidatnr =
     fullKandidat.arenaKandidatnr ||
     `fallback-arenaKandidatnr-${fullKandidat.aktorId || 'unknown'}`;
+
+  if (!fullKandidat.fodselsnummer) {
+    return null;
+  }
 
   return {
     yrkeJobbonskerObj:
@@ -282,7 +286,7 @@ export function mapToKandidatSokKandidat(
       })) || [],
     innsatsgruppe: fullKandidat.innsatsgruppe || Innsatsgruppe.STANDARD_INNSATS,
     fornavn: fullKandidat.fornavn || 'Mangler fornavn',
-    fodselsnummer: fullKandidat.fodselsnummer || '00000000000',
+    fodselsnummer: fullKandidat.fodselsnummer,
     poststed: fullKandidat.poststed || 'Mangler poststed',
   };
 }

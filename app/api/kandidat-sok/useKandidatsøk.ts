@@ -130,7 +130,9 @@ export const useKandidatsøk = (
 
 export const kandidatSokMirage = (server: any) => {
   return server.post(kandidatSokEndepunkt('*'), () => {
-    const mappedKandidater = mockKandidatDataList.map(mapToKandidatSokKandidat);
+    const mappedKandidater = mockKandidatDataList
+      .map(mapToKandidatSokKandidat)
+      .filter((k): k is KandidatsokKandidat => k !== null);
 
     const antallTotalt = mappedKandidater.length;
 

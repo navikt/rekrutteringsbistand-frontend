@@ -2,6 +2,7 @@
 
 import { Avatar, AvatarFallback } from '../../../components/ui/avatar';
 import { isLocal } from '../../../util/env';
+import { getMiljø, Miljø } from '../../../util/miljø';
 import { nyheter } from '../../nyheter';
 import { useApplikasjonContext } from '../../providers/ApplikasjonContext';
 import { useThemeProvider } from '../../providers/ThemeProvider';
@@ -22,6 +23,7 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar';
 import {
+  ArrowsSquarepathIcon,
   BriefcaseIcon,
   HouseIcon,
   MoonIcon,
@@ -198,6 +200,17 @@ export function AppNavigasjon() {
 
           <VelgKontor />
           <ModiaKnapp />
+
+          <SideLenke
+            tekst={'Til gammel løsning'}
+            ikon={<ArrowsSquarepathIcon />}
+            path={
+              getMiljø() === Miljø.ProdGcp
+                ? 'https://rekrutteringsbistand.intern.dev.nav.no/'
+                : 'https://rekrutteringsbistand.intern.nav.no/'
+            }
+            kreverRoller={null}
+          />
 
           <div className='flex items-baseline w-full'>
             <Avatar className='pt-4 mr-2'>
