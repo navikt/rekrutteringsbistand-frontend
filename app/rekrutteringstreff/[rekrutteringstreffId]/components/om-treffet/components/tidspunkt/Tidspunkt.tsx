@@ -207,7 +207,7 @@ export default function Tidspunkt({
               <Tidspunktrad label='Fra' nameDato='fraDato' nameTid='fraTid' />
               <Tidspunktrad label='Til' nameDato='tilDato' nameTid='tilTid' />
 
-              {errors.root?.message && (
+              {errors.root?.message ? (
                 <div className='flex items-center gap-1 mt-2'>
                   <ExclamationmarkTriangleIcon
                     aria-hidden
@@ -218,9 +218,7 @@ export default function Tidspunkt({
                     {errors.root.message}
                   </ErrorMessage>
                 </div>
-              )}
-
-              {!errors.root && (
+              ) : (
                 <BodyShort size='small' textColor='subtle' className='mt-2'>
                   {varighet && !periodUgyldig ? varighet : 'Velg tid'}
                 </BodyShort>
