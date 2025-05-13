@@ -10,7 +10,7 @@ export interface SideNavigasjonProps {
 const SideNavigasjon: React.FC<SideNavigasjonProps> = ({ tilbakeurl }) => {
   const router = useRouter();
   return (
-    <div className='h-[24px]'>
+    <div className='w-full items-center justify-between  pt-2  sticky top-0 z-10 bg-[var(--ax-bg-default)]'>
       <Button
         size='small'
         icon={<ArrowLeftIcon />}
