@@ -151,7 +151,6 @@ export default function Tidspunkt({
         tilTid: toIso(data.tilDato, data.tilTid),
       });
       onUpdated();
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       logger.error('Feil ved lagring av tidspunkt', error);
       setError('root', {
