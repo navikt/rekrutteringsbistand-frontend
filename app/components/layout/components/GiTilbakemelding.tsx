@@ -81,7 +81,7 @@ const GiTilbakemelding = () => {
           onClose={() => setOpenState(false)}
           anchorEl={buttonRef.current}
         >
-          <Popover.Content>
+          <Popover.Content className='w-360px'>
             {/* @ts-expect-error Ikke typet */}
             <skyra-survey
               ref={skyraSurveyRef}

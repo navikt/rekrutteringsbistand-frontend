@@ -23,24 +23,24 @@
 
 skyra-survey {
   /* Background and text colors */
-  --skyra-bg-color: var(--a-surface-default);
-  --skyra-text-color: var(--a-text-default);
+  --skyra-bg-color: var(--ax-surface-default);
+  --skyra-text-color: var(--ax-text-default);
 
   /* Z-index - using Aksel's modal level */
-  --skyra-z-index: var(--a-z-index-modal);
+  --skyra-z-index: var(--ax-z-index-modal);
 
   /* UI colors */
-  --skyra-interface-color: var(--a-surface-subtle);
-  --skyra-action-color: var(--a-surface-action);
-  --skyra-action-text-color: var(--a-text-on-action);
-  --skyra-secondary-color: var(--a-surface-subtle);
-  --skyra-link-color: var(--a-text-action);
-  --skyra-error-color: var(--a-surface-danger);
+  --skyra-interface-color: var(--ax-surface-subtle);
+  --skyra-action-color: var(--ax-surface-action);
+  --skyra-action-text-color: var(--ax-text-on-action);
+  --skyra-secondary-color: var(--ax-surface-subtle);
+  --skyra-link-color: var(--ax-text-action);
+  --skyra-error-color: var(--ax-surface-danger);
 
   /* Typography */
-  --skyra-font-size: var(--a-font-size-medium);
-  --skyra-font-body: var(--a-font-family);
-  --skyra-font-heading: var(--a-font-family);
+  --skyra-font-size: var(--ax-font-size-medium);
+  --skyra-font-body: var(--ax-font-family);
+  --skyra-font-heading: var(--ax-font-family);
 }
 
 @theme inline {
