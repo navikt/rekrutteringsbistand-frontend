@@ -83,6 +83,10 @@ const EndreTittel: React.FC<EndreTittelProps> = ({
     }
   }, [nyTittelValue]);
 
+  useEffect(() => {
+    reset({ nyTittel: rekrutteringstreff.tittel || '' });
+  }, [rekrutteringstreff.tittel, reset]);
+
   const handleCloseModal = () => {
     modalRef.current?.close();
     reset({ nyTittel: rekrutteringstreff?.tittel || '' });
