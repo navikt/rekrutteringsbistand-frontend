@@ -31,10 +31,10 @@ skyra-survey {
 
   /* UI colors */
   --skyra-interface-color: var(--ax-surface-subtle);
-  --skyra-action-color: var(--ax-button-primary-bg);
-  --skyra-action-text-color: var(--ax-button-primary-text);
-  --skyra-secondary-color: var(--ax-surface-subtle);
-  --skyra-link-color: var(--ax-text-action);
+  /* --skyra-action-color: var(--ax-button-primary-bg); */
+  /* --skyra-action-text-color: var(--ax-button-primary-text); */
+  /* --skyra-secondary-color: var(--ax-surface-subtle); */
+  /* --skyra-link-color: var(--ax-text-action); */
   --skyra-error-color: var(--ax-surface-danger);
 
   /* Typography */
