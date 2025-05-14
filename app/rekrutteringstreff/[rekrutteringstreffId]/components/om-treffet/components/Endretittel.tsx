@@ -1,7 +1,6 @@
-import { XMarkIcon } from '@navikt/aksel-icons';
-import { Button, Modal, TextField } from '@navikt/ds-react';
-import * as React from 'react';
-import { useEffect } from 'react';
+import { ExclamationmarkTriangleIcon, XMarkIcon } from '@navikt/aksel-icons';
+import { Button, Modal, TextField, ErrorMessage } from '@navikt/ds-react';
+import React, { useEffect } from 'react';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 
 export interface EndreTittelProps {
@@ -19,6 +18,7 @@ const EndreTittel: React.FC<EndreTittelProps> = ({ modalRef, tittel }) => {
     handleSubmit,
     reset,
     setValue,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({
     defaultValues: {
@@ -27,34 +27,32 @@ const EndreTittel: React.FC<EndreTittelProps> = ({ modalRef, tittel }) => {
     mode: 'onChange',
   });
 
-  // Oppdater skjemaets defaultVerdi hvis den eksterne 'tittel'-propen endres
+  const nyTittelValue = watch('nyTittel');
+
   useEffect(() => {
     reset({ nyTittel: tittel });
   }, [tittel, reset]);
 
-  const onSubmit: SubmitHandler<FormValues> = async () => {
-    //(data.nyTittel);
+  const onSubmit: SubmitHandler<FormValues> = async (/*data*/) => {
+    //await onSave(data.nyTittel);
     modalRef.current?.close();
   };
 
   const handleClearTittel = () => {
-    setValue('nyTittel', '', { shouldValidate: true }); // Tømmer feltet og kan trigge validering
+    setValue('nyTittel', '', { shouldValidate: true });
   };
 
   const wrapperRef = React.useRef<HTMLDivElement>(null);
 
-  // Denne useEffecten forblir for å style det indre input-feltet
   useEffect(() => {
     const inputElement = wrapperRef?.current?.querySelector<HTMLInputElement>(
       '.aksel-text-field__input',
     );
     if (inputElement) {
-      // Juster padding basert på om X-knappen vises (dvs. om feltet har verdi)
-      const harVerdi =
-        control._formValues.nyTittel && control._formValues.nyTittel.length > 0;
-      inputElement.style.paddingRight = harVerdi ? '2.5rem' : '0.75rem'; // Eksempelverdier
+      const harVerdi = nyTittelValue && nyTittelValue.length > 0;
+      inputElement.style.paddingRight = harVerdi ? '2.5rem' : '0.75rem';
     }
-  }, [control._formValues.nyTittel]); // Kjør når tittelen endres for å justere padding
+  }, [nyTittelValue]);
 
   return (
     <div className='py-12'>
@@ -62,7 +60,7 @@ const EndreTittel: React.FC<EndreTittelProps> = ({ modalRef, tittel }) => {
         ref={modalRef}
         header={{ heading: 'Endre navn på treffet' }}
         width={400}
-        onClose={() => reset({ nyTittel: tittel })} // Tilbakestill skjemaet ved lukking
+        onClose={() => reset({ nyTittel: tittel })}
       >
         <Modal.Body>
           <form id='skjema-endre-tittel' onSubmit={handleSubmit(onSubmit)}>
@@ -76,7 +74,7 @@ const EndreTittel: React.FC<EndreTittelProps> = ({ modalRef, tittel }) => {
                 rules={{
                   required: 'Tittel kan ikke være tom',
                   maxLength: {
-                    value: 30, // Eksempel på validering
+                    value: 30,
                     message: 'Tittelen kan ikke være lenger enn 30 tegn',
                   },
                 }}
@@ -86,20 +84,40 @@ const EndreTittel: React.FC<EndreTittelProps> = ({ modalRef, tittel }) => {
                     label='Ny tittel'
                     hideLabel
                     className='w-full'
-                    error={errors.nyTittel?.message}
+                    error={!!errors.nyTittel?.message}
+                    aria-describedby={
+                      errors.nyTittel?.message
+                        ? 'nyTittel-error-text'
+                        : undefined
+                    }
                     autoFocus
                   />
                 )}
               />
-              {control._formValues.nyTittel && ( // Sjekk verdien fra RHF
+              {nyTittelValue && nyTittelValue.length > 0 && (
                 <Button
                   type='button'
                   onClick={handleClearTittel}
                   icon={<XMarkIcon title='Tøm feltet' />}
                   variant='tertiary'
                   size='small'
-                  className='absolute !right-1 !top-1/2 !-translate-y-1/2' // Justert for å passe bedre
+                  className='absolute right-1 top-1/2 -translate-y-1/2'
                 />
+              )}
+            </div>
+
+            <div className='h-6 mt-4 '>
+              {errors.nyTittel?.message && (
+                <div className='flex items-center gap-1'>
+                  <ExclamationmarkTriangleIcon
+                    aria-hidden
+                    fontSize='1.5rem'
+                    className='aksel-error-message'
+                  />
+                  <ErrorMessage size='medium' id='nyTittel-error-text'>
+                    {errors.nyTittel.message}
+                  </ErrorMessage>
+                </div>
               )}
             </div>
           </form>
@@ -109,6 +127,7 @@ const EndreTittel: React.FC<EndreTittelProps> = ({ modalRef, tittel }) => {
             type='submit'
             form='skjema-endre-tittel'
             loading={isSubmitting}
+            disabled={errors.nyTittel !== undefined}
           >
             Lagre
           </Button>
@@ -117,7 +136,7 @@ const EndreTittel: React.FC<EndreTittelProps> = ({ modalRef, tittel }) => {
             variant='secondary'
             onClick={() => {
               modalRef.current?.close();
-              reset({ nyTittel: tittel }); // Tilbakestill også ved manuell avbryt
+              reset({ nyTittel: tittel });
             }}
           >
             Avbryt
