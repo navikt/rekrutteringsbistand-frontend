@@ -265,7 +265,7 @@ export default function Tidspunkt({
             </form>
           </FormProvider>
         </Modal.Body>
-        <Modal.Footer>
+        <Modal.Footer className='pt-0'>
           <Button
             form={formId}
             type='submit'

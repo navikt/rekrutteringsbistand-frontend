@@ -1,41 +1,78 @@
+import { oppdaterRekrutteringstreff } from '@/app/api/rekrutteringstreff/oppdater-rekrutteringstreff/oppdaterRerkutteringstreff';
+import { RekrutteringstreffDTO } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { ExclamationmarkTriangleIcon, XMarkIcon } from '@navikt/aksel-icons';
-import { Button, Modal, TextField, ErrorMessage } from '@navikt/ds-react';
+import {
+  Button,
+  Modal,
+  TextField,
+  ErrorMessage,
+  Loader,
+} from '@navikt/ds-react';
+import { logger } from '@navikt/next-logger';
 import React, { useEffect } from 'react';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 
 export interface EndreTittelProps {
   modalRef: React.RefObject<HTMLDialogElement | null>;
-  tittel: string;
+  rekrutteringstreff: RekrutteringstreffDTO;
+  onUpdated: () => void;
 }
 
 interface FormValues {
   nyTittel: string;
 }
 
-const EndreTittel: React.FC<EndreTittelProps> = ({ modalRef, tittel }) => {
+const EndreTittel: React.FC<EndreTittelProps> = ({
+  modalRef,
+  rekrutteringstreff,
+  onUpdated,
+}) => {
   const {
     control,
     handleSubmit,
     reset,
     setValue,
     watch,
+    setError,
+    clearErrors,
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({
     defaultValues: {
-      nyTittel: tittel,
+      nyTittel: rekrutteringstreff?.tittel || '',
     },
     mode: 'onChange',
   });
 
   const nyTittelValue = watch('nyTittel');
 
-  useEffect(() => {
-    reset({ nyTittel: tittel });
-  }, [tittel, reset]);
+  const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    if (!rekrutteringstreff) {
+      setError('root', {
+        type: 'manual',
+        message: 'Kan ikke lagre, data for rekrutteringstreff mangler.',
+      });
+      return;
+    }
+    clearErrors('root');
+    try {
+      const { id, beskrivelse, sted, fraTid, tilTid } = rekrutteringstreff;
 
-  const onSubmit: SubmitHandler<FormValues> = async (/*data*/) => {
-    //await onSave(data.nyTittel);
-    modalRef.current?.close();
+      await oppdaterRekrutteringstreff(id, {
+        tittel: data.nyTittel,
+        beskrivelse,
+        sted,
+        fraTid,
+        tilTid,
+      });
+      onUpdated();
+      modalRef.current?.close();
+    } catch (error) {
+      logger.error('Lagring av tittel feilet:', error);
+      setError('root', {
+        type: 'api',
+        message: 'Lagring av tittel feilet. Prøv igjen senere.',
+      });
+    }
   };
 
   const handleClearTittel = () => {
@@ -54,13 +91,31 @@ const EndreTittel: React.FC<EndreTittelProps> = ({ modalRef, tittel }) => {
     }
   }, [nyTittelValue]);
 
+  const handleCloseModal = () => {
+    modalRef.current?.close();
+    reset({ nyTittel: rekrutteringstreff?.tittel || '' });
+    clearErrors('root');
+  };
+
+  if (!rekrutteringstreff && modalRef.current?.open) {
+    return (
+      <Modal ref={modalRef} header={{ heading: 'Laster...' }} width={400}>
+        <Modal.Body>
+          <Loader size='xlarge' />
+        </Modal.Body>
+      </Modal>
+    );
+  }
+  if (!rekrutteringstreff) {
+    return null;
+  }
   return (
     <div className='py-12'>
       <Modal
         ref={modalRef}
         header={{ heading: 'Endre navn på treffet' }}
         width={400}
-        onClose={() => reset({ nyTittel: tittel })}
+        onClose={handleCloseModal}
       >
         <Modal.Body>
           <form id='skjema-endre-tittel' onSubmit={handleSubmit(onSubmit)}>
@@ -88,7 +143,9 @@ const EndreTittel: React.FC<EndreTittelProps> = ({ modalRef, tittel }) => {
                     aria-describedby={
                       errors.nyTittel?.message
                         ? 'nyTittel-error-text'
-                        : undefined
+                        : errors.root?.message
+                          ? 'root-error-text'
+                          : undefined
                     }
                     autoFocus
                   />
@@ -101,25 +158,38 @@ const EndreTittel: React.FC<EndreTittelProps> = ({ modalRef, tittel }) => {
                   icon={<XMarkIcon title='Tøm feltet' />}
                   variant='tertiary'
                   size='small'
-                  className='absolute right-1 top-1/2 -translate-y-1/2'
+                  className='absolute !right-1 !top-1/2 !-translate-y-1/2'
                 />
               )}
             </div>
 
-            <div className='h-6 mt-4 '>
+            <div className='h-6 mt-2 ml-1'>
               {errors.nyTittel?.message && (
-                <div className='flex items-center gap-1'>
+                <div className='flex items-start'>
                   <ExclamationmarkTriangleIcon
                     aria-hidden
-                    fontSize='1.5rem'
-                    className='aksel-error-message'
+                    fontSize='1.25rem'
+                    className='text-red-600 mr-1 mt-0.5'
                   />
-                  <ErrorMessage size='medium' id='nyTittel-error-text'>
+                  <ErrorMessage size='small' id='nyTittel-error-text'>
                     {errors.nyTittel.message}
                   </ErrorMessage>
                 </div>
               )}
             </div>
+
+            {errors.root?.message && (
+              <div className='flex items-start mt-2 ml-1'>
+                <ExclamationmarkTriangleIcon
+                  aria-hidden
+                  fontSize='1.25rem'
+                  className='text-red-600 mr-1 mt-0.5'
+                />
+                <ErrorMessage size='small' id='root-error-text'>
+                  {errors.root.message}
+                </ErrorMessage>
+              </div>
+            )}
           </form>
         </Modal.Body>
         <Modal.Footer>
@@ -127,18 +197,11 @@ const EndreTittel: React.FC<EndreTittelProps> = ({ modalRef, tittel }) => {
             type='submit'
             form='skjema-endre-tittel'
             loading={isSubmitting}
-            disabled={errors.nyTittel !== undefined}
+            disabled={!!errors.nyTittel || !!errors.root}
           >
             Lagre
           </Button>
-          <Button
-            type='button'
-            variant='secondary'
-            onClick={() => {
-              modalRef.current?.close();
-              reset({ nyTittel: tittel });
-            }}
-          >
+          <Button type='button' variant='secondary' onClick={handleCloseModal}>
             Avbryt
           </Button>
         </Modal.Footer>

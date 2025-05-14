@@ -65,7 +65,7 @@ const TreffHeader: React.FC<TreffHeaderProps> = ({ endreTittel }) => {
                         }
                       />
                     </div>
-                    {endreTittel && (
+                    {endreTittel && rekrutteringstreff && (
                       <div className='mb-6'>
                         <Button
                           icon={<PencilIcon />}
@@ -80,7 +80,8 @@ const TreffHeader: React.FC<TreffHeaderProps> = ({ endreTittel }) => {
 
                     <Endretittel
                       modalRef={endreTittelModalref}
-                      tittel={rekrutteringstreff.tittel}
+                      rekrutteringstreff={rekrutteringstreff}
+                      onUpdated={rekrutteringstreffHook.mutate}
                     />
 
                     <BodyShort className='mb-6'>
