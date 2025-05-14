@@ -5,7 +5,6 @@ import { useRef, useState } from 'react';
 
 const GiTilbakemelding = () => {
   const buttonRef = useRef<HTMLButtonElement>(null);
-  const skyraSurveyRef = useRef<HTMLElement>(null);
   const [openState, setOpenState] = useState(false);
   const { open } = useSidebar();
 
@@ -31,9 +30,10 @@ const GiTilbakemelding = () => {
           <Popover.Content className='w-[360px]'>
             {/* @ts-expect-error Ikke typet */}
             <skyra-survey
-              ref={skyraSurveyRef}
               className='w-full h-full'
               slug='arbeids-og-velferdsetaten-nav/oversikt'
+              consent='false'
+              cookieConsent='false'
             >
               {/* @ts-expect-error Ikke typet */}
             </skyra-survey>
