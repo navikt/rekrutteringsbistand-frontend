@@ -40,7 +40,7 @@ const TreffHeader: React.FC<TreffHeaderProps> = ({ endreTittel }) => {
               banner={
                 <div>
                   <div className='flex items-center gap-4'>
-                    <div className='w-90 flex justify-between pt-[32px] pb-10'>
+                    <div className='w-full flex justify-between pt-[32px] pb-10'>
                       <SideTopBanner
                         tittel={rekrutteringstreff.tittel}
                         ikon={
@@ -63,30 +63,42 @@ const TreffHeader: React.FC<TreffHeaderProps> = ({ endreTittel }) => {
                               : ''}
                           </Detail>
                         }
-                      />
+                        tittelElementer={[
+                          ...(endreTittel && rekrutteringstreff
+                            ? [
+                                <Button
+                                  key='endre-tittel-knapp'
+                                  icon={
+                                    <PencilIcon
+                                      title='Redigeringsikon'
+                                      aria-hidden
+                                    />
+                                  }
+                                  aria-label='Endre tittel'
+                                  variant='tertiary'
+                                  size='small'
+                                  onClick={() =>
+                                    endreTittelModalref.current?.showModal()
+                                  }
+                                />,
+                              ]
+                            : []),
+                          ...(rekrutteringstreff?.status
+                            ? [
+                                <BodyShort key='status-tekst'>
+                                  {rekrutteringstreff.status}
+                                </BodyShort>,
+                              ]
+                            : []),
+                        ]}
+                      ></SideTopBanner>
                     </div>
-                    {endreTittel && rekrutteringstreff && (
-                      <div className='mb-6'>
-                        <Button
-                          icon={<PencilIcon />}
-                          variant='tertiary'
-                          size='small'
-                          onClick={() =>
-                            endreTittelModalref.current?.showModal()
-                          }
-                        ></Button>
-                      </div>
-                    )}
 
                     <EndreTittel
                       modalRef={endreTittelModalref}
                       rekrutteringstreff={rekrutteringstreff}
                       onUpdated={rekrutteringstreffHook.mutate}
                     />
-
-                    <BodyShort className='mb-6'>
-                      {rekrutteringstreff.status}
-                    </BodyShort>
                   </div>
                 </div>
               }

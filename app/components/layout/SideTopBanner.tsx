@@ -10,6 +10,7 @@ export type ISideTopBanner = {
   headerInnhold?: ReactNode;
   knappIBanner?: ReactNode;
   tilbakeKnapp?: boolean;
+  tittelElementer?: ReactNode[];
 };
 
 const SideTopBanner = ({
@@ -18,6 +19,7 @@ const SideTopBanner = ({
   knappIBanner,
   headerInnhold,
   chip,
+  tittelElementer,
 }: ISideTopBanner) => {
   return (
     <div className='@container/topBanner w-full flex justify-between pt-[32px] pb-10'>
@@ -27,9 +29,18 @@ const SideTopBanner = ({
           <div className='w-full'>
             {tittel && (
               <div className='flex justify-between @2xl/topBanner:flex-row flex-col'>
-                <Heading className='mr-auto ml-0' level='2' size='xlarge'>
-                  {tittel}
-                </Heading>
+                <div className='flex items-center'>
+                  <Heading className='ml-0' level='2' size='xlarge'>
+                    {tittel}
+                  </Heading>
+                  {tittelElementer && tittelElementer.length > 0 && (
+                    <div className='flex items-center ml-4 gap-4'>
+                      {tittelElementer.map((element, index) => (
+                        <div key={`tittel-el-${index}`}>{element}</div>
+                      ))}
+                    </div>
+                  )}
+                </div>
                 <div className='flex-end flex'>{chip}</div>
               </div>
             )}
