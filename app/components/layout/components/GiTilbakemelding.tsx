@@ -7,10 +7,14 @@ const GiTilbakemelding = () => {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const skyraSurveyRef = useRef<HTMLElement>(null);
   const [openState, setOpenState] = useState(false);
+  const [initialCheckDone, setInitialCheckDone] = useState(false);
   const { open } = useSidebar();
 
   useEffect(() => {
-    if (!skyraSurveyRef.current || !openState) return;
+    if (!skyraSurveyRef.current || !openState) {
+      setInitialCheckDone(false);
+      return;
+    }
 
     // Check if shadow content exists
     const checkShadowContent = () => {
@@ -25,24 +29,23 @@ const GiTilbakemelding = () => {
       return false;
     };
 
-    // Initial check
-    const hasShadowContent = checkShadowContent();
+    const initialCheckTimeout = setTimeout(() => {
+      const hasShadowContent = checkShadowContent();
 
-    // Close popover if initial check shows no content
-    if (!hasShadowContent && openState) {
-      setOpenState(false);
-      return;
-    }
+      // Only close if no content after delay
+      if (!hasShadowContent && openState) {
+        setOpenState(false);
+      }
 
-    // Set up mutation observer to watch for changes
+      setInitialCheckDone(true);
+    }, 300); // 300ms delay before first check
+
     const observer = new MutationObserver(() => {
-      // If shadow content disappears, close the popover
-      if (!checkShadowContent() && openState) {
+      if (initialCheckDone && !checkShadowContent() && openState) {
         setOpenState(false);
       }
     });
 
-    // Observe the element and its shadow root if available
     if (skyraSurveyRef.current) {
       observer.observe(skyraSurveyRef.current, {
         childList: true,
@@ -50,7 +53,6 @@ const GiTilbakemelding = () => {
         attributes: true,
       });
 
-      // Also observe shadow root if it exists
       if (skyraSurveyRef.current.shadowRoot) {
         observer.observe(skyraSurveyRef.current.shadowRoot, {
           childList: true,
@@ -59,8 +61,11 @@ const GiTilbakemelding = () => {
       }
     }
 
-    return () => observer.disconnect();
-  }, [openState]); // Re-run when popover opens/closes
+    return () => {
+      clearTimeout(initialCheckTimeout);
+      observer.disconnect();
+    };
+  }, [openState, initialCheckDone]);
 
   return (
     <>
