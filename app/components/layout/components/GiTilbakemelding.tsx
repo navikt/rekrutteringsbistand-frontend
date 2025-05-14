@@ -75,22 +75,24 @@ const GiTilbakemelding = () => {
         {open && 'Gi tilbakemelding'}
       </Button>
 
-      <Popover
-        open={openState}
-        onClose={() => setOpenState(false)}
-        anchorEl={buttonRef.current}
-      >
-        <Popover.Content>
-          {/* @ts-expect-error Ikke typet */}
-          <skyra-survey
-            ref={skyraSurveyRef}
-            className='w-full h-full'
-            slug='arbeids-og-velferdsetaten-nav/oversikt'
-          >
+      {openState && (
+        <Popover
+          open={openState}
+          onClose={() => setOpenState(false)}
+          anchorEl={buttonRef.current}
+        >
+          <Popover.Content>
             {/* @ts-expect-error Ikke typet */}
-          </skyra-survey>
-        </Popover.Content>
-      </Popover>
+            <skyra-survey
+              ref={skyraSurveyRef}
+              className='w-full h-full'
+              slug='arbeids-og-velferdsetaten-nav/oversikt'
+            >
+              {/* @ts-expect-error Ikke typet */}
+            </skyra-survey>
+          </Popover.Content>
+        </Popover>
+      )}
     </>
   );
 };
