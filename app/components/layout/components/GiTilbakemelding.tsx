@@ -1,5 +1,4 @@
 import { useSidebar } from '../../../../components/ui/sidebar';
-import SkyraInit from '../../skyra/Skyra_init';
 import { PersonChatIcon } from '@navikt/aksel-icons';
 import { Button, Popover } from '@navikt/ds-react';
 import { useEffect, useRef, useState } from 'react';
@@ -12,40 +11,65 @@ const GiTilbakemelding = () => {
   const { open } = useSidebar();
 
   useEffect(() => {
-    if (!skyraSurveyRef.current || !openState) {
-      setInitialCheckDone(false);
-      return;
+    const skyraConfigScriptId = 'skyra-config-script';
+    const skyraSurveyScriptId = 'skyra-survey-script';
+
+    if (openState) {
+      // Load scripts
+      if (!document.getElementById(skyraConfigScriptId)) {
+        const configScript = document.createElement('script');
+        configScript.id = skyraConfigScriptId;
+        configScript.innerHTML = `window.SKYRA_CONFIG = { org: 'arbeids-og-velferdsetaten-nav' }`;
+        document.head.appendChild(configScript);
+      }
+
+      if (!document.getElementById(skyraSurveyScriptId)) {
+        const surveyScript = document.createElement('script');
+        surveyScript.id = skyraSurveyScriptId;
+        surveyScript.src = 'https://survey.skyra.no/skyra-survey.js';
+        surveyScript.defer = true;
+        document.head.appendChild(surveyScript);
+      }
     }
 
-    const checkShadowContent = () => {
-      const element = skyraSurveyRef.current;
-      if (
-        element &&
-        element.shadowRoot &&
-        element.shadowRoot.childElementCount > 0
-      ) {
-        return true;
-      }
-      return false;
-    };
+    // The rest of your existing useEffect logic for checking shadow DOM
+    if (!skyraSurveyRef.current || !openState) {
+      setInitialCheckDone(false);
+      // Do not return here if openState is true, allow script loading and observer setup
+    }
 
-    const initialCheckTimeout = setTimeout(() => {
-      const hasShadowContent = checkShadowContent();
+    let initialCheckTimeout: NodeJS.Timeout | undefined;
+    let observer: MutationObserver | undefined;
 
-      if (!hasShadowContent && openState) {
-        setOpenState(false);
-      }
+    if (openState && skyraSurveyRef.current) {
+      const checkShadowContent = () => {
+        const element = skyraSurveyRef.current;
+        if (
+          element &&
+          element.shadowRoot &&
+          element.shadowRoot.childElementCount > 0
+        ) {
+          return true;
+        }
+        return false;
+      };
 
-      setInitialCheckDone(true);
-    }, 500); // 500ms delay before first check
+      initialCheckTimeout = setTimeout(() => {
+        const hasShadowContent = checkShadowContent();
+        if (!hasShadowContent) {
+          // Removed openState check here as we only run this if openState is true
+          setOpenState(false); // Close if content doesn't load
+        }
+        setInitialCheckDone(true);
+      }, 500);
 
-    const observer = new MutationObserver(() => {
-      if (initialCheckDone && !checkShadowContent() && openState) {
-        setOpenState(false);
-      }
-    });
+      observer = new MutationObserver(() => {
+        if (initialCheckDone && !checkShadowContent()) {
+          // Removed openState check
+          setOpenState(false);
+        }
+      });
 
-    if (skyraSurveyRef.current) {
       observer.observe(skyraSurveyRef.current, {
         childList: true,
         subtree: true,
@@ -62,9 +86,21 @@ const GiTilbakemelding = () => {
 
     return () => {
       clearTimeout(initialCheckTimeout);
-      observer.disconnect();
+      observer?.disconnect();
+
+      if (!openState) {
+        // Unload scripts only if popover is being closed
+        const configScript = document.getElementById(skyraConfigScriptId);
+        if (configScript) {
+          configScript.remove();
+        }
+        const surveyScript = document.getElementById(skyraSurveyScriptId);
+        if (surveyScript) {
+          surveyScript.remove();
+        }
+      }
     };
-  }, [openState, initialCheckDone]);
+  }, [openState, initialCheckDone]); // initialCheckDone is still a dependency for the observer logic
 
   return (
     <>
@@ -81,7 +117,6 @@ const GiTilbakemelding = () => {
 
       {openState && (
         <>
-          <SkyraInit />
           <Popover
             open={openState}
             onClose={() => setOpenState(false)}
