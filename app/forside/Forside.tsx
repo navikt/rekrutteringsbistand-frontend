@@ -8,17 +8,6 @@ const Forside: React.FC = () => {
   return (
     <HovedInnholdKort>
       <Statistikk />
-
-      <div>
-        Survey:
-        {/* @ts-expect-error ikke typet */}
-        <skyra-survey
-          className='w-full h-full'
-          slug='arbeids-og-velferdsetaten-nav/oversikt'
-        >
-          {/* @ts-expect-error ikke typet */}
-        </skyra-survey>
-      </div>
     </HovedInnholdKort>
   );
 };
