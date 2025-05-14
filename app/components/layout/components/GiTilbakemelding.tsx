@@ -11,65 +11,41 @@ const GiTilbakemelding = () => {
   const { open } = useSidebar();
 
   useEffect(() => {
-    const skyraConfigScriptId = 'skyra-config-script';
-    const skyraSurveyScriptId = 'skyra-survey-script';
-
-    if (openState) {
-      // Load scripts
-      if (!document.getElementById(skyraConfigScriptId)) {
-        const configScript = document.createElement('script');
-        configScript.id = skyraConfigScriptId;
-        configScript.innerHTML = `window.SKYRA_CONFIG = { org: 'arbeids-og-velferdsetaten-nav' }`;
-        document.head.appendChild(configScript);
-      }
-
-      if (!document.getElementById(skyraSurveyScriptId)) {
-        const surveyScript = document.createElement('script');
-        surveyScript.id = skyraSurveyScriptId;
-        surveyScript.src = 'https://survey.skyra.no/skyra-survey.js';
-        surveyScript.defer = true;
-        document.head.appendChild(surveyScript);
-      }
-    }
-
-    // The rest of your existing useEffect logic for checking shadow DOM
     if (!skyraSurveyRef.current || !openState) {
       setInitialCheckDone(false);
-      // Do not return here if openState is true, allow script loading and observer setup
+      return;
     }
 
-    let initialCheckTimeout: NodeJS.Timeout | undefined;
-    let observer: MutationObserver | undefined;
+    const checkShadowContent = () => {
+      const element = skyraSurveyRef.current;
+      if (
+        element &&
+        element.shadowRoot &&
+        element.shadowRoot.childElementCount > 0
+      ) {
+        return true;
+      }
+      return false;
+    };
 
-    if (openState && skyraSurveyRef.current) {
-      const checkShadowContent = () => {
-        const element = skyraSurveyRef.current;
-        if (
-          element &&
-          element.shadowRoot &&
-          element.shadowRoot.childElementCount > 0
-        ) {
-          return true;
-        }
-        return false;
-      };
+    const initialCheckTimeout = setTimeout(() => {
+      const hasShadowContent = checkShadowContent();
 
-      initialCheckTimeout = setTimeout(() => {
-        const hasShadowContent = checkShadowContent();
-        if (!hasShadowContent) {
-          // Removed openState check here as we only run this if openState is true
-          setOpenState(false); // Close if content doesn't load
-        }
-        setInitialCheckDone(true);
-      }, 500);
+      if (!hasShadowContent && openState) {
+        setOpenState(false);
+      }
 
-      observer = new MutationObserver(() => {
-        if (initialCheckDone && !checkShadowContent()) {
-          // Removed openState check
-          setOpenState(false);
-        }
-      });
+      setInitialCheckDone(true);
+    }, 250);
 
+    const observer = new MutationObserver(() => {
+      if (initialCheckDone && !checkShadowContent() && openState) {
+        setOpenState(false);
+        window.location.reload();
+      }
+    });
+
+    if (skyraSurveyRef.current) {
       observer.observe(skyraSurveyRef.current, {
         childList: true,
         subtree: true,
@@ -86,21 +62,9 @@ const GiTilbakemelding = () => {
 
     return () => {
       clearTimeout(initialCheckTimeout);
-      observer?.disconnect();
-
-      if (!openState) {
-        // Unload scripts only if popover is being closed
-        const configScript = document.getElementById(skyraConfigScriptId);
-        if (configScript) {
-          configScript.remove();
-        }
-        const surveyScript = document.getElementById(skyraSurveyScriptId);
-        if (surveyScript) {
-          surveyScript.remove();
-        }
-      }
+      observer.disconnect();
     };
-  }, [openState, initialCheckDone]); // initialCheckDone is still a dependency for the observer logic
+  }, [openState, initialCheckDone]);
 
   return (
     <>
@@ -116,24 +80,22 @@ const GiTilbakemelding = () => {
       </Button>
 
       {openState && (
-        <>
-          <Popover
-            open={openState}
-            onClose={() => setOpenState(false)}
-            anchorEl={buttonRef.current}
-          >
-            <Popover.Content className='w-[360px]'>
+        <Popover
+          open={openState}
+          onClose={() => setOpenState(false)}
+          anchorEl={buttonRef.current}
+        >
+          <Popover.Content className='w-[360px]'>
+            {/* @ts-expect-error Ikke typet */}
+            <skyra-survey
+              ref={skyraSurveyRef}
+              className='w-full h-full'
+              slug='arbeids-og-velferdsetaten-nav/oversikt'
+            >
               {/* @ts-expect-error Ikke typet */}
-              <skyra-survey
-                ref={skyraSurveyRef}
-                className='w-full h-full'
-                slug='arbeids-og-velferdsetaten-nav/oversikt'
-              >
-                {/* @ts-expect-error Ikke typet */}
-              </skyra-survey>
-            </Popover.Content>
-          </Popover>
-        </>
+            </skyra-survey>
+          </Popover.Content>
+        </Popover>
       )}
     </>
   );
