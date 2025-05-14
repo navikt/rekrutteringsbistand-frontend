@@ -28,13 +28,14 @@ export default async function RootLayout({
         strategy='afterInteractive'
       />
       <Script
-        defer
         id='umami-analytics'
+        defer
         strategy='afterInteractive'
         src={process.env.NEXT_PUBLIC_UMAMI_SRC}
         data-host-url={process.env.NEXT_PUBLIC_UMAMI_URL}
         data-website-id={process.env.NEXT_PUBLIC_UMAMI_ID}
       />
+
       <body>
         <UmamiProvider>
           <BrukLokalMock>
