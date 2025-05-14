@@ -1,5 +1,6 @@
 import { isLocal } from '../util/env';
 import MirageInitializer from './components/MirageInitializer';
+import SkyraInit from './components/skyra/Skyra_init';
 import './globals.css';
 import RekrutteringsbistandProvider from './providers/RekrutteringsbistandProvider';
 import { UmamiProvider } from './providers/UmamiContext';
@@ -35,7 +36,7 @@ export default async function RootLayout({
         data-host-url={process.env.NEXT_PUBLIC_UMAMI_URL}
         data-website-id={process.env.NEXT_PUBLIC_UMAMI_ID}
       />
-
+      <SkyraInit />
       <body>
         <UmamiProvider>
           <BrukLokalMock>

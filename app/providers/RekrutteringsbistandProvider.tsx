@@ -8,7 +8,6 @@ import { useDecoratorData } from '../api/modia/decorator/useDecoratorData';
 import SWRLaster from '../components/SWRLaster';
 import ErrorBoundary from '../components/feilhåndtering/ErrorBoundary';
 import { AppNavigasjon } from '../components/layout/AppNavigasjon';
-import SkyraInit from '../components/skyra/Skyra_init';
 import { ApplikasjonContextProvider } from './ApplikasjonContext';
 import { KandidatNavigeringProvider } from './KandidatNavigeringContext';
 import NavigasjonsBlockerProvider from './NavigasjonsBlockerProvider';
@@ -30,7 +29,6 @@ const RekrutteringsbistandProvider: React.FC<
 
   return (
     <ThemeProvider>
-      <SkyraInit />
       <SWRConfig
         value={{
           revalidateOnFocus: true,

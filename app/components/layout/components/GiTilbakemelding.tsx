@@ -20,10 +20,7 @@ const GiTilbakemelding = () => {
         onClose={() => setOpenState(false)}
         anchorEl={buttonRef.current}
       >
-        <Popover.Content>
-          {/* @ts-expect-error ikke typet */}
-          <skyra-survey slug='arbeids-og-velferdsetaten-nav/oversikt'></skyra-survey>
-        </Popover.Content>
+        <Popover.Content>kommer</Popover.Content>
       </Popover>
     </>
   );
