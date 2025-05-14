@@ -3,7 +3,7 @@
 import RekrutteringstreffDark from '../../../../public/ikoner/rekrutteringstreff-dark.svg';
 import Rekrutteringstreff from '../../../../public/ikoner/rekrutteringstreff.svg';
 import { useRekrutteringstreffContext } from '../RekrutteringstreffContext';
-import Endretittel from './om-treffet/components/Endretittel';
+import Endretittel from './om-treffet/components/EndreTittel';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import SVGDarkmode from '@/app/components/SVGDarkmode';
 import SWRLaster from '@/app/components/SWRLaster';
