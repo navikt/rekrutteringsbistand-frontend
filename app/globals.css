@@ -19,6 +19,37 @@
     display: none;
   }
 }
+/* ...existing code... */
+
+skyra-survey {
+  /* Background and text colors */
+  --skyra-bg-color: var(--a-surface-default);
+  --skyra-text-color: var(--a-text-default);
+
+  /* Z-index - using Aksel's modal level */
+  --skyra-z-index: var(--a-z-index-modal);
+
+  /* UI colors */
+  --skyra-interface-color: var(--a-surface-subtle);
+  --skyra-action-color: var(--a-surface-action);
+  --skyra-action-text-color: var(--a-text-on-action);
+  --skyra-secondary-color: var(--a-surface-subtle);
+  --skyra-link-color: var(--a-text-action);
+  --skyra-error-color: var(--a-surface-danger);
+
+  /* Typography */
+  --skyra-font-size: var(--a-font-size-medium);
+  --skyra-font-body: var(--a-font-family);
+  --skyra-font-heading: var(--a-font-family);
+}
+
+/* Add this to ensure proper color inheritance in dark mode */
+.dark skyra-survey {
+  --skyra-bg-color: var(--a-surface-default);
+  --skyra-text-color: var(--a-text-default);
+  --skyra-interface-color: var(--a-surface-subtle);
+  --skyra-action-color: var(--a-surface-action);
+}
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
