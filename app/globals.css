@@ -43,14 +43,6 @@ skyra-survey {
   --skyra-font-heading: var(--a-font-family);
 }
 
-/* Add this to ensure proper color inheritance in dark mode */
-.dark skyra-survey {
-  --skyra-bg-color: var(--a-surface-default);
-  --skyra-text-color: var(--a-text-default);
-  --skyra-interface-color: var(--a-surface-subtle);
-  --skyra-action-color: var(--a-surface-action);
-}
-
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
