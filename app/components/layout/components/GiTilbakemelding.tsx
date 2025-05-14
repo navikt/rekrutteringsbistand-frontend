@@ -10,9 +10,9 @@ const GiTilbakemelding = () => {
   const { open } = useSidebar();
 
   useEffect(() => {
-    if (!skyraSurveyRef.current) return;
+    if (!skyraSurveyRef.current || !openState) return;
 
-    // Function to check if shadow root has content
+    // Check if shadow content exists
     const checkShadowContent = () => {
       const element = skyraSurveyRef.current;
       if (
@@ -25,26 +25,42 @@ const GiTilbakemelding = () => {
       return false;
     };
 
-    // Try immediately in case it's already loaded
-    if (checkShadowContent()) return;
+    // Initial check
+    const hasShadowContent = checkShadowContent();
 
-    // Set up mutation observer for the element itself
-    const observer = new MutationObserver((mutations) => {
-      for (const mutation of mutations) {
-        if (mutation.type === 'childList' || mutation.type === 'attributes') {
-          checkShadowContent();
-        }
+    // Close popover if initial check shows no content
+    if (!hasShadowContent && openState) {
+      setOpenState(false);
+      return;
+    }
+
+    // Set up mutation observer to watch for changes
+    const observer = new MutationObserver(() => {
+      // If shadow content disappears, close the popover
+      if (!checkShadowContent() && openState) {
+        setOpenState(false);
       }
     });
 
-    observer.observe(skyraSurveyRef.current, {
-      childList: true,
-      subtree: true,
-      attributes: true,
-    });
+    // Observe the element and its shadow root if available
+    if (skyraSurveyRef.current) {
+      observer.observe(skyraSurveyRef.current, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+      });
+
+      // Also observe shadow root if it exists
+      if (skyraSurveyRef.current.shadowRoot) {
+        observer.observe(skyraSurveyRef.current.shadowRoot, {
+          childList: true,
+          subtree: true,
+        });
+      }
+    }
 
     return () => observer.disconnect();
-  }, [openState]); // Re-run when popover opens
+  }, [openState]); // Re-run when popover opens/closes
 
   return (
     <>
@@ -65,13 +81,13 @@ const GiTilbakemelding = () => {
         anchorEl={buttonRef.current}
       >
         <Popover.Content>
-          {/* @ts-expect-error  Ikke typet */}
+          {/* @ts-expect-error Ikke typet */}
           <skyra-survey
             ref={skyraSurveyRef}
-            className='w-full h-full text-inherit'
+            className='w-full h-full'
             slug='arbeids-og-velferdsetaten-nav/oversikt'
           >
-            {/* @ts-expect-error  Ikke typet */}
+            {/* @ts-expect-error Ikke typet */}
           </skyra-survey>
         </Popover.Content>
       </Popover>
