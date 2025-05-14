@@ -60,6 +60,7 @@ const EndreTittel: React.FC<EndreTittelProps> = ({
         tilTid,
       });
       onUpdated();
+      reset({ nyTittel: rekrutteringstreff?.tittel || '' });
       modalRef.current?.close();
     } catch (error) {
       logger.error('Lagring av tittel feilet:', error);
@@ -82,10 +83,6 @@ const EndreTittel: React.FC<EndreTittelProps> = ({
       inputElement.style.paddingRight = '2rem';
     }
   }, [nyTittelValue]);
-
-  useEffect(() => {
-    reset({ nyTittel: rekrutteringstreff.tittel || '' });
-  }, [rekrutteringstreff.tittel, reset]);
 
   const handleCloseModal = () => {
     modalRef.current?.close();
