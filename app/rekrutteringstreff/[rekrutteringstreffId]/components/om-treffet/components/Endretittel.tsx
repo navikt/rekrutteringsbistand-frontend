@@ -1,13 +1,7 @@
 import { oppdaterRekrutteringstreff } from '@/app/api/rekrutteringstreff/oppdater-rekrutteringstreff/oppdaterRerkutteringstreff';
 import { RekrutteringstreffDTO } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { ExclamationmarkTriangleIcon, XMarkIcon } from '@navikt/aksel-icons';
-import {
-  Button,
-  Modal,
-  TextField,
-  ErrorMessage,
-  Loader,
-} from '@navikt/ds-react';
+import { Button, Modal, TextField, ErrorMessage } from '@navikt/ds-react';
 import { logger } from '@navikt/next-logger';
 import React, { useEffect } from 'react';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
@@ -43,13 +37,14 @@ const EndreTittel: React.FC<EndreTittelProps> = ({
     mode: 'onChange',
   });
 
+  const wrapperRef = React.useRef<HTMLDivElement>(null);
   const nyTittelValue = watch('nyTittel');
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     if (!rekrutteringstreff) {
       setError('root', {
         type: 'manual',
-        message: 'Kan ikke lagre, data for rekrutteringstreff mangler.',
+        message: 'Data for rekrutteringstreff mangler.',
       });
       return;
     }
@@ -70,7 +65,7 @@ const EndreTittel: React.FC<EndreTittelProps> = ({
       logger.error('Lagring av tittel feilet:', error);
       setError('root', {
         type: 'api',
-        message: 'Lagring av tittel feilet. Prøv igjen senere.',
+        message: 'Lagring av tittel feilet.',
       });
     }
   };
@@ -79,15 +74,12 @@ const EndreTittel: React.FC<EndreTittelProps> = ({
     setValue('nyTittel', '', { shouldValidate: true });
   };
 
-  const wrapperRef = React.useRef<HTMLDivElement>(null);
-
   useEffect(() => {
     const inputElement = wrapperRef?.current?.querySelector<HTMLInputElement>(
       '.aksel-text-field__input',
     );
     if (inputElement) {
-      const harVerdi = nyTittelValue && nyTittelValue.length > 0;
-      inputElement.style.paddingRight = harVerdi ? '2.5rem' : '0.75rem';
+      inputElement.style.paddingRight = '2rem';
     }
   }, [nyTittelValue]);
 
@@ -97,18 +89,6 @@ const EndreTittel: React.FC<EndreTittelProps> = ({
     clearErrors('root');
   };
 
-  if (!rekrutteringstreff && modalRef.current?.open) {
-    return (
-      <Modal ref={modalRef} header={{ heading: 'Laster...' }} width={400}>
-        <Modal.Body>
-          <Loader size='xlarge' />
-        </Modal.Body>
-      </Modal>
-    );
-  }
-  if (!rekrutteringstreff) {
-    return null;
-  }
   return (
     <div className='py-12'>
       <Modal
@@ -163,33 +143,23 @@ const EndreTittel: React.FC<EndreTittelProps> = ({
               )}
             </div>
 
-            <div className='h-6 mt-2 ml-1'>
-              {errors.nyTittel?.message && (
-                <div className='flex items-start'>
+            {errors.root?.message ||
+              (errors.nyTittel?.message ? (
+                <div className='flex items-start mt-2 ml-1'>
                   <ExclamationmarkTriangleIcon
                     aria-hidden
                     fontSize='1.25rem'
-                    className='text-red-600 mr-1 mt-0.5'
+                    className='aksel-error-message mr-1 mt-0.5'
                   />
-                  <ErrorMessage size='small' id='nyTittel-error-text'>
-                    {errors.nyTittel.message}
+                  <ErrorMessage size='medium' id='error-text'>
+                    {errors.root?.message
+                      ? errors.root.message
+                      : errors.nyTittel.message}
                   </ErrorMessage>
                 </div>
-              )}
-            </div>
-
-            {errors.root?.message && (
-              <div className='flex items-start mt-2 ml-1'>
-                <ExclamationmarkTriangleIcon
-                  aria-hidden
-                  fontSize='1.25rem'
-                  className='text-red-600 mr-1 mt-0.5'
-                />
-                <ErrorMessage size='small' id='root-error-text'>
-                  {errors.root.message}
-                </ErrorMessage>
-              </div>
-            )}
+              ) : (
+                <div className='flex items-start mt-2 ml-1'>&nbsp;</div>
+              ))}
           </form>
         </Modal.Body>
         <Modal.Footer>
