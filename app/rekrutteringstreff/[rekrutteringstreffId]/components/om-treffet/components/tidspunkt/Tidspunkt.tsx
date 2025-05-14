@@ -1,9 +1,11 @@
-import { formaterNorskDato } from '../../../../../../components/util';
+'use client';
+
 import RekrutteringstreffDetalj from '../../../RekrutteringstreffDetalj';
-import Tidspunktrad from './tidspunktrad';
+import Tidspunktrad from './Tidspunktrad';
 import { rekrutteringstreffVarighet } from './varighet';
 import { oppdaterRekrutteringstreff } from '@/app/api/rekrutteringstreff/oppdater-rekrutteringstreff/oppdaterRerkutteringstreff';
-import { RekrutteringstreffDTO } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
+import type { RekrutteringstreffDTO } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
+import { formaterNorskDato } from '@/app/components/util';
 import {
   CalendarIcon,
   ExclamationmarkTriangleIcon,
@@ -13,8 +15,8 @@ import {
 import { BodyShort, Button, ErrorMessage, Modal } from '@navikt/ds-react';
 import { addWeeks, format, isSameDay, parseISO } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
-import { useEffect, useState } from 'react';
-import { FormProvider, useForm } from 'react-hook-form';
+import { useEffect, useMemo, useState } from 'react';
+import { FormProvider, useForm, useWatch } from 'react-hook-form';
 
 export type TidspunktFormFields = {
   fraDato: Date | null;
@@ -23,11 +25,11 @@ export type TidspunktFormFields = {
   tilTid: string;
 };
 
-interface Props {
+type Props = {
   rekrutteringstreff: RekrutteringstreffDTO;
   onUpdated: () => void;
   className?: string;
-}
+};
 
 const formaterKlokkeslett = (dato: Date | null): string =>
   dato ? format(dato, 'HH:mm') : '';
@@ -46,45 +48,63 @@ export default function Tidspunkt({
     ? toZonedTime(parseISO(rekrutteringstreff.tilTid), 'Europe/Oslo')
     : null;
 
-  const formMethods = useForm<TidspunktFormFields>({
+  const methods = useForm<TidspunktFormFields>({
     defaultValues: {
       fraDato: initialFra ?? addWeeks(new Date(), 2),
       fraTid: formaterKlokkeslett(initialFra) || '08:00',
       tilDato: initialTil ?? addWeeks(new Date(), 2),
       tilTid: formaterKlokkeslett(initialTil) || '10:00',
     },
+    mode: 'onChange',
   });
 
-  const { handleSubmit, watch, setError, formState, clearErrors } = formMethods;
+  const {
+    handleSubmit,
+    setError,
+    clearErrors,
+    formState: { errors },
+  } = methods;
 
-  const { fraDato, fraTid, tilDato, tilTid } = watch();
-  const varighet = rekrutteringstreffVarighet(fraDato, fraTid, tilDato, tilTid);
+  const [fraDato, fraTid, tilDato, tilTid] = useWatch({
+    control: methods.control,
+    name: ['fraDato', 'fraTid', 'tilDato', 'tilTid'],
+  });
+
+  const varighet = useMemo(
+    () => rekrutteringstreffVarighet(fraDato, fraTid, tilDato, tilTid),
+    [fraDato, fraTid, tilDato, tilTid],
+  );
+
+  const periodUgyldig = useMemo(
+    () => varighet.startsWith('-') || varighet === '0 min',
+    [varighet],
+  );
 
   useEffect(() => {
     const erUgyldigPeriode =
       varighet && (varighet.startsWith('-') || varighet === '0 min');
 
     if (erUgyldigPeriode) {
-      if (formState.errors.root?.type !== 'manualPeriod') {
+      if (errors.root?.type !== 'manualPeriod') {
         setError('root', {
           type: 'manualPeriod',
           message: 'Sluttidspunkt kan ikke være før eller lik starttidspunkt.',
         });
       }
-      if (formState.errors.tilDato?.type !== 'visualCueOnly') {
+      if (errors.tilDato?.type !== 'visualCueOnly') {
         setError('tilDato', { type: 'visualCueOnly' });
       }
-      if (formState.errors.tilTid?.type !== 'visualCueOnly') {
+      if (errors.tilTid?.type !== 'visualCueOnly') {
         setError('tilTid', { type: 'visualCueOnly' });
       }
     } else {
-      if (formState.errors.root?.type === 'manualPeriod') {
+      if (errors.root?.type === 'manualPeriod') {
         clearErrors('root');
       }
-      if (formState.errors.tilDato?.type === 'visualCueOnly') {
+      if (errors.tilDato?.type === 'visualCueOnly') {
         clearErrors('tilDato');
       }
-      if (formState.errors.tilTid?.type === 'visualCueOnly') {
+      if (errors.tilTid?.type === 'visualCueOnly') {
         clearErrors('tilTid');
       }
     }
@@ -92,90 +112,49 @@ export default function Tidspunkt({
     varighet,
     setError,
     clearErrors,
-    formState.errors.root,
-    formState.errors.tilDato,
-    formState.errors.tilTid,
+    errors.root,
+    errors.tilDato,
+    errors.tilTid,
   ]);
 
   const onSubmit = async (data: TidspunktFormFields) => {
-    if (!data.fraDato || !data.tilDato) return;
-
-    const innsendt = rekrutteringstreffVarighet(
-      data.fraDato,
-      data.fraTid,
-      data.tilDato,
-      data.tilTid,
-    );
-
-    if (
-      innsendt.startsWith('-') ||
-      (innsendt === '' && data.fraDato && data.tilDato)
-    ) {
-      if (formState.errors.root?.type !== 'manualPeriod') {
-        setError('root', {
-          type: 'manualPeriod',
-          message: 'Sluttidspunkt kan ikke være før eller lik starttidspunkt.',
-        });
-      }
-      if (formState.errors.tilDato?.type !== 'visualCueOnly') {
-        setError('tilDato', { type: 'visualCueOnly' });
-      }
-
-      if (formState.errors.tilTid?.type !== 'visualCueOnly') {
-        setError('tilTid', { type: 'visualCueOnly' });
-      }
-      return;
-    }
-
-    if (formState.errors.root?.type === 'manualPeriod') {
-      clearErrors('root');
-    }
-    if (formState.errors.tilDato?.type === 'visualCueOnly') {
-      clearErrors('tilDato');
-    }
-    if (formState.errors.tilTid?.type === 'visualCueOnly') {
-      clearErrors('tilTid');
-    }
+    if (periodUgyldig) return;
 
     setOpen(false);
 
     const { tittel, beskrivelse, sted } = rekrutteringstreff;
 
-    try {
-      await oppdaterRekrutteringstreff(rekrutteringstreff.id, {
-        tittel,
-        beskrivelse,
-        sted,
-        fraTid: toIso(data.fraDato, data.fraTid),
-        tilTid: toIso(data.tilDato, data.tilTid),
-      });
-      onUpdated();
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error) {
-      setError('root', {
-        type: 'api',
-        message: 'Lagring feilet. Prøv igjen senere.',
-      });
-      setOpen(true);
-    }
+    await oppdaterRekrutteringstreff(rekrutteringstreff.id, {
+      tittel,
+      beskrivelse,
+      sted,
+      fraTid: toIso(data.fraDato!, data.fraTid),
+      tilTid: toIso(data.tilDato!, data.tilTid),
+    });
+    onUpdated();
+  };
+
+  const close = () => {
+    setOpen(false);
+    clearErrors();
   };
 
   const formId = 'tidspunktForm';
 
   return (
-    <div className={className}>
+    <>
       <RekrutteringstreffDetalj
+        className={className}
         tittelIkon={<CalendarIcon fontSize='1.5rem' />}
         tittel='Tidspunkt'
         knapp={
           <Button
             variant='tertiary'
             size='small'
-            icon={rekrutteringstreff.fraTid ? <PencilIcon /> : <PlusIcon />}
+            icon={initialFra ? <PencilIcon /> : <PlusIcon />}
             onClick={() => setOpen(true)}
-            aria-expanded={open}
           >
-            {rekrutteringstreff.fraTid ? 'Endre' : 'Legg til'}
+            {initialFra ? 'Endre' : 'Legg til'}
           </Button>
         }
       >
@@ -215,19 +194,11 @@ export default function Tidspunkt({
       <Modal
         open={open}
         width={420}
-        onClose={() => {
-          setOpen(false);
-          if (formState.errors.root?.type === 'manualPeriod')
-            clearErrors('root');
-          if (formState.errors.tilDato?.type === 'visualCueOnly')
-            clearErrors('tilDato');
-          if (formState.errors.tilTid?.type === 'visualCueOnly')
-            clearErrors('tilTid');
-        }}
-        header={{ heading: 'Tidspunkt' }}
+        onClose={close}
+        header={{ heading: 'Velg tidspunkt' }}
       >
         <Modal.Body>
-          <FormProvider {...formMethods}>
+          <FormProvider {...methods}>
             <form
               id={formId}
               onSubmit={handleSubmit(onSubmit)}
@@ -236,7 +207,7 @@ export default function Tidspunkt({
               <Tidspunktrad label='Fra' nameDato='fraDato' nameTid='fraTid' />
               <Tidspunktrad label='Til' nameDato='tilDato' nameTid='tilTid' />
 
-              {formState.errors.root && formState.errors.root.message && (
+              {errors.root?.message ? (
                 <div className='flex items-center gap-1 mt-2'>
                   <ExclamationmarkTriangleIcon
                     aria-hidden
@@ -244,53 +215,27 @@ export default function Tidspunkt({
                     className='aksel-error-message mr-2'
                   />
                   <ErrorMessage size='medium'>
-                    {formState.errors.root.message}
+                    {errors.root.message}
                   </ErrorMessage>
                 </div>
+              ) : (
+                <BodyShort size='small' textColor='subtle' className='mt-2'>
+                  {varighet && !periodUgyldig ? varighet : 'Velg tid'}
+                </BodyShort>
               )}
-
-              {(!formState.errors.root ||
-                formState.errors.root.type !== 'manualPeriod') &&
-                (varighet &&
-                !varighet.startsWith('-') &&
-                varighet !== '0 min' ? (
-                  <BodyShort size='small' textColor='subtle' className='mt-2'>
-                    {varighet}
-                  </BodyShort>
-                ) : (
-                  <BodyShort size='small' textColor='subtle' className='mt-2'>
-                    Velg tid
-                  </BodyShort>
-                ))}
             </form>
           </FormProvider>
         </Modal.Body>
         <Modal.Footer className='pt-0'>
-          <Button
-            form={formId}
-            type='submit'
-            disabled={varighet.startsWith('-') || varighet === '0 min'}
-          >
+          <Button type='submit' form={formId} disabled={periodUgyldig}>
             Lagre
           </Button>
-          <Button
-            variant='secondary'
-            type='button'
-            onClick={() => {
-              setOpen(false);
-              if (formState.errors.root?.type === 'manualPeriod')
-                clearErrors('root');
-              if (formState.errors.tilDato?.type === 'visualCueOnly')
-                clearErrors('tilDato');
-              if (formState.errors.tilTid?.type === 'visualCueOnly')
-                clearErrors('tilTid');
-            }}
-          >
+          <Button variant='secondary' type='button' onClick={close}>
             Avbryt
           </Button>
         </Modal.Footer>
       </Modal>
-    </div>
+    </>
   );
 }
 

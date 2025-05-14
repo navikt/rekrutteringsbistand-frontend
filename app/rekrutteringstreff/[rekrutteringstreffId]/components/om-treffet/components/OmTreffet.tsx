@@ -40,7 +40,7 @@ const OmTreffet = () => {
         <SWRLaster hooks={[rekrutteringstreffHook]}>
           {(rekrutteringstreff) => {
             return (
-              <div className='mt-4 flex flex-col gap-4 md:flex-row max-w-[64rem]'>
+              <div className='mt-4 flex flex-col gap-4 md:flex-row max-w-[64rem] min-h-[10rem]'>
                 <Tidspunkt
                   rekrutteringstreff={rekrutteringstreff}
                   onUpdated={rekrutteringstreffHook.mutate}
