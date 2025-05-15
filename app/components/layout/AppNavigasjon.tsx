@@ -208,8 +208,8 @@ export function AppNavigasjon() {
             ikon={<ArrowsSquarepathIcon />}
             path={
               getMiljø() === Miljø.ProdGcp
-                ? 'https://rekrutteringsbistand.intern.dev.nav.no/'
-                : 'https://rekrutteringsbistand.intern.nav.no/'
+                ? 'https://rekrutteringsbistand.intern.nav.no/'
+                : 'https://rekrutteringsbistand.intern.dev.nav.no/'
             }
             kreverRoller={null}
           />
