@@ -51,8 +51,11 @@ const EndreTittel = ({
   const nyTittel = useWatch({ control, name: 'nyTittel' });
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const [visTomError, setVisTomError] = useState(false);
-  useEffect(() => setVisTomError(false), [nyTittel]);
+  const [skalViseTomFeil, setSkalViseTomFeil] = useState(false);
+
+  useEffect(() => {
+    setSkalViseTomFeil(false);
+  }, [nyTittel]);
 
   const save = async ({ nyTittel }: FormValues) => {
     try {
@@ -72,7 +75,7 @@ const EndreTittel = ({
   };
 
   const onInvalid = () => {
-    if (errors.nyTittel?.type === ZOD_TOO_SMALL) setVisTomError(true);
+    if (errors.nyTittel?.type === ZOD_TOO_SMALL) setSkalViseTomFeil(true);
   };
 
   const clear = () => {
@@ -88,8 +91,8 @@ const EndreTittel = ({
   const errorMsg =
     errors.nyTittel?.type === ZOD_TOO_BIG
       ? errors.nyTittel.message
-      : visTomError
-        ? errors.nyTittel?.message
+      : skalViseTomFeil && errors.nyTittel?.type === ZOD_TOO_SMALL
+        ? errors.nyTittel.message
         : undefined;
 
   const disableSave = errors.nyTittel?.type === ZOD_TOO_BIG || isSubmitting;
