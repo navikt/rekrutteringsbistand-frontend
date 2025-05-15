@@ -4,8 +4,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { XMarkIcon } from '@navikt/aksel-icons';
 import { Button, Modal, Textarea } from '@navikt/ds-react';
 import { logger } from '@navikt/next-logger';
-import React, { useRef } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import React, { useRef, useState, useEffect } from 'react';
+import { Controller, useForm, useWatch } from 'react-hook-form';
 import { z } from 'zod';
 
 export interface EndreTittelProps {
@@ -15,13 +15,15 @@ export interface EndreTittelProps {
 }
 
 const MAX_TITLE_LENGTH = 30;
-
 const schema = z.object({
   nyTittel: z
     .string()
     .trim()
     .min(1, 'Tittel kan ikke være tom.')
-    .max(MAX_TITLE_LENGTH, 'Tittelen kan ikke ha mer enn 30 tegn.'),
+    .max(
+      MAX_TITLE_LENGTH,
+      `Tittelen kan ikke ha mer enn ${MAX_TITLE_LENGTH} tegn.`,
+    ),
 });
 type FormValues = z.infer<typeof schema>;
 
@@ -33,19 +35,22 @@ const EndreTittel = ({
   const {
     control,
     handleSubmit,
+    setValue,
     reset,
-    watch,
-    formState: { errors, isSubmitting, isValid, isSubmitted },
+    formState: { errors, isSubmitting },
   } = useForm<FormValues>({
-    defaultValues: { nyTittel: rekrutteringstreff?.tittel ?? '' },
     resolver: zodResolver(schema),
     mode: 'onChange',
+    defaultValues: { nyTittel: rekrutteringstreff.tittel },
   });
 
-  const nyTittelValue = watch('nyTittel');
+  const nyTittel = useWatch({ control, name: 'nyTittel' });
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const onSubmit = async ({ nyTittel }: FormValues) => {
+  const [showEmptyError, setShowEmptyError] = useState(false);
+  useEffect(() => setShowEmptyError(false), [nyTittel]);
+
+  const save = async ({ nyTittel }: FormValues) => {
     try {
       const { id, beskrivelse, sted, fraTid, tilTid } = rekrutteringstreff;
       await oppdaterRekrutteringstreff(id, {
@@ -62,36 +67,46 @@ const EndreTittel = ({
     }
   };
 
-  const handleClearTittel = () => {
-    reset(
-      { nyTittel: '' },
-      { keepDirty: false, keepTouched: false, keepIsSubmitted: false },
-    );
+  const onInvalid = () => {
+    if (errors.nyTittel?.type === 'too_small') setShowEmptyError(true);
+  };
+
+  const clear = () => {
+    setValue('nyTittel', '', { shouldValidate: true, shouldDirty: true });
     textareaRef.current?.focus();
   };
 
-  const handleCloseModal = () => {
+  const close = () => {
     modalRef.current?.close();
-    reset({ nyTittel: rekrutteringstreff?.tittel ?? '' });
+    reset({ nyTittel: rekrutteringstreff.tittel });
   };
+
+  const errorMsg =
+    errors.nyTittel?.type === 'too_big'
+      ? errors.nyTittel.message
+      : showEmptyError
+        ? errors.nyTittel?.message
+        : undefined;
+
+  const disableSave = errors.nyTittel?.type === 'too_big' || isSubmitting;
 
   return (
     <Modal
       ref={modalRef}
       header={{ heading: 'Endre navn på treffet' }}
       width={400}
-      onClose={handleCloseModal}
+      onClose={close}
     >
       <Modal.Body>
         <form
           id='skjema-endre-tittel'
-          onSubmit={handleSubmit(onSubmit)}
+          onSubmit={handleSubmit(save, onInvalid)}
           className='space-y-2'
         >
           <div className='flex items-start'>
             <Controller
-              name='nyTittel'
               control={control}
+              name='nyTittel'
               render={({ field }) => (
                 <Textarea
                   {...field}
@@ -105,27 +120,21 @@ const EndreTittel = ({
                   rows={1}
                   resize={false}
                   className='w-full pt-2 pr-9'
-                  error={
-                    errors.nyTittel?.type === 'too_big'
-                      ? errors.nyTittel.message
-                      : isSubmitted && errors.nyTittel?.type === 'too_small'
-                        ? errors.nyTittel.message
-                        : undefined
-                  }
+                  error={errorMsg}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
                       e.preventDefault();
-                      if (isValid && !isSubmitting) handleSubmit(onSubmit)();
+                      if (!disableSave) handleSubmit(save, onInvalid)();
                     }
                   }}
                 />
               )}
             />
 
-            {nyTittelValue && (
+            {nyTittel && (
               <Button
                 type='button'
-                onClick={handleClearTittel}
+                onClick={clear}
                 aria-label='Tøm tittel feltet'
                 variant='tertiary'
                 size='small'
@@ -143,11 +152,11 @@ const EndreTittel = ({
           type='submit'
           form='skjema-endre-tittel'
           loading={isSubmitting}
-          disabled={errors.nyTittel?.type === 'too_big' || isSubmitting}
+          disabled={disableSave}
         >
           Lagre
         </Button>
-        <Button type='button' variant='secondary' onClick={handleCloseModal}>
+        <Button type='button' variant='secondary' onClick={close}>
           Avbryt
         </Button>
       </Modal.Footer>
