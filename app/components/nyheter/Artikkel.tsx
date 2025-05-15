@@ -23,7 +23,7 @@ const Artikkel: FunctionComponent<Props> = ({ nyhet, ulest }) => {
       <Heading spacing className={'mt-0'} size='small'>
         {nyhet.tittel}
       </Heading>
-      <div className={'mb-1 text-base font-semibold'}>{nyhet.innhold}</div>
+      <div className={'mb-1 text-base font-semibold'}>{nyhet.beskrivelse}</div>
     </article>
   );
 };

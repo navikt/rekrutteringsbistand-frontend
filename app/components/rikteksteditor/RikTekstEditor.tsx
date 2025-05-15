@@ -7,7 +7,9 @@ import IconRedo from '../../../public/editor/iconredo.svg';
 import IconUndo from '../../../public/editor/iconundo.svg';
 import SVGDarkmode from '../SVGDarkmode';
 import './RikTekstEditor.css';
+import { LinkIcon } from '@navikt/aksel-icons';
 import { Box, Button, ErrorMessage } from '@navikt/ds-react';
+import Link from '@tiptap/extension-link';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 
@@ -17,6 +19,7 @@ export interface IRikTekstEditor {
   id: string;
   onChange: (tekst: string) => void;
   feilMelding?: string;
+  utviklerExtensions?: boolean;
 }
 
 const RikTekstEditor: React.FC<IRikTekstEditor> = ({
@@ -25,6 +28,7 @@ const RikTekstEditor: React.FC<IRikTekstEditor> = ({
   onChange,
   skjulToolbar,
   feilMelding,
+  utviklerExtensions,
 }) => {
   const extensions = [
     StarterKit.configure({
@@ -37,13 +41,55 @@ const RikTekstEditor: React.FC<IRikTekstEditor> = ({
     }),
   ];
 
+  const utviklerExtension = [
+    Link.configure({
+      openOnClick: false, // Don't open on click in the editor
+      linkOnPaste: true, // Auto-convert pasted URLs to links
+      HTMLAttributes: {
+        rel: 'noopener noreferrer',
+        target: '_blank', // Open links in new tab
+      },
+    }),
+  ];
+
   const editor = useEditor({
-    extensions: extensions,
+    extensions: utviklerExtensions
+      ? [...extensions, ...utviklerExtension]
+      : extensions,
     content: tekst,
     onUpdate: ({ editor }) => {
       onChange(editor.getHTML());
     },
   });
+
+  const setLink = () => {
+    if (!editor) return;
+
+    const previousUrl = editor.getAttributes('link').href;
+    const url = window.prompt('URL', previousUrl);
+
+    // cancelled
+    if (url === null) {
+      return;
+    }
+
+    // empty
+    if (url === '') {
+      editor.chain().focus().extendMarkRange('link').unsetLink().run();
+      return;
+    }
+
+    // add https:// if no protocol specified
+    const urlWithProtocol = url.match(/^https?:\/\//) ? url : `https://${url}`;
+
+    // update link
+    editor
+      .chain()
+      .focus()
+      .extendMarkRange('link')
+      .setLink({ href: urlWithProtocol })
+      .run();
+  };
 
   if (!editor) {
     return null;
@@ -91,6 +137,20 @@ const RikTekstEditor: React.FC<IRikTekstEditor> = ({
             onClick={() => editor.commands.toggleBulletList()}
             aria-pressed={editor.isActive('bulletList')}
           />
+          {utviklerExtensions && (
+            <Button
+              type='button'
+              icon={<LinkIcon />}
+              variant={
+                editor.isActive('link')
+                  ? 'primary-neutral'
+                  : 'secondary-neutral'
+              }
+              size='small'
+              onClick={setLink}
+              aria-pressed={editor.isActive('link')}
+            />
+          )}
           <Button
             type='button'
             icon={<SVGDarkmode src={IconUndo} alt='Undo' />}
