@@ -21,7 +21,7 @@ const schema = z.object({
     .string()
     .trim()
     .min(1, 'Tittel kan ikke være tom.')
-    .max(MAX_TITLE_LENGTH, 'Tittelen kan ikke være lenger enn 30 tegn.'),
+    .max(MAX_TITLE_LENGTH, 'Tittelen kan ikke ha mer enn 30 tegn.'),
 });
 type FormValues = z.infer<typeof schema>;
 
@@ -34,7 +34,6 @@ const EndreTittel = ({
     control,
     handleSubmit,
     reset,
-    setValue,
     watch,
     formState: { errors, isSubmitting, isValid, isSubmitted },
   } = useForm<FormValues>({
@@ -64,7 +63,10 @@ const EndreTittel = ({
   };
 
   const handleClearTittel = () => {
-    setValue('nyTittel', '', { shouldValidate: true, shouldDirty: true });
+    reset(
+      { nyTittel: '' },
+      { keepDirty: false, keepTouched: false, keepIsSubmitted: false },
+    );
     textareaRef.current?.focus();
   };
 
