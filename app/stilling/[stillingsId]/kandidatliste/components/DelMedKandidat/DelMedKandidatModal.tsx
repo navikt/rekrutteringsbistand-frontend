@@ -157,6 +157,7 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
                     type: 'error',
                   });
                 } finally {
+                  forespurteKandidaterHook.mutate();
                   setModalErÅpen(false);
                   fjernAllMarkering();
                   setLoading(false);
