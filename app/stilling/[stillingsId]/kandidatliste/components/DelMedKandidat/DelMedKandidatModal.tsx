@@ -96,13 +96,15 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
               );
             });
 
-            const harIkkeBlittSpurtFør = markerteKandidater.filter(
+            const harBlittSpurtFør = markerteKandidater.filter(
               (k) =>
                 harSvartNei.some((k2) => k2.aktørid === k.aktørid) ||
                 fristUtløpt.some((k2) => k2.aktørid === k.aktørid),
             );
 
-            const harBlittSpurtFør = [...harSvartNei, ...fristUtløpt];
+            const harIkkeBlittSpurtFør = markerteKandidater.filter(
+              (k) => !harBlittSpurtFør.some((k2) => k2.aktørid === k.aktørid),
+            );
 
             const sendForespørsel = async () => {
               if (svarfrist) {
