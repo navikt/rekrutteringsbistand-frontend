@@ -190,7 +190,7 @@ const EndreTittel: React.FC<EndreTittelProps> = ({
             </div>
           </form>
         </Modal.Body>
-        <Modal.Footer>
+        <Modal.Footer className='pt-0'>
           <Button
             type='submit'
             form='skjema-endre-tittel'
