@@ -43,7 +43,8 @@ const StillingsSøk = ({ formidlinger, skjulBanner }: StillingsSøkProps) => {
   React.useEffect(() => {
     if (
       searchParams.get('brukStandardsok') !== null &&
-      !brukerStandardSøkData.isLoading
+      !brukerStandardSøkData.isLoading &&
+      brukerStandardSøkData.data
     ) {
       const newSearch =
         brukerStandardSøkData.data?.søk ||
