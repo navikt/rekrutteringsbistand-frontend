@@ -38,6 +38,8 @@ spec:
       external:
         - host: {{ umamiSrc }}
         - host: {{ umamiUrl }}
+        - host: {{ skyraSrc }}
+        - host: {{ skyraSurvey }}
     outbound:
       rules:
         - application: rekrutteringsbistand-stilling-api
@@ -61,6 +63,8 @@ spec:
         - host: {{ kandidatApiHost }}
         - host: {{ umamiSrc }}
         - host: {{ umamiUrl }}
+        - host: {{ skyraSrc }}
+        - host: {{ skyraSurvey }}
   resources:
     limits:
       memory: 768Mi
