@@ -15,6 +15,10 @@ export interface EndreTittelProps {
 }
 
 const MAX_TITLE_LENGTH = 30;
+
+const ZOD_TOO_SMALL = 'too_small';
+const ZOD_TOO_BIG = 'too_big';
+
 const schema = z.object({
   nyTittel: z
     .string()
@@ -47,8 +51,8 @@ const EndreTittel = ({
   const nyTittel = useWatch({ control, name: 'nyTittel' });
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const [showEmptyError, setShowEmptyError] = useState(false);
-  useEffect(() => setShowEmptyError(false), [nyTittel]);
+  const [visTomError, setVisTomError] = useState(false);
+  useEffect(() => setVisTomError(false), [nyTittel]);
 
   const save = async ({ nyTittel }: FormValues) => {
     try {
@@ -68,7 +72,7 @@ const EndreTittel = ({
   };
 
   const onInvalid = () => {
-    if (errors.nyTittel?.type === 'too_small') setShowEmptyError(true);
+    if (errors.nyTittel?.type === ZOD_TOO_SMALL) setVisTomError(true);
   };
 
   const clear = () => {
@@ -82,13 +86,13 @@ const EndreTittel = ({
   };
 
   const errorMsg =
-    errors.nyTittel?.type === 'too_big'
+    errors.nyTittel?.type === ZOD_TOO_BIG
       ? errors.nyTittel.message
-      : showEmptyError
+      : visTomError
         ? errors.nyTittel?.message
         : undefined;
 
-  const disableSave = errors.nyTittel?.type === 'too_big' || isSubmitting;
+  const disableSave = errors.nyTittel?.type === ZOD_TOO_BIG || isSubmitting;
 
   return (
     <Modal
