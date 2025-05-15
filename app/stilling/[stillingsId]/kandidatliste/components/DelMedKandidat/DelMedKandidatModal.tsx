@@ -1,6 +1,9 @@
 import { UmamiEvent } from '../../../../../../util/umamiEvents';
 import { useForespurteOmDelingAvCv } from '../../../../../api/foresporsel-om-deling-av-cv/foresporsler/[slug]/useForespurteOmDelingAvCv';
-import { sendForespørselOmDelingAvCv } from '../../../../../api/foresporsel-om-deling-av-cv/foresporsler/forespørselOmDelingAvCv';
+import {
+  sendForespørselOmDelingAvCv,
+  sendNyForespørselOmDelingAvCv,
+} from '../../../../../api/foresporsel-om-deling-av-cv/foresporsler/forespørselOmDelingAvCv';
 import { KandidatListeKandidatDTO } from '../../../../../api/kandidat/schema.zod';
 import SWRLaster from '../../../../../components/SWRLaster';
 import { useApplikasjonContext } from '../../../../../providers/ApplikasjonContext';
@@ -17,6 +20,7 @@ import {
   Modal,
   Table,
 } from '@navikt/ds-react';
+import { logger } from '@navikt/next-logger';
 import { differenceInDays, format } from 'date-fns';
 import * as React from 'react';
 
@@ -62,14 +66,6 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
       >
         <SWRLaster hooks={[forespurteKandidaterHook]}>
           {(forespurteKandidater) => {
-            // const forespurteKandidaterAktørListe =
-            //   Object.keys(forespurteKandidater);
-            // const antallSpurtFraFør = markerteKandidater.filter(
-            //   (kandidat) =>
-            //     kandidat.aktørid &&
-            //     forespurteKandidaterAktørListe.includes(kandidat.aktørid),
-            // );
-
             const harSvartNei = markerteKandidater.filter(
               (kandidat) =>
                 kandidat.aktørid &&
@@ -100,32 +96,69 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
               );
             });
 
-            // const kandidaterSomKanDelesTil = markerteKandidater.filter(
-            //   (kandidat) => !antallSpurtFraFør.includes(kandidat),
-            // );
+            const harIkkeBlittSpurtFør = markerteKandidater.filter(
+              (k) =>
+                harSvartNei.some((k2) => k2.aktørid === k.aktørid) ||
+                fristUtløpt.some((k2) => k2.aktørid === k.aktørid),
+            );
+
+            const harBlittSpurtFør = [...harSvartNei, ...fristUtløpt];
 
             const sendForespørsel = async () => {
               if (svarfrist) {
                 setLoading(true);
-                await sendForespørselOmDelingAvCv({
-                  stillingsId: stillingsId,
-                  svarfrist: format(svarfrist, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"),
-                  aktorIder: markerteKandidater
-                    .map((kandidat) => kandidat.aktørid)
-                    .filter((id): id is string => id !== null),
-                  navKontor: valgtNavKontor?.navKontor ?? '',
-                });
-                forespurteKandidaterHook.mutate();
-                track(UmamiEvent.Stilling.del_stilling_med_kandidat, {
-                  antall: markerteKandidater.length,
-                });
-                fjernAllMarkering();
-                setModalErÅpen(false);
-                setLoading(false);
-                visVarsel({
-                  tekst: 'Stillingen er delt med kandidatene',
-                  type: 'info',
-                });
+                try {
+                  await sendForespørselOmDelingAvCv({
+                    stillingsId: stillingsId,
+                    svarfrist: format(
+                      svarfrist,
+                      "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+                    ),
+                    aktorIder: harIkkeBlittSpurtFør
+                      .map((kandidat) => kandidat.aktørid)
+                      .filter((id): id is string => id !== null),
+                    navKontor: valgtNavKontor?.navKontor ?? '',
+                  });
+
+                  track(UmamiEvent.Stilling.del_stilling_med_kandidat, {
+                    antall: harIkkeBlittSpurtFør.length,
+                  });
+
+                  const nyeForespørslerPromises = harBlittSpurtFør
+                    .filter((kandidat) => kandidat.aktørid)
+                    .map((kandidat) =>
+                      sendNyForespørselOmDelingAvCv(kandidat.aktørid!, {
+                        stillingsId: stillingsId,
+                        svarfrist: format(
+                          svarfrist,
+                          "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+                        ),
+                        navKontor: valgtNavKontor?.navKontor ?? '',
+                      }),
+                    );
+
+                  track(UmamiEvent.Stilling.del_stilling_med_kandidat_påNytt, {
+                    antall: harBlittSpurtFør.length,
+                  });
+
+                  await Promise.all(nyeForespørslerPromises);
+
+                  visVarsel({
+                    tekst: 'Stillingen er delt med kandidatene',
+                    type: 'info',
+                  });
+                } catch (error) {
+                  logger.error('Feil ved deling av CV for kandidater', error);
+                  visVarsel({
+                    tekst:
+                      'Det oppstod en feil ved deling av stilling til alle markerte kandidater',
+                    type: 'error',
+                  });
+                } finally {
+                  setModalErÅpen(false);
+                  fjernAllMarkering();
+                  setLoading(false);
+                }
               }
             };
             return (

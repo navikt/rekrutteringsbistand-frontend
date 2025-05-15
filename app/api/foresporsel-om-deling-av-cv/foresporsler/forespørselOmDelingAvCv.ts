@@ -16,3 +16,19 @@ export const sendForespørselOmDelingAvCv = async (
     forespørsel,
   );
 };
+
+export type ForespørselOmDelingAvCvPåNyttOutboundDto = {
+  stillingsId: string;
+  svarfrist: string;
+  navKontor: string;
+};
+
+export const sendNyForespørselOmDelingAvCv = async (
+  aktørId: string,
+  forespørsel: ForespørselOmDelingAvCvPåNyttOutboundDto,
+): Promise<Response> => {
+  return postApi(
+    `${ForespørselDelingAvCvAPI.internUrl}/foresporsler/kandidat/${aktørId}`,
+    forespørsel,
+  );
+};
