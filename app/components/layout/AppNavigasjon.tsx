@@ -11,6 +11,7 @@ import Nyheter from '../nyheter/Nyheter';
 import useAntallUlesteNyheter from '../nyheter/useAntallUlesteNyheter';
 import { TilgangskontrollForInnhold } from '../tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '../tilgangskontroll/roller';
+import GiTilbakemelding from './components/GiTilbakemelding';
 import ModiaKnapp from './components/ModiaKnapp';
 import OpprettKnapp from './components/OpprettKnapp';
 import VelgKontor from './components/VelgKontor';
@@ -182,6 +183,7 @@ export function AppNavigasjon() {
               className={`${antallUlesteNyheter > 0 ? '  top-1 right-0 h-3 w-3 rounded-full bg-[#0067c5]' : ''}`}
             />
           </div>
+          <GiTilbakemelding />
           {darkMode ? (
             <SideHandling
               onClick={() => setDarkMode(!darkMode)}
