@@ -34,12 +34,6 @@ spec:
     sidecar:
       enabled: true
   accessPolicy:
-    inbound:
-      external:
-        - host: {{ umamiSrc }}
-        - host: {{ umamiUrl }}
-        - host: {{ skyraSrc }}
-        - host: {{ skyraSurvey }}
     outbound:
       rules:
         - application: rekrutteringsbistand-stilling-api
