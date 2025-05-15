@@ -1,9 +1,9 @@
 import { oppdaterRekrutteringstreff } from '@/app/api/rekrutteringstreff/oppdater-rekrutteringstreff/oppdaterRerkutteringstreff';
 import { RekrutteringstreffDTO } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { ExclamationmarkTriangleIcon, XMarkIcon } from '@navikt/aksel-icons';
-import { Button, Modal, TextField, ErrorMessage } from '@navikt/ds-react';
+import { Button, Modal, Textarea, ErrorMessage } from '@navikt/ds-react';
 import { logger } from '@navikt/next-logger';
-import React, { useEffect } from 'react';
+import React, { useEffect, KeyboardEvent, useRef } from 'react';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 
 export interface EndreTittelProps {
@@ -34,13 +34,16 @@ const EndreTittel: React.FC<EndreTittelProps> = ({
     defaultValues: {
       nyTittel: rekrutteringstreff?.tittel || '',
     },
-    mode: 'onChange',
   });
 
-  const wrapperRef = React.useRef<HTMLDivElement>(null);
+  const maksAntallTegn = 30;
+
   const nyTittelValue = watch('nyTittel');
+  const wrapperRef = useRef<HTMLDivElement>(null);
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    clearErrors();
+
     if (!rekrutteringstreff) {
       setError('root', {
         type: 'manual',
@@ -48,10 +51,23 @@ const EndreTittel: React.FC<EndreTittelProps> = ({
       });
       return;
     }
-    clearErrors('root');
+    if (data.nyTittel.trim() === '') {
+      setError('root', {
+        type: 'required',
+        message: 'Tittel kan ikke være tom.',
+      });
+      return;
+    }
+    if (data.nyTittel.length > maksAntallTegn) {
+      setError('root', {
+        type: 'maxLength',
+        message: 'Tittelen kan ikke være lenger enn 30 tegn.',
+      });
+      return;
+    }
+
     try {
       const { id, beskrivelse, sted, fraTid, tilTid } = rekrutteringstreff;
-
       await oppdaterRekrutteringstreff(id, {
         tittel: data.nyTittel,
         beskrivelse,
@@ -65,36 +81,54 @@ const EndreTittel: React.FC<EndreTittelProps> = ({
       logger.error('Lagring av tittel feilet:', error);
       setError('root', {
         type: 'api',
-        message: 'Lagring av tittel feilet.',
+        message: 'Lagring av tittel feilet. Prøv igjen.',
       });
     }
   };
 
-  const handleClearTittel = () => {
-    setValue('nyTittel', '', { shouldValidate: true });
-  };
-
   useEffect(() => {
-    const inputElement = wrapperRef?.current?.querySelector<HTMLInputElement>(
-      '.aksel-text-field__input',
-    );
-    if (inputElement) {
-      inputElement.style.paddingRight = '2rem';
+    if (Object.keys(errors).length > 0 && nyTittelValue.trim() !== '') {
+      clearErrors();
     }
-  }, [nyTittelValue]);
 
-  useEffect(() => {
-    reset({ nyTittel: rekrutteringstreff.tittel || '' });
-  }, [rekrutteringstreff.tittel, reset]);
+    const textareaElement = wrapperRef.current?.querySelector('textarea');
+    if (textareaElement) {
+      textareaElement.style.paddingRight = '1.5rem';
+    }
+  }, [nyTittelValue, clearErrors, errors]);
+
+  const handleClearTittel = () => {
+    setValue('nyTittel', '', { shouldValidate: false });
+    clearErrors(); //
+    wrapperRef.current?.querySelector('textarea')?.focus();
+  };
 
   const handleCloseModal = () => {
     modalRef.current?.close();
-    reset({ nyTittel: rekrutteringstreff?.tittel || '' });
-    clearErrors('root');
+    reset({ nyTittel: rekrutteringstreff.tittel || '' });
+    clearErrors();
   };
 
+  const handleTextareaKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      if (
+        !(
+          nyTittelValue.trim() === '' ||
+          nyTittelValue.length > maksAntallTegn ||
+          isSubmitting
+        )
+      ) {
+        handleSubmit(onSubmit)();
+      }
+    }
+  };
+
+  const errorMessageToDisplay =
+    errors.root?.message || errors.nyTittel?.message;
+
   return (
-    <div className='py-12'>
+    <div>
       <Modal
         ref={modalRef}
         header={{ heading: 'Endre navn på treffet' }}
@@ -110,28 +144,19 @@ const EndreTittel: React.FC<EndreTittelProps> = ({
               <Controller
                 name='nyTittel'
                 control={control}
-                rules={{
-                  required: 'Tittel kan ikke være tom',
-                  maxLength: {
-                    value: 30,
-                    message: 'Tittelen kan ikke være lenger enn 30 tegn',
-                  },
-                }}
                 render={({ field }) => (
-                  <TextField
+                  <Textarea
                     {...field}
                     label='Ny tittel'
                     hideLabel
-                    className='w-full'
-                    error={!!errors.nyTittel?.message}
-                    aria-describedby={
-                      errors.nyTittel?.message
-                        ? 'nyTittel-error-text'
-                        : errors.root?.message
-                          ? 'root-error-text'
-                          : undefined
-                    }
+                    maxLength={maksAntallTegn}
+                    className='w-full pt-2'
                     autoFocus
+                    minRows={1}
+                    maxRows={1}
+                    rows={1}
+                    onKeyDown={handleTextareaKeyDown}
+                    resize={false}
                   />
                 )}
               />
@@ -139,31 +164,30 @@ const EndreTittel: React.FC<EndreTittelProps> = ({
                 <Button
                   type='button'
                   onClick={handleClearTittel}
-                  icon={<XMarkIcon title='Tøm feltet' />}
+                  icon={<XMarkIcon title='Tøm feltet' fontSize='1.25rem' />}
                   variant='tertiary'
                   size='small'
-                  className='absolute !right-1 !top-1/2 !-translate-y-1/2'
+                  className='absolute right-1 top-1/6 p-1'
+                  aria-label='Tøm tittel feltet'
                 />
               )}
             </div>
 
-            {errors.root?.message ||
-              (errors.nyTittel?.message ? (
-                <div className='flex items-start mt-2 ml-1'>
+            <div className='h-6 mt-2 ml-1'>
+              {' '}
+              {errorMessageToDisplay && (
+                <div className='flex items-start mt-1'>
                   <ExclamationmarkTriangleIcon
                     aria-hidden
                     fontSize='1.25rem'
-                    className='aksel-error-message mr-1 mt-0.5'
+                    className='aksel-error-message mr-1 '
                   />
-                  <ErrorMessage size='medium' id='error-text'>
-                    {errors.root?.message
-                      ? errors.root.message
-                      : errors.nyTittel.message}
+                  <ErrorMessage size='small' id='general-error-text'>
+                    {errorMessageToDisplay}
                   </ErrorMessage>
                 </div>
-              ) : (
-                <div className='flex items-start mt-2 ml-1'>&nbsp;</div>
-              ))}
+              )}
+            </div>
           </form>
         </Modal.Body>
         <Modal.Footer>
@@ -171,7 +195,7 @@ const EndreTittel: React.FC<EndreTittelProps> = ({
             type='submit'
             form='skjema-endre-tittel'
             loading={isSubmitting}
-            disabled={!!errors.nyTittel || !!errors.root}
+            disabled={nyTittelValue.length > maksAntallTegn || isSubmitting}
           >
             Lagre
           </Button>
