@@ -55,10 +55,8 @@ spec:
         - host: {{ statistikkApiHost }}
         - host: {{ foresporselOmDelingAvCvApiHost }}
         - host: {{ kandidatApiHost }}
-        - host: {{ umamiSrc }}
-        - host: {{ umamiUrl }}
-        - host: {{ skyraSrc }}
         - host: {{ skyraSurvey }}
+        - host: {{ skyraIngest }}
   resources:
     limits:
       memory: 768Mi
