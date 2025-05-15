@@ -7,7 +7,9 @@ import * as React from 'react';
 const Forside: React.FC = () => {
   return (
     <HovedInnholdKort>
-      <Statistikk />
+      <div className='mt-8'>
+        <Statistikk />
+      </div>
     </HovedInnholdKort>
   );
 };

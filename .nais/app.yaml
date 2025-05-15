@@ -25,7 +25,7 @@ spec:
       claims:
         groups:
           - id: {{ adGruppeModiaGenerellTilgang }}
-          - id: {{ adGruppeModiaOppfolging }}
+          - id: {{ adGruppeModiaOppfolgg }}
           - id: {{ adGruppeRekrutteringsbistandArbeidsgiverrettet }}
           - id: {{ adGruppeRekrutteringsbistandJobbsokerrettet }}
           - id: {{ adGruppeRekrutteringsbistandUtvikler }}
@@ -55,6 +55,8 @@ spec:
         - host: {{ statistikkApiHost }}
         - host: {{ foresporselOmDelingAvCvApiHost }}
         - host: {{ kandidatApiHost }}
+        - host: {{ skyraSurvey }}
+        - host: {{ skyraIngest }}
   resources:
     limits:
       memory: 768Mi
