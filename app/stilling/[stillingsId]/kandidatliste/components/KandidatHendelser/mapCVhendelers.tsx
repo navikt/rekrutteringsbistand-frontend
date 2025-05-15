@@ -1,4 +1,4 @@
-import { KandidatForespurtOmDelingSchema } from '../../../../../api/foresporsel-om-deling-av-cv/foresporsler/[slug]/useForespurteOmDelingAvCv';
+import { KandidatForespurtOmDelingSchema } from '../../../../../api/foresporsel-om-deling-av-cv/foresporsler/[...slug]/useForespurteOmDelingAvCv';
 import { formaterNorskDato } from '../../../../../components/util';
 import { TilstandPåForespørsel } from '../../KandidatTyper';
 import {

@@ -1,5 +1,5 @@
 import { UmamiEvent } from '../../../../../../util/umamiEvents';
-import { useForespurteOmDelingAvCv } from '../../../../../api/foresporsel-om-deling-av-cv/foresporsler/[slug]/useForespurteOmDelingAvCv';
+import { useForespurteOmDelingAvCv } from '../../../../../api/foresporsel-om-deling-av-cv/foresporsler/[...slug]/useForespurteOmDelingAvCv';
 import { postDelMedArbeidsgiver } from '../../../../../api/kandidat/postDelMedArbeidsgiver';
 import { KandidatListeKandidatDTO } from '../../../../../api/kandidat/schema.zod';
 import SWRLaster from '../../../../../components/SWRLaster';

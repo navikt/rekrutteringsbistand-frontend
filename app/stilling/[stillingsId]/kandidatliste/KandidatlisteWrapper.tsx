@@ -1,4 +1,4 @@
-import { useForespurteOmDelingAvCv } from '../../../api/foresporsel-om-deling-av-cv/foresporsler/[slug]/useForespurteOmDelingAvCv';
+import { useForespurteOmDelingAvCv } from '../../../api/foresporsel-om-deling-av-cv/foresporsler/[...slug]/useForespurteOmDelingAvCv';
 import { useKandidatliste } from '../../../api/kandidat/useKandidatliste';
 import { useSmserForStilling } from '../../../api/kandidatvarsel/kandidatvarsel';
 import { oppdaterStilling } from '../../../api/stilling/oppdater-stilling/oppdaterStilling';
