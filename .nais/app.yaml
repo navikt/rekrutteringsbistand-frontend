@@ -25,7 +25,7 @@ spec:
       claims:
         groups:
           - id: {{ adGruppeModiaGenerellTilgang }}
-          - id: {{ adGruppeModiaOppfolging }}
+          - id: {{ adGruppeModiaOppfolgg }}
           - id: {{ adGruppeRekrutteringsbistandArbeidsgiverrettet }}
           - id: {{ adGruppeRekrutteringsbistandJobbsokerrettet }}
           - id: {{ adGruppeRekrutteringsbistandUtvikler }}
@@ -34,6 +34,10 @@ spec:
     sidecar:
       enabled: true
   accessPolicy:
+    inbound:
+      external:
+        - host: {{ umamiSrc }}
+        - host: {{ umamiUrl }}
     outbound:
       rules:
         - application: rekrutteringsbistand-stilling-api
@@ -55,6 +59,8 @@ spec:
         - host: {{ statistikkApiHost }}
         - host: {{ foresporselOmDelingAvCvApiHost }}
         - host: {{ kandidatApiHost }}
+        - host: {{ umamiSrc }}
+        - host: {{ umamiUrl }}
   resources:
     limits:
       memory: 768Mi
