@@ -199,8 +199,8 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
                 <Modal.Body>
                   {harIkkeSvart.length > 0 && (
                     <Alert variant='info' size='small' className='mb-1'>
-                      {harSvartNei.length}{' '}
-                      {harSvartNei.length === 1 ? 'kandidat ' : 'kandidater'}
+                      {harIkkeSvart.length}{' '}
+                      {harIkkeSvart.length === 1 ? 'kandidat ' : 'kandidater'}
                       har ikke svart på forespørselen.
                     </Alert>
                   )}
