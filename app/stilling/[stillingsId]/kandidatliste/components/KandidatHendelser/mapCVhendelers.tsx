@@ -52,11 +52,12 @@ export const mapCVHendele = (
       return {
         tag: (
           <KandidatHendelseTag
-            type={KandidatHendelseType.Deling_Av_CV_Feilet}
+            type={KandidatHendelseType.Spurt_om_å_dele_CV_IKKE_DIGITAL}
             dato={svarFrist}
           />
         ),
-        tekst: 'Kan ikke varsle',
+        tekst:
+          'Kandidaten bruker ikke digitale tjenester fra Nav. Du må ringe og registrere svaret i stillingskortet i Aktivitetsplanen.',
         ...defaultData,
       };
     case TilstandPåForespørsel.KAN_IKKE_OPPRETTE:
@@ -83,7 +84,7 @@ export const mapCVHendele = (
               dato={svarFrist}
             />
           ),
-          tekst: ``,
+          tekst: `Frist for deling av CV utløpt ${forespørsel.svarfrist && formaterNorskDato({ dato: forespørsel.svarfrist })}`,
           ...defaultData,
         };
       }

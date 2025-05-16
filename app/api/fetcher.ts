@@ -34,22 +34,28 @@ export const getAPI = async (url: string) => {
     const contentType = response.headers.get('content-type');
 
     if (contentType && contentType.includes('application/json')) {
-      // Hent JSON
-      const errorData = await response.json();
-      errorDetails = JSON.stringify(errorData);
+      try {
+        const errorData = await response.json();
+        errorDetails = JSON.stringify(errorData);
+      } catch (error) {
+        // JSON parsing failed, fall back to plain text
+        logger.warn(
+          'Failed to parse error response as JSON despite content-type header',
+          error,
+        );
+        errorDetails = await response.text();
+      }
     } else {
-      // Håndtere ikke JSON
+      // Handle non-JSON errors
       errorDetails = await response.text();
     }
 
-    const error = new rekbisError({
+    throw new rekbisError({
       url: response.url,
       statuskode: response.status,
       stack: errorDetails,
     });
-    throw error;
   }
-
   if (response.ok) {
     return await response.json();
   } else {
@@ -86,9 +92,17 @@ export const postApi = async (
       const contentType = response.headers.get('content-type');
 
       if (contentType && contentType.includes('application/json')) {
-        // Get JSON error
-        const errorData = await response.json();
-        errorDetails = JSON.stringify(errorData);
+        try {
+          const errorData = await response.json();
+          errorDetails = JSON.stringify(errorData);
+        } catch (error) {
+          // JSON parsing failed, fall back to plain text
+          logger.warn(
+            'Failed to parse error response as JSON despite content-type header',
+            error,
+          );
+          errorDetails = await response.text();
+        }
       } else {
         // Handle non-JSON errors
         errorDetails = await response.text();
@@ -135,7 +149,7 @@ export const putApi = async (
     url += `?${queryString}`;
   }
 
-  const res = await fetch(basePath + url, {
+  const response = await fetch(basePath + url, {
     method: 'PUT',
     credentials: 'include',
     headers: {
@@ -146,17 +160,35 @@ export const putApi = async (
     ),
   });
 
-  if (!res.ok) {
-    const errorText = res.headers
-      .get('content-type')
-      ?.includes('application/json')
-      ? (await res.json()).beskrivelse
-      : await res.text();
+  if (!response.ok) {
+    let errorDetails = '';
+    const contentType = response.headers.get('content-type');
 
-    throw new rekbisError(errorText || 'Feil ved putApi');
+    if (contentType && contentType.includes('application/json')) {
+      try {
+        const errorData = await response.json();
+        errorDetails = JSON.stringify(errorData);
+      } catch (error) {
+        // JSON parsing failed, fall back to plain text
+        logger.warn(
+          'Failed to parse error response as JSON despite content-type header',
+          error,
+        );
+        errorDetails = await response.text();
+      }
+    } else {
+      // Handle non-JSON errors
+      errorDetails = await response.text();
+    }
+
+    throw new rekbisError({
+      url: response.url,
+      statuskode: response.status,
+      stack: errorDetails,
+    });
   }
 
-  return res.json();
+  return response.json();
 };
 
 export const postApiResponse = (url: string, body: any) =>
