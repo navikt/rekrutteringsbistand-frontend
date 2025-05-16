@@ -58,6 +58,24 @@ export const proxyWithOBO = async (
 
     if (!response.ok) {
       const { status, statusText, url, ok, headers } = response;
+      const responseClone = response.clone(); // Clone before consuming
+
+      let errorContent;
+      const contentType = headers.get('content-type');
+
+      try {
+        if (contentType && contentType.includes('application/json')) {
+          // For JSON responses
+          const errorData = await responseClone.json();
+          errorContent = errorData;
+        } else {
+          // For text/other responses
+          const text = await responseClone.text();
+          errorContent = { message: text };
+        }
+      } catch {
+        errorContent = { message: 'Failed to read error response' };
+      }
 
       logger.error(
         {
@@ -68,11 +86,13 @@ export const proxyWithOBO = async (
           tilUrl: requestUrl,
           fraUrl: originalUrl,
           ok,
+          errorContent,
         },
         'Responsen er ikke OK i proxy',
       );
 
-      return response;
+      // Return a new NextResponse with the error data
+      return NextResponse.json(errorContent, { status: status });
     }
 
     // Continue with successful response handling
