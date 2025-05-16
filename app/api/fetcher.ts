@@ -33,21 +33,28 @@ export const getAPI = async (url: string) => {
     let errorDetails = '';
     const contentType = response.headers.get('content-type');
 
-    if (contentType && contentType.includes('application/json')) {
-      // Hent JSON
-      const errorData = await response.json();
-      errorDetails = JSON.stringify(errorData);
-    } else {
-      // Håndtere ikke JSON
-      errorDetails = await response.text();
+    try {
+      if (contentType && contentType.includes('application/json')) {
+        const errorData = await response.json();
+        errorDetails = JSON.stringify(errorData);
+      } else {
+        errorDetails = await response.text();
+      }
+    } catch (error) {
+      // If JSON parsing fails or any other error occurs
+      logger.warn('Failed to parse error response', error);
+      // Need to use response.clone() since the original body stream was consumed
+      errorDetails = await response
+        .clone()
+        .text()
+        .catch(() => 'Could not read response body');
     }
 
-    const error = new rekbisError({
+    throw new rekbisError({
       url: response.url,
       statuskode: response.status,
       stack: errorDetails,
     });
-    throw error;
   }
 
   if (response.ok) {
@@ -85,13 +92,21 @@ export const postApi = async (
       let errorDetails = '';
       const contentType = response.headers.get('content-type');
 
-      if (contentType && contentType.includes('application/json')) {
-        // Get JSON error
-        const errorData = await response.json();
-        errorDetails = JSON.stringify(errorData);
-      } else {
-        // Handle non-JSON errors
-        errorDetails = await response.text();
+      try {
+        if (contentType && contentType.includes('application/json')) {
+          const errorData = await response.json();
+          errorDetails = JSON.stringify(errorData);
+        } else {
+          errorDetails = await response.text();
+        }
+      } catch (error) {
+        // If JSON parsing fails or any other error occurs
+        logger.warn('Failed to parse error response', error);
+        // Need to use response.clone() since the original body stream was consumed
+        errorDetails = await response
+          .clone()
+          .text()
+          .catch(() => 'Could not read response body');
       }
 
       throw new rekbisError({

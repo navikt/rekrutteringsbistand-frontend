@@ -198,21 +198,21 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
               <>
                 <Modal.Body>
                   {harIkkeSvart.length > 0 && (
-                    <Alert variant='info' size='small'>
+                    <Alert variant='info' size='small' className='mb-1'>
                       {harSvartNei.length}{' '}
                       {harSvartNei.length === 1 ? 'kandidat ' : 'kandidater'}
                       har ikke svart på forespørselen.
                     </Alert>
                   )}
                   {harSvartNei.length > 0 && (
-                    <Alert variant='error' size='small'>
+                    <Alert variant='error' size='small' className='mb-1'>
                       {harSvartNei.length}{' '}
                       {harSvartNei.length === 1 ? 'kandidat ' : 'kandidater'}
                       har tidliger svart nei til å dele CV-en.
                     </Alert>
                   )}
                   {fristUtløpt.length > 0 && (
-                    <Alert variant='warning' size='small'>
+                    <Alert variant='warning' size='small' className='mb-1'>
                       {fristUtløpt.length}{' '}
                       {fristUtløpt.length === 1 ? 'kandidat ' : 'kandidater'}
                       har tidligere fått spørsmål, men ikke svart innen fristen.
