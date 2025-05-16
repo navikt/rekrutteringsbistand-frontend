@@ -30,31 +30,9 @@ export const getAPI = async (url: string) => {
   });
 
   if (!response.ok) {
-    let errorDetails = '';
-    const contentType = response.headers.get('content-type');
-
-    try {
-      if (contentType && contentType.includes('application/json')) {
-        const errorData = await response.json();
-        errorDetails = JSON.stringify(errorData);
-      } else {
-        errorDetails = await response.text();
-      }
-    } catch (error) {
-      // If JSON parsing fails or any other error occurs
-      logger.warn('Failed to parse error response', error);
-      // Need to use response.clone() since the original body stream was consumed
-      errorDetails = await response
-        .clone()
-        .text()
-        .catch(() => 'Could not read response body');
-    }
-
-    throw new rekbisError({
-      url: response.url,
-      statuskode: response.status,
-      stack: errorDetails,
-    });
+    // The error response has already been properly formatted by the proxy
+    const errorResponse = await response.json();
+    throw new rekbisError(errorResponse.beskrivelse || 'Feil i fetcher.ts');
   }
 
   if (response.ok) {
@@ -89,31 +67,9 @@ export const postApi = async (
     });
 
     if (!response.ok) {
-      let errorDetails = '';
-      const contentType = response.headers.get('content-type');
-
-      try {
-        if (contentType && contentType.includes('application/json')) {
-          const errorData = await response.json();
-          errorDetails = JSON.stringify(errorData);
-        } else {
-          errorDetails = await response.text();
-        }
-      } catch (error) {
-        // If JSON parsing fails or any other error occurs
-        logger.warn('Failed to parse error response', error);
-        // Need to use response.clone() since the original body stream was consumed
-        errorDetails = await response
-          .clone()
-          .text()
-          .catch(() => 'Could not read response body');
-      }
-
-      throw new rekbisError({
-        url: response.url,
-        statuskode: response.status,
-        stack: errorDetails,
-      });
+      // The error response has already been properly formatted by the proxy
+      const errorResponse = await response.json();
+      throw new rekbisError(errorResponse.beskrivelse || 'Feil i fetcher.ts');
     }
 
     const contentType = response.headers.get('content-type');
@@ -162,13 +118,9 @@ export const putApi = async (
   });
 
   if (!res.ok) {
-    const errorText = res.headers
-      .get('content-type')
-      ?.includes('application/json')
-      ? (await res.json()).beskrivelse
-      : await res.text();
-
-    throw new rekbisError(errorText || 'Feil ved putApi');
+    // The error response has already been properly formatted by the proxy
+    const errorResponse = await res.json();
+    throw new rekbisError(errorResponse.beskrivelse || 'Feil i fetcher.ts');
   }
 
   return res.json();
