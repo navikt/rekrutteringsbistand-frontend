@@ -77,8 +77,10 @@ export const RedigerInnspurt: React.FC<{
     const response = await oppdaterStilling(publiserStillingsData);
 
     if (response.stilling.uuid) {
-      refetch();
-      router.push(`/stilling/${response.stilling.uuid}`);
+      setTimeout(() => {
+        refetch();
+        router.push(`/stilling/${response.stilling.uuid}`);
+      }, 500);
     } else {
       alert('Feil ved opprettelse av stilling');
     }
