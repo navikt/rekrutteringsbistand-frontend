@@ -71,10 +71,27 @@ export const proxyWithOBO = async (
         } else {
           // For text/other responses
           const text = await responseClone.text();
-          errorContent = { message: text };
+          errorContent = { message: text || 'No error message provided' };
         }
-      } catch {
-        errorContent = { message: 'Failed to read error response' };
+      } catch (error) {
+        // Log the specific error for debugging
+        logger.error({ error }, 'Failed to parse error response in proxy');
+
+        // Attempt to read the body as text as a last resort
+        try {
+          const backupText = await response.clone().text();
+          errorContent = {
+            message: backupText || 'Could not parse response',
+            parseError: true,
+          };
+        } catch {
+          // If all reading attempts fail
+          errorContent = {
+            message: 'Failed to read error response body',
+            status,
+            statusText,
+          };
+        }
       }
 
       logger.error(
@@ -90,6 +107,18 @@ export const proxyWithOBO = async (
         },
         'Responsen er ikke OK i proxy',
       );
+
+      // For 409 specifically, provide more context
+      if (status === 409) {
+        return NextResponse.json(
+          {
+            beskrivelse:
+              'Konflikt oppdaget. Ressursen kan være låst eller endret av en annen bruker.',
+            details: errorContent,
+          },
+          { status: status },
+        );
+      }
 
       // Return a new NextResponse with the error data
       return NextResponse.json(errorContent, { status: status });
