@@ -1,7 +1,7 @@
 'use client';
 
 import { brukerMirage } from '../app/api/bruker/useBruker';
-import { foresporselOmDelingAvCVMirage } from '../app/api/foresporsel-om-deling-av-cv/foresporsler/[slug]/useForespurteOmDelingAvCv';
+import { foresporselOmDelingAvCVMirage } from '../app/api/foresporsel-om-deling-av-cv/foresporsler/[...slug]/useForespurteOmDelingAvCv';
 import { foresporselOmDelingAvCVStatistikkMirage } from '../app/api/foresporsel-om-deling-av-cv/statistikk/useForesporselOmdelingAvCV';
 import { arenaKandidatnrMirage } from '../app/api/kandidat-sok/useArenaKandidatnr';
 import { kandidatNavnMirage } from '../app/api/kandidat-sok/useKandidatNavn';

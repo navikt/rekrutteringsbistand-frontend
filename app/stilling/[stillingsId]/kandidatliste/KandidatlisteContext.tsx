@@ -1,5 +1,5 @@
 import { rekbisError } from '../../../../util/rekbisError';
-import { ForespurteOmDelingAvCvDTO } from '../../../api/foresporsel-om-deling-av-cv/foresporsler/[slug]/useForespurteOmDelingAvCv';
+import { ForespurteOmDelingAvCvDTO } from '../../../api/foresporsel-om-deling-av-cv/foresporsler/[...slug]/useForespurteOmDelingAvCv';
 import {
   kandidatlisteSchemaDTO,
   usynligKandidaterSchemaDTO,
