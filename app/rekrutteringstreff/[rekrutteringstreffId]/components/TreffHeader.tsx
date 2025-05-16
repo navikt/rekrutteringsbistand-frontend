@@ -3,6 +3,7 @@
 import RekrutteringstreffDark from '../../../../public/ikoner/rekrutteringstreff-dark.svg';
 import Rekrutteringstreff from '../../../../public/ikoner/rekrutteringstreff.svg';
 import { useRekrutteringstreffContext } from '../RekrutteringstreffContext';
+import AnalyserTittel from './om-treffet/AnalyserTittel';
 import EndreTittel from './om-treffet/components/EndreTittel';
 import {
   HendelseDTO,
@@ -13,7 +14,7 @@ import SVGDarkmode from '@/app/components/SVGDarkmode';
 import SWRLaster from '@/app/components/SWRLaster';
 import SideLayout from '@/app/components/layout/SideLayout';
 import SideTopBanner from '@/app/components/layout/SideTopBanner';
-import { PencilIcon } from '@navikt/aksel-icons';
+import { PencilIcon, RobotIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button, Detail } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import { nb } from 'date-fns/locale/nb';
@@ -30,6 +31,7 @@ const TreffHeader: React.FC<TreffHeaderProps> = ({ endreTittel }) => {
   );
 
   const endreTittelModalref = useRef<HTMLDialogElement>(null);
+  const analyserTittelModalref = useRef<HTMLDialogElement>(null);
 
   return (
     <div>
@@ -85,6 +87,21 @@ const TreffHeader: React.FC<TreffHeaderProps> = ({ endreTittel }) => {
                                     endreTittelModalref.current?.showModal()
                                   }
                                 />,
+                                <Button
+                                  key='analyser-tittel-knapp'
+                                  icon={
+                                    <RobotIcon
+                                      title='Redigeringsikon'
+                                      aria-hidden
+                                    />
+                                  }
+                                  aria-label='Endre tittel'
+                                  variant='tertiary'
+                                  size='small'
+                                  onClick={() =>
+                                    analyserTittelModalref.current?.showModal()
+                                  }
+                                />,
                               ]
                             : []),
                           ...(rekrutteringstreff?.status
@@ -102,6 +119,11 @@ const TreffHeader: React.FC<TreffHeaderProps> = ({ endreTittel }) => {
                       modalRef={endreTittelModalref}
                       rekrutteringstreff={rekrutteringstreff}
                       onUpdated={rekrutteringstreffHook.mutate}
+                    />
+
+                    <AnalyserTittel
+                      modalRef={analyserTittelModalref}
+                      tittel={rekrutteringstreff.tittel}
                     />
                   </div>
                 </div>
