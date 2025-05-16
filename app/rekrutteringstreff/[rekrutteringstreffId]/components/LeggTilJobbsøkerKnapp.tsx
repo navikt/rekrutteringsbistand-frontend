@@ -13,16 +13,11 @@ const LeggTilJobbsøkerKnapp: React.FC<LeggTilJobbsøkerKnappProps> = ({
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
 
   return (
-    <Link
-      href={`/rekrutteringstreff/${rekrutteringstreffId}/finn-kandidater`}
-      passHref
-      legacyBehavior
-    >
+    <Link href={`/rekrutteringstreff/${rekrutteringstreffId}/finn-kandidater`}>
       <Button
         icon={<PlusIcon />}
         type='button'
         variant='secondary'
-        as='a'
         className={className}
       >
         Legg til jobbsøker
