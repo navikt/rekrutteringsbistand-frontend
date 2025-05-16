@@ -7,7 +7,6 @@ import { nyheter } from '../../nyheter';
 import { useApplikasjonContext } from '../../providers/ApplikasjonContext';
 import { useThemeProvider } from '../../providers/ThemeProvider';
 import DevSidebar from '../dev/DevSidebar';
-import Nyheter from '../nyheter/Nyheter';
 import useAntallUlesteNyheter from '../nyheter/useAntallUlesteNyheter';
 import { TilgangskontrollForInnhold } from '../tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '../tilgangskontroll/roller';
@@ -34,6 +33,7 @@ import {
   SunIcon,
 } from '@navikt/aksel-icons';
 import { BodyShort, Button } from '@navikt/ds-react';
+import { MegaphoneIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
@@ -178,7 +178,12 @@ export function AppNavigasjon() {
           className={`flex flex-col w-full gap-3 ${open ? 'items-start' : 'items-center'}`}
         >
           <div className={open ? ' w-full' : ''}>
-            <Nyheter />
+            <SideLenke
+              tekst={'Nyheter'}
+              ikon={<MegaphoneIcon />}
+              path={'/nyheter'}
+              kreverRoller={null}
+            />
             <div
               className={`${antallUlesteNyheter > 0 ? '  top-1 right-0 h-3 w-3 rounded-full bg-[#0067c5]' : ''}`}
             />
