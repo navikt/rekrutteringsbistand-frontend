@@ -25,7 +25,7 @@ const KandidatTilRekrutteringstreff: React.FC = () => {
 
   return (
     <>
-      <TreffHeader />
+      <TreffHeader endreTittel={false} />
       <KandidatSøkTabs
         rekrutteringstreffId={rekrutteringstreff?.rekrutteringstreffId}
         alleredeLagtTil={alleredeLagtTil}

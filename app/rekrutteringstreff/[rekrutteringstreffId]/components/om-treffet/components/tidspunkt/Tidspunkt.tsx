@@ -62,7 +62,7 @@ export default function Tidspunkt({
     handleSubmit,
     setError,
     clearErrors,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = methods;
 
   const [fraDato, fraTid, tilDato, tilTid] = useWatch({
@@ -227,7 +227,12 @@ export default function Tidspunkt({
           </FormProvider>
         </Modal.Body>
         <Modal.Footer className='pt-0'>
-          <Button type='submit' form={formId} disabled={periodUgyldig}>
+          <Button
+            type='submit'
+            form={formId}
+            disabled={periodUgyldig}
+            loading={isSubmitting}
+          >
             Lagre
           </Button>
           <Button variant='secondary' type='button' onClick={close}>

@@ -12,8 +12,8 @@ export interface NyhetDTO {
 
 export const nyheter: NyhetDTO[] = [
   {
-    dato: '01.02.2024',
+    dato: '15.05.2025',
     tittel: 'Rekrutteringsbistand NEXT',
-    innhold: 'Ny rekrutteringsbistand-app er ute til testing.',
+    innhold: 'Ny rekrutteringsbistand-app publisert.',
   },
 ];

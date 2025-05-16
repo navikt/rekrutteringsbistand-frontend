@@ -1,6 +1,5 @@
 'use client';
 
-import { getMiljø, Miljø } from '../../util/miljø';
 import { rekbisError } from '../../util/rekbisError';
 import {
   ModiaEventType,
@@ -8,7 +7,7 @@ import {
 } from '../api/modia/context/setModiaContext';
 import { DecoratorDTO } from '../api/modia/decorator/useDecoratorData';
 import { Roller } from '../components/tilgangskontroll/roller';
-import { Alert, AlertProps, Heading } from '@navikt/ds-react';
+import { Alert, AlertProps } from '@navikt/ds-react';
 import React from 'react';
 
 export type NavKontorMedNavn = {
@@ -84,18 +83,6 @@ export const ApplikasjonContextProvider: React.FC<
         ),
     );
 
-  const harTilgangTilNyApplikasjon =
-    getMiljø() !== Miljø.ProdGcp ||
-    valgtNavKontor?.navKontor === '1001' || // Kristiansand
-    valgtNavKontor?.navKontor === '1621' || // Ørland
-    valgtNavKontor?.navKontor === '0316' || // Gamle Oslo
-    valgtNavKontor?.navKontor === '0521' || // Nav Øyer
-    valgtNavKontor?.navKontor === '5701' || // FALKENBORG
-    valgtNavKontor?.navKontor === '1002' || // LINDESNES
-    valgtNavKontor?.navKontor === '0334' || // VESTRE AKER
-    valgtNavKontor?.navKontor === '2030' || // SØR-Varanger
-    harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER]);
-
   React.useEffect(() => {
     setValgStatetNavKontor((navKontor) => {
       if (navKontor?.navKontor === aktivEnhet) {
@@ -138,18 +125,7 @@ export const ApplikasjonContextProvider: React.FC<
           </Alert>
         )}
 
-        {harTilgangTilNyApplikasjon ? (
-          children
-        ) : (
-          <div>
-            <Alert variant='info'>
-              <Heading spacing size='small' level='3'>
-                Applikasjonen er begrenset
-              </Heading>
-              Kun enkelte kontor har tilgang til den nye applikasjonen
-            </Alert>
-          </div>
-        )}
+        {children}
       </>
     </ApplikasjonContext.Provider>
   );
