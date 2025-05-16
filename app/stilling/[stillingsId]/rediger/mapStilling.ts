@@ -68,6 +68,16 @@ export const mapStillingTilForm = (
   const søknadsfristSnarest =
     stillingsData?.stilling?.properties?.applicationdue === 'Snarest';
 
+  const søknadsfristDato =
+    !søknadsfristSnarest &&
+    typeof stillingsData?.stilling?.properties?.applicationdue === 'string' &&
+    formaterFraISOdato(stillingsData?.stilling?.properties?.applicationdue);
+
+  const oppstartDato =
+    !oppstartEtterAvtale &&
+    typeof stillingsData?.stilling?.properties?.starttime === 'string' &&
+    formaterFraISOdato(stillingsData?.stilling?.properties?.starttime);
+
   const harIkkeLokasjon = stillingsData?.stilling?.locationList?.length === 0;
 
   const employerLokasjon = [
@@ -116,15 +126,10 @@ export const mapStillingTilForm = (
       sektor: stillingsData?.stilling?.properties?.sector ?? '',
       antallStillinger:
         Number(stillingsData?.stilling?.properties?.positioncount) ?? null,
-      oppstart: oppstartEtterAvtale
-        ? null
-        : (stillingsData?.stilling?.properties?.starttime?.toString() ?? null),
+      oppstart: oppstartEtterAvtale ? null : oppstartDato || null,
       oppstartEtterAvtale,
       søknadsfristSnarest,
-      søknadsfrist: søknadsfristSnarest
-        ? null
-        : (stillingsData?.stilling?.properties?.applicationdue?.toString() ??
-          null),
+      søknadsfrist: søknadsfristSnarest ? null : søknadsfristDato || null,
       ansettelsesform:
         stillingsData?.stilling?.properties?.engagementtype ?? null,
       dager: workday,
