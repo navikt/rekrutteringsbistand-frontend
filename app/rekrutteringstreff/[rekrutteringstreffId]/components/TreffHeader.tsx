@@ -4,7 +4,11 @@ import RekrutteringstreffDark from '../../../../public/ikoner/rekrutteringstreff
 import Rekrutteringstreff from '../../../../public/ikoner/rekrutteringstreff.svg';
 import { useRekrutteringstreffContext } from '../RekrutteringstreffContext';
 import EndreTittel from './om-treffet/components/EndreTittel';
-import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
+import {
+  HendelseDTO,
+  RekrutteringstreffDTO,
+  useRekrutteringstreff,
+} from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import SVGDarkmode from '@/app/components/SVGDarkmode';
 import SWRLaster from '@/app/components/SWRLaster';
 import SideLayout from '@/app/components/layout/SideLayout';
@@ -30,9 +34,9 @@ const TreffHeader: React.FC<TreffHeaderProps> = ({ endreTittel }) => {
   return (
     <div>
       <SWRLaster hooks={[rekrutteringstreffHook]}>
-        {(rekrutteringstreff) => {
+        {(rekrutteringstreff: RekrutteringstreffDTO) => {
           const oppretthendelse = rekrutteringstreff.hendelser.find(
-            (h) => h.hendelsestype === 'OPPRETT',
+            (h: HendelseDTO) => h.hendelsestype === 'OPPRETT',
           );
 
           return (
