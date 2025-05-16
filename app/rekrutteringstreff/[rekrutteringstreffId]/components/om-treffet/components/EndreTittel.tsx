@@ -15,6 +15,7 @@ export interface EndreTittelProps {
 }
 
 const MAX_TITLE_LENGTH = 30;
+const DEFAULT_REKRUTTERINGSTREFF_TITTEL = 'Nytt rekrutteringstreff';
 
 const ZOD_TOO_SMALL = 'too_small';
 const ZOD_TOO_BIG = 'too_big';
@@ -50,6 +51,29 @@ const EndreTittel = ({
 
   const nyTittel = useWatch({ control, name: 'nyTittel' });
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const [initialFocusDone, setInitialFocusDone] = useState(false);
+
+  const handleInitialFocus = () => {
+    if (!initialFocusDone) {
+      // Dersom det er autogenerert tittel, vil vi viske den bort
+      const newInitialTittel =
+        rekrutteringstreff.tittel === DEFAULT_REKRUTTERINGSTREFF_TITTEL
+          ? ''
+          : rekrutteringstreff.tittel;
+      reset({ nyTittel: newInitialTittel });
+
+      // Når modal åpnes, fokuserer vi på textarea, ikke på lukkeknapåp som er default i modal
+      textareaRef.current?.focus();
+
+      // Markør skal være til slutt i feltet, ikke i starten som er default
+      if (textareaRef.current) {
+        const len = textareaRef.current.value.length;
+        textareaRef.current.selectionStart = len;
+        textareaRef.current.selectionEnd = len;
+      }
+      setInitialFocusDone(true);
+    }
+  };
 
   const [skalViseTomFeil, setSkalViseTomFeil] = useState(false);
 
@@ -86,6 +110,7 @@ const EndreTittel = ({
   const close = () => {
     modalRef.current?.close();
     reset({ nyTittel: rekrutteringstreff.tittel });
+    setInitialFocusDone(false);
   };
 
   const errorMsg =
@@ -103,6 +128,7 @@ const EndreTittel = ({
       header={{ heading: 'Endre navn på treffet' }}
       width={400}
       onClose={close}
+      onFocus={handleInitialFocus}
     >
       <Modal.Body>
         <form
@@ -154,7 +180,7 @@ const EndreTittel = ({
         </form>
       </Modal.Body>
 
-      <Modal.Footer className='pt-0'>
+      <Modal.Footer className='pt-1'>
         <Button
           type='submit'
           form='skjema-endre-tittel'
