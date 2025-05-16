@@ -14,7 +14,6 @@ export type ISideTopBanner = {
 
 const SideTopBanner = ({
   tittel,
-  ikon,
   knappIBanner,
   headerInnhold,
   chip,
@@ -23,7 +22,6 @@ const SideTopBanner = ({
     <div className='@container/topBanner w-full flex justify-between pt-[32px] pb-10'>
       <div className='flex items-center w-full justify-between flex-col'>
         <div className='flex w-full items-center justify-start gap-8'>
-          {ikon && <div className='w-[64px] h-[64px]'>{ikon}</div>}
           <div className='w-full'>
             {tittel && (
               <div className='flex justify-between @2xl/topBanner:flex-row flex-col'>

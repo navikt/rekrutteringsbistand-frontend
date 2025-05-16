@@ -1,3 +1,5 @@
+'use client';
+
 import HovedInnholdKort from '../components/layout/HovedInnholdKort';
 import SideLayout from '../components/layout/SideLayout';
 import SideTopBanner from '../components/layout/SideTopBanner';
@@ -7,8 +9,8 @@ import { Roller } from '../components/tilgangskontroll/roller';
 import { formaterNorskDato } from '../components/util';
 import { nyheter } from '../nyheter';
 import { OpprettNyhetModal } from './OpprettNyhetModal';
-import { MegaphoneIcon, SparklesIcon } from '@navikt/aksel-icons';
-import { BodyShort } from '@navikt/ds-react';
+import { PencilIcon, TrashIcon } from '@navikt/aksel-icons';
+import { BodyShort, Box, Button } from '@navikt/ds-react';
 import * as React from 'react';
 
 const Nyheter: React.FC = () => {
@@ -17,7 +19,6 @@ const Nyheter: React.FC = () => {
       <SideLayout
         banner={
           <SideTopBanner
-            ikon={<MegaphoneIcon className='w-full h-full' />}
             tittel={'Nyheter'}
             knappIBanner={
               <TilgangskontrollForInnhold
@@ -34,18 +35,38 @@ const Nyheter: React.FC = () => {
       >
         <div className='flex flex-col gap-4 mb-4'>
           {nyheter.map((nyhet, index) => (
-            <div className='flex flex-col gap-4 mb-4' key={index}>
+            <Box.New
+              key={index}
+              className='@container/kandidatlistekort mb-4 flex flex-col p-4 min-w-fit'
+              background='neutral-softA'
+              borderRadius='xlarge'
+              data-testid='stillings-kort'
+            >
               <div className='flex justify-between'>
                 <h1 className='text-2xl font-bold flex gap-2'>
-                  <SparklesIcon /> {nyhet.tittel}
+                  {nyhet.tittel}
                 </h1>
-                <BodyShort>{formaterNorskDato({ dato: nyhet.dato })}</BodyShort>
+                <div>
+                  <TilgangskontrollForInnhold
+                    skjulVarsel
+                    kreverEnAvRollene={[
+                      Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER,
+                    ]}
+                  >
+                    <Button variant='tertiary' disabled icon={<PencilIcon />}>
+                      Endre
+                    </Button>
+                    <Button variant='tertiary' disabled icon={<TrashIcon />}>
+                      Slett
+                    </Button>
+                  </TilgangskontrollForInnhold>
+                </div>
               </div>
-              <div className='mx-8'>
+              <BodyShort>{formaterNorskDato({ dato: nyhet.dato })}</BodyShort>
+              <div className='my-8'>
                 <VisEditorTekst htmlTekst={nyhet.beskrivelse} />
               </div>
-              <hr />
-            </div>
+            </Box.New>
           ))}
         </div>
       </SideLayout>

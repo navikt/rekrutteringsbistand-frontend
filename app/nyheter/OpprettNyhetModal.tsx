@@ -75,7 +75,9 @@ export const OpprettNyhetModal = () => {
             </div>
           </Modal.Body>
           <Modal.Footer>
-            <Button type='submit'>Opprett nyhet</Button>
+            <Button type='submit' disabled>
+              Opprett nyhet
+            </Button>
             <Button
               type='button'
               variant='secondary'
