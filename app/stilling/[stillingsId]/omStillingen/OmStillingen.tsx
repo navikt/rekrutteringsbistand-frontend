@@ -91,8 +91,9 @@ const OmStillingen: React.FC<{ forhåndsvisData?: boolean }> = ({
                     tekst={`Søknadsfrist ${
                       applicationdue
                         ? (() => {
-                            const parsedDate =
-                              formaterNorskDato(applicationdue);
+                            const parsedDate = formaterNorskDato({
+                              dato: applicationdue,
+                            });
                             return parsedDate
                               ? parsedDate
                               : applicationdue.toLowerCase();

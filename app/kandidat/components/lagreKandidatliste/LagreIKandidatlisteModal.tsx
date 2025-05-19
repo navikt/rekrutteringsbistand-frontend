@@ -2,6 +2,7 @@ import { useMineKandidatlister } from '../../../api/kandidat/useMineKandidatlist
 import SWRLaster from '../../../components/SWRLaster';
 import { useApplikasjonContext } from '../../../providers/ApplikasjonContext';
 import { useKandidatSøkMarkerteContext } from '../../KandidatSøkMarkerteContext';
+import KandidatlisteTittel from './KandidatlisteTittel';
 import { leggTilKandidater } from '@/app/api/kandidat-sok/leggTilKandidat';
 import { useKandidatliste } from '@/app/api/kandidat/useKandidatliste';
 import { useUmami } from '@/app/providers/UmamiContext';
@@ -9,7 +10,6 @@ import { UmamiEvent } from '@/util/umamiEvents';
 import {
   Button,
   Checkbox,
-  Link,
   Loader,
   Modal,
   Pagination,
@@ -50,7 +50,7 @@ const LagreIKandidatlisteModal: React.FC<LagreIKandidatlisteProps> = ({
   return (
     <div>
       <Modal
-        width={600}
+        width={800}
         ref={ref}
         header={{
           heading: `Lagre ${markerteKandidater?.length || 0} kandidat i kandidatlister`,
@@ -129,11 +129,9 @@ const LagreIKandidatlisteModal: React.FC<LagreIKandidatlisteProps> = ({
                               </Checkbox>
                             </Table.DataCell>
                             <Table.HeaderCell scope='row'>
-                              <Link
-                                href={`stilling/${kandidatliste.stillingId}`}
-                              >
-                                {kandidatliste.tittel ?? 'Ukjent tittel'}
-                              </Link>
+                              <KandidatlisteTittel
+                                stillingsId={kandidatliste.stillingId}
+                              />
                             </Table.HeaderCell>
                             <Table.DataCell>
                               {kandidatliste.organisasjonNavn}

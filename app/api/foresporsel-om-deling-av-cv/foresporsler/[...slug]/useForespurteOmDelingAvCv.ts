@@ -3,9 +3,9 @@
 /**
  * Endepunkt /useForespurteOmDelingAvCv
  */
+import { generateMockForespurteOmDelingAvCv } from '../../../../../mocks/forespurteOmDelingAvCv.mock';
 import { ForespørselDelingAvCvAPI } from '../../../api-routes';
 import { getAPIwithSchema } from '../../../fetcher';
-import { generateMockForespurteOmDelingAvCv } from './useForespurteOmDelingAvCv.mock';
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
 

@@ -10,6 +10,7 @@ import { useApplikasjonContext } from '../../../../../providers/ApplikasjonConte
 import { useUmami } from '../../../../../providers/UmamiContext';
 import { useStillingsContext } from '../../../StillingsContext';
 import { TilstandPåForespørsel } from '../../KandidatTyper';
+import { useKandidatlisteContext } from '../../KandidatlisteContext';
 import VelgSvarfrist from './VelgSvarfrist';
 import { TasklistIcon } from '@navikt/aksel-icons';
 import {
@@ -40,6 +41,7 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
   const [modalErÅpen, setModalErÅpen] = React.useState(false);
   const [svarfrist, setSvarfrist] = React.useState<Date | undefined>(undefined);
   const { valgtNavKontor, visVarsel } = useApplikasjonContext();
+  const { reFetchKandidatliste } = useKandidatlisteContext();
   const [loading, setLoading] = React.useState(false);
 
   const forespurteKandidaterHook = useForespurteOmDelingAvCv(stillingsId);
@@ -96,15 +98,39 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
               );
             });
 
-            const harBlittSpurtFør = markerteKandidater.filter(
+            const harSvartNeiEllerUtløptFrist = markerteKandidater.filter(
               (k) =>
                 harSvartNei.some((k2) => k2.aktørid === k.aktørid) ||
                 fristUtløpt.some((k2) => k2.aktørid === k.aktørid),
             );
 
             const harIkkeBlittSpurtFør = markerteKandidater.filter(
-              (k) => !harBlittSpurtFør.some((k2) => k2.aktørid === k.aktørid),
+              (k) =>
+                !harSvartNeiEllerUtløptFrist.some(
+                  (k2) => k2.aktørid === k.aktørid,
+                ),
             );
+
+            const harIkkeSvart = markerteKandidater.filter((kandidat) => {
+              const dagerTilSvarfrist =
+                kandidat.aktørid &&
+                forespurteKandidater[kandidat.aktørid]?.[0]?.svarfrist
+                  ? differenceInDays(
+                      new Date(
+                        forespurteKandidater[kandidat.aktørid]?.[0]?.svarfrist,
+                      ),
+                      new Date(),
+                    )
+                  : null;
+
+              return (
+                harSvartNeiEllerUtløptFrist.some(
+                  (k2) => k2.aktørid !== kandidat.aktørid,
+                ) &&
+                dagerTilSvarfrist !== null &&
+                dagerTilSvarfrist >= 0
+              );
+            });
 
             const sendForespørsel = async () => {
               if (svarfrist) {
@@ -117,6 +143,9 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
                       "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
                     ),
                     aktorIder: harIkkeBlittSpurtFør
+                      .filter((k) =>
+                        harIkkeSvart.some((k2) => k2.aktørid === k.aktørid),
+                      )
                       .map((kandidat) => kandidat.aktørid)
                       .filter((id): id is string => id !== null),
                     navKontor: valgtNavKontor?.navKontor ?? '',
@@ -126,7 +155,7 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
                     antall: harIkkeBlittSpurtFør.length,
                   });
 
-                  const nyeForespørslerPromises = harBlittSpurtFør
+                  const nyeForespørslerPromises = harSvartNeiEllerUtløptFrist
                     .filter((kandidat) => kandidat.aktørid)
                     .map((kandidat) =>
                       sendNyForespørselOmDelingAvCv(kandidat.aktørid!, {
@@ -140,7 +169,7 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
                     );
 
                   track(UmamiEvent.Stilling.del_stilling_med_kandidat_påNytt, {
-                    antall: harBlittSpurtFør.length,
+                    antall: harSvartNeiEllerUtløptFrist.length,
                   });
 
                   await Promise.all(nyeForespørslerPromises);
@@ -161,21 +190,29 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
                   setModalErÅpen(false);
                   fjernAllMarkering();
                   setLoading(false);
+                  reFetchKandidatliste();
                 }
               }
             };
             return (
               <>
                 <Modal.Body>
+                  {harIkkeSvart.length > 0 && (
+                    <Alert variant='info' size='small' className='mb-1'>
+                      {harIkkeSvart.length}{' '}
+                      {harIkkeSvart.length === 1 ? 'kandidat ' : 'kandidater'}
+                      har ikke svart på forespørselen.
+                    </Alert>
+                  )}
                   {harSvartNei.length > 0 && (
-                    <Alert variant='error' size='small'>
+                    <Alert variant='error' size='small' className='mb-1'>
                       {harSvartNei.length}{' '}
                       {harSvartNei.length === 1 ? 'kandidat ' : 'kandidater'}
                       har tidliger svart nei til å dele CV-en.
                     </Alert>
                   )}
                   {fristUtløpt.length > 0 && (
-                    <Alert variant='warning' size='small'>
+                    <Alert variant='warning' size='small' className='mb-1'>
                       {fristUtløpt.length}{' '}
                       {fristUtløpt.length === 1 ? 'kandidat ' : 'kandidater'}
                       har tidligere fått spørsmål, men ikke svart innen fristen.
@@ -222,7 +259,11 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
                                               (k) => k.aktørid === aktørid,
                                             )
                                           ? 'Frist utløpt'
-                                          : 'Ikke spurt'}
+                                          : harIkkeSvart.some(
+                                                (k) => k.aktørid === aktørid,
+                                              )
+                                            ? 'Ikke svart'
+                                            : 'Ikke spurt'}
                                     </Table.DataCell>
                                   </Table.Row>
                                 );

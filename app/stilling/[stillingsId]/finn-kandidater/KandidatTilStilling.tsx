@@ -49,7 +49,7 @@ const KandidatTilStilling: React.FC<KandidatTilStillingProps> = ({
       )}
       {kandidatListeInformasjonHook?.data?.kandidatlisteStatus ===
         Kandidatlistestatus.Lukket && (
-        <Alert variant='error'>
+        <Alert variant='error' className='mb-4'>
           Kandidatliste er lukket, så du kan ikke legge til kandidater.
         </Alert>
       )}
