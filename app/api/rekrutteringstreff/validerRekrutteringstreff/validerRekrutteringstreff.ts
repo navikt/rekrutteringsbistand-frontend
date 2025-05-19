@@ -1,5 +1,4 @@
-import { RekrutteringstreffAPI } from '../../api-routes';
-import { postApi, postApiWithSchema } from '../../fetcher';
+import { postApi } from '../../fetcher';
 import { validerRekrutteringstreffMock } from '../mocks/validerRekrutteringstreffMock';
 import { z } from 'zod';
 
@@ -21,8 +20,8 @@ export type ValiderRekrutteringstreffResponsDto = z.infer<
   typeof ValiderRekrutteringstreffResponsDtoSchema
 >;
 
-const validerRekrutteringstreffEndepunkt = () =>
-  `${RekrutteringstreffAPI.internUrl}/valider`;
+export const validerRekrutteringstreffEndepunkt = () =>
+  '/api/rekrutteringstreff/valider';
 
 export const validerRekrutteringstreff = async (
   tittel: string,
@@ -34,11 +33,7 @@ export const validerRekrutteringstreff = async (
 };
 
 export const validerRekrutteringstreffMirage = (server: any) => {
-  return server.put(
-    validerRekrutteringstreffEndepunkt(),
-    (_: any, request: any) => {
-      const { id } = request.params;
-      return validerRekrutteringstreffMock();
-    },
+  server.post('/api/rekrutteringstreff/valider', () =>
+    validerRekrutteringstreffMock(),
   );
 };

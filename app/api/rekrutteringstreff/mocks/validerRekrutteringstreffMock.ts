@@ -1,6 +1,4 @@
-export const validerRekrutteringstreffMock = () => {
-  return {
-    bryterRetningslinjer: true,
-    begrunnelse: 'Tittel inneholder sensitiv informasjon',
-  };
-};
+export const validerRekrutteringstreffMock = () => ({
+  bryterRetningslinjer: false,
+  begrunnelse: 'Alt er ok.',
+});

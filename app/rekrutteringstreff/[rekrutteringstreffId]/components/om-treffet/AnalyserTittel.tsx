@@ -1,92 +1,86 @@
 'use client';
 
+import { ValiderRekrutteringstreffResponsDto } from '@/app/api/rekrutteringstreff/validerRekrutteringstreff/validerRekrutteringstreff';
 import {
-  validerRekrutteringstreff,
-  ValiderRekrutteringstreffResponsDto,
-} from '@/app/api/rekrutteringstreff/validerRekrutteringstreff/validerRekrutteringstreff';
-import {
+  Alert,
   BodyLong,
   BodyShort,
   Button,
-  Modal,
   Label,
-  Alert,
+  Loader,
+  Modal,
 } from '@navikt/ds-react';
-import React, { useEffect } from 'react';
-import useSWRMutation from 'swr/mutation';
-import SWRLaster from '@/app/components/SWRLaster';
+import React from 'react';
 
 export interface AnalyserTittelProps {
-  modalRef: React.RefObject<HTMLDialogElement | null>;
+  open: boolean;
+  onClose: () => void;
   tittel: string;
+  isLoadingAnalyse: boolean;
+  analyseData?: ValiderRekrutteringstreffResponsDto;
+  analyseError?: Error;
 }
 
-const AnalyserTittel: React.FC<AnalyserTittelProps> = ({ modalRef, tittel }) => {
-  const {
-    data,
-    error,
-    trigger,
-    isMutating,
-    reset,
-  } = useSWRMutation<ValiderRekrutteringstreffResponsDto, Error, string, string>(
-    'validerRekrutteringstreff',
-    (_, { arg }) => validerRekrutteringstreff(arg),
-  );
-
-  useEffect(() => {
-    if (modalRef.current?.open) trigger(tittel);
-  }, [modalRef, tittel]);
-
-  const handleClose = () => {
-    modalRef.current?.close();
-    reset();
-  };
-
-  const valideringHook = {
-    data,
-    error,
-    isLoading: isMutating,
-  } as const;
-
+const AnalyserTittel: React.FC<AnalyserTittelProps> = ({
+  open,
+  onClose,
+  tittel,
+  isLoadingAnalyse,
+  analyseData,
+  analyseError,
+}) => {
   return (
     <Modal
-      ref={modalRef}
+      open={open}
+      onClose={onClose}
       header={{ heading: 'Analyser tittel' }}
       width={400}
-      onClose={handleClose}
     >
       <Modal.Body>
-        <div className="space-y-4">
+        <div className='space-y-4'>
           <div>
             <Label>Tittel som analyseres:</Label>
             <BodyLong>{tittel}</BodyLong>
           </div>
 
-          <SWRLaster hooks={[valideringHook]}>
-            {(resultat: ValiderRekrutteringstreffResponsDto) => (
-              <div>
-                <Label>Resultat av analyse:</Label>
-                {resultat.bryterRetningslinjer ? (
-                  <Alert variant="warning">
-                    <BodyShort weight="semibold">
-                      Tittelen bryter med retningslinjer.
-                    </BodyShort>
-                    <BodyLong>{resultat.begrunnelse}</BodyLong>
-                  </Alert>
-                ) : (
-                  <Alert variant="success">
-                    <BodyShort weight="semibold">Tittelen ser grei ut.</BodyShort>
-                    <BodyLong>{resultat.begrunnelse}</BodyLong>
-                  </Alert>
-                )}
-              </div>
-            )}
-          </SWRLaster>
+          {isLoadingAnalyse && (
+            <div className='flex justify-center my-4'>
+              <Loader size='xlarge' title='Validerer tittel...' />
+            </div>
+          )}
+
+          {analyseError && !isLoadingAnalyse && (
+            <Alert variant='error'>
+              {analyseError.message ||
+                'En feil oppstod under validering av tittelen.'}
+            </Alert>
+          )}
+
+          {analyseData && !isLoadingAnalyse && !analyseError && (
+            <div>
+              <Label>Resultat av analyse:</Label>
+              {analyseData.bryterRetningslinjer ? (
+                <Alert variant='warning'>
+                  <BodyShort weight='semibold'>
+                    Tittelen bryter med retningslinjer.
+                  </BodyShort>
+                  <BodyLong>{analyseData.begrunnelse}</BodyLong>
+                </Alert>
+              ) : (
+                <Alert variant='success'>
+                  <BodyShort weight='semibold'>Tittelen ser grei ut.</BodyShort>
+                  <BodyLong>{analyseData.begrunnelse}</BodyLong>
+                </Alert>
+              )}
+            </div>
+          )}
+          {!isLoadingAnalyse && !analyseData && !analyseError && !tittel && (
+            <Alert variant='info'>Ingen tittel å analysere.</Alert>
+          )}
         </div>
       </Modal.Body>
-
-      <Modal.Footer className="pt-1">
-        <Button type="button" variant="secondary" onClick={handleClose}>
+      <Modal.Footer className='pt-1'>
+        <Button variant='secondary' onClick={onClose}>
           Lukk
         </Button>
       </Modal.Footer>

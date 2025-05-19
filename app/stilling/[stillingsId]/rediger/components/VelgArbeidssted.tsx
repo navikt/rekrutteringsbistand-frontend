@@ -42,7 +42,7 @@ const VelgArbeidssted: React.FC<VelgArbeidsstedProps> = ({ feltNavn }) => {
     if (!visAdresse && adresser.length > 0) {
       setVisAdresse(true);
     }
-  }, [adresser]);
+  }, [adresser, visAdresse]);
 
   const fjernLokasjonId = (id: string) => {
     const index = lokasjoner.findIndex((field) => field.id === id);

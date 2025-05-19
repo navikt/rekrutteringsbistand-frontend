@@ -3,8 +3,8 @@
 import RekrutteringstreffDark from '../../../../public/ikoner/rekrutteringstreff-dark.svg';
 import Rekrutteringstreff from '../../../../public/ikoner/rekrutteringstreff.svg';
 import { useRekrutteringstreffContext } from '../RekrutteringstreffContext';
-import AnalyserTittel from './om-treffet/AnalyserTittel';
 import EndreTittel from './om-treffet/components/EndreTittel';
+import TittelAnalyseKnappOgModal from './om-treffet/components/TittelAnalyseKnappOgModal';
 import {
   HendelseDTO,
   RekrutteringstreffDTO,
@@ -14,7 +14,7 @@ import SVGDarkmode from '@/app/components/SVGDarkmode';
 import SWRLaster from '@/app/components/SWRLaster';
 import SideLayout from '@/app/components/layout/SideLayout';
 import SideTopBanner from '@/app/components/layout/SideTopBanner';
-import { PencilIcon, RobotIcon } from '@navikt/aksel-icons';
+import { PencilIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button, Detail } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import { nb } from 'date-fns/locale/nb';
@@ -23,118 +23,105 @@ import { useRef } from 'react';
 export interface TreffHeaderProps {
   endreTittel: boolean;
 }
-const TreffHeader: React.FC<TreffHeaderProps> = ({ endreTittel }) => {
-  const { rekrutteringstreffId } = useRekrutteringstreffContext();
 
-  const rekrutteringstreffHook = useRekrutteringstreff(
-    rekrutteringstreffId as string,
-  );
+const TreffHeader = ({ endreTittel }: TreffHeaderProps) => {
+  const { rekrutteringstreffId } = useRekrutteringstreffContext();
+  const rekrutteringstreffHook = useRekrutteringstreff(rekrutteringstreffId);
 
   const endreTittelModalref = useRef<HTMLDialogElement>(null);
-  const analyserTittelModalref = useRef<HTMLDialogElement>(null);
 
   return (
-    <div>
-      <SWRLaster hooks={[rekrutteringstreffHook]}>
-        {(rekrutteringstreff: RekrutteringstreffDTO) => {
-          const oppretthendelse = rekrutteringstreff.hendelser.find(
-            (h: HendelseDTO) => h.hendelsestype === 'OPPRETT',
-          );
-
+    <SWRLaster hooks={[rekrutteringstreffHook]}>
+      {(treff: RekrutteringstreffDTO) => {
+        if (
+          !treff ||
+          typeof treff !== 'object' ||
+          !('tittel' in treff) ||
+          !('hendelser' in treff)
+        ) {
           return (
             <SideLayout
-              banner={
-                <div>
-                  <div className='flex items-center gap-4'>
-                    <div className='w-full flex justify-between pt-[32px] pb-10'>
-                      <SideTopBanner
-                        tittel={rekrutteringstreff.tittel}
-                        ikon={
-                          <SVGDarkmode
-                            light={Rekrutteringstreff}
-                            dark={RekrutteringstreffDark}
-                            alt='Rekrutteringstreff'
-                          />
-                        }
-                        headerInnhold={
-                          <Detail className='text-gray-400'>
-                            Opprettet av {oppretthendelse?.aktørIdentifikasjon}
-                            {', '}
-                            {oppretthendelse?.tidspunkt
-                              ? format(
-                                  new Date(oppretthendelse.tidspunkt),
-                                  'd. MMMM yyyy',
-                                  { locale: nb },
-                                )
-                              : ''}
-                          </Detail>
-                        }
-                        tittelElementer={[
-                          ...(endreTittel && rekrutteringstreff
-                            ? [
-                                <Button
-                                  key='endre-tittel-knapp'
-                                  icon={
-                                    <PencilIcon
-                                      title='Redigeringsikon'
-                                      aria-hidden
-                                    />
-                                  }
-                                  aria-label='Endre tittel'
-                                  variant='tertiary'
-                                  size='small'
-                                  onClick={() =>
-                                    endreTittelModalref.current?.showModal()
-                                  }
-                                />,
-                                <Button
-                                  key='analyser-tittel-knapp'
-                                  icon={
-                                    <RobotIcon
-                                      title='Redigeringsikon'
-                                      aria-hidden
-                                    />
-                                  }
-                                  aria-label='Endre tittel'
-                                  variant='tertiary'
-                                  size='small'
-                                  onClick={() =>
-                                    analyserTittelModalref.current?.showModal()
-                                  }
-                                />,
-                              ]
-                            : []),
-                          ...(rekrutteringstreff?.status
-                            ? [
-                                <BodyShort key='status-tekst'>
-                                  {rekrutteringstreff.status}
-                                </BodyShort>,
-                              ]
-                            : []),
-                        ]}
-                      ></SideTopBanner>
-                    </div>
-
-                    <EndreTittel
-                      modalRef={endreTittelModalref}
-                      rekrutteringstreff={rekrutteringstreff}
-                      onUpdated={rekrutteringstreffHook.mutate}
-                    />
-
-                    <AnalyserTittel
-                      modalRef={analyserTittelModalref}
-                      tittel={rekrutteringstreff.tittel}
-                    />
-                  </div>
-                </div>
-              }
+              banner={<SideTopBanner tittel='Problem med lasting av data' />}
             >
-              <div></div>
+              <div>Kunne ikke laste rekrutteringstreffdetaljer riktig.</div>
             </SideLayout>
           );
-        }}
-      </SWRLaster>
-    </div>
+        }
+
+        const opprett = treff.hendelser.find(
+          (h: HendelseDTO) => h.hendelsestype === 'OPPRETT',
+        );
+
+        const visningstittel = treff.tittel;
+
+        return (
+          <SideLayout
+            banner={
+              <>
+                <div className='flex items-center gap-4'>
+                  <div className='w-full flex justify-between pt-[32px] pb-10'>
+                    <SideTopBanner
+                      tittel={visningstittel}
+                      ikon={
+                        <SVGDarkmode
+                          light={Rekrutteringstreff}
+                          dark={RekrutteringstreffDark}
+                          alt='Rekrutteringstreff'
+                        />
+                      }
+                      headerInnhold={
+                        <Detail className='text-gray-400'>
+                          Opprettet av {opprett?.aktørIdentifikasjon}
+                          {', '}
+                          {opprett?.tidspunkt
+                            ? format(
+                                new Date(opprett.tidspunkt),
+                                'd. MMMM yyyy',
+                                { locale: nb },
+                              )
+                            : ''}
+                        </Detail>
+                      }
+                      tittelElementer={[
+                        ...(endreTittel
+                          ? [
+                              <Button
+                                key='endre-tittel-knapp'
+                                icon={<PencilIcon aria-hidden />}
+                                aria-label='Endre tittel'
+                                variant='tertiary'
+                                size='small'
+                                onClick={() =>
+                                  endreTittelModalref.current?.showModal()
+                                }
+                              />,
+                              <TittelAnalyseKnappOgModal
+                                key='tittel-analyse'
+                                tittel={treff.tittel}
+                              />,
+                            ]
+                          : []),
+                        ...(treff.status
+                          ? [<BodyShort key='status'>{treff.status}</BodyShort>]
+                          : []),
+                      ]}
+                    />
+                  </div>
+
+                  <EndreTittel
+                    modalRef={endreTittelModalref}
+                    rekrutteringstreff={treff}
+                    onUpdated={rekrutteringstreffHook.mutate}
+                  />
+                </div>
+              </>
+            }
+          >
+            <div />
+          </SideLayout>
+        );
+      }}
+    </SWRLaster>
   );
 };
 
