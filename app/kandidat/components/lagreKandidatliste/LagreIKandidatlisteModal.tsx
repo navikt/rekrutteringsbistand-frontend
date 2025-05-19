@@ -50,7 +50,7 @@ const LagreIKandidatlisteModal: React.FC<LagreIKandidatlisteProps> = ({
   return (
     <div>
       <Modal
-        width={600}
+        width={800}
         ref={ref}
         header={{
           heading: `Lagre ${markerteKandidater?.length || 0} kandidat i kandidatlister`,
