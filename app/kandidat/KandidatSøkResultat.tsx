@@ -73,7 +73,7 @@ const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({
             <Heading size='medium'>
               Viser {kandidatData.antallTotalt} treff
             </Heading>
-            <div className='my-4 flex items-center justify-between'>
+            <div className='my-2 flex items-center justify-between'>
               <div>
                 <Checkbox
                   checked={

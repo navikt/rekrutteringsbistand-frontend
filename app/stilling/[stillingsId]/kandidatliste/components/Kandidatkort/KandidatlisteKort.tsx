@@ -17,6 +17,7 @@ import KandidatCheckbox from './components/KandidatCheckbox';
 import KandidatListeKortValg from './components/KandidatListeKortValg';
 import KandidatlisteNavn from './components/KandidatlisteNavn';
 import { BodyShort, Box } from '@navikt/ds-react';
+import { useQueryState } from 'nuqs';
 import * as React from 'react';
 
 export interface KandidatListeKortProps {
@@ -31,6 +32,11 @@ const KandidatListeKort: React.FC<KandidatListeKortProps> = ({
   const kolonneStyling = 'break-words';
   <div className={kolonneStyling}></div>;
   const { lukketKandidatliste, kandidatlisteId } = useKandidatlisteContext();
+
+  const [visKandidatnr, setVisKandidatnr] = useQueryState('visKandidatnr', {
+    defaultValue: '',
+    clearOnDefault: true,
+  });
 
   if (usynligKandidat) {
     const fåttJobben =
@@ -96,15 +102,25 @@ const KandidatListeKort: React.FC<KandidatListeKortProps> = ({
   }
 
   const slettet = kandidat?.arkivert;
-
+  const inaktiv = kandidat?.fodselsnr === null;
   if (kandidat) {
+    const aktiv = visKandidatnr === kandidat.kandidatnr;
     return (
       <Box.New
+        onClick={() =>
+          !inaktiv && !slettet
+            ? setVisKandidatnr(kandidat?.kandidatnr ?? '')
+            : null
+        }
         padding='4'
         background='neutral-softA'
         borderRadius='xlarge'
         data-testid='stillings-kort'
-        className='min-w-fit'
+        className={`cursor-pointer min-w-fit
+          focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--ax-border-focus)]
+          ${!aktiv && !inaktiv && !slettet ? 'hover:bg-[var(--ax-bg-neutral-moderate-hover)] ' : ''}
+          ${aktiv ? 'bg-[var(--ax-bg-neutral-moderate-pressed)]' : ''}`}
+        tabIndex={0}
       >
         <div
           className={`grid ${KANDIDATLISTE_COLUMN_LAYOUT} gap-x-3 items-center `}

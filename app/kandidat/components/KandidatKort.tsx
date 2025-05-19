@@ -30,7 +30,7 @@ const KandidatKort: React.FC<IKandidatKort> = ({
   stillingsId,
 }) => {
   const { markerteKandidater, setMarkert } = useKandidatSøkMarkerteContext();
-  const [, setVisKandidatnr] = useQueryState('visKandidatnr', {
+  const [visKandidatnr, setVisKandidatnr] = useQueryState('visKandidatnr', {
     defaultValue: '',
     clearOnDefault: true,
   });
@@ -49,50 +49,45 @@ const KandidatKort: React.FC<IKandidatKort> = ({
     </div>
   );
 
+  const aktiv = visKandidatnr === kandidat.arenaKandidatnr;
+
   return (
     <Box.New
-      className='@container/kandidatlistekort mb-4 flex flex-col pl-4 pb-4 pr-4 min-w-fit'
       background='neutral-softA'
+      onClick={() => setVisKandidatnr(kandidat?.arenaKandidatnr ?? '')}
       borderRadius='xlarge'
       data-testid='stillings-kort'
+      className={`p-5 cursor-pointer @container/kandidatlistekort flex flex-col min-w-fit
+          focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--ax-border-focus)]
+          ${aktiv ? 'bg-[var(--ax-bg-neutral-moderate-pressed)]' : 'hover:bg-[var(--ax-bg-neutral-moderate-hover)] '}`}
+      tabIndex={0}
     >
-      <div className=' flex flex-row'>
-        <div>
-          <Checkbox
-            disabled={
-              !kandidat.arenaKandidatnr ||
-              Boolean(
-                alleredeLagtTil?.some((k) => k === kandidat.arenaKandidatnr),
-              )
-            }
-            checked={
-              Boolean(erMarkert) ||
-              Boolean(
-                alleredeLagtTil?.some((k) => k === kandidat.arenaKandidatnr),
-              )
-            }
-            aria-selected={Boolean(erMarkert)}
-            hideLabel
-            className='mr-4'
-            onChange={() =>
-              kandidat.arenaKandidatnr && setMarkert(kandidat.arenaKandidatnr)
-            }
-          >
-            Checkbox
-          </Checkbox>
-        </div>
-        <div className='mt-2 flex-grow'>
-          <Heading
-            className='underline aksel-link aksel-link--action cursor-pointer'
-            size='small'
-          >
-            <div
-              data-testid={`kandidatkort-lenke-${kandidat.arenaKandidatnr}`}
-              onClick={() =>
-                kandidat.arenaKandidatnr &&
-                setVisKandidatnr(kandidat.arenaKandidatnr)
-              }
-            >
+      <div className='flex flex-row '>
+        <Checkbox
+          disabled={
+            !kandidat.arenaKandidatnr ||
+            Boolean(
+              alleredeLagtTil?.some((k) => k === kandidat.arenaKandidatnr),
+            )
+          }
+          checked={
+            Boolean(erMarkert) ||
+            Boolean(
+              alleredeLagtTil?.some((k) => k === kandidat.arenaKandidatnr),
+            )
+          }
+          aria-selected={Boolean(erMarkert)}
+          hideLabel
+          className='-mt-2 mr-4'
+          onChange={() =>
+            kandidat.arenaKandidatnr && setMarkert(kandidat.arenaKandidatnr)
+          }
+        >
+          Checkbox
+        </Checkbox>
+        <div className='flex-grow'>
+          <Heading size='small'>
+            <div data-testid={`kandidatkort-lenke-${kandidat.arenaKandidatnr}`}>
               {hentKandidatensNavn(kandidat)}
             </div>
           </Heading>
