@@ -3,6 +3,7 @@
 import { SidebarProvider } from '../../components/ui/sidebar';
 import { rekbisError } from '../../util/rekbisError';
 import { useBruker } from '../api/bruker/useBruker';
+import { useModiaAktivBruker } from '../api/modia/context/useModiaAktivBruker';
 import { useModiaAktivEnhet } from '../api/modia/context/useModiaAktivEnhet';
 import { useDecoratorData } from '../api/modia/decorator/useDecoratorData';
 import SWRLaster from '../components/SWRLaster';
@@ -26,6 +27,7 @@ const RekrutteringsbistandProvider: React.FC<
   const brukerHook = useBruker();
   const dekoratørHook = useDecoratorData();
   const modiaAktivEnhetHook = useModiaAktivEnhet();
+  const modiaAktivBrukerHook = useModiaAktivBruker();
 
   return (
     <ThemeProvider>
@@ -38,8 +40,15 @@ const RekrutteringsbistandProvider: React.FC<
           provider: () => new Map(), // Forces a new cache for each page load
         }}
       >
-        <SWRLaster hooks={[brukerHook, dekoratørHook, modiaAktivEnhetHook]}>
-          {(bruker, dekoratørData, aktivEnhetData) => {
+        <SWRLaster
+          hooks={[
+            brukerHook,
+            dekoratørHook,
+            modiaAktivEnhetHook,
+            modiaAktivBrukerHook,
+          ]}
+        >
+          {(bruker, dekoratørData, aktivEnhetData, aktivBrukerData) => {
             const brukerData = {
               ...dekoratørData,
               roller: bruker?.roller ?? [],
@@ -54,6 +63,7 @@ const RekrutteringsbistandProvider: React.FC<
               <ApplikasjonContextProvider
                 brukerData={brukerData}
                 aktivEnhet={aktivEnhetData?.aktivEnhet ?? null}
+                aktivBruker={aktivBrukerData?.aktivBruker ?? null}
               >
                 <ErrorBoundary>
                   <NavigasjonsBlockerProvider>
