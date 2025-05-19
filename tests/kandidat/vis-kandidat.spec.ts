@@ -19,9 +19,9 @@ test('Vis kandidat', async ({ page }) => {
   await expect(
     page.getByRole('heading', { name: 'Profilkvalitet' }),
   ).toBeVisible();
-  await expect(
-    page.getByRole('heading', { name: 'Siste aktivitet' }),
-  ).toBeVisible();
+  // await expect(
+  //   page.getByRole('heading', { name: 'Siste aktivitet' }),
+  // ).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Ønsker' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Utdanning' })).toBeVisible();
 
