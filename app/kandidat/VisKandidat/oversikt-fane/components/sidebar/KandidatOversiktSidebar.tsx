@@ -1,6 +1,5 @@
 import GråBoks from '../GråBoks';
 import Profilkvalitet from './Profilkvalitet';
-import SisteAktivitet from './SisteAktivitet';
 import * as React from 'react';
 
 const KandidatOversiktSidebar: React.FC = ({}) => {
@@ -9,9 +8,9 @@ const KandidatOversiktSidebar: React.FC = ({}) => {
       <GråBoks tittel='Profilkvalitet'>
         <Profilkvalitet />
       </GråBoks>
-      <GråBoks tittel='Siste aktivitet'>
+      {/* <GråBoks tittel='Siste aktivitet'>
         <SisteAktivitet />
-      </GråBoks>
+      </GråBoks> */}
 
       {/* <GråBoks tittel='Forslag til stillinger'>
           <ForslagTilStilling />

@@ -1,5 +1,5 @@
-import { TilstandPåForespørsel } from '../../../../stilling/[stillingsId]/kandidatliste/KandidatTyper';
-import { ForespurteOmDelingAvCvDTO } from './useForespurteOmDelingAvCv';
+import { ForespurteOmDelingAvCvDTO } from '../app/api/foresporsel-om-deling-av-cv/foresporsler/[...slug]/useForespurteOmDelingAvCv';
+import { TilstandPåForespørsel } from '../app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
 import { Faker, nb_NO } from '@faker-js/faker';
 
 const faker = new Faker({ locale: [nb_NO] });
