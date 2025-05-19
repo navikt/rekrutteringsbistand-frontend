@@ -102,19 +102,24 @@ const KandidatListeKort: React.FC<KandidatListeKortProps> = ({
   }
 
   const slettet = kandidat?.arkivert;
-
+  const inaktiv = kandidat?.fodselsnr === null;
   if (kandidat) {
     const aktiv = visKandidatnr === kandidat.kandidatnr;
     return (
       <Box.New
-        onClick={() => setVisKandidatnr(kandidat?.kandidatnr ?? '')}
+        onClick={() =>
+          !inaktiv && !slettet
+            ? setVisKandidatnr(kandidat?.kandidatnr ?? '')
+            : null
+        }
         padding='4'
         background='neutral-softA'
         borderRadius='xlarge'
         data-testid='stillings-kort'
         className={`cursor-pointer min-w-fit
           focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--ax-border-focus)]
-          ${aktiv ? 'bg-[var(--ax-bg-neutral-moderate-pressed)]' : 'hover:bg-[var(--ax-bg-neutral-moderate-hover)] '}`}
+          ${!aktiv && !inaktiv && !slettet ? 'hover:bg-[var(--ax-bg-neutral-moderate-hover)] ' : ''}
+          ${aktiv ? 'bg-[var(--ax-bg-neutral-moderate-pressed)]' : ''}`}
         tabIndex={0}
       >
         <div
