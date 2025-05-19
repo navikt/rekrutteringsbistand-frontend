@@ -1,6 +1,6 @@
 'use client';
 
-import { RekrutteringstreffTittelValideringResponsDto } from '@/app/api/rekrutteringstreff/tittelValidering/useRekrutteringstreffTittelValidering';
+import { ValiderRekrutteringstreffResponsDto } from '@/app/api/rekrutteringstreff/tittelValidering/useValiderRekrutteringstreff';
 import {
   Alert,
   BodyLong,
@@ -17,7 +17,7 @@ export interface AnalyserTittelProps {
   onClose: () => void;
   tittel: string;
   isLoadingAnalyse: boolean;
-  analyseData?: RekrutteringstreffTittelValideringResponsDto;
+  analyseData?: ValiderRekrutteringstreffResponsDto;
   analyseError?: Error;
 }
 
