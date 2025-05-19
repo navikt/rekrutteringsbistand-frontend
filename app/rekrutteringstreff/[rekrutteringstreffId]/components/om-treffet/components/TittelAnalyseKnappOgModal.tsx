@@ -31,14 +31,14 @@ const TittelAnalyseKnappOgModal: React.FC<TittelAnalyseKnappOgModalProps> = ({
         ? 'error'
         : 'success';
 
-  let robotIconElement = <RobotIcon aria-hidden />;
+  let robotIconElement = <RobotIcon aria-hidden fontSize='1.5em' />;
   let robotButtonClass = '';
 
   if (status === 'success') {
-    robotIconElement = <RobotSmileIcon aria-hidden />;
+    robotIconElement = <RobotSmileIcon aria-hidden fontSize='1.5em' />;
     robotButtonClass = 'text-green-400';
   } else if (status === 'error') {
-    robotIconElement = <RobotFrownIcon aria-hidden />;
+    robotIconElement = <RobotFrownIcon aria-hidden fontSize='1.5em' />;
     robotButtonClass = 'text-red-600';
   }
 
@@ -52,7 +52,7 @@ const TittelAnalyseKnappOgModal: React.FC<TittelAnalyseKnappOgModalProps> = ({
         className={robotButtonClass}
         aria-label='Analyser tittel'
         variant='tertiary'
-        size='small'
+        size='medium'
         onClick={handleOpenModal}
         disabled={isButtonDisabled}
       />
