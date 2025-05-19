@@ -1,7 +1,7 @@
 'use client';
 
 import AnalyserTittel from '../AnalyserTittel';
-import { useTittelAnalyse } from '@/app/api/rekrutteringstreff/validerRekrutteringstreff/useTittelAnalyse';
+import { useRekruttteringstreffTittelValidering } from '@/app/api/rekrutteringstreff/tittelValidering/useRekrutteringstreffTittelValidering';
 import { RobotIcon, RobotSmileIcon, RobotFrownIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import React, { useState } from 'react';
@@ -15,7 +15,7 @@ const TittelAnalyseKnappOgModal: React.FC<TittelAnalyseKnappOgModalProps> = ({
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const analyse = useTittelAnalyse(tittel);
+  const analyse = useRekruttteringstreffTittelValidering(tittel);
 
   const handleOpenModal = () => {
     if (typeof tittel === 'string' && tittel.length > 0 && !analyse.isLoading) {

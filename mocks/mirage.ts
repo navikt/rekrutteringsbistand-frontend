@@ -40,9 +40,9 @@ import { leggTilNyJobbsøkerMirage } from '@/app/api/rekrutteringstreff/ny-jobbs
 import { opprettNyttRekrutteringstreffMirage } from '@/app/api/rekrutteringstreff/nytt-rekrutteringstreff/opprettNyttRekrutteringstreff';
 import { oppdaterRekrutteringstreffMirage } from '@/app/api/rekrutteringstreff/oppdater-rekrutteringstreff/oppdaterRerkutteringstreff';
 import { slettRekrutteringstreffMirage } from '@/app/api/rekrutteringstreff/slett-rekrutteringstreff/slettRekrutteringstreff';
+import { rekrutteringstreffTittelValideringMirageMock } from '@/app/api/rekrutteringstreff/tittelValidering/useRekrutteringstreffTittelValidering';
 import { rekrutteringstreffMirage } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { rekrutteringstreffOversiktMirage } from '@/app/api/rekrutteringstreff/useRekrutteringstreffOversikt';
-import { validerRekrutteringstreffMirage } from '@/app/api/rekrutteringstreff/validerRekrutteringstreff/validerRekrutteringstreff';
 import { createServer, Model } from 'miragejs';
 
 export function makeServer({ environment = 'test' } = {}) {
@@ -85,7 +85,7 @@ export function makeServer({ environment = 'test' } = {}) {
       rekrutteringstreffOversiktMirage(this);
       rekrutteringstreffMirage(this);
       oppdaterRekrutteringstreffMirage(this);
-      validerRekrutteringstreffMirage(this);
+      rekrutteringstreffTittelValideringMirageMock(this);
       opprettNyttRekrutteringstreffMirage(this);
       leggTilNyArbeidsgiverMirage(this);
       leggTilNyJobbsøkerMirage(this);
