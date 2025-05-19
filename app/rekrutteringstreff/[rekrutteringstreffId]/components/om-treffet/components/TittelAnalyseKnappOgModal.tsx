@@ -36,10 +36,10 @@ const TittelAnalyseKnappOgModal: React.FC<TittelAnalyseKnappOgModalProps> = ({
 
   if (status === 'success') {
     robotIconElement = <RobotSmileIcon aria-hidden />;
-    robotButtonClass = 'text-green-600';
+    robotButtonClass = 'text-green-400';
   } else if (status === 'error') {
     robotIconElement = <RobotFrownIcon aria-hidden />;
-    robotButtonClass = 'aksel-error-message';
+    robotButtonClass = 'text-red-600';
   }
 
   const isButtonDisabled =
