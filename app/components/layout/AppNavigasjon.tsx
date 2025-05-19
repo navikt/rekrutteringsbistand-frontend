@@ -185,7 +185,7 @@ export function AppNavigasjon() {
               kreverRoller={null}
             />
             <div
-              className={`${antallUlesteNyheter > 0 ? '  top-1 right-0 h-3 w-3 rounded-full bg-[#0067c5]' : ''}`}
+              className={`${antallUlesteNyheter > 0 ? 'absolute  top-5 left-3 h-3 w-3 rounded-full bg-[#0067c5]' : ''}`}
             />
           </div>
           <GiTilbakemelding />

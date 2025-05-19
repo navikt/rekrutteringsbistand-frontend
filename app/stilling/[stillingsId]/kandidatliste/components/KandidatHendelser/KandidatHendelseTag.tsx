@@ -15,6 +15,7 @@ import { Tag, TagProps } from '@navikt/ds-react';
 
 export enum KandidatHendelseType {
   Spurt_om_å_dele_CV = 'Spurt om å dele CV: Frist',
+  Spurt_om_å_dele_CV_IKKE_DIGITAL = 'Spurt om å dele CV: Frist ',
   Deling_Av_CV_Feilet = 'Deling av CV feilet',
   Deling_av_CV_JA = 'Deling av CV: Ja',
   Deling_av_CV_NEI = 'Deling av CV: Nei',
@@ -44,6 +45,7 @@ const hendelseVariant = (type: KandidatHendelseType): TagProps['variant'] => {
     case KandidatHendelseType.Frist_for_deling_av_cv_utløpt:
     case KandidatHendelseType.Fjernet_fått_jobben:
     case KandidatHendelseType.SMS_FEIL:
+    case KandidatHendelseType.Spurt_om_å_dele_CV_IKKE_DIGITAL:
       return 'warning';
     case KandidatHendelseType.Avbrutt_i_aktivitetsplanen:
     case KandidatHendelseType.Deling_av_CV_NEI:
@@ -62,6 +64,7 @@ const hendelseIkon = (type: KandidatHendelseType): React.ReactNode => {
     case KandidatHendelseType.Deling_Av_CV_Feilet:
     case KandidatHendelseType.Avbrutt_i_aktivitetsplanen:
     case KandidatHendelseType.SMS_FEIL:
+    case KandidatHendelseType.Spurt_om_å_dele_CV_IKKE_DIGITAL:
       return <ExclamationmarkTriangleIcon />;
     case KandidatHendelseType.Deling_av_CV_JA:
       return <ThumbUpIcon />;
