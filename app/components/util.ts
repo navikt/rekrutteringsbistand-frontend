@@ -52,8 +52,12 @@ export const formaterNorskDato = (
   const { dato, visning, visTid } = props;
   const parsedDato = parseNorskDato(dato);
 
+  if (!parsedDato && typeof dato === 'string') {
+    return dato;
+  }
+
   if (!parsedDato) {
-    return null; // If parsing failed, return null
+    return null;
   }
 
   const getBaseDateFormat = () => {
