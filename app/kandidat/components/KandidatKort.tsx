@@ -37,8 +37,13 @@ const KandidatKort: React.FC<IKandidatKort> = ({
   const erMarkert = markerteKandidater?.some(
     (k) => k === kandidat.arenaKandidatnr,
   );
+
+  const stopPropagation = (e: React.MouseEvent) => {
+    e.stopPropagation();
+  };
+
   const Knapp = (
-    <div className='mt-2 flex justify-end self-end'>
+    <div className='mt-2 flex justify-end self-end' onClick={stopPropagation}>
       {!stillingsId && (
         <div className='flex-end flex flex-col justify-center gap-2 font-bold'>
           <Link href={`/stilling/?visKandidatnr=${kandidat.arenaKandidatnr}`}>
@@ -63,28 +68,30 @@ const KandidatKort: React.FC<IKandidatKort> = ({
       tabIndex={0}
     >
       <div className='flex flex-row '>
-        <Checkbox
-          disabled={
-            !kandidat.arenaKandidatnr ||
-            Boolean(
-              alleredeLagtTil?.some((k) => k === kandidat.arenaKandidatnr),
-            )
-          }
-          checked={
-            Boolean(erMarkert) ||
-            Boolean(
-              alleredeLagtTil?.some((k) => k === kandidat.arenaKandidatnr),
-            )
-          }
-          aria-selected={Boolean(erMarkert)}
-          hideLabel
-          className='-mt-2 mr-4'
-          onChange={() =>
-            kandidat.arenaKandidatnr && setMarkert(kandidat.arenaKandidatnr)
-          }
-        >
-          Checkbox
-        </Checkbox>
+        <div onClick={stopPropagation}>
+          <Checkbox
+            disabled={
+              !kandidat.arenaKandidatnr ||
+              Boolean(
+                alleredeLagtTil?.some((k) => k === kandidat.arenaKandidatnr),
+              )
+            }
+            checked={
+              Boolean(erMarkert) ||
+              Boolean(
+                alleredeLagtTil?.some((k) => k === kandidat.arenaKandidatnr),
+              )
+            }
+            aria-selected={Boolean(erMarkert)}
+            hideLabel
+            className='-mt-2 mr-4'
+            onChange={() =>
+              kandidat.arenaKandidatnr && setMarkert(kandidat.arenaKandidatnr)
+            }
+          >
+            Checkbox
+          </Checkbox>
+        </div>
         <div className='flex-grow'>
           <Heading size='small'>
             <div data-testid={`kandidatkort-lenke-${kandidat.arenaKandidatnr}`}>
