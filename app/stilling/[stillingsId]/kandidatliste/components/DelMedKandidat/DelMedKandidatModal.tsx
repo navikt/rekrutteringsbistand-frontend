@@ -58,7 +58,10 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
   const kandidaterVenterPåSvar = CVAlleredeForespurtDeling(markerteKandidater);
   const harSvartJa = CVKandidaterSvartJa(markerteKandidater);
 
-  const delCVpåNytt = [...kandidaterSvartNei, ...kandidatFristUtløpt];
+  const delCVpåNytt = [...kandidaterSvartNei, ...kandidatFristUtløpt].filter(
+    (kandidat) => !harSvartJa.some((k) => k.aktørid === kandidat.aktørid),
+  );
+
   const delFørsteGang = markerteKandidater.filter(
     (kandidat) =>
       !harSvartJa.some((k) => k.aktørid === kandidat.aktørid) &&
