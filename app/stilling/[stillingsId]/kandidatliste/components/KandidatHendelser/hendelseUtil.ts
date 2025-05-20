@@ -41,6 +41,7 @@ export const CVKandidaterSvartNei_IkkeSpurtPåNytt = (
     const senereSpurtHendelseFinnes = cvHendelser.some((hendelse) => {
       if (
         hendelse.type === KandidatHendelseType.Spurt_om_å_dele_CV ||
+        hendelse.type === KandidatHendelseType.Deling_av_CV_JA ||
         hendelse.type === KandidatHendelseType.Spurt_om_å_dele_CV_IKKE_DIGITAL
       ) {
         const tidspunktSpurt = new Date(hendelse.dato || '');
