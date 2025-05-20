@@ -64,10 +64,9 @@ export const mapTilKandidatHendelser = ({
 
   const varsler = varsel ? [varsel] : [];
 
-  const sisteHendelse = [
-    ...(cvHendelser ?? []),
-    ...(utfallsendringer ?? []),
-  ].sort((a, b) => (b.dato?.getTime() || 0) - (a.dato?.getTime() || 0))[0];
+  const sisteHendelse = [...(cvHendelser ?? []), ...(utfallsendringer ?? [])]
+    .filter((hendelse) => hendelse.type !== null)
+    .sort((a, b) => (b.dato?.getTime() || 0) - (a.dato?.getTime() || 0))[0];
 
   const sisteSms = varsler
     ? varsler.sort(
