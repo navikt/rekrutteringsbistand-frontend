@@ -14,7 +14,6 @@ export const CVKandidaterSvartJa = (kandidater: KandidatVisningProps[]) => {
     ) {
       return true;
     }
-
     return false;
   });
 };
@@ -100,8 +99,12 @@ export const CVAlleredeForespurtDeling = (kandidater: KandidatVisningProps[]) =>
         hendelse.type === KandidatHendelseType.Spurt_om_å_dele_CV ||
         hendelse.type === KandidatHendelseType.Spurt_om_å_dele_CV_IKKE_DIGITAL
       ) {
-        const tidspunktSpurt = new Date(hendelse.dato || '');
-        return tidspunktSpurt > new Date();
+        const svarfrist =
+          hendelse.raw && 'svarfrist' in hendelse.raw
+            ? new Date(hendelse.raw.svarfrist || '')
+            : null;
+
+        return svarfrist && svarfrist > new Date();
       }
       return false;
     });
