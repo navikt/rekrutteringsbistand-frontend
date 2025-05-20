@@ -2,7 +2,7 @@ import { KandidatVisningProps } from '../KandidatlisteFilter/useFiltrerteKandida
 import { KandidatHendelseType } from './KandidatHendelseTag';
 
 export const CVKandidaterSvartNei_IkkeSpurtPåNytt = (
-  kandidater: KandidatVisningProps[], // Corrected parameter type
+  kandidater: KandidatVisningProps[],
 ) => {
   return kandidater.filter((k) => {
     const cvHendelser = k.kandidatHendelser.cvHendelser;
@@ -10,7 +10,6 @@ export const CVKandidaterSvartNei_IkkeSpurtPåNytt = (
       return false;
     }
 
-    // Find all 'Deling_av_CV_NEI' events and sort them by date to get the latest
     const neiHendelser = cvHendelser.filter(
       (hendelse) => hendelse.type === KandidatHendelseType.Deling_av_CV_NEI,
     );
@@ -38,7 +37,7 @@ export const CVKandidaterSvartNei_IkkeSpurtPåNytt = (
 };
 
 export const CVkandidaterMedUtløptFrist_IkkeSpurtPåNytt = (
-  kandidater: KandidatVisningProps[], // Corrected parameter type
+  kandidater: KandidatVisningProps[],
 ) =>
   kandidater.filter((k) => {
     const cvHendelser = k.kandidatHendelser.cvHendelser;
@@ -71,9 +70,7 @@ export const CVkandidaterMedUtløptFrist_IkkeSpurtPåNytt = (
     return !senereSpurtHendelseFinnes;
   });
 
-export const CVAlleredeForespurtDeling = (
-  kandidater: KandidatVisningProps[], // Corrected parameter type
-) =>
+export const CVAlleredeForespurtDeling = (kandidater: KandidatVisningProps[]) =>
   kandidater.filter((k) => {
     const cvHendelser = k.kandidatHendelser.cvHendelser;
     if (!cvHendelser || cvHendelser.length === 0) {
