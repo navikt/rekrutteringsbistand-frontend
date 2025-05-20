@@ -17,7 +17,7 @@ const KandidatlisteNavn: React.FC<KandidatlisteNavnProps> = ({
 }) => {
   if (usynligKandidat) {
     return (
-      <div className={`flex flex-col gap-2`}>
+      <div className={`flex flex-col `}>
         <BodyShort>
           {storForbokstav(usynligKandidat.etternavn)},{' '}
           {storForbokstav(usynligKandidat.fornavn)}
@@ -33,7 +33,7 @@ const KandidatlisteNavn: React.FC<KandidatlisteNavnProps> = ({
 
   if (!kandidat?.fodselsnr) {
     return (
-      <div className={`flex flex-col gap-2`}>
+      <div className={`flex flex-col `}>
         <BodyShort>
           {kandidat.etternavn}, {kandidat.fornavn}
         </BodyShort>
@@ -44,17 +44,19 @@ const KandidatlisteNavn: React.FC<KandidatlisteNavnProps> = ({
 
   if (slettet) {
     return (
-      <div className={`flex flex-col gap-2`}>
+      <div className={`flex flex-col `}>
         {kandidat.etternavn}, {kandidat.fornavn}
-        <span>Slettet av {kandidat.arkivertAv?.navn}</span>
+        <BodyShort textColor='subtle'>
+          Slettet av {kandidat.arkivertAv?.navn}
+        </BodyShort>
       </div>
     );
   }
 
   return (
-    <div className={`flex flex-col gap-2`}>
+    <div className={`flex flex-col `}>
       {kandidat.etternavn}, {kandidat.fornavn}
-      <span>f.nr. {kandidat.fodselsnr}</span>
+      <BodyShort textColor='subtle'>f.nr. {kandidat.fodselsnr}</BodyShort>
     </div>
   );
 };

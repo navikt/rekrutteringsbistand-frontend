@@ -1,9 +1,11 @@
 import { useKandidatlisteContext } from '../../KandidatlisteContext';
+import { KandidatHendelseType } from '../KandidatHendelser/KandidatHendelseTag';
 import { KandidatHendelser } from '../KandidatHendelser/KandidatHendelser';
 import {
   KandidatlisteSortering,
   useKandidatlisteFilterContext,
 } from './KandidatlisteFilterContext';
+// Ny import
 import {
   KandidatListeKandidatDTO,
   usynligKandidaterSchemaDTO,
@@ -22,7 +24,7 @@ type FiltrerteKandidater = {
 
 const useFiltrerteKandidater = (): FiltrerteKandidater | null => {
   const { kandidater, usynligeKandidater } = useKandidatlisteContext();
-  const { fritekstSøk, sortering, internStatus, visSlettede } =
+  const { fritekstSøk, sortering, internStatus, visSlettede, hendelseFilter } =
     useKandidatlisteFilterContext();
 
   const [filtrerteKandidater, setFiltrerteKandidater] =
@@ -126,6 +128,21 @@ const useFiltrerteKandidater = (): FiltrerteKandidater | null => {
         ?.filter((kandidat) => {
           if (internStatus.length === 0) return true;
           return internStatus.includes(kandidat.status);
+        })
+        ?.filter((kandidat) => {
+          if (hendelseFilter.length === 0) return true;
+
+          const filterTyper = hendelseFilter.map(
+            (filter) =>
+              KandidatHendelseType[filter as keyof typeof KandidatHendelseType],
+          );
+
+          return filterTyper.some((filter) => {
+            if (kandidat.kandidatHendelser.sisteHendelse?.type === filter) {
+              return true;
+            }
+            return false;
+          });
         })
         ?.filter((kandidat) => {
           if (visSlettede === 'false') {

@@ -42,6 +42,9 @@ export const mapTilKandidatHendelser = ({
 
   if (beskjedForKandidat !== null && beskjedForKandidat?.opprettet) {
     varsel = {
+      type: beskjedForKandidat?.eksternStatus?.includes('FEIL')
+        ? KandidatHendelseType.SMS_FEIL
+        : KandidatHendelseType.SMS_OK,
       tag: (
         <KandidatHendelseTag
           type={

@@ -5,12 +5,14 @@ import {
 } from '../../../../../api/kandidat/schema.zod';
 import { Sms } from '../../../../../api/kandidatvarsel/kandidatvarsel';
 import KandidatHendelseTagVisning from '../KandidatHendelseTagVisning';
+import { KandidatHendelseType } from './KandidatHendelseTag';
 import { JSX } from 'react';
 
 export interface KandidatHendelseInformasjon {
   tag?: JSX.Element;
   tekst?: string;
   dato: Date | null;
+  type: KandidatHendelseType | null;
   raw:
     | utfallsendringerSchemaDTO
     | KandidatForespurtOmDelingSchema

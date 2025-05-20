@@ -33,6 +33,7 @@ export const mapCVHendele = (
             dato={svarFrist}
           />
         ),
+        type: KandidatHendelseType.Spurt_om_å_dele_CV,
         tekst: 'Prøver varsling',
         ...defaultData,
       };
@@ -44,6 +45,7 @@ export const mapCVHendele = (
             dato={svarFrist}
           />
         ),
+        type: KandidatHendelseType.Spurt_om_å_dele_CV,
         dato: new Date(forespørsel.deltTidspunkt),
         tekst: `av ${forespørsel.deltAv}`,
         raw: forespørsel,
@@ -56,6 +58,7 @@ export const mapCVHendele = (
             dato={svarFrist}
           />
         ),
+        type: KandidatHendelseType.Spurt_om_å_dele_CV_IKKE_DIGITAL,
         tekst:
           'Kandidaten bruker ikke digitale tjenester fra Nav. Du må ringe og registrere svaret i stillingskortet i Aktivitetsplanen.',
         ...defaultData,
@@ -68,6 +71,7 @@ export const mapCVHendele = (
             dato={svarFrist}
           />
         ),
+        type: KandidatHendelseType.Deling_Av_CV_Feilet,
         tekst: 'Kan ikke opprette forespørsel',
         ...defaultData,
       };
@@ -84,11 +88,13 @@ export const mapCVHendele = (
               dato={svarFrist}
             />
           ),
+          type: KandidatHendelseType.Frist_for_deling_av_cv_utløpt,
           tekst: `Frist for deling av CV utløpt ${forespørsel.svarfrist && formaterNorskDato({ dato: forespørsel.svarfrist })}`,
           ...defaultData,
         };
       }
       return {
+        type: KandidatHendelseType.Avbrutt_i_aktivitetsplanen,
         tag: (
           <KandidatHendelseTag
             type={KandidatHendelseType.Avbrutt_i_aktivitetsplanen}
@@ -105,11 +111,13 @@ export const mapCVHendele = (
               dato={svarFrist}
             />
           ),
+          type: KandidatHendelseType.Deling_av_CV_JA,
           tekst: `${forespørsel.svar?.svartAv.ident && `svart av ${forespørsel.svar?.svartAv.ident}`} ${forespørsel.svar?.svarTidspunkt && formaterNorskDato({ dato: forespørsel.svar?.svarTidspunkt })}`,
           ...defaultData,
         };
       } else {
         return {
+          type: KandidatHendelseType.Deling_av_CV_NEI,
           tag: (
             <KandidatHendelseTag
               type={KandidatHendelseType.Deling_av_CV_NEI}
@@ -122,6 +130,7 @@ export const mapCVHendele = (
       }
     default:
       return {
+        type: null,
         tag: <KandidatHendelseTag type={null} />,
         ...defaultData,
       };

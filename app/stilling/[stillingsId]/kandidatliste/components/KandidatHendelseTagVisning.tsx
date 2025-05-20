@@ -3,6 +3,7 @@ import { KandidatHendelseInformasjon } from './KandidatHendelser/KandidatHendels
 import { KandidatVisningProps } from './KandidatlisteFilter/useFiltrerteKandidater';
 import { TrashIcon } from '@navikt/aksel-icons';
 import { BodyShort, Tag, Tooltip } from '@navikt/ds-react';
+import React from 'react';
 
 export interface KandidatHendelseTagProps {
   kandidatHendelse?: KandidatHendelseInformasjon | null;
@@ -44,10 +45,10 @@ const KandidatHendelseTagVisning: React.FC<KandidatHendelseTagProps> = ({
   }
   return (
     <Tooltip content={kandidatHendelse.tekst ?? ''}>
-      <div className={`flex flex-col gap-2`}>
-        <div>{kandidatHendelse.tag}</div>
+      <div>
+        {kandidatHendelse.tag}
         {kandidatHendelse.dato && (
-          <BodyShort textColor='subtle' className='mt-1'>
+          <BodyShort textColor='subtle'>
             {formaterNorskDato({ dato: kandidatHendelse.dato })}
           </BodyShort>
         )}

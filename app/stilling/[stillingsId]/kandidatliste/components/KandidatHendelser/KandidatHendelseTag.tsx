@@ -15,7 +15,7 @@ import { Tag, TagProps } from '@navikt/ds-react';
 
 export enum KandidatHendelseType {
   Spurt_om_å_dele_CV = 'Spurt om å dele CV: Frist',
-  Spurt_om_å_dele_CV_IKKE_DIGITAL = 'Spurt om å dele CV: Frist ',
+  Spurt_om_å_dele_CV_IKKE_DIGITAL = 'Spurt om å dele CV (ikke digital): Frist',
   Deling_Av_CV_Feilet = 'Deling av CV feilet',
   Deling_av_CV_JA = 'Deling av CV: Ja',
   Deling_av_CV_NEI = 'Deling av CV: Nei',

@@ -17,6 +17,7 @@ export const mapUtfallsendringer = (
   switch (utfallseendring.utfall) {
     case KandidatutfallTyper.FATT_JOBBEN:
       return {
+        type: KandidatHendelseType.Fått_jobben,
         ...defaultData,
         tag: <KandidatHendelseTag type={KandidatHendelseType.Fått_jobben} />,
       };
@@ -32,16 +33,19 @@ export const mapUtfallsendringer = (
               type={KandidatHendelseType.CV_slettet_hos_arbeidsgiver}
             />
           ),
+          type: KandidatHendelseType.CV_slettet_hos_arbeidsgiver,
           tekst: KandidatHendelseType.CV_slettet_hos_arbeidsgiver,
         };
       }
       return {
+        type: null,
         ...defaultData,
       };
     case KandidatutfallTyper.PRESENTERT:
       if (utfallseendring.sendtTilArbeidsgiversKandidatliste) {
         return {
           ...defaultData,
+          type: KandidatHendelseType.CV_delt_med_arbeidsgiver,
           tag: (
             <KandidatHendelseTag
               type={KandidatHendelseType.CV_delt_med_arbeidsgiver}
@@ -49,8 +53,12 @@ export const mapUtfallsendringer = (
           ),
         };
       }
-      return defaultData;
+      return { ...defaultData, type: null };
     default:
-      return { ...defaultData, tag: <KandidatHendelseTag type={null} /> };
+      return {
+        ...defaultData,
+        type: null,
+        tag: <KandidatHendelseTag type={null} />,
+      };
   }
 };

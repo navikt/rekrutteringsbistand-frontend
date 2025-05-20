@@ -44,6 +44,7 @@ const KandidatListeKort: React.FC<KandidatListeKortProps> = ({
 
     const usynligHendelse: KandidatHendelseInformasjon = fåttJobben
       ? {
+          type: KandidatHendelseType.Fått_jobben,
           tag: <KandidatHendelseTag type={KandidatHendelseType.Fått_jobben} />,
           tekst:
             formaterNorskDato({
@@ -54,6 +55,7 @@ const KandidatListeKort: React.FC<KandidatListeKortProps> = ({
           raw: usynligKandidat,
         }
       : {
+          type: KandidatHendelseType.Fjernet_fått_jobben,
           tag: (
             <KandidatHendelseTag
               type={KandidatHendelseType.Fjernet_fått_jobben}
@@ -86,12 +88,14 @@ const KandidatListeKort: React.FC<KandidatListeKortProps> = ({
           </div>
           <div className={kolonneStyling}>
             <div className={'flex flex-col items-start'}>
-              <BodyShort> {usynligKandidat.lagtTilAvNavn}</BodyShort>
-              <BodyShort textColor='subtle'>
+              <BodyShort>
                 {formaterNorskDato({
                   dato: usynligKandidat.lagtTilTidspunkt,
                   visning: 'kortMåned',
                 })}
+              </BodyShort>
+              <BodyShort textColor='subtle'>
+                {usynligKandidat.lagtTilAvNavn}
               </BodyShort>
             </div>
           </div>
@@ -129,16 +133,16 @@ const KandidatListeKort: React.FC<KandidatListeKortProps> = ({
               <KandidatlisteNavn kandidat={kandidat} slettet={slettet} />
             </div>
           </div>
-          <div className={`${kolonneStyling} flex flex-col gap-2`}>
-            <BodyShort> {kandidat.lagtTilAv.navn}</BodyShort>
-            <BodyShort textColor='subtle'>
+          <div className={`${kolonneStyling} flex flex-col `}>
+            <BodyShort>
               {formaterNorskDato({
                 dato: kandidat.lagtTilTidspunkt,
                 visning: 'kortMåned',
               })}
             </BodyShort>
+            <BodyShort textColor='subtle'> {kandidat.lagtTilAv.navn}</BodyShort>
           </div>
-          <div className={`${kolonneStyling} flex flex-col gap-2`}>
+          <div className={`${kolonneStyling} flex flex-col `}>
             {slettet ? (
               <SlettetTag kandidat={kandidat} />
             ) : (
@@ -147,7 +151,7 @@ const KandidatListeKort: React.FC<KandidatListeKortProps> = ({
               />
             )}
           </div>
-          <div className={`${kolonneStyling} flex flex-col gap-2`}>
+          <div className={`${kolonneStyling} flex flex-col `}>
             <div>{kandidat.kandidatHendelser.sisteSms?.tag}</div>
             <div />
           </div>

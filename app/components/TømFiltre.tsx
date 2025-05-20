@@ -1,6 +1,7 @@
 'use client';
 
 import { Chips } from '@navikt/ds-react';
+import * as React from 'react';
 
 const clearAllQueryParams = (exclude: string[] = []) => {
   const searchParams = new URLSearchParams(window.location.search);
@@ -18,11 +19,15 @@ const clearAllQueryParams = (exclude: string[] = []) => {
   );
 };
 
-const TømFiltre = () => {
+export interface TømFiltreProps {
+  exlude?: string[];
+}
+
+const TømFiltre: React.FC<TømFiltreProps> = ({ exlude }) => {
   return (
     <Chips.Removable
       className='text-nowrap'
-      onClick={() => clearAllQueryParams(['portefolje'])}
+      onClick={() => clearAllQueryParams(exlude ? exlude : ['portefolje'])}
     >
       Tøm filtre
     </Chips.Removable>
