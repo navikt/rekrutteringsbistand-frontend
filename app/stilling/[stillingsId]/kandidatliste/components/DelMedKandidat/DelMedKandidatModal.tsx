@@ -76,19 +76,21 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
       .filter((id): id is string => id !== null);
 
     const delingPåNytt = delCVpåNytt.filter((kandidat) => kandidat.aktørid);
-    if (svarfrist && vanlgiDeling.length > 0) {
+    if (svarfrist) {
       setLoading(true);
       try {
-        await sendForespørselOmDelingAvCv({
-          stillingsId: stillingsId,
-          svarfrist: format(svarfrist, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"),
-          aktorIder: vanlgiDeling,
-          navKontor: valgtNavKontor?.navKontor ?? '',
-        });
+        if (vanlgiDeling.length > 0) {
+          await sendForespørselOmDelingAvCv({
+            stillingsId: stillingsId,
+            svarfrist: format(svarfrist, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"),
+            aktorIder: vanlgiDeling,
+            navKontor: valgtNavKontor?.navKontor ?? '',
+          });
 
-        track(UmamiEvent.Stilling.del_stilling_med_kandidat, {
-          antall: vanlgiDeling.length,
-        });
+          track(UmamiEvent.Stilling.del_stilling_med_kandidat, {
+            antall: vanlgiDeling.length,
+          });
+        }
 
         if (delingPåNytt.length > 0) {
           const nyeForespørslerPromises = delingPåNytt.map((kandidat) =>
