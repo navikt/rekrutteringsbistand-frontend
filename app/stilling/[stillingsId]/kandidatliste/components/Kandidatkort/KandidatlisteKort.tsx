@@ -107,6 +107,11 @@ const KandidatListeKort: React.FC<KandidatListeKortProps> = ({
 
   const slettet = kandidat?.arkivert;
   const inaktiv = kandidat?.fodselsnr === null;
+
+  const stopPropagation = (e: React.MouseEvent) => {
+    e.stopPropagation();
+  };
+
   if (kandidat) {
     const aktiv = visKandidatnr === kandidat.kandidatnr;
     return (
@@ -129,7 +134,9 @@ const KandidatListeKort: React.FC<KandidatListeKortProps> = ({
         >
           <div className={`${kolonneStyling} flex flex-col gap-2`}>
             <div className='flex gap-4'>
-              <KandidatCheckbox kandidat={kandidat} slettet={slettet} />
+              <div onClick={stopPropagation}>
+                <KandidatCheckbox kandidat={kandidat} slettet={slettet} />
+              </div>
               <KandidatlisteNavn kandidat={kandidat} slettet={slettet} />
             </div>
           </div>
@@ -155,14 +162,17 @@ const KandidatListeKort: React.FC<KandidatListeKortProps> = ({
             <div>{kandidat.kandidatHendelser.sisteSms?.tag}</div>
             <div />
           </div>
-          <div className={kolonneStyling}>
+          <div className={kolonneStyling} onClick={stopPropagation}>
             <VelgInternStatus
               lukketKandidatliste={lukketKandidatliste}
               kandidatnr={kandidat.kandidatnr}
               status={kandidat.status}
             />
           </div>
-          <div className={`${kolonneStyling} flex items-center justify-center`}>
+          <div
+            className={`${kolonneStyling} flex items-center justify-center`}
+            onClick={stopPropagation}
+          >
             <KandidatListeKortValg
               kandidat={kandidat}
               kandidatlisteId={kandidatlisteId}
