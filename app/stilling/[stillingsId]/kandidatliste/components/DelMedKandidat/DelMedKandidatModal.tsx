@@ -104,13 +104,6 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
                 fristUtløpt.some((k2) => k2.aktørid === k.aktørid),
             );
 
-            const harIkkeBlittSpurtFør = markerteKandidater.filter(
-              (k) =>
-                !harSvartNeiEllerUtløptFrist.some(
-                  (k2) => k2.aktørid === k.aktørid,
-                ),
-            );
-
             const harIkkeSvart = markerteKandidater.filter((kandidat) => {
               const dagerTilSvarfrist =
                 kandidat.aktørid &&
@@ -132,6 +125,14 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
               );
             });
 
+            const harIkkeBlittSpurtFør = markerteKandidater.filter(
+              (k) =>
+                harIkkeSvart.some((k2) => k2.aktørid === k.aktørid) &&
+                !harSvartNeiEllerUtløptFrist.some(
+                  (k2) => k2.aktørid === k.aktørid,
+                ),
+            );
+
             const sendForespørsel = async () => {
               if (svarfrist) {
                 setLoading(true);
@@ -143,9 +144,7 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
                       "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
                     ),
                     aktorIder: harIkkeBlittSpurtFør
-                      .filter((k) =>
-                        harIkkeSvart.some((k2) => k2.aktørid === k.aktørid),
-                      )
+
                       .map((kandidat) => kandidat.aktørid)
                       .filter((id): id is string => id !== null),
                     navKontor: valgtNavKontor?.navKontor ?? '',
