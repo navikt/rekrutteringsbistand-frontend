@@ -46,3 +46,4 @@ IntelliJ
 .idea
 node_modules/
 tests/**/*.png
+.vscode

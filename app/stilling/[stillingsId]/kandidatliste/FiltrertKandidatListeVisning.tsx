@@ -83,7 +83,7 @@ const FiltrertKandidatListeVisning: React.FC = () => {
                 else setSortering(KandidatlisteSortering.LAGT_TIL_ASC);
               }}
             >
-              Lagt til av
+              Lagt til
             </Button>
           </div>
           <div className='flex justify-start'>

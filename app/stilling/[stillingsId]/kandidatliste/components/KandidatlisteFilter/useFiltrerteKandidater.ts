@@ -53,10 +53,10 @@ const useFiltrerteKandidater = (): FiltrerteKandidater | null => {
         case KandidatlisteSortering.LAGT_TIL_ASC:
         case KandidatlisteSortering.LAGT_TIL_DESC:
           nyKandidatliste?.sort((a, b) => {
-            const sammenligning = a.lagtTilAv.navn.localeCompare(
-              b.lagtTilAv.navn,
-              'nb',
-            );
+            const datoA = new Date(a.lagtTilTidspunkt).getTime();
+            const datoB = new Date(b.lagtTilTidspunkt).getTime();
+
+            const sammenligning = datoA - datoB;
             return sortering === KandidatlisteSortering.LAGT_TIL_ASC
               ? sammenligning
               : -sammenligning;
@@ -75,29 +75,6 @@ const useFiltrerteKandidater = (): FiltrerteKandidater | null => {
         case KandidatlisteSortering.HENDELSE_ASC:
         case KandidatlisteSortering.HENDELSE_DESC:
           nyKandidatliste?.sort((a, b) => {
-            // Sorter først på tittel
-            const aTittel = a.kandidatHendelser.sisteHendelse?.tekst || '';
-            const bTittel = b.kandidatHendelser.sisteHendelse?.tekst || '';
-            const tittelSammenligning = aTittel.localeCompare(bTittel, 'nb');
-
-            if (tittelSammenligning !== 0) {
-              return sortering === KandidatlisteSortering.HENDELSE_ASC
-                ? tittelSammenligning
-                : -tittelSammenligning;
-            }
-
-            // Sorter deretter på type
-            const aType = a.kandidatHendelser.sisteHendelse?.tekst || '';
-            const bType = b.kandidatHendelser.sisteHendelse?.tekst || '';
-            const typeSammenligning = aType.localeCompare(bType, 'nb');
-
-            if (typeSammenligning !== 0) {
-              return sortering === KandidatlisteSortering.HENDELSE_ASC
-                ? typeSammenligning
-                : -typeSammenligning;
-            }
-
-            // Siste sortering på dato
             const aDato =
               a.kandidatHendelser.sisteHendelse?.dato?.getTime() || 0;
             const bDato =
@@ -119,36 +96,6 @@ const useFiltrerteKandidater = (): FiltrerteKandidater | null => {
         case KandidatlisteSortering.VARSEL_ASC:
         case KandidatlisteSortering.VARSEL_DESC:
           nyKandidatliste?.sort((a, b) => {
-            if (!a.kandidatHendelser.sisteSms && !b.kandidatHendelser.sisteSms)
-              return 0;
-            if (!a.kandidatHendelser.sisteSms)
-              return sortering === KandidatlisteSortering.VARSEL_ASC ? 1 : -1;
-            if (!b.kandidatHendelser.sisteSms)
-              return sortering === KandidatlisteSortering.VARSEL_ASC ? -1 : 1;
-
-            // Sorter først på tittel
-            const aTittel = a.kandidatHendelser.sisteSms?.tekst || '';
-            const bTittel = b.kandidatHendelser.sisteSms?.tekst || '';
-            const tittelSammenligning = aTittel.localeCompare(bTittel, 'nb');
-
-            if (tittelSammenligning !== 0) {
-              return sortering === KandidatlisteSortering.VARSEL_ASC
-                ? tittelSammenligning
-                : -tittelSammenligning;
-            }
-
-            // // Sorter deretter på type
-            // const aType = a.kandidatHendelser.sisteSms?.fargeKode || '';
-            // const bType = b.kandidatHendelser.sisteSms?.fargeKode || '';
-            // const typeSammenligning = aType.localeCompare(bType, 'nb');
-
-            // if (typeSammenligning !== 0) {
-            //   return sortering === KandidatlisteSortering.VARSEL_ASC
-            //     ? typeSammenligning
-            //     : -typeSammenligning;
-            // }
-
-            // Siste sortering på dato
             const aDato = a.kandidatHendelser.sisteSms?.dato?.getTime() || 0;
             const bDato = b.kandidatHendelser.sisteSms?.dato?.getTime() || 0;
             const datoSammenligning = bDato - aDato;

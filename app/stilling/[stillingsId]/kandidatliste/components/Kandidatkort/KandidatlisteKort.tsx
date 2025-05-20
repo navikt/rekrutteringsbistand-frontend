@@ -108,17 +108,15 @@ const KandidatListeKort: React.FC<KandidatListeKortProps> = ({
     return (
       <Box.New
         onClick={() =>
-          !inaktiv && !slettet
-            ? setVisKandidatnr(kandidat?.kandidatnr ?? '')
-            : null
+          !inaktiv ? setVisKandidatnr(kandidat?.kandidatnr ?? '') : null
         }
         padding='4'
         background='neutral-softA'
         borderRadius='xlarge'
         data-testid='stillings-kort'
-        className={`cursor-pointer min-w-fit
+        className={` min-w-fit
           focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--ax-border-focus)]
-          ${!aktiv && !inaktiv && !slettet ? 'hover:bg-[var(--ax-bg-neutral-moderate-hover)] ' : ''}
+          ${!aktiv && !inaktiv ? 'hover:bg-[var(--ax-bg-neutral-moderate-hover)] cursor-pointer ' : ''}
           ${aktiv ? 'bg-[var(--ax-bg-neutral-moderate-pressed)]' : ''}`}
         tabIndex={0}
       >
