@@ -44,14 +44,16 @@ export type SynlighetsevalueringDTO = z.infer<
   typeof SynlighetsevalueringSchema
 >;
 
-export const useSynlighetsevaluering = (fødselsnummer: string) =>
+export const useSynlighetsevaluering = (fødselsnummer: string | null) =>
   useSWRImmutable(
-    {
-      url: SynlighetsevalueringEndepunkt,
-      body: {
-        fnr: fødselsnummer,
-      },
-    },
+    fødselsnummer
+      ? {
+          url: SynlighetsevalueringEndepunkt,
+          body: {
+            fnr: fødselsnummer,
+          },
+        }
+      : null,
     (data) => postApiWithSchema(SynlighetsevalueringSchema)(data),
   );
 

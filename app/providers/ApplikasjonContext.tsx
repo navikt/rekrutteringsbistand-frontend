@@ -42,12 +42,13 @@ interface IApplikasjonContextProvider {
   children: React.ReactNode;
   brukerData: BrukerData;
   aktivEnhet: string | null;
+  aktivBruker: string | null;
 }
 
 export const ApplikasjonContextProvider: React.FC<
   IApplikasjonContextProvider
-> = ({ children, brukerData, aktivEnhet }) => {
-  const [valgtFnr, setValgtFnr] = React.useState<string | null>(null);
+> = ({ children, brukerData, aktivEnhet, aktivBruker }) => {
+  const [valgtFnr, setValgtFnr] = React.useState<string | null>(aktivBruker);
   const [varsel, setVisVarsel] = React.useState<ApplikasjonsVarsel | null>(
     null,
   );
