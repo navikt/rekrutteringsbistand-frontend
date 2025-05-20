@@ -134,7 +134,14 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
             );
 
             const sendForespørsel = async () => {
-              if (svarfrist) {
+              const vanlgiDeling = harIkkeBlittSpurtFør
+                .map((kandidat) => kandidat.aktørid)
+                .filter((id): id is string => id !== null);
+
+              const delingPåNytt = harSvartNeiEllerUtløptFrist.filter(
+                (kandidat) => kandidat.aktørid,
+              );
+              if (svarfrist && vanlgiDeling.length > 0) {
                 setLoading(true);
                 try {
                   await sendForespørselOmDelingAvCv({
@@ -143,10 +150,7 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
                       svarfrist,
                       "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
                     ),
-                    aktorIder: harIkkeBlittSpurtFør
-
-                      .map((kandidat) => kandidat.aktørid)
-                      .filter((id): id is string => id !== null),
+                    aktorIder: vanlgiDeling,
                     navKontor: valgtNavKontor?.navKontor ?? '',
                   });
 
@@ -154,24 +158,28 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
                     antall: harIkkeBlittSpurtFør.length,
                   });
 
-                  const nyeForespørslerPromises = harSvartNeiEllerUtløptFrist
-                    .filter((kandidat) => kandidat.aktørid)
-                    .map((kandidat) =>
-                      sendNyForespørselOmDelingAvCv(kandidat.aktørid!, {
-                        stillingsId: stillingsId,
-                        svarfrist: format(
-                          svarfrist,
-                          "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
-                        ),
-                        navKontor: valgtNavKontor?.navKontor ?? '',
-                      }),
+                  if (delingPåNytt.length > 0) {
+                    const nyeForespørslerPromises = delingPåNytt.map(
+                      (kandidat) =>
+                        sendNyForespørselOmDelingAvCv(kandidat.aktørid!, {
+                          stillingsId: stillingsId,
+                          svarfrist: format(
+                            svarfrist,
+                            "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+                          ),
+                          navKontor: valgtNavKontor?.navKontor ?? '',
+                        }),
                     );
 
-                  track(UmamiEvent.Stilling.del_stilling_med_kandidat_påNytt, {
-                    antall: harSvartNeiEllerUtløptFrist.length,
-                  });
+                    track(
+                      UmamiEvent.Stilling.del_stilling_med_kandidat_påNytt,
+                      {
+                        antall: harSvartNeiEllerUtløptFrist.length,
+                      },
+                    );
 
-                  await Promise.all(nyeForespørslerPromises);
+                    await Promise.all(nyeForespørslerPromises);
+                  }
 
                   visVarsel({
                     tekst: 'Stillingen er delt med kandidatene',
