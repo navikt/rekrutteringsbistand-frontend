@@ -1,6 +1,24 @@
 import { KandidatVisningProps } from '../KandidatlisteFilter/useFiltrerteKandidater';
 import { KandidatHendelseType } from './KandidatHendelseTag';
 
+export const CVKandidaterSvartJa = (kandidater: KandidatVisningProps[]) => {
+  return kandidater.filter((k) => {
+    const cvHendelser = k.kandidatHendelser.cvHendelser;
+    if (!cvHendelser || cvHendelser.length === 0) {
+      return false;
+    }
+    if (
+      cvHendelser.some(
+        (hendelse) => hendelse.type === KandidatHendelseType.Deling_av_CV_JA,
+      )
+    ) {
+      return true;
+    }
+
+    return false;
+  });
+};
+
 export const CVKandidaterSvartNei_IkkeSpurtPåNytt = (
   kandidater: KandidatVisningProps[],
 ) => {

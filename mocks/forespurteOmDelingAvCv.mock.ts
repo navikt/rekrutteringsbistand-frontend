@@ -3,6 +3,7 @@ import { TilstandPåForespørsel } from '../app/stilling/[stillingsId]/kandidatl
 import { Faker, nb_NO } from '@faker-js/faker';
 
 const faker = new Faker({ locale: [nb_NO] });
+faker.seed(123);
 
 function generateSvarfrist() {
   let date;

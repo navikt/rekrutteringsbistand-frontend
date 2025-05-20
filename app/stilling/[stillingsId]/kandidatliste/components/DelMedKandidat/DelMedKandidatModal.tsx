@@ -11,6 +11,7 @@ import { useKandidatlisteContext } from '../../KandidatlisteContext';
 import {
   CVAlleredeForespurtDeling,
   CVkandidaterMedUtløptFrist_IkkeSpurtPåNytt,
+  CVKandidaterSvartJa,
   CVKandidaterSvartNei_IkkeSpurtPåNytt,
 } from '../KandidatHendelser/hendelseUtil';
 import { KandidatVisningProps } from '../KandidatlisteFilter/useFiltrerteKandidater';
@@ -19,6 +20,7 @@ import { TasklistIcon } from '@navikt/aksel-icons';
 import {
   Accordion,
   Alert,
+  BodyLong,
   BodyShort,
   Button,
   Modal,
@@ -54,12 +56,14 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
   const kandidatFristUtløpt =
     CVkandidaterMedUtløptFrist_IkkeSpurtPåNytt(markerteKandidater);
   const kandidaterVenterPåSvar = CVAlleredeForespurtDeling(markerteKandidater);
+  const harSvartJa = CVKandidaterSvartJa(markerteKandidater);
 
   const delCVpåNytt = [...kandidaterSvartNei, ...kandidatFristUtløpt];
   const delFørsteGang = markerteKandidater.filter(
     (kandidat) =>
+      !harSvartJa.some((k) => k.aktørid === kandidat.aktørid) &&
       !kandidaterSvartNei.some((k) => k.aktørid === kandidat.aktørid) &&
-      !kandidaterSvartNei.some((k) => k.aktørid === kandidat.aktørid) &&
+      !kandidatFristUtløpt.some((k) => k.aktørid === kandidat.aktørid) &&
       !kandidaterVenterPåSvar.some((k) => k.aktørid === kandidat.aktørid),
   );
 
@@ -111,15 +115,33 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
           type: 'error',
         });
       } finally {
-        forespurteKandidaterHook.mutate();
-        setModalErÅpen(false);
         fjernAllMarkering();
-        setLoading(false);
+        forespurteKandidaterHook.mutate();
         reFetchKandidatliste();
+        setModalErÅpen(false);
+        setLoading(false);
       }
     }
   };
 
+  const tabellStatus = (aktørId: string | null): string => {
+    if (aktørId === null) {
+      return 'Kan ikke spørre';
+    }
+    switch (true) {
+      case harSvartJa.some((k) => k.aktørid === aktørId):
+        return 'Har allerede svart ja';
+      case kandidaterVenterPåSvar.some((k) => k.aktørid === aktørId):
+        return 'Venter på svar';
+      case kandidaterSvartNei.some((k) => k.aktørid === aktørId):
+        return 'Har tidligere svart nei';
+      case kandidatFristUtløpt.some((k) => k.aktørid === aktørId):
+        return 'Frist utløpt';
+
+      default:
+        return 'Ikke spurt';
+    }
+  };
   return (
     <>
       <Button
@@ -162,6 +184,13 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
               har tidligere fått spørsmål, men ikke svart innen fristen.
             </Alert>
           )}
+          {harSvartJa.length > 0 && (
+            <Alert variant='success' size='small' className='mb-1'>
+              {harSvartJa.length}{' '}
+              {harSvartJa.length === 1 ? 'kandidat ' : 'kandidater'}
+              har allerede svart ja.
+            </Alert>
+          )}
           <Accordion size='small' headingSize='xsmall' className='my-4'>
             <Accordion.Item>
               <Accordion.Header>Vis kandidater</Accordion.Header>
@@ -186,21 +215,7 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
                             </Table.HeaderCell>
                             <Table.DataCell>{fodselsnr}</Table.DataCell>
                             <Table.DataCell>
-                              {aktørid &&
-                              kandidaterSvartNei.some(
-                                (k) => k.aktørid === aktørid,
-                              )
-                                ? 'Har svart nei'
-                                : aktørid &&
-                                    kandidatFristUtløpt.some(
-                                      (k) => k.aktørid === aktørid,
-                                    )
-                                  ? 'Frist utløpt'
-                                  : kandidaterVenterPåSvar.some(
-                                        (k) => k.aktørid === aktørid,
-                                      )
-                                    ? 'Ikke svart'
-                                    : 'Ikke spurt'}
+                              {tabellStatus(aktørid)}
                             </Table.DataCell>
                           </Table.Row>
                         );
@@ -213,11 +228,27 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
           </Accordion>
 
           <BodyShort className='my-8'>
+            <>
+              {delFørsteGang.length > 0 &&
+                `Deler for første gang stillingen med ${delFørsteGang.length} ${
+                  delFørsteGang.length === 1 ? 'kandidat' : 'kandidater'
+                }.`}
+              {delCVpåNytt.length > 0 && (
+                <>
+                  <br />
+                  {`Spør om deling på nytt for ${delCVpåNytt.length} ${
+                    delCVpåNytt.length === 1 ? 'kandidat' : 'kandidater'
+                  }.`}
+                </>
+              )}
+            </>
+          </BodyShort>
+          <BodyLong className='my-8'>
             {`Det opprettes et stillingskort i Aktivitetsplanen. Kandidatene
                   vil bli varslet på SMS, og kan svare "ja" eller "nei" til at
                   CV-en skal bli delt med arbeidsgiver. Du vil se svaret i
                   kandidatlisten.`}
-          </BodyShort>
+          </BodyLong>
 
           <VelgSvarfrist setValgtSvarfrist={setSvarfrist} />
           <Alert variant='info' className={'mt-8'}>
