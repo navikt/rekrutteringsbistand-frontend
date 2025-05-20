@@ -4,7 +4,7 @@ import RekrutteringstreffDark from '../../../../public/ikoner/rekrutteringstreff
 import Rekrutteringstreff from '../../../../public/ikoner/rekrutteringstreff.svg';
 import { useRekrutteringstreffContext } from '../RekrutteringstreffContext';
 import EndreTittel from './om-treffet/components/EndreTittel';
-import TittelAnalyseKnappOgModal from './om-treffet/components/TittelAnalyseKnappOgModal';
+import TittelAnalyseKnapp from './om-treffet/components/TittelAnalyseKnapp';
 import {
   HendelseDTO,
   RekrutteringstreffDTO,
@@ -95,7 +95,7 @@ const TreffHeader = ({ endreTittel }: TreffHeaderProps) => {
                                   endreTittelModalref.current?.showModal()
                                 }
                               />,
-                              <TittelAnalyseKnappOgModal
+                              <TittelAnalyseKnapp
                                 key='tittel-analyse'
                                 tittel={treff.tittel}
                               />,
