@@ -109,7 +109,7 @@ export const useSmserForStilling = (
       return smser;
     },
     {
-      refreshInterval: 3_000,
+      refreshInterval: 20000, // 20 seconds
     },
   );
 
