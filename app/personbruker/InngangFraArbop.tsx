@@ -17,6 +17,18 @@ const InngangFraArbop: React.FC = () => {
 
   const router = useRouter();
 
+  React.useEffect(() => {
+    if (
+      kandidatnrHook.data &&
+      kandidatnrHook.data.arenaKandidatnr &&
+      synlighetHook.data
+    ) {
+      router.push(
+        `/stilling?visKandidatnr=${kandidatnrHook.data.arenaKandidatnr}`,
+      );
+    }
+  }, [kandidatnrHook.data, synlighetHook.data, router]);
+
   if (!valgtFnr) {
     return (
       <SideLayout>
@@ -52,9 +64,6 @@ const InngangFraArbop: React.FC = () => {
           }
 
           if (synlighet && kandidatnrData.arenaKandidatnr) {
-            router.push(
-              `/stilling?visKandidatnr=${kandidatnrData.arenaKandidatnr}`,
-            );
             return <Sidelaster />;
           }
 
