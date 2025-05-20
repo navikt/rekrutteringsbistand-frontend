@@ -14,7 +14,7 @@ export interface EndreTittelProps {
   onUpdated: () => void;
 }
 
-const MAX_TITLE_LENGTH = 30;
+const MAX_TITLE_LENGTH = 50;
 const DEFAULT_REKRUTTERINGSTREFF_TITTEL = 'Nytt rekrutteringstreff';
 
 const ZOD_TOO_SMALL = 'too_small';
