@@ -110,7 +110,7 @@ const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({
                 kandidat={kandidat as KandidatDataSchemaDTO}
               />
             ))}
-            {antallSider > 2 && (
+            {antallSider > 1 && (
               <Pagination
                 className='mt-4 flex justify-center'
                 size='medium'
