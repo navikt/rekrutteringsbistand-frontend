@@ -37,14 +37,6 @@ const KandidatSplitScreenLayout: React.FC<KandidatSplitScreenLayoutProps> = ({
     }
   }, [sidebar]);
 
-  if (!sidebar) {
-    return (
-      <SidebarProvider>
-        <HovedInnholdKort>{children}</HovedInnholdKort>
-      </SidebarProvider>
-    );
-  }
-
   return (
     <SidebarProvider>
       <ResizablePanelGroup direction='horizontal' className='@container'>
@@ -57,7 +49,10 @@ const KandidatSplitScreenLayout: React.FC<KandidatSplitScreenLayoutProps> = ({
 
         <ResizableHandle className='z-20' />
 
-        <ResizablePanel style={{ minWidth: '550px' }}>
+        <ResizablePanel
+          style={{ minWidth: '550px' }}
+          className={!sidebar ? 'hidden' : ''}
+        >
           <HøyreInnholdKort
             lukkSidebar={lukkSidebar}
             nesteSide={harNesteKandidat ? nesteKandidat : null}
