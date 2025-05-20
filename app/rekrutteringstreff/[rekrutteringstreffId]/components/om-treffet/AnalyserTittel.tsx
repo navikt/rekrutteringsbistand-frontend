@@ -38,7 +38,7 @@ const AnalyserTittel: React.FC<AnalyserTittelProps> = ({
 
     {analyseData && !isLoadingAnalyse && !analyseError && (
       <div>
-        <Label>Resultat av analyse:</Label>
+        <Label className='mb-2 block'>Resultat av analyse:</Label>
         {analyseData.bryterRetningslinjer ? (
           <Alert variant='warning'>
             <BodyShort weight='semibold'>

@@ -4,20 +4,25 @@ import AnalyserTittel from '../AnalyserTittel';
 import { useValiderRekrutteringstreff } from '@/app/api/rekrutteringstreff/tittelValidering/useValiderRekrutteringstreff';
 import { RobotIcon, RobotSmileIcon, RobotFrownIcon } from '@navikt/aksel-icons';
 import { Button, Modal } from '@navikt/ds-react';
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 
-interface TittelAnalyseKnappProps {
+interface Props {
   tittel?: string;
 }
 
-const TittelAnalyseKnapp: React.FC<TittelAnalyseKnappProps> = ({ tittel }) => {
+const TittelAnalyseKnapp: React.FC<Props> = ({ tittel }) => {
   const modalRef = useRef<HTMLDialogElement>(null);
-  const analyse = useValiderRekrutteringstreff(tittel);
 
-  const status: 'neutral' | 'success' | 'error' =
-    analyse.isLoading || !analyse.data
+  const { trigger, data, error, isMutating } = useValiderRekrutteringstreff();
+
+  useEffect(() => {
+    if (tittel) trigger({ tittel, beskrivelse: null });
+  }, [tittel, trigger]);
+
+  const status =
+    isMutating || !data
       ? 'neutral'
-      : analyse.data.bryterRetningslinjer
+      : data.bryterRetningslinjer
         ? 'error'
         : 'success';
 
@@ -37,21 +42,19 @@ const TittelAnalyseKnapp: React.FC<TittelAnalyseKnappProps> = ({ tittel }) => {
         ? 'text-red-600'
         : '';
 
-  const disabled = !tittel || analyse.isLoading;
-
   const open = () => modalRef.current?.showModal();
   const close = () => modalRef.current?.close();
 
   return (
     <>
       <Button
-        disabled={disabled}
-        onClick={open}
         icon={icon}
         className={btnClass}
         aria-label='Analyser tittel'
         variant='tertiary'
         size='medium'
+        disabled={!tittel || isMutating}
+        onClick={open}
       />
 
       <Modal
@@ -64,9 +67,9 @@ const TittelAnalyseKnapp: React.FC<TittelAnalyseKnappProps> = ({ tittel }) => {
           {tittel && (
             <AnalyserTittel
               tittel={tittel}
-              isLoadingAnalyse={analyse.isLoading}
-              analyseData={analyse.data}
-              analyseError={analyse.error as Error | undefined}
+              isLoadingAnalyse={isMutating}
+              analyseData={data}
+              analyseError={error as Error | undefined}
             />
           )}
         </Modal.Body>
