@@ -121,10 +121,12 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
         });
       } finally {
         fjernAllMarkering();
-        forespurteKandidaterHook.mutate();
-        reFetchKandidatliste();
         setModalErÅpen(false);
         setLoading(false);
+        setTimeout(() => {
+          forespurteKandidaterHook.mutate();
+          reFetchKandidatliste();
+        }, 5000); // 5000 milliseconds = 5 seconds
       }
     }
   };
