@@ -14,7 +14,7 @@ import SideTopBanner from '../components/layout/SideTopBanner';
 import { TilgangskontrollForInnhold } from '../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '../components/tilgangskontroll/roller';
 import VisKandidat from '../kandidat/VisKandidat/VisKandidat';
-import { useStillingForKandidat } from '../kandidat/VisKandidat/forslag-til-stilling/useStillingForKandidat';
+import { useStillingForKandidat } from '../kandidat/VisKandidat/useStillingForKandidat';
 import { useUmami } from '../providers/UmamiContext';
 import {
   StillingsSøkProvider,
