@@ -120,7 +120,7 @@ const EndreTittel = ({
 
   useEffect(() => {
     if (!validating && analyse && !analyseError) focusEtterAnalyse();
-  }, [analyse, analyseError, validating]);
+  }, [analyse, analyseError, validating, focusEtterAnalyse]);
 
   useEffect(() => {
     if (modalRef.current) {
