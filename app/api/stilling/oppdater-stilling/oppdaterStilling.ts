@@ -17,7 +17,7 @@ export const oppdaterStilling = (
 ) => {
   return putApi(oppdaterStillingEndepunkt, {
     ...stillingsData,
-    setStillingsinfo: {
+    stillingsinfo: {
       ...stillingsData.stillingsinfo,
       eierNavident: brukerInfo.eierNavident ?? null,
       eierNavn: brukerInfo.eierNavn ?? null,
