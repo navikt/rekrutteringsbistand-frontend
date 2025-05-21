@@ -1,5 +1,5 @@
-import KandidatForslagTilStilling from './KandidatForslagTilStilling';
+import StillingsSøk from '../../../stilling/StillingsSøk';
 
 export default function ForslagTilStillingPage() {
-  return <KandidatForslagTilStilling />;
+  return <StillingsSøk skjulBanner />;
 }

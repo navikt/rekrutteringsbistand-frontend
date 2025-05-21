@@ -33,15 +33,18 @@ import * as React from 'react';
 interface StillingsSøkProps {
   formidlinger?: boolean;
   skjulBanner?: boolean;
-  kandidatId?: string;
 }
 
 const StillingsSøk = ({ formidlinger, skjulBanner }: StillingsSøkProps) => {
   const searchParams = useSearchParams();
   const brukerStandardSøkData = useUseBrukerStandardSøk();
-
+  const [visKandidatnr] = useQueryState('visKandidatnr', {
+    defaultValue: '',
+    clearOnDefault: true,
+  });
   React.useEffect(() => {
     if (
+      !visKandidatnr &&
       searchParams.get('brukStandardsok') !== null &&
       !brukerStandardSøkData.isLoading &&
       brukerStandardSøkData.data
