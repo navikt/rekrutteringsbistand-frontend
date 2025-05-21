@@ -5,6 +5,7 @@ interface OpprettStillingInfo {
   eierNavident: string;
   eierNavn: string;
   stillingsid: string;
+  eierNavKontorEnhetId?: string;
 }
 
 export const setStillingsinfo = async (stillingsinfo: OpprettStillingInfo) => {

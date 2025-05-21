@@ -29,6 +29,7 @@ const StillingSidebarKnapper: React.FC<StillingSidebarKnapperProps> = ({
     stillingsid: stillingsData.stilling.uuid,
     eierNavident: brukerData.ident,
     eierNavn: brukerData.navn,
+    eierNavKontorEnhetId: valgtNavKontor?.navKontor,
   };
 
   const kanOvertaStilling = !erFormidling && erDirektemeldt && !erEier;
