@@ -24,10 +24,15 @@ export interface TømFiltreProps {
 }
 
 const TømFiltre: React.FC<TømFiltreProps> = ({ exlude }) => {
+  const eksluderFilter = ['portefolje', 'visKandidatnr'];
   return (
     <Chips.Removable
       className='text-nowrap'
-      onClick={() => clearAllQueryParams(exlude ? exlude : ['portefolje'])}
+      onClick={() =>
+        clearAllQueryParams(
+          exlude ? [...eksluderFilter, ...exlude] : eksluderFilter,
+        )
+      }
     >
       Tøm filtre
     </Chips.Removable>
