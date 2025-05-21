@@ -52,6 +52,8 @@ const EndreTittel = ({
   onUpdated,
 }: EndreTittelProps) => {
   const lagreButtonRef = useRef<HTMLButtonElement>(null);
+  const clearButtonRef = useRef<HTMLButtonElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const {
     trigger: validate,
@@ -74,7 +76,6 @@ const EndreTittel = ({
   });
 
   const nyTittel = useWatch({ control, name: 'nyTittel' });
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [initialFocusDone, setInitialFocusDone] = useState(false);
 
   const handleInitialFocus = () => {
@@ -166,8 +167,6 @@ const EndreTittel = ({
     !!errors.nyTittel ||
     analyse.bryterRetningslinjer;
 
-  const clearButtonRef = useRef<HTMLButtonElement>(null);
-
   return (
     <Modal
       ref={modalRef}
@@ -242,37 +241,16 @@ const EndreTittel = ({
               </Button>
             )}
           </div>
-          {validating && (
-            <div>
-              <div className='flex gap-3 mt-2 items-start'>
-                <div className='inline-flex justify-center items-start w-10 pt-1'>
-                  <RobotIcon
-                    aria-hidden
-                    fontSize='2em'
-                    className='text-gray-700'
-                  />
-                </div>
-                <div className='w-full'>
-                  <Skeleton variant='text' width='100%' height={31} />
-                  <Skeleton variant='text' width='100%' height={31} />
-                  <Skeleton variant='text' width='100%' height={31} />
-                  <Skeleton variant='text' width='100%' height={31} />
-                  <Skeleton variant='text' width='100%' height={31} />
-                </div>
-              </div>
-            </div>
-          )}
-
-          {analyseError && !validating && (
-            <Alert variant='error'>
-              {analyseError.message ?? 'En feil oppstod under validering.'}
-            </Alert>
-          )}
-
-          {analyse && !validating && !analyseError && (
-            <div className='flex gap-3 mt-2 items-start'>
-              <div className='inline-flex justify-center items-start w-10 pt-1'>
-                {analyse.bryterRetningslinjer ? (
+          <div className='flex gap-3 mt-2 items-start'>
+            <div className='inline-flex justify-center items-start w-10 pt-1'>
+              {validating ? (
+                <RobotIcon
+                  aria-hidden
+                  fontSize='2em'
+                  className='text-gray-700'
+                />
+              ) : analyse && !analyseError ? (
+                analyse.bryterRetningslinjer ? (
                   <RobotFrownIcon
                     aria-hidden
                     fontSize='2em'
@@ -284,19 +262,35 @@ const EndreTittel = ({
                     fontSize='2em'
                     className='text-green-800'
                   />
-                )}
-              </div>
-              <div
-                className={
-                  analyse.bryterRetningslinjer
-                    ? 'aksel-error-message p-1'
-                    : 'text-green-700 p-1'
-                }
-              >
-                <BodyLong>{analyse.begrunnelse}</BodyLong>
-              </div>
+                )
+              ) : null}
             </div>
-          )}
+            <div className='w-full'>
+              {validating && (
+                <>
+                  {[...Array(6)].map((_, i) => (
+                    <Skeleton key={i} variant='text' width='100%' height={31} />
+                  ))}
+                </>
+              )}
+              {analyseError && !validating && (
+                <Alert variant='error'>
+                  {analyseError.message ?? 'En feil oppstod under validering.'}
+                </Alert>
+              )}
+              {analyse && !validating && !analyseError && (
+                <div
+                  className={
+                    analyse.bryterRetningslinjer
+                      ? 'aksel-error-message p-1'
+                      : 'text-green-700 p-1'
+                  }
+                >
+                  <BodyLong>{analyse.begrunnelse}</BodyLong>
+                </div>
+              )}
+            </div>
+          </div>
         </form>
       </Modal.Body>
 
