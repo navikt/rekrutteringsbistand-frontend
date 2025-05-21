@@ -74,7 +74,7 @@ const EndreTittel = ({
     handleSubmit,
     setValue,
     reset,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, dirtyFields },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
     mode: 'onChange',
@@ -84,24 +84,29 @@ const EndreTittel = ({
 
   const [initialFocusDone, setInitialFocusDone] = useState(false);
   const [visTomFeil, setVisTomFeil] = useState(false);
+  const [showUnchangedError, setShowUnchangedError] = useState(false);
 
   const errorMsg = useMemo(() => {
     const err = errors.nyTittel;
-    if (!err) return undefined;
-    if (err.type === 'too_big') return err.message;
-    if (err.type === 'too_small' && visTomFeil) return err.message;
+    if (err) {
+      if (err.type === 'too_big') return err.message;
+      if (err.type === 'too_small' && visTomFeil) return err.message;
+      return undefined;
+    }
+    if (showUnchangedError) return 'Tittel er ikke endret.';
     return undefined;
-  }, [errors.nyTittel, visTomFeil]);
+  }, [errors.nyTittel, visTomFeil, showUnchangedError]);
 
   const disableSave = useMemo(
     () =>
+      !dirtyFields.nyTittel ||
       errors.nyTittel?.type === 'too_big' ||
       isSubmitting ||
       validating ||
       !analyse ||
       !!errors.nyTittel ||
       analyse?.bryterRetningslinjer,
-    [errors.nyTittel, isSubmitting, validating, analyse],
+    [dirtyFields.nyTittel, errors.nyTittel, isSubmitting, validating, analyse],
   );
 
   const focusEnd = () => {
@@ -123,6 +128,7 @@ const EndreTittel = ({
   useEffect(() => {
     resetAnalyse();
     setVisTomFeil(false);
+    setShowUnchangedError(false);
   }, [nyTittel, resetAnalyse]);
 
   useEffect(() => {
@@ -139,6 +145,7 @@ const EndreTittel = ({
 
   const handleInitialFocus = () => {
     if (initialFocusDone) return;
+    setShowUnchangedError(false);
     if (rekrutteringstreff.tittel === DEFAULT_TITLE) {
       reset({ nyTittel: '' });
     } else {
@@ -167,6 +174,7 @@ const EndreTittel = ({
 
   const clear = () => {
     setValue('nyTittel', '', { shouldValidate: true, shouldDirty: true });
+    setShowUnchangedError(false);
     focusEnd();
   };
 
@@ -176,6 +184,20 @@ const EndreTittel = ({
     resetAnalyse();
     setInitialFocusDone(false);
     setVisTomFeil(false);
+    setShowUnchangedError(false);
+  };
+
+  const handleValidateOrError = () => {
+    if (!dirtyFields.nyTittel) {
+      setShowUnchangedError(true);
+      setVisTomFeil(false);
+    } else if (dirtyFields.nyTittel && nyTittel?.trim()) {
+      validate({ tittel: nyTittel, beskrivelse: null });
+      setShowUnchangedError(false);
+    } else {
+      setVisTomFeil(true);
+      setShowUnchangedError(false);
+    }
   };
 
   return (
@@ -204,11 +226,7 @@ const EndreTittel = ({
                   active !== closeButtonRef.current &&
                   active !== modalLukkeknappRef.current
                 ) {
-                  if (nyTittel?.trim()) {
-                    validate({ tittel: nyTittel, beskrivelse: null });
-                  } else {
-                    setVisTomFeil(true);
-                  }
+                  handleValidateOrError();
                 }
               })
             }
@@ -232,9 +250,7 @@ const EndreTittel = ({
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
                       e.preventDefault();
-                      if (nyTittel?.trim()) {
-                        validate({ tittel: nyTittel, beskrivelse: null });
-                      } else setVisTomFeil(true);
+                      handleValidateOrError();
                     }
                   }}
                 />
