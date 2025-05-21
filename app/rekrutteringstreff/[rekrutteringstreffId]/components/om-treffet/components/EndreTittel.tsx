@@ -54,10 +54,11 @@ const EndreTittel = ({
   rekrutteringstreff,
   onUpdated,
 }: EndreTittelProps) => {
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const lagreButtonRef = useRef<HTMLButtonElement>(null);
+
   const clearButtonRef = useRef<HTMLButtonElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const modalLukkeknappRef = useRef<HTMLButtonElement | null>(null);
 
   const {
@@ -121,6 +122,7 @@ const EndreTittel = ({
 
   useEffect(() => {
     resetAnalyse();
+    setVisTomFeil(false);
   }, [nyTittel, resetAnalyse]);
 
   useEffect(() => {
@@ -163,10 +165,6 @@ const EndreTittel = ({
     }
   };
 
-  const onInvalid = () => {
-    if (errors.nyTittel?.type === 'too_small') setVisTomFeil(true);
-  };
-
   const clear = () => {
     setValue('nyTittel', '', { shouldValidate: true, shouldDirty: true });
     focusEnd();
@@ -191,7 +189,7 @@ const EndreTittel = ({
       <Modal.Body>
         <form
           id='skjema-endre-tittel'
-          onSubmit={handleSubmit(save, onInvalid)}
+          onSubmit={handleSubmit(save)}
           className='space-y-2'
         >
           <div
@@ -204,10 +202,13 @@ const EndreTittel = ({
                   active !== textareaRef.current &&
                   active !== clearButtonRef.current &&
                   active !== closeButtonRef.current &&
-                  active !== modalLukkeknappRef.current &&
-                  nyTittel?.trim()
+                  active !== modalLukkeknappRef.current
                 ) {
-                  validate({ tittel: nyTittel, beskrivelse: null });
+                  if (nyTittel?.trim()) {
+                    validate({ tittel: nyTittel, beskrivelse: null });
+                  } else {
+                    setVisTomFeil(true);
+                  }
                 }
               })
             }
@@ -231,8 +232,9 @@ const EndreTittel = ({
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
                       e.preventDefault();
-                      if (nyTittel?.trim())
+                      if (nyTittel?.trim()) {
                         validate({ tittel: nyTittel, beskrivelse: null });
+                      } else setVisTomFeil(true);
                     }
                   }}
                 />
