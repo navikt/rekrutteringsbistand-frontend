@@ -23,6 +23,7 @@ export const OpprettStillingKnapp: React.FC<OpprettStillingProps> = ({
 }) => {
   const {
     brukerData: { fornavn, etternavn, ident },
+    valgtNavKontor,
   } = useApplikasjonContext();
   const { track } = useUmami();
   const router = useRouter();
@@ -30,10 +31,11 @@ export const OpprettStillingKnapp: React.FC<OpprettStillingProps> = ({
 
   const handleOpprettStilling = async () => {
     setIsLoading(true);
-    if (stillingskategori && arbeidsgiver) {
+    if (valgtNavKontor?.navKontor && stillingskategori && arbeidsgiver) {
       const erFormidling = stillingskategori === Stillingskategori.Formidling;
 
       const nyStilling: OpprettNyStillingDTO = {
+        eierNavKontorEnhetId: valgtNavKontor?.navKontor,
         kategori: stillingskategori,
         stilling: {
           administration: {

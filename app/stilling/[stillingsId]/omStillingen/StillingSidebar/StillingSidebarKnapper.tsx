@@ -21,7 +21,7 @@ const StillingSidebarKnapper: React.FC<StillingSidebarKnapperProps> = ({
 }) => {
   const { erEier, erDirektemeldt, stillingsData, erFormidling, refetch } =
     useStillingsContext();
-  const { brukerData } = useApplikasjonContext();
+  const { brukerData, valgtNavKontor } = useApplikasjonContext();
 
   const [loading, setLoading] = useState(false);
 
@@ -51,21 +51,10 @@ const StillingSidebarKnapper: React.FC<StillingSidebarKnapperProps> = ({
 
   const onOvertaStilling = async () => {
     setLoading(true);
-    await oppdaterStilling({
-      ...stillingsData,
-      stillingsinfo: {
-        ...stillingsData.stillingsinfo,
-        eierNavident: brukerData.ident,
-        eierNavn: brukerData.navn,
-      },
-      stilling: {
-        ...stillingsData.stilling,
-        administration: {
-          ...stillingsData.stilling.administration,
-          navIdent: brukerData.ident,
-          reportee: brukerData.navn,
-        },
-      },
+    await oppdaterStilling(stillingsData, {
+      eierNavident: brukerData.ident,
+      eierNavn: brukerData.navn,
+      eierNavKontorEnhetId: valgtNavKontor?.navKontor,
     });
     refetch();
   };

@@ -181,7 +181,7 @@ export const mapFormTilStilling = (
     : null;
 
   return {
-    stillingsinfoid: existingData.stillingsinfo?.stillingsinfoid,
+    ...existingData,
     stilling: {
       ...existingData.stilling,
 

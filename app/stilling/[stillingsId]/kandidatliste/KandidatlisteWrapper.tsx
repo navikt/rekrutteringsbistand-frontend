@@ -17,7 +17,7 @@ export interface KandidatlisteWrapperProps {
 const KandidatlisteWrapper: React.FC<KandidatlisteWrapperProps> = ({
   children,
 }) => {
-  const { brukerData } = useApplikasjonContext();
+  const { brukerData, valgtNavKontor } = useApplikasjonContext();
   const { stillingsData } = useStillingsContext();
 
   const forespurteKandidaterHook = useForespurteOmDelingAvCv(
@@ -27,21 +27,10 @@ const KandidatlisteWrapper: React.FC<KandidatlisteWrapperProps> = ({
   const kandidatlisteHook = useKandidatliste(stillingsData.stilling.uuid);
 
   const onOvertaStilling = async () => {
-    await oppdaterStilling({
-      ...stillingsData,
-      stillingsinfo: {
-        ...stillingsData.stillingsinfo,
-        eierNavident: brukerData.ident,
-        eierNavn: brukerData.navn,
-      },
-      stilling: {
-        ...stillingsData.stilling,
-        administration: {
-          ...stillingsData.stilling.administration,
-          navIdent: brukerData.ident,
-          reportee: brukerData.navn,
-        },
-      },
+    await oppdaterStilling(stillingsData, {
+      eierNavident: brukerData.ident,
+      eierNavn: brukerData.navn,
+      eierNavKontorEnhetId: valgtNavKontor?.navKontor,
     });
     window.location.reload();
   };

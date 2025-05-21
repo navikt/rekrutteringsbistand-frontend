@@ -1,4 +1,5 @@
 import { oppdaterStilling } from '../../../../api/stilling/oppdater-stilling/oppdaterStilling';
+import { useApplikasjonContext } from '../../../../providers/ApplikasjonContext';
 import { StillingsStatus } from '../../../stilling-typer';
 import { useStillingsContext } from '../../StillingsContext';
 import { BodyLong, Button, Modal } from '@navikt/ds-react';
@@ -20,16 +21,24 @@ const EndreStillingStatus: React.FC<EndreStillingStatusProps> = ({
 }) => {
   const [open, setOpen] = React.useState(false);
   const { stillingsData, refetch } = useStillingsContext();
+  const { valgtNavKontor, brukerData } = useApplikasjonContext();
   const router = useRouter();
 
   const endreStatus = async () => {
-    const response = await oppdaterStilling({
-      ...stillingsData,
-      stilling: {
-        ...stillingsData.stilling,
-        status: nyStatus,
+    const response = await oppdaterStilling(
+      {
+        ...stillingsData,
+        stilling: {
+          ...stillingsData.stilling,
+          status: nyStatus,
+        },
       },
-    });
+      {
+        eierNavident: brukerData.ident,
+        eierNavn: brukerData.navn,
+        eierNavKontorEnhetId: valgtNavKontor?.navKontor,
+      },
+    );
 
     setOpen(false);
     if (response.stilling.uuid) {
