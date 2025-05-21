@@ -17,7 +17,7 @@ import {
   Textarea,
 } from '@navikt/ds-react';
 import { logger } from '@navikt/next-logger';
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -28,10 +28,8 @@ export interface EndreTittelProps {
 }
 
 const MAX_TITLE_LENGTH = 50;
-const DEFAULT_REKRUTTERINGSTREFF_TITTEL = 'Nytt rekrutteringstreff';
-
-const ZOD_TOO_SMALL = 'too_small';
-const ZOD_TOO_BIG = 'too_big';
+const DEFAULT_TITLE = 'Nytt rekrutteringstreff';
+const SKELETON_LINES = 6;
 
 const schema = z.object({
   nyTittel: z
@@ -77,27 +75,34 @@ const EndreTittel = ({
 
   const nyTittel = useWatch({ control, name: 'nyTittel' });
   const [initialFocusDone, setInitialFocusDone] = useState(false);
-
-  const handleInitialFocus = () => {
-    if (!initialFocusDone) {
-      const newInitialTittel =
-        rekrutteringstreff.tittel === DEFAULT_REKRUTTERINGSTREFF_TITTEL
-          ? ''
-          : rekrutteringstreff.tittel;
-      reset({ nyTittel: newInitialTittel });
-
-      textareaRef.current?.focus();
-
-      if (textareaRef.current) {
-        const len = textareaRef.current.value.length;
-        textareaRef.current.selectionStart = len;
-        textareaRef.current.selectionEnd = len;
-      }
-      setInitialFocusDone(true);
-    }
-  };
-
   const [skalViseTomFeil, setSkalViseTomFeil] = useState(false);
+
+  const errorMsg = useMemo(() => {
+    const err = errors.nyTittel;
+    if (!err) return undefined;
+    if (err.type === 'too_big') return err.message;
+    if (err.type === 'too_small' && skalViseTomFeil) return err.message;
+    return undefined;
+  }, [errors.nyTittel, skalViseTomFeil]);
+
+  const disableSave = useMemo(
+    () =>
+      errors.nyTittel?.type === 'too_big' ||
+      isSubmitting ||
+      validating ||
+      !analyse ||
+      !!errors.nyTittel ||
+      analyse?.bryterRetningslinjer,
+    [errors.nyTittel, isSubmitting, validating, analyse],
+  );
+
+  const focusEtterAnalyse = () => {
+    if (!analyse) return;
+    (analyse.bryterRetningslinjer
+      ? textareaRef
+      : lagreButtonRef
+    ).current?.focus();
+  };
 
   useEffect(() => {
     setSkalViseTomFeil(false);
@@ -105,19 +110,21 @@ const EndreTittel = ({
   }, [nyTittel, resetAnalyse]);
 
   useEffect(() => {
-    if (!validating && analyse && !analyseError) {
-      focusEtterAnalyse();
-    }
+    if (!validating && analyse && !analyseError) focusEtterAnalyse();
   }, [analyse, analyseError, validating]);
 
-  const focusEtterAnalyse = () => {
-    if (!analyse) return;
-    if (!analyse.bryterRetningslinjer && lagreButtonRef.current) {
-      lagreButtonRef.current.focus();
+  const handleInitialFocus = () => {
+    if (initialFocusDone) return;
+
+    if (rekrutteringstreff.tittel === DEFAULT_TITLE) {
+      reset({ nyTittel: '' });
     }
-    if (analyse.bryterRetningslinjer && textareaRef.current) {
-      textareaRef.current.focus();
-    }
+
+    textareaRef.current?.focus();
+    const len = textareaRef.current?.value.length ?? 0;
+    textareaRef.current?.setSelectionRange(len, len);
+
+    setInitialFocusDone(true);
   };
 
   const save = async ({ nyTittel }: FormValues) => {
@@ -138,7 +145,7 @@ const EndreTittel = ({
   };
 
   const onInvalid = () => {
-    if (errors.nyTittel?.type === ZOD_TOO_SMALL) setSkalViseTomFeil(true);
+    if (errors.nyTittel?.type === 'too_small') setSkalViseTomFeil(true);
   };
 
   const clear = () => {
@@ -151,21 +158,6 @@ const EndreTittel = ({
     reset({ nyTittel: rekrutteringstreff.tittel });
     setInitialFocusDone(false);
   };
-
-  const errorMsg =
-    errors.nyTittel?.type === ZOD_TOO_BIG
-      ? errors.nyTittel.message
-      : skalViseTomFeil && errors.nyTittel?.type === ZOD_TOO_SMALL
-        ? errors.nyTittel.message
-        : undefined;
-
-  const disableSave =
-    errors.nyTittel?.type === ZOD_TOO_BIG ||
-    isSubmitting ||
-    validating ||
-    !analyse ||
-    !!errors.nyTittel ||
-    analyse.bryterRetningslinjer;
 
   return (
     <Modal
@@ -189,11 +181,10 @@ const EndreTittel = ({
                 const active = document.activeElement;
                 if (
                   active !== textareaRef.current &&
-                  active !== clearButtonRef.current
+                  active !== clearButtonRef.current &&
+                  nyTittel?.trim()
                 ) {
-                  if (nyTittel?.trim()) {
-                    validate({ tittel: nyTittel, beskrivelse: null });
-                  }
+                  validate({ tittel: nyTittel, beskrivelse: null });
                 }
               }, 0);
             }}
@@ -211,7 +202,6 @@ const EndreTittel = ({
                   autoFocus
                   minRows={1}
                   maxRows={1}
-                  rows={1}
                   resize={false}
                   className='w-full pt-2'
                   error={errorMsg}
@@ -241,6 +231,7 @@ const EndreTittel = ({
               </Button>
             )}
           </div>
+
           <div className='flex gap-3 mt-2 items-start'>
             <div className='inline-flex justify-center items-start w-10 pt-1'>
               {validating ? (
@@ -265,19 +256,19 @@ const EndreTittel = ({
                 )
               ) : null}
             </div>
+
             <div className='w-full'>
-              {validating && (
-                <>
-                  {[...Array(6)].map((_, i) => (
-                    <Skeleton key={i} variant='text' width='100%' height={31} />
-                  ))}
-                </>
-              )}
+              {validating &&
+                [...Array(SKELETON_LINES)].map((_, i) => (
+                  <Skeleton key={i} variant='text' width='100%' height={31} />
+                ))}
+
               {analyseError && !validating && (
                 <Alert variant='error'>
                   {analyseError.message ?? 'En feil oppstod under validering.'}
                 </Alert>
               )}
+
               {analyse && !validating && !analyseError && (
                 <div
                   className={
