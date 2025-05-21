@@ -113,10 +113,7 @@ const EndreTittel = ({
     ).current?.focus();
   };
 
-  useEffect(() => {
-    setVisTomFeil(false);
-    resetAnalyse();
-  }, [nyTittel, resetAnalyse]);
+  useEffect(() => {}, [nyTittel, resetAnalyse]);
 
   useEffect(() => {
     if (!validating && analyse && !analyseError) focusEtterAnalyse();
@@ -132,7 +129,11 @@ const EndreTittel = ({
 
   const handleInitialFocus = () => {
     if (initialFocusDone) return;
-    if (rekrutteringstreff.tittel === DEFAULT_TITLE) reset({ nyTittel: '' });
+    if (rekrutteringstreff.tittel === DEFAULT_TITLE) {
+      reset({ nyTittel: '' });
+    } else {
+      resetAnalyse();
+    }
     focusEnd();
     setInitialFocusDone(true);
   };
@@ -166,7 +167,9 @@ const EndreTittel = ({
   const close = () => {
     modalRef.current?.close();
     reset({ nyTittel: rekrutteringstreff.tittel });
+    resetAnalyse();
     setInitialFocusDone(false);
+    setVisTomFeil(false);
   };
 
   return (
@@ -192,8 +195,8 @@ const EndreTittel = ({
                 if (
                   active !== textareaRef.current &&
                   active !== clearButtonRef.current &&
-                  active !== closeButtonRef.current && // Avbryt-knappen
-                  active !== modalLukkeknappRef.current && // Modalens lukkeknapp (krysset)
+                  active !== closeButtonRef.current &&
+                  active !== modalLukkeknappRef.current &&
                   nyTittel?.trim()
                 ) {
                   validate({ tittel: nyTittel, beskrivelse: null });
