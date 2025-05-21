@@ -158,7 +158,8 @@ const EndreTittel = ({
     isSubmitting ||
     validating ||
     !analyse ||
-    !!errors.nyTittel;
+    !!errors.nyTittel ||
+    analyse.bryterRetningslinjer;
 
   const clearButtonRef = useRef<HTMLButtonElement>(null);
 
