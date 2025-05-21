@@ -14,7 +14,7 @@ import SideTopBanner from '../components/layout/SideTopBanner';
 import { TilgangskontrollForInnhold } from '../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '../components/tilgangskontroll/roller';
 import VisKandidat from '../kandidat/VisKandidat/VisKandidat';
-import { useStillingForKandidat } from '../kandidat/VisKandidat/forslag-til-stilling/useStillingForKandidat';
+import { useStillingForKandidat } from '../kandidat/VisKandidat/useStillingForKandidat';
 import { useUmami } from '../providers/UmamiContext';
 import {
   StillingsSøkProvider,
@@ -33,15 +33,18 @@ import * as React from 'react';
 interface StillingsSøkProps {
   formidlinger?: boolean;
   skjulBanner?: boolean;
-  kandidatId?: string;
 }
 
 const StillingsSøk = ({ formidlinger, skjulBanner }: StillingsSøkProps) => {
   const searchParams = useSearchParams();
   const brukerStandardSøkData = useUseBrukerStandardSøk();
-
+  const [visKandidatnr] = useQueryState('visKandidatnr', {
+    defaultValue: '',
+    clearOnDefault: true,
+  });
   React.useEffect(() => {
     if (
+      !visKandidatnr &&
       searchParams.get('brukStandardsok') !== null &&
       !brukerStandardSøkData.isLoading &&
       brukerStandardSøkData.data

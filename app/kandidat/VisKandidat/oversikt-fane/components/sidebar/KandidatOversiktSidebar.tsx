@@ -8,13 +8,6 @@ const KandidatOversiktSidebar: React.FC = ({}) => {
       <GråBoks tittel='Profilkvalitet'>
         <Profilkvalitet />
       </GråBoks>
-      {/* <GråBoks tittel='Siste aktivitet'>
-        <SisteAktivitet />
-      </GråBoks> */}
-
-      {/* <GråBoks tittel='Forslag til stillinger'>
-          <ForslagTilStilling />
-        </GråBoks> */}
     </div>
   );
 };

@@ -1,6 +1,7 @@
 import { getSingleKandidatSammendrag } from '../../../mocks/kandidat.mock';
 import { KandidatSøkAPI } from '../api-routes';
 import { postApiWithSchemaEs } from '../fetcher';
+import { Server } from 'miragejs';
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
 
@@ -40,7 +41,7 @@ export const useKandidatsammendrag = (kandidatnr: string) =>
     },
   );
 
-export const kandidagsammendragMirage = (server: any) => {
+export const kandidagsammendragMirage = (server: Server) => {
   return server.post(kandidatsammendragEndepunkt, (_: any, request: any) => {
     const body = JSON.parse(request.requestBody);
     const arenaKandidatnrFromRequest = body.kandidatnr;
