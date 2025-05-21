@@ -31,7 +31,9 @@ const LagreIKandidatlisteButton: React.FC<LagreIKandidatlisteButtonProps> = ({
         onClick={() => {
           if (stillingsId) {
             lagreKandidater();
-            kandidatlisteHook?.mutate();
+            setTimeout(() => {
+              kandidatlisteHook?.mutate();
+            }, 1000);
           } else {
             modalRef.current?.showModal();
           }
