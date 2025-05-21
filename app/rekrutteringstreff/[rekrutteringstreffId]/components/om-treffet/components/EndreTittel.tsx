@@ -21,7 +21,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { z } from 'zod';
 
-export interface EndreTittelProps {
+interface EndreTittelProps {
   modalRef: React.RefObject<HTMLDialogElement | null>;
   rekrutteringstreff: RekrutteringstreffDTO;
   onUpdated: () => void;
@@ -41,7 +41,6 @@ const schema = z.object({
       `Tittelen kan ikke ha mer enn ${MAX_TITLE_LENGTH} tegn.`,
     ),
 });
-
 type FormValues = z.infer<typeof schema>;
 
 const EndreTittel = ({
@@ -51,7 +50,9 @@ const EndreTittel = ({
 }: EndreTittelProps) => {
   const lagreButtonRef = useRef<HTMLButtonElement>(null);
   const clearButtonRef = useRef<HTMLButtonElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const modalLukkeknappRef = useRef<HTMLButtonElement | null>(null);
 
   const {
     trigger: validate,
@@ -72,18 +73,18 @@ const EndreTittel = ({
     mode: 'onChange',
     defaultValues: { nyTittel: rekrutteringstreff.tittel },
   });
-
   const nyTittel = useWatch({ control, name: 'nyTittel' });
+
   const [initialFocusDone, setInitialFocusDone] = useState(false);
-  const [skalViseTomFeil, setSkalViseTomFeil] = useState(false);
+  const [visTomFeil, setVisTomFeil] = useState(false);
 
   const errorMsg = useMemo(() => {
     const err = errors.nyTittel;
     if (!err) return undefined;
     if (err.type === 'too_big') return err.message;
-    if (err.type === 'too_small' && skalViseTomFeil) return err.message;
+    if (err.type === 'too_small' && visTomFeil) return err.message;
     return undefined;
-  }, [errors.nyTittel, skalViseTomFeil]);
+  }, [errors.nyTittel, visTomFeil]);
 
   const disableSave = useMemo(
     () =>
@@ -96,6 +97,14 @@ const EndreTittel = ({
     [errors.nyTittel, isSubmitting, validating, analyse],
   );
 
+  const focusEnd = () => {
+    const el = textareaRef.current;
+    if (!el) return;
+    el.focus();
+    const len = el.value.length;
+    el.setSelectionRange(len, len);
+  };
+
   const focusEtterAnalyse = () => {
     if (!analyse) return;
     (analyse.bryterRetningslinjer
@@ -105,7 +114,7 @@ const EndreTittel = ({
   };
 
   useEffect(() => {
-    setSkalViseTomFeil(false);
+    setVisTomFeil(false);
     resetAnalyse();
   }, [nyTittel, resetAnalyse]);
 
@@ -113,17 +122,18 @@ const EndreTittel = ({
     if (!validating && analyse && !analyseError) focusEtterAnalyse();
   }, [analyse, analyseError, validating]);
 
+  useEffect(() => {
+    if (modalRef.current) {
+      modalLukkeknappRef.current = modalRef.current.querySelector(
+        '.aksel-modal__header .aksel-modal__button',
+      ) as HTMLButtonElement | null;
+    }
+  }, [modalRef]);
+
   const handleInitialFocus = () => {
     if (initialFocusDone) return;
-
-    if (rekrutteringstreff.tittel === DEFAULT_TITLE) {
-      reset({ nyTittel: '' });
-    }
-
-    textareaRef.current?.focus();
-    const len = textareaRef.current?.value.length ?? 0;
-    textareaRef.current?.setSelectionRange(len, len);
-
+    if (rekrutteringstreff.tittel === DEFAULT_TITLE) reset({ nyTittel: '' });
+    focusEnd();
     setInitialFocusDone(true);
   };
 
@@ -145,12 +155,12 @@ const EndreTittel = ({
   };
 
   const onInvalid = () => {
-    if (errors.nyTittel?.type === 'too_small') setSkalViseTomFeil(true);
+    if (errors.nyTittel?.type === 'too_small') setVisTomFeil(true);
   };
 
   const clear = () => {
     setValue('nyTittel', '', { shouldValidate: true, shouldDirty: true });
-    textareaRef.current?.focus();
+    focusEnd();
   };
 
   const close = () => {
@@ -176,18 +186,20 @@ const EndreTittel = ({
           <div
             className='flex items-start'
             tabIndex={-1}
-            onBlur={() => {
+            onBlur={() =>
               setTimeout(() => {
                 const active = document.activeElement;
                 if (
                   active !== textareaRef.current &&
                   active !== clearButtonRef.current &&
+                  active !== closeButtonRef.current && // Avbryt-knappen
+                  active !== modalLukkeknappRef.current && // Modalens lukkeknapp (krysset)
                   nyTittel?.trim()
                 ) {
                   validate({ tittel: nyTittel, beskrivelse: null });
                 }
-              }, 0);
-            }}
+              })
+            }
           >
             <Controller
               control={control}
@@ -208,9 +220,8 @@ const EndreTittel = ({
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
                       e.preventDefault();
-                      if (nyTittel?.trim()) {
+                      if (nyTittel?.trim())
                         validate({ tittel: nyTittel, beskrivelse: null });
-                      }
                     }
                   }}
                 />
@@ -238,7 +249,7 @@ const EndreTittel = ({
                 <RobotIcon
                   aria-hidden
                   fontSize='2em'
-                  className='text-gray-700'
+                  className='ac-skeleton-bg'
                 />
               ) : analyse && !analyseError ? (
                 analyse.bryterRetningslinjer ? (
@@ -289,13 +300,18 @@ const EndreTittel = ({
         <Button
           type='submit'
           form='skjema-endre-tittel'
+          ref={lagreButtonRef}
           loading={isSubmitting}
           disabled={disableSave}
-          ref={lagreButtonRef}
         >
           Lagre
         </Button>
-        <Button type='button' variant='secondary' onClick={close}>
+        <Button
+          type='button'
+          variant='secondary'
+          onClick={close}
+          ref={closeButtonRef}
+        >
           Avbryt
         </Button>
       </Modal.Footer>
