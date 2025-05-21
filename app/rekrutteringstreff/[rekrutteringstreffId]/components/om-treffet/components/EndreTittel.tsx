@@ -252,7 +252,7 @@ const EndreTittel = ({
                 <RobotIcon
                   aria-hidden
                   fontSize='2em'
-                  className='ac-skeleton-bg'
+                  className='text-gray-700'
                 />
               ) : analyse && !analyseError ? (
                 analyse.bryterRetningslinjer ? (
