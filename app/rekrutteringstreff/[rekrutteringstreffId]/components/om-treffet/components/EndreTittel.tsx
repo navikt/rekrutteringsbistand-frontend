@@ -17,7 +17,13 @@ import {
   Textarea,
 } from '@navikt/ds-react';
 import { logger } from '@navikt/next-logger';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -105,15 +111,17 @@ const EndreTittel = ({
     el.setSelectionRange(len, len);
   };
 
-  const focusEtterAnalyse = () => {
+  const focusEtterAnalyse = useCallback(() => {
     if (!analyse) return;
     (analyse.bryterRetningslinjer
       ? textareaRef
       : lagreButtonRef
     ).current?.focus();
-  };
+  }, [analyse, textareaRef, lagreButtonRef]);
 
-  useEffect(() => {}, [nyTittel, resetAnalyse]);
+  useEffect(() => {
+    resetAnalyse();
+  }, [nyTittel, resetAnalyse]);
 
   useEffect(() => {
     if (!validating && analyse && !analyseError) focusEtterAnalyse();
