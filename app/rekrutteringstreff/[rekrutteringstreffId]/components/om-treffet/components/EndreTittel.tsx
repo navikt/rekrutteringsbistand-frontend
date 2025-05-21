@@ -7,8 +7,8 @@ import {
   Alert,
   BodyLong,
   Button,
-  Loader,
   Modal,
+  Skeleton,
   Textarea,
 } from '@navikt/ds-react';
 import { logger } from '@navikt/next-logger';
@@ -238,9 +238,7 @@ const EndreTittel = ({
             )}
           </div>
           {validating && (
-            <div className='flex justify-center'>
-              <Loader size='xlarge' title='Validerer tittel...' />
-            </div>
+            <Skeleton height={150} variant='rounded' width={'100%'} />
           )}
 
           {analyseError && !validating && (
