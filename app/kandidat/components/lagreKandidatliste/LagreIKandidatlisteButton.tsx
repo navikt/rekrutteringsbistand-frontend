@@ -1,5 +1,6 @@
 import { UmamiEvent } from '../../../../util/umamiEvents';
 import { leggTilKandidater } from '../../../api/kandidat-sok/leggTilKandidat';
+import { useKandidatliste } from '../../../api/kandidat/useKandidatliste';
 import { useApplikasjonContext } from '../../../providers/ApplikasjonContext';
 import { useKandidatSøkMarkerteContext } from '../../KandidatSøkMarkerteContext';
 import LagreIKandidatlisteModal from './LagreIKandidatlisteModal';
@@ -22,7 +23,7 @@ const LagreIKandidatlisteButton: React.FC<LagreIKandidatlisteButtonProps> = ({
   const { visVarsel } = useApplikasjonContext();
   const { markerteKandidater, fjernMarkerteKandidater } =
     useKandidatSøkMarkerteContext();
-
+  const kandidatlisteHook = useKandidatliste(stillingsId);
   return (
     <div>
       <Button
@@ -30,6 +31,7 @@ const LagreIKandidatlisteButton: React.FC<LagreIKandidatlisteButtonProps> = ({
         onClick={() => {
           if (stillingsId) {
             lagreKandidater();
+            kandidatlisteHook?.mutate();
           } else {
             modalRef.current?.showModal();
           }
