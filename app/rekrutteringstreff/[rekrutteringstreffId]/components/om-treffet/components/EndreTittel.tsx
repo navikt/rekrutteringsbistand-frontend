@@ -2,7 +2,12 @@ import { oppdaterRekrutteringstreff } from '@/app/api/rekrutteringstreff/oppdate
 import { useValiderRekrutteringstreff } from '@/app/api/rekrutteringstreff/tittelValidering/useValiderRekrutteringstreff';
 import { RekrutteringstreffDTO } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { RobotFrownIcon, RobotSmileIcon, XMarkIcon } from '@navikt/aksel-icons';
+import {
+  RobotFrownIcon,
+  RobotIcon,
+  RobotSmileIcon,
+  XMarkIcon,
+} from '@navikt/aksel-icons';
 import {
   Alert,
   BodyLong,
@@ -238,7 +243,24 @@ const EndreTittel = ({
             )}
           </div>
           {validating && (
-            <Skeleton height={150} variant='rounded' width={'100%'} />
+            <div>
+              <div className='flex gap-3 mt-2 items-start'>
+                <div className='inline-flex justify-center items-start w-10 pt-1'>
+                  <RobotIcon
+                    aria-hidden
+                    fontSize='2em'
+                    className='text-gray-700'
+                  />
+                </div>
+                <div className='w-full'>
+                  <Skeleton variant='text' width='100%' height={31} />
+                  <Skeleton variant='text' width='100%' height={31} />
+                  <Skeleton variant='text' width='100%' height={31} />
+                  <Skeleton variant='text' width='100%' height={31} />
+                  <Skeleton variant='text' width='100%' height={31} />
+                </div>
+              </div>
+            </div>
           )}
 
           {analyseError && !validating && (
@@ -278,7 +300,7 @@ const EndreTittel = ({
         </form>
       </Modal.Body>
 
-      <Modal.Footer className='pt-1'>
+      <Modal.Footer className='pt-2'>
         <Button
           type='submit'
           form='skjema-endre-tittel'
