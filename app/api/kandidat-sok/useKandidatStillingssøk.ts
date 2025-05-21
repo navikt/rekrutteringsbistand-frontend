@@ -2,7 +2,7 @@
 
 import { getSingleKandidatStillingssøk } from '../../../mocks/kandidat.mock';
 import { KandidatSøkAPI } from '../api-routes';
-import { postApiWithSchema } from '../fetcher';
+import { postApiWithSchemaEs } from '../fetcher';
 import { Server } from 'miragejs';
 /**
  * Endepunkt /useKandidatStillingssøk
@@ -39,7 +39,7 @@ export type KandidatStillingssøkDTO = z.infer<
 export const useKandidatStillingssøk = (kandidatId: string | null) =>
   useSWRImmutable(kandidatStillingssøkEndepunkt, (url) =>
     kandidatId
-      ? postApiWithSchema(kandidatStillingssøkDTOSchema)({
+      ? postApiWithSchemaEs(kandidatStillingssøkDTOSchema)({
           url,
           body: { kandidatnr: kandidatId },
         })
@@ -69,6 +69,14 @@ export const kandidatStillingsSøkMirage = (server: Server) => {
     // Get stillingssøk data using the seed
     const stillingssøkData = getSingleKandidatStillingssøk(seed);
 
-    return stillingssøkData;
+    return {
+      hits: {
+        hits: [
+          {
+            _source: stillingssøkData,
+          },
+        ],
+      },
+    };
   });
 };

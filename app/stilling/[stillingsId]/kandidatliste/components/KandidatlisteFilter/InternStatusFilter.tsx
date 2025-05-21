@@ -1,5 +1,5 @@
-import { storForbokstavString } from '../../../../../kandidat/util';
 import { InternKandidatstatus } from '../../KandidatTyper';
+import { internStatusTekst } from '../InternStatusTag';
 import { useKandidatlisteFilterContext } from './KandidatlisteFilterContext';
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
 import * as React from 'react';
@@ -22,7 +22,7 @@ const InternStatusFilter: React.FC = () => {
             }
           }}
         >
-          {storForbokstavString(value ?? '').replace(/_/g, ' ')}
+          {internStatusTekst(value ?? '')}
         </Checkbox>
       ))}
     </CheckboxGroup>

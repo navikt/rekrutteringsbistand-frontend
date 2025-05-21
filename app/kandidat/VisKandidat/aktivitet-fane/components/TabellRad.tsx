@@ -1,4 +1,5 @@
-import KandidatStatusTag from '../../../../stilling/[stillingsId]/kandidatliste/components/StatusTag';
+import { InternKandidatstatus } from '../../../../stilling/[stillingsId]/kandidatliste/KandidatTyper';
+import InternStatusTag from '../../../../stilling/[stillingsId]/kandidatliste/components/InternStatusTag';
 import { Link, Table } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import * as React from 'react';
@@ -38,7 +39,7 @@ const TabellRad: React.FC<TabellRadProps> = ({
       <Table.DataCell>{arbeidsgiver}</Table.DataCell>
       <Table.DataCell>{lagtTilAv}</Table.DataCell>
       <Table.DataCell>
-        <KandidatStatusTag status={status ?? ''} />
+        <InternStatusTag status={(status ?? '') as InternKandidatstatus} />
       </Table.DataCell>
     </Table.Row>
   );

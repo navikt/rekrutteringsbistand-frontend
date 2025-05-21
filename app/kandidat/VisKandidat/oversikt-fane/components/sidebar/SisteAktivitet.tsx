@@ -1,6 +1,6 @@
 import { useKandidatListeoversikt } from '../../../../../api/kandidat/useKandidatListeoversikt';
 import SWRLaster from '../../../../../components/SWRLaster';
-import KandidatStatusTag from '../../../../../stilling/[stillingsId]/kandidatliste/components/StatusTag';
+import InternStatusTag from '../../../../../stilling/[stillingsId]/kandidatliste/components/InternStatusTag';
 import { useKandidatContext } from '../../../KandidatContext';
 import { BodyShort, Button, Link } from '@navikt/ds-react';
 import { format } from 'date-fns';
@@ -62,7 +62,7 @@ const SisteAktivitet: React.FC = () => {
                           { locale: nb },
                         )}
                       </BodyShort>
-                      <KandidatStatusTag status={aktivitet.status} liten />
+                      <InternStatusTag status={aktivitet.status} />
                     </div>
                   </div>
                 );
