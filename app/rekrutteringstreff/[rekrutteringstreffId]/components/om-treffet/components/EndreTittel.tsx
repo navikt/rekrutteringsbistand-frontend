@@ -1,8 +1,16 @@
 import { oppdaterRekrutteringstreff } from '@/app/api/rekrutteringstreff/oppdater-rekrutteringstreff/oppdaterRerkutteringstreff';
+import { useValiderRekrutteringstreff } from '@/app/api/rekrutteringstreff/tittelValidering/useValiderRekrutteringstreff';
 import { RekrutteringstreffDTO } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { XMarkIcon } from '@navikt/aksel-icons';
-import { Button, Modal, Textarea } from '@navikt/ds-react';
+import { RobotFrownIcon, RobotSmileIcon, XMarkIcon } from '@navikt/aksel-icons';
+import {
+  Alert,
+  BodyLong,
+  Button,
+  Loader,
+  Modal,
+  Textarea,
+} from '@navikt/ds-react';
 import { logger } from '@navikt/next-logger';
 import React, { useRef, useState, useEffect } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
@@ -30,6 +38,7 @@ const schema = z.object({
       `Tittelen kan ikke ha mer enn ${MAX_TITLE_LENGTH} tegn.`,
     ),
 });
+
 type FormValues = z.infer<typeof schema>;
 
 const EndreTittel = ({
@@ -37,6 +46,16 @@ const EndreTittel = ({
   rekrutteringstreff,
   onUpdated,
 }: EndreTittelProps) => {
+  const lagreButtonRef = useRef<HTMLButtonElement>(null);
+
+  const {
+    trigger: validate,
+    data: analyse,
+    reset: resetAnalyse,
+    error: analyseError,
+    isMutating: validating,
+  } = useValiderRekrutteringstreff();
+
   const {
     control,
     handleSubmit,
@@ -55,17 +74,14 @@ const EndreTittel = ({
 
   const handleInitialFocus = () => {
     if (!initialFocusDone) {
-      // Dersom det er autogenerert tittel, vil vi viske den bort
       const newInitialTittel =
         rekrutteringstreff.tittel === DEFAULT_REKRUTTERINGSTREFF_TITTEL
           ? ''
           : rekrutteringstreff.tittel;
       reset({ nyTittel: newInitialTittel });
 
-      // Når modal åpnes, fokuserer vi på textarea, ikke på lukkeknapåp som er default i modal
       textareaRef.current?.focus();
 
-      // Markør skal være til slutt i feltet, ikke i starten som er default
       if (textareaRef.current) {
         const len = textareaRef.current.value.length;
         textareaRef.current.selectionStart = len;
@@ -79,7 +95,19 @@ const EndreTittel = ({
 
   useEffect(() => {
     setSkalViseTomFeil(false);
-  }, [nyTittel]);
+    resetAnalyse();
+  }, [nyTittel, resetAnalyse]);
+
+  useEffect(() => {
+    if (!validating && analyse && !analyseError) {
+      if (!analyse.bryterRetningslinjer && lagreButtonRef.current) {
+        lagreButtonRef.current.focus();
+      }
+      if (analyse.bryterRetningslinjer && textareaRef.current) {
+        textareaRef.current.focus();
+      }
+    }
+  }, [analyse, analyseError, validating]);
 
   const save = async ({ nyTittel }: FormValues) => {
     try {
@@ -120,7 +148,14 @@ const EndreTittel = ({
         ? errors.nyTittel.message
         : undefined;
 
-  const disableSave = errors.nyTittel?.type === ZOD_TOO_BIG || isSubmitting;
+  const disableSave =
+    errors.nyTittel?.type === ZOD_TOO_BIG ||
+    isSubmitting ||
+    validating ||
+    !analyse ||
+    !!errors.nyTittel;
+
+  const clearButtonRef = useRef<HTMLButtonElement>(null);
 
   return (
     <Modal
@@ -136,7 +171,23 @@ const EndreTittel = ({
           onSubmit={handleSubmit(save, onInvalid)}
           className='space-y-2'
         >
-          <div className='flex items-start'>
+          <div
+            className='flex items-start'
+            tabIndex={-1}
+            onBlur={() => {
+              setTimeout(() => {
+                const active = document.activeElement;
+                if (
+                  active !== textareaRef.current &&
+                  active !== clearButtonRef.current
+                ) {
+                  if (nyTittel?.trim()) {
+                    validate({ tittel: nyTittel, beskrivelse: null });
+                  }
+                }
+              }, 0);
+            }}
+          >
             <Controller
               control={control}
               name='nyTittel'
@@ -167,6 +218,7 @@ const EndreTittel = ({
             {nyTittel && (
               <Button
                 type='button'
+                ref={clearButtonRef}
                 onClick={clear}
                 aria-label='Tøm tittel feltet'
                 variant='tertiary'
@@ -177,6 +229,44 @@ const EndreTittel = ({
               </Button>
             )}
           </div>
+          {validating && (
+            <div className='flex justify-center'>
+              <Loader size='xlarge' title='Validerer tittel...' />
+            </div>
+          )}
+
+          {analyseError && !validating && (
+            <Alert variant='error'>
+              {analyseError.message ?? 'En feil oppstod under validering.'}
+            </Alert>
+          )}
+
+          {analyse && !validating && !analyseError && (
+            <div className='flex items-center gap-3 mt-2'>
+              {analyse.bryterRetningslinjer ? (
+                <RobotFrownIcon
+                  aria-hidden
+                  fontSize='2em'
+                  className='text-red-600'
+                />
+              ) : (
+                <RobotSmileIcon
+                  aria-hidden
+                  fontSize='2em'
+                  className='text-green-800'
+                />
+              )}
+              <span
+                className={
+                  analyse.bryterRetningslinjer
+                    ? 'text-red-700'
+                    : 'text-green-700'
+                }
+              >
+                <BodyLong>{analyse.begrunnelse}</BodyLong>
+              </span>
+            </div>
+          )}
         </form>
       </Modal.Body>
 
@@ -186,6 +276,7 @@ const EndreTittel = ({
           form='skjema-endre-tittel'
           loading={isSubmitting}
           disabled={disableSave}
+          ref={lagreButtonRef}
         >
           Lagre
         </Button>
