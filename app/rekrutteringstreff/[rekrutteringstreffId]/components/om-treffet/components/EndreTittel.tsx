@@ -1,4 +1,3 @@
-// app/(…)/EndreTittel.tsx
 'use client';
 
 import { oppdaterRekrutteringstreff } from '@/app/api/rekrutteringstreff/oppdater-rekrutteringstreff/oppdaterRerkutteringstreff';
@@ -15,13 +14,9 @@ import {
   Textarea,
 } from '@navikt/ds-react';
 import { logger } from '@navikt/next-logger';
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { z } from 'zod';
-
-// app/(…)/EndreTittel.tsx
-
-// app/(…)/EndreTittel.tsx
 
 interface Props {
   modalRef: React.RefObject<HTMLDialogElement | null>;
@@ -60,15 +55,8 @@ const EndreTittel = ({ modalRef, rekrutteringstreff, onUpdated }: Props) => {
     isMutating: validating,
   } = useValiderRekrutteringstreff();
 
-  useEffect(() => {
-    if (nyTittel?.trim()) validate({ tittel: nyTittel, beskrivelse: null });
-  }, [nyTittel, validate]);
-
   const disableSave =
-    isSubmitting ||
-    validating ||
-    analyse?.bryterRetningslinjer ||
-    !!errors.nyTittel;
+    isSubmitting || validating || !analyse || !!errors.nyTittel;
 
   const save = async ({ nyTittel }: Form) => {
     try {
@@ -133,6 +121,10 @@ const EndreTittel = ({ modalRef, rekrutteringstreff, onUpdated }: Props) => {
                       ? 'Tittelen bryter retningslinjene'
                       : undefined)
                   }
+                  onBlur={() =>
+                    field.value.trim() &&
+                    validate({ tittel: field.value, beskrivelse: null })
+                  }
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
                       e.preventDefault();
@@ -191,19 +183,6 @@ const EndreTittel = ({ modalRef, rekrutteringstreff, onUpdated }: Props) => {
                 }
               >
                 <BodyLong>{analyse.begrunnelse}</BodyLong>
-              </span>
-            </div>
-          )}
-
-          {analyseError && !validating && (
-            <div className='flex items-center gap-3 mt-2'>
-              <RobotFrownIcon
-                aria-hidden
-                fontSize='2em'
-                className='text-red-600'
-              />
-              <span className='text-red-700 font-semibold'>
-                {analyseError.message ?? 'En feil oppstod under validering.'}
               </span>
             </div>
           )}
