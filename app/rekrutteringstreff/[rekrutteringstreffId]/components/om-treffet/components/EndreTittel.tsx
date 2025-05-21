@@ -100,14 +100,19 @@ const EndreTittel = ({
 
   useEffect(() => {
     if (!validating && analyse && !analyseError) {
-      if (!analyse.bryterRetningslinjer && lagreButtonRef.current) {
-        lagreButtonRef.current.focus();
-      }
-      if (analyse.bryterRetningslinjer && textareaRef.current) {
-        textareaRef.current.focus();
-      }
+      focusEtterAnalyse();
     }
   }, [analyse, analyseError, validating]);
+
+  const focusEtterAnalyse = () => {
+    if (!analyse) return;
+    if (!analyse.bryterRetningslinjer && lagreButtonRef.current) {
+      lagreButtonRef.current.focus();
+    }
+    if (analyse.bryterRetningslinjer && textareaRef.current) {
+      textareaRef.current.focus();
+    }
+  };
 
   const save = async ({ nyTittel }: FormValues) => {
     try {
@@ -203,12 +208,14 @@ const EndreTittel = ({
                   maxRows={1}
                   rows={1}
                   resize={false}
-                  className='w-full pt-2 pr-9'
+                  className='w-full pt-2'
                   error={errorMsg}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
                       e.preventDefault();
-                      if (!disableSave) handleSubmit(save, onInvalid)();
+                      if (nyTittel?.trim()) {
+                        validate({ tittel: nyTittel, beskrivelse: null });
+                      }
                     }
                   }}
                 />
@@ -223,7 +230,7 @@ const EndreTittel = ({
                 aria-label='Tøm tittel feltet'
                 variant='tertiary'
                 size='small'
-                className='h-8 p-1 -ml-18 mt-3 flex items-center'
+                className='h-8 p-1 -ml-9 mt-3 flex items-center'
               >
                 <XMarkIcon aria-hidden fontSize='1.25rem' />
               </Button>
@@ -242,29 +249,31 @@ const EndreTittel = ({
           )}
 
           {analyse && !validating && !analyseError && (
-            <div className='flex items-center gap-3 mt-2'>
-              {analyse.bryterRetningslinjer ? (
-                <RobotFrownIcon
-                  aria-hidden
-                  fontSize='2em'
-                  className='text-red-600'
-                />
-              ) : (
-                <RobotSmileIcon
-                  aria-hidden
-                  fontSize='2em'
-                  className='text-green-800'
-                />
-              )}
-              <span
+            <div className='flex gap-3 mt-2 items-start'>
+              <div className='inline-flex justify-center items-start w-10 pt-1'>
+                {analyse.bryterRetningslinjer ? (
+                  <RobotFrownIcon
+                    aria-hidden
+                    fontSize='2em'
+                    className='text-red-600'
+                  />
+                ) : (
+                  <RobotSmileIcon
+                    aria-hidden
+                    fontSize='2em'
+                    className='text-green-800'
+                  />
+                )}
+              </div>
+              <div
                 className={
                   analyse.bryterRetningslinjer
-                    ? 'text-red-700'
-                    : 'text-green-700'
+                    ? 'aksel-error-message p-1'
+                    : 'text-green-700 p-1'
                 }
               >
                 <BodyLong>{analyse.begrunnelse}</BodyLong>
-              </span>
+              </div>
             </div>
           )}
         </form>
