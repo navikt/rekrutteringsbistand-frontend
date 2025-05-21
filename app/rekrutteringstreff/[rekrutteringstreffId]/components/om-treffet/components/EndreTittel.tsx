@@ -1,49 +1,50 @@
+// app/(…)/EndreTittel.tsx
+'use client';
+
 import { oppdaterRekrutteringstreff } from '@/app/api/rekrutteringstreff/oppdater-rekrutteringstreff/oppdaterRerkutteringstreff';
+import { useValiderRekrutteringstreff } from '@/app/api/rekrutteringstreff/tittelValidering/useValiderRekrutteringstreff';
 import { RekrutteringstreffDTO } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { XMarkIcon } from '@navikt/aksel-icons';
-import { Button, Modal, Textarea } from '@navikt/ds-react';
+import { RobotFrownIcon, RobotSmileIcon, XMarkIcon } from '@navikt/aksel-icons';
+import {
+  Alert,
+  BodyLong,
+  Button,
+  Loader,
+  Modal,
+  Textarea,
+} from '@navikt/ds-react';
 import { logger } from '@navikt/next-logger';
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { z } from 'zod';
 
-export interface EndreTittelProps {
+// app/(…)/EndreTittel.tsx
+
+// app/(…)/EndreTittel.tsx
+
+interface Props {
   modalRef: React.RefObject<HTMLDialogElement | null>;
   rekrutteringstreff: RekrutteringstreffDTO;
   onUpdated: () => void;
 }
 
-const MAX_TITLE_LENGTH = 50;
-const DEFAULT_REKRUTTERINGSTREFF_TITTEL = 'Nytt rekrutteringstreff';
-
-const ZOD_TOO_SMALL = 'too_small';
-const ZOD_TOO_BIG = 'too_big';
+const MAX = 50;
+const AUTO = 'Nytt rekrutteringstreff';
 
 const schema = z.object({
-  nyTittel: z
-    .string()
-    .trim()
-    .min(1, 'Tittel kan ikke være tom.')
-    .max(
-      MAX_TITLE_LENGTH,
-      `Tittelen kan ikke ha mer enn ${MAX_TITLE_LENGTH} tegn.`,
-    ),
+  nyTittel: z.string().trim().min(1).max(MAX),
 });
-type FormValues = z.infer<typeof schema>;
+type Form = z.infer<typeof schema>;
 
-const EndreTittel = ({
-  modalRef,
-  rekrutteringstreff,
-  onUpdated,
-}: EndreTittelProps) => {
+const EndreTittel = ({ modalRef, rekrutteringstreff, onUpdated }: Props) => {
   const {
     control,
     handleSubmit,
     setValue,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<FormValues>({
+  } = useForm<Form>({
     resolver: zodResolver(schema),
     mode: 'onChange',
     defaultValues: { nyTittel: rekrutteringstreff.tittel },
@@ -51,37 +52,25 @@ const EndreTittel = ({
 
   const nyTittel = useWatch({ control, name: 'nyTittel' });
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const [initialFocusDone, setInitialFocusDone] = useState(false);
 
-  const handleInitialFocus = () => {
-    if (!initialFocusDone) {
-      // Dersom det er autogenerert tittel, vil vi viske den bort
-      const newInitialTittel =
-        rekrutteringstreff.tittel === DEFAULT_REKRUTTERINGSTREFF_TITTEL
-          ? ''
-          : rekrutteringstreff.tittel;
-      reset({ nyTittel: newInitialTittel });
-
-      // Når modal åpnes, fokuserer vi på textarea, ikke på lukkeknapåp som er default i modal
-      textareaRef.current?.focus();
-
-      // Markør skal være til slutt i feltet, ikke i starten som er default
-      if (textareaRef.current) {
-        const len = textareaRef.current.value.length;
-        textareaRef.current.selectionStart = len;
-        textareaRef.current.selectionEnd = len;
-      }
-      setInitialFocusDone(true);
-    }
-  };
-
-  const [skalViseTomFeil, setSkalViseTomFeil] = useState(false);
+  const {
+    trigger: validate,
+    data: analyse,
+    error: analyseError,
+    isMutating: validating,
+  } = useValiderRekrutteringstreff();
 
   useEffect(() => {
-    setSkalViseTomFeil(false);
-  }, [nyTittel]);
+    if (nyTittel?.trim()) validate({ tittel: nyTittel, beskrivelse: null });
+  }, [nyTittel, validate]);
 
-  const save = async ({ nyTittel }: FormValues) => {
+  const disableSave =
+    isSubmitting ||
+    validating ||
+    analyse?.bryterRetningslinjer ||
+    !!errors.nyTittel;
+
+  const save = async ({ nyTittel }: Form) => {
     try {
       const { id, beskrivelse, sted, fraTid, tilTid } = rekrutteringstreff;
       await oppdaterRekrutteringstreff(id, {
@@ -93,34 +82,18 @@ const EndreTittel = ({
       });
       onUpdated();
       modalRef.current?.close();
-    } catch (error) {
-      logger.error('Lagring av tittel feilet:', error);
+    } catch (e) {
+      logger.error('Lagring av tittel feilet:', e);
     }
   };
 
-  const onInvalid = () => {
-    if (errors.nyTittel?.type === ZOD_TOO_SMALL) setSkalViseTomFeil(true);
-  };
-
-  const clear = () => {
+  const clear = () =>
     setValue('nyTittel', '', { shouldValidate: true, shouldDirty: true });
-    textareaRef.current?.focus();
-  };
 
   const close = () => {
     modalRef.current?.close();
     reset({ nyTittel: rekrutteringstreff.tittel });
-    setInitialFocusDone(false);
   };
-
-  const errorMsg =
-    errors.nyTittel?.type === ZOD_TOO_BIG
-      ? errors.nyTittel.message
-      : skalViseTomFeil && errors.nyTittel?.type === ZOD_TOO_SMALL
-        ? errors.nyTittel.message
-        : undefined;
-
-  const disableSave = errors.nyTittel?.type === ZOD_TOO_BIG || isSubmitting;
 
   return (
     <Modal
@@ -128,13 +101,16 @@ const EndreTittel = ({
       header={{ heading: 'Endre navn på treffet' }}
       width={400}
       onClose={close}
-      onFocus={handleInitialFocus}
+      onFocus={() => {
+        if (rekrutteringstreff.tittel === AUTO) reset({ nyTittel: '' });
+        textareaRef.current?.focus();
+      }}
     >
       <Modal.Body>
         <form
-          id='skjema-endre-tittel'
-          onSubmit={handleSubmit(save, onInvalid)}
-          className='space-y-2'
+          id='endre-tittel'
+          onSubmit={handleSubmit(save)}
+          className='space-y-4'
         >
           <div className='flex items-start'>
             <Controller
@@ -146,18 +122,21 @@ const EndreTittel = ({
                   ref={textareaRef}
                   hideLabel
                   label='Ny tittel'
-                  maxLength={MAX_TITLE_LENGTH}
-                  autoFocus
+                  maxLength={MAX}
                   minRows={1}
                   maxRows={1}
-                  rows={1}
                   resize={false}
                   className='w-full pt-2 pr-9'
-                  error={errorMsg}
+                  error={
+                    errors.nyTittel?.message ||
+                    (analyse?.bryterRetningslinjer
+                      ? 'Tittelen bryter retningslinjene'
+                      : undefined)
+                  }
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
                       e.preventDefault();
-                      if (!disableSave) handleSubmit(save, onInvalid)();
+                      if (!disableSave) handleSubmit(save)();
                     }
                   }}
                 />
@@ -168,28 +147,79 @@ const EndreTittel = ({
               <Button
                 type='button'
                 onClick={clear}
-                aria-label='Tøm tittel feltet'
                 variant='tertiary'
                 size='small'
-                className='h-8 p-1 -ml-18 mt-3 flex items-center'
+                className='h-8 p-1 -ml-18 mt-3'
               >
                 <XMarkIcon aria-hidden fontSize='1.25rem' />
               </Button>
             )}
           </div>
+
+          {validating && (
+            <div className='flex justify-center'>
+              <Loader size='xlarge' title='Validerer tittel...' />
+            </div>
+          )}
+
+          {analyseError && !validating && (
+            <Alert variant='error'>
+              {analyseError.message ?? 'En feil oppstod under validering.'}
+            </Alert>
+          )}
+
+          {analyse && !validating && !analyseError && (
+            <div className='flex items-center gap-3 mt-2'>
+              {analyse.bryterRetningslinjer ? (
+                <RobotFrownIcon
+                  aria-hidden
+                  fontSize='2em'
+                  className='text-red-600'
+                />
+              ) : (
+                <RobotSmileIcon
+                  aria-hidden
+                  fontSize='2em'
+                  className='text-green-800'
+                />
+              )}
+              <span
+                className={
+                  analyse.bryterRetningslinjer
+                    ? 'text-red-700'
+                    : 'text-green-700'
+                }
+              >
+                <BodyLong>{analyse.begrunnelse}</BodyLong>
+              </span>
+            </div>
+          )}
+
+          {analyseError && !validating && (
+            <div className='flex items-center gap-3 mt-2'>
+              <RobotFrownIcon
+                aria-hidden
+                fontSize='2em'
+                className='text-red-600'
+              />
+              <span className='text-red-700 font-semibold'>
+                {analyseError.message ?? 'En feil oppstod under validering.'}
+              </span>
+            </div>
+          )}
         </form>
       </Modal.Body>
 
       <Modal.Footer className='pt-1'>
         <Button
           type='submit'
-          form='skjema-endre-tittel'
+          form='endre-tittel'
           loading={isSubmitting}
           disabled={disableSave}
         >
           Lagre
         </Button>
-        <Button type='button' variant='secondary' onClick={close}>
+        <Button variant='secondary' onClick={close}>
           Avbryt
         </Button>
       </Modal.Footer>
@@ -197,5 +227,4 @@ const EndreTittel = ({
   );
 };
 
-EndreTittel.displayName = 'EndreTittel';
 export default EndreTittel;
