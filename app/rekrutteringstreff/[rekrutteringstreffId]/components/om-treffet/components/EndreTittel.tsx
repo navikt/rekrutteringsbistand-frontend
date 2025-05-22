@@ -17,6 +17,7 @@ import {
   Textarea,
 } from '@navikt/ds-react';
 import { logger } from '@navikt/next-logger';
+import { AnimatePresence, motion } from 'framer-motion';
 import React, {
   useCallback,
   useEffect,
@@ -298,28 +299,58 @@ const EndreTittel = ({
             </div>
 
             <div className='w-full'>
-              {validating &&
-                [...Array(SKELETON_LINES)].map((_, i) => (
-                  <Skeleton key={i} variant='text' width='100%' height={31} />
-                ))}
+              <AnimatePresence mode='wait'>
+                {validating && (
+                  <motion.div
+                    key='skeleton'
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    {[...Array(SKELETON_LINES)].map((_, i) => (
+                      <Skeleton
+                        key={i}
+                        variant='text'
+                        width='100%'
+                        height={31}
+                      />
+                    ))}
+                  </motion.div>
+                )}
 
-              {analyseError && !validating && (
-                <Alert variant='error'>
-                  {analyseError.message ?? 'En feil oppstod under validering.'}
-                </Alert>
-              )}
+                {!validating && analyseError && (
+                  <motion.div
+                    key='error'
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <Alert variant='error'>
+                      {analyseError.message ??
+                        'En feil oppstod under validering.'}
+                    </Alert>
+                  </motion.div>
+                )}
 
-              {analyse && !validating && !analyseError && (
-                <div
-                  className={
-                    analyse.bryterRetningslinjer
-                      ? 'aksel-error-message p-1'
-                      : 'text-green-700 p-1'
-                  }
-                >
-                  <BodyLong>{analyse.begrunnelse}</BodyLong>
-                </div>
-              )}
+                {!validating && analyse && !analyseError && (
+                  <motion.div
+                    key='analyse'
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className={
+                      analyse.bryterRetningslinjer
+                        ? 'aksel-error-message p-1'
+                        : 'text-green-700 p-1'
+                    }
+                  >
+                    <BodyLong>{analyse.begrunnelse}</BodyLong>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </div>
         </form>
