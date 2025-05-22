@@ -28,7 +28,9 @@ const OmStillingBoks: React.FC<OmStillingBoksProps> = ({
         </div>
       )}
 
-      <div className='mt-4 grid grid-cols-3 gap-4'>{gridInnhold}</div>
+      <div className='mt-4 grid  grid-cols-1 2xl:grid-cols-3 gap-4'>
+        {gridInnhold}
+      </div>
       {innholdTopp && innhold && (
         <div className='prose prose-ul:list-disc prose-ul:pl-6 max-w-none pt-8 [&_ul]:list-disc [&_ul]:pl-6'>
           {innhold}

@@ -13,7 +13,7 @@ const Kontaktpersoner: React.FC = () => {
           ? 'Kontaktpersoner'
           : 'Kontaktperson'}
       </Heading>
-      <div className='grid grid-cols-2 gap-8'>
+      <div className='grid grid-cols-1 2xl:grid-cols-2 gap-8'>
         {kontaktInfo?.map((kontakt, index) => (
           <dl key={index}>
             <div className='mb-1'>

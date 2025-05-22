@@ -9,7 +9,7 @@ const Definisjon: React.FC<DefinisjonProps> = ({ tittel, innhold }) => {
   return (
     <div>
       <dt className='font-bold'>{tittel}</dt>
-      <dd>{innhold ?? '-'}</dd>
+      <dd className='break-all'>{innhold ?? '-'}</dd>
     </div>
   );
 };
