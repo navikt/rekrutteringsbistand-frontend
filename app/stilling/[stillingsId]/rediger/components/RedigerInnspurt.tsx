@@ -1,5 +1,6 @@
 import { UmamiEvent } from '../../../../../util/umamiEvents';
 import { oppdaterStilling } from '../../../../api/stilling/oppdater-stilling/oppdaterStilling';
+import { useApplikasjonContext } from '../../../../providers/ApplikasjonContext';
 import { useUmami } from '../../../../providers/UmamiContext';
 import { useStillingsContext } from '../../StillingsContext';
 import { mapFormTilStilling, StillingSynlighet } from '../mapStilling';
@@ -32,6 +33,7 @@ export const RedigerInnspurt: React.FC<{
 }> = ({ stegNummer, forrigeSteg }) => {
   const { track } = useUmami();
   const { stillingsData, refetch } = useStillingsContext();
+  const { valgtNavKontor, brukerData } = useApplikasjonContext();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [sendeSoknad, setSendeSoknad] = useState<string[]>([]);
@@ -74,7 +76,11 @@ export const RedigerInnspurt: React.FC<{
       omfangIProsent: publiserStillingsData.stilling.properties?.jobpercentage,
       arbeidssted: publiserStillingsData.stilling.locationList,
     });
-    const response = await oppdaterStilling(publiserStillingsData);
+    const response = await oppdaterStilling(publiserStillingsData, {
+      eierNavident: brukerData.ident,
+      eierNavn: brukerData.navn,
+      eierNavKontorEnhetId: valgtNavKontor?.navKontor,
+    });
 
     if (response.stilling.uuid) {
       setTimeout(() => {

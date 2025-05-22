@@ -4,6 +4,7 @@ export type StillingsDataDTO = z.infer<typeof StillingDataSchema>;
 export type GeografiDTO = z.infer<typeof LocationSchema>;
 export type ContactSchemaDTO = z.infer<typeof ContactSchema>;
 export type CategorySchemaDTO = z.infer<typeof KategoriSchema>;
+export type StillingsinfoDTO = z.infer<typeof StillingsinfoSchema>;
 
 // Egendefinert
 export const searchtagSchema = z.object({
@@ -64,12 +65,12 @@ export const propertiesSchema = z
 const LocalDateTimeSchema = z.string(); // Assuming LocalDateTime is represented as a string in JSON
 
 const AdministrationSchema = z.object({
-  id: z.number().nullable(),
-  status: z.string().nullable(),
-  comments: z.string().nullable(),
-  reportee: z.string().nullable(),
-  remarks: z.array(z.string()).nullable(),
-  navIdent: z.string().nullable(),
+  id: z.number().optional().nullable(),
+  status: z.string().optional().nullable(),
+  comments: z.string().optional().nullable(),
+  reportee: z.string().optional().nullable(),
+  remarks: z.array(z.string()).optional().nullable(),
+  navIdent: z.string().optional().nullable(),
 });
 
 const MediaSchema = z.object({
@@ -136,7 +137,7 @@ export const StillingSchemaDTO = z.object({
   updated: LocalDateTimeSchema,
   updatedBy: z.string(),
   title: z.string(),
-  status: z.string(),
+  status: z.string().optional().nullable(),
   administration: AdministrationSchema.nullable(),
   mediaList: z.array(MediaSchema).nullable(),
   contactList: z.array(ContactSchema).nullable(),
@@ -160,15 +161,16 @@ export const StillingSchemaDTO = z.object({
 
 const StillingskategoriEnum = z.enum(['STILLING', 'JOBBMESSE', 'FORMIDLING']);
 
-const StillingsinfoDto = z.object({
+export const StillingsinfoSchema = z.object({
   stillingsid: z.string(),
   stillingsinfoid: z.string(),
-  eierNavident: z.string().nullable(),
-  eierNavn: z.string().nullable(),
-  stillingskategori: StillingskategoriEnum.nullable(),
+  eierNavKontorEnhetId: z.string().optional().nullable(),
+  eierNavident: z.string().optional().nullable(),
+  eierNavn: z.string().optional().nullable(),
+  stillingskategori: StillingskategoriEnum.optional().nullable(),
 });
 
 export const StillingDataSchema = z.object({
-  stillingsinfo: StillingsinfoDto.nullable(),
+  stillingsinfo: StillingsinfoSchema.nullable(),
   stilling: StillingSchemaDTO,
 });

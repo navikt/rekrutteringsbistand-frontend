@@ -8,6 +8,7 @@ import LeggTilKandidater, {
 } from '../../../components/legg-til-kandidat/LeggTilKandidater';
 import { useApplikasjonContext } from '../../../providers/ApplikasjonContext';
 import { useUmami } from '../../../providers/UmamiContext';
+import { useStillingsContext } from '../StillingsContext';
 import { PersonPlusIcon } from '@navikt/aksel-icons';
 import { Button, Modal } from '@navikt/ds-react';
 import * as React from 'react';
@@ -24,12 +25,13 @@ const LeggTilKandidatTilStilling: React.FC<LeggTilKandidatTilStillingProps> = ({
 }) => {
   const ref = useRef<HTMLDialogElement>(null);
   const { track } = useUmami();
+  const { erEier } = useStillingsContext();
   const { valgtNavKontor, visVarsel } = useApplikasjonContext();
   const [valgteKandidater, setValgteKandidater] = useState<ValgtKandidatProp[]>(
     [],
   );
   const [modalKey, setModalKey] = useState(0);
-  const kandidatlisteIdHook = useKandidatliste(stillingsId);
+  const kandidatlisteIdHook = useKandidatliste(stillingsId, erEier);
 
   const [laster, setLaster] = useState(false);
 

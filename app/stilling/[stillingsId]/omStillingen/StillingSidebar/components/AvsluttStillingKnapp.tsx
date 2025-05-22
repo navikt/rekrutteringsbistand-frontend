@@ -1,5 +1,6 @@
 import { setKandidatlisteStatus } from '../../../../../api/kandidat/setKandidatlisteStatus';
 import { oppdaterStilling } from '../../../../../api/stilling/oppdater-stilling/oppdaterStilling';
+import { useApplikasjonContext } from '../../../../../providers/ApplikasjonContext';
 import { StillingsStatus } from '../../../../stilling-typer';
 import { stillingErUtløpt } from '../../../../stilling-util';
 import { useStillingsContext } from '../../../StillingsContext';
@@ -23,6 +24,7 @@ const AvsluttStillingKnapp: React.FC<AvsluttStillingKnappProps> = ({
 }) => {
   const ref = React.useRef<HTMLDialogElement>(null);
   const { stillingsData, refetch } = useStillingsContext();
+  const { valgtNavKontor, brukerData } = useApplikasjonContext();
   const [loading, setLoading] = React.useState(false);
 
   const stillingsStatus = stillingsData.stilling.status;
@@ -32,13 +34,21 @@ const AvsluttStillingKnapp: React.FC<AvsluttStillingKnappProps> = ({
   const avsluttStilling = async (kandidatlisteId: string) => {
     setLoading(true);
     try {
-      await oppdaterStilling({
-        ...stillingsData,
-        stilling: {
-          ...stillingsData.stilling,
-          status: StillingsStatus.Stoppet,
+      await oppdaterStilling(
+        {
+          ...stillingsData,
+
+          stilling: {
+            ...stillingsData.stilling,
+            status: StillingsStatus.Stoppet,
+          },
         },
-      });
+        {
+          eierNavident: brukerData.ident,
+          eierNavn: brukerData.navn,
+          eierNavKontorEnhetId: valgtNavKontor?.navKontor,
+        },
+      );
 
       await setKandidatlisteStatus(kandidatlisteId, 'LUKKET');
 
@@ -52,13 +62,20 @@ const AvsluttStillingKnapp: React.FC<AvsluttStillingKnappProps> = ({
 
   const avpubliserStilling = async () => {
     setLoading(true);
-    await oppdaterStilling({
-      ...stillingsData,
-      stilling: {
-        ...stillingsData.stilling,
-        status: StillingsStatus.Stoppet,
+    await oppdaterStilling(
+      {
+        ...stillingsData,
+        stilling: {
+          ...stillingsData.stilling,
+          status: StillingsStatus.Stoppet,
+        },
       },
-    });
+      {
+        eierNavident: brukerData.ident,
+        eierNavn: brukerData.navn,
+        eierNavKontorEnhetId: valgtNavKontor?.navKontor,
+      },
+    );
     setLoading(false);
     refetch();
   };

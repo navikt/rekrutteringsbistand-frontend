@@ -21,7 +21,7 @@ const StillingSidebarKnapper: React.FC<StillingSidebarKnapperProps> = ({
 }) => {
   const { erEier, erDirektemeldt, stillingsData, erFormidling, refetch } =
     useStillingsContext();
-  const { brukerData } = useApplikasjonContext();
+  const { brukerData, valgtNavKontor } = useApplikasjonContext();
 
   const [loading, setLoading] = useState(false);
 
@@ -29,21 +29,26 @@ const StillingSidebarKnapper: React.FC<StillingSidebarKnapperProps> = ({
     stillingsid: stillingsData.stilling.uuid,
     eierNavident: brukerData.ident,
     eierNavn: brukerData.navn,
+    eierNavKontorEnhetId: valgtNavKontor?.navKontor,
   };
 
   const kanOvertaStilling = !erFormidling && erDirektemeldt && !erEier;
 
   const harStillingsinfo = stillingsData.stillingsinfo !== null;
-  const opprettetAvRekrutteringsbistand =
-    stillingsData.stilling.createdBy === 'pam-rekrutteringsbistand';
+
+  const kanOvertaEksternStilling =
+    harStillingsinfo &&
+    !erEier &&
+    !erDirektemeldt &&
+    stillingsData.stilling.employer?.orgnr;
 
   const kanOppretteKandidatliste =
     !harStillingsinfo &&
     !erEier &&
-    !opprettetAvRekrutteringsbistand &&
+    !erDirektemeldt &&
     stillingsData.stilling.employer?.orgnr;
 
-  const onOpprettKandidatliste = async () => {
+  const onOpprettOgOvertaEksternKandidatliste = async () => {
     await setStillingsinfo(opprettStillingInfo).then(() =>
       window.location.reload(),
     );
@@ -51,21 +56,10 @@ const StillingSidebarKnapper: React.FC<StillingSidebarKnapperProps> = ({
 
   const onOvertaStilling = async () => {
     setLoading(true);
-    await oppdaterStilling({
-      ...stillingsData,
-      stillingsinfo: {
-        ...stillingsData.stillingsinfo,
-        eierNavident: brukerData.ident,
-        eierNavn: brukerData.navn,
-      },
-      stilling: {
-        ...stillingsData.stilling,
-        administration: {
-          ...stillingsData.stilling.administration,
-          navIdent: brukerData.ident,
-          reportee: brukerData.navn,
-        },
-      },
+    await oppdaterStilling(stillingsData, {
+      eierNavident: brukerData.ident,
+      eierNavn: brukerData.navn,
+      eierNavKontorEnhetId: valgtNavKontor?.navKontor,
     });
     refetch();
   };
@@ -86,16 +80,25 @@ const StillingSidebarKnapper: React.FC<StillingSidebarKnapperProps> = ({
         </TilgangskontrollForInnhold>
       )}
 
-      {kanOppretteKandidatliste && (
-        <Button
-          loading={loading}
-          variant='primary'
-          size='small'
-          className='my-2 h-5 w-full'
-          onClick={onOpprettKandidatliste}
+      {(kanOppretteKandidatliste || kanOvertaEksternStilling) && (
+        <TilgangskontrollForInnhold
+          skjulVarsel
+          kreverEnAvRollene={[
+            Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+          ]}
         >
-          Opprett kandidatliste
-        </Button>
+          <Button
+            loading={loading}
+            variant='primary'
+            size='small'
+            className='my-2 h-5 w-full'
+            onClick={onOpprettOgOvertaEksternKandidatliste}
+          >
+            {kanOvertaEksternStilling
+              ? `Marker som min`
+              : 'Opprett kandidatliste'}
+          </Button>
+        </TilgangskontrollForInnhold>
       )}
 
       {kanOvertaStilling && (

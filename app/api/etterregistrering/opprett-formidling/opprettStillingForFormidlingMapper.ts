@@ -7,6 +7,7 @@ export const opprettStillingForFormidlingMapper = (
 ): OpprettNyStillingDTO => {
   return {
     kategori: Stillingskategori.Formidling,
+    eierNavKontorEnhetId: formidlingData.navKontor,
     stilling: {
       administration: {
         status: 'PENDING',

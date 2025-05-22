@@ -20,7 +20,7 @@ const AksjonsknapperSiderbarStilling: React.FC<
 > = ({ formVerdier }) => {
   const { setForhåndsvisData, stillingsData } = useStillingsContext();
   const [lagrer, setLagrer] = React.useState<boolean>(false);
-  const { visVarsel } = useApplikasjonContext();
+  const { visVarsel, valgtNavKontor, brukerData } = useApplikasjonContext();
   const { mutate } = useStilling(stillingsData.stilling.uuid);
 
   const onLagre = async () => {
@@ -29,7 +29,11 @@ const AksjonsknapperSiderbarStilling: React.FC<
     const nyStillingsData = mapFormTilStilling(formVerdier, stillingsData);
 
     try {
-      await oppdaterStilling(nyStillingsData);
+      await oppdaterStilling(nyStillingsData, {
+        eierNavident: brukerData.ident,
+        eierNavn: brukerData.navn,
+        eierNavKontorEnhetId: valgtNavKontor?.navKontor,
+      });
 
       visVarsel({
         tekst: 'Stillingen ble lagret',

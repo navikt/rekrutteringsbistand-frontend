@@ -1,6 +1,7 @@
 export interface OpprettNyStillingDTO {
   stilling: NyStillingStillingDTO;
   kategori: string;
+  eierNavKontorEnhetId: string;
 }
 
 interface NyStillingStillingDTO {
