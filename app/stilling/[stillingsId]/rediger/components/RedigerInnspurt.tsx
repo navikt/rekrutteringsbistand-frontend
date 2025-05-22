@@ -176,7 +176,9 @@ export const RedigerInnspurt: React.FC<{
           />
         </div>
         <div className='pt-8'>
-          <Label>Skal stillingen publiseres på arbeidsplassen.no også?</Label>
+          <Label>
+            Skal stillingen publiseres på arbeidsplassen.no også? (valgfritt)
+          </Label>
           <Checkbox
             checked={
               watch('innspurt.stillingType') === StillingSynlighet.EKSTERN
@@ -194,46 +196,44 @@ export const RedigerInnspurt: React.FC<{
           </Checkbox>
         </div>
 
-        {watch('innspurt.stillingType') === StillingSynlighet.EKSTERN && (
-          <div>
-            <CheckboxGroup
-              legend='Hvordan sende søknad?'
-              onChange={handleChange}
-            >
-              <Checkbox value='epost'>E-post</Checkbox>
-              {sendeSoknad.includes('epost') && (
-                <Controller
-                  name='innspurt.epost'
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      label='E-post'
-                      type='email'
-                      onChange={(e) => field.onChange(e.target.value)}
-                    />
-                  )}
-                />
-              )}
-              <Checkbox value='lenke'>Lenke til søknadsskjema</Checkbox>
-              {sendeSoknad.includes('lenke') && (
-                <Controller
-                  name='innspurt.lenke'
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      label='Lenke til søknadsskjema'
-                      type='url'
-                      onChange={(e) => field.onChange(e.target.value)}
-                    />
-                  )}
-                />
-              )}
-            </CheckboxGroup>
-            {errors?.innspurt?.epost && (
-              <ErrorMessage>{errors.innspurt?.epost?.message}</ErrorMessage>
+        <div>
+          <CheckboxGroup
+            legend={`Hvordan sende søknad? ${watch('innspurt.stillingType') !== StillingSynlighet.EKSTERN ? '(valgfritt)' : ''}`}
+            onChange={handleChange}
+          >
+            <Checkbox value='epost'>E-post</Checkbox>
+            {sendeSoknad.includes('epost') && (
+              <Controller
+                name='innspurt.epost'
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    label='E-post'
+                    type='email'
+                    onChange={(e) => field.onChange(e.target.value)}
+                  />
+                )}
+              />
             )}
-          </div>
-        )}
+            <Checkbox value='lenke'>Lenke til søknadsskjema</Checkbox>
+            {sendeSoknad.includes('lenke') && (
+              <Controller
+                name='innspurt.lenke'
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    label='Lenke til søknadsskjema'
+                    type='url'
+                    onChange={(e) => field.onChange(e.target.value)}
+                  />
+                )}
+              />
+            )}
+          </CheckboxGroup>
+          {errors?.innspurt?.epost && (
+            <ErrorMessage>{errors.innspurt?.epost?.message}</ErrorMessage>
+          )}
+        </div>
 
         <div>
           <Heading level='3' size='small' spacing>
