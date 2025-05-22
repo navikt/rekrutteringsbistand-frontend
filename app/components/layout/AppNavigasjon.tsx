@@ -19,6 +19,7 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
+  SidebarHeader,
   SidebarRail,
   useSidebar,
 } from '@/components/ui/sidebar';
@@ -149,13 +150,15 @@ export function AppNavigasjon() {
 
   return (
     <Sidebar collapsible='icon'>
-      <SidebarContent className='py-3'>
+      <SidebarHeader>
         <SideHandling
           kreverRoller={null}
           onClick={toggleSidebar}
           tekst='Rekrutteringsbistand'
           ikon={<SidebarLeftIcon style={{ color: 'var(--ax-text-accent)' }} />}
         />
+      </SidebarHeader>
+      <SidebarContent className='py-3'>
         <SidebarGroup className='py-8'>
           <OpprettKnapp />
         </SidebarGroup>
@@ -172,10 +175,9 @@ export function AppNavigasjon() {
             <DevSidebar />
           </SidebarGroup>
         )}
-      </SidebarContent>
-      <SidebarFooter>
+
         <SidebarGroup
-          className={`flex flex-col w-full gap-3 ${open ? 'items-start' : 'items-center'}`}
+          className={`flex flex-col w-full gap-3 mt-auto ${open ? 'items-start' : 'items-center'}`}
         >
           <div className={open ? ' w-full' : ''}>
             <SideLenke
@@ -218,21 +220,22 @@ export function AppNavigasjon() {
             }
             kreverRoller={null}
           />
-
-          <div className='flex items-baseline w-full'>
-            <Avatar className='pt-4 mr-2'>
-              <AvatarFallback>
-                {brukerData.fornavn.charAt(0)}
-                {brukerData.etternavn.charAt(0)}
-              </AvatarFallback>
-            </Avatar>
-            {open && (
-              <BodyShort className='truncate max-w-[80%]'>
-                {brukerData.fornavn} {brukerData.etternavn}
-              </BodyShort>
-            )}
-          </div>
         </SidebarGroup>
+      </SidebarContent>
+      <SidebarFooter>
+        <div className='flex items-baseline w-full justify-center'>
+          <Avatar className='pt-4 mr-2'>
+            <AvatarFallback>
+              {brukerData.fornavn.charAt(0)}
+              {brukerData.etternavn.charAt(0)}
+            </AvatarFallback>
+          </Avatar>
+          {open && (
+            <BodyShort className='truncate max-w-[80%]'>
+              {brukerData.fornavn} {brukerData.etternavn}
+            </BodyShort>
+          )}
+        </div>
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
