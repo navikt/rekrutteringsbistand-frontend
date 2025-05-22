@@ -242,8 +242,8 @@ const EndreTittel = ({
                   label='Ny tittel'
                   maxLength={MAX_TITLE_LENGTH}
                   autoFocus
-                  minRows={1}
-                  maxRows={1}
+                  minRows={2}
+                  maxRows={2}
                   resize={false}
                   className='w-full pt-2'
                   error={errorMsg}
