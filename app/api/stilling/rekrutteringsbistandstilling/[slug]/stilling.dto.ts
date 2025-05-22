@@ -4,6 +4,7 @@ export type StillingsDataDTO = z.infer<typeof StillingDataSchema>;
 export type GeografiDTO = z.infer<typeof LocationSchema>;
 export type ContactSchemaDTO = z.infer<typeof ContactSchema>;
 export type CategorySchemaDTO = z.infer<typeof KategoriSchema>;
+export type StillingsinfoDTO = z.infer<typeof StillingsinfoSchema>;
 
 // Egendefinert
 export const searchtagSchema = z.object({
@@ -160,7 +161,7 @@ export const StillingSchemaDTO = z.object({
 
 const StillingskategoriEnum = z.enum(['STILLING', 'JOBBMESSE', 'FORMIDLING']);
 
-const StillingsinfoDto = z.object({
+const StillingsinfoSchema = z.object({
   stillingsid: z.string().optional().nullable(),
   eierNavKontorEnhetId: z.string().optional().nullable(),
   stillingsinfoid: z.string().optional().nullable(),
@@ -170,6 +171,6 @@ const StillingsinfoDto = z.object({
 });
 
 export const StillingDataSchema = z.object({
-  stillingsinfo: StillingsinfoDto.nullable(),
+  stillingsinfo: StillingsinfoSchema.nullable(),
   stilling: StillingSchemaDTO,
 });

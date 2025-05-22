@@ -41,9 +41,10 @@ interface StillingsContextProviderProps {
 export const StillingsContextProvider: React.FC<
   StillingsContextProviderProps
 > = ({ stillingsId, children }) => {
-  const kandidatListeInfo = useKandidatlisteInfo(stillingsId);
   const stillingHook = useStilling(stillingsId);
-
+  const kandidatListeInfo = useKandidatlisteInfo(
+    stillingHook.data?.stillingsinfo,
+  );
   React.useEffect(() => {
     if (stillingHook.data?.stilling?.updated) {
       kandidatListeInfo?.mutate();

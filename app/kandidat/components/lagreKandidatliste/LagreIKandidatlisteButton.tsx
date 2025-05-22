@@ -20,9 +20,9 @@ const LagreIKandidatlisteMedStillingsId: React.FC<
   LagreIKandidatlisteMedStillingsIdProps
 > = ({ stillingsId }) => {
   const { track } = useUmami();
-  const { erEier } = useStillingsContext();
+  const { erEier, stillingsData } = useStillingsContext();
   const kandidatlisteHook = useKandidatliste(stillingsId, erEier);
-  const kandidatListeInfo = useKandidatlisteInfo(stillingsId);
+  const kandidatListeInfo = useKandidatlisteInfo(stillingsData.stillingsinfo);
   const { visVarsel } = useApplikasjonContext();
   const { markerteKandidater, fjernMarkerteKandidater } =
     useKandidatSøkMarkerteContext();

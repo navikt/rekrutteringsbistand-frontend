@@ -5,6 +5,7 @@
  */
 import { KandidatAPI } from '../api-routes';
 import { getAPIwithSchema } from '../fetcher';
+import { StillingsinfoDTO } from '../stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { Server } from 'miragejs';
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
@@ -20,9 +21,13 @@ const KandidatlisteInfoSchema = z.object({
 
 export type KandidatlisteInfoDTO = z.infer<typeof KandidatlisteInfoSchema>;
 
-export const useKandidatlisteInfo = (stillingsId?: string | null) => {
+export const useKandidatlisteInfo = (
+  stillingsInfo?: StillingsinfoDTO | null,
+) => {
   const kandidatlisteHook = useSWRImmutable(
-    stillingsId ? kandidatlisteInfoEndepunkt(stillingsId) : null,
+    stillingsInfo?.stillingsid
+      ? kandidatlisteInfoEndepunkt(stillingsInfo.stillingsid)
+      : null,
     getAPIwithSchema(KandidatlisteInfoSchema),
     {
       errorRetryCount: 3,

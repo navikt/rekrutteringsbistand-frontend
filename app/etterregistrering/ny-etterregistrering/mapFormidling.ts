@@ -5,20 +5,20 @@ import { format } from 'date-fns';
 
 export const mapFormTilFormidling = (
   formData: FormidlingDataForm,
-  stillingInfo: StillingsDataDTO,
+  stillingsinfo: StillingsDataDTO,
 ): StillingsDataDTO => {
   const datoIDag = format(new Date(), "yyyy-MM-dd'T'HH:mm:ss");
   return {
-    ...stillingInfo,
+    ...stillingsinfo,
     stillingsinfo: null,
     stilling: {
-      ...stillingInfo.stilling,
+      ...stillingsinfo.stilling,
       categoryList: formData.omFormidlingen?.categoryList ?? [],
       // status: 'ACTIVE',
       status: StillingsStatus.Stoppet,
       firstPublished: true,
       properties: {
-        ...stillingInfo.stilling.properties,
+        ...stillingsinfo.stilling.properties,
         tags: JSON.stringify(formData.omTilrettelegging?.tags),
         sector: formData.omFormidlingen.sektor,
         positioncount: formData.omKandidatene.length,
@@ -32,13 +32,13 @@ export const mapFormTilFormidling = (
       published: datoIDag,
       expires: datoIDag,
       administration: {
-        ...stillingInfo.stilling.administration!,
+        ...stillingsinfo.stilling.administration!,
         status: 'DONE',
-        id: stillingInfo.stilling.administration?.id ?? null,
-        reportee: stillingInfo.stilling.administration?.reportee ?? null,
-        navIdent: stillingInfo.stilling.administration?.navIdent ?? null,
-        comments: stillingInfo.stilling.administration?.comments ?? null,
-        remarks: stillingInfo.stilling.administration?.remarks ?? null,
+        id: stillingsinfo.stilling.administration?.id ?? null,
+        reportee: stillingsinfo.stilling.administration?.reportee ?? null,
+        navIdent: stillingsinfo.stilling.administration?.navIdent ?? null,
+        comments: stillingsinfo.stilling.administration?.comments ?? null,
+        remarks: stillingsinfo.stilling.administration?.remarks ?? null,
       },
       locationList: [
         ...(formData.omFormidlingen.adresser ?? []),

@@ -26,7 +26,7 @@ const KandidatTilStilling: React.FC<KandidatTilStillingProps> = ({
   );
 
   const kandidatListeInformasjonHook = useKandidatlisteInfo(
-    stillingsData?.stilling.uuid ?? null,
+    stillingsData?.stillingsinfo,
   );
 
   React.useEffect(() => {
