@@ -1,6 +1,7 @@
 import { UmamiEvent } from '../../../../util/umamiEvents';
 import { leggTilKandidater } from '../../../api/kandidat-sok/leggTilKandidat';
 import { useKandidatliste } from '../../../api/kandidat/useKandidatliste';
+import { useKandidatlisteInfo } from '../../../api/kandidat/useKandidatlisteInfo';
 import { useApplikasjonContext } from '../../../providers/ApplikasjonContext';
 import { useKandidatSøkMarkerteContext } from '../../KandidatSøkMarkerteContext';
 import LagreIKandidatlisteModal from './LagreIKandidatlisteModal';
@@ -11,7 +12,7 @@ import { logger } from '@navikt/next-logger';
 import * as React from 'react';
 
 interface LagreIKandidatlisteButtonProps {
-  stillingsId?: string;
+  stillingsId: string;
 }
 
 const LagreIKandidatlisteButton: React.FC<LagreIKandidatlisteButtonProps> = ({
@@ -24,6 +25,7 @@ const LagreIKandidatlisteButton: React.FC<LagreIKandidatlisteButtonProps> = ({
   const { markerteKandidater, fjernMarkerteKandidater } =
     useKandidatSøkMarkerteContext();
   const kandidatlisteHook = useKandidatliste(stillingsId);
+  const kandidatListeInfo = useKandidatlisteInfo(stillingsId);
   return (
     <div>
       <Button
@@ -32,7 +34,8 @@ const LagreIKandidatlisteButton: React.FC<LagreIKandidatlisteButtonProps> = ({
           if (stillingsId) {
             lagreKandidater();
             setTimeout(() => {
-              kandidatlisteHook?.mutate();
+              kandidatlisteHook.mutate();
+              kandidatListeInfo?.mutate();
             }, 1000);
           } else {
             modalRef.current?.showModal();

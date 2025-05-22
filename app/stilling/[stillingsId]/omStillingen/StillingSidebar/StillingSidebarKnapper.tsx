@@ -32,16 +32,20 @@ const StillingSidebarKnapper: React.FC<StillingSidebarKnapperProps> = ({
     eierNavKontorEnhetId: valgtNavKontor?.navKontor,
   };
 
-  const kanOvertaStilling = !erFormidling && !erEier;
+  const kanOvertaStilling = !erFormidling && erDirektemeldt && !erEier;
 
   const harStillingsinfo = stillingsData.stillingsinfo !== null;
-  const opprettetAvRekrutteringsbistand =
-    stillingsData.stilling.createdBy === 'pam-rekrutteringsbistand';
+
+  const kanOvertaEksternStilling =
+    harStillingsinfo &&
+    !erEier &&
+    !erDirektemeldt &&
+    stillingsData.stilling.employer?.orgnr;
 
   const kanOppretteKandidatliste =
     !harStillingsinfo &&
     !erEier &&
-    !opprettetAvRekrutteringsbistand &&
+    !erDirektemeldt &&
     stillingsData.stilling.employer?.orgnr;
 
   const onOpprettKandidatliste = async () => {
@@ -76,7 +80,7 @@ const StillingSidebarKnapper: React.FC<StillingSidebarKnapperProps> = ({
         </TilgangskontrollForInnhold>
       )}
 
-      {kanOppretteKandidatliste && (
+      {(kanOppretteKandidatliste || kanOvertaEksternStilling) && (
         <Button
           loading={loading}
           variant='primary'
@@ -84,7 +88,9 @@ const StillingSidebarKnapper: React.FC<StillingSidebarKnapperProps> = ({
           className='my-2 h-5 w-full'
           onClick={onOpprettKandidatliste}
         >
-          Opprett kandidatliste
+          {kanOvertaEksternStilling
+            ? `Marker som min`
+            : 'Opprett kandidatliste'}
         </Button>
       )}
 
