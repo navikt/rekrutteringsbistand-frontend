@@ -81,17 +81,24 @@ const StillingSidebarKnapper: React.FC<StillingSidebarKnapperProps> = ({
       )}
 
       {(kanOppretteKandidatliste || kanOvertaEksternStilling) && (
-        <Button
-          loading={loading}
-          variant='primary'
-          size='small'
-          className='my-2 h-5 w-full'
-          onClick={onOpprettKandidatliste}
+        <TilgangskontrollForInnhold
+          skjulVarsel
+          kreverEnAvRollene={[
+            Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+          ]}
         >
-          {kanOvertaEksternStilling
-            ? `Marker som min`
-            : 'Opprett kandidatliste'}
-        </Button>
+          <Button
+            loading={loading}
+            variant='primary'
+            size='small'
+            className='my-2 h-5 w-full'
+            onClick={onOpprettKandidatliste}
+          >
+            {kanOvertaEksternStilling
+              ? `Marker som min`
+              : 'Opprett kandidatliste'}
+          </Button>
+        </TilgangskontrollForInnhold>
       )}
 
       {kanOvertaStilling && (
