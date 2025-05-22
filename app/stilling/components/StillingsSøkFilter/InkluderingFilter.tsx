@@ -54,7 +54,8 @@ export const visningsnavnForFilter = {
   [Subtag.MålgruppeLiteEllerIngenArbeidserfaring]:
     'Lite eller ingen arbeidserfaring',
 
-  [Hovedtag.StatligInkluderingsdugnad]: 'Statlig inkluderingsdugnad',
+  [Hovedtag.StatligInkluderingsdugnad]:
+    'Inkluderingssamarbeid med offentlig virksomhet',
 };
 
 export const hierarkiAvTagsForFilter: Array<GruppeMedTags> = [
