@@ -90,7 +90,6 @@ const LagreIKandidatlisteButton: React.FC<LagreIKandidatlisteButtonProps> = ({
         variant='tertiary'
         onClick={() => {
           modalRef.current?.showModal();
-          // }
         }}
         icon={<PersonPlusIcon aria-hidden />}
         disabled={markerteKandidater?.length === 0}
