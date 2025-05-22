@@ -1,11 +1,9 @@
 import { useMineKandidatlister } from '../../../api/kandidat/useMineKandidatlister';
 import SWRLaster from '../../../components/SWRLaster';
 import { useApplikasjonContext } from '../../../providers/ApplikasjonContext';
-import { useStillingsContext } from '../../../stilling/[stillingsId]/StillingsContext';
 import { useKandidatSøkMarkerteContext } from '../../KandidatSøkMarkerteContext';
 import KandidatlisteTittel from './KandidatlisteTittel';
 import { leggTilKandidater } from '@/app/api/kandidat-sok/leggTilKandidat';
-import { useKandidatliste } from '@/app/api/kandidat/useKandidatliste';
 import { useUmami } from '@/app/providers/UmamiContext';
 import { UmamiEvent } from '@/util/umamiEvents';
 import {
@@ -20,17 +18,13 @@ import { logger } from '@navikt/next-logger';
 import * as React from 'react';
 
 interface LagreIKandidatlisteProps {
-  stillingsId?: string;
   ref: React.RefObject<HTMLDialogElement>;
 }
 
 const LagreIKandidatlisteModal: React.FC<LagreIKandidatlisteProps> = ({
-  stillingsId,
   ref,
 }) => {
   const { track } = useUmami();
-  const { erEier } = useStillingsContext();
-  const kandidatlisteHook = useKandidatliste(stillingsId, erEier);
 
   const { visVarsel } = useApplikasjonContext();
   const { markerteKandidater, fjernMarkerteKandidater } =
@@ -218,7 +212,6 @@ const LagreIKandidatlisteModal: React.FC<LagreIKandidatlisteProps> = ({
         });
       }
     }
-    kandidatlisteHook?.mutate();
     setLaster(false);
   }
 };

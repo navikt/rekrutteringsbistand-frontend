@@ -12,46 +12,20 @@ import { Button } from '@navikt/ds-react';
 import { logger } from '@navikt/next-logger';
 import * as React from 'react';
 
-interface LagreIKandidatlisteButtonProps {
+export interface LagreIKandidatlisteMedStillingsIdProps {
   stillingsId: string;
 }
 
-const LagreIKandidatlisteButton: React.FC<LagreIKandidatlisteButtonProps> = ({
-  stillingsId,
-}) => {
+const LagreIKandidatlisteMedStillingsId: React.FC<
+  LagreIKandidatlisteMedStillingsIdProps
+> = ({ stillingsId }) => {
   const { track } = useUmami();
-
   const { erEier } = useStillingsContext();
-
-  const modalRef = React.useRef<HTMLDialogElement>(null!);
+  const kandidatlisteHook = useKandidatliste(stillingsId, erEier);
+  const kandidatListeInfo = useKandidatlisteInfo(stillingsId);
   const { visVarsel } = useApplikasjonContext();
   const { markerteKandidater, fjernMarkerteKandidater } =
     useKandidatSøkMarkerteContext();
-  const kandidatlisteHook = useKandidatliste(stillingsId, erEier);
-  const kandidatListeInfo = useKandidatlisteInfo(stillingsId);
-  return (
-    <div>
-      <Button
-        variant='tertiary'
-        onClick={() => {
-          if (stillingsId) {
-            lagreKandidater();
-            setTimeout(() => {
-              kandidatlisteHook.mutate();
-              kandidatListeInfo?.mutate();
-            }, 1000);
-          } else {
-            modalRef.current?.showModal();
-          }
-        }}
-        icon={<PersonPlusIcon aria-hidden />}
-        disabled={markerteKandidater?.length === 0}
-      >
-        {stillingsId ? 'Legg til markerte kandidater' : 'Lagre i kandidatliste'}
-      </Button>
-      <LagreIKandidatlisteModal stillingsId={stillingsId} ref={modalRef} />
-    </div>
-  );
 
   async function lagreKandidater() {
     if (!markerteKandidater || markerteKandidater.length === 0) return;
@@ -77,6 +51,55 @@ const LagreIKandidatlisteButton: React.FC<LagreIKandidatlisteButtonProps> = ({
       }
     }
   }
+
+  return (
+    <Button
+      variant='tertiary'
+      onClick={() => {
+        lagreKandidater();
+        setTimeout(() => {
+          kandidatlisteHook.mutate();
+          kandidatListeInfo?.mutate();
+        }, 1000);
+      }}
+      icon={<PersonPlusIcon aria-hidden />}
+      disabled={markerteKandidater?.length === 0}
+    >
+      Legg til markerte kandidater
+    </Button>
+  );
+};
+
+interface LagreIKandidatlisteButtonProps {
+  stillingsId?: string;
+}
+
+const LagreIKandidatlisteButton: React.FC<LagreIKandidatlisteButtonProps> = ({
+  stillingsId,
+}) => {
+  const modalRef = React.useRef<HTMLDialogElement>(null!);
+  const { markerteKandidater } = useKandidatSøkMarkerteContext();
+
+  if (stillingsId) {
+    return <LagreIKandidatlisteMedStillingsId stillingsId={stillingsId} />;
+  }
+
+  return (
+    <div>
+      <Button
+        variant='tertiary'
+        onClick={() => {
+          modalRef.current?.showModal();
+          // }
+        }}
+        icon={<PersonPlusIcon aria-hidden />}
+        disabled={markerteKandidater?.length === 0}
+      >
+        Lagre i kandidatliste
+      </Button>
+      <LagreIKandidatlisteModal ref={modalRef} />
+    </div>
+  );
 };
 
 export default LagreIKandidatlisteButton;
