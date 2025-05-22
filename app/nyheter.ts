@@ -12,6 +12,14 @@ export interface NyhetDTO {
 
 export const nyheter: NyhetDTO[] = [
   {
+    beskrivelse:
+      ' <p>Nå kan alle teste nytt design i Rekrutteringsbistand.<br>De siste dagene har vi gjort en rekke små og store endringer i løsningen etter tilbakemeldinger fra dere via "gi tilbakemeldinger"-knappen. Her er noen:</p><ul><li><p>Endret noen små kosmetiske feil i CV-visning.</p></li><li><p>"Finn Stillinger for kandidat " gir nå forhåndsutfylte filtre, som i gammel løsning.</p></li><li><p>Endret filter slik at man kan filtrere på hendelser og siste aktivitet.</p></li><li><p>Markering av kandidat som har aktiv visning av CV i sidepanel, slik at det er lettere å se hvilken jobbsøker som er i fokus.</p></li><li><p>Og flere andre små og store endringer.</p></li></ul><p>Dette jobber vi med nå:</p><ul><li><p>Løpende forbedringer etter hvert som tilbakemeldinger kommer fra dere som bruker løsningen.</p></li><li><p>Gjøre det mulig å ferdigsstille oppdrag.</p></li></ul><p>I tillegg jobber teamet med å lage applikasjonen Rekrutteringstreff som vil erstatte jobbmesse-fanen i Rekrutteringsbistand.</p>',
+    dato: '22.06.2025',
+    id: '1',
+    opprettetAv: null,
+    tittel: 'Oppdateringer uke 20-21',
+  },
+  {
     dato: '15.05.2025',
     id: '2',
     opprettetAv: null,
