@@ -48,7 +48,7 @@ const StillingSidebarKnapper: React.FC<StillingSidebarKnapperProps> = ({
     !erDirektemeldt &&
     stillingsData.stilling.employer?.orgnr;
 
-  const onOpprettKandidatliste = async () => {
+  const onOpprettOgOvertaEksternKandidatliste = async () => {
     await setStillingsinfo(opprettStillingInfo).then(() =>
       window.location.reload(),
     );
@@ -92,7 +92,7 @@ const StillingSidebarKnapper: React.FC<StillingSidebarKnapperProps> = ({
             variant='primary'
             size='small'
             className='my-2 h-5 w-full'
-            onClick={onOpprettKandidatliste}
+            onClick={onOpprettOgOvertaEksternKandidatliste}
           >
             {kanOvertaEksternStilling
               ? `Marker som min`
