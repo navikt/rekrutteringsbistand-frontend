@@ -17,7 +17,7 @@ const KandidatListeKandidat: React.FC<KandidatListeKandidatProps> = ({
   const kandidatlisteHook = useKandidatliste(stillingsData.stilling.uuid);
 
   return (
-    <SWRLaster hooks={[kandidatlisteHook]}>
+    <SWRLaster hooks={[kandidatlisteHook]} skjulFeilmelding>
       {(kandidatliste) => {
         if (!kandidatliste) {
           return null;

@@ -32,7 +32,7 @@ const StillingSidebarKnapper: React.FC<StillingSidebarKnapperProps> = ({
     eierNavKontorEnhetId: valgtNavKontor?.navKontor,
   };
 
-  const kanOvertaStilling = !erFormidling && erDirektemeldt && !erEier;
+  const kanOvertaStilling = !erFormidling && !erEier;
 
   const harStillingsinfo = stillingsData.stillingsinfo !== null;
   const opprettetAvRekrutteringsbistand =
