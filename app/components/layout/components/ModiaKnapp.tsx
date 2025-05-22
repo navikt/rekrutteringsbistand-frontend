@@ -1,9 +1,11 @@
+// Add this import
 import { useSidebar } from '../../../../components/ui/sidebar';
 import { LinkWithTitle, useGenerateLinks } from '../../modia/genererModiaLenke';
 import { MenuGridIcon } from '@navikt/aksel-icons';
 import { Button, Popover } from '@navikt/ds-react';
 import Link from 'next/link';
 import * as React from 'react';
+import { createPortal } from 'react-dom';
 
 const ModiaKnapp: React.FC = () => {
   const buttonRef = React.useRef<HTMLButtonElement>(null);
@@ -24,6 +26,7 @@ const ModiaKnapp: React.FC = () => {
       );
     });
   };
+
   return (
     <>
       <Button
@@ -36,31 +39,35 @@ const ModiaKnapp: React.FC = () => {
         {open && 'Modia'}
       </Button>
 
-      <Popover
-        open={openState}
-        onClose={() => setOpenState(false)}
-        anchorEl={buttonRef.current}
-      >
-        <Popover.Content>
-          <div>
-            <div className='flex flex-row  gap-8 p-4'>
-              {Object.keys(links).map((key) => {
-                const section = links[key as keyof typeof links];
-                return (
-                  <div key={key} className='mb-2'>
-                    <div className='underline font-bold mb-2  whitespace-nowrap'>
-                      {section.title}
-                    </div>
-                    <div className='flex flex-col gap-2'>
-                      {mapLinks(section.links)}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </Popover.Content>
-      </Popover>
+      {openState &&
+        createPortal(
+          <Popover
+            open={openState}
+            onClose={() => setOpenState(false)}
+            anchorEl={buttonRef.current}
+          >
+            <Popover.Content className='z-[9999]'>
+              <div>
+                <div className='flex flex-row gap-8 p-4'>
+                  {Object.keys(links).map((key) => {
+                    const section = links[key as keyof typeof links];
+                    return (
+                      <div key={key} className='mb-2'>
+                        <div className='underline font-bold mb-2 whitespace-nowrap'>
+                          {section.title}
+                        </div>
+                        <div className='flex flex-col gap-2'>
+                          {mapLinks(section.links)}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </Popover.Content>
+          </Popover>,
+          document.body,
+        )}
     </>
   );
 };

@@ -2,6 +2,7 @@ import { useSidebar } from '../../../../components/ui/sidebar';
 import { PersonChatIcon } from '@navikt/aksel-icons';
 import { Button, Popover } from '@navikt/ds-react';
 import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 
 const GiTilbakemelding = () => {
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -79,24 +80,26 @@ const GiTilbakemelding = () => {
         {open && 'Gi tilbakemelding'}
       </Button>
 
-      {openState && (
-        <Popover
-          open={openState}
-          onClose={() => setOpenState(false)}
-          anchorEl={buttonRef.current}
-        >
-          <Popover.Content className='w-[360px]'>
-            {/* @ts-expect-error Ikke typet */}
-            <skyra-survey
-              ref={skyraSurveyRef}
-              className='w-full h-full'
-              slug='arbeids-og-velferdsetaten-nav/oversikt'
-            >
+      {openState &&
+        createPortal(
+          <Popover
+            open={openState}
+            onClose={() => setOpenState(false)}
+            anchorEl={buttonRef.current}
+          >
+            <Popover.Content className='w-[360px]'>
               {/* @ts-expect-error Ikke typet */}
-            </skyra-survey>
-          </Popover.Content>
-        </Popover>
-      )}
+              <skyra-survey
+                ref={skyraSurveyRef}
+                className='w-full h-full'
+                slug='arbeids-og-velferdsetaten-nav/oversikt'
+              >
+                {/* @ts-expect-error Ikke typet */}
+              </skyra-survey>
+            </Popover.Content>
+          </Popover>,
+          document.body,
+        )}
     </>
   );
 };
