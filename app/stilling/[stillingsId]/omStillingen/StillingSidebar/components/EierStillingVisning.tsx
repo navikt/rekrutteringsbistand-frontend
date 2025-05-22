@@ -11,7 +11,11 @@ import * as React from 'react';
 const EierStillingVisning: React.FC = () => {
   const router = useRouter();
   const { erEier, stillingsData, kandidatlisteInfo } = useStillingsContext();
-  const { data, isLoading } = useKandidatliste(stillingsData.stilling.uuid);
+
+  const { data, isLoading } = useKandidatliste(
+    stillingsData.stilling.uuid,
+    erEier,
+  );
 
   if (isLoading) {
     return <Loader size='small' />;

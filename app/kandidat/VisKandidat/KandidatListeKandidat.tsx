@@ -12,9 +12,12 @@ export interface KandidatListeKandidatProps {
 const KandidatListeKandidat: React.FC<KandidatListeKandidatProps> = ({
   kandidatnr,
 }) => {
-  const { stillingsData } = useStillingsContext();
+  const { stillingsData, erEier } = useStillingsContext();
 
-  const kandidatlisteHook = useKandidatliste(stillingsData.stilling.uuid);
+  const kandidatlisteHook = useKandidatliste(
+    stillingsData.stilling.uuid,
+    erEier,
+  );
 
   return (
     <SWRLaster hooks={[kandidatlisteHook]} skjulFeilmelding>

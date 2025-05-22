@@ -9,9 +9,12 @@ export const kandidatlisteEndepunkt = (stillingsId?: string) =>
     ? `${KandidatAPI.internUrl}/veileder/stilling/${stillingsId}/kandidatliste`
     : undefined;
 
-export const useKandidatliste = (stillingsId?: string) => {
+export const useKandidatliste = (
+  stillingsId: string | undefined,
+  erEier: boolean | undefined,
+) => {
   return useSWRImmutable(
-    stillingsId ? kandidatlisteEndepunkt(stillingsId) : null,
+    erEier && stillingsId ? kandidatlisteEndepunkt(stillingsId) : null,
     getAPIwithSchema(kandidatlisteSchema),
   );
 };

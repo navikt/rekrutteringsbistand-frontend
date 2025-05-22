@@ -4,6 +4,7 @@ import { useKandidatlisteInfo } from '../../../api/kandidat/useKandidatlisteInfo
 import { StillingsDataDTO } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import Sidelaster from '../../../components/Sidelaster';
 import KandidatSøkTabs from '../../../kandidat/KandidatSøkTabs';
+import { useStillingsContext } from '../StillingsContext';
 import { useFinnKandidatForStilling } from './useFinnKandidatForStilling';
 import { Alert } from '@navikt/ds-react';
 import * as React from 'react';
@@ -16,10 +17,13 @@ const KandidatTilStilling: React.FC<KandidatTilStillingProps> = ({
   stillingsData,
 }) => {
   useFinnKandidatForStilling(stillingsData);
-
+  const { erEier } = useStillingsContext();
   const [alleredeLagtTil, setAlleredeLagtTil] = React.useState<string[]>([]);
 
-  const kandidatlisteHook = useKandidatliste(stillingsData?.stilling.uuid);
+  const kandidatlisteHook = useKandidatliste(
+    stillingsData?.stilling.uuid,
+    erEier,
+  );
 
   const kandidatListeInformasjonHook = useKandidatlisteInfo(
     stillingsData?.stilling.uuid ?? null,

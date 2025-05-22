@@ -18,13 +18,16 @@ const KandidatlisteWrapper: React.FC<KandidatlisteWrapperProps> = ({
   children,
 }) => {
   const { brukerData, valgtNavKontor } = useApplikasjonContext();
-  const { stillingsData } = useStillingsContext();
+  const { stillingsData, erEier } = useStillingsContext();
 
   const forespurteKandidaterHook = useForespurteOmDelingAvCv(
     stillingsData.stilling.uuid,
   );
   const beskjederHook = useSmserForStilling(stillingsData.stilling.uuid);
-  const kandidatlisteHook = useKandidatliste(stillingsData.stilling.uuid);
+  const kandidatlisteHook = useKandidatliste(
+    stillingsData.stilling.uuid,
+    erEier,
+  );
 
   const onOvertaStilling = async () => {
     await oppdaterStilling(stillingsData, {

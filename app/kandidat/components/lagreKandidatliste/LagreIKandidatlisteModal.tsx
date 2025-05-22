@@ -1,6 +1,7 @@
 import { useMineKandidatlister } from '../../../api/kandidat/useMineKandidatlister';
 import SWRLaster from '../../../components/SWRLaster';
 import { useApplikasjonContext } from '../../../providers/ApplikasjonContext';
+import { useStillingsContext } from '../../../stilling/[stillingsId]/StillingsContext';
 import { useKandidatSøkMarkerteContext } from '../../KandidatSøkMarkerteContext';
 import KandidatlisteTittel from './KandidatlisteTittel';
 import { leggTilKandidater } from '@/app/api/kandidat-sok/leggTilKandidat';
@@ -28,7 +29,8 @@ const LagreIKandidatlisteModal: React.FC<LagreIKandidatlisteProps> = ({
   ref,
 }) => {
   const { track } = useUmami();
-  const kandidatlisteHook = useKandidatliste(stillingsId);
+  const { erEier } = useStillingsContext();
+  const kandidatlisteHook = useKandidatliste(stillingsId, erEier);
 
   const { visVarsel } = useApplikasjonContext();
   const { markerteKandidater, fjernMarkerteKandidater } =

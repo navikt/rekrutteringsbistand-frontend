@@ -3,6 +3,7 @@ import { leggTilKandidater } from '../../../api/kandidat-sok/leggTilKandidat';
 import { useKandidatliste } from '../../../api/kandidat/useKandidatliste';
 import { useKandidatlisteInfo } from '../../../api/kandidat/useKandidatlisteInfo';
 import { useApplikasjonContext } from '../../../providers/ApplikasjonContext';
+import { useStillingsContext } from '../../../stilling/[stillingsId]/StillingsContext';
 import { useKandidatSøkMarkerteContext } from '../../KandidatSøkMarkerteContext';
 import LagreIKandidatlisteModal from './LagreIKandidatlisteModal';
 import { useUmami } from '@/app/providers/UmamiContext';
@@ -20,11 +21,13 @@ const LagreIKandidatlisteButton: React.FC<LagreIKandidatlisteButtonProps> = ({
 }) => {
   const { track } = useUmami();
 
+  const { erEier } = useStillingsContext();
+
   const modalRef = React.useRef<HTMLDialogElement>(null!);
   const { visVarsel } = useApplikasjonContext();
   const { markerteKandidater, fjernMarkerteKandidater } =
     useKandidatSøkMarkerteContext();
-  const kandidatlisteHook = useKandidatliste(stillingsId);
+  const kandidatlisteHook = useKandidatliste(stillingsId, erEier);
   const kandidatListeInfo = useKandidatlisteInfo(stillingsId);
   return (
     <div>

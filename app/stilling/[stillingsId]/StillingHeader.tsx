@@ -14,10 +14,13 @@ import { BodyShort } from '@navikt/ds-react';
 import * as React from 'react';
 
 const StillingHeader: React.FC = () => {
-  const { stillingsData, erFormidling, erSlettet, kandidatlisteInfo } =
+  const { stillingsData, erFormidling, erSlettet, kandidatlisteInfo, erEier } =
     useStillingsContext();
 
-  const kandidatlisteHook = useKandidatliste(stillingsData.stilling.uuid);
+  const kandidatlisteHook = useKandidatliste(
+    stillingsData.stilling.uuid,
+    erEier,
+  );
 
   const eierNavn = navnEierAvAstilling(stillingsData);
 
