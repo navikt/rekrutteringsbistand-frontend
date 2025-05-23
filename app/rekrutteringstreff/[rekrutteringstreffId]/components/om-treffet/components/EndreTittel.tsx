@@ -18,13 +18,7 @@ import {
 } from '@navikt/ds-react';
 import { logger } from '@navikt/next-logger';
 import { AnimatePresence, motion } from 'framer-motion';
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -48,6 +42,7 @@ const schema = z.object({
       `Tittelen kan ikke ha mer enn ${MAX_TITLE_LENGTH} tegn.`,
     ),
 });
+
 type FormValues = z.infer<typeof schema>;
 
 const EndreTittel = ({
@@ -57,6 +52,7 @@ const EndreTittel = ({
 }: EndreTittelProps) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const lagreButtonRef = useRef<HTMLButtonElement>(null);
+  const analyseRef = useRef<HTMLDivElement>(null);
 
   const clearButtonRef = useRef<HTMLButtonElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
@@ -110,7 +106,7 @@ const EndreTittel = ({
     [dirtyFields.nyTittel, errors.nyTittel, isSubmitting, validating, analyse],
   );
 
-  const focusEnd = () => {
+  const focusTextareaEnd = () => {
     const el = textareaRef.current;
     if (!el) return;
     el.focus();
@@ -118,23 +114,12 @@ const EndreTittel = ({
     el.setSelectionRange(len, len);
   };
 
-  const focusEtterAnalyse = useCallback(() => {
-    if (!analyse) return;
-    (analyse.bryterRetningslinjer
-      ? textareaRef
-      : lagreButtonRef
-    ).current?.focus();
-  }, [analyse, textareaRef, lagreButtonRef]);
-
+  /* Effects */
   useEffect(() => {
     resetAnalyse();
     setVisTomFeil(false);
     setShowUnchangedError(false);
   }, [nyTittel, resetAnalyse]);
-
-  useEffect(() => {
-    if (!validating && analyse && !analyseError) focusEtterAnalyse();
-  }, [analyse, analyseError, validating, focusEtterAnalyse]);
 
   useEffect(() => {
     if (modalRef.current) {
@@ -152,7 +137,7 @@ const EndreTittel = ({
     } else {
       resetAnalyse();
     }
-    focusEnd();
+    focusTextareaEnd();
     setInitialFocusDone(true);
   };
 
@@ -176,7 +161,7 @@ const EndreTittel = ({
   const clear = () => {
     setValue('nyTittel', '', { shouldValidate: true, shouldDirty: true });
     setShowUnchangedError(false);
-    focusEnd();
+    focusTextareaEnd();
   };
 
   const close = () => {
@@ -201,6 +186,9 @@ const EndreTittel = ({
     }
   };
 
+  const inside = (wrapper: HTMLElement | null, el: Element | null) =>
+    !!wrapper && !!el && (wrapper === el || wrapper.contains(el));
+
   return (
     <Modal
       ref={modalRef}
@@ -215,6 +203,7 @@ const EndreTittel = ({
           onSubmit={handleSubmit(save)}
           className='space-y-2'
         >
+          {/* TEXTAREA + CLEAR BTN */}
           <div
             className='flex items-start'
             tabIndex={-1}
@@ -222,10 +211,11 @@ const EndreTittel = ({
               setTimeout(() => {
                 const active = document.activeElement;
                 if (
-                  active !== textareaRef.current &&
-                  active !== clearButtonRef.current &&
-                  active !== closeButtonRef.current &&
-                  active !== modalLukkeknappRef.current
+                  !inside(textareaRef.current, active) &&
+                  !inside(clearButtonRef.current, active) &&
+                  !inside(closeButtonRef.current, active) &&
+                  !inside(modalLukkeknappRef.current, active) &&
+                  !inside(analyseRef.current, active)
                 ) {
                   handleValidateOrError();
                 }
@@ -273,7 +263,9 @@ const EndreTittel = ({
             )}
           </div>
 
+          {/* ANALYSE / SKELETON / ERROR */}
           <div className='flex gap-3 mt-2 items-start'>
+            {/* STATUS ICON */}
             <div className='inline-flex justify-center items-start w-10 pt-1'>
               {validating ? (
                 <RobotIcon
@@ -295,9 +287,16 @@ const EndreTittel = ({
                     className='text-green-800'
                   />
                 )
+              ) : analyseError ? (
+                <RobotFrownIcon
+                  aria-hidden
+                  fontSize='2em'
+                  className='text-red-600'
+                />
               ) : null}
             </div>
 
+            {/* CONTENTER */}
             <div className='w-full'>
               <AnimatePresence mode='wait'>
                 {validating && (
@@ -322,10 +321,13 @@ const EndreTittel = ({
                 {!validating && analyseError && (
                   <motion.div
                     key='error'
+                    ref={analyseRef}
+                    tabIndex={0}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.2 }}
+                    onAnimationComplete={() => analyseRef.current?.focus()}
                   >
                     <Alert variant='error'>
                       {analyseError.message ??
@@ -337,10 +339,13 @@ const EndreTittel = ({
                 {!validating && analyse && !analyseError && (
                   <motion.div
                     key='analyse'
+                    ref={analyseRef}
+                    tabIndex={0}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.2 }}
+                    onAnimationComplete={() => analyseRef.current?.focus()}
                     className={
                       analyse.bryterRetningslinjer
                         ? 'aksel-error-message p-1'
