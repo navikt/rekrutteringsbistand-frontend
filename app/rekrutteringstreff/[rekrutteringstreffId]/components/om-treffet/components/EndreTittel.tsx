@@ -115,10 +115,9 @@ const EndreTittel = ({
   };
 
   useEffect(() => {
-    resetAnalyse();
     setVisTomFeil(false);
     setShowUnchangedError(false);
-  }, [nyTittel, resetAnalyse]);
+  }, [nyTittel]);
 
   useEffect(() => {
     if (modalRef.current) {
