@@ -114,7 +114,6 @@ const EndreTittel = ({
     el.setSelectionRange(len, len);
   };
 
-  /* Effects */
   useEffect(() => {
     resetAnalyse();
     setVisTomFeil(false);
@@ -186,7 +185,7 @@ const EndreTittel = ({
     }
   };
 
-  const inside = (wrapper: HTMLElement | null, el: Element | null) =>
+  const erInni = (wrapper: HTMLElement | null, el: Element | null) =>
     !!wrapper && !!el && (wrapper === el || wrapper.contains(el));
 
   return (
@@ -203,7 +202,6 @@ const EndreTittel = ({
           onSubmit={handleSubmit(save)}
           className='space-y-2'
         >
-          {/* TEXTAREA + CLEAR BTN */}
           <div
             className='flex items-start'
             tabIndex={-1}
@@ -211,11 +209,11 @@ const EndreTittel = ({
               setTimeout(() => {
                 const active = document.activeElement;
                 if (
-                  !inside(textareaRef.current, active) &&
-                  !inside(clearButtonRef.current, active) &&
-                  !inside(closeButtonRef.current, active) &&
-                  !inside(modalLukkeknappRef.current, active) &&
-                  !inside(analyseRef.current, active)
+                  !erInni(textareaRef.current, active) &&
+                  !erInni(clearButtonRef.current, active) &&
+                  !erInni(closeButtonRef.current, active) &&
+                  !erInni(modalLukkeknappRef.current, active) &&
+                  !erInni(analyseRef.current, active)
                 ) {
                   handleValidateOrError();
                 }
@@ -263,9 +261,7 @@ const EndreTittel = ({
             )}
           </div>
 
-          {/* ANALYSE / SKELETON / ERROR */}
           <div className='flex gap-3 mt-2 items-start'>
-            {/* STATUS ICON */}
             <div className='inline-flex justify-center items-start w-10 pt-1'>
               {validating ? (
                 <RobotIcon
@@ -296,7 +292,6 @@ const EndreTittel = ({
               ) : null}
             </div>
 
-            {/* CONTENTER */}
             <div className='w-full'>
               <AnimatePresence mode='wait'>
                 {validating && (
