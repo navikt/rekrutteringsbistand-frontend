@@ -1,13 +1,13 @@
 import RekrutteringstreffDetalj from '../../RekrutteringstreffDetalj';
+import { usePamPostdata } from '@/app/api/pam-geografi/postdata/[postnummer]/usePamPostdata';
 import { oppdaterRekrutteringstreff } from '@/app/api/rekrutteringstreff/oppdater-rekrutteringstreff/oppdaterRerkutteringstreff';
 import { RekrutteringstreffDTO } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { LocationPinIcon, PencilIcon, PlusIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button, Modal, TextField } from '@navikt/ds-react';
-// Fjernet Detail da den ikke er i bruk
 import { logger } from '@navikt/next-logger';
 import * as React from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, useForm, useWatch } from 'react-hook-form';
 import { z } from 'zod';
 
 const stedSchema = z.object({
@@ -17,6 +17,7 @@ const stedSchema = z.object({
     .trim()
     .min(1, 'Postnummer må fylles ut')
     .regex(/^\d{4}$/, 'Postnummer må bestå av 4 siffer'),
+  poststed: z.string().optional(),
 });
 
 const formId = 'skjema-endre-sted';
@@ -40,12 +41,14 @@ const Sted: React.FC<StedProps> = ({
     handleSubmit,
     control,
     reset,
+    setValue,
     formState: { isSubmitting, isDirty, isValid },
   } = useForm<StedFormFields>({
     resolver: zodResolver(stedSchema),
     defaultValues: {
       gateadresse: rekrutteringstreff.gateadresse || '',
       postnummer: rekrutteringstreff.postnummer || '',
+      poststed: '',
     },
     mode: 'onChange',
   });
@@ -53,10 +56,35 @@ const Sted: React.FC<StedProps> = ({
   const harStedsinfo =
     !!rekrutteringstreff.gateadresse || !!rekrutteringstreff.postnummer;
 
+  const postnummerValue = useWatch({
+    control,
+    name: 'postnummer',
+  });
+
+  const { data: postdata, isLoading: postdataLoading } =
+    usePamPostdata(postnummerValue);
+
+  React.useEffect(() => {
+    if (postdata && postdata.korrigertNavnBy) {
+      setValue('poststed', postdata.korrigertNavnBy, {
+        shouldValidate: true,
+        shouldDirty: true, // Vurder shouldDirty: false hvis dette ikke skal påvirke om skjemaet er "endret" kun av oppslag
+      });
+    } else if (
+      postnummerValue &&
+      postnummerValue.length === 4 &&
+      !postdata &&
+      !postdataLoading
+    ) {
+      setValue('poststed', '', { shouldValidate: true, shouldDirty: true });
+    }
+  }, [postdata, postnummerValue, postdataLoading, setValue]);
+
   const åpneModal = () => {
     reset({
       gateadresse: rekrutteringstreff.gateadresse || '',
       postnummer: rekrutteringstreff.postnummer || '',
+      poststed: '',
     });
     modalRef.current?.showModal();
   };
@@ -65,8 +93,14 @@ const Sted: React.FC<StedProps> = ({
     reset({
       gateadresse: rekrutteringstreff.gateadresse || '',
       postnummer: rekrutteringstreff.postnummer || '',
+      poststed: '',
     });
     modalRef.current?.close();
+  };
+
+  const handleLukkModalFraKnapp = () => {
+    modalRef.current?.close();
+    close();
   };
 
   const onSubmit = async (data: StedFormFields) => {
@@ -82,13 +116,14 @@ const Sted: React.FC<StedProps> = ({
         tilTid,
       });
       onUpdated();
-      close();
+      handleLukkModalFraKnapp();
     } catch (error) {
-      logger.error('Error in postApi:', error);
+      logger.error('Feil ved oppdatering av sted:', error);
     }
   };
 
   const disableSave = !isDirty || !isValid || isSubmitting;
+  const poststedWatch = useWatch({ control, name: 'poststed' });
 
   return (
     <>
@@ -107,23 +142,21 @@ const Sted: React.FC<StedProps> = ({
         }
         className={className}
       >
-        {harStedsinfo ? (
-          <BodyShort size='small'>
-            {rekrutteringstreff.gateadresse}
-            {rekrutteringstreff.gateadresse &&
-              rekrutteringstreff.postnummer &&
-              ', '}
-            {rekrutteringstreff.postnummer}
-          </BodyShort>
-        ) : (
-          <BodyShort size='small' textColor='subtle'>
-            Ikke oppgitt
-          </BodyShort>
+        {harStedsinfo && (
+          <>
+            <BodyShort size='small'>{rekrutteringstreff.gateadresse}</BodyShort>
+            {rekrutteringstreff.postnummer && (
+              <BodyShort size='small' textColor='subtle'>
+                {rekrutteringstreff.postnummer}
+                {poststedWatch ? ` ${poststedWatch}` : ''}
+              </BodyShort>
+            )}
+          </>
         )}
       </RekrutteringstreffDetalj>
       <Modal
         ref={modalRef}
-        header={{ heading: harStedsinfo ? 'Endre sted' : 'Legg til sted' }} // Dynamisk header
+        header={{ heading: harStedsinfo ? 'Endre sted' : 'Legg til sted' }}
         width={400}
         onClose={close}
       >
@@ -145,17 +178,36 @@ const Sted: React.FC<StedProps> = ({
                 />
               )}
             />
-            <Controller
-              name='postnummer'
-              control={control}
-              render={({ field, fieldState }) => (
-                <TextField
-                  {...field}
-                  label='Postnummer'
-                  error={fieldState.error?.message}
+            <div className='flex flex-row gap-4 items-start'>
+              <div>
+                <Controller
+                  name='postnummer'
+                  control={control}
+                  render={({ field, fieldState }) => (
+                    <TextField
+                      {...field}
+                      htmlSize={12}
+                      label='Postnummer'
+                      error={fieldState.error?.message}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/\D/g, '');
+                        if (value.length <= 4) {
+                          field.onChange(value);
+                        }
+                      }}
+                    />
+                  )}
                 />
-              )}
-            />
+              </div>
+              <div className='flex-1 pt-2'>
+                <BodyShort className='mt-6'>
+                  {(!postdataLoading && poststedWatch) ||
+                    (postnummerValue && postnummerValue.length === 4
+                      ? 'Ukjent poststed'
+                      : '')}
+                </BodyShort>
+              </div>
+            </div>
           </form>
         </Modal.Body>
         <Modal.Footer className='pt-2'>
@@ -167,7 +219,11 @@ const Sted: React.FC<StedProps> = ({
           >
             Lagre
           </Button>
-          <Button type='button' variant='secondary' onClick={close}>
+          <Button
+            type='button'
+            variant='secondary'
+            onClick={handleLukkModalFraKnapp}
+          >
             Avbryt
           </Button>
         </Modal.Footer>
