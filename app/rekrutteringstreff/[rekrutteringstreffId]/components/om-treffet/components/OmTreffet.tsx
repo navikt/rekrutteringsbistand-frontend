@@ -5,14 +5,14 @@ import RekrutteringstreffDetalj from '../../RekrutteringstreffDetalj';
 import SlettRekrutteringstreffModal from '../../SlettRekrutteringstreffModal';
 import ArbeidsgiverHendelserKort from '../../arbeidsgivere/components/ArbeidsgiverHendelserKort';
 import JobbsøkerHendelserKort from '../../jobbsøkere/components/JobbsøkerHendelserKort';
+import Sted from './Sted';
 import Tidspunkt from './tidspunkt/Tidspunkt';
 import { useArbeidsgiverHendelser } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgiverHendelser';
 import { useJobbsøkerHendelser } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkerHendelser';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import SWRLaster from '@/app/components/SWRLaster';
-import { LocationPinIcon, PlusIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button } from '@navikt/ds-react';
-import { TimerIcon } from 'lucide-react';
+import { PlusIcon, TimerIcon } from 'lucide-react';
 import * as React from 'react';
 
 const OmTreffet = () => {
@@ -46,18 +46,11 @@ const OmTreffet = () => {
                   onUpdated={rekrutteringstreffHook.mutate}
                   className='flex-1'
                 />
-                <RekrutteringstreffDetalj
-                  tittelIkon={<LocationPinIcon fontSize='1.5rem' />}
-                  tittel='Sted'
-                  knapp={
-                    <Button icon={<PlusIcon />} variant='tertiary' size='small'>
-                      Legg til
-                    </Button>
-                  }
+                <Sted
+                  rekrutteringstreff={rekrutteringstreff}
+                  onUpdated={rekrutteringstreffHook.mutate}
                   className='flex-1'
-                >
-                  <BodyShort size='small'>TODO</BodyShort>
-                </RekrutteringstreffDetalj>
+                />
                 <RekrutteringstreffDetalj
                   tittelIkon={<TimerIcon fontSize='1.5rem' />}
                   tittel='Svarfrist'

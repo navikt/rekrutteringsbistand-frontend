@@ -30,7 +30,9 @@ const RekrutteringstreffSøk: React.FC<RekrutteringstreffSøkProps> = () => {
               antallArbeidsgivere={0}
               tittel={rekrutteringstreff.tittel}
               beskrivelse={rekrutteringstreff.beskrivelse}
-              sted='Oslo'
+              gateadresse={rekrutteringstreff.gateadresse || ''}
+              postnummer={rekrutteringstreff.postnummer || ''}
+              poststed={rekrutteringstreff.poststed || ''}
               opprettetAv={rekrutteringstreff.opprettetAvPersonNavident}
               opprettetDato='12. April'
               navKontor={rekrutteringstreff.opprettetAvNavkontorEnhetId}

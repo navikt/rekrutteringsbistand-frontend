@@ -7,7 +7,9 @@ export const OppdaterRekrutteringstreffSchema = z.object({
   beskrivelse: z.string().nullable().optional(),
   fraTid: z.string().nullable().nullable().optional(),
   tilTid: z.string().nullable().optional(),
-  sted: z.string().nullable().optional(),
+  gateadresse: z.string().nullable().optional(),
+  postnummer: z.string().nullable().optional(),
+  poststed: z.string().nullable().optional(),
 });
 
 export type OppdaterRekrutteringstreffDTO = z.infer<
@@ -21,7 +23,9 @@ export const OppdaterRekrutteringstreffResponseSchema = z.object({
   fraTid: z.string().nullable(),
 
   tilTid: z.string().nullable(),
-  sted: z.string().nullable(),
+  gateadresse: z.string().nullable(),
+  postnummer: z.string().nullable(),
+  poststed: z.string().nullable(),
   status: z.string(),
   opprettetAvPersonNavident: z.string(),
   opprettetAvNavkontorEnhetId: z.string(),

@@ -141,11 +141,13 @@ const EndreTittel = ({
 
   const save = async ({ nyTittel }: FormValues) => {
     try {
-      const { id, beskrivelse, sted, fraTid, tilTid } = rekrutteringstreff;
+      const { id, beskrivelse, gateadresse, postnummer, fraTid, tilTid } =
+        rekrutteringstreff;
       await oppdaterRekrutteringstreff(id, {
         tittel: nyTittel,
         beskrivelse,
-        sted,
+        gateadresse,
+        postnummer,
         fraTid,
         tilTid,
       });

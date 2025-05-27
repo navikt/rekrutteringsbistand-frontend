@@ -122,12 +122,13 @@ export default function Tidspunkt({
 
     setOpen(false);
 
-    const { tittel, beskrivelse, sted } = rekrutteringstreff;
+    const { tittel, beskrivelse, gateadresse, postnummer } = rekrutteringstreff;
 
     await oppdaterRekrutteringstreff(rekrutteringstreff.id, {
       tittel,
       beskrivelse,
-      sted,
+      gateadresse,
+      postnummer,
       fraTid: toIso(data.fraDato!, data.fraTid),
       tilTid: toIso(data.tilDato!, data.tilTid),
     });
