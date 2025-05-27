@@ -2,10 +2,10 @@ import RekrutteringstreffDetalj from '../../RekrutteringstreffDetalj';
 import { oppdaterRekrutteringstreff } from '@/app/api/rekrutteringstreff/oppdater-rekrutteringstreff/oppdaterRerkutteringstreff';
 import { RekrutteringstreffDTO } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { LocationPinIcon } from '@navikt/aksel-icons';
+import { LocationPinIcon, PencilIcon, PlusIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button, Modal, TextField } from '@navikt/ds-react';
+// Fjernet Detail da den ikke er i bruk
 import { logger } from '@navikt/next-logger';
-import { PlusIcon } from 'lucide-react';
 import * as React from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -21,15 +21,11 @@ const stedSchema = z.object({
 
 const formId = 'skjema-endre-sted';
 
-export type StedFormFields = {
-  gateadresse: string;
-  postnummer: string;
-};
+export type StedFormFields = z.infer<typeof stedSchema>;
 
 export interface StedProps {
   rekrutteringstreff: RekrutteringstreffDTO;
   onUpdated: () => void;
-
   className?: string;
 }
 
@@ -42,12 +38,9 @@ const Sted: React.FC<StedProps> = ({
 
   const {
     handleSubmit,
-    /*setError,
-    clearErrors,
-    register,*/
     control,
     reset,
-    formState: { /*errors,*/ isSubmitting, isDirty, isValid },
+    formState: { isSubmitting, isDirty, isValid },
   } = useForm<StedFormFields>({
     resolver: zodResolver(stedSchema),
     defaultValues: {
@@ -57,12 +50,23 @@ const Sted: React.FC<StedProps> = ({
     mode: 'onChange',
   });
 
-  const close = () => {
-    modalRef.current?.close();
+  const harStedsinfo =
+    !!rekrutteringstreff.gateadresse || !!rekrutteringstreff.postnummer;
+
+  const åpneModal = () => {
     reset({
       gateadresse: rekrutteringstreff.gateadresse || '',
       postnummer: rekrutteringstreff.postnummer || '',
     });
+    modalRef.current?.showModal();
+  };
+
+  const close = () => {
+    reset({
+      gateadresse: rekrutteringstreff.gateadresse || '',
+      postnummer: rekrutteringstreff.postnummer || '',
+    });
+    modalRef.current?.close();
   };
 
   const onSubmit = async (data: StedFormFields) => {
@@ -92,17 +96,34 @@ const Sted: React.FC<StedProps> = ({
         tittelIkon={<LocationPinIcon fontSize='1.5rem' />}
         tittel='Sted'
         knapp={
-          <Button icon={<PlusIcon />} variant='tertiary' size='small'>
-            Legg til
+          <Button
+            icon={harStedsinfo ? <PencilIcon /> : <PlusIcon />}
+            variant='tertiary'
+            size='small'
+            onClick={åpneModal}
+          >
+            {harStedsinfo ? 'Endre' : 'Legg til'}
           </Button>
         }
         className={className}
       >
-        <BodyShort size='small'>TODO</BodyShort>
+        {harStedsinfo ? (
+          <BodyShort size='small'>
+            {rekrutteringstreff.gateadresse}
+            {rekrutteringstreff.gateadresse &&
+              rekrutteringstreff.postnummer &&
+              ', '}
+            {rekrutteringstreff.postnummer}
+          </BodyShort>
+        ) : (
+          <BodyShort size='small' textColor='subtle'>
+            Ikke oppgitt
+          </BodyShort>
+        )}
       </RekrutteringstreffDetalj>
       <Modal
         ref={modalRef}
-        header={{ heading: 'Endre navn på treffet' }}
+        header={{ heading: harStedsinfo ? 'Endre sted' : 'Legg til sted' }} // Dynamisk header
         width={400}
         onClose={close}
       >
