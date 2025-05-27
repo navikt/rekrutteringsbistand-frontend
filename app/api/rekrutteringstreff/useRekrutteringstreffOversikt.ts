@@ -21,6 +21,7 @@ const RekrutteringstreffOversiktSchema = z.array(
     tilTid: z.string(),
     gateadresse: z.string(),
     postnummer: z.string(),
+    poststed: z.string(),
     status: z.string(),
     opprettetAvPersonNavident: z.string(),
     opprettetAvNavkontorEnhetId: z.string(),

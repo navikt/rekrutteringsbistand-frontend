@@ -11,6 +11,7 @@ interface Props {
   beskrivelse: string;
   gateadresse: string;
   postnummer: string;
+  poststed?: string;
   stedUrl?: string;
   opprettetAv: string;
   opprettetDato: string;
@@ -27,6 +28,7 @@ export const RekrutteringstreffKort: FunctionComponent<Props> = ({
   beskrivelse,
   gateadresse,
   postnummer,
+  poststed,
   stedUrl,
   opprettetAv,
   opprettetDato,
@@ -58,11 +60,11 @@ export const RekrutteringstreffKort: FunctionComponent<Props> = ({
         <LocationPinIcon aria-hidden />
         {stedUrl ? (
           <Link href={stedUrl} target='_blank'>
-            {gateadresse}, {postnummer}
+            {gateadresse}, {postnummer} {poststed}
           </Link>
         ) : (
           <BodyShort>
-            {gateadresse}, {postnummer}
+            {gateadresse}, {postnummer} {poststed}
           </BodyShort>
         )}
       </div>
