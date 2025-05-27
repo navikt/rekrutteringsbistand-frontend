@@ -6,8 +6,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { LocationPinIcon, PencilIcon, PlusIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button, Modal, TextField } from '@navikt/ds-react';
 import { logger } from '@navikt/next-logger';
-import * as React from 'react';
-import { Controller, useForm, useWatch } from 'react-hook-form';
+import React, { useEffect, useId, useRef, useMemo } from 'react';
+import { Controller, useForm, SubmitHandler } from 'react-hook-form';
 import { z } from 'zod';
 
 const stedSchema = z.object({
@@ -19,12 +19,9 @@ const stedSchema = z.object({
     .regex(/^\d{4}$/, 'Postnummer må bestå av 4 siffer'),
   poststed: z.string().optional(),
 });
+type StedFormFields = z.infer<typeof stedSchema>;
 
-const formId = 'skjema-endre-sted';
-
-export type StedFormFields = z.infer<typeof stedSchema>;
-
-export interface StedProps {
+interface StedProps {
   rekrutteringstreff: RekrutteringstreffDTO;
   onUpdated: () => void;
   className?: string;
@@ -32,111 +29,84 @@ export interface StedProps {
 
 const Sted: React.FC<StedProps> = ({
   rekrutteringstreff,
-  className,
   onUpdated,
+  className,
 }) => {
-  const modalRef = React.useRef<HTMLDialogElement>(null);
+  const {
+    id,
+    gateadresse = '',
+    postnummer = '',
+    tittel,
+    beskrivelse,
+    fraTid,
+    tilTid,
+  } = rekrutteringstreff;
+
+  const formId = useId();
+  const modalRef = useRef<HTMLDialogElement>(null);
 
   const {
-    handleSubmit,
     control,
+    handleSubmit,
     reset,
     setValue,
-    clearErrors, // ①
-    formState: { isSubmitting, isDirty, isValid },
+    clearErrors,
+    watch,
+    formState: { isDirty, isValid, isSubmitting },
   } = useForm<StedFormFields>({
     resolver: zodResolver(stedSchema),
     defaultValues: {
-      gateadresse: rekrutteringstreff.gateadresse || '',
-      postnummer: rekrutteringstreff.postnummer || '',
+      gateadresse: gateadresse || undefined,
+      postnummer: postnummer || undefined,
       poststed: '',
     },
     mode: 'onBlur',
   });
 
-  const harStedsinfo =
-    !!rekrutteringstreff.gateadresse || !!rekrutteringstreff.postnummer;
+  const watchPostnummer = watch('postnummer');
+  const { data: postdata, isLoading } = usePamPostdata(watchPostnummer);
 
-  const postnummerValue = useWatch({
-    control,
-    name: 'postnummer',
-  });
-
-  const { data: postdata, isLoading: postdataLoading } =
-    usePamPostdata(postnummerValue);
-
-  const poststedWatch = useWatch({ control, name: 'poststed' });
-
-  React.useEffect(() => {
-    if (poststedWatch !== '') {
-      setValue('poststed', '', {
-        shouldValidate: false,
-        shouldDirty: true,
-      });
-    }
-  }, [postnummerValue, setValue, poststedWatch]);
-
-  React.useEffect(() => {
-    if (postnummerValue && postnummerValue.length === 4 && !postdataLoading) {
-      if (postdata && postdata.korrigertNavnBy) {
-        setValue('poststed', postdata.korrigertNavnBy, {
-          shouldValidate: false,
-          shouldDirty: true,
-        });
-      } else {
-        if (poststedWatch !== '') {
-          setValue('poststed', '', {
-            shouldValidate: false,
-            shouldDirty: true,
-          });
-        }
-      }
-    }
-  }, [postnummerValue, postdata, postdataLoading, setValue, poststedWatch]);
-
-  const åpneModal = () => {
-    reset({
-      gateadresse: rekrutteringstreff.gateadresse || '',
-      postnummer: rekrutteringstreff.postnummer || '',
-      poststed: '',
+  useEffect(() => {
+    if (watchPostnummer.length !== 4 || isLoading) return;
+    setValue('poststed', postdata?.korrigertNavnBy ?? '', {
+      shouldDirty: true,
+      shouldValidate: false,
     });
+  }, [watchPostnummer, isLoading, postdata, setValue]);
+
+  const harStedsinfo = useMemo(
+    () => !!gateadresse || !!postnummer,
+    [gateadresse, postnummer],
+  );
+
+  const open = () => {
+    reset();
     modalRef.current?.showModal();
   };
-
   const close = () => {
-    reset({
-      gateadresse: rekrutteringstreff.gateadresse || '',
-      postnummer: rekrutteringstreff.postnummer || '',
-      poststed: '',
-    });
     modalRef.current?.close();
+    reset();
   };
 
-  const handleLukkModalFraKnapp = () => {
-    modalRef.current?.close();
-    close();
-  };
-
-  const onSubmit = async (data: StedFormFields) => {
-    const { tittel, beskrivelse, fraTid, tilTid } = rekrutteringstreff;
-
+  const submit: SubmitHandler<StedFormFields> = async ({
+    gateadresse,
+    postnummer,
+  }: StedFormFields) => {
     try {
-      await oppdaterRekrutteringstreff(rekrutteringstreff.id, {
+      await oppdaterRekrutteringstreff(id, {
         tittel,
         beskrivelse,
-        gateadresse: data.gateadresse,
-        postnummer: data.postnummer,
+        gateadresse,
+        postnummer,
         fraTid,
         tilTid,
       });
       onUpdated();
-      handleLukkModalFraKnapp();
-    } catch (error) {
-      logger.error('Feil ved oppdatering av sted:', error);
+      close();
+    } catch (err) {
+      logger.error('Feil ved oppdatering av sted:', err);
     }
   };
-
-  const disableSave = !isDirty || !isValid || isSubmitting;
 
   return (
     <>
@@ -148,7 +118,7 @@ const Sted: React.FC<StedProps> = ({
             icon={harStedsinfo ? <PencilIcon /> : <PlusIcon />}
             variant='tertiary'
             size='small'
-            onClick={åpneModal}
+            onClick={open}
           >
             {harStedsinfo ? 'Endre' : 'Legg til'}
           </Button>
@@ -157,16 +127,17 @@ const Sted: React.FC<StedProps> = ({
       >
         {harStedsinfo && (
           <>
-            <BodyShort size='small'>{rekrutteringstreff.gateadresse}</BodyShort>
-            {rekrutteringstreff.postnummer && (
+            <BodyShort size='small'>{gateadresse}</BodyShort>
+            {postnummer && (
               <BodyShort size='small' textColor='subtle'>
-                {rekrutteringstreff.postnummer}
-                {poststedWatch ? ` ${poststedWatch}` : ''}
+                {postnummer}
+                {watch('poststed') && ` ${watch('poststed')}`}
               </BodyShort>
             )}
           </>
         )}
       </RekrutteringstreffDetalj>
+
       <Modal
         ref={modalRef}
         header={{ heading: harStedsinfo ? 'Endre sted' : 'Legg til sted' }}
@@ -176,7 +147,7 @@ const Sted: React.FC<StedProps> = ({
         <Modal.Body>
           <form
             id={formId}
-            onSubmit={handleSubmit(onSubmit)}
+            onSubmit={handleSubmit(submit)}
             className='space-y-4'
           >
             <Controller
@@ -191,53 +162,47 @@ const Sted: React.FC<StedProps> = ({
                 />
               )}
             />
-            <div className='flex flex-row gap-4 items-start'>
-              <div>
-                <Controller
-                  name='postnummer'
-                  control={control}
-                  render={({ field, fieldState }) => (
-                    <TextField
-                      {...field}
-                      htmlSize={12}
-                      label='Postnummer'
-                      error={fieldState.error?.message}
-                      onChange={(e) => {
-                        const value = e.target.value.replace(/\D/g, '');
-                        clearErrors('postnummer'); // ②
-                        if (value.length <= 4) {
-                          field.onChange(value);
-                        }
-                      }}
-                    />
-                  )}
-                />
-              </div>
-              <div className='flex-1 pt-2'>
-                <BodyShort className='mt-6'>
-                  {(!postdataLoading && poststedWatch) ||
-                    (postnummerValue && postnummerValue.length === 4
-                      ? 'Ukjent poststed'
-                      : '')}
-                </BodyShort>
-              </div>
+            <div className='flex gap-4'>
+              <Controller
+                name='postnummer'
+                control={control}
+                render={({ field, fieldState }) => (
+                  <TextField
+                    {...field}
+                    label='Postnummer'
+                    htmlSize={12}
+                    error={fieldState.error?.message}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/\D/g, '');
+                      clearErrors('postnummer');
+                      setValue('poststed', '', {
+                        shouldDirty: false,
+                        shouldValidate: false,
+                      });
+                      if (value.length <= 4) field.onChange(value);
+                    }}
+                  />
+                )}
+              />
+              <BodyShort className='pt-8'>
+                {watch('poststed') ||
+                  (watchPostnummer.length === 4 && !isLoading
+                    ? 'Ukjent poststed'
+                    : '')}
+              </BodyShort>
             </div>
           </form>
         </Modal.Body>
-        <Modal.Footer className='pt-2'>
+        <Modal.Footer>
           <Button
-            type='submit'
             form={formId}
+            type='submit'
             loading={isSubmitting}
-            disabled={disableSave}
+            disabled={!isDirty || !isValid || isSubmitting}
           >
             Lagre
           </Button>
-          <Button
-            type='button'
-            variant='secondary'
-            onClick={handleLukkModalFraKnapp}
-          >
+          <Button variant='secondary' onClick={close}>
             Avbryt
           </Button>
         </Modal.Footer>
