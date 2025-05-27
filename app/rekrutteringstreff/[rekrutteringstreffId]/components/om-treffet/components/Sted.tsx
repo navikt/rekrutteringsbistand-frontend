@@ -10,14 +10,23 @@ import React, { useEffect, useId, useRef, useMemo } from 'react';
 import { Controller, useForm, SubmitHandler } from 'react-hook-form';
 import { z } from 'zod';
 
+const FormFields = {
+  GATEADRESSE: 'gateadresse',
+  POSTNUMMER: 'postnummer',
+  POSTSTED: 'poststed',
+} as const;
+
 const stedSchema = z.object({
-  gateadresse: z.string().trim().min(1, 'Gateadresse må fylles ut'),
-  postnummer: z
+  [FormFields.GATEADRESSE]: z
+    .string()
+    .trim()
+    .min(1, 'Gateadresse må fylles ut'),
+  [FormFields.POSTNUMMER]: z
     .string()
     .trim()
     .min(1, 'Postnummer må fylles ut')
     .regex(/^\d{4}$/, 'Postnummer må bestå av 4 siffer'),
-  poststed: z.string().optional(),
+  [FormFields.POSTSTED]: z.string().optional(),
 });
 type StedFormFields = z.infer<typeof stedSchema>;
 
@@ -52,6 +61,7 @@ const Sted: React.FC<StedProps> = ({
     setValue,
     clearErrors,
     watch,
+    trigger,
     formState: { isDirty, isValid, isSubmitting },
   } = useForm<StedFormFields>({
     resolver: zodResolver(stedSchema),
@@ -63,12 +73,12 @@ const Sted: React.FC<StedProps> = ({
     mode: 'onBlur',
   });
 
-  const watchPostnummer = watch('postnummer');
+  const watchPostnummer = watch(FormFields.POSTNUMMER);
   const { data: postdata, isLoading } = usePamPostdata(watchPostnummer);
 
   useEffect(() => {
     if (watchPostnummer.length !== 4 || isLoading) return;
-    setValue('poststed', postdata?.korrigertNavnBy ?? '', {
+    setValue(FormFields.POSTSTED, postdata?.korrigertNavnBy ?? '', {
       shouldDirty: true,
       shouldValidate: false,
     });
@@ -131,7 +141,10 @@ const Sted: React.FC<StedProps> = ({
             {postnummer && (
               <BodyShort size='small' textColor='subtle'>
                 {postnummer}
-                {watch('poststed') && ` ${watch('poststed')}`}
+                {(() => {
+                  const poststedValue = watch(FormFields.POSTSTED);
+                  return poststedValue ? ` ${poststedValue}` : '';
+                })()}
               </BodyShort>
             )}
           </>
@@ -151,7 +164,7 @@ const Sted: React.FC<StedProps> = ({
             className='space-y-4'
           >
             <Controller
-              name='gateadresse'
+              name={FormFields.GATEADRESSE}
               control={control}
               render={({ field, fieldState }) => (
                 <TextField
@@ -164,7 +177,7 @@ const Sted: React.FC<StedProps> = ({
             />
             <div className='flex gap-4'>
               <Controller
-                name='postnummer'
+                name={FormFields.POSTNUMMER}
                 control={control}
                 render={({ field, fieldState }) => (
                   <TextField
@@ -174,18 +187,19 @@ const Sted: React.FC<StedProps> = ({
                     error={fieldState.error?.message}
                     onChange={(e) => {
                       const value = e.target.value.replace(/\D/g, '');
-                      clearErrors('postnummer');
-                      setValue('poststed', '', {
+                      clearErrors(FormFields.POSTNUMMER);
+                      setValue(FormFields.POSTSTED, '', {
                         shouldDirty: false,
                         shouldValidate: false,
                       });
                       if (value.length <= 4) field.onChange(value);
+                      if (value.length === 4) trigger();
                     }}
                   />
                 )}
               />
               <BodyShort className='pt-8'>
-                {watch('poststed') ||
+                {watch(FormFields.POSTSTED) ||
                   (watchPostnummer.length === 4 && !isLoading
                     ? 'Ukjent poststed'
                     : '')}
