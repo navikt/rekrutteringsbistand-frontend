@@ -156,6 +156,7 @@ const Sted: React.FC<StedProps> = ({
         header={{ heading: harStedsinfo ? 'Endre sted' : 'Legg til sted' }}
         width={400}
         onClose={close}
+        key={`nytt-sted-modal-${id}-${rekrutteringstreff.postnummer}-${rekrutteringstreff.gateadresse}`}
       >
         <Modal.Body>
           <form
