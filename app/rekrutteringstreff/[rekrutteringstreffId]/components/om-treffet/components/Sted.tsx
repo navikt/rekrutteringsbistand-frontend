@@ -66,8 +66,8 @@ const Sted: React.FC<StedProps> = ({
   } = useForm<StedFormFields>({
     resolver: zodResolver(stedSchema),
     defaultValues: {
-      gateadresse: gateadresse || undefined,
-      postnummer: postnummer || undefined,
+      gateadresse: gateadresse ?? '',
+      postnummer: postnummer ?? '',
       poststed: '',
     },
     mode: 'onBlur',
