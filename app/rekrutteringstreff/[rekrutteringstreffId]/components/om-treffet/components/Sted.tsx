@@ -26,7 +26,7 @@ const stedSchema = z.object({
     .trim()
     .min(1, 'Postnummer må fylles ut')
     .regex(/^\d{4}$/, 'Postnummer må bestå av 4 siffer'),
-  [FormFields.POSTSTED]: z.string().optional(),
+  [FormFields.POSTSTED]: z.string().trim().min(1, 'Poststed må fylles ut'),
 });
 
 type StedFormFields = z.infer<typeof stedSchema>;
@@ -62,6 +62,7 @@ const Sted: React.FC<StedProps> = ({
     reset,
     setValue,
     clearErrors,
+    setError,
     watch,
     trigger,
     formState: { isDirty, isValid, isSubmitting },
@@ -80,11 +81,24 @@ const Sted: React.FC<StedProps> = ({
 
   useEffect(() => {
     if (watchPostnummer.length !== 4 || isLoading) return;
-    setValue(FormFields.POSTSTED, postdata?.korrigertNavnBy ?? '', {
-      shouldDirty: true,
-      shouldValidate: false,
-    });
-  }, [watchPostnummer, isLoading, postdata, setValue]);
+
+    if (postdata?.korrigertNavnBy) {
+      setValue(FormFields.POSTSTED, postdata.korrigertNavnBy, {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
+      clearErrors(FormFields.POSTSTED);
+    } else {
+      setValue(FormFields.POSTSTED, '', {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
+      setError(FormFields.POSTSTED, {
+        type: 'manual',
+        message: 'Ukjent poststed',
+      });
+    }
+  }, [watchPostnummer, isLoading, postdata, setValue, setError, clearErrors]);
 
   const harStedsinfo = useMemo(
     () => !!gateadresse || !!postnummer || !!poststed,
@@ -99,7 +113,6 @@ const Sted: React.FC<StedProps> = ({
     });
     modalRef.current?.showModal();
   };
-
   const close = () => {
     modalRef.current?.close();
     reset();
@@ -194,10 +207,10 @@ const Sted: React.FC<StedProps> = ({
                     error={fieldState.error?.message}
                     onChange={(e) => {
                       const value = e.target.value.replace(/\D/g, '');
-                      clearErrors(FormFields.POSTNUMMER);
+                      clearErrors([FormFields.POSTNUMMER, FormFields.POSTSTED]);
                       setValue(FormFields.POSTSTED, '', {
                         shouldDirty: false,
-                        shouldValidate: false,
+                        shouldValidate: true,
                       });
                       if (value.length <= 4) field.onChange(value);
                       if (value.length === 4) trigger();
@@ -205,7 +218,9 @@ const Sted: React.FC<StedProps> = ({
                   />
                 )}
               />
-              <BodyShort className='pt-8'>
+              <BodyShort
+                className={`pt-8 ${watch(FormFields.POSTSTED) ? '' : 'aksel-error-message'}`}
+              >
                 {watch(FormFields.POSTSTED) ||
                   (watchPostnummer.length === 4 && !isLoading
                     ? 'Ukjent poststed'
