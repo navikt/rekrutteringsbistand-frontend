@@ -7,6 +7,7 @@ export const oppdaterRekrutteringstreffMock = (id: string) => {
     tilTid: '2025-06-15T11:30:00+02:00',
     gateadresse: 'Malmøgata 1',
     postnummer: '0284',
+    poststed: 'Oslo',
     status: 'Utkast',
     opprettetAvPersonNavident: 'A123456',
     opprettetAvNavkontorEnhetId: '0318',

@@ -6,8 +6,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { LocationPinIcon, PencilIcon, PlusIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button, Modal, TextField } from '@navikt/ds-react';
 import { logger } from '@navikt/next-logger';
-import React, { useEffect, useId, useRef, useMemo } from 'react';
-import { Controller, useForm, SubmitHandler } from 'react-hook-form';
+import React, { useEffect, useId, useMemo, useRef } from 'react';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 const FormFields = {
@@ -28,6 +28,7 @@ const stedSchema = z.object({
     .regex(/^\d{4}$/, 'Postnummer må bestå av 4 siffer'),
   [FormFields.POSTSTED]: z.string().optional(),
 });
+
 type StedFormFields = z.infer<typeof stedSchema>;
 
 interface StedProps {
@@ -45,6 +46,7 @@ const Sted: React.FC<StedProps> = ({
     id,
     gateadresse = '',
     postnummer = '',
+    poststed = '',
     tittel,
     beskrivelse,
     fraTid,
@@ -68,7 +70,7 @@ const Sted: React.FC<StedProps> = ({
     defaultValues: {
       gateadresse: gateadresse ?? '',
       postnummer: postnummer ?? '',
-      poststed: '',
+      poststed: poststed ?? '',
     },
     mode: 'onBlur',
   });
@@ -85,15 +87,15 @@ const Sted: React.FC<StedProps> = ({
   }, [watchPostnummer, isLoading, postdata, setValue]);
 
   const harStedsinfo = useMemo(
-    () => !!gateadresse || !!postnummer,
-    [gateadresse, postnummer],
+    () => !!gateadresse || !!postnummer || !!poststed,
+    [gateadresse, postnummer, poststed],
   );
 
   const open = () => {
     reset({
       gateadresse: gateadresse ?? '',
       postnummer: postnummer ?? '',
-      poststed: '',
+      poststed: poststed ?? '',
     });
     modalRef.current?.showModal();
   };
@@ -104,15 +106,17 @@ const Sted: React.FC<StedProps> = ({
   };
 
   const submit: SubmitHandler<StedFormFields> = async ({
-    gateadresse,
-    postnummer,
-  }: StedFormFields) => {
+    gateadresse: nyGateadresse,
+    postnummer: nyttPostnummer,
+    poststed: nyttPoststed,
+  }) => {
     try {
       await oppdaterRekrutteringstreff(id, {
         tittel,
         beskrivelse,
-        gateadresse,
-        postnummer,
+        gateadresse: nyGateadresse,
+        postnummer: nyttPostnummer,
+        poststed: nyttPoststed,
         fraTid,
         tilTid,
       });
@@ -142,14 +146,11 @@ const Sted: React.FC<StedProps> = ({
       >
         {harStedsinfo && (
           <>
-            <BodyShort size='small'>{gateadresse}</BodyShort>
-            {postnummer && (
+            {gateadresse && <BodyShort size='small'>{gateadresse}</BodyShort>}
+            {(postnummer || poststed) && (
               <BodyShort size='small' textColor='subtle'>
                 {postnummer}
-                {(() => {
-                  const poststedValue = watch(FormFields.POSTSTED);
-                  return poststedValue ? ` ${poststedValue}` : '';
-                })()}
+                {poststed ? ` ${poststed}` : ''}
               </BodyShort>
             )}
           </>
@@ -161,7 +162,7 @@ const Sted: React.FC<StedProps> = ({
         header={{ heading: harStedsinfo ? 'Endre sted' : 'Legg til sted' }}
         width={400}
         onClose={close}
-        key={`nytt-sted-modal-${id}-${rekrutteringstreff.postnummer}-${rekrutteringstreff.gateadresse}`}
+        key={`nytt-sted-modal-${id}-${postnummer}-${gateadresse}`}
       >
         <Modal.Body>
           <form

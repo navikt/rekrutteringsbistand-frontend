@@ -28,6 +28,7 @@ export const RekrutteringstreffSchema = z.object({
   tilTid: z.string().nullable(),
   gateadresse: z.string().nullable(),
   postnummer: z.string().nullable(),
+  poststed: z.string().nullable(),
   status: z.string(),
   opprettetAvPersonNavident: z.string(),
   opprettetAvNavkontorEnhetId: z.string(),
