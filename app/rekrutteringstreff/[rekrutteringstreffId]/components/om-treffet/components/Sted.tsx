@@ -90,9 +90,14 @@ const Sted: React.FC<StedProps> = ({
   );
 
   const open = () => {
-    reset();
+    reset({
+      gateadresse: gateadresse ?? '',
+      postnummer: postnummer ?? '',
+      poststed: '',
+    });
     modalRef.current?.showModal();
   };
+
   const close = () => {
     modalRef.current?.close();
     reset();
