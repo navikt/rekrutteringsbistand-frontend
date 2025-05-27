@@ -42,6 +42,7 @@ const Sted: React.FC<StedProps> = ({
     control,
     reset,
     setValue,
+    clearErrors, // ①
     formState: { isSubmitting, isDirty, isValid },
   } = useForm<StedFormFields>({
     resolver: zodResolver(stedSchema),
@@ -50,7 +51,7 @@ const Sted: React.FC<StedProps> = ({
       postnummer: rekrutteringstreff.postnummer || '',
       poststed: '',
     },
-    mode: 'onChange',
+    mode: 'onBlur',
   });
 
   const harStedsinfo =
@@ -64,21 +65,34 @@ const Sted: React.FC<StedProps> = ({
   const { data: postdata, isLoading: postdataLoading } =
     usePamPostdata(postnummerValue);
 
+  const poststedWatch = useWatch({ control, name: 'poststed' });
+
   React.useEffect(() => {
-    if (postdata && postdata.korrigertNavnBy) {
-      setValue('poststed', postdata.korrigertNavnBy, {
-        shouldValidate: true,
-        shouldDirty: true, // Vurder shouldDirty: false hvis dette ikke skal påvirke om skjemaet er "endret" kun av oppslag
+    if (poststedWatch !== '') {
+      setValue('poststed', '', {
+        shouldValidate: false,
+        shouldDirty: true,
       });
-    } else if (
-      postnummerValue &&
-      postnummerValue.length === 4 &&
-      !postdata &&
-      !postdataLoading
-    ) {
-      setValue('poststed', '', { shouldValidate: true, shouldDirty: true });
     }
-  }, [postdata, postnummerValue, postdataLoading, setValue]);
+  }, [postnummerValue, setValue, poststedWatch]);
+
+  React.useEffect(() => {
+    if (postnummerValue && postnummerValue.length === 4 && !postdataLoading) {
+      if (postdata && postdata.korrigertNavnBy) {
+        setValue('poststed', postdata.korrigertNavnBy, {
+          shouldValidate: false,
+          shouldDirty: true,
+        });
+      } else {
+        if (poststedWatch !== '') {
+          setValue('poststed', '', {
+            shouldValidate: false,
+            shouldDirty: true,
+          });
+        }
+      }
+    }
+  }, [postnummerValue, postdata, postdataLoading, setValue, poststedWatch]);
 
   const åpneModal = () => {
     reset({
@@ -123,7 +137,6 @@ const Sted: React.FC<StedProps> = ({
   };
 
   const disableSave = !isDirty || !isValid || isSubmitting;
-  const poststedWatch = useWatch({ control, name: 'poststed' });
 
   return (
     <>
@@ -191,6 +204,7 @@ const Sted: React.FC<StedProps> = ({
                       error={fieldState.error?.message}
                       onChange={(e) => {
                         const value = e.target.value.replace(/\D/g, '');
+                        clearErrors('postnummer'); // ②
                         if (value.length <= 4) {
                           field.onChange(value);
                         }
