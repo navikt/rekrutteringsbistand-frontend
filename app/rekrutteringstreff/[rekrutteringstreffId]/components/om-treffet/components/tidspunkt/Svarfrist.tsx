@@ -31,7 +31,7 @@ export default function Svarfrist({
   const modalRef = React.useRef<HTMLDialogElement>(null);
 
   const initialSvarfrist = rekrutteringstreff.svarfrist
-    ? new Date(rekrutteringstreff.svarfrist)
+    ? toZonedTime(parseISO(rekrutteringstreff.svarfrist), 'Europe/Oslo')
     : null;
 
   const methods = useForm<SvarfristFormFields>({
