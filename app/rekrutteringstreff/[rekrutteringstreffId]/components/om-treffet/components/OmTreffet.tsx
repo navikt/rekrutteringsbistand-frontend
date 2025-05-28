@@ -1,18 +1,16 @@
 'use client';
 
 import { useRekrutteringstreffContext } from '../../../RekrutteringstreffContext';
-import RekrutteringstreffDetalj from '../../RekrutteringstreffDetalj';
 import SlettRekrutteringstreffModal from '../../SlettRekrutteringstreffModal';
 import ArbeidsgiverHendelserKort from '../../arbeidsgivere/components/ArbeidsgiverHendelserKort';
 import JobbsøkerHendelserKort from '../../jobbsøkere/components/JobbsøkerHendelserKort';
 import Sted from './Sted';
+import Svarfrist from './tidspunkt/Svarfrist';
 import Tidspunkt from './tidspunkt/Tidspunkt';
 import { useArbeidsgiverHendelser } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgiverHendelser';
 import { useJobbsøkerHendelser } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkerHendelser';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import SWRLaster from '@/app/components/SWRLaster';
-import { BodyShort, Button } from '@navikt/ds-react';
-import { PlusIcon, TimerIcon } from 'lucide-react';
 import * as React from 'react';
 
 const OmTreffet = () => {
@@ -51,18 +49,11 @@ const OmTreffet = () => {
                   onUpdated={rekrutteringstreffHook.mutate}
                   className='flex-1'
                 />
-                <RekrutteringstreffDetalj
-                  tittelIkon={<TimerIcon fontSize='1.5rem' />}
-                  tittel='Svarfrist'
-                  knapp={
-                    <Button icon={<PlusIcon />} variant='tertiary' size='small'>
-                      Legg til
-                    </Button>
-                  }
+                <Svarfrist
+                  rekrutteringstreff={rekrutteringstreff}
+                  onUpdated={rekrutteringstreffHook.mutate}
                   className='flex-1'
-                >
-                  <BodyShort size='small'>TODO</BodyShort>
-                </RekrutteringstreffDetalj>
+                />
               </div>
             );
           }}

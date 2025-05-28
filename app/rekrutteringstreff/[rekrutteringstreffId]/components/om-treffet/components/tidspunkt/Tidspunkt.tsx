@@ -1,9 +1,13 @@
 'use client';
 
 import RekrutteringstreffDetalj from '../../../RekrutteringstreffDetalj';
-import Tidspunktrad from './Tidspunktrad';
+import DatoTidRad from './DatoTidRad';
+import { formaterKlokkeslett, toIso } from './utils';
 import { rekrutteringstreffVarighet } from './varighet';
-import { oppdaterRekrutteringstreff } from '@/app/api/rekrutteringstreff/oppdater-rekrutteringstreff/oppdaterRerkutteringstreff';
+import {
+  oppdaterRekrutteringstreff,
+  toOppdaterRekrutteringstreffDto,
+} from '@/app/api/rekrutteringstreff/oppdater-rekrutteringstreff/oppdaterRerkutteringstreff';
 import type { RekrutteringstreffDTO } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { formaterNorskDato } from '@/app/components/util';
 import {
@@ -13,17 +17,10 @@ import {
   PlusIcon,
 } from '@navikt/aksel-icons';
 import { BodyShort, Button, ErrorMessage, Modal } from '@navikt/ds-react';
-import { addWeeks, format, isSameDay, parseISO } from 'date-fns';
+import { addWeeks, isSameDay, parseISO } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
-import { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
-
-export type TidspunktFormFields = {
-  fraDato: Date | null;
-  fraTid: string;
-  tilDato: Date | null;
-  tilTid: string;
-};
 
 type Props = {
   rekrutteringstreff: RekrutteringstreffDTO;
@@ -31,15 +28,19 @@ type Props = {
   className?: string;
 };
 
-const formaterKlokkeslett = (dato: Date | null): string =>
-  dato ? format(dato, 'HH:mm') : '';
+type TidspunktFormFields = {
+  fraDato: Date | null;
+  fraTid: string;
+  tilDato: Date | null;
+  tilTid: string;
+};
 
 export default function Tidspunkt({
   rekrutteringstreff,
   onUpdated,
   className,
 }: Props) {
-  const [open, setOpen] = useState(false);
+  const modalRef = React.useRef<HTMLDialogElement>(null);
 
   const initialFra = rekrutteringstreff.fraTid
     ? toZonedTime(parseISO(rekrutteringstreff.fraTid), 'Europe/Oslo')
@@ -120,23 +121,21 @@ export default function Tidspunkt({
   const onSubmit = async (data: TidspunktFormFields) => {
     if (periodUgyldig) return;
 
-    setOpen(false);
+    modalRef.current?.close();
 
-    const { tittel, beskrivelse, gateadresse, postnummer } = rekrutteringstreff;
-
-    await oppdaterRekrutteringstreff(rekrutteringstreff.id, {
-      tittel,
-      beskrivelse,
-      gateadresse,
-      postnummer,
-      fraTid: toIso(data.fraDato!, data.fraTid),
-      tilTid: toIso(data.tilDato!, data.tilTid),
-    });
+    await oppdaterRekrutteringstreff(
+      rekrutteringstreff.id,
+      toOppdaterRekrutteringstreffDto({
+        ...rekrutteringstreff,
+        fraTid: toIso(data.fraDato!, data.fraTid),
+        tilTid: toIso(data.tilDato!, data.tilTid),
+      }),
+    );
     onUpdated();
   };
 
   const close = () => {
-    setOpen(false);
+    modalRef.current?.close();
     clearErrors();
   };
 
@@ -153,7 +152,7 @@ export default function Tidspunkt({
             variant='tertiary'
             size='small'
             icon={initialFra ? <PencilIcon /> : <PlusIcon />}
-            onClick={() => setOpen(true)}
+            onClick={() => modalRef.current?.showModal()}
           >
             {initialFra ? 'Endre' : 'Legg til'}
           </Button>
@@ -193,8 +192,8 @@ export default function Tidspunkt({
       </RekrutteringstreffDetalj>
 
       <Modal
-        open={open}
-        width={420}
+        ref={modalRef}
+        width={360}
         onClose={close}
         header={{ heading: 'Velg tidspunkt' }}
       >
@@ -203,10 +202,18 @@ export default function Tidspunkt({
             <form
               id={formId}
               onSubmit={handleSubmit(onSubmit)}
-              className='flex flex-col gap-4 p-2'
+              className='flex flex-col gap-4'
             >
-              <Tidspunktrad label='Fra' nameDato='fraDato' nameTid='fraTid' />
-              <Tidspunktrad label='Til' nameDato='tilDato' nameTid='tilTid' />
+              <DatoTidRad<TidspunktFormFields>
+                label='Fra'
+                nameDato='fraDato'
+                nameTid='fraTid'
+              />
+              <DatoTidRad<TidspunktFormFields>
+                label='Til'
+                nameDato='tilDato'
+                nameTid='tilTid'
+              />
 
               {errors.root?.message ? (
                 <div className='flex items-center gap-1 mt-2'>
@@ -244,10 +251,3 @@ export default function Tidspunkt({
     </>
   );
 }
-
-const toIso = (d: Date, t: string) => {
-  const [h, m] = t.split(':').map(Number);
-  const copy = new Date(d);
-  copy.setHours(h, m, 0, 0);
-  return copy.toISOString();
-};

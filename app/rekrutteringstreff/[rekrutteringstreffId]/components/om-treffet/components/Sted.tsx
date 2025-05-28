@@ -1,6 +1,9 @@
 import RekrutteringstreffDetalj from '../../RekrutteringstreffDetalj';
 import { usePamPostdata } from '@/app/api/pam-geografi/postdata/[postnummer]/usePamPostdata';
-import { oppdaterRekrutteringstreff } from '@/app/api/rekrutteringstreff/oppdater-rekrutteringstreff/oppdaterRerkutteringstreff';
+import {
+  oppdaterRekrutteringstreff,
+  toOppdaterRekrutteringstreffDto,
+} from '@/app/api/rekrutteringstreff/oppdater-rekrutteringstreff/oppdaterRerkutteringstreff';
 import { RekrutteringstreffDTO } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { LocationPinIcon, PencilIcon, PlusIcon } from '@navikt/aksel-icons';
@@ -47,10 +50,6 @@ const Sted: React.FC<StedProps> = ({
     gateadresse = '',
     postnummer = '',
     poststed = '',
-    tittel,
-    beskrivelse,
-    fraTid,
-    tilTid,
   } = rekrutteringstreff;
 
   const formId = useId();
@@ -118,21 +117,14 @@ const Sted: React.FC<StedProps> = ({
     reset();
   };
 
-  const submit: SubmitHandler<StedFormFields> = async ({
-    gateadresse: nyGateadresse,
-    postnummer: nyttPostnummer,
-    poststed: nyttPoststed,
-  }) => {
+  const submit: SubmitHandler<StedFormFields> = async ({}) => {
     try {
-      await oppdaterRekrutteringstreff(id, {
-        tittel,
-        beskrivelse,
-        gateadresse: nyGateadresse,
-        postnummer: nyttPostnummer,
-        poststed: nyttPoststed,
-        fraTid,
-        tilTid,
-      });
+      await oppdaterRekrutteringstreff(
+        id,
+        toOppdaterRekrutteringstreffDto({
+          ...rekrutteringstreff,
+        }),
+      );
       onUpdated();
       close();
     } catch (err) {

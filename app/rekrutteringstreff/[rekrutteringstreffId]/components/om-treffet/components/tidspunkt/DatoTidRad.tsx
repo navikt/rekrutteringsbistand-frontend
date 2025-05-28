@@ -1,7 +1,6 @@
 import ControlledDatePicker from './ControlledDatepicker';
-import type { TidspunktFormFields } from './Tidspunkt';
 import { Select } from '@navikt/ds-react';
-import { Controller, useFormContext } from 'react-hook-form';
+import { Controller, Path, useFormContext } from 'react-hook-form';
 
 const KLOKKESLETT_OPTIONS = [...Array(24)].flatMap((_, h) =>
   [0, 15, 30, 45].map(
@@ -9,17 +8,21 @@ const KLOKKESLETT_OPTIONS = [...Array(24)].flatMap((_, h) =>
   ),
 );
 
-type Props = {
+type Props<T extends Record<string, unknown>> = {
   label: string;
-  nameDato: 'fraDato' | 'tilDato';
-  nameTid: 'fraTid' | 'tilTid';
+  nameDato: Path<T>;
+  nameTid: Path<T>;
 };
 
-export default function Tidspunktrad({ label, nameDato, nameTid }: Props) {
-  const { control } = useFormContext<TidspunktFormFields>();
+export default function DatoTidRad<T extends Record<string, unknown>>({
+  label,
+  nameDato,
+  nameTid,
+}: Props<T>) {
+  const { control } = useFormContext<T>();
 
   return (
-    <div className='flex gap-4 items-start'>
+    <div className='flex gap-4 items-start  justify-end'>
       <span className='w-10 pt-3'>{label}</span>
 
       <Controller
@@ -29,7 +32,7 @@ export default function Tidspunktrad({ label, nameDato, nameTid }: Props) {
         render={({ field, fieldState }) => (
           <ControlledDatePicker
             label={label}
-            value={field.value}
+            value={field.value as Date | null}
             onChange={field.onChange}
             error={fieldState.error}
           />
@@ -48,6 +51,7 @@ export default function Tidspunktrad({ label, nameDato, nameTid }: Props) {
             size='medium'
             className='h-[48px] min-w-[6rem]'
             error={fieldState.invalid}
+            value={field.value as string}
           >
             {KLOKKESLETT_OPTIONS.map((t) => (
               <option key={t} value={t}>
