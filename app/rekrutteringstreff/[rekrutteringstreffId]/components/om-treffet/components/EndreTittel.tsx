@@ -1,4 +1,7 @@
-import { oppdaterRekrutteringstreff } from '@/app/api/rekrutteringstreff/oppdater-rekrutteringstreff/oppdaterRerkutteringstreff';
+import {
+  oppdaterRekrutteringstreff,
+  toOppdaterRekrutteringstreffDto,
+} from '@/app/api/rekrutteringstreff/oppdater-rekrutteringstreff/oppdaterRerkutteringstreff';
 import { useValiderRekrutteringstreff } from '@/app/api/rekrutteringstreff/tittelValidering/useValiderRekrutteringstreff';
 import { RekrutteringstreffDTO } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -141,16 +144,13 @@ const EndreTittel = ({
 
   const save = async ({ nyTittel }: FormValues) => {
     try {
-      const { id, beskrivelse, gateadresse, postnummer, fraTid, tilTid } =
-        rekrutteringstreff;
-      await oppdaterRekrutteringstreff(id, {
-        tittel: nyTittel,
-        beskrivelse,
-        gateadresse,
-        postnummer,
-        fraTid,
-        tilTid,
-      });
+      await oppdaterRekrutteringstreff(
+        rekrutteringstreff.id,
+        toOppdaterRekrutteringstreffDto({
+          ...rekrutteringstreff,
+          tittel: nyTittel,
+        }),
+      );
       onUpdated();
       modalRef.current?.close();
     } catch (error) {

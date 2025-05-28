@@ -4,6 +4,7 @@ export const rekrutteringstreffMock = {
   beskrivelse: 'Testbeskrivelse',
   fraTid: '2025-06-01T08:00:00+02:00',
   tilTid: '2025-07-01T08:00:00+02:00',
+  svarfrist: '2025-05-15T12:00:00+02:00',
   gateadresse: 'Malmøgata 1',
   postnummer: '0284',
   poststed: 'Oslo',
