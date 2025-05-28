@@ -1,4 +1,5 @@
 import { oppdaterRekrutteringstreffMock } from '../mocks/oppdaterRekrutteringstreffMock';
+import { RekrutteringstreffDTO } from '../useRekrutteringstreff';
 import { putApi } from '@/app/api/fetcher';
 import { z } from 'zod';
 
@@ -31,6 +32,21 @@ export const OppdaterRekrutteringstreffResponseSchema = z.object({
   opprettetAvPersonNavident: z.string(),
   opprettetAvNavkontorEnhetId: z.string(),
 });
+
+export function toOppdaterRekrutteringstreffDto(
+  treff: RekrutteringstreffDTO,
+): OppdaterRekrutteringstreffDTO {
+  return {
+    tittel: treff.tittel,
+    beskrivelse: treff.beskrivelse ?? null,
+    fraTid: treff.fraTid ?? null,
+    tilTid: treff.tilTid ?? null,
+    svarfrist: treff.svarfrist ?? null,
+    gateadresse: treff.gateadresse ?? null,
+    postnummer: treff.postnummer ?? null,
+    poststed: treff.poststed ?? null,
+  };
+}
 
 export type OppdaterRekrutteringstreffResponseDTO = z.infer<
   typeof OppdaterRekrutteringstreffResponseSchema

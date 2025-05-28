@@ -4,7 +4,10 @@ import RekrutteringstreffDetalj from '../../../RekrutteringstreffDetalj';
 import DatoTidRad from './DatoTidRad';
 import { formaterKlokkeslett, toIso } from './utils';
 import { rekrutteringstreffVarighet } from './varighet';
-import { oppdaterRekrutteringstreff } from '@/app/api/rekrutteringstreff/oppdater-rekrutteringstreff/oppdaterRerkutteringstreff';
+import {
+  oppdaterRekrutteringstreff,
+  toOppdaterRekrutteringstreffDto,
+} from '@/app/api/rekrutteringstreff/oppdater-rekrutteringstreff/oppdaterRerkutteringstreff';
 import type { RekrutteringstreffDTO } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { formaterNorskDato } from '@/app/components/util';
 import {
@@ -120,11 +123,14 @@ export default function Tidspunkt({
 
     modalRef.current?.close();
 
-    await oppdaterRekrutteringstreff(rekrutteringstreff.id, {
-      ...rekrutteringstreff,
-      fraTid: toIso(data.fraDato!, data.fraTid),
-      tilTid: toIso(data.tilDato!, data.tilTid),
-    });
+    await oppdaterRekrutteringstreff(
+      rekrutteringstreff.id,
+      toOppdaterRekrutteringstreffDto({
+        ...rekrutteringstreff,
+        fraTid: toIso(data.fraDato!, data.fraTid),
+        tilTid: toIso(data.tilDato!, data.tilTid),
+      }),
+    );
     onUpdated();
   };
 

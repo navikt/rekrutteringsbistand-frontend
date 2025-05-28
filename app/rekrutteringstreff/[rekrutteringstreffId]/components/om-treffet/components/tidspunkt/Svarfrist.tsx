@@ -1,7 +1,10 @@
 import RekrutteringstreffDetalj from '../../../RekrutteringstreffDetalj';
 import DatoTidRad from './DatoTidRad';
 import { formaterKlokkeslett, toIso } from './utils';
-import { oppdaterRekrutteringstreff } from '@/app/api/rekrutteringstreff/oppdater-rekrutteringstreff/oppdaterRerkutteringstreff';
+import {
+  oppdaterRekrutteringstreff,
+  toOppdaterRekrutteringstreffDto,
+} from '@/app/api/rekrutteringstreff/oppdater-rekrutteringstreff/oppdaterRerkutteringstreff';
 import type { RekrutteringstreffDTO } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { ExclamationmarkTriangleIcon } from '@navikt/aksel-icons';
 import { Modal, Button, BodyShort, ErrorMessage } from '@navikt/ds-react';
@@ -59,19 +62,16 @@ export default function Svarfrist({
     }
 
     try {
-      const svarfristVerdi =
-        data.svarfristDato && data.svarfristTid
-          ? toIso(data.svarfristDato, data.svarfristTid)
-          : null;
-
-      await oppdaterRekrutteringstreff(rekrutteringstreff.id, {
-        ...rekrutteringstreff,
-        svarfrist: svarfristVerdi,
-      });
-      await oppdaterRekrutteringstreff(rekrutteringstreff.id, {
-        ...rekrutteringstreff,
-        svarfrist: toIso(data.svarfristDato!, data.svarfristTid),
-      });
+      await oppdaterRekrutteringstreff(
+        rekrutteringstreff.id,
+        toOppdaterRekrutteringstreffDto({
+          ...rekrutteringstreff,
+          svarfrist:
+            data.svarfristDato && data.svarfristTid
+              ? toIso(data.svarfristDato, data.svarfristTid)
+              : null,
+        }),
+      );
       modalRef.current?.close();
       onUpdated();
     } catch (e) {
