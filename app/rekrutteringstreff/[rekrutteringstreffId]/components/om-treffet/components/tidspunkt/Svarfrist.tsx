@@ -6,7 +6,8 @@ import type { RekrutteringstreffDTO } from '@/app/api/rekrutteringstreff/useRekr
 import { ExclamationmarkTriangleIcon } from '@navikt/aksel-icons';
 import { Modal, Button, BodyShort, ErrorMessage } from '@navikt/ds-react';
 import { logger } from '@navikt/next-logger';
-import { addWeeks } from 'date-fns';
+import { addWeeks, parseISO } from 'date-fns';
+import { toZonedTime } from 'date-fns-tz';
 import { PlusIcon, TimerIcon } from 'lucide-react';
 import React from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
@@ -98,7 +99,10 @@ export default function Svarfrist({
     >
       <BodyShort size='small' className={className}>
         {rekrutteringstreff.svarfrist ? (
-          new Date(rekrutteringstreff.svarfrist).toLocaleString('no-NO', {
+          toZonedTime(
+            parseISO(rekrutteringstreff.svarfrist),
+            'Europe/Oslo',
+          ).toLocaleString('no-NO', {
             dateStyle: 'short',
             timeStyle: 'short',
           })
