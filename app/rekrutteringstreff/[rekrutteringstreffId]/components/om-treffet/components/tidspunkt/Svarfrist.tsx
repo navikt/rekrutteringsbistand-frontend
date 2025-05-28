@@ -61,7 +61,7 @@ export default function Svarfrist({
     try {
       await oppdaterRekrutteringstreff(rekrutteringstreff.id, {
         ...rekrutteringstreff,
-        svarfrist: toIso(data.svarfristDato, data.svarfristTid),
+        svarfrist: toIso(data.svarfristDato!, data.svarfristTid),
       });
       modalRef.current?.close();
       onUpdated();

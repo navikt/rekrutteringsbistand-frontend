@@ -120,13 +120,8 @@ export default function Tidspunkt({
 
     modalRef.current?.close();
 
-    const { tittel, beskrivelse, gateadresse, postnummer } = rekrutteringstreff;
-
     await oppdaterRekrutteringstreff(rekrutteringstreff.id, {
-      tittel,
-      beskrivelse,
-      gateadresse,
-      postnummer,
+      ...rekrutteringstreff,
       fraTid: toIso(data.fraDato!, data.fraTid),
       tilTid: toIso(data.tilDato!, data.tilTid),
     });
