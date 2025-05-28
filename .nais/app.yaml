@@ -108,3 +108,9 @@ spec:
       value: {{ umamiUrl }}
     - name: NEXT_PUBLIC_DECORATOR_SRC
       value: {{ decoratorSrc }}
+  observability:
+    logging:
+      destinations:
+        - id: loki
+        - id: elastic
+      enabled: true      
