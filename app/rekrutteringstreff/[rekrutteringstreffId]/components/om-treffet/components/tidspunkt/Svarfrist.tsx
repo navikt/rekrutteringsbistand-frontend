@@ -6,6 +6,7 @@ import {
   toOppdaterRekrutteringstreffDto,
 } from '@/app/api/rekrutteringstreff/oppdater-rekrutteringstreff/oppdaterRerkutteringstreff';
 import type { RekrutteringstreffDTO } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
+import { formaterNorskDato } from '@/app/components/util';
 import { ExclamationmarkTriangleIcon } from '@navikt/aksel-icons';
 import { Modal, Button, BodyShort, ErrorMessage } from '@navikt/ds-react';
 import { logger } from '@navikt/next-logger';
@@ -92,6 +93,10 @@ export default function Svarfrist({
 
   const formId = 'svarfristForm';
 
+  const svarfristDato = rekrutteringstreff.svarfrist
+    ? toZonedTime(parseISO(rekrutteringstreff.svarfrist), 'Europe/Oslo')
+    : null;
+
   return (
     <RekrutteringstreffDetalj
       tittelIkon={<TimerIcon fontSize='1.5rem' />}
@@ -108,19 +113,19 @@ export default function Svarfrist({
       }
       className={className}
     >
-      <BodyShort size='small' className={className}>
-        {rekrutteringstreff.svarfrist ? (
-          toZonedTime(
-            parseISO(rekrutteringstreff.svarfrist),
-            'Europe/Oslo',
-          ).toLocaleString('no-NO', {
-            dateStyle: 'short',
-            timeStyle: 'short',
-          })
-        ) : (
-          <span></span>
+      <div>
+        {svarfristDato && (
+          <>
+            <BodyShort size='small'>
+              {formaterNorskDato({ dato: svarfristDato, visning: 'tall' })}
+              <BodyShort as='span' size='small' textColor='subtle'>
+                {' kl '}
+                {formaterKlokkeslett(svarfristDato)}
+              </BodyShort>
+            </BodyShort>
+          </>
         )}
-      </BodyShort>
+      </div>
 
       <Modal
         ref={modalRef}
