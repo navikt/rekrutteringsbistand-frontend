@@ -7,6 +7,7 @@ export const OppdaterRekrutteringstreffSchema = z.object({
   beskrivelse: z.string().nullable().optional(),
   fraTid: z.string().nullable().nullable().optional(),
   tilTid: z.string().nullable().optional(),
+  svarfrist: z.string().nullable().optional(),
   gateadresse: z.string().nullable().optional(),
   postnummer: z.string().nullable().optional(),
   poststed: z.string().nullable().optional(),
@@ -21,8 +22,8 @@ export const OppdaterRekrutteringstreffResponseSchema = z.object({
   tittel: z.string(),
   beskrivelse: z.string().nullable(),
   fraTid: z.string().nullable(),
-
   tilTid: z.string().nullable(),
+  svarfrist: z.string().nullable(),
   gateadresse: z.string().nullable(),
   postnummer: z.string().nullable(),
   poststed: z.string().nullable(),
