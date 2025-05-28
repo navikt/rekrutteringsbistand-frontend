@@ -16,7 +16,7 @@ import {
 import { BodyShort, Button, ErrorMessage, Modal } from '@navikt/ds-react';
 import { addWeeks, isSameDay, parseISO } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
-import { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 
 type Props = {
@@ -37,7 +37,7 @@ export default function Tidspunkt({
   onUpdated,
   className,
 }: Props) {
-  const [open, setOpen] = useState(false);
+  const modalRef = React.useRef<HTMLDialogElement>(null);
 
   const initialFra = rekrutteringstreff.fraTid
     ? toZonedTime(parseISO(rekrutteringstreff.fraTid), 'Europe/Oslo')
@@ -118,7 +118,7 @@ export default function Tidspunkt({
   const onSubmit = async (data: TidspunktFormFields) => {
     if (periodUgyldig) return;
 
-    setOpen(false);
+    modalRef.current?.close();
 
     const { tittel, beskrivelse, gateadresse, postnummer } = rekrutteringstreff;
 
@@ -134,7 +134,7 @@ export default function Tidspunkt({
   };
 
   const close = () => {
-    setOpen(false);
+    modalRef.current?.close();
     clearErrors();
   };
 
@@ -151,7 +151,7 @@ export default function Tidspunkt({
             variant='tertiary'
             size='small'
             icon={initialFra ? <PencilIcon /> : <PlusIcon />}
-            onClick={() => setOpen(true)}
+            onClick={() => modalRef.current?.showModal()}
           >
             {initialFra ? 'Endre' : 'Legg til'}
           </Button>
@@ -191,7 +191,7 @@ export default function Tidspunkt({
       </RekrutteringstreffDetalj>
 
       <Modal
-        open={open}
+        ref={modalRef}
         width={360}
         onClose={close}
         header={{ heading: 'Velg tidspunkt' }}

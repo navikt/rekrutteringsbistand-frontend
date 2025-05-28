@@ -8,7 +8,7 @@ import { Modal, Button, BodyShort, ErrorMessage } from '@navikt/ds-react';
 import { logger } from '@navikt/next-logger';
 import { addWeeks } from 'date-fns';
 import { PlusIcon, TimerIcon } from 'lucide-react';
-import { useState } from 'react';
+import React from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 
 export type SvarfristFormFields = {
@@ -27,7 +27,7 @@ export default function Svarfrist({
   onUpdated,
   className,
 }: Props) {
-  const [open, setOpen] = useState(false);
+  const modalRef = React.useRef<HTMLDialogElement>(null);
 
   const initialSvarfrist = rekrutteringstreff.svarfrist
     ? new Date(rekrutteringstreff.svarfrist)
@@ -57,13 +57,12 @@ export default function Svarfrist({
       return;
     }
 
-    setOpen(false);
-
     try {
       await oppdaterRekrutteringstreff(rekrutteringstreff.id, {
         ...rekrutteringstreff,
         svarfrist: toIso(data.svarfristDato, data.svarfristTid),
       });
+      modalRef.current?.close();
       onUpdated();
     } catch (e) {
       setError('root', {
@@ -75,7 +74,7 @@ export default function Svarfrist({
   };
 
   const close = () => {
-    setOpen(false);
+    modalRef.current?.close();
     clearErrors();
   };
 
@@ -90,7 +89,7 @@ export default function Svarfrist({
           icon={<PlusIcon />}
           variant='tertiary'
           size='small'
-          onClick={() => setOpen(true)}
+          onClick={() => modalRef.current?.showModal()}
         >
           {rekrutteringstreff.svarfrist ? 'Endre' : 'Legg til'}
         </Button>
@@ -109,7 +108,7 @@ export default function Svarfrist({
       </BodyShort>
 
       <Modal
-        open={open}
+        ref={modalRef}
         onClose={close}
         header={{ heading: 'Velg svarfrist' }}
         width={320}
