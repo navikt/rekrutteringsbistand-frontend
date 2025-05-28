@@ -59,6 +59,15 @@ export default function Svarfrist({
     }
 
     try {
+      const svarfristVerdi =
+        data.svarfristDato && data.svarfristTid
+          ? toIso(data.svarfristDato, data.svarfristTid)
+          : null;
+
+      await oppdaterRekrutteringstreff(rekrutteringstreff.id, {
+        ...rekrutteringstreff,
+        svarfrist: svarfristVerdi,
+      });
       await oppdaterRekrutteringstreff(rekrutteringstreff.id, {
         ...rekrutteringstreff,
         svarfrist: toIso(data.svarfristDato!, data.svarfristTid),
