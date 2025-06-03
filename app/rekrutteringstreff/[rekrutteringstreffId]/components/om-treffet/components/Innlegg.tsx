@@ -3,15 +3,18 @@ import SVGDarkmode from '@/app/components/SVGDarkmode';
 import RekrutteringstreffDetalj from '@/app/rekrutteringstreff/[rekrutteringstreffId]/components/RekrutteringstreffDetalj';
 import InnleggPenDarkIkon from '@/public/ikoner/innlegg_pen-dark.svg';
 import InnleggPenIkon from '@/public/ikoner/innlegg_pen.svg';
-import { HandShakeHeartIcon } from '@navikt/aksel-icons';
-import { BodyLong, Box, Heading, Label } from '@navikt/ds-react';
+import { HandShakeHeartIcon, PencilIcon, PlusIcon } from '@navikt/aksel-icons';
+import { BodyLong, Box, Button, Heading, Label } from '@navikt/ds-react';
 import * as React from 'react';
+import { useRef } from 'react';
 
 export interface InnleggProps {
   InnleggDTO: InnleggDTO | undefined;
 }
 
-const Innlegg: React.FC<InnleggProps> = ({}) => {
+const Innlegg: React.FC<InnleggProps> = ({ InnleggDTO }) => {
+  const modalRef = useRef<HTMLDialogElement>(null);
+
   return (
     <div className='max-w-[64rem]'>
       <Heading level='2' size='medium'>
@@ -21,7 +24,16 @@ const Innlegg: React.FC<InnleggProps> = ({}) => {
         tittelIkon={<HandShakeHeartIcon fontSize='1.5rem' />}
         tittel='Om treffet'
         headingLevel='3'
-        knapp={<React.Fragment></React.Fragment>}
+        knapp={
+          <Button
+            icon={InnleggDTO ? <PencilIcon /> : <PlusIcon />}
+            variant='tertiary'
+            size='small'
+            onClick={modalRef.current?.showModal}
+          >
+            {InnleggDTO ? 'Endre' : 'Legg til'}
+          </Button>
+        }
       >
         <Box.New
           background='raised'
