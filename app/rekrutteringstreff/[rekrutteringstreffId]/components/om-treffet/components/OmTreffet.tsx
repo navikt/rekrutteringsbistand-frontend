@@ -79,6 +79,9 @@ const OmTreffet = () => {
             />
           )}
         </SWRLaster>
+      </div>
+
+      <div>
         <SWRLaster hooks={[innleggHook]}>
           {(innlegg) => <Innlegg InnleggDTO={innlegg?.[0]} />}
         </SWRLaster>

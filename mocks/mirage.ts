@@ -98,6 +98,7 @@ export function makeServer({ environment = 'test' } = {}) {
       jobbsøkereMirage(this);
       rekruteringstreffArbeidsgivereMirage(this);
       slettRekrutteringstreffMirage(this);
+      innleggMirage(this);
       modiaAktivEnhetMirage(this);
       modiaAktivBrukerMirage(this);
       mockModiaContext(this);
