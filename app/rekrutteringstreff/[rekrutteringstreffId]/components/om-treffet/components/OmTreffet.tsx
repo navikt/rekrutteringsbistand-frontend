@@ -4,10 +4,12 @@ import { useRekrutteringstreffContext } from '../../../RekrutteringstreffContext
 import SlettRekrutteringstreffModal from '../../SlettRekrutteringstreffModal';
 import ArbeidsgiverHendelserKort from '../../arbeidsgivere/components/ArbeidsgiverHendelserKort';
 import JobbsøkerHendelserKort from '../../jobbsøkere/components/JobbsøkerHendelserKort';
+import Innlegg from './Innlegg';
 import Sted from './Sted';
 import Svarfrist from './tidspunkt/Svarfrist';
 import Tidspunkt from './tidspunkt/Tidspunkt';
 import { useArbeidsgiverHendelser } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgiverHendelser';
+import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
 import { useJobbsøkerHendelser } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkerHendelser';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import SWRLaster from '@/app/components/SWRLaster';
@@ -27,6 +29,8 @@ const OmTreffet = () => {
   const arbeidsgiverHendelserHook = useArbeidsgiverHendelser(
     rekrutteringstreffId as string,
   );
+
+  const innleggHook = useInnlegg(rekrutteringstreffId as string);
 
   return (
     <div>
@@ -74,6 +78,9 @@ const OmTreffet = () => {
               jobbsøkerHendelserDTO={jobbsøkerHendelser || []}
             />
           )}
+        </SWRLaster>
+        <SWRLaster hooks={[innleggHook]}>
+          {(innlegg) => <Innlegg InnleggDTO={innlegg?.[0]} />}
         </SWRLaster>
       </div>
     </div>
