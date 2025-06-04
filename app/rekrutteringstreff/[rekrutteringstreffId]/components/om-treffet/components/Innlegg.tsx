@@ -1,20 +1,32 @@
+import { formaterKlokkeslett } from './tidspunkt/utils';
 import { InnleggDTO } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
 import SVGDarkmode from '@/app/components/SVGDarkmode';
+import VisEditorTekst from '@/app/components/rikteksteditor/VisEditorTekst';
+import { formaterNorskDato } from '@/app/components/util';
 import RekrutteringstreffDetalj from '@/app/rekrutteringstreff/[rekrutteringstreffId]/components/RekrutteringstreffDetalj';
 import InnleggPenDarkIkon from '@/public/ikoner/innlegg_pen-dark.svg';
 import InnleggPenIkon from '@/public/ikoner/innlegg_pen.svg';
 import { HandShakeHeartIcon, PencilIcon, PlusIcon } from '@navikt/aksel-icons';
-import { BodyLong, Box, Button, Heading, Label } from '@navikt/ds-react';
+import {
+  BodyLong,
+  Box,
+  Button,
+  Detail,
+  Heading,
+  Label,
+} from '@navikt/ds-react';
+import { isSameDay } from 'date-fns';
 import * as React from 'react';
 import { useRef } from 'react';
 
 export interface InnleggProps {
-  InnleggDTO: InnleggDTO | undefined;
+  innlegg?: InnleggDTO;
+  fra: Date | null;
+  til: Date | null;
 }
 
-const Innlegg: React.FC<InnleggProps> = ({ InnleggDTO }) => {
+const Innlegg: React.FC<InnleggProps> = ({ innlegg, fra, til }) => {
   const modalRef = useRef<HTMLDialogElement>(null);
-
   return (
     <div className='max-w-[64rem]'>
       <Heading level='2' size='medium'>
@@ -26,39 +38,59 @@ const Innlegg: React.FC<InnleggProps> = ({ InnleggDTO }) => {
         headingLevel='3'
         knapp={
           <Button
-            icon={InnleggDTO ? <PencilIcon /> : <PlusIcon />}
+            icon={innlegg ? <PencilIcon /> : <PlusIcon />}
             variant='tertiary'
             size='small'
             onClick={modalRef.current?.showModal}
           >
-            {InnleggDTO ? 'Endre' : 'Legg til'}
+            {innlegg ? 'Endre' : 'Legg til'}
           </Button>
         }
       >
-        <Box.New
-          background='raised'
-          className='rounded-full mb-2 flex items-center justify-center'
-        >
-          <div className='flex flex-col ml-23'>
-            <Label size='medium' spacing={true}>
-              Her skriver du første innlegg til jobbsøkerne.
+        {!innlegg ? (
+          <Box.New
+            background='raised'
+            className='rounded-full mb-2 flex items-center justify-center'
+          >
+            <div className='flex flex-col ml-23'>
+              <Label size='medium' spacing={true}>
+                Her skriver du første innlegg til jobbsøkerne.
+              </Label>
+              <BodyLong size='small' spacing={true}>
+                Skap litt ekstra trygghet ved å forklare hva som vil skje. For
+                eksempel hva treffet handler om, et innsalg om hvorfor
+                jobbsøkerne burde komme, eller hva de kan forvente.
+              </BodyLong>
+              <BodyLong size='small'>
+                Husk at du ikke trenger å informere om alt med en gang. Du kan
+                lage flere nye innlegg helt frem til treffet starter.
+              </BodyLong>
+            </div>
+            <SVGDarkmode
+              light={InnleggPenIkon}
+              dark={InnleggPenDarkIkon}
+              alt='legg_til_innlegg'
+            />
+          </Box.New>
+        ) : (
+          <Box.New background='raised' className='rounded-full mb-2'>
+            <Label>
+              {innlegg.opprettetAvPersonNavn}
+              {' - '}
+              {innlegg.opprettetAvPersonBeskrivelse}
             </Label>
-            <BodyLong size='small' spacing={true}>
-              Skap litt ekstra trygghet ved å forklare hva som vil skje. For
-              eksempel hva treffet handler om, et innsalg om hvorfor jobbsøkerne
-              burde komme, eller hva de kan forvente.
-            </BodyLong>
-            <BodyLong size='small'>
-              Husk at du ikke trenger å informere om alt med en gang. Du kan
-              lage flere nye innlegg helt frem til treffet starter.
-            </BodyLong>
-          </div>
-          <SVGDarkmode
-            light={InnleggPenIkon}
-            dark={InnleggPenDarkIkon}
-            alt='legg_til_innlegg'
-          />
-        </Box.New>
+            <Detail spacing>
+              {fra && til
+                ? isSameDay(fra, til)
+                  ? `${formaterNorskDato({ dato: fra, visning: 'tall' })} kl ${formaterKlokkeslett(fra)} - ${formaterKlokkeslett(til)}`
+                  : `${formaterNorskDato({ dato: fra, visning: 'tall' })} kl ${formaterKlokkeslett(fra)} - ${formaterNorskDato({ dato: til, visning: 'tall' })} kl ${formaterKlokkeslett(til)}`
+                : ''}
+            </Detail>
+            <div className='prose prose-sm ...'>
+              <VisEditorTekst htmlTekst={innlegg.htmlContent} />
+            </div>
+          </Box.New>
+        )}
       </RekrutteringstreffDetalj>
     </div>
   );

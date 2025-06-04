@@ -10,7 +10,7 @@ export const innleggMock: InnleggListeDTO = [
     opprettetAvPersonBeskrivelse: 'Rekrutteringsansvarlig',
     sendesTilJobbsokerTidspunkt: null,
     htmlContent:
-      '<p>Hei og velkommen! Vi gleder oss til å møte dere på rekrutteringstreffet.</p>',
+      '<p>Hei og velkommen! Vi gleder oss til å møte dere på rekrutteringstreffet.</p><div>Dette blir gøy!</div><p>Husk å ta med dere CV-er og spørsmål.</p>',
     opprettetTidspunkt: '2025-05-25T08:15:34+02:00',
     sistOppdatertTidspunkt: '2025-05-25T08:15:34+02:00',
   },
