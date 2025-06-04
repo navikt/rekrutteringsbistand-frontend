@@ -14,6 +14,7 @@ import {
   Detail,
   Heading,
   Label,
+  Modal,
 } from '@navikt/ds-react';
 import { isSameDay } from 'date-fns';
 import * as React from 'react';
@@ -27,6 +28,8 @@ export interface InnleggProps {
 
 const Innlegg: React.FC<InnleggProps> = ({ innlegg, fra, til }) => {
   const modalRef = useRef<HTMLDialogElement>(null);
+
+  const handleLeggTil = async () => {};
   return (
     <div className='max-w-[64rem]'>
       <Heading level='2' size='medium'>
@@ -41,7 +44,7 @@ const Innlegg: React.FC<InnleggProps> = ({ innlegg, fra, til }) => {
             icon={innlegg ? <PencilIcon /> : <PlusIcon />}
             variant='tertiary'
             size='small'
-            onClick={modalRef.current?.showModal}
+            onClick={() => modalRef.current?.showModal()}
           >
             {innlegg ? 'Endre' : 'Legg til'}
           </Button>
@@ -92,6 +95,30 @@ const Innlegg: React.FC<InnleggProps> = ({ innlegg, fra, til }) => {
           </Box.New>
         )}
       </RekrutteringstreffDetalj>
+      <Modal ref={modalRef} header={{ heading: 'Overskrift' }}>
+        <Modal.Body>
+          <BodyLong>
+            Culpa aliquip ut cupidatat laborum minim quis ex in aliqua. Qui
+            incididunt dolor do ad ut. Incididunt eiusmod nostrud deserunt duis
+            laborum. Proident aute culpa qui nostrud velit adipisicing minim.
+            Consequat aliqua aute dolor do sit Lorem nisi mollit velit. Aliqua
+            exercitation non minim minim pariatur sunt laborum ipsum.
+            Exercitation nostrud est laborum magna non non aliqua qui esse.
+          </BodyLong>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button type='button' onClick={handleLeggTil}>
+            Legg til
+          </Button>
+          <Button
+            type='button'
+            variant='secondary'
+            onClick={() => modalRef.current?.close()}
+          >
+            Avbryt
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };
