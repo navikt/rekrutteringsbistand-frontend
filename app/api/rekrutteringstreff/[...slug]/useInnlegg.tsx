@@ -9,7 +9,7 @@ import { z } from 'zod';
 export const innleggEndepunkt = (id: string) =>
   `${RekrutteringstreffAPI.internUrl}/${id}/innlegg`;
 
-const InnleggSchema = z.object({
+export const InnleggSchema = z.object({
   id: z.string(),
   treffId: z.string(),
   tittel: z.string(),
