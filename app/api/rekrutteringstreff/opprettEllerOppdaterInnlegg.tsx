@@ -45,7 +45,7 @@ export const oppdaterEttInnlegg = async (
 
 export const opprettInnleggfMirage = (server: any) => {
   server.post('/api/rekrutteringstreff/:rekrutteringstreffId/innlegg', () => {
-    return innleggMock;
+    return [innleggMock];
   });
 };
 
@@ -53,7 +53,7 @@ export const oppdaterInnleggfMirage = (server: any) => {
   server.put(
     '/api/rekrutteringstreff/:rekrutteringstreffId/innlegg/:innleggId',
     () => {
-      return innleggMock;
+      return [innleggMock;
     },
   );
 };

@@ -1,6 +1,14 @@
+'use client';
+
 import { formaterKlokkeslett } from './tidspunkt/utils';
 import { InnleggDTO } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
+import {
+  oppdaterEttInnlegg,
+  OpprettEllerOppdaterInnleggDto,
+  opprettInnleggForTreff,
+} from '@/app/api/rekrutteringstreff/opprettEllerOppdaterInnlegg';
 import SVGDarkmode from '@/app/components/SVGDarkmode';
+import RikTekstEditor from '@/app/components/rikteksteditor/RikTekstEditor';
 import VisEditorTekst from '@/app/components/rikteksteditor/VisEditorTekst';
 import { formaterNorskDato } from '@/app/components/util';
 import RekrutteringstreffDetalj from '@/app/rekrutteringstreff/[rekrutteringstreffId]/components/RekrutteringstreffDetalj';
@@ -9,30 +17,94 @@ import InnleggPenIkon from '@/public/ikoner/innlegg_pen.svg';
 import { HandShakeHeartIcon, PencilIcon, PlusIcon } from '@navikt/aksel-icons';
 import {
   BodyLong,
+  BodyShort,
   Box,
   Button,
   Detail,
+  ErrorMessage,
   Heading,
   Label,
   Modal,
+  TextField,
 } from '@navikt/ds-react';
+import { logger } from '@navikt/next-logger';
 import { isSameDay } from 'date-fns';
 import * as React from 'react';
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
+import { useForm, FormProvider, type SubmitHandler } from 'react-hook-form';
 
 export interface InnleggProps {
+  rekrutteringstreffId: string;
   innlegg?: InnleggDTO;
   fra: Date | null;
   til: Date | null;
+  onInnleggUpdated: () => void; // For å trigge SWR mutate e.l.
 }
 
-const Innlegg: React.FC<InnleggProps> = ({ innlegg, fra, til }) => {
-  const modalRef = useRef<HTMLDialogElement>(null);
+interface InnleggFormFields {
+  htmlContent: string;
+}
 
-  const handleLeggTil = async () => {};
+const Innlegg: React.FC<InnleggProps> = ({
+  rekrutteringstreffId,
+  innlegg,
+  fra,
+  til,
+  onInnleggUpdated,
+}) => {
+  const modalRef = useRef<HTMLDialogElement>(null);
+  const formId = React.useId();
+
+  const methods = useForm<InnleggFormFields>({
+    defaultValues: {
+      htmlContent: innlegg?.htmlContent ?? '',
+    },
+  });
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    reset,
+    formState: { errors, isSubmitting },
+  } = methods;
+
+  useEffect(() => {
+    reset({
+      htmlContent: innlegg?.htmlContent ?? '',
+    });
+  }, [innlegg, reset]);
+
+  const onSubmitHandler: SubmitHandler<InnleggFormFields> = async (data) => {
+    try {
+      const payload: OpprettEllerOppdaterInnleggDto = {
+        htmlContent: data.htmlContent,
+        tittel: 'Om treffet',
+      };
+
+      if (innlegg?.id) {
+        await oppdaterEttInnlegg(rekrutteringstreffId, innlegg.id, payload);
+      } else {
+        await opprettInnleggForTreff(rekrutteringstreffId, payload);
+      }
+      onInnleggUpdated();
+      modalRef.current?.close();
+    } catch (error) {
+      logger.error('Feil ved lagring av innlegg:', error);
+    }
+  };
+
+  const openModal = () => {
+    reset({
+      htmlContent: innlegg?.htmlContent ?? '',
+    });
+    modalRef.current?.showModal();
+  };
+
   return (
     <div className='max-w-[64rem]'>
-      <Heading level='2' size='medium'>
+      <Heading level='2' size='medium' className='mb-4'>
         Innlegg
       </Heading>
       <RekrutteringstreffDetalj
@@ -44,7 +116,7 @@ const Innlegg: React.FC<InnleggProps> = ({ innlegg, fra, til }) => {
             icon={innlegg ? <PencilIcon /> : <PlusIcon />}
             variant='tertiary'
             size='small'
-            onClick={() => modalRef.current?.showModal()}
+            onClick={openModal}
           >
             {innlegg ? 'Endre' : 'Legg til'}
           </Button>
@@ -52,72 +124,111 @@ const Innlegg: React.FC<InnleggProps> = ({ innlegg, fra, til }) => {
       >
         {!innlegg ? (
           <Box.New
-            background='raised'
-            className='rounded-full mb-2 flex items-center justify-center'
+            padding='6'
+            borderRadius='xlarge'
+            className='mb-2 flex items-center justify-center'
           >
-            <div className='flex flex-col ml-23'>
-              <Label size='medium' spacing={true}>
-                Her skriver du første innlegg til jobbsøkerne.
+            <div className='flex flex-col items-center text-center gap-4'>
+              <SVGDarkmode
+                light={InnleggPenIkon}
+                dark={InnleggPenDarkIkon}
+                alt='Illustrasjon av en penn som skriver'
+              />
+              <Label size='medium'>
+                Her kan du skrive det første innlegget til jobbsøkerne.
               </Label>
-              <BodyLong size='small' spacing={true}>
+              <BodyLong size='small' className='max-w-md'>
                 Skap litt ekstra trygghet ved å forklare hva som vil skje. For
                 eksempel hva treffet handler om, et innsalg om hvorfor
-                jobbsøkerne burde komme, eller hva de kan forvente.
+                jobbsøkerne burde komme, eller hva de kan forvente. Husk at du
+                kan lage flere nye innlegg helt frem til treffet starter.
               </BodyLong>
-              <BodyLong size='small'>
-                Husk at du ikke trenger å informere om alt med en gang. Du kan
-                lage flere nye innlegg helt frem til treffet starter.
-              </BodyLong>
+              <Button icon={<PlusIcon />} variant='primary' onClick={openModal}>
+                Legg til første innlegg
+              </Button>
             </div>
-            <SVGDarkmode
-              light={InnleggPenIkon}
-              dark={InnleggPenDarkIkon}
-              alt='legg_til_innlegg'
-            />
           </Box.New>
         ) : (
-          <Box.New background='raised' className='rounded-full mb-2'>
-            <Label>
-              {innlegg.opprettetAvPersonNavn}
-              {' - '}
-              {innlegg.opprettetAvPersonBeskrivelse}
-            </Label>
-            <Detail spacing>
-              {fra && til
-                ? isSameDay(fra, til)
+          <Box.New borderRadius='xlarge' className='mb-2 ml-12'>
+            <div className='flex justify-between items-start mb-2'>
+              <div>
+                <Label size='small' as='p' textColor='subtle'>
+                  {innlegg.opprettetAvPersonNavn}
+                  {innlegg.opprettetAvPersonBeskrivelse &&
+                    ` - ${innlegg.opprettetAvPersonBeskrivelse}`}
+                </Label>
+              </div>
+            </div>
+
+            {fra && til && (
+              <Detail spacing>
+                Treffet er:{' '}
+                {isSameDay(fra, til)
                   ? `${formaterNorskDato({ dato: fra, visning: 'tall' })} kl ${formaterKlokkeslett(fra)} - ${formaterKlokkeslett(til)}`
-                  : `${formaterNorskDato({ dato: fra, visning: 'tall' })} kl ${formaterKlokkeslett(fra)} - ${formaterNorskDato({ dato: til, visning: 'tall' })} kl ${formaterKlokkeslett(til)}`
-                : ''}
-            </Detail>
-            <div className='prose prose-sm ...'>
+                  : `${formaterNorskDato({ dato: fra, visning: 'tall' })} kl ${formaterKlokkeslett(fra)} - ${formaterNorskDato({ dato: til, visning: 'tall' })} kl ${formaterKlokkeslett(til)}`}
+              </Detail>
+            )}
+            <div className='prose prose-sm max-w-none mt-4'>
               <VisEditorTekst htmlTekst={innlegg.htmlContent} />
             </div>
           </Box.New>
         )}
       </RekrutteringstreffDetalj>
-      <Modal ref={modalRef} header={{ heading: 'Overskrift' }}>
-        <Modal.Body>
-          <BodyLong>
-            Culpa aliquip ut cupidatat laborum minim quis ex in aliqua. Qui
-            incididunt dolor do ad ut. Incididunt eiusmod nostrud deserunt duis
-            laborum. Proident aute culpa qui nostrud velit adipisicing minim.
-            Consequat aliqua aute dolor do sit Lorem nisi mollit velit. Aliqua
-            exercitation non minim minim pariatur sunt laborum ipsum.
-            Exercitation nostrud est laborum magna non non aliqua qui esse.
-          </BodyLong>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button type='button' onClick={handleLeggTil}>
-            Legg til
-          </Button>
-          <Button
-            type='button'
-            variant='secondary'
-            onClick={() => modalRef.current?.close()}
-          >
-            Avbryt
-          </Button>
-        </Modal.Footer>
+
+      <Modal
+        ref={modalRef}
+        header={{ heading: innlegg ? 'Endre innlegg' : 'Skriv nytt innlegg' }}
+        onClose={() => reset()}
+        width='medium'
+      >
+        <FormProvider {...methods}>
+          <form id={formId} onSubmit={handleSubmit(onSubmitHandler)}>
+            <Modal.Body>
+              <div className='flex flex-col gap-6'>
+                <BodyShort>
+                  Dette innlegget vises til jobbsøkerne før treffet. Skriv
+                  gjerne en hyggelig introduksjon og praktisk informasjon.
+                </BodyShort>
+                <div>
+                  <Label
+                    htmlFor='rediger-innlegg-htmlcontent'
+                    className='mb-2 block'
+                  >
+                    Innhold
+                  </Label>
+                  <RikTekstEditor
+                    id='rediger-innlegg-htmlcontent'
+                    tekst={watch('htmlContent') ?? ''}
+                    onChange={(html) =>
+                      setValue('htmlContent', html, {
+                        shouldValidate: true,
+                        shouldDirty: true,
+                      })
+                    }
+                  />
+                  {errors.htmlContent && (
+                    <ErrorMessage>{errors.htmlContent.message}</ErrorMessage>
+                  )}
+                </div>
+              </div>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button type='submit' loading={isSubmitting}>
+                {innlegg ? 'Lagre endringer' : 'Opprett innlegg'}
+              </Button>
+              <Button
+                type='button'
+                variant='secondary'
+                onClick={() => {
+                  modalRef.current?.close();
+                  reset();
+                }}
+              >
+                Avbryt
+              </Button>
+            </Modal.Footer>
+          </form>
+        </FormProvider>
       </Modal>
     </div>
   );

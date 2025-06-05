@@ -4,7 +4,7 @@ export const innleggMock: InnleggListeDTO = [
   {
     id: '123e4567-e89b-12d3-a456-426614174000',
     treffId: 'aa1b2c3d-4e5f-6789-abcd-ef0123456789',
-    tittel: 'Velkommen til treffet',
+    tittel: 'Et kult treff',
     opprettetAvPersonNavident: 'AB12345',
     opprettetAvPersonNavn: 'Kari Nordmann',
     opprettetAvPersonBeskrivelse: 'Rekrutteringsansvarlig',

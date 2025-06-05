@@ -82,6 +82,8 @@ const OmTreffet = () => {
               <SWRLaster hooks={[innleggHook]}>
                 {(innlegg) => (
                   <Innlegg
+                    rekrutteringstreffId={rekrutteringstreffId as string}
+                    onInnleggUpdated={innleggHook.mutate}
                     innlegg={innlegg?.[0]}
                     fra={
                       rekrutteringstreff.fraTid
