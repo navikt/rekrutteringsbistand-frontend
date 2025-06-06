@@ -79,6 +79,9 @@ const Innlegg: React.FC<InnleggProps> = ({
       const payload: OpprettEllerOppdaterInnleggDto = {
         htmlContent: data.htmlContent,
         tittel: 'Om treffet',
+        opprettetAvPersonNavn: 'Todo Navn',
+        opprettetAvPersonBeskrivelse: 'Rekrutteringstreff Admin',
+        sendesTilJobbsokerTidspunkt: new Date().toISOString(),
       };
 
       if (innlegg?.id) {
