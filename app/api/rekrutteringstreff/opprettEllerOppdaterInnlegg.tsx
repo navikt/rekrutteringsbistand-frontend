@@ -1,5 +1,5 @@
 import { innleggMock } from './[...slug]/mocks/InnleggMock';
-import { InnleggListeDTO, InnleggListeSchema } from './[...slug]/useInnlegg';
+import { InnleggDTO, InnleggSchema } from './[...slug]/useInnlegg';
 import { postApi, putApi } from '@/app/api/fetcher';
 import { z } from 'zod';
 
@@ -12,7 +12,7 @@ export type OpprettEllerOppdaterInnleggDto = z.infer<
   typeof OpprettEllerOppdaterInnleggDtoSchema
 >;
 
-export const InnleggResponseDtoSchema = InnleggListeSchema;
+export const InnleggResponseDtoSchema = InnleggSchema;
 
 const innleggBaseUrl = (rekrutteringstreffId: string) =>
   `/api/rekrutteringstreff/${rekrutteringstreffId}/innlegg`;
@@ -23,7 +23,7 @@ const innleggItemUrl = (rekrutteringstreffId: string, innleggId: string) =>
 export const opprettInnleggForTreff = async (
   rekrutteringstreffId: string,
   data: OpprettEllerOppdaterInnleggDto,
-): Promise<InnleggListeDTO> => {
+): Promise<InnleggDTO> => {
   OpprettEllerOppdaterInnleggDtoSchema.parse(data);
   const response = await postApi(innleggBaseUrl(rekrutteringstreffId), data);
   return InnleggResponseDtoSchema.parse(response);
@@ -33,7 +33,7 @@ export const oppdaterEttInnlegg = async (
   rekrutteringstreffId: string,
   innleggId: string,
   data: OpprettEllerOppdaterInnleggDto,
-): Promise<InnleggListeDTO> => {
+): Promise<InnleggDTO> => {
   OpprettEllerOppdaterInnleggDtoSchema.parse(data);
   const response = await putApi(
     innleggItemUrl(rekrutteringstreffId, innleggId),
@@ -44,7 +44,7 @@ export const oppdaterEttInnlegg = async (
 
 export const opprettInnleggfMirage = (server: any) => {
   server.post('/api/rekrutteringstreff/:rekrutteringstreffId/innlegg', () => {
-    return innleggMock;
+    return innleggMock[0];
   });
 };
 
@@ -52,7 +52,7 @@ export const oppdaterInnleggfMirage = (server: any) => {
   server.put(
     '/api/rekrutteringstreff/:rekrutteringstreffId/innlegg/:innleggId',
     () => {
-      return innleggMock;
+      return innleggMock[0];
     },
   );
 };
