@@ -22,7 +22,7 @@ export const InnleggSchema = z.object({
   sistOppdatertTidspunkt: z.string(),
 });
 
-const InnleggListeSchema = z.array(InnleggSchema);
+export const InnleggListeSchema = z.array(InnleggSchema);
 
 export type InnleggDTO = z.infer<typeof InnleggSchema>;
 export type InnleggListeDTO = z.infer<typeof InnleggListeSchema>;

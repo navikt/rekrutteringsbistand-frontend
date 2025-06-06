@@ -25,7 +25,6 @@ import {
   Heading,
   Label,
   Modal,
-  TextField,
 } from '@navikt/ds-react';
 import { logger } from '@navikt/next-logger';
 import { isSameDay } from 'date-fns';
@@ -62,7 +61,6 @@ const Innlegg: React.FC<InnleggProps> = ({
   });
 
   const {
-    register,
     handleSubmit,
     setValue,
     watch,
