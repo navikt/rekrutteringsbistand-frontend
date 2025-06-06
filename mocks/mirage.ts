@@ -36,11 +36,16 @@ import { leggTilNyArbeidsgiverMirage } from '@/app/api/rekrutteringstreff/[...sl
 import { alleHendelserMirage } from '@/app/api/rekrutteringstreff/[...slug]/useAlleHendelser';
 import { arbeidsgiverHendelserMirage } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgiverHendelser';
 import { rekruteringstreffArbeidsgivereMirage } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
+import { innleggMirage } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
 import { jobbsøkerHendelserMirage } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkerHendelser';
 import { jobbsøkereMirage } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
 import { leggTilNyJobbsøkerMirage } from '@/app/api/rekrutteringstreff/ny-jobbsøker/leggTilNyjobbsøker';
 import { opprettNyttRekrutteringstreffMirage } from '@/app/api/rekrutteringstreff/nytt-rekrutteringstreff/opprettNyttRekrutteringstreff';
 import { oppdaterRekrutteringstreffMirage } from '@/app/api/rekrutteringstreff/oppdater-rekrutteringstreff/oppdaterRerkutteringstreff';
+import {
+  oppdaterInnleggfMirage,
+  opprettInnleggfMirage,
+} from '@/app/api/rekrutteringstreff/opprettEllerOppdaterInnlegg';
 import { slettRekrutteringstreffMirage } from '@/app/api/rekrutteringstreff/slett-rekrutteringstreff/slettRekrutteringstreff';
 import { validerRekrutteringstreffMirage } from '@/app/api/rekrutteringstreff/tittelValidering/useValiderRekrutteringstreff';
 import { rekrutteringstreffMirage } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
@@ -97,6 +102,9 @@ export function makeServer({ environment = 'test' } = {}) {
       jobbsøkereMirage(this);
       rekruteringstreffArbeidsgivereMirage(this);
       slettRekrutteringstreffMirage(this);
+      innleggMirage(this);
+      opprettInnleggfMirage(this);
+      oppdaterInnleggfMirage(this);
       modiaAktivEnhetMirage(this);
       modiaAktivBrukerMirage(this);
       mockModiaContext(this);

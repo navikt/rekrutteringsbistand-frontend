@@ -5,6 +5,7 @@ interface RekrutteringstreffDetaljerProps {
   tittelIkon: React.ReactNode;
   tittel: string;
   knapp: React.ReactNode;
+  headingLevel?: '1' | '2' | '3' | '4' | '5' | '6';
   className?: string;
   children?: React.ReactNode;
 }
@@ -13,6 +14,7 @@ const RekrutteringstreffDetalj: React.FC<RekrutteringstreffDetaljerProps> = ({
   tittelIkon,
   tittel,
   knapp,
+  headingLevel = '2',
   className,
   children,
 }) => {
@@ -29,7 +31,7 @@ const RekrutteringstreffDetalj: React.FC<RekrutteringstreffDetaljerProps> = ({
       <div className='flex items-center justify-between mb-4'>
         <div className='flex gap-2'>
           {tittelIkon}
-          <Heading level='3' size='xsmall'>
+          <Heading level={headingLevel} size='small' className='mb-4 text-left'>
             {tittel}
           </Heading>
         </div>
