@@ -44,7 +44,11 @@ export const mapJanzzTilKategori = (
 };
 
 const formaterFraISOdato = (dato: string) => {
-  return format(dato, 'dd.MM.yyyy');
+  if (dato.match(/^\d{2}\.\d{2}\.\d{4}$/)) {
+    return dato; // Already formatted correctly
+  }
+
+  return format(new Date(dato), 'dd.MM.yyyy');
 };
 
 export const mapStillingTilForm = (

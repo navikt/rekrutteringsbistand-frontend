@@ -25,13 +25,13 @@ const LeggTilKandidatTilStilling: React.FC<LeggTilKandidatTilStillingProps> = ({
 }) => {
   const ref = useRef<HTMLDialogElement>(null);
   const { track } = useUmami();
-  const { erEier } = useStillingsContext();
+  const { erEier, stillingsData } = useStillingsContext();
   const { valgtNavKontor, visVarsel } = useApplikasjonContext();
   const [valgteKandidater, setValgteKandidater] = useState<ValgtKandidatProp[]>(
     [],
   );
   const [modalKey, setModalKey] = useState(0);
-  const kandidatlisteIdHook = useKandidatliste(stillingsId, erEier);
+  const kandidatlisteIdHook = useKandidatliste(stillingsData, erEier);
 
   const [laster, setLaster] = useState(false);
 

@@ -43,16 +43,6 @@ export const StillingsContextProvider: React.FC<
 > = ({ stillingsId, children }) => {
   const stillingHook = useStilling(stillingsId);
 
-  const kandidatListeInfo = useKandidatlisteInfo(
-    stillingHook.data?.stillingsinfo,
-  );
-
-  React.useEffect(() => {
-    if (stillingHook.data?.stilling?.updated) {
-      kandidatListeInfo?.mutate();
-    }
-  }, [stillingHook.data?.stilling?.updated, kandidatListeInfo]);
-
   return (
     <SWRLaster hooks={[stillingHook]}>
       {(stillingsData) => {
@@ -61,7 +51,6 @@ export const StillingsContextProvider: React.FC<
             key={stillingsData?.stilling?.updated}
             stillingsData={stillingsData}
             refetch={stillingHook.mutate}
-            kandidatlisteInfo={kandidatListeInfo?.data ?? null}
           >
             {children}
           </StillingsContextMedData>
@@ -73,13 +62,11 @@ export const StillingsContextProvider: React.FC<
 
 interface StillingsContextMedDataProps {
   stillingsData: StillingsDataDTO;
-  kandidatlisteInfo: KandidatlisteInfoDTO | null;
   children: React.ReactNode;
   refetch: () => void;
 }
 
 const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
-  kandidatlisteInfo,
   stillingsData,
   children,
   refetch,
@@ -89,6 +76,19 @@ const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
     brukerData: { ident },
     harRolle,
   } = useApplikasjonContext();
+
+  const kandidatListeInfoHook = useKandidatlisteInfo(
+    stillingsData.stilling.publishedByAdmin
+      ? stillingsData?.stillingsinfo
+      : null,
+  );
+
+  React.useEffect(() => {
+    if (stillingsData.stilling?.updated) {
+      kandidatListeInfoHook?.mutate();
+    }
+  }, [stillingsData?.stilling?.updated, kandidatListeInfoHook]);
+
   const [forhåndsvisData, setForhåndsvisData] =
     React.useState<StillingsDataDTO | null>(null);
 
@@ -134,7 +134,7 @@ const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
           stillingsData.stillingsinfo?.stillingskategori === 'FORMIDLING',
         setForhåndsvisData,
         refetch,
-        kandidatlisteInfo,
+        kandidatlisteInfo: kandidatListeInfoHook?.data ?? null,
         erJobbmesse,
         stillingsId: stillingsData.stilling.uuid,
       }}

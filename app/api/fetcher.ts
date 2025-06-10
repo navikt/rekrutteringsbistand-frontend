@@ -16,14 +16,15 @@ const validerSchema = <T>(schema: ZodSchema<T>, data: any) => {
 
 export const getAPIwithSchema = <T>(
   schema: ZodSchema<T>,
+  skjulFeilmelding?: boolean,
 ): ((url: string) => Promise<T>) => {
   return async (url: string) => {
-    const data = await getAPI(url);
+    const data = await getAPI(url, skjulFeilmelding);
     return validerSchema(schema, data);
   };
 };
 
-export const getAPI = async (url: string) => {
+export const getAPI = async (url: string, skjulFeilmelding?: boolean) => {
   const response = await fetch(basePath + url, {
     method: 'GET',
     credentials: 'include',
@@ -46,15 +47,18 @@ export const getAPI = async (url: string) => {
         errorDetails = await response.text();
       }
     } else {
-      // Handle non-JSON errors
       errorDetails = await response.text();
     }
 
-    throw new rekbisError({
-      url: response.url,
-      statuskode: response.status,
-      stack: errorDetails,
-    });
+    if (!skjulFeilmelding) {
+      throw new rekbisError({
+        url: response.url,
+        statuskode: response.status,
+        stack: errorDetails,
+      });
+    }
+
+    return response;
   }
   if (response.ok) {
     return await response.json();

@@ -12,10 +12,7 @@ const EierStillingVisning: React.FC = () => {
   const router = useRouter();
   const { erEier, stillingsData, kandidatlisteInfo } = useStillingsContext();
 
-  const { data, isLoading } = useKandidatliste(
-    stillingsData.stilling.uuid,
-    erEier,
-  );
+  const { data, isLoading } = useKandidatliste(stillingsData, erEier);
 
   if (isLoading) {
     return <Loader size='small' />;
