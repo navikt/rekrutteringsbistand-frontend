@@ -15,7 +15,7 @@ export const useKandidatliste = (
 ) => {
   return useSWRImmutable(
     erEier && stillingsId ? kandidatlisteEndepunkt(stillingsId) : null,
-    getAPIwithSchema(kandidatlisteSchema),
+    getAPIwithSchema(kandidatlisteSchema, true),
   );
 };
 

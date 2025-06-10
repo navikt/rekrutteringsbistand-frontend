@@ -16,7 +16,7 @@ export type BrukerStandardSøkDTO = z.infer<typeof BrukerStandardSøkSchema>;
 export const useUseBrukerStandardSøk = () =>
   useSWRImmutable(
     brukerStandardSøkEndepunkt,
-    getAPIwithSchema(BrukerStandardSøkSchema),
+    getAPIwithSchema(BrukerStandardSøkSchema, true),
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,

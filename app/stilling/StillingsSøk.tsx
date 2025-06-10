@@ -58,15 +58,7 @@ const StillingsSøk = ({ formidlinger, skjulBanner }: StillingsSøkProps) => {
         `${window.location.pathname}?${newSearch}`,
       );
     }
-  }, [
-    searchParams,
-    brukerStandardSøkData.isLoading,
-    brukerStandardSøkData.data,
-  ]);
-
-  if (brukerStandardSøkData.isLoading) {
-    return <Sidelaster />;
-  }
+  }, [searchParams, brukerStandardSøkData]);
 
   return (
     <React.Suspense fallback={<Sidelaster />}>
