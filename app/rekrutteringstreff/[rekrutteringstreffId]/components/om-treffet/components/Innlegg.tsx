@@ -80,10 +80,12 @@ const Innlegg: React.FC<InnleggProps> = ({
         htmlContent: data.htmlContent,
         tittel: 'Om treffet',
         opprettetAvPersonNavn:
-          innlegg?.opprettetAvPersonNavn ??
-          innlegg?.opprettetAvPersonNavident ??
+          innlegg?.opprettetAvPersonNavn ||
+          innlegg?.opprettetAvPersonNavident ||
           '',
-        opprettetAvPersonBeskrivelse: 'Rekrutteringstreff Pilotbruker',
+        opprettetAvPersonBeskrivelse:
+          innlegg?.opprettetAvPersonBeskrivelse ||
+          'Rekrutteringstreff Pilotbruker',
         sendesTilJobbsokerTidspunkt: new Date().toISOString(),
       };
 
