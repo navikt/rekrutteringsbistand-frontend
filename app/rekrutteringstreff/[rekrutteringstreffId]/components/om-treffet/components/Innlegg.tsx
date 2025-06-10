@@ -79,13 +79,8 @@ const Innlegg: React.FC<InnleggProps> = ({
       const payload: OpprettEllerOppdaterInnleggDto = {
         htmlContent: data.htmlContent,
         tittel: 'Om treffet',
-        opprettetAvPersonNavn:
-          innlegg?.opprettetAvPersonNavn ||
-          innlegg?.opprettetAvPersonNavident ||
-          '',
-        opprettetAvPersonBeskrivelse:
-          innlegg?.opprettetAvPersonBeskrivelse ||
-          'Rekrutteringstreff Pilotbruker',
+        opprettetAvPersonNavn: null,
+        opprettetAvPersonBeskrivelse: 'Rekrutteringstreff Pilotbruker',
         sendesTilJobbsokerTidspunkt: new Date().toISOString(),
       };
 
@@ -163,7 +158,8 @@ const Innlegg: React.FC<InnleggProps> = ({
             <div className='flex justify-between items-start mb-2'>
               <div>
                 <Label size='small' as='p' textColor='subtle'>
-                  {innlegg.opprettetAvPersonNavn}
+                  {innlegg.opprettetAvPersonNavn ||
+                    innlegg.opprettetAvPersonNavident}
                   {innlegg.opprettetAvPersonBeskrivelse &&
                     ` - ${innlegg.opprettetAvPersonBeskrivelse}`}
                 </Label>
