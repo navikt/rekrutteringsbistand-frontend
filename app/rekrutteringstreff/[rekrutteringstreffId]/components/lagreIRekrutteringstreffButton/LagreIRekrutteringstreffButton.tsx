@@ -25,11 +25,6 @@ const LagreIRekrutteringstreffButton: React.FC<
 
   const { markerteKandidater, fjernMarkerteKandidater } =
     useKandidatSøkMarkerteContext();
-  /*const mineKandidatlisterHook = useMineKandidatlister(
-    pageNumber > 1 ? pageNumber - 1 : 0,
-  );*/
-
-  //const kandidatlisteHook = useKandidatliste(stillingsId);
 
   return (
     <div>
