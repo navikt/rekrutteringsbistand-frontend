@@ -6,9 +6,7 @@ import { z } from 'zod';
 export const OpprettEllerOppdaterInnleggDtoSchema = z.object({
   tittel: z.string().min(1, 'Tittel kan ikke være tom'),
   htmlContent: z.string().min(1, 'Innhold kan ikke være tomt'),
-  opprettetAvPersonNavn: z
-    .string()
-    .min(1, 'OpprettetAvPersonNavn kan ikke være tomt'),
+  opprettetAvPersonNavn: z.string().nullable().optional(),
   opprettetAvPersonBeskrivelse: z
     .string()
     .min(1, 'OpprettetAvPersonBeskrivelse kan ikke være tomt'),
