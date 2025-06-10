@@ -1,6 +1,8 @@
 import { mockKandidatliste } from '../../../mocks/kandidatliste.mock';
 import { getAPIwithSchema } from '../../api/fetcher';
 import { KandidatAPI } from '../api-routes';
+import { StillingsDataDTO } from '../stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
+import { RekrutteringsbistandStillingSchemaDTO } from '../stillings-sok/schema/rekrutteringsbistandStillingSchema.zod';
 import { kandidatlisteSchema } from './schema.zod';
 import useSWRImmutable from 'swr/immutable';
 
@@ -10,11 +12,21 @@ export const kandidatlisteEndepunkt = (stillingsId?: string) =>
     : undefined;
 
 export const useKandidatliste = (
-  stillingsId: string | undefined,
+  stillingsData:
+    | RekrutteringsbistandStillingSchemaDTO
+    | StillingsDataDTO
+    | undefined,
   erEier: boolean | undefined,
 ) => {
+  const kanHenteKandidatliste =
+    erEier &&
+    stillingsData?.stilling.uuid &&
+    stillingsData?.stilling?.publishedByAdmin;
+
   return useSWRImmutable(
-    erEier && stillingsId ? kandidatlisteEndepunkt(stillingsId) : null,
+    kanHenteKandidatliste
+      ? kandidatlisteEndepunkt(stillingsData?.stilling.uuid)
+      : null,
     getAPIwithSchema(kandidatlisteSchema, true),
   );
 };

@@ -20,10 +20,7 @@ const KandidatTilStilling: React.FC<KandidatTilStillingProps> = ({
   const { erEier } = useStillingsContext();
   const [alleredeLagtTil, setAlleredeLagtTil] = React.useState<string[]>([]);
 
-  const kandidatlisteHook = useKandidatliste(
-    stillingsData?.stilling.uuid,
-    erEier,
-  );
+  const kandidatlisteHook = useKandidatliste(stillingsData, erEier);
 
   const kandidatListeInformasjonHook = useKandidatlisteInfo(
     stillingsData?.stillingsinfo,
