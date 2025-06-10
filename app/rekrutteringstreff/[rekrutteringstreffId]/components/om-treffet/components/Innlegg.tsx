@@ -79,7 +79,10 @@ const Innlegg: React.FC<InnleggProps> = ({
       const payload: OpprettEllerOppdaterInnleggDto = {
         htmlContent: data.htmlContent,
         tittel: 'Om treffet',
-        opprettetAvPersonNavn: 'Todo Navn',
+        opprettetAvPersonNavn:
+          innlegg?.opprettetAvPersonNavn ??
+          innlegg?.opprettetAvPersonNavident ??
+          '',
         opprettetAvPersonBeskrivelse: 'Rekrutteringstreff Admin',
         sendesTilJobbsokerTidspunkt: new Date().toISOString(),
       };
