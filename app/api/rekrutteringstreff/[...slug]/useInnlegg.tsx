@@ -14,7 +14,7 @@ export const InnleggSchema = z.object({
   treffId: z.string(),
   tittel: z.string(),
   opprettetAvPersonNavident: z.string(),
-  opprettetAvPersonNavn: z.string(),
+  opprettetAvPersonNavn: z.string().optional().nullable(),
   opprettetAvPersonBeskrivelse: z.string(),
   sendesTilJobbsokerTidspunkt: z.string().nullable(),
   htmlContent: z.string(),
