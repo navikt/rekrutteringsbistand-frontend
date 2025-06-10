@@ -46,8 +46,7 @@ const StillingsSøk = ({ formidlinger, skjulBanner }: StillingsSøkProps) => {
     if (
       !visKandidatnr &&
       searchParams.get('brukStandardsok') !== null &&
-      !brukerStandardSøkData.isLoading &&
-      brukerStandardSøkData.data
+      !brukerStandardSøkData.isLoading
     ) {
       const newSearch =
         brukerStandardSøkData.data?.søk ||
