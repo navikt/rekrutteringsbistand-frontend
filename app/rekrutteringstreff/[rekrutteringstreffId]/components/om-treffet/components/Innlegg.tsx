@@ -125,28 +125,32 @@ const Innlegg: React.FC<InnleggProps> = ({
       >
         {!innlegg ? (
           <Box.New
-            padding='6'
+            padding='0'
             borderRadius='xlarge'
-            className='mb-2 flex items-center justify-center'
+            className='flex flex-col px-6'
           >
-            <div className='flex flex-col items-center text-center gap-4'>
-              <SVGDarkmode
-                light={InnleggPenIkon}
-                dark={InnleggPenDarkIkon}
-                alt='Illustrasjon av en penn som skriver'
-              />
-              <Label size='medium'>
-                Her kan du skrive det første innlegget til jobbsøkerne.
-              </Label>
-              <BodyLong size='small' className='max-w-md'>
-                Skap litt ekstra trygghet ved å forklare hva som vil skje. For
-                eksempel hva treffet handler om, et innsalg om hvorfor
-                jobbsøkerne burde komme, eller hva de kan forvente. Husk at du
-                kan lage flere nye innlegg helt frem til treffet starter.
-              </BodyLong>
-              <Button icon={<PlusIcon />} variant='primary' onClick={openModal}>
-                Legg til første innlegg
-              </Button>
+            <div className='flex'>
+              <div className='flex-[4] mt-4'>
+                <Label size='medium' spacing>
+                  Her kan du skrive det første innlegget til jobbsøkerne.
+                </Label>
+                <BodyLong size='small' spacing>
+                  Skap litt ekstra trygghet ved å forklare hva som vil skje. For
+                  eksempel hva treffet handler om, et innsalg om hvorfor
+                  jobbsøkerne burde komme, eller hva de kan forvente.
+                </BodyLong>
+                <BodyLong size='small' spacing>
+                  Husk at du ikke trenger å informere om alt med en gang. Du kan
+                  lage flere nye innlegg helt frem til treffet starter.
+                </BodyLong>
+              </div>
+              <div className='flex-[1]'>
+                <SVGDarkmode
+                  light={InnleggPenIkon}
+                  dark={InnleggPenDarkIkon}
+                  alt='Illustrasjon av en penn som skriver'
+                />
+              </div>
             </div>
           </Box.New>
         ) : (
