@@ -83,7 +83,7 @@ const Innlegg: React.FC<InnleggProps> = ({
           innlegg?.opprettetAvPersonNavn ??
           innlegg?.opprettetAvPersonNavident ??
           '',
-        opprettetAvPersonBeskrivelse: 'Rekrutteringstreff Admin',
+        opprettetAvPersonBeskrivelse: 'Rekrutteringstreff Pilotbruker',
         sendesTilJobbsokerTidspunkt: new Date().toISOString(),
       };
 
