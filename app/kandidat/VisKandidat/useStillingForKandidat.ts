@@ -102,7 +102,7 @@ export const useStillingForKandidat = (kandidatId: string | null) => {
 
       stillingsSøkContext.setFylker(fylker);
       stillingsSøkContext.setKommuner(kommuner);
-      stillingsSøkContext.setKategori(yrkesønsker);
+      stillingsSøkContext.setFritekstListe(yrkesønsker);
       stillingsSøkContext.setStatuser([StillingsStatusTyper.Publisert]);
 
       hasSetInitialData.current = true;
