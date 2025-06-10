@@ -14,7 +14,7 @@ const StillingsSøkChips: React.FC = () => {
         <div className='flex flex-row flex-wrap gap-2 pb-2'>
           {Object.values(filter).some(
             (value) => Array.isArray(value) && value.length > 0,
-          ) && <TømFiltre />}
+          ) && <TømFiltre fjernFritekst={() => filter.setFritekst('')} />}
           {filter.fritekst && (
             <Chips key={filter.fritekst}>
               <Chips.Removable
