@@ -9,7 +9,7 @@ import {
 } from '@/app/api/rekrutteringstreff/opprettEllerOppdaterInnlegg';
 import { useValiderRekrutteringstreff } from '@/app/api/rekrutteringstreff/tittelValidering/useValiderRekrutteringstreff';
 import SVGDarkmode from '@/app/components/SVGDarkmode';
-import RikTekstEditorInnlegg from '@/app/components/rikteksteditor/RikTekstEditorInnlegg';
+import RikTekstEditor from '@/app/components/rikteksteditor/RikTekstEditor';
 import VisEditorTekst from '@/app/components/rikteksteditor/VisEditorTekst';
 import { formaterNorskDato } from '@/app/components/util';
 import RekrutteringstreffDetalj from '@/app/rekrutteringstreff/[rekrutteringstreffId]/components/RekrutteringstreffDetalj';
@@ -268,7 +268,7 @@ const Innlegg: React.FC<InnleggProps> = ({
                     Innhold
                   </Label>
 
-                  <RikTekstEditorInnlegg
+                  <RikTekstEditor
                     id={EDITOR_WRAPPER_ID}
                     tekst={htmlContent ?? ''}
                     onChange={(html) =>
