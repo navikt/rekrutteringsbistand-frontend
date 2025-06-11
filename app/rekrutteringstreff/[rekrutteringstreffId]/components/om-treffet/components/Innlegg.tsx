@@ -237,6 +237,7 @@ const Innlegg: React.FC<InnleggProps> = ({
 
       <Modal
         ref={modalRef}
+        placement='top'
         header={{ heading: innlegg ? 'Endre innlegg' : 'Skriv nytt innlegg' }}
         onClose={() => {
           reset();

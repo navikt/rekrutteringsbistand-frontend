@@ -191,6 +191,7 @@ const EndreTittel = ({
 
   return (
     <Modal
+      placement='top'
       ref={modalRef}
       header={{ heading: 'Endre navn på treffet' }}
       width={400}
