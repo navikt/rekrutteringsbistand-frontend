@@ -117,10 +117,15 @@ const Innlegg: React.FC<InnleggProps> = ({
 
   const onSubmitHandler: SubmitHandler<InnleggFormFields> = async (data) => {
     try {
+      const navnForPayload =
+        innlegg?.opprettetAvPersonNavn ||
+        innlegg?.opprettetAvPersonNavident ||
+        'Markedskontakt';
+
       const payload: OpprettEllerOppdaterInnleggDto = {
         htmlContent: data.htmlContent,
         tittel: 'Om treffet',
-        opprettetAvPersonNavn: null,
+        opprettetAvPersonNavn: navnForPayload,
         opprettetAvPersonBeskrivelse: 'Markedskontakt',
         sendesTilJobbsokerTidspunkt: new Date().toISOString(),
       };
