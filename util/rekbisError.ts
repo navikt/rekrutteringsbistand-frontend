@@ -28,8 +28,12 @@ export class rekbisError extends Error {
     logger.error(`RekBis Error: ${this.tittel} (${this.statuskode})`, {
       beskrivelse: this.beskrivelse,
       url: this.url,
-      stack: this.stack,
-      error: this.error,
+      stack:
+        typeof this.stack === 'string'
+          ? this.stack
+          : JSON.stringify(this.stack),
+      errorMessage:
+        this.error instanceof Error ? this.error.message : String(this.error),
     });
   }
 
