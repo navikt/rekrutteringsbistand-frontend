@@ -20,8 +20,22 @@ const Feilmelding: React.FC<IFeilmelding> = ({
   stack,
   beskrivelse,
   url,
+  error,
 }) => {
   const [showError, setShowError] = React.useState(false);
+
+  // Log the error for debugging purposes
+  React.useEffect(() => {
+    if (error) {
+      logger.error('Error displayed in UI', {
+        error,
+        tittel,
+        statuskode,
+        stack,
+        url,
+      });
+    }
+  }, [error, tittel, statuskode]);
 
   if (zodError) {
     logger.info('ZodError', zodError);
@@ -60,7 +74,7 @@ const Feilmelding: React.FC<IFeilmelding> = ({
     <div style={{ width: '100%' }}>
       <Alert style={{ margin: '1rem' }} variant='error'>
         <strong>Noe gikk galt!</strong>
-        <BodyShort>{tittel}</BodyShort>
+        <BodyShort>{tittel || 'Ukjent feil'}</BodyShort>
         <BodyLong>{beskrivelse}</BodyLong>
         <Button
           className='mt-4 mb-4'

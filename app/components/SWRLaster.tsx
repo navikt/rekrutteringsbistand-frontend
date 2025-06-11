@@ -1,5 +1,6 @@
 'use client';
 
+import { rekbisError } from '../../util/rekbisError';
 import Sidelaster from './Sidelaster';
 import Feilmelding from './feilhåndtering/Feilmelding';
 import * as React from 'react';
@@ -19,6 +20,10 @@ export interface ISWRLasterProps<T extends any[]> {
 
 function isZodError(error: any): error is ZodError {
   return error instanceof ZodError;
+}
+
+function isRekbisError(error: any): error is rekbisError {
+  return error instanceof rekbisError;
 }
 
 const SWRLaster = <T extends any[]>({
@@ -48,6 +53,11 @@ const SWRLaster = <T extends any[]>({
   }
 
   if (error && !skjulFeilmelding) {
+    if (isRekbisError(error)) {
+      // Handle rekbisError directly - it already has the structure we need
+      return <Feilmelding {...error} />;
+    }
+
     return (
       <Feilmelding
         {...error}

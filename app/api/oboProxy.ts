@@ -90,8 +90,17 @@ export const proxyWithOBO = async (
         `Feil ved proxying av forespørselen til url: ${requestUrl} fra url: ${originalUrl}`,
       );
     }
+
+    // Use a consistent error response structure matching rekbisError properties
     return NextResponse.json(
-      { beskrivelse: error.message || 'Feil i proxy' },
+      {
+        name: 'rekbisError',
+        statuskode: error.status || 500,
+        tittel: error.tittel || 'Feil i proxy',
+        beskrivelse: error.message || 'Feil ved proxying av forespørselen',
+        url: requestUrl,
+        stack: error.stack || JSON.stringify(error),
+      },
       { status: error.status || 500 },
     );
   }
