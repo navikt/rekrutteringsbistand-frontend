@@ -62,9 +62,6 @@ const KandidatHandlingerForStilling: React.FC<
       reFetchKandidatliste();
     } catch (error) {
       logger.error(error);
-      // setFeilDialog(
-      //   error ivgnstanceof Error ? error.message : 'En ukjent feil oppstod',
-      // );
     }
     setLoading(false);
   };

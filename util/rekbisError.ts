@@ -21,7 +21,7 @@ export class rekbisError extends Error {
     this.statuskode = statuskode ?? 500;
     this.tittel = tittel ?? 'Ukjent feil';
     this.stack = stack || this.stack;
-    this.beskrivelse = beskrivelse ?? '';
+    this.beskrivelse = beskrivelse ?? this.message ?? '';
     this.url = url ?? '';
     this.error = error;
 
