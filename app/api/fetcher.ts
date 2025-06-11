@@ -128,18 +128,13 @@ export const postApi = async (
       try {
         return await response.json();
       } catch (error) {
-        logger.error('Error in postApi:', error);
+        logger.error('Error in postApi:', error, response);
         return await response.text();
       }
     }
   } catch (error) {
-    if (error && typeof (error as any).toJSON === 'function') {
-      logger.error('Error in postApi:', (error as any).toJSON());
-      throw (error as any).toJSON();
-    } else {
-      logger.error('Error in postApi:', error);
-      throw error;
-    }
+    logger.error('Error in postApi:', error);
+    throw error;
   }
 };
 
