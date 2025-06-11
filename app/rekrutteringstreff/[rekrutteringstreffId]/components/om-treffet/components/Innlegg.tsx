@@ -66,7 +66,7 @@ const Innlegg: React.FC<InnleggProps> = ({
 }) => {
   const modalRef = useRef<HTMLDialogElement>(null);
   const cancelButtonRef = useRef<HTMLButtonElement>(null);
-  const analyseRef = useRef<HTMLDivElement>(null); // fokus-mål etter Tab
+  const analyseRef = useRef<HTMLDivElement>(null);
 
   const methods = useForm<InnleggFormFields>({
     defaultValues: { htmlContent: innlegg?.htmlContent ?? '' },
@@ -187,20 +187,18 @@ const Innlegg: React.FC<InnleggProps> = ({
                   Her kan du skrive det første innlegget til jobbsøkerne.
                 </Label>
                 <BodyLong size='small' spacing>
-                  Skap litt ekstra trygghet ved å forklare hva som vil skje. For
-                  eksempel hva treffet handler om, et innsalg om hvorfor
-                  jobbsøkerne burde komme, eller hva de kan forvente.
+                  Skap litt ekstra trygghet ved å forklare hva som vil skje.
                 </BodyLong>
                 <BodyLong size='small' spacing>
-                  Husk at du ikke trenger å informere om alt med en gang. Du kan
-                  lage flere nye innlegg helt frem til treffet starter.
+                  Husk at du kan lage flere nye innlegg helt frem til treffet
+                  starter.
                 </BodyLong>
               </div>
               <div className='flex-[1]'>
                 <SVGDarkmode
                   light={InnleggPenIkon}
                   dark={InnleggPenDarkIkon}
-                  alt='Illustrasjon av en penn som skriver'
+                  alt='Illustrasjon av en penn'
                 />
               </div>
             </div>
@@ -287,12 +285,7 @@ const Innlegg: React.FC<InnleggProps> = ({
                   )}
                 </div>
 
-                <div
-                  ref={analyseRef}
-                  tabIndex={-1}
-                  aria-live='polite'
-                  className='outline-none'
-                >
+                <div ref={analyseRef} tabIndex={0} aria-live='polite'>
                   <div className='flex gap-3 items-start'>
                     <div className='inline-flex justify-center items-start w-10 pt-1'>
                       {validating ? (
