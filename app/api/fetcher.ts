@@ -2,6 +2,25 @@ import { rekbisError } from '../../util/rekbisError';
 import { logger } from '@navikt/next-logger';
 import { z, ZodSchema } from 'zod';
 
+export const getErrorTitle = (statusCode: number): string => {
+  switch (true) {
+    case statusCode === 400:
+      return 'Ugyldig forespørsel';
+    case statusCode === 401:
+      return 'Ikke autorisert';
+    case statusCode === 403:
+      return 'Ingen tilgang';
+    case statusCode === 404:
+      return 'Ressurs ikke funnet';
+    case statusCode === 409:
+      return 'Konflikt i dataene';
+    case statusCode >= 500:
+      return 'Serverfeil';
+    default:
+      return 'Ukjent feil';
+  }
+};
+
 const basePath = process.env.NAIS_CLUSTER_NAME === 'local' ? '' : '';
 
 const validerSchema = <T>(schema: ZodSchema<T>, data: any) => {
@@ -54,6 +73,8 @@ export const getAPI = async (url: string, skjulFeilmelding?: boolean) => {
       throw new rekbisError({
         url: response.url,
         statuskode: response.status,
+        tittel: getErrorTitle(response.status),
+        beskrivelse: `Feil ved henting av data: ${response.status} ${response.statusText}`,
         stack: errorDetails,
       });
     }
@@ -74,12 +95,14 @@ export const postApi = async (
   body: any,
   queryParams?: URLSearchParams,
 ) => {
-  if (queryParams) {
-    const queryString = new URLSearchParams(queryParams).toString();
-    url += `?${queryString}`;
-  }
-
   try {
+    // Build URL with query params
+    if (queryParams) {
+      const queryString = new URLSearchParams(queryParams).toString();
+      url += `?${queryString}`;
+    }
+
+    // Make request
     const response = await fetch(basePath + url, {
       method: 'POST',
       credentials: 'include',
@@ -108,13 +131,14 @@ export const postApi = async (
           errorDetails = await response.text();
         }
       } else {
-        // Handle non-JSON errors
         errorDetails = await response.text();
       }
 
       throw new rekbisError({
-        url: response.url,
         statuskode: response.status,
+        tittel: getErrorTitle(response.status),
+        beskrivelse: `Request failed with status: ${response.status} ${response.statusText}`,
+        url: response.url,
         stack: errorDetails,
       });
     }
@@ -133,7 +157,15 @@ export const postApi = async (
       }
     }
   } catch (error) {
-    logger.error('Error in postApi:', error);
+    if (!(error instanceof rekbisError)) {
+      throw new rekbisError({
+        statuskode: 0,
+        tittel: 'Nettverksfeil',
+        beskrivelse: 'Kunne ikke koble til serveren',
+        url: basePath + url,
+        error: error,
+      });
+    }
     throw error;
   }
 };
@@ -143,51 +175,66 @@ export const putApi = async (
   body: any,
   queryParams?: URLSearchParams,
 ) => {
-  if (queryParams) {
-    const queryString = new URLSearchParams(queryParams).toString();
-    url += `?${queryString}`;
-  }
-
-  const response = await fetch(basePath + url, {
-    method: 'PUT',
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(body, (_key, value) =>
-      value instanceof Set ? [...value] : value,
-    ),
-  });
-
-  if (!response.ok) {
-    let errorDetails = '';
-    const contentType = response.headers.get('content-type');
-
-    if (contentType && contentType.includes('application/json')) {
-      try {
-        const errorData = await response.json();
-        errorDetails = JSON.stringify(errorData);
-      } catch (error) {
-        // JSON parsing failed, fall back to plain text
-        logger.warn(
-          'Failed to parse error response as JSON despite content-type header',
-          error,
-        );
-        errorDetails = await response.text();
-      }
-    } else {
-      // Handle non-JSON errors
-      errorDetails = await response.text();
+  try {
+    // Build URL with query params
+    if (queryParams) {
+      const queryString = new URLSearchParams(queryParams).toString();
+      url += `?${queryString}`;
     }
 
-    throw new rekbisError({
-      url: response.url,
-      statuskode: response.status,
-      stack: errorDetails,
+    const response = await fetch(basePath + url, {
+      method: 'PUT',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body, (_key, value) =>
+        value instanceof Set ? [...value] : value,
+      ),
     });
-  }
 
-  return response.json();
+    if (!response.ok) {
+      let errorDetails = '';
+      const contentType = response.headers.get('content-type');
+
+      if (contentType && contentType.includes('application/json')) {
+        try {
+          const errorData = await response.json();
+          errorDetails = JSON.stringify(errorData);
+        } catch (error) {
+          // JSON parsing failed, fall back to plain text
+          logger.warn(
+            'Failed to parse error response as JSON despite content-type header',
+            error,
+          );
+          errorDetails = await response.text();
+        }
+      } else {
+        errorDetails = await response.text();
+      }
+
+      throw new rekbisError({
+        statuskode: response.status,
+        tittel: getErrorTitle(response.status),
+        beskrivelse: `Request failed with status: ${response.status} ${response.statusText}`,
+        url: response.url,
+        stack: errorDetails,
+      });
+    }
+
+    return response.json();
+  } catch (error) {
+    if (!(error instanceof rekbisError)) {
+      throw new rekbisError({
+        statuskode: 0,
+        tittel: 'Nettverksfeil',
+        beskrivelse: 'Kunne ikke koble til serveren',
+        url: basePath + url,
+        error: error,
+      });
+    }
+    throw error;
+  }
 };
 
 export const postApiResponse = (url: string, body: any) =>
