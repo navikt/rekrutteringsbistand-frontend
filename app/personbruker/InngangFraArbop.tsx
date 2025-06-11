@@ -2,7 +2,6 @@
 
 import { useArenaKandidatnr } from '../api/kandidat-sok/useArenaKandidatnr';
 import { useSynlighetsevaluering } from '../api/synlighet/evaluering/useSynlighetsevaluering';
-import SWRLaster from '../components/SWRLaster';
 import Sidelaster from '../components/Sidelaster';
 import SideLayout from '../components/layout/SideLayout';
 import { useApplikasjonContext } from '../providers/ApplikasjonContext';
@@ -56,48 +55,35 @@ const InngangFraArbop: React.FC = () => {
     );
   }
 
+  if (synlighetHook.isLoading && kandidatnrHook.isLoading) {
+    return <Sidelaster />;
+  }
+
   return (
     <SideLayout>
-      <SWRLaster hooks={[kandidatnrHook, synlighetHook]} skjulFeilmelding>
-        {(kandidatnrData, synlighet) => {
-          if (!kandidatnrData || !kandidatnrData.arenaKandidatnr) {
-            return (
-              <div>
-                <Heading level='2' size='large'>
-                  Fant ikke kandidaten
-                </Heading>
-                <TilbakeKnapp />
-              </div>
-            );
-          }
-          if (!synlighet) {
-            return (
-              <div>
-                <Heading level='2' size='large'>
-                  Fant ikke kandidaten
-                </Heading>
-                <BodyLong>
-                  Kandidaten er ikke synlig i Rekrutteringsbistand.
-                </BodyLong>
-                <TilbakeKnapp />
-              </div>
-            );
-          }
-
-          if (synlighet && kandidatnrData.arenaKandidatnr) {
-            return <Sidelaster />;
-          }
-
-          return (
-            <div>
-              <Heading level='2' size='large'>
-                Fant ikke kandidaten
-              </Heading>
-              <TilbakeKnapp />
-            </div>
-          );
-        }}
-      </SWRLaster>
+      <div>
+        {(!kandidatnrHook.data || !kandidatnrHook.data.arenaKandidatnr) && (
+          <div>
+            <Heading level='2' size='large'>
+              Fant ikke kandidaten
+            </Heading>
+            <br />
+            <TilbakeKnapp />
+          </div>
+        )}
+        {!synlighetHook.data && (
+          <div>
+            <Heading level='2' size='large'>
+              Fant ikke kandidaten
+            </Heading>
+            <BodyLong>
+              Kandidaten er ikke synlig i Rekrutteringsbistand.
+            </BodyLong>
+            <br />
+            <TilbakeKnapp />
+          </div>
+        )}
+      </div>
     </SideLayout>
   );
 };
