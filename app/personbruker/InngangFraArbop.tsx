@@ -2,11 +2,12 @@
 
 import { useArenaKandidatnr } from '../api/kandidat-sok/useArenaKandidatnr';
 import { useSynlighetsevaluering } from '../api/synlighet/evaluering/useSynlighetsevaluering';
-import SWRLaster from '../components/SWRLaster';
 import Sidelaster from '../components/Sidelaster';
+import HvitKort from '../components/layout/HvitKort';
 import SideLayout from '../components/layout/SideLayout';
 import { useApplikasjonContext } from '../providers/ApplikasjonContext';
-import { BodyLong, Heading } from '@navikt/ds-react';
+import { BodyLong, Button, Heading } from '@navikt/ds-react';
+import { ArrowLeftIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 
@@ -16,6 +17,21 @@ const InngangFraArbop: React.FC = () => {
   const synlighetHook = useSynlighetsevaluering(valgtFnr);
 
   const router = useRouter();
+
+  const handleBackClick = () => {
+    window.history.back();
+  };
+
+  const TilbakeKnapp = () => (
+    <Button
+      variant='tertiary'
+      icon={<ArrowLeftIcon aria-hidden />}
+      onClick={handleBackClick}
+      style={{ marginBottom: '1rem' }}
+    >
+      Tilbake
+    </Button>
+  );
 
   React.useEffect(() => {
     if (
@@ -35,45 +51,40 @@ const InngangFraArbop: React.FC = () => {
         <Heading level='2' size='medium' spacing>
           Ingen kandidat valgt i modia dekoratøren
         </Heading>
+        <TilbakeKnapp />
       </SideLayout>
     );
   }
 
+  if (synlighetHook.isLoading && kandidatnrHook.isLoading) {
+    return <Sidelaster />;
+  }
+
   return (
     <SideLayout>
-      <SWRLaster hooks={[kandidatnrHook, synlighetHook]}>
-        {(kandidatnrData, synlighet) => {
-          if (!kandidatnrData || !kandidatnrData.arenaKandidatnr) {
-            return (
-              <Heading level='2' size='large'>
-                Fant ikke kandidaten
-              </Heading>
-            );
-          }
-          if (!synlighet) {
-            return (
-              <>
-                <Heading level='2' size='large'>
-                  Fant ikke kandidaten
-                </Heading>
-                <BodyLong>
-                  Kandidaten er ikke synlig i Rekrutteringsbistand.
-                </BodyLong>
-              </>
-            );
-          }
-
-          if (synlighet && kandidatnrData.arenaKandidatnr) {
-            return <Sidelaster />;
-          }
-
-          return (
+      <div>
+        {(!kandidatnrHook.data || !kandidatnrHook.data.arenaKandidatnr) && (
+          <HvitKort>
             <Heading level='2' size='large'>
-              Fant ikke kandidaten
+              Fant ikke kandidaten i rekrutteringsbistand
             </Heading>
-          );
-        }}
-      </SWRLaster>
+            <br />
+            <TilbakeKnapp />
+          </HvitKort>
+        )}
+        {!synlighetHook.data && (
+          <HvitKort>
+            <Heading level='2' size='large'>
+              Fant ikke kandidaten i rekrutteringsbistand
+            </Heading>
+            <BodyLong>
+              Kandidaten er ikke synlig i Rekrutteringsbistand.
+            </BodyLong>
+            <br />
+            <TilbakeKnapp />
+          </HvitKort>
+        )}
+      </div>
     </SideLayout>
   );
 };

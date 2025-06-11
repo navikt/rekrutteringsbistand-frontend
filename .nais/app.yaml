@@ -12,8 +12,8 @@ spec:
       enabled: true
       runtime: nodejs
   replicas:
-    max: 2
-    min: 1
+    max: 4
+    min: 2
   image: {{ image }}
   ingresses:
      - {{ NEXT_PUBLIC_BASE_URL }}
@@ -109,6 +109,9 @@ spec:
     - name: NEXT_PUBLIC_DECORATOR_SRC
       value: {{ decoratorSrc }}
   observability:
+    autoInstrumentation:
+      enabled: true
+      runtime: nodejs
     logging:
       destinations:
         - id: loki
