@@ -240,16 +240,7 @@ const Innlegg: React.FC<InnleggProps> = ({
                   gjerne en hyggelig introduksjon og praktisk informasjon.
                 </BodyShort>
 
-                <div
-                  tabIndex={-1}
-                  onBlur={() =>
-                    setTimeout(() => {
-                      if (!modalRef.current?.contains(document.activeElement)) {
-                        handleValidateOrError();
-                      }
-                    })
-                  }
-                >
+                <div tabIndex={-1} onBlur={handleValidateOrError}>
                   <Label
                     htmlFor='rediger-innlegg-htmlcontent'
                     className='mb-2 block'
@@ -267,12 +258,8 @@ const Innlegg: React.FC<InnleggProps> = ({
                       })
                     }
                     onKeyDown={(e) => {
-                      if (e.key === 'Enter') {
-                        e.preventDefault();
+                      if (e.key === 'Tab' && !e.shiftKey) {
                         handleValidateOrError();
-                      } else if (e.key === 'Tab' && !e.shiftKey) {
-                        e.preventDefault();
-                        cancelButtonRef.current?.focus();
                       }
                     }}
                   />
