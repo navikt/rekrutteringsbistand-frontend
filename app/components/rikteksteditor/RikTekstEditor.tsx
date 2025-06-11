@@ -19,6 +19,7 @@ export interface IRikTekstEditor {
   id: string;
   onChange: (tekst: string) => void;
   feilMelding?: string;
+  onKeyDown?: (e: React.KeyboardEvent) => void;
   utviklerExtensions?: boolean;
 }
 
@@ -28,6 +29,7 @@ const RikTekstEditor: React.FC<IRikTekstEditor> = ({
   onChange,
   skjulToolbar,
   feilMelding,
+  onKeyDown,
   utviklerExtensions,
 }) => {
   const extensions = [
@@ -168,7 +170,7 @@ const RikTekstEditor: React.FC<IRikTekstEditor> = ({
         </Box.New>
       )}
       <hr className='my-4' />
-      <EditorContent id={id} editor={editor} />
+      <EditorContent id={id} editor={editor} onKeyDown={onKeyDown} />
       {feilMelding && <ErrorMessage>{feilMelding}</ErrorMessage>}
     </Box.New>
   );
