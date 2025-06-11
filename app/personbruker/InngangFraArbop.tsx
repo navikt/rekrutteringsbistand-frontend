@@ -3,6 +3,7 @@
 import { useArenaKandidatnr } from '../api/kandidat-sok/useArenaKandidatnr';
 import { useSynlighetsevaluering } from '../api/synlighet/evaluering/useSynlighetsevaluering';
 import Sidelaster from '../components/Sidelaster';
+import HvitKort from '../components/layout/HvitKort';
 import SideLayout from '../components/layout/SideLayout';
 import { useApplikasjonContext } from '../providers/ApplikasjonContext';
 import { BodyLong, Button, Heading } from '@navikt/ds-react';
@@ -63,25 +64,25 @@ const InngangFraArbop: React.FC = () => {
     <SideLayout>
       <div>
         {(!kandidatnrHook.data || !kandidatnrHook.data.arenaKandidatnr) && (
-          <div>
+          <HvitKort>
             <Heading level='2' size='large'>
-              Fant ikke kandidaten
+              Fant ikke kandidaten i rekrutteringsbistand
             </Heading>
             <br />
             <TilbakeKnapp />
-          </div>
+          </HvitKort>
         )}
         {!synlighetHook.data && (
-          <div>
+          <HvitKort>
             <Heading level='2' size='large'>
-              Fant ikke kandidaten
+              Fant ikke kandidaten i rekrutteringsbistand
             </Heading>
             <BodyLong>
               Kandidaten er ikke synlig i Rekrutteringsbistand.
             </BodyLong>
             <br />
             <TilbakeKnapp />
-          </div>
+          </HvitKort>
         )}
       </div>
     </SideLayout>
