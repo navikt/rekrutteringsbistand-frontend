@@ -28,7 +28,14 @@ const validerSchema = <T>(schema: ZodSchema<T>, data: any) => {
   // TODO Midlertidig løsning for å unngå så mange feil ved feil schema:
   const zodResult = schema.safeParse(data);
   if (zodResult.error) {
-    logger.warn(zodResult.error, 'ZodError');
+    logger.warn('ZodError encountered during schema validation', {
+      error: zodResult.error.message,
+      issues: zodResult.error.issues.map((issue) => ({
+        code: issue.code,
+        path: issue.path,
+        message: issue.message,
+      })),
+    });
   }
   return data;
 };
@@ -58,10 +65,14 @@ export const getAPI = async (url: string, skjulFeilmelding?: boolean) => {
         const errorData = await response.json();
         errorDetails = JSON.stringify(errorData);
       } catch (error) {
-        // JSON parsing failed, fall back to plain text
+        // FIX: Properly structured metadata object
         logger.warn(
           'Failed to parse error response as JSON despite content-type header',
-          error,
+          {
+            url: response.url,
+            status: response.status,
+            error: error instanceof Error ? error.message : String(error),
+          },
         );
         errorDetails = await response.text();
       }
@@ -102,7 +113,6 @@ export const postApi = async (
       url += `?${queryString}`;
     }
 
-    // Make request
     const response = await fetch(basePath + url, {
       method: 'POST',
       credentials: 'include',
@@ -152,7 +162,12 @@ export const postApi = async (
       try {
         return await response.json();
       } catch (error) {
-        logger.error('Error in postApi:', error, response);
+        logger.error('Error in postApi response.json():', {
+          url: response.url,
+          status: response.status,
+          contentType: contentType || 'unknown',
+          error: error instanceof Error ? error.message : String(error),
+        });
         return await response.text();
       }
     }
