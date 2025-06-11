@@ -20,19 +20,21 @@ const clearAllQueryParams = (exclude: string[] = []) => {
 };
 
 export interface TømFiltreProps {
+  fjernFritekst?: () => void;
   exlude?: string[];
 }
 
-const TømFiltre: React.FC<TømFiltreProps> = ({ exlude }) => {
+const TømFiltre: React.FC<TømFiltreProps> = ({ fjernFritekst, exlude }) => {
   const eksluderFilter = ['portefolje', 'visKandidatnr'];
   return (
     <Chips.Removable
       className='text-nowrap'
-      onClick={() =>
+      onClick={() => {
+        fjernFritekst?.();
         clearAllQueryParams(
           exlude ? [...eksluderFilter, ...exlude] : eksluderFilter,
-        )
-      }
+        );
+      }}
     >
       Tøm filtre
     </Chips.Removable>

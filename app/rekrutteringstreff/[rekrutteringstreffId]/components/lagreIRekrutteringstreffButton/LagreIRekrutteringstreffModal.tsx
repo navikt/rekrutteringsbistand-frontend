@@ -21,12 +21,6 @@ const LagreIRekrutteringstreffModal: React.FC<
 > = ({ kandidatsokKandidater, modalRef }) => {
   const rekrutteringstreffOversiktHook = useRekrutteringstreffOversikt();
 
-  //const { track } = useUmami();
-  /*const mineKandidatlisterHook = useMineKandidatlister(
-    pageNumber > 1 ? pageNumber - 1 : 0,
-  );*/
-
-  //const kandidatlisteHook = useKandidatliste(stillingsId);
   const [selectedRows, setSelectedRows] = React.useState<string[]>([]);
   const [laster, setLaster] = React.useState(false);
   const toggleSelectedRow = (stillingsId: string) =>

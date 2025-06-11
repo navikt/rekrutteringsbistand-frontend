@@ -11,7 +11,6 @@ enum KandidatlisteFilterParam {
   SIDE = 'kandidatlisteSide',
   SORTERING = 'kandidatlisteSortering',
   INTERN_STATUS = 'kandidatlsiteInternStatus',
-  FRITEKST_SØK = 'kandidatlisteFritekstSøk',
   VIS_SLETTEDE = 'visSlettedeKanidater',
   HENDELSE_TYPE = 'kandidatlisteHendelseType',
 }
@@ -63,6 +62,8 @@ export const KandidatlisteFilterContextProvider: React.FC<
     },
   );
 
+  const [fritekstSøk, setFritekstSøk] = React.useState<string>('');
+
   const [side, setSide] = useQueryState(
     StillingsSøkQueryparam.Side,
     parseAsInteger.withDefault(1).withOptions({ clearOnDefault: true }),
@@ -80,11 +81,6 @@ export const KandidatlisteFilterContextProvider: React.FC<
     parseAsArrayOf(parseAsString)
       .withDefault([])
       .withOptions({ clearOnDefault: true }),
-  );
-
-  const [fritekstSøk, setFritekstSøk] = useQueryState<string>(
-    KandidatlisteFilterParam.FRITEKST_SØK,
-    parseAsString.withDefault('').withOptions({ clearOnDefault: true }),
   );
 
   const [visSlettede, setVisSlettede] = useQueryState<string>(

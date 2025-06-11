@@ -17,10 +17,7 @@ const StillingHeader: React.FC = () => {
   const { stillingsData, erFormidling, erSlettet, kandidatlisteInfo, erEier } =
     useStillingsContext();
 
-  const kandidatlisteHook = useKandidatliste(
-    stillingsData.stilling.uuid,
-    erEier,
-  );
+  const kandidatlisteHook = useKandidatliste(stillingsData, erEier);
 
   const eierNavn = navnEierAvAstilling(stillingsData);
 

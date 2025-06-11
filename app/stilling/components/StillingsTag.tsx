@@ -3,11 +3,8 @@ import { RekrutteringsbistandStillingSchemaDTO } from '../../api/stillings-sok/s
 import { eierStilling } from '../../components/tilgangskontroll/erEier';
 import { formaterNorskDato } from '../../components/util';
 import { useApplikasjonContext } from '../../providers/ApplikasjonContext';
-import {
-  AdminStatus,
-  StillingsStatus,
-  Stillingskategori,
-} from '../../stilling/stilling-typer';
+import { AdminStatus, StillingsStatus } from '../../stilling/stilling-typer';
+import { visStillingsDataInfo } from '../stillingInfoUtil';
 import { Hovedtag } from './StillingsSøkFilter/InkluderingFilter';
 import { Tag } from '@navikt/ds-react';
 import { isBefore, startOfToday } from 'date-fns';
@@ -42,19 +39,19 @@ const StillingsTag: React.FC<IStillingTag> = ({ stillingsData, splitTags }) => {
     navIdent: ident,
   });
 
+  const stillingsDataInfo = visStillingsDataInfo(stillingsData);
+
   const stillingStatus = stillingsData.stilling.status as StillingsStatus;
 
-  const erFormidling =
-    stillingsData?.stillingsinfo?.stillingskategori ===
-    Stillingskategori.Formidling;
+  // const erFormidling =
+  //   stillingsData?.stillingsinfo?.stillingskategori ===
+  //   Stillingskategori.Formidling;
 
   const stillingenBlirPubliserDato =
     'stilling' in stillingsData &&
     'activationOnPublishingDate' in stillingsData.stilling
       ? stillingsData.stilling.activationOnPublishingDate
       : undefined;
-
-  const stillingUløpt = stillingErUtløpt(stillingsData.stilling);
 
   const publisertDato = stillingsData.stilling.published
     ? formaterNorskDato({ dato: stillingsData.stilling.published })
@@ -63,19 +60,9 @@ const StillingsTag: React.FC<IStillingTag> = ({ stillingsData, splitTags }) => {
   const erEierTag = erEier;
 
   const erIkkePublisertTag =
-    !stillingUløpt &&
+    !stillingsDataInfo.erUtløpt &&
     !stillingenBlirPubliserDato &&
     stillingStatus === StillingsStatus.Inaktiv;
-
-  const erUtkastTag = !stillingsData.stilling.publishedByAdmin;
-  const erStoppetTag = stillingStatus === StillingsStatus.Stoppet;
-  const erJobbmesseTag =
-    stillingsData?.stillingsinfo?.stillingskategori ===
-    Stillingskategori.Jobbmesse;
-  const erSlettetTag = stillingStatus === StillingsStatus.Slettet;
-  const direktemeldtTag = stillingsData?.stilling?.source === 'DIR';
-
-  const arbeidsplassenTag = stillingsData?.stilling?.privacy === 'SHOW_ALL';
 
   const registrertMedInkluderingsmulighetTag =
     Array.isArray(stillingsData?.stilling?.properties?.tags) &&
@@ -85,7 +72,7 @@ const StillingsTag: React.FC<IStillingTag> = ({ stillingsData, splitTags }) => {
 
   const venstre = (
     <>
-      {erJobbmesseTag && (
+      {stillingsDataInfo.erJobbMesse && (
         <Tag className={'mr-2 mb-4'} size='small' variant='alt2'>
           Jobbmesse
         </Tag>
@@ -95,7 +82,7 @@ const StillingsTag: React.FC<IStillingTag> = ({ stillingsData, splitTags }) => {
           Min stilling
         </Tag>
       )}
-      {stillingUløpt && (
+      {stillingsDataInfo.erUtløpt && (
         <Tag className={'mr-2 mb-4'} size='small' variant='warning'>
           Utløpt
         </Tag>
@@ -105,17 +92,17 @@ const StillingsTag: React.FC<IStillingTag> = ({ stillingsData, splitTags }) => {
           Ikke publisert
         </Tag>
       )}
-      {erUtkastTag && (
+      {stillingsDataInfo.erUtkast && (
         <Tag className={'mr-2 mb-4'} size='small' variant='alt1'>
           Utkast
         </Tag>
       )}
-      {erStoppetTag && (
+      {stillingsDataInfo.erStoppet && (
         <Tag className={'mr-2 mb-4'} size='small' variant='error'>
           Stoppet
         </Tag>
       )}
-      {erSlettetTag && (
+      {stillingsDataInfo.erSlettet && (
         <Tag className={'mr-2 mb-4'} size='small' variant='error'>
           Slettet
         </Tag>
@@ -130,12 +117,12 @@ const StillingsTag: React.FC<IStillingTag> = ({ stillingsData, splitTags }) => {
           Inkludering
         </Tag>
       )}
-      {direktemeldtTag && (
+      {stillingsDataInfo.erDirektemeldt && (
         <Tag className={'mr-2 mb-4'} size='small' variant='alt1'>
-          Intern {erFormidling ? 'formidling' : ''}
+          Intern {stillingsDataInfo.erFormidling ? 'formidling' : ''}
         </Tag>
       )}
-      {arbeidsplassenTag && (
+      {stillingsDataInfo.erPåArbeidsplassen && (
         <Tag className={'mr-2 mb-4'} size='small' variant='alt3'>
           Arbeidsplassen
         </Tag>

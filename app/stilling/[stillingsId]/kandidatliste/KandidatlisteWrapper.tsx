@@ -24,10 +24,7 @@ const KandidatlisteWrapper: React.FC<KandidatlisteWrapperProps> = ({
     stillingsData.stilling.uuid,
   );
   const beskjederHook = useSmserForStilling(stillingsData.stilling.uuid);
-  const kandidatlisteHook = useKandidatliste(
-    stillingsData.stilling.uuid,
-    erEier,
-  );
+  const kandidatlisteHook = useKandidatliste(stillingsData, erEier);
 
   const onOvertaStilling = async () => {
     await oppdaterStilling(stillingsData, {

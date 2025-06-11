@@ -1,6 +1,6 @@
 import { StillingAPI } from '../../api-routes';
 import { getAPIwithSchema } from '../../fetcher';
-import useSWRImmutable from 'swr/immutable';
+import useSWR from 'swr';
 import { z } from 'zod';
 
 export const brukerStandardSøkEndepunkt = `${StillingAPI.internUrl}/standardsok`;
@@ -14,14 +14,15 @@ const BrukerStandardSøkSchema = z.object({
 export type BrukerStandardSøkDTO = z.infer<typeof BrukerStandardSøkSchema>;
 
 export const useUseBrukerStandardSøk = () =>
-  useSWRImmutable(
+  useSWR(
     brukerStandardSøkEndepunkt,
-    getAPIwithSchema(BrukerStandardSøkSchema),
+    getAPIwithSchema(BrukerStandardSøkSchema, true),
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
       refreshInterval: 0,
       dedupingInterval: 0,
+      shouldRetryOnError: false,
     },
   );
 
