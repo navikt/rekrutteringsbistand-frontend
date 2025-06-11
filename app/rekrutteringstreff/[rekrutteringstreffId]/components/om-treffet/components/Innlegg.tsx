@@ -39,8 +39,7 @@ import {
 import { logger } from '@navikt/next-logger';
 import { isSameDay } from 'date-fns';
 import { AnimatePresence, motion } from 'framer-motion';
-import * as React from 'react';
-import { useRef, useEffect, useMemo } from 'react';
+import React, { useRef, useEffect, useMemo } from 'react';
 import { useForm, FormProvider, type SubmitHandler } from 'react-hook-form';
 
 export interface InnleggProps {
@@ -56,6 +55,7 @@ interface InnleggFormFields {
 }
 
 const SKELETON_LINES = 6;
+const EDITOR_WRAPPER_ID = 'rediger-innlegg-htmlcontent';
 
 const Innlegg: React.FC<InnleggProps> = ({
   rekrutteringstreffId,
@@ -66,13 +66,12 @@ const Innlegg: React.FC<InnleggProps> = ({
 }) => {
   const modalRef = useRef<HTMLDialogElement>(null);
   const cancelButtonRef = useRef<HTMLButtonElement>(null);
-  const formId = React.useId();
+  const analyseRef = useRef<HTMLDivElement>(null); // fokus-mål etter Tab
 
   const methods = useForm<InnleggFormFields>({
     defaultValues: { htmlContent: innlegg?.htmlContent ?? '' },
     mode: 'onChange',
   });
-
   const {
     handleSubmit,
     setValue,
@@ -138,10 +137,21 @@ const Innlegg: React.FC<InnleggProps> = ({
     }
   };
 
+  const focusEditor = () => {
+    requestAnimationFrame(() => {
+      const wrapper = document.getElementById(EDITOR_WRAPPER_ID);
+      const editable = wrapper?.querySelector(
+        '[contenteditable]',
+      ) as HTMLElement | null;
+      editable?.focus();
+    });
+  };
+
   const openModal = () => {
     reset({ htmlContent: innlegg?.htmlContent ?? '' });
     resetAnalyse();
     modalRef.current?.showModal();
+    focusEditor();
   };
 
   return (
@@ -232,7 +242,7 @@ const Innlegg: React.FC<InnleggProps> = ({
         width='medium'
       >
         <FormProvider {...methods}>
-          <form id={formId} onSubmit={handleSubmit(onSubmitHandler)}>
+          <form id='innlegg-form' onSubmit={handleSubmit(onSubmitHandler)}>
             <Modal.Body>
               <div className='flex flex-col gap-6'>
                 <BodyShort>
@@ -240,16 +250,22 @@ const Innlegg: React.FC<InnleggProps> = ({
                   gjerne en hyggelig introduksjon og praktisk informasjon.
                 </BodyShort>
 
-                <div tabIndex={-1} onBlur={handleValidateOrError}>
-                  <Label
-                    htmlFor='rediger-innlegg-htmlcontent'
-                    className='mb-2 block'
-                  >
+                <div
+                  tabIndex={-1}
+                  onBlur={() =>
+                    setTimeout(() => {
+                      if (!modalRef.current?.contains(document.activeElement)) {
+                        handleValidateOrError();
+                      }
+                    })
+                  }
+                >
+                  <Label htmlFor={EDITOR_WRAPPER_ID} className='mb-2 block'>
                     Innhold
                   </Label>
 
                   <RikTekstEditorInnlegg
-                    id='rediger-innlegg-htmlcontent'
+                    id={EDITOR_WRAPPER_ID}
                     tekst={htmlContent ?? ''}
                     onChange={(html) =>
                       setValue('htmlContent', html, {
@@ -259,7 +275,9 @@ const Innlegg: React.FC<InnleggProps> = ({
                     }
                     onKeyDown={(e) => {
                       if (e.key === 'Tab' && !e.shiftKey) {
+                        e.preventDefault();
                         handleValidateOrError();
+                        setTimeout(() => analyseRef.current?.focus(), 0);
                       }
                     }}
                   />
@@ -269,86 +287,93 @@ const Innlegg: React.FC<InnleggProps> = ({
                   )}
                 </div>
 
-                <div className='flex gap-3 items-start'>
-                  <div className='inline-flex justify-center items-start w-10 pt-1'>
-                    {validating ? (
-                      <RobotIcon aria-hidden fontSize='2em' />
-                    ) : analyse && !analyseError ? (
-                      analyse.bryterRetningslinjer ? (
+                <div
+                  ref={analyseRef}
+                  tabIndex={-1}
+                  aria-live='polite'
+                  className='outline-none'
+                >
+                  <div className='flex gap-3 items-start'>
+                    <div className='inline-flex justify-center items-start w-10 pt-1'>
+                      {validating ? (
+                        <RobotIcon aria-hidden fontSize='2em' />
+                      ) : analyse && !analyseError ? (
+                        analyse.bryterRetningslinjer ? (
+                          <RobotFrownIcon
+                            aria-hidden
+                            fontSize='2em'
+                            className='text-red-600'
+                          />
+                        ) : (
+                          <RobotSmileIcon
+                            aria-hidden
+                            fontSize='2em'
+                            className='text-green-800'
+                          />
+                        )
+                      ) : analyseError ? (
                         <RobotFrownIcon
                           aria-hidden
                           fontSize='2em'
                           className='text-red-600'
                         />
-                      ) : (
-                        <RobotSmileIcon
-                          aria-hidden
-                          fontSize='2em'
-                          className='text-green-800'
-                        />
-                      )
-                    ) : analyseError ? (
-                      <RobotFrownIcon
-                        aria-hidden
-                        fontSize='2em'
-                        className='text-red-600'
-                      />
-                    ) : null}
-                  </div>
+                      ) : null}
+                    </div>
 
-                  <div className='w-full'>
-                    <AnimatePresence mode='wait'>
-                      {validating && (
-                        <motion.div
-                          key='skeleton'
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          exit={{ opacity: 0 }}
-                          transition={{ duration: 0.2 }}
-                        >
-                          {[...Array(SKELETON_LINES)].map((_, i) => (
-                            <Skeleton
-                              key={i}
-                              variant='text'
-                              width='100%'
-                              height={24}
-                            />
-                          ))}
-                        </motion.div>
-                      )}
+                    <div className='w-full'>
+                      <AnimatePresence mode='wait'>
+                        {validating && (
+                          <motion.div
+                            key='skeleton'
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                          >
+                            {[...Array(SKELETON_LINES)].map((_, i) => (
+                              <Skeleton
+                                key={i}
+                                variant='text'
+                                width='100%'
+                                height={24}
+                              />
+                            ))}
+                          </motion.div>
+                        )}
 
-                      {!validating && analyseError && (
-                        <motion.div
-                          key='error'
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          exit={{ opacity: 0 }}
-                          transition={{ duration: 0.2 }}
-                        >
-                          <Alert variant='error'>
-                            {analyseError.message ??
-                              'En feil oppstod under validering.'}
-                          </Alert>
-                        </motion.div>
-                      )}
+                        {!validating && analyseError && (
+                          <motion.div
+                            key='error'
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                          >
+                            <Alert variant='error'>
+                              {analyseError.message ??
+                                'En feil oppstod under validering.'}
+                            </Alert>
+                          </motion.div>
+                        )}
 
-                      {!validating && analyse && !analyseError && (
-                        <motion.div
-                          key='analyse'
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          exit={{ opacity: 0 }}
-                          transition={{ duration: 0.2 }}
-                          className={
-                            analyse.bryterRetningslinjer
-                              ? 'aksel-error-message p-1'
-                              : 'text-green-700 p-1'
-                          }
-                        >
-                          <BodyLong>{analyse.begrunnelse}</BodyLong>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
+                        {!validating && analyse && !analyseError && (
+                          <motion.div
+                            key='analyse'
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                            className={
+                              analyse.bryterRetningslinjer
+                                ? 'aksel-error-message p-1'
+                                : 'text-green-700 p-1'
+                            }
+                          >
+                            <BodyLong>{analyse.begrunnelse}</BodyLong>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
                   </div>
                 </div>
               </div>
