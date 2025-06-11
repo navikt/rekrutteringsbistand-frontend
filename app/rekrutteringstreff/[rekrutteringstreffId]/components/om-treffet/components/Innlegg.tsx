@@ -101,7 +101,7 @@ const Innlegg: React.FC<InnleggProps> = ({
   );
 
   const handleValidateOrError = () => {
-    if (!dirtyFields.htmlContent) return;
+    if (validating) return;
     const txt = htmlContent?.trim();
     if (!txt) {
       resetAnalyse();
@@ -252,10 +252,11 @@ const Innlegg: React.FC<InnleggProps> = ({
                   tabIndex={-1}
                   onBlur={() =>
                     setTimeout(() => {
-                      if (!modalRef.current?.contains(document.activeElement)) {
+                      const activeElement = document.activeElement;
+                      if (activeElement !== cancelButtonRef.current) {
                         handleValidateOrError();
                       }
-                    })
+                    }, 0)
                   }
                 >
                   <Label htmlFor={EDITOR_WRAPPER_ID} className='mb-2 block'>
