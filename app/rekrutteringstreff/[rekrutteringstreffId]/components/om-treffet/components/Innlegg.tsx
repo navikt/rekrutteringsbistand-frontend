@@ -495,7 +495,9 @@ const Innlegg: React.FC<InnleggProps> = ({
                               exit={{ opacity: 0 }}
                               transition={{ duration: 0.2 }}
                             >
-                              <BodyLong>Ingen endring.</BodyLong>
+                              <BodyShort textColor='subtle' className='italic'>
+                                Ingen endring.
+                              </BodyShort>
                             </motion.div>
                           )}
                       </AnimatePresence>
