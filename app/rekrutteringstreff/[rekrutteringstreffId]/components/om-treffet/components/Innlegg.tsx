@@ -70,10 +70,15 @@ const Innlegg: React.FC<InnleggProps> = ({
   const analyseRef = useRef<HTMLDivElement>(null);
 
   const [isClosingModal, setIsClosingModal] = useState(false);
+  const [initialFocusDone, setInitialFocusDone] = useState(false);
+  const [
+    hasValidatedCurrentContentSuccessfully,
+    setHasValidatedCurrentContentSuccessfully,
+  ] = useState(false);
 
   const methods = useForm<InnleggFormFields>({
     defaultValues: { htmlContent: innlegg?.htmlContent ?? '' },
-    mode: 'onChange',
+    mode: 'onChange', // Endret til onChange for å få hyppigere dirty-status
   });
   const {
     handleSubmit,
@@ -92,15 +97,28 @@ const Innlegg: React.FC<InnleggProps> = ({
   } = useValiderRekrutteringstreff();
 
   const htmlContent = watch('htmlContent');
+  const isDirty = dirtyFields.htmlContent;
+
+  useEffect(() => {
+    if (isDirty) {
+      setHasValidatedCurrentContentSuccessfully(false);
+    }
+  }, [htmlContent, isDirty]);
 
   const disableSave = useMemo(
     () =>
-      !dirtyFields.htmlContent ||
+      !isDirty ||
       !htmlContent?.trim() ||
       isSubmitting ||
       validating ||
-      analyse?.bryterRetningslinjer,
-    [dirtyFields.htmlContent, htmlContent, isSubmitting, validating, analyse],
+      !hasValidatedCurrentContentSuccessfully,
+    [
+      isDirty,
+      htmlContent,
+      isSubmitting,
+      validating,
+      hasValidatedCurrentContentSuccessfully,
+    ],
   );
 
   const handleValidateOrError = () => {
@@ -108,20 +126,42 @@ const Innlegg: React.FC<InnleggProps> = ({
     const txt = htmlContent?.trim();
     if (!txt) {
       resetAnalyse();
+      setHasValidatedCurrentContentSuccessfully(false);
       return;
     }
+    setHasValidatedCurrentContentSuccessfully(false);
     validate({ tittel: null, beskrivelse: txt });
   };
 
   useEffect(() => {
+    if (analyse && !validating && !analyseError) {
+      if (!analyse.bryterRetningslinjer) {
+        setHasValidatedCurrentContentSuccessfully(true);
+      } else {
+        setHasValidatedCurrentContentSuccessfully(false);
+      }
+    } else if (analyseError && !validating) {
+      setHasValidatedCurrentContentSuccessfully(false);
+    }
+  }, [analyse, validating, analyseError]);
+
+  useEffect(() => {
     reset({ htmlContent: innlegg?.htmlContent ?? '' });
     resetAnalyse();
+    setHasValidatedCurrentContentSuccessfully(false);
     if (!modalRef.current?.open) {
       setIsClosingModal(false);
+      setInitialFocusDone(false);
     }
   }, [innlegg, reset, resetAnalyse]);
 
   const onSubmitHandler: SubmitHandler<InnleggFormFields> = async (data) => {
+    if (validating || !hasValidatedCurrentContentSuccessfully) {
+      logger.warn(
+        'Forsøkte å lagre innlegg uten vellykket validering eller mens validering pågikk.',
+      );
+      return;
+    }
     try {
       const navnForPayload =
         innlegg?.opprettetAvPersonNavn ||
@@ -152,9 +192,18 @@ const Innlegg: React.FC<InnleggProps> = ({
     requestAnimationFrame(() => {
       const wrapper = document.getElementById(EDITOR_WRAPPER_ID);
       const editable = wrapper?.querySelector(
-        '[contenteditable]',
+        '.ProseMirror[contenteditable="true"]',
       ) as HTMLElement | null;
-      editable?.focus();
+
+      if (editable) {
+        editable.focus();
+        const selection = window.getSelection();
+        const range = document.createRange();
+        range.selectNodeContents(editable);
+        range.collapse(false);
+        selection?.removeAllRanges();
+        selection?.addRange(range);
+      }
     });
   };
 
@@ -162,8 +211,15 @@ const Innlegg: React.FC<InnleggProps> = ({
     setIsClosingModal(false);
     reset({ htmlContent: innlegg?.htmlContent ?? '' });
     resetAnalyse();
+    setInitialFocusDone(false);
+    setHasValidatedCurrentContentSuccessfully(false);
     modalRef.current?.showModal();
+  };
+
+  const handleInitialModalFocus = () => {
+    if (initialFocusDone || !modalRef.current?.open) return;
     focusEditor();
+    setInitialFocusDone(true);
   };
 
   return (
@@ -250,8 +306,11 @@ const Innlegg: React.FC<InnleggProps> = ({
           reset();
           resetAnalyse();
           setIsClosingModal(false);
+          setInitialFocusDone(false);
+          setHasValidatedCurrentContentSuccessfully(false);
         }}
         width='medium'
+        onFocus={handleInitialModalFocus}
       >
         <FormProvider {...methods}>
           <form id='innlegg-form' onSubmit={handleSubmit(onSubmitHandler)}>
@@ -275,7 +334,9 @@ const Innlegg: React.FC<InnleggProps> = ({
                         activeElement !== cancelButtonRef.current &&
                         activeElement !== submitButtonRef.current
                       ) {
-                        handleValidateOrError();
+                        if (isDirty) {
+                          handleValidateOrError();
+                        }
                       }
                     }, 0)
                   }
@@ -287,16 +348,18 @@ const Innlegg: React.FC<InnleggProps> = ({
                   <RikTekstEditor
                     id={EDITOR_WRAPPER_ID}
                     tekst={htmlContent ?? ''}
-                    onChange={(html) =>
+                    onChange={(html) => {
                       setValue('htmlContent', html, {
-                        shouldValidate: true,
+                        shouldValidate: false,
                         shouldDirty: true,
-                      })
-                    }
+                      });
+                    }}
                     onKeyDown={(e) => {
                       if (e.key === 'Tab' && !e.shiftKey) {
                         e.preventDefault();
-                        handleValidateOrError();
+                        if (isDirty) {
+                          handleValidateOrError();
+                        }
                         setTimeout(() => analyseRef.current?.focus(), 0);
                       } else if (e.key === 'Escape') {
                         e.preventDefault();
