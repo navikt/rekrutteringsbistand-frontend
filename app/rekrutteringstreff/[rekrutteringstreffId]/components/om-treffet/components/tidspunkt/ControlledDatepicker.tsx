@@ -27,7 +27,7 @@ export default function ControlledDatePicker({
   });
 
   return (
-    <DatePicker className='pt-16' mode='single' {...datepickerProps}>
+    <DatePicker mode='single' {...datepickerProps}>
       <DatePicker.Input
         {...inputProps}
         hideLabel
