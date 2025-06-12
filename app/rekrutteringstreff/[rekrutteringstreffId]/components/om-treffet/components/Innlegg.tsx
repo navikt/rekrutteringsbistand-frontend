@@ -39,7 +39,7 @@ import {
 import { logger } from '@navikt/next-logger';
 import { isSameDay } from 'date-fns';
 import { AnimatePresence, motion } from 'framer-motion';
-import React, { useRef, useEffect, useMemo } from 'react';
+import React, { useRef, useEffect, useMemo, useState } from 'react';
 import { useForm, FormProvider, type SubmitHandler } from 'react-hook-form';
 
 export interface InnleggProps {
@@ -66,7 +66,10 @@ const Innlegg: React.FC<InnleggProps> = ({
 }) => {
   const modalRef = useRef<HTMLDialogElement>(null);
   const cancelButtonRef = useRef<HTMLButtonElement>(null);
+  const submitButtonRef = useRef<HTMLButtonElement>(null);
   const analyseRef = useRef<HTMLDivElement>(null);
+
+  const [isClosingModal, setIsClosingModal] = useState(false);
 
   const methods = useForm<InnleggFormFields>({
     defaultValues: { htmlContent: innlegg?.htmlContent ?? '' },
@@ -113,6 +116,9 @@ const Innlegg: React.FC<InnleggProps> = ({
   useEffect(() => {
     reset({ htmlContent: innlegg?.htmlContent ?? '' });
     resetAnalyse();
+    if (!modalRef.current?.open) {
+      setIsClosingModal(false);
+    }
   }, [innlegg, reset, resetAnalyse]);
 
   const onSubmitHandler: SubmitHandler<InnleggFormFields> = async (data) => {
@@ -153,6 +159,7 @@ const Innlegg: React.FC<InnleggProps> = ({
   };
 
   const openModal = () => {
+    setIsClosingModal(false);
     reset({ htmlContent: innlegg?.htmlContent ?? '' });
     resetAnalyse();
     modalRef.current?.showModal();
@@ -242,6 +249,7 @@ const Innlegg: React.FC<InnleggProps> = ({
         onClose={() => {
           reset();
           resetAnalyse();
+          setIsClosingModal(false);
         }}
         width='medium'
       >
@@ -258,8 +266,15 @@ const Innlegg: React.FC<InnleggProps> = ({
                   tabIndex={-1}
                   onBlur={() =>
                     setTimeout(() => {
+                      if (isClosingModal || !modalRef.current?.open) {
+                        return;
+                      }
+
                       const activeElement = document.activeElement;
-                      if (activeElement !== cancelButtonRef.current) {
+                      if (
+                        activeElement !== cancelButtonRef.current &&
+                        activeElement !== submitButtonRef.current
+                      ) {
                         handleValidateOrError();
                       }
                     }, 0)
@@ -283,6 +298,10 @@ const Innlegg: React.FC<InnleggProps> = ({
                         e.preventDefault();
                         handleValidateOrError();
                         setTimeout(() => analyseRef.current?.focus(), 0);
+                      } else if (e.key === 'Escape') {
+                        e.preventDefault();
+                        setIsClosingModal(true);
+                        modalRef.current?.close();
                       }
                     }}
                   />
@@ -381,6 +400,7 @@ const Innlegg: React.FC<InnleggProps> = ({
 
             <Modal.Footer>
               <Button
+                ref={submitButtonRef}
                 type='submit'
                 loading={isSubmitting}
                 disabled={disableSave}
@@ -392,9 +412,8 @@ const Innlegg: React.FC<InnleggProps> = ({
                 type='button'
                 variant='secondary'
                 onClick={() => {
+                  setIsClosingModal(true);
                   modalRef.current?.close();
-                  reset();
-                  resetAnalyse();
                 }}
               >
                 Avbryt
