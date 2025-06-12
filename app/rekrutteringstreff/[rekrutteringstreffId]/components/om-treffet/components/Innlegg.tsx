@@ -75,7 +75,6 @@ const Innlegg: React.FC<InnleggProps> = ({
     hasValidatedCurrentContentSuccessfully,
     setHasValidatedCurrentContentSuccessfully,
   ] = useState(false);
-  const [showNoChangeMessage, setShowNoChangeMessage] = useState(false);
   const [editorKey, setEditorKey] = useState(Date.now());
 
   const methods = useForm<InnleggFormFields>({
@@ -104,7 +103,6 @@ const Innlegg: React.FC<InnleggProps> = ({
   useEffect(() => {
     if (isDirty) {
       setHasValidatedCurrentContentSuccessfully(false);
-      setShowNoChangeMessage(false);
     }
   }, [htmlContent, isDirty]);
 
@@ -126,7 +124,6 @@ const Innlegg: React.FC<InnleggProps> = ({
 
   const handleValidateOrError = () => {
     if (validating) return;
-    setShowNoChangeMessage(false);
 
     const txt = htmlContent?.trim();
     if (!txt) {
@@ -140,14 +137,12 @@ const Innlegg: React.FC<InnleggProps> = ({
 
   useEffect(() => {
     if (analyse && !validating && !analyseError) {
-      setShowNoChangeMessage(false);
       if (!analyse.bryterRetningslinjer) {
         setHasValidatedCurrentContentSuccessfully(true);
       } else {
         setHasValidatedCurrentContentSuccessfully(false);
       }
     } else if (analyseError && !validating) {
-      setShowNoChangeMessage(false);
       setHasValidatedCurrentContentSuccessfully(false);
     }
   }, [analyse, validating, analyseError]);
@@ -156,7 +151,6 @@ const Innlegg: React.FC<InnleggProps> = ({
     reset({ htmlContent: innlegg?.htmlContent ?? '' });
     resetAnalyse();
     setHasValidatedCurrentContentSuccessfully(false);
-    setShowNoChangeMessage(false);
     setEditorKey(Date.now());
     if (!modalRef.current?.open) {
       setIsClosingModal(false);
@@ -222,7 +216,6 @@ const Innlegg: React.FC<InnleggProps> = ({
     resetAnalyse();
     setInitialFocusDone(false);
     setHasValidatedCurrentContentSuccessfully(false);
-    setShowNoChangeMessage(false);
     setEditorKey(Date.now());
     modalRef.current?.showModal();
   };
@@ -319,7 +312,6 @@ const Innlegg: React.FC<InnleggProps> = ({
           setIsClosingModal(false);
           setInitialFocusDone(false);
           setHasValidatedCurrentContentSuccessfully(false);
-          setShowNoChangeMessage(false);
         }}
         width='medium'
         onFocus={handleInitialModalFocus}
@@ -347,11 +339,10 @@ const Innlegg: React.FC<InnleggProps> = ({
                         activeElement !== submitButtonRef.current
                       ) {
                         if (!isDirty) {
-                          setShowNoChangeMessage(true);
                           resetAnalyse();
                           setHasValidatedCurrentContentSuccessfully(false);
+                          cancelButtonRef.current?.focus();
                         } else {
-                          setShowNoChangeMessage(false);
                           handleValidateOrError();
                         }
                       }
@@ -376,14 +367,13 @@ const Innlegg: React.FC<InnleggProps> = ({
                       if (e.key === 'Tab' && !e.shiftKey) {
                         e.preventDefault();
                         if (!isDirty) {
-                          setShowNoChangeMessage(true);
                           resetAnalyse();
                           setHasValidatedCurrentContentSuccessfully(false);
+                          setTimeout(() => cancelButtonRef.current?.focus(), 0);
                         } else {
-                          setShowNoChangeMessage(false);
                           handleValidateOrError();
+                          setTimeout(() => analyseRef.current?.focus(), 0);
                         }
-                        setTimeout(() => analyseRef.current?.focus(), 0);
                       } else if (e.key === 'Escape') {
                         e.preventDefault();
                         setIsClosingModal(true);
@@ -402,13 +392,13 @@ const Innlegg: React.FC<InnleggProps> = ({
                     <div className='inline-flex justify-center items-start w-10 pt-1'>
                       {validating ? (
                         <RobotIcon aria-hidden fontSize='2em' />
-                      ) : analyseError && !showNoChangeMessage ? (
+                      ) : analyseError ? (
                         <RobotFrownIcon
                           aria-hidden
                           fontSize='2em'
                           className='text-red-600'
                         />
-                      ) : analyse && !showNoChangeMessage ? (
+                      ) : analyse ? (
                         analyse.bryterRetningslinjer ? (
                           <RobotFrownIcon
                             aria-hidden
@@ -446,60 +436,37 @@ const Innlegg: React.FC<InnleggProps> = ({
                           </motion.div>
                         )}
 
-                        {!validating &&
-                          analyseError &&
-                          !showNoChangeMessage && (
-                            <motion.div
-                              key='error'
-                              initial={{ opacity: 0 }}
-                              animate={{ opacity: 1 }}
-                              exit={{ opacity: 0 }}
-                              transition={{ duration: 0.2 }}
-                            >
-                              <Alert variant='error'>
-                                {analyseError.message ??
-                                  'En feil oppstod under validering.'}
-                              </Alert>
-                            </motion.div>
-                          )}
+                        {!validating && analyseError && (
+                          <motion.div
+                            key='error'
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                          >
+                            <Alert variant='error'>
+                              {analyseError.message ??
+                                'En feil oppstod under validering.'}
+                            </Alert>
+                          </motion.div>
+                        )}
 
-                        {!validating &&
-                          analyse &&
-                          !analyseError &&
-                          !showNoChangeMessage && (
-                            <motion.div
-                              key='analyse'
-                              initial={{ opacity: 0 }}
-                              animate={{ opacity: 1 }}
-                              exit={{ opacity: 0 }}
-                              transition={{ duration: 0.2 }}
-                              className={
-                                analyse.bryterRetningslinjer
-                                  ? 'aksel-error-message p-1'
-                                  : 'text-green-700 p-1'
-                              }
-                            >
-                              <BodyLong>{analyse.begrunnelse}</BodyLong>
-                            </motion.div>
-                          )}
-
-                        {showNoChangeMessage &&
-                          !isDirty &&
-                          !validating &&
-                          !analyse &&
-                          !analyseError && (
-                            <motion.div
-                              key='no-change-message'
-                              initial={{ opacity: 0 }}
-                              animate={{ opacity: 1 }}
-                              exit={{ opacity: 0 }}
-                              transition={{ duration: 0.2 }}
-                            >
-                              <BodyShort textColor='subtle' className='italic'>
-                                Ingen endring.
-                              </BodyShort>
-                            </motion.div>
-                          )}
+                        {!validating && analyse && !analyseError && (
+                          <motion.div
+                            key='analyse'
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                            className={
+                              analyse.bryterRetningslinjer
+                                ? 'aksel-error-message p-1'
+                                : 'text-green-700 p-1'
+                            }
+                          >
+                            <BodyLong>{analyse.begrunnelse}</BodyLong>
+                          </motion.div>
+                        )}
                       </AnimatePresence>
                     </div>
                   </div>
