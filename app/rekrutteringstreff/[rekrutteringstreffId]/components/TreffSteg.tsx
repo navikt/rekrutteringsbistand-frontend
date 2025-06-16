@@ -4,6 +4,7 @@ import { useRekrutteringstreffContext } from '../RekrutteringstreffContext';
 import LeggTilArbeidsgiverModal from './LeggTilArbeidsgiverModal';
 import EndreTittel from './om-treffet/components/EndreTittel';
 import StedModal from './om-treffet/components/sted/StedModal';
+import SvarfristModal from './om-treffet/components/tidspunkt/svarfrist/SvarfristModal';
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
@@ -72,6 +73,7 @@ const TreffSteg = () => {
   const arbeidsgiverModalRef = React.useRef<HTMLDialogElement>(null);
   const endreTittelModalRef = React.useRef<HTMLDialogElement>(null);
   const stedModalRef = React.useRef<HTMLDialogElement>(null);
+  const svarfristModalRef = React.useRef<HTMLDialogElement>(null);
 
   const {
     data: arbeidsgivereData,
@@ -146,6 +148,7 @@ const TreffSteg = () => {
     if (id === 'arbeidsgiver') arbeidsgiverModalRef.current?.showModal();
     if (id === 'navn') endreTittelModalRef.current?.showModal();
     if (id === 'sted') stedModalRef.current?.showModal();
+    if (id === 'svarfrist') svarfristModalRef.current?.showModal();
   };
 
   const currentHeader =
@@ -316,6 +319,13 @@ const TreffSteg = () => {
               mutateRekrutteringstreff();
             }}
             modalRef={stedModalRef}
+          />
+          <SvarfristModal
+            rekrutteringstreff={rekrutteringstreffData}
+            onUpdated={() => {
+              mutateRekrutteringstreff();
+            }}
+            modalRef={svarfristModalRef}
           />
         </>
       )}
