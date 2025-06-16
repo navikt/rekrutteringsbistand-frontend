@@ -39,6 +39,7 @@ const Arbeidserfaring: React.FC = () => {
         label='Arbeidserfaring'
         options={data ?? []}
         isMultiSelect
+        allowNewValues
         onToggleSelected={onOptionSelected}
         onChange={(val) => setSøkeTekst(val)}
       />

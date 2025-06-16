@@ -31,6 +31,7 @@ const Kompetanse: React.FC = () => {
       <UNSAFE_Combobox
         isLoading={isLoading}
         selectedOptions={kompetanse}
+        allowNewValues
         label='Kompetanse'
         // description='For eksempel fagbrev, sertifisering, ferdigheter eller programmer'
         options={data ?? []}
