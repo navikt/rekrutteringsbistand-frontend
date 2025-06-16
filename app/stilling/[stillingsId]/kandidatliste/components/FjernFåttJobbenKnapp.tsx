@@ -21,7 +21,7 @@ const FjernFåttJobbenKnapp: React.FC<FjernFåttJobbenKnappProps> = ({
       return (
         <ActionMenu.Item
           onSelect={() =>
-            endreUtfallForKandidat(KandidatutfallTyper.FATT_JOBBEN)
+            endreUtfallForKandidat(KandidatutfallTyper.PRESENTERT)
           }
         >
           <MinusCircleIcon /> Fjern registrer fått jobben
