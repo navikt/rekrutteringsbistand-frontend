@@ -1,11 +1,16 @@
-import { ChevronDownIcon, ChevronUpIcon } from '@navikt/aksel-icons';
+import {
+  ChevronDownIcon,
+  ChevronUpIcon,
+  CheckmarkIcon,
+  XMarkIcon,
+} from '@navikt/aksel-icons';
 import {
   BodyShort,
   Box,
   Button,
-  Checkbox,
   Heading,
   Stepper,
+  Detail,
 } from '@navikt/ds-react';
 import * as React from 'react';
 
@@ -17,8 +22,6 @@ interface ChecklistItemProps {
   id: string;
   label: string;
   checked?: boolean;
-  onCheckChange?: (id: string, checked: boolean) => void;
-  onLeggTilClick?: (id: string) => void;
 }
 
 const sjekklisteData: ChecklistItemProps[] = [
@@ -47,6 +50,10 @@ const TreffSteg: React.FC<TreffStegProps> = ({ className }) => {
     ),
   );
 
+  const [itemValidity] = React.useState<Record<string, boolean>>(
+    sjekklisteData.reduce((acc, item) => ({ ...acc, [item.id]: false }), {}),
+  );
+
   const handleCheckChange = (id: string, isChecked: boolean) => {
     setCheckedItems((prev) => ({ ...prev, [id]: isChecked }));
   };
@@ -64,11 +71,7 @@ const TreffSteg: React.FC<TreffStegProps> = ({ className }) => {
     <div className={`my-2 ${className ?? ''}`}>
       <Box.New
         {...commonBoxProps}
-        className={`
-          ${isOpen ? 'rounded-t-xl border-b-0' : 'rounded-xl'} 
-          cursor-pointer 
-          focus-visible:shadow-focus focus-visible:outline-none
-        `}
+        className={`${isOpen ? 'rounded-t-xl border-b-0' : 'rounded-xl'} cursor-pointer focus-visible:shadow-focus focus-visible:outline-none`}
         onClick={toggleContent}
         role='button'
         aria-expanded={isOpen}
@@ -119,10 +122,10 @@ const TreffSteg: React.FC<TreffStegProps> = ({ className }) => {
           role='region'
           aria-labelledby={headerId}
         >
-          <div className='flex flex-row gap-8'>
+          <div className='flex flex-row gap-16'>
             <Stepper
               aria-labelledby='stepper-heading'
-              activeStep={1} // Du må kanskje gjøre denne dynamisk
+              activeStep={1}
               orientation='vertical'
             >
               <Stepper.Step>Publisere</Stepper.Step>
@@ -132,29 +135,52 @@ const TreffSteg: React.FC<TreffStegProps> = ({ className }) => {
               <Stepper.Step>Avslutte</Stepper.Step>
             </Stepper>
             <div className='flex-1'>
-              <BodyShort spacing>
+              <Detail spacing>
                 Før treffet er tilgjengelig for andre, og du kan invitere
                 jobbsøker må noen detaljer være på plass først:
-              </BodyShort>
+              </Detail>
               <ul className='space-y-0'>
-                {sjekklisteData.map((item, index) => (
+                {sjekklisteData.map((item) => (
                   <li
                     key={item.id}
-                    className={`flex items-center justify-between py-3 ${
-                      index < sjekklisteData.length - 1
-                        ? 'border-b border-border-subtle'
+                    className={`flex items-center justify-between py-1 ${
+                      item.id === 'arbeidsgiver' || item.id === 'svarfrist'
+                        ? 'border-b border-border-subtle mb-4'
                         : ''
                     }`}
                   >
-                    <Checkbox
-                      checked={checkedItems[item.id]}
-                      onChange={(e) =>
-                        handleCheckChange(item.id, e.target.checked)
+                    <div
+                      role='checkbox'
+                      aria-checked={checkedItems[item.id]}
+                      onClick={() =>
+                        handleCheckChange(item.id, !checkedItems[item.id])
                       }
-                      size='small'
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          handleCheckChange(item.id, !checkedItems[item.id]);
+                        }
+                      }}
+                      tabIndex={0}
+                      className='flex items-center cursor-pointer group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus focus-visible:ring-offset-1 rounded'
                     >
-                      {item.label}
-                    </Checkbox>
+                      <div className='w-5 h-5 border-2 border-blue-500 rounded-full flex items-center justify-center mr-2 group-hover:border-blue-700 text-blue-600'>
+                        {itemValidity[item.id] ? (
+                          <CheckmarkIcon
+                            title='Gyldig'
+                            fontSize='1rem'
+                            className='text-green-600'
+                          />
+                        ) : (
+                          <XMarkIcon
+                            title='Ugyldig'
+                            fontSize='1rem'
+                            className='text-red-600'
+                          />
+                        )}
+                      </div>
+                      <BodyShort as='span'>{item.label}</BodyShort>
+                    </div>
                     <Button
                       variant='tertiary'
                       size='small'
