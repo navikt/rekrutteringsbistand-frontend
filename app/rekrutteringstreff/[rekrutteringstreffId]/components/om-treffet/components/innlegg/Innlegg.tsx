@@ -1,7 +1,7 @@
 'use client';
 
-import { formaterKlokkeslett } from './tidspunkt/utils';
-import { InnleggDTO } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
+import { formaterKlokkeslett } from '../tidspunkt/utils';
+import type { InnleggDTO } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
 import {
   oppdaterEttInnlegg,
   OpprettEllerOppdaterInnleggDto,
@@ -147,12 +147,14 @@ const Innlegg: React.FC<InnleggProps> = ({
     }
   }, [analyse, validating, analyseError]);
 
+  // Effekt for å resette form og analyse når 'innlegg' prop endres,
+  // eller når modalen ikke er åpen (for å håndtere tilfeller der modalen lukkes utenfor submit/cancel)
   useEffect(() => {
     reset({ htmlContent: innlegg?.htmlContent ?? '' });
     resetAnalyse();
     setHasValidatedCurrentContentSuccessfully(false);
-    setEditorKey(Date.now());
-    if (!modalRef.current?.open) {
+    setEditorKey(Date.now()); // For å tvinge re-render av RikTekstEditor
+    if (modalRef.current && !modalRef.current.open) {
       setIsClosingModal(false);
       setInitialFocusDone(false);
     }
@@ -173,10 +175,10 @@ const Innlegg: React.FC<InnleggProps> = ({
 
       const payload: OpprettEllerOppdaterInnleggDto = {
         htmlContent: data.htmlContent,
-        tittel: 'Om treffet',
+        tittel: 'Om treffet', // Eller en annen relevant tittel
         opprettetAvPersonNavn: navnForPayload,
-        opprettetAvPersonBeskrivelse: 'Markedskontakt',
-        sendesTilJobbsokerTidspunkt: new Date().toISOString(),
+        opprettetAvPersonBeskrivelse: 'Markedskontakt', // Eller annen beskrivelse
+        sendesTilJobbsokerTidspunkt: new Date().toISOString(), // Eller null hvis det ikke skal sendes umiddelbart
       };
 
       if (innlegg?.id) {
@@ -185,9 +187,10 @@ const Innlegg: React.FC<InnleggProps> = ({
         await opprettInnleggForTreff(rekrutteringstreffId, payload);
       }
       onInnleggUpdated();
-      modalRef.current?.close();
+      modalRef.current?.close(); // Dette vil trigge Modal sin onClose
     } catch (error) {
       logger.error('Feil ved lagring av innlegg:', error);
+      // Vurder å gi brukeren feedback her, f.eks. via en Alert
     }
   };
 
@@ -203,7 +206,7 @@ const Innlegg: React.FC<InnleggProps> = ({
         const selection = window.getSelection();
         const range = document.createRange();
         range.selectNodeContents(editable);
-        range.collapse(false);
+        range.collapse(false); // Flytt cursor til slutten
         selection?.removeAllRanges();
         selection?.addRange(range);
       }
@@ -211,12 +214,13 @@ const Innlegg: React.FC<InnleggProps> = ({
   };
 
   const openModal = () => {
+    // Resetter state spesifikt for når modalen åpnes
     setIsClosingModal(false);
-    reset({ htmlContent: innlegg?.htmlContent ?? '' });
+    reset({ htmlContent: innlegg?.htmlContent ?? '' }); // Sørg for at formen har riktig data
     resetAnalyse();
     setInitialFocusDone(false);
     setHasValidatedCurrentContentSuccessfully(false);
-    setEditorKey(Date.now());
+    setEditorKey(Date.now()); // For å tvinge re-render av RikTekstEditor
     modalRef.current?.showModal();
   };
 
@@ -224,6 +228,15 @@ const Innlegg: React.FC<InnleggProps> = ({
     if (initialFocusDone || !modalRef.current?.open) return;
     focusEditor();
     setInitialFocusDone(true);
+  };
+
+  // Håndterer cleanup når modalen lukkes (uansett årsak)
+  const handleModalClose = () => {
+    reset({ htmlContent: innlegg?.htmlContent ?? '' }); // Reset form til opprinnelig eller tom
+    resetAnalyse();
+    setIsClosingModal(false); // Reset flagg
+    setInitialFocusDone(false); // Reset flagg
+    setHasValidatedCurrentContentSuccessfully(false); // Reset flagg
   };
 
   return (
@@ -306,13 +319,7 @@ const Innlegg: React.FC<InnleggProps> = ({
         ref={modalRef}
         placement='top'
         header={{ heading: innlegg ? 'Endre innlegg' : 'Skriv nytt innlegg' }}
-        onClose={() => {
-          reset();
-          resetAnalyse();
-          setIsClosingModal(false);
-          setInitialFocusDone(false);
-          setHasValidatedCurrentContentSuccessfully(false);
-        }}
+        onClose={handleModalClose} // Bruker den dedikerte cleanup-funksjonen
         width='medium'
         onFocus={handleInitialModalFocus}
       >
@@ -326,23 +333,27 @@ const Innlegg: React.FC<InnleggProps> = ({
                 </BodyShort>
 
                 <div
-                  tabIndex={-1}
+                  tabIndex={-1} // Gjør div-en fokuserbar for onBlur, men ikke via Tab
                   onBlur={() =>
                     setTimeout(() => {
+                      // isClosingModal forhindrer validering hvis modalen aktivt lukkes
                       if (isClosingModal || !modalRef.current?.open) {
                         return;
                       }
 
                       const activeElement = document.activeElement;
+                      // Sjekk om fokus har flyttet seg til en av knappene i modalen
                       if (
                         activeElement !== cancelButtonRef.current &&
                         activeElement !== submitButtonRef.current
                       ) {
                         if (!isDirty) {
+                          // Hvis ikke endret, reset analyse og flytt fokus til Avbryt
                           resetAnalyse();
                           setHasValidatedCurrentContentSuccessfully(false);
                           cancelButtonRef.current?.focus();
                         } else {
+                          // Hvis endret, kjør validering
                           handleValidateOrError();
                         }
                       }
@@ -359,7 +370,7 @@ const Innlegg: React.FC<InnleggProps> = ({
                     tekst={htmlContent ?? ''}
                     onChange={(html) => {
                       setValue('htmlContent', html, {
-                        shouldValidate: false,
+                        shouldValidate: false, // Validering skjer onBlur eller ved forsøk på lagring
                         shouldDirty: true,
                       });
                     }}
@@ -372,12 +383,13 @@ const Innlegg: React.FC<InnleggProps> = ({
                           setTimeout(() => cancelButtonRef.current?.focus(), 0);
                         } else {
                           handleValidateOrError();
+                          // Vurder å flytte fokus til analyseRef eller submitButtonRef
                           setTimeout(() => analyseRef.current?.focus(), 0);
                         }
                       } else if (e.key === 'Escape') {
                         e.preventDefault();
-                        setIsClosingModal(true);
-                        modalRef.current?.close();
+                        setIsClosingModal(true); // Sett flagg før close()
+                        modalRef.current?.close(); // Dette trigger Modal sin onClose
                       }
                     }}
                   />
@@ -387,6 +399,7 @@ const Innlegg: React.FC<InnleggProps> = ({
                   )}
                 </div>
 
+                {/* Valideringsseksjon */}
                 <div ref={analyseRef} tabIndex={0} aria-live='polite'>
                   <div className='flex gap-3 items-start'>
                     <div className='inline-flex justify-center items-start w-10 pt-1'>

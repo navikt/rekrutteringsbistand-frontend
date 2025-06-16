@@ -4,7 +4,7 @@ import { useRekrutteringstreffContext } from '../../../RekrutteringstreffContext
 import SlettRekrutteringstreffModal from '../../SlettRekrutteringstreffModal';
 import ArbeidsgiverHendelserKort from '../../arbeidsgivere/components/ArbeidsgiverHendelserKort';
 import JobbsøkerHendelserKort from '../../jobbsøkere/components/JobbsøkerHendelserKort';
-import Innlegg from './Innlegg';
+import Innlegg from './innlegg/Innlegg';
 import Sted from './sted/Sted';
 import Tidspunkt from './tidspunkt/Tidspunkt';
 import Svarfrist from './tidspunkt/svarfrist/Svarfrist';
