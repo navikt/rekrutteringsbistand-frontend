@@ -2,7 +2,6 @@ import {
   ChevronDownIcon,
   ChevronUpIcon,
   CheckmarkIcon,
-  XMarkIcon,
 } from '@navikt/aksel-icons';
 import {
   BodyShort,
@@ -34,6 +33,26 @@ const sjekklisteData: ChecklistItemProps[] = [
   { id: 'avslortnavn', label: 'Avslørt navnet på arbeidsgiverne (valgfritt)' },
 ];
 
+const steps = [
+  { id: 1, stepLabel: 'Publisere', header: 'Gjør klar til publisering' },
+  { id: 2, stepLabel: 'Invitere', header: 'Send ut invitasjoner' },
+  {
+    id: 3,
+    stepLabel: 'Arrangere',
+    header: 'Planlegg og gjennomfør arrangementet',
+  },
+  {
+    id: 4,
+    stepLabel: 'Følge opp',
+    header: 'Følg opp påmeldte og gjennomfør treffet',
+  },
+  {
+    id: 5,
+    stepLabel: 'Avslutte',
+    header: 'Avslutt og evaluer rekrutteringstreffet',
+  },
+];
+
 const TreffSteg: React.FC<TreffStegProps> = ({ className }) => {
   const [isOpen, setIsOpen] = React.useState(true);
   const toggleContent = () => setIsOpen(!isOpen);
@@ -41,24 +60,23 @@ const TreffSteg: React.FC<TreffStegProps> = ({ className }) => {
   const headerId = React.useId();
   const contentId = React.useId();
 
-  const [checkedItems, setCheckedItems] = React.useState<
-    Record<string, boolean>
-  >(
+  const [activeStep] = React.useState(1);
+
+  const [checkedItems] = React.useState<Record<string, boolean>>(
     sjekklisteData.reduce(
       (acc, item) => ({ ...acc, [item.id]: item.checked ?? false }),
       {},
     ),
   );
 
-  const [itemValidity] = React.useState<Record<string, boolean>>(
-    sjekklisteData.reduce((acc, item) => ({ ...acc, [item.id]: false }), {}),
-  );
-
+  /*
   const handleCheckChange = (id: string, isChecked: boolean) => {
     setCheckedItems((prev) => ({ ...prev, [id]: isChecked }));
-  };
+  };*/
 
-  const handleLeggTil = () => {};
+  const handleLeggTil = () => {
+    // TODO: venter med denne
+  };
 
   const commonBoxProps = {
     background: 'raised' as const,
@@ -86,7 +104,12 @@ const TreffSteg: React.FC<TreffStegProps> = ({ className }) => {
         }}
       >
         <div className='flex items-center justify-between w-full'>
-          <Heading size='small'>Gjør klar til publisering</Heading>
+          <Heading size='small' className='flex items-center'>
+            <span className='mr-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-gray-800 text-sm text-white'>
+              {activeStep}
+            </span>
+            {steps[activeStep - 1].header}
+          </Heading>
           <div className='flex items-center gap-4'>
             <div className='flex gap-2'>
               <Button
@@ -114,6 +137,7 @@ const TreffSteg: React.FC<TreffStegProps> = ({ className }) => {
           </div>
         </div>
       </Box.New>
+
       {isOpen && (
         <Box.New
           {...commonBoxProps}
@@ -125,15 +149,15 @@ const TreffSteg: React.FC<TreffStegProps> = ({ className }) => {
           <div className='flex flex-row gap-16'>
             <Stepper
               aria-labelledby='stepper-heading'
-              activeStep={1}
+              activeStep={activeStep}
               orientation='vertical'
+              interactive={false}
             >
-              <Stepper.Step>Publisere</Stepper.Step>
-              <Stepper.Step>Invitere</Stepper.Step>
-              <Stepper.Step>Arrangere</Stepper.Step>
-              <Stepper.Step>Følge opp</Stepper.Step>
-              <Stepper.Step>Avslutte</Stepper.Step>
+              {steps.map(({ id, stepLabel }) => (
+                <Stepper.Step key={id}>{stepLabel}</Stepper.Step>
+              ))}
             </Stepper>
+
             <div className='flex-1'>
               <Detail spacing>
                 Før treffet er tilgjengelig for andre, og du kan invitere
@@ -145,38 +169,24 @@ const TreffSteg: React.FC<TreffStegProps> = ({ className }) => {
                     key={item.id}
                     className={`flex items-center justify-between py-1 ${
                       item.id === 'arbeidsgiver' || item.id === 'svarfrist'
-                        ? 'border-b border-border-subtle mb-4'
+                        ? 'border-b border-border-subtle mb-2'
                         : ''
                     }`}
                   >
                     <div
                       role='checkbox'
                       aria-checked={checkedItems[item.id]}
-                      onClick={() =>
-                        handleCheckChange(item.id, !checkedItems[item.id])
-                      }
                       onKeyDown={(e) => {
                         if (e.key === 'Enter' || e.key === ' ') {
                           e.preventDefault();
-                          handleCheckChange(item.id, !checkedItems[item.id]);
                         }
                       }}
                       tabIndex={0}
-                      className='flex items-center cursor-pointer group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus focus-visible:ring-offset-1 rounded'
+                      className='flex items-center group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus focus-visible:ring-offset-1 rounded' // Fjernet cursor-pointer, beholdt fokusstiler
                     >
                       <div className='w-5 h-5 border-2 border-blue-500 rounded-full flex items-center justify-center mr-2 group-hover:border-blue-700 text-blue-600'>
-                        {itemValidity[item.id] ? (
-                          <CheckmarkIcon
-                            title='Gyldig'
-                            fontSize='1rem'
-                            className='text-green-600'
-                          />
-                        ) : (
-                          <XMarkIcon
-                            title='Ugyldig'
-                            fontSize='1rem'
-                            className='text-red-600'
-                          />
+                        {checkedItems[item.id] && (
+                          <CheckmarkIcon title='Avkrysset' fontSize='1rem' />
                         )}
                       </div>
                       <BodyShort as='span'>{item.label}</BodyShort>
