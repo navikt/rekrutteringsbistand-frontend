@@ -8,103 +8,78 @@ import { useArbeidsgiverHendelser } from '@/app/api/rekrutteringstreff/[...slug]
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
 import VelgArbeidsgiver from '@/app/stilling/ny-stilling/components/VelgArbeidsgiver';
 import { rekbisError } from '@/util/rekbisError';
-import { PlusIcon } from '@navikt/aksel-icons';
 import { Button, Modal } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 
-interface LeggTilArbeidsgiverModalProps {
-  leggTilKnappTekst?: string;
+interface Props {
+  modalRef: React.RefObject<HTMLDialogElement | null>;
 }
 
-const LeggTilArbeidsgiverModal: React.FC<LeggTilArbeidsgiverModalProps> = ({
-  leggTilKnappTekst = 'Legg til arbeidsgiver',
-}) => {
-  const [open, setOpen] = React.useState(false);
+const LeggTilArbeidsgiverModal: React.FC<Props> = ({ modalRef }) => {
   const [arbeidsgiver, setArbeidsgiver] =
     React.useState<ArbeidsgiverDTO | null>(null);
 
-  const rekrutteringstreffId =
-    useRekrutteringstreffContext().rekrutteringstreffId;
-
+  const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const router = useRouter();
-
   const arbeidsgiverHook =
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
   const hendelseHook = useArbeidsgiverHendelser(rekrutteringstreffId);
 
-  const handleLeggTil = async () => {
-    if (arbeidsgiver) {
-      try {
-        await leggtilNyArbeidsgiver(
-          {
-            organisasjonsnummer: arbeidsgiver.organisasjonsnummer,
-            navn: arbeidsgiver.navn,
-          },
-          rekrutteringstreffId,
-        );
-
-        arbeidsgiverHook.mutate();
-        hendelseHook.mutate();
-
-        router.push(
-          `/rekrutteringstreff/${rekrutteringstreffId}?visFane=${RekrutteringstreffTabs.ARBEIDSGIVERE}`,
-        );
-      } catch (error) {
-        throw new rekbisError({
-          beskrivelse: 'Feiler når prøver å legge til ny arbeidsgiver:',
-          error,
-        });
-      }
+  const leggTil = async () => {
+    if (!arbeidsgiver) return;
+    try {
+      await leggtilNyArbeidsgiver(
+        {
+          organisasjonsnummer: arbeidsgiver.organisasjonsnummer,
+          navn: arbeidsgiver.navn,
+        },
+        rekrutteringstreffId,
+      );
+      arbeidsgiverHook.mutate();
+      hendelseHook.mutate();
+      router.push(
+        `/rekrutteringstreff/${rekrutteringstreffId}?visFane=${RekrutteringstreffTabs.ARBEIDSGIVERE}`,
+      );
+    } catch (error) {
+      throw new rekbisError({
+        beskrivelse: 'Feiler når prøver å legge til ny arbeidsgiver:',
+        error,
+      });
+    } finally {
       setArbeidsgiver(null);
-      setOpen(false);
+      modalRef.current?.close();
     }
   };
 
-  const handleAvbryt = () => {
+  const lukk = () => {
     setArbeidsgiver(null);
-    setOpen(false);
+    modalRef.current?.close();
   };
 
   return (
-    <div>
-      <Button
-        icon={<PlusIcon />}
-        type='button'
-        variant='secondary'
-        onClick={() => setOpen(true)}
-        className='w-full max-w-2xl'
-      >
-        {leggTilKnappTekst}
-      </Button>
-
-      <Modal
-        className='overflow-visible'
-        open={open}
-        onClose={handleAvbryt}
-        header={{ heading: 'Legg til arbeidsgiver' }}
-      >
-        <Modal.Body className='overflow-visible'>
-          <VelgArbeidsgiver
-            key={open ? 'open-arbeidsgiver' : 'closed-arbeidsgiver'}
-            arbeidsgiverCallback={setArbeidsgiver}
-            valgtArbeidsgiver={arbeidsgiver}
-          />
-        </Modal.Body>
-        <Modal.Footer>
-          <Button
-            type='button'
-            onClick={handleLeggTil}
-            disabled={!arbeidsgiver}
-          >
-            Legg til
-          </Button>
-          <Button type='button' variant='secondary' onClick={handleAvbryt}>
-            Avbryt
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    </div>
+    <Modal
+      ref={modalRef}
+      className='overflow-visible'
+      onClose={lukk}
+      header={{ heading: 'Legg til arbeidsgiver' }}
+    >
+      <Modal.Body className='overflow-visible'>
+        <VelgArbeidsgiver
+          key={modalRef.current?.open ? 'open' : 'closed'}
+          arbeidsgiverCallback={setArbeidsgiver}
+          valgtArbeidsgiver={arbeidsgiver}
+        />
+      </Modal.Body>
+      <Modal.Footer>
+        <Button onClick={leggTil} disabled={!arbeidsgiver}>
+          Legg til
+        </Button>
+        <Button variant='secondary' onClick={lukk}>
+          Avbryt
+        </Button>
+      </Modal.Footer>
+    </Modal>
   );
 };
 

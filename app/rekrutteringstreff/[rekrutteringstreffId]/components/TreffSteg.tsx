@@ -1,3 +1,8 @@
+'use client';
+
+import { useRekrutteringstreffContext } from '../RekrutteringstreffContext';
+import LeggTilArbeidsgiverModal from './LeggTilArbeidsgiverModal';
+import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
 import {
   ChevronDownIcon,
   ChevronUpIcon,
@@ -10,20 +15,17 @@ import {
   Heading,
   Stepper,
   Detail,
+  Loader,
 } from '@navikt/ds-react';
+import { logger } from '@navikt/next-logger';
 import * as React from 'react';
 
-export interface TreffStegProps {
-  className?: string;
-}
-
-interface ChecklistItemProps {
+interface ChecklistItem {
   id: string;
   label: string;
-  checked?: boolean;
 }
 
-const sjekklisteData: ChecklistItemProps[] = [
+const sjekklisteData: ChecklistItem[] = [
   { id: 'arbeidsgiver', label: 'Minst 1 arbeidsgiver' },
   { id: 'navn', label: 'Navn' },
   { id: 'sted', label: 'Sted' },
@@ -33,7 +35,7 @@ const sjekklisteData: ChecklistItemProps[] = [
   { id: 'avslortnavn', label: 'Avslørt navnet på arbeidsgiverne (valgfritt)' },
 ];
 
-const steps = [
+const stepDetails = [
   { id: 1, stepLabel: 'Publisere', header: 'Gjør klar til publisering' },
   { id: 2, stepLabel: 'Invitere', header: 'Send ut invitasjoner' },
   {
@@ -53,30 +55,60 @@ const steps = [
   },
 ];
 
-const TreffSteg: React.FC<TreffStegProps> = ({ className }) => {
-  const [isOpen, setIsOpen] = React.useState(true);
-  const toggleContent = () => setIsOpen(!isOpen);
+const stepsForStepper = stepDetails.map((detail) => detail.stepLabel);
 
-  const headerId = React.useId();
-  const contentId = React.useId();
+const TreffSteg = () => {
+  const [isOpen, setIsOpen] = React.useState(false);
+  const toggle = () => setIsOpen((o) => !o);
+  const activeStep = 1;
 
-  const [activeStep] = React.useState(1);
+  const { rekrutteringstreffId } = useRekrutteringstreffContext();
+  const modalRef = React.useRef<HTMLDialogElement>(null);
 
-  const [checkedItems] = React.useState<Record<string, boolean>>(
-    sjekklisteData.reduce(
-      (acc, item) => ({ ...acc, [item.id]: item.checked ?? false }),
-      {},
-    ),
+  const {
+    data: arbeidsgivereData,
+    isLoading: arbeidsgivereLoading,
+    error: arbeidsgivereError,
+  } = useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
+
+  const [checkedItems, setCheckedItems] = React.useState<
+    Record<string, boolean>
+  >(
+    () =>
+      Object.fromEntries(
+        sjekklisteData.map(({ id }) => [
+          id,
+          id === 'arbeidsgiver' ? false : false,
+        ]),
+      ) as Record<string, boolean>,
   );
 
-  /*
-  const handleCheckChange = (id: string, isChecked: boolean) => {
-    setCheckedItems((prev) => ({ ...prev, [id]: isChecked }));
-  };*/
+  React.useEffect(() => {
+    if (arbeidsgivereData) {
+      setCheckedItems((c) => ({
+        ...c,
+        arbeidsgiver: arbeidsgivereData.length > 0,
+      }));
+    }
+    if (arbeidsgivereError) {
+      logger.error('Feil ved henting av arbeidsgivere:', arbeidsgivereError);
+    }
+  }, [arbeidsgivereData, arbeidsgivereError]);
 
-  const handleLeggTil = () => {
-    // TODO: venter med denne
+  const handleClickSjekklisteItem = (id: string) => {
+    if (checkedItems[id]) return;
+
+    if (id === 'arbeidsgiver') {
+      modalRef.current?.showModal();
+    } else {
+      // TODO
+    }
   };
+
+  const currentStepDetail = stepDetails.find(
+    (detail) => detail.id === activeStep,
+  );
+  const currentHeader = currentStepDetail ? currentStepDetail.header : 'Steg';
 
   const commonBoxProps = {
     background: 'raised' as const,
@@ -86,20 +118,18 @@ const TreffSteg: React.FC<TreffStegProps> = ({ className }) => {
   };
 
   return (
-    <div className={`my-2 ${className ?? ''}`}>
+    <div className='my-2'>
       <Box.New
         {...commonBoxProps}
         className={`${isOpen ? 'rounded-t-xl border-b-0' : 'rounded-xl'} cursor-pointer focus-visible:shadow-focus focus-visible:outline-none`}
-        onClick={toggleContent}
+        onClick={toggle}
         role='button'
         aria-expanded={isOpen}
-        aria-controls={contentId}
-        id={headerId}
         tabIndex={0}
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();
-            toggleContent();
+            toggle();
           }
         }}
       >
@@ -108,12 +138,12 @@ const TreffSteg: React.FC<TreffStegProps> = ({ className }) => {
             <span className='mr-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-gray-800 text-sm text-white'>
               {activeStep}
             </span>
-            {steps[activeStep - 1].header}
+            {currentHeader}
           </Heading>
           <div className='flex items-center gap-4'>
             <div className='flex gap-2'>
               <Button
-                disabled
+                disabled // TODO: Logikk for når denne skal være enabled
                 size='small'
                 onClick={(e) => e.stopPropagation()}
               >
@@ -142,9 +172,7 @@ const TreffSteg: React.FC<TreffStegProps> = ({ className }) => {
         <Box.New
           {...commonBoxProps}
           className='rounded-b-xl border-t-0'
-          id={contentId}
           role='region'
-          aria-labelledby={headerId}
         >
           <div className='flex flex-row gap-16'>
             <Stepper
@@ -153,8 +181,8 @@ const TreffSteg: React.FC<TreffStegProps> = ({ className }) => {
               orientation='vertical'
               interactive={false}
             >
-              {steps.map(({ id, stepLabel }) => (
-                <Stepper.Step key={id}>{stepLabel}</Stepper.Step>
+              {stepsForStepper.map((stepLabel, index) => (
+                <Stepper.Step key={index + 1}>{stepLabel}</Stepper.Step>
               ))}
             </Stepper>
 
@@ -163,51 +191,82 @@ const TreffSteg: React.FC<TreffStegProps> = ({ className }) => {
                 Før treffet er tilgjengelig for andre, og du kan invitere
                 jobbsøker må noen detaljer være på plass først:
               </Detail>
-              <ul className='space-y-0'>
-                {sjekklisteData.map((item) => (
-                  <li
-                    key={item.id}
-                    className={`flex items-center justify-between py-1 ${
-                      item.id === 'arbeidsgiver' || item.id === 'svarfrist'
-                        ? 'border-b border-border-subtle mb-2'
-                        : ''
-                    }`}
-                  >
-                    <div
-                      role='checkbox'
-                      aria-checked={checkedItems[item.id]}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          e.preventDefault();
+              {arbeidsgivereLoading && (
+                <Loader size='medium' title='Laster sjekkliste status...' />
+              )}
+              {!arbeidsgivereLoading && (
+                <ul className='space-y-0'>
+                  {sjekklisteData.map((item) => {
+                    const erOppfylt = !!checkedItems[item.id];
+                    const kanKlikkesForHandling = !erOppfylt;
+
+                    return (
+                      <li
+                        key={item.id}
+                        onClick={() =>
+                          kanKlikkesForHandling &&
+                          handleClickSjekklisteItem(item.id)
                         }
-                      }}
-                      tabIndex={0}
-                      className='flex items-center group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus focus-visible:ring-offset-1 rounded' // Fjernet cursor-pointer, beholdt fokusstiler
-                    >
-                      <div className='w-5 h-5 border-2 border-blue-500 rounded-full flex items-center justify-center mr-2 group-hover:border-blue-700 text-blue-600'>
-                        {checkedItems[item.id] && (
-                          <CheckmarkIcon title='Avkrysset' fontSize='1rem' />
+                        onKeyDown={(e) => {
+                          if (
+                            kanKlikkesForHandling &&
+                            (e.key === 'Enter' || e.key === ' ')
+                          ) {
+                            e.preventDefault();
+                            handleClickSjekklisteItem(item.id);
+                          }
+                        }}
+                        className={`flex items-center justify-between py-1 ${
+                          item.id === 'arbeidsgiver' || item.id === 'svarfrist'
+                            ? 'border-b border-border-subtle mb-2'
+                            : ''
+                        } ${
+                          kanKlikkesForHandling
+                            ? 'cursor-pointer group hover:bg-surface-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus focus-visible:ring-offset-1 rounded'
+                            : ''
+                        }`}
+                        role={kanKlikkesForHandling ? 'button' : undefined}
+                        tabIndex={kanKlikkesForHandling ? 0 : undefined}
+                        aria-label={
+                          kanKlikkesForHandling
+                            ? `Legg til eller rediger ${item.label}`
+                            : `${item.label} - Oppfylt`
+                        }
+                      >
+                        <div className='flex items-center'>
+                          <div
+                            className={`w-5 h-5 border-2 rounded-full flex items-center justify-center mr-2 border-blue-400 text-blue-400 `}
+                            aria-hidden='true'
+                          >
+                            {erOppfylt && (
+                              <CheckmarkIcon title='Oppfylt' fontSize='1rem' />
+                            )}
+                          </div>
+                          <BodyShort as='span'>{item.label}</BodyShort>
+                        </div>
+                        {kanKlikkesForHandling && (
+                          <Button
+                            variant='tertiary'
+                            size='small'
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleClickSjekklisteItem(item.id);
+                            }}
+                            aria-label={`Legg til ${item.label}`}
+                          >
+                            Legg til
+                          </Button>
                         )}
-                      </div>
-                      <BodyShort as='span'>{item.label}</BodyShort>
-                    </div>
-                    <Button
-                      variant='tertiary'
-                      size='small'
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleLeggTil();
-                      }}
-                    >
-                      Legg til
-                    </Button>
-                  </li>
-                ))}
-              </ul>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
             </div>
           </div>
         </Box.New>
       )}
+      <LeggTilArbeidsgiverModal modalRef={modalRef} />
     </div>
   );
 };
