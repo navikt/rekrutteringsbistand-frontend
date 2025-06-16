@@ -2,6 +2,7 @@
 
 import { useRekrutteringstreffContext } from '../RekrutteringstreffContext';
 import LeggTilArbeidsgiverModal from './LeggTilArbeidsgiverModal';
+import EndreTittel from './om-treffet/components/EndreTittel';
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
@@ -26,6 +27,8 @@ interface ChecklistItem {
   id: string;
   label: string;
 }
+
+const DEFAULT_TITTEL = 'Nytt rekrutteringstreff';
 
 const sjekklisteData: ChecklistItem[] = [
   { id: 'arbeidsgiver', label: 'Minst 1 arbeidsgiver' },
@@ -65,8 +68,8 @@ const TreffSteg = () => {
   const activeStep = 1;
 
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
-
-  const modalRef = React.useRef<HTMLDialogElement>(null);
+  const arbeidsgiverModalRef = React.useRef<HTMLDialogElement>(null);
+  const endreTittelModalRef = React.useRef<HTMLDialogElement>(null);
 
   const {
     data: arbeidsgivereData,
@@ -78,6 +81,7 @@ const TreffSteg = () => {
     data: rekrutteringstreffData,
     isLoading: rekrutteringstreffLoading,
     error: rekrutteringstreffError,
+    mutate: mutateRekrutteringstreff,
   } = useRekrutteringstreff(rekrutteringstreffId);
 
   const {
@@ -103,16 +107,16 @@ const TreffSteg = () => {
         arbeidsgiver: arbeidsgivereData.length > 0,
       }));
     }
-    if (arbeidsgivereError) {
+    if (arbeidsgivereError)
       logger.error('Feil ved henting av arbeidsgivere:', arbeidsgivereError);
-    }
   }, [arbeidsgivereData, arbeidsgivereError]);
 
   React.useEffect(() => {
     if (rekrutteringstreffData) {
+      const tittel = rekrutteringstreffData.tittel?.trim() ?? '';
       setCheckedItems((c) => ({
         ...c,
-        navn: !!rekrutteringstreffData.tittel?.trim(),
+        navn: tittel.length > 0 && tittel !== DEFAULT_TITTEL,
         sted:
           !!rekrutteringstreffData.gateadresse?.trim() &&
           !!rekrutteringstreffData.poststed?.trim(),
@@ -120,27 +124,25 @@ const TreffSteg = () => {
         svarfrist: !!rekrutteringstreffData.svarfrist,
       }));
     }
-    if (rekrutteringstreffError) {
+    if (rekrutteringstreffError)
       logger.error(
         'Feil ved henting av rekrutteringstreff:',
         rekrutteringstreffError,
       );
-    }
   }, [rekrutteringstreffData, rekrutteringstreffError]);
 
   React.useEffect(() => {
     if (innleggData) {
       setCheckedItems((c) => ({ ...c, innlegg: innleggData.length > 0 }));
     }
-    if (innleggError) {
+    if (innleggError)
       logger.error('Feil ved henting av innlegg:', innleggError);
-    }
   }, [innleggData, innleggError]);
 
   const handleClickSjekklisteItem = (id: string) => {
     if (checkedItems[id]) return;
-    if (id === 'arbeidsgiver') modalRef.current?.showModal();
-    // TODO: håndter øvrige modaler når de er klare
+    if (id === 'arbeidsgiver') arbeidsgiverModalRef.current?.showModal();
+    if (id === 'navn') endreTittelModalRef.current?.showModal();
   };
 
   const currentHeader =
@@ -155,9 +157,10 @@ const TreffSteg = () => {
 
   return (
     <div className='my-2'>
+      {/* topp */}
       <Box.New
         {...commonBoxProps}
-        className={`${isOpen ? 'rounded-t-xl border-b-0' : 'rounded-xl'} cursor-pointer focus-visible:shadow-focus focus-visible:outline-none`}
+        className={`${isOpen ? 'rounded-t-xl border-b-0' : 'rounded-xl'} cursor-pointer`}
         onClick={toggle}
         role='button'
         aria-expanded={isOpen}
@@ -195,15 +198,16 @@ const TreffSteg = () => {
             </div>
             <div className='text-text-action pointer-events-none'>
               {isOpen ? (
-                <ChevronUpIcon title='Lukk innhold' fontSize='1.5rem' />
+                <ChevronUpIcon fontSize='1.5rem' />
               ) : (
-                <ChevronDownIcon title='Åpne innhold' fontSize='1.5rem' />
+                <ChevronDownIcon fontSize='1.5rem' />
               )}
             </div>
           </div>
         </div>
       </Box.New>
 
+      {/* innhold */}
       {isOpen && (
         <Box.New
           {...commonBoxProps}
@@ -212,7 +216,6 @@ const TreffSteg = () => {
         >
           <div className='flex flex-row gap-16'>
             <Stepper
-              aria-labelledby='stepper-heading'
               activeStep={activeStep}
               orientation='vertical'
               interactive={false}
@@ -237,11 +240,10 @@ const TreffSteg = () => {
               {!arbeidsgivereLoading &&
                 !rekrutteringstreffLoading &&
                 !innleggLoading && (
-                  <ul className='space-y-3'>
+                  <ul className='space-y-0'>
                     {sjekklisteData.map((item) => {
                       const erOppfylt = !!checkedItems[item.id];
                       const kanKlikkes = !erOppfylt;
-
                       return (
                         <li
                           key={item.id}
@@ -257,16 +259,7 @@ const TreffSteg = () => {
                               handleClickSjekklisteItem(item.id);
                             }
                           }}
-                          className={`flex items-center justify-between py-1 ${
-                            item.id === 'arbeidsgiver' ||
-                            item.id === 'svarfrist'
-                              ? 'border-b border-border-subtle pb-3 mb-2 '
-                              : ''
-                          } ${
-                            kanKlikkes
-                              ? 'cursor-pointer group hover:bg-surface-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus focus-visible:ring-offset-1 rounded'
-                              : ''
-                          }`}
+                          className={`flex items-center justify-between py-1 ${item.id === 'arbeidsgiver' || item.id === 'svarfrist' ? 'border-b border-border-subtle mb-2' : ''} ${kanKlikkes ? 'cursor-pointer hover:bg-surface-hover rounded' : ''}`}
                           role={kanKlikkes ? 'button' : undefined}
                           tabIndex={kanKlikkes ? 0 : undefined}
                           aria-label={
@@ -275,19 +268,11 @@ const TreffSteg = () => {
                               : `${item.label} - Oppfylt`
                           }
                         >
-                          <div className='flex items-center'>
-                            <div
-                              className='w-5 h-5 border-2 rounded-full flex items-center justify-center mr-2 border-blue-400 text-blue-400'
-                              aria-hidden='true'
-                            >
-                              {erOppfylt && (
-                                <CheckmarkIcon
-                                  title='Oppfylt'
-                                  fontSize='1rem'
-                                />
-                              )}
+                          <div className='flex items-center gap-2'>
+                            <div className='w-5 h-5 border-2 rounded-full flex items-center justify-center border-blue-400 text-blue-400'>
+                              {erOppfylt && <CheckmarkIcon fontSize='1rem' />}
                             </div>
-                            <BodyShort as='span'>{item.label}</BodyShort>
+                            <BodyShort>{item.label}</BodyShort>
                           </div>
                           {kanKlikkes && (
                             <Button
@@ -297,7 +282,6 @@ const TreffSteg = () => {
                                 e.stopPropagation();
                                 handleClickSjekklisteItem(item.id);
                               }}
-                              aria-label={`Legg til ${item.label}`}
                             >
                               Legg til
                             </Button>
@@ -312,7 +296,17 @@ const TreffSteg = () => {
         </Box.New>
       )}
 
-      <LeggTilArbeidsgiverModal modalRef={modalRef} />
+      <LeggTilArbeidsgiverModal modalRef={arbeidsgiverModalRef} />
+
+      {rekrutteringstreffData && (
+        <EndreTittel
+          modalRef={endreTittelModalRef}
+          rekrutteringstreff={rekrutteringstreffData}
+          onUpdated={() => {
+            mutateRekrutteringstreff();
+          }}
+        />
+      )}
     </div>
   );
 };
