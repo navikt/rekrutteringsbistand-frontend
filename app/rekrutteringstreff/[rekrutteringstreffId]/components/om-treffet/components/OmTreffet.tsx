@@ -6,8 +6,8 @@ import ArbeidsgiverHendelserKort from '../../arbeidsgivere/components/Arbeidsgiv
 import JobbsøkerHendelserKort from '../../jobbsøkere/components/JobbsøkerHendelserKort';
 import Innlegg from './Innlegg';
 import Sted from './sted/Sted';
-import Svarfrist from './tidspunkt/Svarfrist';
 import Tidspunkt from './tidspunkt/Tidspunkt';
+import Svarfrist from './tidspunkt/svarfrist/Svarfrist';
 import { useArbeidsgiverHendelser } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgiverHendelser';
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
 import { useJobbsøkerHendelser } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkerHendelser';
