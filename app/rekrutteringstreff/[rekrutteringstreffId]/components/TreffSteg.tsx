@@ -3,6 +3,7 @@
 import { useRekrutteringstreffContext } from '../RekrutteringstreffContext';
 import LeggTilArbeidsgiverModal from './LeggTilArbeidsgiverModal';
 import EndreTittel from './om-treffet/components/EndreTittel';
+import StedModal from './om-treffet/components/sted/StedModal';
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
@@ -70,6 +71,7 @@ const TreffSteg = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const arbeidsgiverModalRef = React.useRef<HTMLDialogElement>(null);
   const endreTittelModalRef = React.useRef<HTMLDialogElement>(null);
+  const stedModalRef = React.useRef<HTMLDialogElement>(null);
 
   const {
     data: arbeidsgivereData,
@@ -143,6 +145,7 @@ const TreffSteg = () => {
     if (checkedItems[id]) return;
     if (id === 'arbeidsgiver') arbeidsgiverModalRef.current?.showModal();
     if (id === 'navn') endreTittelModalRef.current?.showModal();
+    if (id === 'sted') stedModalRef.current?.showModal();
   };
 
   const currentHeader =
@@ -299,13 +302,22 @@ const TreffSteg = () => {
       <LeggTilArbeidsgiverModal modalRef={arbeidsgiverModalRef} />
 
       {rekrutteringstreffData && (
-        <EndreTittel
-          modalRef={endreTittelModalRef}
-          rekrutteringstreff={rekrutteringstreffData}
-          onUpdated={() => {
-            mutateRekrutteringstreff();
-          }}
-        />
+        <>
+          <EndreTittel
+            modalRef={endreTittelModalRef}
+            rekrutteringstreff={rekrutteringstreffData}
+            onUpdated={() => {
+              mutateRekrutteringstreff();
+            }}
+          />
+          <StedModal
+            rekrutteringstreff={rekrutteringstreffData}
+            onUpdated={() => {
+              mutateRekrutteringstreff();
+            }}
+            modalRef={stedModalRef}
+          />
+        </>
       )}
     </div>
   );
