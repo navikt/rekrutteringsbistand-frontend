@@ -2,6 +2,7 @@
 
 import { useRekrutteringstreffContext } from './RekrutteringstreffContext';
 import TreffHeader from './components/TreffHeader';
+import TreffSteg from './components/TreffSteg';
 import Aktiviteter from './components/aktiviteter/components/Aktiviteter';
 import RekrutteringstreffArbeidsgivere from './components/arbeidsgivere/Arbeidsgivere';
 import Jobbsøkere from './components/jobbsøkere/Jobbsøkere';
@@ -34,6 +35,7 @@ const Rekrutteringstreff: React.FC = () => {
   return (
     <Box.New>
       <TreffHeader endreTittel={fane === RekrutteringstreffTabs.OM_TREFFET} />
+      <TreffSteg />
       <Tabs value={fane} onChange={(val) => setFane(val)}>
         <Tabs.List className='w-full'>
           <Tabs.Tab

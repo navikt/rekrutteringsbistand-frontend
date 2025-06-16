@@ -1,0 +1,274 @@
+'use client';
+
+import { useRekrutteringstreffContext } from '../RekrutteringstreffContext';
+import LeggTilArbeidsgiverModal from './LeggTilArbeidsgiverModal';
+import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
+import {
+  ChevronDownIcon,
+  ChevronUpIcon,
+  CheckmarkIcon,
+} from '@navikt/aksel-icons';
+import {
+  BodyShort,
+  Box,
+  Button,
+  Heading,
+  Stepper,
+  Detail,
+  Loader,
+} from '@navikt/ds-react';
+import { logger } from '@navikt/next-logger';
+import * as React from 'react';
+
+interface ChecklistItem {
+  id: string;
+  label: string;
+}
+
+const sjekklisteData: ChecklistItem[] = [
+  { id: 'arbeidsgiver', label: 'Minst 1 arbeidsgiver' },
+  { id: 'navn', label: 'Navn' },
+  { id: 'sted', label: 'Sted' },
+  { id: 'tidspunkt', label: 'Tidspunkt' },
+  { id: 'svarfrist', label: 'Svarfrist' },
+  { id: 'omtreffet', label: 'Om treffet' },
+  { id: 'avslortnavn', label: 'Avslørt navnet på arbeidsgiverne (valgfritt)' },
+];
+
+const stepDetails = [
+  { id: 1, stepLabel: 'Publisere', header: 'Gjør klar til publisering' },
+  { id: 2, stepLabel: 'Invitere', header: 'Send ut invitasjoner' },
+  {
+    id: 3,
+    stepLabel: 'Arrangere',
+    header: 'Planlegg og gjennomfør arrangementet',
+  },
+  {
+    id: 4,
+    stepLabel: 'Følge opp',
+    header: 'Følg opp påmeldte og gjennomfør treffet',
+  },
+  {
+    id: 5,
+    stepLabel: 'Avslutte',
+    header: 'Avslutt og evaluer rekrutteringstreffet',
+  },
+];
+
+const stepsForStepper = stepDetails.map((detail) => detail.stepLabel);
+
+const TreffSteg = () => {
+  const [isOpen, setIsOpen] = React.useState(false);
+  const toggle = () => setIsOpen((o) => !o);
+  const activeStep = 1;
+
+  const { rekrutteringstreffId } = useRekrutteringstreffContext();
+  const modalRef = React.useRef<HTMLDialogElement>(null);
+
+  const {
+    data: arbeidsgivereData,
+    isLoading: arbeidsgivereLoading,
+    error: arbeidsgivereError,
+  } = useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
+
+  const [checkedItems, setCheckedItems] = React.useState<
+    Record<string, boolean>
+  >(
+    () =>
+      Object.fromEntries(
+        sjekklisteData.map(({ id }) => [
+          id,
+          id === 'arbeidsgiver' ? false : false,
+        ]),
+      ) as Record<string, boolean>,
+  );
+
+  React.useEffect(() => {
+    if (arbeidsgivereData) {
+      setCheckedItems((c) => ({
+        ...c,
+        arbeidsgiver: arbeidsgivereData.length > 0,
+      }));
+    }
+    if (arbeidsgivereError) {
+      logger.error('Feil ved henting av arbeidsgivere:', arbeidsgivereError);
+    }
+  }, [arbeidsgivereData, arbeidsgivereError]);
+
+  const handleClickSjekklisteItem = (id: string) => {
+    if (checkedItems[id]) return;
+
+    if (id === 'arbeidsgiver') {
+      modalRef.current?.showModal();
+    } else {
+      // TODO
+    }
+  };
+
+  const currentStepDetail = stepDetails.find(
+    (detail) => detail.id === activeStep,
+  );
+  const currentHeader = currentStepDetail ? currentStepDetail.header : 'Steg';
+
+  const commonBoxProps = {
+    background: 'raised' as const,
+    borderColor: 'neutral-subtleA' as const,
+    borderWidth: '1' as const,
+    padding: '6' as const,
+  };
+
+  return (
+    <div className='my-2'>
+      <Box.New
+        {...commonBoxProps}
+        className={`${isOpen ? 'rounded-t-xl border-b-0' : 'rounded-xl'} cursor-pointer focus-visible:shadow-focus focus-visible:outline-none`}
+        onClick={toggle}
+        role='button'
+        aria-expanded={isOpen}
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            toggle();
+          }
+        }}
+      >
+        <div className='flex items-center justify-between w-full'>
+          <Heading size='small' className='flex items-center'>
+            <span className='mr-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-gray-800 text-sm text-white'>
+              {activeStep}
+            </span>
+            {currentHeader}
+          </Heading>
+          <div className='flex items-center gap-4'>
+            <div className='flex gap-2'>
+              <Button
+                disabled // TODO: Logikk for når denne skal være enabled
+                size='small'
+                onClick={(e) => e.stopPropagation()}
+              >
+                Publiser treffet
+              </Button>
+              <Button
+                variant='secondary'
+                size='small'
+                onClick={(e) => e.stopPropagation()}
+              >
+                Se forhåndsvisning
+              </Button>
+            </div>
+            <div className='text-text-action pointer-events-none'>
+              {isOpen ? (
+                <ChevronUpIcon title='Lukk innhold' fontSize='1.5rem' />
+              ) : (
+                <ChevronDownIcon title='Åpne innhold' fontSize='1.5rem' />
+              )}
+            </div>
+          </div>
+        </div>
+      </Box.New>
+
+      {isOpen && (
+        <Box.New
+          {...commonBoxProps}
+          className='rounded-b-xl border-t-0'
+          role='region'
+        >
+          <div className='flex flex-row gap-16'>
+            <Stepper
+              aria-labelledby='stepper-heading'
+              activeStep={activeStep}
+              orientation='vertical'
+              interactive={false}
+            >
+              {stepsForStepper.map((stepLabel, index) => (
+                <Stepper.Step key={index + 1}>{stepLabel}</Stepper.Step>
+              ))}
+            </Stepper>
+
+            <div className='flex-1'>
+              <Detail spacing>
+                Før treffet er tilgjengelig for andre, og du kan invitere
+                jobbsøker må noen detaljer være på plass først:
+              </Detail>
+              {arbeidsgivereLoading && (
+                <Loader size='medium' title='Laster sjekkliste status...' />
+              )}
+              {!arbeidsgivereLoading && (
+                <ul className='space-y-0'>
+                  {sjekklisteData.map((item) => {
+                    const erOppfylt = !!checkedItems[item.id];
+                    const kanKlikkesForHandling = !erOppfylt;
+
+                    return (
+                      <li
+                        key={item.id}
+                        onClick={() =>
+                          kanKlikkesForHandling &&
+                          handleClickSjekklisteItem(item.id)
+                        }
+                        onKeyDown={(e) => {
+                          if (
+                            kanKlikkesForHandling &&
+                            (e.key === 'Enter' || e.key === ' ')
+                          ) {
+                            e.preventDefault();
+                            handleClickSjekklisteItem(item.id);
+                          }
+                        }}
+                        className={`flex items-center justify-between py-1 ${
+                          item.id === 'arbeidsgiver' || item.id === 'svarfrist'
+                            ? 'border-b border-border-subtle mb-2'
+                            : ''
+                        } ${
+                          kanKlikkesForHandling
+                            ? 'cursor-pointer group hover:bg-surface-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus focus-visible:ring-offset-1 rounded'
+                            : ''
+                        }`}
+                        role={kanKlikkesForHandling ? 'button' : undefined}
+                        tabIndex={kanKlikkesForHandling ? 0 : undefined}
+                        aria-label={
+                          kanKlikkesForHandling
+                            ? `Legg til eller rediger ${item.label}`
+                            : `${item.label} - Oppfylt`
+                        }
+                      >
+                        <div className='flex items-center'>
+                          <div
+                            className={`w-5 h-5 border-2 rounded-full flex items-center justify-center mr-2 border-blue-400 text-blue-400 `}
+                            aria-hidden='true'
+                          >
+                            {erOppfylt && (
+                              <CheckmarkIcon title='Oppfylt' fontSize='1rem' />
+                            )}
+                          </div>
+                          <BodyShort as='span'>{item.label}</BodyShort>
+                        </div>
+                        {kanKlikkesForHandling && (
+                          <Button
+                            variant='tertiary'
+                            size='small'
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleClickSjekklisteItem(item.id);
+                            }}
+                            aria-label={`Legg til ${item.label}`}
+                          >
+                            Legg til
+                          </Button>
+                        )}
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+            </div>
+          </div>
+        </Box.New>
+      )}
+      <LeggTilArbeidsgiverModal modalRef={modalRef} />
+    </div>
+  );
+};
+
+export default TreffSteg;

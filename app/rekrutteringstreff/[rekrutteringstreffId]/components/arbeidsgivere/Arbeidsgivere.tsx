@@ -8,11 +8,13 @@ import {
   useRekrutteringstreffArbeidsgivere,
 } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
 import SWRLaster from '@/app/components/SWRLaster';
-import { BodyShort } from '@navikt/ds-react';
+import { BodyShort, Button } from '@navikt/ds-react';
+import { PlusIcon } from 'lucide-react';
 import * as React from 'react';
 
 const RekrutteringstreffArbeidsgivere = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
+  const modalRef = React.useRef<HTMLDialogElement>(null); // Ny ref
 
   const arbeidsgivereHook =
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
@@ -36,8 +38,18 @@ const RekrutteringstreffArbeidsgivere = () => {
       {(arbeidsgivere) => (
         <div className='p-4 flex flex-col gap-4'>
           <div className='flex items-center justify-between'>
-            <LeggTilArbeidsgiverModal leggTilKnappTekst='Legg til arbeidsgiver' />
+            <Button
+              onClick={() => modalRef.current?.showModal()}
+              icon={<PlusIcon />}
+              type='button'
+              variant='secondary'
+            >
+              Legg til arbeidsgiver
+            </Button>
           </div>
+          <LeggTilArbeidsgiverModal
+            modalRef={modalRef} // Send ref til modalen
+          />
           {arbeidsgivere.length === 0 ? (
             <BodyShort>Ingen arbeidsgivere lagt til</BodyShort>
           ) : (
@@ -46,11 +58,7 @@ const RekrutteringstreffArbeidsgivere = () => {
                 const { status } = getLagtTilData(a);
                 return (
                   <li key={index}>
-                    <ArbeidsgiverKort
-                      navn={a.navn}
-                      //adresse={{ adresse: '' }} //TODO: Byttes ut når vi får implemetert adresse
-                      status={status}
-                    />
+                    <ArbeidsgiverKort navn={a.navn} status={status} />
                   </li>
                 );
               })}

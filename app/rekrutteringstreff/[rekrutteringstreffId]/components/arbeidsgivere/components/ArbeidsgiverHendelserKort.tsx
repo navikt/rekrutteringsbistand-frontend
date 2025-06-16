@@ -1,3 +1,5 @@
+'use client';
+
 import ArbeidsgiverDarkIkon from '../../../../../../public/ikoner/arbeidsgiver-dark.svg';
 import ArbeidsgiverIkon from '../../../../../../public/ikoner/arbeidsgiver.svg';
 import LeggTilArbeidsgiverModal from '../../LeggTilArbeidsgiverModal';
@@ -11,132 +13,122 @@ import {
   XMarkOctagonIcon,
   EnvelopeClosedIcon,
 } from '@navikt/aksel-icons';
-import { BodyShort, Box, Heading } from '@navikt/ds-react';
+import { BodyShort, Box, Button, Heading } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import { nb } from 'date-fns/locale/nb';
+import { PlusIcon } from 'lucide-react';
 import * as React from 'react';
 
-interface ArbeidsgiverHendelserKortProps {
+interface Props {
   arbeidsgiverHendelserDTO: ArbeidsgiverHendelserDTO;
 }
 
-const ArbeidsgiverHendelserKort: React.FC<ArbeidsgiverHendelserKortProps> = ({
+const ArbeidsgiverHendelserKort: React.FC<Props> = ({
   arbeidsgiverHendelserDTO,
 }) => {
-  const antallHendelser = arbeidsgiverHendelserDTO.length;
-  const antallLagtTilHendelser = arbeidsgiverHendelserDTO.filter(
+  const modalRef = React.useRef<HTMLDialogElement>(null);
+
+  const antallLagtTil = arbeidsgiverHendelserDTO.filter(
     (h) => h.hendelsestype === 'OPPRETT',
   ).length;
-  const siste5Hendelser = arbeidsgiverHendelserDTO.slice(-5);
+
+  const siste5 = arbeidsgiverHendelserDTO.slice(-5);
 
   return (
-    <div>
-      <Box.New
-        background='neutral-softA'
-        className='mb-4 max-w-[30rem] flex flex-col items-center justify-center'
-        borderColor='neutral-subtleA'
-        borderRadius='xlarge'
-        borderWidth='1'
-        padding='6'
-      >
-        <div>
-          <Heading level='2' size='small' className='mb-4 text-left'>
-            Arbeidsgivere
-          </Heading>
-          <div className='min-h-[18rem] mb-12'>
-            {antallHendelser === 0 ? (
-              <div className='p-4 mb-12 flex flex-col items-center'>
-                <Box.New
-                  background='raised'
-                  className='rounded-full mb-2 flex items-center justify-center'
-                >
-                  <SVGDarkmode
-                    light={ArbeidsgiverIkon}
-                    dark={ArbeidsgiverDarkIkon}
-                    alt='legg_til_jobbsøker'
-                  />
-                </Box.New>
-                <BodyShort className='text-center'>
-                  <span className='block'>
-                    Finn og legg til en arbeidsgiver så dukker aktivitetene
-                    deres opp her.
-                  </span>
-                </BodyShort>
-              </div>
-            ) : (
-              <div>
-                <div className='flex flex-wrap gap-2'>
+    <Box.New
+      background='neutral-softA'
+      className='mb-4 max-w-[30rem]'
+      borderColor='neutral-subtleA'
+      borderRadius='xlarge'
+      borderWidth='1'
+      padding='6'
+    >
+      <Heading level='2' size='small' className='mb-4'>
+        Arbeidsgivere
+      </Heading>
+      <div className='min-h-[18rem] mb-12'>
+        {arbeidsgiverHendelserDTO.length === 0 ? (
+          <div className='p-4 mb-12 flex flex-col items-center'>
+            <Box.New background='raised' className='rounded-full mb-2'>
+              <SVGDarkmode
+                light={ArbeidsgiverIkon}
+                dark={ArbeidsgiverDarkIkon}
+                alt=''
+              />
+            </Box.New>
+            <BodyShort className='text-center'>
+              Finn og legg til en arbeidsgiver så dukker aktivitetene deres opp
+              her.
+            </BodyShort>
+          </div>
+        ) : (
+          <div className='mb-12'>
+            <div className='flex flex-wrap gap-2'>
+              <HendelseLabel
+                icon={<PlusCircleIcon className='text-white' />}
+                hendelseType='OPPRETT'
+                antall={antallLagtTil}
+              />
+              <HendelseLabel
+                icon={<CheckmarkCircleIcon className='text-green-500' />}
+                hendelseType='DELTA'
+                antall={0}
+              />
+              <HendelseLabel
+                icon={<QuestionmarkDiamondIcon className='text-sky-300' />}
+                hendelseType='UBESVART'
+                antall={0}
+              />
+              <HendelseLabel
+                icon={<XMarkOctagonIcon className='text-violet-300' />}
+                hendelseType='IKKE_INTERESSERT'
+                antall={0}
+              />
+              <HendelseLabel
+                icon={<EnvelopeClosedIcon className='text-blue-400' />}
+                hendelseType='INVITER'
+                antall={0}
+              />
+            </div>
+
+            <Heading size='xsmall' level='4' className='mt-8 mb-2'>
+              Siste aktivitet
+            </Heading>
+
+            {siste5.map((h) => (
+              <div key={h.id} className='flex gap-2 mb-4'>
+                <div className='min-w-[10rem]'>
                   <HendelseLabel
                     icon={<PlusCircleIcon className='text-white' />}
-                    hendelseType='OPPRETT'
-                    antall={antallLagtTilHendelser}
+                    hendelseType={h.hendelsestype}
                   />
-                  <HendelseLabel
-                    icon={<CheckmarkCircleIcon className='text-green-500' />}
-                    hendelseType='DELTA'
-                    antall={0}
-                  />
-                  <HendelseLabel
-                    icon={<QuestionmarkDiamondIcon className='text-sky-300' />}
-                    hendelseType='UBESVART'
-                    antall={0}
-                  />
-                  <HendelseLabel
-                    icon={<XMarkOctagonIcon className='text-violet-300' />}
-                    hendelseType='IKKE_INTERESSERT'
-                    antall={0}
-                  />
-                  <HendelseLabel
-                    icon={<EnvelopeClosedIcon className='text-blue-400' />}
-                    hendelseType='INVITER'
-                    antall={0}
-                  />
+                  <BodyShort className='ml-6'>
+                    {format(new Date(h.tidspunkt), 'dd. MMMM yyyy', {
+                      locale: nb,
+                    })}
+                  </BodyShort>
                 </div>
-
-                <Heading size='xsmall' level='4' className='mt-8 mb-2'>
-                  Siste aktivitet
-                </Heading>
-
-                <div className='mt-4'>
-                  {siste5Hendelser.map((hendelse) => (
-                    <div
-                      key={hendelse.id}
-                      className='flex flex-wrap gap-2 mb-4'
-                    >
-                      <div className='mb-2 min-w-[10rem]'>
-                        <HendelseLabel
-                          key={hendelse.id}
-                          icon={<PlusCircleIcon className='text-white' />}
-                          hendelseType={hendelse.hendelsestype}
-                        />
-                        <BodyShort className='ml-6'>
-                          {format(
-                            new Date(hendelse.tidspunkt),
-                            'dd. MMMM yyyy',
-                            { locale: nb },
-                          )}
-                        </BodyShort>
-                      </div>
-                      <div>
-                        {hendelse.orgnavn && hendelse.orgnr && (
-                          <div>
-                            <BodyShort> {hendelse.orgnavn}</BodyShort>
-                            <BodyShort> {hendelse.orgnr}</BodyShort>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                {h.orgnavn && (
+                  <div>
+                    <BodyShort>{h.orgnavn}</BodyShort>
+                    <BodyShort>{h.orgnr}</BodyShort>
+                  </div>
+                )}
               </div>
-            )}
+            ))}
           </div>
-          <div className='w-full max-w-2xl'>
-            <LeggTilArbeidsgiverModal />
-          </div>
-        </div>
-      </Box.New>
-    </div>
+        )}
+      </div>
+      <Button
+        onClick={() => modalRef.current?.showModal()}
+        variant='secondary'
+        icon={<PlusIcon />}
+        className='w-full'
+      >
+        Legg til arbeidsgiver
+      </Button>
+      <LeggTilArbeidsgiverModal modalRef={modalRef} />
+    </Box.New>
   );
 };
 
