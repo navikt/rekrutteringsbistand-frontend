@@ -39,7 +39,6 @@ const sjekklisteData: ChecklistItem[] = [
   { id: 'sted', label: 'Sted' },
   { id: 'tidspunkt', label: 'Tidspunkt' },
   { id: 'svarfrist', label: 'Svarfrist' },
-  { id: 'innlegg', label: 'Minst 1 innlegg' },
   { id: 'omtreffet', label: 'Om treffet' },
 ];
 
@@ -138,8 +137,11 @@ const TreffSteg = () => {
   }, [rekrutteringstreffData, rekrutteringstreffError]);
 
   React.useEffect(() => {
-    if (innleggData) {
-      setCheckedItems((c) => ({ ...c, innlegg: innleggData.length > 0 }));
+    if (innleggData && innleggData.length > 0) {
+      setCheckedItems((c) => ({
+        ...c,
+        omtreffet: innleggData && innleggData.length > 0,
+      }));
     }
     if (innleggError)
       logger.error('Feil ved henting av innlegg:', innleggError);
@@ -151,7 +153,7 @@ const TreffSteg = () => {
     if (id === 'navn') endreTittelModalRef.current?.showModal();
     if (id === 'sted') stedModalRef.current?.showModal();
     if (id === 'svarfrist') svarfristModalRef.current?.showModal();
-    if (id === 'innlegg') innleggModalRef.current?.showModal();
+    if (id === 'omtreffet') innleggModalRef.current?.showModal();
   };
 
   const currentHeader =
