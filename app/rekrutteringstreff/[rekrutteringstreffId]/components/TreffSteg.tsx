@@ -95,6 +95,7 @@ const TreffSteg = () => {
     data: innleggData,
     isLoading: innleggLoading,
     error: innleggError,
+    mutate: mutateInnlegg,
   } = useInnlegg(rekrutteringstreffId);
 
   const [checkedItems, setCheckedItems] = React.useState<
@@ -348,7 +349,7 @@ const TreffSteg = () => {
               innleggData && innleggData.length > 0 ? innleggData[0] : undefined
             }
             onInnleggUpdated={() => {
-              mutateRekrutteringstreff();
+              mutateInnlegg();
             }}
             modalRef={innleggModalRef}
           />
