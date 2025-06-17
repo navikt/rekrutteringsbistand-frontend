@@ -5,6 +5,7 @@ import LeggTilArbeidsgiverModal from './LeggTilArbeidsgiverModal';
 import EndreTittel from './om-treffet/components/EndreTittel';
 import InnleggModal from './om-treffet/components/innlegg/InnleggModal';
 import StedModal from './om-treffet/components/sted/StedModal';
+import TidspunktModal from './om-treffet/components/tidspunkt/TidspunktModal';
 import SvarfristModal from './om-treffet/components/tidspunkt/svarfrist/SvarfristModal';
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
@@ -72,6 +73,7 @@ const TreffSteg = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const arbeidsgiverModalRef = React.useRef<HTMLDialogElement>(null);
   const endreTittelModalRef = React.useRef<HTMLDialogElement>(null);
+  const tidspunktModalRef = React.useRef<HTMLDialogElement>(null);
   const stedModalRef = React.useRef<HTMLDialogElement>(null);
   const svarfristModalRef = React.useRef<HTMLDialogElement>(null);
   const innleggModalRef = React.useRef<HTMLDialogElement>(null);
@@ -151,6 +153,7 @@ const TreffSteg = () => {
     if (checkedItems[id]) return;
     if (id === 'arbeidsgiver') arbeidsgiverModalRef.current?.showModal();
     if (id === 'navn') endreTittelModalRef.current?.showModal();
+    if (id === 'tidspunkt') tidspunktModalRef.current?.showModal();
     if (id === 'sted') stedModalRef.current?.showModal();
     if (id === 'svarfrist') svarfristModalRef.current?.showModal();
     if (id === 'omtreffet') innleggModalRef.current?.showModal();
@@ -314,6 +317,13 @@ const TreffSteg = () => {
           <EndreTittel
             modalRef={endreTittelModalRef}
             rekrutteringstreff={rekrutteringstreffData}
+            onUpdated={() => {
+              mutateRekrutteringstreff();
+            }}
+          />
+          <TidspunktModal
+            rekrutteringstreff={rekrutteringstreffData}
+            modalRef={tidspunktModalRef}
             onUpdated={() => {
               mutateRekrutteringstreff();
             }}
