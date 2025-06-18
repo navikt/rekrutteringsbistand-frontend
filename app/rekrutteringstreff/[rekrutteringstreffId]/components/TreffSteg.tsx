@@ -276,7 +276,7 @@ const TreffSteg = () => {
                               handleClickSjekklisteItem(item.id);
                             }
                           }}
-                          className={`flex items-center justify-between py-1 ${item.id === 'arbeidsgiver' || item.id === 'svarfrist' ? 'border-b border-border-subtle mb-2' : ''} ${kanKlikkes ? 'cursor-pointer hover:blue-400 rounded' : ''}`}
+                          className={`flex items-center justify-between py-4 ${item.id === 'arbeidsgiver' || item.id === 'svarfrist' ? 'border-b border-border-subtle mb-1' : ''} ${kanKlikkes ? 'cursor-pointer hover:bg-gray-800 rounded' : ''}`}
                           role={kanKlikkes ? 'button' : undefined}
                           tabIndex={kanKlikkes ? 0 : undefined}
                           aria-label={
@@ -292,16 +292,9 @@ const TreffSteg = () => {
                             <BodyShort>{item.label}</BodyShort>
                           </div>
                           {kanKlikkes && (
-                            <Button
-                              variant='tertiary'
-                              size='small'
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleClickSjekklisteItem(item.id);
-                              }}
-                            >
+                            <BodyShort className='text-blue-400 px-1'>
                               Legg til
-                            </Button>
+                            </BodyShort>
                           )}
                         </li>
                       );
