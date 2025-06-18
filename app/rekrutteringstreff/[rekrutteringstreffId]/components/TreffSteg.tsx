@@ -170,6 +170,8 @@ const TreffSteg = () => {
     padding: '6' as const,
   };
 
+  const alleStegOk = sjekklisteData.every((item) => checkedItems[item.id]);
+
   return (
     <div className='my-2'>
       {/* topp */}
@@ -197,7 +199,7 @@ const TreffSteg = () => {
           <div className='flex items-center gap-4'>
             <div className='flex gap-2'>
               <Button
-                disabled
+                disabled={!alleStegOk}
                 size='small'
                 onClick={(e) => e.stopPropagation()}
               >
@@ -274,7 +276,7 @@ const TreffSteg = () => {
                               handleClickSjekklisteItem(item.id);
                             }
                           }}
-                          className={`flex items-center justify-between py-1 ${item.id === 'arbeidsgiver' || item.id === 'svarfrist' ? 'border-b border-border-subtle mb-2' : ''} ${kanKlikkes ? 'cursor-pointer hover:bg-surface-hover rounded' : ''}`}
+                          className={`flex items-center justify-between py-1 ${item.id === 'arbeidsgiver' || item.id === 'svarfrist' ? 'border-b border-border-subtle mb-2' : ''} ${kanKlikkes ? 'cursor-pointer hover:blue-400 rounded' : ''}`}
                           role={kanKlikkes ? 'button' : undefined}
                           tabIndex={kanKlikkes ? 0 : undefined}
                           aria-label={
