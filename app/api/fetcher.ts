@@ -162,13 +162,11 @@ export const postApi = async (
       try {
         return await response.json();
       } catch (error) {
-        logger.error('Error in postApi response.json():', {
+        throw new rekbisError({
+          beskrivelse: 'Error in postApi response.json():',
           url: response.url,
-          status: response.status,
-          contentType: contentType || 'unknown',
           error: error instanceof Error ? error.message : String(error),
         });
-        return await response.text();
       }
     }
   } catch (error) {

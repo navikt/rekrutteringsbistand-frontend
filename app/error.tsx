@@ -19,7 +19,7 @@ export default function Error({
       }`;
     }
 
-    logger.error('Error', error);
+    logger.error(error);
   }, [error]);
 
   const router = useRouter();

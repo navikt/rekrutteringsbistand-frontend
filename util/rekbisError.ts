@@ -1,11 +1,13 @@
 import { IFeilmelding } from '../app/components/feilhåndtering/Feilmelding';
 import { logger } from '@navikt/next-logger';
+import { nanoid } from 'nanoid';
 
 export class rekbisError extends Error {
   public statuskode: number;
   public tittel: string;
   public beskrivelse: string;
   public url: string;
+  public id: string;
   public error: unknown;
 
   constructor({
@@ -24,17 +26,16 @@ export class rekbisError extends Error {
     this.beskrivelse = beskrivelse ?? this.message ?? '';
     this.url = url ?? '';
     this.error = error;
+    this.id = nanoid();
 
-    logger.error(`RekBis Error: ${this.tittel} (${this.statuskode})`, {
-      beskrivelse: this.beskrivelse,
-      url: this.url,
-      stack:
-        typeof this.stack === 'string'
-          ? this.stack
-          : JSON.stringify(this.stack),
-      errorMessage:
-        this.error instanceof Error ? this.error.message : String(this.error),
-    });
+    logger.error(
+      {
+        err: this,
+        operationId: this.id,
+        endpoint: this.url,
+      },
+      this.beskrivelse || 'Ukjent beskrivelse',
+    );
   }
 
   toJSON() {
@@ -46,6 +47,7 @@ export class rekbisError extends Error {
       beskrivelse: this.beskrivelse,
       url: this.url,
       stack: this.stack,
+      id: this.id,
     };
   }
 }
