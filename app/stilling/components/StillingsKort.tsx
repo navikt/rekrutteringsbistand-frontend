@@ -6,6 +6,7 @@ import TekstMedIkon from '../../components/TekstMedIkon';
 import { formaterNorskDato } from '../../components/util';
 import { useApplikasjonContext } from '../../providers/ApplikasjonContext';
 import { useUmami } from '../../providers/UmamiContext';
+import { visStillingsDataInfo } from '../stillingInfoUtil';
 import {
   formaterEiernavn,
   hentArbeidssted,
@@ -20,6 +21,7 @@ import {
   PersonIcon,
 } from '@navikt/aksel-icons';
 import { Box, Button, Heading, Link } from '@navikt/ds-react';
+import { useRouter } from 'next/navigation';
 import * as React from 'react';
 
 export interface IStillingsKort {
@@ -36,6 +38,7 @@ const StillingsKort: React.FC<IStillingsKort> = ({
     brukerData: { ident },
   } = useApplikasjonContext();
 
+  const router = useRouter();
   const { track } = useUmami();
   const antallStillinger = Number(
     stillingData?.stilling?.properties?.positioncount,
@@ -43,11 +46,13 @@ const StillingsKort: React.FC<IStillingsKort> = ({
   const antallStillingerSuffix =
     antallStillinger === 1 ? ` stilling` : ` stillinger`;
 
+  const stillingsDataInfo = visStillingsDataInfo(stillingData);
+
   const eierNavn = formaterEiernavn(hentEierFraStilling(stillingData));
   const erEier = hentIdentFraStilling(stillingData) === ident;
 
-  const erFormidling =
-    stillingData.stillingsinfo?.stillingskategori === 'FORMIDLING';
+  const erFormidling = stillingsDataInfo.erFormidling;
+  const erDirektemeldt = stillingsDataInfo.erDirektemeldt;
 
   const stillingUrl = `${erFormidling ? '/etterregistrering/' : '/stilling/'}${stillingData.stilling.uuid}`;
 
@@ -70,13 +75,23 @@ const StillingsKort: React.FC<IStillingsKort> = ({
   const Knapper = (
     <>
       {kandidatId ? (
-        <Button
-          variant='tertiary'
-          onClick={() => leggTilKandidat(kandidatId)}
-          className='self-start sm:self-center whitespace-nowrap'
-        >
-          Legg til kandidat
-        </Button>
+        erDirektemeldt ? (
+          <Button
+            variant='tertiary'
+            onClick={() => leggTilKandidat(kandidatId)}
+            className='self-start sm:self-center whitespace-nowrap'
+          >
+            Legg til kandidat
+          </Button>
+        ) : (
+          <Button
+            variant='tertiary'
+            onClick={() => router.push(stillingUrl)}
+            className='self-start sm:self-center whitespace-nowrap'
+          >
+            Vis stilling
+          </Button>
+        )
       ) : (
         <div className='flex flex-col sm:flex-row whitespace-nowrap gap-2'>
           {erEier && (

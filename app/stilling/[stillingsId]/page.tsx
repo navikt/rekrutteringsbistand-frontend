@@ -32,6 +32,11 @@ export default function StillingSide() {
 
   const TabKnapper = (
     <div className='flex items-center'>
+      {kandidatlisteInfo === null && (
+        <Alert variant='warning'>
+          Det er ikke opprettet kandidatliste for denne stillingen.
+        </Alert>
+      )}
       {kandidatlistenErLukket ? (
         <Alert variant={'info'}>
           Oppdraget er ferdigstilt og kandidatlisten er lukket
