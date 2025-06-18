@@ -1,3 +1,4 @@
+import { RekbisError } from '../../../../../../util/rekbisError';
 import {
   oppdaterRekrutteringstreff,
   toOppdaterRekrutteringstreffDto,
@@ -19,7 +20,6 @@ import {
   Skeleton,
   Textarea,
 } from '@navikt/ds-react';
-import { logger } from '@navikt/next-logger';
 import { AnimatePresence, motion } from 'framer-motion';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
@@ -154,7 +154,7 @@ const EndreTittel = ({
       onUpdated();
       modalRef.current?.close();
     } catch (error) {
-      logger.error('Lagring av tittel feilet:', error);
+      new RekbisError({ beskrivelse: 'Lagring av tittel feilet:', error });
     }
   };
 

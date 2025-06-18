@@ -1,3 +1,4 @@
+import { RekbisError } from '../../../../../../util/rekbisError';
 import { setKandidatlisteStatus } from '../../../../../api/kandidat/setKandidatlisteStatus';
 import { oppdaterStilling } from '../../../../../api/stilling/oppdater-stilling/oppdaterStilling';
 import { useApplikasjonContext } from '../../../../../providers/ApplikasjonContext';
@@ -6,7 +7,6 @@ import { stillingErUtløpt } from '../../../../stilling-util';
 import { useStillingsContext } from '../../../StillingsContext';
 import { EyeSlashIcon, TasklistIcon } from '@navikt/aksel-icons';
 import { BodyLong, Button, Modal } from '@navikt/ds-react';
-import { logger } from '@navikt/next-logger';
 import * as React from 'react';
 
 interface AvsluttStillingKnappProps {
@@ -54,7 +54,10 @@ const AvsluttStillingKnapp: React.FC<AvsluttStillingKnappProps> = ({
 
       refetch();
     } catch (error) {
-      logger.error('Feil ved oppdatering av stilling', error);
+      new RekbisError({
+        beskrivelse: 'Feil ved oppdatering av stilling',
+        error,
+      });
     }
     setLoading(false);
     ref.current?.close();

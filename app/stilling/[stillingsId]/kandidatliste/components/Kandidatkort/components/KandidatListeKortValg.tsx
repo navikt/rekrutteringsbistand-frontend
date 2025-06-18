@@ -1,3 +1,4 @@
+import { RekbisError } from '../../../../../../../util/rekbisError';
 import { endreUtfallKandidat } from '../../../../../../api/kandidat/endreKandidatUtfall';
 import { KandidatListeKandidatDTO } from '../../../../../../api/kandidat/schema.zod';
 import { useApplikasjonContext } from '../../../../../../providers/ApplikasjonContext';
@@ -11,7 +12,6 @@ import FjernFåttJobbenKnapp from '../../FjernFåttJobbenKnapp';
 import RegistrerFåttJobbenKnapp from '../../RegistrerFåttJobbenKnapp';
 import { MenuElipsisVerticalIcon } from '@navikt/aksel-icons';
 import { ActionMenu, Button } from '@navikt/ds-react';
-import { logger } from '@navikt/next-logger';
 import * as React from 'react';
 
 export interface KandidatListeKortValgProps {
@@ -40,7 +40,7 @@ const KandidatListeKortValg: React.FC<KandidatListeKortValgProps> = ({
       );
       reFetchKandidatliste();
     } catch (error) {
-      logger.error(error);
+      new RekbisError({ error });
     }
     setLoading(false);
   };

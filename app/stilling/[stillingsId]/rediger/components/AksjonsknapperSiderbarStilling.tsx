@@ -1,3 +1,4 @@
+import { RekbisError } from '../../../../../util/rekbisError';
 import { oppdaterStilling } from '../../../../api/stilling/oppdater-stilling/oppdaterStilling';
 import { useStilling } from '../../../../api/stilling/rekrutteringsbistandstilling/[slug]/useStilling';
 import { useApplikasjonContext } from '../../../../providers/ApplikasjonContext';
@@ -8,7 +9,6 @@ import { StillingsDataForm } from '../redigerFormType.zod';
 import EndreStillingStatus from './EndreStillingStatus';
 import { EyeIcon, FloppydiskIcon, TrashIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
-import { logger } from '@navikt/next-logger';
 import * as React from 'react';
 
 export interface AksjonsknapperSiderbarStillingProps {
@@ -41,7 +41,7 @@ const AksjonsknapperSiderbarStilling: React.FC<
       });
       await mutate();
     } catch (error) {
-      logger.error('Feil ved lagring av stilling', error);
+      new RekbisError({ beskrivelse: 'Feil ved lagring av stilling', error });
       visVarsel({
         tekst: 'Feil ved lagring av stilling',
         type: 'error',

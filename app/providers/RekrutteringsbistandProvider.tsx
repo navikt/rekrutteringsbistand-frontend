@@ -1,7 +1,7 @@
 'use client';
 
 import { SidebarProvider } from '../../components/ui/sidebar';
-import { rekbisError } from '../../util/rekbisError';
+import { RekbisError } from '../../util/rekbisError';
 import { useBruker } from '../api/bruker/useBruker';
 import { useModiaAktivBruker } from '../api/modia/context/useModiaAktivBruker';
 import { useModiaAktivEnhet } from '../api/modia/context/useModiaAktivEnhet';
@@ -55,7 +55,7 @@ const RekrutteringsbistandProvider: React.FC<
             };
 
             if (!bruker || !dekoratørData) {
-              throw new rekbisError({
+              throw new RekbisError({
                 beskrivelse: 'Fant ikke bruker eller dekoratør',
               });
             }

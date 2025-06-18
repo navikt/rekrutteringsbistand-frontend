@@ -1,3 +1,4 @@
+import { RekbisError } from '../../../util/rekbisError';
 import { Alert, BodyLong, BodyShort, Button } from '@navikt/ds-react';
 import { logger } from '@navikt/next-logger';
 import * as React from 'react';
@@ -27,7 +28,8 @@ const Feilmelding: React.FC<IFeilmelding> = ({
   // Log the error for debugging purposes
   React.useEffect(() => {
     if (error) {
-      logger.error('Error displayed in UI', {
+      new RekbisError({
+        beskrivelse: 'Error displayed in UI',
         error,
         tittel,
         statuskode,
@@ -35,7 +37,7 @@ const Feilmelding: React.FC<IFeilmelding> = ({
         url,
       });
     }
-  }, [error, tittel, statuskode]);
+  }, [error, tittel, statuskode, stack, url]);
 
   if (zodError) {
     logger.info('ZodError', zodError);

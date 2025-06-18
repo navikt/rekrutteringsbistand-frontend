@@ -1,5 +1,5 @@
+import { RekbisError } from '../../../util/rekbisError';
 import { NyhetDTO } from '../../nyheter';
-import { logger } from '@navikt/next-logger';
 import { useEffect, useState } from 'react';
 
 const hentAntallUlesteNyheter = (
@@ -44,7 +44,10 @@ const useAntallUlesteNyheter = (
         setAntallUlesteVedSidelast(1);
       }
     } catch (error) {
-      logger.error(error, 'Kunne ikke hente fra local storage');
+      new RekbisError({
+        error,
+        beskrivelse: 'Kunne ikke hente fra local storage',
+      });
     }
   }, [nyheter, onFørsteBesøk]);
 
@@ -55,7 +58,10 @@ const useAntallUlesteNyheter = (
       const antallLesteNyheter = JSON.stringify(nyheter.length);
       window.localStorage.setItem(LOCAL_STORAGE_KEY, antallLesteNyheter);
     } catch (error) {
-      logger.error(error, 'Kunne ikke lagre til local storage');
+      new RekbisError({
+        error,
+        beskrivelse: 'Kunne ikke lagre til local storage',
+      });
     }
   };
 

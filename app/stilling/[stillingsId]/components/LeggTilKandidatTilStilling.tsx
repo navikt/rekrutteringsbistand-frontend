@@ -1,4 +1,4 @@
-import { rekbisError } from '../../../../util/rekbisError';
+import { RekbisError } from '../../../../util/rekbisError';
 import { UmamiEvent } from '../../../../util/umamiEvents';
 import { leggTilKandidater } from '../../../api/kandidat-sok/leggTilKandidat';
 import { formidleUsynligKandidat } from '../../../api/kandidat/formidleKandidat';
@@ -86,7 +86,7 @@ const LeggTilKandidatTilStilling: React.FC<LeggTilKandidatTilStillingProps> = ({
           tekst: 'Noe gikk galt ved lagring av kandidater',
           type: 'error',
         });
-        throw new rekbisError({ error: error });
+        throw new RekbisError({ error: error });
       }
     }
 

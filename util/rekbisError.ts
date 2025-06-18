@@ -2,7 +2,7 @@ import { IFeilmelding } from '../app/components/feilhåndtering/Feilmelding';
 import { logger } from '@navikt/next-logger';
 import { nanoid } from 'nanoid';
 
-export class rekbisError extends Error {
+export class RekbisError extends Error {
   public statuskode: number;
   public tittel: string;
   public beskrivelse: string;

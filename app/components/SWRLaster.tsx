@@ -1,6 +1,6 @@
 'use client';
 
-import { rekbisError } from '../../util/rekbisError';
+import { RekbisError } from '../../util/rekbisError';
 import Sidelaster from './Sidelaster';
 import Feilmelding from './feilhåndtering/Feilmelding';
 import * as React from 'react';
@@ -22,8 +22,8 @@ function isZodError(error: any): error is ZodError {
   return error instanceof ZodError;
 }
 
-function isRekbisError(error: any): error is rekbisError {
-  return error instanceof rekbisError;
+function isRekbisError(error: any): error is RekbisError {
+  return error instanceof RekbisError;
 }
 
 const SWRLaster = <T extends any[]>({

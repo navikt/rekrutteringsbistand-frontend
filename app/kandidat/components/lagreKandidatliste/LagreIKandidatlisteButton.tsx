@@ -1,3 +1,4 @@
+import { RekbisError } from '../../../../util/rekbisError';
 import { UmamiEvent } from '../../../../util/umamiEvents';
 import { leggTilKandidater } from '../../../api/kandidat-sok/leggTilKandidat';
 import { useKandidatliste } from '../../../api/kandidat/useKandidatliste';
@@ -9,7 +10,6 @@ import LagreIKandidatlisteModal from './LagreIKandidatlisteModal';
 import { useUmami } from '@/app/providers/UmamiContext';
 import { PersonPlusIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
-import { logger } from '@navikt/next-logger';
 import * as React from 'react';
 
 export interface LagreIKandidatlisteMedStillingsIdProps {
@@ -43,7 +43,10 @@ const LagreIKandidatlisteMedStillingsId: React.FC<
         });
         fjernMarkerteKandidater();
       } catch (error) {
-        logger.error('Feil ved lagring av kandidater i kandidatliste', error);
+        new RekbisError({
+          beskrivelse: 'Feil ved lagring av kandidater i kandidatliste',
+          error,
+        });
         visVarsel({
           type: 'error',
           tekst: 'Feil ved lagring av kandidater i kandidatliste',

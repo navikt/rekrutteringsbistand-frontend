@@ -1,5 +1,6 @@
 'use client';
 
+import { RekbisError } from '../../../../util/rekbisError';
 import { RekrutteringstreffTabs } from '../Rekrutteringstreff';
 import { useRekrutteringstreffContext } from '../RekrutteringstreffContext';
 import { ArbeidsgiverDTO } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
@@ -7,7 +8,6 @@ import { leggtilNyArbeidsgiver } from '@/app/api/rekrutteringstreff/[...slug]/ny
 import { useArbeidsgiverHendelser } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgiverHendelser';
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
 import VelgArbeidsgiver from '@/app/stilling/ny-stilling/components/VelgArbeidsgiver';
-import { rekbisError } from '@/util/rekbisError';
 import { Button, Modal } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
@@ -42,7 +42,7 @@ const LeggTilArbeidsgiverModal: React.FC<Props> = ({ modalRef }) => {
         `/rekrutteringstreff/${rekrutteringstreffId}?visFane=${RekrutteringstreffTabs.ARBEIDSGIVERE}`,
       );
     } catch (error) {
-      throw new rekbisError({
+      throw new RekbisError({
         beskrivelse: 'Feiler når prøver å legge til ny arbeidsgiver:',
         error,
       });

@@ -1,4 +1,4 @@
-import { rekbisError } from '../../../../../util/rekbisError';
+import { RekbisError } from '../../../../../util/rekbisError';
 import { KandidatAPI } from '../../../../api/api-routes';
 import { putApi } from '../../../../api/fetcher';
 import { KandidatListeKandidatDTO } from '../../../../api/kandidat/schema.zod';
@@ -81,7 +81,7 @@ export const EndreArkivertStatusModal: React.FC<
       reFetchKandidatliste();
       modalRef.current?.close();
     } catch {
-      throw new rekbisError({ beskrivelse: 'Feil ved sletting av kandidat' });
+      throw new RekbisError({ beskrivelse: 'Feil ved sletting av kandidat' });
     } finally {
       setIsLoading(false);
     }

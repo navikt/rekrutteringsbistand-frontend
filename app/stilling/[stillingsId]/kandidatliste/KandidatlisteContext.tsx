@@ -1,4 +1,4 @@
-import { rekbisError } from '../../../../util/rekbisError';
+import { RekbisError } from '../../../../util/rekbisError';
 import { ForespurteOmDelingAvCvDTO } from '../../../api/foresporsel-om-deling-av-cv/foresporsler/[...slug]/useForespurteOmDelingAvCv';
 import {
   kandidatlisteSchemaDTO,
@@ -122,7 +122,7 @@ export const useNullableKandidatlisteContext = () => {
 export const useKandidatlisteContext = () => {
   const context = React.useContext(KandidatListeContext);
   if (context === undefined) {
-    throw new rekbisError({
+    throw new RekbisError({
       beskrivelse:
         'Context er undefined, må være children av KandidatlisteContextProvider.',
     });

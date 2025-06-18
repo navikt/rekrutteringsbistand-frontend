@@ -1,7 +1,7 @@
 import { isLocal } from '../../util/env';
+import { RekbisError } from '../../util/rekbisError';
 import { Iroute } from './api-routes';
 import { hentOboToken, setHeaderToken } from './oboToken';
-import { logger } from '@navikt/next-logger';
 import { NextRequest, NextResponse } from 'next/server';
 
 export const proxyWithOBO = async (
@@ -46,7 +46,10 @@ export const proxyWithOBO = async (
           fetchOptions.body = JSON.stringify(body);
         }
       } catch (error) {
-        logger.error('Failed to parse request body as JSON:', error);
+        new RekbisError({
+          beskrivelse: 'Failed to parse request body as JSON:',
+          error,
+        });
         return NextResponse.json(
           { beskrivelse: 'Invalid JSON in request body' },
           { status: 400 },
@@ -80,15 +83,16 @@ export const proxyWithOBO = async (
     }
   } catch (error: any) {
     if (error instanceof Error) {
-      logger.error(
+      new RekbisError({
+        beskrivelse: `Feil ved proxying av forespørselen til url: ${requestUrl} fra url: ${originalUrl}`,
         error,
-        `Feil ved proxying av forespørselen til url: ${requestUrl} fra url: ${originalUrl}`,
-      );
+      });
     } else {
-      logger.error(
-        { msg: 'Unknown error', error },
-        `Feil ved proxying av forespørselen til url: ${requestUrl} fra url: ${originalUrl}`,
-      );
+      new RekbisError({
+        tittel: 'Unknown error',
+        error,
+        beskrivelse: `Feil ved proxying av forespørselen til url: ${requestUrl} fra url: ${originalUrl}`,
+      });
     }
 
     // Use a consistent error response structure matching rekbisError properties

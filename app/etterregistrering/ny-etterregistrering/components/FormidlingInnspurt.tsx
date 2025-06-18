@@ -1,4 +1,4 @@
-import { rekbisError } from '../../../../util/rekbisError';
+import { RekbisError } from '../../../../util/rekbisError';
 import { UmamiEvent } from '../../../../util/umamiEvents';
 import { useApplikasjonContext } from '../../../providers/ApplikasjonContext';
 import { useUmami } from '../../../providers/UmamiContext';
@@ -12,7 +12,6 @@ import {
   FormSummary,
   Heading,
 } from '@navikt/ds-react';
-import { logger } from '@navikt/next-logger';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
@@ -62,8 +61,10 @@ const FormidlingInnspurt = () => {
         router.push('/etterregistrering?portefolje=visMine');
       }
     } catch (error) {
-      logger.error('Kunne ikke opprette formidling', error);
-      throw new rekbisError({ beskrivelse: 'Kunne ikke opprette formidling' });
+      throw new RekbisError({
+        beskrivelse: 'Kunne ikke opprette formidling',
+        error,
+      });
     }
   };
 

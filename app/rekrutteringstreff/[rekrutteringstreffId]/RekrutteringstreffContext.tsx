@@ -1,6 +1,6 @@
 'use client';
 
-import { rekbisError } from '../../../util/rekbisError';
+import { RekbisError } from '../../../util/rekbisError';
 import * as React from 'react';
 
 export interface RekrutteringstreffContextProps {
@@ -29,13 +29,13 @@ export const RekrutteringstreffContextProvider: React.FC<
 export const useRekrutteringstreffContext = () => {
   const context = React.useContext(RekrutteringstreffContext);
   if (context === undefined) {
-    throw new rekbisError({
+    throw new RekbisError({
       beskrivelse:
         'useRekrutteringstreffContext må være i scope: RekrutteringstreffContextProvider',
     });
   }
   if (!context.rekrutteringstreffId) {
-    throw new rekbisError({
+    throw new RekbisError({
       beskrivelse: 'RekrutteringstreffId mangler i konteksten!',
     });
   }

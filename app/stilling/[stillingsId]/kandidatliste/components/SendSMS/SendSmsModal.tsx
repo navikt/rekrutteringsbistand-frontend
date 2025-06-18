@@ -1,3 +1,4 @@
+import { RekbisError } from '../../../../../../util/rekbisError';
 import { UmamiEvent } from '../../../../../../util/umamiEvents';
 import { KandidatListeKandidatDTO } from '../../../../../api/kandidat/schema.zod';
 import {
@@ -25,7 +26,6 @@ import {
   Select,
   Table,
 } from '@navikt/ds-react';
-import { logger } from '@navikt/next-logger';
 import { ChangeEvent, FunctionComponent, useState } from 'react';
 
 type Props = {
@@ -101,7 +101,7 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
       fjernAllMarkering();
       setVis(false);
     } catch (error) {
-      logger.error('Klarte ikke å sende SMS:', error);
+      new RekbisError({ beskrivelse: 'Klarte ikke å sende SMS:', error });
       visVarsel({
         tekst:
           error instanceof Error

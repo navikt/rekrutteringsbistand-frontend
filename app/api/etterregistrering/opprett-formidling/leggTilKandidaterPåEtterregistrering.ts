@@ -1,8 +1,7 @@
-import { rekbisError } from '../../../../util/rekbisError';
+import { RekbisError } from '../../../../util/rekbisError';
 import { KandidatAPI } from '../../api-routes';
 import { FormidlingUsynligKandidatDTO } from '../../kandidat/formidleKandidat';
 import { hentOboToken } from '../../oboToken';
-import { logger } from '@navikt/next-logger';
 
 interface leggTilKandidaterPåEtterregistreringProps {
   kandidater: FormidlingUsynligKandidatDTO[];
@@ -59,7 +58,7 @@ export const leggTilKandidaterPåEtterregistrering = async ({
 
           if (!response.ok) {
             const errorText = await response.text();
-            throw new rekbisError({
+            throw new RekbisError({
               beskrivelse: `Klarte ikke å legge til kandidat (${response.status}): ${errorText}`,
             });
           }
@@ -72,9 +71,9 @@ export const leggTilKandidaterPåEtterregistrering = async ({
           //   reqHeaders,
           // });
         } catch (fetchError) {
-          logger.error(
-            `Feil ved formidling av kandidat...: ${fetchError instanceof Error ? fetchError.message : String(fetchError)}`,
-          );
+          new RekbisError({
+            beskrivelse: `Feil ved formidling av kandidat...: ${fetchError instanceof Error ? fetchError.message : String(fetchError)}`,
+          });
 
           return {
             success: false,
@@ -89,17 +88,21 @@ export const leggTilKandidaterPåEtterregistrering = async ({
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      logger.error(`Klarte ikke å formidle kandidater: ${errorMessage}`, error);
+      new RekbisError({
+        beskrivelse: `Klarte ikke å formidle kandidater: ${errorMessage}`,
+        error,
+      });
       return {
         success: false,
         error: 'Klarte ikke å formidle kandidater',
       };
     }
   } catch (error) {
-    logger.error(
-      '[Opprett etterregistrering] Feil ved oppdatering av etterregistrering:',
+    new RekbisError({
+      beskrivelse:
+        '[Opprett etterregistrering] Feil ved oppdatering av etterregistrering:',
       error,
-    );
+    });
     return {
       success: false,
       error: 'Feil ved oppdatering av etterregistrering',

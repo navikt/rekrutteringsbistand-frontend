@@ -1,6 +1,7 @@
 'use client';
 
 import { getWorkLocationsAsString } from '../../../../util/locationUtil';
+import { RekbisError } from '../../../../util/rekbisError';
 import { GeografiDTO } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import TekstMedIkon from '../../../components/TekstMedIkon';
 import VisEditorTekst from '../../../components/rikteksteditor/VisEditorTekst';
@@ -17,7 +18,6 @@ import {
   LocationPinIcon,
   TimerStartIcon,
 } from '@navikt/aksel-icons';
-import { logger } from '@navikt/next-logger';
 import * as React from 'react';
 
 export const parseWorktime = (worktime: string) => {
@@ -29,7 +29,7 @@ export const parseWorktime = (worktime: string) => {
       arrayString += `${jsonArray[i]} `;
     }
   } catch (error) {
-    logger.error('Failed to parse worktime', error);
+    new RekbisError({ error });
     arrayString = worktime;
   }
 
