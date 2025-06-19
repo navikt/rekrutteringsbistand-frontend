@@ -98,7 +98,7 @@ const Feilmelding: React.FC<IFeilmelding> = ({
               Feilkode for rapportering av feil:
             </dt>
             <dd className='ml-4'>
-              {feilkode} <CopyButton className='ml-2' copyText={feilkode} />;
+              {feilkode} <CopyButton className='ml-2' copyText={feilkode} />
             </dd>
           </dl>
         )}
