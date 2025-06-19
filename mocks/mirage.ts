@@ -33,6 +33,10 @@ import { brukerStandardSøkMirage } from '../app/api/stilling/standardsok/useBru
 import { stillingssøkMirage } from '../app/api/stillings-sok/useStillingssøk';
 import { synlighetsevalueringMirage } from '../app/api/synlighet/evaluering/useSynlighetsevaluering';
 import { leggTilNyArbeidsgiverMirage } from '@/app/api/rekrutteringstreff/[...slug]/ny-arbeidsgiver/leggTilNyArbeidsgiver';
+import {
+  publiserRekrutteringstreff,
+  publiserRekrutteringstreffMirage,
+} from '@/app/api/rekrutteringstreff/[...slug]/publiserRekrutteringstreff';
 import { alleHendelserMirage } from '@/app/api/rekrutteringstreff/[...slug]/useAlleHendelser';
 import { arbeidsgiverHendelserMirage } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgiverHendelser';
 import { rekruteringstreffArbeidsgivereMirage } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
@@ -105,6 +109,7 @@ export function makeServer({ environment = 'test' } = {}) {
       innleggMirage(this);
       opprettInnleggfMirage(this);
       oppdaterInnleggfMirage(this);
+      publiserRekrutteringstreffMirage(this);
       modiaAktivEnhetMirage(this);
       modiaAktivBrukerMirage(this);
       mockModiaContext(this);
