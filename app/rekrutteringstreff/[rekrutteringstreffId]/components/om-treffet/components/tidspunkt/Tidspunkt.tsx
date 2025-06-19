@@ -40,6 +40,8 @@ import React from 'react';
 
 // tidspunkt.tsx
 
+// tidspunkt.tsx
+
 type Props = {
   rekrutteringstreff: RekrutteringstreffDTO;
   onUpdated: () => void;

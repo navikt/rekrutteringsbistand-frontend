@@ -30,9 +30,7 @@ export class RekbisError extends Error {
 
     logger.error(
       {
-        err: this,
-        operationId: this.id,
-        endpoint: this.url,
+        ...this,
       },
       this.beskrivelse || 'Ukjent beskrivelse',
     );

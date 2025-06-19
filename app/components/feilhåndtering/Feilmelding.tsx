@@ -72,6 +72,7 @@ const Feilmelding: React.FC<IFeilmelding> = ({
       </Alert>
     );
   }
+  const errorId = error instanceof RekbisError ? error.id : 'unknown';
   return (
     <div style={{ width: '100%' }}>
       <Alert style={{ margin: '1rem' }} variant='error'>
@@ -89,6 +90,11 @@ const Feilmelding: React.FC<IFeilmelding> = ({
         {showError && (
           <dl>
             <dt className='font-bold italic'>Statuskode</dt>
+            {errorId && (
+              <dd className='mb-4 ml-4'>
+                Feilkode for rapportering av feil: {errorId}
+              </dd>
+            )}
             <dd className='mb-4 ml-4'>{statuskode ?? '-'}</dd>
 
             <dt className='font-bold italic'>URL</dt>
