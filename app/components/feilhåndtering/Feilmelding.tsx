@@ -87,9 +87,14 @@ const Feilmelding: React.FC<IFeilmelding> = ({
         <strong>Noe gikk galt!</strong>
         <BodyShort>{tittel || 'Ukjent feil'}</BodyShort>
         {feilkode && (
-          <BodyLong>Feilkode for rapportering av feil: {feilkode}</BodyLong>
+          <dl>
+            <dt className='font-bold italic'>
+              Feilkode for rapportering av feil:
+            </dt>
+            <dd className='mb-4 ml-4'>{feilkode}</dd>
+          </dl>
         )}
-        <BodyLong>{beskrivelse}</BodyLong>
+
         <Button
           className='mt-4 mb-4'
           size='small'
@@ -99,10 +104,13 @@ const Feilmelding: React.FC<IFeilmelding> = ({
           {showError ? 'Skjul' : 'Vis'} detaljert feilmelding
         </Button>
         {showError && (
-          <dl>
-            <dt className='font-bold italic'>Teknisk feilmelding</dt>
-            <dd className='mb-4 ml-4'>{stack ?? '-'}</dd>
-          </dl>
+          <>
+            <BodyLong>{beskrivelse}</BodyLong>
+            <dl>
+              <dt className='font-bold italic'>Teknisk feilmelding</dt>
+              <dd className='mb-4 ml-4'>{stack ?? '-'}</dd>
+            </dl>
+          </>
         )}
       </Alert>
     </div>

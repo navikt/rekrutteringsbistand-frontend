@@ -1,60 +1,77 @@
 import { IFeilmelding } from '../app/components/feilhåndtering/Feilmelding';
 import { logger } from '@navikt/next-logger';
-import { nanoid } from 'nanoid';
+import { customAlphabet } from 'nanoid';
+
+const lagFeilkode = customAlphabet('1234567890abcdefghijklmnopqrstuvw', 10);
 
 export class RekbisError extends Error {
-  public tittel: string = 'Ukjent feil';
-  public beskrivelse: string = '';
-  public url: string = '';
-  public feilkode: string = nanoid();
-  public error: unknown;
+  public tittel: string;
+  public beskrivelse: string;
+  public url: string;
+  public feilkode: string;
+  public originalError: unknown;
 
   constructor({
-    tittel,
+    tittel = 'Ukjent feil',
     stack,
-    beskrivelse,
+    beskrivelse = '',
     error,
-    feilkode,
-    url,
+    feilkode = lagFeilkode(),
+    url = '', // Set default here
   }: IFeilmelding) {
-    // If the error is already a RekbisError, don't wrap it
-    if (error instanceof RekbisError) {
-      return error;
-    }
+    super(feilkode);
 
-    super(beskrivelse || 'Ukjent feil');
+    Object.setPrototypeOf(this, RekbisError.prototype);
+
     this.name = this.constructor.name;
-    this.tittel = tittel ?? 'Ukjent feil';
+    this.tittel = tittel;
     this.stack = stack || this.stack;
-    this.beskrivelse = beskrivelse ?? this.message ?? '';
-    this.url = url ?? '';
-    this.error = error;
-    this.feilkode = feilkode || nanoid();
+    this.beskrivelse = beskrivelse;
+    this.url = url;
+    this.originalError = error;
+    this.feilkode = feilkode;
 
     logger.error(
       {
-        err: this,
+        err: {
+          name: this.name,
+          message: this.message,
+          stack: this.stack,
+          tittel: this.tittel,
+          beskrivelse: this.beskrivelse,
+          url: this.url,
+          feilkode: this.feilkode,
+        },
         operationId: this.feilkode,
         endpoint: this.url,
         originalError:
-          this.error instanceof Error
-            ? { message: this.error.message, stack: this.error.stack }
-            : this.error,
+          this.originalError instanceof Error
+            ? {
+                message: this.originalError.message,
+                stack: this.originalError.stack,
+              }
+            : this.originalError,
       },
       this.beskrivelse || 'Ukjent beskrivelse',
     );
   }
 
-  // Helper method to ensure we have a RekbisError
   static ensure(error: unknown, defaultMessage?: string): RekbisError {
     if (error instanceof RekbisError) {
       return error;
     }
 
+    let description = defaultMessage;
+    if (!description) {
+      if (error instanceof Error) {
+        description = error.message;
+      } else {
+        description = 'En ukjent feil har oppstått.';
+      }
+    }
+
     return new RekbisError({
-      beskrivelse:
-        defaultMessage ||
-        (error instanceof Error ? error.message : 'En feil har oppstått'),
+      beskrivelse: description,
       error: error,
     });
   }
