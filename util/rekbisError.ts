@@ -17,9 +17,9 @@ export class RekbisError extends Error {
     beskrivelse = '',
     error,
     feilkode,
-    url = '', // Set default here
+    url = '',
   }: IFeilmelding) {
-    super(beskrivelse);
+    super(`${beskrivelse} (${feilkode})`);
 
     if (!feilkode) {
       feilkode = lagFeilkode();
@@ -36,24 +36,20 @@ export class RekbisError extends Error {
     this.feilkode = feilkode;
 
     logger.error({
-      err: {
-        name: this.name,
-        message:
-          this.message ??
-          `Feilkode: ${this.feilkode} - ${this.beskrivelse || 'Ukjent beskrivelse'}`,
-        stack: this.stack,
-        tittel: this.tittel,
-        beskrivelse: this.beskrivelse,
-        url: this.url,
-        feilkode: this.feilkode,
-        originalError:
-          this.originalError instanceof Error
-            ? {
-                message: this.originalError.message,
-                stack: this.originalError.stack,
-              }
-            : this.originalError,
-      },
+      errorName: this.name,
+      errorMessage: this.message,
+      errorStack: this.stack,
+      tittel: this.tittel,
+      beskrivelse: this.beskrivelse,
+      url: this.url,
+      feilkode: this.feilkode,
+      originalError:
+        this.originalError instanceof Error
+          ? {
+              message: this.originalError.message,
+              stack: this.originalError.stack,
+            }
+          : this.originalError,
     });
   }
 
