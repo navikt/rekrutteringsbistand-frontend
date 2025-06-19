@@ -7,6 +7,7 @@ import InnleggModal from './om-treffet/components/innlegg/InnleggModal';
 import StedModal from './om-treffet/components/sted/StedModal';
 import TidspunktModal from './om-treffet/components/tidspunkt/TidspunktModal';
 import SvarfristModal from './om-treffet/components/tidspunkt/svarfrist/SvarfristModal';
+import { publiserRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/publiserRekrutteringstreff';
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
@@ -68,6 +69,9 @@ const stepsForStepper = stepDetails.map((d) => d.stepLabel);
 const TreffSteg = () => {
   const [isOpen, setIsOpen] = React.useState(false);
   const toggle = () => setIsOpen((o) => !o);
+
+  const [isPublishing, setIsPublishing] = React.useState(false);
+
   const activeStep = 1;
 
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
@@ -172,9 +176,28 @@ const TreffSteg = () => {
 
   const alleStegOk = sjekklisteData.every((item) => checkedItems[item.id]);
 
+  const onPubliserTreffet = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsPublishing(true);
+
+    try {
+      await publiserRekrutteringstreff(rekrutteringstreffId);
+      await mutateRekrutteringstreff();
+    } catch (error) {
+      logger.error('Publisering av rekrutteringstreff feilet', error);
+    } finally {
+      setIsPublishing(false);
+    }
+  };
+
+  const harPubliseringshendelse = React.useMemo(() => {
+    return rekrutteringstreffData?.hendelser?.some(
+      (hendelse) => hendelse.hendelsestype === 'publisert',
+    );
+  }, [rekrutteringstreffData]);
+
   return (
     <div className='my-2'>
-      {/* topp */}
       <Box.New
         {...commonBoxProps}
         className={`${isOpen ? 'rounded-t-xl border-b-0' : 'rounded-xl'} cursor-pointer`}
@@ -199,9 +222,12 @@ const TreffSteg = () => {
           <div className='flex items-center gap-4'>
             <div className='flex gap-2'>
               <Button
-                disabled={!alleStegOk}
+                disabled={
+                  !alleStegOk || isPublishing || harPubliseringshendelse
+                }
+                loading={isPublishing}
                 size='small'
-                onClick={(e) => e.stopPropagation()}
+                onClick={onPubliserTreffet}
               >
                 Publiser treffet
               </Button>
@@ -224,7 +250,6 @@ const TreffSteg = () => {
         </div>
       </Box.New>
 
-      {/* innhold */}
       {isOpen && (
         <Box.New
           {...commonBoxProps}
