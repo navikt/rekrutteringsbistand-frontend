@@ -20,5 +20,12 @@ export const rekrutteringstreffMock = {
       opprettetAvAktørType: 'ARRANGØR',
       aktørIdentifikasjon: 'A123456',
     },
+    {
+      id: '11111111-2222-3333-4444-555555555556',
+      tidspunkt: '2025-06-02T08:00:00+02:00',
+      hendelsestype: 'PUBLISER',
+      opprettetAvAktørType: 'ARRANGØR',
+      aktørIdentifikasjon: 'A123456',
+    },
   ],
 };

@@ -192,7 +192,7 @@ const TreffSteg = () => {
 
   const harPubliseringshendelse = React.useMemo(() => {
     return rekrutteringstreffData?.hendelser?.some(
-      (hendelse) => hendelse.hendelsestype === 'publisert',
+      (hendelse) => hendelse.hendelsestype === 'PUBLISER',
     );
   }, [rekrutteringstreffData]);
 
@@ -221,16 +221,16 @@ const TreffSteg = () => {
           </Heading>
           <div className='flex items-center gap-4'>
             <div className='flex gap-2'>
-              <Button
-                disabled={
-                  !alleStegOk || isPublishing || harPubliseringshendelse
-                }
-                loading={isPublishing}
-                size='small'
-                onClick={onPubliserTreffet}
-              >
-                Publiser treffet
-              </Button>
+              {!harPubliseringshendelse && (
+                <Button
+                  disabled={!alleStegOk || isPublishing}
+                  loading={isPublishing}
+                  size='small'
+                  onClick={onPubliserTreffet}
+                >
+                  Publiser treffet
+                </Button>
+              )}
               <Button
                 variant='secondary'
                 size='small'
