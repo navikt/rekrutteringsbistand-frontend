@@ -247,7 +247,7 @@ export const useKandidatSøkFilterContext = () => {
   const context = React.useContext(KandidaSøkFilterContext);
   if (context === undefined) {
     throw new RekbisError({
-      beskrivelse: 'useKandidaSokFilterContext må være i scope',
+      message: 'useKandidaSokFilterContext må være i scope',
     });
   }
   return context;

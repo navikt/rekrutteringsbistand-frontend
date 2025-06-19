@@ -108,7 +108,7 @@ export const useKandidatNavigeringContext = () => {
   const context = useContext(KandidatNavigeringContext);
   if (!context) {
     throw new RekbisError({
-      beskrivelse:
+      message:
         'useKandidatNavigering must be used within a KandidatNavigeringProvider',
     });
   }

@@ -17,7 +17,7 @@ export const setKandidatlisteStatus = async (
     return response.data;
   } catch {
     throw new RekbisError({
-      beskrivelse: 'Klarte ikke å sette kandidatliste status',
+      message: 'Klarte ikke å sette kandidatliste status',
     });
   }
 };

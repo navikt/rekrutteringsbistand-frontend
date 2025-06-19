@@ -81,7 +81,7 @@ export const EndreArkivertStatusModal: React.FC<
       reFetchKandidatliste();
       modalRef.current?.close();
     } catch {
-      throw new RekbisError({ beskrivelse: 'Feil ved sletting av kandidat' });
+      throw new RekbisError({ message: 'Feil ved sletting av kandidat' });
     } finally {
       setIsLoading(false);
     }

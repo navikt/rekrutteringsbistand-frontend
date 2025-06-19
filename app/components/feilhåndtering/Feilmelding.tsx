@@ -1,33 +1,16 @@
 import { RekbisError } from '../../../util/rekbisError';
-import {
-  Alert,
-  BodyLong,
-  BodyShort,
-  Button,
-  CopyButton,
-} from '@navikt/ds-react';
+import { Alert, BodyShort, Button, CopyButton } from '@navikt/ds-react';
 import { logger } from '@navikt/next-logger';
 import * as React from 'react';
 import { ZodError } from 'zod';
 
 export interface IFeilmelding {
   zodError?: ZodError;
-  tittel?: string;
-  stack?: string;
-  beskrivelse?: string;
-  error?: unknown;
-  feilkode?: string;
-  url?: string;
+  error?: RekbisError | unknown;
+  message?: string;
 }
 
-const Feilmelding: React.FC<IFeilmelding> = ({
-  zodError,
-  stack,
-  beskrivelse,
-  error,
-  tittel = 'Ukjent feil',
-  feilkode,
-}) => {
+const Feilmelding: React.FC<IFeilmelding> = ({ zodError, error, message }) => {
   const [showError, setShowError] = React.useState(false);
 
   // Log error hvis ikke rekbisError
@@ -39,16 +22,15 @@ const Feilmelding: React.FC<IFeilmelding> = ({
             operationId: error.feilkode,
             errorType: 'RekbisError',
           },
-          'Error displayed in UI: ' + error.beskrivelse,
+          'Error vist i UI: ' + error.message || message,
         );
       } else {
         logger.error(
           {
             err: error instanceof Error ? error : null,
             errorType: error?.constructor?.name || typeof error,
-            context: 'Feilmelding component',
           },
-          'Error displayed in UI (original error)',
+          `Error displayed in UI (${message})`,
         );
       }
     }
@@ -59,7 +41,6 @@ const Feilmelding: React.FC<IFeilmelding> = ({
     return (
       <Alert className='w-full' style={{ margin: '1rem' }} variant='error'>
         <strong>Feil ved validering av data (ZodError)</strong>
-        <BodyLong>{tittel}</BodyLong>
         <BodyShort>Antall feil {zodError?.errors.length ?? 'N/A'}</BodyShort>
         <Button
           className='mt-4 mb-4'
@@ -87,39 +68,53 @@ const Feilmelding: React.FC<IFeilmelding> = ({
       </Alert>
     );
   }
-  return (
-    <div style={{ width: '100%' }}>
-      <Alert style={{ margin: '1rem' }} variant='error'>
-        <BodyShort className='font-bold'>Noe gikk galt!</BodyShort>
 
-        {feilkode && (
-          <dl className='my-4'>
-            <dt className='font-bold italic'>
-              Feilkode for rapportering av feil:
-            </dt>
-            <dd className='ml-4'>
-              {feilkode} <CopyButton className='ml-2' copyText={feilkode} />
-            </dd>
-          </dl>
-        )}
-        <BodyShort className='font-bold'>{tittel || 'Ukjent feil'}</BodyShort>
-        <BodyLong>{beskrivelse}</BodyLong>
-        <Button
-          className='mt-4 mb-4'
-          size='small'
-          variant={showError ? 'secondary-neutral' : 'secondary'}
-          onClick={() => setShowError(!showError)}
-        >
-          {showError ? 'Skjul' : 'Vis'} detaljert feilmelding
-        </Button>
-        {showError && (
-          <dl>
-            <dt className='font-bold italic'>Teknisk feilmelding</dt>
-            <dd className='mb-4 ml-4'>{stack ?? '-'}</dd>
-          </dl>
-        )}
-      </Alert>
-    </div>
+  if (error instanceof RekbisError) {
+    return (
+      <div style={{ width: '100%' }}>
+        <Alert style={{ margin: '1rem' }} variant='error'>
+          <BodyShort className='font-bold'>Noe gikk galt!</BodyShort>
+
+          {error.feilkode && (
+            <dl className='my-4'>
+              <dt className='font-bold italic'>
+                Feilkode for rapportering av feil:
+              </dt>
+              <dd className='ml-4'>
+                {error.feilkode}{' '}
+                <CopyButton className='ml-2' copyText={error.feilkode} />
+              </dd>
+            </dl>
+          )}
+          <BodyShort className='font-bold'>
+            {error.message || 'Ukjent feil'}
+          </BodyShort>
+          <Button
+            className='mt-4 mb-4'
+            size='small'
+            variant={showError ? 'secondary-neutral' : 'secondary'}
+            onClick={() => setShowError(!showError)}
+          >
+            {showError ? 'Skjul' : 'Vis'} detaljert feilmelding
+          </Button>
+          {showError && (
+            <dl>
+              <dt className='font-bold italic'>Teknisk feilmelding</dt>
+              <dd className='mb-4 ml-4'>{error.details ?? error.stack}</dd>
+            </dl>
+          )}
+        </Alert>
+      </div>
+    );
+  }
+
+  return (
+    <Alert style={{ margin: '1rem' }} variant='error'>
+      <BodyShort className='font-bold'>Noe gikk galt!</BodyShort>
+      <BodyShort>
+        Ukjent feil ikke håndtert. Rapporter inn via fagsystemsak.
+      </BodyShort>
+    </Alert>
   );
 };
 

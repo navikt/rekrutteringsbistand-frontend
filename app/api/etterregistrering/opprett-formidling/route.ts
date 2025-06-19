@@ -118,7 +118,10 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     return NextResponse.json({ stillingsId: stillingsId });
   } catch (error) {
-    new RekbisError({ error });
+    new RekbisError({
+      message: 'Klarte ikke å opprette etterregistrering',
+      error,
+    });
     return NextResponse.json(
       { error: 'Klarte ikke å opprette etterregistrering' },
       { status: 500 },

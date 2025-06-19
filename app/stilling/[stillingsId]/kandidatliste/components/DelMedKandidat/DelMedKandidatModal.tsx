@@ -114,7 +114,7 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
         });
       } catch (error) {
         new RekbisError({
-          beskrivelse: 'Feil ved deling av CV for kandidater',
+          message: 'Feil ved deling av CV for kandidater',
           error,
         });
         visVarsel({

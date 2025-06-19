@@ -30,13 +30,13 @@ export const useRekrutteringstreffContext = () => {
   const context = React.useContext(RekrutteringstreffContext);
   if (context === undefined) {
     throw new RekbisError({
-      beskrivelse:
+      message:
         'useRekrutteringstreffContext må være i scope: RekrutteringstreffContextProvider',
     });
   }
   if (!context.rekrutteringstreffId) {
     throw new RekbisError({
-      beskrivelse: 'RekrutteringstreffId mangler i konteksten!',
+      message: 'RekrutteringstreffId mangler i konteksten!',
     });
   }
   return context;

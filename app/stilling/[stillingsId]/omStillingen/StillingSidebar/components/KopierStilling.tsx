@@ -23,7 +23,7 @@ const KopierStilling: React.FC<KopierStillingProps> = ({ stillingsId }) => {
       });
     } catch (error) {
       new RekbisError({
-        beskrivelse: 'Feil ved duplisering av stilling',
+        message: 'Feil ved duplisering av stilling',
         error,
       });
       visVarsel({

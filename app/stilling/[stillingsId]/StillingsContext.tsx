@@ -158,8 +158,7 @@ export const useStillingsContext = () => {
 
   if (context === undefined) {
     throw new RekbisError({
-      beskrivelse:
-        'useStillingsContext må være i scope: StillingsContextProvider',
+      message: 'useStillingsContext må være i scope: StillingsContextProvider',
     });
   }
   return context;

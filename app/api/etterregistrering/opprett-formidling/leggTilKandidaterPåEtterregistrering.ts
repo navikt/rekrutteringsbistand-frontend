@@ -59,7 +59,7 @@ export const leggTilKandidaterPåEtterregistrering = async ({
           if (!response.ok) {
             const errorText = await response.text();
             throw new RekbisError({
-              beskrivelse: `Klarte ikke å legge til kandidat (${response.status}): ${errorText}`,
+              message: `Klarte ikke å legge til kandidat (${response.status}): ${errorText}`,
             });
           }
 
@@ -72,7 +72,8 @@ export const leggTilKandidaterPåEtterregistrering = async ({
           // });
         } catch (fetchError) {
           new RekbisError({
-            beskrivelse: `Feil ved formidling av kandidat...: ${fetchError instanceof Error ? fetchError.message : String(fetchError)}`,
+            message: `Feil ved formidling av kandidat.`,
+            error: fetchError,
           });
 
           return {
@@ -89,7 +90,7 @@ export const leggTilKandidaterPåEtterregistrering = async ({
       const errorMessage =
         error instanceof Error ? error.message : String(error);
       new RekbisError({
-        beskrivelse: `Klarte ikke å formidle kandidater: ${errorMessage}`,
+        message: `Klarte ikke å formidle kandidater: ${errorMessage}`,
         error,
       });
       return {
@@ -99,7 +100,7 @@ export const leggTilKandidaterPåEtterregistrering = async ({
     }
   } catch (error) {
     new RekbisError({
-      beskrivelse:
+      message:
         '[Opprett etterregistrering] Feil ved oppdatering av etterregistrering:',
       error,
     });

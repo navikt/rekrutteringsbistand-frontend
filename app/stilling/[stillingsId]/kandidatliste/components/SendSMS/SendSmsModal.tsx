@@ -101,7 +101,7 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
       fjernAllMarkering();
       setVis(false);
     } catch (error) {
-      new RekbisError({ beskrivelse: 'Klarte ikke å sende SMS:', error });
+      new RekbisError({ message: 'Klarte ikke å sende SMS:', error });
       visVarsel({
         tekst:
           error instanceof Error

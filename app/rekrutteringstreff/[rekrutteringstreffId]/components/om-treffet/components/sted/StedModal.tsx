@@ -115,7 +115,7 @@ const StedModal: React.FC<StedModalProps> = ({
       close();
     } catch (err) {
       new RekbisError({
-        beskrivelse: 'Feil ved oppdatering av sted:',
+        message: 'Feil ved oppdatering av sted:',
         error: err,
       });
     }

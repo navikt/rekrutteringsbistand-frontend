@@ -58,7 +58,7 @@ export const useThemeProvider = () => {
   const context = React.useContext(ThemeContext);
   if (context === undefined) {
     throw new RekbisError({
-      beskrivelse: 'useThemeProvider må være i scope: ThemeProvider',
+      message: 'useThemeProvider må være i scope: ThemeProvider',
     });
   }
   return context;

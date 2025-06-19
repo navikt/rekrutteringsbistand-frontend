@@ -154,7 +154,7 @@ const EndreTittel = ({
       onUpdated();
       modalRef.current?.close();
     } catch (error) {
-      new RekbisError({ beskrivelse: 'Lagring av tittel feilet:', error });
+      new RekbisError({ message: 'Lagring av tittel feilet:', error });
     }
   };
 

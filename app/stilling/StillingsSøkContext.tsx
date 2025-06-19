@@ -243,7 +243,7 @@ export const useStillingsSøkFilter = () => {
   const context = React.useContext(StillingsSøkContext);
   if (context === undefined) {
     throw new RekbisError({
-      beskrivelse: 'useStillingsSøk må være i scope: StillingsSøkProvider',
+      message: 'useStillingsSøk må være i scope: StillingsSøkProvider',
     });
   }
   return context;

@@ -8,7 +8,7 @@ import { z } from 'zod';
 
 const varselStillingEndepunkt = (stillingId: string) => {
   if (stillingId === undefined)
-    throw new RekbisError({ beskrivelse: 'stillingId === undefined' });
+    throw new RekbisError({ message: 'stillingId === undefined' });
   return `${KandidatvarselAPI.internUrl}/varsler/stilling/${stillingId}`;
 };
 const varselQueryEndepunkt = `${KandidatvarselAPI.internUrl}/varsler/query`;

@@ -105,7 +105,7 @@ const OpprettKnapp: React.FC = () => {
                       })
                       .catch((error) => {
                         throw new RekbisError({
-                          beskrivelse:
+                          message:
                             'Feil ved opprettelse av nytt rekrutteringstreff:',
                           error,
                         });

@@ -64,7 +64,7 @@ export const oppdaterEtterregistrering = async ({
     };
   } catch (e) {
     new RekbisError({
-      beskrivelse:
+      message:
         '[Opprett etterregistrering] Feil ved oppdatering av etterregistrering:',
       error: e,
     });

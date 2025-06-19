@@ -41,7 +41,7 @@ const AksjonsknapperSiderbarStilling: React.FC<
       });
       await mutate();
     } catch (error) {
-      new RekbisError({ beskrivelse: 'Feil ved lagring av stilling', error });
+      new RekbisError({ message: 'Feil ved lagring av stilling', error });
       visVarsel({
         tekst: 'Feil ved lagring av stilling',
         type: 'error',

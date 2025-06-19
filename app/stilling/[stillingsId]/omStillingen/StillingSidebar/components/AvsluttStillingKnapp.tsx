@@ -55,7 +55,7 @@ const AvsluttStillingKnapp: React.FC<AvsluttStillingKnappProps> = ({
       refetch();
     } catch (error) {
       new RekbisError({
-        beskrivelse: 'Feil ved oppdatering av stilling',
+        message: 'Feil ved oppdatering av stilling',
         error,
       });
     }

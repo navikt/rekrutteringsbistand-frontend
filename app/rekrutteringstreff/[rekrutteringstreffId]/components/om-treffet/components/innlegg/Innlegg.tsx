@@ -190,7 +190,7 @@ const Innlegg: React.FC<InnleggProps> = ({
       onInnleggUpdated();
       modalRef.current?.close(); // Dette vil trigge Modal sin onClose
     } catch (error) {
-      new RekbisError({ beskrivelse: 'Feil ved lagring av innlegg:', error });
+      new RekbisError({ message: 'Feil ved lagring av innlegg:', error });
       // Vurder å gi brukeren feedback her, f.eks. via en Alert
     }
   };

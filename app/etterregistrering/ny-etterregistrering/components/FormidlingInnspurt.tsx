@@ -62,7 +62,7 @@ const FormidlingInnspurt = () => {
       }
     } catch (error) {
       throw new RekbisError({
-        beskrivelse: 'Kunne ikke opprette formidling',
+        message: 'Kunne ikke opprette formidling',
         error,
       });
     }

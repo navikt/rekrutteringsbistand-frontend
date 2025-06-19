@@ -1,46 +1,68 @@
-import { IFeilmelding } from '../app/components/feilhåndtering/Feilmelding';
 import { logger } from '@navikt/next-logger';
 import { customAlphabet } from 'nanoid';
 
 const lagFeilkode = customAlphabet('1234567890abcdefghijklmnopqrstuvw', 10);
 
+/**
+ * Error class for handling application errors
+ * Can be used with simple message like: new RekbisError('Something failed')
+ * Or with options: new RekbisError({ message: 'Failed', url: '/path', feilkode: 'ABC123' })
+ */
 export class RekbisError extends Error {
-  public tittel: string;
-  public beskrivelse: string;
-  public url: string;
   public feilkode: string;
-  public originalError: unknown;
+  public details: string;
+  public url: string;
+  public originalError?: unknown;
 
-  constructor({
-    tittel = 'Ukjent feil',
-    stack,
-    beskrivelse = '',
-    error,
-    feilkode: inputFeilkode,
-    url = '',
-  }: IFeilmelding) {
-    const feilkode = inputFeilkode || lagFeilkode();
+  constructor(
+    messageOrOptions:
+      | string
+      | {
+          message: string;
+          details?: string;
+          feilkode?: string;
+          url?: string;
+          error?: unknown;
+        },
+  ) {
+    // Handle both string and object constructor patterns
+    const isString = typeof messageOrOptions === 'string';
+    const message = isString ? messageOrOptions : messageOrOptions.message;
+    const options = isString
+      ? ({} as {
+          feilkode?: string;
+          url?: string;
+          details?: string;
+          error?: unknown;
+        })
+      : messageOrOptions;
 
-    super(`${beskrivelse} (${feilkode})`);
+    // Generate feilkode if not provided
+    const feilkode = options.feilkode || lagFeilkode();
 
+    // Call super with message
+    super(message);
+
+    // Fix prototype chain for instanceof checks
     Object.setPrototypeOf(this, RekbisError.prototype);
 
-    this.name = this.constructor.name;
-    this.tittel = tittel;
-    this.stack = stack || this.stack;
-    this.beskrivelse = beskrivelse;
-    this.url = url;
-    this.originalError = error;
-    this.feilkode = feilkode;
+    // Capture stack trace properly
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, RekbisError);
+    }
 
-    logger.error({
-      err: {
-        name: this.name,
-        stack: this.stack,
-        tittel: this.tittel,
-        beskrivelse: this.beskrivelse,
-        url: this.url,
+    // Set properties
+    this.name = 'RekbisError';
+    this.feilkode = feilkode;
+    this.url = options.url || '';
+    this.details = options.details || '';
+    this.originalError = options.error;
+
+    // Log the error
+    logger.error(
+      {
         feilkode: this.feilkode,
+        url: this.url,
         originalError:
           this.originalError instanceof Error
             ? {
@@ -49,26 +71,33 @@ export class RekbisError extends Error {
               }
             : this.originalError,
       },
-    });
+      `${message} (${feilkode})`,
+    );
   }
 
-  static ensure(error: unknown, defaultMessage?: string): RekbisError {
+  /**
+   * Ensures that an error is a RekbisError
+   * @param error Any error object
+   * @param defaultMessage Optional default message if error doesn't have a message
+   */
+  static ensure(
+    error: unknown,
+    defaultMessage = 'En ukjent feil har oppstått',
+  ): RekbisError {
     if (error instanceof RekbisError) {
       return error;
     }
 
-    let description = defaultMessage;
-    if (!description) {
-      if (error instanceof Error) {
-        description = error.message;
-      } else {
-        description = 'En ukjent feil har oppstått.';
-      }
+    if (error instanceof Error) {
+      return new RekbisError({
+        message: error.message,
+        error,
+      });
     }
 
     return new RekbisError({
-      beskrivelse: description,
-      error: error,
+      message: defaultMessage,
+      error,
     });
   }
 }

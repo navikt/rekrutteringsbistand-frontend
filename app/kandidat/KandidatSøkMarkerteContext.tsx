@@ -20,7 +20,7 @@ export const useKandidatSøkMarkerteContext = () => {
   const context = React.useContext(KandidatSøkMarkerteContext);
   if (context === undefined) {
     throw new RekbisError({
-      beskrivelse: 'useKandidatSøk må være i scope: KandidatSøkProvider',
+      message: 'useKandidatSøk må være i scope: KandidatSøkProvider',
     });
   }
   return context;

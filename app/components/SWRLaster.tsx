@@ -60,7 +60,7 @@ const SWRLaster = <T extends any[]>({
     return (
       <Feilmelding
         {...error}
-        tittel='Feil ved henting av data'
+        message='Feil ved henting av data'
         zodError={isZodError(error) ? error : undefined}
       />
     );

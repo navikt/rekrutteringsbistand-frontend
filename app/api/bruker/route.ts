@@ -38,7 +38,7 @@ export async function GET(req: NextRequest) {
       roller,
     });
   } catch (error) {
-    new RekbisError({ beskrivelse: 'Feil ved henting av brukerdata', error });
+    new RekbisError({ message: 'Feil ved henting av brukerdata', error });
     return NextResponse.json(
       { error: 'Internal Server Error' },
       { status: 500 },

@@ -47,7 +47,7 @@ export const proxyWithOBO = async (
         }
       } catch (error) {
         new RekbisError({
-          beskrivelse: 'Failed to parse request body as JSON:',
+          message: 'Failed to parse request body as JSON:',
           error,
         });
         return NextResponse.json(
@@ -84,14 +84,13 @@ export const proxyWithOBO = async (
   } catch (error: any) {
     if (error instanceof Error) {
       new RekbisError({
-        beskrivelse: `Feil ved proxying av forespørselen til url: ${requestUrl} fra url: ${originalUrl}`,
+        message: `Feil ved proxying av forespørselen til url: ${requestUrl} fra url: ${originalUrl}`,
         error,
       });
     } else {
       new RekbisError({
-        tittel: 'Unknown error',
         error,
-        beskrivelse: `Feil ved proxying av forespørselen til url: ${requestUrl} fra url: ${originalUrl}`,
+        message: `Feil ved proxying av forespørselen til url: ${requestUrl} fra url: ${originalUrl}`,
       });
     }
 

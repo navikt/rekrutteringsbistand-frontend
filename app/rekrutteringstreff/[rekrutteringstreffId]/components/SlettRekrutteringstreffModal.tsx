@@ -21,7 +21,7 @@ const SlettRekrutteringstreffModal = () => {
         router.push(`/rekrutteringstreff`);
       } catch (error) {
         throw new RekbisError({
-          beskrivelse: 'Feiler når vi prøver å slette rekrutteringstreff:',
+          message: 'Feiler når vi prøver å slette rekrutteringstreff:',
           error,
         });
       }

@@ -86,7 +86,7 @@ const LeggTilKandidatTilStilling: React.FC<LeggTilKandidatTilStillingProps> = ({
           tekst: 'Noe gikk galt ved lagring av kandidater',
           type: 'error',
         });
-        throw new RekbisError({ error: error });
+        throw new RekbisError({ message: 'Veil ved legg til kandidat', error });
       }
     }
 

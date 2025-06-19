@@ -222,7 +222,7 @@ const LagreIRekrutteringstreffModal: React.FC<
       closeModal();
     } catch (error) {
       new RekbisError({
-        beskrivelse: 'Feil ved lagring av kandidater i rekrutteringstreff',
+        message: 'Feil ved lagring av kandidater i rekrutteringstreff',
         error,
       });
       visVarsel({

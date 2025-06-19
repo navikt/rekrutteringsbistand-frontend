@@ -56,7 +56,7 @@ const RekrutteringsbistandProvider: React.FC<
 
             if (!bruker || !dekoratørData) {
               throw new RekbisError({
-                beskrivelse: 'Fant ikke bruker eller dekoratør',
+                message: 'Fant ikke bruker eller dekoratør',
               });
             }
             return (

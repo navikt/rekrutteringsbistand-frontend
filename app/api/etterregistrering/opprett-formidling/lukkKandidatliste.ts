@@ -60,7 +60,7 @@ export const lukkKandidatliste = async ({
     };
   } catch (e) {
     new RekbisError({
-      beskrivelse:
+      message:
         '[Opprett etterregistrering] Feil respons ved setting av status på kandidatliste',
       error: e,
     });

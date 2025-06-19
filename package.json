@@ -13,7 +13,6 @@
     "lint": "next lint",
     "lint-fix": "npx eslint --fix .",
     "formater-kode": "prettier --write .",
-    "prepare": "husky",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {

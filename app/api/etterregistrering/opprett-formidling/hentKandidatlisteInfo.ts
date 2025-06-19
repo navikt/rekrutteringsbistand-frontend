@@ -63,7 +63,7 @@ export const hentKandidatlisteInfo = async ({
     };
   } catch (error) {
     new RekbisError({
-      beskrivelse:
+      message:
         '[Opprett etterregistrering] Feil ved henting av kandidatlisteinfo:',
       error,
     });

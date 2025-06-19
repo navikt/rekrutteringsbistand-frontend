@@ -163,7 +163,7 @@ const InnleggModal: React.FC<InnleggModalProps> = ({
       onInnleggUpdated();
       modalRef.current?.close(); // Triggers Modal's onClose
     } catch (error) {
-      new RekbisError({ beskrivelse: 'Error saving post:', error });
+      new RekbisError({ message: 'Error saving post:', error });
     }
   };
 

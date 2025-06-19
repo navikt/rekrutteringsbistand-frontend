@@ -43,7 +43,7 @@ const LeggTilArbeidsgiverModal: React.FC<Props> = ({ modalRef }) => {
       );
     } catch (error) {
       throw new RekbisError({
-        beskrivelse: 'Feiler når prøver å legge til ny arbeidsgiver:',
+        message: 'Feiler når prøver å legge til ny arbeidsgiver:',
         error,
       });
     } finally {

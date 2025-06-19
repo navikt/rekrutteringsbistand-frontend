@@ -117,7 +117,7 @@ const TreffSteg = () => {
     }
     if (arbeidsgivereError)
       new RekbisError({
-        beskrivelse: 'Feil ved henting av arbeidsgivere:',
+        message: 'Feil ved henting av arbeidsgivere:',
         error: arbeidsgivereError,
       });
   }, [arbeidsgivereData, arbeidsgivereError]);
@@ -137,7 +137,7 @@ const TreffSteg = () => {
     }
     if (rekrutteringstreffError)
       new RekbisError({
-        beskrivelse: 'Feil ved henting av rekrutteringstreff:',
+        message: 'Feil ved henting av rekrutteringstreff:',
         error: rekrutteringstreffError,
       });
   }, [rekrutteringstreffData, rekrutteringstreffError]);
@@ -151,7 +151,7 @@ const TreffSteg = () => {
     }
     if (innleggError)
       new RekbisError({
-        beskrivelse: 'Feil ved henting av innlegg:',
+        message: 'Feil ved henting av innlegg:',
         error: innleggError,
       });
   }, [innleggData, innleggError]);

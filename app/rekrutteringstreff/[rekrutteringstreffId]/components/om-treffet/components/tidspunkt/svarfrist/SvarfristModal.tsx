@@ -78,7 +78,7 @@ const SvarfristModal: React.FC<SvarfristModalProps> = ({
         message: 'Kunne ikke lagre svarfrist. Prøv igjen.',
       });
       new RekbisError({
-        beskrivelse: 'Feil ved oppdatering av svarfrist:',
+        message: 'Feil ved oppdatering av svarfrist:',
         error: e,
       });
     }

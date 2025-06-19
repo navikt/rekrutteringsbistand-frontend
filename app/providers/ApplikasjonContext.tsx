@@ -136,7 +136,7 @@ export const useApplikasjonContext = () => {
   const context = React.useContext(ApplikasjonContext);
   if (context === undefined) {
     throw new RekbisError({
-      beskrivelse:
+      message:
         'useApplikasjonContext må være i scope: ApplikasjonContextProvider',
     });
   }

@@ -206,7 +206,7 @@ const LagreIKandidatlisteModal: React.FC<LagreIKandidatlisteProps> = ({
         closeModal();
       } catch (error) {
         new RekbisError({
-          beskrivelse: 'Feil ved lagring av kandidater i kandidatliste',
+          message: 'Feil ved lagring av kandidater i kandidatliste',
           error,
         });
         visVarsel({

@@ -62,8 +62,7 @@ export const useKandidatContext = () => {
 
   if (context === undefined) {
     throw new RekbisError({
-      beskrivelse:
-        'useKandidatContext må være i scope: KandidatContextProvider',
+      message: 'useKandidatContext må være i scope: KandidatContextProvider',
     });
   }
   return context;

@@ -40,7 +40,7 @@ const KandidatListeKortValg: React.FC<KandidatListeKortValgProps> = ({
       );
       reFetchKandidatliste();
     } catch (error) {
-      new RekbisError({ error });
+      new RekbisError({ message: 'Feil ved endring av utfall', error });
     }
     setLoading(false);
   };

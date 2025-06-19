@@ -46,7 +46,7 @@ const useAntallUlesteNyheter = (
     } catch (error) {
       new RekbisError({
         error,
-        beskrivelse: 'Kunne ikke hente fra local storage',
+        message: 'Kunne ikke hente fra local storage',
       });
     }
   }, [nyheter, onFørsteBesøk]);
@@ -60,7 +60,7 @@ const useAntallUlesteNyheter = (
     } catch (error) {
       new RekbisError({
         error,
-        beskrivelse: 'Kunne ikke lagre til local storage',
+        message: 'Kunne ikke lagre til local storage',
       });
     }
   };

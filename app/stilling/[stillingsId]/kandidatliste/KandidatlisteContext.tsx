@@ -123,7 +123,7 @@ export const useKandidatlisteContext = () => {
   const context = React.useContext(KandidatListeContext);
   if (context === undefined) {
     throw new RekbisError({
-      beskrivelse:
+      message:
         'Context er undefined, må være children av KandidatlisteContextProvider.',
     });
   }

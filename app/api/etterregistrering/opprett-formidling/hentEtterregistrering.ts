@@ -63,7 +63,7 @@ export const hentEtterregistrering = async ({
     };
   } catch (error) {
     new RekbisError({
-      beskrivelse:
+      message:
         '[Opprett etterregistrering] Feil ved henting av etterregistrering:',
       error,
     });
