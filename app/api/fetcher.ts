@@ -134,7 +134,7 @@ const validerSchema = <T>(schema: ZodSchema<T>, data: any) => {
   // TODO Midlertidig løsning for å unngå så mange feil ved feil schema:
   const zodResult = schema.safeParse(data);
   if (zodResult.error) {
-    logger.warn('ZodError encountered during schema validation', {
+    logger.info('ZodError encountered during schema validation', {
       error: zodResult.error.message,
       issues: zodResult.error.issues.map((issue) => ({
         code: issue.code,
