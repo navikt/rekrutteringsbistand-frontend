@@ -83,6 +83,7 @@ export const getAPI = async (url: string, skjulFeilmelding?: boolean) => {
     if (!skjulFeilmelding) {
       throw new RekbisError({
         url: response.url,
+        statuskode: response.status,
         message: getErrorTitle(response.status),
         details: errorDetails,
       });
@@ -96,6 +97,7 @@ export const getAPI = async (url: string, skjulFeilmelding?: boolean) => {
     throw new RekbisError({
       message: `Feil respons fra server: (http-status: ${response.status})`,
       url: response.url,
+      statuskode: response.status,
     });
   }
 };
@@ -147,6 +149,7 @@ export const postApi = async (
         message: getErrorTitle(response.status),
         url: response.url,
         details: errorDetails,
+        statuskode: response.status,
       });
     }
 
@@ -160,6 +163,7 @@ export const postApi = async (
         return await response.json();
       } catch (error) {
         throw new RekbisError({
+          statuskode: response.status,
           message: 'Error in postApi response.json():',
           url: response.url,
           error: error instanceof Error ? error.message : String(error),
@@ -225,6 +229,7 @@ export const putApi = async (
         message: getErrorTitle(response.status),
         url: response.url,
         details: errorDetails,
+        statuskode: response.status,
       });
     }
 
@@ -318,6 +323,7 @@ export const deleteApi = async (url: string) => {
 
     throw new RekbisError({
       url: response.url,
+      statuskode: response.status,
       message: `Respons ikke ok: ${response.status} ${response.statusText}`,
       details: errorDetails,
     });
