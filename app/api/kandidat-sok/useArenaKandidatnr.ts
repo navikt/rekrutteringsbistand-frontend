@@ -23,6 +23,7 @@ export const useArenaKandidatnr = (fødselsnummer: string | null) => {
       ? {
           url: hentArenaKandidatnrEndepunkt,
           body: { fodselsnummer: fødselsnummer },
+          options: { skjulFeilmelding: true },
         }
       : null,
     (data) => {

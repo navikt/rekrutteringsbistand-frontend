@@ -27,7 +27,7 @@ export const useKandidatliste = (
     kanHenteKandidatliste
       ? kandidatlisteEndepunkt(stillingsData?.stilling.uuid)
       : null,
-    getAPIwithSchema(kandidatlisteSchema, true),
+    getAPIwithSchema(kandidatlisteSchema, { skjulFeilmelding: true }),
   );
 };
 

@@ -16,7 +16,7 @@ export type BrukerStandardSøkDTO = z.infer<typeof BrukerStandardSøkSchema>;
 export const useUseBrukerStandardSøk = () =>
   useSWR(
     brukerStandardSøkEndepunkt,
-    getAPIwithSchema(BrukerStandardSøkSchema, true),
+    getAPIwithSchema(BrukerStandardSøkSchema, { skjulFeilmelding: true }),
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,

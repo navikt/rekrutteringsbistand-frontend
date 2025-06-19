@@ -2,6 +2,11 @@ import { RekbisError } from '../../util/rekbisError';
 import { logger } from '@navikt/next-logger';
 import { z, ZodSchema } from 'zod';
 
+interface fetchOptions {
+  skjulFeilmelding?: boolean;
+  queryParams?: URLSearchParams;
+}
+
 export const getErrorTitle = (statusCode: number): string => {
   switch (true) {
     case statusCode === 400:
@@ -42,15 +47,20 @@ const validerSchema = <T>(schema: ZodSchema<T>, data: any) => {
 
 export const getAPIwithSchema = <T>(
   schema: ZodSchema<T>,
-  skjulFeilmelding?: boolean,
+  options?: fetchOptions,
 ): ((url: string) => Promise<T>) => {
   return async (url: string) => {
-    const data = await getAPI(url, skjulFeilmelding);
+    const data = await getAPI(url, options);
     return validerSchema(schema, data);
   };
 };
 
-export const getAPI = async (url: string, skjulFeilmelding?: boolean) => {
+export const getAPI = async (url: string, options?: fetchOptions) => {
+  if (options?.queryParams) {
+    const queryString = new URLSearchParams(options.queryParams).toString();
+    url += `?${queryString}`;
+  }
+
   const response = await fetch(basePath + url, {
     method: 'GET',
     credentials: 'include',
@@ -80,7 +90,7 @@ export const getAPI = async (url: string, skjulFeilmelding?: boolean) => {
       errorDetails = await response.text();
     }
 
-    if (!skjulFeilmelding) {
+    if (!options?.skjulFeilmelding) {
       throw new RekbisError({
         url: response.url,
         statuskode: response.status,
@@ -105,12 +115,12 @@ export const getAPI = async (url: string, skjulFeilmelding?: boolean) => {
 export const postApi = async (
   url: string,
   body: any,
-  queryParams?: URLSearchParams,
+  options?: fetchOptions,
 ) => {
   try {
     // Build URL with query params
-    if (queryParams) {
-      const queryString = new URLSearchParams(queryParams).toString();
+    if (options?.queryParams) {
+      const queryString = new URLSearchParams(options.queryParams).toString();
       url += `?${queryString}`;
     }
 
@@ -144,13 +154,14 @@ export const postApi = async (
       } else {
         errorDetails = await response.text();
       }
-
-      throw new RekbisError({
-        message: getErrorTitle(response.status),
-        url: response.url,
-        details: errorDetails,
-        statuskode: response.status,
-      });
+      if (!options?.skjulFeilmelding) {
+        throw new RekbisError({
+          message: getErrorTitle(response.status),
+          url: response.url,
+          details: errorDetails,
+          statuskode: response.status,
+        });
+      }
     }
 
     const contentType = response.headers.get('content-type');
@@ -185,12 +196,12 @@ export const postApi = async (
 export const putApi = async (
   url: string,
   body: any,
-  queryParams?: URLSearchParams,
+  options?: fetchOptions,
 ) => {
   try {
     // Build URL with query params
-    if (queryParams) {
-      const queryString = new URLSearchParams(queryParams).toString();
+    if (options?.queryParams) {
+      const queryString = new URLSearchParams(options.queryParams).toString();
       url += `?${queryString}`;
     }
 
@@ -225,12 +236,14 @@ export const putApi = async (
         errorDetails = await response.text();
       }
 
-      throw new RekbisError({
-        message: getErrorTitle(response.status),
-        url: response.url,
-        details: errorDetails,
-        statuskode: response.status,
-      });
+      if (!options?.skjulFeilmelding) {
+        throw new RekbisError({
+          message: getErrorTitle(response.status),
+          url: response.url,
+          details: errorDetails,
+          statuskode: response.status,
+        });
+      }
     }
 
     return response.json();
@@ -246,20 +259,10 @@ export const putApi = async (
   }
 };
 
-export const postApiResponse = (url: string, body: any) =>
-  fetch(basePath + url, {
-    method: 'POST',
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(body),
-  });
-
 export type postApiProps = {
   url: string;
   body?: any;
-  queryParams?: string;
+  options?: fetchOptions;
 };
 
 const esResponseDto = z.object({
@@ -275,7 +278,7 @@ export const postApiWithSchemaEs = <T>(
   schema: ZodSchema<T>,
 ): ((props: postApiProps) => Promise<T>) => {
   return async (props) => {
-    const data: any = await postApi(props.url, props.body);
+    const data: any = await postApi(props.url, props.body, props.options);
     const parsedData = esResponseDto.parse(data);
     return validerSchema(schema, parsedData.hits.hits[0]._source);
   };
@@ -297,14 +300,20 @@ export const postApiWithSchema = <T>(
 ): ((props: postApiProps) => Promise<T>) => {
   return async (props) => {
     const data = await postApi(
-      props.queryParams ? props.url + `?${props.queryParams}` : props.url,
+      props?.options?.queryParams
+        ? props.url + `?${props.options.queryParams}`
+        : props.url,
       props.body,
     );
     return validerSchema(schema, data);
   };
 };
 
-export const deleteApi = async (url: string) => {
+export const deleteApi = async (url: string, options?: fetchOptions) => {
+  if (options?.queryParams) {
+    const queryString = new URLSearchParams(options.queryParams).toString();
+    url += `?${queryString}`;
+  }
   const response = await fetch(basePath + url, {
     method: 'DELETE',
     credentials: 'include',
@@ -321,12 +330,14 @@ export const deleteApi = async (url: string) => {
       errorDetails = await response.text();
     }
 
-    throw new RekbisError({
-      url: response.url,
-      statuskode: response.status,
-      message: `Respons ikke ok: ${response.status} ${response.statusText}`,
-      details: errorDetails,
-    });
+    if (!options?.skjulFeilmelding) {
+      throw new RekbisError({
+        url: response.url,
+        statuskode: response.status,
+        message: `Respons ikke ok: ${response.status} ${response.statusText}`,
+        details: errorDetails,
+      });
+    }
   }
 
   return response.ok;
