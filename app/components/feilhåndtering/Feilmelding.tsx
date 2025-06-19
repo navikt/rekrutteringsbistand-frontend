@@ -84,16 +84,17 @@ const Feilmelding: React.FC<IFeilmelding> = ({
   return (
     <div style={{ width: '100%' }}>
       <Alert style={{ margin: '1rem' }} variant='error'>
-        <strong>Noe gikk galt!</strong>
-        <BodyShort>{tittel || 'Ukjent feil'}</BodyShort>
+        <BodyShort className='font-bold'>Noe gikk galt!</BodyShort>
+
         {feilkode && (
-          <dl>
+          <dl className='my-4'>
             <dt className='font-bold italic'>
               Feilkode for rapportering av feil:
             </dt>
-            <dd className='mb-4 ml-4'>{feilkode}</dd>
+            <dd className='ml-4'>{feilkode}</dd>
           </dl>
         )}
+        <BodyShort className='font-bold'>{tittel || 'Ukjent feil'}</BodyShort>
         <BodyLong>{beskrivelse}</BodyLong>
         <Button
           className='mt-4 mb-4'

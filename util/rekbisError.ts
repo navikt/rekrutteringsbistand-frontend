@@ -52,7 +52,7 @@ export class RekbisError extends Error {
               }
             : this.originalError,
       },
-      this.beskrivelse || 'Ukjent beskrivelse',
+      `Feilkode: ${this.feilkode} - ${this.beskrivelse || 'Ukjent beskrivelse'}`,
     );
   }
 
