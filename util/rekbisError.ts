@@ -36,9 +36,9 @@ export class RekbisError extends Error {
     this.feilkode = feilkode;
 
     logger.error({
-      errorName: this.name,
-      errorMessage: this.message,
-      errorStack: this.stack,
+      name: this.name,
+      message: this.message,
+      stack: this.stack,
       tittel: this.tittel,
       beskrivelse: this.beskrivelse,
       url: this.url,
