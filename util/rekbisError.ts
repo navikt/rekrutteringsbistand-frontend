@@ -3,49 +3,59 @@ import { logger } from '@navikt/next-logger';
 import { nanoid } from 'nanoid';
 
 export class RekbisError extends Error {
-  public statuskode: number;
-  public tittel: string;
-  public beskrivelse: string;
-  public url: string;
-  public id: string;
+  public tittel: string = 'Ukjent feil';
+  public beskrivelse: string = '';
+  public url: string = '';
+  public feilkode: string = nanoid();
   public error: unknown;
 
   constructor({
-    statuskode,
     tittel,
     stack,
     beskrivelse,
-    url,
     error,
+    feilkode,
+    url,
   }: IFeilmelding) {
-    super(beskrivelse);
+    // If the error is already a RekbisError, don't wrap it
+    if (error instanceof RekbisError) {
+      return error;
+    }
+
+    super(beskrivelse || 'Ukjent feil');
     this.name = this.constructor.name;
-    this.statuskode = statuskode ?? 500;
     this.tittel = tittel ?? 'Ukjent feil';
     this.stack = stack || this.stack;
     this.beskrivelse = beskrivelse ?? this.message ?? '';
     this.url = url ?? '';
     this.error = error;
-    this.id = nanoid();
+    this.feilkode = feilkode || nanoid();
 
     logger.error(
       {
-        ...this,
+        err: this,
+        operationId: this.feilkode,
+        endpoint: this.url,
+        originalError:
+          this.error instanceof Error
+            ? { message: this.error.message, stack: this.error.stack }
+            : this.error,
       },
       this.beskrivelse || 'Ukjent beskrivelse',
     );
   }
 
-  toJSON() {
-    return {
-      name: this.name,
-      message: this.message,
-      statuskode: this.statuskode,
-      tittel: this.tittel,
-      beskrivelse: this.beskrivelse,
-      url: this.url,
-      stack: this.stack,
-      id: this.id,
-    };
+  // Helper method to ensure we have a RekbisError
+  static ensure(error: unknown, defaultMessage?: string): RekbisError {
+    if (error instanceof RekbisError) {
+      return error;
+    }
+
+    return new RekbisError({
+      beskrivelse:
+        defaultMessage ||
+        (error instanceof Error ? error.message : 'En feil har oppstått'),
+      error: error,
+    });
   }
 }

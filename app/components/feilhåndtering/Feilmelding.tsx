@@ -6,38 +6,47 @@ import { ZodError } from 'zod';
 
 export interface IFeilmelding {
   zodError?: ZodError;
-  statuskode?: number;
   tittel?: string;
   stack?: string;
   beskrivelse?: string;
-  url?: string;
   error?: unknown;
+  feilkode?: string;
+  url?: string;
 }
 
 const Feilmelding: React.FC<IFeilmelding> = ({
   zodError,
-  tittel,
-  statuskode,
   stack,
   beskrivelse,
-  url,
   error,
+  tittel = 'Ukjent feil',
+  feilkode,
 }) => {
   const [showError, setShowError] = React.useState(false);
 
-  // Log the error for debugging purposes
+  // Log error hvis ikke rekbisError
   React.useEffect(() => {
     if (error) {
-      new RekbisError({
-        beskrivelse: 'Error displayed in UI',
-        error,
-        tittel,
-        statuskode,
-        stack,
-        url,
-      });
+      if (error instanceof RekbisError) {
+        logger.error(
+          {
+            operationId: error.feilkode,
+            errorType: 'RekbisError',
+          },
+          'Error displayed in UI: ' + error.beskrivelse,
+        );
+      } else {
+        logger.error(
+          {
+            err: error instanceof Error ? error : null,
+            errorType: error?.constructor?.name || typeof error,
+            context: 'Feilmelding component',
+          },
+          'Error displayed in UI (original error)',
+        );
+      }
     }
-  }, [error, tittel, statuskode, stack, url]);
+  }, [error]);
 
   if (zodError) {
     logger.info('ZodError', zodError);
@@ -72,12 +81,14 @@ const Feilmelding: React.FC<IFeilmelding> = ({
       </Alert>
     );
   }
-  const errorId = error instanceof RekbisError ? error.id : 'unknown';
   return (
     <div style={{ width: '100%' }}>
       <Alert style={{ margin: '1rem' }} variant='error'>
         <strong>Noe gikk galt!</strong>
         <BodyShort>{tittel || 'Ukjent feil'}</BodyShort>
+        {feilkode && (
+          <BodyLong>Feilkode for rapportering av feil: {feilkode}</BodyLong>
+        )}
         <BodyLong>{beskrivelse}</BodyLong>
         <Button
           className='mt-4 mb-4'
@@ -89,17 +100,6 @@ const Feilmelding: React.FC<IFeilmelding> = ({
         </Button>
         {showError && (
           <dl>
-            <dt className='font-bold italic'>Statuskode</dt>
-            {errorId && (
-              <dd className='mb-4 ml-4'>
-                Feilkode for rapportering av feil: {errorId}
-              </dd>
-            )}
-            <dd className='mb-4 ml-4'>{statuskode ?? '-'}</dd>
-
-            <dt className='font-bold italic'>URL</dt>
-            <dd className='mb-4 ml-4'>{url ?? '-'}</dd>
-
             <dt className='font-bold italic'>Teknisk feilmelding</dt>
             <dd className='mb-4 ml-4'>{stack ?? '-'}</dd>
           </dl>
