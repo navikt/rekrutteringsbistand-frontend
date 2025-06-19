@@ -54,7 +54,7 @@ const SWRLaster = <T extends any[]>({
 
   if (error && !skjulFeilmelding) {
     if (isRekbisError(error)) {
-      return <Feilmelding {...error} />;
+      return <Feilmelding error={error} />;
     }
 
     return (

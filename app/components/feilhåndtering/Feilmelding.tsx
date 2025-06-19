@@ -5,8 +5,8 @@ import * as React from 'react';
 import { ZodError } from 'zod';
 
 export interface IFeilmelding {
-  zodError?: ZodError;
   error?: RekbisError | unknown;
+  zodError?: ZodError;
   message?: string;
 }
 
