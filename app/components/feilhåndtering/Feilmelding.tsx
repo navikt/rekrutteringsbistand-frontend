@@ -1,5 +1,11 @@
 import { RekbisError } from '../../../util/rekbisError';
-import { Alert, BodyLong, BodyShort, Button } from '@navikt/ds-react';
+import {
+  Alert,
+  BodyLong,
+  BodyShort,
+  Button,
+  CopyButton,
+} from '@navikt/ds-react';
 import { logger } from '@navikt/next-logger';
 import * as React from 'react';
 import { ZodError } from 'zod';
@@ -91,7 +97,9 @@ const Feilmelding: React.FC<IFeilmelding> = ({
             <dt className='font-bold italic'>
               Feilkode for rapportering av feil:
             </dt>
-            <dd className='ml-4'>{feilkode}</dd>
+            <dd className='ml-4'>
+              {feilkode} <CopyButton className='ml-2' copyText={feilkode} />;
+            </dd>
           </dl>
         )}
         <BodyShort className='font-bold'>{tittel || 'Ukjent feil'}</BodyShort>
