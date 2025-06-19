@@ -1,7 +1,7 @@
+import { RekbisError } from '../../../../util/rekbisError';
 import { StillingAPI } from '../../api-routes';
 import { hentOboToken } from '../../oboToken';
 import { StillingsDataDTO } from '../../stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
-import { logger } from '@navikt/next-logger';
 
 interface oppdaterEtterregistreringProps {
   nyData: StillingsDataDTO;
@@ -62,11 +62,12 @@ export const oppdaterEtterregistrering = async ({
       success: true,
       data,
     };
-  } catch (error) {
-    logger.error(
-      '[Opprett etterregistrering] Feil ved oppdatering av etterregistrering:',
-      error,
-    );
+  } catch (e) {
+    new RekbisError({
+      message:
+        '[Opprett etterregistrering] Feil ved oppdatering av etterregistrering:',
+      error: e,
+    });
     return {
       success: false,
       error: 'Feil ved oppdatering av etterregistrering',

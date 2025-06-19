@@ -1,6 +1,6 @@
 'use client';
 
-import { rekbisError } from '../../util/rekbisError';
+import { RekbisError } from '../../util/rekbisError';
 import {
   ModiaEventType,
   setModiaContext,
@@ -135,8 +135,8 @@ export const ApplikasjonContextProvider: React.FC<
 export const useApplikasjonContext = () => {
   const context = React.useContext(ApplikasjonContext);
   if (context === undefined) {
-    throw new rekbisError({
-      beskrivelse:
+    throw new RekbisError({
+      message:
         'useApplikasjonContext må være i scope: ApplikasjonContextProvider',
     });
   }

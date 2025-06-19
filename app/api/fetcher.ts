@@ -1,4 +1,4 @@
-import { rekbisError } from '../../util/rekbisError';
+import { RekbisError } from '../../util/rekbisError';
 import { logger } from '@navikt/next-logger';
 import { z, ZodSchema } from 'zod';
 
@@ -81,12 +81,11 @@ export const getAPI = async (url: string, skjulFeilmelding?: boolean) => {
     }
 
     if (!skjulFeilmelding) {
-      throw new rekbisError({
+      throw new RekbisError({
         url: response.url,
         statuskode: response.status,
-        tittel: getErrorTitle(response.status),
-        beskrivelse: `Feil ved henting av data: ${response.status} ${response.statusText}`,
-        stack: errorDetails,
+        message: getErrorTitle(response.status),
+        details: errorDetails,
       });
     }
 
@@ -95,8 +94,10 @@ export const getAPI = async (url: string, skjulFeilmelding?: boolean) => {
   if (response.ok) {
     return await response.json();
   } else {
-    throw new rekbisError({
-      beskrivelse: `Feil respons fra server: (http-status: ${response.status})`,
+    throw new RekbisError({
+      message: `Feil respons fra server: (http-status: ${response.status})`,
+      url: response.url,
+      statuskode: response.status,
     });
   }
 };
@@ -144,12 +145,11 @@ export const postApi = async (
         errorDetails = await response.text();
       }
 
-      throw new rekbisError({
-        statuskode: response.status,
-        tittel: getErrorTitle(response.status),
-        beskrivelse: `Request failed with status: ${response.status} ${response.statusText}`,
+      throw new RekbisError({
+        message: getErrorTitle(response.status),
         url: response.url,
-        stack: errorDetails,
+        details: errorDetails,
+        statuskode: response.status,
       });
     }
 
@@ -162,19 +162,18 @@ export const postApi = async (
       try {
         return await response.json();
       } catch (error) {
-        throw new rekbisError({
-          beskrivelse: 'Error in postApi response.json():',
+        throw new RekbisError({
+          statuskode: response.status,
+          message: 'Error in postApi response.json():',
           url: response.url,
           error: error instanceof Error ? error.message : String(error),
         });
       }
     }
   } catch (error) {
-    if (!(error instanceof rekbisError)) {
-      throw new rekbisError({
-        statuskode: 0,
-        tittel: 'Nettverksfeil',
-        beskrivelse: 'Kunne ikke koble til serveren',
+    if (!(error instanceof RekbisError)) {
+      throw new RekbisError({
+        message: 'Nettverksfeil: Kunne ikke koble til serveren',
         url: basePath + url,
         error: error,
       });
@@ -226,22 +225,19 @@ export const putApi = async (
         errorDetails = await response.text();
       }
 
-      throw new rekbisError({
-        statuskode: response.status,
-        tittel: getErrorTitle(response.status),
-        beskrivelse: `Request failed with status: ${response.status} ${response.statusText}`,
+      throw new RekbisError({
+        message: getErrorTitle(response.status),
         url: response.url,
-        stack: errorDetails,
+        details: errorDetails,
+        statuskode: response.status,
       });
     }
 
     return response.json();
   } catch (error) {
-    if (!(error instanceof rekbisError)) {
-      throw new rekbisError({
-        statuskode: 0,
-        tittel: 'Nettverksfeil',
-        beskrivelse: 'Kunne ikke koble til serveren',
+    if (!(error instanceof RekbisError)) {
+      throw new RekbisError({
+        message: 'Nettverksfeil: Kunne ikke koble til serveren',
         url: basePath + url,
         error: error,
       });
@@ -325,10 +321,11 @@ export const deleteApi = async (url: string) => {
       errorDetails = await response.text();
     }
 
-    throw new rekbisError({
+    throw new RekbisError({
       url: response.url,
       statuskode: response.status,
-      stack: errorDetails,
+      message: `Respons ikke ok: ${response.status} ${response.statusText}`,
+      details: errorDetails,
     });
   }
 

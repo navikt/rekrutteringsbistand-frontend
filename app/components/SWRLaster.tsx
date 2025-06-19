@@ -1,6 +1,6 @@
 'use client';
 
-import { rekbisError } from '../../util/rekbisError';
+import { RekbisError } from '../../util/rekbisError';
 import Sidelaster from './Sidelaster';
 import Feilmelding from './feilhåndtering/Feilmelding';
 import * as React from 'react';
@@ -22,8 +22,8 @@ function isZodError(error: any): error is ZodError {
   return error instanceof ZodError;
 }
 
-function isRekbisError(error: any): error is rekbisError {
-  return error instanceof rekbisError;
+function isRekbisError(error: any): error is RekbisError {
+  return error instanceof RekbisError;
 }
 
 const SWRLaster = <T extends any[]>({
@@ -54,14 +54,13 @@ const SWRLaster = <T extends any[]>({
 
   if (error && !skjulFeilmelding) {
     if (isRekbisError(error)) {
-      // Handle rekbisError directly - it already has the structure we need
-      return <Feilmelding {...error} />;
+      return <Feilmelding error={error} />;
     }
 
     return (
       <Feilmelding
         {...error}
-        tittel='Feil ved henting av data'
+        message='Feil ved henting av data'
         zodError={isZodError(error) ? error : undefined}
       />
     );

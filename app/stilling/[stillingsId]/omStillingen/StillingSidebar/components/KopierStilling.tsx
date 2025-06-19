@@ -1,8 +1,8 @@
+import { RekbisError } from '../../../../../../util/rekbisError';
 import { kopierStilling } from '../../../../../api/stilling/rekrutteringsbistandstilling/kopier/[slug]/kopierStilling';
 import { useApplikasjonContext } from '../../../../../providers/ApplikasjonContext';
 import { FilesIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
-import { logger } from '@navikt/next-logger';
 import * as React from 'react';
 
 export interface KopierStillingProps {
@@ -22,7 +22,10 @@ const KopierStilling: React.FC<KopierStillingProps> = ({ stillingsId }) => {
         type: 'success',
       });
     } catch (error) {
-      logger.error('Feil ved duplisering av stilling', error);
+      new RekbisError({
+        message: 'Feil ved duplisering av stilling',
+        error,
+      });
       visVarsel({
         tekst: 'Feil ved duplisering av stilling',
         type: 'error',

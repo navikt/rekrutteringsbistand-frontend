@@ -1,5 +1,5 @@
+import { RekbisError } from '../../../util/rekbisError';
 import { navnForRolleId } from '../../components/tilgangskontroll/roller';
-import { logger } from '@navikt/next-logger';
 import { getToken } from '@navikt/oasis';
 import { decodeJwt } from 'jose';
 import { NextRequest, NextResponse } from 'next/server';
@@ -38,7 +38,7 @@ export async function GET(req: NextRequest) {
       roller,
     });
   } catch (error) {
-    logger.error(error, 'Feil ved henting av brukerdata');
+    new RekbisError({ message: 'Feil ved henting av brukerdata', error });
     return NextResponse.json(
       { error: 'Internal Server Error' },
       { status: 500 },

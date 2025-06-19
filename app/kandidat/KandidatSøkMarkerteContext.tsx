@@ -1,4 +1,4 @@
-import { rekbisError } from '../../util/rekbisError';
+import { RekbisError } from '../../util/rekbisError';
 import * as React from 'react';
 
 interface KandidatSøkMarkerteContextProps {
@@ -19,8 +19,8 @@ const KandidatSøkMarkerteContext =
 export const useKandidatSøkMarkerteContext = () => {
   const context = React.useContext(KandidatSøkMarkerteContext);
   if (context === undefined) {
-    throw new rekbisError({
-      beskrivelse: 'useKandidatSøk må være i scope: KandidatSøkProvider',
+    throw new RekbisError({
+      message: 'useKandidatSøk må være i scope: KandidatSøkProvider',
     });
   }
   return context;

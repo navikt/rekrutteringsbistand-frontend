@@ -1,6 +1,6 @@
 'use client';
 
-import { rekbisError } from '../../../util/rekbisError';
+import { RekbisError } from '../../../util/rekbisError';
 import {
   KandidatlisteInfoDTO,
   useKandidatlisteInfo,
@@ -157,9 +157,8 @@ export const useStillingsContext = () => {
   const context = React.useContext(StillingsContext);
 
   if (context === undefined) {
-    throw new rekbisError({
-      beskrivelse:
-        'useStillingsContext må være i scope: StillingsContextProvider',
+    throw new RekbisError({
+      message: 'useStillingsContext må være i scope: StillingsContextProvider',
     });
   }
   return context;

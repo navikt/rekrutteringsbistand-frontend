@@ -1,3 +1,4 @@
+import { RekbisError } from '../../../../../../../util/rekbisError';
 import { usePamPostdata } from '@/app/api/pam-geografi/postdata/[postnummer]/usePamPostdata';
 import {
   oppdaterRekrutteringstreff,
@@ -5,8 +6,7 @@ import {
 } from '@/app/api/rekrutteringstreff/oppdater-rekrutteringstreff/oppdaterRerkutteringstreff';
 import { RekrutteringstreffDTO } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Modal, Button, TextField, BodyShort } from '@navikt/ds-react';
-import { logger } from '@navikt/next-logger';
+import { BodyShort, Button, Modal, TextField } from '@navikt/ds-react';
 import React, { useId } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -114,7 +114,10 @@ const StedModal: React.FC<StedModalProps> = ({
       onUpdated();
       close();
     } catch (err) {
-      logger.error('Feil ved oppdatering av sted:', err);
+      new RekbisError({
+        message: 'Feil ved oppdatering av sted:',
+        error: err,
+      });
     }
   };
 

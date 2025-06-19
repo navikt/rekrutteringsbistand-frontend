@@ -1,5 +1,6 @@
 'use client';
 
+import { RekbisError } from '../../../../util/rekbisError';
 import { useRekrutteringstreffContext } from '../RekrutteringstreffContext';
 import LeggTilArbeidsgiverModal from './LeggTilArbeidsgiverModal';
 import EndreTittel from './om-treffet/components/EndreTittel';
@@ -12,20 +13,19 @@ import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import {
+  CheckmarkIcon,
   ChevronDownIcon,
   ChevronUpIcon,
-  CheckmarkIcon,
 } from '@navikt/aksel-icons';
 import {
   BodyShort,
   Box,
   Button,
-  Heading,
-  Stepper,
   Detail,
+  Heading,
   Loader,
+  Stepper,
 } from '@navikt/ds-react';
-import { logger } from '@navikt/next-logger';
 import * as React from 'react';
 
 interface ChecklistItem {
@@ -120,7 +120,10 @@ const TreffSteg = () => {
       }));
     }
     if (arbeidsgivereError)
-      logger.error('Feil ved henting av arbeidsgivere:', arbeidsgivereError);
+      new RekbisError({
+        message: 'Feil ved henting av arbeidsgivere:',
+        error: arbeidsgivereError,
+      });
   }, [arbeidsgivereData, arbeidsgivereError]);
 
   React.useEffect(() => {
@@ -137,10 +140,10 @@ const TreffSteg = () => {
       }));
     }
     if (rekrutteringstreffError)
-      logger.error(
-        'Feil ved henting av rekrutteringstreff:',
-        rekrutteringstreffError,
-      );
+      new RekbisError({
+        message: 'Feil ved henting av rekrutteringstreff:',
+        error: rekrutteringstreffError,
+      });
   }, [rekrutteringstreffData, rekrutteringstreffError]);
 
   React.useEffect(() => {
@@ -151,7 +154,10 @@ const TreffSteg = () => {
       }));
     }
     if (innleggError)
-      logger.error('Feil ved henting av innlegg:', innleggError);
+      new RekbisError({
+        message: 'Feil ved henting av innlegg:',
+        error: innleggError,
+      });
   }, [innleggData, innleggError]);
 
   const handleClickSjekklisteItem = (id: string) => {
@@ -184,7 +190,10 @@ const TreffSteg = () => {
       await publiserRekrutteringstreff(rekrutteringstreffId);
       await mutateRekrutteringstreff();
     } catch (error) {
-      logger.error('Publisering av rekrutteringstreff feilet', error);
+      new RekbisError({
+        message: 'Publisering av rekrutteringstreff feilet',
+        error,
+      });
     } finally {
       setIsPublishing(false);
     }

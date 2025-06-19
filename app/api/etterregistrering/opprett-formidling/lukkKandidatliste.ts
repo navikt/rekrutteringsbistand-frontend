@@ -1,6 +1,6 @@
+import { RekbisError } from '../../../../util/rekbisError';
 import { KandidatAPI } from '../../api-routes';
 import { hentOboToken } from '../../oboToken';
-import { logger } from '@navikt/next-logger';
 
 interface lukkKandidatlisteProps {
   kandidatlisteId: string;
@@ -58,11 +58,12 @@ export const lukkKandidatliste = async ({
     return {
       success: true,
     };
-  } catch (error) {
-    logger.error(
-      '[Opprett etterregistrering] Feil respons ved setting av status på kandidatliste',
-      error,
-    );
+  } catch (e) {
+    new RekbisError({
+      message:
+        '[Opprett etterregistrering] Feil respons ved setting av status på kandidatliste',
+      error: e,
+    });
     return {
       success: false,
       error:

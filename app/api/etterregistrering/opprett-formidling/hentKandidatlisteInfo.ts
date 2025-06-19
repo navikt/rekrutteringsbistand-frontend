@@ -1,7 +1,7 @@
+import { RekbisError } from '../../../../util/rekbisError';
 import { KandidatAPI } from '../../api-routes';
 import { KandidatlisteInfoDTO } from '../../kandidat/useKandidatlisteInfo';
 import { hentOboToken } from '../../oboToken';
-import { logger } from '@navikt/next-logger';
 
 interface hentKandidatlisteInfoProps {
   stillingsId: string;
@@ -62,10 +62,11 @@ export const hentKandidatlisteInfo = async ({
       data,
     };
   } catch (error) {
-    logger.error(
-      '[Opprett etterregistrering] Feil ved henting av kandidatlisteinfo:',
+    new RekbisError({
+      message:
+        '[Opprett etterregistrering] Feil ved henting av kandidatlisteinfo:',
       error,
-    );
+    });
     return {
       success: false,
       error:

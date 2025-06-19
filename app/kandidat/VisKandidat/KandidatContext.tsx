@@ -1,6 +1,6 @@
 'use client';
 
-import { rekbisError } from '../../../util/rekbisError';
+import { RekbisError } from '../../../util/rekbisError';
 import { KandidatDataSchemaDTO } from '../../api/kandidat-sok/schema/cvSchema.zod';
 import { useKandidatinformasjon } from '../../api/kandidat-sok/useKandidatinformasjon';
 import SWRLaster from '../../components/SWRLaster';
@@ -61,9 +61,8 @@ export const useKandidatContext = () => {
   const context = React.useContext(KandidatContext);
 
   if (context === undefined) {
-    throw new rekbisError({
-      beskrivelse:
-        'useKandidatContext må være i scope: KandidatContextProvider',
+    throw new RekbisError({
+      message: 'useKandidatContext må være i scope: KandidatContextProvider',
     });
   }
   return context;

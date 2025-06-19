@@ -1,3 +1,4 @@
+import { RekbisError } from '../../../../util/rekbisError';
 import { mapFormTilFormidling } from '../../../etterregistrering/ny-etterregistrering/mapFormidling';
 import { FormidlingDataForm } from '../../../etterregistrering/ny-etterregistrering/redigerFormidlingFormType';
 import { hentEtterregistrering } from './hentEtterregistrering';
@@ -7,7 +8,6 @@ import { lukkKandidatliste } from './lukkKandidatliste';
 import { oppdaterEtterregistrering } from './oppdaterEtterregistrering';
 import { opprettEtterregistrering } from './opprettEtterregistrering';
 import { opprettStillingForFormidlingMapper } from './opprettStillingForFormidlingMapper';
-import { logger } from '@navikt/next-logger';
 import { NextRequest, NextResponse } from 'next/server';
 
 export interface FormidlingAvUsynligKandidatOutboundDto {
@@ -118,7 +118,10 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     return NextResponse.json({ stillingsId: stillingsId });
   } catch (error) {
-    logger.error(error);
+    new RekbisError({
+      message: 'Klarte ikke å opprette etterregistrering',
+      error,
+    });
     return NextResponse.json(
       { error: 'Klarte ikke å opprette etterregistrering' },
       { status: 500 },

@@ -1,7 +1,7 @@
+import { RekbisError } from '../../../../util/rekbisError';
 import { StillingAPI } from '../../api-routes';
 import { hentOboToken } from '../../oboToken';
 import { StillingsDataDTO } from '../../stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
-import { logger } from '@navikt/next-logger';
 
 interface hentEtterregistreringProps {
   stillingsId: string;
@@ -62,10 +62,11 @@ export const hentEtterregistrering = async ({
       data: await response.json(),
     };
   } catch (error) {
-    logger.error(
-      '[Opprett etterregistrering] Feil ved henting av etterregistrering:',
+    new RekbisError({
+      message:
+        '[Opprett etterregistrering] Feil ved henting av etterregistrering:',
       error,
-    );
+    });
     return {
       success: false,
       error:

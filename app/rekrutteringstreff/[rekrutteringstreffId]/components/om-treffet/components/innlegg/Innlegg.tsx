@@ -1,5 +1,6 @@
 'use client';
 
+import { RekbisError } from '../../../../../../../util/rekbisError';
 import { formaterKlokkeslett } from '../tidspunkt/utils';
 import type { InnleggDTO } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
 import {
@@ -39,8 +40,8 @@ import {
 import { logger } from '@navikt/next-logger';
 import { isSameDay } from 'date-fns';
 import { AnimatePresence, motion } from 'framer-motion';
-import React, { useRef, useEffect, useMemo, useState } from 'react';
-import { useForm, FormProvider, type SubmitHandler } from 'react-hook-form';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { FormProvider, useForm, type SubmitHandler } from 'react-hook-form';
 
 export interface InnleggProps {
   rekrutteringstreffId: string;
@@ -187,7 +188,8 @@ const Innlegg: React.FC<InnleggProps> = ({
       onInnleggUpdated();
       modalRef.current?.close();
     } catch (error) {
-      logger.error('Feil ved lagring av innlegg:', error);
+      new RekbisError({ message: 'Feil ved lagring av innlegg:', error });
+      // Vurder å gi brukeren feedback her, f.eks. via en Alert
     }
   };
 

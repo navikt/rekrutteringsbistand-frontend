@@ -1,48 +1,46 @@
-import { Alert, BodyLong, BodyShort, Button } from '@navikt/ds-react';
+import { RekbisError } from '../../../util/rekbisError';
+import { Alert, BodyShort, Button, CopyButton } from '@navikt/ds-react';
 import { logger } from '@navikt/next-logger';
 import * as React from 'react';
 import { ZodError } from 'zod';
 
 export interface IFeilmelding {
+  error?: RekbisError | unknown;
   zodError?: ZodError;
-  statuskode?: number;
-  tittel?: string;
-  stack?: string;
-  beskrivelse?: string;
-  url?: string;
-  error?: unknown;
+  message?: string;
 }
 
-const Feilmelding: React.FC<IFeilmelding> = ({
-  zodError,
-  tittel,
-  statuskode,
-  stack,
-  beskrivelse,
-  url,
-  error,
-}) => {
+const Feilmelding: React.FC<IFeilmelding> = ({ zodError, error, message }) => {
   const [showError, setShowError] = React.useState(false);
 
-  // Log the error for debugging purposes
+  // Log error hvis ikke rekbisError
   React.useEffect(() => {
     if (error) {
-      logger.error('Error displayed in UI', {
-        error,
-        tittel,
-        statuskode,
-        stack,
-        url,
-      });
+      if (error instanceof RekbisError) {
+        logger.error(
+          {
+            operationId: error.feilkode,
+            errorType: 'RekbisError',
+          },
+          'Error vist i UI: ' + error.message || message,
+        );
+      } else {
+        logger.error(
+          {
+            err: error instanceof Error ? error : null,
+            errorType: error?.constructor?.name || typeof error,
+          },
+          `Error displayed in UI (${message})`,
+        );
+      }
     }
-  }, [error, tittel, statuskode]);
+  }, [error]);
 
   if (zodError) {
     logger.info('ZodError', zodError);
     return (
       <Alert className='w-full' style={{ margin: '1rem' }} variant='error'>
         <strong>Feil ved validering av data (ZodError)</strong>
-        <BodyLong>{tittel}</BodyLong>
         <BodyShort>Antall feil {zodError?.errors.length ?? 'N/A'}</BodyShort>
         <Button
           className='mt-4 mb-4'
@@ -70,34 +68,53 @@ const Feilmelding: React.FC<IFeilmelding> = ({
       </Alert>
     );
   }
+
+  if (error instanceof RekbisError) {
+    return (
+      <div style={{ width: '100%' }}>
+        <Alert style={{ margin: '1rem' }} variant='error'>
+          <BodyShort className='font-bold'>Noe gikk galt!</BodyShort>
+
+          {error.feilkode && (
+            <dl className='my-4'>
+              <dt className='font-bold italic'>
+                Feilkode for rapportering av feil:
+              </dt>
+              <dd className='ml-4'>
+                {error.feilkode}{' '}
+                <CopyButton className='ml-2' copyText={error.feilkode} />
+              </dd>
+            </dl>
+          )}
+          <BodyShort className='font-bold'>
+            {error.message || 'Ukjent feil'}
+          </BodyShort>
+          <Button
+            className='mt-4 mb-4'
+            size='small'
+            variant={showError ? 'secondary-neutral' : 'secondary'}
+            onClick={() => setShowError(!showError)}
+          >
+            {showError ? 'Skjul' : 'Vis'} detaljert feilmelding
+          </Button>
+          {showError && (
+            <dl>
+              <dt className='font-bold italic'>Teknisk feilmelding</dt>
+              <dd className='mb-4 ml-4'>{error.details ?? error.stack}</dd>
+            </dl>
+          )}
+        </Alert>
+      </div>
+    );
+  }
+
   return (
-    <div style={{ width: '100%' }}>
-      <Alert style={{ margin: '1rem' }} variant='error'>
-        <strong>Noe gikk galt!</strong>
-        <BodyShort>{tittel || 'Ukjent feil'}</BodyShort>
-        <BodyLong>{beskrivelse}</BodyLong>
-        <Button
-          className='mt-4 mb-4'
-          size='small'
-          variant={showError ? 'secondary-neutral' : 'secondary'}
-          onClick={() => setShowError(!showError)}
-        >
-          {showError ? 'Skjul' : 'Vis'} detaljert feilmelding
-        </Button>
-        {showError && (
-          <dl>
-            <dt className='font-bold italic'>Statuskode</dt>
-            <dd className='mb-4 ml-4'>{statuskode ?? '-'}</dd>
-
-            <dt className='font-bold italic'>URL</dt>
-            <dd className='mb-4 ml-4'>{url ?? '-'}</dd>
-
-            <dt className='font-bold italic'>Teknisk feilmelding</dt>
-            <dd className='mb-4 ml-4'>{stack ?? '-'}</dd>
-          </dl>
-        )}
-      </Alert>
-    </div>
+    <Alert style={{ margin: '1rem' }} variant='error'>
+      <BodyShort className='font-bold'>Noe gikk galt!</BodyShort>
+      <BodyShort>
+        Ukjent feil ikke håndtert. Rapporter inn via fagsystemsak.
+      </BodyShort>
+    </Alert>
   );
 };
 
