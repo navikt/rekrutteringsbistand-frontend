@@ -29,9 +29,6 @@ importers:
       '@navikt/fnrvalidator':
         specifier: ^2.1.5
         version: 2.1.5
-      '@navikt/next-api-proxy':
-        specifier: ^4.1.4
-        version: 4.1.4(next@15.3.2(@babel/core@7.26.9)(@opentelemetry/api@1.9.0)(@playwright/test@1.52.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))
       '@navikt/next-logger':
         specifier: ^3.0.3
         version: 3.0.3(next@15.3.2(@babel/core@7.26.9)(@opentelemetry/api@1.9.0)(@playwright/test@1.52.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(pino@9.6.0)
@@ -1038,11 +1035,6 @@ packages:
 
   '@navikt/fnrvalidator@2.1.5':
     resolution: {integrity: sha512-uHzoL3ZTYwrF7OTKaihNf9xHH6S9WnGqz420HX4lEX+yu5367l+dYxI5OIRVT5MKWEDQ4DCVSAuJhoWValv6Fw==, tarball: https://npm.pkg.github.com/download/@navikt/fnrvalidator/2.1.5/e33cbc5693b14419bbcf4d5daee2ac9eeec532e5}
-
-  '@navikt/next-api-proxy@4.1.4':
-    resolution: {integrity: sha512-3tylOzh0G/Ru8jDy7mz9GW52pSEUkOUWq6tXe+YTf6M4Wq/c/FtFhU0gzlZlcI09kgpMA31Re6JyXu2K0Cx00g==, tarball: https://npm.pkg.github.com/download/@navikt/next-api-proxy/4.1.4/781f2144baaceb4ff9e9bea9d50d443ed52d2f99}
-    peerDependencies:
-      next: 14 || 15
 
   '@navikt/next-logger@3.0.3':
     resolution: {integrity: sha512-b0s3yq+vCznS6IDPr66Ac4PfdUZiElP8TExz8PDEKz26D6RAvWJBADmJc8BgKy/fsOtPbsdDMtA3yhX2dFhLUQ==, tarball: https://npm.pkg.github.com/download/@navikt/next-logger/3.0.3/207790c463fcfe8b50bfc5639a090b8c4f9565e7}
@@ -5043,10 +5035,6 @@ snapshots:
   '@navikt/ds-tokens@7.21.1': {}
 
   '@navikt/fnrvalidator@2.1.5': {}
-
-  '@navikt/next-api-proxy@4.1.4(next@15.3.2(@babel/core@7.26.9)(@opentelemetry/api@1.9.0)(@playwright/test@1.52.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))':
-    dependencies:
-      next: 15.3.2(@babel/core@7.26.9)(@opentelemetry/api@1.9.0)(@playwright/test@1.52.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
 
   '@navikt/next-logger@3.0.3(next@15.3.2(@babel/core@7.26.9)(@opentelemetry/api@1.9.0)(@playwright/test@1.52.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(pino@9.6.0)':
     dependencies:

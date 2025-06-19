@@ -3,7 +3,7 @@ import { logger } from '@navikt/next-logger';
 import { z, ZodSchema } from 'zod';
 
 interface fetchOptions {
-  skjulFeilmelding?: boolean | number; // bool eller http kode
+  skjulFeilmelding?: boolean | number | number[]; // bool eller http kode(r)
   queryParams?: URLSearchParams;
 }
 
@@ -66,11 +66,19 @@ const handleErrorResponse = async (
   }
 
   // Determine if error should be hidden based on skjulFeilmelding
-  const shouldHideError =
-    typeof options?.skjulFeilmelding === 'number'
-      ? response.status === options.skjulFeilmelding
-      : !!options?.skjulFeilmelding;
+  const shouldHideError = (() => {
+    const skjulFeilmelding = options?.skjulFeilmelding;
 
+    if (typeof skjulFeilmelding === 'boolean') {
+      return skjulFeilmelding; // If true, hide all errors
+    } else if (typeof skjulFeilmelding === 'number') {
+      return response.status === skjulFeilmelding; // Hide specific status code
+    } else if (Array.isArray(skjulFeilmelding)) {
+      return skjulFeilmelding.includes(response.status); // Hide if status is in array
+    }
+
+    return false; // Default: don't hide errors
+  })();
   if (!shouldHideError) {
     throw createRekbisError({
       url: response.url,
