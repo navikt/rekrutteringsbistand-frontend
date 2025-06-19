@@ -72,8 +72,6 @@ const TreffSteg = () => {
 
   const [isPublishing, setIsPublishing] = React.useState(false);
 
-  const activeStep = 1;
-
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const arbeidsgiverModalRef = React.useRef<HTMLDialogElement>(null);
   const endreTittelModalRef = React.useRef<HTMLDialogElement>(null);
@@ -164,9 +162,6 @@ const TreffSteg = () => {
     if (id === 'omtreffet') innleggModalRef.current?.showModal();
   };
 
-  const currentHeader =
-    stepDetails.find((d) => d.id === activeStep)?.header ?? 'Steg';
-
   const commonBoxProps = {
     background: 'raised' as const,
     borderColor: 'neutral-subtleA' as const,
@@ -195,6 +190,11 @@ const TreffSteg = () => {
       (hendelse) => hendelse.hendelsestype === 'PUBLISER',
     );
   }, [rekrutteringstreffData]);
+
+  const activeStep = harPubliseringshendelse ? 2 : 1;
+
+  const currentHeader =
+    stepDetails.find((d) => d.id === activeStep)?.header ?? 'Steg';
 
   return (
     <div className='my-2'>
@@ -267,66 +267,68 @@ const TreffSteg = () => {
               ))}
             </Stepper>
 
-            <div className='flex-1'>
-              <Detail spacing>
-                Før treffet er tilgjengelig for andre, og du kan invitere
-                jobbsøker må noen detaljer være på plass først:
-              </Detail>
+            {!harPubliseringshendelse && (
+              <div className='flex-1'>
+                <Detail spacing>
+                  Før treffet er tilgjengelig for andre, og du kan invitere
+                  jobbsøker må noen detaljer være på plass først:
+                </Detail>
 
-              {(arbeidsgivereLoading ||
-                rekrutteringstreffLoading ||
-                innleggLoading) && (
-                <Loader size='medium' title='Laster sjekkliste status...' />
-              )}
-
-              {!arbeidsgivereLoading &&
-                !rekrutteringstreffLoading &&
-                !innleggLoading && (
-                  <ul className='space-y-0'>
-                    {sjekklisteData.map((item) => {
-                      const erOppfylt = !!checkedItems[item.id];
-                      const kanKlikkes = !erOppfylt;
-                      return (
-                        <li
-                          key={item.id}
-                          onClick={() =>
-                            kanKlikkes && handleClickSjekklisteItem(item.id)
-                          }
-                          onKeyDown={(e) => {
-                            if (
-                              kanKlikkes &&
-                              (e.key === 'Enter' || e.key === ' ')
-                            ) {
-                              e.preventDefault();
-                              handleClickSjekklisteItem(item.id);
-                            }
-                          }}
-                          className={`flex items-center justify-between py-4 ${item.id === 'arbeidsgiver' || item.id === 'svarfrist' ? 'border-b border-border-subtle mb-1' : ''} ${kanKlikkes ? 'cursor-pointer hover:bg-gray-800 rounded' : ''}`}
-                          role={kanKlikkes ? 'button' : undefined}
-                          tabIndex={kanKlikkes ? 0 : undefined}
-                          aria-label={
-                            kanKlikkes
-                              ? `Legg til eller rediger ${item.label}`
-                              : `${item.label} - Oppfylt`
-                          }
-                        >
-                          <div className='flex items-center gap-2'>
-                            <div className='w-5 h-5 border-2 rounded-full flex items-center justify-center border-blue-400 text-blue-400'>
-                              {erOppfylt && <CheckmarkIcon fontSize='1rem' />}
-                            </div>
-                            <BodyShort>{item.label}</BodyShort>
-                          </div>
-                          {kanKlikkes && (
-                            <BodyShort className='text-blue-400 px-1'>
-                              Legg til
-                            </BodyShort>
-                          )}
-                        </li>
-                      );
-                    })}
-                  </ul>
+                {(arbeidsgivereLoading ||
+                  rekrutteringstreffLoading ||
+                  innleggLoading) && (
+                  <Loader size='medium' title='Laster sjekkliste status...' />
                 )}
-            </div>
+
+                {!arbeidsgivereLoading &&
+                  !rekrutteringstreffLoading &&
+                  !innleggLoading && (
+                    <ul className='space-y-0'>
+                      {sjekklisteData.map((item) => {
+                        const erOppfylt = !!checkedItems[item.id];
+                        const kanKlikkes = !erOppfylt;
+                        return (
+                          <li
+                            key={item.id}
+                            onClick={() =>
+                              kanKlikkes && handleClickSjekklisteItem(item.id)
+                            }
+                            onKeyDown={(e) => {
+                              if (
+                                kanKlikkes &&
+                                (e.key === 'Enter' || e.key === ' ')
+                              ) {
+                                e.preventDefault();
+                                handleClickSjekklisteItem(item.id);
+                              }
+                            }}
+                            className={`flex items-center justify-between py-4 ${item.id === 'arbeidsgiver' || item.id === 'svarfrist' ? 'border-b border-border-subtle mb-1' : ''} ${kanKlikkes ? 'cursor-pointer hover:bg-gray-800 rounded' : ''}`}
+                            role={kanKlikkes ? 'button' : undefined}
+                            tabIndex={kanKlikkes ? 0 : undefined}
+                            aria-label={
+                              kanKlikkes
+                                ? `Legg til eller rediger ${item.label}`
+                                : `${item.label} - Oppfylt`
+                            }
+                          >
+                            <div className='flex items-center gap-2'>
+                              <div className='w-5 h-5 border-2 rounded-full flex items-center justify-center border-blue-400 text-blue-400'>
+                                {erOppfylt && <CheckmarkIcon fontSize='1rem' />}
+                              </div>
+                              <BodyShort>{item.label}</BodyShort>
+                            </div>
+                            {kanKlikkes && (
+                              <BodyShort className='text-blue-400 px-1'>
+                                Legg til
+                              </BodyShort>
+                            )}
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  )}
+              </div>
+            )}
           </div>
         </Box.New>
       )}
