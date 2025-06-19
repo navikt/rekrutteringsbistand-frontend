@@ -16,14 +16,12 @@ export class RekbisError extends Error {
     stack,
     beskrivelse = '',
     error,
-    feilkode,
+    feilkode: inputFeilkode,
     url = '',
   }: IFeilmelding) {
-    super(`${beskrivelse} (${feilkode})`);
+    const feilkode = inputFeilkode || lagFeilkode();
 
-    if (!feilkode) {
-      feilkode = lagFeilkode();
-    }
+    super(`${beskrivelse} (${feilkode})`);
 
     Object.setPrototypeOf(this, RekbisError.prototype);
 
@@ -36,20 +34,21 @@ export class RekbisError extends Error {
     this.feilkode = feilkode;
 
     logger.error({
-      name: this.name,
-      message: this.message,
-      stack: this.stack,
-      tittel: this.tittel,
-      beskrivelse: this.beskrivelse,
-      url: this.url,
-      feilkode: this.feilkode,
-      originalError:
-        this.originalError instanceof Error
-          ? {
-              message: this.originalError.message,
-              stack: this.originalError.stack,
-            }
-          : this.originalError,
+      err: {
+        name: this.name,
+        stack: this.stack,
+        tittel: this.tittel,
+        beskrivelse: this.beskrivelse,
+        url: this.url,
+        feilkode: this.feilkode,
+        originalError:
+          this.originalError instanceof Error
+            ? {
+                message: this.originalError.message,
+                stack: this.originalError.stack,
+              }
+            : this.originalError,
+      },
     });
   }
 
