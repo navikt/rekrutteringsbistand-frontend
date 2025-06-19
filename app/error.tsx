@@ -31,7 +31,7 @@ export default function Error({
         Tilbake
       </Button>
       <h2 className='text-2xl font-semibold'>Ojsann!</h2>
-      <Feilmelding error={error.stack} message={error.message} />
+      <Feilmelding error={error} message={error.message} />
     </div>
   );
 }
