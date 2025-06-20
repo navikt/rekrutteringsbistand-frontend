@@ -14,6 +14,7 @@ export class RekbisError extends Error {
   public url: string;
   public statuskode?: number;
   public originalError?: unknown;
+  public skjulLogger: boolean;
 
   constructor(
     messageOrOptions:
@@ -25,6 +26,7 @@ export class RekbisError extends Error {
           url?: string;
           error?: unknown;
           statuskode?: number;
+          skjulLogger?: boolean;
         },
   ) {
     // Handle both string and object constructor patterns
@@ -37,6 +39,7 @@ export class RekbisError extends Error {
           details?: string;
           error?: unknown;
           statuskode?: number;
+          skjulLogger?: boolean;
         })
       : messageOrOptions;
 
@@ -61,23 +64,26 @@ export class RekbisError extends Error {
     this.details = options.details || '';
     this.originalError = options.error;
     this.statuskode = options.statuskode;
+    this.skjulLogger = options.skjulLogger || false;
 
     // Log the error
-    logger.error(
-      {
-        feilkode: this.feilkode,
-        url: this.url,
-        statuskode: this.statuskode,
-        originalError:
-          this.originalError instanceof Error
-            ? {
-                message: this.originalError.message,
-                stack: this.originalError.stack,
-              }
-            : this.originalError,
-      },
-      `${message} (${feilkode})`,
-    );
+    if (!this.skjulLogger) {
+      logger.error(
+        {
+          feilkode: this.feilkode,
+          url: this.url,
+          statuskode: this.statuskode,
+          originalError:
+            this.originalError instanceof Error
+              ? {
+                  message: this.originalError.message,
+                  stack: this.originalError.stack,
+                }
+              : this.originalError,
+        },
+        `${message} (${feilkode})`,
+      );
+    }
   }
 
   /**

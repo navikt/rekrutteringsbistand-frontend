@@ -20,6 +20,7 @@ interface StillingsContextType {
   stillingsId: string;
   stillingsData: StillingsDataDTO;
   kandidatlisteInfo: KandidatlisteInfoDTO | null;
+  kandidatlisteLaster: boolean;
   forhåndsvisData: StillingsDataDTO | null;
   erFormidling: boolean;
   erEier?: boolean;
@@ -135,6 +136,7 @@ const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
         setForhåndsvisData,
         refetch,
         kandidatlisteInfo: kandidatListeInfoHook?.data ?? null,
+        kandidatlisteLaster: kandidatListeInfoHook?.isLoading ?? false,
         erJobbmesse,
         stillingsId: stillingsData.stilling.uuid,
       }}
