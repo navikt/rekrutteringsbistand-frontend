@@ -35,7 +35,6 @@ const buildUrl = (url: string, queryParams?: URLSearchParams): string => {
   }
   return url;
 };
-
 const handleErrorResponse = async (
   response: Response,
   options?: fetchOptions,
@@ -44,6 +43,9 @@ const handleErrorResponse = async (
 
   let errorDetails = '';
   const contentType = response.headers.get('content-type');
+
+  // Clone the response before reading it to avoid the "Already read" error
+  const responseClone = response.clone();
 
   // Extract error details from response
   if (contentType && contentType.includes('application/json')) {
@@ -59,7 +61,8 @@ const handleErrorResponse = async (
           error: error instanceof Error ? error.message : String(error),
         },
       );
-      errorDetails = await response.text();
+      // Use the cloned response instead of the original which is already consumed
+      errorDetails = await responseClone.text();
     }
   } else {
     errorDetails = await response.text();
@@ -79,14 +82,16 @@ const handleErrorResponse = async (
 
     return false; // Default: don't hide errors
   })();
-  if (!shouldHideError) {
-    throw createRekbisError({
-      url: response.url,
-      statuskode: response.status,
-      message: getErrorTitle(response.status),
-      details: errorDetails,
-    });
-  }
+
+  // IMPORTANT: Changed logic here! Always throw an error when the response is not ok
+  // Only modify the error based on whether it should be hidden or not
+  throw createRekbisError({
+    url: response.url,
+    statuskode: response.status,
+    message: getErrorTitle(response.status),
+    details: errorDetails,
+    skjulLogger: shouldHideError,
+  });
 };
 
 const createRekbisError = (params: {
@@ -95,6 +100,7 @@ const createRekbisError = (params: {
   statuskode?: number;
   details?: string;
   error?: unknown;
+  skjulLogger?: boolean;
 }): RekbisError => {
   return new RekbisError({
     message: params.message,
@@ -102,33 +108,54 @@ const createRekbisError = (params: {
     statuskode: params.statuskode,
     details: params.details,
     error: params.error,
+    skjulLogger: params.skjulLogger || false,
   });
 };
 
-/**
- * Extracts response data based on content type
- */
 const extractResponseData = async (response: Response): Promise<any> => {
+  // Clone the response to avoid "Already read" errors
+  const responseClone = response.clone();
+
   const contentType = response.headers.get('content-type');
 
   if (contentType && contentType.includes('application/json')) {
-    return await response.json();
-  } else if (contentType && contentType.includes('text/plain')) {
-    return await response.text();
-  } else {
     try {
       return await response.json();
     } catch (error) {
-      throw createRekbisError({
-        statuskode: response.status,
-        message: 'Error extracting response data:',
-        url: response.url,
-        error: error instanceof Error ? error.message : String(error),
-      });
+      // If json parsing fails, try using the cloned response
+      logger.warn(
+        'Failed to parse response as JSON despite content-type header',
+        {
+          url: response.url,
+          status: response.status,
+          error: error instanceof Error ? error.message : String(error),
+        },
+      );
+      return await responseClone.text();
+    }
+  } else if (contentType && contentType.includes('text/plain')) {
+    return await response.text();
+  } else {
+    // For unknown content types, try JSON first then fall back to text
+    try {
+      return await response.json();
+    } catch {
+      try {
+        return await responseClone.text();
+      } catch (secondError) {
+        throw createRekbisError({
+          statuskode: response.status,
+          message: 'Error extracting response data:',
+          url: response.url,
+          error:
+            secondError instanceof Error
+              ? secondError.message
+              : String(secondError),
+        });
+      }
     }
   }
 };
-
 const validerSchema = <T>(schema: ZodSchema<T>, data: any) => {
   // return schema.parse(data);
   // TODO Midlertidig løsning for å unngå så mange feil ved feil schema:
@@ -167,11 +194,8 @@ export const getAPI = async (url: string, options?: fetchOptions) => {
 
     await handleErrorResponse(response, options);
 
-    if (response.ok) {
-      return await response.json();
-    }
-
-    return response;
+    // Only use extractResponseData, remove the response.ok check
+    return await extractResponseData(response);
   } catch (error) {
     if (!(error instanceof RekbisError)) {
       throw createRekbisError({
@@ -204,6 +228,8 @@ export const postApi = async (
     });
 
     await handleErrorResponse(response, options);
+
+    // Only use extractResponseData, remove the response.ok check
     return await extractResponseData(response);
   } catch (error) {
     if (!(error instanceof RekbisError)) {
@@ -237,6 +263,8 @@ export const putApi = async (
     });
 
     await handleErrorResponse(response, options);
+
+    // Only use extractResponseData, remove the response.ok check
     return await extractResponseData(response);
   } catch (error) {
     if (!(error instanceof RekbisError)) {
@@ -306,7 +334,9 @@ export const deleteApi = async (url: string, options?: fetchOptions) => {
     });
 
     await handleErrorResponse(response, options);
-    return response.ok;
+
+    // Only use extractResponseData, remove the response.ok check
+    return await extractResponseData(response);
   } catch (error) {
     if (!(error instanceof RekbisError)) {
       throw createRekbisError({
