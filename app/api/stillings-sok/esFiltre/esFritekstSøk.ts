@@ -30,11 +30,10 @@ export const esFritekstSøk = (fritekst: string, felt?: string) => {
   }
 
   return {
-    multi_match: {
-      type: 'cross_fields',
+    simple_query_string: {
       query: fritekst,
       fields: feltManSkalSøkeI,
-      operator: 'and',
+      default_operator: 'and',
     },
   };
 };
