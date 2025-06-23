@@ -7,6 +7,7 @@ import {
   JobbsøkerDTO,
   useJobbsøkere,
 } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
+import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import SWRLaster from '@/app/components/SWRLaster';
 import { BodyShort } from '@navikt/ds-react';
 import { format } from 'date-fns';
@@ -15,6 +16,14 @@ import * as React from 'react';
 const Jobbsøkere = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const jobbsøkerHook = useJobbsøkere(rekrutteringstreffId);
+
+  const { data: rekrutteringstreffData } =
+    useRekrutteringstreff(rekrutteringstreffId);
+
+  const harPublisert: boolean =
+    rekrutteringstreffData?.hendelser?.some(
+      (hendelse) => hendelse.hendelsestype === 'PUBLISER',
+    ) ?? false;
 
   const getLagtTilData = (jobbsøker: JobbsøkerDTO) => {
     const leggTilHendelse = jobbsøker.hendelser.find(
@@ -63,6 +72,7 @@ const Jobbsøkere = () => {
                       datoLagtTil={format(datoLagtTil, 'dd.MM.yyyy')}
                       lagtTilAv={lagtTilAv}
                       status={status}
+                      harPublisert={harPublisert}
                     />
                   </li>
                 );
