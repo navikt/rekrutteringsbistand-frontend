@@ -118,6 +118,11 @@ const Jobbsøkere = () => {
           <InviterModal
             modalref={inviterModalRef}
             inviterInternalDto={valgteJobbsøkere}
+            onFjernJobbsøker={(fødselsnummer: string) => {
+              setValgteJobbsøkere((prev) =>
+                prev.filter((j) => j.fødselsnummer !== fødselsnummer),
+              );
+            }}
           />
         </div>
       )}
