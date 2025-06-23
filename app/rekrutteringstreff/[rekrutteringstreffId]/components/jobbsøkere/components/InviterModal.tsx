@@ -17,7 +17,7 @@ const InviterModal: React.FC<InviterModalProps> = ({
   inviterInternalDto,
 }) => {
   const header =
-    inviterInternalDto?.length > 0
+    inviterInternalDto?.length > 1
       ? `Inviter ${inviterInternalDto.length} jobbsøkere til treff`
       : 'Inviter jobbsøkeren til treff';
 

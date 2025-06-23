@@ -31,4 +31,4 @@ export const jobbsøkerMock = (): JobbsøkerDTO => {
   };
 };
 
-export const jobbsøkereMock = [jobbsøkerMock()];
+export const jobbsøkereMock = [jobbsøkerMock(), jobbsøkerMock()];
