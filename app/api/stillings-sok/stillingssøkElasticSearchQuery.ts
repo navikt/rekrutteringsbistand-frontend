@@ -138,15 +138,23 @@ export function generateElasticSearchQuery(
     }
   }
 
+  const fritekstSøkestreng = filter.fritekst
+    .map((fritekstOrd) => {
+      const ord = fritekstOrd.split(' ').filter((it) => it.length > 1);
+
+      return `(+${ord.map((ord) => ord.trim()).join(' +')})`;
+    })
+    .join(' | ');
+
   const byggQuery = {
     size: maksAntallTreffPerSøk,
     from: regnUtFørsteTreffFra(filter.side, maksAntallTreffPerSøk),
     track_total_hits: true,
     query: {
       bool: {
-        minimum_should_match: filter.fritekst.length ? '1' : '0',
         filter: [...term, ...valgteFilter],
-        should: filter.fritekst.map((fritekst) => esFritekstSøk(fritekst)),
+        minimum_should_match: filter.fritekst.length ? '1' : '0',
+        should: esFritekstSøk(fritekstSøkestreng),
       },
     },
     ...sort,
@@ -160,33 +168,25 @@ export function generateElasticSearchQuery(
                 filters: {
                   arbeidsgiver: {
                     bool: {
-                      should: filter.fritekst.map((fritekst) =>
-                        esFritekstSøk(fritekst),
-                      ),
+                      should: esFritekstSøk(fritekstSøkestreng),
                       filter: [...term, ...valgteFilter],
                     },
                   },
                   tittel: {
                     bool: {
-                      should: filter.fritekst.map((fritekst) =>
-                        esFritekstSøk(fritekst),
-                      ),
+                      should: esFritekstSøk(fritekstSøkestreng),
                       filter: [...term, ...valgteFilter],
                     },
                   },
                   annonsetekst: {
                     bool: {
-                      should: filter.fritekst.map((fritekst) =>
-                        esFritekstSøk(fritekst),
-                      ),
+                      should: esFritekstSøk(fritekstSøkestreng),
                       filter: [...term, ...valgteFilter],
                     },
                   },
                   annonsenummer: {
                     bool: {
-                      should: filter.fritekst.map((fritekst) =>
-                        esFritekstSøk(fritekst),
-                      ),
+                      should: esFritekstSøk(fritekstSøkestreng),
                       filter: [...term, ...valgteFilter],
                     },
                   },
