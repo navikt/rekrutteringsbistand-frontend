@@ -1,7 +1,6 @@
-import InviterModal from './InviterModal';
 import NavnLink from './NavnLenke';
 import { Buildings3Icon, PersonIcon } from '@navikt/aksel-icons';
-import { BodyShort, Box, Button, Heading, Tag } from '@navikt/ds-react';
+import { BodyShort, Box, Checkbox, Heading, Tag } from '@navikt/ds-react';
 import * as React from 'react';
 
 interface JobbsøkerKortProps {
@@ -15,14 +14,14 @@ interface JobbsøkerKortProps {
   lagtTilAv?: string;
   status?: string;
   harPublisert: boolean;
+  onCheckboxChange: (checked: boolean) => void;
+  erValgt: boolean;
 }
 
 export type Veileder = {
   navn?: string;
   navIdent?: string;
 };
-
-const inviterModalRef = React.createRef<HTMLDialogElement>();
 
 const JobbsøkerKort: React.FC<JobbsøkerKortProps> = ({
   fornavn,
@@ -34,22 +33,29 @@ const JobbsøkerKort: React.FC<JobbsøkerKortProps> = ({
   lagtTilAv,
   status,
   harPublisert,
+  onCheckboxChange,
+  erValgt,
 }) => {
-  const onInviterJobbsøker = () => {
-    inviterModalRef.current?.showModal();
-  };
-
   return (
-    <>
-      <Box.New
-        background='raised'
-        borderColor='neutral-subtleA'
-        borderRadius='xlarge'
-        borderWidth='1'
-        padding='4'
-        marginBlock='2'
-        className='flex items-center justify-between'
-      >
+    <Box.New
+      background='raised'
+      borderColor='neutral-subtleA'
+      borderRadius='xlarge'
+      borderWidth='1'
+      padding='4'
+      marginBlock='2'
+      className='flex items-center justify-between'
+    >
+      <div className='flex items-center gap-4'>
+        {harPublisert && (
+          <Checkbox
+            hideLabel
+            checked={erValgt}
+            onChange={(e) => onCheckboxChange(e.target.checked)}
+          >
+            Velg kandidat {fornavn} {etternavn}
+          </Checkbox>
+        )}
         <div>
           <Heading size='small'>
             <NavnLink
@@ -82,23 +88,15 @@ const JobbsøkerKort: React.FC<JobbsøkerKortProps> = ({
             )}
           </BodyShort>
         </div>
-        <div className='flex items-center gap-4'>
-          {harPublisert && (
-            <div>
-              <Button variant='tertiary' onClick={onInviterJobbsøker}>
-                Inviter
-              </Button>
-            </div>
-          )}
-          {status && (
-            <Tag className={'mr-2'} size='medium' variant='info'>
-              {status}
-            </Tag>
-          )}
-        </div>
-      </Box.New>
-      <InviterModal modalref={inviterModalRef} inviterInternalDto={[]} />
-    </>
+      </div>
+      <div>
+        {status && (
+          <Tag className={'mr-2'} size='medium' variant='info'>
+            {status}
+          </Tag>
+        )}
+      </div>
+    </Box.New>
   );
 };
 
