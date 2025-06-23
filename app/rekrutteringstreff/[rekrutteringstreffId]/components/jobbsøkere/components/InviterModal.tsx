@@ -39,9 +39,10 @@ export const InviterModal: React.FC<InviterModalProps> = ({
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const [isLoading, setIsLoading] = React.useState(false);
   const antall = inviterInternalDto.length;
-  const header = `Inviter ${antall} ${
-    antall > 1 ? 'jobbsøkere' : 'jobbsøker'
-  } til treff`;
+  const header =
+    antall === 1
+      ? 'Inviter jobbsøkeren til treff'
+      : `Inviter ${antall} jobbsøkere til treff`;
 
   const handleInviter = async () => {
     setIsLoading(true);
@@ -84,9 +85,9 @@ export const InviterModal: React.FC<InviterModalProps> = ({
               >
                 <Detail>Navn og fødselsnummer</Detail>
                 <Detail>Veileder</Detail>
-                <Detail style={{ width: '48px' }} className='text-right'>
-                  Fjern
-                </Detail>
+                <div style={{ width: '48px' }} className='text-right'>
+                  {antall > 1 && <Detail>Fjern</Detail>}
+                </div>
               </HStack>
               <ul className='space-y-2 mt-2'>
                 {inviterInternalDto.map((jobbsøker) => (
@@ -103,14 +104,21 @@ export const InviterModal: React.FC<InviterModalProps> = ({
                         <Detail>{jobbsøker.fødselsnummer}</Detail>
                       </VStack>
                       <BodyShort>{jobbsøker.veilederNavn}</BodyShort>
-                      <Button
-                        variant='tertiary'
-                        icon={<XMarkIcon aria-hidden />}
-                        onClick={() =>
-                          onFjernJobbsøker(jobbsøker.fødselsnummer)
-                        }
-                        aria-label={`Fjern ${jobbsøker.fornavn} ${jobbsøker.etternavn}`}
-                      />
+                      <div
+                        style={{ width: '48px' }}
+                        className='flex justify-end'
+                      >
+                        {antall > 1 && (
+                          <Button
+                            variant='tertiary'
+                            icon={<XMarkIcon aria-hidden />}
+                            onClick={() =>
+                              onFjernJobbsøker(jobbsøker.fødselsnummer)
+                            }
+                            aria-label={`Fjern ${jobbsøker.fornavn} ${jobbsøker.etternavn}`}
+                          />
+                        )}
+                      </div>
                     </HStack>
                   </li>
                 ))}
@@ -175,7 +183,9 @@ export const InviterModal: React.FC<InviterModalProps> = ({
           loading={isLoading}
           disabled={antall === 0}
         >
-          Inviter {antall} {antall > 1 ? 'jobbsøkere' : 'jobbsøker'}
+          {antall === 1
+            ? 'Inviter jobbsøkeren'
+            : `Inviter ${antall} jobbsøkere`}
         </Button>
         <Button variant='secondary' onClick={lukkModal}>
           Avbryt
@@ -184,3 +194,5 @@ export const InviterModal: React.FC<InviterModalProps> = ({
     </Modal>
   );
 };
+
+export default InviterModal;
