@@ -2,7 +2,7 @@
 
 import { useRekrutteringstreffContext } from '../../RekrutteringstreffContext';
 import LeggTilJobbsøkerKnapp from '../LeggTilJobbsøkerKnapp';
-import InviterModal, { InviterInternalDto } from './components/InviterModal';
+import { InviterInternalDto, InviterModal } from './components/InviterModal';
 import JobbsøkerKort from './components/JobbsøkerKort';
 import {
   JobbsøkerDTO,

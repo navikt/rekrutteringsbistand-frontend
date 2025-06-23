@@ -31,7 +31,7 @@ export interface InviterModalProps {
   onFjernJobbsøker: (fødselsnummer: string) => void;
 }
 
-const InviterModal: React.FC<InviterModalProps> = ({
+export const InviterModal: React.FC<InviterModalProps> = ({
   modalref,
   inviterInternalDto,
   onFjernJobbsøker,
@@ -82,13 +82,9 @@ const InviterModal: React.FC<InviterModalProps> = ({
                 justify='space-between'
                 className='border-b border-border-subtle pb-2 text-text-subtle'
               >
-                <Detail uppercase>Navn og fødselsnummer</Detail>
-                <Detail uppercase>Veileder</Detail>
-                <Detail
-                  uppercase
-                  style={{ width: '48px' }}
-                  className='text-right'
-                >
+                <Detail>Navn og fødselsnummer</Detail>
+                <Detail>Veileder</Detail>
+                <Detail style={{ width: '48px' }} className='text-right'>
                   Fjern
                 </Detail>
               </HStack>
@@ -128,31 +124,42 @@ const InviterModal: React.FC<InviterModalProps> = ({
             </Heading>
             <VStack gap='3'>
               <HStack gap='2' align='start'>
-                <FileTextIcon fontSize='1.5rem' aria-hidden />
-                <BodyShort>
+                <div className='flex-none w-6 mt-[2px]'>
+                  <FileTextIcon fontSize='1.5rem' aria-hidden />
+                </div>
+                <BodyShort className='flex-1'>
                   Jobbsøkeren får et kort i aktivitetsplanen i kolonnen
                   “Forslag”. Kortet inneholder navnet på treffet, tid, sted og
                   svarfrist.
                 </BodyShort>
               </HStack>
+
               <HStack gap='2' align='start'>
-                <BellIcon fontSize='1.5rem' aria-hidden />
-                <BodyShort>
-                  Jobbsøkeren varsles på måten de har valgt (sms, epost,
+                <div className='flex-none w-6 mt-[2px]'>
+                  <BellIcon fontSize='1.5rem' aria-hidden />
+                </div>
+                <BodyShort className='flex-1'>
+                  Jobbsøkeren varsles på måten de har valgt (sms, e-post,
                   nav.no).
                 </BodyShort>
               </HStack>
+
               <HStack gap='2' align='start'>
-                <LinkIcon fontSize='1.5rem' aria-hidden />
-                <BodyShort>
+                <div className='flex-none w-6 mt-[2px]'>
+                  <LinkIcon fontSize='1.5rem' aria-hidden />
+                </div>
+                <BodyShort className='flex-1'>
                   Aktivitetskortet lenker til en informasjonsside om treffet.
                   Der ser de mer informasjon om treffet og svarer på
                   invitasjonen.
                 </BodyShort>
               </HStack>
+
               <HStack gap='2' align='start'>
-                <PersonSuitIcon fontSize='1.5rem' aria-hidden />
-                <BodyShort>
+                <div className='flex-none w-6 mt-[2px]'>
+                  <PersonSuitIcon fontSize='1.5rem' aria-hidden />
+                </div>
+                <BodyShort className='flex-1'>
                   [Fremtid] Veileder får beskjed i Modia Arbeidsrettet
                   Oppfølging.
                 </BodyShort>
@@ -177,5 +184,3 @@ const InviterModal: React.FC<InviterModalProps> = ({
     </Modal>
   );
 };
-
-export default InviterModal;
