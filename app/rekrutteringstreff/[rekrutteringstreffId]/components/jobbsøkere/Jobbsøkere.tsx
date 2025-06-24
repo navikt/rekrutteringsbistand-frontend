@@ -69,7 +69,6 @@ const Jobbsøkere = () => {
   const handleInvitasjonSendt = () => {
     inviterModalRef.current?.close();
     setValgteJobbsøkere([]);
-    // Her kan du også legge til en toast/bekreftelsesmelding
   };
 
   return (
@@ -124,7 +123,7 @@ const Jobbsøkere = () => {
           )}
           <InviterModal
             modalref={inviterModalRef}
-            inviterInternalDto={valgteJobbsøkere}
+            inviterInternalDtoer={valgteJobbsøkere}
             onInvitasjonSendt={handleInvitasjonSendt}
             onFjernJobbsøker={(fødselsnummer: string) => {
               setValgteJobbsøkere((prev) =>

@@ -1,5 +1,5 @@
 import { useRekrutteringstreffContext } from '../../../RekrutteringstreffContext';
-import { inviterJobbsøker } from '@/app/api/rekrutteringstreff/inviterJobbsoker/inviterJobbsoker';
+import { inviterJobbsøkere } from '@/app/api/rekrutteringstreff/inviterJobbsokere/inviterJobbsokere';
 import { RekbisError } from '@/util/rekbisError';
 import {
   BellIcon,
@@ -28,20 +28,20 @@ export type InviterInternalDto = {
 
 export interface InviterModalProps {
   modalref?: React.RefObject<HTMLDialogElement | null>;
-  inviterInternalDto: InviterInternalDto[];
+  inviterInternalDtoer: InviterInternalDto[];
   onFjernJobbsøker: (fødselsnummer: string) => void;
   onInvitasjonSendt: () => void;
 }
 
 export const InviterModal: React.FC<InviterModalProps> = ({
   modalref,
-  inviterInternalDto,
+  inviterInternalDtoer,
   onFjernJobbsøker,
   onInvitasjonSendt,
 }) => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const [isLoading, setIsLoading] = React.useState(false);
-  const antall = inviterInternalDto.length;
+  const antall = inviterInternalDtoer.length;
   const header =
     antall === 1
       ? 'Inviter jobbsøkeren til treff'
@@ -49,12 +49,10 @@ export const InviterModal: React.FC<InviterModalProps> = ({
 
   const handleInviter = async () => {
     setIsLoading(true);
-    const invitasjonskall = inviterInternalDto.map((j) =>
-      inviterJobbsøker(rekrutteringstreffId, j.fødselsnummer),
-    );
+    const fødselsnumre = inviterInternalDtoer.map((j) => j.fødselsnummer);
 
     try {
-      await Promise.all(invitasjonskall);
+      await inviterJobbsøkere(rekrutteringstreffId, fødselsnumre);
       onInvitasjonSendt();
     } catch (error) {
       throw new RekbisError({
@@ -101,7 +99,7 @@ export const InviterModal: React.FC<InviterModalProps> = ({
                 </div>
               </HStack>
               <ul className='space-y-2 mt-2'>
-                {inviterInternalDto.map((jobbsøker) => (
+                {inviterInternalDtoer.map((jobbsøker) => (
                   <li key={jobbsøker.fødselsnummer}>
                     <HStack align='center' className='py-2' gap='4'>
                       <VStack gap='0' className='flex-1'>
