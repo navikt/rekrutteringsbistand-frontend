@@ -66,6 +66,12 @@ const Jobbsøkere = () => {
     };
   };
 
+  const handleInvitasjonSendt = () => {
+    inviterModalRef.current?.close();
+    setValgteJobbsøkere([]);
+    // Her kan du også legge til en toast/bekreftelsesmelding
+  };
+
   return (
     <SWRLaster hooks={[jobbsøkerHook]}>
       {(jobbsøkere) => (
@@ -119,6 +125,7 @@ const Jobbsøkere = () => {
           <InviterModal
             modalref={inviterModalRef}
             inviterInternalDto={valgteJobbsøkere}
+            onInvitasjonSendt={handleInvitasjonSendt}
             onFjernJobbsøker={(fødselsnummer: string) => {
               setValgteJobbsøkere((prev) =>
                 prev.filter((j) => j.fødselsnummer !== fødselsnummer),

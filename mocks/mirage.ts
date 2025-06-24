@@ -43,6 +43,7 @@ import { rekruteringstreffArbeidsgivereMirage } from '@/app/api/rekrutteringstre
 import { innleggMirage } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
 import { jobbsøkerHendelserMirage } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkerHendelser';
 import { jobbsøkereMirage } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
+import { inviterJobbsøkerMirage } from '@/app/api/rekrutteringstreff/inviterJobbsoker/inviterJobbsoker';
 import { leggTilNyJobbsøkerMirage } from '@/app/api/rekrutteringstreff/ny-jobbsøker/leggTilNyjobbsøker';
 import { opprettNyttRekrutteringstreffMirage } from '@/app/api/rekrutteringstreff/nytt-rekrutteringstreff/opprettNyttRekrutteringstreff';
 import { oppdaterRekrutteringstreffMirage } from '@/app/api/rekrutteringstreff/oppdater-rekrutteringstreff/oppdaterRerkutteringstreff';
@@ -110,6 +111,7 @@ export function makeServer({ environment = 'test' } = {}) {
       opprettInnleggfMirage(this);
       oppdaterInnleggfMirage(this);
       publiserRekrutteringstreffMirage(this);
+      inviterJobbsøkerMirage(this);
       modiaAktivEnhetMirage(this);
       modiaAktivBrukerMirage(this);
       mockModiaContext(this);

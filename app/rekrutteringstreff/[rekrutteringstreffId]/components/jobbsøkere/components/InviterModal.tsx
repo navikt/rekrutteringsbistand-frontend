@@ -1,4 +1,5 @@
 import { useRekrutteringstreffContext } from '../../../RekrutteringstreffContext';
+import { inviterJobbsøker } from '@/app/api/rekrutteringstreff/inviterJobbsoker/inviterJobbsoker';
 import { rekbisError } from '@/util/rekbisError';
 import {
   BellIcon,
@@ -16,7 +17,6 @@ import {
   Modal,
   VStack,
 } from '@navikt/ds-react';
-import { logger } from '@navikt/next-logger';
 import * as React from 'react';
 
 export type InviterInternalDto = {
@@ -30,12 +30,14 @@ export interface InviterModalProps {
   modalref?: React.RefObject<HTMLDialogElement | null>;
   inviterInternalDto: InviterInternalDto[];
   onFjernJobbsøker: (fødselsnummer: string) => void;
+  onInvitasjonSendt: () => void;
 }
 
 export const InviterModal: React.FC<InviterModalProps> = ({
   modalref,
   inviterInternalDto,
   onFjernJobbsøker,
+  onInvitasjonSendt,
 }) => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const [isLoading, setIsLoading] = React.useState(false);
@@ -47,11 +49,13 @@ export const InviterModal: React.FC<InviterModalProps> = ({
 
   const handleInviter = async () => {
     setIsLoading(true);
-    const jobbsokerIder = inviterInternalDto.map((j) => j.fødselsnummer);
+    const invitasjonskall = inviterInternalDto.map((j) =>
+      inviterJobbsøker(rekrutteringstreffId, j.fødselsnummer),
+    );
+
     try {
-      logger.info(
-        `Inviterer ${jobbsokerIder.length} jobbsøkere til treff ${rekrutteringstreffId}...`,
-      );
+      await Promise.all(invitasjonskall);
+      onInvitasjonSendt();
     } catch (error) {
       throw new rekbisError({
         beskrivelse: 'Feil ved invitasjon av jobbsøkere',

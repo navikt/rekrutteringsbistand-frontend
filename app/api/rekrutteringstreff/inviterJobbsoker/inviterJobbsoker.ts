@@ -22,7 +22,7 @@ export const inviterJobbsøker = async (
 
 export const inviterJobbsøkerMirage = (server: any) => {
   server.post(
-    '/api/rekrutteringstreff/:rekrutteringstreffId/jobbsoker/:jobbsokerId/inviter',
+    '/api/rekrutteringstreff/:rekrutteringstreffId/jobbsoker/inviter',
     () => {
       return {};
     },
