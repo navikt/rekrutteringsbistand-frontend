@@ -88,24 +88,23 @@ export const InviterModal: React.FC<InviterModalProps> = ({
             </BodyShort>
             <div>
               <HStack
-                justify='space-between'
                 className='border-b border-border-subtle pb-2 text-text-subtle'
+                gap='4'
               >
-                <Detail>Navn og fødselsnummer</Detail>
-                <Detail>Veileder</Detail>
-                <div style={{ width: '48px' }} className='text-right'>
+                <Detail className='flex-1'>Navn og fødselsnummer</Detail>
+                <Detail className='w-70 flex-shrink-0'>Veileder</Detail>
+                <div
+                  style={{ width: '48px' }}
+                  className='text-right flex-shrink-0'
+                >
                   {antall > 1 && <Detail>Fjern</Detail>}
                 </div>
               </HStack>
               <ul className='space-y-2 mt-2'>
                 {inviterInternalDto.map((jobbsøker) => (
                   <li key={jobbsøker.fødselsnummer}>
-                    <HStack
-                      justify='space-between'
-                      align='center'
-                      className='py-2'
-                    >
-                      <VStack gap='0'>
+                    <HStack align='center' className='py-2' gap='4'>
+                      <VStack gap='0' className='flex-1'>
                         <BodyShort>
                           {jobbsøker.fornavn} {jobbsøker.etternavn}
                         </BodyShort>
@@ -113,10 +112,12 @@ export const InviterModal: React.FC<InviterModalProps> = ({
                           {jobbsøker.fødselsnummer}
                         </BodyShort>
                       </VStack>
-                      <BodyShort>{jobbsøker.veilederNavn}</BodyShort>
+                      <BodyShort className='w-70 flex-shrink-0'>
+                        {jobbsøker.veilederNavn}
+                      </BodyShort>
                       <div
                         style={{ width: '48px' }}
-                        className='flex justify-end'
+                        className='flex justify-end flex-shrink-0'
                       >
                         {antall > 1 && (
                           <Button
@@ -136,7 +137,11 @@ export const InviterModal: React.FC<InviterModalProps> = ({
             </div>
           </VStack>
 
-          <VStack gap='4' className='bg-bg-subtle p-4 rounded-md'>
+          <VStack
+            gap='4'
+            data-color='bg-bg-subtle'
+            className='bg-bg-subtle p-4 rounded-md'
+          >
             <Heading level='3' size='small'>
               Dette skjer videre
             </Heading>
