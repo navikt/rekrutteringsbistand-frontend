@@ -14,6 +14,9 @@ import { BodyShort, Button } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import * as React from 'react';
 
+const erInvitert = (j: JobbsøkerDTO) =>
+  j.hendelser.some((h) => h.hendelsestype === 'INVITER');
+
 const Jobbsøkere = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const jobbsøkerHook = useJobbsøkere(rekrutteringstreffId);
@@ -26,9 +29,9 @@ const Jobbsøkere = () => {
     InviterInternalDto[]
   >([]);
 
-  const harPublisert: boolean =
+  const harPublisert =
     rekrutteringstreffData?.hendelser?.some(
-      (hendelse) => hendelse.hendelsestype === 'PUBLISER',
+      (h) => h.hendelsestype === 'PUBLISER',
     ) ?? false;
 
   const handleCheckboxChange = (jobbsøker: JobbsøkerDTO, erValgt: boolean) => {
@@ -39,37 +42,32 @@ const Jobbsøkere = () => {
       veilederNavIdent: jobbsøker.veilederNavIdent,
     };
 
-    if (erValgt) {
-      setValgteJobbsøkere((prev) => [...prev, dto]);
-    } else {
-      setValgteJobbsøkere((prev) =>
-        prev.filter((j) => j.fødselsnummer !== dto.fødselsnummer),
-      );
-    }
+    setValgteJobbsøkere((prev) =>
+      erValgt
+        ? [...prev, dto]
+        : prev.filter((j) => j.fødselsnummer !== dto.fødselsnummer),
+    );
   };
 
   const getLagtTilData = (jobbsøker: JobbsøkerDTO) => {
     const leggTilHendelse = jobbsøker.hendelser.find(
       ({ hendelsestype }) => hendelsestype === 'OPPRETT',
     );
-
     const inviterHendelse = jobbsøker.hendelser.find(
       ({ hendelsestype }) => hendelsestype === 'INVITER',
     );
-    if (inviterHendelse) {
+    if (inviterHendelse)
       return {
         status: 'Invitert',
         datoLagtTil: inviterHendelse.tidspunkt,
         lagtTilAv: inviterHendelse.aktørIdentifikasjon,
       };
-    }
-    if (leggTilHendelse) {
+    if (leggTilHendelse)
       return {
         status: 'Lagt til',
         datoLagtTil: leggTilHendelse.tidspunkt,
         lagtTilAv: leggTilHendelse.aktørIdentifikasjon,
       };
-    }
     return {
       status: undefined,
       datoLagtTil: 'Ukjent dato',
@@ -84,66 +82,83 @@ const Jobbsøkere = () => {
 
   return (
     <SWRLaster hooks={[jobbsøkerHook]}>
-      {(jobbsøkere) => (
-        <div className='p-4 flex flex-col gap-4'>
-          <div className='flex items-center justify-between'>
-            <LeggTilJobbsøkerKnapp />
-            {harPublisert && (
-              <Button
-                disabled={valgteJobbsøkere.length === 0}
-                onClick={() => inviterModalRef.current?.showModal()}
-              >
-                Inviter ({valgteJobbsøkere.length})
-              </Button>
-            )}
-          </div>
+      {(jobbsøkere) => {
+        // Finn fødselsnummer på alle som er invitert
+        const inviterteFnr = new Set(
+          jobbsøkere.filter(erInvitert).map((j) => j.fødselsnummer),
+        );
 
-          {jobbsøkere.length === 0 ? (
-            <BodyShort>Ingen jobbsøkere lagt til</BodyShort>
-          ) : (
-            <ul>
-              {jobbsøkere.map((j, index) => {
-                const { status, datoLagtTil, lagtTilAv } = getLagtTilData(j);
-                return (
-                  <li key={index}>
-                    <JobbsøkerKort
-                      fornavn={j.fornavn}
-                      etternavn={j.etternavn}
-                      kandidatnummer={j.kandidatnummer}
-                      fødselsnummer={j.fødselsnummer}
-                      navKontor={j.navkontor}
-                      veileder={{
-                        navn: j.veilederNavn,
-                        navIdent: j.veilederNavIdent,
-                      }}
-                      datoLagtTil={format(new Date(datoLagtTil), 'dd.MM.yyyy')}
-                      lagtTilAv={lagtTilAv}
-                      status={status}
-                      harPublisert={harPublisert}
-                      erValgt={valgteJobbsøkere.some(
-                        (valgt) => valgt.fødselsnummer === j.fødselsnummer,
-                      )}
-                      onCheckboxChange={(erValgt) =>
-                        handleCheckboxChange(j, erValgt)
-                      }
-                    />
-                  </li>
-                );
-              })}
-            </ul>
-          )}
-          <InviterModal
-            modalref={inviterModalRef}
-            inviterInternalDtoer={valgteJobbsøkere}
-            onInvitasjonSendt={handleInvitasjonSendt}
-            onFjernJobbsøker={(fødselsnummer: string) => {
-              setValgteJobbsøkere((prev) =>
-                prev.filter((j) => j.fødselsnummer !== fødselsnummer),
-              );
-            }}
-          />
-        </div>
-      )}
+        // Filtrer ut de som allerede er invitert fra valgteJobbsøkere
+        const valgteSomIkkeErInvitert = valgteJobbsøkere.filter(
+          (j) => !inviterteFnr.has(j.fødselsnummer),
+        );
+
+        return (
+          <div className='p-4 flex flex-col gap-4'>
+            <div className='flex items-center justify-between'>
+              <LeggTilJobbsøkerKnapp />
+              {harPublisert && (
+                <Button
+                  disabled={valgteSomIkkeErInvitert.length === 0}
+                  onClick={() => inviterModalRef.current?.showModal()}
+                >
+                  Inviter ({valgteSomIkkeErInvitert.length})
+                </Button>
+              )}
+            </div>
+
+            {jobbsøkere.length === 0 ? (
+              <BodyShort>Ingen jobbsøkere lagt til</BodyShort>
+            ) : (
+              <ul>
+                {jobbsøkere.map((j, idx) => {
+                  const { status, datoLagtTil, lagtTilAv } = getLagtTilData(j);
+                  return (
+                    <li key={idx}>
+                      <JobbsøkerKort
+                        fornavn={j.fornavn}
+                        etternavn={j.etternavn}
+                        kandidatnummer={j.kandidatnummer}
+                        fødselsnummer={j.fødselsnummer}
+                        navKontor={j.navkontor}
+                        veileder={{
+                          navn: j.veilederNavn,
+                          navIdent: j.veilederNavIdent,
+                        }}
+                        datoLagtTil={format(
+                          new Date(datoLagtTil),
+                          'dd.MM.yyyy',
+                        )}
+                        lagtTilAv={lagtTilAv}
+                        status={status}
+                        harPublisert={harPublisert}
+                        erValgt={valgteJobbsøkere.some(
+                          (v) => v.fødselsnummer === j.fødselsnummer,
+                        )}
+                        onCheckboxChange={(valgt) =>
+                          handleCheckboxChange(j, valgt)
+                        }
+                        // Du kan fortsatt vise checkbox for alle, men de inviterte telles ikke med
+                      />
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+
+            <InviterModal
+              modalref={inviterModalRef}
+              inviterInternalDtoer={valgteSomIkkeErInvitert}
+              onInvitasjonSendt={handleInvitasjonSendt}
+              onFjernJobbsøker={(fnr) =>
+                setValgteJobbsøkere((prev) =>
+                  prev.filter((j) => j.fødselsnummer !== fnr),
+                )
+              }
+            />
+          </div>
+        );
+      }}
     </SWRLaster>
   );
 };
