@@ -1,6 +1,6 @@
 import { useRekrutteringstreffContext } from '../../../RekrutteringstreffContext';
 import { inviterJobbsøker } from '@/app/api/rekrutteringstreff/inviterJobbsoker/inviterJobbsoker';
-import { rekbisError } from '@/util/rekbisError';
+import { RekbisError } from '@/util/rekbisError';
 import {
   BellIcon,
   NewspaperIcon,
@@ -57,8 +57,8 @@ export const InviterModal: React.FC<InviterModalProps> = ({
       await Promise.all(invitasjonskall);
       onInvitasjonSendt();
     } catch (error) {
-      throw new rekbisError({
-        beskrivelse: 'Feil ved invitasjon av jobbsøkere',
+      throw new RekbisError({
+        message: 'Feil ved invitasjon av jobbsøkere',
         error: error,
       });
     } finally {

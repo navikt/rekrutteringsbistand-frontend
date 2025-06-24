@@ -1,3 +1,4 @@
+import { RekbisError } from '../../../../../../util/rekbisError';
 import { UmamiEvent } from '../../../../../../util/umamiEvents';
 import { useForespurteOmDelingAvCv } from '../../../../../api/foresporsel-om-deling-av-cv/foresporsler/[...slug]/useForespurteOmDelingAvCv';
 import {
@@ -26,7 +27,6 @@ import {
   Modal,
   Table,
 } from '@navikt/ds-react';
-import { logger } from '@navikt/next-logger';
 import { format } from 'date-fns';
 import * as React from 'react';
 
@@ -113,7 +113,10 @@ const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
           type: 'info',
         });
       } catch (error) {
-        logger.error('Feil ved deling av CV for kandidater', error);
+        new RekbisError({
+          message: 'Feil ved deling av CV for kandidater',
+          error,
+        });
         visVarsel({
           tekst:
             'Det oppstod en feil ved deling av stilling til alle markerte kandidater',

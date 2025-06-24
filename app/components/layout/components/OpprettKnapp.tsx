@@ -1,4 +1,5 @@
 import { useSidebar } from '../../../../components/ui/sidebar';
+import { RekbisError } from '../../../../util/rekbisError';
 import { UmamiEvent } from '../../../../util/umamiEvents';
 import { useUmami } from '../../../providers/UmamiContext';
 import { TilgangskontrollForInnhold } from '../../tilgangskontroll/TilgangskontrollForInnhold';
@@ -9,7 +10,6 @@ import {
 } from '@/app/api/rekrutteringstreff/nytt-rekrutteringstreff/opprettNyttRekrutteringstreff';
 import RekrutteringstreffFeatureToggle from '@/app/components/RekrutteringstreffFeatureToggle';
 import { useApplikasjonContext } from '@/app/providers/ApplikasjonContext';
-import { rekbisError } from '@/util/rekbisError';
 import { PlusIcon } from '@navikt/aksel-icons';
 import { ActionMenu, Button } from '@navikt/ds-react';
 import * as React from 'react';
@@ -104,8 +104,8 @@ const OpprettKnapp: React.FC = () => {
                         );
                       })
                       .catch((error) => {
-                        throw new rekbisError({
-                          beskrivelse:
+                        throw new RekbisError({
+                          message:
                             'Feil ved opprettelse av nytt rekrutteringstreff:',
                           error,
                         });

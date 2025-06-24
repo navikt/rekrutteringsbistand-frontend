@@ -2,7 +2,6 @@
 
 import Feilmelding from './components/feilhåndtering/Feilmelding';
 import { Button } from '@navikt/ds-react';
-import { logger } from '@navikt/next-logger';
 import { ArrowLeftIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
@@ -18,8 +17,6 @@ export default function Error({
         window.location.pathname
       }`;
     }
-
-    logger.error(error);
   }, [error]);
 
   const router = useRouter();
@@ -34,7 +31,7 @@ export default function Error({
         Tilbake
       </Button>
       <h2 className='text-2xl font-semibold'>Ojsann!</h2>
-      <Feilmelding stack={error.stack} beskrivelse={error.message} />
+      <Feilmelding error={error} message={error.message} />
     </div>
   );
 }

@@ -1,3 +1,4 @@
+import { RekbisError } from '../../../../util/rekbisError';
 import { useMineKandidatlister } from '../../../api/kandidat/useMineKandidatlister';
 import SWRLaster from '../../../components/SWRLaster';
 import { useApplikasjonContext } from '../../../providers/ApplikasjonContext';
@@ -14,7 +15,6 @@ import {
   Pagination,
   Table,
 } from '@navikt/ds-react';
-import { logger } from '@navikt/next-logger';
 import * as React from 'react';
 
 interface LagreIKandidatlisteProps {
@@ -205,7 +205,10 @@ const LagreIKandidatlisteModal: React.FC<LagreIKandidatlisteProps> = ({
         fjernMarkerteKandidater();
         closeModal();
       } catch (error) {
-        logger.error('Feil ved lagring av kandidater i kandidatliste', error);
+        new RekbisError({
+          message: 'Feil ved lagring av kandidater i kandidatliste',
+          error,
+        });
         visVarsel({
           type: 'error',
           tekst: 'Feil ved lagring av kandidater i kandidatliste',

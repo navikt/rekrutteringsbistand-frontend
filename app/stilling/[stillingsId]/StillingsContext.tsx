@@ -1,6 +1,6 @@
 'use client';
 
-import { rekbisError } from '../../../util/rekbisError';
+import { RekbisError } from '../../../util/rekbisError';
 import {
   KandidatlisteInfoDTO,
   useKandidatlisteInfo,
@@ -20,6 +20,7 @@ interface StillingsContextType {
   stillingsId: string;
   stillingsData: StillingsDataDTO;
   kandidatlisteInfo: KandidatlisteInfoDTO | null;
+  kandidatlisteLaster: boolean;
   forhåndsvisData: StillingsDataDTO | null;
   erFormidling: boolean;
   erEier?: boolean;
@@ -135,6 +136,7 @@ const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
         setForhåndsvisData,
         refetch,
         kandidatlisteInfo: kandidatListeInfoHook?.data ?? null,
+        kandidatlisteLaster: kandidatListeInfoHook?.isLoading ?? false,
         erJobbmesse,
         stillingsId: stillingsData.stilling.uuid,
       }}
@@ -157,9 +159,8 @@ export const useStillingsContext = () => {
   const context = React.useContext(StillingsContext);
 
   if (context === undefined) {
-    throw new rekbisError({
-      beskrivelse:
-        'useStillingsContext må være i scope: StillingsContextProvider',
+    throw new RekbisError({
+      message: 'useStillingsContext må være i scope: StillingsContextProvider',
     });
   }
   return context;

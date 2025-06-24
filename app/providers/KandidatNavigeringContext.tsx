@@ -1,4 +1,4 @@
-import { rekbisError } from '../../util/rekbisError';
+import { RekbisError } from '../../util/rekbisError';
 import {
   getSessionStorage,
   setSessionStorage,
@@ -107,8 +107,8 @@ export const KandidatNavigeringProvider: React.FC<{
 export const useKandidatNavigeringContext = () => {
   const context = useContext(KandidatNavigeringContext);
   if (!context) {
-    throw new rekbisError({
-      beskrivelse:
+    throw new RekbisError({
+      message:
         'useKandidatNavigering must be used within a KandidatNavigeringProvider',
     });
   }

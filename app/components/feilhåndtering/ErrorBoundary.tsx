@@ -1,8 +1,8 @@
 'use client';
 
+import { RekbisError } from '../../../util/rekbisError';
 import { Alert, BodyLong, Button } from '@navikt/ds-react';
-import { logger } from '@navikt/next-logger';
-import { Component, ErrorInfo, ReactNode } from 'react';
+import { Component, ReactNode } from 'react';
 import { ZodError } from 'zod';
 
 interface Props {
@@ -45,8 +45,11 @@ class ErrorBoundary extends Component<Props, State> {
     return { hasError: true, error: null, showError: false };
   }
 
-  public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    logger.error(error, 'Feilmelding:', errorInfo);
+  public componentDidCatch(error: Error) {
+    new RekbisError({
+      message: 'ErrorBoundary caught an error',
+      error: error,
+    });
   }
 
   public render() {

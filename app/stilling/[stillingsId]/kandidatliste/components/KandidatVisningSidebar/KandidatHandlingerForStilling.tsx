@@ -1,3 +1,4 @@
+import { RekbisError } from '../../../../../../util/rekbisError';
 import { endreUtfallKandidat } from '../../../../../api/kandidat/endreKandidatUtfall';
 import { useApplikasjonContext } from '../../../../../providers/ApplikasjonContext';
 import { useStillingsContext } from '../../../StillingsContext';
@@ -19,7 +20,6 @@ import RegistrerFåttJobbenKnapp from '../RegistrerFåttJobbenKnapp';
 import SendSmsModal from '../SendSMS/SendSmsModal';
 import VelgInternStatus from '../VelgInternStatus';
 import { Accordion, Box } from '@navikt/ds-react';
-import { logger } from '@navikt/next-logger';
 import * as React from 'react';
 
 export interface KandidatHandlingerForStillingProps {
@@ -61,7 +61,7 @@ const KandidatHandlingerForStilling: React.FC<
       );
       reFetchKandidatliste();
     } catch (error) {
-      logger.error(error);
+      new RekbisError({ message: 'Feil ved endring av utfall', error });
     }
     setLoading(false);
   };

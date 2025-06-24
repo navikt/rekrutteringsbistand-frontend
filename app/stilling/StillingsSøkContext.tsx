@@ -1,6 +1,6 @@
 'use client';
 
-import { rekbisError } from '../../util/rekbisError';
+import { RekbisError } from '../../util/rekbisError';
 import { Roller } from '../components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '../providers/ApplikasjonContext';
 import {
@@ -242,8 +242,8 @@ export const StillingsSøkProvider: React.FC<{
 export const useStillingsSøkFilter = () => {
   const context = React.useContext(StillingsSøkContext);
   if (context === undefined) {
-    throw new rekbisError({
-      beskrivelse: 'useStillingsSøk må være i scope: StillingsSøkProvider',
+    throw new RekbisError({
+      message: 'useStillingsSøk må være i scope: StillingsSøkProvider',
     });
   }
   return context;

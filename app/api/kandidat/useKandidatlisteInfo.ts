@@ -28,7 +28,7 @@ export const useKandidatlisteInfo = (
     stillingsInfo?.stillingsid
       ? kandidatlisteInfoEndepunkt(stillingsInfo.stillingsid)
       : null,
-    getAPIwithSchema(KandidatlisteInfoSchema, true),
+    getAPIwithSchema(KandidatlisteInfoSchema, { skjulFeilmelding: true }),
     {
       errorRetryCount: 3,
       errorRetryInterval: 3000,

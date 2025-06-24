@@ -1,5 +1,6 @@
 'use client';
 
+import { RekbisError } from '../../../../../../../util/rekbisError';
 import type { InnleggDTO } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
 import {
   oppdaterEttInnlegg,
@@ -21,8 +22,8 @@ import {
 } from '@navikt/ds-react';
 import { logger } from '@navikt/next-logger';
 import { AnimatePresence, motion } from 'framer-motion';
-import React, { useRef, useEffect, useMemo, useState } from 'react';
-import { useForm, FormProvider, type SubmitHandler } from 'react-hook-form';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { FormProvider, useForm, type SubmitHandler } from 'react-hook-form';
 
 export interface InnleggModalProps {
   rekrutteringstreffId: string;
@@ -162,7 +163,7 @@ const InnleggModal: React.FC<InnleggModalProps> = ({
       onInnleggUpdated();
       modalRef.current?.close(); // Triggers Modal's onClose
     } catch (error) {
-      logger.error('Error saving post:', error);
+      new RekbisError({ message: 'Error saving post:', error });
     }
   };
 

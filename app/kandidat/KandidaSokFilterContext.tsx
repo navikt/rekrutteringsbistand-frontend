@@ -1,6 +1,6 @@
 'use client';
 
-import { rekbisError } from '../../util/rekbisError';
+import { RekbisError } from '../../util/rekbisError';
 import { useApplikasjonContext } from '../providers/ApplikasjonContext';
 import {
   parseAsArrayOf,
@@ -246,8 +246,8 @@ export const KandidatSøkProvider: React.FC<{ children: React.ReactNode }> = ({
 export const useKandidatSøkFilterContext = () => {
   const context = React.useContext(KandidaSøkFilterContext);
   if (context === undefined) {
-    throw new rekbisError({
-      beskrivelse: 'useKandidaSokFilterContext må være i scope',
+    throw new RekbisError({
+      message: 'useKandidaSokFilterContext må være i scope',
     });
   }
   return context;

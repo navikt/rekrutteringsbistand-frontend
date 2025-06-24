@@ -11,7 +11,7 @@ import { z } from 'zod';
 
 const modiaAktivBrukerEndepunkt = `${ModiaDecoratorAPI.internUrl}/context/v2/aktivbruker`;
 
-const ModiaAktivBrukerSchema = z.object({ aktivBruker: z.string() });
+const ModiaAktivBrukerSchema = z.object({ aktivBruker: z.string().nullable() });
 
 export type ModiaAktivBrukerDTO = z.infer<typeof ModiaAktivBrukerSchema>;
 

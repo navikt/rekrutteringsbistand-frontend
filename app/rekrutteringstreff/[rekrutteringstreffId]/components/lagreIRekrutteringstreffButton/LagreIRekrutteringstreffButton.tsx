@@ -1,3 +1,4 @@
+import { RekbisError } from '../../../../../util/rekbisError';
 import { useKandidatSøkMarkerteContext } from '../../../../kandidat/KandidatSøkMarkerteContext';
 import LagreIRekrutteringstreffModal from './LagreIRekrutteringstreffModal';
 import { KandidatsokKandidat } from '@/app/api/kandidat-sok/useKandidatsøk';
@@ -8,7 +9,6 @@ import {
 import { useApplikasjonContext } from '@/app/providers/ApplikasjonContext';
 import { PersonPlusIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
-import { logger } from '@navikt/next-logger';
 import * as React from 'react';
 
 interface LagreIRekrutteringstreffButtonProps {
@@ -91,10 +91,10 @@ const LagreIRekrutteringstreffButton: React.FC<
       });
       fjernMarkerteKandidater();
     } catch (error) {
-      logger.error(
-        'Feil ved lagring av kandidater i rekrutteringstreff',
+      new RekbisError({
+        message: 'Feil ved lagring av kandidater i rekrutteringstreff',
         error,
-      );
+      });
       visVarsel({
         type: 'error',
         tekst: 'Feil ved lagring av kandidater i rekrutteringstreff',

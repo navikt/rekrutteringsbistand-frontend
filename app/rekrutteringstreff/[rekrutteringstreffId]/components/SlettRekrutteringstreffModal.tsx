@@ -1,6 +1,6 @@
+import { RekbisError } from '../../../../util/rekbisError';
 import { useRekrutteringstreffContext } from '../RekrutteringstreffContext';
 import { slettRekrutteringstreff } from '@/app/api/rekrutteringstreff/slett-rekrutteringstreff/slettRekrutteringstreff';
-import { rekbisError } from '@/util/rekbisError';
 import { TrashIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button, List, Modal } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
@@ -20,8 +20,8 @@ const SlettRekrutteringstreffModal = () => {
         setOpen(false);
         router.push(`/rekrutteringstreff`);
       } catch (error) {
-        throw new rekbisError({
-          beskrivelse: 'Feiler når vi prøver å slette rekrutteringstreff:',
+        throw new RekbisError({
+          message: 'Feiler når vi prøver å slette rekrutteringstreff:',
           error,
         });
       }

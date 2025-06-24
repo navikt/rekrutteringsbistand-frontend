@@ -19,8 +19,13 @@ enum StillingFane {
 }
 
 export default function StillingSide() {
-  const { erEier, stillingsData, kandidatlisteInfo, erSlettet } =
-    useStillingsContext();
+  const {
+    erEier,
+    stillingsData,
+    kandidatlisteInfo,
+    kandidatlisteLaster,
+    erSlettet,
+  } = useStillingsContext();
 
   const kandidatlistenErLukket =
     kandidatlisteInfo?.kandidatlisteStatus === Kandidatlistestatus.Lukket;
@@ -32,7 +37,7 @@ export default function StillingSide() {
 
   const TabKnapper = (
     <div className='flex items-center'>
-      {kandidatlisteInfo === null && (
+      {!kandidatlisteLaster && kandidatlisteInfo === null && (
         <Alert variant='warning'>
           Det er ikke opprettet kandidatliste for denne stillingen.
         </Alert>

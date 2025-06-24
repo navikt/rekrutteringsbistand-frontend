@@ -1,3 +1,4 @@
+import { RekbisError } from '../../../../../../../../util/rekbisError';
 import DatoTidRad from '../DatoTidRad';
 import { formaterKlokkeslett, toIso } from '../utils';
 import {
@@ -6,12 +7,11 @@ import {
 } from '@/app/api/rekrutteringstreff/oppdater-rekrutteringstreff/oppdaterRerkutteringstreff';
 import type { RekrutteringstreffDTO } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { ExclamationmarkTriangleIcon } from '@navikt/aksel-icons';
-import { Modal, Button, ErrorMessage } from '@navikt/ds-react';
-import { logger } from '@navikt/next-logger';
+import { Button, ErrorMessage, Modal } from '@navikt/ds-react';
 import { addWeeks, parseISO } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
 import React from 'react';
-import { useForm, FormProvider } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 
 export type SvarfristFormFields = {
   svarfristDato: Date | null;
@@ -77,7 +77,10 @@ const SvarfristModal: React.FC<SvarfristModalProps> = ({
         type: 'manual',
         message: 'Kunne ikke lagre svarfrist. Prøv igjen.',
       });
-      logger.error('Feil ved oppdatering av svarfrist:', e);
+      new RekbisError({
+        message: 'Feil ved oppdatering av svarfrist:',
+        error: e,
+      });
     }
   };
 
