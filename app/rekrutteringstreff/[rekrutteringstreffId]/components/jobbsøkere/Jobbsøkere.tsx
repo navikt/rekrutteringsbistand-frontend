@@ -36,7 +36,7 @@ const Jobbsøkere = () => {
       fornavn: jobbsøker.fornavn,
       etternavn: jobbsøker.etternavn,
       fødselsnummer: jobbsøker.fødselsnummer,
-      veilederNavn: jobbsøker.veilederNavn,
+      veilederNavIdent: jobbsøker.veilederNavIdent,
     };
 
     if (erValgt) {

@@ -23,7 +23,7 @@ export type InviterInternalDto = {
   fornavn: string;
   etternavn: string;
   fødselsnummer: string;
-  veilederNavn?: string;
+  veilederNavIdent?: string;
 };
 
 export interface InviterModalProps {
@@ -111,7 +111,7 @@ export const InviterModal: React.FC<InviterModalProps> = ({
                         </BodyShort>
                       </VStack>
                       <BodyShort className='w-70 flex-shrink-0'>
-                        {jobbsøker.veilederNavn}
+                        {jobbsøker.veilederNavIdent}
                       </BodyShort>
                       <div
                         style={{ width: '48px' }}

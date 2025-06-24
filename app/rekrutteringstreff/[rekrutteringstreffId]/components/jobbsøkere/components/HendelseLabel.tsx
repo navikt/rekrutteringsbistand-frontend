@@ -9,16 +9,16 @@ interface HendelseLabelProps {
 
 export const labelTekst = (hendelsetype: string) => {
   switch (hendelsetype) {
-    case 'OPPRETT':
-      return 'lagt til';
+    case 'INVITER':
+      return 'invitert';
     case 'DELTA':
       return 'deltar';
     case 'UBESVART':
       return 'ubesvart';
     case 'IKKE_INTERESSERT':
       return 'ikke interessert';
-    case 'INVITER':
-      return 'invitert';
+    case 'OPPRETT':
+      return 'lagt til';
     default:
       return '';
   }
