@@ -1,9 +1,10 @@
 import { useRekrutteringstreffContext } from '../../../RekrutteringstreffContext';
+import { rekbisError } from '@/util/rekbisError';
 import {
   BellIcon,
-  FileTextIcon,
-  LinkIcon,
+  NewspaperIcon,
   PersonSuitIcon,
+  TableIcon,
   XMarkIcon,
 } from '@navikt/aksel-icons';
 import {
@@ -52,7 +53,10 @@ export const InviterModal: React.FC<InviterModalProps> = ({
         `Inviterer ${jobbsokerIder.length} jobbsøkere til treff ${rekrutteringstreffId}...`,
       );
     } catch (error) {
-      logger.error('Feil ved invitasjon av jobbsøkere', error);
+      throw new rekbisError({
+        beskrivelse: 'Feil ved invitasjon av jobbsøkere',
+        error: error,
+      });
     } finally {
       setIsLoading(false);
     }
@@ -101,7 +105,9 @@ export const InviterModal: React.FC<InviterModalProps> = ({
                         <BodyShort>
                           {jobbsøker.fornavn} {jobbsøker.etternavn}
                         </BodyShort>
-                        <Detail>{jobbsøker.fødselsnummer}</Detail>
+                        <BodyShort textColor='subtle'>
+                          {jobbsøker.fødselsnummer}
+                        </BodyShort>
                       </VStack>
                       <BodyShort>{jobbsøker.veilederNavn}</BodyShort>
                       <div
@@ -133,7 +139,7 @@ export const InviterModal: React.FC<InviterModalProps> = ({
             <VStack gap='3'>
               <HStack gap='2' align='start'>
                 <div className='flex-none w-6 mt-[2px]'>
-                  <FileTextIcon fontSize='1.5rem' aria-hidden />
+                  <TableIcon fontSize='1.5rem' aria-hidden />
                 </div>
                 <BodyShort className='flex-1'>
                   Jobbsøkeren får et kort i aktivitetsplanen i kolonnen
@@ -154,7 +160,7 @@ export const InviterModal: React.FC<InviterModalProps> = ({
 
               <HStack gap='2' align='start'>
                 <div className='flex-none w-6 mt-[2px]'>
-                  <LinkIcon fontSize='1.5rem' aria-hidden />
+                  <NewspaperIcon fontSize='1.5rem' aria-hidden />
                 </div>
                 <BodyShort className='flex-1'>
                   Aktivitetskortet lenker til en informasjonsside om treffet.
