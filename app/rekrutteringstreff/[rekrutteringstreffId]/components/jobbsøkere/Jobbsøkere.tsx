@@ -52,6 +52,17 @@ const Jobbsøkere = () => {
     const leggTilHendelse = jobbsøker.hendelser.find(
       ({ hendelsestype }) => hendelsestype === 'OPPRETT',
     );
+
+    const inviterHendelse = jobbsøker.hendelser.find(
+      ({ hendelsestype }) => hendelsestype === 'INVITER',
+    );
+    if (inviterHendelse) {
+      return {
+        status: 'Invitert',
+        datoLagtTil: inviterHendelse.tidspunkt,
+        lagtTilAv: inviterHendelse.aktørIdentifikasjon,
+      };
+    }
     if (leggTilHendelse) {
       return {
         status: 'Lagt til',
