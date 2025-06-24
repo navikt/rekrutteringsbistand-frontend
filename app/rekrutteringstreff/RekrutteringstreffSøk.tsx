@@ -21,6 +21,7 @@ const RekrutteringstreffSøk: React.FC<RekrutteringstreffSøkProps> = () => {
             rekrutteringstreff.fraTid,
             rekrutteringstreff.tilTid,
           );
+
           return (
             <RekrutteringstreffKort
               key={rekrutteringstreff.id}
@@ -36,7 +37,6 @@ const RekrutteringstreffSøk: React.FC<RekrutteringstreffSøkProps> = () => {
               opprettetAv={rekrutteringstreff.opprettetAvPersonNavident}
               opprettetDato='12. April'
               navKontor={rekrutteringstreff.opprettetAvNavkontorEnhetId}
-              erPublisert={false}
             />
           );
         })

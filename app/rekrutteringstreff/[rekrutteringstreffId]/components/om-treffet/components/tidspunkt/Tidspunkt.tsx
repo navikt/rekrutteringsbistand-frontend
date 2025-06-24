@@ -1,4 +1,3 @@
-// tidspunkt.tsx
 'use client';
 
 import RekrutteringstreffDetalj from '../../../RekrutteringstreffDetalj';
@@ -11,58 +10,6 @@ import { Button, BodyShort } from '@navikt/ds-react';
 import { isSameDay, parseISO } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
 import React from 'react';
-
-// tidspunkt.tsx
-
-// tidspunkt.tsx
-
-// tidspunkt.tsx
-
-// tidspunkt.tsx
-
-// tidspunkt.tsx
-
-// tidspunkt.tsx
-
-// tidspunkt.tsx
-
-// tidspunkt.tsx
-
-// tidspunkt.tsx
-
-// tidspunkt.tsx
-
-// tidspunkt.tsx
-
-// tidspunkt.tsx
-
-// tidspunkt.tsx
-
-// tidspunkt.tsx
-
-// tidspunkt.tsx
-
-// tidspunkt.tsx
-
-// tidspunkt.tsx
-
-// tidspunkt.tsx
-
-// tidspunkt.tsx
-
-// tidspunkt.tsx
-
-// tidspunkt.tsx
-
-// tidspunkt.tsx
-
-// tidspunkt.tsx
-
-// tidspunkt.tsx
-
-// tidspunkt.tsx
-
-// tidspunkt.tsx
 
 type Props = {
   rekrutteringstreff: RekrutteringstreffDTO;

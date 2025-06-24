@@ -2,19 +2,51 @@
 
 import { useRekrutteringstreffContext } from '../../RekrutteringstreffContext';
 import LeggTilJobbsøkerKnapp from '../LeggTilJobbsøkerKnapp';
+import { InviterInternalDto, InviterModal } from './components/InviterModal';
 import JobbsøkerKort from './components/JobbsøkerKort';
 import {
   JobbsøkerDTO,
   useJobbsøkere,
 } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
+import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import SWRLaster from '@/app/components/SWRLaster';
-import { BodyShort } from '@navikt/ds-react';
+import { BodyShort, Button } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import * as React from 'react';
 
 const Jobbsøkere = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const jobbsøkerHook = useJobbsøkere(rekrutteringstreffId);
+  const inviterModalRef = React.useRef<HTMLDialogElement>(null);
+
+  const { data: rekrutteringstreffData } =
+    useRekrutteringstreff(rekrutteringstreffId);
+
+  const [valgteJobbsøkere, setValgteJobbsøkere] = React.useState<
+    InviterInternalDto[]
+  >([]);
+
+  const harPublisert: boolean =
+    rekrutteringstreffData?.hendelser?.some(
+      (hendelse) => hendelse.hendelsestype === 'PUBLISER',
+    ) ?? false;
+
+  const handleCheckboxChange = (jobbsøker: JobbsøkerDTO, erValgt: boolean) => {
+    const dto: InviterInternalDto = {
+      fornavn: jobbsøker.fornavn,
+      etternavn: jobbsøker.etternavn,
+      fødselsnummer: jobbsøker.fødselsnummer,
+      veilederNavn: jobbsøker.veilederNavn,
+    };
+
+    if (erValgt) {
+      setValgteJobbsøkere((prev) => [...prev, dto]);
+    } else {
+      setValgteJobbsøkere((prev) =>
+        prev.filter((j) => j.fødselsnummer !== dto.fødselsnummer),
+      );
+    }
+  };
 
   const getLagtTilData = (jobbsøker: JobbsøkerDTO) => {
     const leggTilHendelse = jobbsøker.hendelser.find(
@@ -34,12 +66,26 @@ const Jobbsøkere = () => {
     };
   };
 
+  const handleInvitasjonSendt = () => {
+    inviterModalRef.current?.close();
+    setValgteJobbsøkere([]);
+    // Her kan du også legge til en toast/bekreftelsesmelding
+  };
+
   return (
     <SWRLaster hooks={[jobbsøkerHook]}>
       {(jobbsøkere) => (
         <div className='p-4 flex flex-col gap-4'>
           <div className='flex items-center justify-between'>
             <LeggTilJobbsøkerKnapp />
+            {harPublisert && (
+              <Button
+                disabled={valgteJobbsøkere.length === 0}
+                onClick={() => inviterModalRef.current?.showModal()}
+              >
+                Inviter ({valgteJobbsøkere.length})
+              </Button>
+            )}
           </div>
 
           {jobbsøkere.length === 0 ? (
@@ -60,15 +106,32 @@ const Jobbsøkere = () => {
                         navn: j.veilederNavn,
                         navIdent: j.veilederNavIdent,
                       }}
-                      datoLagtTil={format(datoLagtTil, 'dd.MM.yyyy')}
+                      datoLagtTil={format(new Date(datoLagtTil), 'dd.MM.yyyy')}
                       lagtTilAv={lagtTilAv}
                       status={status}
+                      harPublisert={harPublisert}
+                      erValgt={valgteJobbsøkere.some(
+                        (valgt) => valgt.fødselsnummer === j.fødselsnummer,
+                      )}
+                      onCheckboxChange={(erValgt) =>
+                        handleCheckboxChange(j, erValgt)
+                      }
                     />
                   </li>
                 );
               })}
             </ul>
           )}
+          <InviterModal
+            modalref={inviterModalRef}
+            inviterInternalDto={valgteJobbsøkere}
+            onInvitasjonSendt={handleInvitasjonSendt}
+            onFjernJobbsøker={(fødselsnummer: string) => {
+              setValgteJobbsøkere((prev) =>
+                prev.filter((j) => j.fødselsnummer !== fødselsnummer),
+              );
+            }}
+          />
         </div>
       )}
     </SWRLaster>

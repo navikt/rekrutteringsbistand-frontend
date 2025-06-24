@@ -1,6 +1,6 @@
 import NavnLink from './NavnLenke';
 import { Buildings3Icon, PersonIcon } from '@navikt/aksel-icons';
-import { BodyShort, Box, Heading, Tag } from '@navikt/ds-react';
+import { BodyShort, Box, Checkbox, Heading, Tag } from '@navikt/ds-react';
 import * as React from 'react';
 
 interface JobbsøkerKortProps {
@@ -13,6 +13,9 @@ interface JobbsøkerKortProps {
   datoLagtTil?: string;
   lagtTilAv?: string;
   status?: string;
+  harPublisert: boolean;
+  onCheckboxChange: (checked: boolean) => void;
+  erValgt: boolean;
 }
 
 export type Veileder = {
@@ -29,6 +32,9 @@ const JobbsøkerKort: React.FC<JobbsøkerKortProps> = ({
   datoLagtTil,
   lagtTilAv,
   status,
+  harPublisert,
+  onCheckboxChange,
+  erValgt,
 }) => {
   return (
     <Box.New
@@ -40,44 +46,56 @@ const JobbsøkerKort: React.FC<JobbsøkerKortProps> = ({
       marginBlock='2'
       className='flex items-center justify-between'
     >
-      <div>
-        <Heading size='small'>
-          <NavnLink
-            fornavn={fornavn}
-            etternavn={etternavn}
-            kandidatnummer={kandidatnummer}
-          />
-        </Heading>
-        <BodyShort
-          size='small'
-          className='text-text-subtle flex gap-6 items-center mt-1'
-        >
-          {navKontor && (
-            <span className='flex items-center gap-1'>
-              <Buildings3Icon fontSize='1.25rem' />
-              {navKontor}
-            </span>
-          )}
-          {veileder?.navn && (
-            <span className='flex items-center gap-1'>
-              <PersonIcon fontSize='1.25rem' />
-              Følges opp av {veileder.navn}{' '}
-              {veileder.navIdent && `(${veileder.navIdent})`}
-            </span>
-          )}
-          {lagtTilAv && datoLagtTil && (
-            <span>
-              Lagt til av {lagtTilAv}, {datoLagtTil}
-            </span>
-          )}
-        </BodyShort>
+      <div className='flex items-center gap-4'>
+        {harPublisert && (
+          <Checkbox
+            hideLabel
+            checked={erValgt}
+            onChange={(e) => onCheckboxChange(e.target.checked)}
+          >
+            Velg kandidat {fornavn} {etternavn}
+          </Checkbox>
+        )}
+        <div>
+          <Heading size='small'>
+            <NavnLink
+              fornavn={fornavn}
+              etternavn={etternavn}
+              kandidatnummer={kandidatnummer}
+            />
+          </Heading>
+          <BodyShort
+            size='small'
+            className='text-text-subtle flex gap-6 items-center mt-1'
+          >
+            {navKontor && (
+              <span className='flex items-center gap-1'>
+                <Buildings3Icon fontSize='1.25rem' />
+                {navKontor}
+              </span>
+            )}
+            {veileder?.navn && (
+              <span className='flex items-center gap-1'>
+                <PersonIcon fontSize='1.25rem' />
+                Følges opp av {veileder.navn}{' '}
+                {veileder.navIdent && `(${veileder.navIdent})`}
+              </span>
+            )}
+            {lagtTilAv && datoLagtTil && (
+              <span>
+                Lagt til av {lagtTilAv}, {datoLagtTil}
+              </span>
+            )}
+          </BodyShort>
+        </div>
       </div>
-
-      {status && (
-        <Tag className={'mr-2'} size='medium' variant='info'>
-          {status}
-        </Tag>
-      )}
+      <div>
+        {status && (
+          <Tag className={'mr-2'} size='medium' variant='info'>
+            {status}
+          </Tag>
+        )}
+      </div>
     </Box.New>
   );
 };
