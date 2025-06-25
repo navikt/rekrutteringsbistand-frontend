@@ -11,6 +11,7 @@ import SvarfristModal from './om-treffet/components/tidspunkt/svarfrist/Svarfris
 import { publiserRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/publiserRekrutteringstreff';
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
+import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import {
   CheckmarkIcon,
@@ -26,6 +27,7 @@ import {
   Loader,
   Stepper,
 } from '@navikt/ds-react';
+import { useRouter } from 'next/navigation';
 import * as React from 'react';
 
 interface ChecklistItem {
@@ -69,8 +71,8 @@ const stepsForStepper = stepDetails.map((d) => d.stepLabel);
 const TreffSteg = () => {
   const [isOpen, setIsOpen] = React.useState(false);
   const toggle = () => setIsOpen((o) => !o);
-
   const [isPublishing, setIsPublishing] = React.useState(false);
+  const [inviteringFerdig, setInviteringFerdig] = React.useState(false);
 
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const arbeidsgiverModalRef = React.useRef<HTMLDialogElement>(null);
@@ -79,12 +81,19 @@ const TreffSteg = () => {
   const stedModalRef = React.useRef<HTMLDialogElement>(null);
   const svarfristModalRef = React.useRef<HTMLDialogElement>(null);
   const innleggModalRef = React.useRef<HTMLDialogElement>(null);
+  const router = useRouter();
 
   const {
     data: arbeidsgivereData,
     isLoading: arbeidsgivereLoading,
     error: arbeidsgivereError,
   } = useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
+
+  const {
+    data: jobbsøkereData,
+    isLoading: jobbsøkereLoading,
+    error: jobbsøkereError,
+  } = useJobbsøkere(rekrutteringstreffId);
 
   const {
     data: rekrutteringstreffData,
@@ -146,10 +155,7 @@ const TreffSteg = () => {
 
   React.useEffect(() => {
     if (innleggData && innleggData.length > 0) {
-      setCheckedItems((c) => ({
-        ...c,
-        omtreffet: innleggData && innleggData.length > 0,
-      }));
+      setCheckedItems((c) => ({ ...c, omtreffet: innleggData.length > 0 }));
     }
     if (innleggError)
       new RekbisError({
@@ -157,6 +163,14 @@ const TreffSteg = () => {
         error: innleggError,
       });
   }, [innleggData, innleggError]);
+
+  React.useEffect(() => {
+    if (jobbsøkereError)
+      new RekbisError({
+        message: 'Feil ved henting av jobbsøkere:',
+        error: jobbsøkereError,
+      });
+  }, [jobbsøkereError]);
 
   const handleClickSjekklisteItem = (id: string) => {
     if (checkedItems[id]) return;
@@ -180,7 +194,6 @@ const TreffSteg = () => {
   const onPubliserTreffet = async (e: React.MouseEvent) => {
     e.stopPropagation();
     setIsPublishing(true);
-
     try {
       await publiserRekrutteringstreff(rekrutteringstreffId);
       await mutateRekrutteringstreff();
@@ -194,16 +207,24 @@ const TreffSteg = () => {
     }
   };
 
-  const harPubliseringshendelse = React.useMemo(() => {
-    return rekrutteringstreffData?.hendelser?.some(
-      (hendelse) => hendelse.hendelsestype === 'PUBLISER',
-    );
-  }, [rekrutteringstreffData]);
+  const harPubliseringshendelse = React.useMemo(
+    () =>
+      rekrutteringstreffData?.hendelser?.some(
+        (h) => h.hendelsestype === 'PUBLISER',
+      ),
+    [rekrutteringstreffData],
+  );
 
-  const activeStep = harPubliseringshendelse ? 2 : 1;
-
+  const activeStep = inviteringFerdig ? 3 : harPubliseringshendelse ? 2 : 1;
   const currentHeader =
     stepDetails.find((d) => d.id === activeStep)?.header ?? 'Steg';
+
+  const antallInviterte =
+    jobbsøkereData?.filter((j) =>
+      j.hendelser?.some((h) => h.hendelsestype === 'INVITER'),
+    ).length ?? 0;
+
+  const harInvitert = antallInviterte > 0;
 
   return (
     <div className='my-2'>
@@ -230,7 +251,7 @@ const TreffSteg = () => {
           </Heading>
           <div className='flex items-center gap-4'>
             <div className='flex gap-2'>
-              {!harPubliseringshendelse && (
+              {activeStep === 1 && (
                 <Button
                   disabled={!alleStegOk || isPublishing}
                   loading={isPublishing}
@@ -238,6 +259,32 @@ const TreffSteg = () => {
                   onClick={onPubliserTreffet}
                 >
                   Publiser treffet
+                </Button>
+              )}
+              {activeStep === 2 && (
+                <Button
+                  variant='primary'
+                  size='small'
+                  disabled={!harInvitert || jobbsøkereLoading}
+                  loading={jobbsøkereLoading}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setInviteringFerdig(true);
+                  }}
+                >
+                  Ferdig å invitere
+                </Button>
+              )}
+              {activeStep === 3 && (
+                <Button
+                  variant='primary'
+                  size='small'
+                  loading={jobbsøkereLoading}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
+                  Ferdig å arrangere
                 </Button>
               )}
               <Button
@@ -276,7 +323,7 @@ const TreffSteg = () => {
               ))}
             </Stepper>
 
-            {!harPubliseringshendelse && (
+            {activeStep == 1 && (
               <div className='flex-1'>
                 <Detail spacing>
                   Før treffet er tilgjengelig for andre, og du kan invitere
@@ -311,7 +358,12 @@ const TreffSteg = () => {
                                 handleClickSjekklisteItem(item.id);
                               }
                             }}
-                            className={`flex items-center justify-between py-4 ${item.id === 'arbeidsgiver' || item.id === 'svarfrist' ? 'border-b border-border-subtle mb-1' : ''} ${kanKlikkes ? 'cursor-pointer hover:bg-gray-800 rounded' : ''}`}
+                            className={`flex items-center justify-between py-4 ${
+                              item.id === 'arbeidsgiver' ||
+                              item.id === 'svarfrist'
+                                ? 'border-b border-border-subtle mb-1'
+                                : ''
+                            } ${kanKlikkes ? 'cursor-pointer hover:bg-gray-800 rounded' : ''}`}
                             role={kanKlikkes ? 'button' : undefined}
                             tabIndex={kanKlikkes ? 0 : undefined}
                             aria-label={
@@ -338,6 +390,39 @@ const TreffSteg = () => {
                   )}
               </div>
             )}
+
+            {activeStep == 2 && (
+              <div className='flex-1'>
+                <Box.New padding='6' borderRadius='large' className='mb-4'>
+                  <div className='flex flex-col gap-4'>
+                    <div className='flex items-center justify-between gap-2 pb-4 border-b border-border-subtle'>
+                      <div className='flex items-center gap-2'>
+                        <div className='w-5 h-5 border-2 rounded-full flex items-center justify-center border-blue-400 text-blue-400'>
+                          {harInvitert && <CheckmarkIcon fontSize='1rem' />}
+                        </div>
+                        <BodyShort>Minst en invitasjon</BodyShort>
+                      </div>
+                      <button
+                        type='button'
+                        className='text-blue-400 hover:underline focus:underline'
+                        onClick={() =>
+                          router.push(
+                            `/rekrutteringstreff/${rekrutteringstreffId}?visFane=jobbsøkere`,
+                          )
+                        }
+                      >
+                        Inviter
+                      </button>
+                    </div>
+                    <div className='pt-2'>
+                      <BodyShort>
+                        Antall inviterte: <b>{antallInviterte}</b>
+                      </BodyShort>
+                    </div>
+                  </div>
+                </Box.New>
+              </div>
+            )}
           </div>
         </Box.New>
       )}
@@ -349,29 +434,21 @@ const TreffSteg = () => {
           <EndreTittel
             modalRef={endreTittelModalRef}
             rekrutteringstreff={rekrutteringstreffData}
-            onUpdated={() => {
-              mutateRekrutteringstreff();
-            }}
+            onUpdated={() => mutateRekrutteringstreff()}
           />
           <TidspunktModal
             rekrutteringstreff={rekrutteringstreffData}
             modalRef={tidspunktModalRef}
-            onUpdated={() => {
-              mutateRekrutteringstreff();
-            }}
+            onUpdated={() => mutateRekrutteringstreff()}
           />
           <StedModal
             rekrutteringstreff={rekrutteringstreffData}
-            onUpdated={() => {
-              mutateRekrutteringstreff();
-            }}
+            onUpdated={() => mutateRekrutteringstreff()}
             modalRef={stedModalRef}
           />
           <SvarfristModal
             rekrutteringstreff={rekrutteringstreffData}
-            onUpdated={() => {
-              mutateRekrutteringstreff();
-            }}
+            onUpdated={() => mutateRekrutteringstreff()}
             modalRef={svarfristModalRef}
           />
           <InnleggModal
@@ -379,9 +456,7 @@ const TreffSteg = () => {
             innlegg={
               innleggData && innleggData.length > 0 ? innleggData[0] : undefined
             }
-            onInnleggUpdated={() => {
-              mutateInnlegg();
-            }}
+            onInnleggUpdated={() => mutateInnlegg()}
             modalRef={innleggModalRef}
           />
         </>
