@@ -78,17 +78,16 @@ const Jobbsøkere = () => {
   const handleInvitasjonSendt = () => {
     inviterModalRef.current?.close();
     setValgteJobbsøkere([]);
+    jobbsøkerHook.mutate();
   };
 
   return (
     <SWRLaster hooks={[jobbsøkerHook]}>
       {(jobbsøkere) => {
-        // Finn fødselsnummer på alle som er invitert
         const inviterteFnr = new Set(
           jobbsøkere.filter(erInvitert).map((j) => j.fødselsnummer),
         );
 
-        // Filtrer ut de som allerede er invitert fra valgteJobbsøkere
         const valgteSomIkkeErInvitert = valgteJobbsøkere.filter(
           (j) => !inviterteFnr.has(j.fødselsnummer),
         );
@@ -138,7 +137,6 @@ const Jobbsøkere = () => {
                         onCheckboxChange={(valgt) =>
                           handleCheckboxChange(j, valgt)
                         }
-                        // Du kan fortsatt vise checkbox for alle, men de inviterte telles ikke med
                       />
                     </li>
                   );
