@@ -5,5 +5,6 @@ interface Window {
   };
   skyra?: {
     start: (config: { org: string }) => void;
+    redactSearchParam: (param: string, options?: { path: string }) => void;
   };
 }
