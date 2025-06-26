@@ -1,13 +1,13 @@
 'use client';
 
-import { RekbisError } from '../../../../util/rekbisError';
-import { useRekrutteringstreffContext } from '../RekrutteringstreffContext';
-import LeggTilArbeidsgiverModal from './LeggTilArbeidsgiverModal';
-import EndreTittel from './om-treffet/components/EndreTittel';
-import InnleggModal from './om-treffet/components/innlegg/InnleggModal';
-import StedModal from './om-treffet/components/sted/StedModal';
-import TidspunktModal from './om-treffet/components/tidspunkt/TidspunktModal';
-import SvarfristModal from './om-treffet/components/tidspunkt/svarfrist/SvarfristModal';
+import { useRekrutteringstreffContext } from '../../../RekrutteringstreffContext';
+import LeggTilArbeidsgiverModal from '../../LeggTilArbeidsgiverModal';
+import EndreTittel from '../components/EndreTittel';
+import InnleggModal from '../components/innlegg/InnleggModal';
+import StedModal from '../components/sted/StedModal';
+import TidspunktModal from '../components/tidspunkt/TidspunktModal';
+import SvarfristModal from '../components/tidspunkt/svarfrist/SvarfristModal';
+import TreffStegRouter from './TreffStegRouter';
 import {
   avsluttArrangement,
   avsluttInvitasjon,
@@ -19,24 +19,13 @@ import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
-import {
-  CheckmarkIcon,
-  ChevronDownIcon,
-  ChevronUpIcon,
-} from '@navikt/aksel-icons';
-import {
-  BodyShort,
-  Box,
-  Button,
-  Detail,
-  Heading,
-  Loader,
-  Stepper,
-} from '@navikt/ds-react';
+import { RekbisError } from '@/util/rekbisError';
+import { ChevronDownIcon, ChevronUpIcon } from '@navikt/aksel-icons';
+import { Box, Button, Heading, Stepper } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 
-interface ChecklistItem {
+export interface ChecklistItem {
   id: string;
   label: string;
 }
@@ -437,132 +426,25 @@ const TreffSteg = () => {
                 <Stepper.Step key={i + 1}>{label}</Stepper.Step>
               ))}
             </Stepper>
-
-            {activeStep == 1 && (
-              <div className='flex-1'>
-                <Detail spacing>
-                  Før treffet er tilgjengelig for andre, og du kan invitere
-                  jobbsøker må noen detaljer være på plass først:
-                </Detail>
-
-                {(arbeidsgivereLoading ||
-                  rekrutteringstreffLoading ||
-                  innleggLoading) && (
-                  <Loader size='medium' title='Laster sjekkliste status...' />
-                )}
-
-                {!arbeidsgivereLoading &&
-                  !rekrutteringstreffLoading &&
-                  !innleggLoading && (
-                    <ul className='space-y-0'>
-                      {sjekklisteData.map((item) => {
-                        const erOppfylt = !!checkedItems[item.id];
-                        const kanKlikkes = !erOppfylt;
-                        return (
-                          <li
-                            key={item.id}
-                            onClick={() =>
-                              kanKlikkes && handleClickSjekklisteItem(item.id)
-                            }
-                            onKeyDown={(e) => {
-                              if (
-                                kanKlikkes &&
-                                (e.key === 'Enter' || e.key === ' ')
-                              ) {
-                                e.preventDefault();
-                                handleClickSjekklisteItem(item.id);
-                              }
-                            }}
-                            className={`flex items-center justify-between py-4 ${
-                              item.id === 'arbeidsgiver' ||
-                              item.id === 'svarfrist'
-                                ? 'border-b border-border-subtle mb-1'
-                                : ''
-                            } ${kanKlikkes ? 'cursor-pointer hover:bg-gray-800 rounded' : ''}`}
-                            role={kanKlikkes ? 'button' : undefined}
-                            tabIndex={kanKlikkes ? 0 : undefined}
-                            aria-label={
-                              kanKlikkes
-                                ? `Legg til eller rediger ${item.label}`
-                                : `${item.label} - Oppfylt`
-                            }
-                          >
-                            <div className='flex items-center gap-2'>
-                              <div className='w-5 h-5 border-2 rounded-full flex items-center justify-center border-blue-400 text-blue-400'>
-                                {erOppfylt && <CheckmarkIcon fontSize='1rem' />}
-                              </div>
-                              <BodyShort>{item.label}</BodyShort>
-                            </div>
-                            {kanKlikkes && (
-                              <BodyShort className='text-blue-400 px-1'>
-                                Legg til
-                              </BodyShort>
-                            )}
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  )}
-              </div>
-            )}
-
-            {activeStep == 2 && (
-              <div className='flex-1'>
-                <Box.New padding='6' borderRadius='large' className='mb-4'>
-                  <div className='flex flex-col gap-4'>
-                    <div className='flex items-center justify-between gap-2 pb-4 border-b border-border-subtle'>
-                      <div className='flex items-center gap-2'>
-                        <div className='w-5 h-5 border-2 rounded-full flex items-center justify-center border-blue-400 text-blue-400'>
-                          {harInvitert && <CheckmarkIcon fontSize='1rem' />}
-                        </div>
-                        <BodyShort>Minst en invitasjon</BodyShort>
-                      </div>
-                      <button
-                        type='button'
-                        className='text-blue-400 hover:underline focus:underline'
-                        onClick={() =>
-                          router.push(
-                            `/rekrutteringstreff/${rekrutteringstreffId}?visFane=jobbsøkere`,
-                          )
-                        }
-                      >
-                        Inviter
-                      </button>
-                    </div>
-                    <div className='pt-2'>
-                      <BodyShort>
-                        Antall inviterte: <b>{antallInviterte}</b>
-                      </BodyShort>
-                    </div>
-                  </div>
-                </Box.New>
-              </div>
-            )}
-            {activeStep === 3 && (
-              <div className='flex-1'>
-                <Detail spacing>
-                  Her kan du planlegge og gjennomføre arrangementet.
-                </Detail>
-              </div>
-            )}
-            {activeStep === 4 && (
-              <div className='flex-1'>
-                <Detail spacing>
-                  Her kan du følge opp påmeldte og gjennomføre treffet.
-                </Detail>
-              </div>
-            )}
-            {activeStep === 5 && (
-              <div className='flex-1'>
-                {harAvsluttet ? (
-                  <Detail spacing>Treffet er avsluttet.</Detail>
-                ) : (
-                  <Detail spacing>
-                    Her kan du avslutte og evaluere rekrutteringstreffet.
-                  </Detail>
-                )}
-              </div>
-            )}
+            <TreffStegRouter
+              activeStep={activeStep}
+              sjekklisteData={sjekklisteData}
+              checkedItems={checkedItems}
+              handleClickSjekklisteItem={handleClickSjekklisteItem}
+              loading={
+                arbeidsgivereLoading ||
+                rekrutteringstreffLoading ||
+                innleggLoading
+              }
+              harInvitert={harInvitert}
+              antallInviterte={antallInviterte}
+              onInviteClick={() =>
+                router.push(
+                  `/rekrutteringstreff/${rekrutteringstreffId}?visFane=jobbsøkere`,
+                )
+              }
+              harAvsluttet={harAvsluttet || false}
+            />
           </div>
         </Box.New>
       )}

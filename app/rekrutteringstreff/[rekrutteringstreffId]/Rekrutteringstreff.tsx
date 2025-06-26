@@ -2,11 +2,11 @@
 
 import { useRekrutteringstreffContext } from './RekrutteringstreffContext';
 import TreffHeader from './components/TreffHeader';
-import TreffSteg from './components/TreffSteg';
 import Aktiviteter from './components/aktiviteter/components/Aktiviteter';
 import RekrutteringstreffArbeidsgivere from './components/arbeidsgivere/Arbeidsgivere';
 import Jobbsøkere from './components/jobbsøkere/Jobbsøkere';
 import OmTreffet from './components/om-treffet/components/OmTreffet';
+import TreffSteg from './components/om-treffet/steg/TreffSteg';
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
 import { Box, Tabs } from '@navikt/ds-react';
