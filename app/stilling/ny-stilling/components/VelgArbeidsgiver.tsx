@@ -41,7 +41,7 @@ const VelgArbeidsgiver: React.FC<IVelgArbeidsgiver> = ({
           shouldAutocomplete={true}
           onChange={(verdi) => setSøkeord(verdi)}
           onToggleSelected={(valg) => {
-            const orgnr = valg.split(' - ')[1];
+            const orgnr = valg.split(' - ').at(-1);
             const selectedArbeidsgiver = data?.find(
               (arbeidsgiver) => arbeidsgiver.organisasjonsnummer === orgnr,
             );
