@@ -8,7 +8,10 @@ import InnleggModal from './om-treffet/components/innlegg/InnleggModal';
 import StedModal from './om-treffet/components/sted/StedModal';
 import TidspunktModal from './om-treffet/components/tidspunkt/TidspunktModal';
 import SvarfristModal from './om-treffet/components/tidspunkt/svarfrist/SvarfristModal';
-import { publiserRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/publiserRekrutteringstreff';
+import {
+  avsluttInvitasjon,
+  publiserRekrutteringstreff,
+} from '@/app/api/rekrutteringstreff/[...slug]/milepeltransisjon';
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
@@ -72,7 +75,8 @@ const TreffSteg = () => {
   const [isOpen, setIsOpen] = React.useState(false);
   const toggle = () => setIsOpen((o) => !o);
   const [isPublishing, setIsPublishing] = React.useState(false);
-  const [inviteringFerdig, setInviteringFerdig] = React.useState(false);
+  const [isFinishingInvitation, setIsFinishingInvitation] =
+    React.useState(false);
 
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const arbeidsgiverModalRef = React.useRef<HTMLDialogElement>(null);
@@ -207,6 +211,22 @@ const TreffSteg = () => {
     }
   };
 
+  const onAvsluttInvitasjon = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsFinishingInvitation(true);
+    try {
+      await avsluttInvitasjon(rekrutteringstreffId);
+      await mutateRekrutteringstreff();
+    } catch (error) {
+      new RekbisError({
+        message: 'Avslutting av invitasjon feilet',
+        error,
+      });
+    } finally {
+      setIsFinishingInvitation(false);
+    }
+  };
+
   const harPubliseringshendelse = React.useMemo(
     () =>
       rekrutteringstreffData?.hendelser?.some(
@@ -215,7 +235,19 @@ const TreffSteg = () => {
     [rekrutteringstreffData],
   );
 
-  const activeStep = inviteringFerdig ? 3 : harPubliseringshendelse ? 2 : 1;
+  const harAvsluttetInvitasjon = React.useMemo(
+    () =>
+      rekrutteringstreffData?.hendelser?.some(
+        (h) => h.hendelsestype === 'AVSLUTT_INVITASJON',
+      ),
+    [rekrutteringstreffData],
+  );
+
+  const activeStep = harAvsluttetInvitasjon
+    ? 3
+    : harPubliseringshendelse
+      ? 2
+      : 1;
   const currentHeader =
     stepDetails.find((d) => d.id === activeStep)?.header ?? 'Steg';
 
@@ -265,12 +297,11 @@ const TreffSteg = () => {
                 <Button
                   variant='primary'
                   size='small'
-                  disabled={!harInvitert || jobbsøkereLoading}
-                  loading={jobbsøkereLoading}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setInviteringFerdig(true);
-                  }}
+                  disabled={
+                    !harInvitert || jobbsøkereLoading || isFinishingInvitation
+                  }
+                  loading={isFinishingInvitation}
+                  onClick={onAvsluttInvitasjon}
                 >
                   Ferdig å invitere
                 </Button>
