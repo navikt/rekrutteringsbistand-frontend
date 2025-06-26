@@ -17,6 +17,8 @@ import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import * as React from 'react';
 import { SWRConfig } from 'swr';
 
+const MAX_RETRY_ATTEMPTS = 10;
+
 export interface RekrutteringsbistandProviderProps {
   children?: React.ReactNode | undefined;
 }
@@ -28,6 +30,23 @@ const RekrutteringsbistandProvider: React.FC<
   const dekoratørHook = useDecoratorData();
   const modiaAktivEnhetHook = useModiaAktivEnhet();
   const modiaAktivBrukerHook = useModiaAktivBruker();
+  const [retryCount, setRetryCount] = React.useState(0);
+
+  React.useEffect(() => {
+    if (retryCount < MAX_RETRY_ATTEMPTS) {
+      if (window !== undefined && window?.skyra?.redactSearchParam) {
+        window?.skyra?.redactSearchParam('visKandidatnr');
+      } else {
+        setTimeout(() => {
+          setRetryCount((prevCount) => prevCount + 1);
+        }, 1000); // Retry after 1 second
+      }
+    } else {
+      new RekbisError(
+        'Skyramaskering: Maximum retry attempts reached. Could not call redactSearchParam.',
+      );
+    }
+  });
 
   return (
     <ThemeProvider>
