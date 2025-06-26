@@ -431,6 +431,7 @@ const TreffSteg = () => {
               activeStep={activeStep}
               orientation='vertical'
               interactive={false}
+              className='w-40'
             >
               {stepsForStepper.map((label, i) => (
                 <Stepper.Step key={i + 1}>{label}</Stepper.Step>
@@ -553,9 +554,13 @@ const TreffSteg = () => {
             )}
             {activeStep === 5 && (
               <div className='flex-1'>
-                <Detail spacing>
-                  Her kan du avslutte og evaluere rekrutteringstreffet.
-                </Detail>
+                {harAvsluttet ? (
+                  <Detail spacing>Treffet er avsluttet.</Detail>
+                ) : (
+                  <Detail spacing>
+                    Her kan du avslutte og evaluere rekrutteringstreffet.
+                  </Detail>
+                )}
               </div>
             )}
           </div>
