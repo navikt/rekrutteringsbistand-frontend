@@ -32,8 +32,8 @@ import { stillingMirage } from '../app/api/stilling/rekrutteringsbistandstilling
 import { brukerStandardSøkMirage } from '../app/api/stilling/standardsok/useBrukersStandardsøk';
 import { stillingssøkMirage } from '../app/api/stillings-sok/useStillingssøk';
 import { synlighetsevalueringMirage } from '../app/api/synlighet/evaluering/useSynlighetsevaluering';
-import { rekrutteringstreffHendelserMirage } from '@/app/api/rekrutteringstreff/[...slug]/milepeltransisjon';
 import { leggTilNyArbeidsgiverMirage } from '@/app/api/rekrutteringstreff/[...slug]/ny-arbeidsgiver/leggTilNyArbeidsgiver';
+import { rekrutteringstreffHendelserMirage } from '@/app/api/rekrutteringstreff/[...slug]/steg';
 import { alleHendelserMirage } from '@/app/api/rekrutteringstreff/[...slug]/useAlleHendelser';
 import { arbeidsgiverHendelserMirage } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgiverHendelser';
 import { rekruteringstreffArbeidsgivereMirage } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';

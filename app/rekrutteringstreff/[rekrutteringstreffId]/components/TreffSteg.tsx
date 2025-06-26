@@ -14,7 +14,7 @@ import {
   avsluttOppfolging,
   avsluttRekrutteringstreff,
   publiserRekrutteringstreff,
-} from '@/app/api/rekrutteringstreff/[...slug]/milepeltransisjon';
+} from '@/app/api/rekrutteringstreff/[...slug]/steg';
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
@@ -283,38 +283,6 @@ const TreffSteg = () => {
     }
   };
 
-  const harPubliseringshendelse = React.useMemo(
-    () =>
-      rekrutteringstreffData?.hendelser?.some(
-        (h) => h.hendelsestype === 'PUBLISER',
-      ),
-    [rekrutteringstreffData],
-  );
-
-  const harAvsluttetInvitasjon = React.useMemo(
-    () =>
-      rekrutteringstreffData?.hendelser?.some(
-        (h) => h.hendelsestype === 'AVSLUTT_INVITASJON',
-      ),
-    [rekrutteringstreffData],
-  );
-
-  const harAvsluttetArrangement = React.useMemo(
-    () =>
-      rekrutteringstreffData?.hendelser?.some(
-        (h) => h.hendelsestype === 'AVSLUTT_ARRANGEMENT',
-      ),
-    [rekrutteringstreffData],
-  );
-
-  const harAvsluttetOppfolging = React.useMemo(
-    () =>
-      rekrutteringstreffData?.hendelser?.some(
-        (h) => h.hendelsestype === 'AVSLUTT_OPPFOLGING',
-      ),
-    [rekrutteringstreffData],
-  );
-
   const harAvsluttet = React.useMemo(
     () =>
       rekrutteringstreffData?.hendelser?.some(
@@ -323,16 +291,28 @@ const TreffSteg = () => {
     [rekrutteringstreffData],
   );
 
-  const activeStep =
-    harAvsluttet || harAvsluttetOppfolging
-      ? 5
-      : harAvsluttetArrangement
-        ? 4
-        : harAvsluttetInvitasjon
-          ? 3
-          : harPubliseringshendelse
-            ? 2
-            : 1;
+  const activeStep = React.useMemo(() => {
+    const hendelser = rekrutteringstreffData?.hendelser;
+    if (!hendelser) return 1;
+
+    const harHendelse = (type: string) =>
+      hendelser.some((h) => h.hendelsestype === type);
+
+    if (harHendelse('AVSLUTT') || harHendelse('AVSLUTT_OPPFOLGING')) {
+      return 5;
+    }
+    if (harHendelse('AVSLUTT_ARRANGEMENT')) {
+      return 4;
+    }
+    if (harHendelse('AVSLUTT_INVITASJON')) {
+      return 3;
+    }
+    if (harHendelse('PUBLISER')) {
+      return 2;
+    }
+    return 1;
+  }, [rekrutteringstreffData]);
+
   const currentHeader =
     stepDetails.find((d) => d.id === activeStep)?.header ?? 'Steg';
 
