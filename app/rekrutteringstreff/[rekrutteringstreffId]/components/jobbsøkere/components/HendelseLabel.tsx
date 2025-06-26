@@ -19,6 +19,20 @@ export const labelTekst = (hendelsetype: string) => {
       return 'ikke interessert';
     case 'OPPRETT':
       return 'lagt til';
+    case 'OPPDATER':
+      return 'oppdatert';
+    case 'SLETT':
+      return 'slettet';
+    case 'PUBLISER':
+      return 'publisert';
+    case 'AVSLUTT_INVITASJON':
+      return 'invitasjon avsluttet';
+    case 'AVSLUTT_ARRANGEMENT':
+      return 'arrangement avsluttet';
+    case 'AVSLUTT_OPPFOLGING':
+      return 'oppfølging avsluttet';
+    case 'AVSLUTT':
+      return 'avsluttet';
     default:
       return '';
   }
