@@ -9,7 +9,10 @@ import StedModal from './om-treffet/components/sted/StedModal';
 import TidspunktModal from './om-treffet/components/tidspunkt/TidspunktModal';
 import SvarfristModal from './om-treffet/components/tidspunkt/svarfrist/SvarfristModal';
 import {
+  avsluttArrangement,
   avsluttInvitasjon,
+  avsluttOppfolging,
+  avsluttRekrutteringstreff,
   publiserRekrutteringstreff,
 } from '@/app/api/rekrutteringstreff/[...slug]/milepeltransisjon';
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
@@ -76,6 +79,11 @@ const TreffSteg = () => {
   const toggle = () => setIsOpen((o) => !o);
   const [isPublishing, setIsPublishing] = React.useState(false);
   const [isFinishingInvitation, setIsFinishingInvitation] =
+    React.useState(false);
+  const [isFinishingArrangement, setIsFinishingArrangement] =
+    React.useState(false);
+  const [isFinishingFollowUp, setIsFinishingFollowUp] = React.useState(false);
+  const [isFinishingRecruitment, setIsFinishingRecruitment] =
     React.useState(false);
 
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
@@ -227,6 +235,54 @@ const TreffSteg = () => {
     }
   };
 
+  const onAvsluttArrangement = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsFinishingArrangement(true);
+    try {
+      await avsluttArrangement(rekrutteringstreffId);
+      await mutateRekrutteringstreff();
+    } catch (error) {
+      new RekbisError({
+        message: 'Avslutting av arrangement feilet',
+        error,
+      });
+    } finally {
+      setIsFinishingArrangement(false);
+    }
+  };
+
+  const onAvsluttOppfolging = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsFinishingFollowUp(true);
+    try {
+      await avsluttOppfolging(rekrutteringstreffId);
+      await mutateRekrutteringstreff();
+    } catch (error) {
+      new RekbisError({
+        message: 'Avslutting av oppfølging feilet',
+        error,
+      });
+    } finally {
+      setIsFinishingFollowUp(false);
+    }
+  };
+
+  const onAvsluttRekrutteringstreff = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsFinishingRecruitment(true);
+    try {
+      await avsluttRekrutteringstreff(rekrutteringstreffId);
+      await mutateRekrutteringstreff();
+    } catch (error) {
+      new RekbisError({
+        message: 'Avslutting av rekrutteringstreff feilet',
+        error,
+      });
+    } finally {
+      setIsFinishingRecruitment(false);
+    }
+  };
+
   const harPubliseringshendelse = React.useMemo(
     () =>
       rekrutteringstreffData?.hendelser?.some(
@@ -243,11 +299,40 @@ const TreffSteg = () => {
     [rekrutteringstreffData],
   );
 
-  const activeStep = harAvsluttetInvitasjon
-    ? 3
-    : harPubliseringshendelse
-      ? 2
-      : 1;
+  const harAvsluttetArrangement = React.useMemo(
+    () =>
+      rekrutteringstreffData?.hendelser?.some(
+        (h) => h.hendelsestype === 'AVSLUTT_ARRANGEMENT',
+      ),
+    [rekrutteringstreffData],
+  );
+
+  const harAvsluttetOppfolging = React.useMemo(
+    () =>
+      rekrutteringstreffData?.hendelser?.some(
+        (h) => h.hendelsestype === 'AVSLUTT_OPPFOLGING',
+      ),
+    [rekrutteringstreffData],
+  );
+
+  const harAvsluttet = React.useMemo(
+    () =>
+      rekrutteringstreffData?.hendelser?.some(
+        (h) => h.hendelsestype === 'AVSLUTT',
+      ),
+    [rekrutteringstreffData],
+  );
+
+  const activeStep =
+    harAvsluttet || harAvsluttetOppfolging
+      ? 5
+      : harAvsluttetArrangement
+        ? 4
+        : harAvsluttetInvitasjon
+          ? 3
+          : harPubliseringshendelse
+            ? 2
+            : 1;
   const currentHeader =
     stepDetails.find((d) => d.id === activeStep)?.header ?? 'Steg';
 
@@ -310,12 +395,30 @@ const TreffSteg = () => {
                 <Button
                   variant='primary'
                   size='small'
-                  loading={jobbsøkereLoading}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                  }}
+                  loading={isFinishingArrangement}
+                  onClick={onAvsluttArrangement}
                 >
                   Ferdig å arrangere
+                </Button>
+              )}
+              {activeStep === 4 && (
+                <Button
+                  variant='primary'
+                  size='small'
+                  loading={isFinishingFollowUp}
+                  onClick={onAvsluttOppfolging}
+                >
+                  Ferdig med oppfølging
+                </Button>
+              )}
+              {activeStep === 5 && !harAvsluttet && (
+                <Button
+                  variant='primary'
+                  size='small'
+                  loading={isFinishingRecruitment}
+                  onClick={onAvsluttRekrutteringstreff}
+                >
+                  Avslutt treffet
                 </Button>
               )}
               <Button
@@ -454,6 +557,27 @@ const TreffSteg = () => {
                 </Box.New>
               </div>
             )}
+            {activeStep === 3 && (
+              <div className='flex-1'>
+                <Detail spacing>
+                  Her kan du planlegge og gjennomføre arrangementet.
+                </Detail>
+              </div>
+            )}
+            {activeStep === 4 && (
+              <div className='flex-1'>
+                <Detail spacing>
+                  Her kan du følge opp påmeldte og gjennomføre treffet.
+                </Detail>
+              </div>
+            )}
+            {activeStep === 5 && (
+              <div className='flex-1'>
+                <Detail spacing>
+                  Her kan du avslutte og evaluere rekrutteringstreffet.
+                </Detail>
+              </div>
+            )}
           </div>
         </Box.New>
       )}
@@ -495,5 +619,4 @@ const TreffSteg = () => {
     </div>
   );
 };
-
 export default TreffSteg;
