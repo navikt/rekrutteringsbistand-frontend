@@ -298,7 +298,7 @@ const TreffSteg = () => {
     const harHendelse = (type: string) =>
       hendelser.some((h) => h.hendelsestype === type);
 
-    if (harHendelse('AVSLUTT') || harHendelse('AVSLUTT_OPPFOLGING')) {
+    if (harHendelse('AVSLUTT') || harHendelse('AVSLUTT_OPPFØLGING')) {
       return 5;
     }
     if (harHendelse('AVSLUTT_ARRANGEMENT')) {

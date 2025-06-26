@@ -29,7 +29,7 @@ export const labelTekst = (hendelsetype: string) => {
       return 'invitasjon avsluttet';
     case 'AVSLUTT_ARRANGEMENT':
       return 'arrangement avsluttet';
-    case 'AVSLUTT_OPPFOLGING':
+    case 'AVSLUTT_OPPFØLGING':
       return 'oppfølging avsluttet';
     case 'AVSLUTT':
       return 'avsluttet';
