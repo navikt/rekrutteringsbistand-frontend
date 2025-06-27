@@ -34,6 +34,11 @@ const Jobbsøkere = () => {
       (h) => h.hendelsestype === 'PUBLISER',
     ) ?? false;
 
+  const harAvsluttetInvitasjon =
+    rekrutteringstreffData?.hendelser?.some(
+      (h) => h.hendelsestype === 'AVSLUTT_INVITASJON',
+    ) ?? false;
+
   const handleCheckboxChange = (jobbsøker: JobbsøkerDTO, erValgt: boolean) => {
     const dto: InviterInternalDto = {
       fornavn: jobbsøker.fornavn,
@@ -98,7 +103,10 @@ const Jobbsøkere = () => {
               <LeggTilJobbsøkerKnapp />
               {harPublisert && (
                 <Button
-                  disabled={valgteSomIkkeErInvitert.length === 0}
+                  disabled={
+                    valgteSomIkkeErInvitert.length === 0 ||
+                    harAvsluttetInvitasjon
+                  }
                   onClick={() => inviterModalRef.current?.showModal()}
                 >
                   Inviter ({valgteSomIkkeErInvitert.length})
