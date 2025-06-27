@@ -39,7 +39,7 @@ const InvitereSteg: React.FC<Props> = ({
               <div className='w-5 h-5 border-2 rounded-full flex items-center justify-center border-blue-400 text-blue-400'>
                 {erDatoPassert && <CheckmarkIcon fontSize='1rem' />}
               </div>
-              <BodyShort>Arrangementets tildato har passert</BodyShort>
+              <BodyShort>Arrangementets fradato har passert</BodyShort>
             </div>
           </div>
           <div className='pt-4 border-t border-border-subtle'>
