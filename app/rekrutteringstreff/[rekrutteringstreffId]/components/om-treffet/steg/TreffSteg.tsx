@@ -9,7 +9,6 @@ import TidspunktModal from '../components/tidspunkt/TidspunktModal';
 import SvarfristModal from '../components/tidspunkt/svarfrist/SvarfristModal';
 import TreffStegRouter from './TreffStegRouter';
 import {
-  avsluttArrangement,
   avsluttInvitasjon,
   avsluttOppfolging,
   avsluttRekrutteringstreff,
@@ -46,16 +45,11 @@ const stepDetails = [
   { id: 2, stepLabel: 'Invitere', header: 'Send ut invitasjoner' },
   {
     id: 3,
-    stepLabel: 'Arrangere',
-    header: 'Planlegg og gjennomfør arrangementet',
-  },
-  {
-    id: 4,
     stepLabel: 'Følge opp',
     header: 'Følg opp påmeldte og gjennomfør treffet',
   },
   {
-    id: 5,
+    id: 4,
     stepLabel: 'Avslutte',
     header: 'Avslutt og evaluer rekrutteringstreffet',
   },
@@ -68,8 +62,6 @@ const TreffSteg = () => {
   const toggle = () => setIsOpen((o) => !o);
   const [isPublishing, setIsPublishing] = React.useState(false);
   const [isFinishingInvitation, setIsFinishingInvitation] =
-    React.useState(false);
-  const [isFinishingArrangement, setIsFinishingArrangement] =
     React.useState(false);
   const [isFinishingFollowUp, setIsFinishingFollowUp] = React.useState(false);
   const [isFinishingRecruitment, setIsFinishingRecruitment] =
@@ -224,22 +216,6 @@ const TreffSteg = () => {
     }
   };
 
-  const onAvsluttArrangement = async (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setIsFinishingArrangement(true);
-    try {
-      await avsluttArrangement(rekrutteringstreffId);
-      await mutateRekrutteringstreff();
-    } catch (error) {
-      new RekbisError({
-        message: 'Avslutting av arrangement feilet',
-        error,
-      });
-    } finally {
-      setIsFinishingArrangement(false);
-    }
-  };
-
   const onAvsluttOppfolging = async (e: React.MouseEvent) => {
     e.stopPropagation();
     setIsFinishingFollowUp(true);
@@ -288,9 +264,6 @@ const TreffSteg = () => {
       hendelser.some((h) => h.hendelsestype === type);
 
     if (harHendelse('AVSLUTT') || harHendelse('AVSLUTT_OPPFØLGING')) {
-      return 5;
-    }
-    if (harHendelse('AVSLUTT_ARRANGEMENT')) {
       return 4;
     }
     if (harHendelse('AVSLUTT_INVITASJON')) {
@@ -364,23 +337,13 @@ const TreffSteg = () => {
                 <Button
                   variant='primary'
                   size='small'
-                  loading={isFinishingArrangement}
-                  onClick={onAvsluttArrangement}
-                >
-                  Ferdig å arrangere
-                </Button>
-              )}
-              {activeStep === 4 && (
-                <Button
-                  variant='primary'
-                  size='small'
                   loading={isFinishingFollowUp}
                   onClick={onAvsluttOppfolging}
                 >
                   Ferdig med oppfølging
                 </Button>
               )}
-              {activeStep === 5 && !harAvsluttet && (
+              {activeStep === 4 && !harAvsluttet && (
                 <Button
                   variant='primary'
                   size='small'
