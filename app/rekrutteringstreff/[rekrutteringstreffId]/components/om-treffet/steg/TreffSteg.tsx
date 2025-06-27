@@ -21,6 +21,8 @@ import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutter
 import { RekbisError } from '@/util/rekbisError';
 import { ChevronDownIcon, ChevronUpIcon } from '@navikt/aksel-icons';
 import { Box, Button, Heading, Stepper } from '@navikt/ds-react';
+import { parseISO } from 'date-fns';
+import { toZonedTime } from 'date-fns-tz';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 
@@ -285,6 +287,14 @@ const TreffSteg = () => {
 
   const harInvitert = antallInviterte > 0;
 
+  const arrangementtidspunktHarPassert = React.useMemo(() => {
+    if (!rekrutteringstreffData?.fraTid) return false;
+    return (
+      toZonedTime(parseISO(rekrutteringstreffData.fraTid), 'Europe/Oslo') <
+      new Date()
+    );
+  }, [rekrutteringstreffData?.fraTid]);
+
   return (
     <div className='my-2'>
       <Box.New
@@ -325,7 +335,10 @@ const TreffSteg = () => {
                   variant='primary'
                   size='small'
                   disabled={
-                    !harInvitert || jobbsøkereLoading || isFinishingInvitation
+                    !harInvitert ||
+                    jobbsøkereLoading ||
+                    isFinishingInvitation ||
+                    !arrangementtidspunktHarPassert
                   }
                   loading={isFinishingInvitation}
                   onClick={onAvsluttInvitasjon}
@@ -402,6 +415,7 @@ const TreffSteg = () => {
                 )
               }
               harAvsluttet={harAvsluttet || false}
+              erDatoPassert={arrangementtidspunktHarPassert}
             />
           </div>
         </Box.New>

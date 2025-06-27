@@ -1,4 +1,4 @@
-import ArrangereSteg from './ArrangereSteg';
+// filepath: /Users/joaraurdal/ws/nav/rekrutteringsbistand-frontend/app/rekrutteringstreff/[rekrutteringstreffId]/components/om-treffet/steg/TreffStegRouter.tsx
 import AvslutteSteg from './AvslutteSteg';
 import FølgeOppSteg from './FølgeOppSteg';
 import InvitereSteg from './InvitereSteg';
@@ -16,6 +16,7 @@ interface Props {
   antallInviterte: number;
   onInviteClick: () => void;
   harAvsluttet: boolean;
+  erDatoPassert: boolean;
 }
 
 const TreffStegRouter: React.FC<Props> = ({ activeStep, ...props }) => {
@@ -35,13 +36,12 @@ const TreffStegRouter: React.FC<Props> = ({ activeStep, ...props }) => {
           harInvitert={props.harInvitert}
           antallInviterte={props.antallInviterte}
           onInviteClick={props.onInviteClick}
+          erDatoPassert={props.erDatoPassert}
         />
       );
     case 3:
-      return <ArrangereSteg />;
-    case 4:
       return <FølgeOppSteg />;
-    case 5:
+    case 4:
       return <AvslutteSteg harAvsluttet={props.harAvsluttet} />;
     default:
       return null;
