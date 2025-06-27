@@ -54,7 +54,7 @@ const handleErrorResponse = async (
       errorDetails = JSON.stringify(errorData);
     } catch (error) {
       logger.warn(
-        'Failed to parse error response as JSON despite content-type header',
+        `Failed to parse error response as JSON despite content-type header, from endpoint ${response.url}`,
         {
           url: response.url,
           status: response.status,
