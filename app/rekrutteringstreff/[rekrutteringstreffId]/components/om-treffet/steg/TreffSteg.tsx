@@ -416,7 +416,9 @@ const TreffSteg = () => {
               className='w-40'
             >
               {stepsForStepper.map((label, i) => (
-                <Stepper.Step key={i + 1}>{label}</Stepper.Step>
+                <Stepper.Step key={i + 1} completed={i < activeStep - 1}>
+                  {label}
+                </Stepper.Step>
               ))}
             </Stepper>
             <TreffStegRouter
