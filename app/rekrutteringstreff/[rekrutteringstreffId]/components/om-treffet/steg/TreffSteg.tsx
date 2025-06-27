@@ -390,13 +390,6 @@ const TreffSteg = () => {
                   Avslutt treffet
                 </Button>
               )}
-              <Button
-                variant='secondary'
-                size='small'
-                onClick={(e) => e.stopPropagation()}
-              >
-                Se forhåndsvisning
-              </Button>
             </div>
             <div className='text-text-action pointer-events-none'>
               {isOpen ? (
