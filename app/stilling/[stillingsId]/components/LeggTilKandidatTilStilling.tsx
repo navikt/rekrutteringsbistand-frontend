@@ -2,7 +2,7 @@ import { RekbisError } from '../../../../util/rekbisError';
 import { UmamiEvent } from '../../../../util/umamiEvents';
 import { leggTilKandidater } from '../../../api/kandidat-sok/leggTilKandidat';
 import { formidleUsynligKandidat } from '../../../api/kandidat/formidleKandidat';
-import { useKandidatliste } from '../../../api/kandidat/useKandidatliste';
+import { useKandidatlisteInfo } from '../../../api/kandidat/useKandidatlisteInfo';
 import LeggTilKandidater, {
   ValgtKandidatProp,
 } from '../../../components/legg-til-kandidat/LeggTilKandidater';
@@ -25,13 +25,15 @@ const LeggTilKandidatTilStilling: React.FC<LeggTilKandidatTilStillingProps> = ({
 }) => {
   const ref = useRef<HTMLDialogElement>(null);
   const { track } = useUmami();
-  const { erEier, stillingsData } = useStillingsContext();
+  const { stillingsData } = useStillingsContext();
   const { valgtNavKontor, visVarsel } = useApplikasjonContext();
   const [valgteKandidater, setValgteKandidater] = useState<ValgtKandidatProp[]>(
     [],
   );
   const [modalKey, setModalKey] = useState(0);
-  const kandidatlisteIdHook = useKandidatliste(stillingsData, erEier);
+  const kandidatlisteInfoHook = useKandidatlisteInfo(
+    stillingsData.stillingsinfo,
+  );
 
   const [laster, setLaster] = useState(false);
 
@@ -52,7 +54,7 @@ const LeggTilKandidatTilStilling: React.FC<LeggTilKandidatTilStillingProps> = ({
       .filter((aktørId) => aktørId !== undefined && aktørId !== null);
 
     if (
-      kandidatlisteIdHook.data?.kandidatlisteId &&
+      kandidatlisteInfoHook?.data?.kandidatlisteId &&
       (synligeKandidater.length > 0 || usynligFåttJobben.length > 0)
     ) {
       try {
@@ -60,7 +62,7 @@ const LeggTilKandidatTilStilling: React.FC<LeggTilKandidatTilStillingProps> = ({
 
         for (const kandidat of usynligFåttJobben) {
           await formidleUsynligKandidat(
-            kandidatlisteIdHook.data?.kandidatlisteId,
+            kandidatlisteInfoHook?.data?.kandidatlisteId,
             {
               fnr: kandidat.fødselsnummer,
               fåttJobb: true,
@@ -79,7 +81,7 @@ const LeggTilKandidatTilStilling: React.FC<LeggTilKandidatTilStillingProps> = ({
           type: 'success',
         });
         setValgteKandidater([]);
-        kandidatlisteIdHook.mutate();
+        kandidatlisteInfoHook.mutate();
         ref.current?.close();
       } catch (error) {
         visVarsel({
