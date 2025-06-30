@@ -84,6 +84,10 @@ const EndreTittel = ({
   });
   const nyTittel = useWatch({ control, name: 'nyTittel' });
 
+  useEffect(() => {
+    reset({ nyTittel: rekrutteringstreff.tittel });
+  }, [rekrutteringstreff.tittel, reset]);
+
   const [initialFocusDone, setInitialFocusDone] = useState(false);
   const [visTomFeil, setVisTomFeil] = useState(false);
   const [showUnchangedError, setShowUnchangedError] = useState(false);
@@ -202,7 +206,6 @@ const EndreTittel = ({
     >
       <Modal.Body>
         <form
-          key={rekrutteringstreff.id}
           id='skjema-endre-tittel'
           onSubmit={handleSubmit(save)}
           className='space-y-2'
