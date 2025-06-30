@@ -11,7 +11,7 @@ import {
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { RekbisError } from '@/util/rekbisError';
 import { ChevronDownIcon, ChevronUpIcon } from '@navikt/aksel-icons';
-import { Box, Button, Heading, BodyShort } from '@navikt/ds-react';
+import { Box, Button, Heading, BodyShort, ProgressBar } from '@navikt/ds-react';
 import * as React from 'react';
 
 interface Props {
@@ -25,30 +25,6 @@ const commonBoxProps = {
   borderColor: 'neutral-subtleA' as const,
   borderWidth: '1' as const,
   padding: '6' as const,
-};
-
-interface SjekklisteProgressBarProps {
-  fullforte: number;
-  totalt: number;
-}
-
-const SjekklisteProgressBar: React.FC<SjekklisteProgressBarProps> = ({
-  fullforte,
-  totalt,
-}) => {
-  if (totalt === 0) return null;
-  return (
-    <div className='flex w-full gap-1 mt-2'>
-      {Array.from({ length: totalt }, (_, i) => (
-        <div
-          key={i}
-          className={`h-1 flex-grow rounded-full ${
-            i < fullforte ? 'bg-blue-500' : 'bg-gray-300'
-          }`}
-        />
-      ))}
-    </div>
-  );
 };
 
 const StegviserHeader: React.FC<Props> = ({ isOpen, toggle, stepDetails }) => {
@@ -149,6 +125,11 @@ const StegviserHeader: React.FC<Props> = ({ isOpen, toggle, stepDetails }) => {
   const currentHeader =
     stepDetails.find((d) => d.id === activeStep)?.header ?? 'Steg';
 
+  const getProsent = (value: number, max: number) => {
+    if (max === 0) return 0;
+    return (value / max) * 100;
+  };
+
   return (
     <Box.New
       {...commonBoxProps}
@@ -188,15 +169,25 @@ const StegviserHeader: React.FC<Props> = ({ isOpen, toggle, stepDetails }) => {
           </div>
           <div>
             {activeStep === 1 && (
-              <SjekklisteProgressBar
-                fullforte={sjekklistePunkterFullfort}
-                totalt={totaltAntallSjekklistePunkter}
+              <ProgressBar
+                value={getProsent(
+                  sjekklistePunkterFullfort,
+                  totaltAntallSjekklistePunkter,
+                )}
+                size='small'
+                className='mt-2'
+                aria-label='Fremdrift for publisering'
               />
             )}
             {activeStep === 2 && (
-              <SjekklisteProgressBar
-                fullforte={inviterePunkterFullfort}
-                totalt={totaltAntallInviterePunkter}
+              <ProgressBar
+                value={getProsent(
+                  inviterePunkterFullfort,
+                  totaltAntallInviterePunkter,
+                )}
+                size='small'
+                className='mt-2'
+                aria-label='Fremdrift for invitasjon'
               />
             )}
           </div>
@@ -261,4 +252,5 @@ const StegviserHeader: React.FC<Props> = ({ isOpen, toggle, stepDetails }) => {
     </Box.New>
   );
 };
+
 export default StegviserHeader;
