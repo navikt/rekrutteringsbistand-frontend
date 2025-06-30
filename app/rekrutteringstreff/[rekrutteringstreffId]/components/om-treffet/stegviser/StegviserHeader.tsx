@@ -175,7 +175,7 @@ const StegviserHeader: React.FC<Props> = ({ isOpen, toggle, stepDetails }) => {
                   totaltAntallSjekklistePunkter,
                 )}
                 size='small'
-                className='mt-2'
+                className='mt-2 h-1'
                 aria-label='Fremdrift for publisering'
               />
             )}
@@ -186,7 +186,7 @@ const StegviserHeader: React.FC<Props> = ({ isOpen, toggle, stepDetails }) => {
                   totaltAntallInviterePunkter,
                 )}
                 size='small'
-                className='mt-2'
+                className='mt-2 h-1'
                 aria-label='Fremdrift for invitasjon'
               />
             )}
