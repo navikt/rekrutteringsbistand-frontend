@@ -12,19 +12,27 @@ jobs:
     if: ${{ github.actor == 'dependabot[bot]' }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: ${{ github.head_ref }}
           token: ${{ secrets.GITHUB_TOKEN }}
-      - uses: pnpm/action-setup@v2
+      
+      - uses: pnpm/action-setup@v4
         with:
-          version: 7
-      - uses: actions/setup-node@v3
+          version: 9
+      
+      - uses: actions/setup-node@v4
         with:
-          node-version: '16'
+          node-version: '20'
           cache: 'pnpm'
-      - run: pnpm install --frozen-lockfile
-      - uses: stefanzweifel/git-auto-commit-action@v4
+      
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      
+      - name: Update lockfile
+        run: pnpm install --lockfile-only
+      
+      - uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: Update pnpm lockfile
+          commit_message: 'chore: update pnpm lockfile'
           file_pattern: pnpm-lock.yaml
