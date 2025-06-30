@@ -34,7 +34,6 @@ interface Props {
 const PublisereSteg: React.FC<Props> = ({ onAlleStegOkChange }) => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
 
-  // Modal-referanser
   const arbeidsgiverModalRef = React.useRef<HTMLDialogElement>(null);
   const endreTittelModalRef = React.useRef<HTMLDialogElement>(null);
   const tidspunktModalRef = React.useRef<HTMLDialogElement>(null);
