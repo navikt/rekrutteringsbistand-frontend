@@ -1,5 +1,6 @@
 'use client';
 
+import StegviserLayout from './StegviserLayout';
 import TreffStegContent from './TreffStegContent';
 import TreffStegHeader from './TreffStegHeader';
 import * as React from 'react';
@@ -27,30 +28,26 @@ const stepDetails = [
 const stepsForStepper = stepDetails.map((d) => d.stepLabel);
 
 const TreffSteg = () => {
-  const [isOpen, setIsOpen] = React.useState(false);
-
+  // State som deles mellom header og content
   const [alleSteg1Ok, setAlleSteg1Ok] = React.useState(false);
   const [harInvitert, setHarInvitert] = React.useState(false);
 
-  const toggle = () => setIsOpen((o) => !o);
-
   return (
-    <div className='my-2'>
-      <TreffStegHeader
-        isOpen={isOpen}
-        toggle={toggle}
-        stepDetails={stepDetails}
-        alleSteg1Ok={alleSteg1Ok}
-        harInvitert={harInvitert}
-      />
-      {isOpen && (
-        <TreffStegContent
-          stepsForStepper={stepsForStepper}
-          setAlleSteg1Ok={setAlleSteg1Ok}
-          setHarInvitert={setHarInvitert}
+    <StegviserLayout
+      header={
+        <TreffStegHeader
+          stepDetails={stepDetails}
+          alleSteg1Ok={alleSteg1Ok}
+          harInvitert={harInvitert}
         />
-      )}
-    </div>
+      }
+    >
+      <TreffStegContent
+        stepsForStepper={stepsForStepper}
+        setAlleSteg1Ok={setAlleSteg1Ok}
+        setHarInvitert={setHarInvitert}
+      />
+    </StegviserLayout>
   );
 };
 export default TreffSteg;

@@ -14,8 +14,8 @@ import { toZonedTime } from 'date-fns-tz';
 import * as React from 'react';
 
 interface Props {
-  isOpen: boolean;
-  toggle: () => void;
+  isOpen?: boolean;
+  toggle?: () => void;
   stepDetails: { id: number; stepLabel: string; header: string }[];
   alleSteg1Ok: boolean;
   harInvitert: boolean;
@@ -157,7 +157,7 @@ const TreffStegHeader: React.FC<Props> = ({
       aria-expanded={isOpen}
       tabIndex={0}
       onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
+        if (toggle && (e.key === 'Enter' || e.key === ' ')) {
           e.preventDefault();
           toggle();
         }
