@@ -1,6 +1,6 @@
 export const rekrutteringstreffMock = {
   id: 'd6a587cd-8797-4b9a-a68b-575373f16d65',
-  tittel: 'Nytt rekrutteringstreff',
+  tittel: 'Sommerjobbtreff',
   beskrivelse: 'Testbeskrivelse',
   fraTid: '2025-06-01T08:00:00+02:00',
   tilTid: '2025-07-01T08:00:00+02:00',
@@ -23,7 +23,7 @@ export const rekrutteringstreffMock = {
     {
       id: '11111111-2222-3333-4444-555555555556',
       tidspunkt: '2025-06-02T08:00:00+02:00',
-      hendelsestype: 'PUBLISER_',
+      hendelsestype: 'PUBLISER',
       opprettetAvAktørType: 'ARRANGØR',
       aktørIdentifikasjon: 'A123456',
     },

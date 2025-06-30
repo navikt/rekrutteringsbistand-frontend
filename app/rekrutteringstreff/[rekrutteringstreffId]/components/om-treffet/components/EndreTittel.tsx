@@ -33,7 +33,7 @@ interface EndreTittelProps {
   onUpdated: () => void;
 }
 
-const MAX_TITLE_LENGTH = 50;
+const MAX_TITLE_LENGTH = 100;
 const DEFAULT_TITLE = 'Nytt rekrutteringstreff';
 const SKELETON_LINES = 6;
 
