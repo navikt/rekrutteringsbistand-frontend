@@ -24,7 +24,7 @@ import {
   Textarea,
 } from '@navikt/ds-react';
 import { AnimatePresence, motion } from 'framer-motion';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -195,6 +195,8 @@ const EndreTittel = ({ modalRef, onUpdated }: EndreTittelProps) => {
     }
   };
 
+  const formId = useId();
+
   const erInni = (wrapper: HTMLElement | null, el: Element | null) =>
     !!wrapper && !!el && (wrapper === el || wrapper.contains(el));
 
@@ -210,11 +212,7 @@ const EndreTittel = ({ modalRef, onUpdated }: EndreTittelProps) => {
       <Modal.Body>
         {isLoading && <Skeleton variant='text' />}
         {!isLoading && rekrutteringstreff && (
-          <form
-            id='skjema-endre-tittel'
-            onSubmit={handleSubmit(save)}
-            className='space-y-2'
-          >
+          <form id={formId} onSubmit={handleSubmit(save)} className='space-y-2'>
             <div
               className='flex items-start'
               tabIndex={-1}
@@ -373,7 +371,7 @@ const EndreTittel = ({ modalRef, onUpdated }: EndreTittelProps) => {
       <Modal.Footer className='pt-2'>
         <Button
           type='submit'
-          form='skjema-endre-tittel'
+          form={formId}
           ref={lagreButtonRef}
           loading={isSubmitting}
           disabled={disableSave}
