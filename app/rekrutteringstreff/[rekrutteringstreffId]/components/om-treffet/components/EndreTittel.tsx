@@ -1,3 +1,5 @@
+'use client';
+
 import { RekbisError } from '../../../../../../util/rekbisError';
 import {
   oppdaterRekrutteringstreff,
@@ -200,6 +202,7 @@ const EndreTittel = ({
     >
       <Modal.Body>
         <form
+          key={rekrutteringstreff.id}
           id='skjema-endre-tittel'
           onSubmit={handleSubmit(save)}
           className='space-y-2'
