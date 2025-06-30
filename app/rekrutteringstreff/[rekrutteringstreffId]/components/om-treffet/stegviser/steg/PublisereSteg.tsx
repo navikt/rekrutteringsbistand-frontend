@@ -6,7 +6,12 @@ import InnleggModal from '../../components/innlegg/InnleggModal';
 import StedModal from '../../components/sted/StedModal';
 import TidspunktModal from '../../components/tidspunkt/TidspunktModal';
 import SvarfristModal from '../../components/tidspunkt/svarfrist/SvarfristModal';
-import { StegContainer, StegRad, StegSeparator } from './SjekklisteItem';
+import { useStegviser } from '../StegviserContext';
+import {
+  SjekklisteContainer,
+  SjekklisteRad,
+  SjekklisteSeparator,
+} from './Sjekkliste';
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
@@ -31,13 +36,11 @@ const sjekklisteData: ChecklistItem[] = [
   { id: 'omtreffet', label: 'Om treffet' },
 ];
 
-interface Props {
-  onAlleStegOkChange: (erOk: boolean) => void;
-}
-
-const PublisereSteg: React.FC<Props> = ({ onAlleStegOkChange }) => {
+const PublisereSteg = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
+  const { setErPubliseringklar } = useStegviser();
 
+  // Modal-referanser
   const arbeidsgiverModalRef = React.useRef<HTMLDialogElement>(null);
   const endreTittelModalRef = React.useRef<HTMLDialogElement>(null);
   const tidspunktModalRef = React.useRef<HTMLDialogElement>(null);
@@ -97,8 +100,8 @@ const PublisereSteg: React.FC<Props> = ({ onAlleStegOkChange }) => {
 
   React.useEffect(() => {
     const alleOk = sjekklisteData.every((item) => checkedItems[item.id]);
-    onAlleStegOkChange(alleOk);
-  }, [checkedItems, onAlleStegOkChange]);
+    setErPubliseringklar(alleOk);
+  }, [checkedItems, setErPubliseringklar]);
 
   const handleClickSjekklisteItem = (id: string) => {
     if (checkedItems[id]) return;
@@ -115,7 +118,7 @@ const PublisereSteg: React.FC<Props> = ({ onAlleStegOkChange }) => {
 
   return (
     <>
-      <StegContainer>
+      <SjekklisteContainer>
         <Detail spacing>
           Før treffet er tilgjengelig for andre, og du kan invitere jobbsøker må
           noen detaljer være på plass først:
@@ -133,7 +136,7 @@ const PublisereSteg: React.FC<Props> = ({ onAlleStegOkChange }) => {
               item.id === 'arbeidsgiver' || item.id === 'svarfrist';
             return (
               <React.Fragment key={item.id}>
-                <StegRad
+                <SjekklisteRad
                   erOppfylt={erOppfylt}
                   kanKlikkes={kanKlikkes}
                   onClick={() => handleClickSjekklisteItem(item.id)}
@@ -145,11 +148,11 @@ const PublisereSteg: React.FC<Props> = ({ onAlleStegOkChange }) => {
                       : `${item.label} - Oppfylt`
                   }
                 />
-                {visRamme && <StegSeparator />}
+                {visRamme && <SjekklisteSeparator />}
               </React.Fragment>
             );
           })}
-      </StegContainer>
+      </SjekklisteContainer>
 
       <LeggTilArbeidsgiverModal modalRef={arbeidsgiverModalRef} />
 

@@ -1,4 +1,5 @@
 import { useRekrutteringstreffContext } from '../../../RekrutteringstreffContext';
+import { useStegviser } from './StegviserContext';
 import {
   avsluttInvitasjon,
   avsluttOppfolging,
@@ -17,8 +18,6 @@ interface Props {
   isOpen?: boolean;
   toggle?: () => void;
   stepDetails: { id: number; stepLabel: string; header: string }[];
-  alleSteg1Ok: boolean;
-  harInvitert: boolean;
 }
 
 const commonBoxProps = {
@@ -28,13 +27,7 @@ const commonBoxProps = {
   padding: '6' as const,
 };
 
-const TreffStegHeader: React.FC<Props> = ({
-  isOpen,
-  toggle,
-  stepDetails,
-  alleSteg1Ok,
-  harInvitert,
-}) => {
+const StegviserHeader: React.FC<Props> = ({ isOpen, toggle, stepDetails }) => {
   const [isPublishing, setIsPublishing] = React.useState(false);
   const [isFinishingInvitation, setIsFinishingInvitation] =
     React.useState(false);
@@ -45,6 +38,8 @@ const TreffStegHeader: React.FC<Props> = ({
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { data: rekrutteringstreffData, mutate: mutateRekrutteringstreff } =
     useRekrutteringstreff(rekrutteringstreffId);
+
+  const { activeStep, erPubliseringklar, harInvitert } = useStegviser();
 
   const onPubliserTreffet = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -110,25 +105,6 @@ const TreffStegHeader: React.FC<Props> = ({
     }
   };
 
-  const activeStep = React.useMemo(() => {
-    const hendelser = rekrutteringstreffData?.hendelser;
-    if (!hendelser) return 1;
-
-    const harHendelse = (type: string) =>
-      hendelser.some((h) => h.hendelsestype === type);
-
-    if (harHendelse('AVSLUTT') || harHendelse('AVSLUTT_OPPFØLGING')) {
-      return 4;
-    }
-    if (harHendelse('AVSLUTT_INVITASJON')) {
-      return 3;
-    }
-    if (harHendelse('PUBLISER')) {
-      return 2;
-    }
-    return 1;
-  }, [rekrutteringstreffData]);
-
   const harAvsluttet = React.useMemo(
     () =>
       rekrutteringstreffData?.hendelser?.some(
@@ -174,7 +150,7 @@ const TreffStegHeader: React.FC<Props> = ({
           <div className='flex gap-2'>
             {activeStep === 1 && (
               <Button
-                disabled={!alleSteg1Ok || isPublishing}
+                disabled={!erPubliseringklar || isPublishing}
                 loading={isPublishing}
                 size='small'
                 onClick={onPubliserTreffet}
@@ -231,4 +207,4 @@ const TreffStegHeader: React.FC<Props> = ({
   );
 };
 
-export default TreffStegHeader;
+export default StegviserHeader;

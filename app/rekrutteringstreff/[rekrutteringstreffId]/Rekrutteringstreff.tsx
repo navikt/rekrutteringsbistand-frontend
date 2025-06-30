@@ -6,7 +6,7 @@ import Aktiviteter from './components/aktiviteter/components/Aktiviteter';
 import RekrutteringstreffArbeidsgivere from './components/arbeidsgivere/Arbeidsgivere';
 import Jobbsøkere from './components/jobbsøkere/Jobbsøkere';
 import OmTreffet from './components/om-treffet/components/OmTreffet';
-import TreffSteg from './components/om-treffet/stegviser/TreffSteg';
+import Stegviser from './components/om-treffet/stegviser/Stegviser';
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
 import { Box, Tabs } from '@navikt/ds-react';
@@ -35,7 +35,7 @@ const Rekrutteringstreff: React.FC = () => {
   return (
     <Box.New>
       <TreffHeader endreTittel={fane === RekrutteringstreffTabs.OM_TREFFET} />
-      <TreffSteg />
+      <Stegviser />
       <Tabs value={fane} onChange={(val) => setFane(val)}>
         <Tabs.List className='w-full'>
           <Tabs.Tab

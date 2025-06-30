@@ -2,7 +2,7 @@ import { CheckmarkIcon } from '@navikt/aksel-icons';
 import { BodyShort, Box } from '@navikt/ds-react';
 import * as React from 'react';
 
-export const StegContainer: React.FC<{ children: React.ReactNode }> = ({
+export const SjekklisteContainer: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => (
   <div className='flex-1'>
@@ -12,7 +12,7 @@ export const StegContainer: React.FC<{ children: React.ReactNode }> = ({
   </div>
 );
 
-interface StegRadProps {
+interface SjekklisteRadProps {
   erOppfylt: boolean;
   kanKlikkes: boolean;
   onClick: () => void;
@@ -21,7 +21,7 @@ interface StegRadProps {
   ariaLabel: string;
 }
 
-export const StegRad: React.FC<StegRadProps> = ({
+export const SjekklisteRad: React.FC<SjekklisteRadProps> = ({
   erOppfylt,
   kanKlikkes,
   onClick,
@@ -58,10 +58,10 @@ export const StegRad: React.FC<StegRadProps> = ({
   </div>
 );
 
-export const StegSeparator = () => (
+export const SjekklisteSeparator = () => (
   <div className='border-b border-border-subtle my-4'></div>
 );
 
-export const StegInfoRad: React.FC<{ children: React.ReactNode }> = ({
+export const SjekklisteInfoRad: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => <div className='my-4'>{children}</div>;

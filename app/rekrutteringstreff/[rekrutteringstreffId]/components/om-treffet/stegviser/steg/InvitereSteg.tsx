@@ -1,11 +1,12 @@
 'use client';
 
+import { useStegviser } from '../StegviserContext';
 import {
-  StegContainer,
-  StegInfoRad,
-  StegRad,
-  StegSeparator,
-} from './SjekklisteItem';
+  SjekklisteContainer,
+  SjekklisteInfoRad,
+  SjekklisteRad,
+  SjekklisteSeparator,
+} from './Sjekkliste';
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
 import { BodyShort, Loader } from '@navikt/ds-react';
@@ -14,14 +15,11 @@ import * as React from 'react';
 
 interface Props {
   erDatoPassert: boolean;
-  onHarInvitertChange: (harInvitert: boolean) => void;
 }
 
-const InvitereSteg: React.FC<Props> = ({
-  erDatoPassert,
-  onHarInvitertChange,
-}) => {
+const InvitereSteg: React.FC<Props> = ({ erDatoPassert }) => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
+  const { setHarInvitert } = useStegviser();
   const router = useRouter();
   const { data: jobbsøkere, isLoading: jobbsøkereLoading } =
     useJobbsøkere(rekrutteringstreffId);
@@ -37,8 +35,8 @@ const InvitereSteg: React.FC<Props> = ({
   const harInvitert = antallInviterte > 0;
 
   React.useEffect(() => {
-    onHarInvitertChange(harInvitert);
-  }, [harInvitert, onHarInvitertChange]);
+    setHarInvitert(harInvitert);
+  }, [harInvitert, setHarInvitert]);
 
   const onInviteClick = () => {
     router.push(
@@ -53,8 +51,8 @@ const InvitereSteg: React.FC<Props> = ({
   }
 
   return (
-    <StegContainer>
-      <StegRad
+    <SjekklisteContainer>
+      <SjekklisteRad
         erOppfylt={harInvitert}
         kanKlikkes={kanInvitere}
         onClick={onInviteClick}
@@ -64,21 +62,21 @@ const InvitereSteg: React.FC<Props> = ({
           kanInvitere ? 'Inviter jobbsøkere' : 'Minst en invitasjon - Oppfylt'
         }
       />
-      <StegSeparator />
-      <StegRad
+      <SjekklisteSeparator />
+      <SjekklisteRad
         erOppfylt={erDatoPassert}
         kanKlikkes={false}
         onClick={() => {}}
         label='Arrangementets fradato har passert'
         ariaLabel='Arrangementets fradato har passert'
       />
-      <StegSeparator />
-      <StegInfoRad>
+      <SjekklisteSeparator />
+      <SjekklisteInfoRad>
         <BodyShort>
           Antall inviterte: <b>{antallInviterte}</b>
         </BodyShort>
-      </StegInfoRad>
-    </StegContainer>
+      </SjekklisteInfoRad>
+    </SjekklisteContainer>
   );
 };
 

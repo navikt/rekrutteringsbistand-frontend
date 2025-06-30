@@ -1,4 +1,7 @@
+'use client';
+
 import { useRekrutteringstreffContext } from '../../../RekrutteringstreffContext';
+import { useStegviser } from './StegviserContext';
 import AvslutteSteg from './steg/AvslutteSteg';
 import FølgeOppSteg from './steg/FølgeOppSteg';
 import InvitereSteg from './steg/InvitereSteg';
@@ -11,8 +14,6 @@ import * as React from 'react';
 
 interface Props {
   stepsForStepper: string[];
-  setAlleSteg1Ok: (erOk: boolean) => void;
-  setHarInvitert: (harInvitert: boolean) => void;
 }
 
 const commonBoxProps = {
@@ -22,33 +23,11 @@ const commonBoxProps = {
   padding: '6' as const,
 };
 
-const TreffStegContent: React.FC<Props> = ({
-  stepsForStepper,
-  setAlleSteg1Ok,
-  setHarInvitert,
-}) => {
+const StegviserContent: React.FC<Props> = ({ stepsForStepper }) => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { data: rekrutteringstreffData } =
     useRekrutteringstreff(rekrutteringstreffId);
-
-  const activeStep = React.useMemo(() => {
-    const hendelser = rekrutteringstreffData?.hendelser;
-    if (!hendelser) return 1;
-
-    const harHendelse = (type: string) =>
-      hendelser.some((h) => h.hendelsestype === type);
-
-    if (harHendelse('AVSLUTT') || harHendelse('AVSLUTT_OPPFØLGING')) {
-      return 4;
-    }
-    if (harHendelse('AVSLUTT_INVITASJON')) {
-      return 3;
-    }
-    if (harHendelse('PUBLISER')) {
-      return 2;
-    }
-    return 1;
-  }, [rekrutteringstreffData]);
+  const { activeStep } = useStegviser();
 
   const harAvsluttet = React.useMemo(
     () =>
@@ -85,14 +64,9 @@ const TreffStegContent: React.FC<Props> = ({
             </Stepper.Step>
           ))}
         </Stepper>
-        {activeStep === 1 && (
-          <PublisereSteg onAlleStegOkChange={setAlleSteg1Ok} />
-        )}
+        {activeStep === 1 && <PublisereSteg />}
         {activeStep === 2 && (
-          <InvitereSteg
-            erDatoPassert={arrangementtidspunktHarPassert}
-            onHarInvitertChange={setHarInvitert}
-          />
+          <InvitereSteg erDatoPassert={arrangementtidspunktHarPassert} />
         )}
         {activeStep === 3 && <FølgeOppSteg />}
         {activeStep === 4 && <AvslutteSteg harAvsluttet={harAvsluttet} />}
@@ -101,4 +75,4 @@ const TreffStegContent: React.FC<Props> = ({
   );
 };
 
-export default TreffStegContent;
+export default StegviserContent;
