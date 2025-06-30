@@ -61,7 +61,6 @@ const EndreTittel = ({
 
   const clearButtonRef = useRef<HTMLButtonElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
-  const modalLukkeknappRef = useRef<HTMLButtonElement | null>(null);
 
   const {
     trigger: validate,
@@ -85,28 +84,20 @@ const EndreTittel = ({
   const nyTittel = useWatch({ control, name: 'nyTittel' });
 
   const [initialFocusDone, setInitialFocusDone] = useState(false);
-  const [visTomFeil, setVisTomFeil] = useState(false);
   const [showUnchangedError, setShowUnchangedError] = useState(false);
 
   const errorMsg = useMemo(() => {
-    const err = errors.nyTittel;
-    if (err) {
-      if (err.type === 'too_big') return err.message;
-      if (err.type === 'too_small' && visTomFeil) return err.message;
-      return undefined;
-    }
+    if (errors.nyTittel) return errors.nyTittel.message;
     if (showUnchangedError) return 'Tittel er ikke endret.';
     return undefined;
-  }, [errors.nyTittel, visTomFeil, showUnchangedError]);
+  }, [errors.nyTittel, showUnchangedError]);
 
   const disableSave = useMemo(
     () =>
       !dirtyFields.nyTittel ||
-      errors.nyTittel?.type === 'too_big' ||
+      !!errors.nyTittel ||
       isSubmitting ||
       validating ||
-      !analyse ||
-      !!errors.nyTittel ||
       analyse?.bryterRetningslinjer,
     [dirtyFields.nyTittel, errors.nyTittel, isSubmitting, validating, analyse],
   );
@@ -120,17 +111,8 @@ const EndreTittel = ({
   };
 
   useEffect(() => {
-    setVisTomFeil(false);
     setShowUnchangedError(false);
   }, [nyTittel]);
-
-  useEffect(() => {
-    if (modalRef.current) {
-      modalLukkeknappRef.current = modalRef.current.querySelector(
-        '.aksel-modal__header .aksel-modal__button',
-      ) as HTMLButtonElement | null;
-    }
-  }, [modalRef]);
 
   const handleInitialFocus = () => {
     if (initialFocusDone) return;
@@ -145,6 +127,14 @@ const EndreTittel = ({
   };
 
   const save = async ({ nyTittel }: FormValues) => {
+    const validationResult = await validate({
+      tittel: nyTittel,
+      beskrivelse: null,
+    });
+    if (validationResult?.bryterRetningslinjer) {
+      return;
+    }
+
     try {
       await oppdaterRekrutteringstreff(
         rekrutteringstreff.id,
@@ -171,25 +161,8 @@ const EndreTittel = ({
     reset({ nyTittel: rekrutteringstreff.tittel });
     resetAnalyse();
     setInitialFocusDone(false);
-    setVisTomFeil(false);
     setShowUnchangedError(false);
   };
-
-  const handleValidateOrError = () => {
-    if (!dirtyFields.nyTittel) {
-      setShowUnchangedError(true);
-      setVisTomFeil(false);
-    } else if (dirtyFields.nyTittel && nyTittel?.trim()) {
-      validate({ tittel: nyTittel, beskrivelse: null });
-      setShowUnchangedError(false);
-    } else {
-      setVisTomFeil(true);
-      setShowUnchangedError(false);
-    }
-  };
-
-  const erInni = (wrapper: HTMLElement | null, el: Element | null) =>
-    !!wrapper && !!el && (wrapper === el || wrapper.contains(el));
 
   return (
     <Modal
@@ -207,24 +180,7 @@ const EndreTittel = ({
           onSubmit={handleSubmit(save)}
           className='space-y-2'
         >
-          <div
-            className='flex items-start'
-            tabIndex={-1}
-            onBlur={() =>
-              setTimeout(() => {
-                const active = document.activeElement;
-                if (
-                  !erInni(textareaRef.current, active) &&
-                  !erInni(clearButtonRef.current, active) &&
-                  !erInni(closeButtonRef.current, active) &&
-                  !erInni(modalLukkeknappRef.current, active) &&
-                  !erInni(analyseRef.current, active)
-                ) {
-                  handleValidateOrError();
-                }
-              })
-            }
-          >
+          <div className='flex items-start'>
             <Controller
               control={control}
               name='nyTittel'
@@ -241,12 +197,6 @@ const EndreTittel = ({
                   resize={false}
                   className='w-full pt-2'
                   error={errorMsg}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      e.preventDefault();
-                      handleValidateOrError();
-                    }
-                  }}
                 />
               )}
             />
@@ -368,6 +318,11 @@ const EndreTittel = ({
           ref={lagreButtonRef}
           loading={isSubmitting}
           disabled={disableSave}
+          onClick={() => {
+            if (!dirtyFields.nyTittel) {
+              setShowUnchangedError(true);
+            }
+          }}
         >
           Lagre
         </Button>
