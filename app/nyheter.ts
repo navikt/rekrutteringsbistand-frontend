@@ -30,7 +30,7 @@ export const nyheter: NyhetDTO[] = [
     beskrivelse:
       '<p>Rekrutteringsbistand tar ikke lenger hensyn til FRKAS som synlighetsregel for CV-er kandidatsøket i Rekrutteringsbistand.<br/><br/>' +
       'FRKAS er en kode som settes i Arena, og betyr «fritatt fra kandidatsøk». De oppdaterte synlighetsreglene kan du se på Navet:<br/>' +
-      '<a target="_new" href="https://navno.sharepoint.com/:u:/r/sites/fag-og-ytelser-arbeid-markedsarbeid/SitePages/Hvorfor-er-ikke-personen-synlig-i-Rekr.aspx?csf=1&web=1&e=DyQEFN">Regler som styrer synlighet for CV i Rekrutteringsbistand</a></p>',
+      '<a target="_blank" rel="noopener noreferrer" href="https://navno.sharepoint.com/:u:/r/sites/fag-og-ytelser-arbeid-markedsarbeid/SitePages/Hvorfor-er-ikke-personen-synlig-i-Rekr.aspx?csf=1&web=1&e=DyQEFN">Regler som styrer synlighet for CV i Rekrutteringsbistand</a></p>',
     dato: '30.06.2025',
     id: '6',
     opprettetAv: null,
