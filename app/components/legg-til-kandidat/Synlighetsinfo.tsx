@@ -35,10 +35,6 @@ const Synlighetsinfo: React.FC<SynlighetsinfoProps> = ({ fødselsnummer }) => {
               eller med en CV som ble opprettet før hen kom under oppfølging av
               Nav.
             </li>
-            <li>
-              Personbruker har personforholdet «Fritatt for kandidatsøk» i
-              Arena.
-            </li>
             <li>Personbruker må være i Navs Arbeidssøkerregister.</li>
             <li>Personbruker har status «Egen ansatt».</li>
             <li>
@@ -54,7 +50,7 @@ const Synlighetsinfo: React.FC<SynlighetsinfoProps> = ({ fødselsnummer }) => {
             onClick={() => setVisSynlighetsEvaluering(true)}
             variant='secondary'
           >
-            Se hvorfor kandidaten ikke er synlig (punkt 1-5)
+            Se hvorfor kandidaten ikke er synlig (punkt 1-4)
           </Button>
         </div>
       )}
