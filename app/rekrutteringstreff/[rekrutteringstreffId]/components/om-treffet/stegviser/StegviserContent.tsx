@@ -8,8 +8,6 @@ import InvitereSteg from './steg/InvitereSteg';
 import PublisereSteg from './steg/PublisereSteg';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { Box, Stepper } from '@navikt/ds-react';
-import { parseISO } from 'date-fns';
-import { toZonedTime } from 'date-fns-tz';
 import * as React from 'react';
 
 interface Props {
@@ -37,14 +35,6 @@ const StegviserContent: React.FC<Props> = ({ stepsForStepper }) => {
     [rekrutteringstreffData],
   );
 
-  const arrangementtidspunktHarPassert = React.useMemo(() => {
-    if (!rekrutteringstreffData?.fraTid) return false;
-    return (
-      toZonedTime(parseISO(rekrutteringstreffData.fraTid), 'Europe/Oslo') <
-      new Date()
-    );
-  }, [rekrutteringstreffData?.fraTid]);
-
   return (
     <Box.New
       {...commonBoxProps}
@@ -65,9 +55,7 @@ const StegviserContent: React.FC<Props> = ({ stepsForStepper }) => {
           ))}
         </Stepper>
         {activeStep === 1 && <PublisereSteg />}
-        {activeStep === 2 && (
-          <InvitereSteg erDatoPassert={arrangementtidspunktHarPassert} />
-        )}
+        {activeStep === 2 && <InvitereSteg />}
         {activeStep === 3 && <FølgeOppSteg />}
         {activeStep === 4 && <AvslutteSteg harAvsluttet={harAvsluttet} />}
       </div>

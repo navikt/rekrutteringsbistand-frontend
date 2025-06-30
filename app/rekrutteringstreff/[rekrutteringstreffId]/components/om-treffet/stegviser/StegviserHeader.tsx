@@ -1,3 +1,5 @@
+'use client';
+
 import { useRekrutteringstreffContext } from '../../../RekrutteringstreffContext';
 import { useStegviser } from './StegviserContext';
 import {
@@ -9,9 +11,7 @@ import {
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { RekbisError } from '@/util/rekbisError';
 import { ChevronDownIcon, ChevronUpIcon } from '@navikt/aksel-icons';
-import { Box, Button, Heading } from '@navikt/ds-react';
-import { parseISO } from 'date-fns';
-import { toZonedTime } from 'date-fns-tz';
+import { Box, Button, Heading, BodyShort } from '@navikt/ds-react';
 import * as React from 'react';
 
 interface Props {
@@ -27,6 +27,30 @@ const commonBoxProps = {
   padding: '6' as const,
 };
 
+interface SjekklisteProgressBarProps {
+  fullforte: number;
+  totalt: number;
+}
+
+const SjekklisteProgressBar: React.FC<SjekklisteProgressBarProps> = ({
+  fullforte,
+  totalt,
+}) => {
+  if (totalt === 0) return null;
+  return (
+    <div className='flex w-full gap-1 mt-2'>
+      {Array.from({ length: totalt }, (_, i) => (
+        <div
+          key={i}
+          className={`h-1 flex-grow rounded-full ${
+            i < fullforte ? 'bg-blue-500' : 'bg-gray-300'
+          }`}
+        />
+      ))}
+    </div>
+  );
+};
+
 const StegviserHeader: React.FC<Props> = ({ isOpen, toggle, stepDetails }) => {
   const [isPublishing, setIsPublishing] = React.useState(false);
   const [isFinishingInvitation, setIsFinishingInvitation] =
@@ -39,7 +63,16 @@ const StegviserHeader: React.FC<Props> = ({ isOpen, toggle, stepDetails }) => {
   const { data: rekrutteringstreffData, mutate: mutateRekrutteringstreff } =
     useRekrutteringstreff(rekrutteringstreffId);
 
-  const { activeStep, erPubliseringklar, harInvitert } = useStegviser();
+  const {
+    activeStep,
+    erPubliseringklar,
+    harInvitert,
+    sjekklistePunkterFullfort,
+    totaltAntallSjekklistePunkter,
+    inviterePunkterFullfort,
+    totaltAntallInviterePunkter,
+    arrangementtidspunktHarPassert,
+  } = useStegviser();
 
   const onPubliserTreffet = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -113,14 +146,6 @@ const StegviserHeader: React.FC<Props> = ({ isOpen, toggle, stepDetails }) => {
     [rekrutteringstreffData],
   );
 
-  const arrangementtidspunktHarPassert = React.useMemo(() => {
-    if (!rekrutteringstreffData?.fraTid) return false;
-    return (
-      toZonedTime(parseISO(rekrutteringstreffData.fraTid), 'Europe/Oslo') <
-      new Date()
-    );
-  }, [rekrutteringstreffData?.fraTid]);
-
   const currentHeader =
     stepDetails.find((d) => d.id === activeStep)?.header ?? 'Steg';
 
@@ -140,12 +165,42 @@ const StegviserHeader: React.FC<Props> = ({ isOpen, toggle, stepDetails }) => {
       }}
     >
       <div className='flex items-center justify-between w-full'>
-        <Heading size='small' className='flex items-center'>
-          <span className='mr-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-gray-800 text-sm text-white'>
-            {activeStep}
-          </span>
-          {currentHeader}
-        </Heading>
+        <div className='flex-grow mr-4'>
+          <div className='flex items-center justify-between'>
+            <div className='flex items-center'>
+              <span className='mr-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-gray-800 text-sm text-white'>
+                {activeStep}
+              </span>
+              <Heading size='small'>{currentHeader}</Heading>
+            </div>
+            <div>
+              {activeStep === 1 && (
+                <BodyShort className='text-text-subtle whitespace-nowrap'>
+                  {sjekklistePunkterFullfort} / {totaltAntallSjekklistePunkter}
+                </BodyShort>
+              )}
+              {activeStep === 2 && (
+                <BodyShort className='text-text-subtle whitespace-nowrap'>
+                  {inviterePunkterFullfort} / {totaltAntallInviterePunkter}
+                </BodyShort>
+              )}
+            </div>
+          </div>
+          <div>
+            {activeStep === 1 && (
+              <SjekklisteProgressBar
+                fullforte={sjekklistePunkterFullfort}
+                totalt={totaltAntallSjekklistePunkter}
+              />
+            )}
+            {activeStep === 2 && (
+              <SjekklisteProgressBar
+                fullforte={inviterePunkterFullfort}
+                totalt={totaltAntallInviterePunkter}
+              />
+            )}
+          </div>
+        </div>
         <div className='flex items-center gap-4'>
           <div className='flex gap-2'>
             {activeStep === 1 && (
@@ -206,5 +261,4 @@ const StegviserHeader: React.FC<Props> = ({ isOpen, toggle, stepDetails }) => {
     </Box.New>
   );
 };
-
 export default StegviserHeader;

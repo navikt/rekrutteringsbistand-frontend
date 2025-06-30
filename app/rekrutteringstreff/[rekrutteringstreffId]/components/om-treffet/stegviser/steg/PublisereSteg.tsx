@@ -6,7 +6,6 @@ import InnleggModal from '../../components/innlegg/InnleggModal';
 import StedModal from '../../components/sted/StedModal';
 import TidspunktModal from '../../components/tidspunkt/TidspunktModal';
 import SvarfristModal from '../../components/tidspunkt/svarfrist/SvarfristModal';
-import { useStegviser } from '../StegviserContext';
 import {
   SjekklisteContainer,
   SjekklisteRad,
@@ -16,18 +15,12 @@ import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
-import { RekbisError } from '@/util/rekbisError';
 import { Detail, Loader } from '@navikt/ds-react';
 import * as React from 'react';
 
 const DEFAULT_TITTEL = 'Nytt rekrutteringstreff';
 
-export interface ChecklistItem {
-  id: string;
-  label: string;
-}
-
-const sjekklisteData: ChecklistItem[] = [
+const sjekklisteData = [
   { id: 'arbeidsgiver', label: 'Minst 1 arbeidsgiver' },
   { id: 'navn', label: 'Navn' },
   { id: 'sted', label: 'Sted' },
@@ -38,7 +31,6 @@ const sjekklisteData: ChecklistItem[] = [
 
 const PublisereSteg = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
-  const { setErPubliseringklar } = useStegviser();
 
   const arbeidsgiverModalRef = React.useRef<HTMLDialogElement>(null);
   const endreTittelModalRef = React.useRef<HTMLDialogElement>(null);
@@ -47,41 +39,18 @@ const PublisereSteg = () => {
   const svarfristModalRef = React.useRef<HTMLDialogElement>(null);
   const innleggModalRef = React.useRef<HTMLDialogElement>(null);
 
-  const {
-    data: arbeidsgivereData,
-    isLoading: arbeidsgivereLoading,
-    error: arbeidsgivereError,
-  } = useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
+  const { data: arbeidsgivereData, isLoading: arbeidsgivereLoading } =
+    useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
   const {
     data: rekrutteringstreffData,
     isLoading: rekrutteringstreffLoading,
-    error: rekrutteringstreffError,
     mutate: mutateRekrutteringstreff,
   } = useRekrutteringstreff(rekrutteringstreffId);
   const {
     data: innleggData,
     isLoading: innleggLoading,
-    error: innleggError,
     mutate: mutateInnlegg,
   } = useInnlegg(rekrutteringstreffId);
-
-  React.useEffect(() => {
-    if (arbeidsgivereError)
-      new RekbisError({
-        message: 'Feil ved henting av arbeidsgivere:',
-        error: arbeidsgivereError,
-      });
-    if (rekrutteringstreffError)
-      new RekbisError({
-        message: 'Feil ved henting av rekrutteringstreff:',
-        error: rekrutteringstreffError,
-      });
-    if (innleggError)
-      new RekbisError({
-        message: 'Feil ved henting av innlegg:',
-        error: innleggError,
-      });
-  }, [arbeidsgivereError, rekrutteringstreffError, innleggError]);
 
   const checkedItems: Record<string, boolean> = React.useMemo(() => {
     const tittel = rekrutteringstreffData?.tittel?.trim() ?? '';
@@ -96,11 +65,6 @@ const PublisereSteg = () => {
       omtreffet: (innleggData?.length ?? 0) > 0,
     };
   }, [arbeidsgivereData, rekrutteringstreffData, innleggData]);
-
-  React.useEffect(() => {
-    const alleOk = sjekklisteData.every((item) => checkedItems[item.id]);
-    setErPubliseringklar(alleOk);
-  }, [checkedItems, setErPubliseringklar]);
 
   const handleClickSjekklisteItem = (id: string) => {
     if (id === 'arbeidsgiver') arbeidsgiverModalRef.current?.showModal();
