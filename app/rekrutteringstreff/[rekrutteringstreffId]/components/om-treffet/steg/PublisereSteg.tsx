@@ -26,46 +26,56 @@ const PublisereSteg: React.FC<Props> = ({
       {loading && <Loader size='medium' title='Laster sjekkliste status...' />}
 
       {!loading && (
-        <ul className='space-y-0'>
+        <div className='space-y-0'>
           {sjekklisteData.map((item) => {
             const erOppfylt = !!checkedItems[item.id];
             const kanKlikkes = !erOppfylt;
+            const visRamme =
+              item.id === 'arbeidsgiver' || item.id === 'svarfrist';
             return (
-              <li
-                key={item.id}
-                onClick={() => kanKlikkes && handleClickSjekklisteItem(item.id)}
-                onKeyDown={(e) => {
-                  if (kanKlikkes && (e.key === 'Enter' || e.key === ' ')) {
-                    e.preventDefault();
-                    handleClickSjekklisteItem(item.id);
+              <React.Fragment key={item.id}>
+                <div
+                  onClick={() =>
+                    kanKlikkes && handleClickSjekklisteItem(item.id)
                   }
-                }}
-                className={`flex items-center justify-between py-4 ${
-                  item.id === 'arbeidsgiver' || item.id === 'svarfrist'
-                    ? 'border-b border-border-subtle mb-1'
-                    : ''
-                } ${kanKlikkes ? 'cursor-pointer hover:bg-[var(--ax-bg-neutral-moderate-hover)] rounded' : ''}`}
-                role={kanKlikkes ? 'button' : undefined}
-                tabIndex={kanKlikkes ? 0 : undefined}
-                aria-label={
-                  kanKlikkes
-                    ? `Legg til eller rediger ${item.label}`
-                    : `${item.label} - Oppfylt`
-                }
-              >
-                <div className='flex items-center gap-2'>
-                  <div className='w-5 h-5 border-2 rounded-full flex items-center justify-center border-blue-400 text-blue-400'>
-                    {erOppfylt && <CheckmarkIcon fontSize='1rem' />}
+                  onKeyDown={(e) => {
+                    if (kanKlikkes && (e.key === 'Enter' || e.key === ' ')) {
+                      e.preventDefault();
+                      handleClickSjekklisteItem(item.id);
+                    }
+                  }}
+                  className={`flex items-center justify-between my-4 ${
+                    kanKlikkes
+                      ? 'cursor-pointer hover:bg-[var(--ax-bg-neutral-moderate-hover)] rounded'
+                      : ''
+                  }`}
+                  role={kanKlikkes ? 'button' : undefined}
+                  tabIndex={kanKlikkes ? 0 : undefined}
+                  aria-label={
+                    kanKlikkes
+                      ? `Legg til eller rediger ${item.label}`
+                      : `${item.label} - Oppfylt`
+                  }
+                >
+                  <div className='flex items-center gap-2'>
+                    <div className='w-5 h-5 border-2 rounded-full flex items-center justify-center border-blue-400 text-blue-400'>
+                      {erOppfylt && <CheckmarkIcon fontSize='1rem' />}
+                    </div>
+                    <BodyShort>{item.label}</BodyShort>
                   </div>
-                  <BodyShort>{item.label}</BodyShort>
+                  {kanKlikkes && (
+                    <BodyShort className='text-blue-400 px-1'>
+                      Legg til
+                    </BodyShort>
+                  )}
                 </div>
-                {kanKlikkes && (
-                  <BodyShort className='text-blue-400 px-1'>Legg til</BodyShort>
+                {visRamme && (
+                  <div className='border-b border-border-subtle my-4'></div>
                 )}
-              </li>
+              </React.Fragment>
             );
           })}
-        </ul>
+        </div>
       )}
     </div>
   );
