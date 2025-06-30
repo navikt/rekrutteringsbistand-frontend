@@ -44,7 +44,7 @@ const PublisereSteg: React.FC<Props> = ({
                   item.id === 'arbeidsgiver' || item.id === 'svarfrist'
                     ? 'border-b border-border-subtle mb-1'
                     : ''
-                } ${kanKlikkes ? 'cursor-pointer hover:bg-gray-800 rounded' : ''}`}
+                } ${kanKlikkes ? 'cursor-pointer hover:bg-[var(--ax-bg-neutral-moderate-hover)] rounded' : ''}`}
                 role={kanKlikkes ? 'button' : undefined}
                 tabIndex={kanKlikkes ? 0 : undefined}
                 aria-label={
