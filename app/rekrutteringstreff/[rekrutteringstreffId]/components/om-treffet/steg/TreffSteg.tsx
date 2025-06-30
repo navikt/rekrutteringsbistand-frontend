@@ -1,46 +1,28 @@
 'use client';
 
 import { useRekrutteringstreffContext } from '../../../RekrutteringstreffContext';
-import LeggTilArbeidsgiverModal from '../../LeggTilArbeidsgiverModal';
-import EndreTittel from '../components/EndreTittel';
-import InnleggModal from '../components/innlegg/InnleggModal';
-import StedModal from '../components/sted/StedModal';
-import TidspunktModal from '../components/tidspunkt/TidspunktModal';
-import SvarfristModal from '../components/tidspunkt/svarfrist/SvarfristModal';
-import TreffStegRouter from './TreffStegRouter';
+import AvslutteSteg from './AvslutteSteg';
+import FølgeOppSteg from './FølgeOppSteg';
+import InvitereSteg from './InvitereSteg';
+import PublisereSteg from './PublisereSteg';
 import {
   avsluttInvitasjon,
   avsluttOppfolging,
   avsluttRekrutteringstreff,
   publiserRekrutteringstreff,
 } from '@/app/api/rekrutteringstreff/[...slug]/steg';
-import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
-import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
-import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { RekbisError } from '@/util/rekbisError';
 import { ChevronDownIcon, ChevronUpIcon } from '@navikt/aksel-icons';
 import { Box, Button, Heading, Stepper } from '@navikt/ds-react';
 import { parseISO } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
-import { useRouter } from 'next/navigation';
 import * as React from 'react';
 
 export interface ChecklistItem {
   id: string;
   label: string;
 }
-
-const DEFAULT_TITTEL = 'Nytt rekrutteringstreff';
-
-const sjekklisteData: ChecklistItem[] = [
-  { id: 'arbeidsgiver', label: 'Minst 1 arbeidsgiver' },
-  { id: 'navn', label: 'Navn' },
-  { id: 'sted', label: 'Sted' },
-  { id: 'tidspunkt', label: 'Tidspunkt' },
-  { id: 'svarfrist', label: 'Svarfrist' },
-  { id: 'omtreffet', label: 'Om treffet' },
-];
 
 const stepDetails = [
   { id: 1, stepLabel: 'Publisere', header: 'Gjør klar til publisering' },
@@ -61,7 +43,6 @@ const stepsForStepper = stepDetails.map((d) => d.stepLabel);
 
 const TreffSteg = () => {
   const [isOpen, setIsOpen] = React.useState(false);
-  const toggle = () => setIsOpen((o) => !o);
   const [isPublishing, setIsPublishing] = React.useState(false);
   const [isFinishingInvitation, setIsFinishingInvitation] =
     React.useState(false);
@@ -69,122 +50,15 @@ const TreffSteg = () => {
   const [isFinishingRecruitment, setIsFinishingRecruitment] =
     React.useState(false);
 
+  // State som deles mellom stegene
+  const [alleSteg1Ok, setAlleSteg1Ok] = React.useState(false);
+  const [harInvitert, setHarInvitert] = React.useState(false);
+
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
-  const arbeidsgiverModalRef = React.useRef<HTMLDialogElement>(null);
-  const endreTittelModalRef = React.useRef<HTMLDialogElement>(null);
-  const tidspunktModalRef = React.useRef<HTMLDialogElement>(null);
-  const stedModalRef = React.useRef<HTMLDialogElement>(null);
-  const svarfristModalRef = React.useRef<HTMLDialogElement>(null);
-  const innleggModalRef = React.useRef<HTMLDialogElement>(null);
-  const router = useRouter();
+  const { data: rekrutteringstreffData, mutate: mutateRekrutteringstreff } =
+    useRekrutteringstreff(rekrutteringstreffId);
 
-  const {
-    data: arbeidsgivereData,
-    isLoading: arbeidsgivereLoading,
-    error: arbeidsgivereError,
-  } = useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
-
-  const {
-    data: jobbsøkereData,
-    isLoading: jobbsøkereLoading,
-    error: jobbsøkereError,
-  } = useJobbsøkere(rekrutteringstreffId);
-
-  const {
-    data: rekrutteringstreffData,
-    isLoading: rekrutteringstreffLoading,
-    error: rekrutteringstreffError,
-    mutate: mutateRekrutteringstreff,
-  } = useRekrutteringstreff(rekrutteringstreffId);
-
-  const {
-    data: innleggData,
-    isLoading: innleggLoading,
-    error: innleggError,
-    mutate: mutateInnlegg,
-  } = useInnlegg(rekrutteringstreffId);
-
-  const [checkedItems, setCheckedItems] = React.useState<
-    Record<string, boolean>
-  >(
-    () =>
-      Object.fromEntries(sjekklisteData.map(({ id }) => [id, false])) as Record<
-        string,
-        boolean
-      >,
-  );
-
-  React.useEffect(() => {
-    if (arbeidsgivereData) {
-      setCheckedItems((c) => ({
-        ...c,
-        arbeidsgiver: arbeidsgivereData.length > 0,
-      }));
-    }
-    if (arbeidsgivereError)
-      new RekbisError({
-        message: 'Feil ved henting av arbeidsgivere:',
-        error: arbeidsgivereError,
-      });
-  }, [arbeidsgivereData, arbeidsgivereError]);
-
-  React.useEffect(() => {
-    if (rekrutteringstreffData) {
-      const tittel = rekrutteringstreffData.tittel?.trim() ?? '';
-      setCheckedItems((c) => ({
-        ...c,
-        navn: tittel.length > 0 && tittel !== DEFAULT_TITTEL,
-        sted:
-          !!rekrutteringstreffData.gateadresse?.trim() &&
-          !!rekrutteringstreffData.poststed?.trim(),
-        tidspunkt: !!rekrutteringstreffData.fraTid,
-        svarfrist: !!rekrutteringstreffData.svarfrist,
-      }));
-    }
-    if (rekrutteringstreffError)
-      new RekbisError({
-        message: 'Feil ved henting av rekrutteringstreff:',
-        error: rekrutteringstreffError,
-      });
-  }, [rekrutteringstreffData, rekrutteringstreffError]);
-
-  React.useEffect(() => {
-    if (innleggData && innleggData.length > 0) {
-      setCheckedItems((c) => ({ ...c, omtreffet: innleggData.length > 0 }));
-    }
-    if (innleggError)
-      new RekbisError({
-        message: 'Feil ved henting av innlegg:',
-        error: innleggError,
-      });
-  }, [innleggData, innleggError]);
-
-  React.useEffect(() => {
-    if (jobbsøkereError)
-      new RekbisError({
-        message: 'Feil ved henting av jobbsøkere:',
-        error: jobbsøkereError,
-      });
-  }, [jobbsøkereError]);
-
-  const handleClickSjekklisteItem = (id: string) => {
-    if (checkedItems[id]) return;
-    if (id === 'arbeidsgiver') arbeidsgiverModalRef.current?.showModal();
-    if (id === 'navn') endreTittelModalRef.current?.showModal();
-    if (id === 'tidspunkt') tidspunktModalRef.current?.showModal();
-    if (id === 'sted') stedModalRef.current?.showModal();
-    if (id === 'svarfrist') svarfristModalRef.current?.showModal();
-    if (id === 'omtreffet') innleggModalRef.current?.showModal();
-  };
-
-  const commonBoxProps = {
-    background: 'raised' as const,
-    borderColor: 'neutral-subtleA' as const,
-    borderWidth: '1' as const,
-    padding: '6' as const,
-  };
-
-  const alleStegOk = sjekklisteData.every((item) => checkedItems[item.id]);
+  const toggle = () => setIsOpen((o) => !o);
 
   const onPubliserTreffet = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -250,14 +124,6 @@ const TreffSteg = () => {
     }
   };
 
-  const harAvsluttet = React.useMemo(
-    () =>
-      rekrutteringstreffData?.hendelser?.some(
-        (h) => h.hendelsestype === 'AVSLUTT',
-      ),
-    [rekrutteringstreffData],
-  );
-
   const activeStep = React.useMemo(() => {
     const hendelser = rekrutteringstreffData?.hendelser;
     if (!hendelser) return 1;
@@ -277,15 +143,13 @@ const TreffSteg = () => {
     return 1;
   }, [rekrutteringstreffData]);
 
-  const currentHeader =
-    stepDetails.find((d) => d.id === activeStep)?.header ?? 'Steg';
-
-  const antallInviterte =
-    jobbsøkereData?.filter((j) =>
-      j.hendelser?.some((h) => h.hendelsestype === 'INVITER'),
-    ).length ?? 0;
-
-  const harInvitert = antallInviterte > 0;
+  const harAvsluttet = React.useMemo(
+    () =>
+      rekrutteringstreffData?.hendelser?.some(
+        (h) => h.hendelsestype === 'AVSLUTT',
+      ),
+    [rekrutteringstreffData],
+  );
 
   const arrangementtidspunktHarPassert = React.useMemo(() => {
     if (!rekrutteringstreffData?.fraTid) return false;
@@ -294,6 +158,16 @@ const TreffSteg = () => {
       new Date()
     );
   }, [rekrutteringstreffData?.fraTid]);
+
+  const currentHeader =
+    stepDetails.find((d) => d.id === activeStep)?.header ?? 'Steg';
+
+  const commonBoxProps = {
+    background: 'raised' as const,
+    borderColor: 'neutral-subtleA' as const,
+    borderWidth: '1' as const,
+    padding: '6' as const,
+  };
 
   return (
     <div className='my-2'>
@@ -322,7 +196,7 @@ const TreffSteg = () => {
             <div className='flex gap-2'>
               {activeStep === 1 && (
                 <Button
-                  disabled={!alleStegOk || isPublishing}
+                  disabled={!alleSteg1Ok || isPublishing}
                   loading={isPublishing}
                   size='small'
                   onClick={onPubliserTreffet}
@@ -336,9 +210,8 @@ const TreffSteg = () => {
                   size='small'
                   disabled={
                     !harInvitert ||
-                    jobbsøkereLoading ||
-                    isFinishingInvitation ||
-                    !arrangementtidspunktHarPassert
+                    !arrangementtidspunktHarPassert ||
+                    isFinishingInvitation
                   }
                   loading={isFinishingInvitation}
                   onClick={onAvsluttInvitasjon}
@@ -397,63 +270,21 @@ const TreffSteg = () => {
                 </Stepper.Step>
               ))}
             </Stepper>
-            <TreffStegRouter
-              activeStep={activeStep}
-              sjekklisteData={sjekklisteData}
-              checkedItems={checkedItems}
-              handleClickSjekklisteItem={handleClickSjekklisteItem}
-              loading={
-                arbeidsgivereLoading ||
-                rekrutteringstreffLoading ||
-                innleggLoading
-              }
-              harInvitert={harInvitert}
-              antallInviterte={antallInviterte}
-              onInviteClick={() =>
-                router.push(
-                  `/rekrutteringstreff/${rekrutteringstreffId}?visFane=jobbsøkere`,
-                )
-              }
-              harAvsluttet={harAvsluttet || false}
-              erDatoPassert={arrangementtidspunktHarPassert}
-            />
+            {activeStep === 1 && (
+              <PublisereSteg onAlleStegOkChange={setAlleSteg1Ok} />
+            )}
+            {activeStep === 2 && (
+              <InvitereSteg
+                erDatoPassert={arrangementtidspunktHarPassert}
+                onHarInvitertChange={setHarInvitert}
+              />
+            )}
+            {activeStep === 3 && <FølgeOppSteg />}
+            {activeStep === 4 && (
+              <AvslutteSteg harAvsluttet={harAvsluttet || false} />
+            )}
           </div>
         </Box.New>
-      )}
-
-      <LeggTilArbeidsgiverModal modalRef={arbeidsgiverModalRef} />
-
-      {rekrutteringstreffData && (
-        <>
-          <EndreTittel
-            modalRef={endreTittelModalRef}
-            rekrutteringstreff={rekrutteringstreffData}
-            onUpdated={() => mutateRekrutteringstreff()}
-          />
-          <TidspunktModal
-            rekrutteringstreff={rekrutteringstreffData}
-            modalRef={tidspunktModalRef}
-            onUpdated={() => mutateRekrutteringstreff()}
-          />
-          <StedModal
-            rekrutteringstreff={rekrutteringstreffData}
-            onUpdated={() => mutateRekrutteringstreff()}
-            modalRef={stedModalRef}
-          />
-          <SvarfristModal
-            rekrutteringstreff={rekrutteringstreffData}
-            onUpdated={() => mutateRekrutteringstreff()}
-            modalRef={svarfristModalRef}
-          />
-          <InnleggModal
-            rekrutteringstreffId={rekrutteringstreffData.id}
-            innlegg={
-              innleggData && innleggData.length > 0 ? innleggData[0] : undefined
-            }
-            onInnleggUpdated={() => mutateInnlegg()}
-            modalRef={innleggModalRef}
-          />
-        </>
       )}
     </div>
   );

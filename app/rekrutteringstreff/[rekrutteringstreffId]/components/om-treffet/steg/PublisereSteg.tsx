@@ -1,83 +1,216 @@
+'use client';
+
+import { useRekrutteringstreffContext } from '../../../RekrutteringstreffContext';
+import LeggTilArbeidsgiverModal from '../../LeggTilArbeidsgiverModal';
+import EndreTittel from '../components/EndreTittel';
+import InnleggModal from '../components/innlegg/InnleggModal';
+import StedModal from '../components/sted/StedModal';
+import TidspunktModal from '../components/tidspunkt/TidspunktModal';
+import SvarfristModal from '../components/tidspunkt/svarfrist/SvarfristModal';
 import { ChecklistItem } from './TreffSteg';
+import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
+import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
+import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
+import { RekbisError } from '@/util/rekbisError';
 import { CheckmarkIcon } from '@navikt/aksel-icons';
 import { BodyShort, Detail, Loader } from '@navikt/ds-react';
 import * as React from 'react';
 
+const DEFAULT_TITTEL = 'Nytt rekrutteringstreff';
+
+const sjekklisteData: ChecklistItem[] = [
+  { id: 'arbeidsgiver', label: 'Minst 1 arbeidsgiver' },
+  { id: 'navn', label: 'Navn' },
+  { id: 'sted', label: 'Sted' },
+  { id: 'tidspunkt', label: 'Tidspunkt' },
+  { id: 'svarfrist', label: 'Svarfrist' },
+  { id: 'omtreffet', label: 'Om treffet' },
+];
+
 interface Props {
-  sjekklisteData: ChecklistItem[];
-  checkedItems: Record<string, boolean>;
-  handleClickSjekklisteItem: (id: string) => void;
-  loading: boolean;
+  onAlleStegOkChange: (erOk: boolean) => void;
 }
 
-const PublisereSteg: React.FC<Props> = ({
-  sjekklisteData,
-  checkedItems,
-  handleClickSjekklisteItem,
-  loading,
-}) => {
+const PublisereSteg: React.FC<Props> = ({ onAlleStegOkChange }) => {
+  const { rekrutteringstreffId } = useRekrutteringstreffContext();
+
+  // Modal-referanser
+  const arbeidsgiverModalRef = React.useRef<HTMLDialogElement>(null);
+  const endreTittelModalRef = React.useRef<HTMLDialogElement>(null);
+  const tidspunktModalRef = React.useRef<HTMLDialogElement>(null);
+  const stedModalRef = React.useRef<HTMLDialogElement>(null);
+  const svarfristModalRef = React.useRef<HTMLDialogElement>(null);
+  const innleggModalRef = React.useRef<HTMLDialogElement>(null);
+
+  const {
+    data: arbeidsgivereData,
+    isLoading: arbeidsgivereLoading,
+    error: arbeidsgivereError,
+  } = useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
+  const {
+    data: rekrutteringstreffData,
+    isLoading: rekrutteringstreffLoading,
+    error: rekrutteringstreffError,
+    mutate: mutateRekrutteringstreff,
+  } = useRekrutteringstreff(rekrutteringstreffId);
+  const {
+    data: innleggData,
+    isLoading: innleggLoading,
+    error: innleggError,
+    mutate: mutateInnlegg,
+  } = useInnlegg(rekrutteringstreffId);
+
+  React.useEffect(() => {
+    if (arbeidsgivereError)
+      new RekbisError({
+        message: 'Feil ved henting av arbeidsgivere:',
+        error: arbeidsgivereError,
+      });
+    if (rekrutteringstreffError)
+      new RekbisError({
+        message: 'Feil ved henting av rekrutteringstreff:',
+        error: rekrutteringstreffError,
+      });
+    if (innleggError)
+      new RekbisError({
+        message: 'Feil ved henting av innlegg:',
+        error: innleggError,
+      });
+  }, [arbeidsgivereError, rekrutteringstreffError, innleggError]);
+
+  const checkedItems: Record<string, boolean> = React.useMemo(() => {
+    const tittel = rekrutteringstreffData?.tittel?.trim() ?? '';
+    return {
+      arbeidsgiver: (arbeidsgivereData?.length ?? 0) > 0,
+      navn: tittel.length > 0 && tittel !== DEFAULT_TITTEL,
+      sted:
+        !!rekrutteringstreffData?.gateadresse?.trim() &&
+        !!rekrutteringstreffData?.poststed?.trim(),
+      tidspunkt: !!rekrutteringstreffData?.fraTid,
+      svarfrist: !!rekrutteringstreffData?.svarfrist,
+      omtreffet: (innleggData?.length ?? 0) > 0,
+    };
+  }, [arbeidsgivereData, rekrutteringstreffData, innleggData]);
+
+  React.useEffect(() => {
+    const alleOk = sjekklisteData.every((item) => checkedItems[item.id]);
+    onAlleStegOkChange(alleOk);
+  }, [checkedItems, onAlleStegOkChange]);
+
+  const handleClickSjekklisteItem = (id: string) => {
+    if (checkedItems[id]) return;
+    if (id === 'arbeidsgiver') arbeidsgiverModalRef.current?.showModal();
+    if (id === 'navn') endreTittelModalRef.current?.showModal();
+    if (id === 'tidspunkt') tidspunktModalRef.current?.showModal();
+    if (id === 'sted') stedModalRef.current?.showModal();
+    if (id === 'svarfrist') svarfristModalRef.current?.showModal();
+    if (id === 'omtreffet') innleggModalRef.current?.showModal();
+  };
+
+  const loading =
+    arbeidsgivereLoading || rekrutteringstreffLoading || innleggLoading;
+
   return (
-    <div className='flex-1'>
-      <Detail spacing>
-        Før treffet er tilgjengelig for andre, og du kan invitere jobbsøker må
-        noen detaljer være på plass først:
-      </Detail>
+    <>
+      <div className='flex-1'>
+        <Detail spacing>
+          Før treffet er tilgjengelig for andre, og du kan invitere jobbsøker må
+          noen detaljer være på plass først:
+        </Detail>
 
-      {loading && <Loader size='medium' title='Laster sjekkliste status...' />}
+        {loading && (
+          <Loader size='medium' title='Laster sjekkliste status...' />
+        )}
 
-      {!loading && (
-        <div className='space-y-0'>
-          {sjekklisteData.map((item) => {
-            const erOppfylt = !!checkedItems[item.id];
-            const kanKlikkes = !erOppfylt;
-            const visRamme =
-              item.id === 'arbeidsgiver' || item.id === 'svarfrist';
-            return (
-              <React.Fragment key={item.id}>
-                <div
-                  onClick={() =>
-                    kanKlikkes && handleClickSjekklisteItem(item.id)
-                  }
-                  onKeyDown={(e) => {
-                    if (kanKlikkes && (e.key === 'Enter' || e.key === ' ')) {
-                      e.preventDefault();
-                      handleClickSjekklisteItem(item.id);
+        {!loading && (
+          <div className='space-y-0'>
+            {sjekklisteData.map((item) => {
+              const erOppfylt = !!checkedItems[item.id];
+              const kanKlikkes = !erOppfylt;
+              const visRamme =
+                item.id === 'arbeidsgiver' || item.id === 'svarfrist';
+              return (
+                <React.Fragment key={item.id}>
+                  <div
+                    onClick={() =>
+                      kanKlikkes && handleClickSjekklisteItem(item.id)
                     }
-                  }}
-                  className={`flex items-center justify-between my-4 ${
-                    kanKlikkes
-                      ? 'cursor-pointer hover:bg-[var(--ax-bg-neutral-moderate-hover)] rounded'
-                      : ''
-                  }`}
-                  role={kanKlikkes ? 'button' : undefined}
-                  tabIndex={kanKlikkes ? 0 : undefined}
-                  aria-label={
-                    kanKlikkes
-                      ? `Legg til eller rediger ${item.label}`
-                      : `${item.label} - Oppfylt`
-                  }
-                >
-                  <div className='flex items-center gap-2'>
-                    <div className='w-5 h-5 border-2 rounded-full flex items-center justify-center border-blue-400 text-blue-400'>
-                      {erOppfylt && <CheckmarkIcon fontSize='1rem' />}
+                    onKeyDown={(e) => {
+                      if (kanKlikkes && (e.key === 'Enter' || e.key === ' ')) {
+                        e.preventDefault();
+                        handleClickSjekklisteItem(item.id);
+                      }
+                    }}
+                    className={`flex items-center justify-between my-4 ${
+                      kanKlikkes
+                        ? 'cursor-pointer hover:bg-[var(--ax-bg-neutral-moderate-hover)] rounded'
+                        : ''
+                    }`}
+                    role={kanKlikkes ? 'button' : undefined}
+                    tabIndex={kanKlikkes ? 0 : undefined}
+                    aria-label={
+                      kanKlikkes
+                        ? `Legg til eller rediger ${item.label}`
+                        : `${item.label} - Oppfylt`
+                    }
+                  >
+                    <div className='flex items-center gap-2'>
+                      <div className='w-5 h-5 border-2 rounded-full flex items-center justify-center border-blue-400 text-blue-400'>
+                        {erOppfylt && <CheckmarkIcon fontSize='1rem' />}
+                      </div>
+                      <BodyShort>{item.label}</BodyShort>
                     </div>
-                    <BodyShort>{item.label}</BodyShort>
+                    {kanKlikkes && (
+                      <BodyShort className='text-blue-400 px-1'>
+                        Legg til
+                      </BodyShort>
+                    )}
                   </div>
-                  {kanKlikkes && (
-                    <BodyShort className='text-blue-400 px-1'>
-                      Legg til
-                    </BodyShort>
+                  {visRamme && (
+                    <div className='border-b border-border-subtle my-4'></div>
                   )}
-                </div>
-                {visRamme && (
-                  <div className='border-b border-border-subtle my-4'></div>
-                )}
-              </React.Fragment>
-            );
-          })}
-        </div>
+                </React.Fragment>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      <LeggTilArbeidsgiverModal modalRef={arbeidsgiverModalRef} />
+
+      {rekrutteringstreffData && (
+        <>
+          <EndreTittel
+            modalRef={endreTittelModalRef}
+            rekrutteringstreff={rekrutteringstreffData}
+            onUpdated={() => mutateRekrutteringstreff()}
+          />
+          <TidspunktModal
+            rekrutteringstreff={rekrutteringstreffData}
+            modalRef={tidspunktModalRef}
+            onUpdated={() => mutateRekrutteringstreff()}
+          />
+          <StedModal
+            rekrutteringstreff={rekrutteringstreffData}
+            onUpdated={() => mutateRekrutteringstreff()}
+            modalRef={stedModalRef}
+          />
+          <SvarfristModal
+            rekrutteringstreff={rekrutteringstreffData}
+            onUpdated={() => mutateRekrutteringstreff()}
+            modalRef={svarfristModalRef}
+          />
+          <InnleggModal
+            rekrutteringstreffId={rekrutteringstreffData.id}
+            innlegg={
+              innleggData && innleggData.length > 0 ? innleggData[0] : undefined
+            }
+            onInnleggUpdated={() => mutateInnlegg()}
+            modalRef={innleggModalRef}
+          />
+        </>
       )}
-    </div>
+    </>
   );
 };
 

@@ -1,21 +1,51 @@
+'use client';
+
+import { useRekrutteringstreffContext } from '../../../RekrutteringstreffContext';
+import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
 import { CheckmarkIcon } from '@navikt/aksel-icons';
-import { BodyShort, Box } from '@navikt/ds-react';
+import { BodyShort, Box, Loader } from '@navikt/ds-react';
+import { useRouter } from 'next/navigation';
 import * as React from 'react';
 
 interface Props {
-  harInvitert: boolean;
-  antallInviterte: number;
-  onInviteClick: () => void;
   erDatoPassert: boolean;
+  onHarInvitertChange: (harInvitert: boolean) => void;
 }
 
 const InvitereSteg: React.FC<Props> = ({
-  harInvitert,
-  antallInviterte,
-  onInviteClick,
   erDatoPassert,
+  onHarInvitertChange,
 }) => {
+  const { rekrutteringstreffId } = useRekrutteringstreffContext();
+  const router = useRouter();
+  const { data: jobbsøkere, isLoading: jobbsøkereLoading } =
+    useJobbsøkere(rekrutteringstreffId);
+
+  const antallInviterte = React.useMemo(
+    () =>
+      jobbsøkere?.filter((j) =>
+        j.hendelser?.some((h) => h.hendelsestype === 'INVITER'),
+      ).length ?? 0,
+    [jobbsøkere],
+  );
+
+  const harInvitert = antallInviterte > 0;
+
+  React.useEffect(() => {
+    onHarInvitertChange(harInvitert);
+  }, [harInvitert, onHarInvitertChange]);
+
+  const onInviteClick = () => {
+    router.push(
+      `/rekrutteringstreff/${rekrutteringstreffId}?visFane=jobbsøkere`,
+    );
+  };
+
   const kanInvitere = !harInvitert;
+
+  if (jobbsøkereLoading) {
+    return <Loader size='medium' title='Laster invitasjonsstatus...' />;
+  }
 
   return (
     <div className='flex-1'>
@@ -52,6 +82,8 @@ const InvitereSteg: React.FC<Props> = ({
               <BodyShort className='text-blue-400 px-1'>Inviter</BodyShort>
             )}
           </div>
+
+          <div className='border-b border-border-subtle my-4'></div>
 
           <div className='flex items-center justify-between my-4'>
             <div className='flex items-center gap-2'>
