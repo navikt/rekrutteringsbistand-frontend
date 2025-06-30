@@ -122,7 +122,6 @@ const PublisereSteg = () => {
         <>
           <EndreTittel
             modalRef={endreTittelModalRef}
-            rekrutteringstreff={rekrutteringstreffData}
             onUpdated={() => mutateRekrutteringstreff()}
           />
           <TidspunktModal

@@ -97,7 +97,6 @@ const TreffHeader = ({ endreTittel }: TreffHeaderProps) => {
                               <EndreTittel
                                 key={`endre-tittel-modal-${treff.tittel}`}
                                 modalRef={endreTittelModalref}
-                                rekrutteringstreff={treff}
                                 onUpdated={rekrutteringstreffHook.mutate}
                               />,
                             ]
