@@ -1,22 +1,26 @@
 'use client';
 
-import { useRekrutteringstreffContext } from '../../../RekrutteringstreffContext';
-import LeggTilArbeidsgiverModal from '../../LeggTilArbeidsgiverModal';
-import EndreTittel from '../components/EndreTittel';
-import InnleggModal from '../components/innlegg/InnleggModal';
-import StedModal from '../components/sted/StedModal';
-import TidspunktModal from '../components/tidspunkt/TidspunktModal';
-import SvarfristModal from '../components/tidspunkt/svarfrist/SvarfristModal';
-import { StegContainer, StegRad, StegSeparator } from './StegLayout';
-import { ChecklistItem } from './TreffSteg';
+import LeggTilArbeidsgiverModal from '../../../LeggTilArbeidsgiverModal';
+import EndreTittel from '../../components/EndreTittel';
+import InnleggModal from '../../components/innlegg/InnleggModal';
+import StedModal from '../../components/sted/StedModal';
+import TidspunktModal from '../../components/tidspunkt/TidspunktModal';
+import SvarfristModal from '../../components/tidspunkt/svarfrist/SvarfristModal';
+import { StegContainer, StegRad, StegSeparator } from './SjekklisteItem';
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
+import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
 import { RekbisError } from '@/util/rekbisError';
 import { Detail, Loader } from '@navikt/ds-react';
 import * as React from 'react';
 
 const DEFAULT_TITTEL = 'Nytt rekrutteringstreff';
+
+export interface ChecklistItem {
+  id: string;
+  label: string;
+}
 
 const sjekklisteData: ChecklistItem[] = [
   { id: 'arbeidsgiver', label: 'Minst 1 arbeidsgiver' },

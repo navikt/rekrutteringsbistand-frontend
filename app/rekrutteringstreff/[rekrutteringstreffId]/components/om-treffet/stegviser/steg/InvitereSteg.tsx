@@ -1,13 +1,13 @@
 'use client';
 
-import { useRekrutteringstreffContext } from '../../../RekrutteringstreffContext';
 import {
   StegContainer,
   StegInfoRad,
   StegRad,
   StegSeparator,
-} from './StegLayout';
+} from './SjekklisteItem';
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
+import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
 import { BodyShort, Loader } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';

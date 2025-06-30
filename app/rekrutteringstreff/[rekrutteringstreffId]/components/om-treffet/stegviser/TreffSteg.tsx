@@ -5,11 +5,6 @@ import TreffStegContent from './TreffStegContent';
 import TreffStegHeader from './TreffStegHeader';
 import * as React from 'react';
 
-export interface ChecklistItem {
-  id: string;
-  label: string;
-}
-
 const stepDetails = [
   { id: 1, stepLabel: 'Publisere', header: 'Gjør klar til publisering' },
   { id: 2, stepLabel: 'Invitere', header: 'Send ut invitasjoner' },
@@ -28,7 +23,6 @@ const stepDetails = [
 const stepsForStepper = stepDetails.map((d) => d.stepLabel);
 
 const TreffSteg = () => {
-  // State som deles mellom header og content
   const [alleSteg1Ok, setAlleSteg1Ok] = React.useState(false);
   const [harInvitert, setHarInvitert] = React.useState(false);
 

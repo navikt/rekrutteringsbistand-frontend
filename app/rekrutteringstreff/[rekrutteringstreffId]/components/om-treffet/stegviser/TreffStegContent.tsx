@@ -1,8 +1,8 @@
 import { useRekrutteringstreffContext } from '../../../RekrutteringstreffContext';
-import AvslutteSteg from './AvslutteSteg';
-import FølgeOppSteg from './FølgeOppSteg';
-import InvitereSteg from './InvitereSteg';
-import PublisereSteg from './PublisereSteg';
+import AvslutteSteg from './steg/AvslutteSteg';
+import FølgeOppSteg from './steg/FølgeOppSteg';
+import InvitereSteg from './steg/InvitereSteg';
+import PublisereSteg from './steg/PublisereSteg';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { Box, Stepper } from '@navikt/ds-react';
 import { parseISO } from 'date-fns';
