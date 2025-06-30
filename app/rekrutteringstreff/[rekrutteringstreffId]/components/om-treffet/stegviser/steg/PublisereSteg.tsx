@@ -40,7 +40,6 @@ const PublisereSteg = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { setErPubliseringklar } = useStegviser();
 
-  // Modal-referanser
   const arbeidsgiverModalRef = React.useRef<HTMLDialogElement>(null);
   const endreTittelModalRef = React.useRef<HTMLDialogElement>(null);
   const tidspunktModalRef = React.useRef<HTMLDialogElement>(null);
@@ -104,7 +103,6 @@ const PublisereSteg = () => {
   }, [checkedItems, setErPubliseringklar]);
 
   const handleClickSjekklisteItem = (id: string) => {
-    if (checkedItems[id]) return;
     if (id === 'arbeidsgiver') arbeidsgiverModalRef.current?.showModal();
     if (id === 'navn') endreTittelModalRef.current?.showModal();
     if (id === 'tidspunkt') tidspunktModalRef.current?.showModal();
@@ -131,7 +129,7 @@ const PublisereSteg = () => {
         {!loading &&
           sjekklisteData.map((item) => {
             const erOppfylt = !!checkedItems[item.id];
-            const kanKlikkes = !erOppfylt;
+            const kanKlikkes = true;
             const visRamme =
               item.id === 'arbeidsgiver' || item.id === 'svarfrist';
             return (
@@ -143,9 +141,9 @@ const PublisereSteg = () => {
                   label={item.label}
                   handlingstekst='Legg til'
                   ariaLabel={
-                    kanKlikkes
-                      ? `Legg til eller rediger ${item.label}`
-                      : `${item.label} - Oppfylt`
+                    erOppfylt
+                      ? `Rediger ${item.label}`
+                      : `Legg til ${item.label}`
                   }
                 />
                 {visRamme && <SjekklisteSeparator />}

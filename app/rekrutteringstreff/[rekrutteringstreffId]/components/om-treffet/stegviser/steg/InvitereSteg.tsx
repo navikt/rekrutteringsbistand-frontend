@@ -44,7 +44,7 @@ const InvitereSteg: React.FC<Props> = ({ erDatoPassert }) => {
     );
   };
 
-  const kanInvitere = !harInvitert;
+  const kanInvitere = true;
 
   if (jobbsøkereLoading) {
     return <Loader size='medium' title='Laster invitasjonsstatus...' />;
@@ -58,9 +58,7 @@ const InvitereSteg: React.FC<Props> = ({ erDatoPassert }) => {
         onClick={onInviteClick}
         label='Minst en invitasjon'
         handlingstekst='Inviter'
-        ariaLabel={
-          kanInvitere ? 'Inviter jobbsøkere' : 'Minst en invitasjon - Oppfylt'
-        }
+        ariaLabel={harInvitert ? 'Rediger invitasjoner' : 'Inviter jobbsøkere'}
       />
       <SjekklisteSeparator />
       <SjekklisteRad

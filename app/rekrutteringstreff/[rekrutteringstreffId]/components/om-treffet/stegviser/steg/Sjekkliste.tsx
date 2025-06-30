@@ -1,4 +1,4 @@
-import { CheckmarkIcon } from '@navikt/aksel-icons';
+import { CheckmarkIcon, PencilIcon } from '@navikt/aksel-icons';
 import { BodyShort, Box } from '@navikt/ds-react';
 import * as React from 'react';
 
@@ -52,9 +52,18 @@ export const SjekklisteRad: React.FC<SjekklisteRadProps> = ({
       </div>
       <BodyShort>{label}</BodyShort>
     </div>
-    {kanKlikkes && handlingstekst && (
-      <BodyShort className='text-blue-400 px-1'>{handlingstekst}</BodyShort>
-    )}
+    {kanKlikkes &&
+      (erOppfylt ? (
+        <PencilIcon
+          className='text-blue-400'
+          title='Rediger'
+          fontSize='1.5rem'
+        />
+      ) : (
+        handlingstekst && (
+          <BodyShort className='text-blue-400 px-1'>{handlingstekst}</BodyShort>
+        )
+      ))}
   </div>
 );
 
