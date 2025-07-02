@@ -25,12 +25,14 @@ interface KandidatSøkResultatProps {
   type: KandidatSøkPortefølje;
   stillingsId?: string;
   rekrutteringstreffId?: string;
+  alleredeLagtTilTreff?: string[];
 }
 
 const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({
   type,
   stillingsId,
   rekrutteringstreffId,
+  alleredeLagtTilTreff,
 }) => {
   const filter = useKandidatSøkFilterContext();
   const kandidatsøkHook = useKandidatsøk(type, filter);
@@ -121,7 +123,7 @@ const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({
             {kandidatData.kandidater?.map((kandidat, index) => (
               <KandidatKort
                 stillingsId={stillingsId}
-                alleredeLagtTil={alleredeLagtTil}
+                alleredeLagtTil={alleredeLagtTil ?? alleredeLagtTilTreff}
                 key={kandidat.arenaKandidatnr || index}
                 kandidat={kandidat as KandidatDataSchemaDTO}
               />

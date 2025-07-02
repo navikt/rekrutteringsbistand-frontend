@@ -17,11 +17,13 @@ import * as React from 'react';
 interface KandidatSøkTabsProps {
   stillingsId?: string;
   rekrutteringstreffId?: string;
+  alleredeLagtTilTreff?: string[];
 }
 
 const KandidatSøkTabs: React.FC<KandidatSøkTabsProps> = ({
   stillingsId,
   rekrutteringstreffId,
+  alleredeLagtTilTreff,
 }) => {
   const { portefølje, setPortefølje } = useKandidatSøkFilterContext();
   const { valgtNavKontor, brukerData } = useApplikasjonContext();
@@ -134,6 +136,7 @@ const KandidatSøkTabs: React.FC<KandidatSøkTabsProps> = ({
         <KandidatSøkChips />
       </div>
       <KandidatSøkResultat
+        alleredeLagtTilTreff={alleredeLagtTilTreff}
         type={portefølje as KandidatSøkPortefølje}
         stillingsId={stillingsId}
         rekrutteringstreffId={rekrutteringstreffId}
