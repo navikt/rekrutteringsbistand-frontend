@@ -3,7 +3,6 @@ import { faker } from '@faker-js/faker/locale/nb_NO';
 
 interface MockStilling {
   id?: string;
-  annonsenr?: string;
   navIdent?: string;
   seed?: number;
   ekstern?: boolean;
@@ -14,6 +13,7 @@ interface MockStilling {
 
 const createMockStilling = (props?: MockStilling): StillingsDataDTO => {
   faker.seed(props?.seed || 1337);
+  const id = faker.number.int({ min: 100000, max: 999999 });
   return {
     stillingsinfo: props?.utenStillingsinfo
       ? null
@@ -25,10 +25,8 @@ const createMockStilling = (props?: MockStilling): StillingsDataDTO => {
           stillingskategori: props?.erFormidling ? 'FORMIDLING' : 'STILLING',
         },
     stilling: {
-      id: faker.number.int({ min: 100000, max: 999999 }),
-      annonsenr:
-        props?.annonsenr ||
-        'R' + faker.number.int({ min: 100000, max: 999999 }),
+      id: id,
+      annonsenr: 'R' + id,
       uuid: props?.id || faker.string.uuid(),
       created: faker.date.past().toISOString(),
       createdBy: props?.ekstern ? 'import-api' : 'pam-rekrutteringsbistand',
@@ -173,20 +171,17 @@ export const mockBaseStilling = createMockStilling();
 
 export const mockMinStilling = createMockStilling({
   id: 'minStilling',
-  annonsenr: 'mittAnnonsenr',
   navIdent: 'TestIdent',
   seed: 1,
 });
 export const mockMinEksternStilling = createMockStilling({
   id: 'minEksternStilling',
-  annonsenr: 'mittAnnonsenr',
   navIdent: 'TestIdent',
   ekstern: true,
   seed: 2,
 });
 export const mockEksternStilling = createMockStilling({
   id: 'eksternStilling',
-  annonsenr: 'mittAnnonsenr',
   ekstern: true,
   utenStillingsinfo: true,
   seed: 3,
@@ -195,7 +190,6 @@ export const mockEksternStilling = createMockStilling({
 export const mockFormidling = createMockStilling({
   erFormidling: true,
   id: 'minFormidling',
-  annonsenr: 'mittAnnonsenr',
   navIdent: 'TestIdent',
   seed: 4,
 });
