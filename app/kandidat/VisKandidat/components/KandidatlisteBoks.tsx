@@ -41,11 +41,12 @@ const KandidatlisteBoks: React.FC<KandidatlisteBoksProps> = ({
     <SWRLaster
       hooks={[kandidatlisteEierHook, kandidatlisteInfoHook]}
       skjulFeilmelding
+      allowPartialData={true}
     >
-      {(kandidatliste, kandidatlisteInfo) => {
+      {(kandidatlisteEier, kandidatlisteInfo) => {
         if (
-          kandidatliste &&
-          kandidatliste.kandidater.some(
+          kandidatlisteEier &&
+          kandidatlisteEier.kandidater.some(
             (kandidat) => kandidat.kandidatnr === kandidatnr,
           )
         ) {
@@ -58,14 +59,16 @@ const KandidatlisteBoks: React.FC<KandidatlisteBoksProps> = ({
               </KandidatlisteWrapper>
             </div>
           );
-        } else if (kandidatlisteInfo) {
+        }
+
+        if (kandidatlisteInfo) {
           return (
             <BoksWrapper>
               <div className='flex justify-between'>
                 <div>
                   <div className='mb-2'>{stillingsData.stilling.title}</div>
                   <LeggKandidatTilKandidatliste
-                    kandidatId={kandidatlisteInfo.kandidatlisteId}
+                    kandidatId={kandidatnr}
                     stillingId={stillingsData.stilling.uuid}
                   />
                 </div>
@@ -73,6 +76,7 @@ const KandidatlisteBoks: React.FC<KandidatlisteBoksProps> = ({
             </BoksWrapper>
           );
         }
+
         return null;
       }}
     </SWRLaster>

@@ -7,7 +7,6 @@ interface MockStilling {
   seed?: number;
   ekstern?: boolean;
   utenStillingsinfo?: boolean;
-
   erFormidling?: boolean;
 }
 
@@ -192,6 +191,10 @@ export const mockFormidling = createMockStilling({
   seed: 4,
 });
 
+export const internStillingMock = createMockStilling({
+  id: 'internStilling',
+  seed: 5,
+});
 export const nyStillingMock = {
   stillingsinfo: {
     stillingsid: 'nyStilling',

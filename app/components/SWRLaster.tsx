@@ -15,6 +15,7 @@ export interface ISWRLasterProps<T extends any[]> {
   hooks: { [K in keyof T]: SWRHookResponse<T[K]> };
   skeleton?: React.ReactNode;
   egenFeilmelding?: (error: Error) => React.ReactNode;
+  allowPartialData?: boolean;
   children: (...data: T) => React.ReactNode;
 }
 
@@ -33,6 +34,7 @@ const SWRLaster = <T extends any[]>({
   skjulFeilmelding = false,
   egenFeilmelding,
   visLoaderUnderValidering = false,
+  allowPartialData = false,
 }: ISWRLasterProps<T>): React.ReactElement | null => {
   if (hooks.some((hook) => !hook)) {
     return <>{skeleton ? skeleton : <Sidelaster />}</>;
@@ -66,9 +68,22 @@ const SWRLaster = <T extends any[]>({
     );
   }
 
-  if (hooks.every((hook) => hook?.data)) {
-    const data = hooks.map((hook) => hook?.data) as T;
-    return <>{children(...data)}</>;
+  if (allowPartialData) {
+    const hasAnyData = hooks.some((hook) => hook?.data);
+    const isAnyLoading = hooks.some(
+      (hook) =>
+        hook?.isLoading || (visLoaderUnderValidering && hook?.isValidating),
+    );
+
+    if (hasAnyData && !isAnyLoading) {
+      const data = hooks.map((hook) => hook?.data) as T;
+      return <>{children(...data)}</>;
+    }
+  } else {
+    if (hooks.every((hook) => hook?.data)) {
+      const data = hooks.map((hook) => hook?.data) as T;
+      return <>{children(...data)}</>;
+    }
   }
 
   return null;
