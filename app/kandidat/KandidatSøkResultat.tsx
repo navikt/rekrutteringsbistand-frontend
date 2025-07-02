@@ -5,12 +5,10 @@ import {
   KandidatsokKandidat,
   useKandidatsøk,
 } from '../api/kandidat-sok/useKandidatsøk';
-import { useKandidatlisteForEier } from '../api/kandidat/useKandidatlisteForEier';
 import RekrutteringstreffFeatureToggle from '../components/RekrutteringstreffFeatureToggle';
 import SWRLaster from '../components/SWRLaster';
 import { useKandidatNavigeringContext } from '../providers/KandidatNavigeringContext';
 import LagreIRekrutteringstreffButton from '../rekrutteringstreff/[rekrutteringstreffId]/components/lagreIRekrutteringstreffButton/LagreIRekrutteringstreffButton';
-import { useStillingsContext } from '../stilling/[stillingsId]/StillingsContext';
 import {
   KandidatSøkPortefølje,
   useKandidatSøkFilterContext,
@@ -26,6 +24,7 @@ interface KandidatSøkResultatProps {
   stillingsId?: string;
   rekrutteringstreffId?: string;
   alleredeLagtTilTreff?: string[];
+  alleredeLagtTilKandidatliste?: string[];
 }
 
 const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({
@@ -33,26 +32,11 @@ const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({
   stillingsId,
   rekrutteringstreffId,
   alleredeLagtTilTreff,
+  alleredeLagtTilKandidatliste,
 }) => {
   const filter = useKandidatSøkFilterContext();
   const kandidatsøkHook = useKandidatsøk(type, filter);
   const { setKandidatNavigering } = useKandidatNavigeringContext();
-  const [alleredeLagtTil, setAlleredeLagtTil] = React.useState<string[]>([]);
-
-  const { erEier, stillingsData } = useStillingsContext();
-
-  // Brukes for å vise eier hvem som allerede er lagt til i kandidatliste
-  const kandidatlisteHook = useKandidatlisteForEier(stillingsData, erEier);
-
-  React.useEffect(() => {
-    if (kandidatlisteHook?.data?.kandidater) {
-      const listeOverValgteKandidater = kandidatlisteHook.data.kandidater
-        .map((kandidat) => kandidat.kandidatnr)
-        .filter((id): id is string => id !== null);
-
-      setAlleredeLagtTil(listeOverValgteKandidater);
-    }
-  }, [kandidatlisteHook?.data?.kandidater]);
 
   React.useEffect(() => {
     setKandidatNavigering(kandidatsøkHook.data?.navigering.kandidatnumre ?? []);
@@ -123,7 +107,9 @@ const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({
             {kandidatData.kandidater?.map((kandidat, index) => (
               <KandidatKort
                 stillingsId={stillingsId}
-                alleredeLagtTil={alleredeLagtTil ?? alleredeLagtTilTreff}
+                alleredeLagtTil={
+                  alleredeLagtTilKandidatliste ?? alleredeLagtTilTreff
+                }
                 key={kandidat.arenaKandidatnr || index}
                 kandidat={kandidat as KandidatDataSchemaDTO}
               />

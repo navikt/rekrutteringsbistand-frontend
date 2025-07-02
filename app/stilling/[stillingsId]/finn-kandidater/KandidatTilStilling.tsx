@@ -1,9 +1,11 @@
 import { getMiljø, Miljø } from '../../../../util/miljø';
 import { Kandidatlistestatus } from '../../../api/kandidat/schema.zod';
+import { useKandidatlisteForEier } from '../../../api/kandidat/useKandidatlisteForEier';
 import { useKandidatlisteInfo } from '../../../api/kandidat/useKandidatlisteInfo';
 import { StillingsDataDTO } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import Sidelaster from '../../../components/Sidelaster';
 import KandidatSøkTabs from '../../../kandidat/KandidatSøkTabs';
+import { useStillingsContext } from '../StillingsContext';
 import { useFinnKandidatForStilling } from './useFinnKandidatForStilling';
 import { ArrowRightIcon, FilesIcon } from '@navikt/aksel-icons';
 import { Alert, Button, Heading } from '@navikt/ds-react';
@@ -19,6 +21,22 @@ const KandidatTilStilling: React.FC<KandidatTilStillingProps> = ({
 }) => {
   useFinnKandidatForStilling(stillingsData);
   const router = useRouter();
+  const [alleredeLagtTilKandidatliste, setAlleredeLagtTilKandidatliste] =
+    React.useState<string[]>([]);
+  const { erEier } = useStillingsContext();
+
+  // Brukes for å vise eier hvem som allerede er lagt til i kandidatliste
+  const kandidatlisteHook = useKandidatlisteForEier(stillingsData, erEier);
+
+  React.useEffect(() => {
+    if (kandidatlisteHook?.data?.kandidater) {
+      const listeOverValgteKandidater = kandidatlisteHook.data.kandidater
+        .map((kandidat) => kandidat.kandidatnr)
+        .filter((id): id is string => id !== null);
+
+      setAlleredeLagtTilKandidatliste(listeOverValgteKandidater);
+    }
+  }, [kandidatlisteHook?.data?.kandidater]);
 
   const kandidatListeInformasjonHook = useKandidatlisteInfo(
     stillingsData?.stillingsinfo,
@@ -111,7 +129,10 @@ const KandidatTilStilling: React.FC<KandidatTilStillingProps> = ({
               Kandidatliste er lukket, så du kan ikke legge til kandidater.
             </Alert>
           )}
-          <KandidatSøkTabs stillingsId={stillingsData?.stilling.uuid} />
+          <KandidatSøkTabs
+            alleredeLagtTilKandidatliste={alleredeLagtTilKandidatliste}
+            stillingsId={stillingsData?.stilling.uuid}
+          />
         </>
       )}
     </>
