@@ -1,13 +1,13 @@
 'use client';
 
 import { oppdaterStilling } from '../../../../api/stilling/oppdater-stilling/oppdaterStilling';
-import { setStillingsinfo } from '../../../../api/stilling/stillingsinfo/setStillingsinfo';
 import { TilgangskontrollForInnhold } from '../../../../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '../../../../components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '../../../../providers/ApplikasjonContext';
 import { useStillingsContext } from '../../StillingsContext';
 import StillingPrint from './StillingPrint';
 import EierStillingVisning from './components/EierStillingVisning';
+import OpprettRekrutteringsoppdrag from './components/OpprettRekrutteringsoppdrag';
 import { Button } from '@navikt/ds-react';
 import * as React from 'react';
 import { useState } from 'react';
@@ -25,13 +25,6 @@ const StillingSidebarKnapper: React.FC<StillingSidebarKnapperProps> = ({
 
   const [loading, setLoading] = useState(false);
 
-  const opprettStillingInfo = {
-    stillingsid: stillingsData.stilling.uuid,
-    eierNavident: brukerData.ident,
-    eierNavn: brukerData.navn,
-    eierNavKontorEnhetId: valgtNavKontor?.navKontor,
-  };
-
   const kanOvertaStilling = !erFormidling && erDirektemeldt && !erEier;
 
   const harStillingsinfo = stillingsData.stillingsinfo !== null;
@@ -47,12 +40,6 @@ const StillingSidebarKnapper: React.FC<StillingSidebarKnapperProps> = ({
     !erEier &&
     !erDirektemeldt &&
     stillingsData.stilling.employer?.orgnr;
-
-  const onOpprettOgOvertaEksternKandidatliste = async () => {
-    await setStillingsinfo(opprettStillingInfo).then(() =>
-      window.location.reload(),
-    );
-  };
 
   const onOvertaStilling = async () => {
     setLoading(true);
@@ -87,17 +74,27 @@ const StillingSidebarKnapper: React.FC<StillingSidebarKnapperProps> = ({
             Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
           ]}
         >
-          <Button
-            loading={loading}
-            variant='primary'
-            size='small'
-            className='my-2 h-5 w-full'
-            onClick={onOpprettOgOvertaEksternKandidatliste}
-          >
-            {kanOvertaEksternStilling
-              ? `Marker som min`
-              : 'Opprett kandidatliste'}
-          </Button>
+          {kanOvertaEksternStilling && (
+            <Button
+              loading={loading}
+              variant='primary'
+              size='small'
+              className='my-2 h-5 w-full'
+              onClick={onOvertaStilling}
+            >
+              Marker som min
+            </Button>
+          )}
+          {kanOppretteKandidatliste && (
+            <OpprettRekrutteringsoppdrag
+              arbeidsgiver={
+                stillingsData.stilling.employer?.name || 'Ukjent bedrift'
+              }
+              orgnr={stillingsData.stilling.employer?.orgnr}
+              stillingstittel={stillingsData.stilling.title}
+              stillingsId={stillingsData.stilling.uuid}
+            />
+          )}
         </TilgangskontrollForInnhold>
       )}
 
