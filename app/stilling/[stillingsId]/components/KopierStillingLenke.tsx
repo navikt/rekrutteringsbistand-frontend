@@ -9,7 +9,7 @@ const visStillingUrl =
   getMiljø() !== Miljø.ProdGcp
     ? 'https://vis-stilling.intern.dev.nav.no/arbeid/stilling'
     : 'https://www.nav.no/arbeid/stilling';
-const hentAnnonselenke = (uuid?: string) => `${visStillingUrl}/${uuid}`;
+export const hentAnnonselenke = (uuid?: string) => `${visStillingUrl}/${uuid}`;
 
 const KopierStillingLenke: React.FC<IKopierStillingLenke> = ({
   stillingsId,
