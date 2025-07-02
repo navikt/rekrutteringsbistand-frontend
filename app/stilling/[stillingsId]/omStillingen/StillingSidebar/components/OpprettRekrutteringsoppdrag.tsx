@@ -30,14 +30,17 @@ const OpprettRekrutteringsoppdrag: React.FC<
   OpprettRekrutteringsoppdragProps
 > = ({ arbeidsgiver, orgnr, stillingstittel, stillingsId }) => {
   const { brukerData, valgtNavKontor } = useApplikasjonContext();
+  const [loading, setLoading] = React.useState(false);
   const [avtaltMedArbeidsgiver, setAvtaltMedArbeidsgiver] =
     React.useState(false);
 
   const [open, setOpen] = React.useState(false);
   const handleFullfor = async () => {
+    setLoading(true);
     await setStillingsinfo(opprettStillingInfo).then(() =>
       window.location.reload(),
     );
+    setLoading(false);
     setOpen(false);
   };
 
@@ -175,6 +178,7 @@ const OpprettRekrutteringsoppdrag: React.FC<
                 Avbryt
               </Button>
               <Button
+                loading={loading}
                 variant='primary'
                 onClick={handleFullfor}
                 disabled={!avtaltMedArbeidsgiver}
