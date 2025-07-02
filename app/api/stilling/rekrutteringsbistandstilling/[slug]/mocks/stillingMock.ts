@@ -25,6 +25,7 @@ const createMockStilling = (props?: MockStilling): StillingsDataDTO => {
         },
     stilling: {
       id: faker.number.int({ min: 100000, max: 999999 }),
+      annonsenr: 'R' + faker.number.int({ min: 100000, max: 999999 }),
       uuid: props?.id || faker.string.uuid(),
       created: faker.date.past().toISOString(),
       createdBy: props?.ekstern ? 'import-api' : 'pam-rekrutteringsbistand',
