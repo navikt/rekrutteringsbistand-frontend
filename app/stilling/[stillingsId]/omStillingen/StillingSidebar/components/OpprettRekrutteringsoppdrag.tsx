@@ -1,3 +1,4 @@
+import { RekbisError } from '../../../../../../util/rekbisError';
 import { setStillingsinfo } from '../../../../../api/stilling/stillingsinfo/setStillingsinfo';
 import { useApplikasjonContext } from '../../../../../providers/ApplikasjonContext';
 import {
@@ -37,11 +38,19 @@ const OpprettRekrutteringsoppdrag: React.FC<
   const [open, setOpen] = React.useState(false);
   const handleFullfor = async () => {
     setLoading(true);
-    await setStillingsinfo(opprettStillingInfo).then(() =>
-      window.location.reload(),
-    );
-    setLoading(false);
-    setOpen(false);
+    try {
+      await setStillingsinfo(opprettStillingInfo);
+      window.location.reload();
+    } catch (error) {
+      new RekbisError({
+        message: 'Feil under opprettelse av stillingsinfo',
+        error: error,
+      });
+      alert('Noe gikk galt. Vennligst prøv igjen senere.');
+    } finally {
+      setLoading(false);
+      setOpen(false);
+    }
   };
 
   const opprettStillingInfo = {
