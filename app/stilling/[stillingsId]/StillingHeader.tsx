@@ -1,4 +1,4 @@
-import { useKandidatliste } from '../../api/kandidat/useKandidatliste';
+import { useKandidatlisteForEier } from '../../api/kandidat/useKandidatlisteForEier';
 import TekstMedIkon from '../../components/TekstMedIkon';
 import SideTopBanner from '../../components/layout/SideTopBanner';
 import StillingsTag from '../components/StillingsTag';
@@ -17,7 +17,7 @@ const StillingHeader: React.FC = () => {
   const { stillingsData, erFormidling, erSlettet, kandidatlisteInfo, erEier } =
     useStillingsContext();
 
-  const kandidatlisteHook = useKandidatliste(stillingsData, erEier);
+  const kandidatlisteHook = useKandidatlisteForEier(stillingsData, erEier);
 
   const eierNavn = navnEierAvAstilling(stillingsData);
 

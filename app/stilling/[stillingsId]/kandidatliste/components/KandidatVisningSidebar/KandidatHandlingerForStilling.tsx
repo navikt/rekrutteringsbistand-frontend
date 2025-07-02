@@ -19,7 +19,7 @@ import { KandidatVisningProps } from '../KandidatlisteFilter/useFiltrerteKandida
 import RegistrerFåttJobbenKnapp from '../RegistrerFåttJobbenKnapp';
 import SendSmsModal from '../SendSMS/SendSmsModal';
 import VelgInternStatus from '../VelgInternStatus';
-import { Accordion, Box } from '@navikt/ds-react';
+import { Accordion } from '@navikt/ds-react';
 import * as React from 'react';
 
 export interface KandidatHandlingerForStillingProps {
@@ -67,112 +67,103 @@ const KandidatHandlingerForStilling: React.FC<
   };
 
   return (
-    <Box.New
-      borderColor='neutral-subtleA'
-      borderWidth='1'
-      padding='4'
-      borderRadius='xlarge'
-    >
-      <div className='flex flex-col gap-4'>
-        <div className='flex justify-between'>
-          <div>
-            <div className='mb-2'>{stillingsData.stilling.title}</div>
-            {kandidat.arkivert ? (
-              <SlettetTag kandidat={kandidat} />
-            ) : (
-              <KandidatHendelseTag
-                sidebar
-                kandidatHendelse={kandidat.kandidatHendelser.sisteHendelse}
-              />
-            )}
-          </div>
-          <div>
-            {kandidatlisteInfo && (
-              <VelgInternStatus
-                lukketKandidatliste={
-                  kandidatlisteInfo.kandidatlisteStatus === 'LUKKET'
-                }
-                kandidatnr={kandidat.kandidatnr}
-                status={kandidat.status}
-              />
-            )}
-          </div>
-        </div>
-        {!kandidat.arkivert &&
-          !fåttJobben &&
-          !cvDeltMedArbeidsgiver &&
-          !cvFjernetFraArbeidsgiver && (
-            <div className='grid grid-cols-2 gap-2'>
-              <DelMedKandidatModal
-                markerteKandidater={[kandidat]}
-                fjernAllMarkering={() => {}}
-                sidebar
-              />
-
-              <DelMedArbeidsgiver markerteKandidater={[kandidat]} sidebar />
-            </div>
+    <div className='flex flex-col gap-4'>
+      <div className='flex justify-between'>
+        <div>
+          <div className='mb-2'>{stillingsData.stilling.title}</div>
+          {kandidat.arkivert ? (
+            <SlettetTag kandidat={kandidat} />
+          ) : (
+            <KandidatHendelseTag
+              sidebar
+              kandidatHendelse={kandidat.kandidatHendelser.sisteHendelse}
+            />
           )}
-
-        {kandidat.arkivert ? (
-          <EndreArkivertStatusKnapp
-            lukketKandidatliste={lukketKandidatliste}
-            slettet={kandidat.arkivert}
-            modalRef={modalRef}
-          />
-        ) : (
-          <div className='flex gap-2 border-t-2 pt-4'>
-            <SendSmsModal
+        </div>
+        <div>
+          {kandidatlisteInfo && (
+            <VelgInternStatus
+              lukketKandidatliste={
+                kandidatlisteInfo.kandidatlisteStatus === 'LUKKET'
+              }
+              kandidatnr={kandidat.kandidatnr}
+              status={kandidat.status}
+            />
+          )}
+        </div>
+      </div>
+      {!kandidat.arkivert &&
+        !fåttJobben &&
+        !cvDeltMedArbeidsgiver &&
+        !cvFjernetFraArbeidsgiver && (
+          <div className='grid grid-cols-2 gap-2'>
+            <DelMedKandidatModal
               markerteKandidater={[kandidat]}
               fjernAllMarkering={() => {}}
               sidebar
             />
-            <div>
-              {kandidat.utfall !== KandidatutfallTyper.FATT_JOBBEN ? (
-                <RegistrerFåttJobbenKnapp
-                  loading={loading}
-                  endreUtfallForKandidat={endreUtfallForKandidat}
-                  lukketKandidatliste={lukketKandidatliste}
-                />
-              ) : (
-                <FjernFåttJobbenKnapp
-                  loading={loading}
-                  endreUtfallForKandidat={endreUtfallForKandidat}
-                  lukketKandidatliste={lukketKandidatliste}
-                />
-              )}
-            </div>
-            {cvDeltMedArbeidsgiver && (
-              <FjernDelingMedArbeidsgiver
-                kandidatnummer={kandidat.kandidatnr}
-                navKontor={valgtNavKontor?.navKontor ?? null}
-              />
-            )}
-            <div className='flex flex-1 justify-end'>
-              <EndreArkivertStatusKnapp
-                lukketKandidatliste={lukketKandidatliste}
-                slettet={kandidat.arkivert}
-                modalRef={modalRef}
-              />
-            </div>
+
+            <DelMedArbeidsgiver markerteKandidater={[kandidat]} sidebar />
           </div>
         )}
-        <EndreArkivertStatusModal
+
+      {kandidat.arkivert ? (
+        <EndreArkivertStatusKnapp
+          lukketKandidatliste={lukketKandidatliste}
+          slettet={kandidat.arkivert}
           modalRef={modalRef}
-          kandidat={kandidat}
-          kandidatlisteId={kandidatlisteId}
         />
-        <Accordion>
-          <Accordion.Item>
-            <Accordion.Header>Vis alle hendelser og varsler</Accordion.Header>
-            <Accordion.Content>
-              <KandidatHendelser
-                kandidatHendelser={kandidat.kandidatHendelser}
+      ) : (
+        <div className='flex gap-2 border-t-2 pt-4'>
+          <SendSmsModal
+            markerteKandidater={[kandidat]}
+            fjernAllMarkering={() => {}}
+            sidebar
+          />
+          <div>
+            {kandidat.utfall !== KandidatutfallTyper.FATT_JOBBEN ? (
+              <RegistrerFåttJobbenKnapp
+                loading={loading}
+                endreUtfallForKandidat={endreUtfallForKandidat}
+                lukketKandidatliste={lukketKandidatliste}
               />
-            </Accordion.Content>
-          </Accordion.Item>
-        </Accordion>
-      </div>
-    </Box.New>
+            ) : (
+              <FjernFåttJobbenKnapp
+                loading={loading}
+                endreUtfallForKandidat={endreUtfallForKandidat}
+                lukketKandidatliste={lukketKandidatliste}
+              />
+            )}
+          </div>
+          {cvDeltMedArbeidsgiver && (
+            <FjernDelingMedArbeidsgiver
+              kandidatnummer={kandidat.kandidatnr}
+              navKontor={valgtNavKontor?.navKontor ?? null}
+            />
+          )}
+          <div className='flex flex-1 justify-end'>
+            <EndreArkivertStatusKnapp
+              lukketKandidatliste={lukketKandidatliste}
+              slettet={kandidat.arkivert}
+              modalRef={modalRef}
+            />
+          </div>
+        </div>
+      )}
+      <EndreArkivertStatusModal
+        modalRef={modalRef}
+        kandidat={kandidat}
+        kandidatlisteId={kandidatlisteId}
+      />
+      <Accordion>
+        <Accordion.Item>
+          <Accordion.Header>Vis alle hendelser og varsler</Accordion.Header>
+          <Accordion.Content>
+            <KandidatHendelser kandidatHendelser={kandidat.kandidatHendelser} />
+          </Accordion.Content>
+        </Accordion.Item>
+      </Accordion>
+    </div>
   );
 };
 

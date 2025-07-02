@@ -40,6 +40,10 @@ const StillingsKort: React.FC<IStillingsKort> = ({
 
   const router = useRouter();
   const { track } = useUmami();
+
+  const [leggerTilKandidatLoading, setLeggerTilKandidatLoading] =
+    React.useState(false);
+
   const antallStillinger = Number(
     stillingData?.stilling?.properties?.positioncount,
   );
@@ -58,6 +62,7 @@ const StillingsKort: React.FC<IStillingsKort> = ({
 
   const leggTilKandidat = async (kandidatId: string) => {
     track(UmamiEvent.Stilling.forslag_til_stilling_legg_til_kandidat);
+    setLeggerTilKandidatLoading(true);
     try {
       await leggTilKandidater([kandidatId], stillingData.stilling.uuid);
       visVarsel({
@@ -69,6 +74,8 @@ const StillingsKort: React.FC<IStillingsKort> = ({
         tekst: 'Kandidat kunne ikke legges til i kandidatliste',
         type: 'error',
       });
+    } finally {
+      setLeggerTilKandidatLoading(false);
     }
   };
 
@@ -77,6 +84,7 @@ const StillingsKort: React.FC<IStillingsKort> = ({
       {kandidatId ? (
         erDirektemeldt ? (
           <Button
+            loading={leggerTilKandidatLoading}
             variant='tertiary'
             onClick={() => leggTilKandidat(kandidatId)}
             className='self-start sm:self-center whitespace-nowrap'

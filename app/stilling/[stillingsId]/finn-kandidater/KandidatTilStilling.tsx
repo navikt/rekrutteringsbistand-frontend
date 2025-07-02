@@ -1,11 +1,9 @@
 import { getMiljø, Miljø } from '../../../../util/miljø';
 import { Kandidatlistestatus } from '../../../api/kandidat/schema.zod';
-import { useKandidatliste } from '../../../api/kandidat/useKandidatliste';
 import { useKandidatlisteInfo } from '../../../api/kandidat/useKandidatlisteInfo';
 import { StillingsDataDTO } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import Sidelaster from '../../../components/Sidelaster';
 import KandidatSøkTabs from '../../../kandidat/KandidatSøkTabs';
-import { useStillingsContext } from '../StillingsContext';
 import { useFinnKandidatForStilling } from './useFinnKandidatForStilling';
 import { ArrowRightIcon, FilesIcon } from '@navikt/aksel-icons';
 import { Alert, Button, Heading } from '@navikt/ds-react';
@@ -21,10 +19,6 @@ const KandidatTilStilling: React.FC<KandidatTilStillingProps> = ({
 }) => {
   useFinnKandidatForStilling(stillingsData);
   const router = useRouter();
-  const { erEier } = useStillingsContext();
-  const [alleredeLagtTil, setAlleredeLagtTil] = React.useState<string[]>([]);
-
-  const kandidatlisteHook = useKandidatliste(stillingsData, erEier);
 
   const kandidatListeInformasjonHook = useKandidatlisteInfo(
     stillingsData?.stillingsinfo,
@@ -41,16 +35,6 @@ const KandidatTilStilling: React.FC<KandidatTilStillingProps> = ({
       `https://arbeidsplassen.intern.dev.nav.no/stillinger/stilling/${stillingsData?.stilling.uuid}`,
     );
   };
-
-  React.useEffect(() => {
-    if (kandidatlisteHook?.data?.kandidater) {
-      const listeOverValgteKandidater = kandidatlisteHook.data.kandidater
-        .map((kandidat) => kandidat.kandidatnr)
-        .filter((id): id is string => id !== null);
-
-      setAlleredeLagtTil(listeOverValgteKandidater);
-    }
-  }, [kandidatlisteHook?.data?.kandidater]);
 
   if (kandidatListeInformasjonHook?.isLoading) {
     return <Sidelaster />;
@@ -127,10 +111,7 @@ const KandidatTilStilling: React.FC<KandidatTilStillingProps> = ({
               Kandidatliste er lukket, så du kan ikke legge til kandidater.
             </Alert>
           )}
-          <KandidatSøkTabs
-            stillingsId={stillingsData?.stilling.uuid}
-            alleredeLagtTil={alleredeLagtTil}
-          />
+          <KandidatSøkTabs stillingsId={stillingsData?.stilling.uuid} />
         </>
       )}
     </>

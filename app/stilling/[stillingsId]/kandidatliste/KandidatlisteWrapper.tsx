@@ -1,5 +1,5 @@
 import { useForespurteOmDelingAvCv } from '../../../api/foresporsel-om-deling-av-cv/foresporsler/[...slug]/useForespurteOmDelingAvCv';
-import { useKandidatliste } from '../../../api/kandidat/useKandidatliste';
+import { useKandidatlisteForEier } from '../../../api/kandidat/useKandidatlisteForEier';
 import { useSmserForStilling } from '../../../api/kandidatvarsel/kandidatvarsel';
 import { oppdaterStilling } from '../../../api/stilling/oppdater-stilling/oppdaterStilling';
 import SWRLaster from '../../../components/SWRLaster';
@@ -24,7 +24,7 @@ const KandidatlisteWrapper: React.FC<KandidatlisteWrapperProps> = ({
     stillingsData.stilling.uuid,
   );
   const beskjederHook = useSmserForStilling(stillingsData.stilling.uuid);
-  const kandidatlisteHook = useKandidatliste(stillingsData, erEier);
+  const kandidatlisteHook = useKandidatlisteForEier(stillingsData, erEier);
 
   const onOvertaStilling = async () => {
     await oppdaterStilling(stillingsData, {
