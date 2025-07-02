@@ -203,6 +203,7 @@ export const nyStillingMock = {
   },
   stilling: {
     id: 997524,
+    annonsenr: 'R997524',
     uuid: 'nyStilling',
     created: '2025-02-21T22:42:20.197827',
     createdBy: 'pam-rekrutteringsbistand',
