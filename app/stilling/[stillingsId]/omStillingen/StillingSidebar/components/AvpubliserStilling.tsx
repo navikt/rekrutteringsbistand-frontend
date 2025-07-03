@@ -7,10 +7,6 @@ import { ArrowUndoIcon, EyeSlashIcon } from '@navikt/aksel-icons';
 import { BodyLong, BodyShort, Button, Modal } from '@navikt/ds-react';
 import * as React from 'react';
 
-export interface AvpubliserStillingProps {
-  children?: React.ReactNode | undefined;
-}
-
 const AvpubliserStilling: React.FC = () => {
   const ref = React.useRef<HTMLDialogElement>(null);
 
