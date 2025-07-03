@@ -3,9 +3,8 @@ import { setKandidatlisteStatus } from '../../../../../api/kandidat/setKandidatl
 import { oppdaterStilling } from '../../../../../api/stilling/oppdater-stilling/oppdaterStilling';
 import { useApplikasjonContext } from '../../../../../providers/ApplikasjonContext';
 import { StillingsStatus } from '../../../../stilling-typer';
-import { stillingErUtløpt } from '../../../../stilling-util';
 import { useStillingsContext } from '../../../StillingsContext';
-import { EyeSlashIcon, TasklistIcon } from '@navikt/aksel-icons';
+import { TasklistIcon } from '@navikt/aksel-icons';
 import { BodyLong, Button, Modal } from '@navikt/ds-react';
 import * as React from 'react';
 
@@ -28,8 +27,6 @@ const AvsluttStillingKnapp: React.FC<AvsluttStillingKnappProps> = ({
   const [loading, setLoading] = React.useState(false);
 
   const stillingsStatus = stillingsData.stilling.status;
-
-  const erUtløpt = stillingErUtløpt(stillingsData.stilling);
 
   const avsluttStilling = async (kandidatlisteId: string) => {
     setLoading(true);
@@ -61,26 +58,6 @@ const AvsluttStillingKnapp: React.FC<AvsluttStillingKnappProps> = ({
     }
     setLoading(false);
     ref.current?.close();
-  };
-
-  const avpubliserStilling = async () => {
-    setLoading(true);
-    await oppdaterStilling(
-      {
-        ...stillingsData,
-        stilling: {
-          ...stillingsData.stilling,
-          status: StillingsStatus.Stoppet,
-        },
-      },
-      {
-        eierNavident: brukerData.ident,
-        eierNavn: brukerData.navn,
-        eierNavKontorEnhetId: valgtNavKontor?.navKontor,
-      },
-    );
-    setLoading(false);
-    refetch();
   };
 
   return (
@@ -121,17 +98,7 @@ const AvsluttStillingKnapp: React.FC<AvsluttStillingKnappProps> = ({
           </Button>
         </Modal.Footer>
       </Modal>
-      <Button
-        disabled={
-          erUtløpt || loading || stillingsStatus === StillingsStatus.Stoppet
-        }
-        icon={<EyeSlashIcon />}
-        variant='secondary'
-        size='small'
-        onClick={avpubliserStilling}
-      >
-        Avpubliser
-      </Button>
+
       <Button
         onClick={() => ref.current?.show()}
         disabled={
