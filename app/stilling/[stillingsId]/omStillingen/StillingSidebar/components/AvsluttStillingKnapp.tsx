@@ -4,7 +4,6 @@ import { oppdaterStilling } from '../../../../../api/stilling/oppdater-stilling/
 import { useApplikasjonContext } from '../../../../../providers/ApplikasjonContext';
 import { StillingsStatus } from '../../../../stilling-typer';
 import { useStillingsContext } from '../../../StillingsContext';
-import AvpubliserStilling from './AvpubliserStilling';
 import { TasklistIcon } from '@navikt/aksel-icons';
 import { BodyLong, Button, Modal } from '@navikt/ds-react';
 import * as React from 'react';
@@ -100,7 +99,6 @@ const AvsluttStillingKnapp: React.FC<AvsluttStillingKnappProps> = ({
         </Modal.Footer>
       </Modal>
 
-      <AvpubliserStilling />
       <Button
         onClick={() => ref.current?.show()}
         disabled={

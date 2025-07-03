@@ -3,8 +3,8 @@ import { useApplikasjonContext } from '../../../../../providers/ApplikasjonConte
 import { StillingsStatus } from '../../../../stilling-typer';
 import { stillingErUtløpt } from '../../../../stilling-util';
 import { useStillingsContext } from '../../../StillingsContext';
-import { EyeSlashIcon } from '@navikt/aksel-icons';
-import { BodyLong, Button, Modal } from '@navikt/ds-react';
+import { ArrowUndoIcon, EyeSlashIcon } from '@navikt/aksel-icons';
+import { BodyLong, BodyShort, Button, Modal } from '@navikt/ds-react';
 import * as React from 'react';
 
 export interface AvpubliserStillingProps {
@@ -58,21 +58,32 @@ const AvpubliserStilling: React.FC = () => {
       <Modal
         ref={ref}
         header={{
-          heading: 'Er du sikker?',
+          heading: 'Avpubliser stillingsannonsen',
           size: 'small',
-          closeButton: false,
         }}
-        width='small'
+        width='medium'
       >
         <Modal.Body>
-          <BodyLong>Er du sikker på at du vil avpublisere stillingen?</BodyLong>
-          <BodyLong>
-            Du må redigere stillingen for å publisere den på nytt
-          </BodyLong>
+          <div className='flex gap-2 flex-col'>
+            <BodyShort>Hva som skjer</BodyShort>
+            <div className='flex gap-2'>
+              <EyeSlashIcon />
+              <BodyLong>
+                Stillingsannonsen skjules for andre i rekrutteringsbistand.
+              </BodyLong>
+            </div>
+            <div className='flex gap-2'>
+              <ArrowUndoIcon />
+              <BodyLong>
+                Du kan publisere annonsen på nytt. Det gjør du ved å velge
+                &quot;Rediger&quot; på annonsen og fullføre flyten.
+              </BodyLong>
+            </div>
+          </div>
         </Modal.Body>
         <Modal.Footer>
           <Button type='button' variant='danger' onClick={avpubliserStilling}>
-            Ja, jeg er sikker
+            Avpubliser annonsen
           </Button>
           <Button
             type='button'
