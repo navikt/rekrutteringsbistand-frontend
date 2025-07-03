@@ -1,6 +1,6 @@
 import { getMiljø, Miljø } from '../../../../util/miljø';
 import { Kandidatlistestatus } from '../../../api/kandidat/schema.zod';
-import { useKandidatliste } from '../../../api/kandidat/useKandidatliste';
+import { useKandidatlisteForEier } from '../../../api/kandidat/useKandidatlisteForEier';
 import { useKandidatlisteInfo } from '../../../api/kandidat/useKandidatlisteInfo';
 import { StillingsDataDTO } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import Sidelaster from '../../../components/Sidelaster';
@@ -21,10 +21,22 @@ const KandidatTilStilling: React.FC<KandidatTilStillingProps> = ({
 }) => {
   useFinnKandidatForStilling(stillingsData);
   const router = useRouter();
+  const [alleredeLagtTilKandidatliste, setAlleredeLagtTilKandidatliste] =
+    React.useState<string[]>([]);
   const { erEier } = useStillingsContext();
-  const [alleredeLagtTil, setAlleredeLagtTil] = React.useState<string[]>([]);
 
-  const kandidatlisteHook = useKandidatliste(stillingsData, erEier);
+  // Brukes for å vise eier hvem som allerede er lagt til i kandidatliste
+  const kandidatlisteHook = useKandidatlisteForEier(stillingsData, erEier);
+
+  React.useEffect(() => {
+    if (kandidatlisteHook?.data?.kandidater) {
+      const listeOverValgteKandidater = kandidatlisteHook.data.kandidater
+        .map((kandidat) => kandidat.kandidatnr)
+        .filter((id): id is string => id !== null);
+
+      setAlleredeLagtTilKandidatliste(listeOverValgteKandidater);
+    }
+  }, [kandidatlisteHook?.data?.kandidater]);
 
   const kandidatListeInformasjonHook = useKandidatlisteInfo(
     stillingsData?.stillingsinfo,
@@ -41,16 +53,6 @@ const KandidatTilStilling: React.FC<KandidatTilStillingProps> = ({
       `https://arbeidsplassen.intern.dev.nav.no/stillinger/stilling/${stillingsData?.stilling.uuid}`,
     );
   };
-
-  React.useEffect(() => {
-    if (kandidatlisteHook?.data?.kandidater) {
-      const listeOverValgteKandidater = kandidatlisteHook.data.kandidater
-        .map((kandidat) => kandidat.kandidatnr)
-        .filter((id): id is string => id !== null);
-
-      setAlleredeLagtTil(listeOverValgteKandidater);
-    }
-  }, [kandidatlisteHook?.data?.kandidater]);
 
   if (kandidatListeInformasjonHook?.isLoading) {
     return <Sidelaster />;
@@ -128,8 +130,8 @@ const KandidatTilStilling: React.FC<KandidatTilStillingProps> = ({
             </Alert>
           )}
           <KandidatSøkTabs
+            alleredeLagtTilKandidatliste={alleredeLagtTilKandidatliste}
             stillingsId={stillingsData?.stilling.uuid}
-            alleredeLagtTil={alleredeLagtTil}
           />
         </>
       )}

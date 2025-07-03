@@ -12,7 +12,7 @@ import { kandidatSokMirage } from '../app/api/kandidat-sok/useKandidatsøk';
 import { kontorSøkMirage } from '../app/api/kandidat-sok/useKontorSøk';
 import { formidleUsynligKandidatMirage } from '../app/api/kandidat/formidleKandidat';
 import { kandidatlisteoversiktMirage } from '../app/api/kandidat/useKandidatListeoversikt';
-import { kandidatlisteMirage } from '../app/api/kandidat/useKandidatliste';
+import { kandidatlisteMirage } from '../app/api/kandidat/useKandidatlisteForEier';
 import { kandidatlisteInfoMirage } from '../app/api/kandidat/useKandidatlisteInfo';
 import { mineKandidatlisterMirage } from '../app/api/kandidat/useMineKandidatlister';
 import { meldingsmalerMirage } from '../app/api/kandidatvarsel/hentMeldingsmaler';

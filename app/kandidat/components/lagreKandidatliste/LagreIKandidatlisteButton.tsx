@@ -1,7 +1,7 @@
 import { RekbisError } from '../../../../util/rekbisError';
 import { UmamiEvent } from '../../../../util/umamiEvents';
 import { leggTilKandidater } from '../../../api/kandidat-sok/leggTilKandidat';
-import { useKandidatliste } from '../../../api/kandidat/useKandidatliste';
+import { useKandidatlisteForEier } from '../../../api/kandidat/useKandidatlisteForEier';
 import { useKandidatlisteInfo } from '../../../api/kandidat/useKandidatlisteInfo';
 import { useApplikasjonContext } from '../../../providers/ApplikasjonContext';
 import { useStillingsContext } from '../../../stilling/[stillingsId]/StillingsContext';
@@ -21,7 +21,13 @@ const LagreIKandidatlisteMedStillingsId: React.FC<
 > = ({ stillingsId }) => {
   const { track } = useUmami();
   const { erEier, stillingsData } = useStillingsContext();
-  const kandidatlisteHook = useKandidatliste(stillingsData, erEier);
+
+  // bruker for å oppdatere eiers kandidatliste med nye kandidater
+  const kandidatlisteForEierHook = useKandidatlisteForEier(
+    stillingsData,
+    erEier,
+  );
+
   const kandidatListeInfo = useKandidatlisteInfo(stillingsData.stillingsinfo);
   const { visVarsel } = useApplikasjonContext();
   const { markerteKandidater, fjernMarkerteKandidater } =
@@ -61,7 +67,8 @@ const LagreIKandidatlisteMedStillingsId: React.FC<
       onClick={() => {
         lagreKandidater();
         setTimeout(() => {
-          kandidatlisteHook.mutate();
+          // Brukers her slik at eier får oppdatert listen
+          kandidatlisteForEierHook.mutate();
           kandidatListeInfo?.mutate();
         }, 1000);
       }}
