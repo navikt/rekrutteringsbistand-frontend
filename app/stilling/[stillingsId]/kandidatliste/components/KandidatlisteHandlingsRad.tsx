@@ -2,6 +2,7 @@ import { useStillingsContext } from '../../StillingsContext';
 import { useKandidatlisteContext } from '../KandidatlisteContext';
 import DelMedArbeidsgiver from './DelMedArbeidsgiver/DelMedArbeidsgiver';
 import DelMedKandidatModal from './DelMedKandidat/DelMedKandidatModal';
+import useFiltrerteKandidater from './KandidatlisteFilter/useFiltrerteKandidater';
 import SendSmsModal from './SendSMS/SendSmsModal';
 import { Checkbox } from '@navikt/ds-react';
 import * as React from 'react';
@@ -14,6 +15,9 @@ const KandidatlisteHandlingsRad: React.FC = () => {
     setMarkerteKandidater,
   } = useKandidatlisteContext();
   const { erJobbmesse } = useStillingsContext();
+
+  // filtrerteKandidater
+  const filtrerteKandidater = useFiltrerteKandidater();
 
   return (
     <div className='flex gap-4'>
@@ -31,14 +35,21 @@ const KandidatlisteHandlingsRad: React.FC = () => {
           if (markerteKandidater.length) {
             setMarkerteKandidater([]);
           } else {
-            setMarkerteKandidater(
-              kandidater.filter((k) => k.fodselsnr !== null),
-            );
+            if (filtrerteKandidater?.kandidater) {
+              setMarkerteKandidater(
+                filtrerteKandidater.kandidater.filter(
+                  (k) => k.fodselsnr !== null,
+                ),
+              );
+            }
           }
         }}
-        hideLabel
       >
-        Velg alle rader
+        <span>
+          {markerteKandidater.length > 0 && (
+            <span> {markerteKandidater.length} valgt</span>
+          )}
+        </span>
       </Checkbox>
       {!lukketKandidatliste && (
         <div>
@@ -57,7 +68,7 @@ const KandidatlisteHandlingsRad: React.FC = () => {
             </>
           )}
         </div>
-      )}{' '}
+      )}
     </div>
   );
 };
