@@ -187,7 +187,7 @@ const EndreTittel = ({ modalRef, onUpdated }: EndreTittelProps) => {
       setShowUnchangedError(true);
       setVisTomFeil(false);
     } else if (dirtyFields.nyTittel && nyTittel?.trim()) {
-      validate({ tittel: nyTittel, beskrivelse: null });
+      validate({ tekst: nyTittel });
       setShowUnchangedError(false);
     } else {
       setVisTomFeil(true);
