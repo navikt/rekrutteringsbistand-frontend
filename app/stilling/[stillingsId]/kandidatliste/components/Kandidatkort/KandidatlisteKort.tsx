@@ -1,5 +1,6 @@
 import { usynligKandidaterSchemaDTO } from '../../../../../api/kandidat/schema.zod';
 import { formaterNorskDato } from '../../../../../components/util';
+import { useVisKandidatNr } from '../../../../../kandidat/vis-kandidat/useVisKandidatNr';
 import { KANDIDATLISTE_COLUMN_LAYOUT } from '../../FiltrertKandidatListeVisning';
 import { KandidatutfallTyper } from '../../KandidatTyper';
 import { useKandidatlisteContext } from '../../KandidatlisteContext';
@@ -17,7 +18,6 @@ import KandidatCheckbox from './components/KandidatCheckbox';
 import KandidatListeKortValg from './components/KandidatListeKortValg';
 import KandidatlisteNavn from './components/KandidatlisteNavn';
 import { BodyShort, Box } from '@navikt/ds-react';
-import { useQueryState } from 'nuqs';
 import * as React from 'react';
 
 export interface KandidatListeKortProps {
@@ -33,10 +33,7 @@ const KandidatListeKort: React.FC<KandidatListeKortProps> = ({
   <div className={kolonneStyling}></div>;
   const { lukketKandidatliste, kandidatlisteId } = useKandidatlisteContext();
 
-  const [visKandidatnr, setVisKandidatnr] = useQueryState('visKandidatnr', {
-    defaultValue: '',
-    clearOnDefault: true,
-  });
+  const [visKandidatnr, setVisKandidatnr] = useVisKandidatNr();
 
   if (usynligKandidat) {
     const fåttJobben =

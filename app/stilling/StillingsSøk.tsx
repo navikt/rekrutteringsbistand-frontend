@@ -8,13 +8,13 @@ import { UmamiEvent } from '../../util/umamiEvents';
 import { useUseBrukerStandardSøk } from '../api/stilling/standardsok/useBrukersStandardsøk';
 import SVGDarkmode from '../components/SVGDarkmode';
 import Sidelaster from '../components/Sidelaster';
-import KandidatSplitScreenLayout from '../components/layout/KandidatSplitScreenLayout';
 import SideLayout from '../components/layout/SideLayout';
 import SideTopBanner from '../components/layout/SideTopBanner';
+import { SplitScreenLayout } from '../components/layout/SplitScreenLayout';
 import { TilgangskontrollForInnhold } from '../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '../components/tilgangskontroll/roller';
-import VisKandidat from '../kandidat/VisKandidat/VisKandidat';
-import { useStillingForKandidat } from '../kandidat/VisKandidat/useStillingForKandidat';
+import { useStillingForKandidat } from '../kandidat/vis-kandidat/useStillingForKandidat';
+import { useVisKandidatNr } from '../kandidat/vis-kandidat/useVisKandidatNr';
 import { useUmami } from '../providers/UmamiContext';
 import {
   StillingsSøkProvider,
@@ -27,7 +27,6 @@ import { StillingsSøkPortefølje } from './stillingssøk-typer';
 import { Button, ToggleGroup } from '@navikt/ds-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { useQueryState } from 'nuqs';
 import * as React from 'react';
 
 interface StillingsSøkProps {
@@ -38,10 +37,7 @@ interface StillingsSøkProps {
 const StillingsSøk = ({ formidlinger, skjulBanner }: StillingsSøkProps) => {
   const searchParams = useSearchParams();
   const brukerStandardSøkData = useUseBrukerStandardSøk();
-  const [visKandidatnr] = useQueryState('visKandidatnr', {
-    defaultValue: '',
-    clearOnDefault: true,
-  });
+  const [visKandidatnr] = useVisKandidatNr();
   React.useEffect(() => {
     if (
       !visKandidatnr &&
@@ -78,10 +74,7 @@ const StillingsSøkLayout: React.FC<StillingsSøkProps> = ({
   const { portefølje, setPortefølje } = useStillingsSøkFilter();
   const { track } = useUmami();
 
-  const [visKandidatnr] = useQueryState('visKandidatnr', {
-    defaultValue: '',
-    clearOnDefault: true,
-  });
+  const [visKandidatnr] = useVisKandidatNr();
 
   const kandidatStillingssøkData = useStillingForKandidat(
     visKandidatnr ?? null,
@@ -110,9 +103,7 @@ const StillingsSøkLayout: React.FC<StillingsSøkProps> = ({
   }
 
   return (
-    <KandidatSplitScreenLayout
-      sidebar={visKandidatnr && <VisKandidat kandidatnr={visKandidatnr} />}
-    >
+    <SplitScreenLayout>
       <SideLayout
         banner={
           skjulBanner ? null : (
@@ -193,7 +184,7 @@ const StillingsSøkLayout: React.FC<StillingsSøkProps> = ({
           erFormidling={formidlinger}
         />
       </SideLayout>
-    </KandidatSplitScreenLayout>
+    </SplitScreenLayout>
   );
 };
 

@@ -1,12 +1,10 @@
 'use client';
 
-import SplitScreenLayout from '../../components/layout/KandidatSplitScreenLayout';
 import SideLayout from '../../components/layout/SideLayout';
-import VisKandidat from '../../kandidat/VisKandidat/VisKandidat';
+import { SplitScreenLayout } from '../../components/layout/SplitScreenLayout';
 import StillingHeader from './StillingHeader';
 import { useStillingsContext } from './StillingsContext';
 import { Alert, Heading } from '@navikt/ds-react';
-import { useQueryState } from 'nuqs';
 import * as React from 'react';
 
 interface StillingSideLayoutProps {
@@ -18,19 +16,12 @@ const StillingSideLayout: React.FC<StillingSideLayoutProps> = ({
 }) => {
   const { stillingsData } = useStillingsContext();
 
-  const [visKandidatnr] = useQueryState('visKandidatnr', {
-    defaultValue: '',
-    clearOnDefault: true,
-  });
-
   const ugyldigStilling =
     stillingsData?.stilling?.medium === 'DIR' &&
     (stillingsData?.stilling?.employer?.orgnr ?? null) === null;
 
   return (
-    <SplitScreenLayout
-      sidebar={visKandidatnr && <VisKandidat kandidatnr={visKandidatnr} />}
-    >
+    <SplitScreenLayout>
       <SideLayout banner={<StillingHeader />}>
         {ugyldigStilling ? (
           <Alert variant='error'>

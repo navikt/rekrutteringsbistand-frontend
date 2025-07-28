@@ -1,8 +1,6 @@
 'use client';
 
-import KandidatSplitScreenLayout from '../components/layout/KandidatSplitScreenLayout';
-import VisKandidat from '../kandidat/VisKandidat/VisKandidat';
-import { useQueryState } from 'nuqs';
+import { SplitScreenLayout } from '../components/layout/SplitScreenLayout';
 import * as React from 'react';
 
 export interface RekrutteringsTreffLayoutProps {
@@ -12,18 +10,7 @@ export interface RekrutteringsTreffLayoutProps {
 const RekrutteringsTreffLayout: React.FC<RekrutteringsTreffLayoutProps> = ({
   children,
 }) => {
-  const [visKandidatnr] = useQueryState('visKandidatnr', {
-    defaultValue: '',
-    clearOnDefault: true,
-  });
-
-  return (
-    <KandidatSplitScreenLayout
-      sidebar={visKandidatnr && <VisKandidat kandidatnr={visKandidatnr} />}
-    >
-      {children}
-    </KandidatSplitScreenLayout>
-  );
+  return <SplitScreenLayout>{children}</SplitScreenLayout>;
 };
 
 export default RekrutteringsTreffLayout;
