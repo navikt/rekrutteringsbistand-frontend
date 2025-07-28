@@ -1,7 +1,6 @@
 'use client';
 
 import SideLayout from '../../components/layout/SideLayout';
-import { SplitScreenLayout } from '../../components/layout/SplitScreenLayout';
 import StillingHeader from './StillingHeader';
 import { useStillingsContext } from './StillingsContext';
 import { Alert, Heading } from '@navikt/ds-react';
@@ -21,24 +20,22 @@ const StillingSideLayout: React.FC<StillingSideLayoutProps> = ({
     (stillingsData?.stilling?.employer?.orgnr ?? null) === null;
 
   return (
-    <SplitScreenLayout>
-      <SideLayout banner={<StillingHeader />}>
-        {ugyldigStilling ? (
-          <Alert variant='error'>
-            <Heading spacing size='small' level='3'>
-              Ugyldig stilling
-            </Heading>
-            <p>
-              Denne stillingen er ikke gyldig da det er en intern stilling som
-              mangler organisasjonsnummer.
-            </p>
-            <p> Stillingen er derfor ikke tilgjengelig for rekruttering.</p>
-          </Alert>
-        ) : (
-          children
-        )}
-      </SideLayout>
-    </SplitScreenLayout>
+    <SideLayout banner={<StillingHeader />}>
+      {ugyldigStilling ? (
+        <Alert variant='error'>
+          <Heading spacing size='small' level='3'>
+            Ugyldig stilling
+          </Heading>
+          <p>
+            Denne stillingen er ikke gyldig da det er en intern stilling som
+            mangler organisasjonsnummer.
+          </p>
+          <p> Stillingen er derfor ikke tilgjengelig for rekruttering.</p>
+        </Alert>
+      ) : (
+        children
+      )}
+    </SideLayout>
   );
 };
 

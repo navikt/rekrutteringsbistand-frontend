@@ -7,7 +7,7 @@ import { useEffect } from 'react';
 export const useVisPersonTreffId = () => {
   const pathname = usePathname();
 
-  const [visPersonTreffId, setVisPersonTreffId] = useQueryState(
+  const [visPersonTreffId, setVisPersonTreffIdSetter] = useQueryState(
     'visPersonTreffId',
     {
       defaultValue: '',
@@ -17,17 +17,15 @@ export const useVisPersonTreffId = () => {
 
   useEffect(() => {
     if (!pathname.includes('/rekrutteringstreff') && visPersonTreffId !== '') {
-      setVisPersonTreffId('');
+      setVisPersonTreffIdSetter('');
     }
-  }, [pathname, visPersonTreffId, setVisPersonTreffId]);
+  }, [pathname, visPersonTreffId, setVisPersonTreffIdSetter]);
 
-  const wrappedSetVisPersonTreffId = (
-    value: string | ((prev: string) => string),
-  ) => {
+  const setVisPersonTreffId = (value: string | ((prev: string) => string)) => {
     if (pathname.includes('/rekrutteringstreff')) {
-      setVisPersonTreffId(value);
+      setVisPersonTreffIdSetter(value);
     }
   };
 
-  return [visPersonTreffId, wrappedSetVisPersonTreffId] as const;
+  return [visPersonTreffId, setVisPersonTreffId] as const;
 };

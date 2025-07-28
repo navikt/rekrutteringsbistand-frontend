@@ -9,6 +9,7 @@ import { useDecoratorData } from '../api/modia/decorator/useDecoratorData';
 import SWRLaster from '../components/SWRLaster';
 import ErrorBoundary from '../components/feilhåndtering/ErrorBoundary';
 import { AppNavigasjon } from '../components/layout/AppNavigasjon';
+import { SplitScreenLayout } from '../components/layout/SplitScreenLayout';
 import { ApplikasjonContextProvider } from './ApplikasjonContext';
 import { KandidatNavigeringProvider } from './KandidatNavigeringContext';
 import NavigasjonsBlockerProvider from './NavigasjonsBlockerProvider';
@@ -90,7 +91,7 @@ const RekrutteringsbistandProvider: React.FC<
                       <SidebarProvider>
                         <AppNavigasjon />
                         <KandidatNavigeringProvider>
-                          {children}
+                          <SplitScreenLayout>{children}</SplitScreenLayout>
                         </KandidatNavigeringProvider>
                       </SidebarProvider>
                     </NuqsAdapter>
