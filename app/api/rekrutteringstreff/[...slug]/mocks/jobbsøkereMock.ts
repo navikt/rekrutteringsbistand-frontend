@@ -7,6 +7,7 @@ const fakerEN = new Faker({ locale: [en_NG] });
 
 export const jobbsøkerMock = (): JobbsøkerDTO => {
   return {
+    personTreffId: faker.string.uuid(),
     fødselsnummer: navfaker.personIdentifikator.fødselsnummer(),
     fornavn: faker.person.firstName(),
     etternavn: faker.person.lastName(),

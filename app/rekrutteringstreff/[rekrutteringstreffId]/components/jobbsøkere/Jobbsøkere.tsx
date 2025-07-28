@@ -41,6 +41,7 @@ const Jobbsøkere = () => {
 
   const handleCheckboxChange = (jobbsøker: JobbsøkerDTO, erValgt: boolean) => {
     const dto: InviterInternalDto = {
+      personTreffId: jobbsøker.personTreffId,
       fornavn: jobbsøker.fornavn,
       etternavn: jobbsøker.etternavn,
       fødselsnummer: jobbsøker.fødselsnummer,
@@ -89,12 +90,12 @@ const Jobbsøkere = () => {
   return (
     <SWRLaster hooks={[jobbsøkerHook]}>
       {(jobbsøkere) => {
-        const inviterteFnr = new Set(
-          jobbsøkere.filter(erInvitert).map((j) => j.fødselsnummer),
+        const invitertePersonTreffIder = new Set(
+          jobbsøkere.filter(erInvitert).map((j) => j.personTreffId),
         );
 
         const valgteSomIkkeErInvitert = valgteJobbsøkere.filter(
-          (j) => !inviterteFnr.has(j.fødselsnummer),
+          (j) => !invitertePersonTreffIder.has(j.personTreffId),
         );
 
         return (
