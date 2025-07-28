@@ -20,14 +20,13 @@ export interface SplitScreenLayoutProps {
 export const SplitScreenLayout: React.FC<SplitScreenLayoutProps> = ({
   children,
 }) => {
-  const [visKandidatnr] = useVisKandidatNr();
-  const [visPersonTreffId] = useVisPersonTreffId();
+  const [visKandidatnr, setVisKandidatnr] = useVisKandidatNr();
+  const [visPersonTreffId, setVisTreffId] = useVisPersonTreffId();
 
   const [ekspanderHøyre, setEkspanderHøyre] = React.useState(false);
   const {
     nesteKandidat,
     forrigeKandidat,
-    lukkSidebar,
     harNesteKandidat,
     harForrigeKandidat,
   } = useKandidatNavigeringContext();
@@ -42,6 +41,13 @@ export const SplitScreenLayout: React.FC<SplitScreenLayoutProps> = ({
     return null;
   };
 
+  const sidebarComponent = getSidebarComponent();
+
+  const lukkSidebar = () => {
+    setVisKandidatnr('');
+    setVisTreffId('');
+  };
+
   React.useEffect(() => {
     if (visPersonTreffId || visKandidatnr) {
       const originalStyle = document.body.style.overflow;
@@ -50,7 +56,7 @@ export const SplitScreenLayout: React.FC<SplitScreenLayoutProps> = ({
         document.body.style.overflow = originalStyle;
       };
     }
-  }, [getSidebarComponent]);
+  }, [sidebarComponent]);
 
   return (
     <SidebarProvider>
@@ -66,7 +72,7 @@ export const SplitScreenLayout: React.FC<SplitScreenLayoutProps> = ({
 
         <ResizablePanel
           style={{ minWidth: '550px' }}
-          className={!getSidebarComponent() ? 'hidden' : ''}
+          className={!sidebarComponent ? 'hidden' : ''}
         >
           <HøyreInnholdKort
             lukkSidebar={lukkSidebar}
@@ -76,7 +82,7 @@ export const SplitScreenLayout: React.FC<SplitScreenLayoutProps> = ({
             ekspanderHøyre={ekspanderHøyre}
             ekspanderSidebar={() => setEkspanderHøyre(!ekspanderHøyre)}
           >
-            {getSidebarComponent()}
+            {sidebarComponent}
           </HøyreInnholdKort>
         </ResizablePanel>
       </ResizablePanelGroup>
