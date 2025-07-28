@@ -56,7 +56,7 @@ export const SplitScreenLayout: React.FC<SplitScreenLayoutProps> = ({
         document.body.style.overflow = originalStyle;
       };
     }
-  }, [sidebarComponent]);
+  }, [visPersonTreffId, visKandidatnr]);
 
   return (
     <SidebarProvider>
