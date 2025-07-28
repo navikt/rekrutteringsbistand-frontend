@@ -18,6 +18,7 @@ const HendelseSchema = z.object({
 });
 
 const JobbsøkerSchema = z.object({
+  personTreffId: z.string(),
   fødselsnummer: z.string(),
   kandidatnummer: z.string().nullable(),
   fornavn: z.string(),

@@ -6,15 +6,15 @@ const inviterJobbsøkereEndepunkt = (rekrutteringstreffId: string) =>
 
 export const inviterJobbsøkere = async (
   rekrutteringstreffId: string,
-  fødselsnumre: string[],
+  personTreffIder: string[],
 ): Promise<void> => {
   try {
     await postApi(inviterJobbsøkereEndepunkt(rekrutteringstreffId), {
-      fødselsnumre,
+      personTreffIder,
     });
   } catch (error) {
     logger.error(
-      `Feil ved invitasjon av ${fødselsnumre.length} jobbsøkere til rekrutteringstreff ${rekrutteringstreffId}`,
+      `Feil ved invitasjon av ${personTreffIder.length} jobbsøkere til rekrutteringstreff ${rekrutteringstreffId}`,
       error,
     );
     throw error;
