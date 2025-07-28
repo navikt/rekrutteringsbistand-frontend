@@ -43,7 +43,7 @@ export const SplitScreenLayout: React.FC<SplitScreenLayoutProps> = ({
   };
 
   React.useEffect(() => {
-    if (getSidebarComponent()) {
+    if (visPersonTreffId || visKandidatnr) {
       const originalStyle = document.body.style.overflow;
       document.body.style.overflow = 'hidden';
       return () => {
