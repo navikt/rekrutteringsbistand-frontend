@@ -7,10 +7,10 @@ import {
   KandidatSøkPortefølje,
   useKandidatSøkFilterContext,
 } from './KandidaSokFilterContext';
-import KandidatSøkFilter from './KandidatSøkFilter/KandidatSøkFilter';
 import KandidatSøkResultat from './KandidatSøkResultat';
 import KandidatSøkChips from './components/KandidatSøkChips';
 import ValgteKontorer from './components/ValgteKontorer';
+import KandidatSøkFilter from './kandidat-søk-filter/KandidatSøkFilter';
 import { ToggleGroup } from '@navikt/ds-react';
 import * as React from 'react';
 

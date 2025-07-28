@@ -8,13 +8,12 @@ import { UmamiEvent } from '../../util/umamiEvents';
 import { useUseBrukerStandardSøk } from '../api/stilling/standardsok/useBrukersStandardsøk';
 import SVGDarkmode from '../components/SVGDarkmode';
 import Sidelaster from '../components/Sidelaster';
-import KandidatSplitScreenLayout from '../components/layout/KandidatSplitScreenLayout';
 import SideLayout from '../components/layout/SideLayout';
 import SideTopBanner from '../components/layout/SideTopBanner';
 import { TilgangskontrollForInnhold } from '../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '../components/tilgangskontroll/roller';
-import VisKandidat from '../kandidat/VisKandidat/VisKandidat';
-import { useStillingForKandidat } from '../kandidat/VisKandidat/useStillingForKandidat';
+import { useStillingForKandidat } from '../kandidat/vis-kandidat/useStillingForKandidat';
+import { useVisKandidatNr } from '../kandidat/vis-kandidat/useVisKandidatNr';
 import { useUmami } from '../providers/UmamiContext';
 import {
   StillingsSøkProvider,
@@ -27,7 +26,6 @@ import { StillingsSøkPortefølje } from './stillingssøk-typer';
 import { Button, ToggleGroup } from '@navikt/ds-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { useQueryState } from 'nuqs';
 import * as React from 'react';
 
 interface StillingsSøkProps {
@@ -38,10 +36,7 @@ interface StillingsSøkProps {
 const StillingsSøk = ({ formidlinger, skjulBanner }: StillingsSøkProps) => {
   const searchParams = useSearchParams();
   const brukerStandardSøkData = useUseBrukerStandardSøk();
-  const [visKandidatnr] = useQueryState('visKandidatnr', {
-    defaultValue: '',
-    clearOnDefault: true,
-  });
+  const [visKandidatnr] = useVisKandidatNr();
   React.useEffect(() => {
     if (
       !visKandidatnr &&
@@ -78,10 +73,7 @@ const StillingsSøkLayout: React.FC<StillingsSøkProps> = ({
   const { portefølje, setPortefølje } = useStillingsSøkFilter();
   const { track } = useUmami();
 
-  const [visKandidatnr] = useQueryState('visKandidatnr', {
-    defaultValue: '',
-    clearOnDefault: true,
-  });
+  const [visKandidatnr] = useVisKandidatNr();
 
   const kandidatStillingssøkData = useStillingForKandidat(
     visKandidatnr ?? null,
@@ -110,90 +102,86 @@ const StillingsSøkLayout: React.FC<StillingsSøkProps> = ({
   }
 
   return (
-    <KandidatSplitScreenLayout
-      sidebar={visKandidatnr && <VisKandidat kandidatnr={visKandidatnr} />}
+    <SideLayout
+      banner={
+        skjulBanner ? null : (
+          <>
+            <SideTopBanner
+              tittel={
+                formidlinger ? 'Etterregistrering formidlinger' : 'Stillinger'
+              }
+              knappIBanner={
+                <div>
+                  <Link
+                    href={
+                      formidlinger
+                        ? '/etterregistrering/ny-etterregistrering'
+                        : '/stilling/ny-stilling'
+                    }
+                  >
+                    <Button>
+                      {formidlinger ? 'Ny etterregistrering' : 'Ny stilling'}
+                    </Button>
+                  </Link>
+                </div>
+              }
+              ikon={
+                formidlinger ? (
+                  <SVGDarkmode
+                    light={EtterregistreringIkon}
+                    dark={EtterregistreringIkonDark}
+                    alt='Finn stillinger'
+                  />
+                ) : (
+                  <SVGDarkmode
+                    light={FinnStillingerIkon}
+                    dark={FinnStillingerIkonDark}
+                    alt='Finn stillinger'
+                  />
+                )
+              }
+            />
+            {visKandidatnr && (
+              <StillingForKandidat kandidatnr={visKandidatnr} />
+            )}
+          </>
+        )
+      }
     >
-      <SideLayout
-        banner={
-          skjulBanner ? null : (
-            <>
-              <SideTopBanner
-                tittel={
-                  formidlinger ? 'Etterregistrering formidlinger' : 'Stillinger'
-                }
-                knappIBanner={
-                  <div>
-                    <Link
-                      href={
-                        formidlinger
-                          ? '/etterregistrering/ny-etterregistrering'
-                          : '/stilling/ny-stilling'
-                      }
-                    >
-                      <Button>
-                        {formidlinger ? 'Ny etterregistrering' : 'Ny stilling'}
-                      </Button>
-                    </Link>
-                  </div>
-                }
-                ikon={
-                  formidlinger ? (
-                    <SVGDarkmode
-                      light={EtterregistreringIkon}
-                      dark={EtterregistreringIkonDark}
-                      alt='Finn stillinger'
-                    />
-                  ) : (
-                    <SVGDarkmode
-                      light={FinnStillingerIkon}
-                      dark={FinnStillingerIkonDark}
-                      alt='Finn stillinger'
-                    />
-                  )
-                }
-              />
-              {visKandidatnr && (
-                <StillingForKandidat kandidatnr={visKandidatnr} />
-              )}
-            </>
-          )
-        }
-      >
-        <div className='grid gap-4 mb-2'>
-          <ToggleGroup
-            size='small'
-            value={portefølje || StillingsSøkPortefølje.VIS_ALLE}
-            onChange={(e) => setPortefølje(e as StillingsSøkPortefølje)}
+      <div className='grid gap-4 mb-2'>
+        <ToggleGroup
+          size='small'
+          value={portefølje || StillingsSøkPortefølje.VIS_ALLE}
+          onChange={(e) => setPortefølje(e as StillingsSøkPortefølje)}
+        >
+          <ToggleGroup.Item
+            value={StillingsSøkPortefølje.VIS_ALLE}
+            label='Alle stillinger'
+          />
+          <TilgangskontrollForInnhold
+            skjulVarsel
+            kreverEnAvRollene={[
+              Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+            ]}
           >
             <ToggleGroup.Item
-              value={StillingsSøkPortefølje.VIS_ALLE}
-              label='Alle stillinger'
+              value={StillingsSøkPortefølje.VIS_MINE}
+              label={
+                formidlinger ? 'Mine etterregistreringer' : 'Mine stillinger'
+              }
             />
-            <TilgangskontrollForInnhold
-              skjulVarsel
-              kreverEnAvRollene={[
-                Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-              ]}
-            >
-              <ToggleGroup.Item
-                value={StillingsSøkPortefølje.VIS_MINE}
-                label={
-                  formidlinger ? 'Mine etterregistreringer' : 'Mine stillinger'
-                }
-              />
-            </TilgangskontrollForInnhold>
-          </ToggleGroup>
-        </div>
-        <StillingsSøkFilter
-          formidlinger={formidlinger}
-          stillingForKandidat={visKandidatnr}
-        />
-        <StillingsSøkeresultat
-          kandidatId={visKandidatnr}
-          erFormidling={formidlinger}
-        />
-      </SideLayout>
-    </KandidatSplitScreenLayout>
+          </TilgangskontrollForInnhold>
+        </ToggleGroup>
+      </div>
+      <StillingsSøkFilter
+        formidlinger={formidlinger}
+        stillingForKandidat={visKandidatnr}
+      />
+      <StillingsSøkeresultat
+        kandidatId={visKandidatnr}
+        erFormidling={formidlinger}
+      />
+    </SideLayout>
   );
 };
 
