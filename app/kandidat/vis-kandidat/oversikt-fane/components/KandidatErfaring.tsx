@@ -12,10 +12,10 @@ const KandidatErfaring: React.FC = () => {
         {kandidatData.yrkeserfaring &&
           kandidatData.yrkeserfaring.length > 0 && (
             <>
-              <Heading size='small' textColor='subtle'>
+              <Heading size='small' textColor='subtle' className='mb-4'>
                 Yrkeserfaring
               </Heading>
-              <div className='my-2'>
+              <div>
                 {kandidatData.yrkeserfaring
                   .slice() // Create a copy of the array to avoid mutating the original
                   .sort((a, b) => {
