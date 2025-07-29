@@ -46,7 +46,7 @@ const StillingsSøk = ({ formidlinger, skjulBanner }: StillingsSøkProps) => {
       const newSearch =
         brukerStandardSøkData.data?.søk ||
         'publisert=intern&statuser=publisert';
-      window.history.pushState(
+      window.history.replaceState(
         {},
         '',
         `${window.location.pathname}?${newSearch}`,
