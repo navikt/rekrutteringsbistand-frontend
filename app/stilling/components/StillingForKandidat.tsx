@@ -17,7 +17,7 @@ const StillingForKandidat: React.FC<StillingForKandidatProps> = ({
       {(data) => (
         <div className='mb-4'>
           <Heading size='medium'>
-            Finner stilling for: {data.fornavn}, {data.etternavn}
+            Finner stilling for: {data.fornavn} {data.etternavn}
           </Heading>
         </div>
       )}
