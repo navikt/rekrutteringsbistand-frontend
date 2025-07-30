@@ -110,7 +110,7 @@ const InkluderingFilter: React.FC = () => {
   const trackOgSetInkludering = (value: string[]) => {
     setInkludering(value);
     track(UmamiEvent.Stilling.inkludering_filter_søk, {
-      inkludering: value.join(', '),
+      inkludering: value,
     });
   };
 
