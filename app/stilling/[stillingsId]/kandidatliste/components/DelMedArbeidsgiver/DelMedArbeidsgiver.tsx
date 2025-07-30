@@ -30,6 +30,7 @@ const DelMedArbeidsgiver: React.FC<DelMedArbeidsgiverProps> = ({
   sidebar,
 }) => {
   const { track } = useUmami();
+  const [loading, setLoading] = React.useState(false);
   const [visModal, setVisModal] = React.useState(false);
   const { valgtNavKontor } = useApplikasjonContext();
   const { stillingsData } = useStillingsContext();
@@ -51,16 +52,23 @@ const DelMedArbeidsgiver: React.FC<DelMedArbeidsgiverProps> = ({
     track(UmamiEvent.Stilling.del_kandidat_med_arbeidsgiver, {
       antall: kandidatnummerListe.length,
     });
+    setLoading(true);
     await postDelMedArbeidsgiver({
       kandidatlisteId: kandidatlisteId,
       kandidatnummerListe,
       mailadresser: epost,
       navKontor: valgtNavKontor?.navKontor ?? '',
     }).then(() => {
+      setLoading(false);
       setEpost([]);
       setVisModal(false);
       reFetchKandidatliste();
     });
+  };
+
+  const isValidEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
   };
 
   return (
@@ -174,7 +182,9 @@ const DelMedArbeidsgiver: React.FC<DelMedArbeidsgiverProps> = ({
                     isMultiSelect
                     onToggleSelected={(val, selected) => {
                       if (selected) {
-                        setEpost([...epost, val]);
+                        if (isValidEmail(val)) {
+                          setEpost([...epost, val]);
+                        }
                       } else {
                         setEpost(epost.filter((e) => e !== val));
                       }
@@ -203,7 +213,8 @@ const DelMedArbeidsgiver: React.FC<DelMedArbeidsgiverProps> = ({
                     Avbryt
                   </Button>
                   <Button
-                    disabled={harSvartJa.length === 0}
+                    loading={loading}
+                    disabled={harSvartJa.length === 0 || epost.length === 0}
                     variant='primary'
                     onClick={() =>
                       onDelMedArbeidsgiver(
