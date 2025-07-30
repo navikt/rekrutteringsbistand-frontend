@@ -1,3 +1,5 @@
+import { UmamiEvent } from '../../../../util/umamiEvents';
+import { useUmami } from '../../../providers/UmamiContext';
 import { useStillingsSøkFilter } from '../../StillingsSøkContext';
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
 import * as React from 'react';
@@ -97,6 +99,7 @@ export const hierarkiAvTagsForFilter: Array<GruppeMedTags> = [
 ];
 
 const InkluderingFilter: React.FC = () => {
+  const { track } = useUmami();
   const {
     inkludering,
     setInkludering,
@@ -104,11 +107,18 @@ const InkluderingFilter: React.FC = () => {
     setInkluderingUnderkategori,
   } = useStillingsSøkFilter();
 
+  const trackOgSetInkludering = (value: string[]) => {
+    setInkludering(value);
+    track(UmamiEvent.Stilling.inkludering_filter_søk, {
+      inkludering: value.join(', '),
+    });
+  };
+
   return (
     <CheckboxGroup
       legend='Inkludering'
       value={inkludering}
-      onChange={setInkludering}
+      onChange={trackOgSetInkludering}
     >
       {hierarkiAvTagsForFilter.map((gruppeMedTags) => (
         <React.Fragment key={gruppeMedTags.hovedtag}>
