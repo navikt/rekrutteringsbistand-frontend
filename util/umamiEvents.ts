@@ -57,6 +57,7 @@ const Stilling = lagEventPrefix(UmamiDomene.Stilling, {
   forslag_til_stilling_fane: 'Forslag til stilling fane',
   forslag_til_stilling_legg_til_kandidat:
     'Forslag til stilling legg til kandidat',
+  inkludering_filter_søk: 'Inkludering filter søk',
 });
 
 const Kandidat = lagEventPrefix(UmamiDomene.Kandidat, {
