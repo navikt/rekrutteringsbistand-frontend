@@ -33,6 +33,10 @@ export const labelTekst = (hendelsetype: string) => {
       return 'oppfølging avsluttet';
     case 'AVSLUTT':
       return 'avsluttet';
+    case 'SVAR_JA_TIL_INVITASJON':
+      return 'svart ja';
+    case 'SVAR_NEI_TIL_INVITASJON':
+      return 'svart nei';
     default:
       return '';
   }
