@@ -56,24 +56,28 @@ const Jobbsøkere = () => {
   };
 
   const getLagtTilData = (jobbsøker: JobbsøkerDTO) => {
-    const leggTilHendelse = jobbsøker.hendelser.find(
-      ({ hendelsestype }) => hendelsestype === 'OPPRETT',
-    );
-    const inviterHendelse = jobbsøker.hendelser.find(
-      ({ hendelsestype }) => hendelsestype === 'INVITER',
-    );
-    if (inviterHendelse)
+    const statusMap: Record<string, string> = {
+      SVAR_JA_TIL_INVITASJON: 'Svart ja',
+      SVAR_NEI_TIL_INVITASJON: 'Svart nei',
+      INVITER: 'Invitert',
+      OPPRETT: 'Lagt til',
+    };
+
+    const sisteRelevanteHendelse = [...jobbsøker.hendelser]
+      .filter((hendelse) => hendelse.hendelsestype in statusMap)
+      .sort(
+        (a, b) =>
+          new Date(b.tidspunkt).getTime() - new Date(a.tidspunkt).getTime(),
+      )[0];
+
+    if (sisteRelevanteHendelse) {
       return {
-        status: 'Invitert',
-        datoLagtTil: inviterHendelse.tidspunkt,
-        lagtTilAv: inviterHendelse.aktørIdentifikasjon,
+        status: statusMap[sisteRelevanteHendelse.hendelsestype],
+        datoLagtTil: sisteRelevanteHendelse.tidspunkt,
+        lagtTilAv: sisteRelevanteHendelse.aktørIdentifikasjon,
       };
-    if (leggTilHendelse)
-      return {
-        status: 'Lagt til',
-        datoLagtTil: leggTilHendelse.tidspunkt,
-        lagtTilAv: leggTilHendelse.aktørIdentifikasjon,
-      };
+    }
+
     return {
       status: undefined,
       datoLagtTil: 'Ukjent dato',
