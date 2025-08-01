@@ -50,23 +50,6 @@ const SWRLaster = <T extends any[]>({
   }
 
   const error = hooks.find((hook) => hook?.error)?.error;
-  if (error && egenFeilmelding) {
-    return <>{egenFeilmelding(error)}</>;
-  }
-
-  if (error && !skjulFeilmelding) {
-    if (isRekbisError(error)) {
-      return <Feilmelding error={error} />;
-    }
-
-    return (
-      <Feilmelding
-        {...error}
-        message='Feil ved henting av data'
-        zodError={isZodError(error) ? error : undefined}
-      />
-    );
-  }
 
   if (allowPartialData) {
     const hasAnyData = hooks.some((hook) => hook?.data);
@@ -77,9 +60,47 @@ const SWRLaster = <T extends any[]>({
 
     if (hasAnyData && !isAnyLoading) {
       const data = hooks.map((hook) => hook?.data) as T;
+
+      if (error && !skjulFeilmelding) {
+        return (
+          <>
+            {egenFeilmelding ? (
+              egenFeilmelding(error)
+            ) : isRekbisError(error) ? (
+              <Feilmelding error={error} />
+            ) : (
+              <Feilmelding
+                {...error}
+                message='Feil ved henting av data'
+                zodError={isZodError(error) ? error : undefined}
+              />
+            )}
+            {children(...data)}
+          </>
+        );
+      }
+
       return <>{children(...data)}</>;
     }
   } else {
+    if (error && egenFeilmelding) {
+      return <>{egenFeilmelding(error)}</>;
+    }
+
+    if (error && !skjulFeilmelding) {
+      if (isRekbisError(error)) {
+        return <Feilmelding error={error} />;
+      }
+
+      return (
+        <Feilmelding
+          {...error}
+          message='Feil ved henting av data'
+          zodError={isZodError(error) ? error : undefined}
+        />
+      );
+    }
+
     if (hooks.every((hook) => hook?.data)) {
       const data = hooks.map((hook) => hook?.data) as T;
       return <>{children(...data)}</>;
