@@ -1,7 +1,8 @@
 'use client';
 
+import SWRLaster from '../../../components/SWRLaster';
+import VisKandidat from '../../../kandidat/vis-kandidat/VisKandidat';
 import { useKandidatnummer } from '@/app/api/rekrutteringstreff/[...slug]/useKandidatnummer';
-import { BodyShort } from '@navikt/ds-react';
 import * as React from 'react';
 
 export interface VisPersonProps {
@@ -9,15 +10,18 @@ export interface VisPersonProps {
 }
 
 const VisPerson: React.FC<VisPersonProps> = ({ personTreffId }) => {
-  const { data: kandidatnummerData } = useKandidatnummer(personTreffId || null);
+  const kandidatnummerHook = useKandidatnummer(personTreffId || null);
 
   return (
-    <div>
-      <BodyShort>Viser personTreffId: {personTreffId}</BodyShort>
-      <BodyShort>
-        Viser kandidatnummer om det finnes {kandidatnummerData?.kandidatnummer}
-      </BodyShort>
-    </div>
+    <SWRLaster hooks={[kandidatnummerHook]} allowPartialData>
+      {(kandidatnummerData) =>
+        kandidatnummerData.kandidatnummer ? (
+          <VisKandidat kandidatnr={kandidatnummerData.kandidatnummer} />
+        ) : (
+          <div> Personen er ikke i kandidatsøk </div>
+        )
+      }
+    </SWRLaster>
   );
 };
 
