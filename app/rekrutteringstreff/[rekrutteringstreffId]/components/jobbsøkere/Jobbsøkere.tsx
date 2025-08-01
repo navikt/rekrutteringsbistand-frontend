@@ -130,7 +130,7 @@ const Jobbsøkere = () => {
                       <JobbsøkerKort
                         fornavn={j.fornavn}
                         etternavn={j.etternavn}
-                        kandidatnummer={j.kandidatnummer}
+                        personTreffid={j.personTreffId}
                         fødselsnummer={j.fødselsnummer}
                         navKontor={j.navkontor}
                         veileder={{

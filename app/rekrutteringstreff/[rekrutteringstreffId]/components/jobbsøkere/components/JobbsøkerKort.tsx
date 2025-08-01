@@ -5,7 +5,7 @@ import * as React from 'react';
 
 interface JobbsøkerKortProps {
   fødselsnummer?: string;
-  kandidatnummer: string | null;
+  personTreffid: string | null;
   fornavn: string;
   etternavn: string;
   navKontor?: string;
@@ -26,7 +26,7 @@ export type Veileder = {
 const JobbsøkerKort: React.FC<JobbsøkerKortProps> = ({
   fornavn,
   etternavn,
-  kandidatnummer,
+  personTreffid,
   navKontor,
   veileder,
   datoLagtTil,
@@ -61,7 +61,7 @@ const JobbsøkerKort: React.FC<JobbsøkerKortProps> = ({
             <NavnLink
               fornavn={fornavn}
               etternavn={etternavn}
-              kandidatnummer={kandidatnummer}
+              personTreffid={personTreffid}
             />
           </Heading>
           <BodyShort

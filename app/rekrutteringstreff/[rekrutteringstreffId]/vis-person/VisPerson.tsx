@@ -9,19 +9,14 @@ export interface VisPersonProps {
 }
 
 const VisPerson: React.FC<VisPersonProps> = ({ personTreffId }) => {
-  const { data: kandidatnummerData, isLoading } = useKandidatnummer(
-    personTreffId || null,
-  );
+  const { data: kandidatnummerData } = useKandidatnummer(personTreffId || null);
 
   return (
     <div>
       <BodyShort>Viser personTreffId: {personTreffId}</BodyShort>
-      {!isLoading && (
-        <BodyShort>
-          Viser kandidatnummer om det finnes{' '}
-          {kandidatnummerData?.kandidatnummer}
-        </BodyShort>
-      )}
+      <BodyShort>
+        Viser kandidatnummer om det finnes {kandidatnummerData?.kandidatnummer}
+      </BodyShort>
     </div>
   );
 };
