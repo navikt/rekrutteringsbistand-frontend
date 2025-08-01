@@ -1,3 +1,7 @@
+'use client';
+
+import { useKandidatnummer } from '@/app/api/rekrutteringstreff/[...slug]/useKandidatnummer';
+import { BodyShort } from '@navikt/ds-react';
 import * as React from 'react';
 
 export interface VisPersonProps {
@@ -5,7 +9,16 @@ export interface VisPersonProps {
 }
 
 const VisPerson: React.FC<VisPersonProps> = ({ personTreffId }) => {
-  return <React.Fragment> Viser id: {personTreffId} </React.Fragment>;
+  const { data: kandidatnummerData } = useKandidatnummer(personTreffId || null);
+
+  return (
+    <div>
+      <BodyShort>Viser personTreffId: {personTreffId}</BodyShort>
+      <BodyShort>
+        Viser kandidatnummer om det finnes {kandidatnummerData?.kandidatnummer}
+      </BodyShort>
+    </div>
+  );
 };
 
 export default VisPerson;

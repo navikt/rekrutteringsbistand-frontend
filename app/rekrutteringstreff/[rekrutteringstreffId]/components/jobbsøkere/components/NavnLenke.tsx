@@ -4,7 +4,7 @@ import * as React from 'react';
 interface NavnLenkeProps {
   fornavn: string;
   etternavn: string;
-  kandidatnummer: string | null;
+  personTreffid: string | null;
 }
 
 const storForbokstavFlereOrd = (s: string | null | undefined) => {
@@ -18,14 +18,14 @@ const storForbokstavFlereOrd = (s: string | null | undefined) => {
 const NavnLenke: React.FC<NavnLenkeProps> = ({
   fornavn,
   etternavn,
-  kandidatnummer,
+  personTreffid,
 }) => {
   const [, setVisPersonTreffId] = useVisPersonTreffId();
 
   return (
     <div
       className='aksel-link'
-      onClick={() => kandidatnummer && setVisPersonTreffId(kandidatnummer)}
+      onClick={() => personTreffid && setVisPersonTreffId(personTreffid)}
     >
       {storForbokstavFlereOrd(etternavn)}, {storForbokstavFlereOrd(fornavn)}
     </div>
