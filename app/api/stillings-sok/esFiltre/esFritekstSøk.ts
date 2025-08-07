@@ -11,6 +11,25 @@ export const esFritekstSøk = (fritekst: string, felt?: string) => {
     feltManSkalSøkeI.push('stilling.adtext_no');
   } else if (felt === 'annonsenummer') {
     feltManSkalSøkeI.push('stilling.annonsenr');
+  } else if (felt === 'yrkestitlerOgTall') {
+    feltManSkalSøkeI.push(
+      'stilling.adtext_no^0.5',
+      'stilling.tittel',
+      'stilling.annonsenr',
+      'stilling.employer.orgnr',
+      'stilling.properties.jobtitle',
+      'stilling.properties.arbeidsplassenoccupation',
+      'stilling.properties.keywords',
+    );
+  } else if (felt === 'yrkestitler') {
+    feltManSkalSøkeI.push(
+      'stilling.adtext_no^0.5',
+      'stilling.tittel',
+      'stilling.employer.name',
+      'stilling.properties.jobtitle',
+      'stilling.properties.arbeidsplassenoccupation',
+      'stilling.properties.keywords',
+    );
   } else {
     feltManSkalSøkeI.push(
       'stilling.adtext_no^0.5',
