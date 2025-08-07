@@ -185,11 +185,24 @@ export function generateElasticSearchQuery(
                     },
                     annonsetekst: {
                       bool: {
-                        should: esFritekstSøk(fritekstSøkestreng),
-                        søkefelter,
+                        should: esFritekstSøk(fritekstSøkestreng, søkefelter),
                         filter: [...term, ...valgteFilter],
                       },
                     },
+                    arbeidsgiver: {
+                      bool: {
+                        should: esFritekstSøk(fritekstSøkestreng, søkefelter),
+                        filter: [...term, ...valgteFilter],
+                      },
+                    },
+                    ...(inneholderVerdierMedBareTall && {
+                      annonsenummer: {
+                        bool: {
+                          should: esFritekstSøk(fritekstSøkestreng, søkefelter),
+                          filter: [...term, ...valgteFilter],
+                        },
+                      },
+                    }),
                   },
                 },
               },
