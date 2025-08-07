@@ -63,6 +63,18 @@ const Stilling = lagEventPrefix(UmamiDomene.Stilling, {
 const Kandidat = lagEventPrefix(UmamiDomene.Kandidat, {
   tab_oversikt: 'Kandidatliste oversikt',
   finn_stilling_knapp: 'Finn stilling knapp',
+  filter_portefølje: 'Filter portefølje',
+  filter_innsatsgruppe: 'Filter innsatsgruppe',
+  filter_ønsket_sted: 'Filter ønsket sted',
+  filter_ønsket_yrke: 'Filter ønsket yrke',
+  filter_valgt_kontor: 'Filter valgt kontor',
+  filter_hovedmål: 'Filter hovedmål',
+  filter_kompetanse: 'Filter kompetanse',
+  filter_førerkort: 'Filter førerkort',
+  filter_språk: 'Filter språk',
+  filter_arbeidserfaring: 'Filter arbeidserfaring',
+  filter_utdanningsnivå: 'Filter utdanningsnivå',
+  filter_prioritert_målgruppe: 'Filter prioritert målgruppe',
 });
 
 const Sidebar = lagEventPrefix(UmamiDomene.Sidebar, {
