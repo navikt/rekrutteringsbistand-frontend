@@ -179,13 +179,14 @@ export function generateElasticSearchQuery(
                   filters: {
                     tittel: {
                       bool: {
-                        should: esFritekstSøk(fritekstSøkestreng),
+                        should: esFritekstSøk(fritekstSøkestreng, søkefelter),
                         filter: [...term, ...valgteFilter],
                       },
                     },
                     annonsetekst: {
                       bool: {
                         should: esFritekstSøk(fritekstSøkestreng),
+                        søkefelter,
                         filter: [...term, ...valgteFilter],
                       },
                     },
