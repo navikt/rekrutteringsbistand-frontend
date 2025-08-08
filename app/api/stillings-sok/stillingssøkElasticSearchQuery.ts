@@ -152,7 +152,7 @@ export function generateElasticSearchQuery(
     .join(' | ');
 
   if (finnStillingerForKandidat) {
-    const søkINummerFelter = !!inneholderVerdierMedBareTall;
+    const søkINummerFelter = inneholderVerdierMedBareTall;
     let søkefelt: string | undefined;
 
     if (!søkINummerFelter) {
