@@ -57,6 +57,7 @@ const Jobbsøkere = () => {
 
   const getLagtTilData = (jobbsøker: JobbsøkerDTO) => {
     const statusMap: Record<string, string> = {
+      AKTIVITETSKORT_OPPRETTELSE_FEIL: 'Invitasjon feilet',
       SVAR_JA_TIL_INVITASJON: 'Svart ja',
       SVAR_NEI_TIL_INVITASJON: 'Svart nei',
       INVITER: 'Invitert',
