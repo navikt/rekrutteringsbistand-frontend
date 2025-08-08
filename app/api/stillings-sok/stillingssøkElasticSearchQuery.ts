@@ -152,10 +152,12 @@ export function generateElasticSearchQuery(
     .join(' | ');
 
   if (finnStillingerForKandidat) {
-    const søkITallFelter = !!inneholderVerdierMedBareTall;
-    const søkefelter: string = søkITallFelter
-      ? 'yrkestitlerOgTall'
-      : 'yrkestitler';
+    const søkINummerFelter = !!inneholderVerdierMedBareTall;
+    let søkefelt: string | undefined;
+
+    if (!søkINummerFelter) {
+      søkefelt = 'tekstfelter';
+    }
 
     const byggFinnStillingerQuery = {
       size: maksAntallTreffPerSøk,
@@ -165,7 +167,7 @@ export function generateElasticSearchQuery(
         bool: {
           filter: [...term, ...valgteFilter],
           minimum_should_match: filter.fritekst.length ? '1' : '0',
-          should: esFritekstSøk(fritekstSøkestreng, søkefelter),
+          should: esFritekstSøk(fritekstSøkestreng, søkefelt),
         },
       },
       ...sort,
@@ -179,26 +181,26 @@ export function generateElasticSearchQuery(
                   filters: {
                     tittel: {
                       bool: {
-                        should: esFritekstSøk(fritekstSøkestreng, søkefelter),
+                        should: esFritekstSøk(fritekstSøkestreng, søkefelt),
                         filter: [...term, ...valgteFilter],
                       },
                     },
                     annonsetekst: {
                       bool: {
-                        should: esFritekstSøk(fritekstSøkestreng, søkefelter),
+                        should: esFritekstSøk(fritekstSøkestreng, søkefelt),
                         filter: [...term, ...valgteFilter],
                       },
                     },
                     arbeidsgiver: {
                       bool: {
-                        should: esFritekstSøk(fritekstSøkestreng, søkefelter),
+                        should: esFritekstSøk(fritekstSøkestreng, søkefelt),
                         filter: [...term, ...valgteFilter],
                       },
                     },
                     ...(inneholderVerdierMedBareTall && {
                       annonsenummer: {
                         bool: {
-                          should: esFritekstSøk(fritekstSøkestreng, søkefelter),
+                          should: esFritekstSøk(fritekstSøkestreng, søkefelt),
                           filter: [...term, ...valgteFilter],
                         },
                       },

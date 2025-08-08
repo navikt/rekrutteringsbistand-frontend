@@ -11,17 +11,7 @@ export const esFritekstSøk = (fritekst: string, felt?: string) => {
     feltManSkalSøkeI.push('stilling.adtext_no');
   } else if (felt === 'annonsenummer') {
     feltManSkalSøkeI.push('stilling.annonsenr');
-  } else if (felt === 'yrkestitlerOgTall') {
-    feltManSkalSøkeI.push(
-      'stilling.adtext_no^0.5',
-      'stilling.tittel',
-      'stilling.annonsenr',
-      'stilling.employer.orgnr',
-      'stilling.properties.jobtitle',
-      'stilling.properties.arbeidsplassenoccupation',
-      'stilling.properties.keywords',
-    );
-  } else if (felt === 'yrkestitler') {
+  } else if (felt === 'tekstfelter') {
     feltManSkalSøkeI.push(
       'stilling.adtext_no^0.5',
       'stilling.tittel',
