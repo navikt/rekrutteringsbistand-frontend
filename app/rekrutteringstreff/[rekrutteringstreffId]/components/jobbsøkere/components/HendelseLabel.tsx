@@ -37,6 +37,8 @@ export const labelTekst = (hendelsetype: string) => {
       return 'svart ja';
     case 'SVAR_NEI_TIL_INVITASJON':
       return 'svart nei';
+    case 'AKTIVITETSKORT_OPPRETTELSE_FEIL':
+      return 'invitasjon feilet';
     default:
       return '';
   }
