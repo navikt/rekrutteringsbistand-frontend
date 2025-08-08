@@ -20,6 +20,7 @@ export const useStillingssøk = (
   filter: StillingsSøkFilter,
   navIdent?: string,
   formidlinger?: boolean,
+  finnStillingerForKandidat?: boolean,
 ) => {
   const geografiData = usePamGeografi();
 
@@ -28,6 +29,7 @@ export const useStillingssøk = (
     navIdent,
     geografiData.data,
     formidlinger,
+    finnStillingerForKandidat,
   );
 
   return useSWRImmutable(
