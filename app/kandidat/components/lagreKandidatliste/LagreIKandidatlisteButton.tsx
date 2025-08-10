@@ -87,9 +87,8 @@ interface LagreIKandidatlisteButtonProps {
 const LagreIKandidatlisteButton: React.FC<LagreIKandidatlisteButtonProps> = ({
   stillingsId,
 }) => {
-  const modalRef = React.useRef<HTMLDialogElement>(null!);
   const { markerteKandidater } = useKandidatSøkMarkerteContext();
-
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
   if (stillingsId) {
     return <LagreIKandidatlisteMedStillingsId stillingsId={stillingsId} />;
   }
@@ -98,15 +97,15 @@ const LagreIKandidatlisteButton: React.FC<LagreIKandidatlisteButtonProps> = ({
     <div>
       <Button
         variant='tertiary'
-        onClick={() => {
-          modalRef.current?.showModal();
-        }}
+        onClick={() => setIsModalOpen(true)}
         icon={<PersonPlusIcon aria-hidden />}
         disabled={markerteKandidater?.length === 0}
       >
         Lagre i kandidatliste
       </Button>
-      <LagreIKandidatlisteModal ref={modalRef} />
+      {isModalOpen && (
+        <LagreIKandidatlisteModal onClose={() => setIsModalOpen(false)} />
+      )}
     </div>
   );
 };
