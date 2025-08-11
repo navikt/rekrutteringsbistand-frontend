@@ -67,7 +67,14 @@ export const OpprettStillingKnapp: React.FC<OpprettStillingProps> = ({
             properties: {
               nace2:
                 (arbeidsgiver.naringskoder &&
-                  JSON.stringify(arbeidsgiver.naringskoder)) ??
+                  JSON.stringify(
+                    arbeidsgiver.naringskoder.map((naringskode) => {
+                      return {
+                        code: naringskode.kode,
+                        name: naringskode.beskrivelse,
+                      };
+                    }),
+                  )) ??
                 null,
             },
           },
