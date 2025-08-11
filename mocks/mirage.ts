@@ -12,7 +12,7 @@ import { kandidatSokMirage } from '../app/api/kandidat-sok/useKandidatsøk';
 import { kontorSøkMirage } from '../app/api/kandidat-sok/useKontorSøk';
 import { formidleUsynligKandidatMirage } from '../app/api/kandidat/formidleKandidat';
 import { kandidatlisteoversiktMirage } from '../app/api/kandidat/useKandidatListeoversikt';
-import { kandidatlisteMirage } from '../app/api/kandidat/useKandidatliste';
+import { kandidatlisteMirage } from '../app/api/kandidat/useKandidatlisteForEier';
 import { kandidatlisteInfoMirage } from '../app/api/kandidat/useKandidatlisteInfo';
 import { mineKandidatlisterMirage } from '../app/api/kandidat/useMineKandidatlister';
 import { meldingsmalerMirage } from '../app/api/kandidatvarsel/hentMeldingsmaler';
@@ -40,6 +40,7 @@ import { rekruteringstreffArbeidsgivereMirage } from '@/app/api/rekrutteringstre
 import { innleggMirage } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
 import { jobbsøkerHendelserMirage } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkerHendelser';
 import { jobbsøkereMirage } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
+import { kandidatnummerMirage } from '@/app/api/rekrutteringstreff/[...slug]/useKandidatnummer';
 import { inviterJobbsøkereMirage } from '@/app/api/rekrutteringstreff/inviterJobbsokere/inviterJobbsokere';
 import { leggTilNyJobbsøkerMirage } from '@/app/api/rekrutteringstreff/ny-jobbsøker/leggTilNyjobbsøker';
 import { opprettNyttRekrutteringstreffMirage } from '@/app/api/rekrutteringstreff/nytt-rekrutteringstreff/opprettNyttRekrutteringstreff';
@@ -109,6 +110,7 @@ export function makeServer({ environment = 'test' } = {}) {
       oppdaterInnleggfMirage(this);
       rekrutteringstreffHendelserMirage(this);
       inviterJobbsøkereMirage(this);
+      kandidatnummerMirage(this);
       modiaAktivEnhetMirage(this);
       modiaAktivBrukerMirage(this);
       mockModiaContext(this);

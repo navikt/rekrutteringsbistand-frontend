@@ -10,7 +10,7 @@ import {
 } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import SWRLaster from '@/app/components/SWRLaster';
-import { BodyShort, Button } from '@navikt/ds-react';
+import { BodyShort, Button, TagProps } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import * as React from 'react';
 
@@ -41,6 +41,7 @@ const Jobbsøkere = () => {
 
   const handleCheckboxChange = (jobbsøker: JobbsøkerDTO, erValgt: boolean) => {
     const dto: InviterInternalDto = {
+      personTreffId: jobbsøker.personTreffId,
       fornavn: jobbsøker.fornavn,
       etternavn: jobbsøker.etternavn,
       fødselsnummer: jobbsøker.fødselsnummer,
@@ -55,24 +56,25 @@ const Jobbsøkere = () => {
   };
 
   const getLagtTilData = (jobbsøker: JobbsøkerDTO) => {
-    const leggTilHendelse = jobbsøker.hendelser.find(
-      ({ hendelsestype }) => hendelsestype === 'OPPRETT',
-    );
-    const inviterHendelse = jobbsøker.hendelser.find(
-      ({ hendelsestype }) => hendelsestype === 'INVITER',
-    );
-    if (inviterHendelse)
+    const sisteRelevanteHendelse = [...jobbsøker.hendelser]
+      .filter((h) => statusInfoForHendelsestype(h.hendelsestype))
+      .sort(
+        (a, b) =>
+          new Date(b.tidspunkt).getTime() - new Date(a.tidspunkt).getTime(),
+      )[0];
+
+    if (sisteRelevanteHendelse) {
+      const status = statusInfoForHendelsestype(
+        sisteRelevanteHendelse.hendelsestype,
+      ) as StatusInfo;
+
       return {
-        status: 'Invitert',
-        datoLagtTil: inviterHendelse.tidspunkt,
-        lagtTilAv: inviterHendelse.aktørIdentifikasjon,
+        status,
+        datoLagtTil: sisteRelevanteHendelse.tidspunkt,
+        lagtTilAv: sisteRelevanteHendelse.aktørIdentifikasjon,
       };
-    if (leggTilHendelse)
-      return {
-        status: 'Lagt til',
-        datoLagtTil: leggTilHendelse.tidspunkt,
-        lagtTilAv: leggTilHendelse.aktørIdentifikasjon,
-      };
+    }
+
     return {
       status: undefined,
       datoLagtTil: 'Ukjent dato',
@@ -89,12 +91,12 @@ const Jobbsøkere = () => {
   return (
     <SWRLaster hooks={[jobbsøkerHook]}>
       {(jobbsøkere) => {
-        const inviterteFnr = new Set(
-          jobbsøkere.filter(erInvitert).map((j) => j.fødselsnummer),
+        const invitertePersonTreffIder = new Set(
+          jobbsøkere.filter(erInvitert).map((j) => j.personTreffId),
         );
 
         const valgteSomIkkeErInvitert = valgteJobbsøkere.filter(
-          (j) => !inviterteFnr.has(j.fødselsnummer),
+          (j) => !invitertePersonTreffIder.has(j.personTreffId),
         );
 
         return (
@@ -125,7 +127,7 @@ const Jobbsøkere = () => {
                       <JobbsøkerKort
                         fornavn={j.fornavn}
                         etternavn={j.etternavn}
-                        kandidatnummer={j.kandidatnummer}
+                        personTreffId={j.personTreffId}
                         fødselsnummer={j.fødselsnummer}
                         navKontor={j.navkontor}
                         veileder={{
@@ -137,7 +139,7 @@ const Jobbsøkere = () => {
                           'dd.MM.yyyy',
                         )}
                         lagtTilAv={lagtTilAv}
-                        status={status}
+                        status={status?.text}
                         harPublisert={harPublisert}
                         erValgt={valgteJobbsøkere.some(
                           (v) => v.fødselsnummer === j.fødselsnummer,
@@ -170,3 +172,25 @@ const Jobbsøkere = () => {
 };
 
 export default Jobbsøkere;
+
+export type StatusVariant = TagProps['variant'];
+export type StatusInfo = { text: string; variant: StatusVariant };
+
+export const statusInfoForHendelsestype = (
+  hendelsestype: string,
+): StatusInfo | undefined => {
+  switch (hendelsestype) {
+    case 'AKTIVITETSKORT_OPPRETTELSE_FEIL':
+      return { text: 'Invitasjon feilet', variant: 'error' };
+    case 'SVAR_JA_TIL_INVITASJON':
+      return { text: 'Svart ja', variant: 'success' };
+    case 'SVAR_NEI_TIL_INVITASJON':
+      return { text: 'Svart nei', variant: 'neutral' };
+    case 'INVITER':
+      return { text: 'Invitert', variant: 'info' };
+    case 'OPPRETT':
+      return { text: 'Lagt til', variant: 'neutral' };
+    default:
+      return undefined;
+  }
+};

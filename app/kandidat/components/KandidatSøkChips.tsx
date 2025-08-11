@@ -1,7 +1,7 @@
 import FilterChip from '../../components/FilterChip';
 import TømFiltre from '../../components/TømFiltre';
 import { useKandidatSøkFilterContext } from '../KandidaSokFilterContext';
-import { HovedMålType } from '../KandidatSøkFilter/components/Hovedmål';
+import { HovedMålType } from '../kandidat-søk-filter/components/Hovedmål';
 import { Chips } from '@navikt/ds-react';
 import * as React from 'react';
 

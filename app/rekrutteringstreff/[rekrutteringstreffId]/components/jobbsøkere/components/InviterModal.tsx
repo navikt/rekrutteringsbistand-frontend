@@ -20,6 +20,7 @@ import {
 import * as React from 'react';
 
 export type InviterInternalDto = {
+  personTreffId: string;
   fornavn: string;
   etternavn: string;
   fødselsnummer: string;
@@ -49,10 +50,10 @@ export const InviterModal: React.FC<InviterModalProps> = ({
 
   const handleInviter = async () => {
     setIsLoading(true);
-    const fødselsnumre = inviterInternalDtoer.map((j) => j.fødselsnummer);
+    const personTreffIder = inviterInternalDtoer.map((j) => j.personTreffId);
 
     try {
-      await inviterJobbsøkere(rekrutteringstreffId, fødselsnumre);
+      await inviterJobbsøkere(rekrutteringstreffId, personTreffIder);
       onInvitasjonSendt();
     } catch (error) {
       throw new RekbisError({

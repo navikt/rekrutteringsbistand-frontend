@@ -1,19 +1,16 @@
 import { setNyttStandardsøk } from '../../api/stilling/standardsok/settStandardsøk';
 import { useUseBrukerStandardSøk } from '../../api/stilling/standardsok/useBrukersStandardsøk';
+import { useVisKandidatNr } from '../../kandidat/vis-kandidat/useVisKandidatNr';
 import { FloppydiskIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import { useSearchParams } from 'next/navigation';
-import { useQueryState } from 'nuqs';
 import * as React from 'react';
 
 const LagreStandardsøk: React.FC = () => {
   const brukerStandardSøkData = useUseBrukerStandardSøk();
   const searchParams = useSearchParams();
   const searchString = new URLSearchParams(searchParams.toString()).toString();
-  const [visKandidatnr] = useQueryState('visKandidatnr', {
-    defaultValue: '',
-    clearOnDefault: true,
-  });
+  const [visKandidatnr] = useVisKandidatNr();
   const brukerStandardSøk = searchString === brukerStandardSøkData.data?.søk;
 
   return (

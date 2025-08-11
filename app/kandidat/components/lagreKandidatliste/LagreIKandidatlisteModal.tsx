@@ -18,11 +18,11 @@ import {
 import * as React from 'react';
 
 interface LagreIKandidatlisteProps {
-  ref: React.RefObject<HTMLDialogElement>;
+  onClose: () => void;
 }
 
 const LagreIKandidatlisteModal: React.FC<LagreIKandidatlisteProps> = ({
-  ref,
+  onClose,
 }) => {
   const { track } = useUmami();
 
@@ -44,139 +44,132 @@ const LagreIKandidatlisteModal: React.FC<LagreIKandidatlisteProps> = ({
     );
 
   return (
-    <div>
-      <Modal
-        width={800}
-        ref={ref}
-        header={{
-          heading: `Lagre ${markerteKandidater?.length || 0} kandidat i kandidatlister`,
-        }}
-      >
-        <Modal.Body>
-          <SWRLaster hooks={[mineKandidatlisterHook]}>
-            {(mineKandidatlister) => {
-              const pageCount = Math.floor(mineKandidatlister.antall / 8);
-              return laster ? (
-                <Loader />
-              ) : (
-                <>
-                  <Table zebraStripes>
-                    <Table.Header>
-                      <Table.Row>
-                        <Table.DataCell>
-                          <Checkbox
-                            checked={
-                              selectedRows.length ===
+    <Modal
+      onClose={onClose}
+      open={true}
+      width={800}
+      header={{
+        heading: `Lagre ${markerteKandidater?.length || 0} kandidat i kandidatlister`,
+      }}
+    >
+      <Modal.Body>
+        <SWRLaster hooks={[mineKandidatlisterHook]}>
+          {(mineKandidatlister) => {
+            const pageCount = Math.floor(mineKandidatlister.antall / 8);
+            return laster ? (
+              <Loader />
+            ) : (
+              <>
+                <Table zebraStripes>
+                  <Table.Header>
+                    <Table.Row>
+                      <Table.DataCell>
+                        <Checkbox
+                          checked={
+                            selectedRows.length ===
+                            mineKandidatlister.liste.length
+                          }
+                          indeterminate={
+                            selectedRows.length > 0 &&
+                            selectedRows.length !==
                               mineKandidatlister.liste.length
+                          }
+                          onChange={() => {
+                            if (selectedRows.length) {
+                              setSelectedRows([]);
+                            } else {
+                              setSelectedRows(
+                                mineKandidatlister.liste.map(
+                                  (stilling) => stilling.stillingId,
+                                ),
+                              );
                             }
-                            indeterminate={
-                              selectedRows.length > 0 &&
-                              selectedRows.length !==
-                                mineKandidatlister.liste.length
-                            }
-                            onChange={() => {
-                              if (selectedRows.length) {
-                                setSelectedRows([]);
-                              } else {
-                                setSelectedRows(
-                                  mineKandidatlister.liste.map(
-                                    (stilling) => stilling.stillingId,
-                                  ),
-                                );
+                          }}
+                          hideLabel
+                        >
+                          Velg alle rader
+                        </Checkbox>
+                      </Table.DataCell>
+                      <Table.HeaderCell scope='col'>Stilling</Table.HeaderCell>
+                      <Table.HeaderCell scope='col'>
+                        Organisasjon
+                      </Table.HeaderCell>
+                      <Table.HeaderCell scope='col'>
+                        Antall stillinger
+                      </Table.HeaderCell>
+                    </Table.Row>
+                  </Table.Header>
+                  <Table.Body>
+                    {mineKandidatlister.liste?.map((kandidatliste, i) => {
+                      return (
+                        <Table.Row
+                          key={kandidatliste.stillingId + i}
+                          selected={selectedRows.includes(
+                            kandidatliste.stillingId,
+                          )}
+                        >
+                          <Table.DataCell>
+                            <Checkbox
+                              hideLabel
+                              checked={selectedRows.includes(
+                                kandidatliste.stillingId,
+                              )}
+                              onChange={() =>
+                                toggleSelectedRow(kandidatliste.stillingId)
                               }
-                            }}
-                            hideLabel
-                          >
-                            Velg alle rader
-                          </Checkbox>
-                        </Table.DataCell>
-                        <Table.HeaderCell scope='col'>
-                          Stilling
-                        </Table.HeaderCell>
-                        <Table.HeaderCell scope='col'>
-                          Organisasjon
-                        </Table.HeaderCell>
-                        <Table.HeaderCell scope='col'>
-                          Antall stillinger
-                        </Table.HeaderCell>
-                      </Table.Row>
-                    </Table.Header>
-                    <Table.Body>
-                      {mineKandidatlister.liste?.map((kandidatliste, i) => {
-                        return (
-                          <Table.Row
-                            key={kandidatliste.stillingId + i}
-                            selected={selectedRows.includes(
-                              kandidatliste.stillingId,
-                            )}
-                          >
-                            <Table.DataCell>
-                              <Checkbox
-                                hideLabel
-                                checked={selectedRows.includes(
-                                  kandidatliste.stillingId,
-                                )}
-                                onChange={() =>
-                                  toggleSelectedRow(kandidatliste.stillingId)
-                                }
-                                aria-labelledby={`id-${kandidatliste.stillingId}`}
-                              >
-                                {' '}
-                              </Checkbox>
-                            </Table.DataCell>
-                            <Table.HeaderCell scope='row'>
-                              <KandidatlisteTittel
-                                stillingsId={kandidatliste.stillingId}
-                              />
-                            </Table.HeaderCell>
-                            <Table.DataCell>
-                              {kandidatliste.organisasjonNavn}
-                            </Table.DataCell>
-                            <Table.DataCell>
-                              {kandidatliste.antallStillinger}
-                            </Table.DataCell>
-                          </Table.Row>
-                        );
-                      })}
-                    </Table.Body>
-                  </Table>
-                  <Pagination
-                    className='my-8 flex justify-center'
-                    size='small'
-                    page={pageNumber}
-                    onPageChange={setPageNumber}
-                    count={pageCount > 0 ? pageCount : 1}
-                  />
-                </>
-              );
-            }}
-          </SWRLaster>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button
-            disabled={laster || selectedRows.length === 0}
-            type='button'
-            onClick={() => {
-              lagreKandidater(
-                selectedRows,
-                () => ref.current?.close(),
-                setLaster,
-              );
-            }}
-          >
-            Lagre
-          </Button>
-          <Button
-            disabled={laster}
-            type='button'
-            variant='secondary'
-            onClick={() => ref.current?.close()}
-          >
-            Avbryt
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    </div>
+                              aria-labelledby={`id-${kandidatliste.stillingId}`}
+                            >
+                              {' '}
+                            </Checkbox>
+                          </Table.DataCell>
+                          <Table.HeaderCell scope='row'>
+                            <KandidatlisteTittel
+                              stillingsId={kandidatliste.stillingId}
+                            />
+                          </Table.HeaderCell>
+                          <Table.DataCell>
+                            {kandidatliste.organisasjonNavn}
+                          </Table.DataCell>
+                          <Table.DataCell>
+                            {kandidatliste.antallStillinger}
+                          </Table.DataCell>
+                        </Table.Row>
+                      );
+                    })}
+                  </Table.Body>
+                </Table>
+                <Pagination
+                  className='my-8 flex justify-center'
+                  size='small'
+                  page={pageNumber}
+                  onPageChange={setPageNumber}
+                  count={pageCount > 0 ? pageCount : 1}
+                />
+              </>
+            );
+          }}
+        </SWRLaster>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button
+          disabled={laster || selectedRows.length === 0}
+          type='button'
+          onClick={() => {
+            lagreKandidater(selectedRows, onClose, setLaster);
+          }}
+        >
+          Lagre
+        </Button>
+        <Button
+          disabled={laster}
+          type='button'
+          variant='secondary'
+          onClick={onClose}
+        >
+          Avbryt
+        </Button>
+      </Modal.Footer>
+    </Modal>
   );
 
   async function lagreKandidater(

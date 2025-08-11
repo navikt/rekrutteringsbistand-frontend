@@ -1,11 +1,18 @@
 import NavnLink from './NavnLenke';
 import { Buildings3Icon, PersonIcon } from '@navikt/aksel-icons';
-import { BodyShort, Box, Checkbox, Heading, Tag } from '@navikt/ds-react';
+import {
+  BodyShort,
+  Box,
+  Checkbox,
+  Heading,
+  Tag,
+  TagProps,
+} from '@navikt/ds-react';
 import * as React from 'react';
 
 interface JobbsøkerKortProps {
   fødselsnummer?: string;
-  kandidatnummer: string | null;
+  personTreffId: string | null;
   fornavn: string;
   etternavn: string;
   navKontor?: string;
@@ -13,6 +20,7 @@ interface JobbsøkerKortProps {
   datoLagtTil?: string;
   lagtTilAv?: string;
   status?: string;
+  statusVariant?: TagProps['variant'];
   harPublisert: boolean;
   onCheckboxChange: (checked: boolean) => void;
   erValgt: boolean;
@@ -26,12 +34,13 @@ export type Veileder = {
 const JobbsøkerKort: React.FC<JobbsøkerKortProps> = ({
   fornavn,
   etternavn,
-  kandidatnummer,
+  personTreffId,
   navKontor,
   veileder,
   datoLagtTil,
   lagtTilAv,
   status,
+  statusVariant,
   harPublisert,
   onCheckboxChange,
   erValgt,
@@ -61,7 +70,7 @@ const JobbsøkerKort: React.FC<JobbsøkerKortProps> = ({
             <NavnLink
               fornavn={fornavn}
               etternavn={etternavn}
-              kandidatnummer={kandidatnummer}
+              personTreffId={personTreffId}
             />
           </Heading>
           <BodyShort
@@ -91,7 +100,11 @@ const JobbsøkerKort: React.FC<JobbsøkerKortProps> = ({
       </div>
       <div>
         {status && (
-          <Tag className={'mr-2'} size='medium' variant='info'>
+          <Tag
+            className={'mr-2'}
+            size='medium'
+            variant={statusVariant ?? 'info'}
+          >
             {status}
           </Tag>
         )}

@@ -8,8 +8,7 @@ import { z } from 'zod';
 const validerRekrutteringstreffEndepunkt = '/api/rekrutteringstreff/valider';
 
 const ReqSchema = z.object({
-  tittel: z.string().min(1).nullable(),
-  beskrivelse: z.string().nullable(),
+  tekst: z.string(),
 });
 export type ValiderRekrutteringstreffDto = z.infer<typeof ReqSchema>;
 
