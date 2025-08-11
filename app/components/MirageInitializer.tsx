@@ -23,6 +23,7 @@ export default function MirageInitializer({
         // eslint-disable-next-line no-console
         console.log('Starter Mirage server...');
         mirageServer = makeServer({ environment: 'development' });
+        mirageServer.logging = true;
         // eslint-disable-next-line no-console
         console.log('Mirage server startet');
       } catch (error) {
