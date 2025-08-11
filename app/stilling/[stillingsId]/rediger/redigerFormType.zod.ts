@@ -39,7 +39,7 @@ export const OmVirksomhetenSchema = z.object({
             return !!(data.email || data.phone);
           },
           {
-            message: 'Du må fylle ut enten e-post eller telefonnummer',
+            error: 'Du må fylle ut enten e-post eller telefonnummer',
             path: ['email'],
           },
         ),
@@ -76,8 +76,8 @@ export const OmStillingenSchema = z
 
           if (harManglendeFelt) {
             ctx.addIssue({
-              code: z.ZodIssueCode.custom,
-              message:
+              code: 'custom',
+              error:
                 'Alle adressefelt må fylles ut (adresse, postnummer og poststed)',
             });
           }
@@ -87,8 +87,8 @@ export const OmStillingenSchema = z
   .superRefine((data, ctx) => {
     if (data.adresser?.length === 0 && data.lokasjoner?.length === 0) {
       ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: 'Du må velge arbeidssted',
+        code: 'custom',
+        error: 'Du må velge arbeidssted',
         path: ['adresser'],
       });
     }
@@ -112,7 +112,7 @@ export const PraktiskInfoSchema = z
         return isNaN(num) ? null : num;
       }, z.number().nullable().optional())
       .refine((val) => val !== null && val !== undefined && val > 0, {
-        message: 'Antall stillinger må fylles ut',
+        error: 'Antall stillinger må fylles ut',
       }),
     oppstart: z.string().nullable(),
     oppstartEtterAvtale: z.boolean(),
@@ -123,40 +123,40 @@ export const PraktiskInfoSchema = z
       .string()
       .nullable()
       .refine((val) => val !== null && val !== '', {
-        message: 'Ansettelsesform må velges',
+        error: 'Ansettelsesform må velges',
       }),
     dager: z
       .array(z.string(), {
-        required_error: 'Arbeidsdager må velges',
+        error: 'Arbeidsdager må velges',
       })
       .min(1, 'Velg minst én arbeidsdag'),
     tid: z
       .array(z.string(), {
-        required_error: 'Arbeidstid må velges',
+        error: 'Arbeidstid må velges',
       })
       .min(1, 'Velg minst én arbeidstid'),
   })
   .superRefine((data, ctx) => {
     if (data.omfangKode === 'Deltid' && !data.omfangProsent) {
       ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: 'Du må fylle ut omfang i prosent for deltid',
+        code: 'custom',
+        error: 'Du må fylle ut omfang i prosent for deltid',
         path: ['omfangProsent'],
       });
     }
 
     if (!data.oppstart && !data.oppstartEtterAvtale) {
       ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: 'Du må fylle ut enten oppstart eller oppstart etter avtale',
+        code: 'custom',
+        error: 'Du må fylle ut enten oppstart eller oppstart etter avtale',
         path: ['oppstart'],
       });
     }
 
     if (!data.søknadsfrist && !data.søknadsfristSnarest) {
       ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: 'Du må fylle ut enten søknadsfrist eller velge snarest',
+        code: 'custom',
+        error: 'Du må fylle ut enten søknadsfrist eller velge snarest',
         path: ['søknadsfrist'],
       });
     }
@@ -177,12 +177,18 @@ export const InnspurtSchema = z
       !data.lenke
     ) {
       ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: 'Du må fylle ut enten e-post eller lenke',
+        code: 'custom',
+        error: 'Du må fylle ut enten e-post eller lenke',
         path: ['epost'],
       });
     }
   });
+
+export type OmVirksomhetenType = z.infer<typeof OmVirksomhetenSchema>;
+export type OmStillingenType = z.infer<typeof OmStillingenSchema>;
+export type PraktiskInfoType = z.infer<typeof PraktiskInfoSchema>;
+export type OmTilretteleggingType = z.infer<typeof OmTilretteleggingSchema>;
+export type InnspurtType = z.infer<typeof InnspurtSchema>;
 
 export const StillingsDataFormSchema = z.object({
   omVirksomheten: OmVirksomhetenSchema,
@@ -192,16 +198,4 @@ export const StillingsDataFormSchema = z.object({
   innspurt: InnspurtSchema,
 });
 
-export type OmVirksomhetenType = z.infer<typeof OmVirksomhetenSchema>;
-export type OmStillingenType = z.infer<typeof OmStillingenSchema>;
-export type PraktiskInfoType = z.infer<typeof PraktiskInfoSchema>;
-export type OmTilretteleggingType = z.infer<typeof OmTilretteleggingSchema>;
-export type InnspurtType = z.infer<typeof InnspurtSchema>;
-
-export interface StillingsDataForm {
-  omVirksomheten: OmVirksomhetenType;
-  omTilrettelegging: OmTilretteleggingType;
-  omStillingen: OmStillingenType;
-  praktiskInfo: PraktiskInfoType;
-  innspurt: InnspurtType;
-}
+export type StillingsDataForm = z.infer<typeof StillingsDataFormSchema>;

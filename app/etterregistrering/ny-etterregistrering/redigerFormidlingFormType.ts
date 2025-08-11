@@ -19,8 +19,8 @@ export const OmFormidlingSchema = z
       .superRefine((val, ctx) => {
         if (!val) {
           ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: 'Du må velge en arbeidsgiver',
+            code: 'custom',
+            error: 'Du må velge en arbeidsgiver',
           });
         }
       }),
@@ -31,8 +31,8 @@ export const OmFormidlingSchema = z
       .superRefine((val, ctx) => {
         if (!val) {
           ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: 'Du må velge en yrkeskategori',
+            code: 'custom',
+            error: 'Du må velge en yrkeskategori',
           });
         }
       }),
@@ -43,22 +43,22 @@ export const OmFormidlingSchema = z
       .superRefine((val, ctx) => {
         if (!val) {
           ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: 'Du må velge sektor',
+            code: 'custom',
+            error: 'Du må velge sektor',
           });
         }
       }),
     ansettelsesform: z
       .string({
-        required_error: 'Du må velge ansettelsesform',
+        error: 'Du må velge ansettelsesform',
       })
-      .min(1, { message: 'Du må velge ansettelsesform' }),
+      .min(1, { error: 'Du må velge ansettelsesform' }),
     arbeidstidsordning: z.string().optional().nullable(),
     omfangKode: z
       .string({
-        required_error: 'Du må velge omfang',
+        error: 'Du må velge omfang',
       })
-      .min(1, { message: 'Du må velge omfang' }),
+      .min(1, { error: 'Du må velge omfang' }),
     omfangProsent: z.string().optional().nullable(),
     lokasjoner: z.array(LocationSchema).optional().nullable(),
     adresser: z
@@ -75,8 +75,8 @@ export const OmFormidlingSchema = z
 
           if (harManglendeFelt) {
             ctx.addIssue({
-              code: z.ZodIssueCode.custom,
-              message:
+              code: 'custom',
+              error:
                 'Alle adressefelt må fylles ut (adresse, postnummer og poststed)',
             });
           }
@@ -86,8 +86,8 @@ export const OmFormidlingSchema = z
   .superRefine((data, ctx) => {
     if (data.adresser?.length === 0 && data.lokasjoner?.length === 0) {
       ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: 'Du må velge arbeidssted',
+        code: 'custom',
+        error: 'Du må velge arbeidssted',
         path: ['adresser'],
       });
     }
@@ -95,7 +95,7 @@ export const OmFormidlingSchema = z
 
 export const OmKandidateneSchema = z
   .array(FormidlingKandidatSchema)
-  .min(1, { message: 'Du må velge minst én kandidat' });
+  .min(1, { error: 'Du må velge minst én kandidat' });
 
 export const FormidlingFormSchema = z.object({
   omKandidatene: OmKandidateneSchema,

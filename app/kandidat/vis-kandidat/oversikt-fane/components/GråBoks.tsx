@@ -23,7 +23,7 @@ const GråBoks: React.FC<GråBoksProps> = ({
     >
       <div className='mb-4 flex items-center'>
         {ikon && (
-          <div className='mr-3 flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-[var(--a-gray-900)]'>
+          <div className='mr-3 flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-[var(--ax-gray-900)]'>
             {ikon}
           </div>
         )}

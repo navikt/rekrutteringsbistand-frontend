@@ -36,13 +36,13 @@ const SisteAktivitet: React.FC = () => {
                   >
                     <div>
                       {aktivitet.erMaskert ? (
-                        <BodyShort className='text-[var(--a-text-error)]'>
+                        <BodyShort className='text-[var(--ax-text-error)]'>
                           Ingen tilgang
                         </BodyShort>
                       ) : (
                         <Link
                           href={`/stilling/${aktivitet.stillingId}`}
-                          className='text-[var(--ax-text-default)]'
+                          className='text-[var(--ax-text-neutral)]'
                         >
                           <BodyShort weight='semibold'>
                             {aktivitet.tittel ?? '-'}

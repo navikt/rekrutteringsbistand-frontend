@@ -15,7 +15,7 @@ const SideLayout = ({ banner, children, navigasjon }: ISideLayout) => {
       {navigasjon ? (
         navigasjon
       ) : (
-        <div className='w-full items-center justify-between  pt-2  sticky top-0 z-10 bg-[var(--ax-bg-default)]'>
+        <div className='w-full items-center justify-between  pt-2  sticky top-0 z-10 bg-[var(--ax-bg-neutral)]'>
           <Breadcrumbs />
         </div>
       )}

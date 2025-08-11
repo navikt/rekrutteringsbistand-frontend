@@ -18,8 +18,8 @@ const utførHendelse = async (
     );
   } catch (error) {
     logger.error(
-      `${feilmelding} for rekrutteringstreff ${rekrutteringstreffId}`,
       error,
+      `${feilmelding} for rekrutteringstreff ${rekrutteringstreffId}`,
     );
     throw error;
   }
