@@ -22,6 +22,11 @@ const ArbeidsgiverAdresseSchema = z
   })
   .nullable();
 
+const NaringskodeSchema = z.object({
+  kode: z.string(),
+  beskrivelse: z.string(),
+});
+
 export const ArbeidsgiverSchema = z.object({
   organisasjonsnummer: z.string(),
   navn: z.string(),
@@ -29,6 +34,7 @@ export const ArbeidsgiverSchema = z.object({
   antallAnsatte: z.number().optional().nullable(),
   overordnetEnhet: z.string().optional().nullable(),
   adresse: ArbeidsgiverAdresseSchema,
+  naringskoder: z.array(NaringskodeSchema).optional().nullable(),
 });
 const ArbeidsgiverSchemaDTO = z.array(ArbeidsgiverSchema);
 
@@ -149,7 +155,12 @@ export const arbeidsgiverMirage = (server: any) => {
                 postnummer: faker.location.zipCode(),
                 adresse: faker.location.streetAddress(),
               },
-              naringskoder: null,
+              naringskoder: [
+                {
+                  kode: '86.107',
+                  beskrivelse: 'Rehabilitering- og opptreningsinstitusjoner',
+                },
+              ],
             },
           },
         ],
