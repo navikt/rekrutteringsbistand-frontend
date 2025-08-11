@@ -5,7 +5,9 @@ import KandidatSøkTabs from '@/app/kandidat/KandidatSøkTabs';
 import * as React from 'react';
 
 const KandidatTilRekrutteringstreff: React.FC = () => {
-  const [alleredeLagtTil, setAlleredeLagtTil] = React.useState<string[]>([]);
+  const [alleredeLagtTilTreff, setAlleredeLagtTil] = React.useState<string[]>(
+    [],
+  );
 
   const rekrutteringstreff = useRekrutteringstreffContext();
 
@@ -27,8 +29,8 @@ const KandidatTilRekrutteringstreff: React.FC = () => {
     <>
       <TreffHeader endreTittel={false} />
       <KandidatSøkTabs
+        alleredeLagtTilTreff={alleredeLagtTilTreff}
         rekrutteringstreffId={rekrutteringstreff?.rekrutteringstreffId}
-        alleredeLagtTil={alleredeLagtTil}
       />
     </>
   );

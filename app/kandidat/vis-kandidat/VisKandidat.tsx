@@ -2,9 +2,9 @@ import { TilgangskontrollForInnhold } from '../../components/tilgangskontroll/Ti
 import { Roller } from '../../components/tilgangskontroll/roller';
 import { useNullableStillingsContext } from '../../stilling/[stillingsId]/StillingsContext';
 import { KandidatContextProvider } from './KandidatContext';
-import KandidatListeKandidat from './KandidatListeKandidat';
 import KandidatSide from './KandidatSide';
 import KandidatSideLayout from './KandidatsideLayout';
+import KandidatlisteBoks from './components/KandidatlisteBoks';
 import * as React from 'react';
 
 export interface VisKandidatProps {
@@ -23,7 +23,7 @@ const VisKandidat: React.FC<VisKandidatProps> = ({ kandidatnr }) => {
     >
       <KandidatContextProvider kandidatId={kandidatnr}>
         <KandidatSideLayout>
-          {stillingContext && <KandidatListeKandidat kandidatnr={kandidatnr} />}
+          {stillingContext && <KandidatlisteBoks kandidatnr={kandidatnr} />}
           <KandidatSide />
         </KandidatSideLayout>
       </KandidatContextProvider>

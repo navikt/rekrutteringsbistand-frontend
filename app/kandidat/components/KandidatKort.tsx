@@ -6,6 +6,7 @@ import {
   hentKandidatensØnskedeSteder,
   hentKandidatensØnskedeYrker,
 } from '../util';
+import { useVisKandidatNr } from '../vis-kandidat/useVisKandidatNr';
 import { alleInnsatsgrupper } from './innsatsgrupper';
 import {
   FileSearchIcon,
@@ -15,7 +16,6 @@ import {
   PinIcon,
 } from '@navikt/aksel-icons';
 import { Box, Checkbox, Heading, Link } from '@navikt/ds-react';
-import { useQueryState } from 'nuqs';
 import * as React from 'react';
 
 type IKandidatKort = {
@@ -30,10 +30,7 @@ const KandidatKort: React.FC<IKandidatKort> = ({
   stillingsId,
 }) => {
   const { markerteKandidater, setMarkert } = useKandidatSøkMarkerteContext();
-  const [visKandidatnr, setVisKandidatnr] = useQueryState('visKandidatnr', {
-    defaultValue: '',
-    clearOnDefault: true,
-  });
+  const [visKandidatnr, setVisKandidatnr] = useVisKandidatNr();
   const erMarkert = markerteKandidater?.some(
     (k) => k === kandidat.arenaKandidatnr,
   );

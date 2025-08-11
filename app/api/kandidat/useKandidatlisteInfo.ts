@@ -35,15 +35,6 @@ export const useKandidatlisteInfo = (
     },
   );
 
-  if (
-    //@ts-expect-error fordi dette skal fikses backend
-    kandidatlisteHook.data?.status &&
-    //@ts-expect-error fordi dette skal fikses backend
-    kandidatlisteHook.data?.status === 404
-  ) {
-    return null;
-  }
-
   return kandidatlisteHook;
 };
 

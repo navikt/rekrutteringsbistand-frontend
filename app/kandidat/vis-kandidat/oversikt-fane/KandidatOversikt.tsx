@@ -5,6 +5,7 @@ import KandidatFørerkort from './components/KandidatFørerkort';
 import KandidatGodkjenninger from './components/KandidatGodkjenninger';
 import KandidatKompetanse from './components/KandidatKompetanse';
 import KandidatKurs from './components/KandidatKurs';
+import KandidatOversiktDivider from './components/KandidatOversiktDivider';
 import KandidatSpråk from './components/KandidatSpråk';
 import KandidatUtdanning from './components/KandidatUtdanning';
 import KandidatØnsker from './components/KandidatØnsker';
@@ -15,12 +16,14 @@ const KandidatOversikt: React.FC = () => {
   const { kandidatData } = useKandidatContext();
 
   return (
-    <div className={`mt-10 `}>
+    <div className={`mt-10  mb-8`}>
       <div>
-        <div className={`grid gap-x-[3.5rem] gap-y-8 md:flex-row flex-row`}>
+        <div className={`grid gap-x-[3.5rem]  md:flex-row flex-row`}>
           <KandidatØnsker />
+          <KandidatOversiktDivider />
           <KandidatBeskrivelse kandidatSammendrag={kandidatData.beskrivelse} />
-          <KandidatUtdanning />
+          <KandidatOversiktDivider />
+          <KandidatUtdanning /> <KandidatOversiktDivider />
           <KandidatErfaring />
         </div>
         <div className={`mt-8 grid grid-cols-1 gap-4 `}>

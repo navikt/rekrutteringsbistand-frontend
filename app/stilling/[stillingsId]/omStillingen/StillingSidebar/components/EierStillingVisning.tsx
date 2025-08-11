@@ -1,6 +1,7 @@
-import { useKandidatliste } from '../../../../../api/kandidat/useKandidatliste';
+import { useKandidatlisteForEier } from '../../../../../api/kandidat/useKandidatlisteForEier';
 import { useStillingsContext } from '../../../StillingsContext';
 import { KandidatutfallTyper } from '../../../kandidatliste/KandidatTyper';
+import AvpubliserStilling from './AvpubliserStilling';
 import AvsluttStillingKnapp from './AvsluttStillingKnapp';
 import KopierStilling from './KopierStilling';
 import { PencilIcon } from '@navikt/aksel-icons';
@@ -12,7 +13,7 @@ const EierStillingVisning: React.FC = () => {
   const router = useRouter();
   const { erEier, stillingsData, kandidatlisteInfo } = useStillingsContext();
 
-  const { data, isLoading } = useKandidatliste(stillingsData, erEier);
+  const { data, isLoading } = useKandidatlisteForEier(stillingsData, erEier);
 
   if (isLoading) {
     return <Loader size='small' />;
@@ -51,6 +52,7 @@ const EierStillingVisning: React.FC = () => {
           Rediger
         </Button>
         <KopierStilling stillingsId={stillingsData.stilling.uuid} />
+        <AvpubliserStilling />
         <AvsluttStillingKnapp
           kandidatlisteId={kandidatlisteInfo?.kandidatlisteId}
           besatteStillinger={besatteStillinger}

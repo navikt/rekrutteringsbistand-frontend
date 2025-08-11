@@ -27,8 +27,10 @@ const KandidatØnsker: React.FC = () => {
 
   return (
     <div>
-      <Heading size='medium'>Ønsker</Heading>
-      <p className='my-4 mb-4'>
+      <Heading size='medium' className='mb-4'>
+        Ønsker
+      </Heading>
+      <p>
         {kandidatData.yrkeJobbonskerObj
           ?.map((yrke) => yrke?.styrkBeskrivelse)
           .join(', ') ?? '-'}

@@ -8,6 +8,7 @@ import {
   Subtag,
 } from './components/StillingsSøkFilter/InkluderingFilter';
 import { StillingsSøkQueryparam } from './stillingssøk-typer';
+import { useSearchParams } from 'next/navigation';
 import {
   parseAsArrayOf,
   parseAsInteger,
@@ -52,6 +53,8 @@ export const StillingsSøkProvider: React.FC<{
   formidlinger?: boolean;
 }> = ({ children, formidlinger }) => {
   const { harRolle } = useApplikasjonContext();
+  const searchParams = useSearchParams();
+  const brukStandardSøk = searchParams.get('brukStandardsok') !== null;
 
   const harArbeidsgiverrettetRolle = harRolle([
     Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
@@ -202,6 +205,12 @@ export const StillingsSøkProvider: React.FC<{
       }
     };
   };
+
+  React.useEffect(() => {
+    if (brukStandardSøk) {
+      setFritekstListe([]);
+    }
+  }, [brukStandardSøk]);
 
   return (
     <StillingsSøkContext.Provider

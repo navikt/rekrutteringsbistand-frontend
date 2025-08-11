@@ -1,7 +1,9 @@
 'use client';
 
 import { RekbisError } from '../../util/rekbisError';
+import { UmamiEvent } from '../../util/umamiEvents';
 import { useApplikasjonContext } from '../providers/ApplikasjonContext';
+import { useUmami } from '../providers/UmamiContext';
 import {
   parseAsArrayOf,
   parseAsInteger,
@@ -82,7 +84,7 @@ export const KandidatSøkProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const { valgtNavKontor } = useApplikasjonContext();
-
+  const { track } = useUmami();
   // Unngå fritekst i searchParams
   const [fritekst, setFritekst] = React.useState<string>('');
 
@@ -187,9 +189,16 @@ export const KandidatSøkProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const wrapWithPageReset = <T,>(
     setter: (value: T | ((prevValue: T) => T) | null) => Promise<any>,
+    trackingKey?: keyof typeof UmamiEvent.Kandidat,
   ): ((value: T | ((prevValue: T) => T)) => Promise<void>) => {
     return async (value) => {
       await setter(value);
+
+      if (trackingKey && Array.isArray(value) && value.length > 0) {
+        track(UmamiEvent.Kandidat[trackingKey], {
+          filter: Array.isArray(value) ? value.join(', ') : String(value),
+        });
+      }
 
       if (side !== 1) {
         await setSide(1);
@@ -203,30 +212,45 @@ export const KandidatSøkProvider: React.FC<{ children: React.ReactNode }> = ({
         fritekst,
         setFritekst,
         portefølje,
-        setPortefølje: wrapWithPageReset(setPortefølje),
+        setPortefølje: wrapWithPageReset(setPortefølje, 'filter_portefølje'),
         side,
         ønsketSted,
-        setØnsketSted: wrapWithPageReset(setØnsketSted),
+        setØnsketSted: wrapWithPageReset(setØnsketSted, 'filter_ønsket_sted'),
         ønsketYrke,
-        setØnsketYrke: wrapWithPageReset(setØnsketYrke),
+        setØnsketYrke: wrapWithPageReset(setØnsketYrke, 'filter_ønsket_yrke'),
         innsatsgruppe,
-        setInnsatsgruppe: wrapWithPageReset(setInnsatsgruppe),
+        setInnsatsgruppe: wrapWithPageReset(
+          setInnsatsgruppe,
+          'filter_innsatsgruppe',
+        ),
         valgtKontor,
-        setValgtKontor: wrapWithPageReset(setValgtKontor),
+        setValgtKontor: wrapWithPageReset(
+          setValgtKontor,
+          'filter_valgt_kontor',
+        ),
         hovedmål,
-        setHovedmål: wrapWithPageReset(setHovedmål),
+        setHovedmål: wrapWithPageReset(setHovedmål, 'filter_hovedmål'),
         kompetanse,
-        setKompetanse: wrapWithPageReset(setKompetanse),
+        setKompetanse: wrapWithPageReset(setKompetanse, 'filter_kompetanse'),
         førerkort,
-        setFørerkort: wrapWithPageReset(setFørerkort),
+        setFørerkort: wrapWithPageReset(setFørerkort, 'filter_førerkort'),
         språk,
-        setSpråk: wrapWithPageReset(setSpråk),
+        setSpråk: wrapWithPageReset(setSpråk, 'filter_språk'),
         arbeidserfaring,
-        setArbeidserfaring: wrapWithPageReset(setArbeidserfaring),
+        setArbeidserfaring: wrapWithPageReset(
+          setArbeidserfaring,
+          'filter_arbeidserfaring',
+        ),
         utdanningsnivå,
-        setUtdanningsnivå: wrapWithPageReset(setUtdanningsnivå),
+        setUtdanningsnivå: wrapWithPageReset(
+          setUtdanningsnivå,
+          'filter_utdanningsnivå',
+        ),
         prioritertMålgruppe,
-        setPrioritertMålgruppe: wrapWithPageReset(setPrioritertMålgruppe),
+        setPrioritertMålgruppe: wrapWithPageReset(
+          setPrioritertMålgruppe,
+          'filter_prioritert_målgruppe',
+        ),
         borPåØnsketSted,
         setBorPåØnsketSted,
         ferskhet,

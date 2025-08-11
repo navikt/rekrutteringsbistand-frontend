@@ -16,6 +16,7 @@ export const jobbsøkerHendelserMock = (): JobbsøkerHendelserDTO => {
       kandidatnummer: 'PAM016jg9faeo',
       fornavn: faker.person.firstName(),
       etternavn: faker.person.lastName(),
+      personTreffId: faker.string.uuid(),
     },
   ];
 };

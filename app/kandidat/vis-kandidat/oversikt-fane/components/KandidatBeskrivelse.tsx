@@ -1,4 +1,4 @@
-import { BodyLong } from '@navikt/ds-react';
+import { BodyLong, Heading } from '@navikt/ds-react';
 import * as React from 'react';
 
 export interface KandidatBeskrivelseProps {
@@ -12,9 +12,12 @@ const KandidatBeskrivelse: React.FC<KandidatBeskrivelseProps> = ({
     return null;
   }
   return (
-    <div className='py-10'>
+    <>
+      <Heading size='medium' className='mb-4'>
+        Sammendrag
+      </Heading>
       <BodyLong> {kandidatSammendrag} </BodyLong>
-    </div>
+    </>
   );
 };
 

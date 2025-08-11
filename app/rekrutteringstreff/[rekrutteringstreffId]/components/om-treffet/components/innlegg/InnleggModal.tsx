@@ -111,7 +111,7 @@ const InnleggModal: React.FC<InnleggModalProps> = ({
       return;
     }
     setHasValidatedCurrentContentSuccessfully(false);
-    validate({ tittel: null, beskrivelse: txt });
+    validate({ tekst: txt });
   };
 
   useEffect(() => {
@@ -123,8 +123,6 @@ const InnleggModal: React.FC<InnleggModalProps> = ({
   }, [analyse, validating, analyseError]);
 
   useEffect(() => {
-    // Reset form and validation state when 'innlegg' prop changes or modal is not open
-    // This ensures the modal is fresh if it's re-opened with different or no 'innlegg' data.
     reset({ htmlContent: innlegg?.htmlContent ?? '' });
     resetAnalyse();
     setHasValidatedCurrentContentSuccessfully(false);
@@ -161,7 +159,7 @@ const InnleggModal: React.FC<InnleggModalProps> = ({
         await opprettInnleggForTreff(rekrutteringstreffId, payload);
       }
       onInnleggUpdated();
-      modalRef.current?.close(); // Triggers Modal's onClose
+      modalRef.current?.close();
     } catch (error) {
       new RekbisError({ message: 'Error saving post:', error });
     }
@@ -192,7 +190,6 @@ const InnleggModal: React.FC<InnleggModalProps> = ({
   };
 
   const handleInternalModalClose = () => {
-    // Cleanup logic when the modal is closed for any reason
     reset({ htmlContent: innlegg?.htmlContent ?? '' });
     resetAnalyse();
     setIsClosingModal(false);

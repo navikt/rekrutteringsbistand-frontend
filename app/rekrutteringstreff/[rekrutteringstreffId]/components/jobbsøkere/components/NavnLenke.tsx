@@ -1,10 +1,10 @@
-import { useQueryState } from 'nuqs';
+import { useVisPersonTreffId } from '../../../vis-person/useVisPersonTreffId';
 import * as React from 'react';
 
 interface NavnLenkeProps {
   fornavn: string;
   etternavn: string;
-  kandidatnummer: string | null;
+  personTreffId: string | null;
 }
 
 const storForbokstavFlereOrd = (s: string | null | undefined) => {
@@ -18,15 +18,15 @@ const storForbokstavFlereOrd = (s: string | null | undefined) => {
 const NavnLenke: React.FC<NavnLenkeProps> = ({
   fornavn,
   etternavn,
-  kandidatnummer,
+  personTreffId,
 }) => {
-  const [, settKandidatnr] = useQueryState('visKandidatnr', {
-    defaultValue: '',
-    clearOnDefault: true,
-  });
+  const [, setVisPersonTreffId] = useVisPersonTreffId();
 
   return (
-    <div className='aksel-link' onClick={() => settKandidatnr(kandidatnummer)}>
+    <div
+      className='aksel-link'
+      onClick={() => personTreffId && setVisPersonTreffId(personTreffId)}
+    >
       {storForbokstavFlereOrd(etternavn)}, {storForbokstavFlereOrd(fornavn)}
     </div>
   );

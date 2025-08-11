@@ -6,6 +6,7 @@
 import { StillingAPI } from '../../../api-routes';
 import { getAPIwithSchema } from '../../../fetcher';
 import {
+  internStillingMock,
   mockBaseStilling,
   mockEksternStilling,
   mockFormidling,
@@ -27,6 +28,7 @@ export const useStilling = (stillingsId?: string | null) =>
 
 export const stillingMirage = (server: any) => {
   server.get(stillingEndepunkt('nyStilling'), () => nyStillingMock);
+  server.get(stillingEndepunkt('internStilling'), () => internStillingMock);
   server.get(stillingEndepunkt('minStilling'), () => mockMinStilling);
   server.get(stillingEndepunkt('minFormidling'), () => mockFormidling);
   server.get(stillingEndepunkt('eksternStilling'), () => mockEksternStilling);

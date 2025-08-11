@@ -126,14 +126,14 @@ const Innlegg: React.FC<InnleggProps> = ({
   const handleValidateOrError = () => {
     if (validating) return;
 
-    const txt = htmlContent?.trim();
-    if (!txt) {
+    const tekst = htmlContent?.trim();
+    if (!tekst) {
       resetAnalyse();
       setHasValidatedCurrentContentSuccessfully(false);
       return;
     }
     setHasValidatedCurrentContentSuccessfully(false);
-    validate({ tittel: null, beskrivelse: txt });
+    validate({ tekst: tekst });
   };
 
   useEffect(() => {
@@ -189,7 +189,6 @@ const Innlegg: React.FC<InnleggProps> = ({
       modalRef.current?.close();
     } catch (error) {
       new RekbisError({ message: 'Feil ved lagring av innlegg:', error });
-      // Vurder å gi brukeren feedback her, f.eks. via en Alert
     }
   };
 
