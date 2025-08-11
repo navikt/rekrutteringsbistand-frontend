@@ -50,6 +50,21 @@ export const opprettStillingForFormidlingMapper = (
             formidlingData.omFormidlingen?.organisasjon?.adresse?.poststed ??
             '',
         },
+        properties: {
+          nace2:
+            (formidlingData.omFormidlingen?.organisasjon?.naringskoder &&
+              JSON.stringify(
+                formidlingData.omFormidlingen?.organisasjon?.naringskoder.map(
+                  (naringskode) => {
+                    return {
+                      code: naringskode.kode,
+                      name: naringskode.beskrivelse,
+                    };
+                  },
+                ),
+              )) ??
+            null,
+        },
       },
     },
   };
