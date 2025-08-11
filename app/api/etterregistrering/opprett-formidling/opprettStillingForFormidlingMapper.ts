@@ -1,6 +1,9 @@
 import { FormidlingDataForm } from '../../../etterregistrering/ny-etterregistrering/redigerFormidlingFormType';
 import { Stillingskategori } from '../../../stilling/stilling-typer';
-import { OpprettNyStillingDTO } from '../../stilling/ny-stilling/dto';
+import {
+  NaringskodeDTO,
+  OpprettNyStillingDTO,
+} from '../../stilling/ny-stilling/dto';
 
 export const opprettStillingForFormidlingMapper = (
   formidlingData: FormidlingDataForm,
@@ -49,6 +52,11 @@ export const opprettStillingForFormidlingMapper = (
           city:
             formidlingData.omFormidlingen?.organisasjon?.adresse?.poststed ??
             '',
+        },
+        properties: {
+          nace2:
+            (formidlingData.omFormidlingen?.organisasjon
+              ?.naringskoder as NaringskodeDTO[]) ?? null,
         },
       },
     },

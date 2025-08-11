@@ -21,6 +21,15 @@ interface NyAdministrationDTO {
   navIdent: string;
 }
 
+export interface NaringskodeDTO {
+  kode: string | null;
+  beskrivelse: string | null;
+}
+
+interface NyEmployerPropertiesDTO {
+  nace2: NaringskodeDTO[] | null;
+}
+
 interface NyEmployerDTO {
   orgnr: string;
   name: string;
@@ -28,6 +37,7 @@ interface NyEmployerDTO {
   orgform: string;
   employees: number | null;
   location: NyLocationDTO;
+  properties: NyEmployerPropertiesDTO | null;
 }
 
 interface NyLocationDTO {
