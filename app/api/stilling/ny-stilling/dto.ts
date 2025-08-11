@@ -21,13 +21,8 @@ interface NyAdministrationDTO {
   navIdent: string;
 }
 
-export interface NaringskodeDTO {
-  kode: string | null;
-  beskrivelse: string | null;
-}
-
 interface NyEmployerPropertiesDTO {
-  nace2: NaringskodeDTO[] | null;
+  nace2: string | null;
 }
 
 interface NyEmployerDTO {

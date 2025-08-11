@@ -2,10 +2,7 @@
 
 import { UmamiEvent } from '../../../../util/umamiEvents';
 import { ArbeidsgiverDTO } from '../../../api/pam-search/underenhet/useArbeidsgiver';
-import {
-  NaringskodeDTO,
-  OpprettNyStillingDTO,
-} from '../../../api/stilling/ny-stilling/dto';
+import { OpprettNyStillingDTO } from '../../../api/stilling/ny-stilling/dto';
 import { opprettNyStilling } from '../../../api/stilling/ny-stilling/opprettNyStilling';
 import { useApplikasjonContext } from '../../../providers/ApplikasjonContext';
 import { useUmami } from '../../../providers/UmamiContext';
@@ -68,7 +65,10 @@ export const OpprettStillingKnapp: React.FC<OpprettStillingProps> = ({
               city: arbeidsgiver.adresse?.poststed ?? '',
             },
             properties: {
-              nace2: (arbeidsgiver.naringskoder as NaringskodeDTO[]) ?? null,
+              nace2:
+                (arbeidsgiver.naringskoder &&
+                  JSON.stringify(arbeidsgiver.naringskoder)) ??
+                null,
             },
           },
         },
