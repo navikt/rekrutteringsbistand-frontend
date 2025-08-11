@@ -140,7 +140,7 @@ export function generateElasticSearchQuery(
   }
 
   const inneholderVerdierMedBareTall: boolean = filter.fritekst.some((verdi) =>
-    /^\d+$/.test(verdi),
+    /^R?\d+$/.test(verdi),
   );
 
   const fritekstSøkestreng = filter.fritekst
