@@ -40,12 +40,12 @@ const Infokort: React.FC<IInfokort> = ({
           <div className='flex flex-col'>
             <div className='flex items-center gap-4'>
               {ikon && ikonFront && ikonVisning}
-              <BodyShort className='text-[var(--ax-text-subtle)]'>
+              <BodyShort className='text-[var(--ax-text-neutral)]'>
                 {tittel}
               </BodyShort>
             </div>
             {tall && (
-              <span className='text-[40px] leading-[52px] font-semibold text-[var(--ax-text-default)]'>
+              <span className='text-[40px] leading-[52px] font-semibold text-[var(--ax-text-neutral)]'>
                 {tall}
               </span>
             )}
@@ -54,7 +54,7 @@ const Infokort: React.FC<IInfokort> = ({
         </div>
         <div className='flex flex-col'>
           {beskrivelse && (
-            <BodyShort className='text-[var(--ax-text-default)]'>
+            <BodyShort className='text-[var(--ax-text-neutral)]'>
               {beskrivelse}
             </BodyShort>
           )}
@@ -63,10 +63,10 @@ const Infokort: React.FC<IInfokort> = ({
               key={index}
               className='flex items-start justify-between gap-3 mt-2'
             >
-              <span className='text-[var(--ax-text-default)]'>
+              <span className='text-[var(--ax-text-neutral)]'>
                 {d.beskrivelse}
               </span>
-              <span className='font-semibold text-[var(--ax-text-default)]'>
+              <span className='font-semibold text-[var(--ax-text-neutral)]'>
                 {d.tall}
               </span>
             </Box.New>

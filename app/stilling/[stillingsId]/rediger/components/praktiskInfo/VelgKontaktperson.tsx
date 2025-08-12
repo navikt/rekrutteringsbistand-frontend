@@ -24,24 +24,34 @@ const KontaktPersonInformasjon: React.FC<{
         control={control}
         name={`omVirksomheten.kontaktPersoner.${index}.name`}
         render={({ field: { onChange, value }, fieldState: { error } }) => (
-          <TextField
-            label='Navn'
-            onChange={(e) => onChange(e.target.value)}
-            value={value ?? ''}
-            error={error?.message}
-          />
+          <div
+            id={`omVirksomheten.kontaktPersoner.${index}.name`}
+            tabIndex={-1}
+          >
+            <TextField
+              label='Navn'
+              onChange={(e) => onChange(e.target.value)}
+              value={value ?? ''}
+              error={error?.message}
+            />
+          </div>
         )}
       />
       <Controller
         control={control}
         name={`omVirksomheten.kontaktPersoner.${index}.title`}
         render={({ field: { onChange, value }, fieldState: { error } }) => (
-          <TextField
-            label='Tittel'
-            onChange={(e) => onChange(e.target.value)}
-            value={value ?? ''}
-            error={error?.message}
-          />
+          <div
+            id={`omVirksomheten.kontaktPersoner.${index}.title`}
+            tabIndex={-1}
+          >
+            <TextField
+              label='Tittel'
+              onChange={(e) => onChange(e.target.value)}
+              value={value ?? ''}
+              error={error?.message}
+            />
+          </div>
         )}
       />
 
@@ -53,26 +63,36 @@ const KontaktPersonInformasjon: React.FC<{
         control={control}
         name={`omVirksomheten.kontaktPersoner.${index}.email`}
         render={({ field: { onChange, value }, fieldState: { error } }) => (
-          <TextField
-            type='email'
-            label='E-post'
-            onChange={(e) => onChange(e.target.value)}
-            value={value ?? ''}
-            error={error?.message}
-          />
+          <div
+            id={`omVirksomheten.kontaktPersoner.${index}.email`}
+            tabIndex={-1}
+          >
+            <TextField
+              type='email'
+              label='E-post'
+              onChange={(e) => onChange(e.target.value)}
+              value={value ?? ''}
+              error={error?.message}
+            />
+          </div>
         )}
       />
       <Controller
         control={control}
         name={`omVirksomheten.kontaktPersoner.${index}.phone`}
         render={({ field: { onChange, value }, fieldState: { error } }) => (
-          <TextField
-            type='tel'
-            label='Telefonnummer'
-            onChange={(e) => onChange(e.target.value)}
-            value={value ?? ''}
-            error={error?.message}
-          />
+          <div
+            id={`omVirksomheten.kontaktPersoner.${index}.phone`}
+            tabIndex={-1}
+          >
+            <TextField
+              type='tel'
+              label='Telefonnummer'
+              onChange={(e) => onChange(e.target.value)}
+              value={value ?? ''}
+              error={error?.message}
+            />
+          </div>
         )}
       />
     </div>

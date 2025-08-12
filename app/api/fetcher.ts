@@ -54,12 +54,12 @@ const handleErrorResponse = async (
       errorDetails = JSON.stringify(errorData);
     } catch (error) {
       logger.warn(
-        `Failed to parse error response as JSON despite content-type header, from endpoint ${response.url}`,
         {
           url: response.url,
           status: response.status,
           error: error instanceof Error ? error.message : String(error),
         },
+        `Failed to parse error response as JSON despite content-type header, from endpoint ${response.url}`,
       );
       // Use the cloned response instead of the original which is already consumed
       errorDetails = await responseClone.text();
@@ -124,12 +124,12 @@ const extractResponseData = async (response: Response): Promise<any> => {
     } catch (error) {
       // If json parsing fails, try using the cloned response
       logger.warn(
-        'Failed to parse response as JSON despite content-type header',
         {
           url: response.url,
           status: response.status,
           error: error instanceof Error ? error.message : String(error),
         },
+        'Failed to parse response as JSON despite content-type header',
       );
       return await responseClone.text();
     }
@@ -161,14 +161,17 @@ const validerSchema = <T>(schema: ZodSchema<T>, data: any) => {
   // TODO Midlertidig løsning for å unngå så mange feil ved feil schema:
   const zodResult = schema.safeParse(data);
   if (zodResult.error) {
-    logger.info('ZodError encountered during schema validation', {
-      error: zodResult.error.message,
-      issues: zodResult.error.issues.map((issue) => ({
-        code: issue.code,
-        path: issue.path,
-        message: issue.message,
-      })),
-    });
+    logger.info(
+      {
+        error: zodResult.error.message,
+        issues: zodResult.error.issues.map((issue) => ({
+          code: issue.code,
+          path: issue.path,
+          message: issue.message,
+        })),
+      },
+      'ZodError encountered during schema validation',
+    );
   }
   return data;
 };

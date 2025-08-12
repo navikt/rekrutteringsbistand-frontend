@@ -7,6 +7,7 @@ import {
 } from '../../api/kandidat/useKandidatlisteInfo';
 import { StillingsDataDTO } from '../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { useStilling } from '../../api/stilling/rekrutteringsbistandstilling/[slug]/useStilling';
+import { useBreadcrumbsLabels } from '../../components/Breadcrumbs/BreadcrumbsProvider';
 import SWRLaster from '../../components/SWRLaster';
 import { eierStilling } from '../../components/tilgangskontroll/erEier';
 import { Roller } from '../../components/tilgangskontroll/roller';
@@ -77,12 +78,21 @@ const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
     brukerData: { ident },
     harRolle,
   } = useApplikasjonContext();
-
+  const { setLabel } = useBreadcrumbsLabels();
   const kandidatListeInfoHook = useKandidatlisteInfo(
     stillingsData.stilling.publishedByAdmin
       ? stillingsData?.stillingsinfo
       : null,
   );
+
+  React.useEffect(() => {
+    if (stillingsData.stilling.title) {
+      setLabel(
+        `/stilling/${stillingsData.stilling.uuid}`,
+        stillingsData.stilling.title,
+      );
+    }
+  }, [stillingsData.stilling.title, setLabel, stillingsData.stilling.uuid]);
 
   React.useEffect(() => {
     if (stillingsData.stilling?.updated) {

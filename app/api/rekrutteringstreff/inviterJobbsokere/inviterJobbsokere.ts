@@ -14,8 +14,8 @@ export const inviterJobbsøkere = async (
     });
   } catch (error) {
     logger.error(
-      `Feil ved invitasjon av ${personTreffIder.length} jobbsøkere til rekrutteringstreff ${rekrutteringstreffId}`,
       error,
+      `Feil ved invitasjon av ${personTreffIder.length} jobbsøkere til rekrutteringstreff ${rekrutteringstreffId}`,
     );
     throw error;
   }
