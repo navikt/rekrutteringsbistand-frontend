@@ -140,6 +140,7 @@ const Jobbsøkere = () => {
                         )}
                         lagtTilAv={lagtTilAv}
                         status={status?.text}
+                        statusVariant={status?.variant}
                         harPublisert={harPublisert}
                         erValgt={valgteJobbsøkere.some(
                           (v) => v.fødselsnummer === j.fødselsnummer,
