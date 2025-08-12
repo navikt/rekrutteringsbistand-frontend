@@ -67,33 +67,28 @@ export const OmStillingenSchema = z
       .array(LocationSchema)
       .optional()
       .nullable()
-      .superRefine((val, ctx) => {
-        if (val && val.length > 0) {
-          // Sjekk om noen av adressene mangler påkrevde felter
-          const harManglendeFelt = val.some((location) => {
-            return !location.address || !location.postalCode || !location.city;
-          });
-
-          if (harManglendeFelt) {
-            ctx.addIssue({
-              code: 'custom',
-              error:
-                'Alle adressefelt må fylles ut (adresse, postnummer og poststed)',
-            });
-          }
-        }
-      }),
+      .refine(
+        (val) =>
+          !val ||
+          val.length === 0 ||
+          !val.some((l) => !l.address || !l.postalCode || !l.city),
+        {
+          message:
+            'Alle adressefelt må fylles ut (adresse, postnummer og poststed)',
+        },
+      ),
   })
   .superRefine((data, ctx) => {
-    if (data.adresser?.length === 0 && data.lokasjoner?.length === 0) {
+    const lokEmpty = !data.lokasjoner || data.lokasjoner.length === 0;
+    const adrEmpty = !data.adresser || data.adresser.length === 0;
+    if (lokEmpty && adrEmpty) {
       ctx.addIssue({
         code: 'custom',
-        error: 'Du må velge arbeidssted',
-        path: ['adresser'],
+        path: ['lokasjoner'],
+        message: 'Du må fylle ut minst én lokasjon eller adresse',
       });
     }
   });
-
 export const PraktiskInfoSchema = z
   .object({
     sektor: z.string().min(1, 'Sektor må velges').nullable(),

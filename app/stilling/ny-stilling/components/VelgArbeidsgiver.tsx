@@ -24,7 +24,7 @@ const VelgArbeidsgiver: React.FC<IVelgArbeidsgiver> = ({
     if (arbeidsgiver) {
       arbeidsgiverCallback(arbeidsgiver);
     }
-  }, [arbeidsgiver, arbeidsgiverCallback]);
+  }, [arbeidsgiver]);
 
   return (
     <React.Fragment>

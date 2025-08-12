@@ -1,3 +1,4 @@
+import { FormidlingDataForm } from '../../../../etterregistrering/ny-etterregistrering/redigerFormidlingFormType';
 import { StillingsDataForm } from '../redigerFormType.zod';
 import { ErrorSummary } from '@navikt/ds-react';
 import * as React from 'react';
@@ -8,35 +9,41 @@ export interface OppsummerValideringProps {
     | 'omVirksomheten'
     | 'omTilrettelegging'
     | 'omStillingen'
-    | 'praktiskInfo';
+    | 'praktiskInfo'
+    | 'omFormidlingen';
 }
 
-const hentErrorMelding = (errorObj: any): string[] => {
+const hentIssues = (
+  errorObj: any,
+  path: (string | number)[] = [],
+): { path: (string | number)[]; message: string }[] => {
   if (!errorObj) return [];
 
-  let messages: string[] = [];
+  const issues: { path: (string | number)[]; message: string }[] = [];
 
-  if (errorObj.message) {
-    messages.push(errorObj.message);
+  // RHF error node har message => registrer et issue
+  if (typeof errorObj.message === 'string' && errorObj.message) {
+    issues.push({ path, message: errorObj.message });
   }
 
+  // Array: gå videre med indeks
   if (Array.isArray(errorObj)) {
-    errorObj.forEach((item) => {
-      const nestedMessages = hentErrorMelding(item);
-      nestedMessages.forEach((msg) => {
-        messages.push(msg);
-      });
+    errorObj.forEach((child, idx) => {
+      issues.push(...hentIssues(child, [...path, idx]));
     });
-  } else if (typeof errorObj === 'object') {
-    Object.keys(errorObj).forEach((key) => {
-      if (key !== 'type' && key !== 'ref' && key !== 'message') {
-        const nestedMessages = hentErrorMelding(errorObj[key]);
-        messages = messages.concat(nestedMessages);
-      }
-    });
+    return issues;
   }
 
-  return messages;
+  // Objekt: gå videre på keys
+  if (typeof errorObj === 'object') {
+    Object.keys(errorObj)
+      .filter((k) => !['type', 'ref', 'message'].includes(k))
+      .forEach((key) => {
+        issues.push(...hentIssues(errorObj[key], [...path, key]));
+      });
+  }
+
+  return issues;
 };
 
 const OppsummerValidering: React.FC<OppsummerValideringProps> = ({
@@ -44,22 +51,24 @@ const OppsummerValidering: React.FC<OppsummerValideringProps> = ({
 }) => {
   const {
     formState: { errors },
-  } = useFormContext<StillingsDataForm>();
+  } = useFormContext<StillingsDataForm | FormidlingDataForm>();
 
-  const feilMeldinger = errors[feltNavn];
+  const feilNode = (errors as Record<string, any>)[feltNavn];
+  if (!feilNode) return null;
 
-  if (!feltNavn || !feilMeldinger) {
-    return null;
-  }
-
-  const mapFeilmeldinger = hentErrorMelding(feilMeldinger);
+  const issues = hentIssues(feilNode, [feltNavn]);
 
   return (
     <div className='my-8'>
       <ErrorSummary>
-        {mapFeilmeldinger.map((feilmelding, index) => (
-          <ErrorSummary.Item key={index}>{feilmelding}</ErrorSummary.Item>
-        ))}
+        {issues.map((issue) => {
+          const id = issue.path.map(String).join('.');
+          return (
+            <ErrorSummary.Item key={id} href={`#${id}`}>
+              {issue.message}
+            </ErrorSummary.Item>
+          );
+        })}
       </ErrorSummary>
     </div>
   );

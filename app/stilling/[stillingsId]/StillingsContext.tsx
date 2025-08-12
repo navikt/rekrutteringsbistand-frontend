@@ -93,21 +93,21 @@ const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
   const [forhåndsvisData, setForhåndsvisData] =
     React.useState<StillingsDataDTO | null>(null);
 
-  React.useEffect(() => {
-    const isFormidling =
-      stillingsData.stillingsinfo?.stillingskategori === 'FORMIDLING';
-    const correctPath = isFormidling
-      ? `/etterregistrering/${stillingsData.stilling?.uuid}`
-      : `/stilling/${stillingsData.stilling?.uuid}`;
+  // React.useEffect(() => {
+  //   const isFormidling =
+  //     stillingsData.stillingsinfo?.stillingskategori === 'FORMIDLING';
+  //   const correctPath = isFormidling
+  //     ? `/etterregistrering/${stillingsData.stilling?.uuid}`
+  //     : `/stilling/${stillingsData.stilling?.uuid}`;
 
-    if (!window.location.pathname.includes(correctPath)) {
-      router.push(correctPath);
-    }
-  }, [
-    stillingsData.stillingsinfo?.stillingskategori,
-    router,
-    stillingsData.stilling?.uuid,
-  ]);
+  //   if (!window.location.pathname.includes(correctPath)) {
+  //     router.push(correctPath);
+  //   }
+  // }, [
+  //   stillingsData.stillingsinfo?.stillingskategori,
+  //   router,
+  //   stillingsData.stilling?.uuid,
+  // ]);
 
   const erJobbmesse =
     stillingsData?.stillingsinfo?.stillingskategori ===

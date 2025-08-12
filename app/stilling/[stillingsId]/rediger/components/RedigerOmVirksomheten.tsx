@@ -68,6 +68,7 @@ export const RedigerOmVirksomheten: React.FC<{
           </dl>
 
           <span>Beskrivelse av bedriften (valgfritt)</span>
+
           <RikTekstEditor
             id='rediger-om-virksomheten'
             tekst={watch('omVirksomheten.beskrivelse') ?? ''}
