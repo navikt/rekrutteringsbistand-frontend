@@ -121,14 +121,14 @@ export const PraktiskInfoSchema = z
         error: 'Ansettelsesform må velges',
       }),
     dager: z
-      .array(z.string(), {
-        error: 'Arbeidsdager må velges',
-      })
+      .array(z.string({ error: 'Arbeidsdager må velges' }))
       .min(1, 'Velg minst én arbeidsdag'),
     tid: z
-      .array(z.string(), {
-        error: 'Arbeidstid må velges',
-      })
+      .array(
+        z.string({
+          error: 'Arbeidstid må velges',
+        }),
+      )
       .min(1, 'Velg minst én arbeidstid'),
   })
   .superRefine((data, ctx) => {
