@@ -9,6 +9,7 @@ interface ArbeidsgiverKortProps {
   antallAnsatte?: number;
   adresse?: ArbeidsgiverAdresse | null;
   status?: string;
+  naringskoder?: naringskode[] | null;
 }
 
 export type ArbeidsgiverAdresse = {
@@ -19,6 +20,11 @@ export type ArbeidsgiverAdresse = {
   kommunenummer?: string;
   land?: string;
   landkode?: string;
+};
+
+export type naringskode = {
+  kode?: string;
+  beskrivelse?: string;
 };
 
 const ArbeidsgiverKort: React.FC<ArbeidsgiverKortProps> = ({

@@ -21,6 +21,10 @@ interface NyAdministrationDTO {
   navIdent: string;
 }
 
+interface NyEmployerPropertiesDTO {
+  nace2: string | null;
+}
+
 interface NyEmployerDTO {
   orgnr: string;
   name: string;
@@ -28,6 +32,7 @@ interface NyEmployerDTO {
   orgform: string;
   employees: number | null;
   location: NyLocationDTO;
+  properties: NyEmployerPropertiesDTO | null;
 }
 
 interface NyLocationDTO {

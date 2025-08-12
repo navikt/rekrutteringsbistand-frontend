@@ -64,6 +64,19 @@ export const OpprettStillingKnapp: React.FC<OpprettStillingProps> = ({
               municipal: arbeidsgiver.adresse?.kommune ?? '',
               city: arbeidsgiver.adresse?.poststed ?? '',
             },
+            properties: {
+              nace2:
+                (arbeidsgiver.naringskoder &&
+                  JSON.stringify(
+                    arbeidsgiver.naringskoder.map((naringskode) => {
+                      return {
+                        code: naringskode.kode,
+                        name: naringskode.beskrivelse,
+                      };
+                    }),
+                  )) ??
+                null,
+            },
           },
         },
       };

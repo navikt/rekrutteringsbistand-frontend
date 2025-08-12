@@ -10,7 +10,7 @@ import {
 } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import SWRLaster from '@/app/components/SWRLaster';
-import { BodyShort, Button } from '@navikt/ds-react';
+import { BodyShort, Button, TagProps } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import * as React from 'react';
 
@@ -56,24 +56,20 @@ const Jobbsøkere = () => {
   };
 
   const getLagtTilData = (jobbsøker: JobbsøkerDTO) => {
-    const statusMap: Record<string, string> = {
-      AKTIVITETSKORT_OPPRETTELSE_FEIL: 'Invitasjon feilet',
-      SVAR_JA_TIL_INVITASJON: 'Svart ja',
-      SVAR_NEI_TIL_INVITASJON: 'Svart nei',
-      INVITER: 'Invitert',
-      OPPRETT: 'Lagt til',
-    };
-
     const sisteRelevanteHendelse = [...jobbsøker.hendelser]
-      .filter((hendelse) => hendelse.hendelsestype in statusMap)
+      .filter((h) => statusInfoForHendelsestype(h.hendelsestype))
       .sort(
         (a, b) =>
           new Date(b.tidspunkt).getTime() - new Date(a.tidspunkt).getTime(),
       )[0];
 
     if (sisteRelevanteHendelse) {
+      const status = statusInfoForHendelsestype(
+        sisteRelevanteHendelse.hendelsestype,
+      ) as StatusInfo;
+
       return {
-        status: statusMap[sisteRelevanteHendelse.hendelsestype],
+        status,
         datoLagtTil: sisteRelevanteHendelse.tidspunkt,
         lagtTilAv: sisteRelevanteHendelse.aktørIdentifikasjon,
       };
@@ -131,7 +127,7 @@ const Jobbsøkere = () => {
                       <JobbsøkerKort
                         fornavn={j.fornavn}
                         etternavn={j.etternavn}
-                        personTreffid={j.personTreffId}
+                        personTreffId={j.personTreffId}
                         fødselsnummer={j.fødselsnummer}
                         navKontor={j.navkontor}
                         veileder={{
@@ -143,7 +139,7 @@ const Jobbsøkere = () => {
                           'dd.MM.yyyy',
                         )}
                         lagtTilAv={lagtTilAv}
-                        status={status}
+                        status={status?.text}
                         harPublisert={harPublisert}
                         erValgt={valgteJobbsøkere.some(
                           (v) => v.fødselsnummer === j.fødselsnummer,
@@ -176,3 +172,25 @@ const Jobbsøkere = () => {
 };
 
 export default Jobbsøkere;
+
+export type StatusVariant = TagProps['variant'];
+export type StatusInfo = { text: string; variant: StatusVariant };
+
+export const statusInfoForHendelsestype = (
+  hendelsestype: string,
+): StatusInfo | undefined => {
+  switch (hendelsestype) {
+    case 'AKTIVITETSKORT_OPPRETTELSE_FEIL':
+      return { text: 'Invitasjon feilet', variant: 'error' };
+    case 'SVAR_JA_TIL_INVITASJON':
+      return { text: 'Svart ja', variant: 'success' };
+    case 'SVAR_NEI_TIL_INVITASJON':
+      return { text: 'Svart nei', variant: 'neutral' };
+    case 'INVITER':
+      return { text: 'Invitert', variant: 'info' };
+    case 'OPPRETT':
+      return { text: 'Lagt til', variant: 'neutral' };
+    default:
+      return undefined;
+  }
+};
