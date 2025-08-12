@@ -27,7 +27,10 @@ test('🚫 Rediger stilling Validering', async ({ page }) => {
   await expect(
     page
       .getByRole('paragraph')
-      .filter({ hasText: 'Du må velge arbeidssted' })
+      .filter({
+        hasText:
+          'Du må velge minst én adresse eller én eller flere kommuner, fylker eller land.',
+      })
       .first(),
   ).toBeVisible();
   await expect(

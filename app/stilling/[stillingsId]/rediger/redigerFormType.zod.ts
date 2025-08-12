@@ -135,7 +135,7 @@ export const PraktiskInfoSchema = z
     if (data.omfangKode === 'Deltid' && !data.omfangProsent) {
       ctx.addIssue({
         code: 'custom',
-        error: 'Du må fylle ut omfang i prosent for deltid',
+        message: 'Du må fylle ut omfang i prosent for deltid',
         path: ['omfangProsent'],
       });
     }
@@ -143,7 +143,7 @@ export const PraktiskInfoSchema = z
     if (!data.oppstart && !data.oppstartEtterAvtale) {
       ctx.addIssue({
         code: 'custom',
-        error: 'Du må fylle ut enten oppstart eller oppstart etter avtale',
+        message: 'Du må fylle ut enten oppstart eller oppstart etter avtale',
         path: ['oppstart'],
       });
     }
@@ -151,7 +151,7 @@ export const PraktiskInfoSchema = z
     if (!data.søknadsfrist && !data.søknadsfristSnarest) {
       ctx.addIssue({
         code: 'custom',
-        error: 'Du må fylle ut enten søknadsfrist eller velge snarest',
+        message: 'Du må fylle ut enten søknadsfrist eller velge snarest',
         path: ['søknadsfrist'],
       });
     }
@@ -173,7 +173,7 @@ export const InnspurtSchema = z
     ) {
       ctx.addIssue({
         code: 'custom',
-        error: 'Du må fylle ut enten e-post eller lenke',
+        message: 'Du må fylle ut enten e-post eller lenke',
         path: ['epost'],
       });
     }
