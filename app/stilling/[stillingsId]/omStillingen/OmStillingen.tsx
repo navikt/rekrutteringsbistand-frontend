@@ -21,23 +21,29 @@ import {
 import * as React from 'react';
 
 export const parseWorktime = (worktime: string) => {
-  let arrayString = '';
-  try {
-    const jsonArray = JSON.parse(worktime);
+  if (!worktime) return '';
+  const trimmed = worktime.trim();
 
-    for (let i = 0; i < jsonArray.length; i++) {
-      arrayString += `${jsonArray[i]} `;
+  // Bare forsøk å parse hvis det ser ut som et JSON-array
+  if (trimmed.startsWith('[') && trimmed.endsWith(']')) {
+    try {
+      const parsed = JSON.parse(trimmed);
+      if (Array.isArray(parsed)) {
+        return parsed.filter(Boolean).join(' ');
+      }
+    } catch (error) {
+      // Skjul logging siden dette kan være forventet feilformat
+      new RekbisError({
+        message: 'Feil ved parseWorktime',
+        error,
+        details: `worktime=${worktime}`,
+        skjulLogger: true,
+      });
     }
-  } catch (error) {
-    new RekbisError({
-      message: 'Feil ved parseWorktime',
-      error,
-      url: window.location.href,
-    });
-    arrayString = worktime;
   }
 
-  return arrayString;
+  // Fallback: returner original tekst (f.eks. "Dagtid")
+  return worktime;
 };
 
 const OmStillingen: React.FC<{ forhåndsvisData?: boolean }> = ({
