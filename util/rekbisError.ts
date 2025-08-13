@@ -60,7 +60,12 @@ export class RekbisError extends Error {
     // Set properties
     this.name = 'RekbisError';
     this.feilkode = feilkode;
-    this.url = options.url || '';
+    // Hvis url ikke er satt, bruk current location i browser (unngå crash på SSR)
+    this.url =
+      options.url ??
+      (typeof window !== 'undefined' && window.location
+        ? window.location.href
+        : '');
     this.details = options.details || '';
     this.originalError = options.error;
     this.statuskode = options.statuskode;
