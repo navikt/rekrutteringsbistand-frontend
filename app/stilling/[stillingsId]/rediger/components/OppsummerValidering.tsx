@@ -5,12 +5,17 @@ import * as React from 'react';
 import { useFormContext } from 'react-hook-form';
 
 export interface OppsummerValideringProps {
-  feltNavn:
+  feltNavn?:
     | 'omVirksomheten'
     | 'omTilrettelegging'
     | 'omStillingen'
     | 'praktiskInfo'
     | 'omFormidlingen';
+  /**
+   * Funksjon for å lage custom href per feil-id (path joinet med '.')
+   * Returner f.eks. `?steg=praktisk-info#${id}`
+   */
+  genererHref?: (id: string) => string;
 }
 
 const hentIssues = (
@@ -18,15 +23,12 @@ const hentIssues = (
   path: (string | number)[] = [],
 ): { path: (string | number)[]; message: string }[] => {
   if (!errorObj) return [];
-
   const issues: { path: (string | number)[]; message: string }[] = [];
 
-  // RHF error node har message => registrer et issue
   if (typeof errorObj.message === 'string' && errorObj.message) {
     issues.push({ path, message: errorObj.message });
   }
 
-  // Array: gå videre med indeks
   if (Array.isArray(errorObj)) {
     errorObj.forEach((child, idx) => {
       issues.push(...hentIssues(child, [...path, idx]));
@@ -34,7 +36,6 @@ const hentIssues = (
     return issues;
   }
 
-  // Objekt: gå videre på keys
   if (typeof errorObj === 'object') {
     Object.keys(errorObj)
       .filter((k) => !['type', 'ref', 'message'].includes(k))
@@ -48,23 +49,73 @@ const hentIssues = (
 
 const OppsummerValidering: React.FC<OppsummerValideringProps> = ({
   feltNavn,
+  genererHref,
 }) => {
   const {
     formState: { errors },
   } = useFormContext<StillingsDataForm | FormidlingDataForm>();
 
-  const feilNode = (errors as Record<string, any>)[feltNavn];
-  if (!feilNode) return null;
+  let issues: { path: (string | number)[]; message: string }[] = [];
 
-  const issues = hentIssues(feilNode, [feltNavn]);
+  if (feltNavn) {
+    const feilNode = (errors as Record<string, any>)[feltNavn];
+    if (!feilNode) return null;
+    issues = hentIssues(feilNode, [feltNavn]);
+  } else {
+    issues = hentIssues(errors);
+  }
+
+  if (issues.length === 0) return null;
 
   return (
     <div className='my-8'>
       <ErrorSummary>
         {issues.map((issue) => {
           const id = issue.path.map(String).join('.');
+
+          // Bygg href (for skjermleser / fallback)
+          const href = id
+            ? genererHref
+              ? genererHref(id)
+              : `#${id}`
+            : undefined;
+
+          const onClick = (e: React.MouseEvent) => {
+            if (!id || !href) return;
+            e.preventDefault();
+
+            // Normaliser til full URL for replaceState (unngå Next.js rerender)
+            const path = window.location.pathname;
+
+            let newUrl: string;
+            if (href.startsWith('?')) {
+              newUrl = `${path}${href}`;
+            } else if (href.startsWith('#')) {
+              newUrl = `${path}${window.location.search}${href}`;
+            } else if (href.startsWith('/')) {
+              // Hvis noen sender inn absolutt path til annen side lar vi vanlig navigasjon skje
+              window.location.href = href;
+              return;
+            } else {
+              // Antar hash uten prefiks
+              newUrl = `${path}${window.location.search}#${href}`;
+            }
+
+            window.history.replaceState(null, '', newUrl);
+
+            // Scroll og fokus
+            const el = document.getElementById(id);
+            if (el) {
+              el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              if (!el.hasAttribute('tabindex')) {
+                el.setAttribute('tabindex', '-1');
+              }
+              (el as HTMLElement).focus({ preventScroll: true });
+            }
+          };
+
           return (
-            <ErrorSummary.Item key={id} href={`#${id}`}>
+            <ErrorSummary.Item key={id} href={href} onClick={onClick}>
               {issue.message}
             </ErrorSummary.Item>
           );
