@@ -29,7 +29,11 @@ export const parseWorktime = (worktime: string) => {
       arrayString += `${jsonArray[i]} `;
     }
   } catch (error) {
-    new RekbisError({ message: 'Feil ved parseWorktime', error });
+    new RekbisError({
+      message: 'Feil ved parseWorktime',
+      error,
+      url: window.location.href,
+    });
     arrayString = worktime;
   }
 
