@@ -14,6 +14,8 @@ import {
   RobotIcon,
   RobotSmileIcon,
   XMarkIcon,
+  EyeIcon,
+  PersonCircleIcon,
 } from '@navikt/aksel-icons';
 import {
   Alert,
@@ -22,6 +24,8 @@ import {
   Modal,
   Skeleton,
   Textarea,
+  Switch,
+  Detail,
 } from '@navikt/ds-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import React, { useEffect, useId, useMemo, useRef, useState } from 'react';
@@ -76,11 +80,12 @@ const EndreTittel = ({ modalRef, onUpdated }: EndreTittelProps) => {
     handleSubmit,
     setValue,
     reset,
-    formState: { errors, isSubmitting, dirtyFields },
+    formState: { errors, isSubmitting },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
     mode: 'onChange',
   });
+
   const nyTittel = useWatch({ control, name: 'nyTittel' });
 
   useEffect(() => {
@@ -93,6 +98,9 @@ const EndreTittel = ({ modalRef, onUpdated }: EndreTittelProps) => {
   const [visTomFeil, setVisTomFeil] = useState(false);
   const [showUnchangedError, setShowUnchangedError] = useState(false);
 
+  const [hasChecked, setHasChecked] = useState(false);
+  const [forceSave, setForceSave] = useState(false);
+
   const errorMsg = useMemo(() => {
     const err = errors.nyTittel;
     if (err) {
@@ -104,16 +112,25 @@ const EndreTittel = ({ modalRef, onUpdated }: EndreTittelProps) => {
     return undefined;
   }, [errors.nyTittel, visTomFeil, showUnchangedError]);
 
+  const baseInvalid = useMemo(
+    () => !!errors.nyTittel || !nyTittel?.trim(),
+    [errors.nyTittel, nyTittel],
+  );
+
   const disableSave = useMemo(
     () =>
-      !dirtyFields.nyTittel ||
-      errors.nyTittel?.type === 'too_big' ||
+      baseInvalid ||
       isSubmitting ||
       validating ||
-      !analyse ||
-      !!errors.nyTittel ||
+      (hasChecked && analyse?.bryterRetningslinjer && !forceSave),
+    [
+      baseInvalid,
+      isSubmitting,
+      validating,
+      hasChecked,
       analyse?.bryterRetningslinjer,
-    [dirtyFields.nyTittel, errors.nyTittel, isSubmitting, validating, analyse],
+      forceSave,
+    ],
   );
 
   const focusTextareaEnd = () => {
@@ -127,7 +144,10 @@ const EndreTittel = ({ modalRef, onUpdated }: EndreTittelProps) => {
   useEffect(() => {
     setVisTomFeil(false);
     setShowUnchangedError(false);
-  }, [nyTittel]);
+    setHasChecked(false);
+    setForceSave(false);
+    resetAnalyse();
+  }, [nyTittel, resetAnalyse]);
 
   useEffect(() => {
     if (modalRef.current) {
@@ -145,8 +165,19 @@ const EndreTittel = ({ modalRef, onUpdated }: EndreTittelProps) => {
     } else {
       resetAnalyse();
     }
+    setHasChecked(false);
+    setForceSave(false);
     focusTextareaEnd();
     setInitialFocusDone(true);
+  };
+
+  const runValidation = async () => {
+    if (!nyTittel?.trim()) {
+      setVisTomFeil(true);
+      return;
+    }
+    await validate({ tekst: nyTittel });
+    setHasChecked(true);
   };
 
   const save = async ({ nyTittel }: FormValues) => {
@@ -180,25 +211,20 @@ const EndreTittel = ({ modalRef, onUpdated }: EndreTittelProps) => {
     setInitialFocusDone(false);
     setVisTomFeil(false);
     setShowUnchangedError(false);
+    setHasChecked(false);
+    setForceSave(false);
   };
 
   const handleValidateOrError = () => {
-    if (!dirtyFields.nyTittel) {
-      setShowUnchangedError(true);
-      setVisTomFeil(false);
-    } else if (dirtyFields.nyTittel && nyTittel?.trim()) {
-      validate({ tekst: nyTittel });
-      setShowUnchangedError(false);
-    } else {
+    if (!nyTittel?.trim()) {
       setVisTomFeil(true);
       setShowUnchangedError(false);
+      return;
     }
+    runValidation();
   };
 
   const formId = useId();
-
-  const erInni = (wrapper: HTMLElement | null, el: Element | null) =>
-    !!wrapper && !!el && (wrapper === el || wrapper.contains(el));
 
   return (
     <Modal
@@ -212,25 +238,8 @@ const EndreTittel = ({ modalRef, onUpdated }: EndreTittelProps) => {
       <Modal.Body>
         {isLoading && <Skeleton variant='text' />}
         {!isLoading && rekrutteringstreff && (
-          <form id={formId} onSubmit={handleSubmit(save)} className='space-y-2'>
-            <div
-              className='flex items-start'
-              tabIndex={-1}
-              onBlur={() =>
-                setTimeout(() => {
-                  const active = document.activeElement;
-                  if (
-                    !erInni(textareaRef.current, active) &&
-                    !erInni(clearButtonRef.current, active) &&
-                    !erInni(closeButtonRef.current, active) &&
-                    !erInni(modalLukkeknappRef.current, active) &&
-                    !erInni(analyseRef.current, active)
-                  ) {
-                    handleValidateOrError();
-                  }
-                })
-              }
-            >
+          <form id={formId} onSubmit={handleSubmit(save)} className='space-y-3'>
+            <div className='flex items-start' tabIndex={-1}>
               <Controller
                 control={control}
                 name='nyTittel'
@@ -270,6 +279,33 @@ const EndreTittel = ({ modalRef, onUpdated }: EndreTittelProps) => {
                   <XMarkIcon aria-hidden fontSize='1.25rem' />
                 </Button>
               )}
+            </div>
+
+            <div className='space-y-1'>
+              <Detail
+                size='small'
+                className='flex items-start gap-2 text-gray-400'
+              >
+                <PersonCircleIcon
+                  aria-hidden
+                  className='h-6 w-6 shrink-0 self-start mt-0.5'
+                />
+                <span>
+                  Ikke skriv personopplysninger og diskriminerende innhold.
+                  KI-verktøyet hjelper deg å vurdere innholdet, men du er
+                  ansvarlig for alt tekstinnhold.
+                </span>
+              </Detail>
+              <Detail
+                size='small'
+                className='flex items-start gap-2 text-gray-400'
+              >
+                <EyeIcon aria-hidden fontSize='2em' className='mt-0.5' />
+                <span>
+                  Synlig for jobbsøker, arbeidsgivere og NAV-ansatte når treffet
+                  er publisert.
+                </span>
+              </Detail>
             </div>
 
             <div className='flex gap-3 mt-2 items-start'>
@@ -342,7 +378,7 @@ const EndreTittel = ({ modalRef, onUpdated }: EndreTittelProps) => {
                     </motion.div>
                   )}
 
-                  {!validating && analyse && !analyseError && (
+                  {!validating && analyse && !analyseError && hasChecked && (
                     <motion.div
                       key='analyse'
                       ref={analyseRef}
@@ -364,28 +400,63 @@ const EndreTittel = ({ modalRef, onUpdated }: EndreTittelProps) => {
                 </AnimatePresence>
               </div>
             </div>
+
+            {hasChecked && analyse?.bryterRetningslinjer && (
+              <div className='pt-1'>
+                <Switch
+                  size='small'
+                  checked={forceSave}
+                  onChange={(e) => setForceSave(e.target.checked)}
+                >
+                  Lagre innhold likevel
+                </Switch>
+              </div>
+            )}
           </form>
         )}
       </Modal.Body>
 
       <Modal.Footer className='pt-2'>
-        <Button
-          type='submit'
-          form={formId}
-          ref={lagreButtonRef}
-          loading={isSubmitting}
-          disabled={disableSave}
-        >
-          Lagre
-        </Button>
-        <Button
-          type='button'
-          variant='secondary'
-          onClick={close}
-          ref={closeButtonRef}
-        >
-          Avbryt
-        </Button>
+        {!hasChecked ? (
+          <>
+            <Button
+              type='button'
+              onClick={runValidation}
+              loading={validating}
+              disabled={baseInvalid || validating}
+            >
+              Sjekk teksten for meg
+            </Button>
+            <Button
+              type='button'
+              variant='secondary'
+              onClick={close}
+              ref={closeButtonRef}
+            >
+              Avbryt
+            </Button>
+          </>
+        ) : (
+          <>
+            <Button
+              type='submit'
+              form={formId}
+              ref={lagreButtonRef}
+              loading={isSubmitting}
+              disabled={disableSave}
+            >
+              Lagre
+            </Button>
+            <Button
+              type='button'
+              variant='secondary'
+              onClick={close}
+              ref={closeButtonRef}
+            >
+              Avbryt
+            </Button>
+          </>
+        )}
       </Modal.Footer>
     </Modal>
   );
