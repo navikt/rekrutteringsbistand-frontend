@@ -2,6 +2,12 @@
   "name": "rekrutteringsbistand",
   "version": "0.1.0",
   "private": true,
+  "pnpm": {
+    "overrides": {
+      "react": "19.1.0",
+      "react-dom": "19.1.0"
+    }
+  },
   "scripts": {
     "dev": "next dev --turbopack -p 1337 | pino-pretty",
     "precommit": "pnpm formater-kode && pnpm type-check && pnpm lint",
