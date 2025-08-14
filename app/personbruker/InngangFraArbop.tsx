@@ -97,7 +97,7 @@ const InngangFraArbop: React.FC = () => {
         <Heading level='2' size='large' className={'flex-1 w-96'}>
           Personen vises ikke i rekrutteringsbistand
         </Heading>
-        <ForvirretBlod className={'w-36'}></ForvirretBlod>
+        <ForvirretBlod></ForvirretBlod>
       </div>
       <p>Ikke alle personer kan vises i rekrutteringsbistand. For at de skal dukke opp
         er det noen regler som må oppfylles først. De finner du her:
