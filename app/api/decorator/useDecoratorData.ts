@@ -1,5 +1,5 @@
-import { ModiaDecoratorAPI } from '../../api-routes';
-import { getAPIwithSchema } from '../../fetcher';
+import { ModiaDecoratorAPI } from '../api-routes';
+import { getAPIwithSchema } from '../fetcher';
 import { decoratorMock } from './mocks/dekoratørMock';
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
