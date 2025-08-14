@@ -29,6 +29,9 @@ importers:
       '@navikt/fnrvalidator':
         specifier: ^2.1.5
         version: 2.1.5
+      '@navikt/navspa':
+        specifier: ^7.1.0
+        version: 7.1.0(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
       '@navikt/next-logger':
         specifier: ^4.1.5
         version: 4.1.5(next@15.4.6(@babel/core@7.28.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.54.2)(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(pino@9.8.0)
@@ -1056,6 +1059,12 @@ packages:
 
   '@navikt/fnrvalidator@2.1.5':
     resolution: {integrity: sha512-uHzoL3ZTYwrF7OTKaihNf9xHH6S9WnGqz420HX4lEX+yu5367l+dYxI5OIRVT5MKWEDQ4DCVSAuJhoWValv6Fw==, tarball: https://npm.pkg.github.com/download/@navikt/fnrvalidator/2.1.5/e33cbc5693b14419bbcf4d5daee2ac9eeec532e5}
+
+  '@navikt/navspa@7.1.0':
+    resolution: {integrity: sha512-1H9aagGBWp9/PEHZqvjVItoX43fQMrsdDTkrDV9tTsFIDeZ9dQO5l4zj4gExdZS+qmXGgRyT8QtjhIBiWOWo+Q==, tarball: https://npm.pkg.github.com/download/@navikt/navspa/7.1.0/2af02463571fa745c33d6cb5c28d06b157eb9d7d}
+    peerDependencies:
+      react: '>=19.0.0'
+      react-dom: '>=19.0.0'
 
   '@navikt/next-logger@4.1.5':
     resolution: {integrity: sha512-tdswF2z8FZaiRcbCAH9avcPUQJh93upXGBSkT6Bf/MKVQbzNC8Td1SqrFgxMhYKnCT+XlCVdb+e6P84ktW8gbw==, tarball: https://npm.pkg.github.com/download/@navikt/next-logger/4.1.5/40d028e0d8ec8a978b6e58f464f255ce7605836c}
@@ -3035,6 +3044,9 @@ packages:
 
   linkifyjs@4.3.2:
     resolution: {integrity: sha512-NT1CJtq3hHIreOianA8aSXn6Cw0JzYOuDQbOrSPe7gqFnCpKP++MQe3ODgO3oh2GJFORkAAdqredOa60z63GbA==}
+
+  loadjs@4.3.0:
+    resolution: {integrity: sha512-vNX4ZZLJBeDEOBvdr2v/F+0aN5oMuPu7JTqrMwp+DtgK+AryOlpy6Xtm2/HpNr+azEa828oQjOtWsB6iDtSfSQ==}
 
   locate-path@6.0.0:
     resolution: {integrity: sha512-iPZK6eYjbxRu3uB4/WZ3EsEIMJFMqAoopl3R+zuq0UjcAm/MO6KCweDgPfP3elTztoKP3KtnVHxTn2NHBSDVUw==}
@@ -5032,6 +5044,12 @@ snapshots:
   '@navikt/ds-tokens@7.27.1': {}
 
   '@navikt/fnrvalidator@2.1.5': {}
+
+  '@navikt/navspa@7.1.0(react-dom@19.1.1(react@19.1.1))(react@19.1.1)':
+    dependencies:
+      loadjs: 4.3.0
+      react: 19.1.1
+      react-dom: 19.1.1(react@19.1.1)
 
   '@navikt/next-logger@4.1.5(next@15.4.6(@babel/core@7.28.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.54.2)(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(pino@9.8.0)':
     dependencies:
@@ -7093,6 +7111,8 @@ snapshots:
       uc.micro: 2.1.0
 
   linkifyjs@4.3.2: {}
+
+  loadjs@4.3.0: {}
 
   locate-path@6.0.0:
     dependencies:
