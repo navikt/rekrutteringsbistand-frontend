@@ -132,7 +132,6 @@ function SidebarProvider({
   // Mål dekoratør-høyden og sett CSS-variabel
   React.useEffect(() => {
     const updateDecoratorOffset = () => {
-      // Bruk riktige selektorer basert på HTML-strukturen
       const selectors = [
         '.dekorator', // Ytterste wrapper
         '.navds-internalheader', // Selve header-elementet
@@ -143,9 +142,10 @@ function SidebarProvider({
       let headerEl: HTMLElement | null = null;
       for (const selector of selectors) {
         headerEl = document.querySelector(selector) as HTMLElement;
+        if (headerEl) break;
       }
 
-      // Hvis vi fant .dekorator (ytterste), finn .navds-internalheader inni den
+      // Hvis vi fant .dekorator, finn .navds-internalheader inni den
       if (headerEl?.classList.contains('dekorator')) {
         const innerHeader = headerEl.querySelector(
           '.navds-internalheader',
@@ -155,7 +155,13 @@ function SidebarProvider({
         }
       }
 
-      const height = headerEl?.offsetHeight ?? 72; // Øk fallback til 72px
+      // Mål hele .dekorator-containeren for å fange opp total høyde
+      const decoratorContainer = document.querySelector(
+        '.dekorator',
+      ) as HTMLElement;
+      const height =
+        decoratorContainer?.offsetHeight ?? headerEl?.offsetHeight ?? 72;
+
       document.documentElement.style.setProperty(
         '--nav-decorator-height',
         `${height}px`,
@@ -163,27 +169,47 @@ function SidebarProvider({
     };
 
     // Kjør med forsinkelse for å la dekoratøren laste først
-    const timeoutId = setTimeout(updateDecoratorOffset, 1000); // Øk til 1 sekund
+    const timeoutId = setTimeout(updateDecoratorOffset, 1000);
 
     // Kjør også umiddelbart og på resize
     updateDecoratorOffset();
     window.addEventListener('resize', updateDecoratorOffset);
 
-    // Observer for DOM-endringer (når NAVSPA laster dekoratøren)
+    // Observer for DOM-endringer OG attributtendringer
     const observer = new MutationObserver((mutations) => {
-      // Sjekk om noen av mutasjonene inneholder dekoratør-elementer
-      const hasDecoratorChanges = mutations.some((mutation) =>
-        Array.from(mutation.addedNodes).some(
-          (node) =>
-            node instanceof Element &&
-            (node.classList?.contains('dekorator') ||
-              node.querySelector?.('.dekorator') ||
-              node.classList?.contains('navds-internalheader') ||
-              node.querySelector?.('.navds-internalheader')),
-        ),
-      );
+      let shouldUpdate = false;
 
-      if (hasDecoratorChanges) {
+      mutations.forEach((mutation) => {
+        // Sjekk DOM-endringer
+        if (mutation.type === 'childList') {
+          const hasDecoratorChanges = Array.from(mutation.addedNodes).some(
+            (node) =>
+              node instanceof Element &&
+              (node.classList?.contains('dekorator') ||
+                node.querySelector?.('.dekorator') ||
+                node.classList?.contains('navds-internalheader') ||
+                node.querySelector?.('.navds-internalheader')),
+          );
+          if (hasDecoratorChanges) shouldUpdate = true;
+        }
+
+        // Sjekk attributtendringer på dekoratør-elementer
+        if (
+          mutation.type === 'attributes' &&
+          mutation.target instanceof Element
+        ) {
+          const target = mutation.target;
+          if (
+            target.classList.contains('dekorator') ||
+            target.classList.contains('navds-internalheader') ||
+            target.closest('.dekorator')
+          ) {
+            shouldUpdate = true;
+          }
+        }
+      });
+
+      if (shouldUpdate) {
         setTimeout(updateDecoratorOffset, 100);
       }
     });
@@ -191,13 +217,43 @@ function SidebarProvider({
     observer.observe(document.body, {
       childList: true,
       subtree: true,
-      attributes: false, // Kun DOM-endringer, ikke attributter
+      attributes: true, // Inkluder attributtendringer
+      attributeFilter: ['class', 'style', 'aria-expanded'], // Spesifikke attributter som kan endre høyde
     });
+
+    // Legg til click-listener på Meny-knappen for å fange opp toggle
+    const handleMenuToggle = () => {
+      setTimeout(updateDecoratorOffset, 300); // Vent på animasjon
+    };
+
+    // Finn Meny-knappen
+    const findAndAttachMenuListener = () => {
+      const menuButton = document.querySelector(
+        'button[aria-pressed]',
+      ) as HTMLButtonElement;
+      if (menuButton && menuButton.textContent?.includes('Meny')) {
+        menuButton.addEventListener('click', handleMenuToggle);
+        return menuButton;
+      }
+      return null;
+    };
+
+    const menuButton = findAndAttachMenuListener();
+
+    // Hvis knappen ikke finnes ennå, prøv igjen etter dekoratøren har lastet
+    let menuButtonRetryTimeout: NodeJS.Timeout;
+    if (!menuButton) {
+      menuButtonRetryTimeout = setTimeout(findAndAttachMenuListener, 2000);
+    }
 
     return () => {
       clearTimeout(timeoutId);
+      if (menuButtonRetryTimeout) clearTimeout(menuButtonRetryTimeout);
       window.removeEventListener('resize', updateDecoratorOffset);
       observer.disconnect();
+      if (menuButton) {
+        menuButton.removeEventListener('click', handleMenuToggle);
+      }
     };
   }, []);
 
