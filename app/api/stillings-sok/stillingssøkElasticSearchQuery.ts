@@ -143,9 +143,26 @@ export function generateElasticSearchQuery(
     /^R?\d+$/.test(verdi),
   );
 
+  const ordSomSkalFiltreresUt = [
+    'innen',
+    'på',
+    'av',
+    'og',
+    'for',
+    'med',
+    'som',
+    'mv.',
+    'o.l.',
+  ];
+
   const fritekstSøkestreng = filter.fritekst
-    .map((fritekstOrd) => {
-      const ord = fritekstOrd.split(' ').filter((it) => it.length > 1);
+    .map((fritekstStreng) => {
+      const ord = fritekstStreng
+        .split(' ')
+        .filter(
+          (it) =>
+            it.length > 1 && !ordSomSkalFiltreresUt.includes(it.toLowerCase()),
+        );
 
       return `(+${ord.map((ord) => ord.trim()).join(' +')})`;
     })
@@ -159,7 +176,7 @@ export function generateElasticSearchQuery(
       søkefelt = 'tekstfelter';
     }
 
-    const byggFinnStillingerQuery = {
+    return {
       size: maksAntallTreffPerSøk,
       from: regnUtFørsteTreffFra(filter.side, maksAntallTreffPerSøk),
       track_total_hits: true,
@@ -213,9 +230,8 @@ export function generateElasticSearchQuery(
         },
       }),
     };
-    return byggFinnStillingerQuery;
   } else {
-    const byggQuery = {
+    return {
       size: maksAntallTreffPerSøk,
       from: regnUtFørsteTreffFra(filter.side, maksAntallTreffPerSøk),
       track_total_hits: true,
@@ -267,7 +283,5 @@ export function generateElasticSearchQuery(
         },
       }),
     };
-
-    return byggQuery;
   }
 }
