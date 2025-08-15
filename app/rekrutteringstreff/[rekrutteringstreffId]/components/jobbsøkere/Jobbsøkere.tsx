@@ -4,6 +4,7 @@ import { useRekrutteringstreffContext } from '../../RekrutteringstreffContext';
 import LeggTilJobbsøkerKnapp from '../LeggTilJobbsøkerKnapp';
 import { InviterInternalDto, InviterModal } from './components/InviterModal';
 import JobbsøkerKort from './components/JobbsøkerKort';
+import OppmøteModal from './components/OppmøteModal';
 import {
   JobbsøkerDTO,
   useJobbsøkere,
@@ -17,10 +18,14 @@ import * as React from 'react';
 const erInvitert = (j: JobbsøkerDTO) =>
   j.hendelser.some((h) => h.hendelsestype === 'INVITER');
 
+const harMøttOpp = (j: JobbsøkerDTO) =>
+  j.hendelser.some((h) => h.hendelsestype === 'MØT_OPP');
+
 const Jobbsøkere = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const jobbsøkerHook = useJobbsøkere(rekrutteringstreffId);
   const inviterModalRef = React.useRef<HTMLDialogElement>(null);
+  const oppmøteModalRef = React.useRef<HTMLDialogElement>(null);
 
   const { data: rekrutteringstreffData } =
     useRekrutteringstreff(rekrutteringstreffId);
@@ -37,6 +42,11 @@ const Jobbsøkere = () => {
   const harAvsluttetInvitasjon =
     rekrutteringstreffData?.hendelser?.some(
       (h) => h.hendelsestype === 'AVSLUTT_INVITASJON',
+    ) ?? false;
+
+  const harAvsluttetOppfølging =
+    rekrutteringstreffData?.hendelser?.some(
+      (h) => h.hendelsestype === 'AVSLUTT_OPPFØLGING',
     ) ?? false;
 
   const handleCheckboxChange = (jobbsøker: JobbsøkerDTO, erValgt: boolean) => {
@@ -88,6 +98,12 @@ const Jobbsøkere = () => {
     jobbsøkerHook.mutate();
   };
 
+  const handleOppmøteSendt = () => {
+    oppmøteModalRef.current?.close();
+    setValgteJobbsøkere([]);
+    jobbsøkerHook.mutate();
+  };
+
   return (
     <SWRLaster hooks={[jobbsøkerHook]}>
       {(jobbsøkere) => {
@@ -99,19 +115,32 @@ const Jobbsøkere = () => {
           (j) => !invitertePersonTreffIder.has(j.personTreffId),
         );
 
+        const møttOppPersonTreffIder = new Set(
+          jobbsøkere.filter(harMøttOpp).map((j) => j.personTreffId),
+        );
+
+        const valgteSomIkkeHarMøttOpp = valgteJobbsøkere.filter(
+          (j) => !møttOppPersonTreffIder.has(j.personTreffId),
+        );
+
         return (
           <div className='p-4 flex flex-col gap-4'>
             <div className='flex items-center justify-between'>
               <LeggTilJobbsøkerKnapp />
-              {harPublisert && (
+              {harPublisert && !harAvsluttetInvitasjon && (
                 <Button
-                  disabled={
-                    valgteSomIkkeErInvitert.length === 0 ||
-                    harAvsluttetInvitasjon
-                  }
+                  disabled={valgteSomIkkeErInvitert.length === 0}
                   onClick={() => inviterModalRef.current?.showModal()}
                 >
                   Inviter ({valgteSomIkkeErInvitert.length})
+                </Button>
+              )}
+              {harAvsluttetInvitasjon && !harAvsluttetOppfølging && (
+                <Button
+                  disabled={valgteSomIkkeHarMøttOpp.length === 0}
+                  onClick={() => oppmøteModalRef.current?.showModal()}
+                >
+                  Marker Oppmøte ({valgteSomIkkeHarMøttOpp.length})
                 </Button>
               )}
             </div>
@@ -159,6 +188,17 @@ const Jobbsøkere = () => {
               modalref={inviterModalRef}
               inviterInternalDtoer={valgteSomIkkeErInvitert}
               onInvitasjonSendt={handleInvitasjonSendt}
+              onFjernJobbsøker={(fnr) =>
+                setValgteJobbsøkere((prev) =>
+                  prev.filter((j) => j.fødselsnummer !== fnr),
+                )
+              }
+            />
+
+            <OppmøteModal
+              modalref={oppmøteModalRef}
+              oppmøteInternalDtoer={valgteSomIkkeErInvitert}
+              onOppmøteSendt={handleOppmøteSendt}
               onFjernJobbsøker={(fnr) =>
                 setValgteJobbsøkere((prev) =>
                   prev.filter((j) => j.fødselsnummer !== fnr),
