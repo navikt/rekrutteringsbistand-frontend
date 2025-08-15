@@ -183,10 +183,7 @@ const StillingsSøkLayout: React.FC<StillingsSøkProps> = ({
         formidlinger={formidlinger}
         stillingForKandidat={visKandidatnr}
       />
-      <StillingsSøkeresultat
-        kandidatId={visKandidatnr}
-        erFormidling={formidlinger}
-      />
+      <StillingsSøkeresultat kandidatId={visKandidatnr} />
     </SideLayout>
   );
 };

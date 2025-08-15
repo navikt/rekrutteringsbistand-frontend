@@ -41,7 +41,7 @@ const EtterRegistreringSøkLayout: React.FC = () => {
       }
     >
       <StillingsSøkFilter formidlinger={true} />
-      <StillingsSøkeresultat erFormidling={true} />
+      <StillingsSøkeresultat />
     </SideLayout>
   );
 };

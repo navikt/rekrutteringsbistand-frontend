@@ -15,7 +15,7 @@ const SideBanner: React.FC<SideBannerProps> = ({
   ikon,
 }) => {
   return (
-    <div className='h-10 py-4 flex justify-between  items-baseline mb-4'>
+    <div className='h-10 py-4 flex justify-between  items-center my-4'>
       <div className='flex'>
         {ikon && ikon}
         <Heading className={ikon ? 'pl-1' : ''} size='small'>

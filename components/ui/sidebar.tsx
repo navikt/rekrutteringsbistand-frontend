@@ -132,24 +132,30 @@ function SidebarProvider({
   // Mål dekoratør-høyden og sett CSS-variabel
   React.useEffect(() => {
     const updateDecoratorOffset = () => {
-      // Prøv flere selektorer og log det som finnes
+      // Bruk riktige selektorer basert på HTML-strukturen
       const selectors = [
-        '[data-testid="internarbeidsflate-decorator"]',
-        '.navds-internalheader',
-        '#decorator-header',
-        'header', // Generisk header-tag
-        '[role="banner"]', // ARIA banner role
+        '.dekorator', // Ytterste wrapper
+        '.navds-internalheader', // Selve header-elementet
+        'header[data-theme="dark"]', // Header med data-theme
+        'header', // Fallback til enhver header
       ];
 
       let headerEl: HTMLElement | null = null;
       for (const selector of selectors) {
         headerEl = document.querySelector(selector) as HTMLElement;
-        if (headerEl) {
-          break;
+      }
+
+      // Hvis vi fant .dekorator (ytterste), finn .navds-internalheader inni den
+      if (headerEl?.classList.contains('dekorator')) {
+        const innerHeader = headerEl.querySelector(
+          '.navds-internalheader',
+        ) as HTMLElement;
+        if (innerHeader) {
+          headerEl = innerHeader;
         }
       }
 
-      const height = headerEl?.offsetHeight ?? 64; // Fallback til 64px
+      const height = headerEl?.offsetHeight ?? 72; // Øk fallback til 72px
       document.documentElement.style.setProperty(
         '--nav-decorator-height',
         `${height}px`,
@@ -157,17 +163,36 @@ function SidebarProvider({
     };
 
     // Kjør med forsinkelse for å la dekoratøren laste først
-    const timeoutId = setTimeout(updateDecoratorOffset, 500);
+    const timeoutId = setTimeout(updateDecoratorOffset, 1000); // Øk til 1 sekund
 
     // Kjør også umiddelbart og på resize
     updateDecoratorOffset();
     window.addEventListener('resize', updateDecoratorOffset);
 
-    // Observer for DOM-endringer
-    const observer = new MutationObserver(() => {
-      setTimeout(updateDecoratorOffset, 100);
+    // Observer for DOM-endringer (når NAVSPA laster dekoratøren)
+    const observer = new MutationObserver((mutations) => {
+      // Sjekk om noen av mutasjonene inneholder dekoratør-elementer
+      const hasDecoratorChanges = mutations.some((mutation) =>
+        Array.from(mutation.addedNodes).some(
+          (node) =>
+            node instanceof Element &&
+            (node.classList?.contains('dekorator') ||
+              node.querySelector?.('.dekorator') ||
+              node.classList?.contains('navds-internalheader') ||
+              node.querySelector?.('.navds-internalheader')),
+        ),
+      );
+
+      if (hasDecoratorChanges) {
+        setTimeout(updateDecoratorOffset, 100);
+      }
     });
-    observer.observe(document.body, { childList: true, subtree: true });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: false, // Kun DOM-endringer, ikke attributter
+    });
 
     return () => {
       clearTimeout(timeoutId);
@@ -290,8 +315,8 @@ function Sidebar({
           className,
         )}
         style={{
-          top: 'var(--nav-decorator-height, 3rem)',
-          height: 'calc(100vh - var(--nav-decorator-height, 3rem))',
+          top: 'var(--nav-decorator-height, 72px)', // Øk fallback til 72px
+          height: 'calc(100vh - var(--nav-decorator-height, 72px))',
         }}
         {...props}
       >

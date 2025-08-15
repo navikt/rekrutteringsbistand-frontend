@@ -13,12 +13,10 @@ import * as React from 'react';
 
 interface StillingsSøkeresultatProps {
   kandidatId?: string;
-  erFormidling?: boolean;
 }
 
 const StillingsSøkeresultat: React.FC<StillingsSøkeresultatProps> = ({
   kandidatId,
-  erFormidling,
 }) => {
   const filter = useStillingsSøkFilter();
   const {
@@ -57,9 +55,7 @@ const StillingsSøkeresultat: React.FC<StillingsSøkeresultatProps> = ({
       {(data) => {
         return (
           <>
-            <div className='flex min-h-[80px] items-center gap-2'>
-              <StillingsSøkChips />
-            </div>
+            <StillingsSøkChips />
 
             {data.hits.hits.map((hit) => (
               <StillingsKort
