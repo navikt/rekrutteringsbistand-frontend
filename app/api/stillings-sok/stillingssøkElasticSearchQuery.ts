@@ -156,7 +156,6 @@ export function generateElasticSearchQuery(
   ];
 
   const fritekstSøkestreng = filter.fritekst
-    .filter((it) => it.length > 1)
     .map((fritekstStreng) => {
       const ord = fritekstStreng
         .split(' ')
@@ -168,14 +167,6 @@ export function generateElasticSearchQuery(
       return `(+${ord.map((ord) => ord.trim()).join(' +')})`;
     })
     .join(' | ');
-
-  // const fritekstSøkestreng = filter.fritekst
-  //   .map((fritekstOrd) => {
-  //     const ord = fritekstOrd.split(' ').filter((it) => it.length > 1);
-  //
-  //     return `(+${ord.map((ord) => ord.trim()).join(' +')})`;
-  //   })
-  //   .join(' | ');
 
   if (finnStillingerForKandidat) {
     const søkINummerFelter = inneholderVerdierMedBareTall;
