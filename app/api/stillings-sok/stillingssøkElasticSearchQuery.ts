@@ -162,7 +162,7 @@ export function generateElasticSearchQuery(
         .split(' ')
         .filter(
           (it) =>
-            it.length > 1 || !ordSomSkalFiltreresUt.includes(it.toLowerCase()),
+            it.length > 1 && !ordSomSkalFiltreresUt.includes(it.toLowerCase()),
         );
 
       return `(+${ord.map((ord) => ord.trim()).join(' +')})`;
