@@ -31,6 +31,7 @@ interface StegviserState {
   totaltAntallInviterePunkter: number;
   arrangementtidspunktHarPassert: boolean;
   antallInviterte: number;
+  antallMøttOpp: number;
 }
 
 const StegviserContext = React.createContext<StegviserState | undefined>(
@@ -78,6 +79,14 @@ export const StegviserProvider: React.FC<{ children: React.ReactNode }> = ({
     () =>
       jobbsøkere?.filter((j) =>
         j.hendelser?.some((h) => h.hendelsestype === 'INVITER'),
+      ).length ?? 0,
+    [jobbsøkere],
+  );
+
+  const antallMøttOpp = React.useMemo(
+    () =>
+      jobbsøkere?.filter((j) =>
+        j.hendelser?.some((h) => h.hendelsestype === 'MØT_OPP'),
       ).length ?? 0,
     [jobbsøkere],
   );
@@ -130,6 +139,7 @@ export const StegviserProvider: React.FC<{ children: React.ReactNode }> = ({
     totaltAntallInviterePunkter,
     arrangementtidspunktHarPassert,
     antallInviterte,
+    antallMøttOpp,
   };
 
   return (
@@ -142,7 +152,7 @@ export const StegviserProvider: React.FC<{ children: React.ReactNode }> = ({
 export const useStegviser = () => {
   const context = React.useContext(StegviserContext);
   if (context === undefined) {
-    throw new Error('useStegviser must be used within a StegviserProvider');
+    throw new Error('useStegviser må brukes innenfor en StegviserProvider');
   }
   return context;
 };
