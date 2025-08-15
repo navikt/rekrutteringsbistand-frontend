@@ -2,10 +2,8 @@
 
 import { Avatar, AvatarFallback } from '../../../components/ui/avatar';
 import { getMiljø, Miljø } from '../../../util/miljø';
-import { nyheter } from '../../nyheter';
 import { useApplikasjonContext } from '../../providers/ApplikasjonContext';
 import { useThemeProvider } from '../../providers/ThemeProvider';
-import useAntallUlesteNyheter from '../nyheter/useAntallUlesteNyheter';
 import { TilgangskontrollForInnhold } from '../tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '../tilgangskontroll/roller';
 import GiTilbakemelding from './components/GiTilbakemelding';
@@ -32,7 +30,6 @@ import {
 import { BodyShort, Button } from '@navikt/ds-react';
 import { MegaphoneIcon } from 'lucide-react';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
 
 interface NavigasjonItemProps {
   tekst: string;
@@ -49,22 +46,6 @@ interface NavigasjonHandlingProps {
 }
 const navigasjonListe: NavigasjonItemProps[] = [
   { tekst: 'Oversikt', ikon: <HouseIcon />, path: '/', kreverRoller: null },
-
-  {
-    tekst: 'Stillinger',
-    ikon: <BriefcaseIcon />,
-    path: '/stilling?brukStandardsok=true',
-    kreverRoller: null,
-  },
-  {
-    tekst: 'Kandidater',
-    ikon: <PersonTallShortIcon />,
-    path: '/kandidat',
-    kreverRoller: [
-      Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-      Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
-    ],
-  },
   {
     tekst: 'Rekrutteringstreff',
     ikon: <ReceptionIcon />,
@@ -72,9 +53,25 @@ const navigasjonListe: NavigasjonItemProps[] = [
     kreverRoller: [Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER],
   },
   {
-    tekst: 'Etterregistrering',
+    tekst: 'Stillingsannonser',
+    ikon: <BriefcaseIcon />,
+    // path: '/stilling?brukStandardsok=true',
+    path: '/stilling',
+    kreverRoller: null,
+  },
+  {
+    tekst: 'Etterregistreringer',
     ikon: <BriefcaseIcon />,
     path: '/etterregistrering',
+    kreverRoller: [
+      Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+      Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
+    ],
+  },
+  {
+    tekst: 'Kandidater',
+    ikon: <PersonTallShortIcon />,
+    path: '/kandidat',
     kreverRoller: [
       Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
       Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
@@ -127,40 +124,43 @@ export function AppNavigasjon() {
   const { brukerData } = useApplikasjonContext();
   const { darkMode, setDarkMode } = useThemeProvider();
   const { open, toggleSidebar } = useSidebar();
-  const [åpenNyheter, setÅpenNyheter] = useState<boolean>(false);
+  // const [åpenNyheter, setÅpenNyheter] = useState<boolean>(false);
 
-  const onFørsteBesøk = () => {
-    setÅpenNyheter(true);
-  };
+  // const onFørsteBesøk = () => {
+  //   setÅpenNyheter(true);
+  // };
 
-  const [antallUlesteNyheter, , markerSomLest] = useAntallUlesteNyheter(
-    nyheter,
-    onFørsteBesøk,
-  );
+  // const [antallUlesteNyheter, , markerSomLest] = useAntallUlesteNyheter(
+  //   nyheter,
+  //   onFørsteBesøk,
+  // );
 
-  useEffect(() => {
-    if (åpenNyheter) {
-      markerSomLest();
-    }
-  }, [åpenNyheter, markerSomLest]);
+  // useEffect(() => {
+  //   if (åpenNyheter) {
+  //     markerSomLest();
+  //   }
+  // }, [åpenNyheter, markerSomLest]);
 
   return (
     <Sidebar collapsible='icon'>
       <SidebarHeader>
-        <SideHandling
-          kreverRoller={null}
-          onClick={toggleSidebar}
-          tekst='Rekrutteringsbistand'
-          ikon={<SidebarLeftIcon style={{ color: 'var(--ax-text-accent)' }} />}
-        />
+        <div className='flex items-baseline'>
+          <Button
+            onClick={toggleSidebar}
+            variant='tertiary-neutral'
+            icon={
+              <SidebarLeftIcon style={{ color: 'var(--ax-text-accent)' }} />
+            }
+            className={open ? ' text-left justify-start' : ''}
+          />
+          <OpprettKnapp />
+        </div>
       </SidebarHeader>
       <SidebarContent className='py-3'>
-        <SidebarGroup className='py-8'>
-          <OpprettKnapp />
-        </SidebarGroup>
         <SidebarGroup
           className={`flex flex-col w-full gap-3 ${open ? 'items-start' : 'items-center'}`}
         >
+          {/* <SidebarGroupLabel>Deg</SidebarGroupLabel> */}
           {navigasjonListe.map((item) => (
             <SideLenke key={item.tekst} {...item} />
           ))}
@@ -169,6 +169,7 @@ export function AppNavigasjon() {
         <SidebarGroup
           className={`flex flex-col w-full gap-3 mt-auto ${open ? 'items-start' : 'items-center'}`}
         >
+          {/* <SidebarGroupLabel>Annet</SidebarGroupLabel> */}
           <div className={open ? ' w-full' : ''}>
             <SideLenke
               tekst={'Nyheter'}
@@ -176,9 +177,9 @@ export function AppNavigasjon() {
               path={'/nyheter'}
               kreverRoller={null}
             />
-            <div
+            {/* <div
               className={`${antallUlesteNyheter > 0 ? 'absolute  top-5 left-3 h-3 w-3 rounded-full bg-[#0067c5]' : ''}`}
-            />
+            /> */}
           </div>
           <GiTilbakemelding />
           {darkMode ? (

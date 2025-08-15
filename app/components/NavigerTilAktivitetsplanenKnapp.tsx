@@ -17,12 +17,21 @@ const arbeidsrettetOppfølgingUrl =
 
 const NavigerTilAktivitetsplanenKnapp: React.FC = () => {
   const { kandidatData } = useKandidatContext();
+
+  const [loading, setLoading] = React.useState(false);
+
   const navigerTilAktivitetsplanen = async (
     href: string,
     fødselsnummer: string,
   ) => {
+    setLoading(true);
     await setModiaContext(ModiaEventType.NY_AKTIV_BRUKER, fødselsnummer).then(
-      () => window.open(href, '_blank'),
+      () => {
+        setTimeout(() => {
+          window.open(href, '_blank');
+          setLoading(false);
+        }, 500);
+      },
     );
   };
 
@@ -30,6 +39,7 @@ const NavigerTilAktivitetsplanenKnapp: React.FC = () => {
     return (
       <Button
         size={'small'}
+        loading={loading}
         variant={'secondary'}
         icon={<ExternalLinkIcon />}
         onClick={() =>

@@ -129,6 +129,53 @@ function SidebarProvider({
     [state, open, setOpen, isMobile, openMobile, setOpenMobile, toggleSidebar],
   );
 
+  // Mål dekoratør-høyden og sett CSS-variabel
+  React.useEffect(() => {
+    const updateDecoratorOffset = () => {
+      // Prøv flere selektorer og log det som finnes
+      const selectors = [
+        '[data-testid="internarbeidsflate-decorator"]',
+        '.navds-internalheader',
+        '#decorator-header',
+        'header', // Generisk header-tag
+        '[role="banner"]', // ARIA banner role
+      ];
+
+      let headerEl: HTMLElement | null = null;
+      for (const selector of selectors) {
+        headerEl = document.querySelector(selector) as HTMLElement;
+        if (headerEl) {
+          break;
+        }
+      }
+
+      const height = headerEl?.offsetHeight ?? 64; // Fallback til 64px
+      document.documentElement.style.setProperty(
+        '--nav-decorator-height',
+        `${height}px`,
+      );
+    };
+
+    // Kjør med forsinkelse for å la dekoratøren laste først
+    const timeoutId = setTimeout(updateDecoratorOffset, 500);
+
+    // Kjør også umiddelbart og på resize
+    updateDecoratorOffset();
+    window.addEventListener('resize', updateDecoratorOffset);
+
+    // Observer for DOM-endringer
+    const observer = new MutationObserver(() => {
+      setTimeout(updateDecoratorOffset, 100);
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    return () => {
+      clearTimeout(timeoutId);
+      window.removeEventListener('resize', updateDecoratorOffset);
+      observer.disconnect();
+    };
+  }, []);
+
   return (
     <SidebarContext.Provider value={contextValue}>
       <TooltipProvider delayDuration={0}>
@@ -232,16 +279,20 @@ function Sidebar({
       <div
         data-slot='sidebar-container'
         className={cn(
-          'fixed inset-y-12 z-10 hidden h-svh w-(--sidebar-width) transition-[left,right,width] duration-200 ease-linear md:flex',
+          // Erstatt 'inset-y-12' med bottom: 0 + dynamisk top/height
+          'fixed z-10 hidden w-(--sidebar-width) transition-[left,right,width] duration-200 ease-linear md:flex bottom-0',
           side === 'left'
             ? 'left-0 group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)]'
             : 'right-0 group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)]',
-          // Adjust the padding for floating and inset variants.
           variant === 'floating' || variant === 'inset'
             ? 'p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)]'
-            : 'group-data-[collapsible=icon]:w-(--sidebar-width-icon)  group-data-[side=right]:border-l',
+            : 'group-data-[collapsible=icon]:w-(--sidebar-width-icon) group-data-[side=right]:border-l',
           className,
         )}
+        style={{
+          top: 'var(--nav-decorator-height, 3rem)',
+          height: 'calc(100vh - var(--nav-decorator-height, 3rem))',
+        }}
         {...props}
       >
         <div
@@ -434,7 +485,7 @@ function SidebarGroupLabel({
       data-slot='sidebar-group-label'
       data-sidebar='group-label'
       className={cn(
-        'text-sidebar-foreground/70 ring-sidebar-ring flex h-8 shrink-0 items-center rounded-md px-2 text-xs font-medium outline-hidden transition-[margin,opacity] duration-200 ease-linear focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0',
+        'text-sidebar-foreground/70 ring-sidebar-ring flex h-0 shrink-0 items-center rounded-md px-2 text-sm font-medium outline-hidden transition-[margin,opacity] duration-200 ease-linear focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0',
         'group-data-[collapsible=icon]:-mt-8 group-data-[collapsible=icon]:opacity-0',
         className,
       )}

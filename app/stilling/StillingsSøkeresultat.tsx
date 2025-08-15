@@ -6,12 +6,9 @@ import { useStillingssøk } from '../api/stillings-sok/useStillingssøk';
 import SWRLaster from '../components/SWRLaster';
 import { useApplikasjonContext } from '../providers/ApplikasjonContext';
 import { useStillingsSøkFilter } from './StillingsSøkContext';
-import LagreStandardsøk from './components/LagreStandardsøk';
 import StillingsSøkPaginering from './components/Pagnering';
 import StillingsKort from './components/StillingsKort';
 import StillingsSøkChips from './components/StillingsSøkChips';
-import StillingsSøkSortering from './components/StillingsSøkSortering';
-import { Heading } from '@navikt/ds-react';
 import * as React from 'react';
 
 interface StillingsSøkeresultatProps {
@@ -48,10 +45,10 @@ const StillingsSøkeresultat: React.FC<StillingsSøkeresultatProps> = ({
     const tilAntall = treffFra + maksAntallTreffPerSøk;
 
     return (
-      <Heading size='medium'>
+      <div>
         Viser {fraAntall}-{tilAntall < total ? tilAntall : total} av {total}{' '}
-        treff
-      </Heading>
+        stillingsannonser
+      </div>
     );
   };
 
@@ -62,12 +59,8 @@ const StillingsSøkeresultat: React.FC<StillingsSøkeresultatProps> = ({
           <>
             <div className='flex min-h-[80px] items-center gap-2'>
               <StillingsSøkChips />
-              {!erFormidling && <LagreStandardsøk />}
             </div>
-            <div className='my-4 flex items-center justify-between'>
-              {antallVisning(data.hits.total?.value)}
-              <StillingsSøkSortering />
-            </div>
+
             {data.hits.hits.map((hit) => (
               <StillingsKort
                 key={hit._id}
@@ -75,9 +68,12 @@ const StillingsSøkeresultat: React.FC<StillingsSøkeresultatProps> = ({
                 kandidatId={kandidatId}
               />
             ))}
-            <StillingsSøkPaginering
-              totaltAntallTreff={data.hits.total?.value ?? 0}
-            />
+            <div className={'flex justify-between items-center'}>
+              {antallVisning(data.hits.total?.value)}
+              <StillingsSøkPaginering
+                totaltAntallTreff={data.hits.total?.value ?? 0}
+              />
+            </div>
           </>
         );
       }}

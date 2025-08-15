@@ -6,6 +6,7 @@ import {
   SheetTrigger,
 } from '../../components/ui/sheet';
 import { FilterIcon } from '@navikt/aksel-icons';
+import { Button } from '@navikt/ds-react';
 import * as React from 'react';
 
 export interface AlleFilterKomponentProps {
@@ -18,10 +19,12 @@ const AlleFilterKomponent: React.FC<AlleFilterKomponentProps> = ({
   return (
     <Sheet>
       <SheetTrigger>
-        <div className='flex gap-2 aksel-button aksel-button--tertiary aksel-button--medium'>
-          <FilterIcon />
-          Alle filtre
-        </div>
+        {/* <div className='flex gap-2 aksel-button aksel-button--tertiary aksel-button--medium'> */}
+        <Button size='small' variant='tertiary' icon={<FilterIcon />}>
+          Alle filtre{' '}
+        </Button>
+        {/* Alle filtre
+        </div> */}
       </SheetTrigger>
       <SheetContent className='flex flex-col'>
         <SheetHeader className='flex-shrink-0'>

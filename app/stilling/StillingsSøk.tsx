@@ -1,17 +1,10 @@
 'use client';
 
-import EtterregistreringIkonDark from '../../public/ikoner/etterregistrering-dark.svg';
-import EtterregistreringIkon from '../../public/ikoner/etterregistrering.svg';
-import FinnStillingerIkonDark from '../../public/ikoner/finn-stillinger-dark.svg';
-import FinnStillingerIkon from '../../public/ikoner/finn-stillinger.svg';
 import { UmamiEvent } from '../../util/umamiEvents';
 import { useUseBrukerStandardSøk } from '../api/stilling/standardsok/useBrukersStandardsøk';
-import SVGDarkmode from '../components/SVGDarkmode';
 import Sidelaster from '../components/Sidelaster';
+import SideBanner from '../components/layout/SideBanner';
 import SideLayout from '../components/layout/SideLayout';
-import SideTopBanner from '../components/layout/SideTopBanner';
-import { TilgangskontrollForInnhold } from '../components/tilgangskontroll/TilgangskontrollForInnhold';
-import { Roller } from '../components/tilgangskontroll/roller';
 import { useStillingForKandidat } from '../kandidat/vis-kandidat/useStillingForKandidat';
 import { useVisKandidatNr } from '../kandidat/vis-kandidat/useVisKandidatNr';
 import { useUmami } from '../providers/UmamiContext';
@@ -22,8 +15,9 @@ import {
 import StillingsSøkeresultat from './StillingsSøkeresultat';
 import StillingForKandidat from './components/StillingForKandidat';
 import StillingsSøkFilter from './components/StillingsSøkFilter';
-import { StillingsSøkPortefølje } from './stillingssøk-typer';
-import { Button, ToggleGroup } from '@navikt/ds-react';
+import StillingsSøkNavigasjon from './components/StillingsSøkNavigasjon';
+import { ReceptionIcon } from '@navikt/aksel-icons';
+import { Button } from '@navikt/ds-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import * as React from 'react';
@@ -103,52 +97,63 @@ const StillingsSøkLayout: React.FC<StillingsSøkProps> = ({
 
   return (
     <SideLayout
-      banner={
-        skjulBanner ? null : (
-          <>
-            <SideTopBanner
-              tittel={
-                formidlinger ? 'Etterregistrering formidlinger' : 'Stillinger'
-              }
-              knappIBanner={
-                <div>
-                  <Link
-                    href={
-                      formidlinger
-                        ? '/etterregistrering/ny-etterregistrering'
-                        : '/stilling/ny-stilling'
-                    }
-                  >
-                    <Button>
-                      {formidlinger ? 'Ny etterregistrering' : 'Ny stilling'}
-                    </Button>
-                  </Link>
-                </div>
-              }
-              ikon={
-                formidlinger ? (
-                  <SVGDarkmode
-                    light={EtterregistreringIkon}
-                    dark={EtterregistreringIkonDark}
-                    alt='Finn stillinger'
-                  />
-                ) : (
-                  <SVGDarkmode
-                    light={FinnStillingerIkon}
-                    dark={FinnStillingerIkonDark}
-                    alt='Finn stillinger'
-                  />
-                )
-              }
-            />
-            {visKandidatnr && (
-              <StillingForKandidat kandidatnr={visKandidatnr} />
-            )}
-          </>
-        )
+      topBanner={
+        <SideBanner
+          ikon={<ReceptionIcon className='h-6 w-6' />}
+          tittel='Stillingsannonser'
+          navigasjon={<StillingsSøkNavigasjon />}
+          knapper={
+            <div>
+              <Link href={'/stilling/ny-stilling'}>
+                <Button size='small'>Opprett annonse</Button>
+              </Link>
+            </div>
+          }
+        />
       }
+      // banner={
+      //   skjulBanner ? null : (
+      //     <>
+      //       <SideTopBanner
+      //         tittel={
+      //           formidlinger ? 'Etterregistrering formidlinger' : 'Stillinger'
+      //         }
+      //         knappIBanner={
+      //           <div>
+      //             <Link
+      //               href={
+      //                 formidlinger
+      //                   ? '/etterregistrering/ny-etterregistrering'
+      //                   : '/stilling/ny-stilling'
+      //               }
+      //             >
+      //               <Button>
+      //                 {formidlinger ? 'Ny etterregistrering' : 'Ny stilling'}
+      //               </Button>
+      //             </Link>
+      //           </div>
+      //         }
+      //         ikon={
+      //           formidlinger ? (
+      //             <SVGDarkmode
+      //               light={EtterregistreringIkon}
+      //               dark={EtterregistreringIkonDark}
+      //               alt='Finn stillinger'
+      //             />
+      //           ) : (
+      //             <SVGDarkmode
+      //               light={FinnStillingerIkon}
+      //               dark={FinnStillingerIkonDark}
+      //               alt='Finn stillinger'
+      //             />
+      //           )
+      //         }
+      //       />
+      //     </>
+      //   )
+      // }
     >
-      <div className='grid gap-4 mb-2'>
+      {/* <div className='grid gap-4 mb-2'>
         <ToggleGroup
           size='small'
           value={portefølje || StillingsSøkPortefølje.VIS_ALLE}
@@ -172,7 +177,8 @@ const StillingsSøkLayout: React.FC<StillingsSøkProps> = ({
             />
           </TilgangskontrollForInnhold>
         </ToggleGroup>
-      </div>
+      </div> */}
+      {visKandidatnr && <StillingForKandidat kandidatnr={visKandidatnr} />}
       <StillingsSøkFilter
         formidlinger={formidlinger}
         stillingForKandidat={visKandidatnr}

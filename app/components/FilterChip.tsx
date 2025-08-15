@@ -31,7 +31,7 @@ const FilterChip: React.FC<FilterChipProps> = ({
 
   if (type) {
     return type.map((verdi, i) => (
-      <Chips key={verdi + i}>
+      <Chips key={verdi + i} size='small'>
         <Chips.Removable
           variant='neutral'
           onClick={() => setVerdi(type.filter((i) => i !== verdi))}

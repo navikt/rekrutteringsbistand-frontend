@@ -14,7 +14,7 @@ const StandardsøkKnapp: React.FC = () => {
   return (
     <Button
       disabled={brukerStandardSøk}
-      variant='secondary'
+      variant='tertiary'
       size='small'
       className='w-full'
       onClick={() => {

@@ -22,4 +22,5 @@ export enum StillingsSøkQueryparam {
 export enum StillingsSøkPortefølje {
   VIS_ALLE = 'visAlle',
   VIS_MINE = 'visMine',
+  MITT_KONTOR = 'mittKontor',
 }

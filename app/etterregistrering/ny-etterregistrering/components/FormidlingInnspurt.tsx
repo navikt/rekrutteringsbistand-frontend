@@ -20,6 +20,7 @@ const FormidlingInnspurt = () => {
   const router = useRouter();
 
   const { track } = useUmami();
+
   const { getValues, handleSubmit } = useFormContext<FormidlingDataForm>();
 
   const { brukerData, valgtNavKontor } = useApplikasjonContext();
@@ -51,6 +52,7 @@ const FormidlingInnspurt = () => {
       track(
         UmamiEvent.Etterregistrering.fullført_etterregistrering_av_formidling,
       );
+
       track(UmamiEvent.Etterregistrering.yrkestittel_etterregistrering, {
         yrkestittel: formidlingData.omFormidlingen?.categoryList?.[0]?.name,
       });

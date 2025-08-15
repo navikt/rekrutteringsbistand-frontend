@@ -13,10 +13,12 @@ const LagreStandardsøk: React.FC = () => {
   const [visKandidatnr] = useVisKandidatNr();
   const brukerStandardSøk = searchString === brukerStandardSøkData.data?.søk;
 
+  if (brukerStandardSøk || searchString.length === 0 || visKandidatnr) {
+    return null;
+  }
+
   return (
     <Button
-      className='whitespace-nowrap'
-      disabled={brukerStandardSøk || visKandidatnr !== ''}
       variant='tertiary'
       aria-describedby='lagre-standardsok-beskrivelse'
       icon={<FloppydiskIcon />}

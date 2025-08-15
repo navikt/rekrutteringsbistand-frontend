@@ -30,7 +30,12 @@ const OpprettKnapp: React.FC = () => {
     >
       <ActionMenu>
         <ActionMenu.Trigger>
-          <Button variant={open ? 'secondary' : 'tertiary'} icon={<PlusIcon />}>
+          <Button
+            size='small'
+            className=' w-full'
+            variant={open ? 'primary' : 'tertiary'}
+            icon={<PlusIcon />}
+          >
             {open && 'Opprett'}
           </Button>
         </ActionMenu.Trigger>
