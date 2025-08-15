@@ -1,19 +1,15 @@
 'use client';
 
 import { Avatar, AvatarFallback } from '../../../components/ui/avatar';
-import { isLocal } from '../../../util/env';
 import { getMiljø, Miljø } from '../../../util/miljø';
 import { nyheter } from '../../nyheter';
 import { useApplikasjonContext } from '../../providers/ApplikasjonContext';
 import { useThemeProvider } from '../../providers/ThemeProvider';
-import DevSidebar from '../dev/DevSidebar';
 import useAntallUlesteNyheter from '../nyheter/useAntallUlesteNyheter';
 import { TilgangskontrollForInnhold } from '../tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '../tilgangskontroll/roller';
 import GiTilbakemelding from './components/GiTilbakemelding';
-import ModiaKnapp from './components/ModiaKnapp';
 import OpprettKnapp from './components/OpprettKnapp';
-import VelgKontor from './components/VelgKontor';
 import {
   Sidebar,
   SidebarContent,
@@ -170,12 +166,6 @@ export function AppNavigasjon() {
           ))}
         </SidebarGroup>
 
-        {isLocal && (
-          <SidebarGroup>
-            <DevSidebar />
-          </SidebarGroup>
-        )}
-
         <SidebarGroup
           className={`flex flex-col w-full gap-3 mt-auto ${open ? 'items-start' : 'items-center'}`}
         >
@@ -206,9 +196,6 @@ export function AppNavigasjon() {
               tekst={'Mørk modus'}
             />
           )}
-
-          <VelgKontor />
-          <ModiaKnapp />
 
           <SideLenke
             tekst={'Til gammel løsning'}

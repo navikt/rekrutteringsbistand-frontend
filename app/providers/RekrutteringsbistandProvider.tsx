@@ -3,14 +3,15 @@
 import { SidebarProvider } from '../../components/ui/sidebar';
 import { RekbisError } from '../../util/rekbisError';
 import { useBruker } from '../api/bruker/useBruker';
-import { useModiaAktivBruker } from '../api/modia/context/useModiaAktivBruker';
-import { useModiaAktivEnhet } from '../api/modia/context/useModiaAktivEnhet';
-import { useDecoratorData } from '../api/modia/decorator/useDecoratorData';
+import { useModiaAktivBruker } from '../api/context/useModiaAktivBruker';
+import { useModiaAktivEnhet } from '../api/context/useModiaAktivEnhet';
+import { useDecoratorData } from '../api/decorator/useDecoratorData';
 import { BreadcrumbsProvider } from '../components/Breadcrumbs/BreadcrumbsProvider';
 import SWRLaster from '../components/SWRLaster';
 import ErrorBoundary from '../components/feilhåndtering/ErrorBoundary';
 import { AppNavigasjon } from '../components/layout/AppNavigasjon';
 import { SplitScreenLayout } from '../components/layout/SplitScreenLayout';
+import NavDekoratør from '../components/modiadekoratør/NavDekoratør';
 import { ApplikasjonContextProvider } from './ApplikasjonContext';
 import { KandidatNavigeringProvider } from './KandidatNavigeringContext';
 import NavigasjonsBlockerProvider from './NavigasjonsBlockerProvider';
@@ -87,6 +88,7 @@ const RekrutteringsbistandProvider: React.FC<
                 aktivBruker={aktivBrukerData?.aktivBruker ?? null}
               >
                 <ErrorBoundary>
+                  <NavDekoratør />
                   <NavigasjonsBlockerProvider>
                     <NuqsAdapter>
                       <SidebarProvider>
