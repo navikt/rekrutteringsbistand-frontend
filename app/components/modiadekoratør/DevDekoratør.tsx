@@ -1,6 +1,6 @@
 import { useApplikasjonContext } from '../../providers/ApplikasjonContext';
 import { Roller } from '../tilgangskontroll/roller';
-import { Box, Select, TextField } from '@navikt/ds-react';
+import { Box, InternalHeader, Select, TextField } from '@navikt/ds-react';
 import * as React from 'react';
 
 const rolleTilnavn = (rolle: Roller) => {
@@ -18,7 +18,7 @@ const rolleTilnavn = (rolle: Roller) => {
   }
 };
 
-const DevSidebar: React.FC = () => {
+const DevDekoratør: React.FC = () => {
   const { valgtNavKontor, setValgtNavKontor, visVarsel } =
     useApplikasjonContext();
 
@@ -59,58 +59,63 @@ const DevSidebar: React.FC = () => {
   }
 
   return (
-    <Box.New background='raised' className='flex flex-col px-2 gap-2'>
-      <strong>Dev:</strong>
+    <InternalHeader>
+      <InternalHeader.Title as='h1'>
+        Rekrutteringsbistand - Developer
+      </InternalHeader.Title>
+      <Box.New background='raised' className='flex  px-2 gap-2'>
+        <div className='flex items-center gap-2'>
+          <span>
+            <strong>Bruker:</strong>{' '}
+          </span>
+          <TextField
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                setDevBrukerCookie(e.currentTarget.value);
+              }
+            }}
+            defaultValue={devBruker}
+            size='small'
+            label={'Dev bruker'}
+            hideLabel
+          />
+        </div>
 
-      <div className='flex items-center gap-2'>
-        <span>
-          <strong>Bruker:</strong>{' '}
-        </span>
-        <TextField
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              setDevBrukerCookie(e.currentTarget.value);
-            }
-          }}
-          defaultValue={devBruker}
-          size='small'
-          label={'Dev bruker'}
-          hideLabel
-        />
-      </div>
-
-      <div className='flex items-center gap-2'>
-        <span>
-          <strong>Rolle: </strong>
-        </span>
-        <Select
-          label='Velg bostedsland'
-          hideLabel
-          size='small'
-          value={devRolle}
-          onChange={(e) => setDevRolleCookie(e.target.value as Roller)}
-        >
-          <option value={Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER}>
-            Utvikler
-          </option>
-          <option
-            value={Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET}
+        <div className='flex items-center gap-2'>
+          <span>
+            <strong>Rolle: </strong>
+          </span>
+          <Select
+            label='Velg bostedsland'
+            hideLabel
+            size='small'
+            value={devRolle}
+            onChange={(e) => setDevRolleCookie(e.target.value as Roller)}
           >
-            Arbeidsgiverrettet
-          </option>
-          <option value={Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET}>
-            Jobbsøkerrettet
-          </option>
-          <option value={Roller.AD_GRUPPE_MODIA_GENERELL_TILGANG}>
-            Modia generell
-          </option>
-        </Select>
-      </div>
+            <option value={Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER}>
+              Utvikler
+            </option>
+            <option
+              value={Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET}
+            >
+              Arbeidsgiverrettet
+            </option>
+            <option
+              value={Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET}
+            >
+              Jobbsøkerrettet
+            </option>
+            <option value={Roller.AD_GRUPPE_MODIA_GENERELL_TILGANG}>
+              Modia generell
+            </option>
+          </Select>
+        </div>
+      </Box.New>
       <button onClick={() => visVarsel({ tekst: 'Test', type: 'info' })}>
         Vis varsel
       </button>
-    </Box.New>
+    </InternalHeader>
   );
 };
 
-export default DevSidebar;
+export default DevDekoratør;

@@ -12,6 +12,14 @@ export interface NyhetDTO {
 
 export const nyheter: NyhetDTO[] = [
   {
+    tittel: 'Modia dekoratør tilbake i toppen',
+    beskrivelse:
+      '<p>Modiadekoratøren er fjernet fra sidebaren og flyttet tilbake til toppen etter tilbakemeldinger fra brukerne.</p>',
+    dato: '14.08.2025',
+    id: '8',
+    opprettetAv: null,
+  },
+  {
     tittel: 'Nyheter uke 25-26',
     beskrivelse:
       '<ul>' +
