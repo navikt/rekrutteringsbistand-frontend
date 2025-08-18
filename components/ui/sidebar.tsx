@@ -19,12 +19,8 @@ import {
 } from '@/components/ui/tooltip';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
-import {
-  ChevronLeftDoubleIcon,
-  ChevronRightDoubleIcon,
-} from '@navikt/aksel-icons';
 import { Slot } from '@radix-ui/react-slot';
-import { VariantProps, cva } from 'class-variance-authority';
+import { cva, VariantProps } from 'class-variance-authority';
 import { PanelLeftIcon } from 'lucide-react';
 import * as React from 'react';
 
@@ -129,134 +125,6 @@ function SidebarProvider({
     [state, open, setOpen, isMobile, openMobile, setOpenMobile, toggleSidebar],
   );
 
-  // Mål dekoratør-høyden og sett CSS-variabel
-  React.useEffect(() => {
-    const updateDecoratorOffset = () => {
-      const selectors = [
-        '.dekorator', // Ytterste wrapper
-        '.navds-internalheader', // Selve header-elementet
-        'header[data-theme="dark"]', // Header med data-theme
-        'header', // Fallback til enhver header
-      ];
-
-      let headerEl: HTMLElement | null = null;
-      for (const selector of selectors) {
-        headerEl = document.querySelector(selector) as HTMLElement;
-        if (headerEl) break;
-      }
-
-      // Hvis vi fant .dekorator, finn .navds-internalheader inni den
-      if (headerEl?.classList.contains('dekorator')) {
-        const innerHeader = headerEl.querySelector(
-          '.navds-internalheader',
-        ) as HTMLElement;
-        if (innerHeader) {
-          headerEl = innerHeader;
-        }
-      }
-
-      // Mål hele .dekorator-containeren for å fange opp total høyde
-      const decoratorContainer = document.querySelector(
-        '.dekorator',
-      ) as HTMLElement;
-      const height =
-        decoratorContainer?.offsetHeight ?? headerEl?.offsetHeight ?? 72;
-
-      document.documentElement.style.setProperty(
-        '--nav-decorator-height',
-        `${height}px`,
-      );
-    };
-
-    // Kjør med forsinkelse for å la dekoratøren laste først
-    const timeoutId = setTimeout(updateDecoratorOffset, 1000);
-
-    // Kjør også umiddelbart og på resize
-    updateDecoratorOffset();
-    window.addEventListener('resize', updateDecoratorOffset);
-
-    // Observer for DOM-endringer OG attributtendringer
-    const observer = new MutationObserver((mutations) => {
-      let shouldUpdate = false;
-
-      mutations.forEach((mutation) => {
-        // Sjekk DOM-endringer
-        if (mutation.type === 'childList') {
-          const hasDecoratorChanges = Array.from(mutation.addedNodes).some(
-            (node) =>
-              node instanceof Element &&
-              (node.classList?.contains('dekorator') ||
-                node.querySelector?.('.dekorator') ||
-                node.classList?.contains('navds-internalheader') ||
-                node.querySelector?.('.navds-internalheader')),
-          );
-          if (hasDecoratorChanges) shouldUpdate = true;
-        }
-
-        // Sjekk attributtendringer på dekoratør-elementer
-        if (
-          mutation.type === 'attributes' &&
-          mutation.target instanceof Element
-        ) {
-          const target = mutation.target;
-          if (
-            target.classList.contains('dekorator') ||
-            target.classList.contains('navds-internalheader') ||
-            target.closest('.dekorator')
-          ) {
-            shouldUpdate = true;
-          }
-        }
-      });
-
-      if (shouldUpdate) {
-        setTimeout(updateDecoratorOffset, 100);
-      }
-    });
-
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true,
-      attributes: true, // Inkluder attributtendringer
-      attributeFilter: ['class', 'style', 'aria-expanded'], // Spesifikke attributter som kan endre høyde
-    });
-
-    // Legg til click-listener på Meny-knappen for å fange opp toggle
-    const handleMenuToggle = () => {
-      setTimeout(updateDecoratorOffset, 300); // Vent på animasjon
-    };
-
-    // Finn Meny-knappen
-    const findAndAttachMenuListener = () => {
-      const menuButton = document.querySelector(
-        'button[aria-pressed]',
-      ) as HTMLButtonElement;
-      if (menuButton && menuButton.textContent?.includes('Meny')) {
-        menuButton.addEventListener('click', handleMenuToggle);
-        return menuButton;
-      }
-      return null;
-    };
-
-    const menuButton = findAndAttachMenuListener();
-
-    // Hvis knappen ikke finnes ennå, prøv igjen etter dekoratøren har lastet
-    let menuButtonRetryTimeout: NodeJS.Timeout;
-    if (!menuButton) {
-      menuButtonRetryTimeout = setTimeout(findAndAttachMenuListener, 2000);
-    }
-
-    return () => {
-      clearTimeout(timeoutId);
-      if (menuButtonRetryTimeout) clearTimeout(menuButtonRetryTimeout);
-      window.removeEventListener('resize', updateDecoratorOffset);
-      observer.disconnect();
-      if (menuButton) {
-        menuButton.removeEventListener('click', handleMenuToggle);
-      }
-    };
-  }, []);
-
   return (
     <SidebarContext.Provider value={contextValue}>
       <TooltipProvider delayDuration={0}>
@@ -296,7 +164,7 @@ function Sidebar({
 }) {
   const { isMobile, state, openMobile, setOpenMobile } = useSidebar();
 
-  if (isMobile || collapsible === 'none') {
+  if (collapsible === 'none') {
     return (
       <div
         data-slot='sidebar'
@@ -360,20 +228,16 @@ function Sidebar({
       <div
         data-slot='sidebar-container'
         className={cn(
-          // Erstatt 'inset-y-12' med bottom: 0 + dynamisk top/height
-          'fixed z-10 hidden w-(--sidebar-width) transition-[left,right,width] duration-200 ease-linear md:flex bottom-0',
+          'relative inset-y-0 z-10 hidden h-[calc(100svh-60px)] w-(--sidebar-width) transition-[left,right,width] duration-200 ease-linear md:flex',
           side === 'left'
             ? 'left-0 group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)]'
             : 'right-0 group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)]',
+          // Adjust the padding for floating and inset variants.
           variant === 'floating' || variant === 'inset'
             ? 'p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)]'
-            : 'group-data-[collapsible=icon]:w-(--sidebar-width-icon) group-data-[side=right]:border-l',
+            : 'group-data-[collapsible=icon]:w-(--sidebar-width-icon) group-data-[side=left]:border-r group-data-[side=right]:border-l',
           className,
         )}
-        style={{
-          top: 'var(--nav-decorator-height, 72px)', // Øk fallback til 72px
-          height: 'calc(100vh - var(--nav-decorator-height, 72px))',
-        }}
         {...props}
       >
         <div
@@ -414,32 +278,6 @@ function SidebarTrigger({
   );
 }
 
-function MenySidebarTrigger({
-  className,
-  onClick,
-  ...props
-}: React.ComponentProps<typeof Button>) {
-  const { toggleSidebar, open } = useSidebar();
-
-  return (
-    <Button
-      data-sidebar='trigger'
-      data-slot='sidebar-trigger'
-      variant='ghost'
-      size='icon'
-      className={cn('size-7', className)}
-      onClick={(event) => {
-        onClick?.(event);
-        toggleSidebar();
-      }}
-      {...props}
-    >
-      {open ? <ChevronLeftDoubleIcon /> : <ChevronRightDoubleIcon />}
-      <span className='sr-only'>Toggle Sidebar</span>
-    </Button>
-  );
-}
-
 function SidebarRail({ className, ...props }: React.ComponentProps<'button'>) {
   const { toggleSidebar } = useSidebar();
 
@@ -452,7 +290,7 @@ function SidebarRail({ className, ...props }: React.ComponentProps<'button'>) {
       onClick={toggleSidebar}
       title='Toggle Sidebar'
       className={cn(
-        'hover:after:bg-sidebar-border absolute inset-y-12 z-20 hidden w-4 -translate-x-1/2 transition-all ease-linear group-data-[side=left]:-right-4 group-data-[side=right]:left-0 after:absolute after:inset-y-12 after:left-1/2 after:w-[2px] sm:flex',
+        'hover:after:bg-sidebar-border absolute inset-y-0 z-20 hidden w-4 -translate-x-1/2 transition-all ease-linear group-data-[side=left]:-right-4 group-data-[side=right]:left-0 after:absolute after:inset-y-0 after:left-1/2 after:w-[2px] sm:flex',
         'in-data-[side=left]:cursor-w-resize in-data-[side=right]:cursor-e-resize',
         '[[data-side=left][data-state=collapsed]_&]:cursor-e-resize [[data-side=right][data-state=collapsed]_&]:cursor-w-resize',
         'hover:group-data-[collapsible=offcanvas]:bg-sidebar group-data-[collapsible=offcanvas]:translate-x-0 group-data-[collapsible=offcanvas]:after:left-full',
@@ -509,7 +347,7 @@ function SidebarFooter({ className, ...props }: React.ComponentProps<'div'>) {
     <div
       data-slot='sidebar-footer'
       data-sidebar='footer'
-      className={cn('flex flex-col gap-2 py-5', className)}
+      className={cn('flex flex-col gap-2 p-2', className)}
       {...props}
     />
   );
@@ -535,7 +373,7 @@ function SidebarContent({ className, ...props }: React.ComponentProps<'div'>) {
       data-slot='sidebar-content'
       data-sidebar='content'
       className={cn(
-        'flex min-h-0 flex-1 flex-col gap-3 overflow-auto group-data-[collapsible=icon]:overflow-hidden',
+        'flex min-h-0 flex-1 flex-col gap-2 overflow-auto group-data-[collapsible=icon]:overflow-hidden',
         className,
       )}
       {...props}
@@ -566,7 +404,7 @@ function SidebarGroupLabel({
       data-slot='sidebar-group-label'
       data-sidebar='group-label'
       className={cn(
-        'text-sidebar-foreground/70 ring-sidebar-ring flex h-0 shrink-0 items-center rounded-md px-2 text-sm font-medium outline-hidden transition-[margin,opacity] duration-200 ease-linear focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0',
+        'text-sidebar-foreground/70 ring-sidebar-ring flex h-8 shrink-0 items-center rounded-md px-2 text-xs font-medium outline-hidden transition-[margin,opacity] duration-200 ease-linear focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0',
         'group-data-[collapsible=icon]:-mt-8 group-data-[collapsible=icon]:opacity-0',
         className,
       )}
@@ -860,7 +698,6 @@ function SidebarMenuSubButton({
 }
 
 export {
-  MenySidebarTrigger,
   Sidebar,
   SidebarContent,
   SidebarFooter,

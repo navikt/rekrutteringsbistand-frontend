@@ -3,7 +3,7 @@
 import { useArenaKandidatnr } from '../api/kandidat-sok/useArenaKandidatnr';
 import { useSynlighetsevaluering } from '../api/synlighet/evaluering/useSynlighetsevaluering';
 import Sidelaster from '../components/Sidelaster';
-import HvitKort from '../components/layout/HvitKort';
+import HvitKort from '../components/layout/SideKort';
 import SideLayout from '../components/layout/SideLayout';
 import { useApplikasjonContext } from '../providers/ApplikasjonContext';
 import { BodyLong, Button, Heading } from '@navikt/ds-react';

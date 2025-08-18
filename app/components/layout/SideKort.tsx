@@ -3,13 +3,13 @@
 import { Box } from '@navikt/ds-react';
 import * as React from 'react';
 
-export interface HvitKortProps {
+export interface SideKortProps {
   children?: React.ReactNode | undefined;
   className?: string;
   id?: string;
 }
 
-const HvitKort: React.FC<HvitKortProps> = ({
+const SideKort: React.FC<SideKortProps> = ({
   id,
   children,
   className = '',
@@ -29,4 +29,4 @@ const HvitKort: React.FC<HvitKortProps> = ({
   );
 };
 
-export default HvitKort;
+export default SideKort;

@@ -27,7 +27,7 @@ import {
   SidebarLeftIcon,
   SunIcon,
 } from '@navikt/aksel-icons';
-import { BodyShort, Button } from '@navikt/ds-react';
+import { BodyShort, Box, Button } from '@navikt/ds-react';
 import { MegaphoneIcon } from 'lucide-react';
 import Link from 'next/link';
 
@@ -142,90 +142,97 @@ export function AppNavigasjon() {
   // }, [åpenNyheter, markerSomLest]);
 
   return (
-    <Sidebar collapsible='icon'>
-      <SidebarHeader>
-        <div className='flex items-baseline'>
-          <Button
-            onClick={toggleSidebar}
-            variant='tertiary-neutral'
-            icon={
-              <SidebarLeftIcon style={{ color: 'var(--ax-text-accent)' }} />
-            }
-            className={open ? ' text-left justify-start' : ''}
-          />
-          <OpprettKnapp />
-        </div>
-      </SidebarHeader>
-      <SidebarContent className='py-3'>
-        <SidebarGroup
-          className={`flex flex-col w-full gap-3 ${open ? 'items-start' : 'items-center'}`}
-        >
-          {/* <SidebarGroupLabel>Deg</SidebarGroupLabel> */}
-          {navigasjonListe.map((item) => (
-            <SideLenke key={item.tekst} {...item} />
-          ))}
-        </SidebarGroup>
-
-        <SidebarGroup
-          className={`flex flex-col w-full gap-3 mt-auto ${open ? 'items-start' : 'items-center'}`}
-        >
-          {/* <SidebarGroupLabel>Annet</SidebarGroupLabel> */}
-          <div className={open ? ' w-full' : ''}>
-            <SideLenke
-              tekst={'Nyheter'}
-              ikon={<MegaphoneIcon />}
-              path={'/nyheter'}
-              kreverRoller={null}
+    <Box.New
+      borderRadius='xlarge'
+      borderColor='info-subtleA'
+      background='default'
+      className='mt-3 h-svh] mb-3'
+    >
+      <Sidebar collapsible='icon' variant='inset'>
+        <SidebarHeader>
+          <div className='flex items-baseline'>
+            <Button
+              size='small'
+              onClick={toggleSidebar}
+              variant='tertiary-neutral'
+              icon={
+                <SidebarLeftIcon style={{ color: 'var(--ax-text-accent)' }} />
+              }
+              className={open ? 'ml-3 mr-4 text-left justify-start' : ''}
             />
-            {/* <div
+            {open && <OpprettKnapp />}
+          </div>
+        </SidebarHeader>
+        <SidebarContent className='py-3'>
+          <SidebarGroup
+            className={`flex flex-col w-full gap-3 ${open ? 'items-start' : 'items-center'}`}
+          >
+            {/* <SidebarGroupLabel>Deg</SidebarGroupLabel> */}
+            {navigasjonListe.map((item) => (
+              <SideLenke key={item.tekst} {...item} />
+            ))}
+          </SidebarGroup>
+          <SidebarGroup
+            className={`flex flex-col w-full gap-3 mt-auto ${open ? 'items-start' : 'items-center'}`}
+          >
+            {/* <SidebarGroupLabel>Annet</SidebarGroupLabel> */}
+            <div className={open ? ' w-full' : ''}>
+              <SideLenke
+                tekst={'Nyheter'}
+                ikon={<MegaphoneIcon />}
+                path={'/nyheter'}
+                kreverRoller={null}
+              />
+              {/* <div
               className={`${antallUlesteNyheter > 0 ? 'absolute  top-5 left-3 h-3 w-3 rounded-full bg-[#0067c5]' : ''}`}
             /> */}
-          </div>
-          <GiTilbakemelding />
-          {darkMode ? (
-            <SideHandling
-              onClick={() => setDarkMode(!darkMode)}
-              tekst='Lys modus'
-              ikon={<SunIcon />}
-              kreverRoller={null}
-            />
-          ) : (
-            <SideHandling
-              kreverRoller={null}
-              onClick={() => setDarkMode(!darkMode)}
-              ikon={<MoonIcon />}
-              tekst={'Mørk modus'}
-            />
-          )}
+            </div>
+            <GiTilbakemelding />
+            {darkMode ? (
+              <SideHandling
+                onClick={() => setDarkMode(!darkMode)}
+                tekst='Lys modus'
+                ikon={<SunIcon />}
+                kreverRoller={null}
+              />
+            ) : (
+              <SideHandling
+                kreverRoller={null}
+                onClick={() => setDarkMode(!darkMode)}
+                ikon={<MoonIcon />}
+                tekst={'Mørk modus'}
+              />
+            )}
 
-          <SideLenke
-            tekst={'Til gammel løsning'}
-            ikon={<ArrowsSquarepathIcon />}
-            path={
-              getMiljø() === Miljø.ProdGcp
-                ? 'https://rekrutteringsbistand.intern.nav.no/'
-                : 'https://rekrutteringsbistand.intern.dev.nav.no/'
-            }
-            kreverRoller={null}
-          />
-        </SidebarGroup>
-      </SidebarContent>
-      <SidebarFooter>
-        <div className='flex items-baseline w-full justify-center'>
-          <Avatar className='pt-4 mr-2'>
-            <AvatarFallback>
-              {brukerData.fornavn.charAt(0)}
-              {brukerData.etternavn.charAt(0)}
-            </AvatarFallback>
-          </Avatar>
-          {open && (
-            <BodyShort className='truncate max-w-[80%]'>
-              {brukerData.fornavn} {brukerData.etternavn}
-            </BodyShort>
-          )}
-        </div>
-      </SidebarFooter>
-      <SidebarRail />
-    </Sidebar>
+            <SideLenke
+              tekst={'Til gammel løsning'}
+              ikon={<ArrowsSquarepathIcon />}
+              path={
+                getMiljø() === Miljø.ProdGcp
+                  ? 'https://rekrutteringsbistand.intern.nav.no/'
+                  : 'https://rekrutteringsbistand.intern.dev.nav.no/'
+              }
+              kreverRoller={null}
+            />
+          </SidebarGroup>
+        </SidebarContent>
+        <SidebarFooter>
+          <div className='flex items-baseline w-full justify-center'>
+            <Avatar className='pt-4 mr-2'>
+              <AvatarFallback>
+                {brukerData.fornavn.charAt(0)}
+                {brukerData.etternavn.charAt(0)}
+              </AvatarFallback>
+            </Avatar>
+            {open && (
+              <BodyShort className='truncate max-w-[80%]'>
+                {brukerData.fornavn} {brukerData.etternavn}
+              </BodyShort>
+            )}
+          </div>
+        </SidebarFooter>
+        <SidebarRail />
+      </Sidebar>
+    </Box.New>
   );
 }
