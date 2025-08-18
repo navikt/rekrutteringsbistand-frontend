@@ -5,7 +5,7 @@ test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 
 test('Vis kandidat', async ({ page }) => {
   await page.goto('http://localhost:1337');
-  await page.getByRole('button', { name: 'Kandidater' }).click();
+  await page.getByRole('button', { name: 'Jobbsøkere' }).click();
   await page
     .getByTestId('kandidatkort-lenke-kandidat-arenaKandidatnr-2')
     .click();

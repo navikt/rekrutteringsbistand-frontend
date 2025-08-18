@@ -13,7 +13,16 @@ const LagreStandardsøk: React.FC = () => {
   const [visKandidatnr] = useVisKandidatNr();
   const brukerStandardSøk = searchString === brukerStandardSøkData.data?.søk;
 
-  if (brukerStandardSøk || searchString.length === 0 || visKandidatnr) {
+  const urlParams = new URLSearchParams(searchString);
+
+  const harKunPortefolje = urlParams.size === 1 && urlParams.has('portefolje');
+
+  if (
+    brukerStandardSøk ||
+    searchString.length === 0 ||
+    visKandidatnr ||
+    harKunPortefolje
+  ) {
     return null;
   }
 

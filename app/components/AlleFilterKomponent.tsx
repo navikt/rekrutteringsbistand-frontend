@@ -20,7 +20,7 @@ const AlleFilterKomponent: React.FC<AlleFilterKomponentProps> = ({
     <Sheet>
       <SheetTrigger asChild>
         <Button size='small' variant='tertiary' icon={<FilterIcon />}>
-          Alle filtre
+          Filtrer
         </Button>
       </SheetTrigger>
 

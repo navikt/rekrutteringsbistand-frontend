@@ -13,10 +13,10 @@ test.describe(`Forside test`, () => {
   test('Viser riktig innhold på forsiden', async ({ page }) => {
     await expect(page.getByRole('button', { name: 'Oversikt' })).toBeVisible();
     await expect(
-      page.getByRole('button', { name: 'Stillinger' }),
+      page.getByRole('button', { name: 'Stillingsannonser' }),
     ).toBeVisible();
     await expect(
-      page.getByRole('button', { name: 'Kandidater' }),
+      page.getByRole('button', { name: 'Jobbsøkere' }),
     ).toBeVisible();
     await expect(
       page.getByRole('button', { name: 'Etterregistrering' }),

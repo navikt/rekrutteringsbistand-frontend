@@ -7,7 +7,6 @@ import * as React from 'react';
 
 export enum Publisert {
   Intern = 'intern',
-  Arbeidsplassen = 'arbeidsplassen',
   Dev = 'developer',
 }
 
@@ -24,9 +23,7 @@ const SynlighetFilter: React.FC = () => {
       <Checkbox value={Publisert.Intern}>
         {storForbokstav(Publisert.Intern)}
       </Checkbox>
-      <Checkbox value={Publisert.Arbeidsplassen}>
-        {storForbokstav(Publisert.Arbeidsplassen)}
-      </Checkbox>
+
       <TilgangskontrollForInnhold
         skjulVarsel
         kreverEnAvRollene={[Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER]}

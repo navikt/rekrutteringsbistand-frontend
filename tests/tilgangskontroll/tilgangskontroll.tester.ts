@@ -48,21 +48,21 @@ export const testTilgangskontroll = (rolle: Roller) => {
     });
 
     test('2. Stillingssøk', async ({ page }) => {
-      await page.getByRole('button', { name: 'Stillinger' }).click();
+      await page.getByRole('button', { name: 'Stillingsannonser' }).click();
 
       await page.waitForURL('**/stilling**');
 
       // Alle stillinger fane
-      const alleStillingerFane = page.getByRole('radio', {
-        name: 'Alle stillinger',
+      const alleStillingerFane = page.getByRole('button', {
+        name: 'Alle',
       });
       if (ARBEIDSGIVERRETTET || JOBBSOKERRETTET || MODIA) {
         await expect(alleStillingerFane).toBeVisible();
       }
 
       // Mine stillinger fane
-      const mineStillingerFane = page.getByRole('radio', {
-        name: 'Mine stillinger',
+      const mineStillingerFane = page.getByRole('button', {
+        name: 'Mine',
       });
       if (ARBEIDSGIVERRETTET) {
         await expect(mineStillingerFane).toBeVisible();
@@ -170,7 +170,7 @@ export const testTilgangskontroll = (rolle: Roller) => {
       await page.goto('http://localhost:1337/kandidat');
 
       // Viser kandidatsøk fane
-      const kandidatSøkTab = page.getByRole('button', { name: 'Kandidater' });
+      const kandidatSøkTab = page.getByRole('button', { name: 'Jobbsøkere' });
 
       if (ARBEIDSGIVERRETTET || JOBBSOKERRETTET) {
         await expect(kandidatSøkTab).toBeVisible();

@@ -6,7 +6,7 @@ test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 test('Kandidatsøk', async ({ page }) => {
   await page.goto('http://localhost:1337');
 
-  await page.getByRole('button', { name: 'Kandidater' }).click();
+  await page.getByRole('button', { name: 'Jobbsøkere' }).click();
   await expect(page.getByRole('heading', { name: 'Kandidatsøk' })).toBeVisible({
     timeout: 10000,
   });
