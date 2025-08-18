@@ -40,7 +40,6 @@ import {
   Skeleton,
   Switch,
 } from '@navikt/ds-react';
-import { logger } from '@navikt/next-logger';
 import { isSameDay } from 'date-fns';
 import { AnimatePresence, motion } from 'framer-motion';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
@@ -74,10 +73,6 @@ const Innlegg: React.FC<InnleggProps> = ({
   const analyseRef = useRef<HTMLDivElement>(null);
 
   const [initialFocusDone, setInitialFocusDone] = useState(false);
-  const [
-    hasValidatedCurrentContentSuccessfully,
-    setHasValidatedCurrentContentSuccessfully,
-  ] = useState(false);
   const [hasChecked, setHasChecked] = useState(false);
   const [forceSave, setForceSave] = useState(false);
   const [editorKey, setEditorKey] = useState(Date.now());
@@ -108,7 +103,6 @@ const Innlegg: React.FC<InnleggProps> = ({
   // Nullstill valideringsstatus ved endring
   useEffect(() => {
     if (isDirty) {
-      setHasValidatedCurrentContentSuccessfully(false);
       setHasChecked(false);
       setForceSave(false);
       resetAnalyse();
@@ -143,10 +137,8 @@ const Innlegg: React.FC<InnleggProps> = ({
     if (!tekst) {
       resetAnalyse();
       setHasChecked(false);
-      setHasValidatedCurrentContentSuccessfully(false);
       return;
     }
-    setHasValidatedCurrentContentSuccessfully(false);
     await validate({ tekst });
     setHasChecked(true);
   };
@@ -154,19 +146,14 @@ const Innlegg: React.FC<InnleggProps> = ({
   useEffect(() => {
     if (analyse && !validating && !analyseError) {
       if (!analyse.bryterRetningslinjer) {
-        setHasValidatedCurrentContentSuccessfully(true);
       } else {
-        setHasValidatedCurrentContentSuccessfully(false);
       }
-    } else if (analyseError && !validating) {
-      setHasValidatedCurrentContentSuccessfully(false);
     }
   }, [analyse, validating, analyseError]);
 
   useEffect(() => {
     reset({ htmlContent: innlegg?.htmlContent ?? '' });
     resetAnalyse();
-    setHasValidatedCurrentContentSuccessfully(false);
     setHasChecked(false);
     setForceSave(false);
     setEditorKey(Date.now());
@@ -176,7 +163,6 @@ const Innlegg: React.FC<InnleggProps> = ({
   }, [innlegg, reset, resetAnalyse]);
 
   const onSubmitHandler: SubmitHandler<InnleggFormFields> = async (data) => {
-    // Bevar sperre hvis ikke sjekket eller ikke godkjent, med mindre overstyrt
     if (!hasChecked) return;
     if (validating) return;
     if (analyse?.bryterRetningslinjer && !forceSave) return;
@@ -230,7 +216,6 @@ const Innlegg: React.FC<InnleggProps> = ({
     reset({ htmlContent: innlegg?.htmlContent ?? '' });
     resetAnalyse();
     setInitialFocusDone(false);
-    setHasValidatedCurrentContentSuccessfully(false);
     setHasChecked(false);
     setForceSave(false);
     setEditorKey(Date.now());
@@ -247,7 +232,6 @@ const Innlegg: React.FC<InnleggProps> = ({
     reset({ htmlContent: innlegg?.htmlContent ?? '' });
     resetAnalyse();
     setInitialFocusDone(false);
-    setHasValidatedCurrentContentSuccessfully(false);
     setHasChecked(false);
     setForceSave(false);
   };
@@ -393,7 +377,6 @@ const Innlegg: React.FC<InnleggProps> = ({
                         e.preventDefault();
                         if (!isDirty) {
                           resetAnalyse();
-                          setHasValidatedCurrentContentSuccessfully(false);
                           setHasChecked(false);
                           setTimeout(() => cancelButtonRef.current?.focus(), 0);
                         } else {
