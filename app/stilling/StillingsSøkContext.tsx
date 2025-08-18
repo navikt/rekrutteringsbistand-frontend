@@ -106,7 +106,7 @@ export const StillingsSøkProvider: React.FC<{
   const [portefølje, setPortefølje] = useQueryState(
     StillingsSøkQueryparam.Portefølje,
     {
-      defaultValue: 'visAlle',
+      defaultValue: 'intern',
       clearOnDefault: true,
     },
   );

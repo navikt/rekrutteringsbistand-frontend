@@ -11,9 +11,7 @@ const StillingsSøkNavigasjon: React.FC = () => {
     <div className='flex gap-2'>
       <Button
         variant={
-          !portefølje || portefølje === StillingsSøkPortefølje.INTERN
-            ? 'primary'
-            : 'tertiary'
+          portefølje === StillingsSøkPortefølje.INTERN ? 'primary' : 'tertiary'
         }
         onClick={() => setPortefølje(StillingsSøkPortefølje.INTERN)}
         size='small'
