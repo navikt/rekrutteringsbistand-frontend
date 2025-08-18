@@ -7,12 +7,14 @@ import HvitKort from '../components/layout/HvitKort';
 import SideLayout from '../components/layout/SideLayout';
 import { useApplikasjonContext } from '../providers/ApplikasjonContext';
 import Forvirretblob from '../../public/illustrasjoner/feilmelding-blob.svg'
-import { BodyLong, Button, Heading } from '@navikt/ds-react';
+import { Button, Heading } from '@navikt/ds-react';
 import { ArrowRightIcon } from '@navikt/aksel-icons';
-import { ArrowLeftIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 import Image from 'next/image';
+
+const navetUrl = 'https://navno.sharepoint.com/sites/fag-og-ytelser-arbeid-markedsarbeid/SitePages/Hvorfor-er-ikke-personen-synlig-i-Rekr.aspx';
+const portenUrl = 'https://jira.adeo.no/plugins/servlet/desk/portal/541/create/1904';
 
 const InngangFraArbop: React.FC = () => {
   const { valgtFnr } = useApplikasjonContext();
@@ -20,21 +22,6 @@ const InngangFraArbop: React.FC = () => {
   const synlighetHook = useSynlighetsevaluering(valgtFnr);
 
   const router = useRouter();
-
-  const handleBackClick = () => {
-    window.history.back();
-  };
-
-  const TilbakeKnapp = () => (
-    <Button
-      variant='tertiary'
-      icon={<ArrowLeftIcon aria-hidden />}
-      onClick={handleBackClick}
-      style={{ marginBottom: '1rem' }}
-    >
-      Tilbake
-    </Button>
-  );
 
   React.useEffect(() => {
     if (
@@ -48,53 +35,13 @@ const InngangFraArbop: React.FC = () => {
     }
   }, [kandidatnrHook.data, synlighetHook.data, router]);
 
-
-  if (!valgtFnr) {
-    return (
-      <SideLayout>
-        <Heading level='2' size='medium' spacing>
-          Ingen kandidat valgt i modia dekoratøren
-        </Heading>
-        <TilbakeKnapp />
-      </SideLayout>
-    );
-  }
-
   if (synlighetHook.isLoading && kandidatnrHook.isLoading) {
     return <Sidelaster />;
   }
-/*
+
   return (
     <SideLayout>
-      <div>
-        {(!kandidatnrHook.data || !kandidatnrHook.data.arenaKandidatnr) && (
-          <HvitKort>
-            <Heading level='2' size='large'>
-              Fant ikke kandidaten i rekrutteringsbistand
-            </Heading>
-            <br />
-            <TilbakeKnapp />
-          </HvitKort>
-        )}
-        {!synlighetHook.data && (
-          <HvitKort>
-            <Heading level='2' size='large'>
-              Fant ikke kandidaten i rekrutteringsbistand
-            </Heading>
-            <BodyLong>
-              Kandidaten er ikke synlig i Rekrutteringsbistand.
-            </BodyLong>
-            <br />
-            <TilbakeKnapp />
-          </HvitKort>
-        )}
-      </div>
-    </SideLayout>
-  );
- */
-  return (
-    <SideLayout>
-      <div> {(!kandidatnrHook.data || !kandidatnrHook.data.arenaKandidatnr || !synlighetHook.data) && (
+      <div> {(!kandidatnrHook.data || !kandidatnrHook.data.arenaKandidatnr || !synlighetHook.data || !valgtFnr) && (
         <HvitKort>
           <div className={'mt-4 max-w-6/12 m-auto flex flex-col flex-wrap gap-4'}>
             <div className={'flex-1 flex flex-row gap-8 mt-10 items-center'}>
@@ -110,7 +57,7 @@ const InngangFraArbop: React.FC = () => {
                     size={'small'}
                     icon={<ArrowRightIcon aria-hidden />}
                     iconPosition={'right'}
-              //onClick={}
+                    onClick={() => window.open(navetUrl, '_blank')}
                     style={{width: '224px', height: '48px'}}
 
             >
@@ -130,7 +77,7 @@ const InngangFraArbop: React.FC = () => {
                     size={'small'}
                     icon={<ArrowRightIcon aria-hidden />}
                     iconPosition={'right'}
-              //onClick={}
+                    onClick={() => window.open(portenUrl, '_blank')}
                     style={{width: '283px', height: '48px'}}
 
             >

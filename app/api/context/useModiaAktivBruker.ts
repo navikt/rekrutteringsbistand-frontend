@@ -23,6 +23,6 @@ export const useModiaAktivBruker = () =>
 
 export const modiaAktivBrukerMirage = (server: Server) => {
   server.get(modiaAktivBrukerEndepunkt, () => {
-    return { aktivBruker: '16828397900' };
+    return { aktivBruker: '16828397901' };
   });
 };
