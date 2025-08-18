@@ -3,35 +3,63 @@
 import { useRekrutteringstreffContext } from '../../../RekrutteringstreffContext';
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
-import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
+import {
+  useJobbsøkere,
+  JobbsøkerDTO,
+} from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
-import { parseISO } from 'date-fns';
-import { toZonedTime } from 'date-fns-tz';
 import * as React from 'react';
 
 const DEFAULT_TITTEL = 'Nytt rekrutteringstreff';
-const sjekklisteData = [
-  { id: 'arbeidsgiver', label: 'Minst 1 arbeidsgiver' },
-  { id: 'navn', label: 'Navn' },
-  { id: 'sted', label: 'Sted' },
-  { id: 'tidspunkt', label: 'Tidspunkt' },
-  { id: 'svarfrist', label: 'Svarfrist' },
-  { id: 'omtreffet', label: 'Om treffet' },
-];
 
-interface StegviserState {
+const erMøttOpp = (j: JobbsøkerDTO) =>
+  j.hendelser?.some((h) => h.hendelsestype === 'MØT_OPP') ?? false;
+
+const erIkkeMøttOpp = (j: JobbsøkerDTO) =>
+  j.hendelser?.some((h) => h.hendelsestype === 'IKKE_MØTT_OPP') ?? false;
+
+const erUbestemt = (j: JobbsøkerDTO) =>
+  !(
+    j.hendelser?.some(
+      (h) =>
+        h.hendelsestype === 'MØT_OPP' || h.hendelsestype === 'IKKE_MØTT_OPP',
+    ) ?? false
+  );
+
+const erInvitert = (j: JobbsøkerDTO) =>
+  j.hendelser?.some((h) => h.hendelsestype === 'INVITER') ?? false;
+
+const parseDate = (value?: string | null): Date | undefined => {
+  if (!value) return undefined;
+  const d = new Date(value);
+  return isNaN(d.getTime()) ? undefined : d;
+};
+
+export interface StegviserState {
   activeStep: number;
-  erPubliseringklar: boolean;
-  setErPubliseringklar: (klar: boolean) => void;
-  harInvitert: boolean;
-  setHarInvitert: (invitert: boolean) => void;
+  setActiveStep: (step: number) => void;
+
+  // Steg 1: Publisere
   sjekklistePunkterFullfort: number;
   totaltAntallSjekklistePunkter: number;
+  erPubliseringklar: boolean;
+
+  // Steg 2: Invitere
   inviterePunkterFullfort: number;
   totaltAntallInviterePunkter: number;
-  arrangementtidspunktHarPassert: boolean;
+  harInvitert: boolean;
   antallInviterte: number;
+
+  // Steg 3: Følge opp
   antallMøttOpp: number;
+  antallIkkeMøttOpp: number;
+  antallUbestemt: number;
+  totaltJobbsøkere: number;
+  uregistrerte: JobbsøkerDTO[];
+
+  // Tidsflagg
+  arrangementtidspunktHarPassert: boolean;
+  tiltidspunktHarPassert: boolean;
 }
 
 const StegviserContext = React.createContext<StegviserState | undefined>(
@@ -41,105 +69,87 @@ const StegviserContext = React.createContext<StegviserState | undefined>(
 export const StegviserProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [erPubliseringklar, setErPubliseringklar] = React.useState(false);
-  const [harInvitert, setHarInvitert] = React.useState(false);
-
+  const [activeStep, setActiveStep] = React.useState<number>(1);
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
-  const { data: rekrutteringstreffData } =
+
+  const { data: rekrutteringstreff } =
     useRekrutteringstreff(rekrutteringstreffId);
   const { data: arbeidsgivereData } =
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
   const { data: innleggData } = useInnlegg(rekrutteringstreffId);
-  const { data: jobbsøkere } = useJobbsøkere(rekrutteringstreffId);
+  const { data: jobbsøkere = [] } = useJobbsøkere(rekrutteringstreffId);
 
-  const checkedItems: Record<string, boolean> = React.useMemo(() => {
-    const tittel = rekrutteringstreffData?.tittel?.trim() ?? '';
+  // Steg 1: Publisere-logikk
+  const sjekklisteItems = React.useMemo(() => {
+    const tittel = rekrutteringstreff?.tittel?.trim() ?? '';
     return {
       arbeidsgiver: (arbeidsgivereData?.length ?? 0) > 0,
       navn: tittel.length > 0 && tittel !== DEFAULT_TITTEL,
       sted:
-        !!rekrutteringstreffData?.gateadresse?.trim() &&
-        !!rekrutteringstreffData?.poststed?.trim(),
-      tidspunkt: !!rekrutteringstreffData?.fraTid,
-      svarfrist: !!rekrutteringstreffData?.svarfrist,
+        !!rekrutteringstreff?.gateadresse?.trim() &&
+        !!rekrutteringstreff?.poststed?.trim(),
+      tidspunkt: !!rekrutteringstreff?.fraTid,
+      svarfrist: !!rekrutteringstreff?.svarfrist,
       omtreffet: (innleggData?.length ?? 0) > 0,
     };
-  }, [arbeidsgivereData, rekrutteringstreffData, innleggData]);
-
-  React.useEffect(() => {
-    const alleOk = sjekklisteData.every((item) => checkedItems[item.id]);
-    setErPubliseringklar(alleOk);
-  }, [checkedItems, setErPubliseringklar]);
+  }, [arbeidsgivereData, rekrutteringstreff, innleggData]);
 
   const sjekklistePunkterFullfort =
-    Object.values(checkedItems).filter(Boolean).length;
-  const totaltAntallSjekklistePunkter = sjekklisteData.length;
+    Object.values(sjekklisteItems).filter(Boolean).length;
+  const totaltAntallSjekklistePunkter = Object.keys(sjekklisteItems).length;
+  const erPubliseringklar =
+    sjekklistePunkterFullfort === totaltAntallSjekklistePunkter;
 
-  const antallInviterte = React.useMemo(
-    () =>
-      jobbsøkere?.filter((j) =>
-        j.hendelser?.some((h) => h.hendelsestype === 'INVITER'),
-      ).length ?? 0,
-    [jobbsøkere],
-  );
+  const fra = parseDate(rekrutteringstreff?.fraTid);
+  const til = parseDate(rekrutteringstreff?.tilTid);
+  const now = new Date();
+  const arrangementtidspunktHarPassert = !!(fra && now >= fra);
+  const tiltidspunktHarPassert = !!(til && now >= til);
 
-  const antallMøttOpp = React.useMemo(
-    () =>
-      jobbsøkere?.filter((j) =>
-        j.hendelser?.some((h) => h.hendelsestype === 'MØT_OPP'),
-      ).length ?? 0,
-    [jobbsøkere],
-  );
-
-  const arrangementtidspunktHarPassert = React.useMemo(() => {
-    if (!rekrutteringstreffData?.fraTid) return false;
-    return (
-      toZonedTime(parseISO(rekrutteringstreffData.fraTid), 'Europe/Oslo') <
-      new Date()
-    );
-  }, [rekrutteringstreffData?.fraTid]);
-
-  const harInvitertMinstEn = antallInviterte > 0;
-  React.useEffect(() => {
-    setHarInvitert(harInvitertMinstEn);
-  }, [harInvitertMinstEn, setHarInvitert]);
-
+  // Steg 2: Invitere-logikk
+  const antallInviterte = jobbsøkere.filter(erInvitert).length;
+  const harInvitert = antallInviterte > 0;
   const inviterePunkterFullfort =
-    (harInvitertMinstEn ? 1 : 0) + (arrangementtidspunktHarPassert ? 1 : 0);
+    (harInvitert ? 1 : 0) + (arrangementtidspunktHarPassert ? 1 : 0);
   const totaltAntallInviterePunkter = 2;
 
-  const activeStep = React.useMemo(() => {
-    const hendelser = rekrutteringstreffData?.hendelser;
-    if (!hendelser) return 1;
+  // Steg 3: Følge opp-logikk
+  const antallMøttOpp = jobbsøkere.filter(erMøttOpp).length;
+  const antallIkkeMøttOpp = jobbsøkere.filter(erIkkeMøttOpp).length;
+  const antallUbestemt = jobbsøkere.filter(erUbestemt).length;
+  const totaltJobbsøkere = jobbsøkere.length;
+  const uregistrerte = jobbsøkere.filter(erUbestemt);
 
+  React.useEffect(() => {
+    const hendelser = rekrutteringstreff?.hendelser ?? [];
     const harHendelse = (type: string) =>
       hendelser.some((h) => h.hendelsestype === type);
 
-    if (harHendelse('AVSLUTT') || harHendelse('AVSLUTT_OPPFØLGING')) {
-      return 4;
-    }
-    if (harHendelse('AVSLUTT_INVITASJON')) {
-      return 3;
-    }
-    if (harHendelse('PUBLISER')) {
-      return 2;
-    }
-    return 1;
-  }, [rekrutteringstreffData]);
+    let step = 1;
+    if (harHendelse('PUBLISER')) step = 2;
+    if (harHendelse('AVSLUTT_INVITASJON')) step = 3;
+    if (harHendelse('AVSLUTT_OPPFØLGING') || harHendelse('AVSLUTT')) step = 4;
 
-  const value = {
+    setActiveStep((prev) => (prev === step ? prev : step));
+  }, [rekrutteringstreff?.hendelser]);
+
+  const value: StegviserState = {
     activeStep,
-    erPubliseringklar,
-    setErPubliseringklar,
-    harInvitert,
-    setHarInvitert,
+    setActiveStep,
     sjekklistePunkterFullfort,
     totaltAntallSjekklistePunkter,
+    erPubliseringklar,
     inviterePunkterFullfort,
     totaltAntallInviterePunkter,
-    arrangementtidspunktHarPassert,
+    harInvitert,
     antallInviterte,
+    arrangementtidspunktHarPassert,
+    tiltidspunktHarPassert,
     antallMøttOpp,
+    antallIkkeMøttOpp,
+    antallUbestemt,
+    totaltJobbsøkere,
+    uregistrerte,
   };
 
   return (
