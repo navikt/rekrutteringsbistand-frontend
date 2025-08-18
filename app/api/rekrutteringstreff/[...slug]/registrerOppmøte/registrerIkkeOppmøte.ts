@@ -4,7 +4,7 @@ import { logger } from '@navikt/next-logger';
 const ikkeOppmøteJobbsøkereEndepunkt = (rekrutteringstreffId: string) =>
   `/api/rekrutteringstreff/${rekrutteringstreffId}/jobbsoker/registrer-ikke-oppmote`;
 
-export const registrerOppmøte = async (
+export const registrerIkkeOppmøte = async (
   rekrutteringstreffId: string,
   personTreffIder: string[],
 ): Promise<void> => {
