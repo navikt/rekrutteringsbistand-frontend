@@ -1,13 +1,6 @@
-import { useRekrutteringstreffContext } from '../../../RekrutteringstreffContext';
-import { inviterJobbsøkere } from '@/app/api/rekrutteringstreff/inviterJobbsokere/inviterJobbsokere';
+//import { useRekrutteringstreffContext } from '../../../RekrutteringstreffContext';
 import { RekbisError } from '@/util/rekbisError';
-import {
-  BellIcon,
-  NewspaperIcon,
-  PersonSuitIcon,
-  TableIcon,
-  XMarkIcon,
-} from '@navikt/aksel-icons';
+import { TableIcon, XMarkIcon } from '@navikt/aksel-icons';
 import {
   BodyShort,
   Button,
@@ -40,7 +33,7 @@ export const OppmøteModal: React.FC<OppmøteModalProps> = ({
   onFjernJobbsøker,
   onOppmøteSendt,
 }) => {
-  const { rekrutteringstreffId } = useRekrutteringstreffContext();
+  //const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const [isLoading, setIsLoading] = React.useState(false);
   const antall = oppmøteInternalDtoer.length;
   const header =
@@ -50,7 +43,7 @@ export const OppmøteModal: React.FC<OppmøteModalProps> = ({
 
   const handleOppmøteRegistrering = async () => {
     setIsLoading(true);
-    const personTreffIder = oppmøteInternalDtoer.map((j) => j.personTreffId);
+    // const personTreffIder = oppmøteInternalDtoer.map((j) => j.personTreffId);
 
     try {
       //await inviterJobbsøkere(rekrutteringstreffId, personTreffIder);
