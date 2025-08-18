@@ -10,7 +10,7 @@ export interface SideBannerProps {
 
 const SideBanner: React.FC<SideBannerProps> = ({
   tittel,
-  navigasjon,
+
   knapper,
   ikon,
 }) => {
@@ -21,14 +21,6 @@ const SideBanner: React.FC<SideBannerProps> = ({
         <Heading className={ikon ? 'pl-1' : ''} size='small'>
           {tittel}
         </Heading>
-        {navigasjon && (
-          <div className='flex'>
-            <div className='px-3'>
-              <div className='w-0 h-8 outline-1 outline-offset-[-0.50px] outline-Border-Accent-Accent-Subtle'></div>
-            </div>
-            {navigasjon}
-          </div>
-        )}
       </div>
       {knapper}
     </div>

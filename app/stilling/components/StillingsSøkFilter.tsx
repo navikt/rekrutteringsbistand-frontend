@@ -2,11 +2,11 @@ import AlleFilterKomponent from '../../components/AlleFilterKomponent';
 import { Roller } from '../../components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '../../providers/ApplikasjonContext';
 import { useStillingsSøkFilter } from '../StillingsSøkContext';
-import LagreStandardsøk from './LagreStandardsøk';
 import GeografiFilter from './StillingsSøkFilter/GeografiFilter';
 import InkluderingFilter from './StillingsSøkFilter/InkluderingFilter';
 import KategoriFilter from './StillingsSøkFilter/KategoriFilter';
 import StatusFilter from './StillingsSøkFilter/StatusFilter';
+import StillingsSøkNavigasjon from './StillingsSøkNavigasjon';
 import StillingsSøkSortering from './StillingsSøkSortering';
 import { Search } from '@navikt/ds-react';
 import * as React from 'react';
@@ -23,35 +23,32 @@ const StillingsSøkFilter: React.FC<{
     Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
   ]);
   return (
-    <div className='flex justify-between'>
-      <div className='flex flex-row gap-4 '>
-        <div className='flex gap-4 items-center'>
-          <div>
-            <Search
-              onKeyDownCapture={(e) => {
-                if (e.key === 'Enter') {
-                  e.preventDefault();
-                  const nyListe = [...fritekst, searchValue];
-                  setFritekstListe(nyListe);
-                  setSearchValue('');
-                }
-              }}
-              size='small'
-              hideLabel={true}
-              label='Søk i stillinger'
-              placeholder='Søk i stillinger'
-              variant='secondary'
-              value={searchValue}
-              onChange={(e) => setSearchValue(e)}
-              onSearchClick={() => {
-                const nyListe = [...fritekst, searchValue];
-                setFritekstListe(nyListe);
-                setSearchValue('');
-              }}
-            />
-          </div>
-        </div>
-        <div className='flex flex-wrap '>
+    <div className='flex flex-row  items-center justify-between '>
+      <StillingsSøkNavigasjon />
+      <div className='flex gap-2'>
+        <Search
+          onKeyDownCapture={(e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              const nyListe = [...fritekst, searchValue];
+              setFritekstListe(nyListe);
+              setSearchValue('');
+            }
+          }}
+          size='small'
+          hideLabel={true}
+          label='Søk i stillinger'
+          placeholder='Søk i stillinger'
+          variant='secondary'
+          value={searchValue}
+          onChange={(e) => setSearchValue(e)}
+          onSearchClick={() => {
+            const nyListe = [...fritekst, searchValue];
+            setFritekstListe(nyListe);
+            setSearchValue('');
+          }}
+        />
+        <div className='whitespace-nowrap'>
           <AlleFilterKomponent>
             <StillingsSøkSortering />
             {(harArbeidsgiverrettetRolle || formidlinger) && <StatusFilter />}
@@ -66,7 +63,6 @@ const StillingsSøkFilter: React.FC<{
           </AlleFilterKomponent>
         </div>
       </div>
-      {!formidlinger && <LagreStandardsøk />}
     </div>
   );
 };

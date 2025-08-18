@@ -1,3 +1,5 @@
+import { TilgangskontrollForInnhold } from '../../components/tilgangskontroll/TilgangskontrollForInnhold';
+import { Roller } from '../../components/tilgangskontroll/roller';
 import { useStillingsSøkFilter } from '../StillingsSøkContext';
 import { StillingsSøkPortefølje } from '../stillingssøk-typer';
 import { Button } from '@navikt/ds-react';
@@ -18,17 +20,24 @@ const StillingsSøkNavigasjon: React.FC = () => {
       >
         Alle
       </Button>
-      <Button
-        variant={
-          portefølje === StillingsSøkPortefølje.VIS_MINE
-            ? 'primary'
-            : 'tertiary'
-        }
-        onClick={() => setPortefølje(StillingsSøkPortefølje.VIS_MINE)}
-        size='small'
+      <TilgangskontrollForInnhold
+        skjulVarsel
+        kreverEnAvRollene={[
+          Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+        ]}
       >
-        Mine
-      </Button>
+        <Button
+          variant={
+            portefølje === StillingsSøkPortefølje.VIS_MINE
+              ? 'primary'
+              : 'tertiary'
+          }
+          onClick={() => setPortefølje(StillingsSøkPortefølje.VIS_MINE)}
+          size='small'
+        >
+          Mine
+        </Button>
+      </TilgangskontrollForInnhold>
       <Button
         variant={
           portefølje === StillingsSøkPortefølje.MITT_KONTOR

@@ -11,7 +11,7 @@ import KandidatSøkResultat from './KandidatSøkResultat';
 import KandidatSøkChips from './components/KandidatSøkChips';
 import ValgteKontorer from './components/ValgteKontorer';
 import KandidatSøkFilter from './kandidat-søk-filter/KandidatSøkFilter';
-import { ToggleGroup } from '@navikt/ds-react';
+import { Button } from '@navikt/ds-react';
 import * as React from 'react';
 
 interface KandidatSøkTabsProps {
@@ -31,10 +31,17 @@ const KandidatSøkTabs: React.FC<KandidatSøkTabsProps> = ({
   const { valgtNavKontor, brukerData } = useApplikasjonContext();
 
   const MineBrukere = () => (
-    <ToggleGroup.Item
-      value={KandidatSøkPortefølje.MINE_BRUKERE}
-      label='Mine brukere'
-    />
+    <Button
+      variant={
+        portefølje === KandidatSøkPortefølje.MINE_BRUKERE
+          ? 'primary'
+          : 'tertiary'
+      }
+      onClick={() => setPortefølje(KandidatSøkPortefølje.MINE_BRUKERE)}
+      size='small'
+    >
+      Mine brukere
+    </Button>
   );
 
   const MittKontor = () => {
@@ -47,11 +54,17 @@ const KandidatSøkTabs: React.FC<KandidatSøkTabsProps> = ({
             Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
           ]}
         >
-          <ToggleGroup.Item
-            className='whitespace-nowrap'
-            value={KandidatSøkPortefølje.MITT_KONTOR}
-            label='Mitt kontor'
-          />
+          <Button
+            variant={
+              portefølje === KandidatSøkPortefølje.MITT_KONTOR
+                ? 'primary'
+                : 'tertiary'
+            }
+            onClick={() => setPortefølje(KandidatSøkPortefølje.MITT_KONTOR)}
+            size='small'
+          >
+            Mitt kontor
+          </Button>
         </TilgangskontrollForInnhold>
       );
     }
@@ -68,11 +81,17 @@ const KandidatSøkTabs: React.FC<KandidatSøkTabsProps> = ({
             Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
           ]}
         >
-          <ToggleGroup.Item
-            className='whitespace-nowrap'
-            value={KandidatSøkPortefølje.MINE_KONTORER}
-            label='Mine kontorer'
-          />
+          <Button
+            variant={
+              portefølje === KandidatSøkPortefølje.MINE_KONTORER
+                ? 'primary'
+                : 'tertiary'
+            }
+            onClick={() => setPortefølje(KandidatSøkPortefølje.MINE_KONTORER)}
+            size='small'
+          >
+            Mine kontorer
+          </Button>
         </TilgangskontrollForInnhold>
       );
     }
@@ -86,11 +105,15 @@ const KandidatSøkTabs: React.FC<KandidatSøkTabsProps> = ({
         Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
       ]}
     >
-      <ToggleGroup.Item
-        className='whitespace-nowrap'
-        value={KandidatSøkPortefølje.ALLE}
-        label='Alle kontorer'
-      />
+      <Button
+        variant={
+          portefølje === KandidatSøkPortefølje.ALLE ? 'primary' : 'tertiary'
+        }
+        onClick={() => setPortefølje(KandidatSøkPortefølje.ALLE)}
+        size='small'
+      >
+        Alle kontorer
+      </Button>
     </TilgangskontrollForInnhold>
   );
 
@@ -101,42 +124,43 @@ const KandidatSøkTabs: React.FC<KandidatSøkTabsProps> = ({
         Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
       ]}
     >
-      <ToggleGroup.Item
-        className='whitespace-nowrap'
-        value={KandidatSøkPortefølje.VALGTE_KONTORER}
-        label='Valgte kontorer'
-      />
+      <Button
+        variant={
+          portefølje === KandidatSøkPortefølje.VALGTE_KONTORER
+            ? 'primary'
+            : 'tertiary'
+        }
+        onClick={() => setPortefølje(KandidatSøkPortefølje.VALGTE_KONTORER)}
+        size='small'
+      >
+        Valgte kontorer
+      </Button>
     </TilgangskontrollForInnhold>
   );
 
   return (
-    <div className='grid gap-4 mb-2'>
-      <ToggleGroup
-        size='small'
-        value={portefølje}
-        onChange={(value) => setPortefølje(value)}
-      >
-        <MineBrukere />
-        <MittKontor />
-        <MineKontorer />
-        <TilgangskontrollForInnhold
-          skjulVarsel
-          kreverEnAvRollene={[
-            Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-          ]}
-        >
-          <AlleKontorer />
-          <VelgKontor />
-        </TilgangskontrollForInnhold>
-      </ToggleGroup>
-      {portefølje === KandidatSøkPortefølje.VALGTE_KONTORER && (
-        <ValgteKontorer />
-      )}
-      <KandidatSøkFilter />
-
-      <div className='flex w-full items-baseline justify-between'>
-        <KandidatSøkChips />
+    <div>
+      <div className='flex justify-between'>
+        <div className='flex gap-2'>
+          <MineBrukere />
+          <MittKontor />
+          <MineKontorer />
+          <TilgangskontrollForInnhold
+            skjulVarsel
+            kreverEnAvRollene={[
+              Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+            ]}
+          >
+            <AlleKontorer />
+            <VelgKontor />
+          </TilgangskontrollForInnhold>
+          {portefølje === KandidatSøkPortefølje.VALGTE_KONTORER && (
+            <ValgteKontorer />
+          )}
+        </div>
+        <KandidatSøkFilter />
       </div>
+      <KandidatSøkChips />
       <KandidatSøkResultat
         alleredeLagtTilTreff={alleredeLagtTilTreff}
         alleredeLagtTilKandidatliste={alleredeLagtTilKandidatliste}

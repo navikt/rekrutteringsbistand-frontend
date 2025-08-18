@@ -7,7 +7,7 @@ import { StillingsSøkProvider } from '../stilling/StillingsSøkContext';
 import StillingsSøkeresultat from '../stilling/StillingsSøkeresultat';
 import StillingsSøkFilter from '../stilling/components/StillingsSøkFilter';
 import StillingsSøkNavigasjon from '../stilling/components/StillingsSøkNavigasjon';
-import { ReceptionIcon } from '@navikt/aksel-icons';
+import { BriefcaseClockIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import Link from 'next/link';
 import * as React from 'react';
@@ -27,7 +27,7 @@ const EtterRegistreringSøkLayout: React.FC = () => {
     <SideLayout
       topBanner={
         <SideBanner
-          ikon={<ReceptionIcon className='h-6 w-6' />}
+          ikon={<BriefcaseClockIcon className='h-6 w-6' />}
           tittel='Etterregistreringer'
           navigasjon={<StillingsSøkNavigasjon />}
           knapper={

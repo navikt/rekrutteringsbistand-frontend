@@ -18,14 +18,12 @@ const AlleFilterKomponent: React.FC<AlleFilterKomponentProps> = ({
 }) => {
   return (
     <Sheet>
-      <SheetTrigger>
-        {/* <div className='flex gap-2 aksel-button aksel-button--tertiary aksel-button--medium'> */}
+      <SheetTrigger asChild>
         <Button size='small' variant='tertiary' icon={<FilterIcon />}>
-          Alle filtre{' '}
+          Alle filtre
         </Button>
-        {/* Alle filtre
-        </div> */}
       </SheetTrigger>
+
       <SheetContent className='flex flex-col'>
         <SheetHeader className='flex-shrink-0'>
           <SheetTitle>Filter</SheetTitle>

@@ -11,7 +11,7 @@ const StillingsSøkChips: React.FC = () => {
   return (
     <div className='mt-4 w-full'>
       <Chips size='small'>
-        <div className='flex flex-row flex-wrap gap-2 pb-2'>
+        <div className='flex flex-row flex-wrap items-center gap-2 pb-2'>
           {Object.values(filter).some(
             (value) => Array.isArray(value) && value.length > 0,
           ) && <TømFiltre fjernFritekst={() => filter.setFritekst('')} />}

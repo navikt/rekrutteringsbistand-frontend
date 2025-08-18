@@ -19,6 +19,7 @@ import {
 } from '@/components/ui/sidebar';
 import {
   ArrowsSquarepathIcon,
+  BriefcaseClockIcon,
   BriefcaseIcon,
   HouseIcon,
   MoonIcon,
@@ -61,7 +62,7 @@ const navigasjonListe: NavigasjonItemProps[] = [
   },
   {
     tekst: 'Etterregistreringer',
-    ikon: <BriefcaseIcon />,
+    ikon: <BriefcaseClockIcon />,
     path: '/etterregistrering',
     kreverRoller: [
       Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
@@ -69,7 +70,7 @@ const navigasjonListe: NavigasjonItemProps[] = [
     ],
   },
   {
-    tekst: 'Kandidater',
+    tekst: 'Jobbsøkere',
     ikon: <PersonTallShortIcon />,
     path: '/kandidat',
     kreverRoller: [

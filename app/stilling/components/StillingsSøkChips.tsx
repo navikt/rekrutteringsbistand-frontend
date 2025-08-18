@@ -6,6 +6,7 @@ import FilterChip from '../../components/FilterChip';
 import TømFiltre from '../../components/TømFiltre';
 import { storForbokstavString } from '../../kandidat/util';
 import { useStillingsSøkFilter } from '../StillingsSøkContext';
+import LagreStandardsøk from './LagreStandardsøk';
 import {
   hierarkiAvTagsForFilter,
   Hovedtag,
@@ -36,18 +37,19 @@ const StillingsSøkChips: React.FC = () => {
 
   return (
     <div className='relative w-full mt-3'>
-      <Chips size='small' className='flex flex-row flex-wrap gap-2 pb-2'>
+      <Chips
+        size='small'
+        className='flex items-center flex-row flex-wrap gap-2 pb-2'
+      >
         {Object.values(filter).some(
           (value) => Array.isArray(value) && value.length > 0,
         ) && <TømFiltre fjernFritekst={() => filter.setFritekstListe([])} />}
-
         {filter.fritekst && (
           <FilterChip
             type={filter.fritekst}
             setVerdi={filter.setFritekstListe}
           />
         )}
-
         {filter.statuser.map((statustekst, i) => (
           <Chips.Removable
             key={i}
@@ -60,7 +62,6 @@ const StillingsSøkChips: React.FC = () => {
             {storForbokstavString(statustekst)}
           </Chips.Removable>
         ))}
-
         {filter.inkludering.map((hovedInkludering, i) => {
           const tagger = hierarkiAvTagsForFilter.find(
             (gruppe) => gruppe.hovedtag === hovedInkludering,
@@ -97,7 +98,6 @@ const StillingsSøkChips: React.FC = () => {
             );
           }
         })}
-
         {filter.publisert.map((publisert, i) => (
           <Chips.Removable
             key={i}
@@ -110,7 +110,6 @@ const StillingsSøkChips: React.FC = () => {
             {storForbokstavString(publisert)}
           </Chips.Removable>
         ))}
-
         {filter.kategori.map((kategori, i) => (
           <Chips.Removable
             key={i}
@@ -121,9 +120,7 @@ const StillingsSøkChips: React.FC = () => {
             {storForbokstavString(kategori)}
           </Chips.Removable>
         ))}
-
         {/* <FilterChip type={filter.publisert} setVerdi={filter.setPublisert} /> */}
-
         {filter.fylker.map((fylke, i) => (
           <Chips.Removable
             key={i}
@@ -147,6 +144,7 @@ const StillingsSøkChips: React.FC = () => {
             {storForbokstavString(geografiNavn(kommune))}
           </Chips.Removable>
         ))}
+        <LagreStandardsøk />
       </Chips>
     </div>
   );
