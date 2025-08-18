@@ -1,4 +1,5 @@
-//import { useRekrutteringstreffContext } from '../../../RekrutteringstreffContext';
+import { useRekrutteringstreffContext } from '../../../RekrutteringstreffContext';
+import { registrerOppmøte } from '@/app/api/rekrutteringstreff/[...slug]/registrerOppmøte/registrerOppmøte';
 import { RekbisError } from '@/util/rekbisError';
 import { TableIcon, XMarkIcon } from '@navikt/aksel-icons';
 import {
@@ -33,7 +34,7 @@ export const OppmøteModal: React.FC<OppmøteModalProps> = ({
   onFjernJobbsøker,
   onOppmøteSendt,
 }) => {
-  //const { rekrutteringstreffId } = useRekrutteringstreffContext();
+  const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const [isLoading, setIsLoading] = React.useState(false);
   const antall = oppmøteInternalDtoer.length;
   const header =
@@ -43,10 +44,10 @@ export const OppmøteModal: React.FC<OppmøteModalProps> = ({
 
   const handleOppmøteRegistrering = async () => {
     setIsLoading(true);
-    // const personTreffIder = oppmøteInternalDtoer.map((j) => j.personTreffId);
+    const personTreffIder = oppmøteInternalDtoer.map((j) => j.personTreffId);
 
     try {
-      //await inviterJobbsøkere(rekrutteringstreffId, personTreffIder);
+      await registrerOppmøte(rekrutteringstreffId, personTreffIder);
       onOppmøteSendt();
     } catch (error) {
       throw new RekbisError({
