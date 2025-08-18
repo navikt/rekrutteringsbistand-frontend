@@ -75,7 +75,9 @@ export function generateElasticSearchQuery(
   }
 
   if (filter.publisert.length > 0) {
-    valgteFilter.push(...esSynlighet(filter.publisert));
+    valgteFilter.push(
+      ...esSynlighet(filter.portefølje as StillingsSøkPortefølje),
+    );
   }
 
   if (

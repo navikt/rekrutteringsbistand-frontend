@@ -7,7 +7,6 @@ import GeografiFilter from './StillingsSøkFilter/GeografiFilter';
 import InkluderingFilter from './StillingsSøkFilter/InkluderingFilter';
 import KategoriFilter from './StillingsSøkFilter/KategoriFilter';
 import StatusFilter from './StillingsSøkFilter/StatusFilter';
-import SynlighetFilter from './StillingsSøkFilter/SynlighetFilter';
 import StillingsSøkNavigasjon from './StillingsSøkNavigasjon';
 import StillingsSøkSortering from './StillingsSøkSortering';
 import { MagnifyingGlassIcon } from '@navikt/aksel-icons';
@@ -113,7 +112,6 @@ const StillingsSøkFilter: React.FC<{
               <>
                 <InkluderingFilter />
                 <KategoriFilter />
-                <SynlighetFilter />
               </>
             )}
           </AlleFilterKomponent>

@@ -11,14 +11,12 @@ const StillingsSøkNavigasjon: React.FC = () => {
     <div className='flex gap-2'>
       <Button
         variant={
-          portefølje === StillingsSøkPortefølje.VIS_ALLE
-            ? 'primary'
-            : 'tertiary'
+          portefølje === StillingsSøkPortefølje.INTERN ? 'primary' : 'tertiary'
         }
-        onClick={() => setPortefølje(StillingsSøkPortefølje.VIS_ALLE)}
+        onClick={() => setPortefølje(StillingsSøkPortefølje.INTERN)}
         size='small'
       >
-        Alle
+        Intern
       </Button>
       <TilgangskontrollForInnhold
         skjulVarsel
@@ -48,6 +46,17 @@ const StillingsSøkNavigasjon: React.FC = () => {
         size='small'
       >
         Mitt kontor
+      </Button>
+      <Button
+        variant={
+          portefølje === StillingsSøkPortefølje.ARBEIDSPLASSEN_NO
+            ? 'primary'
+            : 'tertiary'
+        }
+        onClick={() => setPortefølje(StillingsSøkPortefølje.ARBEIDSPLASSEN_NO)}
+        size='small'
+      >
+        Arbeidsplassen.no
       </Button>
     </div>
   );

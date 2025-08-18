@@ -1,4 +1,6 @@
-export const esSynlighet = (synlighet: string[]) => {
+import { StillingsSøkPortefølje } from '../../../stilling/stillingssøk-typer';
+
+export const esSynlighet = (portefølje: StillingsSøkPortefølje) => {
   const synlighetFilter: any[] = [
     {
       bool: {
@@ -18,18 +20,14 @@ export const esSynlighet = (synlighet: string[]) => {
     },
   ];
 
-  if (synlighet.includes('intern') && synlighet.includes('arbeidsplassen')) {
-    return synlighetFilter;
-  }
-
-  if (synlighet.includes('intern')) {
+  if (portefølje === StillingsSøkPortefølje.INTERN) {
     synlighetFilter.push({
       term: {
         'stilling.source': 'DIR',
       },
     });
   }
-  if (synlighet.includes('arbeidsplassen')) {
+  if (portefølje === StillingsSøkPortefølje.ARBEIDSPLASSEN_NO) {
     synlighetFilter.push({
       term: {
         'stilling.privacy': 'SHOW_ALL',
