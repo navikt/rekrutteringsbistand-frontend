@@ -11,7 +11,7 @@ const HovedInnholdKort: React.FC<HovedInnholdKortProps> = ({
   className,
 }) => {
   return (
-    <main className='w-full h-full'>
+    <main className='w-full '>
       <HvitKort className={className ?? 'w-full'}>{children}</HvitKort>
     </main>
   );

@@ -146,7 +146,7 @@ export function AppNavigasjon() {
       borderRadius='xlarge'
       borderColor='info-subtleA'
       background='default'
-      className='mt-3 h-svh] mb-3'
+      className='mt-3 h-[95vh] mb-3'
     >
       <Sidebar collapsible='icon' variant='inset'>
         <SidebarHeader>
