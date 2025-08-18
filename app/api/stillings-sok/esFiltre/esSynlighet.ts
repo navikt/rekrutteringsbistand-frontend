@@ -20,7 +20,7 @@ export const esSynlighet = (portefølje: StillingsSøkPortefølje) => {
     },
   ];
 
-  if (portefølje === StillingsSøkPortefølje.INTERN) {
+  if (!portefølje || portefølje === StillingsSøkPortefølje.INTERN) {
     synlighetFilter.push({
       term: {
         'stilling.source': 'DIR',
