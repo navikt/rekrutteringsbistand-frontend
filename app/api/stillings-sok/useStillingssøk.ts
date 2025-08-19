@@ -18,6 +18,7 @@ const stillingsSøkEndepunkt = StillingsSøkAPI.internUrl;
 
 export const useStillingssøk = (
   filter: StillingsSøkFilter,
+  eierNavKontorEnhetId?: string,
   navIdent?: string,
   formidlinger?: boolean,
   finnStillingerForKandidat?: boolean,
@@ -26,6 +27,7 @@ export const useStillingssøk = (
 
   const payload = generateElasticSearchQuery(
     filter,
+    eierNavKontorEnhetId,
     navIdent,
     geografiData.data,
     formidlinger,

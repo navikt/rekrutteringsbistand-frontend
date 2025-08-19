@@ -20,11 +20,13 @@ const StillingsSøkeresultat: React.FC<StillingsSøkeresultatProps> = ({
 }) => {
   const filter = useStillingsSøkFilter();
   const {
+    valgtNavKontor,
     brukerData: { ident },
   } = useApplikasjonContext();
   const finnStillingerForKandidat: boolean = !!kandidatId;
   const stillingssøkHook = useStillingssøk(
     filter,
+    valgtNavKontor?.navKontor,
     ident,
     filter.formidlinger,
     finnStillingerForKandidat,

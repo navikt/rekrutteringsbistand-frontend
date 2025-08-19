@@ -35,9 +35,11 @@ export type StillingsSøkFilter = {
 
 export function generateElasticSearchQuery(
   filter: StillingsSøkFilter,
+  eierNavKontorEnhetId?: string,
   navIdent?: string,
   geografiData?: PamGeografi[],
   formidlinger?: boolean,
+
   finnStillingerForKandidat?: boolean,
 ) {
   const valgteFilter: any[] = [];
@@ -45,6 +47,14 @@ export function generateElasticSearchQuery(
   const sort: any = esSorter(filter.sortering);
 
   valgteFilter.push();
+
+  if (eierNavKontorEnhetId) {
+    valgteFilter.push({
+      term: {
+        'stillingsinfo.eierNavKontorEnhetId': eierNavKontorEnhetId,
+      },
+    });
+  }
 
   if (!filter?.portefølje?.includes(StillingsSøkPortefølje.VIS_MINE)) {
     valgteFilter.push(esVariabler.skjulSlettetOgRejected);
