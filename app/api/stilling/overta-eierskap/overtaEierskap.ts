@@ -8,6 +8,6 @@ interface OpprettStillingInfo {
   eierNavKontorEnhetId?: string;
 }
 
-export const setStillingsinfo = async (stillingsinfo: OpprettStillingInfo) => {
-  return putApi(`${StillingAPI.internUrl}/stillingsinfo`, stillingsinfo);
+export const overtaEierskap = async (stillingsinfo: OpprettStillingInfo) => {
+  return putApi(`${StillingAPI.internUrl}/overta-eierskap`, stillingsinfo);
 };
