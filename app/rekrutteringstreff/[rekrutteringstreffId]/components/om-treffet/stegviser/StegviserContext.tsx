@@ -22,7 +22,7 @@ const erUbestemt = (j: JobbsøkerDTO) =>
   !(
     j.hendelser?.some(
       (h) =>
-        h.hendelsestype === 'MØT_OPP' || h.hendelsestype === 'IKKE_MØTT_OPP',
+        h.hendelsestype === 'MØT_OPP' || h.hendelsestype === 'IKKE_MØT_OPP',
     ) ?? false
   );
 
