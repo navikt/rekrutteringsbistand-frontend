@@ -17,7 +17,7 @@ const StillingsSøkNavigasjon: React.FC = () => {
         onClick={() => setPortefølje(StillingsSøkPortefølje.INTERN)}
         size='small'
       >
-        Intern
+        Alle interne
       </Button>
       <TilgangskontrollForInnhold
         skjulVarsel
