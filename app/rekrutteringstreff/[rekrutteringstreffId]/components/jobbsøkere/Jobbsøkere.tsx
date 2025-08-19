@@ -21,6 +21,9 @@ const erInvitert = (j: JobbsøkerDTO) =>
 const harMøttOpp = (j: JobbsøkerDTO) =>
   j.hendelser.some((h) => h.hendelsestype === 'MØT_OPP');
 
+const harIkkeMøttOpp = (j: JobbsøkerDTO) =>
+  j.hendelser.some((h) => h.hendelsestype === 'IKKE_MØT_OPP');
+
 const Jobbsøkere = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const jobbsøkerHook = useJobbsøkere(rekrutteringstreffId);
@@ -115,12 +118,14 @@ const Jobbsøkere = () => {
           (j) => !invitertePersonTreffIder.has(j.personTreffId),
         );
 
-        const møttOppPersonTreffIder = new Set(
-          jobbsøkere.filter(harMøttOpp).map((j) => j.personTreffId),
+        const personerMedOppmøtestatusIder = new Set(
+          jobbsøkere
+            .filter((j) => harMøttOpp(j) || harIkkeMøttOpp(j))
+            .map((j) => j.personTreffId),
         );
 
-        const valgteSomIkkeHarMøttOpp = valgteJobbsøkere.filter(
-          (j) => !møttOppPersonTreffIder.has(j.personTreffId),
+        const valgteUtenOppmøtestatus = valgteJobbsøkere.filter(
+          (j) => !personerMedOppmøtestatusIder.has(j.personTreffId),
         );
 
         return (
@@ -137,10 +142,10 @@ const Jobbsøkere = () => {
               )}
               {harAvsluttetInvitasjon && !harAvsluttetOppfølging && (
                 <Button
-                  disabled={valgteSomIkkeHarMøttOpp.length === 0}
+                  disabled={valgteUtenOppmøtestatus.length === 0}
                   onClick={() => oppmøteModalRef.current?.showModal()}
                 >
-                  Marker Oppmøte ({valgteSomIkkeHarMøttOpp.length})
+                  Marker Oppmøte ({valgteUtenOppmøtestatus.length})
                 </Button>
               )}
             </div>
@@ -197,7 +202,7 @@ const Jobbsøkere = () => {
 
             <OppmøteModal
               modalref={oppmøteModalRef}
-              oppmøteInternalDtoer={valgteSomIkkeErInvitert}
+              oppmøteInternalDtoer={valgteUtenOppmøtestatus}
               onOppmøteSendt={handleOppmøteSendt}
               onFjernJobbsøker={(fnr) =>
                 setValgteJobbsøkere((prev) =>
@@ -230,7 +235,11 @@ export const statusInfoForHendelsestype = (
     case 'INVITER':
       return { text: 'Invitert', variant: 'info' };
     case 'OPPRETT':
-      return { text: 'Lagt til', variant: 'neutral' };
+      return { text: 'Lagt til', variant: 'info' };
+    case 'MØT_OPP':
+      return { text: 'Møtt opp', variant: 'info' };
+    case 'IKKE_MØT_OPP':
+      return { text: 'Ikke møtt opp', variant: 'info' };
     default:
       return undefined;
   }

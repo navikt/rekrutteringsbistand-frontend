@@ -33,6 +33,8 @@ import { brukerStandardSøkMirage } from '../app/api/stilling/standardsok/useBru
 import { stillingssøkMirage } from '../app/api/stillings-sok/useStillingssøk';
 import { synlighetsevalueringMirage } from '../app/api/synlighet/evaluering/useSynlighetsevaluering';
 import { leggTilNyArbeidsgiverMirage } from '@/app/api/rekrutteringstreff/[...slug]/ny-arbeidsgiver/leggTilNyArbeidsgiver';
+import { registrerIkkeOppmøteMirage } from '@/app/api/rekrutteringstreff/[...slug]/registrerOppmøte/registrerIkkeOppmøte';
+import { registrerOppmøteMirage } from '@/app/api/rekrutteringstreff/[...slug]/registrerOppmøte/registrerOppmøte';
 import { rekrutteringstreffHendelserMirage } from '@/app/api/rekrutteringstreff/[...slug]/steg';
 import { alleHendelserMirage } from '@/app/api/rekrutteringstreff/[...slug]/useAlleHendelser';
 import { arbeidsgiverHendelserMirage } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgiverHendelser';
@@ -110,6 +112,8 @@ export function makeServer({ environment = 'test' } = {}) {
       oppdaterInnleggfMirage(this);
       rekrutteringstreffHendelserMirage(this);
       inviterJobbsøkereMirage(this);
+      registrerOppmøteMirage(this);
+      registrerIkkeOppmøteMirage(this);
       kandidatnummerMirage(this);
       modiaAktivEnhetMirage(this);
       modiaAktivBrukerMirage(this);

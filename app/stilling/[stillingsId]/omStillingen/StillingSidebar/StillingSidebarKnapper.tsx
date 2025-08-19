@@ -1,6 +1,5 @@
 'use client';
 
-import { oppdaterStilling } from '../../../../api/stilling/oppdater-stilling/oppdaterStilling';
 import { TilgangskontrollForInnhold } from '../../../../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '../../../../components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '../../../../providers/ApplikasjonContext';
@@ -8,6 +7,7 @@ import { useStillingsContext } from '../../StillingsContext';
 import StillingPrint from './StillingPrint';
 import EierStillingVisning from './components/EierStillingVisning';
 import OpprettRekrutteringsoppdrag from './components/OpprettRekrutteringsoppdrag';
+import { overtaEierskap } from '@/app/api/stilling/overta-eierskap/overtaEierskap';
 import { Button } from '@navikt/ds-react';
 import * as React from 'react';
 import { useState } from 'react';
@@ -43,7 +43,8 @@ const StillingSidebarKnapper: React.FC<StillingSidebarKnapperProps> = ({
 
   const onOvertaStilling = async () => {
     setLoading(true);
-    await oppdaterStilling(stillingsData, {
+    await overtaEierskap({
+      stillingsid: stillingsData.stilling.uuid,
       eierNavident: brukerData.ident,
       eierNavn: brukerData.navn,
       eierNavKontorEnhetId: valgtNavKontor?.navKontor,

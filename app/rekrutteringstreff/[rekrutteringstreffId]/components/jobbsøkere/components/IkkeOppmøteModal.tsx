@@ -1,5 +1,5 @@
 import { useRekrutteringstreffContext } from '../../../RekrutteringstreffContext';
-import { registrerOppmøte } from '@/app/api/rekrutteringstreff/[...slug]/registrerOppmøte/registrerOppmøte';
+import { registrerIkkeOppmøte } from '@/app/api/rekrutteringstreff/[...slug]/registrerOppmøte/registrerIkkeOppmøte';
 import { RekbisError } from '@/util/rekbisError';
 import { TableIcon, XMarkIcon } from '@navikt/aksel-icons';
 import {
@@ -13,7 +13,7 @@ import {
 } from '@navikt/ds-react';
 import * as React from 'react';
 
-export type OppmøteInternalDto = {
+export type IkkeOppmøteInternalDto = {
   personTreffId: string;
   fornavn: string;
   etternavn: string;
@@ -21,37 +21,39 @@ export type OppmøteInternalDto = {
   veilederNavIdent?: string;
 };
 
-export interface OppmøteModalProps {
+export interface IkkeOppmøteModalProps {
   modalref?: React.RefObject<HTMLDialogElement | null>;
-  oppmøteInternalDtoer: OppmøteInternalDto[];
+  ikkeOppmøteInternalDtoer: IkkeOppmøteInternalDto[];
   onFjernJobbsøker: (fødselsnummer: string) => void;
-  onOppmøteSendt: () => void;
+  onIkkeOppmøteSendt: () => void;
 }
 
-export const OppmøteModal: React.FC<OppmøteModalProps> = ({
+export const IkkeOppmøteModal: React.FC<IkkeOppmøteModalProps> = ({
   modalref,
-  oppmøteInternalDtoer,
+  ikkeOppmøteInternalDtoer,
   onFjernJobbsøker,
-  onOppmøteSendt,
+  onIkkeOppmøteSendt,
 }) => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const [isLoading, setIsLoading] = React.useState(false);
-  const antall = oppmøteInternalDtoer.length;
+  const antall = ikkeOppmøteInternalDtoer.length;
   const header =
     antall === 1
-      ? 'Legg inn oppmøte for jobbsøkeren til treff'
-      : `Legg inn oppmøte for ${antall} jobbsøkere til treff`;
+      ? 'Legg inn ikke oppmøte for jobbsøkeren til treff'
+      : `Legg inn ikke oppmøte for ${antall} jobbsøkere til treff`;
 
-  const handleOppmøteRegistrering = async () => {
+  const handleIkkeOppmøteRegistrering = async () => {
     setIsLoading(true);
-    const personTreffIder = oppmøteInternalDtoer.map((j) => j.personTreffId);
+    const personTreffIder = ikkeOppmøteInternalDtoer.map(
+      (j) => j.personTreffId,
+    );
 
     try {
-      await registrerOppmøte(rekrutteringstreffId, personTreffIder);
-      onOppmøteSendt();
+      await registrerIkkeOppmøte(rekrutteringstreffId, personTreffIder);
+      onIkkeOppmøteSendt();
     } catch (error) {
       throw new RekbisError({
-        message: 'Feil ved oppmøteregistrering av jobbsøkere',
+        message: 'Feil ved ikke-oppmøte-registrering av jobbsøkere',
         error: error,
       });
     } finally {
@@ -76,8 +78,8 @@ export const OppmøteModal: React.FC<OppmøteModalProps> = ({
         <VStack gap='8'>
           <VStack gap='4'>
             <BodyShort>
-              Sjekk at jobbsøkerne du har valgt stemmer, og legg inn oppmøte for
-              dem i aktivitetsplanen.
+              Sjekk at jobbsøkerne du har valgt stemmer, og legg inn
+              ikke-oppmøte for dem i aktivitetsplanen.
             </BodyShort>
             <div>
               <HStack
@@ -94,7 +96,7 @@ export const OppmøteModal: React.FC<OppmøteModalProps> = ({
                 </div>
               </HStack>
               <ul className='space-y-2 mt-2'>
-                {oppmøteInternalDtoer.map((jobbsøker) => (
+                {ikkeOppmøteInternalDtoer.map((jobbsøker) => (
                   <li key={jobbsøker.fødselsnummer}>
                     <HStack align='center' className='py-2' gap='4'>
                       <VStack gap='0' className='flex-1'>
@@ -145,7 +147,7 @@ export const OppmøteModal: React.FC<OppmøteModalProps> = ({
                 </div>
                 <BodyShort className='flex-1'>
                   Jobbsøkeren får flyttet kort i aktivitetsplanen til kolonnen
-                  Fullført.
+                  Avbrutt.
                 </BodyShort>
               </HStack>
             </VStack>
@@ -155,13 +157,13 @@ export const OppmøteModal: React.FC<OppmøteModalProps> = ({
       <Modal.Footer>
         <Button
           variant='primary'
-          onClick={handleOppmøteRegistrering}
+          onClick={handleIkkeOppmøteRegistrering}
           loading={isLoading}
           disabled={antall === 0}
         >
           {antall === 1
-            ? 'Registrer oppmøte for jobbsøkeren'
-            : `Registrer oppmøte for ${antall} jobbsøkere`}
+            ? 'Registrer ikke oppmøte for jobbsøkeren'
+            : `Registrer ikke oppmøte for ${antall} jobbsøkere`}
         </Button>
         <Button variant='secondary' onClick={lukkModal}>
           Avbryt
@@ -171,4 +173,4 @@ export const OppmøteModal: React.FC<OppmøteModalProps> = ({
   );
 };
 
-export default OppmøteModal;
+export default IkkeOppmøteModal;
