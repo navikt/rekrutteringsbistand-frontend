@@ -48,7 +48,10 @@ export function generateElasticSearchQuery(
 
   valgteFilter.push();
 
-  if (eierNavKontorEnhetId) {
+  if (
+    filter?.portefølje?.includes(StillingsSøkPortefølje.MITT_KONTOR) &&
+    eierNavKontorEnhetId
+  ) {
     valgteFilter.push({
       term: {
         'stillingsinfo.eierNavKontorEnhetId': eierNavKontorEnhetId,
