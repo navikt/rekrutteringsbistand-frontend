@@ -20,6 +20,7 @@ const FølgeOppSteg: React.FC = () => {
     antallIkkeMøttOpp,
     antallUbestemt,
     uregistrerte,
+    antallIkkeInvitert,
   } = useStegviser();
 
   const ikkeOppmøteModalRef = React.useRef<HTMLDialogElement>(null);
@@ -78,6 +79,11 @@ const FølgeOppSteg: React.FC = () => {
         <SjekklisteInfoRad>
           <BodyShort>
             Ikke bestemt ennå: <b>{antallUbestemt}</b>
+          </BodyShort>
+        </SjekklisteInfoRad>
+        <SjekklisteInfoRad>
+          <BodyShort>
+            Ikke invitert: <b>{antallIkkeInvitert}</b>
           </BodyShort>
         </SjekklisteInfoRad>
 

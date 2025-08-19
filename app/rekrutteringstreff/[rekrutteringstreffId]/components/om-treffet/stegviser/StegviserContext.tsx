@@ -55,6 +55,7 @@ export interface StegviserState {
   antallIkkeMøttOpp: number;
   antallUbestemt: number;
   totaltJobbsøkere: number;
+  antallIkkeInvitert: number;
   uregistrerte: JobbsøkerDTO[];
 
   // Tidsflagg
@@ -120,6 +121,7 @@ export const StegviserProvider: React.FC<{ children: React.ReactNode }> = ({
   const uregistrerte = inviterteJobbsøkere.filter(erUbestemt);
   const antallUbestemt = uregistrerte.length;
   const totaltJobbsøkere = jobbsøkere.length;
+  const antallIkkeInvitert = totaltJobbsøkere - antallInviterte;
 
   React.useEffect(() => {
     const hendelser = rekrutteringstreff?.hendelser ?? [];
@@ -149,6 +151,7 @@ export const StegviserProvider: React.FC<{ children: React.ReactNode }> = ({
     antallMøttOpp,
     antallIkkeMøttOpp,
     antallUbestemt,
+    antallIkkeInvitert,
     totaltJobbsøkere,
     uregistrerte,
   };
