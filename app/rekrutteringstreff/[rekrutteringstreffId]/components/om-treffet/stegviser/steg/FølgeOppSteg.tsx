@@ -10,16 +10,21 @@ import {
   SjekklisteRad,
   SjekklisteSeparator,
 } from './Sjekkliste';
+import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
+import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
 import { BodyShort, Detail } from '@navikt/ds-react';
 import * as React from 'react';
 
 const FølgeOppSteg: React.FC = () => {
+  const { rekrutteringstreffId } = useRekrutteringstreffContext();
+  const jobbsøkerHook = useJobbsøkere(rekrutteringstreffId);
+
   const {
     tiltidspunktHarPassert,
     antallMøttOpp,
     antallIkkeMøttOpp,
     antallUbestemt,
-    uregistrerte, // fra context
+    uregistrerte,
   } = useStegviser();
 
   const ikkeOppmøteModalRef = React.useRef<HTMLDialogElement>(null);
@@ -43,7 +48,7 @@ const FølgeOppSteg: React.FC = () => {
   const onIkkeOppmøteSendt = () => {
     ikkeOppmøteModalRef.current?.close();
     setIkkeOppmøteListe([]);
-    // Oppdateres via SWR i modalens submit-flow
+    jobbsøkerHook.mutate();
   };
 
   return (
