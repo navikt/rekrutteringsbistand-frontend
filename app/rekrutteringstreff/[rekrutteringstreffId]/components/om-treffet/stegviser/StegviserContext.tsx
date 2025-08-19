@@ -16,7 +16,7 @@ const erMøttOpp = (j: JobbsøkerDTO) =>
   j.hendelser?.some((h) => h.hendelsestype === 'MØT_OPP') ?? false;
 
 const erIkkeMøttOpp = (j: JobbsøkerDTO) =>
-  j.hendelser?.some((h) => h.hendelsestype === 'IKKE_MØTT_OPP') ?? false;
+  j.hendelser?.some((h) => h.hendelsestype === 'IKKE_MØT_OPP') ?? false;
 
 const erUbestemt = (j: JobbsøkerDTO) =>
   !(
