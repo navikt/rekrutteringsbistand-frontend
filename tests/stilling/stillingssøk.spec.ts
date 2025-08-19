@@ -19,19 +19,17 @@ test.describe(`Stillingssøk test`, () => {
       page.getByRole('searchbox', { name: 'Søk i stillinger' }),
     ).toBeVisible();
 
-    await expect(
-      page.getByRole('button', { name: 'Alle filtre' }),
-    ).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Filtrer' })).toBeVisible();
     await expect(
       page.getByRole('button', { name: 'Opprett annonse' }),
     ).toBeVisible();
-    await page.getByRole('button', { name: 'Alle filtre' }).click();
-    await expect(page.getByRole('heading', { name: 'Filter' })).toBeVisible();
+    await page.getByRole('button', { name: 'Filtrer' }).click();
+    await expect(page.getByText('Sorter')).toBeVisible();
     await expect(page.getByText('Status')).toBeVisible();
     await expect(page.getByText('Område')).toBeVisible();
     await expect(page.getByText('Inkludering', { exact: true })).toBeVisible();
     await expect(page.getByText('Kategori')).toBeVisible();
-    await expect(page.getByText('Synlighet')).toBeVisible();
+
     await page.locator('.data-\\[state\\=open\\]\\:animate-in').first().click();
     await page.getByRole('searchbox', { name: 'Søk i stillinger' }).click();
     await page
@@ -40,7 +38,6 @@ test.describe(`Stillingssøk test`, () => {
     await page
       .getByRole('searchbox', { name: 'Søk i stillinger' })
       .press('Enter');
-    await expect(page.getByLabel('Sorter')).toBeVisible();
 
     await expect(page.getByTestId('stillings-kort').first()).toBeVisible();
   });

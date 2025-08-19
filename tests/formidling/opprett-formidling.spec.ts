@@ -7,9 +7,8 @@ test(`📝 Opprett formidling`, async ({ page }) => {
   await page.goto('http://localhost:1337/etterregistrering');
   await test.step('Opprett formidling', async () => {
     await page
-      .getByRole('button', { name: 'Etterregistrering', exact: true })
+      .getByRole('button', { name: 'Opprett etterregistrering' })
       .click();
-    await page.getByRole('button', { name: 'Ny etterregistrering' }).click();
     await page
       .getByRole('textbox', { name: 'Fødselsnummer på kandidat' })
       .click();

@@ -54,7 +54,7 @@ export const testTilgangskontroll = (rolle: Roller) => {
 
       // Alle stillinger fane
       const alleStillingerFane = page.getByRole('button', {
-        name: 'Alle',
+        name: 'Intern',
       });
       if (ARBEIDSGIVERRETTET || JOBBSOKERRETTET || MODIA) {
         await expect(alleStillingerFane).toBeVisible();
@@ -77,28 +77,20 @@ export const testTilgangskontroll = (rolle: Roller) => {
       );
 
       if (ARBEIDSGIVERRETTET) {
+        await page.getByRole('button', { name: 'Filtrer' }).click();
         await expect(page.getByText('Status')).toBeVisible();
       }
       if (JOBBSOKERRETTET || MODIA) {
+        await page.getByRole('button', { name: 'Filtrer' }).click();
         await expect(page.getByText('Status')).toBeHidden();
       }
 
       await expect(page.getByText('Område')).toBeVisible();
-      await expect(page.getByText('Inkludering')).toBeVisible();
-      await expect(page.getByText('Kategori')).toBeVisible();
-      await expect(page.getByText('Synlighet')).toBeVisible();
       await expect(
-        page.getByRole('button', { name: 'Alle filtre' }),
+        page.getByText('Inkludering', { exact: true }),
       ).toBeVisible();
-      await page.getByRole('button', { name: 'Alle filtre' }).click();
-      await expect(page.getByRole('heading', { name: 'Filter' })).toBeVisible();
-      await page
-        .locator('.data-\\[state\\=open\\]\\:animate-in')
-        .first()
-        .click();
-      await page.getByRole('button', { name: 'Alle filtre' }).click();
-      await expect(page.getByRole('heading', { name: 'Filter' })).toBeVisible();
-      await page.getByRole('button', { name: 'Close' }).click();
+
+      await expect(page.getByText('Kategori')).toBeVisible();
     });
 
     test('3. Stilling', async ({ page }) => {
@@ -185,7 +177,7 @@ export const testTilgangskontroll = (rolle: Roller) => {
       }
 
       // Mine brukere fane
-      const mineBrukereTab = page.getByRole('radio', { name: 'Mine brukere' });
+      const mineBrukereTab = page.getByRole('button', { name: 'Mine brukere' });
       if (ARBEIDSGIVERRETTET || JOBBSOKERRETTET) {
         await expect(mineBrukereTab).toBeVisible();
       }
@@ -194,7 +186,7 @@ export const testTilgangskontroll = (rolle: Roller) => {
       }
 
       // Mitt kontor fane
-      const mittKontorTab = page.getByRole('radio', { name: 'Mitt kontor' });
+      const mittKontorTab = page.getByRole('button', { name: 'Mitt kontor' });
       if (ARBEIDSGIVERRETTET || JOBBSOKERRETTET) {
         await expect(mittKontorTab).toBeVisible();
       }
@@ -203,7 +195,7 @@ export const testTilgangskontroll = (rolle: Roller) => {
       }
 
       // Mine kontor fane
-      const mineKontorTab = page.getByRole('radio', { name: 'Mine kontor' });
+      const mineKontorTab = page.getByRole('button', { name: 'Mine kontor' });
 
       if (ARBEIDSGIVERRETTET || JOBBSOKERRETTET) {
         await expect(mineKontorTab).toBeVisible();
@@ -213,7 +205,7 @@ export const testTilgangskontroll = (rolle: Roller) => {
       }
 
       // Valgte kontor fane
-      const valgteKontorTab = page.getByRole('radio', {
+      const valgteKontorTab = page.getByRole('button', {
         name: 'Valgte kontor',
       });
       if (ARBEIDSGIVERRETTET) {
@@ -224,7 +216,7 @@ export const testTilgangskontroll = (rolle: Roller) => {
       }
 
       // Alle fane
-      const alleFane = page.getByRole('radio', { name: 'Alle' });
+      const alleFane = page.getByRole('button', { name: 'Alle' });
       if (ARBEIDSGIVERRETTET) {
         await expect(alleFane).toBeVisible();
       }
@@ -261,7 +253,7 @@ export const testTilgangskontroll = (rolle: Roller) => {
 
       // Viser formidlinger
       const formidlinger = await page.getByRole('heading', {
-        name: 'Etterregistrering formidlinger',
+        name: 'Etterregistreringer',
       });
       if (ARBEIDSGIVERRETTET || JOBBSOKERRETTET) {
         await expect(formidlinger).toBeVisible();
@@ -275,7 +267,9 @@ export const testTilgangskontroll = (rolle: Roller) => {
         name: 'Opprett etterregistrering',
       });
       if (ARBEIDSGIVERRETTET || JOBBSOKERRETTET) {
-        await page.getByRole('button', { name: 'Opprett' }).click();
+        await page
+          .getByRole('button', { name: 'Opprett', exact: true })
+          .click();
         await expect(
           page.getByRole('menuitem', { name: 'Etterregistrering' }),
         ).toBeVisible();
