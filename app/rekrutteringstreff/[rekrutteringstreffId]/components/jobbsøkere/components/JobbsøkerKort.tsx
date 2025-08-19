@@ -24,6 +24,7 @@ interface JobbsøkerKortProps {
   harPublisert: boolean;
   onCheckboxChange: (checked: boolean) => void;
   erValgt: boolean;
+  erDeaktivert?: boolean;
 }
 
 export type Veileder = {
@@ -44,6 +45,7 @@ const JobbsøkerKort: React.FC<JobbsøkerKortProps> = ({
   harPublisert,
   onCheckboxChange,
   erValgt,
+  erDeaktivert = false,
 }) => {
   return (
     <Box.New
@@ -53,7 +55,7 @@ const JobbsøkerKort: React.FC<JobbsøkerKortProps> = ({
       borderWidth='1'
       padding='4'
       marginBlock='2'
-      className='flex items-center justify-between'
+      className={`flex items-center justify-between `}
     >
       <div className='flex items-center gap-4'>
         {harPublisert && (
@@ -61,6 +63,7 @@ const JobbsøkerKort: React.FC<JobbsøkerKortProps> = ({
             hideLabel
             checked={erValgt}
             onChange={(e) => onCheckboxChange(e.target.checked)}
+            disabled={erDeaktivert}
           >
             Velg kandidat {fornavn} {etternavn}
           </Checkbox>

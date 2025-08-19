@@ -53,6 +53,9 @@ const Jobbsøkere = () => {
     ) ?? false;
 
   const handleCheckboxChange = (jobbsøker: JobbsøkerDTO, erValgt: boolean) => {
+    if (harAvsluttetInvitasjon && !erInvitert(jobbsøker)) {
+      return;
+    }
     const dto: InviterInternalDto = {
       personTreffId: jobbsøker.personTreffId,
       fornavn: jobbsøker.fornavn,
@@ -156,6 +159,8 @@ const Jobbsøkere = () => {
               <ul>
                 {jobbsøkere.map((j, idx) => {
                   const { status, datoLagtTil, lagtTilAv } = getLagtTilData(j);
+                  const erDeaktivert = harAvsluttetInvitasjon && !erInvitert(j);
+
                   return (
                     <li key={idx}>
                       <JobbsøkerKort
@@ -182,6 +187,7 @@ const Jobbsøkere = () => {
                         onCheckboxChange={(valgt) =>
                           handleCheckboxChange(j, valgt)
                         }
+                        erDeaktivert={erDeaktivert}
                       />
                     </li>
                   );

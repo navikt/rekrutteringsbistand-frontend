@@ -10,15 +10,10 @@ import {
   SjekklisteRad,
   SjekklisteSeparator,
 } from './Sjekkliste';
-import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
-import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
 import { BodyShort, Detail } from '@navikt/ds-react';
 import * as React from 'react';
 
 const FølgeOppSteg: React.FC = () => {
-  const { rekrutteringstreffId } = useRekrutteringstreffContext();
-  const jobbsøkerHook = useJobbsøkere(rekrutteringstreffId);
-
   const {
     tiltidspunktHarPassert,
     antallMøttOpp,
@@ -48,7 +43,7 @@ const FølgeOppSteg: React.FC = () => {
   const onIkkeOppmøteSendt = () => {
     ikkeOppmøteModalRef.current?.close();
     setIkkeOppmøteListe([]);
-    jobbsøkerHook.mutate();
+    // TODO: fiks felles jobbsøkerHook.mutate() med jobbsøker.tsx;
   };
 
   return (
