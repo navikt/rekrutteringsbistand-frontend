@@ -26,7 +26,10 @@ export const hentOboToken = async (
     if (!obo.ok || !obo.token) {
       return {
         ok: false,
-        error: new RekbisError({ message: 'Ugyldig OBO-token mottatt' }),
+        error: new RekbisError({
+          skjulLogger: true,
+          message: 'Ugyldig OBO-token mottatt',
+        }),
       };
     }
 
