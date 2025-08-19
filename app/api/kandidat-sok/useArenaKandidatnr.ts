@@ -37,6 +37,10 @@ export const arenaKandidatnrMirage = (server: Server) => {
     const body = JSON.parse(request.requestBody);
     const fodselsnummer = body.fodselsnummer;
 
+    if (fodselsnummer === '16828397901') {
+      return { arenaKandidatnr: null };
+    }
+
     if (fodselsnummer === '16828397900') {
       return { arenaKandidatnr: 'test-arena-kandidatnr' };
     }
