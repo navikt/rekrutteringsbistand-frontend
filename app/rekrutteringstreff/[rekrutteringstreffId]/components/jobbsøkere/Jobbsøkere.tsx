@@ -230,7 +230,11 @@ export const statusInfoForHendelsestype = (
     case 'INVITER':
       return { text: 'Invitert', variant: 'info' };
     case 'OPPRETT':
-      return { text: 'Lagt til', variant: 'neutral' };
+      return { text: 'Lagt til', variant: 'info' };
+    case 'MØT_OPP':
+      return { text: 'Møtt opp', variant: 'info' };
+    case 'IKKE_MØT_OPP':
+      return { text: 'Ikke møtt opp', variant: 'info' };
     default:
       return undefined;
   }
