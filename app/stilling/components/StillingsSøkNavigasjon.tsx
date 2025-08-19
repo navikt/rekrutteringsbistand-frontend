@@ -48,6 +48,7 @@ const StillingsSøkNavigasjon: React.FC = () => {
       >
         Mitt kontor
       </Button>
+      <div className='w-0 h-8  outline-1  outline-Border-Accent-Accent-Subtle' />
       <Button
         variant={
           portefølje === StillingsSøkPortefølje.ARBEIDSPLASSEN_NO
@@ -57,7 +58,7 @@ const StillingsSøkNavigasjon: React.FC = () => {
         onClick={() => setPortefølje(StillingsSøkPortefølje.ARBEIDSPLASSEN_NO)}
         size='small'
       >
-        Arbeidsplassen.no
+        arbeidsplassen.no
       </Button>
       {portefølje === StillingsSøkPortefølje.ARBEIDSPLASSEN_NO && (
         <Switch
