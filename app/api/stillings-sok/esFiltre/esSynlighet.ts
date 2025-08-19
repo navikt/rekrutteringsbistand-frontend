@@ -27,6 +27,7 @@ export const esSynlighet = (portefølje: StillingsSøkPortefølje) => {
       },
     });
   }
+
   if (portefølje === StillingsSøkPortefølje.ARBEIDSPLASSEN_NO) {
     synlighetFilter.push({
       term: {

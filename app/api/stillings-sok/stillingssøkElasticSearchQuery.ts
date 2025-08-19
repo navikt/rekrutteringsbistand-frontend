@@ -74,11 +74,9 @@ export function generateElasticSearchQuery(
     valgteFilter.push(...esKategoriFormidling());
   }
 
-  if (filter.publisert.length > 0) {
-    valgteFilter.push(
-      ...esSynlighet(filter.portefølje as StillingsSøkPortefølje),
-    );
-  }
+  valgteFilter.push(
+    ...esSynlighet(filter.portefølje as StillingsSøkPortefølje),
+  );
 
   if (
     (geografiData && filter.fylker?.length > 0) ||
