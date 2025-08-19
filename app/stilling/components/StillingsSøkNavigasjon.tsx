@@ -2,11 +2,12 @@ import { TilgangskontrollForInnhold } from '../../components/tilgangskontroll/Ti
 import { Roller } from '../../components/tilgangskontroll/roller';
 import { useStillingsSøkFilter } from '../StillingsSøkContext';
 import { StillingsSøkPortefølje } from '../stillingssøk-typer';
-import { Button } from '@navikt/ds-react';
+import { Button, Switch } from '@navikt/ds-react';
 import * as React from 'react';
 
 const StillingsSøkNavigasjon: React.FC = () => {
-  const { portefølje, setPortefølje } = useStillingsSøkFilter();
+  const { portefølje, setPortefølje, harKandidatliste, setHarKandidatliste } =
+    useStillingsSøkFilter();
   return (
     <div className='flex gap-2'>
       <Button
@@ -58,6 +59,16 @@ const StillingsSøkNavigasjon: React.FC = () => {
       >
         Arbeidsplassen.no
       </Button>
+      {portefølje === StillingsSøkPortefølje.ARBEIDSPLASSEN_NO && (
+        <Switch
+          value='sms'
+          size='small'
+          checked={harKandidatliste}
+          onChange={(e) => setHarKandidatliste(e.target.checked)}
+        >
+          Har kandidatliste
+        </Switch>
+      )}
     </div>
   );
 };

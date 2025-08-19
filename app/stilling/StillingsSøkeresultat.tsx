@@ -24,13 +24,13 @@ const StillingsSøkeresultat: React.FC<StillingsSøkeresultatProps> = ({
     brukerData: { ident },
   } = useApplikasjonContext();
   const finnStillingerForKandidat: boolean = !!kandidatId;
-  const stillingssøkHook = useStillingssøk(
+  const stillingssøkHook = useStillingssøk({
     filter,
-    valgtNavKontor?.navKontor,
-    ident,
-    filter.formidlinger,
+    eierNavKontorEnhetId: valgtNavKontor?.navKontor,
+    navIdent: ident,
+    formidlinger: filter.formidlinger,
     finnStillingerForKandidat,
-  );
+  });
 
   const antallVisning = (total: number) => {
     if (!total) {

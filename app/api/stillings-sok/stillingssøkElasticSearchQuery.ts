@@ -31,22 +31,39 @@ export type StillingsSøkFilter = {
   kategori: string[];
   publisert: string[];
   sortering: string;
+  harKandidatliste: boolean;
 };
 
-export function generateElasticSearchQuery(
-  filter: StillingsSøkFilter,
-  eierNavKontorEnhetId?: string,
-  navIdent?: string,
-  geografiData?: PamGeografi[],
-  formidlinger?: boolean,
+interface GenerateElasticSearchQueryParams {
+  filter: StillingsSøkFilter;
+  eierNavKontorEnhetId?: string;
+  navIdent?: string;
+  geografiData?: PamGeografi[];
+  formidlinger?: boolean;
+  finnStillingerForKandidat?: boolean;
+}
 
-  finnStillingerForKandidat?: boolean,
-) {
+export function generateElasticSearchQuery({
+  filter,
+  eierNavKontorEnhetId,
+  navIdent,
+  geografiData,
+  formidlinger,
+  finnStillingerForKandidat,
+}: GenerateElasticSearchQueryParams) {
   const valgteFilter: any[] = [];
   const term: any[] = [];
   const sort: any = esSorter(filter.sortering);
 
   valgteFilter.push();
+
+  if (filter.harKandidatliste) {
+    valgteFilter.push({
+      exists: {
+        field: 'stillingsinfo',
+      },
+    });
+  }
 
   if (
     filter?.portefølje?.includes(StillingsSøkPortefølje.MITT_KONTOR) &&

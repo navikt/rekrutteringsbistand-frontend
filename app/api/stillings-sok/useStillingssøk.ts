@@ -16,23 +16,31 @@ import useSWRImmutable from 'swr/immutable';
 
 const stillingsSøkEndepunkt = StillingsSøkAPI.internUrl;
 
-export const useStillingssøk = (
-  filter: StillingsSøkFilter,
-  eierNavKontorEnhetId?: string,
-  navIdent?: string,
-  formidlinger?: boolean,
-  finnStillingerForKandidat?: boolean,
-) => {
+interface UseStillingssøkParams {
+  filter: StillingsSøkFilter;
+  eierNavKontorEnhetId?: string;
+  navIdent?: string;
+  formidlinger?: boolean;
+  finnStillingerForKandidat?: boolean;
+}
+
+export const useStillingssøk = ({
+  filter,
+  eierNavKontorEnhetId,
+  navIdent,
+  formidlinger,
+  finnStillingerForKandidat,
+}: UseStillingssøkParams) => {
   const geografiData = usePamGeografi();
 
-  const payload = generateElasticSearchQuery(
+  const payload = generateElasticSearchQuery({
     filter,
     eierNavKontorEnhetId,
     navIdent,
-    geografiData.data,
+    geografiData: geografiData.data,
     formidlinger,
     finnStillingerForKandidat,
-  );
+  });
 
   return useSWRImmutable(
     geografiData.isLoading
