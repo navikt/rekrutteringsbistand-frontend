@@ -31,7 +31,7 @@ export type StillingsSøkFilter = {
   kategori: string[];
   publisert: string[];
   sortering: string;
-  harKandidatliste: boolean;
+  utenOppdrag: boolean;
 };
 
 interface GenerateElasticSearchQueryParams {
@@ -57,7 +57,7 @@ export function generateElasticSearchQuery({
 
   valgteFilter.push();
 
-  if (filter.harKandidatliste) {
+  if (!filter.utenOppdrag) {
     valgteFilter.push({
       exists: {
         field: 'stillingsinfo',

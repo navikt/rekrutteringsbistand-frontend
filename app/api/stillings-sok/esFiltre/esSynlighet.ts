@@ -26,6 +26,11 @@ export const esSynlighet = (portefølje: StillingsSøkPortefølje) => {
         'stilling.source': 'DIR',
       },
     });
+    synlighetFilter.push({
+      term: {
+        'stilling.privacy': 'SHOW_ALL',
+      },
+    });
   }
 
   if (portefølje === StillingsSøkPortefølje.ARBEIDSPLASSEN_NO) {

@@ -2,11 +2,11 @@ import { TilgangskontrollForInnhold } from '../../components/tilgangskontroll/Ti
 import { Roller } from '../../components/tilgangskontroll/roller';
 import { useStillingsSøkFilter } from '../StillingsSøkContext';
 import { StillingsSøkPortefølje } from '../stillingssøk-typer';
-import { Button, Switch } from '@navikt/ds-react';
+import { Button, Chips } from '@navikt/ds-react';
 import * as React from 'react';
 
 const StillingsSøkNavigasjon: React.FC = () => {
-  const { portefølje, setPortefølje, harKandidatliste, setHarKandidatliste } =
+  const { portefølje, setPortefølje, utenOppdrag, setUtenOppdrag } =
     useStillingsSøkFilter();
   return (
     <div className='flex gap-2 items-center'>
@@ -17,7 +17,7 @@ const StillingsSøkNavigasjon: React.FC = () => {
         onClick={() => setPortefølje(StillingsSøkPortefølje.INTERN)}
         size='small'
       >
-        Alle interne
+        Alle oppdrag
       </Button>
       <TilgangskontrollForInnhold
         skjulVarsel
@@ -61,14 +61,13 @@ const StillingsSøkNavigasjon: React.FC = () => {
         arbeidsplassen.no
       </Button>
       {portefølje === StillingsSøkPortefølje.ARBEIDSPLASSEN_NO && (
-        <Switch
-          value='sms'
-          size='small'
-          checked={harKandidatliste}
-          onChange={(e) => setHarKandidatliste(e.target.checked)}
+        <Chips.Toggle
+          key='harKandidatliste'
+          selected={!utenOppdrag}
+          onClick={() => setUtenOppdrag(!utenOppdrag)}
         >
-          Har kandidatliste
-        </Switch>
+          Med oppdrag
+        </Chips.Toggle>
       )}
     </div>
   );

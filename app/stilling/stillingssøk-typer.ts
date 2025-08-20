@@ -11,7 +11,7 @@ export enum StillingsSøkQueryparam {
   SubInkluderingTags = 'inkluderingUnderkategori',
   Felter = 'felter',
   Sortering = 'sortering',
-  HarKandidatliste = 'harKandidatliste',
+  HarKandidatliste = 'utenOppdrag',
   // Valgmuligheter
   BrukStandardsøk = 'brukStandardsok',
   BrukKriterierFraKandidat = 'brukKriterierFraKandidat',

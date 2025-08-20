@@ -42,8 +42,8 @@ interface IStillingsSøkContext {
   fritekst: string[];
   setFritekst: (val: string) => void;
   setFritekstListe: (val: string[]) => void;
-  harKandidatliste: boolean;
-  setHarKandidatliste: (val: boolean) => void;
+  utenOppdrag: boolean;
+  setUtenOppdrag: (val: boolean) => void;
   formidlinger?: boolean;
 }
 
@@ -80,7 +80,7 @@ export const StillingsSøkProvider: React.FC<{
     }
   };
 
-  const [harKandidatliste, setHarKandidatliste] = useQueryState(
+  const [utenOppdrag, setUtenOppdrag] = useQueryState(
     StillingsSøkQueryparam.HarKandidatliste,
     parseAsBoolean.withDefault(false).withOptions({ clearOnDefault: false }),
   );
@@ -244,8 +244,8 @@ export const StillingsSøkProvider: React.FC<{
         setInkluderingUnderkategori: wrapWithPageReset(
           setInkluderingUnderkategori,
         ),
-        harKandidatliste,
-        setHarKandidatliste: wrapWithPageReset(setHarKandidatliste),
+        utenOppdrag,
+        setUtenOppdrag: wrapWithPageReset(setUtenOppdrag),
         kategori,
         setKategori: wrapWithPageReset(setKategori),
         publisert,
