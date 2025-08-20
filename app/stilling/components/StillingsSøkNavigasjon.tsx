@@ -9,7 +9,7 @@ const StillingsSøkNavigasjon: React.FC = () => {
   const { portefølje, setPortefølje, harKandidatliste, setHarKandidatliste } =
     useStillingsSøkFilter();
   return (
-    <div className='flex gap-2'>
+    <div className='flex gap-2 items-center'>
       <Button
         variant={
           portefølje === StillingsSøkPortefølje.INTERN ? 'primary' : 'tertiary'
@@ -48,7 +48,7 @@ const StillingsSøkNavigasjon: React.FC = () => {
       >
         Mitt kontor
       </Button>
-      <div className='w-0 h-8  outline-1  outline-Border-Accent-Accent-Subtle' />
+      <div className='w-0 h-4  outline-1 outline-offset-[-0.50px] outline-Border-Accent-Accent-Subtle'></div>
       <Button
         variant={
           portefølje === StillingsSøkPortefølje.ARBEIDSPLASSEN_NO
