@@ -57,7 +57,11 @@ export function generateElasticSearchQuery({
 
   valgteFilter.push();
 
-  if (!filter.utenOppdrag) {
+  if (
+    filter.portefølje === StillingsSøkPortefølje.INTERN ||
+    (filter.portefølje === StillingsSøkPortefølje.ARBEIDSPLASSEN_NO &&
+      !filter.utenOppdrag)
+  ) {
     valgteFilter.push({
       exists: {
         field: 'stillingsinfo',
