@@ -31,7 +31,7 @@ const RekrutteringstreffSøk: React.FC<RekrutteringstreffSøkProps> = () => {
             const opprettetDato = rekrutteringstreff.opprettetAvTidspunkt
               ? format(
                   new Date(rekrutteringstreff.opprettetAvTidspunkt),
-                  'dd.MM.yyyy HH:mm',
+                  'dd. MMMM yyyy',
                 )
               : '';
 
