@@ -15,7 +15,7 @@ const StillingsSøkNavigasjon: React.FC = () => {
           portefølje === StillingsSøkPortefølje.INTERN ? 'primary' : 'tertiary'
         }
         onClick={() => setPortefølje(StillingsSøkPortefølje.INTERN)}
-        size='small'
+        size='xsmall'
       >
         Alle oppdrag
       </Button>
@@ -32,7 +32,7 @@ const StillingsSøkNavigasjon: React.FC = () => {
               : 'tertiary'
           }
           onClick={() => setPortefølje(StillingsSøkPortefølje.VIS_MINE)}
-          size='small'
+          size='xsmall'
         >
           Mine
         </Button>
@@ -44,7 +44,7 @@ const StillingsSøkNavigasjon: React.FC = () => {
             : 'tertiary'
         }
         onClick={() => setPortefølje(StillingsSøkPortefølje.MITT_KONTOR)}
-        size='small'
+        size='xsmall'
       >
         Mitt kontor
       </Button>
@@ -56,18 +56,20 @@ const StillingsSøkNavigasjon: React.FC = () => {
             : 'tertiary'
         }
         onClick={() => setPortefølje(StillingsSøkPortefølje.ARBEIDSPLASSEN_NO)}
-        size='small'
+        size='xsmall'
       >
         arbeidsplassen.no
       </Button>
       {portefølje === StillingsSøkPortefølje.ARBEIDSPLASSEN_NO && (
-        <Chips.Toggle
-          key='harKandidatliste'
-          selected={!utenOppdrag}
-          onClick={() => setUtenOppdrag(!utenOppdrag)}
-        >
-          Med oppdrag
-        </Chips.Toggle>
+        <Chips size='small'>
+          <Chips.Toggle
+            key='harKandidatliste'
+            selected={!utenOppdrag}
+            onClick={() => setUtenOppdrag(!utenOppdrag)}
+          >
+            Med oppdrag
+          </Chips.Toggle>
+        </Chips>
       )}
     </div>
   );

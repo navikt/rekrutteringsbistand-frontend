@@ -9,7 +9,15 @@ import * as React from 'react';
 const LagreStandardsøk: React.FC = () => {
   const brukerStandardSøkData = useUseBrukerStandardSøk();
   const searchParams = useSearchParams();
-  const searchString = new URLSearchParams(searchParams.toString()).toString();
+
+  const filteredParams = new URLSearchParams();
+  searchParams.forEach((value, key) => {
+    if (key !== 'utenOppdrag') {
+      filteredParams.append(key, value);
+    }
+  });
+
+  const searchString = filteredParams.toString();
   const [visKandidatnr] = useVisKandidatNr();
   const brukerStandardSøk = searchString === brukerStandardSøkData.data?.søk;
 
