@@ -16,13 +16,13 @@ const erMøttOpp = (j: JobbsøkerDTO) =>
   j.hendelser?.some((h) => h.hendelsestype === 'MØT_OPP') ?? false;
 
 const erIkkeMøttOpp = (j: JobbsøkerDTO) =>
-  j.hendelser?.some((h) => h.hendelsestype === 'IKKE_MØTT_OPP') ?? false;
+  j.hendelser?.some((h) => h.hendelsestype === 'IKKE_MØT_OPP') ?? false;
 
 const erUbestemt = (j: JobbsøkerDTO) =>
   !(
     j.hendelser?.some(
       (h) =>
-        h.hendelsestype === 'MØT_OPP' || h.hendelsestype === 'IKKE_MØTT_OPP',
+        h.hendelsestype === 'MØT_OPP' || h.hendelsestype === 'IKKE_MØT_OPP',
     ) ?? false
   );
 
@@ -55,6 +55,7 @@ export interface StegviserState {
   antallIkkeMøttOpp: number;
   antallUbestemt: number;
   totaltJobbsøkere: number;
+  antallIkkeInvitert: number;
   uregistrerte: JobbsøkerDTO[];
 
   // Tidsflagg
@@ -113,12 +114,14 @@ export const StegviserProvider: React.FC<{ children: React.ReactNode }> = ({
     (harInvitert ? 1 : 0) + (arrangementtidspunktHarPassert ? 1 : 0);
   const totaltAntallInviterePunkter = 2;
 
-  // Steg 3: Følge opp-logikk
-  const antallMøttOpp = jobbsøkere.filter(erMøttOpp).length;
-  const antallIkkeMøttOpp = jobbsøkere.filter(erIkkeMøttOpp).length;
-  const antallUbestemt = jobbsøkere.filter(erUbestemt).length;
+  // Steg 3: Følge opp-logikk (basert på inviterte)
+  const inviterteJobbsøkere = jobbsøkere.filter(erInvitert);
+  const antallMøttOpp = inviterteJobbsøkere.filter(erMøttOpp).length;
+  const antallIkkeMøttOpp = inviterteJobbsøkere.filter(erIkkeMøttOpp).length;
+  const uregistrerte = inviterteJobbsøkere.filter(erUbestemt);
+  const antallUbestemt = uregistrerte.length;
   const totaltJobbsøkere = jobbsøkere.length;
-  const uregistrerte = jobbsøkere.filter(erUbestemt);
+  const antallIkkeInvitert = totaltJobbsøkere - antallInviterte;
 
   React.useEffect(() => {
     const hendelser = rekrutteringstreff?.hendelser ?? [];
@@ -148,6 +151,7 @@ export const StegviserProvider: React.FC<{ children: React.ReactNode }> = ({
     antallMøttOpp,
     antallIkkeMøttOpp,
     antallUbestemt,
+    antallIkkeInvitert,
     totaltJobbsøkere,
     uregistrerte,
   };

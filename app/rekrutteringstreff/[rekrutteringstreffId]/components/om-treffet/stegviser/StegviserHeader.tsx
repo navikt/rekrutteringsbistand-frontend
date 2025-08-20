@@ -8,10 +8,6 @@ import {
   avsluttRekrutteringstreff,
   publiserRekrutteringstreff,
 } from '@/app/api/rekrutteringstreff/[...slug]/steg';
-import {
-  useJobbsøkere,
-  JobbsøkerDTO,
-} from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { RekbisError } from '@/util/rekbisError';
 import { ChevronDownIcon, ChevronUpIcon } from '@navikt/aksel-icons';
@@ -31,11 +27,6 @@ const commonBoxProps = {
   padding: '6' as const,
 };
 
-const erOppmøteRegistrert = (j: JobbsøkerDTO) =>
-  j.hendelser.some(
-    (h) => h.hendelsestype === 'MØT_OPP' || h.hendelsestype === 'IKKE_MØTT_OPP',
-  );
-
 const StegviserHeader: React.FC<Props> = ({ isOpen, toggle, stepDetails }) => {
   const [isPublishing, setIsPublishing] = React.useState(false);
   const [isFinishingInvitation, setIsFinishingInvitation] =
@@ -47,8 +38,6 @@ const StegviserHeader: React.FC<Props> = ({ isOpen, toggle, stepDetails }) => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { data: rekrutteringstreffData, mutate: mutateRekrutteringstreff } =
     useRekrutteringstreff(rekrutteringstreffId);
-  const jobbsøkerHook = useJobbsøkere(rekrutteringstreffId);
-  const jobbsøkere = jobbsøkerHook.data ?? [];
 
   const {
     activeStep,
@@ -60,12 +49,14 @@ const StegviserHeader: React.FC<Props> = ({ isOpen, toggle, stepDetails }) => {
     totaltAntallInviterePunkter,
     arrangementtidspunktHarPassert,
     tiltidspunktHarPassert,
+    antallMøttOpp,
+    antallIkkeMøttOpp,
+    antallUbestemt,
+    antallInviterte,
   } = useStegviser();
 
   // Avledet data for steg 3
-  const totaltJobbsøkere = jobbsøkere.length;
-  const antallRegistrertOppmøte = jobbsøkere.filter(erOppmøteRegistrert).length;
-  const uregistrerte = jobbsøkere.filter((j) => !erOppmøteRegistrert(j));
+  const antallRegistrertOppmøte = antallMøttOpp + antallIkkeMøttOpp;
 
   const onPubliserTreffet = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -184,7 +175,7 @@ const StegviserHeader: React.FC<Props> = ({ isOpen, toggle, stepDetails }) => {
               )}
               {activeStep === 3 && (
                 <BodyShort className='text-text-subtle whitespace-nowrap'>
-                  {antallRegistrertOppmøte} / {totaltJobbsøkere}
+                  {antallRegistrertOppmøte} / {antallInviterte}
                 </BodyShort>
               )}
             </div>
@@ -214,7 +205,7 @@ const StegviserHeader: React.FC<Props> = ({ isOpen, toggle, stepDetails }) => {
             )}
             {activeStep === 3 && (
               <ProgressBar
-                value={getProsent(antallRegistrertOppmøte, totaltJobbsøkere)}
+                value={getProsent(antallRegistrertOppmøte, antallInviterte)}
                 size='small'
                 className='mt-2 h-1'
                 aria-label='Fremdrift for oppfølging'
@@ -257,7 +248,7 @@ const StegviserHeader: React.FC<Props> = ({ isOpen, toggle, stepDetails }) => {
                 disabled={
                   isFinishingFollowUp ||
                   !tiltidspunktHarPassert ||
-                  uregistrerte.length > 0
+                  antallUbestemt > 0
                 }
                 onClick={onAvsluttOppfolging}
               >

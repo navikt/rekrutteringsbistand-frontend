@@ -10,6 +10,8 @@ import {
   SjekklisteRad,
   SjekklisteSeparator,
 } from './Sjekkliste';
+import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
+import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
 import { BodyShort, Detail } from '@navikt/ds-react';
 import * as React from 'react';
 
@@ -19,8 +21,12 @@ const FølgeOppSteg: React.FC = () => {
     antallMøttOpp,
     antallIkkeMøttOpp,
     antallUbestemt,
-    uregistrerte, // fra context
+    uregistrerte,
+    antallIkkeInvitert,
   } = useStegviser();
+
+  const { rekrutteringstreffId } = useRekrutteringstreffContext();
+  const jobbsøkerHook = useJobbsøkere(rekrutteringstreffId);
 
   const ikkeOppmøteModalRef = React.useRef<HTMLDialogElement>(null);
   const [ikkeOppmøteListe, setIkkeOppmøteListe] = React.useState<
@@ -43,7 +49,7 @@ const FølgeOppSteg: React.FC = () => {
   const onIkkeOppmøteSendt = () => {
     ikkeOppmøteModalRef.current?.close();
     setIkkeOppmøteListe([]);
-    // Oppdateres via SWR i modalens submit-flow
+    jobbsøkerHook.mutate();
   };
 
   return (
@@ -78,6 +84,11 @@ const FølgeOppSteg: React.FC = () => {
         <SjekklisteInfoRad>
           <BodyShort>
             Ikke bestemt ennå: <b>{antallUbestemt}</b>
+          </BodyShort>
+        </SjekklisteInfoRad>
+        <SjekklisteInfoRad>
+          <BodyShort>
+            Ikke invitert: <b>{antallIkkeInvitert}</b>
           </BodyShort>
         </SjekklisteInfoRad>
 

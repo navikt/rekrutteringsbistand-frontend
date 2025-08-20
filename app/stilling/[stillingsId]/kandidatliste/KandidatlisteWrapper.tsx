@@ -1,12 +1,12 @@
 import { useForespurteOmDelingAvCv } from '../../../api/foresporsel-om-deling-av-cv/foresporsler/[...slug]/useForespurteOmDelingAvCv';
 import { useKandidatlisteForEier } from '../../../api/kandidat/useKandidatlisteForEier';
 import { useSmserForStilling } from '../../../api/kandidatvarsel/kandidatvarsel';
-import { oppdaterStilling } from '../../../api/stilling/oppdater-stilling/oppdaterStilling';
 import SWRLaster from '../../../components/SWRLaster';
 import { useApplikasjonContext } from '../../../providers/ApplikasjonContext';
 import { useStillingsContext } from '../StillingsContext';
 import { KandidatlisteContextProvider } from './KandidatlisteContext';
 import { KandidatlisteFilterContextProvider } from './components/KandidatlisteFilter/KandidatlisteFilterContext';
+import { overtaEierskap } from '@/app/api/stilling/overta-eierskap/overtaEierskap';
 import { Button } from '@navikt/ds-react';
 import * as React from 'react';
 
@@ -27,7 +27,8 @@ const KandidatlisteWrapper: React.FC<KandidatlisteWrapperProps> = ({
   const kandidatlisteHook = useKandidatlisteForEier(stillingsData, erEier);
 
   const onOvertaStilling = async () => {
-    await oppdaterStilling(stillingsData, {
+    await overtaEierskap({
+      stillingsid: stillingsData.stilling.uuid,
       eierNavident: brukerData.ident,
       eierNavn: brukerData.navn,
       eierNavKontorEnhetId: valgtNavKontor?.navKontor,

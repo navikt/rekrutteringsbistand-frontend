@@ -1,6 +1,6 @@
 import { RekbisError } from '../../../../../../util/rekbisError';
-import { setStillingsinfo } from '../../../../../api/stilling/stillingsinfo/setStillingsinfo';
 import { useApplikasjonContext } from '../../../../../providers/ApplikasjonContext';
+import { overtaEierskap } from '@/app/api/stilling/overta-eierskap/overtaEierskap';
 import {
   FileTextIcon,
   PersonChatIcon,
@@ -39,7 +39,7 @@ const OpprettRekrutteringsoppdrag: React.FC<
   const handleFullfor = async () => {
     setLoading(true);
     try {
-      await setStillingsinfo(opprettStillingInfo);
+      await overtaEierskap(opprettStillingInfo);
       window.location.reload();
     } catch (error) {
       new RekbisError({
