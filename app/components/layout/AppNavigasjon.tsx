@@ -54,7 +54,7 @@ const navigasjonListe: NavigasjonItemProps[] = [
     kreverRoller: [Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER],
   },
   {
-    tekst: 'Stillingsannonser',
+    tekst: 'Stillingsoppdrag',
     ikon: <BriefcaseIcon />,
     // path: '/stilling?brukStandardsok=true',
     path: '/stilling',

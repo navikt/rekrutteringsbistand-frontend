@@ -48,7 +48,7 @@ export const testTilgangskontroll = (rolle: Roller) => {
     });
 
     test('2. Stillingssøk', async ({ page }) => {
-      await page.getByRole('button', { name: 'Stillingsannonser' }).click();
+      await page.getByRole('button', { name: 'Stillingsoppdrag' }).click();
 
       await page.waitForURL('**/stilling**');
 

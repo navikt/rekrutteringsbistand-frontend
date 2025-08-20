@@ -47,7 +47,7 @@ const StillingsSøkeresultat: React.FC<StillingsSøkeresultatProps> = ({
     return (
       <div>
         Viser {fraAntall}-{tilAntall < total ? tilAntall : total} av {total}{' '}
-        stillingsannonser
+        Stillingsoppdrag
       </div>
     );
   };

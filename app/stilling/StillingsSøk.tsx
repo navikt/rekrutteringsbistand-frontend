@@ -88,7 +88,7 @@ const StillingsSøkLayout: React.FC<StillingsSøkProps> = ({ formidlinger }) => 
       topBanner={
         <SideBanner
           ikon={<BriefcaseIcon className='h-6 w-6' />}
-          tittel='Stillingsannonser'
+          tittel='Stillingsoppdrag'
           knapper={
             <div>
               <Link href={'/stilling/ny-stilling'}>

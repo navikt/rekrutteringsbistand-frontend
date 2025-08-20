@@ -12,7 +12,7 @@ test.describe(`Stillingssøk test`, () => {
 
   test('Viser riktig innhold i stillingssøk', async ({ page }) => {
     await expect(
-      page.getByRole('heading', { name: 'Stillingsannonser' }),
+      page.getByRole('heading', { name: 'Stillingsoppdrag' }),
     ).toBeVisible();
 
     await expect(page.getByRole('button', { name: 'Filtrer' })).toBeVisible();
