@@ -38,7 +38,7 @@ const KandidatSøkTabs: React.FC<KandidatSøkTabsProps> = ({
           : 'tertiary'
       }
       onClick={() => setPortefølje(KandidatSøkPortefølje.MINE_BRUKERE)}
-      size='small'
+      size='xsmall'
     >
       Mine brukere
     </Button>
@@ -61,7 +61,7 @@ const KandidatSøkTabs: React.FC<KandidatSøkTabsProps> = ({
                 : 'tertiary'
             }
             onClick={() => setPortefølje(KandidatSøkPortefølje.MITT_KONTOR)}
-            size='small'
+            size='xsmall'
           >
             Mitt kontor
           </Button>
@@ -88,7 +88,7 @@ const KandidatSøkTabs: React.FC<KandidatSøkTabsProps> = ({
                 : 'tertiary'
             }
             onClick={() => setPortefølje(KandidatSøkPortefølje.MINE_KONTORER)}
-            size='small'
+            size='xsmall'
           >
             Mine kontorer
           </Button>
@@ -110,7 +110,7 @@ const KandidatSøkTabs: React.FC<KandidatSøkTabsProps> = ({
           portefølje === KandidatSøkPortefølje.ALLE ? 'primary' : 'tertiary'
         }
         onClick={() => setPortefølje(KandidatSøkPortefølje.ALLE)}
-        size='small'
+        size='xsmall'
       >
         Alle kontorer
       </Button>
@@ -154,12 +154,12 @@ const KandidatSøkTabs: React.FC<KandidatSøkTabsProps> = ({
             <AlleKontorer />
             <VelgKontor />
           </TilgangskontrollForInnhold>
-          {portefølje === KandidatSøkPortefølje.VALGTE_KONTORER && (
-            <ValgteKontorer />
-          )}
         </div>
         <KandidatSøkFilter />
       </div>
+      {portefølje === KandidatSøkPortefølje.VALGTE_KONTORER && (
+        <ValgteKontorer />
+      )}
       <KandidatSøkChips />
       <KandidatSøkResultat
         alleredeLagtTilTreff={alleredeLagtTilTreff}
