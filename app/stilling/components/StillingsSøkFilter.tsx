@@ -7,10 +7,11 @@ import GeografiFilter from './StillingsSøkFilter/GeografiFilter';
 import InkluderingFilter from './StillingsSøkFilter/InkluderingFilter';
 import KategoriFilter from './StillingsSøkFilter/KategoriFilter';
 import StatusFilter from './StillingsSøkFilter/StatusFilter';
+import StillingSøkebar from './StillingsSøkFilter/StillingSøkebar';
 import StillingsSøkNavigasjon from './StillingsSøkNavigasjon';
 import StillingsSøkSortering from './StillingsSøkSortering';
 import { MagnifyingGlassIcon } from '@navikt/aksel-icons';
-import { Box, Button, Search } from '@navikt/ds-react';
+import { Box, Button } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 
@@ -57,31 +58,7 @@ const StillingsSøkFilter: React.FC<{
       <StillingsSøkNavigasjon />
       <div className='flex gap-2'>
         <div className='relative' ref={searchRef}>
-          <Search
-            onKeyDownCapture={(e) => {
-              if (e.key === 'Enter') {
-                e.preventDefault();
-                const nyListe = [...fritekst, searchValue];
-                setFritekstListe(nyListe);
-                setSearchValue('');
-                setShowStandardsøk(false);
-              }
-            }}
-            onFocus={() => setShowStandardsøk(true)}
-            size='small'
-            hideLabel={true}
-            label='Søk i stillinger'
-            placeholder='Søk i stillinger'
-            variant='secondary'
-            value={searchValue}
-            onChange={(e) => setSearchValue(e)}
-            onSearchClick={() => {
-              const nyListe = [...fritekst, searchValue];
-              setFritekstListe(nyListe);
-              setSearchValue('');
-              setShowStandardsøk(false);
-            }}
-          />
+          <StillingSøkebar />
 
           {showStandardsøk && brukerStandardSøkData.data && (
             <Box.New

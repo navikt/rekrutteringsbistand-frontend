@@ -54,7 +54,7 @@ export const testTilgangskontroll = (rolle: Roller) => {
 
       // Alle stillinger fane
       const alleStillingerFane = page.getByRole('button', {
-        name: 'Intern',
+        name: 'Alle oppdrag',
       });
       if (ARBEIDSGIVERRETTET || JOBBSOKERRETTET || MODIA) {
         await expect(alleStillingerFane).toBeVisible();

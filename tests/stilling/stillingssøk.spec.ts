@@ -15,10 +15,6 @@ test.describe(`Stillingssøk test`, () => {
       page.getByRole('heading', { name: 'Stillingsannonser' }),
     ).toBeVisible();
 
-    await expect(
-      page.getByRole('searchbox', { name: 'Søk i stillinger' }),
-    ).toBeVisible();
-
     await expect(page.getByRole('button', { name: 'Filtrer' })).toBeVisible();
     await expect(
       page.getByRole('button', { name: 'Opprett annonse' }),
@@ -31,10 +27,10 @@ test.describe(`Stillingssøk test`, () => {
     await expect(page.getByText('Kategori')).toBeVisible();
 
     await page.locator('.data-\\[state\\=open\\]\\:animate-in').first().click();
-    await page.getByRole('searchbox', { name: 'Søk i stillinger' }).click();
+    await page.getByRole('button', { name: 'Søk', exact: true }).click();
     await page
       .getByRole('searchbox', { name: 'Søk i stillinger' })
-      .fill('takk test');
+      .fill('test tekst');
     await page
       .getByRole('searchbox', { name: 'Søk i stillinger' })
       .press('Enter');
