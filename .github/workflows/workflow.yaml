@@ -13,7 +13,7 @@ jobs:
       playwright-github-report: true
       dev-vars-path: '.nais/dev-gcp.json'
       prod-vars-path: '.nais/prod-gcp.json'
-      deploy-to-dev-if-branch-name-is: 'forbedre-feilmelding'
+      deploy-to-dev-if-branch-name-is: 'deploy_dev_test'
     secrets: inherit
     permissions:
       contents: write
