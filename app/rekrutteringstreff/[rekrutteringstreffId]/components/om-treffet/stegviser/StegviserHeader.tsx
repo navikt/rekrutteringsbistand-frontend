@@ -48,7 +48,15 @@ const StegviserHeader: React.FC<Props> = ({ isOpen, toggle, stepDetails }) => {
     inviterePunkterFullfort,
     totaltAntallInviterePunkter,
     arrangementtidspunktHarPassert,
+    tiltidspunktHarPassert,
+    antallMøttOpp,
+    antallIkkeMøttOpp,
+    antallUbestemt,
+    antallInviterte,
   } = useStegviser();
+
+  // Avledet data for steg 3
+  const antallRegistrertOppmøte = antallMøttOpp + antallIkkeMøttOpp;
 
   const onPubliserTreffet = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -165,6 +173,11 @@ const StegviserHeader: React.FC<Props> = ({ isOpen, toggle, stepDetails }) => {
                   {inviterePunkterFullfort} / {totaltAntallInviterePunkter}
                 </BodyShort>
               )}
+              {activeStep === 3 && (
+                <BodyShort className='text-text-subtle whitespace-nowrap'>
+                  {antallRegistrertOppmøte} / {antallInviterte}
+                </BodyShort>
+              )}
             </div>
           </div>
           <div>
@@ -188,6 +201,14 @@ const StegviserHeader: React.FC<Props> = ({ isOpen, toggle, stepDetails }) => {
                 size='small'
                 className='mt-2 h-1'
                 aria-label='Fremdrift for invitasjon'
+              />
+            )}
+            {activeStep === 3 && (
+              <ProgressBar
+                value={getProsent(antallRegistrertOppmøte, antallInviterte)}
+                size='small'
+                className='mt-2 h-1'
+                aria-label='Fremdrift for oppfølging'
               />
             )}
           </div>
@@ -224,6 +245,11 @@ const StegviserHeader: React.FC<Props> = ({ isOpen, toggle, stepDetails }) => {
                 variant='primary'
                 size='small'
                 loading={isFinishingFollowUp}
+                disabled={
+                  isFinishingFollowUp ||
+                  !tiltidspunktHarPassert ||
+                  antallUbestemt > 0
+                }
                 onClick={onAvsluttOppfolging}
               >
                 Ferdig med oppfølging

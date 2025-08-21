@@ -3,7 +3,13 @@ import VelgPoststed from '../../../../components/VelgPoststed';
 import { FormidlingDataForm } from '../../../../etterregistrering/ny-etterregistrering/redigerFormidlingFormType';
 import { StillingsDataForm } from '../redigerFormType.zod';
 import VelgKommuneFylkeEllerLand from './VelgKommuneFylkeEllerLand';
-import { BodyLong, Button, Checkbox, Heading } from '@navikt/ds-react';
+import {
+  BodyLong,
+  Button,
+  Checkbox,
+  ErrorMessage,
+  Heading,
+} from '@navikt/ds-react';
 import * as React from 'react';
 import { useState } from 'react';
 import { useFieldArray, useFormContext } from 'react-hook-form';
@@ -13,9 +19,12 @@ export interface VelgArbeidsstedProps {
 }
 
 const VelgArbeidssted: React.FC<VelgArbeidsstedProps> = ({ feltNavn }) => {
-  const { control, setValue, watch } = useFormContext<
-    StillingsDataForm | FormidlingDataForm
-  >();
+  const {
+    control,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useFormContext<StillingsDataForm | FormidlingDataForm>();
 
   const {
     fields: lokasjoner,
@@ -37,6 +46,11 @@ const VelgArbeidssted: React.FC<VelgArbeidsstedProps> = ({ feltNavn }) => {
 
   const [visAdresse, setVisAdresse] = useState(adresser.length > 0);
   const [visLokasjon, setVisLokasjon] = useState(lokasjoner.length > 0);
+
+  const visFeilIngenAdresseValgt =
+    (errors as any)?.[feltNavn] &&
+    adresser.length === 0 &&
+    lokasjoner.length === 0;
 
   React.useEffect(() => {
     if (!visAdresse && adresser.length > 0) {
@@ -80,6 +94,7 @@ const VelgArbeidssted: React.FC<VelgArbeidsstedProps> = ({ feltNavn }) => {
       </BodyLong>
 
       <Checkbox
+        error={visFeilIngenAdresseValgt}
         value='adresse'
         checked={visAdresse}
         onChange={() => setAdresseFelt(!visAdresse)}
@@ -87,6 +102,7 @@ const VelgArbeidssted: React.FC<VelgArbeidsstedProps> = ({ feltNavn }) => {
         Adresse
       </Checkbox>
       <Checkbox
+        error={visFeilIngenAdresseValgt}
         value='lokasjon'
         checked={visLokasjon}
         onChange={() => setVisLokasjon(!visLokasjon)}
@@ -94,6 +110,12 @@ const VelgArbeidssted: React.FC<VelgArbeidsstedProps> = ({ feltNavn }) => {
         Kommune, fylke eller land
       </Checkbox>
 
+      {visFeilIngenAdresseValgt && (
+        <ErrorMessage>
+          Du må velge minst én adresse eller én eller flere kommuner, fylker
+          eller land.
+        </ErrorMessage>
+      )}
       {visAdresse &&
         adresser.map((_, index) => (
           <VelgPoststed

@@ -36,15 +36,29 @@ export const RedigerPraktiskInfo: React.FC<{
       <div className='flex flex-col gap-y-8'>
         <Heading size='large'>Praktisk info</Heading>
         <BodyShort>Fyll inn praktiske detaljer om jobben.</BodyShort>
-        <VelgSektor sektorFelt='praktiskInfo.sektor' />
-        <VelgAntallStillinger />
-        <VelgOmfang
-          omfangFelt='praktiskInfo.omfangKode'
-          omfangProsentFelt='praktiskInfo.omfangProsent'
-        />
-        <VelgAnsettelsesform ansettelsesformFelt='praktiskInfo.ansettelsesform' />
-        <VelgArbeidstidsordning arbeidstidsordningFelt='praktiskInfo.arbeidstidsordning' />
-        <VelgArbeidsTid />
+        <div id={`praktiskInfo.sektor`} tabIndex={-1}>
+          <VelgSektor sektorFelt='praktiskInfo.sektor' />
+        </div>
+        <div id={`praktiskInfo.antallStillinger`} tabIndex={-1}>
+          <VelgAntallStillinger />
+        </div>
+        <div id={`praktiskInfo.omfangKode`} tabIndex={-1}>
+          <VelgOmfang
+            omfangFelt='praktiskInfo.omfangKode'
+            omfangProsentFelt='praktiskInfo.omfangProsent'
+          />
+        </div>
+        <div id={`praktiskInfo.ansettelsesform`} tabIndex={-1}>
+          <VelgAnsettelsesform ansettelsesformFelt='praktiskInfo.ansettelsesform' />
+        </div>
+        <div id={`praktiskInfo.arbeidstidsordning`} tabIndex={-1}>
+          <VelgArbeidstidsordning arbeidstidsordningFelt='praktiskInfo.arbeidstidsordning' />
+        </div>
+        <div id={`praktiskInfo.dager`} tabIndex={-1}>
+          <div id={`praktiskInfo.tid`} tabIndex={-1}>
+            <VelgArbeidsTid />
+          </div>
+        </div>
         <VelgOppstartOgFrist />
         {oppsummerValidering && <OppsummerValidering feltNavn='praktiskInfo' />}
         <StegNavigering stegNummer={stegNummer} forrigeSteg={forrigeSteg} />

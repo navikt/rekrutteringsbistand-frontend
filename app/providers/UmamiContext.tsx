@@ -42,7 +42,7 @@ export const UmamiProvider = ({ children }: UmamiProviderProps) => {
         domene: event.domene,
       });
     } else {
-      logger.error('Umami script er ikke lastet', event);
+      logger.error(event, 'Umami script er ikke lastet');
     }
   };
 

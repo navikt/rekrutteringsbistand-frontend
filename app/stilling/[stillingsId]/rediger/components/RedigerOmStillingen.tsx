@@ -50,7 +50,7 @@ export const RedigerOmStillingen: React.FC<{
 
       <form onSubmit={handleStepSubmit}>
         <div className='space-y-8'>
-          <div>
+          <div id={`omStillingen.categoryList`} tabIndex={-1}>
             <VelgStillingTittel
               categoryList={watch('omStillingen.categoryList')}
               callBack={(val) => setValue('omStillingen.categoryList', val)}
@@ -63,12 +63,14 @@ export const RedigerOmStillingen: React.FC<{
               Kan sees av kandidater som mottar stillingen og andre Nav-ansatte.
               Ikke skriv informasjon som kan avsløre personopplysninger.
             </BodyShort>
-            <RikTekstEditor
-              id='rediger-stilling-beskrivelse'
-              tekst={watch('omStillingen.beskrivelse') ?? ''}
-              onChange={(e) => setValue('omStillingen.beskrivelse', e)}
-              // limitLengde={800}
-            />
+            <div id={`omStillingen.beskrivelse`} tabIndex={-1}>
+              <RikTekstEditor
+                id='rediger-stilling-beskrivelse'
+                tekst={watch('omStillingen.beskrivelse') ?? ''}
+                onChange={(e) => setValue('omStillingen.beskrivelse', e)}
+                // limitLengde={800}
+              />
+            </div>
             <ErrorMessage>
               {errors.omStillingen?.beskrivelse?.message}
             </ErrorMessage>

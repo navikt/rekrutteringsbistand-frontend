@@ -39,7 +39,7 @@ export const OmVirksomhetenSchema = z.object({
             return !!(data.email || data.phone);
           },
           {
-            message: 'Du må fylle ut enten e-post eller telefonnummer',
+            error: 'Du må fylle ut enten e-post eller telefonnummer',
             path: ['email'],
           },
         ),
@@ -67,33 +67,28 @@ export const OmStillingenSchema = z
       .array(LocationSchema)
       .optional()
       .nullable()
-      .superRefine((val, ctx) => {
-        if (val && val.length > 0) {
-          // Sjekk om noen av adressene mangler påkrevde felter
-          const harManglendeFelt = val.some((location) => {
-            return !location.address || !location.postalCode || !location.city;
-          });
-
-          if (harManglendeFelt) {
-            ctx.addIssue({
-              code: z.ZodIssueCode.custom,
-              message:
-                'Alle adressefelt må fylles ut (adresse, postnummer og poststed)',
-            });
-          }
-        }
-      }),
+      .refine(
+        (val) =>
+          !val ||
+          val.length === 0 ||
+          !val.some((l) => !l.address || !l.postalCode || !l.city),
+        {
+          message:
+            'Alle adressefelt må fylles ut (adresse, postnummer og poststed)',
+        },
+      ),
   })
   .superRefine((data, ctx) => {
-    if (data.adresser?.length === 0 && data.lokasjoner?.length === 0) {
+    const lokEmpty = !data.lokasjoner || data.lokasjoner.length === 0;
+    const adrEmpty = !data.adresser || data.adresser.length === 0;
+    if (lokEmpty && adrEmpty) {
       ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: 'Du må velge arbeidssted',
-        path: ['adresser'],
+        code: 'custom',
+        path: ['lokasjoner'],
+        message: 'Du må fylle ut minst én lokasjon eller adresse',
       });
     }
   });
-
 export const PraktiskInfoSchema = z
   .object({
     sektor: z.string().min(1, 'Sektor må velges').nullable(),
@@ -112,7 +107,7 @@ export const PraktiskInfoSchema = z
         return isNaN(num) ? null : num;
       }, z.number().nullable().optional())
       .refine((val) => val !== null && val !== undefined && val > 0, {
-        message: 'Antall stillinger må fylles ut',
+        error: 'Antall stillinger må fylles ut',
       }),
     oppstart: z.string().nullable(),
     oppstartEtterAvtale: z.boolean(),
@@ -123,23 +118,23 @@ export const PraktiskInfoSchema = z
       .string()
       .nullable()
       .refine((val) => val !== null && val !== '', {
-        message: 'Ansettelsesform må velges',
+        error: 'Ansettelsesform må velges',
       }),
     dager: z
-      .array(z.string(), {
-        required_error: 'Arbeidsdager må velges',
-      })
+      .array(z.string({ error: 'Arbeidsdager må velges' }))
       .min(1, 'Velg minst én arbeidsdag'),
     tid: z
-      .array(z.string(), {
-        required_error: 'Arbeidstid må velges',
-      })
+      .array(
+        z.string({
+          error: 'Arbeidstid må velges',
+        }),
+      )
       .min(1, 'Velg minst én arbeidstid'),
   })
   .superRefine((data, ctx) => {
     if (data.omfangKode === 'Deltid' && !data.omfangProsent) {
       ctx.addIssue({
-        code: z.ZodIssueCode.custom,
+        code: 'custom',
         message: 'Du må fylle ut omfang i prosent for deltid',
         path: ['omfangProsent'],
       });
@@ -147,7 +142,7 @@ export const PraktiskInfoSchema = z
 
     if (!data.oppstart && !data.oppstartEtterAvtale) {
       ctx.addIssue({
-        code: z.ZodIssueCode.custom,
+        code: 'custom',
         message: 'Du må fylle ut enten oppstart eller oppstart etter avtale',
         path: ['oppstart'],
       });
@@ -155,7 +150,7 @@ export const PraktiskInfoSchema = z
 
     if (!data.søknadsfrist && !data.søknadsfristSnarest) {
       ctx.addIssue({
-        code: z.ZodIssueCode.custom,
+        code: 'custom',
         message: 'Du må fylle ut enten søknadsfrist eller velge snarest',
         path: ['søknadsfrist'],
       });
@@ -177,12 +172,18 @@ export const InnspurtSchema = z
       !data.lenke
     ) {
       ctx.addIssue({
-        code: z.ZodIssueCode.custom,
+        code: 'custom',
         message: 'Du må fylle ut enten e-post eller lenke',
         path: ['epost'],
       });
     }
   });
+
+export type OmVirksomhetenType = z.infer<typeof OmVirksomhetenSchema>;
+export type OmStillingenType = z.infer<typeof OmStillingenSchema>;
+export type PraktiskInfoType = z.infer<typeof PraktiskInfoSchema>;
+export type OmTilretteleggingType = z.infer<typeof OmTilretteleggingSchema>;
+export type InnspurtType = z.infer<typeof InnspurtSchema>;
 
 export const StillingsDataFormSchema = z.object({
   omVirksomheten: OmVirksomhetenSchema,
@@ -192,16 +193,4 @@ export const StillingsDataFormSchema = z.object({
   innspurt: InnspurtSchema,
 });
 
-export type OmVirksomhetenType = z.infer<typeof OmVirksomhetenSchema>;
-export type OmStillingenType = z.infer<typeof OmStillingenSchema>;
-export type PraktiskInfoType = z.infer<typeof PraktiskInfoSchema>;
-export type OmTilretteleggingType = z.infer<typeof OmTilretteleggingSchema>;
-export type InnspurtType = z.infer<typeof InnspurtSchema>;
-
-export interface StillingsDataForm {
-  omVirksomheten: OmVirksomhetenType;
-  omTilrettelegging: OmTilretteleggingType;
-  omStillingen: OmStillingenType;
-  praktiskInfo: PraktiskInfoType;
-  innspurt: InnspurtType;
-}
+export type StillingsDataForm = z.infer<typeof StillingsDataFormSchema>;

@@ -1,6 +1,10 @@
 'use client';
 
 import { brukerMirage } from '../app/api/bruker/useBruker';
+import { mockModiaContext } from '../app/api/context/setModiaContext';
+import { modiaAktivBrukerMirage } from '../app/api/context/useModiaAktivBruker';
+import { modiaAktivEnhetMirage } from '../app/api/context/useModiaAktivEnhet';
+import { decoratorDataMirage } from '../app/api/decorator/useDecoratorData';
 import { foresporselOmDelingAvCVMirage } from '../app/api/foresporsel-om-deling-av-cv/foresporsler/[...slug]/useForespurteOmDelingAvCv';
 import { foresporselOmDelingAvCVStatistikkMirage } from '../app/api/foresporsel-om-deling-av-cv/statistikk/useForesporselOmdelingAvCV';
 import { arenaKandidatnrMirage } from '../app/api/kandidat-sok/useArenaKandidatnr';
@@ -17,10 +21,6 @@ import { kandidatlisteInfoMirage } from '../app/api/kandidat/useKandidatlisteInf
 import { mineKandidatlisterMirage } from '../app/api/kandidat/useMineKandidatlister';
 import { meldingsmalerMirage } from '../app/api/kandidatvarsel/hentMeldingsmaler';
 import { kandidatvarselMirage } from '../app/api/kandidatvarsel/kandidatvarsel';
-import { mockModiaContext } from '../app/api/modia/context/setModiaContext';
-import { modiaAktivBrukerMirage } from '../app/api/modia/context/useModiaAktivBruker';
-import { modiaAktivEnhetMirage } from '../app/api/modia/context/useModiaAktivEnhet';
-import { decoratorDataMirage } from '../app/api/modia/decorator/useDecoratorData';
 import { pamPostdataMirage } from '../app/api/pam-geografi/postdata/[postnummer]/usePamPostdata';
 import { pamGeografiMirage } from '../app/api/pam-geografi/typehead/lokasjoner/usePamGeografi';
 import { stillingsTittelMirage } from '../app/api/pam-ontologi/stillingsTittel/useStillingsTittel';
@@ -33,6 +33,8 @@ import { brukerStandardSøkMirage } from '../app/api/stilling/standardsok/useBru
 import { stillingssøkMirage } from '../app/api/stillings-sok/useStillingssøk';
 import { synlighetsevalueringMirage } from '../app/api/synlighet/evaluering/useSynlighetsevaluering';
 import { leggTilNyArbeidsgiverMirage } from '@/app/api/rekrutteringstreff/[...slug]/ny-arbeidsgiver/leggTilNyArbeidsgiver';
+import { registrerIkkeOppmøteMirage } from '@/app/api/rekrutteringstreff/[...slug]/registrerOppmøte/registrerIkkeOppmøte';
+import { registrerOppmøteMirage } from '@/app/api/rekrutteringstreff/[...slug]/registrerOppmøte/registrerOppmøte';
 import { rekrutteringstreffHendelserMirage } from '@/app/api/rekrutteringstreff/[...slug]/steg';
 import { alleHendelserMirage } from '@/app/api/rekrutteringstreff/[...slug]/useAlleHendelser';
 import { arbeidsgiverHendelserMirage } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgiverHendelser';
@@ -110,6 +112,8 @@ export function makeServer({ environment = 'test' } = {}) {
       oppdaterInnleggfMirage(this);
       rekrutteringstreffHendelserMirage(this);
       inviterJobbsøkereMirage(this);
+      registrerOppmøteMirage(this);
+      registrerIkkeOppmøteMirage(this);
       kandidatnummerMirage(this);
       modiaAktivEnhetMirage(this);
       modiaAktivBrukerMirage(this);

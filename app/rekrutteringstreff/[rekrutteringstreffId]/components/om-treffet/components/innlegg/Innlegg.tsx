@@ -23,6 +23,8 @@ import {
   RobotFrownIcon,
   RobotIcon,
   RobotSmileIcon,
+  EyeIcon,
+  PersonCircleIcon,
 } from '@navikt/aksel-icons';
 import {
   Alert,
@@ -36,8 +38,8 @@ import {
   Label,
   Modal,
   Skeleton,
+  Switch,
 } from '@navikt/ds-react';
-import { logger } from '@navikt/next-logger';
 import { isSameDay } from 'date-fns';
 import { AnimatePresence, motion } from 'framer-motion';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
@@ -70,12 +72,9 @@ const Innlegg: React.FC<InnleggProps> = ({
   const submitButtonRef = useRef<HTMLButtonElement>(null);
   const analyseRef = useRef<HTMLDivElement>(null);
 
-  const [isClosingModal, setIsClosingModal] = useState(false);
   const [initialFocusDone, setInitialFocusDone] = useState(false);
-  const [
-    hasValidatedCurrentContentSuccessfully,
-    setHasValidatedCurrentContentSuccessfully,
-  ] = useState(false);
+  const [hasChecked, setHasChecked] = useState(false);
+  const [forceSave, setForceSave] = useState(false);
   const [editorKey, setEditorKey] = useState(Date.now());
 
   const methods = useForm<InnleggFormFields>({
@@ -101,71 +100,73 @@ const Innlegg: React.FC<InnleggProps> = ({
   const htmlContent = watch('htmlContent');
   const isDirty = dirtyFields.htmlContent;
 
+  // Nullstill valideringsstatus ved endring
   useEffect(() => {
     if (isDirty) {
-      setHasValidatedCurrentContentSuccessfully(false);
+      setHasChecked(false);
+      setForceSave(false);
+      resetAnalyse();
     }
-  }, [htmlContent, isDirty]);
+  }, [htmlContent, isDirty, resetAnalyse]);
+
+  const baseInvalid = useMemo(
+    () => !isDirty || !htmlContent?.trim(),
+    [isDirty, htmlContent],
+  );
 
   const disableSave = useMemo(
     () =>
-      !isDirty ||
-      !htmlContent?.trim() ||
+      baseInvalid ||
       isSubmitting ||
       validating ||
-      !hasValidatedCurrentContentSuccessfully,
+      (hasChecked && analyse?.bryterRetningslinjer && !forceSave),
     [
-      isDirty,
-      htmlContent,
+      baseInvalid,
       isSubmitting,
       validating,
-      hasValidatedCurrentContentSuccessfully,
+      hasChecked,
+      analyse?.bryterRetningslinjer,
+      forceSave,
     ],
   );
 
-  const handleValidateOrError = () => {
+  const handleValidateOrError = async () => {
     if (validating) return;
 
     const tekst = htmlContent?.trim();
     if (!tekst) {
       resetAnalyse();
-      setHasValidatedCurrentContentSuccessfully(false);
+      setHasChecked(false);
       return;
     }
-    setHasValidatedCurrentContentSuccessfully(false);
-    validate({ tekst: tekst });
+    await validate({ tekst });
+    setHasChecked(true);
   };
 
   useEffect(() => {
     if (analyse && !validating && !analyseError) {
       if (!analyse.bryterRetningslinjer) {
-        setHasValidatedCurrentContentSuccessfully(true);
       } else {
-        setHasValidatedCurrentContentSuccessfully(false);
       }
-    } else if (analyseError && !validating) {
-      setHasValidatedCurrentContentSuccessfully(false);
     }
   }, [analyse, validating, analyseError]);
 
   useEffect(() => {
     reset({ htmlContent: innlegg?.htmlContent ?? '' });
     resetAnalyse();
-    setHasValidatedCurrentContentSuccessfully(false);
+    setHasChecked(false);
+    setForceSave(false);
     setEditorKey(Date.now());
     if (modalRef.current && !modalRef.current.open) {
-      setIsClosingModal(false);
       setInitialFocusDone(false);
     }
   }, [innlegg, reset, resetAnalyse]);
 
   const onSubmitHandler: SubmitHandler<InnleggFormFields> = async (data) => {
-    if (validating || !hasValidatedCurrentContentSuccessfully) {
-      logger.warn(
-        'Forsøkte å lagre innlegg uten vellykket validering eller mens validering pågikk.',
-      );
-      return;
-    }
+    if (!hasChecked) return;
+    if (validating) return;
+    if (analyse?.bryterRetningslinjer && !forceSave) return;
+
     try {
       const navnForPayload =
         innlegg?.opprettetAvPersonNavn ||
@@ -212,11 +213,11 @@ const Innlegg: React.FC<InnleggProps> = ({
   };
 
   const openModal = () => {
-    setIsClosingModal(false);
     reset({ htmlContent: innlegg?.htmlContent ?? '' });
     resetAnalyse();
     setInitialFocusDone(false);
-    setHasValidatedCurrentContentSuccessfully(false);
+    setHasChecked(false);
+    setForceSave(false);
     setEditorKey(Date.now());
     modalRef.current?.showModal();
   };
@@ -230,9 +231,9 @@ const Innlegg: React.FC<InnleggProps> = ({
   const handleModalClose = () => {
     reset({ htmlContent: innlegg?.htmlContent ?? '' });
     resetAnalyse();
-    setIsClosingModal(false);
     setInitialFocusDone(false);
-    setHasValidatedCurrentContentSuccessfully(false);
+    setHasChecked(false);
+    setForceSave(false);
   };
 
   return (
@@ -328,30 +329,35 @@ const Innlegg: React.FC<InnleggProps> = ({
                   gjerne en hyggelig introduksjon og praktisk informasjon.
                 </BodyShort>
 
-                <div
-                  tabIndex={-1}
-                  onBlur={() =>
-                    setTimeout(() => {
-                      if (isClosingModal || !modalRef.current?.open) {
-                        return;
-                      }
+                {/* Hjelpetekster med ikoner */}
+                <div className='space-y-1'>
+                  <Detail
+                    size='small'
+                    className='flex items-start gap-2 text-gray-400'
+                  >
+                    <PersonCircleIcon
+                      aria-hidden
+                      className='h-6 w-6 shrink-0 self-start mt-0.5'
+                    />
+                    <span>
+                      Ikke skriv personopplysninger og diskriminerende innhold.
+                      KI-verktøyet hjelper deg å vurdere innholdet, men du er
+                      ansvarlig for alt tekstinnhold.
+                    </span>
+                  </Detail>
+                  <Detail
+                    size='small'
+                    className='flex items-start gap-2 text-gray-400'
+                  >
+                    <EyeIcon aria-hidden fontSize='2em' className='mt-0.5' />
+                    <span>
+                      Synlig for jobbsøker, arbeidsgivere og NAV-ansatte når
+                      treffet er publisert.
+                    </span>
+                  </Detail>
+                </div>
 
-                      const activeElement = document.activeElement;
-                      if (
-                        activeElement !== cancelButtonRef.current &&
-                        activeElement !== submitButtonRef.current
-                      ) {
-                        if (!isDirty) {
-                          resetAnalyse();
-                          setHasValidatedCurrentContentSuccessfully(false);
-                          cancelButtonRef.current?.focus();
-                        } else {
-                          handleValidateOrError();
-                        }
-                      }
-                    }, 0)
-                  }
-                >
+                <div>
                   <Label htmlFor={EDITOR_WRAPPER_ID} className='mb-2 block'>
                     Innhold
                   </Label>
@@ -371,15 +377,14 @@ const Innlegg: React.FC<InnleggProps> = ({
                         e.preventDefault();
                         if (!isDirty) {
                           resetAnalyse();
-                          setHasValidatedCurrentContentSuccessfully(false);
+                          setHasChecked(false);
                           setTimeout(() => cancelButtonRef.current?.focus(), 0);
                         } else {
-                          handleValidateOrError();
+                          void handleValidateOrError();
                           setTimeout(() => analyseRef.current?.focus(), 0);
                         }
                       } else if (e.key === 'Escape') {
                         e.preventDefault();
-                        setIsClosingModal(true);
                         modalRef.current?.close();
                       }
                     }}
@@ -475,29 +480,62 @@ const Innlegg: React.FC<InnleggProps> = ({
                     </div>
                   </div>
                 </div>
+
+                {/* Overstyringsbryter ved brudd */}
+                {hasChecked && analyse?.bryterRetningslinjer && (
+                  <div className='pt-1'>
+                    <Switch
+                      size='small'
+                      checked={forceSave}
+                      onChange={(e) => setForceSave(e.target.checked)}
+                    >
+                      Lagre innhold likevel
+                    </Switch>
+                  </div>
+                )}
               </div>
             </Modal.Body>
 
             <Modal.Footer>
-              <Button
-                ref={submitButtonRef}
-                type='submit'
-                loading={isSubmitting}
-                disabled={disableSave}
-              >
-                {innlegg ? 'Lagre endringer' : 'Opprett innlegg'}
-              </Button>
-              <Button
-                ref={cancelButtonRef}
-                type='button'
-                variant='secondary'
-                onClick={() => {
-                  setIsClosingModal(true);
-                  modalRef.current?.close();
-                }}
-              >
-                Avbryt
-              </Button>
+              {!hasChecked ? (
+                <>
+                  <Button
+                    type='button'
+                    onClick={handleValidateOrError}
+                    loading={validating}
+                    disabled={baseInvalid || validating}
+                  >
+                    Sjekk teksten for meg
+                  </Button>
+                  <Button
+                    ref={cancelButtonRef}
+                    type='button'
+                    variant='secondary'
+                    onClick={() => modalRef.current?.close()}
+                  >
+                    Avbryt
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button
+                    ref={submitButtonRef}
+                    type='submit'
+                    loading={isSubmitting}
+                    disabled={disableSave}
+                  >
+                    {innlegg ? 'Lagre endringer' : 'Opprett innlegg'}
+                  </Button>
+                  <Button
+                    ref={cancelButtonRef}
+                    type='button'
+                    variant='secondary'
+                    onClick={() => modalRef.current?.close()}
+                  >
+                    Avbryt
+                  </Button>
+                </>
+              )}
             </Modal.Footer>
           </form>
         </FormProvider>

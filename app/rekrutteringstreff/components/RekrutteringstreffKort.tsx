@@ -8,8 +8,8 @@ import {
   Detail,
   Heading,
   Link,
-  Tag,
   Loader,
+  Tag,
 } from '@navikt/ds-react';
 import { FunctionComponent } from 'react';
 
@@ -67,7 +67,7 @@ export const RekrutteringstreffKort: FunctionComponent<Props> = ({
   navKontor,
 }) => {
   return (
-    <Box className='mb-4 rounded-lg border border-[var(--a-border-default)] p-4'>
+    <Box className='mb-4 rounded-lg border border-[var(--ax-border-neutral)] p-4'>
       <div className='mb-4 flex items-start justify-between'>
         <div className='flex items-center gap-2'>
           <CalendarIcon aria-hidden />

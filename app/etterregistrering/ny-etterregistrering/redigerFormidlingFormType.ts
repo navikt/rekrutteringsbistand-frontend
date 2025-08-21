@@ -16,86 +16,58 @@ export const OmFormidlingSchema = z
   .object({
     organisasjon: ArbeidsgiverSchema.optional()
       .nullable()
-      .superRefine((val, ctx) => {
-        if (!val) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: 'Du må velge en arbeidsgiver',
-          });
-        }
+      .refine((v) => !!v, {
+        error: 'Du må velge en arbeidsgiver',
       }),
     categoryList: z
       .array(KategoriSchema)
       .optional()
       .nullable()
-      .superRefine((val, ctx) => {
-        if (!val) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: 'Du må velge en yrkeskategori',
-          });
-        }
+      .refine((v) => !!v && v.length > 0, {
+        error: 'Du må velge en yrkeskategori',
       }),
     sektor: z
       .string()
       .optional()
       .nullable()
-      .superRefine((val, ctx) => {
-        if (!val) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: 'Du må velge sektor',
-          });
-        }
+      .refine((v) => !!v, {
+        error: 'Du må velge sektor',
       }),
-    ansettelsesform: z
-      .string({
-        required_error: 'Du må velge ansettelsesform',
-      })
-      .min(1, { message: 'Du må velge ansettelsesform' }),
+    ansettelsesform: z.string({ error: 'Du må velge ansettelsesform' }),
     arbeidstidsordning: z.string().optional().nullable(),
-    omfangKode: z
-      .string({
-        required_error: 'Du må velge omfang',
-      })
-      .min(1, { message: 'Du må velge omfang' }),
+    omfangKode: z.string({ error: 'Du må velge omfang' }),
     omfangProsent: z.string().optional().nullable(),
     lokasjoner: z.array(LocationSchema).optional().nullable(),
     adresser: z
       .array(LocationSchema)
       .optional()
       .nullable()
-      .superRefine((val, ctx) => {
-        if (val && val.length > 0) {
-          // Sjekk om noen av adressene mangler påkrevde felter
-          const harManglendeFelt = val.some(
-            (location) =>
-              !location.address || !location.postalCode || !location.city,
-          );
-
-          if (harManglendeFelt) {
-            ctx.addIssue({
-              code: z.ZodIssueCode.custom,
-              message:
-                'Alle adressefelt må fylles ut (adresse, postnummer og poststed)',
-            });
-          }
-        }
-      }),
+      .refine(
+        (val) =>
+          !val ||
+          val.length === 0 ||
+          !val.some((l) => !l.address || !l.postalCode || !l.city),
+        {
+          message:
+            'Alle adressefelt må fylles ut (adresse, postnummer og poststed)',
+        },
+      ),
   })
   .superRefine((data, ctx) => {
-    if (data.adresser?.length === 0 && data.lokasjoner?.length === 0) {
+    const lokEmpty = !data.lokasjoner || data.lokasjoner.length === 0;
+    const adrEmpty = !data.adresser || data.adresser.length === 0;
+    if (lokEmpty && adrEmpty) {
       ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: 'Du må velge arbeidssted',
-        path: ['adresser'],
+        code: 'custom',
+        path: ['lokasjoner'],
+        message: 'Du må fylle ut minst én lokasjon eller adresse',
       });
     }
   });
 
 export const OmKandidateneSchema = z
   .array(FormidlingKandidatSchema)
-  .min(1, { message: 'Du må velge minst én kandidat' });
+  .min(1, { error: 'Du må velge minst én kandidat' });
 
 export const FormidlingFormSchema = z.object({
   omKandidatene: OmKandidateneSchema,

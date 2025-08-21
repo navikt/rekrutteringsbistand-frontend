@@ -4,6 +4,7 @@ import { useRekrutteringstreffContext } from '../../RekrutteringstreffContext';
 import LeggTilJobbsøkerKnapp from '../LeggTilJobbsøkerKnapp';
 import { InviterInternalDto, InviterModal } from './components/InviterModal';
 import JobbsøkerKort from './components/JobbsøkerKort';
+import OppmøteModal from './components/OppmøteModal';
 import {
   JobbsøkerDTO,
   useJobbsøkere,
@@ -17,10 +18,17 @@ import * as React from 'react';
 const erInvitert = (j: JobbsøkerDTO) =>
   j.hendelser.some((h) => h.hendelsestype === 'INVITER');
 
+const harMøttOpp = (j: JobbsøkerDTO) =>
+  j.hendelser.some((h) => h.hendelsestype === 'MØT_OPP');
+
+const harIkkeMøttOpp = (j: JobbsøkerDTO) =>
+  j.hendelser.some((h) => h.hendelsestype === 'IKKE_MØT_OPP');
+
 const Jobbsøkere = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const jobbsøkerHook = useJobbsøkere(rekrutteringstreffId);
   const inviterModalRef = React.useRef<HTMLDialogElement>(null);
+  const oppmøteModalRef = React.useRef<HTMLDialogElement>(null);
 
   const { data: rekrutteringstreffData } =
     useRekrutteringstreff(rekrutteringstreffId);
@@ -39,7 +47,15 @@ const Jobbsøkere = () => {
       (h) => h.hendelsestype === 'AVSLUTT_INVITASJON',
     ) ?? false;
 
+  const harAvsluttetOppfølging =
+    rekrutteringstreffData?.hendelser?.some(
+      (h) => h.hendelsestype === 'AVSLUTT_OPPFØLGING',
+    ) ?? false;
+
   const handleCheckboxChange = (jobbsøker: JobbsøkerDTO, erValgt: boolean) => {
+    if (harAvsluttetInvitasjon && !erInvitert(jobbsøker)) {
+      return;
+    }
     const dto: InviterInternalDto = {
       personTreffId: jobbsøker.personTreffId,
       fornavn: jobbsøker.fornavn,
@@ -88,6 +104,12 @@ const Jobbsøkere = () => {
     jobbsøkerHook.mutate();
   };
 
+  const handleOppmøteSendt = () => {
+    oppmøteModalRef.current?.close();
+    setValgteJobbsøkere([]);
+    jobbsøkerHook.mutate();
+  };
+
   return (
     <SWRLaster hooks={[jobbsøkerHook]}>
       {(jobbsøkere) => {
@@ -99,19 +121,34 @@ const Jobbsøkere = () => {
           (j) => !invitertePersonTreffIder.has(j.personTreffId),
         );
 
+        const personerMedOppmøtestatusIder = new Set(
+          jobbsøkere
+            .filter((j) => harMøttOpp(j) || harIkkeMøttOpp(j))
+            .map((j) => j.personTreffId),
+        );
+
+        const valgteUtenOppmøtestatus = valgteJobbsøkere.filter(
+          (j) => !personerMedOppmøtestatusIder.has(j.personTreffId),
+        );
+
         return (
           <div className='p-4 flex flex-col gap-4'>
             <div className='flex items-center justify-between'>
               <LeggTilJobbsøkerKnapp />
-              {harPublisert && (
+              {harPublisert && !harAvsluttetInvitasjon && (
                 <Button
-                  disabled={
-                    valgteSomIkkeErInvitert.length === 0 ||
-                    harAvsluttetInvitasjon
-                  }
+                  disabled={valgteSomIkkeErInvitert.length === 0}
                   onClick={() => inviterModalRef.current?.showModal()}
                 >
                   Inviter ({valgteSomIkkeErInvitert.length})
+                </Button>
+              )}
+              {harAvsluttetInvitasjon && !harAvsluttetOppfølging && (
+                <Button
+                  disabled={valgteUtenOppmøtestatus.length === 0}
+                  onClick={() => oppmøteModalRef.current?.showModal()}
+                >
+                  Marker Oppmøte ({valgteUtenOppmøtestatus.length})
                 </Button>
               )}
             </div>
@@ -122,6 +159,8 @@ const Jobbsøkere = () => {
               <ul>
                 {jobbsøkere.map((j, idx) => {
                   const { status, datoLagtTil, lagtTilAv } = getLagtTilData(j);
+                  const erDeaktivert = harAvsluttetInvitasjon && !erInvitert(j);
+
                   return (
                     <li key={idx}>
                       <JobbsøkerKort
@@ -140,6 +179,7 @@ const Jobbsøkere = () => {
                         )}
                         lagtTilAv={lagtTilAv}
                         status={status?.text}
+                        statusVariant={status?.variant}
                         harPublisert={harPublisert}
                         erValgt={valgteJobbsøkere.some(
                           (v) => v.fødselsnummer === j.fødselsnummer,
@@ -147,6 +187,7 @@ const Jobbsøkere = () => {
                         onCheckboxChange={(valgt) =>
                           handleCheckboxChange(j, valgt)
                         }
+                        erDeaktivert={erDeaktivert}
                       />
                     </li>
                   );
@@ -158,6 +199,17 @@ const Jobbsøkere = () => {
               modalref={inviterModalRef}
               inviterInternalDtoer={valgteSomIkkeErInvitert}
               onInvitasjonSendt={handleInvitasjonSendt}
+              onFjernJobbsøker={(fnr) =>
+                setValgteJobbsøkere((prev) =>
+                  prev.filter((j) => j.fødselsnummer !== fnr),
+                )
+              }
+            />
+
+            <OppmøteModal
+              modalref={oppmøteModalRef}
+              oppmøteInternalDtoer={valgteUtenOppmøtestatus}
+              onOppmøteSendt={handleOppmøteSendt}
               onFjernJobbsøker={(fnr) =>
                 setValgteJobbsøkere((prev) =>
                   prev.filter((j) => j.fødselsnummer !== fnr),
@@ -189,7 +241,11 @@ export const statusInfoForHendelsestype = (
     case 'INVITER':
       return { text: 'Invitert', variant: 'info' };
     case 'OPPRETT':
-      return { text: 'Lagt til', variant: 'neutral' };
+      return { text: 'Lagt til', variant: 'info' };
+    case 'MØT_OPP':
+      return { text: 'Møtt opp', variant: 'info' };
+    case 'IKKE_MØT_OPP':
+      return { text: 'Ikke møtt opp', variant: 'info' };
     default:
       return undefined;
   }

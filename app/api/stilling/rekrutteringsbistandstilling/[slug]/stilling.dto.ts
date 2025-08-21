@@ -23,7 +23,7 @@ export const propertiesSchema = z
     jobpercentagerange: z.string().optional().nullable(),
     extent: z.string().optional().nullable(),
     applicationdue: z.union([z.string(), z.boolean()]).optional().nullable(),
-    jobtitle: z.any(),
+    jobtitle: z.any().optional().nullable(),
     keywords: z.string().optional().nullable(),
     positioncount: z.union([
       z.number().optional().nullable(),
@@ -51,12 +51,12 @@ export const propertiesSchema = z
     classification_input_source: z.string().optional().nullable(),
     sector: z.string().optional().nullable(),
     // workLanguage: z.string().optional().nullable(),
-    salary: z.any(),
+    salary: z.any().nullable().optional(),
     industry: z.string().optional().nullable(),
     starttime: z.union([z.string(), z.boolean()]).optional().nullable(),
-    tags: z.any().nullable(),
-    workhours: z.any().nullable(),
-    workday: z.any().nullable(),
+    tags: z.any().nullable().optional(),
+    workhours: z.any().nullable().optional(),
+    workday: z.any().nullable().optional(),
     applicationemail: z.string().nullish(),
   })
   .nullable();

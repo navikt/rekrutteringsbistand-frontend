@@ -1,3 +1,4 @@
+import OppsummerValidering from '../../../stilling/[stillingsId]/rediger/components/OppsummerValidering';
 import StegNavigering from '../../../stilling/[stillingsId]/rediger/components/StegNavigering';
 import VelgArbeidssted from '../../../stilling/[stillingsId]/rediger/components/VelgArbeidssted';
 import VelgStillingTittel from '../../../stilling/[stillingsId]/rediger/components/VelgStillingTittel';
@@ -42,44 +43,66 @@ const RedigerOmFormidlingen: React.FC<RedigerOmFormidlingenProps> = ({
     <form onSubmit={handleStepSubmit}>
       <div className='space-y-8'>
         <Heading size='large'>Om arbeidsgiver</Heading>
-        <VelgArbeidsgiver
-          valgtArbeidsgiver={getValues('omFormidlingen.organisasjon')}
-          arbeidsgiverCallback={(val) => {
-            setValue('omFormidlingen.organisasjon', val);
-            if (getValues('omFormidlingen.adresser')?.length === 0) {
-              const mapLokasjon = arbeidsgiverLokasjonTilLokasjon(val.adresse);
-              const lokasjoner = getValues('omFormidlingen.lokasjoner') ?? [];
-              setValue('omFormidlingen.adresser', [mapLokasjon, ...lokasjoner]);
-            }
-          }}
-        />
+        <div id='omFormidlingen.organisasjon' tabIndex={-1}>
+          <VelgArbeidsgiver
+            valgtArbeidsgiver={getValues('omFormidlingen.organisasjon')}
+            arbeidsgiverCallback={(val) => {
+              setValue('omFormidlingen.organisasjon', val);
+              if (getValues('omFormidlingen.adresser')?.length === 0) {
+                const mapLokasjon = arbeidsgiverLokasjonTilLokasjon(
+                  val.adresse,
+                );
+                const lokasjoner = getValues('omFormidlingen.lokasjoner') ?? [];
+                setValue('omFormidlingen.adresser', [
+                  mapLokasjon,
+                  ...lokasjoner,
+                ]);
+              }
+            }}
+          />
+        </div>
         {errors.omFormidlingen?.organisasjon && (
           <ErrorMessage>
             {errors.omFormidlingen?.organisasjon?.message}
           </ErrorMessage>
         )}
-        <Heading size='large'>Om stillingen</Heading>
-        <VelgStillingTittel
-          categoryList={watch('omFormidlingen.categoryList')}
-          callBack={(val) => setValue('omFormidlingen.categoryList', val)}
-          error={errors.omFormidlingen?.categoryList?.message}
-        />
 
-        <VelgSektor sektorFelt='omFormidlingen.sektor' />
-        <div className='flex flex-row gap-x-8'>
-          <VelgAnsettelsesform ansettelsesformFelt='omFormidlingen.ansettelsesform' />
-          <VelgArbeidstidsordning arbeidstidsordningFelt='omFormidlingen.arbeidstidsordning' />
+        <Heading size='large'>Om stillingen</Heading>
+        <div id='omFormidlingen.categoryList' tabIndex={-1}>
+          <VelgStillingTittel
+            categoryList={watch('omFormidlingen.categoryList')}
+            callBack={(val) => setValue('omFormidlingen.categoryList', val)}
+            error={errors.omFormidlingen?.categoryList?.message}
+          />
         </div>
+
+        <div id='omFormidlingen.sektor' tabIndex={-1}>
+          <VelgSektor sektorFelt='omFormidlingen.sektor' />
+        </div>
+
+        <div className='flex flex-row gap-x-8'>
+          <div id='omFormidlingen.ansettelsesform' tabIndex={-1}>
+            <VelgAnsettelsesform ansettelsesformFelt='omFormidlingen.ansettelsesform' />
+          </div>
+          <div id='omFormidlingen.arbeidstidsordning' tabIndex={-1}>
+            <VelgArbeidstidsordning arbeidstidsordningFelt='omFormidlingen.arbeidstidsordning' />
+          </div>
+        </div>
+
+        {/* Ankre for begge feltene i VelgOmfang */}
+        <div id='omFormidlingen.omfangKode' tabIndex={-1} />
+        <div id='omFormidlingen.omfangProsent' tabIndex={-1} />
         <VelgOmfang
           omfangFelt='omFormidlingen.omfangKode'
           omfangProsentFelt='omFormidlingen.omfangProsent'
         />
-        <VelgArbeidssted feltNavn='omFormidlingen' />
-        {errors.omFormidlingen?.adresser && (
-          <ErrorMessage>
-            {errors.omFormidlingen?.adresser?.message}
-          </ErrorMessage>
-        )}
+
+        {/* Ankre for arbeidssted-seksjonen */}
+        <div id='omFormidlingen.adresser' tabIndex={-1}>
+          <VelgArbeidssted feltNavn='omFormidlingen' />
+        </div>
+
+        <OppsummerValidering feltNavn='omFormidlingen' />
         <StegNavigering stegNummer={2} forrigeSteg={forrigeSteg} />
       </div>
     </form>

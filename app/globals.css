@@ -23,8 +23,8 @@
 
 skyra-survey {
   /* Background and text colors */
-  --skyra-bg-color: var(--ax-surface-default);
-  --skyra-text-color: var(--ax-text-default);
+  --skyra-bg-color: var(--ax-surface-neutral);
+  --skyra-text-color: var(--ax-text-neutral);
 
   /* Z-index - using Aksel's modal level */
   --skyra-z-index: var(--ax-z-index-modal);

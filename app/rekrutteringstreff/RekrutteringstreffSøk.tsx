@@ -16,30 +16,43 @@ const RekrutteringstreffSøk: React.FC<RekrutteringstreffSøkProps> = () => {
   return (
     <SWRLaster hooks={[rekrutteringstreffOversiktHook]}>
       {(rekrutteringstreffOversikt) =>
-        rekrutteringstreffOversikt.map((rekrutteringstreff) => {
-          const dato: Dato = datoFormatterer(
-            rekrutteringstreff.fraTid,
-            rekrutteringstreff.tilTid,
-          );
+        rekrutteringstreffOversikt
+          .sort(
+            (a, b) =>
+              new Date(b.opprettetAvTidspunkt).getTime() -
+              new Date(a.opprettetAvTidspunkt).getTime(),
+          )
+          .map((rekrutteringstreff) => {
+            const dato: Dato = datoFormatterer(
+              rekrutteringstreff.fraTid,
+              rekrutteringstreff.tilTid,
+            );
 
-          return (
-            <RekrutteringstreffKort
-              key={rekrutteringstreff.id}
-              id={rekrutteringstreff.id}
-              dato={dato.startDato}
-              tidspunkt={`${dato.startTidspunkt} - ${dato.sluttTidspunkt}`}
-              antallArbeidsgivere={0}
-              tittel={rekrutteringstreff.tittel}
-              beskrivelse={rekrutteringstreff.beskrivelse}
-              gateadresse={rekrutteringstreff.gateadresse || ''}
-              postnummer={rekrutteringstreff.postnummer || ''}
-              poststed={rekrutteringstreff.poststed || ''}
-              opprettetAv={rekrutteringstreff.opprettetAvPersonNavident}
-              opprettetDato='12. April'
-              navKontor={rekrutteringstreff.opprettetAvNavkontorEnhetId}
-            />
-          );
-        })
+            const opprettetDato = rekrutteringstreff.opprettetAvTidspunkt
+              ? format(
+                  new Date(rekrutteringstreff.opprettetAvTidspunkt),
+                  'dd. MMMM yyyy',
+                )
+              : '';
+
+            return (
+              <RekrutteringstreffKort
+                key={rekrutteringstreff.id}
+                id={rekrutteringstreff.id}
+                dato={dato.startDato}
+                tidspunkt={`${dato.startTidspunkt} - ${dato.sluttTidspunkt}`}
+                antallArbeidsgivere={0}
+                tittel={rekrutteringstreff.tittel}
+                beskrivelse={rekrutteringstreff.beskrivelse}
+                gateadresse={rekrutteringstreff.gateadresse || ''}
+                postnummer={rekrutteringstreff.postnummer || ''}
+                poststed={rekrutteringstreff.poststed || ''}
+                opprettetAv={rekrutteringstreff.opprettetAvPersonNavident}
+                opprettetDato={opprettetDato}
+                navKontor={rekrutteringstreff.opprettetAvNavkontorEnhetId}
+              />
+            );
+          })
       }
     </SWRLaster>
   );

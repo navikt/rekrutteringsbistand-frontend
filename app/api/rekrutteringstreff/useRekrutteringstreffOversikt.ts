@@ -25,6 +25,7 @@ const RekrutteringstreffOversiktSchema = z.array(
     status: z.string(),
     opprettetAvPersonNavident: z.string(),
     opprettetAvNavkontorEnhetId: z.string(),
+    opprettetAvTidspunkt: z.string(),
   }),
 );
 

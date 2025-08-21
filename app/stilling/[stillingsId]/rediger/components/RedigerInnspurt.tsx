@@ -6,6 +6,7 @@ import { useStillingsContext } from '../../StillingsContext';
 import { mapFormTilStilling, StillingSynlighet } from '../mapStilling';
 import { StillingsDataForm } from '../redigerFormType.zod';
 import { DatoVelger } from './DatoVelger';
+import OppsummerValidering from './OppsummerValidering';
 import { ArrowLeftIcon, CheckmarkCircleIcon } from '@navikt/aksel-icons';
 import {
   BodyShort,
@@ -26,6 +27,14 @@ import {
   SubmitHandler,
   useFormContext,
 } from 'react-hook-form';
+
+const STEG_MAP: Record<string, string> = {
+  omVirksomheten: 'om-virksomheten',
+  omTilrettelegging: 'tilrettelegging',
+  omStillingen: 'om-stillingen',
+  praktiskInfo: 'praktisk-info',
+  omFormidlingen: 'om-formidlingen',
+};
 
 export const RedigerInnspurt: React.FC<{
   stegNummer: number;
@@ -254,41 +263,16 @@ export const RedigerInnspurt: React.FC<{
             <li>Du kan når som helst endre eller avpublisere annonsen.</li>
           </ul>
         </div>
-
-        {errors && Object.keys(errors).length > 0 && (
-          <ErrorSummary>
-            {errors.omVirksomheten && (
-              <>
-                <Heading size='small'>Om virksomheten</Heading>
-                {mapError(errors.omVirksomheten)}
-              </>
-            )}
-            {errors.omTilrettelegging && (
-              <>
-                <Heading size='small'>Om tilrettelegging</Heading>
-                {mapError(errors.omTilrettelegging)}
-              </>
-            )}
-            {errors.omStillingen && (
-              <>
-                <Heading size='small'>Om stillingen</Heading>
-                {mapError(errors.omStillingen)}
-              </>
-            )}
-            {errors.praktiskInfo && (
-              <>
-                <Heading size='small'>Praktisk info</Heading>
-                {mapError(errors.praktiskInfo)}
-              </>
-            )}
-            {errors.innspurt && (
-              <>
-                <Heading size='small'>Innspurt</Heading>
-                {mapError(errors.innspurt)}
-              </>
-            )}
-          </ErrorSummary>
+        {errors && (
+          <OppsummerValidering
+            genererHref={(id) => {
+              const root = id.split('.')[0];
+              const steg = STEG_MAP[root];
+              return steg ? `?steg=${steg}#${id}` : `#${id}`;
+            }}
+          />
         )}
+
         <div className='mb-8 flex w-full justify-between pt-8'>
           {stegNummer > 1 ? (
             <Button

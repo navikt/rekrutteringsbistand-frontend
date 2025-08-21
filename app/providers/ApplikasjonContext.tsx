@@ -4,8 +4,8 @@ import { RekbisError } from '../../util/rekbisError';
 import {
   ModiaEventType,
   setModiaContext,
-} from '../api/modia/context/setModiaContext';
-import { DecoratorDTO } from '../api/modia/decorator/useDecoratorData';
+} from '../api/context/setModiaContext';
+import { DecoratorDTO } from '../api/decorator/useDecoratorData';
 import { Roller } from '../components/tilgangskontroll/roller';
 import { Alert, AlertProps } from '@navikt/ds-react';
 import React from 'react';

@@ -3,8 +3,8 @@
 /**
  * Endepunkt /useModiaAktivBruker
  */
-import { ModiaDecoratorAPI } from '../../api-routes';
-import { getAPIwithSchema } from '../../fetcher';
+import { ModiaDecoratorAPI } from '../api-routes';
+import { getAPIwithSchema } from '../fetcher';
 import { Server } from 'miragejs';
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
@@ -23,6 +23,6 @@ export const useModiaAktivBruker = () =>
 
 export const modiaAktivBrukerMirage = (server: Server) => {
   server.get(modiaAktivBrukerEndepunkt, () => {
-    return { aktivBruker: '16828397900' };
+    return { aktivBruker: '16828397901' };
   });
 };

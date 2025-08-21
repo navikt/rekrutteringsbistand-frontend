@@ -38,6 +38,7 @@ export function generateElasticSearchQuery(
   navIdent?: string,
   geografiData?: PamGeografi[],
   formidlinger?: boolean,
+  finnStillingerForKandidat?: boolean,
 ) {
   const valgteFilter: any[] = [];
   const term: any[] = [];
@@ -138,56 +139,141 @@ export function generateElasticSearchQuery(
     }
   }
 
+  const inneholderVerdierMedBareTall: boolean = filter.fritekst.some((verdi) =>
+    /^R?\d+$/.test(verdi),
+  );
+
+  const ordSomSkalFiltreresUt = [
+    'innen',
+    'på',
+    'av',
+    'og',
+    'for',
+    'med',
+    'som',
+    'mv.',
+    'o.l.',
+  ];
+
   const fritekstSøkestreng = filter.fritekst
-    .map((fritekstOrd) => {
-      const ord = fritekstOrd.split(' ').filter((it) => it.length > 1);
+    .map((fritekstStreng) => {
+      const ord = fritekstStreng
+        .split(' ')
+        .filter(
+          (it) =>
+            it.length > 1 && !ordSomSkalFiltreresUt.includes(it.toLowerCase()),
+        );
 
       return `(+${ord.map((ord) => ord.trim()).join(' +')})`;
     })
     .join(' | ');
 
-  const byggQuery = {
-    size: maksAntallTreffPerSøk,
-    from: regnUtFørsteTreffFra(filter.side, maksAntallTreffPerSøk),
-    track_total_hits: true,
-    query: {
-      bool: {
-        filter: [...term, ...valgteFilter],
-        minimum_should_match: filter.fritekst.length ? '1' : '0',
-        should: esFritekstSøk(fritekstSøkestreng),
+  if (finnStillingerForKandidat) {
+    const søkINummerFelter = inneholderVerdierMedBareTall;
+    let søkefelt: string | undefined;
+
+    if (!søkINummerFelter) {
+      søkefelt = 'tekstfelter';
+    }
+
+    return {
+      size: maksAntallTreffPerSøk,
+      from: regnUtFørsteTreffFra(filter.side, maksAntallTreffPerSøk),
+      track_total_hits: true,
+      query: {
+        bool: {
+          filter: [...term, ...valgteFilter],
+          minimum_should_match: filter.fritekst.length ? '1' : '0',
+          should: esFritekstSøk(fritekstSøkestreng, søkefelt),
+        },
       },
-    },
-    ...sort,
-    ...(filter.fritekst && {
-      aggs: {
-        globalAggregering: {
-          global: {},
-          aggs: {
-            felter: {
-              filters: {
+      ...sort,
+      ...(filter.fritekst && {
+        aggs: {
+          globalAggregering: {
+            global: {},
+            aggs: {
+              felter: {
                 filters: {
-                  arbeidsgiver: {
-                    bool: {
-                      should: esFritekstSøk(fritekstSøkestreng),
-                      filter: [...term, ...valgteFilter],
+                  filters: {
+                    tittel: {
+                      bool: {
+                        should: esFritekstSøk(fritekstSøkestreng, søkefelt),
+                        filter: [...term, ...valgteFilter],
+                      },
                     },
-                  },
-                  tittel: {
-                    bool: {
-                      should: esFritekstSøk(fritekstSøkestreng),
-                      filter: [...term, ...valgteFilter],
+                    annonsetekst: {
+                      bool: {
+                        should: esFritekstSøk(fritekstSøkestreng, søkefelt),
+                        filter: [...term, ...valgteFilter],
+                      },
                     },
-                  },
-                  annonsetekst: {
-                    bool: {
-                      should: esFritekstSøk(fritekstSøkestreng),
-                      filter: [...term, ...valgteFilter],
+                    arbeidsgiver: {
+                      bool: {
+                        should: esFritekstSøk(fritekstSøkestreng, søkefelt),
+                        filter: [...term, ...valgteFilter],
+                      },
                     },
+                    ...(inneholderVerdierMedBareTall && {
+                      annonsenummer: {
+                        bool: {
+                          should: esFritekstSøk(fritekstSøkestreng, søkefelt),
+                          filter: [...term, ...valgteFilter],
+                        },
+                      },
+                    }),
                   },
-                  annonsenummer: {
-                    bool: {
-                      should: esFritekstSøk(fritekstSøkestreng),
-                      filter: [...term, ...valgteFilter],
+                },
+              },
+            },
+          },
+        },
+      }),
+    };
+  } else {
+    return {
+      size: maksAntallTreffPerSøk,
+      from: regnUtFørsteTreffFra(filter.side, maksAntallTreffPerSøk),
+      track_total_hits: true,
+      query: {
+        bool: {
+          filter: [...term, ...valgteFilter],
+          minimum_should_match: filter.fritekst.length ? '1' : '0',
+          should: esFritekstSøk(fritekstSøkestreng),
+        },
+      },
+      ...sort,
+      ...(filter.fritekst && {
+        aggs: {
+          globalAggregering: {
+            global: {},
+            aggs: {
+              felter: {
+                filters: {
+                  filters: {
+                    arbeidsgiver: {
+                      bool: {
+                        should: esFritekstSøk(fritekstSøkestreng),
+                        filter: [...term, ...valgteFilter],
+                      },
+                    },
+                    tittel: {
+                      bool: {
+                        should: esFritekstSøk(fritekstSøkestreng),
+                        filter: [...term, ...valgteFilter],
+                      },
+                    },
+                    annonsetekst: {
+                      bool: {
+                        should: esFritekstSøk(fritekstSøkestreng),
+                        filter: [...term, ...valgteFilter],
+                      },
+                    },
+                    annonsenummer: {
+                      bool: {
+                        should: esFritekstSøk(fritekstSøkestreng),
+                        filter: [...term, ...valgteFilter],
+                      },
                     },
                   },
                 },
@@ -195,9 +281,7 @@ export function generateElasticSearchQuery(
             },
           },
         },
-      },
-    }),
-  };
-
-  return byggQuery;
+      }),
+    };
+  }
 }

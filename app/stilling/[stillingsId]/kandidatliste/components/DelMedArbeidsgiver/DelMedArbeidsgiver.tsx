@@ -177,6 +177,8 @@ const DelMedArbeidsgiver: React.FC<DelMedArbeidsgiverProps> = ({
                     allowNewValues
                     label='E-post til arbeidsgiver'
                     options={eposter}
+                    isListOpen={false}
+                    toggleListButton={false}
                     selectedOptions={epost}
                     shouldAutocomplete={false}
                     isMultiSelect

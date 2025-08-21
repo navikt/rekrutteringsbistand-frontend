@@ -27,7 +27,13 @@ const StillingsSøkeresultat: React.FC<StillingsSøkeresultatProps> = ({
   const {
     brukerData: { ident },
   } = useApplikasjonContext();
-  const stillingssøkHook = useStillingssøk(filter, ident, filter.formidlinger);
+  const finnStillingerForKandidat: boolean = !!kandidatId;
+  const stillingssøkHook = useStillingssøk(
+    filter,
+    ident,
+    filter.formidlinger,
+    finnStillingerForKandidat,
+  );
 
   const antallVisning = (total: number) => {
     if (!total) {
