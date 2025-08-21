@@ -20,6 +20,12 @@ import * as React from 'react';
 const OmTreffet = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
 
+  const kiLoggModalRef = React.useRef<HTMLDialogElement>(null);
+
+  const openKiLoggModal = () => {
+    kiLoggModalRef.current?.showModal();
+  };
+
   const rekrutteringstreffHook = useRekrutteringstreff(
     rekrutteringstreffId as string,
   );

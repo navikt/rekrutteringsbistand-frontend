@@ -44,6 +44,12 @@ import { jobbsøkerHendelserMirage } from '@/app/api/rekrutteringstreff/[...slug
 import { jobbsøkereMirage } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
 import { kandidatnummerMirage } from '@/app/api/rekrutteringstreff/[...slug]/useKandidatnummer';
 import { inviterJobbsøkereMirage } from '@/app/api/rekrutteringstreff/inviterJobbsokere/inviterJobbsokere';
+import {
+  listKiLoggMirage,
+  oppdaterKiLoggLagretMirage,
+  oppdaterKiLoggManuellMirage,
+} from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
+import { validerRekrutteringstreffMirage } from '@/app/api/rekrutteringstreff/kiValidering/useValiderRekrutteringstreff';
 import { leggTilNyJobbsøkerMirage } from '@/app/api/rekrutteringstreff/ny-jobbsøker/leggTilNyjobbsøker';
 import { opprettNyttRekrutteringstreffMirage } from '@/app/api/rekrutteringstreff/nytt-rekrutteringstreff/opprettNyttRekrutteringstreff';
 import { oppdaterRekrutteringstreffMirage } from '@/app/api/rekrutteringstreff/oppdater-rekrutteringstreff/oppdaterRerkutteringstreff';
@@ -52,7 +58,6 @@ import {
   opprettInnleggfMirage,
 } from '@/app/api/rekrutteringstreff/opprettEllerOppdaterInnlegg';
 import { slettRekrutteringstreffMirage } from '@/app/api/rekrutteringstreff/slett-rekrutteringstreff/slettRekrutteringstreff';
-import { validerRekrutteringstreffMirage } from '@/app/api/rekrutteringstreff/tittelValidering/useValiderRekrutteringstreff';
 import { rekrutteringstreffMirage } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { rekrutteringstreffOversiktMirage } from '@/app/api/rekrutteringstreff/useRekrutteringstreffOversikt';
 import { createServer, Model } from 'miragejs';
@@ -98,6 +103,10 @@ export function makeServer({ environment = 'test' } = {}) {
       rekrutteringstreffMirage(this);
       oppdaterRekrutteringstreffMirage(this);
       validerRekrutteringstreffMirage(this);
+      listKiLoggMirage(this);
+      oppdaterKiLoggManuellMirage(this);
+      oppdaterKiLoggLagretMirage(this);
+
       opprettNyttRekrutteringstreffMirage(this);
       leggTilNyArbeidsgiverMirage(this);
       leggTilNyJobbsøkerMirage(this);

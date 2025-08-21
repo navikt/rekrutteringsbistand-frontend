@@ -2,12 +2,12 @@
 
 import { RekbisError } from '../../../../../../../util/rekbisError';
 import type { InnleggDTO } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
+import { useValiderRekrutteringstreff } from '@/app/api/rekrutteringstreff/kiValidering/useValiderRekrutteringstreff';
 import {
   oppdaterEttInnlegg,
   OpprettEllerOppdaterInnleggDto,
   opprettInnleggForTreff,
 } from '@/app/api/rekrutteringstreff/opprettEllerOppdaterInnlegg';
-import { useValiderRekrutteringstreff } from '@/app/api/rekrutteringstreff/tittelValidering/useValiderRekrutteringstreff';
 import RikTekstEditor from '@/app/components/rikteksteditor/RikTekstEditor';
 import { RobotFrownIcon, RobotIcon, RobotSmileIcon } from '@navikt/aksel-icons';
 import {
