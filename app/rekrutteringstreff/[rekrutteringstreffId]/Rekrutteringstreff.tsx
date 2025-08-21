@@ -58,7 +58,10 @@ const Rekrutteringstreff: React.FC = () => {
             value={RekrutteringstreffTabs.AKTIVITETER}
             label='Aktiviteter'
           />
-          <Tabs.Tab value={RekrutteringstreffTabs.KI_LOGG} label='Ki Logg' />
+          <Tabs.Tab
+            value={RekrutteringstreffTabs.KI_LOGG}
+            label='Ki Logg(Kun admin)'
+          />
         </Tabs.List>
 
         <Tabs.Panel value={RekrutteringstreffTabs.OM_TREFFET} className='my-4'>

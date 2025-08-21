@@ -1,6 +1,6 @@
 'use client';
 
-import { getAPI } from '../../fetcher';
+import { getAPI, postApi } from '../../fetcher';
 import { kiLoggMock } from '../[...slug]/mocks/KiLoggMock';
 import { Response } from 'miragejs';
 import useSWR from 'swr';
@@ -40,22 +40,16 @@ const listFetcher = async (url: string): Promise<KiLogg[]> => {
 };
 
 type SetManuellArg = { id: string; bryterRetningslinjer: boolean };
-
-// POST som ikke forventer respons-body (204 OK)
-const postNoContent = async (url: string, body: unknown) => {
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body ?? {}),
-  });
-  if (!res.ok) throw new Error('Serverfeil');
-};
+type SetLagretArg = { id: string; lagret: boolean };
 
 const postManuell = async (_: string, { arg }: { arg: SetManuellArg }) => {
   const { id, bryterRetningslinjer } = arg;
-  await postNoContent(`${kiLoggEndepunkt}/${id}/manuell`, {
-    bryterRetningslinjer,
-  });
+  await postApi(`${kiLoggEndepunkt}/${id}/manuell`, { bryterRetningslinjer });
+};
+
+const postLagret = async (_: string, { arg }: { arg: SetLagretArg }) => {
+  const { id, lagret } = arg;
+  await postApi(`${kiLoggEndepunkt}/${id}/lagret`, { lagret });
 };
 
 export const useKiLogg = (treffId?: string, feltType?: string) => {
@@ -73,6 +67,12 @@ export const useKiLogg = (treffId?: string, feltType?: string) => {
     error: manuellError,
   } = useSWRMutation(`${kiLoggEndepunkt}/manuell`, postManuell);
 
+  const {
+    trigger: setLagret,
+    isMutating: settingLagret,
+    error: lagretError,
+  } = useSWRMutation(`${kiLoggEndepunkt}/lagret`, postLagret);
+
   const refresh = async () => {
     if (key) await swr.mutate();
   };
@@ -82,15 +82,22 @@ export const useKiLogg = (treffId?: string, feltType?: string) => {
     await refresh();
   };
 
+  const setLagretAndRefresh = async (arg: SetLagretArg) => {
+    await setLagret(arg);
+    await refresh();
+  };
+
   return {
     ...swr,
     setManuell: setManuellAndRefresh,
     settingManuell,
     manuellError,
+    setLagret: setLagretAndRefresh,
+    settingLagret,
+    lagretError,
   };
 };
 
-// Mirage (forenklet, i samme fil)
 export const manuellEndepunkt = (id: string | ':id' = ':id') =>
   `${kiLoggEndepunkt}/${id}/manuell`;
 export const lagretEndepunkt = (id: string | ':id' = ':id') =>
