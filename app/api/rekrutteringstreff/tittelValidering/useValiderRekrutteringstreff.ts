@@ -26,8 +26,13 @@ const fetcher = async (
   _: string,
   { arg }: { arg: ValiderRekrutteringstreffDto },
 ): Promise<ValiderRekrutteringstreffResponsDto> => {
+  const tekst = arg.tekst
+    .replace(/<[^>]+>/g, ' ') // bytt ut alle HTML-tagger med space
+    .replace(/\s+/g, ' ') // kollaps whitespace
+    .trim();
+  const payload = { ...arg, tekst };
   ReqSchema.parse(arg);
-  const res = await postApi(validerRekrutteringstreffEndepunkt, arg);
+  const res = await postApi(validerRekrutteringstreffEndepunkt, payload);
   return ResponseSchema.parse(res);
 };
 
