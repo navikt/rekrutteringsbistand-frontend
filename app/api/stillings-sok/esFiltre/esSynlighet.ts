@@ -20,14 +20,6 @@ export const esSynlighet = (portefølje: StillingsSøkPortefølje) => {
     },
   ];
 
-  // if (portefølje === StillingsSøkPortefølje.INTERN) {
-  //   synlighetFilter.push({
-  //     term: {
-  //       'stilling.source': 'DIR',
-  //     },
-  //   });
-  // }
-
   if (portefølje === StillingsSøkPortefølje.ARBEIDSPLASSEN_NO) {
     synlighetFilter.push({
       term: {
