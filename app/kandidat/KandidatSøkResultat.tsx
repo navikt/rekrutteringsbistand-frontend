@@ -16,7 +16,7 @@ import {
 import { useKandidatSøkMarkerteContext } from './KandidatSøkMarkerteContext';
 import KandidatKort from './components/KandidatKort';
 import LagreIKandidatlisteButton from './components/lagreKandidatliste/LagreIKandidatlisteButton';
-import { Checkbox, Heading, Pagination } from '@navikt/ds-react';
+import { Checkbox, Pagination } from '@navikt/ds-react';
 import * as React from 'react';
 
 interface KandidatSøkResultatProps {
@@ -72,11 +72,8 @@ const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({
 
         return (
           <>
-            <Heading size='medium'>
-              Viser {kandidatData.antallTotalt} treff
-            </Heading>
-            <div className='my-2 flex items-center justify-between'>
-              <div>
+            <div className='flex items-center justify-between'>
+              <div className='ml-5'>
                 <Checkbox
                   checked={
                     markerteKandidater &&
@@ -114,15 +111,19 @@ const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({
                 kandidat={kandidat as KandidatDataSchemaDTO}
               />
             ))}
-            {antallSider > 1 && (
-              <Pagination
-                className='mt-4 flex justify-center'
-                size='medium'
-                page={filter.side}
-                onPageChange={filter.setSide}
-                count={siderTilPaginering}
-              />
-            )}
+            <div className={'flex justify-between items-center'}>
+              <div>Viser {kandidatData.antallTotalt} treff</div>
+
+              {antallSider > 1 && (
+                <Pagination
+                  className={'my-4 flex justify-center'}
+                  size='medium'
+                  page={filter.side}
+                  onPageChange={filter.setSide}
+                  count={siderTilPaginering}
+                />
+              )}
+            </div>
           </>
         );
       }}

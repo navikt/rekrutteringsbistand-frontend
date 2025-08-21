@@ -1,5 +1,5 @@
-import StillingsSøk from '../stilling/StillingsSøk';
+import EtterRegistreringSøk from './EtterregistreringSøk';
 
 export default function FormidlingIndex() {
-  return <StillingsSøk formidlinger />;
+  return <EtterRegistreringSøk />;
 }

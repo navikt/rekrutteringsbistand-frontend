@@ -1,13 +1,12 @@
 'use client';
 
-import Piktogram from '../../public/ikoner/finn-kandidater.svg';
-import SVGDarkmode from '../components/SVGDarkmode';
+import SideBanner from '../components/layout/SideBanner';
 import SideLayout from '../components/layout/SideLayout';
-import SideTopBanner from '../components/layout/SideTopBanner';
 import { TilgangskontrollForInnhold } from '../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '../components/tilgangskontroll/roller';
 import { KandidatSøkProvider } from './KandidaSokFilterContext';
 import { KandidatSøkMarkerteContextProvider } from './KandidatSøkMarkerteContext';
+import { PersonTallShortIcon } from '@navikt/aksel-icons';
 
 export interface KandidatSokLayoutProps {
   children?: React.ReactNode | undefined;
@@ -24,10 +23,10 @@ const KandidatSokLayout: React.FC<KandidatSokLayoutProps> = ({ children }) => {
       <KandidatSøkProvider>
         <KandidatSøkMarkerteContextProvider>
           <SideLayout
-            banner={
-              <SideTopBanner
-                tittel='Kandidatsøk'
-                ikon={<SVGDarkmode src={Piktogram} alt='Kandidatsøk' />}
+            topBanner={
+              <SideBanner
+                ikon={<PersonTallShortIcon className='h-6 w-6' />}
+                tittel='Jobbsøkere'
               />
             }
           >

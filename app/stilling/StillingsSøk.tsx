@@ -1,39 +1,28 @@
 'use client';
 
-import EtterregistreringIkonDark from '../../public/ikoner/etterregistrering-dark.svg';
-import EtterregistreringIkon from '../../public/ikoner/etterregistrering.svg';
-import FinnStillingerIkonDark from '../../public/ikoner/finn-stillinger-dark.svg';
-import FinnStillingerIkon from '../../public/ikoner/finn-stillinger.svg';
 import { UmamiEvent } from '../../util/umamiEvents';
 import { useUseBrukerStandardSøk } from '../api/stilling/standardsok/useBrukersStandardsøk';
-import SVGDarkmode from '../components/SVGDarkmode';
 import Sidelaster from '../components/Sidelaster';
+import SideBanner from '../components/layout/SideBanner';
 import SideLayout from '../components/layout/SideLayout';
-import SideTopBanner from '../components/layout/SideTopBanner';
-import { TilgangskontrollForInnhold } from '../components/tilgangskontroll/TilgangskontrollForInnhold';
-import { Roller } from '../components/tilgangskontroll/roller';
 import { useStillingForKandidat } from '../kandidat/vis-kandidat/useStillingForKandidat';
 import { useVisKandidatNr } from '../kandidat/vis-kandidat/useVisKandidatNr';
 import { useUmami } from '../providers/UmamiContext';
-import {
-  StillingsSøkProvider,
-  useStillingsSøkFilter,
-} from './StillingsSøkContext';
+import { StillingsSøkProvider } from './StillingsSøkContext';
 import StillingsSøkeresultat from './StillingsSøkeresultat';
 import StillingForKandidat from './components/StillingForKandidat';
 import StillingsSøkFilter from './components/StillingsSøkFilter';
-import { StillingsSøkPortefølje } from './stillingssøk-typer';
-import { Button, ToggleGroup } from '@navikt/ds-react';
+import { BriefcaseIcon } from '@navikt/aksel-icons';
+import { Button } from '@navikt/ds-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import * as React from 'react';
 
 interface StillingsSøkProps {
   formidlinger?: boolean;
-  skjulBanner?: boolean;
 }
 
-const StillingsSøk = ({ formidlinger, skjulBanner }: StillingsSøkProps) => {
+const StillingsSøk = ({ formidlinger }: StillingsSøkProps) => {
   const searchParams = useSearchParams();
   const brukerStandardSøkData = useUseBrukerStandardSøk();
   const [visKandidatnr] = useVisKandidatNr();
@@ -57,20 +46,13 @@ const StillingsSøk = ({ formidlinger, skjulBanner }: StillingsSøkProps) => {
   return (
     <React.Suspense fallback={<Sidelaster />}>
       <StillingsSøkProvider formidlinger={formidlinger}>
-        <StillingsSøkLayout
-          formidlinger={formidlinger}
-          skjulBanner={skjulBanner}
-        />
+        <StillingsSøkLayout formidlinger={formidlinger} />
       </StillingsSøkProvider>
     </React.Suspense>
   );
 };
 
-const StillingsSøkLayout: React.FC<StillingsSøkProps> = ({
-  formidlinger,
-  skjulBanner,
-}) => {
-  const { portefølje, setPortefølje } = useStillingsSøkFilter();
+const StillingsSøkLayout: React.FC<StillingsSøkProps> = ({ formidlinger }) => {
   const { track } = useUmami();
 
   const [visKandidatnr] = useVisKandidatNr();
@@ -103,84 +85,26 @@ const StillingsSøkLayout: React.FC<StillingsSøkProps> = ({
 
   return (
     <SideLayout
-      banner={
-        skjulBanner ? null : (
-          <>
-            <SideTopBanner
-              tittel={
-                formidlinger ? 'Etterregistrering formidlinger' : 'Stillinger'
-              }
-              knappIBanner={
-                <div>
-                  <Link
-                    href={
-                      formidlinger
-                        ? '/etterregistrering/ny-etterregistrering'
-                        : '/stilling/ny-stilling'
-                    }
-                  >
-                    <Button>
-                      {formidlinger ? 'Ny etterregistrering' : 'Ny stilling'}
-                    </Button>
-                  </Link>
-                </div>
-              }
-              ikon={
-                formidlinger ? (
-                  <SVGDarkmode
-                    light={EtterregistreringIkon}
-                    dark={EtterregistreringIkonDark}
-                    alt='Finn stillinger'
-                  />
-                ) : (
-                  <SVGDarkmode
-                    light={FinnStillingerIkon}
-                    dark={FinnStillingerIkonDark}
-                    alt='Finn stillinger'
-                  />
-                )
-              }
-            />
-            {visKandidatnr && (
-              <StillingForKandidat kandidatnr={visKandidatnr} />
-            )}
-          </>
-        )
+      topBanner={
+        <SideBanner
+          ikon={<BriefcaseIcon className='h-6 w-6' />}
+          tittel='Stillingsoppdrag'
+          knapper={
+            <div>
+              <Link href={'/stilling/ny-stilling'}>
+                <Button size='small'>Opprett annonse</Button>
+              </Link>
+            </div>
+          }
+        />
       }
     >
-      <div className='grid gap-4 mb-2'>
-        <ToggleGroup
-          size='small'
-          value={portefølje || StillingsSøkPortefølje.VIS_ALLE}
-          onChange={(e) => setPortefølje(e as StillingsSøkPortefølje)}
-        >
-          <ToggleGroup.Item
-            value={StillingsSøkPortefølje.VIS_ALLE}
-            label='Alle stillinger'
-          />
-          <TilgangskontrollForInnhold
-            skjulVarsel
-            kreverEnAvRollene={[
-              Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-            ]}
-          >
-            <ToggleGroup.Item
-              value={StillingsSøkPortefølje.VIS_MINE}
-              label={
-                formidlinger ? 'Mine etterregistreringer' : 'Mine stillinger'
-              }
-            />
-          </TilgangskontrollForInnhold>
-        </ToggleGroup>
-      </div>
+      {visKandidatnr && <StillingForKandidat kandidatnr={visKandidatnr} />}
       <StillingsSøkFilter
         formidlinger={formidlinger}
         stillingForKandidat={visKandidatnr}
       />
-      <StillingsSøkeresultat
-        kandidatId={visKandidatnr}
-        erFormidling={formidlinger}
-      />
+      <StillingsSøkeresultat kandidatId={visKandidatnr} />
     </SideLayout>
   );
 };

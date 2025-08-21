@@ -1,5 +1,4 @@
 import AlleFilterKomponent from '../../components/AlleFilterKomponent';
-import FilterKomponent from '../../components/FilterKomponent';
 import Arbeidserfaring from './components/Arbeidserfaring';
 import Arbeidsønsker from './components/Arbeidsønsker';
 import FritekstSøk from './components/FritekstSøk';
@@ -15,23 +14,9 @@ import * as React from 'react';
 
 const KandidatSøkFilter: React.FC = () => {
   return (
-    <div className='@container/kandidatsokfilter'>
-      <div className='flex gap-4 items-center flex-wrap '>
-        <div>
-          <FritekstSøk />
-        </div>
-        <FilterKomponent tittel='Innsatsgruppe'>
-          <Jobbmuligheter />
-        </FilterKomponent>
-        <FilterKomponent tittel='Kandidatens mål'>
-          <Hovedmål />
-        </FilterKomponent>
-        <FilterKomponent tittel='Utdanningsnivå'>
-          <Utdanningsnivå />
-        </FilterKomponent>
-        <FilterKomponent tittel='Prioriterte målgrupper'>
-          <PrioriterteMålgrupper />
-        </FilterKomponent>
+    <div className='flex gap-4 '>
+      <FritekstSøk />
+      <div className='whitespace-nowrap'>
         <AlleFilterKomponent>
           <Arbeidsønsker />
           <KandidatStedSøk />

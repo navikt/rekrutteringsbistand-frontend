@@ -1,5 +1,5 @@
 import { useStillingsSøkFilter } from '../StillingsSøkContext';
-import { Select } from '@navikt/ds-react';
+import { Radio, RadioGroup } from '@navikt/ds-react';
 import * as React from 'react';
 
 export enum StillingsSøkSorteringTyper {
@@ -10,20 +10,25 @@ export enum StillingsSøkSorteringTyper {
 
 const StillingsSøkSortering: React.FC = () => {
   const filter = useStillingsSøkFilter();
+
+  const handleChange = (value: string) => {
+    filter.setSortering(value);
+  };
+
   return (
-    <Select
-      label='Sorter'
+    <RadioGroup
+      legend='Sorter'
       value={filter.sortering}
-      onChange={(e) => filter.setSortering(e.target.value)}
+      onChange={handleChange}
     >
-      <option value={StillingsSøkSorteringTyper.Publiseringsdato}>
+      <Radio value={StillingsSøkSorteringTyper.Publiseringsdato}>
         Publiseringsdato
-      </option>
-      <option value={StillingsSøkSorteringTyper.Utløpsdato}>Utløpsdato</option>
-      <option value={StillingsSøkSorteringTyper.MestRelevant}>
+      </Radio>
+      <Radio value={StillingsSøkSorteringTyper.Utløpsdato}>Utløpsdato</Radio>
+      <Radio value={StillingsSøkSorteringTyper.MestRelevant}>
         Mest relevant
-      </option>
-    </Select>
+      </Radio>
+    </RadioGroup>
   );
 };
 

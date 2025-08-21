@@ -1,4 +1,4 @@
-import HvitKort from './HvitKort';
+import HvitKort from './SideKort';
 import {
   ChevronDownIcon,
   ChevronRightDoubleIcon,

@@ -20,7 +20,7 @@ const StillingSideLayout: React.FC<StillingSideLayoutProps> = ({
     (stillingsData?.stilling?.employer?.orgnr ?? null) === null;
 
   return (
-    <SideLayout banner={<StillingHeader />}>
+    <SideLayout topBanner={<StillingHeader />}>
       {ugyldigStilling ? (
         <Alert variant='error'>
           <Heading spacing size='small' level='3'>

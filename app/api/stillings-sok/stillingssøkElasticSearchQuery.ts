@@ -31,20 +31,54 @@ export type StillingsSøkFilter = {
   kategori: string[];
   publisert: string[];
   sortering: string;
+  utenOppdrag: boolean;
 };
 
-export function generateElasticSearchQuery(
-  filter: StillingsSøkFilter,
-  navIdent?: string,
-  geografiData?: PamGeografi[],
-  formidlinger?: boolean,
-  finnStillingerForKandidat?: boolean,
-) {
+interface GenerateElasticSearchQueryParams {
+  filter: StillingsSøkFilter;
+  eierNavKontorEnhetId?: string;
+  navIdent?: string;
+  geografiData?: PamGeografi[];
+  formidlinger?: boolean;
+  finnStillingerForKandidat?: boolean;
+}
+
+export function generateElasticSearchQuery({
+  filter,
+  eierNavKontorEnhetId,
+  navIdent,
+  geografiData,
+  formidlinger,
+  finnStillingerForKandidat,
+}: GenerateElasticSearchQueryParams) {
   const valgteFilter: any[] = [];
   const term: any[] = [];
   const sort: any = esSorter(filter.sortering);
 
   valgteFilter.push();
+
+  if (
+    filter.portefølje === StillingsSøkPortefølje.INTERN ||
+    (filter.portefølje === StillingsSøkPortefølje.ARBEIDSPLASSEN_NO &&
+      !filter.utenOppdrag)
+  ) {
+    valgteFilter.push({
+      exists: {
+        field: 'stillingsinfo',
+      },
+    });
+  }
+
+  if (
+    filter?.portefølje?.includes(StillingsSøkPortefølje.MITT_KONTOR) &&
+    eierNavKontorEnhetId
+  ) {
+    valgteFilter.push({
+      term: {
+        'stillingsinfo.eierNavKontorEnhetId': eierNavKontorEnhetId,
+      },
+    });
+  }
 
   if (!filter?.portefølje?.includes(StillingsSøkPortefølje.VIS_MINE)) {
     valgteFilter.push(esVariabler.skjulSlettetOgRejected);
@@ -74,9 +108,9 @@ export function generateElasticSearchQuery(
     valgteFilter.push(...esKategoriFormidling());
   }
 
-  if (filter.publisert.length > 0) {
-    valgteFilter.push(...esSynlighet(filter.publisert));
-  }
+  valgteFilter.push(
+    ...esSynlighet(filter.portefølje as StillingsSøkPortefølje, !!formidlinger),
+  );
 
   if (
     (geografiData && filter.fylker?.length > 0) ||

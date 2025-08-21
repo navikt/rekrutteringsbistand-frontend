@@ -10,22 +10,20 @@ const StillingsSøkChips: React.FC = () => {
 
   return (
     <div className='mt-4 w-full'>
-      <Chips>
-        <div className='flex flex-row flex-wrap gap-2 pb-2'>
+      <Chips size='small'>
+        <div className='flex flex-row flex-wrap items-center gap-2 pb-2'>
           {Object.values(filter).some(
             (value) => Array.isArray(value) && value.length > 0,
           ) && <TømFiltre fjernFritekst={() => filter.setFritekst('')} />}
           {filter.fritekst && (
-            <Chips key={filter.fritekst}>
-              <Chips.Removable
-                variant='neutral'
-                onClick={() => {
-                  filter.setFritekst('');
-                }}
-              >
-                {filter.fritekst}
-              </Chips.Removable>
-            </Chips>
+            <Chips.Removable
+              variant='neutral'
+              onClick={() => {
+                filter.setFritekst('');
+              }}
+            >
+              {filter.fritekst}
+            </Chips.Removable>
           )}
 
           <FilterChip

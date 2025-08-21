@@ -65,7 +65,7 @@ export const SplitScreenLayout: React.FC<SplitScreenLayoutProps> = ({
           className={ekspanderHøyre ? 'hidden' : ''}
           style={{ minWidth: '550px' }}
         >
-          <HovedInnholdKort className='h-[98vh]'>{children}</HovedInnholdKort>
+          <HovedInnholdKort className='h-[95vh]'>{children}</HovedInnholdKort>
         </ResizablePanel>
 
         <ResizableHandle className='z-20' />
@@ -78,7 +78,7 @@ export const SplitScreenLayout: React.FC<SplitScreenLayoutProps> = ({
             lukkSidebar={lukkSidebar}
             nesteSide={harNesteKandidat ? nesteKandidat : null}
             forrigeSide={harForrigeKandidat ? forrigeKandidat : null}
-            className='h-[98vh] overflow-auto min-w-[344px]'
+            className='h-[95vh] overflow-auto min-w-[344px]'
             ekspanderHøyre={ekspanderHøyre}
             ekspanderSidebar={() => setEkspanderHøyre(!ekspanderHøyre)}
           >

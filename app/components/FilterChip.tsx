@@ -30,18 +30,20 @@ const FilterChip: React.FC<FilterChipProps> = ({
   };
 
   if (type) {
-    return type.map((verdi, i) => (
-      <Chips key={verdi + i}>
-        <Chips.Removable
-          variant='neutral'
-          onClick={() => setVerdi(type.filter((i) => i !== verdi))}
-        >
-          {mapVerdiNavn
-            ? formatChipText(mapVerdiNavn(verdi))
-            : formatChipText(storForbokstavString(verdi))}
-        </Chips.Removable>
+    return (
+      <Chips size='small' className='m-0 p-0'>
+        {type.map((verdi, i) => (
+          <Chips.Removable
+            key={i}
+            onClick={() => setVerdi(type.filter((i) => i !== verdi))}
+          >
+            {mapVerdiNavn
+              ? formatChipText(mapVerdiNavn(verdi))
+              : formatChipText(storForbokstavString(verdi))}
+          </Chips.Removable>
+        ))}{' '}
       </Chips>
-    ));
+    );
   }
   return null;
 };

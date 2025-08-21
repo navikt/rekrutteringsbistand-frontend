@@ -1,5 +1,24 @@
-export const esSynlighet = (synlighet: string[]) => {
-  const synlighetFilter: any[] = [
+import { StillingsSøkPortefølje } from '../../../stilling/stillingssøk-typer';
+
+export const esSynlighet = (
+  portefølje: StillingsSøkPortefølje,
+  formidlinger: boolean,
+) => {
+  const formidling = [
+    {
+      bool: {
+        must_not: [
+          {
+            term: {
+              'stillingsinfo.stillingskategori': 'ARBEIDSTRENING',
+            },
+          },
+        ],
+      },
+    },
+  ];
+
+  const stillinger = [
     {
       bool: {
         must_not: [
@@ -18,18 +37,9 @@ export const esSynlighet = (synlighet: string[]) => {
     },
   ];
 
-  if (synlighet.includes('intern') && synlighet.includes('arbeidsplassen')) {
-    return synlighetFilter;
-  }
+  const synlighetFilter: any[] = formidlinger ? formidling : stillinger;
 
-  if (synlighet.includes('intern')) {
-    synlighetFilter.push({
-      term: {
-        'stilling.source': 'DIR',
-      },
-    });
-  }
-  if (synlighet.includes('arbeidsplassen')) {
+  if (portefølje === StillingsSøkPortefølje.ARBEIDSPLASSEN_NO) {
     synlighetFilter.push({
       term: {
         'stilling.privacy': 'SHOW_ALL',

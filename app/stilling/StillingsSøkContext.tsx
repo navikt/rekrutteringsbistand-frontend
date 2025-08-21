@@ -11,6 +11,7 @@ import { StillingsSøkQueryparam } from './stillingssøk-typer';
 import { useSearchParams } from 'next/navigation';
 import {
   parseAsArrayOf,
+  parseAsBoolean,
   parseAsInteger,
   parseAsString,
   useQueryState,
@@ -41,6 +42,8 @@ interface IStillingsSøkContext {
   fritekst: string[];
   setFritekst: (val: string) => void;
   setFritekstListe: (val: string[]) => void;
+  utenOppdrag: boolean;
+  setUtenOppdrag: (val: boolean) => void;
   formidlinger?: boolean;
 }
 
@@ -77,6 +80,11 @@ export const StillingsSøkProvider: React.FC<{
     }
   };
 
+  const [utenOppdrag, setUtenOppdrag] = useQueryState(
+    StillingsSøkQueryparam.HarKandidatliste,
+    parseAsBoolean.withDefault(false).withOptions({ clearOnDefault: false }),
+  );
+
   const [statuser, setStatuserOriginal] = useQueryState<string[]>(
     StillingsSøkQueryparam.Statuser,
     parseAsArrayOf(parseAsString)
@@ -106,7 +114,7 @@ export const StillingsSøkProvider: React.FC<{
   const [portefølje, setPortefølje] = useQueryState(
     StillingsSøkQueryparam.Portefølje,
     {
-      defaultValue: 'visAlle',
+      defaultValue: 'intern',
       clearOnDefault: true,
     },
   );
@@ -236,6 +244,8 @@ export const StillingsSøkProvider: React.FC<{
         setInkluderingUnderkategori: wrapWithPageReset(
           setInkluderingUnderkategori,
         ),
+        utenOppdrag,
+        setUtenOppdrag: wrapWithPageReset(setUtenOppdrag),
         kategori,
         setKategori: wrapWithPageReset(setKategori),
         publisert,
