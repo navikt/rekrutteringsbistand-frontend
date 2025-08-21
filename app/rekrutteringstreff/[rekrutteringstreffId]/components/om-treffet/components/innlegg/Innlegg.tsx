@@ -13,6 +13,7 @@ import SVGDarkmode from '@/app/components/SVGDarkmode';
 import RikTekstEditor from '@/app/components/rikteksteditor/RikTekstEditor';
 import VisEditorTekst from '@/app/components/rikteksteditor/VisEditorTekst';
 import { formaterNorskDato } from '@/app/components/util';
+import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
 import RekrutteringstreffDetalj from '@/app/rekrutteringstreff/[rekrutteringstreffId]/components/RekrutteringstreffDetalj';
 import InnleggPenDarkIkon from '@/public/ikoner/innlegg_pen-dark.svg';
 import InnleggPenIkon from '@/public/ikoner/innlegg_pen.svg';
@@ -131,7 +132,7 @@ const Innlegg: React.FC<InnleggProps> = ({
   );
 
   const handleValidateOrError = async () => {
-    if (validating) return;
+    if (validating || !rekrutteringstreffId) return;
 
     const tekst = htmlContent?.trim();
     if (!tekst) {
@@ -139,7 +140,11 @@ const Innlegg: React.FC<InnleggProps> = ({
       setHasChecked(false);
       return;
     }
-    await validate({ tekst });
+    await validate({
+      treffId: rekrutteringstreffId,
+      feltType: 'innlegg',
+      tekst: tekst,
+    });
     setHasChecked(true);
   };
 

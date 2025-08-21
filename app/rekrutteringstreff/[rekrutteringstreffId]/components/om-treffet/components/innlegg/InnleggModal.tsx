@@ -103,7 +103,7 @@ const InnleggModal: React.FC<InnleggModalProps> = ({
   );
 
   const handleValidateOrError = () => {
-    if (validating) return;
+    if (validating || !rekrutteringstreffId) return;
     const txt = htmlContent?.trim();
     if (!txt) {
       resetAnalyse();
@@ -111,7 +111,11 @@ const InnleggModal: React.FC<InnleggModalProps> = ({
       return;
     }
     setHasValidatedCurrentContentSuccessfully(false);
-    validate({ tekst: txt });
+    validate({
+      treffId: rekrutteringstreffId,
+      feltType: 'innlegg',
+      tekst: txt,
+    });
   };
 
   useEffect(() => {
