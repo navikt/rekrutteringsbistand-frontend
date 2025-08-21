@@ -2,7 +2,6 @@ import { useUseBrukerStandardSøk } from '../../api/stilling/standardsok/useBruk
 import AlleFilterKomponent from '../../components/AlleFilterKomponent';
 import { Roller } from '../../components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '../../providers/ApplikasjonContext';
-import { useStillingsSøkFilter } from '../StillingsSøkContext';
 import GeografiFilter from './StillingsSøkFilter/GeografiFilter';
 import InkluderingFilter from './StillingsSøkFilter/InkluderingFilter';
 import KategoriFilter from './StillingsSøkFilter/KategoriFilter';
@@ -18,9 +17,7 @@ import * as React from 'react';
 const StillingsSøkFilter: React.FC<{
   formidlinger?: boolean;
   stillingForKandidat?: string;
-}> = ({ formidlinger, stillingForKandidat }) => {
-  const { fritekst, setFritekstListe } = useStillingsSøkFilter();
-  const [searchValue, setSearchValue] = React.useState<string>('');
+}> = ({ formidlinger }) => {
   const [showStandardsøk, setShowStandardsøk] = React.useState<boolean>(false);
   const { harRolle } = useApplikasjonContext();
   const brukerStandardSøkData = useUseBrukerStandardSøk();

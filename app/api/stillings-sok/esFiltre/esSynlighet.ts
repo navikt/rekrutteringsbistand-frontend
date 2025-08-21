@@ -10,7 +10,7 @@ export const esSynlighet = (
         must_not: [
           {
             term: {
-              'stillingsinfo.stillingskategori': 'FORMIDLING',
+              'stillingsinfo.stillingskategori': 'ARBEIDSTRENING',
             },
           },
         ],
