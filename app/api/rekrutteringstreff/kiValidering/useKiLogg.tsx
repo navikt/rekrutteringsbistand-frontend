@@ -1,6 +1,6 @@
 'use client';
 
-import { getAPI, postApi } from '../../fetcher';
+import { getAPI, putApi } from '../../fetcher';
 import { kiLoggMock } from '../[...slug]/mocks/KiLoggMock';
 import { Response } from 'miragejs';
 import useSWR from 'swr';
@@ -42,14 +42,14 @@ const listFetcher = async (url: string): Promise<KiLogg[]> => {
 type SetManuellArg = { id: string; bryterRetningslinjer: boolean };
 type SetLagretArg = { id: string; lagret: boolean };
 
-const postManuell = async (_: string, { arg }: { arg: SetManuellArg }) => {
+const putManuell = async (_: string, { arg }: { arg: SetManuellArg }) => {
   const { id, bryterRetningslinjer } = arg;
-  await postApi(`${kiLoggEndepunkt}/${id}/manuell`, { bryterRetningslinjer });
+  await putApi(`${kiLoggEndepunkt}/${id}/manuell`, { bryterRetningslinjer });
 };
 
-const postLagret = async (_: string, { arg }: { arg: SetLagretArg }) => {
+const putLagret = async (_: string, { arg }: { arg: SetLagretArg }) => {
   const { id, lagret } = arg;
-  await postApi(`${kiLoggEndepunkt}/${id}/lagret`, { lagret });
+  await putApi(`${kiLoggEndepunkt}/${id}/lagret`, { lagret });
 };
 
 export const useKiLogg = (treffId?: string, feltType?: string) => {
@@ -65,13 +65,13 @@ export const useKiLogg = (treffId?: string, feltType?: string) => {
     trigger: setManuell,
     isMutating: settingManuell,
     error: manuellError,
-  } = useSWRMutation(`${kiLoggEndepunkt}/manuell`, postManuell);
+  } = useSWRMutation(`${kiLoggEndepunkt}/manuell`, putManuell);
 
   const {
     trigger: setLagret,
     isMutating: settingLagret,
     error: lagretError,
-  } = useSWRMutation(`${kiLoggEndepunkt}/lagret`, postLagret);
+  } = useSWRMutation(`${kiLoggEndepunkt}/lagret`, putLagret);
 
   const refresh = async () => {
     if (key) await swr.mutate();
@@ -108,9 +108,9 @@ export const listKiLoggMirage = (server: any) => {
 };
 
 export const oppdaterKiLoggManuellMirage = (server: any) => {
-  return server.post(manuellEndepunkt(':id'), () => new Response(204));
+  return server.put(manuellEndepunkt(':id'), () => new Response(204));
 };
 
 export const oppdaterKiLoggLagretMirage = (server: any) => {
-  return server.post(lagretEndepunkt(':id'), () => new Response(204));
+  return server.put(lagretEndepunkt(':id'), () => new Response(204));
 };
