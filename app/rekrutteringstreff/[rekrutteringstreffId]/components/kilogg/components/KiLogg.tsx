@@ -209,7 +209,7 @@ const KiLogg: React.FC<KiLoggProps> = ({ feltType }) => {
                       <BodyShort className='font-semibold'>
                         Begrunnelse
                       </BodyShort>
-                      <pre className='whitespace-pre-wrap text-sm bg-gray-50 p-2 rounded'>
+                      <pre className='whitespace-pre-wrap text-sm bg-gray-500 p-2 rounded'>
                         {row.begrunnelse ?? '—'}
                       </pre>
                     </div>
@@ -217,7 +217,7 @@ const KiLogg: React.FC<KiLoggProps> = ({ feltType }) => {
                       <BodyShort className='font-semibold'>
                         Spørring (fra frontend)
                       </BodyShort>
-                      <pre className='whitespace-pre-wrap text-xs bg-gray-50 p-2 rounded'>
+                      <pre className='whitespace-pre-wrap text-xs bg-gray-500 p-2 rounded'>
                         {row.spørringFraFrontend}
                       </pre>
                     </div>
@@ -225,7 +225,7 @@ const KiLogg: React.FC<KiLoggProps> = ({ feltType }) => {
                       <BodyShort className='font-semibold'>
                         Spørring (filtrert)
                       </BodyShort>
-                      <pre className='whitespace-pre-wrap text-xs bg-gray-50 p-2 rounded'>
+                      <pre className='whitespace-pre-wrap text-xs bg-gray-500 p-2 rounded'>
                         {row.spørringFiltrert}
                       </pre>
                     </div>
@@ -233,7 +233,7 @@ const KiLogg: React.FC<KiLoggProps> = ({ feltType }) => {
                       <BodyShort className='font-semibold'>
                         Systemprompt
                       </BodyShort>
-                      <pre className='whitespace-pre-wrap text-xs bg-gray-50 p-2 rounded'>
+                      <pre className='whitespace-pre-wrap text-xs bg-gray-500 p-2 rounded'>
                         {row.systemprompt ?? '—'}
                       </pre>
                     </div>
@@ -241,7 +241,7 @@ const KiLogg: React.FC<KiLoggProps> = ({ feltType }) => {
                       <BodyShort className='font-semibold'>
                         Ekstra parametre
                       </BodyShort>
-                      <pre className='whitespace-pre-wrap text-xs bg-gray-50 p-2 rounded'>
+                      <pre className='whitespace-pre-wrap text-xs bg-gray-500 p-2 rounded'>
                         {row.ekstraParametreJson ?? '—'}
                       </pre>
                     </div>

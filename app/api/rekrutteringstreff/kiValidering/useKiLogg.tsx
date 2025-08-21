@@ -1,8 +1,8 @@
 'use client';
 
-import { getAPI, postApi } from '../../fetcher';
+import { getAPI } from '../../fetcher';
 import { kiLoggMock } from '../[...slug]/mocks/KiLoggMock';
-import { Server } from 'miragejs';
+import { Response } from 'miragejs';
 import useSWR from 'swr';
 import useSWRMutation from 'swr/mutation';
 import { z } from 'zod';
@@ -41,9 +41,21 @@ const listFetcher = async (url: string): Promise<KiLogg[]> => {
 
 type SetManuellArg = { id: string; bryterRetningslinjer: boolean };
 
+// POST som ikke forventer respons-body (204 OK)
+const postNoContent = async (url: string, body: unknown) => {
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body ?? {}),
+  });
+  if (!res.ok) throw new Error('Serverfeil');
+};
+
 const postManuell = async (_: string, { arg }: { arg: SetManuellArg }) => {
   const { id, bryterRetningslinjer } = arg;
-  await postApi(`${kiLoggEndepunkt}/${id}/manuell`, { bryterRetningslinjer });
+  await postNoContent(`${kiLoggEndepunkt}/${id}/manuell`, {
+    bryterRetningslinjer,
+  });
 };
 
 export const useKiLogg = (treffId?: string, feltType?: string) => {
@@ -78,6 +90,7 @@ export const useKiLogg = (treffId?: string, feltType?: string) => {
   };
 };
 
+// Mirage (forenklet, i samme fil)
 export const manuellEndepunkt = (id: string | ':id' = ':id') =>
   `${kiLoggEndepunkt}/${id}/manuell`;
 export const lagretEndepunkt = (id: string | ':id' = ':id') =>
@@ -88,15 +101,9 @@ export const listKiLoggMirage = (server: any) => {
 };
 
 export const oppdaterKiLoggManuellMirage = (server: any) => {
-  return server.post(manuellEndepunkt(':id'), (_: any, request: any) => {
-    const { id } = request.params;
-    return kiLoggMock.find((x) => x.id === id) ?? kiLoggMock[0];
-  });
+  return server.post(manuellEndepunkt(':id'), () => new Response(204));
 };
 
 export const oppdaterKiLoggLagretMirage = (server: any) => {
-  return server.post(lagretEndepunkt(':id'), (_: any, request: any) => {
-    const { id } = request.params;
-    return kiLoggMock.find((x) => x.id === id) ?? kiLoggMock[0];
-  });
+  return server.post(lagretEndepunkt(':id'), () => new Response(204));
 };
