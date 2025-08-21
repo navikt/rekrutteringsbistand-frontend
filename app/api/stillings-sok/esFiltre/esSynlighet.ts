@@ -1,7 +1,24 @@
 import { StillingsSøkPortefølje } from '../../../stilling/stillingssøk-typer';
 
-export const esSynlighet = (portefølje: StillingsSøkPortefølje) => {
-  const synlighetFilter: any[] = [
+export const esSynlighet = (
+  portefølje: StillingsSøkPortefølje,
+  formidlinger: boolean,
+) => {
+  const formidling = [
+    {
+      bool: {
+        must_not: [
+          {
+            term: {
+              'stillingsinfo.stillingskategori': 'FORMIDLING',
+            },
+          },
+        ],
+      },
+    },
+  ];
+
+  const stillinger = [
     {
       bool: {
         must_not: [
@@ -19,6 +36,8 @@ export const esSynlighet = (portefølje: StillingsSøkPortefølje) => {
       },
     },
   ];
+
+  const synlighetFilter: any[] = formidlinger ? formidling : stillinger;
 
   if (portefølje === StillingsSøkPortefølje.ARBEIDSPLASSEN_NO) {
     synlighetFilter.push({

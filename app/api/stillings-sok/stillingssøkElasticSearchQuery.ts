@@ -62,12 +62,11 @@ export function generateElasticSearchQuery({
     (filter.portefølje === StillingsSøkPortefølje.ARBEIDSPLASSEN_NO &&
       !filter.utenOppdrag)
   ) {
-    if (!formidlinger)
-      valgteFilter.push({
-        exists: {
-          field: 'stillingsinfo',
-        },
-      });
+    valgteFilter.push({
+      exists: {
+        field: 'stillingsinfo',
+      },
+    });
   }
 
   if (
@@ -110,7 +109,7 @@ export function generateElasticSearchQuery({
   }
 
   valgteFilter.push(
-    ...esSynlighet(filter.portefølje as StillingsSøkPortefølje),
+    ...esSynlighet(filter.portefølje as StillingsSøkPortefølje, !!formidlinger),
   );
 
   if (
