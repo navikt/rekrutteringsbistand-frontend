@@ -28,11 +28,11 @@ const RekrutteringstreffSøkLayout: React.FC<
   const { valgtNavKontor } = useApplikasjonContext();
 
   const handleOpprettRekrutteringstreff = () => {
-    const nyTreff: OpprettNyttRekrutteringstreffDTO = {
+    const nyttTreff: OpprettNyttRekrutteringstreffDTO = {
       opprettetAvNavkontorEnhetId: valgtNavKontor?.navKontor || null,
     };
 
-    opprettNyttRekrutteringstreff(nyTreff)
+    opprettNyttRekrutteringstreff(nyttTreff)
       .then((response) => {
         const id = response.id;
         trackAndNavigate(
