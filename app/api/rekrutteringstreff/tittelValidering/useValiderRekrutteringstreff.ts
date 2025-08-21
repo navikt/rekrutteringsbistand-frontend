@@ -5,7 +5,7 @@ import { validerRekrutteringstreffMock } from '../mocks/validerRekrutteringstref
 import useSWRMutation from 'swr/mutation';
 import { z } from 'zod';
 
-const validerRekrutteringstreffEndepunkt = '/api/rekrutteringstreff/valider';
+const validerRekrutteringstreffEndepunkt = '/api/rekrutteringstreff/ki/valider';
 
 const ReqSchema = z.object({
   tekst: z.string(),
