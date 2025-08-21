@@ -19,6 +19,7 @@ import {
   Label,
   Modal,
   Skeleton,
+  Switch,
 } from '@navikt/ds-react';
 import { logger } from '@navikt/next-logger';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -51,10 +52,8 @@ const InnleggModal: React.FC<InnleggModalProps> = ({
 
   const [isClosingModal, setIsClosingModal] = useState(false);
   const [initialFocusDone, setInitialFocusDone] = useState(false);
-  const [
-    hasValidatedCurrentContentSuccessfully,
-    setHasValidatedCurrentContentSuccessfully,
-  ] = useState(false);
+  const [hasChecked, setHasChecked] = useState(false);
+  const [forceSave, setForceSave] = useState(false);
   const [editorKey, setEditorKey] = useState(Date.now());
 
   const methods = useForm<InnleggFormFields>({
@@ -82,50 +81,54 @@ const InnleggModal: React.FC<InnleggModalProps> = ({
 
   useEffect(() => {
     if (isDirty) {
-      setHasValidatedCurrentContentSuccessfully(false);
+      setHasChecked(false);
+      setForceSave(false);
+      resetAnalyse();
     }
-  }, [htmlContent, isDirty]);
+  }, [htmlContent, isDirty, resetAnalyse]);
+
+  const baseInvalid = useMemo(
+    () => !isDirty || !htmlContent?.trim(),
+    [isDirty, htmlContent],
+  );
 
   const disableSave = useMemo(
     () =>
-      !isDirty ||
-      !htmlContent?.trim() ||
+      baseInvalid ||
       isSubmitting ||
       validating ||
-      !hasValidatedCurrentContentSuccessfully,
+      (hasChecked && analyse?.bryterRetningslinjer && !forceSave),
     [
-      isDirty,
-      htmlContent,
+      baseInvalid,
       isSubmitting,
       validating,
-      hasValidatedCurrentContentSuccessfully,
+      hasChecked,
+      analyse?.bryterRetningslinjer,
+      forceSave,
     ],
   );
 
   const handleValidateOrError = () => {
-    if (validating) return;
+    if (validating || !rekrutteringstreffId) return;
     const txt = htmlContent?.trim();
     if (!txt) {
       resetAnalyse();
-      setHasValidatedCurrentContentSuccessfully(false);
+      setHasChecked(false);
       return;
     }
-    setHasValidatedCurrentContentSuccessfully(false);
-    validate({ tekst: txt });
+    validate({
+      treffId: rekrutteringstreffId,
+      feltType: 'innlegg',
+      tekst: txt,
+    });
+    setHasChecked(true);
   };
-
-  useEffect(() => {
-    if (analyse && !validating && !analyseError) {
-      setHasValidatedCurrentContentSuccessfully(!analyse.bryterRetningslinjer);
-    } else if (analyseError && !validating) {
-      setHasValidatedCurrentContentSuccessfully(false);
-    }
-  }, [analyse, validating, analyseError]);
 
   useEffect(() => {
     reset({ htmlContent: innlegg?.htmlContent ?? '' });
     resetAnalyse();
-    setHasValidatedCurrentContentSuccessfully(false);
+    setHasChecked(false);
+    setForceSave(false);
     setEditorKey(Date.now());
     if (modalRef.current && !modalRef.current.open) {
       setIsClosingModal(false);
@@ -134,12 +137,21 @@ const InnleggModal: React.FC<InnleggModalProps> = ({
   }, [innlegg, reset, resetAnalyse, modalRef]);
 
   const onSubmitHandler: SubmitHandler<InnleggFormFields> = async (data) => {
-    if (validating || !hasValidatedCurrentContentSuccessfully) {
+    if (validating) {
+      logger.warn('Attempted to save post while validation was in progress.');
+      return;
+    }
+    if (!hasChecked) {
+      logger.warn('Attempted to save post without validation.');
+      return;
+    }
+    if (analyse?.bryterRetningslinjer && !forceSave) {
       logger.warn(
-        'Attempted to save post without successful validation or while validation was in progress.',
+        'Attempted to save post with policy violations without override.',
       );
       return;
     }
+
     try {
       const navnForPayload =
         innlegg?.opprettetAvPersonNavn ||
@@ -194,7 +206,8 @@ const InnleggModal: React.FC<InnleggModalProps> = ({
     resetAnalyse();
     setIsClosingModal(false);
     setInitialFocusDone(false);
-    setHasValidatedCurrentContentSuccessfully(false);
+    setHasChecked(false);
+    setForceSave(false);
   };
 
   return (
@@ -226,7 +239,7 @@ const InnleggModal: React.FC<InnleggModalProps> = ({
                     ) {
                       if (!isDirty) {
                         resetAnalyse();
-                        setHasValidatedCurrentContentSuccessfully(false);
+                        setHasChecked(false);
                         cancelButtonRef.current?.focus();
                       } else {
                         handleValidateOrError();
@@ -253,7 +266,7 @@ const InnleggModal: React.FC<InnleggModalProps> = ({
                       e.preventDefault();
                       if (!isDirty) {
                         resetAnalyse();
-                        setHasValidatedCurrentContentSuccessfully(false);
+                        setHasChecked(false);
                         setTimeout(() => cancelButtonRef.current?.focus(), 0);
                       } else {
                         handleValidateOrError();
@@ -331,48 +344,89 @@ const InnleggModal: React.FC<InnleggModalProps> = ({
                           </Alert>
                         </motion.div>
                       )}
-                      {!validating && analyse && !analyseError && (
-                        <motion.div
-                          key='analyse'
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          exit={{ opacity: 0 }}
-                          transition={{ duration: 0.2 }}
-                          className={
-                            analyse.bryterRetningslinjer
-                              ? 'aksel-error-message p-1'
-                              : 'text-green-700 p-1'
-                          }
-                        >
-                          <BodyLong>{analyse.begrunnelse}</BodyLong>
-                        </motion.div>
-                      )}
+                      {!validating &&
+                        analyse &&
+                        !analyseError &&
+                        hasChecked && (
+                          <motion.div
+                            key='analyse'
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                            className={
+                              analyse.bryterRetningslinjer
+                                ? 'aksel-error-message p-1'
+                                : 'text-green-700 p-1'
+                            }
+                          >
+                            <BodyLong>{analyse.begrunnelse}</BodyLong>
+                          </motion.div>
+                        )}
                     </AnimatePresence>
                   </div>
                 </div>
               </div>
+
+              {hasChecked && analyse?.bryterRetningslinjer && (
+                <div className='pt-1'>
+                  <Switch
+                    size='small'
+                    checked={forceSave}
+                    onChange={(e) => setForceSave(e.target.checked)}
+                  >
+                    Lagre innhold likevel
+                  </Switch>
+                </div>
+              )}
             </div>
           </Modal.Body>
           <Modal.Footer>
-            <Button
-              ref={submitButtonRef}
-              type='submit'
-              loading={isSubmitting}
-              disabled={disableSave}
-            >
-              {innlegg ? 'Lagre endringer' : 'Opprett innlegg'}
-            </Button>
-            <Button
-              ref={cancelButtonRef}
-              type='button'
-              variant='secondary'
-              onClick={() => {
-                setIsClosingModal(true);
-                modalRef.current?.close();
-              }}
-            >
-              Avbryt
-            </Button>
+            {!hasChecked ? (
+              <>
+                <Button
+                  type='button'
+                  onClick={handleValidateOrError}
+                  loading={validating}
+                  disabled={baseInvalid || validating}
+                >
+                  Sjekk teksten for meg
+                </Button>
+                <Button
+                  ref={cancelButtonRef}
+                  type='button'
+                  variant='secondary'
+                  onClick={() => {
+                    setIsClosingModal(true);
+                    modalRef.current?.close();
+                  }}
+                >
+                  Avbryt
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button
+                  ref={submitButtonRef}
+                  type='submit'
+                  loading={isSubmitting}
+                  disabled={disableSave}
+                >
+                  {innlegg ? 'Lagre endringer' : 'Opprett innlegg'}
+                </Button>
+                <Button
+                  ref={cancelButtonRef}
+                  type='button'
+                  variant='secondary'
+                  onClick={() => {
+                    setIsClosingModal(true);
+                    modalRef.current?.close();
+                  }}
+                >
+                  Avbryt
+                </Button>
+              </>
+            )}
           </Modal.Footer>
         </form>
       </FormProvider>

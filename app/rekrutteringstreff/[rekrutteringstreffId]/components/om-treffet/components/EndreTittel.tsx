@@ -172,11 +172,18 @@ const EndreTittel = ({ modalRef, onUpdated }: EndreTittelProps) => {
   };
 
   const runValidation = async () => {
+    if (!rekrutteringstreff) return;
+
     if (!nyTittel?.trim()) {
       setVisTomFeil(true);
       return;
     }
-    await validate({ tekst: nyTittel });
+
+    await validate({
+      treffId: rekrutteringstreff.id,
+      feltType: 'tittel',
+      tekst: nyTittel,
+    });
     setHasChecked(true);
   };
 
