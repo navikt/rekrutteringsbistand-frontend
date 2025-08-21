@@ -6,7 +6,7 @@ import * as React from 'react';
 
 const OmAnnonsen: React.FC = () => {
   const { stillingsData } = useStillingsContext();
-  const { updated, medium, reference, id, expires, published } =
+  const { updated, medium, reference, expires, published, annonsenr } =
     stillingsData?.stilling;
   const { reportee, navIdent } = stillingsData?.stilling?.administration ?? {};
 
@@ -15,7 +15,7 @@ const OmAnnonsen: React.FC = () => {
       tittel='Om annonsen'
       gridInnhold={
         <>
-          <Definisjon tittel='Annonsenummer' innhold={`${id ?? '-'}`} />
+          <Definisjon tittel='Annonsenummer' innhold={`${annonsenr ?? '-'}`} />
           <Definisjon tittel='Hentet fra' innhold={`${medium ?? '-'}`} />
           <Definisjon tittel='Referanse' innhold={`${reference ?? '-'}`} />
           <Definisjon

@@ -64,7 +64,7 @@ export const RedigerOmVirksomheten: React.FC<{
             <dt className='font-bold'>Organisasjonsnummer</dt>
             <dd>{stillingsData.stilling?.employer?.orgnr ?? '-'}</dd>
             <dt className='font-bold'>Annonsenummer</dt>
-            <dd>{stillingsData.stilling?.id ?? '-'}</dd>
+            <dd>{stillingsData.stilling?.annonsenr ?? '-'}</dd>
           </dl>
 
           <span>Beskrivelse av bedriften (valgfritt)</span>
