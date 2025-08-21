@@ -16,16 +16,14 @@ const StillingsSøkChips: React.FC = () => {
             (value) => Array.isArray(value) && value.length > 0,
           ) && <TømFiltre fjernFritekst={() => filter.setFritekst('')} />}
           {filter.fritekst && (
-            <Chips key={filter.fritekst} size='small'>
-              <Chips.Removable
-                variant='neutral'
-                onClick={() => {
-                  filter.setFritekst('');
-                }}
-              >
-                {filter.fritekst}
-              </Chips.Removable>
-            </Chips>
+            <Chips.Removable
+              variant='neutral'
+              onClick={() => {
+                filter.setFritekst('');
+              }}
+            >
+              {filter.fritekst}
+            </Chips.Removable>
           )}
 
           <FilterChip

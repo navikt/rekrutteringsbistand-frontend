@@ -120,7 +120,6 @@ const StillingsSøkChips: React.FC = () => {
             {storForbokstavString(kategori)}
           </Chips.Removable>
         ))}
-        {/* <FilterChip type={filter.publisert} setVerdi={filter.setPublisert} /> */}
         {filter.fylker.map((fylke, i) => (
           <Chips.Removable
             key={i}
