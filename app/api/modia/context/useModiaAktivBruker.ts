@@ -3,8 +3,8 @@
 /**
  * Endepunkt /useModiaAktivBruker
  */
-import { ModiaDecoratorAPI } from '../api-routes';
-import { getAPIwithSchema } from '../fetcher';
+import { ModiaDecoratorAPI } from '../../api-routes';
+import { getAPIwithSchema } from '../../fetcher';
 import { Server } from 'miragejs';
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';

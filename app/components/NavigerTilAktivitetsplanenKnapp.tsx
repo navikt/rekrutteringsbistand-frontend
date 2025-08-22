@@ -4,7 +4,7 @@ import { getMiljø, Miljø } from '../../util/miljø';
 import {
   ModiaEventType,
   setModiaContext,
-} from '../api/context/setModiaContext';
+} from '../api/modia/context/setModiaContext';
 import { useKandidatContext } from '../kandidat/vis-kandidat/KandidatContext';
 import { ExternalLinkIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';

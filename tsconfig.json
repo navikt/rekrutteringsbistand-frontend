@@ -20,7 +20,8 @@
     "paths": {
       "@/*": ["./*"]
     },
-    "target": "ES2017"
+    "target": "ES2017",
+    "types": ["@navikt/ds-react/types/theme"]
   },
   "exclude": ["node_modules", ".next"],
   "include": [
