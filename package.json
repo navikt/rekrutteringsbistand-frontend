@@ -10,7 +10,7 @@
     "test-dev": "NEXT_PUBLIC_PLAYWRIGHT_TEST_MODE=true next dev -p 1337",
     "test-codegen": "pnpm exec playwright codegen --viewport-size=1920,1080",
     "build": "next build",
-    "lint": "next lint",
+    "lint": "eslint ./app",
     "lint-fix": "npx eslint --fix .",
     "formater-kode": "prettier --write .",
     "type-check": "tsc --noEmit"
