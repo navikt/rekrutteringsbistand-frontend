@@ -1,7 +1,7 @@
 import {
   maksAntallTreffPerSøk,
   regnUtFørsteTreffFra,
-} from '../api/stillings-sok/stillingssøkElasticSearchQuery';
+} from '../api/stillings-sok/elastic-search/elasticSearchQueryBuilder';
 import { useStillingssøk } from '../api/stillings-sok/useStillingssøk';
 import SWRLaster from '../components/SWRLaster';
 import { useApplikasjonContext } from '../providers/ApplikasjonContext';
