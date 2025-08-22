@@ -129,7 +129,7 @@ export function makeServer({ environment = 'test' } = {}) {
       mockModiaContext(this);
       kandidagsammendragMirage(this);
       // stillingssøk mock kan disables ved ES søk
-      // stillingssøkMirage(this);
+      stillingssøkMirage(this);
       this.passthrough('*');
     },
   });
