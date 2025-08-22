@@ -1,4 +1,4 @@
-import { maksAntallTreffPerSøk } from '../../api/stillings-sok/stillingssøkElasticSearchQuery';
+import { maksAntallTreffPerSøk } from '../../api/stillings-sok/elastic-search/elasticSearchQueryBuilder';
 import { useStillingsSøkFilter } from '../StillingsSøkContext';
 import { Pagination } from '@navikt/ds-react';
 
