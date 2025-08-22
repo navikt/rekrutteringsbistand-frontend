@@ -75,41 +75,39 @@ const NavDekoratør: React.FC = () => {
   };
 
   return (
-    <div>
-      <InternalHeader>
-        <InternalHeader.Title as='h1'>{tittel()}</InternalHeader.Title>
-        {erLokal && <DevDekoratør />}
-        {erUtvikler && <UtviklerDekoratør />}
-        <Spacer />
-        <ModiaKnapper />
-        <Dropdown>
-          <InternalHeader.UserButton
-            as={Dropdown.Toggle}
-            name={`${brukerData.fornavn} ${brukerData.etternavn}`}
-            description={`Enhet: ${valgtNavKontor?.navKontorNavn}`}
-          />
-          <Dropdown.Menu>
-            <Dropdown.Menu.List>
-              {brukerData.enheter.map((enhet) => (
-                <Dropdown.Menu.List.Item
-                  key={enhet.enhetId}
-                  onClick={() =>
-                    setValgtNavKontor({
-                      navKontor: enhet.enhetId,
-                      navKontorNavn: enhet.navn,
-                    })
-                  }
-                >
-                  {enhet.navn}
-                  <Spacer />
-                  <ArrowRight aria-hidden fontSize='1.5rem' />
-                </Dropdown.Menu.List.Item>
-              ))}
-            </Dropdown.Menu.List>
-          </Dropdown.Menu>
-        </Dropdown>
-      </InternalHeader>
-    </div>
+    <InternalHeader>
+      <InternalHeader.Title as='h1'>{tittel()}</InternalHeader.Title>
+      {erLokal && <DevDekoratør />}
+      {erUtvikler && <UtviklerDekoratør />}
+      <Spacer />
+      <ModiaKnapper />
+      <Dropdown>
+        <InternalHeader.UserButton
+          as={Dropdown.Toggle}
+          name={`${brukerData.fornavn} ${brukerData.etternavn}`}
+          description={`Enhet: ${valgtNavKontor?.navKontorNavn}`}
+        />
+        <Dropdown.Menu>
+          <Dropdown.Menu.List>
+            {brukerData.enheter.map((enhet) => (
+              <Dropdown.Menu.List.Item
+                key={enhet.enhetId}
+                onClick={() =>
+                  setValgtNavKontor({
+                    navKontor: enhet.enhetId,
+                    navKontorNavn: enhet.navn,
+                  })
+                }
+              >
+                {enhet.navn}
+                <Spacer />
+                <ArrowRight aria-hidden fontSize='1.5rem' />
+              </Dropdown.Menu.List.Item>
+            ))}
+          </Dropdown.Menu.List>
+        </Dropdown.Menu>
+      </Dropdown>
+    </InternalHeader>
   );
 };
 

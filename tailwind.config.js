@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  presets: [require('@navikt/ds-tailwind')],
+  presets: [require('@navikt/ds-tailwind/darkside-tw3')],
   content: [
     './app/**/*.{js,ts,jsx,tsx,mdx,css}',
     './components/**/*.{js,ts,jsx,tsx,mdx}',

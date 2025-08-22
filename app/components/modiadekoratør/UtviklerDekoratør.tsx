@@ -20,7 +20,7 @@ const UtviklerDekoratør: React.FC = () => {
     <div className='flex items-center ml-4'>
       Utvikler navkontor:
       <Select
-        onChange={(val) => {
+        onChange={(val: any) => {
           const selectedKontor = navkontorer.find(
             (kontor) => kontor.enhetId === val.target.value,
           );
