@@ -5,11 +5,7 @@ import { Box, Button, Search } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 
-export interface StillingSøkebarProps {
-  children?: React.ReactNode | undefined;
-}
-
-const StillingSøkebar: React.FC<StillingSøkebarProps> = ({ children }) => {
+const StillingSøkebar: React.FC = () => {
   const { fritekst, setFritekstListe } = useStillingsSøkFilter();
   const [searchValue, setSearchValue] = React.useState<string>('');
   const [showStandardsøk, setShowStandardsøk] = React.useState<boolean>(false);

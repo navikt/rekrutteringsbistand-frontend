@@ -1,21 +1,9 @@
-import { IStillingsSøkContext } from '../../../stilling/StillingsSøkContext';
-import { PamGeografi } from '../../pam-geografi/typehead/lokasjoner/usePamGeografi';
-
 export const maksAntallTreffPerSøk = 20;
 
 export const regnUtFørsteTreffFra = (
   side: number,
   antallTreffPerSide: number,
 ) => side * antallTreffPerSide - antallTreffPerSide;
-
-interface ElasticSearchQueryBuilderParams {
-  filter: IStillingsSøkContext;
-  eierNavKontorEnhetId?: string;
-  navIdent?: string;
-  geografiData?: PamGeografi[];
-  formidlinger?: boolean;
-  finnStillingerForKandidat?: boolean;
-}
 
 /**
  * ElasticSearch Query Builder

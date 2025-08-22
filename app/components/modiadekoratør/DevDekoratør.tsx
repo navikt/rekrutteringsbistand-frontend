@@ -19,8 +19,7 @@ const rolleTilnavn = (rolle: Roller) => {
 };
 
 const DevDekoratør: React.FC = () => {
-  const { valgtNavKontor, setValgtNavKontor, visVarsel } =
-    useApplikasjonContext();
+  const { valgtNavKontor, setValgtNavKontor } = useApplikasjonContext();
 
   const [devRolle, setDevRolle] = React.useState<Roller>(
     (localStorage.getItem('DEV-ROLLE') as Roller) ||

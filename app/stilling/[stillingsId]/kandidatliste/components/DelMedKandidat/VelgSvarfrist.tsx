@@ -131,6 +131,4 @@ export const lagFristFraSvarfrist = (svarfrist: Svarfrist) => {
   }
 };
 
-// const sisteGyldigeMaksDato = format(addMonths(new Date(), 1), 'dd.MM.yyyy');
-
 export default VelgSvarfrist;

@@ -57,8 +57,3 @@ export const hentArbeidssted = (locations: any[]): string | null => {
 
   return filtrerteLocations.join(', ');
 };
-
-// export const hentArbeidsgiversNavn = (stilling: any) =>
-//   stilling.businessName && stilling.businessName.length > 0
-//     ? formaterMedStoreOgSmåBokstaver(stilling.businessName)
-//     : formaterMedStoreOgSmåBokstaver(stilling.employer?.name);

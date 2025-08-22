@@ -21,7 +21,6 @@ const LagreIRekrutteringstreffButton: React.FC<
 > = ({ rekrutteringstreffId, kandidatsokKandidater }) => {
   const modalRef = React.useRef<HTMLDialogElement>(null!);
   const { visVarsel } = useApplikasjonContext();
-  //const { track } = useUmami();
 
   const { markerteKandidater, fjernMarkerteKandidater } =
     useKandidatSøkMarkerteContext();

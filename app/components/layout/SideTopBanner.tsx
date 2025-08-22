@@ -1,8 +1,6 @@
 import { Heading } from '@navikt/ds-react';
 import { ReactNode } from 'react';
 
-// import Grunnbanner from '../grunnbanner/Grunnbanner';
-
 export type ISideTopBanner = {
   tittel: string | null;
   chip?: ReactNode;

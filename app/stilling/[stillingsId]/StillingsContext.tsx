@@ -13,7 +13,6 @@ import { eierStilling } from '../../components/tilgangskontroll/erEier';
 import { Roller } from '../../components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '../../providers/ApplikasjonContext';
 import { Stillingskategori } from '../stilling-typer';
-// import { useRouter } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import React, { useMemo } from 'react';
 

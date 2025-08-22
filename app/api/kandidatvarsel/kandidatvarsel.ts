@@ -4,8 +4,6 @@ import { getAPI, postApi } from '../fetcher';
 import useSWR, { SWRResponse, useSWRConfig } from 'swr';
 import { z } from 'zod';
 
-// import { fetchJson, postJson } from '../../kandidat/api/fetchUtils';
-
 const varselStillingEndepunkt = (stillingId: string) => {
   if (stillingId === undefined)
     throw new RekbisError({ message: 'stillingId === undefined' });
@@ -17,8 +15,6 @@ export enum Meldingsmal {
   VurdertSomAktuell = 'VURDERT_SOM_AKTUELL',
   FunnetPassendeStilling = 'PASSENDE_STILLING',
   Jobbarrangement = 'PASSENDE_JOBBARRANGEMENT',
-  // EtterspurtPgaKorona = 'etterspurt_pga_korona',
-  // Webinar = 'webinar',
 }
 
 export enum MinsideStatus {
@@ -287,5 +283,3 @@ const smsExampleMock = [
 export const kandidatvarselMirage = (server: any) => {
   return server.get(varselStillingEndepunkt('*'), () => smsExampleMock);
 };
-
-// const mockSms: Sms[] = [smsExampleMock];

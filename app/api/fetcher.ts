@@ -1,6 +1,6 @@
 import { RekbisError } from '../../util/rekbisError';
 import { logger } from '@navikt/next-logger';
-import { z, ZodSchema } from 'zod';
+import { z } from 'zod';
 
 interface fetchOptions {
   skjulFeilmelding?: boolean | number | number[]; // bool eller http kode(r)
@@ -156,7 +156,7 @@ const extractResponseData = async (response: Response): Promise<any> => {
     }
   }
 };
-const validerSchema = <T>(schema: ZodSchema<T>, data: any) => {
+const validerSchema = <T>(schema: z.ZodType<T>, data: any) => {
   // return schema.parse(data);
   // TODO Midlertidig løsning for å unngå så mange feil ved feil schema:
   const zodResult = schema.safeParse(data);
@@ -164,7 +164,7 @@ const validerSchema = <T>(schema: ZodSchema<T>, data: any) => {
     logger.info(
       {
         error: zodResult.error.message,
-        issues: zodResult.error.issues.map((issue) => ({
+        issues: zodResult.error.issues.map((issue: z.ZodIssue) => ({
           code: issue.code,
           path: issue.path,
           message: issue.message,
@@ -177,7 +177,7 @@ const validerSchema = <T>(schema: ZodSchema<T>, data: any) => {
 };
 
 export const getAPIwithSchema = <T>(
-  schema: ZodSchema<T>,
+  schema: z.ZodType<T>,
   options?: fetchOptions,
 ): ((url: string) => Promise<T>) => {
   return async (url: string) => {
@@ -298,7 +298,7 @@ const esResponseDto = z.object({
 });
 
 export const postApiWithSchemaEs = <T>(
-  schema: ZodSchema<T>,
+  schema: z.ZodType<T>,
 ): ((props: postApiProps) => Promise<T>) => {
   return async (props) => {
     const data: any = await postApi(props.url, props.body, props.options);
@@ -308,7 +308,7 @@ export const postApiWithSchemaEs = <T>(
 };
 
 export const getApiWithSchemaEs = <T>(
-  schema: ZodSchema<T>,
+  schema: z.ZodType<T>,
 ): ((props: postApiProps) => Promise<T>) => {
   return async (props) => {
     const data: any = await getAPI(props.url);
@@ -319,7 +319,7 @@ export const getApiWithSchemaEs = <T>(
 };
 
 export const postApiWithSchema = <T>(
-  schema: ZodSchema<T>,
+  schema: z.ZodType<T>,
 ): ((props: postApiProps) => Promise<T>) => {
   return async (props) => {
     const data = await postApi(props.url, props.body, props.options);
