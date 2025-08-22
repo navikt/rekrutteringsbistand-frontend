@@ -7,7 +7,7 @@ import Editor from '@monaco-editor/react';
 import { Button } from '@navikt/ds-react';
 import * as React from 'react';
 
-const RedigerStillingDev: React.FC = () => {
+const RedigerStillingUtvikler: React.FC = () => {
   const { stillingsData } = useStillingsContext();
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [editorData, setEditorData] = React.useState<string>(
@@ -48,4 +48,4 @@ const RedigerStillingDev: React.FC = () => {
   );
 };
 
-export default RedigerStillingDev;
+export default RedigerStillingUtvikler;

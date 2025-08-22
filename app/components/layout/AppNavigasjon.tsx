@@ -125,29 +125,13 @@ export function AppNavigasjon() {
   const { brukerData } = useApplikasjonContext();
   const { darkMode, setDarkMode } = useThemeProvider();
   const { open, toggleSidebar } = useSidebar();
-  // const [åpenNyheter, setÅpenNyheter] = useState<boolean>(false);
-
-  // const onFørsteBesøk = () => {
-  //   setÅpenNyheter(true);
-  // };
-
-  // const [antallUlesteNyheter, , markerSomLest] = useAntallUlesteNyheter(
-  //   nyheter,
-  //   onFørsteBesøk,
-  // );
-
-  // useEffect(() => {
-  //   if (åpenNyheter) {
-  //     markerSomLest();
-  //   }
-  // }, [åpenNyheter, markerSomLest]);
 
   return (
     <Box.New
       borderRadius='xlarge'
       borderColor='info-subtleA'
       background='default'
-      className='mt-3 h-[95vh] mb-3'
+      className='mt-3 h-[95vh] mb-3 ml-3'
     >
       <Sidebar collapsible='icon' variant='inset'>
         <SidebarHeader>
