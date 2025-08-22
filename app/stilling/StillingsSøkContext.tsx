@@ -18,7 +18,7 @@ import {
 } from 'nuqs';
 import * as React from 'react';
 
-interface IStillingsSøkContext {
+export interface IStillingsSøkContext {
   side: number;
   setSide: (val: number) => void;
   sortering: string;

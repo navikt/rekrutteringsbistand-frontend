@@ -1,23 +1,21 @@
 'use client';
 
-/**
- * Endepunkt /stilling
- */
+import { IStillingsSøkContext } from '../../stilling/StillingsSøkContext';
 import { StillingsSøkAPI } from '../api-routes';
 import { postApiWithSchema } from '../fetcher';
 import { usePamGeografi } from '../pam-geografi/typehead/lokasjoner/usePamGeografi';
 import { mockStillingssøk } from './mocks/mockStillingssøk';
+import { opprettElasticSearchQuery } from './opprettElasticSearchQuery';
 import { ESStillingsSøkSchema } from './schema/stillingsSøkSchema.zod';
-import {
-  generateElasticSearchQuery,
-  StillingsSøkFilter,
-} from './stillingssøkElasticSearchQuery';
+/**
+ * Endepunkt /stilling
+ */
 import useSWRImmutable from 'swr/immutable';
 
 const stillingsSøkEndepunkt = StillingsSøkAPI.internUrl;
 
 interface UseStillingssøkParams {
-  filter: StillingsSøkFilter;
+  filter: IStillingsSøkContext;
   eierNavKontorEnhetId?: string;
   navIdent?: string;
   formidlinger?: boolean;
@@ -33,7 +31,8 @@ export const useStillingssøk = ({
 }: UseStillingssøkParams) => {
   const geografiData = usePamGeografi();
 
-  const payload = generateElasticSearchQuery({
+  // const payload = generateElasticSearchQuery({
+  const payload = opprettElasticSearchQuery({
     filter,
     eierNavKontorEnhetId,
     navIdent,

@@ -1,13 +1,13 @@
 'use client';
 
 import {
+  getNummerFraSted,
+  stedmappingFraGammeltNummer,
+} from '../../../util/fylkeOgKommuneMapping';
+import {
   useKandidatStillingssøk,
   YrkeJobbonskeStillingsSøkDTO,
 } from '../../api/kandidat-sok/useKandidatStillingssøk';
-import {
-  getNummerFraSted,
-  stedmappingFraGammeltNummer,
-} from '../../api/stillings-sok/esFiltre/fylkeOgKommuneMapping';
 import { useStillingsSøkFilter } from '../../stilling/StillingsSøkContext';
 import { StillingsStatusTyper } from '../../stilling/components/StillingsSøkFilter/StatusFilter';
 import React, { useRef } from 'react';
