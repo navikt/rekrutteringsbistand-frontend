@@ -13,8 +13,11 @@ const UtviklerDekoratør: React.FC = () => {
     router.push(utviklerPath);
   };
 
+  // Sjekk om vi er på en stilling side (/stilling/{id})
+  const isStillingSide = pathname.match(/^\/stilling\/[^\/]+$/);
+
   return (
-    <div className='flex items-center'>
+    <div className='flex items-center ml-4'>
       Utvikler navkontor:
       <Select
         onChange={(val) => {
@@ -39,9 +42,11 @@ const UtviklerDekoratør: React.FC = () => {
           );
         })}
       </Select>
-      <Button variant='tertiary' onClick={handleUtviklerClick}>
-        Rediger stilling
-      </Button>
+      {isStillingSide && (
+        <Button variant='tertiary' onClick={handleUtviklerClick}>
+          Rediger stilling
+        </Button>
+      )}
     </div>
   );
 };
