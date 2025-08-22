@@ -19,10 +19,13 @@ export const kiLoggMock = [
     manuellKontrollBryterRetningslinjer: null,
     manuellKontrollUtfortAv: null,
     manuellKontrollTidspunkt: null,
+    promptVersjonsnummer: 1,
+    promptEndretTidspunkt: '2025-08-20T12:34:56.789+02:00',
+    promptHash: 'abc123',
   },
   {
     id: '7f1f5a2c-6d2a-4a7b-9c2b-1f0d2a3b4c5d',
-    opprettetTidspunkt: '2025-08-21T09:12:10.123+02:00[Europe/Oslo]',
+    opprettetTidspunkt: '2025-08-21T09:12:10.123+02:00',
     treffId: '550e8400-e29b-41d4-a716-446655440000',
     tittel: 'Sommerjobbmesse på NAV',
     feltType: 'tittel',
@@ -40,5 +43,8 @@ export const kiLoggMock = [
     manuellKontrollBryterRetningslinjer: null,
     manuellKontrollUtfortAv: null,
     manuellKontrollTidspunkt: null,
+    promptVersjonsnummer: null,
+    promptEndretTidspunkt: null,
+    promptHash: null,
   },
 ] as const;

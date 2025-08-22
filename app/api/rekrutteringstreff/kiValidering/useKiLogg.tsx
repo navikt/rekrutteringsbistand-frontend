@@ -29,6 +29,9 @@ const KiLoggSchema = z.object({
   manuellKontrollBryterRetningslinjer: z.boolean().nullable(),
   manuellKontrollUtfortAv: z.string().nullable(),
   manuellKontrollTidspunkt: z.string().nullable(),
+  promptVersjonsnummer: z.number().nullable(),
+  promptEndretTidspunkt: z.string().nullable(),
+  promptHash: z.string().nullable(),
 });
 
 export type KiLogg = z.infer<typeof KiLoggSchema>;
