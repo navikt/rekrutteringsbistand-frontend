@@ -61,6 +61,18 @@ export const esPortefølje = (
     });
     if (!params.filter.utenOppdrag) {
       esBuilder.addFilter({ exists: { field: 'stillingsinfo' } });
+    } else {
+      esBuilder.addBoolFilter({
+        must_not: [
+          { term: { 'stilling.status': 'REJECTED' } },
+          { term: { 'stilling.status': 'DELETED' } },
+        ],
+        must: [
+          { term: { 'stilling.administration.status': 'DONE' } },
+          { exists: { field: 'stilling.publishedByAdmin' } },
+          { range: { 'stilling.published': { lte: 'now/d' } } },
+        ],
+      });
     }
   }
 };
