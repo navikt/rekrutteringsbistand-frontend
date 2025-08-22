@@ -14,7 +14,7 @@ export interface KiLoggProps {
 }
 
 const GRID =
-  'grid grid-cols-[14rem_10rem_14rem_7rem_6rem_10rem_14rem] gap-x-4 items-start';
+  'grid grid-cols-[10rem_6rem_14rem_4rem_4rem_6rem_4rem] gap-x-4 items-start';
 
 const parseZonedDate = (s?: string | null): Date | null => {
   if (!s) return null;
@@ -223,7 +223,7 @@ const KiLogg: React.FC<KiLoggProps> = ({ feltType }) => {
                       <BodyShort className='font-semibold'>
                         Begrunnelse
                       </BodyShort>
-                      <pre className='whitespace-pre-wrap text-sm bg-gray-50 p-2 rounded'>
+                      <pre className='whitespace-pre-wrap text-sm bg-gray-500 p-2 rounded'>
                         {row.begrunnelse ?? '—'}
                       </pre>
                     </div>
@@ -231,7 +231,7 @@ const KiLogg: React.FC<KiLoggProps> = ({ feltType }) => {
                       <BodyShort className='font-semibold'>
                         Spørring (fra frontend)
                       </BodyShort>
-                      <pre className='whitespace-pre-wrap text-xs bg-gray-50 p-2 rounded'>
+                      <pre className='whitespace-pre-wrap text-xs bg-gray-500 p-2 rounded'>
                         {row.spørringFraFrontend}
                       </pre>
                     </div>
@@ -239,7 +239,7 @@ const KiLogg: React.FC<KiLoggProps> = ({ feltType }) => {
                       <BodyShort className='font-semibold'>
                         Spørring (filtrert)
                       </BodyShort>
-                      <pre className='whitespace-pre-wrap text-xs bg-gray-50 p-2 rounded'>
+                      <pre className='whitespace-pre-wrap text-xs bg-gray-500 p-2 rounded'>
                         {row.spørringFiltrert}
                       </pre>
                     </div>
@@ -247,16 +247,8 @@ const KiLogg: React.FC<KiLoggProps> = ({ feltType }) => {
                       <BodyShort className='font-semibold'>
                         Systemprompt
                       </BodyShort>
-                      <pre className='whitespace-pre-wrap text-xs bg-gray-50 p-2 rounded'>
+                      <pre className='whitespace-pre-wrap text-xs bg-gray-500 p-2 rounded'>
                         {row.systemprompt ?? '—'}
-                      </pre>
-                    </div>
-                    <div>
-                      <BodyShort className='font-semibold'>
-                        Ekstra parametre
-                      </BodyShort>
-                      <pre className='whitespace-pre-wrap text-xs bg-gray-50 p-2 rounded'>
-                        {row.ekstraParametreJson ?? '—'}
                       </pre>
                     </div>
                   </div>

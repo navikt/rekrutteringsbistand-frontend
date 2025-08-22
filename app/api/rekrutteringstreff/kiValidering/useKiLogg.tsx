@@ -2,6 +2,7 @@
 
 import { getAPI, putApi } from '../../fetcher';
 import { kiLoggMock } from '../[...slug]/mocks/KiLoggMock';
+import { logger } from '@navikt/next-logger';
 import { Response } from 'miragejs';
 import useSWR from 'swr';
 import useSWRMutation from 'swr/mutation';
@@ -19,7 +20,6 @@ const KiLoggSchema = z.object({
   spørringFraFrontend: z.string(),
   spørringFiltrert: z.string(),
   systemprompt: z.string().nullable(),
-  ekstraParametreJson: z.string().nullable(),
   bryterRetningslinjer: z.boolean(),
   begrunnelse: z.string().nullable(),
   kiNavn: z.string(),
@@ -38,8 +38,13 @@ export type KiLogg = z.infer<typeof KiLoggSchema>;
 const ListSchema = z.array(KiLoggSchema);
 
 const listFetcher = async (url: string): Promise<KiLogg[]> => {
-  const res = await getAPI(url);
-  return ListSchema.parse(res);
+  try {
+    const res = await getAPI(url);
+    return ListSchema.parse(res);
+  } catch (error) {
+    logger.error(error, `Feil ved henting av KI-logg fra ${url}`);
+    throw error;
+  }
 };
 
 type SetManuellArg = { id: string; bryterRetningslinjer: boolean };
@@ -47,12 +52,28 @@ type SetLagretArg = { id: string; lagret: boolean };
 
 const putManuell = async (_: string, { arg }: { arg: SetManuellArg }) => {
   const { id, bryterRetningslinjer } = arg;
-  await putApi(`${kiLoggEndepunkt}/${id}/manuell`, { bryterRetningslinjer });
+  try {
+    await putApi(`${kiLoggEndepunkt}/${id}/manuell`, { bryterRetningslinjer });
+  } catch (error) {
+    logger.error(
+      error,
+      `Feil ved oppdatering av manuell vurdering for KI-logg ${id}`,
+    );
+    throw error;
+  }
 };
 
 const putLagret = async (_: string, { arg }: { arg: SetLagretArg }) => {
   const { id, lagret } = arg;
-  await putApi(`${kiLoggEndepunkt}/${id}/lagret`, { lagret });
+  try {
+    await putApi(`${kiLoggEndepunkt}/${id}/lagret`, { lagret });
+  } catch (error) {
+    logger.error(
+      error,
+      `Feil ved oppdatering av lagret-status for KI-logg ${id}`,
+    );
+    throw error;
+  }
 };
 
 export const useKiLogg = (treffId?: string, feltType?: string) => {
