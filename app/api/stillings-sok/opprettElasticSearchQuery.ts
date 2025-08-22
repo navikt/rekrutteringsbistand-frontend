@@ -33,6 +33,7 @@ export function opprettElasticSearchQuery(
   kategoriQuery(params, esBuilder);
   geografiQuery(params, esBuilder);
   sorteringQuery(params, esBuilder);
+
   if (
     params.filter.inkludering.length > 0 ||
     params.filter.inkluderingUnderkategori.length > 0

@@ -404,7 +404,8 @@ export class ElasticSearchQueryBuilder {
         },
       },
     };
-  } /**
+  }
+  /**
    * Setter standard aggregering som alltid skal være med
    * Inkluderer fritekst-søk hvis det finnes
    */
@@ -487,9 +488,7 @@ export class ElasticSearchQueryBuilder {
       // Hvis det bare er ett sorteringselement, bruk det direkte
       // Hvis det er flere, bruk array
       query.sort = this.sorting.length === 1 ? this.sorting[0] : this.sorting;
-    } else {
     }
-
     // Legg til aggregering hvis spesifisert
     if (Object.keys(this.aggregations).length > 0) {
       query.aggs = this.aggregations;
