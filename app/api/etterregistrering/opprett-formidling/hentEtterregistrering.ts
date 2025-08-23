@@ -1,7 +1,7 @@
-import { RekbisError } from '../../../../util/rekbisError';
-import { StillingAPI } from '../../api-routes';
-import { hentOboToken } from '../../oboToken';
-import { StillingsDataDTO } from '../../stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
+import { StillingAPI } from '@/app/api/api-routes';
+import { hentOboToken } from '@/app/api/oboToken';
+import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
+import { RekbisError } from '@/util/rekbisError';
 
 interface hentEtterregistreringProps {
   stillingsId: string;

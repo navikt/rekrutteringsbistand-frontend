@@ -1,5 +1,5 @@
-import { StillingAPI } from '../../api-routes';
-import { getAPIwithSchema } from '../../fetcher';
+import { StillingAPI } from '@/app/api/api-routes';
+import { getAPIwithSchema } from '@/app/api/fetcher';
 import useSWR from 'swr';
 import { z } from 'zod';
 

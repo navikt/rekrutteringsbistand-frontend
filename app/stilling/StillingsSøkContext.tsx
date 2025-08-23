@@ -1,13 +1,13 @@
 'use client';
 
-import { RekbisError } from '../../util/rekbisError';
-import { Roller } from '../components/tilgangskontroll/roller';
-import { useApplikasjonContext } from '../providers/ApplikasjonContext';
 import {
   hierarkiAvTagsForFilter,
   Subtag,
-} from './components/StillingsSøkFilter/InkluderingFilter';
+} from './_ui/StillingsSøkFilter/InkluderingFilter';
 import { StillingsSøkQueryparam } from './stillingssøk-typer';
+import { Roller } from '@/components/tilgangskontroll/roller';
+import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
+import { RekbisError } from '@/util/rekbisError';
 import { useSearchParams } from 'next/navigation';
 import {
   parseAsArrayOf,

@@ -1,11 +1,11 @@
 'use client';
 
-import TekstMedIkon from '../../components/TekstMedIkon';
-import SideLayout from '../../components/layout/SideLayout';
-import SideTopBanner from '../../components/layout/SideTopBanner';
-import { formaterNorskDato } from '../../components/util';
-import { filtrerbareInnsatsgrupper } from '../components/innsatsgrupper';
 import { useKandidatContext } from './KandidatContext';
+import { filtrerbareInnsatsgrupper } from '@/app/kandidat/_ui/innsatsgrupper';
+import TekstMedIkon from '@/components/felles/TekstMedIkon';
+import SideLayout from '@/components/layout/SideLayout';
+import SideTopBanner from '@/components/layout/SideTopBanner';
+import { formaterNorskDato } from '@/util/util';
 import {
   CandleIcon,
   EnvelopeClosedIcon,

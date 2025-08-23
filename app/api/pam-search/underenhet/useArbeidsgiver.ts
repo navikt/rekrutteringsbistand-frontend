@@ -1,7 +1,7 @@
 'use client';
 
-import { PamSearchAPI } from '../../api-routes';
-import { getApiWithSchemaEs } from '../../fetcher';
+import { PamSearchAPI } from '@/app/api/api-routes';
+import { getApiWithSchemaEs } from '@/app/api/fetcher';
 import { faker } from '@faker-js/faker/locale/nb_NO';
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';

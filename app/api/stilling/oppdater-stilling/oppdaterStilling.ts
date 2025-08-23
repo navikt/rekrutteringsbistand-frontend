@@ -1,6 +1,6 @@
-import { putApi } from '../../fetcher';
-import { mockBaseStilling } from '../rekrutteringsbistandstilling/[slug]/mocks/stillingMock';
-import { StillingsDataDTO } from '../rekrutteringsbistandstilling/[slug]/stilling.dto';
+import { putApi } from '@/app/api/fetcher';
+import { mockBaseStilling } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/mocks/stillingMock';
+import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { Server } from 'miragejs';
 
 export const oppdaterStillingEndepunkt = '/api/stilling/oppdater-stilling';

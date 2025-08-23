@@ -1,10 +1,10 @@
-import { TilgangskontrollForInnhold } from '../../components/tilgangskontroll/TilgangskontrollForInnhold';
-import { Roller } from '../../components/tilgangskontroll/roller';
-import { useNullableStillingsContext } from '../../stilling/[stillingsId]/StillingsContext';
 import { KandidatContextProvider } from './KandidatContext';
 import KandidatSide from './KandidatSide';
 import KandidatSideLayout from './KandidatsideLayout';
-import KandidatlisteBoks from './components/KandidatlisteBoks';
+import KandidatlisteBoks from './_ui/KandidatlisteBoks';
+import { useNullableStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
+import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
+import { Roller } from '@/components/tilgangskontroll/roller';
 import * as React from 'react';
 
 export interface VisKandidatProps {

@@ -1,14 +1,16 @@
-import { useKandidatlisteForEier } from '../../api/kandidat/useKandidatlisteForEier';
-import TekstMedIkon from '../../components/TekstMedIkon';
-import SideTopBanner from '../../components/layout/SideTopBanner';
-import StillingsTag from '../components/StillingsTag';
-import capitalizeEmployerName, { navnEierAvAstilling } from '../stilling-util';
 import { useStillingsContext } from './StillingsContext';
-import KopierStillingLenke from './components/KopierStillingLenke';
+import KopierStillingLenke from './_ui/KopierStillingLenke';
 import {
   InternKandidatstatus,
   KandidatutfallTyper,
 } from './kandidatliste/KandidatTyper';
+import { useKandidatlisteForEier } from '@/app/api/kandidat/useKandidatlisteForEier';
+import StillingsTag from '@/app/stilling/_ui/StillingsTag';
+import capitalizeEmployerName, {
+  navnEierAvAstilling,
+} from '@/app/stilling/stilling-util';
+import TekstMedIkon from '@/components/felles/TekstMedIkon';
+import SideTopBanner from '@/components/layout/SideTopBanner';
 import { Buildings2Icon, PersonIcon } from '@navikt/aksel-icons';
 import { BodyShort } from '@navikt/ds-react';
 import * as React from 'react';

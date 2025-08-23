@@ -1,9 +1,10 @@
-import { isLocal } from '../util/env';
-import MirageInitializer from './components/MirageInitializer';
-import SkyraInit from './components/skyra/Skyra_init';
 import './globals.css';
-import RekrutteringsbistandProvider from './providers/RekrutteringsbistandProvider';
-import { UmamiProvider } from './providers/UmamiContext';
+import NavigasjonWrapper from '@/components/layout/NavigasjonWrapper';
+import MirageInitializer from '@/providers/MirageInitializer';
+import RekrutteringsbistandProvider from '@/providers/RekrutteringsbistandProvider';
+import SkyraInit from '@/providers/Skyra_init';
+import { UmamiProvider } from '@/providers/UmamiContext';
+import { isLocal } from '@/util/env';
 import type { Metadata } from 'next';
 import Script from 'next/script';
 
@@ -41,7 +42,7 @@ export default async function RootLayout({
         <UmamiProvider>
           <BrukLokalMock>
             <RekrutteringsbistandProvider>
-              {children}
+              <NavigasjonWrapper>{children}</NavigasjonWrapper>
             </RekrutteringsbistandProvider>
           </BrukLokalMock>
         </UmamiProvider>

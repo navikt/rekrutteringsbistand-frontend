@@ -1,19 +1,19 @@
 'use client';
 
-import RekrutteringstreffDark from '../../public/ikoner/rekrutteringstreff-dark.svg';
-import Rekrutteringstreff from '../../public/ikoner/rekrutteringstreff.svg';
-import { RekbisError } from '../../util/rekbisError';
-import { UmamiEvent } from '../../util/umamiEvents';
+import { RekrutteringstreffFilter } from './_ui/RekrutteringstreffFilter';
 import {
   opprettNyttRekrutteringstreff,
   OpprettNyttRekrutteringstreffDTO,
-} from '../api/rekrutteringstreff/nytt-rekrutteringstreff/opprettNyttRekrutteringstreff';
-import SVGDarkmode from '../components/SVGDarkmode';
-import SideLayout from '../components/layout/SideLayout';
-import SideTopBanner from '../components/layout/SideTopBanner';
-import { useApplikasjonContext } from '../providers/ApplikasjonContext';
-import { useUmami } from '../providers/UmamiContext';
-import { RekrutteringstreffFilter } from './components/RekrutteringstreffFilter';
+} from '@/app/api/rekrutteringstreff/nytt-rekrutteringstreff/opprettNyttRekrutteringstreff';
+import SVGDarkmode from '@/components/layout/SVGDarkmode';
+import SideLayout from '@/components/layout/SideLayout';
+import SideTopBanner from '@/components/layout/SideTopBanner';
+import { UmamiEvent } from '@/components/umami/umamiEvents';
+import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
+import { useUmami } from '@/providers/UmamiContext';
+import RekrutteringstreffDark from '@/public/ikoner/rekrutteringstreff-dark.svg';
+import Rekrutteringstreff from '@/public/ikoner/rekrutteringstreff.svg';
+import { RekbisError } from '@/util/rekbisError';
 import { Button } from '@navikt/ds-react';
 import * as React from 'react';
 

@@ -1,12 +1,12 @@
 'use client';
 
-import Sidelaster from '../components/Sidelaster';
-import SideBanner from '../components/layout/SideBanner';
-import SideLayout from '../components/layout/SideLayout';
-import { StillingsSøkProvider } from '../stilling/StillingsSøkContext';
-import StillingsSøkeresultat from '../stilling/StillingsSøkeresultat';
-import StillingsSøkFilter from '../stilling/components/StillingsSøkFilter';
-import StillingsSøkNavigasjon from '../stilling/components/StillingsSøkNavigasjon';
+import { StillingsSøkProvider } from '@/app/stilling/StillingsSøkContext';
+import StillingsSøkeresultat from '@/app/stilling/StillingsSøkeresultat';
+import StillingsSøkFilter from '@/app/stilling/_ui/StillingsSøkFilter';
+import StillingsSøkNavigasjon from '@/app/stilling/_ui/StillingsSøkNavigasjon';
+import SideBanner from '@/components/layout/SideBanner';
+import SideLayout from '@/components/layout/SideLayout';
+import Sidelaster from '@/components/layout/Sidelaster';
 import { BriefcaseClockIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import Link from 'next/link';

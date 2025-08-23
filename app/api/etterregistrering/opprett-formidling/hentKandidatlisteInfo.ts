@@ -1,7 +1,7 @@
-import { RekbisError } from '../../../../util/rekbisError';
-import { KandidatAPI } from '../../api-routes';
-import { KandidatlisteInfoDTO } from '../../kandidat/useKandidatlisteInfo';
-import { hentOboToken } from '../../oboToken';
+import { KandidatAPI } from '@/app/api/api-routes';
+import { KandidatlisteInfoDTO } from '@/app/api/kandidat/useKandidatlisteInfo';
+import { hentOboToken } from '@/app/api/oboToken';
+import { RekbisError } from '@/util/rekbisError';
 
 interface hentKandidatlisteInfoProps {
   stillingsId: string;

@@ -1,7 +1,7 @@
 'use client';
 
-import { PamOntologiAPI } from '../../api-routes';
-import { getAPIwithSchema } from '../../fetcher';
+import { PamOntologiAPI } from '@/app/api/api-routes';
+import { getAPIwithSchema } from '@/app/api/fetcher';
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
 

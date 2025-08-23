@@ -1,6 +1,6 @@
 'use client';
 
-import RikTekstEditor from '../components/rikteksteditor/RikTekstEditor';
+import RikTekstEditor from '@/components/felles/rikteksteditor/RikTekstEditor';
 import { Button, Modal, TextField } from '@navikt/ds-react';
 import { useRef, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';

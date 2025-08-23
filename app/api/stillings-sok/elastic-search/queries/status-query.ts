@@ -1,6 +1,6 @@
-import { StillingsStatusTyper } from '../../../../stilling/components/StillingsSøkFilter/StatusFilter';
-import { GenerateElasticSearchQueryParams } from '../../opprettElasticSearchQuery';
-import { ElasticSearchQueryBuilder } from '../elasticSearchQueryBuilder';
+import { ElasticSearchQueryBuilder } from '@/app/api/stillings-sok/elastic-search/elasticSearchQueryBuilder';
+import { GenerateElasticSearchQueryParams } from '@/app/api/stillings-sok/opprettElasticSearchQuery';
+import { StillingsStatusTyper } from '@/app/stilling/_ui/StillingsSøkFilter/StatusFilter';
 
 // Hjelper-funksjon for å lage publisert-kriterier
 const getPublisertKriterier = () => [

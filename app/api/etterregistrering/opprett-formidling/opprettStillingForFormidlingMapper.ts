@@ -1,6 +1,6 @@
-import { FormidlingDataForm } from '../../../etterregistrering/ny-etterregistrering/redigerFormidlingFormType';
-import { Stillingskategori } from '../../../stilling/stilling-typer';
-import { OpprettNyStillingDTO } from '../../stilling/ny-stilling/dto';
+import { OpprettNyStillingDTO } from '@/app/api/stilling/ny-stilling/dto';
+import { FormidlingDataForm } from '@/app/etterregistrering/ny-etterregistrering/redigerFormidlingFormType';
+import { Stillingskategori } from '@/app/stilling/stilling-typer';
 
 export const opprettStillingForFormidlingMapper = (
   formidlingData: FormidlingDataForm,

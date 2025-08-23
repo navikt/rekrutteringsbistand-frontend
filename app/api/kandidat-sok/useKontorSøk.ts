@@ -3,8 +3,8 @@
 /**
  * Endepunkt /useKontorSøk
  */
-import { KandidatSøkAPI } from '../api-routes';
-import { postApiWithSchema } from '../fetcher';
+import { KandidatSøkAPI } from '@/app/api/api-routes';
+import { postApiWithSchema } from '@/app/api/fetcher';
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
 

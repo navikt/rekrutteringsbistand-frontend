@@ -1,4 +1,4 @@
-import { visMørkModus } from '../visMørkModus';
+import { visMørkModus } from '@/tests/visMørkModus';
 import { expect, test } from '@playwright/test';
 
 // Bruker arbeidsgiverrettet tilgang for å teste forsiden

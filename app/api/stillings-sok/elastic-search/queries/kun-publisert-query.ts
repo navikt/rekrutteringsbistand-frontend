@@ -1,4 +1,4 @@
-import { ElasticSearchQueryBuilder } from '../elasticSearchQueryBuilder';
+import { ElasticSearchQueryBuilder } from '@/app/api/stillings-sok/elastic-search/elasticSearchQueryBuilder';
 
 export const kunPubliserte = (esBuilder: ElasticSearchQueryBuilder) => {
   esBuilder.addBoolFilter({

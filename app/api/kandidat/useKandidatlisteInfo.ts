@@ -3,9 +3,9 @@
 /**
  * Endepunkt /useKandidatlisteInfo
  */
-import { KandidatAPI } from '../api-routes';
-import { getAPIwithSchema } from '../fetcher';
-import { StillingsinfoDTO } from '../stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
+import { KandidatAPI } from '@/app/api/api-routes';
+import { getAPIwithSchema } from '@/app/api/fetcher';
+import { StillingsinfoDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { Server } from 'miragejs';
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';

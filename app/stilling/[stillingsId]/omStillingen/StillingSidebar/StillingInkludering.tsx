@@ -1,5 +1,5 @@
-import TekstMedIkon from '../../../../components/TekstMedIkon';
-import { useStillingsContext } from '../../StillingsContext';
+import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
+import TekstMedIkon from '@/components/felles/TekstMedIkon';
 import { CheckmarkIcon } from '@navikt/aksel-icons';
 import { Heading } from '@navikt/ds-react';
 import * as React from 'react';

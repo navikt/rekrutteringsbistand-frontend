@@ -1,6 +1,6 @@
-import { postApi } from '../../fetcher';
-import { mockBaseStilling } from '../rekrutteringsbistandstilling/[slug]/mocks/stillingMock';
 import { OpprettNyStillingDTO } from './dto';
+import { postApi } from '@/app/api/fetcher';
+import { mockBaseStilling } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/mocks/stillingMock';
 
 const opprettNyStillingEndepunkt = '/api/stilling/ny-stilling';
 

@@ -1,6 +1,6 @@
-import { UmamiEvent } from '../../../../../util/umamiEvents';
-import { useUmami } from '../../../../providers/UmamiContext';
-import { useStillingsContext } from '../../StillingsContext';
+import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
+import { UmamiEvent } from '@/components/umami/umamiEvents';
+import { useUmami } from '@/providers/UmamiContext';
 import { PrinterSmallIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import * as React from 'react';

@@ -1,5 +1,5 @@
-import { jobbsøkereMock } from '../[...slug]/mocks/jobbsøkereMock';
 import { postApi } from '@/app/api/fetcher';
+import { jobbsøkereMock } from '@/app/api/rekrutteringstreff/[...slug]/mocks/jobbsøkereMock';
 import { z } from 'zod';
 
 export const NyJobbsøkerSchema = z.object({

@@ -1,10 +1,10 @@
 'use client';
 
-import HovedInnholdKort from '../../components/layout/HovedInnholdKort';
-import SideBanner from '../../components/layout/SideBanner';
-import SideLayout from '../../components/layout/SideLayout';
 import RedigerFormidling from './RedigerFormidling';
 import { FormidlingFormSchema } from './redigerFormidlingFormType';
+import HovedInnholdKort from '@/components/layout/HovedInnholdKort';
+import SideBanner from '@/components/layout/SideBanner';
+import SideLayout from '@/components/layout/SideLayout';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FormProvider, useForm } from 'react-hook-form';
 

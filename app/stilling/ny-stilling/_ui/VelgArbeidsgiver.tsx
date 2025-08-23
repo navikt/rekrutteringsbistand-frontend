@@ -1,0 +1,101 @@
+import {
+  ArbeidsgiverDTO,
+  useFinnArbeidsgiver,
+} from '@/app/api/pam-search/underenhet/useArbeidsgiver';
+import { Alert, FormSummary, UNSAFE_Combobox } from '@navikt/ds-react';
+import * as React from 'react';
+
+export interface IVelgArbeidsgiver {
+  children?: React.ReactNode | undefined;
+  arbeidsgiverCallback: (arbeidsgiver: ArbeidsgiverDTO) => void;
+  valgtArbeidsgiver?: ArbeidsgiverDTO | null;
+}
+
+const VelgArbeidsgiver: React.FC<IVelgArbeidsgiver> = ({
+  arbeidsgiverCallback,
+  valgtArbeidsgiver,
+}) => {
+  const [søkeOrd, setSøkeord] = React.useState<string>('');
+  const { isLoading, error, data } = useFinnArbeidsgiver(søkeOrd);
+  const [arbeidsgiver, setArbeidsgiver] =
+    React.useState<ArbeidsgiverDTO | null>(valgtArbeidsgiver ?? null);
+
+  React.useEffect(() => {
+    if (arbeidsgiver) {
+      arbeidsgiverCallback(arbeidsgiver);
+    }
+  }, [arbeidsgiver]);
+
+  return (
+    <React.Fragment>
+      <div role='search'>
+        <UNSAFE_Combobox
+          isLoading={isLoading}
+          label='Arbeidsgivers navn eller organisasjonsnummer'
+          options={
+            data?.map(
+              (arbeidsgiver) =>
+                `${arbeidsgiver.navn} - ${arbeidsgiver.organisasjonsnummer}`,
+            ) ?? []
+          }
+          shouldAutocomplete={true}
+          onChange={(verdi) => setSøkeord(verdi)}
+          onToggleSelected={(valg) => {
+            const orgnr = valg.split(' - ').at(-1);
+            const selectedArbeidsgiver = data?.find(
+              (arbeidsgiver) => arbeidsgiver.organisasjonsnummer === orgnr,
+            );
+            if (selectedArbeidsgiver) {
+              setArbeidsgiver(selectedArbeidsgiver);
+            }
+          }}
+        />
+        {arbeidsgiver && (
+          <FormSummary className='mt-4'>
+            <FormSummary.Header>
+              <FormSummary.Heading level='2'>
+                Valgt arbeidsgiver
+              </FormSummary.Heading>
+            </FormSummary.Header>
+
+            <FormSummary.Answers>
+              <FormSummary.Answer>
+                <FormSummary.Label>Navn</FormSummary.Label>
+                <FormSummary.Value>{arbeidsgiver?.navn}</FormSummary.Value>
+              </FormSummary.Answer>
+
+              <FormSummary.Answer>
+                <FormSummary.Label>Organisasjonsnummer</FormSummary.Label>
+                <FormSummary.Value>
+                  {arbeidsgiver?.organisasjonsnummer}
+                </FormSummary.Value>
+              </FormSummary.Answer>
+
+              <FormSummary.Answer>
+                <FormSummary.Label>Adresse</FormSummary.Label>
+                <FormSummary.Value>
+                  {arbeidsgiver?.adresse?.adresse ?? '-'}
+                </FormSummary.Value>
+                <FormSummary.Value>
+                  {arbeidsgiver?.adresse?.postnummer ?? '-'},{' '}
+                  {arbeidsgiver?.adresse?.poststed ?? '-'}
+                </FormSummary.Value>
+
+                <FormSummary.Value>
+                  {arbeidsgiver?.adresse?.kommune ?? '-'}
+                </FormSummary.Value>
+              </FormSummary.Answer>
+            </FormSummary.Answers>
+          </FormSummary>
+        )}
+      </div>
+      {error && (
+        <Alert className='mt-8' variant='error'>
+          {JSON.stringify(error)}
+        </Alert>
+      )}
+    </React.Fragment>
+  );
+};
+
+export default VelgArbeidsgiver;

@@ -1,8 +1,8 @@
 'use client';
 
-import { TilgangskontrollForInnhold } from '../../../components/tilgangskontroll/TilgangskontrollForInnhold';
-import { Roller } from '../../../components/tilgangskontroll/roller';
-import { useStillingsContext } from '../StillingsContext';
+import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
+import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
+import { Roller } from '@/components/tilgangskontroll/roller';
 import Editor from '@monaco-editor/react';
 import { Button } from '@navikt/ds-react';
 import * as React from 'react';

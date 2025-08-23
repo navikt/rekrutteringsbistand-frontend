@@ -1,8 +1,8 @@
 'use client';
 
-import SWRLaster from '../components/SWRLaster';
-import { RekrutteringstreffKort } from './components/RekrutteringstreffKort';
+import { RekrutteringstreffKort } from './_ui/RekrutteringstreffKort';
 import { useRekrutteringstreffOversikt } from '@/app/api/rekrutteringstreff/useRekrutteringstreffOversikt';
+import SWRLaster from '@/components/SWRLaster';
 import { format } from 'date-fns';
 import * as React from 'react';
 

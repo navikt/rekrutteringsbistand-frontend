@@ -1,4 +1,4 @@
-import { useStillingsContext } from '../StillingsContext';
+import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import { BodyShort, Heading, Link } from '@navikt/ds-react';
 import * as React from 'react';
 

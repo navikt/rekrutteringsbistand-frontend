@@ -1,6 +1,6 @@
-import { isLocal } from '../../../util/env';
-import { StillingsSøkAPI } from '../api-routes';
-import { proxyWithOBO } from '../oboProxy';
+import { StillingsSøkAPI } from '@/app/api/api-routes';
+import { proxyWithOBO } from '@/app/api/oboProxy';
+import { isLocal } from '@/util/env';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(req: NextRequest) {

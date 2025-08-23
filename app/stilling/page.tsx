@@ -1,5 +1,10 @@
 import StillingsSøk from './StillingsSøk';
+import RekBisKort from '@/components/layout/RekBisKort';
 
 export default function StillingsSøkIndex() {
-  return <StillingsSøk />;
+  return (
+    <RekBisKort>
+      <StillingsSøk />
+    </RekBisKort>
+  );
 }

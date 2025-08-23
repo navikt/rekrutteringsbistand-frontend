@@ -1,14 +1,14 @@
+import { useStillingsSøkFilter } from './StillingsSøkContext';
+import StillingsSøkPaginering from './_ui/Pagnering';
+import StillingsKort from './_ui/StillingsKort';
+import StillingsSøkChips from './_ui/StillingsSøkChips';
 import {
   maksAntallTreffPerSøk,
   regnUtFørsteTreffFra,
-} from '../api/stillings-sok/elastic-search/elasticSearchQueryBuilder';
-import { useStillingssøk } from '../api/stillings-sok/useStillingssøk';
-import SWRLaster from '../components/SWRLaster';
-import { useApplikasjonContext } from '../providers/ApplikasjonContext';
-import { useStillingsSøkFilter } from './StillingsSøkContext';
-import StillingsSøkPaginering from './components/Pagnering';
-import StillingsKort from './components/StillingsKort';
-import StillingsSøkChips from './components/StillingsSøkChips';
+} from '@/app/api/stillings-sok/elastic-search/elasticSearchQueryBuilder';
+import { useStillingssøk } from '@/app/api/stillings-sok/useStillingssøk';
+import SWRLaster from '@/components/SWRLaster';
+import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import * as React from 'react';
 
 interface StillingsSøkeresultatProps {

@@ -1,21 +1,21 @@
 'use client';
 
-import { KandidatDataSchemaDTO } from '../api/kandidat-sok/schema/cvSchema.zod';
-import {
-  KandidatsokKandidat,
-  useKandidatsøk,
-} from '../api/kandidat-sok/useKandidatsøk';
-import RekrutteringstreffFeatureToggle from '../components/RekrutteringstreffFeatureToggle';
-import SWRLaster from '../components/SWRLaster';
-import { useKandidatNavigeringContext } from '../providers/KandidatNavigeringContext';
-import LagreIRekrutteringstreffButton from '../rekrutteringstreff/[rekrutteringstreffId]/components/lagreIRekrutteringstreffButton/LagreIRekrutteringstreffButton';
 import {
   KandidatSøkPortefølje,
   useKandidatSøkFilterContext,
 } from './KandidaSokFilterContext';
 import { useKandidatSøkMarkerteContext } from './KandidatSøkMarkerteContext';
-import KandidatKort from './components/KandidatKort';
-import LagreIKandidatlisteButton from './components/lagreKandidatliste/LagreIKandidatlisteButton';
+import KandidatKort from './_ui/KandidatKort';
+import LagreIKandidatlisteButton from './_ui/lagreKandidatliste/LagreIKandidatlisteButton';
+import { KandidatDataSchemaDTO } from '@/app/api/kandidat-sok/schema/cvSchema.zod';
+import {
+  KandidatsokKandidat,
+  useKandidatsøk,
+} from '@/app/api/kandidat-sok/useKandidatsøk';
+import LagreIRekrutteringstreffButton from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/lagreIRekrutteringstreffButton/LagreIRekrutteringstreffButton';
+import RekrutteringstreffFeatureToggle from '@/components/RekrutteringstreffFeatureToggle';
+import SWRLaster from '@/components/SWRLaster';
+import { useKandidatNavigeringContext } from '@/providers/KandidatNavigeringContext';
 import { Checkbox, Pagination } from '@navikt/ds-react';
 import * as React from 'react';
 

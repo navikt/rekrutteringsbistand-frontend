@@ -25,6 +25,19 @@ const eslintConfig = [
       //TODO Temp rule
       '@typescript-eslint/no-explicit-any': 'off',
       'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'warn',
+      'no-restricted-imports': [
+        'warn',
+        {
+          // Restrict deep relative imports; encourage using configured path aliases instead
+          patterns: [
+            {
+              group: ['../../**', '../../../**', '../../../../**'],
+              message:
+                'Unngå dype relative imports. Bruk alias (f.eks. @/components) der det er mulig.',
+            },
+          ],
+        },
+      ],
     },
   },
 ];

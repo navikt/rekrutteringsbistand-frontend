@@ -1,17 +1,17 @@
 'use client';
 
-import { UmamiEvent } from '../../util/umamiEvents';
-import { useUseBrukerStandardSøk } from '../api/stilling/standardsok/useBrukersStandardsøk';
-import Sidelaster from '../components/Sidelaster';
-import SideBanner from '../components/layout/SideBanner';
-import SideLayout from '../components/layout/SideLayout';
-import { useStillingForKandidat } from '../kandidat/vis-kandidat/useStillingForKandidat';
-import { useVisKandidatNr } from '../kandidat/vis-kandidat/useVisKandidatNr';
-import { useUmami } from '../providers/UmamiContext';
 import { StillingsSøkProvider } from './StillingsSøkContext';
 import StillingsSøkeresultat from './StillingsSøkeresultat';
-import StillingForKandidat from './components/StillingForKandidat';
-import StillingsSøkFilter from './components/StillingsSøkFilter';
+import StillingForKandidat from './_ui/StillingForKandidat';
+import StillingsSøkFilter from './_ui/StillingsSøkFilter';
+import { useUseBrukerStandardSøk } from '@/app/api/stilling/standardsok/useBrukersStandardsøk';
+import { useStillingForKandidat } from '@/app/kandidat/vis-kandidat/useStillingForKandidat';
+import { useVisKandidatNr } from '@/app/kandidat/vis-kandidat/useVisKandidatNr';
+import SideBanner from '@/components/layout/SideBanner';
+import SideLayout from '@/components/layout/SideLayout';
+import Sidelaster from '@/components/layout/Sidelaster';
+import { UmamiEvent } from '@/components/umami/umamiEvents';
+import { useUmami } from '@/providers/UmamiContext';
 import { BriefcaseIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import Link from 'next/link';

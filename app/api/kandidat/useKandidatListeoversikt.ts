@@ -3,9 +3,9 @@
 /**
  * Endepunkt /useKandidatListeoversikt
  */
-import { KandidatAPI } from '../api-routes';
-import { getAPIwithSchema } from '../fetcher';
 import { kandidatHistorikkSchema } from './schema.zod';
+import { KandidatAPI } from '@/app/api/api-routes';
+import { getAPIwithSchema } from '@/app/api/fetcher';
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
 

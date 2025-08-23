@@ -1,10 +1,10 @@
 'use client';
 
-import { RekbisError } from '../../../util/rekbisError';
-import { KandidatDataSchemaDTO } from '../../api/kandidat-sok/schema/cvSchema.zod';
-import { useKandidatinformasjon } from '../../api/kandidat-sok/useKandidatinformasjon';
-import SWRLaster from '../../components/SWRLaster';
-import { useApplikasjonContext } from '../../providers/ApplikasjonContext';
+import { KandidatDataSchemaDTO } from '@/app/api/kandidat-sok/schema/cvSchema.zod';
+import { useKandidatinformasjon } from '@/app/api/kandidat-sok/useKandidatinformasjon';
+import SWRLaster from '@/components/SWRLaster';
+import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
+import { RekbisError } from '@/util/rekbisError';
 import React from 'react';
 
 interface KandidatContextType {

@@ -1,14 +1,14 @@
 'use client';
 
-import HovedInnholdKort from '../components/layout/HovedInnholdKort';
-import SideLayout from '../components/layout/SideLayout';
-import SideTopBanner from '../components/layout/SideTopBanner';
-import VisEditorTekst from '../components/rikteksteditor/VisEditorTekst';
-import { TilgangskontrollForInnhold } from '../components/tilgangskontroll/TilgangskontrollForInnhold';
-import { Roller } from '../components/tilgangskontroll/roller';
-import { formaterNorskDato } from '../components/util';
-import { nyheter } from '../nyheter';
 import { OpprettNyhetModal } from './OpprettNyhetModal';
+import { nyheter } from '@/app/nyheter';
+import VisEditorTekst from '@/components/felles/rikteksteditor/VisEditorTekst';
+import HovedInnholdKort from '@/components/layout/HovedInnholdKort';
+import SideLayout from '@/components/layout/SideLayout';
+import SideTopBanner from '@/components/layout/SideTopBanner';
+import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
+import { Roller } from '@/components/tilgangskontroll/roller';
+import { formaterNorskDato } from '@/util/util';
 import { PencilIcon, TrashIcon } from '@navikt/aksel-icons';
 import { BodyShort, Box, Button } from '@navikt/ds-react';
 import * as React from 'react';

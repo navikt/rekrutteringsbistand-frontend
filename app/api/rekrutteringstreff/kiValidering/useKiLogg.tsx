@@ -1,7 +1,7 @@
 'use client';
 
-import { getAPI, putApi } from '../../fetcher';
-import { kiLoggMock } from '../[...slug]/mocks/KiLoggMock';
+import { getAPI, putApi } from '@/app/api/fetcher';
+import { kiLoggMock } from '@/app/api/rekrutteringstreff/[...slug]/mocks/KiLoggMock';
 import { logger } from '@navikt/next-logger';
 import { Response } from 'miragejs';
 import useSWR from 'swr';

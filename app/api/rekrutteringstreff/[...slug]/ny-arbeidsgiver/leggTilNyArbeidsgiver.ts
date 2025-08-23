@@ -1,5 +1,5 @@
-import { arbeidsgivereMock } from '../mocks/arbeidsgivereMock';
 import { postApi } from '@/app/api/fetcher';
+import { arbeidsgivereMock } from '@/app/api/rekrutteringstreff/[...slug]/mocks/arbeidsgivereMock';
 import { z } from 'zod';
 
 const leggtilNyArbeidsgiverEndepunkt = (id: string) => {

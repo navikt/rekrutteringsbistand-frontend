@@ -1,7 +1,7 @@
-import { StillingAPI } from '../../api-routes';
-import { hentOboToken } from '../../oboToken';
-import { OpprettNyStillingDTO } from '../../stilling/ny-stilling/dto';
-import { StillingsDataDTO } from '../../stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
+import { StillingAPI } from '@/app/api/api-routes';
+import { hentOboToken } from '@/app/api/oboToken';
+import { OpprettNyStillingDTO } from '@/app/api/stilling/ny-stilling/dto';
+import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 
 interface opprettEtterregistreringProps {
   nyEtterregistreringDTO: OpprettNyStillingDTO;

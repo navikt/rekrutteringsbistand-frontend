@@ -3,8 +3,6 @@
 /**
  * Endepunkt /useStilling
  */
-import { StillingAPI } from '../../../api-routes';
-import { getAPIwithSchema } from '../../../fetcher';
 import {
   internStillingMock,
   mockBaseStilling,
@@ -15,6 +13,8 @@ import {
   nyStillingMock,
 } from './mocks/stillingMock';
 import { StillingDataSchema } from './stilling.dto';
+import { StillingAPI } from '@/app/api/api-routes';
+import { getAPIwithSchema } from '@/app/api/fetcher';
 import useSWRImmutable from 'swr/immutable';
 
 const stillingEndepunkt = (stillingsId: string) =>

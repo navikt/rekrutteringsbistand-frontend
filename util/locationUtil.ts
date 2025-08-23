@@ -1,4 +1,4 @@
-import { GeografiDTO } from '../app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
+import { GeografiDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 
 export function getWorkLocationAsString(location?: GeografiDTO | null): string {
   const workLocations: string[] = [];

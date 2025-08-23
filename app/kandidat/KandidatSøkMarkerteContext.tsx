@@ -1,4 +1,4 @@
-import { RekbisError } from '../../util/rekbisError';
+import { RekbisError } from '@/util/rekbisError';
 import * as React from 'react';
 
 interface KandidatSøkMarkerteContextProps {

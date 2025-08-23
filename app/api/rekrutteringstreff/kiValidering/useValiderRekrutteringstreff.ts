@@ -1,7 +1,7 @@
 'use client';
 
-import { postApi } from '../../fetcher';
-import { validerRekrutteringstreffMock } from '../mocks/validerRekrutteringstreffMock';
+import { postApi } from '@/app/api/fetcher';
+import { validerRekrutteringstreffMock } from '@/app/api/rekrutteringstreff/mocks/validerRekrutteringstreffMock';
 import useSWRMutation from 'swr/mutation';
 import { z } from 'zod';
 

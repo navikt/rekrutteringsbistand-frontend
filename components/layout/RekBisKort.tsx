@@ -1,0 +1,32 @@
+'use client';
+
+import { Box } from '@navikt/ds-react';
+import * as React from 'react';
+
+export interface RekBisProps {
+  children?: React.ReactNode | undefined;
+  className?: string;
+  id?: string;
+}
+
+const RekBisKort: React.FC<RekBisProps> = ({
+  id,
+  children,
+  className = '',
+}) => {
+  return (
+    <div className='m-3'>
+      <Box.New
+        id={id}
+        borderRadius='xlarge'
+        borderColor='info-subtleA'
+        background='default'
+        className={`min-w-[320px] flex flex-col px-8 pb-8  w-full  overflow-auto  ${className} `}
+      >
+        <div className='max-w-[1440px] mx-auto w-full'>{children}</div>
+      </Box.New>
+    </div>
+  );
+};
+
+export default RekBisKort;

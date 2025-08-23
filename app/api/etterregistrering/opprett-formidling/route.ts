@@ -1,6 +1,3 @@
-import { RekbisError } from '../../../../util/rekbisError';
-import { mapFormTilFormidling } from '../../../etterregistrering/ny-etterregistrering/mapFormidling';
-import { FormidlingDataForm } from '../../../etterregistrering/ny-etterregistrering/redigerFormidlingFormType';
 import { hentEtterregistrering } from './hentEtterregistrering';
 import { hentKandidatlisteInfo } from './hentKandidatlisteInfo';
 import { leggTilKandidaterPåEtterregistrering } from './leggTilKandidaterPåEtterregistrering';
@@ -8,6 +5,9 @@ import { lukkKandidatliste } from './lukkKandidatliste';
 import { oppdaterEtterregistrering } from './oppdaterEtterregistrering';
 import { opprettEtterregistrering } from './opprettEtterregistrering';
 import { opprettStillingForFormidlingMapper } from './opprettStillingForFormidlingMapper';
+import { mapFormTilFormidling } from '@/app/etterregistrering/ny-etterregistrering/mapFormidling';
+import { FormidlingDataForm } from '@/app/etterregistrering/ny-etterregistrering/redigerFormidlingFormType';
+import { RekbisError } from '@/util/rekbisError';
 import { NextRequest, NextResponse } from 'next/server';
 
 export interface FormidlingAvUsynligKandidatOutboundDto {

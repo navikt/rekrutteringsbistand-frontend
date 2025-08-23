@@ -1,14 +1,14 @@
-import { RekbisError } from '../../../../util/rekbisError';
-import { ForespurteOmDelingAvCvDTO } from '../../../api/foresporsel-om-deling-av-cv/foresporsler/[...slug]/useForespurteOmDelingAvCv';
+import { KandidatVisningProps } from './_ui/KandidatlisteFilter/useFiltrerteKandidater';
+import OrganisasjonsnummerAlert from './_ui/OrganisasjonsnummerAlert';
+import { mapKandidatListeKandidatTilVisning } from './util';
+import { ForespurteOmDelingAvCvDTO } from '@/app/api/foresporsel-om-deling-av-cv/foresporsler/[...slug]/useForespurteOmDelingAvCv';
 import {
   kandidatlisteSchemaDTO,
   usynligKandidaterSchemaDTO,
-} from '../../../api/kandidat/schema.zod';
-import { Sms } from '../../../api/kandidatvarsel/kandidatvarsel';
-import { useStillingsContext } from '../StillingsContext';
-import { KandidatVisningProps } from './components/KandidatlisteFilter/useFiltrerteKandidater';
-import OrganisasjonsnummerAlert from './components/OrganisasjonsnummerAlert';
-import { mapKandidatListeKandidatTilVisning } from './util';
+} from '@/app/api/kandidat/schema.zod';
+import { Sms } from '@/app/api/kandidatvarsel/kandidatvarsel';
+import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
+import { RekbisError } from '@/util/rekbisError';
 import * as React from 'react';
 
 interface KandidatlisteContextProps {

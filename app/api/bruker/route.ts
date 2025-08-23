@@ -1,5 +1,5 @@
-import { RekbisError } from '../../../util/rekbisError';
-import { navnForRolleId } from '../../components/tilgangskontroll/roller';
+import { navnForRolleId } from '@/components/tilgangskontroll/roller';
+import { RekbisError } from '@/util/rekbisError';
 import { getToken } from '@navikt/oasis';
 import { decodeJwt } from 'jose';
 import { NextRequest, NextResponse } from 'next/server';

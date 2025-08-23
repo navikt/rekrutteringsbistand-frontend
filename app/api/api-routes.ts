@@ -1,4 +1,4 @@
-import { getCluster } from '../../util/env';
+import { getCluster } from '@/util/env';
 
 const gcp = getCluster();
 const fss = getCluster(true);

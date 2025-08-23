@@ -1,10 +1,10 @@
-import { JanzzTittelDTO } from '../../../api/pam-ontologi/stillingsTittel/useStillingsTittel';
+import { StillingsDataForm } from './redigerFormType.zod';
+import { JanzzTittelDTO } from '@/app/api/pam-ontologi/stillingsTittel/useStillingsTittel';
 import {
   CategorySchemaDTO,
   StillingsDataDTO,
-} from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
-import { InkluderingsTag } from '../omStillingen/StillingSidebar/StillingInkludering';
-import { StillingsDataForm } from './redigerFormType.zod';
+} from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
+import { InkluderingsTag } from '@/app/stilling/[stillingsId]/omStillingen/StillingSidebar/StillingInkludering';
 import { format, parse } from 'date-fns';
 
 export enum StillingSynlighet {

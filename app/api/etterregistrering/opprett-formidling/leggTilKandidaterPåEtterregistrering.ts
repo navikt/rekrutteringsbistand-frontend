@@ -1,7 +1,7 @@
-import { RekbisError } from '../../../../util/rekbisError';
-import { KandidatAPI } from '../../api-routes';
-import { FormidlingUsynligKandidatDTO } from '../../kandidat/formidleKandidat';
-import { hentOboToken } from '../../oboToken';
+import { KandidatAPI } from '@/app/api/api-routes';
+import { FormidlingUsynligKandidatDTO } from '@/app/api/kandidat/formidleKandidat';
+import { hentOboToken } from '@/app/api/oboToken';
+import { RekbisError } from '@/util/rekbisError';
 
 interface leggTilKandidaterPåEtterregistreringProps {
   kandidater: FormidlingUsynligKandidatDTO[];

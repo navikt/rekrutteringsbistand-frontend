@@ -1,15 +1,15 @@
 'use client';
 
 import {
-  getNummerFraSted,
-  stedmappingFraGammeltNummer,
-} from '../../../util/fylkeOgKommuneMapping';
-import {
   useKandidatStillingssøk,
   YrkeJobbonskeStillingsSøkDTO,
-} from '../../api/kandidat-sok/useKandidatStillingssøk';
-import { useStillingsSøkFilter } from '../../stilling/StillingsSøkContext';
-import { StillingsStatusTyper } from '../../stilling/components/StillingsSøkFilter/StatusFilter';
+} from '@/app/api/kandidat-sok/useKandidatStillingssøk';
+import { useStillingsSøkFilter } from '@/app/stilling/StillingsSøkContext';
+import { StillingsStatusTyper } from '@/app/stilling/_ui/StillingsSøkFilter/StatusFilter';
+import {
+  getNummerFraSted,
+  stedmappingFraGammeltNummer,
+} from '@/util/fylkeOgKommuneMapping';
 import React, { useRef } from 'react';
 
 const hentFylkerFraJobbønsker = (

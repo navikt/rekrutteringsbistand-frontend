@@ -1,12 +1,12 @@
 'use client';
 
-import { useStillingsContext } from '../StillingsContext';
 import RedigerStilling from './RedigerStilling';
 import { mapStillingTilForm } from './mapStilling';
 import {
   StillingsDataForm,
   StillingsDataFormSchema,
 } from './redigerFormType.zod';
+import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FormProvider, useForm } from 'react-hook-form';
 

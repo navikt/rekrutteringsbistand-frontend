@@ -1,6 +1,6 @@
-import NotFound from '../../not-found';
 import { StillingsContextProvider } from './StillingsContext';
 import StillingSideLayout from './StillingssideLayout';
+import NotFound from '@/app/not-found';
 import * as React from 'react';
 
 interface StillingSideRootLayoutProps {

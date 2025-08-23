@@ -1,10 +1,10 @@
-import { navnSchema } from '../../api/kandidat-sok/useKandidatNavn';
-import { ArbeidsgiverSchema } from '../../api/pam-search/underenhet/useArbeidsgiver';
+import { navnSchema } from '@/app/api/kandidat-sok/useKandidatNavn';
+import { ArbeidsgiverSchema } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
 import {
   KategoriSchema,
   LocationSchema,
-} from '../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
-import { OmTilretteleggingSchema } from '../../stilling/[stillingsId]/rediger/redigerFormType.zod';
+} from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
+import { OmTilretteleggingSchema } from '@/app/stilling/[stillingsId]/rediger/redigerFormType.zod';
 import { z } from 'zod';
 
 export const FormidlingKandidatSchema = z.object({

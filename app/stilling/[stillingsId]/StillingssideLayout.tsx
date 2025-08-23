@@ -1,8 +1,8 @@
 'use client';
 
-import SideLayout from '../../components/layout/SideLayout';
 import StillingHeader from './StillingHeader';
 import { useStillingsContext } from './StillingsContext';
+import SideLayout from '@/components/layout/SideLayout';
 import { Alert, Heading } from '@navikt/ds-react';
 import * as React from 'react';
 

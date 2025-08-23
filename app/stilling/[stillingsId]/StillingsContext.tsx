@@ -1,18 +1,17 @@
 'use client';
 
-import { RekbisError } from '../../../util/rekbisError';
 import {
   KandidatlisteInfoDTO,
   useKandidatlisteInfo,
-} from '../../api/kandidat/useKandidatlisteInfo';
-import { StillingsDataDTO } from '../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
-import { useStilling } from '../../api/stilling/rekrutteringsbistandstilling/[slug]/useStilling';
-import { useBreadcrumbsLabels } from '../../components/Breadcrumbs/BreadcrumbsProvider';
-import SWRLaster from '../../components/SWRLaster';
-import { eierStilling } from '../../components/tilgangskontroll/erEier';
-import { Roller } from '../../components/tilgangskontroll/roller';
-import { useApplikasjonContext } from '../../providers/ApplikasjonContext';
-import { Stillingskategori } from '../stilling-typer';
+} from '@/app/api/kandidat/useKandidatlisteInfo';
+import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
+import { useStilling } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/useStilling';
+import { Stillingskategori } from '@/app/stilling/stilling-typer';
+import SWRLaster from '@/components/SWRLaster';
+import { eierStilling } from '@/components/tilgangskontroll/erEier';
+import { Roller } from '@/components/tilgangskontroll/roller';
+import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
+import { RekbisError } from '@/util/rekbisError';
 import { useRouter } from 'next/navigation';
 import React, { useMemo } from 'react';
 
@@ -77,21 +76,11 @@ const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
     brukerData: { ident },
     harRolle,
   } = useApplikasjonContext();
-  const { setLabel } = useBreadcrumbsLabels();
   const kandidatListeInfoHook = useKandidatlisteInfo(
     stillingsData.stilling.publishedByAdmin
       ? stillingsData?.stillingsinfo
       : null,
   );
-
-  React.useEffect(() => {
-    if (stillingsData.stilling.title) {
-      setLabel(
-        `/stilling/${stillingsData.stilling.uuid}`,
-        stillingsData.stilling.title,
-      );
-    }
-  }, [stillingsData.stilling.title, setLabel, stillingsData.stilling.uuid]);
 
   React.useEffect(() => {
     if (stillingsData.stilling?.updated) {

@@ -1,16 +1,16 @@
 'use client';
 
-import { getWorkLocationsAsString } from '../../../../util/locationUtil';
-import { RekbisError } from '../../../../util/rekbisError';
-import { GeografiDTO } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
-import TekstMedIkon from '../../../components/TekstMedIkon';
-import VisEditorTekst from '../../../components/rikteksteditor/VisEditorTekst';
-import { formaterNorskDato } from '../../../components/util';
-import { useStillingsContext } from '../StillingsContext';
-import OmAnnonsen from '../components/OmAnnonsen';
-import OmBedriften from '../components/OmBedriften';
-import OmStillingBoks from '../components/OmStillingBoks';
 import StillingSidebar from './StillingSidebar/StillingSidebar';
+import { GeografiDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
+import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
+import OmAnnonsen from '@/app/stilling/[stillingsId]/_ui/OmAnnonsen';
+import OmBedriften from '@/app/stilling/[stillingsId]/_ui/OmBedriften';
+import OmStillingBoks from '@/app/stilling/[stillingsId]/_ui/OmStillingBoks';
+import TekstMedIkon from '@/components/felles/TekstMedIkon';
+import VisEditorTekst from '@/components/felles/rikteksteditor/VisEditorTekst';
+import { getWorkLocationsAsString } from '@/util/locationUtil';
+import { RekbisError } from '@/util/rekbisError';
+import { formaterNorskDato } from '@/util/util';
 import {
   CalendarIcon,
   ClockIcon,

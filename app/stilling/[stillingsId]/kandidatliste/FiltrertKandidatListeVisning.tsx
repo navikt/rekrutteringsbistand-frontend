@@ -1,12 +1,12 @@
-import { useKandidatNavigeringContext } from '../../../providers/KandidatNavigeringContext';
-import KandidatListeKort from './components/Kandidatkort/KandidatlisteKort';
+import KandidatListeKort from './_ui/Kandidatkort/KandidatlisteKort';
 import {
   KandidatlisteSortering,
   useKandidatlisteFilterContext,
-} from './components/KandidatlisteFilter/KandidatlisteFilterContext';
-import KandidatlisteFilterrad from './components/KandidatlisteFilter/KandidatlisteFilterrad';
-import useFiltrerteKandidater from './components/KandidatlisteFilter/useFiltrerteKandidater';
-import KandidatlisteHandlingsRad from './components/KandidatlisteHandlingsRad';
+} from './_ui/KandidatlisteFilter/KandidatlisteFilterContext';
+import KandidatlisteFilterrad from './_ui/KandidatlisteFilter/KandidatlisteFilterrad';
+import useFiltrerteKandidater from './_ui/KandidatlisteFilter/useFiltrerteKandidater';
+import KandidatlisteHandlingsRad from './_ui/KandidatlisteHandlingsRad';
+import { useKandidatNavigeringContext } from '@/providers/KandidatNavigeringContext';
 import { SortDownIcon, SortUpIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import * as React from 'react';

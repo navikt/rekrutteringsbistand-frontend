@@ -1,13 +1,11 @@
 'use client';
 
-import { useStillingsContext } from '../StillingsContext';
-import OmStillingen from '../omStillingen/OmStillingen';
-import AksjonsknapperSiderbarStilling from './components/AksjonsknapperSiderbarStilling';
-import { RedigerInnspurt } from './components/RedigerInnspurt';
-import { RedigerOmStillingen } from './components/RedigerOmStillingen';
-import { RedigerOmTilrettelegging } from './components/RedigerOmTilrettelegging';
-import { RedigerOmVirksomheten } from './components/RedigerOmVirksomheten';
-import { RedigerPraktiskInfo } from './components/RedigerPraktiskInfo';
+import AksjonsknapperSiderbarStilling from './_ui/AksjonsknapperSiderbarStilling';
+import { RedigerInnspurt } from './_ui/RedigerInnspurt';
+import { RedigerOmStillingen } from './_ui/RedigerOmStillingen';
+import { RedigerOmTilrettelegging } from './_ui/RedigerOmTilrettelegging';
+import { RedigerOmVirksomheten } from './_ui/RedigerOmVirksomheten';
+import { RedigerPraktiskInfo } from './_ui/RedigerPraktiskInfo';
 import {
   InnspurtSchema,
   OmStillingenSchema,
@@ -16,6 +14,8 @@ import {
   PraktiskInfoSchema,
   StillingsDataForm,
 } from './redigerFormType.zod';
+import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
+import OmStillingen from '@/app/stilling/[stillingsId]/omStillingen/OmStillingen';
 import { XMarkIcon } from '@navikt/aksel-icons';
 import { Button, Stepper } from '@navikt/ds-react';
 import { useQueryState } from 'nuqs';

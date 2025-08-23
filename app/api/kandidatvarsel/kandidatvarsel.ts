@@ -1,6 +1,6 @@
-import { RekbisError } from '../../../util/rekbisError';
-import { KandidatvarselAPI } from '../api-routes';
-import { getAPI, postApi } from '../fetcher';
+import { KandidatvarselAPI } from '@/app/api/api-routes';
+import { getAPI, postApi } from '@/app/api/fetcher';
+import { RekbisError } from '@/util/rekbisError';
 import useSWR, { SWRResponse, useSWRConfig } from 'swr';
 import { z } from 'zod';
 

@@ -1,7 +1,7 @@
-import { useRekrutteringstreffContext } from '../RekrutteringstreffContext';
-import TreffHeader from '../components/TreffHeader';
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
 import KandidatSøkTabs from '@/app/kandidat/KandidatSøkTabs';
+import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
+import TreffHeader from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/TreffHeader';
 import * as React from 'react';
 
 const KandidatTilRekrutteringstreff: React.FC = () => {

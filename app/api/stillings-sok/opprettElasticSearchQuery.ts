@@ -1,5 +1,3 @@
-import { IStillingsSøkContext } from '../../stilling/StillingsSøkContext';
-import { PamGeografi } from '../pam-geografi/typehead/lokasjoner/usePamGeografi';
 import {
   ElasticSearchQueryBuilder,
   maksAntallTreffPerSøk,
@@ -12,6 +10,8 @@ import { kategoriQuery } from './elastic-search/queries/kategori-query';
 import { esPortefølje } from './elastic-search/queries/portefølje-query';
 import { sorteringQuery } from './elastic-search/queries/sortering-query';
 import { statusQuery } from './elastic-search/queries/status-query';
+import { PamGeografi } from '@/app/api/pam-geografi/typehead/lokasjoner/usePamGeografi';
+import { IStillingsSøkContext } from '@/app/stilling/StillingsSøkContext';
 
 export interface GenerateElasticSearchQueryParams {
   filter: IStillingsSøkContext;

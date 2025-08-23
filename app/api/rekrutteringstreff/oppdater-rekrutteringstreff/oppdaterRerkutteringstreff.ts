@@ -1,6 +1,6 @@
-import { oppdaterRekrutteringstreffMock } from '../mocks/oppdaterRekrutteringstreffMock';
-import { RekrutteringstreffDTO } from '../useRekrutteringstreff';
 import { putApi } from '@/app/api/fetcher';
+import { oppdaterRekrutteringstreffMock } from '@/app/api/rekrutteringstreff/mocks/oppdaterRekrutteringstreffMock';
+import { RekrutteringstreffDTO } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { z } from 'zod';
 
 export const OppdaterRekrutteringstreffSchema = z.object({

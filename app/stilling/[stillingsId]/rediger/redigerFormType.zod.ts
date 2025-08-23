@@ -1,8 +1,8 @@
+import { StillingSynlighet } from './mapStilling';
 import {
   KategoriSchema,
   LocationSchema,
-} from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
-import { StillingSynlighet } from './mapStilling';
+} from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { z } from 'zod';
 
 export const OmVirksomhetenSchema = z.object({

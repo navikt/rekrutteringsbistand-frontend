@@ -1,5 +1,5 @@
-import { KandidatAPI } from '../api-routes';
-import { putApi } from '../fetcher';
+import { KandidatAPI } from '@/app/api/api-routes';
+import { putApi } from '@/app/api/fetcher';
 
 export const slettCvFraArbeidsgiversKandidatliste = async (
   kandidatlisteId: string,

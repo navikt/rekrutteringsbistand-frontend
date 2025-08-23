@@ -1,9 +1,9 @@
-import { StillingsDataDTO } from '../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import {
   AdminStatus,
   Stillingskategori,
   StillingsStatus,
 } from './stilling-typer';
+import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { startOfDay } from 'date-fns';
 
 export const kategoriTilVisningsnavn = (kategori: Stillingskategori | null) => {

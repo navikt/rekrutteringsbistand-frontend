@@ -1,8 +1,8 @@
 'use client';
 
-import SWRLaster from '../../../components/SWRLaster';
-import VisKandidat from '../../../kandidat/vis-kandidat/VisKandidat';
 import { useKandidatnummer } from '@/app/api/rekrutteringstreff/[...slug]/useKandidatnummer';
+import VisKandidat from '@/app/kandidat/vis-kandidat/VisKandidat';
+import SWRLaster from '@/components/SWRLaster';
 import * as React from 'react';
 
 export interface VisPersonProps {

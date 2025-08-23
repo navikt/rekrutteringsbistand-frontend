@@ -1,5 +1,5 @@
-import { ArbeidsgiverAdresseDTO } from '../api/pam-search/underenhet/useArbeidsgiver';
-import { GeografiDTO } from '../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
+import { ArbeidsgiverAdresseDTO } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
+import { GeografiDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 
 export const arbeidsgiverLokasjonTilLokasjon = (
   arbeidsgiverLokasjon: ArbeidsgiverAdresseDTO,

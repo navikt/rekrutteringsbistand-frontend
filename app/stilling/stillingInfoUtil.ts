@@ -1,7 +1,7 @@
-import { StillingsDataDTO } from '../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
-import { RekrutteringsbistandStillingSchemaDTO } from '../api/stillings-sok/schema/rekrutteringsbistandStillingSchema.zod';
 import { Stillingskategori, StillingsStatus } from './stilling-typer';
 import { stillingErUtløpt } from './stilling-util';
+import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
+import { RekrutteringsbistandStillingSchemaDTO } from '@/app/api/stillings-sok/schema/rekrutteringsbistandStillingSchema.zod';
 
 type StillingsDataInfo = {
   erUtløpt: boolean;

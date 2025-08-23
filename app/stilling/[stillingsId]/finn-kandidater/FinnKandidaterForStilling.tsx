@@ -1,11 +1,11 @@
 'use client';
 
-import { TilgangskontrollForInnhold } from '../../../components/tilgangskontroll/TilgangskontrollForInnhold';
-import { Roller } from '../../../components/tilgangskontroll/roller';
-import { KandidatSøkProvider } from '../../../kandidat/KandidaSokFilterContext';
-import { KandidatSøkMarkerteContextProvider } from '../../../kandidat/KandidatSøkMarkerteContext';
-import { useStillingsContext } from '../StillingsContext';
 import KandidatTilStilling from './KandidatTilStilling';
+import { KandidatSøkProvider } from '@/app/kandidat/KandidaSokFilterContext';
+import { KandidatSøkMarkerteContextProvider } from '@/app/kandidat/KandidatSøkMarkerteContext';
+import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
+import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
+import { Roller } from '@/components/tilgangskontroll/roller';
 import * as React from 'react';
 
 const FinnKandidaterForStilling: React.FC = () => {

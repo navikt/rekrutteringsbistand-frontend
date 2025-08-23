@@ -1,12 +1,12 @@
 'use client';
 
-import { IStillingsSøkContext } from '../../stilling/StillingsSøkContext';
-import { StillingsSøkAPI } from '../api-routes';
-import { postApiWithSchema } from '../fetcher';
-import { usePamGeografi } from '../pam-geografi/typehead/lokasjoner/usePamGeografi';
 import { mockStillingssøk } from './mocks/mockStillingssøk';
 import { opprettElasticSearchQuery } from './opprettElasticSearchQuery';
 import { ESStillingsSøkSchema } from './schema/stillingsSøkSchema.zod';
+import { StillingsSøkAPI } from '@/app/api/api-routes';
+import { postApiWithSchema } from '@/app/api/fetcher';
+import { usePamGeografi } from '@/app/api/pam-geografi/typehead/lokasjoner/usePamGeografi';
+import { IStillingsSøkContext } from '@/app/stilling/StillingsSøkContext';
 /**
  * Endepunkt /stilling
  */

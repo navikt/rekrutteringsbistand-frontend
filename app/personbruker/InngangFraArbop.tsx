@@ -1,10 +1,10 @@
 'use client';
 
-import Forvirretblob from '../../public/illustrasjoner/feilmelding-blob.svg';
-import { useArenaKandidatnr } from '../api/kandidat-sok/useArenaKandidatnr';
-import { useSynlighetsevaluering } from '../api/synlighet/evaluering/useSynlighetsevaluering';
-import Sidelaster from '../components/Sidelaster';
-import { useApplikasjonContext } from '../providers/ApplikasjonContext';
+import { useArenaKandidatnr } from '@/app/api/kandidat-sok/useArenaKandidatnr';
+import { useSynlighetsevaluering } from '@/app/api/synlighet/evaluering/useSynlighetsevaluering';
+import Sidelaster from '@/components/layout/Sidelaster';
+import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
+import Forvirretblob from '@/public/illustrasjoner/feilmelding-blob.svg';
 import { ArrowRightIcon } from '@navikt/aksel-icons';
 import { Button, Heading } from '@navikt/ds-react';
 import Image from 'next/image';

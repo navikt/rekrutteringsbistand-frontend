@@ -1,5 +1,5 @@
-import { StillingsDataDTO } from '../../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
-import { useKandidatSøkFilterContext } from '../../../kandidat/KandidaSokFilterContext';
+import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
+import { useKandidatSøkFilterContext } from '@/app/kandidat/KandidaSokFilterContext';
 import { useEffect, useMemo, useRef } from 'react';
 
 export const useFinnKandidatForStilling = (

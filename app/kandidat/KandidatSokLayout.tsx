@@ -1,11 +1,11 @@
 'use client';
 
-import SideBanner from '../components/layout/SideBanner';
-import SideLayout from '../components/layout/SideLayout';
-import { TilgangskontrollForInnhold } from '../components/tilgangskontroll/TilgangskontrollForInnhold';
-import { Roller } from '../components/tilgangskontroll/roller';
 import { KandidatSøkProvider } from './KandidaSokFilterContext';
 import { KandidatSøkMarkerteContextProvider } from './KandidatSøkMarkerteContext';
+import SideBanner from '@/components/layout/SideBanner';
+import SideLayout from '@/components/layout/SideLayout';
+import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
+import { Roller } from '@/components/tilgangskontroll/roller';
 import { PersonTallShortIcon } from '@navikt/aksel-icons';
 
 export interface KandidatSokLayoutProps {

@@ -1,16 +1,16 @@
 'use client';
 
-import { TilgangskontrollForInnhold } from '../components/tilgangskontroll/TilgangskontrollForInnhold';
-import { Roller } from '../components/tilgangskontroll/roller';
-import { useApplikasjonContext } from '../providers/ApplikasjonContext';
 import {
   KandidatSøkPortefølje,
   useKandidatSøkFilterContext,
 } from './KandidaSokFilterContext';
 import KandidatSøkResultat from './KandidatSøkResultat';
-import KandidatSøkChips from './components/KandidatSøkChips';
-import ValgteKontorer from './components/ValgteKontorer';
+import KandidatSøkChips from './_ui/KandidatSøkChips';
+import ValgteKontorer from './_ui/ValgteKontorer';
 import KandidatSøkFilter from './kandidat-søk-filter/KandidatSøkFilter';
+import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
+import { Roller } from '@/components/tilgangskontroll/roller';
+import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { Button } from '@navikt/ds-react';
 import * as React from 'react';
 

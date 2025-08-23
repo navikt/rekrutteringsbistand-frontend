@@ -1,13 +1,13 @@
 'use client';
 
-import { TilgangskontrollForInnhold } from '../../../../components/tilgangskontroll/TilgangskontrollForInnhold';
-import { Roller } from '../../../../components/tilgangskontroll/roller';
-import { useApplikasjonContext } from '../../../../providers/ApplikasjonContext';
-import { useStillingsContext } from '../../StillingsContext';
 import StillingPrint from './StillingPrint';
-import EierStillingVisning from './components/EierStillingVisning';
-import OpprettRekrutteringsoppdrag from './components/OpprettRekrutteringsoppdrag';
+import EierStillingVisning from './_ui/EierStillingVisning';
+import OpprettRekrutteringsoppdrag from './_ui/OpprettRekrutteringsoppdrag';
 import { overtaEierskap } from '@/app/api/stilling/overta-eierskap/overtaEierskap';
+import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
+import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
+import { Roller } from '@/components/tilgangskontroll/roller';
+import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { Button } from '@navikt/ds-react';
 import * as React from 'react';
 import { useState } from 'react';

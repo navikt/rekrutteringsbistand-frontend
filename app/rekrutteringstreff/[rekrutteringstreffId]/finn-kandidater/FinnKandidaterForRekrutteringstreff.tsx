@@ -1,11 +1,11 @@
 'use client';
 
-import SideLayout from '../../../components/layout/SideLayout';
-import { TilgangskontrollForInnhold } from '../../../components/tilgangskontroll/TilgangskontrollForInnhold';
-import { Roller } from '../../../components/tilgangskontroll/roller';
-import { KandidatSøkProvider } from '../../../kandidat/KandidaSokFilterContext';
-import { KandidatSøkMarkerteContextProvider } from '../../../kandidat/KandidatSøkMarkerteContext';
 import KandidatTilRekrutteringstreff from './KandidatTilRekrutteringstreff';
+import { KandidatSøkProvider } from '@/app/kandidat/KandidaSokFilterContext';
+import { KandidatSøkMarkerteContextProvider } from '@/app/kandidat/KandidatSøkMarkerteContext';
+import SideLayout from '@/components/layout/SideLayout';
+import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
+import { Roller } from '@/components/tilgangskontroll/roller';
 import * as React from 'react';
 
 const FinnKandidaterForRekrutteringstreff: React.FC = () => {

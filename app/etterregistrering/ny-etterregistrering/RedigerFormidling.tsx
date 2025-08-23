@@ -1,13 +1,13 @@
-import { RedigerOmTilrettelegging } from '../../stilling/[stillingsId]/rediger/components/RedigerOmTilrettelegging';
-import { OmTilretteleggingSchema } from '../../stilling/[stillingsId]/rediger/redigerFormType.zod';
-import FormidlingInnspurt from './components/FormidlingInnspurt';
-import FormidlingLeggTilKandidat from './components/FormidlingLeggTilKandidat';
-import FormidlingOmStillingen from './components/RedigerOmFormidlingen';
+import FormidlingInnspurt from './_ui/FormidlingInnspurt';
+import FormidlingLeggTilKandidat from './_ui/FormidlingLeggTilKandidat';
+import FormidlingOmStillingen from './_ui/RedigerOmFormidlingen';
 import {
   FormidlingDataForm,
   OmFormidlingSchema,
   OmKandidateneSchema,
 } from './redigerFormidlingFormType';
+import { RedigerOmTilrettelegging } from '@/app/stilling/[stillingsId]/rediger/_ui/RedigerOmTilrettelegging';
+import { OmTilretteleggingSchema } from '@/app/stilling/[stillingsId]/rediger/redigerFormType.zod';
 import { TrashIcon } from '@navikt/aksel-icons';
 import { Box, Button, Stepper } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';

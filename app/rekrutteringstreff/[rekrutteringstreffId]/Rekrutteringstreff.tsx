@@ -1,17 +1,17 @@
 'use client';
 
 import { useRekrutteringstreffContext } from './RekrutteringstreffContext';
-import TreffHeader from './components/TreffHeader';
-import Aktiviteter from './components/aktiviteter/components/Aktiviteter';
-import RekrutteringstreffArbeidsgivere from './components/arbeidsgivere/Arbeidsgivere';
-import Jobbsøkere from './components/jobbsøkere/Jobbsøkere';
-import KiLogg from './components/kilogg/components/KiLogg';
-import OmTreffet from './components/om-treffet/components/OmTreffet';
-import Stegviser from './components/om-treffet/stegviser/Stegviser';
+import TreffHeader from './_ui/TreffHeader';
+import Aktiviteter from './_ui/aktiviteter/Aktiviteter';
+import RekrutteringstreffArbeidsgivere from './_ui/arbeidsgivere/Arbeidsgivere';
+import Jobbsøkere from './_ui/jobbsøkere/Jobbsøkere';
+import KiLogg from './_ui/kilogg/components/KiLogg';
+import OmTreffet from './_ui/om-treffet/_ui/OmTreffet';
+import Stegviser from './_ui/om-treffet/stegviser/Stegviser';
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
-import { TilgangskontrollForInnhold } from '@/app/components/tilgangskontroll/TilgangskontrollForInnhold';
-import { Roller } from '@/app/components/tilgangskontroll/roller';
+import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
+import { Roller } from '@/components/tilgangskontroll/roller';
 import { Box, Tabs } from '@navikt/ds-react';
 import { useQueryState } from 'nuqs';
 import * as React from 'react';

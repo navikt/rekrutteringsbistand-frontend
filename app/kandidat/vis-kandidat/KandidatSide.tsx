@@ -1,9 +1,9 @@
 'use client';
 
-import NavigerTilAktivitetsplanenKnapp from '../../components/NavigerTilAktivitetsplanenKnapp';
+import FinnStillingForKandidatKnapp from './_ui/FinnStillingForKandidatKnapp';
 import KandidatAktivitet from './aktivitet-fane/KandidatAktivitet';
-import FinnStillingForKandidatKnapp from './components/FinnStillingForKandidatKnapp';
 import KandidatOversikt from './oversikt-fane/KandidatOversikt';
+import NavigerTilAktivitetsplanenKnapp from '@/components/felles/modia/NavigerTilAktivitetsplanenKnapp';
 import { Tabs } from '@navikt/ds-react';
 import { useQueryState } from 'nuqs';
 import * as React from 'react';

@@ -1,14 +1,14 @@
-import { KandidatDataSchemaDTO } from '../app/api/kandidat-sok/schema/cvSchema.zod';
-import { KandidatListeKandidatDTO } from '../app/api/kandidat/schema.zod';
-import { Innsatsgruppe } from '../app/kandidat/components/innsatsgrupper';
-import {
-  InternKandidatstatus,
-  KandidatutfallTyper,
-} from '../app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
 import {
   getSingleKandidatDataSchema,
   kandidatSeedCounter as globalKandidatSeedCounter,
 } from './kandidat.mock';
+import { KandidatDataSchemaDTO } from '@/app/api/kandidat-sok/schema/cvSchema.zod';
+import { KandidatListeKandidatDTO } from '@/app/api/kandidat/schema.zod';
+import { Innsatsgruppe } from '@/app/kandidat/_ui/innsatsgrupper';
+import {
+  InternKandidatstatus,
+  KandidatutfallTyper,
+} from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
 import { Faker, en, nb_NO } from '@faker-js/faker';
 
 // Assuming kandidatSeedCounter is exported and you want to use/mutate the global one

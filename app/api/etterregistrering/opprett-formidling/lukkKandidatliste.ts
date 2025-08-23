@@ -1,6 +1,6 @@
-import { RekbisError } from '../../../../util/rekbisError';
-import { KandidatAPI } from '../../api-routes';
-import { hentOboToken } from '../../oboToken';
+import { KandidatAPI } from '@/app/api/api-routes';
+import { hentOboToken } from '@/app/api/oboToken';
+import { RekbisError } from '@/util/rekbisError';
 
 interface lukkKandidatlisteProps {
   kandidatlisteId: string;

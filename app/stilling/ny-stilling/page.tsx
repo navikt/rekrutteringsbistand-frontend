@@ -1,13 +1,13 @@
 'use client';
 
-import { ArbeidsgiverDTO } from '../../api/pam-search/underenhet/useArbeidsgiver';
-import HovedInnholdKort from '../../components/layout/HovedInnholdKort';
-import SideBanner from '../../components/layout/SideBanner';
-import SideLayout from '../../components/layout/SideLayout';
-import { Stillingskategori } from '../stilling-typer';
-import { OpprettStillingKnapp } from './components/OpprettStilling';
-import VelgArbeidsgiver from './components/VelgArbeidsgiver';
-import VelgStillingskategori from './components/VelgStillingskategori';
+import { OpprettStillingKnapp } from './_ui/OpprettStilling';
+import VelgArbeidsgiver from './_ui/VelgArbeidsgiver';
+import VelgStillingskategori from './_ui/VelgStillingskategori';
+import { ArbeidsgiverDTO } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
+import { Stillingskategori } from '@/app/stilling/stilling-typer';
+import HovedInnholdKort from '@/components/layout/HovedInnholdKort';
+import SideBanner from '@/components/layout/SideBanner';
+import SideLayout from '@/components/layout/SideLayout';
 import { Alert, BodyLong, Button } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
 import { useQueryState } from 'nuqs';
