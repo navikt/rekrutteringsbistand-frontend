@@ -1,7 +1,7 @@
 'use client';
 
-import GiTilbakemelding from './_ui/GiTilbakemelding';
-import OpprettKnapp from './_ui/OpprettKnapp';
+import GiTilbakemelding from './GiTilbakemelding';
+import OpprettKnapp from './OpprettKnapp';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import {
@@ -12,7 +12,6 @@ import {
   SidebarRail,
   useSidebar,
 } from '@/components/ui/sidebar';
-import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useThemeProvider } from '@/providers/ThemeProvider';
 import {
   BriefcaseClockIcon,
@@ -117,14 +116,18 @@ const SideHandling = (item: NavigasjonHandlingProps) => {
   );
 };
 
-export function AppNavigasjon() {
-  const { brukerData } = useApplikasjonContext();
+export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { darkMode, setDarkMode } = useThemeProvider();
   const { open, toggleSidebar } = useSidebar();
 
   return (
-    <Sidebar className='top-(--aksel-internalheader) h-[calc(100svh-var(--aksel-internalheader))]!'>
-      <SidebarHeader className='mt-12'>
+    <Sidebar
+      collapsible='icon'
+      variant='inset'
+      className='top-(--header-height) h-[calc(100svh-var(--header-height))]!'
+      {...props}
+    >
+      <SidebarHeader>
         <div className='flex items-baseline'>
           <Button
             size='small'
@@ -180,21 +183,6 @@ export function AppNavigasjon() {
           )}
         </SidebarGroup>
       </SidebarContent>
-      {/* <SidebarFooter>
-        <div className='flex items-baseline w-full justify-center'>
-          <Avatar className='pt-4 mr-2'>
-            <AvatarFallback>
-              {brukerData.fornavn.charAt(0)}
-              {brukerData.etternavn.charAt(0)}
-            </AvatarFallback>
-          </Avatar>
-          {open && (
-            <BodyShort className='truncate max-w-[80%]'>
-              {brukerData.fornavn} {brukerData.etternavn}
-            </BodyShort>
-          )}
-        </div>
-      </SidebarFooter> */}
       <SidebarRail />
     </Sidebar>
   );
