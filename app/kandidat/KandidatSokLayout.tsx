@@ -2,6 +2,7 @@
 
 import { KandidatSøkProvider } from './KandidaSokFilterContext';
 import { KandidatSøkMarkerteContextProvider } from './KandidatSøkMarkerteContext';
+import WindowVisKandidat from '@/app/_windows/vis-kandidat-window/WindowVisKandidat';
 import SideBanner from '@/components/layout/SideBanner';
 import SideLayout from '@/components/layout/SideLayout';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
@@ -20,6 +21,7 @@ const KandidatSokLayout: React.FC<KandidatSokLayoutProps> = ({ children }) => {
         Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
       ]}
     >
+      <WindowVisKandidat />
       <KandidatSøkProvider>
         <KandidatSøkMarkerteContextProvider>
           <SideLayout

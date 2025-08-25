@@ -1,0 +1,16 @@
+import Kandidat from '@/app/kandidat/[kandidatNr]/Kandidat';
+import VisKandidat from '@/app/kandidat/vis-kandidat/VisKandidat';
+import NotFound from '@/app/not-found';
+
+interface KandidatSideProps {
+  children: React.ReactNode;
+  params: Promise<{ kandidatNr: string }>;
+}
+export default async function KandidatSide({ params }: KandidatSideProps) {
+  const kandidatNr = (await params).kandidatNr;
+
+  if (!kandidatNr) {
+    return <NotFound />;
+  }
+  return <Kandidat kandidatNr={kandidatNr} />;
+}

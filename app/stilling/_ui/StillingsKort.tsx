@@ -122,7 +122,7 @@ const StillingsKort: React.FC<IStillingsKort> = ({
           )}
           <Link
             className='w-full sm:w-auto'
-            href={`/stilling/${stillingData.stilling.uuid}/finn-kandidater`}
+            href={`/stilling/${stillingData.stilling.uuid}?finnKandidater=true`}
           >
             <Button
               className='w-full sm:w-auto whitespace-nowrap'

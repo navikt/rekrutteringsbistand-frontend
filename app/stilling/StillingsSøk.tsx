@@ -6,11 +6,17 @@ import StillingForKandidat from './_ui/StillingForKandidat';
 import StillingsSøkFilter from './_ui/StillingsSøkFilter';
 import { useUseBrukerStandardSøk } from '@/app/api/stilling/standardsok/useBrukersStandardsøk';
 import { useStillingForKandidat } from '@/app/kandidat/vis-kandidat/useStillingForKandidat';
-import { useVisKandidatNr } from '@/app/kandidat/vis-kandidat/useVisKandidatNr';
+import GeografiFilter from '@/app/stilling/_ui/StillingsSøkFilter/GeografiFilter';
+import InkluderingFilter from '@/app/stilling/_ui/StillingsSøkFilter/InkluderingFilter';
+import KategoriFilter from '@/app/stilling/_ui/StillingsSøkFilter/KategoriFilter';
+import StatusFilter from '@/app/stilling/_ui/StillingsSøkFilter/StatusFilter';
+import StillingsSøkSortering from '@/app/stilling/_ui/StillingsSøkSortering';
 import SideBanner from '@/components/layout/SideBanner';
 import SideLayout from '@/components/layout/SideLayout';
 import Sidelaster from '@/components/layout/Sidelaster';
+import { Roller } from '@/components/tilgangskontroll/roller';
 import { UmamiEvent } from '@/components/umami/umamiEvents';
+import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
 import { BriefcaseIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
@@ -20,15 +26,15 @@ import * as React from 'react';
 
 interface StillingsSøkProps {
   formidlinger?: boolean;
+  forKandidatNr?: string;
 }
 
-const StillingsSøk = ({ formidlinger }: StillingsSøkProps) => {
+const StillingsSøk = ({ formidlinger, forKandidatNr }: StillingsSøkProps) => {
   const searchParams = useSearchParams();
   const brukerStandardSøkData = useUseBrukerStandardSøk();
-  const [visKandidatnr] = useVisKandidatNr();
+
   React.useEffect(() => {
     if (
-      !visKandidatnr &&
       searchParams.get('brukStandardsok') !== null &&
       !brukerStandardSøkData.isLoading
     ) {
@@ -46,26 +52,34 @@ const StillingsSøk = ({ formidlinger }: StillingsSøkProps) => {
   return (
     <React.Suspense fallback={<Sidelaster />}>
       <StillingsSøkProvider formidlinger={formidlinger}>
-        <StillingsSøkLayout formidlinger={formidlinger} />
+        <StillingsSøkLayout
+          formidlinger={formidlinger}
+          forKandidatNr={forKandidatNr}
+        />
       </StillingsSøkProvider>
     </React.Suspense>
   );
 };
 
-const StillingsSøkLayout: React.FC<StillingsSøkProps> = ({ formidlinger }) => {
+const StillingsSøkLayout: React.FC<StillingsSøkProps> = ({
+  formidlinger,
+  forKandidatNr,
+}) => {
   const { track } = useUmami();
-
-  const [visKandidatnr] = useVisKandidatNr();
+  const { harRolle } = useApplikasjonContext();
+  const harArbeidsgiverrettetRolle = harRolle([
+    Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+  ]);
 
   const kandidatStillingssøkData = useStillingForKandidat(
-    visKandidatnr ?? null,
+    forKandidatNr ?? null,
   );
 
-  if (visKandidatnr) {
+  if (forKandidatNr) {
     track(UmamiEvent.Stilling.forslag_til_stilling_fane);
   }
 
-  if (visKandidatnr && kandidatStillingssøkData?.isLoading) {
+  if (forKandidatNr && kandidatStillingssøkData?.isLoading) {
     return <Sidelaster />;
   }
 
@@ -99,12 +113,27 @@ const StillingsSøkLayout: React.FC<StillingsSøkProps> = ({ formidlinger }) => 
         />
       }
     >
-      {visKandidatnr && <StillingForKandidat kandidatnr={visKandidatnr} />}
+      {forKandidatNr && <StillingForKandidat kandidatnr={forKandidatNr} />}
       <StillingsSøkFilter
         formidlinger={formidlinger}
-        stillingForKandidat={visKandidatnr}
+        stillingForKandidat={forKandidatNr}
       />
-      <StillingsSøkeresultat kandidatId={visKandidatnr} />
+      <div className='@container flex'>
+        <div className='hidden @[720px]:block mr-4 pt-4  max-w-[200px]'>
+          <StillingsSøkSortering />
+          {(harArbeidsgiverrettetRolle || formidlinger) && <StatusFilter />}
+          <GeografiFilter />
+          {!formidlinger && (
+            <>
+              <InkluderingFilter />
+              <KategoriFilter />
+            </>
+          )}
+        </div>
+        <div className='flex-grow'>
+          <StillingsSøkeresultat kandidatId={forKandidatNr} />
+        </div>
+      </div>
     </SideLayout>
   );
 };

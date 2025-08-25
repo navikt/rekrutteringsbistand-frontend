@@ -48,7 +48,7 @@ const StillingsSøkFilter: React.FC<{
   }, []);
 
   return (
-    <div className='flex flex-row items-center justify-between'>
+    <div className='@container flex flex-row items-center justify-between'>
       <StillingsSøkNavigasjon />
       <div className='flex gap-2'>
         <div className='relative' ref={searchRef}>
@@ -72,18 +72,20 @@ const StillingsSøkFilter: React.FC<{
             </Box.New>
           )}
         </div>
-        <div className='whitespace-nowrap'>
-          <AlleFilterKomponent>
-            <StillingsSøkSortering />
-            {(harArbeidsgiverrettetRolle || formidlinger) && <StatusFilter />}
-            <GeografiFilter />
-            {!formidlinger && (
-              <>
-                <InkluderingFilter />
-                <KategoriFilter />
-              </>
-            )}
-          </AlleFilterKomponent>
+        <div className='block @[720px]:hidden'>
+          <div className='whitespace-nowrap'>
+            <AlleFilterKomponent>
+              <StillingsSøkSortering />
+              {(harArbeidsgiverrettetRolle || formidlinger) && <StatusFilter />}
+              <GeografiFilter />
+              {!formidlinger && (
+                <>
+                  <InkluderingFilter />
+                  <KategoriFilter />
+                </>
+              )}
+            </AlleFilterKomponent>
+          </div>
         </div>
       </div>
     </div>

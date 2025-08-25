@@ -57,7 +57,7 @@ const StillingsSøkeresultat: React.FC<StillingsSøkeresultatProps> = ({
       {(data) => {
         return (
           <>
-            <StillingsSøkChips />
+            <StillingsSøkChips skjulLagreStandard={!!kandidatId} />
             {data.hits.hits.map((hit) => (
               <StillingsKort
                 key={hit._id}

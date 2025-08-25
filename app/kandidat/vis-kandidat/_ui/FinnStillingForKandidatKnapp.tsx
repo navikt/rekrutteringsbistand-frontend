@@ -1,4 +1,5 @@
 import { useKandidatContext } from '@/app/kandidat/vis-kandidat/KandidatContext';
+import { useWindows } from '@/components/layout/windows/WindowWrapper';
 import { UmamiEvent } from '@/components/umami/umamiEvents';
 import { useUmami } from '@/providers/UmamiContext';
 import { Button } from '@navikt/ds-react';
@@ -8,6 +9,7 @@ const FinnStillingForKandidatKnapp: React.FC = () => {
   const { kandidatId } = useKandidatContext();
   const { trackAndNavigate } = useUmami();
 
+  const windows = useWindows();
   return (
     <Button
       size={'small'}
@@ -15,7 +17,7 @@ const FinnStillingForKandidatKnapp: React.FC = () => {
       onClick={() => {
         trackAndNavigate(
           UmamiEvent.Kandidat.finn_stilling_knapp,
-          `/stilling?visKandidatnr=${kandidatId}`,
+          `/kandidat/${kandidatId}?finnStilling=true`,
         );
       }}
     >

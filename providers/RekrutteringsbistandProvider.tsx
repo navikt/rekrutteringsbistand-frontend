@@ -7,7 +7,6 @@ import { useDecoratorData } from '@/app/api/modia/decorator/useDecoratorData';
 import SWRLaster from '@/components/SWRLaster';
 import ErrorBoundary from '@/components/feilhåndtering/ErrorBoundary';
 import NavigasjonWrapper from '@/components/layout/NavigasjonWrapper';
-import WindowController from '@/components/layout/windows/WindowController';
 import WindowWrapper from '@/components/layout/windows/WindowWrapper';
 import { ApplikasjonContextProvider } from '@/providers/ApplikasjonContext';
 import { KandidatNavigeringProvider } from '@/providers/KandidatNavigeringContext';
@@ -98,11 +97,7 @@ const RekrutteringsbistandProvider: React.FC<
                     <NuqsAdapter>
                       <KandidatNavigeringProvider>
                         <NavigasjonWrapper>
-                          <WindowWrapper>
-                            {/* Controller som åpner/lukker dynamiske vinduer basert på query params */}
-                            <WindowController />
-                            {children}
-                          </WindowWrapper>
+                          <WindowWrapper>{children}</WindowWrapper>
                         </NavigasjonWrapper>
                       </KandidatNavigeringProvider>
                     </NuqsAdapter>

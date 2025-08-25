@@ -1,5 +1,6 @@
-import { Box } from '@navikt/ds-react';
-import { nanoid } from 'nanoid';
+import RekBisKort from '@/components/layout/RekBisKort';
+import { XMarkIcon } from '@navikt/aksel-icons';
+import { Box, Button } from '@navikt/ds-react';
 import * as React from 'react';
 import { Mosaic, MosaicNode } from 'react-mosaic-component';
 import 'react-mosaic-component/react-mosaic-component.css';
@@ -11,16 +12,24 @@ export interface WindowWrapperProps {
   children?: React.ReactNode;
 }
 
+interface WindowItem {
+  id: string;
+  navigasjon?: React.ReactNode;
+  onClose?: () => void;
+  content: React.ReactElement;
+}
+
 // ---------------- Window context ----------------
 interface WindowContextValue {
-  addWindow: (
-    element: React.ReactElement,
-    options?: { position?: 'below' | 'above' | 'after' },
-  ) => string; // return id
-  /** Oppdater innholdet i et eksisterende vindu */
-  updateWindow: (id: string, element: React.ReactElement) => void;
+  addWindow: (props: {
+    id: string;
+    onClose?: () => void;
+    navigasjon?: React.ReactNode;
+    content: React.ReactElement;
+  }) => string; // return id
+  updateWindow: (id: string, patch: Partial<Omit<WindowItem, 'id'>>) => void;
   removeWindow: (id: string) => void;
-  listWindows: () => string[]; // ekskluderer locked
+  listWindows: () => string[];
 }
 
 const WindowContext = React.createContext<WindowContextValue | undefined>(
@@ -78,22 +87,27 @@ function removeFromTree(
 const LOCKED_ID = '__locked__';
 
 const WindowWrapper: React.FC<WindowWrapperProps> = ({ children }) => {
-  // Element map lagres i state slik at re-render trigges når vi legger til / fjerner
-  const [elements, setElements] = React.useState<
-    Record<string, React.ReactElement>
-  >({
-    [LOCKED_ID]: (
-      <div className='h-full w-full flex flex-col min-h-0'>{children}</div>
-    ),
+  const [elements, setElements] = React.useState<Record<string, WindowItem>>({
+    [LOCKED_ID]: {
+      id: LOCKED_ID,
+      content: (
+        <div className='h-full w-full flex flex-col min-h-0'>{children}</div>
+      ),
+    },
   });
 
-  // Oppdater locked-element hvis children endrer seg
+  // Holder en synkron liste over IDer som finnes (inkluderer nylig la til vinduer før React-state er commitet)
+  const idsRef = React.useRef<Set<string>>(new Set([LOCKED_ID]));
+
   React.useEffect(() => {
     setElements((prev) => ({
       ...prev,
-      [LOCKED_ID]: (
-        <div className='h-full w-full flex flex-col min-h-0'>{children}</div>
-      ),
+      [LOCKED_ID]: {
+        id: LOCKED_ID,
+        content: (
+          <div className='h-full w-full flex flex-col min-h-0'>{children}</div>
+        ),
+      },
     }));
   }, [children]);
 
@@ -114,18 +128,47 @@ const WindowWrapper: React.FC<WindowWrapperProps> = ({ children }) => {
   }, [dynamicLayout, rootSplit]);
 
   const addWindow = React.useCallback<WindowContextValue['addWindow']>(
-    (element, options) => {
-      const id = nanoid(6);
-      setElements((prev) => ({ ...prev, [id]: element }));
-      // Alltid legg til som kolonne til høyre uansett oppgitt position.
-      setDynamicLayout((prev) => insertAfter(prev, id));
+    ({ id, onClose, navigasjon, content }) => {
+      const alreadyExists = idsRef.current.has(id);
+      if (alreadyExists) {
+        // Bare oppdater innholdet, IKKE endre layout for å unngå duplikate noder i mosaic-treet
+        setElements((prev) => {
+          const current = prev[id];
+          if (!current) return prev; // (teoretisk) skulle ikke skje
+          if (process.env.NODE_ENV === 'development') {
+            // eslint-disable-next-line no-console
+            console.warn(
+              `[WindowWrapper] addWindow: vindu med id="${id}" finnes allerede – erstatter innhold`,
+            );
+          }
+          return {
+            ...prev,
+            [id]: {
+              ...current,
+              navigasjon: navigasjon ?? current.navigasjon,
+              onClose: onClose ?? current.onClose,
+              content: content ?? current.content,
+            },
+          };
+        });
+        return id;
+      }
+
+      // Registrer id umiddelbart (hindrer race hvis addWindow kalles to ganger før state commit)
+      idsRef.current.add(id);
+
+      // Legg vindu inn i layout (alltid til høyre i nåværende modell)
+      setDynamicLayout((prevLayout) => insertAfter(prevLayout, id));
       if (process.env.NODE_ENV === 'development') {
         // eslint-disable-next-line no-console
-        console.log('[WindowWrapper] addWindow', id, {
+        console.log('[WindowWrapper] addWindow (ny)', id, {
           forcedPosition: 'right',
-          requested: options?.position,
         });
       }
+      setElements((prev) => ({
+        ...prev,
+        [id]: { id, navigasjon, onClose, content },
+      }));
       return id;
     },
     [],
@@ -133,12 +176,13 @@ const WindowWrapper: React.FC<WindowWrapperProps> = ({ children }) => {
 
   const removeWindow = React.useCallback<WindowContextValue['removeWindow']>(
     (id) => {
-      if (id === LOCKED_ID) return; // kan ikke fjerne locked
+      if (id === LOCKED_ID) return;
       setDynamicLayout((prev) => removeFromTree(prev, id));
       setElements((prev) => {
         const { [id]: _removed, ...rest } = prev;
         return rest;
       });
+      idsRef.current.delete(id);
       if (process.env.NODE_ENV === 'development') {
         // eslint-disable-next-line no-console
         console.log('[WindowWrapper] removeWindow', id);
@@ -148,10 +192,11 @@ const WindowWrapper: React.FC<WindowWrapperProps> = ({ children }) => {
   );
 
   const updateWindow = React.useCallback<WindowContextValue['updateWindow']>(
-    (id, element) => {
+    (id, patch) => {
       setElements((prev) => {
-        if (!prev[id]) return prev; // ignorer hvis ikke finnes
-        return { ...prev, [id]: element };
+        const item = prev[id];
+        if (!item) return prev;
+        return { ...prev, [id]: { ...item, ...patch } };
       });
       if (process.env.NODE_ENV === 'development') {
         // eslint-disable-next-line no-console
@@ -208,8 +253,10 @@ const WindowWrapper: React.FC<WindowWrapperProps> = ({ children }) => {
             }
           }}
           renderTile={(id, path) => {
-            const content = elements[id];
-            // Horisontal padding mellom locked (venstre) og resten (høyre) kun på rot-nivå.
+            const isDynamic = id !== LOCKED_ID;
+            const item = elements[id];
+            const content = item?.content;
+            const nav = item?.navigasjon;
             const isRightOfRoot = !!dynamicLayout && path?.[0] === 'second';
             return (
               <div
@@ -225,14 +272,40 @@ const WindowWrapper: React.FC<WindowWrapperProps> = ({ children }) => {
                   className='h-full w-full flex flex-col overflow-hidden min-h-0'
                   data-window-type={id === LOCKED_ID ? 'locked' : 'dynamic'}
                 >
-                  <div className='flex-1 w-full overflow-auto min-h-0'>
+                  <RekBisKort className='flex-1 w-full overflow-auto min-h-0'>
+                    {isDynamic && (
+                      <div className='flex items-center justify-between mb-2 gap-2'>
+                        <div className='flex-1'>{nav}</div>
+                        <Button
+                          size='xsmall'
+                          variant='tertiary'
+                          icon={<XMarkIcon aria-hidden />}
+                          aria-label='Lukk vindu'
+                          onClick={() => {
+                            // Kall eventuell onClose før vi fjerner vinduet
+                            try {
+                              item?.onClose?.();
+                            } catch (e) {
+                              if (process.env.NODE_ENV === 'development') {
+                                // eslint-disable-next-line no-console
+                                console.warn(
+                                  '[WindowWrapper] onClose feilet',
+                                  e,
+                                );
+                              }
+                            }
+                            removeWindow(id);
+                          }}
+                        />
+                      </div>
+                    )}
                     {content}
                     {!content && (
                       <div className='text-xs text-red-600'>
                         Ingen innhold for id: {id}
                       </div>
                     )}
-                  </div>
+                  </RekBisKort>
                 </Box.New>
               </div>
             );

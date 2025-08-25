@@ -30,7 +30,7 @@ const InngangFraArbop: React.FC = () => {
       synlighetHook.data
     ) {
       router.push(
-        `/stilling?visKandidatnr=${kandidatnrHook.data.arenaKandidatnr}`,
+        `/kandidat/${kandidatnrHook.data.arenaKandidatnr}?finnStilling=true`,
       );
     }
   }, [kandidatnrHook.data, synlighetHook.data, router]);

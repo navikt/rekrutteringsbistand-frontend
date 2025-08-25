@@ -1,10 +1,13 @@
+'use client';
+
 import StillingsSøk from './StillingsSøk';
-import RekBisKort from '@/components/layout/RekBisKort';
+import WindowVisStilling from '@/app/_windows/vis-stilling-window/WindowVisStilling';
 
 export default function StillingsSøkIndex() {
   return (
-    <RekBisKort>
+    <>
       <StillingsSøk />
-    </RekBisKort>
+      <WindowVisStilling />
+    </>
   );
 }

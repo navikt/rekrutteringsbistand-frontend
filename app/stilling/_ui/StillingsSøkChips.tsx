@@ -16,7 +16,9 @@ import TømFiltre from '@/components/felles/filter/TømFiltre';
 import { Chips } from '@navikt/ds-react';
 import * as React from 'react';
 
-const StillingsSøkChips: React.FC = () => {
+const StillingsSøkChips: React.FC<{ skjulLagreStandard: boolean }> = ({
+  skjulLagreStandard,
+}) => {
   const filter = useStillingsSøkFilter();
   const geografi = usePamGeografi();
 
@@ -139,7 +141,7 @@ const StillingsSøkChips: React.FC = () => {
             {storForbokstavString(geografiNavn(kommune))}
           </Chips.Removable>
         ))}
-        <LagreStandardsøk />
+        {!skjulLagreStandard && <LagreStandardsøk />}
       </Chips>
     </div>
   );

@@ -1,13 +1,17 @@
-import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import { UmamiEvent } from '@/components/umami/umamiEvents';
 import { useUmami } from '@/providers/UmamiContext';
 import { MagnifyingGlassIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import * as React from 'react';
 
-const FinnKandidaterKnapp: React.FC = () => {
+export interface FinnKandidaterKnappProps {
+  stillingId: string;
+}
+
+const FinnKandidaterKnapp: React.FC<FinnKandidaterKnappProps> = ({
+  stillingId,
+}) => {
   const { trackAndNavigate } = useUmami();
-  const { stillingsData } = useStillingsContext();
   return (
     <Button
       variant='primary'
@@ -16,7 +20,7 @@ const FinnKandidaterKnapp: React.FC = () => {
       onClick={() => {
         trackAndNavigate(
           UmamiEvent.Stilling.finn_kandidater_knapp,
-          `/stilling/${stillingsData?.stilling?.uuid}/finn-kandidater`,
+          `/stilling/${stillingId}?finnKandidater=true`,
         );
       }}
     >

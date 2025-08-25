@@ -1,3 +1,5 @@
+'use client';
+
 import { KandidatContextProvider } from './KandidatContext';
 import KandidatSide from './KandidatSide';
 import KandidatSideLayout from './KandidatsideLayout';

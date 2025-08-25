@@ -43,7 +43,9 @@ const KandidatKort: React.FC<IKandidatKort> = ({
     <div className='mt-2 flex justify-end self-end' onClick={stopPropagation}>
       {!stillingsId && (
         <div className='flex-end flex flex-col justify-center gap-2 font-bold'>
-          <Link href={`/stilling/?visKandidatnr=${kandidat.arenaKandidatnr}`}>
+          <Link
+            href={`/kandidat/${kandidat.arenaKandidatnr}?finnStilling=true`}
+          >
             <TekstMedIkon ikon={<FileSearchIcon />} tekst='Finn stilling' />
           </Link>
         </div>

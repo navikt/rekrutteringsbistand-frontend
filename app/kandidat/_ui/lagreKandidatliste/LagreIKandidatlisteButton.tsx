@@ -94,7 +94,7 @@ const LagreIKandidatlisteButton: React.FC<LagreIKandidatlisteButtonProps> = ({
   }
 
   return (
-    <div>
+    <div className='flex'>
       <Button
         variant='tertiary'
         onClick={() => setIsModalOpen(true)}
