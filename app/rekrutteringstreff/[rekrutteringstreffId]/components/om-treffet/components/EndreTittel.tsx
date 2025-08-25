@@ -52,7 +52,6 @@ const schema = z.object({
       `Tittelen kan ikke ha mer enn ${MAX_TITLE_LENGTH} tegn.`,
     ),
 });
-
 type FormValues = z.infer<typeof schema>;
 
 const EndreTittel = ({ modalRef, onUpdated }: EndreTittelProps) => {
@@ -60,15 +59,8 @@ const EndreTittel = ({ modalRef, onUpdated }: EndreTittelProps) => {
   const { data: rekrutteringstreff, isLoading } =
     useRekrutteringstreff(rekrutteringstreffId);
 
+  // Kun for å få tak i setLagret-mutasjonen
   const { setLagret: setKiLagret } = useKiLogg(rekrutteringstreffId, 'tittel');
-
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const lagreButtonRef = useRef<HTMLButtonElement>(null);
-  const analyseRef = useRef<HTMLDivElement>(null);
-
-  const clearButtonRef = useRef<HTMLButtonElement>(null);
-  const closeButtonRef = useRef<HTMLButtonElement>(null);
-  const modalLukkeknappRef = useRef<HTMLButtonElement | null>(null);
 
   const {
     trigger: validate,
@@ -84,27 +76,27 @@ const EndreTittel = ({ modalRef, onUpdated }: EndreTittelProps) => {
     setValue,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<FormValues>({
-    resolver: zodResolver(schema),
-    mode: 'onChange',
-  });
+  } = useForm<FormValues>({ resolver: zodResolver(schema), mode: 'onChange' });
+
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const lagreButtonRef = useRef<HTMLButtonElement>(null);
+  const analyseRef = useRef<HTMLDivElement>(null);
+  const clearButtonRef = useRef<HTMLButtonElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const modalLukkeknappRef = useRef<HTMLButtonElement | null>(null);
 
   const nyTittel = useWatch({ control, name: 'nyTittel' });
-
-  useEffect(() => {
-    if (rekrutteringstreff) {
-      reset({ nyTittel: rekrutteringstreff.tittel });
-    }
-  }, [rekrutteringstreff, reset]);
 
   const [initialFocusDone, setInitialFocusDone] = useState(false);
   const [visTomFeil, setVisTomFeil] = useState(false);
   const [showUnchangedError, setShowUnchangedError] = useState(false);
-
   const [hasChecked, setHasChecked] = useState(false);
   const [forceSave, setForceSave] = useState(false);
-
   const [loggId, setLoggId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (rekrutteringstreff) reset({ nyTittel: rekrutteringstreff.tittel });
+  }, [rekrutteringstreff, reset]);
 
   const errorMsg = useMemo(() => {
     const err = errors.nyTittel;
@@ -127,12 +119,15 @@ const EndreTittel = ({ modalRef, onUpdated }: EndreTittelProps) => {
       baseInvalid ||
       isSubmitting ||
       validating ||
-      (hasChecked && analyse?.bryterRetningslinjer && !forceSave),
+      !hasChecked ||
+      !loggId ||
+      (analyse?.bryterRetningslinjer && !forceSave),
     [
       baseInvalid,
       isSubmitting,
       validating,
       hasChecked,
+      loggId,
       analyse?.bryterRetningslinjer,
       forceSave,
     ],
@@ -180,12 +175,10 @@ const EndreTittel = ({ modalRef, onUpdated }: EndreTittelProps) => {
 
   const runValidation = async () => {
     if (!rekrutteringstreff) return;
-
     if (!nyTittel?.trim()) {
       setVisTomFeil(true);
       return;
     }
-
     const res = (await validate({
       treffId: rekrutteringstreff.id,
       feltType: 'tittel',
@@ -197,7 +190,7 @@ const EndreTittel = ({ modalRef, onUpdated }: EndreTittelProps) => {
   };
 
   const save = async ({ nyTittel }: FormValues) => {
-    if (!rekrutteringstreff) return;
+    if (!rekrutteringstreff || !loggId) return;
     try {
       await oppdaterRekrutteringstreff(
         rekrutteringstreff.id,
@@ -207,15 +200,13 @@ const EndreTittel = ({ modalRef, onUpdated }: EndreTittelProps) => {
         }),
       );
 
-      if (loggId && (!analyse?.bryterRetningslinjer || forceSave)) {
-        try {
-          await setKiLagret({ id: loggId, lagret: true });
-        } catch (error) {
-          new RekbisError({
-            message: `Feil ved lagring av ki logg parameter 'lagret' for loggid ${loggId}  og rekrutteringstreff ${rekrutteringstreffId}`,
-            error,
-          });
-        }
+      try {
+        await setKiLagret({ id: loggId, lagret: true });
+      } catch (error) {
+        new RekbisError({
+          message: `Feil ved PUT /lagret for logg ${loggId} (treff ${rekrutteringstreffId})`,
+          error,
+        });
       }
 
       onUpdated();
@@ -294,7 +285,6 @@ const EndreTittel = ({ modalRef, onUpdated }: EndreTittelProps) => {
                   />
                 )}
               />
-
               {nyTittel && (
                 <Button
                   type='button'
