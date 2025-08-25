@@ -59,7 +59,6 @@ const EndreTittel = ({ modalRef, onUpdated }: EndreTittelProps) => {
   const { data: rekrutteringstreff, isLoading } =
     useRekrutteringstreff(rekrutteringstreffId);
 
-  // Kun for å få tak i setLagret-mutasjonen
   const { setLagret: setKiLagret } = useKiLogg(rekrutteringstreffId, 'tittel');
 
   const {
@@ -121,14 +120,14 @@ const EndreTittel = ({ modalRef, onUpdated }: EndreTittelProps) => {
       validating ||
       !hasChecked ||
       !loggId ||
-      (analyse?.bryterRetningslinjer && !forceSave),
+      (!!(analyse as any)?.bryterRetningslinjer && !forceSave),
     [
       baseInvalid,
       isSubmitting,
       validating,
       hasChecked,
       loggId,
-      analyse?.bryterRetningslinjer,
+      analyse,
       forceSave,
     ],
   );
@@ -185,7 +184,11 @@ const EndreTittel = ({ modalRef, onUpdated }: EndreTittelProps) => {
       tekst: nyTittel,
     })) as { loggId?: string } | undefined;
 
-    setLoggId(res?.loggId && res.loggId.length > 0 ? res.loggId : null);
+    const id =
+      res?.loggId && res.loggId.length > 0
+        ? res.loggId
+        : ((analyse as any)?.loggId ?? null);
+    setLoggId(id ?? null);
     setHasChecked(true);
   };
 
@@ -199,16 +202,7 @@ const EndreTittel = ({ modalRef, onUpdated }: EndreTittelProps) => {
           tittel: nyTittel,
         }),
       );
-
-      try {
-        await setKiLagret({ id: loggId, lagret: true });
-      } catch (error) {
-        new RekbisError({
-          message: `Feil ved PUT /lagret for logg ${loggId} (treff ${rekrutteringstreffId})`,
-          error,
-        });
-      }
-
+      await setKiLagret({ id: loggId, lagret: true });
       onUpdated();
       modalRef.current?.close();
     } catch (error) {
@@ -336,7 +330,7 @@ const EndreTittel = ({ modalRef, onUpdated }: EndreTittelProps) => {
                     className='text-gray-700'
                   />
                 ) : analyse && !analyseError ? (
-                  analyse.bryterRetningslinjer ? (
+                  (analyse as any).bryterRetningslinjer ? (
                     <RobotFrownIcon
                       aria-hidden
                       fontSize='2em'
@@ -408,19 +402,19 @@ const EndreTittel = ({ modalRef, onUpdated }: EndreTittelProps) => {
                       transition={{ duration: 0.2 }}
                       onAnimationComplete={() => analyseRef.current?.focus()}
                       className={
-                        analyse.bryterRetningslinjer
+                        (analyse as any).bryterRetningslinjer
                           ? 'aksel-error-message p-1'
                           : 'text-green-700 p-1'
                       }
                     >
-                      <BodyLong>{analyse.begrunnelse}</BodyLong>
+                      <BodyLong>{(analyse as any).begrunnelse}</BodyLong>
                     </motion.div>
                   )}
                 </AnimatePresence>
               </div>
             </div>
 
-            {hasChecked && analyse?.bryterRetningslinjer && (
+            {hasChecked && (analyse as any)?.bryterRetningslinjer && (
               <div className='pt-1'>
                 <Switch
                   size='small'

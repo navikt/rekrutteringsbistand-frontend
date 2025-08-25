@@ -15,6 +15,7 @@ const ReqSchema = z.object({
 export type ValiderRekrutteringstreffDto = z.infer<typeof ReqSchema>;
 
 const ResponseSchema = z.object({
+  loggId: z.string(),
   bryterRetningslinjer: z.boolean(),
   begrunnelse: z.string(),
 });
