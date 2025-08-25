@@ -47,9 +47,7 @@ const listFetcher = async (url: string): Promise<KiLogg[]> => {
   }
 };
 
-type SetManuellArg = { id: string; bryterRetningslinjer: boolean };
-type SetLagretArg = { id: string; lagret: boolean };
-
+type SetManuellArg = { id: string; bryterRetningslinjer: boolean | null };
 const putManuell = async (_: string, { arg }: { arg: SetManuellArg }) => {
   const { id, bryterRetningslinjer } = arg;
   try {
@@ -63,6 +61,7 @@ const putManuell = async (_: string, { arg }: { arg: SetManuellArg }) => {
   }
 };
 
+type SetLagretArg = { id: string; lagret: boolean | null };
 const putLagret = async (_: string, { arg }: { arg: SetLagretArg }) => {
   const { id, lagret } = arg;
   try {

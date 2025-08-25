@@ -3,7 +3,7 @@
 import { useRekrutteringstreffContext } from '../../../RekrutteringstreffContext';
 import { useKiLogg } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
 import { CheckmarkIcon, XMarkIcon } from '@navikt/aksel-icons';
-import { Alert, BodyShort, Button, Skeleton, Tag } from '@navikt/ds-react';
+import { Alert, BodyShort, Button, Skeleton } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import * as React from 'react';
 import { useState, useMemo } from 'react';
@@ -14,7 +14,7 @@ export interface KiLoggProps {
 }
 
 const GRID =
-  'grid grid-cols-[10rem_6rem_14rem_4rem_4rem_6rem_4rem] gap-x-4 items-start';
+  'grid grid-cols-[2rem_10rem_6rem_14rem_4rem_4rem_3rem_7rem] gap-x-4 items-start';
 
 const parseZonedDate = (s?: string | null): Date | null => {
   if (!s) return null;
@@ -22,17 +22,6 @@ const parseZonedDate = (s?: string | null): Date | null => {
   const d = new Date(cleaned);
   return isNaN(d.getTime()) ? null : d;
 };
-
-const boolTag = (b: boolean, trueText: string, falseText: string) =>
-  b ? (
-    <Tag size='small' variant='error'>
-      {trueText}
-    </Tag>
-  ) : (
-    <Tag size='small' variant='success'>
-      {falseText}
-    </Tag>
-  );
 
 const KiLogg: React.FC<KiLoggProps> = ({ feltType }) => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
@@ -44,13 +33,14 @@ const KiLogg: React.FC<KiLoggProps> = ({ feltType }) => {
   const header = useMemo(
     () => (
       <div className={`${GRID} font-semibold text-lg mt-4`}>
+        <span className='text-base'>✔/✘</span>
         <span>Tidspunkt</span>
         <span>Felt</span>
-        <span>KI</span>
-        <span>Prompt-versjon</span>
+        <span>KI versjon</span>
+        <span>Prompt</span>
         <span>Lagret</span>
-        <span>KI-resultat</span>
-        <span>Manuell vurdering</span>
+        <span>KI</span>
+        <span>Tekst ok?</span>
       </div>
     ),
     [],
@@ -78,24 +68,45 @@ const KiLogg: React.FC<KiLoggProps> = ({ feltType }) => {
           return (
             <div key={row.id} className='border-b border-gray-200 pb-2'>
               <div className={GRID}>
+                <div className='flex justify-start items-center'>
+                  {row.manuellKontrollBryterRetningslinjer === null ? (
+                    <span>—</span>
+                  ) : row.manuellKontrollBryterRetningslinjer ===
+                    row.bryterRetningslinjer ? (
+                    <CheckmarkIcon className='text-green-600' />
+                  ) : (
+                    <XMarkIcon className='text-red-600' />
+                  )}
+                </div>
+
                 <BodyShort className='whitespace-nowrap'>
                   {opprettet ? format(opprettet, 'dd.MM.yyyy HH:mm:ss') : '—'}
                 </BodyShort>
+
                 <BodyShort className='whitespace-nowrap'>
                   {row.feltType}
                 </BodyShort>
+
                 <BodyShort className='whitespace-nowrap'>
                   {row.kiNavn}@{row.kiVersjon}
                 </BodyShort>
+
                 <BodyShort className='whitespace-nowrap'>
                   {row.promptVersjonsnummer ?? '—'}
                 </BodyShort>
+
                 <BodyShort className='whitespace-nowrap'>
                   {row.lagret ? 'Ja' : 'Nei'}
                 </BodyShort>
-                <div className='whitespace-nowrap'>
-                  {boolTag(row.bryterRetningslinjer, 'Brudd', 'OK')}
+
+                <div className='flex justify-start items-center h-6'>
+                  {row.bryterRetningslinjer ? (
+                    <XMarkIcon className='text-red-600' />
+                  ) : (
+                    <CheckmarkIcon className='text-green-600' />
+                  )}
                 </div>
+
                 <div className='flex items-center gap-2'>
                   <Button
                     size='xsmall'
@@ -126,6 +137,21 @@ const KiLogg: React.FC<KiLoggProps> = ({ feltType }) => {
                     title='Marker som ikke godkjent'
                   >
                     <XMarkIcon aria-hidden className='text-red-600' />
+                  </Button>
+                  <Button
+                    size='xsmall'
+                    variant={manuell === null ? 'primary' : 'secondary'}
+                    loading={settingManuell}
+                    onClick={async () =>
+                      setManuell({
+                        id: row.id,
+                        bryterRetningslinjer: null,
+                      })
+                    }
+                    aria-pressed={manuell === null}
+                    title='Nullstill vurdering'
+                  >
+                    —
                   </Button>
 
                   <Button
