@@ -161,7 +161,7 @@ const KiLogg: React.FC<KiLoggProps> = ({ feltType }) => {
                       setOpenId((v) => (v === row.id ? null : row.id))
                     }
                   >
-                    {openId === row.id ? 'Skjul detaljer' : 'Detaljer'}
+                    {openId === row.id ? 'Skjul' : 'Detaljer'}
                   </Button>
                 </div>
               </div>
