@@ -1,4 +1,3 @@
-import RekBisKort from './RekBisKort';
 import * as React from 'react';
 
 export type ISideLayout = {
@@ -15,12 +14,12 @@ const SideLayout = ({
   topBanner,
 }: ISideLayout) => {
   return (
-    <RekBisKort className='px-5'>
+    <div>
       {topBanner && topBanner}
       {navigasjon && navigasjon}
       {banner && banner}
       {children}
-    </RekBisKort>
+    </div>
   );
 };
 

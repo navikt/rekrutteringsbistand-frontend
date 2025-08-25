@@ -6,6 +6,9 @@ import { useModiaAktivEnhet } from '@/app/api/modia/context/useModiaAktivEnhet';
 import { useDecoratorData } from '@/app/api/modia/decorator/useDecoratorData';
 import SWRLaster from '@/components/SWRLaster';
 import ErrorBoundary from '@/components/feilhåndtering/ErrorBoundary';
+import NavigasjonWrapper from '@/components/layout/NavigasjonWrapper';
+import WindowController from '@/components/layout/windows/WindowController';
+import WindowWrapper from '@/components/layout/windows/WindowWrapper';
 import { ApplikasjonContextProvider } from '@/providers/ApplikasjonContext';
 import { KandidatNavigeringProvider } from '@/providers/KandidatNavigeringContext';
 import NavigasjonsBlockerProvider from '@/providers/NavigasjonsBlockerProvider';
@@ -31,20 +34,28 @@ const RekrutteringsbistandProvider: React.FC<
   const [retryCount, setRetryCount] = React.useState(0);
 
   React.useEffect(() => {
+    // Kjør kun én gang – ellers risikerer vi at query-param fjernes rett etter at WindowController har åpnet vindu
     if (retryCount < MAX_RETRY_ATTEMPTS) {
-      if (window !== undefined && window?.skyra?.redactSearchParam) {
-        window?.skyra?.redactSearchParam('visKandidatnr');
+      if (typeof window !== 'undefined' && window?.skyra?.redactSearchParam) {
+        try {
+          window.skyra.redactSearchParam('visKandidatnr');
+        } catch (e) {
+          // eslint-disable-next-line no-console
+          console.warn('Klarte ikke å kalle redactSearchParam', e);
+        }
       } else {
-        setTimeout(() => {
+        const t = setTimeout(() => {
           setRetryCount((prevCount) => prevCount + 1);
-        }, 1000); // Retry after 1 second
+        }, 1000);
+        return () => clearTimeout(t);
       }
     } else {
       new RekbisError(
         'Skyramaskering: Maximum retry attempts reached. Could not call redactSearchParam.',
       );
     }
-  });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <ThemeProvider>
@@ -86,7 +97,13 @@ const RekrutteringsbistandProvider: React.FC<
                   <NavigasjonsBlockerProvider>
                     <NuqsAdapter>
                       <KandidatNavigeringProvider>
-                        {children}
+                        <NavigasjonWrapper>
+                          <WindowWrapper>
+                            {/* Controller som åpner/lukker dynamiske vinduer basert på query params */}
+                            <WindowController />
+                            {children}
+                          </WindowWrapper>
+                        </NavigasjonWrapper>
                       </KandidatNavigeringProvider>
                     </NuqsAdapter>
                   </NavigasjonsBlockerProvider>

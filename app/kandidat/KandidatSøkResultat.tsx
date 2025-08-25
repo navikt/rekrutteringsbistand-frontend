@@ -85,7 +85,7 @@ const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({
                   Marker alle på siden
                 </Checkbox>
               </div>
-              <div className='flex gap-2'>
+              <div className='flex flex-col gap-2'>
                 {!rekrutteringstreffId && (
                   <LagreIKandidatlisteButton stillingsId={stillingsId} />
                 )}
@@ -101,16 +101,18 @@ const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({
                 </RekrutteringstreffFeatureToggle>
               </div>
             </div>
-            {kandidatData.kandidater?.map((kandidat, index) => (
-              <KandidatKort
-                stillingsId={stillingsId}
-                alleredeLagtTil={
-                  alleredeLagtTilKandidatliste ?? alleredeLagtTilTreff
-                }
-                key={kandidat.arenaKandidatnr || index}
-                kandidat={kandidat as KandidatDataSchemaDTO}
-              />
-            ))}
+            <div className='flex flex-col gap-2'>
+              {kandidatData.kandidater?.map((kandidat, index) => (
+                <KandidatKort
+                  stillingsId={stillingsId}
+                  alleredeLagtTil={
+                    alleredeLagtTilKandidatliste ?? alleredeLagtTilTreff
+                  }
+                  key={kandidat.arenaKandidatnr || index}
+                  kandidat={kandidat as KandidatDataSchemaDTO}
+                />
+              ))}
+            </div>
             <div className={'flex justify-between items-center'}>
               <div>Viser {kandidatData.antallTotalt} treff</div>
 

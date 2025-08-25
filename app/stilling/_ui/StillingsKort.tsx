@@ -22,6 +22,7 @@ import {
 } from '@navikt/aksel-icons';
 import { Box, Button, Heading, Link } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
+import { useQueryState } from 'nuqs';
 import * as React from 'react';
 
 export interface IStillingsKort {
@@ -40,6 +41,10 @@ const StillingsKort: React.FC<IStillingsKort> = ({
 
   const router = useRouter();
   const { track } = useUmami();
+  const [visStillingId, setVisStillingId] = useQueryState('visStillingId', {
+    defaultValue: '',
+    clearOnDefault: true,
+  });
 
   const [leggerTilKandidatLoading, setLeggerTilKandidatLoading] =
     React.useState(false);
@@ -134,10 +139,11 @@ const StillingsKort: React.FC<IStillingsKort> = ({
   return (
     <Box.New
       padding='4'
-      className='mb-4'
+      className='mb-4 cursor-pointer'
       background='neutral-softA'
       borderRadius='xlarge'
       data-testid='stillings-kort'
+      onClick={() => setVisStillingId(stillingData.stilling.uuid)}
     >
       <>
         <StillingsTag splitTags stillingsData={stillingData} />

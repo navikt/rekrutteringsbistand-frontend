@@ -1,5 +1,4 @@
 import './globals.css';
-import NavigasjonWrapper from '@/components/layout/NavigasjonWrapper';
 import MirageInitializer from '@/providers/MirageInitializer';
 import RekrutteringsbistandProvider from '@/providers/RekrutteringsbistandProvider';
 import SkyraInit from '@/providers/Skyra_init';
@@ -42,7 +41,7 @@ export default async function RootLayout({
         <UmamiProvider>
           <BrukLokalMock>
             <RekrutteringsbistandProvider>
-              <NavigasjonWrapper>{children}</NavigasjonWrapper>
+              {children}
             </RekrutteringsbistandProvider>
           </BrukLokalMock>
         </UmamiProvider>

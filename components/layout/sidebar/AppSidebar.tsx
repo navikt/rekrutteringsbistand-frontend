@@ -123,12 +123,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar
       collapsible='icon'
-      variant='inset'
-      className='top-(--header-height) h-[calc(100svh-var(--header-height))]!'
+      variant='sidebar'
+      className='  h-full '
       {...props}
     >
       <SidebarHeader>
-        <div className='flex items-baseline'>
+        <div className='flex items-baseline pt-4'>
           <Button
             size='small'
             onClick={toggleSidebar}
@@ -141,7 +141,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           {open && <OpprettKnapp />}
         </div>
       </SidebarHeader>
-      <SidebarContent className='py-3'>
+      <SidebarContent className=''>
         <SidebarGroup
           className={`flex flex-col w-full gap-3 ${open ? 'items-start' : 'items-center'}`}
         >

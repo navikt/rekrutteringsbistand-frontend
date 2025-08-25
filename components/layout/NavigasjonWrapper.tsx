@@ -1,4 +1,5 @@
-// import { AppSidebar } from '@/components/app-sidebar';
+'use client';
+
 import NavDekoratør from '@/components/layout/modiadekoratør/NavDekoratør';
 import { AppSidebar } from '@/components/layout/sidebar/AppSidebar';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
@@ -13,7 +14,7 @@ const NavigasjonWrapper: React.FC<NavigasjonWrapperProps> = ({ children }) => {
     <div className='[--header-height:calc(--spacing(14))]'>
       <SidebarProvider className='flex flex-col'>
         <NavDekoratør />
-        <div className='flex flex-1'>
+        <div className='flex flex-1 h-[calc(100svh-var(--header-height))]'>
           <AppSidebar />
           <SidebarInset>{children}</SidebarInset>
         </div>
