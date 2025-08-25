@@ -1,6 +1,7 @@
 'use client';
 
 import { RekbisError } from '../../../../../../util/rekbisError';
+import { useKiLogg } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
 import { useValiderRekrutteringstreff } from '@/app/api/rekrutteringstreff/kiValidering/useValiderRekrutteringstreff';
 import {
   oppdaterRekrutteringstreff,
@@ -59,6 +60,8 @@ const EndreTittel = ({ modalRef, onUpdated }: EndreTittelProps) => {
   const { data: rekrutteringstreff, isLoading } =
     useRekrutteringstreff(rekrutteringstreffId);
 
+  const { setLagret: setKiLagret } = useKiLogg(rekrutteringstreffId, 'tittel');
+
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const lagreButtonRef = useRef<HTMLButtonElement>(null);
   const analyseRef = useRef<HTMLDivElement>(null);
@@ -100,6 +103,8 @@ const EndreTittel = ({ modalRef, onUpdated }: EndreTittelProps) => {
 
   const [hasChecked, setHasChecked] = useState(false);
   const [forceSave, setForceSave] = useState(false);
+
+  const [loggId, setLoggId] = useState<string | null>(null);
 
   const errorMsg = useMemo(() => {
     const err = errors.nyTittel;
@@ -146,6 +151,7 @@ const EndreTittel = ({ modalRef, onUpdated }: EndreTittelProps) => {
     setShowUnchangedError(false);
     setHasChecked(false);
     setForceSave(false);
+    setLoggId(null);
     resetAnalyse();
   }, [nyTittel, resetAnalyse]);
 
@@ -167,6 +173,7 @@ const EndreTittel = ({ modalRef, onUpdated }: EndreTittelProps) => {
     }
     setHasChecked(false);
     setForceSave(false);
+    setLoggId(null);
     focusTextareaEnd();
     setInitialFocusDone(true);
   };
@@ -179,11 +186,13 @@ const EndreTittel = ({ modalRef, onUpdated }: EndreTittelProps) => {
       return;
     }
 
-    await validate({
+    const res = (await validate({
       treffId: rekrutteringstreff.id,
       feltType: 'tittel',
       tekst: nyTittel,
-    });
+    })) as { loggId?: string } | undefined;
+
+    setLoggId(res?.loggId && res.loggId.length > 0 ? res.loggId : null);
     setHasChecked(true);
   };
 
@@ -197,6 +206,18 @@ const EndreTittel = ({ modalRef, onUpdated }: EndreTittelProps) => {
           tittel: nyTittel,
         }),
       );
+
+      if (loggId && (!analyse?.bryterRetningslinjer || forceSave)) {
+        try {
+          await setKiLagret({ id: loggId, lagret: true });
+        } catch (error) {
+          new RekbisError({
+            message: `Feil ved lagring av ki logg parameter 'lagret' for loggid ${loggId}  og rekrutteringstreff ${rekrutteringstreffId}`,
+            error,
+          });
+        }
+      }
+
       onUpdated();
       modalRef.current?.close();
     } catch (error) {
@@ -220,6 +241,7 @@ const EndreTittel = ({ modalRef, onUpdated }: EndreTittelProps) => {
     setShowUnchangedError(false);
     setHasChecked(false);
     setForceSave(false);
+    setLoggId(null);
   };
 
   const handleValidateOrError = () => {
