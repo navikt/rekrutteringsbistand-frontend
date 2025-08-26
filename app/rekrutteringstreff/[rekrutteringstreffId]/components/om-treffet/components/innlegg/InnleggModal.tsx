@@ -115,19 +115,19 @@ const InnleggModal: React.FC<InnleggModalProps> = ({
 
   const handleValidateOrErrorOgSetLoggId = async () => {
     if (validating || !rekrutteringstreffId) return;
-    const txt = htmlContent?.trim();
-    if (!txt) {
+    const tekst = htmlContent?.trim();
+    if (!tekst) {
       resetAnalyse();
       setHasChecked(false);
       setLoggId(null);
       return;
     }
     try {
-      const res = (await validate({
+      const res = await validate({
         treffId: rekrutteringstreffId,
-        feltType: 'innlegg',
-        tekst: txt,
-      })) as { loggId?: string } | undefined;
+        feltType: 'tittel',
+        tekst,
+      });
 
       setLoggId(res?.loggId && res.loggId.length > 0 ? res.loggId : null);
       if (!res?.loggId) {
