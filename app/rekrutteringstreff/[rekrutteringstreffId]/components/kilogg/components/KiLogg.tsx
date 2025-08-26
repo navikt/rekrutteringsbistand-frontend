@@ -25,8 +25,10 @@ const parseZonedDate = (s?: string | null): Date | null => {
 
 const KiLogg: React.FC<KiLoggProps> = ({ feltType }) => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
-  const { data, isLoading, error, setManuell, settingManuell, manuellError } =
-    useKiLogg(rekrutteringstreffId, feltType);
+  const { data, isLoading, error, setManuell, manuellError } = useKiLogg(
+    rekrutteringstreffId,
+    feltType,
+  );
 
   const [openId, setOpenId] = useState<string | null>(null);
 
@@ -130,7 +132,6 @@ const KiLogg: React.FC<KiLoggProps> = ({ feltType }) => {
                   <Button
                     size='xsmall'
                     variant={manuell === false ? 'primary' : 'secondary'}
-                    loading={settingManuell}
                     onClick={async () =>
                       setManuell({
                         id: row.id,
@@ -145,7 +146,6 @@ const KiLogg: React.FC<KiLoggProps> = ({ feltType }) => {
                   <Button
                     size='xsmall'
                     variant={manuell === true ? 'primary' : 'secondary'}
-                    loading={settingManuell}
                     onClick={async () =>
                       setManuell({
                         id: row.id,
@@ -160,7 +160,6 @@ const KiLogg: React.FC<KiLoggProps> = ({ feltType }) => {
                   <Button
                     size='xsmall'
                     variant={manuell === null ? 'primary' : 'secondary'}
-                    loading={settingManuell}
                     onClick={async () =>
                       setManuell({
                         id: row.id,
