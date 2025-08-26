@@ -65,6 +65,9 @@ const KiLogg: React.FC<KiLoggProps> = ({ feltType }) => {
         data?.map((row) => {
           const opprettet = parseZonedDate(row.opprettetTidspunkt);
           const manuell = row.manuellKontrollBryterRetningslinjer;
+
+          const warn = row.lagret && row.bryterRetningslinjer;
+
           return (
             <div key={row.id} className='border-b border-gray-200 pb-2'>
               <div className={GRID}>
@@ -95,13 +98,29 @@ const KiLogg: React.FC<KiLoggProps> = ({ feltType }) => {
                   {row.promptVersjonsnummer ?? '—'}
                 </BodyShort>
 
-                <BodyShort className='whitespace-nowrap'>
+                <BodyShort
+                  className={`whitespace-nowrap rounded px-1 ${
+                    warn ? 'bg-red-400 font-semibold' : ''
+                  }`}
+                  title={warn ? 'Lagret selv om KI meldte brudd' : undefined}
+                  aria-live='polite'
+                >
                   {row.lagret ? 'Ja' : 'Nei'}
                 </BodyShort>
 
-                <div className='flex justify-start items-center h-6'>
+                <div
+                  className={`flex justify-start items-center h-6 rounded px-1 ${
+                    warn ? 'bg-red-400' : ''
+                  }`}
+                  title={
+                    warn
+                      ? 'KI: Brudd på retningslinjer (rad er lagret)'
+                      : undefined
+                  }
+                  aria-live='polite'
+                >
                   {row.bryterRetningslinjer ? (
-                    <XMarkIcon className='text-red-600' />
+                    <XMarkIcon className={`${warn ? '' : 'text-red-600'}`} />
                   ) : (
                     <CheckmarkIcon className='text-green-600' />
                   )}
