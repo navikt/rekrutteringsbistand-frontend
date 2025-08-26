@@ -6,10 +6,12 @@ import Aktiviteter from './components/aktiviteter/components/Aktiviteter';
 import RekrutteringstreffArbeidsgivere from './components/arbeidsgivere/Arbeidsgivere';
 import Jobbsøkere from './components/jobbsøkere/Jobbsøkere';
 import KiLogg from './components/kilogg/components/KiLogg';
+import EndreTittel2 from './components/om-treffet/components/EndreTittel2';
 import OmTreffet from './components/om-treffet/components/OmTreffet';
 import Stegviser from './components/om-treffet/stegviser/Stegviser';
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
+import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { TilgangskontrollForInnhold } from '@/app/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/app/components/tilgangskontroll/roller';
 import { Box, Tabs } from '@navikt/ds-react';
@@ -31,6 +33,8 @@ const Rekrutteringstreff: React.FC = () => {
   });
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
 
+  const rekrutteringstreffHook = useRekrutteringstreff(rekrutteringstreffId);
+
   const { data: jobbsøkere } = useJobbsøkere(rekrutteringstreffId);
 
   const { data: arbeidsgivere } =
@@ -38,6 +42,7 @@ const Rekrutteringstreff: React.FC = () => {
 
   return (
     <Box.New>
+      <EndreTittel2 onUpdated={rekrutteringstreffHook.mutate}></EndreTittel2>
       <TreffHeader endreTittel={fane === RekrutteringstreffTabs.OM_TREFFET} />
       <Stegviser />
       <Tabs value={fane} onChange={(val) => setFane(val)}>
