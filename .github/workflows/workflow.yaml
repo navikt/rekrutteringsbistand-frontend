@@ -13,7 +13,7 @@ jobs:
       playwright-github-report: true
       dev-vars-path: '.nais/dev-gcp.json'
       prod-vars-path: '.nais/prod-gcp.json'
-      deploy-to-dev-if-branch-name-is: 'egen-dekoratør'
+      deploy-to-dev-if-branch-name-is: 'opprett-stilling'
     secrets: inherit
     permissions:
       contents: write

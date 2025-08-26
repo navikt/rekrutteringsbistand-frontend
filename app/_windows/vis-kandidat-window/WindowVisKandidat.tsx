@@ -3,7 +3,11 @@ import { useWindows } from '@/components/layout/windows/WindowWrapper';
 import { useQueryState } from 'nuqs';
 import * as React from 'react';
 
-const WindowVisKandidat: React.FC = () => {
+export interface WindowVisKandidatProps {
+  position?: 'left' | 'right';
+}
+
+const WindowVisKandidat: React.FC<WindowVisKandidatProps> = ({ position }) => {
   const { addWindow } = useWindows();
   const [visKandidatnr, setVisKandidatnr] = useQueryState('visKandidatnr', {
     defaultValue: '',
@@ -16,6 +20,7 @@ const WindowVisKandidat: React.FC = () => {
         id: 'visKandidatNr',
         onClose: () => setVisKandidatnr(''),
         content: <VisKandidat kandidatnr={visKandidatnr} />,
+        position: 'right',
       });
     }
   }, [visKandidatnr, addWindow]);

@@ -6,7 +6,6 @@ import FiltrertKandidatListeVisning from './kandidatliste/FiltrertKandidatListeV
 import KandidatlisteWrapper from './kandidatliste/KandidatlisteWrapper';
 import OmStillingen from './omStillingen/OmStillingen';
 import FinKandidaterKnapp from '@/app/_windows/finn-kandidater-window/FinnKandidaterKnapp';
-import FinnKandidaterWindow from '@/app/_windows/finn-kandidater-window/WindowFinnKandidater';
 import { Kandidatlistestatus } from '@/app/api/kandidat/schema.zod';
 import { KandidatSøkMarkerteContextProvider } from '@/app/kandidat/KandidatSøkMarkerteContext';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
@@ -59,9 +58,7 @@ export default function StillingSide() {
             >
               <div className='flex items-center justify-center gap-2'>
                 <FinKandidaterKnapp stillingId={stillingsData.stilling.uuid} />
-                <FinnKandidaterWindow
-                  stillingsId={stillingsData.stilling.uuid}
-                />
+
                 <LeggTilKandidatTilStilling
                   stillingsId={stillingsData.stilling.uuid}
                   stillingsTittel={stillingsData.stilling.title}

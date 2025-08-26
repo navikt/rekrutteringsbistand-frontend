@@ -1,5 +1,6 @@
 import { StillingsContextProvider } from './StillingsContext';
 import StillingSideLayout from './StillingssideLayout';
+import WindowVisKandidat from '@/app/_windows/vis-kandidat-window/WindowVisKandidat';
 import NotFound from '@/app/not-found';
 import * as React from 'react';
 

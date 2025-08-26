@@ -26,6 +26,8 @@ interface WindowContextValue {
     onClose?: () => void;
     navigasjon?: React.ReactNode;
     content: React.ReactElement;
+    /** Plassering blant dynamiske vinduer. Default: right */
+    position?: 'left' | 'right';
   }) => string; // return id
   updateWindow: (id: string, patch: Partial<Omit<WindowItem, 'id'>>) => void;
   removeWindow: (id: string) => void;
@@ -69,6 +71,12 @@ function insertAbove(current: MosaicNode<Id> | null, id: Id): MosaicNode<Id> {
 function insertAfter(current: MosaicNode<Id> | null, id: Id): MosaicNode<Id> {
   if (!current) return id;
   return { direction: 'row', first: current, second: id, splitPercentage: 60 };
+}
+
+// Sett inn som ny kolonne helt til venstre (før eksisterende layout)
+function insertBefore(current: MosaicNode<Id> | null, id: Id): MosaicNode<Id> {
+  if (!current) return id;
+  return { direction: 'row', first: id, second: current, splitPercentage: 60 };
 }
 
 function removeFromTree(
@@ -128,17 +136,25 @@ const WindowWrapper: React.FC<WindowWrapperProps> = ({ children }) => {
   }, [dynamicLayout, rootSplit]);
 
   const addWindow = React.useCallback<WindowContextValue['addWindow']>(
-    ({ id, onClose, navigasjon, content }) => {
+    ({ id, onClose, navigasjon, content, position = 'right' }) => {
       const alreadyExists = idsRef.current.has(id);
       if (alreadyExists) {
         // Bare oppdater innholdet, IKKE endre layout for å unngå duplikate noder i mosaic-treet
+        // Endret: Flytt likevel vinduet helt til høyre slik at "siste åpnet" alltid havner ytterst.
+        setDynamicLayout((prevLayout) => {
+          // Fjern id fra treet og legg det inn igjen etter valgt position
+          const utenId = removeFromTree(prevLayout, id);
+          return position === 'left'
+            ? insertBefore(utenId, id)
+            : insertAfter(utenId, id);
+        });
         setElements((prev) => {
           const current = prev[id];
           if (!current) return prev; // (teoretisk) skulle ikke skje
           if (process.env.NODE_ENV === 'development') {
             // eslint-disable-next-line no-console
             console.warn(
-              `[WindowWrapper] addWindow: vindu med id="${id}" finnes allerede – erstatter innhold`,
+              `[WindowWrapper] addWindow: vindu med id="${id}" finnes allerede – erstatter innhold & flytter (${position})`,
             );
           }
           return {
@@ -157,12 +173,16 @@ const WindowWrapper: React.FC<WindowWrapperProps> = ({ children }) => {
       // Registrer id umiddelbart (hindrer race hvis addWindow kalles to ganger før state commit)
       idsRef.current.add(id);
 
-      // Legg vindu inn i layout (alltid til høyre i nåværende modell)
-      setDynamicLayout((prevLayout) => insertAfter(prevLayout, id));
+      // Legg vindu inn i layout helt til venstre eller høyre
+      setDynamicLayout((prevLayout) =>
+        position === 'left'
+          ? insertBefore(prevLayout, id)
+          : insertAfter(prevLayout, id),
+      );
       if (process.env.NODE_ENV === 'development') {
         // eslint-disable-next-line no-console
         console.log('[WindowWrapper] addWindow (ny)', id, {
-          forcedPosition: 'right',
+          forcedPosition: position,
         });
       }
       setElements((prev) => ({
