@@ -25,7 +25,7 @@ import {
   Detail,
   Skeleton,
   Switch,
-  TextField, // <-- enkeltlinje input
+  TextField,
 } from '@navikt/ds-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
@@ -73,11 +73,15 @@ const EndreTittel2 = ({ onUpdated }: EndreTittelProps) => {
     setValue,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<FormValues>({ resolver: zodResolver(schema), mode: 'onChange' });
+  } = useForm<FormValues>({
+    resolver: zodResolver(schema),
+    mode: 'onChange',
+    defaultValues: { nyTittel: '' }, // alltid kontrollert
+  });
 
   const inputRef = useRef<HTMLInputElement>(null);
   const analyseRef = useRef<HTMLDivElement>(null);
-  const sjekkBtnRef = useRef<HTMLButtonElement>(null); // Tab → hit
+  const sjekkBtnRef = useRef<HTMLButtonElement>(null);
 
   const nyTittel = useWatch({ control, name: 'nyTittel' });
 
@@ -89,7 +93,7 @@ const EndreTittel2 = ({ onUpdated }: EndreTittelProps) => {
 
   useEffect(() => {
     if (rekrutteringstreff) {
-      reset({ nyTittel: rekrutteringstreff.tittel });
+      reset({ nyTittel: rekrutteringstreff.tittel ?? '' });
     }
   }, [rekrutteringstreff, reset]);
 
@@ -114,6 +118,14 @@ const EndreTittel2 = ({ onUpdated }: EndreTittelProps) => {
     () => !!errors.nyTittel || !nyTittel?.trim(),
     [errors.nyTittel, nyTittel],
   );
+
+  // Rød ramme når KI sier brudd og du ikke har valgt "lagre likevel"
+  const kiErrorBorder =
+    hasChecked &&
+    !validating &&
+    !analyseError &&
+    (analyse as any)?.bryterRetningslinjer &&
+    !forceSave;
 
   const runValidation = async () => {
     if (!rekrutteringstreff) return;
@@ -220,29 +232,18 @@ const EndreTittel2 = ({ onUpdated }: EndreTittelProps) => {
 
   return (
     <section className='space-y-3'>
-      {/* Toppknapper (kun sjekk) */}
+      {/* Én knapp: "Sjekk teksten". Etter sjekk blir den deaktivert og hoppes over i tab-rekkefølgen */}
       <div className='flex gap-2 justify-end'>
-        {!hasChecked ? (
-          <Button
-            ref={sjekkBtnRef}
-            type='button'
-            onClick={runValidation}
-            loading={validating}
-            disabled={baseInvalid || validating}
-          >
-            Sjekk teksten
-          </Button>
-        ) : (
-          <Button
-            ref={sjekkBtnRef}
-            type='button'
-            variant='secondary'
-            onClick={runValidation}
-            disabled={validating}
-          >
-            Sjekk teksten på nytt
-          </Button>
-        )}
+        <Button
+          ref={sjekkBtnRef}
+          type='button'
+          onClick={runValidation}
+          loading={validating}
+          disabled={hasChecked || baseInvalid || validating}
+          tabIndex={hasChecked ? -1 : 0}
+        >
+          Sjekk teksten
+        </Button>
       </div>
 
       {/* Inputfelt – EN LINJE */}
@@ -256,23 +257,26 @@ const EndreTittel2 = ({ onUpdated }: EndreTittelProps) => {
               render={({ field }) => (
                 <TextField
                   {...field}
-                  ref={inputRef}
+                  value={field.value ?? ''} // alltid kontrollert
+                  ref={(el) => {
+                    field.ref(el);
+                    inputRef.current = el;
+                  }}
                   label='Navn på treffet'
                   maxLength={MAX_TITLE_LENGTH}
                   className='w-full pt-2'
-                  error={errorMsg}
+                  error={errorMsg ?? (kiErrorBorder ? ' ' : undefined)} // <-- gir rød border uten å farge label
+                  aria-invalid={!!(errorMsg || kiErrorBorder)}
                   autoComplete='off'
                   autoCorrect='off'
                   spellCheck={false}
                   onKeyDown={(e) => {
-                    // Enter kjører validering (ingen lagreknapp)
                     if (e.key === 'Enter' && !e.shiftKey) {
                       e.preventDefault();
                       runValidation();
                       return;
                     }
-                    // Tab → fokus på sjekk-knappen
-                    if (e.key === 'Tab' && !e.shiftKey) {
+                    if (e.key === 'Tab' && !e.shiftKey && !hasChecked) {
                       e.preventDefault();
                       sjekkBtnRef.current?.focus();
                     }
@@ -289,7 +293,7 @@ const EndreTittel2 = ({ onUpdated }: EndreTittelProps) => {
                 variant='tertiary'
                 size='small'
                 tabIndex={-1} // ikke i tabrekkefølgen
-                className='h-8 p-1 -ml-9 mt-9 flex items-center' // plasseres "inni" feltet
+                className='h-8 p-1 -ml-9 mt-9 flex items-center'
                 title='Tøm feltet'
               >
                 <XMarkIcon aria-hidden fontSize='1.25rem' />
