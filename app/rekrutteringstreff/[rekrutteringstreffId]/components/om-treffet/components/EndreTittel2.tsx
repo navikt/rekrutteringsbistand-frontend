@@ -227,7 +227,7 @@ const EndreTittel2 = ({ onUpdated }: EndreTittelProps) => {
                 aria-label='Tøm tittel feltet'
                 variant='tertiary'
                 size='small'
-                className='absolute right-2 top-[2.7rem] -translate-y-1/2 h-8 p-1'
+                className='absolute right-2 top-[4rem] -translate-y-1/2 h-8 p-1'
                 title='Tøm feltet'
               >
                 <XMarkIcon aria-hidden fontSize='1.25rem' />
