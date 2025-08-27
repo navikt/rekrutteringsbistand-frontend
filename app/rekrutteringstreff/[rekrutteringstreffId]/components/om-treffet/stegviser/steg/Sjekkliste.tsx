@@ -1,4 +1,4 @@
-import { CheckmarkIcon, PencilIcon } from '@navikt/aksel-icons';
+import { CheckmarkIcon } from '@navikt/aksel-icons';
 import { BodyShort, Box } from '@navikt/ds-react';
 import * as React from 'react';
 
@@ -12,58 +12,17 @@ export const SjekklisteContainer: React.FC<{ children: React.ReactNode }> = ({
   </div>
 );
 
-interface SjekklisteRadProps {
-  erOppfylt: boolean;
-  kanKlikkes: boolean;
-  onClick: () => void;
-  label: string;
-  handlingstekst?: string;
-  ariaLabel: string;
-}
-
-export const SjekklisteRad: React.FC<SjekklisteRadProps> = ({
+export const SjekklisteRad: React.FC<{ erOppfylt: boolean; label: string }> = ({
   erOppfylt,
-  kanKlikkes,
-  onClick,
   label,
-  handlingstekst,
-  ariaLabel,
 }) => (
-  <div
-    onClick={() => kanKlikkes && onClick()}
-    onKeyDown={(e) => {
-      if (kanKlikkes && (e.key === 'Enter' || e.key === ' ')) {
-        e.preventDefault();
-        onClick();
-      }
-    }}
-    className={`flex items-center justify-between my-4 ${
-      kanKlikkes
-        ? 'cursor-pointer hover:bg-[var(--ax-bg-neutral-moderate-hover)] rounded'
-        : ''
-    }`}
-    role={kanKlikkes ? 'button' : undefined}
-    tabIndex={kanKlikkes ? 0 : undefined}
-    aria-label={ariaLabel}
-  >
+  <div className='flex items-center justify-between my-4'>
     <div className='flex items-center gap-2'>
       <div className='w-5 h-5 border-2 rounded-full flex items-center justify-center border-blue-400 text-blue-400'>
         {erOppfylt && <CheckmarkIcon fontSize='1rem' />}
       </div>
       <BodyShort>{label}</BodyShort>
     </div>
-    {kanKlikkes &&
-      (erOppfylt ? (
-        <PencilIcon
-          className='text-blue-400'
-          title='Rediger'
-          fontSize='1.5rem'
-        />
-      ) : (
-        handlingstekst && (
-          <BodyShort className='text-blue-400 px-1'>{handlingstekst}</BodyShort>
-        )
-      ))}
   </div>
 );
 

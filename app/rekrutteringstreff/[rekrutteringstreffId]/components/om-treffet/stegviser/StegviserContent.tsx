@@ -7,7 +7,6 @@ import FølgeOppSteg from './steg/FølgeOppSteg';
 import InvitereSteg from './steg/InvitereSteg';
 import PublisereSteg from './steg/PublisereSteg';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
-import { Stepper } from '@navikt/ds-react';
 import * as React from 'react';
 
 const StegviserContent = () => {

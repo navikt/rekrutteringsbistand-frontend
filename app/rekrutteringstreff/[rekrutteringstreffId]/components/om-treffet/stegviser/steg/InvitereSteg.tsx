@@ -26,21 +26,11 @@ const InvitereSteg = () => {
 
   return (
     <SjekklisteContainer>
-      <SjekklisteRad
-        erOppfylt={harInvitert}
-        kanKlikkes={true}
-        onClick={onInviteClick}
-        label='Minst en invitasjon'
-        handlingstekst='Inviter'
-        ariaLabel={harInvitert ? 'Rediger invitasjoner' : 'Inviter jobbsøkere'}
-      />
+      <SjekklisteRad erOppfylt={harInvitert} label='Minst en invitasjon' />
       <SjekklisteSeparator />
       <SjekklisteRad
         erOppfylt={arrangementtidspunktHarPassert}
-        kanKlikkes={false}
-        onClick={() => {}}
         label='Arrangementets fradato har passert'
-        ariaLabel='Arrangementets fradato har passert'
       />
       <SjekklisteSeparator />
       <SjekklisteInfoRad>

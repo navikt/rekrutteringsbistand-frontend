@@ -114,18 +114,28 @@ const StegviserHeader: React.FC<Props> = ({ stepDetails }) => {
 
   return (
     <div className='w-full'>
-      <div className='flex items-center gap-2'>
-        {activeStep === 1 && (
+      <div className='grid grid-cols-2 gap-2 w-full'>
+        <Button
+          disabled
+          size='small'
+          variant='secondary'
+          className='w-full'
+          onClick={onPubliserTreffet}
+        >
+          Forhåndsvis
+        </Button>
+
+        {activeStep === 1 ? (
           <Button
             disabled={!erPubliseringklar || isPublishing}
             loading={isPublishing}
             size='small'
+            className='w-full'
             onClick={onPubliserTreffet}
           >
             Publiser treffet
           </Button>
-        )}
-        {activeStep === 2 && (
+        ) : activeStep === 2 ? (
           <Button
             variant='primary'
             size='small'
@@ -135,12 +145,12 @@ const StegviserHeader: React.FC<Props> = ({ stepDetails }) => {
               isFinishingInvitation
             }
             loading={isFinishingInvitation}
+            className='w-full'
             onClick={onAvsluttInvitasjon}
           >
             Ferdig å invitere
           </Button>
-        )}
-        {activeStep === 3 && (
+        ) : activeStep === 3 ? (
           <Button
             variant='primary'
             size='small'
@@ -150,22 +160,26 @@ const StegviserHeader: React.FC<Props> = ({ stepDetails }) => {
               !tiltidspunktHarPassert ||
               antallUbestemt > 0
             }
+            className='w-full'
             onClick={onAvsluttOppfolging}
           >
             Ferdig med oppfølging
           </Button>
-        )}
-        {activeStep === 4 && !harAvsluttet && (
+        ) : activeStep === 4 && !harAvsluttet ? (
           <Button
             variant='primary'
             size='small'
             loading={isFinishingRecruitment}
+            className='w-full'
             onClick={onAvsluttRekrutteringstreff}
           >
             Avslutt treffet
           </Button>
+        ) : (
+          <div />
         )}
       </div>
+
       <div className='flex items-center justify-between w-full mt-4'>
         <div className='flex-grow mr-4'>
           <div className='flex items-center justify-between'>
@@ -202,7 +216,7 @@ const StegviserHeader: React.FC<Props> = ({ stepDetails }) => {
                   totaltAntallSjekklistePunkter,
                 )}
                 size='small'
-                className='mt-2 h-1'
+                className='mt-2'
                 aria-label='Fremdrift for publisering'
               />
             )}
@@ -213,7 +227,7 @@ const StegviserHeader: React.FC<Props> = ({ stepDetails }) => {
                   totaltAntallInviterePunkter,
                 )}
                 size='small'
-                className='mt-2 h-1'
+                className='mt-2'
                 aria-label='Fremdrift for invitasjon'
               />
             )}
@@ -221,7 +235,7 @@ const StegviserHeader: React.FC<Props> = ({ stepDetails }) => {
               <ProgressBar
                 value={getProsent(antallRegistrertOppmøte, antallInviterte)}
                 size='small'
-                className='mt-2 h-1'
+                className='mt-2'
                 aria-label='Fremdrift for oppfølging'
               />
             )}
