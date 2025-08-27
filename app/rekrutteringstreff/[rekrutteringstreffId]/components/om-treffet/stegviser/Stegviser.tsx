@@ -21,8 +21,6 @@ const stepDetails = [
   },
 ];
 
-const stepsForStepper = stepDetails.map((d) => d.stepLabel);
-
 const Stegviser = () => {
   return (
     <StegviserProvider>
@@ -35,7 +33,7 @@ const Stegviser = () => {
       >
         <StegviserHeader stepDetails={stepDetails} />
         <div className='mt-4'>
-          <StegviserContent stepsForStepper={stepsForStepper} />
+          <StegviserContent />
         </div>
       </Box.New>
     </StegviserProvider>

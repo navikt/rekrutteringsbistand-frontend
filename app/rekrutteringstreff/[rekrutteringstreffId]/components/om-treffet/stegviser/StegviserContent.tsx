@@ -10,11 +10,7 @@ import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutter
 import { Stepper } from '@navikt/ds-react';
 import * as React from 'react';
 
-interface Props {
-  stepsForStepper: string[];
-}
-
-const StegviserContent: React.FC<Props> = ({ stepsForStepper }) => {
+const StegviserContent = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { data: rekrutteringstreffData } =
     useRekrutteringstreff(rekrutteringstreffId);
@@ -28,19 +24,6 @@ const StegviserContent: React.FC<Props> = ({ stepsForStepper }) => {
   return (
     <div role='region'>
       <div className='flex flex-row gap-6'>
-        <Stepper
-          activeStep={activeStep}
-          orientation='vertical'
-          interactive={false}
-          className='w-40 shrink-0'
-        >
-          {stepsForStepper.map((label, i) => (
-            <Stepper.Step key={i + 1} completed={i < activeStep - 1}>
-              {label}
-            </Stepper.Step>
-          ))}
-        </Stepper>
-
         <div className='flex-1'>
           {activeStep === 1 && <PublisereSteg />}
           {activeStep === 2 && <InvitereSteg />}

@@ -114,7 +114,59 @@ const StegviserHeader: React.FC<Props> = ({ stepDetails }) => {
 
   return (
     <div className='w-full'>
-      <div className='flex items-center justify-between w-full'>
+      <div className='flex items-center gap-2'>
+        {activeStep === 1 && (
+          <Button
+            disabled={!erPubliseringklar || isPublishing}
+            loading={isPublishing}
+            size='small'
+            onClick={onPubliserTreffet}
+          >
+            Publiser treffet
+          </Button>
+        )}
+        {activeStep === 2 && (
+          <Button
+            variant='primary'
+            size='small'
+            disabled={
+              !harInvitert ||
+              !arrangementtidspunktHarPassert ||
+              isFinishingInvitation
+            }
+            loading={isFinishingInvitation}
+            onClick={onAvsluttInvitasjon}
+          >
+            Ferdig å invitere
+          </Button>
+        )}
+        {activeStep === 3 && (
+          <Button
+            variant='primary'
+            size='small'
+            loading={isFinishingFollowUp}
+            disabled={
+              isFinishingFollowUp ||
+              !tiltidspunktHarPassert ||
+              antallUbestemt > 0
+            }
+            onClick={onAvsluttOppfolging}
+          >
+            Ferdig med oppfølging
+          </Button>
+        )}
+        {activeStep === 4 && !harAvsluttet && (
+          <Button
+            variant='primary'
+            size='small'
+            loading={isFinishingRecruitment}
+            onClick={onAvsluttRekrutteringstreff}
+          >
+            Avslutt treffet
+          </Button>
+        )}
+      </div>
+      <div className='flex items-center justify-between w-full mt-4'>
         <div className='flex-grow mr-4'>
           <div className='flex items-center justify-between'>
             <div className='flex items-center'>
@@ -174,59 +226,6 @@ const StegviserHeader: React.FC<Props> = ({ stepDetails }) => {
               />
             )}
           </div>
-        </div>
-
-        <div className='flex items-center gap-2'>
-          {activeStep === 1 && (
-            <Button
-              disabled={!erPubliseringklar || isPublishing}
-              loading={isPublishing}
-              size='small'
-              onClick={onPubliserTreffet}
-            >
-              Publiser treffet
-            </Button>
-          )}
-          {activeStep === 2 && (
-            <Button
-              variant='primary'
-              size='small'
-              disabled={
-                !harInvitert ||
-                !arrangementtidspunktHarPassert ||
-                isFinishingInvitation
-              }
-              loading={isFinishingInvitation}
-              onClick={onAvsluttInvitasjon}
-            >
-              Ferdig å invitere
-            </Button>
-          )}
-          {activeStep === 3 && (
-            <Button
-              variant='primary'
-              size='small'
-              loading={isFinishingFollowUp}
-              disabled={
-                isFinishingFollowUp ||
-                !tiltidspunktHarPassert ||
-                antallUbestemt > 0
-              }
-              onClick={onAvsluttOppfolging}
-            >
-              Ferdig med oppfølging
-            </Button>
-          )}
-          {activeStep === 4 && !harAvsluttet && (
-            <Button
-              variant='primary'
-              size='small'
-              loading={isFinishingRecruitment}
-              onClick={onAvsluttRekrutteringstreff}
-            >
-              Avslutt treffet
-            </Button>
-          )}
         </div>
       </div>
     </div>
