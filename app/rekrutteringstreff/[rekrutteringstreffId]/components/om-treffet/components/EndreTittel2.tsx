@@ -17,6 +17,7 @@ import {
   XMarkIcon,
   EyeIcon,
   PersonCircleIcon,
+  CheckmarkIcon,
 } from '@navikt/aksel-icons';
 import {
   Alert,
@@ -24,7 +25,6 @@ import {
   Button,
   Detail,
   Skeleton,
-  Switch,
   TextField,
 } from '@navikt/ds-react';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -56,9 +56,7 @@ const EndreTittel2 = ({ onUpdated }: EndreTittelProps) => {
   const { data: rekrutteringstreff, isLoading } =
     useRekrutteringstreff(rekrutteringstreffId);
 
-  // PUT /lagret
   const { setLagret: setKiLagret } = useKiLogg(rekrutteringstreffId, 'tittel');
-
   const {
     trigger: validate,
     data: analyse,
@@ -71,17 +69,15 @@ const EndreTittel2 = ({ onUpdated }: EndreTittelProps) => {
     control,
     handleSubmit,
     setValue,
-    reset,
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
     mode: 'onChange',
-    defaultValues: { nyTittel: '' }, // alltid kontrollert
+    defaultValues: { nyTittel: '' },
   });
 
   const inputRef = useRef<HTMLInputElement>(null);
   const analyseRef = useRef<HTMLDivElement>(null);
-  const sjekkBtnRef = useRef<HTMLButtonElement>(null);
 
   const nyTittel = useWatch({ control, name: 'nyTittel' });
 
@@ -91,13 +87,6 @@ const EndreTittel2 = ({ onUpdated }: EndreTittelProps) => {
   const [loggId, setLoggId] = useState<string | null>(null);
   const [lastAutoSaveKey, setLastAutoSaveKey] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (rekrutteringstreff) {
-      reset({ nyTittel: rekrutteringstreff.tittel ?? '' });
-    }
-  }, [rekrutteringstreff, reset]);
-
-  // Reset vurdering når teksten endres
   useEffect(() => {
     setVisTomFeil(false);
     setHasChecked(false);
@@ -119,14 +108,6 @@ const EndreTittel2 = ({ onUpdated }: EndreTittelProps) => {
     [errors.nyTittel, nyTittel],
   );
 
-  // Rød ramme når KI sier brudd og du ikke har valgt "lagre likevel"
-  const kiErrorBorder =
-    hasChecked &&
-    !validating &&
-    !analyseError &&
-    (analyse as any)?.bryterRetningslinjer &&
-    !forceSave;
-
   const runValidation = async () => {
     if (!rekrutteringstreff) return;
 
@@ -145,28 +126,17 @@ const EndreTittel2 = ({ onUpdated }: EndreTittelProps) => {
       res?.loggId && res.loggId.length > 0
         ? res.loggId
         : ((analyse as any)?.loggId ?? null);
-
     setLoggId(id ?? null);
     setHasChecked(true);
 
-    if (!id) {
+    if (!id)
       new RekbisError({
-        message:
-          'Kunne ikke hente logg-ID fra valideringen. Prøv å kjøre «Sjekk teksten» på nytt.',
+        message: 'Kunne ikke hente logg-ID fra valideringen.',
       });
-    }
   };
 
   const save = async ({ nyTittel }: FormValues) => {
-    if (!rekrutteringstreff) return;
-    if (!loggId) {
-      new RekbisError({
-        message:
-          'Mangler referanse til valideringsloggen (logg-ID). Kjør «Sjekk teksten» og prøv igjen.',
-      });
-      return;
-    }
-
+    if (!rekrutteringstreff || !loggId) return;
     try {
       await oppdaterRekrutteringstreff(
         rekrutteringstreff.id,
@@ -175,7 +145,6 @@ const EndreTittel2 = ({ onUpdated }: EndreTittelProps) => {
           tittel: nyTittel,
         }),
       );
-
       try {
         await setKiLagret({ id: loggId, lagret: true });
       } catch (error) {
@@ -184,7 +153,6 @@ const EndreTittel2 = ({ onUpdated }: EndreTittelProps) => {
           error,
         });
       }
-
       onUpdated();
     } catch (error) {
       new RekbisError({ message: 'Lagring av tittel feilet.', error });
@@ -199,7 +167,13 @@ const EndreTittel2 = ({ onUpdated }: EndreTittelProps) => {
   const tegnIgjen =
     MAX_TITLE_LENGTH - (typeof nyTittel === 'string' ? nyTittel.length : 0);
 
-  // AUTOLAGRING (ingen "Lagre"-knapp)
+  const kiErrorBorder =
+    hasChecked &&
+    !validating &&
+    !analyseError &&
+    (analyse as any)?.bryterRetningslinjer &&
+    !forceSave;
+
   useEffect(() => {
     const canAutoSave =
       hasChecked &&
@@ -230,56 +204,48 @@ const EndreTittel2 = ({ onUpdated }: EndreTittelProps) => {
     handleSubmit,
   ]);
 
+  const onForceSave = () => {
+    setForceSave(true);
+    handleSubmit(save)().catch(() => {});
+  };
+
+  const fieldClass = `w-full pt-2 ${kiErrorBorder ? 'no-error-icon' : ''}`;
+
   return (
     <section className='space-y-3'>
-      {/* Én knapp: "Sjekk teksten". Etter sjekk blir den deaktivert og hoppes over i tab-rekkefølgen */}
-      <div className='flex gap-2 justify-end'>
-        <Button
-          ref={sjekkBtnRef}
-          type='button'
-          onClick={runValidation}
-          loading={validating}
-          disabled={hasChecked || baseInvalid || validating}
-          tabIndex={hasChecked ? -1 : 0}
-        >
-          Sjekk teksten
-        </Button>
-      </div>
-
-      {/* Inputfelt – EN LINJE */}
       {isLoading && <Skeleton variant='text' />}
-      {!isLoading && rekrutteringstreff && (
+      {!isLoading && (
         <>
-          <div className='flex items-start' tabIndex={-1}>
+          <div className='flex items-start'>
             <Controller
               control={control}
               name='nyTittel'
               render={({ field }) => (
                 <TextField
                   {...field}
-                  value={field.value ?? ''} // alltid kontrollert
+                  value={field.value ?? ''}
                   ref={(el) => {
                     field.ref(el);
                     inputRef.current = el;
                   }}
                   label='Navn på treffet'
                   maxLength={MAX_TITLE_LENGTH}
-                  className='w-full pt-2'
-                  error={errorMsg ?? (kiErrorBorder ? ' ' : undefined)} // <-- gir rød border uten å farge label
+                  className={fieldClass}
+                  error={
+                    errorMsg ??
+                    (kiErrorBorder ? 'Brudd på retningslinjer' : undefined)
+                  }
                   aria-invalid={!!(errorMsg || kiErrorBorder)}
                   autoComplete='off'
                   autoCorrect='off'
                   spellCheck={false}
+                  onBlur={runValidation}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' && !e.shiftKey) {
                       e.preventDefault();
                       runValidation();
-                      return;
                     }
-                    if (e.key === 'Tab' && !e.shiftKey && !hasChecked) {
-                      e.preventDefault();
-                      sjekkBtnRef.current?.focus();
-                    }
+                    if (e.key === 'Tab') runValidation();
                   }}
                 />
               )}
@@ -292,7 +258,6 @@ const EndreTittel2 = ({ onUpdated }: EndreTittelProps) => {
                 aria-label='Tøm tittel feltet'
                 variant='tertiary'
                 size='small'
-                tabIndex={-1} // ikke i tabrekkefølgen
                 className='h-8 p-1 -ml-9 mt-9 flex items-center'
                 title='Tøm feltet'
               >
@@ -303,7 +268,6 @@ const EndreTittel2 = ({ onUpdated }: EndreTittelProps) => {
 
           <Detail className='text-gray-400'>{tegnIgjen} tegn igjen</Detail>
 
-          {/* Info-tekster */}
           <div className='space-y-1'>
             <Detail
               size='small'
@@ -331,7 +295,6 @@ const EndreTittel2 = ({ onUpdated }: EndreTittelProps) => {
             </Detail>
           </div>
 
-          {/* Analyse/tilbakemelding */}
           <div className='flex gap-3 mt-2 items-start'>
             <div className='inline-flex justify-center items-start w-10 pt-1'>
               {validating ? (
@@ -340,7 +303,7 @@ const EndreTittel2 = ({ onUpdated }: EndreTittelProps) => {
                   fontSize='2em'
                   className='text-gray-700'
                 />
-              ) : analyse && !analyseError ? (
+              ) : analyse && !analyseError && hasChecked && !forceSave ? (
                 (analyse as any).bryterRetningslinjer ? (
                   <RobotFrownIcon
                     aria-hidden
@@ -402,40 +365,37 @@ const EndreTittel2 = ({ onUpdated }: EndreTittelProps) => {
                   </motion.div>
                 )}
 
-                {!validating && analyse && !analyseError && hasChecked && (
-                  <motion.div
-                    key='analyse'
-                    ref={analyseRef}
-                    tabIndex={0}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                    className={
-                      (analyse as any).bryterRetningslinjer
-                        ? 'aksel-error-message p-1'
-                        : 'text-green-700 p-1'
-                    }
-                  >
-                    <BodyLong>{(analyse as any).begrunnelse}</BodyLong>
-                  </motion.div>
-                )}
+                {!validating &&
+                  analyse &&
+                  !analyseError &&
+                  hasChecked &&
+                  (!(analyse as any).bryterRetningslinjer || !forceSave) && (
+                    <motion.div
+                      key='analyse'
+                      ref={analyseRef}
+                      tabIndex={0}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className='p-1'
+                    >
+                      <BodyLong>{(analyse as any).begrunnelse}</BodyLong>
+                    </motion.div>
+                  )}
               </AnimatePresence>
             </div>
           </div>
 
-          {/* Overstyr ved brudd (styrer også autolagring) */}
-          {hasChecked && (analyse as any)?.bryterRetningslinjer && (
-            <div className='pt-1'>
-              <Switch
-                size='small'
-                checked={forceSave}
-                onChange={(e) => setForceSave(e.target.checked)}
-              >
-                Lagre innholdet likevel.
-              </Switch>
-            </div>
-          )}
+          {hasChecked &&
+            (analyse as any)?.bryterRetningslinjer &&
+            !forceSave && (
+              <div className='pt-1'>
+                <Button size='small' variant='secondary' onClick={onForceSave}>
+                  Lagre likevel
+                </Button>
+              </div>
+            )}
         </>
       )}
     </section>
