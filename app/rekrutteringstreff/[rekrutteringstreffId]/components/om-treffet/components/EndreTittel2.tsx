@@ -17,7 +17,6 @@ import {
   XMarkIcon,
   EyeIcon,
   PersonCircleIcon,
-  CheckmarkIcon,
 } from '@navikt/aksel-icons';
 import {
   Alert,
@@ -69,6 +68,7 @@ const EndreTittel2 = ({ onUpdated }: EndreTittelProps) => {
     control,
     handleSubmit,
     setValue,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -79,6 +79,7 @@ const EndreTittel2 = ({ onUpdated }: EndreTittelProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const analyseRef = useRef<HTMLDivElement>(null);
   const skeletonRef = useRef<HTMLDivElement>(null);
+  const initializedFromServer = useRef(false);
 
   const nyTittel = useWatch({ control, name: 'nyTittel' });
 
@@ -87,6 +88,13 @@ const EndreTittel2 = ({ onUpdated }: EndreTittelProps) => {
   const [forceSave, setForceSave] = useState(false);
   const [loggId, setLoggId] = useState<string | null>(null);
   const [lastAutoSaveKey, setLastAutoSaveKey] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!initializedFromServer.current && !isLoading && rekrutteringstreff) {
+      initializedFromServer.current = true;
+      reset({ nyTittel: rekrutteringstreff.tittel ?? '' });
+    }
+  }, [isLoading, rekrutteringstreff, reset]);
 
   useEffect(() => {
     setVisTomFeil(false);
@@ -174,7 +182,6 @@ const EndreTittel2 = ({ onUpdated }: EndreTittelProps) => {
     (analyse as any)?.bryterRetningslinjer &&
     !forceSave;
 
-  // Fokuser skjelett når validering starter (Enter)
   useEffect(() => {
     if (validating) skeletonRef.current?.focus();
   }, [validating]);
