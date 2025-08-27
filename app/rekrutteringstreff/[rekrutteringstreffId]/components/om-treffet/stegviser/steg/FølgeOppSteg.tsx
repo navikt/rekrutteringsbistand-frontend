@@ -68,6 +68,11 @@ const FølgeOppSteg: React.FC = () => {
 
         <SjekklisteSeparator />
 
+        <SjekklisteRad
+          erOppfylt={antallUbestemt === 0}
+          label='Alle jobbsøkere er registrert med møtt opp eller ikke møtt opp'
+        />
+
         <SjekklisteInfoRad>
           <BodyShort>
             Møtt opp: <b>{antallMøttOpp}</b>
@@ -88,13 +93,6 @@ const FølgeOppSteg: React.FC = () => {
             Ikke invitert: <b>{antallIkkeInvitert}</b>
           </BodyShort>
         </SjekklisteInfoRad>
-
-        <SjekklisteSeparator />
-
-        <SjekklisteRad
-          erOppfylt={antallUbestemt === 0}
-          label='Alle jobbsøkere er registrert med møtt opp eller ikke møtt opp'
-        />
 
         {antallUbestemt > 0 && (
           <div className='mt-2'>
