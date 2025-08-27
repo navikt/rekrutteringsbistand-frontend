@@ -43,7 +43,7 @@ const Rekrutteringstreff: React.FC = () => {
   return (
     <Box.New>
       <EndreTittel2 onUpdated={rekrutteringstreffHook.mutate}></EndreTittel2>
-      <TreffHeader endreTittel={fane === RekrutteringstreffTabs.OM_TREFFET} />
+      {/* <TreffHeader endreTittel={fane === RekrutteringstreffTabs.OM_TREFFET} />*/}
       <Stegviser />
       <Tabs value={fane} onChange={(val) => setFane(val)}>
         <Tabs.List className='w-full'>
