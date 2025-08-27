@@ -33,7 +33,6 @@ const PublisereSteg = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
 
   const arbeidsgiverModalRef = React.useRef<HTMLDialogElement>(null);
-  const endreTittelModalRef = React.useRef<HTMLDialogElement>(null);
   const tidspunktModalRef = React.useRef<HTMLDialogElement>(null);
   const stedModalRef = React.useRef<HTMLDialogElement>(null);
   const svarfristModalRef = React.useRef<HTMLDialogElement>(null);
@@ -68,7 +67,6 @@ const PublisereSteg = () => {
 
   const handleClickSjekklisteItem = (id: string) => {
     if (id === 'arbeidsgiver') arbeidsgiverModalRef.current?.showModal();
-    if (id === 'navn') endreTittelModalRef.current?.showModal();
     if (id === 'tidspunkt') tidspunktModalRef.current?.showModal();
     if (id === 'sted') stedModalRef.current?.showModal();
     if (id === 'svarfrist') svarfristModalRef.current?.showModal();
@@ -120,10 +118,6 @@ const PublisereSteg = () => {
 
       {rekrutteringstreffData && (
         <>
-          <EndreTittel
-            modalRef={endreTittelModalRef}
-            onUpdated={() => mutateRekrutteringstreff()}
-          />
           <TidspunktModal
             rekrutteringstreff={rekrutteringstreffData}
             modalRef={tidspunktModalRef}

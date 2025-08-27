@@ -5,7 +5,7 @@ import Aktiviteter from './components/aktiviteter/components/Aktiviteter';
 import RekrutteringstreffArbeidsgivere from './components/arbeidsgivere/Arbeidsgivere';
 import Jobbsøkere from './components/jobbsøkere/Jobbsøkere';
 import KiLogg from './components/kilogg/components/KiLogg';
-import EndreTittel2 from './components/om-treffet/components/EndreTittel2';
+import EndreTittel from './components/om-treffet/components/EndreTittel';
 import OmTreffet from './components/om-treffet/components/OmTreffet';
 import Stegviser from './components/om-treffet/stegviser/Stegviser';
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
@@ -39,7 +39,7 @@ const Rekrutteringstreff: React.FC = () => {
 
   return (
     <Box.New>
-      <EndreTittel2 onUpdated={rekrutteringstreffHook.mutate} />
+      <EndreTittel onUpdated={rekrutteringstreffHook.mutate} />
 
       <div className='grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6 items-start'>
         <div>
