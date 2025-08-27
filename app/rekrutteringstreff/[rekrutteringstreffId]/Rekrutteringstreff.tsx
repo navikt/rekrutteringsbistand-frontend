@@ -39,10 +39,10 @@ const Rekrutteringstreff: React.FC = () => {
 
   return (
     <Box.New>
-      <EndreTittel onUpdated={rekrutteringstreffHook.mutate} />
-
       <div className='grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6 items-start'>
-        <div>
+        <div className='space-y-4'>
+          <EndreTittel onUpdated={rekrutteringstreffHook.mutate} />
+
           <Tabs value={fane} onChange={(val) => setFane(val)}>
             <Tabs.List className='w-full'>
               <Tabs.Tab
@@ -95,7 +95,7 @@ const Rekrutteringstreff: React.FC = () => {
           </Tabs>
         </div>
 
-        <aside className='lg:sticky lg:top-4'>
+        <aside>
           <Stegviser />
         </aside>
       </div>
