@@ -78,6 +78,7 @@ const EndreTittel2 = ({ onUpdated }: EndreTittelProps) => {
 
   const inputRef = useRef<HTMLInputElement>(null);
   const analyseRef = useRef<HTMLDivElement>(null);
+  const skeletonRef = useRef<HTMLDivElement>(null);
 
   const nyTittel = useWatch({ control, name: 'nyTittel' });
 
@@ -110,12 +111,10 @@ const EndreTittel2 = ({ onUpdated }: EndreTittelProps) => {
 
   const runValidation = async () => {
     if (!rekrutteringstreff) return;
-
     if (!nyTittel?.trim()) {
       setVisTomFeil(true);
       return;
     }
-
     const res = (await validate({
       treffId: rekrutteringstreff.id,
       feltType: 'tittel',
@@ -126,6 +125,7 @@ const EndreTittel2 = ({ onUpdated }: EndreTittelProps) => {
       res?.loggId && res.loggId.length > 0
         ? res.loggId
         : ((analyse as any)?.loggId ?? null);
+
     setLoggId(id ?? null);
     setHasChecked(true);
 
@@ -174,6 +174,11 @@ const EndreTittel2 = ({ onUpdated }: EndreTittelProps) => {
     (analyse as any)?.bryterRetningslinjer &&
     !forceSave;
 
+  // Fokuser skjelett når validering starter (Enter)
+  useEffect(() => {
+    if (validating) skeletonRef.current?.focus();
+  }, [validating]);
+
   useEffect(() => {
     const canAutoSave =
       hasChecked &&
@@ -209,48 +214,12 @@ const EndreTittel2 = ({ onUpdated }: EndreTittelProps) => {
     handleSubmit(save)().catch(() => {});
   };
 
-  const fieldClass = `w-full pt-2 ${kiErrorBorder ? 'no-error-icon' : ''}`;
-
   return (
     <section className='space-y-3'>
       {isLoading && <Skeleton variant='text' />}
       {!isLoading && (
         <>
-          <div className='flex items-start'>
-            <Controller
-              control={control}
-              name='nyTittel'
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  value={field.value ?? ''}
-                  ref={(el) => {
-                    field.ref(el);
-                    inputRef.current = el;
-                  }}
-                  label='Navn på treffet'
-                  maxLength={MAX_TITLE_LENGTH}
-                  className={fieldClass}
-                  error={
-                    errorMsg ??
-                    (kiErrorBorder ? 'Brudd på retningslinjer' : undefined)
-                  }
-                  aria-invalid={!!(errorMsg || kiErrorBorder)}
-                  autoComplete='off'
-                  autoCorrect='off'
-                  spellCheck={false}
-                  onBlur={runValidation}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' && !e.shiftKey) {
-                      e.preventDefault();
-                      runValidation();
-                    }
-                    if (e.key === 'Tab') runValidation();
-                  }}
-                />
-              )}
-            />
-
+          <div className='relative w-full'>
             {nyTittel && (
               <Button
                 type='button'
@@ -258,12 +227,48 @@ const EndreTittel2 = ({ onUpdated }: EndreTittelProps) => {
                 aria-label='Tøm tittel feltet'
                 variant='tertiary'
                 size='small'
-                className='h-8 p-1 -ml-9 mt-9 flex items-center'
+                className='absolute right-2 top-[2.7rem] -translate-y-1/2 h-8 p-1'
                 title='Tøm feltet'
               >
                 <XMarkIcon aria-hidden fontSize='1.25rem' />
               </Button>
             )}
+
+            <div className='flex items-start'>
+              <Controller
+                control={control}
+                name='nyTittel'
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    value={field.value ?? ''}
+                    ref={(el) => {
+                      field.ref(el);
+                      inputRef.current = el;
+                    }}
+                    label='Navn på treffet'
+                    maxLength={MAX_TITLE_LENGTH}
+                    className='w-full pt-2'
+                    error={
+                      errorMsg ??
+                      (kiErrorBorder ? 'Brudd på retningslinjer' : undefined)
+                    }
+                    aria-invalid={!!(errorMsg || kiErrorBorder)}
+                    autoComplete='off'
+                    autoCorrect='off'
+                    spellCheck={false}
+                    onBlur={runValidation}
+                    onKeyDown={async (e) => {
+                      if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        await runValidation();
+                        (e.currentTarget as HTMLInputElement).blur();
+                      }
+                    }}
+                  />
+                )}
+              />
+            </div>
           </div>
 
           <Detail className='text-gray-400'>{tegnIgjen} tegn igjen</Detail>
@@ -331,6 +336,8 @@ const EndreTittel2 = ({ onUpdated }: EndreTittelProps) => {
                 {validating && (
                   <motion.div
                     key='skeleton'
+                    ref={skeletonRef}
+                    tabIndex={0}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
@@ -378,6 +385,7 @@ const EndreTittel2 = ({ onUpdated }: EndreTittelProps) => {
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
                       transition={{ duration: 0.2 }}
+                      onAnimationComplete={() => analyseRef.current?.focus()}
                       className='p-1'
                     >
                       <BodyLong>{(analyse as any).begrunnelse}</BodyLong>
