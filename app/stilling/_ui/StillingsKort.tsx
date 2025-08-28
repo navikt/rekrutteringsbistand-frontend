@@ -149,17 +149,17 @@ const StillingsKort: React.FC<IStillingsKort> = ({
         <StillingsTag splitTags stillingsData={stillingData} />
       </>
       <Box className='mb-2'>
-        <Link
+        {/* <Link
           href={
             kandidatId
               ? `${stillingUrl}?visKandidatnr=${kandidatId}`
               : stillingUrl
           }
-        >
-          <Heading size='small'>
-            {stillingData?.stilling?.tittel || 'Ukjent tittel'}
-          </Heading>
-        </Link>
+        > */}
+        <Heading size='small'>
+          {stillingData?.stilling?.tittel || 'Ukjent tittel'}
+        </Heading>
+        {/* </Link> */}
       </Box>
 
       <TekstMedIkon

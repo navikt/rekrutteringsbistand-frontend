@@ -4,7 +4,7 @@ import {
   KategoriSchema,
   LocationSchema,
 } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
-import { OmTilretteleggingSchema } from '@/app/stilling/[stillingsId]/rediger/redigerFormType.zod';
+import { OmTilretteleggingSchema } from '@/app/stilling/[stillingsId]/rediger-old/redigerFormType.zod';
 import { z } from 'zod';
 
 export const FormidlingKandidatSchema = z.object({

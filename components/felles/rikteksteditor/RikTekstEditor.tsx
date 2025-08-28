@@ -97,12 +97,7 @@ const RikTekstEditor: React.FC<IRikTekstEditor> = ({
     return null;
   }
   return (
-    <Box.New
-      borderColor='neutral-subtleA'
-      borderWidth='1'
-      padding='4'
-      borderRadius='xlarge'
-    >
+    <Box.New>
       {!skjulToolbar && (
         <Box.New className='flex gap-2'>
           <Button
@@ -169,8 +164,15 @@ const RikTekstEditor: React.FC<IRikTekstEditor> = ({
           />
         </Box.New>
       )}
-      <hr className='my-4' />
-      <EditorContent id={id} editor={editor} onKeyDown={onKeyDown} />
+      <Box.New
+        background='input'
+        borderColor='neutral-strong'
+        borderWidth='1'
+        borderRadius='large'
+        className='px-2 mt-2'
+      >
+        <EditorContent id={id} editor={editor} onKeyDown={onKeyDown} />
+      </Box.New>
       {feilMelding && <ErrorMessage>{feilMelding}</ErrorMessage>}
     </Box.New>
   );

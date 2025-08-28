@@ -34,10 +34,7 @@ export const propertiesSchema = z
       z.number().optional().nullable(),
       z.string().optional().nullable(),
     ]),
-    employerdescription: z.union([
-      z.string().nullable().optional(),
-      z.number().nullable().optional(),
-    ]),
+    employerdescription: z.union([z.string().nullable().optional()]),
     adtext: z.string().optional().nullable(),
     classification_styrk08_code: z.any().optional().nullable(),
     sourceurl: z.string().optional().nullable(),

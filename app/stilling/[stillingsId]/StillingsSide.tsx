@@ -4,7 +4,6 @@ import { useStillingsContext } from './StillingsContext';
 import LeggTilKandidatTilStilling from './_ui/LeggTilKandidatTilStilling';
 import FiltrertKandidatListeVisning from './kandidatliste/FiltrertKandidatListeVisning';
 import KandidatlisteWrapper from './kandidatliste/KandidatlisteWrapper';
-import OmStillingen from './omStillingen/OmStillingen';
 import FinKandidaterKnapp from '@/app/_windows/finn-kandidater-window/FinnKandidaterKnapp';
 import { Kandidatlistestatus } from '@/app/api/kandidat/schema.zod';
 import { KandidatSøkMarkerteContextProvider } from '@/app/kandidat/KandidatSøkMarkerteContext';
@@ -110,9 +109,10 @@ export default function StillingSide() {
             </div>
             <div className='@3xl/tabs:block hidden'>{TabKnapper}</div>
           </Tabs.List>
-          <Tabs.Panel value={StillingFane.STILLING}>
-            <OmStillingen />
-          </Tabs.Panel>
+          {/* //TODO */}
+          {/* <Tabs.Panel value={StillingFane.STILLING}> */}
+          {/* <OmStillingen /> */}
+          {/* </Tabs.Panel> */}
           {kandidatlisteInfo?.kandidatlisteId && erEier && (
             <>
               <Tabs.Panel value={StillingFane.KANDIDATER}>

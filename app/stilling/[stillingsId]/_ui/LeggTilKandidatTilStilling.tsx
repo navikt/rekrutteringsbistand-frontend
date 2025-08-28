@@ -77,7 +77,7 @@ const LeggTilKandidatTilStilling: React.FC<LeggTilKandidatTilStillingProps> = ({
         });
 
         visVarsel({
-          tekst: 'Kandidater ble lagt til i stillingen',
+          tekst: 'Jobbsøkere ble lagt til i stillingen',
           type: 'success',
         });
         setValgteKandidater([]);
@@ -85,10 +85,13 @@ const LeggTilKandidatTilStilling: React.FC<LeggTilKandidatTilStillingProps> = ({
         ref.current?.close();
       } catch (error) {
         visVarsel({
-          tekst: 'Noe gikk galt ved lagring av kandidater',
+          tekst: 'Noe gikk galt ved lagring av jobbsøkere',
           type: 'error',
         });
-        throw new RekbisError({ message: 'Veil ved legg til kandidat', error });
+        throw new RekbisError({
+          message: 'Veil ved legg til jobbsøkere',
+          error,
+        });
       }
     }
 
@@ -104,7 +107,7 @@ const LeggTilKandidatTilStilling: React.FC<LeggTilKandidatTilStillingProps> = ({
         size='small'
         icon={<PersonPlusIcon aria-hidden />}
       >
-        Legg til kandidater
+        Legg til jobbsøkere
       </Button>
 
       <Modal
@@ -112,7 +115,7 @@ const LeggTilKandidatTilStilling: React.FC<LeggTilKandidatTilStillingProps> = ({
         ref={ref}
         header={{
           closeButton: false,
-          heading: `Legg til kandidater til ${stillingsTittel ?? 'stilling'}`,
+          heading: `Legg til jobbsøkere til ${stillingsTittel ?? 'stilling'}`,
         }}
       >
         <Modal.Body>
@@ -128,7 +131,7 @@ const LeggTilKandidatTilStilling: React.FC<LeggTilKandidatTilStillingProps> = ({
             disabled={valgteKandidater.length === 0}
             onClick={onLeggTilKandidat}
           >
-            Legg til kandidater
+            Legg til jobbsøker
           </Button>
           <Button
             loading={laster}

@@ -12,7 +12,8 @@ import * as React from 'react';
 
 export interface IStillingTag {
   stillingsData: RekrutteringsbistandStillingSchemaDTO | StillingsDataDTO;
-  splitTags?: boolean;
+  splitTags?: boolean; // viser venstre og høyre i hver sin side
+  rad?: boolean; // hvis true: alle tags på én rad samlet (ignorerer splitTags)
 }
 
 const utløperFørIdag = (expires: string | null) => {
@@ -29,7 +30,11 @@ export const stillingErUtløpt = (stilling: any): boolean => {
   );
 };
 
-const StillingsTag: React.FC<IStillingTag> = ({ stillingsData, splitTags }) => {
+const StillingsTag: React.FC<IStillingTag> = ({
+  stillingsData,
+  splitTags,
+  rad,
+}) => {
   const {
     brukerData: { ident },
   } = useApplikasjonContext();
@@ -63,40 +68,43 @@ const StillingsTag: React.FC<IStillingTag> = ({ stillingsData, splitTags }) => {
       Object.values(Hovedtag).includes(tag),
     );
 
+  const tagKlasse = (extra?: string) =>
+    `mr-2 ${rad ? '' : 'mb-4'} ${extra ?? ''}`;
+
   const venstre = (
     <>
       {stillingsDataInfo.erJobbMesse && (
-        <Tag className={'mr-2 mb-4'} size='small' variant='alt2'>
+        <Tag className={tagKlasse()} size='small' variant='alt2'>
           Jobbmesse
         </Tag>
       )}
       {erEierTag && (
-        <Tag className={'mr-2 mb-4'} size='small' variant='info'>
+        <Tag className={tagKlasse()} size='small' variant='info'>
           Min stilling
         </Tag>
       )}
       {stillingsDataInfo.erUtløpt && (
-        <Tag className={'mr-2 mb-4'} size='small' variant='warning'>
+        <Tag className={tagKlasse()} size='small' variant='warning'>
           Utløpt
         </Tag>
       )}
       {erIkkePublisertTag && (
-        <Tag className={'mr-2 mb-4'} size='small' variant='warning'>
+        <Tag className={tagKlasse()} size='small' variant='warning'>
           Ikke publisert
         </Tag>
       )}
       {stillingsDataInfo.erUtkast && (
-        <Tag className={'mr-2 mb-4'} size='small' variant='alt1'>
+        <Tag className={tagKlasse()} size='small' variant='alt1'>
           Utkast
         </Tag>
       )}
       {stillingsDataInfo.erStoppet && (
-        <Tag className={'mr-2 mb-4'} size='small' variant='error'>
+        <Tag className={tagKlasse()} size='small' variant='error'>
           Stoppet
         </Tag>
       )}
       {stillingsDataInfo.erSlettet && (
-        <Tag className={'mr-2 mb-4'} size='small' variant='error'>
+        <Tag className={tagKlasse()} size='small' variant='error'>
           Slettet
         </Tag>
       )}
@@ -106,22 +114,32 @@ const StillingsTag: React.FC<IStillingTag> = ({ stillingsData, splitTags }) => {
   const høyre = (
     <>
       {registrertMedInkluderingsmulighetTag && (
-        <Tag className={'mr-2 mb-4'} size='small' variant='success'>
+        <Tag className={tagKlasse()} size='small' variant='success'>
           Inkludering
         </Tag>
       )}
       {stillingsDataInfo.erDirektemeldt && (
-        <Tag className={'mr-2 mb-4'} size='small' variant='alt1'>
+        <Tag className={tagKlasse()} size='small' variant='alt1'>
           Intern {stillingsDataInfo.erFormidling ? 'formidling' : ''}
         </Tag>
       )}
       {stillingsDataInfo.erPåArbeidsplassen && (
-        <Tag className={'mr-2 mb-4'} size='small' variant='alt3'>
+        <Tag className={tagKlasse()} size='small' variant='alt3'>
           Arbeidsplassen
         </Tag>
       )}
     </>
   );
+
+  if (rad) {
+    return (
+      <div className='flex flex-row flex-nowrap overflow-x-auto'>
+        <span className='mr-4'>{publisertDato} </span>
+        {venstre}
+        {høyre}
+      </div>
+    );
+  }
 
   return splitTags ? (
     <div className='flex justify-between'>

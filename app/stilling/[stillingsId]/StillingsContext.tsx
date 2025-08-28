@@ -12,6 +12,7 @@ import { eierStilling } from '@/components/tilgangskontroll/erEier';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { RekbisError } from '@/util/rekbisError';
+import { Alert, Heading } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
 import React, { useMemo } from 'react';
 
@@ -121,6 +122,24 @@ const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
     [stillingsData, ident, harRolle],
   );
 
+  const ugyldigStilling =
+    stillingsData?.stilling?.medium === 'DIR' &&
+    (stillingsData?.stilling?.employer?.orgnr ?? null) === null;
+
+  if (ugyldigStilling) {
+    return (
+      <Alert variant='error'>
+        <Heading spacing size='small' level='3'>
+          Ugyldig stilling
+        </Heading>
+        <p>
+          Denne stillingen er ikke gyldig da det er en intern stilling som
+          mangler organisasjonsnummer.
+        </p>
+        <p> Stillingen er derfor ikke tilgjengelig for rekruttering.</p>
+      </Alert>
+    );
+  }
   return (
     <StillingsContext.Provider
       value={{

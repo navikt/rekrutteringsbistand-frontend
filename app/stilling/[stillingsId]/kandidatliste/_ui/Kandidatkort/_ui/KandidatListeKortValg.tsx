@@ -1,5 +1,6 @@
 import { endreUtfallKandidat } from '@/app/api/kandidat/endreKandidatUtfall';
 import { KandidatListeKandidatDTO } from '@/app/api/kandidat/schema.zod';
+import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import { KandidatutfallTyper } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
 import { useKandidatlisteContext } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteContext';
 import {
@@ -8,6 +9,7 @@ import {
 } from '@/app/stilling/[stillingsId]/kandidatliste/_ui/EndreArkivertStatusModal';
 import FjernFåttJobbenKnapp from '@/app/stilling/[stillingsId]/kandidatliste/_ui/FjernFåttJobbenKnapp';
 import RegistrerFåttJobbenKnapp from '@/app/stilling/[stillingsId]/kandidatliste/_ui/RegistrerFåttJobbenKnapp';
+import { Stillingskategori } from '@/app/stilling/stilling-typer';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { RekbisError } from '@/util/rekbisError';
 import { MenuElipsisVerticalIcon } from '@navikt/aksel-icons';
@@ -24,6 +26,7 @@ const KandidatListeKortValg: React.FC<KandidatListeKortValgProps> = ({
   kandidatlisteId,
 }) => {
   const { valgtNavKontor } = useApplikasjonContext();
+  const { stillingsData } = useStillingsContext();
   const { reFetchKandidatliste, lukketKandidatliste } =
     useKandidatlisteContext();
   const [loading, setLoading] = React.useState<boolean>(false);
@@ -60,20 +63,25 @@ const KandidatListeKortValg: React.FC<KandidatListeKortValgProps> = ({
         </ActionMenu.Trigger>
         <ActionMenu.Content>
           <ActionMenu.Group label={''}>
-            {kandidat.utfall !== KandidatutfallTyper.FATT_JOBBEN ? (
-              <RegistrerFåttJobbenKnapp
-                actionMenu
-                loading={loading}
-                endreUtfallForKandidat={endreUtfallForKandidat}
-                lukketKandidatliste={lukketKandidatliste}
-              />
-            ) : (
-              <FjernFåttJobbenKnapp
-                actionMenu
-                loading={loading}
-                endreUtfallForKandidat={endreUtfallForKandidat}
-                lukketKandidatliste={lukketKandidatliste}
-              />
+            {stillingsData.stillingsinfo?.stillingskategori !==
+              Stillingskategori.Jobbmesse && (
+              <>
+                {kandidat.utfall !== KandidatutfallTyper.FATT_JOBBEN ? (
+                  <RegistrerFåttJobbenKnapp
+                    actionMenu
+                    loading={loading}
+                    endreUtfallForKandidat={endreUtfallForKandidat}
+                    lukketKandidatliste={lukketKandidatliste}
+                  />
+                ) : (
+                  <FjernFåttJobbenKnapp
+                    actionMenu
+                    loading={loading}
+                    endreUtfallForKandidat={endreUtfallForKandidat}
+                    lukketKandidatliste={lukketKandidatliste}
+                  />
+                )}
+              </>
             )}
 
             <ActionMenu.Divider />

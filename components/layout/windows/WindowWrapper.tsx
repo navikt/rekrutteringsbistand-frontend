@@ -1,5 +1,5 @@
 import RekBisKort from '@/components/layout/RekBisKort';
-import { XMarkIcon } from '@navikt/aksel-icons';
+import { ArrowLeftIcon, XMarkIcon } from '@navikt/aksel-icons';
 import { Box, Button } from '@navikt/ds-react';
 import * as React from 'react';
 import { Mosaic, MosaicNode } from 'react-mosaic-component';
@@ -91,6 +91,17 @@ function removeFromTree(
   return (first || second) ?? null; // komprimer treet
 }
 
+// Flater ut id'er (venstre -> høyre)
+function flattenRow(node: MosaicNode<Id> | null): Id[] {
+  if (!node) return [];
+  if (typeof node === 'string') return [node];
+  if (node.direction === 'row') {
+    return [...flattenRow(node.first), ...flattenRow(node.second)];
+  }
+  // column: behold relative rekkefølge (først, så second)
+  return [...flattenRow(node.first), ...flattenRow(node.second)];
+}
+
 // ---------------- Komponent ----------------
 const LOCKED_ID = '__locked__';
 
@@ -124,16 +135,51 @@ const WindowWrapper: React.FC<WindowWrapperProps> = ({ children }) => {
     React.useState<MosaicNode<Id> | null>(null);
   const [rootSplit, setRootSplit] = React.useState<number>(35);
 
-  // Full verdi til Mosaic avhenger av om vi har dynamiske vinduer
+  // Beregn synlige dynamiske vinduer, maks 2 dersom flere åpne
+  const dynamicIds = React.useMemo(
+    () => flattenRow(dynamicLayout),
+    [dynamicLayout],
+  );
+  const moreThanTwo = dynamicIds.length > 1; // når vi får vindu #2 (dvs 2 dynamiske) skal locked skjules
+  const visibleDynamicIds = moreThanTwo ? dynamicIds.slice(-2) : dynamicIds; // siste to hvis mange
+  const newestDynamicId = visibleDynamicIds[visibleDynamicIds.length - 1];
+  const oldestVisibleDynamicId = visibleDynamicIds[0];
+
+  // Bygg et rad-tre av visibleDynamicIds
+  const buildRow = (ids: Id[]): MosaicNode<Id> | null => {
+    if (ids.length === 0) return null;
+    let tree: MosaicNode<Id> = ids[0];
+    for (let i = 1; i < ids.length; i++) {
+      tree = {
+        direction: 'row',
+        first: tree,
+        second: ids[i],
+        splitPercentage: 60,
+      };
+    }
+    return tree;
+  };
+
+  const visibleDynamicLayout = React.useMemo(
+    () => buildRow(visibleDynamicIds),
+    [visibleDynamicIds],
+  );
+
+  // Full verdi til Mosaic: hvis locked skal skjules (>=2 dynamiske) viser vi kun de to dynamiske, ellers locked + ev. en dynamisk
   const mosaicValue: MosaicNode<Id> = React.useMemo(() => {
-    if (!dynamicLayout) return LOCKED_ID; // Kun locked vindu
+    if (!visibleDynamicLayout && !moreThanTwo) return LOCKED_ID; // Kun locked
+    if (moreThanTwo) {
+      // Kun to dynamiske synlige
+      return visibleDynamicLayout as MosaicNode<Id>;
+    }
+    if (!visibleDynamicLayout) return LOCKED_ID;
     return {
       direction: 'row',
       first: LOCKED_ID,
-      second: dynamicLayout,
+      second: visibleDynamicLayout,
       splitPercentage: rootSplit,
     };
-  }, [dynamicLayout, rootSplit]);
+  }, [visibleDynamicLayout, moreThanTwo, rootSplit]);
 
   const addWindow = React.useCallback<WindowContextValue['addWindow']>(
     ({ id, onClose, navigasjon, content, position = 'right' }) => {
@@ -247,29 +293,27 @@ const WindowWrapper: React.FC<WindowWrapperProps> = ({ children }) => {
           onChange={(next) => {
             // Tillat kun endring av split (resizing) og interne endringer på dynamisk del.
             if (!next) return;
+            // Når locked er skjult opererer vi kun på de synlige dynamiske vinduene (maks 2). Resizing kan ignoreres.
             if (typeof next === 'string') {
-              // Bruker har lukket alle dynamiske paneler via UI (hvis mulig) -> reset
               if (next === LOCKED_ID) {
                 setDynamicLayout(null);
               }
               return;
             }
+            if (moreThanTwo) {
+              // Ignorer endringer (vi vil ikke miste original struktur). Alternativt kunne vi prøve å mappe.
+              return;
+            }
             if (next.direction === 'row') {
-              // Finn hvilken side som er locked og plukk ut dynamic
               if (next.first === LOCKED_ID) {
                 setDynamicLayout(next.second);
-                if (typeof next.splitPercentage === 'number') {
+                if (typeof next.splitPercentage === 'number')
                   setRootSplit(next.splitPercentage);
-                }
               } else if (next.second === LOCKED_ID) {
-                // Reversert – sørg for at locked alltid ligger til venstre i vår modell
                 setDynamicLayout(next.first);
-                if (typeof next.splitPercentage === 'number') {
+                if (typeof next.splitPercentage === 'number')
                   setRootSplit(100 - (next.splitPercentage ?? 0));
-                }
               }
-            } else {
-              // Dersom biblioteket skulle sende en annen struktur, ignorer, vi beholder tidligere state
             }
           }}
           renderTile={(id, path) => {
@@ -277,7 +321,12 @@ const WindowWrapper: React.FC<WindowWrapperProps> = ({ children }) => {
             const item = elements[id];
             const content = item?.content;
             const nav = item?.navigasjon;
-            const isRightOfRoot = !!dynamicLayout && path?.[0] === 'second';
+            const isRightOfRoot =
+              mosaicValue !== LOCKED_ID &&
+              typeof mosaicValue !== 'string' &&
+              path?.[0] === 'second';
+            const showBackButton =
+              isDynamic && moreThanTwo && id === oldestVisibleDynamicId;
             return (
               <div
                 className={
@@ -289,20 +338,54 @@ const WindowWrapper: React.FC<WindowWrapperProps> = ({ children }) => {
                   id={id === LOCKED_ID ? 'window-locked' : `window-${id}`}
                   borderColor='info-subtleA'
                   background='default'
-                  className='h-full w-full flex flex-col overflow-hidden min-h-0'
+                  className='h-full w-full flex flex-col overflow-auto min-h-0'
                   data-window-type={id === LOCKED_ID ? 'locked' : 'dynamic'}
                 >
-                  <RekBisKort className='flex-1 w-full overflow-auto min-h-0'>
+                  <RekBisKort className='flex-1 w-full min-h-0'>
                     {isDynamic && (
                       <div className='flex items-center justify-between mb-2 gap-2'>
-                        <div className='flex-1'>{nav}</div>
+                        <div className='flex items-center gap-2 flex-1'>
+                          {showBackButton && (
+                            <Button
+                              size='xsmall'
+                              variant='tertiary'
+                              icon={<ArrowLeftIcon aria-hidden />}
+                              aria-label='Tilbake'
+                              onClick={() => {
+                                // Finn siste (nyeste) dynamiske vindu akkurat NÅ og lukk det
+                                const idsNow = flattenRow(dynamicLayout);
+                                if (idsNow.length > 1) {
+                                  const lastId = idsNow[idsNow.length - 1];
+                                  if (lastId) {
+                                    // Kall onClose først slik at query-param e.l. nullstilles
+                                    try {
+                                      const lastItem = elements[lastId];
+                                      lastItem?.onClose?.();
+                                    } catch (e) {
+                                      if (
+                                        process.env.NODE_ENV === 'development'
+                                      ) {
+                                        // eslint-disable-next-line no-console
+                                        console.warn(
+                                          '[WindowWrapper] back onClose feilet',
+                                          e,
+                                        );
+                                      }
+                                    }
+                                    removeWindow(lastId);
+                                  }
+                                }
+                              }}
+                            />
+                          )}
+                          <div className='flex-1'>{nav}</div>
+                        </div>
                         <Button
                           size='xsmall'
                           variant='tertiary'
                           icon={<XMarkIcon aria-hidden />}
                           aria-label='Lukk vindu'
                           onClick={() => {
-                            // Kall eventuell onClose før vi fjerner vinduet
                             try {
                               item?.onClose?.();
                             } catch (e) {

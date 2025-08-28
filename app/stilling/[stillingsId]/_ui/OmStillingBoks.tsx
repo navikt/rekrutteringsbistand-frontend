@@ -1,4 +1,4 @@
-import Kontaktpersoner from '@/app/stilling/[stillingsId]/omStillingen/Kontaktpersoner';
+import Kontaktpersoner from '@/app/stilling/[stillingsId]/_ui/om-stillingen/Kontaktpersoner';
 import { Heading } from '@navikt/ds-react';
 import * as React from 'react';
 

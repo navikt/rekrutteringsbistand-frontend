@@ -1,5 +1,5 @@
 import { FormidlingDataForm } from '@/app/etterregistrering/ny-etterregistrering/redigerFormidlingFormType';
-import StegNavigering from '@/app/stilling/[stillingsId]/rediger/_ui/StegNavigering';
+import StegNavigering from '@/app/stilling/[stillingsId]/rediger-old/_ui/StegNavigering';
 import LeggTilKandidater, {
   ValgtKandidatProp,
 } from '@/components/felles/legg-til-kandidat/LeggTilKandidater';

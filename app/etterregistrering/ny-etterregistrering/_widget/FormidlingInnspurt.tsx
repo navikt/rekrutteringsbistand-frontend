@@ -1,6 +1,6 @@
 import { FormidlingDataForm } from '@/app/etterregistrering/ny-etterregistrering/redigerFormidlingFormType';
-import { InkluderingsTag } from '@/app/stilling/[stillingsId]/omStillingen/StillingSidebar/StillingInkludering';
-import { getInkluderingsInfo } from '@/app/stilling/[stillingsId]/rediger/_ui/praktiskInfo/inkluderingsTagTekst';
+import { InkluderingsTag } from '@/app/stilling/[stillingsId]/_ui/om-stillingen/StillingSidebar/StillingInkludering';
+import { getInkluderingsInfo } from '@/app/stilling/[stillingsId]/rediger-old/_ui/praktiskInfo/inkluderingsTagTekst';
 import { UmamiEvent } from '@/components/umami/umamiEvents';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';

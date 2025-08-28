@@ -2,15 +2,14 @@ import { UmamiEvent } from '@/components/umami/umamiEvents';
 import { useUmami } from '@/providers/UmamiContext';
 import { MagnifyingGlassIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
-import * as React from 'react';
 
 export interface FinnKandidaterKnappProps {
   stillingId: string;
 }
 
-const FinnKandidaterKnapp: React.FC<FinnKandidaterKnappProps> = ({
+export default function FinnKandidaterKnapp({
   stillingId,
-}) => {
+}: FinnKandidaterKnappProps) {
   const { trackAndNavigate } = useUmami();
   return (
     <Button
@@ -24,9 +23,7 @@ const FinnKandidaterKnapp: React.FC<FinnKandidaterKnappProps> = ({
         );
       }}
     >
-      Finn kandidater
+      Finn jobbsøkere
     </Button>
   );
-};
-
-export default FinnKandidaterKnapp;
+}

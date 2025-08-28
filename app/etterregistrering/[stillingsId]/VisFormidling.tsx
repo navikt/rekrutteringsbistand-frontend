@@ -2,7 +2,6 @@
 
 import FormidlingKandidater from './FormidlingKandidater';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
-import OmStillingen from '@/app/stilling/[stillingsId]/omStillingen/OmStillingen';
 import { Tabs } from '@navikt/ds-react';
 import * as React from 'react';
 
@@ -17,9 +16,10 @@ const VisFormidling: React.FC = () => {
         <Tabs.Tab value='omStillingen' label='Om stillingen' />
         {erEier && <Tabs.Tab value='kandidater' label='Kandidater' />}
       </Tabs.List>
-      <Tabs.Panel value='omStillingen'>
+      {/* <Tabs.Panel value='omStillingen'>
+      //TODO
         <OmStillingen />
-      </Tabs.Panel>
+      </Tabs.Panel> */}
       {erEier && (
         <Tabs.Panel value='kandidater'>
           <FormidlingKandidater />

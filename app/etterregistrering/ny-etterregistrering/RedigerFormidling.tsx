@@ -6,8 +6,8 @@ import {
   OmFormidlingSchema,
   OmKandidateneSchema,
 } from './redigerFormidlingFormType';
-import { RedigerOmTilrettelegging } from '@/app/stilling/[stillingsId]/rediger/_ui/RedigerOmTilrettelegging';
-import { OmTilretteleggingSchema } from '@/app/stilling/[stillingsId]/rediger/redigerFormType.zod';
+import { RedigerOmTilrettelegging } from '@/app/stilling/[stillingsId]/rediger-old/_ui/RedigerOmTilrettelegging';
+import { OmTilretteleggingSchema } from '@/app/stilling/[stillingsId]/rediger-old/redigerFormType.zod';
 import { TrashIcon } from '@navikt/aksel-icons';
 import { Box, Button, Stepper } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
