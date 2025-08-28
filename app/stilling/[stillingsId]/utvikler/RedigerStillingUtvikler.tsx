@@ -3,6 +3,7 @@
 import { TilgangskontrollForInnhold } from '../../../components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '../../../components/tilgangskontroll/roller';
 import { useStillingsContext } from '../StillingsContext';
+import { oppdaterStilling } from '@/app/api/stilling/oppdater-stilling/oppdaterStilling';
 import Editor from '@monaco-editor/react';
 import { Button } from '@navikt/ds-react';
 import * as React from 'react';
@@ -20,8 +21,15 @@ const RedigerStillingUtvikler: React.FC = () => {
 
   const lagreData = async () => {
     setIsLoading(true);
-    setIsLoading(false);
-    window.location.reload();
+    oppdaterStilling(JSON.parse(editorData), {
+      eierNavident: stillingsData.stilling.administration?.navIdent ?? '',
+      eierNavn: stillingsData.stilling.administration?.reportee ?? '',
+      eierNavKontorEnhetId:
+        stillingsData.stillingsinfo?.eierNavKontorEnhetId ?? '',
+    }).then(() => {
+      setIsLoading(false);
+      window.location.reload();
+    });
   };
 
   return (

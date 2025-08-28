@@ -10,6 +10,8 @@ import {
 } from '../../EndreArkivertStatusModal';
 import FjernFåttJobbenKnapp from '../../FjernFåttJobbenKnapp';
 import RegistrerFåttJobbenKnapp from '../../RegistrerFåttJobbenKnapp';
+import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
+import { Stillingskategori } from '@/app/stilling/stilling-typer';
 import { MenuElipsisVerticalIcon } from '@navikt/aksel-icons';
 import { ActionMenu, Button } from '@navikt/ds-react';
 import * as React from 'react';
@@ -23,6 +25,7 @@ const KandidatListeKortValg: React.FC<KandidatListeKortValgProps> = ({
   kandidat,
   kandidatlisteId,
 }) => {
+  const { stillingsData } = useStillingsContext();
   const { valgtNavKontor } = useApplikasjonContext();
   const { reFetchKandidatliste, lukketKandidatliste } =
     useKandidatlisteContext();
@@ -60,20 +63,25 @@ const KandidatListeKortValg: React.FC<KandidatListeKortValgProps> = ({
         </ActionMenu.Trigger>
         <ActionMenu.Content>
           <ActionMenu.Group label={''}>
-            {kandidat.utfall !== KandidatutfallTyper.FATT_JOBBEN ? (
-              <RegistrerFåttJobbenKnapp
-                actionMenu
-                loading={loading}
-                endreUtfallForKandidat={endreUtfallForKandidat}
-                lukketKandidatliste={lukketKandidatliste}
-              />
-            ) : (
-              <FjernFåttJobbenKnapp
-                actionMenu
-                loading={loading}
-                endreUtfallForKandidat={endreUtfallForKandidat}
-                lukketKandidatliste={lukketKandidatliste}
-              />
+            {stillingsData.stillingsinfo?.stillingskategori !==
+              Stillingskategori.Jobbmesse && (
+              <>
+                {kandidat.utfall !== KandidatutfallTyper.FATT_JOBBEN ? (
+                  <RegistrerFåttJobbenKnapp
+                    actionMenu
+                    loading={loading}
+                    endreUtfallForKandidat={endreUtfallForKandidat}
+                    lukketKandidatliste={lukketKandidatliste}
+                  />
+                ) : (
+                  <FjernFåttJobbenKnapp
+                    actionMenu
+                    loading={loading}
+                    endreUtfallForKandidat={endreUtfallForKandidat}
+                    lukketKandidatliste={lukketKandidatliste}
+                  />
+                )}
+              </>
             )}
 
             <ActionMenu.Divider />

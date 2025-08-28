@@ -56,7 +56,7 @@ const DelMedArbeidsgiver: React.FC<DelMedArbeidsgiverProps> = ({
     await postDelMedArbeidsgiver({
       kandidatlisteId: kandidatlisteId,
       kandidatnummerListe,
-      mailadresser: epost,
+      mailadresser: epost.map((e) => e.trim()).filter((e) => e.length > 0),
       navKontor: valgtNavKontor?.navKontor ?? '',
     }).then(() => {
       setLoading(false);

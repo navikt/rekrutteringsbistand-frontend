@@ -19,6 +19,7 @@ import { KandidatVisningProps } from '../KandidatlisteFilter/useFiltrerteKandida
 import RegistrerFåttJobbenKnapp from '../RegistrerFåttJobbenKnapp';
 import SendSmsModal from '../SendSMS/SendSmsModal';
 import VelgInternStatus from '../VelgInternStatus';
+import { Stillingskategori } from '@/app/stilling/stilling-typer';
 import { Accordion } from '@navikt/ds-react';
 import * as React from 'react';
 
@@ -120,21 +121,24 @@ const KandidatHandlingerForStilling: React.FC<
             fjernAllMarkering={() => {}}
             sidebar
           />
-          <div>
-            {kandidat.utfall !== KandidatutfallTyper.FATT_JOBBEN ? (
-              <RegistrerFåttJobbenKnapp
-                loading={loading}
-                endreUtfallForKandidat={endreUtfallForKandidat}
-                lukketKandidatliste={lukketKandidatliste}
-              />
-            ) : (
-              <FjernFåttJobbenKnapp
-                loading={loading}
-                endreUtfallForKandidat={endreUtfallForKandidat}
-                lukketKandidatliste={lukketKandidatliste}
-              />
-            )}
-          </div>
+          {stillingsData.stillingsinfo?.stillingskategori !==
+            Stillingskategori.Jobbmesse && (
+            <div>
+              {kandidat.utfall !== KandidatutfallTyper.FATT_JOBBEN ? (
+                <RegistrerFåttJobbenKnapp
+                  loading={loading}
+                  endreUtfallForKandidat={endreUtfallForKandidat}
+                  lukketKandidatliste={lukketKandidatliste}
+                />
+              ) : (
+                <FjernFåttJobbenKnapp
+                  loading={loading}
+                  endreUtfallForKandidat={endreUtfallForKandidat}
+                  lukketKandidatliste={lukketKandidatliste}
+                />
+              )}
+            </div>
+          )}
           {cvDeltMedArbeidsgiver && (
             <FjernDelingMedArbeidsgiver
               kandidatnummer={kandidat.kandidatnr}
