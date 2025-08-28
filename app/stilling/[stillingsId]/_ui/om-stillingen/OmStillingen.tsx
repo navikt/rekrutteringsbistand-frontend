@@ -53,7 +53,7 @@ export const parseWorktime = (worktime: string) => {
 
 export interface OmStillingenProps {
   forhåndsvisData?: boolean;
-  printRef: React.RefObject<HTMLDivElement | null>;
+  printRef: React.RefObject<HTMLDivElement | null> | null;
 }
 
 export default function OmStillingen({

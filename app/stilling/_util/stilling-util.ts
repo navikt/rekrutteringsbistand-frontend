@@ -2,7 +2,7 @@ import {
   AdminStatus,
   Stillingskategori,
   StillingsStatus,
-} from './stilling-typer';
+} from '../_ui/stilling-typer';
 import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { startOfDay } from 'date-fns';
 

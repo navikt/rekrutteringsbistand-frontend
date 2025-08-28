@@ -3,7 +3,7 @@
 import { ArbeidsgiverDTO } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
 import { OpprettNyStillingDTO } from '@/app/api/stilling/ny-stilling/dto';
 import { opprettNyStilling } from '@/app/api/stilling/ny-stilling/opprettNyStilling';
-import { Stillingskategori } from '@/app/stilling/stilling-typer';
+import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
 import { UmamiEvent } from '@/components/umami/umamiEvents';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';

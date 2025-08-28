@@ -1,9 +1,9 @@
 import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
-import RedigerBoks from '@/app/stilling/[stillingsId]/rediger/_ui/RedigerBoks';
+import RedigerBoks from '@/app/stilling/[stillingsId]/rediger/_ui/_ui/RedigerBoks';
 import {
   StillingsAnsettelsesform,
   StillingsArbeidstidsordning,
-} from '@/app/stilling/stilling-typer';
+} from '@/app/stilling/_ui/stilling-typer';
 import {
   BodyLong,
   Checkbox,
@@ -18,6 +18,27 @@ import { Controller, useFormContext } from 'react-hook-form';
 
 export default function PraktiskeForhold() {
   const { control, watch } = useFormContext<StillingsDataDTO>();
+  const normalizeToArray = (input: unknown): string[] => {
+    if (Array.isArray(input)) return input as string[];
+    if (typeof input === 'string') {
+      const trimmed = input.trim();
+      if (!trimmed) return [];
+      // Forsøk JSON parse først
+      try {
+        const parsed = JSON.parse(trimmed);
+        if (Array.isArray(parsed)) return parsed as string[];
+      } catch {}
+      // Fallback: kommaseparert liste eller enkeltverdi
+      if (trimmed.includes(',')) {
+        return trimmed
+          .split(',')
+          .map((s) => s.trim())
+          .filter(Boolean);
+      }
+      return [trimmed];
+    }
+    return [];
+  };
   return (
     <RedigerBoks tittel='Praktiske forhold'>
       <div className='flex flex-col gap-4'>
@@ -122,7 +143,7 @@ export default function PraktiskeForhold() {
             />
           )}
         </div>
-        TODO : Verifiser at json ikke på parses
+        {/* Fjernet TODO: CheckboxGroup er nå kontrollert og lagrer array direkte */}
         <div className='flex flex-col gap-8'>
           <Controller
             control={control}
@@ -130,7 +151,7 @@ export default function PraktiskeForhold() {
             render={({ field: { onChange, value }, fieldState: { error } }) => (
               <CheckboxGroup
                 legend='Arbeidsdager'
-                defaultValue={value}
+                value={normalizeToArray(value)}
                 onChange={(val) => onChange(val)}
                 error={error?.message}
               >
@@ -147,8 +168,8 @@ export default function PraktiskeForhold() {
             render={({ field: { onChange, value }, fieldState: { error } }) => (
               <CheckboxGroup
                 legend='Arbeidstid'
+                value={normalizeToArray(value)}
                 onChange={(val) => onChange(val)}
-                defaultValue={value}
                 error={error?.message}
               >
                 <Checkbox value='Dagtid'>Dag</Checkbox>

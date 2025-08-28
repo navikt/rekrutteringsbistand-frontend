@@ -1,6 +1,6 @@
 import { OpprettNyStillingDTO } from '@/app/api/stilling/ny-stilling/dto';
 import { FormidlingDataForm } from '@/app/etterregistrering/ny-etterregistrering/redigerFormidlingFormType';
-import { Stillingskategori } from '@/app/stilling/stilling-typer';
+import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
 
 export const opprettStillingForFormidlingMapper = (
   formidlingData: FormidlingDataForm,

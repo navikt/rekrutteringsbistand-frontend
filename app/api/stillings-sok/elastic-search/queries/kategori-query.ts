@@ -1,6 +1,6 @@
 import { ElasticSearchQueryBuilder } from '@/app/api/stillings-sok/elastic-search/elasticSearchQueryBuilder';
 import { GenerateElasticSearchQueryParams } from '@/app/api/stillings-sok/opprettElasticSearchQuery';
-import { Stillingskategori } from '@/app/stilling/stilling-typer';
+import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
 
 export const kategoriQuery = (
   params: GenerateElasticSearchQueryParams,

@@ -1,8 +1,8 @@
-import VelgKommuneFylkeEllerLand from '../../rediger/_ui/sted/VelgKommuneFylkeEllerLand';
+import VelgKommuneFylkeEllerLand from '../../rediger/_ui/_ui/VelgKommuneFylkeEllerLand';
 import { PamPostdataDTO } from '@/app/api/pam-geografi/postdata/[postnummer]/usePamPostdata';
 import { FormidlingDataForm } from '@/app/etterregistrering/ny-etterregistrering/redigerFormidlingFormType';
 import { StillingsDataForm } from '@/app/stilling/[stillingsId]/rediger-old/redigerFormType.zod';
-import VelgPoststed from '@/app/stilling/[stillingsId]/rediger/_ui/sted/VelgPoststed';
+import VelgPoststed from '@/app/stilling/[stillingsId]/rediger/_ui/_ui/VelgPoststed';
 import {
   BodyLong,
   Button,

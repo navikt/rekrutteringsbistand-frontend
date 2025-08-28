@@ -9,7 +9,7 @@ import {
 } from '@/app/stilling/[stillingsId]/kandidatliste/_ui/EndreArkivertStatusModal';
 import FjernFåttJobbenKnapp from '@/app/stilling/[stillingsId]/kandidatliste/_ui/FjernFåttJobbenKnapp';
 import RegistrerFåttJobbenKnapp from '@/app/stilling/[stillingsId]/kandidatliste/_ui/RegistrerFåttJobbenKnapp';
-import { Stillingskategori } from '@/app/stilling/stilling-typer';
+import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { RekbisError } from '@/util/rekbisError';
 import { MenuElipsisVerticalIcon } from '@navikt/aksel-icons';

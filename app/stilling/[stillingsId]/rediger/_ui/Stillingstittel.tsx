@@ -1,7 +1,7 @@
 import { useStillingsTittel } from '@/app/api/pam-ontologi/stillingsTittel/useStillingsTittel';
 import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
-import RedigerBoks from '@/app/stilling/[stillingsId]/rediger/_ui/RedigerBoks';
+import RedigerBoks from '@/app/stilling/[stillingsId]/rediger/_ui/_ui/RedigerBoks';
 import { mapJanzzTilKategori } from '@/app/stilling/[stillingsId]/rediger/_util/mapJanzz';
 import { UNSAFE_Combobox } from '@navikt/ds-react';
 import { useEffect, useState } from 'react';

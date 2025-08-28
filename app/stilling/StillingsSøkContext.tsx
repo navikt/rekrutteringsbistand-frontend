@@ -4,7 +4,7 @@ import {
   hierarkiAvTagsForFilter,
   Subtag,
 } from './_ui/StillingsSøkFilter/InkluderingFilter';
-import { StillingsSøkQueryparam } from './stillingssøk-typer';
+import { StillingsSøkQueryparam } from './_util/stillingssøk-typer';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { RekbisError } from '@/util/rekbisError';

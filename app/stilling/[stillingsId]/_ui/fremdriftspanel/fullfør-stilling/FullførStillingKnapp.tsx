@@ -6,7 +6,7 @@ import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsConte
 import FullførOppdragTekst from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/fullfør-stilling/FullførOppdragTekst';
 import PersonbrukerTekst from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/fullfør-stilling/PersonbrukerTekst';
 import { KandidatutfallTyper } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
-import { StillingsStatus } from '@/app/stilling/stilling-typer';
+import { StillingsStatus } from '@/app/stilling/_ui/stilling-typer';
 import SWRLaster from '@/components/SWRLaster';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { RekbisError } from '@/util/rekbisError';

@@ -1,4 +1,4 @@
-import capitalizeEmployerName from '@/app/stilling/stilling-util';
+import capitalizeEmployerName from '@/app/stilling/_util/stilling-util';
 import { Box, Heading, Tag } from '@navikt/ds-react';
 import * as React from 'react';
 

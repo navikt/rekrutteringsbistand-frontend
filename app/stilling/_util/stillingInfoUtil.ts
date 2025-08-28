@@ -1,4 +1,4 @@
-import { Stillingskategori, StillingsStatus } from './stilling-typer';
+import { Stillingskategori, StillingsStatus } from '../_ui/stilling-typer';
 import { stillingErUtløpt } from './stilling-util';
 import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { RekrutteringsbistandStillingSchemaDTO } from '@/app/api/stillings-sok/schema/rekrutteringsbistandStillingSchema.zod';

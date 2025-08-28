@@ -1,6 +1,6 @@
 import { oppdaterStilling } from '@/app/api/stilling/oppdater-stilling/oppdaterStilling';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
-import { StillingsStatus } from '@/app/stilling/stilling-typer';
+import { StillingsStatus } from '@/app/stilling/_ui/stilling-typer';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { BodyLong, Button, Modal } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';

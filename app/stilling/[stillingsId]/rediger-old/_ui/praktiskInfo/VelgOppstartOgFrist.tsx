@@ -1,5 +1,5 @@
-import { DatoVelger } from '@/app/stilling/[stillingsId]/rediger-old/_ui/DatoVelger';
 import { StillingsDataForm } from '@/app/stilling/[stillingsId]/rediger-old/redigerFormType.zod';
+import { DatoVelger } from '@/app/stilling/[stillingsId]/rediger/_ui/_ui/DatoVelger';
 import { Checkbox, ErrorMessage, Heading } from '@navikt/ds-react';
 import { addWeeks, format } from 'date-fns';
 import * as React from 'react';

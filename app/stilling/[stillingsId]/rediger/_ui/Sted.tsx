@@ -1,8 +1,8 @@
 import { PamPostdataDTO } from '@/app/api/pam-geografi/postdata/[postnummer]/usePamPostdata';
 import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
-import RedigerBoks from '@/app/stilling/[stillingsId]/rediger/_ui/RedigerBoks';
-import VelgKommuneFylkeEllerLand from '@/app/stilling/[stillingsId]/rediger/_ui/sted/VelgKommuneFylkeEllerLand';
-import VelgPoststed from '@/app/stilling/[stillingsId]/rediger/_ui/sted/VelgPoststed';
+import RedigerBoks from '@/app/stilling/[stillingsId]/rediger/_ui/_ui/RedigerBoks';
+import VelgKommuneFylkeEllerLand from '@/app/stilling/[stillingsId]/rediger/_ui/_ui/VelgKommuneFylkeEllerLand';
+import VelgPoststed from '@/app/stilling/[stillingsId]/rediger/_ui/_ui/VelgPoststed';
 import { PlusCircleIcon } from '@navikt/aksel-icons';
 import { BodyLong, Button, ErrorMessage } from '@navikt/ds-react';
 import { useState } from 'react';

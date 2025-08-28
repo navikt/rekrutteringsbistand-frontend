@@ -4,7 +4,7 @@ import { useStilling } from '@/app/api/stilling/rekrutteringsbistandstilling/[sl
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import { mapFormTilStilling } from '@/app/stilling/[stillingsId]/rediger-old/mapStilling';
 import { StillingsDataForm } from '@/app/stilling/[stillingsId]/rediger-old/redigerFormType.zod';
-import { StillingsStatus } from '@/app/stilling/stilling-typer';
+import { StillingsStatus } from '@/app/stilling/_ui/stilling-typer';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { RekbisError } from '@/util/rekbisError';
 import { EyeIcon, FloppydiskIcon, TrashIcon } from '@navikt/aksel-icons';

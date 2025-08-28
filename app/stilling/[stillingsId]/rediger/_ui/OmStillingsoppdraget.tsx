@@ -1,5 +1,34 @@
-import RedigerBoks from '@/app/stilling/[stillingsId]/rediger/_ui/RedigerBoks';
+import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
+import Definisjon from '@/app/stilling/[stillingsId]/_ui/Definisjon';
+import RedigerBoks from '@/app/stilling/[stillingsId]/rediger/_ui/_ui/RedigerBoks';
+import { formaterNorskDato } from '@/util/util';
 
 export default function OmStillingsoppdraget() {
-  return <RedigerBoks tittel='Om annonsen'>tbd</RedigerBoks>;
+  const { stillingsData } = useStillingsContext();
+  const { annonsenr, uuid, updated, administration } =
+    stillingsData?.stilling ?? {};
+  const { reportee, navIdent } = administration ?? {};
+
+  return (
+    <RedigerBoks tittel='Om stillingsoppdraget'>
+      <dl className='grid gap-6 md:grid-cols-3'>
+        <Definisjon tittel='Annonsenummer' innhold={annonsenr ?? '-'} />
+        <Definisjon
+          tittel='Sist endret'
+          innhold={
+            updated
+              ? formaterNorskDato({ dato: updated, visning: 'tall' })
+              : '-'
+          }
+        />
+        <Definisjon
+          tittel='Kontaktperson hos NAV'
+          innhold={`${reportee ?? '-'} ${navIdent ? `(${navIdent})` : ''}`}
+        />
+      </dl>
+      <dl className='mt-6'>
+        <Definisjon tittel='Referanse' innhold={uuid ?? '-'} />
+      </dl>
+    </RedigerBoks>
+  );
 }

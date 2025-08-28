@@ -1,6 +1,6 @@
 import { FormidlingDataForm } from '@/app/etterregistrering/ny-etterregistrering/redigerFormidlingFormType';
 import { StillingsDataForm } from '@/app/stilling/[stillingsId]/rediger-old/redigerFormType.zod';
-import { StillingsArbeidstidsordning } from '@/app/stilling/stilling-typer';
+import { StillingsArbeidstidsordning } from '@/app/stilling/_ui/stilling-typer';
 import { Select } from '@navikt/ds-react';
 import * as React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';

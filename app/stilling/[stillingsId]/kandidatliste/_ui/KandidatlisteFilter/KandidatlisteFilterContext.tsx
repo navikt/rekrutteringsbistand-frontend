@@ -1,4 +1,4 @@
-import { StillingsSøkQueryparam } from '@/app/stilling/stillingssøk-typer';
+import { StillingsSøkQueryparam } from '@/app/stilling/_util/stillingssøk-typer';
 import {
   parseAsArrayOf,
   parseAsInteger,

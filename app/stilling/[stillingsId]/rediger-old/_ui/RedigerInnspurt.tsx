@@ -1,4 +1,4 @@
-import { DatoVelger } from './DatoVelger';
+import { DatoVelger } from '../../rediger/_ui/_ui/DatoVelger';
 import OppsummerValidering from './OppsummerValidering';
 import { oppdaterStilling } from '@/app/api/stilling/oppdater-stilling/oppdaterStilling';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';

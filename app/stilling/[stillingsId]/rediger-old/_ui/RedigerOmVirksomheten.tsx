@@ -4,7 +4,7 @@ import VelgKontaktperson from './praktiskInfo/VelgKontaktperson';
 import { GeografiDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import { StillingsDataForm } from '@/app/stilling/[stillingsId]/rediger-old/redigerFormType.zod';
-import capitalizeEmployerName from '@/app/stilling/stilling-util';
+import capitalizeEmployerName from '@/app/stilling/_util/stilling-util';
 import RikTekstEditor from '@/components/felles/rikteksteditor/RikTekstEditor';
 import { getWorkLocationAsString } from '@/util/locationUtil';
 import { Accordion, Heading, TextField } from '@navikt/ds-react';

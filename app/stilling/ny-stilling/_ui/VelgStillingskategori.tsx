@@ -1,5 +1,5 @@
-import { Stillingskategori } from '@/app/stilling/stilling-typer';
-import { kategoriTilVisningsnavn } from '@/app/stilling/stilling-util';
+import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
+import { kategoriTilVisningsnavn } from '@/app/stilling/_util/stilling-util';
 import { Label, Radio, RadioGroup } from '@navikt/ds-react';
 import React, { FunctionComponent, ReactNode } from 'react';
 

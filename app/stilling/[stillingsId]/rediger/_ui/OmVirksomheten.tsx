@@ -3,19 +3,24 @@ import {
   useFinnArbeidsgiver,
 } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
 import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
-import RedigerBoks from '@/app/stilling/[stillingsId]/rediger/_ui/RedigerBoks';
+import LeggTilKontaktperson from '@/app/stilling/[stillingsId]/rediger/_ui/_ui/LeggTilKontaktperson';
+import RedigerBoks from '@/app/stilling/[stillingsId]/rediger/_ui/_ui/RedigerBoks';
 import RikTekstEditor from '@/components/felles/rikteksteditor/RikTekstEditor';
+import { TasklistIcon } from '@navikt/aksel-icons';
 import {
   Alert,
   BodyLong,
   FormSummary,
+  Heading,
+  TextField,
   UNSAFE_Combobox,
 } from '@navikt/ds-react';
 import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 export default function OmVirksomheten() {
-  const { setValue, getValues, watch } = useFormContext<StillingsDataDTO>();
+  const { register, setValue, getValues, watch } =
+    useFormContext<StillingsDataDTO>();
   const [søkeOrd, setSøkeord] = useState<string>('');
   const { isLoading, error, data } = useFinnArbeidsgiver(søkeOrd);
   const [arbeidsgiver, setArbeidsgiverState] = useState<ArbeidsgiverDTO | null>(
@@ -152,6 +157,16 @@ export default function OmVirksomheten() {
             setValue('stilling.properties.employerdescription', e)
           }
         />
+
+        <TextField
+          label='Nettside (valgfritt)'
+          {...register('stilling.properties.employerhomepage')}
+        />
+
+        <Heading size='small' className='flex gap-2 items-center'>
+          <TasklistIcon className='shrink-0' /> Kontaktpersoner
+        </Heading>
+        <LeggTilKontaktperson />
       </div>
     </RedigerBoks>
   );

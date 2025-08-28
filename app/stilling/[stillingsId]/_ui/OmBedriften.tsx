@@ -1,7 +1,7 @@
 import OmStillingBoks from './OmStillingBoks';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import Definisjon from '@/app/stilling/[stillingsId]/_ui/Definisjon';
-import capitalizeEmployerName from '@/app/stilling/stilling-util';
+import capitalizeEmployerName from '@/app/stilling/_util/stilling-util';
 import VisEditorTekst from '@/components/felles/rikteksteditor/VisEditorTekst';
 import * as React from 'react';
 

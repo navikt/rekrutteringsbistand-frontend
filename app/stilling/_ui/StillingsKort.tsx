@@ -1,13 +1,13 @@
 import StillingsTag from './StillingsTag';
 import { leggTilKandidater } from '@/app/api/kandidat-sok/leggTilKandidat';
 import { RekrutteringsbistandStillingSchemaDTO } from '@/app/api/stillings-sok/schema/rekrutteringsbistandStillingSchema.zod';
-import { visStillingsDataInfo } from '@/app/stilling/stillingInfoUtil';
+import { visStillingsDataInfo } from '@/app/stilling/_util/stillingInfoUtil';
 import {
   formaterEiernavn,
   hentArbeidssted,
   hentEierFraStilling,
   hentIdentFraStilling,
-} from '@/app/stilling/stillingssøk-util';
+} from '@/app/stilling/_util/stillingssøk-util';
 import TekstMedIkon from '@/components/felles/TekstMedIkon';
 import { UmamiEvent } from '@/components/umami/umamiEvents';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';

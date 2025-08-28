@@ -1,8 +1,11 @@
 import { Hovedtag } from './StillingsSøkFilter/InkluderingFilter';
 import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { RekrutteringsbistandStillingSchemaDTO } from '@/app/api/stillings-sok/schema/rekrutteringsbistandStillingSchema.zod';
-import { AdminStatus, StillingsStatus } from '@/app/stilling/stilling-typer';
-import { visStillingsDataInfo } from '@/app/stilling/stillingInfoUtil';
+import {
+  AdminStatus,
+  StillingsStatus,
+} from '@/app/stilling/_ui/stilling-typer';
+import { visStillingsDataInfo } from '@/app/stilling/_util/stillingInfoUtil';
 import { eierStilling } from '@/components/tilgangskontroll/erEier';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { formaterNorskDato } from '@/util/util';

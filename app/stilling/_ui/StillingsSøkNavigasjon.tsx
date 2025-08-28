@@ -1,5 +1,5 @@
 import { useStillingsSøkFilter } from '@/app/stilling/StillingsSøkContext';
-import { StillingsSøkPortefølje } from '@/app/stilling/stillingssøk-typer';
+import { StillingsSøkPortefølje } from '@/app/stilling/_util/stillingssøk-typer';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { Button, Chips } from '@navikt/ds-react';

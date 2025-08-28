@@ -1,5 +1,5 @@
 import { useStillingsSøkFilter } from '@/app/stilling/StillingsSøkContext';
-import { Stillingskategori } from '@/app/stilling/stilling-typer';
+import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
 import * as React from 'react';
 

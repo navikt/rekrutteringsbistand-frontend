@@ -7,8 +7,8 @@ import VelgAnsettelsesform from '@/app/stilling/[stillingsId]/rediger-old/_ui/pr
 import VelgArbeidstidsordning from '@/app/stilling/[stillingsId]/rediger-old/_ui/praktiskInfo/VelgArbeidstidsordning';
 import VelgOmfang from '@/app/stilling/[stillingsId]/rediger-old/_ui/praktiskInfo/VelgOmfang';
 import VelgSektor from '@/app/stilling/[stillingsId]/rediger-old/_ui/praktiskInfo/VelgSektor';
+import { arbeidsgiverLokasjonTilLokasjon } from '@/app/stilling/_util/stilling.util';
 import VelgArbeidsgiver from '@/app/stilling/ny-stilling/_ui/VelgArbeidsgiver';
-import { arbeidsgiverLokasjonTilLokasjon } from '@/app/stilling/stilling.util';
 import { ErrorMessage, Heading } from '@navikt/ds-react';
 import * as React from 'react';
 import { useFormContext } from 'react-hook-form';

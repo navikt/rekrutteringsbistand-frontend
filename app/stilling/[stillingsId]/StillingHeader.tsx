@@ -8,7 +8,7 @@ import { useKandidatlisteForEier } from '@/app/api/kandidat/useKandidatlisteForE
 import StillingsTag from '@/app/stilling/_ui/StillingsTag';
 import capitalizeEmployerName, {
   navnEierAvAstilling,
-} from '@/app/stilling/stilling-util';
+} from '@/app/stilling/_util/stilling-util';
 import TekstMedIkon from '@/components/felles/TekstMedIkon';
 import SideTopBanner from '@/components/layout/SideTopBanner';
 import { Buildings2Icon, PersonIcon } from '@navikt/aksel-icons';

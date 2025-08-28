@@ -1,7 +1,7 @@
 import { oppdaterStilling } from '@/app/api/stilling/oppdater-stilling/oppdaterStilling';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
-import { StillingsStatus } from '@/app/stilling/stilling-typer';
-import { stillingErUtløpt } from '@/app/stilling/stilling-util';
+import { StillingsStatus } from '@/app/stilling/_ui/stilling-typer';
+import { stillingErUtløpt } from '@/app/stilling/_util/stilling-util';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { ArrowUndoIcon, EyeSlashIcon } from '@navikt/aksel-icons';
 import { BodyLong, BodyShort, Button, Modal } from '@navikt/ds-react';

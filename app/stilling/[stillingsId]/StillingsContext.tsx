@@ -6,7 +6,7 @@ import {
 } from '@/app/api/kandidat/useKandidatlisteInfo';
 import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { useStilling } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/useStilling';
-import { Stillingskategori } from '@/app/stilling/stilling-typer';
+import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
 import SWRLaster from '@/components/SWRLaster';
 import { eierStilling } from '@/components/tilgangskontroll/erEier';
 import { Roller } from '@/components/tilgangskontroll/roller';

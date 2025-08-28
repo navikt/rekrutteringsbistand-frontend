@@ -2,7 +2,7 @@ import { Kandidatlistestatus } from '@/app/api/kandidat/schema.zod';
 import { setKandidatlisteStatus } from '@/app/api/kandidat/setKandidatlisteStatus';
 import { oppdaterStilling } from '@/app/api/stilling/oppdater-stilling/oppdaterStilling';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
-import { StillingsStatus } from '@/app/stilling/stilling-typer';
+import { StillingsStatus } from '@/app/stilling/_ui/stilling-typer';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { RekbisError } from '@/util/rekbisError';
 import { TasklistIcon } from '@navikt/aksel-icons';

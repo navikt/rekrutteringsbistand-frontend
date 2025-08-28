@@ -1,15 +1,11 @@
 import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
-import RedigerBoks from '@/app/stilling/[stillingsId]/rediger/_ui/RedigerBoks';
+import RedigerBoks from '@/app/stilling/[stillingsId]/rediger/_ui/_ui/RedigerBoks';
 import RikTekstEditor from '@/components/felles/rikteksteditor/RikTekstEditor';
 import { BodyLong } from '@navikt/ds-react';
 import { useFormContext } from 'react-hook-form';
 
 export default function OmJobben() {
-  const {
-    setValue,
-    watch,
-    formState: { errors },
-  } = useFormContext<StillingsDataDTO>();
+  const { setValue, watch } = useFormContext<StillingsDataDTO>();
 
   return (
     <RedigerBoks tittel='Om jobben'>
@@ -17,8 +13,7 @@ export default function OmJobben() {
         <BodyLong>
           Fortell jobbsøkeren om jobben: de unike fordelene, mulighetene, og
           oppgavene som de vil møte. For eksempel arbeidsoppgaver,
-          forventninger, læring- og karrieremuligheter, kultur, lønn, og
-          goder.{' '}
+          forventninger, læring- og karrieremuligheter, kultur, lønn, og goder.
         </BodyLong>
         <RikTekstEditor
           id='rediger-stilling-beskrivelse'

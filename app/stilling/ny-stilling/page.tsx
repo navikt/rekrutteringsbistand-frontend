@@ -4,7 +4,7 @@ import { OpprettStillingKnapp } from './_ui/OpprettStilling';
 import VelgArbeidsgiver from './_ui/VelgArbeidsgiver';
 import VelgStillingskategori from './_ui/VelgStillingskategori';
 import { ArbeidsgiverDTO } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
-import { Stillingskategori } from '@/app/stilling/stilling-typer';
+import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
 import HovedInnholdKort from '@/components/layout/HovedInnholdKort';
 import SideBanner from '@/components/layout/SideBanner';
 import SideLayout from '@/components/layout/SideLayout';

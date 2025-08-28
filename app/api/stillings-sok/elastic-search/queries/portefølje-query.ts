@@ -1,6 +1,6 @@
 import { ElasticSearchQueryBuilder } from '@/app/api/stillings-sok/elastic-search/elasticSearchQueryBuilder';
 import { GenerateElasticSearchQueryParams } from '@/app/api/stillings-sok/opprettElasticSearchQuery';
-import { StillingsSøkPortefølje } from '@/app/stilling/stillingssøk-typer';
+import { StillingsSøkPortefølje } from '@/app/stilling/_util/stillingssøk-typer';
 
 /**
  * Portefølje tab
