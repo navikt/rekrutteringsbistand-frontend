@@ -4,6 +4,7 @@ import StillingSideLayout from '@/app/stilling/[stillingsId]/StillingssideLayout
 import { useWindows } from '@/components/layout/windows/WindowWrapper';
 import { useQueryState } from 'nuqs';
 import * as React from 'react';
+import { useEffect } from 'react';
 
 const WindowVisStilling: React.FC = ({}) => {
   const [visStillingId, setVisStillingId] = useQueryState('visStillingId', {
@@ -13,7 +14,7 @@ const WindowVisStilling: React.FC = ({}) => {
 
   const { addWindow } = useWindows();
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (visStillingId) {
       addWindow({
         id: 'visStillingId',
@@ -27,7 +28,7 @@ const WindowVisStilling: React.FC = ({}) => {
         ),
       });
     }
-  }, [visStillingId]);
+  }, [visStillingId, addWindow, setVisStillingId]);
 
   return null;
 };

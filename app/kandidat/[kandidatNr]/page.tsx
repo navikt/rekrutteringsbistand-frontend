@@ -1,6 +1,6 @@
 import Kandidat from '@/app/kandidat/[kandidatNr]/Kandidat';
-import VisKandidat from '@/app/kandidat/vis-kandidat/VisKandidat';
 import NotFound from '@/app/not-found';
+import SideLayout from '@/components/layout/SideLayout';
 
 interface KandidatSideProps {
   children: React.ReactNode;
@@ -12,5 +12,9 @@ export default async function KandidatSide({ params }: KandidatSideProps) {
   if (!kandidatNr) {
     return <NotFound />;
   }
-  return <Kandidat kandidatNr={kandidatNr} />;
+  return (
+    <SideLayout>
+      <Kandidat kandidatNr={kandidatNr} />
+    </SideLayout>
+  );
 }

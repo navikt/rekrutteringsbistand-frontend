@@ -6,7 +6,7 @@ import { useArbeidsgiverHendelser } from '@/app/api/rekrutteringstreff/[...slug]
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
 import { RekrutteringstreffTabs } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/Rekrutteringstreff';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
-import VelgArbeidsgiver from '@/app/stilling/ny-stilling/_ui/VelgArbeidsgiver';
+import VelgArbeidsgiver from '@/app/stilling/ny-stilling-old/_ui/VelgArbeidsgiver';
 import { RekbisError } from '@/util/rekbisError';
 import { Button, Modal } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';

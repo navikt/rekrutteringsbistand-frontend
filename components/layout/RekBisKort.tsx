@@ -15,15 +15,16 @@ const RekBisKort: React.FC<RekBisProps> = ({
   className = '',
 }) => {
   return (
-    <div className='m-3'>
+    <div className='p-2 h-full'>
       <Box.New
         id={id}
         borderRadius='xlarge'
         borderColor='info-subtleA'
         background='default'
-        className={`min-w-[320px] flex flex-col px-8 pb-8  w-full  overflow-auto  ${className} `}
+        className={`min-w-[320px] flex flex-col w-full ${className}`}
       >
-        <div className='max-w-[1440px] mx-auto w-full'>{children}</div>
+        {/* Kortet vokser nå naturlig med innholdet og lar siden scrolle. */}
+        {children}
       </Box.New>
     </div>
   );

@@ -10,9 +10,10 @@ export const useFinnKandidatForStilling = (
   const isDataLoading = !stillingsData;
 
   const processedData = useMemo(() => {
-    if (!stillingsData) return null;
+    if (!stillingsData || !stillingsData.stilling) return null;
 
-    const { locationList, categoryList } = stillingsData.stilling;
+    const locationList = stillingsData.stilling.locationList;
+    const categoryList = stillingsData.stilling.categoryList;
 
     const fylker: string[] =
       locationList

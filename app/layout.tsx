@@ -37,7 +37,7 @@ export default async function RootLayout({
         data-website-id={process.env.NEXT_PUBLIC_UMAMI_ID}
       />
       <SkyraInit />
-      <body className='h-screen overflow-hidden'>
+      <body className='min-h-screen'>
         <UmamiProvider>
           <BrukLokalMock>
             <RekrutteringsbistandProvider>

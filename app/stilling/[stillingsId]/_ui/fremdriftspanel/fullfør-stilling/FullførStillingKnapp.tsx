@@ -44,7 +44,7 @@ export default function FullførStillingKnapp() {
 
       await setKandidatlisteStatus(kandidatlisteId, Kandidatlistestatus.Lukket);
 
-      refetch();
+      if (refetch) refetch();
     } catch (error) {
       new RekbisError({
         message: 'Feil ved oppdatering av stilling',

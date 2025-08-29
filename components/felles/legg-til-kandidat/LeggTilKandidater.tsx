@@ -142,7 +142,9 @@ const LeggTilKandidater: React.FC<LeggTilKandidaterProps> = ({
         </div>
 
         <div className='mr-4 flex gap-2'>
-          <Tag variant='warning'>Kandidaten er ikke synlig</Tag>
+          <Tag variant='warning' size='small'>
+            Kandidaten er ikke synlig
+          </Tag>
           {synlighetSomModal && (
             <SynlighetsModal fødselsnummer={fødselsnummer} />
           )}

@@ -33,7 +33,7 @@ function BackButton({
             return;
           }
         }
-      } catch (e) {
+      } catch {
         // Ignorer – faller tilbake til fallbackPath / history.back
       }
       if (fallbackPath) {
@@ -118,6 +118,8 @@ export interface PanelHeaderSectionProps {
     icon?: ReactNode;
   };
   title?: ReactNode;
+  /** Ikon som vises foran tittel (etter tilbake-knapp). Sett aria-hidden på dekorative ikoner. */
+  titleIcon?: ReactNode;
   subtitle?: ReactNode;
   tabs?: ReactNode; // Egen tab-komponent (f.eks. <StillingTabs />)
   meta?: ReactNode; // f.eks. statustekst ("Lagret ...")
@@ -136,6 +138,7 @@ function cx(...parts: Array<string | undefined | false | null>) {
 export function PanelHeaderSection({
   back,
   title,
+  titleIcon,
   subtitle,
   tabs,
   meta,
@@ -152,11 +155,22 @@ export function PanelHeaderSection({
     />
   ) : null;
 
+  const rowClass = cx(
+    'flex flex-wrap gap-x-4 gap-y-2',
+    subtitle ? 'items-start' : 'items-center',
+  );
+
   return (
-    <div className={cx('group/section flex flex-col gap-2  ', className)}>
-      <div className='flex flex-wrap items-start gap-x-4 gap-y-2'>
+    <div className={cx('group/section flex flex-col gap-2 px-5', className)}>
+      {/* Hvis ingen subtitle: vertikalt sentrer tittel/ikon/knapper ved å bruke items-center */}
+      <div className={rowClass}>
         <div className='flex items-center  gap-3 min-w-0 flex-1'>
           {BackEl && BackEl}
+          {titleIcon && (
+            <span className='shrink-0 flex items-center text-[0] ' aria-hidden>
+              {titleIcon}
+            </span>
+          )}
           {(title || subtitle) && (
             <div className='min-w-0'>
               {title && (

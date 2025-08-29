@@ -51,7 +51,7 @@ const OpprettKnapp: React.FC = () => {
                 onSelect={() =>
                   trackAndNavigate(
                     UmamiEvent.Sidebar.opprettet_stilling,
-                    '/stilling/ny-stilling?stillingskategori=STILLING',
+                    '/stilling/ny',
                   )
                 }
               >
@@ -68,7 +68,7 @@ const OpprettKnapp: React.FC = () => {
                 onSelect={() =>
                   trackAndNavigate(
                     UmamiEvent.Sidebar.opprettet_stilling,
-                    '/stilling/ny-stilling?stillingskategori=JOBBMESSE',
+                    '/stilling/ny/jobbmesse',
                   )
                 }
               >
@@ -86,7 +86,7 @@ const OpprettKnapp: React.FC = () => {
                 onSelect={() =>
                   trackAndNavigate(
                     UmamiEvent.Sidebar.opprettet_etterregistrering,
-                    '/etterregistrering/ny-etterregistrering',
+                    '/stilling/ny/etterregistrering',
                   )
                 }
               >

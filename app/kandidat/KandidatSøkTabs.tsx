@@ -131,7 +131,7 @@ const KandidatSøkTabs: React.FC<KandidatSøkTabsProps> = ({
             : 'tertiary'
         }
         onClick={() => setPortefølje(KandidatSøkPortefølje.VALGTE_KONTORER)}
-        size='small'
+        size='xsmall'
       >
         Valgte kontorer
       </Button>
@@ -139,9 +139,9 @@ const KandidatSøkTabs: React.FC<KandidatSøkTabsProps> = ({
   );
 
   return (
-    <div>
-      <div className='flex justify-between'>
-        <div className='flex gap-2'>
+    <div className='@container'>
+      <div className='flex justify-between flex-col @2xl:flex-row @2xl:gap-0 gap-3 '>
+        <div className='flex gap-2 items-center'>
           <MineBrukere />
           <MittKontor />
           <MineKontorer />

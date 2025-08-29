@@ -31,7 +31,9 @@ const AvpubliserStilling: React.FC = () => {
     );
     setLoading(false);
 
-    refetch();
+    if (refetch) {
+      refetch();
+    }
   };
 
   const erUtløpt = stillingErUtløpt(stillingsData.stilling);

@@ -9,7 +9,6 @@ import {
   SidebarContent,
   SidebarGroup,
   SidebarHeader,
-  SidebarRail,
   useSidebar,
 } from '@/components/ui/sidebar';
 import { useThemeProvider } from '@/providers/ThemeProvider';
@@ -183,7 +182,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           )}
         </SidebarGroup>
       </SidebarContent>
-      <SidebarRail />
     </Sidebar>
   );
 }

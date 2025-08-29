@@ -11,16 +11,11 @@ import InkluderingFilter from '@/app/stilling/_ui/StillingsSøkFilter/Inkluderin
 import KategoriFilter from '@/app/stilling/_ui/StillingsSøkFilter/KategoriFilter';
 import StatusFilter from '@/app/stilling/_ui/StillingsSøkFilter/StatusFilter';
 import StillingsSøkSortering from '@/app/stilling/_ui/StillingsSøkSortering';
-import SideBanner from '@/components/layout/SideBanner';
-import SideLayout from '@/components/layout/SideLayout';
 import Sidelaster from '@/components/layout/Sidelaster';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { UmamiEvent } from '@/components/umami/umamiEvents';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
-import { BriefcaseIcon } from '@navikt/aksel-icons';
-import { Button } from '@navikt/ds-react';
-import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import * as React from 'react';
 
@@ -98,21 +93,7 @@ const StillingsSøkLayout: React.FC<StillingsSøkProps> = ({
   }
 
   return (
-    <SideLayout
-      topBanner={
-        <SideBanner
-          ikon={<BriefcaseIcon className='h-6 w-6' />}
-          tittel='Stillingsoppdrag'
-          knapper={
-            <div>
-              <Link href={'/stilling/ny-stilling'}>
-                <Button size='small'>Opprett annonse</Button>
-              </Link>
-            </div>
-          }
-        />
-      }
-    >
+    <>
       {forKandidatNr && <StillingForKandidat kandidatnr={forKandidatNr} />}
       <StillingsSøkFilter
         formidlinger={formidlinger}
@@ -134,7 +115,7 @@ const StillingsSøkLayout: React.FC<StillingsSøkProps> = ({
           <StillingsSøkeresultat kandidatId={forKandidatNr} />
         </div>
       </div>
-    </SideLayout>
+    </>
   );
 };
 

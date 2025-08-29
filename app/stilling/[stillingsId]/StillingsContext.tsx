@@ -12,7 +12,6 @@ import { eierStilling } from '@/components/tilgangskontroll/erEier';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { RekbisError } from '@/util/rekbisError';
-import { Alert, Heading } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
 import React, { useMemo } from 'react';
 
@@ -26,7 +25,7 @@ interface StillingsContextType {
   erEier?: boolean;
   setForhåndsvisData: (data: StillingsDataDTO | null) => void;
   erDirektemeldt: boolean;
-  refetch: () => void;
+  refetch?: () => void;
   erSlettet: boolean;
   erJobbmesse: boolean;
 }
@@ -64,21 +63,19 @@ export const StillingsContextProvider: React.FC<
 interface StillingsContextMedDataProps {
   stillingsData: StillingsDataDTO;
   children: React.ReactNode;
-  refetch: () => void;
+  refetch?: () => void;
 }
 
-const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
-  stillingsData,
-  children,
-  refetch,
-}) => {
+export const StillingsContextMedData: React.FC<
+  StillingsContextMedDataProps
+> = ({ stillingsData, children, refetch }) => {
   const router = useRouter();
   const {
     brukerData: { ident },
     harRolle,
   } = useApplikasjonContext();
   const kandidatListeInfoHook = useKandidatlisteInfo(
-    stillingsData.stilling.publishedByAdmin
+    stillingsData?.stilling?.publishedByAdmin
       ? stillingsData?.stillingsinfo
       : null,
   );
@@ -122,28 +119,29 @@ const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
     [stillingsData, ident, harRolle],
   );
 
-  const ugyldigStilling =
-    stillingsData?.stilling?.medium === 'DIR' &&
-    (stillingsData?.stilling?.employer?.orgnr ?? null) === null;
+  //TODO Legg denne barrieren en plass
+  // const ugyldigStilling =
+  //   stillingsData?.stilling?.medium === 'DIR' &&
+  //   (stillingsData?.stilling?.employer?.orgnr ?? null) === null;
 
-  if (ugyldigStilling) {
-    return (
-      <Alert variant='error'>
-        <Heading spacing size='small' level='3'>
-          Ugyldig stilling
-        </Heading>
-        <p>
-          Denne stillingen er ikke gyldig da det er en intern stilling som
-          mangler organisasjonsnummer.
-        </p>
-        <p> Stillingen er derfor ikke tilgjengelig for rekruttering.</p>
-      </Alert>
-    );
-  }
+  // if (ugyldigStilling) {
+  //   return (
+  //     <Alert variant='error'>
+  //       <Heading spacing size='small' level='3'>
+  //         Ugyldig stilling
+  //       </Heading>
+  //       <p>
+  //         Denne stillingen er ikke gyldig da det er en intern stilling som
+  //         mangler organisasjonsnummer.
+  //       </p>
+  //       <p> Stillingen er derfor ikke tilgjengelig for rekruttering.</p>
+  //     </Alert>
+  //   );
+  // }
   return (
     <StillingsContext.Provider
       value={{
-        erSlettet: stillingsData.stilling.status === 'DELETED',
+        erSlettet: stillingsData?.stilling?.status === 'DELETED',
         erDirektemeldt: stillingsData.stilling?.source === 'DIR',
         forhåndsvisData,
         stillingsData: forhåndsvisData ? forhåndsvisData : stillingsData,
@@ -155,7 +153,7 @@ const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
         kandidatlisteInfo: kandidatListeInfoHook?.data ?? null,
         kandidatlisteLaster: kandidatListeInfoHook?.isLoading ?? false,
         erJobbmesse,
-        stillingsId: stillingsData.stilling.uuid,
+        stillingsId: stillingsData?.stilling?.uuid,
       }}
     >
       {children}

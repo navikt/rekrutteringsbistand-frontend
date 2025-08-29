@@ -4,8 +4,11 @@ export interface FremdriftspanelProps {
 
 export default function Fremdriftspanel({ children }: FremdriftspanelProps) {
   return (
-    <div className='w-[320px] border-l border-l-[var(--ax-border-neutral-subtle)] py-3 pl-5'>
-      {children}
-    </div>
+    <aside
+      aria-label='Fremdriftspanel'
+      className='w-full md:w-[320px] border-l border-l-[var(--ax-border-neutral-subtle)] py-3 pl-5 px-5'
+    >
+      <div className='sticky top-0'>{children}</div>
+    </aside>
   );
 }

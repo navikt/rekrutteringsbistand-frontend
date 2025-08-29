@@ -7,6 +7,7 @@ import TabKnapper from '@/app/stilling/[stillingsId]/_ui/tabs/TabKnapper';
 import FiltrertKandidatListeVisning from '@/app/stilling/[stillingsId]/kandidatliste/FiltrertKandidatListeVisning';
 import KandidatlisteWrapper from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteWrapper';
 import PanelHeader from '@/components/layout/PanelHeader';
+import SideLayout from '@/components/layout/SideLayout';
 import { Tabs } from '@navikt/ds-react';
 import { useQueryState } from 'nuqs';
 import { useRef } from 'react';
@@ -25,30 +26,32 @@ export default function StillingsSidePage() {
 
   const printRef = useRef<HTMLDivElement>(null);
   return (
-    <Tabs defaultValue={fane} onChange={(val: any) => setFane(val)}>
-      <PanelHeader>
-        <PanelHeader.Section
-          title={stillingsData.stilling.title ?? ''}
-          back={{
-            fallbackPath: '/stilling',
-          }}
-          tabs={<StillingTabs />}
-          actionsRight={<TabKnapper printRef={printRef} />}
-        />
-      </PanelHeader>
+    <SideLayout>
+      <Tabs defaultValue={fane} onChange={(val: any) => setFane(val)}>
+        <PanelHeader>
+          <PanelHeader.Section
+            title={stillingsData.stilling.title ?? ''}
+            back={{
+              fallbackPath: '/stilling',
+            }}
+            tabs={<StillingTabs />}
+            actionsRight={<TabKnapper printRef={printRef} />}
+          />
+        </PanelHeader>
 
-      <Tabs.Panel value={StillingFane.STILLING}>
-        <OmStillingen printRef={printRef} />
-      </Tabs.Panel>
-      {kandidatlisteInfo?.kandidatlisteId && erEier && (
-        <>
-          <Tabs.Panel value={StillingFane.KANDIDATER}>
-            <KandidatlisteWrapper>
-              <FiltrertKandidatListeVisning />
-            </KandidatlisteWrapper>
-          </Tabs.Panel>
-        </>
-      )}
-    </Tabs>
+        <Tabs.Panel value={StillingFane.STILLING}>
+          <OmStillingen printRef={printRef} />
+        </Tabs.Panel>
+        {kandidatlisteInfo?.kandidatlisteId && erEier && (
+          <>
+            <Tabs.Panel value={StillingFane.KANDIDATER}>
+              <KandidatlisteWrapper>
+                <FiltrertKandidatListeVisning />
+              </KandidatlisteWrapper>
+            </Tabs.Panel>
+          </>
+        )}
+      </Tabs>
+    </SideLayout>
   );
 }

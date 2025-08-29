@@ -7,6 +7,7 @@ import KandidatlisteWrapper from './kandidatliste/KandidatlisteWrapper';
 import FinKandidaterKnapp from '@/app/_windows/finn-kandidater-window/FinnKandidaterKnapp';
 import { Kandidatlistestatus } from '@/app/api/kandidat/schema.zod';
 import { KandidatSøkMarkerteContextProvider } from '@/app/kandidat/KandidatSøkMarkerteContext';
+import OmStillingen from '@/app/stilling/[stillingsId]/_ui/om-stillingen/OmStillingen';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { Alert, Tabs } from '@navikt/ds-react';
@@ -109,10 +110,9 @@ export default function StillingSide() {
             </div>
             <div className='@3xl/tabs:block hidden'>{TabKnapper}</div>
           </Tabs.List>
-          {/* //TODO */}
-          {/* <Tabs.Panel value={StillingFane.STILLING}> */}
-          {/* <OmStillingen /> */}
-          {/* </Tabs.Panel> */}
+          <Tabs.Panel value={StillingFane.STILLING}>
+            <OmStillingen printRef={null} />
+          </Tabs.Panel>
           {kandidatlisteInfo?.kandidatlisteId && erEier && (
             <>
               <Tabs.Panel value={StillingFane.KANDIDATER}>

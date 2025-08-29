@@ -4,7 +4,6 @@ import StillingHeader from './StillingHeader';
 import { useStillingsContext } from './StillingsContext';
 import WindowFinnKandidater from '@/app/_windows/finn-kandidater-window/WindowFinnKandidater';
 import WindowVisKandidat from '@/app/_windows/vis-kandidat-window/WindowVisKandidat';
-import SideLayout from '@/components/layout/SideLayout';
 import * as React from 'react';
 
 interface StillingSideLayoutProps {
@@ -21,11 +20,12 @@ const StillingSideLayout: React.FC<StillingSideLayoutProps> = ({
     (stillingsData?.stilling?.employer?.orgnr ?? null) === null;
 
   return (
-    <SideLayout topBanner={<StillingHeader />}>
+    <>
+      <StillingHeader />
       <WindowFinnKandidater stillingsId={stillingsData.stilling.uuid} />
       <WindowVisKandidat />
       {children}
-    </SideLayout>
+    </>
   );
 };
 

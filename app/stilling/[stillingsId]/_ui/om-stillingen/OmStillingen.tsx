@@ -147,7 +147,7 @@ export default function OmStillingen({
             <OmAnnonsen />
           </div>
         </div>
-        {!forhåndsvisData && erEier && (
+        {!forhåndsvisData && erEier && printRef !== null && (
           <Fremdriftspanel>
             <TilgangskontrollForInnhold
               skjulVarsel

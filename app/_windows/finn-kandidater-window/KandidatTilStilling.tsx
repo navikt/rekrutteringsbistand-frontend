@@ -46,11 +46,11 @@ const KandidatTilStilling: React.FC<KandidatTilStillingProps> = ({
     const miljø = getMiljø();
     if (miljø === Miljø.ProdGcp) {
       navigator.clipboard.writeText(
-        `https://arbeidsplassen.nav.no/stillinger/stilling/${stillingsData?.stilling.uuid}`,
+        `https://arbeidsplassen.nav.no/stillinger/stilling/${stillingsData?.stilling?.uuid}`,
       );
     }
     navigator.clipboard.writeText(
-      `https://arbeidsplassen.intern.dev.nav.no/stillinger/stilling/${stillingsData?.stilling.uuid}`,
+      `https://arbeidsplassen.intern.dev.nav.no/stillinger/stilling/${stillingsData?.stilling?.uuid}`,
     );
   };
 
@@ -115,7 +115,7 @@ const KandidatTilStilling: React.FC<KandidatTilStillingProps> = ({
             iconPosition='right'
             variant='secondary-neutral'
             onClick={() =>
-              router.push(`/stilling/${stillingsData?.stilling.uuid}`)
+              router.push(`/stilling/${stillingsData?.stilling?.uuid}`)
             }
           >
             Gå til stillingannonsen
@@ -131,7 +131,7 @@ const KandidatTilStilling: React.FC<KandidatTilStillingProps> = ({
           )}
           <KandidatSøkTabs
             alleredeLagtTilKandidatliste={alleredeLagtTilKandidatliste}
-            stillingsId={stillingsData?.stilling.uuid}
+            stillingsId={stillingsData?.stilling?.uuid}
           />
         </>
       )}

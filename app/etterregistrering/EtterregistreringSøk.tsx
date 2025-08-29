@@ -4,8 +4,7 @@ import WindowVisStilling from '@/app/_windows/vis-stilling-window/WindowVisStill
 import { StillingsSøkProvider } from '@/app/stilling/StillingsSøkContext';
 import StillingsSøkeresultat from '@/app/stilling/StillingsSøkeresultat';
 import StillingsSøkFilter from '@/app/stilling/_ui/StillingsSøkFilter';
-import StillingsSøkNavigasjon from '@/app/stilling/_ui/StillingsSøkNavigasjon';
-import SideBanner from '@/components/layout/SideBanner';
+import PanelHeader from '@/components/layout/PanelHeader';
 import SideLayout from '@/components/layout/SideLayout';
 import Sidelaster from '@/components/layout/Sidelaster';
 import { BriefcaseClockIcon } from '@navikt/aksel-icons';
@@ -27,19 +26,18 @@ const EtterRegistreringSøk = () => {
 const EtterRegistreringSøkLayout: React.FC = () => {
   return (
     <SideLayout
-      topBanner={
-        <SideBanner
-          ikon={<BriefcaseClockIcon className='h-6 w-6' />}
-          tittel='Etterregistreringer'
-          navigasjon={<StillingsSøkNavigasjon />}
-          knapper={
-            <div>
-              <Link href={'/etterregistrering/ny-etterregistrering'}>
+      header={
+        <PanelHeader>
+          <PanelHeader.Section
+            title={'Etterregistreringer'}
+            titleIcon={<BriefcaseClockIcon />}
+            actionsRight={
+              <Link href={'/stilling/ny/etterregistrering'}>
                 <Button size='small'>Opprett etterregistrering</Button>
               </Link>
-            </div>
-          }
-        />
+            }
+          />
+        </PanelHeader>
       }
     >
       <StillingsSøkFilter formidlinger={true} />

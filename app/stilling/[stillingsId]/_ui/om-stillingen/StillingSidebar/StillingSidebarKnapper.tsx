@@ -49,7 +49,9 @@ const StillingSidebarKnapper: React.FC<StillingSidebarKnapperProps> = ({
       eierNavn: brukerData.navn,
       eierNavKontorEnhetId: valgtNavKontor?.navKontor,
     });
-    refetch();
+    if (refetch) {
+      refetch();
+    }
   };
 
   return (
