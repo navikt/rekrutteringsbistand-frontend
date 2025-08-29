@@ -5,11 +5,10 @@ import { useKiLogg } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
 import { useValiderRekrutteringstreff } from '@/app/api/rekrutteringstreff/kiValidering/useValiderRekrutteringstreff';
 import {
   oppdaterRekrutteringstreff,
-  toOppdaterRekrutteringstreffDto,
+  MAX_TITLE_LENGTH,
 } from '@/app/api/rekrutteringstreff/oppdater-rekrutteringstreff/oppdaterRerkutteringstreff';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
-import { zodResolver } from '@hookform/resolvers/zod';
 import {
   RobotFrownIcon,
   RobotIcon,
@@ -27,34 +26,22 @@ import {
   TextField,
 } from '@navikt/ds-react';
 import { AnimatePresence, cubicBezier, motion } from 'framer-motion';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Controller, useForm, useWatch } from 'react-hook-form';
-import { z } from 'zod';
+import React, { useRef, useState } from 'react';
+import { Controller, useFormContext, useWatch } from 'react-hook-form';
 
 interface EndreTittelProps {
   onUpdated: () => void;
 }
 
-const MAX_TITLE_LENGTH = 100;
-
-const schema = z.object({
-  nyTittel: z
-    .string()
-    .trim()
-    .min(1, 'Tittel kan ikke være tom.')
-    .max(
-      MAX_TITLE_LENGTH,
-      `Tittelen kan ikke ha mer enn ${MAX_TITLE_LENGTH} tegn.`,
-    ),
-});
-type FormValues = z.infer<typeof schema>;
-
 const ease = cubicBezier(0.16, 1, 0.3, 1);
 
 const EndreTittel = ({ onUpdated }: EndreTittelProps) => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
-  const { data: rekrutteringstreff, isLoading } =
-    useRekrutteringstreff(rekrutteringstreffId);
+  const {
+    data: rekrutteringstreff,
+    isLoading,
+    mutate,
+  } = useRekrutteringstreff(rekrutteringstreffId);
 
   const { setLagret: setKiLagret } = useKiLogg(rekrutteringstreffId, 'tittel');
   const {
@@ -67,17 +54,12 @@ const EndreTittel = ({ onUpdated }: EndreTittelProps) => {
 
   const {
     control,
-    handleSubmit,
     setValue,
-    reset,
-    formState: { errors, touchedFields, isSubmitting },
     getValues,
     trigger: triggerRHF,
-  } = useForm<FormValues>({
-    resolver: zodResolver(schema),
-    mode: 'onBlur',
-    defaultValues: { nyTittel: '' },
-  });
+    clearErrors,
+    formState: { isSubmitting },
+  } = useFormContext();
 
   const inputRef = useRef<HTMLInputElement>(null);
   const skeletonRef = useRef<HTMLDivElement>(null);
@@ -86,22 +68,15 @@ const EndreTittel = ({ onUpdated }: EndreTittelProps) => {
   const [loggId, setLoggId] = useState<string | null>(null);
   const [forceSave, setForceSave] = useState(false);
 
-  const nyTittel = useWatch({ control, name: 'nyTittel' });
+  const tittel = useWatch({ control, name: 'tittel' });
+  const tegnIgjen =
+    MAX_TITLE_LENGTH - (typeof tittel === 'string' ? tittel.length : 0);
 
-  useEffect(() => {
-    if (!isLoading && rekrutteringstreff) {
-      reset({ nyTittel: rekrutteringstreff.tittel ?? '' });
-    }
-  }, [isLoading, rekrutteringstreff, reset]);
-
-  useEffect(() => {
+  React.useEffect(() => {
     setLoggId(null);
     setForceSave(false);
     resetAnalyse();
-  }, [nyTittel, resetAnalyse]);
-
-  const tegnIgjen =
-    MAX_TITLE_LENGTH - (typeof nyTittel === 'string' ? nyTittel.length : 0);
+  }, [tittel]);
 
   const kiErrorBorder =
     !!analyse &&
@@ -109,22 +84,11 @@ const EndreTittel = ({ onUpdated }: EndreTittelProps) => {
     (analyse as any)?.bryterRetningslinjer &&
     !forceSave;
 
-  const errorMsg = useMemo(() => {
-    const e = errors.nyTittel?.message;
-    if (!touchedFields.nyTittel) return undefined;
-    return e ?? (kiErrorBorder ? 'Brudd på retningslinjer' : undefined);
-  }, [errors.nyTittel, touchedFields.nyTittel, kiErrorBorder]);
-
-  const save = async (values: FormValues, currentLoggId: string | null) => {
-    if (!rekrutteringstreff) return;
+  const save = async (currentLoggId: string | null) => {
     try {
-      await oppdaterRekrutteringstreff(
-        rekrutteringstreff.id,
-        toOppdaterRekrutteringstreffDto({
-          ...rekrutteringstreff,
-          tittel: values.nyTittel,
-        }),
-      );
+      await oppdaterRekrutteringstreff(rekrutteringstreffId, {
+        tittel: getValues('tittel'),
+      });
       if (currentLoggId) {
         try {
           await setKiLagret({ id: currentLoggId, lagret: true });
@@ -135,24 +99,24 @@ const EndreTittel = ({ onUpdated }: EndreTittelProps) => {
           });
         }
       }
-      onUpdated();
+      await mutate();
+      onUpdated?.();
     } catch (error) {
       new RekbisError({ message: 'Lagring av tittel feilet.', error });
     }
   };
 
   const runValidationAndMaybeSave = async () => {
-    const ok = await triggerRHF('nyTittel');
+    const ok = await triggerRHF('tittel');
     if (!ok) return;
 
-    const v = getValues();
-    if (!v.nyTittel?.trim() || errors.nyTittel) return;
-    if (!rekrutteringstreff) return;
+    const v = getValues('tittel');
+    if (!String(v ?? '').trim()) return;
 
     const res = (await validateKI({
-      treffId: rekrutteringstreff.id,
+      treffId: rekrutteringstreff?.id ?? rekrutteringstreffId,
       feltType: 'tittel',
-      tekst: v.nyTittel,
+      tekst: v,
     })) as { loggId?: string } | undefined;
 
     const id = res?.loggId ?? (analyse as any)?.loggId ?? null;
@@ -162,18 +126,22 @@ const EndreTittel = ({ onUpdated }: EndreTittelProps) => {
     const kanLagre = (!bryter || forceSave) && !validating && !isSubmitting;
 
     if (kanLagre) {
-      await handleSubmit(async (fv) => save(fv, id ?? null))();
+      await save(id ?? null);
     }
   };
 
   const clear = () => {
-    setValue('nyTittel', '', { shouldValidate: true, shouldDirty: true });
+    setValue('tittel', '', {
+      shouldValidate: true,
+      shouldDirty: true,
+      shouldTouch: true,
+    });
     inputRef.current?.focus();
   };
 
   const onForceSave = async () => {
     setForceSave(true);
-    await handleSubmit(async (fv) => save(fv, loggId))();
+    await save(loggId);
   };
 
   return (
@@ -182,7 +150,7 @@ const EndreTittel = ({ onUpdated }: EndreTittelProps) => {
       {!isLoading && (
         <>
           <div className='relative w-full'>
-            {nyTittel && (
+            {tittel && (
               <Button
                 type='button'
                 onClick={clear}
@@ -199,32 +167,45 @@ const EndreTittel = ({ onUpdated }: EndreTittelProps) => {
             <div className='flex items-start'>
               <Controller
                 control={control}
-                name='nyTittel'
-                render={({ field }) => (
+                name='tittel'
+                render={({ field, fieldState }) => (
                   <TextField
                     {...field}
                     value={field.value ?? ''}
                     ref={(el) => {
                       field.ref(el);
-                      inputRef.current = el;
+                      inputRef.current = el as HTMLInputElement | null;
                     }}
                     label='Navn på treffet'
                     maxLength={MAX_TITLE_LENGTH}
                     className='w-full pt-2'
-                    error={errorMsg}
-                    aria-invalid={!!errorMsg}
+                    error={
+                      fieldState.error?.message ||
+                      (kiErrorBorder ? 'Brudd på retningslinjer' : undefined)
+                    }
+                    aria-invalid={!!(fieldState.error || kiErrorBorder)}
                     autoComplete='off'
                     autoCorrect='off'
                     spellCheck={false}
-                    onBlur={async (e) => {
+                    onChange={(e) => {
+                      field.onChange(e);
+                      const v = (e.target as HTMLInputElement).value;
+                      if (v.trim().length > 0) {
+                        clearErrors('tittel'); // fjerner "tom"-feil live når man begynner å skrive
+                      }
+                    }}
+                    onBlur={async () => {
                       field.onBlur();
                       await runValidationAndMaybeSave();
                     }}
-                    onKeyDown={async (e) => {
+                    onKeyDown={(e) => {
                       if (e.key === 'Enter' && !e.shiftKey) {
                         e.preventDefault();
-                        await runValidationAndMaybeSave();
-                        (e.currentTarget as HTMLInputElement).blur();
+                        (async () => {
+                          const el = e.currentTarget as HTMLInputElement;
+                          await runValidationAndMaybeSave();
+                          el?.blur();
+                        })();
                       }
                     }}
                   />
@@ -245,9 +226,8 @@ const EndreTittel = ({ onUpdated }: EndreTittelProps) => {
                 className='h-6 w-6 shrink-0 self-start mt-0.5'
               />
               <span>
-                Ikke skriv personopplysninger og diskriminerende innhold.
-                KI-verktøyet hjelper deg å vurdere innholdet, men du er
-                ansvarlig for alt tekstinnhold.
+                Ikke skriv personopplysninger og diskriminerende innhold. KI
+                hjelper deg å vurdere innholdet, men du er ansvarlig.
               </span>
             </Detail>
             <Detail
@@ -350,8 +330,6 @@ const EndreTittel = ({ onUpdated }: EndreTittelProps) => {
                       initial={{ opacity: 0, y: 4 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -4 }}
-                      transition={{ duration: 0.2, ease }}
-                      onAnimationComplete={() => analyseRef.current?.focus()}
                     >
                       <BodyLong>{(analyse as any).begrunnelse}</BodyLong>
                     </motion.div>

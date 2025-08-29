@@ -3,8 +3,17 @@ import { RekrutteringstreffDTO } from '../useRekrutteringstreff';
 import { putApi } from '@/app/api/fetcher';
 import { z } from 'zod';
 
+export const MAX_TITLE_LENGTH = 100;
+
 export const OppdaterRekrutteringstreffSchema = z.object({
-  tittel: z.string(),
+  tittel: z
+    .string()
+    .trim()
+    .min(1, 'Tittel kan ikke være tom.')
+    .max(
+      MAX_TITLE_LENGTH,
+      `Tittelen kan ikke ha mer enn ${MAX_TITLE_LENGTH} tegn.`,
+    ),
   beskrivelse: z.string().nullable().optional(),
   fraTid: z.string().nullable().nullable().optional(),
   tilTid: z.string().nullable().optional(),
