@@ -90,7 +90,7 @@
               - generic [ref=e146]:
                 - heading "District Markets Analyst" [level=1] [ref=e147]
                 - generic [ref=e148]:
-                  - generic [ref=e149]: 8. september 2025
+                  - generic [ref=e149]: 9. september 2025
                   - generic [ref=e150]: Intern
               - generic [ref=e151]:
                 - heading "Om jobben" [level=1] [ref=e152]
@@ -148,13 +148,13 @@
                     - definition [ref=e218]: STILLING
                   - generic [ref=e219]:
                     - term [ref=e220]: Publisert
-                    - definition [ref=e221]: 08.09.25
+                    - definition [ref=e221]: 09.09.25
                   - generic [ref=e222]:
                     - term [ref=e223]: Siste visning
                     - definition [ref=e224]: 29.09.25
                   - generic [ref=e225]:
                     - term [ref=e226]: Sist endret
-                    - definition [ref=e227]: 29.08.25
+                    - definition [ref=e227]: 30.08.25
                   - generic [ref=e228]:
                     - term [ref=e229]: Kontaktperson hos Nav
                     - definition [ref=e230]: Dr. Karoline Haukelidsæter (Z536282)
