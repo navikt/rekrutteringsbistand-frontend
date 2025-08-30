@@ -8,7 +8,14 @@ import { DecoratorDTO } from '@/app/api/modia/decorator/useDecoratorData';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { RekbisError } from '@/util/rekbisError';
 import { Alert, AlertProps } from '@navikt/ds-react';
-import React from 'react';
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from 'react';
 
 export type NavKontorMedNavn = {
   navKontor: string;
@@ -34,12 +41,12 @@ interface ApplikasjonContextType {
   visVarsel: (varsel: ApplikasjonsVarsel) => void;
 }
 
-const ApplikasjonContext = React.createContext<
-  ApplikasjonContextType | undefined
->(undefined);
+const ApplikasjonContext = createContext<ApplikasjonContextType | undefined>(
+  undefined,
+);
 
 interface IApplikasjonContextProvider {
-  children: React.ReactNode;
+  children: ReactNode;
   brukerData: BrukerData;
   aktivEnhet: string | null;
   aktivBruker: string | null;
@@ -48,15 +55,13 @@ interface IApplikasjonContextProvider {
 export const ApplikasjonContextProvider: React.FC<
   IApplikasjonContextProvider
 > = ({ children, brukerData, aktivEnhet, aktivBruker }) => {
-  const [valgtFnr, setValgtFnr] = React.useState<string | null>(aktivBruker);
-  const [varsel, setVisVarsel] = React.useState<ApplikasjonsVarsel | null>(
-    null,
-  );
+  const [valgtFnr, setValgtFnr] = useState<string | null>(aktivBruker);
+  const [varsel, setVisVarsel] = useState<ApplikasjonsVarsel | null>(null);
 
   const [valgtNavKontor, setValgStatetNavKontor] =
-    React.useState<NavKontorMedNavn | null>(null);
+    useState<NavKontorMedNavn | null>(null);
 
-  const visVarsel = React.useCallback(
+  const visVarsel = useCallback(
     (varsel: ApplikasjonsVarsel) => {
       setVisVarsel(varsel);
       setTimeout(() => {
@@ -84,7 +89,7 @@ export const ApplikasjonContextProvider: React.FC<
         ),
     );
 
-  React.useEffect(() => {
+  useEffect(() => {
     setValgStatetNavKontor((navKontor) => {
       if (navKontor?.navKontor === aktivEnhet) {
         return navKontor;
@@ -133,7 +138,7 @@ export const ApplikasjonContextProvider: React.FC<
 };
 
 export const useApplikasjonContext = () => {
-  const context = React.useContext(ApplikasjonContext);
+  const context = useContext(ApplikasjonContext);
   if (context === undefined) {
     throw new RekbisError({
       message:

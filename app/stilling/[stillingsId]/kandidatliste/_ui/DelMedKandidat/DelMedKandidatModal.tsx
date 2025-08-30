@@ -28,7 +28,7 @@ import {
   Table,
 } from '@navikt/ds-react';
 import { format } from 'date-fns';
-import * as React from 'react';
+import { useState, type FC } from 'react';
 
 export interface DelMedKandidatModalProps {
   markerteKandidater: KandidatVisningProps[];
@@ -36,18 +36,18 @@ export interface DelMedKandidatModalProps {
   sidebar?: boolean;
 }
 
-const DelMedKandidatModal: React.FC<DelMedKandidatModalProps> = ({
+const DelMedKandidatModal: FC<DelMedKandidatModalProps> = ({
   markerteKandidater,
   fjernAllMarkering,
   sidebar,
 }) => {
   const { track } = useUmami();
   const { stillingsId } = useStillingsContext();
-  const [modalErÅpen, setModalErÅpen] = React.useState(false);
-  const [svarfrist, setSvarfrist] = React.useState<Date | undefined>(undefined);
+  const [modalErÅpen, setModalErÅpen] = useState(false);
+  const [svarfrist, setSvarfrist] = useState<Date | undefined>(undefined);
   const { valgtNavKontor, visVarsel } = useApplikasjonContext();
   const { reFetchKandidatliste } = useKandidatlisteContext();
-  const [loading, setLoading] = React.useState(false);
+  const [loading, setLoading] = useState(false);
 
   const forespurteKandidaterHook = useForespurteOmDelingAvCv(stillingsId);
 

@@ -11,6 +11,7 @@ import OmStillingenHeader from '@/app/stilling/[stillingsId]/_ui/om-stillingen/O
 import Fremdriftspanel from '@/components/Fremdriftspanel';
 import TekstMedIkon from '@/components/felles/TekstMedIkon';
 import VisEditorTekst from '@/components/felles/rikteksteditor/VisEditorTekst';
+import { useWindowContext } from '@/components/layout/windows/DynamicWindowContext';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { getWorkLocationsAsString } from '@/util/locationUtil';
@@ -61,6 +62,8 @@ export default function OmStillingen({
   printRef,
 }: OmStillingenProps) {
   const { stillingsData, erEier } = useStillingsContext();
+
+  const windowContext = useWindowContext();
 
   const lokasjon = getWorkLocationsAsString(
     stillingsData.stilling.locationList as GeografiDTO[],
@@ -147,7 +150,7 @@ export default function OmStillingen({
             <OmAnnonsen />
           </div>
         </div>
-        {!forhåndsvisData && erEier && printRef !== null && (
+        {windowContext?.isDynamic === false && !forhåndsvisData && erEier && (
           <Fremdriftspanel>
             <TilgangskontrollForInnhold
               skjulVarsel

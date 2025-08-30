@@ -10,7 +10,7 @@ import {
   parseAsString,
   useQueryState,
 } from 'nuqs';
-import * as React from 'react';
+import { createContext, FC, useContext, useState, type ReactNode } from 'react';
 
 export enum KandidatSøkPortefølje {
   MINE_BRUKERE = 'minebrukere',
@@ -76,17 +76,17 @@ export interface IKandidaSokFilterContext {
   orgenhet: string | null;
 }
 
-export const KandidaSøkFilterContext = React.createContext<
+export const KandidaSøkFilterContext = createContext<
   IKandidaSokFilterContext | undefined
 >(undefined);
 
-export const KandidatSøkProvider: React.FC<{ children: React.ReactNode }> = ({
+export const KandidatSøkProvider: FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const { valgtNavKontor } = useApplikasjonContext();
   const { track } = useUmami();
   // Unngå fritekst i searchParams
-  const [fritekst, setFritekst] = React.useState<string>('');
+  const [fritekst, setFritekst] = useState<string>('');
 
   const [side, setSide] = useQueryState(
     KandidatSøkQueryparam.Side,
@@ -185,7 +185,7 @@ export const KandidatSøkProvider: React.FC<{ children: React.ReactNode }> = ({
 
   //TODO er denne aktuell?
 
-  const [ferskhet] = React.useState<number | null>(null);
+  const [ferskhet] = useState<number | null>(null);
 
   const wrapWithPageReset = <T,>(
     setter: (value: T | ((prevValue: T) => T) | null) => Promise<any>,
@@ -268,7 +268,7 @@ export const KandidatSøkProvider: React.FC<{ children: React.ReactNode }> = ({
 };
 
 export const useKandidatSøkFilterContext = () => {
-  const context = React.useContext(KandidaSøkFilterContext);
+  const context = useContext(KandidaSøkFilterContext);
   if (context === undefined) {
     throw new RekbisError({
       message: 'useKandidaSokFilterContext må være i scope',

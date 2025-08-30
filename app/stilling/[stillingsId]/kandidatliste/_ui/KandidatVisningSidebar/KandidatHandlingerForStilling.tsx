@@ -22,21 +22,21 @@ import VelgInternStatus from '@/app/stilling/[stillingsId]/kandidatliste/_ui/Vel
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { RekbisError } from '@/util/rekbisError';
 import { Accordion } from '@navikt/ds-react';
-import * as React from 'react';
+import { useRef, useState, type FC } from 'react';
 
 export interface KandidatHandlingerForStillingProps {
   kandidat: KandidatVisningProps;
 }
 
-const KandidatHandlingerForStilling: React.FC<
-  KandidatHandlingerForStillingProps
-> = ({ kandidat }) => {
+const KandidatHandlingerForStilling: FC<KandidatHandlingerForStillingProps> = ({
+  kandidat,
+}) => {
   const { valgtNavKontor } = useApplikasjonContext();
   const { stillingsData, kandidatlisteInfo } = useStillingsContext();
   const { reFetchKandidatliste, lukketKandidatliste, kandidatlisteId } =
     useKandidatlisteContext();
-  const [loading, setLoading] = React.useState<boolean>(false);
-  const modalRef = React.useRef<HTMLDialogElement>(null!);
+  const [loading, setLoading] = useState<boolean>(false);
+  const modalRef = useRef<HTMLDialogElement>(null!);
 
   const cvDeltMedArbeidsgiver =
     kandidat.kandidatHendelser.utfallsendringer?.some(

@@ -4,6 +4,8 @@ import KandidatTilStilling from './KandidatTilStilling';
 import { KandidatSøkProvider } from '@/app/kandidat/KandidaSokFilterContext';
 import { KandidatSøkMarkerteContextProvider } from '@/app/kandidat/KandidatSøkMarkerteContext';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
+import PanelHeader from '@/components/layout/PanelHeader';
+import SideLayout from '@/components/layout/SideLayout';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import * as React from 'react';
@@ -12,18 +14,26 @@ const FinnKandidaterForStilling: React.FC = () => {
   const { stillingsData } = useStillingsContext();
 
   return (
-    <TilgangskontrollForInnhold
-      kreverEnAvRollene={[
-        Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-        Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
-      ]}
+    <SideLayout
+      header={
+        <PanelHeader>
+          <PanelHeader.Section title={'Finn kandidater for stilling'} />
+        </PanelHeader>
+      }
     >
-      <KandidatSøkProvider>
-        <KandidatSøkMarkerteContextProvider>
-          <KandidatTilStilling stillingsData={stillingsData} />
-        </KandidatSøkMarkerteContextProvider>
-      </KandidatSøkProvider>
-    </TilgangskontrollForInnhold>
+      <TilgangskontrollForInnhold
+        kreverEnAvRollene={[
+          Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+          Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
+        ]}
+      >
+        <KandidatSøkProvider>
+          <KandidatSøkMarkerteContextProvider>
+            <KandidatTilStilling stillingsData={stillingsData} />
+          </KandidatSøkMarkerteContextProvider>
+        </KandidatSøkProvider>
+      </TilgangskontrollForInnhold>
+    </SideLayout>
   );
 };
 

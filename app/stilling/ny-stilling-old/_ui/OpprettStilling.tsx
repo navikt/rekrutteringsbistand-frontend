@@ -10,14 +10,14 @@ import { useUmami } from '@/providers/UmamiContext';
 import { PlusCircleIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
-import * as React from 'react';
+import { useState, type FC } from 'react';
 
 export interface OpprettStillingProps {
   stillingskategori: Stillingskategori | null;
   arbeidsgiver: ArbeidsgiverDTO | null;
 }
 
-export const OpprettStillingKnapp: React.FC<OpprettStillingProps> = ({
+export const OpprettStillingKnapp: FC<OpprettStillingProps> = ({
   stillingskategori,
   arbeidsgiver,
 }) => {
@@ -27,7 +27,7 @@ export const OpprettStillingKnapp: React.FC<OpprettStillingProps> = ({
   } = useApplikasjonContext();
   const { track } = useUmami();
   const router = useRouter();
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleOpprettStilling = async () => {
     setIsLoading(true);

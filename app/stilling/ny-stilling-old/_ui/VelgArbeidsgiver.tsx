@@ -3,31 +3,30 @@ import {
   useFinnArbeidsgiver,
 } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
 import { Alert, FormSummary, UNSAFE_Combobox } from '@navikt/ds-react';
-import * as React from 'react';
+import { FC, Fragment, useEffect, useState, type ReactNode } from 'react';
 
 export interface IVelgArbeidsgiver {
-  children?: React.ReactNode | undefined;
+  children?: ReactNode | undefined;
   arbeidsgiverCallback: (arbeidsgiver: ArbeidsgiverDTO) => void;
   valgtArbeidsgiver?: ArbeidsgiverDTO | null;
 }
-
-const VelgArbeidsgiver: React.FC<IVelgArbeidsgiver> = ({
+const VelgArbeidsgiver: FC<IVelgArbeidsgiver> = ({
   arbeidsgiverCallback,
   valgtArbeidsgiver,
 }) => {
-  const [søkeOrd, setSøkeord] = React.useState<string>('');
+  const [søkeOrd, setSøkeord] = useState<string>('');
   const { isLoading, error, data } = useFinnArbeidsgiver(søkeOrd);
-  const [arbeidsgiver, setArbeidsgiver] =
-    React.useState<ArbeidsgiverDTO | null>(valgtArbeidsgiver ?? null);
-
-  React.useEffect(() => {
+  const [arbeidsgiver, setArbeidsgiver] = useState<ArbeidsgiverDTO | null>(
+    valgtArbeidsgiver ?? null,
+  );
+  useEffect(() => {
     if (arbeidsgiver) {
       arbeidsgiverCallback(arbeidsgiver);
     }
-  }, [arbeidsgiver]);
+  }, [arbeidsgiver, arbeidsgiverCallback]);
 
   return (
-    <React.Fragment>
+    <Fragment>
       <div role='search'>
         <UNSAFE_Combobox
           isLoading={isLoading}
@@ -94,7 +93,7 @@ const VelgArbeidsgiver: React.FC<IVelgArbeidsgiver> = ({
           {JSON.stringify(error)}
         </Alert>
       )}
-    </React.Fragment>
+    </Fragment>
   );
 };
 

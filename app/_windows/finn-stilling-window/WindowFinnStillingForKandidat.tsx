@@ -1,4 +1,6 @@
 import StillingsSøk from '@/app/stilling/StillingsSøk';
+import PanelHeader from '@/components/layout/PanelHeader';
+import SideLayout from '@/components/layout/SideLayout';
 import { useWindows } from '@/components/layout/windows/WindowWrapper';
 import { parseAsBoolean, useQueryState } from 'nuqs';
 import * as React from 'react';
@@ -22,10 +24,18 @@ const WindowFinnStillingForKandidat: React.FC<
         id: 'visKandidatNr',
         onClose: () => setFinnStilling(false),
         content: (
-          <StillingsSøk
-            key={`stilling-${kandidatNr}`}
-            forKandidatNr={kandidatNr}
-          />
+          <SideLayout
+            header={
+              <PanelHeader>
+                <PanelHeader.Section title={'Finn stilling for kandidat'} />
+              </PanelHeader>
+            }
+          >
+            <StillingsSøk
+              key={`stilling-${kandidatNr}`}
+              forKandidatNr={kandidatNr}
+            />
+          </SideLayout>
         ),
       });
     }

@@ -12,8 +12,15 @@ import { eierStilling } from '@/components/tilgangskontroll/erEier';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { RekbisError } from '@/util/rekbisError';
-import { useRouter } from 'next/navigation';
-import React, { useMemo } from 'react';
+import {
+  createContext,
+  FC,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from 'react';
 
 interface StillingsContextType {
   stillingsId: string;
@@ -30,17 +37,18 @@ interface StillingsContextType {
   erJobbmesse: boolean;
 }
 
-const StillingsContext = React.createContext<StillingsContextType | undefined>(
+const StillingsContext = createContext<StillingsContextType | undefined>(
   undefined,
 );
 
 interface StillingsContextProviderProps {
   stillingsId: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }
-export const StillingsContextProvider: React.FC<
-  StillingsContextProviderProps
-> = ({ stillingsId, children }) => {
+export const StillingsContextProvider: FC<StillingsContextProviderProps> = ({
+  stillingsId,
+  children,
+}) => {
   const stillingHook = useStilling(stillingsId);
 
   return (
@@ -62,14 +70,16 @@ export const StillingsContextProvider: React.FC<
 
 interface StillingsContextMedDataProps {
   stillingsData: StillingsDataDTO;
-  children: React.ReactNode;
+  children: ReactNode;
   refetch?: () => void;
 }
 
-export const StillingsContextMedData: React.FC<
-  StillingsContextMedDataProps
-> = ({ stillingsData, children, refetch }) => {
-  const router = useRouter();
+export const StillingsContextMedData: FC<StillingsContextMedDataProps> = ({
+  stillingsData,
+  children,
+  refetch,
+}) => {
+  // const router = useRouter(); // (ubrukt per nå)
   const {
     brukerData: { ident },
     harRolle,
@@ -80,14 +90,14 @@ export const StillingsContextMedData: React.FC<
       : null,
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (stillingsData.stilling?.updated) {
       kandidatListeInfoHook?.mutate();
     }
   }, [stillingsData?.stilling?.updated, kandidatListeInfoHook]);
 
   const [forhåndsvisData, setForhåndsvisData] =
-    React.useState<StillingsDataDTO | null>(null);
+    useState<StillingsDataDTO | null>(null);
 
   // React.useEffect(() => {
   //   const isFormidling =
@@ -162,7 +172,7 @@ export const StillingsContextMedData: React.FC<
 };
 
 export const useNullableStillingsContext = () => {
-  const context = React.useContext(StillingsContext);
+  const context = useContext(StillingsContext);
 
   if (context === undefined) {
     return null;
@@ -171,7 +181,7 @@ export const useNullableStillingsContext = () => {
 };
 
 export const useStillingsContext = () => {
-  const context = React.useContext(StillingsContext);
+  const context = useContext(StillingsContext);
 
   if (context === undefined) {
     throw new RekbisError({

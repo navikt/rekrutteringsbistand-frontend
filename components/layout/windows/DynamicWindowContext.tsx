@@ -9,4 +9,4 @@ export const DynamicWindowContext = React.createContext<
   DynamicWindowContextValue | undefined
 >(undefined);
 
-export const useDynamicWindowContext = () => useContext(DynamicWindowContext);
+export const useWindowContext = () => useContext(DynamicWindowContext);

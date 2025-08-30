@@ -1,7 +1,7 @@
 import { RekbisError } from '@/util/rekbisError';
 import { Alert, BodyShort, Button, CopyButton } from '@navikt/ds-react';
 import { logger } from '@navikt/next-logger';
-import * as React from 'react';
+import { useEffect, useState } from 'react';
 import { ZodError } from 'zod';
 
 export interface IFeilmelding {
@@ -11,10 +11,10 @@ export interface IFeilmelding {
 }
 
 const Feilmelding: React.FC<IFeilmelding> = ({ zodError, error, message }) => {
-  const [showError, setShowError] = React.useState(false);
+  const [showError, setShowError] = useState(false);
 
   // Log error hvis ikke rekbisError
-  React.useEffect(() => {
+  useEffect(() => {
     if (error) {
       if (error instanceof RekbisError) {
         logger.error(
@@ -34,7 +34,7 @@ const Feilmelding: React.FC<IFeilmelding> = ({ zodError, error, message }) => {
         );
       }
     }
-  }, [error]);
+  }, [error, message]);
 
   if (zodError) {
     logger.info({ zodError: zodError }, 'ZodError');

@@ -5,12 +5,12 @@ import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/Tilgan
 import { Roller } from '@/components/tilgangskontroll/roller';
 import Editor from '@monaco-editor/react';
 import { Button } from '@navikt/ds-react';
-import * as React from 'react';
+import { useState, type FC } from 'react';
 
-const RedigerStillingUtvikler: React.FC = () => {
+const RedigerStillingUtvikler: FC = () => {
   const { stillingsData } = useStillingsContext();
-  const [isLoading, setIsLoading] = React.useState<boolean>(false);
-  const [editorData, setEditorData] = React.useState<string>(
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [editorData, setEditorData] = useState<string>(
     JSON.stringify(stillingsData, null, 2),
   );
 

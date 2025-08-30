@@ -9,12 +9,12 @@ import KandidatlisteHandlingsRad from './_ui/KandidatlisteHandlingsRad';
 import { useKandidatNavigeringContext } from '@/providers/KandidatNavigeringContext';
 import { SortDownIcon, SortUpIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
-import * as React from 'react';
+import { useEffect, type FC } from 'react';
 
 export const KANDIDATLISTE_COLUMN_LAYOUT =
   'grid-cols-1 md:grid-cols-[minmax(10rem,30%)_minmax(6rem,20%)_minmax(10rem,20%)_minmax(5rem,10%)_minmax(10rem,12%)_minmax(1rem,2%)]';
 
-const FiltrertKandidatListeVisning: React.FC = () => {
+const FiltrertKandidatListeVisning: FC = () => {
   const filtrerteKandidater = useFiltrerteKandidater();
   const { setSortering, sortering } = useKandidatlisteFilterContext();
   const { setKandidatNavigering } = useKandidatNavigeringContext();
@@ -29,7 +29,7 @@ const FiltrertKandidatListeVisning: React.FC = () => {
     return null;
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (filtrerteKandidater?.kandidater) {
       setKandidatNavigering(
         filtrerteKandidater.kandidater.map((kandidat) => kandidat.kandidatnr),

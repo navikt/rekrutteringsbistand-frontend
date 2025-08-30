@@ -12,16 +12,16 @@ import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { MagnifyingGlassIcon } from '@navikt/aksel-icons';
 import { Box, Button } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
-import * as React from 'react';
+import { useEffect, useRef, useState, type FC } from 'react';
 
-const StillingsSøkFilter: React.FC<{
+const StillingsSøkFilter: FC<{
   formidlinger?: boolean;
   stillingForKandidat?: string;
 }> = ({ formidlinger }) => {
-  const [showStandardsøk, setShowStandardsøk] = React.useState<boolean>(false);
+  const [showStandardsøk, setShowStandardsøk] = useState<boolean>(false);
   const { harRolle } = useApplikasjonContext();
   const brukerStandardSøkData = useUseBrukerStandardSøk();
-  const searchRef = React.useRef<HTMLDivElement>(null);
+  const searchRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const harArbeidsgiverrettetRolle = harRolle([
     Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
@@ -32,7 +32,7 @@ const StillingsSøkFilter: React.FC<{
     router.push('/stilling?brukStandardsok=true');
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
         searchRef.current &&

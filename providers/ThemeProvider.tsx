@@ -2,26 +2,33 @@
 
 import { RekbisError } from '@/util/rekbisError';
 import { Theme } from '@navikt/ds-react';
-import * as React from 'react';
-import { useEffect } from 'react';
+import {
+  createContext,
+  FC,
+  useContext,
+  useEffect,
+  useEffect as useReactEffect,
+  useState,
+  type ReactNode,
+} from 'react';
 
 interface ApplikasjonContextType {
   darkMode: boolean;
   setDarkMode: (val: boolean) => void;
 }
 
-export const ThemeContext = React.createContext<ApplikasjonContextType>({
+export const ThemeContext = createContext<ApplikasjonContextType>({
   darkMode: false,
   setDarkMode: () => false,
 });
 
 export interface ThemeProviderProps {
-  children?: React.ReactNode | undefined;
+  children?: ReactNode | undefined;
 }
 
-export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
-  const [mounted, setMounted] = React.useState(false);
-  const [darkMode, setDarkMode] = React.useState<boolean>(() => {
+export const ThemeProvider: FC<ThemeProviderProps> = ({ children }) => {
+  const [mounted, setMounted] = useState(false);
+  const [darkMode, setDarkMode] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
       return localStorage.getItem('darkMode') === 'true';
     }
@@ -39,7 +46,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     document.documentElement.classList.toggle('dark', darkMode);
   }, [darkMode]);
 
-  React.useEffect(() => {
+  useReactEffect(() => {
     setMounted(true);
   }, []);
 
@@ -55,7 +62,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
 };
 
 export const useThemeProvider = () => {
-  const context = React.useContext(ThemeContext);
+  const context = useContext(ThemeContext);
   if (context === undefined) {
     throw new RekbisError({
       message: 'useThemeProvider må være i scope: ThemeProvider',

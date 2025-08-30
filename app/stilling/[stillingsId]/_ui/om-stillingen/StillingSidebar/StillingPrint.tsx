@@ -3,14 +3,14 @@ import { UmamiEvent } from '@/components/umami/umamiEvents';
 import { useUmami } from '@/providers/UmamiContext';
 import { PrinterSmallIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
-import * as React from 'react';
+import { useEffect, type FC } from 'react';
 import { useReactToPrint } from 'react-to-print';
 
 export interface StillingPrintProps {
   printRef: React.RefObject<HTMLDivElement | null>;
 }
 
-const StillingPrint: React.FC<StillingPrintProps> = ({ printRef }) => {
+const StillingPrint: FC<StillingPrintProps> = ({ printRef }) => {
   const { stillingsData } = useStillingsContext();
   const { track } = useUmami();
 
@@ -35,7 +35,7 @@ const StillingPrint: React.FC<StillingPrintProps> = ({ printRef }) => {
       `,
   });
 
-  React.useEffect(() => {
+  useEffect(() => {
     const currentRef = printRef.current;
     if (currentRef) {
       currentRef.classList.add('print-content');

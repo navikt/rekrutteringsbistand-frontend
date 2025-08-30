@@ -17,7 +17,7 @@ import { UmamiEvent } from '@/components/umami/umamiEvents';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
 import { useSearchParams } from 'next/navigation';
-import * as React from 'react';
+import { FC, Suspense, useEffect } from 'react';
 
 interface StillingsSøkProps {
   formidlinger?: boolean;
@@ -28,7 +28,7 @@ const StillingsSøk = ({ formidlinger, forKandidatNr }: StillingsSøkProps) => {
   const searchParams = useSearchParams();
   const brukerStandardSøkData = useUseBrukerStandardSøk();
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (
       searchParams.get('brukStandardsok') !== null &&
       !brukerStandardSøkData.isLoading
@@ -45,18 +45,18 @@ const StillingsSøk = ({ formidlinger, forKandidatNr }: StillingsSøkProps) => {
   }, [searchParams, brukerStandardSøkData]);
 
   return (
-    <React.Suspense fallback={<Sidelaster />}>
+    <Suspense fallback={<Sidelaster />}>
       <StillingsSøkProvider formidlinger={formidlinger}>
         <StillingsSøkLayout
           formidlinger={formidlinger}
           forKandidatNr={forKandidatNr}
         />
       </StillingsSøkProvider>
-    </React.Suspense>
+    </Suspense>
   );
 };
 
-const StillingsSøkLayout: React.FC<StillingsSøkProps> = ({
+const StillingsSøkLayout: FC<StillingsSøkProps> = ({
   formidlinger,
   forKandidatNr,
 }) => {

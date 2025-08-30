@@ -3,16 +3,16 @@ import { useStillingsSøkFilter } from '@/app/stilling/StillingsSøkContext';
 import { MagnifyingGlassIcon } from '@navikt/aksel-icons';
 import { Box, Button, Search } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
-import * as React from 'react';
+import { useEffect, useRef, useState, type FC } from 'react';
 
-const StillingSøkebar: React.FC = () => {
+const StillingSøkebar: FC = () => {
   const { fritekst, setFritekstListe } = useStillingsSøkFilter();
-  const [searchValue, setSearchValue] = React.useState<string>('');
-  const [showStandardsøk, setShowStandardsøk] = React.useState<boolean>(false);
-  const [showSearch, setShowSearch] = React.useState<boolean>(false);
+  const [searchValue, setSearchValue] = useState<string>('');
+  const [showStandardsøk, setShowStandardsøk] = useState<boolean>(false);
+  const [showSearch, setShowSearch] = useState<boolean>(false);
   const brukerStandardSøkData = useUseBrukerStandardSøk();
-  const searchRef = React.useRef<HTMLDivElement>(null);
-  const searchInputRef = React.useRef<HTMLInputElement>(null);
+  const searchRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
   const handleStandardsøkClick = () => {
@@ -31,13 +31,13 @@ const StillingSøkebar: React.FC = () => {
     setShowSearch(false);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (showSearch && searchInputRef.current) {
       searchInputRef.current.focus();
     }
   }, [showSearch]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
         searchRef.current &&

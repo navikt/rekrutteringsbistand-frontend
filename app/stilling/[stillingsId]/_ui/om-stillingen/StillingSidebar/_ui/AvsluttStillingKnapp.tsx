@@ -7,7 +7,7 @@ import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { RekbisError } from '@/util/rekbisError';
 import { TasklistIcon } from '@navikt/aksel-icons';
 import { BodyLong, Button, Modal } from '@navikt/ds-react';
-import * as React from 'react';
+import { useRef, useState, type FC } from 'react';
 
 interface AvsluttStillingKnappProps {
   kandidatlisteId?: string;
@@ -16,16 +16,16 @@ interface AvsluttStillingKnappProps {
   kandidatlisteStatus?: string;
 }
 
-const AvsluttStillingKnapp: React.FC<AvsluttStillingKnappProps> = ({
+const AvsluttStillingKnapp: FC<AvsluttStillingKnappProps> = ({
   kandidatlisteId,
   besatteStillinger,
   antallStillinger,
   kandidatlisteStatus,
 }) => {
-  const ref = React.useRef<HTMLDialogElement>(null);
+  const ref = useRef<HTMLDialogElement>(null);
   const { stillingsData, refetch } = useStillingsContext();
   const { valgtNavKontor, brukerData } = useApplikasjonContext();
-  const [loading, setLoading] = React.useState(false);
+  const [loading, setLoading] = useState(false);
 
   const stillingsStatus = stillingsData.stilling.status;
 

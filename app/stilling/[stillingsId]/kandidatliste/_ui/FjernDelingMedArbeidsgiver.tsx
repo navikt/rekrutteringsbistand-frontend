@@ -2,18 +2,18 @@ import { slettCvFraArbeidsgiversKandidatliste } from '@/app/api/kandidat/slettCv
 import { useKandidatlisteContext } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteContext';
 import { MinusCircleIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
-import * as React from 'react';
+import { useState, type FC } from 'react';
 
 export interface FjernDelingMedArbeidsgiverProps {
   kandidatnummer: string;
   navKontor: string | null;
 }
 
-const FjernDelingMedArbeidsgiver: React.FC<FjernDelingMedArbeidsgiverProps> = ({
+const FjernDelingMedArbeidsgiver: FC<FjernDelingMedArbeidsgiverProps> = ({
   kandidatnummer,
   navKontor,
 }) => {
-  const [loading, setLoading] = React.useState(false);
+  const [loading, setLoading] = useState(false);
   const { reFetchKandidatliste, kandidatlisteId } = useKandidatlisteContext();
 
   const slettCv = async () => {

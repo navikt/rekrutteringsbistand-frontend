@@ -8,7 +8,7 @@ import {
 } from '@navikt/ds-react';
 import { addDays, addMonths, format } from 'date-fns';
 import { nb } from 'date-fns/locale';
-import React, { FunctionComponent, useState } from 'react';
+import { FunctionComponent, useEffect, useState } from 'react';
 
 export enum Svarfrist {
   ToDager = 'TO_DAGER',
@@ -49,7 +49,7 @@ const VelgSvarfrist: FunctionComponent<Props> = ({
     allowTwoDigitYear: false,
   });
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (svarFrist) {
       setValgtSvarfrist(svarFrist);
     }

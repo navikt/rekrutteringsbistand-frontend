@@ -14,25 +14,25 @@ import NavigasjonsBlockerProvider from '@/providers/NavigasjonsBlockerProvider';
 import { ThemeProvider } from '@/providers/ThemeProvider';
 import { RekbisError } from '@/util/rekbisError';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
-import * as React from 'react';
+import { FC, useEffect, useState, type ReactNode } from 'react';
 import { SWRConfig } from 'swr';
 
 const MAX_RETRY_ATTEMPTS = 10;
 
 export interface RekrutteringsbistandProviderProps {
-  children?: React.ReactNode | undefined;
+  children?: ReactNode | undefined;
 }
 
-const RekrutteringsbistandProvider: React.FC<
-  RekrutteringsbistandProviderProps
-> = ({ children }) => {
+const RekrutteringsbistandProvider: FC<RekrutteringsbistandProviderProps> = ({
+  children,
+}) => {
   const brukerHook = useBruker();
   const dekoratørHook = useDecoratorData();
   const modiaAktivEnhetHook = useModiaAktivEnhet();
   const modiaAktivBrukerHook = useModiaAktivBruker();
-  const [retryCount, setRetryCount] = React.useState(0);
+  const [retryCount, setRetryCount] = useState(0);
 
-  React.useEffect(() => {
+  useEffect(() => {
     // Kjør kun én gang – ellers risikerer vi at query-param fjernes rett etter at WindowController har åpnet vindu
     if (retryCount < MAX_RETRY_ATTEMPTS) {
       if (typeof window !== 'undefined' && window?.skyra?.redactSearchParam) {

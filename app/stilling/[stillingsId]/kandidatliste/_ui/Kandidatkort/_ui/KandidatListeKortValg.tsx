@@ -14,14 +14,14 @@ import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { RekbisError } from '@/util/rekbisError';
 import { MenuElipsisVerticalIcon } from '@navikt/aksel-icons';
 import { ActionMenu, Button } from '@navikt/ds-react';
-import * as React from 'react';
+import { useRef, useState, type FC } from 'react';
 
 export interface KandidatListeKortValgProps {
   kandidat: KandidatListeKandidatDTO;
   kandidatlisteId: string;
 }
 
-const KandidatListeKortValg: React.FC<KandidatListeKortValgProps> = ({
+const KandidatListeKortValg: FC<KandidatListeKortValgProps> = ({
   kandidat,
   kandidatlisteId,
 }) => {
@@ -29,8 +29,8 @@ const KandidatListeKortValg: React.FC<KandidatListeKortValgProps> = ({
   const { stillingsData } = useStillingsContext();
   const { reFetchKandidatliste, lukketKandidatliste } =
     useKandidatlisteContext();
-  const [loading, setLoading] = React.useState<boolean>(false);
-  const modalRef = React.useRef<HTMLDialogElement>(null!);
+  const [loading, setLoading] = useState<boolean>(false);
+  const modalRef = useRef<HTMLDialogElement>(null!);
 
   const endreUtfallForKandidat = async (utfall: KandidatutfallTyper) => {
     setLoading(true);

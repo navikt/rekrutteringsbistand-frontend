@@ -9,7 +9,7 @@ import {
 import { Sms } from '@/app/api/kandidatvarsel/kandidatvarsel';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import { RekbisError } from '@/util/rekbisError';
-import * as React from 'react';
+import { createContext, FC, useContext, useState, type ReactNode } from 'react';
 
 interface KandidatlisteContextProps {
   forespurteKandidater: ForespurteOmDelingAvCvDTO;
@@ -25,19 +25,19 @@ interface KandidatlisteContextProps {
   kandidatlisteRawData: kandidatlisteSchemaDTO;
 }
 
-const KandidatListeContext = React.createContext<
+const KandidatListeContext = createContext<
   KandidatlisteContextProps | undefined
 >(undefined);
 
 interface KandidatlisteContextProviderProps {
-  children?: React.ReactNode | undefined;
+  children?: ReactNode | undefined;
   kandidatliste: kandidatlisteSchemaDTO;
   forespurteKandidater: ForespurteOmDelingAvCvDTO;
   beskjeder: Record<string, Sms>;
   reFetchKandidatliste: () => void;
 }
 
-export const KandidatlisteContextProvider: React.FC<
+export const KandidatlisteContextProvider: FC<
   KandidatlisteContextProviderProps
 > = ({
   children,
@@ -47,7 +47,7 @@ export const KandidatlisteContextProvider: React.FC<
   reFetchKandidatliste,
 }) => {
   const { stillingsData, kandidatlisteInfo } = useStillingsContext();
-  const [markerteKandidater, setMarkerteKandidater] = React.useState<
+  const [markerteKandidater, setMarkerteKandidater] = useState<
     KandidatVisningProps[]
   >([]);
 
@@ -112,7 +112,7 @@ export const KandidatlisteContextProvider: React.FC<
 };
 
 export const useNullableKandidatlisteContext = () => {
-  const context = React.useContext(KandidatListeContext);
+  const context = useContext(KandidatListeContext);
   if (context === undefined) {
     return null;
   }
@@ -120,7 +120,7 @@ export const useNullableKandidatlisteContext = () => {
 };
 
 export const useKandidatlisteContext = () => {
-  const context = React.useContext(KandidatListeContext);
+  const context = useContext(KandidatListeContext);
   if (context === undefined) {
     throw new RekbisError({
       message:

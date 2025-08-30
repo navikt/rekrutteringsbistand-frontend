@@ -10,7 +10,7 @@ import {
 import { useKandidatlisteContext } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteContext';
 import { KandidatHendelseType } from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatHendelser/KandidatHendelseTag';
 import { KandidatHendelser } from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatHendelser/KandidatHendelser';
-import React from 'react';
+import { useEffect, useState } from 'react';
 
 export interface KandidatVisningProps extends KandidatListeKandidatDTO {
   kandidatHendelser: KandidatHendelser;
@@ -28,9 +28,9 @@ const useFiltrerteKandidater = (): FiltrerteKandidater | null => {
     useKandidatlisteFilterContext();
 
   const [filtrerteKandidater, setFiltrerteKandidater] =
-    React.useState<FiltrerteKandidater | null>(null);
+    useState<FiltrerteKandidater | null>(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (kandidater) {
       const nyKandidatliste = kandidater;
       const nyUsynligListe = usynligeKandidater;
@@ -171,6 +171,7 @@ const useFiltrerteKandidater = (): FiltrerteKandidater | null => {
     fritekstSøk,
     internStatus,
     visSlettede,
+    hendelseFilter,
   ]);
 
   return filtrerteKandidater;

@@ -18,7 +18,7 @@ import {
   Modal,
   VStack,
 } from '@navikt/ds-react';
-import * as React from 'react';
+import { useState, type FC } from 'react';
 
 interface OpprettRekrutteringsoppdragProps {
   arbeidsgiver: string;
@@ -27,15 +27,16 @@ interface OpprettRekrutteringsoppdragProps {
   stillingsId: string;
 }
 
-const OpprettRekrutteringsoppdrag: React.FC<
-  OpprettRekrutteringsoppdragProps
-> = ({ arbeidsgiver, orgnr, stillingstittel, stillingsId }) => {
+const OpprettRekrutteringsoppdrag: FC<OpprettRekrutteringsoppdragProps> = ({
+  arbeidsgiver,
+  orgnr,
+  stillingstittel,
+  stillingsId,
+}) => {
   const { brukerData, valgtNavKontor } = useApplikasjonContext();
-  const [loading, setLoading] = React.useState(false);
-  const [avtaltMedArbeidsgiver, setAvtaltMedArbeidsgiver] =
-    React.useState(false);
-
-  const [open, setOpen] = React.useState(false);
+  const [loading, setLoading] = useState(false);
+  const [avtaltMedArbeidsgiver, setAvtaltMedArbeidsgiver] = useState(false);
+  const [open, setOpen] = useState(false);
   const handleFullfor = async () => {
     setLoading(true);
     try {

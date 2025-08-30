@@ -3,14 +3,14 @@ import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { RekbisError } from '@/util/rekbisError';
 import { FilesIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
-import * as React from 'react';
+import { useState, type FC } from 'react';
 
 export interface KopierStillingProps {
   stillingsId: string;
 }
 
-const KopierStilling: React.FC<KopierStillingProps> = ({ stillingsId }) => {
-  const [loading, setLoading] = React.useState(false);
+const KopierStilling: FC<KopierStillingProps> = ({ stillingsId }) => {
+  const [loading, setLoading] = useState(false);
   const { visVarsel } = useApplikasjonContext();
   const onKopierStilling = async () => {
     try {

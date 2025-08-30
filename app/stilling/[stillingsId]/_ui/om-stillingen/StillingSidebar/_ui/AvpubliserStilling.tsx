@@ -5,14 +5,14 @@ import { stillingErUtløpt } from '@/app/stilling/_util/stilling-util';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { ArrowUndoIcon, EyeSlashIcon } from '@navikt/aksel-icons';
 import { BodyLong, BodyShort, Button, Modal } from '@navikt/ds-react';
-import * as React from 'react';
+import { Fragment, useRef, useState, type FC } from 'react';
 
-const AvpubliserStilling: React.FC = () => {
-  const ref = React.useRef<HTMLDialogElement>(null);
+const AvpubliserStilling: FC = () => {
+  const ref = useRef<HTMLDialogElement>(null);
 
   const { valgtNavKontor, brukerData } = useApplikasjonContext();
   const { stillingsData, refetch } = useStillingsContext();
-  const [loading, setLoading] = React.useState(false);
+  const [loading, setLoading] = useState(false);
   const avpubliserStilling = async () => {
     setLoading(true);
     await oppdaterStilling(
@@ -40,7 +40,7 @@ const AvpubliserStilling: React.FC = () => {
   const stillingsStatus = stillingsData.stilling.status;
 
   return (
-    <React.Fragment>
+    <Fragment>
       <Button
         disabled={
           erUtløpt || loading || stillingsStatus === StillingsStatus.Stoppet
@@ -92,7 +92,7 @@ const AvpubliserStilling: React.FC = () => {
           </Button>
         </Modal.Footer>
       </Modal>
-    </React.Fragment>
+    </Fragment>
   );
 };
 

@@ -11,9 +11,9 @@ import SideLayout from '@/components/layout/SideLayout';
 import { Alert, BodyLong, Button } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
 import { useQueryState } from 'nuqs';
-import * as React from 'react';
+import { useState, type FC } from 'react';
 
-const NyStilling: React.FC = () => {
+const NyStilling: FC = () => {
   const router = useRouter();
 
   const [stillingskategori, setStillingskategori] =
@@ -22,8 +22,9 @@ const NyStilling: React.FC = () => {
       defaultValue: null,
     });
 
-  const [arbeidsgiver, setArbeidsgiver] =
-    React.useState<ArbeidsgiverDTO | null>(null);
+  const [arbeidsgiver, setArbeidsgiver] = useState<ArbeidsgiverDTO | null>(
+    null,
+  );
 
   const handleGoBack = () => {
     router.back();

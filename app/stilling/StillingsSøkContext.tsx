@@ -16,7 +16,14 @@ import {
   parseAsString,
   useQueryState,
 } from 'nuqs';
-import * as React from 'react';
+import {
+  createContext,
+  FC,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from 'react';
 
 export interface IStillingsSøkContext {
   side: number;
@@ -47,12 +54,12 @@ export interface IStillingsSøkContext {
   formidlinger?: boolean;
 }
 
-const StillingsSøkContext = React.createContext<
-  IStillingsSøkContext | undefined
->(undefined);
+const StillingsSøkContext = createContext<IStillingsSøkContext | undefined>(
+  undefined,
+);
 
-export const StillingsSøkProvider: React.FC<{
-  children: React.ReactNode;
+export const StillingsSøkProvider: FC<{
+  children: ReactNode;
   formidlinger?: boolean;
 }> = ({ children, formidlinger }) => {
   const { harRolle } = useApplikasjonContext();
@@ -64,7 +71,7 @@ export const StillingsSøkProvider: React.FC<{
   ]);
 
   // Set fritekst som lokal state for å hindre fritekst i searchparam
-  const [fritekst, setFritekstListe] = React.useState<string[]>([]);
+  const [fritekst, setFritekstListe] = useState<string[]>([]);
 
   const setFritekst = (val: string) => {
     setFritekstListe((prevFritekst) => [...prevFritekst, val]);
@@ -157,7 +164,7 @@ export const StillingsSøkProvider: React.FC<{
       .withOptions({ clearOnDefault: true }),
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (
       !formidlinger &&
       !harArbeidsgiverrettetRolle &&
@@ -167,7 +174,7 @@ export const StillingsSøkProvider: React.FC<{
     }
   }, [harArbeidsgiverrettetRolle, statuser, setStatuserOriginal, formidlinger]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (inkluderingUnderkategori.length !== 0) {
       let newInkluderingUnderkategori = inkluderingUnderkategori;
 
@@ -189,7 +196,7 @@ export const StillingsSøkProvider: React.FC<{
     }
   }, [inkludering, inkluderingUnderkategori, setInkluderingUnderkategori]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (kommuner.length !== 0) {
       const filteredKommuner = kommuner.filter((kommune) => {
         const prefix = kommune.slice(0, 2);
@@ -214,7 +221,7 @@ export const StillingsSøkProvider: React.FC<{
     };
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (brukStandardSøk) {
       setFritekstListe([]);
     }
@@ -259,7 +266,7 @@ export const StillingsSøkProvider: React.FC<{
 };
 
 export const useStillingsSøkFilter = () => {
-  const context = React.useContext(StillingsSøkContext);
+  const context = useContext(StillingsSøkContext);
   if (context === undefined) {
     throw new RekbisError({
       message: 'useStillingsSøk må være i scope: StillingsSøkProvider',

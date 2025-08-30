@@ -20,7 +20,7 @@ import {
   TextField,
 } from '@navikt/ds-react';
 import { idnr } from '@navikt/fnrvalidator';
-import * as React from 'react';
+import { useEffect, useState, type FC } from 'react';
 
 export interface LeggTilKandidaterProps {
   callBack: (valgteKandidater: ValgtKandidatProp[]) => void;
@@ -37,22 +37,22 @@ export interface ValgtKandidatProp extends Kandidatnavn {
 
 const validerFnr = (fnr: string): boolean => idnr(fnr).status === 'valid';
 
-const LeggTilKandidater: React.FC<LeggTilKandidaterProps> = ({
+const LeggTilKandidater: FC<LeggTilKandidaterProps> = ({
   callBack,
   synlighetSomModal,
   initielleKandidater,
   tilFormidling,
 }) => {
-  const [feilmelding, setFeilmelding] = React.useState('');
-  const [valgteKandidater, setValgteKandidater] = React.useState<
-    ValgtKandidatProp[]
-  >(initielleKandidater ?? []);
-  const [fødselsnummer, setFødselsnummer] = React.useState<string | null>(null);
-  const [søkeString, setSøkestring] = React.useState<string>('');
+  const [feilmelding, setFeilmelding] = useState('');
+  const [valgteKandidater, setValgteKandidater] = useState<ValgtKandidatProp[]>(
+    initielleKandidater ?? [],
+  );
+  const [fødselsnummer, setFødselsnummer] = useState<string | null>(null);
+  const [søkeString, setSøkestring] = useState<string>('');
   const kandidatNavnHook = useKandidatNavn(fødselsnummer);
   const arenaKandidatnrHook = useArenaKandidatnr(fødselsnummer);
 
-  React.useEffect(() => {
+  useEffect(() => {
     callBack(valgteKandidater);
   }, [valgteKandidater, callBack]);
 

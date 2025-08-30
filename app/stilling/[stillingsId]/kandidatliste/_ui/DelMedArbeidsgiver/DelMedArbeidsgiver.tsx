@@ -18,20 +18,20 @@ import {
   Table,
   UNSAFE_Combobox,
 } from '@navikt/ds-react';
-import * as React from 'react';
+import { useState, type FC } from 'react';
 
 export interface DelMedArbeidsgiverProps {
   markerteKandidater: KandidatListeKandidatDTO[];
   sidebar?: boolean;
 }
 
-const DelMedArbeidsgiver: React.FC<DelMedArbeidsgiverProps> = ({
+const DelMedArbeidsgiver: FC<DelMedArbeidsgiverProps> = ({
   markerteKandidater,
   sidebar,
 }) => {
   const { track } = useUmami();
-  const [loading, setLoading] = React.useState(false);
-  const [visModal, setVisModal] = React.useState(false);
+  const [loading, setLoading] = useState(false);
+  const [visModal, setVisModal] = useState(false);
   const { valgtNavKontor } = useApplikasjonContext();
   const { stillingsData } = useStillingsContext();
   const { kandidatlisteId, reFetchKandidatliste, kandidatlisteRawData } =
@@ -46,7 +46,7 @@ const DelMedArbeidsgiver: React.FC<DelMedArbeidsgiverProps> = ({
       ?.map((kontakt) => kontakt.email)
       .filter((email): email is string => email !== null) || [];
 
-  const [epost, setEpost] = React.useState<string[]>(eposter);
+  const [epost, setEpost] = useState<string[]>(eposter);
 
   const onDelMedArbeidsgiver = async (kandidatnummerListe: string[]) => {
     track(UmamiEvent.Stilling.del_kandidat_med_arbeidsgiver, {

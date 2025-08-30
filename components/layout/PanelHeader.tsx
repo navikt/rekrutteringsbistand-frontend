@@ -1,6 +1,6 @@
 'use client';
 
-import { useDynamicWindowContext } from '../layout/windows/DynamicWindowContext';
+import { useWindowContext } from '../layout/windows/DynamicWindowContext';
 import { ArrowLeftIcon, XMarkIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import { ReactNode, createContext, useContext } from 'react';
@@ -99,7 +99,7 @@ export default function PanelHeader({
   children: ReactNode;
   className?: string;
 }) {
-  const dynamicCtx = useDynamicWindowContext();
+  const dynamicCtx = useWindowContext();
   const childArr = (Array.isArray(children) ? children : [children]).filter(
     Boolean,
   );
@@ -200,13 +200,16 @@ export function PanelHeaderSection({
   className,
 }: PanelHeaderSectionProps) {
   const { compact } = useContext(PanelHeaderModeContext);
-  const BackEl = back ? (
-    <BackButton
-      label={back.label}
-      fallbackPath={back.fallbackPath}
-      onClick={back.onClick}
-    />
-  ) : null;
+  // Back-knapp skal bare vises for hovedvindu (ikke dynamiske child-vinduer)
+  const winCtx = useWindowContext();
+  const BackEl =
+    back && !winCtx?.isDynamic ? (
+      <BackButton
+        label={back.label}
+        fallbackPath={back.fallbackPath}
+        onClick={back.onClick}
+      />
+    ) : null;
 
   const rowClass = cx(
     'flex gap-x-4',

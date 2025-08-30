@@ -7,7 +7,7 @@ import { InternKandidatstatus } from '@/app/stilling/[stillingsId]/kandidatliste
 import { useKandidatlisteContext } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteContext';
 import { PencilIcon } from '@navikt/aksel-icons';
 import { Button, Dropdown } from '@navikt/ds-react';
-import * as React from 'react';
+import { useEffect, useState, type FC } from 'react';
 
 export interface VelgInternStatusProps {
   status: InternKandidatstatus;
@@ -15,16 +15,14 @@ export interface VelgInternStatusProps {
   lukketKandidatliste: boolean;
 }
 
-const VelgInternStatus: React.FC<VelgInternStatusProps> = ({
+const VelgInternStatus: FC<VelgInternStatusProps> = ({
   kandidatnr,
   status,
   lukketKandidatliste,
 }) => {
   const { reFetchKandidatliste, kandidatlisteId } = useKandidatlisteContext();
-  const [valgtStatus, setValgtStatus] =
-    React.useState<InternKandidatstatus>(status);
-
-  React.useEffect(() => {
+  const [valgtStatus, setValgtStatus] = useState<InternKandidatstatus>(status);
+  useEffect(() => {
     setValgtStatus(status);
   }, [status]);
 

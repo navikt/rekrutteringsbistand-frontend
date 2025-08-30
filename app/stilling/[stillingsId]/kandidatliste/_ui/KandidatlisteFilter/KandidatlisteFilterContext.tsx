@@ -5,7 +5,13 @@ import {
   parseAsString,
   useQueryState,
 } from 'nuqs';
-import * as React from 'react';
+import {
+  createContext,
+  useContext,
+  useState,
+  type FC,
+  type ReactNode,
+} from 'react';
 
 enum KandidatlisteFilterParam {
   SIDE = 'kandidatlisteSide',
@@ -43,15 +49,15 @@ export interface KandidatlisteFilterContextProps {
   setHendelseFilter: (val: string[]) => void;
 }
 
-const KandidatlisteFilterContext = React.createContext<
+const KandidatlisteFilterContext = createContext<
   KandidatlisteFilterContextProps | undefined
 >(undefined);
 
 export interface KandidatlisteFilterContextProviderProps {
-  children?: React.ReactNode | undefined;
+  children?: ReactNode | undefined;
 }
 
-export const KandidatlisteFilterContextProvider: React.FC<
+export const KandidatlisteFilterContextProvider: FC<
   KandidatlisteFilterContextProviderProps
 > = ({ children }) => {
   const [sortering, setSortering] = useQueryState(
@@ -62,7 +68,7 @@ export const KandidatlisteFilterContextProvider: React.FC<
     },
   );
 
-  const [fritekstSøk, setFritekstSøk] = React.useState<string>('');
+  const [fritekstSøk, setFritekstSøk] = useState<string>('');
 
   const [side, setSide] = useQueryState(
     StillingsSøkQueryparam.Side,
@@ -111,7 +117,7 @@ export const KandidatlisteFilterContextProvider: React.FC<
 };
 
 export const useKandidatlisteFilterContext = () => {
-  const context = React.useContext(KandidatlisteFilterContext);
+  const context = useContext(KandidatlisteFilterContext);
   if (context === undefined) {
     throw new Error(
       'KandidatlisteFilterContext must be used within a KandidatlisteFilterContextProvider',
