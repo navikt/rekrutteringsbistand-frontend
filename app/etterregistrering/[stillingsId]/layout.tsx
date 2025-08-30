@@ -1,6 +1,5 @@
 import NotFound from '@/app/not-found';
 import { StillingsContextProvider } from '@/app/stilling/[stillingsId]/StillingsContext';
-import StillingSideLayout from '@/app/stilling/[stillingsId]/StillingssideLayout';
 import * as React from 'react';
 
 interface FormidlingSideRootLayoutProps {
@@ -18,7 +17,7 @@ export default async function FormidlingSideRootLayout({
   }
   return (
     <StillingsContextProvider stillingsId={stillingsId}>
-      <StillingSideLayout>{children}</StillingSideLayout>
+      {children}
     </StillingsContextProvider>
   );
 }

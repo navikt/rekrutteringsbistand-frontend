@@ -1,6 +1,4 @@
-import SideLayout from '@/components/layout/SideLayout';
-import { ArrowLeftIcon, XMarkIcon } from '@navikt/aksel-icons';
-import { Button } from '@navikt/ds-react';
+import { DynamicWindowContext } from './DynamicWindowContext';
 import React, {
   useCallback,
   useContext,
@@ -10,7 +8,6 @@ import React, {
   useState,
 } from 'react';
 import { Mosaic, MosaicNode } from 'react-mosaic-component';
-import 'react-mosaic-component/react-mosaic-component.css';
 
 // nødvendig for layout
 
@@ -24,6 +21,10 @@ interface WindowItem {
   navigasjon?: React.ReactNode;
   onClose?: () => void;
   content: React.ReactElement;
+  /** Egendefinert header (erstatter standard header med back + close). Hvis satt rendres ikke default header. */
+  customHeader?: React.ReactNode;
+  /** Enkel tittel som vises i standard header hvis verken customHeader eller navigasjon er satt */
+  title?: React.ReactNode;
 }
 
 // ---------------- Window context ----------------
@@ -33,6 +34,10 @@ interface WindowContextValue {
     onClose?: () => void;
     navigasjon?: React.ReactNode;
     content: React.ReactElement;
+    /** Egendefinert header som skal brukes i stedet for standard header */
+    customHeader?: React.ReactNode;
+    /** Enkel tittel for standard header */
+    title?: React.ReactNode;
     /** Plassering blant dynamiske vinduer. Default: right */
     position?: 'left' | 'right';
   }) => string; // return id
@@ -111,13 +116,16 @@ function flattenRow(node: MosaicNode<Id> | null): Id[] {
 
 // ---------------- Komponent ----------------
 const LOCKED_ID = '__locked__';
+const MIN_WINDOW_PX = 480; // Minimum bredde per vindu
 
 const WindowWrapper: React.FC<WindowWrapperProps> = ({ children }) => {
   const [elements, setElements] = useState<Record<string, WindowItem>>({
     [LOCKED_ID]: {
       id: LOCKED_ID,
       content: (
-        <div className='h-full w-full flex flex-col min-h-0'>{children}</div>
+        <div className='h-full w-full flex flex-col min-h-0 min-w-[480px]'>
+          {children}
+        </div>
       ),
     },
   });
@@ -131,7 +139,9 @@ const WindowWrapper: React.FC<WindowWrapperProps> = ({ children }) => {
       [LOCKED_ID]: {
         id: LOCKED_ID,
         content: (
-          <div className='h-full w-full flex flex-col min-h-0'>{children}</div>
+          <div className='h-full w-full flex flex-col min-h-0 min-w-[480px]'>
+            {children}
+          </div>
         ),
       },
     }));
@@ -143,11 +153,38 @@ const WindowWrapper: React.FC<WindowWrapperProps> = ({ children }) => {
   );
   const [rootSplit, setRootSplit] = useState<number>(35);
 
+  // Spor bredde på container for å kunne klampe split ved resizing
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const [containerWidth, setContainerWidth] = useState<number>(0);
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const el = containerRef.current;
+    const update = () => setContainerWidth(el.getBoundingClientRect().width);
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  const clampSplit = useCallback(
+    (pct: number | undefined): number | undefined => {
+      if (typeof pct !== 'number') return pct;
+      if (containerWidth <= 0) return pct; // ukjent bredde ennå
+      const minPct = (MIN_WINDOW_PX / containerWidth) * 100;
+      if (minPct * 2 >= 100) {
+        // For smal skjerm til å oppfylle begge min-bredder; prioriter locked vindu og la dynamisk krympe
+        return Math.min(pct, 100 - minPct); // sørg for at locked ikke blir for smal
+      }
+      return Math.min(Math.max(pct, minPct), 100 - minPct);
+    },
+    [containerWidth],
+  );
+
   // Beregn synlige dynamiske vinduer, maks 2 dersom flere åpne
   const dynamicIds = useMemo(() => flattenRow(dynamicLayout), [dynamicLayout]);
   const moreThanTwo = dynamicIds.length > 1; // når vi får vindu #2 (dvs 2 dynamiske) skal locked skjules
   const visibleDynamicIds = moreThanTwo ? dynamicIds.slice(-2) : dynamicIds; // siste to hvis mange
-  const oldestVisibleDynamicId = visibleDynamicIds[0];
+  // brukes ikke lenger (back-knapp fjernet)
 
   // Bygg et rad-tre av visibleDynamicIds
   const buildRow = (ids: Id[]): MosaicNode<Id> | null => {
@@ -186,7 +223,15 @@ const WindowWrapper: React.FC<WindowWrapperProps> = ({ children }) => {
   }, [visibleDynamicLayout, moreThanTwo, rootSplit]);
 
   const addWindow = useCallback<WindowContextValue['addWindow']>(
-    ({ id, onClose, navigasjon, content, position = 'right' }) => {
+    ({
+      id,
+      onClose,
+      navigasjon,
+      content,
+      customHeader,
+      title,
+      position = 'right',
+    }) => {
       const alreadyExists = idsRef.current.has(id);
       if (alreadyExists) {
         // Bare oppdater innholdet, IKKE endre layout for å unngå duplikate noder i mosaic-treet
@@ -214,6 +259,8 @@ const WindowWrapper: React.FC<WindowWrapperProps> = ({ children }) => {
               navigasjon: navigasjon ?? current.navigasjon,
               onClose: onClose ?? current.onClose,
               content: content ?? current.content,
+              customHeader: customHeader ?? current.customHeader,
+              title: title ?? current.title,
             },
           };
         });
@@ -237,7 +284,7 @@ const WindowWrapper: React.FC<WindowWrapperProps> = ({ children }) => {
       }
       setElements((prev) => ({
         ...prev,
-        [id]: { id, navigasjon, onClose, content },
+        [id]: { id, navigasjon, onClose, content, customHeader, title },
       }));
       return id;
     },
@@ -288,6 +335,7 @@ const WindowWrapper: React.FC<WindowWrapperProps> = ({ children }) => {
     <WindowContext.Provider value={ctxValue}>
       <div
         id='windows'
+        ref={containerRef}
         className='w-full flex-1 flex flex-col min-h-0 overflow-hidden '
       >
         <Mosaic<Id>
@@ -309,12 +357,19 @@ const WindowWrapper: React.FC<WindowWrapperProps> = ({ children }) => {
             if (next.direction === 'row') {
               if (next.first === LOCKED_ID) {
                 setDynamicLayout(next.second);
-                if (typeof next.splitPercentage === 'number')
-                  setRootSplit(next.splitPercentage);
+                if (typeof next.splitPercentage === 'number') {
+                  setRootSplit(
+                    clampSplit(next.splitPercentage) ?? next.splitPercentage,
+                  );
+                }
               } else if (next.second === LOCKED_ID) {
                 setDynamicLayout(next.first);
-                if (typeof next.splitPercentage === 'number')
-                  setRootSplit(100 - (next.splitPercentage ?? 0));
+                if (typeof next.splitPercentage === 'number') {
+                  // Når locked er second, rootSplit representerer bredden til locked second (speilvendt)
+                  const lockedPct = 100 - next.splitPercentage;
+                  const clamped = clampSplit(lockedPct);
+                  setRootSplit(clamped ?? lockedPct);
+                }
               }
             }
           }}
@@ -322,122 +377,47 @@ const WindowWrapper: React.FC<WindowWrapperProps> = ({ children }) => {
             const isDynamic = id !== LOCKED_ID;
             const item = elements[id];
             const content = item?.content;
-            const nav = item?.navigasjon;
+            const customHeader = item?.customHeader;
             const isRightOfRoot =
               mosaicValue !== LOCKED_ID &&
               typeof mosaicValue !== 'string' &&
               path?.[0] === 'second';
-            const showBackButton =
-              isDynamic && moreThanTwo && id === oldestVisibleDynamicId;
             return (
-              <div
-                className={
-                  'h-full w-full flex flex-col min-h-0' +
-                  (isRightOfRoot ? ' pl-2' : '')
-                }
+              <DynamicWindowContext.Provider
+                value={{
+                  isDynamic,
+                  onRequestClose: isDynamic
+                    ? () => {
+                        try {
+                          item?.onClose?.();
+                        } finally {
+                          removeWindow(id);
+                        }
+                      }
+                    : undefined,
+                }}
               >
                 <div
-                  id={id === LOCKED_ID ? 'window-locked' : `window-${id}`}
-                  className='h-full w-full flex flex-col overflow-auto min-h-0'
-                  data-window-type={id === LOCKED_ID ? 'locked' : 'dynamic'}
+                  className={
+                    'h-full w-full flex flex-col min-h-0 min-w-[480px]' +
+                    (isRightOfRoot ? ' pl-2' : '')
+                  }
                 >
-                  {(() => {
-                    if (!content) return content;
-                    if (!isDynamic) return content; // hovedvindu beholder original struktur
-
-                    const headerNode = (
-                      <div className='flex items-center justify-between mb-2 gap-2'>
-                        <div className='flex items-center gap-2 flex-1'>
-                          {showBackButton && (
-                            <Button
-                              className='mt-2 ml-2'
-                              size='xsmall'
-                              variant='tertiary'
-                              icon={<ArrowLeftIcon aria-hidden />}
-                              aria-label='Tilbake'
-                              onClick={() => {
-                                const idsNow = flattenRow(dynamicLayout);
-                                if (idsNow.length > 1) {
-                                  const lastId = idsNow[idsNow.length - 1];
-                                  if (lastId) {
-                                    try {
-                                      const lastItem = elements[lastId];
-                                      lastItem?.onClose?.();
-                                    } catch (e) {
-                                      if (
-                                        process.env.NODE_ENV === 'development'
-                                      ) {
-                                        // eslint-disable-next-line no-console
-                                        console.warn(
-                                          '[WindowWrapper] back onClose feilet',
-                                          e,
-                                        );
-                                      }
-                                    }
-                                    removeWindow(lastId);
-                                  }
-                                }
-                              }}
-                            />
-                          )}
-                          <div className='flex-1'>{nav}</div>
-                        </div>
-                        <Button
-                          className='mt-2 mr-2'
-                          size='xsmall'
-                          variant='tertiary'
-                          icon={<XMarkIcon aria-hidden />}
-                          aria-label='Lukk vindu'
-                          onClick={() => {
-                            try {
-                              item?.onClose?.();
-                            } catch (e) {
-                              if (process.env.NODE_ENV === 'development') {
-                                // eslint-disable-next-line no-console
-                                console.warn(
-                                  '[WindowWrapper] onClose feilet',
-                                  e,
-                                );
-                              }
-                            }
-                            removeWindow(id);
-                          }}
-                        />
+                  <div
+                    id={id === LOCKED_ID ? 'window-locked' : `window-${id}`}
+                    className='h-full w-full flex flex-col overflow-auto min-h-0'
+                    data-window-type={id === LOCKED_ID ? 'locked' : 'dynamic'}
+                  >
+                    {customHeader && customHeader}
+                    {content}
+                    {!content && (
+                      <div className='text-xs text-red-600'>
+                        Ingen innhold for id: {id}
                       </div>
-                    );
-
-                    // Hvis content allerede er et SideLayout: klon og prepend header
-                    if (
-                      React.isValidElement(content) &&
-                      (content.type === SideLayout ||
-                        (content.type as any)?.displayName === 'SideLayout' ||
-                        (content.type as any)?.name === 'SideLayout')
-                    ) {
-                      const existingHeader = (content.props as any)?.header;
-                      return React.cloneElement(
-                        content as React.ReactElement<any>,
-                        {
-                          header: (
-                            <>
-                              {headerNode}
-                              {existingHeader}
-                            </>
-                          ),
-                        } as any,
-                      );
-                    }
-
-                    return (
-                      <SideLayout header={headerNode}>{content}</SideLayout>
-                    );
-                  })()}
-                  {!content && (
-                    <div className='text-xs text-red-600'>
-                      Ingen innhold for id: {id}
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
-              </div>
+              </DynamicWindowContext.Provider>
             );
           }}
           className='h-full'

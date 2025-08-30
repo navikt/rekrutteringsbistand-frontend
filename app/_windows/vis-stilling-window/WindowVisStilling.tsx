@@ -1,6 +1,5 @@
 import { StillingsContextProvider } from '@/app/stilling/[stillingsId]/StillingsContext';
-import StillingsSide from '@/app/stilling/[stillingsId]/StillingsSide';
-import StillingSideLayout from '@/app/stilling/[stillingsId]/StillingssideLayout';
+import StillingsSidePage from '@/app/stilling/[stillingsId]/page';
 import { useWindows } from '@/components/layout/windows/WindowWrapper';
 import { useQueryState } from 'nuqs';
 import * as React from 'react';
@@ -21,10 +20,11 @@ const WindowVisStilling: React.FC = ({}) => {
         onClose: () => setVisStillingId(''),
         content: (
           <StillingsContextProvider stillingsId={visStillingId}>
-            <StillingSideLayout>
-              <StillingsSide />
-            </StillingSideLayout>
+            <StillingsSidePage />
           </StillingsContextProvider>
+          // <StillingsContextProvider stillingsId={visStillingId}>
+          //   <StillingsSide />
+          // </StillingsContextProvider>
         ),
       });
     }

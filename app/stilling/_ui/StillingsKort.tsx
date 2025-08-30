@@ -1,29 +1,33 @@
-import StillingsTag from './StillingsTag';
 import { leggTilKandidater } from '@/app/api/kandidat-sok/leggTilKandidat';
 import { RekrutteringsbistandStillingSchemaDTO } from '@/app/api/stillings-sok/schema/rekrutteringsbistandStillingSchema.zod';
+import StillingsTag from '@/app/stilling/_ui/StillingsTag';
 import { visStillingsDataInfo } from '@/app/stilling/_util/stillingInfoUtil';
-import {
-  formaterEiernavn,
-  hentArbeidssted,
-  hentEierFraStilling,
-  hentIdentFraStilling,
-} from '@/app/stilling/_util/stillingssøk-util';
-import TekstMedIkon from '@/components/felles/TekstMedIkon';
+import { hentArbeidssted } from '@/app/stilling/_util/stillingssøk-util';
+// import TekstMedIkon from '@/components/felles/TekstMedIkon';
 import { UmamiEvent } from '@/components/umami/umamiEvents';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
 import formaterMedStoreOgSmåBokstaver from '@/util/tekst';
-import { formaterNorskDato } from '@/util/util';
+// import { formaterNorskDato } from '@/util/util';
 import {
   BriefcaseIcon,
   Buildings2Icon,
   ClockIcon,
-  PersonIcon,
+  CogIcon,
+  // PersonIcon,
+  PinIcon,
 } from '@navikt/aksel-icons';
-import { Box, Button, Heading, Link } from '@navikt/ds-react';
+import { Box, Button, Heading } from '@navikt/ds-react';
+import {
+  differenceInCalendarDays,
+  isBefore,
+  isToday,
+  parseISO,
+  startOfToday,
+} from 'date-fns';
 import { useRouter } from 'next/navigation';
 import { useQueryState } from 'nuqs';
-import * as React from 'react';
+import React, { useMemo, useState } from 'react';
 
 export interface IStillingsKort {
   stillingData: RekrutteringsbistandStillingSchemaDTO;
@@ -41,29 +45,33 @@ const StillingsKort: React.FC<IStillingsKort> = ({
 
   const router = useRouter();
   const { track } = useUmami();
-  const [visStillingId, setVisStillingId] = useQueryState('visStillingId', {
+  const [, setVisStillingId] = useQueryState('visStillingId', {
     defaultValue: '',
     clearOnDefault: true,
   });
 
   const [leggerTilKandidatLoading, setLeggerTilKandidatLoading] =
-    React.useState(false);
-
-  const antallStillinger = Number(
-    stillingData?.stilling?.properties?.positioncount,
-  );
-  const antallStillingerSuffix =
-    antallStillinger === 1 ? ` stilling` : ` stillinger`;
+    useState(false);
 
   const stillingsDataInfo = visStillingsDataInfo(stillingData);
-
-  const eierNavn = formaterEiernavn(hentEierFraStilling(stillingData));
-  const erEier = hentIdentFraStilling(stillingData) === ident;
 
   const erFormidling = stillingsDataInfo.erFormidling;
   const erDirektemeldt = stillingsDataInfo.erDirektemeldt;
 
   const stillingUrl = `${erFormidling ? '/etterregistrering/' : '/stilling/'}${stillingData.stilling.uuid}`;
+
+  // Beregn dager til frist (fra applicationdue)
+  const fristTekst = useMemo(() => {
+    const frist = stillingData.stilling.properties?.applicationdue;
+    if (!frist) return '-';
+    // parseISO håndterer streng (YYYY-MM-DD / full ISO) trygt
+    const fristDato = parseISO(String(frist));
+    if (isNaN(fristDato.getTime())) return '-';
+    if (isBefore(fristDato, startOfToday())) return 'Frist utløpt';
+    if (isToday(fristDato)) return 'Frist i dag';
+    const dager = differenceInCalendarDays(fristDato, new Date());
+    return `Frist om ${dager} dager`;
+  }, [stillingData.stilling.properties?.applicationdue]);
 
   const leggTilKandidat = async (kandidatId: string) => {
     track(UmamiEvent.Stilling.forslag_til_stilling_legg_til_kandidat);
@@ -85,131 +93,107 @@ const StillingsKort: React.FC<IStillingsKort> = ({
   };
 
   const Knapper = (
-    <>
+    <div className='flex flex-row gap-2 items-center'>
       {kandidatId ? (
         erDirektemeldt ? (
           <Button
             loading={leggerTilKandidatLoading}
+            size='small'
             variant='tertiary'
-            onClick={() => leggTilKandidat(kandidatId)}
-            className='self-start sm:self-center whitespace-nowrap'
+            onClick={(e) => {
+              e.stopPropagation();
+              leggTilKandidat(kandidatId);
+            }}
+            className='whitespace-nowrap'
           >
             Legg til kandidat
           </Button>
         ) : (
           <Button
+            size='small'
             variant='tertiary'
-            onClick={() => router.push(stillingUrl)}
-            className='self-start sm:self-center whitespace-nowrap'
+            onClick={(e) => {
+              e.stopPropagation();
+              router.push(stillingUrl);
+            }}
+            className='whitespace-nowrap'
           >
             Vis stilling
           </Button>
         )
       ) : (
-        <div className='flex flex-col sm:flex-row whitespace-nowrap gap-2'>
-          {erEier && (
-            <Link
-              className='w-full sm:w-auto'
-              href={`/stilling/${stillingData.stilling.uuid}?stillingFane=kandidater`}
-            >
-              <Button
-                className='w-full sm:w-auto whitespace-nowrap'
-                variant='tertiary'
-              >
-                Vis kandidater
-              </Button>
-            </Link>
-          )}
-          <Link
-            className='w-full sm:w-auto'
-            href={`/stilling/${stillingData.stilling.uuid}?finnKandidater=true`}
-          >
-            <Button
-              className='w-full sm:w-auto whitespace-nowrap'
-              variant='tertiary'
-            >
-              Finn kandidater
-            </Button>
-          </Link>
-        </div>
+        <Button
+          icon={<CogIcon />}
+          size='small'
+          variant='tertiary'
+          className='whitespace-nowrap'
+          onClick={(e) => {
+            e.stopPropagation();
+            router.push(stillingUrl);
+          }}
+        >
+          Administrer
+        </Button>
       )}
-    </>
+    </div>
   );
 
   return (
     <Box.New
       padding='4'
-      className='mb-4 cursor-pointer'
+      className='mb-4 cursor-pointer group'
       background='neutral-softA'
       borderRadius='xlarge'
       data-testid='stillings-kort'
       onClick={() => setVisStillingId(stillingData.stilling.uuid)}
     >
-      <>
-        <StillingsTag splitTags stillingsData={stillingData} />
-      </>
-      <Box className='mb-2'>
-        {/* <Link
-          href={
-            kandidatId
-              ? `${stillingUrl}?visKandidatnr=${kandidatId}`
-              : stillingUrl
-          }
-        > */}
-        <Heading size='small'>
-          {stillingData?.stilling?.tittel || 'Ukjent tittel'}
-        </Heading>
-        {/* </Link> */}
-      </Box>
-
-      <TekstMedIkon
-        ikon={<Buildings2Icon />}
-        tekst={stillingData.stilling?.businessName || 'Ukjent bedrift'}
-      />
-
-      <div className='mt-4 flex justify-between flex-col sm:flex-row gap-4 sm:gap-2'>
-        <div className='flex flex-col sm:flex-row flex-wrap gap-4'>
-          <TekstMedIkon
-            className='sm:mr-4'
-            title='Lokasjon'
-            tekst={
-              formaterMedStoreOgSmåBokstaver(
-                hentArbeidssted(stillingData.stilling.locations),
-              ) || '-'
-            }
-          />
-          <TekstMedIkon
-            className='sm:mr-4'
-            ikon={<BriefcaseIcon />}
-            title='Antall stillinger'
-            tekst={
-              antallStillinger
-                ? `${antallStillinger} ${antallStillingerSuffix}`
-                : '-'
-            }
-          />
-          <TekstMedIkon
-            className='sm:mr-4'
-            ikon={<ClockIcon />}
-            title='Frist'
-            tekst={` ${
-              stillingData.stilling.properties?.applicationdue
-                ? formaterNorskDato({
-                    dato: stillingData.stilling.properties.applicationdue,
-                  })
-                : '-'
-            }`}
-          />
-          <TekstMedIkon
-            className='sm:mr-4'
-            ikon={<PersonIcon />}
-            title='Eier'
-            tekst={eierNavn}
-          />
+      <div className='flex gap-2 items-start'>
+        {/* Ikon / avatar */}
+        <div>
+          <BriefcaseIcon aria-hidden />
         </div>
-        <div className='hidden xl:block'>{Knapper}</div>
+        {/* Innhold */}
+        <div className='flex-1 min-w-0'>
+          <div className='flex justify-between'>
+            <Heading
+              size='small'
+              className='truncate max-w-full pr-2'
+              title={stillingData?.stilling?.tittel || 'Ukjent tittel'}
+            >
+              {stillingData?.stilling?.tittel || 'Ukjent tittel'}
+            </Heading>
+            <StillingsTag stillingsData={stillingData} />
+          </div>
+          <div className='flex justify-between'>
+            <div className='text-sm text-text-subtle flex flex-wrap gap-x-4'>
+              <span className='flex items-center gap-1'>
+                <Buildings2Icon aria-hidden className='text-text-subtle' />
+                {stillingData.stilling?.businessName || 'Ukjent bedrift'}
+              </span>
+              <span className='flex items-center gap-1'>
+                <BriefcaseIcon aria-hidden className='text-text-subtle' />
+                {[
+                  stillingData.stilling.properties?.engagementtype,
+                  stillingData.stilling.properties?.extent,
+                ]
+                  .filter(Boolean)
+                  .join(', ') || '-'}
+              </span>
+              <span className='flex items-center gap-1'>
+                <ClockIcon aria-hidden className='text-text-subtle' />
+                {fristTekst}
+              </span>
+              <span className='flex items-center gap-1'>
+                <PinIcon aria-hidden className='text-text-subtle' />
+                {formaterMedStoreOgSmåBokstaver(
+                  hentArbeidssted(stillingData.stilling.locations),
+                ) || '-'}
+              </span>
+            </div>
+            <div className='mt-3 flex justify-end'>{Knapper}</div>
+          </div>
+        </div>
       </div>
-      <div className='xl:hidden flex justify-end'>{Knapper}</div>
     </Box.New>
   );
 };

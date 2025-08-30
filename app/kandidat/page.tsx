@@ -1,3 +1,5 @@
+'use client';
+
 import KandidatSokLayout from './KandidatSokLayout';
 import KandidatSøkTabs from './KandidatSøkTabs';
 import PanelHeader from '@/components/layout/PanelHeader';

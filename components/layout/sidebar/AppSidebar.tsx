@@ -25,6 +25,7 @@ import {
 import { Button } from '@navikt/ds-react';
 import { MegaphoneIcon } from 'lucide-react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 interface NavigasjonItemProps {
   tekst: string;
@@ -76,6 +77,10 @@ const navigasjonListe: NavigasjonItemProps[] = [
 
 const SideLenke = (item: NavigasjonItemProps) => {
   const { open } = useSidebar();
+  const pathname = usePathname();
+  // Aktiv logikk: '/' kun aktiv på eksakt rot, andre paths bruker startsWith
+  const aktiv =
+    item.path === '/' ? pathname === '/' : pathname?.startsWith(item.path);
   return (
     <TilgangskontrollForInnhold
       key={item.tekst}
@@ -84,7 +89,8 @@ const SideLenke = (item: NavigasjonItemProps) => {
     >
       <Link href={item.path} className={open ? 'w-full' : ''}>
         <Button
-          variant='tertiary-neutral'
+          variant={aktiv ? 'secondary-neutral' : 'tertiary-neutral'}
+          aria-current={aktiv ? 'page' : undefined}
           icon={item.ikon}
           className={open ? 'w-full text-left justify-start' : ''}
         >
@@ -129,6 +135,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader>
         <div className='flex items-baseline pt-4'>
           <Button
+            aria-pressed={true}
             size='small'
             onClick={toggleSidebar}
             variant='tertiary-neutral'

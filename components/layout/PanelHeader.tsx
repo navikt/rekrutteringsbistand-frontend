@@ -1,6 +1,9 @@
-import { ArrowLeftIcon } from '@navikt/aksel-icons';
+'use client';
+
+import { useDynamicWindowContext } from '../layout/windows/DynamicWindowContext';
+import { ArrowLeftIcon, XMarkIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
-import { ReactNode } from 'react';
+import { ReactNode, createContext, useContext } from 'react';
 
 // BackButton er egen klient-komponent for å kunne bruke document.referrer uten
 // å gjøre hele PanelHeader til en klient-komponent.
@@ -84,6 +87,11 @@ function BackButton({
  *   tabs={<StillingTabs />}
  * />
  */
+// Intern context for å signalisere kompakt modus til seksjoner
+const PanelHeaderModeContext = createContext<{ compact: boolean }>({
+  compact: false,
+});
+
 export default function PanelHeader({
   children,
   className = '',
@@ -91,21 +99,65 @@ export default function PanelHeader({
   children: ReactNode;
   className?: string;
 }) {
-  // Sjekk om noen av seksjonene har tabs-prop.
-  const hasTabs = (Array.isArray(children) ? children : [children]).some(
-    (child: any) =>
-      child &&
-      typeof child === 'object' &&
-      'props' in child &&
-      child?.props?.tabs,
+  const dynamicCtx = useDynamicWindowContext();
+  const childArr = (Array.isArray(children) ? children : [children]).filter(
+    Boolean,
   );
-  const borderCls = hasTabs
-    ? ''
-    : 'border-b border-b-[var(--ax-border-neutral-subtle)] py-4 ';
+  const hasTabs = childArr.some(
+    (c: any) => c && typeof c === 'object' && 'props' in c && c.props?.tabs,
+  );
+  const borderCls = 'border-b border-b-[var(--ax-border-neutral-subtle)]';
+  const compact = !hasTabs; // Alltid kompakt (32px) når ingen tabs – også for låst vindu
+
+  // Injiser close-knapp kun for dynamiske vinduer (men uten å påvirke layoutbeslutningen)
+  let enhancedChildren: ReactNode = childArr;
+  if (dynamicCtx?.isDynamic && dynamicCtx.onRequestClose) {
+    const lastIndex = childArr
+      .map((c: any, i) => (c && c.type === PanelHeaderSection ? i : -1))
+      .filter((i) => i >= 0)
+      .pop();
+    if (lastIndex != null) {
+      enhancedChildren = childArr.map((c: any, i) => {
+        if (i !== lastIndex) return c;
+        const existing = c.props?.actionsRight;
+        const already =
+          existing &&
+          (Array.isArray(existing)
+            ? existing.some(
+                (el: any) => el?.props?.['aria-label'] === 'Lukk vindu',
+              )
+            : existing?.props?.['aria-label'] === 'Lukk vindu');
+        if (already) return c;
+        return (
+          <PanelHeaderSection
+            key={c.key || `ph-sec-${i}`}
+            {...c.props}
+            actionsRight={
+              <>
+                {existing}
+                <Button
+                  size='xsmall'
+                  variant='tertiary'
+                  aria-label='Lukk vindu'
+                  icon={<XMarkIcon aria-hidden />}
+                  onClick={() => dynamicCtx.onRequestClose?.()}
+                />
+              </>
+            }
+          />
+        );
+      });
+    }
+  }
+
   return (
-    <div className={`flex flex-col gap-2 ${borderCls} ${className}`}>
-      {children}
-    </div>
+    <PanelHeaderModeContext.Provider value={{ compact }}>
+      <div
+        className={`flex flex-col ${borderCls} ${compact ? 'py-4' : ''} ${className}`}
+      >
+        {enhancedChildren}
+      </div>
+    </PanelHeaderModeContext.Provider>
   );
 }
 
@@ -147,6 +199,7 @@ export function PanelHeaderSection({
   children,
   className,
 }: PanelHeaderSectionProps) {
+  const { compact } = useContext(PanelHeaderModeContext);
   const BackEl = back ? (
     <BackButton
       label={back.label}
@@ -156,18 +209,24 @@ export function PanelHeaderSection({
   ) : null;
 
   const rowClass = cx(
-    'flex flex-wrap gap-x-4 gap-y-2',
-    subtitle ? 'items-start' : 'items-center',
+    'flex gap-x-4',
+    compact ? 'h-8 items-center px-4' : 'flex-wrap gap-y-2 items-center px-5',
+    subtitle && !compact ? 'items-start' : undefined,
   );
 
   return (
-    <div className={cx('group/section flex flex-col gap-2 px-5', className)}>
-      {/* Hvis ingen subtitle: vertikalt sentrer tittel/ikon/knapper ved å bruke items-center */}
+    <div
+      className={cx(
+        'group/section flex flex-col',
+        compact ? '' : 'gap-2',
+        className,
+      )}
+    >
       <div className={rowClass}>
-        <div className='flex items-center  gap-3 min-w-0 flex-1'>
+        <div className='flex items-center gap-3 min-w-0 flex-1'>
           {BackEl && BackEl}
           {titleIcon && (
-            <span className='shrink-0 flex items-center text-[0] ' aria-hidden>
+            <span className='shrink-0 flex items-center text-[0]' aria-hidden>
               {titleIcon}
             </span>
           )}
@@ -183,7 +242,7 @@ export function PanelHeaderSection({
                   {title}
                 </h1>
               )}
-              {subtitle && (
+              {!compact && subtitle && (
                 <div className='text-xs text-muted-foreground truncate'>
                   {subtitle}
                 </div>
@@ -205,8 +264,8 @@ export function PanelHeaderSection({
           )}
         </div>
       </div>
-      {tabs && <div>{tabs}</div>}
-      {children && <div>{children}</div>}
+      {!compact && tabs && <div className='px-5'>{tabs}</div>}
+      {!compact && children && <div className='px-5'>{children}</div>}
     </div>
   );
 }

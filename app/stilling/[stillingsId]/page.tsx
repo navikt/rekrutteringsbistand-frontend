@@ -1,5 +1,7 @@
 'use client';
 
+import WindowFinnKandidater from '@/app/_windows/finn-kandidater-window/WindowFinnKandidater';
+import WindowVisKandidat from '@/app/_windows/vis-kandidat-window/WindowVisKandidat';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import OmStillingen from '@/app/stilling/[stillingsId]/_ui/om-stillingen/OmStillingen';
 import StillingTabs from '@/app/stilling/[stillingsId]/_ui/tabs/StillingTabs';
@@ -52,6 +54,8 @@ export default function StillingsSidePage() {
           </>
         )}
       </Tabs>
+      <WindowFinnKandidater stillingsId={stillingsData.stilling.uuid} />
+      <WindowVisKandidat />
     </SideLayout>
   );
 }
