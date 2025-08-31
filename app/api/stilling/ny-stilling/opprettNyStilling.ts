@@ -14,12 +14,12 @@ export const opprettNyStilling = async (props: OpprettStillingProps) => {
   return await postApi(opprettNyStillingEndepunkt, {
     eierNavKontorEnhetId: props.eierNavKontorEnhetId,
     kategori: props.kategori,
-    administration: {
-      status: 'PENDING',
-      reportee: props.brukerNavn,
-      navIdent: props.navident,
-    },
     stilling: {
+      administration: {
+        status: 'PENDING',
+        reportee: props.brukerNavn,
+        navIdent: props.navident,
+      },
       createdBy: 'pam-rekrutteringsbistand',
       updatedBy: 'pam-rekrutteringsbistand',
       source: 'DIR',
