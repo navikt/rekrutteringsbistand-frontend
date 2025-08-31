@@ -5,14 +5,21 @@ import { FloppydiskIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import { useSearchParams } from 'next/navigation';
 import * as React from 'react';
+import { useMemo } from 'react';
 
 const LagreStandardsøk: React.FC = () => {
   const brukerStandardSøkData = useUseBrukerStandardSøk();
   const searchParams = useSearchParams();
 
+  // Keys that should NOT be persisted as en del av standardsøk.
+  const ekskluderteParametere = useMemo(
+    () => new Set<string>(['utenOppdrag', 'visStillingId', 'finnKandidater']),
+    [],
+  );
+
   const filteredParams = new URLSearchParams();
   searchParams.forEach((value, key) => {
-    if (key !== 'utenOppdrag') {
+    if (!ekskluderteParametere.has(key)) {
       filteredParams.append(key, value);
     }
   });

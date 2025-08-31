@@ -1,7 +1,12 @@
 'use client';
 
 import FormidlingKandidater from './FormidlingKandidater';
+import WindowVisKandidat from '@/app/_windows/vis-kandidat-window/WindowVisKandidat';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
+import OmStillingen from '@/app/stilling/[stillingsId]/_ui/om-stillingen/OmStillingen';
+import PanelHeader from '@/components/layout/PanelHeader';
+import SideLayout from '@/components/layout/SideLayout';
+import { BriefcaseClockIcon } from '@navikt/aksel-icons';
 import { Tabs } from '@navikt/ds-react';
 import * as React from 'react';
 
@@ -12,19 +17,35 @@ const VisFormidling: React.FC = () => {
 
   return (
     <Tabs defaultValue='omStillingen'>
-      <Tabs.List>
-        <Tabs.Tab value='omStillingen' label='Om stillingen' />
-        {erEier && <Tabs.Tab value='kandidater' label='Kandidater' />}
-      </Tabs.List>
-      {/* <Tabs.Panel value='omStillingen'>
-      //TODO
-        <OmStillingen />
-      </Tabs.Panel> */}
-      {erEier && (
-        <Tabs.Panel value='kandidater'>
-          <FormidlingKandidater />
+      <WindowVisKandidat />
+      <SideLayout
+        header={
+          <PanelHeader>
+            <PanelHeader.Section
+              back={{
+                fallbackPath: '/etterregistrering',
+              }}
+              title={'Etterregistrering'}
+              titleIcon={<BriefcaseClockIcon />}
+              tabs={
+                <>
+                  <Tabs.Tab value='omStillingen' label='Om stillingen' />
+                  {erEier && <Tabs.Tab value='kandidater' label='Kandidater' />}
+                </>
+              }
+            />
+          </PanelHeader>
+        }
+      >
+        <Tabs.Panel value='omStillingen'>
+          <OmStillingen printRef={null} />
         </Tabs.Panel>
-      )}
+        {erEier && (
+          <Tabs.Panel value='kandidater'>
+            <FormidlingKandidater />
+          </Tabs.Panel>
+        )}
+      </SideLayout>
     </Tabs>
   );
 };

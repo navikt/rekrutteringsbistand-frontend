@@ -4,6 +4,7 @@ import * as React from 'react';
 
 export type ISideLayout = {
   header?: React.ReactNode;
+  sidepanel?: React.ReactNode;
   children: React.ReactNode;
   /** @deprecated Bruk NewProps */
   topBanner?: React.ReactNode | undefined;
@@ -16,6 +17,7 @@ export type ISideLayout = {
 const SideLayout = ({
   banner,
   children,
+  sidepanel,
   header,
   navigasjon,
   topBanner,
@@ -27,7 +29,10 @@ const SideLayout = ({
       {navigasjon && navigasjon}
       {banner && banner}
 
-      <MaksBredde>{children}</MaksBredde>
+      <div className='flex flex-row'>
+        <MaksBredde>{children}</MaksBredde>
+        {sidepanel}
+      </div>
     </RekBisKort>
   );
 };

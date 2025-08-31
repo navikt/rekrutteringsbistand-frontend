@@ -25,12 +25,12 @@ const KandidatSideLayout: React.FC<KandidatSideProps> = ({ children }) => {
 
   return (
     <>
-      <div className='@container/kandidatside'>
+      <div className='@container/kandidatside '>
         <Heading size='medium' level='2'>
           {kandidatData.fornavn} {kandidatData.etternavn}
         </Heading>
         <div
-          className={'grid @xl/kandidatside:grid-cols-2 grid-cols-1 gap-4 mb-4'}
+          className={'grid @xl/kandidatside:grid-cols-2 grid-cols-1 gap-4 my-4'}
         >
           <div>
             <TekstMedIkon

@@ -1,6 +1,5 @@
 'use client';
 
-import WindowVisStilling from '@/app/_windows/vis-stilling-window/WindowVisStilling';
 import { StillingsSøkProvider } from '@/app/stilling/StillingsSøkContext';
 import StillingsSøkeresultat from '@/app/stilling/StillingsSøkeresultat';
 import StillingsSøkFilter from '@/app/stilling/_ui/StillingsSøkFilter';
@@ -17,7 +16,6 @@ const EtterRegistreringSøk = () => {
     <React.Suspense fallback={<Sidelaster />}>
       <StillingsSøkProvider formidlinger={true}>
         <EtterRegistreringSøkLayout />
-        <WindowVisStilling />
       </StillingsSøkProvider>
     </React.Suspense>
   );

@@ -18,7 +18,6 @@ const KandidatSokLayout: React.FC<KandidatSokLayoutProps> = ({ children }) => {
         Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
       ]}
     >
-      <WindowVisKandidat />
       <KandidatSøkProvider>
         <KandidatSøkMarkerteContextProvider>
           {children}

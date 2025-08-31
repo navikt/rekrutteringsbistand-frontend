@@ -1,73 +1,73 @@
-'use client';
+// 'use client';
 
-import { OpprettStillingKnapp } from './_ui/OpprettStilling';
-import VelgArbeidsgiver from './_ui/VelgArbeidsgiver';
-import VelgStillingskategori from './_ui/VelgStillingskategori';
-import { ArbeidsgiverDTO } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
-import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
-import HovedInnholdKort from '@/components/layout/HovedInnholdKort';
-import SideBanner from '@/components/layout/SideBanner';
-import SideLayout from '@/components/layout/SideLayout';
-import { Alert, BodyLong, Button } from '@navikt/ds-react';
-import { useRouter } from 'next/navigation';
-import { useQueryState } from 'nuqs';
-import { useState, type FC } from 'react';
+// import { OpprettStillingKnapp } from './_ui/OpprettStilling';
+// import VelgArbeidsgiver from './_ui/VelgArbeidsgiver';
+// import VelgStillingskategori from './_ui/VelgStillingskategori';
+// import { ArbeidsgiverDTO } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
+// import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
+// import HovedInnholdKort from '@/components/layout/HovedInnholdKort';
+// import SideBanner from '@/components/layout/SideBanner';
+// import SideLayout from '@/components/layout/SideLayout';
+// import { Alert, BodyLong, Button } from '@navikt/ds-react';
+// import { useRouter } from 'next/navigation';
+// import { useQueryState } from 'nuqs';
+// import { useState, type FC } from 'react';
 
-const NyStilling: FC = () => {
-  const router = useRouter();
+// const NyStilling: FC = () => {
+//   const router = useRouter();
 
-  const [stillingskategori, setStillingskategori] =
-    useQueryState<Stillingskategori | null>('stillingskategori', {
-      parse: (value) => value as Stillingskategori | null,
-      defaultValue: null,
-    });
+//   const [stillingskategori, setStillingskategori] =
+//     useQueryState<Stillingskategori | null>('stillingskategori', {
+//       parse: (value) => value as Stillingskategori | null,
+//       defaultValue: null,
+//     });
 
-  const [arbeidsgiver, setArbeidsgiver] = useState<ArbeidsgiverDTO | null>(
-    null,
-  );
+//   const [arbeidsgiver, setArbeidsgiver] = useState<ArbeidsgiverDTO | null>(
+//     null,
+//   );
 
-  const handleGoBack = () => {
-    router.back();
-  };
+//   const handleGoBack = () => {
+//     router.back();
+//   };
 
-  return (
-    <HovedInnholdKort>
-      <SideLayout topBanner={<SideBanner tittel='Opprett ny stilling' />}>
-        <div>
-          <Alert className='mb-2' variant='warning'>
-            <BodyLong spacing>
-              Du kan ikke registrere Nav-kurs, webinar, arbeidstrening og
-              lignende. Det er kun kategoriene nedenfor som skal brukes.
-            </BodyLong>
-            <BodyLong>
-              Du kan ikke endre stillingskategori eller arbeidsgiver etter
-              stillingen er opprettet.
-            </BodyLong>
-          </Alert>
-          <div className='grid'>
-            <VelgStillingskategori
-              setStillingskategori={setStillingskategori}
-              stillingskategori={stillingskategori}
-            />
-            <VelgArbeidsgiver arbeidsgiverCallback={setArbeidsgiver} />
-          </div>
-          <div className='mt-4 flex justify-end'>
-            <Button
-              className={'mr-4'}
-              variant={'secondary'}
-              onClick={handleGoBack}
-            >
-              Avbryt
-            </Button>
-            <OpprettStillingKnapp
-              stillingskategori={stillingskategori}
-              arbeidsgiver={arbeidsgiver}
-            />
-          </div>
-        </div>
-      </SideLayout>
-    </HovedInnholdKort>
-  );
-};
+//   return (
+//     <HovedInnholdKort>
+//       <SideLayout topBanner={<SideBanner tittel='Opprett ny stilling' />}>
+//         <div>
+//           <Alert className='mb-2' variant='warning'>
+//             <BodyLong spacing>
+//               Du kan ikke registrere Nav-kurs, webinar, arbeidstrening og
+//               lignende. Det er kun kategoriene nedenfor som skal brukes.
+//             </BodyLong>
+//             <BodyLong>
+//               Du kan ikke endre stillingskategori eller arbeidsgiver etter
+//               stillingen er opprettet.
+//             </BodyLong>
+//           </Alert>
+//           <div className='grid'>
+//             <VelgStillingskategori
+//               setStillingskategori={setStillingskategori}
+//               stillingskategori={stillingskategori}
+//             />
+//             <VelgArbeidsgiver arbeidsgiverCallback={setArbeidsgiver} />
+//           </div>
+//           <div className='mt-4 flex justify-end'>
+//             <Button
+//               className={'mr-4'}
+//               variant={'secondary'}
+//               onClick={handleGoBack}
+//             >
+//               Avbryt
+//             </Button>
+//             <OpprettStillingKnapp
+//               stillingskategori={stillingskategori}
+//               arbeidsgiver={arbeidsgiver}
+//             />
+//           </div>
+//         </div>
+//       </SideLayout>
+//     </HovedInnholdKort>
+//   );
+// };
 
-export default NyStilling;
+// export default NyStilling;

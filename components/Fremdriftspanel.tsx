@@ -8,7 +8,7 @@ export default function Fremdriftspanel({ children }: FremdriftspanelProps) {
       aria-label='Fremdriftspanel'
       className='w-full md:w-[320px] border-l border-l-[var(--ax-border-neutral-subtle)] py-3 pl-5 px-5'
     >
-      <div className='sticky top-0'>{children}</div>
+      <div className='sticky top-0 w-full'>{children}</div>
     </aside>
   );
 }

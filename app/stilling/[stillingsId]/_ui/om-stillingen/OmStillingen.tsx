@@ -5,15 +5,9 @@ import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsConte
 import OmAnnonsen from '@/app/stilling/[stillingsId]/_ui/OmAnnonsen';
 import OmBedriften from '@/app/stilling/[stillingsId]/_ui/OmBedriften';
 import OmStillingBoks from '@/app/stilling/[stillingsId]/_ui/OmStillingBoks';
-import RedigerStillingKnapp from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/RedigerStillingKnapp';
-import FullførStillingKnapp from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/fullfør-stilling/FullførStillingKnapp';
-import OmStillingenHeader from '@/app/stilling/[stillingsId]/_ui/om-stillingen/OmStillingenHeader';
-import Fremdriftspanel from '@/components/Fremdriftspanel';
 import TekstMedIkon from '@/components/felles/TekstMedIkon';
 import VisEditorTekst from '@/components/felles/rikteksteditor/VisEditorTekst';
 import { useWindowContext } from '@/components/layout/windows/DynamicWindowContext';
-import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
-import { Roller } from '@/components/tilgangskontroll/roller';
 import { getWorkLocationsAsString } from '@/util/locationUtil';
 import { RekbisError } from '@/util/rekbisError';
 import { formaterNorskDato } from '@/util/util';
@@ -83,7 +77,6 @@ export default function OmStillingen({
       <div className='flex flex-col gap-x-[3.5rem] gap-y-8 md:flex-row'>
         <div className='w-full' id='print-content' ref={printRef}>
           <div className='flex flex-col'>
-            <OmStillingenHeader />
             <OmStillingBoks
               tittel='Om jobben'
               innholdTopp
@@ -150,29 +143,6 @@ export default function OmStillingen({
             <OmAnnonsen />
           </div>
         </div>
-        {windowContext?.isDynamic === false && !forhåndsvisData && erEier && (
-          <Fremdriftspanel>
-            <TilgangskontrollForInnhold
-              skjulVarsel
-              kreverEnAvRollene={[
-                Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-              ]}
-            >
-              {/* <AvpubliserStilling />
-        <AvsluttStillingKnapp
-          kandidatlisteId={kandidatlisteInfo?.kandidatlisteId}
-          besatteStillinger={besatteStillinger}
-          antallStillinger={antallStillinger}
-          kandidatlisteStatus={data?.status}
-        /> */}
-
-              <div className='grid grid-cols-2 gap-2'>
-                <RedigerStillingKnapp />
-                <FullførStillingKnapp />
-              </div>
-            </TilgangskontrollForInnhold>
-          </Fremdriftspanel>
-        )}
       </div>
     </div>
   );

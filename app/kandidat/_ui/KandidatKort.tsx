@@ -1,6 +1,6 @@
-import { alleInnsatsgrupper } from './innsatsgrupper';
 import { KandidatDataSchemaDTO } from '@/app/api/kandidat-sok/schema/cvSchema.zod';
 import { useKandidatSøkMarkerteContext } from '@/app/kandidat/KandidatSøkMarkerteContext';
+import { alleInnsatsgrupper } from '@/app/kandidat/_ui/innsatsgrupper';
 import {
   hentKandidatensNavn,
   hentKandidatensØnskedeSteder,
@@ -10,12 +10,11 @@ import { useVisKandidatNr } from '@/app/kandidat/vis-kandidat/useVisKandidatNr';
 import TekstMedIkon from '@/components/felles/TekstMedIkon';
 import {
   FileSearchIcon,
-  HandHeartIcon,
   HandShakeHeartIcon,
   HouseIcon,
   PinIcon,
 } from '@navikt/aksel-icons';
-import { Box, Checkbox, Heading, Link } from '@navikt/ds-react';
+import { Box, Checkbox, Heading, Link, Tag } from '@navikt/ds-react';
 import * as React from 'react';
 
 type IKandidatKort = {
@@ -92,46 +91,39 @@ const KandidatKort: React.FC<IKandidatKort> = ({
           </Checkbox>
         </div>
         <div className='flex-grow'>
-          <Heading size='small'>
-            <div data-testid={`kandidatkort-lenke-${kandidat.arenaKandidatnr}`}>
-              {hentKandidatensNavn(kandidat)}
-            </div>
-          </Heading>
-          <div className='items-row flex'>
-            <div className='w-full'>
-              <div className='mt-2 flex flex-row gap-4'>
-                <TekstMedIkon
-                  ikon={<PinIcon />}
-                  tekst={hentKandidatensØnskedeSteder(kandidat) ?? '-'}
-                />
+          <div className='flex justify-between'>
+            <Heading size='small'>
+              <div
+                data-testid={`kandidatkort-lenke-${kandidat.arenaKandidatnr}`}
+              >
+                {hentKandidatensNavn(kandidat)}
+              </div>
+            </Heading>
+            <Tag variant='neutral' size='small'>
+              {kandidat.innsatsgruppe &&
+                alleInnsatsgrupper[kandidat.innsatsgruppe].label}
+            </Tag>
+          </div>
+          <div className='flex w-full justify-between'>
+            <div className='mt-2 flex flex-col @md:flex-row gap-4'>
+              <TekstMedIkon
+                ikon={<PinIcon />}
+                tekst={hentKandidatensØnskedeSteder(kandidat) ?? '-'}
+              />
 
-                <TekstMedIkon
-                  ikon={<HouseIcon />}
-                  tekst={`${kandidat.postnummer ?? '-'} ${kandidat.poststed ?? '-'} ${kandidat.kommuneNavn ? `(${kandidat.kommuneNavn})` : ''}`}
-                />
-              </div>
-              <div className='mt-2 flex flex-row gap-4'>
-                <TekstMedIkon
-                  ikon={<HandShakeHeartIcon />}
-                  tekst={hentKandidatensØnskedeYrker(kandidat) ?? '-'}
-                />
-                <TekstMedIkon
-                  ikon={<HandHeartIcon />}
-                  tekst={
-                    kandidat.innsatsgruppe &&
-                    alleInnsatsgrupper[kandidat.innsatsgruppe].label
-                  }
-                />
-              </div>
+              <TekstMedIkon
+                ikon={<HouseIcon />}
+                tekst={`${kandidat.postnummer ?? '-'} ${kandidat.poststed ?? '-'} ${kandidat.kommuneNavn ? `(${kandidat.kommuneNavn})` : ''}`}
+              />
+
+              <TekstMedIkon
+                ikon={<HandShakeHeartIcon />}
+                tekst={hentKandidatensØnskedeYrker(kandidat) ?? '-'}
+              />
             </div>
+            {Knapp}
           </div>
         </div>
-        <div className='hidden @xl/kandidatlistekort:block  flex-end self-end '>
-          {Knapp}
-        </div>
-      </div>
-      <div className=' @xl/kandidatlistekort:hidden flex justify-end'>
-        {Knapp}
       </div>
     </Box.New>
   );

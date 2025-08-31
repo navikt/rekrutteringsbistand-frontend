@@ -107,7 +107,9 @@ export default function PanelHeader({
     (c: any) => c && typeof c === 'object' && 'props' in c && c.props?.tabs,
   );
   const borderCls = 'border-b border-b-[var(--ax-border-neutral-subtle)]';
-  const compact = !hasTabs; // Alltid kompakt (32px) når ingen tabs – også for låst vindu
+  // Ønsket endring: Tabs skal alltid ligge under original (kompakt) header uten å påvirke høyden.
+  // Derfor tvinger vi compact = true uavhengig av om seksjoner har tabs.
+  const compact = true;
 
   // Injiser close-knapp kun for dynamiske vinduer (men uten å påvirke layoutbeslutningen)
   let enhancedChildren: ReactNode = childArr;
@@ -153,7 +155,7 @@ export default function PanelHeader({
   return (
     <PanelHeaderModeContext.Provider value={{ compact }}>
       <div
-        className={`flex flex-col ${borderCls} ${compact ? 'py-4' : ''} ${className}`}
+        className={`flex flex-col ${borderCls} ${compact ? (hasTabs ? 'pt-4 pb-0' : 'py-4') : ''} ${className}`}
       >
         {enhancedChildren}
       </div>
@@ -267,8 +269,8 @@ export function PanelHeaderSection({
           )}
         </div>
       </div>
-      {!compact && tabs && <div className='px-5'>{tabs}</div>}
-      {!compact && children && <div className='px-5'>{children}</div>}
+      {tabs && <div className='px-5'>{tabs}</div>}
+      {children && <div className='px-5'>{children}</div>}
     </div>
   );
 }

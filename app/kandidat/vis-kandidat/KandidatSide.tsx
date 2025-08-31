@@ -7,6 +7,7 @@ import NavigerTilAktivitetsplanenKnapp from '@/components/felles/modia/NavigerTi
 import { Tabs } from '@navikt/ds-react';
 import { useQueryState } from 'nuqs';
 import * as React from 'react';
+import { useEffect } from 'react';
 
 enum Fane {
   OVERSIKT = 'oversikt',
@@ -19,7 +20,7 @@ const KandidatSide: React.FC = () => {
     clearOnDefault: true,
   });
 
-  React.useEffect(() => {
+  useEffect(() => {
     const contentElement = document.getElementById('høyreinnhold');
 
     if (contentElement) {

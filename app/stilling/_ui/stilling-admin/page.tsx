@@ -14,9 +14,9 @@ import {
   Stillingskategori,
   StillingsStatus,
 } from '@/app/stilling/_ui/stilling-typer';
-import MaksBredde from '@/components/layout/MaksBredde';
 // import ViktigeDatoer from '@/app/stilling/rediger/_ui/ViktigeDatoer';
 import PanelHeader from '@/components/layout/PanelHeader';
+import SideLayout from '@/components/layout/SideLayout';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { TrashIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
@@ -33,7 +33,8 @@ export const StillingAdminSchema = z.object({
 export type StillingAdminDTO = z.infer<typeof StillingAdminSchema>;
 
 export default function StillingAdmin() {
-  const { setForhåndsvisData, stillingsData } = useStillingsContext();
+  const { forhåndsvisData, setForhåndsvisData, stillingsData } =
+    useStillingsContext();
   const router = useRouter();
   const [forhåndsvis, setStateForhåndsvis] = useState<boolean>(false);
 
@@ -44,7 +45,6 @@ export default function StillingAdmin() {
 
   const setForhåndsvis = (val: boolean) => {
     if (val) {
-      //@ts-expect-error Alle verdier er ikke nødvendigvis satt
       setForhåndsvisData(forhåndsvisData);
       setStateForhåndsvis(true);
     } else {
@@ -99,39 +99,37 @@ export default function StillingAdmin() {
   return (
     <FormProvider {...registerForm}>
       {forhåndsvis ? (
-        <>
+        <SideLayout>
           <PanelHeader>
             <Button onClick={() => setForhåndsvis(false)}>
               Avslutt forhåndsvisning
             </Button>
           </PanelHeader>
           <OmStillingen printRef={null} forhåndsvisData />
-        </>
+        </SideLayout>
       ) : (
-        <>
-          <PanelHeader>
-            <PanelHeader.Section
-              title={headerTittel()}
-              back={{
-                fallbackPath: '/stilling',
-              }}
-              actionsRight={knapperad()}
-            />
-          </PanelHeader>
-
-          <div className='flex flex-col md:flex-row'>
-            <MaksBredde>
-              <div className='w-full flex flex-col gap-5 m-5'>
-                {moduler.map((m) => (
-                  <m.Component key={m.key} />
-                ))}
-              </div>
-            </MaksBredde>
+        <SideLayout
+          header={
+            <PanelHeader>
+              <PanelHeader.Section
+                title={headerTittel()}
+                back={{
+                  fallbackPath: '/stilling',
+                }}
+                actionsRight={knapperad()}
+              />
+            </PanelHeader>
+          }
+          sidepanel={
             <FremdriftspanelRedigering
               setForhåndsvis={() => setForhåndsvis(true)}
             />
-          </div>
-        </>
+          }
+        >
+          {moduler.map((m) => (
+            <m.Component key={m.key} />
+          ))}
+        </SideLayout>
       )}
     </FormProvider>
   );

@@ -38,10 +38,7 @@ const StillingsKort: React.FC<IStillingsKort> = ({
   stillingData,
   kandidatId,
 }) => {
-  const {
-    visVarsel,
-    brukerData: { ident },
-  } = useApplikasjonContext();
+  const { visVarsel } = useApplikasjonContext();
 
   const router = useRouter();
   const { track } = useUmami();
@@ -141,31 +138,37 @@ const StillingsKort: React.FC<IStillingsKort> = ({
   return (
     <Box.New
       padding='4'
-      className='mb-4 cursor-pointer group'
+      className={`mb-4 group ${erFormidling ? '' : 'cursor-pointer '}`}
       background='neutral-softA'
       borderRadius='xlarge'
       data-testid='stillings-kort'
-      onClick={() => setVisStillingId(stillingData.stilling.uuid)}
+      onClick={() =>
+        !erFormidling && setVisStillingId(stillingData.stilling.uuid)
+      }
     >
-      <div className='flex gap-2 items-start'>
+      <div className='flex gap-2 items-start min-w-0'>
         {/* Ikon / avatar */}
         <div>
           <BriefcaseIcon aria-hidden />
         </div>
         {/* Innhold */}
         <div className='flex-1 min-w-0'>
-          <div className='flex justify-between'>
+          {/* Tittel + tag */}
+          <div className='flex items-start gap-2 min-w-0'>
             <Heading
               size='small'
-              className='truncate max-w-full pr-2'
+              className='flex-1 min-w-0 truncate pr-2'
               title={stillingData?.stilling?.tittel || 'Ukjent tittel'}
             >
               {stillingData?.stilling?.tittel || 'Ukjent tittel'}
             </Heading>
-            <StillingsTag stillingsData={stillingData} />
+            <div className='flex-shrink-0'>
+              <StillingsTag stillingsData={stillingData} />
+            </div>
           </div>
-          <div className='flex justify-between'>
-            <div className='text-sm text-text-subtle flex flex-wrap gap-x-4'>
+          {/* Info + knapper */}
+          <div className='flex gap-2 items-start min-w-0'>
+            <div className='text-sm text-text-subtle flex flex-wrap gap-x-4 gap-y-1 flex-1 min-w-0'>
               <span className='flex items-center gap-1'>
                 <Buildings2Icon aria-hidden className='text-text-subtle' />
                 {stillingData.stilling?.businessName || 'Ukjent bedrift'}
@@ -190,7 +193,7 @@ const StillingsKort: React.FC<IStillingsKort> = ({
                 ) || '-'}
               </span>
             </div>
-            <div className='mt-3 flex justify-end'>{Knapper}</div>
+            <div className='mt-3 flex justify-end flex-shrink-0'>{Knapper}</div>
           </div>
         </div>
       </div>
