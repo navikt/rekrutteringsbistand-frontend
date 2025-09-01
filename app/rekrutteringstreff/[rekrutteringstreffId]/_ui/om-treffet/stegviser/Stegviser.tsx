@@ -3,7 +3,7 @@
 import StegviserContent from './StegviserContent';
 import { StegviserProvider } from './StegviserContext';
 import StegviserHeader from './StegviserHeader';
-import StegviserLayout from './StegviserLayout';
+import { Box } from '@navikt/ds-react';
 import * as React from 'react';
 
 const stepDetails = [
@@ -21,15 +21,23 @@ const stepDetails = [
   },
 ];
 
-const stepsForStepper = stepDetails.map((d) => d.stepLabel);
-
 const Stegviser = () => {
   return (
     <StegviserProvider>
-      <StegviserLayout header={<StegviserHeader stepDetails={stepDetails} />}>
-        <StegviserContent stepsForStepper={stepsForStepper} />
-      </StegviserLayout>
+      <Box.New
+        background='raised'
+        borderColor='neutral-subtleA'
+        borderWidth='1'
+        padding='6'
+        className='rounded-xl'
+      >
+        <StegviserHeader stepDetails={stepDetails} />
+        <div className='mt-4'>
+          <StegviserContent />
+        </div>
+      </Box.New>
     </StegviserProvider>
   );
 };
+
 export default Stegviser;

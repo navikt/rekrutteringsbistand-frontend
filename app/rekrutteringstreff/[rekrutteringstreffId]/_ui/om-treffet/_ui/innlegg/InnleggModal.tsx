@@ -1,6 +1,7 @@
 'use client';
 
 import type { InnleggDTO } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
+import { useKiLogg } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
 import { useValiderRekrutteringstreff } from '@/app/api/rekrutteringstreff/kiValidering/useValiderRekrutteringstreff';
 import {
   oppdaterEttInnlegg,
@@ -55,6 +56,9 @@ const InnleggModal: React.FC<InnleggModalProps> = ({
   const [hasChecked, setHasChecked] = useState(false);
   const [forceSave, setForceSave] = useState(false);
   const [editorKey, setEditorKey] = useState(Date.now());
+  const [loggId, setLoggId] = useState<string | null>(null);
+
+  const { setLagret: setKiLagret } = useKiLogg(rekrutteringstreffId, 'innlegg');
 
   const methods = useForm<InnleggFormFields>({
     defaultValues: { htmlContent: innlegg?.htmlContent ?? '' },
@@ -83,6 +87,7 @@ const InnleggModal: React.FC<InnleggModalProps> = ({
     if (isDirty) {
       setHasChecked(false);
       setForceSave(false);
+      setLoggId(null);
       resetAnalyse();
     }
   }, [htmlContent, isDirty, resetAnalyse]);
@@ -108,20 +113,38 @@ const InnleggModal: React.FC<InnleggModalProps> = ({
     ],
   );
 
-  const handleValidateOrError = () => {
+  const handleValidateOrErrorOgSetLoggId = async () => {
     if (validating || !rekrutteringstreffId) return;
-    const txt = htmlContent?.trim();
-    if (!txt) {
+    const tekst = htmlContent?.trim();
+    if (!tekst) {
       resetAnalyse();
       setHasChecked(false);
+      setLoggId(null);
       return;
     }
-    validate({
-      treffId: rekrutteringstreffId,
-      feltType: 'innlegg',
-      tekst: txt,
-    });
-    setHasChecked(true);
+    try {
+      const res = await validate({
+        treffId: rekrutteringstreffId,
+        feltType: 'tittel',
+        tekst,
+      });
+
+      setLoggId(res?.loggId && res.loggId.length > 0 ? res.loggId : null);
+      if (!res?.loggId) {
+        logger.warn(
+          'Valideringen fullførte uten å returnere logglinje-id for innlegg.',
+        );
+      }
+      setHasChecked(true);
+    } catch (e) {
+      setHasChecked(false);
+      setLoggId(null);
+      new RekbisError({
+        message:
+          'Validering av innlegget feilet. Prøv igjen eller kontakt brukerstøtte.',
+        error: e,
+      });
+    }
   };
 
   useEffect(() => {
@@ -129,6 +152,7 @@ const InnleggModal: React.FC<InnleggModalProps> = ({
     resetAnalyse();
     setHasChecked(false);
     setForceSave(false);
+    setLoggId(null);
     setEditorKey(Date.now());
     if (modalRef.current && !modalRef.current.open) {
       setIsClosingModal(false);
@@ -138,16 +162,16 @@ const InnleggModal: React.FC<InnleggModalProps> = ({
 
   const onSubmitHandler: SubmitHandler<InnleggFormFields> = async (data) => {
     if (validating) {
-      logger.warn('Attempted to save post while validation was in progress.');
+      logger.warn('Forsøkte å lagre mens validering pågikk.');
       return;
     }
     if (!hasChecked) {
-      logger.warn('Attempted to save post without validation.');
+      logger.warn('Forsøkte å lagre uten at validering var kjørt.');
       return;
     }
     if (analyse?.bryterRetningslinjer && !forceSave) {
       logger.warn(
-        'Attempted to save post with policy violations without override.',
+        'Forsøkte å lagre innhold med brudd uten at overstyring var valgt.',
       );
       return;
     }
@@ -170,10 +194,31 @@ const InnleggModal: React.FC<InnleggModalProps> = ({
       } else {
         await opprettInnleggForTreff(rekrutteringstreffId, payload);
       }
+
+      // Marker KI-logglinjen som lagret (hvis vi har ID)
+      if (loggId) {
+        try {
+          await setKiLagret({ id: loggId, lagret: true });
+        } catch (e) {
+          new RekbisError({
+            message:
+              'Innholdet ble lagret, men markering av KI-logg som lagret feilet.',
+            error: e,
+          });
+        }
+      } else {
+        logger.warn(
+          'Innlegg lagret uten at logglinje-id var tilgjengelig – hopper over oppdatering av KI-logg.',
+        );
+      }
+
       onInnleggUpdated();
       modalRef.current?.close();
     } catch (error) {
-      new RekbisError({ message: 'Error saving post:', error });
+      new RekbisError({
+        message: 'Lagring av innlegget feilet. Prøv igjen senere.',
+        error,
+      });
     }
   };
 
@@ -208,6 +253,7 @@ const InnleggModal: React.FC<InnleggModalProps> = ({
     setInitialFocusDone(false);
     setHasChecked(false);
     setForceSave(false);
+    setLoggId(null);
   };
 
   return (
@@ -240,9 +286,10 @@ const InnleggModal: React.FC<InnleggModalProps> = ({
                       if (!isDirty) {
                         resetAnalyse();
                         setHasChecked(false);
+                        setLoggId(null);
                         cancelButtonRef.current?.focus();
                       } else {
-                        handleValidateOrError();
+                        handleValidateOrErrorOgSetLoggId();
                       }
                     }
                   }, 0)
@@ -267,9 +314,10 @@ const InnleggModal: React.FC<InnleggModalProps> = ({
                       if (!isDirty) {
                         resetAnalyse();
                         setHasChecked(false);
+                        setLoggId(null);
                         setTimeout(() => cancelButtonRef.current?.focus(), 0);
                       } else {
-                        handleValidateOrError();
+                        handleValidateOrErrorOgSetLoggId();
                         setTimeout(() => analyseRef.current?.focus(), 0);
                       }
                     } else if (e.key === 'Escape') {
@@ -386,7 +434,7 @@ const InnleggModal: React.FC<InnleggModalProps> = ({
               <>
                 <Button
                   type='button'
-                  onClick={handleValidateOrError}
+                  onClick={handleValidateOrErrorOgSetLoggId}
                   loading={validating}
                   disabled={baseInvalid || validating}
                 >

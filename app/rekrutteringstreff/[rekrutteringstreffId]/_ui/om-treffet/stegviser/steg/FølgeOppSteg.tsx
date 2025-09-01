@@ -12,7 +12,7 @@ import IkkeOppmøteModal, {
   IkkeOppmøteInternalDto,
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøkere/_ui/IkkeOppmøteModal';
 import { useStegviser } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/om-treffet/stegviser/StegviserContext';
-import { BodyShort, Detail } from '@navikt/ds-react';
+import { BodyShort, Button, Detail } from '@navikt/ds-react';
 import * as React from 'react';
 
 const FølgeOppSteg: React.FC = () => {
@@ -63,13 +63,15 @@ const FølgeOppSteg: React.FC = () => {
 
         <SjekklisteRad
           erOppfylt={tiltidspunktHarPassert}
-          kanKlikkes={false}
-          onClick={() => {}}
           label='Arrangementets tiltidspunkt har passert'
-          ariaLabel='Arrangementets tiltidspunkt har passert'
         />
 
         <SjekklisteSeparator />
+
+        <SjekklisteRad
+          erOppfylt={antallUbestemt === 0}
+          label='Alle jobbsøkere er registrert med møtt opp eller ikke møtt opp'
+        />
 
         <SjekklisteInfoRad>
           <BodyShort>
@@ -92,18 +94,18 @@ const FølgeOppSteg: React.FC = () => {
           </BodyShort>
         </SjekklisteInfoRad>
 
-        <SjekklisteSeparator />
-
-        <SjekklisteRad
-          erOppfylt={antallUbestemt === 0}
-          kanKlikkes={antallUbestemt > 0}
-          onClick={åpneIkkeOppmøteForUregistrerte}
-          label='Alle jobbsøkere er registrert med møtt opp eller ikke møtt opp'
-          handlingstekst={
-            antallUbestemt > 0 ? 'Registrer ikke oppmøte' : undefined
-          }
-          ariaLabel='Alle jobbsøkere er registrert med møtt opp eller ikke møtt opp'
-        />
+        {antallUbestemt > 0 && (
+          <div className='mt-2'>
+            <Button
+              size='small'
+              onClick={åpneIkkeOppmøteForUregistrerte}
+              disabled={uregistrerte.length === 0}
+              className='w-full'
+            >
+              Registrer ikke oppmøte
+            </Button>
+          </div>
+        )}
       </SjekklisteContainer>
 
       <IkkeOppmøteModal
