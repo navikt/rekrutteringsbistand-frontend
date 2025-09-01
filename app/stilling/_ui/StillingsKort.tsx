@@ -12,22 +12,14 @@ import formaterMedStoreOgSmåBokstaver from '@/util/tekst';
 import {
   BriefcaseIcon,
   Buildings2Icon,
-  ClockIcon,
   CogIcon,
   // PersonIcon,
   PinIcon,
 } from '@navikt/aksel-icons';
 import { Box, Button, Heading } from '@navikt/ds-react';
-import {
-  differenceInCalendarDays,
-  isBefore,
-  isToday,
-  parseISO,
-  startOfToday,
-} from 'date-fns';
 import { useRouter } from 'next/navigation';
 import { useQueryState } from 'nuqs';
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 
 export interface IStillingsKort {
   stillingData: RekrutteringsbistandStillingSchemaDTO;
@@ -56,19 +48,6 @@ const StillingsKort: React.FC<IStillingsKort> = ({
   const erDirektemeldt = stillingsDataInfo.erDirektemeldt;
 
   const stillingUrl = `${erFormidling ? '/etterregistrering/' : '/stilling/'}${stillingData.stilling.uuid}`;
-
-  // Beregn dager til frist (fra applicationdue)
-  const fristTekst = useMemo(() => {
-    const frist = stillingData.stilling.properties?.applicationdue;
-    if (!frist) return '-';
-    // parseISO håndterer streng (YYYY-MM-DD / full ISO) trygt
-    const fristDato = parseISO(String(frist));
-    if (isNaN(fristDato.getTime())) return '-';
-    if (isBefore(fristDato, startOfToday())) return 'Frist utløpt';
-    if (isToday(fristDato)) return 'Frist i dag';
-    const dager = differenceInCalendarDays(fristDato, new Date());
-    return `Frist om ${dager} dager`;
-  }, [stillingData.stilling.properties?.applicationdue]);
 
   const leggTilKandidat = async (kandidatId: string) => {
     track(UmamiEvent.Stilling.forslag_til_stilling_legg_til_kandidat);
@@ -138,7 +117,7 @@ const StillingsKort: React.FC<IStillingsKort> = ({
   return (
     <Box.New
       padding='4'
-      className={`mb-4 group ${erFormidling ? '' : 'cursor-pointer '}`}
+      className={`group ${erFormidling ? '' : 'cursor-pointer '}`}
       background='neutral-softA'
       borderRadius='xlarge'
       data-testid='stillings-kort'
@@ -182,10 +161,7 @@ const StillingsKort: React.FC<IStillingsKort> = ({
                   .filter(Boolean)
                   .join(', ') || '-'}
               </span>
-              <span className='flex items-center gap-1'>
-                <ClockIcon aria-hidden className='text-text-subtle' />
-                {fristTekst}
-              </span>
+
               <span className='flex items-center gap-1'>
                 <PinIcon aria-hidden className='text-text-subtle' />
                 {formaterMedStoreOgSmåBokstaver(

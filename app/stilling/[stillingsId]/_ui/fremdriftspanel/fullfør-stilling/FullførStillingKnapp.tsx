@@ -17,7 +17,7 @@ import { useRef, useState } from 'react';
 export default function FullførStillingKnapp() {
   const ref = useRef<HTMLDialogElement>(null);
   const { stillingsData, refetch, erEier } = useStillingsContext();
-  const { valgtNavKontor, brukerData } = useApplikasjonContext();
+  const { valgtNavKontor, brukerData, visVarsel } = useApplikasjonContext();
   const [loading, setLoading] = useState(false);
   const kandidatlisteForEier = useKandidatlisteForEier(stillingsData, erEier);
 
@@ -148,7 +148,4 @@ export default function FullførStillingKnapp() {
       }}
     </SWRLaster>
   );
-}
-function visVarsel(arg0: { type: string; tekst: string }) {
-  throw new Error('Function not implemented.');
 }

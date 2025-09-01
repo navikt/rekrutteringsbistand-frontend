@@ -84,13 +84,15 @@ const StillingsSøkeresultat: React.FC<StillingsSøkeresultatProps> = ({
         return (
           <>
             <StillingsSøkChips skjulLagreStandard={!!kandidatId} />
-            {data.hits.hits.map((hit) => (
-              <StillingsKort
-                key={hit._id}
-                stillingData={hit._source}
-                kandidatId={kandidatId}
-              />
-            ))}
+            <div className='flex flex-col gap-1'>
+              {data.hits.hits.map((hit) => (
+                <StillingsKort
+                  key={hit._id}
+                  stillingData={hit._source}
+                  kandidatId={kandidatId}
+                />
+              ))}
+            </div>
             <div className={'flex justify-between items-center'}>
               {antallVisning(data.hits.total?.value)}
               <StillingsSøkPaginering

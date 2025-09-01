@@ -3,7 +3,6 @@
 import { storForbokstav } from '@/app/kandidat/util';
 import { useStillingsSøkFilter } from '@/app/stilling/StillingsSøkContext';
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
-import * as React from 'react';
 
 export enum StillingsStatusTyper {
   Publisert = 'publisert',
@@ -11,11 +10,17 @@ export enum StillingsStatusTyper {
   Stoppet = 'stoppet',
 }
 
-const StatusFilter: React.FC = () => {
+export interface StatusFilterProps {
+  hideLegend?: boolean;
+}
+
+export default function StatusFilter({ hideLegend }: StatusFilterProps) {
   const { statuser, setStatuser } = useStillingsSøkFilter();
   return (
     <CheckboxGroup
+      hideLegend={hideLegend}
       legend='Status'
+      size='small'
       onChange={setStatuser}
       value={statuser ? statuser : undefined}
     >
@@ -30,6 +35,4 @@ const StatusFilter: React.FC = () => {
       </Checkbox>
     </CheckboxGroup>
   );
-};
-
-export default StatusFilter;
+}

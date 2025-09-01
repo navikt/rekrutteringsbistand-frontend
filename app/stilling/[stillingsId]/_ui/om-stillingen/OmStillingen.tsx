@@ -7,7 +7,6 @@ import OmBedriften from '@/app/stilling/[stillingsId]/_ui/OmBedriften';
 import OmStillingBoks from '@/app/stilling/[stillingsId]/_ui/OmStillingBoks';
 import TekstMedIkon from '@/components/felles/TekstMedIkon';
 import VisEditorTekst from '@/components/felles/rikteksteditor/VisEditorTekst';
-import { useWindowContext } from '@/components/layout/windows/DynamicWindowContext';
 import { getWorkLocationsAsString } from '@/util/locationUtil';
 import { RekbisError } from '@/util/rekbisError';
 import { formaterNorskDato } from '@/util/util';
@@ -51,13 +50,8 @@ export interface OmStillingenProps {
   printRef: React.RefObject<HTMLDivElement | null> | null;
 }
 
-export default function OmStillingen({
-  forhåndsvisData,
-  printRef,
-}: OmStillingenProps) {
-  const { stillingsData, erEier } = useStillingsContext();
-
-  const windowContext = useWindowContext();
+export default function OmStillingen({ printRef }: OmStillingenProps) {
+  const { stillingsData } = useStillingsContext();
 
   const lokasjon = getWorkLocationsAsString(
     stillingsData.stilling.locationList as GeografiDTO[],

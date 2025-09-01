@@ -4,7 +4,6 @@ import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsConte
 import RedigerStillingKnapp from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/RedigerStillingKnapp';
 import FullførStillingKnapp from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/fullfør-stilling/FullførStillingKnapp';
 import { StillingsStatus } from '@/app/stilling/_ui/stilling-typer';
-import Fremdriftspanel from '@/components/Fremdriftspanel';
 import SWRLaster from '@/components/SWRLaster';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
@@ -16,7 +15,13 @@ import {
 } from '@navikt/aksel-icons';
 import { BodyShort, Box, Heading } from '@navikt/ds-react';
 
-export default function FremdriftspanelStilling() {
+export interface FremdriftspanelStillingProps {
+  dropDown?: boolean;
+}
+
+export default function FremdriftspanelStilling({
+  dropDown,
+}: FremdriftspanelStillingProps) {
   const { stillingsData, erEier } = useStillingsContext();
   const kandidatlisteHook = useKandidatlisteForEier(stillingsData, erEier);
 
@@ -91,23 +96,26 @@ export default function FremdriftspanelStilling() {
   );
 
   return (
-    <Fremdriftspanel>
-      <TilgangskontrollForInnhold
-        skjulVarsel
-        kreverEnAvRollene={[
-          Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-        ]}
-      >
-        <SWRLaster hooks={[kandidatlisteHook]}>
-          {(kandidatliste) => {
-            const erFullført =
-              stillingsData.stilling.status === StillingsStatus.Inaktiv &&
-              kandidatliste.status === Kandidatlistestatus.Lukket;
+    <TilgangskontrollForInnhold
+      skjulVarsel
+      kreverEnAvRollene={[
+        Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+      ]}
+    >
+      <SWRLaster hooks={[kandidatlisteHook]}>
+        {(kandidatliste) => {
+          const erFullført =
+            stillingsData.stilling.status === StillingsStatus.Inaktiv &&
+            kandidatliste.status === Kandidatlistestatus.Lukket;
 
-            return erFullført ? fullført : ikkeFullført;
-          }}
-        </SWRLaster>
-      </TilgangskontrollForInnhold>
-    </Fremdriftspanel>
+          return (
+            <div className={dropDown ? 'p-4' : ''}>
+              {' '}
+              {erFullført ? fullført : ikkeFullført}{' '}
+            </div>
+          );
+        }}
+      </SWRLaster>
+    </TilgangskontrollForInnhold>
   );
 }

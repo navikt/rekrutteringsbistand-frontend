@@ -13,7 +13,6 @@ import FiltrertKandidatListeVisning from '@/app/stilling/[stillingsId]/kandidatl
 import KandidatlisteWrapper from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteWrapper';
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideLayout from '@/components/layout/SideLayout';
-import { useWindowContext } from '@/components/layout/windows/DynamicWindowContext';
 import { Alert, Heading, Tabs } from '@navikt/ds-react';
 import { useQueryState } from 'nuqs';
 import { useRef } from 'react';
@@ -28,7 +27,6 @@ export default function StillingsSidePage() {
     defaultValue: StillingFane.STILLING,
     clearOnDefault: true,
   });
-  const windowContext = useWindowContext();
   const {
     erEier,
     kandidatlisteInfo,
@@ -60,7 +58,7 @@ export default function StillingsSidePage() {
   );
 
   return (
-    <>
+    <div className='@stilling'>
       <WindowFinnKandidater stillingsId={stillingsData.stilling.uuid} />
       <WindowVisKandidat />
       <Tabs defaultValue={fane} onChange={(val: any) => setFane(val)}>
@@ -68,7 +66,7 @@ export default function StillingsSidePage() {
           header={
             <PanelHeader>
               <PanelHeader.Section
-                title={stillingsData.stilling.title ?? ''}
+                title={'Stillingsoppdrag'}
                 back={{
                   fallbackPath: '/stilling',
                 }}
@@ -77,10 +75,11 @@ export default function StillingsSidePage() {
               />
             </PanelHeader>
           }
-          sidepanel={
-            windowContext?.isDynamic === false &&
-            !forhåndsvisData &&
-            erEier && <FremdriftspanelStilling />
+          fremdriftspanel={
+            !forhåndsvisData && erEier && <FremdriftspanelStilling />
+          }
+          fremdriftspanelTop={
+            !forhåndsvisData && erEier && <FremdriftspanelStilling dropDown />
           }
         >
           {!kandidatlisteLaster && kandidatlisteInfo === null && (
@@ -116,6 +115,6 @@ export default function StillingsSidePage() {
           )}
         </SideLayout>
       </Tabs>
-    </>
+    </div>
   );
 }

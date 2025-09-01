@@ -7,7 +7,6 @@ import StillingsSøkFilter from './_ui/StillingsSøkFilter';
 import { useUseBrukerStandardSøk } from '@/app/api/stilling/standardsok/useBrukersStandardsøk';
 import { useStillingForKandidat } from '@/app/kandidat/vis-kandidat/useStillingForKandidat';
 import GeografiFilter from '@/app/stilling/_ui/StillingsSøkFilter/GeografiFilter';
-import InkluderingFilter from '@/app/stilling/_ui/StillingsSøkFilter/InkluderingFilter';
 import KategoriFilter from '@/app/stilling/_ui/StillingsSøkFilter/KategoriFilter';
 import StatusFilter from '@/app/stilling/_ui/StillingsSøkFilter/StatusFilter';
 import StillingsSøkSortering from '@/app/stilling/_ui/StillingsSøkSortering';
@@ -16,6 +15,7 @@ import { Roller } from '@/components/tilgangskontroll/roller';
 import { UmamiEvent } from '@/components/umami/umamiEvents';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
+import { Accordion } from '@navikt/ds-react';
 import { useSearchParams } from 'next/navigation';
 import { FC, Suspense, useEffect } from 'react';
 
@@ -101,15 +101,36 @@ const StillingsSøkLayout: FC<StillingsSøkProps> = ({
       />
       <div className='@container flex'>
         <div className='hidden @[720px]:block mr-4 pt-4  max-w-[200px]'>
-          <StillingsSøkSortering />
-          {(harArbeidsgiverrettetRolle || formidlinger) && <StatusFilter />}
-          <GeografiFilter />
-          {!formidlinger && (
-            <>
-              <InkluderingFilter />
-              <KategoriFilter />
-            </>
-          )}
+          <Accordion size='small'>
+            <Accordion.Item>
+              <Accordion.Header>Sorter</Accordion.Header>
+              <Accordion.Content>
+                <StillingsSøkSortering hideLegend />
+              </Accordion.Content>
+            </Accordion.Item>
+            {(harArbeidsgiverrettetRolle || formidlinger) && (
+              <Accordion.Item>
+                <Accordion.Header>Status</Accordion.Header>
+                <Accordion.Content>
+                  <StatusFilter hideLegend />
+                </Accordion.Content>
+              </Accordion.Item>
+            )}
+            <Accordion.Item>
+              <Accordion.Header>Område</Accordion.Header>
+              <Accordion.Content>
+                <GeografiFilter hideLegend />
+              </Accordion.Content>
+            </Accordion.Item>
+            {!formidlinger && (
+              <Accordion.Item>
+                <Accordion.Header>Kategori</Accordion.Header>
+                <Accordion.Content>
+                  <KategoriFilter hideLegend />
+                </Accordion.Content>
+              </Accordion.Item>
+            )}
+          </Accordion>
         </div>
         <div className='flex-grow min-w-0'>
           <StillingsSøkeresultat kandidatId={forKandidatNr} />

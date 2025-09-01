@@ -1,5 +1,4 @@
 import GeografiFilter from './StillingsSøkFilter/GeografiFilter';
-import InkluderingFilter from './StillingsSøkFilter/InkluderingFilter';
 import KategoriFilter from './StillingsSøkFilter/KategoriFilter';
 import StatusFilter from './StillingsSøkFilter/StatusFilter';
 import StillingSøkebar from './StillingsSøkFilter/StillingSøkebar';
@@ -78,12 +77,7 @@ const StillingsSøkFilter: FC<{
               <StillingsSøkSortering />
               {(harArbeidsgiverrettetRolle || formidlinger) && <StatusFilter />}
               <GeografiFilter />
-              {!formidlinger && (
-                <>
-                  <InkluderingFilter />
-                  <KategoriFilter />
-                </>
-              )}
+              {!formidlinger && <KategoriFilter />}
             </AlleFilterKomponent>
           </div>
         </div>

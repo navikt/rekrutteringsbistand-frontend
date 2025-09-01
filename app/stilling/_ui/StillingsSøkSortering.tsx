@@ -1,6 +1,5 @@
 import { useStillingsSøkFilter } from '@/app/stilling/StillingsSøkContext';
 import { Radio, RadioGroup } from '@navikt/ds-react';
-import * as React from 'react';
 
 export enum StillingsSøkSorteringTyper {
   MestRelevant = 'mestRelevant',
@@ -8,16 +7,25 @@ export enum StillingsSøkSorteringTyper {
   Utløpsdato = 'utløpsdato',
 }
 
-const StillingsSøkSortering: React.FC = () => {
+export interface StillingsSøkSorteringProps {
+  hideLegend?: boolean;
+}
+
+export default function StillingsSøkSortering({
+  hideLegend,
+}: StillingsSøkSorteringProps) {
   const filter = useStillingsSøkFilter();
   const handleChange = (value: string) => {
     filter.setSortering(value);
   };
   return (
     <RadioGroup
+      size='small'
+      hideLegend={hideLegend}
       legend='Sorter'
       value={filter.sortering}
       onChange={handleChange}
+      className='pb-2'
     >
       <Radio value={StillingsSøkSorteringTyper.Publiseringsdato}>
         Publiseringsdato
@@ -28,6 +36,4 @@ const StillingsSøkSortering: React.FC = () => {
       </Radio>
     </RadioGroup>
   );
-};
-
-export default StillingsSøkSortering;
+}

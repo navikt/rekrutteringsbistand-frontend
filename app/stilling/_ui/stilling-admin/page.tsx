@@ -120,7 +120,7 @@ export default function StillingAdmin() {
               />
             </PanelHeader>
           }
-          sidepanel={
+          fremdriftspanel={
             <FremdriftspanelRedigering
               setForhåndsvis={() => setForhåndsvis(true)}
             />

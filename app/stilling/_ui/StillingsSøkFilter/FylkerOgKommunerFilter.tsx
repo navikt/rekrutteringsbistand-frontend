@@ -9,9 +9,13 @@ import React, { Fragment } from 'react';
 
 interface IFylkerOgKommuner {
   geografi: PamGeografi[];
+  hideLegend?: boolean;
 }
 
-const FylkerOgKommunerFilter: React.FC<IFylkerOgKommuner> = ({ geografi }) => {
+const FylkerOgKommunerFilter: React.FC<IFylkerOgKommuner> = ({
+  geografi,
+  hideLegend,
+}) => {
   const { fylker, setFylker, kommuner, setKommuner } = useStillingsSøkFilter();
   const fylkerMedKommuner = geografi
     ?.filter((g) => g.type === GeografiType.FYLKE)
@@ -27,7 +31,13 @@ const FylkerOgKommunerFilter: React.FC<IFylkerOgKommuner> = ({ geografi }) => {
     }))
     .sort((a: PamGeografi, b: PamGeografi) => a.navn.localeCompare(b.navn));
   return (
-    <CheckboxGroup legend='Område' value={fylker || []} onChange={setFylker}>
+    <CheckboxGroup
+      size='small'
+      hideLegend={hideLegend}
+      legend='Område'
+      value={fylker || []}
+      onChange={setFylker}
+    >
       {fylkerMedKommuner?.map((fylke) => (
         <Fragment key={fylke.lokasjon.fylkesnummer}>
           <Checkbox value={fylke.lokasjon.fylkesnummer}>
