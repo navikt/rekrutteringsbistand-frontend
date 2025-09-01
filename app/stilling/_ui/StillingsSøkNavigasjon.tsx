@@ -1,5 +1,6 @@
 import { useStillingsSøkFilter } from '@/app/stilling/StillingsSøkContext';
 import { StillingsSøkPortefølje } from '@/app/stilling/_util/stillingssøk-typer';
+import { useStillingssokTotalData } from '@/app/stilling/store/stillingssokTotalData';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { Button, Chips } from '@navikt/ds-react';
@@ -13,6 +14,8 @@ const StillingsSøkNavigasjon: React.FC = () => {
     setUtenOppdrag,
     formidlinger,
   } = useStillingsSøkFilter();
+
+  const antall = useStillingssokTotalData();
   return (
     <div className='flex gap-2 items-center'>
       <Button
@@ -22,7 +25,10 @@ const StillingsSøkNavigasjon: React.FC = () => {
         onClick={() => setPortefølje(StillingsSøkPortefølje.INTERN)}
         size='xsmall'
       >
-        Alle oppdrag
+        Alle oppdrag{' '}
+        {antall.antall?.alleOppdrag !== undefined
+          ? `(${antall.antall.alleOppdrag})`
+          : ''}
       </Button>
       <TilgangskontrollForInnhold
         skjulVarsel
@@ -39,7 +45,10 @@ const StillingsSøkNavigasjon: React.FC = () => {
           onClick={() => setPortefølje(StillingsSøkPortefølje.VIS_MINE)}
           size='xsmall'
         >
-          Mine
+          Mine{' '}
+          {antall.antall?.mineOppdrag !== undefined
+            ? `(${antall.antall.mineOppdrag})`
+            : ''}
         </Button>
       </TilgangskontrollForInnhold>
       <Button
@@ -51,7 +60,10 @@ const StillingsSøkNavigasjon: React.FC = () => {
         onClick={() => setPortefølje(StillingsSøkPortefølje.MITT_KONTOR)}
         size='xsmall'
       >
-        Mitt kontor
+        Mitt kontor{' '}
+        {antall.antall?.mittKontor !== undefined
+          ? `(${antall.antall.mittKontor})`
+          : ''}
       </Button>
       {!formidlinger && (
         <>
@@ -67,7 +79,10 @@ const StillingsSøkNavigasjon: React.FC = () => {
             }
             size='xsmall'
           >
-            arbeidsplassen.no
+            arbeidsplassen.no{' '}
+            {antall.antall?.arbeidsplassen !== undefined
+              ? `(${antall.antall.arbeidsplassen})`
+              : ''}
           </Button>
           {portefølje === StillingsSøkPortefølje.ARBEIDSPLASSEN_NO && (
             <Chips size='small'>
