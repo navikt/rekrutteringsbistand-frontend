@@ -25,6 +25,8 @@ interface WindowItem {
   customHeader?: React.ReactNode;
   /** Enkel tittel som vises i standard header hvis verken customHeader eller navigasjon er satt */
   title?: React.ReactNode;
+  /** Sekvensnummer i den reelle åpne-rekkefølgen (brukes for kaskadelukking) */
+  openedAt: number;
 }
 
 // ---------------- Window context ----------------
@@ -127,6 +129,7 @@ const WindowWrapper: React.FC<WindowWrapperProps> = ({ children }) => {
           {children}
         </div>
       ),
+      openedAt: 0,
     },
   });
 
@@ -143,6 +146,7 @@ const WindowWrapper: React.FC<WindowWrapperProps> = ({ children }) => {
             {children}
           </div>
         ),
+        openedAt: 0,
       },
     }));
   }, [children]);
@@ -261,6 +265,7 @@ const WindowWrapper: React.FC<WindowWrapperProps> = ({ children }) => {
               content: content ?? current.content,
               customHeader: customHeader ?? current.customHeader,
               title: title ?? current.title,
+              openedAt: current.openedAt, // behold opprinnelig åpne-rekkefølge
             },
           };
         });
@@ -284,26 +289,65 @@ const WindowWrapper: React.FC<WindowWrapperProps> = ({ children }) => {
       }
       setElements((prev) => ({
         ...prev,
-        [id]: { id, navigasjon, onClose, content, customHeader, title },
+        [id]: {
+          id,
+          navigasjon,
+          onClose,
+          content,
+          customHeader,
+          title,
+          openedAt: Date.now() + Math.random(), // relativt monotont — høyere verdi => senere
+        },
       }));
       return id;
     },
     [],
   );
 
+  // Fjern ett vindu OG alle som ble åpnet etter det (kaskadelukking)
   const removeWindow = useCallback<WindowContextValue['removeWindow']>((id) => {
     if (id === LOCKED_ID) return;
-    setDynamicLayout((prev) => removeFromTree(prev, id));
     setElements((prev) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { [id]: _removed, ...rest } = prev; // destrukturer for å ekskludere
-      return rest;
+      const target = prev[id];
+      if (!target) return prev;
+      const cutoff = target.openedAt;
+      const idsToRemove = Object.values(prev)
+        .filter((w) => w.id !== LOCKED_ID && w.openedAt >= cutoff)
+        .map((w) => w.id);
+
+      // Oppdatér layout (fjern alle i ett pass)
+      setDynamicLayout((prevLayout) => {
+        if (!prevLayout) return prevLayout;
+        const idsSet = new Set(idsToRemove);
+        const removeMany = (
+          node: MosaicNode<Id> | null,
+        ): MosaicNode<Id> | null => {
+          if (!node) return null;
+          if (typeof node === 'string') return idsSet.has(node) ? null : node;
+          const first = removeMany(node.first);
+          const second = removeMany(node.second);
+          if (first && second) return { ...node, first, second };
+          return (first || second) ?? null;
+        };
+        return removeMany(prevLayout);
+      });
+
+      const next: typeof prev = { ...prev };
+      for (const rid of idsToRemove) {
+        delete next[rid];
+        idsRef.current.delete(rid);
+      }
+      if (process.env.NODE_ENV === 'development') {
+        // eslint-disable-next-line no-console
+        console.log(
+          '[WindowWrapper] removeWindow(kaskade)',
+          id,
+          '->',
+          idsToRemove,
+        );
+      }
+      return next;
     });
-    idsRef.current.delete(id);
-    if (process.env.NODE_ENV === 'development') {
-      // eslint-disable-next-line no-console
-      console.log('[WindowWrapper] removeWindow', id);
-    }
   }, []);
 
   const updateWindow = useCallback<WindowContextValue['updateWindow']>(
