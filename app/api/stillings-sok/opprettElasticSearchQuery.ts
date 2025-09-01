@@ -46,6 +46,10 @@ export function opprettElasticSearchQuery(
     params.navIdent,
     params.eierNavKontorEnhetId,
     params.filter.fritekst,
+    {
+      formidlinger: params.formidlinger,
+      utenOppdrag: params.filter.utenOppdrag,
+    },
   );
 
   // Bygg query
