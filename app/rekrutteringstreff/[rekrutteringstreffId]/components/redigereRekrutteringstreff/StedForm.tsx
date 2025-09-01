@@ -19,7 +19,7 @@ const StedForm = ({ control }: any) => {
   const watchPostnummer = useWatch({ control, name: FormFields.POSTNUMMER });
   const { data: postdata, isLoading } = usePamPostdata(watchPostnummer || '');
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!watchPostnummer || watchPostnummer.length !== 4 || isLoading) return;
 
     if (postdata?.korrigertNavnBy) {
