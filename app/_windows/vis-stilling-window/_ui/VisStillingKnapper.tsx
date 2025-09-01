@@ -6,7 +6,7 @@ import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
 import { CogIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 
 /**
@@ -24,6 +24,8 @@ export default function VisStillingKnapper({
   const pathname = usePathname();
   const [leggTilKandidatLoading, setLeggerTilKandidatLoading] = useState(false);
   const { track } = useUmami();
+
+  const router = useRouter();
   // Finn segmentet etter /kandidat/ som starter med kandidat-arenaKandidatnr-
   const kandidat = useMemo(
     () => pathname.match(/\/kandidat\/(kandidat-arenaKandidatnr-\d+)/),
@@ -51,7 +53,11 @@ export default function VisStillingKnapper({
 
   return (
     <div className='flex gap-2 flex-col pb-5'>
-      <Button variant='secondary' icon={<CogIcon />}>
+      <Button
+        variant='secondary'
+        icon={<CogIcon />}
+        onClick={() => router.push(`/stilling/${stillingsId}/rediger`)}
+      >
         Administrer oppdraget
       </Button>
       {kandidat && (

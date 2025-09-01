@@ -126,9 +126,11 @@ export default function StillingAdmin() {
             />
           }
         >
-          {moduler.map((m) => (
-            <m.Component key={m.key} />
-          ))}
+          <div className='flex flex-col gap-4'>
+            {moduler.map((m) => (
+              <m.Component key={m.key} />
+            ))}
+          </div>
         </SideLayout>
       )}
     </FormProvider>
