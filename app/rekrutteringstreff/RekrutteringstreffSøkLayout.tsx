@@ -5,9 +5,9 @@ import {
   opprettNyttRekrutteringstreff,
   OpprettNyttRekrutteringstreffDTO,
 } from '@/app/api/rekrutteringstreff/nytt-rekrutteringstreff/opprettNyttRekrutteringstreff';
+import PanelHeader from '@/components/layout/PanelHeader';
 import SVGDarkmode from '@/components/layout/SVGDarkmode';
 import SideLayout from '@/components/layout/SideLayout';
-import SideTopBanner from '@/components/layout/SideTopBanner';
 import { UmamiEvent } from '@/components/umami/umamiEvents';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
@@ -50,26 +50,26 @@ const RekrutteringstreffSøkLayout: React.FC<
 
   return (
     <SideLayout
-      banner={
-        <div className='flex justify-between items-center'>
-          <SideTopBanner
-            tittel='Rekrutteringstreff'
-            knappIBanner={
-              <div>
-                <Button onClick={handleOpprettRekrutteringstreff}>
-                  Nytt rekrutteringstreff
-                </Button>
+      header={
+        <PanelHeader>
+          <PanelHeader.Section
+            title={'Rekrutteringstreff'}
+            titleIcon={
+              <div className='w-6 h-6'>
+                <SVGDarkmode
+                  light={Rekrutteringstreff}
+                  dark={RekrutteringstreffDark}
+                  alt='Rekrutteringstreff'
+                />
               </div>
             }
-            ikon={
-              <SVGDarkmode
-                light={Rekrutteringstreff}
-                dark={RekrutteringstreffDark}
-                alt='Rekrutteringstreff'
-              />
+            actionsRight={
+              <Button onClick={handleOpprettRekrutteringstreff}>
+                Nytt rekrutteringstreff
+              </Button>
             }
           />
-        </div>
+        </PanelHeader>
       }
     >
       <RekrutteringstreffFilter />

@@ -17,20 +17,15 @@ export type ISideLayout = {
 };
 
 const SideLayout = ({
-  banner,
   children,
   fremdriftspanel,
   fremdriftspanelTop,
   header,
-  navigasjon,
-  topBanner,
 }: ISideLayout) => {
   return (
     <RekBisKort>
       {header && header}
-      {topBanner && topBanner}
-      {navigasjon && navigasjon}
-      {banner && banner}
+
       <div className='@container'>
         <div className='hidden @2xl:block'>
           <div className='flex flex-row'>

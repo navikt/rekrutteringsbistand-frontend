@@ -1,5 +1,6 @@
 import { RekrutteringstreffContextProvider } from './RekrutteringstreffContext';
 import RekrutteringstreffForm from './RekrutteringstreffForm';
+import SideLayout from '@/components/layout/SideLayout';
 
 interface RekrutteringsTreffLayoutProps {
   children: React.ReactNode;
@@ -17,7 +18,7 @@ export default async function RekrutteringsTreffLayout({
       rekrutteringstreffId={rekrutteringstreffId}
     >
       <RekrutteringstreffForm rekrutteringstreffId={rekrutteringstreffId}>
-        {children}
+        <SideLayout> {children}</SideLayout>
       </RekrutteringstreffForm>
     </RekrutteringstreffContextProvider>
   );
