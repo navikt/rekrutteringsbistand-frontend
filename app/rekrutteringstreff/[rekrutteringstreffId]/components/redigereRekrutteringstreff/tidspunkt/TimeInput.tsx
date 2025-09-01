@@ -1,7 +1,7 @@
 'use client';
 
-import { TextField } from '@navikt/ds-react';
-import React, { forwardRef, useState } from 'react';
+import { UNSAFE_Combobox as Combobox } from '@navikt/ds-react';
+import React, { forwardRef } from 'react';
 
 const KLOKKESLETT_OPTIONS = [...Array(24)].flatMap((_, h) =>
   [0, 15, 30, 45].map(
@@ -9,31 +9,50 @@ const KLOKKESLETT_OPTIONS = [...Array(24)].flatMap((_, h) =>
   ),
 );
 
-type Props = React.ComponentProps<typeof TextField>;
+type Props = {
+  value?: string;
+  onChange: (value: string) => void;
+  onBlur?: React.FocusEventHandler<HTMLInputElement>;
+  label?: string;
+  hideLabel?: boolean;
+  disabled?: boolean;
+  error?: React.ReactNode | boolean;
+  className?: string;
+};
 
-const TimeInput = forwardRef<HTMLInputElement, Props>((props, ref) => {
-  const [listId] = useState(`time-list-${Math.random()}`);
-
-  return (
-    <>
-      <TextField
-        {...props}
-        value={props.value ?? ''}
+const TimeInput = forwardRef<HTMLInputElement, Props>(
+  (
+    {
+      value,
+      onChange,
+      onBlur,
+      label = 'Klokkeslett',
+      hideLabel,
+      disabled,
+      error,
+      className,
+    },
+    ref,
+  ) => {
+    return (
+      <Combobox
         ref={ref}
-        autoComplete='off'
-        list={listId}
-        className='min-w-[6rem]'
+        label={label}
+        hideLabel={hideLabel}
+        disabled={disabled}
+        error={error}
+        className={['min-w-[7rem]', className].filter(Boolean).join(' ')}
+        options={KLOKKESLETT_OPTIONS}
+        value={value ?? ''}
+        onChange={(v) => onChange(v)}
+        onToggleSelected={(option, isSelected) => {
+          if (isSelected) onChange(option);
+        }}
+        onBlur={onBlur}
       />
-      <datalist id={listId}>
-        {KLOKKESLETT_OPTIONS.map((t) => (
-          <option key={t} value={t}>
-            {t}
-          </option>
-        ))}
-      </datalist>
-    </>
-  );
-});
+    );
+  },
+);
 
 TimeInput.displayName = 'TimeInput';
 

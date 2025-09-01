@@ -25,6 +25,8 @@ import { Controller, Path } from 'react-hook-form';
 
 // DatoTidRad.tsx
 
+// DatoTidRad.tsx
+
 type Props<T extends Record<string, unknown>> = {
   label: string;
   nameDato: Path<T>;
