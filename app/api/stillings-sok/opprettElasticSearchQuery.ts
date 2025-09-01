@@ -42,7 +42,11 @@ export function opprettElasticSearchQuery(
   }
 
   // Sett aggregering for korrekt antall
-  esBuilder.setStandardAggregation(params.filter.fritekst);
+  esBuilder.setStandardAggregation(
+    params.navIdent,
+    params.eierNavKontorEnhetId,
+    params.filter.fritekst,
+  );
 
   // Bygg query
   const from = regnUtFørsteTreffFra(params.filter.side, maksAntallTreffPerSøk);

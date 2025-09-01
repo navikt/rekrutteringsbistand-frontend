@@ -290,7 +290,11 @@ export class ElasticSearchQueryBuilder {
    * Inkluderer fritekst-søk i should-delen hvis det finnes fritekst
    * Matcher den fungerende implementasjonen fra stillingssøkElasticSearchQuery
    */
-  buildStandardAggregation(fritekstSøkestreng?: string): any {
+  buildStandardAggregation(
+    navIdent?: string,
+    kontorEnhetId?: string,
+    fritekstSøkestreng?: string,
+  ): any {
     // Hent hele bool-strukturen for bruk i aggregeringer
     const allFilters = this.buildFilters();
 
@@ -359,6 +363,141 @@ export class ElasticSearchQueryBuilder {
       globalAggregering: {
         global: {},
         aggs: {
+          alleOppdrag: {
+            filter: {
+              bool: {
+                filter: [
+                  {
+                    bool: {
+                      must_not: [
+                        {
+                          term: {
+                            'stillingsinfo.stillingskategori': 'ARBEIDSTRENING',
+                          },
+                        },
+                        {
+                          term: {
+                            'stillingsinfo.stillingskategori': 'FORMIDLING',
+                          },
+                        },
+                      ],
+                    },
+                  },
+                  { exists: { field: 'stillingsinfo' } },
+                  {
+                    bool: {
+                      must: [
+                        { term: { 'stilling.administration.status': 'DONE' } },
+                        { exists: { field: 'stilling.publishedByAdmin' } },
+                        { range: { 'stilling.published': { lte: 'now/d' } } },
+                      ],
+                      must_not: [
+                        { term: { 'stilling.status': 'REJECTED' } },
+                        { term: { 'stilling.status': 'DELETED' } },
+                      ],
+                    },
+                  },
+                ],
+              },
+            },
+          },
+          mineOppdrag: {
+            filter: {
+              bool: {
+                filter: [
+                  {
+                    bool: {
+                      must_not: [
+                        {
+                          term: {
+                            'stillingsinfo.stillingskategori': 'ARBEIDSTRENING',
+                          },
+                        },
+                        {
+                          term: {
+                            'stillingsinfo.stillingskategori': 'FORMIDLING',
+                          },
+                        },
+                      ],
+                    },
+                  },
+                  {
+                    bool: {
+                      should: [
+                        {
+                          term: {
+                            'stilling.administration.navIdent': navIdent,
+                          },
+                        },
+                        { term: { 'stillingsinfo.eierNavident': navIdent } },
+                      ],
+                      minimum_should_match: 1,
+                    },
+                  },
+                ],
+              },
+            },
+          },
+          mittKontor: {
+            filter: {
+              bool: {
+                filter: [
+                  {
+                    bool: {
+                      must_not: [
+                        {
+                          term: {
+                            'stillingsinfo.stillingskategori': 'ARBEIDSTRENING',
+                          },
+                        },
+                        {
+                          term: {
+                            'stillingsinfo.stillingskategori': 'FORMIDLING',
+                          },
+                        },
+                      ],
+                    },
+                  },
+                  {
+                    term: {
+                      'stillingsinfo.eierNavKontorEnhetId': kontorEnhetId,
+                    },
+                  },
+                ],
+              },
+            },
+          },
+          arbeidsplassen: {
+            filter: {
+              bool: {
+                filter: [
+                  {
+                    bool: {
+                      must_not: [
+                        {
+                          term: {
+                            'stillingsinfo.stillingskategori': 'ARBEIDSTRENING',
+                          },
+                        },
+                        {
+                          term: {
+                            'stillingsinfo.stillingskategori': 'FORMIDLING',
+                          },
+                        },
+                      ],
+                    },
+                  },
+                  { term: { 'stilling.privacy': 'SHOW_ALL' } },
+                  {
+                    bool: {
+                      must_not: [{ term: { 'stilling.source': 'DIR' } }],
+                    },
+                  },
+                  { exists: { field: 'stillingsinfo' } },
+                ],
+              },
+            },
+          },
           felter: {
             filters: {
               filters: {
@@ -397,11 +536,19 @@ export class ElasticSearchQueryBuilder {
    * Setter standard aggregering som alltid skal være med
    * Inkluderer fritekst-søk hvis det finnes
    */
-  setStandardAggregation(fritekst?: string[]): this {
+  setStandardAggregation(
+    navIdent?: string,
+    kontorEnhetId?: string,
+    fritekst?: string[],
+  ): this {
     const fritekstSøkestreng =
       fritekst && fritekst.length > 0 ? fritekst.join(' ') : undefined;
 
-    const standardAggs = this.buildStandardAggregation(fritekstSøkestreng);
+    const standardAggs = this.buildStandardAggregation(
+      navIdent,
+      kontorEnhetId,
+      fritekstSøkestreng,
+    );
 
     // Kombiner med eksisterende aggregeringer
     this.aggregations = {
