@@ -4,6 +4,7 @@ import WindowFinnKandidater from '@/app/_windows/finn-kandidater-window/WindowFi
 import WindowVisKandidat from '@/app/_windows/vis-kandidat-window/WindowVisKandidat';
 import { Kandidatlistestatus } from '@/app/api/kandidat/schema.zod';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
+import FremdriftspanelStilling from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/FremdriftspanelStilling';
 import RedigerStillingKnapp from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/RedigerStillingKnapp';
 import FullførStillingKnapp from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/fullfør-stilling/FullførStillingKnapp';
 import OmStillingen from '@/app/stilling/[stillingsId]/_ui/om-stillingen/OmStillingen';
@@ -66,29 +67,7 @@ export default function StillingsSidePage() {
           sidepanel={
             windowContext?.isDynamic === false &&
             !forhåndsvisData &&
-            erEier && (
-              <Fremdriftspanel>
-                <TilgangskontrollForInnhold
-                  skjulVarsel
-                  kreverEnAvRollene={[
-                    Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-                  ]}
-                >
-                  {/* <AvpubliserStilling />
-        <AvsluttStillingKnapp
-          kandidatlisteId={kandidatlisteInfo?.kandidatlisteId}
-          besatteStillinger={besatteStillinger}
-          antallStillinger={antallStillinger}
-          kandidatlisteStatus={data?.status}
-        /> */}
-
-                  <div className='grid grid-cols-2 gap-2'>
-                    <RedigerStillingKnapp />
-                    <FullførStillingKnapp />
-                  </div>
-                </TilgangskontrollForInnhold>
-              </Fremdriftspanel>
-            )
+            erEier && <FremdriftspanelStilling />
           }
         >
           {!kandidatlisteLaster && kandidatlisteInfo === null && (

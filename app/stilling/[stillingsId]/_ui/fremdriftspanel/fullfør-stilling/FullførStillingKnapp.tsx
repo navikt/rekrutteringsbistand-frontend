@@ -26,30 +26,33 @@ export default function FullførStillingKnapp() {
   const avsluttStilling = async (kandidatlisteId: string) => {
     setLoading(true);
     try {
-      await oppdaterStilling(
-        {
-          ...stillingsData,
-
-          stilling: {
-            ...stillingsData.stilling,
-            status: StillingsStatus.Stoppet,
+      await Promise.all([
+        setKandidatlisteStatus(kandidatlisteId, Kandidatlistestatus.Lukket),
+        oppdaterStilling(
+          {
+            ...stillingsData,
+            stilling: {
+              ...stillingsData.stilling,
+              status: StillingsStatus.Inaktiv,
+            },
           },
-        },
-        {
-          eierNavident: brukerData.ident,
-          eierNavn: brukerData.navn,
-          eierNavKontorEnhetId: valgtNavKontor?.navKontor,
-        },
-      );
+          {
+            eierNavident: brukerData.ident,
+            eierNavn: brukerData.navn,
+            eierNavKontorEnhetId: valgtNavKontor?.navKontor,
+          },
+        ),
+      ]);
+      visVarsel({ type: 'success', tekst: 'Du har nå fullført oppdraget.' });
 
-      await setKandidatlisteStatus(kandidatlisteId, Kandidatlistestatus.Lukket);
-
+      kandidatlisteForEier.mutate();
       if (refetch) refetch();
     } catch (error) {
-      new RekbisError({
-        message: 'Feil ved oppdatering av stilling',
-        error,
+      visVarsel({
+        type: 'error',
+        tekst: 'Klarte ikke å endre status på oppdraget',
       });
+      new RekbisError({ message: 'Klarte ikke å fullføre oppdrag', error });
     }
     setLoading(false);
     ref.current?.close();
@@ -145,4 +148,7 @@ export default function FullførStillingKnapp() {
       }}
     </SWRLaster>
   );
+}
+function visVarsel(arg0: { type: string; tekst: string }) {
+  throw new Error('Function not implemented.');
 }
