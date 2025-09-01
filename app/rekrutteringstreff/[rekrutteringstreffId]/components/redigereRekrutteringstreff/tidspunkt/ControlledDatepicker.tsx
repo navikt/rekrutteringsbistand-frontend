@@ -1,5 +1,4 @@
 import { DatePicker, useDatepicker } from '@navikt/ds-react';
-import { addWeeks } from 'date-fns';
 import type { FieldError } from 'react-hook-form';
 
 type Props = {

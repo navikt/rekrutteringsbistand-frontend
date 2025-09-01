@@ -10,15 +10,17 @@ import VelgArbeidsgiver from '@/app/stilling/ny-stilling-old/_ui/VelgArbeidsgive
 import { RekbisError } from '@/util/rekbisError';
 import { Button, Modal } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
+import { useState, RefObject, FC } from 'react';
 import * as React from 'react';
 
 interface Props {
-  modalRef: React.RefObject<HTMLDialogElement | null>;
+  modalRef: RefObject<HTMLDialogElement | null>;
 }
 
-const LeggTilArbeidsgiverModal: React.FC<Props> = ({ modalRef }) => {
-  const [arbeidsgiver, setArbeidsgiver] =
-    React.useState<ArbeidsgiverDTO | null>(null);
+const LeggTilArbeidsgiverModal: FC<Props> = ({ modalRef }) => {
+  const [arbeidsgiver, setArbeidsgiver] = useState<ArbeidsgiverDTO | null>(
+    null,
+  );
 
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const router = useRouter();

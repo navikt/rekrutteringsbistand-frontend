@@ -11,6 +11,7 @@ import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutter
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
 import { RekbisError } from '@/util/rekbisError';
 import { Button, Heading, BodyShort, ProgressBar } from '@navikt/ds-react';
+import { useState } from 'react';
 import * as React from 'react';
 
 interface Props {
@@ -18,12 +19,10 @@ interface Props {
 }
 
 const StegviserHeader: React.FC<Props> = ({ stepDetails }) => {
-  const [isPublishing, setIsPublishing] = React.useState(false);
-  const [isFinishingInvitation, setIsFinishingInvitation] =
-    React.useState(false);
-  const [isFinishingFollowUp, setIsFinishingFollowUp] = React.useState(false);
-  const [isFinishingRecruitment, setIsFinishingRecruitment] =
-    React.useState(false);
+  const [isPublishing, setIsPublishing] = useState(false);
+  const [isFinishingInvitation, setIsFinishingInvitation] = useState(false);
+  const [isFinishingFollowUp, setIsFinishingFollowUp] = useState(false);
+  const [isFinishingRecruitment, setIsFinishingRecruitment] = useState(false);
 
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { data: rekrutteringstreffData, mutate: mutateRekrutteringstreff } =

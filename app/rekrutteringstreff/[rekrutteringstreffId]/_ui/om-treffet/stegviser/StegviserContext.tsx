@@ -8,6 +8,15 @@ import {
 } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
+import {
+  createContext,
+  useMemo,
+  useState,
+  useContext,
+  useEffect,
+  FC,
+  ReactNode,
+} from 'react';
 import * as React from 'react';
 
 const DEFAULT_TITTEL = 'Nytt rekrutteringstreff';
@@ -63,14 +72,12 @@ export interface StegviserState {
   tiltidspunktHarPassert: boolean;
 }
 
-const StegviserContext = React.createContext<StegviserState | undefined>(
-  undefined,
-);
+const StegviserContext = createContext<StegviserState | undefined>(undefined);
 
-export const StegviserProvider: React.FC<{ children: React.ReactNode }> = ({
+export const StegviserProvider: FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const [activeStep, setActiveStep] = React.useState<number>(1);
+  const [activeStep, setActiveStep] = useState<number>(1);
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
 
   const { data: rekrutteringstreff } =
@@ -81,7 +88,7 @@ export const StegviserProvider: React.FC<{ children: React.ReactNode }> = ({
   const { data: jobbsøkere = [] } = useJobbsøkere(rekrutteringstreffId);
 
   // Steg 1: Publisere-logikk
-  const sjekklisteItems = React.useMemo(() => {
+  const sjekklisteItems = useMemo(() => {
     const tittel = rekrutteringstreff?.tittel?.trim() ?? '';
     return {
       arbeidsgiver: (arbeidsgivereData?.length ?? 0) > 0,
@@ -123,7 +130,7 @@ export const StegviserProvider: React.FC<{ children: React.ReactNode }> = ({
   const totaltJobbsøkere = jobbsøkere.length;
   const antallIkkeInvitert = totaltJobbsøkere - antallInviterte;
 
-  React.useEffect(() => {
+  useEffect(() => {
     const hendelser = rekrutteringstreff?.hendelser ?? [];
     const harHendelse = (type: string) =>
       hendelser.some((h) => h.hendelsestype === type);
@@ -164,7 +171,7 @@ export const StegviserProvider: React.FC<{ children: React.ReactNode }> = ({
 };
 
 export const useStegviser = () => {
-  const context = React.useContext(StegviserContext);
+  const context = useContext(StegviserContext);
   if (context === undefined) {
     throw new Error('useStegviser må brukes innenfor en StegviserProvider');
   }

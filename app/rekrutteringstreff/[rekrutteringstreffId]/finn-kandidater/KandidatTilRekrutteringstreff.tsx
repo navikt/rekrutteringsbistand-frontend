@@ -1,12 +1,11 @@
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
 import KandidatSøkTabs from '@/app/kandidat/KandidatSøkTabs';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
+import { useState, useEffect } from 'react';
 import * as React from 'react';
 
 const KandidatTilRekrutteringstreff: React.FC = () => {
-  const [alleredeLagtTilTreff, setAlleredeLagtTil] = React.useState<string[]>(
-    [],
-  );
+  const [alleredeLagtTilTreff, setAlleredeLagtTil] = useState<string[]>([]);
 
   const rekrutteringstreff = useRekrutteringstreffContext();
 
@@ -14,7 +13,7 @@ const KandidatTilRekrutteringstreff: React.FC = () => {
     rekrutteringstreff.rekrutteringstreffId as string,
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (jobbsøkere) {
       const listeOverValgteJobbsøkere = jobbsøkere
         .map((jobbsøker) => jobbsøker.kandidatnummer)

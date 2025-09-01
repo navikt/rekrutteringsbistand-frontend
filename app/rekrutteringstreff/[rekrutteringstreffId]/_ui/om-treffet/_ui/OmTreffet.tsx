@@ -12,12 +12,13 @@ import JobbsøkerHendelserKort from '@/app/rekrutteringstreff/[rekrutteringstref
 import SWRLaster from '@/components/SWRLaster';
 import { parseISO } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
+import { useRef } from 'react';
 import * as React from 'react';
 
 const OmTreffet = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
 
-  const kiLoggModalRef = React.useRef<HTMLDialogElement>(null);
+  const kiLoggModalRef = useRef<HTMLDialogElement>(null);
 
   const openKiLoggModal = () => {
     kiLoggModalRef.current?.showModal();

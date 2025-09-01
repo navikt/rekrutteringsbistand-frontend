@@ -1,6 +1,7 @@
 'use client';
 
 import { RekbisError } from '@/util/rekbisError';
+import { useContext } from 'react';
 import * as React from 'react';
 
 export interface RekrutteringstreffContextProps {
@@ -27,7 +28,7 @@ export const RekrutteringstreffContextProvider: React.FC<
 };
 
 export const useRekrutteringstreffContext = () => {
-  const context = React.useContext(RekrutteringstreffContext);
+  const context = useContext(RekrutteringstreffContext);
   if (context === undefined) {
     throw new RekbisError({
       message:

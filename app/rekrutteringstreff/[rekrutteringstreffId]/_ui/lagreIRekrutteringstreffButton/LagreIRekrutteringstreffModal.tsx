@@ -9,6 +9,7 @@ import SWRLaster from '@/components/SWRLaster';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { RekbisError } from '@/util/rekbisError';
 import { Button, Checkbox, Link, Loader, Modal, Table } from '@navikt/ds-react';
+import { useState } from 'react';
 import * as React from 'react';
 
 interface LagreIRekrutteringstreffModalProps {
@@ -21,8 +22,8 @@ const LagreIRekrutteringstreffModal: React.FC<
 > = ({ kandidatsokKandidater, modalRef }) => {
   const rekrutteringstreffOversiktHook = useRekrutteringstreffOversikt();
 
-  const [selectedRows, setSelectedRows] = React.useState<string[]>([]);
-  const [laster, setLaster] = React.useState(false);
+  const [selectedRows, setSelectedRows] = useState<string[]>([]);
+  const [laster, setLaster] = useState(false);
   const toggleSelectedRow = (stillingsId: string) =>
     setSelectedRows((list) =>
       list.includes(stillingsId)

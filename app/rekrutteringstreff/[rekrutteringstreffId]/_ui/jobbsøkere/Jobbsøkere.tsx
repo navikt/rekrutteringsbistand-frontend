@@ -13,6 +13,7 @@ import LeggTilJobbsøkerKnapp from '@/app/rekrutteringstreff/[rekrutteringstreff
 import SWRLaster from '@/components/SWRLaster';
 import { BodyShort, Button, TagProps } from '@navikt/ds-react';
 import { format } from 'date-fns';
+import { useRef, useState } from 'react';
 import * as React from 'react';
 
 const erInvitert = (j: JobbsøkerDTO) =>
@@ -27,13 +28,13 @@ const harIkkeMøttOpp = (j: JobbsøkerDTO) =>
 const Jobbsøkere = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const jobbsøkerHook = useJobbsøkere(rekrutteringstreffId);
-  const inviterModalRef = React.useRef<HTMLDialogElement>(null);
-  const oppmøteModalRef = React.useRef<HTMLDialogElement>(null);
+  const inviterModalRef = useRef<HTMLDialogElement>(null);
+  const oppmøteModalRef = useRef<HTMLDialogElement>(null);
 
   const { data: rekrutteringstreffData } =
     useRekrutteringstreff(rekrutteringstreffId);
 
-  const [valgteJobbsøkere, setValgteJobbsøkere] = React.useState<
+  const [valgteJobbsøkere, setValgteJobbsøkere] = useState<
     InviterInternalDto[]
   >([]);
 

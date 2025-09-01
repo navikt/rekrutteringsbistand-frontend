@@ -11,6 +11,7 @@ import {
   Modal,
   VStack,
 } from '@navikt/ds-react';
+import { useState, RefObject, FC } from 'react';
 import * as React from 'react';
 
 export type OppmøteInternalDto = {
@@ -22,20 +23,20 @@ export type OppmøteInternalDto = {
 };
 
 export interface OppmøteModalProps {
-  modalref?: React.RefObject<HTMLDialogElement | null>;
+  modalref?: RefObject<HTMLDialogElement | null>;
   oppmøteInternalDtoer: OppmøteInternalDto[];
   onFjernJobbsøker: (fødselsnummer: string) => void;
   onOppmøteSendt: () => void;
 }
 
-export const OppmøteModal: React.FC<OppmøteModalProps> = ({
+export const OppmøteModal: FC<OppmøteModalProps> = ({
   modalref,
   oppmøteInternalDtoer,
   onFjernJobbsøker,
   onOppmøteSendt,
 }) => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const antall = oppmøteInternalDtoer.length;
   const header =
     antall === 1

@@ -27,6 +27,7 @@ import {
 } from '@navikt/ds-react';
 import { AnimatePresence, cubicBezier, motion } from 'framer-motion';
 import React, { useRef, useState } from 'react';
+import { useEffect } from 'react';
 import { Controller, useFormContext, useWatch } from 'react-hook-form';
 
 interface EndreTittelProps {
@@ -72,11 +73,11 @@ const EndreTittel = ({ onUpdated }: EndreTittelProps) => {
   const tegnIgjen =
     MAX_TITLE_LENGTH - (typeof tittel === 'string' ? tittel.length : 0);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setLoggId(null);
     setForceSave(false);
     resetAnalyse();
-  }, [tittel]);
+  }, [tittel, resetAnalyse]);
 
   const kiErrorBorder =
     !!analyse &&

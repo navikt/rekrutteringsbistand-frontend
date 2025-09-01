@@ -10,11 +10,12 @@ import LeggTilArbeidsgiverModal from '@/app/rekrutteringstreff/[rekrutteringstre
 import SWRLaster from '@/components/SWRLaster';
 import { BodyShort, Button } from '@navikt/ds-react';
 import { PlusIcon } from 'lucide-react';
+import { useRef } from 'react';
 import * as React from 'react';
 
 const RekrutteringstreffArbeidsgivere = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
-  const modalRef = React.useRef<HTMLDialogElement>(null); // Ny ref
+  const modalRef = useRef<HTMLDialogElement>(null); // Ny ref
 
   const arbeidsgivereHook =
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
@@ -47,9 +48,7 @@ const RekrutteringstreffArbeidsgivere = () => {
               Legg til arbeidsgiver
             </Button>
           </div>
-          <LeggTilArbeidsgiverModal
-            modalRef={modalRef} // Send ref til modalen
-          />
+          <LeggTilArbeidsgiverModal modalRef={modalRef} />
           {arbeidsgivere.length === 0 ? (
             <BodyShort>Ingen arbeidsgivere lagt til</BodyShort>
           ) : (

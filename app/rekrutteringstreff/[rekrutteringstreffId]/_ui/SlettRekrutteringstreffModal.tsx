@@ -4,10 +4,11 @@ import { RekbisError } from '@/util/rekbisError';
 import { TrashIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button, List, Modal } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import * as React from 'react';
 
 const SlettRekrutteringstreffModal = () => {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const rekrutteringstreffId =
     useRekrutteringstreffContext().rekrutteringstreffId;
 
