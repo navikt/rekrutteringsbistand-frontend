@@ -56,7 +56,7 @@ const StedForm = ({ control }: any) => {
             error={fieldState.error?.message}
             onBlur={() => {
               field.onBlur();
-              save(FormFields.GATEADRESSE);
+              save([FormFields.GATEADRESSE]);
             }}
           />
         )}

@@ -1,45 +1,16 @@
-// DatoTidRad.tsx
 'use client';
 
 import ControlledDatePicker from './ControlledDatepicker';
 import TimeInput from './TimeInput';
 import { Controller, Path } from 'react-hook-form';
 
-// DatoTidRad.tsx
-
-// DatoTidRad.tsx
-
-// DatoTidRad.tsx
-
-// DatoTidRad.tsx
-
-// DatoTidRad.tsx
-
-// DatoTidRad.tsx
-
-// DatoTidRad.tsx
-
-// DatoTidRad.tsx
-
-// DatoTidRad.tsx
-
-// DatoTidRad.tsx
-
-// DatoTidRad.tsx
-
-// DatoTidRad.tsx
-
-// DatoTidRad.tsx
-
-// DatoTidRad.tsx
-
 type Props<T extends Record<string, unknown>> = {
   label: string;
   nameDato: Path<T>;
   nameTid: Path<T>;
   control: any;
-  disabledDato?: boolean; // <-- NY
-  disabledTid?: boolean; // <-- NY
+  disabledDato?: boolean;
+  disabledTid?: boolean;
   onSave: () => void;
 };
 

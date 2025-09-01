@@ -16,7 +16,7 @@ export const OppdaterRekrutteringstreffSchema = z.object({
     )
     .optional(),
   beskrivelse: z.string().nullable().optional(),
-  fraTid: z.string().nullable().nullable().optional(),
+  fraTid: z.string().nullable().optional(),
   tilTid: z.string().nullable().optional(),
   svarfrist: z.string().nullable().optional(),
   gateadresse: z.string().nullable().optional(),

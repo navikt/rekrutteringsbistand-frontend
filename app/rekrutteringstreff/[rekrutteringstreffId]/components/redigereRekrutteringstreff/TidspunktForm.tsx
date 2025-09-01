@@ -1,8 +1,10 @@
 'use client';
 
+import { useRekrutteringstreffContext } from '../../RekrutteringstreffContext';
 import DatoTidRad from './tidspunkt/DatoTidRad';
 import { rekrutteringstreffVarighet } from './tidspunkt/varighet';
 import { useAutosave } from './useAutosave';
+import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { ExclamationmarkTriangleIcon } from '@navikt/aksel-icons';
 import { BodyShort, Checkbox, ErrorMessage, Heading } from '@navikt/ds-react';
 import { isSameDay } from 'date-fns';
@@ -16,13 +18,21 @@ type TidspunktFormFields = {
   tilTid: string;
 };
 
+const pad = (n: number) => String(n).padStart(2, '0');
+const toDate = (iso?: string | null) => (iso ? new Date(iso) : null);
+const toHHmm = (iso?: string | null) => {
+  if (!iso) return '';
+  const d = new Date(iso);
+  return `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+};
+
 const TidspunktForm = ({ control }: any) => {
   const {
     setError,
     clearErrors,
     formState: { errors },
     setValue,
-  } = useFormContext(); // <-- FIX
+  } = useFormContext();
   const { save } = useAutosave();
 
   const [fraDato, fraTid, tilDato, tilTid] = useWatch({
@@ -30,9 +40,47 @@ const TidspunktForm = ({ control }: any) => {
     name: ['fraDato', 'fraTid', 'tilDato', 'tilTid'],
   });
 
+  const { rekrutteringstreffId } = useRekrutteringstreffContext();
+  const { data: treff } = useRekrutteringstreff(rekrutteringstreffId);
+
+  useEffect(() => {
+    if (!treff) return;
+
+    if (!fraDato && treff.fraTid) {
+      setValue('fraDato', toDate(treff.fraTid), {
+        shouldValidate: false,
+        shouldDirty: false,
+      });
+    }
+    if (!fraTid && treff.fraTid) {
+      setValue('fraTid', toHHmm(treff.fraTid), {
+        shouldValidate: false,
+        shouldDirty: false,
+      });
+    }
+    if (!tilDato && treff.tilTid) {
+      setValue('tilDato', toDate(treff.tilTid), {
+        shouldValidate: false,
+        shouldDirty: false,
+      });
+    }
+    if (!tilTid && treff.tilTid) {
+      setValue('tilTid', toHHmm(treff.tilTid), {
+        shouldValidate: false,
+        shouldDirty: false,
+      });
+    }
+  }, [treff, fraDato, fraTid, tilDato, tilTid, setValue]);
+
   const [flereDager, setFlereDager] = useState(
     fraDato && tilDato ? !isSameDay(fraDato, tilDato) : false,
   );
+
+  useEffect(() => {
+    if (fraDato && tilDato) {
+      setFlereDager(!isSameDay(fraDato, tilDato));
+    }
+  }, [fraDato, tilDato]);
 
   useEffect(() => {
     if (!flereDager && fraDato && !isSameDay(fraDato, tilDato)) {
