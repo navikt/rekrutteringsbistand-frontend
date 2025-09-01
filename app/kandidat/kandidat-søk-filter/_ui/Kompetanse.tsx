@@ -29,6 +29,7 @@ const Kompetanse: React.FC = () => {
   return (
     <React.Fragment>
       <UNSAFE_Combobox
+        size='small'
         isLoading={isLoading}
         selectedOptions={kompetanse}
         allowNewValues

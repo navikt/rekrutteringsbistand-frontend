@@ -8,6 +8,15 @@ import KandidatSøkResultat from './KandidatSøkResultat';
 import KandidatSøkChips from './_ui/KandidatSøkChips';
 import ValgteKontorer from './_ui/ValgteKontorer';
 import KandidatSøkFilter from './kandidat-søk-filter/KandidatSøkFilter';
+import Arbeidserfaring from '@/app/kandidat/kandidat-søk-filter/_ui/Arbeidserfaring';
+import Arbeidsønsker from '@/app/kandidat/kandidat-søk-filter/_ui/Arbeidsønsker';
+import Førerkort from '@/app/kandidat/kandidat-søk-filter/_ui/Førerkort';
+import Hovedmål from '@/app/kandidat/kandidat-søk-filter/_ui/Hovedmål';
+import KandidatStedSøk from '@/app/kandidat/kandidat-søk-filter/_ui/KandidatStedSøk';
+import Kompetanse from '@/app/kandidat/kandidat-søk-filter/_ui/Kompetanse';
+import PrioriterteMålgrupper from '@/app/kandidat/kandidat-søk-filter/_ui/PrioriterteMålgrupper';
+import Språk from '@/app/kandidat/kandidat-søk-filter/_ui/Språk';
+import Utdanningsnivå from '@/app/kandidat/kandidat-søk-filter/_ui/Utdanningsnivå';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
@@ -161,13 +170,30 @@ const KandidatSøkTabs: React.FC<KandidatSøkTabsProps> = ({
         <ValgteKontorer />
       )}
       <KandidatSøkChips />
-      <KandidatSøkResultat
-        alleredeLagtTilTreff={alleredeLagtTilTreff}
-        alleredeLagtTilKandidatliste={alleredeLagtTilKandidatliste}
-        type={portefølje as KandidatSøkPortefølje}
-        stillingsId={stillingsId}
-        rekrutteringstreffId={rekrutteringstreffId}
-      />
+      <div className='@container/kandidatsøk flex'>
+        <div className='hidden @[720px]:block mr-4 pt-4  max-w-[200px]'>
+          <div className='flex flex-col gap-4'>
+            <Arbeidsønsker />
+            <KandidatStedSøk />
+            <Kompetanse />
+            <Førerkort />
+            <Språk />
+            <Arbeidserfaring />
+            <Hovedmål />
+            <Utdanningsnivå />
+            <PrioriterteMålgrupper />
+          </div>
+        </div>
+        <div className='flex-grow min-w-0'>
+          <KandidatSøkResultat
+            alleredeLagtTilTreff={alleredeLagtTilTreff}
+            alleredeLagtTilKandidatliste={alleredeLagtTilKandidatliste}
+            type={portefølje as KandidatSøkPortefølje}
+            stillingsId={stillingsId}
+            rekrutteringstreffId={rekrutteringstreffId}
+          />
+        </div>
+      </div>
     </div>
   );
 };

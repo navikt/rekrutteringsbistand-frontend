@@ -3,7 +3,6 @@ import Arbeidsønsker from './_ui/Arbeidsønsker';
 import FritekstSøk from './_ui/FritekstSøk';
 import Førerkort from './_ui/Førerkort';
 import Hovedmål from './_ui/Hovedmål';
-import Jobbmuligheter from './_ui/Innsatsgrupper';
 import KandidatStedSøk from './_ui/KandidatStedSøk';
 import Kompetanse from './_ui/Kompetanse';
 import PrioriterteMålgrupper from './_ui/PrioriterteMålgrupper';
@@ -16,16 +15,18 @@ const KandidatSøkFilter: React.FC = () => {
   return (
     <div className='flex gap-4 '>
       <FritekstSøk />
-      <div className='whitespace-nowrap'>
-        <AlleFilterKomponent>
-          <Arbeidsønsker />
-          <KandidatStedSøk />
-          <Kompetanse />
-          <Førerkort />
-          <Språk />
-          <Arbeidserfaring /> <Jobbmuligheter /> <Hovedmål /> <Utdanningsnivå />{' '}
-          <PrioriterteMålgrupper />
-        </AlleFilterKomponent>
+      <div className='block @[720px]:hidden'>
+        <div className='whitespace-nowrap'>
+          <AlleFilterKomponent>
+            <Arbeidsønsker />
+            <KandidatStedSøk />
+            <Kompetanse />
+            <Førerkort />
+            <Språk />
+            <Arbeidserfaring /> <Hovedmål /> <Utdanningsnivå />{' '}
+            <PrioriterteMålgrupper />
+          </AlleFilterKomponent>
+        </div>
       </div>
     </div>
   );

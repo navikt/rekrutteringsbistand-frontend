@@ -16,6 +16,7 @@ const Hovedmål: React.FC = () => {
 
   return (
     <CheckboxGroup
+      size='small'
       legend='Velg kandidatens mål'
       value={hovedmål}
       onChange={onChange}

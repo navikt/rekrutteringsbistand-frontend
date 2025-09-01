@@ -36,6 +36,7 @@ const Førerkort: React.FC = () => {
   return (
     <React.Fragment>
       <UNSAFE_Combobox
+        size='small'
         selectedOptions={førerkort}
         label='Førerkort'
         options={Object.values(Førerkortklasse)}

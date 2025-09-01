@@ -34,6 +34,7 @@ const Arbeidserfaring: React.FC = () => {
   return (
     <React.Fragment>
       <UNSAFE_Combobox
+        size='small'
         isLoading={isLoading}
         selectedOptions={arbeidserfaring}
         label='Arbeidserfaring'

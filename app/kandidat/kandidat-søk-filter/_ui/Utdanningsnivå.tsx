@@ -17,6 +17,7 @@ const Utdanningsnivå = () => {
 
   return (
     <CheckboxGroup
+      size='small'
       legend='Utdanningsnivå'
       description='Velg ett eller flere nivåer'
       value={utdanningsnivå}

@@ -18,6 +18,7 @@ const PrioriterteMålgrupper: FunctionComponent = () => {
 
   return (
     <CheckboxGroup
+      size='small'
       legend='Velg prioriterte målgrupper'
       onChange={onChange}
       value={prioritertMålgruppe}

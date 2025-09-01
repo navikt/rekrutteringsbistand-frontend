@@ -37,6 +37,7 @@ const KandidatStedSøk: React.FC = () => {
   return (
     <>
       <UNSAFE_Combobox
+        size='small'
         disabled={geografi.isLoading}
         selectedOptions={ønsketSted}
         label='Ønsket sted'
@@ -53,6 +54,7 @@ const BorPåØnsketSted: React.FC = () => {
   const { setBorPåØnsketSted, borPåØnsketSted } = useKandidatSøkFilterContext();
   return (
     <Checkbox
+      size='small'
       checked={borPåØnsketSted === 'ja'}
       onChange={(e) => setBorPåØnsketSted(e.target.checked ? 'ja' : 'nei')}
     >

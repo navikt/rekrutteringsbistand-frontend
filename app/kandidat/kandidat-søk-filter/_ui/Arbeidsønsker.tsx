@@ -29,6 +29,7 @@ const Arbeidsønsker: React.FC = () => {
   return (
     <React.Fragment>
       <UNSAFE_Combobox
+        size='small'
         isLoading={isLoading}
         selectedOptions={ønsketYrke}
         label='Arbeidsønsker'

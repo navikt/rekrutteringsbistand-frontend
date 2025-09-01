@@ -24,6 +24,7 @@ const Språk: React.FC = () => {
   return (
     <React.Fragment>
       <UNSAFE_Combobox
+        size='small'
         isLoading={isLoading}
         selectedOptions={språk}
         label='Språk'

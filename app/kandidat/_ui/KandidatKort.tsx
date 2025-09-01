@@ -105,7 +105,7 @@ const KandidatKort: React.FC<IKandidatKort> = ({
             </Tag>
           </div>
           <div className='flex w-full justify-between'>
-            <div className='mt-2 flex flex-col @md:flex-row gap-4'>
+            <div className='mt-2 flex flex-col @xl:flex-row gap-4'>
               <TekstMedIkon
                 ikon={<PinIcon />}
                 tekst={hentKandidatensØnskedeSteder(kandidat) ?? '-'}
