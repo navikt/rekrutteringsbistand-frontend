@@ -13,7 +13,8 @@ export const OppdaterRekrutteringstreffSchema = z.object({
     .max(
       MAX_TITLE_LENGTH,
       `Tittelen kan ikke ha mer enn ${MAX_TITLE_LENGTH} tegn.`,
-    ),
+    )
+    .optional(),
   beskrivelse: z.string().nullable().optional(),
   fraTid: z.string().nullable().nullable().optional(),
   tilTid: z.string().nullable().optional(),

@@ -1,6 +1,5 @@
 'use client';
 
-import { RekbisError } from '../../../../../../util/rekbisError';
 import { useKiLogg } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
 import { useValiderRekrutteringstreff } from '@/app/api/rekrutteringstreff/kiValidering/useValiderRekrutteringstreff';
 import {
@@ -9,6 +8,7 @@ import {
 } from '@/app/api/rekrutteringstreff/oppdater-rekrutteringstreff/oppdaterRerkutteringstreff';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
+import { RekbisError } from '@/util/rekbisError';
 import {
   RobotFrownIcon,
   RobotIcon,

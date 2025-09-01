@@ -3,11 +3,12 @@
 import {
   OppdaterRekrutteringstreffDTO,
   OppdaterRekrutteringstreffSchema,
-  toOppdaterRekrutteringstreffDto,
 } from '@/app/api/rekrutteringstreff/oppdater-rekrutteringstreff/oppdaterRerkutteringstreff';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { zodResolver } from '@hookform/resolvers/zod';
-import * as React from 'react';
+import { parseISO } from 'date-fns';
+import { format } from 'date-fns';
+import { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 
 function RekrutteringstreffForm({
@@ -19,33 +20,37 @@ function RekrutteringstreffForm({
 }) {
   const { data } = useRekrutteringstreff(rekrutteringstreffId);
 
-  const form = useForm<OppdaterRekrutteringstreffDTO>({
+  const methods = useForm<OppdaterRekrutteringstreffDTO>({
     resolver: zodResolver(OppdaterRekrutteringstreffSchema),
-    defaultValues: toDefaults(data),
-    mode: 'onBlur',
+    defaultValues: {},
   });
 
-  React.useEffect(() => {
-    if (data) form.reset(toDefaults(data));
-  }, [data, form]);
+  useEffect(() => {
+    if (data) {
+      methods.reset(toDefaults(data));
+    }
+  }, [data, methods]);
 
-  return <FormProvider {...form}>{children}</FormProvider>;
+  return <FormProvider {...methods}>{children}</FormProvider>;
 }
 
 function toDefaults(treff: any | undefined): OppdaterRekrutteringstreffDTO {
-  if (!treff) {
-    return {
-      tittel: '',
-      beskrivelse: null,
-      fraTid: null,
-      tilTid: null,
-      svarfrist: null,
-      gateadresse: null,
-      postnummer: null,
-      poststed: null,
-    };
-  }
-  return toOppdaterRekrutteringstreffDto(treff);
+  if (!treff) return {} as any;
+
+  return {
+    tittel: treff.tittel,
+    gateadresse: treff.gateadresse,
+    postnummer: treff.postnummer,
+    poststed: treff.poststed,
+    fraDato: treff.fraDato ? parseISO(treff.fraDato) : null,
+    fraTid: treff.fraDato ? format(parseISO(treff.fraDato), 'HH:mm') : '08:00',
+    tilDato: treff.tilDato ? parseISO(treff.tilDato) : null,
+    tilTid: treff.tilDato ? format(parseISO(treff.tilDato), 'HH:mm') : '10:00',
+    svarfristDato: treff.svarfrist ? parseISO(treff.svarfrist) : null,
+    svarfristTid: treff.svarfrist
+      ? format(parseISO(treff.svarfrist), 'HH:mm')
+      : '',
+  } as any;
 }
 
 export default RekrutteringstreffForm;

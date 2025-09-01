@@ -1,9 +1,9 @@
 'use client';
 
+import RekrutteringstreffDetalj from '../../../RekrutteringstreffDetalj';
 import InnleggModal from './InnleggModal';
 import type { InnleggDTO } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
-import RekrutteringstreffDetalj from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/RekrutteringstreffDetalj';
-import { formaterKlokkeslett } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/om-treffet/_ui/tidspunkt/utils';
+import { formaterKlokkeslett } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/components/redigereRekrutteringstreff/tidspunkt/utils';
 import VisEditorTekst from '@/components/felles/rikteksteditor/VisEditorTekst';
 import SVGDarkmode from '@/components/layout/SVGDarkmode';
 import InnleggPenDarkIkon from '@/public/ikoner/innlegg_pen-dark.svg';

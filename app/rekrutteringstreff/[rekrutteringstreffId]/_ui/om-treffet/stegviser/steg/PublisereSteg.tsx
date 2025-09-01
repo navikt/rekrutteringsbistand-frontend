@@ -10,28 +10,8 @@ import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
-import LeggTilArbeidsgiverModal from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/LeggTilArbeidsgiverModal';
-import EndreTittel from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/om-treffet/_ui/EndreTittel';
-import InnleggModal from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/om-treffet/_ui/innlegg/InnleggModal';
-import StedModal from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/om-treffet/_ui/sted/StedModal';
-import TidspunktModal from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/om-treffet/_ui/tidspunkt/TidspunktModal';
-import SvarfristModal from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/om-treffet/_ui/tidspunkt/svarfrist/SvarfristModal';
 import { Detail, Loader } from '@navikt/ds-react';
 import * as React from 'react';
-
-// app/rekrutteringstreff/[rekrutteringstreffId]/steg/PublisereSteg.tsx
-
-// app/rekrutteringstreff/[rekrutteringstreffId]/steg/PublisereSteg.tsx
-
-// app/rekrutteringstreff/[rekrutteringstreffId]/steg/PublisereSteg.tsx
-
-// app/rekrutteringstreff/[rekrutteringstreffId]/steg/PublisereSteg.tsx
-
-// app/rekrutteringstreff/[rekrutteringstreffId]/steg/PublisereSteg.tsx
-
-// app/rekrutteringstreff/[rekrutteringstreffId]/steg/PublisereSteg.tsx
-
-// app/rekrutteringstreff/[rekrutteringstreffId]/steg/PublisereSteg.tsx
 
 // app/rekrutteringstreff/[rekrutteringstreffId]/steg/PublisereSteg.tsx
 

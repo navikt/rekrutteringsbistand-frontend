@@ -6,21 +6,25 @@ type Props = {
   label: string;
   value: Date | null;
   onChange: (d: Date | null) => void;
+  onBlur?: () => void;
   error?: FieldError;
   from?: Date;
   to?: Date;
+  disabled?: boolean;
 };
 
 export default function ControlledDatePicker({
   label,
   value,
   onChange,
+  onBlur,
   error,
   from = new Date(),
   to = new Date('2040-12-31'),
+  disabled,
 }: Props) {
   const { inputProps, datepickerProps } = useDatepicker({
-    defaultSelected: value ?? addWeeks(new Date(), 2),
+    defaultSelected: value ?? undefined,
     fromDate: from,
     toDate: to,
     onDateChange: (d) => onChange(d ?? null),
@@ -33,6 +37,8 @@ export default function ControlledDatePicker({
         hideLabel
         label={label}
         error={error ? error.message || true : undefined}
+        disabled={disabled}
+        onBlur={onBlur} // <-- lagre ved blur
       />
     </DatePicker>
   );

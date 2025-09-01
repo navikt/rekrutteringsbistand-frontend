@@ -1,9 +1,6 @@
 'use client';
 
 import Innlegg from './innlegg/Innlegg';
-import Sted from './sted/Sted';
-import Tidspunkt from './tidspunkt/Tidspunkt';
-import Svarfrist from './tidspunkt/svarfrist/Svarfrist';
 import { useArbeidsgiverHendelser } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgiverHendelser';
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
 import { useJobbsøkerHendelser } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkerHendelser';
@@ -49,24 +46,6 @@ const OmTreffet = () => {
       <SWRLaster hooks={[rekrutteringstreffHook]}>
         {(rekrutteringstreff) => (
           <>
-            <div className='mt-4 flex flex-col gap-4 md:flex-row max-w-[64rem] min-h-[10rem]'>
-              <Tidspunkt
-                rekrutteringstreff={rekrutteringstreff}
-                onUpdated={rekrutteringstreffHook.mutate}
-                className='flex-1'
-              />
-              <Sted
-                rekrutteringstreff={rekrutteringstreff}
-                onUpdated={rekrutteringstreffHook.mutate}
-                className='flex-1'
-              />
-              <Svarfrist
-                rekrutteringstreff={rekrutteringstreff}
-                onUpdated={rekrutteringstreffHook.mutate}
-                className='flex-1'
-              />
-            </div>
-
             <div className='mt-4 flex flex-col gap-16 md:flex-row'>
               <SWRLaster hooks={[arbeidsgiverHendelserHook]}>
                 {(arbeidsgiverHendelser) => (

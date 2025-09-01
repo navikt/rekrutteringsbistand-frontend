@@ -1,21 +1,23 @@
 'use client';
 
 import { useRekrutteringstreffContext } from './RekrutteringstreffContext';
+import EndreTittel from './components/redigereRekrutteringstreff/EndreTittel';
+import PraktiskeForhold from './components/redigereRekrutteringstreff/Praktiskeforhold';
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
-import Aktiviteter from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/aktiviteter/Aktiviteter';
-import RekrutteringstreffArbeidsgivere from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/arbeidsgivere/Arbeidsgivere';
-import Jobbsøkere from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøkere/Jobbsøkere';
-import KiLogg from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/kilogg/components/KiLogg';
-import EndreTittel from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/om-treffet/_ui/EndreTittel';
-import OmTreffet from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/om-treffet/_ui/OmTreffet';
-import Stegviser from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/om-treffet/stegviser/Stegviser';
-import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
-import { Roller } from '@/components/tilgangskontroll/roller';
 import { Box, Tabs } from '@navikt/ds-react';
 import { useQueryState } from 'nuqs';
 import * as React from 'react';
+import OmTreffet from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/om-treffet/_ui/OmTreffet';
+import Jobbsøkere from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøkere/Jobbsøkere';
+import RekrutteringstreffArbeidsgivere
+  from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/arbeidsgivere/Arbeidsgivere';
+import Aktiviteter from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/aktiviteter/Aktiviteter';
+import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
+import { Roller } from '@/components/tilgangskontroll/roller';
+import KiLogg from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/kilogg/components/KiLogg';
+import Stegviser from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/om-treffet/stegviser/Stegviser';
 
 export enum RekrutteringstreffTabs {
   OM_TREFFET = 'om_treffet',
@@ -42,6 +44,7 @@ const Rekrutteringstreff: React.FC = () => {
       <div className='grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6 items-start'>
         <div className='space-y-4'>
           <EndreTittel onUpdated={rekrutteringstreffHook.mutate} />
+          <PraktiskeForhold />
 
           <Tabs value={fane} onChange={(val) => setFane(val)}>
             <Tabs.List className='w-full'>
