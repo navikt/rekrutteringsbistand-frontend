@@ -1,8 +1,8 @@
 'use client';
 
 import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
+import PubliserModal from '@/app/stilling/_ui/stilling-admin/admin_moduler/PubliserModal';
 import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
-import Fremdriftspanel from '@/components/Fremdriftspanel';
 import {
   BellIcon,
   CheckmarkIcon,
@@ -196,15 +196,13 @@ export default function FremdriftspanelRedigering({ setForhåndsvis }: Props) {
     });
 
   return (
-    <Fremdriftspanel>
+    <>
       <div className='flex flex-col gap-6'>
         <div className='flex justify-between items-center pb-3'>
           <Button size='small' variant='secondary' onClick={setForhåndsvis}>
             Forhåndsvis
           </Button>
-          <Button size='small' disabled={doneCount !== total}>
-            Publiser
-          </Button>
+          <PubliserModal disabled={doneCount !== total} />
         </div>
 
         <div className='flex flex-col gap-2'>
@@ -328,6 +326,6 @@ export default function FremdriftspanelRedigering({ setForhåndsvis }: Props) {
           </div>
         </Box.New>
       </div>
-    </Fremdriftspanel>
+    </>
   );
 }

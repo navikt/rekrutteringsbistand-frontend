@@ -47,6 +47,8 @@ import * as React from 'react';
 
 // app/rekrutteringstreff/[rekrutteringstreffId]/steg/PublisereSteg.tsx
 
+// app/rekrutteringstreff/[rekrutteringstreffId]/steg/PublisereSteg.tsx
+
 const DEFAULT_TITTEL = 'Nytt rekrutteringstreff';
 
 const sjekklisteData = [
