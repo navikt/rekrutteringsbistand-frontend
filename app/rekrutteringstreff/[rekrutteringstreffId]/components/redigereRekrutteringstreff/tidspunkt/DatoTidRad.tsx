@@ -2,6 +2,7 @@
 
 import ControlledDatePicker from './ControlledDatepicker';
 import TimeInput from './TimeInput';
+import { BodyShort } from '@navikt/ds-react';
 import { Controller, Path } from 'react-hook-form';
 
 type Props<T extends Record<string, unknown>> = {
@@ -11,6 +12,7 @@ type Props<T extends Record<string, unknown>> = {
   control: any;
   disabledDato?: boolean;
   disabledTid?: boolean;
+  hideDato?: boolean;
   onSave: () => void;
 };
 
@@ -21,25 +23,46 @@ export default function DatoTidRad<T extends Record<string, unknown>>({
   control,
   disabledDato,
   disabledTid,
+  hideDato,
   onSave,
 }: Props<T>) {
   return (
     <div className='flex gap-4 items-start'>
-      <Controller
-        name={nameDato}
-        control={control}
-        rules={{ required: 'Dato er obligatorisk' }}
-        render={({ field, fieldState }) => (
-          <ControlledDatePicker
-            label={label}
-            value={field.value as Date | null}
-            onChange={(date) => field.onChange(date)}
-            onBlur={onSave}
-            error={fieldState.error}
-            disabled={disabledDato}
-          />
-        )}
-      />
+      <div className='flex items-center min-w-fit mt-3'>
+        <BodyShort size='small'>{label}</BodyShort>
+      </div>
+
+      {!hideDato && (
+        <Controller
+          name={nameDato}
+          control={control}
+          rules={{ required: 'Dato er obligatorisk' }}
+          render={({ field, fieldState }) => (
+            <ControlledDatePicker
+              label={label}
+              value={field.value as Date | null}
+              onChange={(date) => field.onChange(date)}
+              onBlur={onSave}
+              error={fieldState.error}
+              disabled={disabledDato}
+            />
+          )}
+        />
+      )}
+
+      {hideDato && (
+        <Controller
+          name={nameDato}
+          control={control}
+          render={({ field }) => (
+            <input
+              type='hidden'
+              value={field.value?.toISOString() || ''}
+              onChange={() => {}}
+            />
+          )}
+        />
+      )}
 
       <Controller
         name={nameTid}
@@ -49,7 +72,7 @@ export default function DatoTidRad<T extends Record<string, unknown>>({
           <TimeInput
             value={field.value ?? ''}
             onChange={field.onChange}
-            label={label ? 'Klokkeslett' : ' '}
+            label='Klokkeslett'
             hideLabel={true}
             error={fieldState.error?.message}
             disabled={disabledTid}
@@ -57,6 +80,7 @@ export default function DatoTidRad<T extends Record<string, unknown>>({
               field.onBlur();
               onSave();
             }}
+            className='w-24'
           />
         )}
       />

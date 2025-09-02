@@ -31,17 +31,16 @@ const TidspunktForm = ({ control }: any) => {
     name: ['fraDato', 'fraTid', 'tilDato', 'tilTid'],
   });
 
-  const [flereDager, setFlereDager] = useState(false);
+  const [flereDager, setFlereDager] = useState(
+    fraDato && tilDato ? !isSameDay(fraDato, tilDato) : false,
+  );
 
-  // Automatically set switch state based on dates
   useEffect(() => {
     if (fraDato && tilDato) {
       const shouldBeMultipledays = !isSameDay(fraDato, tilDato);
-      if (shouldBeMultipledays !== flereDager) {
-        setFlereDager(shouldBeMultipledays);
-      }
+      setFlereDager(shouldBeMultipledays);
     }
-  }, [fraDato, tilDato, flereDager]);
+  }, [fraDato, tilDato]);
 
   const varighet = useMemo(
     () => rekrutteringstreffVarighet(fraDato, fraTid, tilDato, tilTid),
@@ -90,23 +89,24 @@ const TidspunktForm = ({ control }: any) => {
         </Switch>
       </div>
 
-      <DatoTidRad<TidspunktFormFields>
-        label='Fra'
-        nameDato='fraDato'
-        nameTid='fraTid'
-        control={control}
-        onSave={() => save(['fraDato', 'fraTid'])}
-      />
+      <div className='flex flex-col lg:flex-row gap-4'>
+        <DatoTidRad<TidspunktFormFields>
+          label='Fra'
+          nameDato='fraDato'
+          nameTid='fraTid'
+          control={control}
+          onSave={() => save(['fraDato', 'fraTid'])}
+        />
 
-      <DatoTidRad<TidspunktFormFields>
-        label='Til'
-        nameDato='tilDato'
-        nameTid='tilTid'
-        control={control}
-        disabledDato={!flereDager}
-        disabledTid={false}
-        onSave={() => save(['tilDato', 'tilTid'])}
-      />
+        <DatoTidRad<TidspunktFormFields>
+          label='Til'
+          nameDato='tilDato'
+          nameTid='tilTid'
+          control={control}
+          hideDato={!flereDager}
+          onSave={() => save(['tilDato', 'tilTid'])}
+        />
+      </div>
 
       {errors.root?.message ? (
         <div className='flex items-center gap-1 mt-2'>
@@ -118,7 +118,7 @@ const TidspunktForm = ({ control }: any) => {
           <ErrorMessage size='medium'>{errors.root.message}</ErrorMessage>
         </div>
       ) : (
-        <BodyShort size='small' textColor='subtle' className='mt-2'>
+        <BodyShort size='small' className='mt-2'>
           {varighet && !periodUgyldig ? varighet : 'Velg tid'}
         </BodyShort>
       )}
