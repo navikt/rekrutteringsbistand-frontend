@@ -13,12 +13,25 @@ function toIso(
   time?: string | null,
 ): string | null {
   if (!date) return null;
-  const [hh, mm] = String(time ?? '00:00')
-    .split(':')
-    .map((n) => Number(n) || 0);
-  const d = new Date(date);
-  d.setHours(hh, mm, 0, 0);
-  return d.toISOString();
+
+  const [hStr = '0', mStr = '0'] = String(time ?? '00:00').split(':');
+  const hh = Number.isFinite(Number(hStr)) ? Number(hStr) : 0;
+  const mm = Number.isFinite(Number(mStr)) ? Number(mStr) : 0;
+
+  const d = new Date(
+    date.getFullYear(),
+    date.getMonth(),
+    date.getDate(),
+    hh,
+    mm,
+    0,
+    0,
+  );
+
+  if (isNaN(d.getTime())) return null;
+
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}:00`;
 }
 
 export function useAutosave() {

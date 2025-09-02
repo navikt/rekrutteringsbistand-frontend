@@ -1,4 +1,5 @@
 import { DatePicker, useDatepicker } from '@navikt/ds-react';
+import * as React from 'react';
 import type { FieldError } from 'react-hook-form';
 
 type Props = {
@@ -22,12 +23,29 @@ export default function ControlledDatePicker({
   to = new Date('2040-12-31'),
   disabled,
 }: Props) {
-  const { inputProps, datepickerProps } = useDatepicker({
-    defaultSelected: value ?? undefined,
-    fromDate: from,
-    toDate: to,
-    onDateChange: (d) => onChange(d ?? null),
-  });
+  const { inputProps, datepickerProps, selectedDay, setSelected } =
+    useDatepicker({
+      defaultSelected: value ?? undefined,
+      fromDate: from,
+      toDate: to,
+      onDateChange: (d) => onChange(d ?? null),
+    });
+
+  React.useEffect(() => {
+    const next = value ?? undefined;
+    const cur = selectedDay ?? undefined;
+    if (
+      (next && (!cur || cur.getTime() !== next.getTime())) ||
+      (!next && !!cur)
+    ) {
+      setSelected(next);
+    }
+  }, [value, selectedDay, setSelected]);
+
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    inputProps.onBlur?.(e);
+    onBlur?.();
+  };
 
   return (
     <DatePicker mode='single' {...datepickerProps}>
@@ -37,7 +55,7 @@ export default function ControlledDatePicker({
         label={label}
         error={error ? error.message || true : undefined}
         disabled={disabled}
-        onBlur={onBlur} // <-- lagre ved blur
+        onBlur={handleBlur}
       />
     </DatePicker>
   );

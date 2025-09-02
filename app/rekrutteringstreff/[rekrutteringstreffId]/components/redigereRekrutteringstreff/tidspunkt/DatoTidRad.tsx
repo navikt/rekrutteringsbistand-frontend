@@ -48,6 +48,7 @@ export default function DatoTidRad<T extends Record<string, unknown>>({
         render={({ field, fieldState }) => (
           <TimeInput
             {...field}
+            value={field.value ?? ''}
             label={label ? 'Klokkeslett' : ' '}
             hideLabel={true}
             error={fieldState.error?.message}
