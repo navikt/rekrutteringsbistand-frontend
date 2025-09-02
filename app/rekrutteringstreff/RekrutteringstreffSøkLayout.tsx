@@ -6,14 +6,12 @@ import {
   OpprettNyttRekrutteringstreffDTO,
 } from '@/app/api/rekrutteringstreff/nytt-rekrutteringstreff/opprettNyttRekrutteringstreff';
 import PanelHeader from '@/components/layout/PanelHeader';
-import SVGDarkmode from '@/components/layout/SVGDarkmode';
 import SideLayout from '@/components/layout/SideLayout';
 import { UmamiEvent } from '@/components/umami/umamiEvents';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
-import RekrutteringstreffDark from '@/public/ikoner/rekrutteringstreff-dark.svg';
-import Rekrutteringstreff from '@/public/ikoner/rekrutteringstreff.svg';
 import { RekbisError } from '@/util/rekbisError';
+import { ReceptionIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import * as React from 'react';
 
@@ -54,15 +52,7 @@ const RekrutteringstreffSøkLayout: React.FC<
         <PanelHeader>
           <PanelHeader.Section
             title={'Rekrutteringstreff'}
-            titleIcon={
-              <div className='w-6 h-6'>
-                <SVGDarkmode
-                  light={Rekrutteringstreff}
-                  dark={RekrutteringstreffDark}
-                  alt='Rekrutteringstreff'
-                />
-              </div>
-            }
+            titleIcon={<ReceptionIcon />}
             actionsRight={
               <Button onClick={handleOpprettRekrutteringstreff}>
                 Nytt rekrutteringstreff

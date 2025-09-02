@@ -3,8 +3,6 @@
 import StegviserContent from './StegviserContent';
 import { StegviserProvider } from './StegviserContext';
 import StegviserHeader from './StegviserHeader';
-import { Box } from '@navikt/ds-react';
-import * as React from 'react';
 
 const stepDetails = [
   { id: 1, stepLabel: 'Publisere', header: 'Gjør klar til publisering' },
@@ -24,18 +22,10 @@ const stepDetails = [
 const Stegviser = () => {
   return (
     <StegviserProvider>
-      <Box.New
-        background='raised'
-        borderColor='neutral-subtleA'
-        borderWidth='1'
-        padding='6'
-        className='rounded-xl'
-      >
-        <StegviserHeader stepDetails={stepDetails} />
-        <div className='mt-4'>
-          <StegviserContent />
-        </div>
-      </Box.New>
+      <StegviserHeader stepDetails={stepDetails} />
+      <div className='mt-4'>
+        <StegviserContent />
+      </div>
     </StegviserProvider>
   );
 };
