@@ -9,6 +9,7 @@ import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { RekbisError } from '@/util/rekbisError';
 import { PersonPlusIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
+import { useRef } from 'react';
 import * as React from 'react';
 
 interface LagreIRekrutteringstreffButtonProps {
@@ -19,7 +20,7 @@ interface LagreIRekrutteringstreffButtonProps {
 const LagreIRekrutteringstreffButton: React.FC<
   LagreIRekrutteringstreffButtonProps
 > = ({ rekrutteringstreffId, kandidatsokKandidater }) => {
-  const modalRef = React.useRef<HTMLDialogElement>(null!);
+  const modalRef = useRef<HTMLDialogElement>(null!);
   const { visVarsel } = useApplikasjonContext();
 
   const { markerteKandidater, fjernMarkerteKandidater } =

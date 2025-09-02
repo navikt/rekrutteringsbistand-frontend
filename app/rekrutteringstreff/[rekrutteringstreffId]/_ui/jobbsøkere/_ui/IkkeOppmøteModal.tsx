@@ -11,6 +11,7 @@ import {
   Modal,
   VStack,
 } from '@navikt/ds-react';
+import { useState } from 'react';
 import * as React from 'react';
 
 export type IkkeOppmøteInternalDto = {
@@ -35,7 +36,7 @@ export const IkkeOppmøteModal: React.FC<IkkeOppmøteModalProps> = ({
   onIkkeOppmøteSendt,
 }) => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const antall = ikkeOppmøteInternalDtoer.length;
   const header =
     antall === 1

@@ -13,6 +13,7 @@ import IkkeOppmøteModal, {
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøkere/_ui/IkkeOppmøteModal';
 import { useStegviser } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/om-treffet/stegviser/StegviserContext';
 import { BodyShort, Button, Detail } from '@navikt/ds-react';
+import { useRef, useState } from 'react';
 import * as React from 'react';
 
 const FølgeOppSteg: React.FC = () => {
@@ -28,8 +29,8 @@ const FølgeOppSteg: React.FC = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const jobbsøkerHook = useJobbsøkere(rekrutteringstreffId);
 
-  const ikkeOppmøteModalRef = React.useRef<HTMLDialogElement>(null);
-  const [ikkeOppmøteListe, setIkkeOppmøteListe] = React.useState<
+  const ikkeOppmøteModalRef = useRef<HTMLDialogElement>(null);
+  const [ikkeOppmøteListe, setIkkeOppmøteListe] = useState<
     IkkeOppmøteInternalDto[]
   >([]);
 

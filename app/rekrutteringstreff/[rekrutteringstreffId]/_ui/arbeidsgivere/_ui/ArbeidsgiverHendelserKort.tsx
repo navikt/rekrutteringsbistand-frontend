@@ -17,6 +17,7 @@ import { BodyShort, Box, Button, Heading } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import { nb } from 'date-fns/locale/nb';
 import { PlusIcon } from 'lucide-react';
+import { useRef } from 'react';
 import * as React from 'react';
 
 interface Props {
@@ -26,7 +27,7 @@ interface Props {
 const ArbeidsgiverHendelserKort: React.FC<Props> = ({
   arbeidsgiverHendelserDTO,
 }) => {
-  const modalRef = React.useRef<HTMLDialogElement>(null);
+  const modalRef = useRef<HTMLDialogElement>(null);
 
   const antallLagtTil = arbeidsgiverHendelserDTO.filter(
     (h) => h.hendelsestype === 'OPPRETT',

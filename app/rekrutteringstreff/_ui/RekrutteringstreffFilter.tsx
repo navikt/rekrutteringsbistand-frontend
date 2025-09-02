@@ -6,17 +6,17 @@ import {
 } from '@/app/api/kandidat-sok/useSugestions';
 import AlleFilterKomponent from '@/components/felles/filter/AlleFilterKomponent';
 import { Search, UNSAFE_Combobox } from '@navikt/ds-react';
+import { useState, FC } from 'react';
 import * as React from 'react';
 
-export const RekrutteringstreffFilter: React.FC = () => {
-  const [fritekstSøkTekst, setFritekstSøkTekst] = React.useState('');
+export const RekrutteringstreffFilter: FC = () => {
+  const [fritekstSøkTekst, setFritekstSøkTekst] = useState('');
 
-  const [kompetanse, setKompetanse] = React.useState<string[]>([]);
-  const [kompetanseSøkeTekst, setKompetanseSøkeTekst] =
-    React.useState<string>('');
+  const [kompetanse, setKompetanse] = useState<string[]>([]);
+  const [kompetanseSøkeTekst, setKompetanseSøkeTekst] = useState<string>('');
 
-  const [yrke, setYrke] = React.useState<string[]>([]);
-  const [yrkeSøkeTekst, setYrkeSøkeTekst] = React.useState<string>('');
+  const [yrke, setYrke] = useState<string[]>([]);
+  const [yrkeSøkeTekst, setYrkeSøkeTekst] = useState<string>('');
 
   const onKompetanseSelected = (option: string, isSelected: boolean) => {
     if (isSelected) {

@@ -17,6 +17,7 @@ import {
   Modal,
   VStack,
 } from '@navikt/ds-react';
+import { useState } from 'react';
 import * as React from 'react';
 
 export type InviterInternalDto = {
@@ -41,7 +42,7 @@ export const InviterModal: React.FC<InviterModalProps> = ({
   onInvitasjonSendt,
 }) => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const antall = inviterInternalDtoer.length;
   const header =
     antall === 1
