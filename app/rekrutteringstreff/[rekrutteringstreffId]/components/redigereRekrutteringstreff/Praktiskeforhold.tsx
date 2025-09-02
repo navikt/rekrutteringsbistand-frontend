@@ -1,5 +1,6 @@
 'use client';
 
+import EndreInnlegg from './EndreInnlegg';
 import StedForm from './StedForm';
 import SvarfristForm from './SvarfristForm';
 import TidspunktForm from './TidspunktForm';
@@ -21,6 +22,7 @@ const PraktiskeForhold = () => {
         rekrutteringstreffId={rekrutteringstreffId}
       />
       <StedForm control={control} rekrutteringstreffId={rekrutteringstreffId} />
+      <EndreInnlegg onUpdated={() => {}} />
       <SvarfristForm
         control={control}
         rekrutteringstreffId={rekrutteringstreffId}
