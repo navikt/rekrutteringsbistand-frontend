@@ -47,8 +47,8 @@ export default function DatoTidRad<T extends Record<string, unknown>>({
         rules={{ required: 'Tid er obligatorisk' }}
         render={({ field, fieldState }) => (
           <TimeInput
-            {...field}
             value={field.value ?? ''}
+            onChange={field.onChange}
             label={label ? 'Klokkeslett' : ' '}
             hideLabel={true}
             error={fieldState.error?.message}
