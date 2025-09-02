@@ -4,7 +4,7 @@ import DatoTidRad from './tidspunkt/DatoTidRad';
 import { rekrutteringstreffVarighet } from './tidspunkt/varighet';
 import { useAutosave } from './useAutosave';
 import { ExclamationmarkTriangleIcon } from '@navikt/aksel-icons';
-import { BodyShort, Checkbox, ErrorMessage, Heading } from '@navikt/ds-react';
+import { BodyShort, ErrorMessage, Heading, Switch } from '@navikt/ds-react';
 import { isSameDay } from 'date-fns';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
@@ -35,6 +35,13 @@ const TidspunktForm = ({ control }: any) => {
     fraDato && tilDato ? !isSameDay(fraDato, tilDato) : false,
   );
 
+  useEffect(() => {
+    if (fraDato && tilDato) {
+      const shouldBeMultipledays = !isSameDay(fraDato, tilDato);
+      setFlereDager(shouldBeMultipledays);
+    }
+  }, [fraDato, tilDato]);
+
   const varighet = useMemo(
     () => rekrutteringstreffVarighet(fraDato, fraTid, tilDato, tilTid),
     [fraDato, fraTid, tilDato, tilTid],
@@ -63,12 +70,12 @@ const TidspunktForm = ({ control }: any) => {
         <Heading level='3' size='small'>
           Tid
         </Heading>
-        <Checkbox
+        <Switch
           checked={flereDager}
           onChange={() =>
             setFlereDager((prev) => {
               const next = !prev;
-              if (!next && fraDato && !isSameDay(fraDato, tilDato)) {
+              if (!next && fraDato) {
                 setValue('tilDato', fraDato, {
                   shouldValidate: true,
                   shouldDirty: true,
@@ -79,26 +86,27 @@ const TidspunktForm = ({ control }: any) => {
           }
         >
           Flere dager
-        </Checkbox>
+        </Switch>
       </div>
 
-      <DatoTidRad<TidspunktFormFields>
-        label='Fra'
-        nameDato='fraDato'
-        nameTid='fraTid'
-        control={control}
-        onSave={() => save(['fraDato', 'fraTid'])}
-      />
+      <div className='flex flex-col lg:flex-row gap-4'>
+        <DatoTidRad<TidspunktFormFields>
+          label='Fra'
+          nameDato='fraDato'
+          nameTid='fraTid'
+          control={control}
+          onSave={() => save(['fraDato', 'fraTid'])}
+        />
 
-      <DatoTidRad<TidspunktFormFields>
-        label='Til'
-        nameDato='tilDato'
-        nameTid='tilTid'
-        control={control}
-        disabledDato={!flereDager}
-        disabledTid={false}
-        onSave={() => save(['tilDato', 'tilTid'])}
-      />
+        <DatoTidRad<TidspunktFormFields>
+          label='Til'
+          nameDato='tilDato'
+          nameTid='tilTid'
+          control={control}
+          hideDato={!flereDager}
+          onSave={() => save(['tilDato', 'tilTid'])}
+        />
+      </div>
 
       {errors.root?.message ? (
         <div className='flex items-center gap-1 mt-2'>
@@ -110,7 +118,7 @@ const TidspunktForm = ({ control }: any) => {
           <ErrorMessage size='medium'>{errors.root.message}</ErrorMessage>
         </div>
       ) : (
-        <BodyShort size='small' textColor='subtle' className='mt-2'>
+        <BodyShort size='small' className='mt-2'>
           {varighet && !periodUgyldig ? varighet : 'Velg tid'}
         </BodyShort>
       )}

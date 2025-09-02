@@ -44,7 +44,6 @@ const TimeInput = forwardRef<HTMLInputElement, Props>(
         className={['min-w-[7rem]', className].filter(Boolean).join(' ')}
         options={KLOKKESLETT_OPTIONS}
         value={value ?? ''}
-        onChange={(v) => onChange(v)}
         onToggleSelected={(option, isSelected) => {
           if (isSelected) onChange(option);
         }}

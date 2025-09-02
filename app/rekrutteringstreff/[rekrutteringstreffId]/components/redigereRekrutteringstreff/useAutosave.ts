@@ -15,7 +15,8 @@ function toIso(
 ): string | null {
   if (!date) return null;
 
-  const [hStr = '0', mStr = '0'] = String(time ?? '00:00').split(':');
+  const timeValue = time && time.trim() !== '' ? time : '00:00';
+  const [hStr = '0', mStr = '0'] = timeValue.split(':');
   const hh = Number.isFinite(Number(hStr)) ? Number(hStr) : 0;
   const mm = Number.isFinite(Number(mStr)) ? Number(mStr) : 0;
 
