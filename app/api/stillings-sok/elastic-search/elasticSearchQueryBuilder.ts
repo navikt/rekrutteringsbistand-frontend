@@ -294,7 +294,11 @@ export class ElasticSearchQueryBuilder {
     navIdent?: string,
     kontorEnhetId?: string,
     fritekstSøkestreng?: string,
-    opts?: { formidlinger?: boolean; utenOppdrag?: boolean },
+    opts?: {
+      formidlinger?: boolean;
+      utenOppdrag?: boolean;
+      includePortfolioInCounts?: boolean;
+    },
   ): any {
     // Hent hele bool-strukturen for bruk i aggregeringer
     const allFilters = this.buildFilters();
@@ -395,7 +399,9 @@ export class ElasticSearchQueryBuilder {
       return cleaned;
     };
 
-    const allFiltersWithoutPortfolio = pruneTopLevelArrays(allFilters);
+    const allFiltersWithoutPortfolio = opts?.includePortfolioInCounts
+      ? allFilters // ta med portefølje-feltene i counts
+      : pruneTopLevelArrays(allFilters); // gammel oppførsel
 
     // Helper: standard ekskludering av kategorier når formidlinger ikke er valgt
     const kategoriEkskludering = !opts?.formidlinger
@@ -633,6 +639,133 @@ export class ElasticSearchQueryBuilder {
               },
             },
           },
+          // Status-facet (Publisert/Active, Utløpt, Stoppet) – teller dokumenter gitt øvrige (valgte) filtre
+          status: {
+            filter: {
+              bool: {
+                filter: [
+                  ...(allFiltersWithoutPortfolio &&
+                  Object.keys(allFiltersWithoutPortfolio).length > 0
+                    ? [{ bool: allFiltersWithoutPortfolio }]
+                    : []),
+                ],
+              },
+            },
+            aggs: {
+              koder: {
+                terms: {
+                  field: 'stilling.status',
+                  size: 10,
+                  order: { _key: 'asc' },
+                },
+              },
+            },
+          },
+          // Kategori-facet (Stilling / Jobbmesse)
+          kategori: {
+            filters: {
+              filters: {
+                stilling: {
+                  bool: {
+                    filter: [
+                      ...(allFiltersWithoutPortfolio &&
+                      Object.keys(allFiltersWithoutPortfolio).length > 0
+                        ? [{ bool: allFiltersWithoutPortfolio }]
+                        : []),
+                      {
+                        bool: {
+                          must_not: [
+                            {
+                              term: {
+                                'stillingsinfo.stillingskategori': 'JOBBMESSE',
+                              },
+                            },
+                            {
+                              term: {
+                                'stillingsinfo.stillingskategori':
+                                  'ARBEIDSTRENING',
+                              },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+                jobbmesse: {
+                  bool: {
+                    filter: [
+                      ...(allFiltersWithoutPortfolio &&
+                      Object.keys(allFiltersWithoutPortfolio).length > 0
+                        ? [{ bool: allFiltersWithoutPortfolio }]
+                        : []),
+                      {
+                        term: {
+                          'stillingsinfo.stillingskategori': 'JOBBMESSE',
+                        },
+                      },
+                    ],
+                  },
+                },
+              },
+            },
+          },
+          // Rå buckets for alle stillingskategorier (inkl. FORMIDLING, ARBEIDSTRENING, JOBBMESSE, osv.) – respekterer valgte filtre
+          stillingskategori: {
+            filter: {
+              bool: {
+                filter: [
+                  ...(allFiltersWithoutPortfolio &&
+                  Object.keys(allFiltersWithoutPortfolio).length > 0
+                    ? [{ bool: allFiltersWithoutPortfolio }]
+                    : []),
+                ],
+              },
+            },
+            aggs: {
+              koder: {
+                terms: {
+                  field: 'stillingsinfo.stillingskategori',
+                  size: 20,
+                  order: { _key: 'asc' },
+                },
+              },
+            },
+          },
+          // Geografi-facets (fylker og kommuner) – nested aggregering filtrert på øvrige valgte filtre
+          geografi: {
+            filter: {
+              bool: {
+                filter: [
+                  ...(allFiltersWithoutPortfolio &&
+                  Object.keys(allFiltersWithoutPortfolio).length > 0
+                    ? [{ bool: allFiltersWithoutPortfolio }]
+                    : []),
+                ],
+              },
+            },
+            aggs: {
+              nested_geografi: {
+                nested: { path: 'stilling.locations' },
+                aggs: {
+                  fylker: {
+                    terms: {
+                      field: 'stilling.locations.countyCode', // bruker kode for å samsvare med filtrering
+                      size: 200,
+                      order: { _key: 'asc' },
+                    },
+                  },
+                  kommuner: {
+                    terms: {
+                      field: 'stilling.locations.municipalCode',
+                      size: 2000,
+                      order: { _key: 'asc' },
+                    },
+                  },
+                },
+              },
+            },
+          },
         },
       },
     };
@@ -645,7 +778,11 @@ export class ElasticSearchQueryBuilder {
     navIdent?: string,
     kontorEnhetId?: string,
     fritekst?: string[],
-    opts?: { formidlinger?: boolean; utenOppdrag?: boolean },
+    opts?: {
+      formidlinger?: boolean;
+      utenOppdrag?: boolean;
+      includePortfolioInCounts?: boolean;
+    },
   ): this {
     const fritekstSøkestreng =
       fritekst && fritekst.length > 0 ? fritekst.join(' ') : undefined;

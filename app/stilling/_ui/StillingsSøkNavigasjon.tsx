@@ -15,7 +15,7 @@ const StillingsSøkNavigasjon: React.FC = () => {
     formidlinger,
   } = useStillingsSøkFilter();
 
-  const antall = useStillingssokTotalData();
+  useStillingssokTotalData(); // behold hook-kall hvis senere utvidelser
   return (
     <div className='flex gap-2 items-center'>
       <Button
@@ -25,10 +25,7 @@ const StillingsSøkNavigasjon: React.FC = () => {
         onClick={() => setPortefølje(StillingsSøkPortefølje.INTERN)}
         size='xsmall'
       >
-        Alle{' '}
-        {antall.antall?.alleOppdrag !== undefined
-          ? `(${antall.antall.alleOppdrag})`
-          : ''}
+        Alle
       </Button>
       <TilgangskontrollForInnhold
         skjulVarsel
@@ -45,10 +42,7 @@ const StillingsSøkNavigasjon: React.FC = () => {
           onClick={() => setPortefølje(StillingsSøkPortefølje.VIS_MINE)}
           size='xsmall'
         >
-          Mine{' '}
-          {antall.antall?.mineOppdrag !== undefined
-            ? `(${antall.antall.mineOppdrag})`
-            : ''}
+          Mine
         </Button>
       </TilgangskontrollForInnhold>
       <Button
@@ -60,10 +54,7 @@ const StillingsSøkNavigasjon: React.FC = () => {
         onClick={() => setPortefølje(StillingsSøkPortefølje.MITT_KONTOR)}
         size='xsmall'
       >
-        Mitt kontor{' '}
-        {antall.antall?.mittKontor !== undefined
-          ? `(${antall.antall.mittKontor})`
-          : ''}
+        Mitt kontor
       </Button>
       {!formidlinger && (
         <>
@@ -79,10 +70,7 @@ const StillingsSøkNavigasjon: React.FC = () => {
             }
             size='xsmall'
           >
-            arbeidsplassen.no{' '}
-            {antall.antall?.arbeidsplassen !== undefined
-              ? `(${antall.antall.arbeidsplassen})`
-              : ''}
+            arbeidsplassen.no
           </Button>
           {portefølje === StillingsSøkPortefølje.ARBEIDSPLASSEN_NO && (
             <Chips size='small'>

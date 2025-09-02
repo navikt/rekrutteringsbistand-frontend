@@ -28,7 +28,7 @@ const StillingsSøkeresultat: React.FC<StillingsSøkeresultatProps> = ({
     brukerData: { ident },
   } = useApplikasjonContext();
   const finnStillingerForKandidat: boolean = !!kandidatId;
-  const stillingssøkHook = useStillingssøk({
+  const combinedHook = useStillingssøk({
     filter,
     eierNavKontorEnhetId: valgtNavKontor?.navKontor,
     navIdent: ident,
@@ -58,34 +58,19 @@ const StillingsSøkeresultat: React.FC<StillingsSøkeresultatProps> = ({
 
   // Oppdater totals i en effekt (ikke i render) for å unngå React warning.
   useEffect(() => {
-    const data = stillingssøkHook.data;
-    if (!data) return;
-    setAntall({
-      alleOppdrag:
-        // @ts-expect-error ikke typet
-        data?.aggregations?.globalAggregering?.alleOppdrag?.doc_count,
-
-      mineOppdrag:
-        // @ts-expect-error ikke typet
-        data?.aggregations?.globalAggregering?.mineOppdrag?.doc_count,
-
-      mittKontor:
-        // @ts-expect-error ikke typet
-        data?.aggregations?.globalAggregering?.mittKontor?.doc_count,
-      arbeidsplassen:
-        // @ts-expect-error ikke typet
-        data?.aggregations?.globalAggregering?.arbeidsplassen?.doc_count,
-    });
-  }, [stillingssøkHook.data, setAntall]);
+    const data: any = combinedHook.data;
+    if (!data?.antall) return;
+    setAntall({});
+  }, [combinedHook.data, setAntall]);
 
   return (
-    <SWRLaster hooks={[stillingssøkHook]}>
-      {(data) => {
+    <SWRLaster hooks={[combinedHook]}>
+      {(data: any) => {
         return (
           <>
             <StillingsSøkChips skjulLagreStandard={!!kandidatId} />
             <div className='flex flex-col gap-1'>
-              {data.hits.hits.map((hit) => (
+              {data.hits?.hits?.map((hit: any) => (
                 <StillingsKort
                   key={hit._id}
                   stillingData={hit._source}
@@ -94,9 +79,9 @@ const StillingsSøkeresultat: React.FC<StillingsSøkeresultatProps> = ({
               ))}
             </div>
             <div className={'flex justify-between items-center'}>
-              {antallVisning(data.hits.total?.value)}
+              {antallVisning(data.hits?.total?.value)}
               <StillingsSøkPaginering
-                totaltAntallTreff={data.hits.total?.value ?? 0}
+                totaltAntallTreff={data.hits?.total?.value ?? 0}
               />
             </div>
           </>

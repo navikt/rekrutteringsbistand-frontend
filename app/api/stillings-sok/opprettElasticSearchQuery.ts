@@ -22,11 +22,15 @@ export interface GenerateElasticSearchQueryParams {
   finnStillingerForKandidat?: boolean;
 }
 
-export function opprettElasticSearchQuery(
+/**
+ * Ny funksjon: bygger kun søk etter treff (uten aggregeringer)
+ */
+export function opprettElasticSearchTreffQuery(
   params: GenerateElasticSearchQueryParams,
 ) {
   const esBuilder = new ElasticSearchQueryBuilder();
 
+  // Gjenbruker samme filterlogikk som tidligere
   esPortefølje(params, esBuilder);
   fritekstQuery(params, esBuilder);
   statusQuery(params, esBuilder);
@@ -41,7 +45,32 @@ export function opprettElasticSearchQuery(
     esBuilder.addFilter(inkluderingQuery(params, esBuilder));
   }
 
-  // Sett aggregering for korrekt antall
+  const from = regnUtFørsteTreffFra(params.filter.side, maksAntallTreffPerSøk);
+  return esBuilder.build(maksAntallTreffPerSøk, from);
+}
+
+/**
+ * Ny funksjon: bygger kun aggregeringsspørring (size=0) for å hente antall.
+ */
+export function opprettElasticSearchAggregeringsQuery(
+  params: GenerateElasticSearchQueryParams,
+) {
+  const esBuilder = new ElasticSearchQueryBuilder();
+
+  esPortefølje(params, esBuilder);
+  fritekstQuery(params, esBuilder);
+  statusQuery(params, esBuilder);
+  kategoriQuery(params, esBuilder);
+  geografiQuery(params, esBuilder);
+  // sortering er irrelevant for aggregering – utelates bevisst
+
+  if (
+    params.filter.inkludering.length > 0 ||
+    params.filter.inkluderingUnderkategori.length > 0
+  ) {
+    esBuilder.addFilter(inkluderingQuery(params, esBuilder));
+  }
+
   esBuilder.setStandardAggregation(
     params.navIdent,
     params.eierNavKontorEnhetId,
@@ -49,10 +78,10 @@ export function opprettElasticSearchQuery(
     {
       formidlinger: params.formidlinger,
       utenOppdrag: params.filter.utenOppdrag,
+      includePortfolioInCounts: true,
     },
   );
 
-  // Bygg query
-  const from = regnUtFørsteTreffFra(params.filter.side, maksAntallTreffPerSøk);
-  return esBuilder.build(maksAntallTreffPerSøk, from);
+  // size=0 for kun aggregeringer
+  return esBuilder.build(0, 0);
 }

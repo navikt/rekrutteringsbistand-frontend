@@ -2,7 +2,6 @@ import { useStillingsSøkFilter } from '@/app/stilling/StillingsSøkContext';
 import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
 
-const kategorier = [Stillingskategori.Stilling, Stillingskategori.Jobbmesse];
 const stillingskategoriTilVisningsnavn = (kategori: Stillingskategori) => {
   switch (kategori) {
     case Stillingskategori.Stilling:
@@ -28,11 +27,12 @@ export default function KategoriFilter({ hideLegend }: KategoriFilterProps) {
       value={kategori}
       onChange={setKategori}
     >
-      {kategorier.map((kategori) => (
-        <Checkbox key={kategori} value={kategori}>
-          {stillingskategoriTilVisningsnavn(kategori)}
-        </Checkbox>
-      ))}
+      <Checkbox value={Stillingskategori.Stilling}>
+        {stillingskategoriTilVisningsnavn(Stillingskategori.Stilling)}
+      </Checkbox>
+      <Checkbox value={Stillingskategori.Jobbmesse}>
+        {stillingskategoriTilVisningsnavn(Stillingskategori.Jobbmesse)}
+      </Checkbox>
     </CheckboxGroup>
   );
 }
