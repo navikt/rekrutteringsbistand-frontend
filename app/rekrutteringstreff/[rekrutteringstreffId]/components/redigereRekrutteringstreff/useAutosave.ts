@@ -3,6 +3,7 @@
 import { useRekrutteringstreffContext } from '../../RekrutteringstreffContext';
 import { oppdaterRekrutteringstreff } from '@/app/api/rekrutteringstreff/oppdater-rekrutteringstreff/oppdaterRerkutteringstreff';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
+import { format } from 'date-fns';
 import { useCallback } from 'react';
 import { useFormContext } from 'react-hook-form';
 
@@ -27,11 +28,9 @@ function toIso(
     0,
     0,
   );
-
   if (isNaN(d.getTime())) return null;
 
-  const pad = (n: number) => String(n).padStart(2, '0');
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}:00`;
+  return format(d, "yyyy-MM-dd'T'HH:mm:ssXXX");
 }
 
 export function useAutosave() {

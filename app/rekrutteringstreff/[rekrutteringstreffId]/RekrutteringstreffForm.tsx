@@ -40,18 +40,25 @@ function toDefaults(treff: any): OppdaterRekrutteringstreffDTO {
   const til = treff.tilTid ? parseISO(treff.tilTid) : null;
   const svarfrist = treff.svarfrist ? parseISO(treff.svarfrist) : null;
 
+  const dateOnly = (d: Date | null) =>
+    d ? new Date(d.getFullYear(), d.getMonth(), d.getDate()) : null;
+
+  const fraDato = dateOnly(fra);
+  const tilDato = dateOnly(til);
+  const svarfristDato = dateOnly(svarfrist);
+
   return {
     tittel: treff.tittel,
     gateadresse: treff.gateadresse,
     postnummer: treff.postnummer,
     poststed: treff.poststed,
 
-    fraDato: fra,
+    fraDato,
     fraTid: fra ? format(fra, 'HH:mm') : '',
-    tilDato: til,
+    tilDato,
     tilTid: til ? format(til, 'HH:mm') : '',
 
-    svarfristDato: svarfrist,
+    svarfristDato,
     svarfristTid: svarfrist ? format(svarfrist, 'HH:mm') : '',
   } as any;
 }
