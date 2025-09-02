@@ -67,3 +67,23 @@ skyra-survey {
   --skyra-font-body: var(--ax-font-family);
   --skyra-font-heading: var(--ax-font-family);
 }
+
+.mosaic-split {
+  background-color: var(
+    --ax-border-neutral-subtle
+  ) !important; /* Rød farge for eksempel */
+  opacity: 0.5; /* Gjør den litt gjennomsiktig */
+}
+
+/* Du kan også endre fargen når du holder musen over den */
+.mosaic-split:hover {
+  background-color: var(
+    --ax-border-neutral-strong
+  ) !important; /* Blå farge ved hover */
+  opacity: 0.8;
+}
+
+/* For å gjøre den enda tydeligere, kan du øke bredden (merk: dette kan påvirke layout litt) */
+.mosaic-split-line {
+  width: 10px !important; /* Øker bredden på linjen */
+}

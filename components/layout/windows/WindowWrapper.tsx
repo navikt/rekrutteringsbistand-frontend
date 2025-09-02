@@ -444,7 +444,7 @@ const WindowWrapper: React.FC<WindowWrapperProps> = ({ children }) => {
                 <div
                   className={
                     'h-full w-full flex flex-col min-h-0 min-w-[480px]' +
-                    (isRightOfRoot ? ' pl-2' : '')
+                    (isRightOfRoot ? ' pl-0' : '')
                   }
                 >
                   <div
