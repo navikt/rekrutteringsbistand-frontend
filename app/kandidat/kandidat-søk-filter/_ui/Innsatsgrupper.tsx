@@ -14,6 +14,7 @@ const Innsatsgrupper = () => {
 
   return (
     <CheckboxGroup
+      size='small'
       legend='Velg innsatsgrupper'
       onChange={onChange}
       value={Array.from(innsatsgruppe)}

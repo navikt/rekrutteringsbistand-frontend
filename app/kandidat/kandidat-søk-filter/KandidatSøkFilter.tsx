@@ -8,6 +8,7 @@ import Kompetanse from './_ui/Kompetanse';
 import PrioriterteMålgrupper from './_ui/PrioriterteMålgrupper';
 import Språk from './_ui/Språk';
 import Utdanningsnivå from './_ui/Utdanningsnivå';
+import Innsatsgrupper from '@/app/kandidat/kandidat-søk-filter/_ui/Innsatsgrupper';
 import AlleFilterKomponent from '@/components/felles/filter/AlleFilterKomponent';
 import * as React from 'react';
 
@@ -23,8 +24,9 @@ const KandidatSøkFilter: React.FC = () => {
             <Kompetanse />
             <Førerkort />
             <Språk />
-            <Arbeidserfaring /> <Hovedmål /> <Utdanningsnivå />{' '}
+            <Arbeidserfaring /> <Hovedmål /> <Utdanningsnivå />
             <PrioriterteMålgrupper />
+            <Innsatsgrupper />
           </AlleFilterKomponent>
         </div>
       </div>

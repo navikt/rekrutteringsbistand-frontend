@@ -4,8 +4,8 @@ import { oppdaterStilling } from '@/app/api/stilling/oppdater-stilling/oppdaterS
 import { StillingAdminDTO } from '@/app/stilling/_ui/stilling-admin/page';
 import { StillingsStatus } from '@/app/stilling/_ui/stilling-typer';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
+import { FloppydiskIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
-import { SaveIcon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
 interface AutolagreStillingProps {
@@ -133,9 +133,9 @@ export default function AutolagreStilling({
   return (
     <div className='flex items-center gap-2 text-xs' aria-live='polite'>
       <Button
-        icon={<SaveIcon />}
+        icon={<FloppydiskIcon />}
         size='xsmall'
-        variant='secondary'
+        variant='tertiary'
         onClick={lagre}
         loading={saving}
         disabled={saving || disabled}

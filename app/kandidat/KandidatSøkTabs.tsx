@@ -12,6 +12,7 @@ import Arbeidserfaring from '@/app/kandidat/kandidat-søk-filter/_ui/Arbeidserfa
 import Arbeidsønsker from '@/app/kandidat/kandidat-søk-filter/_ui/Arbeidsønsker';
 import Førerkort from '@/app/kandidat/kandidat-søk-filter/_ui/Førerkort';
 import Hovedmål from '@/app/kandidat/kandidat-søk-filter/_ui/Hovedmål';
+import Innsatsgrupper from '@/app/kandidat/kandidat-søk-filter/_ui/Innsatsgrupper';
 import KandidatStedSøk from '@/app/kandidat/kandidat-søk-filter/_ui/KandidatStedSøk';
 import Kompetanse from '@/app/kandidat/kandidat-søk-filter/_ui/Kompetanse';
 import PrioriterteMålgrupper from '@/app/kandidat/kandidat-søk-filter/_ui/PrioriterteMålgrupper';
@@ -171,7 +172,16 @@ const KandidatSøkTabs: React.FC<KandidatSøkTabsProps> = ({
       )}
       <KandidatSøkChips />
       <div className='@container/kandidatsøk flex'>
-        <div className='hidden @[720px]:block mr-4 pt-4  max-w-[200px]'>
+        <div className='flex-grow min-w-0'>
+          <KandidatSøkResultat
+            alleredeLagtTilTreff={alleredeLagtTilTreff}
+            alleredeLagtTilKandidatliste={alleredeLagtTilKandidatliste}
+            type={portefølje as KandidatSøkPortefølje}
+            stillingsId={stillingsId}
+            rekrutteringstreffId={rekrutteringstreffId}
+          />
+        </div>
+        <div className='hidden @[720px]:block ml-4 pt-4  max-w-[200px]'>
           <div className='flex flex-col gap-4'>
             <Arbeidsønsker />
             <KandidatStedSøk />
@@ -182,16 +192,8 @@ const KandidatSøkTabs: React.FC<KandidatSøkTabsProps> = ({
             <Hovedmål />
             <Utdanningsnivå />
             <PrioriterteMålgrupper />
+            <Innsatsgrupper />
           </div>
-        </div>
-        <div className='flex-grow min-w-0'>
-          <KandidatSøkResultat
-            alleredeLagtTilTreff={alleredeLagtTilTreff}
-            alleredeLagtTilKandidatliste={alleredeLagtTilKandidatliste}
-            type={portefølje as KandidatSøkPortefølje}
-            stillingsId={stillingsId}
-            rekrutteringstreffId={rekrutteringstreffId}
-          />
         </div>
       </div>
     </div>

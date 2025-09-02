@@ -25,7 +25,7 @@ const StillingsSøkNavigasjon: React.FC = () => {
         onClick={() => setPortefølje(StillingsSøkPortefølje.INTERN)}
         size='xsmall'
       >
-        Alle oppdrag{' '}
+        Alle{' '}
         {antall.antall?.alleOppdrag !== undefined
           ? `(${antall.antall.alleOppdrag})`
           : ''}
