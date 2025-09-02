@@ -9,16 +9,18 @@ import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsConte
 import OmStillingen from '@/app/stilling/[stillingsId]/_ui/om-stillingen/OmStillingen';
 import FremdriftspanelRedigering from '@/app/stilling/_ui/stilling-admin/FremdriftspanelRedigering';
 import { hentModulerForKategori } from '@/app/stilling/_ui/stilling-admin/StillingAdminModuler';
+import AutolagreStilling from '@/app/stilling/_ui/stilling-admin/admin_moduler/AutolagreStilling';
 import EndreStillingStatus from '@/app/stilling/_ui/stilling-admin/admin_moduler/_felles/EndreStillingStatus';
 import {
   Stillingskategori,
   StillingsStatus,
 } from '@/app/stilling/_ui/stilling-typer';
+import { visStillingsDataInfo } from '@/app/stilling/_util/stillingInfoUtil';
 // import ViktigeDatoer from '@/app/stilling/rediger/_ui/ViktigeDatoer';
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideLayout from '@/components/layout/SideLayout';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { TrashIcon } from '@navikt/aksel-icons';
+import { MultiplyIcon, TrashIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -38,6 +40,8 @@ export default function StillingAdmin() {
   const router = useRouter();
   const [forhåndsvis, setStateForhåndsvis] = useState<boolean>(false);
 
+  const stillingsInfo = visStillingsDataInfo(stillingsData);
+
   const registerForm = useForm<StillingAdminDTO>({
     resolver: zodResolver(StillingAdminSchema),
     defaultValues: { ...stillingsData, formidlingKandidater: [] },
@@ -54,26 +58,23 @@ export default function StillingAdmin() {
   };
 
   const knapperad = () => {
-    if (stillingsData?.stilling?.uuid) {
-      return (
-        <EndreStillingStatus
-          nyStatus={StillingsStatus.Slettet}
-          knappNavn='Slett'
-          knappIkon={<TrashIcon />}
-          tekst={''}
-        />
-      );
-    }
     return (
       <div className='flex gap-2'>
+        <AutolagreStilling stillingsData={stillingsData} />
         <Button
-          icon={<TrashIcon />}
+          icon={<MultiplyIcon />}
           size='small'
           variant='tertiary'
           onClick={() => router.push('/stilling')}
         >
           Avbryt
         </Button>
+        <EndreStillingStatus
+          nyStatus={StillingsStatus.Slettet}
+          knappNavn='Slett'
+          knappIkon={<TrashIcon />}
+          tekst={''}
+        />
       </div>
     );
   };
