@@ -4,7 +4,7 @@ import DatoTidRad from './tidspunkt/DatoTidRad';
 import { rekrutteringstreffVarighet } from './tidspunkt/varighet';
 import { useAutosave } from './useAutosave';
 import { ExclamationmarkTriangleIcon } from '@navikt/aksel-icons';
-import { BodyShort, Checkbox, ErrorMessage, Heading } from '@navikt/ds-react';
+import { BodyShort, ErrorMessage, Heading, Switch } from '@navikt/ds-react';
 import { isSameDay } from 'date-fns';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
@@ -31,9 +31,17 @@ const TidspunktForm = ({ control }: any) => {
     name: ['fraDato', 'fraTid', 'tilDato', 'tilTid'],
   });
 
-  const [flereDager, setFlereDager] = useState(
-    fraDato && tilDato ? !isSameDay(fraDato, tilDato) : false,
-  );
+  const [flereDager, setFlereDager] = useState(false);
+
+  // Automatically set switch state based on dates
+  useEffect(() => {
+    if (fraDato && tilDato) {
+      const shouldBeMultipledays = !isSameDay(fraDato, tilDato);
+      if (shouldBeMultipledays !== flereDager) {
+        setFlereDager(shouldBeMultipledays);
+      }
+    }
+  }, [fraDato, tilDato, flereDager]);
 
   const varighet = useMemo(
     () => rekrutteringstreffVarighet(fraDato, fraTid, tilDato, tilTid),
@@ -63,12 +71,12 @@ const TidspunktForm = ({ control }: any) => {
         <Heading level='3' size='small'>
           Tid
         </Heading>
-        <Checkbox
+        <Switch
           checked={flereDager}
           onChange={() =>
             setFlereDager((prev) => {
               const next = !prev;
-              if (!next && fraDato && !isSameDay(fraDato, tilDato)) {
+              if (!next && fraDato) {
                 setValue('tilDato', fraDato, {
                   shouldValidate: true,
                   shouldDirty: true,
@@ -79,7 +87,7 @@ const TidspunktForm = ({ control }: any) => {
           }
         >
           Flere dager
-        </Checkbox>
+        </Switch>
       </div>
 
       <DatoTidRad<TidspunktFormFields>
