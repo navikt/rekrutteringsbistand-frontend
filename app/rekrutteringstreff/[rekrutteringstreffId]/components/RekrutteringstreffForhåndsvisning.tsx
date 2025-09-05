@@ -7,17 +7,11 @@ import { useArbeidsgiverHendelser } from '@/app/api/rekrutteringstreff/[...slug]
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
 import { useJobbsøkerHendelser } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkerHendelser';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
-import SWRLaster from '@/components/SWRLaster';
+import { formaterNorskDato } from '@/util/util';
 import { CalendarIcon, ClockIcon, LocationPinIcon } from '@navikt/aksel-icons';
-import {
-  BodyLong,
-  BodyShort,
-  Box,
-  Detail,
-  Heading,
-  Skeleton,
-} from '@navikt/ds-react';
-import { format } from 'date-fns';
+import { BodyShort, Box, Detail, Heading, Skeleton } from '@navikt/ds-react';
+import { format, isSameDay, parseISO } from 'date-fns';
+import { toZonedTime } from 'date-fns-tz';
 import { nb } from 'date-fns/locale';
 import React from 'react';
 
@@ -59,6 +53,10 @@ const formatWeekdayDate = (dateString?: string | null) => {
   } catch {
     return null;
   }
+};
+
+const formaterKlokkeslett = (date: Date) => {
+  return format(date, 'HH:mm');
 };
 
 const RekrutteringstreffForhåndsvisning: React.FC = () => {
@@ -114,28 +112,24 @@ const RekrutteringstreffForhåndsvisning: React.FC = () => {
         </Heading>
       </section>
 
-      {/* Large card containing all main info */}
       <Box.New
         background='neutral-softA'
         borderColor='neutral-subtleA'
         borderRadius='xlarge'
         borderWidth='1'
         padding='6'
-        className='space-y-6'
+        className='space-y-6 max-w-[64rem]'
       >
-        {/* Om treffet title */}
         <Heading level='2' size='medium'>
           Om treffet
         </Heading>
 
-        {/* Three-column layout for main info */}
-        <section className='flex flex-col gap-4 md:flex-row max-w-[64rem] min-h-[10rem]'>
+        <section className='flex flex-col gap-4 md:flex-row'>
           <TidspunktKort rekrutteringstreff={rekrutteringstreff} />
           <StedKort rekrutteringstreff={rekrutteringstreff} />
           <SvarfristKort rekrutteringstreff={rekrutteringstreff} />
         </section>
 
-        {/* Innlegg content */}
         {innlegg?.htmlContent && (
           <Box.New
             background='neutral-softA'
@@ -152,7 +146,6 @@ const RekrutteringstreffForhåndsvisning: React.FC = () => {
         )}
       </Box.New>
 
-      {/* Hendelser cards */}
       <section className='mt-4 flex flex-col gap-16 md:flex-row'>
         {arbeidsgiverHendelser && (
           <ArbeidsgiverHendelserKort
@@ -164,7 +157,6 @@ const RekrutteringstreffForhåndsvisning: React.FC = () => {
         )}
       </section>
 
-      {/* Status og metadata */}
       <section className='border-t pt-6'>
         <div className='flex flex-wrap gap-6 text-sm text-gray-600'>
           <Detail>
@@ -188,17 +180,17 @@ const RekrutteringstreffForhåndsvisning: React.FC = () => {
   );
 };
 
-// Separate card components
-interface CardProps {
+interface KortProps {
   rekrutteringstreff: any;
 }
 
-const TidspunktKort: React.FC<CardProps> = ({ rekrutteringstreff }) => {
-  const erSammedag =
-    rekrutteringstreff.fraTid &&
-    rekrutteringstreff.tilTid &&
-    formatDate(rekrutteringstreff.fraTid) ===
-      formatDate(rekrutteringstreff.tilTid);
+const TidspunktKort: React.FC<KortProps> = ({ rekrutteringstreff }) => {
+  const initialFra = rekrutteringstreff.fraTid
+    ? toZonedTime(parseISO(rekrutteringstreff.fraTid), 'Europe/Oslo')
+    : null;
+  const initialTil = rekrutteringstreff.tilTid
+    ? toZonedTime(parseISO(rekrutteringstreff.tilTid), 'Europe/Oslo')
+    : null;
 
   return (
     <Box.New
@@ -209,51 +201,50 @@ const TidspunktKort: React.FC<CardProps> = ({ rekrutteringstreff }) => {
       borderWidth='1'
       padding='6'
     >
-      <Heading level='3' size='small' className='flex items-center gap-2 mb-3'>
-        <ClockIcon aria-hidden className='text-blue-600' />
+      <BodyShort
+        size='small'
+        className='flex items-center gap-1 mb-2'
+        textColor='subtle'
+      >
+        <ClockIcon aria-hidden fontSize='1rem' />
         Tid
-      </Heading>
-      {rekrutteringstreff.fraTid || rekrutteringstreff.tilTid ? (
-        <div>
-          {erSammedag &&
-          rekrutteringstreff.fraTid &&
-          rekrutteringstreff.tilTid ? (
-            <div>
-              <BodyShort>
-                {formatWeekdayDate(rekrutteringstreff.fraTid)}
+      </BodyShort>
+      {initialFra && initialTil ? (
+        isSameDay(initialFra, initialTil) ? (
+          <BodyShort size='small'>
+            {formaterNorskDato({ dato: initialFra, visning: 'tall' })}{' '}
+            <BodyShort as='span' size='small' textColor='subtle'>
+              kl {formaterKlokkeslett(initialFra)}-
+              {formaterKlokkeslett(initialTil)}
+            </BodyShort>
+          </BodyShort>
+        ) : (
+          <>
+            <BodyShort size='small'>
+              {formaterNorskDato({ dato: initialFra, visning: 'tall' })}{' '}
+              <BodyShort as='span' size='small' textColor='subtle'>
+                kl {formaterKlokkeslett(initialFra)}
+              </BodyShort>{' '}
+              til
+            </BodyShort>
+            <BodyShort size='small'>
+              {formaterNorskDato({ dato: initialTil, visning: 'tall' })}{' '}
+              <BodyShort as='span' size='small' textColor='subtle'>
+                kl {formaterKlokkeslett(initialTil)}
               </BodyShort>
-              <BodyShort>
-                kl {formatTime(rekrutteringstreff.fraTid)} -{' '}
-                {formatTime(rekrutteringstreff.tilTid)}
-              </BodyShort>
-            </div>
-          ) : (
-            <div className='space-y-1'>
-              {rekrutteringstreff.fraTid && (
-                <BodyShort>
-                  <strong>Fra:</strong>{' '}
-                  {formatWeekdayDate(rekrutteringstreff.fraTid)} kl{' '}
-                  {formatTime(rekrutteringstreff.fraTid)}
-                </BodyShort>
-              )}
-              {rekrutteringstreff.tilTid && (
-                <BodyShort>
-                  <strong>Til:</strong>{' '}
-                  {formatWeekdayDate(rekrutteringstreff.tilTid)} kl{' '}
-                  {formatTime(rekrutteringstreff.tilTid)}
-                </BodyShort>
-              )}
-            </div>
-          )}
-        </div>
+            </BodyShort>
+          </>
+        )
       ) : (
-        <BodyShort className='text-gray-500'>Ikke satt</BodyShort>
+        <BodyShort size='small' textColor='subtle'>
+          &nbsp;
+        </BodyShort>
       )}
     </Box.New>
   );
 };
 
-const StedKort: React.FC<CardProps> = ({ rekrutteringstreff }) => {
+const StedKort: React.FC<KortProps> = ({ rekrutteringstreff }) => {
   return (
     <Box.New
       background='neutral-softA'
@@ -263,31 +254,37 @@ const StedKort: React.FC<CardProps> = ({ rekrutteringstreff }) => {
       borderWidth='1'
       padding='6'
     >
-      <Heading level='3' size='small' className='flex items-center gap-2 mb-3'>
-        <LocationPinIcon aria-hidden className='text-blue-600' />
+      <BodyShort
+        size='small'
+        className='flex items-center gap-1 mb-2'
+        textColor='subtle'
+      >
+        <LocationPinIcon aria-hidden fontSize='1rem' />
         Sted
-      </Heading>
+      </BodyShort>
       {rekrutteringstreff.gateadresse ||
       rekrutteringstreff.postnummer ||
       rekrutteringstreff.poststed ? (
         <div className='space-y-1'>
           {rekrutteringstreff.gateadresse && (
-            <BodyShort>{rekrutteringstreff.gateadresse}</BodyShort>
+            <BodyShort size='small'>{rekrutteringstreff.gateadresse}</BodyShort>
           )}
           {(rekrutteringstreff.postnummer || rekrutteringstreff.poststed) && (
-            <BodyShort>
+            <BodyShort size='small'>
               {rekrutteringstreff.postnummer} {rekrutteringstreff.poststed}
             </BodyShort>
           )}
         </div>
       ) : (
-        <BodyShort className='text-gray-500'>Ikke satt</BodyShort>
+        <BodyShort size='small' textColor='subtle'>
+          &nbsp;
+        </BodyShort>
       )}
     </Box.New>
   );
 };
 
-const SvarfristKort: React.FC<CardProps> = ({ rekrutteringstreff }) => {
+const SvarfristKort: React.FC<KortProps> = ({ rekrutteringstreff }) => {
   const svarfristFormatert = rekrutteringstreff.svarfrist
     ? formatWeekdayDate(rekrutteringstreff.svarfrist) +
       ' kl ' +
@@ -303,14 +300,20 @@ const SvarfristKort: React.FC<CardProps> = ({ rekrutteringstreff }) => {
       borderWidth='1'
       padding='6'
     >
-      <Heading level='3' size='small' className='flex items-center gap-2 mb-3'>
-        <CalendarIcon aria-hidden className='text-blue-600' />
+      <BodyShort
+        size='small'
+        className='flex items-center gap-1 mb-2'
+        textColor='subtle'
+      >
+        <CalendarIcon aria-hidden fontSize='1rem' />
         Svarfrist
-      </Heading>
+      </BodyShort>
       {svarfristFormatert ? (
-        <BodyShort>{svarfristFormatert}</BodyShort>
+        <BodyShort size='small'>{svarfristFormatert}</BodyShort>
       ) : (
-        <BodyShort className='text-gray-500'>Ikke satt</BodyShort>
+        <BodyShort size='small' textColor='subtle'>
+          &nbsp;
+        </BodyShort>
       )}
     </Box.New>
   );
