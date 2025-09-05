@@ -77,7 +77,7 @@ export async function POST(req: NextRequest) {
     const treffResponse = await proxyWithOBO(
       StillingsSøkAPI,
       req,
-      undefined,
+      StillingsSøkAPI.api_route, // unngå /esCombined i upstream-path
       body.treff,
     );
     if (!treffResponse.ok) {
@@ -86,7 +86,7 @@ export async function POST(req: NextRequest) {
     const aggsResponse = await proxyWithOBO(
       StillingsSøkAPI,
       req,
-      undefined,
+      StillingsSøkAPI.api_route,
       body.aggs,
     );
     if (!aggsResponse.ok) {

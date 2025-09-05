@@ -31,5 +31,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(data);
   }
 
-  return proxyWithOBO(StillingsSøkAPI, req);
+  // Sørg for at upstream-path ikke får /esAggs suffix
+  return proxyWithOBO(StillingsSøkAPI, req, StillingsSøkAPI.api_route);
 }
