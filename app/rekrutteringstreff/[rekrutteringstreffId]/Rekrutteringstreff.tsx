@@ -33,6 +33,7 @@ const Rekrutteringstreff: React.FC = () => {
     defaultValue: RekrutteringstreffTabs.OM_TREFFET,
     clearOnDefault: true,
   });
+  const [erIForhåndsvisning, setErIForhåndsvisning] = React.useState(false);
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
 
   const rekrutteringstreffHook = useRekrutteringstreff(rekrutteringstreffId);
@@ -40,9 +41,15 @@ const Rekrutteringstreff: React.FC = () => {
   const { data: arbeidsgivere } =
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
 
+  const handleToggleForhåndsvisning = (newState: boolean) => {
+    setErIForhåndsvisning(newState);
+  };
+
   return (
     <SideLayout
-      fremdriftspanel={<Stegviser />}
+      fremdriftspanel={
+        <Stegviser onToggleForhåndsvisning={handleToggleForhåndsvisning} />
+      }
       header={
         <PanelHeader>
           <PanelHeader.Section
@@ -55,8 +62,12 @@ const Rekrutteringstreff: React.FC = () => {
       }
     >
       <div className='space-y-4'>
-        <EndreTittel onUpdated={rekrutteringstreffHook.mutate} />
-        <PraktiskeForhold />
+        {!erIForhåndsvisning && (
+          <>
+            <EndreTittel onUpdated={rekrutteringstreffHook.mutate} />
+            <PraktiskeForhold />
+          </>
+        )}
 
         <Tabs value={fane} onChange={(val) => setFane(val)}>
           <Tabs.List className='w-full'>
