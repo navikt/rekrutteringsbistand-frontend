@@ -9,7 +9,6 @@ test.describe(`Stilling test`, () => {
     await page.goto('http://localhost:1337/stilling/minStilling');
 
     await page.getByRole('tab', { name: 'Om stillingen' }).click();
-    await page.getByRole('tab', { name: 'Om stillingen' }).click();
     await expect(
       page.getByRole('tab', { name: 'Om stillingen' }),
     ).toBeVisible();
@@ -27,9 +26,7 @@ test.describe(`Stilling test`, () => {
     await expect(
       page.getByRole('heading', { name: 'Om stillingen' }),
     ).toBeVisible();
-    await expect(
-      page.getByRole('heading', { name: 'Om Andersen AS' }),
-    ).toBeVisible();
+    await expect(page.getByText('Virksomheten', { exact: true })).toBeVisible();
     await expect(
       page.getByRole('heading', { name: 'Om annonsen' }),
     ).toBeVisible();
@@ -46,7 +43,6 @@ test.describe(`Stilling test`, () => {
   test('Ikke min stilling', async ({ page }) => {
     await page.goto('http://localhost:1337/stilling/123');
 
-    await page.getByRole('tab', { name: 'Om stillingen' }).click();
     await page.getByRole('tab', { name: 'Om stillingen' }).click();
     await expect(
       page.getByRole('tab', { name: 'Om stillingen' }),
@@ -79,7 +75,9 @@ test.describe(`Stilling test`, () => {
   test.describe(`Min stilling i mørk modus`, () => {
     test.beforeEach(async ({ page }) => {
       await page.goto('http://localhost:1337/stilling/minStilling');
-      await page.waitForLoadState('networkidle');
+      await expect(
+        page.getByRole('tab', { name: 'Om stillingen' }),
+      ).toBeVisible({ timeout: 15000 });
     });
 
     visMørkModus('om-stillingen');

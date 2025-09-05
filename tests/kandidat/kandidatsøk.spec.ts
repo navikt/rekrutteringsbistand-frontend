@@ -7,9 +7,8 @@ test('Kandidatsøk', async ({ page }) => {
   await page.goto('http://localhost:1337');
 
   await page.getByRole('button', { name: 'Jobbsøkere' }).click();
-  await expect(page.getByRole('heading', { name: 'Jobbsøkere' })).toBeVisible({
-    timeout: 10000,
-  });
+  await expect(page.getByRole('heading', { name: 'Jobbsøkere' })).toBeVisible();
+
   //filter test
 
   await expect(page.getByRole('button', { name: 'Mitt kontor' })).toBeVisible();

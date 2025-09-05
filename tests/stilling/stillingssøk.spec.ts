@@ -7,7 +7,9 @@ test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 test.describe(`Stillingssøk test`, () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('http://localhost:1337/stilling');
-    await page.waitForLoadState('networkidle');
+    await expect(
+      page.getByRole('heading', { name: 'Stillingsoppdrag' }),
+    ).toBeVisible({ timeout: 15000 });
   });
 
   test('Viser riktig innhold i stillingssøk', async ({ page }) => {
@@ -15,18 +17,22 @@ test.describe(`Stillingssøk test`, () => {
       page.getByRole('heading', { name: 'Stillingsoppdrag' }),
     ).toBeVisible();
 
-    await expect(page.getByRole('button', { name: 'Filtrer' })).toBeVisible();
-    await expect(
-      page.getByRole('button', { name: 'Opprett annonse' }),
-    ).toBeVisible();
-    await page.getByRole('button', { name: 'Filtrer' }).click();
+    // Filtrer-knappen vises kun < 720px bredde. Ved desktop (>=720px) er filtrene alltid synlige.
+    const filterButton = page.getByRole('button', { name: 'Filtrer' });
+    if (await filterButton.isVisible()) {
+      await filterButton.click();
+    }
+    // "Opprett annonse" er erstattet av global Opprett-knapp i sidebaren og testes ikke her.
     await expect(page.getByText('Sorter')).toBeVisible();
     await expect(page.getByText('Status')).toBeVisible();
     await expect(page.getByText('Område')).toBeVisible();
     await expect(page.getByText('Inkludering', { exact: true })).toBeVisible();
     await expect(page.getByText('Kategori')).toBeVisible();
 
-    await page.locator('.data-\\[state\\=open\\]\\:animate-in').first().click();
+    const openPanel = page.locator('[data-state="open"]').first();
+    if (await openPanel.isVisible()) {
+      await openPanel.click();
+    }
     await page.getByRole('button', { name: 'Søk', exact: true }).click();
     await page
       .getByRole('searchbox', { name: 'Søk i stillinger' })

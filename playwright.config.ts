@@ -47,10 +47,18 @@ export default defineConfig({
   /* Configure projects for major browsers */
   projects: [
     {
-      name: 'chromium',
+      name: 'chromium-desktop',
       use: {
         ...devices['Desktop Chrome'],
         viewport: { width: 1440, height: 1080 },
+      },
+    },
+    {
+      name: 'chromium-responsive',
+      use: {
+        ...devices['Desktop Chrome'],
+        // Under 720px slik at mobil/spesielle komponent-states testes (f.eks. Filtrer-knapp)
+        viewport: { width: 680, height: 1080 },
       },
     },
 
@@ -86,9 +94,10 @@ export default defineConfig({
   ],
 
   /* Run your local dev server before starting the tests */
-  // webServer: {
-  //   command: 'npm run start',
-  //   url: 'http://127.0.0.1:3000',
-  //   reuseExistingServer: !process.env.CI,
-  // },
+  webServer: {
+    command: 'NEXT_PUBLIC_PLAYWRIGHT_TEST_MODE=true next dev -p 1337',
+    url: 'http://localhost:1337',
+    reuseExistingServer: !process.env.CI,
+    timeout: 120 * 1000,
+  },
 });

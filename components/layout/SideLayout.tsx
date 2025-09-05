@@ -25,26 +25,26 @@ const SideLayout = ({
   return (
     <RekBisKort>
       {header && header}
-
       <div className='@container'>
-        <div className='hidden @2xl:block'>
-          <div className='flex flex-row'>
-            <MaksBredde>{children}</MaksBredde>
-            {fremdriftspanel && (
-              <Fremdriftspanel>{fremdriftspanel}</Fremdriftspanel>
-            )}
-          </div>
+        {/* Mobil / liten skjerm: vis fremdriftspanel (top) over innhold */}
+        <div className='@2xl:hidden'>
+          {fremdriftspanelTop ||
+            (fremdriftspanel && (
+              <Fremdriftspanel>
+                {fremdriftspanelTop ? fremdriftspanelTop : fremdriftspanel}
+              </Fremdriftspanel>
+            ))}
         </div>
-        <div className='blcok @2xl:hidden'>
-          <div className='flex flex-col'>
-            {fremdriftspanelTop ||
-              (fremdriftspanel && (
-                <Fremdriftspanel>
-                  {fremdriftspanelTop ? fremdriftspanelTop : fremdriftspanel}
-                </Fremdriftspanel>
-              ))}
-            <MaksBredde>{children}</MaksBredde>
-          </div>
+
+        {/* Felles innhold + desktop sidepanel */}
+        <div className='flex flex-col @2xl:flex-row'>
+          <MaksBredde>{children}</MaksBredde>
+          {/* Desktop / stor skjerm: sidepanel til høyre */}
+          {fremdriftspanel && (
+            <div className='hidden @2xl:block'>
+              <Fremdriftspanel>{fremdriftspanel}</Fremdriftspanel>
+            </div>
+          )}
         </div>
       </div>
     </RekBisKort>

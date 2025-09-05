@@ -24,6 +24,9 @@ export const testTilgangskontroll = (rolle: Roller) => {
   test.describe(`Tilgangskontroll for ${rolleNavn(rolle)}`, () => {
     test.beforeEach(async ({ page }) => {
       await page.goto('http://localhost:1337/');
+      await expect(page.getByRole('button', { name: 'Oversikt' })).toBeVisible({
+        timeout: 15000,
+      });
     });
 
     test('1. Forside', async ({ page }) => {
@@ -143,7 +146,7 @@ export const testTilgangskontroll = (rolle: Roller) => {
         await expect(redigerKnapp).toBeVisible();
         await expect(dupliserKnapp).toBeVisible();
         await expect(avpubliserKnapp).toBeVisible();
-        await expect(ferdigstillKnapp).toBeVisible(); // updated to check for the new button
+        await expect(ferdigstillKnapp).toBeVisible();
       } else {
         await expect(redigerKnapp).toBeHidden();
         await expect(dupliserKnapp).toBeHidden();

@@ -91,6 +91,7 @@ const SideLenke = (item: NavigasjonItemProps) => {
         <Button
           variant={aktiv ? 'secondary-neutral' : 'tertiary-neutral'}
           aria-current={aktiv ? 'page' : undefined}
+          aria-label={item.tekst}
           icon={item.ikon}
           className={open ? 'w-full text-left justify-start' : ''}
         >
@@ -112,6 +113,7 @@ const SideHandling = (item: NavigasjonHandlingProps) => {
       <Button
         onClick={item.onClick}
         variant='tertiary-neutral'
+        aria-label={item.tekst}
         icon={item.ikon}
         className={open ? 'w-full text-left justify-start' : ''}
       >
