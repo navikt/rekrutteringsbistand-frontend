@@ -1,4 +1,5 @@
 import { StillingsSøkAPI } from '@/app/api/api-routes';
+import { proxyWithOBO } from '@/app/api/oboProxy';
 import { isLocal } from '@/util/env';
 import {
   formaterStedsnavn,
@@ -71,50 +72,27 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(byggRespons(treffData, aggsData));
     }
 
-    // PROD / ikke-lokal: kaller hoved /api/stillings-sok endepunkt to ganger (treff + aggs)
-    const origin = req.headers.get('x-forwarded-host')
-      ? `${req.headers.get('x-forwarded-proto') || 'https'}://${req.headers.get('x-forwarded-host')}`
-      : undefined;
-    const base = origin
-      ? `${origin}${StillingsSøkAPI.internUrl}`
-      : StillingsSøkAPI.internUrl;
-
-    const internalBase = `${base}`; // /api/stillings-sok
-
-    const [treffRes, aggsRes] = await Promise.all([
-      fetch(internalBase, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body.treff),
-      }),
-      fetch(internalBase, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body.aggs),
-      }),
-    ]);
-    if (!treffRes.ok) {
-      const txt = await treffRes.text();
-      return NextResponse.json(
-        { error: 'Treff-spørring feilet', status: treffRes.status, body: txt },
-        { status: treffRes.status },
-      );
+    // PROD / ikke-lokal: bruk proxyWithOBO med customRoute = api_route for å unngå /esCombined i upstream-path
+    const treffResponse = await proxyWithOBO(
+      StillingsSøkAPI,
+      req,
+      StillingsSøkAPI.api_route,
+      body.treff,
+    );
+    if (!treffResponse.ok) {
+      return treffResponse; // proxyWithOBO gir korrekt JSON-feil
     }
-    if (!aggsRes.ok) {
-      const txt = await aggsRes.text();
-      return NextResponse.json(
-        {
-          error: 'Aggregerings-spørring feilet',
-          status: aggsRes.status,
-          body: txt,
-        },
-        { status: aggsRes.status },
-      );
+    const aggsResponse = await proxyWithOBO(
+      StillingsSøkAPI,
+      req,
+      StillingsSøkAPI.api_route,
+      body.aggs,
+    );
+    if (!aggsResponse.ok) {
+      return aggsResponse;
     }
-    const [treffData, aggsData] = await Promise.all([
-      treffRes.json(),
-      aggsRes.json(),
-    ]);
+    const treffData = await treffResponse.json();
+    const aggsData = await aggsResponse.json();
     return NextResponse.json(byggRespons(treffData, aggsData));
   } catch (error: any) {
     new RekbisError({ message: 'Feil i kombinert stillingssøk', error });

@@ -11,6 +11,7 @@ import { ArrowRightIcon, FilesIcon } from '@navikt/aksel-icons';
 import { Alert, Button, Heading } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
+import { useEffect, useState } from 'react';
 
 export interface KandidatTilStillingProps {
   stillingsData?: StillingsDataDTO;
@@ -22,13 +23,13 @@ const KandidatTilStilling: React.FC<KandidatTilStillingProps> = ({
   useFinnKandidatForStilling(stillingsData);
   const router = useRouter();
   const [alleredeLagtTilKandidatliste, setAlleredeLagtTilKandidatliste] =
-    React.useState<string[]>([]);
+    useState<string[]>([]);
   const { erEier } = useStillingsContext();
 
   // Brukes for å vise eier hvem som allerede er lagt til i kandidatliste
   const kandidatlisteHook = useKandidatlisteForEier(stillingsData, erEier);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (kandidatlisteHook?.data?.kandidater) {
       const listeOverValgteKandidater = kandidatlisteHook.data.kandidater
         .map((kandidat) => kandidat.kandidatnr)

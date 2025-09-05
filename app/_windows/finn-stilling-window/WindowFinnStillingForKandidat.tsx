@@ -3,7 +3,7 @@ import PanelHeader from '@/components/layout/PanelHeader';
 import SideLayout from '@/components/layout/SideLayout';
 import { useWindows } from '@/components/layout/windows/WindowWrapper';
 import { parseAsBoolean, useQueryState } from 'nuqs';
-import * as React from 'react';
+import { useEffect } from 'react';
 
 export interface WindowFinnStillingForKandidatProps {
   kandidatNr: string;
@@ -18,7 +18,7 @@ const WindowFinnStillingForKandidat: React.FC<
     parseAsBoolean.withDefault(false),
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (kandidatNr && finnStilling) {
       addWindow({
         id: 'visKandidatNr',
@@ -39,7 +39,7 @@ const WindowFinnStillingForKandidat: React.FC<
         ),
       });
     }
-  }, [finnStilling, kandidatNr]);
+  }, [finnStilling, kandidatNr, addWindow, setFinnStilling]);
 
   return null;
 };

@@ -1,7 +1,6 @@
 import FinnKandidaterForStilling from './FinnKandidaterForStilling';
 import { StillingsContextProvider } from '@/app/stilling/[stillingsId]/StillingsContext';
 import { useWindows } from '@/components/layout/windows/WindowWrapper';
-import { useUmami } from '@/providers/UmamiContext';
 import { parseAsBoolean, useQueryState } from 'nuqs';
 import { useEffect } from 'react';
 
@@ -13,7 +12,6 @@ const WindowFinnKandidater: React.FC<WindowFinnKandidaterProps> = ({
   stillingsId,
 }) => {
   const { addWindow, removeWindow } = useWindows();
-  const { track } = useUmami();
 
   // nuqs boolean query param: ?finnKandidater=true
   const [finnKandidater, setFinnKandidater] = useQueryState(
@@ -34,7 +32,7 @@ const WindowFinnKandidater: React.FC<WindowFinnKandidaterProps> = ({
         ),
       });
     }
-  }, [finnKandidater, addWindow, removeWindow]);
+  }, [finnKandidater, addWindow, removeWindow, setFinnKandidater, stillingsId]);
 
   return null;
 };
