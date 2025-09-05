@@ -1,9 +1,8 @@
 'use client';
 
 import { useRekrutteringstreffContext } from './RekrutteringstreffContext';
-import TreffHeader from './_ui/RekrutteringstreffHeader';
-import EndreTittel from './components/redigereRekrutteringstreff/EndreTittel';
-import PraktiskeForhold from './components/redigereRekrutteringstreff/Praktiskeforhold';
+import RekrutteringstreffForhåndsvisning from './components/RekrutteringstreffForhåndsvisning';
+import RekrutteringstreffRedigering from './components/RekrutteringstreffRedigering';
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
@@ -11,7 +10,6 @@ import Aktiviteter from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/akt
 import RekrutteringstreffArbeidsgivere from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/arbeidsgivere/Arbeidsgivere';
 import Jobbsøkere from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøkere/Jobbsøkere';
 import KiLogg from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/kilogg/components/KiLogg';
-import OmTreffet from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/om-treffet/_ui/OmTreffet';
 import Stegviser from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/om-treffet/stegviser/Stegviser';
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideLayout from '@/components/layout/SideLayout';
@@ -93,7 +91,7 @@ const Rekrutteringstreff: React.FC = () => {
                 value={RekrutteringstreffTabs.OM_TREFFET}
                 className='my-4'
               >
-                <OmTreffet />
+                <RekrutteringstreffForhåndsvisning />
               </Tabs.Panel>
               <Tabs.Panel value={RekrutteringstreffTabs.JOBBSØKERE}>
                 <Jobbsøkere />
@@ -116,10 +114,9 @@ const Rekrutteringstreff: React.FC = () => {
               </TilgangskontrollForInnhold>
             </>
           ) : (
-            <>
-              <EndreTittel onUpdated={rekrutteringstreffHook.mutate} />
-              <PraktiskeForhold />
-            </>
+            <RekrutteringstreffRedigering
+              onUpdated={rekrutteringstreffHook.mutate}
+            />
           )}
         </div>
       </SideLayout>
