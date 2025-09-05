@@ -38,7 +38,7 @@ const ArbeidsgiverHendelserKort: React.FC<Props> = ({
   return (
     <Box.New
       background='neutral-softA'
-      className='mb-4 max-w-[30rem]'
+      className='mb-4'
       borderColor='neutral-subtleA'
       borderRadius='xlarge'
       borderWidth='1'

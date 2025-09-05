@@ -15,26 +15,6 @@ import { toZonedTime } from 'date-fns-tz';
 import { nb } from 'date-fns/locale';
 import React from 'react';
 
-const formatDateTime = (dateString?: string | null) => {
-  if (!dateString) return null;
-  try {
-    const date = new Date(dateString);
-    return format(date, "dd. MMMM yyyy 'kl.' HH:mm", { locale: nb });
-  } catch {
-    return null;
-  }
-};
-
-const formatDate = (dateString?: string | null) => {
-  if (!dateString) return null;
-  try {
-    const date = new Date(dateString);
-    return format(date, 'dd. MMM yyyy', { locale: nb });
-  } catch {
-    return null;
-  }
-};
-
 const formatTime = (dateString?: string | null) => {
   if (!dateString) return null;
   try {
@@ -105,7 +85,7 @@ const RekrutteringstreffForhåndsvisning: React.FC = () => {
   }
 
   return (
-    <div className='space-y-8'>
+    <div className='space-y-8 max-w-[64rem] mx-auto'>
       <section>
         <Heading level='1' size='large' className='mb-2'>
           {rekrutteringstreff.tittel}
@@ -113,31 +93,25 @@ const RekrutteringstreffForhåndsvisning: React.FC = () => {
       </section>
 
       <Box.New
-        background='neutral-softA'
-        borderColor='neutral-subtleA'
+        background='neutral-soft'
+        borderColor='neutral-subtle'
         borderRadius='xlarge'
         borderWidth='1'
         padding='6'
-        className='space-y-6 max-w-[64rem]'
+        className='space-y-6'
       >
         <Heading level='2' size='medium'>
           Om treffet
         </Heading>
 
-        <section className='flex flex-col gap-4 md:flex-row'>
+        <section className='grid grid-cols-1 md:grid-cols-3 gap-4'>
           <TidspunktKort rekrutteringstreff={rekrutteringstreff} />
           <StedKort rekrutteringstreff={rekrutteringstreff} />
           <SvarfristKort rekrutteringstreff={rekrutteringstreff} />
         </section>
 
         {innlegg?.htmlContent && (
-          <Box.New
-            background='neutral-softA'
-            borderColor='neutral-subtleA'
-            borderRadius='large'
-            borderWidth='1'
-            padding='4'
-          >
+          <Box.New padding='4'>
             <div
               className='prose prose-sm max-w-none'
               dangerouslySetInnerHTML={{ __html: innlegg.htmlContent }}
@@ -146,7 +120,7 @@ const RekrutteringstreffForhåndsvisning: React.FC = () => {
         )}
       </Box.New>
 
-      <section className='mt-4 flex flex-col gap-16 md:flex-row'>
+      <div className='grid grid-cols-1 xl:grid-cols-2 gap-8'>
         {arbeidsgiverHendelser && (
           <ArbeidsgiverHendelserKort
             arbeidsgiverHendelserDTO={arbeidsgiverHendelser}
@@ -155,7 +129,7 @@ const RekrutteringstreffForhåndsvisning: React.FC = () => {
         {jobbsøkerHendelser && (
           <JobbsøkerHendelserKort jobbsøkerHendelserDTO={jobbsøkerHendelser} />
         )}
-      </section>
+      </div>
 
       <section className='border-t pt-6'>
         <div className='flex flex-wrap gap-6 text-sm text-gray-600'>
@@ -193,14 +167,7 @@ const TidspunktKort: React.FC<KortProps> = ({ rekrutteringstreff }) => {
     : null;
 
   return (
-    <Box.New
-      background='neutral-softA'
-      className='flex-1'
-      borderColor='neutral-subtleA'
-      borderRadius='xlarge'
-      borderWidth='1'
-      padding='6'
-    >
+    <Box.New className='flex-1' padding='6'>
       <BodyShort
         size='small'
         className='flex items-center gap-1 mb-2'
@@ -246,14 +213,7 @@ const TidspunktKort: React.FC<KortProps> = ({ rekrutteringstreff }) => {
 
 const StedKort: React.FC<KortProps> = ({ rekrutteringstreff }) => {
   return (
-    <Box.New
-      background='neutral-softA'
-      className='flex-1'
-      borderColor='neutral-subtleA'
-      borderRadius='xlarge'
-      borderWidth='1'
-      padding='6'
-    >
+    <Box.New className='flex-1' padding='6'>
       <BodyShort
         size='small'
         className='flex items-center gap-1 mb-2'
@@ -292,14 +252,7 @@ const SvarfristKort: React.FC<KortProps> = ({ rekrutteringstreff }) => {
     : null;
 
   return (
-    <Box.New
-      background='neutral-softA'
-      className='flex-1'
-      borderColor='neutral-subtleA'
-      borderRadius='xlarge'
-      borderWidth='1'
-      padding='6'
-    >
+    <Box.New className='flex-1' padding='6'>
       <BodyShort
         size='small'
         className='flex items-center gap-1 mb-2'

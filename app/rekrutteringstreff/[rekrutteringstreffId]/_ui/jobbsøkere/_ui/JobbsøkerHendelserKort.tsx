@@ -33,7 +33,7 @@ const JobbsøkerHendelserKort: React.FC<JobbsøkerHendelserKortProps> = ({
     <div>
       <Box.New
         background='neutral-softA'
-        className='mb-4 max-w-[30rem] flex flex-col items-center justify-center'
+        className='mb-4 flex flex-col items-center justify-center'
         borderColor='neutral-subtleA'
         borderRadius='xlarge'
         borderWidth='1'
