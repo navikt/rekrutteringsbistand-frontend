@@ -7,6 +7,8 @@ test('Kandidatsøk', async ({ page }) => {
   await page.goto('http://localhost:1337');
 
   await page.getByRole('button', { name: 'Jobbsøkere' }).click();
+
+  await page.waitForLoadState('networkidle');
   await expect(page.getByRole('heading', { name: 'Jobbsøkere' })).toBeVisible();
 
   //filter test

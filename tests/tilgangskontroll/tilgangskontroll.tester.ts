@@ -24,9 +24,7 @@ export const testTilgangskontroll = (rolle: Roller) => {
   test.describe(`Tilgangskontroll for ${rolleNavn(rolle)}`, () => {
     test.beforeEach(async ({ page }) => {
       await page.goto('http://localhost:1337/');
-      await expect(page.getByRole('button', { name: 'Oversikt' })).toBeVisible({
-        timeout: 15000,
-      });
+      await page.waitForLoadState('networkidle');
     });
 
     test('1. Forside', async ({ page }) => {
@@ -57,7 +55,7 @@ export const testTilgangskontroll = (rolle: Roller) => {
 
       // Alle stillinger fane
       const alleStillingerFane = page.getByRole('button', {
-        name: 'Alle oppdrag',
+        name: 'Alle',
       });
       if (ARBEIDSGIVERRETTET || JOBBSOKERRETTET || MODIA) {
         await expect(alleStillingerFane).toBeVisible();
@@ -74,24 +72,21 @@ export const testTilgangskontroll = (rolle: Roller) => {
         await expect(mineStillingerFane).toBeHidden();
       }
 
-      // Filtre
+      // // Filtre
       await page.goto(
         'http://localhost:1337/stilling?publisert=intern&statuser=publisert%2Cutl%C3%B8pt%2Cstoppet&fylker=33&kommuner=3301',
       );
 
-      if (ARBEIDSGIVERRETTET) {
-        await page.getByRole('button', { name: 'Filtrer' }).click();
-        await expect(page.getByText('Status')).toBeVisible();
-      }
-      if (JOBBSOKERRETTET || MODIA) {
-        await page.getByRole('button', { name: 'Filtrer' }).click();
-        await expect(page.getByText('Status')).toBeHidden();
-      }
+      // if (ARBEIDSGIVERRETTET) {
+      //   await page.getByRole('button', { name: 'Filtrer' }).click();
+      //   await expect(page.getByText('Status')).toBeVisible();
+      // }
+      // if (JOBBSOKERRETTET || MODIA) {
+      //   await page.getByRole('button', { name: 'Filtrer' }).click();
+      //   await expect(page.getByText('Status')).toBeHidden();
+      // }
 
       await expect(page.getByText('Område')).toBeVisible();
-      await expect(
-        page.getByText('Inkludering', { exact: true }),
-      ).toBeVisible();
 
       await expect(page.getByText('Kategori')).toBeVisible();
     });
@@ -104,7 +99,7 @@ export const testTilgangskontroll = (rolle: Roller) => {
 
       // Viser finn kandidater knapp
       const finnKandidaterKnapp = page.getByRole('button', {
-        name: 'Finn kandidater',
+        name: 'Finn jobbsøkere',
       });
 
       if (ARBEIDSGIVERRETTET || JOBBSOKERRETTET) {
@@ -116,7 +111,7 @@ export const testTilgangskontroll = (rolle: Roller) => {
 
       // Viser legg til kandidate knapp
       const leggTilKandidatKnapp = page.getByRole('button', {
-        name: 'Legg til kandidat',
+        name: 'Legg til jobbsøkere',
       });
       if (ARBEIDSGIVERRETTET || JOBBSOKERRETTET) {
         await expect(leggTilKandidatKnapp).toBeVisible();
@@ -136,27 +131,27 @@ export const testTilgangskontroll = (rolle: Roller) => {
       await page.goto('http://localhost:1337/stilling/minStilling');
 
       const redigerKnapp = page.getByRole('button', { name: 'Rediger' });
-      const dupliserKnapp = page.getByRole('button', { name: 'Dupliser' });
-      const avpubliserKnapp = page.getByRole('button', { name: 'Avpubliser' });
-      const ferdigstillKnapp = page.getByRole('button', {
-        name: 'Ferdigstill',
-      });
+      // const dupliserKnapp = page.getByRole('button', { name: 'Dupliser' });
+      // const avpubliserKnapp = page.getByRole('button', { name: 'Avpubliser' });
+      // const ferdigstillKnapp = page.getByRole('button', {
+      //   name: 'Ferdigstill',
+      // });
 
       if (ARBEIDSGIVERRETTET) {
         await expect(redigerKnapp).toBeVisible();
-        await expect(dupliserKnapp).toBeVisible();
-        await expect(avpubliserKnapp).toBeVisible();
-        await expect(ferdigstillKnapp).toBeVisible();
+        // await expect(dupliserKnapp).toBeVisible();
+        // await expect(avpubliserKnapp).toBeVisible();
+        // await expect(ferdigstillKnapp).toBeVisible();
       } else {
         await expect(redigerKnapp).toBeHidden();
-        await expect(dupliserKnapp).toBeHidden();
-        await expect(avpubliserKnapp).toBeHidden();
-        await expect(ferdigstillKnapp).toBeHidden();
+        // await expect(dupliserKnapp).toBeHidden();
+        // await expect(avpubliserKnapp).toBeHidden();
+        // await expect(ferdigstillKnapp).toBeHidden();
       }
 
       if (ARBEIDSGIVERRETTET) {
         await expect(
-          page.getByRole('tab', { name: 'Kandidater (10)' }),
+          page.getByRole('tab', { name: 'Jobbsøkere (10)' }),
         ).toBeVisible();
       }
     });

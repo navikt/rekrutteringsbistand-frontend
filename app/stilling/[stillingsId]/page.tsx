@@ -58,7 +58,7 @@ export default function StillingsSidePage() {
   );
 
   return (
-    <div className='@stilling'>
+    <div className='@stilling' data-testid='stilling-side'>
       <WindowFinnKandidater stillingsId={stillingsData.stilling.uuid} />
       <WindowVisKandidat />
       <Tabs defaultValue={fane} onChange={(val: any) => setFane(val)}>

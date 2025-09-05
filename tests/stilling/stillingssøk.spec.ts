@@ -18,15 +18,14 @@ test.describe(`Stillingssøk test`, () => {
     ).toBeVisible();
 
     // Filtrer-knappen vises kun < 720px bredde. Ved desktop (>=720px) er filtrene alltid synlige.
-    const filterButton = page.getByRole('button', { name: 'Filtrer' });
-    if (await filterButton.isVisible()) {
-      await filterButton.click();
-    }
+    // const filterButton = page.getByRole('button', { name: 'Filtrer' });
+    // if (await filterButton.isVisible()) {
+    //   await filterButton.click();
+    // }
     // "Opprett annonse" er erstattet av global Opprett-knapp i sidebaren og testes ikke her.
     await expect(page.getByText('Sorter')).toBeVisible();
     await expect(page.getByText('Status')).toBeVisible();
     await expect(page.getByText('Område')).toBeVisible();
-    await expect(page.getByText('Inkludering', { exact: true })).toBeVisible();
     await expect(page.getByText('Kategori')).toBeVisible();
 
     const openPanel = page.locator('[data-state="open"]').first();

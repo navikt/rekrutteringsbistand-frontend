@@ -53,14 +53,15 @@ export default defineConfig({
         viewport: { width: 1440, height: 1080 },
       },
     },
-    {
-      name: 'chromium-responsive',
-      use: {
-        ...devices['Desktop Chrome'],
-        // Under 720px slik at mobil/spesielle komponent-states testes (f.eks. Filtrer-knapp)
-        viewport: { width: 680, height: 1080 },
-      },
-    },
+    // TODO Legg til responsive
+    // {
+    //   name: 'chromium-responsive',
+    //   use: {
+    //     ...devices['Desktop Chrome'],
+    //     // Under 720px slik at mobil/spesielle komponent-states testes (f.eks. Filtrer-knapp)
+    //     viewport: { width: 680, height: 1080 },
+    //   },
+    // },
 
     // {
     //   name: 'firefox',

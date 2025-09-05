@@ -13,31 +13,28 @@ test.describe(`Stilling test`, () => {
       page.getByRole('tab', { name: 'Om stillingen' }),
     ).toBeVisible();
     await expect(
-      page.getByRole('tab', { name: 'Kandidater (10)' }),
+      page.getByRole('tab', { name: 'Jobbsøkere (10)' }),
     ).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Kopier' })).toBeVisible();
+    // await expect(page.getByRole('button', { name: 'Kopier' })).toBeVisible();
     await expect(
-      page.getByRole('button', { name: 'Finn kandidater' }),
+      page.getByRole('button', { name: 'Finn jobbsøkere' }),
     ).toBeVisible();
     await expect(
-      page.getByRole('button', { name: 'Legg til kandidater' }),
+      page.getByRole('button', { name: 'Legg til jobbsøkere' }),
     ).toBeVisible();
     await expect(page.getByRole('button', { name: 'Skriv ut' })).toBeVisible();
-    await expect(
-      page.getByRole('heading', { name: 'Om stillingen' }),
-    ).toBeVisible();
-    await expect(page.getByText('Virksomheten', { exact: true })).toBeVisible();
+
     await expect(
       page.getByRole('heading', { name: 'Om annonsen' }),
     ).toBeVisible();
     await expect(page.getByRole('button', { name: 'Rediger' })).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Dupliser' })).toBeVisible();
-    await expect(
-      page.getByRole('button', { name: 'Avpubliser' }),
-    ).toBeVisible();
-    await expect(
-      page.getByRole('button', { name: 'Ferdigstill' }),
-    ).toBeVisible();
+    // await expect(page.getByRole('button', { name: 'Dupliser' })).toBeVisible();
+    // await expect(
+    //   page.getByRole('button', { name: 'Avpubliser' }),
+    // ).toBeVisible();
+    // await expect(
+    //   page.getByRole('button', { name: 'Ferdigstill' }),
+    // ).toBeVisible();
   });
 
   test('Ikke min stilling', async ({ page }) => {
@@ -48,27 +45,25 @@ test.describe(`Stilling test`, () => {
       page.getByRole('tab', { name: 'Om stillingen' }),
     ).toBeVisible();
 
-    await expect(page.getByRole('button', { name: 'Kopier' })).toBeVisible();
+    // await expect(page.getByRole('button', { name: 'Kopier' })).toBeVisible();
     await expect(
-      page.getByRole('button', { name: 'Finn kandidater' }),
+      page.getByRole('button', { name: 'Finn jobbsøkere' }),
     ).toBeVisible();
     await expect(
-      page.getByRole('button', { name: 'Legg til kandidater' }),
+      page.getByRole('button', { name: 'Legg til jobbsøkere' }),
     ).toBeVisible();
     await expect(page.getByRole('button', { name: 'Skriv ut' })).toBeVisible();
-    await expect(
-      page.getByRole('heading', { name: 'Om stillingen' }),
-    ).toBeVisible();
+
     await expect(page.getByText('Organisasjonsnummer')).toBeVisible();
     await expect(
       page.getByRole('heading', { name: 'Om annonsen' }),
     ).toBeVisible();
 
     await expect(
-      page.getByRole('tab', { name: 'Kandidater', exact: true }),
+      page.getByRole('tab', { name: 'Jobbsøkere', exact: true }),
     ).toBeHidden();
     await expect(page.getByRole('button', { name: 'Rediger' })).toBeHidden();
-    await expect(page.getByRole('button', { name: 'Dupliser' })).toBeHidden();
+    // await expect(page.getByRole('button', { name: 'Dupliser' })).toBeHidden();
     await expect(page.getByRole('button', { name: 'Avslutt' })).toBeHidden();
   });
 

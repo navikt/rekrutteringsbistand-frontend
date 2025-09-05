@@ -30,7 +30,7 @@ const VisFormidling: React.FC = () => {
               tabs={
                 <>
                   <Tabs.Tab value='omStillingen' label='Om stillingen' />
-                  {erEier && <Tabs.Tab value='kandidater' label='Kandidater' />}
+                  {erEier && <Tabs.Tab value='kandidater' label='Jobbsøkere' />}
                 </>
               }
             />
