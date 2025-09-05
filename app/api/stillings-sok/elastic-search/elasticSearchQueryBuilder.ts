@@ -403,6 +403,69 @@ export class ElasticSearchQueryBuilder {
       ? allFilters // ta med portefølje-feltene i counts
       : pruneTopLevelArrays(allFilters); // gammel oppførsel
 
+    // removeGeografiNested fjernet: område skal nå reflektere valgt område direkte
+
+    // Fjern status-termer for status-aggregeringen slik at hver status viser total antall uavhengig av valg av andre statuser
+    const removeStatusTerms = (filtersObj: any): any => {
+      if (!filtersObj || Object.keys(filtersObj).length === 0)
+        return filtersObj;
+      const cleaned: any = {};
+      // Hjelper: identifiser publiserings-kriterier (uten REJECTED/DELETED) slik de kan dukke opp fra statusQuery (STOPPED/UTLØPT)
+      const erPubliseringsMustSet = (mustArray: any[]): boolean => {
+        if (!Array.isArray(mustArray)) return false;
+        // Krav: inneholder alle tre: administration.status DONE, exists publishedByAdmin, range published <= now/d
+        let hasDone = false;
+        let hasExists = false;
+        let hasRange = false;
+        for (const m of mustArray) {
+          if (m?.term && m.term['stilling.administration.status'] === 'DONE')
+            hasDone = true;
+          else if (m?.exists?.field === 'stilling.publishedByAdmin')
+            hasExists = true;
+          else if (m?.range && m.range['stilling.published']) hasRange = true;
+          else return false; // Inneholder annet -> ikke rent publiseringssett
+        }
+        return hasDone && hasExists && hasRange && mustArray.length === 3;
+      };
+      ['filter', 'must', 'should', 'must_not'].forEach((k) => {
+        if (Array.isArray(filtersObj[k])) {
+          const pruned = filtersObj[k]
+            .map((c: any) => {
+              if (c && c.term && c.term['stilling.status']) {
+                return null; // fjern direkte status-term
+              }
+              if (c && c.terms && c.terms['stilling.status']) {
+                return null; // fjern terms-variant
+              }
+              if (c && c.bool) {
+                const inner = removeStatusTerms(c.bool);
+                // Hvis det kun gjenstår et must-array med publiseringskriterier, fjern hele bool'en for å hindre inkonsistente status-tall
+                if (
+                  inner &&
+                  Object.keys(inner).length === 1 &&
+                  inner.must &&
+                  erPubliseringsMustSet(inner.must)
+                ) {
+                  return null;
+                }
+                return Object.keys(inner).length === 0 ? null : { bool: inner };
+              }
+              return c;
+            })
+            .filter((c: any) => !!c);
+          if (pruned.length > 0) cleaned[k] = pruned;
+        }
+      });
+      if (filtersObj.minimum_should_match && cleaned.should) {
+        cleaned.minimum_should_match = filtersObj.minimum_should_match;
+      }
+      return cleaned;
+    };
+
+    const allFiltersWithoutStatus = removeStatusTerms(
+      allFiltersWithoutPortfolio,
+    );
+
     // Helper: standard ekskludering av kategorier når formidlinger ikke er valgt
     const kategoriEkskludering = !opts?.formidlinger
       ? [
@@ -641,22 +704,72 @@ export class ElasticSearchQueryBuilder {
           },
           // Status-facet (Publisert/Active, Utløpt, Stoppet) – teller dokumenter gitt øvrige (valgte) filtre
           status: {
+            // Beholder andre filtre (uten status) i container-filteret
             filter: {
               bool: {
                 filter: [
-                  ...(allFiltersWithoutPortfolio &&
-                  Object.keys(allFiltersWithoutPortfolio).length > 0
-                    ? [{ bool: allFiltersWithoutPortfolio }]
+                  ...(allFiltersWithoutStatus &&
+                  Object.keys(allFiltersWithoutStatus).length > 0
+                    ? [{ bool: allFiltersWithoutStatus }]
                     : []),
                 ],
               },
             },
             aggs: {
+              // Eksplicit definisjon av de tre status-buckets for å sikre korrekt domene-logikk
               koder: {
-                terms: {
-                  field: 'stilling.status',
-                  size: 10,
-                  order: { _key: 'asc' },
+                filters: {
+                  filters: {
+                    ACTIVE: {
+                      bool: {
+                        must: [
+                          { term: { 'stilling.status': 'ACTIVE' } },
+                          {
+                            term: { 'stilling.administration.status': 'DONE' },
+                          },
+                          { exists: { field: 'stilling.publishedByAdmin' } },
+                          { range: { 'stilling.published': { lte: 'now/d' } } },
+                        ],
+                        must_not: [
+                          { term: { 'stilling.status': 'REJECTED' } },
+                          { term: { 'stilling.status': 'DELETED' } },
+                        ],
+                      },
+                    },
+                    INACTIVE: {
+                      bool: {
+                        must: [
+                          { term: { 'stilling.status': 'INACTIVE' } },
+                          { range: { 'stilling.expires': { lt: 'now/d' } } },
+                          {
+                            term: { 'stilling.administration.status': 'DONE' },
+                          },
+                          { exists: { field: 'stilling.publishedByAdmin' } },
+                          { range: { 'stilling.published': { lte: 'now/d' } } },
+                        ],
+                        must_not: [
+                          { term: { 'stilling.status': 'REJECTED' } },
+                          { term: { 'stilling.status': 'DELETED' } },
+                        ],
+                      },
+                    },
+                    STOPPED: {
+                      bool: {
+                        must: [
+                          { term: { 'stilling.status': 'STOPPED' } },
+                          {
+                            term: { 'stilling.administration.status': 'DONE' },
+                          },
+                          { exists: { field: 'stilling.publishedByAdmin' } },
+                          { range: { 'stilling.published': { lte: 'now/d' } } },
+                        ],
+                        must_not: [
+                          { term: { 'stilling.status': 'REJECTED' } },
+                          { term: { 'stilling.status': 'DELETED' } },
+                        ],
+                      },
+                    },
+                  },
                 },
               },
             },
@@ -732,11 +845,12 @@ export class ElasticSearchQueryBuilder {
               },
             },
           },
-          // Geografi-facets (fylker og kommuner) – nested aggregering filtrert på øvrige valgte filtre
+          // Geografi-facets (fylker og kommuner) – teller per område gitt andre filtre (IGNORERER valgt område)
           geografi: {
             filter: {
               bool: {
                 filter: [
+                  // Endret: område skal nå reflektere valgt område også, så vi bruker fullstendig filter-sett
                   ...(allFiltersWithoutPortfolio &&
                   Object.keys(allFiltersWithoutPortfolio).length > 0
                     ? [{ bool: allFiltersWithoutPortfolio }]
@@ -754,12 +868,72 @@ export class ElasticSearchQueryBuilder {
                       size: 200,
                       order: { _key: 'asc' },
                     },
+                    aggs: {
+                      // Unik telling av stillinger (parent docs) som har minst én location i dette fylket
+                      stillinger: {
+                        reverse_nested: {},
+                        aggs: {
+                          ids: {
+                            terms: {
+                              field: 'stilling.uuid',
+                              size: 50000, // nok til å dekke realistisk antall stillinger per fylke
+                            },
+                          },
+                        },
+                      },
+                    },
                   },
                   kommuner: {
                     terms: {
                       field: 'stilling.locations.municipalCode',
                       size: 2000,
                       order: { _key: 'asc' },
+                    },
+                  },
+                  // Ekstra agg: dokumenter uten fylkeskode (countyCode mangler eller tom streng) grupperes på county.keyword
+                  // slik at vi kan legge disse til korrekt fylke-count (eks: AGDER uten kode skal inn under 42)
+                  utenCountyCode: {
+                    filter: {
+                      bool: {
+                        should: [
+                          {
+                            bool: {
+                              must_not: [
+                                {
+                                  exists: {
+                                    field: 'stilling.locations.countyCode',
+                                  },
+                                },
+                              ],
+                            },
+                          },
+                          { term: { 'stilling.locations.countyCode': '' } },
+                        ],
+                        minimum_should_match: 1,
+                      },
+                    },
+                    aggs: {
+                      fylker: {
+                        terms: {
+                          field: 'stilling.locations.county.keyword',
+                          size: 400,
+                          order: { _key: 'asc' },
+                        },
+                        aggs: {
+                          // Parent-docs for missing countyCode (brukes for å unngå dobbelttelling hvis samme stilling også har kode)
+                          stillinger: {
+                            reverse_nested: {},
+                            aggs: {
+                              ids: {
+                                terms: {
+                                  field: 'stilling.uuid',
+                                  size: 50000,
+                                },
+                              },
+                            },
+                          },
+                        },
+                      },
                     },
                   },
                 },

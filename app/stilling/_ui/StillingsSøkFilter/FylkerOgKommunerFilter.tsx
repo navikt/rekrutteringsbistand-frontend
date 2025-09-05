@@ -6,6 +6,10 @@ import { useStillingssøk } from '@/app/api/stillings-sok/useStillingssøk';
 import { storBokstavSted } from '@/app/kandidat/util';
 import { useStillingsSøkFilter } from '@/app/stilling/StillingsSøkContext';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
+import {
+  aggregateKommunebuckets,
+  normaliserKommunekode,
+} from '@/util/fylkeOgKommuneMapping';
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
 import React, { Fragment } from 'react';
 
@@ -32,29 +36,27 @@ const FylkerOgKommunerFilter: React.FC<IFylkerOgKommuner> = ({
   });
   const fylkeBuckets: Array<{ key: string; count: number }> =
     combined.data?.antall?.geografi?.fylker || [];
-  const kommuneBuckets: Array<{ key: string; count: number }> =
+  // Normaliser kommunebuckets slik at gamle koder samles under nye (eks: 0602,0625,0711,3005 -> 3301)
+  const kommuneBucketsRaw: Array<{ key: string; count: number }> =
     combined.data?.antall?.geografi?.kommuner || [];
-  const fylkeCount = (f: string | null) =>
-    f ? (fylkeBuckets.find((b) => String(b.key) === String(f))?.count ?? 0) : 0;
-  const kommuneCount = (k: string | null) =>
-    k ? (kommuneBuckets.find((b) => b.key === k)?.count ?? 0) : 0;
-  const fylkeTotalWithKommuner = (f: string | null) => {
-    if (!f) return 0;
-    const base = fylkeCount(f);
-    const kommunerISammeFylke = kommuneBuckets.filter((b) =>
-      // norske kommunekoder starter med fylkesnummer (to siffer / ev. nye 2-siffer prefiks)
-      String(b.key).startsWith(String(f)),
-    );
-    const sumKommuner = kommunerISammeFylke.reduce(
-      (acc, k) => acc + k.count,
-      0,
-    );
-    // Hvis dokumenter allerede kun finnes på kommunenivå vil base typisk være 0; hvis begge finnes risikerer vi duplisering.
-    // Bruk heuristikk: dersom base < sumKommuner * 0.1, anta at base er uavhengig og legg til; ellers prioriter kommunesummer.
-    if (base === 0) return sumKommuner;
-    if (sumKommuner === 0) return base;
-    return base < sumKommuner * 0.1 ? sumKommuner : sumKommuner; // velg kommunesum som representativ total
+  const kommuneBuckets = aggregateKommunebuckets(kommuneBucketsRaw);
+  const loading = combined.isLoading || combined.isValidating;
+  const fylkeCount = (f: string | null) => {
+    if (loading) return '-';
+    return f
+      ? (fylkeBuckets.find((b) => String(b.key) === String(f))?.count ?? 0)
+      : 0;
   };
+  const kommuneCount = (k: string | null) => {
+    if (loading) return '-';
+    return k
+      ? (kommuneBuckets.find(
+          (b) => normaliserKommunekode(b.key) === normaliserKommunekode(k),
+        )?.count ?? 0)
+      : 0;
+  };
+  // Etter justering: fylke-count kommer direkte fra ES (inkluderer dokumenter uten kommunekode).
+  const fylkeTotal = (f: string | null) => fylkeCount(f);
   const fylkerMedKommuner = geografi
     ?.filter((g) => g.type === GeografiType.FYLKE)
     ?.map((fylke) => ({
@@ -80,7 +82,7 @@ const FylkerOgKommunerFilter: React.FC<IFylkerOgKommuner> = ({
         <Fragment key={fylke.lokasjon.fylkesnummer}>
           <Checkbox value={fylke.lokasjon.fylkesnummer}>
             {storBokstavSted(fylke.navn)} (
-            {fylkeTotalWithKommuner(fylke.lokasjon.fylkesnummer)})
+            {fylkeTotal(fylke.lokasjon.fylkesnummer)})
           </Checkbox>
           {fylke.lokasjon.fylkesnummer &&
             fylker.includes(fylke.lokasjon.fylkesnummer) &&

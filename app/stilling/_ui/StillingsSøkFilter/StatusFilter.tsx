@@ -30,8 +30,11 @@ export default function StatusFilter({ hideLegend }: StatusFilterProps) {
     formidlinger: filterCtx.formidlinger,
   });
   const buckets = combined.data?.antall?.statusBuckets || [];
-  const finnCount = (key: string) =>
-    buckets.find((b: any) => b.key === key)?.count ?? 0;
+  const loading = combined.isLoading || combined.isValidating;
+  const finnCount = (key: string) => {
+    if (loading) return '-';
+    return buckets.find((b: any) => b.key === key)?.count ?? 0;
+  };
   return (
     <CheckboxGroup
       hideLegend={hideLegend}

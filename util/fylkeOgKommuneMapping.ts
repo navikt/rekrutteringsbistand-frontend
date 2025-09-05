@@ -498,3 +498,94 @@ export const stedmappingFraGammeltNummer: Map<string, Sted> = new Map(
     return [key.nummer, value];
   }),
 );
+
+// --- Ekstra hjelpefunksjoner for normalisering / utvidelse ---
+/**
+ * Returnerer "ny" kommunenummer dersom input er et historisk nummer, ellers samme verdi.
+ */
+export const normaliserKommunekode = (nummer: string): string =>
+  stedmappingFraGammeltNummer.get(nummer)?.nummer || nummer;
+
+/**
+ * Gitt en liste av nye kommunekoder: ekspander til inkluderende liste av nye + alle historiske.
+ * (Brukes når vi sender søk mot ES slik at gamle dokumenter treffes.)
+ */
+export const expandKommunekoder = (nye: string[]): string[] => {
+  const sett = new Set<string>();
+  for (const ny of nye) {
+    sett.add(ny);
+    const gamle = stedmappingFraNyttNummer.get(ny);
+    if (gamle) {
+      for (const g of gamle) sett.add(g.nummer);
+    }
+  }
+  return Array.from(sett);
+};
+
+/**
+ * Slå sammen buckets fra ES (som kan inneholde både gamle og nye koder) til nye koder.
+ */
+export function aggregateKommunebuckets<
+  T extends { key: string; count: number },
+>(buckets: T[] = []): { key: string; count: number }[] {
+  const acc = new Map<string, number>();
+  for (const b of buckets) {
+    const ny = normaliserKommunekode(b.key);
+    acc.set(ny, (acc.get(ny) ?? 0) + b.count);
+  }
+  return Array.from(acc.entries()).map(([key, count]) => ({ key, count }));
+}
+
+// --- Fylkesnavn -> kode mapping (inkluderer historiske / alternative navn) ---
+// Kilde: interne administrative endringer + tidligere fylkesnavn.
+// Ambiguous "VESTFOLD OG TELEMARK" (historisk sammenslåing) mappes her til TELEMARK (40) for konsistens – juster hvis behov.
+const fylkesnavnKodeTabell: Array<[string[], string]> = [
+  [['AGDER', 'AUST-AGDER', 'VEST-AGDER'], '42'],
+  [['OSLO'], '03'],
+  [
+    [
+      'AKERSHUS',
+      'VIKEN', // historisk sammenslåing, men beholdt for gamle dokumenter uten spesifikk splitting
+    ],
+    '32',
+  ],
+  [['ØSTFOLD'], '31'],
+  [['BUSKERUD'], '33'],
+  [['INNLANDET', 'HEDMARK', 'OPPLAND'], '34'],
+  [
+    ['TELEMARK', 'VESTFOLD OG TELEMARK (TELEMARK DEL)', 'VESTFOLD OG TELEMARK'],
+    '40',
+  ],
+  [['VESTFOLD'], '39'],
+  [['ROGALAND'], '11'],
+  [['VESTLAND', 'HORDALAND', 'SOGN OG FJORDANE'], '46'],
+  [['MØRE OG ROMSDAL', 'MORE OG ROMSDAL'], '15'],
+  [
+    [
+      'TRØNDELAG',
+      'SØR-TRØNDELAG',
+      'NORD-TRØNDELAG',
+      'TRONDELAG',
+      'SOR-TRONDELAG',
+      'NORD-TRONDELAG',
+    ],
+    '50',
+  ],
+  [['NORDLAND'], '18'],
+  [['TROMS', 'TROMS OG FINNMARK (TROMS DEL)'], '55'],
+  [['FINNMARK', 'TROMS OG FINNMARK'], '56'],
+];
+
+const fylkesnavnTilKodeMap: Map<string, string> = new Map(
+  fylkesnavnKodeTabell.flatMap(([navnListe, kode]) =>
+    navnListe.map((n) => [n.toUpperCase(), kode]),
+  ),
+);
+
+export function fylkesnavnTilKode(
+  navn: string | undefined | null,
+): string | undefined {
+  if (!navn) return undefined;
+  const key = navn.trim().toUpperCase();
+  return fylkesnavnTilKodeMap.get(key);
+}

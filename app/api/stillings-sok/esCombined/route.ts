@@ -1,6 +1,10 @@
 import { StillingsSøkAPI } from '@/app/api/api-routes';
 import { hentOboToken, setHeaderToken } from '@/app/api/oboToken';
 import { isLocal } from '@/util/env';
+import {
+  formaterStedsnavn,
+  fylkesnavnTilKode,
+} from '@/util/fylkeOgKommuneMapping';
 import { RekbisError } from '@/util/rekbisError';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -130,8 +134,22 @@ export async function POST(req: NextRequest) {
 function byggRespons(treffData: any, aggsData: any) {
   // Alle våre aggregeringer ligger under globalAggregering (definert i buildStandardAggregation)
   const aggs = aggsData?.aggregations?.globalAggregering;
-  const statusBuckets: Array<{ key: string; doc_count: number }> =
-    aggs?.status?.koder?.buckets || [];
+  // status.koder er nå en filters-aggregasjon: buckets: { ACTIVE: {doc_count}, ... }
+  let statusBuckets: Array<{ key: string; doc_count: number }> = [];
+  const statusKoder = aggs?.status?.koder?.buckets;
+  if (
+    statusKoder &&
+    typeof statusKoder === 'object' &&
+    !Array.isArray(statusKoder)
+  ) {
+    statusBuckets = Object.entries(statusKoder).map(([key, val]: any) => ({
+      key,
+      doc_count: val?.doc_count ?? 0,
+    }));
+  } else if (Array.isArray(statusKoder)) {
+    // fallback hvis format ikke er endret som forventet
+    statusBuckets = statusKoder;
+  }
   const stillingskategoriBuckets: Array<{ key: string; doc_count: number }> =
     aggs?.stillingskategori?.koder?.buckets || [];
   const geografiAggs = aggs?.geografi?.nested_geografi; // nested agg flyttet ett nivå ned
@@ -161,15 +179,88 @@ function mapGeografiBuckets(geografiAggs: any) {
   if (!geografiAggs) {
     return { fylker: [], kommuner: [] };
   }
+  // Bygg unik telling per fylke basert på reverse_nested stillinger.ids (dersom tilstede), fall tilbake til doc_count
   const fylker =
-    geografiAggs?.fylker?.buckets?.map((b: any) => ({
-      key: b.key,
-      count: b.doc_count,
-    })) || [];
+    geografiAggs?.fylker?.buckets?.map((b: any) => {
+      const idBuckets = b?.stillinger?.ids?.buckets;
+      const parentDocCount = b?.stillinger?.doc_count; // reverse_nested gir unike parent docs
+      const uniqueCount =
+        typeof parentDocCount === 'number'
+          ? parentDocCount
+          : Array.isArray(idBuckets)
+            ? idBuckets.length
+            : b.doc_count; // ultimate fallback (kan være overcount)
+      const idSet = new Set(
+        Array.isArray(idBuckets)
+          ? idBuckets.map((ib: any) => ib.key as string)
+          : [],
+      );
+      return { key: b.key, count: uniqueCount, _ids: idSet };
+    }) || [];
   const kommuner =
     geografiAggs?.kommuner?.buckets?.map((b: any) => ({
       key: b.key,
       count: b.doc_count,
     })) || [];
-  return { fylker, kommuner };
+
+  // Slå sammen dokumenter uten countyCode (utenCountyCode.fylker) inn i fylker-listen basert på navn → kode heuristikk
+  const utenCountyCodeBuckets: Array<{ key: string; doc_count: number }> =
+    geografiAggs?.utenCountyCode?.fylker?.buckets || [];
+
+  if (utenCountyCodeBuckets.length > 0) {
+    utenCountyCodeBuckets.forEach((b: any) => {
+      const navn = formaterStedsnavn(b.key).toUpperCase();
+      const kode = fylkesnavnTilKode(navn);
+      if (!kode) return;
+      const idBuckets = b?.stillinger?.ids?.buckets;
+      const parentDocCount = b?.stillinger?.doc_count;
+      const bucketIds: string[] = Array.isArray(idBuckets)
+        ? idBuckets.map((ib: any) => ib.key as string)
+        : [];
+      const eksisterende: any = fylker.find(
+        (f: { key: string; _ids?: Set<string> }) =>
+          String(f.key) === String(kode),
+      );
+      if (eksisterende) {
+        // Legg til bare nye stillings-id'er for å unngå dobbelttelling dersom samme stilling også har countyCode
+        if (bucketIds.length > 0) {
+          let nye = 0;
+          bucketIds.forEach((id) => {
+            if (!eksisterende._ids.has(id)) {
+              eksisterende._ids.add(id);
+              nye++;
+            }
+          });
+          eksisterende.count += nye;
+        } else if (typeof parentDocCount === 'number') {
+          // Vi kan ikke dedupe uten ID-liste; anta at reverse_nested teller unike og at disse mangler i eksisterende sett.
+          // For sikkerhet: hvis vi allerede har noen id'er, ikke legg til hele parentDocCount blindt.
+          if (eksisterende._ids.size === 0) {
+            eksisterende.count += parentDocCount;
+          }
+        }
+      } else {
+        const initialCount =
+          bucketIds.length > 0
+            ? bucketIds.length
+            : typeof parentDocCount === 'number'
+              ? parentDocCount
+              : b.doc_count; // fallback
+        fylker.push({
+          key: kode,
+          count: initialCount,
+          _ids: new Set(bucketIds),
+        });
+      }
+    });
+  }
+
+  // Fjern interne _ids før vi returnerer
+  // Fjern bucket med tom key ('') – slike dokumenter (countyCode='') er allerede håndtert via utenCountyCode
+  // og slått inn i korrekt fylke basert på navn. Å vise den tomme nøkkelen skaper forvirring.
+  const rensetFylker = fylker
+    .filter((f: any) => String(f.key) !== '')
+    .map((f: any) => ({ key: f.key, count: f.count }));
+
+  return { fylker: rensetFylker, kommuner };
 }
