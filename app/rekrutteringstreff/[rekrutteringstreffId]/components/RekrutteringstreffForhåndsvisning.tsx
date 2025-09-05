@@ -1,12 +1,18 @@
 'use client';
 
 import { useRekrutteringstreffContext } from '../RekrutteringstreffContext';
+import ArbeidsgiverHendelserKort from '../_ui/arbeidsgivere/_ui/ArbeidsgiverHendelserKort';
+import JobbsøkerHendelserKort from '../_ui/jobbsøkere/_ui/JobbsøkerHendelserKort';
+import { useArbeidsgiverHendelser } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgiverHendelser';
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
+import { useJobbsøkerHendelser } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkerHendelser';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
+import SWRLaster from '@/components/SWRLaster';
 import { CalendarIcon, ClockIcon, LocationPinIcon } from '@navikt/aksel-icons';
 import {
   BodyLong,
   BodyShort,
+  Box,
   Detail,
   Heading,
   Skeleton,
@@ -29,7 +35,7 @@ const formatDate = (dateString?: string | null) => {
   if (!dateString) return null;
   try {
     const date = new Date(dateString);
-    return format(date, 'dd. MMMM yyyy', { locale: nb });
+    return format(date, 'dd. MMM yyyy', { locale: nb });
   } catch {
     return null;
   }
@@ -45,16 +51,37 @@ const formatTime = (dateString?: string | null) => {
   }
 };
 
+const formatWeekdayDate = (dateString?: string | null) => {
+  if (!dateString) return null;
+  try {
+    const date = new Date(dateString);
+    return format(date, 'EEEE dd. MMM yyyy', { locale: nb });
+  } catch {
+    return null;
+  }
+};
+
 const RekrutteringstreffForhåndsvisning: React.FC = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { data: rekrutteringstreff, isLoading: isLoadingTreff } =
     useRekrutteringstreff(rekrutteringstreffId);
   const { data: innleggListe, isLoading: isLoadingInnlegg } =
     useInnlegg(rekrutteringstreffId);
+  const { data: jobbsøkerHendelser, isLoading: isLoadingJobbsøkerHendelser } =
+    useJobbsøkerHendelser(rekrutteringstreffId);
+  const {
+    data: arbeidsgiverHendelser,
+    isLoading: isLoadingArbeidsgiverHendelser,
+  } = useArbeidsgiverHendelser(rekrutteringstreffId);
 
   const innlegg = innleggListe?.[0];
 
-  if (isLoadingTreff || isLoadingInnlegg) {
+  if (
+    isLoadingTreff ||
+    isLoadingInnlegg ||
+    isLoadingJobbsøkerHendelser ||
+    isLoadingArbeidsgiverHendelser
+  ) {
     return (
       <div className='space-y-6'>
         <Skeleton variant='text' width='60%' height={32} />
@@ -79,16 +106,6 @@ const RekrutteringstreffForhåndsvisning: React.FC = () => {
     );
   }
 
-  const fraTidFormatert = formatDateTime(rekrutteringstreff.fraTid);
-  const tilTidFormatert = formatDateTime(rekrutteringstreff.tilTid);
-  const svarfristFormatert = formatDateTime(rekrutteringstreff.svarfrist);
-
-  const erSammedag =
-    rekrutteringstreff.fraTid &&
-    rekrutteringstreff.tilTid &&
-    formatDate(rekrutteringstreff.fraTid) ===
-      formatDate(rekrutteringstreff.tilTid);
-
   return (
     <div className='space-y-8'>
       <section>
@@ -97,89 +114,53 @@ const RekrutteringstreffForhåndsvisning: React.FC = () => {
         </Heading>
       </section>
 
-      <section className='space-y-6'>
+      {/* Large card containing all main info */}
+      <Box.New
+        background='neutral-softA'
+        borderColor='neutral-subtleA'
+        borderRadius='xlarge'
+        borderWidth='1'
+        padding='6'
+        className='space-y-6'
+      >
+        {/* Om treffet title */}
         <Heading level='2' size='medium'>
-          Praktiske forhold
+          Om treffet
         </Heading>
 
-        {(rekrutteringstreff.fraTid || rekrutteringstreff.tilTid) && (
-          <div className='space-y-2'>
-            <Heading level='3' size='small' className='flex items-center gap-2'>
-              <ClockIcon aria-hidden className='text-blue-600' />
-              Tid
-            </Heading>
-            <div className='ml-6'>
-              {erSammedag &&
-              rekrutteringstreff.fraTid &&
-              rekrutteringstreff.tilTid ? (
-                <BodyShort>
-                  {formatDate(rekrutteringstreff.fraTid)} kl.{' '}
-                  {formatTime(rekrutteringstreff.fraTid)} -{' '}
-                  {formatTime(rekrutteringstreff.tilTid)}
-                </BodyShort>
-              ) : (
-                <div className='space-y-1'>
-                  {fraTidFormatert && (
-                    <BodyShort>
-                      <strong>Fra:</strong> {fraTidFormatert}
-                    </BodyShort>
-                  )}
-                  {tilTidFormatert && (
-                    <BodyShort>
-                      <strong>Til:</strong> {tilTidFormatert}
-                    </BodyShort>
-                  )}
-                </div>
-              )}
-            </div>
-          </div>
-        )}
+        {/* Three-column layout for main info */}
+        <section className='flex flex-col gap-4 md:flex-row max-w-[64rem] min-h-[10rem]'>
+          <TidspunktKort rekrutteringstreff={rekrutteringstreff} />
+          <StedKort rekrutteringstreff={rekrutteringstreff} />
+          <SvarfristKort rekrutteringstreff={rekrutteringstreff} />
+        </section>
 
-        {/* Sted */}
-        {(rekrutteringstreff.gateadresse ||
-          rekrutteringstreff.postnummer ||
-          rekrutteringstreff.poststed) && (
-          <div className='space-y-2'>
-            <Heading level='3' size='small' className='flex items-center gap-2'>
-              <LocationPinIcon aria-hidden className='text-blue-600' />
-              Sted
-            </Heading>
-            <div className='ml-6 space-y-1'>
-              {rekrutteringstreff.gateadresse && (
-                <BodyShort>{rekrutteringstreff.gateadresse}</BodyShort>
-              )}
-              {(rekrutteringstreff.postnummer ||
-                rekrutteringstreff.poststed) && (
-                <BodyShort>
-                  {rekrutteringstreff.postnummer} {rekrutteringstreff.poststed}
-                </BodyShort>
-              )}
-            </div>
-          </div>
-        )}
-
-        {rekrutteringstreff.svarfrist && (
-          <div className='space-y-2'>
-            <Heading level='3' size='small' className='flex items-center gap-2'>
-              <CalendarIcon aria-hidden className='text-blue-600' />
-              Svarfrist
-            </Heading>
-            <div className='ml-6'>
-              <BodyShort>{svarfristFormatert}</BodyShort>
-            </div>
-          </div>
-        )}
-
+        {/* Innlegg content */}
         {innlegg?.htmlContent && (
-          <div className='space-y-2'>
-            <Heading level='3' size='small'>
-              Om treffet
-            </Heading>
+          <Box.New
+            background='neutral-softA'
+            borderColor='neutral-subtleA'
+            borderRadius='large'
+            borderWidth='1'
+            padding='4'
+          >
             <div
-              className='ml-6 prose prose-sm max-w-none'
+              className='prose prose-sm max-w-none'
               dangerouslySetInnerHTML={{ __html: innlegg.htmlContent }}
             />
-          </div>
+          </Box.New>
+        )}
+      </Box.New>
+
+      {/* Hendelser cards */}
+      <section className='mt-4 flex flex-col gap-16 md:flex-row'>
+        {arbeidsgiverHendelser && (
+          <ArbeidsgiverHendelserKort
+            arbeidsgiverHendelserDTO={arbeidsgiverHendelser}
+          />
+        )}
+        {jobbsøkerHendelser && (
+          <JobbsøkerHendelserKort jobbsøkerHendelserDTO={jobbsøkerHendelser} />
         )}
       </section>
 
@@ -204,6 +185,134 @@ const RekrutteringstreffForhåndsvisning: React.FC = () => {
         </div>
       </section>
     </div>
+  );
+};
+
+// Separate card components
+interface CardProps {
+  rekrutteringstreff: any;
+}
+
+const TidspunktKort: React.FC<CardProps> = ({ rekrutteringstreff }) => {
+  const erSammedag =
+    rekrutteringstreff.fraTid &&
+    rekrutteringstreff.tilTid &&
+    formatDate(rekrutteringstreff.fraTid) ===
+      formatDate(rekrutteringstreff.tilTid);
+
+  return (
+    <Box.New
+      background='neutral-softA'
+      className='flex-1'
+      borderColor='neutral-subtleA'
+      borderRadius='xlarge'
+      borderWidth='1'
+      padding='6'
+    >
+      <Heading level='3' size='small' className='flex items-center gap-2 mb-3'>
+        <ClockIcon aria-hidden className='text-blue-600' />
+        Tid
+      </Heading>
+      {rekrutteringstreff.fraTid || rekrutteringstreff.tilTid ? (
+        <div>
+          {erSammedag &&
+          rekrutteringstreff.fraTid &&
+          rekrutteringstreff.tilTid ? (
+            <div>
+              <BodyShort>
+                {formatWeekdayDate(rekrutteringstreff.fraTid)}
+              </BodyShort>
+              <BodyShort>
+                kl {formatTime(rekrutteringstreff.fraTid)} -{' '}
+                {formatTime(rekrutteringstreff.tilTid)}
+              </BodyShort>
+            </div>
+          ) : (
+            <div className='space-y-1'>
+              {rekrutteringstreff.fraTid && (
+                <BodyShort>
+                  <strong>Fra:</strong>{' '}
+                  {formatWeekdayDate(rekrutteringstreff.fraTid)} kl{' '}
+                  {formatTime(rekrutteringstreff.fraTid)}
+                </BodyShort>
+              )}
+              {rekrutteringstreff.tilTid && (
+                <BodyShort>
+                  <strong>Til:</strong>{' '}
+                  {formatWeekdayDate(rekrutteringstreff.tilTid)} kl{' '}
+                  {formatTime(rekrutteringstreff.tilTid)}
+                </BodyShort>
+              )}
+            </div>
+          )}
+        </div>
+      ) : (
+        <BodyShort className='text-gray-500'>Ikke satt</BodyShort>
+      )}
+    </Box.New>
+  );
+};
+
+const StedKort: React.FC<CardProps> = ({ rekrutteringstreff }) => {
+  return (
+    <Box.New
+      background='neutral-softA'
+      className='flex-1'
+      borderColor='neutral-subtleA'
+      borderRadius='xlarge'
+      borderWidth='1'
+      padding='6'
+    >
+      <Heading level='3' size='small' className='flex items-center gap-2 mb-3'>
+        <LocationPinIcon aria-hidden className='text-blue-600' />
+        Sted
+      </Heading>
+      {rekrutteringstreff.gateadresse ||
+      rekrutteringstreff.postnummer ||
+      rekrutteringstreff.poststed ? (
+        <div className='space-y-1'>
+          {rekrutteringstreff.gateadresse && (
+            <BodyShort>{rekrutteringstreff.gateadresse}</BodyShort>
+          )}
+          {(rekrutteringstreff.postnummer || rekrutteringstreff.poststed) && (
+            <BodyShort>
+              {rekrutteringstreff.postnummer} {rekrutteringstreff.poststed}
+            </BodyShort>
+          )}
+        </div>
+      ) : (
+        <BodyShort className='text-gray-500'>Ikke satt</BodyShort>
+      )}
+    </Box.New>
+  );
+};
+
+const SvarfristKort: React.FC<CardProps> = ({ rekrutteringstreff }) => {
+  const svarfristFormatert = rekrutteringstreff.svarfrist
+    ? formatWeekdayDate(rekrutteringstreff.svarfrist) +
+      ' kl ' +
+      formatTime(rekrutteringstreff.svarfrist)
+    : null;
+
+  return (
+    <Box.New
+      background='neutral-softA'
+      className='flex-1'
+      borderColor='neutral-subtleA'
+      borderRadius='xlarge'
+      borderWidth='1'
+      padding='6'
+    >
+      <Heading level='3' size='small' className='flex items-center gap-2 mb-3'>
+        <CalendarIcon aria-hidden className='text-blue-600' />
+        Svarfrist
+      </Heading>
+      {svarfristFormatert ? (
+        <BodyShort>{svarfristFormatert}</BodyShort>
+      ) : (
+        <BodyShort className='text-gray-500'>Ikke satt</BodyShort>
+      )}
+    </Box.New>
   );
 };
 
