@@ -12,10 +12,11 @@ import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { RekbisError } from '@/util/rekbisError';
 import { TasklistIcon } from '@navikt/aksel-icons';
 import { BodyLong, Box, Button, Modal } from '@navikt/ds-react';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 
 export default function FullførStillingKnapp() {
-  const ref = useRef<HTMLDialogElement>(null);
+  // Bruk kontrollert state i stedet for dialog.show() for å sikre korrekt backdrop (spesielt i Windows)
+  const [open, setOpen] = useState(false);
   const { stillingsData, refetch, erEier } = useStillingsContext();
   const { valgtNavKontor, brukerData, visVarsel } = useApplikasjonContext();
   const [loading, setLoading] = useState(false);
@@ -55,7 +56,7 @@ export default function FullførStillingKnapp() {
       new RekbisError({ message: 'Klarte ikke å fullføre oppdrag', error });
     }
     setLoading(false);
-    ref.current?.close();
+    setOpen(false);
   };
 
   return (
@@ -80,7 +81,8 @@ export default function FullførStillingKnapp() {
           <>
             <Modal
               width={600}
-              ref={ref}
+              open={open}
+              onClose={() => setOpen(false)}
               header={{ heading: 'Fullfør oppdraget' }}
             >
               <Modal.Body>
@@ -122,7 +124,7 @@ export default function FullførStillingKnapp() {
                 <Button
                   type='button'
                   variant='secondary'
-                  onClick={() => ref.current?.close()}
+                  onClick={() => setOpen(false)}
                 >
                   Avbryt
                 </Button>
@@ -130,7 +132,7 @@ export default function FullførStillingKnapp() {
             </Modal>
 
             <Button
-              onClick={() => ref.current?.show()}
+              onClick={() => setOpen(true)}
               disabled={
                 loading ||
                 kandidatlisteForEier.status !== Kandidatlistestatus.Åpen ||
