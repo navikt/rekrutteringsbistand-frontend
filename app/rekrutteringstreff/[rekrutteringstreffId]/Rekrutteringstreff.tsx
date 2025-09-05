@@ -1,6 +1,7 @@
 'use client';
 
 import { useRekrutteringstreffContext } from './RekrutteringstreffContext';
+import TreffHeader from './_ui/RekrutteringstreffHeader';
 import EndreTittel from './components/redigereRekrutteringstreff/EndreTittel';
 import PraktiskeForhold from './components/redigereRekrutteringstreff/Praktiskeforhold';
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
@@ -45,80 +46,84 @@ const Rekrutteringstreff: React.FC = () => {
     setErIForhåndsvisning(newState);
   };
 
+  const tabList = (
+    <>
+      <Tabs.Tab value={RekrutteringstreffTabs.OM_TREFFET} label='Om treffet' />
+      <Tabs.Tab
+        value={RekrutteringstreffTabs.JOBBSØKERE}
+        label={`Jobbsøkere(${jobbsøkere?.length ?? 0})`}
+      />
+      <Tabs.Tab
+        value={RekrutteringstreffTabs.ARBEIDSGIVERE}
+        label={`Arbeidsgivere(${arbeidsgivere?.length ?? 0})`}
+      />
+      <Tabs.Tab
+        value={RekrutteringstreffTabs.AKTIVITETER}
+        label='Aktiviteter'
+      />
+      <Tabs.Tab
+        value={RekrutteringstreffTabs.KI_LOGG}
+        label='Ki Logg(Kun admin)'
+      />
+    </>
+  );
+
   return (
-    <SideLayout
-      fremdriftspanel={
-        <Stegviser onToggleForhåndsvisning={handleToggleForhåndsvisning} />
-      }
-      header={
-        <PanelHeader>
-          <PanelHeader.Section
-            title={'Rekrutteringstreff'}
-            actionsRight={
-              <Button size='small'>Opprett rekrutteringstreff</Button>
-            }
-          />
-        </PanelHeader>
-      }
-    >
-      <div className='space-y-4'>
-        {!erIForhåndsvisning && (
-          <>
-            <EndreTittel onUpdated={rekrutteringstreffHook.mutate} />
-            <PraktiskeForhold />
-          </>
-        )}
+    <Tabs value={fane} onChange={(val) => setFane(val)}>
+      <SideLayout
+        fremdriftspanel={
+          <Stegviser onToggleForhåndsvisning={handleToggleForhåndsvisning} />
+        }
+        header={
+          <PanelHeader>
+            <PanelHeader.Section
+              title={'Rekrutteringstreff'}
+              actionsRight={
+                <Button size='small'>Opprett rekrutteringstreff</Button>
+              }
+              tabs={erIForhåndsvisning ? tabList : undefined}
+            />
+          </PanelHeader>
+        }
+      >
+        <div className='space-y-4'>
+          {erIForhåndsvisning ? (
+            <>
+              <Tabs.Panel
+                value={RekrutteringstreffTabs.OM_TREFFET}
+                className='my-4'
+              >
+                <OmTreffet />
+              </Tabs.Panel>
+              <Tabs.Panel value={RekrutteringstreffTabs.JOBBSØKERE}>
+                <Jobbsøkere />
+              </Tabs.Panel>
+              <Tabs.Panel value={RekrutteringstreffTabs.ARBEIDSGIVERE}>
+                <RekrutteringstreffArbeidsgivere />
+              </Tabs.Panel>
+              <Tabs.Panel value={RekrutteringstreffTabs.AKTIVITETER}>
+                <Aktiviteter />
+              </Tabs.Panel>
 
-        <Tabs value={fane} onChange={(val) => setFane(val)}>
-          <Tabs.List className='w-full'>
-            <Tabs.Tab
-              value={RekrutteringstreffTabs.OM_TREFFET}
-              label='Om treffet'
-            />
-            <Tabs.Tab
-              value={RekrutteringstreffTabs.JOBBSØKERE}
-              label={`Jobbsøkere(${jobbsøkere?.length ?? 0})`}
-            />
-            <Tabs.Tab
-              value={RekrutteringstreffTabs.ARBEIDSGIVERE}
-              label={`Arbeidsgivere(${arbeidsgivere?.length ?? 0})`}
-            />
-            <Tabs.Tab
-              value={RekrutteringstreffTabs.AKTIVITETER}
-              label='Aktiviteter'
-            />
-            <Tabs.Tab
-              value={RekrutteringstreffTabs.KI_LOGG}
-              label='Ki Logg(Kun admin)'
-            />
-          </Tabs.List>
-
-          <Tabs.Panel
-            value={RekrutteringstreffTabs.OM_TREFFET}
-            className='my-4'
-          >
-            <OmTreffet />
-          </Tabs.Panel>
-          <Tabs.Panel value={RekrutteringstreffTabs.JOBBSØKERE}>
-            <Jobbsøkere />
-          </Tabs.Panel>
-          <Tabs.Panel value={RekrutteringstreffTabs.ARBEIDSGIVERE}>
-            <RekrutteringstreffArbeidsgivere />
-          </Tabs.Panel>
-          <Tabs.Panel value={RekrutteringstreffTabs.AKTIVITETER}>
-            <Aktiviteter />
-          </Tabs.Panel>
-
-          <TilgangskontrollForInnhold
-            kreverEnAvRollene={[Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER]}
-          >
-            <Tabs.Panel value={RekrutteringstreffTabs.KI_LOGG}>
-              <KiLogg />
-            </Tabs.Panel>
-          </TilgangskontrollForInnhold>
-        </Tabs>
-      </div>
-    </SideLayout>
+              <TilgangskontrollForInnhold
+                kreverEnAvRollene={[
+                  Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER,
+                ]}
+              >
+                <Tabs.Panel value={RekrutteringstreffTabs.KI_LOGG}>
+                  <KiLogg />
+                </Tabs.Panel>
+              </TilgangskontrollForInnhold>
+            </>
+          ) : (
+            <>
+              <EndreTittel onUpdated={rekrutteringstreffHook.mutate} />
+              <PraktiskeForhold />
+            </>
+          )}
+        </div>
+      </SideLayout>
+    </Tabs>
   );
 };
 
