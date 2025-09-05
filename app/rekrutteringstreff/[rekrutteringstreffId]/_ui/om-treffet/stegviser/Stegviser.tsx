@@ -21,14 +21,19 @@ const stepDetails = [
 
 interface StegviserProps {
   onToggleForhåndsvisning?: (erIForhåndsvisning: boolean) => void;
+  erIForhåndsvisning: boolean;
 }
 
-const Stegviser = ({ onToggleForhåndsvisning }: StegviserProps) => {
+const Stegviser = ({
+  onToggleForhåndsvisning,
+  erIForhåndsvisning,
+}: StegviserProps) => {
   return (
     <StegviserProvider>
       <StegviserHeader
         stepDetails={stepDetails}
         onToggleForhåndsvisning={onToggleForhåndsvisning}
+        erIForhåndsvisning={erIForhåndsvisning}
       />
       <div className='mt-4'>
         <StegviserContent />

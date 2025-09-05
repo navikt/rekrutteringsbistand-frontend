@@ -87,7 +87,7 @@ const EndreInnlegg = ({ onUpdated }: EndreInnleggProps) => {
     setForceSave(false);
     setLoggId(null);
     setEditorKey(Date.now());
-  }, [innlegg, setValue]);
+  }, [innlegg?.id, setValue]);
 
   useEffect(() => {
     if (isDirty) {

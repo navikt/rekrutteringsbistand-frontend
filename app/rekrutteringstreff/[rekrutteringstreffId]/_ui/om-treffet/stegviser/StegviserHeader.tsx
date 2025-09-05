@@ -17,17 +17,18 @@ import * as React from 'react';
 interface Props {
   stepDetails: { id: number; stepLabel: string; header: string }[];
   onToggleForhåndsvisning?: (erIForhåndsvisning: boolean) => void;
+  erIForhåndsvisning: boolean;
 }
 
 const StegviserHeader: React.FC<Props> = ({
   stepDetails,
   onToggleForhåndsvisning,
+  erIForhåndsvisning,
 }) => {
   const [isPublishing, setIsPublishing] = useState(false);
   const [isFinishingInvitation, setIsFinishingInvitation] = useState(false);
   const [isFinishingFollowUp, setIsFinishingFollowUp] = useState(false);
   const [isFinishingRecruitment, setIsFinishingRecruitment] = useState(false);
-  const [erIForhåndsvisning, setErIForhåndsvisning] = useState(false);
 
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { data: rekrutteringstreffData, mutate: mutateRekrutteringstreff } =
@@ -117,9 +118,7 @@ const StegviserHeader: React.FC<Props> = ({
     max === 0 ? 0 : (value / max) * 100;
 
   const handleToggleForhåndsvisning = () => {
-    const newState = !erIForhåndsvisning;
-    setErIForhåndsvisning(newState);
-    onToggleForhåndsvisning?.(newState);
+    onToggleForhåndsvisning?.(!erIForhåndsvisning);
   };
 
   return (

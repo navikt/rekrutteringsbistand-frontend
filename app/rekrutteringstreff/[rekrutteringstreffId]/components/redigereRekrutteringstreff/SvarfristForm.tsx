@@ -21,7 +21,11 @@ const toHHmm = (iso?: string | null) => {
   return `${pad(d.getHours())}:${pad(d.getMinutes())}`;
 };
 
-const SvarfristForm = ({ control }: any) => {
+interface Props {
+  control: any;
+}
+
+const SvarfristForm = ({ control }: Props) => {
   const { save } = useAutosave();
   const { setValue } = useFormContext();
   const [dato, tid] = useWatch({

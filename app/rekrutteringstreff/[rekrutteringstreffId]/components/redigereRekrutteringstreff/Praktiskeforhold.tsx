@@ -23,10 +23,7 @@ const PraktiskeForhold = () => {
       />
       <StedForm control={control} rekrutteringstreffId={rekrutteringstreffId} />
       <EndreInnlegg onUpdated={() => {}} />
-      <SvarfristForm
-        control={control}
-        rekrutteringstreffId={rekrutteringstreffId}
-      />
+      <SvarfristForm control={control} />
     </div>
   );
 };

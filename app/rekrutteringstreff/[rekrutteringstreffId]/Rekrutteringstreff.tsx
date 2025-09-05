@@ -16,7 +16,7 @@ import SideLayout from '@/components/layout/SideLayout';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { Button, Tabs } from '@navikt/ds-react';
-import { useQueryState } from 'nuqs';
+import { useQueryState, parseAsString } from 'nuqs';
 import * as React from 'react';
 
 export enum RekrutteringstreffTabs {
@@ -32,7 +32,12 @@ const Rekrutteringstreff: React.FC = () => {
     defaultValue: RekrutteringstreffTabs.OM_TREFFET,
     clearOnDefault: true,
   });
-  const [erIForhåndsvisning, setErIForhåndsvisning] = React.useState(false);
+  // Query param mode=edit -> redigeringsmodus, ellers forhåndsvisning
+  const [modus, setModus] = useQueryState(
+    'mode',
+    parseAsString.withDefault('').withOptions({ clearOnDefault: true }),
+  );
+  const erIForhåndsvisning = modus !== 'edit';
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
 
   const rekrutteringstreffHook = useRekrutteringstreff(rekrutteringstreffId);
@@ -40,8 +45,22 @@ const Rekrutteringstreff: React.FC = () => {
   const { data: arbeidsgivere } =
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
 
-  const handleToggleForhåndsvisning = (newState: boolean) => {
-    setErIForhåndsvisning(newState);
+  const scrollToTop = () => {
+    if (typeof window !== 'undefined') {
+      requestAnimationFrame(() =>
+        window.scrollTo({ top: 0, behavior: 'smooth' }),
+      );
+    }
+  };
+
+  const handleToggleForhåndsvisning = (nyForhåndsvisning: boolean) => {
+    setModus(nyForhåndsvisning ? '' : 'edit');
+    scrollToTop();
+  };
+
+  const gåTilForhåndsvisning = () => {
+    setModus('');
+    scrollToTop();
   };
 
   const tabList = (
@@ -70,7 +89,10 @@ const Rekrutteringstreff: React.FC = () => {
     <Tabs value={fane} onChange={(val) => setFane(val)}>
       <SideLayout
         fremdriftspanel={
-          <Stegviser onToggleForhåndsvisning={handleToggleForhåndsvisning} />
+          <Stegviser
+            onToggleForhåndsvisning={handleToggleForhåndsvisning}
+            erIForhåndsvisning={erIForhåndsvisning}
+          />
         }
         header={
           <PanelHeader>
@@ -116,6 +138,7 @@ const Rekrutteringstreff: React.FC = () => {
           ) : (
             <RekrutteringstreffRedigering
               onUpdated={rekrutteringstreffHook.mutate}
+              onGåTilForhåndsvisning={gåTilForhåndsvisning}
             />
           )}
         </div>
