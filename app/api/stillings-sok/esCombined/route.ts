@@ -1,6 +1,4 @@
 import { StillingsSøkAPI } from '@/app/api/api-routes';
-// proxyWithOBO håndterer OBO-token internt
-import { proxyWithOBO } from '@/app/api/oboProxy';
 import { isLocal } from '@/util/env';
 import {
   formaterStedsnavn,
@@ -74,26 +72,47 @@ export async function POST(req: NextRequest) {
     }
 
     // PROD / ikke-lokal: bruk felles proxyWithOBO to ganger (treff og aggs)
-    const treffResponse = await proxyWithOBO(
-      StillingsSøkAPI,
-      req,
-      StillingsSøkAPI.api_route, // unngå /esCombined i upstream-path
-      body.treff,
-    );
-    if (!treffResponse.ok) {
-      return treffResponse;
+    const origin = req.headers.get('x-forwarded-host')
+      ? `${req.headers.get('x-forwarded-proto') || 'https'}://${req.headers.get('x-forwarded-host')}`
+      : undefined;
+    const base = origin
+      ? `${origin}${StillingsSøkAPI.internUrl}`
+      : StillingsSøkAPI.internUrl;
+
+    const [treffRes, aggsRes] = await Promise.all([
+      fetch(`${base}/esSearch`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body.treff),
+      }),
+      fetch(`${base}/esAggs`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body.aggs),
+      }),
+    ]);
+    if (!treffRes.ok) {
+      const txt = await treffRes.text();
+      return NextResponse.json(
+        { error: 'Treff-spørring feilet', status: treffRes.status, body: txt },
+        { status: treffRes.status },
+      );
     }
-    const aggsResponse = await proxyWithOBO(
-      StillingsSøkAPI,
-      req,
-      StillingsSøkAPI.api_route,
-      body.aggs,
-    );
-    if (!aggsResponse.ok) {
-      return aggsResponse;
+    if (!aggsRes.ok) {
+      const txt = await aggsRes.text();
+      return NextResponse.json(
+        {
+          error: 'Aggregerings-spørring feilet',
+          status: aggsRes.status,
+          body: txt,
+        },
+        { status: aggsRes.status },
+      );
     }
-    const treffData = await treffResponse.json();
-    const aggsData = await aggsResponse.json();
+    const [treffData, aggsData] = await Promise.all([
+      treffRes.json(),
+      aggsRes.json(),
+    ]);
     return NextResponse.json(byggRespons(treffData, aggsData));
   } catch (error: any) {
     new RekbisError({ message: 'Feil i kombinert stillingssøk', error });
