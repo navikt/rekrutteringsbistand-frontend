@@ -16,13 +16,18 @@ import * as React from 'react';
 
 interface Props {
   stepDetails: { id: number; stepLabel: string; header: string }[];
+  onToggleForhåndsvisning?: (erIForhåndsvisning: boolean) => void;
 }
 
-const StegviserHeader: React.FC<Props> = ({ stepDetails }) => {
+const StegviserHeader: React.FC<Props> = ({
+  stepDetails,
+  onToggleForhåndsvisning,
+}) => {
   const [isPublishing, setIsPublishing] = useState(false);
   const [isFinishingInvitation, setIsFinishingInvitation] = useState(false);
   const [isFinishingFollowUp, setIsFinishingFollowUp] = useState(false);
   const [isFinishingRecruitment, setIsFinishingRecruitment] = useState(false);
+  const [erIForhåndsvisning, setErIForhåndsvisning] = useState(false);
 
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { data: rekrutteringstreffData, mutate: mutateRekrutteringstreff } =
@@ -111,17 +116,22 @@ const StegviserHeader: React.FC<Props> = ({ stepDetails }) => {
   const getProsent = (value: number, max: number) =>
     max === 0 ? 0 : (value / max) * 100;
 
+  const handleToggleForhåndsvisning = () => {
+    const newState = !erIForhåndsvisning;
+    setErIForhåndsvisning(newState);
+    onToggleForhåndsvisning?.(newState);
+  };
+
   return (
     <div className='w-full'>
       <div className='grid grid-cols-2 gap-2 w-full'>
         <Button
-          disabled
           size='small'
           variant='secondary'
           className='w-full'
-          onClick={onPubliserTreffet}
+          onClick={handleToggleForhåndsvisning}
         >
-          Forhåndsvis
+          {erIForhåndsvisning ? 'Rediger' : 'Forhåndsvis'}
         </Button>
 
         {activeStep === 1 ? (
