@@ -78,38 +78,35 @@ export const statusQuery = (
   const ingenFiltreValgt = statuser.length === 0;
   const alleFiltreValgt =
     statuser.length === Object.keys(StillingsStatusTyper).length;
-
-  if (ingenFiltreValgt || alleFiltreValgt) {
-    if (params.navIdent) {
-      return;
-    }
-    return alleStillinger(esBuilder);
+  // Baseline: alle publiserte stillinger (ekskl REJECTED/DELETED) i hovedquery slik at aggregasjoner ALLTID baserer seg på hele settet
+  if (!params.navIdent) {
+    alleStillinger(esBuilder);
   }
 
-  // Samle should-clauses for valgte statuser
-  const shouldClauses: any[] = [];
+  // Hvis ingen eller alle statuser er valgt skal vi IKKE snevre inn treff. Da lar vi baseline stå og skipper post_filter.
+  if (ingenFiltreValgt || alleFiltreValgt) {
+    return;
+  }
+
+  // Bygg post_filter for de valgte statusene — påvirker kun hits, ikke aggregasjoner
+  const postFilterShould: any[] = [];
 
   if (statuser.includes(StillingsStatusTyper.Publisert)) {
-    // Legg til ACTIVE status som should-clause
-    shouldClauses.push({
-      term: {
-        'stilling.status': 'ACTIVE',
-      },
-    });
+    postFilterShould.push({ term: { 'stilling.status': 'ACTIVE' } });
   }
-
   if (statuser.includes(StillingsStatusTyper.Stoppet)) {
-    shouldClauses.push(getStoppetQuery());
+    postFilterShould.push(getStoppetQuery());
   }
-
   if (statuser.includes(StillingsStatusTyper.Utløpt)) {
-    shouldClauses.push(getUtløptQuery());
+    postFilterShould.push(getUtløptQuery());
   }
 
-  if (shouldClauses.length > 0) {
-    esBuilder.addBoolFilter({
-      should: shouldClauses,
-      minimum_should_match: 1,
+  if (postFilterShould.length > 0) {
+    esBuilder.setPostFilter({
+      bool: {
+        should: postFilterShould,
+        minimum_should_match: 1,
+      },
     });
   }
 };

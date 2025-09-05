@@ -54,6 +54,7 @@ export class ElasticSearchQueryBuilder {
   private mustNotClauses: any[] = [];
   private sorting: any[] = [];
   private aggregations: any = {};
+  private postFilterClause: any | null = null;
   private minimumShouldMatch?: string | number;
 
   /**
@@ -282,6 +283,14 @@ export class ElasticSearchQueryBuilder {
    */
   setAggregations(aggs: any): this {
     this.aggregations = aggs;
+    return this;
+  }
+
+  /**
+   * Setter post_filter (påvirker bare treff, ikke aggregasjoner)
+   */
+  setPostFilter(clause: any): this {
+    this.postFilterClause = clause;
     return this;
   }
 
@@ -1045,6 +1054,10 @@ export class ElasticSearchQueryBuilder {
     // Legg til aggregering hvis spesifisert
     if (Object.keys(this.aggregations).length > 0) {
       query.aggs = this.aggregations;
+    }
+
+    if (this.postFilterClause) {
+      query.post_filter = this.postFilterClause;
     }
 
     return query;

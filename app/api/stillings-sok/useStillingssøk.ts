@@ -1,5 +1,6 @@
 'use client';
 
+import { byggKombinertQuery } from './byggKombinertQuery';
 import { mockStillingssøk } from './mocks/mockStillingssøk';
 import {
   opprettElasticSearchAggregeringsQuery,
@@ -14,7 +15,7 @@ import { IStillingsSøkContext } from '@/app/stilling/StillingsSøkContext';
  */
 import useSWRImmutable from 'swr/immutable';
 
-const stillingsSøkCombined = `${StillingsSøkAPI.internUrl}/esCombined` as const; // kombinert endepunkt
+const stillingsSokBase = `${StillingsSøkAPI.internUrl}` as const; // direkte ett kall
 
 interface UseStillingssøkParams {
   filter: IStillingsSøkContext;
@@ -52,31 +53,23 @@ export const useStillingssøk = ({
     finnStillingerForKandidat,
   });
 
-  // Vi henter treff og aggregeringer separat
+  const mergedQuery = byggKombinertQuery(treffPayload, aggsPayload);
+
   const combinedHook = useSWRImmutable(
     geografiData.isLoading
       ? null
-      : {
-          url: stillingsSøkCombined,
-          body: { treff: treffPayload, aggs: aggsPayload },
-        },
+      : { url: stillingsSokBase, body: mergedQuery },
     async (requestConfig) => {
-      // Utfør POST til combined endepunkt
       const res = await fetch(requestConfig.url, {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(requestConfig.body),
       });
-      if (!res.ok) throw new Error('Feil ved kombinert stillingssøk');
+      if (!res.ok) throw new Error('Feil ved stillingssøk');
       const json = await res.json();
-      // Valider komplett combined respons (kaster ikke for å unngå hard crash, men kunne gjort parse her)
       const result = StillingsSokCombinedSchema.safeParse(json);
-      if (!result.success) {
-        // Returner likevel data for ikke å stoppe UI, evt kunne logges
-        return json;
-      }
-      return result.data;
+      return result.success ? result.data : json;
     },
   );
 
@@ -84,7 +77,7 @@ export const useStillingssøk = ({
 };
 
 export const stillingssøkMirage = (server: any) => {
-  server.post(stillingsSøkCombined, () => ({
+  server.post(stillingsSokBase, () => ({
     hits: mockStillingssøk.hits,
     antall: {
       status: { publisert: 0, utløpt: 0, stoppet: 0 },
