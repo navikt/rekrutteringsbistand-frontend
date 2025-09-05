@@ -12,7 +12,7 @@ export interface NavigasjonWrapperProps {
 const NavigasjonWrapper: React.FC<NavigasjonWrapperProps> = ({ children }) => {
   return (
     <div className='[--header-height:calc(--spacing(14))]'>
-      <SidebarProvider className='flex flex-col'>
+      <SidebarProvider mobileBehavior='collapse' className='flex flex-col'>
         <NavDekoratør />
         <div className='flex flex-1 h-[calc(100svh-var(--header-height))]'>
           <AppSidebar />

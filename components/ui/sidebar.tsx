@@ -67,11 +67,18 @@ function SidebarProvider({
   className,
   style,
   children,
+  mobileBehavior = 'sheet',
   ...props
 }: ComponentProps<'div'> & {
   defaultOpen?: boolean;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
+  /**
+   * Bestemmer hvordan sidebaren skal oppføre seg på små skjermer.
+   * 'sheet' (default) = viser Sheet.
+   * 'collapse' = beholder vanlig sidebar og lar den kollapse til ikonbredde.
+   */
+  mobileBehavior?: 'sheet' | 'collapse';
 }) {
   const isMobile = useIsMobile();
   const [openMobile, setOpenMobile] = useState(false);
@@ -97,8 +104,13 @@ function SidebarProvider({
 
   // Helper to toggle the sidebar.
   const toggleSidebar = useCallback(() => {
-    return isMobile ? setOpenMobile((open) => !open) : setOpen((open) => !open);
-  }, [isMobile, setOpen, setOpenMobile]);
+    // Hvis vi har valgt 'collapse' for mobil, skal vi bruke samme open-state
+    // i stedet for å åpne Sheet.
+    if (isMobile && mobileBehavior === 'sheet') {
+      return setOpenMobile((open) => !open);
+    }
+    return setOpen((open) => !open);
+  }, [isMobile, mobileBehavior, setOpen, setOpenMobile]);
 
   // Adds a keyboard shortcut to toggle the sidebar.
   useEffect(() => {
@@ -187,7 +199,13 @@ function Sidebar({
     );
   }
 
-  if (isMobile) {
+  // Dersom vi er på mobil og standard oppførsel (sheet) brukes, vis Sheet.
+  if (
+    isMobile &&
+    openMobile !== undefined &&
+    openMobile &&
+    collapsible !== 'icon'
+  ) {
     return (
       <Sheet open={openMobile} onOpenChange={setOpenMobile} {...props}>
         <SheetContent
@@ -214,7 +232,7 @@ function Sidebar({
 
   return (
     <div
-      className='bg-background group peer text-sidebar-foreground hidden md:block'
+      className='bg-background group peer text-sidebar-foreground block'
       data-state={state}
       data-collapsible={state === 'collapsed' ? collapsible : ''}
       data-variant={variant}
@@ -236,7 +254,7 @@ function Sidebar({
       <div
         data-slot='sidebar-container'
         className={cn(
-          'bg-background inset-y-0 z-10 hidden h-svh w-(--sidebar-width) transition-[left,right,width] duration-200 ease-linear md:flex',
+          'bg-background inset-y-0 z-10 flex h-svh w-(--sidebar-width) transition-[left,right,width] duration-200 ease-linear',
           side === 'left'
             ? 'left-0 group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)]'
             : 'right-0 group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)]',

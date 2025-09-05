@@ -133,20 +133,20 @@ export const testTilgangskontroll = (rolle: Roller) => {
       const redigerKnapp = page.getByRole('button', { name: 'Rediger' });
       // const dupliserKnapp = page.getByRole('button', { name: 'Dupliser' });
       // const avpubliserKnapp = page.getByRole('button', { name: 'Avpubliser' });
-      // const ferdigstillKnapp = page.getByRole('button', {
-      //   name: 'Ferdigstill',
-      // });
+      const ferdigstillKnapp = page.getByRole('button', {
+        name: 'Fullfør',
+      });
 
       if (ARBEIDSGIVERRETTET) {
         await expect(redigerKnapp).toBeVisible();
         // await expect(dupliserKnapp).toBeVisible();
         // await expect(avpubliserKnapp).toBeVisible();
-        // await expect(ferdigstillKnapp).toBeVisible();
+        await expect(ferdigstillKnapp).toBeVisible();
       } else {
         await expect(redigerKnapp).toBeHidden();
         // await expect(dupliserKnapp).toBeHidden();
         // await expect(avpubliserKnapp).toBeHidden();
-        // await expect(ferdigstillKnapp).toBeHidden();
+        await expect(ferdigstillKnapp).toBeHidden();
       }
 
       if (ARBEIDSGIVERRETTET) {

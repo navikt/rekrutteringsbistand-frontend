@@ -32,9 +32,7 @@ test.describe(`Stilling test`, () => {
     // await expect(
     //   page.getByRole('button', { name: 'Avpubliser' }),
     // ).toBeVisible();
-    // await expect(
-    //   page.getByRole('button', { name: 'Ferdigstill' }),
-    // ).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Fullfør' })).toBeVisible();
   });
 
   test('Ikke min stilling', async ({ page }) => {
