@@ -71,7 +71,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(byggRespons(treffData, aggsData));
     }
 
-    // PROD / ikke-lokal: bruk felles proxyWithOBO to ganger (treff og aggs)
+    // PROD / ikke-lokal: kaller hoved /api/stillings-sok endepunkt to ganger (treff + aggs)
     const origin = req.headers.get('x-forwarded-host')
       ? `${req.headers.get('x-forwarded-proto') || 'https'}://${req.headers.get('x-forwarded-host')}`
       : undefined;
@@ -79,13 +79,15 @@ export async function POST(req: NextRequest) {
       ? `${origin}${StillingsSøkAPI.internUrl}`
       : StillingsSøkAPI.internUrl;
 
+    const internalBase = `${base}`; // /api/stillings-sok
+
     const [treffRes, aggsRes] = await Promise.all([
-      fetch(`${base}/esSearch`, {
+      fetch(internalBase, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body.treff),
       }),
-      fetch(`${base}/esAggs`, {
+      fetch(internalBase, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body.aggs),
