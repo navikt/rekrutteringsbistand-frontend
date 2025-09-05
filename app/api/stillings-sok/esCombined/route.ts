@@ -1,6 +1,7 @@
 import { StillingsSøkAPI } from '@/app/api/api-routes';
-import { proxyWithOBO } from '@/app/api/oboProxy';
+import { hentOboToken, setHeaderToken } from '@/app/api/oboToken';
 import { isLocal } from '@/util/env';
+// Removed unused import
 import {
   formaterStedsnavn,
   fylkesnavnTilKode,
@@ -73,27 +74,127 @@ export async function POST(req: NextRequest) {
     }
 
     // PROD / ikke-lokal: bruk proxyWithOBO med customRoute = api_route for å unngå /esCombined i upstream-path
-    const treffResponse = await proxyWithOBO(
-      StillingsSøkAPI,
-      req,
-      StillingsSøkAPI.api_route,
-      body.treff,
-    );
-    if (!treffResponse.ok) {
-      return treffResponse; // proxyWithOBO gir korrekt JSON-feil
+    // PROD / ikke-lokal: ett OBO-token, to kall mot upstream /stilling/_search
+    const correlationId = crypto.randomUUID();
+    const debug = new URL(req.url).searchParams.get('debug') === '1';
+
+    const obo = await hentOboToken({
+      headers: req.headers,
+      scope: StillingsSøkAPI.scope,
+    });
+    if (!obo.ok || !obo.token) {
+      return NextResponse.json(
+        { error: 'Kunne ikke hente OBO-token', correlationId },
+        { status: 500 },
+      );
     }
-    const aggsResponse = await proxyWithOBO(
-      StillingsSøkAPI,
-      req,
-      StillingsSøkAPI.api_route,
-      body.aggs,
-    );
-    if (!aggsResponse.ok) {
-      return aggsResponse;
+    const headers = setHeaderToken({
+      headers: req.headers,
+      oboToken: obo.token,
+    });
+    headers.set('content-type', 'application/json');
+    headers.set('x-correlation-id', correlationId);
+
+    const baseUrl = `${StillingsSøkAPI.api_url}${StillingsSøkAPI.api_route}`;
+
+    const fetchWithRetry = async (
+      payload: any,
+      label: string,
+      attempts = 2,
+    ): Promise<Response> => {
+      let lastErr: any;
+      for (let i = 0; i < attempts; i++) {
+        try {
+          const res = await fetch(baseUrl, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify(payload),
+          });
+          if (
+            !res.ok &&
+            (res.status >= 500 || res.status === 429) &&
+            i + 1 < attempts
+          ) {
+            await new Promise((r) => setTimeout(r, 120 * (i + 1)));
+            continue;
+          }
+          return res;
+        } catch (e: any) {
+          lastErr = e;
+          if (i + 1 < attempts) {
+            await new Promise((r) => setTimeout(r, 120 * (i + 1)));
+            continue;
+          }
+        }
+      }
+      throw new RekbisError({
+        message: `Nettverksfeil etter retry (${label})`,
+        error: lastErr,
+        details: debug
+          ? JSON.stringify({ correlationId }).slice(0, 800)
+          : undefined,
+      });
+    };
+
+    const treffRes = await fetchWithRetry(body.treff, 'treff');
+    if (!treffRes.ok) {
+      const txt = await treffRes.text();
+      return NextResponse.json(
+        {
+          error: 'Treff-spørring feilet',
+          status: treffRes.status,
+          correlationId,
+          ...(debug && { body: txt }),
+        },
+        { status: treffRes.status },
+      );
     }
-    const treffData = await treffResponse.json();
-    const aggsData = await aggsResponse.json();
-    return NextResponse.json(byggRespons(treffData, aggsData));
+    const aggsRes = await fetchWithRetry(body.aggs, 'aggs');
+    if (!aggsRes.ok) {
+      const txt = await aggsRes.text();
+      return NextResponse.json(
+        {
+          error: 'Aggregerings-spørring feilet',
+          status: aggsRes.status,
+          correlationId,
+          ...(debug && { body: txt }),
+        },
+        { status: aggsRes.status },
+      );
+    }
+    let treffData: any;
+    let aggsData: any;
+    try {
+      [treffData, aggsData] = await Promise.all([
+        treffRes.json(),
+        aggsRes.json(),
+      ]);
+    } catch (parseErr: any) {
+      return NextResponse.json(
+        {
+          error: 'Klarte ikke parse JSON',
+          correlationId,
+          ...(debug && { original: parseErr?.message }),
+        },
+        { status: 502 },
+      );
+    }
+    try {
+      return NextResponse.json(byggRespons(treffData, aggsData));
+    } catch (mapErr: any) {
+      new RekbisError({
+        message: 'Feil ved mapping av combined respons',
+        error: mapErr,
+      });
+      return NextResponse.json(
+        {
+          error: 'Feil ved mapping av respons',
+          correlationId,
+          ...(debug && { original: mapErr?.message }),
+        },
+        { status: 500 },
+      );
+    }
   } catch (error: any) {
     new RekbisError({ message: 'Feil i kombinert stillingssøk', error });
     return NextResponse.json(
