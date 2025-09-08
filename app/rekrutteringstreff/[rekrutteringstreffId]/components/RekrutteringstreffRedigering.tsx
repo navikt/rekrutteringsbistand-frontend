@@ -45,32 +45,30 @@ const RekrutteringstreffRedigering: React.FC<
   >([]);
   const bekreftModalRef = React.useRef<HTMLDialogElement>(null);
 
-  // Hold endringer oppdatert i sanntid for å styre "Publiser på nytt"-knappen
-  const watched = watch([
-    'tittel',
-    'beskrivelse',
-    'fraDato',
-    'fraTid',
-    'tilDato',
-    'tilTid',
-    'svarfristDato',
-    'svarfristTid',
-    'gateadresse',
-    'postnummer',
-    'poststed',
-  ] as any);
-
   React.useEffect(() => {
     const treff = rekrutteringstreffHook.data as any;
     if (!treff) {
       setEndringer([]);
       return;
     }
-    // Verdiene fra watch er en array i samme rekkefølge som feltene over, men vi kan hente hele skjemaet trygt her
-    const verdier = getValues() as any;
-    const elementer = beregnEndringer(verdier, treff);
-    setEndringer(elementer);
-  }, [rekrutteringstreffHook.data, watched]);
+    // Beregn ved init når data lastes
+    {
+      const verdier = getValues() as any;
+      const elementer = beregnEndringer(verdier, treff);
+      setEndringer((prev) =>
+        erLikEndringsliste(prev, elementer) ? prev : elementer,
+      );
+    }
+
+    const subscription = watch(() => {
+      const verdier = getValues() as any;
+      const elementer = beregnEndringer(verdier, treff);
+      setEndringer((prev) =>
+        erLikEndringsliste(prev, elementer) ? prev : elementer,
+      );
+    });
+    return () => subscription.unsubscribe();
+  }, [rekrutteringstreffHook.data, watch, getValues]);
 
   const håndterOppdatert = () => {
     rekrutteringstreffHook.mutate();
@@ -88,6 +86,13 @@ const RekrutteringstreffRedigering: React.FC<
 
   const formatIso = (iso: string | null | undefined) => {
     return iso ? formatIsoUtil(iso) : '';
+  };
+
+  const erLikEndringsliste = (
+    a: { etikett: string; gammelVerdi: string; nyVerdi: string }[],
+    b: { etikett: string; gammelVerdi: string; nyVerdi: string }[],
+  ) => {
+    return JSON.stringify(a) === JSON.stringify(b);
   };
 
   const beregnEndringer = (verdier: any, treff: any) => {
@@ -206,7 +211,6 @@ const RekrutteringstreffRedigering: React.FC<
               size='small'
               disabled={endringer.length === 0}
               onClick={() => {
-                // Vis oppsummering av endringer før vi lagrer
                 åpneBekreftelse();
               }}
             >
