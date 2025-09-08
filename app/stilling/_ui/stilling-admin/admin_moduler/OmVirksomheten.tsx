@@ -15,17 +15,93 @@ import {
   TextField,
   UNSAFE_Combobox,
 } from '@navikt/ds-react';
-import { useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
+
+export const ValgtArbeidsgiverVisning: FC<{
+  arbeidsgiver: ArbeidsgiverDTO;
+}> = ({ arbeidsgiver }) => (
+  <FormSummary className='mt-4'>
+    <FormSummary.Header>
+      <FormSummary.Heading level='2'>Valgt arbeidsgiver</FormSummary.Heading>
+    </FormSummary.Header>
+
+    <FormSummary.Answers>
+      <FormSummary.Answer>
+        <FormSummary.Label>Navn</FormSummary.Label>
+        <FormSummary.Value>{arbeidsgiver?.navn}</FormSummary.Value>
+      </FormSummary.Answer>
+
+      <FormSummary.Answer>
+        <FormSummary.Label>Organisasjonsnummer</FormSummary.Label>
+        <FormSummary.Value>
+          {arbeidsgiver?.organisasjonsnummer}
+        </FormSummary.Value>
+      </FormSummary.Answer>
+
+      <FormSummary.Answer>
+        <FormSummary.Label>Adresse</FormSummary.Label>
+        <FormSummary.Value>
+          {arbeidsgiver?.adresse?.adresse ?? '-'}
+        </FormSummary.Value>
+        <FormSummary.Value>
+          {arbeidsgiver?.adresse?.postnummer ?? '-'},{' '}
+          {arbeidsgiver?.adresse?.poststed ?? '-'}
+        </FormSummary.Value>
+
+        <FormSummary.Value>
+          {arbeidsgiver?.adresse?.kommune ?? '-'}
+        </FormSummary.Value>
+      </FormSummary.Answer>
+    </FormSummary.Answers>
+  </FormSummary>
+);
 
 export default function OmVirksomheten() {
   const { register, setValue, getValues, watch } =
     useFormContext<StillingsDataDTO>();
   const [søkeOrd, setSøkeord] = useState<string>('');
   const { isLoading, error, data } = useFinnArbeidsgiver(søkeOrd);
+  // Hjelper: mappe fra stilling.employer (form-format) til ArbeidsgiverDTO (visningsformat)
+  const mapEmployerToArbeidsgiverDTO = (
+    employer: any | null | undefined,
+  ): ArbeidsgiverDTO | null => {
+    if (!employer) return null;
+    const loc = employer.location ?? null;
+    const adresse = loc
+      ? {
+          land: loc.country === 'NORGE' ? 'Norge' : (loc.country ?? 'Norge'),
+          landkode: 'NO',
+          kommune: loc.municipal ?? '',
+          kommunenummer: loc.municipalCode ?? '',
+          poststed: loc.city ?? '',
+          postnummer: loc.postalCode ?? '',
+          adresse: loc.address ?? '',
+        }
+      : null;
+    const dto: ArbeidsgiverDTO = {
+      organisasjonsnummer: employer.orgnr ?? '',
+      navn: employer.name ?? '',
+      organisasjonsform: employer.orgform ?? '',
+      antallAnsatte: employer.employees ?? null,
+      overordnetEnhet: employer.parentOrgnr ?? null,
+      adresse,
+      naringskoder: null,
+    };
+    return dto;
+  };
+
   const [arbeidsgiver, setArbeidsgiverState] = useState<ArbeidsgiverDTO | null>(
-    null,
+    mapEmployerToArbeidsgiverDTO(getValues('stilling.employer')),
   );
+
+  // Hold valgt arbeidsgiver i sync når stilling.employer endres i form
+  const employerWatch = watch('stilling.employer');
+  useEffect(() => {
+    setArbeidsgiverState(mapEmployerToArbeidsgiverDTO(employerWatch));
+  }, [employerWatch]);
+
+  const harVærtPublisert = getValues('stilling.firstPublished');
 
   const setArbeidsgiver = (arbeidsgiver: ArbeidsgiverDTO) => {
     setArbeidsgiverState(arbeidsgiver);
@@ -43,7 +119,10 @@ export default function OmVirksomheten() {
         address: arbeidsgiver.adresse?.adresse ?? '',
         postalCode: arbeidsgiver.adresse?.postnummer ?? '',
         county: '',
-        country: arbeidsgiver.adresse?.land ?? 'Norge',
+        country:
+          arbeidsgiver.adresse?.land === 'Norge'
+            ? 'NORGE'
+            : (arbeidsgiver.adresse?.land ?? 'NORGE'),
         municipal: arbeidsgiver.adresse?.kommune ?? '',
         city: arbeidsgiver.adresse?.poststed ?? '',
       },
@@ -68,58 +147,29 @@ export default function OmVirksomheten() {
     <RedigerBoks tittel='Om virksomheten'>
       <div className='flex flex-col gap-4'>
         <div role='search'>
-          <UNSAFE_Combobox
-            isLoading={isLoading}
-            label='Arbeidsgivers navn eller organisasjonsnummer'
-            options={
-              data?.map(
-                (arbeidsgiver) =>
-                  `${arbeidsgiver.navn} - ${arbeidsgiver.organisasjonsnummer}`,
-              ) ?? []
-            }
-            shouldAutocomplete={true}
-            onChange={(verdi) => setSøkeord(verdi)}
-            onToggleSelected={(valg) => {
-              const orgnr = valg.split(' - ').at(-1);
-              const selectedArbeidsgiver = data?.find(
-                (a) => a.organisasjonsnummer === orgnr,
-              );
-              if (selectedArbeidsgiver) setArbeidsgiver(selectedArbeidsgiver);
-            }}
-          />
+          {!harVærtPublisert && (
+            <UNSAFE_Combobox
+              isLoading={isLoading}
+              label='Arbeidsgivers navn eller organisasjonsnummer'
+              options={
+                data?.map(
+                  (arbeidsgiver) =>
+                    `${arbeidsgiver.navn} - ${arbeidsgiver.organisasjonsnummer}`,
+                ) ?? []
+              }
+              shouldAutocomplete={true}
+              onChange={(verdi) => setSøkeord(verdi)}
+              onToggleSelected={(valg) => {
+                const orgnr = valg.split(' - ').at(-1);
+                const selectedArbeidsgiver = data?.find(
+                  (a) => a.organisasjonsnummer === orgnr,
+                );
+                if (selectedArbeidsgiver) setArbeidsgiver(selectedArbeidsgiver);
+              }}
+            />
+          )}
           {arbeidsgiver && (
-            <FormSummary className='mt-4'>
-              <FormSummary.Header>
-                <FormSummary.Heading level='2'>
-                  Valgt arbeidsgiver
-                </FormSummary.Heading>
-              </FormSummary.Header>
-              <FormSummary.Answers>
-                <FormSummary.Answer>
-                  <FormSummary.Label>Navn</FormSummary.Label>
-                  <FormSummary.Value>{arbeidsgiver?.navn}</FormSummary.Value>
-                </FormSummary.Answer>
-                <FormSummary.Answer>
-                  <FormSummary.Label>Organisasjonsnummer</FormSummary.Label>
-                  <FormSummary.Value>
-                    {arbeidsgiver?.organisasjonsnummer}
-                  </FormSummary.Value>
-                </FormSummary.Answer>
-                <FormSummary.Answer>
-                  <FormSummary.Label>Adresse</FormSummary.Label>
-                  <FormSummary.Value>
-                    {arbeidsgiver?.adresse?.adresse ?? '-'}
-                  </FormSummary.Value>
-                  <FormSummary.Value>
-                    {arbeidsgiver?.adresse?.postnummer ?? '-'},{' '}
-                    {arbeidsgiver?.adresse?.poststed ?? '-'}
-                  </FormSummary.Value>
-                  <FormSummary.Value>
-                    {arbeidsgiver?.adresse?.kommune ?? '-'}
-                  </FormSummary.Value>
-                </FormSummary.Answer>
-              </FormSummary.Answers>
-            </FormSummary>
+            <ValgtArbeidsgiverVisning arbeidsgiver={arbeidsgiver} />
           )}
         </div>
         {error && (
