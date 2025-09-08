@@ -33,7 +33,7 @@ const RekrutteringstreffRedigering: React.FC<
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const rekrutteringstreffHook = useRekrutteringstreff(rekrutteringstreffId);
   const { save } = useAutosave();
-  const { getValues } = useFormContext();
+  const { getValues, watch } = useFormContext();
 
   const harPublisert =
     rekrutteringstreffHook.data?.hendelser?.some(
@@ -44,6 +44,33 @@ const RekrutteringstreffRedigering: React.FC<
     { etikett: string; gammelVerdi: string; nyVerdi: string }[]
   >([]);
   const bekreftModalRef = React.useRef<HTMLDialogElement>(null);
+
+  // Hold endringer oppdatert i sanntid for å styre "Publiser på nytt"-knappen
+  const watched = watch([
+    'tittel',
+    'beskrivelse',
+    'fraDato',
+    'fraTid',
+    'tilDato',
+    'tilTid',
+    'svarfristDato',
+    'svarfristTid',
+    'gateadresse',
+    'postnummer',
+    'poststed',
+  ] as any);
+
+  React.useEffect(() => {
+    const treff = rekrutteringstreffHook.data as any;
+    if (!treff) {
+      setEndringer([]);
+      return;
+    }
+    // Verdiene fra watch er en array i samme rekkefølge som feltene over, men vi kan hente hele skjemaet trygt her
+    const verdier = getValues() as any;
+    const elementer = beregnEndringer(verdier, treff);
+    setEndringer(elementer);
+  }, [rekrutteringstreffHook.data, watched]);
 
   const håndterOppdatert = () => {
     rekrutteringstreffHook.mutate();
@@ -63,11 +90,7 @@ const RekrutteringstreffRedigering: React.FC<
     return iso ? formatIsoUtil(iso) : '';
   };
 
-  const åpneBekreftelse = () => {
-    const verdier = getValues() as any;
-    const treff = rekrutteringstreffHook.data as any;
-    if (!treff) return;
-
+  const beregnEndringer = (verdier: any, treff: any) => {
     const fraTid =
       toIso(verdier.fraDato ?? null, verdier.fraTid) ?? treff?.fraTid ?? null;
     const tilTid =
@@ -163,7 +186,10 @@ const RekrutteringstreffRedigering: React.FC<
       nesteDto.poststed,
     );
 
-    setEndringer(elementer);
+    return elementer;
+  };
+
+  const åpneBekreftelse = () => {
     bekreftModalRef.current?.showModal();
   };
 
