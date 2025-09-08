@@ -1,38 +1,13 @@
 'use client';
 
 import { useRekrutteringstreffContext } from '../../RekrutteringstreffContext';
+import { toIso as toIsoUtil } from './tidspunkt/utils';
 import { oppdaterRekrutteringstreff } from '@/app/api/rekrutteringstreff/oppdater-rekrutteringstreff/oppdaterRerkutteringstreff';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
-import { format } from 'date-fns';
 import { useCallback } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 type AnyValues = Record<string, any>;
-
-function toIso(
-  date: Date | null | undefined,
-  time?: string | null,
-): string | null {
-  if (!date) return null;
-
-  const timeValue = time && time.trim() !== '' ? time : '00:00';
-  const [hStr = '0', mStr = '0'] = timeValue.split(':');
-  const hh = Number.isFinite(Number(hStr)) ? Number(hStr) : 0;
-  const mm = Number.isFinite(Number(mStr)) ? Number(mStr) : 0;
-
-  const d = new Date(
-    date.getFullYear(),
-    date.getMonth(),
-    date.getDate(),
-    hh,
-    mm,
-    0,
-    0,
-  );
-  if (isNaN(d.getTime())) return null;
-
-  return format(d, "yyyy-MM-dd'T'HH:mm:ssXXX");
-}
 
 export function useAutosave() {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
@@ -48,13 +23,16 @@ export function useAutosave() {
   const buildFullDto = useCallback(() => {
     const v = getValues();
 
-    const fraTid = toIso(v.fraDato ?? null, v.fraTid) ?? treff?.fraTid ?? null;
+    const fraTid =
+      toIsoUtil(v.fraDato ?? null, v.fraTid) ?? treff?.fraTid ?? null;
 
     const tilTid =
-      toIso(v.tilDato ?? v.fraDato ?? null, v.tilTid) ?? treff?.tilTid ?? null;
+      toIsoUtil(v.tilDato ?? v.fraDato ?? null, v.tilTid) ??
+      treff?.tilTid ??
+      null;
 
     const svarfrist =
-      toIso(v.svarfristDato ?? null, v.svarfristTid) ??
+      toIsoUtil(v.svarfristDato ?? null, v.svarfristTid) ??
       treff?.svarfrist ??
       null;
 

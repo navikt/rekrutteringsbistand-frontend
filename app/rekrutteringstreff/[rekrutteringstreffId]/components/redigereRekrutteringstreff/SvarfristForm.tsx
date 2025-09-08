@@ -5,6 +5,7 @@ import DatoTidRad from './tidspunkt/DatoTidRad';
 import { useAutosave } from './useAutosave';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { Heading } from '@navikt/ds-react';
+import { parseISO, format } from 'date-fns';
 import React from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
@@ -13,13 +14,9 @@ export type SvarfristFormFields = {
   svarfristTid: string;
 };
 
-const pad = (n: number) => String(n).padStart(2, '0');
-const toDate = (iso?: string | null) => (iso ? new Date(iso) : null);
-const toHHmm = (iso?: string | null) => {
-  if (!iso) return '';
-  const d = new Date(iso);
-  return `${pad(d.getHours())}:${pad(d.getMinutes())}`;
-};
+const toDate = (iso?: string | null) => (iso ? parseISO(iso) : null);
+const toHHmm = (iso?: string | null) =>
+  iso ? format(parseISO(iso), 'HH:mm') : '';
 
 interface Props {
   control: any;
