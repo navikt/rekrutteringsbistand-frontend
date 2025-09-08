@@ -1,5 +1,10 @@
+import { oppdaterStilling } from '@/app/api/stilling/oppdater-stilling/oppdaterStilling';
 import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
+import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import { DatoVelger } from '@/app/stilling/_ui/stilling-admin/admin_moduler/_felles/DatoVelger';
+import { UmamiEvent } from '@/components/umami/umamiEvents';
+import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
+import { useUmami } from '@/providers/UmamiContext';
 import {
   BodyLong,
   Box,
@@ -11,6 +16,7 @@ import {
   ToggleGroup,
 } from '@navikt/ds-react';
 import { format, parse } from 'date-fns';
+import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 
@@ -19,15 +25,19 @@ export interface PubliserModalProps {
 }
 
 export default function PubliserModal({ disabled }: PubliserModalProps) {
+  const { brukerData, valgtNavKontor } = useApplikasjonContext();
+  const { stillingsData } = useStillingsContext();
   const ref = useRef<HTMLDialogElement>(null);
   const { watch, setValue } = useFormContext<StillingsDataDTO>();
-
+  const { track } = useUmami();
+  const router = useRouter();
   // Hent eksisterende verdier fra form
   const privacy = watch('stilling.privacy');
   const publishedISO = watch('stilling.published');
   const expiresISO = watch('stilling.expires');
   const applicationEmail = watch('stilling.properties.applicationemail');
   const applicationUrl = watch('stilling.properties.applicationurl');
+  const [isLoading, setIsLoading] = useState(false);
 
   const isoTilSkjemaDato = (iso?: string | null) => {
     if (!iso) return undefined;
@@ -62,7 +72,7 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
     return format(parsed, "yyyy-MM-dd'T'HH:mm:ss");
   };
 
-  const håndterPubliser = () => {
+  const håndterPubliser = async () => {
     // Sett datoer på form
     setValue('stilling.published', skjemaDatoTilIso(publiseringsdato), {
       shouldDirty: true,
@@ -99,6 +109,48 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
     if (!sisteVisningsdato && publiseringsdato && søkemetode === 'email') {
       // valgfritt: ingen spesifikasjon gitt – hopper over
     }
+
+    const nyData = watch();
+    const publiserStillingsData = {
+      ...nyData,
+      stilling: {
+        ...nyData.stilling,
+        status: 'ACTIVE',
+        administration: {
+          ...nyData.stilling.administration,
+          status: 'DONE',
+        },
+        firstPublished: true,
+      },
+    };
+
+    track(UmamiEvent.Stilling.ny_stilling_info, {
+      yrkestittel: publiserStillingsData.stilling.categoryList?.[0]?.name,
+      sektor: publiserStillingsData.stilling.properties?.sector,
+      ansettelsesform:
+        publiserStillingsData.stilling.properties?.engagementtype,
+      arbeidstidsordning:
+        publiserStillingsData.stilling?.properties?.jobarrangement,
+      omfangIProsent: publiserStillingsData.stilling.properties?.jobpercentage,
+      arbeidssted: publiserStillingsData.stilling.locationList,
+    });
+
+    const response = await oppdaterStilling(publiserStillingsData, {
+      eierNavident: brukerData.ident,
+      eierNavn: brukerData.navn,
+      eierNavKontorEnhetId: valgtNavKontor?.navKontor,
+    });
+
+    if (response.stilling.uuid) {
+      setTimeout(() => {
+        router.push(`/stilling/${response.stilling.uuid}`);
+      }, 500);
+    } else {
+      alert('Feil ved opprettelse av stilling');
+    }
+
+    setIsLoading(false);
+
     ref.current?.close();
   };
 
@@ -193,7 +245,7 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <Button disabled type='button' onClick={håndterPubliser}>
+          <Button loading={isLoading} type='button' onClick={håndterPubliser}>
             Publiser annonsen
           </Button>
           <Button

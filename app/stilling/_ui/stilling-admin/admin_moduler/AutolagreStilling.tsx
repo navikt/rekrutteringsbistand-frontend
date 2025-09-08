@@ -12,7 +12,6 @@ interface AutolagreStillingProps {
   stillingsData: StillingAdminDTO;
   /** (valgfritt) override på intervall i ms for testing */
   intervallMs?: number;
-  disabled?: boolean;
 }
 
 // Hjelpefunksjon for menneskelig tidsformat
@@ -30,7 +29,6 @@ const formatElapsed = (sekunder: number) => {
 export default function AutolagreStilling({
   stillingsData,
   intervallMs = 5 * 60 * 1000, // 5 minutter default
-  disabled,
 }: AutolagreStillingProps) {
   const { brukerData, valgtNavKontor } = useApplikasjonContext();
   const [sisteLagret, setSisteLagret] = useState<Date | null>(null);
@@ -41,10 +39,9 @@ export default function AutolagreStilling({
   const tickRef = useRef<NodeJS.Timeout | null>(null);
   const inFlightRef = useRef<Promise<any> | null>(null);
 
-  const erPublisert = stillingsData?.stilling?.status !== StillingsStatus.Aktiv;
+  const erPublisert = stillingsData?.stilling?.status === StillingsStatus.Aktiv;
 
   const kanLagre =
-    !disabled &&
     !erPublisert &&
     !!stillingsData?.stilling &&
     !!(stillingsData as any).stilling?.uuid; // trenger eksisterende stilling for oppdatering
@@ -96,7 +93,7 @@ export default function AutolagreStilling({
 
   // Autolagre intervall
   useEffect(() => {
-    if (!kanLagre || disabled) return; // ikke sett intervall
+    if (!kanLagre) return; // ikke sett intervall
     if (intervalRef.current) clearInterval(intervalRef.current);
     intervalRef.current = setInterval(() => {
       // unngå å trigge hvis vi ikke har endringer? (ikke tilgjengelig nå) -> alltid lagre
@@ -106,7 +103,7 @@ export default function AutolagreStilling({
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [kanLagre, disabled, intervallMs, stillingsData]);
+  }, [kanLagre, intervallMs, stillingsData]);
 
   // Første lagring initielt? Vi velger å ikke lagre umiddelbart, kun starte timer.
 
@@ -138,7 +135,7 @@ export default function AutolagreStilling({
         variant='tertiary'
         onClick={lagre}
         loading={saving}
-        disabled={saving || disabled}
+        disabled={saving}
       >
         {statusTekst}
       </Button>
