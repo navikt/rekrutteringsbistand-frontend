@@ -247,6 +247,7 @@ const RekrutteringstreffRedigering: React.FC<
               type='button'
               variant='primary'
               size='small'
+              disabled={endringer.length === 0}
               onClick={async () => {
                 bekreftModalRef.current?.close();
                 await save(undefined, true);

@@ -147,7 +147,7 @@ const OpprettKnapp: React.FC = () => {
                         const id = response.id;
                         trackAndNavigate(
                           UmamiEvent.Sidebar.opprettet_rekrutteringstreff,
-                          `/rekrutteringstreff/${id}`,
+                          `/rekrutteringstreff/${id}?mode=edit`,
                         );
                       })
                       .catch((error) => {
