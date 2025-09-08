@@ -1,12 +1,14 @@
 'use client';
 
 import { oppdaterStilling } from '@/app/api/stilling/oppdater-stilling/oppdaterStilling';
+import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { StillingAdminDTO } from '@/app/stilling/_ui/stilling-admin/page';
 import { StillingsStatus } from '@/app/stilling/_ui/stilling-typer';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { FloppydiskIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import { useEffect, useRef, useState } from 'react';
+import { useFormContext } from 'react-hook-form';
 
 interface AutolagreStillingProps {
   stillingsData: StillingAdminDTO;
@@ -38,7 +40,7 @@ export default function AutolagreStilling({
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const tickRef = useRef<NodeJS.Timeout | null>(null);
   const inFlightRef = useRef<Promise<any> | null>(null);
-
+  const { getValues } = useFormContext<StillingsDataDTO>();
   const erPublisert = stillingsData?.stilling?.status === StillingsStatus.Aktiv;
 
   const kanLagre =
@@ -49,14 +51,17 @@ export default function AutolagreStilling({
   const lagre = async () => {
     if (!kanLagre) return;
     if (saving) return; // unngå parallell
+
+    const nyeVerdier = getValues();
+
     setSaving(true);
     setError(null);
     try {
       const promise = oppdaterStilling(
         {
           // Sikrer at vi sender riktig struktur (stilling er required i StillingsDataDTO)
-          stilling: stillingsData.stilling as any,
-          stillingsinfo: stillingsData.stillingsinfo || undefined,
+          stilling: nyeVerdier.stilling as any,
+          stillingsinfo: nyeVerdier.stillingsinfo || undefined,
         } as any,
         {
           eierNavident: brukerData.ident,
