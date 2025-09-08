@@ -80,11 +80,11 @@ export function useAutosave() {
   }, [getValues, treff]);
 
   const save = useCallback(
-    async (fieldsToValidate?: string[]) => {
+    async (fieldsToValidate?: string[], force?: boolean) => {
       if (!rekrutteringstreffId) return;
 
-      // Ikke autosave hvis publisert og i redigering
-      if (harPublisert && isEditMode) {
+      // Ikke autosave hvis publisert og i redigering, med mindre vi eksplisitt tvinger lagring (Publiser på nytt)
+      if (!force && harPublisert && isEditMode) {
         return;
       }
 

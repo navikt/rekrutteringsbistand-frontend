@@ -36,18 +36,28 @@ const RekrutteringstreffRedigering: React.FC<
       <PraktiskeForhold />
       <div>
         {harPublisert ? (
-          <Button
-            type='button'
-            variant='primary'
-            size='small'
-            onClick={async () => {
-              // Lagre hele formet i én operasjon, og gå til forhåndsvisning
-              await save();
-              onGåTilForhåndsvisning?.();
-            }}
-          >
-            Publiser på nytt
-          </Button>
+          <div className='flex gap-2'>
+            <Button
+              type='button'
+              variant='primary'
+              size='small'
+              onClick={async () => {
+                // Lagre hele formet i én operasjon, og gå til forhåndsvisning
+                await save(undefined, true);
+                onGåTilForhåndsvisning?.();
+              }}
+            >
+              Publiser på nytt
+            </Button>
+            <Button
+              type='button'
+              variant='secondary'
+              size='small'
+              onClick={() => onGåTilForhåndsvisning?.()}
+            >
+              Avbryt
+            </Button>
+          </div>
         ) : (
           <Button
             type='button'
