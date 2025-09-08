@@ -9,7 +9,15 @@ import {
 } from './redigereRekrutteringstreff/tidspunkt/utils';
 import { useAutosave } from './redigereRekrutteringstreff/useAutosave';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
-import { Button, Modal, BodyLong, BodyShort, Label } from '@navikt/ds-react';
+import {
+  Button,
+  Modal,
+  BodyLong,
+  BodyShort,
+  Label,
+  Detail,
+  Alert,
+} from '@navikt/ds-react';
 import { format, parseISO } from 'date-fns';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
@@ -206,6 +214,10 @@ const RekrutteringstreffRedigering: React.FC<
           header={{ heading: 'Følgende endringer vil bli publisert' }}
         >
           <Modal.Body>
+            <Alert variant='info' className='mb-4'>
+              Inviterte deltakere vil ikke bli informert om endringene på nytt
+              av republiseringen
+            </Alert>
             {endringer.length === 0 ? (
               <BodyLong>Ingen endringer oppdaget.</BodyLong>
             ) : (
