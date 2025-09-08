@@ -13,6 +13,7 @@ import FiltrertKandidatListeVisning from '@/app/stilling/[stillingsId]/kandidatl
 import KandidatlisteWrapper from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteWrapper';
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideLayout from '@/components/layout/SideLayout';
+import { useWindowContext } from '@/components/layout/windows/DynamicWindowContext';
 import { Alert, Heading, Tabs } from '@navikt/ds-react';
 import { useQueryState } from 'nuqs';
 import { useRef } from 'react';
@@ -23,6 +24,7 @@ enum StillingFane {
 }
 
 export default function StillingsSidePage() {
+  const window = useWindowContext();
   const [fane, setFane] = useQueryState('stillingFane', {
     defaultValue: StillingFane.STILLING,
     clearOnDefault: true,
@@ -63,10 +65,14 @@ export default function StillingsSidePage() {
             </PanelHeader>
           }
           fremdriftspanel={
-            !forhåndsvisData && erEier && <FremdriftspanelStilling />
+            !window?.isDynamic &&
+            !forhåndsvisData &&
+            erEier && <FremdriftspanelStilling />
           }
           fremdriftspanelTop={
-            !forhåndsvisData && erEier && <FremdriftspanelStilling dropDown />
+            !window?.isDynamic &&
+            !forhåndsvisData &&
+            erEier && <FremdriftspanelStilling dropDown />
           }
         >
           {!kandidatlisteLaster && kandidatlisteInfo === null && (
@@ -82,27 +88,24 @@ export default function StillingsSidePage() {
           )}
 
           <>
+            {ugyldigStilling && (
+              <Alert variant='error'>
+                <Heading spacing size='small' level='3'>
+                  Ugyldig stilling
+                </Heading>
+                <p>
+                  Denne stillingen er ikke gyldig da det er en intern stilling
+                  som mangler organisasjonsnummer.
+                </p>
+                <p> Stillingen er derfor ikke tilgjengelig for rekruttering.</p>
+              </Alert>
+            )}
             <Tabs.Panel value={StillingFane.STILLING}>
               <OmStillingenHeader />
               <OmStillingen printRef={printRef} />
             </Tabs.Panel>
             {kandidatlisteInfo?.kandidatlisteId && erEier && (
               <>
-                {ugyldigStilling && (
-                  <Alert variant='error'>
-                    <Heading spacing size='small' level='3'>
-                      Ugyldig stilling
-                    </Heading>
-                    <p>
-                      Denne stillingen er ikke gyldig da det er en intern
-                      stilling som mangler organisasjonsnummer.
-                    </p>
-                    <p>
-                      {' '}
-                      Stillingen er derfor ikke tilgjengelig for rekruttering.
-                    </p>
-                  </Alert>
-                )}
                 <Tabs.Panel value={StillingFane.KANDIDATER}>
                   <KandidatlisteWrapper>
                     <FiltrertKandidatListeVisning />

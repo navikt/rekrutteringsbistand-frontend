@@ -15,7 +15,6 @@ import {
   Stillingskategori,
   StillingsStatus,
 } from '@/app/stilling/_ui/stilling-typer';
-import { visStillingsDataInfo } from '@/app/stilling/_util/stillingInfoUtil';
 // import ViktigeDatoer from '@/app/stilling/rediger/_ui/ViktigeDatoer';
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideLayout from '@/components/layout/SideLayout';
@@ -39,8 +38,6 @@ export default function StillingAdmin() {
     useStillingsContext();
   const router = useRouter();
   const [forhåndsvis, setStateForhåndsvis] = useState<boolean>(false);
-
-  const stillingsInfo = visStillingsDataInfo(stillingsData);
 
   const registerForm = useForm<StillingAdminDTO>({
     resolver: zodResolver(StillingAdminSchema),
