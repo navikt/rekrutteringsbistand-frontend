@@ -1,12 +1,32 @@
 import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
-import { format, parse } from 'date-fns';
+import { format, isValid, parse, parseISO } from 'date-fns';
 
-const formaterFraISOdato = (dato: string) => {
-  if (dato.match(/^\d{2}\.\d{2}\.\d{4}$/)) {
-    return dato; // Already formatted correctly
+// Normaliserer ISO-lik streng: legg til sekunder om mangler, trim fraksjoner > 3 siffer (mikrosek)
+const normalizeIso = (value: string) =>
+  value
+    .replace(/^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2})(?!:)/, '$1:00')
+    .replace(
+      /^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})\.(\d{3})\d+(.*)$/,
+      '$1.$2$3',
+    );
+
+// Til skjema (dd.MM.yyyy) fra ISO eller dd.MM.yyyy
+const toFormDate = (value?: string | null): string | null => {
+  if (!value) return null;
+  if (/^\d{2}\.\d{2}\.\d{4}$/.test(value)) return value;
+  const d = parseISO(normalizeIso(value));
+  return isValid(d) ? format(d, 'dd.MM.yyyy') : null;
+};
+
+// Til backend-format (yyyy-MM-dd'T'HH:mm:ss) fra dd.MM.yyyy eller ISO
+const toBackendDate = (value?: string | null): string | null => {
+  if (!value) return null;
+  if (/^\d{2}\.\d{2}\.\d{4}$/.test(value)) {
+    const d = parse(value, 'dd.MM.yyyy', new Date());
+    return isValid(d) ? format(d, "yyyy-MM-dd'T'00:00:00") : null;
   }
-
-  return format(new Date(dato), 'dd.MM.yyyy');
+  const dIso = parseISO(normalizeIso(value));
+  return isValid(dIso) ? format(dIso, "yyyy-MM-dd'T'HH:mm:ss") : null;
 };
 
 export const mapTilForm = (
@@ -24,21 +44,19 @@ export const mapTilForm = (
     ? JSON.parse(stillingsData.stilling.properties.workday)
     : [];
 
-  const oppstartEtterAvtale =
-    stillingsData?.stilling?.properties?.starttime === 'Etter avtale';
+  const søknadsfristVal = stillingsData?.stilling?.properties?.applicationdue;
+  const søknadsfristDato =
+    søknadsfristVal === 'Snarest'
+      ? 'Snarest'
+      : toFormDate(
+          typeof søknadsfristVal === 'string' ? søknadsfristVal : null,
+        );
 
-  const søknadsfristSnarest =
-    stillingsData?.stilling?.properties?.applicationdue === 'Snarest';
-
-  const søknadsfristDato = søknadsfristSnarest
-    ? søknadsfristSnarest
-    : typeof stillingsData?.stilling?.properties?.applicationdue === 'string' &&
-      formaterFraISOdato(stillingsData?.stilling?.properties?.applicationdue);
-
-  const oppstartDato = oppstartEtterAvtale
-    ? oppstartEtterAvtale
-    : typeof stillingsData?.stilling?.properties?.starttime === 'string' &&
-      formaterFraISOdato(stillingsData?.stilling?.properties?.starttime);
+  const oppstartVal = stillingsData?.stilling?.properties?.starttime;
+  const oppstartDato =
+    oppstartVal === 'Etter avtale'
+      ? 'Etter avtale'
+      : toFormDate(typeof oppstartVal === 'string' ? oppstartVal : null);
 
   return {
     ...stillingsData,
@@ -59,19 +77,8 @@ export const mapTilForm = (
 export const mapSendStillingOppdatering = (
   stillingsData: StillingsDataDTO,
 ): StillingsDataDTO => {
-  const publiseringsDato = stillingsData.stilling?.published
-    ? format(
-        parse(stillingsData.stilling?.published, 'dd.MM.yyyy', new Date()),
-        "yyyy-MM-dd'T'HH:mm:ss",
-      )
-    : null;
-
-  const avsluttesDato = stillingsData.stilling?.expires
-    ? format(
-        parse(stillingsData.stilling?.expires, 'dd.MM.yyyy', new Date()),
-        "yyyy-MM-dd'T'HH:mm:ss",
-      )
-    : null;
+  const publiseringsDato = toBackendDate(stillingsData.stilling?.published);
+  const avsluttesDato = toBackendDate(stillingsData.stilling?.expires);
 
   return {
     ...stillingsData,
@@ -79,11 +86,20 @@ export const mapSendStillingOppdatering = (
       ...stillingsData.stilling,
       properties: {
         ...stillingsData.stilling.properties,
-        tags: JSON.stringify(stillingsData.stilling?.properties?.tags),
-        workday: JSON.stringify(stillingsData.stilling?.properties?.workday),
-        workhours: JSON.stringify(
-          stillingsData.stilling?.properties?.workhours,
-        ),
+        tags:
+          typeof stillingsData.stilling?.properties?.tags === 'string'
+            ? (stillingsData.stilling?.properties?.tags as string)
+            : JSON.stringify(stillingsData.stilling?.properties?.tags ?? []),
+        workday:
+          typeof stillingsData.stilling?.properties?.workday === 'string'
+            ? (stillingsData.stilling?.properties?.workday as string)
+            : JSON.stringify(stillingsData.stilling?.properties?.workday ?? []),
+        workhours:
+          typeof stillingsData.stilling?.properties?.workhours === 'string'
+            ? (stillingsData.stilling?.properties?.workhours as string)
+            : JSON.stringify(
+                stillingsData.stilling?.properties?.workhours ?? [],
+              ),
       },
       published: publiseringsDato,
       expires: avsluttesDato,
