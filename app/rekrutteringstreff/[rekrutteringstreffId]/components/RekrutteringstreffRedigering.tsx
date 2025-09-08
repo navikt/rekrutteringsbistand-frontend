@@ -178,6 +178,7 @@ const RekrutteringstreffRedigering: React.FC<
               type='button'
               variant='primary'
               size='small'
+              disabled={endringer.length === 0}
               onClick={() => {
                 // Vis oppsummering av endringer før vi lagrer
                 åpneBekreftelse();
