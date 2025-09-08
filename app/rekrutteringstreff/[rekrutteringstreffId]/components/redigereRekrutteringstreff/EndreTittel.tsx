@@ -26,6 +26,7 @@ import {
   TextField,
 } from '@navikt/ds-react';
 import { AnimatePresence, cubicBezier, motion } from 'framer-motion';
+import { useSearchParams } from 'next/navigation';
 import React, { useRef, useState } from 'react';
 import { useEffect } from 'react';
 import { Controller, useFormContext, useWatch } from 'react-hook-form';
@@ -45,6 +46,8 @@ const EndreTittel = ({ onUpdated }: EndreTittelProps) => {
   } = useRekrutteringstreff(rekrutteringstreffId);
 
   const { setLagret: setKiLagret } = useKiLogg(rekrutteringstreffId, 'tittel');
+  const searchParams = useSearchParams();
+  const isEditMode = (searchParams?.get('mode') ?? '') === 'edit';
   const {
     trigger: validateKI,
     data: analyse,
@@ -85,6 +88,10 @@ const EndreTittel = ({ onUpdated }: EndreTittelProps) => {
     (analyse as any)?.bryterRetningslinjer &&
     !forceSave;
 
+  const harPublisert = (rekrutteringstreff?.hendelser ?? []).some(
+    (h: any) => h.hendelsestype === 'PUBLISER',
+  );
+
   const save = async (currentLoggId: string | null) => {
     try {
       await oppdaterRekrutteringstreff(rekrutteringstreffId, {
@@ -124,7 +131,11 @@ const EndreTittel = ({ onUpdated }: EndreTittelProps) => {
     setLoggId(id ?? null);
 
     const bryter = (analyse as any)?.bryterRetningslinjer;
-    const kanLagre = (!bryter || forceSave) && !validating && !isSubmitting;
+    const kanLagre =
+      (!bryter || forceSave) &&
+      !validating &&
+      !isSubmitting &&
+      !(harPublisert && isEditMode);
 
     if (kanLagre) {
       await save(id ?? null);
@@ -343,8 +354,21 @@ const EndreTittel = ({ onUpdated }: EndreTittelProps) => {
             (analyse as any)?.bryterRetningslinjer &&
             !forceSave && (
               <div className='pt-1'>
-                <Button size='small' variant='secondary' onClick={onForceSave}>
-                  Lagre likevel
+                <Button
+                  size='small'
+                  variant='secondary'
+                  onClick={() => {
+                    if (harPublisert && isEditMode) {
+                      // Ikke lagre nå, bare tillat brudd og fortsett i formet
+                      setForceSave(true);
+                    } else {
+                      onForceSave();
+                    }
+                  }}
+                >
+                  {harPublisert && isEditMode
+                    ? 'Bruk likevel'
+                    : 'Lagre likevel'}
                 </Button>
               </div>
             )}
