@@ -11,6 +11,7 @@ import FremdriftspanelRedigering from '@/app/stilling/_ui/stilling-admin/Fremdri
 import { hentModulerForKategori } from '@/app/stilling/_ui/stilling-admin/StillingAdminModuler';
 import AutolagreStilling from '@/app/stilling/_ui/stilling-admin/admin_moduler/AutolagreStilling';
 import EndreStillingStatus from '@/app/stilling/_ui/stilling-admin/admin_moduler/_felles/EndreStillingStatus';
+import { mapTilForm } from '@/app/stilling/_ui/stilling-admin/admin_moduler/mapVerdier';
 import {
   Stillingskategori,
   StillingsStatus,
@@ -39,9 +40,10 @@ export default function StillingAdmin() {
   const router = useRouter();
   const [forhåndsvis, setStateForhåndsvis] = useState<boolean>(false);
 
+  const mappetVerdier = mapTilForm(stillingsData);
   const registerForm = useForm<StillingAdminDTO>({
     resolver: zodResolver(StillingAdminSchema),
-    defaultValues: { ...stillingsData, formidlingKandidater: [] },
+    defaultValues: mappetVerdier,
   });
 
   const setForhåndsvis = (val: boolean) => {
