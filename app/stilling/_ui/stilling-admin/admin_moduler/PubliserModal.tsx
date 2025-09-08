@@ -1,6 +1,7 @@
 import { oppdaterStilling } from '@/app/api/stilling/oppdater-stilling/oppdaterStilling';
 import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { DatoVelger } from '@/app/stilling/_ui/stilling-admin/admin_moduler/_felles/DatoVelger';
+import { mapSendStillingOppdatering } from '@/app/stilling/_ui/stilling-admin/admin_moduler/mapVerdier';
 import { UmamiEvent } from '@/components/umami/umamiEvents';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
@@ -108,7 +109,7 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
       // valgfritt: ingen spesifikasjon gitt – hopper over
     }
 
-    const nyData = getValues();
+    const nyData = mapSendStillingOppdatering(getValues());
     const publiserStillingsData = {
       ...nyData,
       stillingsinfo: {

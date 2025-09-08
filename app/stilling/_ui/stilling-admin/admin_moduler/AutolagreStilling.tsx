@@ -2,6 +2,7 @@
 
 import { oppdaterStilling } from '@/app/api/stilling/oppdater-stilling/oppdaterStilling';
 import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
+import { mapSendStillingOppdatering } from '@/app/stilling/_ui/stilling-admin/admin_moduler/mapVerdier';
 import { StillingAdminDTO } from '@/app/stilling/_ui/stilling-admin/page';
 import { StillingsStatus } from '@/app/stilling/_ui/stilling-typer';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
@@ -57,18 +58,15 @@ export default function AutolagreStilling({
     setSaving(true);
     setError(null);
     try {
-      const promise = oppdaterStilling(
-        {
-          // Sikrer at vi sender riktig struktur (stilling er required i StillingsDataDTO)
-          stilling: nyeVerdier.stilling as any,
-          stillingsinfo: nyeVerdier.stillingsinfo || undefined,
-        },
-        {
-          eierNavident: brukerData.ident,
-          eierNavn: brukerData.navn,
-          eierNavKontorEnhetId: valgtNavKontor?.navKontor,
-        },
-      );
+      const mapedValues = mapSendStillingOppdatering({
+        stilling: nyeVerdier.stilling,
+        stillingsinfo: nyeVerdier.stillingsinfo || undefined,
+      });
+      const promise = oppdaterStilling(mapedValues, {
+        eierNavident: brukerData.ident,
+        eierNavn: brukerData.navn,
+        eierNavKontorEnhetId: valgtNavKontor?.navKontor,
+      });
       inFlightRef.current = promise;
       await promise;
       setSisteLagret(new Date());
