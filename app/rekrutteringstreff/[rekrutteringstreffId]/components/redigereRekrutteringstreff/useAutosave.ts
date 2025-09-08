@@ -38,6 +38,12 @@ export function useAutosave() {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { data: treff, mutate } = useRekrutteringstreff(rekrutteringstreffId);
   const { getValues, trigger } = useFormContext<AnyValues>();
+  const isEditMode =
+    typeof window !== 'undefined' &&
+    new URLSearchParams(window.location.search).get('mode') === 'edit';
+  const harPublisert = (treff?.hendelser ?? []).some(
+    (h: any) => h.hendelsestype === 'PUBLISER',
+  );
 
   const buildFullDto = useCallback(() => {
     const v = getValues();
@@ -77,6 +83,11 @@ export function useAutosave() {
     async (fieldsToValidate?: string[]) => {
       if (!rekrutteringstreffId) return;
 
+      // Ikke autosave hvis publisert og i redigering
+      if (harPublisert && isEditMode) {
+        return;
+      }
+
       if (fieldsToValidate && fieldsToValidate.length) {
         const ok = await trigger(fieldsToValidate as any, {
           shouldFocus: false,
@@ -88,7 +99,14 @@ export function useAutosave() {
       await oppdaterRekrutteringstreff(rekrutteringstreffId, dto);
       await mutate();
     },
-    [buildFullDto, mutate, rekrutteringstreffId, trigger],
+    [
+      buildFullDto,
+      mutate,
+      rekrutteringstreffId,
+      trigger,
+      harPublisert,
+      isEditMode,
+    ],
   );
 
   return { save };

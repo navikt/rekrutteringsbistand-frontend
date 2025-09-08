@@ -15,7 +15,7 @@ import PanelHeader from '@/components/layout/PanelHeader';
 import SideLayout from '@/components/layout/SideLayout';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
-import { Button, Tabs } from '@navikt/ds-react';
+import { Button, Tabs, Modal, BodyLong } from '@navikt/ds-react';
 import { useQueryState, parseAsString } from 'nuqs';
 import * as React from 'react';
 
@@ -45,6 +45,13 @@ const Rekrutteringstreff: React.FC = () => {
   const { data: arbeidsgivere } =
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
 
+  const harPublisert =
+    rekrutteringstreffHook.data?.hendelser?.some(
+      (h) => h.hendelsestype === 'PUBLISER',
+    ) ?? false;
+
+  const redigerPublisertModalRef = React.useRef<HTMLDialogElement>(null);
+
   const scrollToTop = () => {
     if (typeof window !== 'undefined') {
       requestAnimationFrame(() =>
@@ -54,6 +61,11 @@ const Rekrutteringstreff: React.FC = () => {
   };
 
   const handleToggleForhåndsvisning = (nyForhåndsvisning: boolean) => {
+    // Hvis vi er publisert og skal inn i redigering, vis bekreftelsesdialog først
+    if (!nyForhåndsvisning && harPublisert) {
+      redigerPublisertModalRef.current?.showModal();
+      return;
+    }
     setModus(nyForhåndsvisning ? '' : 'edit');
     scrollToTop();
   };
@@ -143,6 +155,41 @@ const Rekrutteringstreff: React.FC = () => {
           )}
         </div>
       </SideLayout>
+
+      <Modal
+        ref={redigerPublisertModalRef}
+        header={{ heading: 'Treffet er allerede publisert' }}
+      >
+        <Modal.Body>
+          <BodyLong>
+            Dette rekrutteringstreffet er allerede publisert. Hvis du gjør
+            endringer nå, vil vi ikke lagre fortløpende per felt. Endringene
+            blir lagret når du trykker på knappen Publiser på nytt.
+          </BodyLong>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            type='button'
+            variant='primary'
+            size='small'
+            onClick={() => {
+              redigerPublisertModalRef.current?.close();
+              setModus('edit');
+              scrollToTop();
+            }}
+          >
+            Rediger likevel
+          </Button>
+          <Button
+            type='button'
+            variant='secondary'
+            size='small'
+            onClick={() => redigerPublisertModalRef.current?.close()}
+          >
+            Avbryt
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </Tabs>
   );
 };
