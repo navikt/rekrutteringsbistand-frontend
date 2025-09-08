@@ -42,7 +42,7 @@ const RekrutteringstreffRedigering: React.FC<
             size='small'
             onClick={async () => {
               // Lagre hele formet i én operasjon, og gå til forhåndsvisning
-              await save();
+              await save(undefined, true);
               onGåTilForhåndsvisning?.();
             }}
           >
