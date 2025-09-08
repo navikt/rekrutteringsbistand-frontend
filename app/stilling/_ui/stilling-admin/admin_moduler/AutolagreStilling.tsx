@@ -62,7 +62,7 @@ export default function AutolagreStilling({
           // Sikrer at vi sender riktig struktur (stilling er required i StillingsDataDTO)
           stilling: nyeVerdier.stilling as any,
           stillingsinfo: nyeVerdier.stillingsinfo || undefined,
-        } as any,
+        },
         {
           eierNavident: brukerData.ident,
           eierNavn: brukerData.navn,

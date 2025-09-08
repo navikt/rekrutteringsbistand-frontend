@@ -110,6 +110,7 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
 
     const nyData = getValues();
     const publiserStillingsData = {
+      ...nyData,
       stillingsinfo: {
         ...nyData.stillingsinfo,
       },
