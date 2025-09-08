@@ -1,4 +1,5 @@
 import { DynamicWindowContext } from './DynamicWindowContext';
+import { usePathname } from 'next/navigation';
 import React, {
   useCallback,
   useContext,
@@ -14,6 +15,8 @@ import { Mosaic, MosaicNode } from 'react-mosaic-component';
 export interface WindowWrapperProps {
   /** Innholdet i det låste (første) vinduet */
   children?: React.ReactNode;
+  /** Lukk alle dynamiske vinduer når route (pathname) endres. Default: true */
+  closeOnRouteChange?: boolean;
 }
 
 interface WindowItem {
@@ -120,7 +123,46 @@ function flattenRow(node: MosaicNode<Id> | null): Id[] {
 const LOCKED_ID = '__locked__';
 const MIN_WINDOW_PX = 480; // Minimum bredde per vindu
 
-const WindowWrapper: React.FC<WindowWrapperProps> = ({ children }) => {
+const WindowWrapper: React.FC<WindowWrapperProps> = ({
+  children,
+  closeOnRouteChange = true,
+}) => {
+  const pathname = usePathname();
+  const lastPathRef = useRef<string | null>(null);
+  useEffect(() => {
+    if (!closeOnRouteChange) return;
+    if (lastPathRef.current === null) {
+      lastPathRef.current = pathname;
+      return;
+    }
+    if (lastPathRef.current !== pathname) {
+      // Lukk alle dynamiske vinduer ved navigasjon.
+      setElements((prev) => {
+        const dyn = Object.values(prev).filter((w) => w.id !== LOCKED_ID);
+        // Kall onClose for hvert vindu (wrap i try/catch så en feil ikke stopper resten)
+        for (const w of dyn) {
+          try {
+            w.onClose?.();
+          } catch (e) {
+            if (process.env.NODE_ENV === 'development') {
+              // eslint-disable-next-line no-console
+              console.warn(
+                '[WindowWrapper] onClose feilet ved route change',
+                w.id,
+                e,
+              );
+            }
+          }
+        }
+        idsRef.current = new Set([LOCKED_ID]);
+        return {
+          [LOCKED_ID]: prev[LOCKED_ID],
+        } as typeof prev;
+      });
+      setDynamicLayout(null);
+    }
+    lastPathRef.current = pathname;
+  }, [pathname, closeOnRouteChange]);
   const [elements, setElements] = useState<Record<string, WindowItem>>({
     [LOCKED_ID]: {
       id: LOCKED_ID,

@@ -44,19 +44,6 @@ export default function StillingsSidePage() {
     stillingsData?.stilling?.medium === 'DIR' &&
     (stillingsData?.stilling?.employer?.orgnr ?? null) === null;
 
-  const manglerOrgnummerVisning = (
-    <Alert variant='error'>
-      <Heading spacing size='small' level='3'>
-        Ugyldig stilling
-      </Heading>
-      <p>
-        Denne stillingen er ikke gyldig da det er en intern stilling som mangler
-        organisasjonsnummer.
-      </p>
-      <p> Stillingen er derfor ikke tilgjengelig for rekruttering.</p>
-    </Alert>
-  );
-
   return (
     <div className='@stilling' data-testid='stilling-side'>
       <WindowFinnKandidater stillingsId={stillingsData.stilling.uuid} />
@@ -94,25 +81,36 @@ export default function StillingsSidePage() {
             </Alert>
           )}
 
-          {ugyldigStilling ? (
-            manglerOrgnummerVisning
-          ) : (
-            <>
-              <Tabs.Panel value={StillingFane.STILLING}>
-                <OmStillingenHeader />
-                <OmStillingen printRef={printRef} />
-              </Tabs.Panel>
-              {kandidatlisteInfo?.kandidatlisteId && erEier && (
-                <>
-                  <Tabs.Panel value={StillingFane.KANDIDATER}>
-                    <KandidatlisteWrapper>
-                      <FiltrertKandidatListeVisning />
-                    </KandidatlisteWrapper>
-                  </Tabs.Panel>
-                </>
-              )}
-            </>
-          )}
+          <>
+            <Tabs.Panel value={StillingFane.STILLING}>
+              <OmStillingenHeader />
+              <OmStillingen printRef={printRef} />
+            </Tabs.Panel>
+            {kandidatlisteInfo?.kandidatlisteId && erEier && (
+              <>
+                {ugyldigStilling && (
+                  <Alert variant='error'>
+                    <Heading spacing size='small' level='3'>
+                      Ugyldig stilling
+                    </Heading>
+                    <p>
+                      Denne stillingen er ikke gyldig da det er en intern
+                      stilling som mangler organisasjonsnummer.
+                    </p>
+                    <p>
+                      {' '}
+                      Stillingen er derfor ikke tilgjengelig for rekruttering.
+                    </p>
+                  </Alert>
+                )}
+                <Tabs.Panel value={StillingFane.KANDIDATER}>
+                  <KandidatlisteWrapper>
+                    <FiltrertKandidatListeVisning />
+                  </KandidatlisteWrapper>
+                </Tabs.Panel>
+              </>
+            )}
+          </>
         </SideLayout>
       </Tabs>
     </div>
