@@ -1,6 +1,5 @@
 import { oppdaterStilling } from '@/app/api/stilling/oppdater-stilling/oppdaterStilling';
 import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
-import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import { DatoVelger } from '@/app/stilling/_ui/stilling-admin/admin_moduler/_felles/DatoVelger';
 import { UmamiEvent } from '@/components/umami/umamiEvents';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
@@ -26,9 +25,8 @@ export interface PubliserModalProps {
 
 export default function PubliserModal({ disabled }: PubliserModalProps) {
   const { brukerData, valgtNavKontor } = useApplikasjonContext();
-  const { stillingsData } = useStillingsContext();
   const ref = useRef<HTMLDialogElement>(null);
-  const { watch, setValue } = useFormContext<StillingsDataDTO>();
+  const { watch, setValue, getValues } = useFormContext<StillingsDataDTO>();
   const { track } = useUmami();
   const router = useRouter();
   // Hent eksisterende verdier fra form
@@ -110,9 +108,11 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
       // valgfritt: ingen spesifikasjon gitt – hopper over
     }
 
-    const nyData = watch();
+    const nyData = getValues();
     const publiserStillingsData = {
-      ...nyData,
+      stillingsinfo: {
+        ...nyData.stillingsinfo,
+      },
       stilling: {
         ...nyData.stilling,
         status: 'ACTIVE',
