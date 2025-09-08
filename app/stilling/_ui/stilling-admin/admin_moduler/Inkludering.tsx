@@ -1,10 +1,7 @@
 import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
-import {
-  InkluderingsTag,
-  visningsnavnForRegistrering,
-} from '@/app/stilling/[stillingsId]/_ui/om-stillingen/StillingSidebar/StillingInkludering';
+import { InkluderingsTag } from '@/app/stilling/[stillingsId]/_ui/om-stillingen/StillingSidebar/StillingInkludering';
 import RedigerBoks from '@/app/stilling/_ui/stilling-admin/admin_moduler/_felles/RedigerBoks';
-import { BodyLong, Checkbox, Heading } from '@navikt/ds-react';
+import { Switch } from '@navikt/ds-react';
 import { useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
 
@@ -68,13 +65,9 @@ export default function Inkludering() {
   };
 
   return (
-    <RedigerBoks tittel='Inkludering'>
-      <BodyLong className='mb-4'>
-        Velg relevant tilrettelegging, virkemidler eller prioriterte målgrupper
-        for kandidatene.
-      </BodyLong>
-      <div className='flex flex-col gap-10'>
-        {grupper.map((g) => (
+    <RedigerBoks tittel='Om tilrettelegging'>
+      {/* <div className='flex flex-col gap-10'> */}
+      {/* {grupper.map((g) => (
           <div key={g.navn} className='flex flex-col gap-4'>
             <Heading size='xsmall'>{g.navn}</Heading>
             <div className='flex flex-col '>
@@ -89,18 +82,17 @@ export default function Inkludering() {
               ))}
             </div>
           </div>
-        ))}
-        <div className='flex flex-col gap-2'>
-          <Heading size='xsmall'>Statlig inkluderingsdugnad</Heading>
-          <Checkbox
-            checked={valgte.includes(InkluderingsTag.StatligInkluderingsdugnad)}
-            onChange={() =>
-              toggleTag(InkluderingsTag.StatligInkluderingsdugnad)
-            }
-          >
-            Inkluderingssamarbeid med offentlig virksomhet
-          </Checkbox>
-        </div>
+        ))} */}
+      <div className='flex flex-col gap-2'>
+        <Switch
+          defaultChecked={valgte.includes(
+            InkluderingsTag.StatligInkluderingsdugnad,
+          )}
+          onChange={() => toggleTag(InkluderingsTag.StatligInkluderingsdugnad)}
+          description='Gjelder offentlige virksomheter med samarbeidsavtale, eller strategisk partneravtale.'
+        >
+          Arbeidsgiver har avtale om inkluderingssamarbeid
+        </Switch>
       </div>
     </RedigerBoks>
   );

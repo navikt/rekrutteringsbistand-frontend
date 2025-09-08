@@ -7,6 +7,7 @@ import StillingsSøkFilter from './_ui/StillingsSøkFilter';
 import { useUseBrukerStandardSøk } from '@/app/api/stilling/standardsok/useBrukersStandardsøk';
 import { useStillingForKandidat } from '@/app/kandidat/vis-kandidat/useStillingForKandidat';
 import GeografiFilter from '@/app/stilling/_ui/StillingsSøkFilter/GeografiFilter';
+import InkluderingFilter from '@/app/stilling/_ui/StillingsSøkFilter/InkluderingFilter';
 import KategoriFilter from '@/app/stilling/_ui/StillingsSøkFilter/KategoriFilter';
 import StatusFilter from '@/app/stilling/_ui/StillingsSøkFilter/StatusFilter';
 import StillingsSøkSortering from '@/app/stilling/_ui/StillingsSøkSortering';
@@ -110,6 +111,7 @@ const StillingsSøkLayout: FC<StillingsSøkProps> = ({
           <GeografiFilter />
 
           {!formidlinger && <KategoriFilter />}
+          <InkluderingFilter />
         </div>
       </div>
     </>

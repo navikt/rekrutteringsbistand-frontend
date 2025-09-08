@@ -55,34 +55,34 @@ export const visningsnavnForFilter = {
 };
 
 export const hierarkiAvTagsForFilter: Array<GruppeMedTags> = [
-  {
-    hovedtag: Hovedtag.Tilrettelegging,
-    subtags: [
-      Subtag.TilretteleggingArbeidstid,
-      Subtag.TilretteleggingArbeidshverdagen,
-      Subtag.TilretteleggingFysisk,
-      Subtag.TilretteleggingGrunnleggende,
-    ],
-  },
-  {
-    hovedtag: Hovedtag.TiltakEllerVirkemiddel,
-    subtags: [
-      Subtag.VirkemiddelLønnstilskudd,
-      Subtag.VirkemiddelMentortilskudd,
-      Subtag.VirkemiddelLærlingplass,
-    ],
-  },
-  {
-    hovedtag: Hovedtag.PrioritertMålgruppe,
-    subtags: [
-      Subtag.MålgruppeErUngeUnder30,
-      Subtag.MålgruppeErSeniorerOver50,
-      Subtag.MålgruppeKommerFraLandUtenforEØS,
-      Subtag.MålgruppeHullICVen,
-      Subtag.MålgruppeLiteEllerIngenUtdanning,
-      Subtag.MålgruppeLiteEllerIngenArbeidserfaring,
-    ],
-  },
+  // {
+  //   hovedtag: Hovedtag.Tilrettelegging,
+  //   subtags: [
+  //     Subtag.TilretteleggingArbeidstid,
+  //     Subtag.TilretteleggingArbeidshverdagen,
+  //     Subtag.TilretteleggingFysisk,
+  //     Subtag.TilretteleggingGrunnleggende,
+  //   ],
+  // },
+  // {
+  //   hovedtag: Hovedtag.TiltakEllerVirkemiddel,
+  //   subtags: [
+  //     Subtag.VirkemiddelLønnstilskudd,
+  //     Subtag.VirkemiddelMentortilskudd,
+  //     Subtag.VirkemiddelLærlingplass,
+  //   ],
+  // },
+  // {
+  //   hovedtag: Hovedtag.PrioritertMålgruppe,
+  //   subtags: [
+  //     Subtag.MålgruppeErUngeUnder30,
+  //     Subtag.MålgruppeErSeniorerOver50,
+  //     Subtag.MålgruppeKommerFraLandUtenforEØS,
+  //     Subtag.MålgruppeHullICVen,
+  //     Subtag.MålgruppeLiteEllerIngenUtdanning,
+  //     Subtag.MålgruppeLiteEllerIngenArbeidserfaring,
+  //   ],
+  // },
   { hovedtag: Hovedtag.StatligInkluderingsdugnad, subtags: [] },
 ];
 
@@ -106,6 +106,7 @@ const InkluderingFilter: React.FC = () => {
 
   return (
     <CheckboxGroup
+      size='small'
       legend='Inkludering'
       value={inkludering}
       onChange={trackOgSetInkludering}
