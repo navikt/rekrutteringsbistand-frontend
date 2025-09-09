@@ -1,6 +1,10 @@
 'use client';
 
 import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
+import {
+  hentModulerForKategori,
+  ModulKey,
+} from '@/app/stilling/_ui/stilling-admin/StillingAdminModuler';
 import OpprettEtterregistrering from '@/app/stilling/_ui/stilling-admin/admin_moduler/OpprettEtterregistrering';
 import PubliserModal from '@/app/stilling/_ui/stilling-admin/admin_moduler/PubliserModal';
 import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
@@ -39,20 +43,55 @@ export default function FremdriftspanelRedigering({ setForhåndsvis }: Props) {
 
   const kategori = data?.stillingsinfo?.stillingskategori;
 
-  const items: ChecklistItem[] = useMemo(
-    () => [
-      // Formidling spesifikt (øverst)
-      ...(kategori === Stillingskategori.Formidling
-        ? [
-            {
-              id: 'formidling_kandidater',
-              label: 'Legg til kandidater',
-              isDone: (d: any) =>
-                Array.isArray((d as any).formidlingKandidater) &&
-                (d as any).formidlingKandidater.length > 0,
-            } as ChecklistItem,
-          ]
-        : []),
+  // For Formidling ønsker vi 1-til-1 mellom admin-moduler og sjekkliste
+  const formidlingModuler = useMemo(
+    () =>
+      kategori === Stillingskategori.Formidling
+        ? hentModulerForKategori(Stillingskategori.Formidling)
+        : [],
+    [kategori],
+  );
+
+  const formidlingDoneByModule = useMemo<
+    Partial<Record<ModulKey, (d: StillingsDataDTO) => boolean>>
+  >(
+    () => ({
+      formidling_kandidater: (d) =>
+        Array.isArray((d as any).formidlingKandidater) &&
+        (d as any).formidlingKandidater.length > 0,
+      yrkestittel: (d) => (d.stilling?.categoryList ?? []).length > 0,
+      formidling_sektor: (d) => !!d.stilling?.properties?.sector,
+      formidling_ansettelsesform: (d) =>
+        !!d.stilling?.properties?.engagementtype,
+      // Valgfritt: skal ikke blokkere fremdrift
+      formidling_arbeidstidsordning: () => true,
+      formidling_omfang: (d) => {
+        const extent = d.stilling?.properties?.extent;
+        if (!extent) return false;
+        if (extent === 'Heltid') return true;
+        if (extent === 'Deltid') {
+          const pct = d.stilling?.properties?.jobpercentage;
+          return typeof pct === 'string' && pct.trim().length > 0;
+        }
+        return false;
+      },
+      formidling_sted: (d) => (d.stilling?.locationList ?? []).length > 0,
+      // Inkludering er valgfritt – ikke blokkér
+      formidling_inkludering: () => true,
+    }),
+    [],
+  );
+
+  const items: ChecklistItem[] = useMemo(() => {
+    if (kategori === Stillingskategori.Formidling) {
+      // 1:1 mellom valgte moduler og sjekkliste
+      return formidlingModuler.map((m) => ({
+        id: m.key,
+        label: m.tittel,
+        isDone: formidlingDoneByModule[m.key as ModulKey] ?? (() => true),
+      }));
+    }
+    return [
       // Ugrupperte (vises øverst)
       {
         id: 'stillingstittel',
@@ -67,7 +106,6 @@ export default function FremdriftspanelRedigering({ setForhåndsvis }: Props) {
           d.stilling.properties.adtext.trim().length > 10,
       },
 
-      // Praktiske forhold
       // Praktiske forhold (samlet modul, men trackes som del-sjekker)
       {
         id: 'praktiskeForhold_antall',
@@ -150,7 +188,6 @@ export default function FremdriftspanelRedigering({ setForhåndsvis }: Props) {
           if (list.length === 0) return false;
           if (list.length > 1) return true; // Mer enn én kontaktperson er alltid OK
           const c = list[0];
-          // Tell antall utfylte felter (ikke tom streng / null)
           const fields = [c?.name, c?.email, c?.phone, c?.title];
           const filled = fields.filter(
             (v) => typeof v === 'string' && v.trim().length > 0,
@@ -178,23 +215,27 @@ export default function FremdriftspanelRedigering({ setForhåndsvis }: Props) {
         group: 'Viktige datoer',
         isDone: (d) => !!d.stilling?.properties?.applicationdue,
       },
-    ],
-    [kategori],
-  );
+    ];
+  }, [kategori, formidlingModuler, formidlingDoneByModule]);
 
   const doneCount = items.filter((i) => i.isDone(data)).length;
   const total = items.length;
 
   // Del opp i ugruppeerte og grupperte. Grupper beholdes i definert rekkefølge basert på første forekomst
-  const ungrouped = items.filter((i) => !i.group);
+  const ungrouped =
+    kategori === Stillingskategori.Formidling
+      ? items // for Formidling viser vi en flat 1:1-liste
+      : items.filter((i) => !i.group);
   const groups: { name: string; items: ChecklistItem[] }[] = [];
-  items
-    .filter((i) => i.group)
-    .forEach((i) => {
-      const g = groups.find((g) => g.name === i.group);
-      if (g) g.items.push(i);
-      else groups.push({ name: i.group!, items: [i] });
-    });
+  if (kategori !== Stillingskategori.Formidling) {
+    items
+      .filter((i) => i.group)
+      .forEach((i) => {
+        const g = groups.find((g) => g.name === i.group);
+        if (g) g.items.push(i);
+        else groups.push({ name: i.group!, items: [i] });
+      });
+  }
 
   const etterregistreringKnapper = (
     <div className='flex justify-between items-center pb-3'>
