@@ -1,39 +1,22 @@
 'use client';
 
-import { erEditMode } from './useAutosave';
+import KiAnalysePanel from './ki/KiAnalysePanel';
 import { useAutosave } from './useAutosave';
+import { useKiAnalyse } from './useKiAnalyse';
 import { useKiLogg } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
-import { useValiderRekrutteringstreff } from '@/app/api/rekrutteringstreff/kiValidering/useValiderRekrutteringstreff';
 import { MAX_TITLE_LENGTH } from '@/app/api/rekrutteringstreff/oppdater-rekrutteringstreff/oppdaterRerkutteringstreff';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
+import KiAnalyse from '@/app/rekrutteringstreff/[rekrutteringstreffId]/components/redigereRekrutteringstreff/ki/KiAnalyse';
 import { RekbisError } from '@/util/rekbisError';
-import {
-  RobotFrownIcon,
-  RobotIcon,
-  RobotSmileIcon,
-  XMarkIcon,
-  EyeIcon,
-  PersonCircleIcon,
-} from '@navikt/aksel-icons';
-import {
-  Alert,
-  BodyLong,
-  Button,
-  Detail,
-  Skeleton,
-  TextField,
-} from '@navikt/ds-react';
-import { AnimatePresence, cubicBezier, motion } from 'framer-motion';
-import React, { useRef, useState } from 'react';
-import { useEffect } from 'react';
+import { XMarkIcon } from '@navikt/aksel-icons';
+import { Button, Detail, Skeleton, TextField } from '@navikt/ds-react';
+import React, { useRef } from 'react';
 import { Controller, useFormContext, useWatch } from 'react-hook-form';
 
 interface TittelFormProps {
   onUpdated: () => void;
 }
-
-const ease = cubicBezier(0.16, 1, 0.3, 1);
 
 const TittelForm = ({ onUpdated }: TittelFormProps) => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
@@ -41,13 +24,6 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
     useRekrutteringstreff(rekrutteringstreffId);
 
   const { setLagret: setKiLagret } = useKiLogg(rekrutteringstreffId, 'tittel');
-  const {
-    trigger: validateKI,
-    data: analyse,
-    reset: resetAnalyse,
-    error: analyseError,
-    isMutating: validating,
-  } = useValiderRekrutteringstreff();
 
   const {
     control,
@@ -59,94 +35,44 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
   } = useFormContext();
 
   const inputRef = useRef<HTMLInputElement>(null);
-  const skeletonRef = useRef<HTMLDivElement>(null);
-  const analyseRef = useRef<HTMLDivElement>(null);
-
-  const [loggId, setLoggId] = useState<string | null>(null);
-  const [forceSave, setForceSave] = useState(false);
 
   const tittel = useWatch({ control, name: 'tittel' });
   const tegnIgjen =
     MAX_TITLE_LENGTH - (typeof tittel === 'string' ? tittel.length : 0);
 
-  useEffect(() => {
-    setLoggId(null);
-    setForceSave(false);
-    resetAnalyse();
-  }, [tittel, resetAnalyse]);
+  const { save } = useAutosave();
 
-  const kiErrorBorder =
-    !!analyse &&
-    !analyseError &&
-    (analyse as any)?.bryterRetningslinjer &&
-    !forceSave;
-
-  // Oppdater form-flagget for KI-feil slik at publisering kan deaktiveres ved brudd
-  useEffect(() => {
-    const feil =
-      !!analyse &&
-      !analyseError &&
-      !!(analyse as any)?.bryterRetningslinjer &&
-      !forceSave;
-    setValue('tittelKiFeil' as any, feil as any, {
-      shouldDirty: false,
-      shouldValidate: false,
-      shouldTouch: false,
-    });
-  }, [analyse, analyseError, forceSave, setValue]);
-
-  const harPublisert = (rekrutteringstreff?.hendelser ?? []).some(
-    (h: any) => h.hendelsestype === 'PUBLISER',
-  );
-
-  const { save: save } = useAutosave();
-
-  const saveTittel = async (currentLoggId: string | null, force?: boolean) => {
+  const saveCallback = async (force?: boolean) => {
     try {
       await save(['tittel'], force);
-      if (currentLoggId) {
-        try {
-          await setKiLagret({ id: currentLoggId, lagret: true });
-        } catch (error) {
-          new RekbisError({
-            message: `Feil ved oppdatering av /lagret for logg ${currentLoggId}.`,
-            error,
-          });
-        }
-      }
       onUpdated?.();
     } catch (error) {
       new RekbisError({ message: 'Lagring av tittel feilet.', error });
     }
   };
 
-  const runValidationAndMaybeSave = async () => {
-    const ok = await triggerRHF('tittel');
-    if (!ok) return;
-
-    const v = getValues('tittel');
-    if (!String(v ?? '').trim()) return;
-
-    const res = (await validateKI({
-      treffId: rekrutteringstreff?.id ?? rekrutteringstreffId,
-      feltType: 'tittel',
-      tekst: v,
-    })) as { loggId?: string } | undefined;
-
-    const id = res?.loggId ?? (analyse as any)?.loggId ?? null;
-    setLoggId(id ?? null);
-
-    const bryter = (analyse as any)?.bryterRetningslinjer;
-    const kanLagre =
-      (!bryter || forceSave) &&
-      !validating &&
-      !isSubmitting &&
-      !(harPublisert && erEditMode());
-
-    if (kanLagre) {
-      await saveTittel(id ?? null);
-    }
-  };
+  const {
+    analyse,
+    analyseError,
+    validating,
+    kiErrorBorder,
+    forceSave,
+    setForceSave,
+    publisertRedigeringsmodus,
+    runValidationAndMaybeSave,
+    onForceSave,
+  } = useKiAnalyse({
+    feltType: 'tittel',
+    fieldName: 'tittel',
+    watchedValue: tittel,
+    triggerRHF,
+    getValues,
+    setValue,
+    isSubmitting,
+    setKiFeilFieldName: 'tittelKiFeil' as any,
+    saveCallback,
+    setKiLagret,
+  });
 
   const clear = () => {
     setValue('tittel', '', {
@@ -155,11 +81,6 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
       shouldTouch: true,
     });
     inputRef.current?.focus();
-  };
-
-  const onForceSave = async () => {
-    setForceSave(true);
-    await saveTittel(loggId);
   };
 
   return (
@@ -234,149 +155,20 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
 
           <Detail className='text-gray-400'>{tegnIgjen} tegn igjen</Detail>
 
-          <div className='space-y-1'>
-            <Detail
-              size='small'
-              className='flex items-start gap-2 text-gray-400'
-            >
-              <PersonCircleIcon
-                aria-hidden
-                className='h-6 w-6 shrink-0 self-start mt-0.5'
-              />
-              <span>
-                Ikke skriv personopplysninger og diskriminerende innhold. KI
-                hjelper deg å vurdere innholdet, men du er ansvarlig.
-              </span>
-            </Detail>
-            <Detail
-              size='small'
-              className='flex items-start gap-2 text-gray-400'
-            >
-              <EyeIcon aria-hidden fontSize='2em' className='mt-0.5' />
-              <span>
-                Synlig for jobbsøker, arbeidsgivere og NAV-ansatte når treffet
-                er publisert.
-              </span>
-            </Detail>
-          </div>
+          <KiAnalyse />
 
-          <div className='flex gap-3 mt-2 items-start'>
-            <div className='inline-flex justify-center items-start w-10 pt-1'>
-              {validating ? (
-                <RobotIcon
-                  aria-hidden
-                  fontSize='2em'
-                  className='text-gray-700'
-                />
-              ) : analyse && !analyseError && !forceSave ? (
-                (analyse as any).bryterRetningslinjer ? (
-                  <RobotFrownIcon
-                    aria-hidden
-                    fontSize='2em'
-                    className='text-red-600'
-                  />
-                ) : (
-                  <RobotSmileIcon
-                    aria-hidden
-                    fontSize='2em'
-                    className='text-green-800'
-                  />
-                )
-              ) : analyseError ? (
-                <RobotFrownIcon
-                  aria-hidden
-                  fontSize='2em'
-                  className='text-red-600'
-                />
-              ) : null}
-            </div>
-
-            <div className='w-full'>
-              <AnimatePresence mode='wait'>
-                {validating && (
-                  <motion.div
-                    key='skeleton'
-                    ref={skeletonRef}
-                    tabIndex={0}
-                    role='status'
-                    aria-label='Validerer tittel'
-                    initial={{ opacity: 0, y: 4 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -4 }}
-                    transition={{ duration: 0.2, ease }}
-                    onAnimationComplete={() => skeletonRef.current?.focus()}
-                  >
-                    <Skeleton variant='text' width='100%' height={31} />
-                    <Skeleton variant='text' width='100%' height={31} />
-                    <Skeleton variant='text' width='100%' height={31} />
-                    <Skeleton variant='text' width='100%' height={31} />
-                    <Skeleton variant='text' width='100%' height={31} />
-                    <Skeleton variant='text' width='100%' height={31} />
-                  </motion.div>
-                )}
-
-                {!validating && analyseError && (
-                  <motion.div
-                    key='error'
-                    ref={analyseRef}
-                    tabIndex={0}
-                    role='alert'
-                    initial={{ opacity: 0, y: 4 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -4 }}
-                    transition={{ duration: 0.2, ease }}
-                    onAnimationComplete={() => analyseRef.current?.focus()}
-                  >
-                    <Alert variant='error'>
-                      {analyseError.message ??
-                        'En feil oppstod under validering.'}
-                    </Alert>
-                  </motion.div>
-                )}
-
-                {!validating &&
-                  analyse &&
-                  !analyseError &&
-                  (!(analyse as any).bryterRetningslinjer || !forceSave) && (
-                    <motion.div
-                      key='analyse'
-                      ref={analyseRef}
-                      tabIndex={0}
-                      role='region'
-                      aria-label='Analyse av tittel'
-                      className='p-1'
-                      initial={{ opacity: 0, y: 4 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -4 }}
-                    >
-                      <BodyLong>{(analyse as any).begrunnelse}</BodyLong>
-                    </motion.div>
-                  )}
-              </AnimatePresence>
-            </div>
-          </div>
-
-          {!!analyse &&
-            (analyse as any)?.bryterRetningslinjer &&
-            !forceSave && (
-              <div className='pt-1'>
-                <Button
-                  size='small'
-                  variant='secondary'
-                  onClick={() => {
-                    if (harPublisert && erEditMode()) {
-                      setForceSave(true);
-                    } else {
-                      onForceSave();
-                    }
-                  }}
-                >
-                  {harPublisert && erEditMode()
-                    ? 'Bruk likevel'
-                    : 'Lagre likevel'}
-                </Button>
-              </div>
-            )}
+          <KiAnalysePanel
+            validating={validating}
+            analyse={analyse}
+            analyseError={analyseError}
+            forceSave={forceSave}
+            showAnalysis={true}
+            publisertRedigeringsmodus={publisertRedigeringsmodus}
+            onForceSave={onForceSave}
+            setForceSave={setForceSave}
+            variant='tittel'
+            ariaLabel='Analyse av tittel'
+          />
         </>
       )}
     </section>
