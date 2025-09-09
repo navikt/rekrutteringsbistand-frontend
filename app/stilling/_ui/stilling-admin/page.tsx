@@ -27,10 +27,18 @@ import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import z from 'zod';
 
+const formidlingKandidaterSchema = navnSchema.extend({
+  fnr: z.string(),
+});
+
 export const StillingAdminSchema = z.object({
   stillingsinfo: StillingsinfoSchema.nullable().optional(),
   stilling: StillingSchemaDTO.nullable().optional(),
-  formidlingKandidater: z.array(navnSchema).default([]).optional().nullable(),
+  formidlingKandidater: z
+    .array(formidlingKandidaterSchema)
+    .default([])
+    .optional()
+    .nullable(),
 });
 export type StillingAdminDTO = z.infer<typeof StillingAdminSchema>;
 

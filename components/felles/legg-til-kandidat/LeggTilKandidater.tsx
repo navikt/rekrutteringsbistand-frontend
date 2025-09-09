@@ -142,7 +142,7 @@ const LeggTilKandidater: FC<LeggTilKandidaterProps> = ({
         </div>
 
         <div className='mr-4 flex gap-2'>
-          <Tag variant='warning' size='small'>
+          <Tag variant='warning' size='xsmall' className='my-2'>
             Kandidaten er ikke synlig
           </Tag>
           {synlighetSomModal && (

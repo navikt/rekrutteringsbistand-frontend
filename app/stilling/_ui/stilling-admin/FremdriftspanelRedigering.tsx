@@ -1,6 +1,7 @@
 'use client';
 
 import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
+import OpprettEtterregistrering from '@/app/stilling/_ui/stilling-admin/admin_moduler/OpprettEtterregistrering';
 import PubliserModal from '@/app/stilling/_ui/stilling-admin/admin_moduler/PubliserModal';
 import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
 import {
@@ -195,15 +196,35 @@ export default function FremdriftspanelRedigering({ setForhåndsvis }: Props) {
       else groups.push({ name: i.group!, items: [i] });
     });
 
+  const etterregistreringKnapper = (
+    <div className='flex justify-between items-center pb-3'>
+      <Button
+        size='small'
+        variant='secondary'
+        onClick={setForhåndsvis}
+        className='whitespace-nowrap shrink-0'
+      >
+        Forhåndsvis
+      </Button>
+      <OpprettEtterregistrering disabled={doneCount !== total} />
+    </div>
+  );
+
+  const stillingKnapper = (
+    <div className='flex justify-between items-center pb-3'>
+      <Button size='small' variant='secondary' onClick={setForhåndsvis}>
+        Forhåndsvis
+      </Button>
+      <PubliserModal disabled={doneCount !== total} />
+    </div>
+  );
+
   return (
     <>
       <div className='flex flex-col gap-6'>
-        <div className='flex justify-between items-center pb-3'>
-          <Button size='small' variant='secondary' onClick={setForhåndsvis}>
-            Forhåndsvis
-          </Button>
-          <PubliserModal disabled={doneCount !== total} />
-        </div>
+        {kategori === Stillingskategori.Formidling
+          ? etterregistreringKnapper
+          : stillingKnapper}
 
         <div className='flex flex-col gap-2'>
           <Heading size='small' level='2'>

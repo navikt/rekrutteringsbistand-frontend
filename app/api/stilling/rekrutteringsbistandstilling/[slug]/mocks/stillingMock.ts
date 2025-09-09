@@ -27,7 +27,6 @@ const createMockStilling = (props?: MockStilling): StillingsDataDTO => {
           stillingskategori: props?.erFormidling ? 'FORMIDLING' : 'STILLING',
         },
     stilling: {
-      id: id,
       annonsenr: 'R' + id,
       uuid: props?.id || faker.string.uuid(),
       created: faker.date.past().toISOString(),

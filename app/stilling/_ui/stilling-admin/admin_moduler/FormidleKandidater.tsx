@@ -18,6 +18,7 @@ export default function StillingAdminFormidleKandidater() {
         fornavn: k.fornavn,
         etternavn: k.etternavn,
         kilde: k.kilde,
+        fnr: k.fødselsnummer,
       }));
 
       const eksisterende = getValues('formidlingKandidater') || [];
@@ -29,7 +30,8 @@ export default function StillingAdminFormidleKandidater() {
           (e, idx) =>
             e.fornavn === mapped[idx].fornavn &&
             e.etternavn === mapped[idx].etternavn &&
-            e.kilde === mapped[idx].kilde,
+            e.kilde === mapped[idx].kilde &&
+            e.fnr === mapped[idx].fnr,
         );
 
       if (!sameContent) {
