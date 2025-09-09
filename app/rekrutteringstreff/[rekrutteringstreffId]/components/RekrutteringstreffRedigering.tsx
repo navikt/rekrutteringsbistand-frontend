@@ -8,7 +8,14 @@ import {
   formatIso as formatIsoUtil,
 } from './redigereRekrutteringstreff/tidspunkt/utils';
 import { useAutosave } from './redigereRekrutteringstreff/useAutosave';
+import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
+import {
+  oppdaterEttInnlegg,
+  opprettInnleggForTreff,
+  OpprettEllerOppdaterInnleggDto,
+} from '@/app/api/rekrutteringstreff/opprettEllerOppdaterInnlegg';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
+import { RekbisError } from '@/util/rekbisError';
 import {
   Button,
   Modal,
@@ -32,8 +39,9 @@ const RekrutteringstreffRedigering: React.FC<
 > = ({ onUpdated, onGåTilForhåndsvisning }) => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const rekrutteringstreffHook = useRekrutteringstreff(rekrutteringstreffId);
+  const innleggHook = useInnlegg(rekrutteringstreffId);
   const { save } = useAutosave();
-  const { getValues, watch } = useFormContext();
+  const { getValues, setValue, watch } = useFormContext();
 
   const harPublisert =
     rekrutteringstreffHook.data?.hendelser?.some(
@@ -54,7 +62,8 @@ const RekrutteringstreffRedigering: React.FC<
     // Beregn ved init når data lastes
     {
       const verdier = getValues() as any;
-      const elementer = beregnEndringer(verdier, treff);
+      const innleggHtml = (innleggHook.data?.[0]?.htmlContent ?? '') as string;
+      const elementer = beregnEndringer(verdier, treff, innleggHtml);
       setEndringer((prev) =>
         erLikEndringsliste(prev, elementer) ? prev : elementer,
       );
@@ -62,13 +71,14 @@ const RekrutteringstreffRedigering: React.FC<
 
     const subscription = watch(() => {
       const verdier = getValues() as any;
-      const elementer = beregnEndringer(verdier, treff);
+      const innleggHtml = (innleggHook.data?.[0]?.htmlContent ?? '') as string;
+      const elementer = beregnEndringer(verdier, treff, innleggHtml);
       setEndringer((prev) =>
         erLikEndringsliste(prev, elementer) ? prev : elementer,
       );
     });
     return () => subscription.unsubscribe();
-  }, [rekrutteringstreffHook.data, watch, getValues]);
+  }, [rekrutteringstreffHook.data, watch, getValues, innleggHook.data]);
 
   const håndterOppdatert = () => {
     rekrutteringstreffHook.mutate();
@@ -95,7 +105,11 @@ const RekrutteringstreffRedigering: React.FC<
     return JSON.stringify(a) === JSON.stringify(b);
   };
 
-  const beregnEndringer = (verdier: any, treff: any) => {
+  const beregnEndringer = (
+    verdier: any,
+    treff: any,
+    innleggHtmlFraBackend: string,
+  ) => {
     const fraTid =
       toIso(verdier.fraDato ?? null, verdier.fraTid) ?? treff?.fraTid ?? null;
     const tilTid =
@@ -191,6 +205,15 @@ const RekrutteringstreffRedigering: React.FC<
       nesteDto.poststed,
     );
 
+    const currentInnleggHtml = (verdier.htmlContent ?? '') as string;
+    if ((innleggHtmlFraBackend ?? '') !== (currentInnleggHtml ?? '')) {
+      elementer.push({
+        etikett: 'Innlegg',
+        gammelVerdi: 'Innhold endret',
+        nyVerdi: 'Innhold endret',
+      });
+    }
+
     return elementer;
   };
 
@@ -282,6 +305,47 @@ const RekrutteringstreffRedigering: React.FC<
               onClick={async () => {
                 bekreftModalRef.current?.close();
                 await save(undefined, true);
+                try {
+                  const values: any = getValues();
+                  const currentHtml: string = (values?.htmlContent ??
+                    '') as string;
+                  const backendHtml: string = (innleggHook.data?.[0]
+                    ?.htmlContent ?? '') as string;
+                  const shouldSaveInnlegg =
+                    (currentHtml ?? '').trim() !== (backendHtml ?? '').trim();
+                  if (
+                    shouldSaveInnlegg &&
+                    (currentHtml ?? '').trim().length > 0
+                  ) {
+                    const payload: OpprettEllerOppdaterInnleggDto = {
+                      htmlContent: currentHtml,
+                      tittel: 'Om treffet',
+                      opprettetAvPersonNavn: null,
+                      opprettetAvPersonBeskrivelse: 'Markedskontakt',
+                      sendesTilJobbsokerTidspunkt: new Date().toISOString(),
+                    };
+
+                    const eksisterende = innleggHook.data?.[0];
+                    if (eksisterende?.id) {
+                      await oppdaterEttInnlegg(
+                        rekrutteringstreffId,
+                        eksisterende.id,
+                        payload,
+                      );
+                    } else {
+                      await opprettInnleggForTreff(
+                        rekrutteringstreffId,
+                        payload,
+                      );
+                    }
+                    await innleggHook.mutate();
+                  }
+                } catch (e) {
+                  new RekbisError({
+                    message: 'Lagring av innlegg feilet.',
+                    error: e,
+                  });
+                }
                 onGåTilForhåndsvisning?.();
               }}
             >

@@ -8,6 +8,7 @@ import {
   OpprettEllerOppdaterInnleggDto,
   opprettInnleggForTreff,
 } from '@/app/api/rekrutteringstreff/opprettEllerOppdaterInnlegg';
+import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
 import RikTekstEditor from '@/components/felles/rikteksteditor/RikTekstEditor';
 import { RekbisError } from '@/util/rekbisError';
@@ -48,6 +49,14 @@ const EndreInnlegg = ({ onUpdated }: EndreInnleggProps) => {
   } = useInnlegg(rekrutteringstreffId);
 
   const innlegg = innleggListe?.[0];
+
+  const { data: treff } = useRekrutteringstreff(rekrutteringstreffId);
+  const isEditMode =
+    typeof window !== 'undefined' &&
+    new URLSearchParams(window.location.search).get('mode') === 'edit';
+  const harPublisert = (treff?.hendelser ?? []).some(
+    (h: any) => h.hendelsestype === 'PUBLISER',
+  );
 
   const {
     control,
@@ -148,6 +157,7 @@ const EndreInnlegg = ({ onUpdated }: EndreInnleggProps) => {
   };
 
   const runValidationAndMaybeSave = async () => {
+    // Ved publisert i redigeringsmodus: kjør validering og vis analyse, men ikke lagre automatisk
     const ok = await triggerRHF('htmlContent');
     if (!ok) return;
 
@@ -174,7 +184,8 @@ const EndreInnlegg = ({ onUpdated }: EndreInnleggProps) => {
       const bryterRetningslinjer = validationResult.bryterRetningslinjer;
       const kanLagre = !bryterRetningslinjer || forceSave;
 
-      if (kanLagre) {
+      // I publisert redigeringsmodus: ikke lagre automatisk, men vis analyse
+      if (kanLagre && !(harPublisert && isEditMode)) {
         await save(currentLoggId);
       }
     } catch (error) {
@@ -184,6 +195,8 @@ const EndreInnlegg = ({ onUpdated }: EndreInnleggProps) => {
   };
 
   const onForceSave = async () => {
+    // Ikke tillat lagre likevel hvis publisert og i redigering
+    if (harPublisert && isEditMode) return;
     setForceSave(true);
     await save(loggId);
   };
@@ -355,13 +368,16 @@ const EndreInnlegg = ({ onUpdated }: EndreInnleggProps) => {
             </div>
           </div>
 
-          {hasChecked && analyse?.bryterRetningslinjer && !forceSave && (
-            <div className='pt-1'>
-              <Button size='small' variant='secondary' onClick={onForceSave}>
-                Lagre likevel
-              </Button>
-            </div>
-          )}
+          {hasChecked &&
+            analyse?.bryterRetningslinjer &&
+            !forceSave &&
+            !(harPublisert && isEditMode) && (
+              <div className='pt-1'>
+                <Button size='small' variant='secondary' onClick={onForceSave}>
+                  Lagre likevel
+                </Button>
+              </div>
+            )}
         </>
       )}
     </section>
