@@ -16,6 +16,7 @@ import { Roller } from '@/components/tilgangskontroll/roller';
 import { UmamiEvent } from '@/components/umami/umamiEvents';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
+import { Switch } from '@navikt/ds-react';
 import { useSearchParams } from 'next/navigation';
 import { FC, Suspense, useEffect } from 'react';
 
@@ -99,11 +100,15 @@ const StillingsSøkLayout: FC<StillingsSøkProps> = ({
         formidlinger={formidlinger}
         stillingForKandidat={forKandidatNr}
       />
+
       <div className='@container flex'>
         <div className='flex-grow min-w-0'>
           <StillingsSøkeresultat kandidatId={forKandidatNr} />
         </div>
         <div className='hidden @[720px]:flex @[720px]:flex-col ml-4 pt-4  max-w-[200px] gap-4'>
+          <Switch disabled size='small'>
+            Mitt standardsøk
+          </Switch>
           <StillingsSøkSortering />
 
           {(harArbeidsgiverrettetRolle || formidlinger) && <StatusFilter />}
