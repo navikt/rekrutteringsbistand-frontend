@@ -1,14 +1,10 @@
 'use client';
 
 import { erEditMode, erPublisert } from './autosaveUtils';
+import { useInnleggAutosave } from './useInnleggAutosave';
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
 import { useKiLogg } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
 import { useValiderRekrutteringstreff } from '@/app/api/rekrutteringstreff/kiValidering/useValiderRekrutteringstreff';
-import {
-  oppdaterEttInnlegg,
-  OpprettEllerOppdaterInnleggDto,
-  opprettInnleggForTreff,
-} from '@/app/api/rekrutteringstreff/opprettEllerOppdaterInnlegg';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
 import RikTekstEditor from '@/components/felles/rikteksteditor/RikTekstEditor';
@@ -30,7 +26,6 @@ import {
   Skeleton,
 } from '@navikt/ds-react';
 import { logger } from '@navikt/next-logger';
-import { formatInTimeZone } from 'date-fns-tz';
 import { AnimatePresence, cubicBezier, motion } from 'framer-motion';
 import React, { useEffect, useRef, useState } from 'react';
 import { Controller, useFormContext, useWatch } from 'react-hook-form';
@@ -44,11 +39,7 @@ const EDITOR_WRAPPER_ID = 'rediger-innlegg-htmlcontent-form';
 
 const EndreInnlegg = ({ onUpdated }: EndreInnleggProps) => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
-  const {
-    data: innleggListe,
-    mutate,
-    isLoading,
-  } = useInnlegg(rekrutteringstreffId);
+  const { data: innleggListe, isLoading } = useInnlegg(rekrutteringstreffId);
 
   const innlegg = innleggListe?.[0];
 
@@ -62,6 +53,8 @@ const EndreInnlegg = ({ onUpdated }: EndreInnleggProps) => {
     trigger: triggerRHF,
     formState: { isDirty, isSubmitting },
   } = useFormContext();
+
+  const { save: autosaveInnlegg } = useInnleggAutosave();
 
   const { setLagret: setKiLagret } = useKiLogg(rekrutteringstreffId, 'innlegg');
   const {
@@ -120,34 +113,9 @@ const EndreInnlegg = ({ onUpdated }: EndreInnleggProps) => {
     });
   }, [analyse, analyseError, forceSave, setValue]);
 
-  const save = async (currentLoggId: string | null) => {
-    const contentToSave = getValues('htmlContent');
-    if (!contentToSave?.trim()) return;
-
+  const save = async (currentLoggId: string | null, force?: boolean) => {
     try {
-      const navnForPayload =
-        innlegg?.opprettetAvPersonNavn ||
-        innlegg?.opprettetAvPersonNavident ||
-        'Markedskontakt';
-
-      const payload: OpprettEllerOppdaterInnleggDto = {
-        htmlContent: contentToSave,
-        tittel: 'Om treffet',
-        opprettetAvPersonNavn: navnForPayload,
-        opprettetAvPersonBeskrivelse: 'Markedskontakt',
-        sendesTilJobbsokerTidspunkt: formatInTimeZone(
-          new Date(),
-          'Europe/Oslo',
-          "yyyy-MM-dd'T'HH:mm:ssXXX",
-        ),
-      };
-
-      if (innlegg?.id) {
-        await oppdaterEttInnlegg(rekrutteringstreffId, innlegg.id, payload);
-      } else {
-        await opprettInnleggForTreff(rekrutteringstreffId, payload);
-      }
-
+      await autosaveInnlegg(['htmlContent'], force);
       if (currentLoggId) {
         try {
           await setKiLagret({ id: currentLoggId, lagret: true });
@@ -158,15 +126,9 @@ const EndreInnlegg = ({ onUpdated }: EndreInnleggProps) => {
           });
         }
       }
-
-      await mutate();
-      setValue('htmlContent', contentToSave, { shouldDirty: false });
       onUpdated?.();
     } catch (error) {
-      new RekbisError({
-        message: 'Lagring av innlegg feilet.',
-        error,
-      });
+      new RekbisError({ message: 'Lagring av innlegg feilet.', error });
     }
   };
 
