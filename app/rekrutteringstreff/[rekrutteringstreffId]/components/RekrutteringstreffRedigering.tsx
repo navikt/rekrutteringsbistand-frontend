@@ -1,8 +1,8 @@
 'use client';
 
 import { useRekrutteringstreffContext } from '../RekrutteringstreffContext';
-import EndreTittel from './redigereRekrutteringstreff/EndreTittel';
 import PraktiskeForhold from './redigereRekrutteringstreff/Praktiskeforhold';
+import TittelForm from './redigereRekrutteringstreff/TittelForm';
 import {
   toIso as toIsoUtil,
   formatIso as formatIsoUtil,
@@ -210,7 +210,7 @@ const RekrutteringstreffRedigering: React.FC<
 
   return (
     <div className='space-y-8'>
-      <EndreTittel onUpdated={håndterOppdatert} />
+      <TittelForm onUpdated={håndterOppdatert} />
       <PraktiskeForhold />
       <div>
         {harPublisert ? (
