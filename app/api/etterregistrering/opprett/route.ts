@@ -52,7 +52,10 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     if (!kandidatlisteInfo.success) {
       return NextResponse.json(
-        { error: 'Klarte ikke å hente kandidatliste informasjon' },
+        {
+          message: 'Klarte ikke å hente kandidatliste informasjon',
+          details: kandidatlisteInfo.error,
+        },
         { status: 500 },
       );
     }

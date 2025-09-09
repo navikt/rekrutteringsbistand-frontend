@@ -1,10 +1,5 @@
 'use client';
 
-import { navnSchema } from '@/app/api/kandidat-sok/useKandidatNavn';
-import {
-  StillingSchemaDTO,
-  StillingsinfoSchema,
-} from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import OmStillingen from '@/app/stilling/[stillingsId]/_ui/om-stillingen/OmStillingen';
 import FremdriftspanelRedigering from '@/app/stilling/_ui/stilling-admin/FremdriftspanelRedigering';
@@ -12,6 +7,7 @@ import { hentModulerForKategori } from '@/app/stilling/_ui/stilling-admin/Stilli
 import AutolagreStilling from '@/app/stilling/_ui/stilling-admin/admin_moduler/AutolagreStilling';
 import EndreStillingStatus from '@/app/stilling/_ui/stilling-admin/admin_moduler/_felles/EndreStillingStatus';
 import { mapTilForm } from '@/app/stilling/_ui/stilling-admin/admin_moduler/mapVerdier';
+import { StillingAdminSchema } from '@/app/stilling/_ui/stilling-admin/stilling-admin.schema';
 import {
   Stillingskategori,
   StillingsStatus,
@@ -27,19 +23,6 @@ import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import z from 'zod';
 
-const formidlingKandidaterSchema = navnSchema.extend({
-  fnr: z.string(),
-});
-
-export const StillingAdminSchema = z.object({
-  stillingsinfo: StillingsinfoSchema.nullable().optional(),
-  stilling: StillingSchemaDTO.nullable().optional(),
-  formidlingKandidater: z
-    .array(formidlingKandidaterSchema)
-    .default([])
-    .optional()
-    .nullable(),
-});
 export type StillingAdminDTO = z.infer<typeof StillingAdminSchema>;
 
 export default function StillingAdmin() {
