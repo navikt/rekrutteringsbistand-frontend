@@ -1,5 +1,6 @@
 'use client';
 
+import { erEditMode } from './useAutosave';
 import { useKiLogg } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
 import { useValiderRekrutteringstreff } from '@/app/api/rekrutteringstreff/kiValidering/useValiderRekrutteringstreff';
 import {
@@ -26,7 +27,6 @@ import {
   TextField,
 } from '@navikt/ds-react';
 import { AnimatePresence, cubicBezier, motion } from 'framer-motion';
-import { useSearchParams } from 'next/navigation';
 import React, { useRef, useState } from 'react';
 import { useEffect } from 'react';
 import { Controller, useFormContext, useWatch } from 'react-hook-form';
@@ -46,8 +46,6 @@ const EndreTittel = ({ onUpdated }: EndreTittelProps) => {
   } = useRekrutteringstreff(rekrutteringstreffId);
 
   const { setLagret: setKiLagret } = useKiLogg(rekrutteringstreffId, 'tittel');
-  const searchParams = useSearchParams();
-  const isEditMode = (searchParams?.get('mode') ?? '') === 'edit';
   const {
     trigger: validateKI,
     data: analyse,
@@ -149,7 +147,7 @@ const EndreTittel = ({ onUpdated }: EndreTittelProps) => {
       (!bryter || forceSave) &&
       !validating &&
       !isSubmitting &&
-      !(harPublisert && isEditMode);
+      !(harPublisert && erEditMode);
 
     if (kanLagre) {
       await save(id ?? null);
@@ -372,15 +370,14 @@ const EndreTittel = ({ onUpdated }: EndreTittelProps) => {
                   size='small'
                   variant='secondary'
                   onClick={() => {
-                    if (harPublisert && isEditMode) {
-                      // Ikke lagre nå, bare tillat brudd og fortsett i formet
+                    if (harPublisert && erEditMode()) {
                       setForceSave(true);
                     } else {
                       onForceSave();
                     }
                   }}
                 >
-                  {harPublisert && isEditMode
+                  {harPublisert && erEditMode()
                     ? 'Bruk likevel'
                     : 'Lagre likevel'}
                 </Button>

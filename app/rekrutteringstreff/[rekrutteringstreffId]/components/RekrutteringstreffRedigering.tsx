@@ -6,7 +6,6 @@ import PraktiskeForhold from './redigereRekrutteringstreff/Praktiskeforhold';
 import {
   toIso as toIsoUtil,
   formatIso as formatIsoUtil,
-  formaterKlokkeslett,
 } from './redigereRekrutteringstreff/tidspunkt/utils';
 import { useAutosave } from './redigereRekrutteringstreff/useAutosave';
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';

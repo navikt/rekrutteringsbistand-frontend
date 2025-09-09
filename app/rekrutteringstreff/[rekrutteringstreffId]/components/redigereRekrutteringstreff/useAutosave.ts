@@ -13,12 +13,6 @@ export function useAutosave() {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { data: treff, mutate } = useRekrutteringstreff(rekrutteringstreffId);
   const { getValues, trigger } = useFormContext<AnyValues>();
-  const isEditMode =
-    typeof window !== 'undefined' &&
-    new URLSearchParams(window.location.search).get('mode') === 'edit';
-  const harPublisert = (treff?.hendelser ?? []).some(
-    (h: any) => h.hendelsestype === 'PUBLISER',
-  );
 
   const buildFullDto = useCallback(() => {
     const v = getValues();
@@ -62,7 +56,7 @@ export function useAutosave() {
       if (!rekrutteringstreffId) return;
 
       // Ikke autosave hvis publisert og i redigering, med mindre vi eksplisitt tvinger lagring (Publiser på nytt)
-      if (!force && harPublisert && isEditMode) {
+      if (skalHindreAutosave(treff, force)) {
         return;
       }
 
@@ -77,15 +71,35 @@ export function useAutosave() {
       await oppdaterRekrutteringstreff(rekrutteringstreffId, dto);
       await mutate();
     },
-    [
-      buildFullDto,
-      mutate,
-      rekrutteringstreffId,
-      trigger,
-      harPublisert,
-      isEditMode,
-    ],
+    [buildFullDto, mutate, rekrutteringstreffId, trigger, treff],
   );
 
   return { save };
 }
+
+export type Hendelse = { hendelsestype?: string };
+export type TreffLike = { hendelser?: Hendelse[] } | null | undefined;
+
+export const erEditMode = (): boolean => {
+  try {
+    return (
+      typeof window !== 'undefined' &&
+      new URLSearchParams(window.location.search).get('mode') === 'edit'
+    );
+  } catch {
+    return false;
+  }
+};
+
+export const erPublisert = (treff: TreffLike): boolean => {
+  const hendelser = (treff?.hendelser ?? []) as Hendelse[];
+  return hendelser.some((h) => h?.hendelsestype === 'PUBLISER');
+};
+
+export const skalHindreAutosave = (
+  treff: TreffLike,
+  force?: boolean,
+): boolean => {
+  if (force) return false;
+  return erPublisert(treff) && erEditMode();
+};

@@ -1,5 +1,6 @@
 'use client';
 
+import { erEditMode, erPublisert } from './useAutosave';
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
 import { useKiLogg } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
 import { useValiderRekrutteringstreff } from '@/app/api/rekrutteringstreff/kiValidering/useValiderRekrutteringstreff';
@@ -52,12 +53,7 @@ const EndreInnlegg = ({ onUpdated }: EndreInnleggProps) => {
   const innlegg = innleggListe?.[0];
 
   const { data: treff } = useRekrutteringstreff(rekrutteringstreffId);
-  const isEditMode =
-    typeof window !== 'undefined' &&
-    new URLSearchParams(window.location.search).get('mode') === 'edit';
-  const harPublisert = (treff?.hendelser ?? []).some(
-    (h: any) => h.hendelsestype === 'PUBLISER',
-  );
+  const publisertRedigeringsmodus = erPublisert(treff as any) && erEditMode();
 
   const {
     control,
@@ -203,7 +199,7 @@ const EndreInnlegg = ({ onUpdated }: EndreInnleggProps) => {
       const kanLagre = !bryterRetningslinjer || forceSave;
 
       // I publisert redigeringsmodus: ikke lagre automatisk, men vis analyse
-      if (kanLagre && !(harPublisert && isEditMode)) {
+      if (kanLagre && !publisertRedigeringsmodus) {
         await save(currentLoggId);
       }
     } catch (error) {
@@ -214,7 +210,7 @@ const EndreInnlegg = ({ onUpdated }: EndreInnleggProps) => {
 
   const onForceSave = async () => {
     // Ved publisert redigeringsmodus: ikke lagre nå, bare tillat brudd og fortsett i formet
-    if (harPublisert && isEditMode) {
+    if (publisertRedigeringsmodus) {
       setForceSave(true);
       return;
     }
@@ -392,7 +388,7 @@ const EndreInnlegg = ({ onUpdated }: EndreInnleggProps) => {
           {hasChecked && analyse?.bryterRetningslinjer && !forceSave && (
             <div className='pt-1'>
               <Button size='small' variant='secondary' onClick={onForceSave}>
-                {harPublisert && isEditMode ? 'Bruk likevel' : 'Lagre likevel'}
+                {publisertRedigeringsmodus ? 'Bruk likevel' : 'Lagre likevel'}
               </Button>
             </div>
           )}
