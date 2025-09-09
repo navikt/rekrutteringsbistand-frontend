@@ -15,15 +15,19 @@ import {
 import { StillingDataSchema } from './stilling.dto';
 import { StillingAPI } from '@/app/api/api-routes';
 import { getAPIwithSchema } from '@/app/api/fetcher';
-import useSWRImmutable from 'swr/immutable';
+import useSWR from 'swr';
 
 const stillingEndepunkt = (stillingsId: string) =>
   `${StillingAPI.internUrl}/rekrutteringsbistandstilling/${stillingsId}`;
 
 export const useStilling = (stillingsId?: string | null) =>
-  useSWRImmutable(
+  useSWR(
     stillingsId ? stillingEndepunkt(stillingsId) : null,
     getAPIwithSchema(StillingDataSchema),
+    {
+      revalidateOnMount: true,
+      revalidateOnFocus: true,
+    },
   );
 
 export const stillingMirage = (server: any) => {

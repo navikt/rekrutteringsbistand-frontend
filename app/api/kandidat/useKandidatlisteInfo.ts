@@ -7,7 +7,7 @@ import { KandidatAPI } from '@/app/api/api-routes';
 import { getAPIwithSchema } from '@/app/api/fetcher';
 import { StillingsinfoDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { Server } from 'miragejs';
-import useSWRImmutable from 'swr/immutable';
+import useSWR from 'swr';
 import { z } from 'zod';
 
 export const kandidatlisteInfoEndepunkt = (stillingsId: string) =>
@@ -24,7 +24,7 @@ export type KandidatlisteInfoDTO = z.infer<typeof KandidatlisteInfoSchema>;
 export const useKandidatlisteInfo = (
   stillingsInfo?: StillingsinfoDTO | null,
 ) => {
-  const kandidatlisteHook = useSWRImmutable(
+  const kandidatlisteHook = useSWR(
     stillingsInfo?.stillingsid
       ? kandidatlisteInfoEndepunkt(stillingsInfo.stillingsid)
       : null,
