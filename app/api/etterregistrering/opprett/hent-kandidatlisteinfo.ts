@@ -1,5 +1,6 @@
 import { KandidatAPI } from '@/app/api/api-routes';
 import { KandidatlisteInfoDTO } from '@/app/api/kandidat/useKandidatlisteInfo';
+import { hentOboToken } from '@/app/api/oboToken';
 import { RekbisError } from '@/util/rekbisError';
 
 interface hentKandidatlisteInfoProps {
@@ -24,13 +25,29 @@ export const hentKandidatlisteInfo = async ({
   reqHeaders,
 }: hentKandidatlisteInfoProps): Promise<Result> => {
   try {
-    // Bruk intern proxy-route slik at OBO-token håndteres sentralt og fungerer lokalt
+    // Hent OBO-token og kall ekstern API direkte for å unngå lokal proxy-loop
+    const obo = await hentOboToken({
+      headers: reqHeaders,
+      scope: KandidatAPI.scope,
+    });
+
+    if (!obo.ok) {
+      return {
+        success: false,
+        error: 'Kunne ikke hente OBO-token',
+      };
+    }
+
+    const headers = new Headers({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${obo.token}`,
+    });
+
     const response = await fetch(
-      `${KandidatAPI.internUrl}/veileder/stilling/${stillingsId}/kandidatlisteinfo`,
+      `${KandidatAPI.api_url}/veileder/stilling/${stillingsId}/kandidatlisteinfo`,
       {
         method: 'GET',
-        // Videresend originale headers (inkl. cookies) slik at proxy kan hente token
-        headers: reqHeaders,
+        headers,
       },
     );
 
