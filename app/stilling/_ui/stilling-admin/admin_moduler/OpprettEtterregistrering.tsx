@@ -1,10 +1,12 @@
 import { navnSchema } from '@/app/api/kandidat-sok/useKandidatNavn';
 import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
+import { StillingsStatus } from '@/app/stilling/_ui/stilling-typer';
 import { UmamiEvent } from '@/components/umami/umamiEvents';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
 import { RekbisError } from '@/util/rekbisError';
 import { Button } from '@navikt/ds-react';
+import { format } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
@@ -37,11 +39,37 @@ export default function OpprettEtterregistrering({
   const router = useRouter();
 
   const [loading, setLoading] = useState(false);
-
+  const datoIDag = format(new Date(), "yyyy-MM-dd'T'HH:mm:ss");
   const opprettEtterregistrering = async () => {
     setLoading(true);
+
+    const adminData = getValues();
     const dto = {
-      ...getValues(),
+      ...adminData,
+      stillingsinfo: {
+        ...adminData.stillingsinfo,
+        eierNavident: brukerData.ident ?? null,
+        eierNavn: `${brukerData.fornavn} ${brukerData.etternavn}`,
+        eierNavKontorEnhetId: valgtNavKontor?.navKontor ?? null,
+      },
+      stilling: {
+        ...adminData.stilling,
+        properties: {
+          ...adminData.stilling.properties,
+          starttime: datoIDag,
+          applicationdue: datoIDag,
+        },
+        administration: {
+          ...adminData.stilling.administration,
+          status: 'DONE',
+          navIdent: brukerData.ident,
+          reportee: `${brukerData.fornavn} ${brukerData.etternavn}`,
+        },
+        status: StillingsStatus.Stoppet,
+        firstPublished: true,
+        published: datoIDag,
+        expires: datoIDag,
+      },
       navKontor: valgtNavKontor?.navKontor || '',
       navIdent: brukerData.ident,
       reportee: `${brukerData.fornavn} ${brukerData.etternavn}`,

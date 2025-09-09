@@ -1,8 +1,6 @@
 import { oppdaterEtterregistrering } from '@/app/api/etterregistrering/opprett/oppdater-etterregistrering';
 import { FormidlingsDataDTO } from '@/app/stilling/_ui/stilling-admin/admin_moduler/OpprettEtterregistrering';
-import { StillingsStatus } from '@/app/stilling/_ui/stilling-typer';
 import { RekbisError } from '@/util/rekbisError';
-import { format } from 'date-fns';
 import { NextRequest, NextResponse } from 'next/server';
 
 export interface FormidlingAvUsynligKandidatOutboundDto {
@@ -18,38 +16,12 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const payload: FormidlingsDataDTO = await request.json();
 
     const stillingsId = payload.stilling.uuid;
-    const datoIDag = format(new Date(), "yyyy-MM-dd'T'HH:mm:ss");
-    // Oppdater etterregistrering
-
-    const stillingsData = {
-      stillingsinfo: {
-        ...payload.stillingsinfo,
-        eierNavident: payload.navIdent ?? null,
-        eierNavn: payload.reportee ?? null,
-        eierNavKontorEnhetId: payload.navKontor ?? null,
-      },
-      stilling: {
-        ...payload.stilling,
-        status: StillingsStatus.Stoppet,
-        firstPublished: true,
-        published: datoIDag,
-        expires: datoIDag,
-        properties: {
-          ...payload.stilling.properties,
-          starttime: datoIDag,
-          applicationdue: datoIDag,
-        },
-        administration: {
-          ...payload.stilling.administration,
-          status: 'DONE',
-          navIdent: payload.navIdent ?? null,
-          reportee: payload.reportee ?? null,
-        },
-      },
-    };
 
     await oppdaterEtterregistrering({
-      stillingsData: stillingsData,
+      stillingsData: {
+        stilling: payload.stilling,
+        stillingsinfo: payload.stillingsinfo,
+      },
       reqHeaders: request.headers,
     });
 
