@@ -39,14 +39,18 @@ export default function OpprettEtterregistrering({
 }: OpprettEtterregistreringProps) {
   const { getValues } = useFormContext<StillingAdminDTO>();
   const { track } = useUmami();
-  const { brukerData, valgtNavKontor, visVarsel } = useApplikasjonContext();
+  const { valgtNavKontor, visVarsel } = useApplikasjonContext();
   const router = useRouter();
 
   const [steg, setSteg] = useState('');
-
   const [oppretter, setOppretter] = useState(false);
+  const [feil, setFeil] = useState<string | null>(null);
+  const [laster, setLaster] = useState(false); // Laste-indikator for sekvensen
 
   const opprettEtterregistrering = async () => {
+    // Nullstill feil før ny kjøring
+    setFeil(null);
+    setLaster(true);
     const adminData = getValues();
 
     const stillingsId = adminData.stilling?.uuid;
@@ -72,17 +76,21 @@ export default function OpprettEtterregistrering({
       }
       setSteg('Etterregistrerer kandidater...');
 
-      adminData.formidlingKandidater?.forEach(async (kandidat) => {
-        const navn = `${kandidat?.fornavn} ${kandidat?.etternavn}`;
-
-        setSteg(`Etterregistrerer ${navn}...`);
-        await formidleUsynligKandidat(kandidatlisteInfo.kandidatlisteId, {
-          fnr: kandidat.fnr,
-          fåttJobb: true,
-          navKontor: valgtNavKontor?.navKontor,
-          stillingsId: stillingsId,
-        });
-      });
+      if (
+        adminData.formidlingKandidater &&
+        adminData.formidlingKandidater.length > 0
+      ) {
+        for (const kandidat of adminData.formidlingKandidater) {
+          const navn = `${kandidat?.fornavn} ${kandidat?.etternavn}`;
+          setSteg(`Etterregistrerer ${navn}...`);
+          await formidleUsynligKandidat(kandidatlisteInfo.kandidatlisteId, {
+            fnr: kandidat.fnr,
+            fåttJobb: true,
+            navKontor: valgtNavKontor?.navKontor,
+            stillingsId: stillingsId,
+          });
+        }
+      }
 
       setSteg('Ferdigstiller etterregistrering...');
 
@@ -105,6 +113,9 @@ export default function OpprettEtterregistrering({
         type: 'error',
         tekst: 'Feil ved steg: ' + steg,
       });
+      setFeil('Feil ved steg: ' + steg);
+    } finally {
+      setLaster(false);
     }
   };
 
@@ -134,17 +145,41 @@ export default function OpprettEtterregistrering({
         >
           <Modal.Body>
             <BodyLong>{steg}</BodyLong>
+            {feil && <BodyLong>{feil}</BodyLong>}
           </Modal.Body>
           <Modal.Footer>
-            <Button
-              type='button'
-              disabled={steg !== 'Etterregistrering fullført!'}
-              onClick={() =>
-                router.push('/etterregistrering?portefolje=visMine')
-              }
-            >
-              Avslutt
-            </Button>
+            {feil ? (
+              <>
+                {/* Vis "Prøv igjen" ved feil */}
+                <Button
+                  type='button'
+                  loading={laster}
+                  onClick={() => {
+                    setFeil(null);
+                    opprettEtterregistrering();
+                  }}
+                >
+                  Prøv igjen
+                </Button>
+                <Button
+                  type='button'
+                  variant='secondary'
+                  onClick={() => setOppretter(false)}
+                >
+                  Avbryt
+                </Button>
+              </>
+            ) : (
+              <Button
+                type='button'
+                disabled={steg !== 'Etterregistrering fullført!'}
+                onClick={() =>
+                  router.push('/etterregistrering?portefolje=visMine')
+                }
+              >
+                Avslutt
+              </Button>
+            )}
           </Modal.Footer>
         </Modal>
       )}
