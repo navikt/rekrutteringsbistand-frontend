@@ -4,7 +4,7 @@ import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstillin
 import { RekbisError } from '@/util/rekbisError';
 
 interface oppdaterEtterregistreringProps {
-  nyData: StillingsDataDTO;
+  stillingsData: StillingsDataDTO;
   reqHeaders: Headers;
 }
 
@@ -21,7 +21,7 @@ interface Failure {
 type Result = Success | Failure;
 
 export const oppdaterEtterregistrering = async ({
-  nyData,
+  stillingsData,
   reqHeaders,
 }: oppdaterEtterregistreringProps): Promise<Result> => {
   try {
@@ -46,7 +46,7 @@ export const oppdaterEtterregistrering = async ({
       {
         method: 'PUT',
         headers: headers,
-        body: JSON.stringify(nyData),
+        body: JSON.stringify(stillingsData),
       },
     );
 
