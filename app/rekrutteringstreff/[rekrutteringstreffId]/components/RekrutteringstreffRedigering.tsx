@@ -25,6 +25,7 @@ import {
   Alert,
 } from '@navikt/ds-react';
 import { format, parseISO } from 'date-fns';
+import { formatInTimeZone } from 'date-fns-tz';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 
@@ -325,7 +326,11 @@ const RekrutteringstreffRedigering: React.FC<
                       tittel: 'Om treffet',
                       opprettetAvPersonNavn: null,
                       opprettetAvPersonBeskrivelse: 'Markedskontakt',
-                      sendesTilJobbsokerTidspunkt: new Date().toISOString(),
+                      sendesTilJobbsokerTidspunkt: formatInTimeZone(
+                        new Date(),
+                        'Europe/Oslo',
+                        "yyyy-MM-dd'T'HH:mm:ssXXX",
+                      ),
                     };
 
                     const eksisterende = innleggHook.data?.[0];

@@ -29,6 +29,7 @@ import {
   Skeleton,
 } from '@navikt/ds-react';
 import { logger } from '@navikt/next-logger';
+import { formatInTimeZone } from 'date-fns-tz';
 import { AnimatePresence, cubicBezier, motion } from 'framer-motion';
 import React, { KeyboardEvent, useEffect, useRef, useState } from 'react';
 import { Controller, useFormContext, useWatch } from 'react-hook-form';
@@ -138,7 +139,11 @@ const EndreInnlegg = ({ onUpdated }: EndreInnleggProps) => {
         tittel: 'Om treffet',
         opprettetAvPersonNavn: navnForPayload,
         opprettetAvPersonBeskrivelse: 'Markedskontakt',
-        sendesTilJobbsokerTidspunkt: new Date().toISOString(),
+        sendesTilJobbsokerTidspunkt: formatInTimeZone(
+          new Date(),
+          'Europe/Oslo',
+          "yyyy-MM-dd'T'HH:mm:ssXXX",
+        ),
       };
 
       if (innlegg?.id) {
