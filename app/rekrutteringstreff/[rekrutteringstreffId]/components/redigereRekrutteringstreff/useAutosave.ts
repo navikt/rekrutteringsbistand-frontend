@@ -1,6 +1,7 @@
 'use client';
 
 import { useRekrutteringstreffContext } from '../../RekrutteringstreffContext';
+import { skalHindreAutosave } from './autosaveUtils';
 import { toIso as toIsoUtil } from './tidspunkt/utils';
 import { oppdaterRekrutteringstreff } from '@/app/api/rekrutteringstreff/oppdater-rekrutteringstreff/oppdaterRerkutteringstreff';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
@@ -13,12 +14,6 @@ export function useAutosave() {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { data: treff, mutate } = useRekrutteringstreff(rekrutteringstreffId);
   const { getValues, trigger } = useFormContext<AnyValues>();
-  const isEditMode =
-    typeof window !== 'undefined' &&
-    new URLSearchParams(window.location.search).get('mode') === 'edit';
-  const harPublisert = (treff?.hendelser ?? []).some(
-    (h: any) => h.hendelsestype === 'PUBLISER',
-  );
 
   const buildFullDto = useCallback(() => {
     const v = getValues();
@@ -62,7 +57,7 @@ export function useAutosave() {
       if (!rekrutteringstreffId) return;
 
       // Ikke autosave hvis publisert og i redigering, med mindre vi eksplisitt tvinger lagring (Publiser på nytt)
-      if (!force && harPublisert && isEditMode) {
+      if (skalHindreAutosave(treff, force)) {
         return;
       }
 
@@ -77,14 +72,7 @@ export function useAutosave() {
       await oppdaterRekrutteringstreff(rekrutteringstreffId, dto);
       await mutate();
     },
-    [
-      buildFullDto,
-      mutate,
-      rekrutteringstreffId,
-      trigger,
-      harPublisert,
-      isEditMode,
-    ],
+    [buildFullDto, mutate, rekrutteringstreffId, trigger, treff],
   );
 
   return { save };

@@ -1,10 +1,27 @@
 import { format, parseISO } from 'date-fns';
+import { formatInTimeZone } from 'date-fns-tz';
 
-export const toIso = (d: Date, t: string) => {
-  const [h, m] = t.split(':').map(Number);
-  const local = new Date(d);
-  local.setHours(h, m, 0, 0);
-  return format(local, "yyyy-MM-dd'T'HH:mm:ssXXX");
+const OSLO_TZ = 'Europe/Oslo';
+const TIME_REGEX = /^([01]?\d|2[0-3]):([0-5]\d)$/;
+
+export const toIso = (d?: Date | null, t?: string | null): string | null => {
+  if (!d) return null;
+  const time = (t ?? '').trim();
+  if (!TIME_REGEX.test(time)) return null;
+  const [hh, mm] = time.split(':').map(Number);
+
+  const local = new Date(
+    d.getFullYear(),
+    d.getMonth(),
+    d.getDate(),
+    hh,
+    mm,
+    0,
+    0,
+  );
+  if (isNaN(local.getTime())) return null;
+
+  return formatInTimeZone(local, OSLO_TZ, "yyyy-MM-dd'T'HH:mm:ssXXX");
 };
 
 export const formatIso = (iso?: string | null) =>

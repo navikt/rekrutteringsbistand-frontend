@@ -1,5 +1,6 @@
 'use client';
 
+import { erEditMode, erPublisert } from './autosaveUtils';
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
 import { useKiLogg } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
 import { useValiderRekrutteringstreff } from '@/app/api/rekrutteringstreff/kiValidering/useValiderRekrutteringstreff';
@@ -29,8 +30,9 @@ import {
   Skeleton,
 } from '@navikt/ds-react';
 import { logger } from '@navikt/next-logger';
+import { formatInTimeZone } from 'date-fns-tz';
 import { AnimatePresence, cubicBezier, motion } from 'framer-motion';
-import React, { KeyboardEvent, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Controller, useFormContext, useWatch } from 'react-hook-form';
 
 interface EndreInnleggProps {
@@ -51,12 +53,7 @@ const EndreInnlegg = ({ onUpdated }: EndreInnleggProps) => {
   const innlegg = innleggListe?.[0];
 
   const { data: treff } = useRekrutteringstreff(rekrutteringstreffId);
-  const isEditMode =
-    typeof window !== 'undefined' &&
-    new URLSearchParams(window.location.search).get('mode') === 'edit';
-  const harPublisert = (treff?.hendelser ?? []).some(
-    (h: any) => h.hendelsestype === 'PUBLISER',
-  );
+  const publisertRedigeringsmodus = erPublisert(treff as any) && erEditMode();
 
   const {
     control,
@@ -110,6 +107,19 @@ const EndreInnlegg = ({ onUpdated }: EndreInnleggProps) => {
   const kiErrorBorder =
     !!analyse && !analyseError && analyse?.bryterRetningslinjer && !forceSave;
 
+  useEffect(() => {
+    const feil =
+      !!analyse &&
+      !analyseError &&
+      !!analyse?.bryterRetningslinjer &&
+      !forceSave;
+    setValue('innleggKiFeil' as any, feil as any, {
+      shouldDirty: false,
+      shouldValidate: false,
+      shouldTouch: false,
+    });
+  }, [analyse, analyseError, forceSave, setValue]);
+
   const save = async (currentLoggId: string | null) => {
     const contentToSave = getValues('htmlContent');
     if (!contentToSave?.trim()) return;
@@ -125,7 +135,11 @@ const EndreInnlegg = ({ onUpdated }: EndreInnleggProps) => {
         tittel: 'Om treffet',
         opprettetAvPersonNavn: navnForPayload,
         opprettetAvPersonBeskrivelse: 'Markedskontakt',
-        sendesTilJobbsokerTidspunkt: new Date().toISOString(),
+        sendesTilJobbsokerTidspunkt: formatInTimeZone(
+          new Date(),
+          'Europe/Oslo',
+          "yyyy-MM-dd'T'HH:mm:ssXXX",
+        ),
       };
 
       if (innlegg?.id) {
@@ -185,7 +199,7 @@ const EndreInnlegg = ({ onUpdated }: EndreInnleggProps) => {
       const kanLagre = !bryterRetningslinjer || forceSave;
 
       // I publisert redigeringsmodus: ikke lagre automatisk, men vis analyse
-      if (kanLagre && !(harPublisert && isEditMode)) {
+      if (kanLagre && !publisertRedigeringsmodus) {
         await save(currentLoggId);
       }
     } catch (error) {
@@ -195,8 +209,11 @@ const EndreInnlegg = ({ onUpdated }: EndreInnleggProps) => {
   };
 
   const onForceSave = async () => {
-    // Ikke tillat lagre likevel hvis publisert og i redigering
-    if (harPublisert && isEditMode) return;
+    // Ved publisert redigeringsmodus: ikke lagre nå, bare tillat brudd og fortsett i formet
+    if (publisertRedigeringsmodus) {
+      setForceSave(true);
+      return;
+    }
     setForceSave(true);
     await save(loggId);
   };
@@ -368,16 +385,13 @@ const EndreInnlegg = ({ onUpdated }: EndreInnleggProps) => {
             </div>
           </div>
 
-          {hasChecked &&
-            analyse?.bryterRetningslinjer &&
-            !forceSave &&
-            !(harPublisert && isEditMode) && (
-              <div className='pt-1'>
-                <Button size='small' variant='secondary' onClick={onForceSave}>
-                  Lagre likevel
-                </Button>
-              </div>
-            )}
+          {hasChecked && analyse?.bryterRetningslinjer && !forceSave && (
+            <div className='pt-1'>
+              <Button size='small' variant='secondary' onClick={onForceSave}>
+                {publisertRedigeringsmodus ? 'Bruk likevel' : 'Lagre likevel'}
+              </Button>
+            </div>
+          )}
         </>
       )}
     </section>
