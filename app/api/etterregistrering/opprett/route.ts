@@ -1,4 +1,3 @@
-import { hentKandidatlisteInfo } from '@/app/api/etterregistrering/opprett/hent-kandidatlisteinfo';
 import { oppdaterEtterregistrering } from '@/app/api/etterregistrering/opprett/oppdater-etterregistrering';
 import { FormidlingsDataDTO } from '@/app/stilling/_ui/stilling-admin/admin_moduler/OpprettEtterregistrering';
 import { StillingsStatus } from '@/app/stilling/_ui/stilling-typer';
@@ -58,17 +57,17 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     await new Promise((resolve) => setTimeout(resolve, 2000));
 
     // // Verifiser at kandidatlisten er oppdatert
-    const kandidatlisteInfo = await hentKandidatlisteInfo({
-      stillingsId,
-      reqHeaders: request.headers,
-    });
+    // const kandidatlisteInfo = await hentKandidatlisteInfo({
+    //   stillingsId,
+    //   reqHeaders: request.headers,
+    // });
 
-    if (!kandidatlisteInfo.success) {
-      return NextResponse.json(
-        { error: 'Klarte ikke å hente kandidatliste informasjon' },
-        { status: 500 },
-      );
-    }
+    // if (!kandidatlisteInfo.success) {
+    //   return NextResponse.json(
+    //     { error: 'Klarte ikke å hente kandidatliste informasjon' },
+    //     { status: 500 },
+    //   );
+    // }
     // const kandidatlisteId = kandidatlisteInfo.data.kandidatlisteId;
     // if (!kandidatlisteInfo.success) {
     //   return NextResponse.json(
