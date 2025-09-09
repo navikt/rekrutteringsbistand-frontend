@@ -25,7 +25,6 @@ export const hentKandidatlisteInfo = async ({
   reqHeaders,
 }: hentKandidatlisteInfoProps): Promise<Result> => {
   try {
-    // Hent OBO-token og kall ekstern API direkte for å unngå lokal proxy-loop
     const obo = await hentOboToken({
       headers: reqHeaders,
       scope: KandidatAPI.scope,
@@ -42,12 +41,11 @@ export const hentKandidatlisteInfo = async ({
       'Content-Type': 'application/json',
       Authorization: `Bearer ${obo.token}`,
     });
-
     const response = await fetch(
       `${KandidatAPI.api_url}/veileder/stilling/${stillingsId}/kandidatlisteinfo`,
       {
         method: 'GET',
-        headers,
+        headers: headers,
       },
     );
 

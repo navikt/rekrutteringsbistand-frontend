@@ -3,7 +3,9 @@ import { hentKandidatlisteInfo } from '@/app/api/etterregistrering/opprett/hent-
 import { lukkKandidatliste } from '@/app/api/etterregistrering/opprett/lukk-kandidatlist';
 import { oppdaterEtterregistrering } from '@/app/api/etterregistrering/opprett/oppdater-etterregistrering';
 import { FormidlingsDataDTO } from '@/app/stilling/_ui/stilling-admin/admin_moduler/OpprettEtterregistrering';
+import { StillingsStatus } from '@/app/stilling/_ui/stilling-typer';
 import { RekbisError } from '@/util/rekbisError';
+import { format } from 'date-fns';
 import { NextRequest, NextResponse } from 'next/server';
 
 export interface FormidlingAvUsynligKandidatOutboundDto {
@@ -19,7 +21,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const payload: FormidlingsDataDTO = await request.json();
 
     const stillingsId = payload.stilling.uuid;
-
+    const datoIDag = format(new Date(), "yyyy-MM-dd'T'HH:mm:ss");
     // Oppdater etterregistrering
     await oppdaterEtterregistrering({
       nyData: {
@@ -31,6 +33,15 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         },
         stilling: {
           ...payload.stilling,
+          status: StillingsStatus.Stoppet,
+          firstPublished: true,
+          published: datoIDag,
+          expires: datoIDag,
+          properties: {
+            ...payload.stilling.properties,
+            starttime: datoIDag,
+            applicationdue: datoIDag,
+          },
           administration: {
             ...payload.stilling.administration,
             navIdent: payload.navIdent ?? null,

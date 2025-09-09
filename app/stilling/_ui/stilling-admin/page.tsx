@@ -47,10 +47,17 @@ export default function StillingAdmin() {
     }
   };
 
+  const harId = registerForm.getValues('stilling.uuid');
+  const stillingskategori = registerForm.getValues(
+    'stillingsinfo.stillingskategori',
+  );
+
   const knapperad = () => {
     return (
       <div className='flex gap-2'>
-        <AutolagreStilling stillingsData={stillingsData} />
+        {stillingskategori !== Stillingskategori.Formidling && (
+          <AutolagreStilling stillingsData={stillingsData} />
+        )}
         <Button
           icon={<MultiplyIcon />}
           size='small'
@@ -68,11 +75,6 @@ export default function StillingAdmin() {
       </div>
     );
   };
-
-  const harId = registerForm.getValues('stilling.uuid');
-  const stillingskategori = registerForm.getValues(
-    'stillingsinfo.stillingskategori',
-  );
 
   const moduler = hentModulerForKategori(stillingskategori);
 
