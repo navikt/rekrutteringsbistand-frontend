@@ -20,6 +20,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     const stillingsId = payload.stilling.uuid;
 
+    // Oppdater etterregistrering
     await oppdaterEtterregistrering({
       nyData: {
         stillingsinfo: {
@@ -40,7 +41,10 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       reqHeaders: request.headers,
     });
 
-    // 4 Verifiser at kandidatlisten er oppdatert
+    // Vent litt for å sikre at oppdateringen har gått igjennom før vi henter kandidatliste
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
+    // Verifiser at kandidatlisten er oppdatert
     const kandidatlisteInfo = await hentKandidatlisteInfo({
       stillingsId,
       reqHeaders: request.headers,
@@ -54,7 +58,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
     const kandidatlisteId = kandidatlisteInfo.data.kandidatlisteId;
 
-    // 6. Legg til kandidater i kandidatliste
+    //  Legg til kandidater i kandidatliste
     const kandidater = payload.formidlingKandidater.map((kandidat) => {
       return {
         fnr: kandidat.fnr,
