@@ -99,7 +99,7 @@ const StillingsKort: React.FC<IStillingsKort> = ({
         )
       ) : (
         <Button
-          icon={<CogIcon />}
+          icon={erFormidling ? null : <CogIcon />}
           size='small'
           variant='tertiary'
           className='whitespace-nowrap'
@@ -108,7 +108,7 @@ const StillingsKort: React.FC<IStillingsKort> = ({
             router.push(stillingUrl);
           }}
         >
-          Administrer
+          {erFormidling ? 'Vis formidling' : 'Administrer'}
         </Button>
       )}
     </div>
