@@ -110,6 +110,19 @@ const EndreInnlegg = ({ onUpdated }: EndreInnleggProps) => {
   const kiErrorBorder =
     !!analyse && !analyseError && analyse?.bryterRetningslinjer && !forceSave;
 
+  useEffect(() => {
+    const feil =
+      !!analyse &&
+      !analyseError &&
+      !!analyse?.bryterRetningslinjer &&
+      !forceSave;
+    setValue('innleggKiFeil' as any, feil as any, {
+      shouldDirty: false,
+      shouldValidate: false,
+      shouldTouch: false,
+    });
+  }, [analyse, analyseError, forceSave, setValue]);
+
   const save = async (currentLoggId: string | null) => {
     const contentToSave = getValues('htmlContent');
     if (!contentToSave?.trim()) return;
@@ -195,8 +208,11 @@ const EndreInnlegg = ({ onUpdated }: EndreInnleggProps) => {
   };
 
   const onForceSave = async () => {
-    // Ikke tillat lagre likevel hvis publisert og i redigering
-    if (harPublisert && isEditMode) return;
+    // Ved publisert redigeringsmodus: ikke lagre nå, bare tillat brudd og fortsett i formet
+    if (harPublisert && isEditMode) {
+      setForceSave(true);
+      return;
+    }
     setForceSave(true);
     await save(loggId);
   };
@@ -368,16 +384,13 @@ const EndreInnlegg = ({ onUpdated }: EndreInnleggProps) => {
             </div>
           </div>
 
-          {hasChecked &&
-            analyse?.bryterRetningslinjer &&
-            !forceSave &&
-            !(harPublisert && isEditMode) && (
-              <div className='pt-1'>
-                <Button size='small' variant='secondary' onClick={onForceSave}>
-                  Lagre likevel
-                </Button>
-              </div>
-            )}
+          {hasChecked && analyse?.bryterRetningslinjer && !forceSave && (
+            <div className='pt-1'>
+              <Button size='small' variant='secondary' onClick={onForceSave}>
+                {harPublisert && isEditMode ? 'Bruk likevel' : 'Lagre likevel'}
+              </Button>
+            </div>
+          )}
         </>
       )}
     </section>

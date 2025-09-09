@@ -22,7 +22,6 @@ import {
   BodyLong,
   BodyShort,
   Label,
-  Detail,
   Alert,
 } from '@navikt/ds-react';
 import { format, parseISO } from 'date-fns';
@@ -42,6 +41,10 @@ const RekrutteringstreffRedigering: React.FC<
   const innleggHook = useInnlegg(rekrutteringstreffId);
   const { save } = useAutosave();
   const { getValues, setValue, watch } = useFormContext();
+  // KI-feil flagg fra underkomponenter for å deaktivere publisering ved brudd
+  const tittelKiFeil = (watch('tittelKiFeil' as any) as any) ?? false;
+  const innleggKiFeil = (watch('innleggKiFeil' as any) as any) ?? false;
+  const anyKiFeil = !!tittelKiFeil || !!innleggKiFeil;
 
   const harPublisert =
     rekrutteringstreffHook.data?.hendelser?.some(
@@ -232,7 +235,7 @@ const RekrutteringstreffRedigering: React.FC<
               type='button'
               variant='primary'
               size='small'
-              disabled={endringer.length === 0}
+              disabled={endringer.length === 0 || anyKiFeil}
               onClick={() => {
                 åpneBekreftelse();
               }}
@@ -301,7 +304,7 @@ const RekrutteringstreffRedigering: React.FC<
               type='button'
               variant='primary'
               size='small'
-              disabled={endringer.length === 0}
+              disabled={endringer.length === 0 || anyKiFeil}
               onClick={async () => {
                 bekreftModalRef.current?.close();
                 await save(undefined, true);

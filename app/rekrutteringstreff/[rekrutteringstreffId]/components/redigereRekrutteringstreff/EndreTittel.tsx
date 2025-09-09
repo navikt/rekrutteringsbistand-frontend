@@ -88,6 +88,20 @@ const EndreTittel = ({ onUpdated }: EndreTittelProps) => {
     (analyse as any)?.bryterRetningslinjer &&
     !forceSave;
 
+  // Oppdater form-flagget for KI-feil slik at publisering kan deaktiveres ved brudd
+  useEffect(() => {
+    const feil =
+      !!analyse &&
+      !analyseError &&
+      !!(analyse as any)?.bryterRetningslinjer &&
+      !forceSave;
+    setValue('tittelKiFeil' as any, feil as any, {
+      shouldDirty: false,
+      shouldValidate: false,
+      shouldTouch: false,
+    });
+  }, [analyse, analyseError, forceSave, setValue]);
+
   const harPublisert = (rekrutteringstreff?.hendelser ?? []).some(
     (h: any) => h.hendelsestype === 'PUBLISER',
   );
