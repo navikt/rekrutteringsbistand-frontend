@@ -13,6 +13,7 @@ export const oppdaterEtterregistrering = async (data: StillingAdminDTO) => {
       ...data.stilling,
       properties: {
         ...data.stilling?.properties,
+        tags: JSON.stringify(data.stilling?.properties?.tags || []),
         starttime: datoIDag,
         applicationdue: datoIDag,
       },
