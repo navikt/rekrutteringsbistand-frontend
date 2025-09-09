@@ -1,6 +1,6 @@
 'use client';
 
-import { erEditMode } from './autosaveUtils';
+import { erEditMode } from './useAutosave';
 import { useAutosave } from './useAutosave';
 import { useKiLogg } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
 import { useValiderRekrutteringstreff } from '@/app/api/rekrutteringstreff/kiValidering/useValiderRekrutteringstreff';

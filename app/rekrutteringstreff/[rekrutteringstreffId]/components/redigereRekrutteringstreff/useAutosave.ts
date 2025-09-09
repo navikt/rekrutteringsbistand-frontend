@@ -17,9 +17,6 @@ import { useFormContext } from 'react-hook-form';
 
 type AnyValues = Record<string, any>;
 
-export type Hendelse = { hendelsestype?: string };
-export type TreffLike = { hendelser?: Hendelse[] } | null | undefined;
-
 export const erEditMode = (): boolean => {
   try {
     return (
@@ -31,15 +28,16 @@ export const erEditMode = (): boolean => {
   }
 };
 
-export const erPublisert = (treff: TreffLike): boolean => {
-  const hendelser = (treff?.hendelser ?? []) as Hendelse[];
-  return hendelser.some((h) => h?.hendelsestype === 'PUBLISER');
+export const erPublisert = (treff: any): boolean => {
+  try {
+    const hendelser = Array.isArray(treff?.hendelser) ? treff.hendelser : [];
+    return hendelser.some((h: any) => h?.hendelsestype === 'PUBLISER');
+  } catch {
+    return false;
+  }
 };
 
-export const skalHindreAutosave = (
-  treff: TreffLike,
-  force?: boolean,
-): boolean => {
+export const skalHindreAutosave = (treff: any, force?: boolean): boolean => {
   if (force) return false;
   return erPublisert(treff) && erEditMode();
 };
