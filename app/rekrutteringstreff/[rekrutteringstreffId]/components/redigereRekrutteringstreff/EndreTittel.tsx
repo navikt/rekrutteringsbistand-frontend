@@ -1,6 +1,6 @@
 'use client';
 
-import { erEditMode } from './useAutosave';
+import { erEditMode } from './autosaveUtils';
 import { useKiLogg } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
 import { useValiderRekrutteringstreff } from '@/app/api/rekrutteringstreff/kiValidering/useValiderRekrutteringstreff';
 import {
@@ -147,7 +147,7 @@ const EndreTittel = ({ onUpdated }: EndreTittelProps) => {
       (!bryter || forceSave) &&
       !validating &&
       !isSubmitting &&
-      !(harPublisert && erEditMode);
+      !(harPublisert && erEditMode());
 
     if (kanLagre) {
       await save(id ?? null);

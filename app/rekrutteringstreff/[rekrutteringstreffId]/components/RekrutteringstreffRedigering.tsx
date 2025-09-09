@@ -8,14 +8,9 @@ import {
   formatIso as formatIsoUtil,
 } from './redigereRekrutteringstreff/tidspunkt/utils';
 import { useAutosave } from './redigereRekrutteringstreff/useAutosave';
+import { useInnleggAutosave } from './redigereRekrutteringstreff/useInnleggAutosave';
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
-import {
-  oppdaterEttInnlegg,
-  opprettInnleggForTreff,
-  OpprettEllerOppdaterInnleggDto,
-} from '@/app/api/rekrutteringstreff/opprettEllerOppdaterInnlegg';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
-import { RekbisError } from '@/util/rekbisError';
 import {
   Button,
   Modal,
@@ -24,7 +19,6 @@ import {
   Label,
   Alert,
 } from '@navikt/ds-react';
-import { formatInTimeZone } from 'date-fns-tz';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 
@@ -40,6 +34,7 @@ const RekrutteringstreffRedigering: React.FC<
   const rekrutteringstreffHook = useRekrutteringstreff(rekrutteringstreffId);
   const innleggHook = useInnlegg(rekrutteringstreffId);
   const { save } = useAutosave();
+  const { save: saveInnlegg } = useInnleggAutosave();
   const { getValues, watch } = useFormContext();
 
   const tittelKiFeil = (watch('tittelKiFeil' as any) as any) ?? false;
@@ -295,56 +290,16 @@ const RekrutteringstreffRedigering: React.FC<
               onClick={async () => {
                 bekreftModalRef.current?.close();
                 await save(undefined, true);
-                try {
-                  const values: any = getValues();
-                  const currentHtml: string = (values?.htmlContent ??
-                    '') as string;
-                  const backendHtml: string = (innleggHook.data?.[0]
-                    ?.htmlContent ?? '') as string;
-                  const shouldSaveInnlegg =
-                    (currentHtml ?? '').trim() !== (backendHtml ?? '').trim();
-                  if (
-                    shouldSaveInnlegg &&
-                    (currentHtml ?? '').trim().length > 0
-                  ) {
-                    const eksisterendeInnlegg = innleggHook.data?.[0];
-                    const navnForPayload =
-                      eksisterendeInnlegg?.opprettetAvPersonNavn ||
-                      (eksisterendeInnlegg as any)?.opprettetAvPersonNavident ||
-                      'Markedskontakt';
-
-                    const payload: OpprettEllerOppdaterInnleggDto = {
-                      htmlContent: currentHtml,
-                      tittel: 'Om treffet',
-                      opprettetAvPersonNavn: navnForPayload,
-                      opprettetAvPersonBeskrivelse: 'Markedskontakt',
-                      sendesTilJobbsokerTidspunkt: formatInTimeZone(
-                        new Date(),
-                        'Europe/Oslo',
-                        "yyyy-MM-dd'T'HH:mm:ssXXX",
-                      ),
-                    };
-
-                    const eksisterende = innleggHook.data?.[0];
-                    if (eksisterende?.id) {
-                      await oppdaterEttInnlegg(
-                        rekrutteringstreffId,
-                        eksisterende.id,
-                        payload,
-                      );
-                    } else {
-                      await opprettInnleggForTreff(
-                        rekrutteringstreffId,
-                        payload,
-                      );
-                    }
-                    await innleggHook.mutate();
-                  }
-                } catch (e) {
-                  new RekbisError({
-                    message: 'Lagring av innlegg feilet.',
-                    error: e,
-                  });
+                const values: any = getValues();
+                const currentHtml: string = (values?.htmlContent ??
+                  '') as string;
+                const backendHtml: string = (innleggHook.data?.[0]
+                  ?.htmlContent ?? '') as string;
+                const shouldSaveInnlegg =
+                  (currentHtml ?? '').trim() !== (backendHtml ?? '').trim() &&
+                  (currentHtml ?? '').trim().length > 0;
+                if (shouldSaveInnlegg) {
+                  await saveInnlegg(undefined, true);
                 }
                 onGåTilForhåndsvisning?.();
               }}

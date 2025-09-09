@@ -1,6 +1,6 @@
 'use client';
 
-import { erEditMode, erPublisert } from './useAutosave';
+import { erEditMode, erPublisert } from './autosaveUtils';
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
 import { useKiLogg } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
 import { useValiderRekrutteringstreff } from '@/app/api/rekrutteringstreff/kiValidering/useValiderRekrutteringstreff';
@@ -32,7 +32,7 @@ import {
 import { logger } from '@navikt/next-logger';
 import { formatInTimeZone } from 'date-fns-tz';
 import { AnimatePresence, cubicBezier, motion } from 'framer-motion';
-import React, { KeyboardEvent, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Controller, useFormContext, useWatch } from 'react-hook-form';
 
 interface EndreInnleggProps {
