@@ -1,12 +1,10 @@
 'use client';
 
 import { erEditMode } from './autosaveUtils';
+import { useAutosave } from './useAutosave';
 import { useKiLogg } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
 import { useValiderRekrutteringstreff } from '@/app/api/rekrutteringstreff/kiValidering/useValiderRekrutteringstreff';
-import {
-  oppdaterRekrutteringstreff,
-  MAX_TITLE_LENGTH,
-} from '@/app/api/rekrutteringstreff/oppdater-rekrutteringstreff/oppdaterRerkutteringstreff';
+import { MAX_TITLE_LENGTH } from '@/app/api/rekrutteringstreff/oppdater-rekrutteringstreff/oppdaterRerkutteringstreff';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
 import { RekbisError } from '@/util/rekbisError';
@@ -39,11 +37,8 @@ const ease = cubicBezier(0.16, 1, 0.3, 1);
 
 const EndreTittel = ({ onUpdated }: EndreTittelProps) => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
-  const {
-    data: rekrutteringstreff,
-    isLoading,
-    mutate,
-  } = useRekrutteringstreff(rekrutteringstreffId);
+  const { data: rekrutteringstreff, isLoading } =
+    useRekrutteringstreff(rekrutteringstreffId);
 
   const { setLagret: setKiLagret } = useKiLogg(rekrutteringstreffId, 'tittel');
   const {
@@ -104,11 +99,11 @@ const EndreTittel = ({ onUpdated }: EndreTittelProps) => {
     (h: any) => h.hendelsestype === 'PUBLISER',
   );
 
-  const save = async (currentLoggId: string | null) => {
+  const { save: save } = useAutosave();
+
+  const saveTittel = async (currentLoggId: string | null, force?: boolean) => {
     try {
-      await oppdaterRekrutteringstreff(rekrutteringstreffId, {
-        tittel: getValues('tittel'),
-      });
+      await save(['tittel'], force);
       if (currentLoggId) {
         try {
           await setKiLagret({ id: currentLoggId, lagret: true });
@@ -119,7 +114,6 @@ const EndreTittel = ({ onUpdated }: EndreTittelProps) => {
           });
         }
       }
-      await mutate();
       onUpdated?.();
     } catch (error) {
       new RekbisError({ message: 'Lagring av tittel feilet.', error });
@@ -150,7 +144,7 @@ const EndreTittel = ({ onUpdated }: EndreTittelProps) => {
       !(harPublisert && erEditMode());
 
     if (kanLagre) {
-      await save(id ?? null);
+      await saveTittel(id ?? null);
     }
   };
 
@@ -165,7 +159,7 @@ const EndreTittel = ({ onUpdated }: EndreTittelProps) => {
 
   const onForceSave = async () => {
     setForceSave(true);
-    await save(loggId);
+    await saveTittel(loggId);
   };
 
   return (
