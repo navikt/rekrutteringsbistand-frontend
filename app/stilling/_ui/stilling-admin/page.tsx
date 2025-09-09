@@ -15,6 +15,7 @@ import {
 // import ViktigeDatoer from '@/app/stilling/rediger/_ui/ViktigeDatoer';
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideLayout from '@/components/layout/SideLayout';
+import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { MultiplyIcon, TrashIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
@@ -26,6 +27,7 @@ import z from 'zod';
 export type StillingAdminDTO = z.infer<typeof StillingAdminSchema>;
 
 export default function StillingAdmin() {
+  const { brukerData, valgtNavKontor } = useApplikasjonContext();
   const { forhåndsvisData, setForhåndsvisData, stillingsData } =
     useStillingsContext();
   const router = useRouter();
@@ -34,7 +36,11 @@ export default function StillingAdmin() {
   const mappetVerdier = mapTilForm(stillingsData);
   const registerForm = useForm<StillingAdminDTO>({
     resolver: zodResolver(StillingAdminSchema),
-    defaultValues: mappetVerdier,
+    defaultValues: {
+      ...mappetVerdier,
+      brukerData,
+      navKontorEnhet: valgtNavKontor?.navKontor || null,
+    },
   });
 
   const setForhåndsvis = (val: boolean) => {

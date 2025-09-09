@@ -119,6 +119,7 @@ const stillingRekkefolge: ModulKey[] = [
 const formidlingRekkefolge: ModulKey[] = [
   'formidling_kandidater',
   'yrkestittel',
+  'virksomheten',
   'formidling_sektor',
   'formidling_ansettelsesform',
   'formidling_arbeidstidsordning',

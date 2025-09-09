@@ -22,7 +22,7 @@ export const propertiesSchema = z
     jobpercentage: z.string().optional().nullable(),
     jobpercentagerange: z.string().optional().nullable(),
     extent: z.string().optional().nullable(),
-    applicationdue: z.union([z.string(), z.boolean()]).optional().nullable(),
+    applicationdue: z.string().optional().nullable(),
     jobtitle: z.any().optional().nullable(),
     keywords: z.string().optional().nullable(),
     positioncount: z.union([
@@ -50,7 +50,7 @@ export const propertiesSchema = z
     // workLanguage: z.string().optional().nullable(),
     salary: z.any().nullable().optional(),
     industry: z.string().optional().nullable(),
-    starttime: z.union([z.string(), z.boolean()]).optional().nullable(),
+    starttime: z.string().optional().nullable(),
     tags: z.any().nullable().optional(),
     workhours: z.any().nullable().optional(),
     workday: z.any().nullable().optional(),
@@ -127,7 +127,7 @@ export const KategoriSchema = z.object({
 });
 
 export const StillingSchemaDTO = z.object({
-  annonsenr: z.string(),
+  annonsenr: z.string().optional().nullable(),
   uuid: z.string(),
   created: LocalDateTimeSchema,
   createdBy: z.string(),

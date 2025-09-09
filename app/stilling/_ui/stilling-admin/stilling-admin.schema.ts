@@ -1,4 +1,5 @@
 import { navnSchema } from '@/app/api/kandidat-sok/useKandidatNavn';
+import { decoratorSchema } from '@/app/api/modia/decorator/useDecoratorData';
 import {
   StillingSchemaDTO,
   StillingsinfoSchema,
@@ -13,6 +14,8 @@ export const StillingAdminSchema = z
   .object({
     stillingsinfo: StillingsinfoSchema.nullable().optional(),
     stilling: StillingSchemaDTO.nullable().optional(),
+    brukerData: decoratorSchema.nullable().optional(),
+    navKontorEnhet: z.string().nullable().optional(),
     formidlingKandidater: z
       .array(formidlingKandidaterSchema)
       .default([])

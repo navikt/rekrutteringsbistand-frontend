@@ -5,8 +5,8 @@ import {
   hentModulerForKategori,
   ModulKey,
 } from '@/app/stilling/_ui/stilling-admin/StillingAdminModuler';
-import OpprettEtterregistrering from '@/app/stilling/_ui/stilling-admin/admin_moduler/OpprettEtterregistrering';
 import PubliserModal from '@/app/stilling/_ui/stilling-admin/admin_moduler/PubliserModal';
+import OpprettEtterregistrering from '@/app/stilling/_ui/stilling-admin/admin_moduler/etterregistrering/OpprettEtterregistrering';
 import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
 import {
   BellIcon,
@@ -60,6 +60,7 @@ export default function FremdriftspanelRedigering({ setForhåndsvis }: Props) {
         Array.isArray((d as any).formidlingKandidater) &&
         (d as any).formidlingKandidater.length > 0,
       yrkestittel: (d) => (d.stilling?.categoryList ?? []).length > 0,
+      virksomheten: (d) => !!d.stilling?.employer?.name,
       formidling_sektor: (d) => !!d.stilling?.properties?.sector,
       formidling_ansettelsesform: (d) =>
         !!d.stilling?.properties?.engagementtype,
