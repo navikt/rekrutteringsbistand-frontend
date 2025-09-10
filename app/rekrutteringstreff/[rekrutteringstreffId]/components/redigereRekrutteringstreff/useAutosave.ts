@@ -88,7 +88,6 @@ export function useAutosave() {
     async (fieldsToValidate?: string[], force?: boolean) => {
       if (!rekrutteringstreffId) return;
 
-      // Ikke autosave hvis publisert og i redigering, med mindre vi eksplisitt tvinger lagring (Publiser på nytt)
       if (skalHindreAutosave(treff, force)) {
         return;
       }
@@ -102,8 +101,9 @@ export function useAutosave() {
 
       const dto = buildFullDto();
       await oppdaterRekrutteringstreff(rekrutteringstreffId, dto);
+      await mutate();
     },
-    [buildFullDto, rekrutteringstreffId, trigger, treff],
+    [buildFullDto, rekrutteringstreffId, trigger, treff, mutate],
   );
 
   return { save };
@@ -160,6 +160,8 @@ export function useInnleggAutosave() {
         } else {
           await opprettInnleggForTreff(rekrutteringstreffId, payload);
         }
+
+        await mutate();
 
         setValue('htmlContent', contentToSave, { shouldDirty: false });
       } catch (error) {
