@@ -34,7 +34,7 @@ export default function FullførStillingKnapp() {
             ...stillingsData,
             stilling: {
               ...stillingsData.stilling,
-              status: StillingsStatus.Inaktiv,
+              status: StillingsStatus.Stoppet,
             },
           },
           {
