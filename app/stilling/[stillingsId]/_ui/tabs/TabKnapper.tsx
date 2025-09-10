@@ -5,7 +5,6 @@ import LeggTilKandidatTilStilling from '@/app/stilling/[stillingsId]/_ui/LeggTil
 import StillingPrint from '@/app/stilling/[stillingsId]/_ui/om-stillingen/StillingSidebar/StillingPrint';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
-import { Alert } from '@navikt/ds-react';
 
 export default function TabKnapper({
   printRef,
@@ -17,34 +16,31 @@ export default function TabKnapper({
   const kandidatlistenErLukket =
     kandidatlisteInfo?.kandidatlisteStatus === Kandidatlistestatus.Lukket;
 
+  if (kandidatlistenErLukket) {
+    return null;
+  }
   return (
     <div className='flex items-center'>
-      {kandidatlistenErLukket ? (
-        <Alert variant={'info'}>
-          Oppdraget er ferdigstilt og kandidatlisten er lukket
-        </Alert>
-      ) : (
-        <>
-          {kandidatlisteInfo?.kandidatlisteId && (
-            <TilgangskontrollForInnhold
-              skjulVarsel
-              kreverEnAvRollene={[
-                Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-                Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
-              ]}
-            >
-              <div className='flex items-center justify-center gap-2'>
-                <FinnKandidaterKnapp stillingId={stillingsData.stilling.uuid} />
+      <>
+        {kandidatlisteInfo?.kandidatlisteId && (
+          <TilgangskontrollForInnhold
+            skjulVarsel
+            kreverEnAvRollene={[
+              Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+              Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
+            ]}
+          >
+            <div className='flex items-center justify-center gap-2'>
+              <FinnKandidaterKnapp stillingId={stillingsData.stilling.uuid} />
 
-                <LeggTilKandidatTilStilling
-                  stillingsId={stillingsData.stilling.uuid}
-                  stillingsTittel={stillingsData.stilling.title}
-                />
-              </div>
-            </TilgangskontrollForInnhold>
-          )}
-        </>
-      )}
+              <LeggTilKandidatTilStilling
+                stillingsId={stillingsData.stilling.uuid}
+                stillingsTittel={stillingsData.stilling.title}
+              />
+            </div>
+          </TilgangskontrollForInnhold>
+        )}
+      </>
       <StillingPrint printRef={printRef} />
     </div>
   );

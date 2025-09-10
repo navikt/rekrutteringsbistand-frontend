@@ -2,9 +2,9 @@
 
 import WindowFinnKandidater from '@/app/_windows/finn-kandidater-window/WindowFinnKandidater';
 import WindowVisKandidat from '@/app/_windows/vis-kandidat-window/WindowVisKandidat';
-import { Kandidatlistestatus } from '@/app/api/kandidat/schema.zod';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import FremdriftspanelStilling from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/FremdriftspanelStilling';
+import FremdriftspanelArbeidsplassen from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/arbeidsplassen/FremdriftspanelArbeidsplassen';
 import OmStillingen from '@/app/stilling/[stillingsId]/_ui/om-stillingen/OmStillingen';
 import OmStillingenHeader from '@/app/stilling/[stillingsId]/_ui/om-stillingen/OmStillingenHeader';
 import StillingTabs from '@/app/stilling/[stillingsId]/_ui/tabs/StillingTabs';
@@ -29,22 +29,26 @@ export default function StillingsSidePage() {
     defaultValue: StillingFane.STILLING,
     clearOnDefault: true,
   });
-  const {
-    erEier,
-    kandidatlisteInfo,
-    stillingsData,
-    kandidatlisteLaster,
-    forhåndsvisData,
-  } = useStillingsContext();
-
-  const kandidatlistenErLukket =
-    kandidatlisteInfo?.kandidatlisteStatus === Kandidatlistestatus.Lukket;
+  const { erEier, kandidatlisteInfo, stillingsData, forhåndsvisData } =
+    useStillingsContext();
 
   const printRef = useRef<HTMLDivElement>(null);
 
   const ugyldigStilling =
     stillingsData?.stilling?.medium === 'DIR' &&
     (stillingsData?.stilling?.employer?.orgnr ?? null) === null;
+
+  const fremdriftsPanel = (top?: boolean) => {
+    if (stillingsData.stillingsinfo === null) {
+      return <FremdriftspanelArbeidsplassen />;
+    }
+
+    return (
+      !window?.isDynamic &&
+      !forhåndsvisData &&
+      erEier && <FremdriftspanelStilling dropDown={top} />
+    );
+  };
 
   return (
     <div className='@stilling' data-testid='stilling-side'>
@@ -64,29 +68,9 @@ export default function StillingsSidePage() {
               />
             </PanelHeader>
           }
-          fremdriftspanel={
-            !window?.isDynamic &&
-            !forhåndsvisData &&
-            erEier && <FremdriftspanelStilling />
-          }
-          fremdriftspanelTop={
-            !window?.isDynamic &&
-            !forhåndsvisData &&
-            erEier && <FremdriftspanelStilling dropDown />
-          }
+          fremdriftspanel={fremdriftsPanel()}
+          fremdriftspanelTop={fremdriftsPanel(true)}
         >
-          {!kandidatlisteLaster && kandidatlisteInfo === null && (
-            <Alert variant='warning'>
-              Det er ikke opprettet kandidatliste for denne stillingen.
-            </Alert>
-          )}
-
-          {kandidatlistenErLukket && (
-            <Alert variant={'info'}>
-              Oppdraget er ferdigstilt og kandidatlisten er lukket
-            </Alert>
-          )}
-
           <>
             {ugyldigStilling && (
               <Alert variant='error'>
