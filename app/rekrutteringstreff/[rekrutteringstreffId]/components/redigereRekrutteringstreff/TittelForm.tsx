@@ -45,9 +45,10 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
   const saveCallback = async (force?: boolean) => {
     try {
       await save(['tittel'], force);
-      onUpdated?.();
     } catch (error) {
       new RekbisError({ message: 'Lagring av tittel feilet.', error });
+    } finally {
+      onUpdated?.();
     }
   };
 
