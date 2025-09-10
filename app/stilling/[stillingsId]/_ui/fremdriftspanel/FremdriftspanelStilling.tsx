@@ -41,7 +41,7 @@ export default function FremdriftspanelStilling({
         Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
       ]}
     >
-      {!erFullført ? (
+      {erFullført ? (
         <div className={dropDown ? 'p-4' : ''}>
           <GjenåpneStillingKnapp />
           <div className='flex flex-col gap-6 mt-6'>
