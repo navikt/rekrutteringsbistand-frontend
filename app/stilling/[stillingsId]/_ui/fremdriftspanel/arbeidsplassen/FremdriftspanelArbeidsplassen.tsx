@@ -7,8 +7,10 @@ import { formaterNorskDato } from '@/util/util';
 import {
   ArrowForwardIcon,
   BriefcaseIcon,
+  CircleSlashIcon,
   DocPencilIcon,
   HandshakeIcon,
+  PlusCircleIcon,
 } from '@navikt/aksel-icons';
 import { BodyShort, Box, Button, Heading } from '@navikt/ds-react';
 import { useState } from 'react';
@@ -45,7 +47,7 @@ export default function FremdriftspanelArbeidsplassen() {
         den {formaterNorskDato({ dato: stillingsData.stilling.published })}
       </BodyShort>
       <div className='flex flex-col gap-6 mt-6'>
-        {kanBrukesTilRekrutteringsoppdrag && (
+        {kanBrukesTilRekrutteringsoppdrag ? (
           <>
             <Button size='small' loading={loading} onClick={opprett}>
               Bruk til oppdrag
@@ -76,6 +78,31 @@ export default function FremdriftspanelArbeidsplassen() {
               </div>
             </Box.New>
           </>
+        ) : (
+          <Box.New
+            background='brand-beige-moderate'
+            borderRadius={'large'}
+            padding='3'
+          >
+            <Heading size='xsmall' level='3' className='mb-4'>
+              Annonsen mangler et gyldig organisasjonsnummer.
+            </Heading>
+            <div className='flex gap-4 flex-col'>
+              <div className='flex gap-2'>
+                <CircleSlashIcon aria-hidden className='shrink-0' />
+                <BodyShort size='small'>
+                  Det gjør at den kan ikke brukes til rekrutteringsoppdrag.
+                </BodyShort>
+              </div>
+              <div className='flex gap-2'>
+                <PlusCircleIcon aria-hidden className='shrink-0' />
+                <BodyShort size='small'>
+                  Har du et oppdrag med arbeidsgiveren kan du opprette en
+                  stillingsannonse selv her i Rekrutteringsbistand.
+                </BodyShort>
+              </div>
+            </div>
+          </Box.New>
         )}
         <Box.New background='neutral-soft' borderRadius={'large'} padding='3'>
           <Heading size='xsmall' level='3' className='mb-4'>
