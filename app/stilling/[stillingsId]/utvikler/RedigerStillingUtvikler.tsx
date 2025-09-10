@@ -1,6 +1,7 @@
 'use client';
 
-import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
+import { useStillingsContext } from '../StillingsContext';
+import { oppdaterStilling } from '@/app/api/stilling/oppdater-stilling/oppdaterStilling';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import Editor from '@monaco-editor/react';
@@ -20,8 +21,15 @@ const RedigerStillingUtvikler: FC = () => {
 
   const lagreData = async () => {
     setIsLoading(true);
-    setIsLoading(false);
-    window.location.reload();
+    oppdaterStilling(JSON.parse(editorData), {
+      eierNavident: stillingsData.stilling.administration?.navIdent ?? '',
+      eierNavn: stillingsData.stilling.administration?.reportee ?? '',
+      eierNavKontorEnhetId:
+        stillingsData.stillingsinfo?.eierNavKontorEnhetId ?? '',
+    }).then(() => {
+      setIsLoading(false);
+      window.location.reload();
+    });
   };
 
   return (

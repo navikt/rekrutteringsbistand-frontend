@@ -15,12 +15,12 @@ interface MockHit {
 const createMockHit = (props: MockHit) => ({
   _index: 'stilling_5',
   _type: '_doc',
-  _id: props.id || faker.string.uuid(),
+  _id: faker.string.uuid(),
   _score: null,
   _source: {
     stilling: {
-      uuid: props.id || faker.string.uuid(),
-      annonsenr: faker.number.int({ min: 1000, max: 9999 }).toString(),
+      uuid: faker.string.uuid(),
+      annonsenr: `R${faker.number.int({ min: 1000, max: 9999 })}`,
       status: props.status || 'ACTIVE',
       privacy: props.privacy || 'INTERNAL_NOT_SHOWN',
       published: props.published || faker.date.past().toISOString(),

@@ -15,7 +15,6 @@ interface MockStilling {
 
 const createMockStilling = (props?: MockStilling): StillingsDataDTO => {
   faker.seed(props?.seed || 1337);
-  const id = faker.number.int({ min: 100000, max: 999999 });
   return {
     stillingsinfo: props?.utenStillingsinfo
       ? null
@@ -27,7 +26,7 @@ const createMockStilling = (props?: MockStilling): StillingsDataDTO => {
           stillingskategori: props?.erFormidling ? 'FORMIDLING' : 'STILLING',
         },
     stilling: {
-      annonsenr: 'R' + id,
+      annonsenr: `R${faker.number.int({ min: 100000, max: 999999 })}`,
       uuid: props?.id || faker.string.uuid(),
       created: faker.date.past().toISOString(),
       createdBy: props?.ekstern ? 'import-api' : 'pam-rekrutteringsbistand',

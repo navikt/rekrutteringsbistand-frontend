@@ -127,7 +127,7 @@ export const KategoriSchema = z.object({
 });
 
 export const StillingSchemaDTO = z.object({
-  annonsenr: z.string().optional().nullable(),
+  annonsenr: z.string(),
   uuid: z.string(),
   created: LocalDateTimeSchema,
   createdBy: z.string(),
