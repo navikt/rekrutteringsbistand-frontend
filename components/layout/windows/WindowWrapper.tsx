@@ -198,6 +198,8 @@ const WindowWrapper: React.FC<WindowWrapperProps> = ({
     null,
   );
   const [rootSplit, setRootSplit] = useState<number>(35);
+  // Split mellom de to synlige dynamiske vinduene når locked er skjult (>=2 dynamiske totalt)
+  const [dynamicPairSplit, setDynamicPairSplit] = useState<number>(60);
 
   // Spor bredde på container for å kunne klampe split ved resizing
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -256,7 +258,15 @@ const WindowWrapper: React.FC<WindowWrapperProps> = ({
   const mosaicValue: MosaicNode<Id> = useMemo(() => {
     if (!visibleDynamicLayout && !moreThanTwo) return LOCKED_ID; // Kun locked
     if (moreThanTwo) {
-      // Kun to dynamiske synlige
+      // Kun to dynamiske synlige; tillat resizing mellom disse (lagres i dynamicPairSplit)
+      if (visibleDynamicIds.length === 2) {
+        return {
+          direction: 'row',
+          first: visibleDynamicIds[0],
+          second: visibleDynamicIds[1],
+          splitPercentage: dynamicPairSplit,
+        } as MosaicNode<Id>;
+      }
       return visibleDynamicLayout as MosaicNode<Id>;
     }
     if (!visibleDynamicLayout) return LOCKED_ID;
@@ -266,7 +276,13 @@ const WindowWrapper: React.FC<WindowWrapperProps> = ({
       second: visibleDynamicLayout,
       splitPercentage: rootSplit,
     };
-  }, [visibleDynamicLayout, moreThanTwo, rootSplit]);
+  }, [
+    visibleDynamicLayout,
+    moreThanTwo,
+    rootSplit,
+    dynamicPairSplit,
+    visibleDynamicIds,
+  ]);
 
   const addWindow = useCallback<WindowContextValue['addWindow']>(
     ({
@@ -437,8 +453,15 @@ const WindowWrapper: React.FC<WindowWrapperProps> = ({
               return;
             }
             if (moreThanTwo) {
-              // Ignorer endringer (vi vil ikke miste original struktur). Alternativt kunne vi prøve å mappe.
-              return;
+              // Her viser vi kun siste to dynamiske vinduer (locked er skjult). Tillat lagring av split.
+              if (
+                next.direction === 'row' &&
+                typeof next.splitPercentage === 'number'
+              ) {
+                const clamped = clampSplit(next.splitPercentage);
+                setDynamicPairSplit(clamped ?? next.splitPercentage);
+              }
+              return; // Ikke endre det underliggende dynamicLayout-treet (som inneholder alle)
             }
             if (next.direction === 'row') {
               if (next.first === LOCKED_ID) {
