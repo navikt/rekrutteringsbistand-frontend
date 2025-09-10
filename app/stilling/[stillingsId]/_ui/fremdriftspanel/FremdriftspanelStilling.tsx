@@ -12,7 +12,14 @@ import {
   PersonChatIcon,
   TableIcon,
 } from '@navikt/aksel-icons';
-import { BodyShort, Box, Heading } from '@navikt/ds-react';
+import {
+  BodyLong,
+  BodyShort,
+  Box,
+  Button,
+  Heading,
+  ProgressBar,
+} from '@navikt/ds-react';
 
 export interface FremdriftspanelStillingProps {
   dropDown?: boolean;
@@ -23,6 +30,9 @@ export default function FremdriftspanelStilling({
 }: FremdriftspanelStillingProps) {
   const { stillingsData, erEier } = useStillingsContext();
   const kandidatlisteHook = useKandidatlisteForEier(stillingsData, erEier);
+
+  const total = 1;
+  const doneCount = 0;
 
   const erFullført =
     stillingsData.stilling.status === StillingsStatus.Inaktiv &&
@@ -45,22 +55,43 @@ export default function FremdriftspanelStilling({
           </div>
         )}
         <div className='flex flex-col gap-6 mt-6'>
-          {/* <div className='flex flex-col gap-2'>
+          <div className='flex flex-col gap-2'>
             <Heading size='small' level='2'>
               Del med arbeidsgiver
             </Heading>
 
             <ProgressBar
-              value={1}
-              valueMax={doneCount}
+              value={doneCount}
+              valueMax={total}
               size='small'
               aria-labelledby='progress-bar-label-small'
             />
 
             <div className=' flex justify-end text-sm tabular-nums'>
-              {1}/{doneCount}
-            </div> */}
-          {/* </div> */}
+              {doneCount}/{total}
+            </div>
+          </div>
+          <div>
+            <Heading size='xsmall' level='3'>
+              Sjekkliste
+            </Heading>
+            <BodyLong size='small' className='mt-1'>
+              Ble det match? Velg hvem som fikk jobben og fullfør. Du kan også
+              fullføre oppdraget selv om det ikke gikk denne gangen.
+            </BodyLong>
+          </div>
+          <div>
+            <Heading size='xsmall' level='3'>
+              Søkerstopp
+            </Heading>
+            <BodyLong size='small' className='mt-1'>
+              Har du fått nok jobbsøkere? Du kan stoppe å motta nye forslag, og
+              samtidig skjule oppdraget fra listen. Slå det på igjen når du vil.
+            </BodyLong>
+            <Button size='small' className='w-full  mt-4'>
+              Pause søkerforslag
+            </Button>
+          </div>
           <Box.New background='neutral-soft' borderRadius={'large'} padding='3'>
             <Heading size='xsmall' level='3' className='mb-4'>
               Hva skjer etter fullføring?
