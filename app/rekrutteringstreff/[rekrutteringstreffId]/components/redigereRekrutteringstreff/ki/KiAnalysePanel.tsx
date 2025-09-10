@@ -2,6 +2,7 @@
 
 import { RobotFrownIcon, RobotIcon, RobotSmileIcon } from '@navikt/aksel-icons';
 import { Alert, BodyLong, Button, Skeleton } from '@navikt/ds-react';
+import { AnimatePresence, motion } from 'framer-motion';
 import React, { useEffect, useMemo, useRef } from 'react';
 
 export type KiAnalyseVariant = 'tittel' | 'innlegg';
@@ -89,53 +90,76 @@ const KiAnalysePanel: React.FC<KiAnalysePanelProps> = ({
         </div>
 
         <div className='w-full'>
-          {showTextBlock === 'skeleton' && (
-            <div
-              ref={skeletonRef}
-              tabIndex={-1}
-              role='status'
-              aria-live='polite'
-              aria-busy='true'
-            >
-              <Skeleton variant='text' width='100%' height={31} />
-              <Skeleton variant='text' width='100%' height={31} />
-              <Skeleton variant='text' width='100%' height={31} />
-              <Skeleton variant='text' width='100%' height={31} />
-              <Skeleton variant='text' width='100%' height={31} />
-              <Skeleton variant='text' width='100%' height={31} />
-            </div>
-          )}
+          <AnimatePresence mode='wait'>
+            {showTextBlock === 'skeleton' && (
+              <motion.div
+                key='skeleton'
+                ref={skeletonRef}
+                tabIndex={-1}
+                role='status'
+                aria-live='polite'
+                aria-busy='true'
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2, ease: 'easeIn' }}
+              >
+                <Skeleton variant='text' width='100%' height={31} />
+                <Skeleton variant='text' width='100%' height={31} />
+                <Skeleton variant='text' width='100%' height={31} />
+                <Skeleton variant='text' width='100%' height={31} />
+                <Skeleton variant='text' width='100%' height={31} />
+                <Skeleton variant='text' width='100%' height={31} />
+              </motion.div>
+            )}
 
-          {showTextBlock === 'error' && (
-            <div ref={errorRef} tabIndex={-1} role='alert'>
-              <Alert variant='error'>
-                {analyseError?.message ?? 'En feil oppstod under validering.'}
-              </Alert>
-            </div>
-          )}
+            {showTextBlock === 'error' && (
+              <motion.div
+                key='error'
+                ref={errorRef}
+                tabIndex={-1}
+                role='alert'
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2, ease: 'easeIn' }}
+                onAnimationComplete={() => errorRef.current?.focus()}
+              >
+                <Alert variant='error'>
+                  {analyseError?.message ?? 'En feil oppstod under validering.'}
+                </Alert>
+              </motion.div>
+            )}
 
-          {showTextBlock === 'text' && (
-            <div
-              ref={textRef}
-              tabIndex={-1}
-              role='region'
-              aria-label={ariaLabel}
-              className={
-                bryter
-                  ? 'aksel-error-message p-1'
-                  : variant === 'innlegg'
-                    ? 'text-green-700 p-1'
-                    : 'p-1'
-              }
-            >
-              <BodyLong>{(analyse as any)?.begrunnelse}</BodyLong>
-            </div>
-          )}
+            {showTextBlock === 'text' && (
+              <motion.div
+                key='text'
+                ref={textRef}
+                tabIndex={-1}
+                role='region'
+                aria-label={ariaLabel}
+                className={
+                  bryter
+                    ? 'aksel-error-message p-1'
+                    : variant === 'innlegg'
+                      ? 'text-green-700 p-1'
+                      : 'p-1'
+                }
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2, ease: 'easeIn' }}
+                onAnimationComplete={() => textRef.current?.focus()}
+              >
+                <BodyLong>{(analyse as any)?.begrunnelse}</BodyLong>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
 
       {hasAnalyse && bryter && !forceSave && (
-        <div className='pt-1'>
+        <div className='pt-4'>
           <Button variant='secondary' size='small' onClick={onForceSave}>
             {publisertRedigeringsmodus ? 'Bruk likevel' : 'Lagre likevel'}
           </Button>
