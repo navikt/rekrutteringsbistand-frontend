@@ -1,6 +1,7 @@
 import { Kandidatlistestatus } from '@/app/api/kandidat/schema.zod';
 import { useKandidatlisteForEier } from '@/app/api/kandidat/useKandidatlisteForEier';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
+import EndreSøkeforslag from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/EndreSøkeforslag';
 import RedigerStillingKnapp from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/RedigerStillingKnapp';
 import FullførStillingKnapp from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/fullfør-stilling/FullførStillingKnapp';
 import { StillingsStatus } from '@/app/stilling/_ui/stilling-typer';
@@ -16,7 +17,6 @@ import {
   BodyLong,
   BodyShort,
   Box,
-  Button,
   Heading,
   ProgressBar,
 } from '@navikt/ds-react';
@@ -88,9 +88,7 @@ export default function FremdriftspanelStilling({
               Har du fått nok jobbsøkere? Du kan stoppe å motta nye forslag, og
               samtidig skjule oppdraget fra listen. Slå det på igjen når du vil.
             </BodyLong>
-            <Button size='small' className='w-full  mt-4'>
-              Pause søkerforslag
-            </Button>
+            <EndreSøkeforslag />
           </div>
           <Box.New background='neutral-soft' borderRadius={'large'} padding='3'>
             <Heading size='xsmall' level='3' className='mb-4'>
