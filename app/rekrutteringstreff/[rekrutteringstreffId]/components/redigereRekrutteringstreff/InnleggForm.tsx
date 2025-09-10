@@ -67,7 +67,6 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
     validating,
     kiErrorBorder,
     forceSave,
-    setForceSave,
     showAnalysis,
     publisertRedigeringsmodus,
     runValidationAndMaybeSave,
@@ -140,7 +139,6 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
             showAnalysis={showAnalysis}
             publisertRedigeringsmodus={publisertRedigeringsmodus}
             onForceSave={onForceSave}
-            setForceSave={setForceSave}
             variant='innlegg'
             ariaLabel='Analyse av innlegg'
           />

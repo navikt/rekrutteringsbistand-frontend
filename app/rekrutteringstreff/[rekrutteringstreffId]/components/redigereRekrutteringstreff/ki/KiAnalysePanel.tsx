@@ -16,7 +16,6 @@ interface KiAnalysePanelProps {
   showAnalysis: boolean;
   publisertRedigeringsmodus: boolean;
   onForceSave: () => void;
-  setForceSave: (val: boolean) => void;
   variant: KiAnalyseVariant;
   ariaLabel: string;
 }
@@ -29,7 +28,6 @@ const KiAnalysePanel: React.FC<KiAnalysePanelProps> = ({
   showAnalysis,
   publisertRedigeringsmodus,
   onForceSave,
-  setForceSave,
   variant,
   ariaLabel,
 }) => {
