@@ -5,6 +5,7 @@ import EndreSøkeforslag from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/
 import RedigerStillingKnapp from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/RedigerStillingKnapp';
 import FullførStillingKnapp from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/fullfør-stilling/FullførStillingKnapp';
 import GjenåpneStillingKnapp from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/fullfør-stilling/GjenåpneStillingKnapp';
+import { KandidatutfallTyper } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
 import { StillingsStatus } from '@/app/stilling/_ui/stilling-typer';
 import SWRLaster from '@/components/SWRLaster';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
@@ -59,6 +60,11 @@ export default function FremdriftspanelStilling({
               ),
             ).length ?? 0;
 
+          const antallFåttJobben =
+            kandidatliste?.kandidater.filter(
+              (k) => k.utfall === KandidatutfallTyper.FATT_JOBBEN,
+            ).length ?? 0;
+
           if (erFullført) {
             return (
               <div className={dropDown ? 'p-4' : ''}>
@@ -77,6 +83,30 @@ export default function FremdriftspanelStilling({
                         dato: stillingsData.stilling.updated,
                       })}
                     </BodyShort>
+                  </div>
+
+                  <div>
+                    {antallFåttJobben > 0 ? (
+                      <div>
+                        <Heading size='xsmall' level='3'>
+                          🎯 Her traff du blink
+                        </Heading>
+                        <BodyShort size='small'>
+                          {antallFåttJobben} av {totalStillinger} stillinger ble
+                          besatt
+                        </BodyShort>
+                      </div>
+                    ) : (
+                      <div>
+                        <Heading size='xsmall' level='3'>
+                          🐟 Ingen napp denne gangen
+                        </Heading>
+                        <BodyShort size='small'>
+                          {antallFåttJobben} av {totalStillinger} stillinger ble
+                          besatt
+                        </BodyShort>
+                      </div>
+                    )}
                   </div>
                   <Box.New
                     background='neutral-soft'
