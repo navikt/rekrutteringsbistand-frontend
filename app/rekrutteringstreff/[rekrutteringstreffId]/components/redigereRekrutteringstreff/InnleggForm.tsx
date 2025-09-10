@@ -83,6 +83,7 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
     saveCallback,
     setKiLagret,
     requireHasCheckedToShow: true,
+    setKiSjekketFieldName: 'innleggKiSjekket' as any,
   });
 
   return (

@@ -26,6 +26,11 @@ interface UseKiAnalyseParams<FormValues extends Record<string, any>> {
   saveCallback: (force?: boolean) => Promise<void>;
   setKiLagret?: (args: { id: string; lagret: boolean }) => Promise<void>;
   requireHasCheckedToShow?: boolean;
+  // Optional: name of a boolean field in the RHF form that indicates whether KI validation
+  // has been performed for the current value. When watchedValue changes we set it to false,
+  // and when validation finishes we set it to true. This is used to block publish until
+  // a check has been performed.
+  setKiSjekketFieldName?: keyof FormValues & string;
 }
 
 export function useKiAnalyse<FormValues extends Record<string, any>>(
@@ -43,6 +48,7 @@ export function useKiAnalyse<FormValues extends Record<string, any>>(
     saveCallback,
     setKiLagret,
     requireHasCheckedToShow,
+    setKiSjekketFieldName,
   } = params;
 
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
@@ -69,7 +75,14 @@ export function useKiAnalyse<FormValues extends Record<string, any>>(
     setForceSave(false);
     setLoggId(null);
     resetAnalyse();
-  }, [watchedValue, resetAnalyse]);
+    if (setKiSjekketFieldName) {
+      setValue(setKiSjekketFieldName as any, false as any, {
+        shouldDirty: false,
+        shouldValidate: false,
+        shouldTouch: false,
+      });
+    }
+  }, [watchedValue, resetAnalyse, setKiSjekketFieldName, setValue]);
 
   const kiErrorBorder =
     !!analyse &&
@@ -108,6 +121,13 @@ export function useKiAnalyse<FormValues extends Record<string, any>>(
       });
 
       setHasChecked(true);
+      if (setKiSjekketFieldName) {
+        setValue(setKiSjekketFieldName as any, true as any, {
+          shouldDirty: false,
+          shouldValidate: false,
+          shouldTouch: false,
+        });
+      }
 
       const currentLoggId =
         (res as any)?.loggId ?? (analyse as any)?.loggId ?? null;
@@ -140,6 +160,13 @@ export function useKiAnalyse<FormValues extends Record<string, any>>(
     } catch (error) {
       new RekbisError({ message: 'Validation failed:', error });
       setHasChecked(true);
+      if (setKiSjekketFieldName) {
+        setValue(setKiSjekketFieldName as any, true as any, {
+          shouldDirty: false,
+          shouldValidate: false,
+          shouldTouch: false,
+        });
+      }
     }
   }, [
     triggerRHF,

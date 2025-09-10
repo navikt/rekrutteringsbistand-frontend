@@ -72,6 +72,7 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
     setKiFeilFieldName: 'tittelKiFeil' as any,
     saveCallback,
     setKiLagret,
+    setKiSjekketFieldName: 'tittelKiSjekket' as any,
   });
 
   const clear = () => {

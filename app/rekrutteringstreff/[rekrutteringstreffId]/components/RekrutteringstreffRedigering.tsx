@@ -41,6 +41,8 @@ const RekrutteringstreffRedigering: React.FC<
 
   const tittelKiFeil = (watch('tittelKiFeil' as any) as any) ?? false;
   const innleggKiFeil = (watch('innleggKiFeil' as any) as any) ?? false;
+  const tittelKiSjekket = (watch('tittelKiSjekket' as any) as any) ?? false;
+  const innleggKiSjekket = (watch('innleggKiSjekket' as any) as any) ?? false;
   const anyKiFeil = !!tittelKiFeil || !!innleggKiFeil;
 
   const harPublisert =
@@ -208,7 +210,18 @@ const RekrutteringstreffRedigering: React.FC<
     return elementer;
   };
 
-  const åpneBekreftelse = () => bekreftModalRef.current?.showModal();
+  const kreverTittelSjekk = endringer.some((e) => e.etikett === 'Tittel');
+  const kreverInnleggSjekk = endringer.some((e) => e.etikett === 'Innlegg');
+  const kanPublisereNå =
+    endringer.length > 0 &&
+    !anyKiFeil &&
+    (!kreverTittelSjekk || tittelKiSjekket) &&
+    (!kreverInnleggSjekk || innleggKiSjekket);
+
+  const åpneBekreftelse = () => {
+    if (!kanPublisereNå) return;
+    bekreftModalRef.current?.showModal();
+  };
 
   return (
     <div className='space-y-8'>
@@ -221,7 +234,7 @@ const RekrutteringstreffRedigering: React.FC<
               type='button'
               variant='primary'
               size='small'
-              disabled={endringer.length === 0 || anyKiFeil}
+              disabled={!kanPublisereNå}
               onClick={åpneBekreftelse}
             >
               Publiser på nytt
@@ -288,8 +301,10 @@ const RekrutteringstreffRedigering: React.FC<
               type='button'
               variant='primary'
               size='small'
-              disabled={endringer.length === 0 || anyKiFeil}
+              disabled={!kanPublisereNå}
               onClick={async () => {
+                // Ekstra vern: ikke fortsett hvis KI-sjekk ikke er utført
+                if (!kanPublisereNå) return;
                 bekreftModalRef.current?.close();
                 await save(undefined, true);
                 const values: any = getValues();
