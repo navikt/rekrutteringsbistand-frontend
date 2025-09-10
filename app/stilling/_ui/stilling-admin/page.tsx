@@ -95,7 +95,7 @@ export default function StillingAdmin() {
     return 'Ukjent type';
   };
 
-  if (!fraArbeidsplassen) {
+  if (fraArbeidsplassen) {
     return (
       <SideLayout>
         <Heading spacing size='large' level='3'>
