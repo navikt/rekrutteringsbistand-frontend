@@ -36,6 +36,8 @@ export default function FremdriftspanelStilling({
   const { stillingsData, erEier } = useStillingsContext();
   const kandidatlisteHook = useKandidatlisteForEier(stillingsData, erEier);
 
+  const fraArbeidsplassen = stillingsData.stilling.source !== 'DIR';
+
   return (
     <TilgangskontrollForInnhold
       skjulVarsel
@@ -154,10 +156,14 @@ export default function FremdriftspanelStilling({
           }
           return (
             <div className={dropDown ? 'p-4' : ''}>
-              <div className='grid grid-cols-2 gap-2'>
-                <RedigerStillingKnapp />
+              {fraArbeidsplassen ? (
                 <FullførStillingKnapp />
-              </div>
+              ) : (
+                <div className='grid grid-cols-2 gap-2'>
+                  <RedigerStillingKnapp />
+                  <FullførStillingKnapp />
+                </div>
+              )}
 
               <div className='flex flex-col gap-6 mt-6'>
                 <div className='flex flex-col gap-2'>

@@ -18,7 +18,7 @@ import SideLayout from '@/components/layout/SideLayout';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { MultiplyIcon, TrashIcon } from '@navikt/aksel-icons';
-import { Button } from '@navikt/ds-react';
+import { Button, Heading } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -32,7 +32,7 @@ export default function StillingAdmin() {
     useStillingsContext();
   const router = useRouter();
   const [forhåndsvis, setStateForhåndsvis] = useState<boolean>(false);
-
+  const fraArbeidsplassen = stillingsData.stilling.source !== 'DIR';
   const mappetVerdier = mapTilForm(stillingsData);
   const registerForm = useForm<StillingAdminDTO>({
     resolver: zodResolver(StillingAdminSchema),
@@ -94,6 +94,17 @@ export default function StillingAdmin() {
     }
     return 'Ukjent type';
   };
+
+  if (!fraArbeidsplassen) {
+    return (
+      <SideLayout>
+        <Heading spacing size='large' level='3'>
+          Kan ikke endre stilling fra arbeidsplassen.no
+        </Heading>
+        <Button onClick={() => router.back()}>Tilbake</Button>
+      </SideLayout>
+    );
+  }
 
   return (
     <FormProvider {...registerForm}>
