@@ -1,5 +1,6 @@
 'use client';
 
+import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import OmStillingen from '@/app/stilling/[stillingsId]/_ui/om-stillingen/OmStillingen';
 import FremdriftspanelRedigering from '@/app/stilling/_ui/stilling-admin/FremdriftspanelRedigering';
@@ -12,6 +13,7 @@ import {
   Stillingskategori,
   StillingsStatus,
 } from '@/app/stilling/_ui/stilling-typer';
+import { normaliserPropertiesTilStrenger } from '@/app/stilling/_util/normaliserStillingProperties';
 // import ViktigeDatoer from '@/app/stilling/rediger/_ui/ViktigeDatoer';
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideLayout from '@/components/layout/SideLayout';
@@ -28,8 +30,7 @@ export type StillingAdminDTO = z.infer<typeof StillingAdminSchema>;
 
 export default function StillingAdmin() {
   const { brukerData, valgtNavKontor } = useApplikasjonContext();
-  const { forhåndsvisData, setForhåndsvisData, stillingsData } =
-    useStillingsContext();
+  const { setForhåndsvisData, stillingsData } = useStillingsContext();
   const router = useRouter();
   const [forhåndsvis, setStateForhåndsvis] = useState<boolean>(false);
   const fraArbeidsplassen = stillingsData.stilling.source !== 'DIR';
@@ -45,7 +46,17 @@ export default function StillingAdmin() {
 
   const setForhåndsvis = (val: boolean) => {
     if (val) {
-      setForhåndsvisData(forhåndsvisData);
+      const verdier = registerForm.getValues();
+      const properties = normaliserPropertiesTilStrenger(
+        verdier.stilling?.properties as any,
+      );
+      setForhåndsvisData({
+        stilling: {
+          ...verdier.stilling,
+          properties: properties ?? null,
+        },
+        stillingsinfo: verdier.stillingsinfo,
+      } as StillingsDataDTO);
       setStateForhåndsvis(true);
     } else {
       setForhåndsvisData(null);

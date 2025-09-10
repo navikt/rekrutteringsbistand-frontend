@@ -29,20 +29,31 @@ const toBackendDate = (value?: string | null): string | null => {
   return isValid(dIso) ? format(dIso, "yyyy-MM-dd'T'HH:mm:ss") : null;
 };
 
+const safeParseArray = (val: unknown): string[] => {
+  if (!val) return [];
+  if (Array.isArray(val)) return val.filter(Boolean);
+  if (typeof val === 'string') {
+    const t = val.trim();
+    if (t.startsWith('[') && t.endsWith(']')) {
+      try {
+        const parsed = JSON.parse(t);
+        if (Array.isArray(parsed)) return parsed.filter(Boolean);
+      } catch {}
+    }
+    return t ? [t] : [];
+  }
+  return [];
+};
+
 export const mapTilForm = (
   stillingsData: StillingsDataDTO,
 ): StillingsDataDTO => {
-  const tags = stillingsData?.stilling?.properties?.tags
-    ? JSON.parse(stillingsData.stilling.properties.tags)
-    : [];
-
-  const workhours = stillingsData?.stilling?.properties?.workhours
-    ? JSON.parse(stillingsData.stilling.properties.workhours)
-    : [];
-
-  const workday = stillingsData?.stilling?.properties?.workday
-    ? JSON.parse(stillingsData.stilling.properties.workday)
-    : [];
+  // Robust parsing: aksepter array, JSON-array-streng eller enkel verdi
+  const tags = safeParseArray(stillingsData?.stilling?.properties?.tags);
+  const workhours = safeParseArray(
+    stillingsData?.stilling?.properties?.workhours,
+  );
+  const workday = safeParseArray(stillingsData?.stilling?.properties?.workday);
 
   const søknadsfristVal = stillingsData?.stilling?.properties?.applicationdue;
   const søknadsfristDato =

@@ -19,13 +19,13 @@ export default function GjenåpneStillingKnapp() {
     setLoading(true);
     try {
       await Promise.all([
-        setKandidatlisteStatus(kandidatlisteId, Kandidatlistestatus.Lukket),
+        setKandidatlisteStatus(kandidatlisteId, Kandidatlistestatus.Åpen),
         oppdaterStilling(
           {
             ...stillingsData,
             stilling: {
               ...stillingsData.stilling,
-              status: StillingsStatus.Stoppet,
+              status: StillingsStatus.Aktiv,
             },
           },
           {
@@ -35,14 +35,14 @@ export default function GjenåpneStillingKnapp() {
           },
         ),
       ]);
-      visVarsel({ type: 'success', tekst: 'Du har nå fullført oppdraget.' });
+      visVarsel({ type: 'success', tekst: 'Oppdraget gjenåpnet.' });
       refetch?.();
     } catch (error) {
       visVarsel({
         type: 'error',
         tekst: 'Klarte ikke å endre status på oppdraget',
       });
-      new RekbisError({ message: 'Klarte ikke å fullføre oppdrag', error });
+      new RekbisError({ message: 'Klarte ikke å gjenåpne oppdrag', error });
     }
     setLoading(false);
   };
