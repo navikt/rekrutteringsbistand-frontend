@@ -43,6 +43,7 @@ export default function EndreSøkeforslag() {
     return (
       <>
         <Button
+          loading={loading}
           icon={<PauseIcon />}
           size='small'
           className='w-full  mt-4'
