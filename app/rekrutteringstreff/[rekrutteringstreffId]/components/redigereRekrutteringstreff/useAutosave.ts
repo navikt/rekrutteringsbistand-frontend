@@ -102,9 +102,8 @@ export function useAutosave() {
 
       const dto = buildFullDto();
       await oppdaterRekrutteringstreff(rekrutteringstreffId, dto);
-      await mutate();
     },
-    [buildFullDto, mutate, rekrutteringstreffId, trigger, treff],
+    [buildFullDto, rekrutteringstreffId, trigger, treff],
   );
 
   return { save };
@@ -162,7 +161,6 @@ export function useInnleggAutosave() {
           await opprettInnleggForTreff(rekrutteringstreffId, payload);
         }
 
-        await mutate();
         setValue('htmlContent', contentToSave, { shouldDirty: false });
       } catch (error) {
         new RekbisError({ message: 'Lagring av innlegg feilet.', error });
@@ -172,7 +170,6 @@ export function useInnleggAutosave() {
       getValues,
       innlegg?.id,
       (innlegg as any)?.opprettetAvPersonNavn,
-      mutate,
       rekrutteringstreffId,
       setValue,
       treff,

@@ -54,9 +54,10 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
   const saveCallback = async (force?: boolean) => {
     try {
       await autosaveInnlegg(['htmlContent'], force);
-      onUpdated?.();
     } catch (error) {
       new RekbisError({ message: 'Lagring av innlegg feilet.', error });
+    } finally {
+      onUpdated?.();
     }
   };
 
