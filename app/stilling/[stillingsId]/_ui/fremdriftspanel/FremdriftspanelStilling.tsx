@@ -12,6 +12,7 @@ import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/Tilgan
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { formaterNorskDato } from '@/util/util';
 import {
+  BarChartIcon,
   BellIcon,
   EyeIcon,
   PersonChatIcon,
@@ -232,6 +233,15 @@ export default function FremdriftspanelStilling({
                         Annonsen vises ikke lenger som aktiv.
                       </BodyShort>
                     </div>
+                    {antallFåttJobben > 0 && (
+                      <div className='flex gap-2'>
+                        <BarChartIcon aria-hidden className='shrink-0' />
+                        <BodyShort size='small'>
+                          Registreringen ble sendt til statitstikk. Tellingene
+                          låses ved månedsskifte.
+                        </BodyShort>
+                      </div>
+                    )}
                   </div>
                 </Box.New>
               </div>
