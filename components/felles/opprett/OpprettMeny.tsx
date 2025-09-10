@@ -2,12 +2,10 @@ import {
   opprettNyttRekrutteringstreff,
   OpprettNyttRekrutteringstreffDTO,
 } from '@/app/api/rekrutteringstreff/nytt-rekrutteringstreff/opprettNyttRekrutteringstreff';
-import {
-  opprettNyStilling,
-  OpprettStillingProps,
-} from '@/app/api/stilling/ny-stilling/opprettNyStilling';
+import { OpprettStillingProps } from '@/app/api/stilling/ny-stilling/opprettNyStilling';
 import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
 import RekrutteringstreffFeatureToggle from '@/components/RekrutteringstreffFeatureToggle';
+import { opprettOgNaviger } from '@/components/felles/opprett/opprett-ny';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useSidebar } from '@/components/ui/sidebar';
@@ -20,39 +18,22 @@ import { ActionMenu, Button } from '@navikt/ds-react';
 import * as React from 'react';
 import { useState } from 'react';
 
-const OpprettKnapp: React.FC = () => {
+const OpprettMeny: React.FC = () => {
   const { open } = useSidebar();
   const { trackAndNavigate } = useUmami();
   const [loading, setLoading] = useState<boolean>(false);
   const { valgtNavKontor, brukerData } = useApplikasjonContext();
 
-  const opprettProps: OpprettStillingProps = {
-    eierNavKontorEnhetId: valgtNavKontor?.navKontor,
-    navident: brukerData.ident,
-    brukerNavn: `${brukerData.fornavn} ${brukerData.etternavn}`,
-  };
-
-  const opprett = async (kategori: Stillingskategori): Promise<string> => {
+  const opprett = async (kategori: Stillingskategori) => {
     setLoading(true);
+    const opprettProps: OpprettStillingProps = {
+      kategori,
+      eierNavKontorEnhetId: valgtNavKontor?.navKontor,
+      navident: brukerData.ident,
+      brukerNavn: `${brukerData.fornavn} ${brukerData.etternavn}`,
+    };
     try {
-      const response = await opprettNyStilling({
-        ...opprettProps,
-        kategori,
-      });
-      const uuid = response?.stilling?.uuid;
-      if (uuid) {
-        return uuid;
-      } else {
-        throw new RekbisError({
-          message: 'Manglende uuid ved opprettelse av stilling',
-          error: response,
-        });
-      }
-    } catch (error) {
-      throw new RekbisError({
-        message: 'Feil ved opprettelse av stilling',
-        error,
-      });
+      await opprettOgNaviger(opprettProps, trackAndNavigate);
     } finally {
       setLoading(false);
     }
@@ -88,11 +69,7 @@ const OpprettKnapp: React.FC = () => {
             >
               <ActionMenu.Item
                 onSelect={async () => {
-                  const uuid = await opprett(Stillingskategori.Stilling);
-                  trackAndNavigate(
-                    UmamiEvent.Sidebar.opprettet_stilling,
-                    `/stilling/${uuid}/rediger`,
-                  );
+                  await opprett(Stillingskategori.Stilling);
                 }}
               >
                 Stilling
@@ -106,11 +83,7 @@ const OpprettKnapp: React.FC = () => {
             >
               <ActionMenu.Item
                 onSelect={async () => {
-                  const uuid = await opprett(Stillingskategori.Jobbmesse);
-                  trackAndNavigate(
-                    UmamiEvent.Sidebar.opprettet_stilling,
-                    `/stilling/${uuid}/rediger`,
-                  );
+                  await opprett(Stillingskategori.Jobbmesse);
                 }}
               >
                 Jobbmesse
@@ -125,11 +98,7 @@ const OpprettKnapp: React.FC = () => {
             >
               <ActionMenu.Item
                 onSelect={async () => {
-                  const uuid = await opprett(Stillingskategori.Formidling);
-                  trackAndNavigate(
-                    UmamiEvent.Sidebar.opprettet_etterregistrering,
-                    `/etterregistrering/${uuid}/rediger`,
-                  );
+                  await opprett(Stillingskategori.Formidling);
                 }}
               >
                 Etterregistrering
@@ -141,7 +110,6 @@ const OpprettKnapp: React.FC = () => {
                       opprettetAvNavkontorEnhetId:
                         valgtNavKontor?.navKontor || null,
                     };
-
                     opprettNyttRekrutteringstreff(nyTreff)
                       .then((response) => {
                         const id = response.id;
@@ -170,4 +138,4 @@ const OpprettKnapp: React.FC = () => {
   );
 };
 
-export default OpprettKnapp;
+export default OpprettMeny;

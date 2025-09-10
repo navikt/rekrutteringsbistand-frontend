@@ -1,7 +1,7 @@
 'use client';
 
 import GiTilbakemelding from './GiTilbakemelding';
-import OpprettKnapp from './OpprettKnapp';
+import OpprettMeny from '@/components/felles/opprett/OpprettMeny';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import {
@@ -146,7 +146,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             }
             className={open ? 'ml-3 mr-4 text-left justify-start' : ''}
           />
-          {open && <OpprettKnapp />}
+          {open && <OpprettMeny />}
         </div>
       </SidebarHeader>
       <SidebarContent className=''>

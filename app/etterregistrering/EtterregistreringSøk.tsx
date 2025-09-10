@@ -3,12 +3,12 @@
 import { StillingsSøkProvider } from '@/app/stilling/StillingsSøkContext';
 import StillingsSøkeresultat from '@/app/stilling/StillingsSøkeresultat';
 import StillingsSøkFilter from '@/app/stilling/_ui/StillingsSøkFilter';
+import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
+import { OpprettKnapp } from '@/components/felles/opprett/OpprettKnapp';
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideLayout from '@/components/layout/SideLayout';
 import Sidelaster from '@/components/layout/Sidelaster';
 import { BriefcaseClockIcon } from '@navikt/aksel-icons';
-import { Button } from '@navikt/ds-react';
-import Link from 'next/link';
 import * as React from 'react';
 
 const EtterRegistreringSøk = () => {
@@ -30,9 +30,7 @@ const EtterRegistreringSøkLayout: React.FC = () => {
             title={'Etterregistreringer'}
             titleIcon={<BriefcaseClockIcon />}
             actionsRight={
-              <Link href={'/stilling/ny/etterregistrering'}>
-                <Button size='small'>Opprett etterregistrering</Button>
-              </Link>
+              <OpprettKnapp kategori={Stillingskategori.Formidling} />
             }
           />
         </PanelHeader>

@@ -12,19 +12,13 @@ export default function TabKnapper({
 }: {
   printRef: React.RefObject<HTMLDivElement | null>;
 }) {
-  const { stillingsData, kandidatlisteInfo, kandidatlisteLaster } =
-    useStillingsContext();
+  const { stillingsData, kandidatlisteInfo } = useStillingsContext();
 
   const kandidatlistenErLukket =
     kandidatlisteInfo?.kandidatlisteStatus === Kandidatlistestatus.Lukket;
 
   return (
     <div className='flex items-center'>
-      {!kandidatlisteLaster && kandidatlisteInfo === null && (
-        <Alert variant='warning'>
-          Det er ikke opprettet kandidatliste for denne stillingen.
-        </Alert>
-      )}
       {kandidatlistenErLukket ? (
         <Alert variant={'info'}>
           Oppdraget er ferdigstilt og kandidatlisten er lukket

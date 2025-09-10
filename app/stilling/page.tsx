@@ -2,11 +2,11 @@
 
 import StillingsSøk from './StillingsSøk';
 import WindowVisStilling from '@/app/_windows/vis-stilling-window/WindowVisStilling';
+import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
+import { OpprettKnapp } from '@/components/felles/opprett/OpprettKnapp';
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideLayout from '@/components/layout/SideLayout';
 import { BriefcaseIcon } from '@navikt/aksel-icons';
-import { Button } from '@navikt/ds-react';
-import Link from 'next/link';
 
 export default function StillingsSøkIndex() {
   return (
@@ -17,9 +17,7 @@ export default function StillingsSøkIndex() {
             title={'Stillingsoppdrag'}
             titleIcon={<BriefcaseIcon />}
             actionsRight={
-              <Link href={'/stilling/ny'}>
-                <Button size='small'>Opprett annonse</Button>
-              </Link>
+              <OpprettKnapp kategori={Stillingskategori.Stilling} />
             }
           />
         </PanelHeader>
