@@ -31,7 +31,7 @@ export default function FremdriftspanelStilling({
   // const doneCount = 0;
 
   const erFullført =
-    stillingsData.stilling.status === StillingsStatus.Inaktiv &&
+    stillingsData.stilling.status === StillingsStatus.Stoppet &&
     kandidatlisteHook.data?.status === Kandidatlistestatus.Lukket;
 
   return (
