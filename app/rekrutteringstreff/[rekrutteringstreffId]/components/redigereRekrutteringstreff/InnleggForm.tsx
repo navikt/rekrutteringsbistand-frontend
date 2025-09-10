@@ -2,7 +2,7 @@
 
 import KiAnalyse from './ki/KiAnalyse';
 import KiAnalysePanel from './ki/KiAnalysePanel';
-import { useInnleggAutosave } from './useInnleggAutosave';
+import { useInnleggAutosave } from './useAutosave';
 import { useKiAnalyse } from './useKiAnalyse';
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
 import { useKiLogg } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';

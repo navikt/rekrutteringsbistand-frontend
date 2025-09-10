@@ -7,8 +7,10 @@ import {
   toIso as toIsoUtil,
   formatIso as formatIsoUtil,
 } from './redigereRekrutteringstreff/tidspunkt/utils';
-import { useAutosave } from './redigereRekrutteringstreff/useAutosave';
-import { useInnleggAutosave } from './redigereRekrutteringstreff/useInnleggAutosave';
+import {
+  useAutosave,
+  useInnleggAutosave,
+} from './redigereRekrutteringstreff/useAutosave';
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import {
