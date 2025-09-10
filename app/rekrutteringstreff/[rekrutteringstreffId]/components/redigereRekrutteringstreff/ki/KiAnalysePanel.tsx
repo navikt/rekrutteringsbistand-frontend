@@ -16,7 +16,6 @@ interface KiAnalysePanelProps {
   showAnalysis: boolean;
   publisertRedigeringsmodus: boolean;
   onForceSave: () => void;
-  setForceSave: (val: boolean) => void;
   variant: KiAnalyseVariant;
   ariaLabel: string;
 }
@@ -29,7 +28,6 @@ const KiAnalysePanel: React.FC<KiAnalysePanelProps> = ({
   showAnalysis,
   publisertRedigeringsmodus,
   onForceSave,
-  setForceSave,
   variant,
   ariaLabel,
 }) => {
@@ -89,6 +87,13 @@ const KiAnalysePanel: React.FC<KiAnalysePanelProps> = ({
         </div>
 
         <div className='w-full'>
+          <style jsx global>{`
+            @keyframes kiFadeIn {
+              to {
+                opacity: 1;
+              }
+            }
+          `}</style>
           {showTextBlock === 'skeleton' && (
             <div
               ref={skeletonRef}
@@ -120,6 +125,10 @@ const KiAnalysePanel: React.FC<KiAnalysePanelProps> = ({
               tabIndex={-1}
               role='region'
               aria-label={ariaLabel}
+              style={{
+                opacity: 0,
+                animation: 'kiFadeIn 300ms ease-in forwards',
+              }}
               className={
                 bryter
                   ? 'aksel-error-message p-1'
@@ -135,7 +144,7 @@ const KiAnalysePanel: React.FC<KiAnalysePanelProps> = ({
       </div>
 
       {hasAnalyse && bryter && !forceSave && (
-        <div className='pt-1'>
+        <div className='pt-4'>
           <Button variant='secondary' size='small' onClick={onForceSave}>
             {publisertRedigeringsmodus ? 'Bruk likevel' : 'Lagre likevel'}
           </Button>

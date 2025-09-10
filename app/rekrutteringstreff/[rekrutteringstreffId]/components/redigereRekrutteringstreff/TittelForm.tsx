@@ -58,7 +58,6 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
     validating,
     kiErrorBorder,
     forceSave,
-    setForceSave,
     publisertRedigeringsmodus,
     runValidationAndMaybeSave,
     onForceSave,
@@ -73,6 +72,7 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
     setKiFeilFieldName: 'tittelKiFeil' as any,
     saveCallback,
     setKiLagret,
+    setKiSjekketFieldName: 'tittelKiSjekket' as any,
   });
 
   const clear = () => {
@@ -166,7 +166,6 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
             showAnalysis={true}
             publisertRedigeringsmodus={publisertRedigeringsmodus}
             onForceSave={onForceSave}
-            setForceSave={setForceSave}
             variant='tittel'
             ariaLabel='Analyse av tittel'
           />
