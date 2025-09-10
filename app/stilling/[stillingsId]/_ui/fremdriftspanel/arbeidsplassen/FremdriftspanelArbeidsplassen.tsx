@@ -17,7 +17,7 @@ import { useState } from 'react';
 
 export default function FremdriftspanelArbeidsplassen() {
   const { stillingsData } = useStillingsContext();
-  const { brukerData } = useApplikasjonContext();
+  const { brukerData, valgtNavKontor } = useApplikasjonContext();
   const kanBrukesTilRekrutteringsoppdrag =
     stillingsData.stilling.employer?.orgnr;
 
@@ -26,11 +26,15 @@ export default function FremdriftspanelArbeidsplassen() {
   const opprett = async () => {
     setLoading(true);
     await opprettStillingsinfo({
+      eierNavKontorEnhetId: valgtNavKontor?.navKontor ?? 'Ukjent Nav kontor',
       stillingsid: stillingsData.stilling.uuid,
       eierNavident: brukerData.ident,
       eierNavn: brukerData.navn,
     });
+
     setLoading(false);
+
+    window.location.reload();
   };
 
   return (
