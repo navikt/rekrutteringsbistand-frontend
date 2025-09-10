@@ -2,8 +2,13 @@ import { oppdaterStilling } from '@/app/api/stilling/oppdater-stilling/oppdaterS
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import { StillingsStatus } from '@/app/stilling/_ui/stilling-typer';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
-import { PauseIcon, PlayIcon } from '@navikt/aksel-icons';
-import { Button } from '@navikt/ds-react';
+import {
+  CircleSlashIcon,
+  EyeSlashIcon,
+  PauseIcon,
+  PlayIcon,
+} from '@navikt/aksel-icons';
+import { BodyShort, Box, Button, Heading } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
@@ -56,15 +61,42 @@ export default function EndreSøkeforslag() {
   }
   if (status === StillingsStatus.Inaktiv) {
     return (
-      <Button
-        loading={loading}
-        icon={<PlayIcon />}
-        size='small'
-        className='w-full  mt-4'
-        onClick={() => endreStatus(StillingsStatus.Aktiv)}
-      >
-        Åpne søkerforslag
-      </Button>
+      <>
+        <Box.New
+          background='brand-beige-moderate'
+          borderRadius={'large'}
+          className='my-4 p-4'
+        >
+          <Heading level='2' size='xsmall' className='mb-2'>
+            Du mottar ikke søkerforslag
+          </Heading>
+
+          <div className='flex gap-4 flex-col'>
+            <div className='flex gap-2'>
+              <EyeSlashIcon aria-hidden className='shrink-0' />
+              <BodyShort size='small'>
+                Oppdraget er skjult. Folk kan fortsatt finne oppdraget ved å
+                filtrerer det inn.
+              </BodyShort>
+            </div>
+            <div className='flex gap-2'>
+              <CircleSlashIcon aria-hidden className='shrink-0' />
+              <BodyShort size='small'>
+                Andre kan ikke foreslå jobbsøkere.
+              </BodyShort>
+            </div>
+          </div>
+        </Box.New>
+        <Button
+          loading={loading}
+          icon={<PlayIcon />}
+          size='small'
+          className='w-full  mt-4'
+          onClick={() => endreStatus(StillingsStatus.Aktiv)}
+        >
+          Åpne søkerforslag
+        </Button>
+      </>
     );
   }
 
