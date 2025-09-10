@@ -1,7 +1,7 @@
 'use client';
 
 import { RobotFrownIcon, RobotIcon, RobotSmileIcon } from '@navikt/aksel-icons';
-import { Alert, BodyLong, Skeleton, Switch } from '@navikt/ds-react';
+import { Alert, BodyLong, Button, Skeleton } from '@navikt/ds-react';
 import React, { useEffect, useMemo, useRef } from 'react';
 
 export type KiAnalyseVariant = 'tittel' | 'innlegg';
@@ -134,23 +134,11 @@ const KiAnalysePanel: React.FC<KiAnalysePanelProps> = ({
         </div>
       </div>
 
-      {hasAnalyse && bryter && (
+      {hasAnalyse && bryter && !forceSave && (
         <div className='pt-1'>
-          <Switch
-            size='small'
-            checked={!!forceSave}
-            onChange={() => {
-              const next = !forceSave;
-              if (publisertRedigeringsmodus) {
-                setForceSave(next);
-              } else {
-                setForceSave(next);
-                if (next) onForceSave();
-              }
-            }}
-          >
+          <Button variant='secondary' size='small' onClick={onForceSave}>
             {publisertRedigeringsmodus ? 'Bruk likevel' : 'Lagre likevel'}
-          </Switch>
+          </Button>
         </div>
       )}
     </div>

@@ -158,7 +158,6 @@ export function useKiAnalyse<FormValues extends Record<string, any>>(
   ]);
 
   const onForceSave = useCallback(async () => {
-    // In published edit mode, don't save immediately – only allow override and keep local state
     if (publisertRedigeringsmodus) {
       setForceSave(true);
       return;
