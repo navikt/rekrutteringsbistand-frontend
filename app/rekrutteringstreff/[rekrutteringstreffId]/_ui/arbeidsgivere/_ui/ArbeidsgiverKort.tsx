@@ -1,5 +1,5 @@
 import capitalizeEmployerName from '@/app/stilling/_util/stilling-util';
-import { Box, Heading, Tag } from '@navikt/ds-react';
+import { Box, Heading, Tag, BodyShort } from '@navikt/ds-react';
 import * as React from 'react';
 
 interface ArbeidsgiverKortProps {
@@ -10,6 +10,7 @@ interface ArbeidsgiverKortProps {
   adresse?: ArbeidsgiverAdresse | null;
   status?: string;
   naringskoder?: naringskode[] | null;
+  actionSlot?: React.ReactNode;
 }
 
 export type ArbeidsgiverAdresse = {
@@ -29,9 +30,19 @@ export type naringskode = {
 
 const ArbeidsgiverKort: React.FC<ArbeidsgiverKortProps> = ({
   navn,
-  //adresse,
+  adresse,
   status,
+  organisasjonsnummer,
+  actionSlot,
 }) => {
+  const adresseLinje = [
+    adresse?.adresse,
+    [adresse?.postnummer, adresse?.poststed].filter(Boolean).join(' '),
+    adresse?.kommune,
+  ]
+    .filter((x) => x && String(x).trim().length > 0)
+    .join(', ');
+
   return (
     <Box.New
       background='raised'
@@ -40,19 +51,30 @@ const ArbeidsgiverKort: React.FC<ArbeidsgiverKortProps> = ({
       borderWidth='1'
       padding='4'
       marginBlock='2'
-      className='flex items-center justify-between'
+      className='flex items-start justify-between'
     >
-      <Heading level='3' size='xsmall'>
-        {capitalizeEmployerName(navn || '')}
-      </Heading>
-      {/*<BodyShort size='small'>
-        {adresse?.adresse}, {adresse?.postnummer} {adresse?.poststed}
-      </BodyShort>*/}
-      {status && (
-        <Tag className={'mr-2'} size='medium' variant='info'>
-          {status}
-        </Tag>
-      )}
+      <div>
+        <Heading level='3' size='xsmall'>
+          {capitalizeEmployerName(navn || '')}
+        </Heading>
+        <BodyShort size='small' className='mt-1'>
+          {organisasjonsnummer && (
+            <>
+              Org.nr. {organisasjonsnummer}
+              {adresseLinje ? '  ' : ''}
+            </>
+          )}
+          {adresseLinje}
+        </BodyShort>
+      </div>
+      <div className='ml-2 self-start flex items-center gap-2'>
+        {status && (
+          <Tag size='medium' variant='info'>
+            {status}
+          </Tag>
+        )}
+        {actionSlot}
+      </div>
     </Box.New>
   );
 };

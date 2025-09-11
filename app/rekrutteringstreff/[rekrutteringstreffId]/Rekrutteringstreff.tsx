@@ -17,7 +17,7 @@ import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/Tilgan
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { Button, Tabs, Modal, BodyLong } from '@navikt/ds-react';
 import { useQueryState, parseAsString } from 'nuqs';
-import * as React from 'react';
+import { useRef } from 'react';
 
 export enum RekrutteringstreffTabs {
   OM_TREFFET = 'om_treffet',
@@ -50,7 +50,7 @@ const Rekrutteringstreff: React.FC = () => {
       (h) => h.hendelsestype === 'PUBLISER',
     ) ?? false;
 
-  const redigerPublisertModalRef = React.useRef<HTMLDialogElement>(null);
+  const redigerPublisertModalRef = useRef<HTMLDialogElement>(null);
 
   const scrollToTop = () => {
     if (typeof window !== 'undefined') {

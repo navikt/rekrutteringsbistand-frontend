@@ -13,6 +13,7 @@ import {
 } from './redigereRekrutteringstreff/useAutosave';
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
+import LeggTilArbeidsgiverForm from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/arbeidsgivere/_ui/LeggTilArbeidsgiverForm';
 import {
   Button,
   Modal,
@@ -20,8 +21,9 @@ import {
   BodyShort,
   Label,
   Alert,
+  Heading,
 } from '@navikt/ds-react';
-import React from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 interface RekrutteringstreffRedigeringProps {
@@ -29,9 +31,10 @@ interface RekrutteringstreffRedigeringProps {
   onGåTilForhåndsvisning?: () => void;
 }
 
-const RekrutteringstreffRedigering: React.FC<
-  RekrutteringstreffRedigeringProps
-> = ({ onUpdated, onGåTilForhåndsvisning }) => {
+const RekrutteringstreffRedigering: FC<RekrutteringstreffRedigeringProps> = ({
+  onUpdated,
+  onGåTilForhåndsvisning,
+}) => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const rekrutteringstreffHook = useRekrutteringstreff(rekrutteringstreffId);
   const innleggHook = useInnlegg(rekrutteringstreffId);
@@ -50,12 +53,12 @@ const RekrutteringstreffRedigering: React.FC<
       (h) => h.hendelsestype === 'PUBLISER',
     ) ?? false;
 
-  const [endringer, setEndringer] = React.useState<
+  const [endringer, setEndringer] = useState<
     { etikett: string; gammelVerdi: string; nyVerdi: string }[]
   >([]);
-  const bekreftModalRef = React.useRef<HTMLDialogElement>(null);
+  const bekreftModalRef = useRef<HTMLDialogElement>(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const treff = rekrutteringstreffHook.data as any;
     if (!treff) {
       setEndringer([]);
@@ -227,6 +230,14 @@ const RekrutteringstreffRedigering: React.FC<
     <div className='space-y-8'>
       <TittelForm onUpdated={håndterOppdatert} />
       <PraktiskeForhold />
+      {!harPublisert && (
+        <section className='space-y-4'>
+          <Heading level='2' size='small'>
+            Arbeidsgivere
+          </Heading>
+          <LeggTilArbeidsgiverForm variant='inline' />
+        </section>
+      )}
       <div>
         {harPublisert ? (
           <div className='flex gap-2'>
