@@ -119,41 +119,39 @@ export default function StillingAdmin() {
 
   return (
     <FormProvider {...registerForm}>
-      {forhåndsvis ? (
-        <SideLayout>
+      <SideLayout
+        header={
           <PanelHeader>
-            <Button onClick={() => setForhåndsvis(false)}>
-              Avslutt forhåndsvisning
-            </Button>
-          </PanelHeader>
-          <OmStillingen printRef={null} forhåndsvisData />
-        </SideLayout>
-      ) : (
-        <SideLayout
-          header={
-            <PanelHeader>
-              <PanelHeader.Section
-                title={headerTittel()}
-                back={{
-                  fallbackPath: '/stilling',
-                }}
-                actionsRight={knapperad()}
-              />
-            </PanelHeader>
-          }
-          fremdriftspanel={
-            <FremdriftspanelRedigering
-              setForhåndsvis={() => setForhåndsvis(true)}
+            <PanelHeader.Section
+              title={headerTittel()}
+              back={{
+                fallbackPath: '/stilling',
+              }}
+              actionsRight={knapperad()}
             />
-          }
-        >
+            {forhåndsvis && (
+              <Button className='mt-4' onClick={() => setForhåndsvis(false)}>
+                Avslutt forhåndsvisning
+              </Button>
+            )}
+          </PanelHeader>
+        }
+        fremdriftspanel={
+          <FremdriftspanelRedigering
+            setForhåndsvis={() => setForhåndsvis(true)}
+          />
+        }
+      >
+        {forhåndsvis ? (
+          <OmStillingen printRef={null} forhåndsvisData />
+        ) : (
           <div className='flex flex-col gap-4'>
             {moduler.map((m) => (
               <m.Component key={m.key} />
             ))}
           </div>
-        </SideLayout>
-      )}
+        )}
+      </SideLayout>
     </FormProvider>
   );
 }
