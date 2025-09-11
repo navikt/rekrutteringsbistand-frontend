@@ -39,20 +39,21 @@ const RekrutteringstreffArbeidsgivere = () => {
     };
   };
 
-  const [slette, setSlette] = useState<{ navn: string; orgnr: string } | null>(
-    null,
-  );
+  const [slette, setSlette] = useState<ArbeidsgiverDTO | null>(null);
   const slettModalRef = useRef<HTMLDialogElement>(null);
 
-  const åpneSlettModal = (navn: string, orgnr: string) => {
-    setSlette({ navn, orgnr });
+  const åpneSlettModal = (arbeidsgiver: ArbeidsgiverDTO) => {
+    setSlette(arbeidsgiver);
     slettModalRef.current?.showModal();
   };
 
   const bekreftSlett = async () => {
     if (!slette) return;
     try {
-      await fjernArbeidsgiver(rekrutteringstreffId, slette.orgnr);
+      await fjernArbeidsgiver(
+        rekrutteringstreffId,
+        (slette as any).arbeidsgiverTreffId ?? slette.organisasjonsnummer,
+      );
       await arbeidsgivereHook.mutate();
       await hendelseHook.mutate();
     } finally {
@@ -92,9 +93,7 @@ const RekrutteringstreffArbeidsgivere = () => {
                         <Button
                           size='small'
                           variant='tertiary'
-                          onClick={() =>
-                            åpneSlettModal(a.navn, a.organisasjonsnummer)
-                          }
+                          onClick={() => åpneSlettModal(a)}
                           icon={<TrashIcon aria-hidden />}
                         >
                           Slett

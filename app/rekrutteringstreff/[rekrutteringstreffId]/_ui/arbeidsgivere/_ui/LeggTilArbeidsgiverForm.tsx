@@ -6,7 +6,10 @@ import { ArbeidsgiverDTO as PamArbeidsgiverDTO } from '@/app/api/pam-search/unde
 import { leggtilNyArbeidsgiver } from '@/app/api/rekrutteringstreff/[...slug]/ny-arbeidsgiver/leggTilNyArbeidsgiver';
 import { fjernArbeidsgiver } from '@/app/api/rekrutteringstreff/[...slug]/slett-arbeidsgiver/fjernArbeidsgiver';
 import { useArbeidsgiverHendelser } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgiverHendelser';
-import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
+import {
+  ArbeidsgiverDTO,
+  useRekrutteringstreffArbeidsgivere,
+} from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
 import { RekbisError } from '@/util/rekbisError';
 import { XMarkIcon } from '@navikt/aksel-icons';
@@ -27,20 +30,21 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
   const hendelseHook = useArbeidsgiverHendelser(rekrutteringstreffId);
 
-  const [slette, setSlette] = useState<{ navn: string; orgnr: string } | null>(
-    null,
-  );
+  const [slette, setSlette] = useState<ArbeidsgiverDTO | null>(null);
   const slettModalRef = useRef<HTMLDialogElement>(null);
 
-  const åpneSlettModal = (navn: string, orgnr: string) => {
-    setSlette({ navn, orgnr });
+  const åpneSlettModal = (arbeidsgiver: ArbeidsgiverDTO) => {
+    setSlette(arbeidsgiver);
     slettModalRef.current?.showModal();
   };
 
   const bekreftSlett = async () => {
     if (!slette) return;
     try {
-      await fjernArbeidsgiver(rekrutteringstreffId, slette.orgnr);
+      await fjernArbeidsgiver(
+        rekrutteringstreffId,
+        (slette as any).arbeidsgiverTreffId ?? slette.organisasjonsnummer,
+      );
       await arbeidsgivereHook.mutate();
       await hendelseHook.mutate();
     } finally {
@@ -208,9 +212,7 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({
                         <Button
                           size='xsmall'
                           variant='tertiary'
-                          onClick={() =>
-                            åpneSlettModal(a.navn, a.organisasjonsnummer)
-                          }
+                          onClick={() => åpneSlettModal(a)}
                           aria-label={`Fjern ${a.navn}`}
                         >
                           <XMarkIcon aria-hidden />

@@ -1,26 +1,24 @@
+import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { deleteApi } from '@/app/api/fetcher';
 
 const fjernArbeidsgiverEndepunkt = (
   treffId: string,
-  organisasjonsnummer: string,
+  arbeidsgiverId: string,
 ) => {
-  return `/api/rekrutteringstreff/${treffId}/arbeidsgiver/${organisasjonsnummer}`;
+  return `${RekrutteringstreffAPI.internUrl}/${treffId}/arbeidsgiver/${arbeidsgiverId}`;
 };
 
 export const fjernArbeidsgiver = async (
   treffId: string,
-  organisasjonsnummer: string,
+  arbeidsgiverId: string,
 ) => {
-  const endepunkt = fjernArbeidsgiverEndepunkt(treffId, organisasjonsnummer);
+  const endepunkt = fjernArbeidsgiverEndepunkt(treffId, arbeidsgiverId);
   return deleteApi(endepunkt);
 };
 
 export const fjernArbeidsgiverMirage = (server: any) => {
   return server.delete(
-    fjernArbeidsgiverEndepunkt(
-      'd6a587cd-8797-4b9a-a68b-575373f16d65',
-      '999999999',
-    ),
+    `${RekrutteringstreffAPI.internUrl}/:treffId/arbeidsgiver/:arbeidsgiverId`,
     () => undefined,
   );
 };
