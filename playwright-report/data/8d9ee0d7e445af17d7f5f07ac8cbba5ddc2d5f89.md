@@ -72,9 +72,9 @@
                   - img [ref=e111] [cursor=pointer]
                 - heading "Stillingsoppdrag" [level=1] [ref=e114]
               - generic [ref=e117]:
-                - button "Kopier aonnonselenke" [ref=e118] [cursor=pointer]:
+                - button "Kopier delingslenke" [ref=e118] [cursor=pointer]:
                   - img [ref=e120] [cursor=pointer]
-                  - generic [ref=e123] [cursor=pointer]: Kopier aonnonselenke
+                  - generic [ref=e123] [cursor=pointer]: Kopier delingslenke
                 - button "Skriv ut" [ref=e124] [cursor=pointer]:
                   - img [ref=e126] [cursor=pointer]
                   - generic [ref=e128] [cursor=pointer]: Skriv ut
@@ -192,7 +192,7 @@
                   - generic [ref=e268]:
                     - heading "Del med arbeidsgiver" [level=2] [ref=e269]
                     - progressbar [ref=e270]
-                    - generic [ref=e272]: 6/6
+                    - generic [ref=e272]: 4/6
                   - generic [ref=e273]:
                     - heading "Sjekkliste" [level=3] [ref=e274]
                     - paragraph [ref=e275]: Ble det match? Velg hvem som fikk jobben og fullfør. Du kan også fullføre oppdraget selv om det ikke gikk denne gangen.
