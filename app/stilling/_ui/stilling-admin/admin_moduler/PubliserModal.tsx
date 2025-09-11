@@ -72,88 +72,94 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
   };
 
   const håndterPubliser = async () => {
-    // Sett datoer på form
-    setValue('stilling.published', skjemaDatoTilIso(publiseringsdato), {
-      shouldDirty: true,
-    });
-    setValue('stilling.expires', skjemaDatoTilIso(sisteVisningsdato), {
-      shouldDirty: true,
-    });
-    // Privacy
-    setValue(
-      'stilling.privacy',
-      publiserOffentlig ? 'SHOW_ALL' : 'INTERNAL_NOT_SHOWN',
-      { shouldDirty: true },
-    );
-    // Søkemetode felter
-    if (publiserOffentlig) {
-      if (søkemetode === 'email') {
-        setValue('stilling.properties.applicationemail', epost || null, {
-          shouldDirty: true,
-        });
-        setValue('stilling.properties.applicationurl', null as any, {
-          shouldDirty: true,
-        });
-      } else {
-        setValue('stilling.properties.applicationurl', lenke || null, {
-          shouldDirty: true,
-        });
-        setValue('stilling.properties.applicationemail', null as any, {
-          shouldDirty: true,
-        });
+    setIsLoading(true);
+    try {
+      // Sett datoer på form
+      setValue('stilling.published', skjemaDatoTilIso(publiseringsdato), {
+        shouldDirty: true,
+      });
+      setValue('stilling.expires', skjemaDatoTilIso(sisteVisningsdato), {
+        shouldDirty: true,
+      });
+      // Privacy
+      setValue(
+        'stilling.privacy',
+        publiserOffentlig ? 'SHOW_ALL' : 'INTERNAL_NOT_SHOWN',
+        { shouldDirty: true },
+      );
+      // Søkemetode felter
+      if (publiserOffentlig) {
+        if (søkemetode === 'email') {
+          setValue('stilling.properties.applicationemail', epost || null, {
+            shouldDirty: true,
+          });
+          setValue('stilling.properties.applicationurl', null as any, {
+            shouldDirty: true,
+          });
+        } else {
+          setValue('stilling.properties.applicationurl', lenke || null, {
+            shouldDirty: true,
+          });
+          setValue('stilling.properties.applicationemail', null as any, {
+            shouldDirty: true,
+          });
+        }
       }
-    }
 
-    // Hvis søknadsfrist er "Snarest" og ingen expires satt, sett en default 3 uker frem i tid
-    if (!sisteVisningsdato && publiseringsdato && søkemetode === 'email') {
-      // valgfritt: ingen spesifikasjon gitt – hopper over
-    }
+      // Hvis søknadsfrist er "Snarest" og ingen expires satt, sett en default 3 uker frem i tid
+      if (!sisteVisningsdato && publiseringsdato && søkemetode === 'email') {
+        // valgfritt: ingen spesifikasjon gitt – hopper over
+      }
 
-    const nyData = mapSendStillingOppdatering(getValues());
-    const publiserStillingsData = {
-      ...nyData,
-      stillingsinfo: {
-        ...nyData.stillingsinfo,
-      },
-      stilling: {
-        ...nyData.stilling,
-        status: 'ACTIVE',
-        administration: {
-          ...nyData.stilling.administration,
-          status: 'DONE',
+      const nyData = mapSendStillingOppdatering(getValues());
+      const publiserStillingsData = {
+        ...nyData,
+        stillingsinfo: {
+          ...nyData.stillingsinfo,
         },
-        firstPublished: true,
-      },
-    };
+        stilling: {
+          ...nyData.stilling,
+          status: 'ACTIVE',
+          administration: {
+            ...nyData.stilling.administration,
+            status: 'DONE',
+          },
+          firstPublished: true,
+        },
+      };
 
-    track(UmamiEvent.Stilling.ny_stilling_info, {
-      yrkestittel: publiserStillingsData.stilling.categoryList?.[0]?.name,
-      sektor: publiserStillingsData.stilling.properties?.sector,
-      ansettelsesform:
-        publiserStillingsData.stilling.properties?.engagementtype,
-      arbeidstidsordning:
-        publiserStillingsData.stilling?.properties?.jobarrangement,
-      omfangIProsent: publiserStillingsData.stilling.properties?.jobpercentage,
-      arbeidssted: publiserStillingsData.stilling.locationList,
-    });
+      track(UmamiEvent.Stilling.ny_stilling_info, {
+        yrkestittel: publiserStillingsData.stilling.categoryList?.[0]?.name,
+        sektor: publiserStillingsData.stilling.properties?.sector,
+        ansettelsesform:
+          publiserStillingsData.stilling.properties?.engagementtype,
+        arbeidstidsordning:
+          publiserStillingsData.stilling?.properties?.jobarrangement,
+        omfangIProsent:
+          publiserStillingsData.stilling.properties?.jobpercentage,
+        arbeidssted: publiserStillingsData.stilling.locationList,
+      });
 
-    const response = await oppdaterStilling(publiserStillingsData, {
-      eierNavident: brukerData.ident,
-      eierNavn: brukerData.navn,
-      eierNavKontorEnhetId: valgtNavKontor?.navKontor,
-    });
+      const response = await oppdaterStilling(publiserStillingsData, {
+        eierNavident: brukerData.ident,
+        eierNavn: brukerData.navn,
+        eierNavKontorEnhetId: valgtNavKontor?.navKontor,
+      });
 
-    if (response.stilling.uuid) {
-      setTimeout(() => {
+      if (response.stilling.uuid) {
+        // Naviger direkte og force re-fetch av server components
         router.push(`/stilling/${response.stilling.uuid}`);
-      }, 500);
-    } else {
-      alert('Feil ved opprettelse av stilling');
+        // Sikrer at vi ikke viser stale data dersom siden allerede ligger i cache/historikk
+        router.refresh();
+      } else {
+        alert('Feil ved opprettelse av stilling');
+      }
+    } catch {
+      alert('Uventet feil ved publisering');
+    } finally {
+      setIsLoading(false);
+      ref.current?.close();
     }
-
-    setIsLoading(false);
-
-    ref.current?.close();
   };
 
   return (
