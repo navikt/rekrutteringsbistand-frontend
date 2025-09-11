@@ -9,8 +9,8 @@ import { UmamiEvent } from '@/components/umami/umamiEvents';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
 import { RekbisError } from '@/util/rekbisError';
-import { PersonPlusIcon } from '@navikt/aksel-icons';
-import { Button, Modal } from '@navikt/ds-react';
+import { ArrowRightIcon } from '@navikt/aksel-icons';
+import { BodyShort, Box, Button, Link, Modal } from '@navikt/ds-react';
 import * as React from 'react';
 import { useRef, useState } from 'react';
 
@@ -100,15 +100,49 @@ const LeggTilKandidatTilStilling: React.FC<LeggTilKandidatTilStillingProps> = ({
 
   return (
     <React.Fragment key={stillingsId}>
-      <Button
-        loading={laster}
-        onClick={handleOpenModal}
-        variant='secondary'
-        size='small'
-        icon={<PersonPlusIcon aria-hidden />}
+      <Box.New
+        background='neutral-softA'
+        borderRadius='xlarge'
+        paddingInline='space-16'
+        paddingBlock='space-12'
+        role='button'
+        tabIndex={0}
+        aria-label='Legg til jobbsøkere. Velg og legg til jobbsøkere i stillingen.'
+        className='group flex items-start justify-between gap-4 cursor-pointer outline-none focus:ring-2 focus:ring-focus focus:ring-offset-2'
+        onClick={() => !laster && handleOpenModal()}
+        onKeyDown={(e) => {
+          if ((e.key === 'Enter' || e.key === ' ') && !laster) {
+            e.preventDefault();
+            handleOpenModal();
+          }
+        }}
+        aria-busy={laster || undefined}
       >
-        Legg til jobbsøkere
-      </Button>
+        <div className='flex gap-3 items-start'>
+          <span className='text-xl leading-none mt-0.5'>➕</span>
+          <div className='flex flex-col'>
+            <BodyShort spacing className='m-0'>
+              <Link
+                href={'#'}
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (!laster) handleOpenModal();
+                }}
+              >
+                Legg til jobbsøkere
+              </Link>
+            </BodyShort>
+            <BodyShort size='small'>
+              Vet du fødselsnummeret til personen, kan du legge dem til med en
+              gang.
+            </BodyShort>
+          </div>
+        </div>
+        <ArrowRightIcon
+          aria-hidden
+          className='transition-transform group-hover:translate-x-1 mt-1'
+        />
+      </Box.New>
 
       <Modal
         width='600px'

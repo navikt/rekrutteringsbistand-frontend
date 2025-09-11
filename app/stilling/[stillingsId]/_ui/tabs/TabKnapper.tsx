@@ -1,11 +1,7 @@
-import FinnKandidaterKnapp from '@/app/_windows/finn-kandidater-window/FinnKandidaterKnapp';
 import { Kandidatlistestatus } from '@/app/api/kandidat/schema.zod';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import KopierStillingLenke from '@/app/stilling/[stillingsId]/_ui/KopierStillingLenke';
-import LeggTilKandidatTilStilling from '@/app/stilling/[stillingsId]/_ui/LeggTilKandidatTilStilling';
 import StillingPrint from '@/app/stilling/[stillingsId]/_ui/om-stillingen/StillingSidebar/StillingPrint';
-import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
-import { Roller } from '@/components/tilgangskontroll/roller';
 
 export default function TabKnapper({
   printRef,
@@ -22,26 +18,6 @@ export default function TabKnapper({
   }
   return (
     <div className='flex items-center'>
-      <>
-        {kandidatlisteInfo?.kandidatlisteId && (
-          <TilgangskontrollForInnhold
-            skjulVarsel
-            kreverEnAvRollene={[
-              Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-              Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
-            ]}
-          >
-            <div className='flex items-center justify-center gap-2'>
-              <FinnKandidaterKnapp stillingId={stillingsData.stilling.uuid} />
-
-              <LeggTilKandidatTilStilling
-                stillingsId={stillingsData.stilling.uuid}
-                stillingsTittel={stillingsData.stilling.title}
-              />
-            </div>
-          </TilgangskontrollForInnhold>
-        )}
-      </>
       <KopierStillingLenke stillingsId={stillingsData.stilling.uuid} />
       <StillingPrint printRef={printRef} />
     </div>
