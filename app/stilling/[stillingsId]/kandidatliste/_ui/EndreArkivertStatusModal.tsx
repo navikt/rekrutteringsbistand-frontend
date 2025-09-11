@@ -6,7 +6,6 @@ import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { RekbisError } from '@/util/rekbisError';
 import { ArrowUndoIcon, TrashIcon } from '@navikt/aksel-icons';
 import { ActionMenu, BodyLong, Button, Modal } from '@navikt/ds-react';
-import * as React from 'react';
 import { useState } from 'react';
 
 export interface EndreArkivertStatusKnappProps {

@@ -21,7 +21,6 @@ import {
   LocationPinIcon,
   TimerStartIcon,
 } from '@navikt/aksel-icons';
-import * as React from 'react';
 
 export const parseWorktime = (worktime: string) => {
   if (!worktime) return '';

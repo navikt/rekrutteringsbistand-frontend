@@ -1,5 +1,4 @@
 import { Box, Heading } from '@navikt/ds-react';
-import * as React from 'react';
 
 export interface GråBoksProps {
   children?: React.ReactNode | undefined;

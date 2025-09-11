@@ -14,7 +14,6 @@ import {
 } from '@navikt/aksel-icons';
 import { Heading } from '@navikt/ds-react';
 import { differenceInYears } from 'date-fns';
-import * as React from 'react';
 
 export interface KandidatSideProps {
   children?: React.ReactNode | undefined;

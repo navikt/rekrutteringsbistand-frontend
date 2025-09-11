@@ -5,7 +5,6 @@ import {
 } from '@/app/api/pam-geografi/postdata/[postnummer]/usePamPostdata';
 import { XMarkIcon } from '@navikt/aksel-icons';
 import { BodyLong, BodyShort, Box, Button, TextField } from '@navikt/ds-react';
-import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { Control, Controller } from 'react-hook-form';
 

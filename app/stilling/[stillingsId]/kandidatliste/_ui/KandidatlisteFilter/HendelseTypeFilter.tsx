@@ -2,7 +2,6 @@ import { useKandidatlisteFilterContext } from './KandidatlisteFilterContext';
 import { storForbokstavString } from '@/app/kandidat/util';
 import { KandidatHendelseType } from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatHendelser/KandidatHendelseTag';
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
-import * as React from 'react';
 
 const HendelseTypeFilter: React.FC = () => {
   const { hendelseFilter, setHendelseFilter } = useKandidatlisteFilterContext();

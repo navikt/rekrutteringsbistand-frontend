@@ -7,7 +7,6 @@ import { KandidatutfallTyper } from '@/app/stilling/[stillingsId]/kandidatliste/
 import { PencilIcon } from '@navikt/aksel-icons';
 import { Button, Loader } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
-import * as React from 'react';
 
 const EierStillingVisning: React.FC = () => {
   const router = useRouter();

@@ -5,41 +5,41 @@ import { Switch } from '@navikt/ds-react';
 import { useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
 
-interface TagGruppe {
-  navn: string;
-  tags: InkluderingsTag[];
-}
+// interface TagGruppe {
+//   navn: string;
+//   tags: InkluderingsTag[];
+// }
 
-const grupper: TagGruppe[] = [
-  {
-    navn: 'Tilrettelegging',
-    tags: [
-      InkluderingsTag.TilretteleggingArbeidstid,
-      InkluderingsTag.TilretteleggingFysisk,
-      InkluderingsTag.TilretteleggingArbeidshverdagen,
-      InkluderingsTag.TilretteleggingGrunnleggende,
-    ],
-  },
-  {
-    navn: 'Tiltak eller virkemiddel',
-    tags: [
-      InkluderingsTag.VirkemiddelLønnstilskudd,
-      InkluderingsTag.VirkemiddelMentortilskudd,
-      InkluderingsTag.VirkemiddelLærlingplass,
-    ],
-  },
-  {
-    navn: 'Prioritert målgruppe',
-    tags: [
-      InkluderingsTag.MålgruppeErUngeUnder30,
-      InkluderingsTag.MålgruppeErSeniorerOver50,
-      InkluderingsTag.MålgruppeKommerFraLandUtenforEØS,
-      InkluderingsTag.MålgruppeHullICVen,
-      InkluderingsTag.MålgruppeLiteEllerIngenUtdanning,
-      InkluderingsTag.MålgruppeLiteEllerIngenArbeidserfaring,
-    ],
-  },
-];
+// const grupper: TagGruppe[] = [
+//   {
+//     navn: 'Tilrettelegging',
+//     tags: [
+//       InkluderingsTag.TilretteleggingArbeidstid,
+//       InkluderingsTag.TilretteleggingFysisk,
+//       InkluderingsTag.TilretteleggingArbeidshverdagen,
+//       InkluderingsTag.TilretteleggingGrunnleggende,
+//     ],
+//   },
+//   {
+//     navn: 'Tiltak eller virkemiddel',
+//     tags: [
+//       InkluderingsTag.VirkemiddelLønnstilskudd,
+//       InkluderingsTag.VirkemiddelMentortilskudd,
+//       InkluderingsTag.VirkemiddelLærlingplass,
+//     ],
+//   },
+//   {
+//     navn: 'Prioritert målgruppe',
+//     tags: [
+//       InkluderingsTag.MålgruppeErUngeUnder30,
+//       InkluderingsTag.MålgruppeErSeniorerOver50,
+//       InkluderingsTag.MålgruppeKommerFraLandUtenforEØS,
+//       InkluderingsTag.MålgruppeHullICVen,
+//       InkluderingsTag.MålgruppeLiteEllerIngenUtdanning,
+//       InkluderingsTag.MålgruppeLiteEllerIngenArbeidserfaring,
+//     ],
+//   },
+// ];
 
 export default function Inkludering() {
   const { watch, setValue } = useFormContext<StillingsDataDTO>();

@@ -15,7 +15,6 @@ import {
   Pagination,
   Table,
 } from '@navikt/ds-react';
-import * as React from 'react';
 
 interface LagreIKandidatlisteProps {
   onClose: () => void;

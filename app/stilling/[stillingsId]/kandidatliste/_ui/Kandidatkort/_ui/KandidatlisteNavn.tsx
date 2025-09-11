@@ -2,7 +2,6 @@ import { usynligKandidaterSchemaDTO } from '@/app/api/kandidat/schema.zod';
 import { storForbokstav } from '@/app/kandidat/util';
 import { KandidatVisningProps } from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatlisteFilter/useFiltrerteKandidater';
 import { BodyShort } from '@navikt/ds-react';
-import * as React from 'react';
 
 export interface KandidatlisteNavnProps {
   kandidat?: KandidatVisningProps;

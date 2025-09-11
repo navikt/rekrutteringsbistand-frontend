@@ -4,7 +4,6 @@ import Erfaring from './erfaring/Erfaring';
 import { SprakSchemaDTO } from '@/app/api/kandidat-sok/schema/sprakSchema.zod';
 import { LanguageIcon } from '@navikt/aksel-icons';
 import { BodyShort } from '@navikt/ds-react';
-import * as React from 'react';
 
 export enum Språkferdighetsnivå {
   IkkeOppgitt = 'IKKEOPPGITT',

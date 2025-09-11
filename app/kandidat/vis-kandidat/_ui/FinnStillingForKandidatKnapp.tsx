@@ -3,7 +3,6 @@ import { useWindows } from '@/components/layout/windows/WindowWrapper';
 import { UmamiEvent } from '@/components/umami/umamiEvents';
 import { useUmami } from '@/providers/UmamiContext';
 import { Button } from '@navikt/ds-react';
-import * as React from 'react';
 
 const FinnStillingForKandidatKnapp: React.FC = () => {
   const { kandidatId } = useKandidatContext();

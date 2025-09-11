@@ -9,15 +9,15 @@ import PanelHeader from '@/components/layout/PanelHeader';
 import SideLayout from '@/components/layout/SideLayout';
 import Sidelaster from '@/components/layout/Sidelaster';
 import { BriefcaseClockIcon } from '@navikt/aksel-icons';
-import * as React from 'react';
+import { Suspense } from 'react';
 
 const EtterRegistreringSøk = () => {
   return (
-    <React.Suspense fallback={<Sidelaster />}>
+    <Suspense fallback={<Sidelaster />}>
       <StillingsSøkProvider formidlinger={true}>
         <EtterRegistreringSøkLayout />
       </StillingsSøkProvider>
-    </React.Suspense>
+    </Suspense>
   );
 };
 

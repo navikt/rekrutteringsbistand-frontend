@@ -1,5 +1,4 @@
 import { BodyLong, Heading } from '@navikt/ds-react';
-import * as React from 'react';
 
 export interface KandidatBeskrivelseProps {
   kandidatSammendrag?: string | null;

@@ -1,6 +1,5 @@
 import Kontaktpersoner from '@/app/stilling/[stillingsId]/_ui/om-stillingen/Kontaktpersoner';
 import { Heading } from '@navikt/ds-react';
-import * as React from 'react';
 
 export interface OmStillingBoksProps {
   tittel: string;

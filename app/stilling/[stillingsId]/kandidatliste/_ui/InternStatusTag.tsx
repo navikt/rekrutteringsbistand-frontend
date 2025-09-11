@@ -8,7 +8,6 @@ import {
   XMarkOctagonIcon,
 } from '@navikt/aksel-icons';
 import { Tag } from '@navikt/ds-react';
-import * as React from 'react';
 
 export interface InternStatusTagProps {
   status: InternKandidatstatus;

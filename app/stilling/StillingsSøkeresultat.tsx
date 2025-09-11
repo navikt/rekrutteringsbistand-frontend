@@ -10,7 +10,6 @@ import { useStillingssøk } from '@/app/api/stillings-sok/useStillingssøk';
 import { useStillingssokTotalData } from '@/app/stilling/store/stillingssokTotalData';
 import SWRLaster from '@/components/SWRLaster';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
-import * as React from 'react';
 import { useEffect } from 'react';
 
 interface StillingsSøkeresultatProps {

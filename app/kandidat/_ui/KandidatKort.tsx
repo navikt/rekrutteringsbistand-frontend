@@ -15,7 +15,6 @@ import {
   PinIcon,
 } from '@navikt/aksel-icons';
 import { Box, Checkbox, Heading, Link, Tag } from '@navikt/ds-react';
-import * as React from 'react';
 
 type IKandidatKort = {
   kandidat: KandidatDataSchemaDTO;

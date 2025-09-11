@@ -2,7 +2,6 @@ import Definisjon from './Definisjon';
 import OmStillingBoks from './OmStillingBoks';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import { formaterNorskDato } from '@/util/util';
-import * as React from 'react';
 
 const OmAnnonsen: React.FC = () => {
   const { stillingsData } = useStillingsContext();

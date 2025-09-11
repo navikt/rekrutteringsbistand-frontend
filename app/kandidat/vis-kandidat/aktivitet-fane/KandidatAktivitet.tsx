@@ -5,9 +5,9 @@ import { useStilling } from '@/app/api/stilling/rekrutteringsbistandstilling/[sl
 import { useKandidatContext } from '@/app/kandidat/vis-kandidat/KandidatContext';
 import SWRLaster from '@/components/SWRLaster';
 import { Loader, Table } from '@navikt/ds-react';
-import * as React from 'react';
+import { Fragment } from 'react';
 
-const KandidatAktivitet: React.FC = () => {
+export default function KandidatAktivitet() {
   const { kandidatId } = useKandidatContext();
 
   const kandidatListeoversiktHook = useKandidatListeoversikt(kandidatId);
@@ -45,7 +45,7 @@ const KandidatAktivitet: React.FC = () => {
                         new Date(a.lagtTilTidspunkt).getTime(),
                     )
                     .map((i: kandidatHistorikkSchemaDTO) => (
-                      <React.Fragment key={i.uuid}>
+                      <Fragment key={i.uuid}>
                         {i.erMaskert ? (
                           <TabellRad
                             dato={i.lagtTilTidspunkt}
@@ -59,7 +59,7 @@ const KandidatAktivitet: React.FC = () => {
                         ) : i.stillingId ? (
                           <HistoriskStillingRad historikkData={i} />
                         ) : null}
-                      </React.Fragment>
+                      </Fragment>
                     ))}
                 </>
               );
@@ -78,7 +78,7 @@ const KandidatAktivitet: React.FC = () => {
       </Table>
     </div>
   );
-};
+}
 
 const HistoriskStillingRad: React.FC<{
   historikkData: kandidatHistorikkSchemaDTO;
@@ -115,5 +115,3 @@ const HistoriskStillingRad: React.FC<{
     </SWRLaster>
   );
 };
-
-export default KandidatAktivitet;

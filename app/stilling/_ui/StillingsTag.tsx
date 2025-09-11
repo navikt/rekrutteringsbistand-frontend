@@ -11,7 +11,6 @@ import {
 import { formaterNorskDato } from '@/util/util';
 import { Tag } from '@navikt/ds-react';
 import { isBefore, startOfToday } from 'date-fns';
-import * as React from 'react';
 
 export interface IStillingTag {
   stillingsData: RekrutteringsbistandStillingSchemaDTO | StillingsDataDTO;

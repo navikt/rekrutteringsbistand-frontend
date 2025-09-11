@@ -16,12 +16,11 @@ export enum VisningsStatus {
 }
 
 type StillingsDataInfo = {
-  // Historiske / eksisterende flagg (legacy) – skal kunne fjernes når UI er migrert
   erFormidling: boolean;
   erJobbMesse: boolean;
   erPåArbeidsplassen: boolean;
   erDirektemeldt: boolean;
-  // Nytt felt for samlet visningsstatus
+
   visningsStatus: VisningsStatus;
 };
 
@@ -80,7 +79,6 @@ export const visStillingsDataInfo = (
   }
 
   return {
-    // Legacy booleans (kan fjernes når ingen lenger er i bruk):
     erFormidling:
       stillingsData?.stillingsinfo?.stillingskategori ===
       Stillingskategori.Formidling,

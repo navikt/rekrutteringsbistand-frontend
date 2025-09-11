@@ -6,7 +6,6 @@ import {
 import { GeografiDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { storForbokstavString } from '@/app/kandidat/util';
 import { UNSAFE_Combobox } from '@navikt/ds-react';
-import * as React from 'react';
 import { useEffect, useState } from 'react';
 
 interface GeografiDTOmedId extends GeografiDTO {

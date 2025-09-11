@@ -2,7 +2,6 @@ import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsConte
 import TekstMedIkon from '@/components/felles/TekstMedIkon';
 import { CheckmarkIcon } from '@navikt/aksel-icons';
 import { Heading } from '@navikt/ds-react';
-import * as React from 'react';
 
 export enum InkluderingsTag {
   Tilrettelegging = 'INKLUDERING',

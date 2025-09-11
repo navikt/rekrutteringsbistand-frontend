@@ -1,5 +1,4 @@
 import { BodyShort, Box, Skeleton } from '@navikt/ds-react';
-import * as React from 'react';
 
 export interface IInfokort {
   tittel: string;

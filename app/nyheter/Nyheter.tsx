@@ -11,7 +11,6 @@ import { Roller } from '@/components/tilgangskontroll/roller';
 import { formaterNorskDato } from '@/util/util';
 import { PencilIcon, TrashIcon } from '@navikt/aksel-icons';
 import { BodyShort, Box, Button } from '@navikt/ds-react';
-import * as React from 'react';
 
 const Nyheter: React.FC = () => {
   return (

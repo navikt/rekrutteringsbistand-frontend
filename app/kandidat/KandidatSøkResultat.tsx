@@ -17,7 +17,6 @@ import RekrutteringstreffFeatureToggle from '@/components/RekrutteringstreffFeat
 import SWRLaster from '@/components/SWRLaster';
 import { useKandidatNavigeringContext } from '@/providers/KandidatNavigeringContext';
 import { Checkbox, Pagination } from '@navikt/ds-react';
-import * as React from 'react';
 
 interface KandidatSøkResultatProps {
   type: KandidatSøkPortefølje;

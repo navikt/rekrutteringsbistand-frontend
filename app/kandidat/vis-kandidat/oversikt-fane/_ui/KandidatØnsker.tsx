@@ -6,7 +6,6 @@ import {
   TimerStartIcon,
 } from '@navikt/aksel-icons';
 import { Heading } from '@navikt/ds-react';
-import * as React from 'react';
 
 type Oppstartskode = {
   key: string;

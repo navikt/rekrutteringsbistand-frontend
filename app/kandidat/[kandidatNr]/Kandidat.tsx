@@ -1,7 +1,6 @@
 'use client';
 
 import VisKandidat from '@/app/kandidat/vis-kandidat/VisKandidat';
-import * as React from 'react';
 
 export interface KandidatProps {
   kandidatNr: string;

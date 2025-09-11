@@ -13,7 +13,7 @@
 // import SideTopBanner from '@/components/layout/SideTopBanner';
 // import { Buildings2Icon, PersonIcon } from '@navikt/aksel-icons';
 // import { BodyShort } from '@navikt/ds-react';
-// import * as React from 'react';
+//
 
 // const StillingHeader: React.FC = () => {
 //   const { stillingsData, erFormidling, erSlettet, kandidatlisteInfo, erEier } =

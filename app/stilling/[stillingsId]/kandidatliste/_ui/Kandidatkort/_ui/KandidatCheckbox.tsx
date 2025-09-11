@@ -1,7 +1,6 @@
 import { useKandidatlisteContext } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteContext';
 import { KandidatVisningProps } from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatlisteFilter/useFiltrerteKandidater';
 import { Checkbox } from '@navikt/ds-react';
-import * as React from 'react';
 
 export interface KandidatCheckboxProps {
   kandidat?: KandidatVisningProps;

@@ -18,7 +18,6 @@ import { KandidatVisningProps } from '@/app/stilling/[stillingsId]/kandidatliste
 import VelgInternStatus from '@/app/stilling/[stillingsId]/kandidatliste/_ui/VelgInternStatus';
 import { formaterNorskDato } from '@/util/util';
 import { BodyShort, Box } from '@navikt/ds-react';
-import * as React from 'react';
 
 export interface KandidatListeKortProps {
   kandidat?: KandidatVisningProps;

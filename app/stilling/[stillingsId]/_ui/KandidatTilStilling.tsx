@@ -10,7 +10,6 @@ import { getMiljø, Miljø } from '@/util/miljø';
 import { ArrowRightIcon, FilesIcon } from '@navikt/aksel-icons';
 import { Alert, Button, Heading } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
-import * as React from 'react';
 import { useEffect, useState } from 'react';
 
 export interface KandidatTilStillingProps {

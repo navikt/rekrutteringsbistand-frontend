@@ -2,7 +2,6 @@ import { useKandidatlisteFilterContext } from './KandidatlisteFilterContext';
 import { InternKandidatstatus } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
 import { internStatusTekst } from '@/app/stilling/[stillingsId]/kandidatliste/_ui/InternStatusTag';
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
-import * as React from 'react';
 
 const InternStatusFilter: React.FC = () => {
   const { internStatus, setInternStatus } = useKandidatlisteFilterContext();

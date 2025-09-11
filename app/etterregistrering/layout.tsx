@@ -1,6 +1,5 @@
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
-import * as React from 'react';
 
 export interface layoutProps {
   children?: React.ReactNode | undefined;

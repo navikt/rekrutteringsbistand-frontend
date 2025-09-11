@@ -4,12 +4,12 @@ import {
 } from '@/app/api/kandidat-sok/useSugestions';
 import { useKandidatSøkFilterContext } from '@/app/kandidat/KandidaSokFilterContext';
 import { UNSAFE_Combobox } from '@navikt/ds-react';
-import * as React from 'react';
+import { FC, useState } from 'react';
 
-const Språk: React.FC = () => {
+const Språk: FC = () => {
   const { språk, setSpråk } = useKandidatSøkFilterContext();
 
-  const [søkeTekst, setSøkeTekst] = React.useState<string>('');
+  const [søkeTekst, setSøkeTekst] = useState<string>('');
 
   const { data, isLoading } = useUseSugestions(søkeTekst, SuggestType.Språk);
 
@@ -22,18 +22,16 @@ const Språk: React.FC = () => {
   };
 
   return (
-    <React.Fragment>
-      <UNSAFE_Combobox
-        size='small'
-        isLoading={isLoading}
-        selectedOptions={språk}
-        label='Språk'
-        options={data ?? []}
-        isMultiSelect
-        onToggleSelected={onOptionSelected}
-        onChange={(val) => setSøkeTekst(val)}
-      />
-    </React.Fragment>
+    <UNSAFE_Combobox
+      size='small'
+      isLoading={isLoading}
+      selectedOptions={språk}
+      label='Språk'
+      options={data ?? []}
+      isMultiSelect
+      onToggleSelected={onOptionSelected}
+      onChange={(val) => setSøkeTekst(val)}
+    />
   );
 };
 

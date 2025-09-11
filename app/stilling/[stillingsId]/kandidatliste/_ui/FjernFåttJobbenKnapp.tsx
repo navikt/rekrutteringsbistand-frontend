@@ -1,7 +1,6 @@
 import { KandidatutfallTyper } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
 import { MinusCircleIcon } from '@navikt/aksel-icons';
 import { ActionMenu, Button } from '@navikt/ds-react';
-import * as React from 'react';
 
 export interface FjernFåttJobbenKnappProps {
   endreUtfallForKandidat: (utfall: KandidatutfallTyper) => void;

@@ -6,7 +6,6 @@ import KandidatlisteWrapper from '@/app/stilling/[stillingsId]/kandidatliste/Kan
 import KandidatVisningSidebar from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatVisningSidebar/KandidatVisningSidebar';
 import SWRLaster from '@/components/SWRLaster';
 import { Box } from '@navikt/ds-react';
-import * as React from 'react';
 
 export interface KandidatlisteBoksProps {
   kandidatnr: string;

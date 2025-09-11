@@ -2,7 +2,6 @@ import { getMiljø, Miljø } from '@/util/miljø';
 import { ThumbUpIcon } from '@navikt/aksel-icons';
 import { CopyButton } from '@navikt/ds-react';
 import { LinkIcon } from 'lucide-react';
-import * as React from 'react';
 
 export interface IKopierStillingLenke {
   stillingsId: string;

@@ -6,7 +6,6 @@ import { BodyShort, Button, Link } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import { nb } from 'date-fns/locale';
 import { useQueryState } from 'nuqs';
-import * as React from 'react';
 
 const SisteAktivitet: React.FC = () => {
   const { kandidatId } = useKandidatContext();

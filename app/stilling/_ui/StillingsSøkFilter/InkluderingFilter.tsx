@@ -2,7 +2,7 @@ import { useStillingsSøkFilter } from '@/app/stilling/StillingsSøkContext';
 import { UmamiEvent } from '@/components/umami/umamiEvents';
 import { useUmami } from '@/providers/UmamiContext';
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
-import * as React from 'react';
+import { Fragment } from 'react';
 
 type GruppeMedTags = {
   hovedtag: Hovedtag;
@@ -112,7 +112,7 @@ const InkluderingFilter: React.FC = () => {
       onChange={trackOgSetInkludering}
     >
       {hierarkiAvTagsForFilter.map((gruppeMedTags) => (
-        <React.Fragment key={gruppeMedTags.hovedtag}>
+        <Fragment key={gruppeMedTags.hovedtag}>
           <Checkbox value={gruppeMedTags.hovedtag}>
             {visningsnavnForFilter[gruppeMedTags.hovedtag]}
           </Checkbox>
@@ -132,7 +132,7 @@ const InkluderingFilter: React.FC = () => {
                 ))}
               </CheckboxGroup>
             )}
-        </React.Fragment>
+        </Fragment>
       ))}
     </CheckboxGroup>
   );

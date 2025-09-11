@@ -2,7 +2,6 @@ import { usePamGeografi } from '@/app/api/pam-geografi/typehead/lokasjoner/usePa
 import { useKandidatSøkFilterContext } from '@/app/kandidat/KandidaSokFilterContext';
 import { storBokstavSted, storForbokstavString } from '@/app/kandidat/util';
 import { Checkbox, UNSAFE_Combobox } from '@navikt/ds-react';
-import * as React from 'react';
 
 const KandidatStedSøk: React.FC = () => {
   const { ønsketSted, setØnsketSted } = useKandidatSøkFilterContext();

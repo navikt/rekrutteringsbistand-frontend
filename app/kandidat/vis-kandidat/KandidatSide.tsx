@@ -6,7 +6,6 @@ import KandidatOversikt from './oversikt-fane/KandidatOversikt';
 import NavigerTilAktivitetsplanenKnapp from '@/components/felles/modia/NavigerTilAktivitetsplanenKnapp';
 import { Tabs } from '@navikt/ds-react';
 import { useQueryState } from 'nuqs';
-import * as React from 'react';
 import { useEffect } from 'react';
 
 enum Fane {

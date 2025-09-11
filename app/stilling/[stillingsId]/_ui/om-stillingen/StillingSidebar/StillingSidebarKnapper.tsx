@@ -9,7 +9,6 @@ import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/Tilgan
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { Button } from '@navikt/ds-react';
-import * as React from 'react';
 import { useState } from 'react';
 
 interface StillingSidebarKnapperProps {

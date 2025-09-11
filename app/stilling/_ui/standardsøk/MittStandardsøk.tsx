@@ -15,7 +15,7 @@ export default function MittStandardsøk() {
       <Switch
         checked={brukerStandardSøk}
         size='small'
-        onChange={(e) => {
+        onChange={() => {
           if (!brukerStandardSøk) {
             router.push('/stilling?brukStandardsok=true');
           }

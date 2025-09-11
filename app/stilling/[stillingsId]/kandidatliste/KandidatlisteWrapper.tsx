@@ -8,7 +8,6 @@ import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsConte
 import SWRLaster from '@/components/SWRLaster';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { Button } from '@navikt/ds-react';
-import * as React from 'react';
 
 export interface KandidatlisteWrapperProps {
   children?: React.ReactNode | undefined;

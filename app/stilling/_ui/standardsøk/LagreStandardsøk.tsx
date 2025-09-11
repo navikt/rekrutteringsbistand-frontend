@@ -5,7 +5,6 @@ import { useVisKandidatNr } from '@/app/kandidat/vis-kandidat/useVisKandidatNr';
 import { FloppydiskIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import { useSearchParams } from 'next/navigation';
-import * as React from 'react';
 
 const LagreStandardsøk: React.FC = () => {
   const brukerStandardSøkData = useUseBrukerStandardSøk();

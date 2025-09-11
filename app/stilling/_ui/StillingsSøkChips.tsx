@@ -14,7 +14,6 @@ import { useStillingsSøkFilter } from '@/app/stilling/StillingsSøkContext';
 import FilterChip from '@/components/felles/filter/FilterChip';
 import TømFiltre from '@/components/felles/filter/TømFiltre';
 import { Chips } from '@navikt/ds-react';
-import * as React from 'react';
 
 const StillingsSøkChips: React.FC<{ skjulLagreStandard: boolean }> = ({
   skjulLagreStandard,

@@ -11,15 +11,14 @@ import { useUmami } from '@/providers/UmamiContext';
 import { RekbisError } from '@/util/rekbisError';
 import { ArrowRightIcon } from '@navikt/aksel-icons';
 import { BodyShort, Box, Button, Link, Modal } from '@navikt/ds-react';
-import * as React from 'react';
-import { useRef, useState } from 'react';
+import { FC, Fragment, useRef, useState } from 'react';
 
 export interface LeggTilKandidatTilStillingProps {
   stillingsId: string;
   stillingsTittel: string;
 }
 
-const LeggTilKandidatTilStilling: React.FC<LeggTilKandidatTilStillingProps> = ({
+const LeggTilKandidatTilStilling: FC<LeggTilKandidatTilStillingProps> = ({
   stillingsId,
   stillingsTittel,
 }) => {
@@ -99,7 +98,7 @@ const LeggTilKandidatTilStilling: React.FC<LeggTilKandidatTilStillingProps> = ({
   };
 
   return (
-    <React.Fragment key={stillingsId}>
+    <Fragment key={stillingsId}>
       <Box.New
         background='neutral-softA'
         borderRadius='xlarge'
@@ -177,7 +176,7 @@ const LeggTilKandidatTilStilling: React.FC<LeggTilKandidatTilStillingProps> = ({
           </Button>
         </Modal.Footer>
       </Modal>
-    </React.Fragment>
+    </Fragment>
   );
 };
 

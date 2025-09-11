@@ -1,7 +1,6 @@
 import { useStilling } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/useStilling';
 import SWRLaster from '@/components/SWRLaster';
 import { Link } from '@navikt/ds-react';
-import * as React from 'react';
 
 export interface KandidatlisteTittelProps {
   stillingsId: string;

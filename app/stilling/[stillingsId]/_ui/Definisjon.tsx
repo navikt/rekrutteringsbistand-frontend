@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 export interface DefinisjonProps {
   tittel: string;
   innhold?: string | null;

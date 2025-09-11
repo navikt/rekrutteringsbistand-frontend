@@ -1,6 +1,5 @@
 import Profilkvalitet from './Profilkvalitet';
 import GråBoks from '@/app/kandidat/vis-kandidat/oversikt-fane/_ui/GråBoks';
-import * as React from 'react';
 
 const KandidatOversiktSidebar: React.FC = ({}) => {
   return (

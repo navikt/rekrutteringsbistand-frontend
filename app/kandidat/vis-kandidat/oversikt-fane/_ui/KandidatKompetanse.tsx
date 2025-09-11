@@ -2,7 +2,6 @@ import GråBoks from './GråBoks';
 import Erfaring from './erfaring/Erfaring';
 import { KompetanseSchemaDTO } from '@/app/api/kandidat-sok/schema/kompetanseSchema.zod';
 import { ClipboardIcon } from '@navikt/aksel-icons';
-import * as React from 'react';
 
 export interface KandidatKompetanseProps {
   kompetanse?: KompetanseSchemaDTO[] | null;

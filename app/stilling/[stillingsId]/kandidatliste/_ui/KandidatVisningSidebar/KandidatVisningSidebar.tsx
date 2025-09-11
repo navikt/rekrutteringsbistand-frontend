@@ -1,6 +1,5 @@
 import KandidatHandlingerForStilling from './KandidatHandlingerForStilling';
 import { useKandidatlisteContext } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteContext';
-import * as React from 'react';
 
 export interface KandidatVisningSidebarProps {
   kandidatnr: string;

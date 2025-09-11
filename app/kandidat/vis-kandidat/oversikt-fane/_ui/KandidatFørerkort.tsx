@@ -4,7 +4,6 @@ import { FørerkortSchemaDTO } from '@/app/api/kandidat-sok/schema/forerkortSche
 import { CarIcon } from '@navikt/aksel-icons';
 import { BodyShort } from '@navikt/ds-react';
 import { compareAsc, format, parseISO } from 'date-fns';
-import * as React from 'react';
 
 const FørerkortTidsperiode = ({
   førerkort,

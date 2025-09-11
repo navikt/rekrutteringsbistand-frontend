@@ -8,7 +8,6 @@ import PanelHeader from '@/components/layout/PanelHeader';
 import SideLayout from '@/components/layout/SideLayout';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
-import * as React from 'react';
 
 const FinnKandidaterForStilling: React.FC = () => {
   const { stillingsData } = useStillingsContext();

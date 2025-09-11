@@ -1,6 +1,5 @@
 import { StillingsContextProvider } from './StillingsContext';
 import NotFound from '@/app/not-found';
-import * as React from 'react';
 
 interface StillingSideRootLayoutProps {
   children: React.ReactNode;

@@ -10,7 +10,6 @@ import KandidatUtdanning from './_ui/KandidatUtdanning';
 import KandidatØnsker from './_ui/KandidatØnsker';
 import KandidatOversiktSidebar from './_ui/sidebar/KandidatOversiktSidebar';
 import { useKandidatContext } from '@/app/kandidat/vis-kandidat/KandidatContext';
-import * as React from 'react';
 
 const KandidatOversikt: React.FC = () => {
   const { kandidatData } = useKandidatContext();

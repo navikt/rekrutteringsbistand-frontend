@@ -2,7 +2,6 @@ import { useKandidatContext } from '@/app/kandidat/vis-kandidat/KandidatContext'
 import { dialogUrl } from '@/components/felles/modia/eksterneUrler';
 import { ExternalLinkIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button } from '@navikt/ds-react';
-import * as React from 'react';
 
 const Profilkvalitet: React.FC = () => {
   const { kandidatData } = useKandidatContext();

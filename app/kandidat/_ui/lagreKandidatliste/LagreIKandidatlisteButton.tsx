@@ -10,7 +10,6 @@ import { useUmami } from '@/providers/UmamiContext';
 import { RekbisError } from '@/util/rekbisError';
 import { PersonPlusIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
-import * as React from 'react';
 
 export interface LagreIKandidatlisteMedStillingsIdProps {
   stillingsId: string;
