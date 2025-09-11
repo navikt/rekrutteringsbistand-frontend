@@ -17,7 +17,7 @@ import { StillingAPI } from '@/app/api/api-routes';
 import { getAPIwithSchema } from '@/app/api/fetcher';
 import useSWR from 'swr';
 
-const stillingEndepunkt = (stillingsId: string) =>
+export const stillingEndepunkt = (stillingsId: string) =>
   `${StillingAPI.internUrl}/rekrutteringsbistandstilling/${stillingsId}`;
 
 export const useStilling = (stillingsId?: string | null) =>

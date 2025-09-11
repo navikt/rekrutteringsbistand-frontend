@@ -1,5 +1,6 @@
 import { oppdaterStilling } from '@/app/api/stilling/oppdater-stilling/oppdaterStilling';
 import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
+import { stillingEndepunkt } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/useStilling';
 import { DatoVelger } from '@/app/stilling/_ui/stilling-admin/admin_moduler/_felles/DatoVelger';
 import { mapSendStillingOppdatering } from '@/app/stilling/_ui/stilling-admin/admin_moduler/mapVerdier';
 import { UmamiEvent } from '@/components/umami/umamiEvents';
@@ -19,6 +20,7 @@ import { format, parse } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
+import { mutate } from 'swr';
 
 export interface PubliserModalProps {
   disabled: boolean;
@@ -147,10 +149,8 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
       });
 
       if (response.stilling.uuid) {
-        // Naviger direkte og force re-fetch av server components
+        mutate(stillingEndepunkt(response.stilling.uuid));
         router.push(`/stilling/${response.stilling.uuid}`);
-        // Sikrer at vi ikke viser stale data dersom siden allerede ligger i cache/historikk
-        router.refresh();
       } else {
         alert('Feil ved opprettelse av stilling');
       }
