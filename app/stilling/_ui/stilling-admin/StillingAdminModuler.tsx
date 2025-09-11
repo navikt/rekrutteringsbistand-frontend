@@ -19,6 +19,7 @@ import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
 export type ModulKey =
   | 'yrkestittel'
   | 'omJobben'
+  | 'omJobbmesse'
   | 'praktiskeForhold'
   | 'virksomheten'
   | 'kontaktperson'
@@ -50,6 +51,7 @@ export interface VisningsModul {
 export const alleModuler: VisningsModul[] = [
   { key: 'yrkestittel', tittel: 'Yrkestittel', Component: Yrkestittel },
   { key: 'omJobben', tittel: 'Om jobben', Component: OmJobben },
+  { key: 'omJobbmesse', tittel: 'Om jobbmessen', Component: OmJobben },
   {
     key: 'praktiskeForhold',
     tittel: 'Praktiske forhold',
@@ -132,6 +134,20 @@ const formidlingRekkefolge: ModulKey[] = [
   'formidling_inkludering',
 ];
 
+// Egen rekkefølge for Jobbmesse – skiller seg fra vanlig stilling ved at vi bruker "Om jobbmessen"
+const jobbmesseRekkefolge: ModulKey[] = [
+  'yrkestittel',
+  'omJobbmesse',
+  'praktiskeForhold',
+  'virksomheten',
+  'sektor',
+  'kontaktperson',
+  'sted',
+  'oppstartsdato',
+  'inkludering',
+  'omStillingsoppdraget',
+];
+
 // Kan utvides for andre kategorier
 export function hentModulerForKategori(
   kategori?: string | null,
@@ -142,8 +158,8 @@ export function hentModulerForKategori(
         .map((k) => alleModuler.find((m) => m.key === k)!)
         .filter(Boolean);
     case Stillingskategori.Jobbmesse:
-      // Jobbmesse skal ha samme moduler som vanlig stilling, men AntallStillinger skjules inne i PraktiskeForhold-komponenten
-      return stillingRekkefolge
+      // Egen modul-rekkefølge for jobbmesse (AntallStillinger skjules fortsatt i PraktiskeForhold)
+      return jobbmesseRekkefolge
         .map((k) => alleModuler.find((m) => m.key === k)!)
         .filter(Boolean);
     case Stillingskategori.Formidling:
