@@ -1,5 +1,5 @@
 import { getMiljø, Miljø } from '@/util/miljø';
-import { CopyButton, Link } from '@navikt/ds-react';
+import { CopyButton, Tooltip } from '@navikt/ds-react';
 import * as React from 'react';
 
 export interface IKopierStillingLenke {
@@ -16,12 +16,9 @@ const KopierStillingLenke: React.FC<IKopierStillingLenke> = ({
 }) => {
   const lenke = hentAnnonselenke(stillingsId);
   return (
-    <div className='flex gap-2'>
-      <Link href={lenke} target='_blank'>
-        {lenke}
-      </Link>
-      <CopyButton className='m-0 p-0' copyText={lenke} />
-    </div>
+    <Tooltip content='Kopier lenke til stillingsannonse' placement='bottom'>
+      <CopyButton copyText={lenke} />
+    </Tooltip>
   );
 };
 

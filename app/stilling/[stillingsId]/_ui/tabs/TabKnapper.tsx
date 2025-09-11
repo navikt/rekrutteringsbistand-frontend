@@ -1,6 +1,7 @@
 import FinnKandidaterKnapp from '@/app/_windows/finn-kandidater-window/FinnKandidaterKnapp';
 import { Kandidatlistestatus } from '@/app/api/kandidat/schema.zod';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
+import KopierStillingLenke from '@/app/stilling/[stillingsId]/_ui/KopierStillingLenke';
 import LeggTilKandidatTilStilling from '@/app/stilling/[stillingsId]/_ui/LeggTilKandidatTilStilling';
 import StillingPrint from '@/app/stilling/[stillingsId]/_ui/om-stillingen/StillingSidebar/StillingPrint';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
@@ -41,6 +42,7 @@ export default function TabKnapper({
           </TilgangskontrollForInnhold>
         )}
       </>
+      <KopierStillingLenke stillingsId={stillingsData.stilling.uuid} />
       <StillingPrint printRef={printRef} />
     </div>
   );
