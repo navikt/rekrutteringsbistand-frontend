@@ -28,7 +28,7 @@ export interface PubliserModalProps {
 }
 
 export default function PubliserModal({ disabled }: PubliserModalProps) {
-  const { brukerData, valgtNavKontor } = useApplikasjonContext();
+  const { brukerData, valgtNavKontor, visVarsel } = useApplikasjonContext();
 
   const ref = useRef<HTMLDialogElement>(null);
   const { watch, setValue, getValues } = useFormContext<StillingsDataDTO>();
@@ -157,13 +157,18 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
           error: e,
         });
       }
+
+      ref.current?.close();
+      mutate(stillingEndepunkt(getValues().stilling.uuid)).then(() => {
+        // eslint-disable-next-line no-console
+        console.log('Har kjørt mutate');
+      });
+
+      router.push(`/stilling/${getValues().stilling.uuid}`);
     } catch {
       alert('Uventet feil ved publisering');
     } finally {
       setIsLoading(false);
-      ref.current?.close();
-      mutate(stillingEndepunkt(getValues().stilling.uuid));
-      router.push(`/stilling/${getValues().stilling.uuid}`);
     }
   };
 

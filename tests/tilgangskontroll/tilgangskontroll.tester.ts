@@ -98,8 +98,9 @@ export const testTilgangskontroll = (rolle: Roller) => {
       await expect(page.getByTestId('stilling-side')).toBeVisible();
 
       // Viser finn kandidater knapp
-      const finnKandidaterKnapp = page.getByRole('button', {
-        name: 'Finn jobbsøkere',
+      const finnKandidaterKnapp = page.getByRole('link', {
+        name: 'Finn og foreslå jobbsøkere',
+        exact: true,
       });
 
       if (ARBEIDSGIVERRETTET || JOBBSOKERRETTET) {
