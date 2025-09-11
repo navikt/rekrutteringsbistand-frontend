@@ -6,6 +6,7 @@ import { mapSendStillingOppdatering } from '@/app/stilling/_ui/stilling-admin/ad
 import { UmamiEvent } from '@/components/umami/umamiEvents';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
+import { RekbisError } from '@/util/rekbisError';
 import {
   BodyLong,
   Box,
@@ -28,6 +29,7 @@ export interface PubliserModalProps {
 
 export default function PubliserModal({ disabled }: PubliserModalProps) {
   const { brukerData, valgtNavKontor } = useApplikasjonContext();
+
   const ref = useRef<HTMLDialogElement>(null);
   const { watch, setValue, getValues } = useFormContext<StillingsDataDTO>();
   const { track } = useUmami();
@@ -142,23 +144,26 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
         arbeidssted: publiserStillingsData.stilling.locationList,
       });
 
-      const response = await oppdaterStilling(publiserStillingsData, {
-        eierNavident: brukerData.ident,
-        eierNavn: brukerData.navn,
-        eierNavKontorEnhetId: valgtNavKontor?.navKontor,
-      });
-
-      if (response.stilling.uuid) {
-        mutate(stillingEndepunkt(response.stilling.uuid));
-        router.push(`/stilling/${response.stilling.uuid}`);
-      } else {
+      try {
+        await oppdaterStilling(publiserStillingsData, {
+          eierNavident: brukerData.ident,
+          eierNavn: brukerData.navn,
+          eierNavKontorEnhetId: valgtNavKontor?.navKontor,
+        });
+      } catch (e) {
         alert('Feil ved opprettelse av stilling');
+        new RekbisError({
+          message: 'Feil ved opprettelse av stilling',
+          error: e,
+        });
       }
     } catch {
       alert('Uventet feil ved publisering');
     } finally {
       setIsLoading(false);
       ref.current?.close();
+      mutate(stillingEndepunkt(getValues().stilling.uuid));
+      router.push(`/stilling/${getValues().stilling.uuid}`);
     }
   };
 
