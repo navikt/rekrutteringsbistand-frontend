@@ -1,5 +1,7 @@
 import { getMiljø, Miljø } from '@/util/miljø';
-import { CopyButton, Tooltip } from '@navikt/ds-react';
+import { ThumbUpIcon } from '@navikt/aksel-icons';
+import { CopyButton } from '@navikt/ds-react';
+import { LinkIcon } from 'lucide-react';
 import * as React from 'react';
 
 export interface IKopierStillingLenke {
@@ -16,9 +18,15 @@ const KopierStillingLenke: React.FC<IKopierStillingLenke> = ({
 }) => {
   const lenke = hentAnnonselenke(stillingsId);
   return (
-    <Tooltip content='Kopier lenke til stillingsannonse' placement='bottom'>
-      <CopyButton copyText={lenke} />
-    </Tooltip>
+    <CopyButton
+      size='small'
+      variant='action'
+      copyText={lenke}
+      text='Kopier aonnonselenke'
+      activeText='Lenken er kopiert'
+      icon={<LinkIcon aria-hidden />}
+      activeIcon={<ThumbUpIcon aria-hidden />}
+    />
   );
 };
 
