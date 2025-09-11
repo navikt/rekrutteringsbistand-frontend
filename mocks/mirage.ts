@@ -28,6 +28,7 @@ import { arbeidsgiverMirage } from '@/app/api/pam-search/underenhet/useArbeidsgi
 import { leggTilNyArbeidsgiverMirage } from '@/app/api/rekrutteringstreff/[...slug]/ny-arbeidsgiver/leggTilNyArbeidsgiver';
 import { registrerIkkeOppmøteMirage } from '@/app/api/rekrutteringstreff/[...slug]/registrerOppmøte/registrerIkkeOppmøte';
 import { registrerOppmøteMirage } from '@/app/api/rekrutteringstreff/[...slug]/registrerOppmøte/registrerOppmøte';
+import { fjernArbeidsgiverMirage } from '@/app/api/rekrutteringstreff/[...slug]/slett-arbeidsgiver/fjernArbeidsgiver';
 import { rekrutteringstreffHendelserMirage } from '@/app/api/rekrutteringstreff/[...slug]/steg';
 import { alleHendelserMirage } from '@/app/api/rekrutteringstreff/[...slug]/useAlleHendelser';
 import { arbeidsgiverHendelserMirage } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgiverHendelser';
@@ -115,6 +116,7 @@ export function makeServer({ environment = 'test' } = {}) {
       alleHendelserMirage(this);
       jobbsøkereMirage(this);
       rekruteringstreffArbeidsgivereMirage(this);
+      fjernArbeidsgiverMirage(this);
       slettRekrutteringstreffMirage(this);
       innleggMirage(this);
       opprettInnleggfMirage(this);
