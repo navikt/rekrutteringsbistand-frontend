@@ -1,7 +1,6 @@
 'use client';
 
 import FormidlingKandidater from './FormidlingKandidater';
-import WindowVisKandidat from '@/app/_windows/vis-kandidat-window/WindowVisKandidat';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import OmStillingen from '@/app/stilling/[stillingsId]/_ui/om-stillingen/OmStillingen';
 import PanelHeader from '@/components/layout/PanelHeader';
@@ -17,7 +16,6 @@ const VisFormidling: React.FC = () => {
 
   return (
     <Tabs defaultValue='omStillingen'>
-      <WindowVisKandidat />
       <SideLayout
         header={
           <PanelHeader>

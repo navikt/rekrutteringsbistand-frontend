@@ -1,7 +1,5 @@
 'use client';
 
-import WindowFinnKandidater from '@/app/_windows/finn-kandidater-window/WindowFinnKandidater';
-import WindowVisKandidat from '@/app/_windows/vis-kandidat-window/WindowVisKandidat';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import FremdriftspanelStilling from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/FremdriftspanelStilling';
 import FremdriftspanelArbeidsplassen from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/arbeidsplassen/FremdriftspanelArbeidsplassen';
@@ -52,8 +50,6 @@ export default function StillingsSidePage() {
 
   return (
     <div className='@stilling' data-testid='stilling-side'>
-      <WindowFinnKandidater stillingsId={stillingsData.stilling.uuid} />
-      <WindowVisKandidat />
       <Tabs defaultValue={fane} onChange={(val: any) => setFane(val)}>
         <SideLayout
           header={

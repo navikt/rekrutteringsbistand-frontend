@@ -1,7 +1,5 @@
 'use client';
 
-import WindowFinnStillingForKandidat from '@/app/_windows/finn-stilling-window/WindowFinnStillingForKandidat';
-import WindowVisStilling from '@/app/_windows/vis-stilling-window/WindowVisStilling';
 import VisKandidat from '@/app/kandidat/vis-kandidat/VisKandidat';
 import * as React from 'react';
 
@@ -13,8 +11,6 @@ const Kandidat: React.FC<KandidatProps> = ({ kandidatNr }) => {
   return (
     <>
       <VisKandidat kandidatnr={kandidatNr} />
-      <WindowFinnStillingForKandidat kandidatNr={kandidatNr} />
-      <WindowVisStilling />
     </>
   );
 };

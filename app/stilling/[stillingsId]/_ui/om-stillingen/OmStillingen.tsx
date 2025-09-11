@@ -1,8 +1,8 @@
 'use client';
 
-import FinnKandidaterKnapp from '@/app/_windows/finn-kandidater-window/FinnKandidaterKnapp';
 import { GeografiDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
+import FinnKandidaterKnapp from '@/app/stilling/[stillingsId]/_ui/FinnKandidaterKnapp';
 import LeggTilKandidatTilStilling from '@/app/stilling/[stillingsId]/_ui/LeggTilKandidatTilStilling';
 import OmAnnonsen from '@/app/stilling/[stillingsId]/_ui/OmAnnonsen';
 import OmBedriften from '@/app/stilling/[stillingsId]/_ui/OmBedriften';

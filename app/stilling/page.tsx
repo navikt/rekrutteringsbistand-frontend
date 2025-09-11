@@ -1,7 +1,6 @@
 'use client';
 
 import StillingsSøk from './StillingsSøk';
-import WindowVisStilling from '@/app/_windows/vis-stilling-window/WindowVisStilling';
 import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
 import { OpprettKnapp } from '@/components/felles/opprett/OpprettKnapp';
 import PanelHeader from '@/components/layout/PanelHeader';
@@ -24,7 +23,6 @@ export default function StillingsSøkIndex() {
       }
     >
       <StillingsSøk />
-      <WindowVisStilling />
     </SideLayout>
   );
 }

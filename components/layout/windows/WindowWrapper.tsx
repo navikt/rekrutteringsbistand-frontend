@@ -1,4 +1,5 @@
 import { DynamicWindowContext } from './DynamicWindowContext';
+import { useAllUrlWindows } from '@/app/_windows';
 import { usePathname } from 'next/navigation';
 import React, {
   useCallback,
@@ -129,6 +130,7 @@ const WindowWrapper: React.FC<WindowWrapperProps> = ({
 }) => {
   const pathname = usePathname();
   const lastPathRef = useRef<string | null>(null);
+
   useEffect(() => {
     if (!closeOnRouteChange) return;
     if (lastPathRef.current === null) {
@@ -296,10 +298,10 @@ const WindowWrapper: React.FC<WindowWrapperProps> = ({
     }) => {
       const alreadyExists = idsRef.current.has(id);
       if (alreadyExists) {
-        // Bare oppdater innholdet, IKKE endre layout for å unngå duplikate noder i mosaic-treet
-        // Endret: Flytt likevel vinduet helt til høyre slik at "siste åpnet" alltid havner ytterst.
+        // Flytt vinduet til samme posisjon som spesifisert for å opprettholde konsistent oppførsel
+        // Dette sikrer at vinduer alltid havner på samme side når de oppdateres
         setDynamicLayout((prevLayout) => {
-          // Fjern id fra treet og legg det inn igjen etter valgt position
+          // Fjern id fra treet og legg det inn igjen på spesifisert posisjon for å sikre synlighet
           const utenId = removeFromTree(prevLayout, id);
           return position === 'left'
             ? insertBefore(utenId, id)
@@ -311,7 +313,7 @@ const WindowWrapper: React.FC<WindowWrapperProps> = ({
           if (process.env.NODE_ENV === 'development') {
             // eslint-disable-next-line no-console
             console.warn(
-              `[WindowWrapper] addWindow: vindu med id="${id}" finnes allerede – erstatter innhold & flytter (${position})`,
+              `[WindowWrapper] addWindow: vindu med id="${id}" finnes allerede – erstatter innhold & flytter til høyre for synlighet`,
             );
           }
           return {
@@ -319,11 +321,11 @@ const WindowWrapper: React.FC<WindowWrapperProps> = ({
             [id]: {
               ...current,
               navigasjon: navigasjon ?? current.navigasjon,
-              onClose: onClose ?? current.onClose,
+              onClose: onClose ?? current.onClose, // Behold opprinnelig onClose hvis ingen ny
               content: content ?? current.content,
               customHeader: customHeader ?? current.customHeader,
               title: title ?? current.title,
-              openedAt: current.openedAt, // behold opprinnelig åpne-rekkefølge
+              openedAt: Date.now() + Math.random(), // Oppdater tid så vinduet havner bakerst
             },
           };
         });
@@ -427,6 +429,9 @@ const WindowWrapper: React.FC<WindowWrapperProps> = ({
     () => Object.keys(elements).filter((k) => k !== LOCKED_ID),
     [elements],
   );
+
+  // Håndter alle URL-vinduer
+  useAllUrlWindows(addWindow, removeWindow);
 
   const ctxValue = useMemo<WindowContextValue>(
     () => ({ addWindow, updateWindow, removeWindow, listWindows }),
