@@ -34,7 +34,6 @@ export enum StillingsAnsettelsesform {
 }
 
 export enum StillingsArbeidstidsordning {
-  Ingen = '',
   Skift = 'Skift',
   Turnus = 'Turnus',
   Vakt = 'Vakt',
