@@ -106,6 +106,7 @@ export default function OmVirksomheten() {
   const setArbeidsgiver = (arbeidsgiver: ArbeidsgiverDTO) => {
     setArbeidsgiverState(arbeidsgiver);
     const eksisterende = getValues('stilling.employer') ?? ({} as any);
+    setValue('stilling.businessName', arbeidsgiver.navn ?? null);
     setValue('stilling.employer', {
       ...eksisterende,
       orgnr: arbeidsgiver.organisasjonsnummer ?? '',
