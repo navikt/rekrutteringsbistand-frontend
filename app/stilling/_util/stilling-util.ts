@@ -1,10 +1,5 @@
-import {
-  AdminStatus,
-  Stillingskategori,
-  StillingsStatus,
-} from '../_ui/stilling-typer';
+import { Stillingskategori } from '../_ui/stilling-typer';
 import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
-import { startOfDay } from 'date-fns';
 
 export const kategoriTilVisningsnavn = (kategori: Stillingskategori | null) => {
   switch (kategori) {
@@ -19,24 +14,6 @@ export const kategoriTilVisningsnavn = (kategori: Stillingskategori | null) => {
     default:
       return 'Stilling';
   }
-};
-
-const utløperFørIdag = (expires: string | null) => {
-  if (expires === null) {
-    return false;
-  }
-
-  const startenAvDøgnet = startOfDay(new Date());
-  return new Date(expires) <= startenAvDøgnet;
-};
-
-export const stillingErUtløpt = (stilling: any): boolean => {
-  return (
-    stilling.publishedByAdmin !== null &&
-    stilling.status === StillingsStatus.Inaktiv &&
-    utløperFørIdag(stilling.expires) &&
-    stilling.administration?.status === AdminStatus.Done
-  );
 };
 
 export default function capitalizeEmployerName(text: string | null) {

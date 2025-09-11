@@ -1,13 +1,13 @@
-import { Hovedtag } from './StillingsSøkFilter/InkluderingFilter';
 import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { RekrutteringsbistandStillingSchemaDTO } from '@/app/api/stillings-sok/schema/rekrutteringsbistandStillingSchema.zod';
 import {
   AdminStatus,
   StillingsStatus,
 } from '@/app/stilling/_ui/stilling-typer';
-import { visStillingsDataInfo } from '@/app/stilling/_util/stillingInfoUtil';
-import { eierStilling } from '@/components/tilgangskontroll/erEier';
-import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
+import {
+  VisningsStatus,
+  visStillingsDataInfo,
+} from '@/app/stilling/_util/stillingInfoUtil';
 import { formaterNorskDato } from '@/util/util';
 import { Tag } from '@navikt/ds-react';
 import { isBefore, startOfToday } from 'date-fns';
@@ -38,77 +38,25 @@ const StillingsTag: React.FC<IStillingTag> = ({
   splitTags,
   rad,
 }) => {
-  const {
-    brukerData: { ident },
-  } = useApplikasjonContext();
-
-  const erEier = eierStilling({
-    stillingsData: stillingsData,
-    navIdent: ident,
-  });
-
-  const stillingsDataInfo = visStillingsDataInfo(stillingsData);
-  const stillingStatus = stillingsData.stilling.status as StillingsStatus;
-  const stillingenBlirPubliserDato =
-    'stilling' in stillingsData &&
-    'activationOnPublishingDate' in stillingsData.stilling
-      ? stillingsData.stilling.activationOnPublishingDate
-      : undefined;
+  const info = visStillingsDataInfo(stillingsData);
 
   const publisertDato = stillingsData.stilling.published
     ? formaterNorskDato({ dato: stillingsData.stilling.published })
     : '-';
-
-  const erEierTag = erEier;
-  const erIkkePublisertTag =
-    !stillingsDataInfo.erUtløpt &&
-    !stillingenBlirPubliserDato &&
-    stillingStatus === StillingsStatus.Inaktiv;
-
-  const registrertMedInkluderingsmulighetTag =
-    Array.isArray(stillingsData?.stilling?.properties?.tags) &&
-    stillingsData.stilling.properties.tags.some((tag: any) =>
-      Object.values(Hovedtag).includes(tag),
-    );
 
   const tagKlasse = (extra?: string) =>
     `mr-2 ${rad ? '' : 'mb-4'} ${extra ?? ''}`;
 
   const venstre = (
     <>
-      {stillingsDataInfo.erJobbMesse && (
+      {info.erJobbMesse && (
         <Tag className={tagKlasse()} size='small' variant='alt2'>
           Jobbmesse
         </Tag>
       )}
-      {erEierTag && (
-        <Tag className={tagKlasse()} size='small' variant='info'>
-          Min stilling
-        </Tag>
-      )}
-      {stillingsDataInfo.erUtløpt && (
-        <Tag className={tagKlasse()} size='small' variant='warning'>
-          Utløpt
-        </Tag>
-      )}
-      {erIkkePublisertTag && (
-        <Tag className={tagKlasse()} size='small' variant='warning'>
-          Ikke publisert
-        </Tag>
-      )}
-      {stillingsDataInfo.erUtkast && (
-        <Tag className={tagKlasse()} size='small' variant='alt1'>
-          Utkast
-        </Tag>
-      )}
-      {stillingsDataInfo.erStoppet && (
-        <Tag className={tagKlasse()} size='small' variant='error'>
-          Stoppet
-        </Tag>
-      )}
-      {stillingsDataInfo.erSlettet && (
-        <Tag className={tagKlasse()} size='small' variant='error'>
-          Slettet
+      {info.erPåArbeidsplassen && (
+        <Tag className={tagKlasse()} size='small' variant='alt3'>
+          arbeidsplassen.no
         </Tag>
       )}
     </>
@@ -116,19 +64,35 @@ const StillingsTag: React.FC<IStillingTag> = ({
 
   const høyre = (
     <>
-      {registrertMedInkluderingsmulighetTag && (
-        <Tag className={tagKlasse()} size='small' variant='success'>
-          Inkludering
+      {info.visningsStatus === VisningsStatus.IkkePublisert && (
+        <Tag className={tagKlasse()} size='small' variant='warning-moderate'>
+          {VisningsStatus.IkkePublisert}
         </Tag>
       )}
-      {stillingsDataInfo.erDirektemeldt && (
-        <Tag className={tagKlasse()} size='small' variant='alt1'>
-          Intern {stillingsDataInfo.erFormidling ? 'formidling' : ''}
+      {info.visningsStatus === VisningsStatus.ApenForSokere && (
+        <Tag className={tagKlasse()} size='small' variant='alt3-moderate'>
+          {VisningsStatus.ApenForSokere}
         </Tag>
       )}
-      {stillingsDataInfo.erPåArbeidsplassen && (
-        <Tag className={tagKlasse()} size='small' variant='alt3'>
-          Arbeidsplassen
+      {info.visningsStatus === VisningsStatus.StengtForSokere && (
+        <Tag className={tagKlasse()} size='small' variant='warning-moderate'>
+          {VisningsStatus.StengtForSokere}
+        </Tag>
+      )}
+      {info.visningsStatus === VisningsStatus.UtloptStengtForSokere && (
+        <Tag className={tagKlasse()} size='small' variant='warning-moderate'>
+          {VisningsStatus.UtloptStengtForSokere}
+        </Tag>
+      )}
+
+      {info.visningsStatus === VisningsStatus.Fullfort && (
+        <Tag className={tagKlasse()} size='small' variant='success-moderate'>
+          {VisningsStatus.Fullfort}
+        </Tag>
+      )}
+      {info.visningsStatus === VisningsStatus.Avbrutt && (
+        <Tag className={tagKlasse()} size='small' variant='error-moderate'>
+          {VisningsStatus.Avbrutt}
         </Tag>
       )}
     </>

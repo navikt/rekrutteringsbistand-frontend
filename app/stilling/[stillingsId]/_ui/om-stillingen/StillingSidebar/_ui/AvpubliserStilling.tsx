@@ -1,7 +1,6 @@
 import { oppdaterStilling } from '@/app/api/stilling/oppdater-stilling/oppdaterStilling';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import { StillingsStatus } from '@/app/stilling/_ui/stilling-typer';
-import { stillingErUtløpt } from '@/app/stilling/_util/stilling-util';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { ArrowUndoIcon, EyeSlashIcon } from '@navikt/aksel-icons';
 import { BodyLong, BodyShort, Button, Modal } from '@navikt/ds-react';
@@ -36,15 +35,12 @@ const AvpubliserStilling: FC = () => {
     }
   };
 
-  const erUtløpt = stillingErUtløpt(stillingsData.stilling);
   const stillingsStatus = stillingsData.stilling.status;
 
   return (
     <Fragment>
       <Button
-        disabled={
-          erUtløpt || loading || stillingsStatus === StillingsStatus.Stoppet
-        }
+        disabled={loading || stillingsStatus === StillingsStatus.Stoppet}
         icon={<EyeSlashIcon />}
         variant='secondary'
         size='small'
