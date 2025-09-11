@@ -11,12 +11,12 @@ import InkluderingFilter from '@/app/stilling/_ui/StillingsSøkFilter/Inkluderin
 import KategoriFilter from '@/app/stilling/_ui/StillingsSøkFilter/KategoriFilter';
 import StatusFilter from '@/app/stilling/_ui/StillingsSøkFilter/StatusFilter';
 import StillingsSøkSortering from '@/app/stilling/_ui/StillingsSøkSortering';
+import MittStandardsøk from '@/app/stilling/_ui/standardsøk/MittStandardsøk';
 import Sidelaster from '@/components/layout/Sidelaster';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { UmamiEvent } from '@/components/umami/umamiEvents';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
-import { Switch } from '@navikt/ds-react';
 import { useSearchParams } from 'next/navigation';
 import { FC, Suspense, useEffect } from 'react';
 
@@ -106,9 +106,7 @@ const StillingsSøkLayout: FC<StillingsSøkProps> = ({
           <StillingsSøkeresultat kandidatId={forKandidatNr} />
         </div>
         <div className='hidden @[720px]:flex @[720px]:flex-col ml-4 pt-4  max-w-[200px] gap-4'>
-          <Switch disabled size='small'>
-            Mitt standardsøk
-          </Switch>
+          <MittStandardsøk />
           <StillingsSøkSortering />
 
           {(harArbeidsgiverrettetRolle || formidlinger) && <StatusFilter />}

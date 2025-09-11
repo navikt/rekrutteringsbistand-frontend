@@ -1,10 +1,10 @@
-import LagreStandardsøk from './LagreStandardsøk';
 import {
   hierarkiAvTagsForFilter,
   Hovedtag,
   Subtag,
   visningsnavnForFilter,
 } from './StillingsSøkFilter/InkluderingFilter';
+import LagreStandardsøk from './standardsøk/LagreStandardsøk';
 import {
   GeografiType,
   usePamGeografi,
