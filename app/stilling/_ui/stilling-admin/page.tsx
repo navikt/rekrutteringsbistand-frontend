@@ -143,7 +143,9 @@ export default function StillingAdmin() {
         }
       >
         {forhåndsvis ? (
-          <OmStillingen printRef={null} forhåndsvisData />
+          <>
+            <OmStillingen printRef={null} forhåndsvisData />
+          </>
         ) : (
           <div className='flex flex-col gap-4'>
             {moduler.map((m) => (

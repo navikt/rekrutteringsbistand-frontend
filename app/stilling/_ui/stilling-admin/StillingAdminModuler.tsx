@@ -108,10 +108,11 @@ export const alleModuler: VisningsModul[] = [
 const stillingRekkefolge: ModulKey[] = [
   'yrkestittel',
   'omJobben',
-  'sektor',
   'praktiskeForhold',
   // Sektor, omfang og arbeidstidsordning kan flyttes i rekkefølge senere
+
   'virksomheten',
+  'sektor',
   'kontaktperson',
   'sted',
   'oppstartsdato',

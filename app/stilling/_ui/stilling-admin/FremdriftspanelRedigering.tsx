@@ -106,11 +106,6 @@ export default function FremdriftspanelRedigering({ setForhåndsvis }: Props) {
           !!d.stilling?.properties?.adtext &&
           d.stilling.properties.adtext.trim().length > 10,
       },
-      {
-        id: 'sektor',
-        label: 'Sektor',
-        isDone: (d) => !!d.stilling?.properties?.sector,
-      },
 
       // Praktiske forhold (samlet modul, men trackes som del-sjekker)
       {
@@ -179,12 +174,14 @@ export default function FremdriftspanelRedigering({ setForhåndsvis }: Props) {
         },
       },
       // Om virksomheten
+
       {
         id: 'virksomheten',
         label: 'Virksomheten',
         group: 'Om virksomheten',
         isDone: (d) => !!d.stilling?.employer?.name,
       },
+
       {
         id: 'kontaktperson',
         label: 'Kontaktperson',
@@ -200,6 +197,12 @@ export default function FremdriftspanelRedigering({ setForhåndsvis }: Props) {
           ).length;
           return filled >= 3; // Minst tre felter må være utfylt
         },
+      },
+      {
+        id: 'sektor',
+        label: 'Sektor',
+        group: 'Sektor',
+        isDone: (d) => !!d.stilling?.properties?.sector,
       },
       // Sted
       {

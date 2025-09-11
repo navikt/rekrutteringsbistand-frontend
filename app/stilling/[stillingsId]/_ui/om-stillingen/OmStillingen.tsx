@@ -54,7 +54,10 @@ export interface OmStillingenProps {
   printRef: React.RefObject<HTMLDivElement | null> | null;
 }
 
-export default function OmStillingen({ printRef }: OmStillingenProps) {
+export default function OmStillingen({
+  printRef,
+  forhåndsvisData,
+}: OmStillingenProps) {
   const { stillingsData, kandidatlisteInfo } = useStillingsContext();
 
   const lokasjon = getWorkLocationsAsString(
@@ -72,7 +75,7 @@ export default function OmStillingen({ printRef }: OmStillingenProps) {
 
   return (
     <div data-testid='om-stillingen'>
-      {kandidatlisteInfo?.kandidatlisteId && (
+      {!forhåndsvisData && kandidatlisteInfo?.kandidatlisteId && (
         <TilgangskontrollForInnhold
           skjulVarsel
           kreverEnAvRollene={[
