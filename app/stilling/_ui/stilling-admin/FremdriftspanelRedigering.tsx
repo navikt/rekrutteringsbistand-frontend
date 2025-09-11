@@ -106,6 +106,11 @@ export default function FremdriftspanelRedigering({ setForhåndsvis }: Props) {
           !!d.stilling?.properties?.adtext &&
           d.stilling.properties.adtext.trim().length > 10,
       },
+      {
+        id: 'sektor',
+        label: 'Sektor',
+        isDone: (d) => !!d.stilling?.properties?.sector,
+      },
 
       // Praktiske forhold (samlet modul, men trackes som del-sjekker)
       {

@@ -20,7 +20,6 @@ export enum Stillingskategori {
 }
 
 export enum StillingsAnsettelsesform {
-  Ingen = '',
   Fast = 'Fast',
   Vikariat = 'Vikariat',
   Engasjement = 'Engasjement',

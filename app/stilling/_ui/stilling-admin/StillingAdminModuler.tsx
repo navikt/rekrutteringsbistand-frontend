@@ -26,6 +26,7 @@ export type ModulKey =
   | 'oppstartsdato'
   | 'omStillingsoppdraget'
   | 'inkludering'
+  | 'sektor'
   // Formidling spesifikke
   | 'formidling_kandidater'
   | 'formidling_sektor'
@@ -76,6 +77,7 @@ export const alleModuler: VisningsModul[] = [
     tittel: 'Om stillingsoppdraget',
     Component: OmStillingsoppdraget,
   },
+  { key: 'sektor', tittel: 'Sektor', Component: Sektor },
   // Formidling (Etterregistrering) — enklere variant uten Om jobben / virksomhet (kan justeres senere)
   {
     key: 'formidling_kandidater',
@@ -106,6 +108,7 @@ export const alleModuler: VisningsModul[] = [
 const stillingRekkefolge: ModulKey[] = [
   'yrkestittel',
   'omJobben',
+  'sektor',
   'praktiskeForhold',
   // Sektor, omfang og arbeidstidsordning kan flyttes i rekkefølge senere
   'virksomheten',
