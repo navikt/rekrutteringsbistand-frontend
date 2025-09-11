@@ -1,6 +1,6 @@
 import { oppdaterStilling } from '@/app/api/stilling/oppdater-stilling/oppdaterStilling';
 import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
-import { stillingEndepunkt } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/useStilling';
+import { useStilling } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/useStilling';
 import { DatoVelger } from '@/app/stilling/_ui/stilling-admin/admin_moduler/_felles/DatoVelger';
 import { mapSendStillingOppdatering } from '@/app/stilling/_ui/stilling-admin/admin_moduler/mapVerdier';
 import { UmamiEvent } from '@/components/umami/umamiEvents';
@@ -21,14 +21,13 @@ import { format, parse } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { mutate } from 'swr';
 
 export interface PubliserModalProps {
   disabled: boolean;
 }
 
 export default function PubliserModal({ disabled }: PubliserModalProps) {
-  const { brukerData, valgtNavKontor, visVarsel } = useApplikasjonContext();
+  const { brukerData, valgtNavKontor } = useApplikasjonContext();
 
   const ref = useRef<HTMLDialogElement>(null);
   const { watch, setValue, getValues } = useFormContext<StillingsDataDTO>();
@@ -41,6 +40,8 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
   const applicationEmail = watch('stilling.properties.applicationemail');
   const applicationUrl = watch('stilling.properties.applicationurl');
   const [isLoading, setIsLoading] = useState(false);
+
+  const stillingHook = useStilling(getValues().stilling.uuid);
 
   const isoTilSkjemaDato = (iso?: string | null) => {
     if (!iso) return undefined;
@@ -159,11 +160,7 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
       }
 
       ref.current?.close();
-      mutate(stillingEndepunkt(getValues().stilling.uuid)).then(() => {
-        // eslint-disable-next-line no-console
-        console.log('Har kjørt mutate');
-      });
-
+      stillingHook.mutate();
       router.push(`/stilling/${getValues().stilling.uuid}`);
     } catch {
       alert('Uventet feil ved publisering');
