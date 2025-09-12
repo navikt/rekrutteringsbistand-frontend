@@ -9,12 +9,13 @@ import PanelHeader from '@/components/layout/PanelHeader';
 import SideLayout from '@/components/layout/SideLayout';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
+import { FC } from 'react';
 
 export interface VisKandidatProps {
   kandidatnr: string;
 }
 
-const VisKandidat: React.FC<VisKandidatProps> = ({ kandidatnr }) => {
+const VisKandidat: FC<VisKandidatProps> = ({ kandidatnr }) => {
   const stillingContext = useNullableStillingsContext();
 
   return (

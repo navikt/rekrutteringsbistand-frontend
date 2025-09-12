@@ -2,10 +2,10 @@
 
 import { UrlWindowConfig } from './useUrlWindow';
 import WindowLoader from '@/app/_windows/WindowLoader';
-import React from 'react';
+import React, { FC } from 'react';
 
 // Wrapper komponent for finn kandidater
-const FinnKandidaterWrapper: React.FC<{ stillingsId: string }> = ({
+const FinnKandidaterWrapper: FC<{ stillingsId: string }> = ({
   stillingsId,
 }) => {
   const StillingsContextProvider = React.lazy(() =>

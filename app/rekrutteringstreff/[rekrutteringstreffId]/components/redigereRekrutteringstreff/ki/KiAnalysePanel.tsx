@@ -2,7 +2,7 @@
 
 import { RobotFrownIcon, RobotIcon, RobotSmileIcon } from '@navikt/aksel-icons';
 import { Alert, BodyLong, Button, Skeleton } from '@navikt/ds-react';
-import React, { useEffect, useMemo, useRef } from 'react';
+import { FC, useEffect, useMemo, useRef } from 'react';
 
 export type KiAnalyseVariant = 'tittel' | 'innlegg';
 
@@ -20,7 +20,7 @@ interface KiAnalysePanelProps {
   ariaLabel: string;
 }
 
-const KiAnalysePanel: React.FC<KiAnalysePanelProps> = ({
+const KiAnalysePanel: FC<KiAnalysePanelProps> = ({
   validating,
   analyse,
   analyseError,

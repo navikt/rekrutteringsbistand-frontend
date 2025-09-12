@@ -15,7 +15,7 @@
 // import { BodyShort } from '@navikt/ds-react';
 //
 
-// const StillingHeader: React.FC = () => {
+// const StillingHeader: FC = () => {
 //   const { stillingsData, erFormidling, erSlettet, kandidatlisteInfo, erEier } =
 //     useStillingsContext();
 

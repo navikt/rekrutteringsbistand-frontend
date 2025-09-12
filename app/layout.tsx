@@ -6,6 +6,7 @@ import { UmamiProvider } from '@/providers/UmamiContext';
 import { isLocal } from '@/util/env';
 import type { Metadata } from 'next';
 import Script from 'next/script';
+import { ReactNode } from 'react';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,7 +17,7 @@ export const metadata: Metadata = {
 export default async function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: ReactNode;
 }>) {
   return (
     <html
@@ -50,7 +51,7 @@ export default async function RootLayout({
   );
 }
 
-const BrukLokalMock = ({ children }: { children: React.ReactNode }) => {
+const BrukLokalMock = ({ children }: { children: ReactNode }) => {
   if (isLocal) {
     return <MirageInitializer>{children}</MirageInitializer>;
   }

@@ -11,6 +11,7 @@ import {
 import { formaterNorskDato } from '@/util/util';
 import { Tag } from '@navikt/ds-react';
 import { isBefore, startOfToday } from 'date-fns';
+import { FC } from 'react';
 
 export interface IStillingTag {
   stillingsData: RekrutteringsbistandStillingSchemaDTO | StillingsDataDTO;
@@ -32,11 +33,7 @@ export const stillingErUtløpt = (stilling: any): boolean => {
   );
 };
 
-const StillingsTag: React.FC<IStillingTag> = ({
-  stillingsData,
-  splitTags,
-  rad,
-}) => {
+const StillingsTag: FC<IStillingTag> = ({ stillingsData, splitTags, rad }) => {
   const info = visStillingsDataInfo(stillingsData);
 
   const publisertDato = stillingsData.stilling.published

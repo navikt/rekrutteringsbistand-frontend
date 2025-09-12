@@ -11,14 +11,14 @@ import {
   normaliserKommunekode,
 } from '@/util/fylkeOgKommuneMapping';
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
-import React, { Fragment } from 'react';
+import { FC, Fragment } from 'react';
 
 interface IFylkerOgKommuner {
   geografi: PamGeografi[];
   hideLegend?: boolean;
 }
 
-const FylkerOgKommunerFilter: React.FC<IFylkerOgKommuner> = ({
+const FylkerOgKommunerFilter: FC<IFylkerOgKommuner> = ({
   geografi,
   hideLegend,
 }) => {

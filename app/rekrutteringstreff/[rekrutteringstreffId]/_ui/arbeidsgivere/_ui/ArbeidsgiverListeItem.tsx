@@ -3,15 +3,15 @@
 import ArbeidsgiverKort, { ArbeidsgiverAdresse } from './ArbeidsgiverKort';
 import { useFinnArbeidsgiver } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
 import { ArbeidsgiverDTO as TreffArbeidsgiverDTO } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
-import { useMemo } from 'react';
+import { FC, ReactNode, useMemo } from 'react';
 
 interface Props {
   arbeidsgiver: TreffArbeidsgiverDTO;
   status?: string;
-  actionSlot?: React.ReactNode;
+  actionSlot?: ReactNode;
 }
 
-const ArbeidsgiverListeItem: React.FC<Props> = ({
+const ArbeidsgiverListeItem: FC<Props> = ({
   arbeidsgiver,
   status,
   actionSlot,

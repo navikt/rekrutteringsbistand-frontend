@@ -10,7 +10,7 @@ import { Tabs } from '@navikt/ds-react';
 
 // import OmStillingen from '@/app/stilling/[stillingsId]/omStillingen/OmStillingen'
 
-const VisFormidling: React.FC = () => {
+export default function VisFormidling() {
   const { erEier } = useStillingsContext();
 
   return (
@@ -45,6 +45,4 @@ const VisFormidling: React.FC = () => {
       </SideLayout>
     </Tabs>
   );
-};
-
-export default VisFormidling;
+}

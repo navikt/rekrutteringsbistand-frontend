@@ -10,8 +10,7 @@ import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
 import { Detail, Loader } from '@navikt/ds-react';
-import { useMemo } from 'react';
-import * as React from 'react';
+import { FC, Fragment, useMemo } from 'react';
 
 const DEFAULT_TITTEL = 'Nytt rekrutteringstreff';
 
@@ -24,7 +23,7 @@ const sjekklisteData = [
   { id: 'omtreffet', label: 'Om treffet' },
 ] as const;
 
-const PublisereSteg: React.FC = () => {
+const PublisereSteg: FC = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
 
   const { data: arbeidsgivereData, isLoading: arbeidsgivereLoading } =
@@ -67,10 +66,10 @@ const PublisereSteg: React.FC = () => {
         sjekklisteData.map((item, idx) => {
           const erOppfylt = !!checkedItems[item.id];
           return (
-            <React.Fragment key={item.id}>
+            <Fragment key={item.id}>
               <SjekklisteRad erOppfylt={erOppfylt} label={item.label} />
               {idx < sjekklisteData.length - 1 && <SjekklisteSeparator />}
-            </React.Fragment>
+            </Fragment>
           );
         })}
     </SjekklisteContainer>

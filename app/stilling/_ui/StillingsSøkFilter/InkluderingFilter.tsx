@@ -2,7 +2,7 @@ import { useStillingsSøkFilter } from '@/app/stilling/StillingsSøkContext';
 import { UmamiEvent } from '@/components/umami/umamiEvents';
 import { useUmami } from '@/providers/UmamiContext';
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
-import { Fragment } from 'react';
+import { FC, Fragment } from 'react';
 
 type GruppeMedTags = {
   hovedtag: Hovedtag;
@@ -86,7 +86,7 @@ export const hierarkiAvTagsForFilter: Array<GruppeMedTags> = [
   { hovedtag: Hovedtag.StatligInkluderingsdugnad, subtags: [] },
 ];
 
-const InkluderingFilter: React.FC = () => {
+const InkluderingFilter: FC = () => {
   const { track } = useUmami();
   const {
     inkludering,

@@ -9,15 +9,14 @@ import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { RekbisError } from '@/util/rekbisError';
 import { PersonPlusIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
-import { useRef } from 'react';
-import * as React from 'react';
+import { FC, useRef } from 'react';
 
 interface LagreIRekrutteringstreffButtonProps {
   rekrutteringstreffId?: string;
   kandidatsokKandidater: KandidatsokKandidat[];
 }
 
-const LagreIRekrutteringstreffButton: React.FC<
+const LagreIRekrutteringstreffButton: FC<
   LagreIRekrutteringstreffButtonProps
 > = ({ rekrutteringstreffId, kandidatsokKandidater }) => {
   const modalRef = useRef<HTMLDialogElement>(null!);

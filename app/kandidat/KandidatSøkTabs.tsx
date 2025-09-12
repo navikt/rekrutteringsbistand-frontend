@@ -22,6 +22,7 @@ import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/Tilgan
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { Button } from '@navikt/ds-react';
+import { FC } from 'react';
 
 interface KandidatSøkTabsProps {
   stillingsId?: string;
@@ -30,7 +31,7 @@ interface KandidatSøkTabsProps {
   alleredeLagtTilKandidatliste?: string[];
 }
 
-const KandidatSøkTabs: React.FC<KandidatSøkTabsProps> = ({
+const KandidatSøkTabs: FC<KandidatSøkTabsProps> = ({
   stillingsId,
   rekrutteringstreffId,
   alleredeLagtTilTreff,

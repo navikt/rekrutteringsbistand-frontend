@@ -4,7 +4,7 @@ import Definisjon from '@/app/stilling/[stillingsId]/_ui/Definisjon';
 import capitalizeEmployerName from '@/app/stilling/_util/stilling-util';
 import VisEditorTekst from '@/components/felles/rikteksteditor/VisEditorTekst';
 
-const OmBedriften: React.FC = () => {
+export default function OmBedriften() {
   const { stillingsData } = useStillingsContext();
   const employer = stillingsData.stilling?.employer;
 
@@ -56,6 +56,4 @@ const OmBedriften: React.FC = () => {
       }
     />
   );
-};
-
-export default OmBedriften;
+}

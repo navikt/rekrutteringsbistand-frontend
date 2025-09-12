@@ -17,6 +17,7 @@ import RekrutteringstreffFeatureToggle from '@/components/RekrutteringstreffFeat
 import SWRLaster from '@/components/SWRLaster';
 import { useKandidatNavigeringContext } from '@/providers/KandidatNavigeringContext';
 import { Checkbox, Pagination } from '@navikt/ds-react';
+import { FC, useEffect } from 'react';
 
 interface KandidatSøkResultatProps {
   type: KandidatSøkPortefølje;
@@ -26,7 +27,7 @@ interface KandidatSøkResultatProps {
   alleredeLagtTilKandidatliste?: string[];
 }
 
-const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({
+const KandidatSøkResultat: FC<KandidatSøkResultatProps> = ({
   type,
   stillingsId,
   rekrutteringstreffId,
@@ -37,7 +38,7 @@ const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({
   const kandidatsøkHook = useKandidatsøk(type, filter);
   const { setKandidatNavigering } = useKandidatNavigeringContext();
 
-  React.useEffect(() => {
+  useEffect(() => {
     setKandidatNavigering(kandidatsøkHook.data?.navigering.kandidatnumre ?? []);
   }, [kandidatsøkHook.data?.navigering, setKandidatNavigering]);
 

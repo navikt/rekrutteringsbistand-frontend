@@ -1,7 +1,8 @@
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import { BodyShort, Heading, Link } from '@navikt/ds-react';
+import { FC } from 'react';
 
-const Kontaktpersoner: React.FC = () => {
+const Kontaktpersoner: FC = () => {
   const { stillingsData } = useStillingsContext();
   const kontaktInfo = stillingsData?.stilling?.contactList;
 

@@ -1,14 +1,14 @@
 'use client';
 
 import { RekbisError } from '@/util/rekbisError';
-import { useContext } from 'react';
 import * as React from 'react';
+import { createContext, useContext } from 'react';
 
 export interface RekrutteringstreffContextProps {
   rekrutteringstreffId: string;
 }
 
-const RekrutteringstreffContext = React.createContext<
+const RekrutteringstreffContext = createContext<
   RekrutteringstreffContextProps | undefined
 >(undefined);
 

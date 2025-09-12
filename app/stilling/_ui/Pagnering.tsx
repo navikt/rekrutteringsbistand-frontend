@@ -1,12 +1,13 @@
 import { maksAntallTreffPerSøk } from '@/app/api/stillings-sok/elastic-search/elasticSearchQueryBuilder';
 import { useStillingsSøkFilter } from '@/app/stilling/StillingsSøkContext';
 import { Pagination } from '@navikt/ds-react';
+import { FunctionComponent } from 'react';
 
 type PagineringProps = {
   totaltAntallTreff: number;
 };
 
-const StillingsSøkPaginering: React.FunctionComponent<PagineringProps> = ({
+const StillingsSøkPaginering: FunctionComponent<PagineringProps> = ({
   totaltAntallTreff,
 }) => {
   const filter = useStillingsSøkFilter();

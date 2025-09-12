@@ -10,9 +10,8 @@ import {
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
 import { RekbisError } from '@/util/rekbisError';
-import { Button, Heading, BodyShort, ProgressBar } from '@navikt/ds-react';
-import { useState } from 'react';
-import * as React from 'react';
+import { BodyShort, Button, Heading, ProgressBar } from '@navikt/ds-react';
+import { FC, useState } from 'react';
 
 interface Props {
   stepDetails: { id: number; stepLabel: string; header: string }[];
@@ -20,7 +19,7 @@ interface Props {
   erIForhåndsvisning: boolean;
 }
 
-const StegviserHeader: React.FC<Props> = ({
+const StegviserHeader: FC<Props> = ({
   stepDetails,
   onToggleForhåndsvisning,
   erIForhåndsvisning,

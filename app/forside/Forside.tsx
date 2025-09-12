@@ -4,7 +4,7 @@ import Statistikk from './_ui/Statistikk';
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideLayout from '@/components/layout/SideLayout';
 
-const Forside: React.FC = () => {
+export default function Forside() {
   return (
     <SideLayout
       header={
@@ -18,6 +18,4 @@ const Forside: React.FC = () => {
       </div>
     </SideLayout>
   );
-};
-
-export default Forside;
+}

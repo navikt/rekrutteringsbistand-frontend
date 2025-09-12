@@ -6,7 +6,7 @@ import AlleFilterKomponent from '@/components/felles/filter/AlleFilterKomponent'
 import FilterKomponent from '@/components/felles/filter/FilterKomponent';
 import { Search, Switch } from '@navikt/ds-react';
 
-const KandidatlisteFilterrad: React.FC = () => {
+export default function KandidatlisteFilterrad() {
   const { fritekstSøk, setFritekstSøk, visSlettede, setVisSlettede } =
     useKandidatlisteFilterContext();
   return (
@@ -47,6 +47,4 @@ const KandidatlisteFilterrad: React.FC = () => {
       <KandidatListeChip />
     </div>
   );
-};
-
-export default KandidatlisteFilterrad;
+}

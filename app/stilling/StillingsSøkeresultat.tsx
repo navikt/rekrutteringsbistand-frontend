@@ -10,13 +10,13 @@ import { useStillingssøk } from '@/app/api/stillings-sok/useStillingssøk';
 import { useStillingssokTotalData } from '@/app/stilling/store/stillingssokTotalData';
 import SWRLaster from '@/components/SWRLaster';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
-import { useEffect } from 'react';
+import { FC, useEffect } from 'react';
 
 interface StillingsSøkeresultatProps {
   kandidatId?: string;
 }
 
-const StillingsSøkeresultat: React.FC<StillingsSøkeresultatProps> = ({
+const StillingsSøkeresultat: FC<StillingsSøkeresultatProps> = ({
   kandidatId,
 }) => {
   // Abonner kun på setteren for å unngå re-render ved antall-endringer her.

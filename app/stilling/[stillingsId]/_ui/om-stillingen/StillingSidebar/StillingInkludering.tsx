@@ -2,6 +2,7 @@ import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsConte
 import TekstMedIkon from '@/components/felles/TekstMedIkon';
 import { CheckmarkIcon } from '@navikt/aksel-icons';
 import { Heading } from '@navikt/ds-react';
+import { FC } from 'react';
 
 export enum InkluderingsTag {
   Tilrettelegging = 'INKLUDERING',
@@ -49,7 +50,7 @@ export const visningsnavnForRegistrering: Partial<
     'inkluderingssamarbeid med offentlig virksomhet',
 };
 
-const StillingInkludering: React.FC = () => {
+const StillingInkludering: FC = () => {
   const { stillingsData } = useStillingsContext();
 
   const registrerteTags: InkluderingsTag[] = stillingsData.stilling?.properties

@@ -6,14 +6,13 @@ import KandidatlisteWrapper from '@/app/stilling/[stillingsId]/kandidatliste/Kan
 import KandidatVisningSidebar from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatVisningSidebar/KandidatVisningSidebar';
 import SWRLaster from '@/components/SWRLaster';
 import { Box } from '@navikt/ds-react';
+import { FC, ReactNode } from 'react';
 
 export interface KandidatlisteBoksProps {
   kandidatnr: string;
 }
 
-const KandidatlisteBoks: React.FC<KandidatlisteBoksProps> = ({
-  kandidatnr,
-}) => {
+const KandidatlisteBoks: FC<KandidatlisteBoksProps> = ({ kandidatnr }) => {
   const { stillingsData, erEier } = useStillingsContext();
 
   const kandidatlisteEierHook = useKandidatlisteForEier(stillingsData, erEier);
@@ -22,8 +21,8 @@ const KandidatlisteBoks: React.FC<KandidatlisteBoksProps> = ({
   );
 
   // Felles styling for boks-komponenter
-  const BoksWrapper: React.FC<{
-    children: React.ReactNode;
+  const BoksWrapper: FC<{
+    children: ReactNode;
   }> = ({ children }) => (
     <Box.New
       borderColor='neutral-subtleA'

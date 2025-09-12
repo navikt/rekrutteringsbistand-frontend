@@ -7,19 +7,20 @@ import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
 import { PlusIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
+import { FC, useState } from 'react';
 
 export interface LeggKandidatTilKandidatlisteProps {
   kandidatId: string;
   stillingId: string;
 }
 
-const LeggKandidatTilKandidatliste: React.FC<
-  LeggKandidatTilKandidatlisteProps
-> = ({ kandidatId, stillingId }) => {
+const LeggKandidatTilKandidatliste: FC<LeggKandidatTilKandidatlisteProps> = ({
+  kandidatId,
+  stillingId,
+}) => {
   const { track } = useUmami();
   const { visVarsel } = useApplikasjonContext();
-  const [leggTilKandidatLoading, setLeggerTilKandidatLoading] =
-    React.useState(false);
+  const [leggTilKandidatLoading, setLeggerTilKandidatLoading] = useState(false);
 
   const stillingsContext = useNullableStillingsContext();
 

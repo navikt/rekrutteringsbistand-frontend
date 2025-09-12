@@ -1,18 +1,14 @@
 import { Box, Heading } from '@navikt/ds-react';
+import { FC, ReactNode } from 'react';
 
 export interface GråBoksProps {
-  children?: React.ReactNode | undefined;
-  ikon?: React.ReactNode | undefined;
+  children?: ReactNode | undefined;
+  ikon?: ReactNode | undefined;
   tittel: string;
   className?: string;
 }
 
-const GråBoks: React.FC<GråBoksProps> = ({
-  children,
-  ikon,
-  tittel,
-  className,
-}) => {
+const GråBoks: FC<GråBoksProps> = ({ children, ikon, tittel, className }) => {
   return (
     <Box.New
       background='neutral-softA'

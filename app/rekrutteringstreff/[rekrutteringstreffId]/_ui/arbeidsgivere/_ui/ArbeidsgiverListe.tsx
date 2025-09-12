@@ -2,7 +2,7 @@
 
 import ArbeidsgiverKort, { ArbeidsgiverAdresse } from './ArbeidsgiverKort';
 import ArbeidsgiverListeItem from './ArbeidsgiverListeItem';
-import * as React from 'react';
+import { FC, ReactNode } from 'react';
 
 export interface ArbeidsgiverVisningItem {
   navn: string;
@@ -19,11 +19,11 @@ interface Props {
    */
   usePamLookup?: boolean;
   /** Render action node (e.g. X/Slett) for a given item */
-  actionFactory?: (item: ArbeidsgiverVisningItem) => React.ReactNode;
+  actionFactory?: (item: ArbeidsgiverVisningItem) => ReactNode;
   emptyText?: string;
 }
 
-const ArbeidsgiverListe: React.FC<Props> = ({
+const ArbeidsgiverListe: FC<Props> = ({
   items,
   usePamLookup = false,
   actionFactory,

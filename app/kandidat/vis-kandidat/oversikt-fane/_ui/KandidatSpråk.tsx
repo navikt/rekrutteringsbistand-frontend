@@ -4,6 +4,7 @@ import Erfaring from './erfaring/Erfaring';
 import { SprakSchemaDTO } from '@/app/api/kandidat-sok/schema/sprakSchema.zod';
 import { LanguageIcon } from '@navikt/aksel-icons';
 import { BodyShort } from '@navikt/ds-react';
+import { FC } from 'react';
 
 export enum Språkferdighetsnivå {
   IkkeOppgitt = 'IKKEOPPGITT',
@@ -33,7 +34,7 @@ const språkferdighetTilVisningsnavn = (ferdighet?: string | null) => {
 export interface KandidatSpråkProps {
   språk?: SprakSchemaDTO[] | null;
 }
-const KandidatSpråk: React.FC<KandidatSpråkProps> = ({ språk }) => {
+const KandidatSpråk: FC<KandidatSpråkProps> = ({ språk }) => {
   if (!språk || !språk.length) {
     return null;
   }

@@ -1,7 +1,7 @@
 // Flyttet fra _old/_ui/DatoVelger.tsx
 import { DatePicker, useDatepicker } from '@navikt/ds-react';
 import { format, parse } from 'date-fns';
-import React from 'react';
+import { FC } from 'react';
 
 interface DatoVelgerProps {
   error?: string;
@@ -11,7 +11,7 @@ interface DatoVelgerProps {
   setDato: (date: string | undefined) => void;
 }
 
-export const DatoVelger: React.FC<DatoVelgerProps> = ({
+export const DatoVelger: FC<DatoVelgerProps> = ({
   error,
   disabled,
   valgtDato,

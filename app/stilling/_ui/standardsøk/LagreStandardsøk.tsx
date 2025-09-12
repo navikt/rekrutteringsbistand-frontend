@@ -6,7 +6,7 @@ import { FloppydiskIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import { useSearchParams } from 'next/navigation';
 
-const LagreStandardsøk: React.FC = () => {
+export default function LagreStandardsøk() {
   const brukerStandardSøkData = useUseBrukerStandardSøk();
   const searchParams = useSearchParams();
 
@@ -38,6 +38,4 @@ const LagreStandardsøk: React.FC = () => {
       Lagre nytt standardsøk
     </Button>
   );
-};
-
-export default LagreStandardsøk;
+}

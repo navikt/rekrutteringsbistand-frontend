@@ -10,12 +10,13 @@ import { useUmami } from '@/providers/UmamiContext';
 import { RekbisError } from '@/util/rekbisError';
 import { PersonPlusIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
+import { FC, useState } from 'react';
 
 export interface LagreIKandidatlisteMedStillingsIdProps {
   stillingsId: string;
 }
 
-const LagreIKandidatlisteMedStillingsId: React.FC<
+const LagreIKandidatlisteMedStillingsId: FC<
   LagreIKandidatlisteMedStillingsIdProps
 > = ({ stillingsId }) => {
   const { track } = useUmami();
@@ -83,11 +84,11 @@ interface LagreIKandidatlisteButtonProps {
   stillingsId?: string;
 }
 
-const LagreIKandidatlisteButton: React.FC<LagreIKandidatlisteButtonProps> = ({
+const LagreIKandidatlisteButton: FC<LagreIKandidatlisteButtonProps> = ({
   stillingsId,
 }) => {
   const { markerteKandidater } = useKandidatSøkMarkerteContext();
-  const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   if (stillingsId) {
     return <LagreIKandidatlisteMedStillingsId stillingsId={stillingsId} />;
   }

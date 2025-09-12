@@ -11,8 +11,8 @@ import {
   Modal,
   VStack,
 } from '@navikt/ds-react';
-import { useState } from 'react';
 import * as React from 'react';
+import { useState } from 'react';
 
 export type IkkeOppmøteInternalDto = {
   personTreffId: string;

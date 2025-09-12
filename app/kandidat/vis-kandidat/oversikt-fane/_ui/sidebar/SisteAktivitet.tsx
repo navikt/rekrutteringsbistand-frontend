@@ -6,8 +6,9 @@ import { BodyShort, Button, Link } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import { nb } from 'date-fns/locale';
 import { useQueryState } from 'nuqs';
+import { FC } from 'react';
 
-const SisteAktivitet: React.FC = () => {
+const SisteAktivitet: FC = () => {
   const { kandidatId } = useKandidatContext();
   const [, setFane] = useQueryState('kandidatFane', {
     defaultValue: 'oversikt',

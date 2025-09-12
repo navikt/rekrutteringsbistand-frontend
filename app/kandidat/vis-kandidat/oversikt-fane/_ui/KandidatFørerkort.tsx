@@ -4,6 +4,7 @@ import { FørerkortSchemaDTO } from '@/app/api/kandidat-sok/schema/forerkortSche
 import { CarIcon } from '@navikt/aksel-icons';
 import { BodyShort } from '@navikt/ds-react';
 import { compareAsc, format, parseISO } from 'date-fns';
+import { FC } from 'react';
 
 const FørerkortTidsperiode = ({
   førerkort,
@@ -26,7 +27,7 @@ interface KandidatFørerkortProps {
   førerkort?: FørerkortSchemaDTO[] | null;
 }
 
-const KandidatFørerkort: React.FC<KandidatFørerkortProps> = ({ førerkort }) => {
+const KandidatFørerkort: FC<KandidatFørerkortProps> = ({ førerkort }) => {
   if (!førerkort || !førerkort.length) {
     return null;
   }

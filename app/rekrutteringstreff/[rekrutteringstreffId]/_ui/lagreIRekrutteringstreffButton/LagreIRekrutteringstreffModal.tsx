@@ -9,8 +9,8 @@ import SWRLaster from '@/components/SWRLaster';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { RekbisError } from '@/util/rekbisError';
 import { Button, Checkbox, Link, Loader, Modal, Table } from '@navikt/ds-react';
-import { useState } from 'react';
 import * as React from 'react';
+import { useState } from 'react';
 
 interface LagreIRekrutteringstreffModalProps {
   kandidatsokKandidater: KandidatsokKandidat[];

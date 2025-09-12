@@ -7,7 +7,7 @@ export enum HovedMålType {
   ØkeDeltagelse = 'OKE_DELTAKELSE',
 }
 
-const Hovedmål: React.FC = () => {
+export default function Hovedmål() {
   const { hovedmål, setHovedmål } = useKandidatSøkFilterContext();
 
   const onChange = (valgteHovedmål: HovedMålType[]) => {
@@ -28,6 +28,4 @@ const Hovedmål: React.FC = () => {
       </Checkbox>
     </CheckboxGroup>
   );
-};
-
-export default Hovedmål;
+}

@@ -13,7 +13,7 @@ import { BodyShort, Box, Detail, Heading, Skeleton } from '@navikt/ds-react';
 import { format, isSameDay, parseISO } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
 import { nb } from 'date-fns/locale';
-import React from 'react';
+import { FC } from 'react';
 
 const formatTime = (dateString?: string | null) => {
   if (!dateString) return null;
@@ -39,7 +39,7 @@ const formaterKlokkeslett = (date: Date) => {
   return format(date, 'HH:mm');
 };
 
-const RekrutteringstreffForhåndsvisning: React.FC = () => {
+const RekrutteringstreffForhåndsvisning: FC = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { data: rekrutteringstreff, isLoading: isLoadingTreff } =
     useRekrutteringstreff(rekrutteringstreffId);
@@ -158,7 +158,7 @@ interface KortProps {
   rekrutteringstreff: any;
 }
 
-const TidspunktKort: React.FC<KortProps> = ({ rekrutteringstreff }) => {
+const TidspunktKort: FC<KortProps> = ({ rekrutteringstreff }) => {
   const initialFra = rekrutteringstreff.fraTid
     ? toZonedTime(parseISO(rekrutteringstreff.fraTid), 'Europe/Oslo')
     : null;
@@ -211,7 +211,7 @@ const TidspunktKort: React.FC<KortProps> = ({ rekrutteringstreff }) => {
   );
 };
 
-const StedKort: React.FC<KortProps> = ({ rekrutteringstreff }) => {
+const StedKort: FC<KortProps> = ({ rekrutteringstreff }) => {
   return (
     <Box.New className='flex-1' padding='6'>
       <BodyShort
@@ -244,7 +244,7 @@ const StedKort: React.FC<KortProps> = ({ rekrutteringstreff }) => {
   );
 };
 
-const SvarfristKort: React.FC<KortProps> = ({ rekrutteringstreff }) => {
+const SvarfristKort: FC<KortProps> = ({ rekrutteringstreff }) => {
   const svarfristFormatert = rekrutteringstreff.svarfrist
     ? formatWeekdayDate(rekrutteringstreff.svarfrist) +
       ' kl ' +

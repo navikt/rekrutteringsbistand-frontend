@@ -12,6 +12,7 @@ import {
   TrashIcon,
 } from '@navikt/aksel-icons';
 import { Tag, TagProps } from '@navikt/ds-react';
+import { FC, ReactNode } from 'react';
 
 export enum KandidatHendelseType {
   Spurt_om_å_dele_CV = 'Spurt om å dele CV: Frist',
@@ -57,7 +58,7 @@ const hendelseVariant = (type: KandidatHendelseType): TagProps['variant'] => {
       return 'info';
   }
 };
-const hendelseIkon = (type: KandidatHendelseType): React.ReactNode => {
+const hendelseIkon = (type: KandidatHendelseType): ReactNode => {
   switch (type) {
     case KandidatHendelseType.Spurt_om_å_dele_CV:
       return <TableIcon />;
@@ -93,7 +94,7 @@ interface KandidatHendelseTagProps {
   type: KandidatHendelseType | null;
   dato?: string | null;
 }
-export const KandidatHendelseTag: React.FC<KandidatHendelseTagProps> = ({
+export const KandidatHendelseTag: FC<KandidatHendelseTagProps> = ({
   type,
   dato,
 }) => {

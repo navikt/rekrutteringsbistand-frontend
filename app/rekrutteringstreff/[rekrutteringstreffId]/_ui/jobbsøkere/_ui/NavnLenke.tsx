@@ -1,5 +1,5 @@
 import { useVisPersonTreffId } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/vis-person/useVisPersonTreffId';
-import * as React from 'react';
+import { FC } from 'react';
 
 interface NavnLenkeProps {
   fornavn: string;
@@ -15,7 +15,7 @@ const storForbokstavFlereOrd = (s: string | null | undefined) => {
     .join(' ');
 };
 
-const NavnLenke: React.FC<NavnLenkeProps> = ({
+const NavnLenke: FC<NavnLenkeProps> = ({
   fornavn,
   etternavn,
   personTreffId,

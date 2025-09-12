@@ -1,7 +1,8 @@
 import Profilkvalitet from './Profilkvalitet';
 import GråBoks from '@/app/kandidat/vis-kandidat/oversikt-fane/_ui/GråBoks';
+import { FC } from 'react';
 
-const KandidatOversiktSidebar: React.FC = ({}) => {
+const KandidatOversiktSidebar: FC = ({}) => {
   return (
     <div className={'flex flex-col gap-4 mt-4'}>
       <GråBoks tittel='Profilkvalitet'>

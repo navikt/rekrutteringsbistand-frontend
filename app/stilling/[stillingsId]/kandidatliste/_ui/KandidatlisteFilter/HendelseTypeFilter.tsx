@@ -3,7 +3,7 @@ import { storForbokstavString } from '@/app/kandidat/util';
 import { KandidatHendelseType } from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatHendelser/KandidatHendelseTag';
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
 
-const HendelseTypeFilter: React.FC = () => {
+export default function HendelseTypeFilter() {
   const { hendelseFilter, setHendelseFilter } = useKandidatlisteFilterContext();
 
   return (
@@ -30,6 +30,4 @@ const HendelseTypeFilter: React.FC = () => {
         ))}
     </CheckboxGroup>
   );
-};
-
-export default HendelseTypeFilter;
+}

@@ -9,7 +9,7 @@ import SideLayout from '@/components/layout/SideLayout';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
 
-const FinnKandidaterForStilling: React.FC = () => {
+export default function FinnKandidaterForStilling() {
   const { stillingsData } = useStillingsContext();
 
   return (
@@ -34,6 +34,4 @@ const FinnKandidaterForStilling: React.FC = () => {
       </TilgangskontrollForInnhold>
     </SideLayout>
   );
-};
-
-export default FinnKandidaterForStilling;
+}

@@ -1,7 +1,7 @@
 import FiltrertKandidatListeVisning from '@/app/stilling/[stillingsId]/kandidatliste/FiltrertKandidatListeVisning';
 import KandidatlisteWrapper from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteWrapper';
 
-const FormidlingKandidater: React.FC = () => {
+export default function FormidlingKandidater() {
   return (
     <div className='w-full'>
       <KandidatlisteWrapper>
@@ -9,6 +9,4 @@ const FormidlingKandidater: React.FC = () => {
       </KandidatlisteWrapper>
     </div>
   );
-};
-
-export default FormidlingKandidater;
+}

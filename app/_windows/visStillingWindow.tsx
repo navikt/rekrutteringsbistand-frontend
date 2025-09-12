@@ -2,10 +2,10 @@
 
 import { UrlWindowConfig } from './useUrlWindow';
 import WindowLoader from '@/app/_windows/WindowLoader';
-import React from 'react';
+import React, { FC } from 'react';
 
 // Wrapper komponent for stilling
-const StillingWrapper: React.FC<{ stillingId: string }> = ({ stillingId }) => {
+const StillingWrapper: FC<{ stillingId: string }> = ({ stillingId }) => {
   const StillingsContextProvider = React.lazy(() =>
     import('@/app/stilling/[stillingsId]/StillingsContext').then((module) => ({
       default: module.StillingsContextProvider,

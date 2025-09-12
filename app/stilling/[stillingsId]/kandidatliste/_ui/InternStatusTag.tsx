@@ -8,6 +8,7 @@ import {
   XMarkOctagonIcon,
 } from '@navikt/aksel-icons';
 import { Tag } from '@navikt/ds-react';
+import { FC } from 'react';
 
 export interface InternStatusTagProps {
   status: InternKandidatstatus;
@@ -70,7 +71,7 @@ const internStatusVariant = (status: InternKandidatstatus) => {
   }
 };
 
-const InternStatusTag: React.FC<InternStatusTagProps> = ({ status }) => {
+const InternStatusTag: FC<InternStatusTagProps> = ({ status }) => {
   return (
     <Tag size='small' variant={internStatusVariant(status)}>
       <div className='flex gap-1'>

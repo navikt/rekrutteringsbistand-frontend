@@ -1,6 +1,7 @@
 import { BodyShort, Box } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import { nb } from 'date-fns/locale';
+import { FC, ReactNode } from 'react';
 
 export interface KandidatHendelseKortProps {
   tittel: string;
@@ -8,10 +9,10 @@ export interface KandidatHendelseKortProps {
   dato?: Date;
   frist?: Date;
   fargeKode: string;
-  ikon: React.ReactNode;
+  ikon: ReactNode;
 }
 
-const KandidatHendelseKort: React.FC<KandidatHendelseKortProps> = ({
+const KandidatHendelseKort: FC<KandidatHendelseKortProps> = ({
   tittel,
   tekst,
   dato,

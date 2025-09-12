@@ -4,12 +4,13 @@ import { KandidatSøkProvider } from './KandidaSokFilterContext';
 import { KandidatSøkMarkerteContextProvider } from './KandidatSøkMarkerteContext';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
+import { FC, ReactNode } from 'react';
 
 export interface KandidatSokLayoutProps {
-  children?: React.ReactNode | undefined;
+  children?: ReactNode | undefined;
 }
 
-const KandidatSokLayout: React.FC<KandidatSokLayoutProps> = ({ children }) => {
+const KandidatSokLayout: FC<KandidatSokLayoutProps> = ({ children }) => {
   return (
     <TilgangskontrollForInnhold
       kreverEnAvRollene={[

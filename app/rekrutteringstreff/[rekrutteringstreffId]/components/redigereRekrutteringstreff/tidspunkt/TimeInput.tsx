@@ -1,7 +1,7 @@
 'use client';
 
 import { UNSAFE_Combobox as Combobox } from '@navikt/ds-react';
-import React, { forwardRef } from 'react';
+import React, { forwardRef, ReactNode } from 'react';
 
 const KLOKKESLETT_OPTIONS = [...Array(24)].flatMap((_, h) =>
   [0, 15, 30, 45].map(
@@ -16,7 +16,7 @@ type Props = {
   label?: string;
   hideLabel?: boolean;
   disabled?: boolean;
-  error?: React.ReactNode | boolean;
+  error?: ReactNode | boolean;
   className?: string;
 };
 

@@ -1,8 +1,8 @@
 import { CheckmarkIcon } from '@navikt/aksel-icons';
 import { BodyShort, Box } from '@navikt/ds-react';
-import * as React from 'react';
+import { FC, ReactNode } from 'react';
 
-export const SjekklisteContainer: React.FC<{ children: React.ReactNode }> = ({
+export const SjekklisteContainer: FC<{ children: ReactNode }> = ({
   children,
 }) => (
   <div className='flex-1'>
@@ -12,7 +12,7 @@ export const SjekklisteContainer: React.FC<{ children: React.ReactNode }> = ({
   </div>
 );
 
-export const SjekklisteRad: React.FC<{ erOppfylt: boolean; label: string }> = ({
+export const SjekklisteRad: FC<{ erOppfylt: boolean; label: string }> = ({
   erOppfylt,
   label,
 }) => (
@@ -30,6 +30,6 @@ export const SjekklisteSeparator = () => (
   <div className='border-b border-border-subtle my-4'></div>
 );
 
-export const SjekklisteInfoRad: React.FC<{ children: React.ReactNode }> = ({
+export const SjekklisteInfoRad: FC<{ children: ReactNode }> = ({
   children,
 }) => <div className='my-4'>{children}</div>;

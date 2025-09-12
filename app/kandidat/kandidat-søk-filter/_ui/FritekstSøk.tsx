@@ -1,9 +1,10 @@
 import { useKandidatSøkFilterContext } from '@/app/kandidat/KandidaSokFilterContext';
 import { Search } from '@navikt/ds-react';
+import { useState } from 'react';
 
-const FritekstSøk: React.FC = () => {
+export default function FritekstSøk() {
   const { fritekst, setFritekst } = useKandidatSøkFilterContext();
-  const [localFritekst, setLocalFritekst] = React.useState<string>(fritekst);
+  const [localFritekst, setLocalFritekst] = useState<string>(fritekst);
 
   return (
     <Search
@@ -17,6 +18,4 @@ const FritekstSøk: React.FC = () => {
       onSearchClick={() => setFritekst(localFritekst)}
     />
   );
-};
-
-export default FritekstSøk;
+}

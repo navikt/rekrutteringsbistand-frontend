@@ -1,10 +1,9 @@
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
 import KandidatSøkTabs from '@/app/kandidat/KandidatSøkTabs';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
-import { useState, useEffect } from 'react';
-import * as React from 'react';
+import { FC, useEffect, useState } from 'react';
 
-const KandidatTilRekrutteringstreff: React.FC = () => {
+const KandidatTilRekrutteringstreff: FC = () => {
   const [alleredeLagtTilTreff, setAlleredeLagtTil] = useState<string[]>([]);
 
   const rekrutteringstreff = useRekrutteringstreffContext();

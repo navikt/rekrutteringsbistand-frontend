@@ -6,7 +6,7 @@ import {
 import { GeografiDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { storForbokstavString } from '@/app/kandidat/util';
 import { UNSAFE_Combobox } from '@navikt/ds-react';
-import { useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 
 interface GeografiDTOmedId extends GeografiDTO {
   id: string;
@@ -17,7 +17,7 @@ interface VelgKommuneFylkeEllerLandProps {
   fjernLokasjonId: (id: string) => void;
 }
 
-const VelgKommuneFylkeEllerLand: React.FC<VelgKommuneFylkeEllerLandProps> = ({
+const VelgKommuneFylkeEllerLand: FC<VelgKommuneFylkeEllerLandProps> = ({
   lokasjoner,
   leggTilLokasjon,
   fjernLokasjonId,

@@ -10,7 +10,7 @@ import {
   getNummerFraSted,
   stedmappingFraGammeltNummer,
 } from '@/util/fylkeOgKommuneMapping';
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 const hentFylkerFraJobbønsker = (
   geografijobbønskenummer: string[],
@@ -96,7 +96,7 @@ export const useStillingForKandidat = (kandidatId: string | null) => {
     };
   }, [kandidatStillingssøk]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (processedData && !hasSetInitialData.current) {
       const { fylker, kommuner, yrkesønsker } = processedData;
 

@@ -1,11 +1,12 @@
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
+import { FC, ReactNode } from 'react';
 
 export interface layoutProps {
-  children?: React.ReactNode | undefined;
+  children?: ReactNode | undefined;
 }
 
-const FormidlingerLayout: React.FC<layoutProps> = ({ children }) => {
+const FormidlingerLayout: FC<layoutProps> = ({ children }) => {
   return (
     <TilgangskontrollForInnhold
       kreverEnAvRollene={[

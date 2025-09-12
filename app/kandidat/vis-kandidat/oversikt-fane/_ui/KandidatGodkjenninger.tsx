@@ -5,13 +5,14 @@ import { SertifikatSchemaDTO } from '@/app/api/kandidat-sok/schema/sertifikatSch
 import { SealCheckmarkIcon } from '@navikt/aksel-icons';
 import { BodyShort } from '@navikt/ds-react';
 import { compareAsc, format, parseISO } from 'date-fns';
+import { FC } from 'react';
 
 export interface KandidatGodkjenningerProps {
   godkjenninger?: GodkjenningSchemaDTO[] | null;
   sertifikatObj?: SertifikatSchemaDTO[] | null;
 }
 
-const KandidatGodkjenninger: React.FC<KandidatGodkjenningerProps> = ({
+const KandidatGodkjenninger: FC<KandidatGodkjenningerProps> = ({
   godkjenninger,
   sertifikatObj,
 }) => {

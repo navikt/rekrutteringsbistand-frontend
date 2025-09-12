@@ -1,14 +1,13 @@
 import { useKandidatContext } from '@/app/kandidat/vis-kandidat/KandidatContext';
-import { useWindows } from '@/components/layout/windows/WindowWrapper';
 import { UmamiEvent } from '@/components/umami/umamiEvents';
 import { useUmami } from '@/providers/UmamiContext';
 import { Button } from '@navikt/ds-react';
+import { FC } from 'react';
 
-const FinnStillingForKandidatKnapp: React.FC = () => {
+const FinnStillingForKandidatKnapp: FC = () => {
   const { kandidatId } = useKandidatContext();
   const { trackAndNavigate } = useUmami();
 
-  const windows = useWindows();
   return (
     <Button
       size={'small'}

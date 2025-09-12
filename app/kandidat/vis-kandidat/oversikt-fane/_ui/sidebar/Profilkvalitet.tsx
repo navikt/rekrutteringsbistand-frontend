@@ -2,12 +2,13 @@ import { useKandidatContext } from '@/app/kandidat/vis-kandidat/KandidatContext'
 import { dialogUrl } from '@/components/felles/modia/eksterneUrler';
 import { ExternalLinkIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button } from '@navikt/ds-react';
+import { useEffect, useState } from 'react';
 
-const Profilkvalitet: React.FC = () => {
+export default function Profilkvalitet() {
   const { kandidatData } = useKandidatContext();
 
-  const [progress, setProgress] = React.useState(0);
-  const [manglerFelt, setManglerFelt] = React.useState<string[]>([]);
+  const [progress, setProgress] = useState(0);
+  const [manglerFelt, setManglerFelt] = useState<string[]>([]);
 
   // Ønsket jobbsted
   const harØnsketJobbsted = (kandidatData?.geografiJobbonsker?.length ?? 0) > 0;
@@ -20,7 +21,7 @@ const Profilkvalitet: React.FC = () => {
   // Språk
   const harSpråk = (kandidatData?.sprak?.length ?? 0) > 0;
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (kandidatData) {
       let prosent = 0;
       const mangler: string[] = [];
@@ -111,6 +112,4 @@ const Profilkvalitet: React.FC = () => {
       )}
     </div>
   );
-};
-
-export default Profilkvalitet;
+}

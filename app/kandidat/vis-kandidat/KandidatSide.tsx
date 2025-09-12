@@ -6,14 +6,14 @@ import KandidatOversikt from './oversikt-fane/KandidatOversikt';
 import NavigerTilAktivitetsplanenKnapp from '@/components/felles/modia/NavigerTilAktivitetsplanenKnapp';
 import { Tabs } from '@navikt/ds-react';
 import { useQueryState } from 'nuqs';
-import { useEffect } from 'react';
+import { FC, useEffect } from 'react';
 
 enum Fane {
   OVERSIKT = 'oversikt',
   AKTIVITET = 'aktivitet',
 }
 
-const KandidatSide: React.FC = () => {
+const KandidatSide: FC = () => {
   const [fane, setFane] = useQueryState('kandidatFane', {
     defaultValue: 'oversikt',
     clearOnDefault: true,

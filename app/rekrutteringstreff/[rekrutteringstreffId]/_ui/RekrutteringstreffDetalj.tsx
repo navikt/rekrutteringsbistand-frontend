@@ -1,16 +1,16 @@
 import { Box, Heading } from '@navikt/ds-react';
-import * as React from 'react';
+import { FC, ReactNode } from 'react';
 
 interface RekrutteringstreffDetaljerProps {
-  tittelIkon: React.ReactNode;
+  tittelIkon: ReactNode;
   tittel: string;
-  knapp: React.ReactNode;
+  knapp: ReactNode;
   headingLevel?: '1' | '2' | '3' | '4' | '5' | '6';
   className?: string;
-  children?: React.ReactNode;
+  children?: ReactNode;
 }
 
-const RekrutteringstreffDetalj: React.FC<RekrutteringstreffDetaljerProps> = ({
+const RekrutteringstreffDetalj: FC<RekrutteringstreffDetaljerProps> = ({
   tittelIkon,
   tittel,
   knapp,

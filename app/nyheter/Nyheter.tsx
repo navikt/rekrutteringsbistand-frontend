@@ -12,7 +12,7 @@ import { formaterNorskDato } from '@/util/util';
 import { PencilIcon, TrashIcon } from '@navikt/aksel-icons';
 import { BodyShort, Box, Button } from '@navikt/ds-react';
 
-const Nyheter: React.FC = () => {
+export default function Nyheter() {
   return (
     <HovedInnholdKort>
       <SideLayout
@@ -71,6 +71,4 @@ const Nyheter: React.FC = () => {
       </SideLayout>
     </HovedInnholdKort>
   );
-};
-
-export default Nyheter;
+}

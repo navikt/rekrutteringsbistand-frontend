@@ -8,14 +8,13 @@ import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsConte
 import SWRLaster from '@/components/SWRLaster';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { Button } from '@navikt/ds-react';
+import { FC, ReactNode } from 'react';
 
 export interface KandidatlisteWrapperProps {
-  children?: React.ReactNode | undefined;
+  children?: ReactNode | undefined;
 }
 
-const KandidatlisteWrapper: React.FC<KandidatlisteWrapperProps> = ({
-  children,
-}) => {
+const KandidatlisteWrapper: FC<KandidatlisteWrapperProps> = ({ children }) => {
   const { brukerData, valgtNavKontor } = useApplikasjonContext();
   const { stillingsData, erEier } = useStillingsContext();
 

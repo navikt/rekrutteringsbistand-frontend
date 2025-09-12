@@ -1,6 +1,6 @@
 import capitalizeEmployerName from '@/app/stilling/_util/stilling-util';
-import { Box, Heading, Tag, BodyShort } from '@navikt/ds-react';
-import * as React from 'react';
+import { BodyShort, Box, Heading, Tag } from '@navikt/ds-react';
+import { FC, ReactNode } from 'react';
 
 interface ArbeidsgiverKortProps {
   organisasjonsnummer?: string;
@@ -10,7 +10,7 @@ interface ArbeidsgiverKortProps {
   adresse?: ArbeidsgiverAdresse | null;
   status?: string;
   naringskoder?: naringskode[] | null;
-  actionSlot?: React.ReactNode;
+  actionSlot?: ReactNode;
 }
 
 export type ArbeidsgiverAdresse = {
@@ -28,7 +28,7 @@ export type naringskode = {
   beskrivelse?: string;
 };
 
-const ArbeidsgiverKort: React.FC<ArbeidsgiverKortProps> = ({
+const ArbeidsgiverKort: FC<ArbeidsgiverKortProps> = ({
   navn,
   adresse,
   status,

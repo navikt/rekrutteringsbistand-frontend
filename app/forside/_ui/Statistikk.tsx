@@ -7,14 +7,14 @@ import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { BodyShort, Heading, Select } from '@navikt/ds-react';
 import { format, lastDayOfMonth, startOfMonth } from 'date-fns';
 import { nb } from 'date-fns/locale';
-import React, { ChangeEvent, useState } from 'react';
+import { ChangeEvent, FC, useState } from 'react';
 
 export interface IStatistikkValg {
   navKontor: string;
   fraOgMed: Date;
   tilOgMed: Date;
 }
-const Statistikk: React.FC = () => {
+const Statistikk: FC = () => {
   const { valgtNavKontor } = useApplikasjonContext();
   const [startDatoPeriode, setStartDatoPeriode] = useState<Date>(
     startOfMonth(new Date()),

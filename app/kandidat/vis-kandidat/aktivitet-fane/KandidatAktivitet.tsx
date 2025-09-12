@@ -5,7 +5,7 @@ import { useStilling } from '@/app/api/stilling/rekrutteringsbistandstilling/[sl
 import { useKandidatContext } from '@/app/kandidat/vis-kandidat/KandidatContext';
 import SWRLaster from '@/components/SWRLaster';
 import { Loader, Table } from '@navikt/ds-react';
-import { Fragment } from 'react';
+import { FC, Fragment } from 'react';
 
 export default function KandidatAktivitet() {
   const { kandidatId } = useKandidatContext();
@@ -80,7 +80,7 @@ export default function KandidatAktivitet() {
   );
 }
 
-const HistoriskStillingRad: React.FC<{
+const HistoriskStillingRad: FC<{
   historikkData: kandidatHistorikkSchemaDTO;
 }> = ({ historikkData }) => {
   const stillingHook = useStilling(historikkData.stillingId);

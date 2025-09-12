@@ -3,8 +3,9 @@ import { IStatistikkValg } from './Statistikk';
 import { useForesporselOmdelingAvCV } from '@/app/api/foresporsel-om-deling-av-cv/statistikk/useForesporselOmdelingAvCV';
 import SWRLaster from '@/components/SWRLaster';
 import { ArrowForwardIcon } from '@navikt/aksel-icons';
+import { FC } from 'react';
 
-const Forespørsler: React.FC<IStatistikkValg> = ({
+const Forespørsler: FC<IStatistikkValg> = ({
   navKontor,
   fraOgMed,
   tilOgMed,

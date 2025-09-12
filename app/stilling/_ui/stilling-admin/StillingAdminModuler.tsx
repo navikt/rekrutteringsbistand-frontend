@@ -15,6 +15,7 @@ import Sted from '@/app/stilling/_ui/stilling-admin/admin_moduler/Sted';
 import ViktigeDatoer from '@/app/stilling/_ui/stilling-admin/admin_moduler/ViktigeDatoer';
 import Yrkestittel from '@/app/stilling/_ui/stilling-admin/admin_moduler/Yrkestittel';
 import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
+import { FC } from 'react';
 
 export type ModulKey =
   | 'yrkestittel'
@@ -40,7 +41,7 @@ export type ModulKey =
 export interface VisningsModul {
   key: ModulKey;
   tittel: string;
-  Component: React.FC;
+  Component: FC;
   // valgfritt: om modul skal vises gitt gjeldende form-data
   vis?: (data: any) => boolean;
   // valgfritt: valideringsstatus kan injiseres senere

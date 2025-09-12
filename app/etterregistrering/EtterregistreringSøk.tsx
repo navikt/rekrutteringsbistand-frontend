@@ -9,7 +9,7 @@ import PanelHeader from '@/components/layout/PanelHeader';
 import SideLayout from '@/components/layout/SideLayout';
 import Sidelaster from '@/components/layout/Sidelaster';
 import { BriefcaseClockIcon } from '@navikt/aksel-icons';
-import { Suspense } from 'react';
+import { FC, Suspense } from 'react';
 
 const EtterRegistreringSøk = () => {
   return (
@@ -21,7 +21,7 @@ const EtterRegistreringSøk = () => {
   );
 };
 
-const EtterRegistreringSøkLayout: React.FC = () => {
+const EtterRegistreringSøkLayout: FC = () => {
   return (
     <SideLayout
       header={

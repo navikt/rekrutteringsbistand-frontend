@@ -1,4 +1,5 @@
 import { BodyShort, Box, Skeleton } from '@navikt/ds-react';
+import { FC } from 'react';
 
 export interface IInfokort {
   tittel: string;
@@ -22,7 +23,7 @@ export const InfokortSkeleton = ({ fullWidth }: { fullWidth?: boolean }) => {
   );
 };
 
-const Infokort: React.FC<IInfokort> = ({
+const Infokort: FC<IInfokort> = ({
   tittel,
   beskrivelse,
   ikon,

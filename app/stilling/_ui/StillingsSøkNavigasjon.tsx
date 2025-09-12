@@ -4,8 +4,9 @@ import { useStillingssokTotalData } from '@/app/stilling/store/stillingssokTotal
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { Button, Chips } from '@navikt/ds-react';
+import { FC } from 'react';
 
-const StillingsSøkNavigasjon: React.FC = () => {
+const StillingsSøkNavigasjon: FC = () => {
   const {
     portefølje,
     setPortefølje,

@@ -1,7 +1,7 @@
 'use client';
 
 import { UrlWindowConfig } from './useUrlWindow';
-import React from 'react';
+import { createElement } from 'react';
 
 /**
  * Eksempel på hvordan man legger til et nytt URL-vindu.
@@ -13,7 +13,7 @@ export const exampleWindowConfig: UrlWindowConfig = {
   title: 'Eksempel vindu', // Tittel som vises i vinduet
   createContent: (paramValue: string) => {
     // Her kan du lage innholdet basert på parameter-verdien
-    return React.createElement(
+    return createElement(
       'div',
       {
         className: 'p-4',

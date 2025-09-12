@@ -15,12 +15,12 @@ import {
 import { BodyShort, Box, Heading } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import { nb } from 'date-fns/locale/nb';
-import * as React from 'react';
+import { FC } from 'react';
 
 interface JobbsøkerHendelserKortProps {
   jobbsøkerHendelserDTO: JobbsøkerHendelserDTO;
 }
-const JobbsøkerHendelserKort: React.FC<JobbsøkerHendelserKortProps> = ({
+const JobbsøkerHendelserKort: FC<JobbsøkerHendelserKortProps> = ({
   jobbsøkerHendelserDTO,
 }) => {
   const antallHendelser = jobbsøkerHendelserDTO.length;

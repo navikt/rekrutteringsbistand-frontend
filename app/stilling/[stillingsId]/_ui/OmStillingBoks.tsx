@@ -1,15 +1,16 @@
 import Kontaktpersoner from '@/app/stilling/[stillingsId]/_ui/om-stillingen/Kontaktpersoner';
 import { Heading } from '@navikt/ds-react';
+import { FC, ReactNode } from 'react';
 
 export interface OmStillingBoksProps {
   tittel: string;
-  gridInnhold: React.ReactNode;
-  innhold?: React.ReactNode;
+  gridInnhold: ReactNode;
+  innhold?: ReactNode;
   innholdTopp?: boolean;
   kontaktpersoner?: boolean;
 }
 
-const OmStillingBoks: React.FC<OmStillingBoksProps> = ({
+const OmStillingBoks: FC<OmStillingBoksProps> = ({
   tittel,
   gridInnhold,
   innhold,

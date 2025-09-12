@@ -18,13 +18,14 @@ import { KandidatVisningProps } from '@/app/stilling/[stillingsId]/kandidatliste
 import VelgInternStatus from '@/app/stilling/[stillingsId]/kandidatliste/_ui/VelgInternStatus';
 import { formaterNorskDato } from '@/util/util';
 import { BodyShort, Box } from '@navikt/ds-react';
+import { FC } from 'react';
 
 export interface KandidatListeKortProps {
   kandidat?: KandidatVisningProps;
   usynligKandidat?: usynligKandidaterSchemaDTO;
 }
 
-const KandidatListeKort: React.FC<KandidatListeKortProps> = ({
+const KandidatListeKort: FC<KandidatListeKortProps> = ({
   kandidat,
   usynligKandidat,
 }) => {

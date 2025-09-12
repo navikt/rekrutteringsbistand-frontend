@@ -1,16 +1,14 @@
 import { useKandidatlisteContext } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteContext';
 import { KandidatVisningProps } from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatlisteFilter/useFiltrerteKandidater';
 import { Checkbox } from '@navikt/ds-react';
+import { FC } from 'react';
 
 export interface KandidatCheckboxProps {
   kandidat?: KandidatVisningProps;
   slettet?: boolean;
 }
 
-const KandidatCheckbox: React.FC<KandidatCheckboxProps> = ({
-  kandidat,
-  slettet,
-}) => {
+const KandidatCheckbox: FC<KandidatCheckboxProps> = ({ kandidat, slettet }) => {
   const { markerteKandidater, toggleMarkerKandidat, lukketKandidatliste } =
     useKandidatlisteContext();
 

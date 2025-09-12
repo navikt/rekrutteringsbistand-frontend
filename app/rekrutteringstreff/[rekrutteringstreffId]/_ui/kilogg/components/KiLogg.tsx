@@ -5,11 +5,10 @@ import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutte
 import { CheckmarkIcon, XMarkIcon } from '@navikt/aksel-icons';
 import { Alert, BodyShort, Button, Skeleton } from '@navikt/ds-react';
 import { format } from 'date-fns';
-import * as React from 'react';
-import { useState, useMemo } from 'react';
+import { FC, ReactNode, useMemo, useState } from 'react';
 
 export interface KiLoggProps {
-  children?: React.ReactNode | undefined;
+  children?: ReactNode | undefined;
   feltType?: string;
 }
 
@@ -23,7 +22,7 @@ const parseZonedDate = (s?: string | null): Date | null => {
   return isNaN(d.getTime()) ? null : d;
 };
 
-const KiLogg: React.FC<KiLoggProps> = ({ feltType }) => {
+const KiLogg: FC<KiLoggProps> = ({ feltType }) => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { data, isLoading, error, setManuell, manuellError } = useKiLogg(
     rekrutteringstreffId,

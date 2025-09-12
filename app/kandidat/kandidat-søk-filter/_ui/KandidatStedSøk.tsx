@@ -2,15 +2,16 @@ import { usePamGeografi } from '@/app/api/pam-geografi/typehead/lokasjoner/usePa
 import { useKandidatSøkFilterContext } from '@/app/kandidat/KandidaSokFilterContext';
 import { storBokstavSted, storForbokstavString } from '@/app/kandidat/util';
 import { Checkbox, UNSAFE_Combobox } from '@navikt/ds-react';
+import { FC, useEffect, useState } from 'react';
 
-const KandidatStedSøk: React.FC = () => {
+export default function KandidatStedSøk() {
   const { ønsketSted, setØnsketSted } = useKandidatSøkFilterContext();
 
-  const [valg, setValg] = React.useState<string[]>([]);
+  const [valg, setValg] = useState<string[]>([]);
 
   const geografi = usePamGeografi();
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (geografi.data) {
       const uniqueValg = geografi.data
         .filter((geo) => geo.type !== 'LAND')
@@ -47,9 +48,9 @@ const KandidatStedSøk: React.FC = () => {
       <BorPåØnsketSted />
     </>
   );
-};
+}
 
-const BorPåØnsketSted: React.FC = () => {
+const BorPåØnsketSted: FC = () => {
   const { setBorPåØnsketSted, borPåØnsketSted } = useKandidatSøkFilterContext();
   return (
     <Checkbox
@@ -61,5 +62,3 @@ const BorPåØnsketSted: React.FC = () => {
     </Checkbox>
   );
 };
-
-export default KandidatStedSøk;

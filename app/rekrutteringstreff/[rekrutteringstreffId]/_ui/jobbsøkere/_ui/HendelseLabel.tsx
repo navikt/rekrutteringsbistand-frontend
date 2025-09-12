@@ -1,8 +1,8 @@
 import { BodyShort } from '@navikt/ds-react';
-import * as React from 'react';
+import { FC, ReactNode } from 'react';
 
 interface HendelseLabelProps {
-  icon: React.ReactNode;
+  icon: ReactNode;
   hendelseType: string;
   antall?: number;
 }
@@ -47,7 +47,7 @@ export const labelTekst = (hendelsetype: string) => {
 const capitalizeFirstLetter = (str: string) =>
   str.charAt(0).toUpperCase() + str.slice(1);
 
-const HendelseLabel: React.FC<HendelseLabelProps> = ({
+const HendelseLabel: FC<HendelseLabelProps> = ({
   icon,
   hendelseType,
   antall,

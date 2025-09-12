@@ -3,7 +3,7 @@ import { InternKandidatstatus } from '@/app/stilling/[stillingsId]/kandidatliste
 import { internStatusTekst } from '@/app/stilling/[stillingsId]/kandidatliste/_ui/InternStatusTag';
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
 
-const InternStatusFilter: React.FC = () => {
+export default function InternStatusFilter() {
   const { internStatus, setInternStatus } = useKandidatlisteFilterContext();
 
   return (
@@ -26,6 +26,4 @@ const InternStatusFilter: React.FC = () => {
       ))}
     </CheckboxGroup>
   );
-};
-
-export default InternStatusFilter;
+}

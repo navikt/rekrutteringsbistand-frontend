@@ -5,16 +5,16 @@ import { StillingsStatus } from '@/app/stilling/_ui/stilling-typer';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { BodyLong, Button, Modal } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
-import React, { useState } from 'react';
+import { FC, ReactNode, useState } from 'react';
 
 export interface EndreStillingStatusProps {
   nyStatus: StillingsStatus;
   tekst: string;
   knappNavn: string;
-  knappIkon: React.ReactNode;
+  knappIkon: ReactNode;
 }
 
-const EndreStillingStatus: React.FC<EndreStillingStatusProps> = ({
+const EndreStillingStatus: FC<EndreStillingStatusProps> = ({
   nyStatus,
   tekst,
   knappNavn,

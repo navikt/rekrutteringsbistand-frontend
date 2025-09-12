@@ -6,8 +6,8 @@ import {
 } from '@/app/api/rekrutteringstreff/oppdater-rekrutteringstreff/oppdaterRerkutteringstreff';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { parseISO, format } from 'date-fns';
-import { useEffect, useRef } from 'react';
+import { format, parseISO } from 'date-fns';
+import { ReactNode, useEffect, useRef } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 
 export default function RekrutteringstreffForm({
@@ -15,7 +15,7 @@ export default function RekrutteringstreffForm({
   children,
 }: {
   rekrutteringstreffId: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   const { data } = useRekrutteringstreff(rekrutteringstreffId);
 

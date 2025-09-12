@@ -6,7 +6,7 @@ import { useAutosave } from './useAutosave';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { Heading } from '@navikt/ds-react';
 import { parseISO, format } from 'date-fns';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 export type SvarfristFormFields = {
@@ -33,7 +33,7 @@ const SvarfristForm = ({ control }: Props) => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { data: treff } = useRekrutteringstreff(rekrutteringstreffId);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!treff) return;
     if (!dato && treff.svarfrist) {
       setValue('svarfristDato', toDate(treff.svarfrist), {

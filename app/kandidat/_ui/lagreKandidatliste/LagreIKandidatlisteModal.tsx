@@ -15,12 +15,13 @@ import {
   Pagination,
   Table,
 } from '@navikt/ds-react';
+import { FC, useState } from 'react';
 
 interface LagreIKandidatlisteProps {
   onClose: () => void;
 }
 
-const LagreIKandidatlisteModal: React.FC<LagreIKandidatlisteProps> = ({
+const LagreIKandidatlisteModal: FC<LagreIKandidatlisteProps> = ({
   onClose,
 }) => {
   const { track } = useUmami();
@@ -28,13 +29,13 @@ const LagreIKandidatlisteModal: React.FC<LagreIKandidatlisteProps> = ({
   const { visVarsel } = useApplikasjonContext();
   const { markerteKandidater, fjernMarkerteKandidater } =
     useKandidatSøkMarkerteContext();
-  const [pageNumber, setPageNumber] = React.useState(1);
+  const [pageNumber, setPageNumber] = useState(1);
   const mineKandidatlisterHook = useMineKandidatlister(
     pageNumber > 1 ? pageNumber - 1 : 0,
   );
 
-  const [selectedRows, setSelectedRows] = React.useState<string[]>([]);
-  const [laster, setLaster] = React.useState(false);
+  const [selectedRows, setSelectedRows] = useState<string[]>([]);
+  const [laster, setLaster] = useState(false);
   const toggleSelectedRow = (stillingsId: string) =>
     setSelectedRows((list) =>
       list.includes(stillingsId)

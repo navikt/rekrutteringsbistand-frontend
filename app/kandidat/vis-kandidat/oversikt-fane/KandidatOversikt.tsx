@@ -11,7 +11,7 @@ import KandidatØnsker from './_ui/KandidatØnsker';
 import KandidatOversiktSidebar from './_ui/sidebar/KandidatOversiktSidebar';
 import { useKandidatContext } from '@/app/kandidat/vis-kandidat/KandidatContext';
 
-const KandidatOversikt: React.FC = () => {
+export default function KandidatOversikt() {
   const { kandidatData } = useKandidatContext();
 
   return (
@@ -40,6 +40,4 @@ const KandidatOversikt: React.FC = () => {
       <KandidatOversiktSidebar />
     </div>
   );
-};
-
-export default KandidatOversikt;
+}

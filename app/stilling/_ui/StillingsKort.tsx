@@ -19,17 +19,14 @@ import {
 import { Box, Button, Heading } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
 import { useQueryState } from 'nuqs';
-import React, { useState } from 'react';
+import { FC, useState } from 'react';
 
 export interface IStillingsKort {
   stillingData: RekrutteringsbistandStillingSchemaDTO;
   kandidatId?: string;
 }
 
-const StillingsKort: React.FC<IStillingsKort> = ({
-  stillingData,
-  kandidatId,
-}) => {
+const StillingsKort: FC<IStillingsKort> = ({ stillingData, kandidatId }) => {
   const { visVarsel } = useApplikasjonContext();
 
   const router = useRouter();

@@ -14,9 +14,8 @@ import IkkeOppmøteModal, {
 import { useStegviser } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/om-treffet/stegviser/StegviserContext';
 import { BodyShort, Button, Detail } from '@navikt/ds-react';
 import { useRef, useState } from 'react';
-import * as React from 'react';
 
-const FølgeOppSteg: React.FC = () => {
+export default function FølgeOppSteg() {
   const {
     tiltidspunktHarPassert,
     antallMøttOpp,
@@ -121,6 +120,4 @@ const FølgeOppSteg: React.FC = () => {
       />
     </div>
   );
-};
-
-export default FølgeOppSteg;
+}
