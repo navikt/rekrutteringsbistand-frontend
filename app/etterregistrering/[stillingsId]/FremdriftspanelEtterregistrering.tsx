@@ -7,7 +7,7 @@ import {
 } from '@/app/stilling/_util/stillingInfoUtil';
 import { Button } from '@navikt/ds-react';
 import { PencilIcon } from 'lucide-react';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 
 export default function FremdriftspanelEtterregistrering() {
   const { erEier, stillingsData } = useStillingsContext();
