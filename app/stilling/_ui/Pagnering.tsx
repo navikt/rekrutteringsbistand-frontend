@@ -22,6 +22,7 @@ const StillingsSøkPaginering: FunctionComponent<PagineringProps> = ({
 
   return (
     <Pagination
+      size='small'
       className={'my-4 flex justify-center'}
       page={filter.side}
       count={antallSider}
@@ -30,7 +31,7 @@ const StillingsSøkPaginering: FunctionComponent<PagineringProps> = ({
   );
 };
 
-const regnUtAntallSider = (
+export const regnUtAntallSider = (
   totaltAntallTreff: number,
   maksAntallTreffPerSøk: number,
 ) => {

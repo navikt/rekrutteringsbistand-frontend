@@ -101,7 +101,7 @@ export default function StillingAdmin() {
     } else if (stillingskategori === Stillingskategori.Formidling) {
       return harId ? 'Rediger etterregistrering' : 'Opprett etterregistrering';
     } else if (stillingskategori === Stillingskategori.Stilling) {
-      return harId ? 'Rediger stilling' : 'Opprett stilling';
+      return harId ? 'Rediger stillingsoppdrag' : 'Opprett stillingoppdrag';
     }
     return 'Ukjent type';
   };

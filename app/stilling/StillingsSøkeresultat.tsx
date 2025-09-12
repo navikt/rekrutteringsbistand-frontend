@@ -10,6 +10,8 @@ import { useStillingssøk } from '@/app/api/stillings-sok/useStillingssøk';
 import { useStillingssokTotalData } from '@/app/stilling/store/stillingssokTotalData';
 import SWRLaster from '@/components/SWRLaster';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
+import { ChevronLeftIcon, ChevronRightIcon } from '@navikt/aksel-icons';
+import { Button } from '@navikt/ds-react';
 import { FC, useEffect } from 'react';
 
 interface StillingsSøkeresultatProps {
@@ -48,9 +50,22 @@ const StillingsSøkeresultat: FC<StillingsSøkeresultatProps> = ({
     const tilAntall = treffFra + maksAntallTreffPerSøk;
 
     return (
-      <div>
-        Viser {fraAntall}-{tilAntall < total ? tilAntall : total} av {total}{' '}
-        Stillingsoppdrag
+      <div className='flex items-center py-1.5 justify-end'>
+        {fraAntall}-{tilAntall < total ? tilAntall : total} av {total}
+        <Button
+          disabled={filter.side === 1}
+          onClick={() => filter.setSide(filter.side - 1)}
+          icon={<ChevronLeftIcon />}
+          size='small'
+          variant='tertiary'
+        />
+        <Button
+          disabled={tilAntall >= total}
+          onClick={() => filter.setSide(filter.side + 1)}
+          icon={<ChevronRightIcon />}
+          size='small'
+          variant='tertiary'
+        />
       </div>
     );
   };
@@ -68,6 +83,8 @@ const StillingsSøkeresultat: FC<StillingsSøkeresultatProps> = ({
         return (
           <>
             <StillingsSøkChips skjulLagreStandard={!!kandidatId} />
+            {antallVisning(data.hits?.total?.value)}
+
             <div className='flex flex-col gap-1'>
               {data.hits?.hits?.map((hit: any) => (
                 <StillingsKort
@@ -78,7 +95,6 @@ const StillingsSøkeresultat: FC<StillingsSøkeresultatProps> = ({
               ))}
             </div>
             <div className={'flex justify-between items-center'}>
-              {antallVisning(data.hits?.total?.value)}
               <StillingsSøkPaginering
                 totaltAntallTreff={data.hits?.total?.value ?? 0}
               />

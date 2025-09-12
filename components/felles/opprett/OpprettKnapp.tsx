@@ -27,7 +27,7 @@ export const OpprettKnapp: FC<{ kategori: Stillingskategori }> = ({
   const knappTekst = () => {
     switch (kategori) {
       case Stillingskategori.Stilling:
-        return 'Opprett annonse';
+        return 'Opprett stillingsoppdrag';
       case Stillingskategori.Formidling:
         return 'Opprett etterregistrering';
       default:
