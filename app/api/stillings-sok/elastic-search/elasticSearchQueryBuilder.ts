@@ -556,6 +556,16 @@ export class ElasticSearchQueryBuilder {
             annonsenummer: [],
           };
 
+    // Hvis status er valgt legges dette til kun i geografi-aggregasjonen (område skal ta høyde for valgt status)
+    // Status-valg legges i post_filter for treff, men aggregeringer ignorerer post_filter.
+    // Vi gjenbruker post_filter-clausen dersom den filtrerer på stilling.status for å få korrekte område-tall.
+    const statusPostFilterClause =
+      this.postFilterClause &&
+      typeof this.postFilterClause === 'object' &&
+      JSON.stringify(this.postFilterClause).includes('"stilling.status"')
+        ? this.postFilterClause
+        : null;
+
     return {
       globalAggregering: {
         global: {},
@@ -864,6 +874,8 @@ export class ElasticSearchQueryBuilder {
                   Object.keys(allFiltersWithoutPortfolio).length > 0
                     ? [{ bool: allFiltersWithoutPortfolio }]
                     : []),
+                  // Inkluder valgt status hvis satt (status legges ellers kun i post_filter)
+                  ...(statusPostFilterClause ? [statusPostFilterClause] : []),
                 ],
               },
             },
