@@ -1,12 +1,8 @@
-import { leggTilKandidater } from '@/app/api/kandidat-sok/leggTilKandidat';
 import { RekrutteringsbistandStillingSchemaDTO } from '@/app/api/stillings-sok/schema/rekrutteringsbistandStillingSchema.zod';
 import StillingsTag from '@/app/stilling/_ui/StillingsTag';
 import { visStillingsDataInfo } from '@/app/stilling/_util/stillingInfoUtil';
 import { hentArbeidssted } from '@/app/stilling/_util/stillingssøk-util';
 // import TekstMedIkon from '@/components/felles/TekstMedIkon';
-import { UmamiEvent } from '@/components/umami/umamiEvents';
-import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
-import { useUmami } from '@/providers/UmamiContext';
 // import { formaterNorskDato } from '@/util/util';
 import ArbeidsplassenLogo from '@/public/arbeidsplassen.png';
 import NavLogo from '@/public/nav.svg';
@@ -19,9 +15,8 @@ import {
 } from '@navikt/aksel-icons';
 import { Box, Heading } from '@navikt/ds-react';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import { useQueryState } from 'nuqs';
-import { FC, useState } from 'react';
+import { FC } from 'react';
 
 export interface IStillingsKort {
   stillingData: RekrutteringsbistandStillingSchemaDTO;
@@ -29,43 +24,48 @@ export interface IStillingsKort {
 }
 
 const StillingsKort: FC<IStillingsKort> = ({ stillingData, kandidatId }) => {
-  const { visVarsel } = useApplikasjonContext();
+  // const { visVarsel } = useApplikasjonContext();
 
-  const router = useRouter();
-  const { track } = useUmami();
+  // const router = useRouter();
+  // const { track } = useUmami();
   const [, setVisStillingId] = useQueryState('visStillingId', {
     defaultValue: '',
     clearOnDefault: true,
   });
+  const [, setVisEtterregistreringId] = useQueryState(
+    'visEtterregistreringId',
+    {
+      defaultValue: '',
+      clearOnDefault: true,
+    },
+  );
 
-  const [leggerTilKandidatLoading, setLeggerTilKandidatLoading] =
-    useState(false);
+  // const [leggerTilKandidatLoading, setLeggerTilKandidatLoading] =
+  //   useState(false);
 
   const stillingsDataInfo = visStillingsDataInfo(stillingData);
 
   const erFormidling = stillingsDataInfo.erFormidling;
   const erDirektemeldt = stillingsDataInfo.erDirektemeldt;
 
-  const stillingUrl = `${erFormidling ? '/etterregistrering/' : '/stilling/'}${stillingData.stilling.uuid}`;
-
-  const leggTilKandidat = async (kandidatId: string) => {
-    track(UmamiEvent.Stilling.forslag_til_stilling_legg_til_kandidat);
-    setLeggerTilKandidatLoading(true);
-    try {
-      await leggTilKandidater([kandidatId], stillingData.stilling.uuid);
-      visVarsel({
-        tekst: 'Kandidat er lagt til i kandidatliste',
-        type: 'success',
-      });
-    } catch {
-      visVarsel({
-        tekst: 'Kandidat kunne ikke legges til i kandidatliste',
-        type: 'error',
-      });
-    } finally {
-      setLeggerTilKandidatLoading(false);
-    }
-  };
+  // const leggTilKandidat = async (kandidatId: string) => {
+  //   track(UmamiEvent.Stilling.forslag_til_stilling_legg_til_kandidat);
+  //   setLeggerTilKandidatLoading(true);
+  //   try {
+  //     await leggTilKandidater([kandidatId], stillingData.stilling.uuid);
+  //     visVarsel({
+  //       tekst: 'Kandidat er lagt til i kandidatliste',
+  //       type: 'success',
+  //     });
+  //   } catch {
+  //     visVarsel({
+  //       tekst: 'Kandidat kunne ikke legges til i kandidatliste',
+  //       type: 'error',
+  //     });
+  //   } finally {
+  //     setLeggerTilKandidatLoading(false);
+  //   }
+  // };
 
   // const Knapper = (
   //   <div className='flex flex-row gap-2 items-center'>
@@ -120,7 +120,9 @@ const StillingsKort: FC<IStillingsKort> = ({ stillingData, kandidatId }) => {
       borderRadius='xlarge'
       data-testid='stillings-kort'
       onClick={() =>
-        !erFormidling && setVisStillingId(stillingData.stilling.uuid)
+        erFormidling
+          ? setVisEtterregistreringId(stillingData.stilling.uuid)
+          : setVisStillingId(stillingData.stilling.uuid)
       }
     >
       <div className='flex  items-start min-w-0'>

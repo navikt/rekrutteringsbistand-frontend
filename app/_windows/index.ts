@@ -4,6 +4,7 @@ import { finnKandidaterWindowConfig } from './finnKandidaterWindow';
 import { UrlWindowConfig, useUrlWindow } from './useUrlWindow';
 import { visKandidatWindowConfig } from './visKandidatWindow';
 import { visStillingWindowConfig } from './visStillingWindow';
+import { visEtterregistreringWindowConfig } from '@/app/_windows/visEtterregistreringWindow';
 
 /**
  * Alle URL-vinduer som skal være aktive i applikasjonen.
@@ -13,6 +14,7 @@ export const urlWindowConfigs: UrlWindowConfig[] = [
   visKandidatWindowConfig,
   visStillingWindowConfig,
   finnKandidaterWindowConfig,
+  visEtterregistreringWindowConfig,
   // Legg til flere vinduer her...
 ];
 
@@ -27,6 +29,7 @@ export const useAllUrlWindows = (
   // Registrer alle URL-vinduer
   useUrlWindow(visKandidatWindowConfig, addWindow, removeWindow);
   useUrlWindow(visStillingWindowConfig, addWindow, removeWindow);
+  useUrlWindow(visEtterregistreringWindowConfig, addWindow, removeWindow);
   useUrlWindow(finnKandidaterWindowConfig, addWindow, removeWindow);
 
   // Legg til flere vinduer her ved å kalle useUrlWindow for hver konfigurasjon

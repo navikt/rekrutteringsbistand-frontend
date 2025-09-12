@@ -9,6 +9,7 @@ import StillingTabs from '@/app/stilling/[stillingsId]/_ui/tabs/StillingTabs';
 import TabKnapper from '@/app/stilling/[stillingsId]/_ui/tabs/TabKnapper';
 import FiltrertKandidatListeVisning from '@/app/stilling/[stillingsId]/kandidatliste/FiltrertKandidatListeVisning';
 import KandidatlisteWrapper from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteWrapper';
+import { visStillingsDataInfo } from '@/app/stilling/_util/stillingInfoUtil';
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideLayout from '@/components/layout/SideLayout';
 import { Alert, Heading, Tabs } from '@navikt/ds-react';
@@ -30,6 +31,7 @@ export default function StillingsSidePage() {
 
   const printRef = useRef<HTMLDivElement>(null);
 
+  const info = visStillingsDataInfo(stillingsData);
   const ugyldigStilling =
     stillingsData?.stilling?.medium === 'DIR' &&
     (stillingsData?.stilling?.employer?.orgnr ?? null) === null;
@@ -50,7 +52,11 @@ export default function StillingsSidePage() {
         <SideLayout
           header={
             <PanelHeader
-              fullskjermUrl={`/stilling/${stillingsData.stilling.uuid}`}
+              fullskjermUrl={
+                info.erFormidling
+                  ? `/etterregistrering/${stillingsData.stilling.uuid}`
+                  : `/stilling/${stillingsData.stilling.uuid}`
+              }
             >
               <PanelHeader.Section
                 title={'Stillingsoppdrag'}
