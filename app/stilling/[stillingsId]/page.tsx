@@ -62,6 +62,7 @@ export default function StillingsSidePage() {
               />
             </PanelHeader>
           }
+          skjulFremdriftspanel={fane !== StillingFane.STILLING}
           fremdriftspanel={fremdriftsPanel()}
           fremdriftspanelTop={fremdriftsPanel(true)}
         >

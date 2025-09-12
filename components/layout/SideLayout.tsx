@@ -5,6 +5,7 @@ import * as React from 'react';
 
 export type ISideLayout = {
   header?: React.ReactNode;
+  skjulFremdriftspanel?: boolean; // Når true skjules alle fremdriftspanel-varianter
   fremdriftspanel?: React.ReactNode;
   fremdriftspanelTop?: React.ReactNode;
   children: React.ReactNode;
@@ -21,26 +22,29 @@ const SideLayout = ({
   fremdriftspanel,
   fremdriftspanelTop,
   header,
+  skjulFremdriftspanel,
 }: ISideLayout) => {
   return (
     <RekBisKort>
       {header && header}
       <div className='@container'>
         {/* Mobil / liten skjerm: vis fremdriftspanel (top) over innhold */}
-        <div className='@2xl:hidden'>
-          {fremdriftspanelTop ||
-            (fremdriftspanel && (
-              <Fremdriftspanel>
-                {fremdriftspanelTop ? fremdriftspanelTop : fremdriftspanel}
-              </Fremdriftspanel>
-            ))}
-        </div>
+        {!skjulFremdriftspanel && (
+          <div className='@2xl:hidden'>
+            {fremdriftspanelTop ||
+              (fremdriftspanel && (
+                <Fremdriftspanel>
+                  {fremdriftspanelTop ? fremdriftspanelTop : fremdriftspanel}
+                </Fremdriftspanel>
+              ))}
+          </div>
+        )}
 
         {/* Felles innhold + desktop sidepanel */}
         <div className='flex flex-col @2xl:flex-row'>
           <MaksBredde>{children}</MaksBredde>
           {/* Desktop / stor skjerm: sidepanel til høyre */}
-          {fremdriftspanel && (
+          {!skjulFremdriftspanel && fremdriftspanel && (
             <div className='hidden @2xl:block'>
               <Fremdriftspanel>{fremdriftspanel}</Fremdriftspanel>
             </div>
