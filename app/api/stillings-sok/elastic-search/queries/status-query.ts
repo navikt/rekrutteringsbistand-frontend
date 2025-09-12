@@ -51,9 +51,13 @@ export const statusQuery = (
     alleStillinger(esBuilder);
   }
 
-  // Ingen valgte statuser => bruk match_none slik at ingen treff vises.
+  // Ingen valgte statuser:
+  //  - formidlinger=true: la være å snevre inn (alle baseline-publiserte formidlinger skal vises)
+  //  - ellers: match_none for å unngå forvirrende tom baseline for intern søk der vi forventer minst én status
   if (ingenFiltreValgt) {
-    esBuilder.setPostFilter({ match_none: {} });
+    if (!params.formidlinger) {
+      esBuilder.setPostFilter({ match_none: {} });
+    }
     return;
   }
 

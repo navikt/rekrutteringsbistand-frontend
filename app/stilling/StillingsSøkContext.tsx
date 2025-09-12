@@ -167,6 +167,7 @@ export const StillingsSøkProvider: FC<{
   );
 
   useEffect(() => {
+    // For ikke-formidlinger uten arbeidsgiverrettet rolle: lås til kun Åpen for søkere
     if (
       !formidlinger &&
       !harArbeidsgiverrettetRolle &&

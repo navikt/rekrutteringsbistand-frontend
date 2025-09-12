@@ -21,8 +21,13 @@ const VisKandidat: FC<VisKandidatProps> = ({ kandidatnr }) => {
   return (
     <SideLayout
       header={
-        <PanelHeader className='pb-2'>
-          <PanelHeader.Section title={'Jobbsøker'} />
+        <PanelHeader className='pb-2' fullskjermUrl={'/kandidat/' + kandidatnr}>
+          <PanelHeader.Section
+            title={'Jobbsøker'}
+            back={{
+              fallbackPath: '/kandidat',
+            }}
+          />
         </PanelHeader>
       }
     >

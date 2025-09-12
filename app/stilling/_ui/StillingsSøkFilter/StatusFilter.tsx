@@ -46,12 +46,12 @@ export default function StatusFilter({ hideLegend }: StatusFilterProps) {
     VisningsStatus.Fullfort,
   ];
 
-  // Auto-aktiver "Åpen for søkere" dersom bruker tømmer alle statuser.
+  // Auto-aktiver "Åpen for søkere" dersom bruker tømmer alle statuser - men kun for ikke-formidlinger.
   useEffect(() => {
-    if (!loading && (statuser?.length ?? 0) === 0) {
+    if (!filterCtx.formidlinger && !loading && (statuser?.length ?? 0) === 0) {
       setStatuser([VisningsStatus.ApenForSokere]);
     }
-  }, [loading, statuser, setStatuser]);
+  }, [loading, statuser, setStatuser, filterCtx.formidlinger]);
 
   return (
     <Fieldset legend={hideLegend ? undefined : 'Status'} size='small'>
