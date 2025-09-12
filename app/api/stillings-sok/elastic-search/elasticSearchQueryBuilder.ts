@@ -744,7 +744,6 @@ export class ElasticSearchQueryBuilder {
                         must: [{ term: { 'stilling.status': 'INACTIVE' } }],
                         must_not: [
                           { exists: { field: 'stilling.publishedByAdmin' } },
-                          { exists: { field: 'stilling.published' } },
                           { term: { 'stilling.status': 'REJECTED' } },
                           { term: { 'stilling.status': 'DELETED' } },
                         ],

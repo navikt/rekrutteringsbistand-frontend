@@ -51,8 +51,14 @@ export const statusQuery = (
     alleStillinger(esBuilder);
   }
 
-  // Hvis ingen eller alle statuser er valgt skal vi IKKE snevre inn treff. Da lar vi baseline stå og skipper post_filter.
-  if (ingenFiltreValgt || alleFiltreValgt) {
+  // Ingen valgte statuser => bruk match_none slik at ingen treff vises.
+  if (ingenFiltreValgt) {
+    esBuilder.setPostFilter({ match_none: {} });
+    return;
+  }
+
+  // Alle statuser valgt => ingen innsnevring; behold baseline uten post_filter.
+  if (alleFiltreValgt) {
     return;
   }
 
@@ -135,7 +141,6 @@ export const statusQuery = (
         must: [{ term: { 'stilling.status': 'INACTIVE' } }],
         must_not: [
           { exists: { field: 'stilling.publishedByAdmin' } },
-          { exists: { field: 'stilling.published' } },
           { term: { 'stilling.status': 'REJECTED' } },
           { term: { 'stilling.status': 'DELETED' } },
         ],
@@ -144,6 +149,28 @@ export const statusQuery = (
   }
   if (statuser.includes(VisningsStatus.Avbrutt)) {
     postFilterShould.push({ term: { 'stilling.status': 'DELETED' } });
+  }
+
+  // Implicit inkludering for "Mine" (navIdent):
+  //  - Ikke publisert (INACTIVE uten publishedByAdmin) skal alltid dukke opp sammen med valgte statuser
+  //  - Avbrutt (DELETED) skal også dukke opp selv om det ikke er et eksponert filter
+  // Begge legges kun til dersom bruker har valgt minst én annen status (postFilterShould.length > 0)
+  if (params.navIdent && postFilterShould.length > 0) {
+    if (!statuser.includes(VisningsStatus.IkkePublisert)) {
+      postFilterShould.push({
+        bool: {
+          must: [{ term: { 'stilling.status': 'INACTIVE' } }],
+          must_not: [
+            { exists: { field: 'stilling.publishedByAdmin' } },
+            { term: { 'stilling.status': 'REJECTED' } },
+            { term: { 'stilling.status': 'DELETED' } },
+          ],
+        },
+      });
+    }
+    if (!statuser.includes(VisningsStatus.Avbrutt)) {
+      postFilterShould.push({ term: { 'stilling.status': 'DELETED' } });
+    }
   }
 
   if (postFilterShould.length > 0) {

@@ -11,7 +11,6 @@ import FiltrertKandidatListeVisning from '@/app/stilling/[stillingsId]/kandidatl
 import KandidatlisteWrapper from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteWrapper';
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideLayout from '@/components/layout/SideLayout';
-import { useWindowContext } from '@/components/layout/windows/DynamicWindowContext';
 import { Alert, Heading, Tabs } from '@navikt/ds-react';
 import { useQueryState } from 'nuqs';
 import { useRef } from 'react';
@@ -22,7 +21,6 @@ enum StillingFane {
 }
 
 export default function StillingsSidePage() {
-  const window = useWindowContext();
   const [fane, setFane] = useQueryState('stillingFane', {
     defaultValue: StillingFane.STILLING,
     clearOnDefault: true,
@@ -42,9 +40,7 @@ export default function StillingsSidePage() {
     }
 
     return (
-      !window?.isDynamic &&
-      !forhåndsvisData &&
-      erEier && <FremdriftspanelStilling dropDown={top} />
+      !forhåndsvisData && erEier && <FremdriftspanelStilling dropDown={top} />
     );
   };
 
@@ -53,7 +49,9 @@ export default function StillingsSidePage() {
       <Tabs defaultValue={fane} onChange={(val: any) => setFane(val)}>
         <SideLayout
           header={
-            <PanelHeader>
+            <PanelHeader
+              fullskjermUrl={`/stilling/${stillingsData.stilling.uuid}`}
+            >
               <PanelHeader.Section
                 title={'Stillingsoppdrag'}
                 back={{

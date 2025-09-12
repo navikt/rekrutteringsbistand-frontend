@@ -1,7 +1,7 @@
 'use client';
 
 import { useWindowContext } from '../layout/windows/DynamicWindowContext';
-import { ArrowLeftIcon, XMarkIcon } from '@navikt/aksel-icons';
+import { ArrowLeftIcon, ExpandIcon, XMarkIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import { ReactNode, createContext, useContext } from 'react';
 
@@ -95,9 +95,14 @@ const PanelHeaderModeContext = createContext<{ compact: boolean }>({
 export default function PanelHeader({
   children,
   className = '',
+  fullskjermUrl,
+  fullskjermAriaLabel = 'Åpne i fullskjerm',
 }: {
   children: ReactNode;
   className?: string;
+  /** Når satt og vinduet er dynamisk vises en knapp (til venstre for lukk) som navigerer hit i hovedvisning */
+  fullskjermUrl?: string;
+  fullskjermAriaLabel?: string;
 }) {
   const dynamicCtx = useWindowContext();
   const childArr = (Array.isArray(children) ? children : [children]).filter(
@@ -130,6 +135,13 @@ export default function PanelHeader({
               )
             : existing?.props?.['aria-label'] === 'Lukk vindu');
         if (already) return c;
+        const hasFullscreenAlready =
+          existing &&
+          (Array.isArray(existing)
+            ? existing.some(
+                (el: any) => el?.props?.['aria-label'] === fullskjermAriaLabel,
+              )
+            : existing?.props?.['aria-label'] === fullskjermAriaLabel);
         return (
           <PanelHeaderSection
             key={c.key || `ph-sec-${i}`}
@@ -137,6 +149,19 @@ export default function PanelHeader({
             actionsRight={
               <>
                 {existing}
+                {fullskjermUrl && !hasFullscreenAlready && (
+                  <Button
+                    size='xsmall'
+                    variant='tertiary'
+                    aria-label={fullskjermAriaLabel}
+                    icon={<ExpandIcon aria-hidden />}
+                    onClick={() => {
+                      if (typeof window !== 'undefined') {
+                        window.location.assign(fullskjermUrl);
+                      }
+                    }}
+                  />
+                )}
                 <Button
                   size='xsmall'
                   variant='tertiary'
