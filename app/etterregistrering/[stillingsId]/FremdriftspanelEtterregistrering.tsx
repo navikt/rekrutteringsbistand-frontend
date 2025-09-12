@@ -19,7 +19,7 @@ export default function FremdriftspanelEtterregistrering() {
   }
 
   return (
-    <div>
+    <div className='flex flex-col gap-2'>
       {info.visningsStatus === VisningsStatus.Fullfort ? (
         <GjenåpneStillingKnapp />
       ) : (
