@@ -2,15 +2,12 @@
 
 import { GeografiDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
-import FinnKandidaterKnapp from '@/app/stilling/[stillingsId]/_ui/FinnKandidaterKnapp';
-import LeggTilKandidatTilStilling from '@/app/stilling/[stillingsId]/_ui/LeggTilKandidatTilStilling';
 import OmAnnonsen from '@/app/stilling/[stillingsId]/_ui/OmAnnonsen';
 import OmBedriften from '@/app/stilling/[stillingsId]/_ui/OmBedriften';
 import OmStillingBoks from '@/app/stilling/[stillingsId]/_ui/OmStillingBoks';
+import KandidatKnapper from '@/app/stilling/[stillingsId]/_ui/om-stillingen/KandidatKnapper';
 import TekstMedIkon from '@/components/felles/TekstMedIkon';
 import VisEditorTekst from '@/components/felles/rikteksteditor/VisEditorTekst';
-import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
-import { Roller } from '@/components/tilgangskontroll/roller';
 import { getWorkLocationsAsString } from '@/util/locationUtil';
 import { RekbisError } from '@/util/rekbisError';
 import { formaterNorskDato } from '@/util/util';
@@ -75,22 +72,7 @@ export default function OmStillingen({
   return (
     <div data-testid='om-stillingen'>
       {!forhåndsvisData && kandidatlisteInfo?.kandidatlisteId && (
-        <TilgangskontrollForInnhold
-          skjulVarsel
-          kreverEnAvRollene={[
-            Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-            Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
-          ]}
-        >
-          <div className='grid grid-cols-2 gap-4 mb-6'>
-            <FinnKandidaterKnapp stillingId={stillingsData.stilling.uuid} />
-
-            <LeggTilKandidatTilStilling
-              stillingsId={stillingsData.stilling.uuid}
-              stillingsTittel={stillingsData.stilling.title}
-            />
-          </div>
-        </TilgangskontrollForInnhold>
+        <KandidatKnapper />
       )}
       <div className='flex flex-col gap-x-[3.5rem] gap-y-8 md:flex-row'>
         <div className='w-full' id='print-content' ref={printRef}>
