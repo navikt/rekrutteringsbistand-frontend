@@ -72,8 +72,7 @@ export const visStillingsDataInfo = (
     visningsStatus = VisningsStatus.ApenForSokere;
   } else if (
     stillingStatus === StillingsStatus.Inaktiv &&
-    publishedByAdmin === null &&
-    published === null
+    publishedByAdmin === null
   ) {
     visningsStatus = VisningsStatus.IkkePublisert;
   }

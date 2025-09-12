@@ -7,16 +7,18 @@ import { hentArbeidssted } from '@/app/stilling/_util/stillingssøk-util';
 import { UmamiEvent } from '@/components/umami/umamiEvents';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
-import formaterMedStoreOgSmåBokstaver from '@/util/tekst';
 // import { formaterNorskDato } from '@/util/util';
+import ArbeidsplassenLogo from '@/public/arbeidsplassen.png';
+import NavLogo from '@/public/nav.svg';
+import formaterMedStoreOgSmåBokstaver from '@/util/tekst';
 import {
   BriefcaseIcon,
   Buildings2Icon,
-  CogIcon,
   // PersonIcon,
   PinIcon,
 } from '@navikt/aksel-icons';
-import { Box, Button, Heading } from '@navikt/ds-react';
+import { Box, Heading } from '@navikt/ds-react';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useQueryState } from 'nuqs';
 import { FC, useState } from 'react';
@@ -65,51 +67,50 @@ const StillingsKort: FC<IStillingsKort> = ({ stillingData, kandidatId }) => {
     }
   };
 
-  const Knapper = (
-    <div className='flex flex-row gap-2 items-center'>
-      {kandidatId ? (
-        erDirektemeldt ? (
-          <Button
-            loading={leggerTilKandidatLoading}
-            size='small'
-            variant='tertiary'
-            onClick={(e) => {
-              e.stopPropagation();
-              leggTilKandidat(kandidatId);
-            }}
-            className='whitespace-nowrap'
-          >
-            Legg til kandidat
-          </Button>
-        ) : (
-          <Button
-            size='small'
-            variant='tertiary'
-            onClick={(e) => {
-              e.stopPropagation();
-              router.push(stillingUrl);
-            }}
-            className='whitespace-nowrap'
-          >
-            Vis stilling
-          </Button>
-        )
-      ) : (
-        <Button
-          icon={erFormidling ? null : <CogIcon />}
-          size='small'
-          variant='tertiary'
-          className='whitespace-nowrap'
-          onClick={(e) => {
-            e.stopPropagation();
-            router.push(stillingUrl);
-          }}
-        >
-          {erFormidling ? 'Vis formidling' : 'Administrer'}
-        </Button>
-      )}
-    </div>
-  );
+  // const Knapper = (
+  //   <div className='flex flex-row gap-2 items-center'>
+  //     {kandidatId ? (
+  //       erDirektemeldt ? (
+  //         <Button
+  //           loading={leggerTilKandidatLoading}
+  //           size='small'
+  //           variant='tertiary'
+  //           onClick={(e) => {
+  //             e.stopPropagation();
+  //             leggTilKandidat(kandidatId);
+  //           }}
+  //           className='whitespace-nowrap'
+  //         >
+  //           Legg til kandidat
+  //         </Button>
+  //       ) : (
+  //         <Button
+  //           size='small'
+  //           variant='tertiary'
+  //           onClick={(e) => {
+  //             e.stopPropagation();
+  //             router.push(stillingUrl);
+  //           }}
+  //           className='whitespace-nowrap'
+  //         >
+  //           Vis stilling
+  //         </Button>
+  //       )
+  //     ) : (
+  //       <Button
+  //         size='small'
+  //         variant='tertiary'
+  //         className='whitespace-nowrap'
+  //         onClick={(e) => {
+  //           e.stopPropagation();
+  //           router.push(stillingUrl);
+  //         }}
+  //       >
+  //         {erFormidling ? 'Vis etterregistrering' : 'Vis stilling'}
+  //       </Button>
+  //     )}
+  //   </div>
+  // );
 
   return (
     <Box.New
@@ -122,10 +123,20 @@ const StillingsKort: FC<IStillingsKort> = ({ stillingData, kandidatId }) => {
         !erFormidling && setVisStillingId(stillingData.stilling.uuid)
       }
     >
-      <div className='flex gap-2 items-start min-w-0'>
+      <div className='flex  items-start min-w-0'>
         {/* Ikon / avatar */}
-        <div>
-          <BriefcaseIcon aria-hidden />
+        <div className='pr-4'>
+          {erDirektemeldt ? (
+            // <BriefcaseIcon aria-hidden />
+            <Image width={'26'} height={'26'} alt='intern' src={NavLogo} />
+          ) : (
+            <Image
+              width={'26'}
+              height={'26'}
+              alt='arbeidsplassen.no'
+              src={ArbeidsplassenLogo}
+            />
+          )}
         </div>
         {/* Innhold */}
         <div className='flex-1 min-w-0'>
@@ -166,7 +177,7 @@ const StillingsKort: FC<IStillingsKort> = ({ stillingData, kandidatId }) => {
                 ) || '-'}
               </span>
             </div>
-            <div className='mt-3 flex justify-end flex-shrink-0'>{Knapper}</div>
+            {/* <div className='mt-3 flex justify-end flex-shrink-0'>{Knapper}</div> */}
           </div>
         </div>
       </div>

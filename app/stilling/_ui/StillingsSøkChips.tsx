@@ -38,10 +38,7 @@ const StillingsSøkChips: FC<{ skjulLagreStandard: boolean }> = ({
 
   return (
     <div className='relative w-full mt-3'>
-      <Chips
-        size='small'
-        className='flex items-center flex-row flex-wrap gap-2 pb-2'
-      >
+      <Chips size='small'>
         {Object.values(filter).some(
           (value) => Array.isArray(value) && value.length > 0,
         ) && <TømFiltre fjernFritekst={() => filter.setFritekstListe([])} />}

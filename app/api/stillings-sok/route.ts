@@ -86,9 +86,9 @@ function mapGeografiBuckets(geografiAggs: any) {
 function leggTilAntall(data: any) {
   if (data?.antall || !data?.aggregations?.globalAggregering) return data;
   const aggs = data.aggregations.globalAggregering;
-  // Status (filters)
+  // Visningsstatus (filters)
   let statusBuckets: Array<{ key: string; doc_count: number }> = [];
-  const statusKoder = aggs?.status?.koder?.buckets;
+  const statusKoder = aggs?.visningsstatus?.koder?.buckets;
   if (
     statusKoder &&
     typeof statusKoder === 'object' &&
@@ -105,7 +105,7 @@ function leggTilAntall(data: any) {
     aggs?.stillingskategori?.koder?.buckets || [];
   const geografiAggs = aggs?.geografi?.nested_geografi;
   const antall = {
-    statusBuckets: statusBuckets.map((b) => ({
+    visningsStatusBuckets: statusBuckets.map((b) => ({
       key: b.key,
       count: b.doc_count,
     })),

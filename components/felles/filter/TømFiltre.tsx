@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from '@navikt/ds-react';
+import { Chips } from '@navikt/ds-react';
 import * as React from 'react';
 
 const clearAllQueryParams = (exclude: string[] = []) => {
@@ -27,10 +27,10 @@ export interface TømFiltreProps {
 const TømFiltre: React.FC<TømFiltreProps> = ({ fjernFritekst, exlude }) => {
   const eksluderFilter = ['portefolje', 'visKandidatnr'];
   return (
-    <Button
-      size='small'
-      variant={'tertiary-neutral'}
-      className='text-nowrap'
+    <Chips.Toggle
+      checkmark={false}
+      variant='neutral'
+      key={'Fjern alle filtre'}
       onClick={() => {
         fjernFritekst?.();
         clearAllQueryParams(
@@ -39,7 +39,7 @@ const TømFiltre: React.FC<TømFiltreProps> = ({ fjernFritekst, exlude }) => {
       }}
     >
       Fjern alle filtre
-    </Button>
+    </Chips.Toggle>
   );
 };
 

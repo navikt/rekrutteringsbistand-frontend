@@ -40,8 +40,7 @@ const StillingsTag: FC<IStillingTag> = ({ stillingsData, splitTags, rad }) => {
     ? formaterNorskDato({ dato: stillingsData.stilling.published })
     : '-';
 
-  const tagKlasse = (extra?: string) =>
-    `mr-2 ${rad ? '' : 'mb-4'} ${extra ?? ''}`;
+  const tagKlasse = (extra?: string) => `mr-2 ${rad ? '' : ''} ${extra ?? ''}`;
 
   const venstre = (
     <>

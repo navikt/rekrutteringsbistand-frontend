@@ -5,7 +5,7 @@ import {
   YrkeJobbonskeStillingsSøkDTO,
 } from '@/app/api/kandidat-sok/useKandidatStillingssøk';
 import { useStillingsSøkFilter } from '@/app/stilling/StillingsSøkContext';
-import { StillingsStatusTyper } from '@/app/stilling/_ui/StillingsSøkFilter/StatusFilter';
+import { VisningsStatus } from '@/app/stilling/_util/stillingInfoUtil';
 import {
   getNummerFraSted,
   stedmappingFraGammeltNummer,
@@ -103,7 +103,7 @@ export const useStillingForKandidat = (kandidatId: string | null) => {
       stillingsSøkContext.setFylker(fylker);
       stillingsSøkContext.setKommuner(kommuner);
       stillingsSøkContext.setFritekstListe(yrkesønsker);
-      stillingsSøkContext.setStatuser([StillingsStatusTyper.Publisert]);
+      stillingsSøkContext.setStatuser([VisningsStatus.ApenForSokere]);
 
       hasSetInitialData.current = true;
     }

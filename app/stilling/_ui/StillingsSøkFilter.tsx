@@ -6,6 +6,7 @@ import StillingsSøkNavigasjon from './StillingsSøkNavigasjon';
 import StillingsSøkSortering from './StillingsSøkSortering';
 import { useUseBrukerStandardSøk } from '@/app/api/stilling/standardsok/useBrukersStandardsøk';
 import InkluderingFilter from '@/app/stilling/_ui/StillingsSøkFilter/InkluderingFilter';
+import MittStandardsøk from '@/app/stilling/_ui/standardsøk/MittStandardsøk';
 import AlleFilterKomponent from '@/components/felles/filter/AlleFilterKomponent';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
@@ -75,6 +76,7 @@ const StillingsSøkFilter: FC<{
         <div className='block @[720px]:hidden'>
           <div className='whitespace-nowrap'>
             <AlleFilterKomponent>
+              <MittStandardsøk />
               <StillingsSøkSortering />
               {(harArbeidsgiverrettetRolle || formidlinger) && <StatusFilter />}
               <GeografiFilter />
