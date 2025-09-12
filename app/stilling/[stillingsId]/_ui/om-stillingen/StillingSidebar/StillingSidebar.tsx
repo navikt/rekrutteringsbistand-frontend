@@ -1,9 +1,9 @@
 import StillingInkludering from './StillingInkludering';
 import StillingSidebarKnapper from './StillingSidebarKnapper';
-import { FC } from 'react';
+import { FC, RefObject } from 'react';
 
 interface StillingSidebarKnapperProps {
-  printRef: React.RefObject<HTMLDivElement>;
+  printRef: RefObject<HTMLDivElement>;
 }
 
 const StillingSidebar: FC<StillingSidebarKnapperProps> = ({ printRef }) => {

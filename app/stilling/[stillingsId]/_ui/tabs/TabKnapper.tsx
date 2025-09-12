@@ -2,11 +2,12 @@ import { Kandidatlistestatus } from '@/app/api/kandidat/schema.zod';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import KopierStillingLenke from '@/app/stilling/[stillingsId]/_ui/KopierStillingLenke';
 import StillingPrint from '@/app/stilling/[stillingsId]/_ui/om-stillingen/StillingSidebar/StillingPrint';
+import { RefObject } from 'react';
 
 export default function TabKnapper({
   printRef,
 }: {
-  printRef: React.RefObject<HTMLDivElement | null>;
+  printRef: RefObject<HTMLDivElement | null>;
 }) {
   const { stillingsData, kandidatlisteInfo } = useStillingsContext();
 

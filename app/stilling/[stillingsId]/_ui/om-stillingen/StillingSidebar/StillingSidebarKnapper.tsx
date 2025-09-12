@@ -9,10 +9,10 @@ import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/Tilgan
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { Button } from '@navikt/ds-react';
-import { FC, useState } from 'react';
+import { FC, RefObject, useState } from 'react';
 
 interface StillingSidebarKnapperProps {
-  printRef: React.RefObject<HTMLDivElement>;
+  printRef: RefObject<HTMLDivElement>;
 }
 
 const StillingSidebarKnapper: FC<StillingSidebarKnapperProps> = ({

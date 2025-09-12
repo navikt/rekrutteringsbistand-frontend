@@ -18,7 +18,7 @@ import { KandidatVisningProps } from '@/app/stilling/[stillingsId]/kandidatliste
 import VelgInternStatus from '@/app/stilling/[stillingsId]/kandidatliste/_ui/VelgInternStatus';
 import { formaterNorskDato } from '@/util/util';
 import { BodyShort, Box } from '@navikt/ds-react';
-import { FC } from 'react';
+import { FC, MouseEvent } from 'react';
 
 export interface KandidatListeKortProps {
   kandidat?: KandidatVisningProps;
@@ -105,7 +105,7 @@ const KandidatListeKort: FC<KandidatListeKortProps> = ({
   const slettet = kandidat?.arkivert;
   const inaktiv = kandidat?.fodselsnr === null;
 
-  const stopPropagation = (e: React.MouseEvent) => {
+  const stopPropagation = (e: MouseEvent) => {
     e.stopPropagation();
   };
 

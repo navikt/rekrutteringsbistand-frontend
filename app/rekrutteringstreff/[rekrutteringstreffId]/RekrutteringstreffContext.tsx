@@ -2,7 +2,7 @@
 
 import { RekbisError } from '@/util/rekbisError';
 import * as React from 'react';
-import { createContext, useContext } from 'react';
+import { createContext, ReactNode, useContext } from 'react';
 
 export interface RekrutteringstreffContextProps {
   rekrutteringstreffId: string;
@@ -13,7 +13,7 @@ const RekrutteringstreffContext = createContext<
 >(undefined);
 
 export interface RekrutteringstreffContextProviderProps {
-  children?: React.ReactNode | undefined;
+  children?: ReactNode | undefined;
   rekrutteringstreffId: string;
 }
 

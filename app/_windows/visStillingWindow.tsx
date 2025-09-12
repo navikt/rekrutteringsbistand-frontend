@@ -2,25 +2,25 @@
 
 import { UrlWindowConfig } from './useUrlWindow';
 import WindowLoader from '@/app/_windows/WindowLoader';
-import React, { FC } from 'react';
+import { createElement, FC, lazy, Suspense } from 'react';
 
 // Wrapper komponent for stilling
 const StillingWrapper: FC<{ stillingId: string }> = ({ stillingId }) => {
-  const StillingsContextProvider = React.lazy(() =>
+  const StillingsContextProvider = lazy(() =>
     import('@/app/stilling/[stillingsId]/StillingsContext').then((module) => ({
       default: module.StillingsContextProvider,
     })),
   );
-  const StillingsSidePage = React.lazy(
+  const StillingsSidePage = lazy(
     () => import('@/app/stilling/[stillingsId]/page'),
   );
 
   return (
-    <React.Suspense fallback={<WindowLoader />}>
+    <Suspense fallback={<WindowLoader />}>
       <StillingsContextProvider stillingsId={stillingId}>
         <StillingsSidePage />
       </StillingsContextProvider>
-    </React.Suspense>
+    </Suspense>
   );
 };
 
@@ -33,7 +33,7 @@ export const visStillingWindowConfig: UrlWindowConfig = {
   title: 'Vis stilling',
   position: 'right', // Stillings-vinduer skal havne til høyre
   createContent: (stillingId: string) => {
-    return React.createElement(StillingWrapper, {
+    return createElement(StillingWrapper, {
       key: `stilling-${stillingId}-${Date.now()}`,
       stillingId,
     });

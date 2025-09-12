@@ -3,11 +3,11 @@ import { UmamiEvent } from '@/components/umami/umamiEvents';
 import { useUmami } from '@/providers/UmamiContext';
 import { PrinterSmallIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
-import { useEffect, type FC } from 'react';
+import { RefObject, useEffect, type FC } from 'react';
 import { useReactToPrint } from 'react-to-print';
 
 export interface StillingPrintProps {
-  printRef: React.RefObject<HTMLDivElement | null>;
+  printRef: RefObject<HTMLDivElement | null>;
 }
 
 const StillingPrint: FC<StillingPrintProps> = ({ printRef }) => {

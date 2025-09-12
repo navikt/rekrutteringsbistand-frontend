@@ -2,27 +2,27 @@
 
 import { UrlWindowConfig } from './useUrlWindow';
 import WindowLoader from '@/app/_windows/WindowLoader';
-import React, { FC } from 'react';
+import { createElement, FC, lazy, Suspense } from 'react';
 
 // Wrapper komponent for finn kandidater
 const FinnKandidaterWrapper: FC<{ stillingsId: string }> = ({
   stillingsId,
 }) => {
-  const StillingsContextProvider = React.lazy(() =>
+  const StillingsContextProvider = lazy(() =>
     import('@/app/stilling/[stillingsId]/StillingsContext').then((module) => ({
       default: module.StillingsContextProvider,
     })),
   );
-  const FinnKandidaterForStilling = React.lazy(
+  const FinnKandidaterForStilling = lazy(
     () => import('@/app/stilling/[stillingsId]/_ui/FinnKandidaterForStilling'),
   );
 
   return (
-    <React.Suspense fallback={<WindowLoader />}>
+    <Suspense fallback={<WindowLoader />}>
       <StillingsContextProvider stillingsId={stillingsId}>
         <FinnKandidaterForStilling />
       </StillingsContextProvider>
-    </React.Suspense>
+    </Suspense>
   );
 };
 
@@ -37,7 +37,7 @@ export const finnKandidaterWindowConfig: UrlWindowConfig = {
   createContent: (value: string) => {
     // For boolean parametere, hvis value er 'true' lager vi innholdet
     if (value !== 'true') {
-      return React.createElement('div');
+      return createElement('div');
     }
 
     // Hent stillingsId fra URL
@@ -47,14 +47,14 @@ export const finnKandidaterWindowConfig: UrlWindowConfig = {
     const stillingsId = stillingsIdMatch ? stillingsIdMatch[1] : '';
 
     if (!stillingsId) {
-      return React.createElement(
+      return createElement(
         'div',
         { className: 'p-4' },
         'Kunne ikke finne stillings-ID',
       );
     }
 
-    return React.createElement(FinnKandidaterWrapper, {
+    return createElement(FinnKandidaterWrapper, {
       key: `finn-kandidater-${stillingsId}-${Date.now()}`,
       stillingsId,
     });

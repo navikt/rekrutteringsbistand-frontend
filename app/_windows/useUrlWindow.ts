@@ -1,7 +1,7 @@
 'use client';
 
 import { useQueryState } from 'nuqs';
-import React, { useEffect } from 'react';
+import { ReactElement, useEffect } from 'react';
 
 export interface UrlWindowConfig {
   urlParam: string;
@@ -9,7 +9,7 @@ export interface UrlWindowConfig {
   title?: string;
   position?: 'left' | 'right';
   onClose?: () => void;
-  createContent: (paramValue: string) => React.ReactElement;
+  createContent: (paramValue: string) => ReactElement;
 }
 
 /**

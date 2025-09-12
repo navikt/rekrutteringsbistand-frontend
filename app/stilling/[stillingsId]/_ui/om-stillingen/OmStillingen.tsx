@@ -18,6 +18,7 @@ import {
   LocationPinIcon,
   TimerStartIcon,
 } from '@navikt/aksel-icons';
+import { RefObject } from 'react';
 
 export const parseWorktime = (worktime: string) => {
   if (!worktime) return '';
@@ -47,7 +48,7 @@ export const parseWorktime = (worktime: string) => {
 
 export interface OmStillingenProps {
   forhåndsvisData?: boolean;
-  printRef: React.RefObject<HTMLDivElement | null> | null;
+  printRef: RefObject<HTMLDivElement | null> | null;
 }
 
 export default function OmStillingen({

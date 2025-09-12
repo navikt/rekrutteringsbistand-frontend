@@ -15,7 +15,7 @@ import {
   PinIcon,
 } from '@navikt/aksel-icons';
 import { Box, Checkbox, Heading, Link, Tag } from '@navikt/ds-react';
-import { FC } from 'react';
+import { FC, MouseEvent } from 'react';
 
 type IKandidatKort = {
   kandidat: KandidatDataSchemaDTO;
@@ -34,7 +34,7 @@ const KandidatKort: FC<IKandidatKort> = ({
     (k) => k === kandidat.arenaKandidatnr,
   );
 
-  const stopPropagation = (e: React.MouseEvent) => {
+  const stopPropagation = (e: MouseEvent) => {
     e.stopPropagation();
   };
 
