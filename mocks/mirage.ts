@@ -61,6 +61,7 @@ import { brukerStandardSøkMirage } from '@/app/api/stilling/standardsok/useBruk
 import { stillingssøkMirage } from '@/app/api/stillings-sok/useStillingssøk';
 import { synlighetsevalueringMirage } from '@/app/api/synlighet/evaluering/useSynlighetsevaluering';
 import { createServer, Model } from 'miragejs';
+import { nyheterMirage } from '@/app/api/bruker/nyheter/useNyheter';
 
 export function makeServer({ environment = 'test' } = {}) {
   const server = createServer({
@@ -74,6 +75,7 @@ export function makeServer({ environment = 'test' } = {}) {
       this.logging = false;
       arenaKandidatnrMirage(this);
       brukerMirage(this);
+      nyheterMirage(this);
       brukerStandardSøkMirage(this);
       decoratorDataMirage(this);
       foresporselOmDelingAvCVStatistikkMirage(this);

@@ -1,17 +1,25 @@
 'use client';
 
-import { opprettNyhet } from '@/app/api/bruker/nyheter/[...slug]/nyhet-admin';
+import { oppdaterNyhet } from '@/app/api/bruker/nyheter/[...slug]/nyhet-admin';
 import RikTekstEditor from '@/components/felles/rikteksteditor/RikTekstEditor';
 import { Button, Modal, TextField } from '@navikt/ds-react';
 import { useRef } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import { PencilIcon } from '@navikt/aksel-icons';
+import * as React from 'react';
+
+interface NyhetData {
+  id: string;
+  tittel: string;
+  innhold: string;
+}
 
 interface NyhetForm {
   tittel: string;
   innhold: string;
 }
 
-export const OpprettNyhetModal = () => {
+export const EndreNyhetModal = (nyhet: NyhetData) => {
   const nyhetModalRef = useRef<HTMLDialogElement>(null);
   const {
     control,
@@ -20,13 +28,17 @@ export const OpprettNyhetModal = () => {
     formState: { errors },
   } = useForm<NyhetForm>({
     defaultValues: {
-      tittel: '',
-      innhold: '',
+      tittel: nyhet.tittel,
+      innhold: nyhet.innhold,
     },
   });
 
   const onSubmit: SubmitHandler<NyhetForm> = (nyhetForm ) => {
-    opprettNyhet(nyhetForm);
+    const oppdatertNyhet = {
+      id: nyhet.id,
+      ...nyhetForm
+    }
+    oppdaterNyhet(oppdatertNyhet);
 
     nyhetModalRef.current?.close();
     reset();
@@ -34,8 +46,11 @@ export const OpprettNyhetModal = () => {
 
   return (
     <div>
-      <Button onClick={() => nyhetModalRef.current?.showModal()}>
-        Opprett nyhet
+      <Button onClick={() => nyhetModalRef.current?.showModal()}
+        variant='tertiary'
+        icon={<PencilIcon />}
+      >
+        Endre
       </Button>
 
       <Modal
@@ -67,7 +82,7 @@ export const OpprettNyhetModal = () => {
                   render={({ field }) => (
                     <RikTekstEditor
                       utviklerExtensions
-                      id={'opprett-nyhet'}
+                      id={'oppdater-nyhet'}
                       tekst={field.value ?? ''}
                       onChange={field.onChange}
                     />
@@ -77,7 +92,7 @@ export const OpprettNyhetModal = () => {
             </div>
           </Modal.Body>
           <Modal.Footer>
-            <Button type='submit'>Opprett nyhet</Button>
+            <Button type='submit'>Oppdater nyhet</Button>
             <Button
               type='button'
               variant='secondary'
