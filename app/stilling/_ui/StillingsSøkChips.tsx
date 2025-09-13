@@ -39,106 +39,110 @@ const StillingsSøkChips: FC<{ skjulLagreStandard: boolean }> = ({
   return (
     <div className='relative w-full mt-3'>
       <Chips size='small'>
-        {Object.values(filter).some(
-          (value) => Array.isArray(value) && value.length > 0,
-        ) && <TømFiltre fjernFritekst={() => filter.setFritekstListe([])} />}
-        {filter.fritekst && (
-          <FilterChip
-            type={filter.fritekst}
-            setVerdi={filter.setFritekstListe}
-          />
-        )}
-        {filter.statuser.map((statustekst, i) => (
-          <Chips.Removable
-            key={i}
-            onClick={() =>
-              filter.setStatuser(
-                filter.statuser.filter((i) => i !== statustekst),
-              )
-            }
-          >
-            {storForbokstavString(statustekst)}
-          </Chips.Removable>
-        ))}
-        {filter.inkludering.map((hovedInkludering, i) => {
-          const tagger = hierarkiAvTagsForFilter.find(
-            (gruppe) => gruppe.hovedtag === hovedInkludering,
-          );
-
-          const aktiveSubtags = filter.inkluderingUnderkategori.filter((i) =>
-            tagger?.subtags.includes(i as Subtag),
-          );
-          if (aktiveSubtags.length > 0) {
-            return aktiveSubtags.map((subtag, i) => (
-              <Chips.Removable
-                key={i}
-                onClick={() =>
-                  filter.setInkluderingUnderkategori(
-                    filter.inkludering.filter((i) => i !== hovedInkludering),
-                  )
-                }
-              >
-                {visningsnavnForFilter[subtag as Subtag]}
-              </Chips.Removable>
-            ));
-          } else {
-            return (
-              <Chips.Removable
-                key={i}
-                onClick={() =>
-                  filter.setInkludering(
-                    filter.inkludering.filter((i) => i !== hovedInkludering),
-                  )
-                }
-              >
-                {visningsnavnForFilter[hovedInkludering as Hovedtag]}
-              </Chips.Removable>
+        <div className='flex flex-row flex-wrap gap-2  pb-2'>
+          {Object.values(filter).some(
+            (value) => Array.isArray(value) && value.length > 0,
+          ) && <TømFiltre fjernFritekst={() => filter.setFritekstListe([])} />}
+          {filter.fritekst && (
+            <FilterChip
+              type={filter.fritekst}
+              setVerdi={filter.setFritekstListe}
+            />
+          )}
+          {filter.statuser.map((statustekst, i) => (
+            <Chips.Removable
+              key={i}
+              onClick={() =>
+                filter.setStatuser(
+                  filter.statuser.filter((i) => i !== statustekst),
+                )
+              }
+            >
+              {storForbokstavString(statustekst)}
+            </Chips.Removable>
+          ))}
+          {filter.inkludering.map((hovedInkludering, i) => {
+            const tagger = hierarkiAvTagsForFilter.find(
+              (gruppe) => gruppe.hovedtag === hovedInkludering,
             );
-          }
-        })}
-        {filter.publisert.map((publisert, i) => (
-          <Chips.Removable
-            key={i}
-            onClick={() =>
-              filter.setPublisert(
-                filter.publisert.filter((i) => i !== publisert),
-              )
+
+            const aktiveSubtags = filter.inkluderingUnderkategori.filter((i) =>
+              tagger?.subtags.includes(i as Subtag),
+            );
+            if (aktiveSubtags.length > 0) {
+              return aktiveSubtags.map((subtag, i) => (
+                <Chips.Removable
+                  key={i}
+                  onClick={() =>
+                    filter.setInkluderingUnderkategori(
+                      filter.inkludering.filter((i) => i !== hovedInkludering),
+                    )
+                  }
+                >
+                  {visningsnavnForFilter[subtag as Subtag]}
+                </Chips.Removable>
+              ));
+            } else {
+              return (
+                <Chips.Removable
+                  key={i}
+                  onClick={() =>
+                    filter.setInkludering(
+                      filter.inkludering.filter((i) => i !== hovedInkludering),
+                    )
+                  }
+                >
+                  {visningsnavnForFilter[hovedInkludering as Hovedtag]}
+                </Chips.Removable>
+              );
             }
-          >
-            {storForbokstavString(publisert)}
-          </Chips.Removable>
-        ))}
-        {filter.kategori.map((kategori, i) => (
-          <Chips.Removable
-            key={i}
-            onClick={() =>
-              filter.setKategori(filter.kategori.filter((i) => i !== kategori))
-            }
-          >
-            {storForbokstavString(kategori)}
-          </Chips.Removable>
-        ))}
-        {filter.fylker.map((fylke, i) => (
-          <Chips.Removable
-            key={i}
-            onClick={() => {
-              filter.setFylker(filter.fylker.filter((i) => i !== fylke));
-            }}
-          >
-            {storForbokstavString(geografiNavn(fylke))}
-          </Chips.Removable>
-        ))}
-        {filter.kommuner.map((kommune, i) => (
-          <Chips.Removable
-            key={i}
-            onClick={() =>
-              filter.setKommuner(filter.kommuner.filter((i) => i !== kommune))
-            }
-          >
-            {storForbokstavString(geografiNavn(kommune))}
-          </Chips.Removable>
-        ))}
-        {!skjulLagreStandard && <LagreStandardsøk />}
+          })}
+          {filter.publisert.map((publisert, i) => (
+            <Chips.Removable
+              key={i}
+              onClick={() =>
+                filter.setPublisert(
+                  filter.publisert.filter((i) => i !== publisert),
+                )
+              }
+            >
+              {storForbokstavString(publisert)}
+            </Chips.Removable>
+          ))}
+          {filter.kategori.map((kategori, i) => (
+            <Chips.Removable
+              key={i}
+              onClick={() =>
+                filter.setKategori(
+                  filter.kategori.filter((i) => i !== kategori),
+                )
+              }
+            >
+              {storForbokstavString(kategori)}
+            </Chips.Removable>
+          ))}
+          {filter.fylker.map((fylke, i) => (
+            <Chips.Removable
+              key={i}
+              onClick={() => {
+                filter.setFylker(filter.fylker.filter((i) => i !== fylke));
+              }}
+            >
+              {storForbokstavString(geografiNavn(fylke))}
+            </Chips.Removable>
+          ))}
+          {filter.kommuner.map((kommune, i) => (
+            <Chips.Removable
+              key={i}
+              onClick={() =>
+                filter.setKommuner(filter.kommuner.filter((i) => i !== kommune))
+              }
+            >
+              {storForbokstavString(geografiNavn(kommune))}
+            </Chips.Removable>
+          ))}
+          {!skjulLagreStandard && <LagreStandardsøk />}
+        </div>
       </Chips>
     </div>
   );
