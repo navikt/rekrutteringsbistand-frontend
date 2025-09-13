@@ -15,7 +15,7 @@ export const nyheter: NyhetDTO[] = [
     tittel: 'Se stillingene fra ditt eget kontor',
     beskrivelse:
       '<p>Vi har sett at det har vært vanskelig å finne stillingsoppdrag som noen jobber med ved kontoret. Nå kan alle som tilhører et kontor finne direktemeldte interne stillingsoppdrag ved å velge «mitt kontor» som et eget filtervalg.</p>' +
-      '<p>Det finnes tusenvis av offentlig utlyste stillingsannonser. Noen av de har markedskontakter avtalt med arbeidsgiver å sende over CV, eller tipse kandidater å sende søknad selv. Disse stillingsannonsene får kandidatliste som markedskontakten jobber med. Det nye er at du nå kan finne de offentlig utlyste stillingsannonsene som markedskontakter jobber mer, gjennom et eget filtervalg. På den måten kan du enklere bidra til å legge kandidater til stillingsannonsen på samme måte som ved direktemeldte stillingsoppdrag. Her kan du lese mer om <a href="https://navno.sharepoint.com/:u:/r/sites/fag-og-ytelser-arbeid-markedsarbeid/SitePages/Jobb-med-offentlig-utlyste-stillinger.aspx?csf=1&web=1&e=fwd1iN" alt="Jobb med offentlige utlyste stillinger" target="_blank" >Jobb med offentlig utlyste stillinger</a> fra Navet.</p>',
+      '<p>Det finnes tusenvis av offentlig utlyste stillingsoppdrag. Noen av de har markedskontakter avtalt med arbeidsgiver å sende over CV, eller tipse kandidater å sende søknad selv. Disse stillingsoppdragene får kandidatliste som markedskontakten jobber med. Det nye er at du nå kan finne de offentlig utlyste stillingsoppdragene som markedskontakter jobber mer, gjennom et eget filtervalg. På den måten kan du enklere bidra til å legge kandidater til stillingsoppdraget på samme måte som ved direktemeldte stillingsoppdrag. Her kan du lese mer om <a href="https://navno.sharepoint.com/:u:/r/sites/fag-og-ytelser-arbeid-markedsarbeid/SitePages/Jobb-med-offentlig-utlyste-stillinger.aspx?csf=1&web=1&e=fwd1iN" alt="Jobb med offentlige utlyste stillinger" target="_blank" >Jobb med offentlig utlyste stillinger</a> fra Navet.</p>',
     dato: '22.08.2025',
     id: '9',
     opprettetAv: null,
@@ -63,7 +63,7 @@ export const nyheter: NyhetDTO[] = [
   {
     tittel: 'Janzz-yrkeskode vises i stedenfor ikke-tilgang i historikk i CV',
     beskrivelse:
-      '<p>Når du har åpnet en CV og står i fanen “Aktiviteter”, så er det nå en klikkbar lenke til stillingsannonsen/jobbmessen/etterregistreringen, samt at yrkeskoden (Janzz) vises.</p>',
+      '<p>Når du har åpnet en CV og står i fanen “Aktiviteter”, så er det nå en klikkbar lenke til stillingsoppdrag/jobbmessen/etterregistreringen, samt at yrkeskoden (Janzz) vises.</p>',
     dato: '30.06.2025',
     id: '4',
     opprettetAv: null,

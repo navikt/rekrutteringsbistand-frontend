@@ -262,7 +262,7 @@ const DelMedKandidatModal: FC<DelMedKandidatModalProps> = ({
 
           <VelgSvarfrist setValgtSvarfrist={setSvarfrist} />
           <Alert variant='info' className={'mt-8'}>
-            Stillingsannonsen vil bli delt med kandidaten.
+            Stillingsoppdraget vil bli delt med kandidaten.
             <br /> Det er viktig at annonseteksten er informativ og lett å
             forstå.
           </Alert>

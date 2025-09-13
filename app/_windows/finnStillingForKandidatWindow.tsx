@@ -16,7 +16,7 @@ import { createElement } from 'react';
 export const finnStillingForKandidatWindow: UrlWindowConfig = {
   urlParam: 'finnStilling',
   windowId: 'finnStillingForKandidat',
-  title: 'Finn stillinger for kandidat',
+  title: 'Finn stillinger for jobbsøker',
   createContent: () => {
     // Inline komponent for å kunne bruke Next.js hooks
     const Wrapper = () => {

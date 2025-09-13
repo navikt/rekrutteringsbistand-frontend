@@ -187,7 +187,7 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
             </Heading>
             <ul className='list-disc pl-5 text-sm mb-4'>
               <li>
-                Stillingsannonsen blir synlig for Nav-ansatte i
+                Stillingsoppdraget blir synlig for Nav-ansatte i
                 rekrutteringsbistand.
               </li>
               <li>
@@ -219,7 +219,7 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
               checked={publiserOffentlig}
               onChange={(e) => setPubliserOffentlig(e.target.checked)}
             >
-              Publiser stillingsannonsen offentlig på arbeidsplassen.no også
+              Publiser stillingsoppdraget offentlig på arbeidsplassen.no også
             </Checkbox>
 
             {publiserOffentlig && (

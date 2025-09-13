@@ -144,7 +144,7 @@ export default function StillingDropdown() {
           onClose={() => setVisAvpubliserModal(false)}
           open={true}
           header={{
-            heading: 'Avpubliser stillingsannonsen',
+            heading: 'Avpubliser stillingsoppdraget',
             size: 'small',
           }}
           width='medium'
@@ -155,7 +155,7 @@ export default function StillingDropdown() {
               <div className='flex gap-2'>
                 <EyeSlashIcon />
                 <BodyLong>
-                  Stillingsannonsen skjules for andre i rekrutteringsbistand.
+                  Stillingsoppdraget skjules for andre i rekrutteringsbistand.
                 </BodyLong>
               </div>
               <div className='flex gap-2'>

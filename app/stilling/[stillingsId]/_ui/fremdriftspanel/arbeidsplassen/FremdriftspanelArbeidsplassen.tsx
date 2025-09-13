@@ -80,8 +80,8 @@ export default function FremdriftspanelArbeidsplassen() {
               <div className='flex gap-2'>
                 <PlusCircleIcon aria-hidden className='shrink-0' />
                 <BodyShort size='small'>
-                  Har du et oppdrag med arbeidsgiveren kan du opprette en
-                  stillingsannonse selv her i Rekrutteringsbistand.
+                  Har du et oppdrag med arbeidsgiveren kan du opprette et
+                  stillingsoppdrag selv her i Rekrutteringsbistand.
                 </BodyShort>
               </div>
             </div>

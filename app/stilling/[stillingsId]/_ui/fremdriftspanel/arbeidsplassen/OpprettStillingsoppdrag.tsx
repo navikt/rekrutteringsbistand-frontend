@@ -114,7 +114,7 @@ export default function OpprettStillingsoppdrag() {
               </ul>
               <BodyShort>
                 Har du et oppdrag med arbeidsgiveren kan du opprette en
-                stillingsannonse selv her i Rekrutteringsbistand.
+                stillingsoppdrag selv her i Rekrutteringsbistand.
               </BodyShort>
             </Alert>
           </Modal.Body>

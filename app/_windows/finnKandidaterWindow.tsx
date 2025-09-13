@@ -32,7 +32,7 @@ const FinnKandidaterWrapper: FC<{ stillingsId: string }> = ({
 export const finnKandidaterWindowConfig: UrlWindowConfig = {
   urlParam: 'finnKandidater',
   windowId: 'finnKandidater',
-  title: 'Finn kandidater',
+  title: 'Finn jobbsøkere',
   position: 'left', // Finn kandidater skal være til venstre
   createContent: (value: string) => {
     // For boolean parametere, hvis value er 'true' lager vi innholdet
