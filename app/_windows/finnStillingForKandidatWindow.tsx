@@ -26,10 +26,11 @@ export const finnStillingForKandidatWindow: UrlWindowConfig = {
       const kandidatNr = (() => {
         if (!pathname) return null;
         const segments = pathname.split('/').filter(Boolean);
-        const last = segments[segments.length - 1];
-        if (!last) return null;
-        if (last.startsWith('kandidat-')) {
-          return last.substring('kandidat-'.length) || null;
+        // Finn index til 'kandidat' og ta neste segment som kandidatnummer
+        const kandidatIndex = segments.indexOf('kandidat');
+        if (kandidatIndex !== -1 && segments.length > kandidatIndex + 1) {
+          const kandidatSegment = segments[kandidatIndex + 1];
+          return kandidatSegment || null;
         }
         return null;
       })();
