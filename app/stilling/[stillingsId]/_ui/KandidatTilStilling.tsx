@@ -85,7 +85,7 @@ const KandidatTilStilling: FC<KandidatTilStillingProps> = ({
           </Button>
 
           <p className='mb-4 mt-8'>
-            Ønsker du å legge til kandidater må Nav ha inngått avtale med
+            Ønsker du å legge til jobbsøkere må Nav ha inngått avtale med
             arbeidsgiver om å hjelpe dem med rekruttering, og stillingsoppdraget
             må oppdateres. For å gjøre dette må du:
           </p>
@@ -126,7 +126,7 @@ const KandidatTilStilling: FC<KandidatTilStillingProps> = ({
           {kandidatListeInformasjonHook?.data?.kandidatlisteStatus ===
             Kandidatlistestatus.Lukket && (
             <Alert variant='error' className='mb-4'>
-              Kandidatliste er lukket, så du kan ikke legge til kandidater.
+              Kandidatliste er lukket, så du kan ikke legge til jobbsøkere.
             </Alert>
           )}
           <KandidatSøkTabs

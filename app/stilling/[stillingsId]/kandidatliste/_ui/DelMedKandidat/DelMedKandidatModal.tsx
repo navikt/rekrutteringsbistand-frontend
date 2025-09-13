@@ -158,17 +158,17 @@ const DelMedKandidatModal: FC<DelMedKandidatModalProps> = ({
         disabled={markerteKandidater.length === 0}
         onClick={() => setModalErÅpen(true)}
         variant={sidebar ? 'primary' : 'tertiary'}
-        icon={<TasklistIcon title='Del med kandidat' />}
+        icon={<TasklistIcon title='Del med jobbsøker' />}
       >
         Spør om å dele CV
       </Button>
       <Modal
         open={modalErÅpen}
-        aria-label='Del stillingen med de markerte kandidatene2'
+        aria-label='Del stillingen med de markerte jobbsøkere'
         onClose={() => setModalErÅpen(false)}
         header={{
           heading: `Del med ${markerteKandidater.length} ${
-            markerteKandidater.length === 1 ? 'kandidat' : 'kandidater'
+            markerteKandidater.length === 1 ? 'jobbsøker ' : 'jobbsøkere'
           } i aktivitetsplanen`,
         }}
       >
@@ -176,34 +176,36 @@ const DelMedKandidatModal: FC<DelMedKandidatModalProps> = ({
           {kandidaterVenterPåSvar.length > 0 && (
             <Alert variant='info' size='small' className='mb-1'>
               {kandidaterVenterPåSvar.length}{' '}
-              {kandidaterVenterPåSvar.length === 1 ? 'kandidat ' : 'kandidater'}
+              {kandidaterVenterPåSvar.length === 1
+                ? 'jobbsøker '
+                : 'jobbsøkere'}
               har ikke svart på forespørselen.
             </Alert>
           )}
           {kandidaterSvartNei.length > 0 && (
             <Alert variant='error' size='small' className='mb-1'>
               {kandidaterSvartNei.length}{' '}
-              {kandidaterSvartNei.length === 1 ? 'kandidat ' : 'kandidater'}
+              {kandidaterSvartNei.length === 1 ? 'jobbsøker ' : 'jobbsøkere'}
               har tidliger svart nei til å dele CV-en.
             </Alert>
           )}
           {kandidatFristUtløpt.length > 0 && (
             <Alert variant='warning' size='small' className='mb-1'>
               {kandidatFristUtløpt.length}{' '}
-              {kandidatFristUtløpt.length === 1 ? 'kandidat ' : 'kandidater'}
+              {kandidatFristUtløpt.length === 1 ? 'jobbsøker ' : 'jobbsøkere'}
               har tidligere fått spørsmål, men ikke svart innen fristen.
             </Alert>
           )}
           {harSvartJa.length > 0 && (
             <Alert variant='success' size='small' className='mb-1'>
               {harSvartJa.length}{' '}
-              {harSvartJa.length === 1 ? 'kandidat ' : 'kandidater'}
+              {harSvartJa.length === 1 ? 'jobbsøker ' : 'jobbsøkere'}
               har allerede svart ja.
             </Alert>
           )}
           <Accordion size='small' headingSize='xsmall' className='my-4'>
             <Accordion.Item>
-              <Accordion.Header>Vis kandidater</Accordion.Header>
+              <Accordion.Header>Vis jobbsøkere</Accordion.Header>
               <Accordion.Content>
                 <Table size='small'>
                   <Table.Header>
@@ -241,20 +243,20 @@ const DelMedKandidatModal: FC<DelMedKandidatModalProps> = ({
             <>
               {delFørsteGang.length > 0 &&
                 `Deler for første gang stillingen med ${delFørsteGang.length} ${
-                  delFørsteGang.length === 1 ? 'kandidat' : 'kandidater'
+                  delFørsteGang.length === 1 ? 'jobbsøker' : 'jobbsøkere'
                 }.`}
               {delCVpåNytt.length > 0 && (
                 <>
                   <br />
                   {`Spør om deling på nytt for ${delCVpåNytt.length} ${
-                    delCVpåNytt.length === 1 ? 'kandidat' : 'kandidater'
+                    delCVpåNytt.length === 1 ? 'jobbsøker' : 'jobbsøkere'
                   }.`}
                 </>
               )}
             </>
           </BodyShort>
           <BodyLong className='my-8'>
-            {`Det opprettes et stillingskort i Aktivitetsplanen. Kandidatene
+            {`Det opprettes et stillingskort i Aktivitetsplanen. Jobbsøkere
                   vil bli varslet på SMS, og kan svare "ja" eller "nei" til at
                   CV-en skal bli delt med arbeidsgiver. Du vil se svaret i
                   kandidatlisten.`}
@@ -262,7 +264,7 @@ const DelMedKandidatModal: FC<DelMedKandidatModalProps> = ({
 
           <VelgSvarfrist setValgtSvarfrist={setSvarfrist} />
           <Alert variant='info' className={'mt-8'}>
-            Stillingsoppdraget vil bli delt med kandidaten.
+            Stillingsoppdraget vil bli delt med jobbsøker.
             <br /> Det er viktig at annonseteksten er informativ og lett å
             forstå.
           </Alert>

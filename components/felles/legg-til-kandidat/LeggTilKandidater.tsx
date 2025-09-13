@@ -143,7 +143,7 @@ const LeggTilKandidater: FC<LeggTilKandidaterProps> = ({
 
         <div className='mr-4 flex gap-2'>
           <Tag variant='warning' size='xsmall' className='my-2'>
-            Kandidaten er ikke synlig
+            Jobbsøkeren er ikke synlig
           </Tag>
           {synlighetSomModal && (
             <SynlighetsModal fødselsnummer={fødselsnummer} />
@@ -161,7 +161,7 @@ const LeggTilKandidater: FC<LeggTilKandidaterProps> = ({
               velgKandidat(fødselsnummer, kandidatNavnHook?.data, null);
           }}
         >
-          Legg til som usynlig kandidat (Registrer som fått jobben)
+          Legg til som usynlig jobbsøker (Registrer som fått jobben)
         </Button>
       </div>
     </Box.New>
@@ -182,7 +182,7 @@ const LeggTilKandidater: FC<LeggTilKandidaterProps> = ({
           type='text'
           inputMode='numeric'
           value={søkeString}
-          label='Fødselsnummer på kandidat'
+          label='Fødselsnummer på jobbsøker'
           hideLabel
           onChange={(e) => {
             // Bare nummer (ikke type numeric for å ikke ha piltaster)
@@ -217,7 +217,7 @@ const LeggTilKandidater: FC<LeggTilKandidaterProps> = ({
       </Box.New>
       {valgteKandidater.length > 0 && (
         <div className='mt-8'>
-          <Heading size='medium'>Utvalgte kandidater</Heading>
+          <Heading size='medium'>Utvalgte jobbsøkere</Heading>
 
           {valgteKandidater.map((kandidat) => (
             <Box.New

@@ -225,7 +225,7 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
             {publiserOffentlig && (
               <div>
                 <Heading size='small' className='mb-4'>
-                  Hvordan skal kandidaten søke?
+                  Hvordan skal jobbsøker søke?
                 </Heading>
 
                 <ToggleGroup

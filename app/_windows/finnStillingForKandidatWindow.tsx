@@ -47,7 +47,7 @@ export const finnStillingForKandidatWindow: UrlWindowConfig = {
         <SideLayout
           header={
             <PanelHeader>
-              <PanelHeader.Section title={'Finn stilling for kandidat'} />
+              <PanelHeader.Section title={'Finn stilling for jobbsøker'} />
             </PanelHeader>
           }
         >
