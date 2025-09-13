@@ -7,7 +7,7 @@ import { InternKandidatstatus } from '@/app/stilling/[stillingsId]/kandidatliste
 import { useKandidatlisteContext } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteContext';
 import { PencilIcon } from '@navikt/aksel-icons';
 import { Button, Dropdown } from '@navikt/ds-react';
-import { useEffect, useState, type FC } from 'react';
+import { useState, type FC } from 'react';
 
 export interface VelgInternStatusProps {
   status: InternKandidatstatus;
@@ -15,53 +15,56 @@ export interface VelgInternStatusProps {
   lukketKandidatliste: boolean;
 }
 
+const alleStatuser: InternKandidatstatus[] = Object.values(
+  InternKandidatstatus,
+) as InternKandidatstatus[];
+
 const VelgInternStatus: FC<VelgInternStatusProps> = ({
   kandidatnr,
   status,
   lukketKandidatliste,
 }) => {
   const { reFetchKandidatliste, kandidatlisteId } = useKandidatlisteContext();
-  const [valgtStatus, setValgtStatus] = useState<InternKandidatstatus>(status);
-  useEffect(() => {
-    setValgtStatus(status);
-  }, [status]);
+  const [pending, setPending] = useState(false);
 
-  const endreStatus = (status: InternKandidatstatus) => {
-    setValgtStatus(status);
-    endreKandidatStatus(kandidatlisteId, kandidatnr, status);
-    reFetchKandidatliste();
+  const endreStatus = async (ny: InternKandidatstatus) => {
+    if (pending || ny === status) return;
+    setPending(true);
+    try {
+      await endreKandidatStatus(kandidatlisteId, kandidatnr, ny);
+      reFetchKandidatliste();
+    } finally {
+      setPending(false);
+    }
   };
 
   return (
-    <>
-      <Dropdown>
-        <div className='flex justify-left'>
-          <InternStatusTag status={valgtStatus} />
-          <Button
-            disabled={lukketKandidatliste}
-            size='small'
-            icon={<PencilIcon />}
-            variant='tertiary-neutral'
-            as={Dropdown.Toggle}
-          />
-        </div>
-        <Dropdown.Menu>
-          <Dropdown.Menu.GroupedList>
-            {(Object.keys(InternKandidatstatus) as InternKandidatstatus[]).map(
-              (status) => (
-                <Dropdown.Menu.GroupedList.Item
-                  key={status}
-                  onClick={() => endreStatus(status)}
-                >
-                  {internStatusIcon(status)}
-                  {internStatusTekst(status)}
-                </Dropdown.Menu.GroupedList.Item>
-              ),
-            )}
-          </Dropdown.Menu.GroupedList>
-        </Dropdown.Menu>
-      </Dropdown>
-    </>
+    <Dropdown>
+      <div className='flex justify-left'>
+        <InternStatusTag status={status} />
+        <Button
+          disabled={lukketKandidatliste || pending}
+          size='small'
+          icon={<PencilIcon aria-hidden />}
+          variant='tertiary-neutral'
+          aria-label='Endre intern status'
+          as={Dropdown.Toggle}
+        />
+      </div>
+      <Dropdown.Menu>
+        <Dropdown.Menu.GroupedList>
+          {alleStatuser.map((s) => (
+            <Dropdown.Menu.GroupedList.Item
+              key={s}
+              onClick={() => endreStatus(s)}
+            >
+              {internStatusIcon(s)}
+              {internStatusTekst(s)}
+            </Dropdown.Menu.GroupedList.Item>
+          ))}
+        </Dropdown.Menu.GroupedList>
+      </Dropdown.Menu>
+    </Dropdown>
   );
 };
 
