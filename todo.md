@@ -6,4 +6,3 @@ Følg opp: https://docs.nais.io/observability/how-to/auto-instrumentation/ for n
 - Dupliser stilling knapp
 
 // Inkludering statlig visning
-// Overta stilling
