@@ -8,8 +8,12 @@ test('Kandidatsøk', async ({ page }) => {
 
   await page.getByRole('button', { name: 'Jobbsøkere' }).click();
 
-  await page.waitForLoadState('networkidle');
-  await expect(page.getByRole('heading', { name: 'Jobbsøkere' })).toBeVisible();
+  // Vent på at heading vises (implicit retry) i stedet for networkidle
+  const heading = page.getByRole('heading', { name: 'Jobbsøkere' });
+  await expect(heading).toBeVisible();
+
+  // Sikre at loader er borte før vi går videre (Loader har title="Laster...")
+  await expect(page.getByTitle('Laster...')).toHaveCount(0);
 
   //filter test
 
