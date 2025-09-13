@@ -89,6 +89,7 @@ const SideLenke = (item: NavigasjonItemProps) => {
     >
       <Link href={item.path} className={open ? 'w-full' : ''}>
         <Button
+          size='small'
           variant={aktiv ? 'secondary-neutral' : 'tertiary-neutral'}
           aria-current={aktiv ? 'page' : undefined}
           aria-label={item.tekst}
@@ -111,6 +112,7 @@ const SideHandling = (item: NavigasjonHandlingProps) => {
       kreverEnAvRollene={item.kreverRoller}
     >
       <Button
+        size='small'
         onClick={item.onClick}
         variant='tertiary-neutral'
         aria-label={item.tekst}

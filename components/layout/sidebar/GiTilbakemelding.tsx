@@ -70,6 +70,7 @@ const GiTilbakemelding = () => {
   return (
     <>
       <Button
+        size='small'
         ref={buttonRef}
         onClick={() => setOpenState(!openState)}
         aria-expanded={openState}
