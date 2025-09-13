@@ -1,8 +1,7 @@
-import { opprettStillingsinfo } from '@/app/api/stilling/opprett-stillingsinfo/opprett-stillingsinfo';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
+import OpprettRekrutteringsoppdrag from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/arbeidsplassen/OpprettStillingsoppdrag';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
-import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { formaterNorskDato } from '@/util/util';
 import {
   ArrowForwardIcon,
@@ -12,30 +11,12 @@ import {
   HandshakeIcon,
   PlusCircleIcon,
 } from '@navikt/aksel-icons';
-import { BodyShort, Box, Button, Heading } from '@navikt/ds-react';
-import { useState } from 'react';
+import { BodyShort, Box, Heading } from '@navikt/ds-react';
 
 export default function FremdriftspanelArbeidsplassen() {
   const { stillingsData } = useStillingsContext();
-  const { brukerData, valgtNavKontor } = useApplikasjonContext();
   const kanBrukesTilRekrutteringsoppdrag =
     stillingsData.stilling.employer?.orgnr;
-
-  const [loading, setLoading] = useState(false);
-
-  const opprett = async () => {
-    setLoading(true);
-    await opprettStillingsinfo({
-      eierNavKontorEnhetId: valgtNavKontor?.navKontor ?? 'Ukjent Nav kontor',
-      stillingsid: stillingsData.stilling.uuid,
-      eierNavident: brukerData.ident,
-      eierNavn: brukerData.navn,
-    });
-
-    setLoading(false);
-
-    window.location.reload();
-  };
 
   return (
     <TilgangskontrollForInnhold
@@ -53,9 +34,7 @@ export default function FremdriftspanelArbeidsplassen() {
       <div className='flex flex-col gap-6 mt-6'>
         {kanBrukesTilRekrutteringsoppdrag ? (
           <>
-            <Button size='small' loading={loading} onClick={opprett}>
-              Bruk til oppdrag
-            </Button>
+            <OpprettRekrutteringsoppdrag />
             <Box.New
               background='neutral-soft'
               borderRadius={'large'}

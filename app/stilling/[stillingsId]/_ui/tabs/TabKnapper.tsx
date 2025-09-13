@@ -1,7 +1,7 @@
 import { Kandidatlistestatus } from '@/app/api/kandidat/schema.zod';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import KopierStillingLenke from '@/app/stilling/[stillingsId]/_ui/KopierStillingLenke';
-import StillingPrint from '@/app/stilling/[stillingsId]/_ui/om-stillingen/StillingSidebar/StillingPrint';
+import StillingPrint from '@/app/stilling/[stillingsId]/_ui/StillingPrint';
 import StillingDropdown from '@/app/stilling/[stillingsId]/_ui/tabs/StillingDropdown';
 import { RefObject } from 'react';
 

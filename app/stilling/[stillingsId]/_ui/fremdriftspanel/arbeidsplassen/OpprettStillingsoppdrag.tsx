@@ -1,4 +1,5 @@
-import { overtaEierskap } from '@/app/api/stilling/overta-eierskap/overtaEierskap';
+import { opprettStillingsinfo } from '@/app/api/stilling/opprett-stillingsinfo/opprett-stillingsinfo';
+import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { RekbisError } from '@/util/rekbisError';
 import {
@@ -18,48 +19,66 @@ import {
   Modal,
   VStack,
 } from '@navikt/ds-react';
-import { useState, type FC } from 'react';
+import { useState } from 'react';
 
-interface OpprettRekrutteringsoppdragProps {
-  arbeidsgiver: string;
-  orgnr?: string | null;
-  stillingstittel: string;
-  stillingsId: string;
-}
-
-const OpprettRekrutteringsoppdrag: FC<OpprettRekrutteringsoppdragProps> = ({
-  arbeidsgiver,
-  orgnr,
-  stillingstittel,
-  stillingsId,
-}) => {
+export default function OpprettStillingsoppdrag() {
+  const { stillingsData, refetch } = useStillingsContext();
   const { brukerData, valgtNavKontor } = useApplikasjonContext();
   const [loading, setLoading] = useState(false);
   const [avtaltMedArbeidsgiver, setAvtaltMedArbeidsgiver] = useState(false);
   const [open, setOpen] = useState(false);
-  const handleFullfor = async () => {
+
+  const arbeidsgiver =
+    stillingsData.stilling.employer?.name || 'Ukjent bedrift';
+  const orgnr = stillingsData.stilling.employer?.orgnr;
+  const stillingstittel = stillingsData.stilling.title;
+  const stillingsId = stillingsData.stilling.uuid;
+
+  const opprett = async () => {
     setLoading(true);
     try {
-      await overtaEierskap(opprettStillingInfo);
-      window.location.reload();
+      await opprettStillingsinfo({
+        eierNavKontorEnhetId: valgtNavKontor?.navKontor ?? 'Ukjent Nav kontor',
+        stillingsid: stillingsId,
+        eierNavident: brukerData.ident,
+        eierNavn: brukerData.navn,
+      });
     } catch (error) {
       new RekbisError({
         message: 'Feil under opprettelse av stillingsinfo',
         error: error,
       });
-      alert('Noe gikk galt. Vennligst prøv igjen senere.');
     } finally {
+      refetch?.();
       setLoading(false);
       setOpen(false);
     }
   };
 
-  const opprettStillingInfo = {
-    stillingsid: stillingsId,
-    eierNavident: brukerData.ident,
-    eierNavn: brukerData.navn,
-    eierNavKontorEnhetId: valgtNavKontor?.navKontor,
-  };
+  //TODO Skal denen brukes?
+  // const handleFullfor = async () => {
+  //   setLoading(true);
+  //   try {
+  //     await overtaEierskap(opprettStillingInfo);
+  //     window.location.reload();
+  //   } catch (error) {
+  //     new RekbisError({
+  //       message: 'Feil under opprettelse av stillingsinfo',
+  //       error: error,
+  //     });
+  //     alert('Noe gikk galt. Vennligst prøv igjen senere.');
+  // } finally {
+  //   setLoading(false);
+  //   setOpen(false);
+  // }
+  // };
+
+  // const opprettStillingInfo = {
+  //   stillingsid: stillingsId,
+  //   eierNavident: brukerData.ident,
+  //   eierNavn: brukerData.navn,
+  //   eierNavKontorEnhetId: valgtNavKontor?.navKontor,
+  // };
 
   return (
     <>
@@ -190,7 +209,7 @@ const OpprettRekrutteringsoppdrag: FC<OpprettRekrutteringsoppdragProps> = ({
               <Button
                 loading={loading}
                 variant='primary'
-                onClick={handleFullfor}
+                onClick={opprett}
                 disabled={!avtaltMedArbeidsgiver}
               >
                 Fullfør
@@ -201,6 +220,4 @@ const OpprettRekrutteringsoppdrag: FC<OpprettRekrutteringsoppdragProps> = ({
       </Modal>
     </>
   );
-};
-
-export default OpprettRekrutteringsoppdrag;
+}
