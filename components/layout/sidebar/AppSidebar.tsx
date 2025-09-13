@@ -77,9 +77,10 @@ const navigasjonListe: NavigasjonItemProps[] = [
 const SideLenke = (item: NavigasjonItemProps) => {
   const { open } = useSidebar();
   const pathname = usePathname();
-  // Aktiv logikk: '/' kun aktiv på eksakt rot, andre paths bruker startsWith
+
+  const basePath = item.path.split('?')[0];
   const aktiv =
-    item.path === '/' ? pathname === '/' : pathname?.startsWith(item.path);
+    basePath === '/' ? pathname === '/' : pathname?.startsWith(basePath);
   return (
     <TilgangskontrollForInnhold
       key={item.tekst}
