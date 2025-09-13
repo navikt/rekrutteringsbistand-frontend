@@ -25,7 +25,14 @@ export interface TømFiltreProps {
 }
 
 const TømFiltre: React.FC<TømFiltreProps> = ({ fjernFritekst, exlude }) => {
-  const eksluderFilter = ['portefolje', 'visKandidatnr', 'finnStilling'];
+  const eksluderFilter = [
+    'portefolje',
+    'visKandidatnr',
+    'finnStilling',
+    'finnKandidater',
+    'visStillingId',
+    'visEtterregistreringId',
+  ];
   return (
     <Chips.Toggle
       checkmark={false}
