@@ -4,6 +4,8 @@ import { KandidatContextProvider } from './KandidatContext';
 import KandidatSide from './KandidatSide';
 import KandidatSideLayout from './KandidatsideLayout';
 import KandidatlisteBoks from './_ui/KandidatlisteBoks';
+import FinnStillingForKandidatKnapp from '@/app/kandidat/_ui/ActionLinks/FinnStillingForKandidatKnapp';
+import NavigerTilAktivitetsplanenKnapp from '@/app/kandidat/_ui/ActionLinks/NavigerTilAktivitetsplanenKnapp';
 import { useNullableStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideLayout from '@/components/layout/SideLayout';
@@ -40,6 +42,12 @@ const VisKandidat: FC<VisKandidatProps> = ({ kandidatnr }) => {
         <KandidatContextProvider kandidatId={kandidatnr}>
           <KandidatSideLayout>
             {stillingContext && <KandidatlisteBoks kandidatnr={kandidatnr} />}
+            <div className='@container/kandidat-knapper'>
+              <div className='grid grid-cols-1 @3xl:grid-cols-2 gap-4 mb-6'>
+                <FinnStillingForKandidatKnapp />
+                <NavigerTilAktivitetsplanenKnapp />
+              </div>
+            </div>
             <KandidatSide />
           </KandidatSideLayout>
         </KandidatContextProvider>

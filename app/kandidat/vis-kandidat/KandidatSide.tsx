@@ -1,9 +1,7 @@
 'use client';
 
-import FinnStillingForKandidatKnapp from './_ui/FinnStillingForKandidatKnapp';
 import KandidatAktivitet from './aktivitet-fane/KandidatAktivitet';
 import KandidatOversikt from './oversikt-fane/KandidatOversikt';
-import NavigerTilAktivitetsplanenKnapp from '@/components/felles/modia/NavigerTilAktivitetsplanenKnapp';
 import { Tabs } from '@navikt/ds-react';
 import { useQueryState } from 'nuqs';
 import { FC, useEffect } from 'react';
@@ -27,22 +25,12 @@ const KandidatSide: FC = () => {
     }
   }, [fane]);
 
-  const Knapper = (
-    <div className={'flex items-center gap-2'}>
-      <FinnStillingForKandidatKnapp />
-      <NavigerTilAktivitetsplanenKnapp />
-    </div>
-  );
   return (
     <Tabs value={fane} onChange={(val) => setFane(val)} className=' w-full'>
       <div className={'w-full @container/kandidattabs'}>
-        <div className={' @xl/kandidattabs:hidden'}>{Knapper}</div>
-        <Tabs.List className='flex w-full justify-between'>
-          <div className='flex whitespace-nowrap'>
-            <Tabs.Tab value={Fane.OVERSIKT} label='Oversikt' />
-            <Tabs.Tab value={Fane.AKTIVITET} label='Aktiviteter' />
-          </div>
-          <div className='hidden @xl/kandidattabs:block'>{Knapper}</div>
+        <Tabs.List>
+          <Tabs.Tab value={Fane.OVERSIKT} label='Oversikt' />
+          <Tabs.Tab value={Fane.AKTIVITET} label='Aktiviteter' />
         </Tabs.List>
       </div>
       <Tabs.Panel value={Fane.OVERSIKT}>

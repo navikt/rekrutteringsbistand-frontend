@@ -1,7 +1,7 @@
 import { leggTilKandidater } from '@/app/api/kandidat-sok/leggTilKandidat';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
-import FinnKandidaterKnapp from '@/app/stilling/[stillingsId]/_ui/FinnKandidaterKnapp';
-import LeggTilKandidatTilStilling from '@/app/stilling/[stillingsId]/_ui/LeggTilKandidatTilStilling';
+import FinnKandidaterKnapp from '@/app/stilling/[stillingsId]/_ui/ActionLinks/FinnKandidaterKnapp';
+import LeggTilKandidatTilStilling from '@/app/stilling/[stillingsId]/_ui/ActionLinks/LeggTilKandidatTilStilling';
 import {
   VisningsStatus,
   visStillingsDataInfo,
@@ -126,13 +126,14 @@ export default function KandidatKnapper() {
         Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
       ]}
     >
-      <div className='grid grid-cols-2 gap-4 mb-6'>
-        <FinnKandidaterKnapp stillingId={stillingsData.stilling.uuid} />
-
-        <LeggTilKandidatTilStilling
-          stillingsId={stillingsData.stilling.uuid}
-          stillingsTittel={stillingsData.stilling.title}
-        />
+      <div className='@container/kandidat-knapper'>
+        <div className='grid grid-cols-1 @3xl:grid-cols-2 gap-4 mb-6'>
+          <FinnKandidaterKnapp stillingId={stillingsData.stilling.uuid} />
+          <LeggTilKandidatTilStilling
+            stillingsId={stillingsData.stilling.uuid}
+            stillingsTittel={stillingsData.stilling.title}
+          />
+        </div>
       </div>
     </TilgangskontrollForInnhold>
   );

@@ -5,20 +5,19 @@ import {
   setModiaContext,
 } from '@/app/api/modia/context/setModiaContext';
 import { useKandidatContext } from '@/app/kandidat/vis-kandidat/KandidatContext';
+import LenkeKortMedIkon from '@/components/felles/LenkeKortMedIkon';
 import { getMiljø, Miljø } from '@/util/miljø';
-import { ExternalLinkIcon } from '@navikt/aksel-icons';
-import { Button } from '@navikt/ds-react';
-import * as React from 'react';
+import { useState } from 'react';
 
 const arbeidsrettetOppfølgingUrl =
   getMiljø() === Miljø.ProdGcp
     ? 'https://veilarbpersonflate.intern.nav.no'
     : 'https://veilarbpersonflate.intern.dev.nav.no';
 
-const NavigerTilAktivitetsplanenKnapp: React.FC = () => {
+export default function NavigerTilAktivitetsplanenKnapp() {
   const { kandidatData } = useKandidatContext();
 
-  const [loading, setLoading] = React.useState(false);
+  const [loading, setLoading] = useState(false);
 
   const navigerTilAktivitetsplanen = async (
     href: string,
@@ -37,23 +36,19 @@ const NavigerTilAktivitetsplanenKnapp: React.FC = () => {
 
   if (kandidatData.fodselsnummer) {
     return (
-      <Button
-        size={'small'}
+      <LenkeKortMedIkon
+        tittel='Gå til aktivitetsplanen'
+        beskrivelse='Se aktivitetsplanen i Modia arbeidsrettet oppfølging.'
         loading={loading}
-        variant={'secondary'}
-        icon={<ExternalLinkIcon />}
+        ikon={'🔗'}
         onClick={() =>
           navigerTilAktivitetsplanen(
             arbeidsrettetOppfølgingUrl,
             kandidatData.fodselsnummer!,
           )
         }
-      >
-        Gå til aktivitetsplanen
-      </Button>
+      />
     );
   }
   return null;
-};
-
-export default NavigerTilAktivitetsplanenKnapp;
+}

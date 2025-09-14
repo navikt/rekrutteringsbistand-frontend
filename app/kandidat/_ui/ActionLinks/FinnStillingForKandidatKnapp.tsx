@@ -1,7 +1,7 @@
 import { useKandidatContext } from '@/app/kandidat/vis-kandidat/KandidatContext';
+import LenkeKortMedIkon from '@/components/felles/LenkeKortMedIkon';
 import { UmamiEvent } from '@/components/umami/umamiEvents';
 import { useUmami } from '@/providers/UmamiContext';
-import { Button } from '@navikt/ds-react';
 import { FC } from 'react';
 
 const FinnStillingForKandidatKnapp: FC = () => {
@@ -9,18 +9,17 @@ const FinnStillingForKandidatKnapp: FC = () => {
   const { trackAndNavigate } = useUmami();
 
   return (
-    <Button
-      size={'small'}
-      variant='primary'
+    <LenkeKortMedIkon
+      ikon='🔎'
+      tittel='Finn jobb'
+      beskrivelse='Se stillingsoppdrag som kan passe.'
       onClick={() => {
         trackAndNavigate(
           UmamiEvent.Kandidat.finn_stilling_knapp,
           `/kandidat/${kandidatId}?finnStilling=true`,
         );
       }}
-    >
-      Finn stillinger
-    </Button>
+    />
   );
 };
 
