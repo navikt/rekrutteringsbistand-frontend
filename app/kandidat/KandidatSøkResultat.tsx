@@ -15,6 +15,7 @@ import {
 import LagreIRekrutteringstreffButton from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/lagreIRekrutteringstreffButton/LagreIRekrutteringstreffButton';
 import RekrutteringstreffFeatureToggle from '@/components/RekrutteringstreffFeatureToggle';
 import SWRLaster from '@/components/SWRLaster';
+import SkeletonKort from '@/components/layout/SkeletonKort';
 import { useKandidatNavigeringContext } from '@/providers/KandidatNavigeringContext';
 import { Checkbox, Pagination } from '@navikt/ds-react';
 import { FC, useEffect } from 'react';
@@ -46,7 +47,14 @@ const KandidatSøkResultat: FC<KandidatSøkResultatProps> = ({
     useKandidatSøkMarkerteContext();
 
   return (
-    <SWRLaster hooks={[kandidatsøkHook]}>
+    <SWRLaster
+      hooks={[kandidatsøkHook]}
+      skeleton={
+        <div className='mt-14'>
+          <SkeletonKort />
+        </div>
+      }
+    >
       {(kandidatData) => {
         const antallSider = Math.ceil(kandidatData.antallTotalt / 25);
         // Elasticsearch takler ikke mer enn 10000 element i pagineringen uten å endre max result i es, som kan ha konsekvenser for minne og ytelse.

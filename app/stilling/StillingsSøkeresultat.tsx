@@ -9,6 +9,7 @@ import {
 import { useStillingssøk } from '@/app/api/stillings-sok/useStillingssøk';
 import { useStillingssokTotalData } from '@/app/stilling/store/stillingssokTotalData';
 import SWRLaster from '@/components/SWRLaster';
+import SkeletonKort from '@/components/layout/SkeletonKort';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { ChevronLeftIcon, ChevronRightIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
@@ -78,7 +79,14 @@ const StillingsSøkeresultat: FC<StillingsSøkeresultatProps> = ({
   }, [combinedHook.data, setAntall]);
 
   return (
-    <SWRLaster hooks={[combinedHook]}>
+    <SWRLaster
+      hooks={[combinedHook]}
+      skeleton={
+        <div className='mt-16'>
+          <SkeletonKort />
+        </div>
+      }
+    >
       {(data: any) => {
         return (
           <>
