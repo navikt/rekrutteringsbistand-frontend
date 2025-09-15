@@ -26,19 +26,23 @@ const utførHendelse = async (
 };
 
 export const publiserRekrutteringstreff = (rekrutteringstreffId: string) =>
-  utførHendelse(rekrutteringstreffId, 'publiser', 'Feil ved publisering');
+  utførHendelse(
+    rekrutteringstreffId,
+    'publiser',
+    'Feil ved publisering av rekrutteringstreff',
+  );
 
 export const gjenåpnRekrutteringstreff = (rekrutteringstreffId: string) =>
   utførHendelse(
     rekrutteringstreffId,
-    'gjenåpn',
+    'gjenapn',
     'Feil ved gjenåpning av rekrutteringstreff',
   );
 
 export const fullførRekrutteringstreff = (rekrutteringstreffId: string) =>
   utførHendelse(
     rekrutteringstreffId,
-    'fullfør',
+    'fullfor',
     'Feil ved fullføring av rekrutteringstreff',
   );
 
