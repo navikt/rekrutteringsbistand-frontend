@@ -22,6 +22,8 @@ const RekrutteringstreffArbeidsgivere = () => {
   const arbeidsgivereHook =
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
   const hendelseHook = useArbeidsgiverHendelser(rekrutteringstreffId);
+  const { mutate: mutateArbeidsgivere } = arbeidsgivereHook;
+  const { mutate: mutateHendelser } = hendelseHook;
 
   const leggTilModalRef = useRef<HTMLDialogElement>(null);
 
@@ -54,8 +56,8 @@ const RekrutteringstreffArbeidsgivere = () => {
         rekrutteringstreffId,
         (slette as any).arbeidsgiverTreffId ?? slette.organisasjonsnummer,
       );
-      await arbeidsgivereHook.mutate();
-      await hendelseHook.mutate();
+      await mutateArbeidsgivere();
+      await mutateHendelser();
     } finally {
       setSlette(null);
       slettModalRef.current?.close();

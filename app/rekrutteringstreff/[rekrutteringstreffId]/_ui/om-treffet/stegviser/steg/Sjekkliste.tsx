@@ -1,5 +1,5 @@
 import { CheckmarkIcon } from '@navikt/aksel-icons';
-import { BodyShort, Box } from '@navikt/ds-react';
+import { Box } from '@navikt/ds-react';
 import { FC, ReactNode } from 'react';
 
 export const SjekklisteContainer: FC<{ children: ReactNode }> = ({

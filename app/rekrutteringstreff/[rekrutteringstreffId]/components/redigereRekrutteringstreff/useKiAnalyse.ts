@@ -26,10 +26,6 @@ interface UseKiAnalyseParams<FormValues extends Record<string, any>> {
   saveCallback: (force?: boolean) => Promise<void>;
   setKiLagret?: (args: { id: string; lagret: boolean }) => Promise<void>;
   requireHasCheckedToShow?: boolean;
-  // Optional: name of a boolean field in the RHF form that indicates whether KI validation
-  // has been performed for the current value. When watchedValue changes we set it to false,
-  // and when validation finishes we set it to true. This is used to block publish until
-  // a check has been performed.
   setKiSjekketFieldName?: keyof FormValues & string;
 }
 
@@ -182,6 +178,8 @@ export function useKiAnalyse<FormValues extends Record<string, any>>(
     saveCallback,
     setKiLagret,
     analyse,
+    setKiSjekketFieldName,
+    setValue,
   ]);
 
   const onForceSave = useCallback(async () => {
