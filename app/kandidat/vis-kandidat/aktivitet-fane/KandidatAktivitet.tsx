@@ -13,7 +13,7 @@ export default function KandidatAktivitet() {
   const kandidatListeoversiktHook = useKandidatListeoversikt(kandidatId);
 
   return (
-    <div className='mt-4 w-full'>
+    <div className='mt-4 w-full overflow-x-scroll'>
       <Table zebraStripes>
         <Table.Header>
           <Table.Row>

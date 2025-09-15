@@ -120,7 +120,7 @@ const KandidatListeKort: FC<KandidatListeKortProps> = ({
         background='neutral-softA'
         borderRadius='xlarge'
         data-testid='stillings-kort'
-        className={` min-w-fit
+        className={` min-w-fit 
           focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--ax-border-focus)]
           ${!aktiv && !inaktiv ? 'hover:bg-[var(--ax-bg-neutral-moderate-hover)] cursor-pointer ' : ''}
           ${aktiv ? 'bg-[var(--ax-bg-neutral-moderate-pressed)]' : ''}`}
