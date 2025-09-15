@@ -2,8 +2,7 @@ import { byggStandardsokQuery } from './standardSokUtils';
 import { setNyttStandardsøk } from '@/app/api/stilling/standardsok/settStandardsøk';
 import { useUseBrukerStandardSøk } from '@/app/api/stilling/standardsok/useBrukersStandardsøk';
 import { useVisKandidatNr } from '@/app/kandidat/vis-kandidat/useVisKandidatNr';
-import { FloppydiskIcon } from '@navikt/aksel-icons';
-import { Button } from '@navikt/ds-react';
+import { Chips } from '@navikt/ds-react';
 import { useSearchParams } from 'next/navigation';
 
 export default function LagreStandardsøk() {
@@ -25,17 +24,17 @@ export default function LagreStandardsøk() {
   }
 
   return (
-    <Button
-      variant='tertiary'
-      aria-describedby='lagre-standardsok-beskrivelse'
-      icon={<FloppydiskIcon />}
-      size='small'
+    <Chips.Toggle
+      // variant='tertiary'
+      // aria-describedby='lagre-standardsok-beskrivelse'
+      checkmark={false}
+      variant='neutral'
       onClick={async () => {
         await setNyttStandardsøk(searchString);
         await brukerStandardSøkData.mutate();
       }}
     >
-      Lagre nytt standardsøk
-    </Button>
+      Lagre som standardsøk
+    </Chips.Toggle>
   );
 }
