@@ -1,13 +1,8 @@
-import { Kandidatlistestatus } from '@/app/api/kandidat/schema.zod';
-import { setKandidatlisteStatus } from '@/app/api/kandidat/setKandidatlisteStatus';
-import { useKandidatlisteForEier } from '@/app/api/kandidat/useKandidatlisteForEier';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import HarKandidatlisteVisning from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/arbeidsplassen/HarKandidatlisteVisning';
 import OpprettRekrutteringsoppdrag from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/arbeidsplassen/OpprettStillingsoppdrag';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
-import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
-import { RekbisError } from '@/util/rekbisError';
 import { formaterNorskDato } from '@/util/util';
 import {
   ArrowForwardIcon,
@@ -18,34 +13,9 @@ import {
   PlusCircleIcon,
 } from '@navikt/aksel-icons';
 import { BodyShort, Box, Heading } from '@navikt/ds-react';
-import { useState } from 'react';
 
 export default function FremdriftspanelArbeidsplassen() {
-  const { stillingsData, refetch, erEier } = useStillingsContext();
-  const { visVarsel } = useApplikasjonContext();
-  const [loading, setLoading] = useState(false);
-  const kandidatlisteForEier = useKandidatlisteForEier(stillingsData, erEier);
-
-  const endreKandidatlisteStatus = async (
-    kandidatlisteId: string,
-    status: Kandidatlistestatus,
-  ) => {
-    setLoading(true);
-    try {
-      await setKandidatlisteStatus(kandidatlisteId, status);
-      visVarsel({ type: 'success', tekst: 'Du har nå fullført oppdraget.' });
-
-      kandidatlisteForEier.mutate();
-      if (refetch) refetch();
-    } catch (error) {
-      visVarsel({
-        type: 'error',
-        tekst: 'Klarte ikke å endre status på oppdraget',
-      });
-      new RekbisError({ message: 'Klarte ikke å fullføre oppdrag', error });
-    }
-    setLoading(false);
-  };
+  const { stillingsData } = useStillingsContext();
 
   const kanBrukesTilRekrutteringsoppdrag =
     stillingsData.stilling.employer?.orgnr;

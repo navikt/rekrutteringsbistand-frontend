@@ -33,6 +33,7 @@ export const visStillingsDataInfo = (
   const published: string | null = stilling.published ?? null;
   const expires: string | null = stilling.expires ?? null;
   const publishedByAdmin = stilling.publishedByAdmin ?? null;
+  const harStillingsinfo = stillingsData.stillingsinfo !== null;
 
   const erUtløpt = () => {
     if (expires === null) {
@@ -67,7 +68,8 @@ export const visStillingsDataInfo = (
   } else if (
     stillingStatus === StillingsStatus.Aktiv &&
     publishedByAdmin !== null &&
-    published !== null
+    published !== null &&
+    harStillingsinfo
   ) {
     visningsStatus = VisningsStatus.ApenForSokere;
   } else if (
