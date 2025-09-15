@@ -31,7 +31,7 @@ export const OpprettNyhetModal = () => {
     //   beskrivelse: editorContent,
     // };
     // Backend lagrer nyhet
-
+    // console.log({ editorContent: editorContent });
     nyhetModalRef.current?.close();
     reset();
     setEditorContent('');
@@ -75,9 +75,7 @@ export const OpprettNyhetModal = () => {
             </div>
           </Modal.Body>
           <Modal.Footer>
-            <Button type='submit' disabled>
-              Opprett nyhet
-            </Button>
+            <Button type='submit'>Opprett nyhet</Button>
             <Button
               type='button'
               variant='secondary'
