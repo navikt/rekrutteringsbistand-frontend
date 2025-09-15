@@ -10,7 +10,7 @@ import {
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
 import { RekbisError } from '@/util/rekbisError';
-import { BodyShort, Button, Heading, ProgressBar } from '@navikt/ds-react';
+import { Button, Heading, ProgressBar } from '@navikt/ds-react';
 import { FC, useState } from 'react';
 
 interface Props {
@@ -116,6 +116,24 @@ const StegviserHeader: FC<Props> = ({
   const getProsent = (value: number, max: number) =>
     max === 0 ? 0 : (value / max) * 100;
 
+  const ProgressMedTeller: FC<{
+    value: number;
+    max: number;
+    ariaLabel: string;
+  }> = ({ value, max, ariaLabel }) => (
+    <>
+      <ProgressBar
+        value={getProsent(value, max)}
+        size='small'
+        className='mt-2'
+        aria-label={ariaLabel}
+      />
+      <div className='flex justify-end text-sm tabular-nums mt-1'>
+        {value} / {max}
+      </div>
+    </>
+  );
+
   const handleToggleForhåndsvisning = () => {
     onToggleForhåndsvisning?.(!erIForhåndsvisning);
   };
@@ -191,59 +209,31 @@ const StegviserHeader: FC<Props> = ({
         <div className='flex-grow mr-4'>
           <div className='flex items-center justify-between'>
             <div className='flex items-center'>
-              <span className='mr-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-gray-800 text-sm text-white'>
-                {activeStep}
-              </span>
               <Heading size='small'>{currentHeader}</Heading>
             </div>
-            <div>
-              {activeStep === 1 && (
-                <BodyShort className='text-text-subtle whitespace-nowrap tabular-nums'>
-                  {sjekklistePunkterFullfort} / {totaltAntallSjekklistePunkter}
-                </BodyShort>
-              )}
-              {activeStep === 2 && (
-                <BodyShort className='text-text-subtle whitespace-nowrap tabular-nums'>
-                  {inviterePunkterFullfort} / {totaltAntallInviterePunkter}
-                </BodyShort>
-              )}
-              {activeStep === 3 && (
-                <BodyShort className='text-text-subtle whitespace-nowrap tabular-nums'>
-                  {antallRegistrertOppmøte} / {antallInviterte}
-                </BodyShort>
-              )}
-            </div>
+            <div />
           </div>
 
           <div>
             {activeStep === 1 && (
-              <ProgressBar
-                value={getProsent(
-                  sjekklistePunkterFullfort,
-                  totaltAntallSjekklistePunkter,
-                )}
-                size='small'
-                className='mt-2'
-                aria-label='Fremdrift for publisering'
+              <ProgressMedTeller
+                value={sjekklistePunkterFullfort}
+                max={totaltAntallSjekklistePunkter}
+                ariaLabel='Fremdrift for publisering'
               />
             )}
             {activeStep === 2 && (
-              <ProgressBar
-                value={getProsent(
-                  inviterePunkterFullfort,
-                  totaltAntallInviterePunkter,
-                )}
-                size='small'
-                className='mt-2'
-                aria-label='Fremdrift for invitasjon'
+              <ProgressMedTeller
+                value={inviterePunkterFullfort}
+                max={totaltAntallInviterePunkter}
+                ariaLabel='Fremdrift for invitasjon'
               />
             )}
             {activeStep === 3 && (
-              <ProgressBar
-                value={getProsent(antallRegistrertOppmøte, antallInviterte)}
-                size='small'
-                className='mt-2'
-                aria-label='Fremdrift for oppfølging'
+              <ProgressMedTeller
+                value={antallRegistrertOppmøte}
+                max={antallInviterte}
+                ariaLabel='Fremdrift for oppfølging'
               />
             )}
           </div>
