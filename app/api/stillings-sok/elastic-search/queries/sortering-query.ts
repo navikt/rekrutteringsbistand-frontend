@@ -1,5 +1,5 @@
-import { GenerateElasticSearchQueryParams } from '../../opprettElasticSearchQuery';
-import { ElasticSearchQueryBuilder } from '../elasticSearchQueryBuilder';
+import { ElasticSearchQueryBuilder } from '@/app/api/stillings-sok/elastic-search/elasticSearchQueryBuilder';
+import { GenerateElasticSearchQueryParams } from '@/app/api/stillings-sok/opprettElasticSearchQuery';
 
 export const sorteringQuery = (
   params: GenerateElasticSearchQueryParams,

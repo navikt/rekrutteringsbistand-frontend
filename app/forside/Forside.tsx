@@ -1,17 +1,21 @@
 'use client';
 
-import HovedInnholdKort from '../components/layout/HovedInnholdKort';
-import Statistikk from './components/Statistikk';
-import * as React from 'react';
+import Statistikk from './_ui/Statistikk';
+import PanelHeader from '@/components/layout/PanelHeader';
+import SideLayout from '@/components/layout/SideLayout';
 
-const Forside: React.FC = () => {
+export default function Forside() {
   return (
-    <HovedInnholdKort>
-      <div className='mt-8'>
+    <SideLayout
+      header={
+        <PanelHeader>
+          <PanelHeader.Section title={'Oversikt'} />
+        </PanelHeader>
+      }
+    >
+      <div className='mt-5'>
         <Statistikk />
       </div>
-    </HovedInnholdKort>
+    </SideLayout>
   );
-};
-
-export default Forside;
+}

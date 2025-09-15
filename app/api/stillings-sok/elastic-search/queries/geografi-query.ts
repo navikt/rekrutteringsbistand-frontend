@@ -1,14 +1,14 @@
 import {
+  GeografiType,
+  PamGeografi,
+} from '@/app/api/pam-geografi/typehead/lokasjoner/usePamGeografi';
+import { ElasticSearchQueryBuilder } from '@/app/api/stillings-sok/elastic-search/elasticSearchQueryBuilder';
+import { GenerateElasticSearchQueryParams } from '@/app/api/stillings-sok/opprettElasticSearchQuery';
+import {
   formaterStedsnavn,
   stedmappingFraNyttNavn,
   stedmappingFraNyttNummer,
-} from '../../../../../util/fylkeOgKommuneMapping';
-import {
-  GeografiType,
-  PamGeografi,
-} from '../../../pam-geografi/typehead/lokasjoner/usePamGeografi';
-import { GenerateElasticSearchQueryParams } from '../../opprettElasticSearchQuery';
-import { ElasticSearchQueryBuilder } from '../elasticSearchQueryBuilder';
+} from '@/util/fylkeOgKommuneMapping';
 
 export const geografiQuery = (
   params: GenerateElasticSearchQueryParams,

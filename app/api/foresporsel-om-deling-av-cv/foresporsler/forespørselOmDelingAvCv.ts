@@ -1,5 +1,5 @@
-import { ForespørselDelingAvCvAPI } from '../../api-routes';
-import { postApi } from '../../fetcher';
+import { ForespørselDelingAvCvAPI } from '@/app/api/api-routes';
+import { postApi } from '@/app/api/fetcher';
 
 export type ForespørselOmDelingAvCvOutboundDto = {
   stillingsId: string;

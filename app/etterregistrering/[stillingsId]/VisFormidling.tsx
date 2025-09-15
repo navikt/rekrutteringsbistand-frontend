@@ -1,32 +1,50 @@
 'use client';
 
-import { useStillingsContext } from '../../stilling/[stillingsId]/StillingsContext';
-import OmStillingen from '../../stilling/[stillingsId]/omStillingen/OmStillingen';
 import FormidlingKandidater from './FormidlingKandidater';
+import FremdriftspanelEtterregistrering from '@/app/etterregistrering/[stillingsId]/FremdriftspanelEtterregistrering';
+import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
+import OmStillingen from '@/app/stilling/[stillingsId]/_ui/om-stillingen/OmStillingen';
+import PanelHeader from '@/components/layout/PanelHeader';
+import SideLayout from '@/components/layout/SideLayout';
+import { BriefcaseClockIcon } from '@navikt/aksel-icons';
 import { Tabs } from '@navikt/ds-react';
-import * as React from 'react';
 
-// import OmStillingen from '../../stilling/[stillingsId]/omStillingen/OmStillingen';
+// import OmStillingen from '@/app/stilling/[stillingsId]/omStillingen/OmStillingen'
 
-const VisFormidling: React.FC = () => {
+export default function VisFormidling() {
   const { erEier } = useStillingsContext();
 
   return (
     <Tabs defaultValue='omStillingen'>
-      <Tabs.List>
-        <Tabs.Tab value='omStillingen' label='Om stillingen' />
-        {erEier && <Tabs.Tab value='kandidater' label='Kandidater' />}
-      </Tabs.List>
-      <Tabs.Panel value='omStillingen'>
-        <OmStillingen />
-      </Tabs.Panel>
-      {erEier && (
-        <Tabs.Panel value='kandidater'>
-          <FormidlingKandidater />
+      <SideLayout
+        fremdriftspanel={<FremdriftspanelEtterregistrering />}
+        header={
+          <PanelHeader>
+            <PanelHeader.Section
+              back={{
+                fallbackPath: '/etterregistrering',
+              }}
+              title={'Etterregistrering'}
+              titleIcon={<BriefcaseClockIcon />}
+              tabs={
+                <>
+                  <Tabs.Tab value='omStillingen' label='Om stillingen' />
+                  {erEier && <Tabs.Tab value='kandidater' label='Jobbsøkere' />}
+                </>
+              }
+            />
+          </PanelHeader>
+        }
+      >
+        <Tabs.Panel value='omStillingen'>
+          <OmStillingen printRef={null} />
         </Tabs.Panel>
-      )}
+        {erEier && (
+          <Tabs.Panel value='kandidater'>
+            <FormidlingKandidater />
+          </Tabs.Panel>
+        )}
+      </SideLayout>
     </Tabs>
   );
-};
-
-export default VisFormidling;
+}

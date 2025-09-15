@@ -1,5 +1,5 @@
-import { StatistikkAPI } from '../api-routes';
-import { proxyWithOBO } from '../oboProxy';
+import { StatistikkAPI } from '@/app/api/api-routes';
+import { proxyWithOBO } from '@/app/api/oboProxy';
 import { NextRequest } from 'next/server';
 
 export async function GET(req: NextRequest) {

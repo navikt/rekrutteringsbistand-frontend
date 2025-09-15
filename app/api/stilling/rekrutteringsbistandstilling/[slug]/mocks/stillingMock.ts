@@ -1,4 +1,7 @@
-import { GeografiDTO, StillingsDataDTO } from '../stilling.dto';
+import {
+  GeografiDTO,
+  StillingsDataDTO,
+} from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { faker } from '@faker-js/faker/locale/nb_NO';
 
 interface MockStilling {

@@ -5,6 +5,7 @@
 @import '@navikt/ds-css/darkside' layer(components);
 @import 'tw-animate-css';
 @import './shadcn.css';
+@import 'react-mosaic-component/react-mosaic-component.css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -12,6 +13,29 @@
 .ProseMirror:focus {
   outline: none;
   border: none;
+}
+
+#windows {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+}
+
+/* Fjern default margin/padding fra react-mosaic-component for sømløs layout */
+.mosaic-root {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+#windows .mosaic-window {
+  margin: 0 !important; /* biblioteket setter margin for spacing */
+}
+#windows .mosaic-window-toolbar {
+  padding: 0; /* unngå ekstra høyde hvis toolbar beholdes */
+}
+#windows .mosaic-window-body,
+#windows .mosaic-tile {
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 @layer utilities {
@@ -42,4 +66,24 @@ skyra-survey {
   --skyra-font-size: var(--ax-font-size-medium);
   --skyra-font-body: var(--ax-font-family);
   --skyra-font-heading: var(--ax-font-family);
+}
+
+.mosaic-split {
+  background-color: var(
+    --ax-border-neutral-subtle
+  ) !important; /* Rød farge for eksempel */
+  opacity: 0.5; /* Gjør den litt gjennomsiktig */
+}
+
+/* Du kan også endre fargen når du holder musen over den */
+.mosaic-split:hover {
+  background-color: var(
+    --ax-border-neutral-strong
+  ) !important; /* Blå farge ved hover */
+  opacity: 0.8;
+}
+
+/* For å gjøre den enda tydeligere, kan du øke bredden (merk: dette kan påvirke layout litt) */
+.mosaic-split-line {
+  width: 10px !important; /* Øker bredden på linjen */
 }

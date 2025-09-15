@@ -3,9 +3,9 @@
 /**
  * Endepunkt /delingAvCV
  */
-import { ForespørselDelingAvCvAPI } from '../../api-routes';
-import { getAPIwithSchema } from '../../fetcher';
-import { forespørselOmDelingAvCVStatistikkMock } from '../mocks/forespørselStatistikkMock';
+import { ForespørselDelingAvCvAPI } from '@/app/api/api-routes';
+import { getAPIwithSchema } from '@/app/api/fetcher';
+import { forespørselOmDelingAvCVStatistikkMock } from '@/app/api/foresporsel-om-deling-av-cv/mocks/forespørselStatistikkMock';
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
 

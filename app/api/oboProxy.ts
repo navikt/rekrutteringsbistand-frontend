@@ -1,7 +1,7 @@
-import { isLocal } from '../../util/env';
-import { RekbisError } from '../../util/rekbisError';
 import { Iroute } from './api-routes';
 import { hentOboToken, setHeaderToken } from './oboToken';
+import { isLocal } from '@/util/env';
+import { RekbisError } from '@/util/rekbisError';
 import { NextRequest, NextResponse } from 'next/server';
 
 export const proxyWithOBO = async (

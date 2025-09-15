@@ -1,34 +1,34 @@
-import AlleFilterKomponent from '../../components/AlleFilterKomponent';
-import Arbeidserfaring from './components/Arbeidserfaring';
-import Arbeidsønsker from './components/Arbeidsønsker';
-import FritekstSøk from './components/FritekstSøk';
-import Førerkort from './components/Førerkort';
-import Hovedmål from './components/Hovedmål';
-import Jobbmuligheter from './components/Innsatsgrupper';
-import KandidatStedSøk from './components/KandidatStedSøk';
-import Kompetanse from './components/Kompetanse';
-import PrioriterteMålgrupper from './components/PrioriterteMålgrupper';
-import Språk from './components/Språk';
-import Utdanningsnivå from './components/Utdanningsnivå';
-import * as React from 'react';
+import Arbeidserfaring from './_ui/Arbeidserfaring';
+import Arbeidsønsker from './_ui/Arbeidsønsker';
+import FritekstSøk from './_ui/FritekstSøk';
+import Førerkort from './_ui/Førerkort';
+import Hovedmål from './_ui/Hovedmål';
+import KandidatStedSøk from './_ui/KandidatStedSøk';
+import Kompetanse from './_ui/Kompetanse';
+import PrioriterteMålgrupper from './_ui/PrioriterteMålgrupper';
+import Språk from './_ui/Språk';
+import Utdanningsnivå from './_ui/Utdanningsnivå';
+import Innsatsgrupper from '@/app/kandidat/kandidat-søk-filter/_ui/Innsatsgrupper';
+import AlleFilterKomponent from '@/components/felles/filter/AlleFilterKomponent';
 
-const KandidatSøkFilter: React.FC = () => {
+export default function KandidatSøkFilter() {
   return (
     <div className='flex gap-4 '>
       <FritekstSøk />
-      <div className='whitespace-nowrap'>
-        <AlleFilterKomponent>
-          <Arbeidsønsker />
-          <KandidatStedSøk />
-          <Kompetanse />
-          <Førerkort />
-          <Språk />
-          <Arbeidserfaring /> <Jobbmuligheter /> <Hovedmål /> <Utdanningsnivå />{' '}
-          <PrioriterteMålgrupper />
-        </AlleFilterKomponent>
+      <div className='block @[720px]:hidden'>
+        <div className='whitespace-nowrap'>
+          <AlleFilterKomponent>
+            <Arbeidsønsker />
+            <KandidatStedSøk />
+            <Kompetanse />
+            <Førerkort />
+            <Språk />
+            <Arbeidserfaring /> <Hovedmål /> <Utdanningsnivå />
+            <PrioriterteMålgrupper />
+            <Innsatsgrupper />
+          </AlleFilterKomponent>
+        </div>
       </div>
     </div>
   );
-};
-
-export default KandidatSøkFilter;
+}

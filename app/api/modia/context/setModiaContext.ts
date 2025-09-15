@@ -1,5 +1,5 @@
-import { ModiaDecoratorAPI } from '../../api-routes';
-import { postApi } from '../../fetcher';
+import { ModiaDecoratorAPI } from '@/app/api/api-routes';
+import { postApi } from '@/app/api/fetcher';
 import { Server } from 'miragejs/server';
 
 export enum ModiaEventType {

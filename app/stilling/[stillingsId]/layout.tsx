@@ -1,10 +1,9 @@
-import NotFound from '../../not-found';
 import { StillingsContextProvider } from './StillingsContext';
-import StillingSideLayout from './StillingssideLayout';
-import * as React from 'react';
+import NotFound from '@/app/not-found';
+import { ReactNode } from 'react';
 
 interface StillingSideRootLayoutProps {
-  children: React.ReactNode;
+  children: ReactNode;
   params: Promise<{ stillingsId: string }>;
 }
 export default async function StillingSideRootLayout({
@@ -19,7 +18,7 @@ export default async function StillingSideRootLayout({
 
   return (
     <StillingsContextProvider stillingsId={stillingsId}>
-      <StillingSideLayout>{children}</StillingSideLayout>
+      {children}
     </StillingsContextProvider>
   );
 }

@@ -1,5 +1,5 @@
-import { LocationSchema } from '../../stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { ESStillingPropertiesSchema } from './stillingPropertiesSchema.zod';
+import { LocationSchema } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { z } from 'zod';
 
 export type ESStillingSchemaDTO = z.infer<typeof ESStillingSchema>;

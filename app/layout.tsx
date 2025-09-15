@@ -1,11 +1,12 @@
-import { isLocal } from '../util/env';
-import MirageInitializer from './components/MirageInitializer';
-import SkyraInit from './components/skyra/Skyra_init';
 import './globals.css';
-import RekrutteringsbistandProvider from './providers/RekrutteringsbistandProvider';
-import { UmamiProvider } from './providers/UmamiContext';
+import MirageInitializer from '@/providers/MirageInitializer';
+import RekrutteringsbistandProvider from '@/providers/RekrutteringsbistandProvider';
+import SkyraInit from '@/providers/Skyra_init';
+import { UmamiProvider } from '@/providers/UmamiContext';
+import { isLocal } from '@/util/env';
 import type { Metadata } from 'next';
 import Script from 'next/script';
+import { ReactNode } from 'react';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,7 +17,7 @@ export const metadata: Metadata = {
 export default async function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: ReactNode;
 }>) {
   return (
     <html
@@ -37,7 +38,7 @@ export default async function RootLayout({
         data-website-id={process.env.NEXT_PUBLIC_UMAMI_ID}
       />
       <SkyraInit />
-      <body className='h-screen overflow-hidden'>
+      <body className='min-h-screen'>
         <UmamiProvider>
           <BrukLokalMock>
             <RekrutteringsbistandProvider>
@@ -50,7 +51,7 @@ export default async function RootLayout({
   );
 }
 
-const BrukLokalMock = ({ children }: { children: React.ReactNode }) => {
+const BrukLokalMock = ({ children }: { children: ReactNode }) => {
   if (isLocal) {
     return <MirageInitializer>{children}</MirageInitializer>;
   }

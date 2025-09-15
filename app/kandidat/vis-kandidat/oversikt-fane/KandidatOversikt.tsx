@@ -1,18 +1,17 @@
-import { useKandidatContext } from '../KandidatContext';
-import KandidatBeskrivelse from './components/KandidatBeskrivelse';
-import KandidatErfaring from './components/KandidatErfaring';
-import KandidatFørerkort from './components/KandidatFørerkort';
-import KandidatGodkjenninger from './components/KandidatGodkjenninger';
-import KandidatKompetanse from './components/KandidatKompetanse';
-import KandidatKurs from './components/KandidatKurs';
-import KandidatOversiktDivider from './components/KandidatOversiktDivider';
-import KandidatSpråk from './components/KandidatSpråk';
-import KandidatUtdanning from './components/KandidatUtdanning';
-import KandidatØnsker from './components/KandidatØnsker';
-import KandidatOversiktSidebar from './components/sidebar/KandidatOversiktSidebar';
-import * as React from 'react';
+import KandidatBeskrivelse from './_ui/KandidatBeskrivelse';
+import KandidatErfaring from './_ui/KandidatErfaring';
+import KandidatFørerkort from './_ui/KandidatFørerkort';
+import KandidatGodkjenninger from './_ui/KandidatGodkjenninger';
+import KandidatKompetanse from './_ui/KandidatKompetanse';
+import KandidatKurs from './_ui/KandidatKurs';
+import KandidatOversiktDivider from './_ui/KandidatOversiktDivider';
+import KandidatSpråk from './_ui/KandidatSpråk';
+import KandidatUtdanning from './_ui/KandidatUtdanning';
+import KandidatØnsker from './_ui/KandidatØnsker';
+import KandidatOversiktSidebar from './_ui/sidebar/KandidatOversiktSidebar';
+import { useKandidatContext } from '@/app/kandidat/vis-kandidat/KandidatContext';
 
-const KandidatOversikt: React.FC = () => {
+export default function KandidatOversikt() {
   const { kandidatData } = useKandidatContext();
 
   return (
@@ -41,6 +40,4 @@ const KandidatOversikt: React.FC = () => {
       <KandidatOversiktSidebar />
     </div>
   );
-};
-
-export default KandidatOversikt;
+}

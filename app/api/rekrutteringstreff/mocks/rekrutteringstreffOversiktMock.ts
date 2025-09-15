@@ -17,7 +17,7 @@ export const rekrutteringstreffOversiktMock = [
   {
     id: 'a7f2387c-4354-4a2e-90a2-fff1a1d83dc6',
     tittel: 'Høstjobbtreff',
-    beskrivelse: 'Testbeskrivelse2',
+    beskrivelse: null,
     fraTid: '2025-09-10T10:00:00+02:00',
     tilTid: '2025-09-10T12:00:00+02:00',
     svarfrist: '2025-08-25T12:00:00+02:00',

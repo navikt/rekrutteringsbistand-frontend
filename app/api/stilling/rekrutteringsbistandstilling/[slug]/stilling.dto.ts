@@ -22,7 +22,7 @@ export const propertiesSchema = z
     jobpercentage: z.string().optional().nullable(),
     jobpercentagerange: z.string().optional().nullable(),
     extent: z.string().optional().nullable(),
-    applicationdue: z.union([z.string(), z.boolean()]).optional().nullable(),
+    applicationdue: z.string().optional().nullable(),
     jobtitle: z.any().optional().nullable(),
     keywords: z.string().optional().nullable(),
     positioncount: z.union([
@@ -34,10 +34,7 @@ export const propertiesSchema = z
       z.number().optional().nullable(),
       z.string().optional().nullable(),
     ]),
-    employerdescription: z.union([
-      z.string().nullable().optional(),
-      z.number().nullable().optional(),
-    ]),
+    employerdescription: z.union([z.string().nullable().optional()]),
     adtext: z.string().optional().nullable(),
     classification_styrk08_code: z.any().optional().nullable(),
     sourceurl: z.string().optional().nullable(),
@@ -53,7 +50,7 @@ export const propertiesSchema = z
     // workLanguage: z.string().optional().nullable(),
     salary: z.any().nullable().optional(),
     industry: z.string().optional().nullable(),
-    starttime: z.union([z.string(), z.boolean()]).optional().nullable(),
+    starttime: z.string().optional().nullable(),
     tags: z.any().nullable().optional(),
     workhours: z.any().nullable().optional(),
     workday: z.any().nullable().optional(),
@@ -130,7 +127,7 @@ export const KategoriSchema = z.object({
 });
 
 export const StillingSchemaDTO = z.object({
-  annonsenr: z.string(),
+  annonsenr: z.string().optional().nullable(),
   uuid: z.string(),
   created: LocalDateTimeSchema,
   createdBy: z.string(),
@@ -162,8 +159,8 @@ export const StillingSchemaDTO = z.object({
 const StillingskategoriEnum = z.enum(['STILLING', 'JOBBMESSE', 'FORMIDLING']);
 
 export const StillingsinfoSchema = z.object({
-  stillingsid: z.string(),
-  stillingsinfoid: z.string(),
+  stillingsid: z.string().optional(),
+  stillingsinfoid: z.string().optional(),
   eierNavKontorEnhetId: z.string().optional().nullable(),
   eierNavident: z.string().optional().nullable(),
   eierNavn: z.string().optional().nullable(),
@@ -171,6 +168,6 @@ export const StillingsinfoSchema = z.object({
 });
 
 export const StillingDataSchema = z.object({
-  stillingsinfo: StillingsinfoSchema.nullable(),
+  stillingsinfo: StillingsinfoSchema.nullable().optional(),
   stilling: StillingSchemaDTO,
 });

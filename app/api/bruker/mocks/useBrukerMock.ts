@@ -1,4 +1,4 @@
-import { Roller } from '../../../components/tilgangskontroll/roller';
+import { Roller } from '@/components/tilgangskontroll/roller';
 
 export const brukerMock = {
   navIdent: 'TestIdent',

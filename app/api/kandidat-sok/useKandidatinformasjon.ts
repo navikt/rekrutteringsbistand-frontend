@@ -1,7 +1,7 @@
-import { getSingleKandidatDataSchema } from '../../../mocks/kandidat.mock';
-import { KandidatSøkAPI } from '../api-routes';
-import { postApiWithSchemaEs } from '../fetcher';
 import { KandidatDataSchema } from './schema/cvSchema.zod';
+import { KandidatSøkAPI } from '@/app/api/api-routes';
+import { postApiWithSchemaEs } from '@/app/api/fetcher';
+import { getSingleKandidatDataSchema } from '@/mocks/kandidat.mock';
 import useSWRImmutable from 'swr/immutable';
 
 const kandidatinformasjonEndepunkt = `${KandidatSøkAPI.internUrl}/lookup-cv`;

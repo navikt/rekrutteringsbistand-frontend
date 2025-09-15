@@ -1,16 +1,16 @@
 'use client';
 
 import {
-  getNummerFraSted,
-  stedmappingFraGammeltNummer,
-} from '../../../util/fylkeOgKommuneMapping';
-import {
   useKandidatStillingssøk,
   YrkeJobbonskeStillingsSøkDTO,
-} from '../../api/kandidat-sok/useKandidatStillingssøk';
-import { useStillingsSøkFilter } from '../../stilling/StillingsSøkContext';
-import { StillingsStatusTyper } from '../../stilling/components/StillingsSøkFilter/StatusFilter';
-import React, { useRef } from 'react';
+} from '@/app/api/kandidat-sok/useKandidatStillingssøk';
+import { useStillingsSøkFilter } from '@/app/stilling/StillingsSøkContext';
+import { VisningsStatus } from '@/app/stilling/_util/stillingInfoUtil';
+import {
+  getNummerFraSted,
+  stedmappingFraGammeltNummer,
+} from '@/util/fylkeOgKommuneMapping';
+import { useEffect, useMemo, useRef } from 'react';
 
 const hentFylkerFraJobbønsker = (
   geografijobbønskenummer: string[],
@@ -73,7 +73,7 @@ export const useStillingForKandidat = (kandidatId: string | null) => {
   const { data: kandidatStillingssøk, isLoading: isKandidatLoading } =
     useKandidatStillingssøk(kandidatId);
 
-  const processedData = React.useMemo(() => {
+  const processedData = useMemo(() => {
     if (!kandidatStillingssøk) return null;
 
     const { geografiJobbonsker, yrkeJobbonskerObj, kommunenummerstring } =
@@ -96,14 +96,14 @@ export const useStillingForKandidat = (kandidatId: string | null) => {
     };
   }, [kandidatStillingssøk]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (processedData && !hasSetInitialData.current) {
       const { fylker, kommuner, yrkesønsker } = processedData;
 
       stillingsSøkContext.setFylker(fylker);
       stillingsSøkContext.setKommuner(kommuner);
       stillingsSøkContext.setFritekstListe(yrkesønsker);
-      stillingsSøkContext.setStatuser([StillingsStatusTyper.Publisert]);
+      stillingsSøkContext.setStatuser([VisningsStatus.ApenForSokere]);
 
       hasSetInitialData.current = true;
     }

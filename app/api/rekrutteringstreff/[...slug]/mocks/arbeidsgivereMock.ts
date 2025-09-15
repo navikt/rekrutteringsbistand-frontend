@@ -1,9 +1,10 @@
-import { ArbeidsgivereDTO } from '../useArbeidsgivere';
+import { ArbeidsgivereDTO } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
 import { faker } from '@faker-js/faker/locale/nb_NO';
 
 export const arbeidsgivereMock = (): ArbeidsgivereDTO => {
   return [
     {
+      arbeidsgiverTreffId: faker.string.uuid(),
       organisasjonsnummer: faker.string.numeric(9),
       navn: faker.company.name(),
       hendelser: [

@@ -1,18 +1,16 @@
 'use client';
 
-import SideBanner from '../components/layout/SideBanner';
-import SideLayout from '../components/layout/SideLayout';
-import { TilgangskontrollForInnhold } from '../components/tilgangskontroll/TilgangskontrollForInnhold';
-import { Roller } from '../components/tilgangskontroll/roller';
 import { KandidatSøkProvider } from './KandidaSokFilterContext';
 import { KandidatSøkMarkerteContextProvider } from './KandidatSøkMarkerteContext';
-import { PersonTallShortIcon } from '@navikt/aksel-icons';
+import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
+import { Roller } from '@/components/tilgangskontroll/roller';
+import { FC, ReactNode } from 'react';
 
 export interface KandidatSokLayoutProps {
-  children?: React.ReactNode | undefined;
+  children?: ReactNode | undefined;
 }
 
-const KandidatSokLayout: React.FC<KandidatSokLayoutProps> = ({ children }) => {
+const KandidatSokLayout: FC<KandidatSokLayoutProps> = ({ children }) => {
   return (
     <TilgangskontrollForInnhold
       kreverEnAvRollene={[
@@ -22,16 +20,7 @@ const KandidatSokLayout: React.FC<KandidatSokLayoutProps> = ({ children }) => {
     >
       <KandidatSøkProvider>
         <KandidatSøkMarkerteContextProvider>
-          <SideLayout
-            topBanner={
-              <SideBanner
-                ikon={<PersonTallShortIcon className='h-6 w-6' />}
-                tittel='Jobbsøkere'
-              />
-            }
-          >
-            {children}
-          </SideLayout>
+          {children}
         </KandidatSøkMarkerteContextProvider>
       </KandidatSøkProvider>
     </TilgangskontrollForInnhold>

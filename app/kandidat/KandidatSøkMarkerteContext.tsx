@@ -1,5 +1,5 @@
-import { RekbisError } from '../../util/rekbisError';
-import * as React from 'react';
+import { RekbisError } from '@/util/rekbisError';
+import { createContext, FC, useContext, useState, type ReactNode } from 'react';
 
 interface KandidatSøkMarkerteContextProps {
   markerteKandidater?: string[] | undefined;
@@ -9,7 +9,7 @@ interface KandidatSøkMarkerteContextProps {
 }
 
 const KandidatSøkMarkerteContext =
-  React.createContext<KandidatSøkMarkerteContextProps>({
+  createContext<KandidatSøkMarkerteContextProps>({
     markerteKandidater: [],
     setMarkert: () => {},
     setMarkertListe: () => {},
@@ -17,7 +17,7 @@ const KandidatSøkMarkerteContext =
   });
 
 export const useKandidatSøkMarkerteContext = () => {
-  const context = React.useContext(KandidatSøkMarkerteContext);
+  const context = useContext(KandidatSøkMarkerteContext);
   if (context === undefined) {
     throw new RekbisError({
       message: 'useKandidatSøk må være i scope: KandidatSøkProvider',
@@ -27,15 +27,13 @@ export const useKandidatSøkMarkerteContext = () => {
 };
 
 export interface KandidatSøkMarkerteContextProviderProps {
-  children?: React.ReactNode | undefined;
+  children?: ReactNode | undefined;
 }
 
-export const KandidatSøkMarkerteContextProvider: React.FC<
+export const KandidatSøkMarkerteContextProvider: FC<
   KandidatSøkMarkerteContextProviderProps
 > = ({ children }) => {
-  const [markerteKandidater, setMarkerteKandidater] = React.useState<string[]>(
-    [],
-  );
+  const [markerteKandidater, setMarkerteKandidater] = useState<string[]>([]);
 
   const setMarkert = (arenaKandidatnr: string) => {
     if (

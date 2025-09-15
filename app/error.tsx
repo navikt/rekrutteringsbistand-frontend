@@ -1,6 +1,6 @@
 'use client';
 
-import Feilmelding from './components/feilhåndtering/Feilmelding';
+import Feilmelding from '@/components/feilhåndtering/Feilmelding';
 import { Button } from '@navikt/ds-react';
 import { ArrowLeftIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';

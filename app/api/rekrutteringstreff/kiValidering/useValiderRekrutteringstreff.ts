@@ -1,7 +1,7 @@
 'use client';
 
-import { postApi } from '../../fetcher';
-import { validerRekrutteringstreffMock } from '../mocks/validerRekrutteringstreffMock';
+import { postApi } from '@/app/api/fetcher';
+import { validerRekrutteringstreffMock } from '@/app/api/rekrutteringstreff/mocks/validerRekrutteringstreffMock';
 import useSWRMutation from 'swr/mutation';
 import { z } from 'zod';
 
@@ -15,6 +15,7 @@ const ReqSchema = z.object({
 export type ValiderRekrutteringstreffDto = z.infer<typeof ReqSchema>;
 
 const ResponseSchema = z.object({
+  loggId: z.string(),
   bryterRetningslinjer: z.boolean(),
   begrunnelse: z.string(),
 });

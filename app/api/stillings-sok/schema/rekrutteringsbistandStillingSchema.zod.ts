@@ -1,5 +1,5 @@
-import { StillingsinfoSchema } from '../../stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { ESStillingSchema } from './stillingSchema.zod';
+import { StillingsinfoSchema } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { z } from 'zod';
 
 export type RekrutteringsbistandStillingSchemaDTO = z.infer<

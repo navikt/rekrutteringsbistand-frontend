@@ -1,5 +1,5 @@
-import { KandidatAPI } from '../api-routes';
-import { postApi } from '../fetcher';
+import { KandidatAPI } from '@/app/api/api-routes';
+import { postApi } from '@/app/api/fetcher';
 
 export const leggTilKandidatEndepunkt = (stillingsId: string) =>
   `${KandidatAPI.internUrl}/veileder/stilling/${stillingsId}/kandidatliste/kandidater`;

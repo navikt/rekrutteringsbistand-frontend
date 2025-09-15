@@ -3,8 +3,8 @@
 /**
  * Endepunkt /useSynlighetsevaluering
  */
-import { SynlighetsevalueringAPI } from '../../api-routes';
-import { postApiWithSchema } from '../../fetcher';
+import { SynlighetsevalueringAPI } from '@/app/api/api-routes';
+import { postApiWithSchema } from '@/app/api/fetcher';
 import { Server } from 'miragejs/server';
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';

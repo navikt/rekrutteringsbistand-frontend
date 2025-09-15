@@ -1,23 +1,24 @@
 'use client';
 
-import { KandidatDataSchemaDTO } from '../api/kandidat-sok/schema/cvSchema.zod';
-import {
-  KandidatsokKandidat,
-  useKandidatsøk,
-} from '../api/kandidat-sok/useKandidatsøk';
-import RekrutteringstreffFeatureToggle from '../components/RekrutteringstreffFeatureToggle';
-import SWRLaster from '../components/SWRLaster';
-import { useKandidatNavigeringContext } from '../providers/KandidatNavigeringContext';
-import LagreIRekrutteringstreffButton from '../rekrutteringstreff/[rekrutteringstreffId]/components/lagreIRekrutteringstreffButton/LagreIRekrutteringstreffButton';
 import {
   KandidatSøkPortefølje,
   useKandidatSøkFilterContext,
 } from './KandidaSokFilterContext';
 import { useKandidatSøkMarkerteContext } from './KandidatSøkMarkerteContext';
-import KandidatKort from './components/KandidatKort';
-import LagreIKandidatlisteButton from './components/lagreKandidatliste/LagreIKandidatlisteButton';
+import KandidatKort from './_ui/KandidatKort';
+import LagreIKandidatlisteButton from './_ui/lagreKandidatliste/LagreIKandidatlisteButton';
+import { KandidatDataSchemaDTO } from '@/app/api/kandidat-sok/schema/cvSchema.zod';
+import {
+  KandidatsokKandidat,
+  useKandidatsøk,
+} from '@/app/api/kandidat-sok/useKandidatsøk';
+import LagreIRekrutteringstreffButton from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/lagreIRekrutteringstreffButton/LagreIRekrutteringstreffButton';
+import RekrutteringstreffFeatureToggle from '@/components/RekrutteringstreffFeatureToggle';
+import SWRLaster from '@/components/SWRLaster';
+import SkeletonKort from '@/components/layout/SkeletonKort';
+import { useKandidatNavigeringContext } from '@/providers/KandidatNavigeringContext';
 import { Checkbox, Pagination } from '@navikt/ds-react';
-import * as React from 'react';
+import { FC, useEffect } from 'react';
 
 interface KandidatSøkResultatProps {
   type: KandidatSøkPortefølje;
@@ -27,7 +28,7 @@ interface KandidatSøkResultatProps {
   alleredeLagtTilKandidatliste?: string[];
 }
 
-const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({
+const KandidatSøkResultat: FC<KandidatSøkResultatProps> = ({
   type,
   stillingsId,
   rekrutteringstreffId,
@@ -38,7 +39,7 @@ const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({
   const kandidatsøkHook = useKandidatsøk(type, filter);
   const { setKandidatNavigering } = useKandidatNavigeringContext();
 
-  React.useEffect(() => {
+  useEffect(() => {
     setKandidatNavigering(kandidatsøkHook.data?.navigering.kandidatnumre ?? []);
   }, [kandidatsøkHook.data?.navigering, setKandidatNavigering]);
 
@@ -46,7 +47,14 @@ const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({
     useKandidatSøkMarkerteContext();
 
   return (
-    <SWRLaster hooks={[kandidatsøkHook]}>
+    <SWRLaster
+      hooks={[kandidatsøkHook]}
+      skeleton={
+        <div className='mt-14'>
+          <SkeletonKort />
+        </div>
+      }
+    >
       {(kandidatData) => {
         const antallSider = Math.ceil(kandidatData.antallTotalt / 25);
         // Elasticsearch takler ikke mer enn 10000 element i pagineringen uten å endre max result i es, som kan ha konsekvenser for minne og ytelse.
@@ -85,7 +93,7 @@ const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({
                   Marker alle på siden
                 </Checkbox>
               </div>
-              <div className='flex gap-2'>
+              <div className='flex flex-col gap-2'>
                 {!rekrutteringstreffId && (
                   <LagreIKandidatlisteButton stillingsId={stillingsId} />
                 )}
@@ -101,16 +109,18 @@ const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({
                 </RekrutteringstreffFeatureToggle>
               </div>
             </div>
-            {kandidatData.kandidater?.map((kandidat, index) => (
-              <KandidatKort
-                stillingsId={stillingsId}
-                alleredeLagtTil={
-                  alleredeLagtTilKandidatliste ?? alleredeLagtTilTreff
-                }
-                key={kandidat.arenaKandidatnr || index}
-                kandidat={kandidat as KandidatDataSchemaDTO}
-              />
-            ))}
+            <div className='flex flex-col gap-1'>
+              {kandidatData.kandidater?.map((kandidat, index) => (
+                <KandidatKort
+                  stillingsId={stillingsId}
+                  alleredeLagtTil={
+                    alleredeLagtTilKandidatliste ?? alleredeLagtTilTreff
+                  }
+                  key={kandidat.arenaKandidatnr || index}
+                  kandidat={kandidat as KandidatDataSchemaDTO}
+                />
+              ))}
+            </div>
             <div className={'flex justify-between items-center'}>
               <div>Viser {kandidatData.antallTotalt} treff</div>
 

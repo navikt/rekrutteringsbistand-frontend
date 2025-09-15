@@ -1,9 +1,9 @@
-import { mockKandidatliste } from '../../../mocks/kandidatliste.mock';
-import { KandidatAPI } from '../api-routes';
-import { getAPIwithSchema } from '../fetcher';
-import { StillingsDataDTO } from '../stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
-import { RekrutteringsbistandStillingSchemaDTO } from '../stillings-sok/schema/rekrutteringsbistandStillingSchema.zod';
 import { kandidatlisteSchema } from './schema.zod';
+import { KandidatAPI } from '@/app/api/api-routes';
+import { getAPIwithSchema } from '@/app/api/fetcher';
+import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
+import { RekrutteringsbistandStillingSchemaDTO } from '@/app/api/stillings-sok/schema/rekrutteringsbistandStillingSchema.zod';
+import { mockKandidatliste } from '@/mocks/kandidatliste.mock';
 import useSWRImmutable from 'swr/immutable';
 
 export const kandidatlisteEndepunkt = (stillingsId?: string) =>

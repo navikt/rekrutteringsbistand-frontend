@@ -1,5 +1,8 @@
 import { defineConfig, devices } from '@playwright/test';
 
+// Tillat overstyring av port i CI hvis flere prosesser kjører parallelt
+const PLAYWRIGHT_PORT = process.env.PLAYWRIGHT_PORT || '1337';
+
 /**
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
@@ -47,12 +50,21 @@ export default defineConfig({
   /* Configure projects for major browsers */
   projects: [
     {
-      name: 'chromium',
+      name: 'chromium-desktop',
       use: {
         ...devices['Desktop Chrome'],
         viewport: { width: 1440, height: 1080 },
       },
     },
+    // TODO Legg til responsive
+    // {
+    //   name: 'chromium-responsive',
+    //   use: {
+    //     ...devices['Desktop Chrome'],
+    //     // Under 720px slik at mobil/spesielle komponent-states testes (f.eks. Filtrer-knapp)
+    //     viewport: { width: 680, height: 1080 },
+    //   },
+    // },
 
     // {
     //   name: 'firefox',
@@ -86,9 +98,12 @@ export default defineConfig({
   ],
 
   /* Run your local dev server before starting the tests */
-  // webServer: {
-  //   command: 'npm run start',
-  //   url: 'http://127.0.0.1:3000',
-  //   reuseExistingServer: !process.env.CI,
-  // },
+  webServer: {
+    // Dreper eventuell tidligere prosess som holder på porten før vi starter (kan skje i pipeline ved gjentatte kjøringer)
+    command: `bash -c "PID=\$(lsof -ti tcp:${PLAYWRIGHT_PORT} || true); if [ -n \"$PID\" ]; then kill -9 $PID; fi; NEXT_PUBLIC_PLAYWRIGHT_TEST_MODE=true next dev -p ${PLAYWRIGHT_PORT}"`,
+    url: `http://localhost:${PLAYWRIGHT_PORT}`,
+    // Gjenbruk server hvis den allerede kjører (unngår feil når flere test-runder trigges i samme miljø)
+    reuseExistingServer: true,
+    timeout: 120 * 1000,
+  },
 });

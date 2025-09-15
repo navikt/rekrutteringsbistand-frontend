@@ -3,7 +3,7 @@
 /**
  * Endepunkt /usePamPostdata
  */
-import { getAPIwithSchema } from '../../../fetcher';
+import { getAPIwithSchema } from '@/app/api/fetcher';
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
 

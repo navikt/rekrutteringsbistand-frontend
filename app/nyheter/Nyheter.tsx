@@ -1,39 +1,27 @@
 'use client';
 
-import HovedInnholdKort from '../components/layout/HovedInnholdKort';
-import SideLayout from '../components/layout/SideLayout';
-import SideTopBanner from '../components/layout/SideTopBanner';
-import VisEditorTekst from '../components/rikteksteditor/VisEditorTekst';
-import { TilgangskontrollForInnhold } from '../components/tilgangskontroll/TilgangskontrollForInnhold';
-import { Roller } from '../components/tilgangskontroll/roller';
-import { formaterNorskDato } from '../components/util';
-import { nyheter } from '../nyheter';
 import { OpprettNyhetModal } from './OpprettNyhetModal';
+import { nyheter } from '@/app/nyheter';
+import VisEditorTekst from '@/components/felles/rikteksteditor/VisEditorTekst';
+import HovedInnholdKort from '@/components/layout/HovedInnholdKort';
+import SideLayout from '@/components/layout/SideLayout';
+import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
+import { Roller } from '@/components/tilgangskontroll/roller';
+import { formaterNorskDato } from '@/util/util';
 import { PencilIcon, TrashIcon } from '@navikt/aksel-icons';
 import { BodyShort, Box, Button } from '@navikt/ds-react';
-import * as React from 'react';
 
-const Nyheter: React.FC = () => {
+export default function Nyheter() {
   return (
     <HovedInnholdKort>
-      <SideLayout
-        banner={
-          <SideTopBanner
-            tittel={'Nyheter'}
-            knappIBanner={
-              <TilgangskontrollForInnhold
-                skjulVarsel
-                kreverEnAvRollene={[
-                  Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER,
-                ]}
-              >
-                <OpprettNyhetModal />
-              </TilgangskontrollForInnhold>
-            }
-          />
-        }
-      >
+      <SideLayout>
         <div className='flex flex-col gap-4 mb-4'>
+          <TilgangskontrollForInnhold
+            skjulVarsel
+            kreverEnAvRollene={[Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER]}
+          >
+            <OpprettNyhetModal />
+          </TilgangskontrollForInnhold>
           {nyheter.map((nyhet, index) => (
             <Box.New
               key={index}
@@ -72,6 +60,4 @@ const Nyheter: React.FC = () => {
       </SideLayout>
     </HovedInnholdKort>
   );
-};
-
-export default Nyheter;
+}

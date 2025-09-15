@@ -1,16 +1,16 @@
 'use client';
 
-import {
-  mapToKandidatSokKandidat,
-  mockKandidatDataList,
-} from '../../../mocks/kandidat.mock';
+import { KandidatSøkAPI } from '@/app/api/api-routes';
+import { postApiWithSchema } from '@/app/api/fetcher';
+import { usePamGeografi } from '@/app/api/pam-geografi/typehead/lokasjoner/usePamGeografi';
 import {
   IKandidaSokFilterContext,
   KandidatSøkPortefølje,
-} from '../../kandidat/KandidaSokFilterContext';
-import { KandidatSøkAPI } from '../api-routes';
-import { postApiWithSchema } from '../fetcher';
-import { usePamGeografi } from '../pam-geografi/typehead/lokasjoner/usePamGeografi';
+} from '@/app/kandidat/KandidaSokFilterContext';
+import {
+  mapToKandidatSokKandidat,
+  mockKandidatDataList,
+} from '@/mocks/kandidat.mock';
 /**
  * Endepunkt /minebrukere
  */

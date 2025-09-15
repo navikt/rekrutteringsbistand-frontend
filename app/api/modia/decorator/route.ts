@@ -1,5 +1,5 @@
-import { ModiaDecoratorAPI } from '../../api-routes';
-import { proxyWithOBO } from '../../oboProxy';
+import { ModiaDecoratorAPI } from '@/app/api/api-routes';
+import { proxyWithOBO } from '@/app/api/oboProxy';
 import { NextRequest } from 'next/server';
 
 export async function GET(req: NextRequest) {

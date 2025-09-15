@@ -1,5 +1,5 @@
-import { isLocal } from '../../../../util/env';
-import { ArbeidsgiverNotifikasjonAPI } from '../../api-routes';
+import { ArbeidsgiverNotifikasjonAPI } from '@/app/api/api-routes';
+import { isLocal } from '@/util/env';
 
 export async function GET() {
   if (isLocal) {

@@ -1,8 +1,8 @@
 'use client';
 
-import { RekrutteringstreffAPI } from '../../api-routes';
-import { getAPIwithSchema } from '../../fetcher';
 import { alleHendelserMock } from './mocks/alleHendelserMock';
+import { RekrutteringstreffAPI } from '@/app/api/api-routes';
+import { getAPIwithSchema } from '@/app/api/fetcher';
 import useSWR from 'swr';
 import { z } from 'zod';
 

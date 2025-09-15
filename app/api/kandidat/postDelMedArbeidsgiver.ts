@@ -3,8 +3,8 @@
 /**
  * Endepunkt /useDelMedArbeidsgiver
  */
-import { KandidatAPI } from '../api-routes';
-import { postApi } from '../fetcher';
+import { KandidatAPI } from '@/app/api/api-routes';
+import { postApi } from '@/app/api/fetcher';
 
 const delMedArbeidsgiverEndepunkt = (kandidatlisteId: string) =>
   `${KandidatAPI.internUrl}/veileder/kandidatlister/${kandidatlisteId}/deltekandidater`;

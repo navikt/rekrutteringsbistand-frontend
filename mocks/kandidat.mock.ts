@@ -1,12 +1,12 @@
 // Make sure these specific DTOs are correctly defined and imported if they are distinct
 // For now, I'll assume they are part of KandidatDataSchemaDTO's array definitions
-import { KandidatDataSchemaDTO } from '../app/api/kandidat-sok/schema/cvSchema.zod';
-import { GeografiJobbonskerSchemaDTO } from '../app/api/kandidat-sok/schema/geografiJobbonskerSchema.zod';
-import { YrkejobbOnskerSchemaDTO } from '../app/api/kandidat-sok/schema/yrkejobbOnskerSchema.zod';
-import { KandidatStillingssøkDTO } from '../app/api/kandidat-sok/useKandidatStillingssøk';
-import { KandidatsammendragDTO } from '../app/api/kandidat-sok/useKandidatsammendrag';
-import { KandidatsokKandidat } from '../app/api/kandidat-sok/useKandidatsøk';
-import { Innsatsgruppe } from '../app/kandidat/components/innsatsgrupper';
+import { KandidatDataSchemaDTO } from '@/app/api/kandidat-sok/schema/cvSchema.zod';
+import { GeografiJobbonskerSchemaDTO } from '@/app/api/kandidat-sok/schema/geografiJobbonskerSchema.zod';
+import { YrkejobbOnskerSchemaDTO } from '@/app/api/kandidat-sok/schema/yrkejobbOnskerSchema.zod';
+import { KandidatStillingssøkDTO } from '@/app/api/kandidat-sok/useKandidatStillingssøk';
+import { KandidatsammendragDTO } from '@/app/api/kandidat-sok/useKandidatsammendrag';
+import { KandidatsokKandidat } from '@/app/api/kandidat-sok/useKandidatsøk';
+import { Innsatsgruppe } from '@/app/kandidat/_ui/innsatsgrupper';
 import { en, Faker, nb_NO } from '@faker-js/faker';
 
 // import * as fs from 'fs'; // Removed as per previous instructions to not save to JSON

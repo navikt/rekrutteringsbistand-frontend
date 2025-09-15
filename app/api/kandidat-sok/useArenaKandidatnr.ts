@@ -1,6 +1,6 @@
-import { getSingleKandidatDataSchema } from '../../../mocks/kandidat.mock';
-import { KandidatSøkAPI } from '../api-routes';
-import { postApiWithSchema } from '../fetcher';
+import { KandidatSøkAPI } from '@/app/api/api-routes';
+import { postApiWithSchema } from '@/app/api/fetcher';
+import { getSingleKandidatDataSchema } from '@/mocks/kandidat.mock';
 import { Server } from 'miragejs';
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';

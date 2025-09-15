@@ -1,4 +1,4 @@
-import { RekbisError } from '../../util/rekbisError';
+import { RekbisError } from '@/util/rekbisError';
 import { logger } from '@navikt/next-logger';
 import { z } from 'zod';
 

@@ -3,8 +3,8 @@
 /**
  * Endepunkt /useMineKandidatlister
  */
-import { KandidatAPI } from '../api-routes';
-import { getAPIwithSchema } from '../fetcher';
+import { KandidatAPI } from '@/app/api/api-routes';
+import { getAPIwithSchema } from '@/app/api/fetcher';
 import { Server } from 'miragejs';
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';

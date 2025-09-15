@@ -1,0 +1,14 @@
+{
+  "defaults": {
+    "timeout": 10000,
+    "viewport": {
+      "height": 480,
+      "width": 320
+    }
+  },
+  "urls": [
+    "http://localhost:1337",
+    "http://localhost:1337/stilling",
+    "http://localhost:1337/kandidat"
+  ]
+}

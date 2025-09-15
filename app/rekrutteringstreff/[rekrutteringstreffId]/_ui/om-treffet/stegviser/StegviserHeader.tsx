@@ -1,0 +1,246 @@
+'use client';
+
+import { useStegviser } from './StegviserContext';
+import {
+  avsluttInvitasjon,
+  avsluttOppfolging,
+  avsluttRekrutteringstreff,
+  publiserRekrutteringstreff,
+} from '@/app/api/rekrutteringstreff/[...slug]/steg';
+import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
+import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
+import { RekbisError } from '@/util/rekbisError';
+import { Button, Heading, ProgressBar } from '@navikt/ds-react';
+import { FC, useState } from 'react';
+
+interface Props {
+  stepDetails: { id: number; stepLabel: string; header: string }[];
+  onToggleForhåndsvisning?: (erIForhåndsvisning: boolean) => void;
+  erIForhåndsvisning: boolean;
+}
+
+const StegviserHeader: FC<Props> = ({
+  stepDetails,
+  onToggleForhåndsvisning,
+  erIForhåndsvisning,
+}) => {
+  const [isPublishing, setIsPublishing] = useState(false);
+  const [isFinishingInvitation, setIsFinishingInvitation] = useState(false);
+  const [isFinishingFollowUp, setIsFinishingFollowUp] = useState(false);
+  const [isFinishingRecruitment, setIsFinishingRecruitment] = useState(false);
+
+  const { rekrutteringstreffId } = useRekrutteringstreffContext();
+  const { data: rekrutteringstreffData, mutate: mutateRekrutteringstreff } =
+    useRekrutteringstreff(rekrutteringstreffId);
+
+  const {
+    activeStep,
+    erPubliseringklar,
+    harInvitert,
+    sjekklistePunkterFullfort,
+    totaltAntallSjekklistePunkter,
+    inviterePunkterFullfort,
+    totaltAntallInviterePunkter,
+    arrangementtidspunktHarPassert,
+    tiltidspunktHarPassert,
+    antallMøttOpp,
+    antallIkkeMøttOpp,
+    antallUbestemt,
+    antallInviterte,
+  } = useStegviser();
+
+  const antallRegistrertOppmøte = antallMøttOpp + antallIkkeMøttOpp;
+
+  const onPubliserTreffet = async () => {
+    setIsPublishing(true);
+    try {
+      await publiserRekrutteringstreff(rekrutteringstreffId);
+      await mutateRekrutteringstreff();
+    } catch (error) {
+      new RekbisError({
+        message: 'Publisering av rekrutteringstreff feilet',
+        error,
+      });
+    } finally {
+      setIsPublishing(false);
+    }
+  };
+
+  const onAvsluttInvitasjon = async () => {
+    setIsFinishingInvitation(true);
+    try {
+      await avsluttInvitasjon(rekrutteringstreffId);
+      await mutateRekrutteringstreff();
+    } catch (error) {
+      new RekbisError({ message: 'Avslutting av invitasjon feilet', error });
+    } finally {
+      setIsFinishingInvitation(false);
+    }
+  };
+
+  const onAvsluttOppfolging = async () => {
+    setIsFinishingFollowUp(true);
+    try {
+      await avsluttOppfolging(rekrutteringstreffId);
+      await mutateRekrutteringstreff();
+    } catch (error) {
+      new RekbisError({ message: 'Avslutting av oppfølging feilet', error });
+    } finally {
+      setIsFinishingFollowUp(false);
+    }
+  };
+
+  const onAvsluttRekrutteringstreff = async () => {
+    setIsFinishingRecruitment(true);
+    try {
+      await avsluttRekrutteringstreff(rekrutteringstreffId);
+      await mutateRekrutteringstreff();
+    } catch (error) {
+      new RekbisError({
+        message: 'Avslutting av rekrutteringstreff feilet',
+        error,
+      });
+    } finally {
+      setIsFinishingRecruitment(false);
+    }
+  };
+
+  const harAvsluttet =
+    rekrutteringstreffData?.hendelser?.some(
+      (h) => h.hendelsestype === 'AVSLUTT',
+    ) ?? false;
+
+  const currentHeader =
+    stepDetails.find((d) => d.id === activeStep)?.header ?? 'Steg';
+
+  const getProsent = (value: number, max: number) =>
+    max === 0 ? 0 : (value / max) * 100;
+
+  const ProgressMedTeller: FC<{
+    value: number;
+    max: number;
+    ariaLabel: string;
+  }> = ({ value, max, ariaLabel }) => (
+    <>
+      <ProgressBar
+        value={getProsent(value, max)}
+        size='small'
+        className='mt-2'
+        aria-label={ariaLabel}
+      />
+      <div className='flex justify-end text-sm tabular-nums mt-1'>
+        {value} / {max}
+      </div>
+    </>
+  );
+
+  const handleToggleForhåndsvisning = () => {
+    onToggleForhåndsvisning?.(!erIForhåndsvisning);
+  };
+
+  return (
+    <div className='w-full'>
+      <div className='grid grid-cols-2 gap-2 w-full'>
+        <Button
+          size='small'
+          variant='secondary'
+          className='w-full'
+          onClick={handleToggleForhåndsvisning}
+        >
+          {erIForhåndsvisning ? 'Rediger' : 'Forhåndsvis'}
+        </Button>
+
+        {activeStep === 1 ? (
+          <Button
+            disabled={!erPubliseringklar || isPublishing}
+            loading={isPublishing}
+            size='small'
+            className='w-full'
+            onClick={onPubliserTreffet}
+          >
+            Publiser treffet
+          </Button>
+        ) : activeStep === 2 ? (
+          <Button
+            variant='primary'
+            size='small'
+            disabled={
+              !harInvitert ||
+              !arrangementtidspunktHarPassert ||
+              isFinishingInvitation
+            }
+            loading={isFinishingInvitation}
+            className='w-full'
+            onClick={onAvsluttInvitasjon}
+          >
+            Ferdig å invitere
+          </Button>
+        ) : activeStep === 3 ? (
+          <Button
+            variant='primary'
+            size='small'
+            loading={isFinishingFollowUp}
+            disabled={
+              isFinishingFollowUp ||
+              !tiltidspunktHarPassert ||
+              antallUbestemt > 0
+            }
+            className='w-full'
+            onClick={onAvsluttOppfolging}
+          >
+            Ferdig med oppfølging
+          </Button>
+        ) : activeStep === 4 && !harAvsluttet ? (
+          <Button
+            variant='primary'
+            size='small'
+            loading={isFinishingRecruitment}
+            className='w-full'
+            onClick={onAvsluttRekrutteringstreff}
+          >
+            Avslutt treffet
+          </Button>
+        ) : (
+          <div />
+        )}
+      </div>
+
+      <div className='flex items-center justify-between w-full mt-4'>
+        <div className='flex-grow mr-4'>
+          <div className='flex items-center justify-between'>
+            <div className='flex items-center'>
+              <Heading size='small'>{currentHeader}</Heading>
+            </div>
+            <div />
+          </div>
+
+          <div>
+            {activeStep === 1 && (
+              <ProgressMedTeller
+                value={sjekklistePunkterFullfort}
+                max={totaltAntallSjekklistePunkter}
+                ariaLabel='Fremdrift for publisering'
+              />
+            )}
+            {activeStep === 2 && (
+              <ProgressMedTeller
+                value={inviterePunkterFullfort}
+                max={totaltAntallInviterePunkter}
+                ariaLabel='Fremdrift for invitasjon'
+              />
+            )}
+            {activeStep === 3 && (
+              <ProgressMedTeller
+                value={antallRegistrertOppmøte}
+                max={antallInviterte}
+                ariaLabel='Fremdrift for oppfølging'
+              />
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default StegviserHeader;

@@ -1,8 +1,8 @@
 'use client';
 
-import { RekrutteringstreffAPI } from '../../api-routes';
-import { getAPIwithSchema } from '../../fetcher';
 import { arbeidsgivereMock } from './mocks/arbeidsgivereMock';
+import { RekrutteringstreffAPI } from '@/app/api/api-routes';
+import { getAPIwithSchema } from '@/app/api/fetcher';
 import useSWR from 'swr';
 import { z } from 'zod';
 
@@ -20,6 +20,7 @@ const ArbeidsgiverHendelseSchema = z.object({
 });
 
 const RekrutteringstreffArbeidsgiverSchema = z.object({
+  arbeidsgiverTreffId: z.string().optional(),
   organisasjonsnummer: z.string(),
   navn: z.string(),
   status: z.string().optional(),

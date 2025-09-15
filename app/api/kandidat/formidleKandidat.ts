@@ -3,8 +3,8 @@
 /**
  * Endepunkt /useEndreKandidatUtfall
  */
-import { KandidatAPI } from '../api-routes';
-import { postApi } from '../fetcher';
+import { KandidatAPI } from '@/app/api/api-routes';
+import { postApi } from '@/app/api/fetcher';
 import { Server } from 'miragejs/server';
 
 export const formidleUsynligKandidatEndepunkt = (kandidatlisteId: string) =>

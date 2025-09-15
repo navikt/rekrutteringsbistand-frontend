@@ -1,4 +1,4 @@
-import { InnleggListeDTO } from '../useInnlegg';
+import { InnleggListeDTO } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
 
 export const innleggMock: InnleggListeDTO = [
   {

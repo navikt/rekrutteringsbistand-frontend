@@ -3,10 +3,10 @@
 /**
  * Endepunkt /statistikk
  */
-import { StatistikkAPI } from '../api-routes';
-import { getAPIwithSchema } from '../fetcher';
-import { formaterDatoTilApi } from '../foresporsel-om-deling-av-cv/statistikk/useForesporselOmdelingAvCV';
 import { statistikkMock } from './mocks/statistikkMock';
+import { StatistikkAPI } from '@/app/api/api-routes';
+import { getAPIwithSchema } from '@/app/api/fetcher';
+import { formaterDatoTilApi } from '@/app/api/foresporsel-om-deling-av-cv/statistikk/useForesporselOmdelingAvCV';
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
 

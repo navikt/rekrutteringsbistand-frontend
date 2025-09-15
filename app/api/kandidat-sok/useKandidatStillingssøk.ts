@@ -1,8 +1,8 @@
 'use client';
 
-import { getSingleKandidatStillingssøk } from '../../../mocks/kandidat.mock';
-import { KandidatSøkAPI } from '../api-routes';
-import { postApiWithSchemaEs } from '../fetcher';
+import { KandidatSøkAPI } from '@/app/api/api-routes';
+import { postApiWithSchemaEs } from '@/app/api/fetcher';
+import { getSingleKandidatStillingssøk } from '@/mocks/kandidat.mock';
 import { Server } from 'miragejs';
 /**
  * Endepunkt /useKandidatStillingssøk

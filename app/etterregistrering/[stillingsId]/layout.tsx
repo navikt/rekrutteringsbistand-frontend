@@ -1,10 +1,9 @@
-import NotFound from '../../not-found';
-import { StillingsContextProvider } from '../../stilling/[stillingsId]/StillingsContext';
-import StillingSideLayout from '../../stilling/[stillingsId]/StillingssideLayout';
-import * as React from 'react';
+import NotFound from '@/app/not-found';
+import { StillingsContextProvider } from '@/app/stilling/[stillingsId]/StillingsContext';
+import { ReactNode } from 'react';
 
 interface FormidlingSideRootLayoutProps {
-  children: React.ReactNode;
+  children: ReactNode;
   params: Promise<{ stillingsId: string }>;
 }
 export default async function FormidlingSideRootLayout({
@@ -18,7 +17,7 @@ export default async function FormidlingSideRootLayout({
   }
   return (
     <StillingsContextProvider stillingsId={stillingsId}>
-      <StillingSideLayout>{children}</StillingSideLayout>
+      {children}
     </StillingsContextProvider>
   );
 }

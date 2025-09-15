@@ -1,4 +1,4 @@
-import { JobbsøkerDTO } from '../useJobbsøkere';
+import { JobbsøkerDTO } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
 import { Faker, en_NG, nb_NO } from '@faker-js/faker';
 import navfaker from 'nav-faker/dist/index';
 

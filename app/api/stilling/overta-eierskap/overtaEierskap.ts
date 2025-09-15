@@ -1,5 +1,5 @@
-import { StillingAPI } from '../../api-routes';
-import { putApi } from '../../fetcher';
+import { StillingAPI } from '@/app/api/api-routes';
+import { putApi } from '@/app/api/fetcher';
 
 interface OpprettStillingInfo {
   eierNavident: string;

@@ -1,13 +1,10 @@
-import { useRekrutteringstreffContext } from '../RekrutteringstreffContext';
-import TreffHeader from '../components/TreffHeader';
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
 import KandidatSøkTabs from '@/app/kandidat/KandidatSøkTabs';
-import * as React from 'react';
+import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
+import { FC, useEffect, useState } from 'react';
 
-const KandidatTilRekrutteringstreff: React.FC = () => {
-  const [alleredeLagtTilTreff, setAlleredeLagtTil] = React.useState<string[]>(
-    [],
-  );
+const KandidatTilRekrutteringstreff: FC = () => {
+  const [alleredeLagtTilTreff, setAlleredeLagtTil] = useState<string[]>([]);
 
   const rekrutteringstreff = useRekrutteringstreffContext();
 
@@ -15,7 +12,7 @@ const KandidatTilRekrutteringstreff: React.FC = () => {
     rekrutteringstreff.rekrutteringstreffId as string,
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (jobbsøkere) {
       const listeOverValgteJobbsøkere = jobbsøkere
         .map((jobbsøker) => jobbsøker.kandidatnummer)
@@ -27,7 +24,6 @@ const KandidatTilRekrutteringstreff: React.FC = () => {
 
   return (
     <>
-      <TreffHeader endreTittel={false} />
       <KandidatSøkTabs
         alleredeLagtTilTreff={alleredeLagtTilTreff}
         rekrutteringstreffId={rekrutteringstreff?.rekrutteringstreffId}

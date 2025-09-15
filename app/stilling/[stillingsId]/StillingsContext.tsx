@@ -1,20 +1,26 @@
 'use client';
 
-import { RekbisError } from '../../../util/rekbisError';
 import {
   KandidatlisteInfoDTO,
   useKandidatlisteInfo,
-} from '../../api/kandidat/useKandidatlisteInfo';
-import { StillingsDataDTO } from '../../api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
-import { useStilling } from '../../api/stilling/rekrutteringsbistandstilling/[slug]/useStilling';
-import { useBreadcrumbsLabels } from '../../components/Breadcrumbs/BreadcrumbsProvider';
-import SWRLaster from '../../components/SWRLaster';
-import { eierStilling } from '../../components/tilgangskontroll/erEier';
-import { Roller } from '../../components/tilgangskontroll/roller';
-import { useApplikasjonContext } from '../../providers/ApplikasjonContext';
-import { Stillingskategori } from '../stilling-typer';
-import { useRouter } from 'next/navigation';
-import React, { useMemo } from 'react';
+} from '@/app/api/kandidat/useKandidatlisteInfo';
+import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
+import { useStilling } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/useStilling';
+import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
+import SWRLaster from '@/components/SWRLaster';
+import { eierStilling } from '@/components/tilgangskontroll/erEier';
+import { Roller } from '@/components/tilgangskontroll/roller';
+import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
+import { RekbisError } from '@/util/rekbisError';
+import {
+  createContext,
+  FC,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from 'react';
 
 interface StillingsContextType {
   stillingsId: string;
@@ -26,22 +32,23 @@ interface StillingsContextType {
   erEier?: boolean;
   setForhåndsvisData: (data: StillingsDataDTO | null) => void;
   erDirektemeldt: boolean;
-  refetch: () => void;
+  refetch?: () => void;
   erSlettet: boolean;
   erJobbmesse: boolean;
 }
 
-const StillingsContext = React.createContext<StillingsContextType | undefined>(
+const StillingsContext = createContext<StillingsContextType | undefined>(
   undefined,
 );
 
 interface StillingsContextProviderProps {
   stillingsId: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }
-export const StillingsContextProvider: React.FC<
-  StillingsContextProviderProps
-> = ({ stillingsId, children }) => {
+export const StillingsContextProvider: FC<StillingsContextProviderProps> = ({
+  stillingsId,
+  children,
+}) => {
   const stillingHook = useStilling(stillingsId);
 
   return (
@@ -63,60 +70,50 @@ export const StillingsContextProvider: React.FC<
 
 interface StillingsContextMedDataProps {
   stillingsData: StillingsDataDTO;
-  children: React.ReactNode;
-  refetch: () => void;
+  children: ReactNode;
+  refetch?: () => void;
 }
 
-const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
+export const StillingsContextMedData: FC<StillingsContextMedDataProps> = ({
   stillingsData,
   children,
   refetch,
 }) => {
-  const router = useRouter();
+  // const router = useRouter(); // (ubrukt per nå)
   const {
     brukerData: { ident },
     harRolle,
   } = useApplikasjonContext();
-  const { setLabel } = useBreadcrumbsLabels();
   const kandidatListeInfoHook = useKandidatlisteInfo(
-    stillingsData.stilling.publishedByAdmin
+    stillingsData?.stilling?.publishedByAdmin
       ? stillingsData?.stillingsinfo
       : null,
   );
 
-  React.useEffect(() => {
-    if (stillingsData.stilling.title) {
-      setLabel(
-        `/stilling/${stillingsData.stilling.uuid}`,
-        stillingsData.stilling.title,
-      );
-    }
-  }, [stillingsData.stilling.title, setLabel, stillingsData.stilling.uuid]);
-
-  React.useEffect(() => {
+  useEffect(() => {
     if (stillingsData.stilling?.updated) {
       kandidatListeInfoHook?.mutate();
     }
   }, [stillingsData?.stilling?.updated, kandidatListeInfoHook]);
 
   const [forhåndsvisData, setForhåndsvisData] =
-    React.useState<StillingsDataDTO | null>(null);
+    useState<StillingsDataDTO | null>(null);
 
-  React.useEffect(() => {
-    const isFormidling =
-      stillingsData.stillingsinfo?.stillingskategori === 'FORMIDLING';
-    const correctPath = isFormidling
-      ? `/etterregistrering/${stillingsData.stilling?.uuid}`
-      : `/stilling/${stillingsData.stilling?.uuid}`;
+  // React.useEffect(() => {
+  //   const isFormidling =
+  //     stillingsData.stillingsinfo?.stillingskategori === 'FORMIDLING';
+  //   const correctPath = isFormidling
+  //     ? `/etterregistrering/${stillingsData.stilling?.uuid}`
+  //     : `/stilling/${stillingsData.stilling?.uuid}`;
 
-    if (!window.location.pathname.includes(correctPath)) {
-      router.push(correctPath);
-    }
-  }, [
-    stillingsData.stillingsinfo?.stillingskategori,
-    router,
-    stillingsData.stilling?.uuid,
-  ]);
+  //   if (!window.location.pathname.includes(correctPath)) {
+  //     router.push(correctPath);
+  //   }
+  // }, [
+  //   stillingsData.stillingsinfo?.stillingskategori,
+  //   router,
+  //   stillingsData.stilling?.uuid,
+  // ]);
 
   const erJobbmesse =
     stillingsData?.stillingsinfo?.stillingskategori ===
@@ -135,7 +132,7 @@ const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
   return (
     <StillingsContext.Provider
       value={{
-        erSlettet: stillingsData.stilling.status === 'DELETED',
+        erSlettet: stillingsData?.stilling?.status === 'DELETED',
         erDirektemeldt: stillingsData.stilling?.source === 'DIR',
         forhåndsvisData,
         stillingsData: forhåndsvisData ? forhåndsvisData : stillingsData,
@@ -147,7 +144,7 @@ const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
         kandidatlisteInfo: kandidatListeInfoHook?.data ?? null,
         kandidatlisteLaster: kandidatListeInfoHook?.isLoading ?? false,
         erJobbmesse,
-        stillingsId: stillingsData.stilling.uuid,
+        stillingsId: stillingsData?.stilling?.uuid,
       }}
     >
       {children}
@@ -156,7 +153,7 @@ const StillingsContextMedData: React.FC<StillingsContextMedDataProps> = ({
 };
 
 export const useNullableStillingsContext = () => {
-  const context = React.useContext(StillingsContext);
+  const context = useContext(StillingsContext);
 
   if (context === undefined) {
     return null;
@@ -165,7 +162,7 @@ export const useNullableStillingsContext = () => {
 };
 
 export const useStillingsContext = () => {
-  const context = React.useContext(StillingsContext);
+  const context = useContext(StillingsContext);
 
   if (context === undefined) {
     throw new RekbisError({

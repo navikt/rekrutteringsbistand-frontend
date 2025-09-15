@@ -3,9 +3,9 @@
 /**
  * Endepunkt /bruker
  */
-import { Roller } from '../../components/tilgangskontroll/roller';
-import { getAPIwithSchema } from '../fetcher';
 import { brukerMock } from './mocks/useBrukerMock';
+import { getAPIwithSchema } from '@/app/api/fetcher';
+import { Roller } from '@/components/tilgangskontroll/roller';
 import { Server } from 'miragejs';
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';

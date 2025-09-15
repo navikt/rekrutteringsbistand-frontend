@@ -1,15 +1,15 @@
-import { RekbisError } from '../../../../util/rekbisError';
-import { ForespurteOmDelingAvCvDTO } from '../../../api/foresporsel-om-deling-av-cv/foresporsler/[...slug]/useForespurteOmDelingAvCv';
+import { KandidatVisningProps } from './_ui/KandidatlisteFilter/useFiltrerteKandidater';
+import OrganisasjonsnummerAlert from './_ui/OrganisasjonsnummerAlert';
+import { mapKandidatListeKandidatTilVisning } from './util';
+import { ForespurteOmDelingAvCvDTO } from '@/app/api/foresporsel-om-deling-av-cv/foresporsler/[...slug]/useForespurteOmDelingAvCv';
 import {
   kandidatlisteSchemaDTO,
   usynligKandidaterSchemaDTO,
-} from '../../../api/kandidat/schema.zod';
-import { Sms } from '../../../api/kandidatvarsel/kandidatvarsel';
-import { useStillingsContext } from '../StillingsContext';
-import { KandidatVisningProps } from './components/KandidatlisteFilter/useFiltrerteKandidater';
-import OrganisasjonsnummerAlert from './components/OrganisasjonsnummerAlert';
-import { mapKandidatListeKandidatTilVisning } from './util';
-import * as React from 'react';
+} from '@/app/api/kandidat/schema.zod';
+import { Sms } from '@/app/api/kandidatvarsel/kandidatvarsel';
+import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
+import { RekbisError } from '@/util/rekbisError';
+import { createContext, FC, useContext, useState, type ReactNode } from 'react';
 
 interface KandidatlisteContextProps {
   forespurteKandidater: ForespurteOmDelingAvCvDTO;
@@ -25,19 +25,19 @@ interface KandidatlisteContextProps {
   kandidatlisteRawData: kandidatlisteSchemaDTO;
 }
 
-const KandidatListeContext = React.createContext<
+const KandidatListeContext = createContext<
   KandidatlisteContextProps | undefined
 >(undefined);
 
 interface KandidatlisteContextProviderProps {
-  children?: React.ReactNode | undefined;
+  children?: ReactNode | undefined;
   kandidatliste: kandidatlisteSchemaDTO;
   forespurteKandidater: ForespurteOmDelingAvCvDTO;
   beskjeder: Record<string, Sms>;
   reFetchKandidatliste: () => void;
 }
 
-export const KandidatlisteContextProvider: React.FC<
+export const KandidatlisteContextProvider: FC<
   KandidatlisteContextProviderProps
 > = ({
   children,
@@ -47,7 +47,7 @@ export const KandidatlisteContextProvider: React.FC<
   reFetchKandidatliste,
 }) => {
   const { stillingsData, kandidatlisteInfo } = useStillingsContext();
-  const [markerteKandidater, setMarkerteKandidater] = React.useState<
+  const [markerteKandidater, setMarkerteKandidater] = useState<
     KandidatVisningProps[]
   >([]);
 
@@ -112,7 +112,7 @@ export const KandidatlisteContextProvider: React.FC<
 };
 
 export const useNullableKandidatlisteContext = () => {
-  const context = React.useContext(KandidatListeContext);
+  const context = useContext(KandidatListeContext);
   if (context === undefined) {
     return null;
   }
@@ -120,7 +120,7 @@ export const useNullableKandidatlisteContext = () => {
 };
 
 export const useKandidatlisteContext = () => {
-  const context = React.useContext(KandidatListeContext);
+  const context = useContext(KandidatListeContext);
   if (context === undefined) {
     throw new RekbisError({
       message:

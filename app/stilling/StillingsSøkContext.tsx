@@ -1,13 +1,14 @@
 'use client';
 
-import { RekbisError } from '../../util/rekbisError';
-import { Roller } from '../components/tilgangskontroll/roller';
-import { useApplikasjonContext } from '../providers/ApplikasjonContext';
 import {
   hierarkiAvTagsForFilter,
   Subtag,
-} from './components/StillingsSøkFilter/InkluderingFilter';
-import { StillingsSøkQueryparam } from './stillingssøk-typer';
+} from './_ui/StillingsSøkFilter/InkluderingFilter';
+import { VisningsStatus } from './_util/stillingInfoUtil';
+import { StillingsSøkQueryparam } from './_util/stillingssøk-typer';
+import { Roller } from '@/components/tilgangskontroll/roller';
+import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
+import { RekbisError } from '@/util/rekbisError';
 import { useSearchParams } from 'next/navigation';
 import {
   parseAsArrayOf,
@@ -16,7 +17,14 @@ import {
   parseAsString,
   useQueryState,
 } from 'nuqs';
-import * as React from 'react';
+import {
+  createContext,
+  FC,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from 'react';
 
 export interface IStillingsSøkContext {
   side: number;
@@ -47,12 +55,12 @@ export interface IStillingsSøkContext {
   formidlinger?: boolean;
 }
 
-const StillingsSøkContext = React.createContext<
-  IStillingsSøkContext | undefined
->(undefined);
+const StillingsSøkContext = createContext<IStillingsSøkContext | undefined>(
+  undefined,
+);
 
-export const StillingsSøkProvider: React.FC<{
-  children: React.ReactNode;
+export const StillingsSøkProvider: FC<{
+  children: ReactNode;
   formidlinger?: boolean;
 }> = ({ children, formidlinger }) => {
   const { harRolle } = useApplikasjonContext();
@@ -64,7 +72,7 @@ export const StillingsSøkProvider: React.FC<{
   ]);
 
   // Set fritekst som lokal state for å hindre fritekst i searchparam
-  const [fritekst, setFritekstListe] = React.useState<string[]>([]);
+  const [fritekst, setFritekstListe] = useState<string[]>([]);
 
   const setFritekst = (val: string) => {
     setFritekstListe((prevFritekst) => [...prevFritekst, val]);
@@ -72,7 +80,8 @@ export const StillingsSøkProvider: React.FC<{
 
   const setStatuser = (value: string[] | ((prev: string[]) => string[])) => {
     if (!formidlinger && !harArbeidsgiverrettetRolle) {
-      setStatuserOriginal(['publisert']);
+      // Tving default til Åpen for søkere (tidligere 'publisert')
+      setStatuserOriginal([VisningsStatus.ApenForSokere]);
       setSide(1);
     } else {
       setStatuserOriginal(value);
@@ -157,17 +166,33 @@ export const StillingsSøkProvider: React.FC<{
       .withOptions({ clearOnDefault: true }),
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
+    // For ikke-formidlinger uten arbeidsgiverrettet rolle: lås til kun Åpen for søkere
     if (
       !formidlinger &&
       !harArbeidsgiverrettetRolle &&
-      (!statuser.includes('publisert') || statuser.length > 1)
+      (!statuser.includes(VisningsStatus.ApenForSokere) || statuser.length > 1)
     ) {
-      setStatuserOriginal(['publisert']);
+      setStatuserOriginal([VisningsStatus.ApenForSokere]);
     }
   }, [harArbeidsgiverrettetRolle, statuser, setStatuserOriginal, formidlinger]);
 
-  React.useEffect(() => {
+  useEffect(() => {
+    // Fjern ugyldige statuser som ikke finnes i VisningsStatus enum
+    const gyldigeVisningsStatuser = Object.values(VisningsStatus);
+    const ugyldige = statuser.filter(
+      (status) => !gyldigeVisningsStatuser.includes(status as VisningsStatus),
+    );
+
+    if (ugyldige.length > 0) {
+      const filtrerteStatuser = statuser.filter((status) =>
+        gyldigeVisningsStatuser.includes(status as VisningsStatus),
+      );
+      setStatuserOriginal(filtrerteStatuser);
+    }
+  }, [statuser, setStatuserOriginal]);
+
+  useEffect(() => {
     if (inkluderingUnderkategori.length !== 0) {
       let newInkluderingUnderkategori = inkluderingUnderkategori;
 
@@ -189,7 +214,7 @@ export const StillingsSøkProvider: React.FC<{
     }
   }, [inkludering, inkluderingUnderkategori, setInkluderingUnderkategori]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (kommuner.length !== 0) {
       const filteredKommuner = kommuner.filter((kommune) => {
         const prefix = kommune.slice(0, 2);
@@ -214,7 +239,7 @@ export const StillingsSøkProvider: React.FC<{
     };
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (brukStandardSøk) {
       setFritekstListe([]);
     }
@@ -259,7 +284,7 @@ export const StillingsSøkProvider: React.FC<{
 };
 
 export const useStillingsSøkFilter = () => {
-  const context = React.useContext(StillingsSøkContext);
+  const context = useContext(StillingsSøkContext);
   if (context === undefined) {
     throw new RekbisError({
       message: 'useStillingsSøk må være i scope: StillingsSøkProvider',

@@ -1,33 +1,34 @@
 'use client';
 
-import { RekbisError } from '../../../util/rekbisError';
-import { KandidatDataSchemaDTO } from '../../api/kandidat-sok/schema/cvSchema.zod';
-import { useKandidatinformasjon } from '../../api/kandidat-sok/useKandidatinformasjon';
-import SWRLaster from '../../components/SWRLaster';
-import { useApplikasjonContext } from '../../providers/ApplikasjonContext';
-import React from 'react';
+import { KandidatDataSchemaDTO } from '@/app/api/kandidat-sok/schema/cvSchema.zod';
+import { useKandidatinformasjon } from '@/app/api/kandidat-sok/useKandidatinformasjon';
+import SWRLaster from '@/components/SWRLaster';
+import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
+import { RekbisError } from '@/util/rekbisError';
+import { createContext, FC, ReactNode, useContext, useEffect } from 'react';
 
 interface KandidatContextType {
   kandidatId: string;
   kandidatData: KandidatDataSchemaDTO;
 }
 
-const KandidatContext = React.createContext<KandidatContextType | undefined>(
+const KandidatContext = createContext<KandidatContextType | undefined>(
   undefined,
 );
 
 interface KandidatContextProviderProps {
   kandidatId: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }
-export const KandidatContextProvider: React.FC<
-  KandidatContextProviderProps
-> = ({ kandidatId, children }) => {
+export const KandidatContextProvider: FC<KandidatContextProviderProps> = ({
+  kandidatId,
+  children,
+}) => {
   const kandidatInformasjonHook = useKandidatinformasjon(kandidatId);
 
   const { setValgtFnr } = useApplikasjonContext();
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (kandidatInformasjonHook?.data?.fodselsnummer) {
       setValgtFnr(kandidatInformasjonHook?.data?.fodselsnummer);
     } else {
@@ -58,7 +59,7 @@ export const KandidatContextProvider: React.FC<
 };
 
 export const useKandidatContext = () => {
-  const context = React.useContext(KandidatContext);
+  const context = useContext(KandidatContext);
 
   if (context === undefined) {
     throw new RekbisError({

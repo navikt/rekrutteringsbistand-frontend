@@ -1,18 +1,21 @@
 'use client';
 
-import { IStillingsSøkContext } from '../../stilling/StillingsSøkContext';
-import { StillingsSøkAPI } from '../api-routes';
-import { postApiWithSchema } from '../fetcher';
-import { usePamGeografi } from '../pam-geografi/typehead/lokasjoner/usePamGeografi';
+import { byggKombinertQuery } from './byggKombinertQuery';
 import { mockStillingssøk } from './mocks/mockStillingssøk';
-import { opprettElasticSearchQuery } from './opprettElasticSearchQuery';
-import { ESStillingsSøkSchema } from './schema/stillingsSøkSchema.zod';
+import {
+  opprettElasticSearchAggregeringsQuery,
+  opprettElasticSearchTreffQuery,
+} from './opprettElasticSearchQuery';
+import { StillingsSokCombinedSchema } from './schema/stillingsSokCombinedSchema.zod';
+import { StillingsSøkAPI } from '@/app/api/api-routes';
+import { usePamGeografi } from '@/app/api/pam-geografi/typehead/lokasjoner/usePamGeografi';
+import { IStillingsSøkContext } from '@/app/stilling/StillingsSøkContext';
 /**
  * Endepunkt /stilling
  */
 import useSWRImmutable from 'swr/immutable';
 
-const stillingsSøkEndepunkt = StillingsSøkAPI.internUrl;
+const stillingsSokBase = `${StillingsSøkAPI.internUrl}` as const; // direkte ett kall
 
 interface UseStillingssøkParams {
   filter: IStillingsSøkContext;
@@ -32,7 +35,7 @@ export const useStillingssøk = ({
   const geografiData = usePamGeografi();
 
   // const payload = generateElasticSearchQuery({
-  const payload = opprettElasticSearchQuery({
+  const treffPayload = opprettElasticSearchTreffQuery({
     filter,
     eierNavKontorEnhetId,
     navIdent,
@@ -41,18 +44,43 @@ export const useStillingssøk = ({
     finnStillingerForKandidat,
   });
 
-  return useSWRImmutable(
+  const aggsPayload = opprettElasticSearchAggregeringsQuery({
+    filter: { ...filter, side: 1 }, // side påvirker ikke aggregat, men sikre deterministisk
+    eierNavKontorEnhetId,
+    navIdent,
+    geografiData: geografiData.data,
+    formidlinger,
+    finnStillingerForKandidat,
+  });
+
+  const mergedQuery = byggKombinertQuery(treffPayload, aggsPayload);
+
+  const combinedHook = useSWRImmutable(
     geografiData.isLoading
       ? null
-      : {
-          url: stillingsSøkEndepunkt,
-          body: payload,
-        },
-    (data) => {
-      return postApiWithSchema(ESStillingsSøkSchema)(data);
+      : { url: stillingsSokBase, body: mergedQuery },
+    async (requestConfig) => {
+      const res = await fetch(requestConfig.url, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestConfig.body),
+      });
+      if (!res.ok) throw new Error('Feil ved stillingssøk');
+      const json = await res.json();
+      const result = StillingsSokCombinedSchema.safeParse(json);
+      return result.success ? result.data : json;
     },
   );
+
+  return combinedHook;
 };
 
-export const stillingssøkMirage = (server: any) =>
-  server.post(stillingsSøkEndepunkt, () => mockStillingssøk);
+export const stillingssøkMirage = (server: any) => {
+  server.post(stillingsSokBase, () => ({
+    hits: mockStillingssøk.hits,
+    antall: {
+      status: { publisert: 0, utløpt: 0, stoppet: 0 },
+    },
+  }));
+};

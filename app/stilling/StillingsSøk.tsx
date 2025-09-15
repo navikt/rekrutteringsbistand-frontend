@@ -1,34 +1,37 @@
 'use client';
 
-import { UmamiEvent } from '../../util/umamiEvents';
-import { useUseBrukerStandardSøk } from '../api/stilling/standardsok/useBrukersStandardsøk';
-import Sidelaster from '../components/Sidelaster';
-import SideBanner from '../components/layout/SideBanner';
-import SideLayout from '../components/layout/SideLayout';
-import { useStillingForKandidat } from '../kandidat/vis-kandidat/useStillingForKandidat';
-import { useVisKandidatNr } from '../kandidat/vis-kandidat/useVisKandidatNr';
-import { useUmami } from '../providers/UmamiContext';
 import { StillingsSøkProvider } from './StillingsSøkContext';
 import StillingsSøkeresultat from './StillingsSøkeresultat';
-import StillingForKandidat from './components/StillingForKandidat';
-import StillingsSøkFilter from './components/StillingsSøkFilter';
-import { BriefcaseIcon } from '@navikt/aksel-icons';
-import { Button } from '@navikt/ds-react';
-import Link from 'next/link';
+import StillingForKandidat from './_ui/StillingForKandidat';
+import StillingsSøkFilter from './_ui/StillingsSøkFilter';
+import { useUseBrukerStandardSøk } from '@/app/api/stilling/standardsok/useBrukersStandardsøk';
+import { useStillingForKandidat } from '@/app/kandidat/vis-kandidat/useStillingForKandidat';
+import GeografiFilter from '@/app/stilling/_ui/StillingsSøkFilter/GeografiFilter';
+import InkluderingFilter from '@/app/stilling/_ui/StillingsSøkFilter/InkluderingFilter';
+import KategoriFilter from '@/app/stilling/_ui/StillingsSøkFilter/KategoriFilter';
+import StatusFilter from '@/app/stilling/_ui/StillingsSøkFilter/StatusFilter';
+import StillingSøkebar from '@/app/stilling/_ui/StillingsSøkFilter/StillingSøkebar';
+import StillingsSøkSortering from '@/app/stilling/_ui/StillingsSøkSortering';
+import MittStandardsøk from '@/app/stilling/_ui/standardsøk/MittStandardsøk';
+import Sidelaster from '@/components/layout/Sidelaster';
+import { Roller } from '@/components/tilgangskontroll/roller';
+import { UmamiEvent } from '@/components/umami/umamiEvents';
+import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
+import { useUmami } from '@/providers/UmamiContext';
 import { useSearchParams } from 'next/navigation';
-import * as React from 'react';
+import { FC, Suspense, useEffect } from 'react';
 
 interface StillingsSøkProps {
   formidlinger?: boolean;
+  forKandidatNr?: string;
 }
 
-const StillingsSøk = ({ formidlinger }: StillingsSøkProps) => {
+const StillingsSøk = ({ formidlinger, forKandidatNr }: StillingsSøkProps) => {
   const searchParams = useSearchParams();
   const brukerStandardSøkData = useUseBrukerStandardSøk();
-  const [visKandidatnr] = useVisKandidatNr();
-  React.useEffect(() => {
+
+  useEffect(() => {
     if (
-      !visKandidatnr &&
       searchParams.get('brukStandardsok') !== null &&
       !brukerStandardSøkData.isLoading
     ) {
@@ -44,28 +47,36 @@ const StillingsSøk = ({ formidlinger }: StillingsSøkProps) => {
   }, [searchParams, brukerStandardSøkData]);
 
   return (
-    <React.Suspense fallback={<Sidelaster />}>
+    <Suspense fallback={<Sidelaster />}>
       <StillingsSøkProvider formidlinger={formidlinger}>
-        <StillingsSøkLayout formidlinger={formidlinger} />
+        <StillingsSøkLayout
+          formidlinger={formidlinger}
+          forKandidatNr={forKandidatNr}
+        />
       </StillingsSøkProvider>
-    </React.Suspense>
+    </Suspense>
   );
 };
 
-const StillingsSøkLayout: React.FC<StillingsSøkProps> = ({ formidlinger }) => {
+const StillingsSøkLayout: FC<StillingsSøkProps> = ({
+  formidlinger,
+  forKandidatNr,
+}) => {
   const { track } = useUmami();
-
-  const [visKandidatnr] = useVisKandidatNr();
+  const { harRolle } = useApplikasjonContext();
+  const harArbeidsgiverrettetRolle = harRolle([
+    Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+  ]);
 
   const kandidatStillingssøkData = useStillingForKandidat(
-    visKandidatnr ?? null,
+    forKandidatNr ?? null,
   );
 
-  if (visKandidatnr) {
+  if (forKandidatNr) {
     track(UmamiEvent.Stilling.forslag_til_stilling_fane);
   }
 
-  if (visKandidatnr && kandidatStillingssøkData?.isLoading) {
+  if (forKandidatNr && kandidatStillingssøkData?.isLoading) {
     return <Sidelaster />;
   }
 
@@ -84,28 +95,27 @@ const StillingsSøkLayout: React.FC<StillingsSøkProps> = ({ formidlinger }) => 
   }
 
   return (
-    <SideLayout
-      topBanner={
-        <SideBanner
-          ikon={<BriefcaseIcon className='h-6 w-6' />}
-          tittel='Stillingsoppdrag'
-          knapper={
-            <div>
-              <Link href={'/stilling/ny-stilling'}>
-                <Button size='small'>Opprett annonse</Button>
-              </Link>
-            </div>
-          }
-        />
-      }
-    >
-      {visKandidatnr && <StillingForKandidat kandidatnr={visKandidatnr} />}
+    <>
+      {forKandidatNr && <StillingForKandidat kandidatnr={forKandidatNr} />}
       <StillingsSøkFilter
         formidlinger={formidlinger}
-        stillingForKandidat={visKandidatnr}
+        stillingForKandidat={forKandidatNr}
       />
-      <StillingsSøkeresultat kandidatId={visKandidatnr} />
-    </SideLayout>
+      <div className='@container flex'>
+        <div className='flex-grow min-w-0'>
+          <StillingsSøkeresultat kandidatId={forKandidatNr} />
+        </div>
+        <div className='hidden @[720px]:flex @[720px]:flex-col ml-4 pt-4  max-w-[200px] gap-4'>
+          <StillingSøkebar alltidÅpen={false} />
+          <MittStandardsøk />
+          <StillingsSøkSortering />
+          {(harArbeidsgiverrettetRolle || formidlinger) && <StatusFilter />}
+          <GeografiFilter />
+          {!formidlinger && <KategoriFilter />}
+          <InkluderingFilter />
+        </div>
+      </div>
+    </>
   );
 };
 

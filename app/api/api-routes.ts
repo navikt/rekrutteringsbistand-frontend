@@ -1,4 +1,4 @@
-import { getCluster } from '../../util/env';
+import { getCluster } from '@/util/env';
 
 const gcp = getCluster();
 const fss = getCluster(true);
@@ -106,4 +106,11 @@ export const RekrutteringstreffAPI: Iroute = {
   api_url: process.env.REKRUTTERINGSTREFF_API_URL ?? '',
   internUrl: '/api/rekrutteringstreff',
   scope: `api://${gcp}.toi.rekrutteringstreff-api/.default`,
+};
+
+export const BrukerAPI: Iroute = {
+  api_route: '/api',
+  api_url: process.env.REKRUTTERINGSBISTAND_BRUKER_API_URL ?? '',
+  internUrl: '/api/bruker',
+  scope: `api://${gcp}.toi.rekrutteringsbistand-bruker/.default`,
 };

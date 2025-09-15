@@ -1,36 +1,36 @@
 'use client';
 
-import Forvirretblob from '../../public/illustrasjoner/feilmelding-blob.svg';
-import { useArenaKandidatnr } from '../api/kandidat-sok/useArenaKandidatnr';
-import { useSynlighetsevaluering } from '../api/synlighet/evaluering/useSynlighetsevaluering';
-import Sidelaster from '../components/Sidelaster';
-import { useApplikasjonContext } from '../providers/ApplikasjonContext';
+import { useArenaKandidatnr } from '@/app/api/kandidat-sok/useArenaKandidatnr';
+import { useSynlighetsevaluering } from '@/app/api/synlighet/evaluering/useSynlighetsevaluering';
+import Sidelaster from '@/components/layout/Sidelaster';
+import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
+import Forvirretblob from '@/public/illustrasjoner/feilmelding-blob.svg';
 import { ArrowRightIcon } from '@navikt/aksel-icons';
 import { Button, Heading } from '@navikt/ds-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import * as React from 'react';
+import { FC, useEffect } from 'react';
 
 const navetUrl =
   'https://navno.sharepoint.com/sites/fag-og-ytelser-arbeid-markedsarbeid/SitePages/Hvorfor-er-ikke-personen-synlig-i-Rekr.aspx';
 const portenUrl =
   'https://jira.adeo.no/plugins/servlet/desk/portal/541/create/1904';
 
-const InngangFraArbop: React.FC = () => {
+const InngangFraArbop: FC = () => {
   const { valgtFnr } = useApplikasjonContext();
   const kandidatnrHook = useArenaKandidatnr(valgtFnr);
   const synlighetHook = useSynlighetsevaluering(valgtFnr);
 
   const router = useRouter();
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (
       kandidatnrHook.data &&
       kandidatnrHook.data.arenaKandidatnr &&
       synlighetHook.data
     ) {
       router.push(
-        `/stilling?visKandidatnr=${kandidatnrHook.data.arenaKandidatnr}`,
+        `/kandidat/${kandidatnrHook.data.arenaKandidatnr}?finnStilling=true`,
       );
     }
   }, [kandidatnrHook.data, synlighetHook.data, router]);

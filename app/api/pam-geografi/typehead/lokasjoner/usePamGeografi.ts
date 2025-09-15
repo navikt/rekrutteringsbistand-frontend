@@ -1,7 +1,7 @@
 'use client';
 
-import { getAPIwithSchema } from '../../../fetcher';
 import lokasjonerMock from './lokasjoner.mock.json';
+import { getAPIwithSchema } from '@/app/api/fetcher';
 import { useMemo } from 'react';
 /**
  * Endepunkt /usePamGeografi

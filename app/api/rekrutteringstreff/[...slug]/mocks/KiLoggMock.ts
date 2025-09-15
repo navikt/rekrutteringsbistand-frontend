@@ -15,7 +15,7 @@ export const kiLoggMock = [
     kiNavn: 'azure-openai',
     kiVersjon: 'toi-gpt-4o',
     svartidMs: 2151,
-    lagret: false,
+    lagret: true,
     manuellKontrollBryterRetningslinjer: null,
     manuellKontrollUtfortAv: null,
     manuellKontrollTidspunkt: null,
