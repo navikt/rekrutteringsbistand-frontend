@@ -18,7 +18,7 @@ export default function FinnKandidaterKnapp({
   return (
     <LenkeKortMedIkon
       tittel='Finn og foreslå jobbsøkere'
-      beskrivelse='Vet du om noen som kan passe til jobben?'
+      beskrivelse='Se alle som leter etter jobb nå, og finn riktig person til jobben'
       ikon={'👉'}
       onClick={navigate}
     />
