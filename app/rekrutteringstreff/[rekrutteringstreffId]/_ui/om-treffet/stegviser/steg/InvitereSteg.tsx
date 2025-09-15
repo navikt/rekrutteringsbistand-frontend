@@ -24,7 +24,7 @@ const InvitereSteg = () => {
       />
       <SjekklisteSeparator />
       <SjekklisteInfoRad>
-        <BodyShort>
+        <BodyShort size='small'>
           Antall inviterte: <b>{antallInviterte}</b>
         </BodyShort>
       </SjekklisteInfoRad>
