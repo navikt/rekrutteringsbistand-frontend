@@ -9,12 +9,8 @@ test('Vis kandidat', async ({ page }) => {
   await page
     .getByTestId('kandidatkort-lenke-kandidat-arenaKandidatnr-2')
     .click();
-  await expect(
-    page.getByRole('button', { name: 'Finn stilling' }),
-  ).toBeVisible();
-  await expect(
-    page.getByRole('button', { name: 'Gå til aktivitetsplanen' }),
-  ).toBeVisible();
+  await expect(page.getByText('Finn jobb')).toBeVisible();
+  await expect(page.getByText('Gå til aktivitetsplanen')).toBeVisible();
   await expect(page.getByRole('tab', { name: 'Aktivitet' })).toBeVisible();
   await expect(
     page.getByRole('heading', { name: 'Profilkvalitet' }),

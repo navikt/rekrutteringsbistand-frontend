@@ -16,14 +16,9 @@ test.describe(`Stilling test`, () => {
       page.getByRole('tab', { name: 'Jobbsøkere (10)' }),
     ).toBeVisible();
     // await expect(page.getByRole('button', { name: 'Kopier' })).toBeVisible();
+    await expect(page.getByText('Finn og foreslå jobbsøkere')).toBeVisible();
     await expect(
-      page.getByRole('link', {
-        name: 'Finn og foreslå jobbsøkere',
-        exact: true,
-      }),
-    ).toBeVisible();
-    await expect(
-      page.getByRole('link', { name: 'Legg til jobbsøkere' }),
+      page.getByText('Legg til jobbsøkere', { exact: true }),
     ).toBeVisible();
     await expect(page.getByRole('button', { name: 'Skriv ut' })).toBeVisible();
 
@@ -47,14 +42,9 @@ test.describe(`Stilling test`, () => {
     ).toBeVisible();
 
     // await expect(page.getByRole('button', { name: 'Kopier' })).toBeVisible();
+    await expect(page.getByText('Finn og foreslå jobbsøkere')).toBeVisible();
     await expect(
-      page.getByRole('link', {
-        name: 'Finn og foreslå jobbsøkere',
-        exact: true,
-      }),
-    ).toBeVisible();
-    await expect(
-      page.getByRole('button', { name: 'Legg til jobbsøkere' }),
+      page.getByText('Legg til jobbsøkere', { exact: true }),
     ).toBeVisible();
     await expect(page.getByRole('button', { name: 'Skriv ut' })).toBeVisible();
 
