@@ -100,7 +100,6 @@ const StillingsSøkLayout: FC<StillingsSøkProps> = ({
         formidlinger={formidlinger}
         stillingForKandidat={forKandidatNr}
       />
-
       <div className='@container flex'>
         <div className='flex-grow min-w-0'>
           <StillingsSøkeresultat kandidatId={forKandidatNr} />

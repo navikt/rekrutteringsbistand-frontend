@@ -78,7 +78,7 @@ const StillingsSøkFilter: FC<{
             <AlleFilterKomponent>
               <MittStandardsøk />
               <StillingsSøkSortering />
-              {(harArbeidsgiverrettetRolle || formidlinger) && <StatusFilter />}
+              {harArbeidsgiverrettetRolle && !formidlinger && <StatusFilter />}
               <GeografiFilter />
               {!formidlinger && <KategoriFilter />}
               <InkluderingFilter />
