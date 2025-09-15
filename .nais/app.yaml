@@ -17,6 +17,7 @@ spec:
   image: {{ image }}
   ingresses:
      - {{ NEXT_PUBLIC_BASE_URL }}
+     - {{ NEXT_PUBLIC_BASE_URL2 }}
   port: 3000
   azure:
     application:
