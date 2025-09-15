@@ -1,11 +1,11 @@
 import GeografiFilter from './StillingsSøkFilter/GeografiFilter';
 import KategoriFilter from './StillingsSøkFilter/KategoriFilter';
 import StatusFilter from './StillingsSøkFilter/StatusFilter';
-import StillingSøkebar from './StillingsSøkFilter/StillingSøkebar';
 import StillingsSøkNavigasjon from './StillingsSøkNavigasjon';
 import StillingsSøkSortering from './StillingsSøkSortering';
 import { useUseBrukerStandardSøk } from '@/app/api/stilling/standardsok/useBrukersStandardsøk';
 import InkluderingFilter from '@/app/stilling/_ui/StillingsSøkFilter/InkluderingFilter';
+import StillingSøkebar from '@/app/stilling/_ui/StillingsSøkFilter/StillingSøkebar';
 import MittStandardsøk from '@/app/stilling/_ui/standardsøk/MittStandardsøk';
 import AlleFilterKomponent from '@/components/felles/filter/AlleFilterKomponent';
 import { Roller } from '@/components/tilgangskontroll/roller';
@@ -53,7 +53,6 @@ const StillingsSøkFilter: FC<{
       <StillingsSøkNavigasjon />
       <div className='flex gap-2'>
         <div className='relative' ref={searchRef}>
-          <StillingSøkebar />
           {showStandardsøk && brukerStandardSøkData.data && (
             <Box.New
               background='default'
@@ -76,6 +75,7 @@ const StillingsSøkFilter: FC<{
         <div className='block @[720px]:hidden'>
           <div className='whitespace-nowrap'>
             <AlleFilterKomponent>
+              <StillingSøkebar alltidÅpen />
               <MittStandardsøk />
               <StillingsSøkSortering />
               {harArbeidsgiverrettetRolle && !formidlinger && <StatusFilter />}

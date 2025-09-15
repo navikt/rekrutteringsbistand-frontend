@@ -10,6 +10,7 @@ import GeografiFilter from '@/app/stilling/_ui/StillingsSøkFilter/GeografiFilte
 import InkluderingFilter from '@/app/stilling/_ui/StillingsSøkFilter/InkluderingFilter';
 import KategoriFilter from '@/app/stilling/_ui/StillingsSøkFilter/KategoriFilter';
 import StatusFilter from '@/app/stilling/_ui/StillingsSøkFilter/StatusFilter';
+import StillingSøkebar from '@/app/stilling/_ui/StillingsSøkFilter/StillingSøkebar';
 import StillingsSøkSortering from '@/app/stilling/_ui/StillingsSøkSortering';
 import MittStandardsøk from '@/app/stilling/_ui/standardsøk/MittStandardsøk';
 import Sidelaster from '@/components/layout/Sidelaster';
@@ -105,13 +106,11 @@ const StillingsSøkLayout: FC<StillingsSøkProps> = ({
           <StillingsSøkeresultat kandidatId={forKandidatNr} />
         </div>
         <div className='hidden @[720px]:flex @[720px]:flex-col ml-4 pt-4  max-w-[200px] gap-4'>
+          <StillingSøkebar alltidÅpen={false} />
           <MittStandardsøk />
           <StillingsSøkSortering />
-
           {(harArbeidsgiverrettetRolle || formidlinger) && <StatusFilter />}
-
           <GeografiFilter />
-
           {!formidlinger && <KategoriFilter />}
           <InkluderingFilter />
         </div>
