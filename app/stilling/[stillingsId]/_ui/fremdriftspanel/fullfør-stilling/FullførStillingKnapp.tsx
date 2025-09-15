@@ -43,7 +43,7 @@ export default function FullførStillingKnapp() {
         ),
       ]);
       visVarsel({ type: 'success', tekst: 'Du har nå fullført oppdraget.' });
-
+      refetch?.();
       kandidatlisteForEier.mutate();
       if (refetch) refetch();
     } catch (error) {

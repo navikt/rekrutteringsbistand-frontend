@@ -37,6 +37,7 @@ export default function GjenåpneStillingKnapp() {
       ]);
       visVarsel({ type: 'success', tekst: 'Oppdraget gjenåpnet.' });
       refetch?.();
+      kandidatlisteForEier.mutate();
     } catch (error) {
       visVarsel({
         type: 'error',
