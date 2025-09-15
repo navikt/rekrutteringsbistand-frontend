@@ -1,5 +1,6 @@
 'use client';
 
+import { Kandidatlistestatus } from '@/app/api/kandidat/schema.zod';
 import { GeografiDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import OmAnnonsen from '@/app/stilling/[stillingsId]/_ui/OmAnnonsen';
@@ -72,9 +73,10 @@ export default function OmStillingen({
 
   return (
     <div data-testid='om-stillingen'>
-      {!forhåndsvisData && kandidatlisteInfo?.kandidatlisteId && (
-        <KandidatKnapper />
-      )}
+      {!forhåndsvisData &&
+        kandidatlisteInfo?.kandidatlisteId &&
+        kandidatlisteInfo.kandidatlisteStatus !==
+          Kandidatlistestatus.Lukket && <KandidatKnapper />}
       <div className='flex flex-col gap-x-[3.5rem] gap-y-8 md:flex-row'>
         <div className='w-full' id='print-content' ref={printRef}>
           <div className='flex flex-col'>

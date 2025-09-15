@@ -6,7 +6,6 @@ import RedigerStillingKnapp from '@/app/stilling/[stillingsId]/_ui/fremdriftspan
 import FullførStillingKnapp from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/fullfør-stilling/FullførStillingKnapp';
 import GjenåpneStillingKnapp from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/fullfør-stilling/GjenåpneStillingKnapp';
 import { KandidatutfallTyper } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
-import { StillingsStatus } from '@/app/stilling/_ui/stilling-typer';
 import SWRLaster from '@/components/SWRLaster';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
@@ -36,8 +35,6 @@ export default function FremdriftspanelStilling({
   const { stillingsData, erEier } = useStillingsContext();
   const kandidatlisteHook = useKandidatlisteForEier(stillingsData, erEier);
 
-  const fraArbeidsplassen = stillingsData.stilling.source !== 'DIR';
-
   return (
     <TilgangskontrollForInnhold
       skjulVarsel
@@ -48,7 +45,6 @@ export default function FremdriftspanelStilling({
       <SWRLaster hooks={[kandidatlisteHook]}>
         {(kandidatliste) => {
           const erFullført =
-            stillingsData.stilling.status === StillingsStatus.Stoppet &&
             kandidatliste.status === Kandidatlistestatus.Lukket;
 
           const totalStillinger =
@@ -156,14 +152,10 @@ export default function FremdriftspanelStilling({
           }
           return (
             <div className={dropDown ? 'p-4' : ''}>
-              {fraArbeidsplassen ? (
+              <div className='grid grid-cols-2 gap-2'>
+                <RedigerStillingKnapp />
                 <FullførStillingKnapp />
-              ) : (
-                <div className='grid grid-cols-2 gap-2'>
-                  <RedigerStillingKnapp />
-                  <FullførStillingKnapp />
-                </div>
-              )}
+              </div>
 
               <div className='flex flex-col gap-6 mt-6'>
                 <div className='flex flex-col gap-2'>
