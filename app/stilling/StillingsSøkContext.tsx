@@ -178,6 +178,21 @@ export const StillingsSøkProvider: FC<{
   }, [harArbeidsgiverrettetRolle, statuser, setStatuserOriginal, formidlinger]);
 
   useEffect(() => {
+    // Fjern ugyldige statuser som ikke finnes i VisningsStatus enum
+    const gyldigeVisningsStatuser = Object.values(VisningsStatus);
+    const ugyldige = statuser.filter(
+      (status) => !gyldigeVisningsStatuser.includes(status as VisningsStatus),
+    );
+
+    if (ugyldige.length > 0) {
+      const filtrerteStatuser = statuser.filter((status) =>
+        gyldigeVisningsStatuser.includes(status as VisningsStatus),
+      );
+      setStatuserOriginal(filtrerteStatuser);
+    }
+  }, [statuser, setStatuserOriginal]);
+
+  useEffect(() => {
     if (inkluderingUnderkategori.length !== 0) {
       let newInkluderingUnderkategori = inkluderingUnderkategori;
 
