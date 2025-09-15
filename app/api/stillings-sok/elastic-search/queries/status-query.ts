@@ -55,9 +55,9 @@ export const statusQuery = (
   //  - formidlinger=true: la være å snevre inn (alle baseline-publiserte formidlinger skal vises)
   //  - ellers: match_none for å unngå forvirrende tom baseline for intern søk der vi forventer minst én status
   if (ingenFiltreValgt) {
-    if (!params.formidlinger) {
-      esBuilder.setPostFilter({ match_none: {} });
-    }
+    // if (!params.formidlinger) {
+    //   esBuilder.setPostFilter({ match_none: {} });
+    // }
     return;
   }
 
