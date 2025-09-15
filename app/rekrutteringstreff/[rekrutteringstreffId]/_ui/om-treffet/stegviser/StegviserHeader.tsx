@@ -23,9 +23,9 @@ const StegviserHeader: FC<Props> = ({
   onToggleForhåndsvisning,
   erIForhåndsvisning,
 }) => {
-  const [isPublishing, setIsPublishing] = useState(false);
-  const [isFinishingRecruitment, setIsFinishingRecruitment] = useState(false);
-  const [isGjenåpneRecruitment, setIsGjenåpneRecruitment] = useState(false);
+  const [publiserer, setPubliserer] = useState(false);
+  const [fullfører, setFullfører] = useState(false);
+  const [gjenåpner, setGjenåpner] = useState(false);
 
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { mutate: mutateRekrutteringstreff } =
@@ -44,7 +44,7 @@ const StegviserHeader: FC<Props> = ({
   } = useStegviser();
 
   const onPubliserTreffet = async () => {
-    setIsPublishing(true);
+    setPubliserer(true);
     try {
       await publiserRekrutteringstreff(rekrutteringstreffId);
       await mutateRekrutteringstreff();
@@ -54,12 +54,12 @@ const StegviserHeader: FC<Props> = ({
         error,
       });
     } finally {
-      setIsPublishing(false);
+      setPubliserer(false);
     }
   };
 
   const onFullførRekrutteringstreff = async () => {
-    setIsFinishingRecruitment(true);
+    setFullfører(true);
     try {
       await fullførRekrutteringstreff(rekrutteringstreffId);
       await mutateRekrutteringstreff();
@@ -69,12 +69,12 @@ const StegviserHeader: FC<Props> = ({
         error,
       });
     } finally {
-      setIsFinishingRecruitment(false);
+      setFullfører(false);
     }
   };
 
   const onGjenåpnTreffet = async () => {
-    setIsGjenåpneRecruitment(true);
+    setGjenåpner(true);
     try {
       await gjenåpnRekrutteringstreff(rekrutteringstreffId);
       await mutateRekrutteringstreff();
@@ -84,7 +84,7 @@ const StegviserHeader: FC<Props> = ({
         error,
       });
     } finally {
-      setIsGjenåpneRecruitment(false);
+      setGjenåpner(false);
     }
   };
 
@@ -131,8 +131,8 @@ const StegviserHeader: FC<Props> = ({
         )}
         {activeStep === 1 ? (
           <Button
-            disabled={!erPubliseringklar || isPublishing}
-            loading={isPublishing}
+            disabled={!erPubliseringklar || publiserer}
+            loading={publiserer}
             size='small'
             className='w-full'
             onClick={onPubliserTreffet}
@@ -145,11 +145,9 @@ const StegviserHeader: FC<Props> = ({
               variant='primary'
               size='small'
               disabled={
-                !harInvitert ||
-                !arrangementtidspunktHarPassert ||
-                isFinishingRecruitment
+                !harInvitert || !arrangementtidspunktHarPassert || fullfører
               }
-              loading={isFinishingRecruitment}
+              loading={fullfører}
               className='w-full'
               onClick={onFullførRekrutteringstreff}
             >
@@ -162,9 +160,9 @@ const StegviserHeader: FC<Props> = ({
         <Button
           variant='primary'
           size='small'
-          loading={isGjenåpneRecruitment}
+          loading={gjenåpner}
           className='w-full'
-          onClick={() => {}}
+          onClick={onGjenåpnTreffet}
         >
           Gjenåpne
         </Button>
