@@ -101,12 +101,29 @@ export const StegviserProvider: FC<{ children: ReactNode }> = ({
 
   useEffect(() => {
     const hendelser = rekrutteringstreff?.hendelser ?? [];
-    const harHendelse = (type: string) =>
-      hendelser.some((h) => h.hendelsestype === type);
+
+    const sorterteHendelser = hendelser
+      .filter((h) =>
+        ['PUBLISER', 'FULLFØR', 'GJENÅPN'].includes(h.hendelsestype),
+      )
+      .sort(
+        (a, b) =>
+          new Date(b.tidspunkt).getTime() - new Date(a.tidspunkt).getTime(),
+      );
 
     let step = 1;
-    if (harHendelse('PUBLISER')) step = 2;
-    if (harHendelse('FULLFØR')) step = 3;
+    if (sorterteHendelser.length > 0) {
+      const sisteHendelse = sorterteHendelser[0];
+      switch (sisteHendelse.hendelsestype) {
+        case 'PUBLISER':
+        case 'GJENÅPN':
+          step = 2;
+          break;
+        case 'FULLFØR':
+          step = 3;
+          break;
+      }
+    }
 
     setActiveStep((prev) => (prev === step ? prev : step));
   }, [rekrutteringstreff?.hendelser]);
