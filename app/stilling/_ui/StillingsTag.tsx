@@ -48,7 +48,7 @@ const StillingsTag: FC<IStillingTag> = ({ stillingsData, rad }) => {
           Jobbmesse
         </Tag>
       )}
-      {!info.erPåArbeidsplassen && (
+      {info.erPåArbeidsplassen && (
         <Tag className={tagKlasse()} size='small' variant='alt3'>
           arbeidsplassen.no
         </Tag>
