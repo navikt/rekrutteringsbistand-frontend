@@ -1,6 +1,5 @@
 'use client';
 
-import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
 import LeggTilArbeidsgiverForm from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/arbeidsgivere/_ui/LeggTilArbeidsgiverForm';
 import { Modal } from '@navikt/ds-react';
 import { RefObject, FC } from 'react';
