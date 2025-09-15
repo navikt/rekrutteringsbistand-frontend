@@ -6,7 +6,7 @@ import {
   TimerStartIcon,
 } from '@navikt/aksel-icons';
 import { Heading } from '@navikt/ds-react';
-import * as React from 'react';
+import { FC } from 'react';
 
 type Oppstartskode = {
   key: string;
@@ -22,7 +22,7 @@ const oppstartskoder: Record<string, Oppstartskode> = {
   ETTER_AVTALE: { key: 'ETTER_AVTALE', label: 'Etter avtale' },
 };
 
-const KandidatØnsker: React.FC = () => {
+const KandidatØnsker: FC = () => {
   const { kandidatData } = useKandidatContext();
 
   return (

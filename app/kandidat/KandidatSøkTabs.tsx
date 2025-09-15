@@ -22,7 +22,7 @@ import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/Tilgan
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { Button } from '@navikt/ds-react';
-import * as React from 'react';
+import { FC } from 'react';
 
 interface KandidatSøkTabsProps {
   stillingsId?: string;
@@ -31,7 +31,7 @@ interface KandidatSøkTabsProps {
   alleredeLagtTilKandidatliste?: string[];
 }
 
-const KandidatSøkTabs: React.FC<KandidatSøkTabsProps> = ({
+const KandidatSøkTabs: FC<KandidatSøkTabsProps> = ({
   stillingsId,
   rekrutteringstreffId,
   alleredeLagtTilTreff,
@@ -39,6 +39,8 @@ const KandidatSøkTabs: React.FC<KandidatSøkTabsProps> = ({
 }) => {
   const { portefølje, setPortefølje } = useKandidatSøkFilterContext();
   const { valgtNavKontor, brukerData } = useApplikasjonContext();
+
+  const labelClass = 'tab-ellipsis';
 
   const MineBrukere = () => (
     <Button
@@ -49,63 +51,68 @@ const KandidatSøkTabs: React.FC<KandidatSøkTabsProps> = ({
       }
       onClick={() => setPortefølje(KandidatSøkPortefølje.MINE_BRUKERE)}
       size='xsmall'
+      className={labelClass}
+      title='Mine brukere'
+      aria-label='Mine brukere'
     >
       Mine brukere
     </Button>
   );
 
   const MittKontor = () => {
-    if (valgtNavKontor) {
-      return (
-        <TilgangskontrollForInnhold
-          skjulVarsel
-          kreverEnAvRollene={[
-            Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-            Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
-          ]}
+    if (!valgtNavKontor) return null;
+    return (
+      <TilgangskontrollForInnhold
+        skjulVarsel
+        kreverEnAvRollene={[
+          Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+          Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
+        ]}
+      >
+        <Button
+          variant={
+            portefølje === KandidatSøkPortefølje.MITT_KONTOR
+              ? 'primary'
+              : 'tertiary'
+          }
+          onClick={() => setPortefølje(KandidatSøkPortefølje.MITT_KONTOR)}
+          size='xsmall'
+          className={labelClass}
+          title='Mitt kontor'
+          aria-label='Mitt kontor'
         >
-          <Button
-            variant={
-              portefølje === KandidatSøkPortefølje.MITT_KONTOR
-                ? 'primary'
-                : 'tertiary'
-            }
-            onClick={() => setPortefølje(KandidatSøkPortefølje.MITT_KONTOR)}
-            size='xsmall'
-          >
-            Mitt kontor
-          </Button>
-        </TilgangskontrollForInnhold>
-      );
-    }
-    return null;
+          Mitt kontor
+        </Button>
+      </TilgangskontrollForInnhold>
+    );
   };
 
   const MineKontorer = () => {
-    if (brukerData?.enheter && brukerData.enheter.length > 1) {
-      return (
-        <TilgangskontrollForInnhold
-          skjulVarsel
-          kreverEnAvRollene={[
-            Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-            Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
-          ]}
+    if (!(brukerData?.enheter && brukerData.enheter.length > 1)) return null;
+    return (
+      <TilgangskontrollForInnhold
+        skjulVarsel
+        kreverEnAvRollene={[
+          Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+          Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
+        ]}
+      >
+        <Button
+          variant={
+            portefølje === KandidatSøkPortefølje.MINE_KONTORER
+              ? 'primary'
+              : 'tertiary'
+          }
+          onClick={() => setPortefølje(KandidatSøkPortefølje.MINE_KONTORER)}
+          size='xsmall'
+          className={labelClass}
+          title='Mine kontorer'
+          aria-label='Mine kontorer'
         >
-          <Button
-            variant={
-              portefølje === KandidatSøkPortefølje.MINE_KONTORER
-                ? 'primary'
-                : 'tertiary'
-            }
-            onClick={() => setPortefølje(KandidatSøkPortefølje.MINE_KONTORER)}
-            size='xsmall'
-          >
-            Mine kontorer
-          </Button>
-        </TilgangskontrollForInnhold>
-      );
-    }
-    return null;
+          Mine kontorer
+        </Button>
+      </TilgangskontrollForInnhold>
+    );
   };
 
   const AlleKontorer = () => (
@@ -121,6 +128,9 @@ const KandidatSøkTabs: React.FC<KandidatSøkTabsProps> = ({
         }
         onClick={() => setPortefølje(KandidatSøkPortefølje.ALLE)}
         size='xsmall'
+        className={labelClass}
+        title='Alle kontorer'
+        aria-label='Alle kontorer'
       >
         Alle kontorer
       </Button>
@@ -142,6 +152,9 @@ const KandidatSøkTabs: React.FC<KandidatSøkTabsProps> = ({
         }
         onClick={() => setPortefølje(KandidatSøkPortefølje.VALGTE_KONTORER)}
         size='xsmall'
+        className={labelClass}
+        title='Valgte kontorer'
+        aria-label='Valgte kontorer'
       >
         Valgte kontorer
       </Button>
@@ -150,7 +163,7 @@ const KandidatSøkTabs: React.FC<KandidatSøkTabsProps> = ({
 
   return (
     <div className='@container'>
-      <div className='flex justify-between flex-col @2xl:flex-row @2xl:gap-0 gap-3 '>
+      <div className='flex justify-between flex-col @3xl:flex-row @3xl:gap-0 gap-3 '>
         <div className='flex gap-2 items-center'>
           <MineBrukere />
           <MittKontor />

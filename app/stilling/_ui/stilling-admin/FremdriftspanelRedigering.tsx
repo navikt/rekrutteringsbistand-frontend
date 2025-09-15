@@ -92,6 +92,7 @@ export default function FremdriftspanelRedigering({ setForhåndsvis }: Props) {
         isDone: formidlingDoneByModule[m.key as ModulKey] ?? (() => true),
       }));
     }
+    const erJobbmesse = kategori === Stillingskategori.Jobbmesse;
     return [
       // Ugrupperte (vises øverst)
       {
@@ -101,21 +102,26 @@ export default function FremdriftspanelRedigering({ setForhåndsvis }: Props) {
       },
       {
         id: 'beskrivelse',
-        label: 'Om jobben',
+        label: erJobbmesse ? 'Om jobbmessen' : 'Om jobben',
         isDone: (d) =>
           !!d.stilling?.properties?.adtext &&
           d.stilling.properties.adtext.trim().length > 10,
       },
 
       // Praktiske forhold (samlet modul, men trackes som del-sjekker)
-      {
-        id: 'praktiskeForhold_antall',
-        label: 'Antall stillinger',
-        group: 'Praktiske forhold',
-        isDone: (d) =>
-          !!d.stilling?.properties?.positioncount &&
-          Number(d.stilling.properties.positioncount) > 0,
-      },
+      // Antall stillinger er låst til 1 og skjult for jobbmesse, behold sjekk kun for ordinær stilling
+      ...(!erJobbmesse
+        ? [
+            {
+              id: 'praktiskeForhold_antall',
+              label: 'Antall stillinger',
+              group: 'Praktiske forhold',
+              isDone: (d: StillingsDataDTO) =>
+                !!d.stilling?.properties?.positioncount &&
+                Number(d.stilling.properties.positioncount) > 0,
+            } as ChecklistItem,
+          ]
+        : []),
       {
         id: 'praktiskeForhold_ansettelsesform',
         label: 'Ansettelsesform',
@@ -174,12 +180,14 @@ export default function FremdriftspanelRedigering({ setForhåndsvis }: Props) {
         },
       },
       // Om virksomheten
+
       {
         id: 'virksomheten',
         label: 'Virksomheten',
         group: 'Om virksomheten',
         isDone: (d) => !!d.stilling?.employer?.name,
       },
+
       {
         id: 'kontaktperson',
         label: 'Kontaktperson',
@@ -195,6 +203,12 @@ export default function FremdriftspanelRedigering({ setForhåndsvis }: Props) {
           ).length;
           return filled >= 3; // Minst tre felter må være utfylt
         },
+      },
+      {
+        id: 'sektor',
+        label: 'Sektor',
+        group: 'Sektor',
+        isDone: (d) => !!d.stilling?.properties?.sector,
       },
       // Sted
       {

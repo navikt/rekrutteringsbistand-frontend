@@ -18,14 +18,14 @@ import { KandidatVisningProps } from '@/app/stilling/[stillingsId]/kandidatliste
 import VelgInternStatus from '@/app/stilling/[stillingsId]/kandidatliste/_ui/VelgInternStatus';
 import { formaterNorskDato } from '@/util/util';
 import { BodyShort, Box } from '@navikt/ds-react';
-import * as React from 'react';
+import { FC, MouseEvent } from 'react';
 
 export interface KandidatListeKortProps {
   kandidat?: KandidatVisningProps;
   usynligKandidat?: usynligKandidaterSchemaDTO;
 }
 
-const KandidatListeKort: React.FC<KandidatListeKortProps> = ({
+const KandidatListeKort: FC<KandidatListeKortProps> = ({
   kandidat,
   usynligKandidat,
 }) => {
@@ -105,7 +105,7 @@ const KandidatListeKort: React.FC<KandidatListeKortProps> = ({
   const slettet = kandidat?.arkivert;
   const inaktiv = kandidat?.fodselsnr === null;
 
-  const stopPropagation = (e: React.MouseEvent) => {
+  const stopPropagation = (e: MouseEvent) => {
     e.stopPropagation();
   };
 
@@ -120,7 +120,7 @@ const KandidatListeKort: React.FC<KandidatListeKortProps> = ({
         background='neutral-softA'
         borderRadius='xlarge'
         data-testid='stillings-kort'
-        className={` min-w-fit
+        className={` min-w-fit 
           focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--ax-border-focus)]
           ${!aktiv && !inaktiv ? 'hover:bg-[var(--ax-bg-neutral-moderate-hover)] cursor-pointer ' : ''}
           ${aktiv ? 'bg-[var(--ax-bg-neutral-moderate-pressed)]' : ''}`}

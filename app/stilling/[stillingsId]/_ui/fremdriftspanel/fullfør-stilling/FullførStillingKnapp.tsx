@@ -22,8 +22,6 @@ export default function FullførStillingKnapp() {
   const [loading, setLoading] = useState(false);
   const kandidatlisteForEier = useKandidatlisteForEier(stillingsData, erEier);
 
-  const stillingsStatus = stillingsData.stilling.status;
-
   const avsluttStilling = async (kandidatlisteId: string) => {
     setLoading(true);
     try {
@@ -45,7 +43,7 @@ export default function FullførStillingKnapp() {
         ),
       ]);
       visVarsel({ type: 'success', tekst: 'Du har nå fullført oppdraget.' });
-
+      refetch?.();
       kandidatlisteForEier.mutate();
       if (refetch) refetch();
     } catch (error) {
@@ -110,9 +108,7 @@ export default function FullførStillingKnapp() {
                   type='button'
                   disabled={
                     loading ||
-                    (kandidatlisteForEier.status ===
-                      Kandidatlistestatus.Lukket &&
-                      stillingsStatus === StillingsStatus.Stoppet)
+                    kandidatlisteForEier.status === Kandidatlistestatus.Lukket
                   }
                   onClick={() =>
                     kandidatlisteForEier.kandidatlisteId &&

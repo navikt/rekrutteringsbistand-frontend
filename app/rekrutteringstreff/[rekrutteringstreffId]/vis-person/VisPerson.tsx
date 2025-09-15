@@ -3,13 +3,13 @@
 import { useKandidatnummer } from '@/app/api/rekrutteringstreff/[...slug]/useKandidatnummer';
 import VisKandidat from '@/app/kandidat/vis-kandidat/VisKandidat';
 import SWRLaster from '@/components/SWRLaster';
-import * as React from 'react';
+import { FC } from 'react';
 
 export interface VisPersonProps {
   personTreffId?: string;
 }
 
-const VisPerson: React.FC<VisPersonProps> = ({ personTreffId }) => {
+const VisPerson: FC<VisPersonProps> = ({ personTreffId }) => {
   const kandidatnummerHook = useKandidatnummer(personTreffId || null);
 
   return (

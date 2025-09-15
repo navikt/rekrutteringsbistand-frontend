@@ -1,8 +1,8 @@
-import { opprettStillingsinfo } from '@/app/api/stilling/opprett-stillingsinfo/opprett-stillingsinfo';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
+import HarKandidatlisteVisning from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/arbeidsplassen/HarKandidatlisteVisning';
+import OpprettRekrutteringsoppdrag from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/arbeidsplassen/OpprettStillingsoppdrag';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
-import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { formaterNorskDato } from '@/util/util';
 import {
   ArrowForwardIcon,
@@ -12,30 +12,68 @@ import {
   HandshakeIcon,
   PlusCircleIcon,
 } from '@navikt/aksel-icons';
-import { BodyShort, Box, Button, Heading } from '@navikt/ds-react';
-import { useState } from 'react';
+import { BodyShort, Box, Heading } from '@navikt/ds-react';
 
 export default function FremdriftspanelArbeidsplassen() {
   const { stillingsData } = useStillingsContext();
-  const { brukerData, valgtNavKontor } = useApplikasjonContext();
+
   const kanBrukesTilRekrutteringsoppdrag =
     stillingsData.stilling.employer?.orgnr;
 
-  const [loading, setLoading] = useState(false);
+  const harKandidatliste = stillingsData.stillingsinfo !== null;
 
-  const opprett = async () => {
-    setLoading(true);
-    await opprettStillingsinfo({
-      eierNavKontorEnhetId: valgtNavKontor?.navKontor ?? 'Ukjent Nav kontor',
-      stillingsid: stillingsData.stilling.uuid,
-      eierNavident: brukerData.ident,
-      eierNavn: brukerData.navn,
-    });
+  const renderKanBrukerTilStillingsoppdrag = (
+    <>
+      <OpprettRekrutteringsoppdrag />
+      <Box.New background='neutral-soft' borderRadius={'large'} padding='3'>
+        <Heading size='xsmall' level='3' className='mb-4'>
+          Bruk til rekrutteringsoppdrag
+        </Heading>
+        <div className='flex gap-4 flex-col'>
+          <div className='flex gap-2'>
+            <HandshakeIcon aria-hidden className='shrink-0' />
+            <BodyShort size='small'>
+              Du kan bruke annonsen til rekrutteringsoppdrag hvis du har avtalt
+              det med arbeidsgiveren.
+            </BodyShort>
+          </div>
+          <div className='flex gap-2'>
+            <DocPencilIcon aria-hidden className='shrink-0' />
+            <BodyShort size='small'>
+              Ved å bruke til oppdrag vil den fungere som interne annonser.
+            </BodyShort>
+          </div>
+        </div>
+      </Box.New>
+    </>
+  );
 
-    setLoading(false);
-
-    window.location.reload();
-  };
+  const renderKanIKKEBrukesTilStillingsoppdrag = (
+    <Box.New
+      background='brand-beige-moderate'
+      borderRadius={'large'}
+      padding='3'
+    >
+      <Heading size='xsmall' level='3' className='mb-4'>
+        Annonsen mangler et gyldig organisasjonsnummer.
+      </Heading>
+      <div className='flex gap-4 flex-col'>
+        <div className='flex gap-2'>
+          <CircleSlashIcon aria-hidden className='shrink-0' />
+          <BodyShort size='small'>
+            Det gjør at den kan ikke brukes til rekrutteringsoppdrag.
+          </BodyShort>
+        </div>
+        <div className='flex gap-2'>
+          <PlusCircleIcon aria-hidden className='shrink-0' />
+          <BodyShort size='small'>
+            Har du et oppdrag med arbeidsgiveren kan du opprette et
+            stillingsoppdrag selv her i Rekrutteringsbistand.
+          </BodyShort>
+        </div>
+      </div>
+    </Box.New>
+  );
 
   return (
     <TilgangskontrollForInnhold
@@ -51,62 +89,12 @@ export default function FremdriftspanelArbeidsplassen() {
         den {formaterNorskDato({ dato: stillingsData.stilling.published })}
       </BodyShort>
       <div className='flex flex-col gap-6 mt-6'>
-        {kanBrukesTilRekrutteringsoppdrag ? (
-          <>
-            <Button size='small' loading={loading} onClick={opprett}>
-              Bruk til oppdrag
-            </Button>
-            <Box.New
-              background='neutral-soft'
-              borderRadius={'large'}
-              padding='3'
-            >
-              <Heading size='xsmall' level='3' className='mb-4'>
-                Bruk til rekrutteringsoppdrag
-              </Heading>
-              <div className='flex gap-4 flex-col'>
-                <div className='flex gap-2'>
-                  <HandshakeIcon aria-hidden className='shrink-0' />
-                  <BodyShort size='small'>
-                    Du kan bruke annonsen til rekrutteringsoppdrag hvis du har
-                    avtalt det med arbeidsgiveren.
-                  </BodyShort>
-                </div>
-                <div className='flex gap-2'>
-                  <DocPencilIcon aria-hidden className='shrink-0' />
-                  <BodyShort size='small'>
-                    Ved å bruke til oppdrag vil den fungere som interne
-                    annonser.
-                  </BodyShort>
-                </div>
-              </div>
-            </Box.New>
-          </>
+        {harKandidatliste ? (
+          <HarKandidatlisteVisning />
+        ) : kanBrukesTilRekrutteringsoppdrag ? (
+          renderKanBrukerTilStillingsoppdrag
         ) : (
-          <Box.New
-            background='brand-beige-moderate'
-            borderRadius={'large'}
-            padding='3'
-          >
-            <Heading size='xsmall' level='3' className='mb-4'>
-              Annonsen mangler et gyldig organisasjonsnummer.
-            </Heading>
-            <div className='flex gap-4 flex-col'>
-              <div className='flex gap-2'>
-                <CircleSlashIcon aria-hidden className='shrink-0' />
-                <BodyShort size='small'>
-                  Det gjør at den kan ikke brukes til rekrutteringsoppdrag.
-                </BodyShort>
-              </div>
-              <div className='flex gap-2'>
-                <PlusCircleIcon aria-hidden className='shrink-0' />
-                <BodyShort size='small'>
-                  Har du et oppdrag med arbeidsgiveren kan du opprette en
-                  stillingsannonse selv her i Rekrutteringsbistand.
-                </BodyShort>
-              </div>
-            </div>
-          </Box.New>
+          renderKanIKKEBrukesTilStillingsoppdrag
         )}
         <Box.New background='neutral-soft' borderRadius={'large'} padding='3'>
           <Heading size='xsmall' level='3' className='mb-4'>

@@ -72,7 +72,7 @@ const OpprettMeny: React.FC = () => {
                   await opprett(Stillingskategori.Stilling);
                 }}
               >
-                Stilling
+                Stillingsoppdrag
               </ActionMenu.Item>
             </TilgangskontrollForInnhold>
             <TilgangskontrollForInnhold

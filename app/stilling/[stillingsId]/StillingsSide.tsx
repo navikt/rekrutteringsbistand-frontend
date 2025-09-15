@@ -4,7 +4,6 @@
 // import LeggTilKandidatTilStilling from './_ui/LeggTilKandidatTilStilling';
 // import FiltrertKandidatListeVisning from './kandidatliste/FiltrertKandidatListeVisning';
 // import KandidatlisteWrapper from './kandidatliste/KandidatlisteWrapper';
-// import FinKandidaterKnapp from '@/app/_windows/finn-kandidater-window/FinnKandidaterKnapp';
 // import { Kandidatlistestatus } from '@/app/api/kandidat/schema.zod';
 // import { KandidatSøkMarkerteContextProvider } from '@/app/kandidat/KandidatSøkMarkerteContext';
 // import OmStillingen from '@/app/stilling/[stillingsId]/_ui/om-stillingen/OmStillingen';

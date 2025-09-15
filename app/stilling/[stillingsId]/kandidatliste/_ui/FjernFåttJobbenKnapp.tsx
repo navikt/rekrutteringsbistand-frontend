@@ -1,7 +1,7 @@
 import { KandidatutfallTyper } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
 import { MinusCircleIcon } from '@navikt/aksel-icons';
 import { ActionMenu, Button } from '@navikt/ds-react';
-import * as React from 'react';
+import { FC } from 'react';
 
 export interface FjernFåttJobbenKnappProps {
   endreUtfallForKandidat: (utfall: KandidatutfallTyper) => void;
@@ -10,7 +10,7 @@ export interface FjernFåttJobbenKnappProps {
   actionMenu?: boolean;
 }
 
-const FjernFåttJobbenKnapp: React.FC<FjernFåttJobbenKnappProps> = ({
+const FjernFåttJobbenKnapp: FC<FjernFåttJobbenKnappProps> = ({
   endreUtfallForKandidat,
   loading,
   lukketKandidatliste,

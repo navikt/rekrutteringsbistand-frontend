@@ -1,4 +1,5 @@
 import { Heading } from '@navikt/ds-react';
+import { de } from 'date-fns/locale';
 import { ReactNode } from 'react';
 
 export type ISideTopBanner = {

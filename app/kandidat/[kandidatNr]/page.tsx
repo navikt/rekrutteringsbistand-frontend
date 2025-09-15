@@ -1,8 +1,9 @@
 import Kandidat from '@/app/kandidat/[kandidatNr]/Kandidat';
 import NotFound from '@/app/not-found';
+import { ReactNode } from 'react';
 
 interface KandidatSideProps {
-  children: React.ReactNode;
+  children: ReactNode;
   params: Promise<{ kandidatNr: string }>;
 }
 export default async function KandidatSide({ params }: KandidatSideProps) {

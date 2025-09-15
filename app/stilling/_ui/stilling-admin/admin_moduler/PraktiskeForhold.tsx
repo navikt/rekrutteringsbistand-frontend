@@ -6,12 +6,26 @@ import Arbeidstidsordning from '@/app/stilling/_ui/stilling-admin/admin_moduler/
 import Omfang from '@/app/stilling/_ui/stilling-admin/admin_moduler/Omfang';
 import RedigerBoks from '@/app/stilling/_ui/stilling-admin/admin_moduler/_felles/RedigerBoks';
 import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
+import { useEffect } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 export default function PraktiskeForhold() {
-  const { watch } = useFormContext();
+  const { watch, setValue, getValues } = useFormContext();
   const kategori = watch('stillingsinfo.stillingskategori');
   const erJobbmesse = kategori === Stillingskategori.Jobbmesse;
+
+  // Tving antall stillinger til 1 for jobbmesse
+  useEffect(() => {
+    if (erJobbmesse) {
+      const current = getValues('stilling.properties.positioncount');
+      if (current !== 1) {
+        setValue('stilling.properties.positioncount', 1, {
+          shouldDirty: true,
+          shouldTouch: true,
+        });
+      }
+    }
+  }, [erJobbmesse, getValues, setValue]);
 
   return (
     <RedigerBoks tittel='Praktiske forhold'>

@@ -170,8 +170,8 @@ export function useInnleggAutosave() {
     },
     [
       getValues,
-      innlegg?.id,
-      (innlegg as any)?.opprettetAvPersonNavn,
+      innlegg,
+      mutate,
       rekrutteringstreffId,
       setValue,
       treff,

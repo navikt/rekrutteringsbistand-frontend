@@ -1,24 +1,23 @@
 'use client';
 
 import FormidlingKandidater from './FormidlingKandidater';
-import WindowVisKandidat from '@/app/_windows/vis-kandidat-window/WindowVisKandidat';
+import FremdriftspanelEtterregistrering from '@/app/etterregistrering/[stillingsId]/FremdriftspanelEtterregistrering';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import OmStillingen from '@/app/stilling/[stillingsId]/_ui/om-stillingen/OmStillingen';
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideLayout from '@/components/layout/SideLayout';
 import { BriefcaseClockIcon } from '@navikt/aksel-icons';
 import { Tabs } from '@navikt/ds-react';
-import * as React from 'react';
 
 // import OmStillingen from '@/app/stilling/[stillingsId]/omStillingen/OmStillingen'
 
-const VisFormidling: React.FC = () => {
+export default function VisFormidling() {
   const { erEier } = useStillingsContext();
 
   return (
     <Tabs defaultValue='omStillingen'>
-      <WindowVisKandidat />
       <SideLayout
+        fremdriftspanel={<FremdriftspanelEtterregistrering />}
         header={
           <PanelHeader>
             <PanelHeader.Section
@@ -48,6 +47,4 @@ const VisFormidling: React.FC = () => {
       </SideLayout>
     </Tabs>
   );
-};
-
-export default VisFormidling;
+}

@@ -20,6 +20,7 @@ const ArbeidsgiverHendelseSchema = z.object({
 });
 
 const RekrutteringstreffArbeidsgiverSchema = z.object({
+  arbeidsgiverTreffId: z.string().optional(),
   organisasjonsnummer: z.string(),
   navn: z.string(),
   status: z.string().optional(),

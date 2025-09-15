@@ -1,9 +1,9 @@
 import { StillingsContextProvider } from './StillingsContext';
 import NotFound from '@/app/not-found';
-import * as React from 'react';
+import { ReactNode } from 'react';
 
 interface StillingSideRootLayoutProps {
-  children: React.ReactNode;
+  children: ReactNode;
   params: Promise<{ stillingsId: string }>;
 }
 export default async function StillingSideRootLayout({

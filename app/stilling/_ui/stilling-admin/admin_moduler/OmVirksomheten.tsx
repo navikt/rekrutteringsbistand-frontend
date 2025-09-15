@@ -5,6 +5,7 @@ import {
 import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import LeggTilKontaktperson from '@/app/stilling/_ui/stilling-admin/admin_moduler/_felles/LeggTilKontaktperson';
 import RedigerBoks from '@/app/stilling/_ui/stilling-admin/admin_moduler/_felles/RedigerBoks';
+import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
 import RikTekstEditor from '@/components/felles/rikteksteditor/RikTekstEditor';
 import { TasklistIcon } from '@navikt/aksel-icons';
 import {
@@ -62,6 +63,15 @@ export default function OmVirksomheten() {
     useFormContext<StillingsDataDTO>();
   const [søkeOrd, setSøkeord] = useState<string>('');
   const { isLoading, error, data } = useFinnArbeidsgiver(søkeOrd);
+  const kategori = watch('stillingsinfo.stillingskategori');
+  const erFormidling = kategori === Stillingskategori.Formidling;
+
+  // Sett beskrivelsen til "Etterregistrering" hvis det er formidling
+  useEffect(() => {
+    if (erFormidling) {
+      setValue('stilling.properties.employerdescription', 'Etterregistrering');
+    }
+  }, [erFormidling, setValue]);
   // Hjelper: mappe fra stilling.employer (form-format) til ArbeidsgiverDTO (visningsformat)
   const mapEmployerToArbeidsgiverDTO = (
     employer: any | null | undefined,
@@ -178,20 +188,24 @@ export default function OmVirksomheten() {
             {JSON.stringify(error)}
           </Alert>
         )}
-        <BodyLong className='font-bold'>
-          Beskrivelse av bedriften (valgfritt)
-        </BodyLong>
-        <RikTekstEditor
-          id='rediger-om-virksomheten'
-          tekst={watch('stilling.properties.employerdescription') ?? ''}
-          onChange={(e) =>
-            setValue('stilling.properties.employerdescription', e)
-          }
-        />
-        <TextField
-          label='Nettside (valgfritt)'
-          {...register('stilling.properties.employerhomepage')}
-        />
+        {!erFormidling && (
+          <>
+            <BodyLong className='font-bold'>
+              Beskrivelse av bedriften (valgfritt)
+            </BodyLong>
+            <RikTekstEditor
+              id='rediger-om-virksomheten'
+              tekst={watch('stilling.properties.employerdescription') ?? ''}
+              onChange={(e) =>
+                setValue('stilling.properties.employerdescription', e)
+              }
+            />
+            <TextField
+              label='Nettside (valgfritt)'
+              {...register('stilling.properties.employerhomepage')}
+            />
+          </>
+        )}
         <Heading size='small' className='flex gap-2 items-center'>
           <TasklistIcon className='shrink-0' /> Kontaktpersoner
         </Heading>

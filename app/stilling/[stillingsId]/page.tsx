@@ -1,7 +1,5 @@
 'use client';
 
-import WindowFinnKandidater from '@/app/_windows/finn-kandidater-window/WindowFinnKandidater';
-import WindowVisKandidat from '@/app/_windows/vis-kandidat-window/WindowVisKandidat';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import FremdriftspanelStilling from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/FremdriftspanelStilling';
 import FremdriftspanelArbeidsplassen from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/arbeidsplassen/FremdriftspanelArbeidsplassen';
@@ -11,9 +9,9 @@ import StillingTabs from '@/app/stilling/[stillingsId]/_ui/tabs/StillingTabs';
 import TabKnapper from '@/app/stilling/[stillingsId]/_ui/tabs/TabKnapper';
 import FiltrertKandidatListeVisning from '@/app/stilling/[stillingsId]/kandidatliste/FiltrertKandidatListeVisning';
 import KandidatlisteWrapper from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteWrapper';
+import { visStillingsDataInfo } from '@/app/stilling/_util/stillingInfoUtil';
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideLayout from '@/components/layout/SideLayout';
-import { useWindowContext } from '@/components/layout/windows/DynamicWindowContext';
 import { Alert, Heading, Tabs } from '@navikt/ds-react';
 import { useQueryState } from 'nuqs';
 import { useRef } from 'react';
@@ -24,7 +22,6 @@ enum StillingFane {
 }
 
 export default function StillingsSidePage() {
-  const window = useWindowContext();
   const [fane, setFane] = useQueryState('stillingFane', {
     defaultValue: StillingFane.STILLING,
     clearOnDefault: true,
@@ -34,32 +31,35 @@ export default function StillingsSidePage() {
 
   const printRef = useRef<HTMLDivElement>(null);
 
+  const info = visStillingsDataInfo(stillingsData);
   const ugyldigStilling =
     stillingsData?.stilling?.medium === 'DIR' &&
     (stillingsData?.stilling?.employer?.orgnr ?? null) === null;
 
   const fremdriftsPanel = (top?: boolean) => {
-    if (stillingsData.stillingsinfo === null) {
+    if (stillingsData.stilling.source !== 'DIR') {
       return <FremdriftspanelArbeidsplassen />;
     }
 
     return (
-      !window?.isDynamic &&
-      !forhåndsvisData &&
-      erEier && <FremdriftspanelStilling dropDown={top} />
+      !forhåndsvisData && erEier && <FremdriftspanelStilling dropDown={top} />
     );
   };
 
   return (
     <div className='@stilling' data-testid='stilling-side'>
-      <WindowFinnKandidater stillingsId={stillingsData.stilling.uuid} />
-      <WindowVisKandidat />
       <Tabs defaultValue={fane} onChange={(val: any) => setFane(val)}>
         <SideLayout
           header={
-            <PanelHeader>
+            <PanelHeader
+              fullskjermUrl={
+                info.erFormidling
+                  ? `/etterregistrering/${stillingsData.stilling.uuid}`
+                  : `/stilling/${stillingsData.stilling.uuid}`
+              }
+            >
               <PanelHeader.Section
-                title={'Stillingsoppdrag'}
+                title={stillingsData.stilling.title}
                 back={{
                   fallbackPath: '/stilling',
                 }}
@@ -68,6 +68,7 @@ export default function StillingsSidePage() {
               />
             </PanelHeader>
           }
+          skjulFremdriftspanel={fane !== StillingFane.STILLING}
           fremdriftspanel={fremdriftsPanel()}
           fremdriftspanelTop={fremdriftsPanel(true)}
         >

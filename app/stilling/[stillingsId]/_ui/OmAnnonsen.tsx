@@ -2,9 +2,8 @@ import Definisjon from './Definisjon';
 import OmStillingBoks from './OmStillingBoks';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import { formaterNorskDato } from '@/util/util';
-import * as React from 'react';
 
-const OmAnnonsen: React.FC = () => {
+export default function OmAnnonsen() {
   const { stillingsData } = useStillingsContext();
   const { updated, medium, reference, expires, published, annonsenr } =
     stillingsData?.stilling;
@@ -42,6 +41,4 @@ const OmAnnonsen: React.FC = () => {
       }
     />
   );
-};
-
-export default OmAnnonsen;
+}

@@ -1,8 +1,8 @@
 import { Box, Heading } from '@navikt/ds-react';
-import React from 'react';
+import { ReactNode } from 'react';
 
 export interface RedigerBoksProps {
-  children: React.ReactNode;
+  children: ReactNode;
   tittel: string;
 }
 

@@ -49,7 +49,7 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
       shouldValidate: false,
     });
     setEditorKey(Date.now());
-  }, [innlegg?.id, setValue]);
+  }, [setValue, innlegg?.htmlContent]);
 
   const saveCallback = async (force?: boolean) => {
     try {

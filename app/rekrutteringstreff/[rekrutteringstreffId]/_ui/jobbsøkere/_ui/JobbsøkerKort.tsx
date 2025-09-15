@@ -8,7 +8,7 @@ import {
   Tag,
   TagProps,
 } from '@navikt/ds-react';
-import * as React from 'react';
+import { FC } from 'react';
 
 interface JobbsøkerKortProps {
   fødselsnummer?: string;
@@ -32,7 +32,7 @@ export type Veileder = {
   navIdent?: string;
 };
 
-const JobbsøkerKort: React.FC<JobbsøkerKortProps> = ({
+const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
   fornavn,
   etternavn,
   personTreffId,

@@ -3,9 +3,13 @@ import { useStillingsSøkFilter } from '@/app/stilling/StillingsSøkContext';
 import { MagnifyingGlassIcon } from '@navikt/aksel-icons';
 import { Box, Button, Search } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
-import { useEffect, useRef, useState, type FC } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-const StillingSøkebar: FC = () => {
+export interface StillingSøkebarProps {
+  alltidÅpen: boolean;
+}
+
+export default function StillingSøkebar({ alltidÅpen }: StillingSøkebarProps) {
   const { fritekst, setFritekstListe } = useStillingsSøkFilter();
   const [searchValue, setSearchValue] = useState<string>('');
   const [showStandardsøk, setShowStandardsøk] = useState<boolean>(false);
@@ -32,10 +36,10 @@ const StillingSøkebar: FC = () => {
   };
 
   useEffect(() => {
-    if (showSearch && searchInputRef.current) {
+    if (!alltidÅpen && showSearch && searchInputRef.current) {
       searchInputRef.current.focus();
     }
-  }, [showSearch]);
+  }, [alltidÅpen, showSearch]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -54,7 +58,7 @@ const StillingSøkebar: FC = () => {
 
   return (
     <div className='relative' ref={searchRef}>
-      {!showSearch ? (
+      {!alltidÅpen && !showSearch ? (
         <Button
           variant='tertiary'
           size='small'
@@ -115,6 +119,4 @@ const StillingSøkebar: FC = () => {
       )}
     </div>
   );
-};
-
-export default StillingSøkebar;
+}

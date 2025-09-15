@@ -1,9 +1,9 @@
 import TidslinjeFelt from './TidslinjeFelt';
 import { useKandidatContext } from '@/app/kandidat/vis-kandidat/KandidatContext';
 import { Heading } from '@navikt/ds-react';
-import * as React from 'react';
+import { FC } from 'react';
 
-const KandidatErfaring: React.FC = () => {
+const KandidatErfaring: FC = () => {
   const { kandidatData } = useKandidatContext();
   return (
     <>

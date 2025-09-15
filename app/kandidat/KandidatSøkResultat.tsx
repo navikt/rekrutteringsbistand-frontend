@@ -15,9 +15,10 @@ import {
 import LagreIRekrutteringstreffButton from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/lagreIRekrutteringstreffButton/LagreIRekrutteringstreffButton';
 import RekrutteringstreffFeatureToggle from '@/components/RekrutteringstreffFeatureToggle';
 import SWRLaster from '@/components/SWRLaster';
+import SkeletonKort from '@/components/layout/SkeletonKort';
 import { useKandidatNavigeringContext } from '@/providers/KandidatNavigeringContext';
 import { Checkbox, Pagination } from '@navikt/ds-react';
-import * as React from 'react';
+import { FC, useEffect } from 'react';
 
 interface KandidatSøkResultatProps {
   type: KandidatSøkPortefølje;
@@ -27,7 +28,7 @@ interface KandidatSøkResultatProps {
   alleredeLagtTilKandidatliste?: string[];
 }
 
-const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({
+const KandidatSøkResultat: FC<KandidatSøkResultatProps> = ({
   type,
   stillingsId,
   rekrutteringstreffId,
@@ -38,7 +39,7 @@ const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({
   const kandidatsøkHook = useKandidatsøk(type, filter);
   const { setKandidatNavigering } = useKandidatNavigeringContext();
 
-  React.useEffect(() => {
+  useEffect(() => {
     setKandidatNavigering(kandidatsøkHook.data?.navigering.kandidatnumre ?? []);
   }, [kandidatsøkHook.data?.navigering, setKandidatNavigering]);
 
@@ -46,7 +47,14 @@ const KandidatSøkResultat: React.FC<KandidatSøkResultatProps> = ({
     useKandidatSøkMarkerteContext();
 
   return (
-    <SWRLaster hooks={[kandidatsøkHook]}>
+    <SWRLaster
+      hooks={[kandidatsøkHook]}
+      skeleton={
+        <div className='mt-14'>
+          <SkeletonKort />
+        </div>
+      }
+    >
       {(kandidatData) => {
         const antallSider = Math.ceil(kandidatData.antallTotalt / 25);
         // Elasticsearch takler ikke mer enn 10000 element i pagineringen uten å endre max result i es, som kan ha konsekvenser for minne og ytelse.

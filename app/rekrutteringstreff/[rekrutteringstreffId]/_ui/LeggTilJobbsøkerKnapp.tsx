@@ -2,12 +2,13 @@ import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutte
 import { PlusIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import Link from 'next/link';
+import { FC } from 'react';
 
 interface LeggTilJobbsøkerKnappProps {
   className?: string;
 }
 
-const LeggTilJobbsøkerKnapp: React.FC<LeggTilJobbsøkerKnappProps> = ({
+const LeggTilJobbsøkerKnapp: FC<LeggTilJobbsøkerKnappProps> = ({
   className,
 }) => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();

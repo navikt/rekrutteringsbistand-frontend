@@ -15,9 +15,9 @@ import PanelHeader from '@/components/layout/PanelHeader';
 import SideLayout from '@/components/layout/SideLayout';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
-import { Button, Tabs, Modal, BodyLong } from '@navikt/ds-react';
-import { useQueryState, parseAsString } from 'nuqs';
-import * as React from 'react';
+import { BodyLong, Button, Modal, Tabs } from '@navikt/ds-react';
+import { parseAsString, useQueryState } from 'nuqs';
+import { FC, useRef } from 'react';
 
 export enum RekrutteringstreffTabs {
   OM_TREFFET = 'om_treffet',
@@ -27,7 +27,7 @@ export enum RekrutteringstreffTabs {
   KI_LOGG = 'ki_logg',
 }
 
-const Rekrutteringstreff: React.FC = () => {
+const Rekrutteringstreff: FC = () => {
   const [fane, setFane] = useQueryState('visFane', {
     defaultValue: RekrutteringstreffTabs.OM_TREFFET,
     clearOnDefault: true,
@@ -50,7 +50,7 @@ const Rekrutteringstreff: React.FC = () => {
       (h) => h.hendelsestype === 'PUBLISER',
     ) ?? false;
 
-  const redigerPublisertModalRef = React.useRef<HTMLDialogElement>(null);
+  const redigerPublisertModalRef = useRef<HTMLDialogElement>(null);
 
   const scrollToTop = () => {
     if (typeof window !== 'undefined') {

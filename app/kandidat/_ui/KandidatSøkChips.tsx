@@ -3,9 +3,8 @@ import { HovedMålType } from '@/app/kandidat/kandidat-søk-filter/_ui/Hovedmål
 import FilterChip from '@/components/felles/filter/FilterChip';
 import TømFiltre from '@/components/felles/filter/TømFiltre';
 import { Chips } from '@navikt/ds-react';
-import * as React from 'react';
 
-const StillingsSøkChips: React.FC = () => {
+export default function KandidatSøkChips() {
   const filter = useKandidatSøkFilterContext();
 
   return (
@@ -71,6 +70,4 @@ const StillingsSøkChips: React.FC = () => {
       </Chips>
     </div>
   );
-};
-
-export default StillingsSøkChips;
+}

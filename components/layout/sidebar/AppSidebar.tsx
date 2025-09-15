@@ -51,8 +51,7 @@ const navigasjonListe: NavigasjonItemProps[] = [
   {
     tekst: 'Stillingsoppdrag',
     ikon: <BriefcaseIcon />,
-    // path: '/stilling?brukStandardsok=true',
-    path: '/stilling',
+    path: '/stilling?brukStandardsok=true',
     kreverRoller: null,
   },
   {
@@ -78,9 +77,10 @@ const navigasjonListe: NavigasjonItemProps[] = [
 const SideLenke = (item: NavigasjonItemProps) => {
   const { open } = useSidebar();
   const pathname = usePathname();
-  // Aktiv logikk: '/' kun aktiv på eksakt rot, andre paths bruker startsWith
+
+  const basePath = item.path.split('?')[0];
   const aktiv =
-    item.path === '/' ? pathname === '/' : pathname?.startsWith(item.path);
+    basePath === '/' ? pathname === '/' : pathname?.startsWith(basePath);
   return (
     <TilgangskontrollForInnhold
       key={item.tekst}
@@ -89,6 +89,7 @@ const SideLenke = (item: NavigasjonItemProps) => {
     >
       <Link href={item.path} className={open ? 'w-full' : ''}>
         <Button
+          size='small'
           variant={aktiv ? 'secondary-neutral' : 'tertiary-neutral'}
           aria-current={aktiv ? 'page' : undefined}
           aria-label={item.tekst}
@@ -111,6 +112,7 @@ const SideHandling = (item: NavigasjonHandlingProps) => {
       kreverEnAvRollene={item.kreverRoller}
     >
       <Button
+        size='small'
         onClick={item.onClick}
         variant='tertiary-neutral'
         aria-label={item.tekst}

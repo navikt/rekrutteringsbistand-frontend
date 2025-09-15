@@ -9,15 +9,17 @@ import {
 import { useStillingssøk } from '@/app/api/stillings-sok/useStillingssøk';
 import { useStillingssokTotalData } from '@/app/stilling/store/stillingssokTotalData';
 import SWRLaster from '@/components/SWRLaster';
+import SkeletonKort from '@/components/layout/SkeletonKort';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
-import * as React from 'react';
-import { useEffect } from 'react';
+import { ChevronLeftIcon, ChevronRightIcon } from '@navikt/aksel-icons';
+import { Button } from '@navikt/ds-react';
+import { FC, useEffect } from 'react';
 
 interface StillingsSøkeresultatProps {
   kandidatId?: string;
 }
 
-const StillingsSøkeresultat: React.FC<StillingsSøkeresultatProps> = ({
+const StillingsSøkeresultat: FC<StillingsSøkeresultatProps> = ({
   kandidatId,
 }) => {
   // Abonner kun på setteren for å unngå re-render ved antall-endringer her.
@@ -49,9 +51,22 @@ const StillingsSøkeresultat: React.FC<StillingsSøkeresultatProps> = ({
     const tilAntall = treffFra + maksAntallTreffPerSøk;
 
     return (
-      <div>
-        Viser {fraAntall}-{tilAntall < total ? tilAntall : total} av {total}{' '}
-        Stillingsoppdrag
+      <div className='flex items-center py-1.5 justify-end'>
+        {fraAntall}-{tilAntall < total ? tilAntall : total} av {total}
+        <Button
+          disabled={filter.side === 1}
+          onClick={() => filter.setSide(filter.side - 1)}
+          icon={<ChevronLeftIcon />}
+          size='small'
+          variant='tertiary'
+        />
+        <Button
+          disabled={tilAntall >= total}
+          onClick={() => filter.setSide(filter.side + 1)}
+          icon={<ChevronRightIcon />}
+          size='small'
+          variant='tertiary'
+        />
       </div>
     );
   };
@@ -64,11 +79,20 @@ const StillingsSøkeresultat: React.FC<StillingsSøkeresultatProps> = ({
   }, [combinedHook.data, setAntall]);
 
   return (
-    <SWRLaster hooks={[combinedHook]}>
+    <SWRLaster
+      hooks={[combinedHook]}
+      skeleton={
+        <div className='mt-16'>
+          <SkeletonKort />
+        </div>
+      }
+    >
       {(data: any) => {
         return (
           <>
             <StillingsSøkChips skjulLagreStandard={!!kandidatId} />
+            {antallVisning(data.hits?.total?.value)}
+
             <div className='flex flex-col gap-1'>
               {data.hits?.hits?.map((hit: any) => (
                 <StillingsKort
@@ -79,7 +103,6 @@ const StillingsSøkeresultat: React.FC<StillingsSøkeresultatProps> = ({
               ))}
             </div>
             <div className={'flex justify-between items-center'}>
-              {antallVisning(data.hits?.total?.value)}
               <StillingsSøkPaginering
                 totaltAntallTreff={data.hits?.total?.value ?? 0}
               />

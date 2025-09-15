@@ -1,11 +1,11 @@
 import { BodyLong, Heading } from '@navikt/ds-react';
-import * as React from 'react';
+import { FC } from 'react';
 
 export interface KandidatBeskrivelseProps {
   kandidatSammendrag?: string | null;
 }
 
-const KandidatBeskrivelse: React.FC<KandidatBeskrivelseProps> = ({
+const KandidatBeskrivelse: FC<KandidatBeskrivelseProps> = ({
   kandidatSammendrag,
 }) => {
   if (!kandidatSammendrag) {

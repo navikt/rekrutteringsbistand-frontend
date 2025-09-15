@@ -2,7 +2,7 @@ import { getMiljø, Miljø } from '@/util/miljø';
 import { ThumbUpIcon } from '@navikt/aksel-icons';
 import { CopyButton } from '@navikt/ds-react';
 import { LinkIcon } from 'lucide-react';
-import * as React from 'react';
+import { FC } from 'react';
 
 export interface IKopierStillingLenke {
   stillingsId: string;
@@ -13,16 +13,14 @@ const visStillingUrl =
     : 'https://www.nav.no/arbeid/stilling';
 export const hentAnnonselenke = (uuid?: string) => `${visStillingUrl}/${uuid}`;
 
-const KopierStillingLenke: React.FC<IKopierStillingLenke> = ({
-  stillingsId,
-}) => {
+const KopierStillingLenke: FC<IKopierStillingLenke> = ({ stillingsId }) => {
   const lenke = hentAnnonselenke(stillingsId);
   return (
     <CopyButton
       size='small'
       variant='action'
       copyText={lenke}
-      text='Kopier aonnonselenke'
+      text='Kopier delingslenke'
       activeText='Lenken er kopiert'
       icon={<LinkIcon aria-hidden />}
       activeIcon={<ThumbUpIcon aria-hidden />}

@@ -1,11 +1,11 @@
 import { Detail } from '@navikt/ds-react';
-import * as React from 'react';
+import { FC } from 'react';
 
 interface Props {
   harAvsluttet: boolean;
 }
 
-const AvslutteSteg: React.FC<Props> = ({ harAvsluttet }) => {
+const AvslutteSteg: FC<Props> = ({ harAvsluttet }) => {
   return (
     <div className='flex-1'>
       {harAvsluttet ? (

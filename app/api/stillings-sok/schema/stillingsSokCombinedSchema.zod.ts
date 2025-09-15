@@ -5,7 +5,7 @@ import { z } from 'zod';
 const hitsOnlySchema = ESStillingsSøkSchema.pick({ hits: true });
 
 export const StillingsSokAntallSchema = z.object({
-  statusBuckets: z
+  visningsStatusBuckets: z
     .array(z.object({ key: z.string(), count: z.number() }))
     .optional(),
   stillingskategoriBuckets: z

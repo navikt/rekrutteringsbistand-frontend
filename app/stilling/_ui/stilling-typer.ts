@@ -20,7 +20,6 @@ export enum Stillingskategori {
 }
 
 export enum StillingsAnsettelsesform {
-  Ingen = '',
   Fast = 'Fast',
   Vikariat = 'Vikariat',
   Engasjement = 'Engasjement',
@@ -35,7 +34,6 @@ export enum StillingsAnsettelsesform {
 }
 
 export enum StillingsArbeidstidsordning {
-  Ingen = '',
   Skift = 'Skift',
   Turnus = 'Turnus',
   Vakt = 'Vakt',

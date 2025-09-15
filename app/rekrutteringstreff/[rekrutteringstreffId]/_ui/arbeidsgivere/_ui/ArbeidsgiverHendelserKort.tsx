@@ -17,16 +17,13 @@ import { BodyShort, Box, Button, Heading } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import { nb } from 'date-fns/locale/nb';
 import { PlusIcon } from 'lucide-react';
-import { useRef } from 'react';
-import * as React from 'react';
+import { FC, useRef } from 'react';
 
 interface Props {
   arbeidsgiverHendelserDTO: ArbeidsgiverHendelserDTO;
 }
 
-const ArbeidsgiverHendelserKort: React.FC<Props> = ({
-  arbeidsgiverHendelserDTO,
-}) => {
+const ArbeidsgiverHendelserKort: FC<Props> = ({ arbeidsgiverHendelserDTO }) => {
   const modalRef = useRef<HTMLDialogElement>(null);
 
   const antallLagtTil = arbeidsgiverHendelserDTO.filter(

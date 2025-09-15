@@ -4,6 +4,7 @@ import {
   hierarkiAvTagsForFilter,
   Subtag,
 } from './_ui/StillingsSøkFilter/InkluderingFilter';
+import { VisningsStatus } from './_util/stillingInfoUtil';
 import { StillingsSøkQueryparam } from './_util/stillingssøk-typer';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
@@ -79,7 +80,8 @@ export const StillingsSøkProvider: FC<{
 
   const setStatuser = (value: string[] | ((prev: string[]) => string[])) => {
     if (!formidlinger && !harArbeidsgiverrettetRolle) {
-      setStatuserOriginal(['publisert']);
+      // Tving default til Åpen for søkere (tidligere 'publisert')
+      setStatuserOriginal([VisningsStatus.ApenForSokere]);
       setSide(1);
     } else {
       setStatuserOriginal(value);
@@ -165,14 +167,30 @@ export const StillingsSøkProvider: FC<{
   );
 
   useEffect(() => {
+    // For ikke-formidlinger uten arbeidsgiverrettet rolle: lås til kun Åpen for søkere
     if (
       !formidlinger &&
       !harArbeidsgiverrettetRolle &&
-      (!statuser.includes('publisert') || statuser.length > 1)
+      (!statuser.includes(VisningsStatus.ApenForSokere) || statuser.length > 1)
     ) {
-      setStatuserOriginal(['publisert']);
+      setStatuserOriginal([VisningsStatus.ApenForSokere]);
     }
   }, [harArbeidsgiverrettetRolle, statuser, setStatuserOriginal, formidlinger]);
+
+  useEffect(() => {
+    // Fjern ugyldige statuser som ikke finnes i VisningsStatus enum
+    const gyldigeVisningsStatuser = Object.values(VisningsStatus);
+    const ugyldige = statuser.filter(
+      (status) => !gyldigeVisningsStatuser.includes(status as VisningsStatus),
+    );
+
+    if (ugyldige.length > 0) {
+      const filtrerteStatuser = statuser.filter((status) =>
+        gyldigeVisningsStatuser.includes(status as VisningsStatus),
+      );
+      setStatuserOriginal(filtrerteStatuser);
+    }
+  }, [statuser, setStatuserOriginal]);
 
   useEffect(() => {
     if (inkluderingUnderkategori.length !== 0) {

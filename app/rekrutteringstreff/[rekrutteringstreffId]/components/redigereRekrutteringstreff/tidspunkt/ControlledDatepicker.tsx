@@ -1,5 +1,6 @@
 import { DatePicker, useDatepicker } from '@navikt/ds-react';
 import * as React from 'react';
+import { useEffect } from 'react';
 import type { FieldError } from 'react-hook-form';
 
 type Props = {
@@ -31,7 +32,7 @@ export default function ControlledDatePicker({
       onDateChange: (d) => onChange(d ?? null),
     });
 
-  React.useEffect(() => {
+  useEffect(() => {
     const next = value ?? undefined;
     const cur = selectedDay ?? undefined;
     if (

@@ -1,6 +1,6 @@
-import * as React from 'react';
+import { FC } from 'react';
 
-const KandidatOversiktDivider: React.FC = () => {
+const KandidatOversiktDivider: FC = () => {
   return <hr className='my-5' />;
 };
 

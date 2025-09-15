@@ -2,9 +2,9 @@
 
 import { EyeIcon, PersonCircleIcon } from '@navikt/aksel-icons';
 import { Detail } from '@navikt/ds-react';
-import React from 'react';
+import { FC } from 'react';
 
-const KiAnalyse: React.FC = () => {
+const KiAnalyse: FC = () => {
   return (
     <div className='space-y-1'>
       <Detail size='small' className='flex items-start gap-2 text-gray-400'>

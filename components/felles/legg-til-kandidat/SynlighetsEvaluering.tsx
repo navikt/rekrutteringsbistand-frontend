@@ -45,7 +45,7 @@ const KandidatenFinnesIkke: React.FC<SynlighetsevalueringDTO> = (
 
   if (ingenKriterierStemmer || alleKriterierStemmer) {
     return (
-      <div>Fant ingen forklaring på hvorfor kandidaten er ikke synlig</div>
+      <div>Fant ingen forklaring på hvorfor jobbsøkeren er ikke synlig</div>
     );
   }
 

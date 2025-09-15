@@ -13,6 +13,7 @@ import {
 } from './redigereRekrutteringstreff/useAutosave';
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
+import LeggTilArbeidsgiverForm from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/arbeidsgivere/_ui/LeggTilArbeidsgiverForm';
 import {
   Button,
   Modal,
@@ -20,18 +21,141 @@ import {
   BodyShort,
   Label,
   Alert,
+  Heading,
 } from '@navikt/ds-react';
-import React from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
+
+// Modul-scope hjelpefunksjoner for stabil referanse i hooks
+const toIsoLocal = (
+  date: Date | null | undefined,
+  time?: string | null,
+): string | null => {
+  if (!date) return null;
+  const timeValue = time && time.trim() !== '' ? time : '00:00';
+  return toIsoUtil(date, timeValue);
+};
+
+const formatIsoLocal = (iso: string | null | undefined) =>
+  iso ? formatIsoUtil(iso) : '';
+
+const beregnEndringer = (
+  verdier: any,
+  treff: any,
+  innleggHtmlFraBackend: string,
+) => {
+  const fraTid =
+    toIsoLocal(verdier.fraDato ?? null, verdier.fraTid) ??
+    treff?.fraTid ??
+    null;
+  const tilTid =
+    toIsoLocal(verdier.tilDato ?? verdier.fraDato ?? null, verdier.tilTid) ??
+    treff?.tilTid ??
+    null;
+  const svarfrist =
+    toIsoLocal(verdier.svarfristDato ?? null, verdier.svarfristTid) ??
+    treff?.svarfrist ??
+    null;
+
+  const sikkerTittel =
+    typeof verdier.tittel === 'string' && verdier.tittel.trim().length > 0
+      ? verdier.tittel
+      : (treff?.tittel ?? '');
+
+  const nesteDto = {
+    tittel: sikkerTittel,
+    beskrivelse: (verdier.beskrivelse ?? treff?.beskrivelse ?? null) as
+      | string
+      | null,
+    fraTid,
+    tilTid,
+    svarfrist,
+    gateadresse: (verdier.gateadresse ?? treff?.gateadresse ?? null) as
+      | string
+      | null,
+    postnummer: (verdier.postnummer ?? treff?.postnummer ?? null) as
+      | string
+      | null,
+    poststed: (verdier.poststed ?? treff?.poststed ?? null) as string | null,
+  };
+
+  const elementer: {
+    etikett: string;
+    gammelVerdi: string;
+    nyVerdi: string;
+  }[] = [];
+
+  const leggTilIEndringslisteHvisEndret = (
+    etikett: string,
+    gammelVerdi: string | null,
+    nyVerdi: string | null,
+    formatter?: (val: string | null) => string,
+  ) => {
+    const fmt = (x: string | null) => (formatter ? formatter(x) : (x ?? ''));
+    const o = fmt(gammelVerdi);
+    const n = fmt(nyVerdi);
+    if (o !== n) elementer.push({ etikett, gammelVerdi: o, nyVerdi: n });
+  };
+
+  leggTilIEndringslisteHvisEndret(
+    'Tittel',
+    treff?.tittel ?? '',
+    nesteDto.tittel ?? '',
+  );
+  leggTilIEndringslisteHvisEndret(
+    'Beskrivelse',
+    treff?.beskrivelse,
+    nesteDto.beskrivelse,
+  );
+  leggTilIEndringslisteHvisEndret('Fra', treff?.fraTid, nesteDto.fraTid, (v) =>
+    formatIsoLocal(v),
+  );
+  leggTilIEndringslisteHvisEndret('Til', treff?.tilTid, nesteDto.tilTid, (v) =>
+    formatIsoLocal(v),
+  );
+  leggTilIEndringslisteHvisEndret(
+    'Svarfrist',
+    treff?.svarfrist,
+    nesteDto.svarfrist,
+    (v) => formatIsoLocal(v),
+  );
+  leggTilIEndringslisteHvisEndret(
+    'Gateadresse',
+    treff?.gateadresse,
+    nesteDto.gateadresse,
+  );
+  leggTilIEndringslisteHvisEndret(
+    'Postnummer',
+    treff?.postnummer,
+    nesteDto.postnummer,
+  );
+  leggTilIEndringslisteHvisEndret(
+    'Poststed',
+    treff?.poststed,
+    nesteDto.poststed,
+  );
+
+  const currentInnleggHtml = (verdier.htmlContent ?? '') as string;
+  if ((innleggHtmlFraBackend ?? '') !== (currentInnleggHtml ?? '')) {
+    elementer.push({
+      etikett: 'Innlegg',
+      gammelVerdi: 'Innhold endret',
+      nyVerdi: 'Innhold endret',
+    });
+  }
+
+  return elementer;
+};
 
 interface RekrutteringstreffRedigeringProps {
   onUpdated?: () => void;
   onGåTilForhåndsvisning?: () => void;
 }
 
-const RekrutteringstreffRedigering: React.FC<
-  RekrutteringstreffRedigeringProps
-> = ({ onUpdated, onGåTilForhåndsvisning }) => {
+const RekrutteringstreffRedigering: FC<RekrutteringstreffRedigeringProps> = ({
+  onUpdated,
+  onGåTilForhåndsvisning,
+}) => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const rekrutteringstreffHook = useRekrutteringstreff(rekrutteringstreffId);
   const innleggHook = useInnlegg(rekrutteringstreffId);
@@ -50,12 +174,12 @@ const RekrutteringstreffRedigering: React.FC<
       (h) => h.hendelsestype === 'PUBLISER',
     ) ?? false;
 
-  const [endringer, setEndringer] = React.useState<
+  const [endringer, setEndringer] = useState<
     { etikett: string; gammelVerdi: string; nyVerdi: string }[]
   >([]);
-  const bekreftModalRef = React.useRef<HTMLDialogElement>(null);
+  const bekreftModalRef = useRef<HTMLDialogElement>(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const treff = rekrutteringstreffHook.data as any;
     if (!treff) {
       setEndringer([]);
@@ -81,134 +205,10 @@ const RekrutteringstreffRedigering: React.FC<
     onUpdated?.();
   };
 
-  const toIso = (
-    date: Date | null | undefined,
-    time?: string | null,
-  ): string | null => {
-    if (!date) return null;
-    const timeValue = time && time.trim() !== '' ? time : '00:00';
-    return toIsoUtil(date, timeValue);
-  };
-
-  const formatIso = (iso: string | null | undefined) =>
-    iso ? formatIsoUtil(iso) : '';
-
   const erLikEndringsliste = (
     a: { etikett: string; gammelVerdi: string; nyVerdi: string }[],
     b: { etikett: string; gammelVerdi: string; nyVerdi: string }[],
   ) => JSON.stringify(a) === JSON.stringify(b);
-
-  const beregnEndringer = (
-    verdier: any,
-    treff: any,
-    innleggHtmlFraBackend: string,
-  ) => {
-    const fraTid =
-      toIso(verdier.fraDato ?? null, verdier.fraTid) ?? treff?.fraTid ?? null;
-    const tilTid =
-      toIso(verdier.tilDato ?? verdier.fraDato ?? null, verdier.tilTid) ??
-      treff?.tilTid ??
-      null;
-    const svarfrist =
-      toIso(verdier.svarfristDato ?? null, verdier.svarfristTid) ??
-      treff?.svarfrist ??
-      null;
-
-    const sikkerTittel =
-      typeof verdier.tittel === 'string' && verdier.tittel.trim().length > 0
-        ? verdier.tittel
-        : (treff?.tittel ?? '');
-
-    const nesteDto = {
-      tittel: sikkerTittel,
-      beskrivelse: (verdier.beskrivelse ?? treff?.beskrivelse ?? null) as
-        | string
-        | null,
-      fraTid,
-      tilTid,
-      svarfrist,
-      gateadresse: (verdier.gateadresse ?? treff?.gateadresse ?? null) as
-        | string
-        | null,
-      postnummer: (verdier.postnummer ?? treff?.postnummer ?? null) as
-        | string
-        | null,
-      poststed: (verdier.poststed ?? treff?.poststed ?? null) as string | null,
-    };
-
-    const elementer: {
-      etikett: string;
-      gammelVerdi: string;
-      nyVerdi: string;
-    }[] = [];
-
-    const leggTilIEndringslisteHvisEndret = (
-      etikett: string,
-      gammelVerdi: string | null,
-      nyVerdi: string | null,
-      formatter?: (val: string | null) => string,
-    ) => {
-      const fmt = (x: string | null) => (formatter ? formatter(x) : (x ?? ''));
-      const o = fmt(gammelVerdi);
-      const n = fmt(nyVerdi);
-      if (o !== n) elementer.push({ etikett, gammelVerdi: o, nyVerdi: n });
-    };
-
-    leggTilIEndringslisteHvisEndret(
-      'Tittel',
-      treff?.tittel ?? '',
-      nesteDto.tittel ?? '',
-    );
-    leggTilIEndringslisteHvisEndret(
-      'Beskrivelse',
-      treff?.beskrivelse,
-      nesteDto.beskrivelse,
-    );
-    leggTilIEndringslisteHvisEndret(
-      'Fra',
-      treff?.fraTid,
-      nesteDto.fraTid,
-      (v) => formatIso(v),
-    );
-    leggTilIEndringslisteHvisEndret(
-      'Til',
-      treff?.tilTid,
-      nesteDto.tilTid,
-      (v) => formatIso(v),
-    );
-    leggTilIEndringslisteHvisEndret(
-      'Svarfrist',
-      treff?.svarfrist,
-      nesteDto.svarfrist,
-      (v) => formatIso(v),
-    );
-    leggTilIEndringslisteHvisEndret(
-      'Gateadresse',
-      treff?.gateadresse,
-      nesteDto.gateadresse,
-    );
-    leggTilIEndringslisteHvisEndret(
-      'Postnummer',
-      treff?.postnummer,
-      nesteDto.postnummer,
-    );
-    leggTilIEndringslisteHvisEndret(
-      'Poststed',
-      treff?.poststed,
-      nesteDto.poststed,
-    );
-
-    const currentInnleggHtml = (verdier.htmlContent ?? '') as string;
-    if ((innleggHtmlFraBackend ?? '') !== (currentInnleggHtml ?? '')) {
-      elementer.push({
-        etikett: 'Innlegg',
-        gammelVerdi: 'Innhold endret',
-        nyVerdi: 'Innhold endret',
-      });
-    }
-
-    return elementer;
-  };
 
   const kreverTittelSjekk = endringer.some((e) => e.etikett === 'Tittel');
   const kreverInnleggSjekk = endringer.some((e) => e.etikett === 'Innlegg');
@@ -227,6 +227,14 @@ const RekrutteringstreffRedigering: React.FC<
     <div className='space-y-8'>
       <TittelForm onUpdated={håndterOppdatert} />
       <PraktiskeForhold />
+      {!harPublisert && (
+        <section className='space-y-4'>
+          <Heading level='2' size='small'>
+            Arbeidsgivere
+          </Heading>
+          <LeggTilArbeidsgiverForm variant='inline' />
+        </section>
+      )}
       <div>
         {harPublisert ? (
           <div className='flex gap-2'>

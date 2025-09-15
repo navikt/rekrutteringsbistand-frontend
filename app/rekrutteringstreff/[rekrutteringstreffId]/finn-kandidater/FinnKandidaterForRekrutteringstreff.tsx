@@ -6,9 +6,9 @@ import { KandidatSøkMarkerteContextProvider } from '@/app/kandidat/KandidatSøk
 import SideLayout from '@/components/layout/SideLayout';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
-import * as React from 'react';
+import { FC } from 'react';
 
-const FinnKandidaterForRekrutteringstreff: React.FC = () => {
+const FinnKandidaterForRekrutteringstreff: FC = () => {
   return (
     <TilgangskontrollForInnhold
       kreverEnAvRollene={[

@@ -5,15 +5,15 @@ import { useStilling } from '@/app/api/stilling/rekrutteringsbistandstilling/[sl
 import { useKandidatContext } from '@/app/kandidat/vis-kandidat/KandidatContext';
 import SWRLaster from '@/components/SWRLaster';
 import { Loader, Table } from '@navikt/ds-react';
-import * as React from 'react';
+import { FC, Fragment } from 'react';
 
-const KandidatAktivitet: React.FC = () => {
+export default function KandidatAktivitet() {
   const { kandidatId } = useKandidatContext();
 
   const kandidatListeoversiktHook = useKandidatListeoversikt(kandidatId);
 
   return (
-    <div className='mt-4 w-full'>
+    <div className='mt-4 w-full overflow-x-scroll'>
       <Table zebraStripes>
         <Table.Header>
           <Table.Row>
@@ -45,7 +45,7 @@ const KandidatAktivitet: React.FC = () => {
                         new Date(a.lagtTilTidspunkt).getTime(),
                     )
                     .map((i: kandidatHistorikkSchemaDTO) => (
-                      <React.Fragment key={i.uuid}>
+                      <Fragment key={i.uuid}>
                         {i.erMaskert ? (
                           <TabellRad
                             dato={i.lagtTilTidspunkt}
@@ -59,7 +59,7 @@ const KandidatAktivitet: React.FC = () => {
                         ) : i.stillingId ? (
                           <HistoriskStillingRad historikkData={i} />
                         ) : null}
-                      </React.Fragment>
+                      </Fragment>
                     ))}
                 </>
               );
@@ -78,9 +78,9 @@ const KandidatAktivitet: React.FC = () => {
       </Table>
     </div>
   );
-};
+}
 
-const HistoriskStillingRad: React.FC<{
+const HistoriskStillingRad: FC<{
   historikkData: kandidatHistorikkSchemaDTO;
 }> = ({ historikkData }) => {
   const stillingHook = useStilling(historikkData.stillingId);
@@ -115,5 +115,3 @@ const HistoriskStillingRad: React.FC<{
     </SWRLaster>
   );
 };
-
-export default KandidatAktivitet;

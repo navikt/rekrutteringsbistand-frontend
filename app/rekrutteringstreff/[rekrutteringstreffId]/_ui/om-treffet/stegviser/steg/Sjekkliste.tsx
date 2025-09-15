@@ -1,8 +1,8 @@
 import { CheckmarkIcon } from '@navikt/aksel-icons';
-import { BodyShort, Box } from '@navikt/ds-react';
-import * as React from 'react';
+import { Box } from '@navikt/ds-react';
+import { FC, ReactNode } from 'react';
 
-export const SjekklisteContainer: React.FC<{ children: React.ReactNode }> = ({
+export const SjekklisteContainer: FC<{ children: ReactNode }> = ({
   children,
 }) => (
   <div className='flex-1'>
@@ -12,16 +12,23 @@ export const SjekklisteContainer: React.FC<{ children: React.ReactNode }> = ({
   </div>
 );
 
-export const SjekklisteRad: React.FC<{ erOppfylt: boolean; label: string }> = ({
+export const SjekklisteRad: FC<{ erOppfylt: boolean; label: string }> = ({
   erOppfylt,
   label,
 }) => (
-  <div className='flex items-center justify-between my-4'>
-    <div className='flex items-center gap-2'>
-      <div className='w-5 h-5 border-2 rounded-full flex items-center justify-center border-blue-400 text-blue-400'>
-        {erOppfylt && <CheckmarkIcon fontSize='1rem' />}
-      </div>
-      <BodyShort>{label}</BodyShort>
+  <div className='flex items-start justify-between my-3 text-sm'>
+    <div className='flex items-start gap-2'>
+      <span
+        aria-hidden
+        className={`mt-[2px] inline-flex h-4 w-4 items-center justify-center rounded-full border ${erOppfylt ? 'bg-[var(--ax-bg-action-selected)] border-[var(--ax-bg-action-selected)] text-[var(--ax-fg-on-inverted)]' : 'border-[var(--ax-border-neutral-subtle)]'}`}
+      >
+        {erOppfylt && <CheckmarkIcon aria-hidden />}
+      </span>
+      <span
+        className={`${erOppfylt ? 'line-through text-text-subtle' : ''} text-sm`}
+      >
+        {label}
+      </span>
     </div>
   </div>
 );
@@ -30,6 +37,6 @@ export const SjekklisteSeparator = () => (
   <div className='border-b border-border-subtle my-4'></div>
 );
 
-export const SjekklisteInfoRad: React.FC<{ children: React.ReactNode }> = ({
+export const SjekklisteInfoRad: FC<{ children: ReactNode }> = ({
   children,
 }) => <div className='my-4'>{children}</div>;

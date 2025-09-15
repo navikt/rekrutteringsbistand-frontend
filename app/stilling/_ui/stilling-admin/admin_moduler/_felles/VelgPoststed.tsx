@@ -5,8 +5,7 @@ import {
 } from '@/app/api/pam-geografi/postdata/[postnummer]/usePamPostdata';
 import { XMarkIcon } from '@navikt/aksel-icons';
 import { BodyLong, BodyShort, Box, Button, TextField } from '@navikt/ds-react';
-import * as React from 'react';
-import { useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { Control, Controller } from 'react-hook-form';
 
 export interface VelgPoststedProps {
@@ -18,7 +17,7 @@ export interface VelgPoststedProps {
   postSted: string | null;
 }
 
-const VelgPoststed: React.FC<VelgPoststedProps> = ({
+const VelgPoststed: FC<VelgPoststedProps> = ({
   control,
   lokasjonsFelt,
   index,

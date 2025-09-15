@@ -1,7 +1,7 @@
 import { KandidatutfallTyper } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
 import { ClipboardCheckmarkIcon } from '@navikt/aksel-icons';
 import { ActionMenu, Button } from '@navikt/ds-react';
-import * as React from 'react';
+import { FC } from 'react';
 
 export interface RegistrerFåttJobbenKnappProps {
   lukketKandidatliste?: boolean;
@@ -10,7 +10,7 @@ export interface RegistrerFåttJobbenKnappProps {
   actionMenu?: boolean;
 }
 
-const RegistrerFåttJobbenKnapp: React.FC<RegistrerFåttJobbenKnappProps> = ({
+const RegistrerFåttJobbenKnapp: FC<RegistrerFåttJobbenKnappProps> = ({
   loading,
   lukketKandidatliste,
   endreUtfallForKandidat,

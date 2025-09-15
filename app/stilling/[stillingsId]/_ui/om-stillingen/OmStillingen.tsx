@@ -1,16 +1,14 @@
 'use client';
 
-import FinnKandidaterKnapp from '@/app/_windows/finn-kandidater-window/FinnKandidaterKnapp';
+import { Kandidatlistestatus } from '@/app/api/kandidat/schema.zod';
 import { GeografiDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
-import LeggTilKandidatTilStilling from '@/app/stilling/[stillingsId]/_ui/LeggTilKandidatTilStilling';
 import OmAnnonsen from '@/app/stilling/[stillingsId]/_ui/OmAnnonsen';
 import OmBedriften from '@/app/stilling/[stillingsId]/_ui/OmBedriften';
 import OmStillingBoks from '@/app/stilling/[stillingsId]/_ui/OmStillingBoks';
+import KandidatKnapper from '@/app/stilling/[stillingsId]/_ui/om-stillingen/KandidatKnapper';
 import TekstMedIkon from '@/components/felles/TekstMedIkon';
 import VisEditorTekst from '@/components/felles/rikteksteditor/VisEditorTekst';
-import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
-import { Roller } from '@/components/tilgangskontroll/roller';
 import { getWorkLocationsAsString } from '@/util/locationUtil';
 import { RekbisError } from '@/util/rekbisError';
 import { formaterNorskDato } from '@/util/util';
@@ -21,7 +19,7 @@ import {
   LocationPinIcon,
   TimerStartIcon,
 } from '@navikt/aksel-icons';
-import * as React from 'react';
+import { RefObject } from 'react';
 
 export const parseWorktime = (worktime: string) => {
   if (!worktime) return '';
@@ -51,10 +49,13 @@ export const parseWorktime = (worktime: string) => {
 
 export interface OmStillingenProps {
   forhåndsvisData?: boolean;
-  printRef: React.RefObject<HTMLDivElement | null> | null;
+  printRef: RefObject<HTMLDivElement | null> | null;
 }
 
-export default function OmStillingen({ printRef }: OmStillingenProps) {
+export default function OmStillingen({
+  printRef,
+  forhåndsvisData,
+}: OmStillingenProps) {
   const { stillingsData, kandidatlisteInfo } = useStillingsContext();
 
   const lokasjon = getWorkLocationsAsString(
@@ -72,24 +73,10 @@ export default function OmStillingen({ printRef }: OmStillingenProps) {
 
   return (
     <div data-testid='om-stillingen'>
-      {kandidatlisteInfo?.kandidatlisteId && (
-        <TilgangskontrollForInnhold
-          skjulVarsel
-          kreverEnAvRollene={[
-            Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-            Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
-          ]}
-        >
-          <div className='grid grid-cols-2 gap-4 mb-6'>
-            <FinnKandidaterKnapp stillingId={stillingsData.stilling.uuid} />
-
-            <LeggTilKandidatTilStilling
-              stillingsId={stillingsData.stilling.uuid}
-              stillingsTittel={stillingsData.stilling.title}
-            />
-          </div>
-        </TilgangskontrollForInnhold>
-      )}
+      {!forhåndsvisData &&
+        kandidatlisteInfo?.kandidatlisteId &&
+        kandidatlisteInfo.kandidatlisteStatus !==
+          Kandidatlistestatus.Lukket && <KandidatKnapper />}
       <div className='flex flex-col gap-x-[3.5rem] gap-y-8 md:flex-row'>
         <div className='w-full' id='print-content' ref={printRef}>
           <div className='flex flex-col'>

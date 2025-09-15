@@ -556,6 +556,16 @@ export class ElasticSearchQueryBuilder {
             annonsenummer: [],
           };
 
+    // Hvis status er valgt legges dette til kun i geografi-aggregasjonen (område skal ta høyde for valgt status)
+    // Status-valg legges i post_filter for treff, men aggregeringer ignorerer post_filter.
+    // Vi gjenbruker post_filter-clausen dersom den filtrerer på stilling.status for å få korrekte område-tall.
+    const statusPostFilterClause =
+      this.postFilterClause &&
+      typeof this.postFilterClause === 'object' &&
+      JSON.stringify(this.postFilterClause).includes('"stilling.status"')
+        ? this.postFilterClause
+        : null;
+
     return {
       globalAggregering: {
         global: {},
@@ -711,8 +721,8 @@ export class ElasticSearchQueryBuilder {
               },
             },
           },
-          // Status-facet (Publisert/Active, Utløpt, Stoppet) – teller dokumenter gitt øvrige (valgte) filtre
-          status: {
+          // Visningsstatus-facet (Alle visningsstatuser fra VisningsStatus enum)
+          visningsstatus: {
             // Beholder andre filtre (uten status) i container-filteret
             filter: {
               bool: {
@@ -725,11 +735,21 @@ export class ElasticSearchQueryBuilder {
               },
             },
             aggs: {
-              // Eksplicit definisjon av de tre status-buckets for å sikre korrekt domene-logikk
+              // Eksplicit definisjon av buckets som speiler visStillingsDataInfo logikken
               koder: {
                 filters: {
                   filters: {
-                    ACTIVE: {
+                    'Ikke publisert': {
+                      bool: {
+                        must: [{ term: { 'stilling.status': 'INACTIVE' } }],
+                        must_not: [
+                          { exists: { field: 'stilling.publishedByAdmin' } },
+                          { term: { 'stilling.status': 'REJECTED' } },
+                          { term: { 'stilling.status': 'DELETED' } },
+                        ],
+                      },
+                    },
+                    'Åpen for søkere': {
                       bool: {
                         must: [
                           { term: { 'stilling.status': 'ACTIVE' } },
@@ -745,7 +765,24 @@ export class ElasticSearchQueryBuilder {
                         ],
                       },
                     },
-                    INACTIVE: {
+                    'Stengt for søkere': {
+                      bool: {
+                        must: [
+                          { term: { 'stilling.status': 'INACTIVE' } },
+                          {
+                            term: { 'stilling.administration.status': 'DONE' },
+                          },
+                          { exists: { field: 'stilling.publishedByAdmin' } },
+                          { range: { 'stilling.published': { lte: 'now/d' } } },
+                        ],
+                        must_not: [
+                          { range: { 'stilling.expires': { lt: 'now/d' } } },
+                          { term: { 'stilling.status': 'REJECTED' } },
+                          { term: { 'stilling.status': 'DELETED' } },
+                        ],
+                      },
+                    },
+                    'Utløpt - Stengt for søkere': {
                       bool: {
                         must: [
                           { term: { 'stilling.status': 'INACTIVE' } },
@@ -762,7 +799,7 @@ export class ElasticSearchQueryBuilder {
                         ],
                       },
                     },
-                    STOPPED: {
+                    Fullført: {
                       bool: {
                         must: [
                           { term: { 'stilling.status': 'STOPPED' } },
@@ -776,6 +813,11 @@ export class ElasticSearchQueryBuilder {
                           { term: { 'stilling.status': 'REJECTED' } },
                           { term: { 'stilling.status': 'DELETED' } },
                         ],
+                      },
+                    },
+                    Avbrutt: {
+                      bool: {
+                        must: [{ term: { 'stilling.status': 'DELETED' } }],
                       },
                     },
                   },
@@ -864,6 +906,8 @@ export class ElasticSearchQueryBuilder {
                   Object.keys(allFiltersWithoutPortfolio).length > 0
                     ? [{ bool: allFiltersWithoutPortfolio }]
                     : []),
+                  // Inkluder valgt status hvis satt (status legges ellers kun i post_filter)
+                  ...(statusPostFilterClause ? [statusPostFilterClause] : []),
                 ],
               },
             },

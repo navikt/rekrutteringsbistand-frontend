@@ -3,7 +3,7 @@ import { KandidatVisningProps } from './KandidatlisteFilter/useFiltrerteKandidat
 import { formaterNorskDato } from '@/util/util';
 import { TrashIcon } from '@navikt/aksel-icons';
 import { BodyShort, Tag, Tooltip } from '@navikt/ds-react';
-import React from 'react';
+import { FC } from 'react';
 
 export interface KandidatHendelseTagProps {
   kandidatHendelse?: KandidatHendelseInformasjon | null;
@@ -34,7 +34,7 @@ export const SlettetTag = ({
   );
 };
 
-const KandidatHendelseTagVisning: React.FC<KandidatHendelseTagProps> = ({
+const KandidatHendelseTagVisning: FC<KandidatHendelseTagProps> = ({
   kandidatHendelse,
 }) => {
   if (!kandidatHendelse) {

@@ -2,9 +2,8 @@ import { useKandidatlisteFilterContext } from './KandidatlisteFilterContext';
 import FilterChip from '@/components/felles/filter/FilterChip';
 import TømFiltre from '@/components/felles/filter/TømFiltre';
 import { Chips } from '@navikt/ds-react';
-import * as React from 'react';
 
-const KandidatListeChip: React.FC = () => {
+export default function KandidatlisteChips() {
   const filter = useKandidatlisteFilterContext();
 
   return (
@@ -31,6 +30,4 @@ const KandidatListeChip: React.FC = () => {
       </Chips>
     </div>
   );
-};
-
-export default KandidatListeChip;
+}

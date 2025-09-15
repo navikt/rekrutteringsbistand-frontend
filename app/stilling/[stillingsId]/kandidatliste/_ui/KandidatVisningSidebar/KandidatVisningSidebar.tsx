@@ -1,12 +1,12 @@
 import KandidatHandlingerForStilling from './KandidatHandlingerForStilling';
 import { useKandidatlisteContext } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteContext';
-import * as React from 'react';
+import { FC } from 'react';
 
 export interface KandidatVisningSidebarProps {
   kandidatnr: string;
 }
 
-const KandidatVisningSidebar: React.FC<KandidatVisningSidebarProps> = ({
+const KandidatVisningSidebar: FC<KandidatVisningSidebarProps> = ({
   kandidatnr,
 }) => {
   const { kandidater } = useKandidatlisteContext();

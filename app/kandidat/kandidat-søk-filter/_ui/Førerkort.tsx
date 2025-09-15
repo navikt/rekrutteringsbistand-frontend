@@ -1,6 +1,6 @@
 import { useKandidatSøkFilterContext } from '@/app/kandidat/KandidaSokFilterContext';
 import { UNSAFE_Combobox } from '@navikt/ds-react';
-import * as React from 'react';
+import { FC } from 'react';
 
 export enum Førerkortklasse {
   LettMotorsykkel = 'A1 - Lett motorsykkel',
@@ -20,7 +20,7 @@ export enum Førerkortklasse {
   Snøscooter = 'S - Snøscooter',
 }
 
-const Førerkort: React.FC = () => {
+const Førerkort: FC = () => {
   const { førerkort, setFørerkort } = useKandidatSøkFilterContext();
 
   const onOptionSelected = (option: string, isSelected: boolean) => {
@@ -34,16 +34,14 @@ const Førerkort: React.FC = () => {
   };
 
   return (
-    <React.Fragment>
-      <UNSAFE_Combobox
-        size='small'
-        selectedOptions={førerkort}
-        label='Førerkort'
-        options={Object.values(Førerkortklasse)}
-        isMultiSelect
-        onToggleSelected={onOptionSelected}
-      />
-    </React.Fragment>
+    <UNSAFE_Combobox
+      size='small'
+      selectedOptions={førerkort}
+      label='Førerkort'
+      options={Object.values(Førerkortklasse)}
+      isMultiSelect
+      onToggleSelected={onOptionSelected}
+    />
   );
 };
 

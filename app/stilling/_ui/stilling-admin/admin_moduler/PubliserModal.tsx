@@ -1,10 +1,12 @@
 import { oppdaterStilling } from '@/app/api/stilling/oppdater-stilling/oppdaterStilling';
 import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
+import { useStilling } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/useStilling';
 import { DatoVelger } from '@/app/stilling/_ui/stilling-admin/admin_moduler/_felles/DatoVelger';
 import { mapSendStillingOppdatering } from '@/app/stilling/_ui/stilling-admin/admin_moduler/mapVerdier';
 import { UmamiEvent } from '@/components/umami/umamiEvents';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
+import { RekbisError } from '@/util/rekbisError';
 import {
   BodyLong,
   Box,
@@ -26,6 +28,7 @@ export interface PubliserModalProps {
 
 export default function PubliserModal({ disabled }: PubliserModalProps) {
   const { brukerData, valgtNavKontor } = useApplikasjonContext();
+
   const ref = useRef<HTMLDialogElement>(null);
   const { watch, setValue, getValues } = useFormContext<StillingsDataDTO>();
   const { track } = useUmami();
@@ -37,6 +40,8 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
   const applicationEmail = watch('stilling.properties.applicationemail');
   const applicationUrl = watch('stilling.properties.applicationurl');
   const [isLoading, setIsLoading] = useState(false);
+
+  const stillingHook = useStilling(getValues().stilling.uuid);
 
   const isoTilSkjemaDato = (iso?: string | null) => {
     if (!iso) return undefined;
@@ -72,88 +77,96 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
   };
 
   const håndterPubliser = async () => {
-    // Sett datoer på form
-    setValue('stilling.published', skjemaDatoTilIso(publiseringsdato), {
-      shouldDirty: true,
-    });
-    setValue('stilling.expires', skjemaDatoTilIso(sisteVisningsdato), {
-      shouldDirty: true,
-    });
-    // Privacy
-    setValue(
-      'stilling.privacy',
-      publiserOffentlig ? 'SHOW_ALL' : 'INTERNAL_NOT_SHOWN',
-      { shouldDirty: true },
-    );
-    // Søkemetode felter
-    if (publiserOffentlig) {
-      if (søkemetode === 'email') {
-        setValue('stilling.properties.applicationemail', epost || null, {
-          shouldDirty: true,
+    setIsLoading(true);
+    try {
+      // Sett datoer på form
+      setValue('stilling.published', skjemaDatoTilIso(publiseringsdato), {
+        shouldDirty: true,
+      });
+      setValue('stilling.expires', skjemaDatoTilIso(sisteVisningsdato), {
+        shouldDirty: true,
+      });
+      // Privacy
+      setValue(
+        'stilling.privacy',
+        publiserOffentlig ? 'SHOW_ALL' : 'INTERNAL_NOT_SHOWN',
+        { shouldDirty: true },
+      );
+      // Søkemetode felter
+      if (publiserOffentlig) {
+        if (søkemetode === 'email') {
+          setValue('stilling.properties.applicationemail', epost || null, {
+            shouldDirty: true,
+          });
+          setValue('stilling.properties.applicationurl', null as any, {
+            shouldDirty: true,
+          });
+        } else {
+          setValue('stilling.properties.applicationurl', lenke || null, {
+            shouldDirty: true,
+          });
+          setValue('stilling.properties.applicationemail', null as any, {
+            shouldDirty: true,
+          });
+        }
+      }
+
+      // Hvis søknadsfrist er "Snarest" og ingen expires satt, sett en default 3 uker frem i tid
+      if (!sisteVisningsdato && publiseringsdato && søkemetode === 'email') {
+        // valgfritt: ingen spesifikasjon gitt – hopper over
+      }
+
+      const nyData = mapSendStillingOppdatering(getValues());
+      const publiserStillingsData = {
+        ...nyData,
+        stillingsinfo: {
+          ...nyData.stillingsinfo,
+        },
+        stilling: {
+          ...nyData.stilling,
+          status: 'ACTIVE',
+          administration: {
+            ...nyData.stilling.administration,
+            status: 'DONE',
+          },
+          firstPublished: true,
+        },
+      };
+
+      track(UmamiEvent.Stilling.ny_stilling_info, {
+        yrkestittel: publiserStillingsData.stilling.categoryList?.[0]?.name,
+        sektor: publiserStillingsData.stilling.properties?.sector,
+        ansettelsesform:
+          publiserStillingsData.stilling.properties?.engagementtype,
+        arbeidstidsordning:
+          publiserStillingsData.stilling?.properties?.jobarrangement,
+        omfangIProsent:
+          publiserStillingsData.stilling.properties?.jobpercentage,
+        arbeidssted: publiserStillingsData.stilling.locationList,
+      });
+
+      try {
+        await oppdaterStilling(publiserStillingsData, {
+          eierNavident: brukerData.ident,
+          eierNavn: brukerData.navn,
+          eierNavKontorEnhetId: valgtNavKontor?.navKontor,
         });
-        setValue('stilling.properties.applicationurl', null as any, {
-          shouldDirty: true,
-        });
-      } else {
-        setValue('stilling.properties.applicationurl', lenke || null, {
-          shouldDirty: true,
-        });
-        setValue('stilling.properties.applicationemail', null as any, {
-          shouldDirty: true,
+      } catch (e) {
+        alert('Feil ved opprettelse av stilling');
+        new RekbisError({
+          message: 'Feil ved opprettelse av stilling',
+          error: e,
         });
       }
+
+      ref.current?.close();
+      stillingHook.mutate();
+      router.push(`/stilling/${getValues().stilling.uuid}`);
+    } catch {
+      alert('Uventet feil ved publisering');
+    } finally {
+      setIsLoading(false);
     }
-
-    // Hvis søknadsfrist er "Snarest" og ingen expires satt, sett en default 3 uker frem i tid
-    if (!sisteVisningsdato && publiseringsdato && søkemetode === 'email') {
-      // valgfritt: ingen spesifikasjon gitt – hopper over
-    }
-
-    const nyData = mapSendStillingOppdatering(getValues());
-    const publiserStillingsData = {
-      ...nyData,
-      stillingsinfo: {
-        ...nyData.stillingsinfo,
-      },
-      stilling: {
-        ...nyData.stilling,
-        status: 'ACTIVE',
-        administration: {
-          ...nyData.stilling.administration,
-          status: 'DONE',
-        },
-        firstPublished: true,
-      },
-    };
-
-    track(UmamiEvent.Stilling.ny_stilling_info, {
-      yrkestittel: publiserStillingsData.stilling.categoryList?.[0]?.name,
-      sektor: publiserStillingsData.stilling.properties?.sector,
-      ansettelsesform:
-        publiserStillingsData.stilling.properties?.engagementtype,
-      arbeidstidsordning:
-        publiserStillingsData.stilling?.properties?.jobarrangement,
-      omfangIProsent: publiserStillingsData.stilling.properties?.jobpercentage,
-      arbeidssted: publiserStillingsData.stilling.locationList,
-    });
-
-    const response = await oppdaterStilling(publiserStillingsData, {
-      eierNavident: brukerData.ident,
-      eierNavn: brukerData.navn,
-      eierNavKontorEnhetId: valgtNavKontor?.navKontor,
-    });
-
-    if (response.stilling.uuid) {
-      setTimeout(() => {
-        router.push(`/stilling/${response.stilling.uuid}`);
-      }, 500);
-    } else {
-      alert('Feil ved opprettelse av stilling');
-    }
-
-    setIsLoading(false);
-
-    ref.current?.close();
   };
 
   return (
@@ -174,7 +187,7 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
             </Heading>
             <ul className='list-disc pl-5 text-sm mb-4'>
               <li>
-                Stillingsannonsen blir synlig for Nav-ansatte i
+                Stillingsoppdraget blir synlig for Nav-ansatte i
                 rekrutteringsbistand.
               </li>
               <li>
@@ -206,13 +219,13 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
               checked={publiserOffentlig}
               onChange={(e) => setPubliserOffentlig(e.target.checked)}
             >
-              Publiser stillingsannonsen offentlig på arbeidsplassen.no også
+              Publiser stillingsoppdraget offentlig på arbeidsplassen.no også
             </Checkbox>
 
             {publiserOffentlig && (
               <div>
                 <Heading size='small' className='mb-4'>
-                  Hvordan skal kandidaten søke?
+                  Hvordan skal jobbsøker søke?
                 </Heading>
 
                 <ToggleGroup
@@ -248,7 +261,7 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
         </Modal.Body>
         <Modal.Footer>
           <Button loading={isLoading} type='button' onClick={håndterPubliser}>
-            Publiser annonsen
+            Publiser oppdraget
           </Button>
           <Button
             type='button'

@@ -8,14 +8,9 @@ import {
 } from '@/app/kandidat/util';
 import { useVisKandidatNr } from '@/app/kandidat/vis-kandidat/useVisKandidatNr';
 import TekstMedIkon from '@/components/felles/TekstMedIkon';
-import {
-  FileSearchIcon,
-  HandShakeHeartIcon,
-  HouseIcon,
-  PinIcon,
-} from '@navikt/aksel-icons';
-import { Box, Checkbox, Heading, Link, Tag } from '@navikt/ds-react';
-import * as React from 'react';
+import { HandShakeHeartIcon, HouseIcon, PinIcon } from '@navikt/aksel-icons';
+import { Box, Checkbox, Heading, Tag } from '@navikt/ds-react';
+import { FC, MouseEvent } from 'react';
 
 type IKandidatKort = {
   kandidat: KandidatDataSchemaDTO;
@@ -23,7 +18,7 @@ type IKandidatKort = {
   stillingsId?: string;
 };
 
-const KandidatKort: React.FC<IKandidatKort> = ({
+const KandidatKort: FC<IKandidatKort> = ({
   kandidat,
   alleredeLagtTil,
   stillingsId,
@@ -34,23 +29,23 @@ const KandidatKort: React.FC<IKandidatKort> = ({
     (k) => k === kandidat.arenaKandidatnr,
   );
 
-  const stopPropagation = (e: React.MouseEvent) => {
+  const stopPropagation = (e: MouseEvent) => {
     e.stopPropagation();
   };
 
-  const Knapp = (
-    <div className='mt-2 flex justify-end self-end' onClick={stopPropagation}>
-      {!stillingsId && (
-        <div className='flex-end flex flex-col justify-center gap-2 font-bold'>
-          <Link
-            href={`/kandidat/${kandidat.arenaKandidatnr}?finnStilling=true`}
-          >
-            <TekstMedIkon ikon={<FileSearchIcon />} tekst='Finn stilling' />
-          </Link>
-        </div>
-      )}
-    </div>
-  );
+  // const Knapp = (
+  //   <div className='mt-2 flex justify-end self-end' onClick={stopPropagation}>
+  //     {!stillingsId && (
+  //       <div className='flex-end flex flex-col justify-center gap-2 font-bold'>
+  //         <Link
+  //           href={`/kandidat/${kandidat.arenaKandidatnr}?finnStilling=true`}
+  //         >
+  //           <TekstMedIkon ikon={<FileSearchIcon />} tekst='Finn stilling' />
+  //         </Link>
+  //       </div>
+  //     )}
+  //   </div>
+  // );
 
   const aktiv = visKandidatnr === kandidat.arenaKandidatnr;
 
@@ -121,7 +116,6 @@ const KandidatKort: React.FC<IKandidatKort> = ({
                 tekst={hentKandidatensØnskedeYrker(kandidat) ?? '-'}
               />
             </div>
-            {Knapp}
           </div>
         </div>
       </div>

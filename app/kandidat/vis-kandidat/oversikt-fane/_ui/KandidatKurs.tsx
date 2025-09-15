@@ -5,7 +5,7 @@ import { KursSchemaDTO } from '@/app/api/kandidat-sok/schema/kursSchema.zod';
 import { HatSchoolIcon } from '@navikt/aksel-icons';
 import { BodyShort } from '@navikt/ds-react';
 import { compareAsc, format, parseISO } from 'date-fns';
-import * as React from 'react';
+import { FC } from 'react';
 
 enum Omfangenhet {
   Time = 'TIME',
@@ -17,7 +17,7 @@ export interface KandidatKursProps {
   kurs?: KursSchemaDTO[] | null;
 }
 
-const KandidatKurs: React.FC<KandidatKursProps> = ({ kurs }) => {
+const KandidatKurs: FC<KandidatKursProps> = ({ kurs }) => {
   if (!kurs || kurs.length === 0) {
     return null;
   }

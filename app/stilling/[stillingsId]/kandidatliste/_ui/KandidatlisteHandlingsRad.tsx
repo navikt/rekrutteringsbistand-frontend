@@ -5,9 +5,9 @@ import SendSmsModal from './SendSMS/SendSmsModal';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import { useKandidatlisteContext } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteContext';
 import { Checkbox } from '@navikt/ds-react';
-import * as React from 'react';
+import { FC } from 'react';
 
-const KandidatlisteHandlingsRad: React.FC = () => {
+const KandidatlisteHandlingsRad: FC = () => {
   const {
     kandidater,
     lukketKandidatliste,

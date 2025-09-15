@@ -2,7 +2,7 @@ import { formaterNorskDato } from '@/util/util';
 import { BodyShort, Box } from '@navikt/ds-react';
 import { differenceInMonths, differenceInYears, format } from 'date-fns';
 import { nb } from 'date-fns/locale';
-import React from 'react';
+import { FC } from 'react';
 
 export const formatDateRange = (fraDato: string, tilDato: string) => {
   const start = new Date(fraDato);
@@ -27,7 +27,7 @@ interface TidslinjeFeltProps {
   description?: string | null;
 }
 
-const TidslinjeFelt: React.FC<TidslinjeFeltProps> = ({
+const TidslinjeFelt: FC<TidslinjeFeltProps> = ({
   fagDokumentasjon,
   startDate,
   endDate,

@@ -2,7 +2,7 @@ import { InternKandidatstatus } from '@/app/stilling/[stillingsId]/kandidatliste
 import InternStatusTag from '@/app/stilling/[stillingsId]/kandidatliste/_ui/InternStatusTag';
 import { Link, Table } from '@navikt/ds-react';
 import { format } from 'date-fns';
-import * as React from 'react';
+import { FC } from 'react';
 
 export interface TabellRadProps {
   erMaskert: boolean;
@@ -15,7 +15,7 @@ export interface TabellRadProps {
   stillingId?: string | null;
 }
 
-const TabellRad: React.FC<TabellRadProps> = ({
+const TabellRad: FC<TabellRadProps> = ({
   dato,
   tittel,
   erMaskert,

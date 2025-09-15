@@ -7,7 +7,6 @@ import SWRLaster from '@/components/SWRLaster';
 import VisEditorTekst from '@/components/felles/rikteksteditor/VisEditorTekst';
 import HovedInnholdKort from '@/components/layout/HovedInnholdKort';
 import SideLayout from '@/components/layout/SideLayout';
-import SideTopBanner from '@/components/layout/SideTopBanner';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { formaterNorskDato } from '@/util/util';
@@ -30,25 +29,14 @@ const Nyheter: React.FC = () => {
 
         return (
           <HovedInnholdKort>
-            <SideLayout
-              banner={
-                <SideTopBanner
-                  tittel={'Nyheter'}
-                  knappIBanner={
-                    <TilgangskontrollForInnhold
-                      skjulVarsel
-                      kreverEnAvRollene={[
-                        Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER,
-                      ]}
-                    >
-                      <OpprettNyhetModal />
-                    </TilgangskontrollForInnhold>
-                  }
-                />
-              }
-            >
-              <OpprettNyhetModal />
+            <SideLayout>
               <div className='flex flex-col gap-4 mb-4'>
+                <TilgangskontrollForInnhold
+                  skjulVarsel
+                  kreverEnAvRollene={[Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER]}
+                >
+                  <OpprettNyhetModal />
+                </TilgangskontrollForInnhold>
                 {nyheterData.map((nyhet, index) => (
                   <Box.New
                     key={index}

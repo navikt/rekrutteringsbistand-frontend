@@ -13,15 +13,15 @@ import { useUmami } from '@/providers/UmamiContext';
 import { RekbisError } from '@/util/rekbisError';
 import { ReceptionIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
-import * as React from 'react';
+import { FC, ReactNode } from 'react';
 
 export interface RekrutteringstreffSøkLayoutProps {
-  children?: React.ReactNode | undefined;
+  children?: ReactNode | undefined;
 }
 
-const RekrutteringstreffSøkLayout: React.FC<
-  RekrutteringstreffSøkLayoutProps
-> = ({ children }) => {
+const RekrutteringstreffSøkLayout: FC<RekrutteringstreffSøkLayoutProps> = ({
+  children,
+}) => {
   const { trackAndNavigate } = useUmami();
   const { valgtNavKontor } = useApplikasjonContext();
 

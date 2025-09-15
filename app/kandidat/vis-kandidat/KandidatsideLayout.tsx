@@ -14,13 +14,13 @@ import {
 } from '@navikt/aksel-icons';
 import { Heading } from '@navikt/ds-react';
 import { differenceInYears } from 'date-fns';
-import * as React from 'react';
+import { FC, ReactNode } from 'react';
 
 export interface KandidatSideProps {
-  children?: React.ReactNode | undefined;
+  children?: ReactNode | undefined;
 }
 
-const KandidatSideLayout: React.FC<KandidatSideProps> = ({ children }) => {
+const KandidatSideLayout: FC<KandidatSideProps> = ({ children }) => {
   const { kandidatData } = useKandidatContext();
 
   return (

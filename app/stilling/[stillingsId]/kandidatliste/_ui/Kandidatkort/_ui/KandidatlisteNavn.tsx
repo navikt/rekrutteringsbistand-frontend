@@ -2,7 +2,7 @@ import { usynligKandidaterSchemaDTO } from '@/app/api/kandidat/schema.zod';
 import { storForbokstav } from '@/app/kandidat/util';
 import { KandidatVisningProps } from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatlisteFilter/useFiltrerteKandidater';
 import { BodyShort } from '@navikt/ds-react';
-import * as React from 'react';
+import { FC } from 'react';
 
 export interface KandidatlisteNavnProps {
   kandidat?: KandidatVisningProps;
@@ -10,7 +10,7 @@ export interface KandidatlisteNavnProps {
   slettet?: boolean;
 }
 
-const KandidatlisteNavn: React.FC<KandidatlisteNavnProps> = ({
+const KandidatlisteNavn: FC<KandidatlisteNavnProps> = ({
   kandidat,
   usynligKandidat,
   slettet,

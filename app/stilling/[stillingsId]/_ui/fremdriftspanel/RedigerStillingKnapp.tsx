@@ -6,6 +6,10 @@ import { useRouter } from 'next/navigation';
 export default function RedigerStillingKnapp() {
   const { stillingsData, erEier, kandidatlisteInfo } = useStillingsContext();
   const router = useRouter();
+
+  if (!erEier) {
+    return null;
+  }
   return (
     <Button
       disabled={kandidatlisteInfo?.kandidatlisteStatus === 'LUKKET'}

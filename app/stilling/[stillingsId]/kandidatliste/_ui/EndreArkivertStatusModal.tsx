@@ -6,19 +6,21 @@ import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { RekbisError } from '@/util/rekbisError';
 import { ArrowUndoIcon, TrashIcon } from '@navikt/aksel-icons';
 import { ActionMenu, BodyLong, Button, Modal } from '@navikt/ds-react';
-import * as React from 'react';
-import { useState } from 'react';
+import { FC, RefObject, useState } from 'react';
 
 export interface EndreArkivertStatusKnappProps {
   lukketKandidatliste: boolean;
   slettet?: boolean;
   actionMenu?: boolean;
-  modalRef: React.RefObject<HTMLDialogElement>;
+  modalRef: RefObject<HTMLDialogElement>;
 }
 
-export const EndreArkivertStatusKnapp: React.FC<
-  EndreArkivertStatusKnappProps
-> = ({ modalRef, lukketKandidatliste, actionMenu, slettet }) => {
+export const EndreArkivertStatusKnapp: FC<EndreArkivertStatusKnappProps> = ({
+  modalRef,
+  lukketKandidatliste,
+  actionMenu,
+  slettet,
+}) => {
   return (
     <>
       {actionMenu ? (
@@ -55,14 +57,16 @@ export const EndreArkivertStatusKnapp: React.FC<
 };
 
 export interface EndreArkivertStatusModalProps {
-  modalRef: React.RefObject<HTMLDialogElement>;
+  modalRef: RefObject<HTMLDialogElement>;
   kandidat: KandidatListeKandidatDTO;
   kandidatlisteId: string;
 }
 
-export const EndreArkivertStatusModal: React.FC<
-  EndreArkivertStatusModalProps
-> = ({ modalRef, kandidat, kandidatlisteId }) => {
+export const EndreArkivertStatusModal: FC<EndreArkivertStatusModalProps> = ({
+  modalRef,
+  kandidat,
+  kandidatlisteId,
+}) => {
   const { valgtNavKontor } = useApplikasjonContext();
 
   const slettet = kandidat.arkivert;

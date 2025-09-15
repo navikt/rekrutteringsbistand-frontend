@@ -6,11 +6,11 @@ import HendelseLabel from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/j
 import { PencilIcon, PlusCircleIcon } from '@navikt/aksel-icons';
 import { BodyShort } from '@navikt/ds-react';
 import { format } from 'date-fns';
-import * as React from 'react';
+import { FC } from 'react';
 
 const GRID = 'grid grid-cols-[14rem_16rem_12rem_9rem] gap-x-4 items-center';
 
-const Aktiviteter: React.FC = () => {
+const Aktiviteter: FC = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { data: hendelser } = useAlleHendelser(rekrutteringstreffId);
 

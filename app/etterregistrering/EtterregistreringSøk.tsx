@@ -3,25 +3,30 @@
 import { StillingsSøkProvider } from '@/app/stilling/StillingsSøkContext';
 import StillingsSøkeresultat from '@/app/stilling/StillingsSøkeresultat';
 import StillingsSøkFilter from '@/app/stilling/_ui/StillingsSøkFilter';
+import GeografiFilter from '@/app/stilling/_ui/StillingsSøkFilter/GeografiFilter';
+import InkluderingFilter from '@/app/stilling/_ui/StillingsSøkFilter/InkluderingFilter';
+import StillingSøkebar from '@/app/stilling/_ui/StillingsSøkFilter/StillingSøkebar';
+import StillingsSøkSortering from '@/app/stilling/_ui/StillingsSøkSortering';
+import MittStandardsøk from '@/app/stilling/_ui/standardsøk/MittStandardsøk';
 import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
 import { OpprettKnapp } from '@/components/felles/opprett/OpprettKnapp';
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideLayout from '@/components/layout/SideLayout';
 import Sidelaster from '@/components/layout/Sidelaster';
 import { BriefcaseClockIcon } from '@navikt/aksel-icons';
-import * as React from 'react';
+import { FC, Suspense } from 'react';
 
 const EtterRegistreringSøk = () => {
   return (
-    <React.Suspense fallback={<Sidelaster />}>
+    <Suspense fallback={<Sidelaster />}>
       <StillingsSøkProvider formidlinger={true}>
         <EtterRegistreringSøkLayout />
       </StillingsSøkProvider>
-    </React.Suspense>
+    </Suspense>
   );
 };
 
-const EtterRegistreringSøkLayout: React.FC = () => {
+const EtterRegistreringSøkLayout: FC = () => {
   return (
     <SideLayout
       header={
@@ -37,7 +42,22 @@ const EtterRegistreringSøkLayout: React.FC = () => {
       }
     >
       <StillingsSøkFilter formidlinger={true} />
-      <StillingsSøkeresultat />
+      <div className='@container flex'>
+        <div className='flex-grow min-w-0'>
+          <StillingsSøkeresultat />
+        </div>
+        <div className='hidden @[720px]:flex @[720px]:flex-col ml-4 pt-4  max-w-[200px] gap-4'>
+          <StillingSøkebar alltidÅpen={false} />
+          <MittStandardsøk />
+          <StillingsSøkSortering />
+
+          {/* <StatusFilter /> */}
+
+          <GeografiFilter />
+
+          <InkluderingFilter />
+        </div>
+      </div>
     </SideLayout>
   );
 };

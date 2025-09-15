@@ -10,9 +10,8 @@ import Språk from './_ui/Språk';
 import Utdanningsnivå from './_ui/Utdanningsnivå';
 import Innsatsgrupper from '@/app/kandidat/kandidat-søk-filter/_ui/Innsatsgrupper';
 import AlleFilterKomponent from '@/components/felles/filter/AlleFilterKomponent';
-import * as React from 'react';
 
-const KandidatSøkFilter: React.FC = () => {
+export default function KandidatSøkFilter() {
   return (
     <div className='flex gap-4 '>
       <FritekstSøk />
@@ -32,6 +31,4 @@ const KandidatSøkFilter: React.FC = () => {
       </div>
     </div>
   );
-};
-
-export default KandidatSøkFilter;
+}

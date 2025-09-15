@@ -4,13 +4,13 @@ import { RekrutteringstreffKort } from './_ui/RekrutteringstreffKort';
 import { useRekrutteringstreffOversikt } from '@/app/api/rekrutteringstreff/useRekrutteringstreffOversikt';
 import SWRLaster from '@/components/SWRLaster';
 import { format } from 'date-fns';
-import * as React from 'react';
+import { FC, ReactNode } from 'react';
 
 export interface RekrutteringstreffSøkProps {
-  children?: React.ReactNode;
+  children?: ReactNode;
 }
 
-const RekrutteringstreffSøk: React.FC<RekrutteringstreffSøkProps> = () => {
+const RekrutteringstreffSøk: FC<RekrutteringstreffSøkProps> = () => {
   const rekrutteringstreffOversiktHook = useRekrutteringstreffOversikt();
 
   return (
