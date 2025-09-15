@@ -48,11 +48,11 @@ export const rekrutteringstreffHendelserMirage = (server: any) => {
     () => ({}),
   );
   server.post(
-    '/api/rekrutteringstreff/:rekrutteringstreffId/fullfør',
+    '/api/rekrutteringstreff/:rekrutteringstreffId/fullfor',
     () => ({}),
   );
   server.post(
-    '/api/rekrutteringstreff/:rekrutteringstreffId/gjenåpn',
+    '/api/rekrutteringstreff/:rekrutteringstreffId/gjenapn',
     () => ({}),
   );
 };
