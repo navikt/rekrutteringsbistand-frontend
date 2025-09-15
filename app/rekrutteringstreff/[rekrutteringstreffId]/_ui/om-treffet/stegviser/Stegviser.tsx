@@ -5,17 +5,11 @@ import { StegviserProvider } from './StegviserContext';
 import StegviserHeader from './StegviserHeader';
 
 const stepDetails = [
-  { id: 1, stepLabel: 'Publisere', header: 'Gjør klar til publisering' },
-  { id: 2, stepLabel: 'Invitere', header: 'Send ut invitasjoner' },
+  { id: 1, header: 'Gjør klar til publisering' },
+  { id: 2, header: 'Invitere og forberede deltakere' },
   {
     id: 3,
-    stepLabel: 'Følge opp',
-    header: 'Følg opp påmeldte og gjennomfør treffet',
-  },
-  {
-    id: 4,
-    stepLabel: 'Avslutte',
-    header: 'Avslutt og evaluer rekrutteringstreffet',
+    header: 'Treffet er fullført',
   },
 ];
 

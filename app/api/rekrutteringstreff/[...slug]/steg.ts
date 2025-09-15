@@ -28,32 +28,18 @@ const utførHendelse = async (
 export const publiserRekrutteringstreff = (rekrutteringstreffId: string) =>
   utførHendelse(rekrutteringstreffId, 'publiser', 'Feil ved publisering');
 
-export const avsluttInvitasjon = (rekrutteringstreffId: string) =>
+export const gjenåpnRekrutteringstreff = (rekrutteringstreffId: string) =>
   utførHendelse(
     rekrutteringstreffId,
-    'avslutt-invitasjon',
-    'Feil ved avslutning av invitasjoner',
+    'gjenåpn',
+    'Feil ved gjenåpning av rekrutteringstreff',
   );
 
-export const avsluttArrangement = (rekrutteringstreffId: string) =>
+export const fullførRekrutteringstreff = (rekrutteringstreffId: string) =>
   utførHendelse(
     rekrutteringstreffId,
-    'avslutt-arrangement',
-    'Feil ved avslutning av arrangement',
-  );
-
-export const avsluttOppfolging = (rekrutteringstreffId: string) =>
-  utførHendelse(
-    rekrutteringstreffId,
-    'avslutt-oppfolging',
-    'Feil ved avslutning av oppfølging',
-  );
-
-export const avsluttRekrutteringstreff = (rekrutteringstreffId: string) =>
-  utførHendelse(
-    rekrutteringstreffId,
-    'avslutt',
-    'Feil ved avslutning av rekrutteringstreff',
+    'fullfør',
+    'Feil ved fullføring av rekrutteringstreff',
   );
 
 export const rekrutteringstreffHendelserMirage = (server: any) => {
@@ -62,19 +48,11 @@ export const rekrutteringstreffHendelserMirage = (server: any) => {
     () => ({}),
   );
   server.post(
-    '/api/rekrutteringstreff/:rekrutteringstreffId/avslutt-invitasjon',
+    '/api/rekrutteringstreff/:rekrutteringstreffId/fullfør',
     () => ({}),
   );
   server.post(
-    '/api/rekrutteringstreff/:rekrutteringstreffId/avslutt-arrangement',
-    () => ({}),
-  );
-  server.post(
-    '/api/rekrutteringstreff/:rekrutteringstreffId/avslutt-oppfolging',
-    () => ({}),
-  );
-  server.post(
-    '/api/rekrutteringstreff/:rekrutteringstreffId/avslutt',
+    '/api/rekrutteringstreff/:rekrutteringstreffId/gjenåpn',
     () => ({}),
   );
 };
