@@ -261,7 +261,7 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
         </Modal.Body>
         <Modal.Footer>
           <Button loading={isLoading} type='button' onClick={håndterPubliser}>
-            Publiser annonsen
+            Publiser oppdraget
           </Button>
           <Button
             type='button'

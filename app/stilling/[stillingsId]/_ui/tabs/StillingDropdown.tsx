@@ -161,15 +161,15 @@ export default function StillingDropdown() {
               <div className='flex gap-2'>
                 <ArrowUndoIcon />
                 <BodyLong>
-                  Du kan publisere annonsen på nytt. Det gjør du ved å velge
-                  &quot;Rediger&quot; på annonsen og fullføre flyten.
+                  Du kan publisere oppdraget på nytt. Det gjør du ved å velge
+                  &quot;Rediger&quot; på oppdraget og fullføre flyten.
                 </BodyLong>
               </div>
             </div>
           </Modal.Body>
           <Modal.Footer>
             <Button type='button' variant='danger' onClick={avpubliserStilling}>
-              Avpubliser annonsen
+              Avpubliser oppdraget
             </Button>
             <Button
               type='button'
