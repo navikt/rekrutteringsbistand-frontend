@@ -9,8 +9,8 @@ import {
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
 import { RekbisError } from '@/util/rekbisError';
-import { Button, Heading, ProgressBar } from '@navikt/ds-react';
-import { FC, useState } from 'react';
+import { Button, Heading, ProgressBar, Modal } from '@navikt/ds-react';
+import { FC, useRef, useState } from 'react';
 
 interface Props {
   stepDetails: { id: number; header: string }[];
@@ -23,6 +23,7 @@ const StegviserHeader: FC<Props> = ({
   onToggleForhåndsvisning,
   erIForhåndsvisning,
 }) => {
+  const fullforModalRef = useRef<HTMLDialogElement>(null);
   const [publiserer, setPubliserer] = useState(false);
   const [fullfører, setFullfører] = useState(false);
   const [gjenåpner, setGjenåpner] = useState(false);
@@ -116,6 +117,14 @@ const StegviserHeader: FC<Props> = ({
     onToggleForhåndsvisning?.(!erIForhåndsvisning);
   };
 
+  const onKlikkFullfor = () => {
+    if (!tiltidspunktHarPassert) {
+      fullforModalRef.current?.showModal();
+    } else {
+      onFullførRekrutteringstreff();
+    }
+  };
+
   return (
     <div className='w-full'>
       <div className='grid grid-cols-2 gap-2 w-full'>
@@ -144,12 +153,10 @@ const StegviserHeader: FC<Props> = ({
             <Button
               variant='primary'
               size='small'
-              disabled={
-                !harInvitert || !arrangementtidspunktHarPassert || fullfører
-              }
+              disabled={!harInvitert || fullfører}
               loading={fullfører}
               className='w-full'
-              onClick={onFullførRekrutteringstreff}
+              onClick={onKlikkFullfor}
             >
               Fullfør
             </Button>
@@ -195,6 +202,35 @@ const StegviserHeader: FC<Props> = ({
           </div>
         </div>
       </div>
+
+      <Modal
+        ref={fullforModalRef}
+        header={{ heading: 'Fullfør rekrutteringstreff?' }}
+      >
+        <Modal.Body>
+          <p>
+            Slutttidspunktet for rekrutteringstreffet har ikke passert ennå. Er
+            du sikker på at du vil fullføre rekrutteringsreffet likevel?
+          </p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            loading={fullfører}
+            onClick={() => {
+              onFullførRekrutteringstreff();
+              fullforModalRef.current?.close();
+            }}
+          >
+            Fullfør
+          </Button>
+          <Button
+            variant='secondary'
+            onClick={() => fullforModalRef.current?.close()}
+          >
+            Avbryt
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };
