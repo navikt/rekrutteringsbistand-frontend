@@ -59,7 +59,7 @@ export default function StillingsSidePage() {
               }
             >
               <PanelHeader.Section
-                title={'Stillingsoppdrag'}
+                title={stillingsData.stilling.title}
                 back={{
                   fallbackPath: '/stilling',
                 }}

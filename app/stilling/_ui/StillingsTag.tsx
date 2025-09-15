@@ -15,7 +15,6 @@ import { FC } from 'react';
 
 export interface IStillingTag {
   stillingsData: RekrutteringsbistandStillingSchemaDTO | StillingsDataDTO;
-  splitTags?: boolean; // viser venstre og høyre i hver sin side
   rad?: boolean; // hvis true: alle tags på én rad samlet (ignorerer splitTags)
 }
 
@@ -33,7 +32,7 @@ export const stillingErUtløpt = (stilling: any): boolean => {
   );
 };
 
-const StillingsTag: FC<IStillingTag> = ({ stillingsData, splitTags, rad }) => {
+const StillingsTag: FC<IStillingTag> = ({ stillingsData, rad }) => {
   const info = visStillingsDataInfo(stillingsData);
 
   const publisertDato = stillingsData.stilling.published
@@ -49,7 +48,7 @@ const StillingsTag: FC<IStillingTag> = ({ stillingsData, splitTags, rad }) => {
           Jobbmesse
         </Tag>
       )}
-      {info.erPåArbeidsplassen && (
+      {!info.erPåArbeidsplassen && (
         <Tag className={tagKlasse()} size='small' variant='alt3'>
           arbeidsplassen.no
         </Tag>
@@ -95,24 +94,18 @@ const StillingsTag: FC<IStillingTag> = ({ stillingsData, splitTags, rad }) => {
 
   if (rad) {
     return (
-      <div className='flex flex-row flex-nowrap overflow-x-auto'>
-        <span className='mr-4'>{publisertDato} </span>
-        {venstre}
-        {høyre}
+      <div className='flex flex-rowflex-nowrap overflow-x-auto  h-fit'>
+        <span className='mr-4 whitespace-nowrap'>{publisertDato} </span>
+        <div className='flex gap-2 flex-col @xl:flex-row'>
+          {venstre}
+          {høyre}
+        </div>
       </div>
     );
   }
 
-  return splitTags ? (
-    <div className='flex justify-between'>
-      <div className='flex'>
-        <span className='mr-4'>{publisertDato} </span>
-        <div className='max-h-16'>{venstre}</div>
-      </div>
-      <div className='max-h-16'>{høyre}</div>
-    </div>
-  ) : (
-    <div className='flex justify-between'>
+  return (
+    <div className='flex justify-between items-center h-fit'>
       {venstre}
       {høyre}
     </div>
