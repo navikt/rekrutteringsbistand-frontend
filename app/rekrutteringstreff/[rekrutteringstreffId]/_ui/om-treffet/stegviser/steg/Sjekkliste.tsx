@@ -16,12 +16,19 @@ export const SjekklisteRad: FC<{ erOppfylt: boolean; label: string }> = ({
   erOppfylt,
   label,
 }) => (
-  <div className='flex items-center justify-between my-4'>
-    <div className='flex items-center gap-2'>
-      <div className='w-5 h-5 border-2 rounded-full flex items-center justify-center border-blue-400 text-blue-400'>
-        {erOppfylt && <CheckmarkIcon fontSize='1rem' />}
-      </div>
-      <BodyShort>{label}</BodyShort>
+  <div className='flex items-start justify-between my-3 text-sm'>
+    <div className='flex items-start gap-2'>
+      <span
+        aria-hidden
+        className={`mt-[2px] inline-flex h-4 w-4 items-center justify-center rounded-full border ${erOppfylt ? 'bg-[var(--ax-bg-action-selected)] border-[var(--ax-bg-action-selected)] text-[var(--ax-fg-on-inverted)]' : 'border-[var(--ax-border-neutral-subtle)]'}`}
+      >
+        {erOppfylt && <CheckmarkIcon aria-hidden />}
+      </span>
+      <span
+        className={`${erOppfylt ? 'line-through text-text-subtle' : ''} text-sm`}
+      >
+        {label}
+      </span>
     </div>
   </div>
 );

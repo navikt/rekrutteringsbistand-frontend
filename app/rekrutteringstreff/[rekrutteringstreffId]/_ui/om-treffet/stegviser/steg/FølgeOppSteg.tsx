@@ -74,22 +74,22 @@ export default function FølgeOppSteg() {
         />
 
         <SjekklisteInfoRad>
-          <BodyShort>
+          <BodyShort size='small'>
             Møtt opp: <b>{antallMøttOpp}</b>
           </BodyShort>
         </SjekklisteInfoRad>
         <SjekklisteInfoRad>
-          <BodyShort>
+          <BodyShort size='small'>
             Ikke møtt opp: <b>{antallIkkeMøttOpp}</b>
           </BodyShort>
         </SjekklisteInfoRad>
         <SjekklisteInfoRad>
-          <BodyShort>
+          <BodyShort size='small'>
             Ikke bestemt ennå: <b>{antallUbestemt}</b>
           </BodyShort>
         </SjekklisteInfoRad>
         <SjekklisteInfoRad>
-          <BodyShort>
+          <BodyShort size='small'>
             Ikke invitert: <b>{antallIkkeInvitert}</b>
           </BodyShort>
         </SjekklisteInfoRad>

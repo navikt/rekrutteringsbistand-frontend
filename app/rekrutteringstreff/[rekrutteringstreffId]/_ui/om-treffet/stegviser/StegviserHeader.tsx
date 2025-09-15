@@ -198,17 +198,17 @@ const StegviserHeader: FC<Props> = ({
             </div>
             <div>
               {activeStep === 1 && (
-                <BodyShort className='text-text-subtle whitespace-nowrap'>
+                <BodyShort className='text-text-subtle whitespace-nowrap tabular-nums'>
                   {sjekklistePunkterFullfort} / {totaltAntallSjekklistePunkter}
                 </BodyShort>
               )}
               {activeStep === 2 && (
-                <BodyShort className='text-text-subtle whitespace-nowrap'>
+                <BodyShort className='text-text-subtle whitespace-nowrap tabular-nums'>
                   {inviterePunkterFullfort} / {totaltAntallInviterePunkter}
                 </BodyShort>
               )}
               {activeStep === 3 && (
-                <BodyShort className='text-text-subtle whitespace-nowrap'>
+                <BodyShort className='text-text-subtle whitespace-nowrap tabular-nums'>
                   {antallRegistrertOppmøte} / {antallInviterte}
                 </BodyShort>
               )}
