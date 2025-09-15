@@ -189,7 +189,7 @@
                   - generic [ref=e272]:
                     - heading "Del med arbeidsgiver" [level=2] [ref=e273]
                     - progressbar [ref=e274]
-                    - generic [ref=e276]: 7/6
+                    - generic [ref=e276]: 8/6
                   - generic [ref=e277]:
                     - heading "Sjekkliste" [level=3] [ref=e278]
                     - paragraph [ref=e279]: Ble det match? Velg hvem som fikk jobben og fullfør. Du kan også fullføre oppdraget selv om det ikke gikk denne gangen.
@@ -214,4 +214,7 @@
                       - generic [ref=e303]:
                         - img [ref=e304]
                         - paragraph [ref=e306]: Annonsen vises ikke lenger som aktiv.
+                      - generic [ref=e307]:
+                        - img [ref=e308]
+                        - paragraph [ref=e310]: Registreringen ble sendt til statitstikk. Tellingene låses ved månedsskifte.
 ```
