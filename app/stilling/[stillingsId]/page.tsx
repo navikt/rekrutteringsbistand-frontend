@@ -37,7 +37,7 @@ export default function StillingsSidePage() {
     (stillingsData?.stilling?.employer?.orgnr ?? null) === null;
 
   const fremdriftsPanel = (top?: boolean) => {
-    if (stillingsData.stillingsinfo === null) {
+    if (stillingsData.stilling.source !== 'DIR') {
       return <FremdriftspanelArbeidsplassen />;
     }
 
