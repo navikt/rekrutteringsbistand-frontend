@@ -166,6 +166,7 @@ const KandidatSøkTabs: FC<KandidatSøkTabsProps> = ({
     <div className='@container'>
       <div className='flex justify-between flex-col @3xl:flex-row @3xl:gap-0 gap-3 '>
         <div className='flex gap-2 items-center'>
+          <AlleKontorer />
           <MineBrukere />
           <MittKontor />
           <MineKontorer />
@@ -175,7 +176,6 @@ const KandidatSøkTabs: FC<KandidatSøkTabsProps> = ({
               Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
             ]}
           >
-            <AlleKontorer />
             <VelgKontor />
           </TilgangskontrollForInnhold>
         </div>
