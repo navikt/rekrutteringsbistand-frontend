@@ -8,8 +8,11 @@ export const StillingsSokAntallSchema = z.object({
   visningsStatusBuckets: z
     .array(z.object({ key: z.string(), count: z.number() }))
     .optional(),
-  stillingskategoriBuckets: z
-    .array(z.object({ key: z.string(), count: z.number() }))
+  kategoriBuckets: z
+    .object({
+      stilling: z.number().optional(),
+      jobbmesse: z.number().optional(),
+    })
     .optional(),
   geografi: z
     .object({
