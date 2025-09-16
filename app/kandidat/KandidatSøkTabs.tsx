@@ -56,7 +56,7 @@ const KandidatSøkTabs: FC<KandidatSøkTabsProps> = ({
       title='Mine brukere'
       aria-label='Mine brukere'
     >
-      Mine brukere
+      Mine
     </Button>
   );
 
@@ -133,7 +133,7 @@ const KandidatSøkTabs: FC<KandidatSøkTabsProps> = ({
         title='Alle kontorer'
         aria-label='Alle kontorer'
       >
-        Alle kontorer
+        Alle
       </Button>
     </TilgangskontrollForInnhold>
   );
@@ -157,7 +157,7 @@ const KandidatSøkTabs: FC<KandidatSøkTabsProps> = ({
         title='Valgte kontorer'
         aria-label='Valgte kontorer'
       >
-        Valgte kontorer
+        Velg kontor
       </Button>
     </TilgangskontrollForInnhold>
   );
