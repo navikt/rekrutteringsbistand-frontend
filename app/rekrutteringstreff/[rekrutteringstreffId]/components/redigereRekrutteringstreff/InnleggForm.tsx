@@ -96,8 +96,9 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
               {innlegg ? 'Endre innlegg' : 'Skriv nytt innlegg'}
             </Label>
             <BodyShort size='small' textColor='subtle'>
-              Dette innlegget vises til jobbsøkerne før treffet. Skriv gjerne en
-              hyggelig introduksjon og praktisk informasjon.
+              Fortell jobbsøkeren om treffet: de unike fordelene, mulighetene,
+              og oppgavene som de vil møte. For eksempel arbeidsgivere,
+              forventninger, læring- og karrieremuligheter.
             </BodyShort>
           </div>
 
