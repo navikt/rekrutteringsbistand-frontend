@@ -4,6 +4,87 @@ import { proxyWithOBO } from '@/app/api/oboProxy';
 import { isLocal } from '@/util/env';
 import { NextRequest, NextResponse } from 'next/server';
 
+/**
+ * Utfører ElasticSearch søk kun for aggregeringer (antall/counts)
+ */
+async function søkEtterAntall(req: NextRequest, body: any) {
+  // Modifiser body for å kun hente aggregeringer - sett size til 0 for å ikke hente hits
+  const antallBody = {
+    ...body,
+    size: 0, // Kun aggregeringer, ikke hits
+    from: 0,
+  };
+
+  // Brukes for å gå rett mot stillingssøk lokalt
+  if (isLocal && process.env.STILLING_ES_PASSWORD) {
+    const response = await fetch(`${process.env.STILLING_ES_URI}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Basic ${Buffer.from(`${process.env.STILLING_ES_USERNAME}:${process.env.STILLING_ES_PASSWORD}`).toString('base64')}`,
+      },
+      body: JSON.stringify(antallBody),
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        `Request failed with status ${response.status}: ${await response.text()}`,
+      );
+    }
+
+    const data = await response.json();
+    return leggTilAntall(data);
+  }
+
+  // Proxy via OBO for ikke-lokale miljøer - send pre-parsed body
+  const res = await proxyWithOBO(StillingsSøkAPI, req, undefined, antallBody);
+  if (!res.ok) {
+    throw new Error(`Proxy request failed with status ${res.status}`);
+  }
+
+  const json = await res.json();
+  return leggTilAntall(json);
+}
+
+/**
+ * Utfører ElasticSearch søk kun for hits (resultater)
+ */
+async function søkEtterHits(req: NextRequest, body: any) {
+  // Modifiser body for å kun hente hits - fjern aggregeringer for å redusere størrelse
+  const hitsBody = {
+    ...body,
+    aggs: undefined, // Fjern aggregeringer for å redusere response størrelse
+  };
+
+  // Brukes for å gå rett mot stillingssøk lokalt
+  if (isLocal && process.env.STILLING_ES_PASSWORD) {
+    const response = await fetch(`${process.env.STILLING_ES_URI}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Basic ${Buffer.from(`${process.env.STILLING_ES_USERNAME}:${process.env.STILLING_ES_PASSWORD}`).toString('base64')}`,
+      },
+      body: JSON.stringify(hitsBody),
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        `Request failed with status ${response.status}: ${await response.text()}`,
+      );
+    }
+
+    return await response.json();
+  }
+
+  // Proxy via OBO for ikke-lokale miljøer - send pre-parsed body
+  const res = await proxyWithOBO(StillingsSøkAPI, req, undefined, hitsBody);
+  if (!res.ok) {
+    throw new Error(`Proxy request failed with status ${res.status}`);
+  }
+
+  return await res.json();
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -16,58 +97,29 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Brukes for å gå rett mot stillingssøk lokalt
-    if (isLocal && process.env.STILLING_ES_PASSWORD) {
-      const response = await fetch(`${process.env.STILLING_ES_URI}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Basic ${Buffer.from(`${process.env.STILLING_ES_USERNAME}:${process.env.STILLING_ES_PASSWORD}`).toString('base64')}`,
-        },
-        body: JSON.stringify(body),
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        return NextResponse.json(
-          {
-            error: `Request failed with status ${response.status}: ${errorText}`,
-          },
-          { status: response.status },
-        );
-      }
-
-      const data = await response.json();
-      return NextResponse.json(leggTilAntall(data));
-    }
-
-    // Proxy via OBO for ikke-lokale miljøer (ett enkelt kall)
-    const res = await proxyWithOBO(StillingsSøkAPI, req, undefined, body);
-    if (!res.ok) {
-      // Prøv å få mer detaljert feilinfo
-      try {
-        const errorText = await res.text();
-        return NextResponse.json(
-          {
-            error: `Proxy request failed with status ${res.status}: ${errorText}`,
-          },
-          { status: res.status },
-        );
-      } catch {
-        return NextResponse.json(
-          { error: `Proxy request failed with status ${res.status}` },
-          { status: res.status },
-        );
-      }
-    }
-
     try {
-      const json = await res.json();
-      return NextResponse.json(leggTilAntall(json));
-    } catch (parseError) {
+      // Utfør to separate kall parallelt
+      const [antallResult, hitsResult] = await Promise.all([
+        søkEtterAntall(req, body),
+        søkEtterHits(req, body),
+      ]);
+
+      // Kombiner resultatene i ett objekt
+      const combinedResult = {
+        antall: antallResult.antall,
+        tookTreff: hitsResult.took,
+        tookAggs: antallResult.tookAggs || antallResult.took,
+        hits: hitsResult.hits,
+        _shards: hitsResult._shards,
+        timed_out: hitsResult.timed_out,
+        took: Math.max(hitsResult.took || 0, antallResult.took || 0),
+      };
+
+      return NextResponse.json(combinedResult);
+    } catch (searchError) {
       return NextResponse.json(
         {
-          error: `JSON parsing failed: ${parseError instanceof Error ? parseError.message : 'Unknown parsing error'}`,
+          error: `Search failed: ${searchError instanceof Error ? searchError.message : 'Unknown search error'}`,
         },
         { status: 500 },
       );
