@@ -13,15 +13,9 @@ const KiAnalyse: FC = () => {
           className='h-6 w-6 shrink-0 self-start mt-0.5'
         />
         <span>
-          Ikke skriv personopplysninger og diskriminerende innhold. KI hjelper
-          deg å vurdere innholdet, men du er ansvarlig.
-        </span>
-      </Detail>
-      <Detail size='small' className='flex items-start gap-2 text-gray-400'>
-        <EyeIcon aria-hidden fontSize='2em' className='mt-0.5' />
-        <span>
-          Synlig for jobbsøker, arbeidsgivere og NAV-ansatte når treffet er
-          publisert.
+          Ikke skriv personopplysninger og diskriminerende innhold. KI-verktøyet
+          hjelper deg med å vurdere innholdet, men du er ansvarlig for all tekst
+          som står i treffet.
         </span>
       </Detail>
     </div>

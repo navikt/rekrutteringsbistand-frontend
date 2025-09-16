@@ -9,7 +9,7 @@ import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutte
 import KiAnalyse from '@/app/rekrutteringstreff/[rekrutteringstreffId]/components/redigereRekrutteringstreff/ki/KiAnalyse';
 import { RekbisError } from '@/util/rekbisError';
 import { XMarkIcon } from '@navikt/aksel-icons';
-import { Button, Detail, Skeleton, TextField } from '@navikt/ds-react';
+import { Button, Detail, Skeleton, TextField, Heading } from '@navikt/ds-react';
 import React, { useRef } from 'react';
 import { Controller, useFormContext, useWatch } from 'react-hook-form';
 
@@ -89,6 +89,10 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
       {isLoading && <Skeleton variant='text' />}
       {!isLoading && (
         <>
+          <Heading level='2' size='medium'>
+            Navn på treffet
+          </Heading>
+
           <div className='relative w-full'>
             {tittel && (
               <Button
@@ -97,7 +101,7 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
                 aria-label='Tøm tittel feltet'
                 variant='tertiary'
                 size='small'
-                className='absolute right-2 top-[4rem] -translate-y-1/2 h-8 p-1'
+                className='absolute right-2 top-[2rem] -translate-y-1/2 h-8 p-1'
                 title='Tøm feltet'
               >
                 <XMarkIcon aria-hidden fontSize='1.25rem' />
@@ -117,6 +121,7 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
                       inputRef.current = el as HTMLInputElement | null;
                     }}
                     label='Navn på treffet'
+                    hideLabel
                     maxLength={MAX_TITLE_LENGTH}
                     className='w-full pt-2'
                     error={
@@ -131,7 +136,7 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
                       field.onChange(e);
                       const v = (e.target as HTMLInputElement).value;
                       if (v.trim().length > 0) {
-                        clearErrors('tittel'); // fjerner "tom"-feil live når man begynner å skrive
+                        clearErrors('tittel');
                       }
                     }}
                     onBlur={async () => {

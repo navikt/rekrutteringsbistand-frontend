@@ -11,20 +11,8 @@ export function mapGeografiBuckets(geografiAggs: any) {
 
   const fylker =
     geografiAggs?.fylker?.buckets?.map((b: any) => {
-      const idBuckets = b?.stillinger?.ids?.buckets;
-      const parentDocCount = b?.stillinger?.doc_count;
-      const uniqueCount =
-        typeof parentDocCount === 'number'
-          ? parentDocCount
-          : Array.isArray(idBuckets)
-            ? idBuckets.length
-            : b.doc_count;
-      const idSet = new Set(
-        Array.isArray(idBuckets)
-          ? idBuckets.map((ib: any) => ib.key as string)
-          : [],
-      );
-      return { key: b.key, count: uniqueCount, _ids: idSet };
+      const uniqueCount = b?.stillinger?.unique_count?.value ?? b.doc_count;
+      return { key: b.key, count: uniqueCount };
     }) || [];
 
   const kommuner =
@@ -41,41 +29,19 @@ export function mapGeografiBuckets(geografiAggs: any) {
       const navn = formaterStedsnavn(b.key).toUpperCase();
       const kode = fylkesnavnTilKode(navn);
       if (!kode) return;
-      const idBuckets = b?.stillinger?.ids?.buckets;
-      const parentDocCount = b?.stillinger?.doc_count;
-      const bucketIds: string[] = Array.isArray(idBuckets)
-        ? idBuckets.map((ib: any) => ib.key as string)
-        : [];
-      const eksisterende: any = fylker.find(
-        (f: { key: string; _ids?: Set<string> }) =>
-          String(f.key) === String(kode),
+
+      const uniqueCount = b?.stillinger?.unique_count?.value ?? b.doc_count;
+
+      const eksisterende = fylker.find(
+        (f: { key: string }) => String(f.key) === String(kode),
       );
+
       if (eksisterende) {
-        if (bucketIds.length > 0) {
-          let nye = 0;
-          bucketIds.forEach((id) => {
-            if (!eksisterende._ids.has(id)) {
-              eksisterende._ids.add(id);
-              nye++;
-            }
-          });
-          eksisterende.count += nye;
-        } else if (typeof parentDocCount === 'number') {
-          if (eksisterende._ids.size === 0) {
-            eksisterende.count += parentDocCount;
-          }
-        }
+        eksisterende.count += uniqueCount;
       } else {
-        const initialCount =
-          bucketIds.length > 0
-            ? bucketIds.length
-            : typeof parentDocCount === 'number'
-              ? parentDocCount
-              : b.doc_count;
         fylker.push({
           key: kode,
-          count: initialCount,
-          _ids: new Set(bucketIds),
+          count: uniqueCount,
         });
       }
     });

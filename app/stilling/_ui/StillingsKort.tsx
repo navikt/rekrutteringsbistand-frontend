@@ -20,10 +20,9 @@ import { FC } from 'react';
 
 export interface IStillingsKort {
   stillingData: RekrutteringsbistandStillingSchemaDTO;
-  kandidatId?: string;
 }
 
-const StillingsKort: FC<IStillingsKort> = ({ stillingData, kandidatId }) => {
+const StillingsKort: FC<IStillingsKort> = ({ stillingData }) => {
   // const { visVarsel } = useApplikasjonContext();
 
   // const router = useRouter();

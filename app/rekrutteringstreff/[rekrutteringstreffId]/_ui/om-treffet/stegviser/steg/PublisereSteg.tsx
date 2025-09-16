@@ -56,8 +56,8 @@ const PublisereSteg: FC = () => {
   return (
     <SjekklisteContainer>
       <Detail spacing>
-        Før treffet er tilgjengelig for andre, og du kan invitere jobbsøker, må
-        noen detaljer være på plass først:
+        Noen detaljer være på plass før du publiserer treffet, og kan invitere
+        jobbsøkere.
       </Detail>
 
       {loading && <Loader size='medium' title='Laster sjekkliste status...' />}
@@ -68,7 +68,6 @@ const PublisereSteg: FC = () => {
           return (
             <Fragment key={item.id}>
               <SjekklisteRad erOppfylt={erOppfylt} label={item.label} />
-              {idx < sjekklisteData.length - 1 && <SjekklisteSeparator />}
             </Fragment>
           );
         })}
