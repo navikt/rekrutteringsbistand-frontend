@@ -58,6 +58,10 @@ export default function StillingSøkebar({ alltidÅpen }: StillingSøkebarProps)
 
   return (
     <div className='relative' ref={searchRef}>
+      {/* 
+      
+      Midlertidig kommentert ut responsivt søkefelt
+      
       {!alltidÅpen && !showSearch ? (
         <Button
           variant='tertiary'
@@ -67,38 +71,38 @@ export default function StillingSøkebar({ alltidÅpen }: StillingSøkebarProps)
         >
           Søk
         </Button>
-      ) : (
-        <Search
-          ref={searchInputRef}
-          onKeyDownCapture={(e) => {
-            if (e.key === 'Enter') {
-              e.preventDefault();
-              handleSearchSubmit();
-            } else if (e.key === 'Escape') {
+      ) : ( */}
+      <Search
+        ref={searchInputRef}
+        onKeyDownCapture={(e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            handleSearchSubmit();
+          } else if (e.key === 'Escape') {
+            setShowSearch(false);
+            setSearchValue('');
+            setShowStandardsøk(false);
+          }
+        }}
+        onFocus={() => setShowStandardsøk(true)}
+        onBlur={() => {
+          setTimeout(() => {
+            if (!searchValue.trim()) {
               setShowSearch(false);
-              setSearchValue('');
-              setShowStandardsøk(false);
             }
-          }}
-          onFocus={() => setShowStandardsøk(true)}
-          onBlur={() => {
-            setTimeout(() => {
-              if (!searchValue.trim()) {
-                setShowSearch(false);
-              }
-              setShowStandardsøk(false);
-            }, 150);
-          }}
-          size='small'
-          hideLabel={true}
-          label='Søk i stillinger'
-          placeholder='Søk i stillinger'
-          variant='secondary'
-          value={searchValue}
-          onChange={(e) => setSearchValue(e)}
-          onSearchClick={handleSearchSubmit}
-        />
-      )}
+            setShowStandardsøk(false);
+          }, 150);
+        }}
+        size='small'
+        hideLabel={true}
+        label='Søk i stillinger'
+        placeholder='Søk i stillinger'
+        variant='secondary'
+        value={searchValue}
+        onChange={(e) => setSearchValue(e)}
+        onSearchClick={handleSearchSubmit}
+      />
+      {/* )} */}
       {showStandardsøk && brukerStandardSøkData.data && showSearch && (
         <Box.New
           background='neutral-moderate'

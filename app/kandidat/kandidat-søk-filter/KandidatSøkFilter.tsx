@@ -14,10 +14,10 @@ import AlleFilterKomponent from '@/components/felles/filter/AlleFilterKomponent'
 export default function KandidatSøkFilter() {
   return (
     <div className='flex gap-4 '>
-      <FritekstSøk />
       <div className='block @[720px]:hidden'>
         <div className='whitespace-nowrap'>
           <AlleFilterKomponent>
+            <FritekstSøk />
             <Arbeidsønsker />
             <KandidatStedSøk />
             <Kompetanse />

@@ -10,6 +10,7 @@ import ValgteKontorer from './_ui/ValgteKontorer';
 import KandidatSøkFilter from './kandidat-søk-filter/KandidatSøkFilter';
 import Arbeidserfaring from '@/app/kandidat/kandidat-søk-filter/_ui/Arbeidserfaring';
 import Arbeidsønsker from '@/app/kandidat/kandidat-søk-filter/_ui/Arbeidsønsker';
+import FritekstSøk from '@/app/kandidat/kandidat-søk-filter/_ui/FritekstSøk';
 import Førerkort from '@/app/kandidat/kandidat-søk-filter/_ui/Førerkort';
 import Hovedmål from '@/app/kandidat/kandidat-søk-filter/_ui/Hovedmål';
 import Innsatsgrupper from '@/app/kandidat/kandidat-søk-filter/_ui/Innsatsgrupper';
@@ -196,6 +197,7 @@ const KandidatSøkTabs: FC<KandidatSøkTabsProps> = ({
         </div>
         <div className='hidden @[720px]:block ml-4 pt-4  max-w-[200px]'>
           <div className='flex flex-col gap-4'>
+            <FritekstSøk />
             <Arbeidsønsker />
             <KandidatStedSøk />
             <Kompetanse />
