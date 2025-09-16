@@ -42,7 +42,15 @@ const KandidatSideLayout: FC<KandidatSideProps> = ({ children }) => {
           </div>
           <TekstMedIkon
             ikon={<LocationPinIcon />}
-            tekst={`${kandidatData.adresselinje1 && `${kandidatData.adresselinje1}, `} ${kandidatData.postnummer && kandidatData.postnummer} ${kandidatData.poststed && kandidatData.poststed}`}
+            tekst={
+              [
+                kandidatData.adresselinje1,
+                kandidatData.postnummer,
+                kandidatData.poststed,
+              ]
+                .filter(Boolean)
+                .join(', ') || null
+            }
           />
           <TekstMedIkon
             ikon={<EnvelopeClosedIcon />}
