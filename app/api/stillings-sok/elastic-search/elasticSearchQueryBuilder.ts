@@ -614,19 +614,28 @@ export class ElasticSearchQueryBuilder {
                         },
                       ]
                     : []),
-                  {
-                    bool: {
-                      should: [
+                  // Kun legg til navIdent filter hvis det finnes og ikke er tomt
+                  ...(navIdent
+                    ? [
                         {
-                          term: {
-                            'stilling.administration.navIdent': navIdent,
+                          bool: {
+                            should: [
+                              {
+                                term: {
+                                  'stilling.administration.navIdent': navIdent,
+                                },
+                              },
+                              {
+                                term: {
+                                  'stillingsinfo.eierNavident': navIdent,
+                                },
+                              },
+                            ],
+                            minimum_should_match: 1,
                           },
                         },
-                        { term: { 'stillingsinfo.eierNavident': navIdent } },
-                      ],
-                      minimum_should_match: 1,
-                    },
-                  },
+                      ]
+                    : []),
                 ],
               },
             },
@@ -646,11 +655,16 @@ export class ElasticSearchQueryBuilder {
                         },
                       ]
                     : []),
-                  {
-                    term: {
-                      'stillingsinfo.eierNavKontorEnhetId': kontorEnhetId,
-                    },
-                  },
+                  // Kun legg til kontorEnhetId filter hvis det finnes og ikke er tomt
+                  ...(kontorEnhetId
+                    ? [
+                        {
+                          term: {
+                            'stillingsinfo.eierNavKontorEnhetId': kontorEnhetId,
+                          },
+                        },
+                      ]
+                    : []),
                   // Ekskluder "Ikke publisert" og "Avbrutt" statuser fra mittKontor
                   {
                     bool: {
@@ -716,25 +730,49 @@ export class ElasticSearchQueryBuilder {
               filters: {
                 arbeidsgiver: {
                   bool: {
-                    should: shouldClauses.arbeidsgiver,
+                    ...(Array.isArray(shouldClauses.arbeidsgiver) &&
+                    shouldClauses.arbeidsgiver.length > 0
+                      ? { should: shouldClauses.arbeidsgiver }
+                      : shouldClauses.arbeidsgiver &&
+                          Object.keys(shouldClauses.arbeidsgiver).length > 0
+                        ? { should: [shouldClauses.arbeidsgiver] }
+                        : {}),
                     ...allFiltersWithoutPortfolio,
                   },
                 },
                 tittel: {
                   bool: {
-                    should: shouldClauses.tittel,
+                    ...(Array.isArray(shouldClauses.tittel) &&
+                    shouldClauses.tittel.length > 0
+                      ? { should: shouldClauses.tittel }
+                      : shouldClauses.tittel &&
+                          Object.keys(shouldClauses.tittel).length > 0
+                        ? { should: [shouldClauses.tittel] }
+                        : {}),
                     ...allFiltersWithoutPortfolio,
                   },
                 },
                 annonsetekst: {
                   bool: {
-                    should: shouldClauses.annonsetekst,
+                    ...(Array.isArray(shouldClauses.annonsetekst) &&
+                    shouldClauses.annonsetekst.length > 0
+                      ? { should: shouldClauses.annonsetekst }
+                      : shouldClauses.annonsetekst &&
+                          Object.keys(shouldClauses.annonsetekst).length > 0
+                        ? { should: [shouldClauses.annonsetekst] }
+                        : {}),
                     ...allFiltersWithoutPortfolio,
                   },
                 },
                 annonsenummer: {
                   bool: {
-                    should: shouldClauses.annonsenummer,
+                    ...(Array.isArray(shouldClauses.annonsenummer) &&
+                    shouldClauses.annonsenummer.length > 0
+                      ? { should: shouldClauses.annonsenummer }
+                      : shouldClauses.annonsenummer &&
+                          Object.keys(shouldClauses.annonsenummer).length > 0
+                        ? { should: [shouldClauses.annonsenummer] }
+                        : {}),
                     ...allFiltersWithoutPortfolio,
                   },
                 },

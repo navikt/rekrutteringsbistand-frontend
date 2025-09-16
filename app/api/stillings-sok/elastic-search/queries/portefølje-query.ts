@@ -39,19 +39,25 @@ export const esPortefølje = (
       ],
     });
   } else if (params.filter.portefølje === StillingsSøkPortefølje.VIS_MINE) {
-    esBuilder.addBoolFilter({
-      should: [
-        { term: { 'stilling.administration.navIdent': params.navIdent } },
-        { term: { 'stillingsinfo.eierNavident': params.navIdent } },
-      ],
-      minimum_should_match: 1,
-    });
+    // Validerer at navIdent finnes og ikke er tom
+    if (params.navIdent) {
+      esBuilder.addBoolFilter({
+        should: [
+          { term: { 'stilling.administration.navIdent': params.navIdent } },
+          { term: { 'stillingsinfo.eierNavident': params.navIdent } },
+        ],
+        minimum_should_match: 1,
+      });
+    }
   } else if (params.filter.portefølje === StillingsSøkPortefølje.MITT_KONTOR) {
-    esBuilder.addFilter({
-      term: {
-        'stillingsinfo.eierNavKontorEnhetId': params.eierNavKontorEnhetId,
-      },
-    });
+    // Validerer at eierNavKontorEnhetId finnes og ikke er tom
+    if (params.eierNavKontorEnhetId) {
+      esBuilder.addFilter({
+        term: {
+          'stillingsinfo.eierNavKontorEnhetId': params.eierNavKontorEnhetId,
+        },
+      });
+    }
 
     // Ekskluder "Ikke publisert" og "Avbrutt" statuser fra Mitt kontor søkeresultater
     esBuilder.addBoolFilter({

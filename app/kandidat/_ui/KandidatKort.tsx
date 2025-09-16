@@ -18,11 +18,7 @@ type IKandidatKort = {
   stillingsId?: string;
 };
 
-const KandidatKort: FC<IKandidatKort> = ({
-  kandidat,
-  alleredeLagtTil,
-  stillingsId,
-}) => {
+const KandidatKort: FC<IKandidatKort> = ({ kandidat, alleredeLagtTil }) => {
   const { markerteKandidater, setMarkert } = useKandidatSøkMarkerteContext();
   const [visKandidatnr, setVisKandidatnr] = useVisKandidatNr();
   const erMarkert = markerteKandidater?.some(

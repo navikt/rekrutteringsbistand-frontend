@@ -95,11 +95,7 @@ const StillingsSøkeresultat: FC<StillingsSøkeresultatProps> = ({
 
             <div className='flex flex-col gap-1'>
               {data.hits?.hits?.map((hit: any) => (
-                <StillingsKort
-                  key={hit._id}
-                  stillingData={hit._source}
-                  kandidatId={kandidatId}
-                />
+                <StillingsKort key={hit._id} stillingData={hit._source} />
               ))}
             </div>
             <div className={'flex justify-center items-center'}>
