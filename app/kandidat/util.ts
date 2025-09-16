@@ -1,8 +1,25 @@
 import { KandidatDataSchemaDTO } from '@/app/api/kandidat-sok/schema/cvSchema.zod';
+import {
+  ModiaEventType,
+  setModiaContext,
+} from '@/app/api/modia/context/setModiaContext';
 
 export function storForbokstavString(string: string) {
   return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
 }
+
+export const setModiaBrukerOgNaviger = async (
+  href: string,
+  fødselsnummer: string,
+) => {
+  await setModiaContext(ModiaEventType.NY_AKTIV_BRUKER, fødselsnummer).then(
+    () => {
+      setTimeout(() => {
+        window.open(href, '_blank');
+      }, 500);
+    },
+  );
+};
 
 export const storBokstavSted = (sted: string) => {
   // Returner stor forbokstav og stor bokstav etter " " og "-" , men ikke stor forbokstav for " og "
