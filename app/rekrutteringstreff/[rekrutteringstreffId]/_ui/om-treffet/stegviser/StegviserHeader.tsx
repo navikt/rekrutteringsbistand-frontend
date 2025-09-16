@@ -2,19 +2,18 @@
 
 import { useStegviser } from './StegviserContext';
 import {
-  avsluttInvitasjon,
-  avsluttOppfolging,
-  avsluttRekrutteringstreff,
   publiserRekrutteringstreff,
+  fullførRekrutteringstreff,
+  gjenåpnRekrutteringstreff,
 } from '@/app/api/rekrutteringstreff/[...slug]/steg';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
 import { RekbisError } from '@/util/rekbisError';
-import { Button, Heading, ProgressBar } from '@navikt/ds-react';
-import { FC, useState } from 'react';
+import { Button, Heading, ProgressBar, Modal } from '@navikt/ds-react';
+import { FC, useRef, useState } from 'react';
 
 interface Props {
-  stepDetails: { id: number; stepLabel: string; header: string }[];
+  stepDetails: { id: number; header: string }[];
   onToggleForhåndsvisning?: (erIForhåndsvisning: boolean) => void;
   erIForhåndsvisning: boolean;
 }
@@ -24,13 +23,13 @@ const StegviserHeader: FC<Props> = ({
   onToggleForhåndsvisning,
   erIForhåndsvisning,
 }) => {
-  const [isPublishing, setIsPublishing] = useState(false);
-  const [isFinishingInvitation, setIsFinishingInvitation] = useState(false);
-  const [isFinishingFollowUp, setIsFinishingFollowUp] = useState(false);
-  const [isFinishingRecruitment, setIsFinishingRecruitment] = useState(false);
+  const fullforModalRef = useRef<HTMLDialogElement>(null);
+  const [publiserer, setPubliserer] = useState(false);
+  const [fullfører, setFullfører] = useState(false);
+  const [gjenåpner, setGjenåpner] = useState(false);
 
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
-  const { data: rekrutteringstreffData, mutate: mutateRekrutteringstreff } =
+  const { mutate: mutateRekrutteringstreff } =
     useRekrutteringstreff(rekrutteringstreffId);
 
   const {
@@ -43,16 +42,10 @@ const StegviserHeader: FC<Props> = ({
     totaltAntallInviterePunkter,
     arrangementtidspunktHarPassert,
     tiltidspunktHarPassert,
-    antallMøttOpp,
-    antallIkkeMøttOpp,
-    antallUbestemt,
-    antallInviterte,
   } = useStegviser();
 
-  const antallRegistrertOppmøte = antallMøttOpp + antallIkkeMøttOpp;
-
   const onPubliserTreffet = async () => {
-    setIsPublishing(true);
+    setPubliserer(true);
     try {
       await publiserRekrutteringstreff(rekrutteringstreffId);
       await mutateRekrutteringstreff();
@@ -62,38 +55,14 @@ const StegviserHeader: FC<Props> = ({
         error,
       });
     } finally {
-      setIsPublishing(false);
+      setPubliserer(false);
     }
   };
 
-  const onAvsluttInvitasjon = async () => {
-    setIsFinishingInvitation(true);
+  const onFullførRekrutteringstreff = async () => {
+    setFullfører(true);
     try {
-      await avsluttInvitasjon(rekrutteringstreffId);
-      await mutateRekrutteringstreff();
-    } catch (error) {
-      new RekbisError({ message: 'Avslutting av invitasjon feilet', error });
-    } finally {
-      setIsFinishingInvitation(false);
-    }
-  };
-
-  const onAvsluttOppfolging = async () => {
-    setIsFinishingFollowUp(true);
-    try {
-      await avsluttOppfolging(rekrutteringstreffId);
-      await mutateRekrutteringstreff();
-    } catch (error) {
-      new RekbisError({ message: 'Avslutting av oppfølging feilet', error });
-    } finally {
-      setIsFinishingFollowUp(false);
-    }
-  };
-
-  const onAvsluttRekrutteringstreff = async () => {
-    setIsFinishingRecruitment(true);
-    try {
-      await avsluttRekrutteringstreff(rekrutteringstreffId);
+      await fullførRekrutteringstreff(rekrutteringstreffId);
       await mutateRekrutteringstreff();
     } catch (error) {
       new RekbisError({
@@ -101,14 +70,24 @@ const StegviserHeader: FC<Props> = ({
         error,
       });
     } finally {
-      setIsFinishingRecruitment(false);
+      setFullfører(false);
     }
   };
 
-  const harAvsluttet =
-    rekrutteringstreffData?.hendelser?.some(
-      (h) => h.hendelsestype === 'AVSLUTT',
-    ) ?? false;
+  const onGjenåpnTreffet = async () => {
+    setGjenåpner(true);
+    try {
+      await gjenåpnRekrutteringstreff(rekrutteringstreffId);
+      await mutateRekrutteringstreff();
+    } catch (error) {
+      new RekbisError({
+        message: 'Gjenåpning av rekrutteringstreff feilet',
+        error,
+      });
+    } finally {
+      setGjenåpner(false);
+    }
+  };
 
   const currentHeader =
     stepDetails.find((d) => d.id === activeStep)?.header ?? 'Steg';
@@ -138,72 +117,63 @@ const StegviserHeader: FC<Props> = ({
     onToggleForhåndsvisning?.(!erIForhåndsvisning);
   };
 
+  const onKlikkFullfor = () => {
+    if (!tiltidspunktHarPassert) {
+      fullforModalRef.current?.showModal();
+    } else {
+      onFullførRekrutteringstreff();
+    }
+  };
+
   return (
     <div className='w-full'>
       <div className='grid grid-cols-2 gap-2 w-full'>
-        <Button
-          size='small'
-          variant='secondary'
-          className='w-full'
-          onClick={handleToggleForhåndsvisning}
-        >
-          {erIForhåndsvisning ? 'Rediger' : 'Forhåndsvis'}
-        </Button>
-
+        {activeStep != 3 && (
+          <Button
+            size='small'
+            variant='secondary'
+            className='w-full'
+            onClick={handleToggleForhåndsvisning}
+          >
+            {erIForhåndsvisning ? 'Rediger' : 'Forhåndsvis'}
+          </Button>
+        )}
         {activeStep === 1 ? (
           <Button
-            disabled={!erPubliseringklar || isPublishing}
-            loading={isPublishing}
+            disabled={!erPubliseringklar || publiserer}
+            loading={publiserer}
             size='small'
             className='w-full'
             onClick={onPubliserTreffet}
           >
             Publiser treffet
           </Button>
-        ) : activeStep === 2 ? (
-          <Button
-            variant='primary'
-            size='small'
-            disabled={
-              !harInvitert ||
-              !arrangementtidspunktHarPassert ||
-              isFinishingInvitation
-            }
-            loading={isFinishingInvitation}
-            className='w-full'
-            onClick={onAvsluttInvitasjon}
-          >
-            Ferdig å invitere
-          </Button>
-        ) : activeStep === 3 ? (
-          <Button
-            variant='primary'
-            size='small'
-            loading={isFinishingFollowUp}
-            disabled={
-              isFinishingFollowUp ||
-              !tiltidspunktHarPassert ||
-              antallUbestemt > 0
-            }
-            className='w-full'
-            onClick={onAvsluttOppfolging}
-          >
-            Ferdig med oppfølging
-          </Button>
-        ) : activeStep === 4 && !harAvsluttet ? (
-          <Button
-            variant='primary'
-            size='small'
-            loading={isFinishingRecruitment}
-            className='w-full'
-            onClick={onAvsluttRekrutteringstreff}
-          >
-            Avslutt treffet
-          </Button>
         ) : (
-          <div />
+          activeStep === 2 && (
+            <Button
+              variant='primary'
+              size='small'
+              disabled={!harInvitert || fullfører}
+              loading={fullfører}
+              className='w-full'
+              onClick={onKlikkFullfor}
+            >
+              Fullfør
+            </Button>
+          )
         )}
       </div>
+      {activeStep === 3 && (
+        <Button
+          variant='primary'
+          size='small'
+          loading={gjenåpner}
+          className='w-full'
+          onClick={onGjenåpnTreffet}
+        >
+          Gjenåpne
+        </Button>
+      )}
 
       <div className='flex items-center justify-between w-full mt-4'>
         <div className='flex-grow mr-4'>
@@ -229,16 +199,38 @@ const StegviserHeader: FC<Props> = ({
                 ariaLabel='Fremdrift for invitasjon'
               />
             )}
-            {activeStep === 3 && (
-              <ProgressMedTeller
-                value={antallRegistrertOppmøte}
-                max={antallInviterte}
-                ariaLabel='Fremdrift for oppfølging'
-              />
-            )}
           </div>
         </div>
       </div>
+
+      <Modal
+        ref={fullforModalRef}
+        header={{ heading: 'Fullfør rekrutteringstreff?' }}
+      >
+        <Modal.Body>
+          <p>
+            Slutttidspunktet for rekrutteringstreffet har ikke passert ennå. Er
+            du sikker på at du vil fullføre rekrutteringsreffet likevel?
+          </p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            loading={fullfører}
+            onClick={() => {
+              onFullførRekrutteringstreff();
+              fullforModalRef.current?.close();
+            }}
+          >
+            Fullfør
+          </Button>
+          <Button
+            variant='secondary'
+            onClick={() => fullforModalRef.current?.close()}
+          >
+            Avbryt
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };

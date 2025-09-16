@@ -21,20 +21,6 @@ import * as React from 'react';
 
 const DEFAULT_TITTEL = 'Nytt rekrutteringstreff';
 
-const erMøttOpp = (j: JobbsøkerDTO) =>
-  j.hendelser?.some((h) => h.hendelsestype === 'MØT_OPP') ?? false;
-
-const erIkkeMøttOpp = (j: JobbsøkerDTO) =>
-  j.hendelser?.some((h) => h.hendelsestype === 'IKKE_MØT_OPP') ?? false;
-
-const erUbestemt = (j: JobbsøkerDTO) =>
-  !(
-    j.hendelser?.some(
-      (h) =>
-        h.hendelsestype === 'MØT_OPP' || h.hendelsestype === 'IKKE_MØT_OPP',
-    ) ?? false
-  );
-
 const erInvitert = (j: JobbsøkerDTO) =>
   j.hendelser?.some((h) => h.hendelsestype === 'INVITER') ?? false;
 
@@ -58,14 +44,6 @@ export interface StegviserState {
   totaltAntallInviterePunkter: number;
   harInvitert: boolean;
   antallInviterte: number;
-
-  // Steg 3: Følge opp
-  antallMøttOpp: number;
-  antallIkkeMøttOpp: number;
-  antallUbestemt: number;
-  totaltJobbsøkere: number;
-  antallIkkeInvitert: number;
-  uregistrerte: JobbsøkerDTO[];
 
   // Tidsflagg
   arrangementtidspunktHarPassert: boolean;
@@ -121,24 +99,31 @@ export const StegviserProvider: FC<{ children: ReactNode }> = ({
     (harInvitert ? 1 : 0) + (arrangementtidspunktHarPassert ? 1 : 0);
   const totaltAntallInviterePunkter = 2;
 
-  // Steg 3: Følge opp-logikk (basert på inviterte)
-  const inviterteJobbsøkere = jobbsøkere.filter(erInvitert);
-  const antallMøttOpp = inviterteJobbsøkere.filter(erMøttOpp).length;
-  const antallIkkeMøttOpp = inviterteJobbsøkere.filter(erIkkeMøttOpp).length;
-  const uregistrerte = inviterteJobbsøkere.filter(erUbestemt);
-  const antallUbestemt = uregistrerte.length;
-  const totaltJobbsøkere = jobbsøkere.length;
-  const antallIkkeInvitert = totaltJobbsøkere - antallInviterte;
-
   useEffect(() => {
     const hendelser = rekrutteringstreff?.hendelser ?? [];
-    const harHendelse = (type: string) =>
-      hendelser.some((h) => h.hendelsestype === type);
+
+    const sorterteHendelser = hendelser
+      .filter((h) =>
+        ['PUBLISER', 'FULLFØR', 'GJENÅPN'].includes(h.hendelsestype),
+      )
+      .sort(
+        (a, b) =>
+          new Date(b.tidspunkt).getTime() - new Date(a.tidspunkt).getTime(),
+      );
 
     let step = 1;
-    if (harHendelse('PUBLISER')) step = 2;
-    if (harHendelse('AVSLUTT_INVITASJON')) step = 3;
-    if (harHendelse('AVSLUTT_OPPFØLGING') || harHendelse('AVSLUTT')) step = 4;
+    if (sorterteHendelser.length > 0) {
+      const sisteHendelse = sorterteHendelser[0];
+      switch (sisteHendelse.hendelsestype) {
+        case 'PUBLISER':
+        case 'GJENÅPN':
+          step = 2;
+          break;
+        case 'FULLFØR':
+          step = 3;
+          break;
+      }
+    }
 
     setActiveStep((prev) => (prev === step ? prev : step));
   }, [rekrutteringstreff?.hendelser]);
@@ -155,12 +140,6 @@ export const StegviserProvider: FC<{ children: ReactNode }> = ({
     antallInviterte,
     arrangementtidspunktHarPassert,
     tiltidspunktHarPassert,
-    antallMøttOpp,
-    antallIkkeMøttOpp,
-    antallUbestemt,
-    antallIkkeInvitert,
-    totaltJobbsøkere,
-    uregistrerte,
   };
 
   return (
