@@ -3,24 +3,38 @@
 import {
   SjekklisteContainer,
   SjekklisteRad,
-  SjekklisteSeparator,
+  SjekklisteInfo,
 } from './Sjekkliste';
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
-import { Detail, Loader } from '@navikt/ds-react';
+import {
+  EyeIcon,
+  PersonGroupIcon,
+  TasklistIcon,
+  BellIcon,
+} from '@navikt/aksel-icons';
+import {
+  Detail,
+  Loader,
+  Heading,
+  BodyShort,
+  HStack,
+  VStack,
+  Box,
+} from '@navikt/ds-react';
 import { FC, Fragment, useMemo } from 'react';
 
 const DEFAULT_TITTEL = 'Nytt rekrutteringstreff';
 
 const sjekklisteData = [
-  { id: 'arbeidsgiver', label: 'Minst 1 arbeidsgiver' },
   { id: 'navn', label: 'Navn' },
-  { id: 'sted', label: 'Sted' },
   { id: 'tidspunkt', label: 'Tidspunkt' },
+  { id: 'sted', label: 'Sted' },
   { id: 'svarfrist', label: 'Svarfrist' },
   { id: 'omtreffet', label: 'Om treffet' },
+  { id: 'arbeidsgiver', label: 'Minst 1 arbeidsgiver' },
 ] as const;
 
 const PublisereSteg: FC = () => {
@@ -71,6 +85,52 @@ const PublisereSteg: FC = () => {
             </Fragment>
           );
         })}
+
+      <SjekklisteInfo>
+        <VStack gap='3'>
+          <Heading level='3' size='small'>
+            Hva skjer etter publisering?
+          </Heading>
+          <VStack gap='2'>
+            <HStack gap='2' align='start'>
+              <div className='flex-none w-6 mt-[2px]'>
+                <EyeIcon fontSize='1.5rem' aria-hidden />
+              </div>
+              <BodyShort className='flex-1'>
+                Treffet blir synlig for kollegaene dine.
+              </BodyShort>
+            </HStack>
+
+            <HStack gap='2' align='start'>
+              <div className='flex-none w-6 mt-[2px]'>
+                <PersonGroupIcon fontSize='1.5rem' aria-hidden />
+              </div>
+              <BodyShort className='flex-1'>
+                De kan finne og foreslå folk som kan være med. Du kan også finne
+                folk selv.
+              </BodyShort>
+            </HStack>
+
+            <HStack gap='2' align='start'>
+              <div className='flex-none w-6 mt-[2px]'>
+                <TasklistIcon fontSize='1.5rem' aria-hidden />
+              </div>
+              <BodyShort className='flex-1'>
+                Du velger hvem som skal inviteres.
+              </BodyShort>
+            </HStack>
+
+            <HStack gap='2' align='start'>
+              <div className='flex-none w-6 mt-[2px]'>
+                <BellIcon fontSize='1.5rem' aria-hidden />
+              </div>
+              <BodyShort className='flex-1'>
+                Inviterte får beskjed, et kort i aktivitetsplanen, og kan svare.
+              </BodyShort>
+            </HStack>
+          </VStack>
+        </VStack>
+      </SjekklisteInfo>
     </SjekklisteContainer>
   );
 };
