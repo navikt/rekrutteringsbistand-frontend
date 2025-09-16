@@ -651,6 +651,26 @@ export class ElasticSearchQueryBuilder {
                       'stillingsinfo.eierNavKontorEnhetId': kontorEnhetId,
                     },
                   },
+                  // Ekskluder "Ikke publisert" og "Avbrutt" statuser fra mittKontor
+                  {
+                    bool: {
+                      must_not: [
+                        // Ekskluder "Ikke publisert" (INACTIVE uten publishedByAdmin)
+                        {
+                          bool: {
+                            must: [{ term: { 'stilling.status': 'INACTIVE' } }],
+                            must_not: [
+                              {
+                                exists: { field: 'stilling.publishedByAdmin' },
+                              },
+                            ],
+                          },
+                        },
+                        // Ekskluder "Avbrutt" (DELETED)
+                        { term: { 'stilling.status': 'DELETED' } },
+                      ],
+                    },
+                  },
                 ],
               },
             },

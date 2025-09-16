@@ -52,6 +52,21 @@ export const esPortefølje = (
         'stillingsinfo.eierNavKontorEnhetId': params.eierNavKontorEnhetId,
       },
     });
+
+    // Ekskluder "Ikke publisert" og "Avbrutt" statuser fra Mitt kontor søkeresultater
+    esBuilder.addBoolFilter({
+      must_not: [
+        // Ekskluder "Ikke publisert" (INACTIVE uten publishedByAdmin)
+        {
+          bool: {
+            must: [{ term: { 'stilling.status': 'INACTIVE' } }],
+            must_not: [{ exists: { field: 'stilling.publishedByAdmin' } }],
+          },
+        },
+        // Ekskluder "Avbrutt" (DELETED)
+        { term: { 'stilling.status': 'DELETED' } },
+      ],
+    });
   } else if (
     params.filter.portefølje === StillingsSøkPortefølje.ARBEIDSPLASSEN_NO
   ) {
