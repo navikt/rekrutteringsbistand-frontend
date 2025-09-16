@@ -102,7 +102,7 @@ const StillingsSøkeresultat: FC<StillingsSøkeresultatProps> = ({
                 />
               ))}
             </div>
-            <div className={'flex justify-between items-center'}>
+            <div className={'flex justify-center tems-center'}>
               <StillingsSøkPaginering
                 totaltAntallTreff={data.hits?.total?.value ?? 0}
               />

@@ -1,3 +1,4 @@
+import { setModiaBrukerOgNaviger } from '@/app/kandidat/util';
 import { useKandidatContext } from '@/app/kandidat/vis-kandidat/KandidatContext';
 import { dialogUrl } from '@/components/felles/modia/eksterneUrler';
 import { ExternalLinkIcon } from '@navikt/aksel-icons';
@@ -6,7 +7,7 @@ import { useEffect, useState } from 'react';
 
 export default function Profilkvalitet() {
   const { kandidatData } = useKandidatContext();
-
+  const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [manglerFelt, setManglerFelt] = useState<string[]>([]);
 
@@ -20,6 +21,12 @@ export default function Profilkvalitet() {
   const harBosted = kandidatData?.kommuneNavn !== null;
   // Språk
   const harSpråk = (kandidatData?.sprak?.length ?? 0) > 0;
+
+  const navigerTilDialog = async (fødselsnummer: string) => {
+    setLoading(true);
+    await setModiaBrukerOgNaviger(dialogUrl, fødselsnummer);
+    setLoading(false);
+  };
 
   useEffect(() => {
     if (kandidatData) {
@@ -101,7 +108,12 @@ export default function Profilkvalitet() {
             Det øker sjansen for at de finner en jobb som passer.
           </BodyShort>
           <Button
-            onClick={() => window.open(dialogUrl, '_blank')}
+            loading={loading}
+            disabled={!kandidatData.fodselsnummer}
+            onClick={() =>
+              kandidatData.fodselsnummer &&
+              navigerTilDialog(kandidatData.fodselsnummer)
+            }
             variant='secondary'
             className='mt-4 w-full'
             icon={<ExternalLinkIcon />}

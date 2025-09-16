@@ -1,9 +1,6 @@
 'use client';
 
-import {
-  ModiaEventType,
-  setModiaContext,
-} from '@/app/api/modia/context/setModiaContext';
+import { setModiaBrukerOgNaviger } from '@/app/kandidat/util';
 import { useKandidatContext } from '@/app/kandidat/vis-kandidat/KandidatContext';
 import LenkeKortMedIkon from '@/components/felles/LenkeKortMedIkon';
 import { getMiljø, Miljø } from '@/util/miljø';
@@ -24,14 +21,8 @@ export default function NavigerTilAktivitetsplanenKnapp() {
     fødselsnummer: string,
   ) => {
     setLoading(true);
-    await setModiaContext(ModiaEventType.NY_AKTIV_BRUKER, fødselsnummer).then(
-      () => {
-        setTimeout(() => {
-          window.open(href, '_blank');
-          setLoading(false);
-        }, 500);
-      },
-    );
+    await setModiaBrukerOgNaviger(href, fødselsnummer);
+    setLoading(false);
   };
 
   if (kandidatData.fodselsnummer) {
