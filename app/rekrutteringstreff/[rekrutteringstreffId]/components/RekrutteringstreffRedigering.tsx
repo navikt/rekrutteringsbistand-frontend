@@ -1,6 +1,7 @@
 'use client';
 
 import { useRekrutteringstreffContext } from '../RekrutteringstreffContext';
+import InnleggForm from './redigereRekrutteringstreff/InnleggForm';
 import PraktiskeForhold from './redigereRekrutteringstreff/Praktiskeforhold';
 import TittelForm from './redigereRekrutteringstreff/TittelForm';
 import {
@@ -22,6 +23,7 @@ import {
   Label,
   Alert,
   Heading,
+  Box,
 } from '@navikt/ds-react';
 import { FC, useEffect, useRef, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
@@ -224,17 +226,57 @@ const RekrutteringstreffRedigering: FC<RekrutteringstreffRedigeringProps> = ({
   };
 
   return (
-    <div className='space-y-8'>
-      <TittelForm onUpdated={håndterOppdatert} />
-      <PraktiskeForhold />
+    <div className='space-y-8 max-w-[64rem] mx-auto'>
+      <Box.New
+        background='neutral-soft'
+        borderColor='neutral-subtle'
+        borderRadius='xlarge'
+        borderWidth='1'
+        padding='6'
+      >
+        <TittelForm onUpdated={håndterOppdatert} />
+      </Box.New>
+
+      <Box.New
+        background='neutral-soft'
+        borderColor='neutral-subtle'
+        borderRadius='xlarge'
+        borderWidth='1'
+        padding='6'
+      >
+        <PraktiskeForhold />
+      </Box.New>
+
+      <Box.New
+        background='neutral-soft'
+        borderColor='neutral-subtle'
+        borderRadius='xlarge'
+        borderWidth='1'
+        padding='6'
+        className='space-y-4'
+      >
+        <Heading level='2' size='medium'>
+          Introduksjon
+        </Heading>
+        <InnleggForm onUpdated={håndterOppdatert} />
+      </Box.New>
+
       {!harPublisert && (
-        <section className='space-y-4'>
-          <Heading level='2' size='small'>
+        <Box.New
+          background='neutral-soft'
+          borderColor='neutral-subtle'
+          borderRadius='xlarge'
+          borderWidth='1'
+          padding='6'
+          className='space-y-4'
+        >
+          <Heading level='2' size='medium'>
             Arbeidsgivere
           </Heading>
           <LeggTilArbeidsgiverForm variant='inline' />
-        </section>
+        </Box.New>
       )}
+
       <div>
         {harPublisert ? (
           <div className='flex gap-2'>
@@ -311,7 +353,6 @@ const RekrutteringstreffRedigering: FC<RekrutteringstreffRedigeringProps> = ({
               size='small'
               disabled={!kanPublisereNå}
               onClick={async () => {
-                // Ekstra vern: ikke fortsett hvis KI-sjekk ikke er utført
                 if (!kanPublisereNå) return;
                 bekreftModalRef.current?.close();
                 await save(undefined, true);
