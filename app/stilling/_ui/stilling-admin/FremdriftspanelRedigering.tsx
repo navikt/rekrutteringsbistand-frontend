@@ -9,9 +9,11 @@ import PubliserModal from '@/app/stilling/_ui/stilling-admin/admin_moduler/Publi
 import OpprettEtterregistrering from '@/app/stilling/_ui/stilling-admin/admin_moduler/etterregistrering/OpprettEtterregistrering';
 import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
 import {
+  BellDotIcon,
   BellIcon,
   CheckmarkIcon,
   EyeIcon,
+  PersonCircleIcon,
   PersonGroupIcon,
   TasklistIcon,
 } from '@navikt/aksel-icons';
@@ -376,14 +378,14 @@ export default function FremdriftspanelRedigering({ setForhåndsvis }: Props) {
             <div className='flex gap-2'>
               <EyeIcon aria-hidden className='shrink-0' />
               <BodyShort size='small'>
-                Annonssen blir synlig for kollegaene dine.
+                Oppdraget blir synlig for kollegaene dine.
               </BodyShort>
             </div>
             <div className='flex gap-2'>
               <PersonGroupIcon aria-hidden className='shrink-0' />
               <BodyShort size='small'>
-                De kan finne og foreslå folk til som kan egne seg. Du kan også
-                finne folk på egenhånd.
+                De kan finne og foreslå folk som kan egne seg til jobben. Du kan
+                også finne folk på selv.
               </BodyShort>
             </div>
             <div className='flex gap-2'>
@@ -398,6 +400,24 @@ export default function FremdriftspanelRedigering({ setForhåndsvis }: Props) {
               <BodyShort size='small'>
                 Jobbsøkeren får beskjed, og muligheten til å svare i
                 aktivtetsplanen.
+              </BodyShort>
+            </div>
+          </div>
+          <Heading size='xsmall' level='3' className='my-4'>
+            For arbeidsgiver
+          </Heading>
+          <div className='flex gap-4 flex-col'>
+            <div className='flex gap-2'>
+              <BellDotIcon aria-hidden className='shrink-0' />
+              <BodyShort size='small'>
+                Arbeidsgiver får en ny sak på arbeidsgivers Min Side på Nav.no.
+              </BodyShort>
+            </div>
+            <div className='flex gap-2'>
+              <PersonCircleIcon aria-hidden className='shrink-0' />
+              <BodyShort size='small'>
+                I saken ser de stillingsbeskrivelsen, og jobbsøkere så snart de
+                deles.
               </BodyShort>
             </div>
           </div>

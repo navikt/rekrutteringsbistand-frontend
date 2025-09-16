@@ -249,15 +249,15 @@ export default function FremdriftspanelStilling({
                         <div className='flex gap-2'>
                           <EyeIcon aria-hidden className='shrink-0' />
                           <BodyShort size='small'>
-                            Annonsen vises ikke lenger som aktiv.
+                            Oppdraget vises ikke lenger som aktiv.
                           </BodyShort>
                         </div>
                         {antallFåttJobben > 0 && (
                           <div className='flex gap-2'>
                             <BarChartIcon aria-hidden className='shrink-0' />
                             <BodyShort size='small'>
-                              Registreringen ble sendt til statitstikk.
-                              Tellingene låses ved månedsskifte.
+                              Registreringen sendes til statitstikk. Tellingene
+                              låses ved månedsskifte.
                             </BodyShort>
                           </div>
                         )}
