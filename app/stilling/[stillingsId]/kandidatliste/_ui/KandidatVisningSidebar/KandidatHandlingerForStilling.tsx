@@ -116,7 +116,7 @@ const KandidatHandlingerForStilling: FC<KandidatHandlingerForStillingProps> = ({
           modalRef={modalRef}
         />
       ) : (
-        <div className='flex gap-2 border-t-2 pt-4'>
+        <div className='grid grid-cols-2 gap-2 justify-between @3xl:flex @3xl:justify-between'>
           <SendSmsModal
             markerteKandidater={[kandidat]}
             fjernAllMarkering={() => {}}

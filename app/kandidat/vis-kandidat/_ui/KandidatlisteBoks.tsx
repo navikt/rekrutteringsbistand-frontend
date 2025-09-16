@@ -26,6 +26,7 @@ const KandidatlisteBoks: FC<KandidatlisteBoksProps> = ({ kandidatnr }) => {
   }> = ({ children }) => (
     <Box.New
       borderColor='neutral-subtleA'
+      background='neutral-soft'
       borderWidth='1'
       padding='4'
       borderRadius='xlarge'

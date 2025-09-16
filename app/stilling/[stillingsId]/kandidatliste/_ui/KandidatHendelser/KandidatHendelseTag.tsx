@@ -1,7 +1,8 @@
 import {
   ArrowUndoIcon,
   CalendarIcon,
-  CheckmarkCircleIcon,
+  ChatCheckmarkIcon,
+  ChatExclamationmarkIcon,
   ExclamationmarkTriangleIcon,
   FileXMarkIcon,
   HandShakeHeartIcon,
@@ -36,26 +37,34 @@ export enum KandidatHendelseType {
 const hendelseVariant = (type: KandidatHendelseType): TagProps['variant'] => {
   switch (type) {
     case KandidatHendelseType.Spurt_om_å_dele_CV:
-    case KandidatHendelseType.CV_delt_med_arbeidsgiver:
-      return 'info';
-    case KandidatHendelseType.Fått_jobben:
-    case KandidatHendelseType.Deling_av_CV_JA:
-    case KandidatHendelseType.SMS_OK:
-      return 'success';
+      return 'neutral';
     case KandidatHendelseType.Deling_Av_CV_Feilet:
-    case KandidatHendelseType.Frist_for_deling_av_cv_utløpt:
-    case KandidatHendelseType.Fjernet_fått_jobben:
-    case KandidatHendelseType.SMS_FEIL:
     case KandidatHendelseType.Spurt_om_å_dele_CV_IKKE_DIGITAL:
+    case KandidatHendelseType.Fjernet_fått_jobben:
       return 'warning';
-    case KandidatHendelseType.Avbrutt_i_aktivitetsplanen:
+    case KandidatHendelseType.Deling_av_CV_JA:
+      return 'success-moderate';
     case KandidatHendelseType.Deling_av_CV_NEI:
+      return 'error-moderate';
+    case KandidatHendelseType.Frist_for_deling_av_cv_utløpt:
+      return 'warning-moderate';
+    case KandidatHendelseType.CV_delt_med_arbeidsgiver:
+      return 'info-moderate';
+    case KandidatHendelseType.Fått_jobben:
+      return 'success';
+    case KandidatHendelseType.Avbrutt_i_aktivitetsplanen:
       return 'error';
     case KandidatHendelseType.Slettet:
+      return 'alt2-moderate';
     case KandidatHendelseType.CV_slettet_hos_arbeidsgiver:
-      return 'alt1';
+      return 'alt2';
+    case KandidatHendelseType.SMS_OK:
+      return 'success-filled';
+    case KandidatHendelseType.SMS_FEIL:
+      return 'error-filled';
+
     default:
-      return 'info';
+      return 'alt1-filled';
   }
 };
 const hendelseIkon = (type: KandidatHendelseType): ReactNode => {
@@ -64,7 +73,6 @@ const hendelseIkon = (type: KandidatHendelseType): ReactNode => {
       return <TableIcon />;
     case KandidatHendelseType.Deling_Av_CV_Feilet:
     case KandidatHendelseType.Avbrutt_i_aktivitetsplanen:
-    case KandidatHendelseType.SMS_FEIL:
     case KandidatHendelseType.Spurt_om_å_dele_CV_IKKE_DIGITAL:
       return <ExclamationmarkTriangleIcon />;
     case KandidatHendelseType.Deling_av_CV_JA:
@@ -84,7 +92,9 @@ const hendelseIkon = (type: KandidatHendelseType): ReactNode => {
     case KandidatHendelseType.CV_slettet_hos_arbeidsgiver:
       return <FileXMarkIcon />;
     case KandidatHendelseType.SMS_OK:
-      return <CheckmarkCircleIcon />;
+      return <ChatCheckmarkIcon />;
+    case KandidatHendelseType.SMS_FEIL:
+      return <ChatExclamationmarkIcon />;
     default:
       return null;
   }
