@@ -83,6 +83,7 @@ const DelMedArbeidsgiver: FC<DelMedArbeidsgiverProps> = ({
         Del CV med arbeidsgiver
       </Button>
       <Modal
+        className='overflow-visible'
         width={'medium'}
         open={visModal}
         onClose={() => setVisModal(false)}
@@ -112,7 +113,7 @@ const DelMedArbeidsgiver: FC<DelMedArbeidsgiverProps> = ({
 
             return (
               <>
-                <Modal.Body>
+                <Modal.Body className={'overflow-visible'}>
                   {!alleHarSvartJa && (
                     <Alert variant='warning' size='small' className='mb-4'>
                       <BodyLong>
@@ -173,12 +174,12 @@ const DelMedArbeidsgiver: FC<DelMedArbeidsgiverProps> = ({
                   </BodyLong>
 
                   <UNSAFE_Combobox
-                    className='my-4'
+                    className='my-4 '
                     allowNewValues
                     label='E-post til arbeidsgiver'
                     options={eposter}
-                    isListOpen={false}
-                    toggleListButton={false}
+                    // isListOpen={false}
+                    // toggleListButton={false}
                     selectedOptions={epost}
                     shouldAutocomplete={false}
                     isMultiSelect
