@@ -573,212 +573,212 @@ export class ElasticSearchQueryBuilder {
           // Hver fane-aggregering inkluderer nå de valgte filtrene (allFilters) slik at tallene
           // reflekterer gjeldende søk. Dersom ingen filtre er valgt legges ikke en tom bool til.
           // AlleOppdrag: base = alle filtre (uten portefølje) + ekskludering + publiserte + eksisterende stillingsinfo
-          alleOppdrag: {
-            filter: {
-              bool: {
-                filter: [
-                  ...(allFiltersWithoutPortfolio &&
-                  Object.keys(allFiltersWithoutPortfolio).length > 0
-                    ? [{ bool: allFiltersWithoutPortfolio }]
-                    : []),
-                  ...(kategoriEkskludering.length > 0
-                    ? [
-                        {
-                          bool: { must_not: kategoriEkskludering },
-                        },
-                      ]
-                    : []),
-                  { exists: { field: 'stillingsinfo' } },
-                  {
-                    bool: {
-                      must: publiserteKriterier,
-                      must_not: avvisteSlettede,
-                    },
-                  },
-                ],
-              },
-            },
-          },
-          mineOppdrag: {
-            filter: {
-              bool: {
-                filter: [
-                  ...(allFiltersWithoutPortfolio &&
-                  Object.keys(allFiltersWithoutPortfolio).length > 0
-                    ? [{ bool: allFiltersWithoutPortfolio }]
-                    : []),
-                  ...(kategoriEkskludering.length > 0
-                    ? [
-                        {
-                          bool: { must_not: kategoriEkskludering },
-                        },
-                      ]
-                    : []),
-                  // Kun legg til navIdent filter hvis det finnes og ikke er tomt
-                  ...(navIdent
-                    ? [
-                        {
-                          bool: {
-                            should: [
-                              {
-                                term: {
-                                  'stilling.administration.navIdent': navIdent,
-                                },
-                              },
-                              {
-                                term: {
-                                  'stillingsinfo.eierNavident': navIdent,
-                                },
-                              },
-                            ],
-                            minimum_should_match: 1,
-                          },
-                        },
-                      ]
-                    : []),
-                ],
-              },
-            },
-          },
-          mittKontor: {
-            filter: {
-              bool: {
-                filter: [
-                  ...(allFiltersWithoutPortfolio &&
-                  Object.keys(allFiltersWithoutPortfolio).length > 0
-                    ? [{ bool: allFiltersWithoutPortfolio }]
-                    : []),
-                  ...(kategoriEkskludering.length > 0
-                    ? [
-                        {
-                          bool: { must_not: kategoriEkskludering },
-                        },
-                      ]
-                    : []),
-                  // Kun legg til kontorEnhetId filter hvis det finnes og ikke er tomt
-                  ...(kontorEnhetId
-                    ? [
-                        {
-                          term: {
-                            'stillingsinfo.eierNavKontorEnhetId': kontorEnhetId,
-                          },
-                        },
-                      ]
-                    : []),
-                  // Ekskluder "Ikke publisert" og "Avbrutt" statuser fra mittKontor
-                  {
-                    bool: {
-                      must_not: [
-                        // Ekskluder "Ikke publisert" (INACTIVE uten publishedByAdmin)
-                        {
-                          bool: {
-                            must: [{ term: { 'stilling.status': 'INACTIVE' } }],
-                            must_not: [
-                              {
-                                exists: { field: 'stilling.publishedByAdmin' },
-                              },
-                            ],
-                          },
-                        },
-                        // Ekskluder "Avbrutt" (DELETED)
-                        { term: { 'stilling.status': 'DELETED' } },
-                      ],
-                    },
-                  },
-                ],
-              },
-            },
-          },
-          arbeidsplassen: {
-            filter: {
-              bool: {
-                filter: [
-                  ...(allFiltersWithoutPortfolio &&
-                  Object.keys(allFiltersWithoutPortfolio).length > 0
-                    ? [{ bool: allFiltersWithoutPortfolio }]
-                    : []),
-                  ...(kategoriEkskludering.length > 0
-                    ? [
-                        {
-                          bool: { must_not: kategoriEkskludering },
-                        },
-                      ]
-                    : []),
-                  { term: { 'stilling.privacy': 'SHOW_ALL' } },
-                  {
-                    bool: {
-                      must_not: [{ term: { 'stilling.source': 'DIR' } }],
-                    },
-                  },
-                  // Arbeidsplassen avhenger av om vi viser oppdrag eller ikke
-                  ...(opts?.utenOppdrag
-                    ? [
-                        {
-                          bool: {
-                            must: publiserteKriterier,
-                            must_not: avvisteSlettede,
-                          },
-                        },
-                      ]
-                    : [{ exists: { field: 'stillingsinfo' } }]),
-                ],
-              },
-            },
-          },
-          felter: {
-            filters: {
-              filters: {
-                arbeidsgiver: {
-                  bool: {
-                    ...(Array.isArray(shouldClauses.arbeidsgiver) &&
-                    shouldClauses.arbeidsgiver.length > 0
-                      ? { should: shouldClauses.arbeidsgiver }
-                      : shouldClauses.arbeidsgiver &&
-                          Object.keys(shouldClauses.arbeidsgiver).length > 0
-                        ? { should: [shouldClauses.arbeidsgiver] }
-                        : {}),
-                    ...allFiltersWithoutPortfolio,
-                  },
-                },
-                tittel: {
-                  bool: {
-                    ...(Array.isArray(shouldClauses.tittel) &&
-                    shouldClauses.tittel.length > 0
-                      ? { should: shouldClauses.tittel }
-                      : shouldClauses.tittel &&
-                          Object.keys(shouldClauses.tittel).length > 0
-                        ? { should: [shouldClauses.tittel] }
-                        : {}),
-                    ...allFiltersWithoutPortfolio,
-                  },
-                },
-                annonsetekst: {
-                  bool: {
-                    ...(Array.isArray(shouldClauses.annonsetekst) &&
-                    shouldClauses.annonsetekst.length > 0
-                      ? { should: shouldClauses.annonsetekst }
-                      : shouldClauses.annonsetekst &&
-                          Object.keys(shouldClauses.annonsetekst).length > 0
-                        ? { should: [shouldClauses.annonsetekst] }
-                        : {}),
-                    ...allFiltersWithoutPortfolio,
-                  },
-                },
-                annonsenummer: {
-                  bool: {
-                    ...(Array.isArray(shouldClauses.annonsenummer) &&
-                    shouldClauses.annonsenummer.length > 0
-                      ? { should: shouldClauses.annonsenummer }
-                      : shouldClauses.annonsenummer &&
-                          Object.keys(shouldClauses.annonsenummer).length > 0
-                        ? { should: [shouldClauses.annonsenummer] }
-                        : {}),
-                    ...allFiltersWithoutPortfolio,
-                  },
-                },
-              },
-            },
-          },
+          // alleOppdrag: {
+          //   filter: {
+          //     bool: {
+          //       filter: [
+          //         ...(allFiltersWithoutPortfolio &&
+          //         Object.keys(allFiltersWithoutPortfolio).length > 0
+          //           ? [{ bool: allFiltersWithoutPortfolio }]
+          //           : []),
+          //         ...(kategoriEkskludering.length > 0
+          //           ? [
+          //               {
+          //                 bool: { must_not: kategoriEkskludering },
+          //               },
+          //             ]
+          //           : []),
+          //         { exists: { field: 'stillingsinfo' } },
+          //         {
+          //           bool: {
+          //             must: publiserteKriterier,
+          //             must_not: avvisteSlettede,
+          //           },
+          //         },
+          //       ],
+          //     },
+          //   },
+          // },
+          // mineOppdrag: {
+          //   filter: {
+          //     bool: {
+          //       filter: [
+          //         ...(allFiltersWithoutPortfolio &&
+          //         Object.keys(allFiltersWithoutPortfolio).length > 0
+          //           ? [{ bool: allFiltersWithoutPortfolio }]
+          //           : []),
+          //         ...(kategoriEkskludering.length > 0
+          //           ? [
+          //               {
+          //                 bool: { must_not: kategoriEkskludering },
+          //               },
+          //             ]
+          //           : []),
+          //         // Kun legg til navIdent filter hvis det finnes og ikke er tomt
+          //         ...(navIdent
+          //           ? [
+          //               {
+          //                 bool: {
+          //                   should: [
+          //                     {
+          //                       term: {
+          //                         'stilling.administration.navIdent': navIdent,
+          //                       },
+          //                     },
+          //                     {
+          //                       term: {
+          //                         'stillingsinfo.eierNavident': navIdent,
+          //                       },
+          //                     },
+          //                   ],
+          //                   minimum_should_match: 1,
+          //                 },
+          //               },
+          //             ]
+          //           : []),
+          //       ],
+          //     },
+          //   },
+          // },
+          // mittKontor: {
+          //   filter: {
+          //     bool: {
+          //       filter: [
+          //         ...(allFiltersWithoutPortfolio &&
+          //         Object.keys(allFiltersWithoutPortfolio).length > 0
+          //           ? [{ bool: allFiltersWithoutPortfolio }]
+          //           : []),
+          //         ...(kategoriEkskludering.length > 0
+          //           ? [
+          //               {
+          //                 bool: { must_not: kategoriEkskludering },
+          //               },
+          //             ]
+          //           : []),
+          //         // Kun legg til kontorEnhetId filter hvis det finnes og ikke er tomt
+          //         ...(kontorEnhetId
+          //           ? [
+          //               {
+          //                 term: {
+          //                   'stillingsinfo.eierNavKontorEnhetId': kontorEnhetId,
+          //                 },
+          //               },
+          //             ]
+          //           : []),
+          //         // Ekskluder "Ikke publisert" og "Avbrutt" statuser fra mittKontor
+          //         {
+          //           bool: {
+          //             must_not: [
+          //               // Ekskluder "Ikke publisert" (INACTIVE uten publishedByAdmin)
+          //               {
+          //                 bool: {
+          //                   must: [{ term: { 'stilling.status': 'INACTIVE' } }],
+          //                   must_not: [
+          //                     {
+          //                       exists: { field: 'stilling.publishedByAdmin' },
+          //                     },
+          //                   ],
+          //                 },
+          //               },
+          //               // Ekskluder "Avbrutt" (DELETED)
+          //               { term: { 'stilling.status': 'DELETED' } },
+          //             ],
+          //           },
+          //         },
+          //       ],
+          //     },
+          //   },
+          // },
+          // arbeidsplassen: {
+          //   filter: {
+          //     bool: {
+          //       filter: [
+          //         ...(allFiltersWithoutPortfolio &&
+          //         Object.keys(allFiltersWithoutPortfolio).length > 0
+          //           ? [{ bool: allFiltersWithoutPortfolio }]
+          //           : []),
+          //         ...(kategoriEkskludering.length > 0
+          //           ? [
+          //               {
+          //                 bool: { must_not: kategoriEkskludering },
+          //               },
+          //             ]
+          //           : []),
+          //         { term: { 'stilling.privacy': 'SHOW_ALL' } },
+          //         {
+          //           bool: {
+          //             must_not: [{ term: { 'stilling.source': 'DIR' } }],
+          //           },
+          //         },
+          //         // Arbeidsplassen avhenger av om vi viser oppdrag eller ikke
+          //         ...(opts?.utenOppdrag
+          //           ? [
+          //               {
+          //                 bool: {
+          //                   must: publiserteKriterier,
+          //                   must_not: avvisteSlettede,
+          //                 },
+          //               },
+          //             ]
+          //           : [{ exists: { field: 'stillingsinfo' } }]),
+          //       ],
+          //     },
+          //   },
+          // },
+          // felter: {
+          //   filters: {
+          //     filters: {
+          //       arbeidsgiver: {
+          //         bool: {
+          //           ...(Array.isArray(shouldClauses.arbeidsgiver) &&
+          //           shouldClauses.arbeidsgiver.length > 0
+          //             ? { should: shouldClauses.arbeidsgiver }
+          //             : shouldClauses.arbeidsgiver &&
+          //                 Object.keys(shouldClauses.arbeidsgiver).length > 0
+          //               ? { should: [shouldClauses.arbeidsgiver] }
+          //               : {}),
+          //           ...allFiltersWithoutPortfolio,
+          //         },
+          //       },
+          //       tittel: {
+          //         bool: {
+          //           ...(Array.isArray(shouldClauses.tittel) &&
+          //           shouldClauses.tittel.length > 0
+          //             ? { should: shouldClauses.tittel }
+          //             : shouldClauses.tittel &&
+          //                 Object.keys(shouldClauses.tittel).length > 0
+          //               ? { should: [shouldClauses.tittel] }
+          //               : {}),
+          //           ...allFiltersWithoutPortfolio,
+          //         },
+          //       },
+          //       annonsetekst: {
+          //         bool: {
+          //           ...(Array.isArray(shouldClauses.annonsetekst) &&
+          //           shouldClauses.annonsetekst.length > 0
+          //             ? { should: shouldClauses.annonsetekst }
+          //             : shouldClauses.annonsetekst &&
+          //                 Object.keys(shouldClauses.annonsetekst).length > 0
+          //               ? { should: [shouldClauses.annonsetekst] }
+          //               : {}),
+          //           ...allFiltersWithoutPortfolio,
+          //         },
+          //       },
+          //       annonsenummer: {
+          //         bool: {
+          //           ...(Array.isArray(shouldClauses.annonsenummer) &&
+          //           shouldClauses.annonsenummer.length > 0
+          //             ? { should: shouldClauses.annonsenummer }
+          //             : shouldClauses.annonsenummer &&
+          //                 Object.keys(shouldClauses.annonsenummer).length > 0
+          //               ? { should: [shouldClauses.annonsenummer] }
+          //               : {}),
+          //           ...allFiltersWithoutPortfolio,
+          //         },
+          //       },
+          //     },
+          //   },
+          // },
           // Visningsstatus-facet (Alle visningsstatuser fra VisningsStatus enum)
           visningsstatus: {
             // Beholder andre filtre (uten status) i container-filteret
@@ -976,7 +976,7 @@ export class ElasticSearchQueryBuilder {
                   fylker: {
                     terms: {
                       field: 'stilling.locations.countyCode', // bruker kode for å samsvare med filtrering
-                      size: 200,
+                      size: 50, // redusert ytterligere - Norge har kun 11 fylker
                       order: { _key: 'asc' },
                     },
                     aggs: {
@@ -984,10 +984,9 @@ export class ElasticSearchQueryBuilder {
                       stillinger: {
                         reverse_nested: {},
                         aggs: {
-                          ids: {
-                            terms: {
+                          unique_count: {
+                            cardinality: {
                               field: 'stilling.uuid',
-                              size: 50000, // nok til å dekke realistisk antall stillinger per fylke
                             },
                           },
                         },
@@ -997,7 +996,7 @@ export class ElasticSearchQueryBuilder {
                   kommuner: {
                     terms: {
                       field: 'stilling.locations.municipalCode',
-                      size: 2000,
+                      size: 200, // redusert ytterligere for å unngå bucket-grense
                       order: { _key: 'asc' },
                     },
                   },
@@ -1027,7 +1026,7 @@ export class ElasticSearchQueryBuilder {
                       fylker: {
                         terms: {
                           field: 'stilling.locations.county.keyword',
-                          size: 400,
+                          size: 20, // redusert ytterligere - kun noen få fylker mangler kode
                           order: { _key: 'asc' },
                         },
                         aggs: {
@@ -1035,10 +1034,9 @@ export class ElasticSearchQueryBuilder {
                           stillinger: {
                             reverse_nested: {},
                             aggs: {
-                              ids: {
-                                terms: {
+                              unique_count: {
+                                cardinality: {
                                   field: 'stilling.uuid',
-                                  size: 50000,
                                 },
                               },
                             },
