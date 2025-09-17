@@ -16,55 +16,57 @@ const Nyheter: React.FC = () => {
   const nyheterHook = useNyheter();
 
   return (
-    <SWRLaster hooks={[nyheterHook]} skjulFeilmelding allowPartialData>
-      {(nyheterData) => {
-        window.localStorage.setItem(
-          'antallLesteNyheter',
-          JSON.stringify(nyheterData.length),
-        );
-
-        return (
-          <HovedInnholdKort>
-            <SideLayout
-              header={
-                <PanelHeader>
-                  <PanelHeader.Section
-                    title={'Nyheter'}
-                    actionsRight={
-                      <TilgangskontrollForInnhold
-                        skjulVarsel
-                        kreverEnAvRollene={[
-                          Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER,
-                        ]}
-                      >
-                        <EndreNyhetModal refetch={() => nyheterHook.mutate()} />
-                      </TilgangskontrollForInnhold>
-                    }
-                  />
-                </PanelHeader>
+    <HovedInnholdKort>
+      <SideLayout
+        header={
+          <PanelHeader>
+            <PanelHeader.Section
+              title={'Nyheter'}
+              actionsRight={
+                <TilgangskontrollForInnhold
+                  skjulVarsel
+                  kreverEnAvRollene={[
+                    Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER,
+                  ]}
+                >
+                  <EndreNyhetModal refetch={() => nyheterHook.mutate()} />
+                </TilgangskontrollForInnhold>
               }
-            >
-              <div className='flex flex-col gap-4 mb-4'>
-                {nyheterData
-                  .sort(
-                    (a, b) =>
-                      new Date(b.opprettetDato).getTime() -
-                      new Date(a.opprettetDato).getTime(),
-                  )
-                  .map((nyhet) => (
-                    <NyhetVisning
-                      key={nyhet.nyhetId}
-                      nyhet={nyhet}
-                      refetch={() => nyheterHook.mutate()}
-                    />
-                  ))}
-                <LegacyNyheter />
-              </div>
-            </SideLayout>
-          </HovedInnholdKort>
-        );
-      }}
-    </SWRLaster>
+            />
+          </PanelHeader>
+        }
+      >
+        <div className='flex flex-col gap-4 mb-4'>
+          <SWRLaster hooks={[nyheterHook]} skjulFeilmelding>
+            {(nyheterData) => {
+              window.localStorage.setItem(
+                'antallLesteNyheter',
+                JSON.stringify(nyheterData.length),
+              );
+
+              return (
+                <>
+                  {nyheterData
+                    .sort(
+                      (a, b) =>
+                        new Date(b.opprettetDato).getTime() -
+                        new Date(a.opprettetDato).getTime(),
+                    )
+                    .map((nyhet) => (
+                      <NyhetVisning
+                        key={nyhet.nyhetId}
+                        nyhet={nyhet}
+                        refetch={() => nyheterHook.mutate()}
+                      />
+                    ))}
+                </>
+              );
+            }}
+          </SWRLaster>
+          <LegacyNyheter />
+        </div>
+      </SideLayout>
+    </HovedInnholdKort>
   );
 };
 

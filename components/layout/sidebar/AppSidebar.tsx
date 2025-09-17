@@ -17,6 +17,7 @@ import {
   BriefcaseClockIcon,
   BriefcaseIcon,
   HouseIcon,
+  MegaphoneSpeakingIcon,
   MoonIcon,
   PersonTallShortIcon,
   ReceptionIcon,
@@ -24,7 +25,6 @@ import {
   SunIcon,
 } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
-import { MegaphoneIcon } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -169,7 +169,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <UlesteNyheterWrapper>
               <SideLenke
                 tekst={'Nyheter'}
-                ikon={<MegaphoneIcon />}
+                ikon={<MegaphoneSpeakingIcon />}
                 path={'/nyheter'}
                 kreverRoller={null}
               />
