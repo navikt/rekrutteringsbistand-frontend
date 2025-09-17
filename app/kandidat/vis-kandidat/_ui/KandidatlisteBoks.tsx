@@ -4,6 +4,7 @@ import { useKandidatlisteInfo } from '@/app/api/kandidat/useKandidatlisteInfo';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import KandidatlisteWrapper from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteWrapper';
 import KandidatVisningSidebar from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatVisningSidebar/KandidatVisningSidebar';
+import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
 import SWRLaster from '@/components/SWRLaster';
 import { Box } from '@navikt/ds-react';
 import { FC, ReactNode } from 'react';
@@ -35,6 +36,13 @@ const KandidatlisteBoks: FC<KandidatlisteBoksProps> = ({ kandidatnr }) => {
       {children}
     </Box.New>
   );
+
+  if (
+    stillingsData.stillingsinfo?.stillingskategori ===
+    Stillingskategori.Jobbmesse
+  ) {
+    return null;
+  }
 
   return (
     <SWRLaster
