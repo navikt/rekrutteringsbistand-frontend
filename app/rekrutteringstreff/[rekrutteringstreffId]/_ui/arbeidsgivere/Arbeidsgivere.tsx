@@ -7,14 +7,14 @@ import {
   ArbeidsgiverDTO,
   useRekrutteringstreffArbeidsgivere,
 } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
+import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
 import LeggTilArbeidsgiverModal from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/LeggTilArbeidsgiverModal';
 import SWRLaster from '@/components/SWRLaster';
-import { TrashIcon } from '@navikt/aksel-icons';
-import { BodyShort, Button, Modal } from '@navikt/ds-react';
-import { PlusIcon } from 'lucide-react';
+import { PlusIcon, TrashIcon } from '@navikt/aksel-icons';
+import { BodyShort, Button, Modal, Tooltip } from '@navikt/ds-react';
 import * as React from 'react';
-import { useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 
 const RekrutteringstreffArbeidsgivere = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
@@ -24,6 +24,25 @@ const RekrutteringstreffArbeidsgivere = () => {
   const hendelseHook = useArbeidsgiverHendelser(rekrutteringstreffId);
   const { mutate: mutateArbeidsgivere } = arbeidsgivereHook;
   const { mutate: mutateHendelser } = hendelseHook;
+
+  const { data: treff } = useRekrutteringstreff(rekrutteringstreffId);
+  const activeStep = useMemo(() => {
+    const hendelser = treff?.hendelser ?? [];
+    const relevante = hendelser
+      .filter((h) =>
+        ['PUBLISER', 'FULLFØR', 'GJENÅPN'].includes(h.hendelsestype),
+      )
+      .sort(
+        (a, b) =>
+          new Date(b.tidspunkt).getTime() - new Date(a.tidspunkt).getTime(),
+      );
+    if (relevante.length === 0) return 1;
+    const siste = relevante[0].hendelsestype;
+    if (siste === 'PUBLISER' || siste === 'GJENÅPN') return 2;
+    if (siste === 'FULLFØR') return 3;
+    return 1;
+  }, [treff?.hendelser]);
+  const erInviterSteg = activeStep === 2;
 
   const leggTilModalRef = useRef<HTMLDialogElement>(null);
 
@@ -44,9 +63,24 @@ const RekrutteringstreffArbeidsgivere = () => {
   const [slette, setSlette] = useState<ArbeidsgiverDTO | null>(null);
   const slettModalRef = useRef<HTMLDialogElement>(null);
 
-  const åpneSlettModal = (arbeidsgiver: ArbeidsgiverDTO) => {
-    setSlette(arbeidsgiver);
-    slettModalRef.current?.showModal();
+  const handleSlettClick = async (arbeidsgiver: ArbeidsgiverDTO) => {
+    // Dersom vi er i inviter-steget, vis modal. Hvis ikke, slett direkte uten modal.
+    if (erInviterSteg) {
+      setSlette(arbeidsgiver);
+      slettModalRef.current?.showModal();
+      return;
+    }
+    try {
+      await fjernArbeidsgiver(
+        rekrutteringstreffId,
+        (arbeidsgiver as any).arbeidsgiverTreffId ??
+          arbeidsgiver.organisasjonsnummer,
+      );
+      await mutateArbeidsgivere();
+      await mutateHendelser();
+    } finally {
+      setSlette(null);
+    }
   };
 
   const bekreftSlett = async () => {
@@ -86,21 +120,44 @@ const RekrutteringstreffArbeidsgivere = () => {
             <ul>
               {arbeidsgivere.map((a, index) => {
                 const { status } = getLagtTilData(a);
+                const kunEnArbeidsgiver = arbeidsgivere.length === 1;
+                const deleteButton = (
+                  <Button
+                    size='small'
+                    variant='tertiary'
+                    disabled={kunEnArbeidsgiver}
+                    onClick={() => handleSlettClick(a)}
+                    icon={<TrashIcon aria-hidden />}
+                  >
+                    Slett
+                  </Button>
+                );
+                const action = kunEnArbeidsgiver ? (
+                  <Tooltip
+                    content='Treffet må alltid ha en arbeidsgiver som deltar. Legg til en ny arbeidsgiver først.'
+                    className='max-w-[200px] text-left'
+                  >
+                    <span>
+                      <Button
+                        size='small'
+                        variant='tertiary'
+                        disabled={kunEnArbeidsgiver}
+                        onClick={() => handleSlettClick(a)}
+                        icon={<TrashIcon aria-hidden />}
+                      >
+                        Slett
+                      </Button>
+                    </span>
+                  </Tooltip>
+                ) : (
+                  deleteButton
+                );
                 return (
                   <li key={index}>
                     <ArbeidsgiverListeItem
                       arbeidsgiver={a}
                       status={status}
-                      actionSlot={
-                        <Button
-                          size='small'
-                          variant='tertiary'
-                          onClick={() => åpneSlettModal(a)}
-                          icon={<TrashIcon aria-hidden />}
-                        >
-                          Slett
-                        </Button>
-                      }
+                      actionSlot={action}
                     />
                   </li>
                 );
