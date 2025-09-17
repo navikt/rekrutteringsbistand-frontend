@@ -18,12 +18,6 @@ const Nyheter: React.FC = () => {
   return (
     <SWRLaster hooks={[nyheterHook]}>
       {(nyheterData) => {
-        nyheterData.sort(
-          (a, b) =>
-            new Date(b.opprettetDato).getDate() -
-            new Date(a.opprettetDato).getDate(),
-        );
-
         return (
           <HovedInnholdKort>
             <SideLayout
@@ -46,13 +40,19 @@ const Nyheter: React.FC = () => {
               }
             >
               <div className='flex flex-col gap-4 mb-4'>
-                {nyheterData.map((nyhet) => (
-                  <NyhetVisning
-                    nyhet={nyhet}
-                    key={nyhet.nyhetId}
-                    refetch={() => nyheterHook.mutate()}
-                  />
-                ))}
+                {nyheterData
+                  .sort(
+                    (a, b) =>
+                      new Date(b.opprettetDato).getTime() -
+                      new Date(a.opprettetDato).getTime(),
+                  )
+                  .map((nyhet) => (
+                    <NyhetVisning
+                      nyhet={nyhet}
+                      key={nyhet.nyhetId}
+                      refetch={() => nyheterHook.mutate()}
+                    />
+                  ))}
                 <LegacyNyheter />
               </div>
             </SideLayout>
