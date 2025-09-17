@@ -1,6 +1,5 @@
 'use client';
 
-import { useRekrutteringstreffContext } from '../../RekrutteringstreffContext';
 import { toIso as toIsoUtil } from './tidspunkt/utils';
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
 import { oppdaterRekrutteringstreff } from '@/app/api/rekrutteringstreff/oppdater-rekrutteringstreff/oppdaterRerkutteringstreff';
@@ -10,6 +9,7 @@ import {
   OpprettEllerOppdaterInnleggDto,
 } from '@/app/api/rekrutteringstreff/opprettEllerOppdaterInnlegg';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
+import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
 import { RekbisError } from '@/util/rekbisError';
 import { formatInTimeZone } from 'date-fns-tz';
 import { useCallback } from 'react';

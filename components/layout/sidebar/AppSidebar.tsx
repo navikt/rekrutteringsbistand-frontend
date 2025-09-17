@@ -2,6 +2,7 @@
 
 import GiTilbakemelding from './GiTilbakemelding';
 import OpprettMeny from '@/components/felles/opprett/OpprettMeny';
+import UlesteNyheterWrapper from '@/components/layout/sidebar/UlesteNyheterWrapper';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import {
@@ -16,6 +17,7 @@ import {
   BriefcaseClockIcon,
   BriefcaseIcon,
   HouseIcon,
+  MegaphoneSpeakingIcon,
   MoonIcon,
   PersonTallShortIcon,
   ReceptionIcon,
@@ -23,7 +25,6 @@ import {
   SunIcon,
 } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
-import { MegaphoneIcon } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -165,12 +166,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         >
           {/* <SidebarGroupLabel>Annet</SidebarGroupLabel> */}
           <div className={open ? ' w-full' : ''}>
-            <SideLenke
-              tekst={'Nyheter'}
-              ikon={<MegaphoneIcon />}
-              path={'/nyheter'}
-              kreverRoller={null}
-            />
+            <UlesteNyheterWrapper>
+              <SideLenke
+                tekst={'Nyheter'}
+                ikon={<MegaphoneSpeakingIcon />}
+                path={'/nyheter'}
+                kreverRoller={null}
+              />
+            </UlesteNyheterWrapper>
             {/* <div
               className={`${antallUlesteNyheter > 0 ? 'absolute  top-5 left-3 h-3 w-3 rounded-full bg-[#0067c5]' : ''}`}
             /> */}

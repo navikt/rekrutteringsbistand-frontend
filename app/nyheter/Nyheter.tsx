@@ -1,63 +1,73 @@
 'use client';
 
-import { OpprettNyhetModal } from './OpprettNyhetModal';
-import { nyheter } from '@/app/nyheter';
-import VisEditorTekst from '@/components/felles/rikteksteditor/VisEditorTekst';
+import { useNyheter } from '@/app/api/bruker/nyheter/useNyheter';
+import EndreNyhetModal from '@/app/nyheter/_ui/EndreNyhetModal';
+import LegacyNyheter from '@/app/nyheter/_ui/LegacyNyheter';
+import NyhetVisning from '@/app/nyheter/_ui/NyhetVisning';
+import SWRLaster from '@/components/SWRLaster';
 import HovedInnholdKort from '@/components/layout/HovedInnholdKort';
+import PanelHeader from '@/components/layout/PanelHeader';
 import SideLayout from '@/components/layout/SideLayout';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
-import { formaterNorskDato } from '@/util/util';
-import { PencilIcon, TrashIcon } from '@navikt/aksel-icons';
-import { BodyShort, Box, Button } from '@navikt/ds-react';
+import * as React from 'react';
 
-export default function Nyheter() {
+const Nyheter: React.FC = () => {
+  const nyheterHook = useNyheter();
+
   return (
     <HovedInnholdKort>
-      <SideLayout>
+      <SideLayout
+        header={
+          <PanelHeader>
+            <PanelHeader.Section
+              title={'Nyheter'}
+              actionsRight={
+                <TilgangskontrollForInnhold
+                  skjulVarsel
+                  kreverEnAvRollene={[
+                    Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER,
+                  ]}
+                >
+                  <EndreNyhetModal refetch={() => nyheterHook.mutate()} />
+                </TilgangskontrollForInnhold>
+              }
+            />
+          </PanelHeader>
+        }
+      >
         <div className='flex flex-col gap-4 mb-4'>
-          <TilgangskontrollForInnhold
-            skjulVarsel
-            kreverEnAvRollene={[Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER]}
-          >
-            <OpprettNyhetModal />
-          </TilgangskontrollForInnhold>
-          {nyheter.map((nyhet, index) => (
-            <Box.New
-              key={index}
-              className='@container/kandidatlistekort mb-4 flex flex-col p-4 min-w-fit'
-              background='neutral-softA'
-              borderRadius='xlarge'
-              data-testid='stillings-kort'
-            >
-              <div className='flex justify-between'>
-                <h1 className='text-2xl font-bold flex gap-2'>
-                  {nyhet.tittel}
-                </h1>
-                <div>
-                  <TilgangskontrollForInnhold
-                    skjulVarsel
-                    kreverEnAvRollene={[
-                      Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER,
-                    ]}
-                  >
-                    <Button variant='tertiary' disabled icon={<PencilIcon />}>
-                      Endre
-                    </Button>
-                    <Button variant='tertiary' disabled icon={<TrashIcon />}>
-                      Slett
-                    </Button>
-                  </TilgangskontrollForInnhold>
-                </div>
-              </div>
-              <BodyShort>{formaterNorskDato({ dato: nyhet.dato })}</BodyShort>
-              <div className='my-8'>
-                <VisEditorTekst htmlTekst={nyhet.beskrivelse} />
-              </div>
-            </Box.New>
-          ))}
+          <SWRLaster hooks={[nyheterHook]} skjulFeilmelding>
+            {(nyheterData) => {
+              window.localStorage.setItem(
+                'antallLesteNyheter',
+                JSON.stringify(nyheterData.length),
+              );
+
+              return (
+                <>
+                  {nyheterData
+                    .sort(
+                      (a, b) =>
+                        new Date(b.opprettetDato).getTime() -
+                        new Date(a.opprettetDato).getTime(),
+                    )
+                    .map((nyhet) => (
+                      <NyhetVisning
+                        key={nyhet.nyhetId}
+                        nyhet={nyhet}
+                        refetch={() => nyheterHook.mutate()}
+                      />
+                    ))}
+                </>
+              );
+            }}
+          </SWRLaster>
+          <LegacyNyheter />
         </div>
       </SideLayout>
     </HovedInnholdKort>
   );
-}
+};
+
+export default Nyheter;

@@ -1,7 +1,5 @@
 'use client';
 
-import RekrutteringstreffDark from '../../../../public/ikoner/rekrutteringstreff-dark.svg';
-import Rekrutteringstreff from '../../../../public/ikoner/rekrutteringstreff.svg';
 import { useRekrutteringstreffContext } from '../RekrutteringstreffContext';
 import {
   HendelseDTO,
@@ -12,6 +10,8 @@ import SWRLaster from '@/components/SWRLaster';
 import SVGDarkmode from '@/components/layout/SVGDarkmode';
 import SideLayout from '@/components/layout/SideLayout';
 import SideTopBanner from '@/components/layout/SideTopBanner';
+import RekrutteringstreffDark from '@/public/ikoner/rekrutteringstreff-dark.svg';
+import Rekrutteringstreff from '@/public/ikoner/rekrutteringstreff.svg';
 import { Detail } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import { nb } from 'date-fns/locale/nb';

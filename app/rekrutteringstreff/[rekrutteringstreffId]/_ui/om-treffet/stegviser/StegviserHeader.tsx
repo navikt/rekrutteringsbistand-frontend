@@ -9,7 +9,15 @@ import {
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
 import { RekbisError } from '@/util/rekbisError';
-import { Button, Heading, ProgressBar, Modal } from '@navikt/ds-react';
+import { EyeIcon } from '@navikt/aksel-icons';
+import {
+  Button,
+  Heading,
+  ProgressBar,
+  Modal,
+  BodyShort,
+  Box,
+} from '@navikt/ds-react';
 import { FC, useRef, useState } from 'react';
 
 interface Props {
@@ -24,6 +32,7 @@ const StegviserHeader: FC<Props> = ({
   erIForhåndsvisning,
 }) => {
   const fullforModalRef = useRef<HTMLDialogElement>(null);
+  const publiserModalRef = useRef<HTMLDialogElement>(null);
   const [publiserer, setPubliserer] = useState(false);
   const [fullfører, setFullfører] = useState(false);
   const [gjenåpner, setGjenåpner] = useState(false);
@@ -40,7 +49,6 @@ const StegviserHeader: FC<Props> = ({
     totaltAntallSjekklistePunkter,
     inviterePunkterFullfort,
     totaltAntallInviterePunkter,
-    arrangementtidspunktHarPassert,
     tiltidspunktHarPassert,
   } = useStegviser();
 
@@ -144,7 +152,7 @@ const StegviserHeader: FC<Props> = ({
             loading={publiserer}
             size='small'
             className='w-full'
-            onClick={onPubliserTreffet}
+            onClick={() => publiserModalRef.current?.showModal()}
           >
             Publiser treffet
           </Button>
@@ -175,7 +183,7 @@ const StegviserHeader: FC<Props> = ({
         </Button>
       )}
 
-      <div className='flex items-center justify-between w-full mt-4'>
+      <div className='flex items-center justify-between w-full mt-12'>
         <div className='flex-grow mr-4'>
           <div className='flex items-center justify-between'>
             <div className='flex items-center'>
@@ -226,6 +234,46 @@ const StegviserHeader: FC<Props> = ({
           <Button
             variant='secondary'
             onClick={() => fullforModalRef.current?.close()}
+          >
+            Avbryt
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal ref={publiserModalRef} header={{ heading: 'Publiser treffet' }}>
+        <Modal.Body>
+          <div className='bg-bg-subtle p-4 rounded-md'>
+            <Box.New>
+              <BodyShort className='font-bold'>
+                Dette skjer når du publiserer treffet
+              </BodyShort>
+              <div className='flex items-center gap-2 mt-4'>
+                <EyeIcon fontSize='1.5rem' aria-hidden />
+                <BodyShort className='flex-1'>
+                  Treffet blir synlig for:
+                </BodyShort>
+              </div>
+              <ul className='list-disc pl-16  mt-1'>
+                <li>Nav-ansatte i rekrutteringsbistand.</li>
+                <li>Nav brukere som blir invitert via aktivitetsplanen.</li>
+              </ul>
+            </Box.New>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant='primary'
+            loading={publiserer}
+            onClick={async () => {
+              publiserModalRef.current?.close();
+              await onPubliserTreffet();
+            }}
+          >
+            Publiser
+          </Button>
+          <Button
+            variant='secondary'
+            onClick={() => publiserModalRef.current?.close()}
           >
             Avbryt
           </Button>

@@ -1,9 +1,9 @@
 'use client';
 
-import { useRekrutteringstreffContext } from '../../RekrutteringstreffContext';
 import DatoTidRad from './tidspunkt/DatoTidRad';
 import { useAutosave } from './useAutosave';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
+import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
 import { Heading } from '@navikt/ds-react';
 import { parseISO, format } from 'date-fns';
 import React, { useEffect } from 'react';

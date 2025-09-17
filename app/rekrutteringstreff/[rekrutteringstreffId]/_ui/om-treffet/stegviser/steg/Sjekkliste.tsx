@@ -6,7 +6,7 @@ export const SjekklisteContainer: FC<{ children: ReactNode }> = ({
   children,
 }) => (
   <div className='flex-1'>
-    <Box.New padding='6' borderRadius='large' className='mb-4'>
+    <Box.New padding='0' className='mb-4'>
       <div className='space-y-0'>{children}</div>
     </Box.New>
   </div>
@@ -33,10 +33,10 @@ export const SjekklisteRad: FC<{ erOppfylt: boolean; label: string }> = ({
   </div>
 );
 
-export const SjekklisteSeparator = () => (
-  <div className='border-b border-border-subtle my-4'></div>
+export const SjekklisteInfo: FC<{ children: ReactNode }> = ({ children }) => (
+  <div className='my-8'>
+    <Box.New background='neutral-soft' borderRadius='large' padding='3'>
+      {children}
+    </Box.New>
+  </div>
 );
-
-export const SjekklisteInfoRad: FC<{ children: ReactNode }> = ({
-  children,
-}) => <div className='my-4'>{children}</div>;

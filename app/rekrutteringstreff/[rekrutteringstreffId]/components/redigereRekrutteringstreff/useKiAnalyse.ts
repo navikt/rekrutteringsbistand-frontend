@@ -1,9 +1,9 @@
 'use client';
 
-import { useRekrutteringstreffContext } from '../../RekrutteringstreffContext';
 import { erEditMode, erPublisert } from './useAutosave';
 import { useValiderRekrutteringstreff } from '@/app/api/rekrutteringstreff/kiValidering/useValiderRekrutteringstreff';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
+import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
 import { RekbisError } from '@/util/rekbisError';
 import { useEffect, useMemo, useState, useCallback } from 'react';
 import {

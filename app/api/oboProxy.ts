@@ -70,8 +70,34 @@ export const proxyWithOBO = async (
     // Continue with successful response handling
     const contentType = response.headers.get('content-type');
     if (contentType?.includes('application/json')) {
-      const data = await response.json();
-      return NextResponse.json(data);
+      const text = await response.text();
+      if (!text || text.trim() === '') {
+        // Return appropriate response based on HTTP method
+        // For POST/PUT/DELETE operations, return success indicator
+        // For GET operations, return empty array or object as fallback
+        if (req.method === 'GET') {
+          return NextResponse.json(null, { status: response.status });
+        } else {
+          return NextResponse.json(
+            { success: true },
+            { status: response.status },
+          );
+        }
+      }
+      try {
+        const data = JSON.parse(text);
+        return NextResponse.json(data);
+      } catch (parseError) {
+        // If JSON parsing fails, return the text as-is with proper error
+        new RekbisError({
+          message: `Failed to parse JSON response from ${requestUrl}`,
+          error: parseError,
+        });
+        return NextResponse.json(
+          { beskrivelse: 'Invalid JSON response from backend' },
+          { status: 502 },
+        );
+      }
     } else {
       const text = await response.text();
       return new NextResponse(text || '', {

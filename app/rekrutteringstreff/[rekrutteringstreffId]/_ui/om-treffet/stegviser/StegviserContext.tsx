@@ -8,6 +8,7 @@ import {
 } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
+import { getActiveStepFromHendelser } from '@/app/rekrutteringstreff/_utils/rekrutteringstreff';
 import {
   createContext,
   useMemo,
@@ -100,31 +101,7 @@ export const StegviserProvider: FC<{ children: ReactNode }> = ({
   const totaltAntallInviterePunkter = 2;
 
   useEffect(() => {
-    const hendelser = rekrutteringstreff?.hendelser ?? [];
-
-    const sorterteHendelser = hendelser
-      .filter((h) =>
-        ['PUBLISER', 'FULLFØR', 'GJENÅPN'].includes(h.hendelsestype),
-      )
-      .sort(
-        (a, b) =>
-          new Date(b.tidspunkt).getTime() - new Date(a.tidspunkt).getTime(),
-      );
-
-    let step = 1;
-    if (sorterteHendelser.length > 0) {
-      const sisteHendelse = sorterteHendelser[0];
-      switch (sisteHendelse.hendelsestype) {
-        case 'PUBLISER':
-        case 'GJENÅPN':
-          step = 2;
-          break;
-        case 'FULLFØR':
-          step = 3;
-          break;
-      }
-    }
-
+    const step = getActiveStepFromHendelser(rekrutteringstreff?.hendelser);
     setActiveStep((prev) => (prev === step ? prev : step));
   }, [rekrutteringstreff?.hendelser]);
 
