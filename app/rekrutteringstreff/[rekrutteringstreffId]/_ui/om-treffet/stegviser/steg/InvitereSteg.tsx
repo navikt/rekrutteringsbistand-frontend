@@ -24,69 +24,75 @@ const InvitereSteg = () => {
   } = useStegviser();
 
   return (
-    <SjekklisteContainer>
-      <Detail spacing>
-        Noen detaljer være på plass før treffet kan fullføres.
-      </Detail>
+    <div className='flex-1 space-y-4'>
+      <Heading level='2' size='medium'>
+        Invitere og forberede deltakere
+      </Heading>
 
-      {/* Tellelinjer */}
-      <div className='flex items-center justify-between my-2 text-sm'>
-        <span>Inviterte som har svart ja</span>
-        <span className='tabular-nums'>{antallSvarJa}</span>
-      </div>
-      <div className='flex items-center justify-between my-2 text-sm'>
-        <span>Du venter fortsatt på svar fra</span>
-        <span className='tabular-nums'>{antallVenterSvar}</span>
-      </div>
+      <SjekklisteContainer>
+        <Detail spacing>
+          Noen detaljer være på plass før treffet kan fullføres.
+        </Detail>
 
-      {/* Sjekkpunkter */}
-      <SjekklisteRad
-        erOppfylt={harInvitert}
-        label='Minst 1 invitert jobbsøker'
-      />
-      <SjekklisteRad
-        erOppfylt={tiltidspunktHarPassert}
-        label='Tidspunktet for treffet er passert'
-      />
-      <BodyShort size='small'>
-        Totalt inviterte: <b>{antallInviterte}</b>
-      </BodyShort>
+        {/* Tellelinjer */}
+        <div className='flex items-center justify-between my-2 text-sm'>
+          <span>Inviterte som har svart ja</span>
+          <span className='tabular-nums'>{antallSvarJa}</span>
+        </div>
+        <div className='flex items-center justify-between my-2 text-sm'>
+          <span>Du venter fortsatt på svar fra</span>
+          <span className='tabular-nums'>{antallVenterSvar}</span>
+        </div>
 
-      <SjekklisteInfo>
-        <VStack gap='2'>
-          <Heading level='3' size='small'>
-            Hva skjer når du fullfører?
-          </Heading>
+        {/* Sjekkpunkter */}
+        <SjekklisteRad
+          erOppfylt={harInvitert}
+          label='Minst 1 invitert jobbsøker'
+        />
+        <SjekklisteRad
+          erOppfylt={tiltidspunktHarPassert}
+          label='Tidspunktet for treffet er passert'
+        />
+        <BodyShort size='small'>
+          Totalt inviterte: <b>{antallInviterte}</b>
+        </BodyShort>
+
+        <SjekklisteInfo>
           <VStack gap='2'>
-            <HStack gap='2' align='start'>
-              <div className='flex-none w-6 mt-[2px]'>
-                <ClockDashedIcon fontSize='1.5rem' aria-hidden />
-              </div>
-              <BodyShort className='flex-1'>
-                Du kan gjenåpne treffet for å rette feil i ettertid.
-              </BodyShort>
-            </HStack>
-            <HStack gap='2' align='start'>
-              <div className='flex-none w-6 mt-[2px]'>
-                <TasklistIcon fontSize='1.5rem' aria-hidden />
-              </div>
-              <BodyShort className='flex-1'>
-                Aktivitetskortet til alle som svarte ja blir flyttet til
-                &quot;Fullført&quot;-kolonnen i aktivitetsplanen.
-              </BodyShort>
-            </HStack>
-            <HStack gap='2' align='start'>
-              <div className='flex-none w-6 mt-[2px]'>
-                <EyeSlashIcon fontSize='1.5rem' aria-hidden />
-              </div>
-              <BodyShort className='flex-1'>
-                Treffet vises ikke lenger som aktivt.
-              </BodyShort>
-            </HStack>
+            <Heading level='3' size='small'>
+              Hva skjer når du fullfører?
+            </Heading>
+            <VStack gap='2'>
+              <HStack gap='2' align='start'>
+                <div className='flex-none w-6 mt-[2px]'>
+                  <ClockDashedIcon fontSize='1.5rem' aria-hidden />
+                </div>
+                <BodyShort className='flex-1'>
+                  Du kan gjenåpne treffet for å rette feil i ettertid.
+                </BodyShort>
+              </HStack>
+              <HStack gap='2' align='start'>
+                <div className='flex-none w-6 mt-[2px]'>
+                  <TasklistIcon fontSize='1.5rem' aria-hidden />
+                </div>
+                <BodyShort className='flex-1'>
+                  Aktivitetskortet til alle som svarte ja blir flyttet til
+                  &quot;Fullført&quot;-kolonnen i aktivitetsplanen.
+                </BodyShort>
+              </HStack>
+              <HStack gap='2' align='start'>
+                <div className='flex-none w-6 mt-[2px]'>
+                  <EyeSlashIcon fontSize='1.5rem' aria-hidden />
+                </div>
+                <BodyShort className='flex-1'>
+                  Treffet vises ikke lenger som aktivt.
+                </BodyShort>
+              </HStack>
+            </VStack>
           </VStack>
-        </VStack>
-      </SjekklisteInfo>
-    </SjekklisteContainer>
+        </SjekklisteInfo>
+      </SjekklisteContainer>
+    </div>
   );
 };
 

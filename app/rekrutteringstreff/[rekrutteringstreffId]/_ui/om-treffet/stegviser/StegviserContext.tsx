@@ -95,7 +95,6 @@ export const StegviserProvider: FC<{ children: ReactNode }> = ({
   const erPubliseringklar =
     sjekklistePunkterFullfort === totaltAntallSjekklistePunkter;
 
-  const fra = parseDate(rekrutteringstreff?.fraTid);
   const til = parseDate(rekrutteringstreff?.tilTid);
   const now = new Date();
   const arrangementtidspunktHarPassert = !!(til && now >= til);
