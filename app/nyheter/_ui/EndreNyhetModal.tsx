@@ -63,10 +63,9 @@ export default function EndreNyhetModal({
           error,
         });
       }
-      refetch();
-      setLoading(false);
     }
-
+    refetch();
+    setLoading(false);
     nyhetModalRef.current?.close();
     reset();
   };
