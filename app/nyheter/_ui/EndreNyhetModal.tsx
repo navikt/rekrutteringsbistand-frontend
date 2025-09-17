@@ -83,14 +83,16 @@ export default function EndreNyhetModal({
         </Button>
       ) : (
         <Button size='small' onClick={() => nyhetModalRef.current?.showModal()}>
-          Opprett nyhet
+          {eksisterendeNyhet ? 'Oppdater nyhet' : 'Opprett nyhet'}
         </Button>
       )}
 
       <Modal
         className='w-full'
         ref={nyhetModalRef}
-        header={{ heading: 'Opprett ny nyhet' }}
+        header={{
+          heading: eksisterendeNyhet ? 'Oppdater nyhet' : 'Opprett ny nyhet',
+        }}
       >
         <form onSubmit={handleSubmit(onSubmit)}>
           <Modal.Body>
