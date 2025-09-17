@@ -3,16 +3,8 @@
 import { SjekklisteInfo } from './Sjekkliste';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
-import { TasklistIcon, EyeSlashIcon } from '@navikt/aksel-icons';
-import {
-  BodyShort,
-  Detail,
-  Heading,
-  Loader,
-  VStack,
-  HStack,
-  Box,
-} from '@navikt/ds-react';
+import { EyeSlashIcon, TableIcon } from '@navikt/aksel-icons';
+import { BodyShort, Heading, Loader, VStack, HStack } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import { nb } from 'date-fns/locale/nb';
 import { useMemo } from 'react';
@@ -59,7 +51,7 @@ const FullføreSteg = () => {
           Treffet er fullført
         </Heading>
         {!isLoading && harFullførHendelse && (
-          <Detail textColor='subtle'>{fullførtAvTekst}</Detail>
+          <BodyShort textColor='subtle'>{fullførtAvTekst}</BodyShort>
         )}
       </div>
 
@@ -76,7 +68,7 @@ const FullføreSteg = () => {
             <VStack gap='3'>
               <HStack gap='3' align='start'>
                 <div className='flex-none w-6 mt-[2px]'>
-                  <TasklistIcon
+                  <TableIcon
                     fontSize='1.5rem'
                     aria-hidden
                     color='var(--ax-text-neutral-subtle)'
