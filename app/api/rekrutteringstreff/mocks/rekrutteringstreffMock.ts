@@ -1,4 +1,4 @@
-/*const fullførthendelser = [
+const fullførthendelser = [
   {
     id: '8ccd0b7c-57c0-468b-b265-653d58da5be6',
     tidspunkt: '2025-08-15T11:48:08Z',
@@ -51,7 +51,7 @@ const publisertHendelser = [
     opprettetAvAktørType: 'ARRANGØR',
     aktørIdentifikasjon: 'Z994886',
   },
-];*/
+];
 
 const ikkepubliserthendelser = [
   {
@@ -84,5 +84,5 @@ export const rekrutteringstreffMock = {
   opprettetAvPersonNavident: 'A123456',
   opprettetAvNavkontorEnhetId: '0318',
   opprettetAvTidspunkt: '2025-06-01T08:00:00+02:00',
-  hendelser: ikkepubliserthendelser,
+  hendelser: publisertHendelser,
 };
