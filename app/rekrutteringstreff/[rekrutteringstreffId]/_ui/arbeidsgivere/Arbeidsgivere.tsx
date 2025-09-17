@@ -10,6 +10,7 @@ import {
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
 import LeggTilArbeidsgiverModal from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/LeggTilArbeidsgiverModal';
+import { getActiveStepFromHendelser } from '@/app/rekrutteringstreff/_utils/rekrutteringstreff';
 import SWRLaster from '@/components/SWRLaster';
 import { PlusIcon, TrashIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button, Modal, Tooltip } from '@navikt/ds-react';
@@ -26,22 +27,10 @@ const RekrutteringstreffArbeidsgivere = () => {
   const { mutate: mutateHendelser } = hendelseHook;
 
   const { data: treff } = useRekrutteringstreff(rekrutteringstreffId);
-  const activeStep = useMemo(() => {
-    const hendelser = treff?.hendelser ?? [];
-    const relevante = hendelser
-      .filter((h) =>
-        ['PUBLISER', 'FULLFØR', 'GJENÅPN'].includes(h.hendelsestype),
-      )
-      .sort(
-        (a, b) =>
-          new Date(b.tidspunkt).getTime() - new Date(a.tidspunkt).getTime(),
-      );
-    if (relevante.length === 0) return 1;
-    const siste = relevante[0].hendelsestype;
-    if (siste === 'PUBLISER' || siste === 'GJENÅPN') return 2;
-    if (siste === 'FULLFØR') return 3;
-    return 1;
-  }, [treff?.hendelser]);
+  const activeStep = useMemo(
+    () => getActiveStepFromHendelser(treff?.hendelser),
+    [treff?.hendelser],
+  );
   const erInviterSteg = activeStep === 2;
 
   const leggTilModalRef = useRef<HTMLDialogElement>(null);
