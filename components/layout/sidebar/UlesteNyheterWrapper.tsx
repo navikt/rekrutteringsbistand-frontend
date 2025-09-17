@@ -39,7 +39,7 @@ export default function UlesteNyheterWrapper({
   return (
     <>
       {harUlestNyhet && (
-        <div className='absolute top-2 left-9 w-3 h-3 bg-red-500 rounded-full'></div>
+        <div className='absolute top-2 left-9 w-3 h-3 bg-[var(--ax-bg-danger-strong)] rounded-full'></div>
       )}
       {children}
     </>
