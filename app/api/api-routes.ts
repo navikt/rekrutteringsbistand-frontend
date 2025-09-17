@@ -112,5 +112,5 @@ export const BrukerAPI: Iroute = {
   api_route: '/api',
   api_url: process.env.REKRUTTERINGSBISTAND_BRUKER_API_URL ?? '',
   internUrl: '/api/bruker',
-  scope: `api://${gcp}.toi.rekrutteringsbistand-bruker/.default`,
+  scope: `api://${gcp}.toi.rekrutteringsbistand-bruker-api/.default`,
 };

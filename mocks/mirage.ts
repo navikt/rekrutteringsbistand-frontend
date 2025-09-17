@@ -1,5 +1,6 @@
 'use client';
 
+import { nyheterMirage } from '@/app/api/bruker/nyheter/useNyheter';
 import { brukerMirage } from '@/app/api/bruker/useBruker';
 import { foresporselOmDelingAvCVMirage } from '@/app/api/foresporsel-om-deling-av-cv/foresporsler/[...slug]/useForespurteOmDelingAvCv';
 import { foresporselOmDelingAvCVStatistikkMirage } from '@/app/api/foresporsel-om-deling-av-cv/statistikk/useForesporselOmdelingAvCV';
@@ -130,6 +131,7 @@ export function makeServer({ environment = 'test' } = {}) {
       modiaAktivBrukerMirage(this);
       mockModiaContext(this);
       kandidagsammendragMirage(this);
+      nyheterMirage(this);
       // stillingssøk mock kan disables ved ES søk
       stillingssøkMirage(this);
       this.passthrough('*');
