@@ -65,26 +65,38 @@ const InvitereSteg = () => {
             <VStack gap='2'>
               <HStack gap='2' align='start'>
                 <div className='flex-none w-6 mt-[2px]'>
-                  <ClockDashedIcon fontSize='1.5rem' aria-hidden />
+                  <ClockDashedIcon
+                    fontSize='1.5rem'
+                    aria-hidden
+                    color='var(--ax-text-neutral-subtle)'
+                  />
                 </div>
-                <BodyShort className='flex-1'>
+                <BodyShort className='flex-1' textColor='subtle'>
                   Du kan gjenåpne treffet for å rette feil i ettertid.
                 </BodyShort>
               </HStack>
               <HStack gap='2' align='start'>
                 <div className='flex-none w-6 mt-[2px]'>
-                  <TasklistIcon fontSize='1.5rem' aria-hidden />
+                  <TasklistIcon
+                    fontSize='1.5rem'
+                    aria-hidden
+                    color='var(--ax-text-neutral-subtle)'
+                  />
                 </div>
-                <BodyShort className='flex-1'>
+                <BodyShort className='flex-1' textColor='subtle'>
                   Aktivitetskortet til alle som svarte ja blir flyttet til
                   &quot;Fullført&quot;-kolonnen i aktivitetsplanen.
                 </BodyShort>
               </HStack>
               <HStack gap='2' align='start'>
                 <div className='flex-none w-6 mt-[2px]'>
-                  <EyeSlashIcon fontSize='1.5rem' aria-hidden />
+                  <EyeSlashIcon
+                    fontSize='1.5rem'
+                    aria-hidden
+                    color='var(--ax-text-neutral-subtle)'
+                  />
                 </div>
-                <BodyShort className='flex-1'>
+                <BodyShort className='flex-1' textColor='subtle'>
                   Treffet vises ikke lenger som aktivt.
                 </BodyShort>
               </HStack>

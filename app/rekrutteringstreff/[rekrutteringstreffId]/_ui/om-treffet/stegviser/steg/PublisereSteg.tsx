@@ -100,18 +100,26 @@ const PublisereSteg: FC = () => {
             <VStack gap='2'>
               <HStack gap='2' align='start'>
                 <div className='flex-none w-6 mt-[2px]'>
-                  <EyeIcon fontSize='1.5rem' aria-hidden />
+                  <EyeIcon
+                    fontSize='1.5rem'
+                    aria-hidden
+                    color='var(--ax-text-neutral-subtle)'
+                  />
                 </div>
-                <BodyShort className='flex-1'>
+                <BodyShort className='flex-1' textColor='subtle'>
                   Treffet blir synlig for kollegaene dine.
                 </BodyShort>
               </HStack>
 
               <HStack gap='2' align='start'>
                 <div className='flex-none w-6 mt-[2px]'>
-                  <PersonGroupIcon fontSize='1.5rem' aria-hidden />
+                  <PersonGroupIcon
+                    fontSize='1.5rem'
+                    aria-hidden
+                    color='var(--ax-text-neutral-subtle)'
+                  />
                 </div>
-                <BodyShort className='flex-1'>
+                <BodyShort className='flex-1' textColor='subtle'>
                   De kan finne og foreslå folk som kan være med. Du kan også
                   finne folk selv.
                 </BodyShort>
@@ -119,18 +127,26 @@ const PublisereSteg: FC = () => {
 
               <HStack gap='2' align='start'>
                 <div className='flex-none w-6 mt-[2px]'>
-                  <TasklistIcon fontSize='1.5rem' aria-hidden />
+                  <TasklistIcon
+                    fontSize='1.5rem'
+                    aria-hidden
+                    color='var(--ax-text-neutral-subtle)'
+                  />
                 </div>
-                <BodyShort className='flex-1'>
+                <BodyShort className='flex-1' textColor='subtle'>
                   Du velger hvem som skal inviteres.
                 </BodyShort>
               </HStack>
 
               <HStack gap='2' align='start'>
                 <div className='flex-none w-6 mt-[2px]'>
-                  <BellIcon fontSize='1.5rem' aria-hidden />
+                  <BellIcon
+                    fontSize='1.5rem'
+                    aria-hidden
+                    color='var(--ax-text-neutral-subtle)'
+                  />
                 </div>
-                <BodyShort className='flex-1'>
+                <BodyShort className='flex-1' textColor='subtle'>
                   Inviterte får beskjed, et kort i aktivitetsplanen, og kan
                   svare.
                 </BodyShort>

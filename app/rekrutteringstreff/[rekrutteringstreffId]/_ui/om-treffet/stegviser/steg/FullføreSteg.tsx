@@ -79,7 +79,7 @@ const FullføreSteg = () => {
                     <TasklistIcon
                       fontSize='1.5rem'
                       aria-hidden
-                      color='subtle'
+                      color='var(--ax-text-neutral-subtle)'
                     />
                   </div>
                   <BodyShort className='flex-1' textColor='subtle'>
@@ -92,7 +92,7 @@ const FullføreSteg = () => {
                     <EyeSlashIcon
                       fontSize='1.5rem'
                       aria-hidden
-                      color='subtle'
+                      color='var(--ax-text-neutral-subtle)'
                     />
                   </div>
                   <BodyShort className='flex-1' textColor='subtle'>
