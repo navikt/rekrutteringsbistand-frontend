@@ -1,3 +1,4 @@
+import { BrukerAPI } from '@/app/api/api-routes';
 import { getAPI, postApi, putApi } from '@/app/api/fetcher';
 import z from 'zod';
 
@@ -17,17 +18,17 @@ export type NyheterDTO = z.infer<typeof nyheterSchema>;
 export type OpprettNyhetDTO = z.infer<typeof opprettNyheteSchema>;
 
 export const oppdaterNyhet = async (nyhet: NyheterDTO) => {
-  await putApi(`/api/nyheter/${nyhet.nyhetId}`, nyhet);
+  await putApi(`${BrukerAPI.internUrl}/nyheter/${nyhet.nyhetId}`, nyhet);
 };
 
 export const opprettNyhet = async (nyhet: OpprettNyhetDTO) => {
-  await postApi(`/api/nyheter`, nyhet);
+  await postApi(`${BrukerAPI.internUrl}/nyheter`, nyhet);
 };
 
 export const slettNyhet = async (nyhetId: string) => {
-  await putApi(`/api/nyheter/slett/${nyhetId}`, {});
+  await putApi(`${BrukerAPI.internUrl}/nyheter/slett/${nyhetId}`, {});
 };
 
 export const hentNyheter = async (): Promise<NyheterDTO[]> => {
-  return await getAPI(`/api/nyheter`);
+  return await getAPI(`${BrukerAPI.internUrl}/nyheter`);
 };
