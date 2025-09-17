@@ -98,7 +98,7 @@ export const StegviserProvider: FC<{ children: ReactNode }> = ({
   const fra = parseDate(rekrutteringstreff?.fraTid);
   const til = parseDate(rekrutteringstreff?.tilTid);
   const now = new Date();
-  const arrangementtidspunktHarPassert = !!(fra && now >= fra);
+  const arrangementtidspunktHarPassert = !!(til && now >= til);
   const tiltidspunktHarPassert = !!(til && now >= til);
 
   // Steg 2: Invitere-logikk
