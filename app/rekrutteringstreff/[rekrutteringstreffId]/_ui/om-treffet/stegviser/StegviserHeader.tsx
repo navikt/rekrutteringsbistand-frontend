@@ -15,10 +15,8 @@ import {
   Heading,
   ProgressBar,
   Modal,
-  VStack,
-  HStack,
   BodyShort,
-  Heading as DsHeading,
+  Box,
 } from '@navikt/ds-react';
 import { FC, useRef, useState } from 'react';
 
@@ -245,27 +243,23 @@ const StegviserHeader: FC<Props> = ({
 
       <Modal ref={publiserModalRef} header={{ heading: 'Publiser treffet' }}>
         <Modal.Body>
-          <VStack gap='4'>
-            <VStack gap='3' className='bg-bg-subtle p-4 rounded-md'>
-              <DsHeading level='3' size='small'>
+          <div className='bg-bg-subtle p-4 rounded-md'>
+            <Box.New>
+              <BodyShort className='font-bold'>
                 Dette skjer når du publiserer treffet
-              </DsHeading>
-              <HStack gap='2' align='start'>
-                <div className='flex-none w-6 mt-[2px]'>
-                  <EyeIcon fontSize='1.5rem' aria-hidden />
-                </div>
+              </BodyShort>
+              <div className='flex items-center gap-2 mt-4'>
+                <EyeIcon fontSize='1.5rem' aria-hidden />
                 <BodyShort className='flex-1'>
                   Treffet blir synlig for:
                 </BodyShort>
-              </HStack>
-              <VStack gap='1' className='pl-8'>
-                <BodyShort>- Nav-ansatte i rekrutteringsbistand.</BodyShort>
-                <BodyShort>
-                  - Nav brukere som blir invitert via aktivitetsplanen.
-                </BodyShort>
-              </VStack>
-            </VStack>
-          </VStack>
+              </div>
+              <ul className='list-disc pl-16  mt-1'>
+                <li>Nav-ansatte i rekrutteringsbistand.</li>
+                <li>Nav brukere som blir invitert via aktivitetsplanen.</li>
+              </ul>
+            </Box.New>
+          </div>
         </Modal.Body>
         <Modal.Footer>
           <Button

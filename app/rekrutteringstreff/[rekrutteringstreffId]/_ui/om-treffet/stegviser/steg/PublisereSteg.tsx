@@ -87,7 +87,7 @@ const PublisereSteg: FC = () => {
         })}
 
       <SjekklisteInfo>
-        <VStack gap='3'>
+        <VStack gap='2'>
           <Heading level='3' size='small'>
             Hva skjer etter publisering?
           </Heading>
