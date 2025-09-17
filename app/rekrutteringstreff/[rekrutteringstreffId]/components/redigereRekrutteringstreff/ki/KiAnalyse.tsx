@@ -1,6 +1,6 @@
 'use client';
 
-import { EyeIcon, PersonCircleIcon } from '@navikt/aksel-icons';
+import { PersonCircleIcon } from '@navikt/aksel-icons';
 import { Detail } from '@navikt/ds-react';
 import { FC } from 'react';
 

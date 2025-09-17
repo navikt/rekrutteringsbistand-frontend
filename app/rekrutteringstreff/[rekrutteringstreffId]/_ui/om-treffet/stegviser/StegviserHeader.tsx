@@ -49,7 +49,6 @@ const StegviserHeader: FC<Props> = ({
     totaltAntallSjekklistePunkter,
     inviterePunkterFullfort,
     totaltAntallInviterePunkter,
-    arrangementtidspunktHarPassert,
     tiltidspunktHarPassert,
   } = useStegviser();
 

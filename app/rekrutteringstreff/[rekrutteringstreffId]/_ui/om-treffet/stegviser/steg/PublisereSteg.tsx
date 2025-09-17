@@ -22,7 +22,6 @@ import {
   BodyShort,
   HStack,
   VStack,
-  Box,
 } from '@navikt/ds-react';
 import { FC, Fragment, useMemo } from 'react';
 
@@ -77,7 +76,7 @@ const PublisereSteg: FC = () => {
       {loading && <Loader size='medium' title='Laster sjekkliste status...' />}
 
       {!loading &&
-        sjekklisteData.map((item, idx) => {
+        sjekklisteData.map((item) => {
           const erOppfylt = !!checkedItems[item.id];
           return (
             <Fragment key={item.id}>
