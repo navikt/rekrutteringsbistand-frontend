@@ -1,5 +1,6 @@
 'use client';
 
+import { SjekklisteInfo } from './Sjekkliste';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
 import { TasklistIcon, EyeSlashIcon } from '@navikt/aksel-icons';
@@ -67,42 +68,40 @@ const FullføreSteg = () => {
           <Loader size='large' title='Laster informasjon om fullføring...' />
         </div>
       ) : (
-        <Box.New padding='4' borderRadius='xlarge' className='space-y-6'>
-          <Box.New background='raised' borderRadius='xlarge' padding='3'>
+        <SjekklisteInfo>
+          <VStack gap='3'>
+            <Heading level='3' size='small'>
+              Hva som skjedde bak kulissene
+            </Heading>
             <VStack gap='3'>
-              <Heading level='3' size='small'>
-                Hva som skjedde bak kulissene
-              </Heading>
-              <VStack gap='3'>
-                <HStack gap='3' align='start'>
-                  <div className='flex-none w-6 mt-[2px]'>
-                    <TasklistIcon
-                      fontSize='1.5rem'
-                      aria-hidden
-                      color='var(--ax-text-neutral-subtle)'
-                    />
-                  </div>
-                  <BodyShort className='flex-1' textColor='subtle'>
-                    Aktivitetskortet til alle som svarte ja ble flyttet til
-                    &quot;Fullført&quot;-kolonnen i aktivitetsplanen.
-                  </BodyShort>
-                </HStack>
-                <HStack gap='3' align='start'>
-                  <div className='flex-none w-6 mt-[2px]'>
-                    <EyeSlashIcon
-                      fontSize='1.5rem'
-                      aria-hidden
-                      color='var(--ax-text-neutral-subtle)'
-                    />
-                  </div>
-                  <BodyShort className='flex-1' textColor='subtle'>
-                    Treffet vises ikke lenger som aktivt.
-                  </BodyShort>
-                </HStack>
-              </VStack>
+              <HStack gap='3' align='start'>
+                <div className='flex-none w-6 mt-[2px]'>
+                  <TasklistIcon
+                    fontSize='1.5rem'
+                    aria-hidden
+                    color='var(--ax-text-neutral-subtle)'
+                  />
+                </div>
+                <BodyShort className='flex-1' textColor='subtle'>
+                  Aktivitetskortet til alle som svarte ja ble flyttet til
+                  &quot;Fullført&quot;-kolonnen i aktivitetsplanen.
+                </BodyShort>
+              </HStack>
+              <HStack gap='3' align='start'>
+                <div className='flex-none w-6 mt-[2px]'>
+                  <EyeSlashIcon
+                    fontSize='1.5rem'
+                    aria-hidden
+                    color='var(--ax-text-neutral-subtle)'
+                  />
+                </div>
+                <BodyShort className='flex-1' textColor='subtle'>
+                  Treffet vises ikke lenger som aktivt.
+                </BodyShort>
+              </HStack>
             </VStack>
-          </Box.New>
-        </Box.New>
+          </VStack>
+        </SjekklisteInfo>
       )}
     </div>
   );
