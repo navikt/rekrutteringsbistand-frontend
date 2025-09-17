@@ -21,8 +21,12 @@ type IKandidatKort = {
 const KandidatKort: FC<IKandidatKort> = ({ kandidat, alleredeLagtTil }) => {
   const { markerteKandidater, setMarkert } = useKandidatSøkMarkerteContext();
   const [visKandidatnr, setVisKandidatnr] = useVisKandidatNr();
-  const erMarkert = markerteKandidater?.some(
-    (k) => k === kandidat.arenaKandidatnr,
+  const erMarkert = Boolean(
+    markerteKandidater?.some((k) => k === kandidat.arenaKandidatnr),
+  );
+
+  const erLagtTil = Boolean(
+    alleredeLagtTil?.some((k) => k === kandidat.arenaKandidatnr),
   );
 
   const stopPropagation = (e: MouseEvent) => {
@@ -53,25 +57,16 @@ const KandidatKort: FC<IKandidatKort> = ({ kandidat, alleredeLagtTil }) => {
       data-testid='stillings-kort'
       className={`p-5 cursor-pointer @container/kandidatlistekort flex flex-col min-w-fit
           focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--ax-border-focus)]
-          ${aktiv ? 'bg-[var(--ax-bg-neutral-moderate-pressed)]' : 'hover:bg-[var(--ax-bg-neutral-moderate-hover)] '}`}
+          ${aktiv ? 'bg-[var(--ax-bg-neutral-moderate-pressed)]' : 'hover:bg-[var(--ax-bg-neutral-moderate-hover)] '}
+          ${erLagtTil ? 'border-l-4 border-[var(--ax-border-success)]' : ''}`}
       tabIndex={0}
     >
       <div className='flex flex-row '>
         <div onClick={stopPropagation}>
           <Checkbox
-            disabled={
-              !kandidat.arenaKandidatnr ||
-              Boolean(
-                alleredeLagtTil?.some((k) => k === kandidat.arenaKandidatnr),
-              )
-            }
-            checked={
-              Boolean(erMarkert) ||
-              Boolean(
-                alleredeLagtTil?.some((k) => k === kandidat.arenaKandidatnr),
-              )
-            }
-            aria-selected={Boolean(erMarkert)}
+            disabled={!kandidat.arenaKandidatnr || erLagtTil}
+            checked={erMarkert || erLagtTil}
+            aria-selected={erMarkert}
             hideLabel
             className='-mt-2 mr-4'
             onChange={() =>

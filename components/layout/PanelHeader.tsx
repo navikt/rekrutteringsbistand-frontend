@@ -151,7 +151,7 @@ export default function PanelHeader({
                 {existing}
                 {fullskjermUrl && !hasFullscreenAlready && (
                   <Button
-                    size='xsmall'
+                    size='small'
                     variant='tertiary'
                     aria-label={fullskjermAriaLabel}
                     icon={<ExpandIcon aria-hidden />}
@@ -163,7 +163,7 @@ export default function PanelHeader({
                   />
                 )}
                 <Button
-                  size='xsmall'
+                  size='small'
                   variant='tertiary'
                   aria-label='Lukk vindu'
                   icon={<XMarkIcon aria-hidden />}

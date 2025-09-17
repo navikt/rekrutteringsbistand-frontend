@@ -78,11 +78,13 @@ export class RekbisError extends Error {
           feilkode: this.feilkode,
           url: this.url,
           statuskode: this.statuskode,
-          originalError:
+          details: this.details,
+          error:
             this.originalError instanceof Error
               ? {
                   message: this.originalError.message,
                   stack: this.originalError.stack,
+                  name: this.originalError.name,
                 }
               : this.originalError,
         },

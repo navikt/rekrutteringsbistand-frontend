@@ -5,6 +5,7 @@ import { useStillingsSøkFilter } from '@/app/stilling/StillingsSøkContext';
 import { VisningsStatus } from '@/app/stilling/_util/stillingInfoUtil';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
+import { useEffect, useRef } from 'react';
 
 export interface StatusFilterProps {
   hideLegend?: boolean;
@@ -23,6 +24,9 @@ export default function StatusFilter({ hideLegend }: StatusFilterProps) {
     navIdent: ident,
     formidlinger: filterCtx.formidlinger,
   });
+
+  const statusRef = useRef(0);
+
   const buckets = combined.data?.antall?.visningsStatusBuckets || [];
   const loading = combined.isLoading || combined.isValidating;
   const finnCount = (key: string) => {
@@ -46,11 +50,17 @@ export default function StatusFilter({ hideLegend }: StatusFilterProps) {
   ];
 
   // Auto-aktiver "Åpen for søkere" dersom bruker tømmer alle statuser - men kun for ikke-formidlinger.
-  // useEffect(() => {
-  //   if (!filterCtx.formidlinger && !loading && (statuser?.length ?? 0) === 0) {
-  //     setStatuser([VisningsStatus.ApenForSokere]);
-  //   }
-  // }, [loading, statuser, setStatuser, filterCtx.formidlinger]);
+  useEffect(() => {
+    if (
+      statusRef.current < 1 &&
+      !filterCtx.formidlinger &&
+      !loading &&
+      (statuser?.length ?? 0) === 0
+    ) {
+      setStatuser([VisningsStatus.ApenForSokere]);
+      statusRef.current = statusRef.current + 1;
+    }
+  }, [loading, statuser, setStatuser, filterCtx.formidlinger]);
 
   return (
     <CheckboxGroup legend={hideLegend ? undefined : 'Status'} size='small'>

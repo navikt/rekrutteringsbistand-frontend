@@ -10,6 +10,7 @@ import ValgteKontorer from './_ui/ValgteKontorer';
 import KandidatSøkFilter from './kandidat-søk-filter/KandidatSøkFilter';
 import Arbeidserfaring from '@/app/kandidat/kandidat-søk-filter/_ui/Arbeidserfaring';
 import Arbeidsønsker from '@/app/kandidat/kandidat-søk-filter/_ui/Arbeidsønsker';
+import FritekstSøk from '@/app/kandidat/kandidat-søk-filter/_ui/FritekstSøk';
 import Førerkort from '@/app/kandidat/kandidat-søk-filter/_ui/Førerkort';
 import Hovedmål from '@/app/kandidat/kandidat-søk-filter/_ui/Hovedmål';
 import Innsatsgrupper from '@/app/kandidat/kandidat-søk-filter/_ui/Innsatsgrupper';
@@ -55,7 +56,7 @@ const KandidatSøkTabs: FC<KandidatSøkTabsProps> = ({
       title='Mine brukere'
       aria-label='Mine brukere'
     >
-      Mine brukere
+      Mine
     </Button>
   );
 
@@ -132,7 +133,7 @@ const KandidatSøkTabs: FC<KandidatSøkTabsProps> = ({
         title='Alle kontorer'
         aria-label='Alle kontorer'
       >
-        Alle kontorer
+        Alle
       </Button>
     </TilgangskontrollForInnhold>
   );
@@ -156,7 +157,7 @@ const KandidatSøkTabs: FC<KandidatSøkTabsProps> = ({
         title='Valgte kontorer'
         aria-label='Valgte kontorer'
       >
-        Valgte kontorer
+        Velg kontor
       </Button>
     </TilgangskontrollForInnhold>
   );
@@ -165,6 +166,7 @@ const KandidatSøkTabs: FC<KandidatSøkTabsProps> = ({
     <div className='@container'>
       <div className='flex justify-between flex-col @3xl:flex-row @3xl:gap-0 gap-3 '>
         <div className='flex gap-2 items-center'>
+          <AlleKontorer />
           <MineBrukere />
           <MittKontor />
           <MineKontorer />
@@ -174,7 +176,6 @@ const KandidatSøkTabs: FC<KandidatSøkTabsProps> = ({
               Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
             ]}
           >
-            <AlleKontorer />
             <VelgKontor />
           </TilgangskontrollForInnhold>
         </div>
@@ -196,6 +197,7 @@ const KandidatSøkTabs: FC<KandidatSøkTabsProps> = ({
         </div>
         <div className='hidden @[720px]:block ml-4 pt-4  max-w-[200px]'>
           <div className='flex flex-col gap-4'>
+            <FritekstSøk />
             <Arbeidsønsker />
             <KandidatStedSøk />
             <Kompetanse />

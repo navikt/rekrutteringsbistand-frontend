@@ -104,6 +104,7 @@ export default function StillingDropdown() {
     <>
       <Dropdown>
         <Button
+          size='small'
           loading={loading}
           variant='tertiary'
           icon={<MenuElipsisHorizontalIcon />}
