@@ -16,7 +16,7 @@ const Nyheter: React.FC = () => {
   const nyheterHook = useNyheter();
 
   return (
-    <SWRLaster hooks={[nyheterHook]}>
+    <SWRLaster hooks={[nyheterHook]} skjulFeilmelding allowPartialData>
       {(nyheterData) => {
         window.localStorage.setItem(
           'antallLesteNyheter',
