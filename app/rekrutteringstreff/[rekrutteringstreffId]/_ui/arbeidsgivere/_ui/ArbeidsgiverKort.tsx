@@ -46,9 +46,7 @@ const ArbeidsgiverKort: FC<ArbeidsgiverKortProps> = ({
   return (
     <Box.New
       background='neutral-softA'
-      borderColor='neutral-subtleA'
       borderRadius='xlarge'
-      borderWidth='1'
       padding='4'
       marginBlock='2'
       className='flex items-start justify-between'
