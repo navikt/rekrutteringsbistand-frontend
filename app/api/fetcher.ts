@@ -147,10 +147,7 @@ const extractResponseData = async (response: Response): Promise<any> => {
           statuskode: response.status,
           message: 'Error extracting response data:',
           url: response.url,
-          error:
-            secondError instanceof Error
-              ? secondError.message
-              : String(secondError),
+          error: secondError,
         });
       }
     }
