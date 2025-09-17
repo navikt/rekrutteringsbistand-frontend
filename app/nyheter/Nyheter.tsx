@@ -18,6 +18,11 @@ const Nyheter: React.FC = () => {
   return (
     <SWRLaster hooks={[nyheterHook]}>
       {(nyheterData) => {
+        window.localStorage.setItem(
+          'antallLesteNyheter',
+          JSON.stringify(nyheterData.length),
+        );
+
         return (
           <HovedInnholdKort>
             <SideLayout
@@ -48,8 +53,8 @@ const Nyheter: React.FC = () => {
                   )
                   .map((nyhet) => (
                     <NyhetVisning
-                      nyhet={nyhet}
                       key={nyhet.nyhetId}
+                      nyhet={nyhet}
                       refetch={() => nyheterHook.mutate()}
                     />
                   ))}
