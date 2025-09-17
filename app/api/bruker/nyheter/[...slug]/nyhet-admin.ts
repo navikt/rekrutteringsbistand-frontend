@@ -18,11 +18,17 @@ export type NyheterDTO = z.infer<typeof nyheterSchema>;
 export type OpprettNyhetDTO = z.infer<typeof opprettNyheteSchema>;
 
 export const oppdaterNyhet = async (nyhet: NyheterDTO) => {
-  await putApi(`${BrukerAPI.internUrl}/nyheter/${nyhet.nyhetId}`, nyhet);
+  await putApi(`${BrukerAPI.internUrl}/nyheter/${nyhet.nyhetId}`, {
+    ...nyhet,
+    innhold: JSON.stringify(nyhet.innhold),
+  });
 };
 
 export const opprettNyhet = async (nyhet: OpprettNyhetDTO) => {
-  await postApi(`${BrukerAPI.internUrl}/nyheter`, nyhet);
+  await postApi(`${BrukerAPI.internUrl}/nyheter`, {
+    ...nyhet,
+    innhold: JSON.stringify(nyhet.innhold),
+  });
 };
 
 export const slettNyhet = async (nyhetId: string) => {
