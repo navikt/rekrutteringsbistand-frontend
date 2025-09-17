@@ -110,9 +110,6 @@ const Rekrutteringstreff: FC = () => {
           <PanelHeader>
             <PanelHeader.Section
               title={'Rekrutteringstreff'}
-              actionsRight={
-                <Button size='small'>Opprett rekrutteringstreff</Button>
-              }
               tabs={erIForhåndsvisning ? tabList : undefined}
             />
           </PanelHeader>
