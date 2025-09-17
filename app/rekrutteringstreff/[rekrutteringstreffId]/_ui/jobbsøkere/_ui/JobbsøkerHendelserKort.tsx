@@ -47,7 +47,7 @@ const JobbsøkerHendelserKort: FC<JobbsøkerHendelserKortProps> = ({
             {antallHendelser === 0 ? (
               <div className='p-4 mb-12 flex flex-col items-center'>
                 <Box.New
-                  background='raised'
+                  background='neutral-softA'
                   className='rounded-full mb-2 flex items-center justify-center'
                 >
                   <SVGDarkmode

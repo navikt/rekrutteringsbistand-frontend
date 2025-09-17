@@ -49,7 +49,7 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
 }) => {
   return (
     <Box.New
-      background='raised'
+      background='neutral-softA'
       borderColor='neutral-subtleA'
       borderRadius='xlarge'
       borderWidth='1'

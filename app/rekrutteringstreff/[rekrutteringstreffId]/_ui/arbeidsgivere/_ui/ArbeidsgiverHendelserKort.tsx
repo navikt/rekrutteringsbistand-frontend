@@ -47,7 +47,7 @@ const ArbeidsgiverHendelserKort: FC<Props> = ({ arbeidsgiverHendelserDTO }) => {
       <div className='min-h-[18rem] mb-12'>
         {arbeidsgiverHendelserDTO.length === 0 ? (
           <div className='p-4 mb-12 flex flex-col items-center'>
-            <Box.New background='raised' className='rounded-full mb-2'>
+            <Box.New background='neutral-softA' className='rounded-full mb-2'>
               <SVGDarkmode
                 light={ArbeidsgiverIkon}
                 dark={ArbeidsgiverDarkIkon}
