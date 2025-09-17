@@ -38,7 +38,7 @@ export const SjekklisteRad: FC<{ erOppfylt: boolean; label: string }> = ({
 
 export const SjekklisteInfo: FC<{ children: ReactNode }> = ({ children }) => (
   <div className='my-8'>
-    <Box.New background='neutral-soft' borderRadius='large' padding='3'>
+    <Box.New background='raised' borderRadius='xlarge' padding='3'>
       {children}
     </Box.New>
   </div>
