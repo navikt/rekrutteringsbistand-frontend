@@ -10,29 +10,21 @@ import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutter
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
 import { RekbisError } from '@/util/rekbisError';
 import { EyeIcon } from '@navikt/aksel-icons';
-import {
-  Button,
-  Heading,
-  ProgressBar,
-  Modal,
-  BodyShort,
-  Box,
-} from '@navikt/ds-react';
+import { Button, ProgressBar, Modal, BodyShort, Box } from '@navikt/ds-react';
 import { FC, useRef, useState } from 'react';
 
 interface Props {
-  stepDetails: { id: number; header: string }[];
   onToggleForhåndsvisning?: (erIForhåndsvisning: boolean) => void;
   erIForhåndsvisning: boolean;
 }
 
 const StegviserHeader: FC<Props> = ({
-  stepDetails,
   onToggleForhåndsvisning,
   erIForhåndsvisning,
 }) => {
   const fullforModalRef = useRef<HTMLDialogElement>(null);
   const publiserModalRef = useRef<HTMLDialogElement>(null);
+  const gjenåpneModalRef = useRef<HTMLDialogElement>(null);
   const [publiserer, setPubliserer] = useState(false);
   const [fullfører, setFullfører] = useState(false);
   const [gjenåpner, setGjenåpner] = useState(false);
@@ -96,9 +88,6 @@ const StegviserHeader: FC<Props> = ({
       setGjenåpner(false);
     }
   };
-
-  const currentHeader =
-    stepDetails.find((d) => d.id === activeStep)?.header ?? 'Steg';
 
   const getProsent = (value: number, max: number) =>
     max === 0 ? 0 : (value / max) * 100;
@@ -177,38 +166,27 @@ const StegviserHeader: FC<Props> = ({
           size='small'
           loading={gjenåpner}
           className='w-full'
-          onClick={onGjenåpnTreffet}
+          onClick={() => gjenåpneModalRef.current?.showModal()}
         >
           Gjenåpne
         </Button>
       )}
 
-      <div className='flex items-center justify-between w-full mt-12'>
-        <div className='flex-grow mr-4'>
-          <div className='flex items-center justify-between'>
-            <div className='flex items-center'>
-              <Heading size='small'>{currentHeader}</Heading>
-            </div>
-            <div />
-          </div>
-
-          <div>
-            {activeStep === 1 && (
-              <ProgressMedTeller
-                value={sjekklistePunkterFullfort}
-                max={totaltAntallSjekklistePunkter}
-                ariaLabel='Fremdrift for publisering'
-              />
-            )}
-            {activeStep === 2 && (
-              <ProgressMedTeller
-                value={inviterePunkterFullfort}
-                max={totaltAntallInviterePunkter}
-                ariaLabel='Fremdrift for invitasjon'
-              />
-            )}
-          </div>
-        </div>
+      <div className='w-full mt-12'>
+        {activeStep === 1 && (
+          <ProgressMedTeller
+            value={sjekklistePunkterFullfort}
+            max={totaltAntallSjekklistePunkter}
+            ariaLabel='Fremdrift for publisering'
+          />
+        )}
+        {activeStep === 2 && (
+          <ProgressMedTeller
+            value={inviterePunkterFullfort}
+            max={totaltAntallInviterePunkter}
+            ariaLabel='Fremdrift for invitasjon'
+          />
+        )}
       </div>
 
       <Modal
@@ -274,6 +252,35 @@ const StegviserHeader: FC<Props> = ({
           <Button
             variant='secondary'
             onClick={() => publiserModalRef.current?.close()}
+          >
+            Avbryt
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal
+        ref={gjenåpneModalRef}
+        header={{ heading: 'Gjenåpne rekrutteringstreffet?' }}
+      >
+        <Modal.Body>
+          <BodyShort>
+            Treffet blir aktivt igjen, og du kan gjøre endringer eller sende nye
+            invitasjoner. Er du sikker på at du vil fortsette?
+          </BodyShort>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            loading={gjenåpner}
+            onClick={async () => {
+              await onGjenåpnTreffet();
+              gjenåpneModalRef.current?.close();
+            }}
+          >
+            Gjenåpne
+          </Button>
+          <Button
+            variant='secondary'
+            onClick={() => gjenåpneModalRef.current?.close()}
           >
             Avbryt
           </Button>

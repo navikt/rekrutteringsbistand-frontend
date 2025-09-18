@@ -20,10 +20,8 @@ const RekrutteringstreffDetalj: FC<RekrutteringstreffDetaljerProps> = ({
 }) => {
   return (
     <Box.New
-      background='raised'
-      borderColor='neutral-subtleA'
+      background='neutral-softA'
       borderRadius='xlarge'
-      borderWidth='1'
       padding='6'
       marginBlock='2'
       className={className}

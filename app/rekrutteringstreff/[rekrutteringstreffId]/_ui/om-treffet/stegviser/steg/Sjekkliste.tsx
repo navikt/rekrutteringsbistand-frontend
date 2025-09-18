@@ -1,5 +1,5 @@
 import { CheckmarkIcon } from '@navikt/aksel-icons';
-import { Box } from '@navikt/ds-react';
+import { Box, Heading } from '@navikt/ds-react';
 import { FC, ReactNode } from 'react';
 
 export const SjekklisteContainer: FC<{ children: ReactNode }> = ({
@@ -7,6 +7,9 @@ export const SjekklisteContainer: FC<{ children: ReactNode }> = ({
 }) => (
   <div className='flex-1'>
     <Box.New padding='0' className='mb-4'>
+      <Heading level='3' size='small' className='mb-2'>
+        Sjekkliste
+      </Heading>
       <div className='space-y-0'>{children}</div>
     </Box.New>
   </div>
@@ -35,7 +38,7 @@ export const SjekklisteRad: FC<{ erOppfylt: boolean; label: string }> = ({
 
 export const SjekklisteInfo: FC<{ children: ReactNode }> = ({ children }) => (
   <div className='my-8'>
-    <Box.New background='neutral-soft' borderRadius='large' padding='3'>
+    <Box.New background='neutral-softA' borderRadius='xlarge' padding='3'>
       {children}
     </Box.New>
   </div>

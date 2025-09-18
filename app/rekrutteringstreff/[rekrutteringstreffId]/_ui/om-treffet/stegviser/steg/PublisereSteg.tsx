@@ -67,70 +67,95 @@ const PublisereSteg: FC = () => {
     arbeidsgivereLoading || rekrutteringstreffLoading || innleggLoading;
 
   return (
-    <SjekklisteContainer>
-      <Detail spacing>
-        Noen detaljer være på plass før du publiserer treffet, og kan invitere
-        jobbsøkere.
-      </Detail>
+    <div className='flex-1 space-y-4'>
+      <Heading level='2' size='medium'>
+        Gjør klar til publisering
+      </Heading>
 
-      {loading && <Loader size='medium' title='Laster sjekkliste status...' />}
+      <SjekklisteContainer>
+        <Detail spacing>
+          Noen detaljer være på plass før du publiserer treffet, og kan invitere
+          jobbsøkere.
+        </Detail>
 
-      {!loading &&
-        sjekklisteData.map((item) => {
-          const erOppfylt = !!checkedItems[item.id];
-          return (
-            <Fragment key={item.id}>
-              <SjekklisteRad erOppfylt={erOppfylt} label={item.label} />
-            </Fragment>
-          );
-        })}
+        {loading && (
+          <Loader size='medium' title='Laster sjekkliste status...' />
+        )}
 
-      <SjekklisteInfo>
-        <VStack gap='2'>
-          <Heading level='3' size='small'>
-            Hva skjer etter publisering?
-          </Heading>
+        {!loading &&
+          sjekklisteData.map((item) => {
+            const erOppfylt = !!checkedItems[item.id];
+            return (
+              <Fragment key={item.id}>
+                <SjekklisteRad erOppfylt={erOppfylt} label={item.label} />
+              </Fragment>
+            );
+          })}
+
+        <SjekklisteInfo>
           <VStack gap='2'>
-            <HStack gap='2' align='start'>
-              <div className='flex-none w-6 mt-[2px]'>
-                <EyeIcon fontSize='1.5rem' aria-hidden />
-              </div>
-              <BodyShort className='flex-1'>
-                Treffet blir synlig for kollegaene dine.
-              </BodyShort>
-            </HStack>
+            <Heading level='3' size='small'>
+              Hva skjer etter publisering?
+            </Heading>
+            <VStack gap='2'>
+              <HStack gap='2' align='start'>
+                <div className='flex-none w-6 mt-[2px]'>
+                  <EyeIcon
+                    fontSize='1.5rem'
+                    aria-hidden
+                    color='var(--ax-text-neutral-subtle)'
+                  />
+                </div>
+                <BodyShort className='flex-1' textColor='subtle'>
+                  Treffet blir synlig for kollegaene dine.
+                </BodyShort>
+              </HStack>
 
-            <HStack gap='2' align='start'>
-              <div className='flex-none w-6 mt-[2px]'>
-                <PersonGroupIcon fontSize='1.5rem' aria-hidden />
-              </div>
-              <BodyShort className='flex-1'>
-                De kan finne og foreslå folk som kan være med. Du kan også finne
-                folk selv.
-              </BodyShort>
-            </HStack>
+              <HStack gap='2' align='start'>
+                <div className='flex-none w-6 mt-[2px]'>
+                  <PersonGroupIcon
+                    fontSize='1.5rem'
+                    aria-hidden
+                    color='var(--ax-text-neutral-subtle)'
+                  />
+                </div>
+                <BodyShort className='flex-1' textColor='subtle'>
+                  De kan finne og foreslå folk som kan være med. Du kan også
+                  finne folk selv.
+                </BodyShort>
+              </HStack>
 
-            <HStack gap='2' align='start'>
-              <div className='flex-none w-6 mt-[2px]'>
-                <TasklistIcon fontSize='1.5rem' aria-hidden />
-              </div>
-              <BodyShort className='flex-1'>
-                Du velger hvem som skal inviteres.
-              </BodyShort>
-            </HStack>
+              <HStack gap='2' align='start'>
+                <div className='flex-none w-6 mt-[2px]'>
+                  <TasklistIcon
+                    fontSize='1.5rem'
+                    aria-hidden
+                    color='var(--ax-text-neutral-subtle)'
+                  />
+                </div>
+                <BodyShort className='flex-1' textColor='subtle'>
+                  Du velger hvem som skal inviteres.
+                </BodyShort>
+              </HStack>
 
-            <HStack gap='2' align='start'>
-              <div className='flex-none w-6 mt-[2px]'>
-                <BellIcon fontSize='1.5rem' aria-hidden />
-              </div>
-              <BodyShort className='flex-1'>
-                Inviterte får beskjed, et kort i aktivitetsplanen, og kan svare.
-              </BodyShort>
-            </HStack>
+              <HStack gap='2' align='start'>
+                <div className='flex-none w-6 mt-[2px]'>
+                  <BellIcon
+                    fontSize='1.5rem'
+                    aria-hidden
+                    color='var(--ax-text-neutral-subtle)'
+                  />
+                </div>
+                <BodyShort className='flex-1' textColor='subtle'>
+                  Inviterte får beskjed, et kort i aktivitetsplanen, og kan
+                  svare.
+                </BodyShort>
+              </HStack>
+            </VStack>
           </VStack>
-        </VStack>
-      </SjekklisteInfo>
-    </SjekklisteContainer>
+        </SjekklisteInfo>
+      </SjekklisteContainer>
+    </div>
   );
 };
 

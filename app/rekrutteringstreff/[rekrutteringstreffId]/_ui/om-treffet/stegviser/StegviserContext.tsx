@@ -24,6 +24,12 @@ const DEFAULT_TITTEL = 'Nytt rekrutteringstreff';
 
 const erInvitert = (j: JobbsøkerDTO) =>
   j.hendelser?.some((h) => h.hendelsestype === 'INVITER') ?? false;
+const harSvarJa = (j: JobbsøkerDTO) =>
+  j.hendelser?.some((h) => h.hendelsestype === 'SVAR_JA_TIL_INVITASJON') ??
+  false;
+const harSvarNei = (j: JobbsøkerDTO) =>
+  j.hendelser?.some((h) => h.hendelsestype === 'SVAR_NEI_TIL_INVITASJON') ??
+  false;
 
 const parseDate = (value?: string | null): Date | undefined => {
   if (!value) return undefined;
@@ -45,6 +51,8 @@ export interface StegviserState {
   totaltAntallInviterePunkter: number;
   harInvitert: boolean;
   antallInviterte: number;
+  antallSvarJa: number;
+  antallVenterSvar: number;
 
   // Tidsflagg
   arrangementtidspunktHarPassert: boolean;
@@ -87,17 +95,20 @@ export const StegviserProvider: FC<{ children: ReactNode }> = ({
   const erPubliseringklar =
     sjekklistePunkterFullfort === totaltAntallSjekklistePunkter;
 
-  const fra = parseDate(rekrutteringstreff?.fraTid);
   const til = parseDate(rekrutteringstreff?.tilTid);
   const now = new Date();
-  const arrangementtidspunktHarPassert = !!(fra && now >= fra);
+  const arrangementtidspunktHarPassert = !!(til && now >= til);
   const tiltidspunktHarPassert = !!(til && now >= til);
 
   // Steg 2: Invitere-logikk
   const antallInviterte = jobbsøkere.filter(erInvitert).length;
   const harInvitert = antallInviterte > 0;
+  const antallSvarJa = jobbsøkere.filter(harSvarJa).length;
+  const antallVenterSvar = jobbsøkere.filter(
+    (j) => erInvitert(j) && !harSvarJa(j) && !harSvarNei(j),
+  ).length;
   const inviterePunkterFullfort =
-    (harInvitert ? 1 : 0) + (arrangementtidspunktHarPassert ? 1 : 0);
+    (harInvitert ? 1 : 0) + (tiltidspunktHarPassert ? 1 : 0);
   const totaltAntallInviterePunkter = 2;
 
   useEffect(() => {
@@ -115,6 +126,8 @@ export const StegviserProvider: FC<{ children: ReactNode }> = ({
     totaltAntallInviterePunkter,
     harInvitert,
     antallInviterte,
+    antallSvarJa,
+    antallVenterSvar,
     arrangementtidspunktHarPassert,
     tiltidspunktHarPassert,
   };

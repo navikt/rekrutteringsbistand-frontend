@@ -23,6 +23,10 @@ export const labelTekst = (hendelsetype: string) => {
       return 'oppdatert';
     case 'SLETT':
       return 'slettet';
+    case 'AVLYS':
+      return 'avlyst';
+    case 'AVPUBLISER':
+      return 'avpublisert';
     case 'PUBLISER':
       return 'publisert';
     case 'AVSLUTT_INVITASJON':

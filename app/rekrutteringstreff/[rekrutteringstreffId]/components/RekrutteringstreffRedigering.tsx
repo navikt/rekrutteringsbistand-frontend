@@ -15,6 +15,7 @@ import {
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import LeggTilArbeidsgiverForm from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/arbeidsgivere/_ui/LeggTilArbeidsgiverForm';
+import { erRekrutteringstreffPublisert } from '@/app/rekrutteringstreff/_utils/rekrutteringstreff';
 import {
   Button,
   Modal,
@@ -171,10 +172,9 @@ const RekrutteringstreffRedigering: FC<RekrutteringstreffRedigeringProps> = ({
   const innleggKiSjekket = (watch('innleggKiSjekket' as any) as any) ?? false;
   const anyKiFeil = !!tittelKiFeil || !!innleggKiFeil;
 
-  const harPublisert =
-    rekrutteringstreffHook.data?.hendelser?.some(
-      (h) => h.hendelsestype === 'PUBLISER',
-    ) ?? false;
+  const harPublisert = erRekrutteringstreffPublisert(
+    rekrutteringstreffHook.data?.hendelser,
+  );
 
   const [endringer, setEndringer] = useState<
     { etikett: string; gammelVerdi: string; nyVerdi: string }[]
