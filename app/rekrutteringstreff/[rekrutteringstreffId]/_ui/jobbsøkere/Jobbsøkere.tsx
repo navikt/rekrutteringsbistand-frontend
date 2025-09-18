@@ -10,6 +10,7 @@ import {
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
 import LeggTilJobbsøkerKnapp from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/LeggTilJobbsøkerKnapp';
+import { erRekrutteringstreffPublisert } from '@/app/rekrutteringstreff/_utils/rekrutteringstreff';
 import SWRLaster from '@/components/SWRLaster';
 import { BodyShort, Button, TagProps } from '@navikt/ds-react';
 import { format } from 'date-fns';
@@ -38,10 +39,9 @@ const Jobbsøkere = () => {
     InviterInternalDto[]
   >([]);
 
-  const harPublisert =
-    rekrutteringstreffData?.hendelser?.some(
-      (h) => h.hendelsestype === 'PUBLISER',
-    ) ?? false;
+  const harPublisert = erRekrutteringstreffPublisert(
+    rekrutteringstreffData?.hendelser,
+  );
 
   const harAvsluttetInvitasjon =
     rekrutteringstreffData?.hendelser?.some(

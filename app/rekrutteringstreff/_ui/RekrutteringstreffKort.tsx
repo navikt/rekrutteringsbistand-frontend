@@ -1,6 +1,7 @@
 'use client';
 
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
+import { erRekrutteringstreffPublisert } from '@/app/rekrutteringstreff/_utils/rekrutteringstreff';
 import { CalendarIcon, LocationPinIcon, PersonIcon } from '@navikt/aksel-icons';
 import {
   BodyShort,
@@ -24,9 +25,7 @@ const StatusTag: FunctionComponent<{ id: string }> = ({ id }) => {
     return null;
   }
 
-  const erPublisert = data?.hendelser?.some(
-    (hendelse) => hendelse.hendelsestype === 'PUBLISER',
-  );
+  const erPublisert = erRekrutteringstreffPublisert(data?.hendelser);
 
   return (
     <Tag size='small' variant={erPublisert ? 'success' : 'warning'}>

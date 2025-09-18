@@ -10,6 +10,7 @@ import {
 } from '@/app/api/rekrutteringstreff/opprettEllerOppdaterInnlegg';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
+import { erRekrutteringstreffPublisert } from '@/app/rekrutteringstreff/_utils/rekrutteringstreff';
 import { RekbisError } from '@/util/rekbisError';
 import { formatInTimeZone } from 'date-fns-tz';
 import { useCallback } from 'react';
@@ -28,14 +29,8 @@ export const erEditMode = (): boolean => {
   }
 };
 
-export const erPublisert = (treff: any): boolean => {
-  try {
-    const hendelser = Array.isArray(treff?.hendelser) ? treff.hendelser : [];
-    return hendelser.some((h: any) => h?.hendelsestype === 'PUBLISER');
-  } catch {
-    return false;
-  }
-};
+export const erPublisert = (treff: any): boolean =>
+  erRekrutteringstreffPublisert(treff?.hendelser);
 
 export const skalHindreAutosave = (treff: any, force?: boolean): boolean => {
   if (force) return false;
