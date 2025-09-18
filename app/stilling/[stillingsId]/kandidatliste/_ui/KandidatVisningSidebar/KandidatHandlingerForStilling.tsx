@@ -137,7 +137,7 @@ const KandidatHandlingerForStilling: FC<KandidatHandlingerForStillingProps> = ({
               />
             )}
           </div>
-          {cvDeltMedArbeidsgiver && (
+          {!cvFjernetFraArbeidsgiver && cvDeltMedArbeidsgiver && (
             <FjernDelingMedArbeidsgiver
               kandidatnummer={kandidat.kandidatnr}
               navKontor={valgtNavKontor?.navKontor ?? null}
