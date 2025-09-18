@@ -44,7 +44,6 @@ export enum RekrutteringstreffTabs {
 }
 
 const Rekrutteringstreff: FC = () => {
-  const router = useRouter();
   const [fane, setFane] = useQueryState('visFane', {
     defaultValue: RekrutteringstreffTabs.OM_TREFFET,
     clearOnDefault: true,
