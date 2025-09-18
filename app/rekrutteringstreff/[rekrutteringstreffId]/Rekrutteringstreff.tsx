@@ -10,9 +10,9 @@ import {
   avlysRekrutteringstreff,
   avpubliserRekrutteringstreff,
   RekrutteringstreffAdministrasjonHendelse,
-  slettRekrutteringstreff,
 } from '@/app/api/rekrutteringstreff/administrer-rekrutteringstreff/administrerRekrutteringstreff';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
+import SlettRekrutteringstreffModal from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/SlettRekrutteringstreffModal';
 import Aktiviteter from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/aktiviteter/Aktiviteter';
 import RekrutteringstreffArbeidsgivere from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/arbeidsgivere/Arbeidsgivere';
 import Jobbsøkere from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøkere/Jobbsøkere';
@@ -156,13 +156,6 @@ const Rekrutteringstreff: FC = () => {
     if (!rekrutteringstreffId) return;
     setProsesserer(hendelse);
     try {
-      if (hendelse === 'slett') {
-        await slettRekrutteringstreff(rekrutteringstreffId);
-        lukkModal();
-        router.push('/rekrutteringstreff');
-        return;
-      }
-
       if (hendelse === 'avpubliser') {
         await avpubliserRekrutteringstreff(rekrutteringstreffId);
       } else if (hendelse === 'avlys') {
@@ -205,12 +198,6 @@ const Rekrutteringstreff: FC = () => {
       heading: 'Avlys treffet',
       body: 'Deltakere får ikke lenger tilgang til innholdet og du kan ikke redigere videre. Dette kan ikke angres.',
       confirmLabel: 'Avlys treffet',
-      variant: 'danger',
-    },
-    slett: {
-      heading: 'Slett treffet',
-      body: 'Når treffet slettes forsvinner det fra oversikten og kan ikke gjenopprettes.',
-      confirmLabel: 'Ja, slett treffet',
       variant: 'danger',
     },
   };
@@ -266,15 +253,7 @@ const Rekrutteringstreff: FC = () => {
                       </Button>
                     </>
                   )}
-                  {status === 'UTKAST' && (
-                    <Button
-                      size='small'
-                      variant='danger'
-                      onClick={() => setAktivModal('slett')}
-                    >
-                      Slett
-                    </Button>
-                  )}
+                  {status === 'UTKAST' && <SlettRekrutteringstreffModal />}
                 </div>
               }
             />

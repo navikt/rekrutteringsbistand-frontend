@@ -29,7 +29,6 @@ import {
 import { FC, useEffect, useRef, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 
-// Modul-scope hjelpefunksjoner for stabil referanse i hooks
 const toIsoLocal = (
   date: Date | null | undefined,
   time?: string | null,
