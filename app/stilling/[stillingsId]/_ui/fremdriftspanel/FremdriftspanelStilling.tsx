@@ -67,10 +67,18 @@ export default function FremdriftspanelStilling({
                 ),
               ).length ?? 0;
 
-            const antallFåttJobben =
+            const antallFåttJobbenKandidatliste =
               kandidatliste?.kandidater.filter(
                 (k) => k.utfall === KandidatutfallTyper.FATT_JOBBEN,
               ).length ?? 0;
+
+            const antallFåttJobbenUsynlig =
+              kandidatliste.formidlingerAvUsynligKandidat.filter(
+                (k) => k.utfall === KandidatutfallTyper.FATT_JOBBEN,
+              ).length ?? 0;
+
+            const antallFåttJobben =
+              antallFåttJobbenKandidatliste + antallFåttJobbenUsynlig;
 
             if (erFullført) {
               return (
