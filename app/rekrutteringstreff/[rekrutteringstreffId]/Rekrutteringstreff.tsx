@@ -5,10 +5,14 @@ import RekrutteringstreffForhåndsvisning from './components/RekrutteringstreffF
 import RekrutteringstreffRedigering from './components/RekrutteringstreffRedigering';
 import { useAlleHendelser } from '@/app/api/rekrutteringstreff/[...slug]/useAlleHendelser';
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
+import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
 import {
   avlysRekrutteringstreff,
   avpubliserRekrutteringstreff,
+  publiserRekrutteringstreff,
+  fullførRekrutteringstreff,
+  gjenåpnRekrutteringstreff,
   RekrutteringstreffAdministrasjonHendelse,
 } from '@/app/api/rekrutteringstreff/status/utførRekrutteringstreffStatusHendelser';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
@@ -18,13 +22,22 @@ import RekrutteringstreffArbeidsgivere from '@/app/rekrutteringstreff/[rekrutter
 import Jobbsøkere from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøkere/Jobbsøkere';
 import KiLogg from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/kilogg/components/KiLogg';
 import Stegviser from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/om-treffet/stegviser/Stegviser';
+import { JobbsøkerHendelsestype } from '@/app/rekrutteringstreff/_domain/constants';
 import { getActiveStepFromHendelser } from '@/app/rekrutteringstreff/_utils/rekrutteringstreff';
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideLayout from '@/components/layout/SideLayout';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { RekbisError } from '@/util/rekbisError';
-import { BodyLong, Button, Modal, Tabs } from '@navikt/ds-react';
+import { EyeIcon } from '@navikt/aksel-icons';
+import {
+  BodyLong,
+  BodyShort,
+  Button,
+  Modal,
+  Tabs,
+  Box,
+} from '@navikt/ds-react';
 import { formatDistanceToNow } from 'date-fns';
 import { nb } from 'date-fns/locale/nb';
 import { parseAsString, useQueryState } from 'nuqs';
@@ -51,9 +64,10 @@ const Rekrutteringstreff: FC = () => {
 
   const rekrutteringstreffHook = useRekrutteringstreff(rekrutteringstreffId);
   const alleHendelserHook = useAlleHendelser(rekrutteringstreffId);
-  const { data: jobbsøkere } = useJobbsøkere(rekrutteringstreffId);
+  const { data: jobbsøkere = [] } = useJobbsøkere(rekrutteringstreffId);
   const { data: arbeidsgivere } =
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
+  const { data: innlegg } = useInnlegg(rekrutteringstreffId);
 
   const hendelser = rekrutteringstreffHook.data?.hendelser;
   const activeStep = useMemo(
@@ -65,10 +79,58 @@ const Rekrutteringstreff: FC = () => {
   const erIForhåndsvisning = avlyst ? true : modus !== 'edit';
 
   const redigerPublisertModalRef = useRef<HTMLDialogElement>(null);
+  const publiserModalRef = useRef<HTMLDialogElement>(null);
+  const fullførModalRef = useRef<HTMLDialogElement>(null);
+  const gjenåpneModalRef = useRef<HTMLDialogElement>(null);
+  const [publiserer, setPubliserer] = useState(false);
+  const [fullfører, setFullfører] = useState(false);
+  const [gjenåpner, setGjenåpner] = useState(false);
   const [aktivModal, setAktivModal] =
     useState<RekrutteringstreffAdministrasjonHendelse | null>(null);
   const [prosesserer, setProsesserer] =
     useState<RekrutteringstreffAdministrasjonHendelse | null>(null);
+
+  const rekrutteringstreff = rekrutteringstreffHook.data;
+
+  const sjekklisteItems = useMemo(() => {
+    const tittel = rekrutteringstreff?.tittel?.trim() ?? '';
+    return {
+      arbeidsgiver: (arbeidsgivere?.length ?? 0) > 0,
+      navn: tittel.length > 0 && tittel !== 'Nytt rekrutteringstreff',
+      sted:
+        !!rekrutteringstreff?.gateadresse?.trim() &&
+        !!rekrutteringstreff?.poststed?.trim(),
+      tidspunkt: !!rekrutteringstreff?.fraTid,
+      svarfrist: !!rekrutteringstreff?.svarfrist,
+      omtreffet: (innlegg?.length ?? 0) > 0,
+    };
+  }, [arbeidsgivere, rekrutteringstreff, innlegg]);
+
+  const sjekklistePunkterFullfort = useMemo(
+    () => Object.values(sjekklisteItems).filter(Boolean).length,
+    [sjekklisteItems],
+  );
+  const totaltAntallSjekklistePunkter = 6;
+  const erPubliseringklar =
+    sjekklistePunkterFullfort === totaltAntallSjekklistePunkter;
+
+  const harInvitert = useMemo(
+    () =>
+      jobbsøkere.some((j) =>
+        (j.hendelser ?? []).some(
+          (h) => h.hendelsestype === JobbsøkerHendelsestype.INVITER,
+        ),
+      ),
+    [jobbsøkere],
+  );
+
+  const tiltidspunktHarPassert = useMemo(() => {
+    const til = rekrutteringstreff?.tilTid
+      ? new Date(rekrutteringstreff.tilTid)
+      : undefined;
+    const now = new Date();
+    return !!(til && now >= til);
+  }, [rekrutteringstreff?.tilTid]);
 
   useEffect(() => {
     if (avlyst && modus === 'edit') {
@@ -147,6 +209,60 @@ const Rekrutteringstreff: FC = () => {
 
   const lukkModal = () => setAktivModal(null);
 
+  const onPubliserTreffet = async () => {
+    setPubliserer(true);
+    try {
+      await publiserRekrutteringstreff(rekrutteringstreffId);
+      await Promise.all([
+        rekrutteringstreffHook.mutate(),
+        alleHendelserHook.mutate(),
+      ]);
+    } catch (error) {
+      new RekbisError({
+        message: 'Publisering av rekrutteringstreff feilet',
+        error,
+      });
+    } finally {
+      setPubliserer(false);
+    }
+  };
+
+  const onFullførRekrutteringstreff = async () => {
+    setFullfører(true);
+    try {
+      await fullførRekrutteringstreff(rekrutteringstreffId);
+      await Promise.all([
+        rekrutteringstreffHook.mutate(),
+        alleHendelserHook.mutate(),
+      ]);
+    } catch (error) {
+      new RekbisError({
+        message: 'Avslutting av rekrutteringstreff feilet',
+        error,
+      });
+    } finally {
+      setFullfører(false);
+    }
+  };
+
+  const onGjenåpnTreffet = async () => {
+    setGjenåpner(true);
+    try {
+      await gjenåpnRekrutteringstreff(rekrutteringstreffId);
+      await Promise.all([
+        rekrutteringstreffHook.mutate(),
+        alleHendelserHook.mutate(),
+      ]);
+    } catch (error) {
+      new RekbisError({
+        message: 'Gjenåpning av rekrutteringstreff feilet',
+        error,
+      });
+    } finally {
+      setGjenåpner(false);
+    }
+  };
+
   const håndterAdministrasjon = async (
     hendelse: RekrutteringstreffAdministrasjonHendelse,
   ) => {
@@ -219,7 +335,7 @@ const Rekrutteringstreff: FC = () => {
               meta={lagretTekst}
               actionsRight={
                 <div className='flex items-center gap-2'>
-                  {!avlyst && (
+                  {!avlyst && activeStep !== 'FULLFØRE' && (
                     <Button
                       size='small'
                       variant='secondary'
@@ -230,6 +346,49 @@ const Rekrutteringstreff: FC = () => {
                       {erIForhåndsvisning ? 'Rediger' : 'Forhåndsvis'}
                     </Button>
                   )}
+
+                  {/* Steg-handlinger */}
+                  {!avlyst && activeStep === 'PUBLISERE' && (
+                    <Button
+                      size='small'
+                      className=''
+                      disabled={!erPubliseringklar || publiserer}
+                      loading={publiserer}
+                      onClick={() => publiserModalRef.current?.showModal()}
+                    >
+                      Publiser treffet
+                    </Button>
+                  )}
+
+                  {!avlyst && activeStep === 'INVITERE' && (
+                    <Button
+                      size='small'
+                      variant='primary'
+                      disabled={!harInvitert || fullfører}
+                      loading={fullfører}
+                      onClick={() => {
+                        if (!tiltidspunktHarPassert) {
+                          fullførModalRef.current?.showModal();
+                        } else {
+                          onFullførRekrutteringstreff();
+                        }
+                      }}
+                    >
+                      Fullfør
+                    </Button>
+                  )}
+
+                  {activeStep === 'FULLFØRE' && (
+                    <Button
+                      size='small'
+                      variant='primary'
+                      loading={gjenåpner}
+                      onClick={() => gjenåpneModalRef.current?.showModal()}
+                    >
+                      Gjenåpne
+                    </Button>
+                  )}
+
                   {harPublisert && !avlyst && (
                     <>
                       <Button
@@ -317,6 +476,110 @@ const Rekrutteringstreff: FC = () => {
             variant='secondary'
             size='small'
             onClick={() => redigerPublisertModalRef.current?.close()}
+          >
+            Avbryt
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal ref={publiserModalRef} header={{ heading: 'Publiser treffet' }}>
+        <Modal.Body>
+          <div className='bg-bg-subtle p-4 rounded-md'>
+            <Box.New>
+              <BodyShort className='font-bold'>
+                Dette skjer når du publiserer treffet
+              </BodyShort>
+              <div className='flex items-center gap-2 mt-4'>
+                <EyeIcon fontSize='1.5rem' aria-hidden />
+                <BodyShort className='flex-1'>
+                  Treffet blir synlig for:
+                </BodyShort>
+              </div>
+              <ul className='list-disc pl-16  mt-1'>
+                <li>Nav-ansatte i rekrutteringsbistand.</li>
+                <li>Nav brukere som blir invitert via aktivitetsplanen.</li>
+              </ul>
+            </Box.New>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant='primary'
+            size='small'
+            loading={publiserer}
+            onClick={async () => {
+              publiserModalRef.current?.close();
+              await onPubliserTreffet();
+            }}
+          >
+            Publiser
+          </Button>
+          <Button
+            variant='secondary'
+            size='small'
+            onClick={() => publiserModalRef.current?.close()}
+          >
+            Avbryt
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal
+        ref={fullførModalRef}
+        header={{ heading: 'Fullfør rekrutteringstreff?' }}
+      >
+        <Modal.Body>
+          <p>
+            Slutttidspunktet for rekrutteringstreffet har ikke passert ennå. Er
+            du sikker på at du vil fullføre rekrutteringsreffet likevel?
+          </p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            size='small'
+            loading={fullfører}
+            onClick={() => {
+              onFullførRekrutteringstreff();
+              fullførModalRef.current?.close();
+            }}
+          >
+            Fullfør
+          </Button>
+          <Button
+            size='small'
+            variant='secondary'
+            onClick={() => fullførModalRef.current?.close()}
+          >
+            Avbryt
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal
+        ref={gjenåpneModalRef}
+        header={{ heading: 'Gjenåpne rekrutteringstreffet?' }}
+      >
+        <Modal.Body>
+          <BodyLong>
+            Treffet blir aktivt igjen, og du kan gjøre endringer eller sende nye
+            invitasjoner. Er du sikker på at du vil fortsette?
+          </BodyLong>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            size='small'
+            loading={gjenåpner}
+            onClick={async () => {
+              await onGjenåpnTreffet();
+              gjenåpneModalRef.current?.close();
+            }}
+          >
+            Gjenåpne
+          </Button>
+          <Button
+            size='small'
+            variant='secondary'
+            onClick={() => gjenåpneModalRef.current?.close()}
           >
             Avbryt
           </Button>

@@ -91,12 +91,12 @@ export const rekrutteringstreffLabelTekst = (
       return 'fullført';
     case RekrutteringstreffHendelsestype.AVLYS:
       return 'avlyst';
+    case RekrutteringstreffHendelsestype.GJENÅPN: //Kun fullførte treff kan gjenåpnes
+      return 'gjenåpnet';
 
     // TODO: Brukes ikke for øyeblikket, men trengs når vi skal stanse for at flere deltakere blir lagt på og treffet er synlig for veiledere
     case RekrutteringstreffHendelsestype.AVPUBLISER:
       return 'avpublisert';
-    case RekrutteringstreffHendelsestype.GJENÅPN:
-      return 'gjenåpnet';
 
     default:
       return '';
