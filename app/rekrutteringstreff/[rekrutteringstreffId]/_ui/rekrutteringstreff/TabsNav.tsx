@@ -1,6 +1,6 @@
 'use client';
 
-import { RekrutteringstreffTabs } from '../../Rekrutteringstreff';
+import { RekrutteringstreffTabs } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/Rekrutteringstreff';
 import { Tabs } from '@navikt/ds-react';
 import { FC } from 'react';
 

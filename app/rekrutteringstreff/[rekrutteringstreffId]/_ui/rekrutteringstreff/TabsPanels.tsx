@@ -1,12 +1,12 @@
 'use client';
 
-import { RekrutteringstreffTabs } from '../../Rekrutteringstreff';
-import Aktiviteter from '../../_ui/aktiviteter/Aktiviteter';
-import RekrutteringstreffArbeidsgivere from '../../_ui/arbeidsgivere/Arbeidsgivere';
-import Jobbsøkere from '../../_ui/jobbsøkere/Jobbsøkere';
-import KiLogg from '../../_ui/kilogg/components/KiLogg';
-import RekrutteringstreffForhåndsvisning from '../../components/RekrutteringstreffForhåndsvisning';
-import RekrutteringstreffRedigering from '../../components/RekrutteringstreffRedigering';
+import { RekrutteringstreffTabs } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/Rekrutteringstreff';
+import Aktiviteter from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/aktiviteter/Aktiviteter';
+import RekrutteringstreffArbeidsgivere from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/arbeidsgivere/Arbeidsgivere';
+import Jobbsøkere from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøkere/Jobbsøkere';
+import KiLogg from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/kilogg/components/KiLogg';
+import RekrutteringstreffForhåndsvisning from '@/app/rekrutteringstreff/[rekrutteringstreffId]/components/RekrutteringstreffForhåndsvisning';
+import RekrutteringstreffRedigering from '@/app/rekrutteringstreff/[rekrutteringstreffId]/components/RekrutteringstreffRedigering';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { Tabs } from '@navikt/ds-react';
