@@ -1,9 +1,6 @@
 'use client';
 
 import { useRekrutteringstreffContext } from './RekrutteringstreffContext';
-import AdminModals, {
-  type AdminHendelse,
-} from './_ui/rekrutteringstreff/AdminModals';
 import HeaderActions from './_ui/rekrutteringstreff/HeaderActions';
 import TabsNav from './_ui/rekrutteringstreff/TabsNav';
 import TabsPanels from './_ui/rekrutteringstreff/TabsPanels';
@@ -13,7 +10,6 @@ import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
 import {
   avlysRekrutteringstreff,
-  avpubliserRekrutteringstreff,
   publiserRekrutteringstreff,
   fullførRekrutteringstreff,
   gjenåpnRekrutteringstreff,
@@ -29,7 +25,7 @@ import { Tabs } from '@navikt/ds-react';
 import { formatDistanceToNow } from 'date-fns';
 import { nb } from 'date-fns/locale/nb';
 import { parseAsString, useQueryState } from 'nuqs';
-import { FC, useEffect, useMemo, useRef, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 
 export enum RekrutteringstreffTabs {
   OM_TREFFET = 'om_treffet',
@@ -66,16 +62,10 @@ const Rekrutteringstreff: FC = () => {
   const avlyst = activeStep === 'AVLYST';
   const erIForhåndsvisning = avlyst ? true : modus !== 'edit';
 
-  const redigerPublisertModalRef = useRef<HTMLDialogElement>(null);
-  const publiserModalRef = useRef<HTMLDialogElement>(null);
-  const fullførModalRef = useRef<HTMLDialogElement>(null);
-  const gjenåpneModalRef = useRef<HTMLDialogElement>(null);
-  const administrasjonModalRef = useRef<HTMLDialogElement>(null);
   const [publiserer, setPubliserer] = useState(false);
   const [fullfører, setFullfører] = useState(false);
   const [gjenåpner, setGjenåpner] = useState(false);
-  const [aktivModal, setAktivModalState] = useState<AdminHendelse | null>(null);
-  const [prosesserer, setProsesserer] = useState<AdminHendelse | null>(null);
+  const [avlyser, setAvlyser] = useState(false);
 
   const rekrutteringstreff = rekrutteringstreffHook.data;
 
@@ -135,11 +125,12 @@ const Rekrutteringstreff: FC = () => {
 
   const handleToggleForhåndsvisning = (nyForhåndsvisning: boolean) => {
     if (avlyst) return;
-    if (!nyForhåndsvisning && harPublisert) {
-      redigerPublisertModalRef.current?.showModal();
-      return;
-    }
     setModus(nyForhåndsvisning ? '' : 'edit');
+    scrollToTop();
+  };
+
+  const onBekreftRedigerPublisert = () => {
+    setModus('edit');
     scrollToTop();
   };
 
@@ -171,22 +162,6 @@ const Rekrutteringstreff: FC = () => {
     if (!erIForhåndsvisning) return 'Rediger rekrutteringstreffet';
     return 'Rekrutteringstreff';
   }, [avlyst, harPublisert, erIForhåndsvisning]);
-
-  const lukkModal = () => {
-    administrasjonModalRef.current?.close();
-    setAktivModalState(null);
-    setProsesserer(null);
-  };
-
-  const setAktivAdministrasjonModal = (hendelse: AdminHendelse) => {
-    setAktivModalState(hendelse);
-    administrasjonModalRef.current?.showModal();
-  };
-
-  const openPubliserModal = () => publiserModalRef.current?.showModal();
-  const openFullførModal = () => fullførModalRef.current?.showModal();
-  const openGjenåpneModal = () => gjenåpneModalRef.current?.showModal();
-  const openAvlysModal = () => setAktivAdministrasjonModal('avlys');
 
   const onPubliserTreffet = async () => {
     setPubliserer(true);
@@ -242,54 +217,26 @@ const Rekrutteringstreff: FC = () => {
     }
   };
 
-  const håndterAdministrasjon = async (hendelse: AdminHendelse) => {
+  const bekreftAvlysning = async () => {
     if (!rekrutteringstreffId) return;
-    setProsesserer(hendelse);
+    setAvlyser(true);
     try {
-      if (hendelse === 'avpubliser') {
-        await avpubliserRekrutteringstreff(rekrutteringstreffId);
-      } else if (hendelse === 'avlys') {
-        await avlysRekrutteringstreff(rekrutteringstreffId);
-        setModus('');
-        scrollToTop();
-      }
+      await avlysRekrutteringstreff(rekrutteringstreffId);
+      setModus('');
+      scrollToTop();
 
       await Promise.all([
         rekrutteringstreffHook.mutate(),
         alleHendelserHook.mutate(),
       ]);
-      lukkModal();
     } catch (error) {
       new RekbisError({
         message: 'Handling på rekrutteringstreff feilet',
         error,
       });
     } finally {
-      setProsesserer(null);
+      setAvlyser(false);
     }
-  };
-
-  const modalKonfig: Record<
-    AdminHendelse,
-    {
-      heading: string;
-      body: string;
-      confirmLabel: string;
-      variant: 'primary' | 'secondary' | 'danger';
-    }
-  > = {
-    avpubliser: {
-      heading: 'Avpubliser treffet',
-      body: 'Treffet blir utilgjengelig for deltakere. Du kan publisere på nytt senere.',
-      confirmLabel: 'Avpubliser',
-      variant: 'secondary',
-    },
-    avlys: {
-      heading: 'Avlys treffet',
-      body: 'Deltakere får ikke lenger tilgang til innholdet og du kan ikke redigere videre. Dette kan ikke angres.',
-      confirmLabel: 'Avlys treffet',
-      variant: 'danger',
-    },
   };
 
   return (
@@ -327,11 +274,12 @@ const Rekrutteringstreff: FC = () => {
                   harInvitert={harInvitert}
                   tiltidspunktHarPassert={tiltidspunktHarPassert}
                   onToggleForhåndsvisning={handleToggleForhåndsvisning}
-                  onOpenPubliser={openPubliserModal}
-                  onOpenFullfør={openFullførModal}
-                  onOpenGjenåpne={openGjenåpneModal}
-                  onOpenAvlys={openAvlysModal}
-                  onFullførDirekte={onFullførRekrutteringstreff}
+                  onBekreftRedigerPublisert={onBekreftRedigerPublisert}
+                  onPubliser={onPubliserTreffet}
+                  onFullfør={onFullførRekrutteringstreff}
+                  onGjenåpne={onGjenåpnTreffet}
+                  onBekreftAvlys={bekreftAvlysning}
+                  prosessererAvlys={avlyser}
                 />
               }
             />
@@ -346,30 +294,6 @@ const Rekrutteringstreff: FC = () => {
           />
         </div>
       </SideLayout>
-
-      <AdminModals
-        redigerPublisertModalRef={redigerPublisertModalRef}
-        publiserModalRef={publiserModalRef}
-        fullførModalRef={fullførModalRef}
-        gjenåpneModalRef={gjenåpneModalRef}
-        administrasjonModalRef={administrasjonModalRef}
-        publiserer={publiserer}
-        fullfører={fullfører}
-        gjenåpner={gjenåpner}
-        onBekreftRedigerPublisert={() => {
-          redigerPublisertModalRef.current?.close();
-          setModus('edit');
-          scrollToTop();
-        }}
-        onPubliser={onPubliserTreffet}
-        onFullfør={onFullførRekrutteringstreff}
-        onGjenåpne={onGjenåpnTreffet}
-        aktivModal={aktivModal}
-        modalKonfig={modalKonfig}
-        prosesserer={prosesserer}
-        onAdministrasjon={håndterAdministrasjon}
-        onCloseAdministrasjonModal={lukkModal}
-      />
     </Tabs>
   );
 };

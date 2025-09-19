@@ -1,7 +1,11 @@
 'use client';
 
-import SlettRekrutteringstreffModal from '../../_ui/SlettRekrutteringstreffModal';
-import { Button } from '@navikt/ds-react';
+import AvlysRekrutteringstreffButton from './AvlysRekrutteringstreffButton';
+import FullforRekrutteringstreffButton from './FullforRekrutteringstreffButton';
+import GjenapneRekrutteringstreffButton from './GjenapneRekrutteringstreffButton';
+import PubliserRekrutteringstreffButton from './PubliserRekrutteringstreffButton';
+import RedigerPublisertButton from './RedigerPublisertButton';
+import SlettRekrutteringstreffModal from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/SlettRekrutteringstreffModal';
 import { FC } from 'react';
 
 export type ActiveStep =
@@ -23,11 +27,12 @@ type Props = {
   harInvitert: boolean;
   tiltidspunktHarPassert: boolean;
   onToggleForhåndsvisning: (ny: boolean) => void;
-  onOpenPubliser: () => void;
-  onOpenFullfør: () => void;
-  onOpenGjenåpne: () => void;
-  onOpenAvlys: () => void;
-  onFullførDirekte: () => void;
+  onBekreftRedigerPublisert: () => void;
+  onPubliser: () => Promise<void> | void;
+  onFullfør: () => Promise<void> | void;
+  onGjenåpne: () => Promise<void> | void;
+  onBekreftAvlys: () => Promise<void> | void;
+  prosessererAvlys: boolean;
 };
 
 const HeaderActions: FC<Props> = ({
@@ -41,71 +46,55 @@ const HeaderActions: FC<Props> = ({
   harInvitert,
   tiltidspunktHarPassert,
   onToggleForhåndsvisning,
-  onOpenPubliser,
-  onOpenFullfør,
-  onOpenGjenåpne,
-  onOpenAvlys,
-  onFullførDirekte,
+  onBekreftRedigerPublisert,
+  onPubliser,
+  onFullfør,
+  onGjenåpne,
+  onBekreftAvlys,
+  prosessererAvlys,
 }) => {
   const harPublisert = activeStep === 'INVITERE' || activeStep === 'FULLFØRE';
 
   return (
     <div className='flex items-center gap-2'>
       {!avlyst && activeStep !== 'FULLFØRE' && (
-        <Button
-          size='small'
-          variant='secondary'
-          onClick={() => onToggleForhåndsvisning(!erIForhåndsvisning)}
-        >
-          {erIForhåndsvisning ? 'Rediger' : 'Forhåndsvis'}
-        </Button>
+        <RedigerPublisertButton
+          erIForhåndsvisning={erIForhåndsvisning}
+          harPublisert={harPublisert}
+          onToggleForhåndsvisning={onToggleForhåndsvisning}
+          onBekreftRedigerPublisert={onBekreftRedigerPublisert}
+        />
       )}
 
       {!avlyst && activeStep === 'PUBLISERE' && (
-        <Button
-          size='small'
-          className=''
-          disabled={!erPubliseringklar || publiserer}
-          loading={publiserer}
-          onClick={onOpenPubliser}
-        >
-          Publiser treffet
-        </Button>
+        <PubliserRekrutteringstreffButton
+          erPubliseringklar={erPubliseringklar}
+          publiserer={publiserer}
+          onPubliser={onPubliser}
+        />
       )}
 
       {!avlyst && activeStep === 'INVITERE' && (
-        <Button
-          size='small'
-          variant='primary'
-          disabled={!harInvitert || fullfører}
-          loading={fullfører}
-          onClick={() => {
-            if (!tiltidspunktHarPassert) {
-              onOpenFullfør();
-            } else {
-              onFullførDirekte();
-            }
-          }}
-        >
-          Fullfør
-        </Button>
+        <FullforRekrutteringstreffButton
+          fullfører={fullfører}
+          harInvitert={harInvitert}
+          tiltidspunktHarPassert={tiltidspunktHarPassert}
+          onFullfør={onFullfør}
+        />
       )}
 
       {activeStep === 'FULLFØRE' && (
-        <Button
-          size='small'
-          variant='primary'
-          loading={gjenåpner}
-          onClick={onOpenGjenåpne}
-        >
-          Gjenåpne
-        </Button>
+        <GjenapneRekrutteringstreffButton
+          gjenåpner={gjenåpner}
+          onGjenåpne={onGjenåpne}
+        />
       )}
 
       {harPublisert && !avlyst && (
-        <Button size='small' variant='danger' onClick={onOpenAvlys}>
-          Avlys treffet
-        </Button>
+        <AvlysRekrutteringstreffButton
+          prosessererAvlys={prosessererAvlys}
+          onBekreftAvlys={onBekreftAvlys}
+        />
       )}
 
       {activeStep === 'PUBLISERE' && <SlettRekrutteringstreffModal />}
