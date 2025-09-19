@@ -74,12 +74,6 @@ const ArbeidsgiverHendelserKort: FC<Props> = ({ arbeidsgiverHendelserDTO }) => {
                 hendelseType={ArbeidsgiverHendelsestype.OPPRETT}
                 antall={antallLagtTil}
               />
-
-              <JobbsøkerHendelseLabel
-                icon={<EnvelopeClosedIcon className='text-blue-400' />}
-                hendelseType={JobbsøkerHendelsestype.INVITER}
-                antall={0}
-              />
             </div>
 
             <Heading size='xsmall' level='4' className='mt-8 mb-2'>

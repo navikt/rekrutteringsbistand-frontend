@@ -15,12 +15,7 @@ interface BaseProps<T extends string> {
   antall?: number;
 }
 
-const capitalizeFirstLetter = (str: string) =>
-  str.charAt(0).toUpperCase() + str.slice(1);
-
-// 1) Jobbsøker
-
-export const jobbsøkerLabelTekst = (t: JobbsøkerHendelsestype) => {
+export const jobbsøkerLabelTekst = (t: JobbsøkerHendelsestype | string) => {
   switch (t) {
     case JobbsøkerHendelsestype.OPPRETT:
       return 'lagt til';
@@ -39,21 +34,18 @@ export const jobbsøkerLabelTekst = (t: JobbsøkerHendelsestype) => {
     case JobbsøkerHendelsestype.SVAR_NEI_TIL_INVITASJON:
       return 'svart nei';
     default:
-      return '';
+      return t.toLowerCase();
   }
 };
-export const JobbsøkerHendelseLabel: FC<BaseProps<JobbsøkerHendelsestype>> = ({
-  icon,
-  hendelseType,
-  antall,
-}) => {
+export const JobbsøkerHendelseLabel: FC<
+  BaseProps<JobbsøkerHendelsestype | string>
+> = ({ icon, hendelseType, antall }) => {
   const lbl = jobbsøkerLabelTekst(hendelseType);
-  const text =
-    antall === undefined ? capitalizeFirstLetter(lbl) : `${antall} ${lbl}`;
+  const text = antall === undefined ? lbl : `${antall} ${lbl}`;
   return (
     <div className='flex flex-nowrap items-center space-x-2'>
       {icon}
-      <BodyShort>{text}</BodyShort>
+      <BodyShort className='capitalize'>{text}</BodyShort>
     </div>
   );
 };
@@ -75,12 +67,11 @@ export const ArbeidsgiverHendelseLabel: FC<
   BaseProps<ArbeidsgiverHendelsestype>
 > = ({ icon, hendelseType, antall }) => {
   const lbl = arbeidsgiverLabelTekst(hendelseType);
-  const text =
-    antall === undefined ? capitalizeFirstLetter(lbl) : `${antall} ${lbl}`;
+  const text = antall === undefined ? lbl : `${antall} ${lbl}`;
   return (
     <div className='flex flex-nowrap items-center space-x-2'>
       {icon}
-      <BodyShort>{text}</BodyShort>
+      <BodyShort className='capitalize'>{text}</BodyShort>
     </div>
   );
 };
@@ -115,12 +106,11 @@ export const RekrutteringstreffHendelseLabel: FC<
   BaseProps<RekrutteringstreffHendelsestype>
 > = ({ icon, hendelseType, antall }) => {
   const lbl = rekrutteringstreffLabelTekst(hendelseType);
-  const text =
-    antall === undefined ? capitalizeFirstLetter(lbl) : `${antall} ${lbl}`;
+  const text = antall === undefined ? lbl : `${antall} ${lbl}`;
   return (
     <div className='flex flex-nowrap items-center space-x-2'>
       {icon}
-      <BodyShort>{text}</BodyShort>
+      <BodyShort className='capitalize'>{text}</BodyShort>
     </div>
   );
 };

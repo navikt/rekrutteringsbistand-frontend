@@ -28,14 +28,29 @@ const JobbsøkerHendelserKort: FC<JobbsøkerHendelserKortProps> = ({
   const antallLagtTilHendelser = jobbsøkerHendelserDTO.filter(
     (h) => h.hendelsestype === JobbsøkerHendelsestype.OPPRETT,
   ).length;
+  const antallInviterte = jobbsøkerHendelserDTO.filter(
+    (h) => h.hendelsestype === JobbsøkerHendelsestype.INVITER,
+  ).length;
+  const antallSvarJa = jobbsøkerHendelserDTO.filter(
+    (h) => h.hendelsestype === JobbsøkerHendelsestype.SVAR_JA_TIL_INVITASJON,
+  ).length;
+  const antallSvarNei = jobbsøkerHendelserDTO.filter(
+    (h) => h.hendelsestype === JobbsøkerHendelsestype.SVAR_NEI_TIL_INVITASJON,
+  ).length;
+  const antallUbesvart = Math.max(
+    0,
+    antallInviterte - antallSvarJa - antallSvarNei,
+  );
   const siste5Hendelser = jobbsøkerHendelserDTO.slice(-5);
 
   return (
     <div>
       <Box.New
         background='neutral-softA'
-        className='mb-4 flex flex-col items-center justify-center'
+        className='mb-4'
+        borderColor='neutral-subtleA'
         borderRadius='xlarge'
+        borderWidth='1'
         padding='6'
       >
         <div>
@@ -47,7 +62,7 @@ const JobbsøkerHendelserKort: FC<JobbsøkerHendelserKortProps> = ({
               <div className='p-4 mb-12 flex flex-col items-center'>
                 <Box.New
                   background='neutral-softA'
-                  className='rounded-full mb-2 flex items-center justify-center'
+                  className='rounded-full mb-2'
                 >
                   <SVGDarkmode
                     light={JobbsokerHeartUpIkon}
@@ -70,11 +85,27 @@ const JobbsøkerHendelserKort: FC<JobbsøkerHendelserKortProps> = ({
                     hendelseType={JobbsøkerHendelsestype.OPPRETT}
                     antall={antallLagtTilHendelser}
                   />
-
                   <JobbsøkerHendelseLabel
                     icon={<EnvelopeClosedIcon className='text-blue-400' />}
                     hendelseType={JobbsøkerHendelsestype.INVITER}
-                    antall={0}
+                    antall={antallInviterte}
+                  />
+                  <JobbsøkerHendelseLabel
+                    icon={<CheckmarkCircleIcon className='text-green-500' />}
+                    hendelseType={JobbsøkerHendelsestype.SVAR_JA_TIL_INVITASJON}
+                    antall={antallSvarJa}
+                  />
+                  <JobbsøkerHendelseLabel
+                    icon={<XMarkOctagonIcon className='text-violet-300' />}
+                    hendelseType={
+                      JobbsøkerHendelsestype.SVAR_NEI_TIL_INVITASJON
+                    }
+                    antall={antallSvarNei}
+                  />
+                  <JobbsøkerHendelseLabel
+                    icon={<QuestionmarkDiamondIcon className='text-sky-300' />}
+                    hendelseType={'ubesvart'}
+                    antall={antallUbesvart}
                   />
                 </div>
 
