@@ -3,6 +3,7 @@ import { useKandidatlisteForEier } from '@/app/api/kandidat/useKandidatlisteForE
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import EndreSøkeforslag from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/EndreSøkeforslag';
 import RedigerStillingKnapp from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/RedigerStillingKnapp';
+import StoppStillingKnapp from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/StoppStillingKnapp';
 import FullførStillingKnapp from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/fullfør-stilling/FullførStillingKnapp';
 import GjenåpneStillingKnapp from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/fullfør-stilling/GjenåpneStillingKnapp';
 import { KandidatutfallTyper } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
@@ -39,6 +40,26 @@ export default function FremdriftspanelStilling({
   const erJobbmesse =
     stillingsData.stillingsinfo?.stillingskategori ===
     Stillingskategori.Jobbmesse;
+
+  // Håndter 404-feil eller andre feil hvor kandidatliste ikke finnes
+  const kandidatlisteFeil = kandidatlisteHook.error;
+  const er404Feil =
+    kandidatlisteFeil?.status === 404 ||
+    kandidatlisteFeil?.message?.includes('404');
+
+  // Hvis kandidatliste er slettet (404), vis bare redigeringsknapp
+  if (er404Feil || (kandidatlisteFeil && !kandidatlisteHook.isLoading)) {
+    return (
+      <TilgangskontrollForInnhold
+        skjulVarsel
+        kreverEnAvRollene={[
+          Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+        ]}
+      >
+        <RedigerStillingKnapp />
+      </TilgangskontrollForInnhold>
+    );
+  }
 
   return (
     <TilgangskontrollForInnhold
@@ -83,7 +104,7 @@ export default function FremdriftspanelStilling({
             if (erFullført) {
               return (
                 <div className={dropDown ? 'p-4' : ''}>
-                  {/* <StoppStillingKnapp /> */}
+                  <StoppStillingKnapp />
                   <GjenåpneStillingKnapp />
 
                   <div className='flex flex-col gap-6 mt-6'>
