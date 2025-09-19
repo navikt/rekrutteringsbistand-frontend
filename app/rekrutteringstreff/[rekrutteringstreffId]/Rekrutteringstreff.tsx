@@ -10,19 +10,15 @@ import {
   avlysRekrutteringstreff,
   avpubliserRekrutteringstreff,
   RekrutteringstreffAdministrasjonHendelse,
-  slettRekrutteringstreff,
 } from '@/app/api/rekrutteringstreff/administrer-rekrutteringstreff/administrerRekrutteringstreff';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
+import SlettRekrutteringstreffModal from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/SlettRekrutteringstreffModal';
 import Aktiviteter from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/aktiviteter/Aktiviteter';
 import RekrutteringstreffArbeidsgivere from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/arbeidsgivere/Arbeidsgivere';
 import Jobbsøkere from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøkere/Jobbsøkere';
 import KiLogg from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/kilogg/components/KiLogg';
 import Stegviser from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/om-treffet/stegviser/Stegviser';
-import {
-  erRekrutteringstreffAvlyst,
-  erRekrutteringstreffPublisert,
-  getRekrutteringstreffStatus,
-} from '@/app/rekrutteringstreff/_utils/rekrutteringstreff';
+import { getActiveStepFromHendelser } from '@/app/rekrutteringstreff/_utils/rekrutteringstreff';
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideLayout from '@/components/layout/SideLayout';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
@@ -31,7 +27,6 @@ import { RekbisError } from '@/util/rekbisError';
 import { BodyLong, Button, Modal, Tabs } from '@navikt/ds-react';
 import { formatDistanceToNow } from 'date-fns';
 import { nb } from 'date-fns/locale/nb';
-import { useRouter } from 'next/navigation';
 import { parseAsString, useQueryState } from 'nuqs';
 import { FC, useEffect, useMemo, useRef, useState } from 'react';
 
@@ -44,7 +39,6 @@ export enum RekrutteringstreffTabs {
 }
 
 const Rekrutteringstreff: FC = () => {
-  const router = useRouter();
   const [fane, setFane] = useQueryState('visFane', {
     defaultValue: RekrutteringstreffTabs.OM_TREFFET,
     clearOnDefault: true,
@@ -62,9 +56,12 @@ const Rekrutteringstreff: FC = () => {
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
 
   const hendelser = rekrutteringstreffHook.data?.hendelser;
-  const status = getRekrutteringstreffStatus(hendelser);
-  const harPublisert = erRekrutteringstreffPublisert(hendelser);
-  const avlyst = erRekrutteringstreffAvlyst(hendelser);
+  const activeStep = useMemo(
+    () => getActiveStepFromHendelser(hendelser),
+    [hendelser],
+  );
+  const harPublisert = activeStep === 'INVITERE' || activeStep === 'FULLFØRE';
+  const avlyst = activeStep === 'AVLYST';
   const erIForhåndsvisning = avlyst ? true : modus !== 'edit';
 
   const redigerPublisertModalRef = useRef<HTMLDialogElement>(null);
@@ -156,13 +153,6 @@ const Rekrutteringstreff: FC = () => {
     if (!rekrutteringstreffId) return;
     setProsesserer(hendelse);
     try {
-      if (hendelse === 'slett') {
-        await slettRekrutteringstreff(rekrutteringstreffId);
-        lukkModal();
-        router.push('/rekrutteringstreff');
-        return;
-      }
-
       if (hendelse === 'avpubliser') {
         await avpubliserRekrutteringstreff(rekrutteringstreffId);
       } else if (hendelse === 'avlys') {
@@ -207,12 +197,6 @@ const Rekrutteringstreff: FC = () => {
       confirmLabel: 'Avlys treffet',
       variant: 'danger',
     },
-    slett: {
-      heading: 'Slett treffet',
-      body: 'Når treffet slettes forsvinner det fra oversikten og kan ikke gjenopprettes.',
-      confirmLabel: 'Ja, slett treffet',
-      variant: 'danger',
-    },
   };
 
   const aktivModalKonfig = aktivModal ? modalKonfig[aktivModal] : undefined;
@@ -220,14 +204,12 @@ const Rekrutteringstreff: FC = () => {
   return (
     <Tabs value={fane} onChange={(val) => setFane(val)}>
       <SideLayout
-        skjulFremdriftspanel={avlyst}
+        skjulFremdriftspanel={false}
         fremdriftspanel={
-          !avlyst ? (
-            <Stegviser
-              onToggleForhåndsvisning={handleToggleForhåndsvisning}
-              erIForhåndsvisning={erIForhåndsvisning}
-            />
-          ) : undefined
+          <Stegviser
+            onToggleForhåndsvisning={handleToggleForhåndsvisning}
+            erIForhåndsvisning={erIForhåndsvisning}
+          />
         }
         header={
           <PanelHeader>
@@ -248,7 +230,7 @@ const Rekrutteringstreff: FC = () => {
                       {erIForhåndsvisning ? 'Rediger' : 'Forhåndsvis'}
                     </Button>
                   )}
-                  {harPublisert && !avlyst && !erIForhåndsvisning && (
+                  {harPublisert && !avlyst && (
                     <>
                       <Button
                         size='small'
@@ -266,14 +248,8 @@ const Rekrutteringstreff: FC = () => {
                       </Button>
                     </>
                   )}
-                  {status === 'UTKAST' && (
-                    <Button
-                      size='small'
-                      variant='danger'
-                      onClick={() => setAktivModal('slett')}
-                    >
-                      Slett
-                    </Button>
+                  {activeStep === 'PUBLISERE' && (
+                    <SlettRekrutteringstreffModal />
                   )}
                 </div>
               }

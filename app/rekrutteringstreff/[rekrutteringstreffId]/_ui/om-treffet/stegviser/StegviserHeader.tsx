@@ -125,7 +125,7 @@ const StegviserHeader: FC<Props> = ({
   return (
     <div className='w-full'>
       <div className='grid grid-cols-2 gap-2 w-full'>
-        {activeStep != 3 && (
+        {activeStep !== 'FULLFØRE' && (
           <Button
             size='small'
             variant='secondary'
@@ -135,7 +135,7 @@ const StegviserHeader: FC<Props> = ({
             {erIForhåndsvisning ? 'Rediger' : 'Forhåndsvis'}
           </Button>
         )}
-        {activeStep === 1 ? (
+        {activeStep === 'PUBLISERE' ? (
           <Button
             disabled={!erPubliseringklar || publiserer}
             loading={publiserer}
@@ -145,22 +145,33 @@ const StegviserHeader: FC<Props> = ({
           >
             Publiser treffet
           </Button>
+        ) : activeStep === 'INVITERE' ? (
+          <Button
+            variant='primary'
+            size='small'
+            disabled={!harInvitert || fullfører}
+            loading={fullfører}
+            className='w-full'
+            onClick={onKlikkFullfor}
+          >
+            Fullfør
+          </Button>
         ) : (
-          activeStep === 2 && (
+          activeStep === 'AVPUBLISERT' && (
             <Button
-              variant='primary'
               size='small'
-              disabled={!harInvitert || fullfører}
-              loading={fullfører}
+              variant='primary'
               className='w-full'
-              onClick={onKlikkFullfor}
+              disabled={publiserer}
+              loading={publiserer}
+              onClick={() => publiserModalRef.current?.showModal()}
             >
-              Fullfør
+              Aktiver på nytt
             </Button>
           )
         )}
       </div>
-      {activeStep === 3 && (
+      {activeStep === 'FULLFØRE' && (
         <Button
           variant='primary'
           size='small'
@@ -173,14 +184,14 @@ const StegviserHeader: FC<Props> = ({
       )}
 
       <div className='w-full mt-12'>
-        {activeStep === 1 && (
+        {activeStep === 'PUBLISERE' && (
           <ProgressMedTeller
             value={sjekklistePunkterFullfort}
             max={totaltAntallSjekklistePunkter}
             ariaLabel='Fremdrift for publisering'
           />
         )}
-        {activeStep === 2 && (
+        {activeStep === 'INVITERE' && (
           <ProgressMedTeller
             value={inviterePunkterFullfort}
             max={totaltAntallInviterePunkter}

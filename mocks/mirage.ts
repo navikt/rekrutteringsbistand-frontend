@@ -53,6 +53,7 @@ import {
   oppdaterInnleggfMirage,
   opprettInnleggfMirage,
 } from '@/app/api/rekrutteringstreff/opprettEllerOppdaterInnlegg';
+import { slettRekrutteringstreffMirage } from '@/app/api/rekrutteringstreff/slett-rekrutteringstreff/slettRekrutteringstreff';
 import { rekrutteringstreffMirage } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { rekrutteringstreffOversiktMirage } from '@/app/api/rekrutteringstreff/useRekrutteringstreffOversikt';
 import { statistikkMirage } from '@/app/api/statistikk/useStatistikk';
@@ -119,6 +120,7 @@ export function makeServer({ environment = 'test' } = {}) {
       rekruteringstreffArbeidsgivereMirage(this);
       fjernArbeidsgiverMirage(this);
       administrerRekrutteringstreffMirage(this);
+      slettRekrutteringstreffMirage(this);
       innleggMirage(this);
       opprettInnleggfMirage(this);
       oppdaterInnleggfMirage(this);

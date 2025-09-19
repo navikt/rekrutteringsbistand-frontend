@@ -31,7 +31,7 @@ const RekrutteringstreffArbeidsgivere = () => {
     () => getActiveStepFromHendelser(treff?.hendelser),
     [treff?.hendelser],
   );
-  const erInviterSteg = activeStep === 2;
+  const erInviterSteg = activeStep === 'INVITERE';
 
   const leggTilModalRef = useRef<HTMLDialogElement>(null);
 
