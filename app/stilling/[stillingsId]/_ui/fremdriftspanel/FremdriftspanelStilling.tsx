@@ -3,7 +3,6 @@ import { useKandidatlisteForEier } from '@/app/api/kandidat/useKandidatlisteForE
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import EndreSøkeforslag from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/EndreSøkeforslag';
 import RedigerStillingKnapp from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/RedigerStillingKnapp';
-import StoppStillingKnapp from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/StoppStillingKnapp';
 import FullførStillingKnapp from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/fullfør-stilling/FullførStillingKnapp';
 import GjenåpneStillingKnapp from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/fullfør-stilling/GjenåpneStillingKnapp';
 import { KandidatutfallTyper } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
@@ -84,7 +83,7 @@ export default function FremdriftspanelStilling({
             if (erFullført) {
               return (
                 <div className={dropDown ? 'p-4' : ''}>
-                  <StoppStillingKnapp />
+                  {/* <StoppStillingKnapp /> */}
                   <GjenåpneStillingKnapp />
 
                   <div className='flex flex-col gap-6 mt-6'>
