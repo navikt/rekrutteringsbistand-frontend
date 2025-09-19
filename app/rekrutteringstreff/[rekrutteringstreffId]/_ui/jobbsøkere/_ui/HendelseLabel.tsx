@@ -2,9 +2,6 @@ import {
   JobbsøkerHendelsestype,
   ArbeidsgiverHendelsestype,
   RekrutteringstreffHendelsestype,
-  JobbsøkerHendelsestypeLabel,
-  ArbeidsgiverHendelsestypeLabel,
-  RekrutteringstreffHendelsestypeLabel,
 } from '@/app/rekrutteringstreff/_domain/constants';
 import { BodyShort } from '@navikt/ds-react';
 import { FC, ReactNode } from 'react';

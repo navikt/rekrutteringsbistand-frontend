@@ -2,24 +2,12 @@
 
 import { ArbeidsgiverHendelserDTO } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgiverHendelser';
 import LeggTilArbeidsgiverModal from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/LeggTilArbeidsgiverModal';
-import {
-  ArbeidsgiverHendelseLabel,
-  JobbsøkerHendelseLabel,
-} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøkere/_ui/HendelseLabel';
-import {
-  ArbeidsgiverHendelsestype,
-  JobbsøkerHendelsestype,
-} from '@/app/rekrutteringstreff/_domain/constants';
+import { ArbeidsgiverHendelseLabel } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøkere/_ui/HendelseLabel';
+import { ArbeidsgiverHendelsestype } from '@/app/rekrutteringstreff/_domain/constants';
 import SVGDarkmode from '@/components/layout/SVGDarkmode';
 import ArbeidsgiverDarkIkon from '@/public/ikoner/arbeidsgiver-dark.svg';
 import ArbeidsgiverIkon from '@/public/ikoner/arbeidsgiver.svg';
-import {
-  CheckmarkCircleIcon,
-  EnvelopeClosedIcon,
-  PlusCircleIcon,
-  QuestionmarkDiamondIcon,
-  XMarkOctagonIcon,
-} from '@navikt/aksel-icons';
+import { PlusCircleIcon } from '@navikt/aksel-icons';
 import { BodyShort, Box, Button, Heading } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import { nb } from 'date-fns/locale/nb';
