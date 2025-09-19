@@ -1,25 +1,51 @@
 'use client';
 
+import { publiserRekrutteringstreff } from '@/app/api/rekrutteringstreff/status/utførRekrutteringstreffStatusHendelser';
+import { RekbisError } from '@/util/rekbisError';
 import { EyeIcon } from '@navikt/aksel-icons';
 import { BodyShort, Box, Button, Modal } from '@navikt/ds-react';
-import { FC, useRef } from 'react';
+import { FC, useRef, useState } from 'react';
 
 type Props = {
   erPubliseringklar: boolean;
-  publiserer: boolean;
-  onPubliser: () => Promise<void> | void;
+  rekrutteringstreffId: string;
+  oppdaterData: () => Promise<void>;
 };
 
 const PubliserRekrutteringstreffButton: FC<Props> = ({
   erPubliseringklar,
-  publiserer,
-  onPubliser,
+  rekrutteringstreffId,
+  oppdaterData,
 }) => {
+  const [laster, setLaster] = useState(false);
   const modalRef = useRef<HTMLDialogElement>(null);
 
+  const åpneModal = () => modalRef.current?.showModal();
+  const lukkModal = () => {
+    if (!laster) {
+      modalRef.current?.close();
+    }
+  };
+
   const handleBekreftPublisering = async () => {
-    modalRef.current?.close();
-    await onPubliser();
+    if (laster) return;
+    setLaster(true);
+    let skalLukke = false;
+    try {
+      await publiserRekrutteringstreff(rekrutteringstreffId);
+      await oppdaterData();
+      skalLukke = true;
+    } catch (error) {
+      new RekbisError({
+        message: 'Publisering av rekrutteringstreff feilet',
+        error,
+      });
+    } finally {
+      setLaster(false);
+      if (skalLukke) {
+        modalRef.current?.close();
+      }
+    }
   };
 
   return (
@@ -27,14 +53,22 @@ const PubliserRekrutteringstreffButton: FC<Props> = ({
       <Button
         type='button'
         size='small'
-        disabled={!erPubliseringklar || publiserer}
-        loading={publiserer}
-        onClick={() => modalRef.current?.showModal()}
+        disabled={!erPubliseringklar || laster}
+        loading={laster}
+        onClick={åpneModal}
       >
         Publiser treffet
       </Button>
 
-      <Modal ref={modalRef} header={{ heading: 'Publiser treffet' }}>
+      <Modal
+        ref={modalRef}
+        onClose={() => {
+          if (laster) {
+            modalRef.current?.showModal();
+          }
+        }}
+        header={{ heading: 'Publiser treffet' }}
+      >
         <Modal.Body>
           <div className='bg-bg-subtle p-4 rounded-md'>
             <Box.New>
@@ -59,8 +93,8 @@ const PubliserRekrutteringstreffButton: FC<Props> = ({
             type='button'
             variant='primary'
             size='small'
-            loading={publiserer}
-            onClick={handleBekreftPublisering}
+            loading={laster}
+            onClick={() => void handleBekreftPublisering()}
           >
             Publiser
           </Button>
@@ -68,7 +102,8 @@ const PubliserRekrutteringstreffButton: FC<Props> = ({
             type='button'
             variant='secondary'
             size='small'
-            onClick={() => modalRef.current?.close()}
+            disabled={laster}
+            onClick={lukkModal}
           >
             Avbryt
           </Button>

@@ -1,34 +1,61 @@
 'use client';
 
+import { fullførRekrutteringstreff } from '@/app/api/rekrutteringstreff/status/utførRekrutteringstreffStatusHendelser';
+import { RekbisError } from '@/util/rekbisError';
 import { Button, Modal } from '@navikt/ds-react';
-import { FC, useRef } from 'react';
+import { FC, useRef, useState } from 'react';
 
 type Props = {
-  fullfører: boolean;
+  rekrutteringstreffId: string;
   harInvitert: boolean;
   tiltidspunktHarPassert: boolean;
-  onFullfør: () => Promise<void> | void;
+  oppdaterData: () => Promise<void>;
 };
 
 const FullforRekrutteringstreffButton: FC<Props> = ({
-  fullfører,
+  rekrutteringstreffId,
   harInvitert,
   tiltidspunktHarPassert,
-  onFullfør,
+  oppdaterData,
 }) => {
+  const [laster, setLaster] = useState(false);
   const modalRef = useRef<HTMLDialogElement>(null);
+
+  const åpneModal = () => modalRef.current?.showModal();
+  const lukkModal = () => {
+    if (!laster) {
+      modalRef.current?.close();
+    }
+  };
+
+  const fullfør = async () => {
+    if (laster) return;
+    setLaster(true);
+    let skalLukke = false;
+
+    try {
+      await fullførRekrutteringstreff(rekrutteringstreffId);
+      await oppdaterData();
+      skalLukke = true;
+    } catch (error) {
+      new RekbisError({
+        message: 'Avslutting av rekrutteringstreff feilet',
+        error,
+      });
+    } finally {
+      setLaster(false);
+      if (skalLukke) {
+        modalRef.current?.close();
+      }
+    }
+  };
 
   const handleOpen = () => {
     if (tiltidspunktHarPassert) {
-      onFullfør();
+      void fullfør();
       return;
     }
-    modalRef.current?.showModal();
-  };
-
-  const handleBekreftFullfør = () => {
-    onFullfør();
-    modalRef.current?.close();
+    åpneModal();
   };
 
   return (
@@ -37,14 +64,22 @@ const FullforRekrutteringstreffButton: FC<Props> = ({
         type='button'
         size='small'
         variant='primary'
-        disabled={!harInvitert || fullfører}
-        loading={fullfører}
+        disabled={!harInvitert || laster}
+        loading={laster}
         onClick={handleOpen}
       >
         Fullfør
       </Button>
 
-      <Modal ref={modalRef} header={{ heading: 'Fullfør rekrutteringstreff?' }}>
+      <Modal
+        ref={modalRef}
+        onClose={() => {
+          if (laster) {
+            modalRef.current?.showModal();
+          }
+        }}
+        header={{ heading: 'Fullfør rekrutteringstreff?' }}
+      >
         <Modal.Body>
           Slutttidspunktet for rekrutteringstreffet har ikke passert ennå. Er du
           sikker på at du vil fullføre rekrutteringstreffet likevel?
@@ -53,8 +88,8 @@ const FullforRekrutteringstreffButton: FC<Props> = ({
           <Button
             type='button'
             size='small'
-            loading={fullfører}
-            onClick={handleBekreftFullfør}
+            loading={laster}
+            onClick={() => void fullfør()}
           >
             Fullfør
           </Button>
@@ -62,7 +97,8 @@ const FullforRekrutteringstreffButton: FC<Props> = ({
             type='button'
             size='small'
             variant='secondary'
-            onClick={() => modalRef.current?.close()}
+            disabled={laster}
+            onClick={lukkModal}
           >
             Avbryt
           </Button>

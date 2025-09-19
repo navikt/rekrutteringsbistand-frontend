@@ -1,48 +1,67 @@
 'use client';
 
+import { avlysRekrutteringstreff } from '@/app/api/rekrutteringstreff/status/utførRekrutteringstreffStatusHendelser';
+import { RekbisError } from '@/util/rekbisError';
 import { BodyLong, Button, Modal } from '@navikt/ds-react';
-import { FC, useRef } from 'react';
+import { FC, useRef, useState } from 'react';
 
 type Props = {
-  prosessererAvlys: boolean;
-  onBekreftAvlys: () => Promise<void> | void;
+  rekrutteringstreffId: string;
+  oppdaterData: () => Promise<void>;
+  onAvlyst: () => void;
 };
 
 const AvlysRekrutteringstreffButton: FC<Props> = ({
-  prosessererAvlys,
-  onBekreftAvlys,
+  rekrutteringstreffId,
+  oppdaterData,
+  onAvlyst,
 }) => {
+  const [laster, setLaster] = useState(false);
   const modalRef = useRef<HTMLDialogElement>(null);
 
-  const handleBekreftAvlys = async () => {
-    try {
-      await onBekreftAvlys();
+  const åpneModal = () => modalRef.current?.showModal();
+  const lukkModal = () => {
+    if (!laster) {
       modalRef.current?.close();
-    } catch {
-      // Beholder modalen åpen dersom handlingen feiler
     }
   };
 
-  const handleClose = () => {
-    if (prosessererAvlys) {
-      modalRef.current?.showModal();
+  const avlys = async () => {
+    if (laster) return;
+    setLaster(true);
+    let skalLukke = false;
+
+    try {
+      await avlysRekrutteringstreff(rekrutteringstreffId);
+      onAvlyst();
+      await oppdaterData();
+      skalLukke = true;
+    } catch (error) {
+      new RekbisError({
+        message: 'Handling på rekrutteringstreff feilet',
+        error,
+      });
+    } finally {
+      setLaster(false);
+      if (skalLukke) {
+        modalRef.current?.close();
+      }
     }
   };
 
   return (
     <>
-      <Button
-        type='button'
-        size='small'
-        variant='danger'
-        onClick={() => modalRef.current?.showModal()}
-      >
+      <Button type='button' size='small' variant='danger' onClick={åpneModal}>
         Avlys treffet
       </Button>
 
       <Modal
         ref={modalRef}
-        onClose={handleClose}
+        onClose={() => {
+          if (laster) {
+            modalRef.current?.showModal();
+          }
+        }}
         header={{ heading: 'Avlys treffet' }}
       >
         <Modal.Body>
@@ -56,8 +75,8 @@ const AvlysRekrutteringstreffButton: FC<Props> = ({
             type='button'
             size='small'
             variant='danger'
-            loading={prosessererAvlys}
-            onClick={handleBekreftAvlys}
+            loading={laster}
+            onClick={() => void avlys()}
           >
             Avlys treffet
           </Button>
@@ -65,8 +84,8 @@ const AvlysRekrutteringstreffButton: FC<Props> = ({
             type='button'
             size='small'
             variant='secondary'
-            disabled={prosessererAvlys}
-            onClick={() => modalRef.current?.close()}
+            disabled={laster}
+            onClick={lukkModal}
           >
             Avbryt
           </Button>

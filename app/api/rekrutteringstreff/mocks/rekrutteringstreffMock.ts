@@ -137,5 +137,5 @@ export const rekrutteringstreffMock = {
   opprettetAvPersonNavident: 'A123456',
   opprettetAvNavkontorEnhetId: '0318',
   opprettetAvTidspunkt: '2025-06-01T08:00:00+02:00',
-  hendelser: publisertHendelser,
+  hendelser: fullførthendelser,
 };

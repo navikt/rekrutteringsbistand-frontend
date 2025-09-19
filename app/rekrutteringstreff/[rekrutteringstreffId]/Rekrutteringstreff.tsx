@@ -8,24 +8,17 @@ import { useAlleHendelser } from '@/app/api/rekrutteringstreff/[...slug]/useAlle
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
-import {
-  avlysRekrutteringstreff,
-  publiserRekrutteringstreff,
-  fullførRekrutteringstreff,
-  gjenåpnRekrutteringstreff,
-} from '@/app/api/rekrutteringstreff/status/utførRekrutteringstreffStatusHendelser';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import Stegviser from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/om-treffet/stegviser/Stegviser';
 import { JobbsøkerHendelsestype } from '@/app/rekrutteringstreff/_domain/constants';
 import { getActiveStepFromHendelser } from '@/app/rekrutteringstreff/_utils/rekrutteringstreff';
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideLayout from '@/components/layout/SideLayout';
-import { RekbisError } from '@/util/rekbisError';
 import { Tabs } from '@navikt/ds-react';
 import { formatDistanceToNow } from 'date-fns';
 import { nb } from 'date-fns/locale/nb';
 import { parseAsString, useQueryState } from 'nuqs';
-import { FC, useEffect, useMemo, useState } from 'react';
+import { FC, useCallback, useEffect, useMemo } from 'react';
 
 export enum RekrutteringstreffTabs {
   OM_TREFFET = 'om_treffet',
@@ -61,11 +54,6 @@ const Rekrutteringstreff: FC = () => {
   const harPublisert = activeStep === 'INVITERE' || activeStep === 'FULLFØRE';
   const avlyst = activeStep === 'AVLYST';
   const erIForhåndsvisning = avlyst ? true : modus !== 'edit';
-
-  const [publiserer, setPubliserer] = useState(false);
-  const [fullfører, setFullfører] = useState(false);
-  const [gjenåpner, setGjenåpner] = useState(false);
-  const [avlyser, setAvlyser] = useState(false);
 
   const rekrutteringstreff = rekrutteringstreffHook.data;
 
@@ -115,13 +103,13 @@ const Rekrutteringstreff: FC = () => {
     }
   }, [avlyst, modus, setModus]);
 
-  const scrollToTop = () => {
+  const scrollToTop = useCallback(() => {
     if (typeof window !== 'undefined') {
       requestAnimationFrame(() =>
         window.scrollTo({ top: 0, behavior: 'smooth' }),
       );
     }
-  };
+  }, []);
 
   const handleToggleForhåndsvisning = (nyForhåndsvisning: boolean) => {
     if (avlyst) return;
@@ -163,81 +151,17 @@ const Rekrutteringstreff: FC = () => {
     return 'Rekrutteringstreff';
   }, [avlyst, harPublisert, erIForhåndsvisning]);
 
-  const onPubliserTreffet = async () => {
-    setPubliserer(true);
-    try {
-      await publiserRekrutteringstreff(rekrutteringstreffId);
-      await Promise.all([
-        rekrutteringstreffHook.mutate(),
-        alleHendelserHook.mutate(),
-      ]);
-    } catch (error) {
-      new RekbisError({
-        message: 'Publisering av rekrutteringstreff feilet',
-        error,
-      });
-    } finally {
-      setPubliserer(false);
-    }
-  };
+  const oppdaterData = useCallback(async () => {
+    await Promise.all([
+      rekrutteringstreffHook.mutate(),
+      alleHendelserHook.mutate(),
+    ]);
+  }, [rekrutteringstreffHook, alleHendelserHook]);
 
-  const onFullførRekrutteringstreff = async () => {
-    setFullfører(true);
-    try {
-      await fullførRekrutteringstreff(rekrutteringstreffId);
-      await Promise.all([
-        rekrutteringstreffHook.mutate(),
-        alleHendelserHook.mutate(),
-      ]);
-    } catch (error) {
-      new RekbisError({
-        message: 'Avslutting av rekrutteringstreff feilet',
-        error,
-      });
-    } finally {
-      setFullfører(false);
-    }
-  };
-
-  const onGjenåpnTreffet = async () => {
-    setGjenåpner(true);
-    try {
-      await gjenåpnRekrutteringstreff(rekrutteringstreffId);
-      await Promise.all([
-        rekrutteringstreffHook.mutate(),
-        alleHendelserHook.mutate(),
-      ]);
-    } catch (error) {
-      new RekbisError({
-        message: 'Gjenåpning av rekrutteringstreff feilet',
-        error,
-      });
-    } finally {
-      setGjenåpner(false);
-    }
-  };
-
-  const bekreftAvlysning = async () => {
-    if (!rekrutteringstreffId) return;
-    setAvlyser(true);
-    try {
-      await avlysRekrutteringstreff(rekrutteringstreffId);
-      setModus('');
-      scrollToTop();
-
-      await Promise.all([
-        rekrutteringstreffHook.mutate(),
-        alleHendelserHook.mutate(),
-      ]);
-    } catch (error) {
-      new RekbisError({
-        message: 'Handling på rekrutteringstreff feilet',
-        error,
-      });
-    } finally {
-      setAvlyser(false);
-    }
-  };
+  const onAvlyst = useCallback(() => {
+    setModus('');
+    scrollToTop();
+  }, [scrollToTop, setModus]);
 
   return (
     <Tabs value={fane} onChange={(val) => setFane(val)}>
@@ -268,18 +192,13 @@ const Rekrutteringstreff: FC = () => {
                   activeStep={activeStep as any}
                   erIForhåndsvisning={erIForhåndsvisning}
                   erPubliseringklar={erPubliseringklar}
-                  publiserer={publiserer}
-                  fullfører={fullfører}
-                  gjenåpner={gjenåpner}
                   harInvitert={harInvitert}
                   tiltidspunktHarPassert={tiltidspunktHarPassert}
+                  rekrutteringstreffId={rekrutteringstreffId}
+                  oppdaterData={oppdaterData}
                   onToggleForhåndsvisning={handleToggleForhåndsvisning}
                   onBekreftRedigerPublisert={onBekreftRedigerPublisert}
-                  onPubliser={onPubliserTreffet}
-                  onFullfør={onFullførRekrutteringstreff}
-                  onGjenåpne={onGjenåpnTreffet}
-                  onBekreftAvlys={bekreftAvlysning}
-                  prosessererAvlys={avlyser}
+                  onAvlyst={onAvlyst}
                 />
               }
             />

@@ -1,22 +1,49 @@
 'use client';
 
+import { gjenåpnRekrutteringstreff } from '@/app/api/rekrutteringstreff/status/utførRekrutteringstreffStatusHendelser';
+import { RekbisError } from '@/util/rekbisError';
 import { BodyLong, Button, Modal } from '@navikt/ds-react';
-import { FC, useRef } from 'react';
+import { FC, useRef, useState } from 'react';
 
 type Props = {
-  gjenåpner: boolean;
-  onGjenåpne: () => Promise<void> | void;
+  rekrutteringstreffId: string;
+  oppdaterData: () => Promise<void>;
 };
 
 const GjenapneRekrutteringstreffButton: FC<Props> = ({
-  gjenåpner,
-  onGjenåpne,
+  rekrutteringstreffId,
+  oppdaterData,
 }) => {
+  const [laster, setLaster] = useState(false);
   const modalRef = useRef<HTMLDialogElement>(null);
 
-  const handleBekreftGjenåpne = async () => {
-    await onGjenåpne();
-    modalRef.current?.close();
+  const åpneModal = () => modalRef.current?.showModal();
+  const lukkModal = () => {
+    if (!laster) {
+      modalRef.current?.close();
+    }
+  };
+
+  const gjenåpne = async () => {
+    if (laster) return;
+    setLaster(true);
+    let skalLukke = false;
+
+    try {
+      await gjenåpnRekrutteringstreff(rekrutteringstreffId);
+      await oppdaterData();
+      skalLukke = true;
+    } catch (error) {
+      new RekbisError({
+        message: 'Gjenåpning av rekrutteringstreff feilet',
+        error,
+      });
+    } finally {
+      setLaster(false);
+      if (skalLukke) {
+        modalRef.current?.close();
+      }
+    }
   };
 
   return (
@@ -25,14 +52,19 @@ const GjenapneRekrutteringstreffButton: FC<Props> = ({
         type='button'
         size='small'
         variant='primary'
-        loading={gjenåpner}
-        onClick={() => modalRef.current?.showModal()}
+        loading={laster}
+        onClick={åpneModal}
       >
         Gjenåpne
       </Button>
 
       <Modal
         ref={modalRef}
+        onClose={() => {
+          if (laster) {
+            modalRef.current?.showModal();
+          }
+        }}
         header={{ heading: 'Gjenåpne rekrutteringstreffet?' }}
       >
         <Modal.Body>
@@ -45,8 +77,8 @@ const GjenapneRekrutteringstreffButton: FC<Props> = ({
           <Button
             type='button'
             size='small'
-            loading={gjenåpner}
-            onClick={handleBekreftGjenåpne}
+            loading={laster}
+            onClick={() => void gjenåpne()}
           >
             Gjenåpne
           </Button>
@@ -54,7 +86,8 @@ const GjenapneRekrutteringstreffButton: FC<Props> = ({
             type='button'
             size='small'
             variant='secondary'
-            onClick={() => modalRef.current?.close()}
+            disabled={laster}
+            onClick={lukkModal}
           >
             Avbryt
           </Button>

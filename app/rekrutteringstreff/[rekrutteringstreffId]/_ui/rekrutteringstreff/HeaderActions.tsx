@@ -21,18 +21,13 @@ type Props = {
   activeStep: ActiveStep;
   erIForhåndsvisning: boolean;
   erPubliseringklar: boolean;
-  publiserer: boolean;
-  fullfører: boolean;
-  gjenåpner: boolean;
   harInvitert: boolean;
   tiltidspunktHarPassert: boolean;
+  rekrutteringstreffId: string;
+  oppdaterData: () => Promise<void>;
   onToggleForhåndsvisning: (ny: boolean) => void;
   onBekreftRedigerPublisert: () => void;
-  onPubliser: () => Promise<void> | void;
-  onFullfør: () => Promise<void> | void;
-  onGjenåpne: () => Promise<void> | void;
-  onBekreftAvlys: () => Promise<void> | void;
-  prosessererAvlys: boolean;
+  onAvlyst: () => void;
 };
 
 const HeaderActions: FC<Props> = ({
@@ -40,18 +35,13 @@ const HeaderActions: FC<Props> = ({
   activeStep,
   erIForhåndsvisning,
   erPubliseringklar,
-  publiserer,
-  fullfører,
-  gjenåpner,
   harInvitert,
   tiltidspunktHarPassert,
+  rekrutteringstreffId,
+  oppdaterData,
   onToggleForhåndsvisning,
   onBekreftRedigerPublisert,
-  onPubliser,
-  onFullfør,
-  onGjenåpne,
-  onBekreftAvlys,
-  prosessererAvlys,
+  onAvlyst,
 }) => {
   const harPublisert = activeStep === 'INVITERE' || activeStep === 'FULLFØRE';
 
@@ -69,31 +59,32 @@ const HeaderActions: FC<Props> = ({
       {!avlyst && activeStep === 'PUBLISERE' && (
         <PubliserRekrutteringstreffButton
           erPubliseringklar={erPubliseringklar}
-          publiserer={publiserer}
-          onPubliser={onPubliser}
+          rekrutteringstreffId={rekrutteringstreffId}
+          oppdaterData={oppdaterData}
         />
       )}
 
       {!avlyst && activeStep === 'INVITERE' && (
         <FullforRekrutteringstreffButton
-          fullfører={fullfører}
+          rekrutteringstreffId={rekrutteringstreffId}
           harInvitert={harInvitert}
           tiltidspunktHarPassert={tiltidspunktHarPassert}
-          onFullfør={onFullfør}
+          oppdaterData={oppdaterData}
         />
       )}
 
       {activeStep === 'FULLFØRE' && (
         <GjenapneRekrutteringstreffButton
-          gjenåpner={gjenåpner}
-          onGjenåpne={onGjenåpne}
+          rekrutteringstreffId={rekrutteringstreffId}
+          oppdaterData={oppdaterData}
         />
       )}
 
       {harPublisert && !avlyst && (
         <AvlysRekrutteringstreffButton
-          prosessererAvlys={prosessererAvlys}
-          onBekreftAvlys={onBekreftAvlys}
+          rekrutteringstreffId={rekrutteringstreffId}
+          oppdaterData={oppdaterData}
+          onAvlyst={onAvlyst}
         />
       )}
 
