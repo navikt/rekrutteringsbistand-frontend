@@ -87,14 +87,17 @@ export const rekrutteringstreffLabelTekst = (
       return 'slettet';
     case RekrutteringstreffHendelsestype.PUBLISER:
       return 'publisert';
-    case RekrutteringstreffHendelsestype.AVPUBLISER:
-      return 'avpublisert';
-    case RekrutteringstreffHendelsestype.GJENÅPN:
-      return 'gjenåpnet';
     case RekrutteringstreffHendelsestype.FULLFØR:
       return 'fullført';
     case RekrutteringstreffHendelsestype.AVLYS:
       return 'avlyst';
+
+    // TODO: Brukes ikke for øyeblikket, men trengs når vi skal stanse for at flere deltakere blir lagt på og treffet er synlig for veiledere
+    case RekrutteringstreffHendelsestype.AVPUBLISER:
+      return 'avpublisert';
+    case RekrutteringstreffHendelsestype.GJENÅPN:
+      return 'gjenåpnet';
+
     default:
       return '';
   }

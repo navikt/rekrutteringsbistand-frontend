@@ -234,13 +234,6 @@ const Rekrutteringstreff: FC = () => {
                     <>
                       <Button
                         size='small'
-                        variant='secondary'
-                        onClick={() => setAktivModal('avpubliser')}
-                      >
-                        Avpubliser
-                      </Button>
-                      <Button
-                        size='small'
                         variant='danger'
                         onClick={() => setAktivModal('avlys')}
                       >

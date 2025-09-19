@@ -145,28 +145,17 @@ const StegviserHeader: FC<Props> = ({
           >
             Publiser treffet
           </Button>
-        ) : activeStep === 'INVITERE' ? (
-          <Button
-            variant='primary'
-            size='small'
-            disabled={!harInvitert || fullfører}
-            loading={fullfører}
-            className='w-full'
-            onClick={onKlikkFullfor}
-          >
-            Fullfør
-          </Button>
         ) : (
-          activeStep === 'AVPUBLISERT' && (
+          activeStep === 'INVITERE' && (
             <Button
-              size='small'
               variant='primary'
+              size='small'
+              disabled={!harInvitert || fullfører}
+              loading={fullfører}
               className='w-full'
-              disabled={publiserer}
-              loading={publiserer}
-              onClick={() => publiserModalRef.current?.showModal()}
+              onClick={onKlikkFullfor}
             >
-              Aktiver på nytt
+              Fullfør
             </Button>
           )
         )}
