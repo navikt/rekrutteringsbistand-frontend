@@ -151,6 +151,8 @@ const Rekrutteringstreff: FC = () => {
     return 'Rekrutteringstreff';
   }, [avlyst, harPublisert, erIForhåndsvisning]);
 
+  const skalViseHeader = !(harPublisert && !erIForhåndsvisning);
+
   const oppdaterData = useCallback(async () => {
     await Promise.all([
       rekrutteringstreffHook.mutate(),
@@ -174,35 +176,37 @@ const Rekrutteringstreff: FC = () => {
           />
         }
         header={
-          <PanelHeader>
-            <PanelHeader.Section
-              title={headerTittel}
-              tabs={
-                erIForhåndsvisning ? (
-                  <TabsNav
-                    jobbsøkereAntall={jobbsøkere?.length ?? 0}
-                    arbeidsgivereAntall={arbeidsgivere?.length ?? 0}
+          skalViseHeader ? (
+            <PanelHeader>
+              <PanelHeader.Section
+                title={headerTittel}
+                tabs={
+                  erIForhåndsvisning ? (
+                    <TabsNav
+                      jobbsøkereAntall={jobbsøkere?.length ?? 0}
+                      arbeidsgivereAntall={arbeidsgivere?.length ?? 0}
+                    />
+                  ) : undefined
+                }
+                meta={lagretTekst}
+                actionsRight={
+                  <HeaderActions
+                    avlyst={avlyst}
+                    activeStep={activeStep as any}
+                    erIForhåndsvisning={erIForhåndsvisning}
+                    erPubliseringklar={erPubliseringklar}
+                    harInvitert={harInvitert}
+                    tiltidspunktHarPassert={tiltidspunktHarPassert}
+                    rekrutteringstreffId={rekrutteringstreffId}
+                    oppdaterData={oppdaterData}
+                    onToggleForhåndsvisning={handleToggleForhåndsvisning}
+                    onBekreftRedigerPublisert={onBekreftRedigerPublisert}
+                    onAvlyst={onAvlyst}
                   />
-                ) : undefined
-              }
-              meta={lagretTekst}
-              actionsRight={
-                <HeaderActions
-                  avlyst={avlyst}
-                  activeStep={activeStep as any}
-                  erIForhåndsvisning={erIForhåndsvisning}
-                  erPubliseringklar={erPubliseringklar}
-                  harInvitert={harInvitert}
-                  tiltidspunktHarPassert={tiltidspunktHarPassert}
-                  rekrutteringstreffId={rekrutteringstreffId}
-                  oppdaterData={oppdaterData}
-                  onToggleForhåndsvisning={handleToggleForhåndsvisning}
-                  onBekreftRedigerPublisert={onBekreftRedigerPublisert}
-                  onAvlyst={onAvlyst}
-                />
-              }
-            />
-          </PanelHeader>
+                }
+              />
+            </PanelHeader>
+          ) : undefined
         }
       >
         <div className='space-y-4'>
