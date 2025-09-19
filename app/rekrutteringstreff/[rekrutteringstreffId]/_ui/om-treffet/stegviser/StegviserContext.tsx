@@ -8,6 +8,10 @@ import {
 } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
+import {
+  AktivtSteg as AktivtStegConst,
+  JobbsøkerHendelsestype,
+} from '@/app/rekrutteringstreff/_domain/constants';
 import { getActiveStepFromHendelser } from '@/app/rekrutteringstreff/_utils/rekrutteringstreff';
 import {
   createContext,
@@ -23,13 +27,17 @@ import * as React from 'react';
 const DEFAULT_TITTEL = 'Nytt rekrutteringstreff';
 
 const erInvitert = (j: JobbsøkerDTO) =>
-  j.hendelser?.some((h) => h.hendelsestype === 'INVITER') ?? false;
+  j.hendelser?.some(
+    (h) => h.hendelsestype === JobbsøkerHendelsestype.INVITER,
+  ) ?? false;
 const harSvarJa = (j: JobbsøkerDTO) =>
-  j.hendelser?.some((h) => h.hendelsestype === 'SVAR_JA_TIL_INVITASJON') ??
-  false;
+  j.hendelser?.some(
+    (h) => h.hendelsestype === JobbsøkerHendelsestype.SVAR_JA_TIL_INVITASJON,
+  ) ?? false;
 const harSvarNei = (j: JobbsøkerDTO) =>
-  j.hendelser?.some((h) => h.hendelsestype === 'SVAR_NEI_TIL_INVITASJON') ??
-  false;
+  j.hendelser?.some(
+    (h) => h.hendelsestype === JobbsøkerHendelsestype.SVAR_NEI_TIL_INVITASJON,
+  ) ?? false;
 
 const parseDate = (value?: string | null): Date | undefined => {
   if (!value) return undefined;
@@ -64,7 +72,9 @@ const StegviserContext = createContext<StegviserState | undefined>(undefined);
 export const StegviserProvider: FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const [activeStep, setActiveStep] = useState<string>('PUBLISERE');
+  const [activeStep, setActiveStep] = useState<string>(
+    AktivtStegConst.PUBLISERE,
+  );
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
 
   const { data: rekrutteringstreff } =

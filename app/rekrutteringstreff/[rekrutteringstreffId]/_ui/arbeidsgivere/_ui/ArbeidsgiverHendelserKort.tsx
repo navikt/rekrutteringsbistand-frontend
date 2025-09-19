@@ -2,7 +2,14 @@
 
 import { ArbeidsgiverHendelserDTO } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgiverHendelser';
 import LeggTilArbeidsgiverModal from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/LeggTilArbeidsgiverModal';
-import HendelseLabel from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøkere/_ui/HendelseLabel';
+import {
+  ArbeidsgiverHendelseLabel,
+  JobbsøkerHendelseLabel,
+} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøkere/_ui/HendelseLabel';
+import {
+  ArbeidsgiverHendelsestype,
+  JobbsøkerHendelsestype,
+} from '@/app/rekrutteringstreff/_domain/constants';
 import SVGDarkmode from '@/components/layout/SVGDarkmode';
 import ArbeidsgiverDarkIkon from '@/public/ikoner/arbeidsgiver-dark.svg';
 import ArbeidsgiverIkon from '@/public/ikoner/arbeidsgiver.svg';
@@ -27,7 +34,7 @@ const ArbeidsgiverHendelserKort: FC<Props> = ({ arbeidsgiverHendelserDTO }) => {
   const modalRef = useRef<HTMLDialogElement>(null);
 
   const antallLagtTil = arbeidsgiverHendelserDTO.filter(
-    (h) => h.hendelsestype === 'OPPRETT',
+    (h) => h.hendelsestype === ArbeidsgiverHendelsestype.OPPRETT,
   ).length;
 
   const siste5 = arbeidsgiverHendelserDTO.slice(-5);
@@ -62,29 +69,15 @@ const ArbeidsgiverHendelserKort: FC<Props> = ({ arbeidsgiverHendelserDTO }) => {
         ) : (
           <div className='mb-12'>
             <div className='flex flex-wrap gap-2'>
-              <HendelseLabel
+              <ArbeidsgiverHendelseLabel
                 icon={<PlusCircleIcon className='text-white' />}
-                hendelseType='OPPRETT'
+                hendelseType={ArbeidsgiverHendelsestype.OPPRETT}
                 antall={antallLagtTil}
               />
-              <HendelseLabel
-                icon={<CheckmarkCircleIcon className='text-green-500' />}
-                hendelseType='DELTA'
-                antall={0}
-              />
-              <HendelseLabel
-                icon={<QuestionmarkDiamondIcon className='text-sky-300' />}
-                hendelseType='UBESVART'
-                antall={0}
-              />
-              <HendelseLabel
-                icon={<XMarkOctagonIcon className='text-violet-300' />}
-                hendelseType='IKKE_INTERESSERT'
-                antall={0}
-              />
-              <HendelseLabel
+
+              <JobbsøkerHendelseLabel
                 icon={<EnvelopeClosedIcon className='text-blue-400' />}
-                hendelseType='INVITER'
+                hendelseType={JobbsøkerHendelsestype.INVITER}
                 antall={0}
               />
             </div>
@@ -96,7 +89,7 @@ const ArbeidsgiverHendelserKort: FC<Props> = ({ arbeidsgiverHendelserDTO }) => {
             {siste5.map((h) => (
               <div key={h.id} className='flex gap-2 mb-4'>
                 <div className='min-w-[10rem]'>
-                  <HendelseLabel
+                  <ArbeidsgiverHendelseLabel
                     icon={<PlusCircleIcon className='text-white' />}
                     hendelseType={h.hendelsestype}
                   />

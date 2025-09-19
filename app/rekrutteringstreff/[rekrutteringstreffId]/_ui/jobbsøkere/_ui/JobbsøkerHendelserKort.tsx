@@ -1,7 +1,8 @@
-import HendelseLabel from './HendelseLabel';
+import { JobbsøkerHendelseLabel } from './HendelseLabel';
 import NavnLenke from './NavnLenke';
 import { JobbsøkerHendelserDTO } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkerHendelser';
 import LeggTilJobbsøkerKnapp from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/LeggTilJobbsøkerKnapp';
+import { JobbsøkerHendelsestype } from '@/app/rekrutteringstreff/_domain/constants';
 import SVGDarkmode from '@/components/layout/SVGDarkmode';
 import JobbsokerHeartUpDarkIkon from '@/public/ikoner/jobbsoker_heart-up-dark.svg';
 import JobbsokerHeartUpIkon from '@/public/ikoner/jobbsoker_heart-up.svg';
@@ -25,7 +26,7 @@ const JobbsøkerHendelserKort: FC<JobbsøkerHendelserKortProps> = ({
 }) => {
   const antallHendelser = jobbsøkerHendelserDTO.length;
   const antallLagtTilHendelser = jobbsøkerHendelserDTO.filter(
-    (h) => h.hendelsestype === 'OPPRETT',
+    (h) => h.hendelsestype === JobbsøkerHendelsestype.OPPRETT,
   ).length;
   const siste5Hendelser = jobbsøkerHendelserDTO.slice(-5);
 
@@ -64,30 +65,15 @@ const JobbsøkerHendelserKort: FC<JobbsøkerHendelserKortProps> = ({
             ) : (
               <div>
                 <div className='flex flex-wrap gap-2'>
-                  <HendelseLabel
+                  <JobbsøkerHendelseLabel
                     icon={<PlusCircleIcon className='text-white' />}
-                    hendelseType='OPPRETT'
+                    hendelseType={JobbsøkerHendelsestype.OPPRETT}
                     antall={antallLagtTilHendelser}
                   />
 
-                  <HendelseLabel
-                    icon={<CheckmarkCircleIcon className='text-green-500' />}
-                    hendelseType='DELTA'
-                    antall={0}
-                  />
-                  <HendelseLabel
-                    icon={<QuestionmarkDiamondIcon className='text-sky-300' />}
-                    hendelseType='UBESVART'
-                    antall={0}
-                  />
-                  <HendelseLabel
-                    icon={<XMarkOctagonIcon className='text-violet-300' />}
-                    hendelseType='IKKE_INTERESSERT'
-                    antall={0}
-                  />
-                  <HendelseLabel
+                  <JobbsøkerHendelseLabel
                     icon={<EnvelopeClosedIcon className='text-blue-400' />}
-                    hendelseType='INVITER'
+                    hendelseType={JobbsøkerHendelsestype.INVITER}
                     antall={0}
                   />
                 </div>
@@ -103,7 +89,7 @@ const JobbsøkerHendelserKort: FC<JobbsøkerHendelserKortProps> = ({
                       className='flex flex-wrap gap-2 mb-4'
                     >
                       <div className='mb-2  min-w-[10rem]'>
-                        <HendelseLabel
+                        <JobbsøkerHendelseLabel
                           key={hendelse.id}
                           icon={<PlusCircleIcon className='text-white' />}
                           hendelseType={hendelse.hendelsestype}
