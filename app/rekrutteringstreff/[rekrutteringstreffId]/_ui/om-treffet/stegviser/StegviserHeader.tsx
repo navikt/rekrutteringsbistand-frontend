@@ -5,7 +5,7 @@ import {
   publiserRekrutteringstreff,
   fullførRekrutteringstreff,
   gjenåpnRekrutteringstreff,
-} from '@/app/api/rekrutteringstreff/[...slug]/steg';
+} from '@/app/api/rekrutteringstreff/status/utførRekrutteringstreffStatusHendelser';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
 import { RekbisError } from '@/util/rekbisError';

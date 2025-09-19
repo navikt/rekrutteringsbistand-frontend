@@ -10,7 +10,7 @@ import {
   avlysRekrutteringstreff,
   avpubliserRekrutteringstreff,
   RekrutteringstreffAdministrasjonHendelse,
-} from '@/app/api/rekrutteringstreff/administrer-rekrutteringstreff/administrerRekrutteringstreff';
+} from '@/app/api/rekrutteringstreff/status/utførRekrutteringstreffStatusHendelser';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import SlettRekrutteringstreffModal from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/SlettRekrutteringstreffModal';
 import Aktiviteter from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/aktiviteter/Aktiviteter';
