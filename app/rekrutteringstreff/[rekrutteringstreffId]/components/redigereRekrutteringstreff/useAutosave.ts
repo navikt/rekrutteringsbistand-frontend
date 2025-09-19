@@ -10,7 +10,7 @@ import {
 } from '@/app/api/rekrutteringstreff/opprettEllerOppdaterInnlegg';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
-import { erRekrutteringstreffPublisert } from '@/app/rekrutteringstreff/_utils/rekrutteringstreff';
+import { getActiveStepFromHendelser } from '@/app/rekrutteringstreff/_utils/rekrutteringstreff';
 import { RekbisError } from '@/util/rekbisError';
 import { formatInTimeZone } from 'date-fns-tz';
 import { useCallback } from 'react';
@@ -29,8 +29,10 @@ export const erEditMode = (): boolean => {
   }
 };
 
-export const erPublisert = (treff: any): boolean =>
-  erRekrutteringstreffPublisert(treff?.hendelser);
+export const erPublisert = (treff: any): boolean => {
+  const step = getActiveStepFromHendelser(treff?.hendelser);
+  return step === 'INVITERE' || step === 'FULLFØRE';
+};
 
 export const skalHindreAutosave = (treff: any, force?: boolean): boolean => {
   if (force) return false;

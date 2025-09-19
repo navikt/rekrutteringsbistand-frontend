@@ -38,8 +38,8 @@ const parseDate = (value?: string | null): Date | undefined => {
 };
 
 export interface StegviserState {
-  activeStep: number;
-  setActiveStep: (step: number) => void;
+  activeStep: string;
+  setActiveStep: (step: string) => void;
 
   // Steg 1: Publisere
   sjekklistePunkterFullfort: number;
@@ -64,7 +64,7 @@ const StegviserContext = createContext<StegviserState | undefined>(undefined);
 export const StegviserProvider: FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const [activeStep, setActiveStep] = useState<number>(1);
+  const [activeStep, setActiveStep] = useState<string>('PUBLISERE');
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
 
   const { data: rekrutteringstreff } =

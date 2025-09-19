@@ -28,6 +28,18 @@ export const useKandidatlisteForEier = (
       ? kandidatlisteEndepunkt(stillingsData?.stilling.uuid)
       : null,
     getAPIwithSchema(kandidatlisteSchema, { skjulFeilmelding: true }),
+    {
+      // Unngå uendelig retry ved 404-feil
+      shouldRetryOnError: (error) => {
+        // Ikke retry ved 404-feil (kandidatliste slettet)
+        if (error?.status === 404) return false;
+        // Ikke retry ved andre client-feil (4xx)
+        if (error?.status >= 400 && error?.status < 500) return false;
+        return true;
+      },
+      errorRetryCount: 2,
+      errorRetryInterval: 5000,
+    },
   );
 };
 
