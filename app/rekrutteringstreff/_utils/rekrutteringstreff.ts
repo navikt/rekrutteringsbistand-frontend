@@ -1,19 +1,9 @@
 import type { HendelseDTO } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
-
-const relevanteStegHendelser = new Set([
-  'PUBLISER',
-  'FULLFØR',
-  'GJENÅPN',
-  'AVLYS',
-  'AVPUBLISER',
-]);
-
-export type AktivtSteg =
-  | 'PUBLISERE'
-  | 'INVITERE'
-  | 'FULLFØRE'
-  | 'AVLYST'
-  | 'AVPUBLISERT';
+import {
+  AktivtSteg,
+  RekrutteringstreffHendelsestype,
+  RelevanteStegHendelser,
+} from '@/app/rekrutteringstreff/_domain/constants';
 
 /**
  * Finner aktivt steg (1–3 eller status) basert på rekrutteringstreff-hendelser.
@@ -28,30 +18,34 @@ export type AktivtSteg =
 export const getActiveStepFromHendelser = (
   hendelser: Pick<HendelseDTO, 'hendelsestype' | 'tidspunkt'>[] | undefined,
 ): AktivtSteg => {
-  if (!hendelser || hendelser.length === 0) return 'PUBLISERE';
+  if (!hendelser || hendelser.length === 0) return AktivtSteg.PUBLISERE;
 
   const relevante = hendelser
-    .filter((h) => relevanteStegHendelser.has(h.hendelsestype))
+    .filter((h) =>
+      RelevanteStegHendelser.has(
+        h.hendelsestype as RekrutteringstreffHendelsestype,
+      ),
+    )
     .sort(
       (a, b) =>
         new Date(b.tidspunkt).getTime() - new Date(a.tidspunkt).getTime(),
     );
 
-  if (relevante.length === 0) return 'PUBLISERE';
+  if (relevante.length === 0) return AktivtSteg.PUBLISERE;
 
-  const siste = relevante[0].hendelsestype;
+  const siste = relevante[0].hendelsestype as RekrutteringstreffHendelsestype;
   switch (siste) {
-    case 'AVLYS':
-      return 'AVLYST';
-    case 'AVPUBLISER':
-      return 'AVPUBLISERT';
-    case 'PUBLISER':
-      return 'PUBLISERE';
-    case 'GJENÅPN':
-      return 'INVITERE';
-    case 'FULLFØR':
-      return 'FULLFØRE';
+    case RekrutteringstreffHendelsestype.AVLYS:
+      return AktivtSteg.AVLYST;
+    case RekrutteringstreffHendelsestype.AVPUBLISER:
+      return AktivtSteg.AVPUBLISERT;
+    case RekrutteringstreffHendelsestype.PUBLISER:
+      return AktivtSteg.INVITERE;
+    case RekrutteringstreffHendelsestype.GJENÅPN:
+      return AktivtSteg.INVITERE;
+    case RekrutteringstreffHendelsestype.FULLFØR:
+      return AktivtSteg.FULLFØRE;
     default:
-      return 'PUBLISERE';
+      return AktivtSteg.PUBLISERE;
   }
 };

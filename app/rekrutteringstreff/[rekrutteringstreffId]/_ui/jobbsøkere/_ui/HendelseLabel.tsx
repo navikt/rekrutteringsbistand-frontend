@@ -1,72 +1,116 @@
+import {
+  JobbsøkerHendelsestype,
+  ArbeidsgiverHendelsestype,
+  RekrutteringstreffHendelsestype,
+} from '@/app/rekrutteringstreff/_domain/constants';
 import { BodyShort } from '@navikt/ds-react';
 import { FC, ReactNode } from 'react';
 
-interface HendelseLabelProps {
+interface BaseProps<T extends string> {
   icon: ReactNode;
-  hendelseType: string;
+  hendelseType: T;
   antall?: number;
 }
 
-export const labelTekst = (hendelsetype: string) => {
-  switch (hendelsetype) {
-    case 'INVITER':
-      return 'invitert';
-    case 'DELTA':
-      return 'deltar';
-    case 'UBESVART':
-      return 'ubesvart';
-    case 'IKKE_INTERESSERT':
-      return 'ikke interessert';
-    case 'OPPRETT':
+export const jobbsøkerLabelTekst = (t: JobbsøkerHendelsestype | string) => {
+  switch (t) {
+    case JobbsøkerHendelsestype.OPPRETT:
       return 'lagt til';
-    case 'OPPDATER':
+    case JobbsøkerHendelsestype.OPPDATER:
       return 'oppdatert';
-    case 'SLETT':
+    case JobbsøkerHendelsestype.SLETT:
       return 'slettet';
-    case 'AVLYS':
-      return 'avlyst';
-    case 'AVPUBLISER':
-      return 'avpublisert';
-    case 'PUBLISER':
-      return 'publisert';
-    case 'AVSLUTT_INVITASJON':
-      return 'invitasjon avsluttet';
-    case 'AVSLUTT_ARRANGEMENT':
-      return 'arrangement avsluttet';
-    case 'AVSLUTT_OPPFØLGING':
-      return 'oppfølging avsluttet';
-    case 'AVSLUTT':
-      return 'avsluttet';
-    case 'SVAR_JA_TIL_INVITASJON':
+    case JobbsøkerHendelsestype.INVITER:
+      return 'invitert';
+    case JobbsøkerHendelsestype.MØT_OPP:
+      return 'møtt opp';
+    case JobbsøkerHendelsestype.IKKE_MØT_OPP:
+      return 'møtte ikke';
+    case JobbsøkerHendelsestype.SVAR_JA_TIL_INVITASJON:
       return 'svart ja';
-    case 'SVAR_NEI_TIL_INVITASJON':
+    case JobbsøkerHendelsestype.SVAR_NEI_TIL_INVITASJON:
       return 'svart nei';
-    case 'AKTIVITETSKORT_OPPRETTELSE_FEIL':
-      return 'invitasjon feilet';
     default:
-      return '';
+      return t.toLowerCase();
   }
 };
-
-const capitalizeFirstLetter = (str: string) =>
-  str.charAt(0).toUpperCase() + str.slice(1);
-
-const HendelseLabel: FC<HendelseLabelProps> = ({
-  icon,
-  hendelseType,
-  antall,
-}) => {
-  const text =
-    antall === undefined
-      ? capitalizeFirstLetter(labelTekst(hendelseType))
-      : `${antall} ${labelTekst(hendelseType)}`;
-
+export const JobbsøkerHendelseLabel: FC<
+  BaseProps<JobbsøkerHendelsestype | string>
+> = ({ icon, hendelseType, antall }) => {
+  const lbl = jobbsøkerLabelTekst(hendelseType);
+  const text = antall === undefined ? lbl : `${antall} ${lbl}`;
   return (
     <div className='flex flex-nowrap items-center space-x-2'>
       {icon}
-      <BodyShort>{text}</BodyShort>
+      <BodyShort className='capitalize'>{text}</BodyShort>
     </div>
   );
 };
 
-export default HendelseLabel;
+// 2) Arbeidsgiver
+export const arbeidsgiverLabelTekst = (t: ArbeidsgiverHendelsestype) => {
+  switch (t) {
+    case ArbeidsgiverHendelsestype.OPPRETT:
+      return 'lagt til';
+    case ArbeidsgiverHendelsestype.OPPDATER:
+      return 'oppdatert';
+    case ArbeidsgiverHendelsestype.SLETT:
+      return 'slettet';
+    default:
+      return '';
+  }
+};
+export const ArbeidsgiverHendelseLabel: FC<
+  BaseProps<ArbeidsgiverHendelsestype>
+> = ({ icon, hendelseType, antall }) => {
+  const lbl = arbeidsgiverLabelTekst(hendelseType);
+  const text = antall === undefined ? lbl : `${antall} ${lbl}`;
+  return (
+    <div className='flex flex-nowrap items-center space-x-2'>
+      {icon}
+      <BodyShort className='capitalize'>{text}</BodyShort>
+    </div>
+  );
+};
+
+// 3) Rekrutteringstreff
+
+export const rekrutteringstreffLabelTekst = (
+  t: RekrutteringstreffHendelsestype,
+) => {
+  switch (t) {
+    case RekrutteringstreffHendelsestype.OPPRETT:
+      return 'lagt til';
+    case RekrutteringstreffHendelsestype.OPPDATER:
+      return 'oppdatert';
+    case RekrutteringstreffHendelsestype.SLETT:
+      return 'slettet';
+    case RekrutteringstreffHendelsestype.PUBLISER:
+      return 'publisert';
+    case RekrutteringstreffHendelsestype.FULLFØR:
+      return 'fullført';
+    case RekrutteringstreffHendelsestype.AVLYS:
+      return 'avlyst';
+    case RekrutteringstreffHendelsestype.GJENÅPN: //Kun fullførte treff kan gjenåpnes
+      return 'gjenåpnet';
+
+    // TODO: Brukes ikke for øyeblikket, men trengs når vi skal stanse for at flere deltakere blir lagt på og treffet er synlig for veiledere
+    case RekrutteringstreffHendelsestype.AVPUBLISER:
+      return 'avpublisert';
+
+    default:
+      return '';
+  }
+};
+export const RekrutteringstreffHendelseLabel: FC<
+  BaseProps<RekrutteringstreffHendelsestype>
+> = ({ icon, hendelseType, antall }) => {
+  const lbl = rekrutteringstreffLabelTekst(hendelseType);
+  const text = antall === undefined ? lbl : `${antall} ${lbl}`;
+  return (
+    <div className='flex flex-nowrap items-center space-x-2'>
+      {icon}
+      <BodyShort className='capitalize'>{text}</BodyShort>
+    </div>
+  );
+};

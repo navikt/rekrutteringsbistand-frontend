@@ -2,7 +2,6 @@
 
 import { useStegviser } from './StegviserContext';
 import AvlystSteg from './steg/AvlystSteg';
-import AvpublisertSteg from './steg/AvpublisertSteg';
 import FullføreSteg from './steg/FullføreSteg';
 import InvitereSteg from './steg/InvitereSteg';
 import PublisereSteg from './steg/PublisereSteg';
@@ -15,7 +14,6 @@ const StegviserContent = () => {
       <div className='flex flex-row gap-6'>
         <div className='flex-1'>
           {activeStep === 'AVLYST' && <AvlystSteg />}
-          {activeStep === 'AVPUBLISERT' && <AvpublisertSteg />}
           {activeStep === 'PUBLISERE' && <PublisereSteg />}
           {activeStep === 'INVITERE' && <InvitereSteg />}
           {activeStep === 'FULLFØRE' && <FullføreSteg />}

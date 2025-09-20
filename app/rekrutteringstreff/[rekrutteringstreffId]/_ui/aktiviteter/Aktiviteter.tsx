@@ -2,7 +2,8 @@
 
 import { useAlleHendelser } from '@/app/api/rekrutteringstreff/[...slug]/useAlleHendelser';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
-import HendelseLabel from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøkere/_ui/HendelseLabel';
+import { RekrutteringstreffHendelseLabel } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøkere/_ui/HendelseLabel';
+import { RekrutteringstreffHendelsestype } from '@/app/rekrutteringstreff/_domain/constants';
 import { PencilIcon, PlusCircleIcon } from '@navikt/aksel-icons';
 import { BodyShort } from '@navikt/ds-react';
 import { format } from 'date-fns';
@@ -30,10 +31,10 @@ const Aktiviteter: FC = () => {
 
       {hendelser.map((h) => (
         <div key={h.id} className={GRID}>
-          <HendelseLabel
-            hendelseType={h.hendelsestype}
+          <RekrutteringstreffHendelseLabel
+            hendelseType={h.hendelsestype as RekrutteringstreffHendelsestype}
             icon={
-              h.hendelsestype === 'OPPRETT' ? (
+              h.hendelsestype === RekrutteringstreffHendelsestype.OPPRETT ? (
                 <PlusCircleIcon className='text-white' />
               ) : (
                 <PencilIcon className='text-white' />
