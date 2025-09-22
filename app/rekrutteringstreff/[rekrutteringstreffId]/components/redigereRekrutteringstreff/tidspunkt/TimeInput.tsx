@@ -1,14 +1,7 @@
 'use client';
 
 import { UNSAFE_Combobox as Combobox } from '@navikt/ds-react';
-import React, {
-  forwardRef,
-  MutableRefObject,
-  ReactNode,
-  useCallback,
-  useEffect,
-  useRef,
-} from 'react';
+import React, { ReactNode, useCallback, useEffect, useRef } from 'react';
 
 const KLOKKESLETT_OPTIONS = [...Array(24)].flatMap((_, h) =>
   [0, 15, 30, 45].map(
@@ -27,91 +20,72 @@ type Props = {
   className?: string;
 };
 
-const TimeInput = forwardRef<HTMLInputElement, Props>(
-  (
-    {
-      value,
-      onChange,
-      onBlur,
-      label = 'Klokkeslett',
-      hideLabel,
-      disabled,
-      error,
-      className,
-    },
-    ref,
-  ) => {
-    // Trenger ref for å kunne scrolle til valgt element i dropdown, det er ikke standard funksjonalitet i ds-react sin Combobox
-    const inputRef = useRef<HTMLInputElement | null>(null);
+function TimeInput({
+  value,
+  onChange,
+  onBlur,
+  label = 'Klokkeslett',
+  hideLabel,
+  disabled,
+  error,
+  className,
+}: Props) {
+  // Trenger ref for å kunne scrolle til valgt element i dropdown, det er ikke standard funksjonalitet i ds-react sin Combobox
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
-    const setRefs = useCallback(
-      (node: HTMLInputElement | null) => {
-        inputRef.current = node;
-        if (typeof ref === 'function') {
-          ref(node);
-        } else if (ref) {
-          ref.current = node;
-        }
-      },
-      [ref],
-    );
+  const scrollSelectedIntoView = useCallback(() => {
+    if (typeof document === 'undefined') return;
 
-    const scrollSelectedIntoView = useCallback(() => {
-      if (typeof document === 'undefined') return;
+    const input = inputRef.current;
+    if (!input || input.getAttribute('aria-expanded') !== 'true') return;
 
-      const input = inputRef.current;
-      if (!input || input.getAttribute('aria-expanded') !== 'true') return;
+    const listId = input.getAttribute('aria-controls');
+    if (!listId) return;
 
-      const listId = input.getAttribute('aria-controls');
-      if (!listId) return;
+    document
+      .getElementById(listId)
+      ?.querySelector<HTMLElement>("[role='option'][aria-selected='true']")
+      ?.scrollIntoView({ block: 'nearest' });
+  }, []);
 
-      document
-        .getElementById(listId)
-        ?.querySelector<HTMLElement>("[role='option'][aria-selected='true']")
-        ?.scrollIntoView({ block: 'nearest' });
-    }, []);
+  const queueScrollIntoView = useCallback(() => {
+    if (typeof window === 'undefined') return;
 
-    const queueScrollIntoView = useCallback(() => {
-      if (typeof window === 'undefined') return;
+    let attempts = 0;
+    const run = () => {
+      attempts += 1;
+      scrollSelectedIntoView();
+      if (attempts < 3) {
+        window.requestAnimationFrame(run);
+      }
+    };
 
-      let attempts = 0;
-      const run = () => {
-        attempts += 1;
-        scrollSelectedIntoView();
-        if (attempts < 3) {
-          window.requestAnimationFrame(run);
-        }
-      };
+    window.requestAnimationFrame(run);
+  }, [scrollSelectedIntoView]);
 
-      window.requestAnimationFrame(run);
-    }, [scrollSelectedIntoView]);
+  useEffect(() => {
+    queueScrollIntoView();
+  }, [queueScrollIntoView, value]);
 
-    useEffect(() => {
-      queueScrollIntoView();
-    }, [queueScrollIntoView, value]);
-
-    return (
-      <Combobox
-        ref={setRefs}
-        label={label}
-        hideLabel={hideLabel}
-        disabled={disabled}
-        error={error}
-        className={['min-w-[7rem]', className].filter(Boolean).join(' ')}
-        options={KLOKKESLETT_OPTIONS}
-        filteredOptions={KLOKKESLETT_OPTIONS}
-        value={value ?? ''}
-        selectedOptions={value ? [value] : []}
-        onFocus={queueScrollIntoView}
-        onToggleSelected={(option, isSelected) => {
-          if (isSelected) onChange(option);
-        }}
-        onBlur={onBlur}
-      />
-    );
-  },
-);
-
-TimeInput.displayName = 'TimeInput';
+  return (
+    <Combobox
+      ref={inputRef}
+      label={label}
+      hideLabel={hideLabel}
+      disabled={disabled}
+      error={error}
+      className={['min-w-[7rem]', className].filter(Boolean).join(' ')}
+      options={KLOKKESLETT_OPTIONS}
+      filteredOptions={KLOKKESLETT_OPTIONS}
+      value={value ?? ''}
+      selectedOptions={value ? [value] : []}
+      onFocus={queueScrollIntoView}
+      onToggleSelected={(option, isSelected) => {
+        if (isSelected) onChange(option);
+      }}
+      onBlur={onBlur}
+    />
+  );
+}
 
 export default TimeInput;
