@@ -45,6 +45,7 @@ const TimeInput = forwardRef<HTMLInputElement, Props>(
         options={KLOKKESLETT_OPTIONS}
         filteredOptions={KLOKKESLETT_OPTIONS}
         value={value ?? ''}
+        selectedOptions={value ? [value] : []}
         onToggleSelected={(option, isSelected) => {
           if (isSelected) onChange(option);
         }}
