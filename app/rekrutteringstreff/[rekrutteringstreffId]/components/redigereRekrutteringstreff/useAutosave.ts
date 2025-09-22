@@ -42,7 +42,7 @@ export const skalHindreAutosave = (treff: any, force?: boolean): boolean => {
 export function useAutosave() {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { data: treff, mutate } = useRekrutteringstreff(rekrutteringstreffId);
-  const { getValues, trigger } = useFormContext<AnyValues>();
+  const { getValues, trigger, formState } = useFormContext<AnyValues>();
 
   const buildFullDto = useCallback(() => {
     const v = getValues();
@@ -89,18 +89,34 @@ export function useAutosave() {
         return;
       }
 
-      if (fieldsToValidate && fieldsToValidate.length) {
-        const ok = await trigger(fieldsToValidate as any, {
+      // Kjør validering for spesifikke felter, eller hele skjemaet hvis ingen er spesifisert
+      const shouldValidateAll =
+        !fieldsToValidate || fieldsToValidate.length === 0;
+      const ok = await trigger(
+        shouldValidateAll ? undefined : (fieldsToValidate as any),
+        {
           shouldFocus: false,
-        });
-        if (!ok) return;
+        },
+      );
+      if (!ok) return;
+
+      // Ikke lagre dersom vi har en manuell periodefeil (lik eller negativ tid)
+      if ((formState?.errors as any)?.root?.type === 'manualPeriod') {
+        return;
       }
 
       const dto = buildFullDto();
       await oppdaterRekrutteringstreff(rekrutteringstreffId, dto);
       await mutate();
     },
-    [buildFullDto, rekrutteringstreffId, trigger, treff, mutate],
+    [
+      buildFullDto,
+      rekrutteringstreffId,
+      trigger,
+      treff,
+      mutate,
+      formState?.errors,
+    ],
   );
 
   return { save };
