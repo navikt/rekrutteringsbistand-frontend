@@ -154,9 +154,9 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
                         // Tøm feltet når brukeren fokuserer hvis defaultverdi er satt
                         // (samme effekt som ved bruk av clear-knappen)
                         setValue('tittel', '', {
-                          shouldValidate: true,
-                          shouldDirty: true,
-                          shouldTouch: true,
+                          shouldValidate: false,
+                          shouldDirty: false,
+                          shouldTouch: false,
                         });
                       }
                     }}
