@@ -60,13 +60,16 @@ export function useAutosave() {
       treff?.svarfrist ??
       null;
 
-    const safeTitle =
-      typeof v.tittel === 'string' && v.tittel.trim().length > 0
-        ? v.tittel
-        : (treff?.tittel ?? '');
+    // Bare inkluder tittel dersom den faktisk har innhold (API krever min. 1 tegn når feltet er med)
+    const trimmedTitle = typeof v.tittel === 'string' ? v.tittel.trim() : '';
+    const includeTitle =
+      trimmedTitle.length > 0 ||
+      (treff?.tittel && treff.tittel.trim().length > 0);
 
     return {
-      tittel: safeTitle,
+      ...(includeTitle && {
+        tittel: trimmedTitle.length > 0 ? trimmedTitle : treff?.tittel,
+      }),
       beskrivelse: (v.beskrivelse ?? treff?.beskrivelse ?? null) as
         | string
         | null,
