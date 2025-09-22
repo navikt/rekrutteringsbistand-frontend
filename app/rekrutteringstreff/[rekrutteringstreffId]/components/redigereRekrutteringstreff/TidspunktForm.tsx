@@ -47,6 +47,18 @@ const TidspunktForm = ({ control }: any) => {
     }
   }, [fraDato, tilDato]);
 
+  // Når brukeren skrur av "Flere dager", sørg for at tilDato settes lik fraDato (kun en gang / ved avvik)
+  useEffect(() => {
+    if (!flereDager && fraDato) {
+      if (!tilDato || !isSameDay(fraDato, tilDato)) {
+        setValue('tilDato', fraDato, {
+          shouldValidate: true,
+          shouldDirty: true,
+        });
+      }
+    }
+  }, [flereDager, fraDato, tilDato, setValue]);
+
   const varighet = useMemo(() => {
     if (!fraDato || !fraTid || !tilTid) return '';
     const sluttDato = (tilDato as Date | null) ?? fraDato;
@@ -107,18 +119,8 @@ const TidspunktForm = ({ control }: any) => {
         </Heading>
         <Switch
           checked={flereDager}
-          onChange={() =>
-            setFlereDager((prev) => {
-              const next = !prev;
-              if (!next && fraDato) {
-                setValue('tilDato', fraDato, {
-                  shouldValidate: true,
-                  shouldDirty: true,
-                });
-              }
-              return next;
-            })
-          }
+          // Viktig: Ikke kalle setValue direkte her for å unngå React warning (setState i annen komponent under render).
+          onChange={() => setFlereDager((prev) => !prev)}
         >
           Flere dager
         </Switch>
