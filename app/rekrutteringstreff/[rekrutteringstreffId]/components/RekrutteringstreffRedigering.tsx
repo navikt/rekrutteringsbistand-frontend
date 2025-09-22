@@ -163,13 +163,15 @@ const RekrutteringstreffRedigering: FC<RekrutteringstreffRedigeringProps> = ({
   const innleggHook = useInnlegg(rekrutteringstreffId);
   const { save } = useAutosave();
   const { save: saveInnlegg } = useInnleggAutosave();
-  const { getValues, watch } = useFormContext();
+  const { getValues, watch, formState } = useFormContext();
 
   const tittelKiFeil = (watch('tittelKiFeil' as any) as any) ?? false;
   const innleggKiFeil = (watch('innleggKiFeil' as any) as any) ?? false;
   const tittelKiSjekket = (watch('tittelKiSjekket' as any) as any) ?? false;
   const innleggKiSjekket = (watch('innleggKiSjekket' as any) as any) ?? false;
+  const harPeriodefeil = formState.errors?.root?.type === 'manualPeriod';
   const anyKiFeil = !!tittelKiFeil || !!innleggKiFeil;
+  const harFeil = anyKiFeil || !!harPeriodefeil;
 
   const activeStep = getActiveStepFromHendelser(
     rekrutteringstreffHook.data?.hendelser,
@@ -216,7 +218,7 @@ const RekrutteringstreffRedigering: FC<RekrutteringstreffRedigeringProps> = ({
   const kreverInnleggSjekk = endringer.some((e) => e.etikett === 'Innlegg');
   const kanPublisereNå =
     endringer.length > 0 &&
-    !anyKiFeil &&
+    !harFeil &&
     (!kreverTittelSjekk || tittelKiSjekket) &&
     (!kreverInnleggSjekk || innleggKiSjekket);
 
