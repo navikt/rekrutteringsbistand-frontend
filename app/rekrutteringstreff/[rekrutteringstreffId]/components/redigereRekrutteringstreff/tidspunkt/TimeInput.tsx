@@ -64,6 +64,28 @@ function TimeInput({
   }, [scrollSelectedIntoView]);
 
   useEffect(() => {
+    const input = inputRef.current;
+    if (!input) return;
+
+    const observer = new MutationObserver((mutations) => {
+      for (const m of mutations) {
+        if (m.type === 'attributes' && m.attributeName === 'aria-expanded') {
+          if (input.getAttribute('aria-expanded') === 'true') {
+            queueScrollIntoView();
+          }
+        }
+      }
+    });
+
+    observer.observe(input, {
+      attributes: true,
+      attributeFilter: ['aria-expanded'],
+    });
+
+    return () => observer.disconnect();
+  }, [queueScrollIntoView]);
+
+  useEffect(() => {
     queueScrollIntoView();
   }, [queueScrollIntoView, value]);
 
