@@ -1,7 +1,6 @@
 'use client';
 
 import { toIso as toIsoUtil } from './tidspunkt/utils';
-import { rekrutteringstreffVarighet } from './tidspunkt/varighet';
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
 import { oppdaterRekrutteringstreff } from '@/app/api/rekrutteringstreff/oppdater-rekrutteringstreff/oppdaterRerkutteringstreff';
 import {
@@ -43,8 +42,7 @@ export const skalHindreAutosave = (treff: any, force?: boolean): boolean => {
 export function useAutosave() {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { data: treff, mutate } = useRekrutteringstreff(rekrutteringstreffId);
-  const { getValues, trigger, formState, setError, clearErrors } =
-    useFormContext<AnyValues>();
+  const { getValues, trigger, formState } = useFormContext<AnyValues>();
 
   const buildFullDto = useCallback(() => {
     const v = getValues();
@@ -121,8 +119,6 @@ export function useAutosave() {
       treff,
       mutate,
       formState?.errors,
-      setError,
-      clearErrors,
     ],
   );
 
