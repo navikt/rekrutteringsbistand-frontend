@@ -42,27 +42,43 @@ const TidspunktForm = ({ control }: any) => {
     }
   }, [fraDato, tilDato]);
 
-  const varighet = useMemo(
-    () => rekrutteringstreffVarighet(fraDato, fraTid, tilDato, tilTid),
-    [fraDato, fraTid, tilDato, tilTid],
-  );
+  const periodeUgyldig = useMemo(() => {
+    if (!fraDato || !fraTid || !tilTid) return false;
+    const sluttDato = (tilDato as Date | null) ?? fraDato;
+    const beregnetVarighet = rekrutteringstreffVarighet(
+      fraDato,
+      fraTid,
+      sluttDato,
+      tilTid,
+    );
+
+    if (!beregnetVarighet) return false;
+
+    return beregnetVarighet === '0 min' || beregnetVarighet.startsWith('-');
+  }, [fraDato, fraTid, tilDato, tilTid]);
+
+  const varighet = useMemo(() => {
+    if (!fraDato || !fraTid || !tilTid) return '';
+    const sluttDato = (tilDato as Date | null) ?? fraDato;
+    return rekrutteringstreffVarighet(fraDato, fraTid, sluttDato, tilTid);
+  }, [fraDato, fraTid, tilDato, tilTid]);
+
+  const harManuellPeriodefeil = errors.root?.type === 'manualPeriod';
 
   useEffect(() => {
-    const ugyldig =
-      varighet && (varighet.startsWith('-') || varighet === '0 min');
-    if (ugyldig) {
-      if (errors.root?.type !== 'manualPeriod') {
+    if (periodeUgyldig) {
+      if (!harManuellPeriodefeil) {
         setError('root', {
           type: 'manualPeriod',
           message: 'Sluttidspunkt kan ikke være før eller lik starttidspunkt.',
         });
       }
-    } else if (errors.root?.type === 'manualPeriod') {
+    } else if (harManuellPeriodefeil) {
       clearErrors('root');
     }
-  }, [varighet, errors, setError, clearErrors]);
+  }, [periodeUgyldig, harManuellPeriodefeil, setError, clearErrors]);
 
-  const periodUgyldig = varighet.startsWith('-') || varighet === '0 min';
+  const periodUgyldig = periodeUgyldig;
 
   return (
     <div className='space-y-4'>
