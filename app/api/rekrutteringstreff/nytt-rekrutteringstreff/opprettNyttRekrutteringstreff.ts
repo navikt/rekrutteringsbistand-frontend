@@ -15,6 +15,7 @@ export const opprettNyttRekrutteringstreff = async (
 export const opprettNyttRekrutteringstreffMirage = (server: any) => {
   return server.post(opprettNyttRekrutteringstreffEndepunkt, () => ({
     id: '1231-1234-1234-1234',
+    tittel: 'Treff uten navn',
   }));
 };
 

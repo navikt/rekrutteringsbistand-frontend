@@ -13,6 +13,8 @@ import { Button, Detail, Skeleton, TextField, Heading } from '@navikt/ds-react';
 import React, { useRef } from 'react';
 import { Controller, useFormContext, useWatch } from 'react-hook-form';
 
+const DEFAULT_TITTEL = 'Treff uten navn';
+
 interface TittelFormProps {
   onUpdated: () => void;
 }
@@ -142,6 +144,21 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
                     onBlur={async () => {
                       field.onBlur();
                       await runValidationAndMaybeSave();
+                    }}
+                    onFocus={() => {
+                      const current = field.value;
+                      if (
+                        typeof current === 'string' &&
+                        current.trim() === DEFAULT_TITTEL
+                      ) {
+                        // Tøm feltet når brukeren fokuserer hvis defaultverdi er satt
+                        // (samme effekt som ved bruk av clear-knappen)
+                        setValue('tittel', '', {
+                          shouldValidate: true,
+                          shouldDirty: true,
+                          shouldTouch: true,
+                        });
+                      }
                     }}
                     onKeyDown={(e) => {
                       if (e.key === 'Enter' && !e.shiftKey) {
