@@ -6,7 +6,7 @@ import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutter
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
 import { Heading } from '@navikt/ds-react';
 import { parseISO, format } from 'date-fns';
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 export type SvarfristFormFields = {
@@ -49,18 +49,39 @@ const SvarfristForm = ({ control }: Props) => {
     }
   }, [treff, dato, tid, setValue]);
 
+  const svarfristGroupRef = useRef<HTMLDivElement | null>(null);
+
+  const saveOnGroupBlur = useCallback(() => {
+    if (dato || tid) {
+      save(['svarfristDato', 'svarfristTid']);
+    }
+  }, [dato, tid, save]);
+
+  const handleGroupBlur = useCallback(
+    (e: React.FocusEvent) => {
+      const container = svarfristGroupRef.current;
+      const next = e.relatedTarget as Node | null;
+      if (container && next && container.contains(next)) {
+        return;
+      }
+      saveOnGroupBlur();
+    },
+    [saveOnGroupBlur],
+  );
+
   return (
     <div className='space-y-4'>
       <Heading level='3' size='small'>
         Svarfrist
       </Heading>
-      <DatoTidRad<SvarfristFormFields>
-        label=''
-        nameDato='svarfristDato'
-        nameTid='svarfristTid'
-        control={control}
-        onSave={() => save(['svarfristDato', 'svarfristTid'])}
-      />
+      <div ref={svarfristGroupRef} onBlurCapture={handleGroupBlur}>
+        <DatoTidRad<SvarfristFormFields>
+          label=''
+          nameDato='svarfristDato'
+          nameTid='svarfristTid'
+          control={control}
+        />
+      </div>
     </div>
   );
 };

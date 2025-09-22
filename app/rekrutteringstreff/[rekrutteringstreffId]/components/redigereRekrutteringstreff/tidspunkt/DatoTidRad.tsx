@@ -13,7 +13,6 @@ type Props<T extends Record<string, unknown>> = {
   disabledDato?: boolean;
   disabledTid?: boolean;
   hideDato?: boolean;
-  onSave: () => void;
 };
 
 export default function DatoTidRad<T extends Record<string, unknown>>({
@@ -24,7 +23,6 @@ export default function DatoTidRad<T extends Record<string, unknown>>({
   disabledDato,
   disabledTid,
   hideDato,
-  onSave,
 }: Props<T>) {
   return (
     <div className='flex gap-4 items-start'>
@@ -42,7 +40,6 @@ export default function DatoTidRad<T extends Record<string, unknown>>({
               label={label}
               value={field.value as Date | null}
               onChange={(date) => field.onChange(date)}
-              onBlur={onSave}
               error={fieldState.error}
               disabled={disabledDato}
             />
@@ -76,10 +73,7 @@ export default function DatoTidRad<T extends Record<string, unknown>>({
             hideLabel={true}
             error={fieldState.error?.message}
             disabled={disabledTid}
-            onBlur={() => {
-              field.onBlur();
-              onSave();
-            }}
+            onBlur={field.onBlur}
             className='w-24'
           />
         )}

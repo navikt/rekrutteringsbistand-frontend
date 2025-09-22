@@ -6,7 +6,13 @@ import { useAutosave } from './useAutosave';
 import { ExclamationmarkTriangleIcon } from '@navikt/aksel-icons';
 import { BodyShort, ErrorMessage, Heading, Switch } from '@navikt/ds-react';
 import { isSameDay } from 'date-fns';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 type TidspunktFormFields = {
@@ -37,25 +43,9 @@ const TidspunktForm = ({ control }: any) => {
 
   useEffect(() => {
     if (fraDato && tilDato) {
-      const shouldBeMultipledays = !isSameDay(fraDato, tilDato);
-      setFlereDager(shouldBeMultipledays);
+      setFlereDager(!isSameDay(fraDato, tilDato));
     }
   }, [fraDato, tilDato]);
-
-  const periodeUgyldig = useMemo(() => {
-    if (!fraDato || !fraTid || !tilTid) return false;
-    const sluttDato = (tilDato as Date | null) ?? fraDato;
-    const beregnetVarighet = rekrutteringstreffVarighet(
-      fraDato,
-      fraTid,
-      sluttDato,
-      tilTid,
-    );
-
-    if (!beregnetVarighet) return false;
-
-    return beregnetVarighet === '0 min' || beregnetVarighet.startsWith('-');
-  }, [fraDato, fraTid, tilDato, tilTid]);
 
   const varighet = useMemo(() => {
     if (!fraDato || !fraTid || !tilTid) return '';
@@ -63,22 +53,51 @@ const TidspunktForm = ({ control }: any) => {
     return rekrutteringstreffVarighet(fraDato, fraTid, sluttDato, tilTid);
   }, [fraDato, fraTid, tilDato, tilTid]);
 
-  const harManuellPeriodefeil = errors.root?.type === 'manualPeriod';
+  const intervalGroupRef = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
-    if (periodeUgyldig) {
-      if (!harManuellPeriodefeil) {
-        setError('root', {
-          type: 'manualPeriod',
-          message: 'Sluttidspunkt kan ikke være før eller lik starttidspunkt.',
-        });
-      }
-    } else if (harManuellPeriodefeil) {
-      clearErrors('root');
+  const validateAndMaybeSave = useCallback(() => {
+    if (!fraDato || !fraTid || !tilTid) {
+      if (errors.root?.type === 'manualPeriod') clearErrors('root');
+      return;
     }
-  }, [periodeUgyldig, harManuellPeriodefeil, setError, clearErrors]);
 
-  const periodUgyldig = periodeUgyldig;
+    const sluttDato = (tilDato as Date | null) ?? fraDato;
+    const v = rekrutteringstreffVarighet(fraDato, fraTid, sluttDato, tilTid);
+    const ugyldig = v === '0 min' || v?.startsWith('-');
+
+    if (ugyldig) {
+      setError('root', {
+        type: 'manualPeriod',
+        message: 'Sluttidspunkt kan ikke være før eller lik starttidspunkt.',
+      });
+    } else {
+      if (errors.root?.type === 'manualPeriod') clearErrors('root');
+      save(['fraDato', 'fraTid', 'tilDato', 'tilTid']);
+    }
+  }, [
+    fraDato,
+    fraTid,
+    tilDato,
+    tilTid,
+    errors.root,
+    clearErrors,
+    setError,
+    save,
+  ]);
+
+  const handleGroupBlur = useCallback(
+    (e: React.FocusEvent) => {
+      const container = intervalGroupRef.current;
+      const next = e.relatedTarget as Node | null;
+      if (container && next && container.contains(next)) {
+        // Fokus fortsatt inne i gruppa
+        return;
+      }
+      // Fokus flyttet ut av intervallgruppen -> valider & lagre
+      validateAndMaybeSave();
+    },
+    [validateAndMaybeSave],
+  );
 
   return (
     <div className='space-y-4'>
@@ -105,13 +124,16 @@ const TidspunktForm = ({ control }: any) => {
         </Switch>
       </div>
 
-      <div className='flex flex-col lg:flex-row gap-4'>
+      <div
+        ref={intervalGroupRef}
+        className='flex flex-col lg:flex-row gap-4'
+        onBlurCapture={handleGroupBlur}
+      >
         <DatoTidRad<TidspunktFormFields>
           label='Fra'
           nameDato='fraDato'
           nameTid='fraTid'
           control={control}
-          onSave={() => save(['fraDato', 'fraTid'])}
         />
 
         <DatoTidRad<TidspunktFormFields>
@@ -120,7 +142,6 @@ const TidspunktForm = ({ control }: any) => {
           nameTid='tilTid'
           control={control}
           hideDato={!flereDager}
-          onSave={() => save(['tilDato', 'tilTid'])}
         />
       </div>
 
@@ -135,7 +156,7 @@ const TidspunktForm = ({ control }: any) => {
         </div>
       ) : (
         <BodyShort size='small' className='mt-2'>
-          {varighet && !periodUgyldig ? varighet : 'Velg tid'}
+          {varighet && !errors.root ? varighet : 'Velg tid'}
         </BodyShort>
       )}
     </div>
