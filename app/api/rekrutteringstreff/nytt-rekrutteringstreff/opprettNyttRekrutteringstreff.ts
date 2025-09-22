@@ -21,6 +21,7 @@ export const opprettNyttRekrutteringstreffMirage = (server: any) => {
 
 export const OpprettNyttRekrutteringstreffSchema = z.object({
   opprettetAvNavkontorEnhetId: z.string().nullable(),
+  tittel: z.string().min(1).max(100),
 });
 
 export type OpprettNyttRekrutteringstreffDTO = z.infer<
