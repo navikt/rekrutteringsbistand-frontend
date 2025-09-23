@@ -24,6 +24,7 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
   const { data: innleggListe, isLoading } = useInnlegg(rekrutteringstreffId);
 
   const innlegg = innleggListe?.[0];
+  const savedHtmlContent = innlegg ? (innlegg.htmlContent ?? null) : undefined;
 
   const {
     control,
@@ -84,6 +85,7 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
     setKiLagret,
     requireHasCheckedToShow: true,
     setKiSjekketFieldName: 'innleggKiSjekket' as any,
+    savedValue: savedHtmlContent,
   });
 
   return (
