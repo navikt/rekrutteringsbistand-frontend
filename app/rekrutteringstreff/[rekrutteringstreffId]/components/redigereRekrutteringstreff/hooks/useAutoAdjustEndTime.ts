@@ -5,7 +5,8 @@ import { UseFormSetValue } from 'react-hook-form';
 
 /**
  * Hook som automatisk justerer sluttidspunkt når starttidspunkt endres.
- * Brukes for å sikre at sluttid alltid er etter startid med en gitt offset.
+ * Positive offsetHours = sluttid ETTER startid (tilTid)
+ * Negative offsetHours = sluttid FØR startid (svarfrist)
  */
 export function useAutoAdjustEndTime(
   setValue: UseFormSetValue<any>,
@@ -29,11 +30,15 @@ export function useAutoAdjustEndTime(
       const sluttDato = currentEndDato ?? startDato;
       const currentEndTidspunkt = kombinerDatoOgTid(sluttDato, currentEndTid);
 
-      // Hvis slutt er etter start, ikke juster
-      if (
-        currentEndTidspunkt &&
-        currentEndTidspunkt.getTime() > startTidspunkt.getTime()
-      ) {
+      // Hvis eksisterende verdi allerede oppfyller regelen, ikke juster
+      const isAfterMode = offsetHours > 0;
+      const currentEndValid = currentEndTidspunkt
+        ? isAfterMode
+          ? currentEndTidspunkt.getTime() > startTidspunkt.getTime()
+          : currentEndTidspunkt.getTime() < startTidspunkt.getTime()
+        : false;
+
+      if (currentEndValid) {
         return false;
       }
 

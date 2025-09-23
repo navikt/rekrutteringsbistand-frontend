@@ -9,7 +9,7 @@ import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutter
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
 import { Heading } from '@navikt/ds-react';
 import { format, parseISO } from 'date-fns';
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 export type SvarfristFormFields = {
@@ -48,14 +48,17 @@ const SvarfristForm = ({ control }: Props) => {
     'svarfristTid',
   ]);
 
-  const { adjustEndTime } = useAutoAdjustEndTime(setValue, scheduleSave, -24); // 24 timer før
+  const { adjustEndTime } = useAutoAdjustEndTime(
+    setValue,
+    scheduleSave,
+    -24, // 24 timer før
+  );
 
   const svarfristTimeOptions = useFilteredTimeOptions(
     dato,
     fraDato,
     fraTid,
-    'before', // Svarfrist må være før starttid
-    15,
+    -15, // 15 min før starttid
   );
 
   // Last inn eksisterende svarfrist fra API
@@ -79,6 +82,36 @@ const SvarfristForm = ({ control }: Props) => {
   useEffect(() => {
     adjustEndTime(fraDato, fraTid, dato, tid, 'svarfristDato', 'svarfristTid');
   }, [fraDato, fraTid, dato, tid, adjustEndTime]);
+
+  const previousValuesRef = useRef<{ dato: Date | null; tid: string | null }>({
+    dato: dato ?? null,
+    tid: tid ?? null,
+  });
+  const isInitialRender = useRef(true);
+
+  useEffect(() => {
+    if (isInitialRender.current) {
+      isInitialRender.current = false;
+      previousValuesRef.current = { dato: dato ?? null, tid: tid ?? null };
+      return;
+    }
+
+    const previous = previousValuesRef.current;
+    const previousTimestamp = previous.dato ? previous.dato.getTime() : null;
+    const currentTimestamp = dato ? dato.getTime() : null;
+    const previousTid = previous.tid ?? null;
+    const currentTid = tid ?? null;
+
+    const dateChanged = previousTimestamp !== currentTimestamp;
+    const timeChanged = previousTid !== currentTid;
+
+    if (dateChanged || timeChanged) {
+      previousValuesRef.current = { dato: dato ?? null, tid: currentTid };
+      if (dato || tid) {
+        scheduleSave();
+      }
+    }
+  }, [dato, tid, scheduleSave]);
 
   return (
     <div className='space-y-4'>
