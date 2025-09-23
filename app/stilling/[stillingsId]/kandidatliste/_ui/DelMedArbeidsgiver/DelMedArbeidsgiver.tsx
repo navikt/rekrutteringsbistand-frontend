@@ -44,7 +44,7 @@ const DelMedArbeidsgiver: FC<DelMedArbeidsgiverProps> = ({
   const eposter =
     stillingsData.stilling.contactList
       ?.map((kontakt) => kontakt.email)
-      .filter((email): email is string => email !== null) || [];
+      .filter((email): email is string => email !== null && email.trim() !== "") || [];
 
   const [epost, setEpost] = useState<string[]>(eposter);
 
@@ -67,7 +67,7 @@ const DelMedArbeidsgiver: FC<DelMedArbeidsgiverProps> = ({
   };
 
   const isValidEmail = (email: string): boolean => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     return emailRegex.test(email);
   };
 
