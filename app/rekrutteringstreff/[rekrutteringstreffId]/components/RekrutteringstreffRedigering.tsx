@@ -169,9 +169,12 @@ const RekrutteringstreffRedigering: FC<RekrutteringstreffRedigeringProps> = ({
   const innleggKiFeil = (watch('innleggKiFeil' as any) as any) ?? false;
   const tittelKiSjekket = (watch('tittelKiSjekket' as any) as any) ?? false;
   const innleggKiSjekket = (watch('innleggKiSjekket' as any) as any) ?? false;
-  const harPeriodefeil = formState.errors?.root?.type === 'manualPeriod';
   const anyKiFeil = !!tittelKiFeil || !!innleggKiFeil;
-  const harFeil = anyKiFeil || !!harPeriodefeil;
+  const harAndreSkjemafeil = Boolean(
+    formState.errors &&
+      Object.keys(formState.errors).some((key) => key !== 'root'),
+  );
+  const harFeil = anyKiFeil || harAndreSkjemafeil;
 
   const activeStep = getActiveStepFromHendelser(
     rekrutteringstreffHook.data?.hendelser,

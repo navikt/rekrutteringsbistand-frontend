@@ -1,11 +1,12 @@
 'use client';
 
 import DatoTidRad from './tidspunkt/DatoTidRad';
+import { KLOKKESLETT_OPTIONS } from './tidspunkt/TimeInput';
+import { isGyldigTid, kombinerDatoOgTid } from './tidspunkt/utils';
 import { rekrutteringstreffVarighet } from './tidspunkt/varighet';
 import { useAutosave } from './useAutosave';
-import { ExclamationmarkTriangleIcon } from '@navikt/aksel-icons';
-import { BodyShort, ErrorMessage, Heading, Switch } from '@navikt/ds-react';
-import { isSameDay } from 'date-fns';
+import { BodyShort, Heading, Switch } from '@navikt/ds-react';
+import { addHours, addMinutes, format, isSameDay, startOfDay } from 'date-fns';
 import React, {
   useCallback,
   useEffect,
@@ -23,12 +24,7 @@ type TidspunktFormFields = {
 };
 
 const TidspunktForm = ({ control }: any) => {
-  const {
-    setError,
-    clearErrors,
-    formState: { errors },
-    setValue,
-  } = useFormContext();
+  const { setValue } = useFormContext();
 
   const { save } = useAutosave();
 
@@ -41,23 +37,113 @@ const TidspunktForm = ({ control }: any) => {
     fraDato && tilDato ? !isSameDay(fraDato, tilDato) : false,
   );
 
+  const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   useEffect(() => {
-    if (fraDato && tilDato) {
-      setFlereDager(!isSameDay(fraDato, tilDato));
+    return () => {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  const scheduleSave = useCallback(() => {
+    const run = () =>
+      save([
+        'fraDato',
+        'fraTid',
+        'tilDato',
+        'tilTid',
+        'svarfristDato',
+        'svarfristTid',
+      ]);
+
+    if (typeof window === 'undefined') {
+      void run();
+      return;
     }
+
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
+    }
+
+    saveTimeoutRef.current = setTimeout(() => {
+      saveTimeoutRef.current = null;
+      void run();
+    }, 0);
+  }, [save]);
+
+  useEffect(() => {
+    const computed = fraDato && tilDato ? !isSameDay(fraDato, tilDato) : false;
+    setFlereDager((prev) => (prev === computed ? prev : computed));
   }, [fraDato, tilDato]);
 
-  // Når brukeren skrur av "Flere dager", sørg for at tilDato settes lik fraDato (kun en gang / ved avvik)
   useEffect(() => {
-    if (!flereDager && fraDato) {
-      if (!tilDato || !isSameDay(fraDato, tilDato)) {
-        setValue('tilDato', fraDato, {
-          shouldValidate: true,
-          shouldDirty: true,
-        });
-      }
+    if (!fraDato || !isGyldigTid(fraTid)) return;
+
+    const startTidspunkt = kombinerDatoOgTid(fraDato, fraTid);
+    if (!startTidspunkt) return;
+
+    const sluttDato = tilDato ?? fraDato;
+    const sluttTidspunkt = kombinerDatoOgTid(sluttDato, tilTid);
+    if (sluttTidspunkt && sluttTidspunkt.getTime() > startTidspunkt.getTime()) {
+      return;
     }
-  }, [flereDager, fraDato, tilDato, setValue]);
+
+    const nyttSlutt = addHours(startTidspunkt, 1);
+    const nyDato = startOfDay(nyttSlutt);
+    const nyTid = format(nyttSlutt, 'HH:mm');
+
+    let oppdatert = false;
+
+    if (!tilDato || startOfDay(tilDato).getTime() !== nyDato.getTime()) {
+      setValue('tilDato', nyDato, {
+        shouldDirty: true,
+        shouldValidate: false,
+      });
+      oppdatert = true;
+    }
+    if (tilTid !== nyTid) {
+      setValue('tilTid', nyTid, {
+        shouldDirty: true,
+        shouldValidate: false,
+      });
+      oppdatert = true;
+    }
+
+    if (oppdatert) {
+      scheduleSave();
+    }
+  }, [fraDato, fraTid, tilDato, tilTid, setValue, scheduleSave]);
+
+  const tilTimeOptions = useMemo(() => {
+    if (!fraDato || !isGyldigTid(fraTid)) {
+      return KLOKKESLETT_OPTIONS;
+    }
+
+    const sluttDato = tilDato ?? fraDato;
+    if (!sluttDato || !isSameDay(fraDato, sluttDato)) {
+      return KLOKKESLETT_OPTIONS;
+    }
+
+    const startTidspunkt = kombinerDatoOgTid(fraDato, fraTid);
+    if (!startTidspunkt) {
+      return KLOKKESLETT_OPTIONS;
+    }
+
+    const tidligsteSluttSammeDag = addMinutes(startTidspunkt, 15);
+    if (!isSameDay(startTidspunkt, tidligsteSluttSammeDag)) {
+      return [];
+    }
+
+    const minTimestamp = tidligsteSluttSammeDag.getTime();
+
+    return KLOKKESLETT_OPTIONS.filter((option) => {
+      const kandidat = kombinerDatoOgTid(sluttDato, option);
+      if (!kandidat) return false;
+      return kandidat.getTime() >= minTimestamp;
+    });
+  }, [fraDato, fraTid, tilDato]);
 
   const varighet = useMemo(() => {
     if (!fraDato || !fraTid || !tilTid) return '';
@@ -65,51 +151,22 @@ const TidspunktForm = ({ control }: any) => {
     return rekrutteringstreffVarighet(fraDato, fraTid, sluttDato, tilTid);
   }, [fraDato, fraTid, tilDato, tilTid]);
 
-  const intervalGroupRef = useRef<HTMLDivElement | null>(null);
+  const handleToggleFlereDager = () => {
+    const next = !flereDager;
+    setFlereDager(next);
 
-  const validateAndMaybeSave = useCallback(() => {
-    if (!fraDato || !fraTid || !tilTid) {
-      if (errors.root?.type === 'manualPeriod') clearErrors('root');
-      return;
-    }
-
-    const sluttDato = (tilDato as Date | null) ?? fraDato;
-    const v = rekrutteringstreffVarighet(fraDato, fraTid, sluttDato, tilTid);
-    const ugyldig = v === '0 min' || v?.startsWith('-');
-
-    if (ugyldig) {
-      setError('root', {
-        type: 'manualPeriod',
-        message: 'Sluttidspunkt kan ikke være før eller lik starttidspunkt.',
-      });
-    } else {
-      if (errors.root?.type === 'manualPeriod') clearErrors('root');
-      save(['fraDato', 'fraTid', 'tilDato', 'tilTid']);
-    }
-  }, [
-    fraDato,
-    fraTid,
-    tilDato,
-    tilTid,
-    errors.root,
-    clearErrors,
-    setError,
-    save,
-  ]);
-
-  const handleGroupBlur = useCallback(
-    (e: React.FocusEvent) => {
-      const container = intervalGroupRef.current;
-      const next = e.relatedTarget as Node | null;
-      if (container && next && container.contains(next)) {
-        // Fokus fortsatt inne i gruppa
-        return;
+    if (!next && fraDato) {
+      const målDato = startOfDay(fraDato);
+      const aktuellTilDato = tilDato ? startOfDay(tilDato) : null;
+      if (!aktuellTilDato || aktuellTilDato.getTime() !== målDato.getTime()) {
+        setValue('tilDato', målDato, {
+          shouldDirty: true,
+          shouldValidate: false,
+        });
+        scheduleSave();
       }
-      // Fokus flyttet ut av intervallgruppen -> valider & lagre
-      validateAndMaybeSave();
-    },
-    [validateAndMaybeSave],
-  );
+    }
+  };
 
   return (
     <div className='space-y-4'>
@@ -117,25 +174,19 @@ const TidspunktForm = ({ control }: any) => {
         <Heading level='3' size='small'>
           Tid
         </Heading>
-        <Switch
-          checked={flereDager}
-          // Viktig: Ikke kalle setValue direkte her for å unngå React warning (setState i annen komponent under render).
-          onChange={() => setFlereDager((prev) => !prev)}
-        >
+        <Switch checked={flereDager} onChange={handleToggleFlereDager}>
           Flere dager
         </Switch>
       </div>
 
-      <div
-        ref={intervalGroupRef}
-        className='flex flex-col lg:flex-row gap-4'
-        onBlurCapture={handleGroupBlur}
-      >
+      <div className='flex flex-col lg:flex-row gap-4'>
         <DatoTidRad<TidspunktFormFields>
           label='Fra'
           nameDato='fraDato'
           nameTid='fraTid'
           control={control}
+          onDatoBlur={scheduleSave}
+          onTidBlur={scheduleSave}
         />
 
         <DatoTidRad<TidspunktFormFields>
@@ -144,23 +195,16 @@ const TidspunktForm = ({ control }: any) => {
           nameTid='tilTid'
           control={control}
           hideDato={!flereDager}
+          dateFrom={fraDato ?? undefined}
+          timeOptions={tilTimeOptions}
+          onDatoBlur={scheduleSave}
+          onTidBlur={scheduleSave}
         />
       </div>
 
-      {errors.root?.message ? (
-        <div className='flex items-center gap-1 mt-2'>
-          <ExclamationmarkTriangleIcon
-            aria-hidden
-            fontSize='1.5rem'
-            className='aksel-error-message mr-2'
-          />
-          <ErrorMessage size='medium'>{errors.root.message}</ErrorMessage>
-        </div>
-      ) : (
-        <BodyShort size='small' className='mt-2'>
-          {varighet && !errors.root ? varighet : 'Velg tid'}
-        </BodyShort>
-      )}
+      <BodyShort size='small' className='mt-2'>
+        {varighet || 'Velg tid'}
+      </BodyShort>
     </div>
   );
 };

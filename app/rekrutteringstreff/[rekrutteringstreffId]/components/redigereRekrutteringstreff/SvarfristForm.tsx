@@ -1,12 +1,21 @@
 'use client';
 
 import DatoTidRad from './tidspunkt/DatoTidRad';
+import { KLOKKESLETT_OPTIONS } from './tidspunkt/TimeInput';
+import { isGyldigTid, kombinerDatoOgTid } from './tidspunkt/utils';
 import { useAutosave } from './useAutosave';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
 import { Heading } from '@navikt/ds-react';
-import { parseISO, format } from 'date-fns';
-import React, { useCallback, useEffect, useRef } from 'react';
+import {
+  addHours,
+  format,
+  isSameDay,
+  parseISO,
+  startOfDay,
+  subMinutes,
+} from 'date-fns';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 export type SvarfristFormFields = {
@@ -30,6 +39,11 @@ const SvarfristForm = ({ control }: Props) => {
     name: ['svarfristDato', 'svarfristTid'],
   });
 
+  const [fraDato, fraTid] = useWatch({
+    control,
+    name: ['fraDato', 'fraTid'],
+  });
+
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { data: treff } = useRekrutteringstreff(rekrutteringstreffId);
 
@@ -49,37 +63,118 @@ const SvarfristForm = ({ control }: Props) => {
     }
   }, [treff, dato, tid, setValue]);
 
-  const svarfristGroupRef = useRef<HTMLDivElement | null>(null);
+  const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const saveOnGroupBlur = useCallback(() => {
-    if (dato || tid) {
-      save(['svarfristDato', 'svarfristTid']);
-    }
-  }, [dato, tid, save]);
-
-  const handleGroupBlur = useCallback(
-    (e: React.FocusEvent) => {
-      const container = svarfristGroupRef.current;
-      const next = e.relatedTarget as Node | null;
-      if (container && next && container.contains(next)) {
-        return;
+  useEffect(() => {
+    return () => {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
       }
-      saveOnGroupBlur();
-    },
-    [saveOnGroupBlur],
-  );
+    };
+  }, []);
+
+  const scheduleSave = useCallback(() => {
+    const run = () => save(['svarfristDato', 'svarfristTid']);
+
+    if (typeof window === 'undefined') {
+      void run();
+      return;
+    }
+
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
+    }
+
+    saveTimeoutRef.current = setTimeout(() => {
+      saveTimeoutRef.current = null;
+      void run();
+    }, 0);
+  }, [save]);
+
+  const svarfristTimeOptions = useMemo(() => {
+    if (!dato || !fraDato || !isGyldigTid(fraTid)) {
+      return KLOKKESLETT_OPTIONS;
+    }
+
+    if (!isSameDay(dato, fraDato)) {
+      return KLOKKESLETT_OPTIONS;
+    }
+
+    const startTidspunkt = kombinerDatoOgTid(fraDato, fraTid);
+    if (!startTidspunkt) {
+      return KLOKKESLETT_OPTIONS;
+    }
+
+    const senesteSvarfristSammeDag = subMinutes(startTidspunkt, 15);
+    if (!isSameDay(startTidspunkt, senesteSvarfristSammeDag)) {
+      return [];
+    }
+
+    const maksTimestamp = senesteSvarfristSammeDag.getTime();
+
+    return KLOKKESLETT_OPTIONS.filter((option) => {
+      const kandidat = kombinerDatoOgTid(dato, option);
+      if (!kandidat) return false;
+      return kandidat.getTime() <= maksTimestamp;
+    });
+  }, [dato, fraDato, fraTid]);
+
+  useEffect(() => {
+    if (!fraDato || !isGyldigTid(fraTid)) return;
+
+    const startTidspunkt = kombinerDatoOgTid(fraDato, fraTid);
+    if (!startTidspunkt) return;
+
+    const nåværendeSvarfrist = kombinerDatoOgTid(dato, tid ?? null);
+    if (
+      nåværendeSvarfrist &&
+      nåværendeSvarfrist.getTime() < startTidspunkt.getTime()
+    ) {
+      return;
+    }
+
+    const foreslåttSvarfrist = addHours(startTidspunkt, -24);
+    const nyDato = startOfDay(foreslåttSvarfrist);
+    const nyTid = format(foreslåttSvarfrist, 'HH:mm');
+
+    let oppdatert = false;
+
+    if (!dato || startOfDay(dato).getTime() !== nyDato.getTime()) {
+      setValue('svarfristDato', nyDato, {
+        shouldDirty: true,
+        shouldValidate: false,
+      });
+      oppdatert = true;
+    }
+
+    if (tid !== nyTid) {
+      setValue('svarfristTid', nyTid, {
+        shouldDirty: true,
+        shouldValidate: false,
+      });
+      oppdatert = true;
+    }
+
+    if (oppdatert) {
+      scheduleSave();
+    }
+  }, [dato, tid, fraDato, fraTid, setValue, scheduleSave]);
 
   return (
     <div className='space-y-4'>
       <Heading level='3' size='small'>
         Svarfrist
       </Heading>
-      <div ref={svarfristGroupRef} onBlurCapture={handleGroupBlur}>
+      <div className='ml-5'>
         <DatoTidRad<SvarfristFormFields>
           label=''
           nameDato='svarfristDato'
           nameTid='svarfristTid'
           control={control}
+          dateTo={fraDato ?? undefined}
+          timeOptions={svarfristTimeOptions}
+          onDatoBlur={scheduleSave}
+          onTidBlur={scheduleSave}
         />
       </div>
     </div>

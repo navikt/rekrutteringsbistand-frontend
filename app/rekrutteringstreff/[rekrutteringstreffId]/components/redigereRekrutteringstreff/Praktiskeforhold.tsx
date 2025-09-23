@@ -20,8 +20,9 @@ const PraktiskeForhold = () => {
         control={control}
         rekrutteringstreffId={rekrutteringstreffId}
       />
-      <StedForm control={control} rekrutteringstreffId={rekrutteringstreffId} />
       <SvarfristForm control={control} />
+
+      <StedForm control={control} rekrutteringstreffId={rekrutteringstreffId} />
     </div>
   );
 };

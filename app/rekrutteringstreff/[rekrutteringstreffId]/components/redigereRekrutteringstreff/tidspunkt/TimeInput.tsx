@@ -3,7 +3,7 @@
 import { UNSAFE_Combobox as Combobox } from '@navikt/ds-react';
 import React, { ReactNode, useCallback, useEffect, useRef } from 'react';
 
-const KLOKKESLETT_OPTIONS = [...Array(24)].flatMap((_, h) =>
+export const KLOKKESLETT_OPTIONS = [...Array(24)].flatMap((_, h) =>
   [0, 15, 30, 45].map(
     (m) => `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`,
   ),
@@ -18,6 +18,7 @@ type Props = {
   disabled?: boolean;
   error?: ReactNode | boolean;
   className?: string;
+  options?: string[];
 };
 
 function TimeInput({
@@ -29,6 +30,7 @@ function TimeInput({
   disabled,
   error,
   className,
+  options,
 }: Props) {
   // Trenger ref for å kunne scrolle til valgt element i dropdown, det er ikke standard funksjonalitet i ds-react sin Combobox
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -89,6 +91,8 @@ function TimeInput({
     queueScrollIntoView();
   }, [queueScrollIntoView, value]);
 
+  const availableOptions = options ?? KLOKKESLETT_OPTIONS;
+
   return (
     <Combobox
       ref={inputRef}
@@ -97,8 +101,8 @@ function TimeInput({
       disabled={disabled}
       error={error}
       className={['min-w-[7rem]', className].filter(Boolean).join(' ')}
-      options={KLOKKESLETT_OPTIONS}
-      filteredOptions={KLOKKESLETT_OPTIONS}
+      options={availableOptions}
+      filteredOptions={availableOptions}
       value={value ?? ''}
       selectedOptions={value ? [value] : []}
       onFocus={queueScrollIntoView}
