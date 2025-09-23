@@ -1,21 +1,15 @@
 'use client';
 
+import { useAutoAdjustEndTime } from './hooks/useAutoAdjustEndTime';
+import { useFilteredTimeOptions } from './hooks/useFilteredTimeOptions';
+import { useScheduledSave } from './hooks/useScheduledSave';
 import DatoTidRad from './tidspunkt/DatoTidRad';
-import { KLOKKESLETT_OPTIONS } from './tidspunkt/TimeInput';
-import { isGyldigTid, kombinerDatoOgTid } from './tidspunkt/utils';
 import { useAutosave } from './useAutosave';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
 import { Heading } from '@navikt/ds-react';
-import {
-  addHours,
-  format,
-  isSameDay,
-  parseISO,
-  startOfDay,
-  subMinutes,
-} from 'date-fns';
-import React, { useCallback, useEffect, useMemo, useRef } from 'react';
+import { format, parseISO } from 'date-fns';
+import React, { useEffect } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 export type SvarfristFormFields = {
@@ -34,6 +28,7 @@ interface Props {
 const SvarfristForm = ({ control }: Props) => {
   const { save } = useAutosave();
   const { setValue } = useFormContext();
+
   const [dato, tid] = useWatch({
     control,
     name: ['svarfristDato', 'svarfristTid'],
@@ -47,6 +42,23 @@ const SvarfristForm = ({ control }: Props) => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { data: treff } = useRekrutteringstreff(rekrutteringstreffId);
 
+  // Bruk de nye hooks
+  const { scheduleSave } = useScheduledSave(save, [
+    'svarfristDato',
+    'svarfristTid',
+  ]);
+
+  const { adjustEndTime } = useAutoAdjustEndTime(setValue, scheduleSave, -24); // 24 timer før
+
+  const svarfristTimeOptions = useFilteredTimeOptions(
+    dato,
+    fraDato,
+    fraTid,
+    'before', // Svarfrist må være før starttid
+    15,
+  );
+
+  // Last inn eksisterende svarfrist fra API
   useEffect(() => {
     if (!treff) return;
     if (!dato && treff.svarfrist) {
@@ -63,102 +75,10 @@ const SvarfristForm = ({ control }: Props) => {
     }
   }, [treff, dato, tid, setValue]);
 
-  const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
+  // Auto-juster svarfrist når starttidspunkt endres
   useEffect(() => {
-    return () => {
-      if (saveTimeoutRef.current) {
-        clearTimeout(saveTimeoutRef.current);
-      }
-    };
-  }, []);
-
-  const scheduleSave = useCallback(() => {
-    const run = () => save(['svarfristDato', 'svarfristTid']);
-
-    if (typeof window === 'undefined') {
-      void run();
-      return;
-    }
-
-    if (saveTimeoutRef.current) {
-      clearTimeout(saveTimeoutRef.current);
-    }
-
-    saveTimeoutRef.current = setTimeout(() => {
-      saveTimeoutRef.current = null;
-      void run();
-    }, 0);
-  }, [save]);
-
-  const svarfristTimeOptions = useMemo(() => {
-    if (!dato || !fraDato || !isGyldigTid(fraTid)) {
-      return KLOKKESLETT_OPTIONS;
-    }
-
-    if (!isSameDay(dato, fraDato)) {
-      return KLOKKESLETT_OPTIONS;
-    }
-
-    const startTidspunkt = kombinerDatoOgTid(fraDato, fraTid);
-    if (!startTidspunkt) {
-      return KLOKKESLETT_OPTIONS;
-    }
-
-    const senesteSvarfristSammeDag = subMinutes(startTidspunkt, 15);
-    if (!isSameDay(startTidspunkt, senesteSvarfristSammeDag)) {
-      return [];
-    }
-
-    const maksTimestamp = senesteSvarfristSammeDag.getTime();
-
-    return KLOKKESLETT_OPTIONS.filter((option) => {
-      const kandidat = kombinerDatoOgTid(dato, option);
-      if (!kandidat) return false;
-      return kandidat.getTime() <= maksTimestamp;
-    });
-  }, [dato, fraDato, fraTid]);
-
-  useEffect(() => {
-    if (!fraDato || !isGyldigTid(fraTid)) return;
-
-    const startTidspunkt = kombinerDatoOgTid(fraDato, fraTid);
-    if (!startTidspunkt) return;
-
-    const nåværendeSvarfrist = kombinerDatoOgTid(dato, tid ?? null);
-    if (
-      nåværendeSvarfrist &&
-      nåværendeSvarfrist.getTime() < startTidspunkt.getTime()
-    ) {
-      return;
-    }
-
-    const foreslåttSvarfrist = addHours(startTidspunkt, -24);
-    const nyDato = startOfDay(foreslåttSvarfrist);
-    const nyTid = format(foreslåttSvarfrist, 'HH:mm');
-
-    let oppdatert = false;
-
-    if (!dato || startOfDay(dato).getTime() !== nyDato.getTime()) {
-      setValue('svarfristDato', nyDato, {
-        shouldDirty: true,
-        shouldValidate: false,
-      });
-      oppdatert = true;
-    }
-
-    if (tid !== nyTid) {
-      setValue('svarfristTid', nyTid, {
-        shouldDirty: true,
-        shouldValidate: false,
-      });
-      oppdatert = true;
-    }
-
-    if (oppdatert) {
-      scheduleSave();
-    }
-  }, [dato, tid, fraDato, fraTid, setValue, scheduleSave]);
+    adjustEndTime(fraDato, fraTid, dato, tid, 'svarfristDato', 'svarfristTid');
+  }, [fraDato, fraTid, dato, tid, adjustEndTime]);
 
   return (
     <div className='space-y-4'>

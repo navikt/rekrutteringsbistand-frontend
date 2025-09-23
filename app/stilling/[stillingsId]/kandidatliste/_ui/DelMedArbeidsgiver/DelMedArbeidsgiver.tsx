@@ -44,7 +44,9 @@ const DelMedArbeidsgiver: FC<DelMedArbeidsgiverProps> = ({
   const eposter =
     stillingsData.stilling.contactList
       ?.map((kontakt) => kontakt.email)
-      .filter((email): email is string => email !== null && email.trim() !== "") || [];
+      .filter(
+        (email): email is string => email !== null && email.trim() !== '',
+      ) || [];
 
   const [epost, setEpost] = useState<string[]>(eposter);
 

@@ -1,19 +1,14 @@
 'use client';
 
+import { useAutoAdjustEndTime } from './hooks/useAutoAdjustEndTime';
+import { useFilteredTimeOptions } from './hooks/useFilteredTimeOptions';
+import { useScheduledSave } from './hooks/useScheduledSave';
 import DatoTidRad from './tidspunkt/DatoTidRad';
-import { KLOKKESLETT_OPTIONS } from './tidspunkt/TimeInput';
-import { isGyldigTid, kombinerDatoOgTid } from './tidspunkt/utils';
 import { rekrutteringstreffVarighet } from './tidspunkt/varighet';
 import { useAutosave } from './useAutosave';
 import { BodyShort, Heading, Switch } from '@navikt/ds-react';
-import { addHours, addMinutes, format, isSameDay, startOfDay } from 'date-fns';
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { isSameDay, startOfDay } from 'date-fns';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 type TidspunktFormFields = {
@@ -25,7 +20,6 @@ type TidspunktFormFields = {
 
 const TidspunktForm = ({ control }: any) => {
   const { setValue } = useFormContext();
-
   const { save } = useAutosave();
 
   const [fraDato, fraTid, tilDato, tilTid] = useWatch({
@@ -37,113 +31,35 @@ const TidspunktForm = ({ control }: any) => {
     fraDato && tilDato ? !isSameDay(fraDato, tilDato) : false,
   );
 
-  const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Bruk de nye hooks
+  const { scheduleSave } = useScheduledSave(save, [
+    'fraDato',
+    'fraTid',
+    'tilDato',
+    'tilTid',
+    'svarfristDato',
+    'svarfristTid',
+  ]);
 
-  useEffect(() => {
-    return () => {
-      if (saveTimeoutRef.current) {
-        clearTimeout(saveTimeoutRef.current);
-      }
-    };
-  }, []);
+  const { adjustEndTime } = useAutoAdjustEndTime(setValue, scheduleSave, 1);
 
-  const scheduleSave = useCallback(() => {
-    const run = () =>
-      save([
-        'fraDato',
-        'fraTid',
-        'tilDato',
-        'tilTid',
-        'svarfristDato',
-        'svarfristTid',
-      ]);
-
-    if (typeof window === 'undefined') {
-      void run();
-      return;
-    }
-
-    if (saveTimeoutRef.current) {
-      clearTimeout(saveTimeoutRef.current);
-    }
-
-    saveTimeoutRef.current = setTimeout(() => {
-      saveTimeoutRef.current = null;
-      void run();
-    }, 0);
-  }, [save]);
+  const tilTimeOptions = useFilteredTimeOptions(
+    tilDato ?? fraDato,
+    fraDato,
+    fraTid,
+    'after',
+    15,
+  );
 
   useEffect(() => {
     const computed = fraDato && tilDato ? !isSameDay(fraDato, tilDato) : false;
     setFlereDager((prev) => (prev === computed ? prev : computed));
   }, [fraDato, tilDato]);
 
+  // Auto-juster sluttidspunkt når startidspunkt endres
   useEffect(() => {
-    if (!fraDato || !isGyldigTid(fraTid)) return;
-
-    const startTidspunkt = kombinerDatoOgTid(fraDato, fraTid);
-    if (!startTidspunkt) return;
-
-    const sluttDato = tilDato ?? fraDato;
-    const sluttTidspunkt = kombinerDatoOgTid(sluttDato, tilTid);
-    if (sluttTidspunkt && sluttTidspunkt.getTime() > startTidspunkt.getTime()) {
-      return;
-    }
-
-    const nyttSlutt = addHours(startTidspunkt, 1);
-    const nyDato = startOfDay(nyttSlutt);
-    const nyTid = format(nyttSlutt, 'HH:mm');
-
-    let oppdatert = false;
-
-    if (!tilDato || startOfDay(tilDato).getTime() !== nyDato.getTime()) {
-      setValue('tilDato', nyDato, {
-        shouldDirty: true,
-        shouldValidate: false,
-      });
-      oppdatert = true;
-    }
-    if (tilTid !== nyTid) {
-      setValue('tilTid', nyTid, {
-        shouldDirty: true,
-        shouldValidate: false,
-      });
-      oppdatert = true;
-    }
-
-    if (oppdatert) {
-      scheduleSave();
-    }
-  }, [fraDato, fraTid, tilDato, tilTid, setValue, scheduleSave]);
-
-  const tilTimeOptions = useMemo(() => {
-    if (!fraDato || !isGyldigTid(fraTid)) {
-      return KLOKKESLETT_OPTIONS;
-    }
-
-    const sluttDato = tilDato ?? fraDato;
-    if (!sluttDato || !isSameDay(fraDato, sluttDato)) {
-      return KLOKKESLETT_OPTIONS;
-    }
-
-    const startTidspunkt = kombinerDatoOgTid(fraDato, fraTid);
-    if (!startTidspunkt) {
-      return KLOKKESLETT_OPTIONS;
-    }
-
-    const tidligsteSluttSammeDag = addMinutes(startTidspunkt, 15);
-    if (!isSameDay(startTidspunkt, tidligsteSluttSammeDag)) {
-      return [];
-    }
-
-    const minTimestamp = tidligsteSluttSammeDag.getTime();
-
-    return KLOKKESLETT_OPTIONS.filter((option) => {
-      const kandidat = kombinerDatoOgTid(sluttDato, option);
-      if (!kandidat) return false;
-      return kandidat.getTime() >= minTimestamp;
-    });
-  }, [fraDato, fraTid, tilDato]);
+    adjustEndTime(fraDato, fraTid, tilDato, tilTid, 'tilDato', 'tilTid');
+  }, [fraDato, fraTid, tilDato, tilTid, adjustEndTime]);
 
   const varighet = useMemo(() => {
     if (!fraDato || !fraTid || !tilTid) return '';
