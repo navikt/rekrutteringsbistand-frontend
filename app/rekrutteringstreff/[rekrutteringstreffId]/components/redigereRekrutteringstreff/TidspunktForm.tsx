@@ -95,14 +95,10 @@ const TidspunktForm = ({ control }: Props) => {
         <Heading level='3' size='small'>
           Tid
         </Heading>
-        <Switch checked={flereDager} onChange={handleToggleFlereDager}>
-          Flere dager
-        </Switch>
       </div>
 
       <div className='flex flex-col lg:flex-row gap-4'>
         <DatoTidRad<TidspunktFormFields>
-          label='Fra'
           nameDato='fraDato'
           nameTid='fraTid'
           control={control}

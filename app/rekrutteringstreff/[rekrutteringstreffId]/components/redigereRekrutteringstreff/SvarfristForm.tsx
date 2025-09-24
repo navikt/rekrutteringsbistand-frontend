@@ -118,9 +118,8 @@ const SvarfristForm = ({ control }: Props) => {
       <Heading level='3' size='small'>
         Svarfrist
       </Heading>
-      <div className='ml-5'>
+      <div>
         <DatoTidRad<SvarfristFormFields>
-          label=''
           nameDato='svarfristDato'
           nameTid='svarfristTid'
           control={control}
