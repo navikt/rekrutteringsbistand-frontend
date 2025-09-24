@@ -1,3 +1,4 @@
+import AvlystSteg from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/om-treffet/stegviser/steg/AvlystSteg';
 import {
   RekrutteringstreffHendelsestype,
   JobbsøkerHendelsestype,
@@ -53,30 +54,6 @@ const publisertHendelser = [
     id: '48435074-2200-429c-830d-8e03a920c11c',
     tidspunkt: '2025-09-15T06:35:26Z',
     hendelsestype: RekrutteringstreffHendelsestype.PUBLISER,
-    opprettetAvAktørType: 'ARRANGØR',
-    aktørIdentifikasjon: 'Z994886',
-  },
-];
-
-const avpublisertHendelser = [
-  {
-    id: '5e322a9e-34eb-41ef-8adc-97e56a5f8a51',
-    tidspunkt: '2025-09-10T17:10:19Z',
-    hendelsestype: RekrutteringstreffHendelsestype.OPPRETT,
-    opprettetAvAktørType: 'ARRANGØR',
-    aktørIdentifikasjon: 'Z994744',
-  },
-  {
-    id: '48435074-2200-429c-830d-8e03a920c11c',
-    tidspunkt: '2025-09-15T06:35:26Z',
-    hendelsestype: RekrutteringstreffHendelsestype.PUBLISER,
-    opprettetAvAktørType: 'ARRANGØR',
-    aktørIdentifikasjon: 'Z994886',
-  },
-  {
-    id: '48435074-2200-429c-830d-8e03a920c11c',
-    tidspunkt: '2025-09-16T06:35:26Z',
-    hendelsestype: RekrutteringstreffHendelsestype.AVPUBLISER,
     opprettetAvAktørType: 'ARRANGØR',
     aktørIdentifikasjon: 'Z994886',
   },

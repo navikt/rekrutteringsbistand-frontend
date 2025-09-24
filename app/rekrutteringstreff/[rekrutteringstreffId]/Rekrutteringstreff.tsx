@@ -1,8 +1,7 @@
 'use client';
 
 import { useRekrutteringstreffContext } from './RekrutteringstreffContext';
-import HeaderActions from './_ui/rekrutteringstreff/HeaderActions';
-import TabsNav from './_ui/rekrutteringstreff/TabsNav';
+import RekrutteringstreffHeader from './_ui/rekrutteringstreff/RekrutteringstreffHeader';
 import TabsPanels from './_ui/rekrutteringstreff/TabsPanels';
 import { useAlleHendelser } from '@/app/api/rekrutteringstreff/[...slug]/useAlleHendelser';
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
@@ -12,13 +11,13 @@ import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutter
 import Stegviser from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/om-treffet/stegviser/Stegviser';
 import { JobbsøkerHendelsestype } from '@/app/rekrutteringstreff/_domain/constants';
 import { getActiveStepFromHendelser } from '@/app/rekrutteringstreff/_utils/rekrutteringstreff';
-import PanelHeader from '@/components/layout/PanelHeader';
+import SideScroll from '@/components/SideScroll';
 import SideLayout from '@/components/layout/SideLayout';
-import { Loader, Tabs } from '@navikt/ds-react';
+import { Tabs } from '@navikt/ds-react';
 import { formatDistanceToNow } from 'date-fns';
 import { nb } from 'date-fns/locale/nb';
 import { parseAsString, useQueryState } from 'nuqs';
-import { FC, useCallback, useEffect, useMemo } from 'react';
+import { FC, useCallback, useEffect, useMemo, useRef } from 'react';
 
 export enum RekrutteringstreffTabs {
   OM_TREFFET = 'om_treffet',
@@ -165,6 +164,8 @@ const Rekrutteringstreff: FC = () => {
     scrollToTop();
   }, [scrollToTop, setModus]);
 
+  const headerRef = useRef<HTMLDivElement>(null);
+
   return (
     <Tabs value={fane} onChange={(val) => setFane(val)}>
       <SideLayout
@@ -177,57 +178,38 @@ const Rekrutteringstreff: FC = () => {
         }
         header={
           skalViseHeader ? (
-            <div className='sticky top-0 z-40 bg-[var(--ax-bg-default)]'>
-              <PanelHeader className='bg-transparent'>
-                <PanelHeader.Section
-                  title={headerTittel}
-                  tabs={
-                    erIForhåndsvisning ? (
-                      <TabsNav
-                        jobbsøkereAntall={jobbsøkere?.length ?? 0}
-                        arbeidsgivereAntall={arbeidsgivere?.length ?? 0}
-                      />
-                    ) : undefined
-                  }
-                  meta={
-                    <div className='flex items-center gap-2'>
-                      {lagrerNoe && (
-                        <span className='inline-flex items-center gap-1 text-xs text-muted-foreground'>
-                          <Loader size='xsmall' title='Lagrer' />
-                          Lagrer…
-                        </span>
-                      )}
-                      {!lagrerNoe && lagretTekst}
-                    </div>
-                  }
-                  actionsRight={
-                    <HeaderActions
-                      avlyst={avlyst}
-                      activeStep={activeStep as any}
-                      erIForhåndsvisning={erIForhåndsvisning}
-                      erPubliseringklar={erPubliseringklar}
-                      harInvitert={harInvitert}
-                      tiltidspunktHarPassert={tiltidspunktHarPassert}
-                      rekrutteringstreffId={rekrutteringstreffId}
-                      oppdaterData={oppdaterData}
-                      onToggleForhåndsvisning={handleToggleForhåndsvisning}
-                      onBekreftRedigerPublisert={onBekreftRedigerPublisert}
-                      onAvlyst={onAvlyst}
-                    />
-                  }
-                />
-              </PanelHeader>
-            </div>
+            <RekrutteringstreffHeader
+              ref={headerRef}
+              skalViseHeader={skalViseHeader}
+              headerTittel={headerTittel}
+              erIForhåndsvisning={erIForhåndsvisning}
+              jobbsøkereAntall={jobbsøkere?.length ?? 0}
+              arbeidsgivereAntall={arbeidsgivere?.length ?? 0}
+              lagrerNoe={lagrerNoe}
+              lagretTekst={lagretTekst}
+              avlyst={avlyst}
+              activeStep={activeStep as any}
+              erPubliseringklar={erPubliseringklar}
+              harInvitert={harInvitert}
+              tiltidspunktHarPassert={tiltidspunktHarPassert}
+              rekrutteringstreffId={rekrutteringstreffId}
+              oppdaterData={oppdaterData}
+              onToggleForhåndsvisning={handleToggleForhåndsvisning}
+              onBekreftRedigerPublisert={onBekreftRedigerPublisert}
+              onAvlyst={onAvlyst}
+            />
           ) : undefined
         }
       >
-        <div className='space-y-4'>
-          <TabsPanels
-            erIForhåndsvisning={erIForhåndsvisning}
-            onUpdated={rekrutteringstreffHook.mutate}
-            onGåTilForhåndsvisning={gåTilForhåndsvisning}
-          />
-        </div>
+        <SideScroll excludeRef={skalViseHeader ? headerRef : null}>
+          <div className='space-y-4'>
+            <TabsPanels
+              erIForhåndsvisning={erIForhåndsvisning}
+              onUpdated={rekrutteringstreffHook.mutate}
+              onGåTilForhåndsvisning={gåTilForhåndsvisning}
+            />
+          </div>
+        </SideScroll>
       </SideLayout>
     </Tabs>
   );
