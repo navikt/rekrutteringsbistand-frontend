@@ -16,18 +16,24 @@ interface Props {
   erIForhåndsvisning: boolean;
   onUpdated: () => Promise<any> | void;
   onGåTilForhåndsvisning: () => void;
+  erPubliseringklar: boolean;
+  oppdaterData: () => Promise<void>;
 }
 
 const TabsPanels: FC<Props> = ({
   erIForhåndsvisning,
   onUpdated,
   onGåTilForhåndsvisning,
+  erPubliseringklar,
+  oppdaterData,
 }) => {
   if (!erIForhåndsvisning) {
     return (
       <RekrutteringstreffRedigering
         onUpdated={onUpdated}
         onGåTilForhåndsvisning={onGåTilForhåndsvisning}
+        erPubliseringklar={erPubliseringklar}
+        oppdaterData={oppdaterData}
       />
     );
   }

@@ -53,7 +53,9 @@ const Rekrutteringstreff: FC = () => {
   );
   const harPublisert = activeStep === 'INVITERE' || activeStep === 'FULLFØRE';
   const avlyst = activeStep === 'AVLYST';
-  const erIForhåndsvisning = avlyst ? true : modus !== 'edit';
+  const erIForhåndsvisning = useMemo(() => {
+    return avlyst || (harPublisert && modus !== 'edit');
+  }, [avlyst, harPublisert, modus]);
 
   const rekrutteringstreff = rekrutteringstreffHook.data;
 
@@ -103,6 +105,12 @@ const Rekrutteringstreff: FC = () => {
     }
   }, [avlyst, modus, setModus]);
 
+  useEffect(() => {
+    if (!harPublisert && !avlyst && modus !== 'edit') {
+      setModus('edit');
+    }
+  }, [avlyst, harPublisert, modus, setModus]);
+
   const scrollToTop = useCallback(() => {
     if (typeof window !== 'undefined') {
       requestAnimationFrame(() =>
@@ -113,6 +121,7 @@ const Rekrutteringstreff: FC = () => {
 
   const handleToggleForhåndsvisning = (nyForhåndsvisning: boolean) => {
     if (avlyst) return;
+    if (!harPublisert && nyForhåndsvisning) return;
     setModus(nyForhåndsvisning ? '' : 'edit');
     scrollToTop();
   };
@@ -213,6 +222,8 @@ const Rekrutteringstreff: FC = () => {
               erIForhåndsvisning={erIForhåndsvisning}
               onUpdated={rekrutteringstreffHook.mutate}
               onGåTilForhåndsvisning={gåTilForhåndsvisning}
+              erPubliseringklar={erPubliseringklar}
+              oppdaterData={oppdaterData}
             />
           </div>
         </SideScroll>

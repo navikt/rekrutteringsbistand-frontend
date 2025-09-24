@@ -16,6 +16,7 @@ import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
 import { useKiLogg } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import LeggTilArbeidsgiverForm from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/arbeidsgivere/_ui/LeggTilArbeidsgiverForm';
+import PubliserRekrutteringstreffButton from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/rekrutteringstreff/PubliserRekrutteringstreffButton';
 import { getActiveStepFromHendelser } from '@/app/rekrutteringstreff/_utils/rekrutteringstreff';
 import { RekbisError } from '@/util/rekbisError';
 import {
@@ -154,11 +155,15 @@ const beregnEndringer = (
 interface RekrutteringstreffRedigeringProps {
   onUpdated?: () => void;
   onGåTilForhåndsvisning?: () => void;
+  erPubliseringklar: boolean;
+  oppdaterData: () => Promise<void>;
 }
 
 const RekrutteringstreffRedigering: FC<RekrutteringstreffRedigeringProps> = ({
   onUpdated,
   onGåTilForhåndsvisning,
+  erPubliseringklar,
+  oppdaterData,
 }) => {
   const { rekrutteringstreffId, startLagring, stoppLagring } =
     useRekrutteringstreffContext();
@@ -360,14 +365,11 @@ const RekrutteringstreffRedigering: FC<RekrutteringstreffRedigeringProps> = ({
             </Button>
           </div>
         ) : (
-          <Button
-            type='button'
-            variant='primary'
-            size='small'
-            onClick={() => onGåTilForhåndsvisning?.()}
-          >
-            Ferdig – gå til forhåndsvisning
-          </Button>
+          <PubliserRekrutteringstreffButton
+            erPubliseringklar={erPubliseringklar}
+            rekrutteringstreffId={rekrutteringstreffId}
+            oppdaterData={oppdaterData}
+          />
         )}
       </div>
 

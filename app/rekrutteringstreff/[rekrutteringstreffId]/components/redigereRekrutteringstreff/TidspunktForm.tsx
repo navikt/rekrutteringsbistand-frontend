@@ -87,8 +87,6 @@ const TidspunktForm = ({ control }: Props) => {
     }
   };
 
-  const skalViseTilFelt = fraDato && !!fraTid;
-
   return (
     <div className='space-y-4'>
       <div className='flex justify-between items-center'>
@@ -106,19 +104,17 @@ const TidspunktForm = ({ control }: Props) => {
           onTidBlur={scheduleSave}
         />
 
-        {skalViseTilFelt && (
-          <DatoTidRad<TidspunktFormFields>
-            label='Til'
-            nameDato='tilDato'
-            nameTid='tilTid'
-            control={control}
-            hideDato={!flereDager}
-            dateFrom={fraDato ?? undefined}
-            timeOptions={tilTimeOptions}
-            onDatoBlur={scheduleSave}
-            onTidBlur={scheduleSave}
-          />
-        )}
+        <DatoTidRad<TidspunktFormFields>
+          label='Til'
+          nameDato='tilDato'
+          nameTid='tilTid'
+          control={control}
+          hideDato={!flereDager}
+          dateFrom={fraDato ?? undefined}
+          timeOptions={tilTimeOptions}
+          onDatoBlur={scheduleSave}
+          onTidBlur={scheduleSave}
+        />
       </div>
 
       <BodyShort size='small' className='mt-2'>

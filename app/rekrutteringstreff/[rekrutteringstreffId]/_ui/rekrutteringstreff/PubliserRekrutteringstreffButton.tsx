@@ -19,6 +19,7 @@ const PubliserRekrutteringstreffButton: FC<Props> = ({
 }) => {
   const [laster, setLaster] = useState(false);
   const modalRef = useRef<HTMLDialogElement>(null);
+  const closingRef = useRef(false);
 
   const åpneModal = () => modalRef.current?.showModal();
   const lukkModal = () => {
@@ -41,10 +42,15 @@ const PubliserRekrutteringstreffButton: FC<Props> = ({
         error,
       });
     } finally {
-      setLaster(false);
       if (skalLukke) {
+        closingRef.current = true;
         modalRef.current?.close();
+        // Reset flag after a microtask to ensure onClose has processed
+        setTimeout(() => {
+          closingRef.current = false;
+        }, 0);
       }
+      setLaster(false);
     }
   };
 
@@ -63,6 +69,9 @@ const PubliserRekrutteringstreffButton: FC<Props> = ({
       <Modal
         ref={modalRef}
         onClose={() => {
+          if (closingRef.current) {
+            return;
+          }
           if (laster) {
             modalRef.current?.showModal();
           }
