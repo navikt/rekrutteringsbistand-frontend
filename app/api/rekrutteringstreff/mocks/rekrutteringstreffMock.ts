@@ -102,7 +102,7 @@ const ikkepubliserthendelser = [
 
 export const rekrutteringstreffMock = {
   id: 'd6a587cd-8797-4b9a-a68b-575373f16d65',
-  tittel: 'Treff uten navn',
+  tittel: 'Treffet',
   beskrivelse: null,
   fraTid: '2025-06-01T08:00:00+02:00',
   tilTid: '2025-07-01T10:00:00+02:00',

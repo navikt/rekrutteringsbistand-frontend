@@ -267,11 +267,19 @@ const RekrutteringstreffRedigering: FC<RekrutteringstreffRedigeringProps> = ({
 
   const kreverTittelSjekk = endringer.some((e) => e.etikett === 'Tittel');
   const kreverInnleggSjekk = endringer.some((e) => e.etikett === 'Innlegg');
+
+  // Publiseringsknappen skal være deaktivert dersom treffet ikke har fått et navn ennå
+  const DEFAULT_TITTEL = 'Treff uten navn';
+  const lagretTittel = rekrutteringstreffHook.data?.tittel ?? '';
+  const manglerNavn =
+    typeof lagretTittel === 'string' && lagretTittel.trim() === DEFAULT_TITTEL;
+
   const kanPublisereNå =
     endringer.length > 0 &&
     !harFeil &&
     (!kreverTittelSjekk || tittelKiSjekket) &&
-    (!kreverInnleggSjekk || innleggKiSjekket);
+    (!kreverInnleggSjekk || innleggKiSjekket) &&
+    !manglerNavn;
 
   const åpneBekreftelse = () => {
     if (!kanPublisereNå) return;

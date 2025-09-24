@@ -25,7 +25,7 @@ import {
 } from '@navikt/ds-react';
 import { FC, Fragment, useMemo } from 'react';
 
-const DEFAULT_TITTEL = 'Nytt rekrutteringstreff';
+const DEFAULT_TITTEL = 'Treff uten navn';
 
 const sjekklisteData = [
   { id: 'navn', label: 'Navn' },

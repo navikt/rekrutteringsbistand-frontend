@@ -24,7 +24,7 @@ import {
 } from 'react';
 import * as React from 'react';
 
-const DEFAULT_TITTEL = 'Nytt rekrutteringstreff';
+const DEFAULT_TITTEL = 'Treff uten navn';
 
 const erInvitert = (j: JobbsøkerDTO) =>
   j.hendelser?.some(

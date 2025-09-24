@@ -61,7 +61,7 @@ const Rekrutteringstreff: FC = () => {
     const tittel = rekrutteringstreff?.tittel?.trim() ?? '';
     return {
       arbeidsgiver: (arbeidsgivere?.length ?? 0) > 0,
-      navn: tittel.length > 0 && tittel !== 'Nytt rekrutteringstreff',
+      navn: tittel.length > 0 && tittel !== 'Treff uten navn',
       sted:
         !!rekrutteringstreff?.gateadresse?.trim() &&
         !!rekrutteringstreff?.poststed?.trim(),
