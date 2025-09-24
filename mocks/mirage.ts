@@ -30,7 +30,6 @@ import { leggTilNyArbeidsgiverMirage } from '@/app/api/rekrutteringstreff/[...sl
 import { registrerIkkeOppmøteMirage } from '@/app/api/rekrutteringstreff/[...slug]/registrerOppmøte/registrerIkkeOppmøte';
 import { registrerOppmøteMirage } from '@/app/api/rekrutteringstreff/[...slug]/registrerOppmøte/registrerOppmøte';
 import { fjernArbeidsgiverMirage } from '@/app/api/rekrutteringstreff/[...slug]/slett-arbeidsgiver/fjernArbeidsgiver';
-import { rekrutteringstreffHendelserMirage } from '@/app/api/rekrutteringstreff/[...slug]/steg';
 import { alleHendelserMirage } from '@/app/api/rekrutteringstreff/[...slug]/useAlleHendelser';
 import { arbeidsgiverHendelserMirage } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgiverHendelser';
 import { rekruteringstreffArbeidsgivereMirage } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
@@ -38,7 +37,6 @@ import { innleggMirage } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg
 import { jobbsøkerHendelserMirage } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkerHendelser';
 import { jobbsøkereMirage } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
 import { kandidatnummerMirage } from '@/app/api/rekrutteringstreff/[...slug]/useKandidatnummer';
-import { administrerRekrutteringstreffMirage } from '@/app/api/rekrutteringstreff/administrer-rekrutteringstreff/administrerRekrutteringstreff';
 import { inviterJobbsøkereMirage } from '@/app/api/rekrutteringstreff/inviterJobbsokere/inviterJobbsokere';
 import {
   listKiLoggMirage,
@@ -54,6 +52,7 @@ import {
   opprettInnleggfMirage,
 } from '@/app/api/rekrutteringstreff/opprettEllerOppdaterInnlegg';
 import { slettRekrutteringstreffMirage } from '@/app/api/rekrutteringstreff/slett-rekrutteringstreff/slettRekrutteringstreff';
+import { utførRekrutteringstreffStatusHendelseMirage } from '@/app/api/rekrutteringstreff/status/utførRekrutteringstreffStatusHendelser';
 import { rekrutteringstreffMirage } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { rekrutteringstreffOversiktMirage } from '@/app/api/rekrutteringstreff/useRekrutteringstreffOversikt';
 import { statistikkMirage } from '@/app/api/statistikk/useStatistikk';
@@ -119,12 +118,11 @@ export function makeServer({ environment = 'test' } = {}) {
       jobbsøkereMirage(this);
       rekruteringstreffArbeidsgivereMirage(this);
       fjernArbeidsgiverMirage(this);
-      administrerRekrutteringstreffMirage(this);
+      utførRekrutteringstreffStatusHendelseMirage(this);
       slettRekrutteringstreffMirage(this);
       innleggMirage(this);
       opprettInnleggfMirage(this);
       oppdaterInnleggfMirage(this);
-      rekrutteringstreffHendelserMirage(this);
       inviterJobbsøkereMirage(this);
       registrerOppmøteMirage(this);
       registrerIkkeOppmøteMirage(this);

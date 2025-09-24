@@ -42,7 +42,7 @@ export const skalHindreAutosave = (treff: any, force?: boolean): boolean => {
 export function useAutosave() {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { data: treff, mutate } = useRekrutteringstreff(rekrutteringstreffId);
-  const { getValues, trigger } = useFormContext<AnyValues>();
+  const { getValues, trigger, formState } = useFormContext<AnyValues>();
 
   const buildFullDto = useCallback(() => {
     const v = getValues();
@@ -60,13 +60,16 @@ export function useAutosave() {
       treff?.svarfrist ??
       null;
 
-    const safeTitle =
-      typeof v.tittel === 'string' && v.tittel.trim().length > 0
-        ? v.tittel
-        : (treff?.tittel ?? '');
+    // Bare inkluder tittel dersom den faktisk har innhold (API krever min. 1 tegn når feltet er med)
+    const trimmedTitle = typeof v.tittel === 'string' ? v.tittel.trim() : '';
+    const includeTitle =
+      trimmedTitle.length > 0 ||
+      (treff?.tittel && treff.tittel.trim().length > 0);
 
     return {
-      tittel: safeTitle,
+      ...(includeTitle && {
+        tittel: trimmedTitle.length > 0 ? trimmedTitle : treff?.tittel,
+      }),
       beskrivelse: (v.beskrivelse ?? treff?.beskrivelse ?? null) as
         | string
         | null,
@@ -89,18 +92,34 @@ export function useAutosave() {
         return;
       }
 
-      if (fieldsToValidate && fieldsToValidate.length) {
-        const ok = await trigger(fieldsToValidate as any, {
+      // Kjør validering for spesifikke felter, eller hele skjemaet hvis ingen er spesifisert
+      const shouldValidateAll =
+        !fieldsToValidate || fieldsToValidate.length === 0;
+      const ok = await trigger(
+        shouldValidateAll ? undefined : (fieldsToValidate as any),
+        {
           shouldFocus: false,
-        });
-        if (!ok) return;
+        },
+      );
+      if (!ok) return;
+
+      // Ikke lagre dersom vi har en manuell periodefeil (lik eller negativ tid)
+      if ((formState?.errors as any)?.root?.type === 'manualPeriod') {
+        return;
       }
 
       const dto = buildFullDto();
       await oppdaterRekrutteringstreff(rekrutteringstreffId, dto);
       await mutate();
     },
-    [buildFullDto, rekrutteringstreffId, trigger, treff, mutate],
+    [
+      buildFullDto,
+      rekrutteringstreffId,
+      trigger,
+      treff,
+      mutate,
+      formState?.errors,
+    ],
   );
 
   return { save };

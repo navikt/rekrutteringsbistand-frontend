@@ -5,6 +5,7 @@ import { useAutosave } from './useAutosave';
 import { useKiAnalyse } from './useKiAnalyse';
 import { useKiLogg } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
 import { MAX_TITLE_LENGTH } from '@/app/api/rekrutteringstreff/oppdater-rekrutteringstreff/oppdaterRerkutteringstreff';
+import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
 import KiAnalyse from '@/app/rekrutteringstreff/[rekrutteringstreffId]/components/redigereRekrutteringstreff/ki/KiAnalyse';
 import { RekbisError } from '@/util/rekbisError';
@@ -13,12 +14,17 @@ import { Button, Detail, Skeleton, TextField, Heading } from '@navikt/ds-react';
 import React, { useRef } from 'react';
 import { Controller, useFormContext, useWatch } from 'react-hook-form';
 
+const DEFAULT_TITTEL = 'Treff uten navn';
+
 interface TittelFormProps {
   onUpdated: () => void;
 }
 
 const TittelForm = ({ onUpdated }: TittelFormProps) => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
+
+  const { data: treff } = useRekrutteringstreff(rekrutteringstreffId);
+  const savedTittel = treff ? (treff.tittel ?? null) : undefined;
 
   const { setLagret: setKiLagret, isLoading } = useKiLogg(
     rekrutteringstreffId,
@@ -73,6 +79,7 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
     saveCallback,
     setKiLagret,
     setKiSjekketFieldName: 'tittelKiSjekket' as any,
+    savedValue: savedTittel,
   });
 
   const clear = () => {
@@ -142,6 +149,21 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
                     onBlur={async () => {
                       field.onBlur();
                       await runValidationAndMaybeSave();
+                    }}
+                    onFocus={() => {
+                      const current = field.value;
+                      if (
+                        typeof current === 'string' &&
+                        current.trim() === DEFAULT_TITTEL
+                      ) {
+                        // Tøm feltet når brukeren fokuserer hvis defaultverdi er satt
+                        // (samme effekt som ved bruk av clear-knappen)
+                        setValue('tittel', '', {
+                          shouldValidate: false,
+                          shouldDirty: false,
+                          shouldTouch: false,
+                        });
+                      }
                     }}
                     onKeyDown={(e) => {
                       if (e.key === 'Enter' && !e.shiftKey) {

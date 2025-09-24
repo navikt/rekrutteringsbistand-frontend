@@ -28,6 +28,7 @@ const RekrutteringstreffSøkLayout: FC<RekrutteringstreffSøkLayoutProps> = ({
   const handleOpprettRekrutteringstreff = () => {
     const nyttTreff: OpprettNyttRekrutteringstreffDTO = {
       opprettetAvNavkontorEnhetId: valgtNavKontor?.navKontor || null,
+      tittel: 'Treff uten navn',
     };
 
     opprettNyttRekrutteringstreff(nyttTreff)

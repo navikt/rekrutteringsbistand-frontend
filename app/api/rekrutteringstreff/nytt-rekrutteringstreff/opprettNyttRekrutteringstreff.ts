@@ -15,11 +15,13 @@ export const opprettNyttRekrutteringstreff = async (
 export const opprettNyttRekrutteringstreffMirage = (server: any) => {
   return server.post(opprettNyttRekrutteringstreffEndepunkt, () => ({
     id: '1231-1234-1234-1234',
+    tittel: 'Treff uten navn',
   }));
 };
 
 export const OpprettNyttRekrutteringstreffSchema = z.object({
   opprettetAvNavkontorEnhetId: z.string().nullable(),
+  tittel: z.string().min(1).max(100),
 });
 
 export type OpprettNyttRekrutteringstreffDTO = z.infer<

@@ -54,11 +54,11 @@ function toDefaults(treff: any): OppdaterRekrutteringstreffDTO {
     poststed: treff.poststed,
 
     fraDato,
-    fraTid: fra ? format(fra, 'HH:mm') : '',
+    fraTid: fra ? format(fra, 'HH:mm') : '08:00',
     tilDato,
-    tilTid: til ? format(til, 'HH:mm') : '',
+    tilTid: til ? format(til, 'HH:mm') : '08:00',
 
     svarfristDato,
-    svarfristTid: svarfrist ? format(svarfrist, 'HH:mm') : '',
+    svarfristTid: svarfrist ? format(svarfrist, 'HH:mm') : '08:00',
   } as any;
 }

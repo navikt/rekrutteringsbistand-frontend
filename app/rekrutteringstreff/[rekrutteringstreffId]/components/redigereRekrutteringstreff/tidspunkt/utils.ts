@@ -29,3 +29,17 @@ export const formatIso = (iso?: string | null) =>
 
 export const formaterKlokkeslett = (dato: Date | null): string =>
   dato ? format(dato, 'HH:mm') : '';
+
+export const isGyldigTid = (tid?: string | null): boolean =>
+  !!tid && TIME_REGEX.test(tid.trim());
+
+export const kombinerDatoOgTid = (
+  dato: Date | null,
+  tid: string | null | undefined,
+): Date | null => {
+  if (!dato || !isGyldigTid(tid)) return null;
+  const [timer, minutter] = (tid ?? '00:00').split(':').map(Number);
+  const resultat = new Date(dato);
+  resultat.setHours(timer, minutter, 0, 0);
+  return resultat;
+};

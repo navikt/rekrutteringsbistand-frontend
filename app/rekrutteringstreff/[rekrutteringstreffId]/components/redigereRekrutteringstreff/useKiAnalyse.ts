@@ -27,7 +27,16 @@ interface UseKiAnalyseParams<FormValues extends Record<string, any>> {
   setKiLagret?: (args: { id: string; lagret: boolean }) => Promise<void>;
   requireHasCheckedToShow?: boolean;
   setKiSjekketFieldName?: keyof FormValues & string;
+  savedValue?: string | null;
 }
+
+const sanitizeForComparison = (value: unknown): string => {
+  if (value === null || value === undefined) return '';
+  return String(value)
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+};
 
 export function useKiAnalyse<FormValues extends Record<string, any>>(
   params: UseKiAnalyseParams<FormValues>,
@@ -45,6 +54,7 @@ export function useKiAnalyse<FormValues extends Record<string, any>>(
     setKiLagret,
     requireHasCheckedToShow,
     setKiSjekketFieldName,
+    savedValue,
   } = params;
 
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
@@ -107,7 +117,15 @@ export function useKiAnalyse<FormValues extends Record<string, any>>(
     const tekst = (
       typeof value === 'string' ? value : String(value ?? '')
     ).trim();
-    if (!tekst) return;
+    const sanitizedTekst = sanitizeForComparison(tekst);
+    if (!sanitizedTekst) return;
+
+    if (savedValue !== undefined) {
+      const sanitizedSaved = sanitizeForComparison(savedValue);
+      if (sanitizedTekst === sanitizedSaved) {
+        return;
+      }
+    }
 
     try {
       const res = await validateKI({
@@ -180,6 +198,7 @@ export function useKiAnalyse<FormValues extends Record<string, any>>(
     analyse,
     setKiSjekketFieldName,
     setValue,
+    savedValue,
   ]);
 
   const onForceSave = useCallback(async () => {

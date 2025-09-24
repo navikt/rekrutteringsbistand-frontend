@@ -3,8 +3,15 @@
 import { jobbsøkerHendelserMock } from './mocks/jobbsøkerHendelserMock';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { getAPIwithSchema } from '@/app/api/fetcher';
+import {
+  AktørType as AktørTypeConst,
+  JobbsøkerHendelsestype as JobbsøkerHendelsestypeConst,
+} from '@/app/rekrutteringstreff/_domain/constants';
 import useSWR from 'swr';
 import { z } from 'zod';
+
+const enumFromConstObject = <T extends Record<string, string>>(obj: T) =>
+  z.enum(Object.values(obj) as [T[keyof T], ...T[keyof T][]]);
 
 export const jobbsøkerHendelserEndepunkt = (id: string) =>
   `${RekrutteringstreffAPI.internUrl}/${id}/jobbsoker/hendelser`;
@@ -12,8 +19,8 @@ export const jobbsøkerHendelserEndepunkt = (id: string) =>
 const JobbsøkerHendelseSchema = z.object({
   id: z.string(),
   tidspunkt: z.string(),
-  hendelsestype: z.string(),
-  opprettetAvAktørType: z.string(),
+  hendelsestype: enumFromConstObject(JobbsøkerHendelsestypeConst),
+  opprettetAvAktørType: enumFromConstObject(AktørTypeConst),
   aktørIdentifikasjon: z.string().optional(),
   fødselsnummer: z.string().optional(),
   kandidatnummer: z.string().optional(),

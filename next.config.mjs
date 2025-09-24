@@ -8,6 +8,16 @@ const nextConfig = {
     optimizePackageImports: ['@navikt/ds-react', '@navikt/aksel-icons'],
   },
   serverExternalPackages: ['@navikt/next-logger'],
+  async redirects() {
+    return [
+      // Redirect legacy stilling URL for aktivitetskort
+      {
+        source: '/stillinger/stilling/:uuid',
+        destination: '/stilling/:uuid',
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

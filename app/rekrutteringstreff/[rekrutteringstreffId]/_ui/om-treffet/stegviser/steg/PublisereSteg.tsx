@@ -30,9 +30,9 @@ const DEFAULT_TITTEL = 'Nytt rekrutteringstreff';
 const sjekklisteData = [
   { id: 'navn', label: 'Navn' },
   { id: 'tidspunkt', label: 'Tidspunkt' },
-  { id: 'sted', label: 'Sted' },
   { id: 'svarfrist', label: 'Svarfrist' },
-  { id: 'omtreffet', label: 'Om treffet' },
+  { id: 'sted', label: 'Sted' },
+  { id: 'omtreffet', label: 'Introduksjon' },
   { id: 'arbeidsgiver', label: 'Minst 1 arbeidsgiver' },
 ] as const;
 
