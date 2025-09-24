@@ -210,9 +210,15 @@ const RekrutteringstreffRedigering: FC<RekrutteringstreffRedigeringProps> = ({
     };
 
     try {
+      // Hent ferskeste KI-logg rett før vi markerer siste som lagret
+      const [tittelListe, innleggListe] = await Promise.all([
+        kiTittelLogg.refresh(),
+        kiInnleggLogg.refresh(),
+      ]);
+
       await Promise.all([
-        mark(kiTittelLogg.data, kiTittelLogg.setLagret),
-        mark(kiInnleggLogg.data, kiInnleggLogg.setLagret),
+        mark(tittelListe ?? kiTittelLogg.data, kiTittelLogg.setLagret),
+        mark(innleggListe ?? kiInnleggLogg.data, kiInnleggLogg.setLagret),
       ]);
     } catch (error) {
       new RekbisError({

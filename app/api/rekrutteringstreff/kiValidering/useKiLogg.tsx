@@ -96,8 +96,8 @@ export const useKiLogg = (treffId?: string, feltType?: string) => {
     error: lagretError,
   } = useSWRMutation(`${kiLoggEndepunkt}/lagret`, putLagret);
 
-  const refresh = async () => {
-    if (key) await swr.mutate();
+  const refresh = async (): Promise<KiLogg[] | undefined> => {
+    return (await swr.mutate()) as KiLogg[] | undefined;
   };
 
   const setManuellAndRefresh = async (arg: SetManuellArg) => {
@@ -118,6 +118,7 @@ export const useKiLogg = (treffId?: string, feltType?: string) => {
     setLagret: setLagretAndRefresh,
     settingLagret,
     lagretError,
+    refresh,
   };
 };
 
