@@ -205,11 +205,13 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
           <div className='grid gap-6'>
             <div className='grid md:grid-cols-2 gap-6'>
               <DatoVelger
+                disablePastDates
                 label='Publiseringsdato'
                 valgtDato={publiseringsdato}
                 setDato={(d) => setPubliseringsdato(d)}
               />
               <DatoVelger
+                disablePastDates
                 label='Siste visningsdato'
                 valgtDato={sisteVisningsdato}
                 setDato={(d) => setSisteVisningsdato(d)}
