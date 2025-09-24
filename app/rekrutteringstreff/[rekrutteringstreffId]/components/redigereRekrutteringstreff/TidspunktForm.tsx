@@ -5,11 +5,10 @@ import { useFilteredTimeOptions } from './hooks/useFilteredTimeOptions';
 import { useScheduledSave } from './hooks/useScheduledSave';
 import DatoTidRad from './tidspunkt/DatoTidRad';
 import { rekrutteringstreffVarighet } from './tidspunkt/varighet';
-import { skalHindreAutosave, useAutosave } from './useAutosave';
-import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
+import { useAutosave } from './useAutosave';
 import { BodyShort, Heading, Switch } from '@navikt/ds-react';
 import { isSameDay, startOfDay } from 'date-fns';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 type TidspunktFormFields = {
@@ -21,13 +20,11 @@ type TidspunktFormFields = {
 
 interface Props {
   control: any;
-  rekrutteringstreffId: string;
 }
 
-const TidspunktForm = ({ control, rekrutteringstreffId }: Props) => {
+const TidspunktForm = ({ control }: Props) => {
   const { setValue } = useFormContext();
   const { save } = useAutosave();
-  const { data: treff } = useRekrutteringstreff(rekrutteringstreffId);
 
   const [fraDato, fraTid, tilDato, tilTid] = useWatch({
     control,

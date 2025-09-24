@@ -1,6 +1,6 @@
 import { KLOKKESLETT_OPTIONS } from '../tidspunkt/TimeInput';
 import { isGyldigTid, kombinerDatoOgTid } from '../tidspunkt/utils';
-import { isSameDay, addMinutes, subMinutes } from 'date-fns';
+import { isSameDay, addMinutes } from 'date-fns';
 import { useMemo } from 'react';
 
 /**

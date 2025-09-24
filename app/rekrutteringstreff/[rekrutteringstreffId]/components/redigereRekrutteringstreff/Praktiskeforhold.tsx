@@ -3,12 +3,10 @@
 import StedForm from './StedForm';
 import SvarfristForm from './SvarfristForm';
 import TidspunktForm from './TidspunktForm';
-import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
 import { Heading } from '@navikt/ds-react';
 import { useFormContext } from 'react-hook-form';
 
 const PraktiskeForhold = () => {
-  const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { control } = useFormContext();
 
   return (
@@ -16,13 +14,10 @@ const PraktiskeForhold = () => {
       <Heading level='2' size='medium'>
         Praktiske forhold
       </Heading>
-      <TidspunktForm
-        control={control}
-        rekrutteringstreffId={rekrutteringstreffId}
-      />
+      <TidspunktForm control={control} />
       <SvarfristForm control={control} />
 
-      <StedForm control={control} rekrutteringstreffId={rekrutteringstreffId} />
+      <StedForm control={control} />
     </div>
   );
 };
