@@ -28,7 +28,7 @@ import {
   Heading,
   Box,
 } from '@navikt/ds-react';
-import { FC, useEffect, useMemo, useRef, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 const toIsoLocal = (
