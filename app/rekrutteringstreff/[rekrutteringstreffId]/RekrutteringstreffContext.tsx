@@ -1,7 +1,14 @@
 'use client';
 
 import { RekbisError } from '@/util/rekbisError';
-import { createContext, ReactNode, useContext, useMemo, useState } from 'react';
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 
 type Lagringsnøkkel = 'rekrutteringstreff' | 'innlegg' | 'republiser';
 
@@ -9,6 +16,7 @@ interface RekrutteringstreffContekst {
   rekrutteringstreffId: string;
   lagringsTellere: Record<Lagringsnøkkel, number>;
   lagrerNoe: boolean;
+  lagrerSynlig: boolean;
   startLagring: (nøkkel: Lagringsnøkkel) => void;
   stoppLagring: (nøkkel: Lagringsnøkkel) => void;
 }
@@ -47,16 +55,28 @@ export const RekrutteringstreffContextProvider = ({
     }));
 
   const lagrerNoe = Object.values(lagringsTellere).some((antall) => antall > 0);
+  const [lagrerSynlig, setLagrerSynlig] = useState(false);
+
+  // Enkel 500ms forsinkelse: vis umiddelbart, skjul etter 500ms
+  useEffect(() => {
+    if (lagrerNoe) {
+      setLagrerSynlig(true);
+    } else {
+      const timer = setTimeout(() => setLagrerSynlig(false), 500);
+      return () => clearTimeout(timer);
+    }
+  }, [lagrerNoe]);
 
   const kontekstVerdi: RekrutteringstreffContekst = useMemo(
     () => ({
       rekrutteringstreffId,
       lagringsTellere,
       lagrerNoe,
+      lagrerSynlig,
       startLagring,
       stoppLagring,
     }),
-    [rekrutteringstreffId, lagringsTellere, lagrerNoe],
+    [rekrutteringstreffId, lagringsTellere, lagrerNoe, lagrerSynlig],
   );
 
   return (
