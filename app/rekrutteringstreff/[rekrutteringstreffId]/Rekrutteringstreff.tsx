@@ -11,6 +11,7 @@ import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutter
 import Stegviser from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/om-treffet/stegviser/Stegviser';
 import { JobbsøkerHendelsestype } from '@/app/rekrutteringstreff/_domain/constants';
 import { getActiveStepFromHendelser } from '@/app/rekrutteringstreff/_utils/rekrutteringstreff';
+import Fremdriftspanel from '@/components/Fremdriftspanel';
 import SideScroll from '@/components/SideScroll';
 import SideLayout from '@/components/layout/SideLayout';
 import { Tabs } from '@navikt/ds-react';
@@ -166,16 +167,21 @@ const Rekrutteringstreff: FC = () => {
 
   const headerRef = useRef<HTMLDivElement>(null);
 
+  const renderStegviser = () => (
+    <Stegviser
+      onToggleForhåndsvisning={handleToggleForhåndsvisning}
+      erIForhåndsvisning={erIForhåndsvisning}
+    />
+  );
+
   return (
     <Tabs value={fane} onChange={(val) => setFane(val)}>
       <SideLayout
         skjulFremdriftspanel={false}
-        fremdriftspanel={
-          <Stegviser
-            onToggleForhåndsvisning={handleToggleForhåndsvisning}
-            erIForhåndsvisning={erIForhåndsvisning}
-          />
+        fremdriftspanelTop={
+          <Fremdriftspanel>{renderStegviser()}</Fremdriftspanel>
         }
+        fremdriftspanel={<SideScroll>{renderStegviser()}</SideScroll>}
         header={
           skalViseHeader ? (
             <RekrutteringstreffHeader
