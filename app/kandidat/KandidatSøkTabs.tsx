@@ -19,6 +19,7 @@ import Kompetanse from '@/app/kandidat/kandidat-søk-filter/_ui/Kompetanse';
 import PrioriterteMålgrupper from '@/app/kandidat/kandidat-søk-filter/_ui/PrioriterteMålgrupper';
 import Språk from '@/app/kandidat/kandidat-søk-filter/_ui/Språk';
 import Utdanningsnivå from '@/app/kandidat/kandidat-søk-filter/_ui/Utdanningsnivå';
+import SideScroll from '@/components/SideScroll';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
@@ -195,20 +196,23 @@ const KandidatSøkTabs: FC<KandidatSøkTabsProps> = ({
             rekrutteringstreffId={rekrutteringstreffId}
           />
         </div>
+
         <div className='hidden @[720px]:block ml-4 pt-4  max-w-[200px]'>
-          <div className='flex flex-col gap-4'>
-            <FritekstSøk />
-            <Arbeidsønsker />
-            <KandidatStedSøk />
-            <Kompetanse />
-            <Førerkort />
-            <Språk />
-            <Arbeidserfaring />
-            <Hovedmål />
-            <Utdanningsnivå />
-            <PrioriterteMålgrupper />
-            <Innsatsgrupper />
-          </div>
+          <FritekstSøk />
+          <SideScroll className='mt-4'>
+            <div className='flex flex-col gap-4 '>
+              <Arbeidsønsker />
+              <KandidatStedSøk />
+              <Kompetanse />
+              <Førerkort />
+              <Språk />
+              <Arbeidserfaring />
+              <Hovedmål />
+              <Utdanningsnivå />
+              <PrioriterteMålgrupper />
+              <Innsatsgrupper />
+            </div>
+          </SideScroll>
         </div>
       </div>
     </div>

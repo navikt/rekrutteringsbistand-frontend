@@ -9,18 +9,21 @@ import {
 import { useStillingssøk } from '@/app/api/stillings-sok/useStillingssøk';
 import { useStillingssokTotalData } from '@/app/stilling/store/stillingssokTotalData';
 import SWRLaster from '@/components/SWRLaster';
+import SideScroll from '@/components/SideScroll';
 import SkeletonKort from '@/components/layout/SkeletonKort';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { ChevronLeftIcon, ChevronRightIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
-import { FC, useEffect } from 'react';
+import { FC, useEffect, useRef } from 'react';
 
 interface StillingsSøkeresultatProps {
   kandidatId?: string;
+  scrollExcludeRefs?: React.RefObject<HTMLElement | null>[];
 }
 
 const StillingsSøkeresultat: FC<StillingsSøkeresultatProps> = ({
   kandidatId,
+  scrollExcludeRefs,
 }) => {
   // Abonner kun på setteren for å unngå re-render ved antall-endringer her.
   const setAntall = useStillingssokTotalData((s) => s.setAntall);
@@ -77,7 +80,7 @@ const StillingsSøkeresultat: FC<StillingsSøkeresultatProps> = ({
     if (!data?.antall) return;
     setAntall({});
   }, [combinedHook.data, setAntall]);
-
+  const headerRef = useRef<HTMLDivElement>(null);
   return (
     <SWRLaster
       hooks={[combinedHook]}
@@ -89,21 +92,30 @@ const StillingsSøkeresultat: FC<StillingsSøkeresultatProps> = ({
     >
       {(data: any) => {
         return (
-          <>
-            <StillingsSøkChips skjulLagreStandard={!!kandidatId} />
-            {antallVisning(data.hits?.total?.value)}
+          <div className='h-full flex flex-col'>
+            <div ref={headerRef} className='flex-shrink-0'>
+              <StillingsSøkChips skjulLagreStandard={!!kandidatId} />
+              {antallVisning(data.hits?.total?.value)}
+            </div>
 
-            <div className='flex flex-col gap-1'>
-              {data.hits?.hits?.map((hit: any) => (
-                <StillingsKort key={hit._id} stillingData={hit._source} />
-              ))}
+            <div className='flex-1 min-h-0'>
+              <SideScroll
+                excludeRef={[headerRef, ...(scrollExcludeRefs || [])]}
+                trimHøyde={100}
+              >
+                <div className='flex flex-col gap-1'>
+                  {data.hits?.hits?.map((hit: any) => (
+                    <StillingsKort key={hit._id} stillingData={hit._source} />
+                  ))}
+                </div>
+                <div className={'flex justify-center items-center'}>
+                  <StillingsSøkPaginering
+                    totaltAntallTreff={data.hits?.total?.value ?? 0}
+                  />
+                </div>
+              </SideScroll>
             </div>
-            <div className={'flex justify-center items-center'}>
-              <StillingsSøkPaginering
-                totaltAntallTreff={data.hits?.total?.value ?? 0}
-              />
-            </div>
-          </>
+          </div>
         );
       }}
     </SWRLaster>

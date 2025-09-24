@@ -10,6 +10,7 @@ import TabKnapper from '@/app/stilling/[stillingsId]/_ui/tabs/TabKnapper';
 import FiltrertKandidatListeVisning from '@/app/stilling/[stillingsId]/kandidatliste/FiltrertKandidatListeVisning';
 import KandidatlisteWrapper from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteWrapper';
 import { visStillingsDataInfo } from '@/app/stilling/_util/stillingInfoUtil';
+import SideScroll from '@/components/SideScroll';
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideLayout from '@/components/layout/SideLayout';
 import { Alert, Heading, Tabs } from '@navikt/ds-react';
@@ -69,10 +70,12 @@ export default function StillingsSidePage() {
             </PanelHeader>
           }
           skjulFremdriftspanel={fane !== StillingFane.STILLING}
-          fremdriftspanel={fremdriftsPanel()}
+          fremdriftspanel={
+            <SideScroll trimHøyde={150}>{fremdriftsPanel()}</SideScroll>
+          }
           fremdriftspanelTop={fremdriftsPanel(true)}
         >
-          <>
+          <SideScroll>
             {ugyldigStilling && (
               <Alert variant='error'>
                 <Heading spacing size='small' level='3'>
@@ -98,7 +101,7 @@ export default function StillingsSidePage() {
                 </Tabs.Panel>
               </>
             )}
-          </>
+          </SideScroll>
         </SideLayout>
       </Tabs>
     </div>

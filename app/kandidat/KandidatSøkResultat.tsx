@@ -15,10 +15,11 @@ import {
 import LagreIRekrutteringstreffButton from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/lagreIRekrutteringstreffButton/LagreIRekrutteringstreffButton';
 import RekrutteringstreffFeatureToggle from '@/components/RekrutteringstreffFeatureToggle';
 import SWRLaster from '@/components/SWRLaster';
+import SideScroll from '@/components/SideScroll';
 import SkeletonKort from '@/components/layout/SkeletonKort';
 import { useKandidatNavigeringContext } from '@/providers/KandidatNavigeringContext';
 import { Checkbox, Pagination } from '@navikt/ds-react';
-import { FC, useEffect } from 'react';
+import { FC, useEffect, useRef } from 'react';
 
 interface KandidatSøkResultatProps {
   type: KandidatSøkPortefølje;
@@ -38,7 +39,7 @@ const KandidatSøkResultat: FC<KandidatSøkResultatProps> = ({
   const filter = useKandidatSøkFilterContext();
   const kandidatsøkHook = useKandidatsøk(type, filter);
   const { setKandidatNavigering } = useKandidatNavigeringContext();
-
+  const headerRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     setKandidatNavigering(kandidatsøkHook.data?.navigering.kandidatnumre ?? []);
   }, [kandidatsøkHook.data?.navigering, setKandidatNavigering]);
@@ -80,7 +81,7 @@ const KandidatSøkResultat: FC<KandidatSøkResultatProps> = ({
 
         return (
           <>
-            <div className='flex items-center justify-between'>
+            <div ref={headerRef} className='flex items-center justify-between'>
               <div className='ml-5'>
                 <Checkbox
                   checked={
@@ -93,7 +94,7 @@ const KandidatSøkResultat: FC<KandidatSøkResultatProps> = ({
                   Marker alle på siden
                 </Checkbox>
               </div>
-              <div className='flex flex-col gap-2'>
+              <div className='flex flex-row gap-2'>
                 {!rekrutteringstreffId && (
                   <LagreIKandidatlisteButton stillingsId={stillingsId} />
                 )}
@@ -109,31 +110,33 @@ const KandidatSøkResultat: FC<KandidatSøkResultatProps> = ({
                 </RekrutteringstreffFeatureToggle>
               </div>
             </div>
-            <div className='flex flex-col gap-1'>
-              {kandidatData.kandidater?.map((kandidat, index) => (
-                <KandidatKort
-                  stillingsId={stillingsId}
-                  alleredeLagtTil={
-                    alleredeLagtTilKandidatliste ?? alleredeLagtTilTreff
-                  }
-                  key={kandidat.arenaKandidatnr || index}
-                  kandidat={kandidat as KandidatDataSchemaDTO}
-                />
-              ))}
-            </div>
-            <div className={'flex justify-between items-center'}>
-              <div>Viser {kandidatData.antallTotalt} treff</div>
+            <SideScroll excludeRef={[headerRef]}>
+              <div className='flex flex-col gap-1'>
+                {kandidatData.kandidater?.map((kandidat, index) => (
+                  <KandidatKort
+                    stillingsId={stillingsId}
+                    alleredeLagtTil={
+                      alleredeLagtTilKandidatliste ?? alleredeLagtTilTreff
+                    }
+                    key={kandidat.arenaKandidatnr || index}
+                    kandidat={kandidat as KandidatDataSchemaDTO}
+                  />
+                ))}
+              </div>
+              <div className={'flex justify-between items-center'}>
+                <div>Viser {kandidatData.antallTotalt} treff</div>
 
-              {antallSider > 1 && (
-                <Pagination
-                  className={'my-4 flex justify-center'}
-                  size='medium'
-                  page={filter.side}
-                  onPageChange={filter.setSide}
-                  count={siderTilPaginering}
-                />
-              )}
-            </div>
+                {antallSider > 1 && (
+                  <Pagination
+                    className={'my-4 flex justify-center'}
+                    size='medium'
+                    page={filter.side}
+                    onPageChange={filter.setSide}
+                    count={siderTilPaginering}
+                  />
+                )}
+              </div>
+            </SideScroll>
           </>
         );
       }}

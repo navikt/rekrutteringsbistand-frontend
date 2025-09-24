@@ -13,13 +13,14 @@ import StatusFilter from '@/app/stilling/_ui/StillingsSøkFilter/StatusFilter';
 import StillingSøkebar from '@/app/stilling/_ui/StillingsSøkFilter/StillingSøkebar';
 import StillingsSøkSortering from '@/app/stilling/_ui/StillingsSøkSortering';
 import MittStandardsøk from '@/app/stilling/_ui/standardsøk/MittStandardsøk';
+import SideScroll from '@/components/SideScroll';
 import Sidelaster from '@/components/layout/Sidelaster';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { UmamiEvent } from '@/components/umami/umamiEvents';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
 import { useSearchParams } from 'next/navigation';
-import { FC, Suspense, useEffect } from 'react';
+import { FC, Suspense, useEffect, useRef } from 'react';
 
 interface StillingsSøkProps {
   formidlinger?: boolean;
@@ -64,6 +65,10 @@ const StillingsSøkLayout: FC<StillingsSøkProps> = ({
 }) => {
   const { track } = useUmami();
   const { harRolle } = useApplikasjonContext();
+
+  const kandidatRef = useRef<HTMLDivElement>(null);
+  const stillingsøkFilterRef = useRef<HTMLDivElement>(null);
+
   const harArbeidsgiverrettetRolle = harRolle([
     Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
   ]);
@@ -96,23 +101,37 @@ const StillingsSøkLayout: FC<StillingsSøkProps> = ({
 
   return (
     <>
-      {forKandidatNr && <StillingForKandidat kandidatnr={forKandidatNr} />}
-      <StillingsSøkFilter
-        formidlinger={formidlinger}
-        stillingForKandidat={forKandidatNr}
-      />
+      {forKandidatNr && (
+        <div ref={kandidatRef}>
+          <StillingForKandidat kandidatnr={forKandidatNr} />
+        </div>
+      )}
+      <div ref={stillingsøkFilterRef}>
+        <StillingsSøkFilter
+          formidlinger={formidlinger}
+          stillingForKandidat={forKandidatNr}
+        />
+      </div>
       <div className='@container flex'>
         <div className='flex-grow min-w-0'>
-          <StillingsSøkeresultat kandidatId={forKandidatNr} />
+          <StillingsSøkeresultat
+            kandidatId={forKandidatNr}
+            scrollExcludeRefs={[stillingsøkFilterRef, kandidatRef]}
+          />
         </div>
-        <div className='hidden @[720px]:flex @[720px]:flex-col ml-4 pt-4  max-w-[200px] gap-4'>
+
+        <div className='hidden @[720px]:flex  flex-col  gap-4'>
           <StillingSøkebar alltidÅpen={false} />
-          <MittStandardsøk />
-          <StillingsSøkSortering />
-          {(harArbeidsgiverrettetRolle || formidlinger) && <StatusFilter />}
-          <GeografiFilter />
-          {!formidlinger && <KategoriFilter />}
-          <InkluderingFilter />
+          <SideScroll trimHøyde={200}>
+            <div className='flex flex-col ml-4 pt-4  max-w-[200px] gap-4'>
+              <MittStandardsøk />
+              <StillingsSøkSortering />
+              {(harArbeidsgiverrettetRolle || formidlinger) && <StatusFilter />}
+              <GeografiFilter />
+              {!formidlinger && <KategoriFilter />}
+              <InkluderingFilter />
+            </div>
+          </SideScroll>
         </div>
       </div>
     </>

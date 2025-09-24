@@ -519,7 +519,7 @@ const WindowWrapper: React.FC<WindowWrapperProps> = ({
                 >
                   <div
                     id={id === LOCKED_ID ? 'window-locked' : `window-${id}`}
-                    className='h-full w-full flex flex-col overflow-auto min-h-0'
+                    className='h-full w-full flex flex-col min-h-0'
                     data-window-type={id === LOCKED_ID ? 'locked' : 'dynamic'}
                   >
                     {customHeader && customHeader}
