@@ -59,10 +59,8 @@ export function useKiAnalyse<FormValues extends Record<string, any>>(
 
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { data: treff } = useRekrutteringstreff(rekrutteringstreffId);
-  const publisertRedigeringsmodus = useMemo(
-    () => erPublisert(treff as any) && erEditMode(),
-    [treff],
-  );
+
+  const publisertRedigeringsmodus = erPublisert(treff as any) && erEditMode();
 
   const {
     trigger: validateKI,

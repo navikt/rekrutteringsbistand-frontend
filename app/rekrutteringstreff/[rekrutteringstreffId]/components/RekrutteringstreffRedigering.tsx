@@ -13,9 +13,11 @@ import {
   useInnleggAutosave,
 } from './redigereRekrutteringstreff/useAutosave';
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
+import { useKiLogg } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import LeggTilArbeidsgiverForm from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/arbeidsgivere/_ui/LeggTilArbeidsgiverForm';
 import { getActiveStepFromHendelser } from '@/app/rekrutteringstreff/_utils/rekrutteringstreff';
+import { RekbisError } from '@/util/rekbisError';
 import {
   Button,
   Modal,
@@ -26,7 +28,7 @@ import {
   Heading,
   Box,
 } from '@navikt/ds-react';
-import { FC, useEffect, useRef, useState } from 'react';
+import { FC, useEffect, useMemo, useRef, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 const toIsoLocal = (
@@ -180,6 +182,45 @@ const RekrutteringstreffRedigering: FC<RekrutteringstreffRedigeringProps> = ({
     rekrutteringstreffHook.data?.hendelser,
   );
   const harPublisert = activeStep === 'INVITERE' || activeStep === 'FULLFØRE';
+
+  // KI-logg hooks for tittel og innlegg slik at vi kan markere logg som lagret ved republisering
+  const kiTittelLogg = useKiLogg(rekrutteringstreffId, 'tittel');
+  const kiInnleggLogg = useKiLogg(rekrutteringstreffId, 'innlegg');
+
+  const markerSisteKiLoggSomLagret = async () => {
+    const mark = async (
+      liste:
+        | { id: string; opprettetTidspunkt: string; lagret: boolean }[]
+        | undefined,
+      setLagret?: (arg: { id: string; lagret: boolean }) => Promise<void>,
+    ) => {
+      if (!liste || liste.length === 0 || !setLagret) return;
+
+      // Sorter etter opprettettidspunkt for å finne den nyeste
+      const sorted = [...liste].sort(
+        (a, b) =>
+          new Date(b.opprettetTidspunkt).getTime() -
+          new Date(a.opprettetTidspunkt).getTime(),
+      );
+      const siste = sorted[0]; // Første element er nå det nyeste
+
+      if (siste && !siste.lagret) {
+        await setLagret({ id: siste.id, lagret: true });
+      }
+    };
+
+    try {
+      await Promise.all([
+        mark(kiTittelLogg.data, kiTittelLogg.setLagret),
+        mark(kiInnleggLogg.data, kiInnleggLogg.setLagret),
+      ]);
+    } catch (error) {
+      new RekbisError({
+        message: 'Kunne ikke oppdatere KI-logg lagret-status:',
+        error,
+      });
+    }
+  };
 
   const [endringer, setEndringer] = useState<
     { etikett: string; gammelVerdi: string; nyVerdi: string }[]
@@ -372,6 +413,8 @@ const RekrutteringstreffRedigering: FC<RekrutteringstreffRedigeringProps> = ({
                 if (shouldSaveInnlegg) {
                   await saveInnlegg(undefined, true);
                 }
+                // Etter at vi har lagret endringer ved republisering, marker siste KI-logg som lagret
+                await markerSisteKiLoggSomLagret();
                 onGåTilForhåndsvisning?.();
               }}
             >
