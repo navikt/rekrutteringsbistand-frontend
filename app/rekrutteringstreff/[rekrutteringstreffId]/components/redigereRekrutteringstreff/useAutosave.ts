@@ -40,7 +40,8 @@ export const skalHindreAutosave = (treff: any, force?: boolean): boolean => {
 };
 
 export function useAutosave() {
-  const { rekrutteringstreffId } = useRekrutteringstreffContext();
+  const { rekrutteringstreffId, startLagring, stoppLagring } =
+    useRekrutteringstreffContext();
   const { data: treff, mutate } = useRekrutteringstreff(rekrutteringstreffId);
   const { getValues, trigger, formState } = useFormContext<AnyValues>();
 
@@ -109,8 +110,13 @@ export function useAutosave() {
       }
 
       const dto = buildFullDto();
-      await oppdaterRekrutteringstreff(rekrutteringstreffId, dto);
-      await mutate();
+      try {
+        startLagring('rekrutteringstreff');
+        await oppdaterRekrutteringstreff(rekrutteringstreffId, dto);
+        await mutate();
+      } finally {
+        stoppLagring('rekrutteringstreff');
+      }
     },
     [
       buildFullDto,
@@ -119,6 +125,8 @@ export function useAutosave() {
       treff,
       mutate,
       formState?.errors,
+      startLagring,
+      stoppLagring,
     ],
   );
 
@@ -126,7 +134,8 @@ export function useAutosave() {
 }
 
 export function useInnleggAutosave() {
-  const { rekrutteringstreffId } = useRekrutteringstreffContext();
+  const { rekrutteringstreffId, startLagring, stoppLagring } =
+    useRekrutteringstreffContext();
   const { data: treff } = useRekrutteringstreff(rekrutteringstreffId);
   const { data: innleggListe, mutate } = useInnlegg(rekrutteringstreffId);
   const innlegg = innleggListe?.[0];
@@ -171,6 +180,7 @@ export function useInnleggAutosave() {
           ),
         };
 
+        startLagring('innlegg');
         if (innlegg?.id) {
           await oppdaterEttInnlegg(rekrutteringstreffId, innlegg.id, payload);
         } else {
@@ -182,6 +192,8 @@ export function useInnleggAutosave() {
         setValue('htmlContent', contentToSave, { shouldDirty: false });
       } catch (error) {
         new RekbisError({ message: 'Lagring av innlegg feilet.', error });
+      } finally {
+        stoppLagring('innlegg');
       }
     },
     [
@@ -189,6 +201,8 @@ export function useInnleggAutosave() {
       innlegg,
       mutate,
       rekrutteringstreffId,
+      startLagring,
+      stoppLagring,
       setValue,
       treff,
       trigger,

@@ -160,7 +160,8 @@ const RekrutteringstreffRedigering: FC<RekrutteringstreffRedigeringProps> = ({
   onUpdated,
   onGåTilForhåndsvisning,
 }) => {
-  const { rekrutteringstreffId } = useRekrutteringstreffContext();
+  const { rekrutteringstreffId, startLagring, stoppLagring } =
+    useRekrutteringstreffContext();
   const rekrutteringstreffHook = useRekrutteringstreff(rekrutteringstreffId);
   const innleggHook = useInnlegg(rekrutteringstreffId);
   const { save } = useAutosave();
@@ -407,21 +408,26 @@ const RekrutteringstreffRedigering: FC<RekrutteringstreffRedigeringProps> = ({
               onClick={async () => {
                 if (!kanPublisereNå) return;
                 bekreftModalRef.current?.close();
-                await save(undefined, true);
-                const values: any = getValues();
-                const currentHtml: string = (values?.htmlContent ??
-                  '') as string;
-                const backendHtml: string = (innleggHook.data?.[0]
-                  ?.htmlContent ?? '') as string;
-                const shouldSaveInnlegg =
-                  (currentHtml ?? '').trim() !== (backendHtml ?? '').trim() &&
-                  (currentHtml ?? '').trim().length > 0;
-                if (shouldSaveInnlegg) {
-                  await saveInnlegg(undefined, true);
+                try {
+                  startLagring('republiser');
+                  await save(undefined, true);
+                  const values: any = getValues();
+                  const currentHtml: string = (values?.htmlContent ??
+                    '') as string;
+                  const backendHtml: string = (innleggHook.data?.[0]
+                    ?.htmlContent ?? '') as string;
+                  const shouldSaveInnlegg =
+                    (currentHtml ?? '').trim() !== (backendHtml ?? '').trim() &&
+                    (currentHtml ?? '').trim().length > 0;
+                  if (shouldSaveInnlegg) {
+                    await saveInnlegg(undefined, true);
+                  }
+                  // Etter at vi har lagret endringer ved republisering, marker siste KI-logg som lagret
+                  await markerSisteKiLoggSomLagret();
+                  onGåTilForhåndsvisning?.();
+                } finally {
+                  stoppLagring('republiser');
                 }
-                // Etter at vi har lagret endringer ved republisering, marker siste KI-logg som lagret
-                await markerSisteKiLoggSomLagret();
-                onGåTilForhåndsvisning?.();
               }}
             >
               Publiser på nytt

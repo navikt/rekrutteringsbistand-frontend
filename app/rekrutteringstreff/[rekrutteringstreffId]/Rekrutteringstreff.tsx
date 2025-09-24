@@ -14,7 +14,7 @@ import { JobbsøkerHendelsestype } from '@/app/rekrutteringstreff/_domain/consta
 import { getActiveStepFromHendelser } from '@/app/rekrutteringstreff/_utils/rekrutteringstreff';
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideLayout from '@/components/layout/SideLayout';
-import { Tabs } from '@navikt/ds-react';
+import { Loader, Tabs } from '@navikt/ds-react';
 import { formatDistanceToNow } from 'date-fns';
 import { nb } from 'date-fns/locale/nb';
 import { parseAsString, useQueryState } from 'nuqs';
@@ -37,7 +37,7 @@ const Rekrutteringstreff: FC = () => {
     'mode',
     parseAsString.withDefault('').withOptions({ clearOnDefault: true }),
   );
-  const { rekrutteringstreffId } = useRekrutteringstreffContext();
+  const { rekrutteringstreffId, lagrerNoe } = useRekrutteringstreffContext();
 
   const rekrutteringstreffHook = useRekrutteringstreff(rekrutteringstreffId);
   const alleHendelserHook = useAlleHendelser(rekrutteringstreffId);
@@ -177,35 +177,47 @@ const Rekrutteringstreff: FC = () => {
         }
         header={
           skalViseHeader ? (
-            <PanelHeader>
-              <PanelHeader.Section
-                title={headerTittel}
-                tabs={
-                  erIForhåndsvisning ? (
-                    <TabsNav
-                      jobbsøkereAntall={jobbsøkere?.length ?? 0}
-                      arbeidsgivereAntall={arbeidsgivere?.length ?? 0}
+            <div className='sticky top-0 z-40 bg-[var(--ax-bg-default)]'>
+              <PanelHeader className='bg-transparent'>
+                <PanelHeader.Section
+                  title={headerTittel}
+                  tabs={
+                    erIForhåndsvisning ? (
+                      <TabsNav
+                        jobbsøkereAntall={jobbsøkere?.length ?? 0}
+                        arbeidsgivereAntall={arbeidsgivere?.length ?? 0}
+                      />
+                    ) : undefined
+                  }
+                  meta={
+                    <div className='flex items-center gap-2'>
+                      {lagrerNoe && (
+                        <span className='inline-flex items-center gap-1 text-xs text-muted-foreground'>
+                          <Loader size='xsmall' title='Lagrer' />
+                          Lagrer…
+                        </span>
+                      )}
+                      {!lagrerNoe && lagretTekst}
+                    </div>
+                  }
+                  actionsRight={
+                    <HeaderActions
+                      avlyst={avlyst}
+                      activeStep={activeStep as any}
+                      erIForhåndsvisning={erIForhåndsvisning}
+                      erPubliseringklar={erPubliseringklar}
+                      harInvitert={harInvitert}
+                      tiltidspunktHarPassert={tiltidspunktHarPassert}
+                      rekrutteringstreffId={rekrutteringstreffId}
+                      oppdaterData={oppdaterData}
+                      onToggleForhåndsvisning={handleToggleForhåndsvisning}
+                      onBekreftRedigerPublisert={onBekreftRedigerPublisert}
+                      onAvlyst={onAvlyst}
                     />
-                  ) : undefined
-                }
-                meta={lagretTekst}
-                actionsRight={
-                  <HeaderActions
-                    avlyst={avlyst}
-                    activeStep={activeStep as any}
-                    erIForhåndsvisning={erIForhåndsvisning}
-                    erPubliseringklar={erPubliseringklar}
-                    harInvitert={harInvitert}
-                    tiltidspunktHarPassert={tiltidspunktHarPassert}
-                    rekrutteringstreffId={rekrutteringstreffId}
-                    oppdaterData={oppdaterData}
-                    onToggleForhåndsvisning={handleToggleForhåndsvisning}
-                    onBekreftRedigerPublisert={onBekreftRedigerPublisert}
-                    onAvlyst={onAvlyst}
-                  />
-                }
-              />
-            </PanelHeader>
+                  }
+                />
+              </PanelHeader>
+            </div>
           ) : undefined
         }
       >
