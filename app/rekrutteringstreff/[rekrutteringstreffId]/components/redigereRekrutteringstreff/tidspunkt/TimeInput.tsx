@@ -44,19 +44,25 @@ function TimeInput({
   // Trenger ref for å kunne scrolle til valgt element i dropdown, det er ikke standard funksjonalitet i ds-react sin Combobox
   const inputRef = useRef<HTMLInputElement | null>(null);
 
+  // Sørger for at valgt option havner helt øverst i lista
   const scrollSelectedIntoView = useCallback(() => {
     if (typeof document === 'undefined') return;
-
     const input = inputRef.current;
     if (!input || input.getAttribute('aria-expanded') !== 'true') return;
-
     const listId = input.getAttribute('aria-controls');
     if (!listId) return;
 
-    document
+    const selected = document
       .getElementById(listId)
-      ?.querySelector<HTMLElement>("[role='option'][aria-selected='true']")
-      ?.scrollIntoView({ block: 'nearest' });
+      ?.querySelector<HTMLElement>("[role='option'][aria-selected='true']");
+    if (selected) {
+      const listbox =
+        selected.closest<HTMLElement>("[role='listbox']") ||
+        selected.parentElement;
+      if (listbox) {
+        listbox.scrollTop = selected.offsetTop; // Plasser valgt øverst
+      }
+    }
   }, []);
 
   const queueScrollIntoView = useCallback(() => {
