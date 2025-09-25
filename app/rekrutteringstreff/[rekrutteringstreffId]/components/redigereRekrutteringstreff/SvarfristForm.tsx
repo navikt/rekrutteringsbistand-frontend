@@ -1,15 +1,15 @@
 'use client';
 
-import { useAutoAdjustEndTime } from './hooks/useAutoAdjustEndTime';
 import { useFilteredTimeOptions } from './hooks/useFilteredTimeOptions';
 import { useScheduledSave } from './hooks/useScheduledSave';
 import DatoTidRad from './tidspunkt/DatoTidRad';
+import { isGyldigTid, kombinerDatoOgTid } from './tidspunkt/utils';
 import { useAutosave } from './useAutosave';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
 import { Heading } from '@navikt/ds-react';
 import { format, parseISO } from 'date-fns';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 export type SvarfristFormFields = {
@@ -48,17 +48,11 @@ const SvarfristForm = ({ control }: Props) => {
     'svarfristTid',
   ]);
 
-  const { adjustEndTime } = useAutoAdjustEndTime(
-    setValue,
-    scheduleSave,
-    -24, // 24 timer før
-  );
-
   const svarfristTimeOptions = useFilteredTimeOptions(
     dato,
     fraDato,
     fraTid,
-    -1, // minst 1 minutt før starttid
+    0, // tillat samme tidspunkt som treffet
   );
 
   // Last inn eksisterende svarfrist fra API
@@ -78,40 +72,30 @@ const SvarfristForm = ({ control }: Props) => {
     }
   }, [treff, dato, tid, setValue]);
 
-  // Auto-juster svarfrist når starttidspunkt endres
+  // Auto-juster svarfrist når svarfrist er etter starttid
   useEffect(() => {
-    adjustEndTime(fraDato, fraTid, dato, tid, 'svarfristDato', 'svarfristTid');
-  }, [fraDato, fraTid, dato, tid, adjustEndTime]);
+    if (!fraDato || !isGyldigTid(fraTid)) return;
 
-  const previousValuesRef = useRef<{ dato: Date | null; tid: string | null }>({
-    dato: dato ?? null,
-    tid: tid ?? null,
-  });
-  const isInitialRender = useRef(true);
+    const startTidspunkt = kombinerDatoOgTid(fraDato, fraTid);
+    const svarfristTidspunkt = kombinerDatoOgTid(dato ?? null, tid ?? null);
 
-  useEffect(() => {
-    if (isInitialRender.current) {
-      isInitialRender.current = false;
-      previousValuesRef.current = { dato: dato ?? null, tid: tid ?? null };
-      return;
+    if (!startTidspunkt || !svarfristTidspunkt) return;
+
+    // Juster til starttid kun hvis svarfrist er etter starttid
+    if (svarfristTidspunkt.getTime() > startTidspunkt.getTime()) {
+      setValue('svarfristDato', new Date(fraDato), {
+        shouldDirty: true,
+        shouldValidate: false,
+      });
+      setValue('svarfristTid', fraTid, {
+        shouldDirty: true,
+        shouldValidate: false,
+      });
+      scheduleSave();
     }
+  }, [fraDato, fraTid, dato, tid, setValue, scheduleSave]);
 
-    const previous = previousValuesRef.current;
-    const previousTimestamp = previous.dato ? previous.dato.getTime() : null;
-    const currentTimestamp = dato ? dato.getTime() : null;
-    const previousTid = previous.tid ?? null;
-    const currentTid = tid ?? null;
-
-    const dateChanged = previousTimestamp !== currentTimestamp;
-    const timeChanged = previousTid !== currentTid;
-
-    if (dateChanged || timeChanged) {
-      previousValuesRef.current = { dato: dato ?? null, tid: currentTid };
-      if (dato || tid) {
-        scheduleSave();
-      }
-    }
-  }, [dato, tid, scheduleSave]);
+  // Lagre når svarfrist endres (håndteres av DatoTidRad onBlur events)
 
   return (
     <div className='space-y-4'>
