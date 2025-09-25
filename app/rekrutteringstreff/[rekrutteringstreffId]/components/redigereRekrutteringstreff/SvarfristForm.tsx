@@ -58,7 +58,7 @@ const SvarfristForm = ({ control }: Props) => {
     dato,
     fraDato,
     fraTid,
-    -15, // 15 min før starttid
+    -1, // minst 1 minutt før starttid
   );
 
   // Last inn eksisterende svarfrist fra API

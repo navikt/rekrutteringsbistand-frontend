@@ -51,7 +51,7 @@ const TidspunktForm = ({ control }: Props) => {
     tilDato ?? fraDato,
     fraDato,
     fraTid,
-    15, // 15 min etter fra-tid
+    1, // minst 1 minutt etter fra-tid
   );
 
   useEffect(() => {
