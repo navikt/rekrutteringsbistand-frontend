@@ -6,8 +6,8 @@ import { useScheduledSave } from './hooks/useScheduledSave';
 import DatoTidRad from './tidspunkt/DatoTidRad';
 import { rekrutteringstreffVarighet } from './tidspunkt/varighet';
 import { useAutosave } from './useAutosave';
-import { BodyShort, Heading, Switch } from '@navikt/ds-react';
-import { isSameDay, startOfDay } from 'date-fns';
+import { BodyShort, Heading } from '@navikt/ds-react';
+import { isSameDay } from 'date-fns';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
@@ -51,7 +51,7 @@ const TidspunktForm = ({ control }: Props) => {
     tilDato ?? fraDato,
     fraDato,
     fraTid,
-    15, // 15 min etter fra-tid
+    1, // minst 1 minutt etter fra-tid
   );
 
   useEffect(() => {
@@ -69,23 +69,6 @@ const TidspunktForm = ({ control }: Props) => {
     const sluttDato = (tilDato as Date | null) ?? fraDato;
     return rekrutteringstreffVarighet(fraDato, fraTid, sluttDato, tilTid);
   }, [fraDato, fraTid, tilDato, tilTid]);
-
-  const handleToggleFlereDager = () => {
-    const next = !flereDager;
-    setFlereDager(next);
-
-    if (!next && fraDato) {
-      const målDato = startOfDay(fraDato);
-      const aktuellTilDato = tilDato ? startOfDay(tilDato) : null;
-      if (!aktuellTilDato || aktuellTilDato.getTime() !== målDato.getTime()) {
-        setValue('tilDato', målDato, {
-          shouldDirty: true,
-          shouldValidate: false,
-        });
-        scheduleSave();
-      }
-    }
-  };
 
   return (
     <div className='space-y-4'>

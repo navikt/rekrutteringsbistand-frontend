@@ -2,38 +2,34 @@ import type { useAutosave } from '../useAutosave';
 import { useCallback, useEffect, useRef } from 'react';
 
 /**
- * Hook som gir scheduleSave funksjon for å batche/debounce lagring.
- * Brukes både i TidspunktForm og SvarfristForm for å unngå for hyppig lagring.
+ * Hook som gir scheduleSave funksjon for å batche lagring.
+ * Bruker setTimeout(0) for å batche flere endringer i samme event loop.
  */
 export function useScheduledSave(
   save: ReturnType<typeof useAutosave>['save'],
   fields: string[],
 ) {
-  const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const timeoutRef = useRef<number | null>(null);
 
+  // Cleanup ved unmount
   useEffect(() => {
     return () => {
-      if (saveTimeoutRef.current) {
-        clearTimeout(saveTimeoutRef.current);
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
       }
     };
   }, []);
 
   const scheduleSave = useCallback(() => {
-    const run = () => save(fields);
-
-    if (typeof window === 'undefined') {
-      void run();
-      return;
+    // Avbryt eventuell pending lagring
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
     }
 
-    if (saveTimeoutRef.current) {
-      clearTimeout(saveTimeoutRef.current);
-    }
-
-    saveTimeoutRef.current = setTimeout(() => {
-      saveTimeoutRef.current = null;
-      void run();
+    // Planlegg ny lagring i neste event loop
+    timeoutRef.current = window.setTimeout(() => {
+      timeoutRef.current = null;
+      save(fields);
     }, 0);
   }, [save, fields]);
 
