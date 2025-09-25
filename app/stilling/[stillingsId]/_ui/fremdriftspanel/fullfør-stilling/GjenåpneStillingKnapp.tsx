@@ -3,7 +3,10 @@ import { setKandidatlisteStatus } from '@/app/api/kandidat/setKandidatlisteStatu
 import { useKandidatlisteForEier } from '@/app/api/kandidat/useKandidatlisteForEier';
 import { oppdaterStilling } from '@/app/api/stilling/oppdater-stilling/oppdaterStilling';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
-import { StillingsStatus } from '@/app/stilling/_ui/stilling-typer';
+import {
+  Stillingskategori,
+  StillingsStatus,
+} from '@/app/stilling/_ui/stilling-typer';
 import SWRLaster from '@/components/SWRLaster';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { RekbisError } from '@/util/rekbisError';
@@ -79,23 +82,25 @@ export default function GjenåpneStillingKnapp() {
               }}
               width='small'
             >
-              {(stillingsData?.stilling?.properties?.applicationurl !== null ||
-                stillingsData?.stilling?.properties?.applicationemail !==
-                  null) && (
-                <Modal.Body>
-                  <BodyLong>
-                    <Checkbox
-                      checked={publiserArbeidsplassen}
-                      onChange={(e) =>
-                        setPubliserArbeidsplassen(e.target.checked)
-                      }
-                    >
-                      Publiser stillingsoppdraget offentlig på arbeidsplassen.no
-                      også
-                    </Checkbox>
-                  </BodyLong>
-                </Modal.Body>
-              )}
+              {stillingsData?.stillingsinfo?.stillingskategori !==
+                Stillingskategori.Formidling &&
+                (stillingsData?.stilling?.properties?.applicationurl != null ||
+                  stillingsData?.stilling?.properties?.applicationemail !=
+                    null) && (
+                  <Modal.Body>
+                    <BodyLong>
+                      <Checkbox
+                        checked={publiserArbeidsplassen}
+                        onChange={(e) =>
+                          setPubliserArbeidsplassen(e.target.checked)
+                        }
+                      >
+                        Publiser stillingsoppdraget offentlig på
+                        arbeidsplassen.no også
+                      </Checkbox>
+                    </BodyLong>
+                  </Modal.Body>
+                )}
               <Modal.Footer>
                 <Button
                   type='button'

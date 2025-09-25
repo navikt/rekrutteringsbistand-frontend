@@ -78,10 +78,9 @@ export default function SideScroll({
       <style jsx>{`
         .scroll-container {
           /* Force scrollbar gutter regardless of system settings */
-          scrollbar-gutter: stable both-edges;
+          // scrollbar-gutter: stable both-edges;
           /* Reserve space for scrollbar */
           box-sizing: border-box;
-          padding-right: 18px;
         }
         .scroll-container::-webkit-scrollbar {
           width: 16px;
