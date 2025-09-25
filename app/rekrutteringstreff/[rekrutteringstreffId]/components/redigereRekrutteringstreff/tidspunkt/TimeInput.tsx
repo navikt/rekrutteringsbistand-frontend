@@ -15,6 +15,9 @@ export const KLOKKESLETT_OPTIONS = [...Array(24)].flatMap((_, h) =>
   ),
 );
 
+// Regex for å validere HH:MM (24-timers format)
+const TIME_REGEX = /^([01]\d|2[0-3]):([0-5]\d)$/; // HH:MM
+
 type Props = {
   value?: string;
   onChange: (value: string) => void;
@@ -107,8 +110,6 @@ function TimeInput({
     setInputValue(value ?? '');
   }, [value]);
 
-  const TIME_REGEX = /^([01]\d|2[0-3]):([0-5]\d)$/; // HH:MM
-
   const isAllowedTime = useCallback((val: string) => TIME_REGEX.test(val), []);
 
   const handleInputChange = useCallback((val: string) => {
@@ -180,7 +181,7 @@ function TimeInput({
       allowNewValues={true}
       value={inputValue}
       selectedOptions={value ? [value] : []}
-      onFocus={(e) => {
+      onFocus={() => {
         didUserTypeRef.current = false;
         lastFocusValueRef.current = value;
         setInputValue(value ?? '');
