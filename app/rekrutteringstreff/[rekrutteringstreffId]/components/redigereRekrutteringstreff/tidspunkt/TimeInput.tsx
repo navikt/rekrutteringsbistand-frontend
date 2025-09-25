@@ -36,18 +36,18 @@ function TimeInput({
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const scrollSelectedIntoView = useCallback(() => {
-    if (typeof document === 'undefined') return;
-
     const input = inputRef.current;
-    if (!input || input.getAttribute('aria-expanded') !== 'true') return;
-
-    const listId = input.getAttribute('aria-controls');
-    if (!listId) return;
-
-    document
-      .getElementById(listId)
-      ?.querySelector<HTMLElement>("[role='option'][aria-selected='true']")
-      ?.scrollIntoView({ block: 'nearest' });
+    if (input?.getAttribute('aria-expanded') === 'true') {
+      const listId = input.getAttribute('aria-controls');
+      const selected =
+        listId &&
+        document
+          .getElementById(listId)
+          ?.querySelector<HTMLElement>("[role='option'][aria-selected='true']");
+      if (selected)
+        (selected.closest<HTMLElement>("[role='listbox']") ||
+          selected.parentElement)!.scrollTop = selected.offsetTop;
+    }
   }, []);
 
   const queueScrollIntoView = useCallback(() => {
