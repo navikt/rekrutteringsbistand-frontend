@@ -147,7 +147,7 @@ export default function SideScroll({
         className={`scroll-container w-full ${overflowClasses} ${className}`}
         style={{
           height: finalHeight,
-          paddingRight: '8px', // Extra padding to ensure content doesn't overlap scrollbar
+          paddingRight: '10px', // Extra padding to ensure content doesn't overlap scrollbar
           paddingBottom: enableHorizontalScroll ? '8px' : '40px',
         }}
         onScroll={handleScroll}
