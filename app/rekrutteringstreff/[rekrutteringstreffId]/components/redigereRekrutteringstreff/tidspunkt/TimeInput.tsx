@@ -1,7 +1,13 @@
 'use client';
 
 import { UNSAFE_Combobox as Combobox } from '@navikt/ds-react';
-import React, { ReactNode, useCallback, useEffect, useRef } from 'react';
+import React, {
+  ReactNode,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
 export const KLOKKESLETT_OPTIONS = [...Array(24)].flatMap((_, h) =>
   [0, 15, 30, 45].map(
@@ -93,6 +99,74 @@ function TimeInput({
 
   const availableOptions = options ?? KLOKKESLETT_OPTIONS;
 
+  const [inputValue, setInputValue] = useState(value ?? '');
+  const didUserTypeRef = useRef(false); // Sporer om bruker faktisk har interagert med input-teksten
+  const lastFocusValueRef = useRef<string | undefined>(value);
+
+  useEffect(() => {
+    setInputValue(value ?? '');
+  }, [value]);
+
+  const TIME_REGEX = /^([01]\d|2[0-3]):([0-5]\d)$/; // HH:MM
+
+  const isAllowedTime = useCallback((val: string) => TIME_REGEX.test(val), []);
+
+  const handleInputChange = useCallback((val: string) => {
+    if (val === '' && !didUserTypeRef.current) {
+      return;
+    }
+    if (val !== '' && !didUserTypeRef.current) {
+      didUserTypeRef.current = true;
+    }
+    if (val === '' && didUserTypeRef.current) {
+      setInputValue('');
+    } else if (val !== '') {
+      setInputValue(val);
+    }
+  }, []);
+
+  const commitIfValid = useCallback(
+    (val: string) => {
+      if (val === '') {
+        if (value) onChange('');
+        return true;
+      }
+      if (isAllowedTime(val)) {
+        if (val !== value) onChange(val);
+        return true;
+      }
+      return false;
+    },
+    [isAllowedTime, onChange, value],
+  );
+
+  const handleBlur: React.FocusEventHandler<HTMLInputElement> = useCallback(
+    (e) => {
+      // Hvis bruker ikke skrev noe og inputValue er lik fokusverdi, ikke forsøk å committe tom init event
+      if (
+        !didUserTypeRef.current &&
+        (inputValue === '' || inputValue === lastFocusValueRef.current)
+      ) {
+        setInputValue(value ?? '');
+        onBlur?.(e);
+        return;
+      }
+
+      const ok = commitIfValid(inputValue.trim());
+      if (!ok) {
+        setInputValue(value ?? '');
+      }
+      onBlur?.(e);
+    },
+    [commitIfValid, inputValue, onBlur, value],
+  );
+
+  // Hvis den commit'ede verdien (value) ikke finnes i 15-min listen fordi bruker skrev et custom minutt, legg den til så den vises som valgt
+  const dynamicOptions =
+    value && !availableOptions.includes(value) && TIME_REGEX.test(value)
+      ? [...availableOptions, value]
+      : availableOptions;
+
   return (
     <Combobox
       ref={inputRef}
@@ -101,15 +175,26 @@ function TimeInput({
       disabled={disabled}
       error={error}
       className={['min-w-[7rem]', className].filter(Boolean).join(' ')}
-      options={availableOptions}
-      filteredOptions={availableOptions}
-      value={value ?? ''}
+      options={dynamicOptions}
+      filteredOptions={dynamicOptions}
+      allowNewValues={true}
+      value={inputValue}
       selectedOptions={value ? [value] : []}
-      onFocus={queueScrollIntoView}
-      onToggleSelected={(option, isSelected) => {
-        if (isSelected) onChange(option);
+      onFocus={(e) => {
+        didUserTypeRef.current = false;
+        lastFocusValueRef.current = value;
+        setInputValue(value ?? '');
+        queueScrollIntoView();
       }}
-      onBlur={onBlur}
+      onToggleSelected={(option, isSelected) => {
+        if (isSelected) {
+          didUserTypeRef.current = true;
+          setInputValue(option);
+          commitIfValid(option);
+        }
+      }}
+      onChange={(val) => handleInputChange(val)}
+      onBlur={handleBlur}
     />
   );
 }
