@@ -35,7 +35,7 @@ const TidspunktForm = ({ control }: Props) => {
     fraDato && tilDato ? !isSameDay(fraDato, tilDato) : false,
   );
 
-  // Bruk de nye hooks
+  // Bruk nye hooks
   const { scheduleSave } = useScheduledSave(save, [
     'fraDato',
     'fraTid',
