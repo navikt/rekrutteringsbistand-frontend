@@ -120,8 +120,8 @@ export default function EndreSøkeforslag() {
           }}
           width='small'
         >
-          {(stillingsData?.stilling?.properties?.applicationurl !== null ||
-            stillingsData?.stilling?.properties?.applicationemail !== null) && (
+          {(stillingsData?.stilling?.properties?.applicationurl != null ||
+            stillingsData?.stilling?.properties?.applicationemail != null) && (
             <Modal.Body>
               <BodyLong>
                 <Checkbox

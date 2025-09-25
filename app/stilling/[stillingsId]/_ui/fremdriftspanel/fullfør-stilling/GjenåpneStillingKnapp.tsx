@@ -84,8 +84,8 @@ export default function GjenåpneStillingKnapp() {
             >
               {stillingsData?.stillingsinfo?.stillingskategori !==
                 Stillingskategori.Formidling &&
-                (stillingsData?.stilling?.properties?.applicationurl !== null ||
-                  stillingsData?.stilling?.properties?.applicationemail !==
+                (stillingsData?.stilling?.properties?.applicationurl != null ||
+                  stillingsData?.stilling?.properties?.applicationemail !=
                     null) && (
                   <Modal.Body>
                     <BodyLong>
