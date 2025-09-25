@@ -57,6 +57,7 @@ export default function ControlledDatePicker({
         error={error ? error.message || true : undefined}
         disabled={disabled}
         onBlur={handleBlur}
+        placeholder='dd.mm.åååå'
       />
     </DatePicker>
   );
