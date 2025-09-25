@@ -8,6 +8,7 @@ export interface SideScrollProps {
     | null;
   trimHøyde?: number;
   className?: string;
+  enableHorizontalScroll?: boolean;
 }
 
 export default function SideScroll({
@@ -15,6 +16,7 @@ export default function SideScroll({
   excludeRef,
   trimHøyde = 150,
   className = '',
+  enableHorizontalScroll = false,
 }: SideScrollProps) {
   const [calculatedHeight, setCalculatedHeight] = useState<string>('');
   const [isScrolling, setIsScrolling] = useState(false);
@@ -67,58 +69,70 @@ export default function SideScroll({
     };
   }, [scrollTimeout]);
 
+  const overflowClasses = enableHorizontalScroll
+    ? 'overflow-auto'
+    : 'overflow-y-auto overflow-x-hidden';
+
   return (
     <>
       <style jsx>{`
         .scroll-container::-webkit-scrollbar {
           width: 8px;
+          height: 8px;
         }
         .scroll-container::-webkit-scrollbar-track {
           background: transparent;
         }
         .scroll-container::-webkit-scrollbar-thumb {
           background: ${isScrolling
-            ? 'var(--scrollbar-thumb, rgba(203, 213, 225, 0.8))'
+            ? 'rgba(203, 213, 225, 0.8)'
             : 'transparent'};
           border-radius: 4px;
           transition: background 0.3s ease;
         }
         .scroll-container:hover::-webkit-scrollbar-thumb {
-          background: var(--scrollbar-thumb, rgba(203, 213, 225, 0.8));
+          background: rgba(203, 213, 225, 0.8);
         }
         .scroll-container::-webkit-scrollbar-thumb:hover {
-          background: var(
-            --scrollbar-thumb-hover,
-            rgba(148, 163, 184, 0.9)
-          ) !important;
+          background: rgba(148, 163, 184, 0.9) !important;
+        }
+        .scroll-container::-webkit-scrollbar-corner {
+          background: transparent;
         }
         .scroll-container {
           scrollbar-width: thin;
           scrollbar-color: ${isScrolling
-              ? 'var(--scrollbar-thumb, rgba(203, 213, 225, 0.8))'
+              ? 'rgba(203, 213, 225, 0.8)'
               : 'transparent'}
             transparent;
           transition: scrollbar-color 0.3s ease;
         }
         .scroll-container:hover {
-          scrollbar-color: var(--scrollbar-thumb, rgba(203, 213, 225, 0.8))
-            transparent;
-        }
-
-        /* Light theme */
-        .scroll-container {
-          --scrollbar-thumb: rgba(203, 213, 225, 0.8);
-          --scrollbar-thumb-hover: rgba(148, 163, 184, 0.9);
+          scrollbar-color: rgba(203, 213, 225, 0.8) transparent;
         }
 
         /* Dark theme */
-        .dark .scroll-container {
-          --scrollbar-thumb: rgba(75, 85, 99, 0.8);
-          --scrollbar-thumb-hover: rgba(107, 114, 128, 0.9);
+        :global(.dark) .scroll-container::-webkit-scrollbar-thumb {
+          background: ${isScrolling ? 'rgba(75, 85, 99, 0.8)' : 'transparent'};
+        }
+        :global(.dark) .scroll-container:hover::-webkit-scrollbar-thumb {
+          background: rgba(75, 85, 99, 0.8);
+        }
+        :global(.dark) .scroll-container::-webkit-scrollbar-thumb:hover {
+          background: rgba(107, 114, 128, 0.9) !important;
+        }
+        :global(.dark) .scroll-container {
+          scrollbar-color: ${isScrolling
+              ? 'rgba(75, 85, 99, 0.8)'
+              : 'transparent'}
+            transparent;
+        }
+        :global(.dark) .scroll-container:hover {
+          scrollbar-color: rgba(75, 85, 99, 0.8) transparent;
         }
       `}</style>
       <div
-        className={`scroll-container w-full overflow-y-auto overflow-x-hidden pb-10 ${className}`}
+        className={`scroll-container w-full ${overflowClasses} pb-10 scrollbar-gutter-stable ${className}`}
         style={{ height: finalHeight }}
         onScroll={handleScroll}
       >

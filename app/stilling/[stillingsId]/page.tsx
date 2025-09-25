@@ -75,33 +75,33 @@ export default function StillingsSidePage() {
           }
           fremdriftspanelTop={fremdriftsPanel(true)}
         >
-          <SideScroll>
-            {ugyldigStilling && (
-              <Alert variant='error'>
-                <Heading spacing size='small' level='3'>
-                  Ugyldig stilling
-                </Heading>
-                <p>
-                  Denne stillingen er ikke gyldig da det er en intern stilling
-                  som mangler organisasjonsnummer.
-                </p>
-                <p> Stillingen er derfor ikke tilgjengelig for rekruttering.</p>
-              </Alert>
-            )}
-            <Tabs.Panel value={StillingFane.STILLING}>
+          {ugyldigStilling && (
+            <Alert variant='error'>
+              <Heading spacing size='small' level='3'>
+                Ugyldig stilling
+              </Heading>
+              <p>
+                Denne stillingen er ikke gyldig da det er en intern stilling som
+                mangler organisasjonsnummer.
+              </p>
+              <p> Stillingen er derfor ikke tilgjengelig for rekruttering.</p>
+            </Alert>
+          )}
+          <Tabs.Panel value={StillingFane.STILLING}>
+            <SideScroll>
               <OmStillingenHeader />
               <OmStillingen printRef={printRef} />
-            </Tabs.Panel>
-            {kandidatlisteInfo?.kandidatlisteId && erEier && (
-              <>
-                <Tabs.Panel value={StillingFane.KANDIDATER}>
-                  <KandidatlisteWrapper>
-                    <FiltrertKandidatListeVisning />
-                  </KandidatlisteWrapper>
-                </Tabs.Panel>
-              </>
-            )}
-          </SideScroll>
+            </SideScroll>
+          </Tabs.Panel>
+          {kandidatlisteInfo?.kandidatlisteId && erEier && (
+            <>
+              <Tabs.Panel value={StillingFane.KANDIDATER}>
+                <KandidatlisteWrapper>
+                  <FiltrertKandidatListeVisning />
+                </KandidatlisteWrapper>
+              </Tabs.Panel>
+            </>
+          )}
         </SideLayout>
       </Tabs>
     </div>
