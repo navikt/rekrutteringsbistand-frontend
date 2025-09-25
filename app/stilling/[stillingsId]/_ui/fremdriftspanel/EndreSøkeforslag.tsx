@@ -8,7 +8,15 @@ import {
   PauseIcon,
   PlayIcon,
 } from '@navikt/aksel-icons';
-import { BodyShort, Box, Button, Heading } from '@navikt/ds-react';
+import {
+  BodyLong,
+  BodyShort,
+  Box,
+  Button,
+  Checkbox,
+  Heading,
+  Modal,
+} from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
@@ -17,6 +25,8 @@ export default function EndreSøkeforslag() {
   const { valgtNavKontor, brukerData } = useApplikasjonContext();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [publiserArbeidsplassen, setPubliserArbeidsplassen] = useState(false);
+  const [open, setOpen] = useState(false);
 
   const endreStatus = async (status: StillingsStatus) => {
     setLoading(true);
@@ -27,7 +37,7 @@ export default function EndreSøkeforslag() {
           stilling: {
             ...(stillingsData.stilling as any),
             status: status,
-            privacy: 'INTERNAL_NOT_SHOWN',
+            privacy: publiserArbeidsplassen ? 'SHOW_ALL' : 'INTERNAL_NOT_SHOWN',
           },
         },
         {
@@ -96,10 +106,50 @@ export default function EndreSøkeforslag() {
           icon={<PlayIcon />}
           size='small'
           className='w-full  mt-4'
-          onClick={() => endreStatus(StillingsStatus.Aktiv)}
+          onClick={() => setOpen(true)}
         >
           Åpne søkerforslag
         </Button>
+        <Modal
+          open={open}
+          onClose={() => setOpen(false)}
+          header={{
+            heading: 'Åpne søkerforslag',
+            size: 'small',
+            closeButton: false,
+          }}
+          width='small'
+        >
+          {(stillingsData?.stilling?.properties?.applicationurl !== null ||
+            stillingsData?.stilling?.properties?.applicationemail !== null) && (
+            <Modal.Body>
+              <BodyLong>
+                <Checkbox
+                  checked={publiserArbeidsplassen}
+                  onChange={(e) => setPubliserArbeidsplassen(e.target.checked)}
+                >
+                  Publiser stillingsoppdraget offentlig på arbeidsplassen.no
+                  også
+                </Checkbox>
+              </BodyLong>
+            </Modal.Body>
+          )}
+          <Modal.Footer>
+            <Button
+              type='button'
+              onClick={() => endreStatus(StillingsStatus.Aktiv)}
+            >
+              Åpne søkerforslag
+            </Button>
+            <Button
+              type='button'
+              variant='secondary'
+              onClick={() => setOpen(false)}
+            >
+              Avbryt
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </>
     );
   }
