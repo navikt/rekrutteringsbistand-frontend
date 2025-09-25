@@ -5,6 +5,7 @@ import {
   opprettNyttRekrutteringstreff,
   OpprettNyttRekrutteringstreffDTO,
 } from '@/app/api/rekrutteringstreff/nytt-rekrutteringstreff/opprettNyttRekrutteringstreff';
+import SideScroll from '@/components/SideScroll';
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideLayout from '@/components/layout/SideLayout';
 import { UmamiEvent } from '@/components/umami/umamiEvents';
@@ -13,7 +14,7 @@ import { useUmami } from '@/providers/UmamiContext';
 import { RekbisError } from '@/util/rekbisError';
 import { ReceptionIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
-import { FC, ReactNode } from 'react';
+import { FC, ReactNode, useRef } from 'react';
 
 export interface RekrutteringstreffSøkLayoutProps {
   children?: ReactNode | undefined;
@@ -24,6 +25,7 @@ const RekrutteringstreffSøkLayout: FC<RekrutteringstreffSøkLayoutProps> = ({
 }) => {
   const { trackAndNavigate } = useUmami();
   const { valgtNavKontor } = useApplikasjonContext();
+  const headerRef = useRef<HTMLDivElement>(null);
 
   const handleOpprettRekrutteringstreff = () => {
     const nyttTreff: OpprettNyttRekrutteringstreffDTO = {
@@ -50,21 +52,27 @@ const RekrutteringstreffSøkLayout: FC<RekrutteringstreffSøkLayoutProps> = ({
   return (
     <SideLayout
       header={
-        <PanelHeader>
-          <PanelHeader.Section
-            title={'Rekrutteringstreff'}
-            titleIcon={<ReceptionIcon />}
-            actionsRight={
-              <Button onClick={handleOpprettRekrutteringstreff}>
-                Nytt rekrutteringstreff
-              </Button>
-            }
-          />
-        </PanelHeader>
+        <div ref={headerRef}>
+          <PanelHeader>
+            <PanelHeader.Section
+              title={'Rekrutteringstreff'}
+              titleIcon={<ReceptionIcon />}
+              actionsRight={
+                <Button onClick={handleOpprettRekrutteringstreff}>
+                  Nytt rekrutteringstreff
+                </Button>
+              }
+            />
+          </PanelHeader>
+        </div>
       }
     >
-      <RekrutteringstreffFilter />
-      {children}
+      <SideScroll excludeRef={headerRef}>
+        <div className='space-y-4'>
+          <RekrutteringstreffFilter />
+          {children}
+        </div>
+      </SideScroll>
     </SideLayout>
   );
 };
