@@ -106,10 +106,14 @@ const Rekrutteringstreff: FC = () => {
   }, [avlyst, modus, setModus]);
 
   useEffect(() => {
+    // Vent til data er lastet før vi evt. tvinger edit-modus. Uten dette
+    // kan vi sette ?mode=edit før vi vet at treffet er publisert, og da
+    // forblir man i edit selv etter publisering.
+    if (!rekrutteringstreff) return;
     if (!harPublisert && !avlyst && modus !== 'edit') {
       setModus('edit');
     }
-  }, [avlyst, harPublisert, modus, setModus]);
+  }, [rekrutteringstreff, avlyst, harPublisert, modus, setModus]);
 
   const scrollToTop = useCallback(() => {
     if (typeof window !== 'undefined') {
