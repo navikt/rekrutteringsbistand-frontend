@@ -18,6 +18,14 @@ export const KLOKKESLETT_OPTIONS = [...Array(24)].flatMap((_, h) =>
 // Regex for å validere HH:MM (24-timers format)
 const TIME_REGEX = /^([01]\d|2[0-3]):([0-5]\d)$/; // HH:MM
 
+const insertOptionSorted = (options: string[], newOption: string) => {
+  if (options.includes(newOption)) {
+    return options;
+  }
+
+  return [...options, newOption].sort();
+};
+
 type Props = {
   value?: string;
   onChange: (value: string) => void;
@@ -170,8 +178,8 @@ function TimeInput({
 
   // Hvis den commit'ede verdien (value) ikke finnes i 15-min listen fordi bruker skrev et custom minutt, legg den til så den vises som valgt
   const dynamicOptions =
-    value && !availableOptions.includes(value) && TIME_REGEX.test(value)
-      ? [...availableOptions, value]
+    value && TIME_REGEX.test(value)
+      ? insertOptionSorted(availableOptions, value)
       : availableOptions;
 
   return (
