@@ -86,7 +86,9 @@ const StillingsSøkeresultat: FC<StillingsSøkeresultatProps> = ({
       hooks={[combinedHook]}
       skeleton={
         <div className='mt-16'>
-          <SkeletonKort />
+          <SideScroll>
+            <SkeletonKort />
+          </SideScroll>
         </div>
       }
     >

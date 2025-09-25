@@ -111,7 +111,7 @@ const KandidatSøkResultat: FC<KandidatSøkResultatProps> = ({
               </div>
             </div>
             <SideScroll excludeRef={[headerRef]}>
-              <div className='flex flex-col gap-1'>
+              <div className='flex flex-col gap-1 pt-2'>
                 {kandidatData.kandidater?.map((kandidat, index) => (
                   <KandidatKort
                     stillingsId={stillingsId}

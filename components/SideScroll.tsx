@@ -79,22 +79,25 @@ export default function SideScroll({
         .scroll-container {
           /* Force scrollbar gutter regardless of system settings */
           scrollbar-gutter: stable both-edges;
+          /* Reserve space for scrollbar */
+          box-sizing: border-box;
+          padding-right: 18px;
         }
         .scroll-container::-webkit-scrollbar {
-          width: 16px; /* Increased to ensure visibility */
+          width: 16px;
           height: 16px;
         }
         .scroll-container::-webkit-scrollbar-track {
           background: transparent;
-          margin: 2px; /* Add margin to push scrollbar away from content */
+          margin: 2px;
         }
         .scroll-container::-webkit-scrollbar-thumb {
           background: ${isScrolling
             ? 'rgba(203, 213, 225, 0.8)'
             : 'transparent'};
           border-radius: 8px;
-          border: 4px solid transparent; /* Creates visual spacing */
-          background-clip: content-box; /* Ensures border creates spacing */
+          border: 4px solid transparent;
+          background-clip: content-box;
           transition: background 0.3s ease;
         }
         .scroll-container:hover::-webkit-scrollbar-thumb {
@@ -108,6 +111,7 @@ export default function SideScroll({
         .scroll-container::-webkit-scrollbar-corner {
           background: transparent;
         }
+
         .scroll-container {
           scrollbar-width: thin;
           scrollbar-color: ${isScrolling
@@ -147,7 +151,6 @@ export default function SideScroll({
         className={`scroll-container w-full ${overflowClasses} ${className}`}
         style={{
           height: finalHeight,
-          paddingRight: '10px', // Extra padding to ensure content doesn't overlap scrollbar
           paddingBottom: enableHorizontalScroll ? '8px' : '40px',
         }}
         onScroll={handleScroll}
