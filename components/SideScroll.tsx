@@ -76,25 +76,34 @@ export default function SideScroll({
   return (
     <>
       <style jsx>{`
+        .scroll-container {
+          /* Force scrollbar gutter regardless of system settings */
+          scrollbar-gutter: stable both-edges;
+        }
         .scroll-container::-webkit-scrollbar {
-          width: 8px;
-          height: 8px;
+          width: 16px; /* Increased to ensure visibility */
+          height: 16px;
         }
         .scroll-container::-webkit-scrollbar-track {
           background: transparent;
+          margin: 2px; /* Add margin to push scrollbar away from content */
         }
         .scroll-container::-webkit-scrollbar-thumb {
           background: ${isScrolling
             ? 'rgba(203, 213, 225, 0.8)'
             : 'transparent'};
-          border-radius: 4px;
+          border-radius: 8px;
+          border: 4px solid transparent; /* Creates visual spacing */
+          background-clip: content-box; /* Ensures border creates spacing */
           transition: background 0.3s ease;
         }
         .scroll-container:hover::-webkit-scrollbar-thumb {
           background: rgba(203, 213, 225, 0.8);
+          background-clip: content-box;
         }
         .scroll-container::-webkit-scrollbar-thumb:hover {
           background: rgba(148, 163, 184, 0.9) !important;
+          background-clip: content-box;
         }
         .scroll-container::-webkit-scrollbar-corner {
           background: transparent;
@@ -114,12 +123,15 @@ export default function SideScroll({
         /* Dark theme */
         :global(.dark) .scroll-container::-webkit-scrollbar-thumb {
           background: ${isScrolling ? 'rgba(75, 85, 99, 0.8)' : 'transparent'};
+          background-clip: content-box;
         }
         :global(.dark) .scroll-container:hover::-webkit-scrollbar-thumb {
           background: rgba(75, 85, 99, 0.8);
+          background-clip: content-box;
         }
         :global(.dark) .scroll-container::-webkit-scrollbar-thumb:hover {
           background: rgba(107, 114, 128, 0.9) !important;
+          background-clip: content-box;
         }
         :global(.dark) .scroll-container {
           scrollbar-color: ${isScrolling
@@ -132,8 +144,12 @@ export default function SideScroll({
         }
       `}</style>
       <div
-        className={`scroll-container w-full ${overflowClasses} pb-10 scrollbar-gutter-stable ${className}`}
-        style={{ height: finalHeight }}
+        className={`scroll-container w-full ${overflowClasses} ${className}`}
+        style={{
+          height: finalHeight,
+          paddingRight: '8px', // Extra padding to ensure content doesn't overlap scrollbar
+          paddingBottom: enableHorizontalScroll ? '8px' : '40px',
+        }}
         onScroll={handleScroll}
       >
         {children}
