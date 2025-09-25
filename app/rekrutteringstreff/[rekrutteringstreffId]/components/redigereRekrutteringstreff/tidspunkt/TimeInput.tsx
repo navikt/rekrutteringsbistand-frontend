@@ -126,6 +126,11 @@ function TimeInput({
 
   const isAllowedTime = useCallback((val: string) => TIME_REGEX.test(val), []);
 
+  const isAllowedInput = useCallback(
+    (text?: string | null) => !text || /^[\d:]*$/.test(text),
+    [],
+  );
+
   const handleInputChange = useCallback((val: string) => {
     if (val === '' && !didUserTypeRef.current) {
       return;
@@ -210,6 +215,19 @@ function TimeInput({
       }}
       onChange={(val) => handleInputChange(val)}
       onBlur={handleBlur}
+      onBeforeInput={(event) => {
+        const nativeEvent = event.nativeEvent as InputEvent;
+        const data = 'data' in nativeEvent ? nativeEvent.data : null;
+        if (!isAllowedInput(data)) {
+          event.preventDefault();
+        }
+      }}
+      onPaste={(event) => {
+        const pasted = event.clipboardData.getData('text');
+        if (!isAllowedInput(pasted)) {
+          event.preventDefault();
+        }
+      }}
     />
   );
 }
