@@ -14,6 +14,7 @@ import {
   StillingsStatus,
 } from '@/app/stilling/_ui/stilling-typer';
 import { normaliserPropertiesTilStrenger } from '@/app/stilling/_util/normaliserStillingProperties';
+import SideScroll from '@/components/SideScroll';
 // import ViktigeDatoer from '@/app/stilling/rediger/_ui/ViktigeDatoer';
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideLayout from '@/components/layout/SideLayout';
@@ -137,9 +138,11 @@ export default function StillingAdmin() {
           </PanelHeader>
         }
         fremdriftspanel={
-          <FremdriftspanelRedigering
-            setForhåndsvis={() => setForhåndsvis(true)}
-          />
+          <SideScroll>
+            <FremdriftspanelRedigering
+              setForhåndsvis={() => setForhåndsvis(true)}
+            />
+          </SideScroll>
         }
       >
         {forhåndsvis ? (
@@ -147,11 +150,13 @@ export default function StillingAdmin() {
             <OmStillingen printRef={null} forhåndsvisData />
           </>
         ) : (
-          <div className='flex flex-col gap-4'>
-            {moduler.map((m) => (
-              <m.Component key={m.key} />
-            ))}
-          </div>
+          <SideScroll>
+            <div className='flex flex-col gap-4'>
+              {moduler.map((m) => (
+                <m.Component key={m.key} />
+              ))}
+            </div>
+          </SideScroll>
         )}
       </SideLayout>
     </FormProvider>

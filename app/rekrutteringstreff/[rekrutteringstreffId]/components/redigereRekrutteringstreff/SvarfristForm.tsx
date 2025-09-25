@@ -4,12 +4,13 @@ import { useAutoAdjustEndTime } from './hooks/useAutoAdjustEndTime';
 import { useFilteredTimeOptions } from './hooks/useFilteredTimeOptions';
 import { useScheduledSave } from './hooks/useScheduledSave';
 import DatoTidRad from './tidspunkt/DatoTidRad';
+import { isGyldigTid, kombinerDatoOgTid } from './tidspunkt/utils';
 import { useAutosave } from './useAutosave';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
 import { Heading } from '@navikt/ds-react';
-import { format, parseISO } from 'date-fns';
-import React, { useEffect, useRef } from 'react';
+import { format, parseISO, addMinutes, isSameDay } from 'date-fns';
+import React, { useEffect } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 export type SvarfristFormFields = {
@@ -81,46 +82,40 @@ const SvarfristForm = ({ control }: Props) => {
   // Auto-juster svarfrist når starttidspunkt endres
   useEffect(() => {
     adjustEndTime(fraDato, fraTid, dato, tid, 'svarfristDato', 'svarfristTid');
-  }, [fraDato, fraTid, dato, tid, adjustEndTime]);
+  }, [fraDato, fraTid, adjustEndTime]);
 
-  const previousValuesRef = useRef<{ dato: Date | null; tid: string | null }>({
-    dato: dato ?? null,
-    tid: tid ?? null,
-  });
-  const isInitialRender = useRef(true);
-
+  // Juster til siste mulige kvarter hvis bruker velger samme dag og ugyldig tid
   useEffect(() => {
-    if (isInitialRender.current) {
-      isInitialRender.current = false;
-      previousValuesRef.current = { dato: dato ?? null, tid: tid ?? null };
+    if (!dato || !fraDato || !isGyldigTid(fraTid) || !isSameDay(dato, fraDato))
       return;
-    }
 
-    const previous = previousValuesRef.current;
-    const previousTimestamp = previous.dato ? previous.dato.getTime() : null;
-    const currentTimestamp = dato ? dato.getTime() : null;
-    const previousTid = previous.tid ?? null;
-    const currentTid = tid ?? null;
+    const startTs = kombinerDatoOgTid(fraDato, fraTid);
+    const currentTs = isGyldigTid(tid) ? kombinerDatoOgTid(dato, tid) : null;
 
-    const dateChanged = previousTimestamp !== currentTimestamp;
-    const timeChanged = previousTid !== currentTid;
+    if (!startTs) return;
 
-    if (dateChanged || timeChanged) {
-      previousValuesRef.current = { dato: dato ?? null, tid: currentTid };
-      if (dato || tid) {
+    // Hvis current tid er lik eller etter starttid, sett til 15 min før starttid
+    if (currentTs && currentTs.getTime() >= startTs.getTime()) {
+      const nyTs = addMinutes(startTs, -15);
+      const nyTid = format(nyTs, 'HH:mm');
+
+      if (nyTid !== tid) {
+        setValue('svarfristTid', nyTid, {
+          shouldDirty: true,
+          shouldValidate: false,
+        });
         scheduleSave();
       }
     }
-  }, [dato, tid, scheduleSave]);
+  }, [dato, fraDato, fraTid, tid, setValue, scheduleSave]);
 
   return (
     <div className='space-y-4'>
       <Heading level='3' size='small'>
         Svarfrist
       </Heading>
-      <div className='ml-5'>
+      <div>
         <DatoTidRad<SvarfristFormFields>
-          label=''
           nameDato='svarfristDato'
           nameTid='svarfristTid'
           control={control}

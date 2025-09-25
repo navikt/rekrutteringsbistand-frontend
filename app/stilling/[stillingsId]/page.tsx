@@ -10,6 +10,7 @@ import TabKnapper from '@/app/stilling/[stillingsId]/_ui/tabs/TabKnapper';
 import FiltrertKandidatListeVisning from '@/app/stilling/[stillingsId]/kandidatliste/FiltrertKandidatListeVisning';
 import KandidatlisteWrapper from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteWrapper';
 import { visStillingsDataInfo } from '@/app/stilling/_util/stillingInfoUtil';
+import SideScroll from '@/components/SideScroll';
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideLayout from '@/components/layout/SideLayout';
 import { Alert, Heading, Tabs } from '@navikt/ds-react';
@@ -35,6 +36,10 @@ export default function StillingsSidePage() {
   const ugyldigStilling =
     stillingsData?.stilling?.medium === 'DIR' &&
     (stillingsData?.stilling?.employer?.orgnr ?? null) === null;
+
+  const skjulFremdriftspanel =
+    fane !== StillingFane.STILLING ||
+    (stillingsData.stilling.source === 'DIR' && !erEier);
 
   const fremdriftsPanel = (top?: boolean) => {
     if (stillingsData.stilling.source !== 'DIR') {
@@ -68,37 +73,39 @@ export default function StillingsSidePage() {
               />
             </PanelHeader>
           }
-          skjulFremdriftspanel={fane !== StillingFane.STILLING}
-          fremdriftspanel={fremdriftsPanel()}
+          skjulFremdriftspanel={skjulFremdriftspanel}
+          fremdriftspanel={
+            <SideScroll trimHøyde={150}>{fremdriftsPanel()}</SideScroll>
+          }
           fremdriftspanelTop={fremdriftsPanel(true)}
         >
-          <>
-            {ugyldigStilling && (
-              <Alert variant='error'>
-                <Heading spacing size='small' level='3'>
-                  Ugyldig stilling
-                </Heading>
-                <p>
-                  Denne stillingen er ikke gyldig da det er en intern stilling
-                  som mangler organisasjonsnummer.
-                </p>
-                <p> Stillingen er derfor ikke tilgjengelig for rekruttering.</p>
-              </Alert>
-            )}
-            <Tabs.Panel value={StillingFane.STILLING}>
+          {ugyldigStilling && (
+            <Alert variant='error'>
+              <Heading spacing size='small' level='3'>
+                Ugyldig stilling
+              </Heading>
+              <p>
+                Denne stillingen er ikke gyldig da det er en intern stilling som
+                mangler organisasjonsnummer.
+              </p>
+              <p> Stillingen er derfor ikke tilgjengelig for rekruttering.</p>
+            </Alert>
+          )}
+          <Tabs.Panel value={StillingFane.STILLING}>
+            <SideScroll>
               <OmStillingenHeader />
               <OmStillingen printRef={printRef} />
-            </Tabs.Panel>
-            {kandidatlisteInfo?.kandidatlisteId && erEier && (
-              <>
-                <Tabs.Panel value={StillingFane.KANDIDATER}>
-                  <KandidatlisteWrapper>
-                    <FiltrertKandidatListeVisning />
-                  </KandidatlisteWrapper>
-                </Tabs.Panel>
-              </>
-            )}
-          </>
+            </SideScroll>
+          </Tabs.Panel>
+          {kandidatlisteInfo?.kandidatlisteId && erEier && (
+            <>
+              <Tabs.Panel value={StillingFane.KANDIDATER}>
+                <KandidatlisteWrapper>
+                  <FiltrertKandidatListeVisning />
+                </KandidatlisteWrapper>
+              </Tabs.Panel>
+            </>
+          )}
         </SideLayout>
       </Tabs>
     </div>

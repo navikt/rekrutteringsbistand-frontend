@@ -52,6 +52,7 @@ export default function ViktigeDatoer({ skjulFrist }: Props) {
           <Heading size='small'>Oppstart</Heading>
           <div className='flex gap-8 items-center'>
             <DatoVelger
+              disablePastDates
               key='oppstart'
               disabled={oppstartEtterAvtale}
               valgtDato={oppstartDato}
@@ -84,6 +85,7 @@ export default function ViktigeDatoer({ skjulFrist }: Props) {
             <Heading size='small'>Søknadsfrist</Heading>
             <div className='flex gap-8 items-center'>
               <DatoVelger
+                disablePastDates
                 disabled={søknadsfristSnarest}
                 valgtDato={søknadsfristDato}
                 setDato={(val) => {

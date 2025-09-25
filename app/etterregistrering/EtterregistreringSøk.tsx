@@ -9,6 +9,7 @@ import StillingSøkebar from '@/app/stilling/_ui/StillingsSøkFilter/StillingSø
 import StillingsSøkSortering from '@/app/stilling/_ui/StillingsSøkSortering';
 import MittStandardsøk from '@/app/stilling/_ui/standardsøk/MittStandardsøk';
 import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
+import SideScroll from '@/components/SideScroll';
 import { OpprettKnapp } from '@/components/felles/opprett/OpprettKnapp';
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideLayout from '@/components/layout/SideLayout';
@@ -46,16 +47,18 @@ const EtterRegistreringSøkLayout: FC = () => {
         <div className='flex-grow min-w-0'>
           <StillingsSøkeresultat />
         </div>
-        <div className='hidden @[720px]:flex @[720px]:flex-col ml-4 pt-4  max-w-[200px] gap-4'>
-          <StillingSøkebar alltidÅpen={false} />
-          <MittStandardsøk />
-          <StillingsSøkSortering />
+        <div className='hidden @[720px]:flex'>
+          <SideScroll className='flex flex-col ml-4 pt-4  max-w-[200px] gap-4'>
+            <StillingSøkebar alltidÅpen={false} />
+            <MittStandardsøk />
+            <StillingsSøkSortering />
 
-          {/* <StatusFilter /> */}
+            {/* <StatusFilter /> */}
 
-          <GeografiFilter />
+            <GeografiFilter />
 
-          <InkluderingFilter />
+            <InkluderingFilter />
+          </SideScroll>
         </div>
       </div>
     </SideLayout>

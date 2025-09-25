@@ -5,7 +5,7 @@ import { useValiderRekrutteringstreff } from '@/app/api/rekrutteringstreff/kiVal
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
 import { RekbisError } from '@/util/rekbisError';
-import { useEffect, useMemo, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import {
   UseFormGetValues,
   UseFormTrigger,
@@ -59,10 +59,8 @@ export function useKiAnalyse<FormValues extends Record<string, any>>(
 
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { data: treff } = useRekrutteringstreff(rekrutteringstreffId);
-  const publisertRedigeringsmodus = useMemo(
-    () => erPublisert(treff as any) && erEditMode(),
-    [treff],
-  );
+
+  const publisertRedigeringsmodus = erPublisert(treff as any) && erEditMode();
 
   const {
     trigger: validateKI,

@@ -1,12 +1,12 @@
 'use client';
 
 import ControlledDatePicker from './ControlledDatepicker';
-import TimeInput from './TimeInput';
+import TimeInput, { KLOKKESLETT_OPTIONS } from './TimeInput';
 import { BodyShort } from '@navikt/ds-react';
 import { Controller, Path } from 'react-hook-form';
 
 type Props<T extends Record<string, unknown>> = {
-  label: string;
+  label?: string;
   nameDato: Path<T>;
   nameTid: Path<T>;
   control: any;
@@ -36,9 +36,11 @@ export default function DatoTidRad<T extends Record<string, unknown>>({
 }: Props<T>) {
   return (
     <div className='flex gap-4 items-start'>
-      <div className='flex items-center min-w-fit mt-3'>
-        <BodyShort size='small'>{label}</BodyShort>
-      </div>
+      {label && (
+        <div className='flex items-center min-w-fit mt-3'>
+          <BodyShort size='small'>{label}</BodyShort>
+        </div>
+      )}
 
       {!hideDato && (
         <Controller
@@ -47,7 +49,7 @@ export default function DatoTidRad<T extends Record<string, unknown>>({
           rules={{ required: 'Dato er obligatorisk' }}
           render={({ field, fieldState }) => (
             <ControlledDatePicker
-              label={label}
+              label={label ?? ''}
               value={field.value as Date | null}
               onChange={(date) => field.onChange(date)}
               onBlur={() => {
@@ -94,7 +96,7 @@ export default function DatoTidRad<T extends Record<string, unknown>>({
               onTidBlur?.();
             }}
             className='w-24'
-            options={timeOptions}
+            options={timeOptions ?? KLOKKESLETT_OPTIONS}
           />
         )}
       />

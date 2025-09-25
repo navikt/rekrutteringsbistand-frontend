@@ -1,8 +1,7 @@
 'use client';
 
 import { useRekrutteringstreffContext } from './RekrutteringstreffContext';
-import HeaderActions from './_ui/rekrutteringstreff/HeaderActions';
-import TabsNav from './_ui/rekrutteringstreff/TabsNav';
+import RekrutteringstreffHeader from './_ui/rekrutteringstreff/RekrutteringstreffHeader';
 import TabsPanels from './_ui/rekrutteringstreff/TabsPanels';
 import { useAlleHendelser } from '@/app/api/rekrutteringstreff/[...slug]/useAlleHendelser';
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
@@ -12,13 +11,14 @@ import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutter
 import Stegviser from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/om-treffet/stegviser/Stegviser';
 import { JobbsøkerHendelsestype } from '@/app/rekrutteringstreff/_domain/constants';
 import { getActiveStepFromHendelser } from '@/app/rekrutteringstreff/_utils/rekrutteringstreff';
-import PanelHeader from '@/components/layout/PanelHeader';
+import Fremdriftspanel from '@/components/Fremdriftspanel';
+import SideScroll from '@/components/SideScroll';
 import SideLayout from '@/components/layout/SideLayout';
 import { Tabs } from '@navikt/ds-react';
 import { formatDistanceToNow } from 'date-fns';
 import { nb } from 'date-fns/locale/nb';
 import { parseAsString, useQueryState } from 'nuqs';
-import { FC, useCallback, useEffect, useMemo } from 'react';
+import { FC, useCallback, useEffect, useMemo, useRef } from 'react';
 
 export enum RekrutteringstreffTabs {
   OM_TREFFET = 'om_treffet',
@@ -37,7 +37,7 @@ const Rekrutteringstreff: FC = () => {
     'mode',
     parseAsString.withDefault('').withOptions({ clearOnDefault: true }),
   );
-  const { rekrutteringstreffId } = useRekrutteringstreffContext();
+  const { rekrutteringstreffId, lagrerNoe } = useRekrutteringstreffContext();
 
   const rekrutteringstreffHook = useRekrutteringstreff(rekrutteringstreffId);
   const alleHendelserHook = useAlleHendelser(rekrutteringstreffId);
@@ -53,7 +53,9 @@ const Rekrutteringstreff: FC = () => {
   );
   const harPublisert = activeStep === 'INVITERE' || activeStep === 'FULLFØRE';
   const avlyst = activeStep === 'AVLYST';
-  const erIForhåndsvisning = avlyst ? true : modus !== 'edit';
+  const erIForhåndsvisning = useMemo(() => {
+    return avlyst || (harPublisert && modus !== 'edit');
+  }, [avlyst, harPublisert, modus]);
 
   const rekrutteringstreff = rekrutteringstreffHook.data;
 
@@ -61,7 +63,7 @@ const Rekrutteringstreff: FC = () => {
     const tittel = rekrutteringstreff?.tittel?.trim() ?? '';
     return {
       arbeidsgiver: (arbeidsgivere?.length ?? 0) > 0,
-      navn: tittel.length > 0 && tittel !== 'Nytt rekrutteringstreff',
+      navn: tittel.length > 0 && tittel !== 'Treff uten navn',
       sted:
         !!rekrutteringstreff?.gateadresse?.trim() &&
         !!rekrutteringstreff?.poststed?.trim(),
@@ -103,6 +105,16 @@ const Rekrutteringstreff: FC = () => {
     }
   }, [avlyst, modus, setModus]);
 
+  useEffect(() => {
+    // Vent til data er lastet før vi evt. tvinger edit-modus. Uten dette
+    // kan vi sette ?mode=edit før vi vet at treffet er publisert, og da
+    // forblir man i edit selv etter publisering.
+    if (!rekrutteringstreff) return;
+    if (!harPublisert && !avlyst && modus !== 'edit') {
+      setModus('edit');
+    }
+  }, [rekrutteringstreff, avlyst, harPublisert, modus, setModus]);
+
   const scrollToTop = useCallback(() => {
     if (typeof window !== 'undefined') {
       requestAnimationFrame(() =>
@@ -113,6 +125,7 @@ const Rekrutteringstreff: FC = () => {
 
   const handleToggleForhåndsvisning = (nyForhåndsvisning: boolean) => {
     if (avlyst) return;
+    if (!harPublisert && nyForhåndsvisning) return;
     setModus(nyForhåndsvisning ? '' : 'edit');
     scrollToTop();
   };
@@ -165,57 +178,59 @@ const Rekrutteringstreff: FC = () => {
     scrollToTop();
   }, [scrollToTop, setModus]);
 
+  const headerRef = useRef<HTMLDivElement>(null);
+
+  const renderStegviser = () => (
+    <Stegviser
+      onToggleForhåndsvisning={handleToggleForhåndsvisning}
+      erIForhåndsvisning={erIForhåndsvisning}
+    />
+  );
+
   return (
     <Tabs value={fane} onChange={(val) => setFane(val)}>
       <SideLayout
         skjulFremdriftspanel={false}
-        fremdriftspanel={
-          <Stegviser
-            onToggleForhåndsvisning={handleToggleForhåndsvisning}
-            erIForhåndsvisning={erIForhåndsvisning}
-          />
+        fremdriftspanelTop={
+          <Fremdriftspanel>{renderStegviser()}</Fremdriftspanel>
         }
+        fremdriftspanel={<SideScroll>{renderStegviser()}</SideScroll>}
         header={
           skalViseHeader ? (
-            <PanelHeader>
-              <PanelHeader.Section
-                title={headerTittel}
-                tabs={
-                  erIForhåndsvisning ? (
-                    <TabsNav
-                      jobbsøkereAntall={jobbsøkere?.length ?? 0}
-                      arbeidsgivereAntall={arbeidsgivere?.length ?? 0}
-                    />
-                  ) : undefined
-                }
-                meta={lagretTekst}
-                actionsRight={
-                  <HeaderActions
-                    avlyst={avlyst}
-                    activeStep={activeStep as any}
-                    erIForhåndsvisning={erIForhåndsvisning}
-                    erPubliseringklar={erPubliseringklar}
-                    harInvitert={harInvitert}
-                    tiltidspunktHarPassert={tiltidspunktHarPassert}
-                    rekrutteringstreffId={rekrutteringstreffId}
-                    oppdaterData={oppdaterData}
-                    onToggleForhåndsvisning={handleToggleForhåndsvisning}
-                    onBekreftRedigerPublisert={onBekreftRedigerPublisert}
-                    onAvlyst={onAvlyst}
-                  />
-                }
-              />
-            </PanelHeader>
+            <RekrutteringstreffHeader
+              ref={headerRef}
+              skalViseHeader={skalViseHeader}
+              headerTittel={headerTittel}
+              erIForhåndsvisning={erIForhåndsvisning}
+              jobbsøkereAntall={jobbsøkere?.length ?? 0}
+              arbeidsgivereAntall={arbeidsgivere?.length ?? 0}
+              lagrerNoe={lagrerNoe}
+              lagretTekst={lagretTekst}
+              avlyst={avlyst}
+              activeStep={activeStep as any}
+              erPubliseringklar={erPubliseringklar}
+              harInvitert={harInvitert}
+              tiltidspunktHarPassert={tiltidspunktHarPassert}
+              rekrutteringstreffId={rekrutteringstreffId}
+              oppdaterData={oppdaterData}
+              onToggleForhåndsvisning={handleToggleForhåndsvisning}
+              onBekreftRedigerPublisert={onBekreftRedigerPublisert}
+              onAvlyst={onAvlyst}
+            />
           ) : undefined
         }
       >
-        <div className='space-y-4'>
-          <TabsPanels
-            erIForhåndsvisning={erIForhåndsvisning}
-            onUpdated={rekrutteringstreffHook.mutate}
-            onGåTilForhåndsvisning={gåTilForhåndsvisning}
-          />
-        </div>
+        <SideScroll excludeRef={skalViseHeader ? headerRef : null}>
+          <div className='space-y-4'>
+            <TabsPanels
+              erIForhåndsvisning={erIForhåndsvisning}
+              onUpdated={rekrutteringstreffHook.mutate}
+              onGåTilForhåndsvisning={gåTilForhåndsvisning}
+              erPubliseringklar={erPubliseringklar}
+              oppdaterData={oppdaterData}
+            />
+          </div>
+        </SideScroll>
       </SideLayout>
     </Tabs>
   );

@@ -5,11 +5,10 @@ import { useFilteredTimeOptions } from './hooks/useFilteredTimeOptions';
 import { useScheduledSave } from './hooks/useScheduledSave';
 import DatoTidRad from './tidspunkt/DatoTidRad';
 import { rekrutteringstreffVarighet } from './tidspunkt/varighet';
-import { skalHindreAutosave, useAutosave } from './useAutosave';
-import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
-import { BodyShort, Heading, Switch } from '@navikt/ds-react';
-import { isSameDay, startOfDay } from 'date-fns';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useAutosave } from './useAutosave';
+import { BodyShort, Heading } from '@navikt/ds-react';
+import { isSameDay } from 'date-fns';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 type TidspunktFormFields = {
@@ -21,13 +20,11 @@ type TidspunktFormFields = {
 
 interface Props {
   control: any;
-  rekrutteringstreffId: string;
 }
 
-const TidspunktForm = ({ control, rekrutteringstreffId }: Props) => {
+const TidspunktForm = ({ control }: Props) => {
   const { setValue } = useFormContext();
   const { save } = useAutosave();
-  const { data: treff } = useRekrutteringstreff(rekrutteringstreffId);
 
   const [fraDato, fraTid, tilDato, tilTid] = useWatch({
     control,
@@ -73,39 +70,16 @@ const TidspunktForm = ({ control, rekrutteringstreffId }: Props) => {
     return rekrutteringstreffVarighet(fraDato, fraTid, sluttDato, tilTid);
   }, [fraDato, fraTid, tilDato, tilTid]);
 
-  const handleToggleFlereDager = () => {
-    const next = !flereDager;
-    setFlereDager(next);
-
-    if (!next && fraDato) {
-      const målDato = startOfDay(fraDato);
-      const aktuellTilDato = tilDato ? startOfDay(tilDato) : null;
-      if (!aktuellTilDato || aktuellTilDato.getTime() !== målDato.getTime()) {
-        setValue('tilDato', målDato, {
-          shouldDirty: true,
-          shouldValidate: false,
-        });
-        scheduleSave();
-      }
-    }
-  };
-
-  const skalViseTilFelt = fraDato && !!fraTid;
-
   return (
     <div className='space-y-4'>
       <div className='flex justify-between items-center'>
         <Heading level='3' size='small'>
           Tid
         </Heading>
-        <Switch checked={flereDager} onChange={handleToggleFlereDager}>
-          Flere dager
-        </Switch>
       </div>
 
       <div className='flex flex-col lg:flex-row gap-4'>
         <DatoTidRad<TidspunktFormFields>
-          label='Fra'
           nameDato='fraDato'
           nameTid='fraTid'
           control={control}
@@ -113,19 +87,17 @@ const TidspunktForm = ({ control, rekrutteringstreffId }: Props) => {
           onTidBlur={scheduleSave}
         />
 
-        {skalViseTilFelt && (
-          <DatoTidRad<TidspunktFormFields>
-            label='Til'
-            nameDato='tilDato'
-            nameTid='tilTid'
-            control={control}
-            hideDato={!flereDager}
-            dateFrom={fraDato ?? undefined}
-            timeOptions={tilTimeOptions}
-            onDatoBlur={scheduleSave}
-            onTidBlur={scheduleSave}
-          />
-        )}
+        <DatoTidRad<TidspunktFormFields>
+          label='Til'
+          nameDato='tilDato'
+          nameTid='tilTid'
+          control={control}
+          hideDato={!flereDager}
+          dateFrom={fraDato ?? undefined}
+          timeOptions={tilTimeOptions}
+          onDatoBlur={scheduleSave}
+          onTidBlur={scheduleSave}
+        />
       </div>
 
       <BodyShort size='small' className='mt-2'>

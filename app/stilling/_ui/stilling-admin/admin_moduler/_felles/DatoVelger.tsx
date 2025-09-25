@@ -9,6 +9,7 @@ interface DatoVelgerProps {
   valgtDato?: string | null;
   label?: string;
   setDato: (date: string | undefined) => void;
+  disablePastDates?: boolean;
 }
 
 export const DatoVelger: FC<DatoVelgerProps> = ({
@@ -17,6 +18,7 @@ export const DatoVelger: FC<DatoVelgerProps> = ({
   valgtDato,
   label,
   setDato,
+  disablePastDates = false,
 }) => {
   const formaterDato = valgtDato
     ? parse(valgtDato, 'dd.MM.yyyy', new Date())
@@ -32,6 +34,7 @@ export const DatoVelger: FC<DatoVelgerProps> = ({
       }
     },
     defaultSelected: formaterDato,
+    fromDate: disablePastDates ? new Date() : undefined,
   });
 
   return (

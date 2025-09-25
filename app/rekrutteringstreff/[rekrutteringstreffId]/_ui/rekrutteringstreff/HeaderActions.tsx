@@ -47,7 +47,7 @@ const HeaderActions: FC<Props> = ({
 
   return (
     <div className='flex items-center gap-2'>
-      {!avlyst && activeStep !== 'FULLFØRE' && (
+      {!avlyst && harPublisert && activeStep !== 'FULLFØRE' && (
         <RedigerPublisertButton
           erIForhåndsvisning={erIForhåndsvisning}
           harPublisert={harPublisert}
