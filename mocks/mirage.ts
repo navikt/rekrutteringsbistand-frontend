@@ -60,6 +60,7 @@ import { opprettNyStillingMirage } from '@/app/api/stilling/ny-stilling/opprettN
 import { oppdaterStillingMirage } from '@/app/api/stilling/oppdater-stilling/oppdaterStilling';
 import { stillingMirage } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/useStilling';
 import { brukerStandardSøkMirage } from '@/app/api/stilling/standardsok/useBrukersStandardsøk';
+import { stillingssøkMirage } from '@/app/api/stillings-sok/useStillingssøk';
 import { synlighetsevalueringMirage } from '@/app/api/synlighet/evaluering/useSynlighetsevaluering';
 import { createServer, Model } from 'miragejs';
 
@@ -132,7 +133,7 @@ export function makeServer({ environment = 'test' } = {}) {
       kandidagsammendragMirage(this);
       nyheterMirage(this);
       // stillingssøk mock kan disables ved ES søk
-      // stillingssøkMirage(this);
+      stillingssøkMirage(this);
       this.passthrough('*');
     },
   });
