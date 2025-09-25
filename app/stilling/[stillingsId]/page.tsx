@@ -37,6 +37,10 @@ export default function StillingsSidePage() {
     stillingsData?.stilling?.medium === 'DIR' &&
     (stillingsData?.stilling?.employer?.orgnr ?? null) === null;
 
+  const skjulFremdriftspanel =
+    fane !== StillingFane.STILLING ||
+    (stillingsData.stilling.source === 'DIR' && !erEier);
+
   const fremdriftsPanel = (top?: boolean) => {
     if (stillingsData.stilling.source !== 'DIR') {
       return <FremdriftspanelArbeidsplassen />;
@@ -69,7 +73,7 @@ export default function StillingsSidePage() {
               />
             </PanelHeader>
           }
-          skjulFremdriftspanel={fane !== StillingFane.STILLING}
+          skjulFremdriftspanel={skjulFremdriftspanel}
           fremdriftspanel={
             <SideScroll trimHøyde={150}>{fremdriftsPanel()}</SideScroll>
           }
