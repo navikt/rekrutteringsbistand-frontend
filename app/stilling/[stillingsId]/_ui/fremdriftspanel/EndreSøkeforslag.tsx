@@ -24,7 +24,11 @@ export default function EndreSøkeforslag() {
       const response = await oppdaterStilling(
         {
           ...stillingsData,
-          stilling: { ...(stillingsData.stilling as any), status: status },
+          stilling: {
+            ...(stillingsData.stilling as any),
+            status: status,
+            privacy: 'INTERNAL_NOT_SHOWN',
+          },
         },
         {
           eierNavident: brukerData.ident,
