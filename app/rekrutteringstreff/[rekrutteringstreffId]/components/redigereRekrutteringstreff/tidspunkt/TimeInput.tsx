@@ -180,7 +180,13 @@ function TimeInput({
       if (!ok) {
         setInputValue(value ?? '');
       }
-      setForceCloseDropdown(false);
+
+      const closeDropdown = () => setForceCloseDropdown(true);
+      if (typeof window !== 'undefined') {
+        window.requestAnimationFrame(closeDropdown);
+      } else {
+        closeDropdown();
+      }
       onBlur?.(e);
     },
     [commitIfValid, inputValue, onBlur, value],
@@ -203,13 +209,14 @@ function TimeInput({
       hideLabel={hideLabel}
       disabled={disabled}
       error={error}
-      className={['min-w-[7rem]', className].filter(Boolean).join(' ')}
+      className='w-[7rem]'
       options={dynamicOptions}
       filteredOptions={dynamicOptions}
       allowNewValues={true}
       toggleListButton={true}
       isListOpen={forceCloseDropdown ? false : undefined}
       value={inputValue}
+      inputClassName='flex-1 min-w-0 box-border'
       shouldShowSelectedOptions={showSelectedOption}
       selectedOptions={selectedOptionsValue}
       onFocus={() => {
