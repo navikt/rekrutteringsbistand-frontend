@@ -11,6 +11,11 @@ import {
   mapToKandidatSokKandidat,
   mockKandidatDataList,
 } from '@/mocks/kandidat.mock';
+import {
+  getNummerFraSted,
+  lagKandidatsøkstreng,
+  stedmappingFraNyttNummer,
+} from '@/util/fylkeOgKommuneMapping';
 /**
  * Endepunkt /minebrukere
  */
@@ -65,7 +70,7 @@ export const useKandidatsøk = (
   const { data: geografi, isLoading: isGeografiLoading } = usePamGeografi();
   const shouldFetch = !isGeografiLoading;
 
-  const stedKoder = kandidatSøkFilter.ønsketSted.map((sted) => {
+  const stedKoder = kandidatSøkFilter.ønsketSted.flatMap((sted) => {
     if (sted.includes('(Kommune)')) {
       const kommuneSted = sted.split('(Kommune)')[0].trim();
       const kommunekode = geografi?.find(
@@ -73,7 +78,18 @@ export const useKandidatsøk = (
       );
 
       if (kommunekode) {
-        return `${kommuneSted}.NO${kommunekode?.lokasjon.fylkesnummer}.${kommunekode?.lokasjon.kommunenummer}`;
+        const gamleSteder = stedmappingFraNyttNummer.get(
+          getNummerFraSted(kommunekode?.lokasjon.kommunenummer || ''),
+        );
+
+        const gamleStederStreng = gamleSteder
+          ? [...gamleSteder.map((s) => lagKandidatsøkstreng(s))]
+          : [];
+
+        const stedString = `${kommuneSted}.NO${kommunekode?.lokasjon.fylkesnummer}.${kommunekode?.lokasjon.kommunenummer}`;
+
+        const liste = [...gamleStederStreng, stedString];
+        return liste;
       }
     }
     if (sted.includes('(Fylke)')) {
@@ -83,11 +99,22 @@ export const useKandidatsøk = (
       );
 
       if (fylkeMedKoder) {
-        return `${fylkeSted}.NO${fylkeMedKoder?.lokasjon.fylkesnummer}`;
+        const gamleSteder = stedmappingFraNyttNummer.get(
+          getNummerFraSted(fylkeMedKoder?.lokasjon.fylkesnummer || ''),
+        );
+
+        const gamleStederStreng = gamleSteder
+          ? [...gamleSteder.map((s) => lagKandidatsøkstreng(s))]
+          : [];
+
+        const fylkeString = `${fylkeSted}.NO${fylkeMedKoder?.lokasjon.fylkesnummer}`;
+
+        const liste = [...gamleStederStreng, fylkeString];
+        return liste;
       }
     }
 
-    return null;
+    return [];
   });
 
   const mapFilterTilpayload = {
@@ -98,7 +125,7 @@ export const useKandidatsøk = (
     innsatsgruppe: kandidatSøkFilter.innsatsgruppe,
     side: kandidatSøkFilter.side,
     ønsketYrke: kandidatSøkFilter.ønsketYrke,
-    ønsketSted: stedKoder.filter((sted) => sted !== null) ?? [],
+    ønsketSted: stedKoder,
     borPåØnsketSted: kandidatSøkFilter.borPåØnsketSted === 'ja',
     kompetanse: kandidatSøkFilter.kompetanse,
     førerkort: kandidatSøkFilter.førerkort,
