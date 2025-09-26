@@ -135,7 +135,6 @@ function TimeInput({
   );
 
   const handleInputChange = useCallback((val: string) => {
-    // ignorer første tomme endring etter musefokus
     if (ignoreNextEmptyChangeRef.current && val === '') {
       ignoreNextEmptyChangeRef.current = false;
       return;
@@ -147,7 +146,7 @@ function TimeInput({
     if (val === '' && didUserTypeRef.current) setInputValue('');
     else if (val !== '') setInputValue(val);
 
-    setForceCloseDropdown(true);
+    if (val !== '') setForceCloseDropdown(true);
   }, []);
 
   const commitIfValid = useCallback(
@@ -195,7 +194,6 @@ function TimeInput({
 
   const selectedOptionsValue = value ? [value] : [];
 
-  // chips av -> ikke send selectedOptions
   // NB: bevar keyboard/arrow-oppførsel via filteredOptions/options
   return (
     <Combobox
@@ -215,7 +213,6 @@ function TimeInput({
       shouldShowSelectedOptions={false}
       selectedOptions={selectedOptionsValue}
       onMouseDownCapture={(e) => {
-        // markér at neste tomme change fra lib skal ignoreres
         if ((e.target as HTMLElement).tagName !== 'INPUT') {
           const el = inputRef.current;
           if (el) el.focus();
@@ -228,11 +225,11 @@ function TimeInput({
         didUserTypeRef.current = false;
         lastFocusValueRef.current = value;
         setForceCloseDropdown(false);
-        // ikke setInputValue her
         queueScrollIntoView();
       }}
       onToggleSelected={(option, isSelected) => {
         if (isSelected) {
+          ignoreNextEmptyChangeRef.current = true; // for å unngå tom endring etter velging
           didUserTypeRef.current = true;
           setInputValue(option);
           commitIfValid(option);
@@ -244,6 +241,10 @@ function TimeInput({
       onKeyDownCapture={(event) => {
         if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
           setForceCloseDropdown(false);
+        }
+        if (event.key === 'Enter') {
+          // <— NYTT
+          ignoreNextEmptyChangeRef.current = true;
         }
       }}
       onBeforeInput={(event) => {
