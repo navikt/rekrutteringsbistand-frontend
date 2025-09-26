@@ -139,8 +139,6 @@ function TimeInput({
   const finalizeCommit = useCallback(
     (valRaw: string) => {
       const v = valRaw.trim();
-
-      // Ikke blank ut ved blur/tab uten faktisk redigering
       if (v === '') {
         if (didUserTypeRef.current) {
           if (value) onChange('');
@@ -149,7 +147,6 @@ function TimeInput({
         }
         return true;
       }
-
       if (erLovligTid(v)) {
         if (v !== value) onChange(v);
         return true;
@@ -227,7 +224,7 @@ function TimeInput({
       didUserTypeRef.current = true;
       ignoreNextEmptyChangeRef.current = true;
       setInputValue(nesteTid);
-      setForceCloseDropdown(true);
+      // ikke tving dropdown å lukke – unngår flash
     },
     [beregnNesteVerdi],
   );
@@ -237,11 +234,13 @@ function TimeInput({
       (event) => {
         if (event.key === 'ArrowDown') {
           event.preventDefault();
+          event.stopPropagation();
           gåTilNesteTid(inputValue || value, +1);
           return;
         }
         if (event.key === 'ArrowUp') {
           event.preventDefault();
+          event.stopPropagation();
           gåTilNesteTid(inputValue || value, -1);
           return;
         }
@@ -259,7 +258,7 @@ function TimeInput({
     useCallback(
       (event) => {
         const nativeEvent = event.nativeEvent as InputEvent;
-        const data = 'data' in nativeEvent ? nativeEvent.data : null;
+        const data = 'data' in nativeEvent ? (nativeEvent as any).data : null;
         if (!erLovligInput(data)) event.preventDefault();
       },
       [erLovligInput],
@@ -293,7 +292,6 @@ function TimeInput({
       didUserTypeRef.current = false;
       lastFocusValueRef.current = value;
       setForceCloseDropdown(false);
-      // ignorer evt. tomme onChange som enkelte Combobox-varianter sender på fokus
       ignoreNextEmptyChangeRef.current = true;
       queueScrollIntoView();
     }, [queueScrollIntoView, value]);
