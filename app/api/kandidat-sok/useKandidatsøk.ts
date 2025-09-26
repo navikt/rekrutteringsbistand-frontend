@@ -11,6 +11,11 @@ import {
   mapToKandidatSokKandidat,
   mockKandidatDataList,
 } from '@/mocks/kandidat.mock';
+import {
+  getNummerFraSted,
+  lagKandidatsøkstreng,
+  stedmappingFraNyttNummer,
+} from '@/util/fylkeOgKommuneMapping';
 /**
  * Endepunkt /minebrukere
  */
@@ -73,7 +78,17 @@ export const useKandidatsøk = (
       );
 
       if (kommunekode) {
-        return `${kommuneSted}.NO${kommunekode?.lokasjon.fylkesnummer}.${kommunekode?.lokasjon.kommunenummer}`;
+        const gamleSteder = stedmappingFraNyttNummer.get(
+          getNummerFraSted(kommunekode?.lokasjon.kommunenummer || ''),
+        );
+
+        const gamleStederStreng = gamleSteder
+          ? [...gamleSteder.map((s) => lagKandidatsøkstreng(s))]
+          : [];
+
+        const stedString = `${kommuneSted}.NO${kommunekode?.lokasjon.fylkesnummer}.${kommunekode?.lokasjon.kommunenummer}`;
+
+        return [...gamleStederStreng, stedString];
       }
     }
     if (sted.includes('(Fylke)')) {
@@ -83,7 +98,17 @@ export const useKandidatsøk = (
       );
 
       if (fylkeMedKoder) {
-        return `${fylkeSted}.NO${fylkeMedKoder?.lokasjon.fylkesnummer}`;
+        const gamleSteder = stedmappingFraNyttNummer.get(
+          getNummerFraSted(fylkeMedKoder?.lokasjon.fylkesnummer || ''),
+        );
+
+        const gamleStederStreng = gamleSteder
+          ? [...gamleSteder.map((s) => lagKandidatsøkstreng(s))]
+          : [];
+
+        const fylkeString = `${fylkeSted}.NO${fylkeMedKoder?.lokasjon.fylkesnummer}`;
+
+        return [...gamleStederStreng, fylkeString];
       }
     }
 
