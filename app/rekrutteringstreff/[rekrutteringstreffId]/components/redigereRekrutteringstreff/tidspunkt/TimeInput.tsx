@@ -15,14 +15,10 @@ export const KLOKKESLETT_OPTIONS = [...Array(24)].flatMap((_, h) =>
   ),
 );
 
-// Regex for å validere HH:MM (24-timers format)
-const TIME_REGEX = /^([01]\d|2[0-3]):([0-5]\d)$/; // HH:MM
+const TIME_REGEX = /^([01]\d|2[0-3]):([0-5]\d)$/;
 
 const insertOptionSorted = (options: string[], newOption: string) => {
-  if (options.includes(newOption)) {
-    return options;
-  }
-
+  if (options.includes(newOption)) return options;
   return [...options, newOption].sort();
 };
 
@@ -49,49 +45,52 @@ function TimeInput({
   className,
   options,
 }: Props) {
-  // Trenger ref for å kunne scrolle til valgt element i dropdown, det er ikke standard funksjonalitet i ds-react sin Combobox
   const inputRef = useRef<HTMLInputElement | null>(null);
 
-  // Sørger for at valgt option havner helt øverst i lista
   const scrollSelectedIntoView = useCallback(() => {
     if (typeof document === 'undefined') return;
     const input = inputRef.current;
     if (!input || input.getAttribute('aria-expanded') !== 'true') return;
+
     const listId = input.getAttribute('aria-controls');
     if (!listId) return;
 
-    const selected = document
-      .getElementById(listId)
-      ?.querySelector<HTMLElement>("[role='option'][aria-selected='true']");
+    const list = document.getElementById(listId);
+    if (!list) return;
+
+    let selected = list.querySelector<HTMLElement>(
+      "[role='option'][aria-selected='true']",
+    );
+
+    if (!selected && value) {
+      const all = Array.from(
+        list.querySelectorAll<HTMLElement>("[role='option']"),
+      );
+      selected = all.find((el) => el.textContent?.trim() === value) || null;
+    }
+
     if (selected) {
       const listbox =
         selected.closest<HTMLElement>("[role='listbox']") ||
         selected.parentElement;
-      if (listbox) {
-        listbox.scrollTop = selected.offsetTop; // Plasser valgt øverst
-      }
+      if (listbox) listbox.scrollTop = selected.offsetTop;
     }
-  }, []);
+  }, [value]);
 
   const queueScrollIntoView = useCallback(() => {
     if (typeof window === 'undefined') return;
-
     let attempts = 0;
     const run = () => {
       attempts += 1;
       scrollSelectedIntoView();
-      if (attempts < 3) {
-        window.requestAnimationFrame(run);
-      }
+      if (attempts < 3) window.requestAnimationFrame(run);
     };
-
     window.requestAnimationFrame(run);
   }, [scrollSelectedIntoView]);
 
   useEffect(() => {
     const input = inputRef.current;
     if (!input) return;
-
     const observer = new MutationObserver((mutations) => {
       for (const m of mutations) {
         if (m.type === 'attributes' && m.attributeName === 'aria-expanded') {
@@ -101,12 +100,10 @@ function TimeInput({
         }
       }
     });
-
     observer.observe(input, {
       attributes: true,
       attributeFilter: ['aria-expanded'],
     });
-
     return () => observer.disconnect();
   }, [queueScrollIntoView]);
 
@@ -119,32 +116,37 @@ function TimeInput({
   const [inputValue, setInputValue] = useState(value ?? '');
   const [isFocused, setIsFocused] = useState(false);
   const [forceCloseDropdown, setForceCloseDropdown] = useState(false);
-  const didUserTypeRef = useRef(false); // Sporer om bruker faktisk har interagert med input-teksten
+
+  const didUserTypeRef = useRef(false);
   const lastFocusValueRef = useRef<string | undefined>(value);
+  const ignoreNextEmptyChangeRef = useRef(false);
 
   useEffect(() => {
-    setInputValue(value ?? '');
-  }, [value]);
+    // sync fra prop når ikke bruker skriver
+    if (!isFocused || !didUserTypeRef.current) {
+      setInputValue(value ?? '');
+    }
+  }, [value, isFocused]);
 
   const isAllowedTime = useCallback((val: string) => TIME_REGEX.test(val), []);
-
   const isAllowedInput = useCallback(
     (text?: string | null) => !text || /^[\d:]*$/.test(text),
     [],
   );
 
   const handleInputChange = useCallback((val: string) => {
-    if (val === '' && !didUserTypeRef.current) {
+    // ignorer første tomme endring etter musefokus
+    if (ignoreNextEmptyChangeRef.current && val === '') {
+      ignoreNextEmptyChangeRef.current = false;
       return;
     }
-    if (val !== '' && !didUserTypeRef.current) {
-      didUserTypeRef.current = true;
-    }
-    if (val === '' && didUserTypeRef.current) {
-      setInputValue('');
-    } else if (val !== '') {
-      setInputValue(val);
-    }
+    if (val === '' && !didUserTypeRef.current) return;
+
+    if (val !== '' && !didUserTypeRef.current) didUserTypeRef.current = true;
+
+    if (val === '' && didUserTypeRef.current) setInputValue('');
+    else if (val !== '') setInputValue(val);
+
     setForceCloseDropdown(true);
   }, []);
 
@@ -166,7 +168,6 @@ function TimeInput({
   const handleBlur: React.FocusEventHandler<HTMLInputElement> = useCallback(
     (e) => {
       setIsFocused(false);
-      // Hvis bruker ikke skrev noe og inputValue er lik fokusverdi, ikke forsøk å committe tom init event
       if (
         !didUserTypeRef.current &&
         (inputValue === '' || inputValue === lastFocusValueRef.current)
@@ -175,33 +176,27 @@ function TimeInput({
         onBlur?.(e);
         return;
       }
-
       const ok = commitIfValid(inputValue.trim());
-      if (!ok) {
-        setInputValue(value ?? '');
-      }
+      if (!ok) setInputValue(value ?? '');
 
       const closeDropdown = () => setForceCloseDropdown(true);
-      if (typeof window !== 'undefined') {
+      if (typeof window !== 'undefined')
         window.requestAnimationFrame(closeDropdown);
-      } else {
-        closeDropdown();
-      }
+      else closeDropdown();
       onBlur?.(e);
     },
     [commitIfValid, inputValue, onBlur, value],
   );
 
-  // Hvis den commit'ede verdien (value) ikke finnes i 15-min listen fordi bruker skrev et custom minutt, legg den til så den vises som valgt
   const dynamicOptions =
     value && TIME_REGEX.test(value)
       ? insertOptionSorted(availableOptions, value)
       : availableOptions;
 
-  // Under skriving (fokus) skal ikke tidligere valg vises som chip. Uten å ta hensyn til dette vil tidspunkt vises når vi blanker ut feltet når vi skal skrive helt nytt tidspunkt.
-  const showSelectedOption = !isFocused && value !== undefined && value !== '';
   const selectedOptionsValue = value ? [value] : [];
 
+  // chips av -> ikke send selectedOptions
+  // NB: bevar keyboard/arrow-oppførsel via filteredOptions/options
   return (
     <Combobox
       ref={inputRef}
@@ -217,14 +212,23 @@ function TimeInput({
       isListOpen={forceCloseDropdown ? false : undefined}
       value={inputValue}
       inputClassName='flex-1 min-w-0 box-border'
-      shouldShowSelectedOptions={showSelectedOption}
+      shouldShowSelectedOptions={false}
       selectedOptions={selectedOptionsValue}
+      onMouseDownCapture={(e) => {
+        // markér at neste tomme change fra lib skal ignoreres
+        if ((e.target as HTMLElement).tagName !== 'INPUT') {
+          const el = inputRef.current;
+          if (el) el.focus();
+          e.preventDefault();
+        }
+        ignoreNextEmptyChangeRef.current = true;
+      }}
       onFocus={() => {
         setIsFocused(true);
         didUserTypeRef.current = false;
         lastFocusValueRef.current = value;
-        setInputValue(value ?? '');
         setForceCloseDropdown(false);
+        // ikke setInputValue her
         queueScrollIntoView();
       }}
       onToggleSelected={(option, isSelected) => {
@@ -245,15 +249,11 @@ function TimeInput({
       onBeforeInput={(event) => {
         const nativeEvent = event.nativeEvent as InputEvent;
         const data = 'data' in nativeEvent ? nativeEvent.data : null;
-        if (!isAllowedInput(data)) {
-          event.preventDefault();
-        }
+        if (!isAllowedInput(data)) event.preventDefault();
       }}
       onPaste={(event) => {
         const pasted = event.clipboardData.getData('text');
-        if (!isAllowedInput(pasted)) {
-          event.preventDefault();
-        }
+        if (!isAllowedInput(pasted)) event.preventDefault();
       }}
     />
   );
