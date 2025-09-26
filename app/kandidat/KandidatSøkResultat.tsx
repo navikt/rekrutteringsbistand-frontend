@@ -27,6 +27,7 @@ interface KandidatSøkResultatProps {
   rekrutteringstreffId?: string;
   alleredeLagtTilTreff?: string[];
   alleredeLagtTilKandidatliste?: string[];
+  scrollRefs?: React.RefObject<HTMLElement | null>[];
 }
 
 const KandidatSøkResultat: FC<KandidatSøkResultatProps> = ({
@@ -35,6 +36,7 @@ const KandidatSøkResultat: FC<KandidatSøkResultatProps> = ({
   rekrutteringstreffId,
   alleredeLagtTilTreff,
   alleredeLagtTilKandidatliste,
+  scrollRefs,
 }) => {
   const filter = useKandidatSøkFilterContext();
   const kandidatsøkHook = useKandidatsøk(type, filter);
@@ -110,7 +112,7 @@ const KandidatSøkResultat: FC<KandidatSøkResultatProps> = ({
                 </RekrutteringstreffFeatureToggle>
               </div>
             </div>
-            <SideScroll excludeRef={[headerRef]}>
+            <SideScroll>
               <div className='flex flex-col gap-1 pt-2'>
                 {kandidatData.kandidater?.map((kandidat, index) => (
                   <KandidatKort

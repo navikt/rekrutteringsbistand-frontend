@@ -67,7 +67,7 @@ const RekrutteringstreffSøkLayout: FC<RekrutteringstreffSøkLayoutProps> = ({
         </div>
       }
     >
-      <SideScroll excludeRef={headerRef}>
+      <SideScroll>
         <div className='space-y-4'>
           <RekrutteringstreffFilter />
           {children}

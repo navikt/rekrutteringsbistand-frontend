@@ -32,6 +32,11 @@ export default function ControlledDatePicker({
       onDateChange: (d) => onChange(d ?? null),
     });
 
+  const isAllowedInput = React.useCallback(
+    (text?: string | null) => !text || /^[\d./-]*$/.test(text),
+    [],
+  );
+
   useEffect(() => {
     const next = value ?? undefined;
     const cur = selectedDay ?? undefined;
@@ -57,6 +62,27 @@ export default function ControlledDatePicker({
         error={error ? error.message || true : undefined}
         disabled={disabled}
         onBlur={handleBlur}
+        onBeforeInput={(event) => {
+          const nativeEvent = event.nativeEvent as InputEvent;
+          const data = 'data' in nativeEvent ? nativeEvent.data : null;
+          if (!isAllowedInput(data)) {
+            event.preventDefault();
+            return;
+          }
+          (
+            inputProps as React.InputHTMLAttributes<HTMLInputElement>
+          ).onBeforeInput?.(event);
+        }}
+        onPaste={(event) => {
+          const pasted = event.clipboardData.getData('text');
+          if (!isAllowedInput(pasted)) {
+            event.preventDefault();
+            return;
+          }
+          (inputProps as React.InputHTMLAttributes<HTMLInputElement>).onPaste?.(
+            event,
+          );
+        }}
         placeholder='dd.mm.åååå'
       />
     </DatePicker>

@@ -1,13 +1,30 @@
 'use client';
 
 import { UNSAFE_Combobox as Combobox } from '@navikt/ds-react';
-import React, { ReactNode, useCallback, useEffect, useRef } from 'react';
+import React, {
+  ReactNode,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
 export const KLOKKESLETT_OPTIONS = [...Array(24)].flatMap((_, h) =>
   [0, 15, 30, 45].map(
     (m) => `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`,
   ),
 );
+
+// Regex for å validere HH:MM (24-timers format)
+const TIME_REGEX = /^([01]\d|2[0-3]):([0-5]\d)$/; // HH:MM
+
+const insertOptionSorted = (options: string[], newOption: string) => {
+  if (options.includes(newOption)) {
+    return options;
+  }
+
+  return [...options, newOption].sort();
+};
 
 type Props = {
   value?: string;
@@ -35,18 +52,24 @@ function TimeInput({
   // Trenger ref for å kunne scrolle til valgt element i dropdown, det er ikke standard funksjonalitet i ds-react sin Combobox
   const inputRef = useRef<HTMLInputElement | null>(null);
 
+  // Sørger for at valgt option havner helt øverst i lista
   const scrollSelectedIntoView = useCallback(() => {
+    if (typeof document === 'undefined') return;
     const input = inputRef.current;
-    if (input?.getAttribute('aria-expanded') === 'true') {
-      const listId = input.getAttribute('aria-controls');
-      const selected =
-        listId &&
-        document
-          .getElementById(listId)
-          ?.querySelector<HTMLElement>("[role='option'][aria-selected='true']");
-      if (selected)
-        (selected.closest<HTMLElement>("[role='listbox']") ||
-          selected.parentElement)!.scrollTop = selected.offsetTop;
+    if (!input || input.getAttribute('aria-expanded') !== 'true') return;
+    const listId = input.getAttribute('aria-controls');
+    if (!listId) return;
+
+    const selected = document
+      .getElementById(listId)
+      ?.querySelector<HTMLElement>("[role='option'][aria-selected='true']");
+    if (selected) {
+      const listbox =
+        selected.closest<HTMLElement>("[role='listbox']") ||
+        selected.parentElement;
+      if (listbox) {
+        listbox.scrollTop = selected.offsetTop; // Plasser valgt øverst
+      }
     }
   }, []);
 
@@ -93,6 +116,83 @@ function TimeInput({
 
   const availableOptions = options ?? KLOKKESLETT_OPTIONS;
 
+  const [inputValue, setInputValue] = useState(value ?? '');
+  const [isFocused, setIsFocused] = useState(false);
+  const didUserTypeRef = useRef(false); // Sporer om bruker faktisk har interagert med input-teksten
+  const lastFocusValueRef = useRef<string | undefined>(value);
+
+  useEffect(() => {
+    setInputValue(value ?? '');
+  }, [value]);
+
+  const isAllowedTime = useCallback((val: string) => TIME_REGEX.test(val), []);
+
+  const isAllowedInput = useCallback(
+    (text?: string | null) => !text || /^[\d:]*$/.test(text),
+    [],
+  );
+
+  const handleInputChange = useCallback((val: string) => {
+    if (val === '' && !didUserTypeRef.current) {
+      return;
+    }
+    if (val !== '' && !didUserTypeRef.current) {
+      didUserTypeRef.current = true;
+    }
+    if (val === '' && didUserTypeRef.current) {
+      setInputValue('');
+    } else if (val !== '') {
+      setInputValue(val);
+    }
+  }, []);
+
+  const commitIfValid = useCallback(
+    (val: string) => {
+      if (val === '') {
+        if (value) onChange('');
+        return true;
+      }
+      if (isAllowedTime(val)) {
+        if (val !== value) onChange(val);
+        return true;
+      }
+      return false;
+    },
+    [isAllowedTime, onChange, value],
+  );
+
+  const handleBlur: React.FocusEventHandler<HTMLInputElement> = useCallback(
+    (e) => {
+      setIsFocused(false);
+      // Hvis bruker ikke skrev noe og inputValue er lik fokusverdi, ikke forsøk å committe tom init event
+      if (
+        !didUserTypeRef.current &&
+        (inputValue === '' || inputValue === lastFocusValueRef.current)
+      ) {
+        setInputValue(value ?? '');
+        onBlur?.(e);
+        return;
+      }
+
+      const ok = commitIfValid(inputValue.trim());
+      if (!ok) {
+        setInputValue(value ?? '');
+      }
+      onBlur?.(e);
+    },
+    [commitIfValid, inputValue, onBlur, value],
+  );
+
+  // Hvis den commit'ede verdien (value) ikke finnes i 15-min listen fordi bruker skrev et custom minutt, legg den til så den vises som valgt
+  const dynamicOptions =
+    value && TIME_REGEX.test(value)
+      ? insertOptionSorted(availableOptions, value)
+      : availableOptions;
+
+  // Under skriving (fokus) skal ikke tidligere valg vises som chip. Uten å ta hensyn til dette vil tidspunkt vises når vi blanker ut feltet når vi skal skrive helt nytt tidspunkt.
+  const showSelectedOption = !isFocused && value !== undefined && value !== '';
+  const selectedOptionsValue = showSelectedOption ? [value] : [];
+
   return (
     <Combobox
       ref={inputRef}
@@ -101,15 +201,40 @@ function TimeInput({
       disabled={disabled}
       error={error}
       className={['min-w-[7rem]', className].filter(Boolean).join(' ')}
-      options={availableOptions}
-      filteredOptions={availableOptions}
-      value={value ?? ''}
-      selectedOptions={value ? [value] : []}
-      onFocus={queueScrollIntoView}
-      onToggleSelected={(option, isSelected) => {
-        if (isSelected) onChange(option);
+      options={dynamicOptions}
+      filteredOptions={dynamicOptions}
+      allowNewValues={true}
+      value={inputValue}
+      selectedOptions={selectedOptionsValue}
+      onFocus={() => {
+        setIsFocused(true);
+        didUserTypeRef.current = false;
+        lastFocusValueRef.current = value;
+        setInputValue(value ?? '');
+        queueScrollIntoView();
       }}
-      onBlur={onBlur}
+      onToggleSelected={(option, isSelected) => {
+        if (isSelected) {
+          didUserTypeRef.current = true;
+          setInputValue(option);
+          commitIfValid(option);
+        }
+      }}
+      onChange={(val) => handleInputChange(val)}
+      onBlur={handleBlur}
+      onBeforeInput={(event) => {
+        const nativeEvent = event.nativeEvent as InputEvent;
+        const data = 'data' in nativeEvent ? nativeEvent.data : null;
+        if (!isAllowedInput(data)) {
+          event.preventDefault();
+        }
+      }}
+      onPaste={(event) => {
+        const pasted = event.clipboardData.getData('text');
+        if (!isAllowedInput(pasted)) {
+          event.preventDefault();
+        }
+      }}
     />
   );
 }

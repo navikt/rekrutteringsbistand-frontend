@@ -150,11 +150,7 @@ const FiltrertKandidatListeVisning: FC = () => {
         <KandidatlisteFilterrad />
         <KandidatlisteHandlingsRad />
       </div>
-      <SideScroll
-        trimHøyde={200}
-        enableHorizontalScroll
-        excludeRef={[headerRef]}
-      >
+      <SideScroll enableHorizontalScroll>
         <div>
           {tableHeader}
           <div className='grid grid-cols-1 gap-4 p-1'>
