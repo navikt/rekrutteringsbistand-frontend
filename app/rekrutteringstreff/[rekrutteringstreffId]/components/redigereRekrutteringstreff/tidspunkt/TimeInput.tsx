@@ -118,6 +118,7 @@ function TimeInput({
 
   const [inputValue, setInputValue] = useState(value ?? '');
   const [isFocused, setIsFocused] = useState(false);
+  const [forceCloseDropdown, setForceCloseDropdown] = useState(false);
   const didUserTypeRef = useRef(false); // Sporer om bruker faktisk har interagert med input-teksten
   const lastFocusValueRef = useRef<string | undefined>(value);
 
@@ -144,6 +145,7 @@ function TimeInput({
     } else if (val !== '') {
       setInputValue(val);
     }
+    setForceCloseDropdown(true);
   }, []);
 
   const commitIfValid = useCallback(
@@ -178,6 +180,7 @@ function TimeInput({
       if (!ok) {
         setInputValue(value ?? '');
       }
+      setForceCloseDropdown(false);
       onBlur?.(e);
     },
     [commitIfValid, inputValue, onBlur, value],
@@ -204,6 +207,8 @@ function TimeInput({
       options={dynamicOptions}
       filteredOptions={dynamicOptions}
       allowNewValues={true}
+      toggleListButton={true}
+      isListOpen={forceCloseDropdown ? false : undefined}
       value={inputValue}
       selectedOptions={selectedOptionsValue}
       onFocus={() => {
@@ -211,6 +216,7 @@ function TimeInput({
         didUserTypeRef.current = false;
         lastFocusValueRef.current = value;
         setInputValue(value ?? '');
+        setForceCloseDropdown(false);
         queueScrollIntoView();
       }}
       onToggleSelected={(option, isSelected) => {
@@ -218,10 +224,16 @@ function TimeInput({
           didUserTypeRef.current = true;
           setInputValue(option);
           commitIfValid(option);
+          setForceCloseDropdown(false);
         }
       }}
       onChange={(val) => handleInputChange(val)}
       onBlur={handleBlur}
+      onKeyDownCapture={(event) => {
+        if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+          setForceCloseDropdown(false);
+        }
+      }}
       onBeforeInput={(event) => {
         const nativeEvent = event.nativeEvent as InputEvent;
         const data = 'data' in nativeEvent ? nativeEvent.data : null;
