@@ -117,7 +117,6 @@ export const useKandidatsøk = (
     return [];
   });
 
-  console.log('🎺 stedKoder', stedKoder);
   const mapFilterTilpayload = {
     orgenhet: kandidatSøkFilter.orgenhet,
     fritekst: kandidatSøkFilter.fritekst,
