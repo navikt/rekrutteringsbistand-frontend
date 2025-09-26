@@ -70,7 +70,7 @@ export const useKandidatsøk = (
   const { data: geografi, isLoading: isGeografiLoading } = usePamGeografi();
   const shouldFetch = !isGeografiLoading;
 
-  const stedKoder = kandidatSøkFilter.ønsketSted.map((sted) => {
+  const stedKoder = kandidatSøkFilter.ønsketSted.flatMap((sted) => {
     if (sted.includes('(Kommune)')) {
       const kommuneSted = sted.split('(Kommune)')[0].trim();
       const kommunekode = geografi?.find(
@@ -88,7 +88,8 @@ export const useKandidatsøk = (
 
         const stedString = `${kommuneSted}.NO${kommunekode?.lokasjon.fylkesnummer}.${kommunekode?.lokasjon.kommunenummer}`;
 
-        return [...gamleStederStreng, stedString];
+        const liste = [...gamleStederStreng, stedString];
+        return liste;
       }
     }
     if (sted.includes('(Fylke)')) {
@@ -108,13 +109,15 @@ export const useKandidatsøk = (
 
         const fylkeString = `${fylkeSted}.NO${fylkeMedKoder?.lokasjon.fylkesnummer}`;
 
-        return [...gamleStederStreng, fylkeString];
+        const liste = [...gamleStederStreng, fylkeString];
+        return liste;
       }
     }
 
-    return null;
+    return [];
   });
 
+  console.log('🎺 stedKoder', stedKoder);
   const mapFilterTilpayload = {
     orgenhet: kandidatSøkFilter.orgenhet,
     fritekst: kandidatSøkFilter.fritekst,
@@ -123,7 +126,7 @@ export const useKandidatsøk = (
     innsatsgruppe: kandidatSøkFilter.innsatsgruppe,
     side: kandidatSøkFilter.side,
     ønsketYrke: kandidatSøkFilter.ønsketYrke,
-    ønsketSted: stedKoder.filter((sted) => sted !== null) ?? [],
+    ønsketSted: stedKoder,
     borPåØnsketSted: kandidatSøkFilter.borPåØnsketSted === 'ja',
     kompetanse: kandidatSøkFilter.kompetanse,
     førerkort: kandidatSøkFilter.førerkort,
