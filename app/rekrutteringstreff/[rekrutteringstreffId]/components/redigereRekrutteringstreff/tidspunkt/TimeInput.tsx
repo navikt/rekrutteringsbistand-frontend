@@ -5,6 +5,7 @@ import React, {
   ReactNode,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -42,6 +43,7 @@ type Props = {
   error?: ReactNode | boolean;
   className?: string;
   options?: string[];
+  maxTime?: string;
 };
 
 function TimeInput({
@@ -54,10 +56,15 @@ function TimeInput({
   error,
   className,
   options,
+  maxTime,
 }: Props) {
   const inputRef = useRef<HTMLInputElement | null>(null);
 
-  const availableOptions = options ?? KLOKKESLETT_OPTIONS;
+  const availableOptions = useMemo(() => {
+    const opts = options ?? KLOKKESLETT_OPTIONS;
+    if (!maxTime) return opts;
+    return opts.filter((opt) => opt <= maxTime);
+  }, [options, maxTime]);
 
   const [inputValue, setInputValue] = useState(value ?? '');
   const [forceCloseDropdown, setForceCloseDropdown] = useState(false);
@@ -66,15 +73,22 @@ function TimeInput({
   const lastFocusValueRef = useRef<string | undefined>(value);
   const ignoreNextEmptyChangeRef = useRef(false);
 
-  const erLovligTid = useCallback((val: string) => TIME_REGEX.test(val), []);
+  const erLovligTid = useCallback(
+    (val: string) => TIME_REGEX.test(val) && (!maxTime || val <= maxTime),
+    [maxTime],
+  );
   const erLovligInput = useCallback(
     (text?: string | null) => !text || /^[\d:]*$/.test(text),
     [],
   );
 
-  const insertOptionSortert = useCallback((opts: string[], v: string) => {
-    return opts.includes(v) ? opts : [...opts, v].sort();
-  }, []);
+  const insertOptionSortert = useCallback(
+    (opts: string[], v: string) => {
+      if (maxTime && v > maxTime) return opts;
+      return opts.includes(v) ? opts : [...opts, v].sort();
+    },
+    [maxTime],
+  );
 
   const dynamiskeOptions =
     value && erLovligTid(value)
@@ -319,14 +333,14 @@ function TimeInput({
       hideLabel={hideLabel}
       disabled={disabled}
       error={error}
-      className={className ?? 'w-[7rem]'}
+      className={`${className ?? 'w-[7rem]'} focus-within:outline-none focus-visible:outline-none focus-within:ring-0 focus-visible:ring-0`}
       options={dynamiskeOptions}
       filteredOptions={dynamiskeOptions}
       allowNewValues={true}
       toggleListButton={true}
       isListOpen={forceCloseDropdown ? false : undefined}
       value={inputValue}
-      inputClassName='flex-1 min-w-0 box-border'
+      inputClassName='flex-1 min-w-0 box-border focus:outline-none focus-visible:outline-none focus:ring-0 focus-visible:ring-0'
       shouldShowSelectedOptions={false}
       selectedOptions={selectedOptionsValue}
       onMouseDownCapture={handleMouseDownCapture}

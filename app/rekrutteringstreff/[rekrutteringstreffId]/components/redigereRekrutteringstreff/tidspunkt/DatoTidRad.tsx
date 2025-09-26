@@ -18,6 +18,7 @@ type Props<T extends Record<string, unknown>> = {
   timeOptions?: string[];
   onDatoBlur?: () => void;
   onTidBlur?: () => void;
+  timeMax?: string;
 };
 
 export default function DatoTidRad<T extends Record<string, unknown>>({
@@ -33,6 +34,7 @@ export default function DatoTidRad<T extends Record<string, unknown>>({
   timeOptions,
   onDatoBlur,
   onTidBlur,
+  timeMax,
 }: Props<T>) {
   return (
     <div className='flex gap-4 items-start'>
@@ -97,6 +99,7 @@ export default function DatoTidRad<T extends Record<string, unknown>>({
             }}
             className='w-24'
             options={timeOptions ?? KLOKKESLETT_OPTIONS}
+            maxTime={timeMax}
           />
         )}
       />

@@ -85,6 +85,7 @@ const TidspunktForm = ({ control }: Props) => {
           control={control}
           onDatoBlur={scheduleSave}
           onTidBlur={scheduleSave}
+          timeMax='22:59'
         />
 
         <DatoTidRad<TidspunktFormFields>
