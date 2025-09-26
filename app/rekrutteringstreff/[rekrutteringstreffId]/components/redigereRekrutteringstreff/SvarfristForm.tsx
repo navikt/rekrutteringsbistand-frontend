@@ -9,7 +9,7 @@ import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutter
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
 import { Heading } from '@navikt/ds-react';
 import { format, parseISO } from 'date-fns';
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 export type SvarfristFormFields = {
