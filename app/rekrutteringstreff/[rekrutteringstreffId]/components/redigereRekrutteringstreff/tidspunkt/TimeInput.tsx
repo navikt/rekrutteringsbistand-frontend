@@ -111,10 +111,17 @@ function TimeInput({
   const finalizeCommit = useCallback(
     (valRaw: string) => {
       const v = valRaw.trim();
+
+      // Ikke blank ut ved blur/tab uten faktisk redigering
       if (v === '') {
-        if (value) onChange('');
+        if (didUserTypeRef.current) {
+          if (value) onChange('');
+        } else {
+          setInputValue(value ?? '');
+        }
         return true;
       }
+
       if (erLovligTid(v)) {
         if (v !== value) onChange(v);
         return true;
@@ -254,12 +261,16 @@ function TimeInput({
 
   const handleMouseDownCapture: React.MouseEventHandler<HTMLDivElement> =
     useCallback((e) => {
-      if ((e.target as HTMLElement).tagName !== 'INPUT') {
-        const el = inputRef.current;
-        if (el) el.focus();
+      const t = e.target as HTMLElement;
+      const isInput = t.tagName === 'INPUT';
+      const isOption =
+        t.getAttribute('role') === 'option' || !!t.closest("[role='option']");
+      const inListbox = !!t.closest("[role='listbox']");
+      if (!isInput && !isOption && !inListbox) {
+        inputRef.current?.focus();
         e.preventDefault();
+        ignoreNextEmptyChangeRef.current = true;
       }
-      ignoreNextEmptyChangeRef.current = true;
     }, []);
 
   const handleFocus: React.FocusEventHandler<HTMLInputElement> =
@@ -268,12 +279,14 @@ function TimeInput({
       didUserTypeRef.current = false;
       lastFocusValueRef.current = value;
       setForceCloseDropdown(false);
+      // ignorer evt. tomme onChange som enkelte Combobox-varianter sender på fokus
+      ignoreNextEmptyChangeRef.current = true;
       queueScrollIntoView();
     }, [queueScrollIntoView, value]);
 
   useEffect(() => {
-    if (!isFocused || !didUserTypeRef.current) setInputValue(value ?? '');
-  }, [value, isFocused]);
+    setInputValue(value ?? '');
+  }, [value]);
 
   useEffect(() => {
     const input = inputRef.current;
@@ -321,9 +334,11 @@ function TimeInput({
       onToggleSelected={(option, isSelected) => {
         if (isSelected) {
           ignoreNextEmptyChangeRef.current = true;
-          didUserTypeRef.current = true;
           setInputValue(option);
-          setForceCloseDropdown(false);
+          lastFocusValueRef.current = option;
+          didUserTypeRef.current = false;
+          onChange(option);
+          setForceCloseDropdown(true);
         }
       }}
       onChange={handleInputChange}
