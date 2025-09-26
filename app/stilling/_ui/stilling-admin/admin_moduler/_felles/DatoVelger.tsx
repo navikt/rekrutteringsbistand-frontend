@@ -10,6 +10,8 @@ interface DatoVelgerProps {
   label?: string;
   setDato: (date: string | undefined) => void;
   disablePastDates?: boolean;
+  fraDato?: string | null;
+  tilDato?: string | null;
 }
 
 export const DatoVelger: FC<DatoVelgerProps> = ({
@@ -19,9 +21,19 @@ export const DatoVelger: FC<DatoVelgerProps> = ({
   label,
   setDato,
   disablePastDates = false,
+  fraDato,
+  tilDato,
 }) => {
   const formaterDato = valgtDato
     ? parse(valgtDato, 'dd.MM.yyyy', new Date())
+    : undefined;
+
+  const formaterFraDato = fraDato
+    ? parse(fraDato, 'dd.MM.yyyy', new Date())
+    : undefined;
+
+  const formaterTilDato = tilDato
+    ? parse(tilDato, 'dd.MM.yyyy', new Date())
     : undefined;
 
   const { datepickerProps, inputProps } = useDatepicker({
@@ -34,7 +46,18 @@ export const DatoVelger: FC<DatoVelgerProps> = ({
       }
     },
     defaultSelected: formaterDato,
-    fromDate: disablePastDates ? new Date() : undefined,
+    fromDate: formaterFraDato
+      ? formaterFraDato > new Date()
+        ? formaterFraDato
+        : new Date()
+      : disablePastDates
+        ? new Date()
+        : undefined,
+    toDate: formaterTilDato
+      ? formaterTilDato > new Date()
+        ? formaterTilDato
+        : undefined
+      : undefined,
   });
 
   return (
