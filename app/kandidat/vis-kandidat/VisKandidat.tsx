@@ -63,7 +63,7 @@ const VisKandidat: FC<VisKandidatProps> = ({ kandidatnr }) => {
           header={
             <PanelHeader
               className='pb-2'
-              fullskjermUrl={'/kandidat/' + kandidatnr}
+              // fullskjermUrl={'/kandidat/' + kandidatnr}
             >
               <PanelHeader.Section
                 title={<KandidatNavn />}

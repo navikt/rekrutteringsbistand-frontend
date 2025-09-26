@@ -57,11 +57,11 @@ export default function StillingsSidePage() {
         <SideLayout
           header={
             <PanelHeader
-              fullskjermUrl={
-                info.erFormidling
-                  ? `/etterregistrering/${stillingsData.stilling.uuid}`
-                  : `/stilling/${stillingsData.stilling.uuid}`
-              }
+            // fullskjermUrl={
+            //   info.erFormidling
+            //     ? `/etterregistrering/${stillingsData.stilling.uuid}`
+            //     : `/stilling/${stillingsData.stilling.uuid}`
+            // }
             >
               <PanelHeader.Section
                 title={stillingsData.stilling.title}

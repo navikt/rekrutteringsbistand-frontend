@@ -1,7 +1,12 @@
 'use client';
 
 import { useWindowContext } from '../layout/windows/DynamicWindowContext';
-import { ArrowLeftIcon, ExpandIcon, XMarkIcon } from '@navikt/aksel-icons';
+import {
+  ArrowLeftIcon,
+  ExpandIcon,
+  MinusIcon,
+  XMarkIcon,
+} from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import { ReactNode, createContext, useContext } from 'react';
 
@@ -95,14 +100,14 @@ const PanelHeaderModeContext = createContext<{ compact: boolean }>({
 export default function PanelHeader({
   children,
   className = '',
-  fullskjermUrl,
-  fullskjermAriaLabel = 'Åpne i fullskjerm',
+  nyFaneUrl,
+  nyFaneLabel = 'Åpne i nytt vindu',
 }: {
   children: ReactNode;
   className?: string;
-  /** Når satt og vinduet er dynamisk vises en knapp (til venstre for lukk) som navigerer hit i hovedvisning */
-  fullskjermUrl?: string;
-  fullskjermAriaLabel?: string;
+  /** Når satt vises en knapp (til venstre for lukk) som åpner URL-en i nytt vindu */
+  nyFaneUrl?: string;
+  nyFaneLabel?: string;
 }) {
   const dynamicCtx = useWindowContext();
   const childArr = (Array.isArray(children) ? children : [children]).filter(
@@ -116,9 +121,9 @@ export default function PanelHeader({
   // Derfor tvinger vi compact = true uavhengig av om seksjoner har tabs.
   const compact = true;
 
-  // Injiser close-knapp kun for dynamiske vinduer (men uten å påvirke layoutbeslutningen)
+  // Injiser vindukontroller for alle vinduer (både dynamiske og hovedvindu)
   let enhancedChildren: ReactNode = childArr;
-  if (dynamicCtx?.isDynamic && dynamicCtx.onRequestClose) {
+  if (dynamicCtx) {
     const lastIndex = childArr
       .map((c: any, i) => (c && c.type === PanelHeaderSection ? i : -1))
       .filter((i) => i >= 0)
@@ -139,9 +144,28 @@ export default function PanelHeader({
           existing &&
           (Array.isArray(existing)
             ? existing.some(
-                (el: any) => el?.props?.['aria-label'] === fullskjermAriaLabel,
+                (el: any) => el?.props?.['aria-label'] === nyFaneLabel,
               )
-            : existing?.props?.['aria-label'] === fullskjermAriaLabel);
+            : existing?.props?.['aria-label'] === nyFaneLabel);
+        const hasMinimizeAlready =
+          existing &&
+          (Array.isArray(existing)
+            ? existing.some(
+                (el: any) => el?.props?.['aria-label'] === 'Minimér vindu',
+              )
+            : existing?.props?.['aria-label'] === 'Minimér vindu');
+        const hasMaximizeAlready =
+          existing &&
+          (Array.isArray(existing)
+            ? existing.some(
+                (el: any) =>
+                  (el?.props?.['aria-label']?.includes('vindu') &&
+                    el?.props?.['aria-label']?.includes('Maksimér')) ||
+                  el?.props?.['aria-label']?.includes('Gjenopprett'),
+              )
+            : existing?.props?.['aria-label']?.includes('vindu') &&
+              (existing?.props?.['aria-label']?.includes('Maksimér') ||
+                existing?.props?.['aria-label']?.includes('Gjenopprett')));
         return (
           <PanelHeaderSection
             key={c.key || `ph-sec-${i}`}
@@ -149,26 +173,57 @@ export default function PanelHeader({
             actionsRight={
               <>
                 {existing}
-                {fullskjermUrl && !hasFullscreenAlready && (
+                {nyFaneUrl && !hasFullscreenAlready && (
                   <Button
                     size='small'
                     variant='tertiary'
-                    aria-label={fullskjermAriaLabel}
+                    aria-label={nyFaneLabel}
                     icon={<ExpandIcon aria-hidden />}
                     onClick={() => {
                       if (typeof window !== 'undefined') {
-                        window.location.assign(fullskjermUrl);
+                        window.open(nyFaneUrl, '_blank');
                       }
                     }}
                   />
                 )}
-                <Button
-                  size='small'
-                  variant='tertiary'
-                  aria-label='Lukk vindu'
-                  icon={<XMarkIcon aria-hidden />}
-                  onClick={() => dynamicCtx.onRequestClose?.()}
-                />
+                {!hasMinimizeAlready && dynamicCtx.onRequestMinimize && (
+                  <Button
+                    size='small'
+                    variant='tertiary'
+                    aria-label='Minimér vindu'
+                    icon={<MinusIcon aria-hidden />}
+                    onClick={() => dynamicCtx.onRequestMinimize?.()}
+                  />
+                )}
+                {!hasMaximizeAlready && dynamicCtx.onRequestMaximize && (
+                  <Button
+                    size='small'
+                    variant='tertiary'
+                    aria-label={
+                      dynamicCtx.isMaximized
+                        ? 'Gjenopprett vindu'
+                        : 'Maksimér vindu'
+                    }
+                    icon={<ExpandIcon aria-hidden />}
+                    onClick={() => {
+                      if (dynamicCtx.isMaximized) {
+                        dynamicCtx.onRequestRestore?.();
+                      } else {
+                        dynamicCtx.onRequestMaximize?.();
+                      }
+                    }}
+                  />
+                )}
+                {/* Close-knapp bare for dynamiske vinduer */}
+                {dynamicCtx.isDynamic && dynamicCtx.onRequestClose && (
+                  <Button
+                    size='small'
+                    variant='tertiary'
+                    aria-label='Lukk vindu'
+                    icon={<XMarkIcon aria-hidden />}
+                    onClick={() => dynamicCtx.onRequestClose?.()}
+                  />
+                )}
               </>
             }
           />

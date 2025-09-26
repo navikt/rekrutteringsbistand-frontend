@@ -27,14 +27,40 @@ export const urlWindowConfigs: UrlWindowConfig[] = [
 export const useAllUrlWindows = (
   addWindow: (props: any) => void,
   removeWindow: (id: string) => void,
+  updateWindowState?: (id: string, state: any) => void,
 ) => {
   // Registrer alle URL-vinduer
-  useUrlWindow(visKandidatWindowConfig, addWindow, removeWindow);
-  useUrlWindow(visStillingWindowConfig, addWindow, removeWindow);
-  useUrlWindow(visEtterregistreringWindowConfig, addWindow, removeWindow);
-  useUrlWindow(finnKandidaterWindowConfig, addWindow, removeWindow);
-  useUrlWindow(finnStillingForKandidatWindow, addWindow, removeWindow);
+  useUrlWindow(
+    visKandidatWindowConfig,
+    addWindow,
+    removeWindow,
+    updateWindowState,
+  );
+  useUrlWindow(
+    visStillingWindowConfig,
+    addWindow,
+    removeWindow,
+    updateWindowState,
+  );
+  useUrlWindow(
+    visEtterregistreringWindowConfig,
+    addWindow,
+    removeWindow,
+    updateWindowState,
+  );
+  useUrlWindow(
+    finnKandidaterWindowConfig,
+    addWindow,
+    removeWindow,
+    updateWindowState,
+  );
+  useUrlWindow(
+    finnStillingForKandidatWindow,
+    addWindow,
+    removeWindow,
+    updateWindowState,
+  );
 
   // Legg til flere vinduer her ved å kalle useUrlWindow for hver konfigurasjon
-  // useUrlWindow(anotherWindowConfig, addWindow, removeWindow);
+  // useUrlWindow(anotherWindowConfig, addWindow, removeWindow, updateWindowState);
 };
