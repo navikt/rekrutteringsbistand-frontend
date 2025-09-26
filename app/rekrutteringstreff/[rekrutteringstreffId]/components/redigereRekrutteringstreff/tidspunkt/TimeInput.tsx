@@ -194,7 +194,7 @@ function TimeInput({
 
   // Under skriving (fokus) skal ikke tidligere valg vises som chip. Uten å ta hensyn til dette vil tidspunkt vises når vi blanker ut feltet når vi skal skrive helt nytt tidspunkt.
   const showSelectedOption = !isFocused && value !== undefined && value !== '';
-  const selectedOptionsValue = showSelectedOption ? [value] : [];
+  const selectedOptionsValue = value ? [value] : [];
 
   return (
     <Combobox
@@ -210,6 +210,7 @@ function TimeInput({
       toggleListButton={true}
       isListOpen={forceCloseDropdown ? false : undefined}
       value={inputValue}
+      shouldShowSelectedOptions={showSelectedOption}
       selectedOptions={selectedOptionsValue}
       onFocus={() => {
         setIsFocused(true);
