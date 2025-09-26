@@ -17,6 +17,21 @@ export const KLOKKESLETT_OPTIONS = [...Array(24)].flatMap((_, h) =>
 
 const TIME_REGEX = /^([01]\d|2[0-3]):([0-5]\d)$/;
 
+const tolkTidsinndata = (tekst: string): string | null => {
+  const tidsformat = tekst.match(/^(\d{1,2})(?::?(\d{0,2}))?$/);
+  if (!tidsformat) return null;
+  const timer = Math.min(parseInt(tidsformat[1] || '0', 10) || 0, 23);
+  const minutterRå = parseInt(tidsformat[2] || '0', 10) || 0;
+  const minutterAvrundet = [0, 15, 30, 45].reduce(
+    (forrige, nåværende) =>
+      Math.abs(nåværende - minutterRå) < Math.abs(forrige - minutterRå)
+        ? nåværende
+        : forrige,
+    0,
+  );
+  return `${String(timer).padStart(2, '0')}:${String(minutterAvrundet).padStart(2, '0')}`;
+};
+
 type Props = {
   value?: string;
   onChange: (value: string) => void;
@@ -45,7 +60,6 @@ function TimeInput({
   const availableOptions = options ?? KLOKKESLETT_OPTIONS;
 
   const [inputValue, setInputValue] = useState(value ?? '');
-  const [isFocused, setIsFocused] = useState(false);
   const [forceCloseDropdown, setForceCloseDropdown] = useState(false);
 
   const didUserTypeRef = useRef(false);
@@ -149,7 +163,6 @@ function TimeInput({
 
   const handleBlur: React.FocusEventHandler<HTMLInputElement> = useCallback(
     (e) => {
-      setIsFocused(false);
       if (
         !didUserTypeRef.current &&
         (inputValue === '' || inputValue === lastFocusValueRef.current)
@@ -170,41 +183,29 @@ function TimeInput({
     [finalizeCommit, inputValue, onBlur, value],
   );
 
-  const tolkTidsinndata = (tekst: string): string | null => {
-    const tidsformat = tekst.match(/^(\d{1,2})(?::?(\d{0,2}))?$/);
-    if (!tidsformat) return null;
-    const timer = Math.min(parseInt(tidsformat[1] || '0', 10) || 0, 23);
-    const minutterRå = parseInt(tidsformat[2] || '0', 10) || 0;
-    const minutterAvrundet = [0, 15, 30, 45].reduce(
-      (forrige, nåværende) =>
-        Math.abs(nåværende - minutterRå) < Math.abs(forrige - minutterRå)
-          ? nåværende
-          : forrige,
-      0,
-    );
-    return `${String(timer).padStart(2, '0')}:${String(minutterAvrundet).padStart(2, '0')}`;
-  };
+  const beregnNesteVerdi = useCallback(
+    (nåværende: string | undefined, endring: number) => {
+      const alternativer = dynamiskeOptions;
+      const erGyldigTid = (verdi?: string) =>
+        verdi && erLovligTid(verdi) ? alternativer.indexOf(verdi) : -1;
 
-  const beregnNesteVerdi = (nåværende: string | undefined, endring: number) => {
-    const alternativer = dynamiskeOptions;
-    const erGyldigTid = (verdi?: string) =>
-      verdi && erLovligTid(verdi) ? alternativer.indexOf(verdi) : -1;
+      let indeks = erGyldigTid(nåværende);
+      if (indeks === -1) {
+        const tolkeTid = tolkTidsinndata(inputValue);
+        indeks = tolkeTid ? alternativer.indexOf(tolkeTid) : -1;
+      }
+      if (indeks === -1) {
+        const start = inputValue || value || '';
+        const i = alternativer.indexOf(start);
+        indeks = i >= 0 ? i : 0;
+      }
 
-    let indeks = erGyldigTid(nåværende);
-    if (indeks === -1) {
-      const tolkeTid = tolkTidsinndata(inputValue);
-      indeks = tolkeTid ? alternativer.indexOf(tolkeTid) : -1;
-    }
-    if (indeks === -1) {
-      const start = inputValue || value || '';
-      const i = alternativer.indexOf(start);
-      indeks = i >= 0 ? i : 0;
-    }
-
-    return alternativer[
-      (indeks + endring + alternativer.length) % alternativer.length
-    ];
-  };
+      return alternativer[
+        (indeks + endring + alternativer.length) % alternativer.length
+      ];
+    },
+    [dynamiskeOptions, erLovligTid, inputValue, value],
+  );
 
   const gåTilNesteTid = useCallback(
     (nåværende: string | undefined, endring: number) => {
@@ -275,7 +276,6 @@ function TimeInput({
 
   const handleFocus: React.FocusEventHandler<HTMLInputElement> =
     useCallback(() => {
-      setIsFocused(true);
       didUserTypeRef.current = false;
       lastFocusValueRef.current = value;
       setForceCloseDropdown(false);
