@@ -17,20 +17,20 @@ export const KLOKKESLETT_OPTIONS = [...Array(24)].flatMap((_, h) =>
 );
 
 const TIME_REGEX = /^([01]\d|2[0-3]):([0-5]\d)$/;
+const ALLOWED_MINUTES = [0, 15, 30, 45] as const;
 
 const tolkTidsinndata = (tekst: string): string | null => {
-  const tidsformat = tekst.match(/^(\d{1,2})(?::?(\d{0,2}))?$/);
-  if (!tidsformat) return null;
-  const timer = Math.min(parseInt(tidsformat[1] || '0', 10) || 0, 23);
-  const minutterRå = parseInt(tidsformat[2] || '0', 10) || 0;
-  const minutterAvrundet = [0, 15, 30, 45].reduce(
-    (forrige, nåværende) =>
-      Math.abs(nåværende - minutterRå) < Math.abs(forrige - minutterRå)
-        ? nåværende
-        : forrige,
+  const m = tekst.match(/^(\d{1,2})(?::?(\d{0,2}))?$/);
+  if (!m) return null;
+
+  const t = Math.min(parseInt(m[1] || '0', 10) || 0, 23);
+  const r = parseInt(m[2] || '0', 10) || 0;
+  const n = ALLOWED_MINUTES.reduce(
+    (best, cand) => (Math.abs(cand - r) < Math.abs(best - r) ? cand : best),
     0,
   );
-  return `${String(timer).padStart(2, '0')}:${String(minutterAvrundet).padStart(2, '0')}`;
+
+  return `${String(t).padStart(2, '0')}:${String(n).padStart(2, '0')}`;
 };
 
 type Props = {
@@ -62,8 +62,7 @@ function TimeInput({
 
   const availableOptions = useMemo(() => {
     const opts = options ?? KLOKKESLETT_OPTIONS;
-    if (!maxTime) return opts;
-    return opts.filter((opt) => opt <= maxTime);
+    return maxTime ? opts.filter((opt) => opt <= maxTime) : opts;
   }, [options, maxTime]);
 
   const [inputValue, setInputValue] = useState(value ?? '');
@@ -77,16 +76,19 @@ function TimeInput({
     (val: string) => TIME_REGEX.test(val) && (!maxTime || val <= maxTime),
     [maxTime],
   );
+
   const erLovligInput = useCallback(
     (text?: string | null) => !text || /^[\d:]*$/.test(text),
     [],
   );
 
   const insertOptionSortert = useCallback(
-    (opts: string[], v: string) => {
-      if (maxTime && v > maxTime) return opts;
-      return opts.includes(v) ? opts : [...opts, v].sort();
-    },
+    (opts: string[], v: string) =>
+      maxTime && v > maxTime
+        ? opts
+        : opts.includes(v)
+          ? opts
+          : [...opts, v].sort(),
     [maxTime],
   );
 
@@ -105,6 +107,7 @@ function TimeInput({
   const scrollSelectedIntoView = useCallback(() => {
     const input = inputRef.current;
     if (!input || input.getAttribute('aria-expanded') !== 'true') return;
+
     const list = hentListeElement();
     if (!list) return;
 
@@ -139,6 +142,7 @@ function TimeInput({
   const finalizeCommit = useCallback(
     (valRaw: string) => {
       const v = valRaw.trim();
+
       if (v === '') {
         if (didUserTypeRef.current) {
           if (value) onChange('');
@@ -147,10 +151,12 @@ function TimeInput({
         }
         return true;
       }
+
       if (erLovligTid(v)) {
         if (v !== value) onChange(v);
         return true;
       }
+
       setInputValue(value ?? '');
       return false;
     },
@@ -162,32 +168,31 @@ function TimeInput({
       ignoreNextEmptyChangeRef.current = false;
       return;
     }
+
+    if (!didUserTypeRef.current && val !== '') didUserTypeRef.current = true;
     if (val === '' && !didUserTypeRef.current) return;
 
-    if (val !== '' && !didUserTypeRef.current) didUserTypeRef.current = true;
-
-    if (val === '' && didUserTypeRef.current) setInputValue('');
-    else if (val !== '') setInputValue(val);
-
+    setInputValue(val === '' ? '' : val);
     if (val !== '') setForceCloseDropdown(true);
   }, []);
 
   const handleBlur: React.FocusEventHandler<HTMLInputElement> = useCallback(
     (e) => {
-      if (
+      const unchanged =
         !didUserTypeRef.current &&
-        (inputValue === '' || inputValue === lastFocusValueRef.current)
-      ) {
+        (inputValue === '' || inputValue === lastFocusValueRef.current);
+
+      if (unchanged) {
         setInputValue(value ?? '');
         onBlur?.(e);
         return;
       }
+
       finalizeCommit(inputValue);
 
-      const closeDropdown = () => setForceCloseDropdown(true);
-      if (typeof window !== 'undefined')
-        window.requestAnimationFrame(closeDropdown);
-      else closeDropdown();
+      const close = () => setForceCloseDropdown(true);
+      if (typeof window !== 'undefined') window.requestAnimationFrame(close);
+      else close();
 
       onBlur?.(e);
     },
@@ -197,22 +202,22 @@ function TimeInput({
   const beregnNesteVerdi = useCallback(
     (nåværende: string | undefined, endring: number) => {
       const alternativer = dynamiskeOptions;
-      const erGyldigTid = (verdi?: string) =>
+      const indexFor = (verdi?: string) =>
         verdi && erLovligTid(verdi) ? alternativer.indexOf(verdi) : -1;
 
-      let indeks = erGyldigTid(nåværende);
-      if (indeks === -1) {
-        const tolkeTid = tolkTidsinndata(inputValue);
-        indeks = tolkeTid ? alternativer.indexOf(tolkeTid) : -1;
+      let i = indexFor(nåværende);
+      if (i === -1) {
+        const tolket = tolkTidsinndata(inputValue);
+        i = tolket ? alternativer.indexOf(tolket) : -1;
       }
-      if (indeks === -1) {
+      if (i === -1) {
         const start = inputValue || value || '';
-        const i = alternativer.indexOf(start);
-        indeks = i >= 0 ? i : 0;
+        const j = alternativer.indexOf(start);
+        i = j >= 0 ? j : 0;
       }
 
       return alternativer[
-        (indeks + endring + alternativer.length) % alternativer.length
+        (i + endring + alternativer.length) % alternativer.length
       ];
     },
     [dynamiskeOptions, erLovligTid, inputValue, value],
@@ -220,11 +225,10 @@ function TimeInput({
 
   const gåTilNesteTid = useCallback(
     (nåværende: string | undefined, endring: number) => {
-      const nesteTid = beregnNesteVerdi(nåværende, endring);
+      const neste = beregnNesteVerdi(nåværende, endring);
       didUserTypeRef.current = true;
       ignoreNextEmptyChangeRef.current = true;
-      setInputValue(nesteTid);
-      // ikke tving dropdown å lukke – unngår flash
+      setInputValue(neste);
     },
     [beregnNesteVerdi],
   );
@@ -232,19 +236,14 @@ function TimeInput({
   const handleKeyDownCapture: React.KeyboardEventHandler<HTMLInputElement> =
     useCallback(
       (event) => {
-        if (event.key === 'ArrowDown') {
+        const k = event.key;
+        if (k === 'ArrowDown' || k === 'ArrowUp') {
           event.preventDefault();
           event.stopPropagation();
-          gåTilNesteTid(inputValue || value, +1);
+          gåTilNesteTid(inputValue || value, k === 'ArrowDown' ? +1 : -1);
           return;
         }
-        if (event.key === 'ArrowUp') {
-          event.preventDefault();
-          event.stopPropagation();
-          gåTilNesteTid(inputValue || value, -1);
-          return;
-        }
-        if (event.key === 'Enter') {
+        if (k === 'Enter') {
           ignoreNextEmptyChangeRef.current = true;
           const ok = finalizeCommit(inputValue ?? '');
           if (!ok && value) setInputValue(value);
@@ -280,7 +279,7 @@ function TimeInput({
       const isOption =
         t.getAttribute('role') === 'option' || !!t.closest("[role='option']");
       const inListbox = !!t.closest("[role='listbox']");
-      if (!isInput && !isOption && !inListbox) {
+      if (!(isInput || isOption || inListbox)) {
         inputRef.current?.focus();
         e.preventDefault();
         ignoreNextEmptyChangeRef.current = true;
@@ -296,21 +295,16 @@ function TimeInput({
       queueScrollIntoView();
     }, [queueScrollIntoView, value]);
 
-  useEffect(() => {
-    setInputValue(value ?? '');
-  }, [value]);
+  useEffect(() => setInputValue(value ?? ''), [value]);
 
   useEffect(() => {
     const input = inputRef.current;
     if (!input) return;
-    const observer = new MutationObserver((mutations) => {
-      for (const m of mutations) {
-        if (m.type === 'attributes' && m.attributeName === 'aria-expanded') {
-          if (input.getAttribute('aria-expanded') === 'true')
-            queueScrollIntoView();
-        }
-      }
+
+    const observer = new MutationObserver(() => {
+      if (input.getAttribute('aria-expanded') === 'true') queueScrollIntoView();
     });
+
     observer.observe(input, {
       attributes: true,
       attributeFilter: ['aria-expanded'],
@@ -323,6 +317,7 @@ function TimeInput({
   }, [queueScrollIntoView, value]);
 
   const selectedOptionsValue = value ? [value] : [];
+  const computedClassName = `${className ?? 'w-[7rem]'} focus-within:outline-none focus-visible:outline-none focus-within:ring-0 focus-visible:ring-0`;
 
   return (
     <Combobox
@@ -331,14 +326,14 @@ function TimeInput({
       hideLabel={hideLabel}
       disabled={disabled}
       error={error}
-      className={`${className ?? 'w-[7rem]'} focus-within:outline-none focus-visible:outline-none focus-within:ring-0 focus-visible:ring-0`}
+      className={computedClassName}
       options={dynamiskeOptions}
       filteredOptions={dynamiskeOptions}
-      allowNewValues={true}
-      toggleListButton={true}
+      allowNewValues
+      toggleListButton
       isListOpen={forceCloseDropdown ? false : undefined}
       value={inputValue}
-      inputClassName='flex-1 min-w-0 box-border focus:outline-none focus-visible:outline-none focus:ring-0 focus-visible:ring-0'
+      inputClassName='min-w-0'
       shouldShowSelectedOptions={false}
       selectedOptions={selectedOptionsValue}
       onMouseDownCapture={handleMouseDownCapture}
