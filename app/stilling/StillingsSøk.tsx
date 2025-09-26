@@ -122,7 +122,7 @@ const StillingsSøkLayout: FC<StillingsSøkProps> = ({
 
         <div className='hidden @[720px]:flex  flex-col  gap-4'>
           <StillingSøkebar alltidÅpen={false} />
-          <SideScroll trimHøyde={200}>
+          <SideScroll>
             <div className='flex flex-col ml-4 pt-4  max-w-[200px] gap-4'>
               <MittStandardsøk />
               <StillingsSøkSortering />

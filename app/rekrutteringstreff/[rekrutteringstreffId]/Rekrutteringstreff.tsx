@@ -18,7 +18,7 @@ import { Tabs } from '@navikt/ds-react';
 import { formatDistanceToNow } from 'date-fns';
 import { nb } from 'date-fns/locale/nb';
 import { parseAsString, useQueryState } from 'nuqs';
-import { FC, useCallback, useEffect, useMemo, useRef } from 'react';
+import { FC, useCallback, useEffect, useMemo } from 'react';
 
 export enum RekrutteringstreffTabs {
   OM_TREFFET = 'om_treffet',
@@ -178,8 +178,6 @@ const Rekrutteringstreff: FC = () => {
     scrollToTop();
   }, [scrollToTop, setModus]);
 
-  const headerRef = useRef<HTMLDivElement>(null);
-
   const renderStegviser = () => (
     <Stegviser
       onToggleForhåndsvisning={handleToggleForhåndsvisning}
@@ -198,7 +196,6 @@ const Rekrutteringstreff: FC = () => {
         header={
           skalViseHeader ? (
             <RekrutteringstreffHeader
-              ref={headerRef}
               skalViseHeader={skalViseHeader}
               headerTittel={headerTittel}
               erIForhåndsvisning={erIForhåndsvisning}
@@ -220,7 +217,7 @@ const Rekrutteringstreff: FC = () => {
           ) : undefined
         }
       >
-        <SideScroll excludeRef={skalViseHeader ? headerRef : null}>
+        <SideScroll>
           <div className='space-y-4'>
             <TabsPanels
               erIForhåndsvisning={erIForhåndsvisning}

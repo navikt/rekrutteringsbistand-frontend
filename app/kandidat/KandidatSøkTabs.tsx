@@ -24,7 +24,7 @@ import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/Tilgan
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { Button } from '@navikt/ds-react';
-import { FC } from 'react';
+import { FC, useRef } from 'react';
 
 interface KandidatSøkTabsProps {
   stillingsId?: string;
@@ -41,6 +41,7 @@ const KandidatSøkTabs: FC<KandidatSøkTabsProps> = ({
 }) => {
   const { portefølje, setPortefølje } = useKandidatSøkFilterContext();
   const { valgtNavKontor, brukerData } = useApplikasjonContext();
+  const tabsRef = useRef(null);
 
   const labelClass = 'tab-ellipsis';
 
@@ -165,7 +166,10 @@ const KandidatSøkTabs: FC<KandidatSøkTabsProps> = ({
 
   return (
     <div className='@container'>
-      <div className='flex justify-between flex-col @3xl:flex-row @3xl:gap-0 gap-3 '>
+      <div
+        ref={tabsRef}
+        className='flex justify-between flex-col @3xl:flex-row @3xl:gap-0 gap-3 '
+      >
         <div className='flex gap-2 items-center'>
           <AlleKontorer />
           <MineBrukere />
@@ -189,6 +193,7 @@ const KandidatSøkTabs: FC<KandidatSøkTabsProps> = ({
       <div className='@container/kandidatsøk flex'>
         <div className='flex-grow min-w-0'>
           <KandidatSøkResultat
+            scrollRefs={[tabsRef]}
             alleredeLagtTilTreff={alleredeLagtTilTreff}
             alleredeLagtTilKandidatliste={alleredeLagtTilKandidatliste}
             type={portefølje as KandidatSøkPortefølje}

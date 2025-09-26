@@ -1,51 +1,78 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 export interface SideScrollProps {
   children: React.ReactNode;
-  excludeRef?:
-    | React.RefObject<HTMLElement | null>
-    | React.RefObject<HTMLElement | null>[]
-    | null;
   trimHøyde?: number;
   className?: string;
   enableHorizontalScroll?: boolean;
+  autoHeight?: boolean;
 }
 
 export default function SideScroll({
   children,
-  excludeRef,
-  trimHøyde = 150,
+  trimHøyde,
   className = '',
   enableHorizontalScroll = false,
+  autoHeight,
 }: SideScrollProps) {
   const [calculatedHeight, setCalculatedHeight] = useState<string>('');
   const [isScrolling, setIsScrolling] = useState(false);
   const [scrollTimeout, setScrollTimeout] = useState<NodeJS.Timeout | null>(
     null,
   );
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (excludeRef) {
-      const refs = Array.isArray(excludeRef) ? excludeRef : [excludeRef];
+  // Determine if we should use auto height
+  const shouldUseAutoHeight = autoHeight ?? !trimHøyde;
 
-      let totalHeight = 0;
-      refs.forEach((ref) => {
-        if (ref.current) {
-          totalHeight += ref.current.offsetHeight;
-        }
-      });
+  // Auto height calculation using viewport
+  useLayoutEffect(() => {
+    if (!shouldUseAutoHeight || !containerRef.current) return;
 
-      if (totalHeight > 0) {
-        const finalHeight = totalHeight + (trimHøyde || 0);
-        setCalculatedHeight(`calc(100vh - ${finalHeight + 20}px)`);
-      }
+    const container = containerRef.current;
+
+    const calculateAvailableHeight = () => {
+      const containerRect = container.getBoundingClientRect();
+
+      // Use viewport height and subtract container's distance from top
+      const availableHeight = window.innerHeight - containerRect.top;
+
+      // Subtract some padding for breathing room
+      const finalHeight = Math.max(200, availableHeight - 40);
+
+      setCalculatedHeight(`${finalHeight}px`);
+    };
+
+    // Initial calculation
+    calculateAvailableHeight();
+
+    // Watch for window resize and scroll events
+    const handleWindowChange = () => calculateAvailableHeight();
+
+    window.addEventListener('resize', handleWindowChange);
+    window.addEventListener('scroll', handleWindowChange);
+
+    // Use ResizeObserver to watch for layout changes
+    const resizeObserver = new ResizeObserver(() => {
+      calculateAvailableHeight();
+    });
+
+    resizeObserver.observe(document.body);
+
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener('resize', handleWindowChange);
+      window.removeEventListener('scroll', handleWindowChange);
+    };
+  }, [shouldUseAutoHeight]);
+
+  const getFinalHeight = () => {
+    if (shouldUseAutoHeight && calculatedHeight) {
+      return calculatedHeight;
     }
-  }, [excludeRef, trimHøyde]);
 
-  const finalHeight =
-    excludeRef && calculatedHeight
-      ? calculatedHeight
-      : `calc(100vh - ${trimHøyde || 100}px)`;
+    return `calc(100vh - ${trimHøyde || 150}px)`;
+  };
 
   const handleScroll = () => {
     setIsScrolling(true);
@@ -77,9 +104,7 @@ export default function SideScroll({
     <>
       <style jsx>{`
         .scroll-container {
-          /* Force scrollbar gutter regardless of system settings */
-          // scrollbar-gutter: stable both-edges;
-          /* Reserve space for scrollbar */
+          scrollbar-gutter: stable;
           box-sizing: border-box;
         }
         .scroll-container::-webkit-scrollbar {
@@ -147,9 +172,10 @@ export default function SideScroll({
         }
       `}</style>
       <div
+        ref={containerRef}
         className={`scroll-container w-full ${overflowClasses} ${className}`}
         style={{
-          height: finalHeight,
+          height: getFinalHeight(),
           paddingBottom: enableHorizontalScroll ? '8px' : '40px',
         }}
         onScroll={handleScroll}

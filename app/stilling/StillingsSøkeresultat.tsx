@@ -101,10 +101,7 @@ const StillingsSøkeresultat: FC<StillingsSøkeresultatProps> = ({
             </div>
 
             <div className='flex-1 min-h-0'>
-              <SideScroll
-                excludeRef={[headerRef, ...(scrollExcludeRefs || [])]}
-                trimHøyde={100}
-              >
+              <SideScroll>
                 <div className='flex flex-col gap-1'>
                   {data.hits?.hits?.map((hit: any) => (
                     <StillingsKort key={hit._id} stillingData={hit._source} />

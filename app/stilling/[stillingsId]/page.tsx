@@ -74,9 +74,7 @@ export default function StillingsSidePage() {
             </PanelHeader>
           }
           skjulFremdriftspanel={skjulFremdriftspanel}
-          fremdriftspanel={
-            <SideScroll trimHøyde={150}>{fremdriftsPanel()}</SideScroll>
-          }
+          fremdriftspanel={<SideScroll>{fremdriftsPanel()}</SideScroll>}
           fremdriftspanelTop={fremdriftsPanel(true)}
         >
           {ugyldigStilling && (
