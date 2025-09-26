@@ -58,16 +58,16 @@ function TimeInput({
     [],
   );
 
-  const insertOptionSorted = useCallback((opts: string[], v: string) => {
+  const insertOptionSortert = useCallback((opts: string[], v: string) => {
     return opts.includes(v) ? opts : [...opts, v].sort();
   }, []);
 
   const dynamiskeOptions =
     value && erLovligTid(value)
-      ? insertOptionSorted(availableOptions, value)
+      ? insertOptionSortert(availableOptions, value)
       : availableOptions;
 
-  const getListEl = () => {
+  const hentListeElement = () => {
     const input = inputRef.current;
     if (!input || typeof document === 'undefined') return null;
     const id = input.getAttribute('aria-controls');
@@ -77,7 +77,7 @@ function TimeInput({
   const scrollSelectedIntoView = useCallback(() => {
     const input = inputRef.current;
     if (!input || input.getAttribute('aria-expanded') !== 'true') return;
-    const list = getListEl();
+    const list = hentListeElement();
     if (!list) return;
 
     let selected = list.querySelector<HTMLElement>(
@@ -108,16 +108,18 @@ function TimeInput({
     window.requestAnimationFrame(run);
   }, [scrollSelectedIntoView]);
 
-  const commitIfValid = useCallback(
-    (val: string) => {
-      if (val === '') {
+  const finalizeCommit = useCallback(
+    (valRaw: string) => {
+      const v = valRaw.trim();
+      if (v === '') {
         if (value) onChange('');
         return true;
       }
-      if (erLovligTid(val)) {
-        if (val !== value) onChange(val);
+      if (erLovligTid(v)) {
+        if (v !== value) onChange(v);
         return true;
       }
+      setInputValue(value ?? '');
       return false;
     },
     [erLovligTid, onChange, value],
@@ -149,8 +151,7 @@ function TimeInput({
         onBlur?.(e);
         return;
       }
-      const ok = commitIfValid(inputValue.trim());
-      if (!ok) setInputValue(value ?? '');
+      finalizeCommit(inputValue);
 
       const closeDropdown = () => setForceCloseDropdown(true);
       if (typeof window !== 'undefined')
@@ -159,7 +160,7 @@ function TimeInput({
 
       onBlur?.(e);
     },
-    [commitIfValid, inputValue, onBlur, value],
+    [finalizeCommit, inputValue, onBlur, value],
   );
 
   const tolkTidsinndata = (tekst: string): string | null => {
@@ -187,7 +188,11 @@ function TimeInput({
       const tolkeTid = tolkTidsinndata(inputValue);
       indeks = tolkeTid ? alternativer.indexOf(tolkeTid) : -1;
     }
-    if (indeks === -1) indeks = Math.max(alternativer.indexOf(value ?? ''), 0);
+    if (indeks === -1) {
+      const start = inputValue || value || '';
+      const i = alternativer.indexOf(start);
+      indeks = i >= 0 ? i : 0;
+    }
 
     return alternativer[
       (indeks + endring + alternativer.length) % alternativer.length
@@ -200,10 +205,9 @@ function TimeInput({
       didUserTypeRef.current = true;
       ignoreNextEmptyChangeRef.current = true;
       setInputValue(nesteTid);
-      commitIfValid(nesteTid);
       setForceCloseDropdown(true);
     },
-    [commitIfValid, beregnNesteVerdi],
+    [beregnNesteVerdi],
   );
 
   const handleKeyDownCapture: React.KeyboardEventHandler<HTMLInputElement> =
@@ -211,22 +215,22 @@ function TimeInput({
       (event) => {
         if (event.key === 'ArrowDown') {
           event.preventDefault();
-          gåTilNesteTid(value ?? inputValue, +1);
+          gåTilNesteTid(inputValue || value, +1);
           return;
         }
         if (event.key === 'ArrowUp') {
           event.preventDefault();
-          gåTilNesteTid(value ?? inputValue, -1);
+          gåTilNesteTid(inputValue || value, -1);
           return;
         }
         if (event.key === 'Enter') {
           ignoreNextEmptyChangeRef.current = true;
-          const ok = commitIfValid((inputValue ?? '').trim());
+          const ok = finalizeCommit(inputValue ?? '');
           if (!ok && value) setInputValue(value);
           setForceCloseDropdown(true);
         }
       },
-      [commitIfValid, inputValue, gåTilNesteTid, value],
+      [finalizeCommit, inputValue, gåTilNesteTid, value],
     );
 
   const handleBeforeInput: React.FormEventHandler<HTMLInputElement> =
@@ -319,7 +323,6 @@ function TimeInput({
           ignoreNextEmptyChangeRef.current = true;
           didUserTypeRef.current = true;
           setInputValue(option);
-          commitIfValid(option);
           setForceCloseDropdown(false);
         }
       }}
