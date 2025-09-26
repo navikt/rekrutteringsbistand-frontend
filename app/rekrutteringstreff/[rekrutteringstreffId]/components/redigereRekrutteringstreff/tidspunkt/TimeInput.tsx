@@ -117,6 +117,7 @@ function TimeInput({
   const availableOptions = options ?? KLOKKESLETT_OPTIONS;
 
   const [inputValue, setInputValue] = useState(value ?? '');
+  const [isFocused, setIsFocused] = useState(false);
   const didUserTypeRef = useRef(false); // Sporer om bruker faktisk har interagert med input-teksten
   const lastFocusValueRef = useRef<string | undefined>(value);
 
@@ -162,6 +163,7 @@ function TimeInput({
 
   const handleBlur: React.FocusEventHandler<HTMLInputElement> = useCallback(
     (e) => {
+      setIsFocused(false);
       // Hvis bruker ikke skrev noe og inputValue er lik fokusverdi, ikke forsøk å committe tom init event
       if (
         !didUserTypeRef.current &&
@@ -187,6 +189,10 @@ function TimeInput({
       ? insertOptionSorted(availableOptions, value)
       : availableOptions;
 
+  // Under skriving (fokus) skal ikke tidligere valg vises som chip. Uten å ta hensyn til dette vil tidspunkt vises når vi blanker ut feltet når vi skal skrive helt nytt tidspunkt.
+  const showSelectedOption = !isFocused && value !== undefined && value !== '';
+  const selectedOptionsValue = showSelectedOption ? [value] : [];
+
   return (
     <Combobox
       ref={inputRef}
@@ -199,8 +205,9 @@ function TimeInput({
       filteredOptions={dynamicOptions}
       allowNewValues={true}
       value={inputValue}
-      selectedOptions={value ? [value] : []}
+      selectedOptions={selectedOptionsValue}
       onFocus={() => {
+        setIsFocused(true);
         didUserTypeRef.current = false;
         lastFocusValueRef.current = value;
         setInputValue(value ?? '');
