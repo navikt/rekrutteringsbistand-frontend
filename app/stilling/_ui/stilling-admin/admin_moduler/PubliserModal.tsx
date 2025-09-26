@@ -56,9 +56,9 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
   const [publiseringsdato, setPubliseringsdato] = useState<string | undefined>(
     isoTilSkjemaDato(publishedISO),
   );
-  const [sisteVisningsdato, setSisteVisningsdato] = useState<
-    string | undefined
-  >(isoTilSkjemaDato(expiresISO));
+  const [sisteVisningsdato, setSisteVisningsdato] = useState<string | undefined>(
+    isoTilSkjemaDato(expiresISO)
+  );
 
   const [publiserOffentlig, setPubliserOffentlig] = useState(
     privacy === 'SHOW_ALL',
@@ -208,12 +208,14 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
                 disablePastDates
                 label='Publiseringsdato'
                 valgtDato={publiseringsdato}
+                tilDato={sisteVisningsdato}
                 setDato={(d) => setPubliseringsdato(d)}
               />
               <DatoVelger
                 disablePastDates
                 label='Siste visningsdato'
                 valgtDato={sisteVisningsdato}
+                fraDato={publiseringsdato}
                 setDato={(d) => setSisteVisningsdato(d)}
               />
             </div>
