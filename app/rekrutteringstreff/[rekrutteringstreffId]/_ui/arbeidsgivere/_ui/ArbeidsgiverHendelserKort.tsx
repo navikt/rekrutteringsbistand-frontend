@@ -1,17 +1,15 @@
 'use client';
 
 import { ArbeidsgiverHendelserDTO } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgiverHendelser';
-import LeggTilArbeidsgiverModal from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/LeggTilArbeidsgiverModal';
 import { ArbeidsgiverHendelseLabel } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøkere/_ui/HendelseLabel';
 import { ArbeidsgiverHendelsestype } from '@/app/rekrutteringstreff/_domain/constants';
 import SVGDarkmode from '@/components/layout/SVGDarkmode';
 import ArbeidsgiverDarkIkon from '@/public/ikoner/arbeidsgiver-dark.svg';
 import ArbeidsgiverIkon from '@/public/ikoner/arbeidsgiver.svg';
 import { PlusCircleIcon } from '@navikt/aksel-icons';
-import { BodyShort, Box, Button, Heading } from '@navikt/ds-react';
+import { BodyShort, Box, Heading } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import { nb } from 'date-fns/locale/nb';
-import { PlusIcon } from 'lucide-react';
 import { FC, useRef } from 'react';
 
 interface Props {
@@ -19,8 +17,6 @@ interface Props {
 }
 
 const ArbeidsgiverHendelserKort: FC<Props> = ({ arbeidsgiverHendelserDTO }) => {
-  const modalRef = useRef<HTMLDialogElement>(null);
-
   const antallLagtTil = arbeidsgiverHendelserDTO.filter(
     (h) => h.hendelsestype === ArbeidsgiverHendelsestype.OPPRETT,
   ).length;
@@ -92,15 +88,6 @@ const ArbeidsgiverHendelserKort: FC<Props> = ({ arbeidsgiverHendelserDTO }) => {
           </div>
         )}
       </div>
-      <Button
-        onClick={() => modalRef.current?.showModal()}
-        variant='secondary'
-        icon={<PlusIcon />}
-        className='w-full'
-      >
-        Legg til arbeidsgiver
-      </Button>
-      <LeggTilArbeidsgiverModal modalRef={modalRef} />
     </Box.New>
   );
 };
