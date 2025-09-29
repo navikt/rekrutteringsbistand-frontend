@@ -11,7 +11,7 @@ import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutte
 import LeggTilArbeidsgiverModal from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/LeggTilArbeidsgiverModal';
 import SlettArbeidsgiverModal from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/arbeidsgivere/_ui/SlettArbeidsgiverModal';
 import SWRLaster from '@/components/SWRLaster';
-import { PlusIcon, TrashIcon } from '@navikt/aksel-icons';
+import { PlusIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button, Tooltip } from '@navikt/ds-react';
 import * as React from 'react';
 import { useRef, useState } from 'react';
@@ -22,7 +22,6 @@ const RekrutteringstreffArbeidsgivere = () => {
   const arbeidsgivereHook =
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
   const hendelseHook = useArbeidsgiverHendelser(rekrutteringstreffId);
-  const { mutate: mutateArbeidsgivere } = arbeidsgivereHook;
   const { mutate: mutateHendelser } = hendelseHook;
 
   const leggTilModalRef = useRef<HTMLDialogElement>(null);
@@ -41,29 +40,20 @@ const RekrutteringstreffArbeidsgivere = () => {
     };
   };
 
-  const [slette, setSlette] = useState<ArbeidsgiverDTO | null>(null);
   const [sletterArbeidsgiver, setSletterArbeidsgiver] = useState(false);
-  const slettModalRef = useRef<HTMLDialogElement>(null);
 
-  const handleSlettClick = (arbeidsgiver: ArbeidsgiverDTO) => {
-    setSlette(arbeidsgiver);
-    slettModalRef.current?.showModal();
-  };
-
-  const bekreftSlett = async () => {
-    if (!slette) return;
+  const bekreftSlett = async (arbeidsgiver: ArbeidsgiverDTO) => {
+    if (!arbeidsgiver) return;
     try {
       setSletterArbeidsgiver(true);
       await fjernArbeidsgiver(
         rekrutteringstreffId,
-        (slette as any).arbeidsgiverTreffId ?? slette.organisasjonsnummer,
+        (arbeidsgiver as any).arbeidsgiverTreffId ??
+          arbeidsgiver.organisasjonsnummer,
       );
-      await mutateArbeidsgivere();
       await mutateHendelser();
     } finally {
       setSletterArbeidsgiver(false);
-      setSlette(null);
-      slettModalRef.current?.close();
     }
   };
 
@@ -90,36 +80,27 @@ const RekrutteringstreffArbeidsgivere = () => {
               {arbeidsgivere.map((a, index) => {
                 const { status } = getLagtTilData(a);
                 const kunEnArbeidsgiver = arbeidsgivere.length === 1;
-                const deleteButton = (
-                  <Button
-                    size='small'
-                    variant='tertiary'
+                const action = (
+                  <SlettArbeidsgiverModal
+                    navn={a.navn}
+                    loading={sletterArbeidsgiver}
                     disabled={kunEnArbeidsgiver || sletterArbeidsgiver}
-                    onClick={() => handleSlettClick(a)}
-                    icon={<TrashIcon aria-hidden />}
-                  >
-                    Slett
-                  </Button>
-                );
-                const action = kunEnArbeidsgiver ? (
-                  <Tooltip
-                    content='Treffet må alltid ha en arbeidsgiver som deltar. Legg til en ny arbeidsgiver først.'
-                    className='max-w-[200px] text-left'
-                  >
-                    <span>
-                      <Button
-                        size='small'
-                        variant='tertiary'
-                        disabled={kunEnArbeidsgiver || sletterArbeidsgiver}
-                        onClick={() => handleSlettClick(a)}
-                        icon={<TrashIcon aria-hidden />}
-                      >
-                        Slett
-                      </Button>
-                    </span>
-                  </Tooltip>
-                ) : (
-                  deleteButton
+                    onConfirm={() => bekreftSlett(a)}
+                    arbeidsgivereHook={arbeidsgivereHook}
+                    variant='trash'
+                    renderTrigger={({ button }) =>
+                      kunEnArbeidsgiver ? (
+                        <Tooltip
+                          content='Treffet må alltid ha en arbeidsgiver som deltar. Legg til en ny arbeidsgiver først.'
+                          className='max-w-[200px] text-left'
+                        >
+                          <span>{button}</span>
+                        </Tooltip>
+                      ) : (
+                        button
+                      )
+                    }
+                  />
                 );
                 return (
                   <li key={index}>
@@ -133,17 +114,6 @@ const RekrutteringstreffArbeidsgivere = () => {
               })}
             </ul>
           )}
-
-          <SlettArbeidsgiverModal
-            ref={slettModalRef}
-            navn={slette?.navn}
-            loading={sletterArbeidsgiver}
-            onConfirm={bekreftSlett}
-            onCancel={() => {
-              setSlette(null);
-              slettModalRef.current?.close();
-            }}
-          />
         </div>
       )}
     </SWRLaster>
