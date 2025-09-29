@@ -9,9 +9,10 @@ import {
 } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
 import LeggTilArbeidsgiverModal from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/LeggTilArbeidsgiverModal';
+import SlettArbeidsgiverModal from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/arbeidsgivere/_ui/SlettArbeidsgiverModal';
 import SWRLaster from '@/components/SWRLaster';
 import { PlusIcon, TrashIcon } from '@navikt/aksel-icons';
-import { BodyShort, Button, Modal, Tooltip } from '@navikt/ds-react';
+import { BodyShort, Button, Tooltip } from '@navikt/ds-react';
 import * as React from 'react';
 import { useRef, useState } from 'react';
 
@@ -133,36 +134,16 @@ const RekrutteringstreffArbeidsgivere = () => {
             </ul>
           )}
 
-          <Modal ref={slettModalRef} header={{ heading: 'Slett arbeidsgiver' }}>
-            <Modal.Body>
-              {slette && (
-                <BodyShort>
-                  Er du sikker på at du vil slette {slette.navn} fra dette
-                  rekrutteringstreffet?
-                </BodyShort>
-              )}
-            </Modal.Body>
-            <Modal.Footer>
-              <Button
-                variant='danger'
-                onClick={bekreftSlett}
-                loading={sletterArbeidsgiver}
-                disabled={sletterArbeidsgiver}
-              >
-                Slett
-              </Button>
-              <Button
-                variant='secondary'
-                onClick={() => {
-                  setSlette(null);
-                  slettModalRef.current?.close();
-                }}
-                disabled={sletterArbeidsgiver}
-              >
-                Avbryt
-              </Button>
-            </Modal.Footer>
-          </Modal>
+          <SlettArbeidsgiverModal
+            ref={slettModalRef}
+            navn={slette?.navn}
+            loading={sletterArbeidsgiver}
+            onConfirm={bekreftSlett}
+            onCancel={() => {
+              setSlette(null);
+              slettModalRef.current?.close();
+            }}
+          />
         </div>
       )}
     </SWRLaster>

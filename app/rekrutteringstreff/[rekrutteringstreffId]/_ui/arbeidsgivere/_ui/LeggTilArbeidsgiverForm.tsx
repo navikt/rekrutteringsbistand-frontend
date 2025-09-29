@@ -11,10 +11,11 @@ import {
   useRekrutteringstreffArbeidsgivere,
 } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
+import SlettArbeidsgiverModal from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/arbeidsgivere/_ui/SlettArbeidsgiverModal';
 import SWRLaster from '@/components/SWRLaster';
 import { RekbisError } from '@/util/rekbisError';
 import { XMarkIcon } from '@navikt/aksel-icons';
-import { Button, BodyShort, HStack, Modal } from '@navikt/ds-react';
+import { Button, BodyShort, HStack } from '@navikt/ds-react';
 import { useState, useMemo, useRef, FC, useEffect } from 'react';
 
 interface Props {
@@ -235,39 +236,16 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({
                 <BodyShort>Ingen arbeidsgivere lagt til</BodyShort>
               )}
 
-              <Modal
+              <SlettArbeidsgiverModal
                 ref={slettModalRef}
-                header={{ heading: 'Slett arbeidsgiver' }}
-              >
-                <Modal.Body>
-                  {slette && (
-                    <BodyShort>
-                      Er du sikker på at du vil slette {slette.navn} fra dette
-                      rekrutteringstreffet?
-                    </BodyShort>
-                  )}
-                </Modal.Body>
-                <Modal.Footer>
-                  <Button
-                    variant='danger'
-                    onClick={bekreftSlett}
-                    loading={sletterArbeidsgiver}
-                    disabled={sletterArbeidsgiver}
-                  >
-                    Slett
-                  </Button>
-                  <Button
-                    variant='secondary'
-                    onClick={() => {
-                      setSlette(null);
-                      slettModalRef.current?.close();
-                    }}
-                    disabled={sletterArbeidsgiver}
-                  >
-                    Avbryt
-                  </Button>
-                </Modal.Footer>
-              </Modal>
+                navn={slette?.navn}
+                loading={sletterArbeidsgiver}
+                onConfirm={bekreftSlett}
+                onCancel={() => {
+                  setSlette(null);
+                  slettModalRef.current?.close();
+                }}
+              />
             </>
           )}
         </div>
