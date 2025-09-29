@@ -10,14 +10,16 @@ import React, {
   useState,
 } from 'react';
 
-export const KLOKKESLETT_OPTIONS = [...Array(24)].flatMap((_, h) =>
-  [0, 15, 30, 45].map(
+// Én felles kilde for hvilke minuttrinn som brukes både i dropdown og ved tolking.
+export const PREDEFINERTE_MINUTTER = [0, 30] as const;
+
+export const KLOKKESLETT_OPTIONS = Array.from({ length: 24 }, (_, h) =>
+  PREDEFINERTE_MINUTTER.map(
     (m) => `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`,
   ),
-);
+).flat();
 
 const TIME_REGEX = /^([01]\d|2[0-3]):([0-5]\d)$/;
-const ALLOWED_MINUTES = [0, 15, 30, 45] as const;
 
 const tolkTidsinndata = (tekst: string): string | null => {
   const m = tekst.match(/^(\d{1,2})(?::?(\d{0,2}))?$/);
@@ -25,9 +27,9 @@ const tolkTidsinndata = (tekst: string): string | null => {
 
   const t = Math.min(parseInt(m[1] || '0', 10) || 0, 23);
   const r = parseInt(m[2] || '0', 10) || 0;
-  const n = ALLOWED_MINUTES.reduce(
+  const n = PREDEFINERTE_MINUTTER.reduce(
     (best, cand) => (Math.abs(cand - r) < Math.abs(best - r) ? cand : best),
-    0,
+    PREDEFINERTE_MINUTTER[0],
   );
 
   return `${String(t).padStart(2, '0')}:${String(n).padStart(2, '0')}`;
@@ -238,6 +240,7 @@ function TimeInput({
       (event) => {
         const k = event.key;
         if (k === 'ArrowDown' || k === 'ArrowUp') {
+          setForceCloseDropdown(true);
           event.preventDefault();
           event.stopPropagation();
           gåTilNesteTid(inputValue || value, k === 'ArrowDown' ? +1 : -1);
