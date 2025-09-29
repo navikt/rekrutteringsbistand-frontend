@@ -47,16 +47,12 @@ export const DatoVelger: FC<DatoVelgerProps> = ({
     },
     defaultSelected: formaterDato,
     fromDate: formaterFraDato
-      ? formaterFraDato > new Date()
         ? formaterFraDato
-        : new Date()
       : disablePastDates
         ? new Date()
         : undefined,
     toDate: formaterTilDato
-      ? formaterTilDato > new Date()
         ? formaterTilDato
-        : undefined
       : undefined,
   });
 
