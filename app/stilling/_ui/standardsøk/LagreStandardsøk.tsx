@@ -1,9 +1,9 @@
 import { byggStandardsokQuery } from './standardSokUtils';
 import { setNyttStandardsøk } from '@/app/api/stilling/standardsok/settStandardsøk';
 import { useUseBrukerStandardSøk } from '@/app/api/stilling/standardsok/useBrukersStandardsøk';
-import { useVisKandidatNr } from '@/app/kandidat/vis-kandidat/useVisKandidatNr';
 import { Chips } from '@navikt/ds-react';
 import { useSearchParams } from 'next/navigation';
+import { useQueryState } from 'nuqs';
 
 export default function LagreStandardsøk() {
   const brukerStandardSøkData = useUseBrukerStandardSøk();
@@ -11,7 +11,12 @@ export default function LagreStandardsøk() {
 
   const { query: searchString, harKunPortefolje } =
     byggStandardsokQuery(searchParams);
-  const [visKandidatnr] = useVisKandidatNr();
+
+  const [visKandidatnr] = useQueryState('visKandidatnr', {
+    defaultValue: '',
+    clearOnDefault: true,
+  });
+
   const brukerStandardSøk = searchString === brukerStandardSøkData.data?.søk;
 
   if (
