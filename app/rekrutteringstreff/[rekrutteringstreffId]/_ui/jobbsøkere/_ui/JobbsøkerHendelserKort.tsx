@@ -1,7 +1,6 @@
 import { JobbsøkerHendelseLabel } from './HendelseLabel';
 import NavnLenke from './NavnLenke';
 import { JobbsøkerHendelserDTO } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkerHendelser';
-import LeggTilJobbsøkerKnapp from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/LeggTilJobbsøkerKnapp';
 import { JobbsøkerHendelsestype } from '@/app/rekrutteringstreff/_domain/constants';
 import SVGDarkmode from '@/components/layout/SVGDarkmode';
 import JobbsokerHeartUpDarkIkon from '@/public/ikoner/jobbsoker_heart-up-dark.svg';
@@ -152,9 +151,6 @@ const JobbsøkerHendelserKort: FC<JobbsøkerHendelserKortProps> = ({
                 </div>
               </div>
             )}
-          </div>
-          <div>
-            <LeggTilJobbsøkerKnapp className='w-full max-w-2xl' />
           </div>
         </div>
       </Box.New>

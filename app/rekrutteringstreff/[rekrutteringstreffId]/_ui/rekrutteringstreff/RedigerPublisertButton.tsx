@@ -42,7 +42,7 @@ const RedigerPublisertButton: FC<Props> = ({
         variant='secondary'
         onClick={handleClick}
       >
-        {erIForhåndsvisning ? 'Rediger' : 'Forhåndsvis'}
+        {erIForhåndsvisning ? 'Rediger' : 'Forhåndsvisning'}
       </Button>
 
       <Modal

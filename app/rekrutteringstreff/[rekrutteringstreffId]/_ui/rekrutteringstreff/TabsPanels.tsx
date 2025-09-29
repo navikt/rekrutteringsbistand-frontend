@@ -5,7 +5,6 @@ import Aktiviteter from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/akt
 import RekrutteringstreffArbeidsgivere from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/arbeidsgivere/Arbeidsgivere';
 import Jobbsøkere from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøkere/Jobbsøkere';
 import KiLogg from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/kilogg/components/KiLogg';
-import RekrutteringstreffForhåndsvisning from '@/app/rekrutteringstreff/[rekrutteringstreffId]/components/RekrutteringstreffForhåndsvisning';
 import RekrutteringstreffRedigering from '@/app/rekrutteringstreff/[rekrutteringstreffId]/components/RekrutteringstreffRedigering';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
@@ -13,7 +12,7 @@ import { Tabs } from '@navikt/ds-react';
 import { FC } from 'react';
 
 interface Props {
-  erIForhåndsvisning: boolean;
+  erIVisning: boolean;
   onUpdated: () => Promise<any> | void;
   onGåTilForhåndsvisning: () => void;
   erPubliseringklar: boolean;
@@ -21,13 +20,13 @@ interface Props {
 }
 
 const TabsPanels: FC<Props> = ({
-  erIForhåndsvisning,
+  erIVisning,
   onUpdated,
   onGåTilForhåndsvisning,
   erPubliseringklar,
   oppdaterData,
 }) => {
-  if (!erIForhåndsvisning) {
+  if (!erIVisning) {
     return (
       <RekrutteringstreffRedigering
         onUpdated={onUpdated}
@@ -40,9 +39,6 @@ const TabsPanels: FC<Props> = ({
 
   return (
     <>
-      <Tabs.Panel value={RekrutteringstreffTabs.OM_TREFFET} className='my-4'>
-        <RekrutteringstreffForhåndsvisning />
-      </Tabs.Panel>
       <Tabs.Panel value={RekrutteringstreffTabs.JOBBSØKERE}>
         <Jobbsøkere />
       </Tabs.Panel>

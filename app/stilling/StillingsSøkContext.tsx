@@ -53,6 +53,8 @@ export interface IStillingsSøkContext {
   utenOppdrag: boolean;
   setUtenOppdrag: (val: boolean) => void;
   formidlinger?: boolean;
+  visAvbryt: boolean;
+  setVisAvbryt: (val: boolean) => void;
 }
 
 const StillingsSøkContext = createContext<IStillingsSøkContext | undefined>(
@@ -73,6 +75,7 @@ export const StillingsSøkProvider: FC<{
 
   // Set fritekst som lokal state for å hindre fritekst i searchparam
   const [fritekst, setFritekstListe] = useState<string[]>([]);
+  const [visAvbryt, setVisAvbryt] = useState<boolean>(false);
 
   const setFritekst = (val: string) => {
     setFritekstListe((prevFritekst) => [...prevFritekst, val]);
@@ -193,6 +196,24 @@ export const StillingsSøkProvider: FC<{
   }, [statuser, setStatuserOriginal]);
 
   useEffect(() => {
+    // Håndter avbrutt status basert på portefølje-valg
+    if (portefølje === 'vis mine' && visAvbryt) {
+      // Legg til "Avbrutt" hvis det ikke allerede finnes
+      if (!statuser.includes(VisningsStatus.Avbrutt)) {
+        setStatuserOriginal([...statuser, VisningsStatus.Avbrutt]);
+      }
+    } else {
+      // Fjern "Avbrutt" hvis det finnes
+      if (statuser.includes(VisningsStatus.Avbrutt)) {
+        const filtrerteStatuser = statuser.filter(
+          (status) => status !== VisningsStatus.Avbrutt,
+        );
+        setStatuserOriginal(filtrerteStatuser);
+      }
+    }
+  }, [portefølje, statuser, setStatuserOriginal, visAvbryt]);
+
+  useEffect(() => {
     if (inkluderingUnderkategori.length !== 0) {
       let newInkluderingUnderkategori = inkluderingUnderkategori;
 
@@ -276,6 +297,8 @@ export const StillingsSøkProvider: FC<{
         publisert,
         setPublisert: wrapWithPageReset(setPublisert),
         formidlinger,
+        visAvbryt,
+        setVisAvbryt,
       }}
     >
       {children}

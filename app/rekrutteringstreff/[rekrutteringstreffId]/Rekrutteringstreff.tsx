@@ -3,6 +3,7 @@
 import { useRekrutteringstreffContext } from './RekrutteringstreffContext';
 import RekrutteringstreffHeader from './_ui/rekrutteringstreff/RekrutteringstreffHeader';
 import TabsPanels from './_ui/rekrutteringstreff/TabsPanels';
+import RekrutteringstreffForhåndsvisning from './components/RekrutteringstreffForhåndsvisning';
 import { useAlleHendelser } from '@/app/api/rekrutteringstreff/[...slug]/useAlleHendelser';
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
@@ -14,14 +15,13 @@ import { getActiveStepFromHendelser } from '@/app/rekrutteringstreff/_utils/rekr
 import Fremdriftspanel from '@/components/Fremdriftspanel';
 import SideScroll from '@/components/SideScroll';
 import SideLayout from '@/components/layout/SideLayout';
-import { Tabs } from '@navikt/ds-react';
+import { Button, Tabs } from '@navikt/ds-react';
 import { formatDistanceToNow } from 'date-fns';
 import { nb } from 'date-fns/locale/nb';
 import { parseAsString, useQueryState } from 'nuqs';
-import { FC, useCallback, useEffect, useMemo } from 'react';
+import { FC, useCallback, useEffect, useMemo, useRef } from 'react';
 
 export enum RekrutteringstreffTabs {
-  OM_TREFFET = 'om_treffet',
   JOBBSØKERE = 'jobbsøkere',
   ARBEIDSGIVERE = 'arbeidsgivere',
   AKTIVITETER = 'aktiviteter',
@@ -30,7 +30,7 @@ export enum RekrutteringstreffTabs {
 
 const Rekrutteringstreff: FC = () => {
   const [fane, setFane] = useQueryState('visFane', {
-    defaultValue: RekrutteringstreffTabs.OM_TREFFET,
+    defaultValue: RekrutteringstreffTabs.JOBBSØKERE,
     clearOnDefault: true,
   });
   const [modus, setModus] = useQueryState(
@@ -53,9 +53,16 @@ const Rekrutteringstreff: FC = () => {
   );
   const harPublisert = activeStep === 'INVITERE' || activeStep === 'FULLFØRE';
   const avlyst = activeStep === 'AVLYST';
-  const erIForhåndsvisning = useMemo(() => {
-    return avlyst || (harPublisert && modus !== 'edit');
+
+  const viserForhåndsvisningsside = useMemo(() => {
+    if (avlyst) return true;
+    return harPublisert && modus === 'preview-page';
   }, [avlyst, harPublisert, modus]);
+
+  const erIForhåndsvisning = useMemo(() => {
+    if (viserForhåndsvisningsside) return false;
+    return harPublisert && modus !== 'edit';
+  }, [viserForhåndsvisningsside, harPublisert, modus]);
 
   const rekrutteringstreff = rekrutteringstreffHook.data;
 
@@ -100,8 +107,8 @@ const Rekrutteringstreff: FC = () => {
   }, [rekrutteringstreff?.tilTid]);
 
   useEffect(() => {
-    if (avlyst && modus === 'edit') {
-      setModus('');
+    if (avlyst && modus !== 'preview-page') {
+      setModus('preview-page');
     }
   }, [avlyst, modus, setModus]);
 
@@ -114,6 +121,21 @@ const Rekrutteringstreff: FC = () => {
       setModus('edit');
     }
   }, [rekrutteringstreff, avlyst, harPublisert, modus, setModus]);
+
+  const harPublisertTidligereRef = useRef(harPublisert);
+
+  useEffect(() => {
+    if (
+      harPublisert &&
+      !harPublisertTidligereRef.current &&
+      !avlyst &&
+      modus === 'edit'
+    ) {
+      setModus('');
+    }
+
+    harPublisertTidligereRef.current = harPublisert;
+  }, [harPublisert, avlyst, modus, setModus]);
 
   const scrollToTop = useCallback(() => {
     if (typeof window !== 'undefined') {
@@ -136,6 +158,11 @@ const Rekrutteringstreff: FC = () => {
   };
 
   const gåTilForhåndsvisning = () => {
+    setModus('preview-page');
+    scrollToTop();
+  };
+
+  const gåTilStandardVisning = () => {
     setModus('');
     scrollToTop();
   };
@@ -158,13 +185,14 @@ const Rekrutteringstreff: FC = () => {
   }, [alleHendelserHook.data]);
 
   const headerTittel = useMemo(() => {
-    if (avlyst) return 'Rekrutteringstreff';
+    if (avlyst || viserForhåndsvisningsside) return 'Rekrutteringstreff';
     if (!harPublisert) return 'Nytt rekrutteringstreff';
     if (!erIForhåndsvisning) return 'Rediger rekrutteringstreffet';
     return 'Rekrutteringstreff';
-  }, [avlyst, harPublisert, erIForhåndsvisning]);
+  }, [avlyst, viserForhåndsvisningsside, harPublisert, erIForhåndsvisning]);
 
-  const skalViseHeader = !(harPublisert && !erIForhåndsvisning);
+  const skalViseHeader =
+    !viserForhåndsvisningsside && !(harPublisert && modus === 'edit');
 
   const oppdaterData = useCallback(async () => {
     await Promise.all([
@@ -174,7 +202,7 @@ const Rekrutteringstreff: FC = () => {
   }, [rekrutteringstreffHook, alleHendelserHook]);
 
   const onAvlyst = useCallback(() => {
-    setModus('');
+    setModus('preview-page');
     scrollToTop();
   }, [scrollToTop, setModus]);
 
@@ -185,14 +213,42 @@ const Rekrutteringstreff: FC = () => {
     />
   );
 
+  const stegviserInnhold = renderStegviser();
+
+  const layoutProps = {
+    skjulFremdriftspanel: false,
+    fremdriftspanelTop: <Fremdriftspanel>{stegviserInnhold}</Fremdriftspanel>,
+    fremdriftspanel: <SideScroll>{stegviserInnhold}</SideScroll>,
+  } as const;
+
+  if (viserForhåndsvisningsside) {
+    return (
+      <SideLayout {...layoutProps}>
+        <SideScroll>
+          <div className='space-y-4'>
+            {!avlyst && (
+              <div className='flex flex-wrap justify-end gap-2'>
+                <Button
+                  type='button'
+                  size='small'
+                  variant='secondary'
+                  onClick={gåTilStandardVisning}
+                >
+                  Avslutt forhåndsvisning
+                </Button>
+              </div>
+            )}
+            <RekrutteringstreffForhåndsvisning />
+          </div>
+        </SideScroll>
+      </SideLayout>
+    );
+  }
+
   return (
     <Tabs value={fane} onChange={(val) => setFane(val)}>
       <SideLayout
-        skjulFremdriftspanel={false}
-        fremdriftspanelTop={
-          <Fremdriftspanel>{renderStegviser()}</Fremdriftspanel>
-        }
-        fremdriftspanel={<SideScroll>{renderStegviser()}</SideScroll>}
+        {...layoutProps}
         header={
           skalViseHeader ? (
             <RekrutteringstreffHeader
@@ -210,6 +266,7 @@ const Rekrutteringstreff: FC = () => {
               tiltidspunktHarPassert={tiltidspunktHarPassert}
               rekrutteringstreffId={rekrutteringstreffId}
               oppdaterData={oppdaterData}
+              onÅpneForhåndsvisning={gåTilForhåndsvisning}
               onToggleForhåndsvisning={handleToggleForhåndsvisning}
               onBekreftRedigerPublisert={onBekreftRedigerPublisert}
               onAvlyst={onAvlyst}
@@ -220,7 +277,7 @@ const Rekrutteringstreff: FC = () => {
         <SideScroll>
           <div className='space-y-4'>
             <TabsPanels
-              erIForhåndsvisning={erIForhåndsvisning}
+              erIVisning={erIForhåndsvisning}
               onUpdated={rekrutteringstreffHook.mutate}
               onGåTilForhåndsvisning={gåTilForhåndsvisning}
               erPubliseringklar={erPubliseringklar}
