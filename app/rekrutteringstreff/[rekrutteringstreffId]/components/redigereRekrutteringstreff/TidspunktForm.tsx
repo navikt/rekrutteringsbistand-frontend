@@ -99,11 +99,11 @@ const TidspunktForm = ({ control }: Props) => {
           onDatoBlur={scheduleSave}
           onTidBlur={scheduleSave}
         />
-      </div>
 
-      <BodyShort size='small' className='mt-2'>
-        {varighet || 'Velg tid'}
-      </BodyShort>
+        <BodyShort size='small' className='mt-3'>
+          {varighet || 'Velg tid'}
+        </BodyShort>
+      </div>
     </div>
   );
 };
