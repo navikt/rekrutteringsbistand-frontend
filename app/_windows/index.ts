@@ -1,5 +1,6 @@
 'use client';
 
+import { finnKandidaterRekrutteringstreffWindowConfig } from './finnKandidaterRekrutteringstreffWindow';
 import { finnKandidaterWindowConfig } from './finnKandidaterWindow';
 import { finnStillingForKandidatWindow } from './finnStillingForKandidatWindow';
 import { UrlWindowConfig, useUrlWindow } from './useUrlWindow';
@@ -15,6 +16,7 @@ export const urlWindowConfigs: UrlWindowConfig[] = [
   visKandidatWindowConfig,
   visStillingWindowConfig,
   finnKandidaterWindowConfig,
+  finnKandidaterRekrutteringstreffWindowConfig,
   visEtterregistreringWindowConfig,
   finnStillingForKandidatWindow,
   // Legg til flere vinduer her...
@@ -33,6 +35,11 @@ export const useAllUrlWindows = (
   useUrlWindow(visStillingWindowConfig, addWindow, removeWindow);
   useUrlWindow(visEtterregistreringWindowConfig, addWindow, removeWindow);
   useUrlWindow(finnKandidaterWindowConfig, addWindow, removeWindow);
+  useUrlWindow(
+    finnKandidaterRekrutteringstreffWindowConfig,
+    addWindow,
+    removeWindow,
+  );
   useUrlWindow(finnStillingForKandidatWindow, addWindow, removeWindow);
 
   // Legg til flere vinduer her ved å kalle useUrlWindow for hver konfigurasjon
