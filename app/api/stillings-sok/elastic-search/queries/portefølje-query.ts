@@ -41,6 +41,15 @@ export const esPortefølje = (
   } else if (params.filter.portefølje === StillingsSøkPortefølje.VIS_MINE) {
     // Validerer at navIdent finnes og ikke er tom
     if (params.navIdent) {
+      if (!params.filter.visAvbryt) {
+        esBuilder.addBoolFilter({
+          must_not: [
+            { term: { 'stilling.status': 'REJECTED' } },
+            { term: { 'stilling.status': 'DELETED' } },
+          ],
+        });
+      }
+
       esBuilder.addBoolFilter({
         should: [
           { term: { 'stilling.administration.navIdent': params.navIdent } },
