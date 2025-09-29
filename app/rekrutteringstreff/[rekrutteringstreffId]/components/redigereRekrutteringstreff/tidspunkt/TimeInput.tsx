@@ -149,7 +149,13 @@ function TimeInput({
     const listbox =
       selected.closest<HTMLElement>("[role='listbox']") ||
       selected.parentElement;
-    if (listbox) listbox.scrollTop = selected.offsetTop;
+    if (listbox) {
+      const desiredSpacing = 4;
+      const currentOffset = selected.offsetTop - listbox.scrollTop;
+      if (currentOffset < desiredSpacing) {
+        listbox.scrollTop = Math.max(selected.offsetTop - desiredSpacing, 0);
+      }
+    }
   }, [value]);
 
   const queueScrollIntoView = useCallback(() => {
