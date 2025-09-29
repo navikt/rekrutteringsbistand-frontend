@@ -89,7 +89,7 @@ const StillingsSøkNavigasjon: FC = () => {
             <Switch
               size='small'
               key='visAvbryt'
-              checked={!visAvbryt}
+              checked={visAvbryt}
               onClick={() => setVisAvbryt(!visAvbryt)}
             >
               Vis avbrutte
