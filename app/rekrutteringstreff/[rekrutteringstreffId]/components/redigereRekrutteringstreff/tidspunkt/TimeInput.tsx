@@ -61,6 +61,7 @@ function TimeInput({
 }: Props) {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const suppressAutoScrollRef = useRef(false);
+  const commitOnNextBlurEvenIfListRef = useRef(false);
 
   const availableOptions = useMemo(() => {
     const opts = options ?? KLOKKESLETT_OPTIONS;
@@ -204,9 +205,13 @@ function TimeInput({
     (e) => {
       const related = e.relatedTarget as HTMLElement | null;
       const list = hentListeElement();
+      const skipListHandling = commitOnNextBlurEvenIfListRef.current;
+      commitOnNextBlurEvenIfListRef.current = false;
+
       const blurInsideList =
-        ignoreBlurDueToOptionClickRef.current ||
-        (related && list ? list.contains(related) : false);
+        !skipListHandling &&
+        (ignoreBlurDueToOptionClickRef.current ||
+          (related && list ? list.contains(related) : false));
       if (blurInsideList) {
         ignoreBlurDueToOptionClickRef.current = false;
         onBlur?.(e);
@@ -285,6 +290,15 @@ function TimeInput({
           const ok = finalizeCommit(inputValue ?? '');
           if (!ok && value) setInputValue(value);
           setForceCloseDropdown(true);
+          return;
+        }
+        if (k === 'Tab') {
+          commitOnNextBlurEvenIfListRef.current = true;
+          ignoreNextEmptyChangeRef.current = true;
+          const ok = finalizeCommit(inputValue ?? '');
+          if (!ok && value) setInputValue(value);
+          setForceCloseDropdown(true);
+          return;
         }
       },
       [finalizeCommit, inputValue, gåTilNesteTid, value],
@@ -333,6 +347,7 @@ function TimeInput({
       setForceCloseDropdown(false);
       ignoreNextEmptyChangeRef.current = true;
       ignoreBlurDueToOptionClickRef.current = false;
+      commitOnNextBlurEvenIfListRef.current = false;
       queueScrollIntoView();
     }, [queueScrollIntoView, value]);
 
