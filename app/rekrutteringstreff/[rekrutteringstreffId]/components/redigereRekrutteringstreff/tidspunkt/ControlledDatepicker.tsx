@@ -1,6 +1,5 @@
 import { DatePicker, useDatepicker } from '@navikt/ds-react';
-import * as React from 'react';
-import { useEffect } from 'react';
+import { FocusEvent, InputHTMLAttributes, useCallback, useEffect } from 'react';
 import type { FieldError } from 'react-hook-form';
 
 type Props = {
@@ -32,7 +31,7 @@ export default function ControlledDatePicker({
       onDateChange: (d) => onChange(d ?? null),
     });
 
-  const isAllowedInput = React.useCallback(
+  const isAllowedInput = useCallback(
     (text?: string | null) => !text || /^[\d./-]*$/.test(text),
     [],
   );
@@ -48,7 +47,7 @@ export default function ControlledDatePicker({
     }
   }, [value, selectedDay, setSelected]);
 
-  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+  const handleBlur = (e: FocusEvent<HTMLInputElement>) => {
     inputProps.onBlur?.(e);
     onBlur?.();
   };
@@ -69,9 +68,9 @@ export default function ControlledDatePicker({
             event.preventDefault();
             return;
           }
-          (
-            inputProps as React.InputHTMLAttributes<HTMLInputElement>
-          ).onBeforeInput?.(event);
+          (inputProps as InputHTMLAttributes<HTMLInputElement>).onBeforeInput?.(
+            event,
+          );
         }}
         onPaste={(event) => {
           const pasted = event.clipboardData.getData('text');
@@ -79,7 +78,7 @@ export default function ControlledDatePicker({
             event.preventDefault();
             return;
           }
-          (inputProps as React.InputHTMLAttributes<HTMLInputElement>).onPaste?.(
+          (inputProps as InputHTMLAttributes<HTMLInputElement>).onPaste?.(
             event,
           );
         }}

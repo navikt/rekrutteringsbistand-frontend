@@ -85,6 +85,7 @@ const TidspunktForm = ({ control }: Props) => {
           control={control}
           onDatoBlur={scheduleSave}
           onTidBlur={scheduleSave}
+          timeMax='22:59'
         />
 
         <DatoTidRad<TidspunktFormFields>
@@ -98,11 +99,11 @@ const TidspunktForm = ({ control }: Props) => {
           onDatoBlur={scheduleSave}
           onTidBlur={scheduleSave}
         />
-      </div>
 
-      <BodyShort size='small' className='mt-2'>
-        {varighet || 'Velg tid'}
-      </BodyShort>
+        <BodyShort size='small' className='mt-3'>
+          {varighet || 'Velg tid'}
+        </BodyShort>
+      </div>
     </div>
   );
 };

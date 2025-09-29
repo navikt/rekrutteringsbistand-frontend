@@ -5,25 +5,33 @@ import React, {
   ReactNode,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react';
 
-export const KLOKKESLETT_OPTIONS = [...Array(24)].flatMap((_, h) =>
-  [0, 15, 30, 45].map(
+export const PREDEFINERTE_MINUTTER = [0, 30] as const;
+
+export const KLOKKESLETT_OPTIONS = Array.from({ length: 24 }, (_, h) =>
+  PREDEFINERTE_MINUTTER.map(
     (m) => `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`,
   ),
-);
+).flat();
 
-// Regex for å validere HH:MM (24-timers format)
-const TIME_REGEX = /^([01]\d|2[0-3]):([0-5]\d)$/; // HH:MM
+const TIME_REGEX = /^([01]\d|2[0-3]):([0-5]\d)$/;
 
-const insertOptionSorted = (options: string[], newOption: string) => {
-  if (options.includes(newOption)) {
-    return options;
-  }
+const tolkTidsinndata = (tekst: string): string | null => {
+  const m = tekst.match(/^(\d{1,2})(?::?(\d{0,2}))?$/);
+  if (!m) return null;
 
-  return [...options, newOption].sort();
+  const t = Math.min(parseInt(m[1] || '0', 10) || 0, 23);
+  const r = parseInt(m[2] || '0', 10) || 0;
+  const n = PREDEFINERTE_MINUTTER.reduce(
+    (best, cand) => (Math.abs(cand - r) < Math.abs(best - r) ? cand : best),
+    PREDEFINERTE_MINUTTER[0],
+  );
+
+  return `${String(t).padStart(2, '0')}:${String(n).padStart(2, '0')}`;
 };
 
 type Props = {
@@ -36,6 +44,7 @@ type Props = {
   error?: ReactNode | boolean;
   className?: string;
   options?: string[];
+  maxTime?: string;
 };
 
 function TimeInput({
@@ -48,153 +57,329 @@ function TimeInput({
   error,
   className,
   options,
+  maxTime,
 }: Props) {
-  // Trenger ref for å kunne scrolle til valgt element i dropdown, det er ikke standard funksjonalitet i ds-react sin Combobox
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const suppressAutoScrollRef = useRef(false);
+  const commitOnNextBlurEvenIfListRef = useRef(false);
 
-  // Sørger for at valgt option havner helt øverst i lista
+  const availableOptions = useMemo(() => {
+    const opts = options ?? KLOKKESLETT_OPTIONS;
+    return maxTime ? opts.filter((opt) => opt <= maxTime) : opts;
+  }, [options, maxTime]);
+
+  const [inputValue, setInputValue] = useState(value ?? '');
+  const [forceCloseDropdown, setForceCloseDropdown] = useState(false);
+
+  const didUserTypeRef = useRef(false);
+  const lastFocusValueRef = useRef<string | undefined>(value);
+  const ignoreNextEmptyChangeRef = useRef(false);
+  const ignoreBlurDueToOptionClickRef = useRef(false);
+
+  const erLovligTid = useCallback(
+    (val: string) => TIME_REGEX.test(val) && (!maxTime || val <= maxTime),
+    [maxTime],
+  );
+
+  const erLovligInput = useCallback(
+    (text?: string | null) => !text || /^[\d:]*$/.test(text),
+    [],
+  );
+
+  const insertOptionSortert = useCallback(
+    (opts: string[], v: string) =>
+      maxTime && v > maxTime
+        ? opts
+        : opts.includes(v)
+          ? opts
+          : [...opts, v].sort(),
+    [maxTime],
+  );
+
+  const dynamiskeOptions =
+    value && erLovligTid(value)
+      ? insertOptionSortert(availableOptions, value)
+      : availableOptions;
+
+  const roter = (arr: string[], start: string) => {
+    const idx = arr.indexOf(start);
+    if (idx <= 0) return arr;
+    return [...arr.slice(idx), ...arr.slice(0, idx)];
+  };
+
+  const rotatedOptions = useMemo(() => {
+    if (
+      inputValue &&
+      erLovligTid(inputValue) &&
+      dynamiskeOptions.includes(inputValue)
+    ) {
+      return roter(dynamiskeOptions, inputValue);
+    }
+    if (value && erLovligTid(value) && dynamiskeOptions.includes(value)) {
+      return roter(dynamiskeOptions, value);
+    }
+    return dynamiskeOptions;
+  }, [dynamiskeOptions, inputValue, value, erLovligTid]);
+
+  const hentListeElement = () => {
+    const input = inputRef.current;
+    if (!input || typeof document === 'undefined') return null;
+    const id = input.getAttribute('aria-controls');
+    return id ? (document.getElementById(id) as HTMLElement | null) : null;
+  };
+
   const scrollSelectedIntoView = useCallback(() => {
-    if (typeof document === 'undefined') return;
+    if (suppressAutoScrollRef.current) return;
     const input = inputRef.current;
     if (!input || input.getAttribute('aria-expanded') !== 'true') return;
-    const listId = input.getAttribute('aria-controls');
-    if (!listId) return;
 
-    const selected = document
-      .getElementById(listId)
-      ?.querySelector<HTMLElement>("[role='option'][aria-selected='true']");
-    if (selected) {
-      const listbox =
-        selected.closest<HTMLElement>("[role='listbox']") ||
-        selected.parentElement;
-      if (listbox) {
-        listbox.scrollTop = selected.offsetTop; // Plasser valgt øverst
+    const list = hentListeElement();
+    if (!list) return;
+
+    let selected = list.querySelector<HTMLElement>(
+      "[role='option'][aria-selected='true']",
+    );
+    if (!selected && value) {
+      const all = Array.from(
+        list.querySelectorAll<HTMLElement>("[role='option']"),
+      );
+      selected = all.find((el) => el.textContent?.trim() === value) || null;
+    }
+    if (!selected) return;
+
+    const listbox =
+      selected.closest<HTMLElement>("[role='listbox']") ||
+      selected.parentElement;
+    if (listbox) {
+      const desiredSpacing = 4;
+      const currentOffset = selected.offsetTop - listbox.scrollTop;
+      if (currentOffset < desiredSpacing) {
+        listbox.scrollTop = Math.max(selected.offsetTop - desiredSpacing, 0);
       }
     }
-  }, []);
+  }, [value]);
 
   const queueScrollIntoView = useCallback(() => {
     if (typeof window === 'undefined') return;
-
-    let attempts = 0;
-    const run = () => {
-      attempts += 1;
-      scrollSelectedIntoView();
-      if (attempts < 3) {
-        window.requestAnimationFrame(run);
-      }
-    };
-
-    window.requestAnimationFrame(run);
+    window.requestAnimationFrame(scrollSelectedIntoView);
   }, [scrollSelectedIntoView]);
+
+  const finalizeCommit = useCallback(
+    (valRaw: string) => {
+      const v = valRaw.trim();
+
+      if (v === '') {
+        if (didUserTypeRef.current) {
+          if (value) onChange('');
+        } else {
+          setInputValue(value ?? '');
+        }
+        return true;
+      }
+
+      if (erLovligTid(v)) {
+        if (v !== value) onChange(v);
+        return true;
+      }
+
+      setInputValue(value ?? '');
+      return false;
+    },
+    [erLovligTid, onChange, value],
+  );
+
+  const handleInputChange = useCallback((val: string) => {
+    if (ignoreNextEmptyChangeRef.current && val === '') {
+      ignoreNextEmptyChangeRef.current = false;
+      return;
+    }
+
+    if (!didUserTypeRef.current && val !== '') didUserTypeRef.current = true;
+    if (val === '' && !didUserTypeRef.current) return;
+
+    setInputValue(val === '' ? '' : val);
+    if (val !== '') setForceCloseDropdown(true);
+  }, []);
+
+  const handleBlur: React.FocusEventHandler<HTMLInputElement> = useCallback(
+    (e) => {
+      const related = e.relatedTarget as HTMLElement | null;
+      const list = hentListeElement();
+      const skipListHandling = commitOnNextBlurEvenIfListRef.current;
+      commitOnNextBlurEvenIfListRef.current = false;
+
+      const blurInsideList =
+        !skipListHandling &&
+        (ignoreBlurDueToOptionClickRef.current ||
+          (related && list ? list.contains(related) : false));
+      if (blurInsideList) {
+        ignoreBlurDueToOptionClickRef.current = false;
+        onBlur?.(e);
+        return;
+      }
+
+      ignoreBlurDueToOptionClickRef.current = false;
+
+      const unchanged =
+        !didUserTypeRef.current &&
+        (inputValue === '' || inputValue === lastFocusValueRef.current);
+
+      if (unchanged) {
+        setInputValue(value ?? '');
+        onBlur?.(e);
+        return;
+      }
+
+      finalizeCommit(inputValue);
+
+      const close = () => setForceCloseDropdown(true);
+      if (typeof window !== 'undefined') window.requestAnimationFrame(close);
+      else close();
+
+      onBlur?.(e);
+    },
+    [finalizeCommit, inputValue, onBlur, value],
+  );
+
+  const beregnNesteVerdi = useCallback(
+    (nåværende: string | undefined, endring: number) => {
+      const alternativer = dynamiskeOptions;
+      const indexFor = (verdi?: string) =>
+        verdi && erLovligTid(verdi) ? alternativer.indexOf(verdi) : -1;
+
+      let i = indexFor(nåværende);
+      if (i === -1) {
+        const tolket = tolkTidsinndata(inputValue);
+        i = tolket ? alternativer.indexOf(tolket) : -1;
+      }
+      if (i === -1) {
+        const start = inputValue || value || '';
+        const j = alternativer.indexOf(start);
+        i = j >= 0 ? j : 0;
+      }
+
+      return alternativer[
+        (i + endring + alternativer.length) % alternativer.length
+      ];
+    },
+    [dynamiskeOptions, erLovligTid, inputValue, value],
+  );
+
+  const gåTilNesteTid = useCallback(
+    (nåværende: string | undefined, endring: number) => {
+      const neste = beregnNesteVerdi(nåværende, endring);
+      didUserTypeRef.current = true;
+      ignoreNextEmptyChangeRef.current = true;
+      setInputValue(neste);
+    },
+    [beregnNesteVerdi],
+  );
+
+  const handleKeyDownCapture: React.KeyboardEventHandler<HTMLInputElement> =
+    useCallback(
+      (event) => {
+        const k = event.key;
+        if (k === 'ArrowDown' || k === 'ArrowUp') {
+          event.preventDefault();
+          event.stopPropagation();
+          gåTilNesteTid(inputValue || value, k === 'ArrowDown' ? +1 : -1);
+          return;
+        }
+        if (k === 'Enter') {
+          ignoreNextEmptyChangeRef.current = true;
+          const ok = finalizeCommit(inputValue ?? '');
+          if (!ok && value) setInputValue(value);
+          setForceCloseDropdown(true);
+          return;
+        }
+        if (k === 'Tab') {
+          commitOnNextBlurEvenIfListRef.current = true;
+          ignoreNextEmptyChangeRef.current = true;
+          const ok = finalizeCommit(inputValue ?? '');
+          if (!ok && value) setInputValue(value);
+          setForceCloseDropdown(true);
+          return;
+        }
+      },
+      [finalizeCommit, inputValue, gåTilNesteTid, value],
+    );
+
+  const handleBeforeInput: React.FormEventHandler<HTMLInputElement> =
+    useCallback(
+      (event) => {
+        const nativeEvent = event.nativeEvent as InputEvent;
+        const data = 'data' in nativeEvent ? (nativeEvent as any).data : null;
+        if (!erLovligInput(data)) event.preventDefault();
+      },
+      [erLovligInput],
+    );
+
+  const handlePaste: React.ClipboardEventHandler<HTMLInputElement> =
+    useCallback(
+      (event) => {
+        const pasted = event.clipboardData.getData('text');
+        if (!erLovligInput(pasted)) event.preventDefault();
+      },
+      [erLovligInput],
+    );
+
+  const handleMouseDownCapture: React.MouseEventHandler<HTMLDivElement> =
+    useCallback((e) => {
+      const t = e.target as HTMLElement;
+      const isInput = t.tagName === 'INPUT';
+      const isOption =
+        t.getAttribute('role') === 'option' || !!t.closest("[role='option']");
+      const inListbox = !!t.closest("[role='listbox']");
+      if (isOption || inListbox) ignoreBlurDueToOptionClickRef.current = true;
+      if (inListbox) suppressAutoScrollRef.current = true;
+      if (!(isInput || isOption || inListbox)) {
+        inputRef.current?.focus();
+        e.preventDefault();
+        ignoreNextEmptyChangeRef.current = true;
+      }
+    }, []);
+
+  const handleFocus: React.FocusEventHandler<HTMLInputElement> =
+    useCallback(() => {
+      suppressAutoScrollRef.current = false;
+      didUserTypeRef.current = false;
+      lastFocusValueRef.current = value;
+      setForceCloseDropdown(false);
+      ignoreNextEmptyChangeRef.current = true;
+      ignoreBlurDueToOptionClickRef.current = false;
+      commitOnNextBlurEvenIfListRef.current = false;
+      queueScrollIntoView();
+    }, [queueScrollIntoView, value]);
+
+  useEffect(() => setInputValue(value ?? ''), [value]);
 
   useEffect(() => {
     const input = inputRef.current;
     if (!input) return;
 
-    const observer = new MutationObserver((mutations) => {
-      for (const m of mutations) {
-        if (m.type === 'attributes' && m.attributeName === 'aria-expanded') {
-          if (input.getAttribute('aria-expanded') === 'true') {
-            queueScrollIntoView();
-          }
-        }
-      }
+    const observer = new MutationObserver(() => {
+      if (input.getAttribute('aria-expanded') === 'true') queueScrollIntoView();
     });
 
     observer.observe(input, {
       attributes: true,
       attributeFilter: ['aria-expanded'],
     });
-
     return () => observer.disconnect();
   }, [queueScrollIntoView]);
 
-  useEffect(() => {
-    queueScrollIntoView();
-  }, [queueScrollIntoView, value]);
-
-  const availableOptions = options ?? KLOKKESLETT_OPTIONS;
-
-  const [inputValue, setInputValue] = useState(value ?? '');
-  const [isFocused, setIsFocused] = useState(false);
-  const [forceCloseDropdown, setForceCloseDropdown] = useState(false);
-  const didUserTypeRef = useRef(false); // Sporer om bruker faktisk har interagert med input-teksten
-  const lastFocusValueRef = useRef<string | undefined>(value);
-
-  useEffect(() => {
-    setInputValue(value ?? '');
-  }, [value]);
-
-  const isAllowedTime = useCallback((val: string) => TIME_REGEX.test(val), []);
-
-  const isAllowedInput = useCallback(
-    (text?: string | null) => !text || /^[\d:]*$/.test(text),
-    [],
-  );
-
-  const handleInputChange = useCallback((val: string) => {
-    if (val === '' && !didUserTypeRef.current) {
-      return;
-    }
-    if (val !== '' && !didUserTypeRef.current) {
-      didUserTypeRef.current = true;
-    }
-    if (val === '' && didUserTypeRef.current) {
-      setInputValue('');
-    } else if (val !== '') {
-      setInputValue(val);
-    }
-    setForceCloseDropdown(true);
-  }, []);
-
-  const commitIfValid = useCallback(
-    (val: string) => {
-      if (val === '') {
-        if (value) onChange('');
-        return true;
-      }
-      if (isAllowedTime(val)) {
-        if (val !== value) onChange(val);
-        return true;
-      }
-      return false;
-    },
-    [isAllowedTime, onChange, value],
-  );
-
-  const handleBlur: React.FocusEventHandler<HTMLInputElement> = useCallback(
-    (e) => {
-      setIsFocused(false);
-      // Hvis bruker ikke skrev noe og inputValue er lik fokusverdi, ikke forsøk å committe tom init event
-      if (
-        !didUserTypeRef.current &&
-        (inputValue === '' || inputValue === lastFocusValueRef.current)
-      ) {
-        setInputValue(value ?? '');
-        onBlur?.(e);
-        return;
-      }
-
-      const ok = commitIfValid(inputValue.trim());
-      if (!ok) {
-        setInputValue(value ?? '');
-      }
-      setForceCloseDropdown(false);
-      onBlur?.(e);
-    },
-    [commitIfValid, inputValue, onBlur, value],
-  );
-
-  // Hvis den commit'ede verdien (value) ikke finnes i 15-min listen fordi bruker skrev et custom minutt, legg den til så den vises som valgt
-  const dynamicOptions =
-    value && TIME_REGEX.test(value)
-      ? insertOptionSorted(availableOptions, value)
-      : availableOptions;
-
-  // Under skriving (fokus) skal ikke tidligere valg vises som chip. Uten å ta hensyn til dette vil tidspunkt vises når vi blanker ut feltet når vi skal skrive helt nytt tidspunkt.
-  const showSelectedOption = !isFocused && value !== undefined && value !== '';
-  const selectedOptionsValue = value ? [value] : [];
+  const selectedOptionsValue = useMemo(() => {
+    const candidate =
+      inputValue &&
+      erLovligTid(inputValue) &&
+      rotatedOptions.includes(inputValue)
+        ? inputValue
+        : value && erLovligTid(value) && rotatedOptions.includes(value)
+          ? value
+          : undefined;
+    return candidate ? [candidate] : [];
+  }, [inputValue, value, erLovligTid, rotatedOptions]);
+  const computedClassName = `${className ?? 'w-[7rem]'} focus-within:outline-none focus-visible:outline-none focus-within:ring-0 focus-visible:ring-0`;
 
   return (
     <Combobox
@@ -203,51 +388,34 @@ function TimeInput({
       hideLabel={hideLabel}
       disabled={disabled}
       error={error}
-      className={['min-w-[7rem]', className].filter(Boolean).join(' ')}
-      options={dynamicOptions}
-      filteredOptions={dynamicOptions}
-      allowNewValues={true}
-      toggleListButton={true}
+      className={computedClassName}
+      options={rotatedOptions}
+      filteredOptions={rotatedOptions}
+      allowNewValues
+      toggleListButton
       isListOpen={forceCloseDropdown ? false : undefined}
       value={inputValue}
-      shouldShowSelectedOptions={showSelectedOption}
+      inputClassName='min-w-0'
+      shouldShowSelectedOptions={false}
       selectedOptions={selectedOptionsValue}
-      onFocus={() => {
-        setIsFocused(true);
-        didUserTypeRef.current = false;
-        lastFocusValueRef.current = value;
-        setInputValue(value ?? '');
-        setForceCloseDropdown(false);
-        queueScrollIntoView();
-      }}
+      onMouseDownCapture={handleMouseDownCapture}
+      onFocus={handleFocus}
       onToggleSelected={(option, isSelected) => {
         if (isSelected) {
-          didUserTypeRef.current = true;
+          ignoreNextEmptyChangeRef.current = true;
+          ignoreBlurDueToOptionClickRef.current = false;
           setInputValue(option);
-          commitIfValid(option);
-          setForceCloseDropdown(false);
+          lastFocusValueRef.current = option;
+          didUserTypeRef.current = false;
+          onChange(option);
+          setForceCloseDropdown(true);
         }
       }}
-      onChange={(val) => handleInputChange(val)}
+      onChange={handleInputChange}
       onBlur={handleBlur}
-      onKeyDownCapture={(event) => {
-        if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
-          setForceCloseDropdown(false);
-        }
-      }}
-      onBeforeInput={(event) => {
-        const nativeEvent = event.nativeEvent as InputEvent;
-        const data = 'data' in nativeEvent ? nativeEvent.data : null;
-        if (!isAllowedInput(data)) {
-          event.preventDefault();
-        }
-      }}
-      onPaste={(event) => {
-        const pasted = event.clipboardData.getData('text');
-        if (!isAllowedInput(pasted)) {
-          event.preventDefault();
-        }
-      }}
+      onKeyDownCapture={handleKeyDownCapture}
+      onBeforeInput={handleBeforeInput}
+      onPaste={handlePaste}
     />
   );
 }

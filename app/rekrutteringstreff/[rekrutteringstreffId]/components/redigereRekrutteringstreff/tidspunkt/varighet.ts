@@ -24,7 +24,7 @@ export const rekrutteringstreffVarighet = (
 
   if (isSameDay(startTidspunkt, sluttTidspunkt)) {
     const minuttForskjell = differenceInMinutes(sluttTidspunkt, startTidspunkt);
-    if (minuttForskjell === 0) return '0 min';
+    if (minuttForskjell === 0) return '0 minutt';
 
     const absolutteMinutter = Math.abs(minuttForskjell);
     const timer = Math.floor(absolutteMinutter / 60);
@@ -32,8 +32,8 @@ export const rekrutteringstreffVarighet = (
 
     const fortegn = minuttForskjell < 0 ? '-' : '';
     const tidsdeler = [];
-    if (timer > 0) tidsdeler.push(`${timer} t`);
-    if (minutter > 0) tidsdeler.push(`${minutter} min`);
+    if (timer > 0) tidsdeler.push(`${timer} time${timer > 1 ? 'r' : ''}`);
+    if (minutter > 0) tidsdeler.push(`${minutter} minutt`);
 
     return `${fortegn}${tidsdeler.join(' ')}`;
   } else {
