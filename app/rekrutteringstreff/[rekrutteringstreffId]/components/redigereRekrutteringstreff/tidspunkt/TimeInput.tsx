@@ -10,7 +10,6 @@ import React, {
   useState,
 } from 'react';
 
-// Én felles kilde for hvilke minuttrinn som brukes både i dropdown og ved tolking.
 export const PREDEFINERTE_MINUTTER = [0, 30] as const;
 
 export const KLOKKESLETT_OPTIONS = Array.from({ length: 24 }, (_, h) =>
@@ -61,6 +60,7 @@ function TimeInput({
   maxTime,
 }: Props) {
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const suppressAutoScrollRef = useRef(false);
 
   const availableOptions = useMemo(() => {
     const opts = options ?? KLOKKESLETT_OPTIONS;
@@ -73,6 +73,7 @@ function TimeInput({
   const didUserTypeRef = useRef(false);
   const lastFocusValueRef = useRef<string | undefined>(value);
   const ignoreNextEmptyChangeRef = useRef(false);
+  const ignoreBlurDueToOptionClickRef = useRef(false);
 
   const erLovligTid = useCallback(
     (val: string) => TIME_REGEX.test(val) && (!maxTime || val <= maxTime),
@@ -99,6 +100,26 @@ function TimeInput({
       ? insertOptionSortert(availableOptions, value)
       : availableOptions;
 
+  const roter = (arr: string[], start: string) => {
+    const idx = arr.indexOf(start);
+    if (idx <= 0) return arr;
+    return [...arr.slice(idx), ...arr.slice(0, idx)];
+  };
+
+  const rotatedOptions = useMemo(() => {
+    if (
+      inputValue &&
+      erLovligTid(inputValue) &&
+      dynamiskeOptions.includes(inputValue)
+    ) {
+      return roter(dynamiskeOptions, inputValue);
+    }
+    if (value && erLovligTid(value) && dynamiskeOptions.includes(value)) {
+      return roter(dynamiskeOptions, value);
+    }
+    return dynamiskeOptions;
+  }, [dynamiskeOptions, inputValue, value, erLovligTid]);
+
   const hentListeElement = () => {
     const input = inputRef.current;
     if (!input || typeof document === 'undefined') return null;
@@ -107,6 +128,7 @@ function TimeInput({
   };
 
   const scrollSelectedIntoView = useCallback(() => {
+    if (suppressAutoScrollRef.current) return;
     const input = inputRef.current;
     if (!input || input.getAttribute('aria-expanded') !== 'true') return;
 
@@ -132,13 +154,7 @@ function TimeInput({
 
   const queueScrollIntoView = useCallback(() => {
     if (typeof window === 'undefined') return;
-    let attempts = 0;
-    const run = () => {
-      attempts += 1;
-      scrollSelectedIntoView();
-      if (attempts < 3) window.requestAnimationFrame(run);
-    };
-    window.requestAnimationFrame(run);
+    window.requestAnimationFrame(scrollSelectedIntoView);
   }, [scrollSelectedIntoView]);
 
   const finalizeCommit = useCallback(
@@ -180,6 +196,19 @@ function TimeInput({
 
   const handleBlur: React.FocusEventHandler<HTMLInputElement> = useCallback(
     (e) => {
+      const related = e.relatedTarget as HTMLElement | null;
+      const list = hentListeElement();
+      const blurInsideList =
+        ignoreBlurDueToOptionClickRef.current ||
+        (related && list ? list.contains(related) : false);
+      if (blurInsideList) {
+        ignoreBlurDueToOptionClickRef.current = false;
+        onBlur?.(e);
+        return;
+      }
+
+      ignoreBlurDueToOptionClickRef.current = false;
+
       const unchanged =
         !didUserTypeRef.current &&
         (inputValue === '' || inputValue === lastFocusValueRef.current);
@@ -240,7 +269,6 @@ function TimeInput({
       (event) => {
         const k = event.key;
         if (k === 'ArrowDown' || k === 'ArrowUp') {
-          setForceCloseDropdown(true);
           event.preventDefault();
           event.stopPropagation();
           gåTilNesteTid(inputValue || value, k === 'ArrowDown' ? +1 : -1);
@@ -282,6 +310,8 @@ function TimeInput({
       const isOption =
         t.getAttribute('role') === 'option' || !!t.closest("[role='option']");
       const inListbox = !!t.closest("[role='listbox']");
+      if (isOption || inListbox) ignoreBlurDueToOptionClickRef.current = true;
+      if (inListbox) suppressAutoScrollRef.current = true;
       if (!(isInput || isOption || inListbox)) {
         inputRef.current?.focus();
         e.preventDefault();
@@ -291,10 +321,12 @@ function TimeInput({
 
   const handleFocus: React.FocusEventHandler<HTMLInputElement> =
     useCallback(() => {
+      suppressAutoScrollRef.current = false;
       didUserTypeRef.current = false;
       lastFocusValueRef.current = value;
       setForceCloseDropdown(false);
       ignoreNextEmptyChangeRef.current = true;
+      ignoreBlurDueToOptionClickRef.current = false;
       queueScrollIntoView();
     }, [queueScrollIntoView, value]);
 
@@ -315,11 +347,17 @@ function TimeInput({
     return () => observer.disconnect();
   }, [queueScrollIntoView]);
 
-  useEffect(() => {
-    queueScrollIntoView();
-  }, [queueScrollIntoView, value]);
-
-  const selectedOptionsValue = value ? [value] : [];
+  const selectedOptionsValue = useMemo(() => {
+    const candidate =
+      inputValue &&
+      erLovligTid(inputValue) &&
+      rotatedOptions.includes(inputValue)
+        ? inputValue
+        : value && erLovligTid(value) && rotatedOptions.includes(value)
+          ? value
+          : undefined;
+    return candidate ? [candidate] : [];
+  }, [inputValue, value, erLovligTid, rotatedOptions]);
   const computedClassName = `${className ?? 'w-[7rem]'} focus-within:outline-none focus-visible:outline-none focus-within:ring-0 focus-visible:ring-0`;
 
   return (
@@ -330,8 +368,8 @@ function TimeInput({
       disabled={disabled}
       error={error}
       className={computedClassName}
-      options={dynamiskeOptions}
-      filteredOptions={dynamiskeOptions}
+      options={rotatedOptions}
+      filteredOptions={rotatedOptions}
       allowNewValues
       toggleListButton
       isListOpen={forceCloseDropdown ? false : undefined}
@@ -344,6 +382,7 @@ function TimeInput({
       onToggleSelected={(option, isSelected) => {
         if (isSelected) {
           ignoreNextEmptyChangeRef.current = true;
+          ignoreBlurDueToOptionClickRef.current = false;
           setInputValue(option);
           lastFocusValueRef.current = option;
           didUserTypeRef.current = false;
