@@ -35,6 +35,7 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({
   const { mutate: mutateHendelser } = hendelseHook;
 
   const [slette, setSlette] = useState<ArbeidsgiverDTO | null>(null);
+  const [sletterArbeidsgiver, setSletterArbeidsgiver] = useState(false);
   const slettModalRef = useRef<HTMLDialogElement>(null);
 
   const åpneSlettModal = (arbeidsgiver: ArbeidsgiverDTO) => {
@@ -45,6 +46,7 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({
   const bekreftSlett = async () => {
     if (!slette) return;
     try {
+      setSletterArbeidsgiver(true);
       await fjernArbeidsgiver(
         rekrutteringstreffId,
         (slette as any).arbeidsgiverTreffId ?? slette.organisasjonsnummer,
@@ -52,6 +54,7 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({
       await mutateArbeidsgivere();
       await mutateHendelser();
     } finally {
+      setSletterArbeidsgiver(false);
       setSlette(null);
       slettModalRef.current?.close();
     }
@@ -218,6 +221,7 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({
                               variant='tertiary'
                               onClick={() => åpneSlettModal(a)}
                               aria-label={`Fjern ${a.navn}`}
+                              disabled={sletterArbeidsgiver}
                             >
                               <XMarkIcon aria-hidden />
                             </Button>
@@ -244,7 +248,12 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({
                   )}
                 </Modal.Body>
                 <Modal.Footer>
-                  <Button variant='danger' onClick={bekreftSlett}>
+                  <Button
+                    variant='danger'
+                    onClick={bekreftSlett}
+                    loading={sletterArbeidsgiver}
+                    disabled={sletterArbeidsgiver}
+                  >
                     Slett
                   </Button>
                   <Button
@@ -253,6 +262,7 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({
                       setSlette(null);
                       slettModalRef.current?.close();
                     }}
+                    disabled={sletterArbeidsgiver}
                   >
                     Avbryt
                   </Button>

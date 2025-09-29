@@ -7,15 +7,13 @@ import {
   ArbeidsgiverDTO,
   useRekrutteringstreffArbeidsgivere,
 } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
-import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
 import LeggTilArbeidsgiverModal from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/LeggTilArbeidsgiverModal';
-import { getActiveStepFromHendelser } from '@/app/rekrutteringstreff/_utils/rekrutteringstreff';
 import SWRLaster from '@/components/SWRLaster';
 import { PlusIcon, TrashIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button, Modal, Tooltip } from '@navikt/ds-react';
 import * as React from 'react';
-import { useMemo, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 
 const RekrutteringstreffArbeidsgivere = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
@@ -25,13 +23,6 @@ const RekrutteringstreffArbeidsgivere = () => {
   const hendelseHook = useArbeidsgiverHendelser(rekrutteringstreffId);
   const { mutate: mutateArbeidsgivere } = arbeidsgivereHook;
   const { mutate: mutateHendelser } = hendelseHook;
-
-  const { data: treff } = useRekrutteringstreff(rekrutteringstreffId);
-  const activeStep = useMemo(
-    () => getActiveStepFromHendelser(treff?.hendelser),
-    [treff?.hendelser],
-  );
-  const erInviterSteg = activeStep === 'INVITERE';
 
   const leggTilModalRef = useRef<HTMLDialogElement>(null);
 
@@ -50,31 +41,18 @@ const RekrutteringstreffArbeidsgivere = () => {
   };
 
   const [slette, setSlette] = useState<ArbeidsgiverDTO | null>(null);
+  const [sletterArbeidsgiver, setSletterArbeidsgiver] = useState(false);
   const slettModalRef = useRef<HTMLDialogElement>(null);
 
-  const handleSlettClick = async (arbeidsgiver: ArbeidsgiverDTO) => {
-    // Dersom vi er i inviter-steget, vis modal. Hvis ikke, slett direkte uten modal.
-    if (erInviterSteg) {
-      setSlette(arbeidsgiver);
-      slettModalRef.current?.showModal();
-      return;
-    }
-    try {
-      await fjernArbeidsgiver(
-        rekrutteringstreffId,
-        (arbeidsgiver as any).arbeidsgiverTreffId ??
-          arbeidsgiver.organisasjonsnummer,
-      );
-      await mutateArbeidsgivere();
-      await mutateHendelser();
-    } finally {
-      setSlette(null);
-    }
+  const handleSlettClick = (arbeidsgiver: ArbeidsgiverDTO) => {
+    setSlette(arbeidsgiver);
+    slettModalRef.current?.showModal();
   };
 
   const bekreftSlett = async () => {
     if (!slette) return;
     try {
+      setSletterArbeidsgiver(true);
       await fjernArbeidsgiver(
         rekrutteringstreffId,
         (slette as any).arbeidsgiverTreffId ?? slette.organisasjonsnummer,
@@ -82,6 +60,7 @@ const RekrutteringstreffArbeidsgivere = () => {
       await mutateArbeidsgivere();
       await mutateHendelser();
     } finally {
+      setSletterArbeidsgiver(false);
       setSlette(null);
       slettModalRef.current?.close();
     }
@@ -114,7 +93,7 @@ const RekrutteringstreffArbeidsgivere = () => {
                   <Button
                     size='small'
                     variant='tertiary'
-                    disabled={kunEnArbeidsgiver}
+                    disabled={kunEnArbeidsgiver || sletterArbeidsgiver}
                     onClick={() => handleSlettClick(a)}
                     icon={<TrashIcon aria-hidden />}
                   >
@@ -130,7 +109,7 @@ const RekrutteringstreffArbeidsgivere = () => {
                       <Button
                         size='small'
                         variant='tertiary'
-                        disabled={kunEnArbeidsgiver}
+                        disabled={kunEnArbeidsgiver || sletterArbeidsgiver}
                         onClick={() => handleSlettClick(a)}
                         icon={<TrashIcon aria-hidden />}
                       >
@@ -164,7 +143,12 @@ const RekrutteringstreffArbeidsgivere = () => {
               )}
             </Modal.Body>
             <Modal.Footer>
-              <Button variant='danger' onClick={bekreftSlett}>
+              <Button
+                variant='danger'
+                onClick={bekreftSlett}
+                loading={sletterArbeidsgiver}
+                disabled={sletterArbeidsgiver}
+              >
                 Slett
               </Button>
               <Button
@@ -173,6 +157,7 @@ const RekrutteringstreffArbeidsgivere = () => {
                   setSlette(null);
                   slettModalRef.current?.close();
                 }}
+                disabled={sletterArbeidsgiver}
               >
                 Avbryt
               </Button>
