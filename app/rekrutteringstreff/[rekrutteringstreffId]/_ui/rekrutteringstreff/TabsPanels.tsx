@@ -1,7 +1,7 @@
 'use client';
 
+import Hendelser from '../hendelser/Hendelser';
 import { RekrutteringstreffTabs } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/Rekrutteringstreff';
-import Aktiviteter from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/aktiviteter/Aktiviteter';
 import RekrutteringstreffArbeidsgivere from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/arbeidsgivere/Arbeidsgivere';
 import Jobbsøkere from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøkere/Jobbsøkere';
 import KiLogg from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/kilogg/components/KiLogg';
@@ -45,8 +45,8 @@ const TabsPanels: FC<Props> = ({
       <Tabs.Panel value={RekrutteringstreffTabs.ARBEIDSGIVERE}>
         <RekrutteringstreffArbeidsgivere />
       </Tabs.Panel>
-      <Tabs.Panel value={RekrutteringstreffTabs.AKTIVITETER}>
-        <Aktiviteter />
+      <Tabs.Panel value={RekrutteringstreffTabs.HENDELSER}>
+        <Hendelser />
       </Tabs.Panel>
       <TilgangskontrollForInnhold
         kreverEnAvRollene={[Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER]}

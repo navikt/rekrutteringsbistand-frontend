@@ -1,5 +1,6 @@
 import LagreIRekrutteringstreffModal from './LagreIRekrutteringstreffModal';
 import { KandidatsokKandidat } from '@/app/api/kandidat-sok/useKandidatsøk';
+import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
 import {
   leggtilNyeJobbsøkere,
   LeggTilNyJobbsøkereDTO,
@@ -21,6 +22,7 @@ const LagreIRekrutteringstreffButton: FC<
 > = ({ rekrutteringstreffId, kandidatsokKandidater }) => {
   const modalRef = useRef<HTMLDialogElement>(null!);
   const { visVarsel } = useApplikasjonContext();
+  const jobbsøkerHook = useJobbsøkere(rekrutteringstreffId);
 
   const { markerteKandidater, fjernMarkerteKandidater } =
     useKandidatSøkMarkerteContext();
@@ -83,6 +85,7 @@ const LagreIRekrutteringstreffButton: FC<
     try {
       if (rekrutteringstreffId) {
         await leggtilNyeJobbsøkere(dto, rekrutteringstreffId);
+        await jobbsøkerHook.mutate?.();
       }
       visVarsel({
         type: 'success',

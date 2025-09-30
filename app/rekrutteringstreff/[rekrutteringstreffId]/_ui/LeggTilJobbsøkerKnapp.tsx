@@ -13,8 +13,10 @@ const LeggTilJobbsøkerKnapp: FC<LeggTilJobbsøkerKnappProps> = ({
 }) => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
 
+  const href = `/rekrutteringstreff/${rekrutteringstreffId}?finnKandidaterTreff=true`;
+
   return (
-    <Link href={`/rekrutteringstreff/${rekrutteringstreffId}/finn-kandidater`}>
+    <Link href={href}>
       <Button
         icon={<PlusIcon />}
         type='button'

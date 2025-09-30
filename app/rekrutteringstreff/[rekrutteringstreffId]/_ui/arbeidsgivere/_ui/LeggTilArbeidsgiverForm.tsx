@@ -11,11 +11,12 @@ import {
   useRekrutteringstreffArbeidsgivere,
 } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
+import SlettArbeidsgiverModal from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/arbeidsgivere/_ui/SlettArbeidsgiverModal';
 import SWRLaster from '@/components/SWRLaster';
 import { RekbisError } from '@/util/rekbisError';
 import { XMarkIcon } from '@navikt/aksel-icons';
-import { Button, BodyShort, HStack, Modal } from '@navikt/ds-react';
-import { useState, useMemo, useRef, FC, useEffect } from 'react';
+import { Button, BodyShort, HStack } from '@navikt/ds-react';
+import { useState, useMemo, FC, useEffect } from 'react';
 
 interface Props {
   variant?: 'inline' | 'modal';
@@ -34,26 +35,19 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({
     arbeidsgivereHook;
   const { mutate: mutateHendelser } = hendelseHook;
 
-  const [slette, setSlette] = useState<ArbeidsgiverDTO | null>(null);
-  const slettModalRef = useRef<HTMLDialogElement>(null);
-
-  const åpneSlettModal = (arbeidsgiver: ArbeidsgiverDTO) => {
-    setSlette(arbeidsgiver);
-    slettModalRef.current?.showModal();
-  };
-
-  const bekreftSlett = async () => {
-    if (!slette) return;
+  const [sletterArbeidsgiver, setSletterArbeidsgiver] = useState(false);
+  const bekreftSlett = async (arbeidsgiver: ArbeidsgiverDTO) => {
+    if (!arbeidsgiver) return;
     try {
+      setSletterArbeidsgiver(true);
       await fjernArbeidsgiver(
         rekrutteringstreffId,
-        (slette as any).arbeidsgiverTreffId ?? slette.organisasjonsnummer,
+        (arbeidsgiver as any).arbeidsgiverTreffId ??
+          arbeidsgiver.organisasjonsnummer,
       );
-      await mutateArbeidsgivere();
       await mutateHendelser();
     } finally {
-      setSlette(null);
-      slettModalRef.current?.close();
+      setSletterArbeidsgiver(false);
     }
   };
 
@@ -213,14 +207,15 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({
                             }}
                           />
                           <div className='absolute right-2 top-2'>
-                            <Button
-                              size='xsmall'
-                              variant='tertiary'
-                              onClick={() => åpneSlettModal(a)}
-                              aria-label={`Fjern ${a.navn}`}
-                            >
-                              <XMarkIcon aria-hidden />
-                            </Button>
+                            <SlettArbeidsgiverModal
+                              navn={a.navn}
+                              loading={sletterArbeidsgiver}
+                              disabled={sletterArbeidsgiver}
+                              onConfirm={() => bekreftSlett(a)}
+                              arbeidsgivereHook={arbeidsgivereHook}
+                              variant='cross'
+                              triggerAriaLabel={`Fjern ${a.navn}`}
+                            />
                           </div>
                         </div>
                       </li>
@@ -230,34 +225,6 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({
               ) : (
                 <BodyShort>Ingen arbeidsgivere lagt til</BodyShort>
               )}
-
-              <Modal
-                ref={slettModalRef}
-                header={{ heading: 'Slett arbeidsgiver' }}
-              >
-                <Modal.Body>
-                  {slette && (
-                    <BodyShort>
-                      Er du sikker på at du vil slette {slette.navn} fra dette
-                      rekrutteringstreffet?
-                    </BodyShort>
-                  )}
-                </Modal.Body>
-                <Modal.Footer>
-                  <Button variant='danger' onClick={bekreftSlett}>
-                    Slett
-                  </Button>
-                  <Button
-                    variant='secondary'
-                    onClick={() => {
-                      setSlette(null);
-                      slettModalRef.current?.close();
-                    }}
-                  >
-                    Avbryt
-                  </Button>
-                </Modal.Footer>
-              </Modal>
             </>
           )}
         </div>

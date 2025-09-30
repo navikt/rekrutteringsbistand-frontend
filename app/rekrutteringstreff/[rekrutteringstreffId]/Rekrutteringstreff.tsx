@@ -24,7 +24,7 @@ import { FC, useCallback, useEffect, useMemo, useRef } from 'react';
 export enum RekrutteringstreffTabs {
   JOBBSØKERE = 'jobbsøkere',
   ARBEIDSGIVERE = 'arbeidsgivere',
-  AKTIVITETER = 'aktiviteter',
+  HENDELSER = 'hendelser',
   KI_LOGG = 'ki_logg',
 }
 

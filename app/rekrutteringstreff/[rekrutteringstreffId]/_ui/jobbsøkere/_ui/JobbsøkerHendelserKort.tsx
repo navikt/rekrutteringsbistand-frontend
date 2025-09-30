@@ -71,8 +71,8 @@ const JobbsøkerHendelserKort: FC<JobbsøkerHendelserKortProps> = ({
                 </Box.New>
                 <BodyShort className='text-center'>
                   <span className='block'>
-                    Finn og legg til en jobbsøker så dukker aktivitetene deres
-                    opp her.
+                    Finn og legg til en jobbsøker så dukker hendelsene deres opp
+                    her.
                   </span>
                 </BodyShort>
               </div>
@@ -109,7 +109,7 @@ const JobbsøkerHendelserKort: FC<JobbsøkerHendelserKortProps> = ({
                 </div>
 
                 <Heading size='xsmall' level='4' className='mt-8 mb-2'>
-                  Siste aktivitet
+                  Siste hendelser
                 </Heading>
 
                 <div className='mt-4'>

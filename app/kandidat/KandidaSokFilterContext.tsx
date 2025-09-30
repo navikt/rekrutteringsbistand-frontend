@@ -96,7 +96,7 @@ export const KandidatSøkProvider: FC<{ children: ReactNode }> = ({
   const [portefølje, setPortefølje] = useQueryState(
     KandidatSøkQueryparam.Portefølje,
     {
-      defaultValue: KandidatSøkPortefølje.MINE_BRUKERE,
+      defaultValue: KandidatSøkPortefølje.ALLE,
       clearOnDefault: true,
     },
   );
