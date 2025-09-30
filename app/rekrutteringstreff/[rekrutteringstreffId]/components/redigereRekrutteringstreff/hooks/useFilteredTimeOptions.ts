@@ -39,7 +39,7 @@ export function useFilteredTimeOptions(
     const grenseTimestamp = grenseTidspunkt.getTime();
     const isAfterMode = offsetMinutes > 0;
 
-    return KLOKKESLETT_OPTIONS.filter((option) => {
+    const filtrert = KLOKKESLETT_OPTIONS.filter((option) => {
       const kandidat = kombinerDatoOgTid(targetDate, option);
       if (!kandidat) return false;
 
@@ -47,5 +47,11 @@ export function useFilteredTimeOptions(
         ? kandidat.getTime() >= grenseTimestamp
         : kandidat.getTime() <= grenseTimestamp;
     });
+
+    if (offsetMinutes <= 0) {
+      return filtrert.slice().reverse();
+    }
+
+    return filtrert;
   }, [targetDate, referenceDato, referenceTid, offsetMinutes]);
 }
