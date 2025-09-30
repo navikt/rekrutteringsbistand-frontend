@@ -101,12 +101,6 @@ function TimeInput({
       ? insertOptionSortert(availableOptions, value)
       : availableOptions;
 
-  const roter = (arr: string[], start: string) => {
-    const idx = arr.indexOf(start);
-    if (idx <= 0) return arr;
-    return [...arr.slice(idx), ...arr.slice(0, idx)];
-  };
-
   const rotatedOptions = useMemo(() => {
     // Behold alltid stigende sortering (00:00 øverst). Ikke roter listen.
     return dynamiskeOptions;

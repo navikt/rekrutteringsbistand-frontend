@@ -12,6 +12,7 @@ type Props = {
 const TabsNav: FC<Props> = ({ jobbsøkereAntall, arbeidsgivereAntall }) => {
   return (
     <>
+      <Tabs.Tab value={RekrutteringstreffTabs.OM_TREFFET} label='Om treffet' />
       <Tabs.Tab
         value={RekrutteringstreffTabs.JOBBSØKERE}
         label={`Jobbsøkere (${jobbsøkereAntall ?? 0})`}
