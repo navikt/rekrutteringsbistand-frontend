@@ -11,6 +11,7 @@ import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/useJobbs�
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import Stegviser from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/om-treffet/stegviser/Stegviser';
 import { JobbsøkerHendelsestype } from '@/app/rekrutteringstreff/_domain/constants';
+import type { RekrutteringstreffBreadcrumbItem } from '@/app/rekrutteringstreff/_ui/RekrutteringstreffBreadcrumbs';
 import { getActiveStepFromHendelser } from '@/app/rekrutteringstreff/_utils/rekrutteringstreff';
 import Fremdriftspanel from '@/components/Fremdriftspanel';
 import SideScroll from '@/components/SideScroll';
@@ -186,12 +187,21 @@ const Rekrutteringstreff: FC = () => {
     return `Lagret ${relativ}`;
   }, [alleHendelserHook.data]);
 
-  const headerTittel = useMemo(() => {
-    if (avlyst || viserForhåndsvisningsside) return 'Rekrutteringstreff';
-    if (!harPublisert) return 'Nytt rekrutteringstreff';
-    if (!erIForhåndsvisning) return 'Rediger rekrutteringstreffet';
+  const rekrutteringstreffNavn = useMemo(() => {
+    const tittel = rekrutteringstreff?.tittel?.trim();
+    if (tittel && tittel.length > 0 && tittel !== 'Treff uten navn') {
+      return tittel;
+    }
     return 'Rekrutteringstreff';
-  }, [avlyst, viserForhåndsvisningsside, harPublisert, erIForhåndsvisning]);
+  }, [rekrutteringstreff?.tittel]);
+
+  const breadcrumbs: RekrutteringstreffBreadcrumbItem[] = useMemo(() => {
+    if (!harPublisert && !avlyst) {
+      return [{ label: 'Nytt rekrutteringstreff' }];
+    }
+
+    return [{ label: rekrutteringstreffNavn }];
+  }, [harPublisert, avlyst, rekrutteringstreffNavn]);
 
   const skalViseHeader =
     !viserForhåndsvisningsside && !(harPublisert && modus === 'edit');
@@ -255,7 +265,7 @@ const Rekrutteringstreff: FC = () => {
           skalViseHeader ? (
             <RekrutteringstreffHeader
               skalViseHeader={skalViseHeader}
-              headerTittel={headerTittel}
+              breadcrumbs={breadcrumbs}
               erIForhåndsvisning={erIForhåndsvisning}
               jobbsøkereAntall={jobbsøkere?.length ?? 0}
               arbeidsgivereAntall={arbeidsgivere?.length ?? 0}

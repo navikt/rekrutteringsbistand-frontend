@@ -2,13 +2,17 @@
 
 import HeaderActions from './HeaderActions';
 import TabsNav from './TabsNav';
+import {
+  RekrutteringstreffBreadcrumbItem,
+  RekrutteringstreffBreadcrumbs,
+} from '@/app/rekrutteringstreff/_ui/RekrutteringstreffBreadcrumbs';
 import PanelHeader from '@/components/layout/PanelHeader';
 import { Loader } from '@navikt/ds-react';
 import { forwardRef } from 'react';
 
 export interface RekrutteringstreffHeaderProps {
   skalViseHeader: boolean;
-  headerTittel: string;
+  breadcrumbs: RekrutteringstreffBreadcrumbItem[];
   erIForhåndsvisning: boolean;
   jobbsøkereAntall: number;
   arbeidsgivereAntall: number;
@@ -33,7 +37,7 @@ const RekrutteringstreffHeader = forwardRef<
   (
     {
       skalViseHeader,
-      headerTittel,
+      breadcrumbs,
       erIForhåndsvisning,
       jobbsøkereAntall,
       arbeidsgivereAntall,
@@ -58,7 +62,7 @@ const RekrutteringstreffHeader = forwardRef<
       <div ref={ref} className='sticky top-0 z-40 bg-[var(--ax-bg-default)]'>
         <PanelHeader className='bg-transparent'>
           <PanelHeader.Section
-            title={headerTittel}
+            actionsLeft={<RekrutteringstreffBreadcrumbs items={breadcrumbs} />}
             tabs={
               erIForhåndsvisning ? (
                 <TabsNav
@@ -93,7 +97,7 @@ const RekrutteringstreffHeader = forwardRef<
                 onAvlyst={onAvlyst}
               />
             }
-          />
+          ></PanelHeader.Section>
         </PanelHeader>
       </div>
     );
