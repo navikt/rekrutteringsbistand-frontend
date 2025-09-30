@@ -67,21 +67,36 @@ export const proxyWithOBO = async (
       });
     }
 
+    // Handle 204 No Content responses properly
+    if (response.status === 204) {
+      return new NextResponse(null, {
+        status: 204,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+    }
+
     // Continue with successful response handling
     const contentType = response.headers.get('content-type');
     if (contentType?.includes('application/json')) {
       const text = await response.text();
       if (!text || text.trim() === '') {
-        // Return appropriate response based on HTTP method
-        // For POST/PUT/DELETE operations, return success indicator
-        // For GET operations, return empty array or object as fallback
-        if (req.method === 'GET') {
-          return NextResponse.json(null, { status: response.status });
-        } else {
+        // Handle empty responses properly based on status code
+        if (response.status === 200) {
+          // 200 OK with empty body should return null or empty object
           return NextResponse.json(
-            { success: true },
-            { status: response.status },
+            req.method === 'GET' ? null : { success: true },
           );
+        } else if (response.status >= 200 && response.status < 300) {
+          // Other 2xx responses with empty body
+          return new NextResponse(null, {
+            status: response.status,
+            headers: { 'Content-Type': 'application/json' },
+          });
+        } else {
+          // Fallback for other empty responses
+          return NextResponse.json(null, { status: response.status });
         }
       }
       try {
@@ -100,6 +115,20 @@ export const proxyWithOBO = async (
       }
     } else {
       const text = await response.text();
+
+      // Handle empty text responses properly
+      if (
+        response.status === 204 ||
+        (!text && response.status >= 200 && response.status < 300)
+      ) {
+        return new NextResponse(null, {
+          status: response.status,
+          headers: {
+            'Content-Type': contentType || 'text/plain',
+          },
+        });
+      }
+
       return new NextResponse(text || '', {
         status: response.status,
         headers: {
