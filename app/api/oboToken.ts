@@ -1,15 +1,23 @@
 import { isLocal } from '@/util/env';
 import { RekbisError } from '@/util/rekbisError';
+import { logger } from '@navikt/next-logger';
 import { getToken, requestOboToken, TokenResult } from '@navikt/oasis';
 
 interface hentOboTokenProps {
   headers: Headers;
   scope: string;
+  retryAttempt?: number;
+  maxRetries?: number;
 }
+
+const DEFAULT_MAX_RETRIES = 3;
+const RETRY_DELAY_MS = 1000;
 
 export const hentOboToken = async (
   props: hentOboTokenProps,
 ): Promise<TokenResult> => {
+  const { retryAttempt = 0, maxRetries = DEFAULT_MAX_RETRIES } = props;
+
   const token = isLocal ? 'DEV' : getToken(props.headers);
   if (!token) {
     return {
@@ -17,11 +25,13 @@ export const hentOboToken = async (
       error: new RekbisError({ message: 'Kunne ikke hente token' }),
     };
   }
-  let obo: TokenResult;
+
+  if (isLocal) {
+    return { ok: true, token: 'DEV' } as TokenResult;
+  }
+
   try {
-    obo = isLocal
-      ? ({ ok: true, token: 'DEV' } as TokenResult)
-      : await requestOboToken(token, props.scope);
+    const obo = await requestOboToken(token, props.scope);
 
     if (!obo.ok || !obo.token) {
       return {
@@ -33,12 +43,44 @@ export const hentOboToken = async (
       };
     }
 
+    // Log success if this was after retries
+    if (retryAttempt > 0) {
+      logger.info(`OBO token hentet på forsøk ${retryAttempt + 1}`);
+    }
+
     return obo;
-  } catch {
-    return {
-      ok: false,
-      error: new RekbisError({ message: 'Kunne ikke hente OBO-token' }),
-    };
+  } catch (error) {
+    const isLastAttempt = retryAttempt >= maxRetries - 1;
+
+    if (isLastAttempt) {
+      // Log som error kun når alle forsøk er brukt opp
+      logger.error({
+        message: `Kunne ikke hente OBO-token etter ${maxRetries} forsøk`,
+        error,
+      });
+      return {
+        ok: false,
+        error: new RekbisError({ message: 'Kunne ikke hente OBO-token' }),
+      };
+    } else {
+      // Log som warning for retry-forsøk
+      logger.warn({
+        message: `OBO token request feilet (forsøk ${retryAttempt + 1}/${maxRetries}), prøver igjen...`,
+        error,
+      });
+
+      // Vent før retry
+      await new Promise((resolve) =>
+        setTimeout(resolve, RETRY_DELAY_MS * (retryAttempt + 1)),
+      );
+
+      // Retry med økt attempt-teller
+      return hentOboToken({
+        ...props,
+        retryAttempt: retryAttempt + 1,
+        maxRetries,
+      });
+    }
   }
 };
 
