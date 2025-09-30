@@ -20,6 +20,11 @@ export const hentOboToken = async (
 
   const token = isLocal ? 'DEV' : getToken(props.headers);
   if (!token) {
+    logger.error({
+      message: 'Kunne ikke hente token fra headers',
+      headers: Array.from(props.headers.entries()).map(([key]) => key), // Logger kun header-nøkler, ikke verdier
+      scope: props.scope,
+    });
     return {
       ok: false,
       error: new RekbisError({ message: 'Kunne ikke hente token' }),
@@ -34,18 +39,43 @@ export const hentOboToken = async (
     const obo = await requestOboToken(token, props.scope);
 
     if (!obo.ok || !obo.token) {
+      const errorMessage = `Ugyldig OBO-token mottatt for scope: ${props.scope}`;
+
+      if (retryAttempt < maxRetries - 1) {
+        logger.warn({
+          message: `${errorMessage} (forsøk ${retryAttempt + 1}/${maxRetries}), prøver igjen...`,
+        });
+
+        await new Promise((resolve) =>
+          setTimeout(resolve, RETRY_DELAY_MS * (retryAttempt + 1)),
+        );
+
+        return hentOboToken({
+          ...props,
+          retryAttempt: retryAttempt + 1,
+          maxRetries,
+        });
+      }
+
+      logger.error({
+        message: `${errorMessage} etter ${maxRetries} forsøk`,
+        scope: props.scope,
+        retries: maxRetries,
+      });
+
       return {
         ok: false,
         error: new RekbisError({
-          skjulLogger: true,
-          message: 'Ugyldig OBO-token mottatt',
+          message: errorMessage,
         }),
       };
     }
 
     // Log success if this was after retries
     if (retryAttempt > 0) {
-      logger.info(`OBO token hentet på forsøk ${retryAttempt + 1}`);
+      logger.info(
+        `OBO token hentet på forsøk ${retryAttempt + 1} for scope: ${props.scope}`,
+      );
     }
 
     return obo;
@@ -56,6 +86,7 @@ export const hentOboToken = async (
       // Log som error kun når alle forsøk er brukt opp
       logger.error({
         message: `Kunne ikke hente OBO-token etter ${maxRetries} forsøk`,
+        scope: props.scope,
         error,
       });
       return {
@@ -66,6 +97,7 @@ export const hentOboToken = async (
       // Log som warning for retry-forsøk
       logger.warn({
         message: `OBO token request feilet (forsøk ${retryAttempt + 1}/${maxRetries}), prøver igjen...`,
+        scope: props.scope,
         error,
       });
 
