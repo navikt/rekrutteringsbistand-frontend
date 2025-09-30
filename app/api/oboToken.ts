@@ -20,14 +20,16 @@ export const hentOboToken = async (
 
   const token = isLocal ? 'DEV' : getToken(props.headers);
   if (!token) {
-    logger.error({
+    const hasAuthHeader = props.headers.has('authorization');
+    logger.warn({
       message: 'Kunne ikke hente token fra headers',
-      headers: Array.from(props.headers.entries()).map(([key]) => key), // Logger kun header-nøkler, ikke verdier
       scope: props.scope,
+      hasAuthHeader,
+      headerKeys: Array.from(props.headers.entries()).map(([key]) => key),
     });
     return {
       ok: false,
-      error: new RekbisError({ message: 'Kunne ikke hente token' }),
+      error: new RekbisError({ message: 'Kunne ikke hente token fra headers' }),
     };
   }
 
