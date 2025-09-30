@@ -8,15 +8,27 @@ import PanelHeader from '@/components/layout/PanelHeader';
 import SideLayout from '@/components/layout/SideLayout';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
-import { FC, useMemo } from 'react';
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb';
+import Link from 'next/link';
+import { FC } from 'react';
+import { useFormContext } from 'react-hook-form';
 
 const FinnKandidaterForRekrutteringstreff: FC = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
+  const { watch } = useFormContext<{ tittel?: string }>();
 
-  const fullskjermUrl = useMemo(
-    () => `/rekrutteringstreff/${rekrutteringstreffId}/finn-kandidater`,
-    [rekrutteringstreffId],
-  );
+  const tittel = watch('tittel');
+  const rekrutteringstreffNavn =
+    typeof tittel === 'string' && tittel.trim().length > 0
+      ? tittel.trim()
+      : 'Rekrutteringstreff';
 
   return (
     <TilgangskontrollForInnhold
@@ -29,11 +41,36 @@ const FinnKandidaterForRekrutteringstreff: FC = () => {
         <KandidatSøkMarkerteContextProvider>
           <SideLayout
             header={
-              <PanelHeader fullskjermUrl={fullskjermUrl}>
+              <PanelHeader>
                 <PanelHeader.Section
-                  title='Finn kandidater til rekrutteringstreff'
-                  subtitle='Søk og inviter jobbsøkere til treffet'
-                />
+                  actionsLeft={
+                    <Breadcrumb>
+                      <BreadcrumbList>
+                        <BreadcrumbItem>
+                          <BreadcrumbLink asChild>
+                            <Link href='/rekrutteringstreff'>
+                              Rekrutteringstreff
+                            </Link>
+                          </BreadcrumbLink>
+                        </BreadcrumbItem>
+                        <BreadcrumbSeparator />
+                        <BreadcrumbItem>
+                          <BreadcrumbLink asChild>
+                            <Link
+                              href={`/rekrutteringstreff/${rekrutteringstreffId}`}
+                            >
+                              {rekrutteringstreffNavn}
+                            </Link>
+                          </BreadcrumbLink>
+                        </BreadcrumbItem>
+                        <BreadcrumbSeparator />
+                        <BreadcrumbItem>
+                          <BreadcrumbPage>Legg til jobbsøker</BreadcrumbPage>
+                        </BreadcrumbItem>
+                      </BreadcrumbList>
+                    </Breadcrumb>
+                  }
+                ></PanelHeader.Section>
               </PanelHeader>
             }
           >
