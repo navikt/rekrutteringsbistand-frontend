@@ -13,6 +13,7 @@ import StatusFilter from '@/app/stilling/_ui/StillingsSøkFilter/StatusFilter';
 import StillingSøkebar from '@/app/stilling/_ui/StillingsSøkFilter/StillingSøkebar';
 import StillingsSøkSortering from '@/app/stilling/_ui/StillingsSøkSortering';
 import MittStandardsøk from '@/app/stilling/_ui/standardsøk/MittStandardsøk';
+import { EKSCLUDERTE_STANDARDSOK_PARAMETERE } from '@/app/stilling/_ui/standardsøk/standardSokUtils';
 import SideScroll from '@/components/SideScroll';
 import Sidelaster from '@/components/layout/Sidelaster';
 import { Roller } from '@/components/tilgangskontroll/roller';
@@ -39,10 +40,19 @@ const StillingsSøk = ({ formidlinger, forKandidatNr }: StillingsSøkProps) => {
       const newSearch =
         brukerStandardSøkData.data?.søk ||
         'publisert=intern&statuser=publisert';
+
+      const eksludert = EKSCLUDERTE_STANDARDSOK_PARAMETERE;
+      const urlSearchParams = new URLSearchParams(newSearch);
+      eksludert.forEach((param) => {
+        if (urlSearchParams.has(param)) {
+          urlSearchParams.delete(param);
+        }
+      });
+
       window.history.replaceState(
         {},
         '',
-        `${window.location.pathname}?${newSearch}`,
+        `${window.location.pathname}?${urlSearchParams.toString()}`,
       );
     }
   }, [searchParams, brukerStandardSøkData]);
