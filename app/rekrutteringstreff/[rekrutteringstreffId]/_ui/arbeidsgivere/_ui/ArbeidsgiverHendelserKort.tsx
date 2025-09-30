@@ -10,7 +10,7 @@ import { PlusCircleIcon } from '@navikt/aksel-icons';
 import { BodyShort, Box, Heading } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import { nb } from 'date-fns/locale/nb';
-import { FC, useRef } from 'react';
+import { FC } from 'react';
 
 interface Props {
   arbeidsgiverHendelserDTO: ArbeidsgiverHendelserDTO;
