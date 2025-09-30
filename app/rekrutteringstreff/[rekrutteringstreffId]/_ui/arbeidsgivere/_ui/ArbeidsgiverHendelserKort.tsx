@@ -30,7 +30,7 @@ const ArbeidsgiverHendelserKort: FC<Props> = ({ arbeidsgiverHendelserDTO }) => {
   return (
     <Box.New
       background='neutral-softA'
-      className='mb-4'
+      className='mb-4 flex flex-col h-full'
       borderColor='neutral-subtleA'
       borderRadius='xlarge'
       borderWidth='1'
@@ -39,9 +39,9 @@ const ArbeidsgiverHendelserKort: FC<Props> = ({ arbeidsgiverHendelserDTO }) => {
       <Heading level='2' size='small' className='mb-4'>
         Arbeidsgivere
       </Heading>
-      <div className='min-h-[18rem] mb-12'>
+      <div className='min-h-[18rem]'>
         {arbeidsgiverHendelserDTO.length === 0 ? (
-          <div className='p-4 mb-12 flex flex-col items-center'>
+          <div className='p-4 flex flex-col items-center'>
             <Box.New background='neutral-softA' className='rounded-full mb-2'>
               <SVGDarkmode
                 light={ArbeidsgiverIkon}
@@ -96,7 +96,7 @@ const ArbeidsgiverHendelserKort: FC<Props> = ({ arbeidsgiverHendelserDTO }) => {
         onClick={() => modalRef.current?.showModal()}
         variant='secondary'
         icon={<PlusIcon />}
-        className='w-full'
+        className='w-full mt-auto'
       >
         Legg til arbeidsgiver
       </Button>
