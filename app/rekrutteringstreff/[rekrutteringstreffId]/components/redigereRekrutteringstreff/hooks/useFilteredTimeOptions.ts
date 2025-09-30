@@ -48,10 +48,7 @@ export function useFilteredTimeOptions(
         : kandidat.getTime() <= grenseTimestamp;
     });
 
-    if (offsetMinutes <= 0) {
-      return filtrert.slice().reverse();
-    }
-
+    // Behold stigende sortering uansett offset (00:00 øverst)
     return filtrert;
   }, [targetDate, referenceDato, referenceTid, offsetMinutes]);
 }
