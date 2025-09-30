@@ -1,5 +1,6 @@
 'use client';
 
+import { RekrutteringstreffBreadcrumbs } from './_ui/RekrutteringstreffBreadcrumbs';
 import { RekrutteringstreffFilter } from './_ui/RekrutteringstreffFilter';
 import {
   opprettNyttRekrutteringstreff,
@@ -12,7 +13,6 @@ import { UmamiEvent } from '@/components/umami/umamiEvents';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
 import { RekbisError } from '@/util/rekbisError';
-import { ReceptionIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import { FC, ReactNode, useRef } from 'react';
 
@@ -55,8 +55,7 @@ const RekrutteringstreffSøkLayout: FC<RekrutteringstreffSøkLayoutProps> = ({
         <div ref={headerRef}>
           <PanelHeader>
             <PanelHeader.Section
-              title={'Rekrutteringstreff'}
-              titleIcon={<ReceptionIcon />}
+              actionsLeft={<RekrutteringstreffBreadcrumbs />}
               actionsRight={
                 <Button onClick={handleOpprettRekrutteringstreff}>
                   Nytt rekrutteringstreff

@@ -1,15 +1,17 @@
 'use client';
 
 import { ArbeidsgiverHendelserDTO } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgiverHendelser';
+import LeggTilArbeidsgiverModal from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/LeggTilArbeidsgiverModal';
 import { ArbeidsgiverHendelseLabel } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøkere/_ui/HendelseLabel';
 import { ArbeidsgiverHendelsestype } from '@/app/rekrutteringstreff/_domain/constants';
 import SVGDarkmode from '@/components/layout/SVGDarkmode';
 import ArbeidsgiverDarkIkon from '@/public/ikoner/arbeidsgiver-dark.svg';
 import ArbeidsgiverIkon from '@/public/ikoner/arbeidsgiver.svg';
 import { PlusCircleIcon } from '@navikt/aksel-icons';
-import { BodyShort, Box, Heading } from '@navikt/ds-react';
+import { BodyShort, Box, Button, Heading } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import { nb } from 'date-fns/locale/nb';
+import { PlusIcon } from 'lucide-react';
 import { FC, useRef } from 'react';
 
 interface Props {
@@ -17,6 +19,8 @@ interface Props {
 }
 
 const ArbeidsgiverHendelserKort: FC<Props> = ({ arbeidsgiverHendelserDTO }) => {
+  const modalRef = useRef<HTMLDialogElement>(null);
+
   const antallLagtTil = arbeidsgiverHendelserDTO.filter(
     (h) => h.hendelsestype === ArbeidsgiverHendelsestype.OPPRETT,
   ).length;
@@ -26,7 +30,7 @@ const ArbeidsgiverHendelserKort: FC<Props> = ({ arbeidsgiverHendelserDTO }) => {
   return (
     <Box.New
       background='neutral-softA'
-      className='mb-4'
+      className='mb-4 flex flex-col h-full'
       borderColor='neutral-subtleA'
       borderRadius='xlarge'
       borderWidth='1'
@@ -35,9 +39,9 @@ const ArbeidsgiverHendelserKort: FC<Props> = ({ arbeidsgiverHendelserDTO }) => {
       <Heading level='2' size='small' className='mb-4'>
         Arbeidsgivere
       </Heading>
-      <div className='min-h-[18rem] mb-12'>
+      <div className='min-h-[18rem]'>
         {arbeidsgiverHendelserDTO.length === 0 ? (
-          <div className='p-4 mb-12 flex flex-col items-center'>
+          <div className='p-4 flex flex-col items-center'>
             <Box.New background='neutral-softA' className='rounded-full mb-2'>
               <SVGDarkmode
                 light={ArbeidsgiverIkon}
@@ -46,7 +50,7 @@ const ArbeidsgiverHendelserKort: FC<Props> = ({ arbeidsgiverHendelserDTO }) => {
               />
             </Box.New>
             <BodyShort className='text-center'>
-              Finn og legg til en arbeidsgiver så dukker hendelelene deres opp
+              Finn og legg til en arbeidsgiver så dukker aktivitetene deres opp
               her.
             </BodyShort>
           </div>
@@ -88,6 +92,15 @@ const ArbeidsgiverHendelserKort: FC<Props> = ({ arbeidsgiverHendelserDTO }) => {
           </div>
         )}
       </div>
+      <Button
+        onClick={() => modalRef.current?.showModal()}
+        variant='secondary'
+        icon={<PlusIcon />}
+        className='w-full mt-auto'
+      >
+        Legg til arbeidsgiver
+      </Button>
+      <LeggTilArbeidsgiverModal modalRef={modalRef} />
     </Box.New>
   );
 };

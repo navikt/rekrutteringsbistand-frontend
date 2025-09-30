@@ -3,6 +3,7 @@ import { Buildings3Icon, PersonIcon } from '@navikt/aksel-icons';
 import {
   BodyShort,
   Box,
+  Button,
   Checkbox,
   Heading,
   Tag,
@@ -25,6 +26,8 @@ interface JobbsøkerKortProps {
   onCheckboxChange: (checked: boolean) => void;
   erValgt: boolean;
   erDeaktivert?: boolean;
+  kanInviteres?: boolean;
+  onInviterClick?: () => void;
 }
 
 export type Veileder = {
@@ -46,6 +49,8 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
   onCheckboxChange,
   erValgt,
   erDeaktivert = false,
+  kanInviteres = false,
+  onInviterClick,
 }) => {
   return (
     <Box.New
@@ -99,13 +104,19 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
           </BodyShort>
         </div>
       </div>
-      <div>
-        {status && (
-          <Tag
-            className={'mr-2'}
-            size='medium'
-            variant={statusVariant ?? 'info'}
+      <div className='flex items-center gap-2'>
+        {harPublisert && onInviterClick && (
+          <Button
+            size='small'
+            variant='secondary'
+            onClick={onInviterClick}
+            disabled={!kanInviteres}
           >
+            Inviter
+          </Button>
+        )}
+        {status && (
+          <Tag size='medium' variant={statusVariant ?? 'info'}>
             {status}
           </Tag>
         )}
