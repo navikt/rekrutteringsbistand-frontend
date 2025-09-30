@@ -26,6 +26,16 @@ const harMøttOpp = (j: JobbsøkerDTO) =>
 const harIkkeMøttOpp = (j: JobbsøkerDTO) =>
   j.hendelser.some((h) => h.hendelsestype === 'IKKE_MØT_OPP');
 
+const jobbsøkerTilInviterDto = (
+  jobbsøker: JobbsøkerDTO,
+): InviterInternalDto => ({
+  personTreffId: jobbsøker.personTreffId,
+  fornavn: jobbsøker.fornavn,
+  etternavn: jobbsøker.etternavn,
+  fødselsnummer: jobbsøker.fødselsnummer,
+  veilederNavIdent: jobbsøker.veilederNavIdent,
+});
+
 const Jobbsøkere = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const jobbsøkerHook = useJobbsøkere(rekrutteringstreffId);
@@ -36,6 +46,11 @@ const Jobbsøkere = () => {
     useRekrutteringstreff(rekrutteringstreffId);
 
   const [valgteJobbsøkere, setValgteJobbsøkere] = useState<
+    InviterInternalDto[]
+  >([]);
+  // Separate state to control which job seekers are included in the InviterModal,
+  // decoupled from the checkbox selection state above
+  const [inviterModalJobbsøkere, setInviterModalJobbsøkere] = useState<
     InviterInternalDto[]
   >([]);
 
@@ -58,19 +73,43 @@ const Jobbsøkere = () => {
     if (harAvsluttetInvitasjon && !erInvitert(jobbsøker)) {
       return;
     }
-    const dto: InviterInternalDto = {
-      personTreffId: jobbsøker.personTreffId,
-      fornavn: jobbsøker.fornavn,
-      etternavn: jobbsøker.etternavn,
-      fødselsnummer: jobbsøker.fødselsnummer,
-      veilederNavIdent: jobbsøker.veilederNavIdent,
-    };
+    const dto = jobbsøkerTilInviterDto(jobbsøker);
 
     setValgteJobbsøkere((prev) =>
       erValgt
-        ? [...prev, dto]
+        ? prev.some((j) => j.fødselsnummer === dto.fødselsnummer)
+          ? prev
+          : [...prev, dto]
         : prev.filter((j) => j.fødselsnummer !== dto.fødselsnummer),
     );
+  };
+
+  const handleMarkerAlle = (jobbsøkereSomKanLeggesTil: JobbsøkerDTO[]) => {
+    if (jobbsøkereSomKanLeggesTil.length === 0) {
+      return;
+    }
+
+    setValgteJobbsøkere((prev) => {
+      const valgtMap = new Map(prev.map((j) => [j.fødselsnummer, j]));
+      jobbsøkereSomKanLeggesTil.forEach((jobbsøker) => {
+        const dto = jobbsøkerTilInviterDto(jobbsøker);
+        valgtMap.set(dto.fødselsnummer, dto);
+      });
+
+      return Array.from(valgtMap.values());
+    });
+  };
+
+  const handleInviterDirekte = (jobbsøker: JobbsøkerDTO) => {
+    if (harAvsluttetInvitasjon) {
+      return;
+    }
+
+    const dto = jobbsøkerTilInviterDto(jobbsøker);
+
+    // Open the modal with only this person, without changing checkbox selections
+    setInviterModalJobbsøkere([dto]);
+    inviterModalRef.current?.showModal();
   };
 
   const getLagtTilData = (jobbsøker: JobbsøkerDTO) => {
@@ -102,6 +141,7 @@ const Jobbsøkere = () => {
 
   const handleInvitasjonSendt = () => {
     inviterModalRef.current?.close();
+    setInviterModalJobbsøkere([]);
     setValgteJobbsøkere([]);
     jobbsøkerHook.mutate();
   };
@@ -133,26 +173,56 @@ const Jobbsøkere = () => {
           (j) => !personerMedOppmøtestatusIder.has(j.personTreffId),
         );
 
+        const inviterbareJobbsøkere = jobbsøkere.filter(
+          (j) => !invitertePersonTreffIder.has(j.personTreffId),
+        );
+        const oppmøteklareJobbsøkere = jobbsøkere.filter(
+          (j) => !personerMedOppmøtestatusIder.has(j.personTreffId),
+        );
+        const jobbsøkereSomKanLeggesTil = !harAvsluttetInvitasjon
+          ? inviterbareJobbsøkere
+          : !harAvsluttetOppfølging
+            ? oppmøteklareJobbsøkere
+            : [];
+        const kanViseMarkerAlle = jobbsøkere.length > 0;
+
         return (
           <div className='p-4 flex flex-col gap-4'>
-            <div className='flex items-center justify-between'>
-              <LeggTilJobbsøkerKnapp />
-              {harPublisert && !harAvsluttetInvitasjon && (
-                <Button
-                  disabled={valgteSomIkkeErInvitert.length === 0}
-                  onClick={() => inviterModalRef.current?.showModal()}
-                >
-                  Inviter ({valgteSomIkkeErInvitert.length})
-                </Button>
-              )}
-              {harAvsluttetInvitasjon && !harAvsluttetOppfølging && (
-                <Button
-                  disabled={valgteUtenOppmøtestatus.length === 0}
-                  onClick={() => oppmøteModalRef.current?.showModal()}
-                >
-                  Marker Oppmøte ({valgteUtenOppmøtestatus.length})
-                </Button>
-              )}
+            <div className='flex flex-wrap items-center justify-between gap-2'>
+              <div className='flex items-center gap-2'>
+                {kanViseMarkerAlle && (
+                  <Button
+                    variant='secondary'
+                    size='small'
+                    onClick={() => handleMarkerAlle(jobbsøkereSomKanLeggesTil)}
+                    disabled={jobbsøkereSomKanLeggesTil.length === 0}
+                  >
+                    Marker alle
+                  </Button>
+                )}
+              </div>
+              <div className='flex items-center gap-2'>
+                {harPublisert && !harAvsluttetInvitasjon && (
+                  <Button
+                    disabled={valgteSomIkkeErInvitert.length === 0}
+                    onClick={() => {
+                      setInviterModalJobbsøkere(valgteSomIkkeErInvitert);
+                      inviterModalRef.current?.showModal();
+                    }}
+                  >
+                    Inviter ({valgteSomIkkeErInvitert.length})
+                  </Button>
+                )}
+                {harAvsluttetInvitasjon && !harAvsluttetOppfølging && (
+                  <Button
+                    disabled={valgteUtenOppmøtestatus.length === 0}
+                    onClick={() => oppmøteModalRef.current?.showModal()}
+                  >
+                    Marker Oppmøte ({valgteUtenOppmøtestatus.length})
+                  </Button>
+                )}
+                <LeggTilJobbsøkerKnapp />
+              </div>
             </div>
 
             {jobbsøkere.length === 0 ? (
@@ -162,6 +232,8 @@ const Jobbsøkere = () => {
                 {jobbsøkere.map((j, idx) => {
                   const { status, datoLagtTil, lagtTilAv } = getLagtTilData(j);
                   const erDeaktivert = harAvsluttetInvitasjon && !erInvitert(j);
+                  const kanInviteres =
+                    harPublisert && !harAvsluttetInvitasjon && !erInvitert(j);
 
                   return (
                     <li key={idx}>
@@ -190,6 +262,8 @@ const Jobbsøkere = () => {
                           handleCheckboxChange(j, valgt)
                         }
                         erDeaktivert={erDeaktivert}
+                        kanInviteres={kanInviteres}
+                        onInviterClick={() => handleInviterDirekte(j)}
                       />
                     </li>
                   );
@@ -199,10 +273,10 @@ const Jobbsøkere = () => {
 
             <InviterModal
               modalref={inviterModalRef}
-              inviterInternalDtoer={valgteSomIkkeErInvitert}
+              inviterInternalDtoer={inviterModalJobbsøkere}
               onInvitasjonSendt={handleInvitasjonSendt}
               onFjernJobbsøker={(fnr) =>
-                setValgteJobbsøkere((prev) =>
+                setInviterModalJobbsøkere((prev) =>
                   prev.filter((j) => j.fødselsnummer !== fnr),
                 )
               }

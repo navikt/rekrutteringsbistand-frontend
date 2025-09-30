@@ -10,7 +10,6 @@ import {
 } from '@/components/ui/breadcrumb';
 import { ReceptionIcon } from '@navikt/aksel-icons';
 import { Link } from '@navikt/ds-react';
-import NextLink from 'next/link';
 import { Fragment, ReactNode } from 'react';
 
 export interface RekrutteringstreffBreadcrumbItem {
