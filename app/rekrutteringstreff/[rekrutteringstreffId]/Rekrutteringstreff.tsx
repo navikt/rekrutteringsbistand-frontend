@@ -22,6 +22,7 @@ import { parseAsString, useQueryState } from 'nuqs';
 import { FC, useCallback, useEffect, useMemo, useRef } from 'react';
 
 export enum RekrutteringstreffTabs {
+  OM_TREFFET = 'om_treffet',
   JOBBSØKERE = 'jobbsøkere',
   ARBEIDSGIVERE = 'arbeidsgivere',
   HENDELSER = 'hendelser',
@@ -158,7 +159,8 @@ const Rekrutteringstreff: FC = () => {
   };
 
   const gåTilForhåndsvisning = () => {
-    setModus('preview-page');
+    setModus('');
+    setFane(RekrutteringstreffTabs.OM_TREFFET);
     scrollToTop();
   };
 
@@ -266,7 +268,6 @@ const Rekrutteringstreff: FC = () => {
               tiltidspunktHarPassert={tiltidspunktHarPassert}
               rekrutteringstreffId={rekrutteringstreffId}
               oppdaterData={oppdaterData}
-              onÅpneForhåndsvisning={gåTilForhåndsvisning}
               onToggleForhåndsvisning={handleToggleForhåndsvisning}
               onBekreftRedigerPublisert={onBekreftRedigerPublisert}
               onAvlyst={onAvlyst}

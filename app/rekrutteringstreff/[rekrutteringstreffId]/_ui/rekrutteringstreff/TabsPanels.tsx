@@ -5,6 +5,7 @@ import { RekrutteringstreffTabs } from '@/app/rekrutteringstreff/[rekrutteringst
 import RekrutteringstreffArbeidsgivere from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/arbeidsgivere/Arbeidsgivere';
 import Jobbsøkere from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøkere/Jobbsøkere';
 import KiLogg from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/kilogg/components/KiLogg';
+import RekrutteringstreffForhåndsvisning from '@/app/rekrutteringstreff/[rekrutteringstreffId]/components/RekrutteringstreffForhåndsvisning';
 import RekrutteringstreffRedigering from '@/app/rekrutteringstreff/[rekrutteringstreffId]/components/RekrutteringstreffRedigering';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
@@ -39,6 +40,9 @@ const TabsPanels: FC<Props> = ({
 
   return (
     <>
+      <Tabs.Panel value={RekrutteringstreffTabs.OM_TREFFET}>
+        <RekrutteringstreffForhåndsvisning />
+      </Tabs.Panel>
       <Tabs.Panel value={RekrutteringstreffTabs.JOBBSØKERE}>
         <Jobbsøkere />
       </Tabs.Panel>

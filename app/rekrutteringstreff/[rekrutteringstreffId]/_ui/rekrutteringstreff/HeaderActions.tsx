@@ -6,7 +6,6 @@ import GjenapneRekrutteringstreffButton from './GjenapneRekrutteringstreffButton
 import PubliserRekrutteringstreffButton from './PubliserRekrutteringstreffButton';
 import RedigerPublisertButton from './RedigerPublisertButton';
 import SlettRekrutteringstreffModal from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/SlettRekrutteringstreffModal';
-import { Button } from '@navikt/ds-react';
 import { FC } from 'react';
 
 export type ActiveStep =
@@ -26,7 +25,6 @@ type Props = {
   tiltidspunktHarPassert: boolean;
   rekrutteringstreffId: string;
   oppdaterData: () => Promise<void>;
-  onÅpneForhåndsvisning: () => void;
   onToggleForhåndsvisning: (ny: boolean) => void;
   onBekreftRedigerPublisert: () => void;
   onAvlyst: () => void;
@@ -41,7 +39,6 @@ const HeaderActions: FC<Props> = ({
   tiltidspunktHarPassert,
   rekrutteringstreffId,
   oppdaterData,
-  onÅpneForhåndsvisning,
   onToggleForhåndsvisning,
   onBekreftRedigerPublisert,
   onAvlyst,
@@ -50,17 +47,6 @@ const HeaderActions: FC<Props> = ({
 
   return (
     <div className='flex items-center gap-2'>
-      {!avlyst && harPublisert && (
-        <Button
-          type='button'
-          size='small'
-          variant='secondary'
-          onClick={onÅpneForhåndsvisning}
-        >
-          Forhåndsvisning
-        </Button>
-      )}
-
       {!avlyst && harPublisert && activeStep !== 'FULLFØRE' && (
         <RedigerPublisertButton
           erIForhåndsvisning={erIForhåndsvisning}

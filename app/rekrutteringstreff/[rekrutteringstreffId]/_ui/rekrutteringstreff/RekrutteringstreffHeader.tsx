@@ -21,7 +21,6 @@ export interface RekrutteringstreffHeaderProps {
   tiltidspunktHarPassert: boolean;
   rekrutteringstreffId: string;
   oppdaterData: () => Promise<void>;
-  onÅpneForhåndsvisning: () => void;
   onToggleForhåndsvisning: (ny: boolean) => void;
   onBekreftRedigerPublisert: () => void;
   onAvlyst: () => void;
@@ -47,7 +46,6 @@ const RekrutteringstreffHeader = forwardRef<
       tiltidspunktHarPassert,
       rekrutteringstreffId,
       oppdaterData,
-      onÅpneForhåndsvisning,
       onToggleForhåndsvisning,
       onBekreftRedigerPublisert,
       onAvlyst,
@@ -90,7 +88,6 @@ const RekrutteringstreffHeader = forwardRef<
                 tiltidspunktHarPassert={tiltidspunktHarPassert}
                 rekrutteringstreffId={rekrutteringstreffId}
                 oppdaterData={oppdaterData}
-                onÅpneForhåndsvisning={onÅpneForhåndsvisning}
                 onToggleForhåndsvisning={onToggleForhåndsvisning}
                 onBekreftRedigerPublisert={onBekreftRedigerPublisert}
                 onAvlyst={onAvlyst}
