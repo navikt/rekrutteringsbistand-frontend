@@ -8,15 +8,12 @@ export interface KandidatBeskrivelseProps {
 const KandidatBeskrivelse: FC<KandidatBeskrivelseProps> = ({
   kandidatSammendrag,
 }) => {
-  if (!kandidatSammendrag) {
-    return null;
-  }
   return (
     <>
       <Heading size='medium' className='mb-4'>
         Sammendrag
       </Heading>
-      <BodyLong> {kandidatSammendrag} </BodyLong>
+      <BodyLong> {kandidatSammendrag ?? '-'} </BodyLong>
     </>
   );
 };
