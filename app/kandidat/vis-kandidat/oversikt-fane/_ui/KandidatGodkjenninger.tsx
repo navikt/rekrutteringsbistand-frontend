@@ -17,35 +17,34 @@ const KandidatGodkjenninger: FC<KandidatGodkjenningerProps> = ({
   sertifikatObj,
 }) => {
   if (
-    !godkjenninger ||
-    !godkjenninger.length ||
-    !sertifikatObj ||
-    !sertifikatObj.length
+    (!godkjenninger || !godkjenninger.length) &&
+    (!sertifikatObj || !sertifikatObj.length)
   ) {
     return null;
   }
   return (
     <GråBoks tittel='Godkjenninger' ikon={<SealCheckmarkIcon />}>
-      {godkjenninger
-        .sort((a, b) =>
-          compareAsc(
-            parseISO(a?.gjennomfoert ?? ''),
-            parseISO(b?.gjennomfoert ?? ''),
-          ),
-        )
-        .map((godkjenning, index) => {
-          return (
-            <Erfaring
-              key={
-                index + `${godkjenning.konseptId}-${godkjenning.gjennomfoert}`
-              }
-              overskrift={godkjenning.tittel}
-              detaljer={<TidsperiodeGodkjenning godkjenning={godkjenning} />}
-            />
-          );
-        })}
+      {godkjenninger &&
+        godkjenninger
+          .sort((a, b) =>
+            compareAsc(
+              parseISO(a?.gjennomfoert ?? ''),
+              parseISO(b?.gjennomfoert ?? ''),
+            ),
+          )
+          .map((godkjenning, index) => {
+            return (
+              <Erfaring
+                key={
+                  index + `${godkjenning.konseptId}-${godkjenning.gjennomfoert}`
+                }
+                overskrift={godkjenning.tittel}
+                detaljer={<TidsperiodeGodkjenning godkjenning={godkjenning} />}
+              />
+            );
+          })}
 
-      {sertifikatObj?.length > 0 &&
+      {sertifikatObj &&
         sertifikatObj
           .sort((a, b) =>
             compareAsc(parseISO(a?.fraDato ?? ''), parseISO(b?.fraDato ?? '')),
