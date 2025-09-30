@@ -46,7 +46,7 @@ const ArbeidsgiverHendelserKort: FC<Props> = ({ arbeidsgiverHendelserDTO }) => {
               />
             </Box.New>
             <BodyShort className='text-center'>
-              Finn og legg til en arbeidsgiver så dukker aktivitetene deres opp
+              Finn og legg til en arbeidsgiver så dukker hendelelene deres opp
               her.
             </BodyShort>
           </div>
@@ -61,7 +61,7 @@ const ArbeidsgiverHendelserKort: FC<Props> = ({ arbeidsgiverHendelserDTO }) => {
             </div>
 
             <Heading size='xsmall' level='4' className='mt-8 mb-2'>
-              Siste aktivitet
+              Siste hendelser
             </Heading>
 
             {siste5.map((h) => (

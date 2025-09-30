@@ -108,18 +108,9 @@ function TimeInput({
   };
 
   const rotatedOptions = useMemo(() => {
-    if (
-      inputValue &&
-      erLovligTid(inputValue) &&
-      dynamiskeOptions.includes(inputValue)
-    ) {
-      return roter(dynamiskeOptions, inputValue);
-    }
-    if (value && erLovligTid(value) && dynamiskeOptions.includes(value)) {
-      return roter(dynamiskeOptions, value);
-    }
+    // Behold alltid stigende sortering (00:00 øverst). Ikke roter listen.
     return dynamiskeOptions;
-  }, [dynamiskeOptions, inputValue, value, erLovligTid]);
+  }, [dynamiskeOptions]);
 
   const hentListeElement = () => {
     const input = inputRef.current;
@@ -152,9 +143,21 @@ function TimeInput({
       selected.parentElement;
     if (listbox) {
       const desiredSpacing = 4;
-      const currentOffset = selected.offsetTop - listbox.scrollTop;
-      if (currentOffset < desiredSpacing) {
-        listbox.scrollTop = Math.max(selected.offsetTop - desiredSpacing, 0);
+      const itemTop = selected.offsetTop;
+      const itemBottom = itemTop + selected.offsetHeight;
+      const viewTop = listbox.scrollTop;
+      const viewBottom = viewTop + listbox.clientHeight;
+
+      // If selected item is above the viewport, scroll up so it appears near the top
+      if (itemTop < viewTop + desiredSpacing) {
+        listbox.scrollTop = Math.max(itemTop - desiredSpacing, 0);
+        return;
+      }
+
+      // If selected item is below the viewport, scroll down so it appears near the top
+      if (itemBottom > viewBottom - desiredSpacing) {
+        const newTop = Math.max(itemTop - desiredSpacing, 0);
+        listbox.scrollTop = newTop;
       }
     }
   }, [value]);

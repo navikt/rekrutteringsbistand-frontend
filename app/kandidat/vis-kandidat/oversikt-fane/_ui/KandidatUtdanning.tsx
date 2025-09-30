@@ -18,6 +18,7 @@ const KandidatUtdanning: FC = () => {
           endDate={edu?.tilDato}
           title={edu?.alternativGrad}
           subtitle={edu?.utdannelsessted}
+          description={edu?.beskrivelse}
         />
       ))}
       {kandidatData.fagdokumentasjon?.map((fag, index) => (
@@ -28,6 +29,7 @@ const KandidatUtdanning: FC = () => {
           endDate={null}
           title={fag?.tittel}
           subtitle={fag?.type}
+          description={fag?.beskrivelse}
         />
       ))}
     </div>

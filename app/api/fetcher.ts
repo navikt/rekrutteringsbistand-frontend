@@ -35,6 +35,7 @@ const buildUrl = (url: string, queryParams?: URLSearchParams): string => {
   }
   return url;
 };
+
 const handleErrorResponse = async (
   response: Response,
   options?: fetchOptions,
@@ -153,6 +154,7 @@ const extractResponseData = async (response: Response): Promise<any> => {
     }
   }
 };
+
 const validerSchema = <T>(schema: z.ZodType<T>, data: any) => {
   // return schema.parse(data);
   // TODO Midlertidig løsning for å unngå så mange feil ved feil schema:
@@ -183,25 +185,66 @@ export const getAPIwithSchema = <T>(
   };
 };
 
+const retryFetch = async (
+  url: string,
+  init: RequestInit,
+  maxRetries: number = 3,
+): Promise<Response> => {
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      const response = await fetch(url, init);
+      return response;
+    } catch (error) {
+      const isNetworkError =
+        error instanceof Error &&
+        (error.message.includes('Failed to fetch') ||
+          error.message.includes('NetworkError') ||
+          error.name === 'AbortError');
+
+      if (attempt < maxRetries && isNetworkError) {
+        // Wait before retry (exponential backoff)
+        await new Promise((resolve) =>
+          setTimeout(resolve, Math.pow(2, attempt) * 1000),
+        );
+        continue;
+      }
+      throw error;
+    }
+  }
+  throw new Error('Max retries reached');
+};
+
 export const getAPI = async (url: string, options?: fetchOptions) => {
   try {
     const fullUrl = buildUrl(url, options?.queryParams);
 
-    const response = await fetch(basePath + fullUrl, {
+    const response = await retryFetch(basePath + fullUrl, {
       method: 'GET',
       credentials: 'include',
+      signal: AbortSignal.timeout(30000), // 30 second timeout
     });
 
     await handleErrorResponse(response, options);
 
-    // Only use extractResponseData, remove the response.ok check
     return await extractResponseData(response);
   } catch (error) {
     if (!(error instanceof RekbisError)) {
+      // Enhanced error information for better debugging
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      const isNetworkError =
+        errorMessage.includes('Failed to fetch') ||
+        errorMessage.includes('fetch') ||
+        errorMessage.includes('NetworkError') ||
+        errorMessage.includes('AbortError');
+
       throw createRekbisError({
-        message: 'Nettverksfeil: Kunne ikke koble til serveren',
+        message: isNetworkError
+          ? `Nettverksfeil (GET): ${errorMessage}. URL: ${basePath + url}`
+          : 'Nettverksfeil: Kunne ikke koble til serveren',
         url: basePath + url,
         error,
+        details: `Error type: ${error instanceof Error ? error.constructor.name : typeof error}, Message: ${errorMessage}`,
       });
     }
     throw error;
@@ -229,14 +272,24 @@ export const postApi = async (
 
     await handleErrorResponse(response, options);
 
-    // Only use extractResponseData, remove the response.ok check
     return await extractResponseData(response);
   } catch (error) {
     if (!(error instanceof RekbisError)) {
+      // Enhanced error information for better debugging
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      const isNetworkError =
+        errorMessage.includes('Failed to fetch') ||
+        errorMessage.includes('fetch') ||
+        errorMessage.includes('NetworkError');
+
       throw createRekbisError({
-        message: 'Nettverksfeil: Kunne ikke koble til serveren',
+        message: isNetworkError
+          ? `Nettverksfeil (POST): ${errorMessage}`
+          : 'Nettverksfeil: Kunne ikke koble til serveren',
         url: basePath + url,
         error,
+        details: `Error type: ${error instanceof Error ? error.constructor.name : typeof error}, Message: ${errorMessage}`,
       });
     }
     throw error;
@@ -264,14 +317,24 @@ export const putApi = async (
 
     await handleErrorResponse(response, options);
 
-    // Only use extractResponseData, remove the response.ok check
     return await extractResponseData(response);
   } catch (error) {
     if (!(error instanceof RekbisError)) {
+      // Enhanced error information for better debugging
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      const isNetworkError =
+        errorMessage.includes('Failed to fetch') ||
+        errorMessage.includes('fetch') ||
+        errorMessage.includes('NetworkError');
+
       throw createRekbisError({
-        message: 'Nettverksfeil: Kunne ikke koble til serveren',
+        message: isNetworkError
+          ? `Nettverksfeil (PUT): ${errorMessage}`
+          : 'Nettverksfeil: Kunne ikke koble til serveren',
         url: basePath + url,
         error,
+        details: `Error type: ${error instanceof Error ? error.constructor.name : typeof error}, Message: ${errorMessage}`,
       });
     }
     throw error;
@@ -335,14 +398,24 @@ export const deleteApi = async (url: string, options?: fetchOptions) => {
 
     await handleErrorResponse(response, options);
 
-    // Only use extractResponseData, remove the response.ok check
     return await extractResponseData(response);
   } catch (error) {
     if (!(error instanceof RekbisError)) {
+      // Enhanced error information for better debugging
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      const isNetworkError =
+        errorMessage.includes('Failed to fetch') ||
+        errorMessage.includes('fetch') ||
+        errorMessage.includes('NetworkError');
+
       throw createRekbisError({
-        message: 'Nettverksfeil: Kunne ikke koble til serveren',
+        message: isNetworkError
+          ? `Nettverksfeil (DELETE): ${errorMessage}`
+          : 'Nettverksfeil: Kunne ikke koble til serveren',
         url: basePath + url,
         error,
+        details: `Error type: ${error instanceof Error ? error.constructor.name : typeof error}, Message: ${errorMessage}`,
       });
     }
     throw error;

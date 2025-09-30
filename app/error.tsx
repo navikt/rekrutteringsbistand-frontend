@@ -12,7 +12,23 @@ export default function Error({
   error: Error & { digest?: string };
 }) {
   useEffect(() => {
-    if (error instanceof Response && error.status === 401) {
+    const isAuthError = error instanceof Response && error.status === 401;
+    const isWonderwallCookieError =
+      error.message?.includes('wonderwall') ||
+      error.message?.includes('callback') ||
+      error.message?.includes('cookie');
+
+    if (isAuthError || isWonderwallCookieError) {
+      // Clear potential stale cookies before redirecting
+      document.cookie.split(';').forEach((cookie) => {
+        const eqPos = cookie.indexOf('=');
+        const name =
+          eqPos > -1 ? cookie.substr(0, eqPos).trim() : cookie.trim();
+        if (name.includes('wonderwall') || name.includes('oauth')) {
+          document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
+        }
+      });
+
       window.location.href = `/oauth2/login?redirect=${
         window.location.pathname
       }`;

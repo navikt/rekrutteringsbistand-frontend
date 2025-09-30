@@ -11,7 +11,7 @@ import { FC } from 'react';
 
 const GRID = 'grid grid-cols-[14rem_16rem_12rem_9rem] gap-x-4 items-center';
 
-const Aktiviteter: FC = () => {
+const Hendelser: FC = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { data: hendelser } = useAlleHendelser(rekrutteringstreffId);
 
@@ -59,4 +59,4 @@ const Aktiviteter: FC = () => {
   );
 };
 
-export default Aktiviteter;
+export default Hendelser;
