@@ -36,33 +36,32 @@ const Nyheter: React.FC = () => {
       }
     >
       <div className='flex flex-col gap-4 mb-4'>
-        <SWRLaster hooks={[nyheterHook]} skjulFeilmelding>
-          {(nyheterData) => {
-            window.localStorage.setItem(
-              'antallLesteNyheter',
-              JSON.stringify(nyheterData.length),
-            );
+        <SideScroll>
+          {' '}
+          <SWRLaster hooks={[nyheterHook]}>
+            {(nyheterData) => {
+              window.localStorage.setItem(
+                'antallLesteNyheter',
+                JSON.stringify(nyheterData.length),
+              );
 
-            return (
-              <SideScroll>
-                {nyheterData
-                  .sort(
-                    (a, b) =>
-                      new Date(b.opprettetDato).getTime() -
-                      new Date(a.opprettetDato).getTime(),
-                  )
-                  .map((nyhet) => (
-                    <NyhetVisning
-                      key={nyhet.nyhetId}
-                      nyhet={nyhet}
-                      refetch={() => nyheterHook.mutate()}
-                    />
-                  ))}
-              </SideScroll>
-            );
-          }}
-        </SWRLaster>
-        <LegacyNyheter />
+              return nyheterData
+                .sort(
+                  (a, b) =>
+                    new Date(b.opprettetDato).getTime() -
+                    new Date(a.opprettetDato).getTime(),
+                )
+                .map((nyhet) => (
+                  <NyhetVisning
+                    key={nyhet.nyhetId}
+                    nyhet={nyhet}
+                    refetch={() => nyheterHook.mutate()}
+                  />
+                ));
+            }}
+          </SWRLaster>
+          <LegacyNyheter />
+        </SideScroll>
       </div>
     </SideLayout>
   );
