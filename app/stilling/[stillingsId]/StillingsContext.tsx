@@ -95,7 +95,8 @@ export const StillingsContextMedData: FC<StillingsContextMedDataProps> = ({
     if (stillingsData.stilling?.updated) {
       kandidatListeInfoHook?.mutate();
     }
-  }, [stillingsData?.stilling?.updated, kandidatListeInfoHook]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stillingsData?.stilling?.updated]);
 
   const [forhåndsvisData, setForhåndsvisData] =
     useState<StillingsDataDTO | null>(null);

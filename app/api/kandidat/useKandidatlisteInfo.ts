@@ -32,6 +32,8 @@ export const useKandidatlisteInfo = (
     {
       errorRetryCount: 3,
       errorRetryInterval: 3000,
+      revalidateOnFocus: false, // Ikke revalider ved fokus
+      dedupingInterval: 2000, // Dedupliser requests innen 2 sekunder
     },
   );
 
