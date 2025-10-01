@@ -16,7 +16,6 @@ import {
   createContext,
   FC,
   useContext,
-  useEffect,
   useMemo,
   useState,
   type ReactNode,
@@ -90,13 +89,6 @@ export const StillingsContextMedData: FC<StillingsContextMedDataProps> = ({
       ? stillingsData?.stillingsinfo
       : null,
   );
-
-  useEffect(() => {
-    if (stillingsData.stilling?.updated) {
-      kandidatListeInfoHook?.mutate();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [stillingsData?.stilling?.updated]);
 
   const [forhåndsvisData, setForhåndsvisData] =
     useState<StillingsDataDTO | null>(null);
