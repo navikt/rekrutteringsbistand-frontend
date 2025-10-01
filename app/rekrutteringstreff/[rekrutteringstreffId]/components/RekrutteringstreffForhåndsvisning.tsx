@@ -121,65 +121,65 @@ const RekrutteringstreffForhåndsvisning: FC = () => {
 
   return (
     <div className='bg-white text-black min-h-screen' data-theme='light'>
-      <div className='max-w-6xl mx-auto p-8 space-y-6'>
-        {/* Header with title */}
-        <div>
-          <Heading level='1' size='large' className='text-gray-900'>
-            {rekrutteringstreff.tittel}
-          </Heading>
-        </div>
-
-        {/* Time and Location info */}
-        <div className='space-y-3'>
-          {/* Time */}
-          {(initialFra || initialTil) && (
-            <div className='flex items-start gap-3'>
-              <ClockIcon
-                aria-hidden
-                fontSize='1.5rem'
-                className='text-gray-700 flex-shrink-0'
-              />
-              <div>
-                <Detail className='text-gray-600 mb-0.5'>Om 6 dager</Detail>
-                <BodyShort className='text-gray-900'>
-                  {formatTimeRange()}
-                </BodyShort>
-              </div>
+      <div className='max-w-7xl mx-auto p-2 space-y-6'>
+        {/* Three column layout */}
+        <div className='grid grid-cols-1 lg:grid-cols-5 gap-4 pt-4'>
+          {/* Left column - Header, Info, Siste aktivitet */}
+          <div className='lg:col-span-3 space-y-6'>
+            {/* Header with title */}
+            <div>
+              <Heading level='1' size='large' className='text-gray-900'>
+                {rekrutteringstreff.tittel}
+              </Heading>
             </div>
-          )}
 
-          {/* Location */}
-          {(rekrutteringstreff.gateadresse ||
-            rekrutteringstreff.postnummer ||
-            rekrutteringstreff.poststed) && (
-            <div className='flex items-start gap-3'>
-              <LocationPinIcon
-                aria-hidden
-                fontSize='1.5rem'
-                className='text-gray-700 flex-shrink-0'
-              />
-              <div>
-                {rekrutteringstreff.gateadresse && (
-                  <BodyShort className='text-gray-900'>
-                    {rekrutteringstreff.gateadresse}
-                  </BodyShort>
-                )}
-                {(rekrutteringstreff.postnummer ||
-                  rekrutteringstreff.poststed) && (
-                  <BodyShort className='text-gray-900'>
-                    {rekrutteringstreff.postnummer}{' '}
-                    {rekrutteringstreff.poststed}
-                  </BodyShort>
-                )}
-              </div>
+            {/* Time and Location info */}
+            <div className='space-y-3'>
+              {/* Time */}
+              {(initialFra || initialTil) && (
+                <div className='flex items-start gap-3'>
+                  <ClockIcon
+                    aria-hidden
+                    fontSize='1.5rem'
+                    className='text-gray-700 flex-shrink-0'
+                  />
+                  <div>
+                    <Detail className='text-gray-600 mb-0.5'>Om 6 dager</Detail>
+                    <BodyShort className='text-gray-900'>
+                      {formatTimeRange()}
+                    </BodyShort>
+                  </div>
+                </div>
+              )}
+
+              {/* Location */}
+              {(rekrutteringstreff.gateadresse ||
+                rekrutteringstreff.postnummer ||
+                rekrutteringstreff.poststed) && (
+                <div className='flex items-start gap-3'>
+                  <LocationPinIcon
+                    aria-hidden
+                    fontSize='1.5rem'
+                    className='text-gray-700 flex-shrink-0'
+                  />
+                  <div>
+                    {rekrutteringstreff.gateadresse && (
+                      <BodyShort className='text-gray-900'>
+                        {rekrutteringstreff.gateadresse}
+                      </BodyShort>
+                    )}
+                    {(rekrutteringstreff.postnummer ||
+                      rekrutteringstreff.poststed) && (
+                      <BodyShort className='text-gray-900'>
+                        {rekrutteringstreff.postnummer}{' '}
+                        {rekrutteringstreff.poststed}
+                      </BodyShort>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
-          )}
-        </div>
 
-        {/* Two column layout */}
-        <div className='grid grid-cols-1 lg:grid-cols-2 gap-6 pt-4'>
-          {/* Left column - Siste aktivitet */}
-          <div className='space-y-6'>
             <div className='space-y-4'>
               <Heading
                 level='2'
@@ -219,10 +219,10 @@ const RekrutteringstreffForhåndsvisning: FC = () => {
           </div>
 
           {/* Right column - Svar and Arbeidsgivere */}
-          <div className='space-y-6'>
+          <div className='lg:col-span-2 space-y-6'>
             {/* User response box */}
             <div className='space-y-4'>
-              <div className='bg-white border border-gray-300 p-6 rounded-lg space-y-4'>
+              <div className='bg-white border border-gray-300 p-4 rounded-lg space-y-4'>
                 <div className='flex items-start gap-3'>
                   <XMarkOctagonFillIcon
                     aria-hidden
@@ -234,17 +234,16 @@ const RekrutteringstreffForhåndsvisning: FC = () => {
                     size='medium'
                     className='text-gray-900 font-semibold'
                   >
-                    Jeg blir ikke med
+                    (svar)
                   </Heading>
                 </div>
 
-                <div className='space-y-3'>
+                <div className='flex items-center justify-between'>
                   <BodyShort className='text-gray-700'>
                     Du kan endre svaret ditt frem til {svarfristFormatert}
                   </BodyShort>
-
                   <Button variant='secondary' size='small'>
-                    Endre svar
+                    (svarvelger)
                   </Button>
                 </div>
               </div>
