@@ -15,7 +15,7 @@ export default function StillingsutkastMelding() {
     return null;
   }
   return (
-    <div className={'flex flex-col items-center gap-4 self-stretch p-10 pl-5 pr-5'}>
+    <div className={'flex flex-col items-center gap-4 self-stretch py-10 px-5'}>
       <Image
         src={UtkastFigur}
         alt={'En smilende figur med verktøy i hendene'}
