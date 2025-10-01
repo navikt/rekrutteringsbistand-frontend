@@ -291,8 +291,6 @@ const Rekrutteringstreff: FC = () => {
               erIVisning={erIForhåndsvisning}
               onUpdated={rekrutteringstreffHook.mutate}
               onGåTilForhåndsvisning={gåTilForhåndsvisning}
-              erPubliseringklar={erPubliseringklar}
-              oppdaterData={oppdaterData}
             />
           </div>
         </SideScroll>
