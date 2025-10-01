@@ -8,7 +8,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
 export default function StillingsutkastMelding() {
-  const { stillingsData, erEier, kandidatlisteInfo } = useStillingsContext();
+  const { stillingsData, erEier } = useStillingsContext();
   const router = useRouter();
 
   if (!erEier) {
@@ -30,7 +30,6 @@ export default function StillingsutkastMelding() {
         <Button
           variant={'primary'}
           className={'w-72 h-12'}
-          disabled={kandidatlisteInfo?.kandidatlisteStatus === 'LUKKET'}
           onClick={() =>
             router.push(`/stilling/${stillingsData.stilling.uuid}/rediger`)
           }
