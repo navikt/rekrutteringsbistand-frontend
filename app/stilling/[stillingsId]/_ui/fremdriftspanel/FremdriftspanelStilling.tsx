@@ -14,6 +14,12 @@ import {
 import SWRLaster from '@/components/SWRLaster';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
 import { formaterNorskDato } from '@/util/util';
 import {
   BarChartIcon,
@@ -104,102 +110,139 @@ export default function FremdriftspanelStilling({
             const antallFåttJobben =
               antallFåttJobbenKandidatliste + antallFåttJobbenUsynlig;
 
-            if (erFullført) {
-              return (
-                <div className={dropDown ? 'p-4' : ''}>
-                  <StoppStillingKnapp />
-                  <GjenåpneStillingKnapp />
+            const delMedArbeidsgiverVisning = () => (
+              <div className='flex flex-col gap-2'>
+                <Heading size='small' level='2'>
+                  Del med arbeidsgiver
+                </Heading>
 
-                  <div className='flex flex-col gap-6 mt-6'>
-                    <div>
-                      <Heading size='small' level='2'>
-                        Oppdrag fullført
-                      </Heading>
-                      <BodyShort
-                        size='small'
-                        className='text-[var(--ax-text-neutral-subtle)] mt-1'
-                      >
-                        Av {stillingsData.stilling?.administration?.reportee}{' '}
-                        {formaterNorskDato({
-                          dato: stillingsData.stilling.updated,
-                        })}
-                      </BodyShort>
-                    </div>
-                    {!erJobbmesse && (
-                      <>
-                        <div>
-                          {antallFåttJobben > 0 ? (
-                            <div>
-                              <Heading size='xsmall' level='3'>
-                                🎯 Her traff du blink
-                              </Heading>
-                              <BodyShort size='small'>
-                                {antallFåttJobben} av {totalStillinger}{' '}
-                                stillinger ble besatt
-                              </BodyShort>
-                            </div>
-                          ) : (
-                            <div>
-                              <Heading size='xsmall' level='3'>
-                                🐟 Ingen napp denne gangen
-                              </Heading>
-                              <BodyShort size='small'>
-                                {antallFåttJobben} av {totalStillinger}{' '}
-                                stillinger ble besatt
-                              </BodyShort>
-                            </div>
-                          )}
-                        </div>
-                        <Box.New
-                          background='neutral-soft'
-                          borderRadius={'large'}
-                          padding='3'
-                        >
-                          <Heading size='xsmall' level='3' className='mb-4'>
-                            Hva som skjedde bak kulissene
-                          </Heading>
-                          <div className='flex gap-4 flex-col'>
-                            <div className='flex gap-2'>
-                              <BellIcon aria-hidden className='shrink-0' />
-                              <BodyShort size='small'>
-                                Alle som ikke fikk jobben fikk beskjed om
-                                avslaget på nav.no/min-side.
-                              </BodyShort>
-                            </div>
-                            <div className='flex gap-2'>
-                              <TableIcon aria-hidden className='shrink-0' />
-                              <BodyShort size='small'>
-                                Aktivitetskortet ble flyttet til
-                                “Fullført”-kolonnen i aktivitetsplanen.
-                              </BodyShort>
-                            </div>
-                            <div className='flex gap-2'>
-                              <PersonChatIcon
-                                aria-hidden
-                                className='shrink-0'
-                              />
-                              <BodyShort size='small'>
-                                De som fikk jobben fikk ikke beskjed automatisk,
-                                siden de mest sannsynlig får høre nyheten
-                                direkte fra arbeidsgiveren.
-                              </BodyShort>
-                            </div>
-                            <div className='flex gap-2'>
-                              <EyeIcon aria-hidden className='shrink-0' />
-                              <BodyShort size='small'>
-                                Annonsen vises ikke lenger som aktiv.
-                              </BodyShort>
-                            </div>
-                          </div>
-                        </Box.New>
-                      </>
-                    )}
-                  </div>
+                <ProgressBar
+                  value={antallDelt}
+                  valueMax={totalStillinger}
+                  size='small'
+                  aria-labelledby='progress-bar-label-small'
+                />
+
+                <div className=' flex justify-end text-sm tabular-nums'>
+                  {antallDelt}/{totalStillinger}
                 </div>
-              );
+              </div>
+            );
+
+            const erFullførtVisning = () => (
+              <div className={dropDown ? 'p-4' : '' + 'mr-2'}>
+                <StoppStillingKnapp />
+                <GjenåpneStillingKnapp />
+
+                <div className='flex flex-col gap-6 mt-6'>
+                  <div>
+                    <Heading size='small' level='2'>
+                      Oppdrag fullført
+                    </Heading>
+                    <BodyShort
+                      size='small'
+                      className='text-[var(--ax-text-neutral-subtle)] mt-1'
+                    >
+                      Av {stillingsData.stilling?.administration?.reportee}{' '}
+                      {formaterNorskDato({
+                        dato: stillingsData.stilling.updated,
+                      })}
+                    </BodyShort>
+                  </div>
+                  {!erJobbmesse && (
+                    <>
+                      <div>
+                        {antallFåttJobben > 0 ? (
+                          <div>
+                            <Heading size='xsmall' level='3'>
+                              🎯 Her traff du blink
+                            </Heading>
+                            <BodyShort size='small'>
+                              {antallFåttJobben} av {totalStillinger} stillinger
+                              ble besatt
+                            </BodyShort>
+                          </div>
+                        ) : (
+                          <div>
+                            <Heading size='xsmall' level='3'>
+                              🐟 Ingen napp denne gangen
+                            </Heading>
+                            <BodyShort size='small'>
+                              {antallFåttJobben} av {totalStillinger} stillinger
+                              ble besatt
+                            </BodyShort>
+                          </div>
+                        )}
+                      </div>
+                      <Box.New
+                        background='neutral-soft'
+                        borderRadius={'large'}
+                        padding='3'
+                      >
+                        <Heading size='xsmall' level='3' className='mb-4'>
+                          Hva som skjedde bak kulissene
+                        </Heading>
+                        <div className='flex gap-4 flex-col'>
+                          <div className='flex gap-2'>
+                            <BellIcon aria-hidden className='shrink-0' />
+                            <BodyShort size='small'>
+                              Alle som ikke fikk jobben fikk beskjed om avslaget
+                              på nav.no/min-side.
+                            </BodyShort>
+                          </div>
+                          <div className='flex gap-2'>
+                            <TableIcon aria-hidden className='shrink-0' />
+                            <BodyShort size='small'>
+                              Aktivitetskortet ble flyttet til
+                              “Fullført”-kolonnen i aktivitetsplanen.
+                            </BodyShort>
+                          </div>
+                          <div className='flex gap-2'>
+                            <PersonChatIcon aria-hidden className='shrink-0' />
+                            <BodyShort size='small'>
+                              De som fikk jobben fikk ikke beskjed automatisk,
+                              siden de mest sannsynlig får høre nyheten direkte
+                              fra arbeidsgiveren.
+                            </BodyShort>
+                          </div>
+                          <div className='flex gap-2'>
+                            <EyeIcon aria-hidden className='shrink-0' />
+                            <BodyShort size='small'>
+                              Annonsen vises ikke lenger som aktiv.
+                            </BodyShort>
+                          </div>
+                        </div>
+                      </Box.New>
+                    </>
+                  )}
+                </div>
+              </div>
+            );
+
+            if (erFullført) {
+              if (dropDown) {
+                return (
+                  <div className='p-2'>
+                    <Accordion type='single' collapsible>
+                      <AccordionItem value='item-1'>
+                        <AccordionTrigger>
+                          <Heading size='small' level='2'>
+                            Fremdriftspanel
+                          </Heading>
+                        </AccordionTrigger>
+                        <AccordionContent>
+                          {erFullførtVisning()}
+                        </AccordionContent>
+                      </AccordionItem>
+                    </Accordion>
+                  </div>
+                );
+              }
+              return erFullførtVisning();
             }
-            return (
-              <div className={dropDown ? 'p-4' : ''}>
+
+            const aktivVisning = () => (
+              <div className={dropDown ? 'p-4' : '' + 'mr-2'}>
                 <div className='grid grid-cols-2 gap-2'>
                   <RedigerStillingKnapp />
                   <FullførStillingKnapp />
@@ -208,23 +251,7 @@ export default function FremdriftspanelStilling({
                 <div className='flex flex-col gap-6 mt-6'>
                   {!erJobbmesse && (
                     <>
-                      {' '}
-                      <div className='flex flex-col gap-2'>
-                        <Heading size='small' level='2'>
-                          Del med arbeidsgiver
-                        </Heading>
-
-                        <ProgressBar
-                          value={antallDelt}
-                          valueMax={totalStillinger}
-                          size='small'
-                          aria-labelledby='progress-bar-label-small'
-                        />
-
-                        <div className=' flex justify-end text-sm tabular-nums'>
-                          {antallDelt}/{totalStillinger}
-                        </div>
-                      </div>
+                      {delMedArbeidsgiverVisning()}
                       <div>
                         <Heading size='xsmall' level='3'>
                           Sjekkliste
@@ -301,6 +328,23 @@ export default function FremdriftspanelStilling({
                 </div>
               </div>
             );
+            if (dropDown) {
+              return (
+                <div className='p-2'>
+                  <Accordion type='single' collapsible>
+                    <AccordionItem value='item-1'>
+                      <AccordionTrigger>
+                        <Heading size='small' level='2'>
+                          Fremdriftspanel
+                        </Heading>
+                      </AccordionTrigger>
+                      <AccordionContent>{aktivVisning()}</AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
+                </div>
+              );
+            }
+            return aktivVisning();
           }}
         </SWRLaster>
       )}
