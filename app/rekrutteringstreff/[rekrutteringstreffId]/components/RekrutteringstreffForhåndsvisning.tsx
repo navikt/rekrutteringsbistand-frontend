@@ -4,20 +4,8 @@ import { useRekrutteringstreffContext } from '../RekrutteringstreffContext';
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
-import {
-  ClockIcon,
-  LocationPinIcon,
-  XMarkOctagonFillIcon,
-} from '@navikt/aksel-icons';
-import {
-  BodyShort,
-  Box,
-  Button,
-  Detail,
-  Heading,
-  Skeleton,
-  Tag,
-} from '@navikt/ds-react';
+import { ClockIcon, LocationPinIcon } from '@navikt/aksel-icons';
+import { BodyShort, Button, Heading, Skeleton, Tag } from '@navikt/ds-react';
 import { format, isSameDay, parseISO } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
 import { nb } from 'date-fns/locale';
@@ -135,7 +123,7 @@ const RekrutteringstreffForhåndsvisning: FC = () => {
             </div>
 
             {/* Time and Location info */}
-            <div className='space-y-3'>
+            <div className='flex gap-16'>
               {/* Time */}
               {(initialFra || initialTil) && (
                 <div className='flex items-start gap-3'>
