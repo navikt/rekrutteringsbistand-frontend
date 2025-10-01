@@ -33,6 +33,7 @@ interface StillingsContextType {
   setForhåndsvisData: (data: StillingsDataDTO | null) => void;
   erDirektemeldt: boolean;
   refetch?: () => void;
+  refetchKandidatliste?: () => void;
   erSlettet: boolean;
   erJobbmesse: boolean;
 }
@@ -141,6 +142,7 @@ export const StillingsContextMedData: FC<StillingsContextMedDataProps> = ({
           stillingsData.stillingsinfo?.stillingskategori === 'FORMIDLING',
         setForhåndsvisData,
         refetch,
+        refetchKandidatliste: kandidatListeInfoHook?.mutate,
         kandidatlisteInfo: kandidatListeInfoHook?.data ?? null,
         kandidatlisteLaster: kandidatListeInfoHook?.isLoading ?? false,
         erJobbmesse,

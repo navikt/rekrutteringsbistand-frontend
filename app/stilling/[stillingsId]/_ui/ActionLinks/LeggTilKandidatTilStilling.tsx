@@ -1,6 +1,5 @@
 import { leggTilKandidater } from '@/app/api/kandidat-sok/leggTilKandidat';
 import { formidleUsynligKandidat } from '@/app/api/kandidat/formidleKandidat';
-import { useKandidatlisteInfo } from '@/app/api/kandidat/useKandidatlisteInfo';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import LenkeKortMedIkon from '@/components/felles/LenkeKortMedIkon';
 import LeggTilKandidater, {
@@ -24,15 +23,13 @@ const LeggTilKandidatTilStilling: FC<LeggTilKandidatTilStillingProps> = ({
 }) => {
   const ref = useRef<HTMLDialogElement>(null);
   const { track } = useUmami();
-  const { stillingsData } = useStillingsContext();
+  const { stillingsData, kandidatlisteInfo, refetchKandidatliste } =
+    useStillingsContext();
   const { valgtNavKontor, visVarsel } = useApplikasjonContext();
   const [valgteKandidater, setValgteKandidater] = useState<ValgtKandidatProp[]>(
     [],
   );
   const [modalKey, setModalKey] = useState(0);
-  const kandidatlisteInfoHook = useKandidatlisteInfo(
-    stillingsData.stillingsinfo,
-  );
 
   const [laster, setLaster] = useState(false);
 
@@ -53,22 +50,19 @@ const LeggTilKandidatTilStilling: FC<LeggTilKandidatTilStillingProps> = ({
       .filter((aktørId) => aktørId !== undefined && aktørId !== null);
 
     if (
-      kandidatlisteInfoHook?.data?.kandidatlisteId &&
+      kandidatlisteInfo?.kandidatlisteId &&
       (synligeKandidater.length > 0 || usynligFåttJobben.length > 0)
     ) {
       try {
         await leggTilKandidater(synligeKandidater, stillingsId);
 
         for (const kandidat of usynligFåttJobben) {
-          await formidleUsynligKandidat(
-            kandidatlisteInfoHook?.data?.kandidatlisteId,
-            {
-              fnr: kandidat.fødselsnummer,
-              fåttJobb: true,
-              navKontor: valgtNavKontor?.navKontor ?? '',
-              stillingsId: stillingsId,
-            },
-          );
+          await formidleUsynligKandidat(kandidatlisteInfo.kandidatlisteId, {
+            fnr: kandidat.fødselsnummer,
+            fåttJobb: true,
+            navKontor: valgtNavKontor?.navKontor ?? '',
+            stillingsId: stillingsId,
+          });
         }
 
         track(UmamiEvent.Stilling.legg_til_kandidat, {
@@ -80,7 +74,7 @@ const LeggTilKandidatTilStilling: FC<LeggTilKandidatTilStillingProps> = ({
           type: 'success',
         });
         setValgteKandidater([]);
-        kandidatlisteInfoHook.mutate();
+        refetchKandidatliste?.();
         ref.current?.close();
       } catch (error) {
         visVarsel({
