@@ -6,6 +6,7 @@ import GjenapneRekrutteringstreffButton from './GjenapneRekrutteringstreffButton
 import PubliserRekrutteringstreffButton from './PubliserRekrutteringstreffButton';
 import RedigerPublisertButton from './RedigerPublisertButton';
 import SlettRekrutteringstreffModal from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/SlettRekrutteringstreffModal';
+import { Button } from '@navikt/ds-react';
 import { FC } from 'react';
 
 export type ActiveStep =
@@ -45,6 +46,59 @@ const HeaderActions: FC<Props> = ({
 }) => {
   const harPublisert = activeStep === 'INVITERE' || activeStep === 'FULLFØRE';
 
+  // Når man er i edit-modus etter publisering, vis spesielle knapper
+  if (
+    harPublisert &&
+    !erIForhåndsvisning &&
+    !avlyst &&
+    activeStep !== 'FULLFØRE'
+  ) {
+    return (
+      <div className='flex items-center gap-2'>
+        <Button
+          type='button'
+          size='small'
+          variant='secondary'
+          onClick={() => onToggleForhåndsvisning(true)}
+        >
+          Forhåndsvisning
+        </Button>
+        <Button
+          type='button'
+          size='small'
+          variant='tertiary'
+          onClick={() => onToggleForhåndsvisning(true)}
+        >
+          Avbryt
+        </Button>
+        {/* TODO: Legg til "Publiser på nytt" knapp her når logikken er klar */}
+      </div>
+    );
+  }
+
+  // Når man er i edit-modus før publisering
+  if (!harPublisert && !erIForhåndsvisning && activeStep === 'PUBLISERE') {
+    return (
+      <div className='flex items-center gap-2'>
+        <PubliserRekrutteringstreffButton
+          erPubliseringklar={erPubliseringklar}
+          rekrutteringstreffId={rekrutteringstreffId}
+          oppdaterData={oppdaterData}
+        />
+        <Button
+          type='button'
+          size='small'
+          variant='secondary'
+          onClick={() => onToggleForhåndsvisning(true)}
+        >
+          Forhåndsvisning
+        </Button>
+        <SlettRekrutteringstreffModal />
+      </div>
+    );
+  }
+
+  // Normal view mode knapper
   return (
     <div className='flex items-center gap-2'>
       {!avlyst && harPublisert && activeStep !== 'FULLFØRE' && (

@@ -58,13 +58,14 @@ const Rekrutteringstreff: FC = () => {
 
   const viserForhåndsvisningsside = useMemo(() => {
     if (avlyst) return true;
-    return harPublisert && modus === 'preview-page';
-  }, [avlyst, harPublisert, modus]);
+    return modus === 'preview-page';
+  }, [avlyst, modus]);
 
   const erIForhåndsvisning = useMemo(() => {
     if (viserForhåndsvisningsside) return false;
-    return harPublisert && modus !== 'edit';
-  }, [viserForhåndsvisningsside, harPublisert, modus]);
+    if (modus === 'edit') return false;
+    return true; // Default view mode
+  }, [viserForhåndsvisningsside, modus]);
 
   const rekrutteringstreff = rekrutteringstreffHook.data;
 
@@ -149,8 +150,12 @@ const Rekrutteringstreff: FC = () => {
 
   const handleToggleForhåndsvisning = (nyForhåndsvisning: boolean) => {
     if (avlyst) return;
-    if (!harPublisert && nyForhåndsvisning) return;
-    setModus(nyForhåndsvisning ? '' : 'edit');
+    if (nyForhåndsvisning) {
+      // Gå til preview-page når man klikker Forhåndsvisning
+      setModus('preview-page');
+    } else {
+      setModus('edit');
+    }
     scrollToTop();
   };
 
@@ -160,8 +165,7 @@ const Rekrutteringstreff: FC = () => {
   };
 
   const gåTilForhåndsvisning = () => {
-    setModus('');
-    setFane(RekrutteringstreffTabs.OM_TREFFET);
+    setModus('preview-page');
     scrollToTop();
   };
 
@@ -203,8 +207,7 @@ const Rekrutteringstreff: FC = () => {
     return [{ label: rekrutteringstreffNavn }];
   }, [harPublisert, avlyst, rekrutteringstreffNavn]);
 
-  const skalViseHeader =
-    !viserForhåndsvisningsside && !(harPublisert && modus === 'edit');
+  const skalViseHeader = !viserForhåndsvisningsside;
 
   const oppdaterData = useCallback(async () => {
     await Promise.all([
