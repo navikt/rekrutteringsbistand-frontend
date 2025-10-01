@@ -1,7 +1,6 @@
 import LagreIKandidatlisteModal from './LagreIKandidatlisteModal';
 import { leggTilKandidater } from '@/app/api/kandidat-sok/leggTilKandidat';
 import { useKandidatlisteForEier } from '@/app/api/kandidat/useKandidatlisteForEier';
-import { useKandidatlisteInfo } from '@/app/api/kandidat/useKandidatlisteInfo';
 import { useKandidatSøkMarkerteContext } from '@/app/kandidat/KandidatSøkMarkerteContext';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import { UmamiEvent } from '@/components/umami/umamiEvents';
@@ -20,15 +19,13 @@ const LagreIKandidatlisteMedStillingsId: FC<
   LagreIKandidatlisteMedStillingsIdProps
 > = ({ stillingsId }) => {
   const { track } = useUmami();
-  const { erEier, stillingsData } = useStillingsContext();
+  const { erEier, stillingsData, refetchKandidatliste } = useStillingsContext();
 
   // bruker for å oppdatere eiers kandidatliste med nye kandidater
   const kandidatlisteForEierHook = useKandidatlisteForEier(
     stillingsData,
     erEier,
   );
-
-  const kandidatListeInfo = useKandidatlisteInfo(stillingsData.stillingsinfo);
   const { visVarsel } = useApplikasjonContext();
   const { markerteKandidater, fjernMarkerteKandidater } =
     useKandidatSøkMarkerteContext();
@@ -69,7 +66,7 @@ const LagreIKandidatlisteMedStillingsId: FC<
         setTimeout(() => {
           // Brukers her slik at eier får oppdatert listen
           kandidatlisteForEierHook.mutate();
-          kandidatListeInfo?.mutate();
+          refetchKandidatliste?.();
         }, 1000);
       }}
       icon={<PersonPlusIcon aria-hidden />}

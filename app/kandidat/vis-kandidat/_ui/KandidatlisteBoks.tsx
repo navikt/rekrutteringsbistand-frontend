@@ -1,6 +1,5 @@
 import LeggKandidatTilKandidatliste from './LeggKandidatTilKandidatliste';
 import { useKandidatlisteForEier } from '@/app/api/kandidat/useKandidatlisteForEier';
-import { useKandidatlisteInfo } from '@/app/api/kandidat/useKandidatlisteInfo';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import KandidatlisteWrapper from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteWrapper';
 import KandidatVisningSidebar from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatVisningSidebar/KandidatVisningSidebar';
@@ -14,12 +13,10 @@ export interface KandidatlisteBoksProps {
 }
 
 const KandidatlisteBoks: FC<KandidatlisteBoksProps> = ({ kandidatnr }) => {
-  const { stillingsData, erEier } = useStillingsContext();
+  const { stillingsData, erEier, kandidatlisteInfo, kandidatlisteLaster } =
+    useStillingsContext();
 
   const kandidatlisteEierHook = useKandidatlisteForEier(stillingsData, erEier);
-  const kandidatlisteInfoHook = useKandidatlisteInfo(
-    stillingsData.stillingsinfo,
-  );
 
   // Felles styling for boks-komponenter
   const BoksWrapper: FC<{
@@ -44,13 +41,17 @@ const KandidatlisteBoks: FC<KandidatlisteBoksProps> = ({ kandidatnr }) => {
     return null;
   }
 
+  if (kandidatlisteLaster) {
+    return null; // eller en loader
+  }
+
   return (
     <SWRLaster
-      hooks={[kandidatlisteEierHook, kandidatlisteInfoHook]}
+      hooks={[kandidatlisteEierHook]}
       skjulFeilmelding
       allowPartialData={true}
     >
-      {(kandidatlisteEier, kandidatlisteInfo) => {
+      {(kandidatlisteEier) => {
         if (
           kandidatlisteEier &&
           kandidatlisteEier.kandidater.some(

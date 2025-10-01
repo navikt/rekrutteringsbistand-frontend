@@ -1,7 +1,6 @@
 import { useFinnKandidatForStilling } from './useFinnKandidatForStilling';
 import { Kandidatlistestatus } from '@/app/api/kandidat/schema.zod';
 import { useKandidatlisteForEier } from '@/app/api/kandidat/useKandidatlisteForEier';
-import { useKandidatlisteInfo } from '@/app/api/kandidat/useKandidatlisteInfo';
 import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import KandidatSøkTabs from '@/app/kandidat/KandidatSøkTabs';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
@@ -23,7 +22,8 @@ const KandidatTilStilling: FC<KandidatTilStillingProps> = ({
   const router = useRouter();
   const [alleredeLagtTilKandidatliste, setAlleredeLagtTilKandidatliste] =
     useState<string[]>([]);
-  const { erEier } = useStillingsContext();
+  const { erEier, kandidatlisteInfo, kandidatlisteLaster } =
+    useStillingsContext();
 
   // Brukes for å vise eier hvem som allerede er lagt til i kandidatliste
   const kandidatlisteHook = useKandidatlisteForEier(stillingsData, erEier);
@@ -38,10 +38,6 @@ const KandidatTilStilling: FC<KandidatTilStillingProps> = ({
     }
   }, [kandidatlisteHook?.data?.kandidater]);
 
-  const kandidatListeInformasjonHook = useKandidatlisteInfo(
-    stillingsData?.stillingsinfo,
-  );
-
   const kopierArbeidsplassenLenke = () => {
     const miljø = getMiljø();
     if (miljø === Miljø.ProdGcp) {
@@ -54,13 +50,13 @@ const KandidatTilStilling: FC<KandidatTilStillingProps> = ({
     );
   };
 
-  if (kandidatListeInformasjonHook?.isLoading) {
+  if (kandidatlisteLaster) {
     return <Sidelaster />;
   }
 
   return (
     <>
-      {!kandidatListeInformasjonHook?.data?.kandidatlisteId ? (
+      {!kandidatlisteInfo?.kandidatlisteId ? (
         <Alert variant='error'>
           <Heading spacing size='small' level='3'>
             Du kan ikke foreslå kandidater til stillingen
@@ -123,7 +119,7 @@ const KandidatTilStilling: FC<KandidatTilStillingProps> = ({
         </Alert>
       ) : (
         <>
-          {kandidatListeInformasjonHook?.data?.kandidatlisteStatus ===
+          {kandidatlisteInfo?.kandidatlisteStatus ===
             Kandidatlistestatus.Lukket && (
             <Alert variant='error' className='mb-4'>
               Kandidatliste er lukket, så du kan ikke legge til jobbsøkere.

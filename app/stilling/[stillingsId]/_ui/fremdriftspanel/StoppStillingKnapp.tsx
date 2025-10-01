@@ -1,5 +1,4 @@
 import { Kandidatlistestatus } from '@/app/api/kandidat/schema.zod';
-import { useKandidatlisteInfo } from '@/app/api/kandidat/useKandidatlisteInfo';
 import { oppdaterStilling } from '@/app/api/stilling/oppdater-stilling/oppdaterStilling';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import { StillingsStatus } from '@/app/stilling/_ui/stilling-typer';
@@ -10,11 +9,8 @@ import { useState } from 'react';
 
 export default function StoppStillingKnapp() {
   const [loading, setLoading] = useState(false);
-  const { stillingsData, refetch } = useStillingsContext();
+  const { stillingsData, refetch, kandidatlisteInfo } = useStillingsContext();
   const { brukerData, valgtNavKontor, visVarsel } = useApplikasjonContext();
-  const kandidatlisteInfoHook = useKandidatlisteInfo(
-    stillingsData.stillingsinfo,
-  );
 
   const settStopp = async () => {
     setLoading(true);
@@ -51,8 +47,7 @@ export default function StoppStillingKnapp() {
   };
 
   if (
-    kandidatlisteInfoHook.data?.kandidatlisteStatus ===
-      Kandidatlistestatus.Lukket &&
+    kandidatlisteInfo?.kandidatlisteStatus === Kandidatlistestatus.Lukket &&
     stillingsData.stilling.status !== StillingsStatus.Stoppet
   ) {
     return (

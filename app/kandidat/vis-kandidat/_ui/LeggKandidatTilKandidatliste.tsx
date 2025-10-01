@@ -1,6 +1,5 @@
 import { leggTilKandidater } from '@/app/api/kandidat-sok/leggTilKandidat';
 import { useKandidatlisteForEier } from '@/app/api/kandidat/useKandidatlisteForEier';
-import { useKandidatlisteInfo } from '@/app/api/kandidat/useKandidatlisteInfo';
 import { useNullableStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import { UmamiEvent } from '@/components/umami/umamiEvents';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
@@ -24,9 +23,6 @@ const LeggKandidatTilKandidatliste: FC<LeggKandidatTilKandidatlisteProps> = ({
 
   const stillingsContext = useNullableStillingsContext();
 
-  const kandidatListeInfo = useKandidatlisteInfo(
-    stillingsContext?.stillingsData?.stillingsinfo,
-  );
   // bruker for å oppdatere eiers kandidatliste med nye kandidater
   const kandidatlisteForEierHook = useKandidatlisteForEier(
     stillingsContext?.stillingsData,
@@ -52,7 +48,7 @@ const LeggKandidatTilKandidatliste: FC<LeggKandidatTilKandidatlisteProps> = ({
       setTimeout(() => {
         // Brukers her slik at eier får oppdatert listen
         kandidatlisteForEierHook.mutate();
-        kandidatListeInfo?.mutate();
+        stillingsContext?.refetchKandidatliste?.();
       }, 1000);
     }
   };
