@@ -1,125 +1,44 @@
 import { isLocal } from '@/util/env';
 import { RekbisError } from '@/util/rekbisError';
-import { logger } from '@navikt/next-logger';
 import { getToken, requestOboToken, TokenResult } from '@navikt/oasis';
 
 interface hentOboTokenProps {
   headers: Headers;
   scope: string;
-  retryAttempt?: number;
-  maxRetries?: number;
 }
-
-const DEFAULT_MAX_RETRIES = 3;
-const RETRY_DELAY_MS = 1000;
 
 export const hentOboToken = async (
   props: hentOboTokenProps,
 ): Promise<TokenResult> => {
-  const { retryAttempt = 0, maxRetries = DEFAULT_MAX_RETRIES } = props;
-
   const token = isLocal ? 'DEV' : getToken(props.headers);
   if (!token) {
-    const hasAuthHeader = props.headers.has('authorization');
-    logger.warn({
-      message: 'Kunne ikke hente token fra headers',
-      scope: props.scope,
-      hasAuthHeader,
-      headerKeys: Array.from(props.headers.entries()).map(([key]) => key),
-    });
     return {
       ok: false,
-      error: new RekbisError({ message: 'Kunne ikke hente token fra headers' }),
+      error: new RekbisError({ message: 'Kunne ikke hente token' }),
     };
   }
-
-  if (isLocal) {
-    return { ok: true, token: 'DEV' } as TokenResult;
-  }
-
+  let obo: TokenResult;
   try {
-    const obo = await requestOboToken(token, props.scope);
+    obo = isLocal
+      ? ({ ok: true, token: 'DEV' } as TokenResult)
+      : await requestOboToken(token, props.scope);
 
     if (!obo.ok || !obo.token) {
-      if (!obo.ok) {
-        logger.warn({
-          message: `Henting av OBO-token feilet med error: ${obo.error.message}`,
-        });
-      }
-      const errorMessage = `Ugyldig OBO-token mottatt for scope: ${props.scope}`;
-
-      if (retryAttempt < maxRetries - 1) {
-        logger.warn({
-          message: `${errorMessage} (forsøk ${retryAttempt + 1}/${maxRetries}), prøver igjen...`,
-        });
-
-        await new Promise((resolve) =>
-          setTimeout(resolve, RETRY_DELAY_MS * (retryAttempt + 1)),
-        );
-
-        return hentOboToken({
-          ...props,
-          retryAttempt: retryAttempt + 1,
-          maxRetries,
-        });
-      }
-
-      logger.error({
-        message: `${errorMessage} etter ${maxRetries} forsøk`,
-        scope: props.scope,
-        retries: maxRetries,
-      });
-
       return {
         ok: false,
         error: new RekbisError({
-          message: errorMessage,
+          skjulLogger: true,
+          message: 'Ugyldig OBO-token mottatt',
         }),
       };
     }
 
-    // Log success if this was after retries
-    if (retryAttempt > 0) {
-      logger.info(
-        `OBO token hentet på forsøk ${retryAttempt + 1} for scope: ${props.scope}`,
-      );
-    }
-
     return obo;
-  } catch (error) {
-    const isLastAttempt = retryAttempt >= maxRetries - 1;
-
-    if (isLastAttempt) {
-      // Log som error kun når alle forsøk er brukt opp
-      logger.error({
-        message: `Kunne ikke hente OBO-token etter ${maxRetries} forsøk`,
-        scope: props.scope,
-        error,
-      });
-      return {
-        ok: false,
-        error: new RekbisError({ message: 'Kunne ikke hente OBO-token' }),
-      };
-    } else {
-      // Log som warning for retry-forsøk
-      logger.warn({
-        message: `OBO token request feilet (forsøk ${retryAttempt + 1}/${maxRetries}), prøver igjen...`,
-        scope: props.scope,
-        error,
-      });
-
-      // Vent før retry
-      await new Promise((resolve) =>
-        setTimeout(resolve, RETRY_DELAY_MS * (retryAttempt + 1)),
-      );
-
-      // Retry med økt attempt-teller
-      return hentOboToken({
-        ...props,
-        retryAttempt: retryAttempt + 1,
-        maxRetries,
-      });
-    }
+  } catch {
+    return {
+      ok: false,
+      error: new RekbisError({ message: 'Kunne ikke hente OBO-token' }),
+    };
   }
 };
 
