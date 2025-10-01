@@ -4,8 +4,19 @@ import { useRekrutteringstreffContext } from '../RekrutteringstreffContext';
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
-import { ClockIcon, LocationPinIcon } from '@navikt/aksel-icons';
-import { BodyShort, Box, Detail, Heading, Skeleton } from '@navikt/ds-react';
+import {
+  ClockIcon,
+  LocationPinIcon,
+  XMarkOctagonFillIcon,
+} from '@navikt/aksel-icons';
+import {
+  BodyShort,
+  Box,
+  Button,
+  Detail,
+  Heading,
+  Skeleton,
+} from '@navikt/ds-react';
 import { format, isSameDay, parseISO } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
 import { nb } from 'date-fns/locale';
@@ -110,162 +121,168 @@ const RekrutteringstreffForhåndsvisning: FC = () => {
 
   return (
     <div className='bg-white text-black min-h-screen' data-theme='light'>
-      <div className='max-w-4xl mx-auto p-8 space-y-8'>
-        {/* Header */}
-        <div className='space-y-2'>
+      <div className='max-w-6xl mx-auto p-8 space-y-6'>
+        {/* Header with title */}
+        <div>
           <Heading level='1' size='large' className='text-gray-900'>
             {rekrutteringstreff.tittel}
           </Heading>
         </div>
 
-        {/* Siste aktivitet section */}
-        <div className='space-y-4'>
-          <Heading
-            level='2'
-            size='small'
-            className='text-gray-900 font-semibold'
-          >
-            Siste aktivitet
-          </Heading>
-
-          {/* Om treffet */}
-          <Box.New
-            background='neutral-soft'
-            padding='6'
-            borderRadius='medium'
-            className='space-y-4 bg-gray-50'
-          >
-            <Heading
-              level='3'
-              size='xsmall'
-              className='text-gray-900 font-semibold'
-            >
-              Om treffet
-            </Heading>
-
-            {innlegg?.htmlContent && (
-              <div
-                className='prose prose-sm max-w-none text-gray-700'
-                dangerouslySetInnerHTML={{ __html: innlegg.htmlContent }}
-              />
-            )}
-
-            <div className='space-y-2 pt-4'>
-              <Detail className='text-gray-700'>Treff arbeidsgiverne</Detail>
-              <Detail className='text-gray-700'>Hør om mulighetene</Detail>
-            </div>
-          </Box.New>
-        </div>
-
-        {/* Info cards */}
-        <div className='grid grid-cols-1 gap-4'>
+        {/* Time and Location info */}
+        <div className='space-y-3'>
           {/* Time */}
           {(initialFra || initialTil) && (
-            <Box.New
-              background='neutral-soft'
-              padding='4'
-              borderRadius='medium'
-              className='bg-gray-50'
-            >
-              <div className='flex items-start gap-3'>
-                <ClockIcon
-                  aria-hidden
-                  fontSize='1.5rem'
-                  className='text-gray-600 mt-1 flex-shrink-0'
-                />
-                <div>
-                  <Detail className='text-gray-600 mb-1'>Om 6 dager</Detail>
-                  <BodyShort className='text-gray-900'>
-                    {formatTimeRange()}
-                  </BodyShort>
-                </div>
+            <div className='flex items-start gap-3'>
+              <ClockIcon
+                aria-hidden
+                fontSize='1.5rem'
+                className='text-gray-700 flex-shrink-0'
+              />
+              <div>
+                <Detail className='text-gray-600 mb-0.5'>Om 6 dager</Detail>
+                <BodyShort className='text-gray-900'>
+                  {formatTimeRange()}
+                </BodyShort>
               </div>
-            </Box.New>
+            </div>
           )}
 
           {/* Location */}
           {(rekrutteringstreff.gateadresse ||
             rekrutteringstreff.postnummer ||
             rekrutteringstreff.poststed) && (
-            <Box.New
-              background='neutral-soft'
-              padding='4'
-              borderRadius='medium'
-              className='bg-gray-50'
-            >
-              <div className='flex items-start gap-3'>
-                <LocationPinIcon
-                  aria-hidden
-                  fontSize='1.5rem'
-                  className='text-gray-600 mt-1 flex-shrink-0'
-                />
-                <div>
-                  {rekrutteringstreff.gateadresse && (
-                    <BodyShort className='text-gray-900'>
-                      {rekrutteringstreff.gateadresse}
-                    </BodyShort>
-                  )}
-                  {(rekrutteringstreff.postnummer ||
-                    rekrutteringstreff.poststed) && (
-                    <BodyShort className='text-gray-900'>
-                      {rekrutteringstreff.postnummer}{' '}
-                      {rekrutteringstreff.poststed}
-                    </BodyShort>
-                  )}
-                </div>
+            <div className='flex items-start gap-3'>
+              <LocationPinIcon
+                aria-hidden
+                fontSize='1.5rem'
+                className='text-gray-700 flex-shrink-0'
+              />
+              <div>
+                {rekrutteringstreff.gateadresse && (
+                  <BodyShort className='text-gray-900'>
+                    {rekrutteringstreff.gateadresse}
+                  </BodyShort>
+                )}
+                {(rekrutteringstreff.postnummer ||
+                  rekrutteringstreff.poststed) && (
+                  <BodyShort className='text-gray-900'>
+                    {rekrutteringstreff.postnummer}{' '}
+                    {rekrutteringstreff.poststed}
+                  </BodyShort>
+                )}
               </div>
-            </Box.New>
+            </div>
           )}
         </div>
 
-        {/* Svarfrist */}
-        {svarfristFormatert && (
-          <Box.New
-            background='neutral-soft'
-            padding='4'
-            borderRadius='medium'
-            className='bg-gray-50'
-          >
-            <Detail className='text-gray-600'>
-              Du kan endre svaret ditt frem til mandag 6. oktober 2025 kl 16:10
-            </Detail>
-          </Box.New>
-        )}
+        {/* Two column layout */}
+        <div className='grid grid-cols-1 lg:grid-cols-2 gap-6 pt-4'>
+          {/* Left column - Siste aktivitet */}
+          <div className='space-y-6'>
+            <div className='space-y-4'>
+              <Heading
+                level='2'
+                size='medium'
+                className='text-gray-900 font-semibold'
+              >
+                Siste aktivitet
+              </Heading>
 
-        {/* Arbeidsgivere */}
-        {arbeidsgivere && arbeidsgivere.length > 0 && (
-          <div className='space-y-4'>
-            <Heading
-              level='2'
-              size='small'
-              className='text-gray-900 font-semibold'
-            >
-              Arbeidsgivere
-            </Heading>
-            <div className='space-y-3'>
-              {arbeidsgivere.map((arbeidsgiver, index) => (
-                <Box.New
-                  key={arbeidsgiver.organisasjonsnummer || index}
-                  background='neutral-soft'
-                  padding='4'
-                  borderRadius='medium'
-                  className='bg-gray-50'
+              {/* Om treffet */}
+              <div className='bg-gray-100 p-6 rounded-lg space-y-3'>
+                <Heading
+                  level='3'
+                  size='small'
+                  className='text-gray-900 font-semibold'
                 >
-                  <Heading
-                    level='3'
-                    size='xsmall'
-                    className='text-gray-900 font-semibold'
-                  >
-                    {arbeidsgiver.navn}
-                  </Heading>
-                  <Detail className='text-gray-600'>
-                    Org.nr: {arbeidsgiver.organisasjonsnummer}
-                  </Detail>
-                </Box.New>
-              ))}
+                  Om treffet
+                </Heading>
+
+                {innlegg?.htmlContent && (
+                  <div
+                    className='prose prose-sm max-w-none text-gray-800'
+                    dangerouslySetInnerHTML={{ __html: innlegg.htmlContent }}
+                  />
+                )}
+
+                <div className='space-y-1 pt-2'>
+                  <BodyShort className='text-gray-800'>
+                    Treff arbeidsgiverne
+                  </BodyShort>
+                  <BodyShort className='text-gray-800'>
+                    Hør om mulighetene
+                  </BodyShort>
+                </div>
+              </div>
             </div>
           </div>
-        )}
+
+          {/* Right column - Svar and Arbeidsgivere */}
+          <div className='space-y-6'>
+            {/* User response box */}
+            <div className='space-y-4'>
+              <div className='bg-white border border-gray-300 p-6 rounded-lg space-y-4'>
+                <div className='flex items-start gap-3'>
+                  <XMarkOctagonFillIcon
+                    aria-hidden
+                    fontSize='1.5rem'
+                    className='text-red-500 flex-shrink-0'
+                  />
+                  <Heading
+                    level='2'
+                    size='medium'
+                    className='text-gray-900 font-semibold'
+                  >
+                    Jeg blir ikke med
+                  </Heading>
+                </div>
+
+                <div className='space-y-3'>
+                  <BodyShort className='text-gray-700'>
+                    Du kan endre svaret ditt frem til {svarfristFormatert}
+                  </BodyShort>
+
+                  <Button variant='secondary' size='small'>
+                    Endre svar
+                  </Button>
+                </div>
+              </div>
+            </div>
+
+            {/* Arbeidsgivere */}
+            {arbeidsgivere && arbeidsgivere.length > 0 && (
+              <div className='space-y-4'>
+                <Heading
+                  level='2'
+                  size='medium'
+                  className='text-gray-900 font-semibold'
+                >
+                  Arbeidsgivere
+                </Heading>
+                <div className='space-y-3'>
+                  {arbeidsgivere.map((arbeidsgiver, index) => (
+                    <div
+                      key={arbeidsgiver.organisasjonsnummer || index}
+                      className='bg-gray-100 p-5 rounded-lg'
+                    >
+                      <Heading
+                        level='3'
+                        size='small'
+                        className='text-gray-900 font-semibold mb-1'
+                      >
+                        {arbeidsgiver.navn}
+                      </Heading>
+                      <BodyShort className='text-gray-700'>
+                        Org.nr: {arbeidsgiver.organisasjonsnummer}
+                      </BodyShort>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
