@@ -16,6 +16,7 @@ import {
   Detail,
   Heading,
   Skeleton,
+  Tag,
 } from '@navikt/ds-react';
 import { format, isSameDay, parseISO } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
@@ -123,9 +124,9 @@ const RekrutteringstreffForhåndsvisning: FC = () => {
     <div className='bg-white text-black min-h-screen' data-theme='light'>
       <div className='max-w-7xl mx-auto p-2 space-y-6'>
         {/* Three column layout */}
-        <div className='grid grid-cols-1 lg:grid-cols-5 gap-4 pt-4'>
+        <div className='grid grid-cols-1 lg:grid-cols-6 gap-4 pt-4'>
           {/* Left column - Header, Info, Siste aktivitet */}
-          <div className='lg:col-span-3 space-y-6'>
+          <div className='lg:col-span-4 space-y-6'>
             {/* Header with title */}
             <div>
               <Heading level='1' size='large' className='text-gray-900'>
@@ -144,7 +145,9 @@ const RekrutteringstreffForhåndsvisning: FC = () => {
                     className='text-gray-700 flex-shrink-0'
                   />
                   <div>
-                    <Detail className='text-gray-600 mb-0.5'>Om 6 dager</Detail>
+                    <BodyShort className='text-gray-600 mb-0.5 font-bold'>
+                      Om 6 dager
+                    </BodyShort>
                     <BodyShort className='text-gray-900'>
                       {formatTimeRange()}
                     </BodyShort>
@@ -164,7 +167,7 @@ const RekrutteringstreffForhåndsvisning: FC = () => {
                   />
                   <div>
                     {rekrutteringstreff.gateadresse && (
-                      <BodyShort className='text-gray-900'>
+                      <BodyShort className='text-gray-900 font-bold'>
                         {rekrutteringstreff.gateadresse}
                       </BodyShort>
                     )}
@@ -223,26 +226,15 @@ const RekrutteringstreffForhåndsvisning: FC = () => {
             {/* User response box */}
             <div className='space-y-4'>
               <div className='bg-white border border-gray-300 p-4 rounded-lg space-y-4'>
-                <div className='flex items-start gap-3'>
-                  <XMarkOctagonFillIcon
-                    aria-hidden
-                    fontSize='1.5rem'
-                    className='text-red-500 flex-shrink-0'
-                  />
-                  <Heading
-                    level='2'
-                    size='medium'
-                    className='text-gray-900 font-semibold'
-                  >
-                    (svar)
-                  </Heading>
-                </div>
+                <Tag variant='neutral' className='text-gray-600 bg-gray-100'>
+                  (Svar fra bruker)
+                </Tag>
 
-                <div className='flex items-center justify-between'>
+                <div className='flex items-center justify-between gap-2'>
                   <BodyShort className='text-gray-700'>
                     Du kan endre svaret ditt frem til {svarfristFormatert}
                   </BodyShort>
-                  <Button variant='secondary' size='small'>
+                  <Button variant='secondary' size='medium'>
                     (svarvelger)
                   </Button>
                 </div>
