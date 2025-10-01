@@ -27,7 +27,7 @@ export default function StillingsutkastMelding() {
       <div className={'flex gap-2 pb-5 '}>
         <Button
           variant={'primary'}
-          style={{ width: '287px', height: '48px' }}
+          className={'w-72 h-12'}
           disabled={kandidatlisteInfo?.kandidatlisteStatus === 'LUKKET'}
           onClick={() =>
             router.push(`/stilling/${stillingsData.stilling.uuid}/rediger`)
