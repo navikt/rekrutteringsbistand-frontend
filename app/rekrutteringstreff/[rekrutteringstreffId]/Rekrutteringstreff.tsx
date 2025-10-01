@@ -63,8 +63,8 @@ const Rekrutteringstreff: FC = () => {
 
   const erIForhåndsvisning = useMemo(() => {
     if (viserForhåndsvisningsside) return false;
-    return harPublisert && modus !== 'edit';
-  }, [viserForhåndsvisningsside, harPublisert, modus]);
+    return modus !== 'edit';
+  }, [viserForhåndsvisningsside, modus]);
 
   const rekrutteringstreff = rekrutteringstreffHook.data;
 
@@ -149,7 +149,6 @@ const Rekrutteringstreff: FC = () => {
 
   const handleToggleForhåndsvisning = (nyForhåndsvisning: boolean) => {
     if (avlyst) return;
-    if (!harPublisert && nyForhåndsvisning) return;
     setModus(nyForhåndsvisning ? '' : 'edit');
     scrollToTop();
   };
@@ -287,6 +286,19 @@ const Rekrutteringstreff: FC = () => {
       >
         <SideScroll>
           <div className='space-y-4'>
+            {!harPublisert && erIForhåndsvisning && (
+              <div className='flex'>
+                <Button
+                  type='button'
+                  size='medium'
+                  variant='secondary'
+                  className='w-full'
+                  onClick={() => setModus('edit')}
+                >
+                  Avslutt forhåndsvisning
+                </Button>
+              </div>
+            )}
             <TabsPanels
               erIVisning={erIForhåndsvisning}
               onUpdated={rekrutteringstreffHook.mutate}

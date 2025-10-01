@@ -41,10 +41,10 @@ export const hentOboToken = async (
     const obo = await requestOboToken(token, props.scope);
 
     if (!obo.ok || !obo.token) {
-      if(!obo.ok) {
+      if (!obo.ok) {
         logger.warn({
           message: `Henting av OBO-token feilet med error: ${obo.error.message}`,
-        })
+        });
       }
       const errorMessage = `Ugyldig OBO-token mottatt for scope: ${props.scope}`;
 

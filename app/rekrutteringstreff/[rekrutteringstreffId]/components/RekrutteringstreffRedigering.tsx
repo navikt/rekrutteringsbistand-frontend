@@ -365,11 +365,21 @@ const RekrutteringstreffRedigering: FC<RekrutteringstreffRedigeringProps> = ({
             </Button>
           </div>
         ) : (
-          <PubliserRekrutteringstreffButton
-            erPubliseringklar={erPubliseringklar}
-            rekrutteringstreffId={rekrutteringstreffId}
-            oppdaterData={oppdaterData}
-          />
+          <div className='flex gap-2 flex-wrap'>
+            <PubliserRekrutteringstreffButton
+              erPubliseringklar={erPubliseringklar}
+              rekrutteringstreffId={rekrutteringstreffId}
+              oppdaterData={oppdaterData}
+            />
+            <Button
+              type='button'
+              variant='secondary'
+              size='small'
+              onClick={() => onGåTilForhåndsvisning?.()}
+            >
+              Forhåndsvis
+            </Button>
+          </div>
         )}
       </div>
 
