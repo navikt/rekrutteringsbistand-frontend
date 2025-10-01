@@ -108,7 +108,9 @@ export default function FullførStillingKnapp() {
                   type='button'
                   disabled={
                     loading ||
-                    kandidatlisteForEier.status === Kandidatlistestatus.Lukket
+                    (kandidatlisteForEier.status ===
+                      Kandidatlistestatus.Lukket &&
+                      stillingsData.stilling.status === StillingsStatus.Stoppet)
                   }
                   onClick={() =>
                     kandidatlisteForEier.kandidatlisteId &&
