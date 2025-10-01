@@ -32,7 +32,7 @@ export enum RekrutteringstreffTabs {
 
 const Rekrutteringstreff: FC = () => {
   const [fane, setFane] = useQueryState('visFane', {
-    defaultValue: RekrutteringstreffTabs.JOBBSØKERE,
+    defaultValue: RekrutteringstreffTabs.OM_TREFFET,
     clearOnDefault: true,
   });
   const [modus, setModus] = useQueryState(

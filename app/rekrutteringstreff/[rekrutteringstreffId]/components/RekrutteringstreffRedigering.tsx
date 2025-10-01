@@ -344,7 +344,7 @@ const RekrutteringstreffRedigering: FC<RekrutteringstreffRedigeringProps> = ({
       )}
 
       <div>
-        {harPublisert ? (
+        {harPublisert && (
           <div className='flex gap-2'>
             <Button
               type='button'
@@ -364,12 +364,6 @@ const RekrutteringstreffRedigering: FC<RekrutteringstreffRedigeringProps> = ({
               Avbryt
             </Button>
           </div>
-        ) : (
-          <PubliserRekrutteringstreffButton
-            erPubliseringklar={erPubliseringklar}
-            rekrutteringstreffId={rekrutteringstreffId}
-            oppdaterData={oppdaterData}
-          />
         )}
       </div>
 

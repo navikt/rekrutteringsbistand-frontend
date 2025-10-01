@@ -56,9 +56,9 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
   const [publiseringsdato, setPubliseringsdato] = useState<string | undefined>(
     isoTilSkjemaDato(publishedISO),
   );
-  const [sisteVisningsdato, setSisteVisningsdato] = useState<string | undefined>(
-    isoTilSkjemaDato(expiresISO)
-  );
+  const [sisteVisningsdato, setSisteVisningsdato] = useState<
+    string | undefined
+  >(isoTilSkjemaDato(expiresISO));
 
   const [publiserOffentlig, setPubliserOffentlig] = useState(
     privacy === 'SHOW_ALL',
