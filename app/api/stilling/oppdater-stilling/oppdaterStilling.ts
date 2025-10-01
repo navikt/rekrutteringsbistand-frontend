@@ -21,14 +21,8 @@ export const oppdaterStilling = (
     stillingsData.stilling?.properties as Record<string, unknown> | undefined,
   );
 
-  return putApi(oppdaterStillingEndepunkt, {
+  let body = {
     ...stillingsData,
-    stillingsinfo: {
-      ...stillingsData.stillingsinfo,
-      eierNavident: brukerInfo.eierNavident ?? null,
-      eierNavn: brukerInfo.eierNavn ?? null,
-      eierNavKontorEnhetId: brukerInfo.eierNavKontorEnhetId ?? null,
-    },
     stilling: {
       ...stillingsData.stilling,
       // Overstyr properties med normaliserte verdier hvis de finnes
@@ -39,7 +33,21 @@ export const oppdaterStilling = (
         reportee: brukerInfo.eierNavn ?? null,
       },
     },
-  });
+  };
+
+  if (stillingsData.stillingsinfo) {
+    body = {
+      ...body,
+      stillingsinfo: {
+        ...stillingsData.stillingsinfo,
+        eierNavident: brukerInfo.eierNavident ?? null,
+        eierNavn: brukerInfo.eierNavn ?? null,
+        eierNavKontorEnhetId: brukerInfo.eierNavKontorEnhetId ?? null,
+      },
+    };
+  }
+
+  return putApi(oppdaterStillingEndepunkt, body);
 };
 
 export const oppdaterStillingMirage = (server: Server) => {

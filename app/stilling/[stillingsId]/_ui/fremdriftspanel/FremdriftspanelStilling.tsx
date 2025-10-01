@@ -7,7 +7,10 @@ import StoppStillingKnapp from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel
 import FullførStillingKnapp from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/fullfør-stilling/FullførStillingKnapp';
 import GjenåpneStillingKnapp from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/fullfør-stilling/GjenåpneStillingKnapp';
 import { KandidatutfallTyper } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
-import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
+import {
+  Stillingskategori,
+  StillingsStatus,
+} from '@/app/stilling/_ui/stilling-typer';
 import SWRLaster from '@/components/SWRLaster';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
@@ -74,8 +77,8 @@ export default function FremdriftspanelStilling({
         <SWRLaster hooks={[kandidatlisteHook]}>
           {(kandidatliste) => {
             const erFullført =
-              kandidatliste.status === Kandidatlistestatus.Lukket;
-
+              kandidatliste.status === Kandidatlistestatus.Lukket &&
+              stillingsData.stilling.status === StillingsStatus.Stoppet;
             const totalStillinger =
               (stillingsData.stilling?.properties?.positioncount &&
                 Number(stillingsData.stilling?.properties?.positioncount)) ||
