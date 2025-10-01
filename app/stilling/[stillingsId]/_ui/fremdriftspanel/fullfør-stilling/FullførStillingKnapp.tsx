@@ -133,7 +133,8 @@ export default function FullførStillingKnapp() {
               onClick={() => setOpen(true)}
               disabled={
                 loading ||
-                kandidatlisteForEier.status !== Kandidatlistestatus.Åpen ||
+                (kandidatlisteForEier.status === Kandidatlistestatus.Lukket &&
+                  stillingsData.stilling.status === StillingsStatus.Stoppet) ||
                 !kandidatlisteForEier.kandidatlisteId
               }
               variant='secondary'
