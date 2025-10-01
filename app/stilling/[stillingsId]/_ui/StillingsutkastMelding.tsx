@@ -29,7 +29,6 @@ export default function StillingsutkastMelding() {
           variant={'primary'}
           style={{ width: '287px', height: '48px' }}
           disabled={kandidatlisteInfo?.kandidatlisteStatus === 'LUKKET'}
-          className='w-full'
           onClick={() =>
             router.push(`/stilling/${stillingsData.stilling.uuid}/rediger`)
           }
