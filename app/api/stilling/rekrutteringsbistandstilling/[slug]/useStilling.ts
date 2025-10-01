@@ -25,8 +25,8 @@ export const useStilling = (stillingsId?: string | null) =>
     stillingsId ? stillingEndepunkt(stillingsId) : null,
     getAPIwithSchema(StillingDataSchema),
     {
-      revalidateOnMount: true,
-      revalidateOnFocus: true,
+      revalidateOnFocus: false,
+      // Bruker default SWR-oppførsel for revalidateOnMount (false når data finnes i cache)
     },
   );
 
