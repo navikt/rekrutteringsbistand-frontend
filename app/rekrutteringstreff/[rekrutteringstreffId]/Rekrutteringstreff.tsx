@@ -120,7 +120,12 @@ const Rekrutteringstreff: FC = () => {
     // kan vi sette ?mode=edit før vi vet at treffet er publisert, og da
     // forblir man i edit selv etter publisering.
     if (!rekrutteringstreff) return;
-    if (!harPublisert && !avlyst && modus !== 'edit') {
+    if (
+      !harPublisert &&
+      !avlyst &&
+      modus !== 'edit' &&
+      modus !== 'preview-page'
+    ) {
       setModus('edit');
     }
   }, [rekrutteringstreff, avlyst, harPublisert, modus, setModus]);
