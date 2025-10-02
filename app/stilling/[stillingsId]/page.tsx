@@ -1,6 +1,7 @@
 'use client';
 
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
+import StillingsutkastMelding from '@/app/stilling/[stillingsId]/_ui/StillingsutkastMelding';
 import FremdriftspanelStilling from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/FremdriftspanelStilling';
 import FremdriftspanelArbeidsplassen from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/arbeidsplassen/FremdriftspanelArbeidsplassen';
 import OmStillingen from '@/app/stilling/[stillingsId]/_ui/om-stillingen/OmStillingen';
@@ -9,6 +10,7 @@ import StillingTabs from '@/app/stilling/[stillingsId]/_ui/tabs/StillingTabs';
 import TabKnapper from '@/app/stilling/[stillingsId]/_ui/tabs/TabKnapper';
 import FiltrertKandidatListeVisning from '@/app/stilling/[stillingsId]/kandidatliste/FiltrertKandidatListeVisning';
 import KandidatlisteWrapper from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteWrapper';
+import { StillingsStatus } from '@/app/stilling/_ui/stilling-typer';
 import { visStillingsDataInfo } from '@/app/stilling/_util/stillingInfoUtil';
 import SideScroll from '@/components/SideScroll';
 import PanelHeader from '@/components/layout/PanelHeader';
@@ -37,8 +39,16 @@ export default function StillingsSidePage() {
     stillingsData?.stilling?.medium === 'DIR' &&
     (stillingsData?.stilling?.employer?.orgnr ?? null) === null;
 
+  const erUtkast =
+    erEier &&
+    stillingsData?.stilling?.status === StillingsStatus.Inaktiv &&
+    stillingsData?.stilling?.publishedByAdmin === null &&
+    !stillingsData?.stilling?.firstPublished &&
+    stillingsData?.stilling?.source === 'DIR';
+
   const skjulFremdriftspanel =
     fane !== StillingFane.STILLING ||
+    erUtkast ||
     (stillingsData.stilling.source === 'DIR' && !erEier);
 
   const fremdriftsPanel = (top?: boolean) => {
@@ -77,7 +87,7 @@ export default function StillingsSidePage() {
           fremdriftspanel={<SideScroll>{fremdriftsPanel()}</SideScroll>}
           fremdriftspanelTop={fremdriftsPanel(true)}
         >
-          {ugyldigStilling && (
+          {ugyldigStilling && !erUtkast && (
             <Alert variant='error'>
               <Heading spacing size='small' level='3'>
                 Ugyldig stilling
@@ -92,6 +102,9 @@ export default function StillingsSidePage() {
           <Tabs.Panel value={StillingFane.STILLING}>
             <SideScroll>
               <OmStillingenHeader />
+              {erUtkast && (
+                <StillingsutkastMelding />
+              )}
               <OmStillingen printRef={printRef} />
             </SideScroll>
           </Tabs.Panel>
