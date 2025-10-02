@@ -174,8 +174,9 @@ const Rekrutteringstreff: FC = () => {
     scrollToTop();
   };
 
-  const gåTilStandardVisning = () => {
-    setModus('');
+  const avsluttForhåndsvisning = () => {
+    // Gå alltid tilbake til redigeringsmodus etter forhåndsvisning
+    setModus('edit');
     scrollToTop();
   };
 
@@ -252,7 +253,7 @@ const Rekrutteringstreff: FC = () => {
                   type='button'
                   size='small'
                   variant='secondary'
-                  onClick={gåTilStandardVisning}
+                  onClick={avsluttForhåndsvisning}
                 >
                   Avslutt forhåndsvisning
                 </Button>
