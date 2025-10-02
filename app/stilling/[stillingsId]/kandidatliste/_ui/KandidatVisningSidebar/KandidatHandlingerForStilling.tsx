@@ -98,7 +98,7 @@ const KandidatHandlingerForStilling: FC<KandidatHandlingerForStillingProps> = ({
         !fåttJobben &&
         !cvDeltMedArbeidsgiver &&
         !cvFjernetFraArbeidsgiver && (
-          <div className='grid grid-cols-2 gap-2'>
+          <div className='grid grid-rows-2 gap-2'>
             <DelMedKandidatModal
               markerteKandidater={[kandidat]}
               fjernAllMarkering={() => {}}
