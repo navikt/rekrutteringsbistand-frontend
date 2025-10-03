@@ -1,8 +1,8 @@
 'use client';
 
+import { RekrutteringstreffHendelseLabel } from '../jobbsøkere/HendelseLabel';
 import { useAlleHendelser } from '@/app/api/rekrutteringstreff/[...slug]/useAlleHendelser';
-import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
-import { RekrutteringstreffHendelseLabel } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøkere/_ui/HendelseLabel';
+import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_contexts/RekrutteringstreffContext';
 import { RekrutteringstreffHendelsestype } from '@/app/rekrutteringstreff/_domain/constants';
 import { PencilIcon, PlusCircleIcon } from '@navikt/aksel-icons';
 import { BodyShort } from '@navikt/ds-react';

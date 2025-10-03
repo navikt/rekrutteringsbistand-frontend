@@ -1,90 +1,120 @@
 'use client';
 
-import { useRekrutteringstreffContext } from '../RekrutteringstreffContext';
+import HeaderActions from './HeaderActions';
+import { RekrutteringstreffTabs } from './Rekrutteringstreff';
+import TabsNav from './TabsNav';
 import {
-  HendelseDTO,
-  RekrutteringstreffDTO,
-  useRekrutteringstreff,
-} from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
-import SWRLaster from '@/components/SWRLaster';
-import SVGDarkmode from '@/components/layout/SVGDarkmode';
-import SideLayout from '@/components/layout/SideLayout';
-import SideTopBanner from '@/components/layout/SideTopBanner';
-import RekrutteringstreffDark from '@/public/ikoner/rekrutteringstreff-dark.svg';
-import Rekrutteringstreff from '@/public/ikoner/rekrutteringstreff.svg';
-import { Detail } from '@navikt/ds-react';
-import { format } from 'date-fns';
-import { nb } from 'date-fns/locale/nb';
+  RekrutteringstreffBreadcrumbItem,
+  RekrutteringstreffBreadcrumbs,
+} from '@/app/rekrutteringstreff/_ui/RekrutteringstreffBreadcrumbs';
+import PanelHeader from '@/components/layout/PanelHeader';
+import { Loader, Tabs } from '@navikt/ds-react';
+import { forwardRef } from 'react';
 
-const TreffHeader = () => {
-  const { rekrutteringstreffId } = useRekrutteringstreffContext();
-  const rekrutteringstreffHook = useRekrutteringstreff(rekrutteringstreffId);
+export interface RekrutteringstreffHeaderProps {
+  skalViseHeader: boolean;
+  breadcrumbs: RekrutteringstreffBreadcrumbItem[];
+  erIForhåndsvisning: boolean;
+  viserFullskjermForhåndsvisning?: boolean;
+  jobbsøkereAntall: number;
+  arbeidsgivereAntall: number;
+  lagrerNoe: boolean;
+  lagretTekst?: string;
+  erPubliseringklar: boolean;
+  onToggleForhåndsvisning: (ny: boolean) => void;
+  onBekreftRedigerPublisert: () => void;
+  onAvlyst: () => void;
+  onAvbrytRedigering: () => void;
+  onPublisert?: () => void;
+  onRepubliser?: () => Promise<void>;
+  republiserDisabled?: boolean;
+  inTabsContext?: boolean;
+}
 
-  return (
-    <SWRLaster hooks={[rekrutteringstreffHook]}>
-      {(treff: RekrutteringstreffDTO) => {
-        if (
-          !treff ||
-          typeof treff !== 'object' ||
-          !('tittel' in treff) ||
-          !('hendelser' in treff)
-        ) {
-          return (
-            <SideLayout
-              banner={<SideTopBanner tittel='Problem med lasting av data' />}
-            >
-              <div>Kunne ikke laste rekrutteringstreffdetaljer riktig.</div>
-            </SideLayout>
-          );
-        }
+const RekrutteringstreffHeader = forwardRef<
+  HTMLDivElement,
+  RekrutteringstreffHeaderProps
+>(
+  (
+    {
+      skalViseHeader,
+      breadcrumbs,
+      erIForhåndsvisning,
+      viserFullskjermForhåndsvisning,
+      jobbsøkereAntall,
+      arbeidsgivereAntall,
+      lagrerNoe,
+      lagretTekst,
+      erPubliseringklar,
+      onToggleForhåndsvisning,
+      onBekreftRedigerPublisert,
+      onAvlyst,
+      onAvbrytRedigering,
+      onPublisert,
+      onRepubliser,
+      republiserDisabled,
+      inTabsContext = false,
+    },
+    ref,
+  ) => {
+    if (!skalViseHeader) return null;
 
-        const opprett = treff.hendelser.find(
-          (h: HendelseDTO) => h.hendelsestype === 'OPPRETT',
-        );
-
-        const visningstittel = treff.tittel;
-
-        return (
-          <SideLayout
-            banner={
-              <>
-                <div className='flex items-center gap-4'>
-                  <div className='w-full flex justify-between pt-[32px] pb-10'>
-                    <SideTopBanner
-                      tittel={visningstittel}
-                      ikon={
-                        <SVGDarkmode
-                          light={Rekrutteringstreff}
-                          dark={RekrutteringstreffDark}
-                          alt='Rekrutteringstreff'
-                        />
-                      }
-                      headerInnhold={
-                        <Detail className='text-gray-400'>
-                          Opprettet av {opprett?.aktørIdentifikasjon}
-                          {', '}
-                          {opprett?.tidspunkt
-                            ? format(
-                                new Date(opprett.tidspunkt),
-                                'd. MMMM yyyy',
-                                { locale: nb },
-                              )
-                            : ''}
-                        </Detail>
-                      }
-                      tittelElementer={[]}
-                    />
-                  </div>
-                </div>
-              </>
+    return (
+      <div ref={ref} className='sticky top-0 z-40 bg-[var(--ax-bg-default)]'>
+        <PanelHeader className='bg-transparent'>
+          <PanelHeader.Section
+            actionsLeft={<RekrutteringstreffBreadcrumbs items={breadcrumbs} />}
+            tabs={
+              erIForhåndsvisning ? (
+                inTabsContext ? (
+                  <TabsNav
+                    jobbsøkereAntall={jobbsøkereAntall}
+                    arbeidsgivereAntall={arbeidsgivereAntall}
+                  />
+                ) : (
+                  <Tabs defaultValue={RekrutteringstreffTabs.OM_TREFFET}>
+                    <Tabs.List>
+                      <TabsNav
+                        jobbsøkereAntall={jobbsøkereAntall}
+                        arbeidsgivereAntall={arbeidsgivereAntall}
+                      />
+                    </Tabs.List>
+                  </Tabs>
+                )
+              ) : undefined
             }
-          >
-            <div />
-          </SideLayout>
-        );
-      }}
-    </SWRLaster>
-  );
-};
+            meta={
+              <div className='flex items-center gap-2'>
+                {lagrerNoe && (
+                  <span className='inline-flex items-center gap-1 text-xs text-muted-foreground'>
+                    <Loader size='xsmall' title='Lagrer' />
+                    Lagrer…
+                  </span>
+                )}
+                {!lagrerNoe && lagretTekst}
+              </div>
+            }
+            actionsRight={
+              <HeaderActions
+                erIForhåndsvisning={erIForhåndsvisning}
+                viserFullskjermForhåndsvisning={viserFullskjermForhåndsvisning}
+                erPubliseringklar={erPubliseringklar}
+                onToggleForhåndsvisning={onToggleForhåndsvisning}
+                onBekreftRedigerPublisert={onBekreftRedigerPublisert}
+                onAvlyst={onAvlyst}
+                onAvbrytRedigering={onAvbrytRedigering}
+                onPublisert={onPublisert}
+                onRepubliser={onRepubliser}
+                republiserDisabled={republiserDisabled}
+              />
+            }
+          ></PanelHeader.Section>
+        </PanelHeader>
+      </div>
+    );
+  },
+);
 
-export default TreffHeader;
+RekrutteringstreffHeader.displayName = 'RekrutteringstreffHeader';
+
+export default RekrutteringstreffHeader;

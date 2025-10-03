@@ -1,5 +1,5 @@
 import { slettRekrutteringstreff } from '@/app/api/rekrutteringstreff/slett-rekrutteringstreff/slettRekrutteringstreff';
-import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
+import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_contexts/RekrutteringstreffContext';
 import { RekbisError } from '@/util/rekbisError';
 import { BodyShort, Button, List, Modal } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';

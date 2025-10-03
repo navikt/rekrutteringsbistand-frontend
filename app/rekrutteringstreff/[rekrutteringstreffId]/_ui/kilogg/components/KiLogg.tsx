@@ -1,7 +1,7 @@
 'use client';
 
 import { useKiLogg } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
-import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
+import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_contexts/RekrutteringstreffContext';
 import { CheckmarkIcon, XMarkIcon } from '@navikt/aksel-icons';
 import { Alert, BodyShort, Button, Skeleton } from '@navikt/ds-react';
 import { format } from 'date-fns';

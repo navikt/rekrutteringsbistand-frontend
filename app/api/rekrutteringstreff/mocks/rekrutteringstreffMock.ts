@@ -1,4 +1,4 @@
-import AvlystSteg from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/om-treffet/stegviser/steg/AvlystSteg';
+import AvlystSteg from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/stegviser/steg/AvlystSteg';
 import {
   RekrutteringstreffHendelsestype,
   JobbsøkerHendelsestype,

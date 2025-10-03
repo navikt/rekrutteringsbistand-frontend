@@ -7,7 +7,7 @@ import { createElement, lazy, Suspense } from 'react';
 const VisRekrutteringstreffPerson = lazy(
   () =>
     import(
-      '@/app/rekrutteringstreff/[rekrutteringstreffId]/vis-person/VisPerson'
+      '@/app/rekrutteringstreff/[rekrutteringstreffId]/vis-person/_ui/VisPerson'
     ),
 );
 
