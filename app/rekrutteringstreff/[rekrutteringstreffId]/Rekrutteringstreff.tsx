@@ -22,7 +22,7 @@ import Fremdriftspanel from '@/components/Fremdriftspanel';
 import SideScroll from '@/components/SideScroll';
 import SideLayout from '@/components/layout/SideLayout';
 import { RekbisError } from '@/util/rekbisError';
-import { Button, Tabs } from '@navikt/ds-react';
+import { Tabs } from '@navikt/ds-react';
 import { formatDistanceToNow } from 'date-fns';
 import { nb } from 'date-fns/locale/nb';
 import { parseAsString, useQueryState } from 'nuqs';
@@ -172,12 +172,6 @@ const Rekrutteringstreff: FC = () => {
   };
 
   const onBekreftRedigerPublisert = () => {
-    setModus('edit');
-    scrollToTop();
-  };
-
-  const avsluttForhåndsvisning = () => {
-    // Gå alltid tilbake til redigeringsmodus etter forhåndsvisning
     setModus('edit');
     scrollToTop();
   };
