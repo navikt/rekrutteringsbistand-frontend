@@ -2,9 +2,7 @@
 
 import { useRekrutteringstreffContext } from '../RekrutteringstreffContext';
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
-import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
 import { OppdaterRekrutteringstreffDTO } from '@/app/api/rekrutteringstreff/oppdater-rekrutteringstreff/oppdaterRerkutteringstreff';
-import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { ClockIcon, LocationPinIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button, Heading, Skeleton, Tag } from '@navikt/ds-react';
 import { format, isSameDay, parseISO } from 'date-fns';
@@ -53,14 +51,10 @@ const formaterKlokkeslett = (date: Date) => {
 
 const RekrutteringstreffForhåndsvisning: FC = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
-  const { data: rekrutteringstreffApi, isLoading: isLoadingTreff } =
-    useRekrutteringstreff(rekrutteringstreffId);
-  const { data: innleggListe, isLoading: isLoadingInnlegg } =
-    useInnlegg(rekrutteringstreffId);
   const { data: arbeidsgivere, isLoading: isLoadingArbeidsgivere } =
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
 
-  // Hent verdier fra form-context for å vise ulagrede endringer i forhåndsvisning
+  // Hent alle verdier fra form-context - dette er alltid den oppdaterte datakilden
   const form = useFormContext<FormValues>();
   const watched = form?.watch?.() as Partial<FormValues> | undefined;
 
@@ -77,44 +71,38 @@ const RekrutteringstreffForhåndsvisning: FC = () => {
   };
 
   const rekrutteringstreff = useMemo(() => {
-    const fallback = rekrutteringstreffApi ?? ({} as any);
-    if (!watched) return fallback;
+    if (!watched) return null;
 
-    const fraTid =
-      combineDateTime(watched.fraDato as any, watched.fraTid as any) ??
-      fallback.fraTid;
-    const tilTid =
-      combineDateTime(watched.tilDato as any, watched.tilTid as any) ??
-      fallback.tilTid;
-    const svarfrist =
-      combineDateTime(
-        watched.svarfristDato as any,
-        watched.svarfristTid as any,
-      ) ?? fallback.svarfrist;
+    const fraTid = combineDateTime(
+      watched.fraDato as any,
+      watched.fraTid as any,
+    );
+    const tilTid = combineDateTime(
+      watched.tilDato as any,
+      watched.tilTid as any,
+    );
+    const svarfrist = combineDateTime(
+      watched.svarfristDato as any,
+      watched.svarfristTid as any,
+    );
 
     return {
-      ...fallback,
-      tittel: (watched.tittel as any) ?? fallback.tittel,
-      gateadresse: (watched.gateadresse as any) ?? fallback.gateadresse,
-      postnummer: (watched.postnummer as any) ?? fallback.postnummer,
-      poststed: (watched.poststed as any) ?? fallback.poststed,
+      tittel: watched.tittel,
+      gateadresse: watched.gateadresse,
+      postnummer: watched.postnummer,
+      poststed: watched.poststed,
       fraTid,
       tilTid,
       svarfrist,
-    } as typeof fallback;
-  }, [rekrutteringstreffApi, watched]);
+    };
+  }, [watched]);
 
-  const innleggFraForm =
-    (form?.watch?.('htmlContent') as string | undefined) ?? undefined;
   const innlegg = useMemo(() => {
-    const first = innleggListe?.[0];
-    if (innleggFraForm !== undefined) {
-      return { ...(first ?? {}), htmlContent: innleggFraForm } as any;
-    }
-    return first;
-  }, [innleggListe, innleggFraForm]);
+    if (!watched?.htmlContent) return null;
+    return { htmlContent: watched.htmlContent };
+  }, [watched?.htmlContent]);
 
-  if (isLoadingTreff || isLoadingInnlegg || isLoadingArbeidsgivere) {
+  if (isLoadingArbeidsgivere) {
     return (
       <div
         className='bg-white text-black min-h-screen p-8 space-y-6'
