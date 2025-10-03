@@ -1,12 +1,12 @@
 'use client';
 
-import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
 import {
   useJobbsøkere,
   JobbsøkerDTO,
 } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
 import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/rekrutteringstreff/useRekrutteringstreffData';
+import { useSjekklisteStatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/rekrutteringstreff/useSjekklisteStatus';
 import {
   AktivtSteg as AktivtStegConst,
   JobbsøkerHendelsestype,
@@ -22,8 +22,7 @@ import {
 } from 'react';
 import * as React from 'react';
 
-const DEFAULT_TITTEL = 'Treff uten navn';
-
+// Helper functions for jobbsøker status
 const erInvitert = (j: JobbsøkerDTO) =>
   j.hendelser?.some(
     (h) => h.hendelsestype === JobbsøkerHendelsestype.INVITER,
@@ -36,12 +35,6 @@ const harSvarNei = (j: JobbsøkerDTO) =>
   j.hendelser?.some(
     (h) => h.hendelsestype === JobbsøkerHendelsestype.SVAR_NEI_TIL_INVITASJON,
   ) ?? false;
-
-const parseDate = (value?: string | null): Date | undefined => {
-  if (!value) return undefined;
-  const d = new Date(value);
-  return isNaN(d.getTime()) ? undefined : d;
-};
 
 export interface StegviserState {
   activeStep: string;
@@ -75,37 +68,17 @@ export const StegviserProvider: FC<{ children: ReactNode }> = ({
   );
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
 
+  // Bruk sentraliserte hooks for data og beregninger
+  const { tilTidspunktHarPassert, activeStep: derivedStep } =
+    useRekrutteringstreffData();
+
   const {
-    treff: rekrutteringstreff,
-    tilTidspunktHarPassert,
-    activeStep: derivedStep,
-    innlegg: innleggData,
-  } = useRekrutteringstreffData();
+    punkterFullfort: sjekklistePunkterFullfort,
+    totaltAntallPunkter: totaltAntallSjekklistePunkter,
+    erPubliseringklar,
+  } = useSjekklisteStatus();
 
-  const { data: arbeidsgivereData } =
-    useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
   const { data: jobbsøkere = [] } = useJobbsøkere(rekrutteringstreffId);
-
-  // Steg 1: Publisere-logikk
-  const sjekklisteItems = useMemo(() => {
-    const tittel = rekrutteringstreff?.tittel?.trim() ?? '';
-    return {
-      arbeidsgiver: (arbeidsgivereData?.length ?? 0) > 0,
-      navn: tittel.length > 0 && tittel !== DEFAULT_TITTEL,
-      sted:
-        !!rekrutteringstreff?.gateadresse?.trim() &&
-        !!rekrutteringstreff?.poststed?.trim(),
-      tidspunkt: !!rekrutteringstreff?.fraTid,
-      svarfrist: !!rekrutteringstreff?.svarfrist,
-      omtreffet: (innleggData?.length ?? 0) > 0,
-    };
-  }, [arbeidsgivereData, rekrutteringstreff, innleggData]);
-
-  const sjekklistePunkterFullfort =
-    Object.values(sjekklisteItems).filter(Boolean).length;
-  const totaltAntallSjekklistePunkter = Object.keys(sjekklisteItems).length;
-  const erPubliseringklar =
-    sjekklistePunkterFullfort === totaltAntallSjekklistePunkter;
 
   const arrangementtidspunktHarPassert = tilTidspunktHarPassert;
 

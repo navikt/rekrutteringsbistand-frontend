@@ -14,6 +14,7 @@ import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/useJobbs�
 import { useKiLogg } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
 import Stegviser from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/om-treffet/stegviser/Stegviser';
 import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/rekrutteringstreff/useRekrutteringstreffData';
+import { useSjekklisteStatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/rekrutteringstreff/useSjekklisteStatus';
 import { JobbsøkerHendelsestype } from '@/app/rekrutteringstreff/_domain/constants';
 import type { RekrutteringstreffBreadcrumbItem } from '@/app/rekrutteringstreff/_ui/RekrutteringstreffBreadcrumbs';
 import Fremdriftspanel from '@/components/Fremdriftspanel';
@@ -62,6 +63,14 @@ const Rekrutteringstreff: FC = () => {
   const { data: arbeidsgivere } =
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
 
+  // Bruk sentralisert sjekkliste-hook
+  const {
+    items: sjekklisteItems,
+    punkterFullfort: sjekklistePunkterFullfort,
+    totaltAntallPunkter: totaltAntallSjekklistePunkter,
+    erPubliseringklar,
+  } = useSjekklisteStatus();
+
   const viserFullskjermForhåndsvisning = useMemo(() => {
     if (avlyst) return true;
     return modus === 'preview-page';
@@ -72,28 +81,6 @@ const Rekrutteringstreff: FC = () => {
     if (modus === 'edit') return false;
     return true;
   }, [viserFullskjermForhåndsvisning, modus]);
-
-  const sjekklisteItems = useMemo(() => {
-    const tittel = rekrutteringstreff?.tittel?.trim() ?? '';
-    return {
-      arbeidsgiver: (arbeidsgivere?.length ?? 0) > 0,
-      navn: tittel.length > 0 && tittel !== 'Treff uten navn',
-      sted:
-        !!rekrutteringstreff?.gateadresse?.trim() &&
-        !!rekrutteringstreff?.poststed?.trim(),
-      tidspunkt: !!rekrutteringstreff?.fraTid,
-      svarfrist: !!rekrutteringstreff?.svarfrist,
-      omtreffet: (innlegg?.length ?? 0) > 0,
-    };
-  }, [arbeidsgivere, rekrutteringstreff, innlegg]);
-
-  const sjekklistePunkterFullfort = useMemo(
-    () => Object.values(sjekklisteItems).filter(Boolean).length,
-    [sjekklisteItems],
-  );
-  const totaltAntallSjekklistePunkter = 6;
-  const erPubliseringklar =
-    sjekklistePunkterFullfort === totaltAntallSjekklistePunkter;
 
   const harInvitert = useMemo(
     () =>
