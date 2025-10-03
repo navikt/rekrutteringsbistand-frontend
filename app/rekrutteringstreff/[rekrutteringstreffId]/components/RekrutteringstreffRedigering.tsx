@@ -35,114 +35,6 @@ const toIsoLocal = (
 const formatIsoLocal = (iso: string | null | undefined) =>
   iso ? formatIsoUtil(iso) : '';
 
-const beregnEndringer = (
-  verdier: any,
-  treff: any,
-  innleggHtmlFraBackend: string,
-) => {
-  const fraTid =
-    toIsoLocal(verdier.fraDato ?? null, verdier.fraTid) ??
-    treff?.fraTid ??
-    null;
-  const tilTid =
-    toIsoLocal(verdier.tilDato ?? verdier.fraDato ?? null, verdier.tilTid) ??
-    treff?.tilTid ??
-    null;
-  const svarfrist =
-    toIsoLocal(verdier.svarfristDato ?? null, verdier.svarfristTid) ??
-    treff?.svarfrist ??
-    null;
-
-  const sikkerTittel =
-    typeof verdier.tittel === 'string' && verdier.tittel.trim().length > 0
-      ? verdier.tittel
-      : (treff?.tittel ?? '');
-
-  const nesteDto = {
-    tittel: sikkerTittel,
-    beskrivelse: (verdier.beskrivelse ?? treff?.beskrivelse ?? null) as
-      | string
-      | null,
-    fraTid,
-    tilTid,
-    svarfrist,
-    gateadresse: (verdier.gateadresse ?? treff?.gateadresse ?? null) as
-      | string
-      | null,
-    postnummer: (verdier.postnummer ?? treff?.postnummer ?? null) as
-      | string
-      | null,
-    poststed: (verdier.poststed ?? treff?.poststed ?? null) as string | null,
-  };
-
-  const elementer: {
-    etikett: string;
-    gammelVerdi: string;
-    nyVerdi: string;
-  }[] = [];
-
-  const leggTilIEndringslisteHvisEndret = (
-    etikett: string,
-    gammelVerdi: string | null,
-    nyVerdi: string | null,
-    formatter?: (val: string | null) => string,
-  ) => {
-    const fmt = (x: string | null) => (formatter ? formatter(x) : (x ?? ''));
-    const o = fmt(gammelVerdi);
-    const n = fmt(nyVerdi);
-    if (o !== n) elementer.push({ etikett, gammelVerdi: o, nyVerdi: n });
-  };
-
-  leggTilIEndringslisteHvisEndret(
-    'Tittel',
-    treff?.tittel ?? '',
-    nesteDto.tittel ?? '',
-  );
-  leggTilIEndringslisteHvisEndret(
-    'Beskrivelse',
-    treff?.beskrivelse,
-    nesteDto.beskrivelse,
-  );
-  leggTilIEndringslisteHvisEndret('Fra', treff?.fraTid, nesteDto.fraTid, (v) =>
-    formatIsoLocal(v),
-  );
-  leggTilIEndringslisteHvisEndret('Til', treff?.tilTid, nesteDto.tilTid, (v) =>
-    formatIsoLocal(v),
-  );
-  leggTilIEndringslisteHvisEndret(
-    'Svarfrist',
-    treff?.svarfrist,
-    nesteDto.svarfrist,
-    (v) => formatIsoLocal(v),
-  );
-  leggTilIEndringslisteHvisEndret(
-    'Gateadresse',
-    treff?.gateadresse,
-    nesteDto.gateadresse,
-  );
-  leggTilIEndringslisteHvisEndret(
-    'Postnummer',
-    treff?.postnummer,
-    nesteDto.postnummer,
-  );
-  leggTilIEndringslisteHvisEndret(
-    'Poststed',
-    treff?.poststed,
-    nesteDto.poststed,
-  );
-
-  const currentInnleggHtml = (verdier.htmlContent ?? '') as string;
-  if ((innleggHtmlFraBackend ?? '') !== (currentInnleggHtml ?? '')) {
-    elementer.push({
-      etikett: 'Innlegg',
-      gammelVerdi: 'Innhold endret',
-      nyVerdi: 'Innhold endret',
-    });
-  }
-
-  return elementer;
-};
-
 interface RekrutteringstreffRedigeringProps {
   onUpdated?: () => void;
   onGåTilForhåndsvisning?: () => void;
@@ -221,56 +113,16 @@ const RekrutteringstreffRedigering: FC<RekrutteringstreffRedigeringProps> = ({
     }
   };
 
-  const [endringer, setEndringer] = useState<
-    { etikett: string; gammelVerdi: string; nyVerdi: string }[]
-  >([]);
-
-  useEffect(() => {
-    const treff = rekrutteringstreffHook.data as any;
-    if (!treff) {
-      setEndringer([]);
-      return;
-    }
-
-    const calc = () => {
-      const verdier = getValues() as any;
-      const innleggHtml = (innleggHook.data?.[0]?.htmlContent ?? '') as string;
-      const elementer = beregnEndringer(verdier, treff, innleggHtml);
-      setEndringer((prev) =>
-        erLikEndringsliste(prev, elementer) ? prev : elementer,
-      );
-    };
-
-    calc();
-    const subscription = watch(() => calc());
-    return () => subscription.unsubscribe();
-  }, [rekrutteringstreffHook.data, watch, getValues, innleggHook.data]);
-
   const håndterOppdatert = () => {
     rekrutteringstreffHook.mutate();
     onUpdated?.();
   };
-
-  const erLikEndringsliste = (
-    a: { etikett: string; gammelVerdi: string; nyVerdi: string }[],
-    b: { etikett: string; gammelVerdi: string; nyVerdi: string }[],
-  ) => JSON.stringify(a) === JSON.stringify(b);
-
-  const kreverTittelSjekk = endringer.some((e) => e.etikett === 'Tittel');
-  const kreverInnleggSjekk = endringer.some((e) => e.etikett === 'Innlegg');
 
   // Publiseringsknappen skal være deaktivert dersom treffet ikke har fått et navn ennå
   const DEFAULT_TITTEL = 'Treff uten navn';
   const lagretTittel = rekrutteringstreffHook.data?.tittel ?? '';
   const manglerNavn =
     typeof lagretTittel === 'string' && lagretTittel.trim() === DEFAULT_TITTEL;
-
-  const kanPublisereNå =
-    endringer.length > 0 &&
-    !harFeil &&
-    (!kreverTittelSjekk || tittelKiSjekket) &&
-    (!kreverInnleggSjekk || innleggKiSjekket) &&
-    !manglerNavn;
 
   return (
     <div className='space-y-8 max-w-[64rem] mx-auto'>
@@ -327,10 +179,12 @@ const RekrutteringstreffRedigering: FC<RekrutteringstreffRedigeringProps> = ({
       {harPublisert && (
         <div className='flex gap-2'>
           <RepubliserRekrutteringstreffButton
-            disabled={!kanPublisereNå}
-            endringer={endringer}
+            disabled={harFeil || manglerNavn}
+            treff={rekrutteringstreffHook.data}
+            innleggHtmlFraBackend={
+              (innleggHook.data?.[0]?.htmlContent ?? '') as string
+            }
             onBekreft={async () => {
-              if (!kanPublisereNå) return;
               try {
                 startLagring('republiser');
                 await save(undefined, true);
