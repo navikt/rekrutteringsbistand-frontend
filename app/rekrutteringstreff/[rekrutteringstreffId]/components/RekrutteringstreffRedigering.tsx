@@ -16,18 +16,10 @@ import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
 import { useKiLogg } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import LeggTilArbeidsgiverForm from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/arbeidsgivere/_ui/LeggTilArbeidsgiverForm';
+import RepubliserRekrutteringstreffButton from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/rekrutteringstreff/RepubliserRekrutteringstreffButton';
 import { getActiveStepFromHendelser } from '@/app/rekrutteringstreff/_utils/rekrutteringstreff';
 import { RekbisError } from '@/util/rekbisError';
-import {
-  Button,
-  Modal,
-  BodyLong,
-  BodyShort,
-  Label,
-  Alert,
-  Heading,
-  Box,
-} from '@navikt/ds-react';
+import { Button, Heading, Box } from '@navikt/ds-react';
 import { FC, useEffect, useRef, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 
@@ -232,7 +224,6 @@ const RekrutteringstreffRedigering: FC<RekrutteringstreffRedigeringProps> = ({
   const [endringer, setEndringer] = useState<
     { etikett: string; gammelVerdi: string; nyVerdi: string }[]
   >([]);
-  const bekreftModalRef = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
     const treff = rekrutteringstreffHook.data as any;
@@ -280,11 +271,6 @@ const RekrutteringstreffRedigering: FC<RekrutteringstreffRedigeringProps> = ({
     (!kreverTittelSjekk || tittelKiSjekket) &&
     (!kreverInnleggSjekk || innleggKiSjekket) &&
     !manglerNavn;
-
-  const åpneBekreftelse = () => {
-    if (!kanPublisereNå) return;
-    bekreftModalRef.current?.showModal();
-  };
 
   return (
     <div className='space-y-8 max-w-[64rem] mx-auto'>
@@ -338,101 +324,37 @@ const RekrutteringstreffRedigering: FC<RekrutteringstreffRedigeringProps> = ({
         </Box.New>
       )}
 
-      <div>
-        {harPublisert && (
-          <div className='flex gap-2'>
-            <Button
-              type='button'
-              variant='primary'
-              size='small'
-              disabled={!kanPublisereNå}
-              onClick={åpneBekreftelse}
-            >
-              Publiser på nytt
-            </Button>
-          </div>
-        )}
-      </div>
+      {harPublisert && (
+        <div className='flex gap-2'>
+          <RepubliserRekrutteringstreffButton
+            disabled={!kanPublisereNå}
+            endringer={endringer}
+            onBekreft={async () => {
+              if (!kanPublisereNå) return;
+              try {
+                startLagring('republiser');
+                await save(undefined, true);
+                const values: any = getValues();
+                const currentHtml: string = (values?.htmlContent ??
+                  '') as string;
+                const backendHtml: string = (innleggHook.data?.[0]
+                  ?.htmlContent ?? '') as string;
+                const shouldSaveInnlegg =
+                  (currentHtml ?? '').trim() !== (backendHtml ?? '').trim() &&
+                  (currentHtml ?? '').trim().length > 0;
+                if (shouldSaveInnlegg) {
+                  await saveInnlegg(undefined, true);
+                }
+                await markerSisteKiLoggSomLagret();
+              } finally {
+                stoppLagring('republiser');
+              }
+            }}
+          />
+        </div>
+      )}
 
       <div aria-hidden className='h-80' />
-
-      {harPublisert && (
-        <Modal
-          ref={bekreftModalRef}
-          header={{ heading: 'Følgende endringer vil bli publisert' }}
-        >
-          <Modal.Body>
-            <Alert variant='info' className='mb-4'>
-              Inviterte deltakere vil ikke bli informert om endringene på nytt
-              av republiseringen
-            </Alert>
-            {endringer.length === 0 ? (
-              <BodyLong>Ingen endringer oppdaget.</BodyLong>
-            ) : (
-              <div className='space-y-3'>
-                {endringer.map((c, idx) => (
-                  <div key={idx} className='border-b pb-2'>
-                    <Label size='small'>{c.etikett}</Label>
-                    <div className='flex gap-2'>
-                      <BodyShort>Fra:</BodyShort>
-                      <BodyShort className='text-gray-400'>
-                        {c.gammelVerdi || '—'}
-                      </BodyShort>
-                    </div>
-                    <div className='flex gap-2'>
-                      <BodyShort>Til:</BodyShort>
-                      <BodyShort className='text-gray-400'>
-                        {c.nyVerdi || '—'}
-                      </BodyShort>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </Modal.Body>
-          <Modal.Footer>
-            <Button
-              type='button'
-              variant='primary'
-              size='small'
-              disabled={!kanPublisereNå}
-              onClick={async () => {
-                if (!kanPublisereNå) return;
-                bekreftModalRef.current?.close();
-                try {
-                  startLagring('republiser');
-                  await save(undefined, true);
-                  const values: any = getValues();
-                  const currentHtml: string = (values?.htmlContent ??
-                    '') as string;
-                  const backendHtml: string = (innleggHook.data?.[0]
-                    ?.htmlContent ?? '') as string;
-                  const shouldSaveInnlegg =
-                    (currentHtml ?? '').trim() !== (backendHtml ?? '').trim() &&
-                    (currentHtml ?? '').trim().length > 0;
-                  if (shouldSaveInnlegg) {
-                    await saveInnlegg(undefined, true);
-                  }
-                  // Etter at vi har lagret endringer ved republisering, marker siste KI-logg som lagret
-                  await markerSisteKiLoggSomLagret();
-                } finally {
-                  stoppLagring('republiser');
-                }
-              }}
-            >
-              Publiser på nytt
-            </Button>
-            <Button
-              type='button'
-              variant='secondary'
-              size='small'
-              onClick={() => bekreftModalRef.current?.close()}
-            >
-              Avbryt
-            </Button>
-          </Modal.Footer>
-        </Modal>
-      )}
     </div>
   );
 };

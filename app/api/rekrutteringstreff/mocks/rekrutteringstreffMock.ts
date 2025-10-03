@@ -106,7 +106,7 @@ export const rekrutteringstreffMock = {
   beskrivelse: null,
   fraTid: '2025-11-01T08:00:00+02:00',
   tilTid: '2025-11-01T10:00:00+02:00',
-  svarfrist: '2025-11-01T12:00:00+02:00',
+  svarfrist: '2025-11-01T07:00:00+02:00',
   gateadresse: 'Malmøgata 1',
   postnummer: '5555',
   poststed: 'Kristiansand S',
