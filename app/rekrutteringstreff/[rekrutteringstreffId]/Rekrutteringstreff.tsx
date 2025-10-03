@@ -56,16 +56,16 @@ const Rekrutteringstreff: FC = () => {
   const harPublisert = activeStep === 'INVITERE' || activeStep === 'FULLFØRE';
   const avlyst = activeStep === 'AVLYST';
 
-  const viserForhåndsvisningsside = useMemo(() => {
+  const viserFullskjermForhåndsvisning = useMemo(() => {
     if (avlyst) return true;
     return modus === 'preview-page';
   }, [avlyst, modus]);
 
-  const erIForhåndsvisning = useMemo(() => {
-    if (viserForhåndsvisningsside) return false;
+  const erILesemodus = useMemo(() => {
+    if (viserFullskjermForhåndsvisning) return false;
     if (modus === 'edit') return false;
-    return true; // Default view mode
-  }, [viserForhåndsvisningsside, modus]);
+    return true;
+  }, [viserFullskjermForhåndsvisning, modus]);
 
   const rekrutteringstreff = rekrutteringstreffHook.data;
 
@@ -213,7 +213,7 @@ const Rekrutteringstreff: FC = () => {
     return [{ label: rekrutteringstreffNavn }];
   }, [harPublisert, avlyst, rekrutteringstreffNavn]);
 
-  const skalViseHeader = !viserForhåndsvisningsside;
+  const skalViseHeader = !viserFullskjermForhåndsvisning;
 
   const oppdaterData = useCallback(async () => {
     await Promise.all([
@@ -230,7 +230,7 @@ const Rekrutteringstreff: FC = () => {
   const renderStegviser = () => (
     <Stegviser
       onToggleForhåndsvisning={handleToggleForhåndsvisning}
-      erIForhåndsvisning={erIForhåndsvisning}
+      erIForhåndsvisning={erILesemodus}
     />
   );
 
@@ -242,7 +242,7 @@ const Rekrutteringstreff: FC = () => {
     fremdriftspanel: <SideScroll>{stegviserInnhold}</SideScroll>,
   } as const;
 
-  if (viserForhåndsvisningsside) {
+  if (viserFullskjermForhåndsvisning) {
     return (
       <SideLayout {...layoutProps}>
         <SideScroll>
@@ -275,7 +275,7 @@ const Rekrutteringstreff: FC = () => {
             <RekrutteringstreffHeader
               skalViseHeader={skalViseHeader}
               breadcrumbs={breadcrumbs}
-              erIForhåndsvisning={erIForhåndsvisning}
+              erIForhåndsvisning={erILesemodus}
               jobbsøkereAntall={jobbsøkere?.length ?? 0}
               arbeidsgivereAntall={arbeidsgivere?.length ?? 0}
               lagrerNoe={lagrerNoe}
@@ -297,7 +297,7 @@ const Rekrutteringstreff: FC = () => {
         <SideScroll>
           <div className='space-y-4'>
             <TabsPanels
-              erIVisning={erIForhåndsvisning}
+              erIVisning={erILesemodus}
               onUpdated={rekrutteringstreffHook.mutate}
               onGåTilForhåndsvisning={gåTilForhåndsvisning}
             />
