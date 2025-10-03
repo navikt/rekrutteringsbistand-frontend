@@ -339,18 +339,6 @@ const RekrutteringstreffRedigering: FC<RekrutteringstreffRedigeringProps> = ({
       )}
 
       <div>
-        {!harPublisert && (
-          <div className='flex gap-2'>
-            <Button
-              type='button'
-              variant='secondary'
-              size='small'
-              onClick={() => onGåTilForhåndsvisning?.()}
-            >
-              Forhåndsvis
-            </Button>
-          </div>
-        )}
         {harPublisert && (
           <div className='flex gap-2'>
             <Button
@@ -361,14 +349,6 @@ const RekrutteringstreffRedigering: FC<RekrutteringstreffRedigeringProps> = ({
               onClick={åpneBekreftelse}
             >
               Publiser på nytt
-            </Button>
-            <Button
-              type='button'
-              variant='secondary'
-              size='small'
-              onClick={() => onGåTilForhåndsvisning?.()}
-            >
-              Forhåndsvis
             </Button>
           </div>
         )}
