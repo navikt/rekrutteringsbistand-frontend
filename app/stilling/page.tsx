@@ -19,6 +19,7 @@ export default function StillingsSøkIndex() {
             titleIcon={<BriefcaseIcon />}
             actionsRight={
               <TilgangskontrollForInnhold
+                skjulVarsel
                 kreverEnAvRollene={[
                   Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
                   Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER,
