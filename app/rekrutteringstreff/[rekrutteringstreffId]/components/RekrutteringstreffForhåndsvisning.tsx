@@ -158,6 +158,27 @@ const RekrutteringstreffForhåndsvisning: FC = () => {
       )
     : null;
 
+  // Beregn dager igjen til svarfrist
+  const svarfristOslo = rekrutteringstreff.svarfrist
+    ? toZonedTime(parseISO(rekrutteringstreff.svarfrist), 'Europe/Oslo')
+    : null;
+  const nowOslo = toZonedTime(new Date(), 'Europe/Oslo');
+  let dagerIgjenTekst: string | null = null;
+  if (svarfristOslo) {
+    const msPerDay = 1000 * 60 * 60 * 24;
+    const diffMs = svarfristOslo.getTime() - nowOslo.getTime();
+    const dager = Math.floor(diffMs / msPerDay);
+    if (dager < 0) {
+      dagerIgjenTekst = 'Utløpt';
+    } else if (dager === 0) {
+      dagerIgjenTekst = 'Utløper i dag';
+    } else if (dager === 1) {
+      dagerIgjenTekst = 'Utløper om 1 dag';
+    } else {
+      dagerIgjenTekst = `Utløper om ${dager} dager`;
+    }
+  }
+
   return (
     <div className='bg-white text-black min-h-screen' data-theme='light'>
       <div className='max-w-7xl mx-auto p-2 space-y-6'>
@@ -260,11 +281,25 @@ const RekrutteringstreffForhåndsvisning: FC = () => {
           <div className='2xl:col-span-2 space-y-6'>
             {/* User response box */}
             <div className='space-y-4'>
-              <div className='bg-white border border-gray-300 p-4 rounded-lg space-y-4'>
-                <div className='flex items-center justify-between gap-2'>
-                  <BodyShort className='text-gray-700'>
-                    Du kan endre svaret ditt frem til {svarfristFormatert}
-                  </BodyShort>
+              <div className='p-4 rounded-lg space-y-2 bg-[var(--ax-surface-info-subtle,_#E6F0FF)] border border-[var(--ax-border-info-subtle,_#99C2FF)]'>
+                <div className='flex items-start justify-between gap-3'>
+                  <div className='flex-1'>
+                    <BodyShort className='text-gray-900 flex items-center gap-2'>
+                      <span role='img' aria-label='flammer'>
+                        🔥🔥🔥
+                      </span>
+                    </BodyShort>
+                    {dagerIgjenTekst && (
+                      <BodyShort className='text-gray-700 font-bold'>
+                        {dagerIgjenTekst}
+                      </BodyShort>
+                    )}
+                    {dagerIgjenTekst !== 'Utløpt' && (
+                      <BodyShort className='text-gray-700'>
+                        Du kan endre svaret ditt frem til {svarfristFormatert}
+                      </BodyShort>
+                    )}
+                  </div>
                   <Button
                     variant='primary'
                     size='medium'
