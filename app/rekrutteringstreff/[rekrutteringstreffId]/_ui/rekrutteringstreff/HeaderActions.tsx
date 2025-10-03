@@ -32,6 +32,7 @@ type Props = {
   onBekreftRedigerPublisert: () => void;
   onAvlyst: () => void;
   onAvbrytRedigering: () => void;
+  onPublisert?: () => void;
   treff?: any;
   innleggHtmlFraBackend?: string | null;
   onRepubliser?: () => Promise<void>;
@@ -52,6 +53,7 @@ const HeaderActions: FC<Props> = ({
   onBekreftRedigerPublisert,
   onAvlyst,
   onAvbrytRedigering,
+  onPublisert,
   treff,
   innleggHtmlFraBackend,
   onRepubliser,
@@ -114,6 +116,7 @@ const HeaderActions: FC<Props> = ({
           erPubliseringklar={erPubliseringklar}
           rekrutteringstreffId={rekrutteringstreffId}
           oppdaterData={oppdaterData}
+          onPublisert={onPublisert}
         />
         <Button
           type='button'
@@ -145,6 +148,7 @@ const HeaderActions: FC<Props> = ({
           erPubliseringklar={erPubliseringklar}
           rekrutteringstreffId={rekrutteringstreffId}
           oppdaterData={oppdaterData}
+          onPublisert={onPublisert}
         />
       )}
 

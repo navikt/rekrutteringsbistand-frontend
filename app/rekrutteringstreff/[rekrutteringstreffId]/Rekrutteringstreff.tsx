@@ -230,6 +230,12 @@ const Rekrutteringstreff: FC = () => {
     scrollToTop();
   }, [scrollToTop, setModus]);
 
+  const onPublisert = useCallback(() => {
+    setModus('');
+    setFane(RekrutteringstreffTabs.OM_TREFFET);
+    scrollToTop();
+  }, [setModus, setFane, scrollToTop]);
+
   // Republiser-logikk
   const { getValues, watch, formState } = useFormContext();
   const { save } = useAutosave();
@@ -291,6 +297,9 @@ const Rekrutteringstreff: FC = () => {
         await saveInnlegg(undefined, true);
       }
       await markerSisteKiLoggSomLagret();
+      // Etter republisering: gå til standard lesemodus (uten ?mode)
+      setModus('');
+      scrollToTop();
     } finally {
       stoppLagring('republiser');
     }
@@ -302,6 +311,8 @@ const Rekrutteringstreff: FC = () => {
     getValues,
     innlegg,
     markerSisteKiLoggSomLagret,
+    setModus,
+    scrollToTop,
   ]);
 
   const tittelKiFeil = (watch('tittelKiFeil' as any) as any) ?? false;
@@ -360,6 +371,7 @@ const Rekrutteringstreff: FC = () => {
               onBekreftRedigerPublisert={onBekreftRedigerPublisert}
               onAvlyst={onAvlyst}
               onAvbrytRedigering={onAvbrytRedigering}
+              onPublisert={onPublisert}
               treff={rekrutteringstreff}
               innleggHtmlFraBackend={
                 (innlegg?.[0]?.htmlContent ?? '') as string
@@ -406,6 +418,7 @@ const Rekrutteringstreff: FC = () => {
               onBekreftRedigerPublisert={onBekreftRedigerPublisert}
               onAvlyst={onAvlyst}
               onAvbrytRedigering={onAvbrytRedigering}
+              onPublisert={onPublisert}
               treff={rekrutteringstreff}
               innleggHtmlFraBackend={
                 (innlegg?.[0]?.htmlContent ?? '') as string

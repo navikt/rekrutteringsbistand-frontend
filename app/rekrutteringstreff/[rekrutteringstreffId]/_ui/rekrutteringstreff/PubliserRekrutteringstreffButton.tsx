@@ -10,12 +10,14 @@ type Props = {
   erPubliseringklar: boolean;
   rekrutteringstreffId: string;
   oppdaterData: () => Promise<void>;
+  onPublisert?: () => void;
 };
 
 const PubliserRekrutteringstreffButton: FC<Props> = ({
   erPubliseringklar,
   rekrutteringstreffId,
   oppdaterData,
+  onPublisert,
 }) => {
   const [laster, setLaster] = useState(false);
   const modalRef = useRef<HTMLDialogElement>(null);
@@ -35,6 +37,7 @@ const PubliserRekrutteringstreffButton: FC<Props> = ({
     try {
       await publiserRekrutteringstreff(rekrutteringstreffId);
       await oppdaterData();
+      onPublisert?.();
       skalLukke = true;
     } catch (error) {
       new RekbisError({

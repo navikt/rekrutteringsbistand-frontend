@@ -31,6 +31,7 @@ export interface RekrutteringstreffHeaderProps {
   onBekreftRedigerPublisert: () => void;
   onAvlyst: () => void;
   onAvbrytRedigering: () => void;
+  onPublisert?: () => void;
   treff?: any;
   innleggHtmlFraBackend?: string | null;
   onRepubliser?: () => Promise<void>;
@@ -63,6 +64,7 @@ const RekrutteringstreffHeader = forwardRef<
       onBekreftRedigerPublisert,
       onAvlyst,
       onAvbrytRedigering,
+      onPublisert,
       treff,
       innleggHtmlFraBackend,
       onRepubliser,
@@ -123,6 +125,7 @@ const RekrutteringstreffHeader = forwardRef<
                 onBekreftRedigerPublisert={onBekreftRedigerPublisert}
                 onAvlyst={onAvlyst}
                 onAvbrytRedigering={onAvbrytRedigering}
+                onPublisert={onPublisert}
                 treff={treff}
                 innleggHtmlFraBackend={innleggHtmlFraBackend}
                 onRepubliser={onRepubliser}
