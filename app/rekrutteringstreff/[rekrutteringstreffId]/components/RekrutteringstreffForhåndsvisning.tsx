@@ -3,13 +3,23 @@
 import { useRekrutteringstreffContext } from '../RekrutteringstreffContext';
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
+import { OppdaterRekrutteringstreffDTO } from '@/app/api/rekrutteringstreff/oppdater-rekrutteringstreff/oppdaterRerkutteringstreff';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { ClockIcon, LocationPinIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button, Heading, Skeleton, Tag } from '@navikt/ds-react';
 import { format, isSameDay, parseISO } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
 import { nb } from 'date-fns/locale';
-import { FC } from 'react';
+import { FC, useMemo } from 'react';
+import { useFormContext } from 'react-hook-form';
+
+type FormValues = OppdaterRekrutteringstreffDTO & {
+  fraDato?: Date | null;
+  tilDato?: Date | null;
+  svarfristDato?: Date | null;
+  svarfristTid?: string | null;
+  htmlContent?: string | null;
+};
 
 const capitalizeFirst = (str: string) => {
   if (!str) return str;
@@ -43,14 +53,66 @@ const formaterKlokkeslett = (date: Date) => {
 
 const RekrutteringstreffForhåndsvisning: FC = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
-  const { data: rekrutteringstreff, isLoading: isLoadingTreff } =
+  const { data: rekrutteringstreffApi, isLoading: isLoadingTreff } =
     useRekrutteringstreff(rekrutteringstreffId);
   const { data: innleggListe, isLoading: isLoadingInnlegg } =
     useInnlegg(rekrutteringstreffId);
   const { data: arbeidsgivere, isLoading: isLoadingArbeidsgivere } =
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
 
-  const innlegg = innleggListe?.[0];
+  // Hent verdier fra form-context for å vise ulagrede endringer i forhåndsvisning
+  const form = useFormContext<FormValues>();
+  const watched = form?.watch?.() as Partial<FormValues> | undefined;
+
+  const combineDateTime = (date?: Date | null, time?: string | null) => {
+    if (!date || !time) return undefined;
+    try {
+      const [hh, mm] = time.split(':').map((s) => parseInt(s, 10));
+      const d = new Date(date);
+      d.setHours(hh || 0, mm || 0, 0, 0);
+      return d.toISOString();
+    } catch {
+      return undefined;
+    }
+  };
+
+  const rekrutteringstreff = useMemo(() => {
+    const fallback = rekrutteringstreffApi ?? ({} as any);
+    if (!watched) return fallback;
+
+    const fraTid =
+      combineDateTime(watched.fraDato as any, watched.fraTid as any) ??
+      fallback.fraTid;
+    const tilTid =
+      combineDateTime(watched.tilDato as any, watched.tilTid as any) ??
+      fallback.tilTid;
+    const svarfrist =
+      combineDateTime(
+        watched.svarfristDato as any,
+        watched.svarfristTid as any,
+      ) ?? fallback.svarfrist;
+
+    return {
+      ...fallback,
+      tittel: (watched.tittel as any) ?? fallback.tittel,
+      gateadresse: (watched.gateadresse as any) ?? fallback.gateadresse,
+      postnummer: (watched.postnummer as any) ?? fallback.postnummer,
+      poststed: (watched.poststed as any) ?? fallback.poststed,
+      fraTid,
+      tilTid,
+      svarfrist,
+    } as typeof fallback;
+  }, [rekrutteringstreffApi, watched]);
+
+  const innleggFraForm =
+    (form?.watch?.('htmlContent') as string | undefined) ?? undefined;
+  const innlegg = useMemo(() => {
+    const first = innleggListe?.[0];
+    if (innleggFraForm !== undefined) {
+      return { ...(first ?? {}), htmlContent: innleggFraForm } as any;
+    }
+    return first;
+  }, [innleggListe, innleggFraForm]);
 
   if (isLoadingTreff || isLoadingInnlegg || isLoadingArbeidsgivere) {
     return (
