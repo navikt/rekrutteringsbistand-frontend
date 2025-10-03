@@ -1,11 +1,11 @@
 'use client';
 
-import { useRekrutteringstreffContext } from '../../../_contexts/RekrutteringstreffContext';
 import ArbeidsgiverHendelserKort from '../arbeidsgivere/ArbeidsgiverHendelserKort';
 import { useRekrutteringstreffData } from '../hooks/useRekrutteringstreffData';
 import JobbsøkerHendelserKort from '../jobbsøkere/JobbsøkerHendelserKort';
 import { useArbeidsgiverHendelser } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgiverHendelser';
 import { useJobbsøkerHendelser } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkerHendelser';
+import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_contexts/RekrutteringstreffContext';
 import { formaterNorskDato } from '@/util/util';
 import { CalendarIcon, ClockIcon, LocationPinIcon } from '@navikt/aksel-icons';
 import { BodyShort, Box, Detail, Heading, Skeleton } from '@navikt/ds-react';

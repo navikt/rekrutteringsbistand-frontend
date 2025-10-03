@@ -16,8 +16,7 @@ interface RekrutteringstreffRedigeringProps {
 const RekrutteringstreffRedigering: FC<RekrutteringstreffRedigeringProps> = ({
   onUpdated,
 }) => {
-  const { activeStep, harPublisert, oppdaterData } =
-    useRekrutteringstreffData();
+  const { harPublisert, oppdaterData } = useRekrutteringstreffData();
 
   const håndterOppdatert = async () => {
     await oppdaterData();

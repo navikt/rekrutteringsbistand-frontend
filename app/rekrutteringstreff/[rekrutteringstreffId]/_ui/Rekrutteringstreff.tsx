@@ -1,9 +1,7 @@
 'use client';
 
-import { useRekrutteringstreffContext } from '../../_contexts/RekrutteringstreffContext';
 import RekrutteringstreffForhåndsvisning from './forhåndsvisning/RekrutteringstreffForhåndsvisning';
 import RekrutteringstreffHeader from './header/RekrutteringstreffHeader';
-import { useInviteringsStatus } from './hooks/useInviteringsStatus';
 import { useRekrutteringstreffData } from './hooks/useRekrutteringstreffData';
 import { useSjekklisteStatus } from './hooks/useSjekklisteStatus';
 import {
@@ -16,6 +14,7 @@ import { useAlleHendelser } from '@/app/api/rekrutteringstreff/[...slug]/useAlle
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
 import { useKiLogg } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
+import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_contexts/RekrutteringstreffContext';
 import type { RekrutteringstreffBreadcrumbItem } from '@/app/rekrutteringstreff/_ui/RekrutteringstreffBreadcrumbs';
 import Fremdriftspanel from '@/components/Fremdriftspanel';
 import SideScroll from '@/components/SideScroll';
@@ -48,13 +47,10 @@ const Rekrutteringstreff: FC = () => {
   const { rekrutteringstreffId, lagrerNoe } = useRekrutteringstreffContext();
 
   const {
-    activeStep,
     avlyst,
     harPublisert,
-    tilTidspunktHarPassert,
     treff: rekrutteringstreff,
     innlegg,
-    oppdaterData,
     rekrutteringstreffHook,
   } = useRekrutteringstreffData();
 
@@ -64,15 +60,7 @@ const Rekrutteringstreff: FC = () => {
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
 
   // Bruk sentralisert sjekkliste-hook
-  const {
-    items: sjekklisteItems,
-    punkterFullfort: sjekklistePunkterFullfort,
-    totaltAntallPunkter: totaltAntallSjekklistePunkter,
-    erPubliseringklar,
-  } = useSjekklisteStatus();
-
-  // Bruk sentralisert hook for inviterings-statistikk
-  const { harInvitert } = useInviteringsStatus();
+  const { erPubliseringklar } = useSjekklisteStatus();
 
   const viserFullskjermForhåndsvisning = useMemo(() => {
     if (avlyst) return true;
@@ -186,10 +174,6 @@ const Rekrutteringstreff: FC = () => {
 
   const skalViseHeader =
     modus === 'preview-page' ? true : !viserFullskjermForhåndsvisning;
-
-  const oppdaterAlleData = useCallback(async () => {
-    await Promise.all([oppdaterData(), alleHendelserHook.mutate()]);
-  }, [oppdaterData, alleHendelserHook]);
 
   const onAvlyst = useCallback(() => {
     setModus('preview-page');

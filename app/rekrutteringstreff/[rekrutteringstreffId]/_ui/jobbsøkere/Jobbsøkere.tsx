@@ -37,11 +37,8 @@ const jobbsøkerTilInviterDto = (
 
 const Jobbsøkere = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
-  const {
-    activeStep,
-    harPublisert,
-    treff: rekrutteringstreffData,
-  } = useRekrutteringstreffData();
+  const { harPublisert, treff: rekrutteringstreffData } =
+    useRekrutteringstreffData();
   const jobbsøkerHook = useJobbsøkere(rekrutteringstreffId);
   const inviterModalRef = useRef<HTMLDialogElement>(null);
   const oppmøteModalRef = useRef<HTMLDialogElement>(null);

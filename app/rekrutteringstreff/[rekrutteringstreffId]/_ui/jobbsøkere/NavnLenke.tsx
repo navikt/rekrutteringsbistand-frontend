@@ -1,4 +1,4 @@
-import { useVisPersonTreffId } from '../../vis-person/_ui/useVisPersonTreffId';
+import { useVisPersonTreffId } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/vis-person/_ui/useVisPersonTreffId';
 import { FC } from 'react';
 
 interface NavnLenkeProps {
