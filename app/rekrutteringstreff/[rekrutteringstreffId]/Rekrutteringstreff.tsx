@@ -180,6 +180,12 @@ const Rekrutteringstreff: FC = () => {
     scrollToTop();
   };
 
+  const onAvbrytRedigering = () => {
+    // Etter publisering, ved avbryt redigering, gå til vanlig lesemodus
+    setModus('');
+    scrollToTop();
+  };
+
   const lagretTekst = useMemo(() => {
     const alle = alleHendelserHook.data;
     if (!alle || alle.length === 0) return undefined;
@@ -290,6 +296,7 @@ const Rekrutteringstreff: FC = () => {
               onToggleForhåndsvisning={handleToggleForhåndsvisning}
               onBekreftRedigerPublisert={onBekreftRedigerPublisert}
               onAvlyst={onAvlyst}
+              onAvbrytRedigering={onAvbrytRedigering}
             />
           ) : undefined
         }

@@ -28,6 +28,7 @@ export interface RekrutteringstreffHeaderProps {
   onToggleForhåndsvisning: (ny: boolean) => void;
   onBekreftRedigerPublisert: () => void;
   onAvlyst: () => void;
+  onAvbrytRedigering: () => void;
 }
 
 const RekrutteringstreffHeader = forwardRef<
@@ -53,6 +54,7 @@ const RekrutteringstreffHeader = forwardRef<
       onToggleForhåndsvisning,
       onBekreftRedigerPublisert,
       onAvlyst,
+      onAvbrytRedigering,
     },
     ref,
   ) => {
@@ -95,6 +97,7 @@ const RekrutteringstreffHeader = forwardRef<
                 onToggleForhåndsvisning={onToggleForhåndsvisning}
                 onBekreftRedigerPublisert={onBekreftRedigerPublisert}
                 onAvlyst={onAvlyst}
+                onAvbrytRedigering={onAvbrytRedigering}
               />
             }
           ></PanelHeader.Section>

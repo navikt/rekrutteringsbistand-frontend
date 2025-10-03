@@ -261,16 +261,16 @@ const RekrutteringstreffForhåndsvisning: FC = () => {
             {/* User response box */}
             <div className='space-y-4'>
               <div className='bg-white border border-gray-300 p-4 rounded-lg space-y-4'>
-                <Tag variant='neutral' className='text-gray-600 bg-gray-100'>
-                  (Svar fra bruker)
-                </Tag>
-
                 <div className='flex items-center justify-between gap-2'>
                   <BodyShort className='text-gray-700'>
                     Du kan endre svaret ditt frem til {svarfristFormatert}
                   </BodyShort>
-                  <Button variant='secondary' size='medium'>
-                    (svarvelger)
+                  <Button
+                    variant='primary'
+                    size='medium'
+                    className='text-white'
+                  >
+                    Svar
                   </Button>
                 </div>
               </div>

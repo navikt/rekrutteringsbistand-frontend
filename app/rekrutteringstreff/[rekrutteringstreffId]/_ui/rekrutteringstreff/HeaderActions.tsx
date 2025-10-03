@@ -29,6 +29,7 @@ type Props = {
   onToggleForhåndsvisning: (ny: boolean) => void;
   onBekreftRedigerPublisert: () => void;
   onAvlyst: () => void;
+  onAvbrytRedigering: () => void;
 };
 
 const HeaderActions: FC<Props> = ({
@@ -43,6 +44,7 @@ const HeaderActions: FC<Props> = ({
   onToggleForhåndsvisning,
   onBekreftRedigerPublisert,
   onAvlyst,
+  onAvbrytRedigering,
 }) => {
   const harPublisert = activeStep === 'INVITERE' || activeStep === 'FULLFØRE';
 
@@ -67,7 +69,7 @@ const HeaderActions: FC<Props> = ({
           type='button'
           size='small'
           variant='tertiary'
-          onClick={() => onToggleForhåndsvisning(true)}
+          onClick={() => onAvbrytRedigering()}
         >
           Avbryt
         </Button>

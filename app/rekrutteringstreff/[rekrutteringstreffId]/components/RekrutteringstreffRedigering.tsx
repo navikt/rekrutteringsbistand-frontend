@@ -435,7 +435,6 @@ const RekrutteringstreffRedigering: FC<RekrutteringstreffRedigeringProps> = ({
                   }
                   // Etter at vi har lagret endringer ved republisering, marker siste KI-logg som lagret
                   await markerSisteKiLoggSomLagret();
-                  onGåTilForhåndsvisning?.();
                 } finally {
                   stoppLagring('republiser');
                 }
