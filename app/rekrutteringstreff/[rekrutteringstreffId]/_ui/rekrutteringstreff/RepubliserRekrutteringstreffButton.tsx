@@ -1,30 +1,18 @@
 'use client';
 
 import {
-  toIso as toIsoUtil,
-  formatIso as formatIsoUtil,
+  toIso,
+  formatIso,
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/components/redigereRekrutteringstreff/tidspunkt/utils';
 import { BodyLong, BodyShort, Button, Label, Modal } from '@navikt/ds-react';
 import { FC, useEffect, useMemo, useRef, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 
-export type Endring = {
+type Endring = {
   etikett: string;
   gammelVerdi: string;
   nyVerdi: string;
 };
-
-const toIsoLocal = (
-  date: Date | null | undefined,
-  time?: string | null,
-): string | null => {
-  if (!date) return null;
-  const timeValue = time && time.trim() !== '' ? time : '00:00';
-  return toIsoUtil(date, timeValue);
-};
-
-const formatIsoLocal = (iso: string | null | undefined) =>
-  iso ? formatIsoUtil(iso) : '';
 
 interface Props {
   disabled?: boolean;
@@ -33,112 +21,110 @@ interface Props {
   onBekreft: () => Promise<void> | void;
 }
 
+const toIsoLocal = (
+  date: Date | null | undefined,
+  time?: string | null,
+): string | null => {
+  if (!date) return null;
+  const timeValue = time?.trim() || '00:00';
+  return toIso(date, timeValue);
+};
+
+const formatIsoLocal = (iso: string | null | undefined) =>
+  iso ? formatIso(iso) : '';
+
+const leggTilEndringHvisUlik = (
+  endringer: Endring[],
+  etikett: string,
+  gammelVerdi: string | null,
+  nyVerdi: string | null,
+  formatter?: (val: string | null) => string,
+) => {
+  const format = (x: string | null) => (formatter ? formatter(x) : (x ?? ''));
+  const gammel = format(gammelVerdi);
+  const ny = format(nyVerdi);
+  if (gammel !== ny) {
+    endringer.push({ etikett, gammelVerdi: gammel, nyVerdi: ny });
+  }
+};
+
 const beregnEndringer = (
   verdier: any,
   treff: any,
   innleggHtmlFraBackend: string,
-) => {
-  const fraTid =
-    toIsoLocal(verdier.fraDato ?? null, verdier.fraTid) ??
-    treff?.fraTid ??
-    null;
+): Endring[] => {
+  const endringer: Endring[] = [];
+
+  // Beregn tidspunkter
+  const fraTid = toIsoLocal(verdier.fraDato, verdier.fraTid) ?? treff?.fraTid;
   const tilTid =
-    toIsoLocal(verdier.tilDato ?? verdier.fraDato ?? null, verdier.tilTid) ??
-    treff?.tilTid ??
-    null;
+    toIsoLocal(verdier.tilDato ?? verdier.fraDato, verdier.tilTid) ??
+    treff?.tilTid;
   const svarfrist =
-    toIsoLocal(verdier.svarfristDato ?? null, verdier.svarfristTid) ??
-    treff?.svarfrist ??
-    null;
+    toIsoLocal(verdier.svarfristDato, verdier.svarfristTid) ?? treff?.svarfrist;
 
-  const sikkerTittel =
-    typeof verdier.tittel === 'string' && verdier.tittel.trim().length > 0
-      ? verdier.tittel
-      : (treff?.tittel ?? '');
+  // Beregn ny tittel
+  const tittel = verdier.tittel?.trim() || treff?.tittel || '';
 
-  const nesteDto = {
-    tittel: sikkerTittel,
-    beskrivelse: (verdier.beskrivelse ?? treff?.beskrivelse ?? null) as
-      | string
-      | null,
-    fraTid,
-    tilTid,
-    svarfrist,
-    gateadresse: (verdier.gateadresse ?? treff?.gateadresse ?? null) as
-      | string
-      | null,
-    postnummer: (verdier.postnummer ?? treff?.postnummer ?? null) as
-      | string
-      | null,
-    poststed: (verdier.poststed ?? treff?.poststed ?? null) as string | null,
-  };
-
-  const elementer: Endring[] = [];
-
-  const leggTilIEndringslisteHvisEndret = (
-    etikett: string,
-    gammelVerdi: string | null,
-    nyVerdi: string | null,
-    formatter?: (val: string | null) => string,
-  ) => {
-    const fmt = (x: string | null) => (formatter ? formatter(x) : (x ?? ''));
-    const o = fmt(gammelVerdi);
-    const n = fmt(nyVerdi);
-    if (o !== n) elementer.push({ etikett, gammelVerdi: o, nyVerdi: n });
-  };
-
-  leggTilIEndringslisteHvisEndret(
-    'Tittel',
-    treff?.tittel ?? '',
-    nesteDto.tittel ?? '',
-  );
-  leggTilIEndringslisteHvisEndret(
+  // Sammenlign alle felter
+  leggTilEndringHvisUlik(endringer, 'Tittel', treff?.tittel, tittel);
+  leggTilEndringHvisUlik(
+    endringer,
     'Beskrivelse',
     treff?.beskrivelse,
-    nesteDto.beskrivelse,
+    verdier.beskrivelse ?? treff?.beskrivelse,
   );
-  leggTilIEndringslisteHvisEndret('Fra', treff?.fraTid, nesteDto.fraTid, (v) =>
-    formatIsoLocal(v),
+  leggTilEndringHvisUlik(
+    endringer,
+    'Fra',
+    treff?.fraTid,
+    fraTid,
+    formatIsoLocal,
   );
-  leggTilIEndringslisteHvisEndret('Til', treff?.tilTid, nesteDto.tilTid, (v) =>
-    formatIsoLocal(v),
+  leggTilEndringHvisUlik(
+    endringer,
+    'Til',
+    treff?.tilTid,
+    tilTid,
+    formatIsoLocal,
   );
-  leggTilIEndringslisteHvisEndret(
+  leggTilEndringHvisUlik(
+    endringer,
     'Svarfrist',
     treff?.svarfrist,
-    nesteDto.svarfrist,
-    (v) => formatIsoLocal(v),
+    svarfrist,
+    formatIsoLocal,
   );
-  leggTilIEndringslisteHvisEndret(
+  leggTilEndringHvisUlik(
+    endringer,
     'Gateadresse',
     treff?.gateadresse,
-    nesteDto.gateadresse,
+    verdier.gateadresse ?? treff?.gateadresse,
   );
-  leggTilIEndringslisteHvisEndret(
+  leggTilEndringHvisUlik(
+    endringer,
     'Postnummer',
     treff?.postnummer,
-    nesteDto.postnummer,
+    verdier.postnummer ?? treff?.postnummer,
   );
-  leggTilIEndringslisteHvisEndret(
+  leggTilEndringHvisUlik(
+    endringer,
     'Poststed',
     treff?.poststed,
-    nesteDto.poststed,
+    verdier.poststed ?? treff?.poststed,
   );
 
-  const currentInnleggHtml = (verdier.htmlContent ?? '') as string;
-  if ((innleggHtmlFraBackend ?? '') !== (currentInnleggHtml ?? '')) {
-    elementer.push({
+  // Sjekk om innlegg er endret
+  if ((innleggHtmlFraBackend || '') !== (verdier.htmlContent || '')) {
+    endringer.push({
       etikett: 'Innlegg',
       gammelVerdi: 'Innhold endret',
       nyVerdi: 'Innhold endret',
     });
   }
 
-  return elementer;
+  return endringer;
 };
-
-const erLikEndringsliste = (a: Endring[], b: Endring[]) =>
-  JSON.stringify(a) === JSON.stringify(b);
 
 const RepubliserRekrutteringstreffButton: FC<Props> = ({
   disabled,
@@ -156,57 +142,53 @@ const RepubliserRekrutteringstreffButton: FC<Props> = ({
       return;
     }
 
-    const calc = () => {
-      const verdier = getValues() as any;
-      const elementer = beregnEndringer(
+    const beregnOgOppdater = () => {
+      const verdier = getValues();
+      const nyeEndringer = beregnEndringer(
         verdier,
         treff,
-        (innleggHtmlFraBackend ?? '') as string,
+        innleggHtmlFraBackend || '',
       );
-      setEndringer((prev) =>
-        erLikEndringsliste(prev, elementer) ? prev : elementer,
-      );
+      // Kun oppdater state hvis endringene faktisk er forskjellige
+      setEndringer((prev) => {
+        if (JSON.stringify(prev) === JSON.stringify(nyeEndringer)) {
+          return prev;
+        }
+        return nyeEndringer;
+      });
     };
 
-    calc();
-    const subscription = watch(() => calc());
+    beregnOgOppdater();
+    const subscription = watch(beregnOgOppdater);
     return () => subscription.unsubscribe();
   }, [treff, watch, getValues, innleggHtmlFraBackend]);
 
-  const tittelKiSjekket = (watch('tittelKiSjekket' as any) as any) ?? false;
-  const innleggKiSjekket = (watch('innleggKiSjekket' as any) as any) ?? false;
-  const anyKiFeil =
-    ((watch('tittelKiFeil' as any) as any) ?? false) ||
-    ((watch('innleggKiFeil' as any) as any) ?? false);
+  const tittelKiSjekket = watch('tittelKiSjekket') ?? false;
+  const innleggKiSjekket = watch('innleggKiSjekket') ?? false;
+  const tittelKiFeil = watch('tittelKiFeil') ?? false;
+  const innleggKiFeil = watch('innleggKiFeil') ?? false;
+
+  const harKiFeil = tittelKiFeil || innleggKiFeil;
   const harAndreSkjemafeil = Boolean(
     formState.errors &&
       Object.keys(formState.errors).some((key) => key !== 'root'),
   );
-  const harFeil = anyKiFeil || harAndreSkjemafeil;
+  const harFeil = harKiFeil || harAndreSkjemafeil;
 
-  const DEFAULT_TITTEL = 'Treff uten navn';
-  const lagretTittel = treff?.tittel ?? '';
-  const manglerNavn =
-    typeof lagretTittel === 'string' && lagretTittel.trim() === DEFAULT_TITTEL;
-
+  const manglerNavn = treff?.tittel?.trim() === 'Treff uten navn';
   const kreverTittelSjekk = endringer.some((e) => e.etikett === 'Tittel');
   const kreverInnleggSjekk = endringer.some((e) => e.etikett === 'Innlegg');
 
   const isDisabled = useMemo(() => {
-    const manglerEndring = (endringer?.length ?? 0) === 0;
+    const manglerEndring = endringer.length === 0;
     const kiSjekkOk =
       (!kreverTittelSjekk || tittelKiSjekket) &&
       (!kreverInnleggSjekk || innleggKiSjekket);
-    return (
-      Boolean(disabled) ||
-      manglerEndring ||
-      harFeil ||
-      !kiSjekkOk ||
-      manglerNavn
-    );
+
+    return disabled || manglerEndring || harFeil || !kiSjekkOk || manglerNavn;
   }, [
     disabled,
-    endringer,
+    endringer.length,
     harFeil,
     kreverTittelSjekk,
     kreverInnleggSjekk,
@@ -215,10 +197,14 @@ const RepubliserRekrutteringstreffButton: FC<Props> = ({
     manglerNavn,
   ]);
 
-  const åpne = () => {
-    if (!isDisabled) modalRef.current?.showModal();
+  const åpneModal = () => !isDisabled && modalRef.current?.showModal();
+  const lukkModal = () => modalRef.current?.close();
+
+  const handleBekreft = async () => {
+    if (isDisabled) return;
+    lukkModal();
+    await onBekreft();
   };
-  const lukk = () => modalRef.current?.close();
 
   return (
     <>
@@ -227,7 +213,7 @@ const RepubliserRekrutteringstreffButton: FC<Props> = ({
         variant='primary'
         size='small'
         disabled={isDisabled}
-        onClick={åpne}
+        onClick={åpneModal}
       >
         Publiser på nytt
       </Button>
@@ -242,19 +228,19 @@ const RepubliserRekrutteringstreffButton: FC<Props> = ({
               <BodyLong>Ingen endringer oppdaget.</BodyLong>
             ) : (
               <div className='space-y-3'>
-                {endringer.map((c, idx) => (
+                {endringer.map((endring, idx) => (
                   <div key={idx} className='border-b pb-2'>
-                    <Label size='small'>{c.etikett}</Label>
+                    <Label size='small'>{endring.etikett}</Label>
                     <div className='flex gap-2'>
                       <BodyShort>Fra:</BodyShort>
                       <BodyShort className='text-gray-400'>
-                        {c.gammelVerdi || '—'}
+                        {endring.gammelVerdi || '—'}
                       </BodyShort>
                     </div>
                     <div className='flex gap-2'>
                       <BodyShort>Til:</BodyShort>
                       <BodyShort className='text-gray-400'>
-                        {c.nyVerdi || '—'}
+                        {endring.nyVerdi || '—'}
                       </BodyShort>
                     </div>
                   </div>
@@ -273,15 +259,16 @@ const RepubliserRekrutteringstreffButton: FC<Props> = ({
             variant='primary'
             size='small'
             disabled={isDisabled}
-            onClick={async () => {
-              if (isDisabled) return;
-              lukk();
-              await onBekreft();
-            }}
+            onClick={handleBekreft}
           >
             Publiser på nytt
           </Button>
-          <Button type='button' variant='secondary' size='small' onClick={lukk}>
+          <Button
+            type='button'
+            variant='secondary'
+            size='small'
+            onClick={lukkModal}
+          >
             Avbryt
           </Button>
         </Modal.Footer>

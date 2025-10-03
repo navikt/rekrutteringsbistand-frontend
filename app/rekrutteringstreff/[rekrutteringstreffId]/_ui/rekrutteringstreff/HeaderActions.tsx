@@ -21,7 +21,8 @@ export type ActiveStep =
 type Props = {
   avlyst: boolean;
   activeStep: ActiveStep;
-  erIForhåndsvisning: boolean;
+  erIForhåndsvisning: boolean; // Betyr: ikke i edit-modus (lesemodus)
+  viserFullskjermForhåndsvisning?: boolean; // Betyr: viser fullskjerm forhåndsvisning
   erPubliseringklar: boolean;
   harInvitert: boolean;
   tiltidspunktHarPassert: boolean;
@@ -41,6 +42,7 @@ const HeaderActions: FC<Props> = ({
   avlyst,
   activeStep,
   erIForhåndsvisning,
+  viserFullskjermForhåndsvisning,
   erPubliseringklar,
   harInvitert,
   tiltidspunktHarPassert,
@@ -56,9 +58,10 @@ const HeaderActions: FC<Props> = ({
   republiserDisabled,
 }) => {
   const harPublisert = activeStep === 'INVITERE' || activeStep === 'FULLFØRE';
+  const erIEditModus = !erIForhåndsvisning;
 
-  // Når man er i forhåndsvisning, vis knapp for å avslutte forhåndsvisning i header
-  if (erIForhåndsvisning) {
+  // Hvis vi er i fullskjerm forhåndsvisning, vis kun "Avslutt forhåndsvisning"
+  if (viserFullskjermForhåndsvisning) {
     return (
       <div className='flex items-center gap-2'>
         <Button
@@ -74,12 +77,7 @@ const HeaderActions: FC<Props> = ({
   }
 
   // Når man er i edit-modus etter publisering, vis spesielle knapper
-  if (
-    harPublisert &&
-    !erIForhåndsvisning &&
-    !avlyst &&
-    activeStep !== 'FULLFØRE'
-  ) {
+  if (erIEditModus && harPublisert && !avlyst && activeStep !== 'FULLFØRE') {
     return (
       <div className='flex items-center gap-2'>
         <RepubliserRekrutteringstreffButton
@@ -109,7 +107,7 @@ const HeaderActions: FC<Props> = ({
   }
 
   // Når man er i edit-modus før publisering
-  if (!harPublisert && !erIForhåndsvisning && activeStep === 'PUBLISERE') {
+  if (erIEditModus && !harPublisert && activeStep === 'PUBLISERE') {
     return (
       <div className='flex items-center gap-2'>
         <PubliserRekrutteringstreffButton
@@ -130,7 +128,7 @@ const HeaderActions: FC<Props> = ({
     );
   }
 
-  // Normal view mode knapper
+  // Normal view mode knapper (når man ikke er i edit-modus)
   return (
     <div className='flex items-center gap-2'>
       {!avlyst && harPublisert && activeStep !== 'FULLFØRE' && (

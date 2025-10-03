@@ -344,6 +344,7 @@ const Rekrutteringstreff: FC = () => {
               skalViseHeader={true}
               breadcrumbs={breadcrumbs}
               erIForhåndsvisning={true}
+              viserFullskjermForhåndsvisning={true}
               jobbsøkereAntall={jobbsøkere?.length ?? 0}
               arbeidsgivereAntall={arbeidsgivere?.length ?? 0}
               lagrerNoe={lagrerNoe}
@@ -389,6 +390,7 @@ const Rekrutteringstreff: FC = () => {
               skalViseHeader={skalViseHeader}
               breadcrumbs={breadcrumbs}
               erIForhåndsvisning={erILesemodus}
+              viserFullskjermForhåndsvisning={viserFullskjermForhåndsvisning}
               jobbsøkereAntall={jobbsøkere?.length ?? 0}
               arbeidsgivereAntall={arbeidsgivere?.length ?? 0}
               lagrerNoe={lagrerNoe}

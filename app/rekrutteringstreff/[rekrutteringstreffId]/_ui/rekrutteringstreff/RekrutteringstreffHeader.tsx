@@ -15,6 +15,7 @@ export interface RekrutteringstreffHeaderProps {
   skalViseHeader: boolean;
   breadcrumbs: RekrutteringstreffBreadcrumbItem[];
   erIForhåndsvisning: boolean;
+  viserFullskjermForhåndsvisning?: boolean;
   jobbsøkereAntall: number;
   arbeidsgivereAntall: number;
   lagrerNoe: boolean;
@@ -46,6 +47,7 @@ const RekrutteringstreffHeader = forwardRef<
       skalViseHeader,
       breadcrumbs,
       erIForhåndsvisning,
+      viserFullskjermForhåndsvisning,
       jobbsøkereAntall,
       arbeidsgivereAntall,
       lagrerNoe,
@@ -111,6 +113,7 @@ const RekrutteringstreffHeader = forwardRef<
                 avlyst={avlyst}
                 activeStep={activeStep as any}
                 erIForhåndsvisning={erIForhåndsvisning}
+                viserFullskjermForhåndsvisning={viserFullskjermForhåndsvisning}
                 erPubliseringklar={erPubliseringklar}
                 harInvitert={harInvitert}
                 tiltidspunktHarPassert={tiltidspunktHarPassert}
