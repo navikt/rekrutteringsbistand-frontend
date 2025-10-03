@@ -102,43 +102,44 @@ export default function StillingDropdown() {
 
   return (
     <>
-      <Dropdown>
-        <Button
-          size='small'
-          loading={loading}
-          variant='tertiary'
-          icon={<MenuElipsisHorizontalIcon />}
-          as={Dropdown.Toggle}
-        />
-        <Dropdown.Menu>
-          <Dropdown.Menu.GroupedList>
-            {(kanOvertaEksternStilling || kanOvertaStilling) && (
-              <TilgangskontrollForInnhold
-                skjulVarsel
-                kreverEnAvRollene={[
-                  Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-                ]}
-              >
+      <TilgangskontrollForInnhold
+        skjulVarsel
+        kreverEnAvRollene={[
+          Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+          Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER,
+        ]}
+      >
+        <Dropdown>
+          <Button
+            size='small'
+            loading={loading}
+            variant='tertiary'
+            icon={<MenuElipsisHorizontalIcon />}
+            as={Dropdown.Toggle}
+          />
+          <Dropdown.Menu>
+            <Dropdown.Menu.GroupedList>
+              {(kanOvertaEksternStilling || kanOvertaStilling) && (
                 <Dropdown.Menu.GroupedList.Item onClick={onOvertaStilling}>
                   <PadlockLockedIcon />
                   Ta over eierskap
                 </Dropdown.Menu.GroupedList.Item>
-              </TilgangskontrollForInnhold>
-            )}
-            <Dropdown.Menu.GroupedList.Item onClick={onKopierStilling}>
-              <TabsAddIcon />
-              Dupliser oppdraget
-            </Dropdown.Menu.GroupedList.Item>
+              )}
+              <Dropdown.Menu.GroupedList.Item onClick={onKopierStilling}>
+                <TabsAddIcon />
+                Dupliser oppdraget
+              </Dropdown.Menu.GroupedList.Item>
 
-            <Dropdown.Menu.GroupedList.Item
-              onClick={() => setVisAvpubliserModal(true)}
-            >
-              <TrashIcon />
-              Avbryt oppdraget
-            </Dropdown.Menu.GroupedList.Item>
-          </Dropdown.Menu.GroupedList>
-        </Dropdown.Menu>
-      </Dropdown>
+              <Dropdown.Menu.GroupedList.Item
+                onClick={() => setVisAvpubliserModal(true)}
+              >
+                <TrashIcon />
+                Avbryt oppdraget
+              </Dropdown.Menu.GroupedList.Item>
+            </Dropdown.Menu.GroupedList>
+          </Dropdown.Menu>
+        </Dropdown>
+      </TilgangskontrollForInnhold>
 
       {visAvpubliserModal && (
         <Modal
