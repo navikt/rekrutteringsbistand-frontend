@@ -2,12 +2,13 @@
 
 import HeaderActions from './HeaderActions';
 import TabsNav from './TabsNav';
+import { RekrutteringstreffTabs } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/Rekrutteringstreff';
 import {
   RekrutteringstreffBreadcrumbItem,
   RekrutteringstreffBreadcrumbs,
 } from '@/app/rekrutteringstreff/_ui/RekrutteringstreffBreadcrumbs';
 import PanelHeader from '@/components/layout/PanelHeader';
-import { Loader } from '@navikt/ds-react';
+import { Loader, Tabs } from '@navikt/ds-react';
 import { forwardRef } from 'react';
 
 export interface RekrutteringstreffHeaderProps {
@@ -33,6 +34,7 @@ export interface RekrutteringstreffHeaderProps {
   innleggHtmlFraBackend?: string | null;
   onRepubliser?: () => Promise<void>;
   republiserDisabled?: boolean;
+  inTabsContext?: boolean;
 }
 
 const RekrutteringstreffHeader = forwardRef<
@@ -63,6 +65,7 @@ const RekrutteringstreffHeader = forwardRef<
       innleggHtmlFraBackend,
       onRepubliser,
       republiserDisabled,
+      inTabsContext = false,
     },
     ref,
   ) => {
@@ -75,10 +78,21 @@ const RekrutteringstreffHeader = forwardRef<
             actionsLeft={<RekrutteringstreffBreadcrumbs items={breadcrumbs} />}
             tabs={
               erIForhåndsvisning ? (
-                <TabsNav
-                  jobbsøkereAntall={jobbsøkereAntall}
-                  arbeidsgivereAntall={arbeidsgivereAntall}
-                />
+                inTabsContext ? (
+                  <TabsNav
+                    jobbsøkereAntall={jobbsøkereAntall}
+                    arbeidsgivereAntall={arbeidsgivereAntall}
+                  />
+                ) : (
+                  <Tabs defaultValue={RekrutteringstreffTabs.OM_TREFFET}>
+                    <Tabs.List>
+                      <TabsNav
+                        jobbsøkereAntall={jobbsøkereAntall}
+                        arbeidsgivereAntall={arbeidsgivereAntall}
+                      />
+                    </Tabs.List>
+                  </Tabs>
+                )
               ) : undefined
             }
             meta={

@@ -57,6 +57,22 @@ const HeaderActions: FC<Props> = ({
 }) => {
   const harPublisert = activeStep === 'INVITERE' || activeStep === 'FULLFØRE';
 
+  // Når man er i forhåndsvisning, vis knapp for å avslutte forhåndsvisning i header
+  if (erIForhåndsvisning) {
+    return (
+      <div className='flex items-center gap-2'>
+        <Button
+          type='button'
+          size='small'
+          variant='secondary'
+          onClick={() => onToggleForhåndsvisning(false)}
+        >
+          Avslutt forhåndsvisning
+        </Button>
+      </div>
+    );
+  }
+
   // Når man er i edit-modus etter publisering, vis spesielle knapper
   if (
     harPublisert &&

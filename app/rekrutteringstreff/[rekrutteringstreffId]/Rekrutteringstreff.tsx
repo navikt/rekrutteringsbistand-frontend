@@ -221,7 +221,8 @@ const Rekrutteringstreff: FC = () => {
     return [{ label: rekrutteringstreffNavn }];
   }, [harPublisert, avlyst, rekrutteringstreffNavn]);
 
-  const skalViseHeader = !viserFullskjermForhåndsvisning;
+  const skalViseHeader =
+    modus === 'preview-page' ? true : !viserFullskjermForhåndsvisning;
 
   const oppdaterData = useCallback(async () => {
     await Promise.all([
@@ -341,21 +342,42 @@ const Rekrutteringstreff: FC = () => {
 
   if (viserFullskjermForhåndsvisning) {
     return (
-      <SideLayout {...layoutProps}>
+      <SideLayout
+        {...layoutProps}
+        header={
+          !avlyst ? (
+            <RekrutteringstreffHeader
+              skalViseHeader={true}
+              breadcrumbs={breadcrumbs}
+              erIForhåndsvisning={true}
+              jobbsøkereAntall={jobbsøkere?.length ?? 0}
+              arbeidsgivereAntall={arbeidsgivere?.length ?? 0}
+              lagrerNoe={lagrerNoe}
+              lagretTekst={lagretTekst}
+              avlyst={avlyst}
+              activeStep={activeStep as any}
+              erPubliseringklar={erPubliseringklar}
+              harInvitert={harInvitert}
+              tiltidspunktHarPassert={tiltidspunktHarPassert}
+              rekrutteringstreffId={rekrutteringstreffId}
+              oppdaterData={oppdaterData}
+              onToggleForhåndsvisning={handleToggleForhåndsvisning}
+              onBekreftRedigerPublisert={onBekreftRedigerPublisert}
+              onAvlyst={onAvlyst}
+              onAvbrytRedigering={onAvbrytRedigering}
+              treff={rekrutteringstreff}
+              innleggHtmlFraBackend={
+                (innlegg?.[0]?.htmlContent ?? '') as string
+              }
+              onRepubliser={onRepubliser}
+              republiserDisabled={republiserDisabled}
+              inTabsContext={false}
+            />
+          ) : undefined
+        }
+      >
         <SideScroll>
           <div className='space-y-4'>
-            {!avlyst && (
-              <div className='flex flex-wrap justify-end gap-2'>
-                <Button
-                  type='button'
-                  size='small'
-                  variant='secondary'
-                  onClick={avsluttForhåndsvisning}
-                >
-                  Avslutt forhåndsvisning
-                </Button>
-              </div>
-            )}
             <RekrutteringstreffForhåndsvisning />
           </div>
         </SideScroll>
@@ -394,6 +416,7 @@ const Rekrutteringstreff: FC = () => {
               }
               onRepubliser={onRepubliser}
               republiserDisabled={republiserDisabled}
+              inTabsContext={true}
             />
           ) : undefined
         }
