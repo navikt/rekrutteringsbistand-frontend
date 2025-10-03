@@ -4,7 +4,7 @@ import { useRekrutteringstreffContext } from '../RekrutteringstreffContext';
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
 import { OppdaterRekrutteringstreffDTO } from '@/app/api/rekrutteringstreff/oppdater-rekrutteringstreff/oppdaterRerkutteringstreff';
 import { ClockIcon, LocationPinIcon } from '@navikt/aksel-icons';
-import { BodyShort, Button, Heading, Skeleton, Tag } from '@navikt/ds-react';
+import { BodyShort, Button, Heading, Skeleton } from '@navikt/ds-react';
 import { format, isSameDay, parseISO } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
 import { nb } from 'date-fns/locale';

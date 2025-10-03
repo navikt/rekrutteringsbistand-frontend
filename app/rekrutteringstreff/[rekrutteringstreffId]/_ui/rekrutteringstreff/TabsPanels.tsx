@@ -15,21 +15,11 @@ import { FC } from 'react';
 interface Props {
   erIVisning: boolean;
   onUpdated: () => Promise<any> | void;
-  onGåTilForhåndsvisning: () => void;
 }
 
-const TabsPanels: FC<Props> = ({
-  erIVisning,
-  onUpdated,
-  onGåTilForhåndsvisning,
-}) => {
+const TabsPanels: FC<Props> = ({ erIVisning, onUpdated }) => {
   if (!erIVisning) {
-    return (
-      <RekrutteringstreffRedigering
-        onUpdated={onUpdated}
-        onGåTilForhåndsvisning={onGåTilForhåndsvisning}
-      />
-    );
+    return <RekrutteringstreffRedigering onUpdated={onUpdated} />;
   }
 
   return (

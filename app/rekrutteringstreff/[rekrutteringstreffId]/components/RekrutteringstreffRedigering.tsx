@@ -5,10 +5,6 @@ import InnleggForm from './redigereRekrutteringstreff/InnleggForm';
 import PraktiskeForhold from './redigereRekrutteringstreff/Praktiskeforhold';
 import TittelForm from './redigereRekrutteringstreff/TittelForm';
 import {
-  toIso as toIsoUtil,
-  formatIso as formatIsoUtil,
-} from './redigereRekrutteringstreff/tidspunkt/utils';
-import {
   useAutosave,
   useInnleggAutosave,
 } from './redigereRekrutteringstreff/useAutosave';
@@ -19,21 +15,9 @@ import LeggTilArbeidsgiverForm from '@/app/rekrutteringstreff/[rekrutteringstref
 import RepubliserRekrutteringstreffButton from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/rekrutteringstreff/RepubliserRekrutteringstreffButton';
 import { getActiveStepFromHendelser } from '@/app/rekrutteringstreff/_utils/rekrutteringstreff';
 import { RekbisError } from '@/util/rekbisError';
-import { Button, Heading, Box } from '@navikt/ds-react';
-import { FC, useEffect, useRef, useState } from 'react';
+import { Heading, Box } from '@navikt/ds-react';
+import { FC } from 'react';
 import { useFormContext } from 'react-hook-form';
-
-const toIsoLocal = (
-  date: Date | null | undefined,
-  time?: string | null,
-): string | null => {
-  if (!date) return null;
-  const timeValue = time && time.trim() !== '' ? time : '00:00';
-  return toIsoUtil(date, timeValue);
-};
-
-const formatIsoLocal = (iso: string | null | undefined) =>
-  iso ? formatIsoUtil(iso) : '';
 
 interface RekrutteringstreffRedigeringProps {
   onUpdated?: () => void;
@@ -42,7 +26,6 @@ interface RekrutteringstreffRedigeringProps {
 
 const RekrutteringstreffRedigering: FC<RekrutteringstreffRedigeringProps> = ({
   onUpdated,
-  onGåTilForhåndsvisning,
 }) => {
   const { rekrutteringstreffId, startLagring, stoppLagring } =
     useRekrutteringstreffContext();
@@ -54,8 +37,6 @@ const RekrutteringstreffRedigering: FC<RekrutteringstreffRedigeringProps> = ({
 
   const tittelKiFeil = (watch('tittelKiFeil' as any) as any) ?? false;
   const innleggKiFeil = (watch('innleggKiFeil' as any) as any) ?? false;
-  const tittelKiSjekket = (watch('tittelKiSjekket' as any) as any) ?? false;
-  const innleggKiSjekket = (watch('innleggKiSjekket' as any) as any) ?? false;
   const anyKiFeil = !!tittelKiFeil || !!innleggKiFeil;
   const harAndreSkjemafeil = Boolean(
     formState.errors &&

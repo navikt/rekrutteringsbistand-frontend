@@ -169,11 +169,6 @@ const Rekrutteringstreff: FC = () => {
     scrollToTop();
   };
 
-  const gåTilForhåndsvisning = () => {
-    setModus('preview-page');
-    scrollToTop();
-  };
-
   const avsluttForhåndsvisning = () => {
     // Gå alltid tilbake til redigeringsmodus etter forhåndsvisning
     setModus('edit');
@@ -306,7 +301,6 @@ const Rekrutteringstreff: FC = () => {
             <TabsPanels
               erIVisning={erILesemodus}
               onUpdated={rekrutteringstreffHook.mutate}
-              onGåTilForhåndsvisning={gåTilForhåndsvisning}
             />
           </div>
         </SideScroll>

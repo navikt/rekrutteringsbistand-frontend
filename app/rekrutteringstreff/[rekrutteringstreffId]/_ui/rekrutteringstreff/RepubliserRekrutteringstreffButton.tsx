@@ -3,7 +3,7 @@
 import {
   toIso as toIsoUtil,
   formatIso as formatIsoUtil,
-} from '../../components/redigereRekrutteringstreff/tidspunkt/utils';
+} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/components/redigereRekrutteringstreff/tidspunkt/utils';
 import { BodyLong, BodyShort, Button, Label, Modal } from '@navikt/ds-react';
 import { FC, useEffect, useMemo, useRef, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
