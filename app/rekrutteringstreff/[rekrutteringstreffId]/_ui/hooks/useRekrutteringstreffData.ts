@@ -1,6 +1,6 @@
-import { useRekrutteringstreffContext } from '../../_contexts/RekrutteringstreffContext';
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
+import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_contexts/RekrutteringstreffContext';
 import { getActiveStepFromHendelser } from '@/app/rekrutteringstreff/_utils/rekrutteringstreff';
 import { useMemo } from 'react';
 

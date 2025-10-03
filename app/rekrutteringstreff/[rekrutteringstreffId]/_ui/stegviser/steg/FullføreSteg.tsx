@@ -1,6 +1,6 @@
 'use client';
 
-import { useRekrutteringstreffData } from '../../useRekrutteringstreffData';
+import { useRekrutteringstreffData } from '../../hooks/useRekrutteringstreffData';
 import { SjekklisteInfo } from './Sjekkliste';
 import { EyeSlashIcon, TableIcon } from '@navikt/aksel-icons';
 import { BodyShort, Heading, Loader, VStack, HStack } from '@navikt/ds-react';

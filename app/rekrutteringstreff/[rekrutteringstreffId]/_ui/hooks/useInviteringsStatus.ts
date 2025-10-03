@@ -1,9 +1,9 @@
-import { useRekrutteringstreffContext } from '../../_contexts/RekrutteringstreffContext';
 import { useRekrutteringstreffData } from './useRekrutteringstreffData';
 import {
   useJobbsøkere,
   JobbsøkerDTO,
 } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
+import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_contexts/RekrutteringstreffContext';
 import { JobbsøkerHendelsestype } from '@/app/rekrutteringstreff/_domain/constants';
 import { useMemo } from 'react';
 

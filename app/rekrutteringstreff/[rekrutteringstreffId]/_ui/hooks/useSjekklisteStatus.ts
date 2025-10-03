@@ -1,6 +1,6 @@
-import { useRekrutteringstreffContext } from '../../_contexts/RekrutteringstreffContext';
 import { useRekrutteringstreffData } from './useRekrutteringstreffData';
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
+import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_contexts/RekrutteringstreffContext';
 import { useMemo } from 'react';
 
 const DEFAULT_TITTEL = 'Treff uten navn';

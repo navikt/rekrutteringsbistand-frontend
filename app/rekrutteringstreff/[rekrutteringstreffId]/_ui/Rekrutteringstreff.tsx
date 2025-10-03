@@ -3,15 +3,15 @@
 import { useRekrutteringstreffContext } from '../../_contexts/RekrutteringstreffContext';
 import RekrutteringstreffForhåndsvisning from './forhåndsvisning/RekrutteringstreffForhåndsvisning';
 import RekrutteringstreffHeader from './header/RekrutteringstreffHeader';
+import { useInviteringsStatus } from './hooks/useInviteringsStatus';
+import { useRekrutteringstreffData } from './hooks/useRekrutteringstreffData';
+import { useSjekklisteStatus } from './hooks/useSjekklisteStatus';
 import {
   useAutosave,
   useInnleggAutosave,
 } from './redigereRekrutteringstreff/useAutosave';
 import Stegviser from './stegviser/Stegviser';
 import TabsPanels from './tabs/TabsPanels';
-import { useInviteringsStatus } from './useInviteringsStatus';
-import { useRekrutteringstreffData } from './useRekrutteringstreffData';
-import { useSjekklisteStatus } from './useSjekklisteStatus';
 import { useAlleHendelser } from '@/app/api/rekrutteringstreff/[...slug]/useAlleHendelser';
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';

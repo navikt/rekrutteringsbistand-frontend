@@ -1,8 +1,8 @@
 'use client';
 
-import { useInviteringsStatus } from '../useInviteringsStatus';
-import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
-import { useSjekklisteStatus } from '../useSjekklisteStatus';
+import { useInviteringsStatus } from '../hooks/useInviteringsStatus';
+import { useRekrutteringstreffData } from '../hooks/useRekrutteringstreffData';
+import { useSjekklisteStatus } from '../hooks/useSjekklisteStatus';
 import { AktivtSteg as AktivtStegConst } from '@/app/rekrutteringstreff/_domain/constants';
 import {
   createContext,

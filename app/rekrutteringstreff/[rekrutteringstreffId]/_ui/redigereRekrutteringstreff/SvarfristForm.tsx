@@ -1,6 +1,6 @@
 'use client';
 
-import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
+import { useRekrutteringstreffData } from '../hooks/useRekrutteringstreffData';
 import { useFilteredTimeOptions } from './hooks/useFilteredTimeOptions';
 import { useScheduledSave } from './hooks/useScheduledSave';
 import DatoTidRad from './tidspunkt/DatoTidRad';

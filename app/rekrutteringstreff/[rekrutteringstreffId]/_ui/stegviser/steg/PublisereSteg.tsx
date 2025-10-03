@@ -1,6 +1,6 @@
 'use client';
 
-import { useRekrutteringstreffData } from '../../useRekrutteringstreffData';
+import { useRekrutteringstreffData } from '../../hooks/useRekrutteringstreffData';
 import {
   SjekklisteContainer,
   SjekklisteRad,

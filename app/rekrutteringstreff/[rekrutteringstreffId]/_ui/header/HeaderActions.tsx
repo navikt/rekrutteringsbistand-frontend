@@ -7,10 +7,7 @@ import PubliserRekrutteringstreffButton from '../actions/PubliserRekrutteringstr
 import RedigerPublisertButton from '../actions/RedigerPublisertButton';
 import RepubliserRekrutteringstreffButton from '../actions/RepubliserRekrutteringstreffButton';
 import SlettRekrutteringstreffModal from '../actions/SlettRekrutteringstreffModal';
-import {
-  useRekrutteringstreffData,
-  type ActiveStep,
-} from '../useRekrutteringstreffData';
+import { useRekrutteringstreffData } from '../hooks/useRekrutteringstreffData';
 import { Button } from '@navikt/ds-react';
 import { FC } from 'react';
 
