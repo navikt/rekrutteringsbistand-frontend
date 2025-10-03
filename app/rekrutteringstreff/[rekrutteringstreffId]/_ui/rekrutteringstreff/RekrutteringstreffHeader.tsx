@@ -29,6 +29,10 @@ export interface RekrutteringstreffHeaderProps {
   onBekreftRedigerPublisert: () => void;
   onAvlyst: () => void;
   onAvbrytRedigering: () => void;
+  treff?: any;
+  innleggHtmlFraBackend?: string | null;
+  onRepubliser?: () => Promise<void>;
+  republiserDisabled?: boolean;
 }
 
 const RekrutteringstreffHeader = forwardRef<
@@ -55,6 +59,10 @@ const RekrutteringstreffHeader = forwardRef<
       onBekreftRedigerPublisert,
       onAvlyst,
       onAvbrytRedigering,
+      treff,
+      innleggHtmlFraBackend,
+      onRepubliser,
+      republiserDisabled,
     },
     ref,
   ) => {
@@ -98,6 +106,10 @@ const RekrutteringstreffHeader = forwardRef<
                 onBekreftRedigerPublisert={onBekreftRedigerPublisert}
                 onAvlyst={onAvlyst}
                 onAvbrytRedigering={onAvbrytRedigering}
+                treff={treff}
+                innleggHtmlFraBackend={innleggHtmlFraBackend}
+                onRepubliser={onRepubliser}
+                republiserDisabled={republiserDisabled}
               />
             }
           ></PanelHeader.Section>

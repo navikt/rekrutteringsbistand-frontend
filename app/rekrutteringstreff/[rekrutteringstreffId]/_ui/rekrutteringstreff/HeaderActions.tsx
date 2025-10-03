@@ -5,6 +5,7 @@ import FullforRekrutteringstreffButton from './FullforRekrutteringstreffButton';
 import GjenapneRekrutteringstreffButton from './GjenapneRekrutteringstreffButton';
 import PubliserRekrutteringstreffButton from './PubliserRekrutteringstreffButton';
 import RedigerPublisertButton from './RedigerPublisertButton';
+import RepubliserRekrutteringstreffButton from './RepubliserRekrutteringstreffButton';
 import SlettRekrutteringstreffModal from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/SlettRekrutteringstreffModal';
 import { Button } from '@navikt/ds-react';
 import { FC } from 'react';
@@ -30,6 +31,10 @@ type Props = {
   onBekreftRedigerPublisert: () => void;
   onAvlyst: () => void;
   onAvbrytRedigering: () => void;
+  treff?: any;
+  innleggHtmlFraBackend?: string | null;
+  onRepubliser?: () => Promise<void>;
+  republiserDisabled?: boolean;
 };
 
 const HeaderActions: FC<Props> = ({
@@ -45,6 +50,10 @@ const HeaderActions: FC<Props> = ({
   onBekreftRedigerPublisert,
   onAvlyst,
   onAvbrytRedigering,
+  treff,
+  innleggHtmlFraBackend,
+  onRepubliser,
+  republiserDisabled,
 }) => {
   const harPublisert = activeStep === 'INVITERE' || activeStep === 'FULLFØRE';
 
@@ -57,6 +66,12 @@ const HeaderActions: FC<Props> = ({
   ) {
     return (
       <div className='flex items-center gap-2'>
+        <RepubliserRekrutteringstreffButton
+          disabled={republiserDisabled}
+          treff={treff}
+          innleggHtmlFraBackend={innleggHtmlFraBackend}
+          onBekreft={onRepubliser ?? (async () => {})}
+        />
         <Button
           type='button'
           size='small'
@@ -73,7 +88,6 @@ const HeaderActions: FC<Props> = ({
         >
           Avbryt
         </Button>
-        {/* TODO: Legg til "Publiser på nytt" knapp her når logikken er klar */}
       </div>
     );
   }

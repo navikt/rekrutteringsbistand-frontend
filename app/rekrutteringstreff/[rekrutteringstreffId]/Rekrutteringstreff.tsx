@@ -4,10 +4,15 @@ import { useRekrutteringstreffContext } from './RekrutteringstreffContext';
 import RekrutteringstreffHeader from './_ui/rekrutteringstreff/RekrutteringstreffHeader';
 import TabsPanels from './_ui/rekrutteringstreff/TabsPanels';
 import RekrutteringstreffForhåndsvisning from './components/RekrutteringstreffForhåndsvisning';
+import {
+  useAutosave,
+  useInnleggAutosave,
+} from './components/redigereRekrutteringstreff/useAutosave';
 import { useAlleHendelser } from '@/app/api/rekrutteringstreff/[...slug]/useAlleHendelser';
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
+import { useKiLogg } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import Stegviser from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/om-treffet/stegviser/Stegviser';
 import { JobbsøkerHendelsestype } from '@/app/rekrutteringstreff/_domain/constants';
@@ -16,11 +21,13 @@ import { getActiveStepFromHendelser } from '@/app/rekrutteringstreff/_utils/rekr
 import Fremdriftspanel from '@/components/Fremdriftspanel';
 import SideScroll from '@/components/SideScroll';
 import SideLayout from '@/components/layout/SideLayout';
+import { RekbisError } from '@/util/rekbisError';
 import { Button, Tabs } from '@navikt/ds-react';
 import { formatDistanceToNow } from 'date-fns';
 import { nb } from 'date-fns/locale/nb';
 import { parseAsString, useQueryState } from 'nuqs';
 import { FC, useCallback, useEffect, useMemo, useRef } from 'react';
+import { useFormContext } from 'react-hook-form';
 
 export enum RekrutteringstreffTabs {
   OM_TREFFET = 'om_treffet',
@@ -228,6 +235,95 @@ const Rekrutteringstreff: FC = () => {
     scrollToTop();
   }, [scrollToTop, setModus]);
 
+  // Republiser-logikk
+  const { getValues, watch, formState } = useFormContext();
+  const { save } = useAutosave();
+  const { save: saveInnlegg } = useInnleggAutosave();
+  const kiTittelLogg = useKiLogg(rekrutteringstreffId, 'tittel');
+  const kiInnleggLogg = useKiLogg(rekrutteringstreffId, 'innlegg');
+  const { startLagring, stoppLagring } = useRekrutteringstreffContext();
+
+  const markerSisteKiLoggSomLagret = useCallback(async () => {
+    const mark = async (
+      liste:
+        | { id: string; opprettetTidspunkt: string; lagret: boolean }[]
+        | undefined,
+      setLagret?: (arg: { id: string; lagret: boolean }) => Promise<void>,
+    ) => {
+      if (!liste || liste.length === 0 || !setLagret) return;
+
+      const sorted = [...liste].sort(
+        (a, b) =>
+          new Date(b.opprettetTidspunkt).getTime() -
+          new Date(a.opprettetTidspunkt).getTime(),
+      );
+      const siste = sorted[0];
+
+      if (siste && !siste.lagret) {
+        await setLagret({ id: siste.id, lagret: true });
+      }
+    };
+
+    try {
+      const [tittelListe, innleggListe] = await Promise.all([
+        kiTittelLogg.refresh(),
+        kiInnleggLogg.refresh(),
+      ]);
+
+      await Promise.all([
+        mark(tittelListe ?? kiTittelLogg.data, kiTittelLogg.setLagret),
+        mark(innleggListe ?? kiInnleggLogg.data, kiInnleggLogg.setLagret),
+      ]);
+    } catch (error) {
+      new RekbisError({
+        message: 'Kunne ikke oppdatere KI-logg lagret-status:',
+        error,
+      });
+    }
+  }, [kiTittelLogg, kiInnleggLogg]);
+
+  const onRepubliser = useCallback(async () => {
+    try {
+      startLagring('republiser');
+      await save(undefined, true);
+      const values: any = getValues();
+      const currentHtml: string = (values?.htmlContent ?? '') as string;
+      const backendHtml: string = (innlegg?.[0]?.htmlContent ?? '') as string;
+      const shouldSaveInnlegg =
+        (currentHtml ?? '').trim() !== (backendHtml ?? '').trim() &&
+        (currentHtml ?? '').trim().length > 0;
+      if (shouldSaveInnlegg) {
+        await saveInnlegg(undefined, true);
+      }
+      await markerSisteKiLoggSomLagret();
+    } finally {
+      stoppLagring('republiser');
+    }
+  }, [
+    startLagring,
+    stoppLagring,
+    save,
+    saveInnlegg,
+    getValues,
+    innlegg,
+    markerSisteKiLoggSomLagret,
+  ]);
+
+  const tittelKiFeil = (watch('tittelKiFeil' as any) as any) ?? false;
+  const innleggKiFeil = (watch('innleggKiFeil' as any) as any) ?? false;
+  const anyKiFeil = !!tittelKiFeil || !!innleggKiFeil;
+  const harAndreSkjemafeil = Boolean(
+    formState.errors &&
+      Object.keys(formState.errors).some((key) => key !== 'root'),
+  );
+  const harFeil = anyKiFeil || harAndreSkjemafeil;
+
+  const DEFAULT_TITTEL = 'Treff uten navn';
+  const lagretTittel = rekrutteringstreff?.tittel ?? '';
+  const manglerNavn =
+    typeof lagretTittel === 'string' && lagretTittel.trim() === DEFAULT_TITTEL;
+  const republiserDisabled = harFeil || manglerNavn;
+
   const renderStegviser = () => (
     <Stegviser
       onToggleForhåndsvisning={handleToggleForhåndsvisning}
@@ -292,6 +388,12 @@ const Rekrutteringstreff: FC = () => {
               onBekreftRedigerPublisert={onBekreftRedigerPublisert}
               onAvlyst={onAvlyst}
               onAvbrytRedigering={onAvbrytRedigering}
+              treff={rekrutteringstreff}
+              innleggHtmlFraBackend={
+                (innlegg?.[0]?.htmlContent ?? '') as string
+              }
+              onRepubliser={onRepubliser}
+              republiserDisabled={republiserDisabled}
             />
           ) : undefined
         }
