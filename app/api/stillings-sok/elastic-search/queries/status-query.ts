@@ -97,10 +97,6 @@ export const statusQuery = (
           { exists: { field: 'stilling.publishedByAdmin' } },
           { range: { 'stilling.published': { lte: 'now/d' } } },
         ],
-        must_not: [
-          { term: { 'stilling.status': 'REJECTED' } },
-          { term: { 'stilling.status': 'DELETED' } },
-        ],
       },
     });
   }
@@ -115,10 +111,6 @@ export const statusQuery = (
           { exists: { field: 'stilling.publishedByAdmin' } },
           { range: { 'stilling.published': { lte: 'now/d' } } },
         ],
-        must_not: [
-          { term: { 'stilling.status': 'REJECTED' } },
-          { term: { 'stilling.status': 'DELETED' } },
-        ],
       },
     });
   }
@@ -131,11 +123,7 @@ export const statusQuery = (
           { exists: { field: 'stilling.publishedByAdmin' } },
           { range: { 'stilling.published': { lte: 'now/d' } } },
         ],
-        must_not: [
-          { range: { 'stilling.expires': { lt: 'now/d' } } },
-          { term: { 'stilling.status': 'REJECTED' } },
-          { term: { 'stilling.status': 'DELETED' } },
-        ],
+        must_not: [{ range: { 'stilling.expires': { lt: 'now/d' } } }],
       },
     });
   }
@@ -143,11 +131,7 @@ export const statusQuery = (
     postFilterShould.push({
       bool: {
         must: [{ term: { 'stilling.status': 'INACTIVE' } }],
-        must_not: [
-          { exists: { field: 'stilling.publishedByAdmin' } },
-          { term: { 'stilling.status': 'REJECTED' } },
-          { term: { 'stilling.status': 'DELETED' } },
-        ],
+        must_not: [{ exists: { field: 'stilling.publishedByAdmin' } }],
       },
     });
   }
@@ -160,19 +144,15 @@ export const statusQuery = (
   //  - Avbrutt (DELETED) skal også dukke opp selv om det ikke er et eksponert filter
   // Begge legges kun til dersom bruker har valgt minst én annen status (postFilterShould.length > 0)
   if (params.navIdent && postFilterShould.length > 0) {
-    if (!statuser.includes(VisningsStatus.IkkePublisert)) {
+    if (statuser.includes(VisningsStatus.IkkePublisert)) {
       postFilterShould.push({
         bool: {
           must: [{ term: { 'stilling.status': 'INACTIVE' } }],
-          must_not: [
-            { exists: { field: 'stilling.publishedByAdmin' } },
-            { term: { 'stilling.status': 'REJECTED' } },
-            { term: { 'stilling.status': 'DELETED' } },
-          ],
+          must_not: [{ exists: { field: 'stilling.publishedByAdmin' } }],
         },
       });
     }
-    if (!statuser.includes(VisningsStatus.Avbrutt)) {
+    if (statuser.includes(VisningsStatus.Avbrutt)) {
       postFilterShould.push({ term: { 'stilling.status': 'DELETED' } });
     }
   }

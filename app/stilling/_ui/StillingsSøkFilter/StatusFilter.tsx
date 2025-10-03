@@ -47,6 +47,7 @@ export default function StatusFilter({ hideLegend }: StatusFilterProps) {
     VisningsStatus.StengtForSokere,
     VisningsStatus.UtloptStengtForSokere,
     VisningsStatus.Fullfort,
+    VisningsStatus.IkkePublisert,
   ];
 
   // Auto-aktiver "Åpen for søkere" dersom bruker tømmer alle statuser - men kun for ikke-formidlinger.
