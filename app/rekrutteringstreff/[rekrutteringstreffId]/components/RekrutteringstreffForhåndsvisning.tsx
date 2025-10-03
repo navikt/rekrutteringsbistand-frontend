@@ -161,11 +161,8 @@ const RekrutteringstreffForhåndsvisning: FC = () => {
   return (
     <div className='bg-white text-black min-h-screen' data-theme='light'>
       <div className='max-w-7xl mx-auto p-2 space-y-6'>
-        {/* Three column layout */}
-        <div className='grid grid-cols-1 lg:grid-cols-6 gap-4 pt-4'>
-          {/* Left column - Header, Info, Siste aktivitet */}
-          <div className='lg:col-span-4 space-y-6'>
-            {/* Header with title */}
+        <div className='grid grid-cols-1 2xl:grid-cols-6 gap-4 pt-4'>
+          <div className='2xl:col-span-4 space-y-6'>
             <div>
               <Heading level='1' size='large' className='text-gray-900'>
                 {rekrutteringstreff.tittel}
@@ -173,7 +170,7 @@ const RekrutteringstreffForhåndsvisning: FC = () => {
             </div>
 
             {/* Time and Location info */}
-            <div className='flex gap-16'>
+            <div className='flex flex-col gap-4 2xl:flex-row 2xl:gap-16'>
               {/* Time */}
               {(initialFra || initialTil) && (
                 <div className='flex items-start gap-3'>
@@ -260,7 +257,7 @@ const RekrutteringstreffForhåndsvisning: FC = () => {
           </div>
 
           {/* Right column - Svar and Arbeidsgivere */}
-          <div className='lg:col-span-2 space-y-6'>
+          <div className='2xl:col-span-2 space-y-6'>
             {/* User response box */}
             <div className='space-y-4'>
               <div className='bg-white border border-gray-300 p-4 rounded-lg space-y-4'>
