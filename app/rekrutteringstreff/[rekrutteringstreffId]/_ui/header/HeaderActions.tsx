@@ -1,16 +1,16 @@
 'use client';
 
-import AvlysRekrutteringstreffButton from './AvlysRekrutteringstreffButton';
-import FullforRekrutteringstreffButton from './FullforRekrutteringstreffButton';
-import GjenapneRekrutteringstreffButton from './GjenapneRekrutteringstreffButton';
-import PubliserRekrutteringstreffButton from './PubliserRekrutteringstreffButton';
-import RedigerPublisertButton from './RedigerPublisertButton';
-import RepubliserRekrutteringstreffButton from './RepubliserRekrutteringstreffButton';
+import AvlysRekrutteringstreffButton from '../actions/AvlysRekrutteringstreffButton';
+import FullforRekrutteringstreffButton from '../actions/FullforRekrutteringstreffButton';
+import GjenapneRekrutteringstreffButton from '../actions/GjenapneRekrutteringstreffButton';
+import PubliserRekrutteringstreffButton from '../actions/PubliserRekrutteringstreffButton';
+import RedigerPublisertButton from '../actions/RedigerPublisertButton';
+import RepubliserRekrutteringstreffButton from '../actions/RepubliserRekrutteringstreffButton';
+import SlettRekrutteringstreffModal from '../actions/SlettRekrutteringstreffModal';
 import {
   useRekrutteringstreffData,
   type ActiveStep,
-} from './useRekrutteringstreffData';
-import SlettRekrutteringstreffModal from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/SlettRekrutteringstreffModal';
+} from '../useRekrutteringstreffData';
 import { Button } from '@navikt/ds-react';
 import { FC } from 'react';
 

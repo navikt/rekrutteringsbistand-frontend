@@ -1,7 +1,7 @@
 'use client';
 
-import LeggTilArbeidsgiverModal from '../LeggTilArbeidsgiverModal';
 import ArbeidsgiverListeItem from './ArbeidsgiverListeItem';
+import LeggTilArbeidsgiverModal from './LeggTilArbeidsgiverModal';
 import SlettArbeidsgiverModal from './SlettArbeidsgiverModal';
 import { fjernArbeidsgiver } from '@/app/api/rekrutteringstreff/[...slug]/slett-arbeidsgiver/fjernArbeidsgiver';
 import { useArbeidsgiverHendelser } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgiverHendelser';

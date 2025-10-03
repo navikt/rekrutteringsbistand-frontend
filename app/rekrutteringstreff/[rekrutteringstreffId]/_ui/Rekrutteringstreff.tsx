@@ -1,14 +1,14 @@
 'use client';
 
 import { useRekrutteringstreffContext } from '../../_contexts/RekrutteringstreffContext';
-import RekrutteringstreffForhåndsvisning from './RekrutteringstreffForhåndsvisning';
-import RekrutteringstreffHeader from './RekrutteringstreffHeader';
-import TabsPanels from './TabsPanels';
+import RekrutteringstreffForhåndsvisning from './forhåndsvisning/RekrutteringstreffForhåndsvisning';
+import RekrutteringstreffHeader from './header/RekrutteringstreffHeader';
 import {
   useAutosave,
   useInnleggAutosave,
 } from './redigereRekrutteringstreff/useAutosave';
 import Stegviser from './stegviser/Stegviser';
+import TabsPanels from './tabs/TabsPanels';
 import { useInviteringsStatus } from './useInviteringsStatus';
 import { useRekrutteringstreffData } from './useRekrutteringstreffData';
 import { useSjekklisteStatus } from './useSjekklisteStatus';

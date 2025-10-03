@@ -1,6 +1,6 @@
 'use client';
 
-import LeggTilArbeidsgiverForm from './arbeidsgivere/LeggTilArbeidsgiverForm';
+import LeggTilArbeidsgiverForm from '../arbeidsgivere/LeggTilArbeidsgiverForm';
 import { Modal } from '@navikt/ds-react';
 import { RefObject, FC } from 'react';
 import * as React from 'react';

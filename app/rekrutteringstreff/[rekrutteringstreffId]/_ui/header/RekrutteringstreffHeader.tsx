@@ -1,7 +1,7 @@
 'use client';
 
+import { RekrutteringstreffTabs } from '../Rekrutteringstreff';
 import HeaderActions from './HeaderActions';
-import { RekrutteringstreffTabs } from './Rekrutteringstreff';
 import TabsNav from './TabsNav';
 import {
   RekrutteringstreffBreadcrumbItem,

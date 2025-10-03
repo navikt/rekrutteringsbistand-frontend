@@ -1,12 +1,12 @@
 'use client';
 
+import { RekrutteringstreffTabs } from '../Rekrutteringstreff';
+import RekrutteringstreffArbeidsgivere from '../arbeidsgivere/Arbeidsgivere';
+import Hendelser from '../hendelser/Hendelser';
+import Jobbsøkere from '../jobbsøkere/Jobbsøkere';
+import KiLogg from '../kilogg/components/KiLogg';
+import RekrutteringstreffRedigering from '../redigereRekrutteringstreff/RekrutteringstreffRedigering';
 import OmTreffet from './OmTreffet';
-import { RekrutteringstreffTabs } from './Rekrutteringstreff';
-import RekrutteringstreffRedigering from './RekrutteringstreffRedigering';
-import RekrutteringstreffArbeidsgivere from './arbeidsgivere/Arbeidsgivere';
-import Hendelser from './hendelser/Hendelser';
-import Jobbsøkere from './jobbsøkere/Jobbsøkere';
-import KiLogg from './kilogg/components/KiLogg';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { Tabs } from '@navikt/ds-react';

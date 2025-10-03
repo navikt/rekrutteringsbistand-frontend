@@ -1,7 +1,7 @@
 'use client';
 
-import LeggTilArbeidsgiverModal from '../LeggTilArbeidsgiverModal';
 import { ArbeidsgiverHendelseLabel } from '../jobbsøkere/HendelseLabel';
+import LeggTilArbeidsgiverModal from './LeggTilArbeidsgiverModal';
 import { ArbeidsgiverHendelserDTO } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgiverHendelser';
 import { ArbeidsgiverHendelsestype } from '@/app/rekrutteringstreff/_domain/constants';
 import SVGDarkmode from '@/components/layout/SVGDarkmode';

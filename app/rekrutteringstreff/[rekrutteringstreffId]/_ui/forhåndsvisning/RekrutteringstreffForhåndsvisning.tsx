@@ -1,6 +1,6 @@
 'use client';
 
-import { useRekrutteringstreffContext } from '../../_contexts/RekrutteringstreffContext';
+import { useRekrutteringstreffContext } from '../../../_contexts/RekrutteringstreffContext';
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
 import { OppdaterRekrutteringstreffDTO } from '@/app/api/rekrutteringstreff/oppdater-rekrutteringstreff/oppdaterRerkutteringstreff';
 import { ClockIcon, LocationPinIcon } from '@navikt/aksel-icons';

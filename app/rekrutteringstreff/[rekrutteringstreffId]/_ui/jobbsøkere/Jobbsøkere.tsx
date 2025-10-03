@@ -1,9 +1,9 @@
 'use client';
 
-import LeggTilJobbsøkerKnapp from '../LeggTilJobbsøkerKnapp';
 import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
 import { InviterInternalDto, InviterModal } from './InviterModal';
 import JobbsøkerKort from './JobbsøkerKort';
+import LeggTilJobbsøkerKnapp from './LeggTilJobbsøkerKnapp';
 import OppmøteModal from './OppmøteModal';
 import {
   JobbsøkerDTO,

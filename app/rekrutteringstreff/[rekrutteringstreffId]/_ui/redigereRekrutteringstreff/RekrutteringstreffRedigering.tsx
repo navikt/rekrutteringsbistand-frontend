@@ -1,10 +1,10 @@
 'use client';
 
-import LeggTilArbeidsgiverForm from './arbeidsgivere/LeggTilArbeidsgiverForm';
-import InnleggForm from './redigereRekrutteringstreff/InnleggForm';
-import PraktiskeForhold from './redigereRekrutteringstreff/Praktiskeforhold';
-import TittelForm from './redigereRekrutteringstreff/TittelForm';
-import { useRekrutteringstreffData } from './useRekrutteringstreffData';
+import LeggTilArbeidsgiverForm from '../arbeidsgivere/LeggTilArbeidsgiverForm';
+import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
+import InnleggForm from './InnleggForm';
+import PraktiskeForhold from './Praktiskeforhold';
+import TittelForm from './TittelForm';
 import { Heading, Box } from '@navikt/ds-react';
 import { FC } from 'react';
 

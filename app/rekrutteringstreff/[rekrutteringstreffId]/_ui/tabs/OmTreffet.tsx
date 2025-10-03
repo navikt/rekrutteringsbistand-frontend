@@ -1,9 +1,9 @@
 'use client';
 
-import { useRekrutteringstreffContext } from '../../_contexts/RekrutteringstreffContext';
-import ArbeidsgiverHendelserKort from './arbeidsgivere/ArbeidsgiverHendelserKort';
-import JobbsøkerHendelserKort from './jobbsøkere/JobbsøkerHendelserKort';
-import { useRekrutteringstreffData } from './useRekrutteringstreffData';
+import { useRekrutteringstreffContext } from '../../../_contexts/RekrutteringstreffContext';
+import ArbeidsgiverHendelserKort from '../arbeidsgivere/ArbeidsgiverHendelserKort';
+import JobbsøkerHendelserKort from '../jobbsøkere/JobbsøkerHendelserKort';
+import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
 import { useArbeidsgiverHendelser } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgiverHendelser';
 import { useJobbsøkerHendelser } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkerHendelser';
 import { formaterNorskDato } from '@/util/util';
