@@ -68,16 +68,16 @@ export const esPortefølje = (
       });
     }
 
-    // Ekskluder "Ikke publisert" og "Avbrutt" statuser fra Mitt kontor søkeresultater
+    // // Ekskluder "Ikke publisert" og "Avbrutt" statuser fra Mitt kontor søkeresultater
     esBuilder.addBoolFilter({
       must_not: [
-        // Ekskluder "Ikke publisert" (INACTIVE uten publishedByAdmin)
-        {
-          bool: {
-            must: [{ term: { 'stilling.status': 'INACTIVE' } }],
-            must_not: [{ exists: { field: 'stilling.publishedByAdmin' } }],
-          },
-        },
+        //     // Ekskluder "Ikke publisert" (INACTIVE uten publishedByAdmin)
+        //     {
+        //       bool: {
+        //         must: [{ term: { 'stilling.status': 'INACTIVE' } }],
+        //         must_not: [{ exists: { field: 'stilling.publishedByAdmin' } }],
+        //       },
+        //     },
         // Ekskluder "Avbrutt" (DELETED)
         { term: { 'stilling.status': 'DELETED' } },
       ],
