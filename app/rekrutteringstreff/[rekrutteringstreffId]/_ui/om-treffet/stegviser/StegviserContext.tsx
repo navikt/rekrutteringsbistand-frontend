@@ -1,19 +1,11 @@
 'use client';
 
-import {
-  useJobbsøkere,
-  JobbsøkerDTO,
-} from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
-import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
+import { useInviteringsStatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/rekrutteringstreff/useInviteringsStatus';
 import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/rekrutteringstreff/useRekrutteringstreffData';
 import { useSjekklisteStatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/rekrutteringstreff/useSjekklisteStatus';
-import {
-  AktivtSteg as AktivtStegConst,
-  JobbsøkerHendelsestype,
-} from '@/app/rekrutteringstreff/_domain/constants';
+import { AktivtSteg as AktivtStegConst } from '@/app/rekrutteringstreff/_domain/constants';
 import {
   createContext,
-  useMemo,
   useState,
   useContext,
   useEffect,
@@ -21,20 +13,6 @@ import {
   ReactNode,
 } from 'react';
 import * as React from 'react';
-
-// Helper functions for jobbsøker status
-const erInvitert = (j: JobbsøkerDTO) =>
-  j.hendelser?.some(
-    (h) => h.hendelsestype === JobbsøkerHendelsestype.INVITER,
-  ) ?? false;
-const harSvarJa = (j: JobbsøkerDTO) =>
-  j.hendelser?.some(
-    (h) => h.hendelsestype === JobbsøkerHendelsestype.SVAR_JA_TIL_INVITASJON,
-  ) ?? false;
-const harSvarNei = (j: JobbsøkerDTO) =>
-  j.hendelser?.some(
-    (h) => h.hendelsestype === JobbsøkerHendelsestype.SVAR_NEI_TIL_INVITASJON,
-  ) ?? false;
 
 export interface StegviserState {
   activeStep: string;
@@ -63,12 +41,12 @@ const StegviserContext = createContext<StegviserState | undefined>(undefined);
 export const StegviserProvider: FC<{ children: ReactNode }> = ({
   children,
 }) => {
+  // Lokal UI state - aktivt steg
   const [activeStep, setActiveStep] = useState<string>(
     AktivtStegConst.PUBLISERE,
   );
-  const { rekrutteringstreffId } = useRekrutteringstreffContext();
 
-  // Bruk sentraliserte hooks for data og beregninger
+  // Bruk sentraliserte hooks for all data og beregninger
   const { tilTidspunktHarPassert, activeStep: derivedStep } =
     useRekrutteringstreffData();
 
@@ -78,21 +56,19 @@ export const StegviserProvider: FC<{ children: ReactNode }> = ({
     erPubliseringklar,
   } = useSjekklisteStatus();
 
-  const { data: jobbsøkere = [] } = useJobbsøkere(rekrutteringstreffId);
+  const {
+    harInvitert,
+    antallInviterte,
+    antallSvarJa,
+    antallVenterSvar,
+    inviterePunkterFullfort,
+    totaltAntallInviterePunkter,
+  } = useInviteringsStatus();
 
+  // Alias for konsistens (brukt i flere komponenter)
   const arrangementtidspunktHarPassert = tilTidspunktHarPassert;
 
-  // Steg 2: Invitere-logikk
-  const antallInviterte = jobbsøkere.filter(erInvitert).length;
-  const harInvitert = antallInviterte > 0;
-  const antallSvarJa = jobbsøkere.filter(harSvarJa).length;
-  const antallVenterSvar = jobbsøkere.filter(
-    (j) => erInvitert(j) && !harSvarJa(j) && !harSvarNei(j),
-  ).length;
-  const inviterePunkterFullfort =
-    (harInvitert ? 1 : 0) + (tilTidspunktHarPassert ? 1 : 0);
-  const totaltAntallInviterePunkter = 2;
-
+  // Synkroniser lokal activeStep med derived state fra backend
   useEffect(() => {
     setActiveStep((prev) => (prev === derivedStep ? prev : derivedStep));
   }, [derivedStep]);

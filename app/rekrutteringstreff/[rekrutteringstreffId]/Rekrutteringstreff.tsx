@@ -13,9 +13,9 @@ import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
 import { useKiLogg } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
 import Stegviser from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/om-treffet/stegviser/Stegviser';
+import { useInviteringsStatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/rekrutteringstreff/useInviteringsStatus';
 import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/rekrutteringstreff/useRekrutteringstreffData';
 import { useSjekklisteStatus } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/rekrutteringstreff/useSjekklisteStatus';
-import { JobbsøkerHendelsestype } from '@/app/rekrutteringstreff/_domain/constants';
 import type { RekrutteringstreffBreadcrumbItem } from '@/app/rekrutteringstreff/_ui/RekrutteringstreffBreadcrumbs';
 import Fremdriftspanel from '@/components/Fremdriftspanel';
 import SideScroll from '@/components/SideScroll';
@@ -71,6 +71,9 @@ const Rekrutteringstreff: FC = () => {
     erPubliseringklar,
   } = useSjekklisteStatus();
 
+  // Bruk sentralisert hook for inviterings-statistikk
+  const { harInvitert } = useInviteringsStatus();
+
   const viserFullskjermForhåndsvisning = useMemo(() => {
     if (avlyst) return true;
     return modus === 'preview-page';
@@ -81,16 +84,6 @@ const Rekrutteringstreff: FC = () => {
     if (modus === 'edit') return false;
     return true;
   }, [viserFullskjermForhåndsvisning, modus]);
-
-  const harInvitert = useMemo(
-    () =>
-      jobbsøkere.some((j) =>
-        (j.hendelser ?? []).some(
-          (h) => h.hendelsestype === JobbsøkerHendelsestype.INVITER,
-        ),
-      ),
-    [jobbsøkere],
-  );
 
   useEffect(() => {
     if (avlyst && modus !== 'preview-page') {
