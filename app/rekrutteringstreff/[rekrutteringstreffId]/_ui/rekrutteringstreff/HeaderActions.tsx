@@ -63,7 +63,7 @@ const HeaderActions: FC<Props> = ({
           variant='secondary'
           onClick={() => onToggleForhåndsvisning(true)}
         >
-          Forhåndsvisning
+          Forhåndsvis
         </Button>
         <Button
           type='button'
@@ -93,7 +93,7 @@ const HeaderActions: FC<Props> = ({
           variant='secondary'
           onClick={() => onToggleForhåndsvisning(true)}
         >
-          Forhåndsvisning
+          Forhåndsvis
         </Button>
         <SlettRekrutteringstreffModal />
       </div>

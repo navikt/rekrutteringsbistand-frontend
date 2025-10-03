@@ -347,7 +347,7 @@ const RekrutteringstreffRedigering: FC<RekrutteringstreffRedigeringProps> = ({
               size='small'
               onClick={() => onGåTilForhåndsvisning?.()}
             >
-              Forhåndsvisning
+              Forhåndsvis
             </Button>
           </div>
         )}
@@ -368,7 +368,7 @@ const RekrutteringstreffRedigering: FC<RekrutteringstreffRedigeringProps> = ({
               size='small'
               onClick={() => onGåTilForhåndsvisning?.()}
             >
-              Forhåndsvisning
+              Forhåndsvis
             </Button>
           </div>
         )}
