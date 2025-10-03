@@ -2,18 +2,20 @@
 
 import HeaderActions from './HeaderActions';
 import TabsNav from './TabsNav';
+import { RekrutteringstreffTabs } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/Rekrutteringstreff';
 import {
   RekrutteringstreffBreadcrumbItem,
   RekrutteringstreffBreadcrumbs,
 } from '@/app/rekrutteringstreff/_ui/RekrutteringstreffBreadcrumbs';
 import PanelHeader from '@/components/layout/PanelHeader';
-import { Loader } from '@navikt/ds-react';
+import { Loader, Tabs } from '@navikt/ds-react';
 import { forwardRef } from 'react';
 
 export interface RekrutteringstreffHeaderProps {
   skalViseHeader: boolean;
   breadcrumbs: RekrutteringstreffBreadcrumbItem[];
   erIForhåndsvisning: boolean;
+  viserFullskjermForhåndsvisning?: boolean;
   jobbsøkereAntall: number;
   arbeidsgivereAntall: number;
   lagrerNoe: boolean;
@@ -28,6 +30,13 @@ export interface RekrutteringstreffHeaderProps {
   onToggleForhåndsvisning: (ny: boolean) => void;
   onBekreftRedigerPublisert: () => void;
   onAvlyst: () => void;
+  onAvbrytRedigering: () => void;
+  onPublisert?: () => void;
+  treff?: any;
+  innleggHtmlFraBackend?: string | null;
+  onRepubliser?: () => Promise<void>;
+  republiserDisabled?: boolean;
+  inTabsContext?: boolean;
 }
 
 const RekrutteringstreffHeader = forwardRef<
@@ -39,6 +48,7 @@ const RekrutteringstreffHeader = forwardRef<
       skalViseHeader,
       breadcrumbs,
       erIForhåndsvisning,
+      viserFullskjermForhåndsvisning,
       jobbsøkereAntall,
       arbeidsgivereAntall,
       lagrerNoe,
@@ -53,6 +63,13 @@ const RekrutteringstreffHeader = forwardRef<
       onToggleForhåndsvisning,
       onBekreftRedigerPublisert,
       onAvlyst,
+      onAvbrytRedigering,
+      onPublisert,
+      treff,
+      innleggHtmlFraBackend,
+      onRepubliser,
+      republiserDisabled,
+      inTabsContext = false,
     },
     ref,
   ) => {
@@ -65,10 +82,21 @@ const RekrutteringstreffHeader = forwardRef<
             actionsLeft={<RekrutteringstreffBreadcrumbs items={breadcrumbs} />}
             tabs={
               erIForhåndsvisning ? (
-                <TabsNav
-                  jobbsøkereAntall={jobbsøkereAntall}
-                  arbeidsgivereAntall={arbeidsgivereAntall}
-                />
+                inTabsContext ? (
+                  <TabsNav
+                    jobbsøkereAntall={jobbsøkereAntall}
+                    arbeidsgivereAntall={arbeidsgivereAntall}
+                  />
+                ) : (
+                  <Tabs defaultValue={RekrutteringstreffTabs.OM_TREFFET}>
+                    <Tabs.List>
+                      <TabsNav
+                        jobbsøkereAntall={jobbsøkereAntall}
+                        arbeidsgivereAntall={arbeidsgivereAntall}
+                      />
+                    </Tabs.List>
+                  </Tabs>
+                )
               ) : undefined
             }
             meta={
@@ -87,6 +115,7 @@ const RekrutteringstreffHeader = forwardRef<
                 avlyst={avlyst}
                 activeStep={activeStep as any}
                 erIForhåndsvisning={erIForhåndsvisning}
+                viserFullskjermForhåndsvisning={viserFullskjermForhåndsvisning}
                 erPubliseringklar={erPubliseringklar}
                 harInvitert={harInvitert}
                 tiltidspunktHarPassert={tiltidspunktHarPassert}
@@ -95,6 +124,12 @@ const RekrutteringstreffHeader = forwardRef<
                 onToggleForhåndsvisning={onToggleForhåndsvisning}
                 onBekreftRedigerPublisert={onBekreftRedigerPublisert}
                 onAvlyst={onAvlyst}
+                onAvbrytRedigering={onAvbrytRedigering}
+                onPublisert={onPublisert}
+                treff={treff}
+                innleggHtmlFraBackend={innleggHtmlFraBackend}
+                onRepubliser={onRepubliser}
+                republiserDisabled={republiserDisabled}
               />
             }
           ></PanelHeader.Section>

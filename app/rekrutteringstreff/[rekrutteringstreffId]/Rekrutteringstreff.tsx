@@ -4,10 +4,15 @@ import { useRekrutteringstreffContext } from './RekrutteringstreffContext';
 import RekrutteringstreffHeader from './_ui/rekrutteringstreff/RekrutteringstreffHeader';
 import TabsPanels from './_ui/rekrutteringstreff/TabsPanels';
 import RekrutteringstreffForhåndsvisning from './components/RekrutteringstreffForhåndsvisning';
+import {
+  useAutosave,
+  useInnleggAutosave,
+} from './components/redigereRekrutteringstreff/useAutosave';
 import { useAlleHendelser } from '@/app/api/rekrutteringstreff/[...slug]/useAlleHendelser';
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
+import { useKiLogg } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import Stegviser from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/om-treffet/stegviser/Stegviser';
 import { JobbsøkerHendelsestype } from '@/app/rekrutteringstreff/_domain/constants';
@@ -16,11 +21,13 @@ import { getActiveStepFromHendelser } from '@/app/rekrutteringstreff/_utils/rekr
 import Fremdriftspanel from '@/components/Fremdriftspanel';
 import SideScroll from '@/components/SideScroll';
 import SideLayout from '@/components/layout/SideLayout';
-import { Button, Tabs } from '@navikt/ds-react';
+import { RekbisError } from '@/util/rekbisError';
+import { Tabs } from '@navikt/ds-react';
 import { formatDistanceToNow } from 'date-fns';
 import { nb } from 'date-fns/locale/nb';
 import { parseAsString, useQueryState } from 'nuqs';
 import { FC, useCallback, useEffect, useMemo, useRef } from 'react';
+import { useFormContext } from 'react-hook-form';
 
 export enum RekrutteringstreffTabs {
   OM_TREFFET = 'om_treffet',
@@ -56,15 +63,16 @@ const Rekrutteringstreff: FC = () => {
   const harPublisert = activeStep === 'INVITERE' || activeStep === 'FULLFØRE';
   const avlyst = activeStep === 'AVLYST';
 
-  const viserForhåndsvisningsside = useMemo(() => {
+  const viserFullskjermForhåndsvisning = useMemo(() => {
     if (avlyst) return true;
-    return harPublisert && modus === 'preview-page';
-  }, [avlyst, harPublisert, modus]);
+    return modus === 'preview-page';
+  }, [avlyst, modus]);
 
-  const erIForhåndsvisning = useMemo(() => {
-    if (viserForhåndsvisningsside) return false;
-    return harPublisert && modus !== 'edit';
-  }, [viserForhåndsvisningsside, harPublisert, modus]);
+  const erILesemodus = useMemo(() => {
+    if (viserFullskjermForhåndsvisning) return false;
+    if (modus === 'edit') return false;
+    return true;
+  }, [viserFullskjermForhåndsvisning, modus]);
 
   const rekrutteringstreff = rekrutteringstreffHook.data;
 
@@ -119,7 +127,12 @@ const Rekrutteringstreff: FC = () => {
     // kan vi sette ?mode=edit før vi vet at treffet er publisert, og da
     // forblir man i edit selv etter publisering.
     if (!rekrutteringstreff) return;
-    if (!harPublisert && !avlyst && modus !== 'edit') {
+    if (
+      !harPublisert &&
+      !avlyst &&
+      modus !== 'edit' &&
+      modus !== 'preview-page'
+    ) {
       setModus('edit');
     }
   }, [rekrutteringstreff, avlyst, harPublisert, modus, setModus]);
@@ -149,8 +162,12 @@ const Rekrutteringstreff: FC = () => {
 
   const handleToggleForhåndsvisning = (nyForhåndsvisning: boolean) => {
     if (avlyst) return;
-    if (!harPublisert && nyForhåndsvisning) return;
-    setModus(nyForhåndsvisning ? '' : 'edit');
+    if (nyForhåndsvisning) {
+      // Gå til preview-page når man klikker Forhåndsvisning
+      setModus('preview-page');
+    } else {
+      setModus('edit');
+    }
     scrollToTop();
   };
 
@@ -159,13 +176,8 @@ const Rekrutteringstreff: FC = () => {
     scrollToTop();
   };
 
-  const gåTilForhåndsvisning = () => {
-    setModus('');
-    setFane(RekrutteringstreffTabs.OM_TREFFET);
-    scrollToTop();
-  };
-
-  const gåTilStandardVisning = () => {
+  const onAvbrytRedigering = () => {
+    // Etter publisering, ved avbryt redigering, gå til vanlig lesemodus
     setModus('');
     scrollToTop();
   };
@@ -204,7 +216,7 @@ const Rekrutteringstreff: FC = () => {
   }, [harPublisert, avlyst, rekrutteringstreffNavn]);
 
   const skalViseHeader =
-    !viserForhåndsvisningsside && !(harPublisert && modus === 'edit');
+    modus === 'preview-page' ? true : !viserFullskjermForhåndsvisning;
 
   const oppdaterData = useCallback(async () => {
     await Promise.all([
@@ -218,10 +230,110 @@ const Rekrutteringstreff: FC = () => {
     scrollToTop();
   }, [scrollToTop, setModus]);
 
+  const onPublisert = useCallback(() => {
+    setModus('');
+    setFane(RekrutteringstreffTabs.OM_TREFFET);
+    scrollToTop();
+  }, [setModus, setFane, scrollToTop]);
+
+  // Republiser-logikk
+  const { getValues, watch, formState } = useFormContext();
+  const { save } = useAutosave();
+  const { save: saveInnlegg } = useInnleggAutosave();
+  const kiTittelLogg = useKiLogg(rekrutteringstreffId, 'tittel');
+  const kiInnleggLogg = useKiLogg(rekrutteringstreffId, 'innlegg');
+  const { startLagring, stoppLagring } = useRekrutteringstreffContext();
+
+  const markerSisteKiLoggSomLagret = useCallback(async () => {
+    const mark = async (
+      liste:
+        | { id: string; opprettetTidspunkt: string; lagret: boolean }[]
+        | undefined,
+      setLagret?: (arg: { id: string; lagret: boolean }) => Promise<void>,
+    ) => {
+      if (!liste || liste.length === 0 || !setLagret) return;
+
+      const sorted = [...liste].sort(
+        (a, b) =>
+          new Date(b.opprettetTidspunkt).getTime() -
+          new Date(a.opprettetTidspunkt).getTime(),
+      );
+      const siste = sorted[0];
+
+      if (siste && !siste.lagret) {
+        await setLagret({ id: siste.id, lagret: true });
+      }
+    };
+
+    try {
+      const [tittelListe, innleggListe] = await Promise.all([
+        kiTittelLogg.refresh(),
+        kiInnleggLogg.refresh(),
+      ]);
+
+      await Promise.all([
+        mark(tittelListe ?? kiTittelLogg.data, kiTittelLogg.setLagret),
+        mark(innleggListe ?? kiInnleggLogg.data, kiInnleggLogg.setLagret),
+      ]);
+    } catch (error) {
+      new RekbisError({
+        message: 'Kunne ikke oppdatere KI-logg lagret-status:',
+        error,
+      });
+    }
+  }, [kiTittelLogg, kiInnleggLogg]);
+
+  const onRepubliser = useCallback(async () => {
+    try {
+      startLagring('republiser');
+      await save(undefined, true);
+      const values: any = getValues();
+      const currentHtml: string = (values?.htmlContent ?? '') as string;
+      const backendHtml: string = (innlegg?.[0]?.htmlContent ?? '') as string;
+      const shouldSaveInnlegg =
+        (currentHtml ?? '').trim() !== (backendHtml ?? '').trim() &&
+        (currentHtml ?? '').trim().length > 0;
+      if (shouldSaveInnlegg) {
+        await saveInnlegg(undefined, true);
+      }
+      await markerSisteKiLoggSomLagret();
+      // Etter republisering: gå til standard lesemodus (uten ?mode)
+      setModus('');
+      scrollToTop();
+    } finally {
+      stoppLagring('republiser');
+    }
+  }, [
+    startLagring,
+    stoppLagring,
+    save,
+    saveInnlegg,
+    getValues,
+    innlegg,
+    markerSisteKiLoggSomLagret,
+    setModus,
+    scrollToTop,
+  ]);
+
+  const tittelKiFeil = (watch('tittelKiFeil' as any) as any) ?? false;
+  const innleggKiFeil = (watch('innleggKiFeil' as any) as any) ?? false;
+  const anyKiFeil = !!tittelKiFeil || !!innleggKiFeil;
+  const harAndreSkjemafeil = Boolean(
+    formState.errors &&
+      Object.keys(formState.errors).some((key) => key !== 'root'),
+  );
+  const harFeil = anyKiFeil || harAndreSkjemafeil;
+
+  const DEFAULT_TITTEL = 'Treff uten navn';
+  const lagretTittel = rekrutteringstreff?.tittel ?? '';
+  const manglerNavn =
+    typeof lagretTittel === 'string' && lagretTittel.trim() === DEFAULT_TITTEL;
+  const republiserDisabled = harFeil || manglerNavn;
+
   const renderStegviser = () => (
     <Stegviser
       onToggleForhåndsvisning={handleToggleForhåndsvisning}
-      erIForhåndsvisning={erIForhåndsvisning}
+      erIForhåndsvisning={erILesemodus}
     />
   );
 
@@ -233,23 +345,46 @@ const Rekrutteringstreff: FC = () => {
     fremdriftspanel: <SideScroll>{stegviserInnhold}</SideScroll>,
   } as const;
 
-  if (viserForhåndsvisningsside) {
+  if (viserFullskjermForhåndsvisning) {
     return (
-      <SideLayout {...layoutProps}>
+      <SideLayout
+        {...layoutProps}
+        header={
+          !avlyst ? (
+            <RekrutteringstreffHeader
+              skalViseHeader={true}
+              breadcrumbs={breadcrumbs}
+              erIForhåndsvisning={true}
+              viserFullskjermForhåndsvisning={true}
+              jobbsøkereAntall={jobbsøkere?.length ?? 0}
+              arbeidsgivereAntall={arbeidsgivere?.length ?? 0}
+              lagrerNoe={lagrerNoe}
+              lagretTekst={lagretTekst}
+              avlyst={avlyst}
+              activeStep={activeStep as any}
+              erPubliseringklar={erPubliseringklar}
+              harInvitert={harInvitert}
+              tiltidspunktHarPassert={tiltidspunktHarPassert}
+              rekrutteringstreffId={rekrutteringstreffId}
+              oppdaterData={oppdaterData}
+              onToggleForhåndsvisning={handleToggleForhåndsvisning}
+              onBekreftRedigerPublisert={onBekreftRedigerPublisert}
+              onAvlyst={onAvlyst}
+              onAvbrytRedigering={onAvbrytRedigering}
+              onPublisert={onPublisert}
+              treff={rekrutteringstreff}
+              innleggHtmlFraBackend={
+                (innlegg?.[0]?.htmlContent ?? '') as string
+              }
+              onRepubliser={onRepubliser}
+              republiserDisabled={republiserDisabled}
+              inTabsContext={false}
+            />
+          ) : undefined
+        }
+      >
         <SideScroll>
           <div className='space-y-4'>
-            {!avlyst && (
-              <div className='flex flex-wrap justify-end gap-2'>
-                <Button
-                  type='button'
-                  size='small'
-                  variant='secondary'
-                  onClick={gåTilStandardVisning}
-                >
-                  Avslutt forhåndsvisning
-                </Button>
-              </div>
-            )}
             <RekrutteringstreffForhåndsvisning />
           </div>
         </SideScroll>
@@ -266,7 +401,8 @@ const Rekrutteringstreff: FC = () => {
             <RekrutteringstreffHeader
               skalViseHeader={skalViseHeader}
               breadcrumbs={breadcrumbs}
-              erIForhåndsvisning={erIForhåndsvisning}
+              erIForhåndsvisning={erILesemodus}
+              viserFullskjermForhåndsvisning={viserFullskjermForhåndsvisning}
               jobbsøkereAntall={jobbsøkere?.length ?? 0}
               arbeidsgivereAntall={arbeidsgivere?.length ?? 0}
               lagrerNoe={lagrerNoe}
@@ -281,6 +417,15 @@ const Rekrutteringstreff: FC = () => {
               onToggleForhåndsvisning={handleToggleForhåndsvisning}
               onBekreftRedigerPublisert={onBekreftRedigerPublisert}
               onAvlyst={onAvlyst}
+              onAvbrytRedigering={onAvbrytRedigering}
+              onPublisert={onPublisert}
+              treff={rekrutteringstreff}
+              innleggHtmlFraBackend={
+                (innlegg?.[0]?.htmlContent ?? '') as string
+              }
+              onRepubliser={onRepubliser}
+              republiserDisabled={republiserDisabled}
+              inTabsContext={true}
             />
           ) : undefined
         }
@@ -288,9 +433,8 @@ const Rekrutteringstreff: FC = () => {
         <SideScroll>
           <div className='space-y-4'>
             <TabsPanels
-              erIVisning={erIForhåndsvisning}
+              erIVisning={erILesemodus}
               onUpdated={rekrutteringstreffHook.mutate}
-              onGåTilForhåndsvisning={gåTilForhåndsvisning}
             />
           </div>
         </SideScroll>

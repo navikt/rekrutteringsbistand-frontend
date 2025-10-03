@@ -5,7 +5,7 @@ import { RekrutteringstreffTabs } from '@/app/rekrutteringstreff/[rekrutteringst
 import RekrutteringstreffArbeidsgivere from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/arbeidsgivere/Arbeidsgivere';
 import Jobbsøkere from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/jobbsøkere/Jobbsøkere';
 import KiLogg from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/kilogg/components/KiLogg';
-import RekrutteringstreffForhåndsvisning from '@/app/rekrutteringstreff/[rekrutteringstreffId]/components/RekrutteringstreffForhåndsvisning';
+import OmTreffet from '@/app/rekrutteringstreff/[rekrutteringstreffId]/components/OmTreffet';
 import RekrutteringstreffRedigering from '@/app/rekrutteringstreff/[rekrutteringstreffId]/components/RekrutteringstreffRedigering';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
@@ -15,27 +15,17 @@ import { FC } from 'react';
 interface Props {
   erIVisning: boolean;
   onUpdated: () => Promise<any> | void;
-  onGåTilForhåndsvisning: () => void;
 }
 
-const TabsPanels: FC<Props> = ({
-  erIVisning,
-  onUpdated,
-  onGåTilForhåndsvisning,
-}) => {
+const TabsPanels: FC<Props> = ({ erIVisning, onUpdated }) => {
   if (!erIVisning) {
-    return (
-      <RekrutteringstreffRedigering
-        onUpdated={onUpdated}
-        onGåTilForhåndsvisning={onGåTilForhåndsvisning}
-      />
-    );
+    return <RekrutteringstreffRedigering onUpdated={onUpdated} />;
   }
 
   return (
     <>
       <Tabs.Panel value={RekrutteringstreffTabs.OM_TREFFET}>
-        <RekrutteringstreffForhåndsvisning />
+        <OmTreffet />
       </Tabs.Panel>
       <Tabs.Panel value={RekrutteringstreffTabs.JOBBSØKERE}>
         <Jobbsøkere />
