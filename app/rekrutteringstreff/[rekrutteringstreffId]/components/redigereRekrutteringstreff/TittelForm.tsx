@@ -5,8 +5,8 @@ import { useAutosave } from './useAutosave';
 import { useKiAnalyse } from './useKiAnalyse';
 import { useKiLogg } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
 import { MAX_TITLE_LENGTH } from '@/app/api/rekrutteringstreff/oppdater-rekrutteringstreff/oppdaterRerkutteringstreff';
-import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
+import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/rekrutteringstreff/useRekrutteringstreffData';
 import KiAnalyse from '@/app/rekrutteringstreff/[rekrutteringstreffId]/components/redigereRekrutteringstreff/ki/KiAnalyse';
 import { RekbisError } from '@/util/rekbisError';
 import { XMarkIcon } from '@navikt/aksel-icons';
@@ -23,7 +23,7 @@ interface TittelFormProps {
 const TittelForm = ({ onUpdated }: TittelFormProps) => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
 
-  const { data: treff } = useRekrutteringstreff(rekrutteringstreffId);
+  const { treff } = useRekrutteringstreffData();
   const savedTittel = treff ? (treff.tittel ?? null) : undefined;
 
   const { setLagret: setKiLagret, isLoading } = useKiLogg(

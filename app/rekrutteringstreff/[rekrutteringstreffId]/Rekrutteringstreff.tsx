@@ -10,14 +10,12 @@ import {
 } from './components/redigereRekrutteringstreff/useAutosave';
 import { useAlleHendelser } from '@/app/api/rekrutteringstreff/[...slug]/useAlleHendelser';
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
-import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
 import { useKiLogg } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
-import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import Stegviser from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/om-treffet/stegviser/Stegviser';
+import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/rekrutteringstreff/useRekrutteringstreffData';
 import { JobbsøkerHendelsestype } from '@/app/rekrutteringstreff/_domain/constants';
 import type { RekrutteringstreffBreadcrumbItem } from '@/app/rekrutteringstreff/_ui/RekrutteringstreffBreadcrumbs';
-import { getActiveStepFromHendelser } from '@/app/rekrutteringstreff/_utils/rekrutteringstreff';
 import Fremdriftspanel from '@/components/Fremdriftspanel';
 import SideScroll from '@/components/SideScroll';
 import SideLayout from '@/components/layout/SideLayout';
@@ -48,20 +46,21 @@ const Rekrutteringstreff: FC = () => {
   );
   const { rekrutteringstreffId, lagrerNoe } = useRekrutteringstreffContext();
 
-  const rekrutteringstreffHook = useRekrutteringstreff(rekrutteringstreffId);
+  const {
+    activeStep,
+    avlyst,
+    harPublisert,
+    tilTidspunktHarPassert,
+    treff: rekrutteringstreff,
+    innlegg,
+    oppdaterData,
+    rekrutteringstreffHook,
+  } = useRekrutteringstreffData();
+
   const alleHendelserHook = useAlleHendelser(rekrutteringstreffId);
   const { data: jobbsøkere = [] } = useJobbsøkere(rekrutteringstreffId);
   const { data: arbeidsgivere } =
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
-  const { data: innlegg } = useInnlegg(rekrutteringstreffId);
-
-  const hendelser = rekrutteringstreffHook.data?.hendelser;
-  const activeStep = useMemo(
-    () => getActiveStepFromHendelser(hendelser),
-    [hendelser],
-  );
-  const harPublisert = activeStep === 'INVITERE' || activeStep === 'FULLFØRE';
-  const avlyst = activeStep === 'AVLYST';
 
   const viserFullskjermForhåndsvisning = useMemo(() => {
     if (avlyst) return true;
@@ -73,8 +72,6 @@ const Rekrutteringstreff: FC = () => {
     if (modus === 'edit') return false;
     return true;
   }, [viserFullskjermForhåndsvisning, modus]);
-
-  const rekrutteringstreff = rekrutteringstreffHook.data;
 
   const sjekklisteItems = useMemo(() => {
     const tittel = rekrutteringstreff?.tittel?.trim() ?? '';
@@ -107,14 +104,6 @@ const Rekrutteringstreff: FC = () => {
       ),
     [jobbsøkere],
   );
-
-  const tiltidspunktHarPassert = useMemo(() => {
-    const til = rekrutteringstreff?.tilTid
-      ? new Date(rekrutteringstreff.tilTid)
-      : undefined;
-    const now = new Date();
-    return !!(til && now >= til);
-  }, [rekrutteringstreff?.tilTid]);
 
   useEffect(() => {
     if (avlyst && modus !== 'preview-page') {
@@ -218,12 +207,9 @@ const Rekrutteringstreff: FC = () => {
   const skalViseHeader =
     modus === 'preview-page' ? true : !viserFullskjermForhåndsvisning;
 
-  const oppdaterData = useCallback(async () => {
-    await Promise.all([
-      rekrutteringstreffHook.mutate(),
-      alleHendelserHook.mutate(),
-    ]);
-  }, [rekrutteringstreffHook, alleHendelserHook]);
+  const oppdaterAlleData = useCallback(async () => {
+    await Promise.all([oppdaterData(), alleHendelserHook.mutate()]);
+  }, [oppdaterData, alleHendelserHook]);
 
   const onAvlyst = useCallback(() => {
     setModus('preview-page');
@@ -360,22 +346,12 @@ const Rekrutteringstreff: FC = () => {
               arbeidsgivereAntall={arbeidsgivere?.length ?? 0}
               lagrerNoe={lagrerNoe}
               lagretTekst={lagretTekst}
-              avlyst={avlyst}
-              activeStep={activeStep as any}
               erPubliseringklar={erPubliseringklar}
-              harInvitert={harInvitert}
-              tiltidspunktHarPassert={tiltidspunktHarPassert}
-              rekrutteringstreffId={rekrutteringstreffId}
-              oppdaterData={oppdaterData}
               onToggleForhåndsvisning={handleToggleForhåndsvisning}
               onBekreftRedigerPublisert={onBekreftRedigerPublisert}
               onAvlyst={onAvlyst}
               onAvbrytRedigering={onAvbrytRedigering}
               onPublisert={onPublisert}
-              treff={rekrutteringstreff}
-              innleggHtmlFraBackend={
-                (innlegg?.[0]?.htmlContent ?? '') as string
-              }
               onRepubliser={onRepubliser}
               republiserDisabled={republiserDisabled}
               inTabsContext={false}
@@ -407,22 +383,12 @@ const Rekrutteringstreff: FC = () => {
               arbeidsgivereAntall={arbeidsgivere?.length ?? 0}
               lagrerNoe={lagrerNoe}
               lagretTekst={lagretTekst}
-              avlyst={avlyst}
-              activeStep={activeStep as any}
               erPubliseringklar={erPubliseringklar}
-              harInvitert={harInvitert}
-              tiltidspunktHarPassert={tiltidspunktHarPassert}
-              rekrutteringstreffId={rekrutteringstreffId}
-              oppdaterData={oppdaterData}
               onToggleForhåndsvisning={handleToggleForhåndsvisning}
               onBekreftRedigerPublisert={onBekreftRedigerPublisert}
               onAvlyst={onAvlyst}
               onAvbrytRedigering={onAvbrytRedigering}
               onPublisert={onPublisert}
-              treff={rekrutteringstreff}
-              innleggHtmlFraBackend={
-                (innlegg?.[0]?.htmlContent ?? '') as string
-              }
               onRepubliser={onRepubliser}
               republiserDisabled={republiserDisabled}
               inTabsContext={true}

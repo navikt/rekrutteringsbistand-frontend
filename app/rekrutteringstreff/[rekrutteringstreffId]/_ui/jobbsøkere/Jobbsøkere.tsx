@@ -7,10 +7,9 @@ import {
   JobbsøkerDTO,
   useJobbsøkere,
 } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
-import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
 import LeggTilJobbsøkerKnapp from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/LeggTilJobbsøkerKnapp';
-import { getActiveStepFromHendelser } from '@/app/rekrutteringstreff/_utils/rekrutteringstreff';
+import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/rekrutteringstreff/useRekrutteringstreffData';
 import SWRLaster from '@/components/SWRLaster';
 import { BodyShort, Button, TagProps } from '@navikt/ds-react';
 import { format } from 'date-fns';
@@ -38,12 +37,14 @@ const jobbsøkerTilInviterDto = (
 
 const Jobbsøkere = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
+  const {
+    activeStep,
+    harPublisert,
+    treff: rekrutteringstreffData,
+  } = useRekrutteringstreffData();
   const jobbsøkerHook = useJobbsøkere(rekrutteringstreffId);
   const inviterModalRef = useRef<HTMLDialogElement>(null);
   const oppmøteModalRef = useRef<HTMLDialogElement>(null);
-
-  const { data: rekrutteringstreffData } =
-    useRekrutteringstreff(rekrutteringstreffId);
 
   const [valgteJobbsøkere, setValgteJobbsøkere] = useState<
     InviterInternalDto[]
@@ -53,11 +54,6 @@ const Jobbsøkere = () => {
   const [inviterModalJobbsøkere, setInviterModalJobbsøkere] = useState<
     InviterInternalDto[]
   >([]);
-
-  const activeStep = getActiveStepFromHendelser(
-    rekrutteringstreffData?.hendelser,
-  );
-  const harPublisert = activeStep === 'INVITERE' || activeStep === 'FULLFØRE';
 
   const harAvsluttetInvitasjon =
     rekrutteringstreffData?.hendelser?.some(

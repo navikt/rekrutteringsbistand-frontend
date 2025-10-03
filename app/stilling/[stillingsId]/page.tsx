@@ -102,9 +102,7 @@ export default function StillingsSidePage() {
           <Tabs.Panel value={StillingFane.STILLING}>
             <SideScroll>
               <OmStillingenHeader />
-              {erUtkast && (
-                <StillingsutkastMelding />
-              )}
+              {erUtkast && <StillingsutkastMelding />}
               <OmStillingen printRef={printRef} />
             </SideScroll>
           </Tabs.Panel>

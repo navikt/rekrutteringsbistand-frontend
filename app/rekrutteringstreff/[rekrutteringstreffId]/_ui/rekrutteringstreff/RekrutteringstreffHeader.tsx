@@ -20,20 +20,12 @@ export interface RekrutteringstreffHeaderProps {
   arbeidsgivereAntall: number;
   lagrerNoe: boolean;
   lagretTekst?: string;
-  avlyst: boolean;
-  activeStep: string;
   erPubliseringklar: boolean;
-  harInvitert: boolean;
-  tiltidspunktHarPassert: boolean;
-  rekrutteringstreffId: string;
-  oppdaterData: () => Promise<void>;
   onToggleForhåndsvisning: (ny: boolean) => void;
   onBekreftRedigerPublisert: () => void;
   onAvlyst: () => void;
   onAvbrytRedigering: () => void;
   onPublisert?: () => void;
-  treff?: any;
-  innleggHtmlFraBackend?: string | null;
   onRepubliser?: () => Promise<void>;
   republiserDisabled?: boolean;
   inTabsContext?: boolean;
@@ -53,20 +45,12 @@ const RekrutteringstreffHeader = forwardRef<
       arbeidsgivereAntall,
       lagrerNoe,
       lagretTekst,
-      avlyst,
-      activeStep,
       erPubliseringklar,
-      harInvitert,
-      tiltidspunktHarPassert,
-      rekrutteringstreffId,
-      oppdaterData,
       onToggleForhåndsvisning,
       onBekreftRedigerPublisert,
       onAvlyst,
       onAvbrytRedigering,
       onPublisert,
-      treff,
-      innleggHtmlFraBackend,
       onRepubliser,
       republiserDisabled,
       inTabsContext = false,
@@ -112,22 +96,14 @@ const RekrutteringstreffHeader = forwardRef<
             }
             actionsRight={
               <HeaderActions
-                avlyst={avlyst}
-                activeStep={activeStep as any}
                 erIForhåndsvisning={erIForhåndsvisning}
                 viserFullskjermForhåndsvisning={viserFullskjermForhåndsvisning}
                 erPubliseringklar={erPubliseringklar}
-                harInvitert={harInvitert}
-                tiltidspunktHarPassert={tiltidspunktHarPassert}
-                rekrutteringstreffId={rekrutteringstreffId}
-                oppdaterData={oppdaterData}
                 onToggleForhåndsvisning={onToggleForhåndsvisning}
                 onBekreftRedigerPublisert={onBekreftRedigerPublisert}
                 onAvlyst={onAvlyst}
                 onAvbrytRedigering={onAvbrytRedigering}
                 onPublisert={onPublisert}
-                treff={treff}
-                innleggHtmlFraBackend={innleggHtmlFraBackend}
                 onRepubliser={onRepubliser}
                 republiserDisabled={republiserDisabled}
               />

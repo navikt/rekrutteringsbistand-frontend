@@ -6,60 +6,50 @@ import GjenapneRekrutteringstreffButton from './GjenapneRekrutteringstreffButton
 import PubliserRekrutteringstreffButton from './PubliserRekrutteringstreffButton';
 import RedigerPublisertButton from './RedigerPublisertButton';
 import RepubliserRekrutteringstreffButton from './RepubliserRekrutteringstreffButton';
+import {
+  useRekrutteringstreffData,
+  type ActiveStep,
+} from './useRekrutteringstreffData';
 import SlettRekrutteringstreffModal from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/SlettRekrutteringstreffModal';
 import { Button } from '@navikt/ds-react';
 import { FC } from 'react';
 
-export type ActiveStep =
-  | 'PUBLISERE'
-  | 'INVITERE'
-  | 'FULLFØRE'
-  | 'AVLYST'
-  | string
-  | undefined;
-
 type Props = {
-  avlyst: boolean;
-  activeStep: ActiveStep;
-  erIForhåndsvisning: boolean; // Betyr: ikke i edit-modus (lesemodus)
-  viserFullskjermForhåndsvisning?: boolean; // Betyr: viser fullskjerm forhåndsvisning
+  erIForhåndsvisning: boolean;
+  viserFullskjermForhåndsvisning?: boolean;
   erPubliseringklar: boolean;
-  harInvitert: boolean;
-  tiltidspunktHarPassert: boolean;
-  rekrutteringstreffId: string;
-  oppdaterData: () => Promise<void>;
   onToggleForhåndsvisning: (ny: boolean) => void;
   onBekreftRedigerPublisert: () => void;
   onAvlyst: () => void;
   onAvbrytRedigering: () => void;
   onPublisert?: () => void;
-  treff?: any;
-  innleggHtmlFraBackend?: string | null;
   onRepubliser?: () => Promise<void>;
   republiserDisabled?: boolean;
 };
 
 const HeaderActions: FC<Props> = ({
-  avlyst,
-  activeStep,
   erIForhåndsvisning,
   viserFullskjermForhåndsvisning,
   erPubliseringklar,
-  harInvitert,
-  tiltidspunktHarPassert,
-  rekrutteringstreffId,
-  oppdaterData,
   onToggleForhåndsvisning,
   onBekreftRedigerPublisert,
   onAvlyst,
   onAvbrytRedigering,
   onPublisert,
-  treff,
-  innleggHtmlFraBackend,
   onRepubliser,
   republiserDisabled,
 }) => {
-  const harPublisert = activeStep === 'INVITERE' || activeStep === 'FULLFØRE';
+  const {
+    rekrutteringstreffId,
+    activeStep,
+    avlyst,
+    harPublisert,
+    harInvitert,
+    fraTidspunktHarPassert,
+    treff,
+    innleggHtmlFraBackend,
+    oppdaterData,
+  } = useRekrutteringstreffData();
   const erIEditModus = !erIForhåndsvisning;
 
   // Hvis vi er i fullskjerm forhåndsvisning, vis kun "Avslutt forhåndsvisning"
@@ -156,7 +146,7 @@ const HeaderActions: FC<Props> = ({
         <FullforRekrutteringstreffButton
           rekrutteringstreffId={rekrutteringstreffId}
           harInvitert={harInvitert}
-          tiltidspunktHarPassert={tiltidspunktHarPassert}
+          tiltidspunktHarPassert={fraTidspunktHarPassert}
           oppdaterData={oppdaterData}
         />
       )}

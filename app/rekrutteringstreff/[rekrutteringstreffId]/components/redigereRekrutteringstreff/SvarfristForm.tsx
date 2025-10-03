@@ -5,8 +5,8 @@ import { useScheduledSave } from './hooks/useScheduledSave';
 import DatoTidRad from './tidspunkt/DatoTidRad';
 import { isGyldigTid, kombinerDatoOgTid } from './tidspunkt/utils';
 import { useAutosave } from './useAutosave';
-import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
+import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/rekrutteringstreff/useRekrutteringstreffData';
 import { Heading } from '@navikt/ds-react';
 import { format, parseISO } from 'date-fns';
 import { useEffect } from 'react';
@@ -40,7 +40,7 @@ const SvarfristForm = ({ control }: Props) => {
   });
 
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
-  const { data: treff } = useRekrutteringstreff(rekrutteringstreffId);
+  const { treff } = useRekrutteringstreffData();
 
   // Bruk de nye hooks
   const { scheduleSave } = useScheduledSave(save, [

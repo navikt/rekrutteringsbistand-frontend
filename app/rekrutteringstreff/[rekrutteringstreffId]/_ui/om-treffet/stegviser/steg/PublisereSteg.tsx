@@ -6,9 +6,8 @@ import {
   SjekklisteInfo,
 } from './Sjekkliste';
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
-import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
-import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
+import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/rekrutteringstreff/useRekrutteringstreffData';
 import {
   EyeIcon,
   PersonGroupIcon,
@@ -39,14 +38,18 @@ const sjekklisteData = [
 const PublisereSteg: FC = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
 
+  const {
+    treff: rekrutteringstreffData,
+    innlegg: innleggData,
+    rekrutteringstreffHook,
+  } = useRekrutteringstreffData();
+
+  const { isLoading: rekrutteringstreffLoading } = rekrutteringstreffHook;
+
   const { data: arbeidsgivereData, isLoading: arbeidsgivereLoading } =
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
 
-  const { data: rekrutteringstreffData, isLoading: rekrutteringstreffLoading } =
-    useRekrutteringstreff(rekrutteringstreffId);
-
-  const { data: innleggData, isLoading: innleggLoading } =
-    useInnlegg(rekrutteringstreffId);
+  const innleggLoading = false; // Innlegg laster via useRekrutteringstreffData
 
   const checkedItems: Record<(typeof sjekklisteData)[number]['id'], boolean> =
     useMemo(() => {

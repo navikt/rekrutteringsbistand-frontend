@@ -1,18 +1,16 @@
 'use client';
 
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
-import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
 import {
   useJobbsøkere,
   JobbsøkerDTO,
 } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
-import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
+import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/rekrutteringstreff/useRekrutteringstreffData';
 import {
   AktivtSteg as AktivtStegConst,
   JobbsøkerHendelsestype,
 } from '@/app/rekrutteringstreff/_domain/constants';
-import { getActiveStepFromHendelser } from '@/app/rekrutteringstreff/_utils/rekrutteringstreff';
 import {
   createContext,
   useMemo,
@@ -77,11 +75,15 @@ export const StegviserProvider: FC<{ children: ReactNode }> = ({
   );
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
 
-  const { data: rekrutteringstreff } =
-    useRekrutteringstreff(rekrutteringstreffId);
+  const {
+    treff: rekrutteringstreff,
+    tilTidspunktHarPassert,
+    activeStep: derivedStep,
+    innlegg: innleggData,
+  } = useRekrutteringstreffData();
+
   const { data: arbeidsgivereData } =
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
-  const { data: innleggData } = useInnlegg(rekrutteringstreffId);
   const { data: jobbsøkere = [] } = useJobbsøkere(rekrutteringstreffId);
 
   // Steg 1: Publisere-logikk
@@ -105,10 +107,7 @@ export const StegviserProvider: FC<{ children: ReactNode }> = ({
   const erPubliseringklar =
     sjekklistePunkterFullfort === totaltAntallSjekklistePunkter;
 
-  const til = parseDate(rekrutteringstreff?.tilTid);
-  const now = new Date();
-  const arrangementtidspunktHarPassert = !!(til && now >= til);
-  const tiltidspunktHarPassert = !!(til && now >= til);
+  const arrangementtidspunktHarPassert = tilTidspunktHarPassert;
 
   // Steg 2: Invitere-logikk
   const antallInviterte = jobbsøkere.filter(erInvitert).length;
@@ -118,13 +117,12 @@ export const StegviserProvider: FC<{ children: ReactNode }> = ({
     (j) => erInvitert(j) && !harSvarJa(j) && !harSvarNei(j),
   ).length;
   const inviterePunkterFullfort =
-    (harInvitert ? 1 : 0) + (tiltidspunktHarPassert ? 1 : 0);
+    (harInvitert ? 1 : 0) + (tilTidspunktHarPassert ? 1 : 0);
   const totaltAntallInviterePunkter = 2;
 
   useEffect(() => {
-    const step = getActiveStepFromHendelser(rekrutteringstreff?.hendelser);
-    setActiveStep((prev) => (prev === step ? prev : step));
-  }, [rekrutteringstreff?.hendelser]);
+    setActiveStep((prev) => (prev === derivedStep ? prev : derivedStep));
+  }, [derivedStep]);
 
   const value: StegviserState = {
     activeStep,
@@ -139,7 +137,7 @@ export const StegviserProvider: FC<{ children: ReactNode }> = ({
     antallSvarJa,
     antallVenterSvar,
     arrangementtidspunktHarPassert,
-    tiltidspunktHarPassert,
+    tiltidspunktHarPassert: tilTidspunktHarPassert,
   };
 
   return (

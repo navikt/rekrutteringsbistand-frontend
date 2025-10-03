@@ -3,10 +3,9 @@
 import { useRekrutteringstreffContext } from '../RekrutteringstreffContext';
 import ArbeidsgiverHendelserKort from '../_ui/arbeidsgivere/_ui/ArbeidsgiverHendelserKort';
 import JobbsøkerHendelserKort from '../_ui/jobbsøkere/_ui/JobbsøkerHendelserKort';
+import { useRekrutteringstreffData } from '../_ui/rekrutteringstreff/useRekrutteringstreffData';
 import { useArbeidsgiverHendelser } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgiverHendelser';
-import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
 import { useJobbsøkerHendelser } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkerHendelser';
-import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { formaterNorskDato } from '@/util/util';
 import { CalendarIcon, ClockIcon, LocationPinIcon } from '@navikt/aksel-icons';
 import { BodyShort, Box, Detail, Heading, Skeleton } from '@navikt/ds-react';
@@ -41,10 +40,14 @@ const formaterKlokkeslett = (date: Date) => {
 
 const OmTreffet: FC = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
-  const { data: rekrutteringstreff, isLoading: isLoadingTreff } =
-    useRekrutteringstreff(rekrutteringstreffId);
-  const { data: innleggListe, isLoading: isLoadingInnlegg } =
-    useInnlegg(rekrutteringstreffId);
+  const {
+    treff: rekrutteringstreff,
+    innlegg: innleggListe,
+    rekrutteringstreffHook,
+  } = useRekrutteringstreffData();
+
+  const { isLoading: isLoadingTreff } = rekrutteringstreffHook;
+  const isLoadingInnlegg = false; // Laster via useRekrutteringstreffData
   const { data: jobbsøkerHendelser, isLoading: isLoadingJobbsøkerHendelser } =
     useJobbsøkerHendelser(rekrutteringstreffId);
   const {

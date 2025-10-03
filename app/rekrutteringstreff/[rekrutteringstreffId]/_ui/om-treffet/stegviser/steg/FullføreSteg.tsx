@@ -1,8 +1,7 @@
 'use client';
 
 import { SjekklisteInfo } from './Sjekkliste';
-import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
-import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
+import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/rekrutteringstreff/useRekrutteringstreffData';
 import { EyeSlashIcon, TableIcon } from '@navikt/aksel-icons';
 import { BodyShort, Heading, Loader, VStack, HStack } from '@navikt/ds-react';
 import { format } from 'date-fns';
@@ -10,9 +9,9 @@ import { nb } from 'date-fns/locale/nb';
 import { useMemo } from 'react';
 
 const FullføreSteg = () => {
-  const { rekrutteringstreffId } = useRekrutteringstreffContext();
-  const { data: rekrutteringstreff, isLoading } =
-    useRekrutteringstreff(rekrutteringstreffId);
+  const { treff: rekrutteringstreff, rekrutteringstreffHook } =
+    useRekrutteringstreffData();
+  const { isLoading } = rekrutteringstreffHook;
 
   const fullførHendelse = useMemo(() => {
     if (!rekrutteringstreff?.hendelser?.length) {

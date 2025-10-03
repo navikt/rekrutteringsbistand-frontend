@@ -1,12 +1,10 @@
 'use client';
 
-import { useRekrutteringstreffContext } from '../RekrutteringstreffContext';
 import InnleggForm from './redigereRekrutteringstreff/InnleggForm';
 import PraktiskeForhold from './redigereRekrutteringstreff/Praktiskeforhold';
 import TittelForm from './redigereRekrutteringstreff/TittelForm';
-import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import LeggTilArbeidsgiverForm from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/arbeidsgivere/_ui/LeggTilArbeidsgiverForm';
-import { getActiveStepFromHendelser } from '@/app/rekrutteringstreff/_utils/rekrutteringstreff';
+import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/rekrutteringstreff/useRekrutteringstreffData';
 import { Heading, Box } from '@navikt/ds-react';
 import { FC } from 'react';
 
@@ -18,16 +16,11 @@ interface RekrutteringstreffRedigeringProps {
 const RekrutteringstreffRedigering: FC<RekrutteringstreffRedigeringProps> = ({
   onUpdated,
 }) => {
-  const { rekrutteringstreffId } = useRekrutteringstreffContext();
-  const rekrutteringstreffHook = useRekrutteringstreff(rekrutteringstreffId);
+  const { activeStep, harPublisert, oppdaterData } =
+    useRekrutteringstreffData();
 
-  const activeStep = getActiveStepFromHendelser(
-    rekrutteringstreffHook.data?.hendelser,
-  );
-  const harPublisert = activeStep === 'INVITERE' || activeStep === 'FULLFØRE';
-
-  const håndterOppdatert = () => {
-    rekrutteringstreffHook.mutate();
+  const håndterOppdatert = async () => {
+    await oppdaterData();
     onUpdated?.();
   };
 
