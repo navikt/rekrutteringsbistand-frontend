@@ -27,8 +27,6 @@ import { pamGeografiMirage } from '@/app/api/pam-geografi/typehead/lokasjoner/us
 import { stillingsTittelMirage } from '@/app/api/pam-ontologi/stillingsTittel/useStillingsTittel';
 import { arbeidsgiverMirage } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
 import { leggTilNyArbeidsgiverMirage } from '@/app/api/rekrutteringstreff/[...slug]/ny-arbeidsgiver/leggTilNyArbeidsgiver';
-import { registrerIkkeOppmøteMirage } from '@/app/api/rekrutteringstreff/[...slug]/registrerOppmøte/registrerIkkeOppmøte';
-import { registrerOppmøteMirage } from '@/app/api/rekrutteringstreff/[...slug]/registrerOppmøte/registrerOppmøte';
 import { fjernArbeidsgiverMirage } from '@/app/api/rekrutteringstreff/[...slug]/slett-arbeidsgiver/fjernArbeidsgiver';
 import { alleHendelserMirage } from '@/app/api/rekrutteringstreff/[...slug]/useAlleHendelser';
 import { arbeidsgiverHendelserMirage } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgiverHendelser';
@@ -124,8 +122,6 @@ export function makeServer({ environment = 'test' } = {}) {
       opprettInnleggfMirage(this);
       oppdaterInnleggfMirage(this);
       inviterJobbsøkereMirage(this);
-      registrerOppmøteMirage(this);
-      registrerIkkeOppmøteMirage(this);
       kandidatnummerMirage(this);
       modiaAktivEnhetMirage(this);
       modiaAktivBrukerMirage(this);

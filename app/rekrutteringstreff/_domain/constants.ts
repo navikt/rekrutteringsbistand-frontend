@@ -6,8 +6,6 @@ export const JobbsøkerHendelsestype = {
   OPPDATER: 'OPPDATER',
   SLETT: 'SLETT',
   INVITER: 'INVITER',
-  MØT_OPP: 'MØT_OPP',
-  IKKE_MØT_OPP: 'IKKE_MØT_OPP',
   SVAR_JA_TIL_INVITASJON: 'SVAR_JA_TIL_INVITASJON',
   SVAR_NEI_TIL_INVITASJON: 'SVAR_NEI_TIL_INVITASJON',
   AKTIVITETSKORT_OPPRETTELSE_FEIL: 'AKTIVITETSKORT_OPPRETTELSE_FEIL',
@@ -75,8 +73,6 @@ export const JobbsøkerHendelsestypeLabel: Record<
   [JobbsøkerHendelsestype.OPPDATER]: 'oppdatert',
   [JobbsøkerHendelsestype.SLETT]: 'slettet',
   [JobbsøkerHendelsestype.INVITER]: 'invitert',
-  [JobbsøkerHendelsestype.MØT_OPP]: 'møtt opp',
-  [JobbsøkerHendelsestype.IKKE_MØT_OPP]: 'møtte ikke',
   [JobbsøkerHendelsestype.SVAR_JA_TIL_INVITASJON]: 'svart ja',
   [JobbsøkerHendelsestype.SVAR_NEI_TIL_INVITASJON]: 'svart nei',
   [JobbsøkerHendelsestype.AKTIVITETSKORT_OPPRETTELSE_FEIL]:

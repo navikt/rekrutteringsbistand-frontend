@@ -22,10 +22,6 @@ export const jobbsøkerLabelTekst = (t: JobbsøkerHendelsestype | string) => {
       return 'slettet';
     case JobbsøkerHendelsestype.INVITER:
       return 'invitert';
-    case JobbsøkerHendelsestype.MØT_OPP:
-      return 'møtt opp';
-    case JobbsøkerHendelsestype.IKKE_MØT_OPP:
-      return 'møtte ikke';
     case JobbsøkerHendelsestype.SVAR_JA_TIL_INVITASJON:
       return 'svart ja';
     case JobbsøkerHendelsestype.SVAR_NEI_TIL_INVITASJON:
