@@ -24,7 +24,7 @@ export interface StegviserState {
   erPubliseringklar: boolean;
 
   // Steg 2: Invitere
-  inviterePunkterFullfort: number;
+  antallInviterePunkterFullfort: number;
   totaltAntallInviterePunkter: number;
   harInvitert: boolean;
   antallInviterte: number;
@@ -61,7 +61,7 @@ export const StegviserProvider: FC<{ children: ReactNode }> = ({
     antallInviterte,
     antallSvarJa,
     antallVenterSvar,
-    inviterePunkterFullfort,
+    antallInviterePunkterFullfort,
     totaltAntallInviterePunkter,
   } = useInviteringsStatus();
 
@@ -79,7 +79,7 @@ export const StegviserProvider: FC<{ children: ReactNode }> = ({
     sjekklistePunkterFullfort,
     totaltAntallSjekklistePunkter,
     erPubliseringklar,
-    inviterePunkterFullfort,
+    antallInviterePunkterFullfort,
     totaltAntallInviterePunkter,
     harInvitert,
     antallInviterte,

@@ -31,7 +31,7 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
     setValue,
     getValues,
     trigger: triggerRHF,
-    formState: { isDirty, isSubmitting },
+    formState: { isDirty },
   } = useFormContext();
 
   const { save: autosaveInnlegg } = useInnleggAutosave();
@@ -79,7 +79,6 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
     triggerRHF,
     getValues,
     setValue,
-    isSubmitting,
     setKiFeilFieldName: 'innleggKiFeil' as any,
     saveCallback,
     setKiLagret,
