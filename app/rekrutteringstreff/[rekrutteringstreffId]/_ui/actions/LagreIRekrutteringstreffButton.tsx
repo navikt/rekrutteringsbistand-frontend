@@ -82,12 +82,13 @@ const LagreIRekrutteringstreffButton: FC<
       if (rekrutteringstreffId) {
         // Direct save to specific rekrutteringstreff
         await leggTilNyeJobbsøkere(dto, rekrutteringstreffId);
-        await jobbsøkerHook.mutate?.();
+        jobbsøkerHook.mutate?.();
       } else if (selectedRows && selectedRows.length > 0) {
         // Save to selected rekrutteringstreff from modal
         await Promise.all(
           selectedRows.map((id) => leggTilNyeJobbsøkere(dto, id)),
         );
+        rekrutteringstreffOversiktHook.mutate();
       } else {
         visVarsel({
           type: 'info',

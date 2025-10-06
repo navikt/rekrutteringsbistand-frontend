@@ -22,7 +22,6 @@ const Arbeidsgivere = () => {
   const arbeidsgivereHook =
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
   const hendelseHook = useArbeidsgiverHendelser(rekrutteringstreffId);
-  const { mutate: mutateHendelser } = hendelseHook;
 
   const leggTilModalRef = useRef<HTMLDialogElement>(null);
 
@@ -51,7 +50,8 @@ const Arbeidsgivere = () => {
         (arbeidsgiver as any).arbeidsgiverTreffId ??
           arbeidsgiver.organisasjonsnummer,
       );
-      await mutateHendelser();
+      arbeidsgivereHook.mutate();
+      hendelseHook.mutate();
     } finally {
       setSletterArbeidsgiver(false);
     }

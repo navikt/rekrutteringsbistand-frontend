@@ -6,7 +6,7 @@
 import { rekrutteringstreffMock } from './mocks/rekrutteringstreffMock';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { getAPIwithSchema } from '@/app/api/fetcher';
-import useSWR from 'swr';
+import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
 
 const rekrutteringstreffEndepunkt = (id: string) =>
@@ -53,7 +53,7 @@ export const useRekrutteringstreff = (id: string) => {
     throw new Error('ID må være definert');
   }
 
-  return useSWR(
+  return useSWRImmutable(
     rekrutteringstreffEndepunkt(id),
     getAPIwithSchema(RekrutteringstreffSchema),
   );

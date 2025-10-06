@@ -1,5 +1,6 @@
 'use client';
 
+import { jobbsøkereMock } from './mocks/jobbsøkereMock';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { getAPIwithSchema } from '@/app/api/fetcher';
 import { HendelseSchema } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
@@ -32,7 +33,6 @@ export const useJobbsøkere = (id?: string) => {
   return useSWR(key, getAPIwithSchema(JobbsøkereSchema));
 };
 
-export const jobbsøkereMirage = async (server: any) => {
-  const { jobbsøkereMock } = await import('./mocks/jobbsøkereMock');
+export const jobbsøkereMirage = (server: any) => {
   return server.get(jobbsøkereEndepunkt('*'), () => jobbsøkereMock);
 };

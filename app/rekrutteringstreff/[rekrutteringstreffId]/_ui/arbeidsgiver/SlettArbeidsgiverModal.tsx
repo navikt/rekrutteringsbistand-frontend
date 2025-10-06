@@ -57,7 +57,7 @@ const SlettArbeidsgiverModal = ({
 
   const handleConfirm = async () => {
     await Promise.resolve(onConfirm());
-    await arbeidsgivereHook.mutate();
+    arbeidsgivereHook.mutate();
     closeModal();
   };
 

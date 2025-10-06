@@ -1,5 +1,6 @@
 'use client';
 
+import { jobbsøkereMock } from './mocks/jobbsøkereMock';
 import { postApi } from '@/app/api/fetcher';
 import { z } from 'zod';
 
@@ -26,8 +27,7 @@ export const leggTilNyeJobbsøkere = (
   id: string,
 ) => postApi(leggTilNyJobbsøkerEndepunkt(id), kandidater);
 
-export const leggTilNyJobbsøkerMirage = async (server: any) => {
-  const { jobbsøkereMock } = await import('./mocks/jobbsøkereMock');
+export const leggTilNyJobbsøkerMirage = (server: any) => {
   return server.post(
     leggTilNyJobbsøkerEndepunkt('d6a587cd-8797-4b9a-a68b-575373f16d65'),
     () => jobbsøkereMock[0],

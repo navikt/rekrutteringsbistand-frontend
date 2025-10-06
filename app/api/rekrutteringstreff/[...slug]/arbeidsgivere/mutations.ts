@@ -1,5 +1,6 @@
 'use client';
 
+import { arbeidsgivereMock } from './mocks/arbeidsgivereMock';
 import { deleteApi, postApi } from '@/app/api/fetcher';
 import { z } from 'zod';
 
@@ -37,9 +38,7 @@ export const fjernArbeidsgiver = async (
   );
 };
 
-export const arbeidsgiverMutationsMirage = async (server: any) => {
-  const { arbeidsgivereMock } = await import('./mocks/arbeidsgivereMock');
-
+export const arbeidsgiverMutationsMirage = (server: any) => {
   server.post(
     arbeidsgiverEndepunkt('d6a587cd-8797-4b9a-a68b-575373f16d65'),
     () => arbeidsgivereMock()[0],

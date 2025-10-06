@@ -1,5 +1,6 @@
 'use client';
 
+import { arbeidsgivereMock } from './mocks/arbeidsgivereMock';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { getAPIwithSchema } from '@/app/api/fetcher';
 import useSWR from 'swr';
@@ -41,8 +42,7 @@ export const useRekrutteringstreffArbeidsgivere = (id: string) => {
   );
 };
 
-export const rekruteringstreffArbeidsgivereMirage = async (server: any) => {
-  const { arbeidsgivereMock } = await import('./mocks/arbeidsgivereMock');
+export const rekruteringstreffArbeidsgivereMirage = (server: any) => {
   return server.get(rekrutteringstreffArbeidsgivereEndepunkt('*'), () =>
     arbeidsgivereMock(),
   );

@@ -113,7 +113,7 @@ export function useAutosave() {
       try {
         startLagring('rekrutteringstreff');
         await oppdaterRekrutteringstreff(rekrutteringstreffId, dto);
-        await mutate();
+        mutate();
       } finally {
         stoppLagring('rekrutteringstreff');
       }
@@ -187,7 +187,7 @@ export function useInnleggAutosave() {
           await opprettInnleggForTreff(rekrutteringstreffId, payload);
         }
 
-        await mutate();
+        mutate();
 
         setValue('htmlContent', contentToSave, { shouldDirty: false });
       } catch (error) {

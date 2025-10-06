@@ -9,7 +9,7 @@ type Props = {
   rekrutteringstreffId: string;
   harInvitert: boolean;
   tiltidspunktHarPassert: boolean;
-  oppdaterData: () => Promise<void>;
+  oppdaterData: () => void;
 };
 
 const FullførRekrutteringstreffButton: FC<Props> = ({
@@ -35,7 +35,7 @@ const FullførRekrutteringstreffButton: FC<Props> = ({
 
     try {
       await fullførRekrutteringstreff(rekrutteringstreffId);
-      await oppdaterData();
+      oppdaterData();
       skalLukke = true;
     } catch (error) {
       new RekbisError({

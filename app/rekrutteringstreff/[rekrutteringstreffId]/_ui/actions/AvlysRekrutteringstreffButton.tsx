@@ -7,7 +7,7 @@ import { FC, useRef, useState } from 'react';
 
 type Props = {
   rekrutteringstreffId: string;
-  oppdaterData: () => Promise<void>;
+  oppdaterData: () => void;
   onAvlyst: () => void;
 };
 
@@ -34,7 +34,7 @@ const AvlysRekrutteringstreffButton: FC<Props> = ({
     try {
       await avlysRekrutteringstreff(rekrutteringstreffId);
       onAvlyst();
-      await oppdaterData();
+      oppdaterData();
       skalLukke = true;
     } catch (error) {
       new RekbisError({

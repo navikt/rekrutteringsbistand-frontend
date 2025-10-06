@@ -31,9 +31,7 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({
   const arbeidsgivereHook =
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
   const hendelseHook = useArbeidsgiverHendelser(rekrutteringstreffId);
-  const { data: arbeidsgivere, mutate: mutateArbeidsgivere } =
-    arbeidsgivereHook;
-  const { mutate: mutateHendelser } = hendelseHook;
+  const { data: arbeidsgivere } = arbeidsgivereHook;
 
   const [sletterArbeidsgiver, setSletterArbeidsgiver] = useState(false);
   const bekreftSlett = async (arbeidsgiver: ArbeidsgiverDTO) => {
@@ -45,7 +43,7 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({
         (arbeidsgiver as any).arbeidsgiverTreffId ??
           arbeidsgiver.organisasjonsnummer,
       );
-      await mutateHendelser();
+      hendelseHook.mutate();
     } finally {
       setSletterArbeidsgiver(false);
     }
@@ -89,8 +87,8 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({
           { organisasjonsnummer: valgt.organisasjonsnummer, navn: valgt.navn },
           rekrutteringstreffId,
         );
-        await mutateArbeidsgivere();
-        await mutateHendelser();
+        arbeidsgivereHook.mutate();
+        hendelseHook.mutate();
       } catch (error) {
         throw new RekbisError({
           message: 'Feiler når prøver å legge til arbeidsgiver.',
@@ -105,8 +103,8 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({
     variant,
     eksisterendeOrgnr,
     rekrutteringstreffId,
-    mutateArbeidsgivere,
-    mutateHendelser,
+    arbeidsgivereHook,
+    hendelseHook,
     arbeidsgivere,
   ]);
 
@@ -120,8 +118,8 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({
           rekrutteringstreffId,
         );
       }
-      await mutateArbeidsgivere();
-      await mutateHendelser();
+      arbeidsgivereHook.mutate();
+      hendelseHook.mutate();
       setPending([]);
       onCompleted?.();
     } catch (error) {

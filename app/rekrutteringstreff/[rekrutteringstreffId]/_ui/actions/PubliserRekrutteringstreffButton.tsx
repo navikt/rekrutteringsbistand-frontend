@@ -9,7 +9,7 @@ import { FC, useRef, useState } from 'react';
 type Props = {
   erPubliseringklar: boolean;
   rekrutteringstreffId: string;
-  oppdaterData: () => Promise<void>;
+  oppdaterData: () => void;
   onPublisert?: () => void;
 };
 
@@ -36,7 +36,7 @@ const PubliserRekrutteringstreffButton: FC<Props> = ({
     let skalLukke = false;
     try {
       await publiserRekrutteringstreff(rekrutteringstreffId);
-      await oppdaterData();
+      oppdaterData();
       onPublisert?.();
       skalLukke = true;
     } catch (error) {
