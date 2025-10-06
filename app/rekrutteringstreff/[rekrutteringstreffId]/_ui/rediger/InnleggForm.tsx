@@ -69,7 +69,7 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
     kiErrorBorder,
     forceSave,
     showAnalysis,
-    publisertRedigeringsmodus,
+    erRedigeringAvPublisertTreff,
     runValidationAndMaybeSave,
     onForceSave,
   } = useKiAnalyse({
@@ -141,7 +141,7 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
             analyseError={analyseError}
             forceSave={forceSave}
             showAnalysis={showAnalysis}
-            publisertRedigeringsmodus={publisertRedigeringsmodus}
+            erRedigeringAvPublisertTreff={erRedigeringAvPublisertTreff}
             onForceSave={onForceSave}
             variant='innlegg'
             ariaLabel='Analyse av innlegg'
