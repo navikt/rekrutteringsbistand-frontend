@@ -14,7 +14,7 @@ import { StillingsStatus } from '@/app/stilling/_ui/stilling-typer';
 import { visStillingsDataInfo } from '@/app/stilling/_util/stillingInfoUtil';
 import SideScroll from '@/components/SideScroll';
 import PanelHeader from '@/components/layout/PanelHeader';
-import SideLayout from '@/components/layout/SideLayout';
+import SideLayout, { SideLayoutMobilTop } from '@/components/layout/SideLayout';
 import { Alert, Heading, Tabs } from '@navikt/ds-react';
 import { useQueryState } from 'nuqs';
 import { useRef } from 'react';
@@ -85,7 +85,6 @@ export default function StillingsSidePage() {
           }
           skjulFremdriftspanel={skjulFremdriftspanel}
           fremdriftspanel={<SideScroll>{fremdriftsPanel()}</SideScroll>}
-          fremdriftspanelTop={fremdriftsPanel(true)}
         >
           {ugyldigStilling && !erUtkast && (
             <Alert variant='error'>
@@ -101,6 +100,7 @@ export default function StillingsSidePage() {
           )}
           <Tabs.Panel value={StillingFane.STILLING}>
             <SideScroll>
+              <SideLayoutMobilTop>{fremdriftsPanel(true)}</SideLayoutMobilTop>
               <OmStillingenHeader />
               {erUtkast && <StillingsutkastMelding />}
               <OmStillingen printRef={printRef} />
