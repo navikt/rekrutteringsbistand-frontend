@@ -64,7 +64,7 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
     validating,
     kiErrorBorder,
     forceSave,
-    publisertRedigeringsmodus,
+    erRedigeringAvPublisertTreff,
     runValidationAndMaybeSave,
     onForceSave,
   } = useKiAnalyse({
@@ -148,16 +148,19 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
                     }}
                     onBlur={async () => {
                       field.onBlur();
-                      await runValidationAndMaybeSave();
+                      setTimeout(async () => {
+                        if (!validating && !isSubmitting) {
+                          await runValidationAndMaybeSave();
+                        }
+                      }, 0);
                     }}
                     onFocus={() => {
                       const current = field.value;
-                      if (
-                        typeof current === 'string' &&
-                        current.trim() === DEFAULT_TITTEL
-                      ) {
-                        // Tøm feltet når brukeren fokuserer hvis defaultverdi er satt
-                        // (samme effekt som ved bruk av clear-knappen)
+                      if (!current || typeof current !== 'string') return;
+
+                      const erDefaultTittel = current.trim() === DEFAULT_TITTEL;
+
+                      if (erDefaultTittel) {
                         setValue('tittel', '', {
                           shouldValidate: false,
                           shouldDirty: false,
@@ -191,7 +194,7 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
             analyseError={analyseError}
             forceSave={forceSave}
             showAnalysis={true}
-            publisertRedigeringsmodus={publisertRedigeringsmodus}
+            erRedigeringAvPublisertTreff={erRedigeringAvPublisertTreff}
             onForceSave={onForceSave}
             variant='tittel'
             ariaLabel='Analyse av tittel'

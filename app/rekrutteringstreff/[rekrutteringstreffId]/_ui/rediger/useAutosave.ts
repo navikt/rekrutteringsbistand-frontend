@@ -29,16 +29,19 @@ export const erEditMode = (): boolean => {
   }
 };
 
+/** Sjekker om treff er publisert (INVITERE eller FULLFØRE steg) */
 export const erPublisert = (treff: any): boolean => {
   const step = getActiveStepFromHendelser(treff?.hendelser);
   return step === 'INVITERE' || step === 'FULLFØRE';
 };
 
+/** Blokkerer autosave når publisert og i edit-mode (med mindre force=true) */
 export const skalHindreAutosave = (treff: any, force?: boolean): boolean => {
   if (force) return false;
   return erPublisert(treff) && erEditMode();
 };
 
+/** Autosave av rekrutteringstreff (blokkeres når publisert og i edit-mode) */
 export function useAutosave() {
   const { rekrutteringstreffId, startLagring, stoppLagring } =
     useRekrutteringstreffContext();
@@ -46,42 +49,52 @@ export function useAutosave() {
   const { getValues, trigger, formState } = useFormContext<AnyValues>();
 
   const buildFullDto = useCallback(() => {
-    const v = getValues();
+    const formVerdier = getValues();
 
     const fraTid =
-      toIsoUtil(v.fraDato ?? null, v.fraTid) ?? treff?.fraTid ?? null;
+      toIsoUtil(formVerdier.fraDato ?? null, formVerdier.fraTid) ??
+      treff?.fraTid ??
+      null;
 
     const tilTid =
-      toIsoUtil(v.tilDato ?? v.fraDato ?? null, v.tilTid) ??
+      toIsoUtil(
+        formVerdier.tilDato ?? formVerdier.fraDato ?? null,
+        formVerdier.tilTid,
+      ) ??
       treff?.tilTid ??
       null;
 
     const svarfrist =
-      toIsoUtil(v.svarfristDato ?? null, v.svarfristTid) ??
+      toIsoUtil(formVerdier.svarfristDato ?? null, formVerdier.svarfristTid) ??
       treff?.svarfrist ??
       null;
 
     // Bare inkluder tittel dersom den faktisk har innhold (API krever min. 1 tegn når feltet er med)
-    const trimmedTitle = typeof v.tittel === 'string' ? v.tittel.trim() : '';
-    const includeTitle =
+    const trimmedTitle =
+      typeof formVerdier.tittel === 'string' ? formVerdier.tittel.trim() : '';
+    const skalInkludereTittel =
       trimmedTitle.length > 0 ||
       (treff?.tittel && treff.tittel.trim().length > 0);
 
     return {
-      ...(includeTitle && {
+      ...(skalInkludereTittel && {
         tittel: trimmedTitle.length > 0 ? trimmedTitle : treff?.tittel,
       }),
-      beskrivelse: (v.beskrivelse ?? treff?.beskrivelse ?? null) as
+      beskrivelse: (formVerdier.beskrivelse ?? treff?.beskrivelse ?? null) as
         | string
         | null,
       fraTid,
       tilTid,
       svarfrist,
-      gateadresse: (v.gateadresse ?? treff?.gateadresse ?? null) as
+      gateadresse: (formVerdier.gateadresse ?? treff?.gateadresse ?? null) as
         | string
         | null,
-      postnummer: (v.postnummer ?? treff?.postnummer ?? null) as string | null,
-      poststed: (v.poststed ?? treff?.poststed ?? null) as string | null,
+      postnummer: (formVerdier.postnummer ?? treff?.postnummer ?? null) as
+        | string
+        | null,
+      poststed: (formVerdier.poststed ?? treff?.poststed ?? null) as
+        | string
+        | null,
     };
   }, [getValues, treff]);
 
@@ -93,18 +106,18 @@ export function useAutosave() {
         return;
       }
 
-      // Kjør validering for spesifikke felter, eller hele skjemaet hvis ingen er spesifisert
-      const shouldValidateAll =
+      const skalValidereAlleFelder =
         !fieldsToValidate || fieldsToValidate.length === 0;
-      const ok = await trigger(
-        shouldValidateAll ? undefined : (fieldsToValidate as any),
+      const valideringOk = await trigger(
+        skalValidereAlleFelder ? undefined : (fieldsToValidate as any),
         {
           shouldFocus: false,
         },
       );
-      if (!ok) return;
 
-      // Ikke lagre dersom vi har en manuell periodefeil (lik eller negativ tid)
+      if (!valideringOk) return;
+
+      // Ikke lagre ved periodefeil (lik eller negativ tid)
       if ((formState?.errors as any)?.root?.type === 'manualPeriod') {
         return;
       }
@@ -133,6 +146,7 @@ export function useAutosave() {
   return { save };
 }
 
+/** Autosave av innlegg (HTML-innhold) i rekrutteringstreff */
 export function useInnleggAutosave() {
   const { rekrutteringstreffId, startLagring, stoppLagring } =
     useRekrutteringstreffContext();
@@ -147,31 +161,30 @@ export function useInnleggAutosave() {
     async (fieldsToValidate?: string[], force?: boolean) => {
       if (!rekrutteringstreffId) return;
 
-      // Ikke autosave hvis publisert og i redigering, med mindre vi eksplisitt tvinger lagring (Publiser på nytt)
       if (skalHindreAutosave(treff as any, force)) {
         return;
       }
 
       if (fieldsToValidate && fieldsToValidate.length) {
-        const ok = await trigger(fieldsToValidate as any, {
+        const valideringOk = await trigger(fieldsToValidate as any, {
           shouldFocus: false,
         });
-        if (!ok) return;
+        if (!valideringOk) return;
       }
 
-      const contentToSave = (getValues('htmlContent') ?? '').toString();
-      if (!contentToSave.trim()) return;
+      const innholdSomSkalLagres = (getValues('htmlContent') ?? '').toString();
+      if (!innholdSomSkalLagres.trim()) return;
 
       try {
-        const navnForPayload =
+        const forfatterNavn =
           innlegg?.opprettetAvPersonNavn ||
           (innlegg as any)?.opprettetAvPersonNavident ||
           'Markedskontakt';
 
         const payload: OpprettEllerOppdaterInnleggDto = {
-          htmlContent: contentToSave,
+          htmlContent: innholdSomSkalLagres,
           tittel: 'Om treffet',
-          opprettetAvPersonNavn: navnForPayload,
+          opprettetAvPersonNavn: forfatterNavn,
           opprettetAvPersonBeskrivelse: 'Markedskontakt',
           sendesTilJobbsokerTidspunkt: formatInTimeZone(
             new Date(),
@@ -181,6 +194,7 @@ export function useInnleggAutosave() {
         };
 
         startLagring('innlegg');
+
         if (innlegg?.id) {
           await oppdaterEttInnlegg(rekrutteringstreffId, innlegg.id, payload);
         } else {
@@ -189,7 +203,7 @@ export function useInnleggAutosave() {
 
         mutate();
 
-        setValue('htmlContent', contentToSave, { shouldDirty: false });
+        setValue('htmlContent', innholdSomSkalLagres, { shouldDirty: false });
       } catch (error) {
         new RekbisError({ message: 'Lagring av innlegg feilet.', error });
       } finally {

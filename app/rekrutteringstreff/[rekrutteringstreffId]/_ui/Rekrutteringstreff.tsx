@@ -21,7 +21,7 @@ import { Tabs } from '@navikt/ds-react';
 import { formatDistanceToNow } from 'date-fns';
 import { nb } from 'date-fns/locale/nb';
 import { parseAsString, useQueryState } from 'nuqs';
-import { FC, useCallback, useEffect, useMemo, useRef } from 'react';
+import { FC, useCallback, useEffect, useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 export enum RekrutteringstreffTabs {
@@ -46,6 +46,7 @@ const Rekrutteringstreff: FC = () => {
   const {
     avlyst,
     harPublisert,
+    activeStep,
     treff: rekrutteringstreff,
     innlegg,
     rekrutteringstreffHook,
@@ -56,55 +57,38 @@ const Rekrutteringstreff: FC = () => {
   const { data: arbeidsgivere } =
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
 
-  // Bruk sentralisert sjekkliste-hook
   const { erPubliseringklar } = useSjekklisteStatus();
 
-  const viserFullskjermForhåndsvisning = useMemo(() => {
-    if (avlyst) return true;
-    return modus === 'preview-page';
-  }, [avlyst, modus]);
+  const erAvlystEllerFullført =
+    activeStep === 'AVLYST' || activeStep === 'FULLFØRE';
 
-  const erILesemodus = useMemo(() => {
-    if (viserFullskjermForhåndsvisning) return false;
-    if (modus === 'edit') return false;
-    return true;
-  }, [viserFullskjermForhåndsvisning, modus]);
+  const viserFullskjermForhåndsvisning = useMemo(
+    () => modus === 'preview-page' && !erAvlystEllerFullført,
+    [modus, erAvlystEllerFullført],
+  );
+
+  const eksplisittEditModus = modus === 'edit';
+  const autoEditModus =
+    rekrutteringstreff && !harPublisert && !erAvlystEllerFullført;
+
+  const erIEditModus = useMemo(
+    () => eksplisittEditModus || autoEditModus,
+    [eksplisittEditModus, autoEditModus],
+  );
+
+  const erILesemodus = !viserFullskjermForhåndsvisning && !erIEditModus;
 
   useEffect(() => {
-    if (avlyst && modus !== 'preview-page') {
-      setModus('preview-page');
-    }
-  }, [avlyst, modus, setModus]);
-
-  useEffect(() => {
-    // Vent til data er lastet før vi evt. tvinger edit-modus. Uten dette
-    // kan vi sette ?mode=edit før vi vet at treffet er publisert, og da
-    // forblir man i edit selv etter publisering.
     if (!rekrutteringstreff) return;
-    if (
-      !harPublisert &&
-      !avlyst &&
-      modus !== 'edit' &&
-      modus !== 'preview-page'
-    ) {
-      setModus('edit');
-    }
-  }, [rekrutteringstreff, avlyst, harPublisert, modus, setModus]);
 
-  const harPublisertTidligereRef = useRef(harPublisert);
+    const erPreviewMedFeilFane =
+      modus === 'preview-page' && fane !== RekrutteringstreffTabs.OM_TREFFET;
+    const harModusVedAvlystEllerFullført = erAvlystEllerFullført && modus;
 
-  useEffect(() => {
-    if (
-      harPublisert &&
-      !harPublisertTidligereRef.current &&
-      !avlyst &&
-      modus === 'edit'
-    ) {
+    if (erPreviewMedFeilFane || harModusVedAvlystEllerFullført) {
       setModus('');
     }
-
-    harPublisertTidligereRef.current = harPublisert;
-  }, [harPublisert, avlyst, modus, setModus]);
+  }, [rekrutteringstreff, modus, fane, erAvlystEllerFullført, setModus]);
 
   const scrollToTop = useCallback(() => {
     if (typeof window !== 'undefined') {
@@ -115,12 +99,11 @@ const Rekrutteringstreff: FC = () => {
   }, []);
 
   const handleToggleForhåndsvisning = (nyForhåndsvisning: boolean) => {
-    if (avlyst) return;
     if (nyForhåndsvisning) {
-      // Gå til preview-page når man klikker Forhåndsvisning
       setModus('preview-page');
+      setFane(RekrutteringstreffTabs.OM_TREFFET);
     } else {
-      setModus('edit');
+      setModus(erIEditModus ? 'edit' : '');
     }
     scrollToTop();
   };
@@ -131,7 +114,6 @@ const Rekrutteringstreff: FC = () => {
   };
 
   const onAvbrytRedigering = () => {
-    // Etter publisering, ved avbryt redigering, gå til vanlig lesemodus
     setModus('');
     scrollToTop();
   };
@@ -171,11 +153,6 @@ const Rekrutteringstreff: FC = () => {
 
   const skalViseHeader =
     modus === 'preview-page' ? true : !viserFullskjermForhåndsvisning;
-
-  const onAvlyst = useCallback(() => {
-    setModus('preview-page');
-    scrollToTop();
-  }, [scrollToTop, setModus]);
 
   const onPublisert = useCallback(() => {
     setModus('');
@@ -244,7 +221,6 @@ const Rekrutteringstreff: FC = () => {
         await saveInnlegg(undefined, true);
       }
       await markerSisteKiLoggSomLagret();
-      // Etter republisering: gå til standard lesemodus (uten ?mode)
       setModus('');
       scrollToTop();
     } finally {
@@ -264,12 +240,12 @@ const Rekrutteringstreff: FC = () => {
 
   const tittelKiFeil = (watch('tittelKiFeil' as any) as any) ?? false;
   const innleggKiFeil = (watch('innleggKiFeil' as any) as any) ?? false;
-  const anyKiFeil = !!tittelKiFeil || !!innleggKiFeil;
+  const harKiFeil = !!tittelKiFeil || !!innleggKiFeil;
   const harAndreSkjemafeil = Boolean(
     formState.errors &&
       Object.keys(formState.errors).some((key) => key !== 'root'),
   );
-  const harFeil = anyKiFeil || harAndreSkjemafeil;
+  const harFeil = harKiFeil || harAndreSkjemafeil;
 
   const DEFAULT_TITTEL = 'Treff uten navn';
   const lagretTittel = rekrutteringstreff?.tittel ?? '';
@@ -297,27 +273,24 @@ const Rekrutteringstreff: FC = () => {
       <SideLayout
         {...layoutProps}
         header={
-          !avlyst ? (
-            <RekrutteringstreffHeader
-              skalViseHeader={true}
-              breadcrumbs={breadcrumbs}
-              erIForhåndsvisning={true}
-              viserFullskjermForhåndsvisning={true}
-              jobbsøkereAntall={jobbsøkere?.length ?? 0}
-              arbeidsgivereAntall={arbeidsgivere?.length ?? 0}
-              lagrerNoe={lagrerNoe}
-              lagretTekst={lagretTekst}
-              erPubliseringklar={erPubliseringklar}
-              onToggleForhåndsvisning={handleToggleForhåndsvisning}
-              onBekreftRedigerPublisert={onBekreftRedigerPublisert}
-              onAvlyst={onAvlyst}
-              onAvbrytRedigering={onAvbrytRedigering}
-              onPublisert={onPublisert}
-              onRepubliser={onRepubliser}
-              republiserDisabled={republiserDisabled}
-              inTabsContext={false}
-            />
-          ) : undefined
+          <RekrutteringstreffHeader
+            skalViseHeader={true}
+            breadcrumbs={breadcrumbs}
+            erIForhåndsvisning={false}
+            viserFullskjermForhåndsvisning={true}
+            jobbsøkereAntall={jobbsøkere?.length ?? 0}
+            arbeidsgivereAntall={arbeidsgivere?.length ?? 0}
+            lagrerNoe={lagrerNoe}
+            lagretTekst={lagretTekst}
+            erPubliseringklar={erPubliseringklar}
+            onToggleForhåndsvisning={handleToggleForhåndsvisning}
+            onBekreftRedigerPublisert={onBekreftRedigerPublisert}
+            onAvbrytRedigering={onAvbrytRedigering}
+            onPublisert={onPublisert}
+            onRepubliser={onRepubliser}
+            republiserDisabled={republiserDisabled}
+            inTabsContext={false}
+          />
         }
       >
         <SideScroll>
@@ -347,7 +320,6 @@ const Rekrutteringstreff: FC = () => {
               erPubliseringklar={erPubliseringklar}
               onToggleForhåndsvisning={handleToggleForhåndsvisning}
               onBekreftRedigerPublisert={onBekreftRedigerPublisert}
-              onAvlyst={onAvlyst}
               onAvbrytRedigering={onAvbrytRedigering}
               onPublisert={onPublisert}
               onRepubliser={onRepubliser}
