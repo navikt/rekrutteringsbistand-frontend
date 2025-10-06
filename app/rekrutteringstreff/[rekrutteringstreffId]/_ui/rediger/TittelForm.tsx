@@ -74,7 +74,6 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
     triggerRHF,
     getValues,
     setValue,
-    isSubmitting,
     setKiFeilFieldName: 'tittelKiFeil' as any,
     saveCallback,
     setKiLagret,

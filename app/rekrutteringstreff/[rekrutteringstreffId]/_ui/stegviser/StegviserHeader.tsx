@@ -14,7 +14,7 @@ const StegviserHeader: FC<Props> = () => {
     activeStep,
     sjekklistePunkterFullfort,
     totaltAntallSjekklistePunkter,
-    inviterePunkterFullfort,
+    antallInviterePunkterFullfort,
     totaltAntallInviterePunkter,
   } = useStegviser();
 
@@ -51,7 +51,7 @@ const StegviserHeader: FC<Props> = () => {
         )}
         {activeStep === 'INVITERE' && (
           <ProgressMedTeller
-            value={inviterePunkterFullfort}
+            value={antallInviterePunkterFullfort}
             max={totaltAntallInviterePunkter}
             ariaLabel='Fremdrift for invitasjon'
           />

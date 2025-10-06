@@ -21,7 +21,6 @@ interface UseKiAnalyseParams<FormValues extends Record<string, any>> {
   triggerRHF: UseFormTrigger<FormValues>;
   getValues: UseFormGetValues<FormValues>;
   setValue: UseFormSetValue<FormValues>;
-  isSubmitting: boolean;
   setKiFeilFieldName: keyof FormValues & string;
   saveCallback: (force?: boolean) => Promise<void>;
   setKiLagret?: (args: { id: string; lagret: boolean }) => Promise<void>;
@@ -49,7 +48,6 @@ export function useKiAnalyse<FormValues extends Record<string, any>>(
     triggerRHF,
     getValues,
     setValue,
-    isSubmitting,
     setKiFeilFieldName,
     saveCallback,
     setKiLagret,
@@ -190,8 +188,6 @@ export function useKiAnalyse<FormValues extends Record<string, any>>(
     rekrutteringstreffId,
     feltType,
     forceSave,
-    validating,
-    isSubmitting,
     erRedigeringAvPublisertTreff,
     saveCallback,
     setKiLagret,
