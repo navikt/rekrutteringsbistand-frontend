@@ -3,7 +3,7 @@
 import {
   OppdaterRekrutteringstreffDTO,
   OppdaterRekrutteringstreffSchema,
-} from '@/app/api/rekrutteringstreff/oppdater-rekrutteringstreff/oppdaterRerkutteringstreff';
+} from '@/app/api/rekrutteringstreff/mutations';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { format, parseISO } from 'date-fns';

@@ -4,11 +4,10 @@ import { useRekrutteringstreffData } from '../hooks/useRekrutteringstreffData';
 import { InviterInternalDto, InviterModal } from './InviterModal';
 import JobbsøkerKort from './JobbsøkerKort';
 import LeggTilJobbsøkerKnapp from './LeggTilJobbsøkerKnapp';
-import OppmøteModal from './OppmøteModal';
 import {
   JobbsøkerDTO,
   useJobbsøkere,
-} from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
+} from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_contexts/RekrutteringstreffContext';
 import SWRLaster from '@/components/SWRLaster';
 import { BodyShort, Button, TagProps } from '@navikt/ds-react';
@@ -18,12 +17,6 @@ import * as React from 'react';
 
 const erInvitert = (j: JobbsøkerDTO) =>
   j.hendelser.some((h) => h.hendelsestype === 'INVITER');
-
-const harMøttOpp = (j: JobbsøkerDTO) =>
-  j.hendelser.some((h) => h.hendelsestype === 'MØT_OPP');
-
-const harIkkeMøttOpp = (j: JobbsøkerDTO) =>
-  j.hendelser.some((h) => h.hendelsestype === 'IKKE_MØT_OPP');
 
 const jobbsøkerTilInviterDto = (
   jobbsøker: JobbsøkerDTO,
@@ -41,7 +34,6 @@ const Jobbsøkere = () => {
     useRekrutteringstreffData();
   const jobbsøkerHook = useJobbsøkere(rekrutteringstreffId);
   const inviterModalRef = useRef<HTMLDialogElement>(null);
-  const oppmøteModalRef = useRef<HTMLDialogElement>(null);
 
   const [valgteJobbsøkere, setValgteJobbsøkere] = useState<
     InviterInternalDto[]
@@ -55,11 +47,6 @@ const Jobbsøkere = () => {
   const harAvsluttetInvitasjon =
     rekrutteringstreffData?.hendelser?.some(
       (h) => h.hendelsestype === 'AVSLUTT_INVITASJON',
-    ) ?? false;
-
-  const harAvsluttetOppfølging =
-    rekrutteringstreffData?.hendelser?.some(
-      (h) => h.hendelsestype === 'AVSLUTT_OPPFØLGING',
     ) ?? false;
 
   const handleCheckboxChange = (jobbsøker: JobbsøkerDTO, erValgt: boolean) => {
@@ -139,12 +126,6 @@ const Jobbsøkere = () => {
     jobbsøkerHook.mutate();
   };
 
-  const handleOppmøteSendt = () => {
-    oppmøteModalRef.current?.close();
-    setValgteJobbsøkere([]);
-    jobbsøkerHook.mutate();
-  };
-
   return (
     <SWRLaster hooks={[jobbsøkerHook]}>
       {(jobbsøkere) => {
@@ -156,27 +137,12 @@ const Jobbsøkere = () => {
           (j) => !invitertePersonTreffIder.has(j.personTreffId),
         );
 
-        const personerMedOppmøtestatusIder = new Set(
-          jobbsøkere
-            .filter((j) => harMøttOpp(j) || harIkkeMøttOpp(j))
-            .map((j) => j.personTreffId),
-        );
-
-        const valgteUtenOppmøtestatus = valgteJobbsøkere.filter(
-          (j) => !personerMedOppmøtestatusIder.has(j.personTreffId),
-        );
-
         const inviterbareJobbsøkere = jobbsøkere.filter(
           (j) => !invitertePersonTreffIder.has(j.personTreffId),
         );
-        const oppmøteklareJobbsøkere = jobbsøkere.filter(
-          (j) => !personerMedOppmøtestatusIder.has(j.personTreffId),
-        );
         const jobbsøkereSomKanLeggesTil = !harAvsluttetInvitasjon
           ? inviterbareJobbsøkere
-          : !harAvsluttetOppfølging
-            ? oppmøteklareJobbsøkere
-            : [];
+          : [];
         const kanViseMarkerAlle = jobbsøkere.length > 0;
 
         return (
@@ -204,14 +170,6 @@ const Jobbsøkere = () => {
                     }}
                   >
                     Inviter ({valgteSomIkkeErInvitert.length})
-                  </Button>
-                )}
-                {harAvsluttetInvitasjon && !harAvsluttetOppfølging && (
-                  <Button
-                    disabled={valgteUtenOppmøtestatus.length === 0}
-                    onClick={() => oppmøteModalRef.current?.showModal()}
-                  >
-                    Marker Oppmøte ({valgteUtenOppmøtestatus.length})
                   </Button>
                 )}
                 <LeggTilJobbsøkerKnapp />
@@ -274,17 +232,6 @@ const Jobbsøkere = () => {
                 )
               }
             />
-
-            <OppmøteModal
-              modalref={oppmøteModalRef}
-              oppmøteInternalDtoer={valgteUtenOppmøtestatus}
-              onOppmøteSendt={handleOppmøteSendt}
-              onFjernJobbsøker={(fnr) =>
-                setValgteJobbsøkere((prev) =>
-                  prev.filter((j) => j.fødselsnummer !== fnr),
-                )
-              }
-            />
           </div>
         );
       }}
@@ -311,10 +258,6 @@ export const statusInfoForHendelsestype = (
       return { text: 'Invitert', variant: 'info' };
     case 'OPPRETT':
       return { text: 'Lagt til', variant: 'info' };
-    case 'MØT_OPP':
-      return { text: 'Møtt opp', variant: 'info' };
-    case 'IKKE_MØT_OPP':
-      return { text: 'Ikke møtt opp', variant: 'info' };
     default:
       return undefined;
   }

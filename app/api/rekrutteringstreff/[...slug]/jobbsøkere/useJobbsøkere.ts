@@ -3,21 +3,14 @@
 import { jobbsøkereMock } from './mocks/jobbsøkereMock';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { getAPIwithSchema } from '@/app/api/fetcher';
+import { HendelseSchema } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import useSWR from 'swr';
 import { z } from 'zod';
 
 export const jobbsøkereEndepunkt = (id: string) =>
   `${RekrutteringstreffAPI.internUrl}/${id}/jobbsoker`;
 
-const HendelseSchema = z.object({
-  id: z.string(),
-  tidspunkt: z.string(),
-  hendelsestype: z.string(),
-  opprettetAvAktørType: z.string(),
-  aktørIdentifikasjon: z.string(),
-});
-
-const JobbsøkerSchema = z.object({
+export const JobbsøkerSchema = z.object({
   personTreffId: z.string(),
   fødselsnummer: z.string(),
   kandidatnummer: z.string().nullable(),
@@ -29,18 +22,15 @@ const JobbsøkerSchema = z.object({
   hendelser: z.array(HendelseSchema),
 });
 
-const JobbsøkereSchema = z.array(JobbsøkerSchema);
+export const JobbsøkereSchema = z.array(JobbsøkerSchema);
 
-export type JobbsøkereDTO = z.infer<typeof JobbsøkereSchema>;
 export type JobbsøkerDTO = z.infer<typeof JobbsøkerSchema>;
+export type JobbsøkereDTO = z.infer<typeof JobbsøkereSchema>;
+export type JobbsøkerHendelseDTO = z.infer<typeof HendelseSchema>;
 
 export const useJobbsøkere = (id?: string) => {
   const key = id ? jobbsøkereEndepunkt(id) : null;
-  const swr = useSWR(key, getAPIwithSchema(JobbsøkereSchema));
-
-  return {
-    ...swr,
-  };
+  return useSWR(key, getAPIwithSchema(JobbsøkereSchema));
 };
 
 export const jobbsøkereMirage = (server: any) => {

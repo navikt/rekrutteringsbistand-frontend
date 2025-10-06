@@ -12,7 +12,7 @@ import { z } from 'zod';
 const rekrutteringstreffEndepunkt = (id: string) =>
   `${RekrutteringstreffAPI.internUrl}/${id}`;
 
-const HendelseSchema = z.object({
+export const HendelseSchema = z.object({
   id: z.string(),
   tidspunkt: z.string(),
   hendelsestype: z.string(),
@@ -20,7 +20,7 @@ const HendelseSchema = z.object({
   aktørIdentifikasjon: z.string().nullable(),
 });
 
-export const RekrutteringstreffSchema = z.object({
+export const RekrutteringstreffBaseSchema = z.object({
   id: z.string(),
   tittel: z.string(),
   beskrivelse: z.string().nullable(),
@@ -33,10 +33,19 @@ export const RekrutteringstreffSchema = z.object({
   status: z.string(),
   opprettetAvPersonNavident: z.string(),
   opprettetAvNavkontorEnhetId: z.string(),
+});
+
+export const RekrutteringstreffSchema = RekrutteringstreffBaseSchema.extend({
   hendelser: z.array(HendelseSchema),
 });
 
+export const RekrutteringstreffUtenHendelserSchema =
+  RekrutteringstreffBaseSchema;
+
 export type RekrutteringstreffDTO = z.infer<typeof RekrutteringstreffSchema>;
+export type RekrutteringstreffUtenHendelserDTO = z.infer<
+  typeof RekrutteringstreffUtenHendelserSchema
+>;
 export type HendelseDTO = z.infer<typeof HendelseSchema>;
 
 export const useRekrutteringstreff = (id: string) => {

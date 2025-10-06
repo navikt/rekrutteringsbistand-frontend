@@ -63,8 +63,8 @@ export const useRekrutteringstreffData = () => {
 
   const innleggHtmlFraBackend = innlegg?.[0]?.htmlContent ?? null;
 
-  const oppdaterData = async () => {
-    await rekrutteringstreffHook.mutate();
+  const oppdaterData = () => {
+    rekrutteringstreffHook.mutate();
   };
 
   return {

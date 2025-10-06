@@ -19,7 +19,7 @@ const RekrutteringstreffRedigering: FC<RekrutteringstreffRedigeringProps> = ({
   const { harPublisert, oppdaterData } = useRekrutteringstreffData();
 
   const håndterOppdatert = async () => {
-    await oppdaterData();
+    oppdaterData();
     onUpdated?.();
   };
 

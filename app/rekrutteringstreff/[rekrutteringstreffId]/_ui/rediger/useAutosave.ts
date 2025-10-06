@@ -2,7 +2,7 @@
 
 import { toIso as toIsoUtil } from './tidspunkt/utils';
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
-import { oppdaterRekrutteringstreff } from '@/app/api/rekrutteringstreff/oppdater-rekrutteringstreff/oppdaterRerkutteringstreff';
+import { oppdaterRekrutteringstreff } from '@/app/api/rekrutteringstreff/mutations';
 import {
   oppdaterEttInnlegg,
   opprettInnleggForTreff,
@@ -113,7 +113,7 @@ export function useAutosave() {
       try {
         startLagring('rekrutteringstreff');
         await oppdaterRekrutteringstreff(rekrutteringstreffId, dto);
-        await mutate();
+        mutate();
       } finally {
         stoppLagring('rekrutteringstreff');
       }
@@ -187,7 +187,7 @@ export function useInnleggAutosave() {
           await opprettInnleggForTreff(rekrutteringstreffId, payload);
         }
 
-        await mutate();
+        mutate();
 
         setValue('htmlContent', contentToSave, { shouldDirty: false });
       } catch (error) {
