@@ -6,7 +6,7 @@ import GjenapneRekrutteringstreffButton from '../actions/GjenapneRekrutteringstr
 import PubliserRekrutteringstreffButton from '../actions/PubliserRekrutteringstreffButton';
 import RedigerPublisertButton from '../actions/RedigerPublisertButton';
 import RepubliserRekrutteringstreffButton from '../actions/RepubliserRekrutteringstreffButton';
-import SlettRekrutteringstreffModal from '../actions/SlettRekrutteringstreffModal';
+import SlettRekrutteringstreffButton from '../actions/SlettRekrutteringstreffButton';
 import { useRekrutteringstreffData } from '../hooks/useRekrutteringstreffData';
 import { Button } from '@navikt/ds-react';
 import { FC } from 'react';
@@ -113,7 +113,7 @@ const HeaderActions: FC<Props> = ({
         >
           Forhåndsvis
         </Button>
-        <SlettRekrutteringstreffModal />
+        <SlettRekrutteringstreffButton />
       </div>
     );
   }
@@ -163,7 +163,7 @@ const HeaderActions: FC<Props> = ({
         />
       )}
 
-      {activeStep === 'PUBLISERE' && <SlettRekrutteringstreffModal />}
+      {activeStep === 'PUBLISERE' && <SlettRekrutteringstreffButton />}
     </div>
   );
 };
