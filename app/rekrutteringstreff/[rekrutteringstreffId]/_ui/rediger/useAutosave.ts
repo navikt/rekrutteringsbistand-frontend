@@ -18,7 +18,6 @@ import { useFormContext } from 'react-hook-form';
 
 type AnyValues = Record<string, any>;
 
-/** Sjekker om bruker er i redigeringsmodus (?mode=edit) */
 export const erEditMode = (): boolean => {
   try {
     return (
