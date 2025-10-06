@@ -1,33 +1,45 @@
+'use client';
+
 import { slettRekrutteringstreff } from '@/app/api/rekrutteringstreff/slett-rekrutteringstreff/slettRekrutteringstreff';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_contexts/RekrutteringstreffContext';
 import { RekbisError } from '@/util/rekbisError';
 import { BodyShort, Button, List, Modal } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 
-const SlettRekrutteringstreffModal = () => {
-  const ref = useRef<HTMLDialogElement>(null);
+const SlettRekrutteringstreffButton = () => {
+  const modalRef = useRef<HTMLDialogElement>(null);
+  const [laster, setLaster] = useState(false);
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
-
   const router = useRouter();
 
-  const handleSlettRekrutteringstreff = async () => {
-    if (rekrutteringstreffId) {
-      try {
-        await slettRekrutteringstreff(rekrutteringstreffId);
-        ref.current?.close();
-        router.push(`/rekrutteringstreff`);
-      } catch (error) {
-        throw new RekbisError({
-          message: 'Feiler når vi prøver å slette rekrutteringstreff:',
-          error,
-        });
-      }
+  const åpneModal = () => modalRef.current?.showModal();
+  const lukkModal = () => {
+    if (!laster) {
+      modalRef.current?.close();
     }
   };
 
-  const handleAvbryt = () => {
-    ref.current?.close();
+  const handleSlettRekrutteringstreff = async () => {
+    if (laster || !rekrutteringstreffId) return;
+    setLaster(true);
+    let skalLukke = false;
+
+    try {
+      await slettRekrutteringstreff(rekrutteringstreffId);
+      skalLukke = true;
+      router.push(`/rekrutteringstreff`);
+    } catch (error) {
+      new RekbisError({
+        message: 'Feiler når vi prøver å slette rekrutteringstreff',
+        error,
+      });
+    } finally {
+      setLaster(false);
+      if (skalLukke) {
+        modalRef.current?.close();
+      }
+    }
   };
 
   return (
@@ -36,12 +48,20 @@ const SlettRekrutteringstreffModal = () => {
         type='button'
         size='small'
         variant='danger'
-        onClick={() => ref.current?.showModal()}
+        disabled={laster}
+        loading={laster}
+        onClick={åpneModal}
       >
         Slett
       </Button>
+
       <Modal
-        ref={ref}
+        ref={modalRef}
+        onClose={() => {
+          if (laster) {
+            modalRef.current?.showModal();
+          }
+        }}
         className='overflow-visible'
         header={{ heading: 'Slett treffet' }}
       >
@@ -60,12 +80,20 @@ const SlettRekrutteringstreffModal = () => {
         <Modal.Footer>
           <Button
             type='button'
-            onClick={handleSlettRekrutteringstreff}
             variant='danger'
+            size='small'
+            loading={laster}
+            onClick={() => void handleSlettRekrutteringstreff()}
           >
             Ja, slett treffet
           </Button>
-          <Button type='button' variant='secondary' onClick={handleAvbryt}>
+          <Button
+            type='button'
+            variant='secondary'
+            size='small'
+            disabled={laster}
+            onClick={lukkModal}
+          >
             Nei, behold treffet
           </Button>
         </Modal.Footer>
@@ -74,4 +102,4 @@ const SlettRekrutteringstreffModal = () => {
   );
 };
 
-export default SlettRekrutteringstreffModal;
+export default SlettRekrutteringstreffButton;

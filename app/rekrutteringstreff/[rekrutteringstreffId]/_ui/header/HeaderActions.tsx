@@ -1,12 +1,12 @@
 'use client';
 
 import AvlysRekrutteringstreffButton from '../actions/AvlysRekrutteringstreffButton';
-import FullforRekrutteringstreffButton from '../actions/FullforRekrutteringstreffButton';
+import FullførRekrutteringstreffButton from '../actions/FullførRekrutteringstreffButton';
 import GjenapneRekrutteringstreffButton from '../actions/GjenapneRekrutteringstreffButton';
 import PubliserRekrutteringstreffButton from '../actions/PubliserRekrutteringstreffButton';
 import RedigerPublisertButton from '../actions/RedigerPublisertButton';
 import RepubliserRekrutteringstreffButton from '../actions/RepubliserRekrutteringstreffButton';
-import SlettRekrutteringstreffModal from '../actions/SlettRekrutteringstreffModal';
+import SlettRekrutteringstreffButton from '../actions/SlettRekrutteringstreffButton';
 import { useRekrutteringstreffData } from '../hooks/useRekrutteringstreffData';
 import { Button } from '@navikt/ds-react';
 import { FC } from 'react';
@@ -113,7 +113,7 @@ const HeaderActions: FC<Props> = ({
         >
           Forhåndsvis
         </Button>
-        <SlettRekrutteringstreffModal />
+        <SlettRekrutteringstreffButton />
       </div>
     );
   }
@@ -140,7 +140,7 @@ const HeaderActions: FC<Props> = ({
       )}
 
       {!avlyst && activeStep === 'INVITERE' && (
-        <FullforRekrutteringstreffButton
+        <FullførRekrutteringstreffButton
           rekrutteringstreffId={rekrutteringstreffId}
           harInvitert={harInvitert}
           tiltidspunktHarPassert={fraTidspunktHarPassert}
@@ -163,7 +163,7 @@ const HeaderActions: FC<Props> = ({
         />
       )}
 
-      {activeStep === 'PUBLISERE' && <SlettRekrutteringstreffModal />}
+      {activeStep === 'PUBLISERE' && <SlettRekrutteringstreffButton />}
     </div>
   );
 };

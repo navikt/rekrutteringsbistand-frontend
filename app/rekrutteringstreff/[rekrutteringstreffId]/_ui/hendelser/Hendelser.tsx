@@ -1,6 +1,6 @@
 'use client';
 
-import { RekrutteringstreffHendelseLabel } from '../jobbsøkere/HendelseLabel';
+import { RekrutteringstreffHendelseLabel } from '../jobbsøker/HendelseLabel';
 import { useAlleHendelser } from '@/app/api/rekrutteringstreff/[...slug]/useAlleHendelser';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_contexts/RekrutteringstreffContext';
 import { RekrutteringstreffHendelsestype } from '@/app/rekrutteringstreff/_domain/constants';

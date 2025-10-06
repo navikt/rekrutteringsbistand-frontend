@@ -16,7 +16,7 @@ import { BodyShort, Button, Tooltip } from '@navikt/ds-react';
 import * as React from 'react';
 import { useRef, useState } from 'react';
 
-const RekrutteringstreffArbeidsgivere = () => {
+const Arbeidsgivere = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
 
   const arbeidsgivereHook =
@@ -120,4 +120,4 @@ const RekrutteringstreffArbeidsgivere = () => {
   );
 };
 
-export default RekrutteringstreffArbeidsgivere;
+export default Arbeidsgivere;

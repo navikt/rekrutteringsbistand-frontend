@@ -1,8 +1,8 @@
 'use client';
 
-import ArbeidsgiverHendelserKort from '../arbeidsgivere/ArbeidsgiverHendelserKort';
+import ArbeidsgiverHendelserKort from '../arbeidsgiver/ArbeidsgiverHendelserKort';
 import { useRekrutteringstreffData } from '../hooks/useRekrutteringstreffData';
-import JobbsøkerHendelserKort from '../jobbsøkere/JobbsøkerHendelserKort';
+import JobbsøkerHendelserKort from '../jobbsøker/JobbsøkerHendelserKort';
 import { useArbeidsgiverHendelser } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgiverHendelser';
 import { useJobbsøkerHendelser } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkerHendelser';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_contexts/RekrutteringstreffContext';

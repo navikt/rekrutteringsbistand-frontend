@@ -1,6 +1,6 @@
 'use client';
 
-import { ArbeidsgiverHendelseLabel } from '../jobbsøkere/HendelseLabel';
+import { ArbeidsgiverHendelseLabel } from '../jobbsøker/HendelseLabel';
 import LeggTilArbeidsgiverModal from './LeggTilArbeidsgiverModal';
 import { ArbeidsgiverHendelserDTO } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgiverHendelser';
 import { ArbeidsgiverHendelsestype } from '@/app/rekrutteringstreff/_domain/constants';
