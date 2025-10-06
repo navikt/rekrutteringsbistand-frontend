@@ -51,6 +51,7 @@ const KiAnalysePanel: FC<KiAnalysePanelProps> = ({
   const textRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (showTextBlock === 'skeleton') skeletonRef.current?.focus();
     if (showTextBlock === 'error') errorRef.current?.focus();
     if (showTextBlock === 'text') textRef.current?.focus();
   }, [showTextBlock]);
