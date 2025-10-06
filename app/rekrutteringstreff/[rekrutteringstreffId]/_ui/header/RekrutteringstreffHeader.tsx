@@ -23,7 +23,6 @@ export interface RekrutteringstreffHeaderProps {
   erPubliseringklar: boolean;
   onToggleForhåndsvisning: (ny: boolean) => void;
   onBekreftRedigerPublisert: () => void;
-  onAvlyst: () => void;
   onAvbrytRedigering: () => void;
   onPublisert?: () => void;
   onRepubliser?: () => Promise<void>;
@@ -48,7 +47,6 @@ const RekrutteringstreffHeader = forwardRef<
       erPubliseringklar,
       onToggleForhåndsvisning,
       onBekreftRedigerPublisert,
-      onAvlyst,
       onAvbrytRedigering,
       onPublisert,
       onRepubliser,
@@ -65,7 +63,8 @@ const RekrutteringstreffHeader = forwardRef<
           <PanelHeader.Section
             actionsLeft={<RekrutteringstreffBreadcrumbs items={breadcrumbs} />}
             tabs={
-              erIForhåndsvisning ? (
+              // Vis tabs kun i lesemodus (ikke i forhåndsvisning eller edit)
+              erIForhåndsvisning && !viserFullskjermForhåndsvisning ? (
                 inTabsContext ? (
                   <TabsNav
                     jobbsøkereAntall={jobbsøkereAntall}
@@ -101,7 +100,6 @@ const RekrutteringstreffHeader = forwardRef<
                 erPubliseringklar={erPubliseringklar}
                 onToggleForhåndsvisning={onToggleForhåndsvisning}
                 onBekreftRedigerPublisert={onBekreftRedigerPublisert}
-                onAvlyst={onAvlyst}
                 onAvbrytRedigering={onAvbrytRedigering}
                 onPublisert={onPublisert}
                 onRepubliser={onRepubliser}

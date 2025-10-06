@@ -21,7 +21,7 @@ import { Tabs } from '@navikt/ds-react';
 import { formatDistanceToNow } from 'date-fns';
 import { nb } from 'date-fns/locale/nb';
 import { parseAsString, useQueryState } from 'nuqs';
-import { FC, useCallback, useEffect, useMemo, useRef } from 'react';
+import { FC, useCallback, useEffect, useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 export enum RekrutteringstreffTabs {
@@ -46,6 +46,7 @@ const Rekrutteringstreff: FC = () => {
   const {
     avlyst,
     harPublisert,
+    activeStep,
     treff: rekrutteringstreff,
     innlegg,
     rekrutteringstreffHook,
@@ -60,51 +61,46 @@ const Rekrutteringstreff: FC = () => {
   const { erPubliseringklar } = useSjekklisteStatus();
 
   const viserFullskjermForhåndsvisning = useMemo(() => {
-    if (avlyst) return true;
-    return modus === 'preview-page';
-  }, [avlyst, modus]);
+    // Vis preview KUN hvis eksplisitt valgt via knapp OG ikke avlyst/fullført
+    return (
+      modus === 'preview-page' &&
+      activeStep !== 'FULLFØRE' &&
+      activeStep !== 'AVLYST'
+    );
+  }, [modus, activeStep]);
 
-  const erILesemodus = useMemo(() => {
-    if (viserFullskjermForhåndsvisning) return false;
-    if (modus === 'edit') return false;
-    return true;
-  }, [viserFullskjermForhåndsvisning, modus]);
-
-  useEffect(() => {
-    if (avlyst && modus !== 'preview-page') {
-      setModus('preview-page');
+  const erIEditModus = useMemo(() => {
+    // Edit-modus hvis:
+    // 1. Eksplisitt satt til edit, ELLER
+    // 2. Ikke publisert og ikke avlyst (auto-edit)
+    if (modus === 'edit') return true;
+    if (!harPublisert && activeStep !== 'AVLYST' && activeStep !== 'FULLFØRE') {
+      return true;
     }
-  }, [avlyst, modus, setModus]);
+    return false;
+  }, [modus, harPublisert, activeStep]);
 
+  const erILesemodus = !viserFullskjermForhåndsvisning && !erIEditModus;
+
+  // Fjern ugyldige mode-verdier basert på tilstand
   useEffect(() => {
-    // Vent til data er lastet før vi evt. tvinger edit-modus. Uten dette
-    // kan vi sette ?mode=edit før vi vet at treffet er publisert, og da
-    // forblir man i edit selv etter publisering.
     if (!rekrutteringstreff) return;
-    if (
-      !harPublisert &&
-      !avlyst &&
-      modus !== 'edit' &&
-      modus !== 'preview-page'
-    ) {
-      setModus('edit');
-    }
-  }, [rekrutteringstreff, avlyst, harPublisert, modus, setModus]);
 
-  const harPublisertTidligereRef = useRef(harPublisert);
-
-  useEffect(() => {
+    // Fjern preview-mode ved fanebytte
     if (
-      harPublisert &&
-      !harPublisertTidligereRef.current &&
-      !avlyst &&
-      modus === 'edit'
+      modus === 'preview-page' &&
+      fane !== RekrutteringstreffTabs.OM_TREFFET
     ) {
       setModus('');
+      return;
     }
 
-    harPublisertTidligereRef.current = harPublisert;
-  }, [harPublisert, avlyst, modus, setModus]);
+    // Fjern alle modes hvis avlyst eller fullført (disse er ikke redigerbare)
+    if ((activeStep === 'AVLYST' || activeStep === 'FULLFØRE') && modus) {
+      setModus('');
+      return;
+    }
+  }, [rekrutteringstreff, modus, fane, activeStep, setModus]);
 
   const scrollToTop = useCallback(() => {
     if (typeof window !== 'undefined') {
@@ -115,12 +111,12 @@ const Rekrutteringstreff: FC = () => {
   }, []);
 
   const handleToggleForhåndsvisning = (nyForhåndsvisning: boolean) => {
-    if (avlyst) return;
     if (nyForhåndsvisning) {
-      // Gå til preview-page når man klikker Forhåndsvisning
       setModus('preview-page');
+      setFane(RekrutteringstreffTabs.OM_TREFFET);
     } else {
-      setModus('edit');
+      // Gå tilbake til edit hvis vi var i edit, ellers til lesemodus
+      setModus(erIEditModus ? 'edit' : '');
     }
     scrollToTop();
   };
@@ -131,7 +127,6 @@ const Rekrutteringstreff: FC = () => {
   };
 
   const onAvbrytRedigering = () => {
-    // Etter publisering, ved avbryt redigering, gå til vanlig lesemodus
     setModus('');
     scrollToTop();
   };
@@ -171,11 +166,6 @@ const Rekrutteringstreff: FC = () => {
 
   const skalViseHeader =
     modus === 'preview-page' ? true : !viserFullskjermForhåndsvisning;
-
-  const onAvlyst = useCallback(() => {
-    setModus('preview-page');
-    scrollToTop();
-  }, [scrollToTop, setModus]);
 
   const onPublisert = useCallback(() => {
     setModus('');
@@ -293,31 +283,29 @@ const Rekrutteringstreff: FC = () => {
   } as const;
 
   if (viserFullskjermForhåndsvisning) {
+    // Forhåndsvisning: Ingen tabs, bare preview-innhold
     return (
       <SideLayout
         {...layoutProps}
         header={
-          !avlyst ? (
-            <RekrutteringstreffHeader
-              skalViseHeader={true}
-              breadcrumbs={breadcrumbs}
-              erIForhåndsvisning={true}
-              viserFullskjermForhåndsvisning={true}
-              jobbsøkereAntall={jobbsøkere?.length ?? 0}
-              arbeidsgivereAntall={arbeidsgivere?.length ?? 0}
-              lagrerNoe={lagrerNoe}
-              lagretTekst={lagretTekst}
-              erPubliseringklar={erPubliseringklar}
-              onToggleForhåndsvisning={handleToggleForhåndsvisning}
-              onBekreftRedigerPublisert={onBekreftRedigerPublisert}
-              onAvlyst={onAvlyst}
-              onAvbrytRedigering={onAvbrytRedigering}
-              onPublisert={onPublisert}
-              onRepubliser={onRepubliser}
-              republiserDisabled={republiserDisabled}
-              inTabsContext={false}
-            />
-          ) : undefined
+          <RekrutteringstreffHeader
+            skalViseHeader={true}
+            breadcrumbs={breadcrumbs}
+            erIForhåndsvisning={false}
+            viserFullskjermForhåndsvisning={true}
+            jobbsøkereAntall={jobbsøkere?.length ?? 0}
+            arbeidsgivereAntall={arbeidsgivere?.length ?? 0}
+            lagrerNoe={lagrerNoe}
+            lagretTekst={lagretTekst}
+            erPubliseringklar={erPubliseringklar}
+            onToggleForhåndsvisning={handleToggleForhåndsvisning}
+            onBekreftRedigerPublisert={onBekreftRedigerPublisert}
+            onAvbrytRedigering={onAvbrytRedigering}
+            onPublisert={onPublisert}
+            onRepubliser={onRepubliser}
+            republiserDisabled={republiserDisabled}
+            inTabsContext={false}
+          />
         }
       >
         <SideScroll>
@@ -347,7 +335,6 @@ const Rekrutteringstreff: FC = () => {
               erPubliseringklar={erPubliseringklar}
               onToggleForhåndsvisning={handleToggleForhåndsvisning}
               onBekreftRedigerPublisert={onBekreftRedigerPublisert}
-              onAvlyst={onAvlyst}
               onAvbrytRedigering={onAvbrytRedigering}
               onPublisert={onPublisert}
               onRepubliser={onRepubliser}

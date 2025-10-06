@@ -155,9 +155,9 @@ export function useKiAnalyse<FormValues extends Record<string, any>>(
         (analyse as any)?.bryterRetningslinjer;
 
       const kanLagres = !bryterRetningslinjer || forceSave;
-      const skalLagre = kanLagres && !erRedigeringAvPublisertTreff;
 
-      if (skalLagre) {
+      // Lagre hvis godkjent (ikke i publisert redigeringsmodus)
+      if (kanLagres && !erRedigeringAvPublisertTreff) {
         await saveCallback(false);
 
         if (loggId && setKiLagret) {

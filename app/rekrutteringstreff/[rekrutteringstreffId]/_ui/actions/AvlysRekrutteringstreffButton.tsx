@@ -8,13 +8,11 @@ import { FC, useRef, useState } from 'react';
 type Props = {
   rekrutteringstreffId: string;
   oppdaterData: () => void;
-  onAvlyst: () => void;
 };
 
 const AvlysRekrutteringstreffButton: FC<Props> = ({
   rekrutteringstreffId,
   oppdaterData,
-  onAvlyst,
 }) => {
   const [laster, setLaster] = useState(false);
   const modalRef = useRef<HTMLDialogElement>(null);
@@ -33,7 +31,6 @@ const AvlysRekrutteringstreffButton: FC<Props> = ({
 
     try {
       await avlysRekrutteringstreff(rekrutteringstreffId);
-      onAvlyst();
       oppdaterData();
       skalLukke = true;
     } catch (error) {
