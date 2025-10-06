@@ -1,21 +1,17 @@
+#!/bin/sh
 # Sjekk om vi er på main branch
 current_branch=$(git symbolic-ref --short HEAD 2>/dev/null)
 
 if [ "$current_branch" = "main" ]; then
-  exec < /dev/tty
-  echo "⚠️  Du er i ferd med å pushe til main branch!"
-  echo "Er du sikker på at du vil fortsette? (j/N)"
-  read -r response
+  # Bruk osascript for å vise en macOS dialog
+  response=$(osascript -e 'display dialog "⚠️ Du er i ferd med å committe til main branch!\n\nEr du sikker på at du vil fortsette?" buttons {"Avbryt", "Ja"} default button "Avbryt" with icon caution with title "Commit til main"' -e 'button returned of result' 2>/dev/null)
   
-  case "$response" in
-    [jJ][aA]|[jJ])
-      echo "✓ Fortsetter push til main..."
-      ;;
-    *)
-      echo "✗ Push avbrutt"
-      exit 1
-      ;;
-  esac
+  if [ "$response" != "Ja" ]; then
+    echo "✗ Commit avbrutt"
+    exit 1
+  fi
+  
+  echo "✓ Fortsetter commit til main..."
 fi
 
 pnpm formater-kode
