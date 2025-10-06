@@ -10,7 +10,7 @@ import { FloppydiskIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import { useEffect, useRef, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { logger } from '@navikt/next-logger';
+
 
 interface AutolagreStillingProps {
   stillingsData: StillingAdminDTO;
@@ -59,23 +59,19 @@ export default function AutolagreStilling({
     setSaving(true);
     setError(null);
     try {
-      const mapedValues = mapSendStillingOppdatering({
+      const mappedValues = mapSendStillingOppdatering({
         stilling: nyeVerdier.stilling,
         stillingsinfo: nyeVerdier.stillingsinfo || undefined,
       });
-      const promise = oppdaterStilling(mapedValues, {
+      const promise = oppdaterStilling(mappedValues, {
         eierNavident: brukerData.ident,
         eierNavn: brukerData.navn,
         eierNavKontorEnhetId: valgtNavKontor?.navKontor,
       });
       inFlightRef.current = promise;
-      const result = await promise;
+      const stilling: StillingsDataDTO = await promise;
 
-      const stilling : StillingsDataDTO = result;
-
-      logger.info(`result ${JSON.stringify(result)}`);
-      logger.info(`Versjon ${stilling.stilling.versjon}` );
-
+      setValue("stilling.versjon", stilling.stilling.versjon)
       setSisteLagret(new Date());
       setTeller(0);
     } catch (e: any) {
