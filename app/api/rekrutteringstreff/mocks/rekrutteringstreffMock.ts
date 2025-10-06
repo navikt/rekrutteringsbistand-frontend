@@ -114,5 +114,5 @@ export const rekrutteringstreffMock: RekrutteringstreffDTO = {
   status: 'Utkast',
   opprettetAvPersonNavident: 'A123456',
   opprettetAvNavkontorEnhetId: '0318',
-  hendelser: publisertHendelser,
+  hendelser: ikkepubliserthendelser,
 };

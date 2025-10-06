@@ -103,7 +103,7 @@ const Rekrutteringstreff: FC = () => {
       setModus('preview-page');
       setFane(RekrutteringstreffTabs.OM_TREFFET);
     } else {
-      setModus(erIEditModus ? 'edit' : '');
+      setModus('edit');
     }
     scrollToTop();
   };
