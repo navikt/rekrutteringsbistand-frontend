@@ -43,6 +43,7 @@ const HeaderActions: FC<Props> = ({
     harPublisert,
     harInvitert,
     fraTidspunktHarPassert,
+    tilTidspunktHarPassert,
     treff,
     innleggHtmlFraBackend,
     oppdaterData,
@@ -143,7 +144,7 @@ const HeaderActions: FC<Props> = ({
         <FullførRekrutteringstreffButton
           rekrutteringstreffId={rekrutteringstreffId}
           harInvitert={harInvitert}
-          tiltidspunktHarPassert={fraTidspunktHarPassert}
+          tiltidspunktHarPassert={tilTidspunktHarPassert}
           oppdaterData={oppdaterData}
         />
       )}

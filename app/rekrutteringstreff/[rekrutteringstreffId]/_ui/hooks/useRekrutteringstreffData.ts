@@ -1,6 +1,7 @@
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_contexts/RekrutteringstreffContext';
+import { JobbsøkerHendelsestype } from '@/app/rekrutteringstreff/_domain/constants';
 import { getActiveStepFromHendelser } from '@/app/rekrutteringstreff/_utils/rekrutteringstreff';
 import { useMemo } from 'react';
 
@@ -46,7 +47,11 @@ export const useRekrutteringstreffData = () => {
   // Sjekk om noen er invitert basert på hendelser
   const harInvitert = useMemo(() => {
     if (!hendelser) return false;
-    return hendelser.some((h) => h.hendelsestype === 'INVITERT');
+    return hendelser.some(
+      (h) =>
+        h.hendelsestype === JobbsøkerHendelsestype.INVITER ||
+        h.hendelsestype === 'INVITERT',
+    );
   }, [hendelser]);
 
   // Sjekk om fra-tidspunkt har passert
