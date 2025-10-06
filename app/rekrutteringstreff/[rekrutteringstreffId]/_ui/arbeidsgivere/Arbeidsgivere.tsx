@@ -1,15 +1,15 @@
 'use client';
 
-import ArbeidsgiverListeItem from './_ui/ArbeidsgiverListeItem';
+import ArbeidsgiverListeItem from './ArbeidsgiverListeItem';
+import LeggTilArbeidsgiverModal from './LeggTilArbeidsgiverModal';
+import SlettArbeidsgiverModal from './SlettArbeidsgiverModal';
 import { fjernArbeidsgiver } from '@/app/api/rekrutteringstreff/[...slug]/slett-arbeidsgiver/fjernArbeidsgiver';
 import { useArbeidsgiverHendelser } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgiverHendelser';
 import {
   ArbeidsgiverDTO,
   useRekrutteringstreffArbeidsgivere,
 } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
-import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/RekrutteringstreffContext';
-import LeggTilArbeidsgiverModal from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/LeggTilArbeidsgiverModal';
-import SlettArbeidsgiverModal from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/arbeidsgivere/_ui/SlettArbeidsgiverModal';
+import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_contexts/RekrutteringstreffContext';
 import SWRLaster from '@/components/SWRLaster';
 import { PlusIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button, Tooltip } from '@navikt/ds-react';

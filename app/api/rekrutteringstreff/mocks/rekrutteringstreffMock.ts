@@ -1,4 +1,4 @@
-import AvlystSteg from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/om-treffet/stegviser/steg/AvlystSteg';
+import AvlystSteg from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/stegviser/steg/AvlystSteg';
 import {
   RekrutteringstreffHendelsestype,
   JobbsøkerHendelsestype,
@@ -114,5 +114,5 @@ export const rekrutteringstreffMock = {
   opprettetAvPersonNavident: 'A123456',
   opprettetAvNavkontorEnhetId: '0318',
   opprettetAvTidspunkt: '2025-06-01T08:00:00+02:00',
-  hendelser: ikkepubliserthendelser,
+  hendelser: publisertHendelser,
 };

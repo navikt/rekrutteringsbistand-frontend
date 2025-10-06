@@ -1,5 +1,5 @@
-import { RekrutteringstreffContextProvider } from './RekrutteringstreffContext';
-import RekrutteringstreffForm from './RekrutteringstreffForm';
+import { RekrutteringstreffContextProvider } from '../_contexts/RekrutteringstreffContext';
+import RekrutteringstreffForm from './_ui/redigereRekrutteringstreff/RekrutteringstreffForm';
 import { ReactNode } from 'react';
 
 interface RekrutteringsTreffLayoutProps {
