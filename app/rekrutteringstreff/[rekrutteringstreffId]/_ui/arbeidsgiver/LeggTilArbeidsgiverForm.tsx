@@ -4,13 +4,13 @@ import ArbeidsgiverKort from './ArbeidsgiverKort';
 import SlettArbeidsgiverModal from './SlettArbeidsgiverModal';
 import VelgArbeidsgiver from './VelgArbeidsgiver';
 import { ArbeidsgiverDTO as PamArbeidsgiverDTO } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
-import { leggtilNyArbeidsgiver } from '@/app/api/rekrutteringstreff/[...slug]/ny-arbeidsgiver/leggTilNyArbeidsgiver';
-import { fjernArbeidsgiver } from '@/app/api/rekrutteringstreff/[...slug]/slett-arbeidsgiver/fjernArbeidsgiver';
-import { useArbeidsgiverHendelser } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgiverHendelser';
+import { leggTilNyArbeidsgiver } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/mutations';
+import { fjernArbeidsgiver } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/mutations';
 import {
   ArbeidsgiverDTO,
   useRekrutteringstreffArbeidsgivere,
-} from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
+} from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
+import { useArbeidsgiverHendelser } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgiverHendelser';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_contexts/RekrutteringstreffContext';
 import SWRLaster from '@/components/SWRLaster';
 import { RekbisError } from '@/util/rekbisError';
@@ -85,7 +85,7 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({
         }
 
         // Inline-variant: legg til direkte mot backend
-        await leggtilNyArbeidsgiver(
+        await leggTilNyArbeidsgiver(
           { organisasjonsnummer: valgt.organisasjonsnummer, navn: valgt.navn },
           rekrutteringstreffId,
         );
@@ -115,7 +115,7 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({
     setSaving(true);
     try {
       for (const p of pending) {
-        await leggtilNyArbeidsgiver(
+        await leggTilNyArbeidsgiver(
           { organisasjonsnummer: p.organisasjonsnummer, navn: p.navn },
           rekrutteringstreffId,
         );

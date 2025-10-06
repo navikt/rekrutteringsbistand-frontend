@@ -2,7 +2,7 @@
 
 import { toIso as toIsoUtil } from './tidspunkt/utils';
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
-import { oppdaterRekrutteringstreff } from '@/app/api/rekrutteringstreff/oppdater-rekrutteringstreff/oppdaterRerkutteringstreff';
+import { oppdaterRekrutteringstreff } from '@/app/api/rekrutteringstreff/mutations';
 import {
   oppdaterEttInnlegg,
   opprettInnleggForTreff,

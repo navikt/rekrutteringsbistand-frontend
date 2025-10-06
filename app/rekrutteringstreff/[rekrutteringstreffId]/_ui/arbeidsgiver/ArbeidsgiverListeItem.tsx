@@ -2,7 +2,7 @@
 
 import ArbeidsgiverKort, { ArbeidsgiverAdresse } from './ArbeidsgiverKort';
 import { useFinnArbeidsgiver } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
-import { ArbeidsgiverDTO as TreffArbeidsgiverDTO } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
+import { ArbeidsgiverDTO as TreffArbeidsgiverDTO } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import { FC, ReactNode, useMemo } from 'react';
 
 interface Props {

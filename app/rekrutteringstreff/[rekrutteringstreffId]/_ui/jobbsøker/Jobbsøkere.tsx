@@ -7,7 +7,7 @@ import LeggTilJobbsøkerKnapp from './LeggTilJobbsøkerKnapp';
 import {
   JobbsøkerDTO,
   useJobbsøkere,
-} from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
+} from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_contexts/RekrutteringstreffContext';
 import SWRLaster from '@/components/SWRLaster';
 import { BodyShort, Button, TagProps } from '@navikt/ds-react';

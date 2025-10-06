@@ -1,6 +1,5 @@
 'use client';
 
-import { arbeidsgivereMock } from './mocks/arbeidsgivereMock';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { getAPIwithSchema } from '@/app/api/fetcher';
 import useSWR from 'swr';
@@ -9,7 +8,7 @@ import { z } from 'zod';
 export const rekrutteringstreffArbeidsgivereEndepunkt = (id: string) =>
   `${RekrutteringstreffAPI.internUrl}/${id}/arbeidsgiver`;
 
-const ArbeidsgiverHendelseSchema = z.object({
+export const ArbeidsgiverHendelseSchema = z.object({
   id: z.string(),
   tidspunkt: z.string(),
   hendelsestype: z.string(),
@@ -19,7 +18,7 @@ const ArbeidsgiverHendelseSchema = z.object({
   orgnavn: z.string(),
 });
 
-const RekrutteringstreffArbeidsgiverSchema = z.object({
+export const ArbeidsgiverSchema = z.object({
   arbeidsgiverTreffId: z.string().optional(),
   organisasjonsnummer: z.string(),
   navn: z.string(),
@@ -27,25 +26,23 @@ const RekrutteringstreffArbeidsgiverSchema = z.object({
   hendelser: z.array(ArbeidsgiverHendelseSchema),
 });
 
-const RekrutteringstreffArbeidsgivereSchema = z.array(
-  RekrutteringstreffArbeidsgiverSchema,
-);
+export const ArbeidsgivereSchema = z.array(ArbeidsgiverSchema);
 
-export type ArbeidsgiverDTO = z.infer<
-  typeof RekrutteringstreffArbeidsgiverSchema
->;
-export type ArbeidsgivereDTO = z.infer<
-  typeof RekrutteringstreffArbeidsgivereSchema
+export type ArbeidsgiverDTO = z.infer<typeof ArbeidsgiverSchema>;
+export type ArbeidsgivereDTO = z.infer<typeof ArbeidsgivereSchema>;
+export type ArbeidsgiverHendelseDTO = z.infer<
+  typeof ArbeidsgiverHendelseSchema
 >;
 
 export const useRekrutteringstreffArbeidsgivere = (id: string) => {
   return useSWR(
     rekrutteringstreffArbeidsgivereEndepunkt(id),
-    getAPIwithSchema(RekrutteringstreffArbeidsgivereSchema),
+    getAPIwithSchema(ArbeidsgivereSchema),
   );
 };
 
-export const rekruteringstreffArbeidsgivereMirage = (server: any) => {
+export const rekruteringstreffArbeidsgivereMirage = async (server: any) => {
+  const { arbeidsgivereMock } = await import('./mocks/arbeidsgivereMock');
   return server.get(rekrutteringstreffArbeidsgivereEndepunkt('*'), () =>
     arbeidsgivereMock(),
   );

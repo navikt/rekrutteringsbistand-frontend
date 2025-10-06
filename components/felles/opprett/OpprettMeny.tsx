@@ -1,7 +1,7 @@
 import {
   opprettNyttRekrutteringstreff,
   OpprettNyttRekrutteringstreffDTO,
-} from '@/app/api/rekrutteringstreff/nytt-rekrutteringstreff/opprettNyttRekrutteringstreff';
+} from '@/app/api/rekrutteringstreff/mutations';
 import { OpprettStillingProps } from '@/app/api/stilling/ny-stilling/opprettNyStilling';
 import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
 import RekrutteringstreffFeatureToggle from '@/components/RekrutteringstreffFeatureToggle';

@@ -19,7 +19,7 @@ interface JobbsøkerKortProps {
   navKontor?: string;
   veileder?: Veileder | null;
   datoLagtTil?: string;
-  lagtTilAv?: string;
+  lagtTilAv?: string | null;
   status?: string;
   statusVariant?: TagProps['variant'];
   harPublisert: boolean;

@@ -27,14 +27,14 @@ export const jobbsøkerMock = (): JobbsøkerDTO => {
         hendelsestype: 'OPPRETT',
         opprettetAvAktørType: 'ARRANGØR',
         aktørIdentifikasjon: 'testperson',
-      },
+      } /*,
       {
         id: faker.string.uuid(),
         tidspunkt: new Date().toISOString(),
         hendelsestype: 'INVITER',
         opprettetAvAktørType: 'ARRANGØR',
         aktørIdentifikasjon: 'testperson',
-      },
+      },*/,
     ],
   };
 };

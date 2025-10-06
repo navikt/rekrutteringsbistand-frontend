@@ -6,7 +6,7 @@ import KiAnalysePanel from './ki/KiAnalysePanel';
 import { useAutosave } from './useAutosave';
 import { useKiAnalyse } from './useKiAnalyse';
 import { useKiLogg } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
-import { MAX_TITLE_LENGTH } from '@/app/api/rekrutteringstreff/oppdater-rekrutteringstreff/oppdaterRerkutteringstreff';
+import { MAX_TITLE_LENGTH } from '@/app/api/rekrutteringstreff/mutations';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_contexts/RekrutteringstreffContext';
 import { RekbisError } from '@/util/rekbisError';
 import { XMarkIcon } from '@navikt/aksel-icons';

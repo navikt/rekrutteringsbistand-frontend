@@ -1,6 +1,6 @@
 'use client';
 
-import type { ArbeidsgivereDTO } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
+import type { ArbeidsgivereDTO } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import { TrashIcon, XMarkIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button, Modal } from '@navikt/ds-react';
 import { useRef } from 'react';
