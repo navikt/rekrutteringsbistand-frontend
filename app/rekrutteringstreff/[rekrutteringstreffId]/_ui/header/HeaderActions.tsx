@@ -42,7 +42,6 @@ const HeaderActions: FC<Props> = ({
     avlyst,
     harPublisert,
     harInvitert,
-    fraTidspunktHarPassert,
     tilTidspunktHarPassert,
     treff,
     innleggHtmlFraBackend,
