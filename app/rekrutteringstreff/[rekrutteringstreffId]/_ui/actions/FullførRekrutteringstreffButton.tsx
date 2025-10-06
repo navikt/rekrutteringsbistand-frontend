@@ -12,7 +12,7 @@ type Props = {
   oppdaterData: () => Promise<void>;
 };
 
-const FullforRekrutteringstreffButton: FC<Props> = ({
+const FullførRekrutteringstreffButton: FC<Props> = ({
   rekrutteringstreffId,
   harInvitert,
   tiltidspunktHarPassert,
@@ -108,4 +108,4 @@ const FullforRekrutteringstreffButton: FC<Props> = ({
   );
 };
 
-export default FullforRekrutteringstreffButton;
+export default FullførRekrutteringstreffButton;

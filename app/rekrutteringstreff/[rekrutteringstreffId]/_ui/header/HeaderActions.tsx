@@ -1,7 +1,7 @@
 'use client';
 
 import AvlysRekrutteringstreffButton from '../actions/AvlysRekrutteringstreffButton';
-import FullforRekrutteringstreffButton from '../actions/FullforRekrutteringstreffButton';
+import FullførRekrutteringstreffButton from '../actions/FullførRekrutteringstreffButton';
 import GjenapneRekrutteringstreffButton from '../actions/GjenapneRekrutteringstreffButton';
 import PubliserRekrutteringstreffButton from '../actions/PubliserRekrutteringstreffButton';
 import RedigerPublisertButton from '../actions/RedigerPublisertButton';
@@ -140,7 +140,7 @@ const HeaderActions: FC<Props> = ({
       )}
 
       {!avlyst && activeStep === 'INVITERE' && (
-        <FullforRekrutteringstreffButton
+        <FullførRekrutteringstreffButton
           rekrutteringstreffId={rekrutteringstreffId}
           harInvitert={harInvitert}
           tiltidspunktHarPassert={fraTidspunktHarPassert}

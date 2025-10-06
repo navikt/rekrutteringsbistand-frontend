@@ -1,7 +1,7 @@
 'use client';
 
 import { RekrutteringstreffTabs } from '../Rekrutteringstreff';
-import RekrutteringstreffArbeidsgivere from '../arbeidsgiver/Arbeidsgivere';
+import Arbeidsgivere from '../arbeidsgiver/Arbeidsgivere';
 import Hendelser from '../hendelser/Hendelser';
 import Jobbsøkere from '../jobbsøker/Jobbsøkere';
 import KiLogg from '../kilogg/components/KiLogg';
@@ -31,7 +31,7 @@ const TabsPanels: FC<Props> = ({ erIVisning, onUpdated }) => {
         <Jobbsøkere />
       </Tabs.Panel>
       <Tabs.Panel value={RekrutteringstreffTabs.ARBEIDSGIVERE}>
-        <RekrutteringstreffArbeidsgivere />
+        <Arbeidsgivere />
       </Tabs.Panel>
       <Tabs.Panel value={RekrutteringstreffTabs.HENDELSER}>
         <Hendelser />
