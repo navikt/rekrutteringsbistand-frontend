@@ -4,10 +4,7 @@ import RekrutteringstreffForhåndsvisning from './forhåndsvisning/Rekrutterings
 import RekrutteringstreffHeader from './header/RekrutteringstreffHeader';
 import { useRekrutteringstreffData } from './hooks/useRekrutteringstreffData';
 import { useSjekklisteStatus } from './hooks/useSjekklisteStatus';
-import {
-  useAutosave,
-  useInnleggAutosave,
-} from './redigereRekrutteringstreff/useAutosave';
+import { useAutosave, useInnleggAutosave } from './rediger/useAutosave';
 import Stegviser from './stegviser/Stegviser';
 import TabsPanels from './tabs/TabsPanels';
 import { useAlleHendelser } from '@/app/api/rekrutteringstreff/[...slug]/useAlleHendelser';
