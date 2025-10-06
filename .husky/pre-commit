@@ -1,3 +1,23 @@
+# Sjekk om vi er på main branch
+current_branch=$(git symbolic-ref --short HEAD 2>/dev/null)
+
+if [ "$current_branch" = "main" ]; then
+  exec < /dev/tty
+  echo "⚠️  Du er i ferd med å pushe til main branch!"
+  echo "Er du sikker på at du vil fortsette? (j/N)"
+  read -r response
+  
+  case "$response" in
+    [jJ][aA]|[jJ])
+      echo "✓ Fortsetter push til main..."
+      ;;
+    *)
+      echo "✗ Push avbrutt"
+      exit 1
+      ;;
+  esac
+fi
+
 pnpm formater-kode
 pnpm type-check
 pnpm lint
