@@ -190,8 +190,6 @@ export function useKiAnalyse<FormValues extends Record<string, any>>(
     rekrutteringstreffId,
     feltType,
     forceSave,
-    validating,
-    isSubmitting,
     erRedigeringAvPublisertTreff,
     saveCallback,
     setKiLagret,
