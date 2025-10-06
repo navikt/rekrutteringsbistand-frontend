@@ -57,50 +57,38 @@ const Rekrutteringstreff: FC = () => {
   const { data: arbeidsgivere } =
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
 
-  // Bruk sentralisert sjekkliste-hook
   const { erPubliseringklar } = useSjekklisteStatus();
 
-  const viserFullskjermForhåndsvisning = useMemo(() => {
-    // Vis preview KUN hvis eksplisitt valgt via knapp OG ikke avlyst/fullført
-    return (
-      modus === 'preview-page' &&
-      activeStep !== 'FULLFØRE' &&
-      activeStep !== 'AVLYST'
-    );
-  }, [modus, activeStep]);
+  const erAvlystEllerFullført =
+    activeStep === 'AVLYST' || activeStep === 'FULLFØRE';
 
-  const erIEditModus = useMemo(() => {
-    // Edit-modus hvis:
-    // 1. Eksplisitt satt til edit, ELLER
-    // 2. Ikke publisert og ikke avlyst (auto-edit)
-    if (modus === 'edit') return true;
-    if (!harPublisert && activeStep !== 'AVLYST' && activeStep !== 'FULLFØRE') {
-      return true;
-    }
-    return false;
-  }, [modus, harPublisert, activeStep]);
+  const viserFullskjermForhåndsvisning = useMemo(
+    () => modus === 'preview-page' && !erAvlystEllerFullført,
+    [modus, erAvlystEllerFullført],
+  );
+
+  const eksplisittEditModus = modus === 'edit';
+  const autoEditModus =
+    rekrutteringstreff && !harPublisert && !erAvlystEllerFullført;
+
+  const erIEditModus = useMemo(
+    () => eksplisittEditModus || autoEditModus,
+    [eksplisittEditModus, autoEditModus],
+  );
 
   const erILesemodus = !viserFullskjermForhåndsvisning && !erIEditModus;
 
-  // Fjern ugyldige mode-verdier basert på tilstand
   useEffect(() => {
     if (!rekrutteringstreff) return;
 
-    // Fjern preview-mode ved fanebytte
-    if (
-      modus === 'preview-page' &&
-      fane !== RekrutteringstreffTabs.OM_TREFFET
-    ) {
-      setModus('');
-      return;
-    }
+    const erPreviewMedFeilFane =
+      modus === 'preview-page' && fane !== RekrutteringstreffTabs.OM_TREFFET;
+    const harModusVedAvlystEllerFullført = erAvlystEllerFullført && modus;
 
-    // Fjern alle modes hvis avlyst eller fullført (disse er ikke redigerbare)
-    if ((activeStep === 'AVLYST' || activeStep === 'FULLFØRE') && modus) {
+    if (erPreviewMedFeilFane || harModusVedAvlystEllerFullført) {
       setModus('');
-      return;
     }
-  }, [rekrutteringstreff, modus, fane, activeStep, setModus]);
+  }, [rekrutteringstreff, modus, fane, erAvlystEllerFullført, setModus]);
 
   const scrollToTop = useCallback(() => {
     if (typeof window !== 'undefined') {
@@ -115,7 +103,6 @@ const Rekrutteringstreff: FC = () => {
       setModus('preview-page');
       setFane(RekrutteringstreffTabs.OM_TREFFET);
     } else {
-      // Gå tilbake til edit hvis vi var i edit, ellers til lesemodus
       setModus(erIEditModus ? 'edit' : '');
     }
     scrollToTop();
@@ -234,7 +221,6 @@ const Rekrutteringstreff: FC = () => {
         await saveInnlegg(undefined, true);
       }
       await markerSisteKiLoggSomLagret();
-      // Etter republisering: gå til standard lesemodus (uten ?mode)
       setModus('');
       scrollToTop();
     } finally {
@@ -254,12 +240,12 @@ const Rekrutteringstreff: FC = () => {
 
   const tittelKiFeil = (watch('tittelKiFeil' as any) as any) ?? false;
   const innleggKiFeil = (watch('innleggKiFeil' as any) as any) ?? false;
-  const anyKiFeil = !!tittelKiFeil || !!innleggKiFeil;
+  const harKiFeil = !!tittelKiFeil || !!innleggKiFeil;
   const harAndreSkjemafeil = Boolean(
     formState.errors &&
       Object.keys(formState.errors).some((key) => key !== 'root'),
   );
-  const harFeil = anyKiFeil || harAndreSkjemafeil;
+  const harFeil = harKiFeil || harAndreSkjemafeil;
 
   const DEFAULT_TITTEL = 'Treff uten navn';
   const lagretTittel = rekrutteringstreff?.tittel ?? '';
@@ -283,7 +269,6 @@ const Rekrutteringstreff: FC = () => {
   } as const;
 
   if (viserFullskjermForhåndsvisning) {
-    // Forhåndsvisning: Ingen tabs, bare preview-innhold
     return (
       <SideLayout
         {...layoutProps}
