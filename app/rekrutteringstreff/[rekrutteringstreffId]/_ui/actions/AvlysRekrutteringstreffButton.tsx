@@ -1,20 +1,18 @@
 'use client';
 
-import { avlysRekrutteringstreff } from '@/app/api/rekrutteringstreff/status/utførRekrutteringstreffStatusHendelser';
+import { avlysRekrutteringstreff } from '@/app/api/rekrutteringstreff/mutations';
 import { RekbisError } from '@/util/rekbisError';
 import { BodyLong, Button, Modal } from '@navikt/ds-react';
 import { FC, useRef, useState } from 'react';
 
 type Props = {
   rekrutteringstreffId: string;
-  oppdaterData: () => Promise<void>;
-  onAvlyst: () => void;
+  oppdaterData: () => void;
 };
 
 const AvlysRekrutteringstreffButton: FC<Props> = ({
   rekrutteringstreffId,
   oppdaterData,
-  onAvlyst,
 }) => {
   const [laster, setLaster] = useState(false);
   const modalRef = useRef<HTMLDialogElement>(null);
@@ -33,8 +31,7 @@ const AvlysRekrutteringstreffButton: FC<Props> = ({
 
     try {
       await avlysRekrutteringstreff(rekrutteringstreffId);
-      onAvlyst();
-      await oppdaterData();
+      oppdaterData();
       skalLukke = true;
     } catch (error) {
       new RekbisError({

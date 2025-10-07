@@ -1,8 +1,9 @@
-import { useRekrutteringstreffData } from './useRekrutteringstreffData';
 import {
   useJobbsøkere,
   JobbsøkerDTO,
-} from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkere';
+  JobbsøkerHendelseDTO,
+} from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
+import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_contexts/RekrutteringstreffContext';
 import { JobbsøkerHendelsestype } from '@/app/rekrutteringstreff/_domain/constants';
 import { useMemo } from 'react';
@@ -10,17 +11,20 @@ import { useMemo } from 'react';
 // Helper functions for jobbsøker status
 const erInvitert = (j: JobbsøkerDTO) =>
   j.hendelser?.some(
-    (h) => h.hendelsestype === JobbsøkerHendelsestype.INVITER,
+    (h: JobbsøkerHendelseDTO) =>
+      h.hendelsestype === JobbsøkerHendelsestype.INVITER,
   ) ?? false;
 
 const harSvarJa = (j: JobbsøkerDTO) =>
   j.hendelser?.some(
-    (h) => h.hendelsestype === JobbsøkerHendelsestype.SVAR_JA_TIL_INVITASJON,
+    (h: JobbsøkerHendelseDTO) =>
+      h.hendelsestype === JobbsøkerHendelsestype.SVAR_JA_TIL_INVITASJON,
   ) ?? false;
 
 const harSvarNei = (j: JobbsøkerDTO) =>
   j.hendelser?.some(
-    (h) => h.hendelsestype === JobbsøkerHendelsestype.SVAR_NEI_TIL_INVITASJON,
+    (h: JobbsøkerHendelseDTO) =>
+      h.hendelsestype === JobbsøkerHendelsestype.SVAR_NEI_TIL_INVITASJON,
   ) ?? false;
 
 export interface InviteringsStatus {
@@ -31,7 +35,7 @@ export interface InviteringsStatus {
   antallVenterSvar: number;
 
   // Progress for steg 2
-  inviterePunkterFullfort: number;
+  antallInviterePunkterFullfort: number;
   totaltAntallInviterePunkter: number;
 }
 
@@ -52,8 +56,14 @@ export interface InviteringsStatus {
  */
 export const useInviteringsStatus = (): InviteringsStatus => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
-  const { tilTidspunktHarPassert } = useRekrutteringstreffData();
+  const { data: treff } = useRekrutteringstreff(rekrutteringstreffId);
   const { data: jobbsøkere = [] } = useJobbsøkere(rekrutteringstreffId);
+
+  // Sjekk om til-tidspunkt har passert
+  const tilTidspunktHarPassert = useMemo(() => {
+    if (!treff?.tilTid) return false;
+    return new Date(treff.tilTid) < new Date();
+  }, [treff?.tilTid]);
 
   // Beregn statistikk
   const antallInviterte = useMemo(
@@ -76,8 +86,10 @@ export const useInviteringsStatus = (): InviteringsStatus => {
   );
 
   // Beregn fremdrift for steg 2: Invitere
-  const inviterePunkterFullfort =
-    (harInvitert ? 1 : 0) + (tilTidspunktHarPassert ? 1 : 0);
+  const antallInviterePunkterFullfort = [
+    harInvitert,
+    tilTidspunktHarPassert,
+  ].filter(Boolean).length;
   const totaltAntallInviterePunkter = 2;
 
   return {
@@ -85,7 +97,7 @@ export const useInviteringsStatus = (): InviteringsStatus => {
     antallInviterte,
     antallSvarJa,
     antallVenterSvar,
-    inviterePunkterFullfort,
+    antallInviterePunkterFullfort,
     totaltAntallInviterePunkter,
   };
 };

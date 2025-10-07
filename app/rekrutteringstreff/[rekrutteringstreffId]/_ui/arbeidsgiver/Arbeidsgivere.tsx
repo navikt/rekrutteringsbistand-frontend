@@ -3,12 +3,12 @@
 import ArbeidsgiverListeItem from './ArbeidsgiverListeItem';
 import LeggTilArbeidsgiverModal from './LeggTilArbeidsgiverModal';
 import SlettArbeidsgiverModal from './SlettArbeidsgiverModal';
-import { fjernArbeidsgiver } from '@/app/api/rekrutteringstreff/[...slug]/slett-arbeidsgiver/fjernArbeidsgiver';
-import { useArbeidsgiverHendelser } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgiverHendelser';
+import { fjernArbeidsgiver } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/mutations';
 import {
   ArbeidsgiverDTO,
   useRekrutteringstreffArbeidsgivere,
-} from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgivere';
+} from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
+import { useArbeidsgiverHendelser } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgiverHendelser';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_contexts/RekrutteringstreffContext';
 import SWRLaster from '@/components/SWRLaster';
 import { PlusIcon } from '@navikt/aksel-icons';
@@ -22,7 +22,6 @@ const Arbeidsgivere = () => {
   const arbeidsgivereHook =
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
   const hendelseHook = useArbeidsgiverHendelser(rekrutteringstreffId);
-  const { mutate: mutateHendelser } = hendelseHook;
 
   const leggTilModalRef = useRef<HTMLDialogElement>(null);
 
@@ -51,7 +50,8 @@ const Arbeidsgivere = () => {
         (arbeidsgiver as any).arbeidsgiverTreffId ??
           arbeidsgiver.organisasjonsnummer,
       );
-      await mutateHendelser();
+      arbeidsgivereHook.mutate();
+      hendelseHook.mutate();
     } finally {
       setSletterArbeidsgiver(false);
     }

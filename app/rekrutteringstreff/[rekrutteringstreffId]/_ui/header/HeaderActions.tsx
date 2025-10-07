@@ -17,7 +17,6 @@ type Props = {
   erPubliseringklar: boolean;
   onToggleForhåndsvisning: (ny: boolean) => void;
   onBekreftRedigerPublisert: () => void;
-  onAvlyst: () => void;
   onAvbrytRedigering: () => void;
   onPublisert?: () => void;
   onRepubliser?: () => Promise<void>;
@@ -30,7 +29,6 @@ const HeaderActions: FC<Props> = ({
   erPubliseringklar,
   onToggleForhåndsvisning,
   onBekreftRedigerPublisert,
-  onAvlyst,
   onAvbrytRedigering,
   onPublisert,
   onRepubliser,
@@ -42,7 +40,7 @@ const HeaderActions: FC<Props> = ({
     avlyst,
     harPublisert,
     harInvitert,
-    fraTidspunktHarPassert,
+    tilTidspunktHarPassert,
     treff,
     innleggHtmlFraBackend,
     oppdaterData,
@@ -143,7 +141,7 @@ const HeaderActions: FC<Props> = ({
         <FullførRekrutteringstreffButton
           rekrutteringstreffId={rekrutteringstreffId}
           harInvitert={harInvitert}
-          tiltidspunktHarPassert={fraTidspunktHarPassert}
+          tiltidspunktHarPassert={tilTidspunktHarPassert}
           oppdaterData={oppdaterData}
         />
       )}
@@ -159,7 +157,6 @@ const HeaderActions: FC<Props> = ({
         <AvlysRekrutteringstreffButton
           rekrutteringstreffId={rekrutteringstreffId}
           oppdaterData={oppdaterData}
-          onAvlyst={onAvlyst}
         />
       )}
 

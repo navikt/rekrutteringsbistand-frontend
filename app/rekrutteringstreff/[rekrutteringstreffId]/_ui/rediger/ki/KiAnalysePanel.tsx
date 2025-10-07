@@ -14,7 +14,7 @@ interface KiAnalysePanelProps {
   analyseError: any | undefined;
   forceSave: boolean;
   showAnalysis: boolean;
-  publisertRedigeringsmodus: boolean;
+  erRedigeringAvPublisertTreff: boolean;
   onForceSave: () => void;
   variant: KiAnalyseVariant;
   ariaLabel: string;
@@ -26,7 +26,7 @@ const KiAnalysePanel: FC<KiAnalysePanelProps> = ({
   analyseError,
   forceSave,
   showAnalysis,
-  publisertRedigeringsmodus,
+  erRedigeringAvPublisertTreff,
   onForceSave,
   variant,
   ariaLabel,
@@ -51,6 +51,7 @@ const KiAnalysePanel: FC<KiAnalysePanelProps> = ({
   const textRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (showTextBlock === 'skeleton') skeletonRef.current?.focus();
     if (showTextBlock === 'error') errorRef.current?.focus();
     if (showTextBlock === 'text') textRef.current?.focus();
   }, [showTextBlock]);
@@ -146,7 +147,7 @@ const KiAnalysePanel: FC<KiAnalysePanelProps> = ({
       {hasAnalyse && bryter && !forceSave && (
         <div className='pt-4'>
           <Button variant='secondary' size='small' onClick={onForceSave}>
-            {publisertRedigeringsmodus ? 'Bruk likevel' : 'Lagre likevel'}
+            {erRedigeringAvPublisertTreff ? 'Bruk likevel' : 'Lagre likevel'}
           </Button>
         </div>
       )}

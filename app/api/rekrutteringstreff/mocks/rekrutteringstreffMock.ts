@@ -1,3 +1,4 @@
+import { RekrutteringstreffDTO } from '../useRekrutteringstreff';
 import AvlystSteg from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/stegviser/steg/AvlystSteg';
 import {
   RekrutteringstreffHendelsestype,
@@ -100,7 +101,7 @@ const ikkepubliserthendelser = [
   },
 ];
 
-export const rekrutteringstreffMock = {
+export const rekrutteringstreffMock: RekrutteringstreffDTO = {
   id: 'd6a587cd-8797-4b9a-a68b-575373f16d65',
   tittel: 'Treffet',
   beskrivelse: null,
@@ -113,6 +114,5 @@ export const rekrutteringstreffMock = {
   status: 'Utkast',
   opprettetAvPersonNavident: 'A123456',
   opprettetAvNavkontorEnhetId: '0318',
-  opprettetAvTidspunkt: '2025-06-01T08:00:00+02:00',
   hendelser: publisertHendelser,
 };

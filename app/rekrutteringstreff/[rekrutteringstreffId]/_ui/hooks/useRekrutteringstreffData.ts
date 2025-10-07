@@ -1,3 +1,4 @@
+import { useInviteringsStatus } from './useInviteringsStatus';
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_contexts/RekrutteringstreffContext';
@@ -43,11 +44,8 @@ export const useRekrutteringstreffData = () => {
   const avlyst = activeStep === 'AVLYST';
   const harPublisert = activeStep === 'INVITERE' || activeStep === 'FULLFØRE';
 
-  // Sjekk om noen er invitert basert på hendelser
-  const harInvitert = useMemo(() => {
-    if (!hendelser) return false;
-    return hendelser.some((h) => h.hendelsestype === 'INVITERT');
-  }, [hendelser]);
+  // Sjekk om noen er invitert basert på jobbsøkere
+  const { harInvitert } = useInviteringsStatus();
 
   // Sjekk om fra-tidspunkt har passert
   const fraTidspunktHarPassert = useMemo(() => {
@@ -63,8 +61,8 @@ export const useRekrutteringstreffData = () => {
 
   const innleggHtmlFraBackend = innlegg?.[0]?.htmlContent ?? null;
 
-  const oppdaterData = async () => {
-    await rekrutteringstreffHook.mutate();
+  const oppdaterData = () => {
+    rekrutteringstreffHook.mutate();
   };
 
   return {

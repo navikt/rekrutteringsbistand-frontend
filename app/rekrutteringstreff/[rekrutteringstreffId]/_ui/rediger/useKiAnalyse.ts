@@ -21,7 +21,6 @@ interface UseKiAnalyseParams<FormValues extends Record<string, any>> {
   triggerRHF: UseFormTrigger<FormValues>;
   getValues: UseFormGetValues<FormValues>;
   setValue: UseFormSetValue<FormValues>;
-  isSubmitting: boolean;
   setKiFeilFieldName: keyof FormValues & string;
   saveCallback: (force?: boolean) => Promise<void>;
   setKiLagret?: (args: { id: string; lagret: boolean }) => Promise<void>;
@@ -30,6 +29,7 @@ interface UseKiAnalyseParams<FormValues extends Record<string, any>> {
   savedValue?: string | null;
 }
 
+/** Fjerner HTML-tags og normaliserer whitespace for sammenligning */
 const sanitizeForComparison = (value: unknown): string => {
   if (value === null || value === undefined) return '';
   return String(value)
@@ -48,7 +48,6 @@ export function useKiAnalyse<FormValues extends Record<string, any>>(
     triggerRHF,
     getValues,
     setValue,
-    isSubmitting,
     setKiFeilFieldName,
     saveCallback,
     setKiLagret,
@@ -60,7 +59,8 @@ export function useKiAnalyse<FormValues extends Record<string, any>>(
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { data: treff } = useRekrutteringstreff(rekrutteringstreffId);
 
-  const publisertRedigeringsmodus = erPublisert(treff as any) && erEditMode();
+  const erRedigeringAvPublisertTreff =
+    erPublisert(treff as any) && erEditMode();
 
   const {
     trigger: validateKI,
@@ -107,29 +107,32 @@ export function useKiAnalyse<FormValues extends Record<string, any>>(
     });
   }, [analyse, analyseError, forceSave, setKiFeilFieldName, setValue]);
 
+  /** Kjører KI-validering og autosave hvis godkjent (ikke i publisert redigeringsmodus) */
   const runValidationAndMaybeSave = useCallback(async () => {
-    const ok = await triggerRHF(fieldName as any);
-    if (!ok) return;
+    const feltErGyldig = await triggerRHF(fieldName as any);
+    if (!feltErGyldig) return;
 
-    const value = getValues(fieldName as any);
-    const tekst = (
-      typeof value === 'string' ? value : String(value ?? '')
+    const feltVerdi = getValues(fieldName as any);
+    const tekstVerdi = (
+      typeof feltVerdi === 'string' ? feltVerdi : String(feltVerdi ?? '')
     ).trim();
-    const sanitizedTekst = sanitizeForComparison(tekst);
-    if (!sanitizedTekst) return;
+    const normalisertTekst = sanitizeForComparison(tekstVerdi);
+
+    if (!normalisertTekst) return;
 
     if (savedValue !== undefined) {
-      const sanitizedSaved = sanitizeForComparison(savedValue);
-      if (sanitizedTekst === sanitizedSaved) {
+      const normalisertLagretVerdi = sanitizeForComparison(savedValue);
+      const innholdErUendret = normalisertTekst === normalisertLagretVerdi;
+      if (innholdErUendret) {
         return;
       }
     }
 
     try {
-      const res = await validateKI({
+      const kiResultat = await validateKI({
         treffId: rekrutteringstreffId,
         feltType,
-        tekst,
+        tekst: tekstVerdi,
       });
 
       setHasChecked(true);
@@ -141,29 +144,26 @@ export function useKiAnalyse<FormValues extends Record<string, any>>(
         });
       }
 
-      const currentLoggId =
-        (res as any)?.loggId ?? (analyse as any)?.loggId ?? null;
-      setLoggId(currentLoggId);
+      const loggId =
+        (kiResultat as any)?.loggId ?? (analyse as any)?.loggId ?? null;
+      setLoggId(loggId);
 
-      const bryter =
-        (res as any)?.bryterRetningslinjer ??
+      const bryterRetningslinjer =
+        (kiResultat as any)?.bryterRetningslinjer ??
         (analyse as any)?.bryterRetningslinjer;
 
-      const baseOk = !bryter || forceSave;
+      const kanLagres = !bryterRetningslinjer || forceSave;
 
-      const extraGate =
-        feltType === 'tittel'
-          ? !validating && !isSubmitting && !publisertRedigeringsmodus
-          : !publisertRedigeringsmodus;
-
-      if (baseOk && extraGate) {
+      // Lagre hvis godkjent (ikke i publisert redigeringsmodus)
+      if (kanLagres && !erRedigeringAvPublisertTreff) {
         await saveCallback(false);
-        if (currentLoggId && setKiLagret) {
+
+        if (loggId && setKiLagret) {
           try {
-            await setKiLagret({ id: currentLoggId, lagret: true });
+            await setKiLagret({ id: loggId, lagret: true });
           } catch (error) {
             new RekbisError({
-              message: `Feil ved oppdatering av /lagret for logg ${currentLoggId}.`,
+              message: `Feil ved oppdatering av /lagret for logg ${loggId}.`,
               error,
             });
           }
@@ -188,9 +188,7 @@ export function useKiAnalyse<FormValues extends Record<string, any>>(
     rekrutteringstreffId,
     feltType,
     forceSave,
-    validating,
-    isSubmitting,
-    publisertRedigeringsmodus,
+    erRedigeringAvPublisertTreff,
     saveCallback,
     setKiLagret,
     analyse,
@@ -199,13 +197,16 @@ export function useKiAnalyse<FormValues extends Record<string, any>>(
     savedValue,
   ]);
 
+  /** Tvinger lagring selv om KI-analyse fant brudd på retningslinjer */
   const onForceSave = useCallback(async () => {
-    if (publisertRedigeringsmodus) {
+    if (erRedigeringAvPublisertTreff) {
       setForceSave(true);
       return;
     }
+
     setForceSave(true);
     await saveCallback(true);
+
     if (loggId && setKiLagret) {
       try {
         await setKiLagret({ id: loggId, lagret: true });
@@ -216,7 +217,7 @@ export function useKiAnalyse<FormValues extends Record<string, any>>(
         });
       }
     }
-  }, [publisertRedigeringsmodus, saveCallback, loggId, setKiLagret]);
+  }, [erRedigeringAvPublisertTreff, saveCallback, loggId, setKiLagret]);
 
   const showAnalysis = requireHasCheckedToShow ? hasChecked : true;
 
@@ -230,7 +231,7 @@ export function useKiAnalyse<FormValues extends Record<string, any>>(
     loggId,
     hasChecked,
     showAnalysis,
-    publisertRedigeringsmodus,
+    erRedigeringAvPublisertTreff,
     runValidationAndMaybeSave,
     onForceSave,
   };

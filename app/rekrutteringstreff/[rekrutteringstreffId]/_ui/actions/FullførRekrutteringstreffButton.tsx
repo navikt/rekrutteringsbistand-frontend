@@ -1,6 +1,6 @@
 'use client';
 
-import { fullførRekrutteringstreff } from '@/app/api/rekrutteringstreff/status/utførRekrutteringstreffStatusHendelser';
+import { fullførRekrutteringstreff } from '@/app/api/rekrutteringstreff/mutations';
 import { RekbisError } from '@/util/rekbisError';
 import { Button, Modal } from '@navikt/ds-react';
 import { FC, useRef, useState } from 'react';
@@ -9,7 +9,7 @@ type Props = {
   rekrutteringstreffId: string;
   harInvitert: boolean;
   tiltidspunktHarPassert: boolean;
-  oppdaterData: () => Promise<void>;
+  oppdaterData: () => void;
 };
 
 const FullførRekrutteringstreffButton: FC<Props> = ({
@@ -35,7 +35,7 @@ const FullførRekrutteringstreffButton: FC<Props> = ({
 
     try {
       await fullførRekrutteringstreff(rekrutteringstreffId);
-      await oppdaterData();
+      oppdaterData();
       skalLukke = true;
     } catch (error) {
       new RekbisError({
