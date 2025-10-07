@@ -1,9 +1,11 @@
+import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { postApi } from '@/app/api/fetcher';
 import { logger } from '@navikt/next-logger';
 
 const rekrutteringstreffInviterJobbsøkereEndepunkt = (
   rekrutteringstreffId: string,
-) => `/api/rekrutteringstreff/${rekrutteringstreffId}/jobbsoker/inviter`;
+) =>
+  `${RekrutteringstreffAPI.internUrl}/${rekrutteringstreffId}/jobbsoker/inviter`;
 
 export const inviterJobbsøkere = async (
   rekrutteringstreffId: string,

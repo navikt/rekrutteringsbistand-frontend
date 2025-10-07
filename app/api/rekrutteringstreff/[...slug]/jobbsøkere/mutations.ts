@@ -1,11 +1,12 @@
 'use client';
 
 import { jobbsøkereMock } from './mocks/jobbsøkereMock';
+import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { postApi } from '@/app/api/fetcher';
 import { z } from 'zod';
 
 const rekrutteringstreffJobbsøkereEndepunkt = (id: string) =>
-  `/api/rekrutteringstreff/${id}/jobbsoker`;
+  `${RekrutteringstreffAPI.internUrl}/${id}/jobbsoker`;
 
 export const OpprettJobbsøkerSchema = z.object({
   fødselsnummer: z.string(),
@@ -23,8 +24,8 @@ export type OpprettJobbsøkerDTO = z.infer<typeof OpprettJobbsøkerSchema>;
 export type OpprettJobbsøkereDTO = OpprettJobbsøkerDTO[];
 
 export const opprettJobbsøkere = (
-  kandidater: OpprettJobbsøkereDTO,
   id: string,
+  kandidater: OpprettJobbsøkereDTO,
 ) => postApi(rekrutteringstreffJobbsøkereEndepunkt(id), kandidater);
 
 export const opprettJobbsøkereMirage = (server: any) => {

@@ -1,11 +1,12 @@
 'use client';
 
 import { RekrutteringstreffUtenHendelserSchema } from './useRekrutteringstreff';
+import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { deleteApi, putApi } from '@/app/api/fetcher';
 import { z } from 'zod';
 
 const rekrutteringstreffEndepunkt = (id: string) =>
-  `/api/rekrutteringstreff/${id}`;
+  `${RekrutteringstreffAPI.internUrl}/${id}`;
 
 export const MAX_TITLE_LENGTH = 100;
 
@@ -41,9 +42,8 @@ export const oppdaterRekrutteringstreff = async (
   return RekrutteringstreffUtenHendelserSchema.parse(response);
 };
 
-export const slettRekrutteringstreff = (id: string) => {
-  return deleteApi(rekrutteringstreffEndepunkt(id));
-};
+export const slettRekrutteringstreff = (id: string) =>
+  deleteApi(rekrutteringstreffEndepunkt(id));
 
 export const rekrutteringstreffSlugMutationsMirage = (server: any) => {
   server.put(rekrutteringstreffEndepunkt(':id'), (_: any, request: any) => {

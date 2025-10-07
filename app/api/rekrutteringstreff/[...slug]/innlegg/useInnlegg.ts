@@ -1,6 +1,6 @@
 'use client';
 
-import { innleggMock } from '../mocks/InnleggMock';
+import { innleggMock } from '../mocks/innleggMock';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { getAPIwithSchema } from '@/app/api/fetcher';
 import useSWR from 'swr';

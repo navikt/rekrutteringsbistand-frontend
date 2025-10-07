@@ -1,18 +1,19 @@
 'use client';
 
 import { arbeidsgivereMock } from './mocks/arbeidsgivereMock';
+import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { deleteApi, postApi } from '@/app/api/fetcher';
 import { z } from 'zod';
 
 const rekrutteringstreffArbeidsgiverEndepunkt = (
   rekrutteringstreffId: string,
-) => `/api/rekrutteringstreff/${rekrutteringstreffId}/arbeidsgiver`;
+) => `${RekrutteringstreffAPI.internUrl}/${rekrutteringstreffId}/arbeidsgiver`;
 
 const rekrutteringstreffEnkeltArbeidsgiverEndepunkt = (
   rekrutteringstreffId: string,
   arbeidsgiverId: string,
 ) =>
-  `/api/rekrutteringstreff/${rekrutteringstreffId}/arbeidsgiver/${arbeidsgiverId}`;
+  `${RekrutteringstreffAPI.internUrl}/${rekrutteringstreffId}/arbeidsgiver/${arbeidsgiverId}`;
 
 export const OpprettArbeidsgiverSchema = z.object({
   organisasjonsnummer: z.string(),
@@ -21,27 +22,21 @@ export const OpprettArbeidsgiverSchema = z.object({
 
 export type OpprettArbeidsgiverDTO = z.infer<typeof OpprettArbeidsgiverSchema>;
 
-export const opprettArbeidsgiver = async (
-  arbeidsgiver: OpprettArbeidsgiverDTO,
+export const opprettArbeidsgiver = (
   id: string,
-) => {
-  return await postApi(
-    rekrutteringstreffArbeidsgiverEndepunkt(id),
-    arbeidsgiver,
-  );
-};
+  arbeidsgiver: OpprettArbeidsgiverDTO,
+) => postApi(rekrutteringstreffArbeidsgiverEndepunkt(id), arbeidsgiver);
 
-export const slettArbeidsgiver = async (
+export const slettArbeidsgiver = (
   rekrutteringstreffId: string,
   arbeidsgiverId: string,
-) => {
-  return await deleteApi(
+) =>
+  deleteApi(
     rekrutteringstreffEnkeltArbeidsgiverEndepunkt(
       rekrutteringstreffId,
       arbeidsgiverId,
     ),
   );
-};
 
 export const arbeidsgiverMutationsMirage = (server: any) => {
   server.post(

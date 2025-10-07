@@ -1,13 +1,14 @@
 'use client';
 
+import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { postApi } from '@/app/api/fetcher';
 import { logger } from '@navikt/next-logger';
 import { z } from 'zod';
 
-const rekrutteringstreffEndepunkt = () => `/api/rekrutteringstreff`;
+const rekrutteringstreffEndepunkt = () => RekrutteringstreffAPI.internUrl;
 
 const rekrutteringstreffStatusEndepunkt = (id: string, hendelse: string) =>
-  `/api/rekrutteringstreff/${id}/${hendelse}`;
+  `${RekrutteringstreffAPI.internUrl}/${id}/${hendelse}`;
 
 export const MAX_TITLE_LENGTH = 100;
 
@@ -31,11 +32,9 @@ export const RekrutteringstreffStatusHendelser = {
 export type RekrutteringstreffStatusHendelse =
   (typeof RekrutteringstreffStatusHendelser)[keyof typeof RekrutteringstreffStatusHendelser];
 
-export const opprettRekrutteringstreff = async (
+export const opprettRekrutteringstreff = (
   rekrutteringstreff: OpprettRekrutteringstreffDTO,
-) => {
-  return await postApi(rekrutteringstreffEndepunkt(), rekrutteringstreff);
-};
+) => postApi(rekrutteringstreffEndepunkt(), rekrutteringstreff);
 
 const tekniskHendelsePathMap: Record<RekrutteringstreffStatusHendelse, string> =
   {

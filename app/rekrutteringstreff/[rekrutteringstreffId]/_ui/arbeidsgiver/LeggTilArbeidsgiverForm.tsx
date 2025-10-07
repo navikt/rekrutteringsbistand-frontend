@@ -83,10 +83,10 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({
         }
 
         // Inline-variant: legg til direkte mot backend
-        await opprettArbeidsgiver(
-          { organisasjonsnummer: valgt.organisasjonsnummer, navn: valgt.navn },
-          rekrutteringstreffId,
-        );
+        await opprettArbeidsgiver(rekrutteringstreffId, {
+          organisasjonsnummer: valgt.organisasjonsnummer,
+          navn: valgt.navn,
+        });
         arbeidsgivereHook.mutate();
         hendelseHook.mutate();
       } catch (error) {
@@ -113,10 +113,10 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({
     setSaving(true);
     try {
       for (const p of pending) {
-        await opprettArbeidsgiver(
-          { organisasjonsnummer: p.organisasjonsnummer, navn: p.navn },
-          rekrutteringstreffId,
-        );
+        await opprettArbeidsgiver(rekrutteringstreffId, {
+          organisasjonsnummer: p.organisasjonsnummer,
+          navn: p.navn,
+        });
       }
       arbeidsgivereHook.mutate();
       hendelseHook.mutate();

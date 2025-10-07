@@ -81,11 +81,11 @@ const LagreIRekrutteringstreffButton: FC<
     try {
       if (rekrutteringstreffId) {
         // Direct save to specific rekrutteringstreff
-        await opprettJobbsøkere(dto, rekrutteringstreffId);
+        await opprettJobbsøkere(rekrutteringstreffId, dto);
         jobbsøkerHook.mutate?.();
       } else if (selectedRows && selectedRows.length > 0) {
         // Save to selected rekrutteringstreff from modal
-        await Promise.all(selectedRows.map((id) => opprettJobbsøkere(dto, id)));
+        await Promise.all(selectedRows.map((id) => opprettJobbsøkere(id, dto)));
         rekrutteringstreffOversiktHook.mutate();
       } else {
         visVarsel({

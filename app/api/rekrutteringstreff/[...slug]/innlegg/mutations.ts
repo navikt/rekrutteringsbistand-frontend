@@ -1,5 +1,6 @@
-import { innleggMock } from '../mocks/InnleggMock';
+import { innleggMock } from '../mocks/innleggMock';
 import { InnleggDTO, InnleggSchema } from './useInnlegg';
+import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { postApi, putApi } from '@/app/api/fetcher';
 import { z } from 'zod';
 
@@ -21,12 +22,13 @@ export type OppdaterInnleggDto = z.infer<typeof InnleggDtoSchema>;
 export const InnleggResponseDtoSchema = InnleggSchema;
 
 const rekrutteringstreffInnleggEndepunkt = (rekrutteringstreffId: string) =>
-  `/api/rekrutteringstreff/${rekrutteringstreffId}/innlegg`;
+  `${RekrutteringstreffAPI.internUrl}/${rekrutteringstreffId}/innlegg`;
 
 const rekrutteringstreffEnkeltInnleggEndepunkt = (
   rekrutteringstreffId: string,
   innleggId: string,
-) => `/api/rekrutteringstreff/${rekrutteringstreffId}/innlegg/${innleggId}`;
+) =>
+  `${RekrutteringstreffAPI.internUrl}/${rekrutteringstreffId}/innlegg/${innleggId}`;
 
 export const opprettInnlegg = async (
   rekrutteringstreffId: string,
