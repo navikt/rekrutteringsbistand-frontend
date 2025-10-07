@@ -27,30 +27,30 @@ import { pamGeografiMirage } from '@/app/api/pam-geografi/typehead/lokasjoner/us
 import { stillingsTittelMirage } from '@/app/api/pam-ontologi/stillingsTittel/useStillingsTittel';
 import { arbeidsgiverMirage } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
 import { alleHendelserMirage } from '@/app/api/rekrutteringstreff/[...slug]/allehendelser/useAlleHendelser';
-import { rekrutteringstreffArbeidsgivereMirage } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/arbeidsgivereMock';
 import { arbeidsgiverMutationsMirage } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/mutations';
 import { arbeidsgiverHendelserMirage } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgiverHendelser';
-import { innleggMirage } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/innleggMock';
+import { rekrutteringstreffArbeidsgivereMirage } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import {
   oppdaterInnleggMirage,
   opprettInnleggMirage,
 } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/mutations';
+import { innleggMirage } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/useInnlegg';
 import { inviterJobbsøkereMirage } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/inviterJobbsøkere';
-import { jobbsøkereMirage } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/jobbsøkereMock';
 import { opprettJobbsøkereMirage } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/mutations';
 import { jobbsøkerHendelserMirage } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerHendelser';
-import { rekrutteringstreffSlugMutationsMirage } from '@/app/api/rekrutteringstreff/[...slug]/oppdaterRekrutteringstreffMock';
-import { rekrutteringstreffMirage } from '@/app/api/rekrutteringstreff/[...slug]/rekrutteringstreffMock';
-import { statusHendelseMirage } from '@/app/api/rekrutteringstreff/[...slug]/statushendelser/statusHendelseMock';
+import { jobbsøkereMirage } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
+import { rekrutteringstreffSlugMutationsMirage } from '@/app/api/rekrutteringstreff/[...slug]/mutations';
+import { statusHendelseMirage } from '@/app/api/rekrutteringstreff/[...slug]/statushendelser/mutations';
+import { rekrutteringstreffMirage } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import { kandidatnummerMirage } from '@/app/api/rekrutteringstreff/[...slug]/utils/useKandidatnummer';
 import {
   listKiLoggMirage,
   oppdaterKiLoggLagretMirage,
   oppdaterKiLoggManuellMirage,
 } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
-import { validerRekrutteringstreffMirage } from '@/app/api/rekrutteringstreff/kiValidering/validerRekrutteringstreffMock';
-import { rekrutteringstreffMutationsMirage } from '@/app/api/rekrutteringstreff/opprettRekrutteringstreffMock';
-import { rekrutteringstreffOversiktMirage } from '@/app/api/rekrutteringstreff/oversikt/rekrutteringstreffOversiktMock';
+import { validerRekrutteringstreffMirage } from '@/app/api/rekrutteringstreff/kiValidering/useValiderRekrutteringstreff';
+import { rekrutteringstreffMutationsMirage } from '@/app/api/rekrutteringstreff/mutations';
+import { rekrutteringstreffOversiktMirage } from '@/app/api/rekrutteringstreff/oversikt/useRekrutteringstreffOversikt';
 import { statistikkMirage } from '@/app/api/statistikk/useStatistikk';
 import { opprettNyStillingMirage } from '@/app/api/stilling/ny-stilling/opprettNyStilling';
 import { oppdaterStillingMirage } from '@/app/api/stilling/oppdater-stilling/oppdaterStilling';

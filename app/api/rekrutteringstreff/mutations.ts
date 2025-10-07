@@ -20,3 +20,10 @@ export type OpprettRekrutteringstreffDTO = z.infer<
 export const opprettRekrutteringstreff = (
   rekrutteringstreff: OpprettRekrutteringstreffDTO,
 ) => postApi(rekrutteringstreffEndepunkt(), rekrutteringstreff);
+
+export const rekrutteringstreffMutationsMirage = (server: any) => {
+  server.post(`${RekrutteringstreffAPI.internUrl}`, () => ({
+    id: '1231-1234-1234-1234',
+    tittel: 'Treff uten navn',
+  }));
+};

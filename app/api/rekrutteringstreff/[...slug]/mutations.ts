@@ -1,5 +1,6 @@
 'use client';
 
+import { oppdaterRekrutteringstreffMock } from './oppdaterRekrutteringstreffMock';
 import { RekrutteringstreffUtenHendelserSchema } from './useRekrutteringstreff';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { deleteApi, putApi } from '@/app/api/fetcher';
@@ -44,3 +45,15 @@ export const oppdaterRekrutteringstreff = async (
 
 export const slettRekrutteringstreff = (id: string) =>
   deleteApi(rekrutteringstreffEndepunkt(id));
+
+export const rekrutteringstreffSlugMutationsMirage = (server: any) => {
+  server.put(
+    `${RekrutteringstreffAPI.internUrl}/:id`,
+    (_: any, request: any) => {
+      const { id } = request.params;
+      return oppdaterRekrutteringstreffMock(id);
+    },
+  );
+
+  server.delete(`${RekrutteringstreffAPI.internUrl}/:id`, () => undefined);
+};

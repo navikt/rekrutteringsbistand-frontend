@@ -1,11 +1,10 @@
 import { RekrutteringstreffDTO } from './useRekrutteringstreff';
-import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import {
   RekrutteringstreffHendelsestype,
   JobbsøkerHendelsestype,
 } from '@/app/rekrutteringstreff/_domain/constants';
 
-const fullførthendelser = [
+const _fullførthendelser = [
   {
     id: '8ccd0b7c-57c0-468b-b265-653d58da5be6',
     tidspunkt: '2025-08-15T11:48:08Z',
@@ -60,7 +59,7 @@ const publisertHendelser = [
   },
 ];
 
-const avlysHendelser = [
+const _avlysHendelser = [
   {
     id: '5e322a9e-34eb-41ef-8adc-97e56a5f8a51',
     tidspunkt: '2025-09-10T17:10:19Z',
@@ -84,7 +83,7 @@ const avlysHendelser = [
   },
 ];
 
-const ikkepubliserthendelser = [
+const _ikkepubliserthendelser = [
   {
     id: '8ccd0b7c-57c0-468b-b265-653d58da5be6',
     tidspunkt: '2025-08-15T11:48:08Z',
@@ -115,10 +114,4 @@ export const rekrutteringstreffMock: RekrutteringstreffDTO = {
   opprettetAvPersonNavident: 'A123456',
   opprettetAvNavkontorEnhetId: '0318',
   hendelser: publisertHendelser,
-};
-
-export const rekrutteringstreffMirage = (server: any) => {
-  server.get(`${RekrutteringstreffAPI.internUrl}/:id`, () => {
-    return rekrutteringstreffMock;
-  });
 };

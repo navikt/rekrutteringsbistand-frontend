@@ -1,5 +1,6 @@
 'use client';
 
+import { arbeidsgivereMock } from './arbeidsgivereMock';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { getAPIwithSchema } from '@/app/api/fetcher';
 import useSWR from 'swr';
@@ -40,5 +41,11 @@ export const useRekrutteringstreffArbeidsgivere = (id: string) => {
   return useSWR(
     rekrutteringstreffArbeidsgivereEndepunkt(id),
     getAPIwithSchema(ArbeidsgivereSchema),
+  );
+};
+
+export const rekrutteringstreffArbeidsgivereMirage = (server: any) => {
+  return server.get(rekrutteringstreffArbeidsgivereEndepunkt('*'), () =>
+    arbeidsgivereMock(),
   );
 };

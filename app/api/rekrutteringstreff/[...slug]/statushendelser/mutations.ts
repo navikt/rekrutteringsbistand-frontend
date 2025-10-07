@@ -77,3 +77,12 @@ export const avpubliserRekrutteringstreff = (id: string) =>
     RekrutteringstreffStatusHendelser.AVPUBLISER,
     'Feil ved avpublisering av rekrutteringstreff',
   );
+
+export const statusHendelseMirage = (server: any) => {
+  Object.values(tekniskHendelsePathMap).forEach((hendelsePath) => {
+    server.post(
+      `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/${hendelsePath}`,
+      () => ({}),
+    );
+  });
+};

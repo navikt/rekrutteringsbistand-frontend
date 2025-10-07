@@ -1,5 +1,4 @@
 import type { ArbeidsgivereDTO } from './useArbeidsgivere';
-import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { faker } from '@faker-js/faker/locale/nb_NO';
 
 export const arbeidsgivereMock = (): ArbeidsgivereDTO => {
@@ -30,13 +29,4 @@ export const arbeidsgivereMock = (): ArbeidsgivereDTO => {
       ],
     },
   ];
-};
-
-export const rekrutteringstreffArbeidsgivereEndepunkt = (id: string) =>
-  `${RekrutteringstreffAPI.internUrl}/${id}/arbeidsgiver`;
-
-export const rekrutteringstreffArbeidsgivereMirage = (server: any) => {
-  return server.get(rekrutteringstreffArbeidsgivereEndepunkt('*'), () =>
-    arbeidsgivereMock(),
-  );
 };

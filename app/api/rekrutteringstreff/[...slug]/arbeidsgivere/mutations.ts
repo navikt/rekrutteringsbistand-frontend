@@ -3,16 +3,12 @@
 import { arbeidsgivereMock } from './arbeidsgivereMock';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { deleteApi, postApi } from '@/app/api/fetcher';
-import { z } from 'zod';
-
-// Schemas som kun brukes for mutations
-const OpprettArbeidsgiverSchema = z.object({
-  organisasjonsnummer: z.string(),
-  navn: z.string(),
-});
 
 // DTOs
-export type OpprettArbeidsgiverDTO = z.infer<typeof OpprettArbeidsgiverSchema>;
+export type OpprettArbeidsgiverDTO = {
+  organisasjonsnummer: string;
+  navn: string;
+};
 
 const rekrutteringstreffArbeidsgiverEndepunkt = (
   rekrutteringstreffId: string,

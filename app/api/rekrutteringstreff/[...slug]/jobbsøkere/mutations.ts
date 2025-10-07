@@ -3,23 +3,17 @@
 import { jobbsøkereMock } from './jobbsøkereMock';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { postApi } from '@/app/api/fetcher';
-import { z } from 'zod';
-
-// Schemas som kun brukes for mutations
-const OpprettJobbsøkerSchema = z.object({
-  fødselsnummer: z.string(),
-  fornavn: z.string().nullish(),
-  etternavn: z.string().nullish(),
-  kandidatnummer: z.string().nullable(),
-  navkontor: z.string().nullish(),
-  veilederNavn: z.string().nullish(),
-  veilederNavIdent: z.string(),
-});
-
-const OpprettJobbsøkereSchema = z.array(OpprettJobbsøkerSchema);
 
 // DTOs
-export type OpprettJobbsøkerDTO = z.infer<typeof OpprettJobbsøkerSchema>;
+export type OpprettJobbsøkerDTO = {
+  fødselsnummer: string;
+  fornavn?: string | null;
+  etternavn?: string | null;
+  kandidatnummer: string | null;
+  navkontor?: string | null;
+  veilederNavn?: string | null;
+  veilederNavIdent: string;
+};
 export type OpprettJobbsøkereDTO = OpprettJobbsøkerDTO[];
 
 const rekrutteringstreffJobbsøkereEndepunkt = (id: string) =>
