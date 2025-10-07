@@ -184,7 +184,6 @@ export function useKiAnalyse<FormValues extends Record<string, any>>(
     fieldName,
     getValues,
     validateKI,
-    rekrutteringstreffId,
     feltType,
     forceSave,
     erRedigeringAvPublisertTreff,
