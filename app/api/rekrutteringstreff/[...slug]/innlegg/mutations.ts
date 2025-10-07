@@ -26,7 +26,7 @@ const innleggBaseUrl = (rekrutteringstreffId: string) =>
 const innleggItemUrl = (rekrutteringstreffId: string, innleggId: string) =>
   `/api/rekrutteringstreff/${rekrutteringstreffId}/innlegg/${innleggId}`;
 
-export const opprettInnleggForTreff = async (
+export const opprettInnlegg = async (
   rekrutteringstreffId: string,
   data: OpprettInnleggDto,
 ): Promise<InnleggDTO> => {
@@ -35,7 +35,7 @@ export const opprettInnleggForTreff = async (
   return InnleggResponseDtoSchema.parse(response);
 };
 
-export const oppdaterEttInnlegg = async (
+export const oppdaterInnlegg = async (
   rekrutteringstreffId: string,
   innleggId: string,
   data: OppdaterInnleggDto,

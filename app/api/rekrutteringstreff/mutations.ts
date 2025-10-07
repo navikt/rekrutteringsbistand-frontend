@@ -4,20 +4,20 @@ import { postApi } from '@/app/api/fetcher';
 import { logger } from '@navikt/next-logger';
 import { z } from 'zod';
 
-const nyRekrutteringstreffEndepunkt = () => `/api/rekrutteringstreff`;
+const opprettRekrutteringstreffEndepunkt = () => `/api/rekrutteringstreff`;
 
 const statusEndepunkt = (id: string, hendelse: string) =>
   `/api/rekrutteringstreff/${id}/${hendelse}`;
 
 export const MAX_TITLE_LENGTH = 100;
 
-export const OpprettNyttRekrutteringstreffSchema = z.object({
+export const OpprettRekrutteringstreffSchema = z.object({
   opprettetAvNavkontorEnhetId: z.string().nullable(),
   tittel: z.string().min(1).max(MAX_TITLE_LENGTH),
 });
 
-export type OpprettNyttRekrutteringstreffDTO = z.infer<
-  typeof OpprettNyttRekrutteringstreffSchema
+export type OpprettRekrutteringstreffDTO = z.infer<
+  typeof OpprettRekrutteringstreffSchema
 >;
 
 export const RekrutteringstreffStatusHendelser = {
@@ -31,10 +31,13 @@ export const RekrutteringstreffStatusHendelser = {
 export type RekrutteringstreffStatusHendelse =
   (typeof RekrutteringstreffStatusHendelser)[keyof typeof RekrutteringstreffStatusHendelser];
 
-export const opprettNyttRekrutteringstreff = async (
-  rekrutteringstreff: OpprettNyttRekrutteringstreffDTO,
+export const opprettRekrutteringstreff = async (
+  rekrutteringstreff: OpprettRekrutteringstreffDTO,
 ) => {
-  return await postApi(nyRekrutteringstreffEndepunkt(), rekrutteringstreff);
+  return await postApi(
+    opprettRekrutteringstreffEndepunkt(),
+    rekrutteringstreff,
+  );
 };
 
 const tekniskHendelsePathMap: Record<RekrutteringstreffStatusHendelse, string> =
@@ -95,7 +98,7 @@ export const avpubliserRekrutteringstreff = (id: string) =>
   );
 
 export const rekrutteringstreffMutationsMirage = (server: any) => {
-  server.post(nyRekrutteringstreffEndepunkt(), () => ({
+  server.post(opprettRekrutteringstreffEndepunkt(), () => ({
     id: '1231-1234-1234-1234',
     tittel: 'Treff uten navn',
   }));

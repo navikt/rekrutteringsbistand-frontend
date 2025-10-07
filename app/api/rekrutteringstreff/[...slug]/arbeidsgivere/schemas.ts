@@ -26,11 +26,9 @@ export type ArbeidsgiverHendelseDTO = z.infer<
   typeof ArbeidsgiverHendelseSchema
 >;
 
-export const LeggTilNyArbeidsgiverSchema = z.object({
+export const OpprettArbeidsgiverSchema = z.object({
   organisasjonsnummer: z.string(),
   navn: z.string(),
 });
 
-export type LeggTilNyArbeidsgiverDTO = z.infer<
-  typeof LeggTilNyArbeidsgiverSchema
->;
+export type OpprettArbeidsgiverDTO = z.infer<typeof OpprettArbeidsgiverSchema>;

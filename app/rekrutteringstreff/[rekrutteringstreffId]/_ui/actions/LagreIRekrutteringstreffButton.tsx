@@ -2,8 +2,8 @@
 
 import { KandidatsokKandidat } from '@/app/api/kandidat-sok/useKandidatsøk';
 import {
-  leggTilNyeJobbsøkere,
-  LeggTilNyeJobbsøkereDTO,
+  opprettJobbsøkere,
+  OpprettJobbsøkereDTO,
 } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/mutations';
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import { useRekrutteringstreffOversikt } from '@/app/api/rekrutteringstreff/useRekrutteringstreffOversikt';
@@ -55,7 +55,7 @@ const LagreIRekrutteringstreffButton: FC<
     let skalLukke = false;
 
     const feil: string[] = [];
-    const dto: LeggTilNyeJobbsøkereDTO = markerteKandidater
+    const dto: OpprettJobbsøkereDTO = markerteKandidater
       .map((kandidatnummer) => {
         const kandidat = kandidatsokKandidater.find(
           (k) => k.arenaKandidatnr === kandidatnummer,
@@ -76,18 +76,16 @@ const LagreIRekrutteringstreffButton: FC<
       })
       .filter(
         (kandidat) => kandidat && kandidat.fødselsnummer,
-      ) as LeggTilNyeJobbsøkereDTO;
+      ) as OpprettJobbsøkereDTO;
 
     try {
       if (rekrutteringstreffId) {
         // Direct save to specific rekrutteringstreff
-        await leggTilNyeJobbsøkere(dto, rekrutteringstreffId);
+        await opprettJobbsøkere(dto, rekrutteringstreffId);
         jobbsøkerHook.mutate?.();
       } else if (selectedRows && selectedRows.length > 0) {
         // Save to selected rekrutteringstreff from modal
-        await Promise.all(
-          selectedRows.map((id) => leggTilNyeJobbsøkere(dto, id)),
-        );
+        await Promise.all(selectedRows.map((id) => opprettJobbsøkere(dto, id)));
         rekrutteringstreffOversiktHook.mutate();
       } else {
         visVarsel({

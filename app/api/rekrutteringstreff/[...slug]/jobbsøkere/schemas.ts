@@ -18,7 +18,7 @@ export const JobbsøkereSchema = z.array(JobbsøkerSchema);
 export type JobbsøkerDTO = z.infer<typeof JobbsøkerSchema>;
 export type JobbsøkereDTO = z.infer<typeof JobbsøkereSchema>;
 
-export const NyJobbsøkerSchema = z.object({
+export const OpprettJobbsøkerSchema = z.object({
   fødselsnummer: z.string(),
   fornavn: z.string().nullish(),
   etternavn: z.string().nullish(),
@@ -28,10 +28,10 @@ export const NyJobbsøkerSchema = z.object({
   veilederNavIdent: z.string(),
 });
 
-export const LeggTilNyeJobbsøkereSchema = z.array(NyJobbsøkerSchema);
+export const OpprettJobbsøkereSchema = z.array(OpprettJobbsøkerSchema);
 
-export type NyJobbsøkerDTO = z.infer<typeof NyJobbsøkerSchema>;
-export type LeggTilNyeJobbsøkereDTO = NyJobbsøkerDTO[];
+export type OpprettJobbsøkerDTO = z.infer<typeof OpprettJobbsøkerSchema>;
+export type OpprettJobbsøkereDTO = OpprettJobbsøkerDTO[];
 
 export const JobbsøkerHendelseSchema = z.object({
   id: z.string(),

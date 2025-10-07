@@ -4,8 +4,8 @@ import ArbeidsgiverKort from './ArbeidsgiverKort';
 import SlettArbeidsgiverModal from './SlettArbeidsgiverModal';
 import VelgArbeidsgiver from './VelgArbeidsgiver';
 import { ArbeidsgiverDTO as PamArbeidsgiverDTO } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
-import { leggTilNyArbeidsgiver } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/mutations';
-import { fjernArbeidsgiver } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/mutations';
+import { opprettArbeidsgiver } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/mutations';
+import { slettArbeidsgiver } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/mutations';
 import {
   ArbeidsgiverDTO,
   useRekrutteringstreffArbeidsgivere,
@@ -38,7 +38,7 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({
     if (!arbeidsgiver) return;
     try {
       setSletterArbeidsgiver(true);
-      await fjernArbeidsgiver(
+      await slettArbeidsgiver(
         rekrutteringstreffId,
         (arbeidsgiver as any).arbeidsgiverTreffId ??
           arbeidsgiver.organisasjonsnummer,
@@ -83,7 +83,7 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({
         }
 
         // Inline-variant: legg til direkte mot backend
-        await leggTilNyArbeidsgiver(
+        await opprettArbeidsgiver(
           { organisasjonsnummer: valgt.organisasjonsnummer, navn: valgt.navn },
           rekrutteringstreffId,
         );
@@ -113,7 +113,7 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({
     setSaving(true);
     try {
       for (const p of pending) {
-        await leggTilNyArbeidsgiver(
+        await opprettArbeidsgiver(
           { organisasjonsnummer: p.organisasjonsnummer, navn: p.navn },
           rekrutteringstreffId,
         );

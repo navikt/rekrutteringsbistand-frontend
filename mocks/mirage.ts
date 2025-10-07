@@ -34,7 +34,7 @@ import {
 } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/mutations';
 import { innleggMirage } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/useInnlegg';
 import { inviterJobbsøkereMirage } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/inviterJobbsokere';
-import { leggTilNyJobbsøkerMirage } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/mutations';
+import { opprettJobbsøkereMirage } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/mutations';
 import { jobbsøkereMirage } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import { rekrutteringstreffSlugMutationsMirage } from '@/app/api/rekrutteringstreff/[...slug]/mutations';
 import { alleHendelserMirage } from '@/app/api/rekrutteringstreff/[...slug]/useAlleHendelser';
@@ -107,7 +107,7 @@ export function makeServer({ environment = 'test' } = {}) {
       oppdaterKiLoggManuellMirage(this);
       oppdaterKiLoggLagretMirage(this);
       jobbsøkereMirage(this);
-      leggTilNyJobbsøkerMirage(this);
+      opprettJobbsøkereMirage(this);
       rekruteringstreffArbeidsgivereMirage(this);
       arbeidsgiverMutationsMirage(this);
       jobbsøkerHendelserMirage(this);

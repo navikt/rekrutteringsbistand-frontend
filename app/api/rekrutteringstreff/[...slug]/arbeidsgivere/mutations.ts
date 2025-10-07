@@ -13,23 +13,21 @@ const enkeltArbeidsgiverEndepunkt = (
 ) =>
   `/api/rekrutteringstreff/${rekrutteringstreffId}/arbeidsgiver/${arbeidsgiverId}`;
 
-export const LeggTilNyArbeidsgiverSchema = z.object({
+export const OpprettArbeidsgiverSchema = z.object({
   organisasjonsnummer: z.string(),
   navn: z.string(),
 });
 
-export type LeggTilNyArbeidsgiverDTO = z.infer<
-  typeof LeggTilNyArbeidsgiverSchema
->;
+export type OpprettArbeidsgiverDTO = z.infer<typeof OpprettArbeidsgiverSchema>;
 
-export const leggTilNyArbeidsgiver = async (
-  leggTilNyArbeidsgiver: LeggTilNyArbeidsgiverDTO,
+export const opprettArbeidsgiver = async (
+  arbeidsgiver: OpprettArbeidsgiverDTO,
   id: string,
 ) => {
-  return await postApi(arbeidsgiverEndepunkt(id), leggTilNyArbeidsgiver);
+  return await postApi(arbeidsgiverEndepunkt(id), arbeidsgiver);
 };
 
-export const fjernArbeidsgiver = async (
+export const slettArbeidsgiver = async (
   rekrutteringstreffId: string,
   arbeidsgiverId: string,
 ) => {

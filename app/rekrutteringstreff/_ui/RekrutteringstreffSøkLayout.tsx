@@ -3,8 +3,8 @@
 import { RekrutteringstreffBreadcrumbs } from './RekrutteringstreffBreadcrumbs';
 import { RekrutteringstreffFilter } from './RekrutteringstreffFilter';
 import {
-  opprettNyttRekrutteringstreff,
-  OpprettNyttRekrutteringstreffDTO,
+  opprettRekrutteringstreff,
+  OpprettRekrutteringstreffDTO,
 } from '@/app/api/rekrutteringstreff/mutations';
 import SideScroll from '@/components/SideScroll';
 import PanelHeader from '@/components/layout/PanelHeader';
@@ -28,12 +28,12 @@ const RekrutteringstreffSøkLayout: FC<RekrutteringstreffSøkLayoutProps> = ({
   const headerRef = useRef<HTMLDivElement>(null);
 
   const handleOpprettRekrutteringstreff = () => {
-    const nyttTreff: OpprettNyttRekrutteringstreffDTO = {
+    const nyttTreff: OpprettRekrutteringstreffDTO = {
       opprettetAvNavkontorEnhetId: valgtNavKontor?.navKontor || null,
       tittel: 'Treff uten navn',
     };
 
-    opprettNyttRekrutteringstreff(nyttTreff)
+    opprettRekrutteringstreff(nyttTreff)
       .then((response) => {
         const id = response.id;
         trackAndNavigate(

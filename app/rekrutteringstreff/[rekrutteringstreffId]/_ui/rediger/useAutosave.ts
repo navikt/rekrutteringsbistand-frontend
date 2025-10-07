@@ -2,8 +2,8 @@
 
 import { toIso as toIsoUtil } from './tidspunkt/utils';
 import {
-  oppdaterEttInnlegg,
-  opprettInnleggForTreff,
+  oppdaterInnlegg,
+  opprettInnlegg,
   OpprettInnleggDto,
   OppdaterInnleggDto,
 } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/mutations';
@@ -197,13 +197,13 @@ export function useInnleggAutosave() {
         startLagring('innlegg');
 
         if (innlegg?.id) {
-          await oppdaterEttInnlegg(
+          await oppdaterInnlegg(
             rekrutteringstreffId,
             innlegg.id,
             payloadData as OppdaterInnleggDto,
           );
         } else {
-          await opprettInnleggForTreff(
+          await opprettInnlegg(
             rekrutteringstreffId,
             payloadData as OpprettInnleggDto,
           );

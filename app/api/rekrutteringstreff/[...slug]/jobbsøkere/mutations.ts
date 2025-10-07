@@ -4,10 +4,10 @@ import { jobbsøkereMock } from './mocks/jobbsøkereMock';
 import { postApi } from '@/app/api/fetcher';
 import { z } from 'zod';
 
-const leggTilNyJobbsøkerEndepunkt = (id: string) =>
+const opprettJobbsøkereEndepunkt = (id: string) =>
   `/api/rekrutteringstreff/${id}/jobbsoker`;
 
-export const NyJobbsøkerSchema = z.object({
+export const OpprettJobbsøkerSchema = z.object({
   fødselsnummer: z.string(),
   fornavn: z.string().nullish(),
   etternavn: z.string().nullish(),
@@ -17,19 +17,19 @@ export const NyJobbsøkerSchema = z.object({
   veilederNavIdent: z.string(),
 });
 
-export const LeggTilNyeJobbsøkereSchema = z.array(NyJobbsøkerSchema);
+export const OpprettJobbsøkereSchema = z.array(OpprettJobbsøkerSchema);
 
-export type NyJobbsøkerDTO = z.infer<typeof NyJobbsøkerSchema>;
-export type LeggTilNyeJobbsøkereDTO = NyJobbsøkerDTO[];
+export type OpprettJobbsøkerDTO = z.infer<typeof OpprettJobbsøkerSchema>;
+export type OpprettJobbsøkereDTO = OpprettJobbsøkerDTO[];
 
-export const leggTilNyeJobbsøkere = (
-  kandidater: LeggTilNyeJobbsøkereDTO,
+export const opprettJobbsøkere = (
+  kandidater: OpprettJobbsøkereDTO,
   id: string,
-) => postApi(leggTilNyJobbsøkerEndepunkt(id), kandidater);
+) => postApi(opprettJobbsøkereEndepunkt(id), kandidater);
 
-export const leggTilNyJobbsøkerMirage = (server: any) => {
+export const opprettJobbsøkereMirage = (server: any) => {
   return server.post(
-    leggTilNyJobbsøkerEndepunkt('d6a587cd-8797-4b9a-a68b-575373f16d65'),
+    opprettJobbsøkereEndepunkt('d6a587cd-8797-4b9a-a68b-575373f16d65'),
     () => jobbsøkereMock[0],
   );
 };

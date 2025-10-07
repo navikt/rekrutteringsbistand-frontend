@@ -3,7 +3,7 @@
 import ArbeidsgiverListeItem from './ArbeidsgiverListeItem';
 import LeggTilArbeidsgiverModal from './LeggTilArbeidsgiverModal';
 import SlettArbeidsgiverModal from './SlettArbeidsgiverModal';
-import { fjernArbeidsgiver } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/mutations';
+import { slettArbeidsgiver } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/mutations';
 import {
   ArbeidsgiverDTO,
   useRekrutteringstreffArbeidsgivere,
@@ -45,7 +45,7 @@ const Arbeidsgivere = () => {
     if (!arbeidsgiver) return;
     try {
       setSletterArbeidsgiver(true);
-      await fjernArbeidsgiver(
+      await slettArbeidsgiver(
         rekrutteringstreffId,
         (arbeidsgiver as any).arbeidsgiverTreffId ??
           arbeidsgiver.organisasjonsnummer,
