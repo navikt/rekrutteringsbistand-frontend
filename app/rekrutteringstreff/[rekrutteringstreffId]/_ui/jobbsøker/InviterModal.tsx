@@ -1,4 +1,4 @@
-import { inviterJobbsøkere } from '@/app/api/rekrutteringstreff/inviterJobbsokere/inviterJobbsokere';
+import { inviterJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/inviterJobbsokere';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_contexts/RekrutteringstreffContext';
 import { RekbisError } from '@/util/rekbisError';
 import {

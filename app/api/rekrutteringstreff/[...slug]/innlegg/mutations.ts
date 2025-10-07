@@ -1,5 +1,5 @@
-import { innleggMock } from './[...slug]/mocks/InnleggMock';
-import { InnleggDTO, InnleggSchema } from './[...slug]/useInnlegg';
+import { innleggMock } from '../mocks/InnleggMock';
+import { InnleggDTO, InnleggSchema } from './useInnlegg';
 import { postApi, putApi } from '@/app/api/fetcher';
 import { z } from 'zod';
 

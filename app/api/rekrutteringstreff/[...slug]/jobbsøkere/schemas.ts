@@ -1,4 +1,4 @@
-import { HendelseSchema } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
+import { HendelseSchema } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import { z } from 'zod';
 
 export const JobbsøkerSchema = z.object({

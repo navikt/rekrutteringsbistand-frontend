@@ -1,14 +1,14 @@
 'use client';
 
 import { toIso as toIsoUtil } from './tidspunkt/utils';
-import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
-import { oppdaterRekrutteringstreff } from '@/app/api/rekrutteringstreff/mutations';
 import {
   oppdaterEttInnlegg,
   opprettInnleggForTreff,
   OpprettEllerOppdaterInnleggDto,
-} from '@/app/api/rekrutteringstreff/opprettEllerOppdaterInnlegg';
-import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
+} from '@/app/api/rekrutteringstreff/[...slug]/innlegg/mutations';
+import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/useInnlegg';
+import { oppdaterRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/mutations';
+import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_contexts/RekrutteringstreffContext';
 import { getActiveStepFromHendelser } from '@/app/rekrutteringstreff/_utils/rekrutteringstreff';
 import { RekbisError } from '@/util/rekbisError';

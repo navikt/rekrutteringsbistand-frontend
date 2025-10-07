@@ -1,6 +1,6 @@
 'use client';
 
-import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
+import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import { getActiveStepFromHendelser } from '@/app/rekrutteringstreff/_utils/rekrutteringstreff';
 import { CalendarIcon, LocationPinIcon, PersonIcon } from '@navikt/aksel-icons';
 import {

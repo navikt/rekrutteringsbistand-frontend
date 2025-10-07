@@ -1,4 +1,4 @@
-import { RekrutteringstreffUtenHendelserDTO } from '../useRekrutteringstreff';
+import { RekrutteringstreffUtenHendelserDTO } from '../[...slug]/useRekrutteringstreff';
 
 export const oppdaterRekrutteringstreffMock = (
   id: string,

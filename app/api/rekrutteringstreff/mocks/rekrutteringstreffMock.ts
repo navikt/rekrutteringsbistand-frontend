@@ -1,4 +1,4 @@
-import { RekrutteringstreffDTO } from '../useRekrutteringstreff';
+import { RekrutteringstreffDTO } from '../[...slug]/useRekrutteringstreff';
 import AvlystSteg from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/stegviser/steg/AvlystSteg';
 import {
   RekrutteringstreffHendelsestype,
@@ -114,5 +114,5 @@ export const rekrutteringstreffMock: RekrutteringstreffDTO = {
   status: 'Utkast',
   opprettetAvPersonNavident: 'A123456',
   opprettetAvNavkontorEnhetId: '0318',
-  hendelser: ikkepubliserthendelser,
+  hendelser: publisertHendelser,
 };

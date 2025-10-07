@@ -3,7 +3,7 @@
 import { jobbsøkereMock } from './mocks/jobbsøkereMock';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { getAPIwithSchema } from '@/app/api/fetcher';
-import { HendelseSchema } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
+import { HendelseSchema } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import useSWR from 'swr';
 import { z } from 'zod';
 

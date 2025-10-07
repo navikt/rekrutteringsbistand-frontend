@@ -1,4 +1,4 @@
-import type { HendelseDTO } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
+import type { HendelseDTO } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import {
   AktivtSteg,
   RekrutteringstreffHendelsestype,
