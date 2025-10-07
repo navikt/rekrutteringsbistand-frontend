@@ -123,7 +123,7 @@ export default function AktivStilling({
               <div className='flex gap-2'>
                 <BarChartIcon aria-hidden className='shrink-0' />
                 <BodyShort size='small'>
-                  Registreringen sendes til statitstikk. Tellingene låses ved
+                  Registreringen sendes til statistikk. Tellingene låses ved
                   månedsskifte.
                 </BodyShort>
               </div>
