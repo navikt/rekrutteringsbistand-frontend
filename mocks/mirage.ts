@@ -27,13 +27,13 @@ import { pamGeografiMirage } from '@/app/api/pam-geografi/typehead/lokasjoner/us
 import { stillingsTittelMirage } from '@/app/api/pam-ontologi/stillingsTittel/useStillingsTittel';
 import { arbeidsgiverMirage } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
 import { arbeidsgiverMutationsMirage } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/mutations';
-import { rekruteringstreffArbeidsgivereMirage } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
+import { rekrutteringstreffArbeidsgivereMirage } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import {
   oppdaterInnleggMirage,
   opprettInnleggMirage,
 } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/mutations';
 import { innleggMirage } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/useInnlegg';
-import { inviterJobbsøkereMirage } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/inviterJobbsokere';
+import { inviterJobbsøkereMirage } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/inviterJobbsøkere';
 import { opprettJobbsøkereMirage } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/mutations';
 import { jobbsøkereMirage } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import { rekrutteringstreffSlugMutationsMirage } from '@/app/api/rekrutteringstreff/[...slug]/mutations';
@@ -108,7 +108,7 @@ export function makeServer({ environment = 'test' } = {}) {
       oppdaterKiLoggLagretMirage(this);
       jobbsøkereMirage(this);
       opprettJobbsøkereMirage(this);
-      rekruteringstreffArbeidsgivereMirage(this);
+      rekrutteringstreffArbeidsgivereMirage(this);
       arbeidsgiverMutationsMirage(this);
       jobbsøkerHendelserMirage(this);
       arbeidsgiverHendelserMirage(this);

@@ -20,18 +20,23 @@ export type OppdaterInnleggDto = z.infer<typeof InnleggDtoSchema>;
 
 export const InnleggResponseDtoSchema = InnleggSchema;
 
-const innleggBaseUrl = (rekrutteringstreffId: string) =>
+const rekrutteringstreffInnleggEndepunkt = (rekrutteringstreffId: string) =>
   `/api/rekrutteringstreff/${rekrutteringstreffId}/innlegg`;
 
-const innleggItemUrl = (rekrutteringstreffId: string, innleggId: string) =>
-  `/api/rekrutteringstreff/${rekrutteringstreffId}/innlegg/${innleggId}`;
+const rekrutteringstreffEnkeltInnleggEndepunkt = (
+  rekrutteringstreffId: string,
+  innleggId: string,
+) => `/api/rekrutteringstreff/${rekrutteringstreffId}/innlegg/${innleggId}`;
 
 export const opprettInnlegg = async (
   rekrutteringstreffId: string,
   data: OpprettInnleggDto,
 ): Promise<InnleggDTO> => {
   InnleggDtoSchema.parse(data);
-  const response = await postApi(innleggBaseUrl(rekrutteringstreffId), data);
+  const response = await postApi(
+    rekrutteringstreffInnleggEndepunkt(rekrutteringstreffId),
+    data,
+  );
   return InnleggResponseDtoSchema.parse(response);
 };
 
@@ -42,7 +47,7 @@ export const oppdaterInnlegg = async (
 ): Promise<InnleggDTO> => {
   InnleggDtoSchema.parse(data);
   const response = await putApi(
-    innleggItemUrl(rekrutteringstreffId, innleggId),
+    rekrutteringstreffEnkeltInnleggEndepunkt(rekrutteringstreffId, innleggId),
     data,
   );
   return InnleggResponseDtoSchema.parse(response);

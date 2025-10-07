@@ -42,7 +42,7 @@ export const useRekrutteringstreffArbeidsgivere = (id: string) => {
   );
 };
 
-export const rekruteringstreffArbeidsgivereMirage = (server: any) => {
+export const rekrutteringstreffArbeidsgivereMirage = (server: any) => {
   return server.get(rekrutteringstreffArbeidsgivereEndepunkt('*'), () =>
     arbeidsgivereMock(),
   );

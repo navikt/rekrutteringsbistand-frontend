@@ -4,9 +4,9 @@ import { postApi } from '@/app/api/fetcher';
 import { logger } from '@navikt/next-logger';
 import { z } from 'zod';
 
-const opprettRekrutteringstreffEndepunkt = () => `/api/rekrutteringstreff`;
+const rekrutteringstreffEndepunkt = () => `/api/rekrutteringstreff`;
 
-const statusEndepunkt = (id: string, hendelse: string) =>
+const rekrutteringstreffStatusEndepunkt = (id: string, hendelse: string) =>
   `/api/rekrutteringstreff/${id}/${hendelse}`;
 
 export const MAX_TITLE_LENGTH = 100;
@@ -34,10 +34,7 @@ export type RekrutteringstreffStatusHendelse =
 export const opprettRekrutteringstreff = async (
   rekrutteringstreff: OpprettRekrutteringstreffDTO,
 ) => {
-  return await postApi(
-    opprettRekrutteringstreffEndepunkt(),
-    rekrutteringstreff,
-  );
+  return await postApi(rekrutteringstreffEndepunkt(), rekrutteringstreff);
 };
 
 const tekniskHendelsePathMap: Record<RekrutteringstreffStatusHendelse, string> =
@@ -55,7 +52,10 @@ export const utførRekrutteringstreffStatusHendelse = async (
   feilmelding: string,
 ): Promise<void> => {
   try {
-    await postApi(statusEndepunkt(id, tekniskHendelsePathMap[hendelse]), {});
+    await postApi(
+      rekrutteringstreffStatusEndepunkt(id, tekniskHendelsePathMap[hendelse]),
+      {},
+    );
   } catch (error) {
     logger.error(error, `${feilmelding} for rekrutteringstreff ${id}`);
     throw error;
@@ -98,7 +98,7 @@ export const avpubliserRekrutteringstreff = (id: string) =>
   );
 
 export const rekrutteringstreffMutationsMirage = (server: any) => {
-  server.post(opprettRekrutteringstreffEndepunkt(), () => ({
+  server.post(rekrutteringstreffEndepunkt(), () => ({
     id: '1231-1234-1234-1234',
     tittel: 'Treff uten navn',
   }));

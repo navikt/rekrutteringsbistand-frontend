@@ -4,7 +4,7 @@ import { jobbsøkereMock } from './mocks/jobbsøkereMock';
 import { postApi } from '@/app/api/fetcher';
 import { z } from 'zod';
 
-const opprettJobbsøkereEndepunkt = (id: string) =>
+const rekrutteringstreffJobbsøkereEndepunkt = (id: string) =>
   `/api/rekrutteringstreff/${id}/jobbsoker`;
 
 export const OpprettJobbsøkerSchema = z.object({
@@ -25,11 +25,13 @@ export type OpprettJobbsøkereDTO = OpprettJobbsøkerDTO[];
 export const opprettJobbsøkere = (
   kandidater: OpprettJobbsøkereDTO,
   id: string,
-) => postApi(opprettJobbsøkereEndepunkt(id), kandidater);
+) => postApi(rekrutteringstreffJobbsøkereEndepunkt(id), kandidater);
 
 export const opprettJobbsøkereMirage = (server: any) => {
   return server.post(
-    opprettJobbsøkereEndepunkt('d6a587cd-8797-4b9a-a68b-575373f16d65'),
+    rekrutteringstreffJobbsøkereEndepunkt(
+      'd6a587cd-8797-4b9a-a68b-575373f16d65',
+    ),
     () => jobbsøkereMock[0],
   );
 };
