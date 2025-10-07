@@ -2,7 +2,11 @@
 
 import { useNullableKandidatContext } from '@/app/kandidat/vis-kandidat/KandidatContext';
 import { useNullableStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
-import { BriefcaseIcon, PersonIcon } from '@navikt/aksel-icons';
+import {
+  BriefcaseIcon,
+  InformationSquareIcon,
+  PersonIcon,
+} from '@navikt/aksel-icons';
 import { Link } from '@navikt/ds-react';
 import { usePathname } from 'next/navigation';
 import { Fragment, ReactNode } from 'react';
@@ -19,6 +23,10 @@ interface BrødsmuleConfig {
 
 // Konfigurasjon av labels for ulike path-segmenter
 const defaultConfig: BrødsmuleConfig = {
+  docs: {
+    label: 'Dokumentasjon',
+    icon: <InformationSquareIcon aria-hidden className='w-4 h-4' />,
+  },
   stilling: {
     label: 'Stillingsoppdrag',
     icon: <BriefcaseIcon aria-hidden className='w-4 h-4' />,

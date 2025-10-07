@@ -108,6 +108,23 @@ const eslintConfig = [
       ],
     },
   },
+  {
+    files: ['app/docs/**/*'],
+    rules: {
+      'no-restricted-imports': [
+        'warn',
+        {
+          patterns: [
+            {
+              group: ['../../**', '../../../**', '../../../../**'],
+              message:
+                'Unngå dype relative imports. Bruk alias (f.eks. @/components) der det er mulig.',
+            },
+          ],
+        },
+      ],
+    },
+  },
 ];
 
 export default eslintConfig;

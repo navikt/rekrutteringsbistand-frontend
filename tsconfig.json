@@ -18,7 +18,8 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "@/dokumentasjon/*": ["./dokumentasjon/*"]
     },
     "target": "ES2017",
     "types": ["@navikt/ds-react/types/theme"]

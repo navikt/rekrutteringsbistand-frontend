@@ -1,4 +1,9 @@
+import createMDX from '@next/mdx';
+
 /** @type {import('next').NextConfig} */
+
+const withMDX = createMDX({ extension: /\.(md|mdx)$/ });
+
 const nextConfig = {
   output: 'standalone',
   transpilePackages: ['@navikt/ds-react', '@navikt/ds-css', '@navikt/navspa'],
@@ -7,12 +12,14 @@ const nextConfig = {
   experimental: {
     optimizePackageImports: ['@navikt/ds-react', '@navikt/aksel-icons'],
   },
+
   // Ensure cache directory is available in production
   cacheMaxMemorySize: 0, // Disable in-memory cache if needed
   images: {
     unoptimized: process.env.NODE_ENV === 'production', // Disable image optimization in prod to avoid cache issues
   },
   // Additional cache configuration to prevent mkdir errors
+  pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'],
   distDir: process.env.NODE_ENV === 'production' ? '.next' : '.next',
   generateEtags: false, // Disable ETags to reduce cache operations
   serverExternalPackages: ['@navikt/next-logger'],
@@ -50,4 +57,4 @@ const nextConfig = {
   },
 };
 
-export default nextConfig;
+export default withMDX(nextConfig);
