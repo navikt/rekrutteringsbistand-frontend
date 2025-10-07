@@ -3,8 +3,8 @@
 import {
   OppdaterRekrutteringstreffDTO,
   OppdaterRekrutteringstreffSchema,
-} from '@/app/api/rekrutteringstreff/mutations';
-import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
+} from '@/app/api/rekrutteringstreff/[...slug]/mutations';
+import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { format, parseISO } from 'date-fns';
 import { ReactNode, useEffect, useRef } from 'react';
