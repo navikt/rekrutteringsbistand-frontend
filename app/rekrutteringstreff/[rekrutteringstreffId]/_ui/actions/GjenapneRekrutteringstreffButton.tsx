@@ -1,6 +1,6 @@
 'use client';
 
-import { gjenåpnRekrutteringstreff } from '@/app/api/rekrutteringstreff/mutations';
+import { gjenåpnRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/statushendelser/mutations';
 import { RekbisError } from '@/util/rekbisError';
 import { BodyLong, Button, Modal } from '@navikt/ds-react';
 import { FC, useRef, useState } from 'react';

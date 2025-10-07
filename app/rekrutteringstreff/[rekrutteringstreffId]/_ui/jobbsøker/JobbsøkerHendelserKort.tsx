@@ -1,7 +1,7 @@
 import { JobbsøkerHendelseLabel } from './HendelseLabel';
 import LeggTilJobbsøkerKnapp from './LeggTilJobbsøkerKnapp';
 import NavnLenke from './NavnLenke';
-import { JobbsøkerHendelserDTO } from '@/app/api/rekrutteringstreff/[...slug]/hendelser/useJobbsøkerHendelser';
+import { JobbsøkerHendelserDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerHendelser';
 import { JobbsøkerHendelsestype } from '@/app/rekrutteringstreff/_domain/constants';
 import SVGDarkmode from '@/components/layout/SVGDarkmode';
 import JobbsokerHeartUpDarkIkon from '@/public/ikoner/jobbsoker_heart-up-dark.svg';

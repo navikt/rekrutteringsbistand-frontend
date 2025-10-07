@@ -1,4 +1,4 @@
-import { RekrutteringstreffDTO } from '../useRekrutteringstreff';
+import { RekrutteringstreffDTO } from './useRekrutteringstreff';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import {
   RekrutteringstreffHendelsestype,

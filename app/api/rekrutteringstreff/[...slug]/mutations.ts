@@ -1,9 +1,6 @@
 'use client';
 
-import {
-  RekrutteringstreffUtenHendelserDTO,
-  RekrutteringstreffUtenHendelserSchema,
-} from './useRekrutteringstreff';
+import { RekrutteringstreffUtenHendelserSchema } from './useRekrutteringstreff';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { deleteApi, putApi } from '@/app/api/fetcher';
 import { z } from 'zod';

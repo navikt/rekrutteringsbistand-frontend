@@ -1,4 +1,4 @@
-import { RekrutteringstreffUtenHendelserDTO } from '../useRekrutteringstreff';
+import { RekrutteringstreffUtenHendelserDTO } from './useRekrutteringstreff';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 
 export const oppdaterRekrutteringstreffMock = (

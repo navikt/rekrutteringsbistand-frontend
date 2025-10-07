@@ -3,7 +3,6 @@
 /**
  * Endepunkt /useRekrutteringstreff
  */
-import { rekrutteringstreffMock } from './mocks/rekrutteringstreffMock';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { getAPIwithSchema } from '@/app/api/fetcher';
 import useSWRImmutable from 'swr/immutable';
