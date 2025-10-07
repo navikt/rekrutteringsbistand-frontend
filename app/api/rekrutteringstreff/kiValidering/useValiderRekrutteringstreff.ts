@@ -1,7 +1,6 @@
 'use client';
 
 import { postApi } from '@/app/api/fetcher';
-import { validerRekrutteringstreffMock } from '@/app/api/rekrutteringstreff/mocks/validerRekrutteringstreffMock';
 import useSWRMutation from 'swr/mutation';
 import { z } from 'zod';
 
@@ -44,9 +43,3 @@ export const useValiderRekrutteringstreff = () =>
     string,
     ValiderRekrutteringstreffDto
   >(validerRekrutteringstreffEndepunkt, fetcher);
-
-export const validerRekrutteringstreffMirage = (server: any): void => {
-  server.post(validerRekrutteringstreffEndepunkt, () => {
-    return validerRekrutteringstreffMock();
-  });
-};

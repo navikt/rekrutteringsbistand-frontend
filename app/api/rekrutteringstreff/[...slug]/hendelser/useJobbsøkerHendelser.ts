@@ -1,6 +1,6 @@
 'use client';
 
-import { jobbsøkerHendelserMock } from '../mocks/jobbsøkerHendelserMock';
+import { jobbsøkerHendelserMock } from './jobbsøkerHendelserMock';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { getAPIwithSchema } from '@/app/api/fetcher';
 import {

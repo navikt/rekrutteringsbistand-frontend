@@ -1,11 +1,26 @@
 'use client';
 
-import { jobbsøkereMock } from './mocks/jobbsøkereMock';
-import { OpprettJobbsøkerDTO, OpprettJobbsøkereDTO } from './schemas';
+import { jobbsøkereMock } from './jobbsøkereMock';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { postApi } from '@/app/api/fetcher';
+import { z } from 'zod';
 
-export type { OpprettJobbsøkerDTO, OpprettJobbsøkereDTO };
+// Schemas som kun brukes for mutations
+const OpprettJobbsøkerSchema = z.object({
+  fødselsnummer: z.string(),
+  fornavn: z.string().nullish(),
+  etternavn: z.string().nullish(),
+  kandidatnummer: z.string().nullable(),
+  navkontor: z.string().nullish(),
+  veilederNavn: z.string().nullish(),
+  veilederNavIdent: z.string(),
+});
+
+const OpprettJobbsøkereSchema = z.array(OpprettJobbsøkerSchema);
+
+// DTOs
+export type OpprettJobbsøkerDTO = z.infer<typeof OpprettJobbsøkerSchema>;
+export type OpprettJobbsøkereDTO = OpprettJobbsøkerDTO[];
 
 const rekrutteringstreffJobbsøkereEndepunkt = (id: string) =>
   `${RekrutteringstreffAPI.internUrl}/${id}/jobbsoker`;

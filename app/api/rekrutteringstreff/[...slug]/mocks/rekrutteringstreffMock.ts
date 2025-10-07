@@ -1,5 +1,5 @@
-import { RekrutteringstreffDTO } from '../[...slug]/useRekrutteringstreff';
-import AvlystSteg from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/stegviser/steg/AvlystSteg';
+import { RekrutteringstreffDTO } from '../useRekrutteringstreff';
+import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import {
   RekrutteringstreffHendelsestype,
   JobbsøkerHendelsestype,
@@ -115,4 +115,10 @@ export const rekrutteringstreffMock: RekrutteringstreffDTO = {
   opprettetAvPersonNavident: 'A123456',
   opprettetAvNavkontorEnhetId: '0318',
   hendelser: publisertHendelser,
+};
+
+export const rekrutteringstreffMirage = (server: any) => {
+  server.get(`${RekrutteringstreffAPI.internUrl}/:id`, () => {
+    return rekrutteringstreffMock;
+  });
 };

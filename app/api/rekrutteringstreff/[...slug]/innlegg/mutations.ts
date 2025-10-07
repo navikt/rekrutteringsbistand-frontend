@@ -1,15 +1,26 @@
-import { innleggMock } from '../mocks/innleggMock';
-import {
-  InnleggDTO,
-  InnleggSchema,
-  OpprettInnleggDto,
-  OpprettInnleggDtoSchema,
-  OppdaterInnleggDto,
-} from './schemas';
+import { innleggMock } from './innleggMock';
+import type { InnleggDTO } from './useInnlegg';
+import { InnleggSchema } from './useInnlegg';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { postApi, putApi } from '@/app/api/fetcher';
+import { z } from 'zod';
 
-export type { OpprettInnleggDto, OppdaterInnleggDto };
+// Schemas som kun brukes for mutations
+const OpprettInnleggDtoSchema = z.object({
+  tittel: z.string().min(1, 'Tittel kan ikke være tom'),
+  htmlContent: z.string().min(1, 'Innhold kan ikke være tomt'),
+  opprettetAvPersonNavn: z.string().nullable().optional(),
+  opprettetAvPersonBeskrivelse: z
+    .string()
+    .min(1, 'OpprettetAvPersonBeskrivelse kan ikke være tomt'),
+  sendesTilJobbsokerTidspunkt: z
+    .string()
+    .min(1, 'SendesTilJobbsokerTidspunkt kan ikke være tomt'),
+});
+
+// DTOs
+export type OpprettInnleggDto = z.infer<typeof OpprettInnleggDtoSchema>;
+export type OppdaterInnleggDto = z.infer<typeof OpprettInnleggDtoSchema>;
 
 const InnleggResponseDtoSchema = InnleggSchema;
 

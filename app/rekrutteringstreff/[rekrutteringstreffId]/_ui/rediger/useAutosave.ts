@@ -4,8 +4,8 @@ import { toIso as toIsoUtil } from './tidspunkt/utils';
 import {
   oppdaterInnlegg,
   opprettInnlegg,
-  OpprettInnleggDto,
-  OppdaterInnleggDto,
+  type OpprettInnleggDto,
+  type OppdaterInnleggDto,
 } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/mutations';
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/useInnlegg';
 import { oppdaterRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/mutations';

@@ -1,4 +1,4 @@
-import { AlleHendelserDTO } from '@/app/api/rekrutteringstreff/[...slug]/hendelser/useAlleHendelser';
+import { AlleHendelserDTO } from './useAlleHendelser';
 
 export const alleHendelserMock = (): AlleHendelserDTO => [
   {

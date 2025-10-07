@@ -3,7 +3,7 @@
 /**
  * Endepunkt /useRekrutteringstreff
  */
-import { rekrutteringstreffMock } from '../mocks/rekrutteringstreffMock';
+import { rekrutteringstreffMock } from './mocks/rekrutteringstreffMock';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { getAPIwithSchema } from '@/app/api/fetcher';
 import useSWRImmutable from 'swr/immutable';
@@ -57,10 +57,4 @@ export const useRekrutteringstreff = (id: string) => {
     rekrutteringstreffEndepunkt(id),
     getAPIwithSchema(RekrutteringstreffSchema),
   );
-};
-
-export const rekrutteringstreffMirage = (server: any) => {
-  server.get(`${RekrutteringstreffAPI.internUrl}/:id`, () => {
-    return rekrutteringstreffMock;
-  });
 };

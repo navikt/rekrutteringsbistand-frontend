@@ -1,6 +1,9 @@
 'use client';
 
-import { RekrutteringstreffUtenHendelserSchema } from './useRekrutteringstreff';
+import {
+  RekrutteringstreffUtenHendelserDTO,
+  RekrutteringstreffUtenHendelserSchema,
+} from './useRekrutteringstreff';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { deleteApi, putApi } from '@/app/api/fetcher';
 import { z } from 'zod';
@@ -44,25 +47,3 @@ export const oppdaterRekrutteringstreff = async (
 
 export const slettRekrutteringstreff = (id: string) =>
   deleteApi(rekrutteringstreffEndepunkt(id));
-
-export const rekrutteringstreffSlugMutationsMirage = (server: any) => {
-  server.put(rekrutteringstreffEndepunkt(':id'), (_: any, request: any) => {
-    const { id } = request.params;
-    return {
-      id,
-      tittel: 'Oppdatert treff',
-      beskrivelse: 'Oppdatert beskrivelse',
-      fraTid: null,
-      tilTid: null,
-      svarfrist: null,
-      gateadresse: null,
-      postnummer: null,
-      poststed: null,
-      status: 'UTKAST',
-      opprettetAvPersonNavident: 'A123456',
-      opprettetAvNavkontorEnhetId: '1234',
-    };
-  });
-
-  server.delete(rekrutteringstreffEndepunkt(':id'), () => undefined);
-};

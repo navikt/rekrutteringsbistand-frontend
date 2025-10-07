@@ -3,10 +3,10 @@
 import { KandidatsokKandidat } from '@/app/api/kandidat-sok/useKandidatsøk';
 import {
   opprettJobbsøkere,
-  OpprettJobbsøkereDTO,
+  type OpprettJobbsøkereDTO,
 } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/mutations';
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
-import { useRekrutteringstreffOversikt } from '@/app/api/rekrutteringstreff/useRekrutteringstreffOversikt';
+import { useRekrutteringstreffOversikt } from '@/app/api/rekrutteringstreff/oversikt/useRekrutteringstreffOversikt';
 import { useKandidatSøkMarkerteContext } from '@/app/kandidat/KandidatSøkMarkerteContext';
 import SWRLaster from '@/components/SWRLaster';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';

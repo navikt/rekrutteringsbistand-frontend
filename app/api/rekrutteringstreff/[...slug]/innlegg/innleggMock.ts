@@ -1,4 +1,4 @@
-import { InnleggListeDTO } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/useInnlegg';
+import { InnleggListeDTO } from './useInnlegg';
 
 export const innleggMock: InnleggListeDTO = [
   {
@@ -15,3 +15,9 @@ export const innleggMock: InnleggListeDTO = [
     sistOppdatertTidspunkt: '2025-05-25T08:15:34+02:00',
   },
 ];
+
+export const innleggMirage = (server: any) => {
+  const innleggEndepunkt = (id: string) =>
+    `/api/rekrutteringstreff/${id}/innlegg`;
+  return server.get(innleggEndepunkt('*'), () => innleggMock);
+};

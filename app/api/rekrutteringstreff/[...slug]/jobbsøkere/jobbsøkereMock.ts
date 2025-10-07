@@ -1,11 +1,12 @@
-import { JobbsøkerDTO } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
+import type { JobbsøkerDTO } from './useJobbsøkere';
+import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { Faker, en_NG, nb_NO } from '@faker-js/faker';
 import navfaker from 'nav-faker/dist/index';
 
 const faker = new Faker({ locale: [nb_NO] });
 const fakerEN = new Faker({ locale: [en_NG] });
 
-export const jobbsøkerMock = (): JobbsøkerDTO => {
+const jobbsøkerMock = (): JobbsøkerDTO => {
   return {
     personTreffId: faker.string.uuid(),
     fødselsnummer: navfaker.personIdentifikator.fødselsnummer(),
@@ -40,3 +41,10 @@ export const jobbsøkerMock = (): JobbsøkerDTO => {
 };
 
 export const jobbsøkereMock = [jobbsøkerMock(), jobbsøkerMock()];
+
+export const jobbsøkereEndepunkt = (id: string) =>
+  `${RekrutteringstreffAPI.internUrl}/${id}/jobbsoker`;
+
+export const jobbsøkereMirage = (server: any) => {
+  return server.get(jobbsøkereEndepunkt('*'), () => jobbsøkereMock);
+};

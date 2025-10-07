@@ -1,6 +1,6 @@
-import { RekrutteringstreffOversiktDTO } from '../useRekrutteringstreffOversikt';
+import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 
-export const rekrutteringstreffOversiktMock: RekrutteringstreffOversiktDTO = [
+export const rekrutteringstreffOversiktMock = [
   {
     id: 'd6a587cd-8797-4b9a-a68b-575373f16d65',
     tittel: 'Sommerjobbtreff',
@@ -30,3 +30,10 @@ export const rekrutteringstreffOversiktMock: RekrutteringstreffOversiktDTO = [
     opprettetAvTidspunkt: '2025-08-25T12:00:00+02:00',
   },
 ];
+
+export const rekrutteringstreffOversiktMirage = (server: any) => {
+  return server.get(
+    `${RekrutteringstreffAPI.internUrl}`,
+    () => rekrutteringstreffOversiktMock,
+  );
+};
