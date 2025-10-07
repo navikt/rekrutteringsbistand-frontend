@@ -23,7 +23,6 @@ interface StillingsSøkeresultatProps {
 
 const StillingsSøkeresultat: FC<StillingsSøkeresultatProps> = ({
   kandidatId,
-  scrollExcludeRefs,
 }) => {
   // Abonner kun på setteren for å unngå re-render ved antall-endringer her.
   const setAntall = useStillingssokTotalData((s) => s.setAntall);
