@@ -1,9 +1,9 @@
 'use client';
 
 import { arbeidsgivereMock } from './mocks/arbeidsgivereMock';
+import { OpprettArbeidsgiverDTO } from './schemas';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { deleteApi, postApi } from '@/app/api/fetcher';
-import { z } from 'zod';
 
 const rekrutteringstreffArbeidsgiverEndepunkt = (
   rekrutteringstreffId: string,
@@ -14,13 +14,6 @@ const rekrutteringstreffEnkeltArbeidsgiverEndepunkt = (
   arbeidsgiverId: string,
 ) =>
   `${RekrutteringstreffAPI.internUrl}/${rekrutteringstreffId}/arbeidsgiver/${arbeidsgiverId}`;
-
-export const OpprettArbeidsgiverSchema = z.object({
-  organisasjonsnummer: z.string(),
-  navn: z.string(),
-});
-
-export type OpprettArbeidsgiverDTO = z.infer<typeof OpprettArbeidsgiverSchema>;
 
 export const opprettArbeidsgiver = (
   id: string,

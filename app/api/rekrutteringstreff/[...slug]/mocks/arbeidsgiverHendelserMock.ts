@@ -1,4 +1,4 @@
-import { ArbeidsgiverHendelserDTO } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgiverHendelser';
+import { ArbeidsgiverHendelserDTO } from '@/app/api/rekrutteringstreff/[...slug]/hendelser/useArbeidsgiverHendelser';
 import { faker } from '@faker-js/faker/locale/nb_NO';
 
 export const arbeidsgiverHendelserMock = (): ArbeidsgiverHendelserDTO => {

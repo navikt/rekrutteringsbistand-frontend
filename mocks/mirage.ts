@@ -28,6 +28,9 @@ import { stillingsTittelMirage } from '@/app/api/pam-ontologi/stillingsTittel/us
 import { arbeidsgiverMirage } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
 import { arbeidsgiverMutationsMirage } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/mutations';
 import { rekrutteringstreffArbeidsgivereMirage } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
+import { alleHendelserMirage } from '@/app/api/rekrutteringstreff/[...slug]/hendelser/useAlleHendelser';
+import { arbeidsgiverHendelserMirage } from '@/app/api/rekrutteringstreff/[...slug]/hendelser/useArbeidsgiverHendelser';
+import { jobbsøkerHendelserMirage } from '@/app/api/rekrutteringstreff/[...slug]/hendelser/useJobbsøkerHendelser';
 import {
   oppdaterInnleggMirage,
   opprettInnleggMirage,
@@ -37,11 +40,8 @@ import { inviterJobbsøkereMirage } from '@/app/api/rekrutteringstreff/[...slug]
 import { opprettJobbsøkereMirage } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/mutations';
 import { jobbsøkereMirage } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import { rekrutteringstreffSlugMutationsMirage } from '@/app/api/rekrutteringstreff/[...slug]/mutations';
-import { alleHendelserMirage } from '@/app/api/rekrutteringstreff/[...slug]/useAlleHendelser';
-import { arbeidsgiverHendelserMirage } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgiverHendelser';
-import { jobbsøkerHendelserMirage } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkerHendelser';
-import { kandidatnummerMirage } from '@/app/api/rekrutteringstreff/[...slug]/useKandidatnummer';
 import { rekrutteringstreffMirage } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
+import { kandidatnummerMirage } from '@/app/api/rekrutteringstreff/[...slug]/utils/useKandidatnummer';
 import {
   listKiLoggMirage,
   oppdaterKiLoggLagretMirage,

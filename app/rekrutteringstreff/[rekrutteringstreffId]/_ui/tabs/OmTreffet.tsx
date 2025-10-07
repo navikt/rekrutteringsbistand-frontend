@@ -3,8 +3,8 @@
 import ArbeidsgiverHendelserKort from '../arbeidsgiver/ArbeidsgiverHendelserKort';
 import { useRekrutteringstreffData } from '../hooks/useRekrutteringstreffData';
 import JobbsøkerHendelserKort from '../jobbsøker/JobbsøkerHendelserKort';
-import { useArbeidsgiverHendelser } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgiverHendelser';
-import { useJobbsøkerHendelser } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkerHendelser';
+import { useArbeidsgiverHendelser } from '@/app/api/rekrutteringstreff/[...slug]/hendelser/useArbeidsgiverHendelser';
+import { useJobbsøkerHendelser } from '@/app/api/rekrutteringstreff/[...slug]/hendelser/useJobbsøkerHendelser';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_contexts/RekrutteringstreffContext';
 import { formaterNorskDato } from '@/util/util';
 import { CalendarIcon, ClockIcon, LocationPinIcon } from '@navikt/aksel-icons';

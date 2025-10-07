@@ -16,7 +16,9 @@ import { useRef, useState } from 'react';
 import * as React from 'react';
 
 const erInvitert = (j: JobbsøkerDTO) =>
-  j.hendelser.some((h) => h.hendelsestype === 'INVITER');
+  j.hendelser.some(
+    (h: { hendelsestype: string }) => h.hendelsestype === 'INVITER',
+  );
 
 const jobbsøkerTilInviterDto = (
   jobbsøker: JobbsøkerDTO,

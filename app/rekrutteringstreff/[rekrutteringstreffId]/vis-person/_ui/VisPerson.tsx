@@ -1,6 +1,6 @@
 'use client';
 
-import { useKandidatnummer } from '@/app/api/rekrutteringstreff/[...slug]/useKandidatnummer';
+import { useKandidatnummer } from '@/app/api/rekrutteringstreff/[...slug]/utils/useKandidatnummer';
 import { KandidatContextProvider } from '@/app/kandidat/vis-kandidat/KandidatContext';
 import VisKandidat from '@/app/kandidat/vis-kandidat/VisKandidat';
 import SWRLaster from '@/components/SWRLaster';

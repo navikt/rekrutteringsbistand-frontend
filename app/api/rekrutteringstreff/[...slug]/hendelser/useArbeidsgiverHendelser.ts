@@ -1,6 +1,6 @@
 'use client';
 
-import { arbeidsgiverHendelserMock } from './mocks/arbeidsgiverHendelserMock';
+import { arbeidsgiverHendelserMock } from '../mocks/arbeidsgiverHendelserMock';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { getAPIwithSchema } from '@/app/api/fetcher';
 import {

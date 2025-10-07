@@ -2,7 +2,7 @@
 
 import { ArbeidsgiverHendelseLabel } from '../jobbsøker/HendelseLabel';
 import LeggTilArbeidsgiverModal from './LeggTilArbeidsgiverModal';
-import { ArbeidsgiverHendelserDTO } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgiverHendelser';
+import { ArbeidsgiverHendelserDTO } from '@/app/api/rekrutteringstreff/[...slug]/hendelser/useArbeidsgiverHendelser';
 import { ArbeidsgiverHendelsestype } from '@/app/rekrutteringstreff/_domain/constants';
 import SVGDarkmode from '@/components/layout/SVGDarkmode';
 import ArbeidsgiverDarkIkon from '@/public/ikoner/arbeidsgiver-dark.svg';

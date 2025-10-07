@@ -1,7 +1,7 @@
 'use client';
 
 import { RekrutteringstreffHendelseLabel } from '../jobbsøker/HendelseLabel';
-import { useAlleHendelser } from '@/app/api/rekrutteringstreff/[...slug]/useAlleHendelser';
+import { useAlleHendelser } from '@/app/api/rekrutteringstreff/[...slug]/hendelser/useAlleHendelser';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_contexts/RekrutteringstreffContext';
 import { RekrutteringstreffHendelsestype } from '@/app/rekrutteringstreff/_domain/constants';
 import { PencilIcon, PlusCircleIcon } from '@navikt/aksel-icons';
