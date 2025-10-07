@@ -199,7 +199,7 @@
                   - generic [ref=e282]:
                     - heading "Del med arbeidsgiver" [level=2] [ref=e283]
                     - progressbar [ref=e284]
-                    - generic [ref=e286]: 3/6
+                    - generic [ref=e286]: 5/6
                   - generic [ref=e287]:
                     - generic [ref=e288]:
                       - heading "Sjekkliste" [level=3] [ref=e289]
