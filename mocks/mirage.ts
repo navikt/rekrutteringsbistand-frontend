@@ -29,8 +29,8 @@ import { arbeidsgiverMirage } from '@/app/api/pam-search/underenhet/useArbeidsgi
 import { arbeidsgiverMutationsMirage } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/mutations';
 import { rekruteringstreffArbeidsgivereMirage } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import {
-  oppdaterInnleggfMirage,
-  opprettInnleggfMirage,
+  oppdaterInnleggMirage,
+  opprettInnleggMirage,
 } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/mutations';
 import { innleggMirage } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/useInnlegg';
 import { inviterJobbsøkereMirage } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/inviterJobbsokere';
@@ -114,8 +114,8 @@ export function makeServer({ environment = 'test' } = {}) {
       arbeidsgiverHendelserMirage(this);
       alleHendelserMirage(this);
       innleggMirage(this);
-      opprettInnleggfMirage(this);
-      oppdaterInnleggfMirage(this);
+      opprettInnleggMirage(this);
+      oppdaterInnleggMirage(this);
       inviterJobbsøkereMirage(this);
       kandidatnummerMirage(this);
       modiaAktivEnhetMirage(this);

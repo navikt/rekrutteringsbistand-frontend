@@ -4,7 +4,8 @@ import { toIso as toIsoUtil } from './tidspunkt/utils';
 import {
   oppdaterEttInnlegg,
   opprettInnleggForTreff,
-  OpprettEllerOppdaterInnleggDto,
+  OpprettInnleggDto,
+  OppdaterInnleggDto,
 } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/mutations';
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/useInnlegg';
 import { oppdaterRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/mutations';
@@ -181,7 +182,7 @@ export function useInnleggAutosave() {
           (innlegg as any)?.opprettetAvPersonNavident ||
           'Markedskontakt';
 
-        const payload: OpprettEllerOppdaterInnleggDto = {
+        const payloadData = {
           htmlContent: innholdSomSkalLagres,
           tittel: 'Om treffet',
           opprettetAvPersonNavn: forfatterNavn,
@@ -196,9 +197,16 @@ export function useInnleggAutosave() {
         startLagring('innlegg');
 
         if (innlegg?.id) {
-          await oppdaterEttInnlegg(rekrutteringstreffId, innlegg.id, payload);
+          await oppdaterEttInnlegg(
+            rekrutteringstreffId,
+            innlegg.id,
+            payloadData as OppdaterInnleggDto,
+          );
         } else {
-          await opprettInnleggForTreff(rekrutteringstreffId, payload);
+          await opprettInnleggForTreff(
+            rekrutteringstreffId,
+            payloadData as OpprettInnleggDto,
+          );
         }
 
         mutate();
