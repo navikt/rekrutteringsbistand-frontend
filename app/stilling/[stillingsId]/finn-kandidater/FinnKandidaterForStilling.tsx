@@ -1,6 +1,6 @@
 'use client';
 
-import KandidatTilStilling from './KandidatTilStilling';
+import KandidatTilStilling from '../_ui/KandidatTilStilling';
 import { KandidatSøkProvider } from '@/app/kandidat/KandidaSokFilterContext';
 import { KandidatSøkMarkerteContextProvider } from '@/app/kandidat/KandidatSøkMarkerteContext';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';

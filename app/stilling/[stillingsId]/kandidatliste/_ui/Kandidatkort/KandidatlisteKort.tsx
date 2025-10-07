@@ -2,7 +2,7 @@ import KandidatCheckbox from './_ui/KandidatCheckbox';
 import KandidatListeKortValg from './_ui/KandidatListeKortValg';
 import KandidatlisteNavn from './_ui/KandidatlisteNavn';
 import { usynligKandidaterSchemaDTO } from '@/app/api/kandidat/schema.zod';
-import { useVisKandidatNr } from '@/app/kandidat/vis-kandidat/useVisKandidatNr';
+import KandidatForhåndsvisning from '@/app/kandidat/[kandidatNr]/_ui/KandidatForhåndsvisning';
 import { KANDIDATLISTE_COLUMN_LAYOUT } from '@/app/stilling/[stillingsId]/kandidatliste/FiltrertKandidatListeVisning';
 import { KandidatutfallTyper } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
 import { useKandidatlisteContext } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteContext';
@@ -18,7 +18,7 @@ import { KandidatVisningProps } from '@/app/stilling/[stillingsId]/kandidatliste
 import VelgInternStatus from '@/app/stilling/[stillingsId]/kandidatliste/_ui/VelgInternStatus';
 import { formaterNorskDato } from '@/util/util';
 import { BodyShort, Box } from '@navikt/ds-react';
-import { FC, MouseEvent } from 'react';
+import { FC, MouseEvent, useState } from 'react';
 
 export interface KandidatListeKortProps {
   kandidat?: KandidatVisningProps;
@@ -33,7 +33,8 @@ const KandidatListeKort: FC<KandidatListeKortProps> = ({
   <div className={kolonneStyling}></div>;
   const { lukketKandidatliste, kandidatlisteId } = useKandidatlisteContext();
 
-  const [visKandidatnr, setVisKandidatnr] = useVisKandidatNr();
+  // const [visKandidatnr, setVisKandidatnr] = useVisKandidatNr();
+  const [visKandidatnr, setVisKandidatnr] = useState<string | null>(null);
 
   if (usynligKandidat) {
     const fåttJobben =
@@ -110,73 +111,85 @@ const KandidatListeKort: FC<KandidatListeKortProps> = ({
   };
 
   if (kandidat) {
-    const aktiv = visKandidatnr === kandidat.kandidatnr;
+    // const aktiv = visKandidatnr === kandidat.kandidatnr;
+    const aktiv = false;
     return (
-      <Box.New
-        onClick={() =>
-          !inaktiv ? setVisKandidatnr(kandidat?.kandidatnr ?? '') : null
-        }
-        padding='4'
-        background='neutral-softA'
-        borderRadius='xlarge'
-        data-testid='stillings-kort'
-        className={` min-w-fit 
+      <>
+        {visKandidatnr && (
+          <KandidatForhåndsvisning
+            kandidatNr={visKandidatnr}
+            onClose={() => setVisKandidatnr(null)}
+          />
+        )}
+        <Box.New
+          onClick={() =>
+            !inaktiv ? setVisKandidatnr(kandidat?.kandidatnr ?? '') : null
+          }
+          padding='4'
+          background='neutral-softA'
+          borderRadius='xlarge'
+          data-testid='stillings-kort'
+          className={` min-w-fit 
           focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--ax-border-focus)]
           ${!aktiv && !inaktiv ? 'hover:bg-[var(--ax-bg-neutral-moderate-hover)] cursor-pointer ' : ''}
           ${aktiv ? 'bg-[var(--ax-bg-neutral-moderate-pressed)]' : ''}`}
-        tabIndex={0}
-      >
-        <div
-          className={`grid ${KANDIDATLISTE_COLUMN_LAYOUT} gap-x-3 items-center `}
+          tabIndex={0}
         >
-          <div className={`${kolonneStyling} flex flex-col gap-2`}>
-            <div className='flex gap-4'>
-              <div onClick={stopPropagation}>
-                <KandidatCheckbox kandidat={kandidat} slettet={slettet} />
+          <div
+            className={`grid ${KANDIDATLISTE_COLUMN_LAYOUT} gap-x-3 items-center `}
+          >
+            <div className={`${kolonneStyling} flex flex-col gap-2`}>
+              <div className='flex gap-4'>
+                <div onClick={stopPropagation}>
+                  <KandidatCheckbox kandidat={kandidat} slettet={slettet} />
+                </div>
+                <KandidatlisteNavn kandidat={kandidat} slettet={slettet} />
               </div>
-              <KandidatlisteNavn kandidat={kandidat} slettet={slettet} />
+            </div>
+            <div className={`${kolonneStyling} flex flex-col `}>
+              <BodyShort>
+                {formaterNorskDato({
+                  dato: kandidat.lagtTilTidspunkt,
+                  visning: 'kortMåned',
+                })}
+              </BodyShort>
+              <BodyShort textColor='subtle'>
+                {' '}
+                {kandidat.lagtTilAv.navn}
+              </BodyShort>
+            </div>
+            <div className={`${kolonneStyling} flex flex-col `}>
+              {slettet ? (
+                <SlettetTag kandidat={kandidat} />
+              ) : (
+                <KandidatHendelseTagVisning
+                  kandidatHendelse={kandidat.kandidatHendelser.sisteHendelse}
+                />
+              )}
+            </div>
+            <div className={`${kolonneStyling} flex flex-col `}>
+              <div>{kandidat.kandidatHendelser.sisteSms?.tag}</div>
+              <div />
+            </div>
+            <div className={kolonneStyling} onClick={stopPropagation}>
+              <VelgInternStatus
+                lukketKandidatliste={lukketKandidatliste}
+                kandidatnr={kandidat.kandidatnr}
+                status={kandidat.status}
+              />
+            </div>
+            <div
+              className={`${kolonneStyling} flex items-center justify-center`}
+              onClick={stopPropagation}
+            >
+              <KandidatListeKortValg
+                kandidat={kandidat}
+                kandidatlisteId={kandidatlisteId}
+              />
             </div>
           </div>
-          <div className={`${kolonneStyling} flex flex-col `}>
-            <BodyShort>
-              {formaterNorskDato({
-                dato: kandidat.lagtTilTidspunkt,
-                visning: 'kortMåned',
-              })}
-            </BodyShort>
-            <BodyShort textColor='subtle'> {kandidat.lagtTilAv.navn}</BodyShort>
-          </div>
-          <div className={`${kolonneStyling} flex flex-col `}>
-            {slettet ? (
-              <SlettetTag kandidat={kandidat} />
-            ) : (
-              <KandidatHendelseTagVisning
-                kandidatHendelse={kandidat.kandidatHendelser.sisteHendelse}
-              />
-            )}
-          </div>
-          <div className={`${kolonneStyling} flex flex-col `}>
-            <div>{kandidat.kandidatHendelser.sisteSms?.tag}</div>
-            <div />
-          </div>
-          <div className={kolonneStyling} onClick={stopPropagation}>
-            <VelgInternStatus
-              lukketKandidatliste={lukketKandidatliste}
-              kandidatnr={kandidat.kandidatnr}
-              status={kandidat.status}
-            />
-          </div>
-          <div
-            className={`${kolonneStyling} flex items-center justify-center`}
-            onClick={stopPropagation}
-          >
-            <KandidatListeKortValg
-              kandidat={kandidat}
-              kandidatlisteId={kandidatlisteId}
-            />
-          </div>
-        </div>
-      </Box.New>
+        </Box.New>
+      </>
     );
   }
 

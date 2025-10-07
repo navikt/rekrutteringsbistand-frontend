@@ -32,6 +32,7 @@ export const visStillingWindowConfig: UrlWindowConfig = {
   windowId: 'visStillingId',
   title: 'Vis stilling',
   position: 'right', // Stillings-vinduer skal havne til høyre
+  allowedPaths: ['/kandidat', '/etterregistrering', '/stilling'],
   createContent: (stillingId: string) => {
     return createElement(StillingWrapper, {
       key: `stilling-${stillingId}-${Date.now()}`,

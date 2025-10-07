@@ -5,7 +5,7 @@ import { finnStillingForKandidatWindow } from './finnStillingForKandidatWindow';
 import { UrlWindowConfig, useUrlWindow } from './useUrlWindow';
 import { visKandidatWindowConfig } from './visKandidatWindow';
 import { visPersonTreffWindowConfig } from './visPersonTreffWindow';
-import { visStillingWindowConfig } from './visStillingWindow';
+import { visStillingWindowConfig } from './visStillingsoppdrag';
 import { visEtterregistreringWindowConfig } from '@/app/_windows/visEtterregistreringWindow';
 
 /**

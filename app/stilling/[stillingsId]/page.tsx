@@ -74,10 +74,6 @@ export default function StillingsSidePage() {
               }
             >
               <PanelHeader.Section
-                title={stillingsData.stilling.title}
-                back={{
-                  fallbackPath: '/stilling',
-                }}
                 tabs={<StillingTabs />}
                 actionsRight={<TabKnapper printRef={printRef} />}
               />

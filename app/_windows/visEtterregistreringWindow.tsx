@@ -32,6 +32,7 @@ export const visEtterregistreringWindowConfig: UrlWindowConfig = {
   windowId: 'visEtterregistreringId',
   title: 'Vis etterregistrering',
   position: 'right',
+  allowedPaths: ['/kandidat', '/etterregistrering'],
   createContent: (stillingId: string) => {
     return createElement(StillingWrapper, {
       key: `etterregistrering-${stillingId}-${Date.now()}`,

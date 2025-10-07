@@ -1,7 +1,8 @@
 'use client';
 
+import { usePathname } from 'next/navigation';
 import { useQueryState } from 'nuqs';
-import { ReactElement, useEffect } from 'react';
+import { ReactElement, useEffect, useRef } from 'react';
 
 export interface UrlWindowConfig {
   urlParam: string;
@@ -10,6 +11,8 @@ export interface UrlWindowConfig {
   position?: 'left' | 'right';
   onClose?: () => void;
   createContent: (paramValue: string) => ReactElement;
+  /** Liste over paths hvor vinduet kan vises. Vinduet kan vises hvis pathname starter med en av disse. */
+  allowedPaths: string[];
 }
 
 /**
@@ -25,35 +28,62 @@ export const useUrlWindow = (
     defaultValue: '',
     clearOnDefault: true,
   });
+  const pathname = usePathname();
+
+  // Bruk ref for å unngå dependency issues med config
+  const configRef = useRef(config);
+  configRef.current = config;
+
+  // Bruk ref for funksjoner som kommer fra WindowWrapper
+  const addWindowRef = useRef(addWindow);
+  const removeWindowRef = useRef(removeWindow);
+  addWindowRef.current = addWindow;
+  removeWindowRef.current = removeWindow;
 
   useEffect(() => {
+    const currentConfig = configRef.current;
+
     if (paramValue) {
-      if (process.env.NODE_ENV === 'development') {
-        // eslint-disable-next-line no-console
-        console.log(
-          `🔗 ${config.windowId}: ${config.urlParam} changed to:`,
-          paramValue,
+      // Sjekk om vinduet kan vises på denne pathen
+      const isAllowed = currentConfig.allowedPaths.some((allowedPath) =>
+        pathname.startsWith(allowedPath),
+      );
+
+      if (!isAllowed) {
+        // Vis alert og fjern vinduet
+        alert(
+          `Vinduet "${currentConfig.title || currentConfig.windowId}" kan ikke vises på denne siden.\n\n` +
+            `Tillatte paths: ${currentConfig.allowedPaths.join(', ')}\n` +
+            `Nåværende path: ${pathname}`,
         );
+        // Fjern URL-parameter
+        setParamValue('');
+        return;
       }
 
-      const content = config.createContent(paramValue);
+      if (process.env.NODE_ENV === 'development') {
+        // eslint-disable-next-line no-console
+        console.log(`🔗 ${currentConfig.windowId}: changed to:`, paramValue);
+      }
 
-      addWindow({
-        id: config.windowId,
+      const content = currentConfig.createContent(paramValue);
+
+      addWindowRef.current({
+        id: currentConfig.windowId,
         content,
-        title: config.title,
-        position: config.position,
+        title: currentConfig.title,
+        position: currentConfig.position,
         onClose: () => {
           // Automatisk fjern URL-parameter når vinduet lukkes
           setParamValue('');
           // Kall custom onClose hvis definert
-          config.onClose?.();
+          currentConfig.onClose?.();
         },
       });
     } else {
-      removeWindow(config.windowId);
+      removeWindowRef.current(currentConfig.windowId);
     }
-  }, [paramValue, setParamValue, config, addWindow, removeWindow]);
+  }, [paramValue, pathname, setParamValue]);
 
   return { paramValue, isOpen: !!paramValue };
 };

@@ -1,6 +1,7 @@
 'use client';
 
 import { useKandidatnummer } from '@/app/api/rekrutteringstreff/[...slug]/useKandidatnummer';
+import { KandidatContextProvider } from '@/app/kandidat/vis-kandidat/KandidatContext';
 import VisKandidat from '@/app/kandidat/vis-kandidat/VisKandidat';
 import SWRLaster from '@/components/SWRLaster';
 import { FC } from 'react';
@@ -16,7 +17,11 @@ const VisPerson: FC<VisPersonProps> = ({ personTreffId }) => {
     <SWRLaster hooks={[kandidatnummerHook]} allowPartialData>
       {(kandidatnummerData) =>
         kandidatnummerData.kandidatnummer ? (
-          <VisKandidat kandidatnr={kandidatnummerData.kandidatnummer} />
+          <KandidatContextProvider
+            kandidatId={kandidatnummerData.kandidatnummer}
+          >
+            <VisKandidat />
+          </KandidatContextProvider>
         ) : (
           <div> Personen er ikke i kandidatsøk </div>
         )

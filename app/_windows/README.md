@@ -35,6 +35,7 @@ export const minWindowConfig: UrlWindowConfig = {
   urlParam: 'minParam', // URL parameter navn
   windowId: 'minWindow', // Unik ID for vinduet
   title: 'Min tittel', // Tittel som vises
+  allowedPaths: ['/stilling', '/kandidat'], // PÅKREVD: Paths hvor vinduet kan vises
   createContent: (value: string) => {
     // Lag innholdet basert på parameter-verdien
     const MinComponent = React.lazy(() => import('@/path/to/MinComponent'));
@@ -78,6 +79,8 @@ Bruk `useQueryState` fra nuqs for å kontrollere vinduet:
 ```typescript
 import { useQueryState } from 'nuqs';
 
+import { useQueryState } from 'nuqs';
+
 const MinKomponent = () => {
   const [minParam, setMinParam] = useQueryState('minParam', {
     defaultValue: '',
@@ -91,3 +94,36 @@ const MinKomponent = () => {
   return <button onClick={handleClick}>Åpne mitt vindu</button>;
 };
 ```
+
+## Path-begrensninger
+
+Alle vinduer må spesifisere `allowedPaths` - en liste over paths hvor vinduet kan vises.
+
+### Hvordan det fungerer
+
+- Vinduet kan vises hvis `pathname` starter med en av de tillatte paths
+- Hvis brukeren prøver å åpne vinduet på en ikke-tillatt path, vises en alert og vinduet lukkes automatisk
+
+### Eksempler
+
+```typescript
+// Vindu som kun kan vises under /stilling
+allowedPaths: ['/stilling'];
+
+// Vindu som kan vises både under /stilling og /kandidat
+allowedPaths: ['/stilling', '/kandidat'];
+
+// Spesifikk subpath
+allowedPaths: ['/stilling/aktive', '/kandidat/mine'];
+```
+
+### Typiske konfigurasjoner
+
+- **visKandidatWindow**: `['/stilling', '/kandidat']` - kandidater kan vises fra stilling eller kandidat-visning
+- **visStillingWindow**: `['/kandidat', '/etterregistrering']` - stillinger kan vises fra kandidat eller etterregistrering
+- **finnKandidaterWindow**: `['/stilling']` - søk etter kandidater kun tilgjengelig fra stillingsvisning
+- **finnStillingWindow**: `['/kandidat']` - søk etter stillinger kun tilgjengelig fra kandidatvisning
+
+````
+```
+````

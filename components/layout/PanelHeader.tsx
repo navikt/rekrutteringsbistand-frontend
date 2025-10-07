@@ -1,61 +1,11 @@
 'use client';
 
-import { useWindowContext } from '../layout/windows/DynamicWindowContext';
-import { ArrowLeftIcon, ExpandIcon, XMarkIcon } from '@navikt/aksel-icons';
+import { useWindowContext } from '@/app/_windows/util/DynamicWindowContext';
+import Brødsmuler from '@/components/layout/Brødsmuler';
+import { ExpandIcon, XMarkIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
+import { usePathname } from 'next/navigation';
 import { ReactNode, createContext, useContext } from 'react';
-
-// BackButton er egen klient-komponent for å kunne bruke document.referrer uten
-// å gjøre hele PanelHeader til en klient-komponent.
-// Den forsøker å gå tilbake i historikken dersom forrige side er på samme origin.
-// Hvis ikke (eller ingen referrer) brukes eventuell fallbackPath.
-// Egendefinert onClick har alltid presedens.
-function BackButton({
-  fallbackPath,
-  onClick,
-}: {
-  label?: string;
-  fallbackPath?: string;
-  onClick?: () => void;
-  icon?: ReactNode;
-}) {
-  // Dynamisk import av hook for å unngå at filen må merkes 'use client'.
-  // Vi sjekker om window finnes før vi bruker den.
-  const handleClick = () => {
-    if (onClick) {
-      onClick();
-      return;
-    }
-    if (typeof window !== 'undefined') {
-      try {
-        const ref = document.referrer;
-        if (ref) {
-          const refUrl = new URL(ref);
-          if (refUrl.origin === window.location.origin) {
-            window.history.back();
-            return;
-          }
-        }
-      } catch {
-        // Ignorer – faller tilbake til fallbackPath / history.back
-      }
-      if (fallbackPath) {
-        // Bruk location.assign fremfor router.push for å slippe å gjøre dette til en client component.
-        window.location.assign(fallbackPath);
-        return;
-      }
-      window.history.back();
-    }
-  };
-  return (
-    <Button
-      size='small'
-      variant='tertiary'
-      icon={<ArrowLeftIcon />}
-      onClick={handleClick}
-    />
-  );
-}
 
 /**
  * Generisk toppseksjon (panel-header) satt sammen av én eller flere seksjoner.
@@ -189,22 +139,17 @@ export default function PanelHeader({
 }
 
 export interface PanelHeaderSectionProps {
-  back?: {
-    label?: string;
-    /** Sti som brukes dersom document.referrer peker til et annet domene */
-    fallbackPath?: string;
-    onClick?: () => void; // Egendefinert handler overstyrer standardlogikk
-    icon?: ReactNode;
-  };
+  /** Hvis true, skjules brødsmuler */
+  skjulBrødsmuler?: boolean;
+  /** Tittel brukes automatisk som label for siste segment i brødsmuler */
   title?: ReactNode;
-  /** Ikon som vises foran tittel (etter tilbake-knapp). Sett aria-hidden på dekorative ikoner. */
-  titleIcon?: ReactNode;
+
   subtitle?: ReactNode;
-  tabs?: ReactNode; // Egen tab-komponent (f.eks. <StillingTabs />)
-  meta?: ReactNode; // f.eks. statustekst ("Lagret ...")
+  tabs?: ReactNode;
+  meta?: ReactNode;
   actionsLeft?: ReactNode;
   actionsRight?: ReactNode;
-  children?: ReactNode; // Tilleggsinnhold / ekstra rad under hovedlinjen
+  children?: ReactNode;
   className?: string;
 }
 
@@ -215,9 +160,8 @@ function cx(...parts: Array<string | undefined | false | null>) {
 }
 
 export function PanelHeaderSection({
-  back,
+  skjulBrødsmuler,
   title,
-  titleIcon,
   subtitle,
   tabs,
   meta,
@@ -227,16 +171,18 @@ export function PanelHeaderSection({
   className,
 }: PanelHeaderSectionProps) {
   const { compact } = useContext(PanelHeaderModeContext);
-  // Back-knapp skal bare vises for hovedvindu (ikke dynamiske child-vinduer)
   const winCtx = useWindowContext();
-  const BackEl =
-    back && !winCtx?.isDynamic ? (
-      <BackButton
-        label={back.label}
-        fallbackPath={back.fallbackPath}
-        onClick={back.onClick}
-      />
-    ) : null;
+  const pathname = usePathname();
+
+  // Generer breadcrumbConfig automatisk fra title
+  const breadcrumbConfig =
+    title && typeof title === 'string'
+      ? {
+          [pathname.split('/').filter(Boolean).pop() || '']: {
+            label: title,
+          },
+        }
+      : undefined;
 
   const rowClass = cx(
     'flex gap-x-4',
@@ -254,24 +200,15 @@ export function PanelHeaderSection({
     >
       <div className={rowClass}>
         <div className='flex items-center gap-3 min-w-0 flex-1'>
-          {BackEl && BackEl}
-          {titleIcon && (
-            <span className='shrink-0 flex items-center text-[0]' aria-hidden>
-              {titleIcon}
-            </span>
+          {!skjulBrødsmuler && !winCtx?.isDynamic ? (
+            <div className='px-4 pt-2'>
+              <Brødsmuler config={breadcrumbConfig} />
+            </div>
+          ) : (
+            title
           )}
-          {(title || subtitle) && (
+          {subtitle && (
             <div className='min-w-0'>
-              {title && (
-                <h1
-                  className={cx(
-                    'text-base font-medium leading-tight truncate',
-                    subtitle ? 'mb-0.5' : undefined,
-                  )}
-                >
-                  {title}
-                </h1>
-              )}
               {!compact && subtitle && (
                 <div className='text-xs text-muted-foreground truncate'>
                   {subtitle}

@@ -12,6 +12,7 @@ export const visKandidatWindowConfig: UrlWindowConfig = {
   windowId: 'visKandidatNr',
   title: 'Vis kandidat',
   position: 'right', // Kandidat-vinduer skal alltid havne til høyre
+  allowedPaths: ['/stilling', '/kandidat'],
   createContent: (kandidatnr: string) => {
     // Dynamisk import for å unngå sirkulære avhengigheter
     const VisKandidat = lazy(
@@ -25,7 +26,6 @@ export const visKandidatWindowConfig: UrlWindowConfig = {
       },
       createElement(VisKandidat, {
         key: `${kandidatnr}-${Date.now()}`,
-        kandidatnr,
       }),
     );
   },

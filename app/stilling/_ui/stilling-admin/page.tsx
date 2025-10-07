@@ -125,9 +125,6 @@ export default function StillingAdmin() {
           <PanelHeader>
             <PanelHeader.Section
               title={headerTittel()}
-              back={{
-                fallbackPath: '/stilling',
-              }}
               actionsRight={knapperad()}
             />
             {forhåndsvis && (

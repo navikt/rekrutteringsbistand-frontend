@@ -7,7 +7,6 @@ import PanelHeader from '@/components/layout/PanelHeader';
 import SideLayout from '@/components/layout/SideLayout';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
-import { BriefcaseIcon } from '@navikt/aksel-icons';
 
 export default function StillingsSøkIndex() {
   return (
@@ -15,8 +14,6 @@ export default function StillingsSøkIndex() {
       header={
         <PanelHeader>
           <PanelHeader.Section
-            title={'Stillingsoppdrag'}
-            titleIcon={<BriefcaseIcon />}
             actionsRight={
               <TilgangskontrollForInnhold
                 skjulVarsel
