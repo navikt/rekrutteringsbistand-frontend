@@ -28,14 +28,20 @@ import { stillingsTittelMirage } from '@/app/api/pam-ontologi/stillingsTittel/us
 import { arbeidsgiverMirage } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
 import { arbeidsgiverMutationsMirage } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/mutations';
 import { rekruteringstreffArbeidsgivereMirage } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
+import {
+  oppdaterInnleggfMirage,
+  opprettInnleggfMirage,
+} from '@/app/api/rekrutteringstreff/[...slug]/innlegg/mutations';
+import { innleggMirage } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/useInnlegg';
+import { inviterJobbsøkereMirage } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/inviterJobbsokere';
 import { leggTilNyJobbsøkerMirage } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/mutations';
 import { jobbsøkereMirage } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
+import { rekrutteringstreffSlugMutationsMirage } from '@/app/api/rekrutteringstreff/[...slug]/mutations';
 import { alleHendelserMirage } from '@/app/api/rekrutteringstreff/[...slug]/useAlleHendelser';
 import { arbeidsgiverHendelserMirage } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgiverHendelser';
-import { innleggMirage } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
 import { jobbsøkerHendelserMirage } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkerHendelser';
 import { kandidatnummerMirage } from '@/app/api/rekrutteringstreff/[...slug]/useKandidatnummer';
-import { inviterJobbsøkereMirage } from '@/app/api/rekrutteringstreff/inviterJobbsokere/inviterJobbsokere';
+import { rekrutteringstreffMirage } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import {
   listKiLoggMirage,
   oppdaterKiLoggLagretMirage,
@@ -43,11 +49,6 @@ import {
 } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
 import { validerRekrutteringstreffMirage } from '@/app/api/rekrutteringstreff/kiValidering/useValiderRekrutteringstreff';
 import { rekrutteringstreffMutationsMirage } from '@/app/api/rekrutteringstreff/mutations';
-import {
-  oppdaterInnleggfMirage,
-  opprettInnleggfMirage,
-} from '@/app/api/rekrutteringstreff/opprettEllerOppdaterInnlegg';
-import { rekrutteringstreffMirage } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
 import { rekrutteringstreffOversiktMirage } from '@/app/api/rekrutteringstreff/useRekrutteringstreffOversikt';
 import { statistikkMirage } from '@/app/api/statistikk/useStatistikk';
 import { opprettNyStillingMirage } from '@/app/api/stilling/ny-stilling/opprettNyStilling';
@@ -100,6 +101,7 @@ export function makeServer({ environment = 'test' } = {}) {
       rekrutteringstreffOversiktMirage(this);
       rekrutteringstreffMirage(this);
       rekrutteringstreffMutationsMirage(this);
+      rekrutteringstreffSlugMutationsMirage(this);
       validerRekrutteringstreffMirage(this);
       listKiLoggMirage(this);
       oppdaterKiLoggManuellMirage(this);

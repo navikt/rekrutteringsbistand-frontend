@@ -19,7 +19,7 @@ const createMockHit = (props: MockHit) => ({
   _score: null,
   _source: {
     stilling: {
-      uuid: faker.string.uuid(),
+      uuid: props.id ?? faker.string.uuid(),
       annonsenr: `R${faker.number.int({ min: 1000, max: 9999 })}`,
       status: props.status || 'ACTIVE',
       privacy: props.privacy || 'INTERNAL_NOT_SHOWN',

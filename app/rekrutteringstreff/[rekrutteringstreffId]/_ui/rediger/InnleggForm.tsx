@@ -4,7 +4,7 @@ import KiAnalyse from './ki/KiAnalyse';
 import KiAnalysePanel from './ki/KiAnalysePanel';
 import { useInnleggAutosave } from './useAutosave';
 import { useKiAnalyse } from './useKiAnalyse';
-import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/useInnlegg';
+import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/useInnlegg';
 import { useKiLogg } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_contexts/RekrutteringstreffContext';
 import RikTekstEditor from '@/components/felles/rikteksteditor/RikTekstEditor';

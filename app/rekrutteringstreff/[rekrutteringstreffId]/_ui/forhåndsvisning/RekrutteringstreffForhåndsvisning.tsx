@@ -1,7 +1,7 @@
 'use client';
 
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
-import { OppdaterRekrutteringstreffDTO } from '@/app/api/rekrutteringstreff/mutations';
+import { OppdaterRekrutteringstreffDTO } from '@/app/api/rekrutteringstreff/[...slug]/mutations';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_contexts/RekrutteringstreffContext';
 import { ClockIcon, LocationPinIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button, Heading, Skeleton } from '@navikt/ds-react';

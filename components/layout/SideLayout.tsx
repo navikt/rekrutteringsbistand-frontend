@@ -17,10 +17,15 @@ export type ISideLayout = {
   banner?: React.ReactNode;
 };
 
+export const SideLayoutMobilTop = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => <div className='@2xl:hidden'>{children}</div>;
+
 const SideLayout = ({
   children,
   fremdriftspanel,
-  fremdriftspanelTop,
   header,
   skjulFremdriftspanel,
 }: ISideLayout) => {
@@ -28,18 +33,6 @@ const SideLayout = ({
     <RekBisKort>
       {header && header}
       <div className='@container'>
-        {/* Mobil / liten skjerm: vis fremdriftspanel (top) over innhold */}
-        {!skjulFremdriftspanel && (
-          <div className='@2xl:hidden'>
-            {fremdriftspanelTop ||
-              (fremdriftspanel && (
-                <Fremdriftspanel>
-                  {fremdriftspanelTop ? fremdriftspanelTop : fremdriftspanel}
-                </Fremdriftspanel>
-              ))}
-          </div>
-        )}
-
         {/* Felles innhold + desktop sidepanel */}
         <div className='flex flex-col @2xl:flex-row'>
           <MaksBredde>{children}</MaksBredde>
