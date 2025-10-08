@@ -68,7 +68,7 @@ export default function StatusFilter({ hideLegend }: StatusFilterProps) {
     <CheckboxGroup legend={hideLegend ? undefined : 'Status'} size='small'>
       <div className='flex flex-col gap-2'>
         {allStatuses.map((status) => {
-          // Vis kune "Ikke publisert" under Mine stillinger
+          // Vis kun "Ikke publisert" under Mine stillinger
           if (
             status === VisningsStatus.IkkePublisert &&
             portefølje !== StillingsSøkPortefølje.VIS_MINE
