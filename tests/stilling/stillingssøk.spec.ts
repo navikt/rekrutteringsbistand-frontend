@@ -8,13 +8,13 @@ test.describe(`Stillingssøk test`, () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('http://localhost:1337/stilling');
     await expect(
-      page.getByRole('heading', { name: 'Stillingsoppdrag' }),
+      page.getByLabel('Brødsmulesti').getByText('Stillingsoppdrag'),
     ).toBeVisible({ timeout: 15000 });
   });
 
   test('Viser riktig innhold i stillingssøk', async ({ page }) => {
     await expect(
-      page.getByRole('heading', { name: 'Stillingsoppdrag' }),
+      page.getByLabel('Brødsmulesti').getByText('Stillingsoppdrag'),
     ).toBeVisible();
 
     // Filtrer-knappen vises kun < 720px bredde. Ved desktop (>=720px) er filtrene alltid synlige.

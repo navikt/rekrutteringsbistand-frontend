@@ -5,7 +5,6 @@
   "scripts": {
     "dev": "next dev --turbopack -p 1337 | pino-pretty",
     "precommit": "pnpm formater-kode && pnpm type-check && pnpm lint",
-    "open-browser": "open http://localhost:1337",
     "test": "playwright test",
     "test-dev": "NEXT_PUBLIC_PLAYWRIGHT_TEST_MODE=true next dev -p 1337",
     "test-codegen": "pnpm exec playwright codegen --viewport-size=1920,1080",

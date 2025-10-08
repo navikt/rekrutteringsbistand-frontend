@@ -222,9 +222,7 @@ export const testTilgangskontroll = (rolle: Roller) => {
     });
 
     test('5. Kandidat', async ({ page }) => {
-      await page.goto(
-        'http://localhost:1337/kandidat?visKandidatnr=PAM012t1avh27',
-      );
+      await page.goto('http://localhost:1337/kandidat/PAM012t1avh27');
       // Viser kandidat side
       const oversiktFane = page.getByRole('tab', { name: 'Oversikt' });
       if (ARBEIDSGIVERRETTET || JOBBSOKERRETTET) {
@@ -248,9 +246,9 @@ export const testTilgangskontroll = (rolle: Roller) => {
       await page.goto('http://localhost:1337/etterregistrering');
 
       // Viser formidlinger
-      const formidlinger = await page.getByRole('heading', {
-        name: 'Etterregistreringer',
-      });
+      const formidlinger = await page
+        .getByLabel('Brødsmulesti')
+        .getByText('Etterregistrering');
       if (ARBEIDSGIVERRETTET || JOBBSOKERRETTET) {
         await expect(formidlinger).toBeVisible();
       }
