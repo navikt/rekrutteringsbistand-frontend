@@ -1,8 +1,7 @@
-import { oppdaterStilling } from '@/app/api/stilling/oppdater-stilling/oppdaterStilling';
 import { overtaEierskap } from '@/app/api/stilling/overta-eierskap/overtaEierskap';
+import { slettStilling } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/slett-stilling';
 import { kopierStilling } from '@/app/api/stilling/rekrutteringsbistandstilling/kopier/[slug]/kopierStilling';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
-import { StillingsStatus } from '@/app/stilling/_ui/stilling-typer';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
@@ -80,20 +79,7 @@ export default function StillingDropdown() {
   const avpubliserStilling = async () => {
     setVisAvpubliserModal(false);
     setLoading(true);
-    await oppdaterStilling(
-      {
-        ...stillingsData,
-        stilling: {
-          ...stillingsData.stilling,
-          status: StillingsStatus.Slettet,
-        },
-      },
-      {
-        eierNavident: brukerData.ident,
-        eierNavn: brukerData.navn,
-        eierNavKontorEnhetId: valgtNavKontor?.navKontor,
-      },
-    );
+    await slettStilling(stillingsData.stilling.uuid);
     setLoading(false);
     if (refetch) {
       refetch();
