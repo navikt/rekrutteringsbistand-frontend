@@ -17,8 +17,12 @@ import { Button, Dropdown } from '@navikt/ds-react';
 import { useState } from 'react';
 
 export default function StillingDropdown() {
-  const { erEier, erDirektemeldt, stillingsData, refetch, erFormidling } =
-    useStillingsContext();
+  const {
+    erEier,
+    stillingsData,
+    refetch,
+    omStilling: { erFormidling, erDirektemeldt },
+  } = useStillingsContext();
 
   const { brukerData, valgtNavKontor, visVarsel } = useApplikasjonContext();
 

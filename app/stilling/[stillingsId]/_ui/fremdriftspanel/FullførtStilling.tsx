@@ -27,7 +27,10 @@ export default function FullførtStilling({
   antallFåttJobben,
   dropDown,
 }: FullførtStillingProps) {
-  const { stillingsData, erJobbmesse } = useStillingsContext();
+  const {
+    stillingsData,
+    omStilling: { erJobbmesse },
+  } = useStillingsContext();
 
   const knapper = (
     <>

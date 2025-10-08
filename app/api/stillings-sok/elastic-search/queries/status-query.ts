@@ -151,7 +151,7 @@ export const statusQuery = (
       },
     });
   }
-  if (statuser.includes(VisningsStatus.Avbrutt)) {
+  if (statuser.includes(VisningsStatus.Slettet)) {
     postFilterShould.push({ term: { 'stilling.status': 'DELETED' } });
   }
 
@@ -172,7 +172,7 @@ export const statusQuery = (
         },
       });
     }
-    if (!statuser.includes(VisningsStatus.Avbrutt)) {
+    if (!statuser.includes(VisningsStatus.Slettet)) {
       postFilterShould.push({ term: { 'stilling.status': 'DELETED' } });
     }
   }
