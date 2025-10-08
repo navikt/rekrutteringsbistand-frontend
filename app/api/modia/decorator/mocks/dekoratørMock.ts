@@ -10,12 +10,8 @@ export const decoratorMock: DecoratorDTO = {
       enhetId: '1001',
       navn: 'NAV Kristiansand',
     },
-    {
-      enhetId: '0403',
-      navn: 'NAV Hamar',
-    },
   ],
-  ident: 'Z994092',
+  ident: 'TestIdent',
   navn: 'Fornavn Etternavn',
   fornavn: 'Fornavn',
   etternavn: 'Etternavn',
