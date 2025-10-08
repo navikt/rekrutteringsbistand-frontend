@@ -11,6 +11,7 @@ import { Button } from '@navikt/ds-react';
 import { useEffect, useRef, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 
+
 interface AutolagreStillingProps {
   stillingsData: StillingAdminDTO;
   /** (valgfritt) override på intervall i ms for testing */
@@ -41,7 +42,7 @@ export default function AutolagreStilling({
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const tickRef = useRef<NodeJS.Timeout | null>(null);
   const inFlightRef = useRef<Promise<any> | null>(null);
-  const { getValues } = useFormContext<StillingsDataDTO>();
+  const { getValues, setValue } = useFormContext<StillingsDataDTO>();
   const erPublisert = stillingsData?.stilling?.status === StillingsStatus.Aktiv;
 
   const kanLagre =
@@ -58,17 +59,22 @@ export default function AutolagreStilling({
     setSaving(true);
     setError(null);
     try {
-      const mapedValues = mapSendStillingOppdatering({
+      const mappedValues = mapSendStillingOppdatering({
         stilling: nyeVerdier.stilling,
         stillingsinfo: nyeVerdier.stillingsinfo || undefined,
       });
-      const promise = oppdaterStilling(mapedValues, {
+      const promise = oppdaterStilling(mappedValues, {
         eierNavident: brukerData.ident,
         eierNavn: brukerData.navn,
         eierNavKontorEnhetId: valgtNavKontor?.navKontor,
       });
       inFlightRef.current = promise;
-      await promise;
+      const stilling: StillingsDataDTO = await promise;
+
+      if(stilling.stilling.versjon) {
+        setValue("stilling.versjon", stilling.stilling.versjon)
+      }
+
       setSisteLagret(new Date());
       setTeller(0);
     } catch (e: any) {

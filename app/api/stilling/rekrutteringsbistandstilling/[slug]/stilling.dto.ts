@@ -154,6 +154,7 @@ export const StillingSchemaDTO = z.object({
   firstPublished: z.boolean().nullable(),
   deactivatedByExpiry: z.boolean().nullable(),
   activationOnPublishingDate: z.boolean().nullable(),
+  versjon: z.int().optional().nullable()
 });
 
 const StillingskategoriEnum = z.enum(['STILLING', 'JOBBMESSE', 'FORMIDLING']);
