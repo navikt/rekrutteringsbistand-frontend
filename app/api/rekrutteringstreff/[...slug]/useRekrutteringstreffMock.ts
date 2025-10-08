@@ -42,7 +42,7 @@ const _fullførthendelser = [
   },
 ];
 
-const publisertHendelser = [
+const _publisertHendelser = [
   {
     id: '5e322a9e-34eb-41ef-8adc-97e56a5f8a51',
     tidspunkt: '2025-09-10T17:10:19Z',
@@ -113,5 +113,5 @@ export const rekrutteringstreffMock: RekrutteringstreffDTO = {
   status: 'Utkast',
   opprettetAvPersonNavident: 'A123456',
   opprettetAvNavkontorEnhetId: '0318',
-  hendelser: publisertHendelser,
+  hendelser: _fullførthendelser,
 };

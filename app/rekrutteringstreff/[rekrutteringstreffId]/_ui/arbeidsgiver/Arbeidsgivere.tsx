@@ -1,7 +1,7 @@
 'use client';
 
+import LeggTilArbeidsgiverKnapp from '../actions/LeggTilArbeidsgiverKnapp';
 import ArbeidsgiverListeItem from './ArbeidsgiverListeItem';
-import LeggTilArbeidsgiverModal from './LeggTilArbeidsgiverModal';
 import SlettArbeidsgiverModal from './SlettArbeidsgiverModal';
 import { slettArbeidsgiver } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/mutations';
 import { useArbeidsgiverHendelser } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgiverHendelser';
@@ -11,10 +11,9 @@ import {
 } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_contexts/RekrutteringstreffContext';
 import SWRLaster from '@/components/SWRLaster';
-import { PlusIcon } from '@navikt/aksel-icons';
-import { BodyShort, Button, Tooltip } from '@navikt/ds-react';
+import { BodyShort, Tooltip } from '@navikt/ds-react';
 import * as React from 'react';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 
 const Arbeidsgivere = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
@@ -22,8 +21,6 @@ const Arbeidsgivere = () => {
   const arbeidsgivereHook =
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
   const hendelseHook = useArbeidsgiverHendelser(rekrutteringstreffId);
-
-  const leggTilModalRef = useRef<HTMLDialogElement>(null);
 
   const getLagtTilData = (arbeidsgiver: ArbeidsgiverDTO) => {
     const leggTilHendelse = arbeidsgiver.hendelser.find(
@@ -64,14 +61,7 @@ const Arbeidsgivere = () => {
         <div className='p-4 flex flex-col gap-4'>
           {
             <div>
-              <Button
-                onClick={() => leggTilModalRef.current?.showModal()}
-                variant='secondary'
-                icon={<PlusIcon />}
-              >
-                Legg til arbeidsgiver
-              </Button>
-              <LeggTilArbeidsgiverModal modalRef={leggTilModalRef} />
+              <LeggTilArbeidsgiverKnapp />
             </div>
           }
           {arbeidsgivere.length === 0 ? (
