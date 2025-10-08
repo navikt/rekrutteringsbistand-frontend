@@ -15,7 +15,6 @@ export interface StatusFilterProps {
 export default function StatusFilter({ hideLegend }: StatusFilterProps) {
   const filterCtx = useStillingsSøkFilter();
   const { statuser, setStatuser, portefølje } = filterCtx;
-  console.log('portefølje', portefølje);
   const {
     brukerData: { ident },
     valgtNavKontor,
@@ -73,8 +72,9 @@ export default function StatusFilter({ hideLegend }: StatusFilterProps) {
           if (
             status === VisningsStatus.IkkePublisert &&
             portefølje !== StillingsSøkPortefølje.VIS_MINE
-          )
+          ) {
             return null;
+          }
 
           const checked = !!statuser?.includes(status);
           const label =
