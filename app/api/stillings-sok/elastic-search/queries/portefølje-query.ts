@@ -23,10 +23,6 @@ export const esPortefølje = (
   }
 
   if (params.filter.portefølje === StillingsSøkPortefølje.INTERN) {
-    // Viser kun stillinger med stillingsinfo (har kandidatliste)
-    esBuilder.addFilter({ exists: { field: 'stillingsinfo' } });
-
-    //Viser kun publiserte:
     esBuilder.addBoolFilter({
       must_not: [
         { term: { 'stilling.status': 'REJECTED' } },
@@ -36,14 +32,21 @@ export const esPortefølje = (
         {
           bool: {
             must: [
+              { exists: { field: 'stillingsinfo' } },
               { term: { 'stilling.administration.status': 'DONE' } },
               { exists: { field: 'stilling.publishedByAdmin' } },
               { range: { 'stilling.published': { lte: 'now/d' } } },
             ],
           },
         },
-        { term: { 'stilling.administration.navIdent': params.navIdent } },
-        { term: { 'stillingsinfo.eierNavident': params.navIdent } },
+        {
+          bool: {
+            should: [
+              { term: { 'stilling.administration.navIdent': params.navIdent } },
+              { term: { 'stillingsinfo.eierNavident': params.navIdent } },
+            ],
+          },
+        },
       ],
     });
   } else if (params.filter.portefølje === StillingsSøkPortefølje.VIS_MINE) {
@@ -85,6 +88,12 @@ export const esPortefølje = (
           {
             bool: {
               must: [
+                {
+                  term: {
+                    'stillingsinfo.eierNavKontorEnhetId':
+                      params.eierNavKontorEnhetId,
+                  },
+                },
                 { term: { 'stilling.administration.status': 'DONE' } },
                 { exists: { field: 'stilling.publishedByAdmin' } },
                 { range: { 'stilling.published': { lte: 'now/d' } } },
