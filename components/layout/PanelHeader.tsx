@@ -186,7 +186,9 @@ export function PanelHeaderSection({
 
   const rowClass = cx(
     'flex gap-x-4',
-    compact ? 'h-8 items-center px-4' : 'flex-wrap gap-y-2 items-center px-5',
+    compact
+      ? 'h-auto min-h-8 items-center px-4 flex-wrap'
+      : 'flex-wrap gap-y-2 items-center px-5',
     subtitle && !compact ? 'items-start' : undefined,
   );
 
@@ -199,9 +201,9 @@ export function PanelHeaderSection({
       )}
     >
       <div className={rowClass}>
-        <div className='flex items-center gap-3 min-w-0 flex-1'>
+        <div className='flex items-center gap-3 min-w-0 flex-1 flex-wrap'>
           {!skjulBrødsmuler && !winCtx?.isDynamic ? (
-            <div className='px-4 pt-2'>
+            <div className='px-4 pt-2 max-w-full'>
               <Brødsmuler config={breadcrumbConfig} />
             </div>
           ) : (
@@ -220,7 +222,7 @@ export function PanelHeaderSection({
             <div className='flex items-center gap-2'>{actionsLeft}</div>
           )}
         </div>
-        <div className='flex items-center gap-3 ml-auto'>
+        <div className='flex items-center gap-3 ml-auto flex-shrink-0'>
           {meta && (
             <div className='text-xs text-muted-foreground whitespace-nowrap'>
               {meta}
