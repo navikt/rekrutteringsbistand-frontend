@@ -262,11 +262,17 @@ const Rekrutteringstreff: FC = () => {
 
   const stegviserInnhold = renderStegviser();
 
-  const layoutProps = {
-    skjulFremdriftspanel: false,
-    fremdriftspanelTop: <Fremdriftspanel>{stegviserInnhold}</Fremdriftspanel>,
-    fremdriftspanel: <SideScroll>{stegviserInnhold}</SideScroll>,
-  } as const;
+  const layoutProps = viserFullskjermForhåndsvisning
+    ? ({
+        skjulFremdriftspanel: true,
+      } as const)
+    : ({
+        skjulFremdriftspanel: false,
+        fremdriftspanelTop: (
+          <Fremdriftspanel>{stegviserInnhold}</Fremdriftspanel>
+        ),
+        fremdriftspanel: <SideScroll>{stegviserInnhold}</SideScroll>,
+      } as const);
 
   if (viserFullskjermForhåndsvisning) {
     return (
