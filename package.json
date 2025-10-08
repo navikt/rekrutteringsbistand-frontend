@@ -13,9 +13,7 @@
     "lint": "eslint ./app",
     "lint-fix": "npx eslint --fix .",
     "formater-kode": "prettier --write .",
-    "type-check": "tsc --noEmit",
-    "unused:app": "pnpm exec ts-prune -p tsconfig.json | grep '^app/' | grep -v 'app/rekrutteringstreff/' || true",
-    "unused:app:custom": "node scripts/find-unused-app.cjs"
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",
