@@ -59,11 +59,14 @@ export const esPortefølje = (
       });
     }
   } else if (params.filter.portefølje === StillingsSøkPortefølje.MITT_KONTOR) {
-    esBuilder.addFilter({
-      term: {
-        'stillingsinfo.eierNavKontorEnhetId': params.eierNavKontorEnhetId,
-      },
-    });
+    // Validerer at eierNavKontorEnhetId finnes og ikke er tom
+    if (params.eierNavKontorEnhetId) {
+      esBuilder.addFilter({
+        term: {
+          'stillingsinfo.eierNavKontorEnhetId': params.eierNavKontorEnhetId,
+        },
+      });
+    }
 
     // Ekskluder "Ikke publisert" og "Avbrutt" statuser fra Mitt kontor søkeresultater
     esBuilder.addBoolFilter({
