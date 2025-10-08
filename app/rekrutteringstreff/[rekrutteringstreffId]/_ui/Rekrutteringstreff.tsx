@@ -1,5 +1,6 @@
 'use client';
 
+import { useVisPersonTreffId } from '../vis-person/_ui/useVisPersonTreffId';
 import RekrutteringstreffForhåndsvisning from './forhåndsvisning/RekrutteringstreffForhåndsvisning';
 import RekrutteringstreffHeader from './header/RekrutteringstreffHeader';
 import { useRekrutteringstreffData } from './hooks/useRekrutteringstreffData';

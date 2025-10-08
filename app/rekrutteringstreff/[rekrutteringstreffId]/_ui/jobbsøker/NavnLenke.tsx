@@ -1,5 +1,7 @@
-import { useVisPersonTreffId } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/vis-person/_ui/useVisPersonTreffId';
-import { FC } from 'react';
+import WindowLoader from '@/app/_windows/WindowLoader';
+import VisPerson from '@/app/rekrutteringstreff/[rekrutteringstreffId]/vis-person/_ui/VisPerson';
+import { Modal } from '@navikt/ds-react';
+import { FC, Suspense, useRef } from 'react';
 
 interface NavnLenkeProps {
   fornavn: string;
@@ -20,15 +22,43 @@ const NavnLenke: FC<NavnLenkeProps> = ({
   etternavn,
   personTreffId,
 }) => {
-  const [, setVisPersonTreffId] = useVisPersonTreffId();
+  const modalRef = useRef<HTMLDialogElement | null>(null);
+
+  const navn = `${storForbokstavFlereOrd(etternavn)}, ${storForbokstavFlereOrd(
+    fornavn,
+  )}`;
+
+  if (!personTreffId) {
+    return <span>{navn}</span>;
+  }
+
+  const åpneModal = () => modalRef.current?.showModal();
+  const lukkModal = () => modalRef.current?.close();
 
   return (
-    <div
-      className='aksel-link'
-      onClick={() => personTreffId && setVisPersonTreffId(personTreffId)}
-    >
-      {storForbokstavFlereOrd(etternavn)}, {storForbokstavFlereOrd(fornavn)}
-    </div>
+    <>
+      <button type='button' className='aksel-link' onClick={åpneModal}>
+        {navn}
+      </button>
+      <Modal
+        ref={modalRef}
+        onClose={lukkModal}
+        width={'1280px'}
+        header={{ heading: '' }}
+      >
+        <Modal.Body className='h-[1024px] overflow-auto'>
+          <Suspense
+            fallback={
+              <div className='h-full flex items-center justify-center'>
+                <WindowLoader />
+              </div>
+            }
+          >
+            <VisPerson personTreffId={personTreffId} />
+          </Suspense>
+        </Modal.Body>
+      </Modal>
+    </>
   );
 };
 
