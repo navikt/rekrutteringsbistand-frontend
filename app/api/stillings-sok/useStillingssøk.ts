@@ -34,6 +34,10 @@ export const useStillingssøk = ({
 }: UseStillingssøkParams) => {
   const geografiData = usePamGeografi();
 
+  // TODO fjern hardkoding
+  navIdent = 'Z994092';
+  eierNavKontorEnhetId = '0403';
+
   // const payload = generateElasticSearchQuery({
   const treffPayload = opprettElasticSearchTreffQuery({
     filter,

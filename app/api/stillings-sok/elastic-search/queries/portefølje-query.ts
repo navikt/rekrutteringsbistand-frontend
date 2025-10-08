@@ -23,30 +23,19 @@ export const esPortefølje = (
   }
 
   if (params.filter.portefølje === StillingsSøkPortefølje.INTERN) {
+    // Viser kun stillinger med stillingsinfo (har kandidatliste)
+    esBuilder.addFilter({ exists: { field: 'stillingsinfo' } });
+
+    //Viser kun publiserte:
     esBuilder.addBoolFilter({
       must_not: [
         { term: { 'stilling.status': 'REJECTED' } },
         { term: { 'stilling.status': 'DELETED' } },
       ],
-      should: [
-        {
-          bool: {
-            must: [
-              { exists: { field: 'stillingsinfo' } },
-              { term: { 'stilling.administration.status': 'DONE' } },
-              { exists: { field: 'stilling.publishedByAdmin' } },
-              { range: { 'stilling.published': { lte: 'now/d' } } },
-            ],
-          },
-        },
-        {
-          bool: {
-            should: [
-              { term: { 'stilling.administration.navIdent': params.navIdent } },
-              { term: { 'stillingsinfo.eierNavident': params.navIdent } },
-            ],
-          },
-        },
+      must: [
+        { term: { 'stilling.administration.status': 'DONE' } },
+        { exists: { field: 'stilling.publishedByAdmin' } },
+        { range: { 'stilling.published': { lte: 'now/d' } } },
       ],
     });
   } else if (params.filter.portefølje === StillingsSøkPortefølje.VIS_MINE) {
@@ -70,64 +59,24 @@ export const esPortefølje = (
       });
     }
   } else if (params.filter.portefølje === StillingsSøkPortefølje.MITT_KONTOR) {
-    // Validerer at eierNavKontorEnhetId finnes og ikke er tom
-    if (params.eierNavKontorEnhetId) {
-      esBuilder.addBoolFilter({
-        must: [
-          {
-            term: {
-              'stillingsinfo.eierNavKontorEnhetId': params.eierNavKontorEnhetId,
-            },
-          },
-        ],
-        must_not: [
-          { term: { 'stilling.status': 'DELETED' } },
-          { term: { 'stilling.status': 'REJECTED' } },
-        ],
-        should: [
-          {
-            bool: {
-              must: [
-                {
-                  term: {
-                    'stillingsinfo.eierNavKontorEnhetId':
-                      params.eierNavKontorEnhetId,
-                  },
-                },
-                { term: { 'stilling.administration.status': 'DONE' } },
-                { exists: { field: 'stilling.publishedByAdmin' } },
-                { range: { 'stilling.published': { lte: 'now/d' } } },
-              ],
-            },
-          },
-          {
-            bool: {
-              must: [{ term: { 'stilling.status': 'INACTIVE' } }],
-              should: [
-                {
-                  term: {
-                    'stillingsinfo.eierNavKontorEnhetId':
-                      params.eierNavKontorEnhetId,
-                  },
-                },
-                {
-                  term: { 'stilling.administration.navIdent': params.navIdent },
-                },
-                { term: { 'stillingsinfo.eierNavident': params.navIdent } },
-              ],
-            },
-          },
-        ],
-        minimum_should_match: 1,
-      });
-    }
+    esBuilder.addFilter({
+      term: {
+        'stillingsinfo.eierNavKontorEnhetId': params.eierNavKontorEnhetId,
+      },
+    });
 
-    // // Ekskluder "Ikke publisert" og "Avbrutt" statuser fra Mitt kontor søkeresultater
+    // Ekskluder "Ikke publisert" og "Avbrutt" statuser fra Mitt kontor søkeresultater
     esBuilder.addBoolFilter({
       must_not: [
+        // Ekskluder "Ikke publisert" (INACTIVE uten publishedByAdmin)
+        {
+          bool: {
+            must: [{ term: { 'stilling.status': 'INACTIVE' } }],
+            must_not: [{ exists: { field: 'stilling.publishedByAdmin' } }],
+          },
+        },
         // Ekskluder "Avbrutt" (DELETED)
         { term: { 'stilling.status': 'DELETED' } },
-        { term: { 'stilling.status': 'REJECTED' } },
       ],
     });
   } else if (

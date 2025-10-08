@@ -3,6 +3,7 @@
 import { useStillingssøk } from '@/app/api/stillings-sok/useStillingssøk';
 import { useStillingsSøkFilter } from '@/app/stilling/StillingsSøkContext';
 import { VisningsStatus } from '@/app/stilling/_util/stillingInfoUtil';
+import { StillingsSøkPortefølje } from '@/app/stilling/_util/stillingssøk-typer';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
 import { useEffect, useRef } from 'react';
@@ -13,7 +14,8 @@ export interface StatusFilterProps {
 
 export default function StatusFilter({ hideLegend }: StatusFilterProps) {
   const filterCtx = useStillingsSøkFilter();
-  const { statuser, setStatuser } = filterCtx;
+  const { statuser, setStatuser, portefølje } = filterCtx;
+  console.log('portefølje', portefølje);
   const {
     brukerData: { ident },
     valgtNavKontor,
@@ -67,6 +69,13 @@ export default function StatusFilter({ hideLegend }: StatusFilterProps) {
     <CheckboxGroup legend={hideLegend ? undefined : 'Status'} size='small'>
       <div className='flex flex-col gap-2'>
         {allStatuses.map((status) => {
+          // Vis kune "Ikke publisert" under Mine stillinger
+          if (
+            status === VisningsStatus.IkkePublisert &&
+            portefølje !== StillingsSøkPortefølje.VIS_MINE
+          )
+            return null;
+
           const checked = !!statuser?.includes(status);
           const label =
             status === VisningsStatus.UtloptStengtForSokere ? 'Utløpt' : status;

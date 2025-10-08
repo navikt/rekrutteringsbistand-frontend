@@ -97,6 +97,10 @@ export const statusQuery = (
           { exists: { field: 'stilling.publishedByAdmin' } },
           { range: { 'stilling.published': { lte: 'now/d' } } },
         ],
+        must_not: [
+          { term: { 'stilling.status': 'REJECTED' } },
+          { term: { 'stilling.status': 'DELETED' } },
+        ],
       },
     });
   }
@@ -111,6 +115,10 @@ export const statusQuery = (
           { exists: { field: 'stilling.publishedByAdmin' } },
           { range: { 'stilling.published': { lte: 'now/d' } } },
         ],
+        must_not: [
+          { term: { 'stilling.status': 'REJECTED' } },
+          { term: { 'stilling.status': 'DELETED' } },
+        ],
       },
     });
   }
@@ -123,7 +131,11 @@ export const statusQuery = (
           { exists: { field: 'stilling.publishedByAdmin' } },
           { range: { 'stilling.published': { lte: 'now/d' } } },
         ],
-        must_not: [{ range: { 'stilling.expires': { lt: 'now/d' } } }],
+        must_not: [
+          { range: { 'stilling.expires': { lt: 'now/d' } } },
+          { term: { 'stilling.status': 'REJECTED' } },
+          { term: { 'stilling.status': 'DELETED' } },
+        ],
       },
     });
   }
@@ -131,7 +143,11 @@ export const statusQuery = (
     postFilterShould.push({
       bool: {
         must: [{ term: { 'stilling.status': 'INACTIVE' } }],
-        must_not: [{ exists: { field: 'stilling.publishedByAdmin' } }],
+        must_not: [
+          { exists: { field: 'stilling.publishedByAdmin' } },
+          { term: { 'stilling.status': 'REJECTED' } },
+          { term: { 'stilling.status': 'DELETED' } },
+        ],
       },
     });
   }
@@ -148,11 +164,15 @@ export const statusQuery = (
       postFilterShould.push({
         bool: {
           must: [{ term: { 'stilling.status': 'INACTIVE' } }],
-          must_not: [{ exists: { field: 'stilling.publishedByAdmin' } }],
+          must_not: [
+            { exists: { field: 'stilling.publishedByAdmin' } },
+            { term: { 'stilling.status': 'REJECTED' } },
+            { term: { 'stilling.status': 'DELETED' } },
+          ],
         },
       });
     }
-    if (statuser.includes(VisningsStatus.Avbrutt)) {
+    if (!statuser.includes(VisningsStatus.Avbrutt)) {
       postFilterShould.push({ term: { 'stilling.status': 'DELETED' } });
     }
   }
