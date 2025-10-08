@@ -1,4 +1,4 @@
-import { RekrutteringstreffContextProvider } from '../_contexts/RekrutteringstreffContext';
+import { RekrutteringstreffProvider } from '../_contexts/RekrutteringstreffContext';
 import RekrutteringstreffForm from './_ui/rediger/RekrutteringstreffForm';
 import { ReactNode } from 'react';
 
@@ -14,12 +14,10 @@ export default async function RekrutteringsTreffLayout({
   const { rekrutteringstreffId } = await params;
 
   return (
-    <RekrutteringstreffContextProvider
-      rekrutteringstreffId={rekrutteringstreffId}
-    >
+    <RekrutteringstreffProvider rekrutteringstreffId={rekrutteringstreffId}>
       <RekrutteringstreffForm rekrutteringstreffId={rekrutteringstreffId}>
         {children}
       </RekrutteringstreffForm>
-    </RekrutteringstreffContextProvider>
+    </RekrutteringstreffProvider>
   );
 }

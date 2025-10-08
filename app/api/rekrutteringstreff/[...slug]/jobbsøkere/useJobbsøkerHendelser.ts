@@ -6,7 +6,7 @@ import { getAPIwithSchema } from '@/app/api/fetcher';
 import {
   AktørType as AktørTypeConst,
   JobbsøkerHendelsestype as JobbsøkerHendelsestypeConst,
-} from '@/app/rekrutteringstreff/_domain/constants';
+} from '@/app/rekrutteringstreff/_types/constants';
 import useSWR from 'swr';
 import { z } from 'zod';
 

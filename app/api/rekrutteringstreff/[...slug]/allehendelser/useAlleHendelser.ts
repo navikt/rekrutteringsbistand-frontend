@@ -8,7 +8,7 @@ import {
   ArbeidsgiverHendelsestype as ArbeidsgiverHendelsestypeConst,
   JobbsøkerHendelsestype as JobbsøkerHendelsestypeConst,
   RekrutteringstreffHendelsestype as RekrutteringstreffHendelsestypeConst,
-} from '@/app/rekrutteringstreff/_domain/constants';
+} from '@/app/rekrutteringstreff/_types/constants';
 import useSWR from 'swr';
 import { z } from 'zod';
 

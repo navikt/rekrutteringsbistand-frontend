@@ -3,7 +3,7 @@
 import { ArbeidsgiverHendelseLabel } from '../jobbsøker/HendelseLabel';
 import LeggTilArbeidsgiverModal from './LeggTilArbeidsgiverModal';
 import { ArbeidsgiverHendelserDTO } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgiverHendelser';
-import { ArbeidsgiverHendelsestype } from '@/app/rekrutteringstreff/_domain/constants';
+import { ArbeidsgiverHendelsestype } from '@/app/rekrutteringstreff/_types/constants';
 import SVGDarkmode from '@/components/layout/SVGDarkmode';
 import ArbeidsgiverDarkIkon from '@/public/ikoner/arbeidsgiver-dark.svg';
 import ArbeidsgiverIkon from '@/public/ikoner/arbeidsgiver.svg';

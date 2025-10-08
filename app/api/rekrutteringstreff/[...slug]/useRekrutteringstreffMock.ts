@@ -2,7 +2,7 @@ import { RekrutteringstreffDTO } from './useRekrutteringstreff';
 import {
   RekrutteringstreffHendelsestype,
   JobbsøkerHendelsestype,
-} from '@/app/rekrutteringstreff/_domain/constants';
+} from '@/app/rekrutteringstreff/_types/constants';
 
 const _fullførthendelser = [
   {

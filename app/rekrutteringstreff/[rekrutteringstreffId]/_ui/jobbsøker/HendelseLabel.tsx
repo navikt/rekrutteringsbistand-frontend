@@ -2,7 +2,7 @@ import {
   JobbsøkerHendelsestype,
   ArbeidsgiverHendelsestype,
   RekrutteringstreffHendelsestype,
-} from '@/app/rekrutteringstreff/_domain/constants';
+} from '@/app/rekrutteringstreff/_types/constants';
 import { BodyShort } from '@navikt/ds-react';
 import { FC, ReactNode } from 'react';
 
