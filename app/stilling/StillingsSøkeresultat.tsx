@@ -14,7 +14,7 @@ import SkeletonKort from '@/components/layout/SkeletonKort';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { ChevronLeftIcon, ChevronRightIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
-import { FC, useEffect, useRef } from 'react';
+import { FC, useEffect } from 'react';
 
 interface StillingsSøkeresultatProps {
   kandidatId?: string;
@@ -23,7 +23,6 @@ interface StillingsSøkeresultatProps {
 
 const StillingsSøkeresultat: FC<StillingsSøkeresultatProps> = ({
   kandidatId,
-  scrollExcludeRefs,
 }) => {
   // Abonner kun på setteren for å unngå re-render ved antall-endringer her.
   const setAntall = useStillingssokTotalData((s) => s.setAntall);
@@ -80,7 +79,10 @@ const StillingsSøkeresultat: FC<StillingsSøkeresultatProps> = ({
     if (!data?.antall) return;
     setAntall({});
   }, [combinedHook.data, setAntall]);
-  const headerRef = useRef<HTMLDivElement>(null);
+  const filterKey = Object.entries(filter)
+    .filter(([key]) => key !== 'setSide' && key !== 'side')
+    .map(([, value]) => JSON.stringify(value))
+    .join('-');
   return (
     <SWRLaster
       hooks={[combinedHook]}
@@ -95,13 +97,13 @@ const StillingsSøkeresultat: FC<StillingsSøkeresultatProps> = ({
       {(data: any) => {
         return (
           <div className='h-full flex flex-col'>
-            <div ref={headerRef} className='flex-shrink-0'>
+            <div className='flex-shrink-0'>
               <StillingsSøkChips skjulLagreStandard={!!kandidatId} />
               {antallVisning(data.hits?.total?.value)}
             </div>
 
             <div className='flex-1 min-h-0'>
-              <SideScroll>
+              <SideScroll key={filterKey}>
                 <div className='flex flex-col gap-1'>
                   {data.hits?.hits?.map((hit: any) => (
                     <StillingsKort key={hit._id} stillingData={hit._source} />

@@ -1,4 +1,4 @@
-import FinnKandidaterForRekrutteringstreff from './FinnKandidaterForRekrutteringstreff';
+import FinnKandidaterForRekrutteringstreff from './_ui/FinnKandidaterForRekrutteringstreff';
 
 export default function FinnKandidaterForRekrutteringstreffPage() {
   return <FinnKandidaterForRekrutteringstreff />;

@@ -1,4 +1,8 @@
-export const oppdaterRekrutteringstreffMock = (id: string) => {
+import { RekrutteringstreffUtenHendelserDTO } from '../[...slug]/useRekrutteringstreff';
+
+export const oppdaterRekrutteringstreffMock = (
+  id: string,
+): RekrutteringstreffUtenHendelserDTO => {
   return {
     id,
     tittel: 'Oppdatert tittel',
@@ -12,6 +16,5 @@ export const oppdaterRekrutteringstreffMock = (id: string) => {
     status: 'Utkast',
     opprettetAvPersonNavident: 'A123456',
     opprettetAvNavkontorEnhetId: '0318',
-    opprettetAvTidspunkt: '2025-06-01T08:00:00+02:00',
   };
 };

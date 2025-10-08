@@ -1,6 +1,6 @@
 'use client';
 
-import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/useRekrutteringstreff';
+import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import { getActiveStepFromHendelser } from '@/app/rekrutteringstreff/_utils/rekrutteringstreff';
 import { CalendarIcon, LocationPinIcon, PersonIcon } from '@navikt/aksel-icons';
 import {
@@ -67,7 +67,7 @@ export const RekrutteringstreffKort: FunctionComponent<Props> = ({
   navKontor,
 }) => {
   return (
-    <Box className='mb-4 rounded-lg border border-[var(--ax-border-neutral)] p-4'>
+    <Box.New className='mb-4 rounded-lg border border-[var(--ax-border-neutral)] p-4'>
       <div className='mb-4 flex items-start justify-between'>
         <div className='flex items-center gap-2'>
           <CalendarIcon aria-hidden />
@@ -103,6 +103,6 @@ export const RekrutteringstreffKort: FunctionComponent<Props> = ({
         <Detail>{`Opprettet av ${opprettetAv} ${opprettetDato}`}</Detail>
         <Detail>{navKontor}</Detail>
       </div>
-    </Box>
+    </Box.New>
   );
 };

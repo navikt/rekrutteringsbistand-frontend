@@ -1,4 +1,5 @@
-import AvlystSteg from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/om-treffet/stegviser/steg/AvlystSteg';
+import { RekrutteringstreffDTO } from '../[...slug]/useRekrutteringstreff';
+import AvlystSteg from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/stegviser/steg/AvlystSteg';
 import {
   RekrutteringstreffHendelsestype,
   JobbsøkerHendelsestype,
@@ -100,19 +101,18 @@ const ikkepubliserthendelser = [
   },
 ];
 
-export const rekrutteringstreffMock = {
+export const rekrutteringstreffMock: RekrutteringstreffDTO = {
   id: 'd6a587cd-8797-4b9a-a68b-575373f16d65',
   tittel: 'Treffet',
   beskrivelse: null,
-  fraTid: '2025-07-01T08:00:00+02:00',
-  tilTid: '2025-07-01T10:00:00+02:00',
-  svarfrist: '2025-06-01T12:00:00+02:00',
+  fraTid: '2025-10-01T08:00:00+02:00',
+  tilTid: '2025-10-01T10:00:00+02:00',
+  svarfrist: '2025-11-01T07:00:00+02:00',
   gateadresse: 'Malmøgata 1',
   postnummer: '5555',
   poststed: 'Kristiansand S',
   status: 'Utkast',
   opprettetAvPersonNavident: 'A123456',
   opprettetAvNavkontorEnhetId: '0318',
-  opprettetAvTidspunkt: '2025-06-01T08:00:00+02:00',
-  hendelser: ikkepubliserthendelser,
+  hendelser: publisertHendelser,
 };

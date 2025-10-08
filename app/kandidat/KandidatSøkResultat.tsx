@@ -12,7 +12,7 @@ import {
   KandidatsokKandidat,
   useKandidatsøk,
 } from '@/app/api/kandidat-sok/useKandidatsøk';
-import LagreIRekrutteringstreffButton from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/lagreIRekrutteringstreffButton/LagreIRekrutteringstreffButton';
+import LagreIRekrutteringstreffButton from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/actions/LagreIRekrutteringstreffButton';
 import RekrutteringstreffFeatureToggle from '@/components/RekrutteringstreffFeatureToggle';
 import SWRLaster from '@/components/SWRLaster';
 import SideScroll from '@/components/SideScroll';

@@ -1,5 +1,5 @@
-import RekrutteringstreffSøk from './RekrutteringstreffSøk';
-import RekrutteringstreffSøkLayout from './RekrutteringstreffSøkLayout';
+import RekrutteringstreffSøk from './_ui/RekrutteringstreffSøk';
+import RekrutteringstreffSøkLayout from './_ui/RekrutteringstreffSøkLayout';
 
 export default async function RekrutteringstreffSøkPage() {
   return (
