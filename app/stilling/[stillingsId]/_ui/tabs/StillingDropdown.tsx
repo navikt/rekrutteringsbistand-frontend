@@ -1,31 +1,35 @@
 import { overtaEierskap } from '@/app/api/stilling/overta-eierskap/overtaEierskap';
-import { slettStilling } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/slett-stilling';
 import { kopierStilling } from '@/app/api/stilling/rekrutteringsbistandstilling/kopier/[slug]/kopierStilling';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
+import SlettOppdragModal from '@/app/stilling/[stillingsId]/_ui/tabs/SlettOppdragModal';
 import { StillingsStatus } from '@/app/stilling/_ui/stilling-typer';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { RekbisError } from '@/util/rekbisError';
 import {
-  ArrowUndoIcon,
-  EyeSlashIcon,
   MenuElipsisHorizontalIcon,
   PadlockLockedIcon,
   TabsAddIcon,
   TrashIcon,
 } from '@navikt/aksel-icons';
-import { BodyLong, BodyShort, Button, Dropdown, Modal } from '@navikt/ds-react';
+import { Button, Dropdown } from '@navikt/ds-react';
 import { useState } from 'react';
 
 export default function StillingDropdown() {
-  const { erEier, erDirektemeldt, stillingsData, refetch, erFormidling } =
-    useStillingsContext();
+  const {
+    erEier,
+    erDirektemeldt,
+    stillingsData,
+    refetch,
+    erFormidling,
+    kandidatlisteInfo,
+  } = useStillingsContext();
 
   const { brukerData, valgtNavKontor, visVarsel } = useApplikasjonContext();
 
   const [loading, setLoading] = useState(false);
-  const [visAvpubliserModal, setVisAvpubliserModal] = useState(false);
+  const [visSlettModal, setVisSlettModal] = useState(false);
 
   const harStillingsinfo = stillingsData.stillingsinfo !== null;
 
@@ -77,16 +81,6 @@ export default function StillingDropdown() {
     }
   };
 
-  const avpubliserStilling = async () => {
-    setVisAvpubliserModal(false);
-    setLoading(true);
-    await slettStilling(stillingsData.stilling.uuid);
-    setLoading(false);
-    if (refetch) {
-      refetch();
-    }
-  };
-
   return (
     <>
       <TilgangskontrollForInnhold
@@ -119,59 +113,17 @@ export default function StillingDropdown() {
 
               {stillingsData.stilling.status !== StillingsStatus.Slettet && (
                 <Dropdown.Menu.GroupedList.Item
-                  onClick={() => setVisAvpubliserModal(true)}
+                  onClick={() => setVisSlettModal(true)}
                 >
                   <TrashIcon />
-                  Avbryt oppdraget
+                  Slett oppdraget
                 </Dropdown.Menu.GroupedList.Item>
               )}
             </Dropdown.Menu.GroupedList>
           </Dropdown.Menu>
         </Dropdown>
+        {visSlettModal && <SlettOppdragModal setVisModal={setVisSlettModal} />}
       </TilgangskontrollForInnhold>
-
-      {visAvpubliserModal && (
-        <Modal
-          onClose={() => setVisAvpubliserModal(false)}
-          open={true}
-          header={{
-            heading: 'Avpubliser stillingsoppdraget',
-            size: 'small',
-          }}
-          width='medium'
-        >
-          <Modal.Body>
-            <div className='flex gap-2 flex-col'>
-              <BodyShort>Hva som skjer</BodyShort>
-              <div className='flex gap-2'>
-                <EyeSlashIcon />
-                <BodyLong>
-                  Stillingsoppdraget skjules for andre i rekrutteringsbistand.
-                </BodyLong>
-              </div>
-              <div className='flex gap-2'>
-                <ArrowUndoIcon />
-                <BodyLong>
-                  Du kan publisere oppdraget på nytt. Det gjør du ved å velge
-                  &quot;Rediger&quot; på oppdraget og fullføre flyten.
-                </BodyLong>
-              </div>
-            </div>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button type='button' variant='danger' onClick={avpubliserStilling}>
-              Avpubliser oppdraget
-            </Button>
-            <Button
-              type='button'
-              variant='secondary'
-              onClick={() => setVisAvpubliserModal(true)}
-            >
-              Avbryt
-            </Button>
-          </Modal.Footer>
-        </Modal>
-      )}
     </>
   );
 }
