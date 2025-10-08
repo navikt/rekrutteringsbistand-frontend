@@ -7,6 +7,7 @@ import {
 import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { useStilling } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/useStilling';
 import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
+import { visStillingsDataInfo } from '@/app/stilling/_util/stillingInfoUtil';
 import SWRLaster from '@/components/SWRLaster';
 import { eierStilling } from '@/components/tilgangskontroll/erEier';
 import { Roller } from '@/components/tilgangskontroll/roller';
@@ -22,6 +23,7 @@ import {
 } from 'react';
 
 interface StillingsContextType {
+  omStilling: ReturnType<typeof visStillingsDataInfo>;
   stillingsId: string;
   stillingsData: StillingsDataDTO;
   kandidatlisteInfo: KandidatlisteInfoDTO | null;
@@ -126,6 +128,7 @@ export const StillingsContextMedData: FC<StillingsContextMedDataProps> = ({
   return (
     <StillingsContext.Provider
       value={{
+        omStilling: visStillingsDataInfo(stillingsData),
         erSlettet: stillingsData?.stilling?.status === 'DELETED',
         erDirektemeldt: stillingsData.stilling?.source === 'DIR',
         forhåndsvisData,

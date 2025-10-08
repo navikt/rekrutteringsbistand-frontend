@@ -1,7 +1,23 @@
 import { slettStilling } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/slett-stilling';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
-import { ArrowUndoIcon, EyeSlashIcon } from '@navikt/aksel-icons';
-import { BodyLong, BodyShort, Button, Modal } from '@navikt/ds-react';
+import { VisningsStatus } from '@/app/stilling/_util/stillingInfoUtil';
+import {
+  CircleSlashIcon,
+  EyeSlashIcon,
+  FileXMarkIcon,
+  PersonCrossIcon,
+  SpeakerSlashIcon,
+  TableIcon,
+  TrashIcon,
+} from '@navikt/aksel-icons';
+import {
+  BodyLong,
+  Box,
+  Button,
+  Heading,
+  Modal,
+  VStack,
+} from '@navikt/ds-react';
 import { useState } from 'react';
 
 export interface SlettOppdragModalProps {
@@ -11,7 +27,7 @@ export interface SlettOppdragModalProps {
 export default function SlettOppdragModal({
   setVisModal,
 }: SlettOppdragModalProps) {
-  const { stillingsData, refetch } = useStillingsContext();
+  const { stillingsData, refetch, omStilling } = useStillingsContext();
 
   const [loading, setLoading] = useState(false);
 
@@ -25,34 +41,97 @@ export default function SlettOppdragModal({
     }
   };
 
+  const ikkePublisertTekst = (
+    <BodyLong>
+      Oppdraget er ikke publisert enda, og kan slettes uten problemer.
+    </BodyLong>
+  );
+
   return (
     <>
       <Modal
         onClose={() => setVisModal(false)}
         open={true}
         header={{
-          heading: 'Avpubliser stillingsoppdraget',
+          heading: 'Vil du slette stillingsoppdraget?',
           size: 'small',
         }}
         width='medium'
       >
         <Modal.Body>
-          <div className='flex gap-2 flex-col'>
-            <BodyShort>Hva som skjer</BodyShort>
-            <div className='flex gap-2'>
-              <EyeSlashIcon />
-              <BodyLong>
-                Stillingsoppdraget skjules for andre i rekrutteringsbistand.
-              </BodyLong>
-            </div>
-            <div className='flex gap-2'>
-              <ArrowUndoIcon />
-              <BodyLong>
-                Du kan publisere oppdraget på nytt. Det gjør du ved å velge
-                &quot;Rediger&quot; på oppdraget og fullføre flyten.
-              </BodyLong>
-            </div>
-          </div>
+          {omStilling.visningsStatus === VisningsStatus.IkkePublisert ? (
+            ikkePublisertTekst
+          ) : (
+            <VStack gap='6'>
+              <Box.New
+                padding='6'
+                borderRadius='xlarge'
+                borderColor='info-subtleA'
+                background='default'
+              >
+                <VStack gap='4'>
+                  <Heading size='small'>
+                    Dette skjer når du sletter oppdraget
+                  </Heading>
+
+                  <div className='flex gap-2'>
+                    <EyeSlashIcon aria-hidden />
+                    <BodyLong>
+                      Oppdraget fjernes for alle i Rekrutteringsbistand.
+                    </BodyLong>
+                  </div>
+                  <div className='flex gap-2'>
+                    <FileXMarkIcon aria-hidden />
+                    <BodyLong>
+                      Alle delte CVer og saker slettes fra arbeidsgivers
+                      min-side.
+                    </BodyLong>
+                  </div>
+                  <div className='flex gap-2'>
+                    <TrashIcon aria-hidden />
+                    <BodyLong>Listen over jobbsøkere slettes.</BodyLong>
+                  </div>
+                  <div className='flex gap-2'>
+                    <CircleSlashIcon aria-hidden />
+                    <BodyLong>Du kan ikke lenger gjenåpne oppdraget.</BodyLong>
+                  </div>
+                </VStack>
+              </Box.New>
+              <Box.New
+                padding='6'
+                borderRadius='xlarge'
+                borderColor='info-subtleA'
+                background='default'
+              >
+                <VStack gap='4'>
+                  <Heading size='small'>
+                    Har du delt CVer til arbeidsgiver?
+                  </Heading>
+                  <div className='flex gap-2'>
+                    <PersonCrossIcon aria-hidden />
+                    <BodyLong>
+                      Du kan fjerne CV-ene fra arbeidsgivers liste manuelt.
+                    </BodyLong>
+                  </div>
+                  <div className='flex gap-2'>
+                    <TableIcon aria-hidden />
+                    <BodyLong>
+                      Jobbsøker og veileder vil fremdeles se kortet i
+                      aktivitetsplanen med lenke til stillingen.
+                    </BodyLong>
+                  </div>
+                  <div className='flex gap-2'>
+                    <SpeakerSlashIcon aria-hidden />
+                    <BodyLong>
+                      Jobbsøker får ikke beskjed om at stillingsoppdraget er
+                      slettet. Kontakt jobbsøker og/eller veileder for å
+                      informere dem.
+                    </BodyLong>
+                  </div>
+                </VStack>
+              </Box.New>
+            </VStack>
+          )}
         </Modal.Body>
         <Modal.Footer>
           <Button
@@ -61,7 +140,7 @@ export default function SlettOppdragModal({
             onClick={slettStillingClick}
             loading={loading}
           >
-            Avpubliser oppdraget
+            Slett oppdraget
           </Button>
           <Button
             type='button'

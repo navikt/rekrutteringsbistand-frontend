@@ -17,14 +17,8 @@ import { Button, Dropdown } from '@navikt/ds-react';
 import { useState } from 'react';
 
 export default function StillingDropdown() {
-  const {
-    erEier,
-    erDirektemeldt,
-    stillingsData,
-    refetch,
-    erFormidling,
-    kandidatlisteInfo,
-  } = useStillingsContext();
+  const { erEier, erDirektemeldt, stillingsData, refetch, erFormidling } =
+    useStillingsContext();
 
   const { brukerData, valgtNavKontor, visVarsel } = useApplikasjonContext();
 
@@ -111,14 +105,15 @@ export default function StillingDropdown() {
                 Dupliser oppdraget
               </Dropdown.Menu.GroupedList.Item>
 
-              {stillingsData.stilling.status !== StillingsStatus.Slettet && (
-                <Dropdown.Menu.GroupedList.Item
-                  onClick={() => setVisSlettModal(true)}
-                >
-                  <TrashIcon />
-                  Slett oppdraget
-                </Dropdown.Menu.GroupedList.Item>
-              )}
+              {erDirektemeldt &&
+                stillingsData.stilling.status !== StillingsStatus.Slettet && (
+                  <Dropdown.Menu.GroupedList.Item
+                    onClick={() => setVisSlettModal(true)}
+                  >
+                    <TrashIcon />
+                    Slett oppdraget
+                  </Dropdown.Menu.GroupedList.Item>
+                )}
             </Dropdown.Menu.GroupedList>
           </Dropdown.Menu>
         </Dropdown>
