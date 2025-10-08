@@ -11,7 +11,6 @@ import { Button } from '@navikt/ds-react';
 import { useEffect, useRef, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 
-
 interface AutolagreStillingProps {
   stillingsData: StillingAdminDTO;
   /** (valgfritt) override på intervall i ms for testing */
@@ -71,8 +70,8 @@ export default function AutolagreStilling({
       inFlightRef.current = promise;
       const stilling: StillingsDataDTO = await promise;
 
-      if(stilling.stilling.versjon) {
-        setValue("stilling.versjon", stilling.stilling.versjon)
+      if (stilling.stilling.versjon) {
+        setValue('stilling.versjon', stilling.stilling.versjon);
       }
 
       setSisteLagret(new Date());
