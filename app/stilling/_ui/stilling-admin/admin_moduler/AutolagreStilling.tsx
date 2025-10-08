@@ -71,7 +71,10 @@ export default function AutolagreStilling({
       inFlightRef.current = promise;
       const stilling: StillingsDataDTO = await promise;
 
-      setValue("stilling.versjon", stilling.stilling.versjon)
+      if(stilling.stilling.versjon) {
+        setValue("stilling.versjon", stilling.stilling.versjon)
+      }
+
       setSisteLagret(new Date());
       setTeller(0);
     } catch (e: any) {
