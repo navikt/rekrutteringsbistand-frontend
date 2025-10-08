@@ -32,6 +32,10 @@ export const useStillingssøk = ({
   formidlinger,
   finnStillingerForKandidat,
 }: UseStillingssøkParams) => {
+  // TODO fjern hardkoding
+  navIdent = 'Z994092';
+  eierNavKontorEnhetId = '0403';
+
   const geografiData = usePamGeografi();
 
   // const payload = generateElasticSearchQuery({
