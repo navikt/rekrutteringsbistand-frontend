@@ -4,8 +4,6 @@ import { RobotFrownIcon } from '@navikt/aksel-icons';
 import { Alert, BodyLong, Button, Skeleton } from '@navikt/ds-react';
 import { FC, useEffect, useMemo, useRef } from 'react';
 
-export type KiAnalyseVariant = 'tittel' | 'innlegg';
-
 type BlockKind = 'none' | 'skeleton' | 'error' | 'text';
 
 interface KiAnalysePanelProps {
@@ -16,7 +14,6 @@ interface KiAnalysePanelProps {
   showAnalysis: boolean;
   erRedigeringAvPublisertTreff: boolean;
   onForceSave: () => void;
-  variant: KiAnalyseVariant;
   ariaLabel: string;
 }
 
@@ -28,23 +25,20 @@ const KiAnalysePanel: FC<KiAnalysePanelProps> = ({
   showAnalysis,
   erRedigeringAvPublisertTreff,
   onForceSave,
-  variant,
   ariaLabel,
 }) => {
   const hasAnalyse = !!analyse && !analyseError;
   const bryter = hasAnalyse ? !!(analyse as any)?.bryterRetningslinjer : false;
 
-  // Only show icon when there is a violation and analysis should be shown
-  const shouldShowIcon = hasAnalyse && showAnalysis && bryter;
+  // Only show icon and content when there is a violation
+  const shouldShowIcon = showAnalysis && bryter;
 
   const showTextBlock: BlockKind = useMemo(() => {
     if (validating) return 'skeleton';
-    if (!validating && analyseError) return 'error';
-    if (!validating && hasAnalyse && showAnalysis) {
-      return 'text';
-    }
+    if (analyseError) return 'error';
+    if (showAnalysis && bryter) return 'text';
     return 'none';
-  }, [validating, analyseError, hasAnalyse, showAnalysis]);
+  }, [validating, analyseError, showAnalysis, bryter]);
 
   const skeletonRef = useRef<HTMLDivElement>(null);
   const errorRef = useRef<HTMLDivElement>(null);
@@ -112,13 +106,7 @@ const KiAnalysePanel: FC<KiAnalysePanelProps> = ({
                 opacity: 0,
                 animation: 'kiFadeIn 300ms ease-in forwards',
               }}
-              className={
-                bryter
-                  ? 'aksel-error-message p-1'
-                  : variant === 'innlegg'
-                    ? 'text-green-700 p-1'
-                    : 'p-1'
-              }
+              className='aksel-error-message p-1'
             >
               <BodyLong>{(analyse as any)?.begrunnelse}</BodyLong>
             </div>
@@ -126,7 +114,7 @@ const KiAnalysePanel: FC<KiAnalysePanelProps> = ({
         </div>
       </div>
 
-      {hasAnalyse && bryter && !forceSave && (
+      {bryter && !forceSave && (
         <div className='pt-4'>
           <Button variant='secondary' size='small' onClick={onForceSave}>
             {erRedigeringAvPublisertTreff ? 'Bruk likevel' : 'Lagre likevel'}

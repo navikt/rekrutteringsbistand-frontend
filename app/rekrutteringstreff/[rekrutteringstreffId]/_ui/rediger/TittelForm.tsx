@@ -196,7 +196,6 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
             showAnalysis={showAnalysis}
             erRedigeringAvPublisertTreff={erRedigeringAvPublisertTreff}
             onForceSave={onForceSave}
-            variant='tittel'
             ariaLabel='Analyse av tittel'
           />
         </>

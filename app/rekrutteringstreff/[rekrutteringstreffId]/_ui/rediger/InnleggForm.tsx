@@ -142,7 +142,6 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
             showAnalysis={showAnalysis}
             erRedigeringAvPublisertTreff={erRedigeringAvPublisertTreff}
             onForceSave={onForceSave}
-            variant='innlegg'
             ariaLabel='Analyse av innlegg'
           />
         </>
