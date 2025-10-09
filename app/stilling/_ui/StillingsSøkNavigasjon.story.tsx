@@ -1,0 +1,17 @@
+import StillingsSøkNavigasjon from './StillingsSøkNavigasjon';
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+
+// Inert navigasjonsrad for stillingssøk.
+
+const meta = {
+  tags: ['autodocs'],
+  render: () => (
+    <div className='opacity-60 pointer-events-none'>
+      <StillingsSøkNavigasjon />
+    </div>
+  ),
+} satisfies Meta;
+export default meta;
+
+type Story = StoryObj<typeof meta>;
+export const Placeholder: Story = {};

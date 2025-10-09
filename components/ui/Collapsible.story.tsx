@@ -1,8 +1,8 @@
 import { Button } from './button';
 import {
   Collapsible,
-  CollapsibleTrigger,
   CollapsibleContent,
+  CollapsibleTrigger,
 } from './collapsible';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { useState } from 'react';

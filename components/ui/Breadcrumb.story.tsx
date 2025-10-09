@@ -1,11 +1,11 @@
 import {
   Breadcrumb,
-  BreadcrumbList,
+  BreadcrumbEllipsis,
   BreadcrumbItem,
   BreadcrumbLink,
-  BreadcrumbSeparator,
+  BreadcrumbList,
   BreadcrumbPage,
-  BreadcrumbEllipsis,
+  BreadcrumbSeparator,
 } from './breadcrumb';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 

@@ -4,8 +4,8 @@ import InvitereSteg from './InvitereSteg';
 import PublisereSteg from './PublisereSteg';
 import {
   SjekklisteContainer,
-  SjekklisteRad,
   SjekklisteInfo,
+  SjekklisteRad,
 } from './Sjekkliste';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 

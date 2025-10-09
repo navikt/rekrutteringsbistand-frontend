@@ -1,9 +1,9 @@
 import GiTilbakemelding from './GiTilbakemelding';
 import {
-  SidebarProvider,
   Sidebar,
   SidebarContent,
   SidebarFooter,
+  SidebarProvider,
 } from '@/components/ui/sidebar';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 

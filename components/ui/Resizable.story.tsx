@@ -1,7 +1,7 @@
 import {
-  ResizablePanelGroup,
-  ResizablePanel,
   ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
 } from './resizable';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 

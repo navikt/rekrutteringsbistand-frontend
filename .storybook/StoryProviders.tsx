@@ -2,7 +2,6 @@ import { Roller } from '../components/tilgangskontroll/roller';
 import { SidebarProvider } from '../components/ui/sidebar';
 import { ApplikasjonContextProvider } from '../providers/ApplikasjonContext';
 import { UmamiProvider } from '../providers/UmamiContext';
-import { Theme } from '@navikt/ds-react';
 import React from 'react';
 
 /**
@@ -14,7 +13,6 @@ import React from 'react';
 export interface StoryProvidersProps {
   children: React.ReactNode;
   roller?: Roller[]; // Mulighet for å overstyre roller i enkelt-stories via egen wrapper om ønskelig
-  darkMode?: boolean; // Verdien hentes i decorator via useDarkMode hook
 }
 
 const DEFAULT_ROLLER: Roller[] = [
@@ -35,41 +33,46 @@ const defaultBruker = (roller: Roller[]) => ({
 export const StoryProviders: React.FC<StoryProvidersProps> = ({
   children,
   roller = DEFAULT_ROLLER,
-  darkMode = false,
 }) => {
   return (
-    <Theme theme={darkMode ? 'dark' : 'light'} hasBackground={false}>
-      <UmamiProvider>
-        <ApplikasjonContextProvider
-          brukerData={defaultBruker(roller) as any}
-          aktivEnhet={null}
-          aktivBruker={null}
-        >
-          {children}
-        </ApplikasjonContextProvider>
-      </UmamiProvider>
-    </Theme>
+    <UmamiProvider>
+      <ApplikasjonContextProvider
+        brukerData={defaultBruker(roller) as any}
+        aktivEnhet={null}
+        aktivBruker={null}
+      >
+        {children}
+      </ApplikasjonContextProvider>
+    </UmamiProvider>
   );
 };
 
 // Dekoratør for å overstyre roller i enkel story uten å endre global provider.
-export const createRollerDecorator = (roller: Roller[]) => (Story: any) => (
-  <ApplikasjonContextProvider
-    brukerData={defaultBruker(roller) as any}
-    aktivEnhet={null}
-    aktivBruker={null}
-  >
-    <Story />
-  </ApplikasjonContextProvider>
-);
+export const createRollerDecorator = (roller: Roller[]) => {
+  const Decorator = (Story: any) => (
+    <ApplikasjonContextProvider
+      brukerData={defaultBruker(roller) as any}
+      aktivEnhet={null}
+      aktivBruker={null}
+    >
+      <Story />
+    </ApplikasjonContextProvider>
+  );
+  Decorator.displayName = 'RollerDecorator';
+  return Decorator;
+};
 
 // Dekoratør for å gi Sidebar-kontekst til komponenter som trenger useSidebar().
-export const createSidebarDecorator =
-  (className = 'h-[540px] border rounded-md') =>
-  (Story: any) => (
+export const createSidebarDecorator = (
+  className = 'h-[540px] border rounded-md',
+) => {
+  const Decorator = (Story: any) => (
     <SidebarProvider className={className}>
       <Story />
     </SidebarProvider>
   );
+  Decorator.displayName = 'SidebarDecorator';
+  return Decorator;
+};
 
 export default StoryProviders;

@@ -1,8 +1,8 @@
 import '../app/globals.css';
+import { ThemeProvider } from '../providers/ThemeProvider';
 import StoryProviders from './StoryProviders';
 import '@navikt/ds-css/darkside';
 import type { Preview } from '@storybook/nextjs-vite';
-import { useDarkMode } from 'storybook-dark-mode';
 
 const preview: Preview = {
   parameters: {
@@ -22,24 +22,16 @@ const preview: Preview = {
       // 'off' - skip a11y checks entirely
       test: 'todo',
     },
-
-    darkMode: {
-      current: 'dark',
-      stylePreview: true,
-      darkClass: 'dark',
-      lightClass: 'light',
-    },
   },
 
   decorators: [
-    (Story) => {
-      const isDark = useDarkMode();
-      return (
-        <StoryProviders darkMode={isDark}>
+    (Story) => (
+      <ThemeProvider>
+        <StoryProviders>
           <Story />
         </StoryProviders>
-      );
-    },
+      </ThemeProvider>
+    ),
   ],
 };
 
