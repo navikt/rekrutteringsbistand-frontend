@@ -19,7 +19,6 @@ const config: StorybookConfig = {
     '@storybook/addon-docs',
     '@storybook/addon-a11y',
     '@storybook/addon-vitest',
-    'storybook-dark-mode',
   ],
   framework: {
     name: '@storybook/nextjs-vite',
