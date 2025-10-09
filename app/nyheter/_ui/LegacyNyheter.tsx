@@ -1,5 +1,5 @@
 import { nyheter } from '@/app/nyheter';
-import VisEditorTekst from '@/components/felles/rikteksteditor/VisEditorTekst';
+import VisEditorTekst from '@/components/rikteksteditor/VisEditorTekst';
 import { formaterNorskDato } from '@/util/util';
 import { BodyShort, Box } from '@navikt/ds-react';
 

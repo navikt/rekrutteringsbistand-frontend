@@ -172,11 +172,18 @@ export function PanelHeaderSection({
 }: PanelHeaderSectionProps) {
   const { compact } = useContext(PanelHeaderModeContext);
   const winCtx = useWindowContext();
-  const pathname = usePathname();
+  // I Storybook / ikke-Next runtime kan usePathname() returnere null eller kaste.
+  let pathname: string | undefined;
+  try {
+    const p = usePathname();
+    pathname = typeof p === 'string' ? p : undefined;
+  } catch {
+    pathname = undefined;
+  }
 
   // Generer breadcrumbConfig automatisk fra title
   const breadcrumbConfig =
-    title && typeof title === 'string'
+    title && typeof title === 'string' && pathname
       ? {
           [pathname.split('/').filter(Boolean).pop() || '']: {
             label: title,
@@ -202,7 +209,7 @@ export function PanelHeaderSection({
     >
       <div className={rowClass}>
         <div className='flex items-center gap-3 min-w-0 flex-1 flex-wrap'>
-          {!skjulBrødsmuler && !winCtx?.isDynamic ? (
+          {!skjulBrødsmuler && !winCtx?.isDynamic && breadcrumbConfig ? (
             <div className='px-4 pt-2 max-w-full'>
               <Brødsmuler config={breadcrumbConfig} />
             </div>

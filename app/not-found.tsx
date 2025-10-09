@@ -1,7 +1,7 @@
 'use client';
 
-import { UmamiEvent } from '@/components/umami/umamiEvents';
 import { useUmami } from '@/providers/UmamiContext';
+import { UmamiEvent } from '@/util/umamiEvents';
 import { NextPage } from 'next';
 import { useEffect } from 'react';
 

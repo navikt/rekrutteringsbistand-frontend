@@ -1,6 +1,6 @@
 'use client';
 
-import { UmamiEventObject } from './umami/umamiEvents';
+import { UmamiEventObject } from '../util/umamiEvents';
 import { getScreenInfo } from '@/providers/UmamiContext';
 import { Link } from '@navikt/ds-react';
 import { ReactNode } from 'react';

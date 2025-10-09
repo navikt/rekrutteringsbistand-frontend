@@ -6,7 +6,7 @@ import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstillin
 import LeggTilKontaktperson from '@/app/stilling/_ui/stilling-admin/admin_moduler/_felles/LeggTilKontaktperson';
 import RedigerBoks from '@/app/stilling/_ui/stilling-admin/admin_moduler/_felles/RedigerBoks';
 import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
-import RikTekstEditor from '@/components/felles/rikteksteditor/RikTekstEditor';
+import RikTekstEditor from '@/components/rikteksteditor/RikTekstEditor';
 import { TasklistIcon } from '@navikt/aksel-icons';
 import {
   Alert,

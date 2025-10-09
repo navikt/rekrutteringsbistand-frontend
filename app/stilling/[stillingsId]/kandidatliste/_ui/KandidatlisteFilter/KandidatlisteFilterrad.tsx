@@ -2,8 +2,8 @@ import HendelseTypeFilter from './HendelseTypeFilter';
 import InternStatusFilter from './InternStatusFilter';
 import KandidatListeChip from './KandidatlisteChips';
 import { useKandidatlisteFilterContext } from './KandidatlisteFilterContext';
-import AlleFilterKomponent from '@/components/felles/filter/AlleFilterKomponent';
-import FilterKomponent from '@/components/felles/filter/FilterKomponent';
+import AlleFilterKomponent from '@/components/filter/AlleFilterKomponent';
+import FilterKomponent from '@/components/filter/FilterKomponent';
 import { Search, Switch } from '@navikt/ds-react';
 
 export default function KandidatlisteFilterrad() {

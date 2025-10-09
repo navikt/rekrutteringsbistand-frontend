@@ -3,10 +3,10 @@ import { leggTilKandidater } from '@/app/api/kandidat-sok/leggTilKandidat';
 import { useMineKandidatlister } from '@/app/api/kandidat/useMineKandidatlister';
 import { useKandidatSøkMarkerteContext } from '@/app/kandidat/KandidatSøkMarkerteContext';
 import SWRLaster from '@/components/SWRLaster';
-import { UmamiEvent } from '@/components/umami/umamiEvents';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
 import { RekbisError } from '@/util/rekbisError';
+import { UmamiEvent } from '@/util/umamiEvents';
 import {
   Button,
   Checkbox,

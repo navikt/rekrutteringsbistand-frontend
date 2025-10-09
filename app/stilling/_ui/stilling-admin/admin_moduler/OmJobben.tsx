@@ -1,6 +1,6 @@
 import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import RedigerBoks from '@/app/stilling/_ui/stilling-admin/admin_moduler/_felles/RedigerBoks';
-import RikTekstEditor from '@/components/felles/rikteksteditor/RikTekstEditor';
+import RikTekstEditor from '@/components/rikteksteditor/RikTekstEditor';
 import { BodyLong } from '@navikt/ds-react';
 import { useFormContext } from 'react-hook-form';
 

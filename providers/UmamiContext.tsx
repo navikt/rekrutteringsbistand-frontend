@@ -1,6 +1,6 @@
 'use client';
 
-import { UmamiEventObject } from '@/components/umami/umamiEvents';
+import { UmamiEventObject } from '@/util/umamiEvents';
 import { logger } from '@navikt/next-logger';
 import { useRouter } from 'next/navigation';
 import { createContext, ReactNode, useContext } from 'react';
@@ -30,7 +30,21 @@ interface UmamiProviderProps {
 }
 
 export const UmamiProvider = ({ children }: UmamiProviderProps) => {
-  const router = useRouter();
+  // I Storybook (uten Next App Router) vil useRouter kaste. Vi fanger og lager en enkel fallback.
+  let router: { push: (url: string) => void } = {
+    push: (url: string) => {
+      if (typeof window !== 'undefined') {
+        window.location.href = url;
+      }
+    },
+  };
+  try {
+    // Forsøk å hente ekte router hvis tilgjengelig.
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    router = useRouter() as any;
+  } catch (e) {
+    // Stillegående fallback – Storybook / test-miljø.
+  }
 
   const track = (event: UmamiEventObject, eventData?: Record<string, any>) => {
     if (window.umami) {
@@ -53,14 +67,20 @@ export const UmamiProvider = ({ children }: UmamiProviderProps) => {
     eventData?: Record<string, any>,
   ) => {
     track(event, eventData);
-
     setTimeout(() => {
-      if (url.startsWith('http')) {
-        window.location.href = url;
-      } else {
-        router.push(url);
+      try {
+        if (url.startsWith('http')) {
+          window.location.href = url;
+        } else {
+          router.push(url);
+        }
+      } catch {
+        // Hvis push feiler i mock, fall tilbake på location.
+        if (!url.startsWith('http')) {
+          window.location.href = url;
+        }
       }
-    }, 150);
+    }, 120);
   };
 
   return (

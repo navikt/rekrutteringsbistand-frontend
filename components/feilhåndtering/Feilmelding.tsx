@@ -80,7 +80,7 @@ const Feilmelding: React.FC<IFeilmelding> = ({ zodError, error, message }) => {
               <dt className='font-bold italic'>
                 Feilkode for rapportering av feil:
               </dt>
-              <dd className='ml-4'>
+              <dd className='ml-4 flex items-center'>
                 {error.feilkode}{' '}
                 <CopyButton className='ml-2' copyText={error.feilkode} />
               </dd>

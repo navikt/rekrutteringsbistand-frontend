@@ -13,8 +13,8 @@ import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøke
 import { useKiLogg } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_contexts/RekrutteringstreffContext';
 import type { RekrutteringstreffBreadcrumbItem } from '@/app/rekrutteringstreff/_ui/RekrutteringstreffBreadcrumbs';
-import Fremdriftspanel from '@/components/Fremdriftspanel';
 import SideScroll from '@/components/SideScroll';
+import Fremdriftspanel from '@/components/fremdriftspanel/Fremdriftspanel';
 import SideLayout from '@/components/layout/SideLayout';
 import { RekbisError } from '@/util/rekbisError';
 import { Tabs } from '@navikt/ds-react';
