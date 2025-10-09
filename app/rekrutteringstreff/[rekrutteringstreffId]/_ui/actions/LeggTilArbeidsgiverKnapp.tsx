@@ -4,7 +4,7 @@ import LeggTilArbeidsgiverForm from '../arbeidsgiver/LeggTilArbeidsgiverForm';
 import { useRekrutteringstreffData } from '../hooks/useRekrutteringstreffData';
 import { PlusIcon } from '@navikt/aksel-icons';
 import { Button, Modal } from '@navikt/ds-react';
-import { FC, RefObject, useRef } from 'react';
+import { FC, useRef } from 'react';
 
 interface Props {
   className?: string;
