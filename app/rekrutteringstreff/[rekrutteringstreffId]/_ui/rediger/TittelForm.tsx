@@ -64,6 +64,7 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
     validating,
     kiErrorBorder,
     forceSave,
+    showAnalysis,
     erRedigeringAvPublisertTreff,
     runValidationAndMaybeSave,
     onForceSave,
@@ -192,7 +193,7 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
             analyse={analyse}
             analyseError={analyseError}
             forceSave={forceSave}
-            showAnalysis={true}
+            showAnalysis={showAnalysis}
             erRedigeringAvPublisertTreff={erRedigeringAvPublisertTreff}
             onForceSave={onForceSave}
             variant='tittel'

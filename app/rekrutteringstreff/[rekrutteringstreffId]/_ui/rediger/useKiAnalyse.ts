@@ -217,7 +217,12 @@ export function useKiAnalyse<FormValues extends Record<string, any>>(
     }
   }, [erRedigeringAvPublisertTreff, saveCallback, loggId, setKiLagret]);
 
-  const showAnalysis = requireHasCheckedToShow ? hasChecked : true;
+  const bryterRetningslinjerFlag =
+    !!analyse && !analyseError && !!(analyse as any)?.bryterRetningslinjer;
+
+  const showAnalysis = requireHasCheckedToShow
+    ? hasChecked && bryterRetningslinjerFlag
+    : bryterRetningslinjerFlag;
 
   return {
     analyse,

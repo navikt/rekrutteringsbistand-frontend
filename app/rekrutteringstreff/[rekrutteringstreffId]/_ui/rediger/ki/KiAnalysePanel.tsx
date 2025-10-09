@@ -1,6 +1,6 @@
 'use client';
 
-import { RobotFrownIcon, RobotIcon, RobotSmileIcon } from '@navikt/aksel-icons';
+import { RobotFrownIcon } from '@navikt/aksel-icons';
 import { Alert, BodyLong, Button, Skeleton } from '@navikt/ds-react';
 import { FC, useEffect, useMemo, useRef } from 'react';
 
@@ -33,9 +33,9 @@ const KiAnalysePanel: FC<KiAnalysePanelProps> = ({
 }) => {
   const hasAnalyse = !!analyse && !analyseError;
   const bryter = hasAnalyse ? !!(analyse as any)?.bryterRetningslinjer : false;
-  const allowIconFromAnalysis =
-    variant === 'tittel' ? hasAnalyse : hasAnalyse && showAnalysis;
-  const shouldShowIcon = validating || allowIconFromAnalysis || !!analyseError;
+
+  // Only show icon when there is a violation and analysis should be shown
+  const shouldShowIcon = hasAnalyse && showAnalysis && bryter;
 
   const showTextBlock: BlockKind = useMemo(() => {
     if (validating) return 'skeleton';
@@ -61,29 +61,11 @@ const KiAnalysePanel: FC<KiAnalysePanelProps> = ({
       <div className='flex gap-3 items-start'>
         <div className='inline-flex justify-center items-start w-10 pt-1'>
           {shouldShowIcon ? (
-            validating ? (
-              <RobotIcon aria-hidden fontSize='2em' className='text-gray-700' />
-            ) : analyseError ? (
-              <RobotFrownIcon
-                aria-hidden
-                fontSize='2em'
-                className='text-red-600'
-              />
-            ) : hasAnalyse ? (
-              bryter ? (
-                <RobotFrownIcon
-                  aria-hidden
-                  fontSize='2em'
-                  className='text-red-600'
-                />
-              ) : (
-                <RobotSmileIcon
-                  aria-hidden
-                  fontSize='2em'
-                  className='text-green-800'
-                />
-              )
-            ) : null
+            <RobotFrownIcon
+              aria-hidden
+              fontSize='2em'
+              className='text-red-600'
+            />
           ) : null}
         </div>
 
