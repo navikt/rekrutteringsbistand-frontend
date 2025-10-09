@@ -26,7 +26,7 @@ export const Default: Story = {
 
 export const MedCallback: Story = {
   args: {
-    fjernFritekst: () => console.log('Fritekst fjernet'),
+    fjernFritekst: () => alert('Fritekst fjernet'),
   },
 };
 

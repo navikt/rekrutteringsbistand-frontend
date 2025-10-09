@@ -11,7 +11,7 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-const log = (utfall: KandidatutfallTyper) => console.log('Utfall', utfall);
+const log = (utfall: KandidatutfallTyper) => alert('Utfall: ' + utfall);
 
 export const Knapp: Story = {
   args: { endreUtfallForKandidat: log, loading: false },

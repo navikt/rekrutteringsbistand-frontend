@@ -30,7 +30,7 @@ export const MedIkon: Story = {
   args: {
     tittel: 'Se kandidater',
     beskrivelse: 'Bla gjennom alle kandidater i systemet',
-    onClick: () => console.log('Kort klikket'),
+    onClick: () => alert('Kort klikket'),
     ikon: <PersonIcon />,
   },
 };
@@ -39,7 +39,7 @@ export const MedEmoji: Story = {
   args: {
     tittel: 'Opprett stilling',
     beskrivelse: 'Lag en ny stillingsannonse',
-    onClick: () => console.log('Opprett stilling'),
+    onClick: () => alert('Opprett stilling'),
     ikon: '💼',
   },
 };
@@ -47,7 +47,7 @@ export const MedEmoji: Story = {
 export const UtenBeskrivelse: Story = {
   args: {
     tittel: 'Min side',
-    onClick: () => console.log('Min side'),
+    onClick: () => alert('Min side'),
     ikon: <PersonIcon />,
   },
 };
@@ -68,7 +68,7 @@ export const LangTittel: Story = {
       'Dette er en veldig lang tittel som kanskje må bryte til flere linjer',
     beskrivelse:
       'Beskrivelsen er også ganske lang og detaljert for å teste hvordan kortet håndterer mye tekst',
-    onClick: () => console.log('Langt kort'),
+    onClick: () => alert('Langt kort'),
     ikon: <FileTextIcon />,
   },
 };
@@ -84,19 +84,19 @@ export const FlereKort: Story = {
       <LenkeKortMedIkon
         tittel='Kandidater'
         beskrivelse='Se alle kandidater'
-        onClick={() => console.log('Kandidater')}
+        onClick={() => alert('Kandidater')}
         ikon={<PersonIcon />}
       />
       <LenkeKortMedIkon
         tittel='Stillinger'
         beskrivelse='Administrer stillinger'
-        onClick={() => console.log('Stillinger')}
+        onClick={() => alert('Stillinger')}
         ikon={<BriefcaseIcon />}
       />
       <LenkeKortMedIkon
         tittel='Kalender'
         beskrivelse='Se dine avtaler'
-        onClick={() => console.log('Kalender')}
+        onClick={() => alert('Kalender')}
         ikon={<CalendarIcon />}
       />
     </HStack>

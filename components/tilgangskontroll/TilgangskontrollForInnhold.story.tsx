@@ -4,10 +4,6 @@ import { ApplikasjonContextProvider } from '@/providers/ApplikasjonContext';
 import { BodyLong, Heading } from '@navikt/ds-react';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
-interface StoryExtraArgs {
-  mockRoller?: Roller[];
-}
-
 // Mock brukerdata
 const createMockBrukerData = (roller: Roller[]) => ({
   roller,
