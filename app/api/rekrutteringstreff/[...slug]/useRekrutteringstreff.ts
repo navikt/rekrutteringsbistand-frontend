@@ -3,7 +3,7 @@
 /**
  * Endepunkt /useRekrutteringstreff
  */
-import { rekrutteringstreffMock } from './useRekrutteringstreffMock';
+import { rekrutteringstreffMock } from './rekrutteringstreffMock';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { getAPIwithSchema } from '@/app/api/fetcher';
 import { Server } from 'miragejs';
