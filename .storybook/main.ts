@@ -38,7 +38,7 @@ const config: StorybookConfig = {
       css: {
         ...config.css,
         postcss: {
-          plugins: [require('@tailwindcss/postcss')()],
+          plugins: [(await import('@tailwindcss/postcss')).default()],
         },
         devSourcemap: true,
       },

@@ -1,10 +1,10 @@
 'use client';
 
 import { useWindowContext } from '@/app/_windows/util/DynamicWindowContext';
-import Brødsmuler from '@/components/layout/Brødsmuler';
+// Brødsmuler er deprecated – vi bygger breadcrumbs direkte her med UI-primitive
+import AutoBreadcrumbs from '@/components/brødsmuler/Brødsmuler';
 import { ExpandIcon, XMarkIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
-import { usePathname } from 'next/navigation';
 import { ReactNode, createContext, useContext } from 'react';
 
 /**
@@ -172,24 +172,9 @@ export function PanelHeaderSection({
 }: PanelHeaderSectionProps) {
   const { compact } = useContext(PanelHeaderModeContext);
   const winCtx = useWindowContext();
-  // I Storybook / ikke-Next runtime kan usePathname() returnere null eller kaste.
-  let pathname: string | undefined;
-  try {
-    const p = usePathname();
-    pathname = typeof p === 'string' ? p : undefined;
-  } catch {
-    pathname = undefined;
-  }
+  // Pathname håndteres nå internt av AutoBreadcrumbs
 
-  // Generer breadcrumbConfig automatisk fra title
-  const breadcrumbConfig =
-    title && typeof title === 'string' && pathname
-      ? {
-          [pathname.split('/').filter(Boolean).pop() || '']: {
-            label: title,
-          },
-        }
-      : undefined;
+  // pathConfig flyttet til AutoBreadcrumbs (defaultPathConfig)
 
   const rowClass = cx(
     'flex gap-x-4',
@@ -209,9 +194,13 @@ export function PanelHeaderSection({
     >
       <div className={rowClass}>
         <div className='flex items-center gap-3 min-w-0 flex-1 flex-wrap'>
-          {!skjulBrødsmuler && !winCtx?.isDynamic && breadcrumbConfig ? (
+          {!skjulBrødsmuler && !winCtx?.isDynamic ? (
             <div className='px-4 pt-2 max-w-full'>
-              <Brødsmuler config={breadcrumbConfig} />
+              <AutoBreadcrumbs
+                overrideLastLabel={
+                  typeof title === 'string' ? (title as string) : undefined
+                }
+              />
             </div>
           ) : (
             title

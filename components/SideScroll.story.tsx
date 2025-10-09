@@ -3,7 +3,6 @@ import { BodyLong, Heading, VStack } from '@navikt/ds-react';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 const meta = {
-  tags: ['autodocs'],
   component: SideScroll,
 } satisfies Meta<typeof SideScroll>;
 
