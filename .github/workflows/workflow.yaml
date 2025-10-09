@@ -13,7 +13,7 @@ jobs:
       playwright-github-report: true
       dev-vars-path: '.nais/dev-gcp.json'
       prod-vars-path: '.nais/prod-gcp.json'
-      deploy-to-dev-if-branch-name-is: 'duplisere-ikke-åpne-stillinger'
+      deploy-to-dev-if-branch-name-is: 'ikke-publisert-filter'
     secrets: inherit
     permissions:
       contents: write
