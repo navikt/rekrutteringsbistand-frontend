@@ -3,6 +3,10 @@ import { overtaEierskap } from '@/app/api/stilling/overta-eierskap/overtaEierska
 import { kopierStilling } from '@/app/api/stilling/rekrutteringsbistandstilling/kopier/[slug]/kopierStilling';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import { StillingsStatus } from '@/app/stilling/_ui/stilling-typer';
+import {
+  VisningsStatus,
+  visStillingsDataInfo,
+} from '@/app/stilling/_util/stillingInfoUtil';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
@@ -36,6 +40,11 @@ export default function StillingDropdown() {
     stillingsData.stilling.employer?.orgnr;
 
   const kanOvertaStilling = !erFormidling && erDirektemeldt && !erEier;
+
+  const kanAvslutteStilling =
+    erEier &&
+    visStillingsDataInfo(stillingsData).visningsStatus !==
+      VisningsStatus.Avbrutt;
 
   const onOvertaStilling = async () => {
     setLoading(true);
@@ -130,12 +139,14 @@ export default function StillingDropdown() {
                 Dupliser oppdraget
               </Dropdown.Menu.GroupedList.Item>
 
-              <Dropdown.Menu.GroupedList.Item
-                onClick={() => setVisAvpubliserModal(true)}
-              >
-                <TrashIcon />
-                Avbryt oppdraget
-              </Dropdown.Menu.GroupedList.Item>
+              {kanAvslutteStilling && (
+                <Dropdown.Menu.GroupedList.Item
+                  onClick={() => setVisAvpubliserModal(true)}
+                >
+                  <TrashIcon />
+                  Avbryt oppdraget
+                </Dropdown.Menu.GroupedList.Item>
+              )}
             </Dropdown.Menu.GroupedList>
           </Dropdown.Menu>
         </Dropdown>
