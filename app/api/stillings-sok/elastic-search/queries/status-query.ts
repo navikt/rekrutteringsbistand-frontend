@@ -160,7 +160,7 @@ export const statusQuery = (
   //  - Avbrutt (DELETED) skal også dukke opp selv om det ikke er et eksponert filter
   // Begge legges kun til dersom bruker har valgt minst én annen status (postFilterShould.length > 0)
   if (params.navIdent && postFilterShould.length > 0) {
-    if (!statuser.includes(VisningsStatus.IkkePublisert)) {
+    if (statuser.includes(VisningsStatus.IkkePublisert)) {
       postFilterShould.push({
         bool: {
           must: [{ term: { 'stilling.status': 'INACTIVE' } }],
