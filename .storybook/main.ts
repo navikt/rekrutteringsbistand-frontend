@@ -27,8 +27,12 @@ const config: StorybookConfig = {
   },
   staticDirs: ['../public'],
   viteFinal: async (config) => {
+    const basePath = process.env.STORYBOOK_BASE_PATH; // Used for GitHub Pages deployment so assets load under /<repo>/
+
     return {
       ...config,
+      // Vite base path only applied in build (ignored in dev server if undefined)
+      base: basePath || config.base,
       server: {
         ...config.server,
         hmr: {
