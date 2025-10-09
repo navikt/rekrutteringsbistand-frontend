@@ -155,28 +155,6 @@ export const statusQuery = (
     postFilterShould.push({ term: { 'stilling.status': 'DELETED' } });
   }
 
-  // Implicit inkludering for "Mine" (navIdent):
-  //  - Ikke publisert (INACTIVE uten publishedByAdmin) skal alltid dukke opp sammen med valgte statuser
-  //  - Avbrutt (DELETED) skal også dukke opp selv om det ikke er et eksponert filter
-  // Begge legges kun til dersom bruker har valgt minst én annen status (postFilterShould.length > 0)
-  if (params.navIdent && postFilterShould.length > 0) {
-    if (statuser.includes(VisningsStatus.IkkePublisert)) {
-      postFilterShould.push({
-        bool: {
-          must: [{ term: { 'stilling.status': 'INACTIVE' } }],
-          must_not: [
-            { exists: { field: 'stilling.publishedByAdmin' } },
-            { term: { 'stilling.status': 'REJECTED' } },
-            { term: { 'stilling.status': 'DELETED' } },
-          ],
-        },
-      });
-    }
-    if (!statuser.includes(VisningsStatus.Slettet)) {
-      postFilterShould.push({ term: { 'stilling.status': 'DELETED' } });
-    }
-  }
-
   if (postFilterShould.length > 0) {
     esBuilder.setPostFilter({
       bool: {
