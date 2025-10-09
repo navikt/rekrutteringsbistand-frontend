@@ -18,7 +18,7 @@ export interface KandidatTilStillingProps {
 const KandidatTilStilling: FC<KandidatTilStillingProps> = ({
   stillingsData,
 }) => {
-  useFinnKandidatForStilling(stillingsData);
+  const kandidatForStillingData = useFinnKandidatForStilling(stillingsData);
   const router = useRouter();
   const [alleredeLagtTilKandidatliste, setAlleredeLagtTilKandidatliste] =
     useState<string[]>([]);
@@ -50,7 +50,7 @@ const KandidatTilStilling: FC<KandidatTilStillingProps> = ({
     );
   };
 
-  if (kandidatlisteLaster) {
+  if (kandidatForStillingData.isLoading || kandidatlisteLaster) {
     return <Sidelaster />;
   }
 
