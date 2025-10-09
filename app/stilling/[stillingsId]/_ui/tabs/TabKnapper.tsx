@@ -16,7 +16,7 @@ export default function TabKnapper({
   const { stillingsData } = useStillingsContext();
 
   const kanKopierePrinteStilling =
-    visStillingsDataInfo(stillingsData).visningsStatus ==
+    visStillingsDataInfo(stillingsData).visningsStatus ===
     VisningsStatus.ApenForSokere;
   return (
     <div className='flex items-center'>
