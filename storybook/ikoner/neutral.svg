@@ -1,0 +1,11 @@
+<svg width="96" height="96" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="state=enabled, mini card=false">
+<path id="Line3" d="M51 46H23" stroke="#202733" stroke-width="3"/>
+<path id="Line2" d="M69 46H15" stroke="#202733" stroke-width="3"/>
+<path id="Line1" d="M61 46H30" stroke="#202733" stroke-width="3"/>
+<rect id="shape2" x="29" y="23" width="35" height="6" fill="#E2FDE8"/>
+<rect id="shape3" x="36" y="59" width="28" height="10" fill="#E2FDE8"/>
+<circle id="shape" cx="48" cy="46" r="40" fill="#E2FDE8"/>
+<path id="Arrow" d="M67 45.5L43.4211 70L35 61.5517L50.1579 45.5L35 29.4483L43.4211 21L67 45.5Z" stroke="#202733" stroke-width="3"/>
+</g>
+</svg>

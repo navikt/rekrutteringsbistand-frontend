@@ -1,0 +1,1 @@
+import{S as o}from"./Sidelaster-Cl1Akhnj.js";import"./iframe-DUxtTNxK.js";import"./preload-helper-BWMAHTUm.js";const s={tags:["autodocs"],component:o},e={};e.parameters={...e.parameters,docs:{...e.parameters?.docs,source:{originalSource:"{}",...e.parameters?.docs?.source}}};export{e as Default,s as default};
