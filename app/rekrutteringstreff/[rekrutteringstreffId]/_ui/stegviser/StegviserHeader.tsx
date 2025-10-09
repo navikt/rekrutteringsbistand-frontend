@@ -1,6 +1,7 @@
 'use client';
 
 import { useStegviser } from './StegviserContext';
+import { AktivtSteg } from '@/app/rekrutteringstreff/_types/constants';
 import { ProgressBar } from '@navikt/ds-react';
 import { FC } from 'react';
 
@@ -42,14 +43,14 @@ const StegviserHeader: FC<Props> = () => {
   return (
     <div className='w-full'>
       <div className='w-full mt-2'>
-        {activeStep === 'PUBLISERE' && (
+        {activeStep === AktivtSteg.PUBLISERE && (
           <ProgressMedTeller
             value={sjekklistePunkterFullfort}
             max={totaltAntallSjekklistePunkter}
             ariaLabel='Fremdrift for publisering'
           />
         )}
-        {activeStep === 'INVITERE' && (
+        {activeStep === AktivtSteg.INVITERE && (
           <ProgressMedTeller
             value={antallInviterePunkterFullfort}
             max={totaltAntallInviterePunkter}

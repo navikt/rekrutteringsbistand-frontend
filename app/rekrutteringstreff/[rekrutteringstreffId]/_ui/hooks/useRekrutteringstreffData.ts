@@ -2,16 +2,9 @@ import { useInviteringsStatus } from './useInviteringsStatus';
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/useInnlegg';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_contexts/RekrutteringstreffContext';
+import { AktivtSteg } from '@/app/rekrutteringstreff/_types/constants';
 import { getActiveStepFromHendelser } from '@/app/rekrutteringstreff/_utils/rekrutteringstreff';
 import { useMemo } from 'react';
-
-export type ActiveStep =
-  | 'PUBLISERE'
-  | 'INVITERE'
-  | 'FULLFØRE'
-  | 'AVLYST'
-  | string
-  | undefined;
 
 /**
  * Sentralisert hook for å hente og beregne rekrutteringstreff-data
@@ -36,13 +29,14 @@ export const useRekrutteringstreffData = () => {
   const treff = rekrutteringstreffHook.data;
   const hendelser = treff?.hendelser;
 
-  const activeStep: ActiveStep = useMemo(
+  const activeStep: AktivtSteg = useMemo(
     () => getActiveStepFromHendelser(hendelser),
     [hendelser],
   );
 
-  const avlyst = activeStep === 'AVLYST';
-  const harPublisert = activeStep === 'INVITERE' || activeStep === 'FULLFØRE';
+  const avlyst = activeStep === AktivtSteg.AVLYST;
+  const harPublisert =
+    activeStep === AktivtSteg.INVITERE || activeStep === AktivtSteg.FULLFØRE;
 
   // Sjekk om noen er invitert basert på jobbsøkere
   const { harInvitert } = useInviteringsStatus();
