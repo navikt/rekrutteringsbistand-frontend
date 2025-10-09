@@ -6,7 +6,7 @@ import {
 } from '@/app/api/kandidat/useKandidatlisteInfo';
 import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { useStilling } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/useStilling';
-import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
+import { visStillingsDataInfo } from '@/app/stilling/_util/stillingInfoUtil';
 import SWRLaster from '@/components/SWRLaster';
 import { eierStilling } from '@/components/tilgangskontroll/erEier';
 import { Roller } from '@/components/tilgangskontroll/roller';
@@ -22,19 +22,16 @@ import {
 } from 'react';
 
 interface StillingsContextType {
+  omStilling: ReturnType<typeof visStillingsDataInfo>;
   stillingsId: string;
   stillingsData: StillingsDataDTO;
   kandidatlisteInfo: KandidatlisteInfoDTO | null;
   kandidatlisteLaster: boolean;
   forhåndsvisData: StillingsDataDTO | null;
-  erFormidling: boolean;
   erEier?: boolean;
   setForhåndsvisData: (data: StillingsDataDTO | null) => void;
-  erDirektemeldt: boolean;
   refetch?: () => void;
   refetchKandidatliste?: () => void;
-  erSlettet: boolean;
-  erJobbmesse: boolean;
 }
 
 const StillingsContext = createContext<StillingsContextType | undefined>(
@@ -79,7 +76,6 @@ export const StillingsContextMedData: FC<StillingsContextMedDataProps> = ({
   children,
   refetch,
 }) => {
-  // const router = useRouter(); // (ubrukt per nå)
   const {
     brukerData: { ident },
     harRolle,
@@ -109,10 +105,6 @@ export const StillingsContextMedData: FC<StillingsContextMedDataProps> = ({
   //   stillingsData.stilling?.uuid,
   // ]);
 
-  const erJobbmesse =
-    stillingsData?.stillingsinfo?.stillingskategori ===
-    Stillingskategori.Jobbmesse;
-
   const erEier = useMemo(
     () =>
       harRolle([Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER]) ||
@@ -126,20 +118,16 @@ export const StillingsContextMedData: FC<StillingsContextMedDataProps> = ({
   return (
     <StillingsContext.Provider
       value={{
-        erSlettet: stillingsData?.stilling?.status === 'DELETED',
-        erDirektemeldt: stillingsData.stilling?.source === 'DIR',
-        forhåndsvisData,
+        omStilling: visStillingsDataInfo(stillingsData),
         stillingsData: forhåndsvisData ? forhåndsvisData : stillingsData,
         erEier,
-        erFormidling:
-          stillingsData.stillingsinfo?.stillingskategori === 'FORMIDLING',
+        stillingsId: stillingsData?.stilling?.uuid,
+        forhåndsvisData,
         setForhåndsvisData,
         refetch,
-        refetchKandidatliste: kandidatListeInfoHook?.mutate,
         kandidatlisteInfo: kandidatListeInfoHook?.data ?? null,
         kandidatlisteLaster: kandidatListeInfoHook?.isLoading ?? false,
-        erJobbmesse,
-        stillingsId: stillingsData?.stilling?.uuid,
+        refetchKandidatliste: kandidatListeInfoHook?.mutate,
       }}
     >
       {children}

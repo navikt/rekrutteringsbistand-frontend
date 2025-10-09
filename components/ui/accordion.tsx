@@ -31,6 +31,7 @@ const AccordionTrigger = React.forwardRef<
     >
       {children}
       <Button
+        as={'div'}
         className='chevron-icon shrink-0 transition-transform duration-200'
         variant='tertiary'
         icon={<ChevronDownIcon />}

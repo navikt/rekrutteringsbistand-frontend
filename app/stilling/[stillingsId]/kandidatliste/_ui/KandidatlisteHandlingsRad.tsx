@@ -14,7 +14,9 @@ const KandidatlisteHandlingsRad: FC = () => {
     markerteKandidater,
     setMarkerteKandidater,
   } = useKandidatlisteContext();
-  const { erJobbmesse } = useStillingsContext();
+  const {
+    omStilling: { erJobbmesse },
+  } = useStillingsContext();
 
   // filtrerteKandidater
   const filtrerteKandidater = useFiltrerteKandidater();

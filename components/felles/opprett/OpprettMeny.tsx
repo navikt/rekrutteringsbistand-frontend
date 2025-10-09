@@ -1,6 +1,6 @@
 import {
-  opprettNyttRekrutteringstreff,
-  OpprettNyttRekrutteringstreffDTO,
+  opprettRekrutteringstreff,
+  OpprettRekrutteringstreffDTO,
 } from '@/app/api/rekrutteringstreff/mutations';
 import { OpprettStillingProps } from '@/app/api/stilling/ny-stilling/opprettNyStilling';
 import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
@@ -106,12 +106,12 @@ const OpprettMeny: React.FC = () => {
               <RekrutteringstreffFeatureToggle>
                 <ActionMenu.Item
                   onSelect={() => {
-                    const nyTreff: OpprettNyttRekrutteringstreffDTO = {
+                    const nyTreff: OpprettRekrutteringstreffDTO = {
                       opprettetAvNavkontorEnhetId:
                         valgtNavKontor?.navKontor || null,
                       tittel: 'Treff uten navn',
                     };
-                    opprettNyttRekrutteringstreff(nyTreff)
+                    opprettRekrutteringstreff(nyTreff)
                       .then((response) => {
                         const id = response.id;
                         trackAndNavigate(

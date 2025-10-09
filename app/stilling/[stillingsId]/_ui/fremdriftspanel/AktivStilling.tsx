@@ -36,7 +36,9 @@ export default function AktivStilling({
   totalStillinger,
   dropDown,
 }: AktivStillingProps) {
-  const { erJobbmesse } = useStillingsContext();
+  const {
+    omStilling: { erJobbmesse },
+  } = useStillingsContext();
 
   const delMedArbeidsgiverVisning = erJobbmesse ? null : (
     <div className='flex flex-col gap-2 w-full'>

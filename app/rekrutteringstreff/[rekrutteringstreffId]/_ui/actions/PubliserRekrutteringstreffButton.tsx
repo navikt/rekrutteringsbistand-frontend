@@ -1,6 +1,6 @@
 'use client';
 
-import { publiserRekrutteringstreff } from '@/app/api/rekrutteringstreff/mutations';
+import { publiserRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/statushendelser/mutations';
 import { RekbisError } from '@/util/rekbisError';
 import { EyeIcon } from '@navikt/aksel-icons';
 import { BodyShort, Box, Button, Modal } from '@navikt/ds-react';

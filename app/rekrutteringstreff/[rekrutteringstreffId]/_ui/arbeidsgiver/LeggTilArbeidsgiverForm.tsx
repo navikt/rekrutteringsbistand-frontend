@@ -4,13 +4,13 @@ import ArbeidsgiverKort from './ArbeidsgiverKort';
 import SlettArbeidsgiverModal from './SlettArbeidsgiverModal';
 import VelgArbeidsgiver from './VelgArbeidsgiver';
 import { ArbeidsgiverDTO as PamArbeidsgiverDTO } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
-import { leggTilNyArbeidsgiver } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/mutations';
-import { fjernArbeidsgiver } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/mutations';
+import { opprettArbeidsgiver } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/mutations';
+import { slettArbeidsgiver } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/mutations';
+import { useArbeidsgiverHendelser } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgiverHendelser';
 import {
   ArbeidsgiverDTO,
   useRekrutteringstreffArbeidsgivere,
 } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
-import { useArbeidsgiverHendelser } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgiverHendelser';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_contexts/RekrutteringstreffContext';
 import SWRLaster from '@/components/SWRLaster';
 import { RekbisError } from '@/util/rekbisError';
@@ -38,7 +38,7 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({
     if (!arbeidsgiver) return;
     try {
       setSletterArbeidsgiver(true);
-      await fjernArbeidsgiver(
+      await slettArbeidsgiver(
         rekrutteringstreffId,
         (arbeidsgiver as any).arbeidsgiverTreffId ??
           arbeidsgiver.organisasjonsnummer,
@@ -83,10 +83,10 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({
         }
 
         // Inline-variant: legg til direkte mot backend
-        await leggTilNyArbeidsgiver(
-          { organisasjonsnummer: valgt.organisasjonsnummer, navn: valgt.navn },
-          rekrutteringstreffId,
-        );
+        await opprettArbeidsgiver(rekrutteringstreffId, {
+          organisasjonsnummer: valgt.organisasjonsnummer,
+          navn: valgt.navn,
+        });
         arbeidsgivereHook.mutate();
         hendelseHook.mutate();
       } catch (error) {
@@ -113,10 +113,10 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({
     setSaving(true);
     try {
       for (const p of pending) {
-        await leggTilNyArbeidsgiver(
-          { organisasjonsnummer: p.organisasjonsnummer, navn: p.navn },
-          rekrutteringstreffId,
-        );
+        await opprettArbeidsgiver(rekrutteringstreffId, {
+          organisasjonsnummer: p.organisasjonsnummer,
+          navn: p.navn,
+        });
       }
       arbeidsgivereHook.mutate();
       hendelseHook.mutate();

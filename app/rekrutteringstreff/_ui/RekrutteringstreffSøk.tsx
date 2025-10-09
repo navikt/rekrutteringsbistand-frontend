@@ -1,7 +1,7 @@
 'use client';
 
 import { RekrutteringstreffKort } from './RekrutteringstreffKort';
-import { useRekrutteringstreffOversikt } from '@/app/api/rekrutteringstreff/useRekrutteringstreffOversikt';
+import { useRekrutteringstreffOversikt } from '@/app/api/rekrutteringstreff/oversikt/useRekrutteringstreffOversikt';
 import SWRLaster from '@/components/SWRLaster';
 import { format } from 'date-fns';
 import { FC, ReactNode } from 'react';

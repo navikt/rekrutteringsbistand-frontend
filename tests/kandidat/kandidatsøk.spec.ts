@@ -9,7 +9,7 @@ test('Kandidatsøk', async ({ page }) => {
   await page.getByRole('button', { name: 'Jobbsøkere' }).click();
 
   // Vent på at heading vises (implicit retry) i stedet for networkidle
-  const heading = page.getByRole('heading', { name: 'Jobbsøkere' });
+  const heading = await page.getByLabel('Brødsmulesti').getByText('Jobbsøkere');
   await expect(heading).toBeVisible();
 
   // Sikre at loader er borte før vi går videre (Loader har title="Laster...")

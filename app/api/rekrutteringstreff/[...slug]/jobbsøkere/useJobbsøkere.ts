@@ -1,15 +1,16 @@
 'use client';
 
-import { jobbsøkereMock } from './mocks/jobbsøkereMock';
+import { jobbsøkereMock } from './jobbsøkereMock';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { getAPIwithSchema } from '@/app/api/fetcher';
-import { HendelseSchema } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
+import {
+  HendelseDTO,
+  HendelseSchema,
+} from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import useSWR from 'swr';
 import { z } from 'zod';
 
-export const jobbsøkereEndepunkt = (id: string) =>
-  `${RekrutteringstreffAPI.internUrl}/${id}/jobbsoker`;
-
+// Schemas
 export const JobbsøkerSchema = z.object({
   personTreffId: z.string(),
   fødselsnummer: z.string(),
@@ -24,9 +25,13 @@ export const JobbsøkerSchema = z.object({
 
 export const JobbsøkereSchema = z.array(JobbsøkerSchema);
 
+// DTOs
 export type JobbsøkerDTO = z.infer<typeof JobbsøkerSchema>;
 export type JobbsøkereDTO = z.infer<typeof JobbsøkereSchema>;
-export type JobbsøkerHendelseDTO = z.infer<typeof HendelseSchema>;
+export type JobbsøkerHendelseDTO = HendelseDTO;
+
+export const jobbsøkereEndepunkt = (id: string) =>
+  `${RekrutteringstreffAPI.internUrl}/${id}/jobbsoker`;
 
 export const useJobbsøkere = (id?: string) => {
   const key = id ? jobbsøkereEndepunkt(id) : null;

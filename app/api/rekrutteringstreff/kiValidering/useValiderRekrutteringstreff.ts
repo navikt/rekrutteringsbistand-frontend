@@ -1,14 +1,16 @@
 'use client';
 
+import { validerRekrutteringstreffMock } from './validerRekrutteringstreffMock';
+import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { postApi } from '@/app/api/fetcher';
-import { validerRekrutteringstreffMock } from '@/app/api/rekrutteringstreff/mocks/validerRekrutteringstreffMock';
 import useSWRMutation from 'swr/mutation';
 import { z } from 'zod';
 
-const validerRekrutteringstreffEndepunkt = '/api/rekrutteringstreff/ki/valider';
+export const validerRekrutteringstreffEndepunkt = (
+  id: string | ':id' = ':id',
+) => `${RekrutteringstreffAPI.internUrl}/${id}/ki/valider`;
 
 const ReqSchema = z.object({
-  treffId: z.string(),
   feltType: z.string(),
   tekst: z.string(),
 });
@@ -24,7 +26,7 @@ export type ValiderRekrutteringstreffResponsDto = z.infer<
 >;
 
 const fetcher = async (
-  _: string,
+  _key: string,
   { arg }: { arg: ValiderRekrutteringstreffDto },
 ): Promise<ValiderRekrutteringstreffResponsDto> => {
   const tekst = arg.tekst
@@ -33,20 +35,20 @@ const fetcher = async (
     .trim();
   const payload = { ...arg, tekst };
   ReqSchema.parse(arg);
-  const res = await postApi(validerRekrutteringstreffEndepunkt, payload);
+  const res = await postApi(_key, payload);
   return ResponseSchema.parse(res);
 };
 
-export const useValiderRekrutteringstreff = () =>
+export const useValiderRekrutteringstreff = (treffId?: string) =>
   useSWRMutation<
     ValiderRekrutteringstreffResponsDto,
     Error,
     string,
     ValiderRekrutteringstreffDto
-  >(validerRekrutteringstreffEndepunkt, fetcher);
+  >(validerRekrutteringstreffEndepunkt(treffId ?? ':id'), fetcher);
 
 export const validerRekrutteringstreffMirage = (server: any): void => {
-  server.post(validerRekrutteringstreffEndepunkt, () => {
+  server.post(validerRekrutteringstreffEndepunkt(':id'), () => {
     return validerRekrutteringstreffMock();
   });
 };

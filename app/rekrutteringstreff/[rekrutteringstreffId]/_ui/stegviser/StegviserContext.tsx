@@ -3,7 +3,7 @@
 import { useInviteringsStatus } from '../hooks/useInviteringsStatus';
 import { useRekrutteringstreffData } from '../hooks/useRekrutteringstreffData';
 import { useSjekklisteStatus } from '../hooks/useSjekklisteStatus';
-import { AktivtSteg as AktivtStegConst } from '@/app/rekrutteringstreff/_domain/constants';
+import { AktivtSteg as AktivtStegConst } from '@/app/rekrutteringstreff/_types/constants';
 import {
   createContext,
   useState,

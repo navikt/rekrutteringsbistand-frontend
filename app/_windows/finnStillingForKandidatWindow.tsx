@@ -17,6 +17,7 @@ export const finnStillingForKandidatWindow: UrlWindowConfig = {
   urlParam: 'finnStilling',
   windowId: 'finnStillingForKandidat',
   title: 'Finn stillinger for jobbsøker',
+  allowedPaths: ['/kandidat'],
   createContent: () => {
     // Inline komponent for å kunne bruke Next.js hooks
     const Wrapper = () => {

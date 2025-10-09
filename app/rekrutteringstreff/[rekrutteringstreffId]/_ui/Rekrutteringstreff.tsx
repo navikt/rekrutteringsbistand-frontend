@@ -7,9 +7,9 @@ import { useSjekklisteStatus } from './hooks/useSjekklisteStatus';
 import { useAutosave, useInnleggAutosave } from './rediger/useAutosave';
 import Stegviser from './stegviser/Stegviser';
 import TabsPanels from './tabs/TabsPanels';
+import { useAlleHendelser } from '@/app/api/rekrutteringstreff/[...slug]/allehendelser/useAlleHendelser';
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
-import { useAlleHendelser } from '@/app/api/rekrutteringstreff/[...slug]/useAlleHendelser';
 import { useKiLogg } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_contexts/RekrutteringstreffContext';
 import type { RekrutteringstreffBreadcrumbItem } from '@/app/rekrutteringstreff/_ui/RekrutteringstreffBreadcrumbs';
@@ -262,11 +262,17 @@ const Rekrutteringstreff: FC = () => {
 
   const stegviserInnhold = renderStegviser();
 
-  const layoutProps = {
-    skjulFremdriftspanel: false,
-    fremdriftspanelTop: <Fremdriftspanel>{stegviserInnhold}</Fremdriftspanel>,
-    fremdriftspanel: <SideScroll>{stegviserInnhold}</SideScroll>,
-  } as const;
+  const layoutProps = viserFullskjermForhåndsvisning
+    ? ({
+        skjulFremdriftspanel: true,
+      } as const)
+    : ({
+        skjulFremdriftspanel: false,
+        fremdriftspanelTop: (
+          <Fremdriftspanel>{stegviserInnhold}</Fremdriftspanel>
+        ),
+        fremdriftspanel: <SideScroll>{stegviserInnhold}</SideScroll>,
+      } as const);
 
   if (viserFullskjermForhåndsvisning) {
     return (

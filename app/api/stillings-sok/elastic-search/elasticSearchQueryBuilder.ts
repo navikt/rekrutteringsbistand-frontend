@@ -477,26 +477,6 @@ export class ElasticSearchQueryBuilder {
       allFiltersWithoutPortfolio,
     );
 
-    // Helper: standard ekskludering av kategorier når formidlinger ikke er valgt
-    const kategoriEkskludering = !opts?.formidlinger
-      ? [
-          { term: { 'stillingsinfo.stillingskategori': 'ARBEIDSTRENING' } },
-          { term: { 'stillingsinfo.stillingskategori': 'FORMIDLING' } },
-        ]
-      : [];
-
-    // Felles publisert / gyldig oppdrag kriterier (INTERN og alleOppdrag baseline)
-    const publiserteKriterier = [
-      { term: { 'stilling.administration.status': 'DONE' } },
-      { exists: { field: 'stilling.publishedByAdmin' } },
-      { range: { 'stilling.published': { lte: 'now/d' } } },
-    ];
-
-    const avvisteSlettede = [
-      { term: { 'stilling.status': 'REJECTED' } },
-      { term: { 'stilling.status': 'DELETED' } },
-    ];
-
     // Hjelpefunksjon for å bygge fritekst should-clauses for et spesifikt felt
     const buildFritekstShouldClause = (fritekst: string, felt: string) => {
       if (!fritekst || fritekst.length < 1) return [];
@@ -532,31 +512,6 @@ export class ElasticSearchQueryBuilder {
         },
       };
     };
-
-    // Bestem should-clauses basert på om det er fritekst-søk
-    const shouldClauses =
-      fritekstSøkestreng && fritekstSøkestreng.length > 0
-        ? {
-            arbeidsgiver: buildFritekstShouldClause(
-              fritekstSøkestreng,
-              'arbeidsgiver',
-            ),
-            tittel: buildFritekstShouldClause(fritekstSøkestreng, 'tittel'),
-            annonsetekst: buildFritekstShouldClause(
-              fritekstSøkestreng,
-              'annonsetekst',
-            ),
-            annonsenummer: buildFritekstShouldClause(
-              fritekstSøkestreng,
-              'annonsenummer',
-            ),
-          }
-        : {
-            arbeidsgiver: [],
-            tittel: [],
-            annonsetekst: [],
-            annonsenummer: [],
-          };
 
     // Hvis status er valgt legges dette til kun i geografi-aggregasjonen (område skal ta høyde for valgt status)
     // Status-valg legges i post_filter for treff, men aggregeringer ignorerer post_filter.

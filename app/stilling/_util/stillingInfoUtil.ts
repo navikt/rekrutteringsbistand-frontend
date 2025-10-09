@@ -11,7 +11,7 @@ export enum VisningsStatus {
   StengtForSokere = 'Stengt for søkere',
   UtloptStengtForSokere = 'Utløpt - Stengt for søkere',
   Fullfort = 'Fullført',
-  Avbrutt = 'Avbrutt',
+  Slettet = 'Slettet',
   Ukjent = 'Ukjent status',
 }
 
@@ -20,7 +20,7 @@ type StillingsDataInfo = {
   erJobbMesse: boolean;
   erPåArbeidsplassen: boolean;
   erDirektemeldt: boolean;
-
+  erJobbmesse: boolean;
   visningsStatus: VisningsStatus;
 };
 
@@ -47,7 +47,7 @@ export const visStillingsDataInfo = (
   let visningsStatus: VisningsStatus = VisningsStatus.Ukjent;
 
   if (stillingStatus === StillingsStatus.Slettet) {
-    visningsStatus = VisningsStatus.Avbrutt;
+    visningsStatus = VisningsStatus.Slettet;
   } else if (
     stillingStatus === StillingsStatus.Stoppet &&
     publishedByAdmin !== null &&
@@ -80,6 +80,9 @@ export const visStillingsDataInfo = (
   }
 
   return {
+    erJobbmesse:
+      stillingsData?.stillingsinfo?.stillingskategori ===
+      Stillingskategori.Jobbmesse,
     erFormidling:
       stillingsData?.stillingsinfo?.stillingskategori ===
       Stillingskategori.Formidling,

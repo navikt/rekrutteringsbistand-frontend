@@ -1,15 +1,20 @@
 'use client';
 
+import { kiLoggMock } from './kiLoggMock';
+import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { getAPI, putApi } from '@/app/api/fetcher';
-import { kiLoggMock } from '@/app/api/rekrutteringstreff/[...slug]/mocks/KiLoggMock';
 import { logger } from '@navikt/next-logger';
 import { Response } from 'miragejs';
 import useSWR from 'swr';
 import useSWRMutation from 'swr/mutation';
 import { z } from 'zod';
 
-export const KI_BASE = '/api/rekrutteringstreff/ki';
-export const kiLoggEndepunkt = `${KI_BASE}/logg`;
+export const kiBase = (
+  id: string | ':rekrutteringstreffId' = ':rekrutteringstreffId',
+) => `${RekrutteringstreffAPI.internUrl}/${id}/ki`;
+export const kiLoggEndepunkt = (
+  id: string | ':rekrutteringstreffId' = ':rekrutteringstreffId',
+) => `${kiBase(id)}/logg`;
 
 const KiLoggSchema = z.object({
   id: z.string(),
@@ -48,39 +53,46 @@ const listFetcher = async (url: string): Promise<KiLogg[]> => {
 };
 
 type SetManuellArg = { id: string; bryterRetningslinjer: boolean | null };
-const putManuell = async (_: string, { arg }: { arg: SetManuellArg }) => {
-  const { id, bryterRetningslinjer } = arg;
-  try {
-    await putApi(`${kiLoggEndepunkt}/${id}/manuell`, { bryterRetningslinjer });
-  } catch (error) {
-    logger.error(
-      error,
-      `Feil ved oppdatering av manuell vurdering for KI-logg ${id}`,
-    );
-    throw error;
-  }
-};
+const putManuell =
+  (treffId: string) =>
+  async (_: string, { arg }: { arg: SetManuellArg }) => {
+    const { id, bryterRetningslinjer } = arg;
+    try {
+      await putApi(`${kiLoggEndepunkt(treffId)}/${id}/manuell`, {
+        bryterRetningslinjer,
+      });
+    } catch (error) {
+      logger.error(
+        error,
+        `Feil ved oppdatering av manuell vurdering for KI-logg ${id}`,
+      );
+      throw error;
+    }
+  };
 
 type SetLagretArg = { id: string; lagret: boolean | null };
-const putLagret = async (_: string, { arg }: { arg: SetLagretArg }) => {
-  const { id, lagret } = arg;
-  try {
-    await putApi(`${kiLoggEndepunkt}/${id}/lagret`, { lagret });
-  } catch (error) {
-    logger.error(
-      error,
-      `Feil ved oppdatering av lagret-status for KI-logg ${id}`,
-    );
-    throw error;
-  }
-};
+const putLagret =
+  (treffId: string) =>
+  async (_: string, { arg }: { arg: SetLagretArg }) => {
+    const { id, lagret } = arg;
+    try {
+      await putApi(`${kiLoggEndepunkt(treffId)}/${id}/lagret`, { lagret });
+    } catch (error) {
+      logger.error(
+        error,
+        `Feil ved oppdatering av lagret-status for KI-logg ${id}`,
+      );
+      throw error;
+    }
+  };
 
 export const useKiLogg = (treffId?: string, feltType?: string) => {
   const query = new URLSearchParams();
-  if (treffId) query.set('treffId', treffId);
   if (feltType) query.set('feltType', feltType);
 
-  const key = treffId ? `${kiLoggEndepunkt}?${query.toString()}` : null;
+  const key = treffId
+    ? `${kiLoggEndepunkt(treffId)}${query.toString() ? `?${query.toString()}` : ''}`
+    : null;
 
   const swr = useSWR<KiLogg[]>(key, listFetcher, { revalidateOnFocus: false });
 
@@ -88,13 +100,19 @@ export const useKiLogg = (treffId?: string, feltType?: string) => {
     trigger: setManuell,
     isMutating: settingManuell,
     error: manuellError,
-  } = useSWRMutation(`${kiLoggEndepunkt}/manuell`, putManuell);
+  } = useSWRMutation(
+    `${kiLoggEndepunkt(treffId ?? ':rekrutteringstreffId')}/manuell`,
+    putManuell(treffId ?? ':rekrutteringstreffId'),
+  );
 
   const {
     trigger: setLagret,
     isMutating: settingLagret,
     error: lagretError,
-  } = useSWRMutation(`${kiLoggEndepunkt}/lagret`, putLagret);
+  } = useSWRMutation(
+    `${kiLoggEndepunkt(treffId ?? ':rekrutteringstreffId')}/lagret`,
+    putLagret(treffId ?? ':rekrutteringstreffId'),
+  );
 
   const refresh = async (): Promise<KiLogg[] | undefined> => {
     return (await swr.mutate()) as KiLogg[] | undefined;
@@ -122,19 +140,33 @@ export const useKiLogg = (treffId?: string, feltType?: string) => {
   };
 };
 
-export const manuellEndepunkt = (id: string | ':id' = ':id') =>
-  `${kiLoggEndepunkt}/${id}/manuell`;
-export const lagretEndepunkt = (id: string | ':id' = ':id') =>
-  `${kiLoggEndepunkt}/${id}/lagret`;
+export const manuellEndepunkt = (
+  rekrutteringstreffId:
+    | string
+    | ':rekrutteringstreffId' = ':rekrutteringstreffId',
+  id: string | ':id' = ':id',
+) => `${kiLoggEndepunkt(rekrutteringstreffId)}/${id}/manuell`;
+export const lagretEndepunkt = (
+  rekrutteringstreffId:
+    | string
+    | ':rekrutteringstreffId' = ':rekrutteringstreffId',
+  id: string | ':id' = ':id',
+) => `${kiLoggEndepunkt(rekrutteringstreffId)}/${id}/lagret`;
 
 export const listKiLoggMirage = (server: any) => {
-  return server.get(kiLoggEndepunkt, () => kiLoggMock);
+  return server.get(kiLoggEndepunkt(':rekrutteringstreffId'), () => kiLoggMock);
 };
 
 export const oppdaterKiLoggManuellMirage = (server: any) => {
-  return server.put(manuellEndepunkt(':id'), () => new Response(204));
+  return server.put(
+    manuellEndepunkt(':rekrutteringstreffId', ':id'),
+    () => new Response(204),
+  );
 };
 
 export const oppdaterKiLoggLagretMirage = (server: any) => {
-  return server.put(lagretEndepunkt(':id'), () => new Response(204));
+  return server.put(
+    lagretEndepunkt(':rekrutteringstreffId', ':id'),
+    () => new Response(204),
+  );
 };

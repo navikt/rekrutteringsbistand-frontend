@@ -58,6 +58,15 @@ export const KandidatContextProvider: FC<KandidatContextProviderProps> = ({
   );
 };
 
+export const useNullableKandidatContext = () => {
+  const context = useContext(KandidatContext);
+
+  if (context === undefined) {
+    return null;
+  }
+  return context;
+};
+
 export const useKandidatContext = () => {
   const context = useContext(KandidatContext);
 

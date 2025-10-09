@@ -1,9 +1,12 @@
-import { innleggMock } from '../mocks/InnleggMock';
-import { InnleggDTO, InnleggSchema } from './useInnlegg';
+import { innleggMock } from './innleggMock';
+import type { InnleggDTO } from './useInnlegg';
+import { InnleggSchema } from './useInnlegg';
+import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { postApi, putApi } from '@/app/api/fetcher';
 import { z } from 'zod';
 
-export const OpprettEllerOppdaterInnleggDtoSchema = z.object({
+// Schemas som kun brukes for mutations
+const OpprettInnleggDtoSchema = z.object({
   tittel: z.string().min(1, 'Tittel kan ikke være tom'),
   htmlContent: z.string().min(1, 'Innhold kan ikke være tomt'),
   opprettetAvPersonNavn: z.string().nullable().optional(),
@@ -15,47 +18,53 @@ export const OpprettEllerOppdaterInnleggDtoSchema = z.object({
     .min(1, 'SendesTilJobbsokerTidspunkt kan ikke være tomt'),
 });
 
-export type OpprettEllerOppdaterInnleggDto = z.infer<
-  typeof OpprettEllerOppdaterInnleggDtoSchema
->;
+// DTOs
+export type OpprettInnleggDto = z.infer<typeof OpprettInnleggDtoSchema>;
+export type OppdaterInnleggDto = z.infer<typeof OpprettInnleggDtoSchema>;
 
-export const InnleggResponseDtoSchema = InnleggSchema;
+const InnleggResponseDtoSchema = InnleggSchema;
 
-const innleggBaseUrl = (rekrutteringstreffId: string) =>
-  `/api/rekrutteringstreff/${rekrutteringstreffId}/innlegg`;
+const rekrutteringstreffInnleggEndepunkt = (rekrutteringstreffId: string) =>
+  `${RekrutteringstreffAPI.internUrl}/${rekrutteringstreffId}/innlegg`;
 
-const innleggItemUrl = (rekrutteringstreffId: string, innleggId: string) =>
-  `/api/rekrutteringstreff/${rekrutteringstreffId}/innlegg/${innleggId}`;
-
-export const opprettInnleggForTreff = async (
-  rekrutteringstreffId: string,
-  data: OpprettEllerOppdaterInnleggDto,
-): Promise<InnleggDTO> => {
-  OpprettEllerOppdaterInnleggDtoSchema.parse(data);
-  const response = await postApi(innleggBaseUrl(rekrutteringstreffId), data);
-  return InnleggResponseDtoSchema.parse(response);
-};
-
-export const oppdaterEttInnlegg = async (
+const rekrutteringstreffEnkeltInnleggEndepunkt = (
   rekrutteringstreffId: string,
   innleggId: string,
-  data: OpprettEllerOppdaterInnleggDto,
+) =>
+  `${RekrutteringstreffAPI.internUrl}/${rekrutteringstreffId}/innlegg/${innleggId}`;
+
+export const opprettInnlegg = async (
+  rekrutteringstreffId: string,
+  data: OpprettInnleggDto,
 ): Promise<InnleggDTO> => {
-  OpprettEllerOppdaterInnleggDtoSchema.parse(data);
-  const response = await putApi(
-    innleggItemUrl(rekrutteringstreffId, innleggId),
+  OpprettInnleggDtoSchema.parse(data);
+  const response = await postApi(
+    rekrutteringstreffInnleggEndepunkt(rekrutteringstreffId),
     data,
   );
   return InnleggResponseDtoSchema.parse(response);
 };
 
-export const opprettInnleggfMirage = (server: any) => {
+export const oppdaterInnlegg = async (
+  rekrutteringstreffId: string,
+  innleggId: string,
+  data: OppdaterInnleggDto,
+): Promise<InnleggDTO> => {
+  OpprettInnleggDtoSchema.parse(data);
+  const response = await putApi(
+    rekrutteringstreffEnkeltInnleggEndepunkt(rekrutteringstreffId, innleggId),
+    data,
+  );
+  return InnleggResponseDtoSchema.parse(response);
+};
+
+export const opprettInnleggMirage = (server: any) => {
   server.post('/api/rekrutteringstreff/:rekrutteringstreffId/innlegg', () => {
     return innleggMock[0];
   });
 };
 
-export const oppdaterInnleggfMirage = (server: any) => {
+export const oppdaterInnleggMirage = (server: any) => {
   server.put(
     '/api/rekrutteringstreff/:rekrutteringstreffId/innlegg/:innleggId',
     () => {

@@ -26,22 +26,23 @@ import { pamPostdataMirage } from '@/app/api/pam-geografi/postdata/[postnummer]/
 import { pamGeografiMirage } from '@/app/api/pam-geografi/typehead/lokasjoner/usePamGeografi';
 import { stillingsTittelMirage } from '@/app/api/pam-ontologi/stillingsTittel/useStillingsTittel';
 import { arbeidsgiverMirage } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
+import { alleHendelserMirage } from '@/app/api/rekrutteringstreff/[...slug]/allehendelser/useAlleHendelser';
 import { arbeidsgiverMutationsMirage } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/mutations';
-import { rekruteringstreffArbeidsgivereMirage } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
+import { arbeidsgiverHendelserMirage } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgiverHendelser';
+import { rekrutteringstreffArbeidsgivereMirage } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import {
-  oppdaterInnleggfMirage,
-  opprettInnleggfMirage,
+  oppdaterInnleggMirage,
+  opprettInnleggMirage,
 } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/mutations';
 import { innleggMirage } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/useInnlegg';
-import { inviterJobbsøkereMirage } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/inviterJobbsokere';
-import { leggTilNyJobbsøkerMirage } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/mutations';
+import { inviterJobbsøkereMirage } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/inviterJobbsøkere';
+import { opprettJobbsøkereMirage } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/mutations';
+import { jobbsøkerHendelserMirage } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerHendelser';
 import { jobbsøkereMirage } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import { rekrutteringstreffSlugMutationsMirage } from '@/app/api/rekrutteringstreff/[...slug]/mutations';
-import { alleHendelserMirage } from '@/app/api/rekrutteringstreff/[...slug]/useAlleHendelser';
-import { arbeidsgiverHendelserMirage } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgiverHendelser';
-import { jobbsøkerHendelserMirage } from '@/app/api/rekrutteringstreff/[...slug]/useJobbsøkerHendelser';
-import { kandidatnummerMirage } from '@/app/api/rekrutteringstreff/[...slug]/useKandidatnummer';
+import { statusHendelseMirage } from '@/app/api/rekrutteringstreff/[...slug]/statushendelser/mutations';
 import { rekrutteringstreffMirage } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
+import { kandidatnummerMirage } from '@/app/api/rekrutteringstreff/[...slug]/utils/useKandidatnummer';
 import {
   listKiLoggMirage,
   oppdaterKiLoggLagretMirage,
@@ -49,7 +50,7 @@ import {
 } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
 import { validerRekrutteringstreffMirage } from '@/app/api/rekrutteringstreff/kiValidering/useValiderRekrutteringstreff';
 import { rekrutteringstreffMutationsMirage } from '@/app/api/rekrutteringstreff/mutations';
-import { rekrutteringstreffOversiktMirage } from '@/app/api/rekrutteringstreff/useRekrutteringstreffOversikt';
+import { rekrutteringstreffOversiktMirage } from '@/app/api/rekrutteringstreff/oversikt/useRekrutteringstreffOversikt';
 import { statistikkMirage } from '@/app/api/statistikk/useStatistikk';
 import { opprettNyStillingMirage } from '@/app/api/stilling/ny-stilling/opprettNyStilling';
 import { oppdaterStillingMirage } from '@/app/api/stilling/oppdater-stilling/oppdaterStilling';
@@ -102,20 +103,21 @@ export function makeServer({ environment = 'test' } = {}) {
       rekrutteringstreffMirage(this);
       rekrutteringstreffMutationsMirage(this);
       rekrutteringstreffSlugMutationsMirage(this);
+      statusHendelseMirage(this);
       validerRekrutteringstreffMirage(this);
       listKiLoggMirage(this);
       oppdaterKiLoggManuellMirage(this);
       oppdaterKiLoggLagretMirage(this);
       jobbsøkereMirage(this);
-      leggTilNyJobbsøkerMirage(this);
-      rekruteringstreffArbeidsgivereMirage(this);
+      opprettJobbsøkereMirage(this);
+      rekrutteringstreffArbeidsgivereMirage(this);
       arbeidsgiverMutationsMirage(this);
       jobbsøkerHendelserMirage(this);
       arbeidsgiverHendelserMirage(this);
       alleHendelserMirage(this);
       innleggMirage(this);
-      opprettInnleggfMirage(this);
-      oppdaterInnleggfMirage(this);
+      opprettInnleggMirage(this);
+      oppdaterInnleggMirage(this);
       inviterJobbsøkereMirage(this);
       kandidatnummerMirage(this);
       modiaAktivEnhetMirage(this);

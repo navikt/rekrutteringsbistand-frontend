@@ -11,6 +11,7 @@ export const exampleWindowConfig: UrlWindowConfig = {
   urlParam: 'visEksempel', // URL parameter navn
   windowId: 'eksempelWindow', // Unik ID for vinduet
   title: 'Eksempel vindu', // Tittel som vises i vinduet
+  allowedPaths: ['/stilling', '/kandidat'], // Paths hvor vinduet kan vises
   createContent: (paramValue: string) => {
     // Her kan du lage innholdet basert på parameter-verdien
     return createElement(

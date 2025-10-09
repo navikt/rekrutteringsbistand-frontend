@@ -84,9 +84,9 @@ const StillingsTag: FC<IStillingTag> = ({ stillingsData, rad }) => {
           {VisningsStatus.Fullfort}
         </Tag>
       )}
-      {info.visningsStatus === VisningsStatus.Avbrutt && (
+      {info.visningsStatus === VisningsStatus.Slettet && (
         <Tag className={tagKlasse()} size='small' variant='error-moderate'>
-          {VisningsStatus.Avbrutt}
+          {VisningsStatus.Slettet}
         </Tag>
       )}
     </>

@@ -14,7 +14,6 @@ import { OpprettKnapp } from '@/components/felles/opprett/OpprettKnapp';
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideLayout from '@/components/layout/SideLayout';
 import Sidelaster from '@/components/layout/Sidelaster';
-import { BriefcaseClockIcon } from '@navikt/aksel-icons';
 import { FC, Suspense } from 'react';
 
 const EtterRegistreringSøk = () => {
@@ -33,8 +32,6 @@ const EtterRegistreringSøkLayout: FC = () => {
       header={
         <PanelHeader>
           <PanelHeader.Section
-            title={'Etterregistreringer'}
-            titleIcon={<BriefcaseClockIcon />}
             actionsRight={
               <OpprettKnapp kategori={Stillingskategori.Formidling} />
             }

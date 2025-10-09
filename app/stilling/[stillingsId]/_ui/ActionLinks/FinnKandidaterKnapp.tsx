@@ -10,7 +10,7 @@ export default function FinnKandidaterKnapp({
   stillingId,
 }: FinnKandidaterKnappProps) {
   const { trackAndNavigate } = useUmami();
-  const href = `/stilling/${stillingId}?finnKandidater=true`;
+  const href = `/stilling/${stillingId}/finn-kandidater`;
 
   const navigate = () =>
     trackAndNavigate(UmamiEvent.Stilling.finn_kandidater_knapp, href);
