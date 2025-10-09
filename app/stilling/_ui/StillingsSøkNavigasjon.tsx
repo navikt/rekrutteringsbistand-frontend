@@ -29,9 +29,14 @@ const StillingsSøkNavigasjon: FC = () => {
       </Button>
       <TilgangskontrollForInnhold
         skjulVarsel
-        kreverEnAvRollene={[
-          Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-        ]}
+        kreverEnAvRollene={
+          formidlinger
+            ? [
+                Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+                Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
+              ]
+            : [Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET]
+        }
       >
         <Button
           variant={
