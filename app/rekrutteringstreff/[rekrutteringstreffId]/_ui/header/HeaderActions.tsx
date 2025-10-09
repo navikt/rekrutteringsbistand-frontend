@@ -100,7 +100,7 @@ const HeaderActions: FC<Props> = ({
   }
 
   // Når man er i edit-modus før publisering
-  if (erIEditModus && !harPublisert && activeStep === AktivtSteg.PUBLISERE) {
+  if (erIEditModus && !harPublisert && activeStep === AktivtSteg.KLADD) {
     return (
       <div className='flex items-center gap-2'>
         <PubliserRekrutteringstreffButton
@@ -134,7 +134,7 @@ const HeaderActions: FC<Props> = ({
         />
       )}
 
-      {!avlyst && activeStep === AktivtSteg.PUBLISERE && (
+      {!avlyst && activeStep === AktivtSteg.KLADD && (
         <PubliserRekrutteringstreffButton
           erPubliseringklar={erPubliseringklar}
           rekrutteringstreffId={rekrutteringstreffId}
@@ -166,7 +166,7 @@ const HeaderActions: FC<Props> = ({
         />
       )}
 
-      {activeStep === AktivtSteg.PUBLISERE && <SlettRekrutteringstreffButton />}
+      {activeStep === AktivtSteg.KLADD && <SlettRekrutteringstreffButton />}
     </div>
   );
 };

@@ -43,7 +43,7 @@ const StegviserHeader: FC<Props> = () => {
   return (
     <div className='w-full'>
       <div className='w-full mt-2'>
-        {activeStep === AktivtSteg.PUBLISERE && (
+        {activeStep === AktivtSteg.KLADD && (
           <ProgressMedTeller
             value={sjekklistePunkterFullfort}
             max={totaltAntallSjekklistePunkter}

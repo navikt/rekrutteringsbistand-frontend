@@ -15,7 +15,7 @@ const StegviserContent = () => {
       <div className='flex flex-row gap-6'>
         <div className='flex-1'>
           {activeStep === AktivtSteg.AVLYST && <AvlystSteg />}
-          {activeStep === AktivtSteg.PUBLISERE && <PublisereSteg />}
+          {activeStep === AktivtSteg.KLADD && <PublisereSteg />}
           {activeStep === AktivtSteg.INVITERE && <InvitereSteg />}
           {activeStep === AktivtSteg.FULLFØRE && <FullføreSteg />}
         </div>

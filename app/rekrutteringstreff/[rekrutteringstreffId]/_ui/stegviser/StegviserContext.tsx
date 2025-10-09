@@ -42,9 +42,7 @@ export const StegviserProvider: FC<{ children: ReactNode }> = ({
   children,
 }) => {
   // Lokal UI state - aktivt steg
-  const [activeStep, setActiveStep] = useState<string>(
-    AktivtStegConst.PUBLISERE,
-  );
+  const [activeStep, setActiveStep] = useState<string>(AktivtStegConst.KLADD);
 
   // Bruk sentraliserte hooks for all data og beregninger
   const { tilTidspunktHarPassert, activeStep: derivedStep } =
