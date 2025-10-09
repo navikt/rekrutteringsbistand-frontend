@@ -5,7 +5,7 @@ import { useRekrutteringstreffData } from '../hooks/useRekrutteringstreffData';
 import JobbsøkerHendelserKort from '../jobbsøker/JobbsøkerHendelserKort';
 import { useArbeidsgiverHendelser } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgiverHendelser';
 import { useJobbsøkerHendelser } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerHendelser';
-import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_contexts/RekrutteringstreffContext';
+import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { formaterNorskDato } from '@/util/util';
 import { CalendarIcon, ClockIcon, LocationPinIcon } from '@navikt/aksel-icons';
 import { BodyShort, Box, Detail, Heading, Skeleton } from '@navikt/ds-react';

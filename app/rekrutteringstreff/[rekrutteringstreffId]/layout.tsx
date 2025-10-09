@@ -1,4 +1,4 @@
-import { RekrutteringstreffProvider } from '../_contexts/RekrutteringstreffContext';
+import { RekrutteringstreffProvider } from '../_providers/RekrutteringstreffContext';
 import RekrutteringstreffForm from './_ui/rediger/RekrutteringstreffForm';
 import { ReactNode } from 'react';
 

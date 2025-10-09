@@ -1,6 +1,6 @@
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import KandidatSøkTabs from '@/app/kandidat/KandidatSøkTabs';
-import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_contexts/RekrutteringstreffContext';
+import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { FC, useEffect, useState } from 'react';
 
 const KandidatTilRekrutteringstreff: FC = () => {

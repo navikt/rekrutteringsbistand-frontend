@@ -1,7 +1,7 @@
 'use client';
 
-import LeggTilArbeidsgiverKnapp from '../actions/LeggTilArbeidsgiverKnapp';
 import { ArbeidsgiverHendelseLabel } from '../jobbsøker/HendelseLabel';
+import LeggTilArbeidsgiverKnapp from './LeggTilArbeidsgiverKnapp';
 import { ArbeidsgiverHendelserDTO } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgiverHendelser';
 import { ArbeidsgiverHendelsestype } from '@/app/rekrutteringstreff/_types/constants';
 import SVGDarkmode from '@/components/layout/SVGDarkmode';

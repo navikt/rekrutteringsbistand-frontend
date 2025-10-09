@@ -1,7 +1,7 @@
 'use client';
 
-import LeggTilArbeidsgiverKnapp from '../actions/LeggTilArbeidsgiverKnapp';
 import ArbeidsgiverListeItem from './ArbeidsgiverListeItem';
+import LeggTilArbeidsgiverKnapp from './LeggTilArbeidsgiverKnapp';
 import SlettArbeidsgiverModal from './SlettArbeidsgiverModal';
 import { slettArbeidsgiver } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/mutations';
 import { useArbeidsgiverHendelser } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgiverHendelser';
@@ -9,7 +9,7 @@ import {
   ArbeidsgiverDTO,
   useRekrutteringstreffArbeidsgivere,
 } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
-import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_contexts/RekrutteringstreffContext';
+import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import SWRLaster from '@/components/SWRLaster';
 import { BodyShort, Tooltip } from '@navikt/ds-react';
 import * as React from 'react';

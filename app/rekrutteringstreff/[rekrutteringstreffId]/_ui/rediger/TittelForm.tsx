@@ -7,7 +7,7 @@ import { useAutosave } from './useAutosave';
 import { useKiAnalyse } from './useKiAnalyse';
 import { MAX_TITLE_LENGTH } from '@/app/api/rekrutteringstreff/[...slug]/mutations';
 import { useKiLogg } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
-import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_contexts/RekrutteringstreffContext';
+import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { RekbisError } from '@/util/rekbisError';
 import { XMarkIcon } from '@navikt/aksel-icons';
 import { Button, Detail, Skeleton, TextField, Heading } from '@navikt/ds-react';
