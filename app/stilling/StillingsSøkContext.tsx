@@ -199,14 +199,14 @@ export const StillingsSøkProvider: FC<{
     // Håndter avbrutt status basert på portefølje-valg
     if (portefølje === 'vis mine' && visAvbryt) {
       // Legg til "Avbrutt" hvis det ikke allerede finnes
-      if (!statuser.includes(VisningsStatus.Avbrutt)) {
-        setStatuserOriginal([...statuser, VisningsStatus.Avbrutt]);
+      if (!statuser.includes(VisningsStatus.Slettet)) {
+        setStatuserOriginal([...statuser, VisningsStatus.Slettet]);
       }
     } else {
       // Fjern "Avbrutt" hvis det finnes
-      if (statuser.includes(VisningsStatus.Avbrutt)) {
+      if (statuser.includes(VisningsStatus.Slettet)) {
         const filtrerteStatuser = statuser.filter(
-          (status) => status !== VisningsStatus.Avbrutt,
+          (status) => status !== VisningsStatus.Slettet,
         );
         setStatuserOriginal(filtrerteStatuser);
       }

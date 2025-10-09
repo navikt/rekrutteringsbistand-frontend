@@ -30,7 +30,7 @@ interface RekrutteringstreffProviderProps {
   rekrutteringstreffId: string;
 }
 
-export const RekrutteringstreffContextProvider = ({
+export const RekrutteringstreffProvider = ({
   children,
   rekrutteringstreffId,
 }: RekrutteringstreffProviderProps) => {
@@ -92,7 +92,7 @@ export const useRekrutteringstreffContext = () => {
   if (!contekst) {
     throw new RekbisError({
       message:
-        'useRekrutteringstreffContext må være i scope: RekrutteringstreffContextProvider',
+        'useRekrutteringstreffContext må være i scope: RekrutteringstreffProvider',
     });
   }
 

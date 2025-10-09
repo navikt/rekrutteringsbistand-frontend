@@ -1,4 +1,5 @@
 import NavnLink from './NavnLenke';
+import { AktivtSteg } from '@/app/rekrutteringstreff/_types/constants';
 import { Buildings3Icon, PersonIcon } from '@navikt/aksel-icons';
 import {
   BodyShort,
@@ -22,7 +23,7 @@ interface JobbsøkerKortProps {
   lagtTilAv?: string | null;
   status?: string;
   statusVariant?: TagProps['variant'];
-  harPublisert: boolean;
+  aktivtSteg: string;
   onCheckboxChange: (checked: boolean) => void;
   erValgt: boolean;
   erDeaktivert?: boolean;
@@ -45,7 +46,7 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
   lagtTilAv,
   status,
   statusVariant,
-  harPublisert,
+  aktivtSteg,
   onCheckboxChange,
   erValgt,
   erDeaktivert = false,
@@ -61,7 +62,7 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
       className={`flex items-center justify-between `}
     >
       <div className='flex items-center gap-4'>
-        {harPublisert && (
+        {aktivtSteg === AktivtSteg.INVITERE && (
           <Checkbox
             hideLabel
             checked={erValgt}
@@ -105,7 +106,7 @@ const JobbsøkerKort: FC<JobbsøkerKortProps> = ({
         </div>
       </div>
       <div className='flex items-center gap-2'>
-        {harPublisert && onInviterClick && (
+        {aktivtSteg === AktivtSteg.INVITERE && onInviterClick && (
           <Button
             size='small'
             variant='secondary'

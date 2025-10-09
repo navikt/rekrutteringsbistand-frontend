@@ -1,35 +1,34 @@
 'use client';
 
-import { jobbsøkereMock } from './mocks/jobbsøkereMock';
+import { jobbsøkereMock } from './jobbsøkereMock';
+import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { postApi } from '@/app/api/fetcher';
-import { z } from 'zod';
 
-const leggTilNyJobbsøkerEndepunkt = (id: string) =>
-  `/api/rekrutteringstreff/${id}/jobbsoker`;
+// DTOs
+export type OpprettJobbsøkerDTO = {
+  fødselsnummer: string;
+  fornavn?: string | null;
+  etternavn?: string | null;
+  kandidatnummer: string | null;
+  navkontor?: string | null;
+  veilederNavn?: string | null;
+  veilederNavIdent: string;
+};
+export type OpprettJobbsøkereDTO = OpprettJobbsøkerDTO[];
 
-export const NyJobbsøkerSchema = z.object({
-  fødselsnummer: z.string(),
-  fornavn: z.string().nullish(),
-  etternavn: z.string().nullish(),
-  kandidatnummer: z.string().nullable(),
-  navkontor: z.string().nullish(),
-  veilederNavn: z.string().nullish(),
-  veilederNavIdent: z.string(),
-});
+const rekrutteringstreffJobbsøkereEndepunkt = (id: string) =>
+  `${RekrutteringstreffAPI.internUrl}/${id}/jobbsoker`;
 
-export const LeggTilNyeJobbsøkereSchema = z.array(NyJobbsøkerSchema);
-
-export type NyJobbsøkerDTO = z.infer<typeof NyJobbsøkerSchema>;
-export type LeggTilNyeJobbsøkereDTO = NyJobbsøkerDTO[];
-
-export const leggTilNyeJobbsøkere = (
-  kandidater: LeggTilNyeJobbsøkereDTO,
+export const opprettJobbsøkere = (
   id: string,
-) => postApi(leggTilNyJobbsøkerEndepunkt(id), kandidater);
+  kandidater: OpprettJobbsøkereDTO,
+) => postApi(rekrutteringstreffJobbsøkereEndepunkt(id), kandidater);
 
-export const leggTilNyJobbsøkerMirage = (server: any) => {
+export const opprettJobbsøkereMirage = (server: any) => {
   return server.post(
-    leggTilNyJobbsøkerEndepunkt('d6a587cd-8797-4b9a-a68b-575373f16d65'),
+    rekrutteringstreffJobbsøkereEndepunkt(
+      'd6a587cd-8797-4b9a-a68b-575373f16d65',
+    ),
     () => jobbsøkereMock[0],
   );
 };

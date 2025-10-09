@@ -3,7 +3,7 @@ import {
   AktivtSteg,
   RekrutteringstreffHendelsestype,
   RelevanteStegHendelser,
-} from '@/app/rekrutteringstreff/_domain/constants';
+} from '@/app/rekrutteringstreff/_types/constants';
 
 /**
  * Finner aktivt steg (1–3 eller status) basert på rekrutteringstreff-hendelser.

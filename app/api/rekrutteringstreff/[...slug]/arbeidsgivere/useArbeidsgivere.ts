@@ -1,14 +1,12 @@
 'use client';
 
-import { arbeidsgivereMock } from './mocks/arbeidsgivereMock';
+import { arbeidsgivereMock } from './arbeidsgivereMock';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { getAPIwithSchema } from '@/app/api/fetcher';
 import useSWR from 'swr';
 import { z } from 'zod';
 
-export const rekrutteringstreffArbeidsgivereEndepunkt = (id: string) =>
-  `${RekrutteringstreffAPI.internUrl}/${id}/arbeidsgiver`;
-
+// Schemas
 export const ArbeidsgiverHendelseSchema = z.object({
   id: z.string(),
   tidspunkt: z.string(),
@@ -29,11 +27,15 @@ export const ArbeidsgiverSchema = z.object({
 
 export const ArbeidsgivereSchema = z.array(ArbeidsgiverSchema);
 
+// DTOs
 export type ArbeidsgiverDTO = z.infer<typeof ArbeidsgiverSchema>;
 export type ArbeidsgivereDTO = z.infer<typeof ArbeidsgivereSchema>;
 export type ArbeidsgiverHendelseDTO = z.infer<
   typeof ArbeidsgiverHendelseSchema
 >;
+
+export const rekrutteringstreffArbeidsgivereEndepunkt = (id: string) =>
+  `${RekrutteringstreffAPI.internUrl}/${id}/arbeidsgiver`;
 
 export const useRekrutteringstreffArbeidsgivere = (id: string) => {
   return useSWR(
@@ -42,7 +44,7 @@ export const useRekrutteringstreffArbeidsgivere = (id: string) => {
   );
 };
 
-export const rekruteringstreffArbeidsgivereMirage = (server: any) => {
+export const rekrutteringstreffArbeidsgivereMirage = (server: any) => {
   return server.get(rekrutteringstreffArbeidsgivereEndepunkt('*'), () =>
     arbeidsgivereMock(),
   );

@@ -68,7 +68,7 @@ export function useKiAnalyse<FormValues extends Record<string, any>>(
     reset: resetAnalyse,
     error: analyseError,
     isMutating: validating,
-  } = useValiderRekrutteringstreff();
+  } = useValiderRekrutteringstreff(rekrutteringstreffId);
 
   const [loggId, setLoggId] = useState<string | null>(null);
   const [forceSave, setForceSave] = useState(false);
@@ -130,7 +130,6 @@ export function useKiAnalyse<FormValues extends Record<string, any>>(
 
     try {
       const kiResultat = await validateKI({
-        treffId: rekrutteringstreffId,
         feltType,
         tekst: tekstVerdi,
       });
@@ -185,7 +184,6 @@ export function useKiAnalyse<FormValues extends Record<string, any>>(
     fieldName,
     getValues,
     validateKI,
-    rekrutteringstreffId,
     feltType,
     forceSave,
     erRedigeringAvPublisertTreff,

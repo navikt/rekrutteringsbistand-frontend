@@ -16,7 +16,7 @@ const FinnStillingForKandidatKnapp: FC = () => {
       onClick={() => {
         trackAndNavigate(
           UmamiEvent.Kandidat.finn_stilling_knapp,
-          `/kandidat/${kandidatId}?finnStilling=true`,
+          `/kandidat/${kandidatId}/finn-stilling`,
         );
       }}
     />

@@ -1,20 +1,19 @@
 'use client';
 
+import LeggTilArbeidsgiverKnapp from '../actions/LeggTilArbeidsgiverKnapp';
 import ArbeidsgiverListeItem from './ArbeidsgiverListeItem';
-import LeggTilArbeidsgiverModal from './LeggTilArbeidsgiverModal';
 import SlettArbeidsgiverModal from './SlettArbeidsgiverModal';
-import { fjernArbeidsgiver } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/mutations';
+import { slettArbeidsgiver } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/mutations';
+import { useArbeidsgiverHendelser } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgiverHendelser';
 import {
   ArbeidsgiverDTO,
   useRekrutteringstreffArbeidsgivere,
 } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
-import { useArbeidsgiverHendelser } from '@/app/api/rekrutteringstreff/[...slug]/useArbeidsgiverHendelser';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_contexts/RekrutteringstreffContext';
 import SWRLaster from '@/components/SWRLaster';
-import { PlusIcon } from '@navikt/aksel-icons';
-import { BodyShort, Button, Tooltip } from '@navikt/ds-react';
+import { BodyShort, Tooltip } from '@navikt/ds-react';
 import * as React from 'react';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 
 const Arbeidsgivere = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
@@ -23,11 +22,10 @@ const Arbeidsgivere = () => {
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
   const hendelseHook = useArbeidsgiverHendelser(rekrutteringstreffId);
 
-  const leggTilModalRef = useRef<HTMLDialogElement>(null);
-
   const getLagtTilData = (arbeidsgiver: ArbeidsgiverDTO) => {
     const leggTilHendelse = arbeidsgiver.hendelser.find(
-      ({ hendelsestype }) => hendelsestype === 'OPPRETT',
+      ({ hendelsestype }: { hendelsestype: string }) =>
+        hendelsestype === 'OPPRETT',
     );
     if (leggTilHendelse) {
       return {
@@ -45,7 +43,7 @@ const Arbeidsgivere = () => {
     if (!arbeidsgiver) return;
     try {
       setSletterArbeidsgiver(true);
-      await fjernArbeidsgiver(
+      await slettArbeidsgiver(
         rekrutteringstreffId,
         (arbeidsgiver as any).arbeidsgiverTreffId ??
           arbeidsgiver.organisasjonsnummer,
@@ -63,14 +61,7 @@ const Arbeidsgivere = () => {
         <div className='p-4 flex flex-col gap-4'>
           {
             <div>
-              <Button
-                onClick={() => leggTilModalRef.current?.showModal()}
-                variant='secondary'
-                icon={<PlusIcon />}
-              >
-                Legg til arbeidsgiver
-              </Button>
-              <LeggTilArbeidsgiverModal modalRef={leggTilModalRef} />
+              <LeggTilArbeidsgiverKnapp />
             </div>
           }
           {arbeidsgivere.length === 0 ? (

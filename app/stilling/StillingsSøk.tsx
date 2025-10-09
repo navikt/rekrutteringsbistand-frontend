@@ -2,7 +2,6 @@
 
 import { StillingsSøkProvider } from './StillingsSøkContext';
 import StillingsSøkeresultat from './StillingsSøkeresultat';
-import StillingForKandidat from './_ui/StillingForKandidat';
 import StillingsSøkFilter from './_ui/StillingsSøkFilter';
 import { useUseBrukerStandardSøk } from '@/app/api/stilling/standardsok/useBrukersStandardsøk';
 import { useStillingForKandidat } from '@/app/kandidat/vis-kandidat/useStillingForKandidat';
@@ -76,7 +75,6 @@ const StillingsSøkLayout: FC<StillingsSøkProps> = ({
   const { track } = useUmami();
   const { harRolle } = useApplikasjonContext();
 
-  const kandidatRef = useRef<HTMLDivElement>(null);
   const stillingsøkFilterRef = useRef<HTMLDivElement>(null);
 
   const harArbeidsgiverrettetRolle = harRolle([
@@ -111,11 +109,6 @@ const StillingsSøkLayout: FC<StillingsSøkProps> = ({
 
   return (
     <>
-      {forKandidatNr && (
-        <div ref={kandidatRef}>
-          <StillingForKandidat kandidatnr={forKandidatNr} />
-        </div>
-      )}
       <div ref={stillingsøkFilterRef}>
         <StillingsSøkFilter
           formidlinger={formidlinger}
@@ -126,7 +119,7 @@ const StillingsSøkLayout: FC<StillingsSøkProps> = ({
         <div className='flex-grow min-w-0'>
           <StillingsSøkeresultat
             kandidatId={forKandidatNr}
-            scrollExcludeRefs={[stillingsøkFilterRef, kandidatRef]}
+            scrollExcludeRefs={[stillingsøkFilterRef]}
           />
         </div>
 

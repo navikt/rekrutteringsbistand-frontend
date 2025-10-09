@@ -14,6 +14,7 @@ const VisRekrutteringstreffPerson = lazy(
 export const visPersonTreffWindowConfig: UrlWindowConfig = {
   urlParam: 'visPersonTreffId',
   windowId: 'visPersonTreff',
+  allowedPaths: ['/rekrutteringstreff/'],
   title: 'Jobbsøker',
   position: 'right',
   createContent: (personTreffId: string) =>

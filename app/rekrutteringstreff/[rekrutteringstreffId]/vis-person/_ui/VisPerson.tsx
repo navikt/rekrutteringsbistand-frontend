@@ -1,7 +1,9 @@
 'use client';
 
-import { useKandidatnummer } from '@/app/api/rekrutteringstreff/[...slug]/useKandidatnummer';
-import VisKandidat from '@/app/kandidat/vis-kandidat/VisKandidat';
+import { useKandidatnummer } from '@/app/api/rekrutteringstreff/[...slug]/utils/useKandidatnummer';
+import { KandidatContextProvider } from '@/app/kandidat/vis-kandidat/KandidatContext';
+import KandidatSideLayout from '@/app/kandidat/vis-kandidat/KandidatsideLayout';
+import KandidatOversikt from '@/app/kandidat/vis-kandidat/oversikt-fane/KandidatOversikt';
 import SWRLaster from '@/components/SWRLaster';
 import { FC } from 'react';
 
@@ -16,7 +18,12 @@ const VisPerson: FC<VisPersonProps> = ({ personTreffId }) => {
     <SWRLaster hooks={[kandidatnummerHook]} allowPartialData>
       {(kandidatnummerData) =>
         kandidatnummerData.kandidatnummer ? (
-          <VisKandidat kandidatnr={kandidatnummerData.kandidatnummer} />
+          <KandidatContextProvider
+            kandidatId={kandidatnummerData.kandidatnummer}
+          >
+            <KandidatSideLayout />
+            <KandidatOversikt />
+          </KandidatContextProvider>
         ) : (
           <div> Personen er ikke i kandidatsøk </div>
         )

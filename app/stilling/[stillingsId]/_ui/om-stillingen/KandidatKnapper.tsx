@@ -102,7 +102,7 @@ export default function KandidatKnapper() {
   }
 
   if (
-    info.visningsStatus === VisningsStatus.Avbrutt ||
+    info.visningsStatus === VisningsStatus.Slettet ||
     info.visningsStatus === VisningsStatus.Fullfort ||
     info.visningsStatus === VisningsStatus.IkkePublisert
   ) {

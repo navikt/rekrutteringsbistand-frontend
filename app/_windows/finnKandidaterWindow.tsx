@@ -14,7 +14,10 @@ const FinnKandidaterWrapper: FC<{ stillingsId: string }> = ({
     })),
   );
   const FinnKandidaterForStilling = lazy(
-    () => import('@/app/stilling/[stillingsId]/_ui/FinnKandidaterForStilling'),
+    () =>
+      import(
+        '@/app/stilling/[stillingsId]/finn-kandidater/FinnKandidaterForStilling'
+      ),
   );
 
   return (
@@ -34,6 +37,7 @@ export const finnKandidaterWindowConfig: UrlWindowConfig = {
   windowId: 'finnKandidater',
   title: 'Finn jobbsøkere',
   position: 'left', // Finn kandidater skal være til venstre
+  allowedPaths: ['/stilling'],
   createContent: (value: string) => {
     // For boolean parametere, hvis value er 'true' lager vi innholdet
     if (value !== 'true') {

@@ -7,7 +7,6 @@ import { useDecoratorData } from '@/app/api/modia/decorator/useDecoratorData';
 import SWRLaster from '@/components/SWRLaster';
 import ErrorBoundary from '@/components/feilhåndtering/ErrorBoundary';
 import NavigasjonWrapper from '@/components/layout/NavigasjonWrapper';
-import WindowWrapper from '@/components/layout/windows/WindowWrapper';
 import { ApplikasjonContextProvider } from '@/providers/ApplikasjonContext';
 import { KandidatNavigeringProvider } from '@/providers/KandidatNavigeringContext';
 import NavigasjonsBlockerProvider from '@/providers/NavigasjonsBlockerProvider';
@@ -96,9 +95,7 @@ const RekrutteringsbistandProvider: FC<RekrutteringsbistandProviderProps> = ({
                   <NavigasjonsBlockerProvider>
                     <NuqsAdapter>
                       <KandidatNavigeringProvider>
-                        <NavigasjonWrapper>
-                          <WindowWrapper>{children}</WindowWrapper>
-                        </NavigasjonWrapper>
+                        <NavigasjonWrapper>{children}</NavigasjonWrapper>
                       </KandidatNavigeringProvider>
                     </NuqsAdapter>
                   </NavigasjonsBlockerProvider>
