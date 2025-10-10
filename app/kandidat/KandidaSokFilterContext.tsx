@@ -80,9 +80,10 @@ export const KandidaSøkFilterContext = createContext<
   IKandidaSokFilterContext | undefined
 >(undefined);
 
-export const KandidatSøkProvider: FC<{ children: ReactNode }> = ({
-  children,
-}) => {
+export const KandidatSøkProvider: FC<{
+  children: ReactNode;
+  defaultPortefølje?: KandidatSøkPortefølje;
+}> = ({ children, defaultPortefølje }) => {
   const { valgtNavKontor } = useApplikasjonContext();
   const { track } = useUmami();
   // Unngå fritekst i searchParams
@@ -96,7 +97,7 @@ export const KandidatSøkProvider: FC<{ children: ReactNode }> = ({
   const [portefølje, setPortefølje] = useQueryState(
     KandidatSøkQueryparam.Portefølje,
     {
-      defaultValue: KandidatSøkPortefølje.MINE_BRUKERE,
+      defaultValue: defaultPortefølje ?? KandidatSøkPortefølje.MINE_BRUKERE,
       clearOnDefault: true,
     },
   );

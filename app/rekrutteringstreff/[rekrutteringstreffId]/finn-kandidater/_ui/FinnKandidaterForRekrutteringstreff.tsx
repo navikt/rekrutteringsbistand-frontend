@@ -1,7 +1,10 @@
 'use client';
 
 import KandidatTilRekrutteringstreff from './KandidatTilRekrutteringstreff';
-import { KandidatSøkProvider } from '@/app/kandidat/KandidaSokFilterContext';
+import {
+  KandidatSøkPortefølje,
+  KandidatSøkProvider,
+} from '@/app/kandidat/KandidaSokFilterContext';
 import { KandidatSøkMarkerteContextProvider } from '@/app/kandidat/KandidatSøkMarkerteContext';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { RekrutteringstreffBreadcrumbs } from '@/app/rekrutteringstreff/_ui/RekrutteringstreffBreadcrumbs';
@@ -40,7 +43,7 @@ const FinnKandidaterForRekrutteringstreff: FC = () => {
         Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
       ]}
     >
-      <KandidatSøkProvider>
+      <KandidatSøkProvider defaultPortefølje={KandidatSøkPortefølje.ALLE}>
         <KandidatSøkMarkerteContextProvider>
           <SideLayout
             header={
