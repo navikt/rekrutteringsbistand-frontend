@@ -3,17 +3,13 @@
 import { RekrutteringstreffTabs } from '../Rekrutteringstreff';
 import HeaderActions from './HeaderActions';
 import TabsNav from './TabsNav';
-import {
-  RekrutteringstreffBreadcrumbItem,
-  RekrutteringstreffBreadcrumbs,
-} from '@/app/rekrutteringstreff/_ui/RekrutteringstreffBreadcrumbs';
 import PanelHeader from '@/components/layout/PanelHeader';
 import { Loader, Tabs } from '@navikt/ds-react';
 import { forwardRef } from 'react';
 
 export interface RekrutteringstreffHeaderProps {
   skalViseHeader: boolean;
-  breadcrumbs: RekrutteringstreffBreadcrumbItem[];
+  erstattPath?: [originalSegment: string, nyLabel: string];
   erIForhåndsvisning: boolean;
   viserFullskjermForhåndsvisning?: boolean;
   jobbsøkereAntall: number;
@@ -37,7 +33,7 @@ const RekrutteringstreffHeader = forwardRef<
   (
     {
       skalViseHeader,
-      breadcrumbs,
+      erstattPath,
       erIForhåndsvisning,
       viserFullskjermForhåndsvisning,
       jobbsøkereAntall,
@@ -61,7 +57,7 @@ const RekrutteringstreffHeader = forwardRef<
       <div ref={ref} className='sticky top-0 z-40 bg-[var(--ax-bg-default)]'>
         <PanelHeader className='bg-transparent'>
           <PanelHeader.Section
-            actionsLeft={<RekrutteringstreffBreadcrumbs items={breadcrumbs} />}
+            erstattPath={erstattPath}
             tabs={
               // Vis tabs kun i lesemodus (ikke i forhåndsvisning eller edit)
               erIForhåndsvisning && !viserFullskjermForhåndsvisning ? (

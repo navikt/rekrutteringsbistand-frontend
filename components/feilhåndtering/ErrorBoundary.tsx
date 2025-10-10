@@ -76,7 +76,14 @@ class ErrorBoundary extends Component<Props, State> {
               </Button>
             )}
             {this.state.showError && (
-              <div>
+              <div
+                style={{
+                  wordBreak: 'break-word',
+                  overflowWrap: 'break-word',
+                  whiteSpace: 'pre-wrap',
+                  maxWidth: '100%',
+                }}
+              >
                 <strong>
                   <p>{this.state.error?.name}</p>
                 </strong>

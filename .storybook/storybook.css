@@ -1,0 +1,239 @@
+/* Storybook-spesifikke overstyringer for dark mode.
+   Disse begrenses til Storybook DOM-struktur for å unngå å lekke inn i appen. */
+
+/* GENERELL BAKGRUNN OG TEKST */
+html.dark body.sb-show-main,
+html.dark .sb-show-main,
+html.dark #storybook-docs .sbdocs-wrapper,
+html.dark #storybook-docs .docs-story {
+  background-color: #0e151f !important;
+  color: #ffffff !important;
+}
+
+/* TYPOGRAFI I DOCS */
+html.dark #storybook-docs h1,
+html.dark #storybook-docs h2,
+html.dark #storybook-docs h3,
+html.dark #storybook-docs h4,
+html.dark #storybook-docs h5,
+html.dark #storybook-docs p,
+html.dark #storybook-docs td,
+html.dark #storybook-docs th,
+html.dark #storybook-docs li,
+html.dark #storybook-docs span,
+html.dark #storybook-docs label {
+  color: #ffffff !important;
+}
+
+/* LENKER (kun i Docs-panelet, ikke i selve Canvas story-innholdet) */
+html.dark #storybook-docs .sbdocs-wrapper a {
+  color: #66b3ff;
+}
+html.dark #storybook-docs .sbdocs-wrapper a:hover {
+  color: #8cc9ff;
+}
+/* Viktig: vi overstyrer ikke .sb-show-main a lenger for å la komponentene vise "ekte" farger. */
+
+/* ARGS / CONTROLS TABELL */
+html.dark .docblock-argstable,
+html.dark .docblock-argstable tbody tr,
+html.dark .docblock-argstable tbody td,
+html.dark .docblock-argstable th {
+  background-color: #0e151f !important;
+  color: #ffffff !important;
+  border-color: #263241 !important;
+}
+
+/* Standard tabeller i docs */
+html.dark #storybook-docs table,
+html.dark #storybook-docs table td,
+html.dark #storybook-docs table th {
+  background-color: #0e151f !important;
+  color: #ffffff !important;
+  border-color: #263241 !important;
+}
+
+/* CODE BLOCKS */
+html.dark pre,
+html.dark code,
+html.dark #storybook-docs pre,
+html.dark #storybook-docs code {
+  background-color: #151f2b !important;
+  color: #e6edf3 !important;
+  border: 1px solid #263241;
+}
+
+/* KNAPPER / INPUTS I CONTROLS */
+html.dark input,
+html.dark select,
+html.dark textarea,
+html.dark button {
+  background-color: #151f2b;
+  color: #ffffff;
+  border-color: #324357;
+}
+html.dark input:focus,
+html.dark select:focus,
+html.dark textarea:focus,
+html.dark button:focus {
+  outline: 1px solid #66b3ff;
+  outline-offset: 0;
+}
+
+/* SCROLLBAR */
+html.dark ::-webkit-scrollbar-track {
+  background: #0e151f;
+}
+html.dark ::-webkit-scrollbar-thumb {
+  background: #263241;
+  border-radius: 4px;
+}
+html.dark ::-webkit-scrollbar-thumb:hover {
+  background: #324357;
+}
+
+/* STORY FRAME BORDER / SEPARATORER */
+html.dark .docs-story {
+  border-color: #263241 !important;
+}
+
+/* Light mode reset (valgfritt eksplisitt) */
+html:not(.dark) .docblock-argstable,
+html:not(.dark) #storybook-docs table {
+  background-color: #ffffff;
+}
+
+/* --- Flere presise overstyringer for elementer som fortsatt var lyse --- */
+/* Type "pills" (inline code) i ArgTypes-tabellen */
+html.dark .docblock-argstable td code,
+html.dark .docblock-argstable td .sbdocs code {
+  background-color: #1b2530 !important;
+  color: #e6edf3 !important;
+  border: 1px solid #2f3d4b !important;
+  box-shadow: none !important;
+}
+
+/* Required-stjerne */
+html.dark .docblock-argstable td .required,
+html.dark .docblock-argstable th .required,
+html.dark .docblock-argstable .required {
+  color: #ffb347 !important;
+}
+
+/* RAW-knapp / code toggle */
+html.dark .docblock-argstable button,
+html.dark .docblock-argstable button[role='button'] {
+  background-color: #1b2530;
+  color: #ffffff;
+  border: 1px solid #324357;
+}
+html.dark .docblock-argstable button:hover {
+  background-color: #243140;
+}
+
+/* Tomme default-celler: fjern hvit bakgrunn som kan komme fra user agent */
+html.dark .docblock-argstable td:empty {
+  background: transparent !important;
+}
+
+/* Tooltip (hvis Storybook default brukes) */
+html.dark .sb-tooltip {
+  background: #1b2530 !important;
+  color: #ffffff !important;
+  border: 1px solid #324357;
+}
+
+/* Addon-panels / tabpanel (f.eks. Actions, Controls) */
+html.dark [data-panel='true'],
+html.dark div[role='tabpanel'] {
+  background-color: #0e151f;
+  color: #ffffff;
+}
+
+/* Syntax highlighting tokens kan fortsatt være mørke på mørk bakgrunn */
+html.dark pre code .token.comment {
+  color: #607080 !important;
+}
+html.dark pre code .token.keyword {
+  color: #66b3ff !important;
+}
+html.dark pre code .token.string {
+  color: #9ddc7c !important;
+}
+html.dark pre code .token.number {
+  color: #ffa657 !important;
+}
+
+/* Scrollbar inne i kodeblokker */
+html.dark pre::-webkit-scrollbar-track {
+  background: #151f2b;
+}
+html.dark pre::-webkit-scrollbar-thumb {
+  background: #324357;
+}
+html.dark pre::-webkit-scrollbar-thumb:hover {
+  background: #3d4f63;
+}
+
+/* Preview header (zoom / open / reset icons) and frame */
+html.dark .sbdocs-preview,
+html.dark .sbdocs-preview .sbdocs-previewHeader,
+html.dark .sbdocs-preview .docs-story,
+html.dark .docs-story .sbdocs-previewHeader {
+  background-color: #0e151f !important;
+  border-color: #263241 !important;
+}
+/* Noen Storybook builds har en ekstra wrapper-div først i preview */
+html.dark .sbdocs-preview > div:first-child {
+  background-color: #0e151f !important;
+  border-color: #263241 !important;
+}
+/* Toolbar container (zoom-knapper) kan ha role=toolbar */
+html.dark .sbdocs-preview [role='toolbar'] {
+  background: #0e151f !important;
+  border-color: #263241 !important;
+  box-shadow: none !important;
+}
+html.dark .sbdocs-preview [role='toolbar'] button {
+  background: #1b2530 !important;
+  border: 1px solid #2f3d4b !important;
+  color: #d6dee6 !important;
+}
+html.dark .sbdocs-preview [role='toolbar'] button:hover {
+  background: #243140 !important;
+  border-color: #395066 !important;
+}
+
+/* Type/description pill (f.eks. "union") i ArgTypes - gjør den mørk */
+html.dark .docblock-argstable td span[class*='DocBlock-TypeSummary'],
+html.dark .docblock-argstable td span[class*='TypeSummary'],
+html.dark .docblock-argstable td span[class*='Pill'],
+html.dark .docblock-argstable td span[title='type'],
+html.dark .docblock-argstable td span[title='union'] {
+  background-color: #1b2530 !important;
+  color: #e6edf3 !important;
+  border: 1px solid #2f3d4b !important;
+  box-shadow: none !important;
+}
+
+/* Fallback: alle små inline spans i first type kolonne med lys bakgrunn */
+html.dark .docblock-argstable td > span:not(:empty) {
+  color: #e6edf3;
+}
+
+/* Spesifikt: type/description "pill" (f.eks. union) i kolonne 2 når den rendres som span uten klasser */
+html.dark .docblock-argstable td:nth-child(2) span:not(.required):not(:empty) {
+  background-color: #1b2530 !important;
+  color: #e6edf3 !important;
+  border: 1px solid #2f3d4b !important;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  line-height: 1.2;
+  box-shadow: none !important;
+}
+
+/* Juster margin/padding hvis Storybook gir hvit outline */
+html.dark .docblock-argstable td > span {
+  outline: none;
+}

@@ -1,6 +1,6 @@
 import { setModiaBrukerOgNaviger } from '@/app/kandidat/util';
 import { useKandidatContext } from '@/app/kandidat/vis-kandidat/KandidatContext';
-import { dialogUrl } from '@/components/felles/modia/eksterneUrler';
+import { dialogUrl } from '@/components/modia/eksterneUrler';
 import { ExternalLinkIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button } from '@navikt/ds-react';
 import { useEffect, useState } from 'react';

@@ -1,14 +1,14 @@
 import { leggTilKandidater } from '@/app/api/kandidat-sok/leggTilKandidat';
 import { formidleUsynligKandidat } from '@/app/api/kandidat/formidleKandidat';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
-import LenkeKortMedIkon from '@/components/felles/LenkeKortMedIkon';
 import LeggTilKandidater, {
   ValgtKandidatProp,
-} from '@/components/felles/legg-til-kandidat/LeggTilKandidater';
-import { UmamiEvent } from '@/components/umami/umamiEvents';
+} from '@/app/stilling/_ui/legg-til-kandidat/LeggTilKandidater';
+import LenkeKortMedIkon from '@/components/lenke-kort/LenkeKortMedIkon';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
 import { RekbisError } from '@/util/rekbisError';
+import { UmamiEvent } from '@/util/umamiEvents';
 import { Button, Modal } from '@navikt/ds-react';
 import { FC, Fragment, useRef, useState } from 'react';
 

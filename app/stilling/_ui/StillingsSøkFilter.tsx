@@ -7,7 +7,7 @@ import { useUseBrukerStandardSøk } from '@/app/api/stilling/standardsok/useBruk
 import InkluderingFilter from '@/app/stilling/_ui/StillingsSøkFilter/InkluderingFilter';
 import StillingSøkebar from '@/app/stilling/_ui/StillingsSøkFilter/StillingSøkebar';
 import MittStandardsøk from '@/app/stilling/_ui/standardsøk/MittStandardsøk';
-import AlleFilterKomponent from '@/components/felles/filter/AlleFilterKomponent';
+import AlleFilterKomponent from '@/components/filter/AlleFilterKomponent';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { MagnifyingGlassIcon } from '@navikt/aksel-icons';

@@ -5,7 +5,7 @@ import {
   oppdaterNyhet,
   opprettNyhet,
 } from '@/app/api/bruker/nyheter/[...slug]/nyhet-admin';
-import RikTekstEditor from '@/components/felles/rikteksteditor/RikTekstEditor';
+import RikTekstEditor from '@/components/rikteksteditor/RikTekstEditor';
 import { RekbisError } from '@/util/rekbisError';
 import { PencilIcon } from '@navikt/aksel-icons';
 import { Button, Modal, TextField } from '@navikt/ds-react';

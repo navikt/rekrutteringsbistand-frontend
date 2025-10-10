@@ -1,6 +1,6 @@
 'use client';
 
-import { UmamiEventObject } from '@/components/umami/umamiEvents';
+import { UmamiEventObject } from '@/util/umamiEvents';
 import { logger } from '@navikt/next-logger';
 import { useRouter } from 'next/navigation';
 import { createContext, ReactNode, useContext } from 'react';
@@ -29,8 +29,17 @@ interface UmamiProviderProps {
   children: ReactNode;
 }
 
+// Wrapper-hook som skjuler runtime-feil dersom App Router ikke er tilgjengelig (f.eks. i Storybook)
+const useSafeRouter = () => {
+  try {
+    return useRouter();
+  } catch {
+    return null as any; // intentional fallback
+  }
+};
+
 export const UmamiProvider = ({ children }: UmamiProviderProps) => {
-  const router = useRouter();
+  const router = useSafeRouter();
 
   const track = (event: UmamiEventObject, eventData?: Record<string, any>) => {
     if (window.umami) {
@@ -57,8 +66,11 @@ export const UmamiProvider = ({ children }: UmamiProviderProps) => {
     setTimeout(() => {
       if (url.startsWith('http')) {
         window.location.href = url;
-      } else {
+      } else if (router?.push) {
         router.push(url);
+      } else {
+        // Fallback når router ikke finnes (Storybook): full page navigation
+        window.location.href = url;
       }
     }, 150);
   };

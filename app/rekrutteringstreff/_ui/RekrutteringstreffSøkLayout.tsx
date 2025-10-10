@@ -1,6 +1,5 @@
 'use client';
 
-import { RekrutteringstreffBreadcrumbs } from './RekrutteringstreffBreadcrumbs';
 import { RekrutteringstreffFilter } from './RekrutteringstreffFilter';
 import {
   opprettRekrutteringstreff,
@@ -9,10 +8,10 @@ import {
 import SideScroll from '@/components/SideScroll';
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideLayout from '@/components/layout/SideLayout';
-import { UmamiEvent } from '@/components/umami/umamiEvents';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
 import { RekbisError } from '@/util/rekbisError';
+import { UmamiEvent } from '@/util/umamiEvents';
 import { Button } from '@navikt/ds-react';
 import { FC, ReactNode, useRef } from 'react';
 
@@ -55,7 +54,6 @@ const RekrutteringstreffSøkLayout: FC<RekrutteringstreffSøkLayoutProps> = ({
         <div ref={headerRef}>
           <PanelHeader>
             <PanelHeader.Section
-              actionsLeft={<RekrutteringstreffBreadcrumbs />}
               actionsRight={
                 <Button onClick={handleOpprettRekrutteringstreff}>
                   Nytt rekrutteringstreff

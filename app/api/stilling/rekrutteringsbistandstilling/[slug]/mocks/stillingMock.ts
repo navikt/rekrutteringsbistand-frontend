@@ -125,6 +125,7 @@ const createMockStilling = (props?: MockStilling): StillingsDataDTO => {
       firstPublished: faker.datatype.boolean(),
       deactivatedByExpiry: faker.datatype.boolean(),
       activationOnPublishingDate: faker.datatype.boolean(),
+      versjon: 1,
     },
   };
 };
@@ -274,5 +275,6 @@ export const nyStillingMock = {
     firstPublished: false,
     deactivatedByExpiry: false,
     activationOnPublishingDate: false,
+    versjon: 1,
   },
 };

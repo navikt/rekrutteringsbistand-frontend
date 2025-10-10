@@ -240,6 +240,7 @@ export class ElasticSearchQueryBuilder {
     if (felt === 'tekstfelter') {
       feltManSkalSøkeI.push(
         'stilling.adtext_no^0.5',
+        'stilling.uuid',
         'stilling.tittel',
         'stilling.employer.name',
         'stilling.properties.jobtitle',
@@ -249,6 +250,7 @@ export class ElasticSearchQueryBuilder {
     } else {
       feltManSkalSøkeI.push(
         'stilling.adtext_no^0.5',
+        'stilling.uuid',
         'stilling.tittel',
         'stilling.annonsenr',
         'stilling.employer.name',

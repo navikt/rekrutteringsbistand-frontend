@@ -86,6 +86,15 @@ export const RekrutteringstreffProvider = ({
   );
 };
 
+export const useNullableRekrutteringstreffContext = () => {
+  const context = useContext(RekrutteringstreffContext);
+
+  if (context === undefined) {
+    return null;
+  }
+  return context;
+};
+
 export const useRekrutteringstreffContext = () => {
   const contekst = useContext(RekrutteringstreffContext);
 

@@ -9,7 +9,7 @@ import PrioriterteMålgrupper from './_ui/PrioriterteMålgrupper';
 import Språk from './_ui/Språk';
 import Utdanningsnivå from './_ui/Utdanningsnivå';
 import Innsatsgrupper from '@/app/kandidat/kandidat-søk-filter/_ui/Innsatsgrupper';
-import AlleFilterKomponent from '@/components/felles/filter/AlleFilterKomponent';
+import AlleFilterKomponent from '@/components/filter/AlleFilterKomponent';
 
 export default function KandidatSøkFilter() {
   return (

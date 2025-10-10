@@ -1,6 +1,6 @@
 import { useStillingsSøkFilter } from '@/app/stilling/StillingsSøkContext';
-import { UmamiEvent } from '@/components/umami/umamiEvents';
 import { useUmami } from '@/providers/UmamiContext';
+import { UmamiEvent } from '@/util/umamiEvents';
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
 import { FC, Fragment } from 'react';
 

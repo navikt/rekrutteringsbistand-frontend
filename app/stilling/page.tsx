@@ -2,9 +2,9 @@
 
 import StillingsSøk from './StillingsSøk';
 import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
-import { OpprettKnapp } from '@/components/felles/opprett/OpprettKnapp';
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideLayout from '@/components/layout/SideLayout';
+import { OpprettKnapp } from '@/components/opprett/OpprettKnapp';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
 

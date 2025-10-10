@@ -7,10 +7,10 @@ import { useKiAnalyse } from './useKiAnalyse';
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/useInnlegg';
 import { useKiLogg } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
-import RikTekstEditor from '@/components/felles/rikteksteditor/RikTekstEditor';
+import RikTekstEditor from '@/components/rikteksteditor/RikTekstEditor';
 import { RekbisError } from '@/util/rekbisError';
 import { BodyShort, Label, Skeleton } from '@navikt/ds-react';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Controller, useFormContext, useWatch } from 'react-hook-form';
 
 interface InnleggFormProps {
