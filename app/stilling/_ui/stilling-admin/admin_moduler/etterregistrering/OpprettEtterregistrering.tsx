@@ -7,9 +7,9 @@ import { kandidatlisteInfoEndepunkt } from '@/app/api/kandidat/useKandidatlisteI
 import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { oppdaterEtterregistrering } from '@/app/stilling/_ui/stilling-admin/admin_moduler/etterregistrering/etterregistrering-steg';
 import { StillingAdminDTO } from '@/app/stilling/_ui/stilling-admin/page';
-import { UmamiEvent } from '@/components/umami/umamiEvents';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
+import { UmamiEvent } from '@/util/umamiEvents';
 import { BodyLong, Button, Modal } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';

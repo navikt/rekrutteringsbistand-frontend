@@ -1,4 +1,4 @@
-import Fremdriftspanel from '@/components/Fremdriftspanel';
+import Fremdriftspanel from '@/components/fremdriftspanel/Fremdriftspanel';
 import MaksBredde from '@/components/layout/MaksBredde';
 import RekBisKort from '@/components/layout/RekBisKort';
 import * as React from 'react';

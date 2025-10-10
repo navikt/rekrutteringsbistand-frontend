@@ -16,9 +16,9 @@ import { EKSCLUDERTE_STANDARDSOK_PARAMETERE } from '@/app/stilling/_ui/standards
 import SideScroll from '@/components/SideScroll';
 import Sidelaster from '@/components/layout/Sidelaster';
 import { Roller } from '@/components/tilgangskontroll/roller';
-import { UmamiEvent } from '@/components/umami/umamiEvents';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
+import { UmamiEvent } from '@/util/umamiEvents';
 import { useSearchParams } from 'next/navigation';
 import { FC, Suspense, useEffect, useRef } from 'react';
 

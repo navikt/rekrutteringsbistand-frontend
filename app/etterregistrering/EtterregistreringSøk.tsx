@@ -10,10 +10,10 @@ import StillingsSøkSortering from '@/app/stilling/_ui/StillingsSøkSortering';
 import MittStandardsøk from '@/app/stilling/_ui/standardsøk/MittStandardsøk';
 import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
 import SideScroll from '@/components/SideScroll';
-import { OpprettKnapp } from '@/components/felles/opprett/OpprettKnapp';
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideLayout from '@/components/layout/SideLayout';
 import Sidelaster from '@/components/layout/Sidelaster';
+import { OpprettKnapp } from '@/components/opprett/OpprettKnapp';
 import { FC, Suspense } from 'react';
 
 const EtterRegistreringSøk = () => {

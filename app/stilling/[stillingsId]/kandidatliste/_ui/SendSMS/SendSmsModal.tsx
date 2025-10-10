@@ -11,10 +11,10 @@ import {
 } from '@/app/api/kandidatvarsel/kandidatvarsel';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
-import { UmamiEvent } from '@/components/umami/umamiEvents';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
 import { RekbisError } from '@/util/rekbisError';
+import { UmamiEvent } from '@/util/umamiEvents';
 import { ArrowForwardIcon } from '@navikt/aksel-icons';
 import {
   Accordion,

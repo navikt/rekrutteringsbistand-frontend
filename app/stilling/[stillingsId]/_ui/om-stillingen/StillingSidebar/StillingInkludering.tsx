@@ -1,5 +1,5 @@
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
-import TekstMedIkon from '@/components/felles/TekstMedIkon';
+import TekstMedIkon from '@/components/TekstMedIkon';
 import { CheckmarkIcon } from '@navikt/aksel-icons';
 import { Heading } from '@navikt/ds-react';
 import { FC } from 'react';

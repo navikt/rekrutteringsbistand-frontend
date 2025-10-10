@@ -74,6 +74,10 @@ export default function StillingsSidePage() {
               }
             >
               <PanelHeader.Section
+                erstattPath={[
+                  stillingsData.stilling.uuid,
+                  stillingsData?.stilling?.title,
+                ]}
                 tabs={<StillingTabs />}
                 actionsRight={<TabKnapper printRef={printRef} />}
               />

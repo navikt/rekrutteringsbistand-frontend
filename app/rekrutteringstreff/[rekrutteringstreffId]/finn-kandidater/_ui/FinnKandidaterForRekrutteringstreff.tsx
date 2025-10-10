@@ -4,7 +4,6 @@ import KandidatTilRekrutteringstreff from './KandidatTilRekrutteringstreff';
 import { KandidatSøkProvider } from '@/app/kandidat/KandidaSokFilterContext';
 import { KandidatSøkMarkerteContextProvider } from '@/app/kandidat/KandidatSøkMarkerteContext';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
-import { RekrutteringstreffBreadcrumbs } from '@/app/rekrutteringstreff/_ui/RekrutteringstreffBreadcrumbs';
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideLayout from '@/components/layout/SideLayout';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
@@ -45,11 +44,7 @@ const FinnKandidaterForRekrutteringstreff: FC = () => {
           <SideLayout
             header={
               <PanelHeader>
-                <PanelHeader.Section
-                  actionsLeft={
-                    <RekrutteringstreffBreadcrumbs items={breadcrumbs} />
-                  }
-                ></PanelHeader.Section>
+                <PanelHeader.Section></PanelHeader.Section>
               </PanelHeader>
             }
           >

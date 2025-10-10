@@ -4,10 +4,9 @@ import {
   SuggestType,
   useUseSugestions,
 } from '@/app/api/kandidat-sok/useSugestions';
-import AlleFilterKomponent from '@/components/felles/filter/AlleFilterKomponent';
+import AlleFilterKomponent from '@/components/filter/AlleFilterKomponent';
 import { Search, UNSAFE_Combobox } from '@navikt/ds-react';
-import { useState, FC } from 'react';
-import * as React from 'react';
+import { FC, useState } from 'react';
 
 export const RekrutteringstreffFilter: FC = () => {
   const [fritekstSøkTekst, setFritekstSøkTekst] = useState('');

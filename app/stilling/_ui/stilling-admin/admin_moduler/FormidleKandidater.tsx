@@ -1,8 +1,8 @@
-import RedigerBoks from '@/app/stilling/_ui/stilling-admin/admin_moduler/_felles/RedigerBoks';
-import { StillingAdminDTO } from '@/app/stilling/_ui/stilling-admin/page';
 import LeggTilKandidater, {
   ValgtKandidatProp,
-} from '@/components/felles/legg-til-kandidat/LeggTilKandidater';
+} from '@/app/stilling/_ui/legg-til-kandidat/LeggTilKandidater';
+import RedigerBoks from '@/app/stilling/_ui/stilling-admin/admin_moduler/_felles/RedigerBoks';
+import { StillingAdminDTO } from '@/app/stilling/_ui/stilling-admin/page';
 import { BodyLong } from '@navikt/ds-react';
 import { useCallback } from 'react';
 import { useFormContext } from 'react-hook-form';

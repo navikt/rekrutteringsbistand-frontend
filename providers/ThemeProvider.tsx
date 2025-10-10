@@ -24,9 +24,14 @@ export const ThemeContext = createContext<ApplikasjonContextType>({
 
 export interface ThemeProviderProps {
   children?: ReactNode | undefined;
+  /** Hvis satt: overstyr darkMode-state eksternt (kontrollert modus) */
+  forceDarkMode?: boolean;
 }
 
-export const ThemeProvider: FC<ThemeProviderProps> = ({ children }) => {
+export const ThemeProvider: FC<ThemeProviderProps> = ({
+  children,
+  forceDarkMode,
+}) => {
   const [mounted, setMounted] = useState(false);
   const [darkMode, setDarkMode] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
@@ -45,6 +50,13 @@ export const ThemeProvider: FC<ThemeProviderProps> = ({ children }) => {
     localStorage.setItem('darkMode', darkMode.toString());
     document.documentElement.classList.toggle('dark', darkMode);
   }, [darkMode]);
+
+  // Synk når forceDarkMode endres (kontrollert utenfra, f.eks. Storybook)
+  useEffect(() => {
+    if (forceDarkMode !== undefined && forceDarkMode !== darkMode) {
+      setDarkMode(forceDarkMode);
+    }
+  }, [forceDarkMode, darkMode]);
 
   useReactEffect(() => {
     setMounted(true);
