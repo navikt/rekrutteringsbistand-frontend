@@ -1,5 +1,6 @@
 'use client';
 
+import { Roller } from '@/components/tilgangskontroll/roller';
 import { UmamiEvent } from '@/components/umami/umamiEvents';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
@@ -83,7 +84,11 @@ export const KandidaSøkFilterContext = createContext<
 export const KandidatSøkProvider: FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const { valgtNavKontor } = useApplikasjonContext();
+  const { valgtNavKontor, harRolle } = useApplikasjonContext();
+  const harTilgangTilAlleBrukerne = harRolle([
+    Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+    Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER,
+  ]);
   const { track } = useUmami();
   // Unngå fritekst i searchParams
   const [fritekst, setFritekst] = useState<string>('');
@@ -96,7 +101,9 @@ export const KandidatSøkProvider: FC<{ children: ReactNode }> = ({
   const [portefølje, setPortefølje] = useQueryState(
     KandidatSøkQueryparam.Portefølje,
     {
-      defaultValue: KandidatSøkPortefølje.MINE_BRUKERE,
+      defaultValue: harTilgangTilAlleBrukerne
+        ? KandidatSøkPortefølje.ALLE
+        : KandidatSøkPortefølje.MINE_BRUKERE,
       clearOnDefault: true,
     },
   );
