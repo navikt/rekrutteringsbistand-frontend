@@ -49,6 +49,9 @@ const config: StorybookConfig = {
         alias: {
           ...config.resolve?.alias,
           '@': path.resolve(__dirname, '../'),
+          // Storybook har ikke Next.js App Router montert. Vi aliaser next/navigation til en mock
+          // slik at hooks som useRouter/usePathname ikke kaster "invariant expected app router to be mounted".
+          'next/navigation': path.resolve(__dirname, './nextNavigationMock.ts'),
         },
       },
     };

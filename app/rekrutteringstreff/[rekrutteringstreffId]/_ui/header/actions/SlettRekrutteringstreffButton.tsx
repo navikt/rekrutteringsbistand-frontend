@@ -2,16 +2,16 @@
 
 import { slettRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/mutations';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
+import { useSafeRouter } from '@/hooks/useSafeRouter';
 import { RekbisError } from '@/util/rekbisError';
 import { BodyShort, Button, List, Modal } from '@navikt/ds-react';
-import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
 
 const SlettRekrutteringstreffButton = () => {
   const modalRef = useRef<HTMLDialogElement>(null);
   const [laster, setLaster] = useState(false);
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
-  const router = useRouter();
+  const router = useSafeRouter();
 
   const åpneModal = () => modalRef.current?.showModal();
   const lukkModal = () => {
@@ -28,7 +28,11 @@ const SlettRekrutteringstreffButton = () => {
     try {
       await slettRekrutteringstreff(rekrutteringstreffId);
       skalLukke = true;
-      router.push(`/rekrutteringstreff`);
+      if (router?.push) {
+        router.push(`/rekrutteringstreff`);
+      } else {
+        window.location.href = `/rekrutteringstreff`;
+      }
     } catch (error) {
       new RekbisError({
         message: 'Feiler når vi prøver å slette rekrutteringstreff',
