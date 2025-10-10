@@ -87,7 +87,6 @@ export const KandidatSøkProvider: FC<{ children: ReactNode }> = ({
   const { valgtNavKontor, harRolle } = useApplikasjonContext();
   const harTilgangTilAlleBrukerne = harRolle([
     Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-    Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER,
   ]);
   const { track } = useUmami();
   // Unngå fritekst i searchParams
