@@ -1,0 +1,1 @@
+import{ac as r,o as n,I as t,gH as o}from"./iframe-WlOW16KT.js";const s=()=>o.internUrl,a=100;n({opprettetAvNavkontorEnhetId:t().nullable(),tittel:t().min(1).max(a)});const p=e=>r(s(),e);export{p as o};
