@@ -1,6 +1,9 @@
 'use client';
 
-import { toIso, formatIso } from '../rediger/tidspunkt/utils';
+import {
+  formatIso,
+  toIso,
+} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/rediger/tidspunkt/utils';
 import { BodyLong, BodyShort, Button, Label, Modal } from '@navikt/ds-react';
 import { FC, useEffect, useMemo, useRef, useState } from 'react';
 import { useFormContext } from 'react-hook-form';

@@ -1,13 +1,14 @@
 'use client';
 
-import AvlysRekrutteringstreffButton from '../actions/AvlysRekrutteringstreffButton';
-import FullførRekrutteringstreffButton from '../actions/FullførRekrutteringstreffButton';
-import GjenapneRekrutteringstreffButton from '../actions/GjenapneRekrutteringstreffButton';
-import PubliserRekrutteringstreffButton from '../actions/PubliserRekrutteringstreffButton';
-import RedigerPublisertButton from '../actions/RedigerPublisertButton';
-import RepubliserRekrutteringstreffButton from '../actions/RepubliserRekrutteringstreffButton';
-import SlettRekrutteringstreffButton from '../actions/SlettRekrutteringstreffButton';
 import { useRekrutteringstreffData } from '../hooks/useRekrutteringstreffData';
+import AvlysRekrutteringstreffButton from './actions/AvlysRekrutteringstreffButton';
+import FullførRekrutteringstreffButton from './actions/FullførRekrutteringstreffButton';
+import GjenapneRekrutteringstreffButton from './actions/GjenapneRekrutteringstreffButton';
+import PubliserRekrutteringstreffButton from './actions/PubliserRekrutteringstreffButton';
+import RedigerPublisertButton from './actions/RedigerPublisertButton';
+import RepubliserRekrutteringstreffButton from './actions/RepubliserRekrutteringstreffButton';
+import SlettRekrutteringstreffButton from './actions/SlettRekrutteringstreffButton';
+import { AktivtSteg } from '@/app/rekrutteringstreff/_types/constants';
 import { Button } from '@navikt/ds-react';
 import { FC } from 'react';
 
@@ -64,7 +65,12 @@ const HeaderActions: FC<Props> = ({
   }
 
   // Når man er i edit-modus etter publisering, vis spesielle knapper
-  if (erIEditModus && harPublisert && !avlyst && activeStep !== 'FULLFØRE') {
+  if (
+    erIEditModus &&
+    harPublisert &&
+    !avlyst &&
+    activeStep !== AktivtSteg.FULLFØRE
+  ) {
     return (
       <div className='flex items-center gap-2'>
         <RepubliserRekrutteringstreffButton
@@ -94,7 +100,7 @@ const HeaderActions: FC<Props> = ({
   }
 
   // Når man er i edit-modus før publisering
-  if (erIEditModus && !harPublisert && activeStep === 'PUBLISERE') {
+  if (erIEditModus && !harPublisert && activeStep === AktivtSteg.KLADD) {
     return (
       <div className='flex items-center gap-2'>
         <PubliserRekrutteringstreffButton
@@ -119,7 +125,7 @@ const HeaderActions: FC<Props> = ({
   // Normal view mode knapper (når man ikke er i edit-modus)
   return (
     <div className='flex items-center gap-2'>
-      {!avlyst && harPublisert && activeStep !== 'FULLFØRE' && (
+      {!avlyst && harPublisert && activeStep !== AktivtSteg.FULLFØRE && (
         <RedigerPublisertButton
           erIForhåndsvisning={erIForhåndsvisning}
           harPublisert={harPublisert}
@@ -128,7 +134,7 @@ const HeaderActions: FC<Props> = ({
         />
       )}
 
-      {!avlyst && activeStep === 'PUBLISERE' && (
+      {!avlyst && activeStep === AktivtSteg.KLADD && (
         <PubliserRekrutteringstreffButton
           erPubliseringklar={erPubliseringklar}
           rekrutteringstreffId={rekrutteringstreffId}
@@ -137,7 +143,7 @@ const HeaderActions: FC<Props> = ({
         />
       )}
 
-      {!avlyst && activeStep === 'INVITERE' && (
+      {!avlyst && activeStep === AktivtSteg.INVITERE && (
         <FullførRekrutteringstreffButton
           rekrutteringstreffId={rekrutteringstreffId}
           harInvitert={harInvitert}
@@ -146,7 +152,7 @@ const HeaderActions: FC<Props> = ({
         />
       )}
 
-      {activeStep === 'FULLFØRE' && (
+      {activeStep === AktivtSteg.FULLFØRE && (
         <GjenapneRekrutteringstreffButton
           rekrutteringstreffId={rekrutteringstreffId}
           oppdaterData={oppdaterData}
@@ -160,7 +166,7 @@ const HeaderActions: FC<Props> = ({
         />
       )}
 
-      {activeStep === 'PUBLISERE' && <SlettRekrutteringstreffButton />}
+      {activeStep === AktivtSteg.KLADD && <SlettRekrutteringstreffButton />}
     </div>
   );
 };

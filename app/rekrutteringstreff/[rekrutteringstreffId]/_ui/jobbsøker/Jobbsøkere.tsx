@@ -1,14 +1,14 @@
 'use client';
 
-import LeggTilJobbsøkerKnapp from '../actions/LeggTilJobbsøkerKnapp';
 import { useRekrutteringstreffData } from '../hooks/useRekrutteringstreffData';
 import { InviterInternalDto, InviterModal } from './InviterModal';
 import JobbsøkerKort from './JobbsøkerKort';
+import LeggTilJobbsøkerKnapp from './LeggTilJobbsøkerKnapp';
 import {
   JobbsøkerDTO,
   useJobbsøkere,
 } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
-import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_contexts/RekrutteringstreffContext';
+import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { AktivtSteg } from '@/app/rekrutteringstreff/_types/constants';
 import SWRLaster from '@/components/SWRLaster';
 import { BodyShort, Button, TagProps } from '@navikt/ds-react';

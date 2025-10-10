@@ -11,7 +11,7 @@ import { useAlleHendelser } from '@/app/api/rekrutteringstreff/[...slug]/allehen
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import { useKiLogg } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
-import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_contexts/RekrutteringstreffContext';
+import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import type { RekrutteringstreffBreadcrumbItem } from '@/app/rekrutteringstreff/_ui/RekrutteringstreffBreadcrumbs';
 import Fremdriftspanel from '@/components/Fremdriftspanel';
 import SideScroll from '@/components/SideScroll';

@@ -18,7 +18,7 @@ import {
 export const getActiveStepFromHendelser = (
   hendelser: Pick<HendelseDTO, 'hendelsestype' | 'tidspunkt'>[] | undefined,
 ): AktivtSteg => {
-  if (!hendelser || hendelser.length === 0) return AktivtSteg.PUBLISERE;
+  if (!hendelser || hendelser.length === 0) return AktivtSteg.KLADD;
 
   const relevante = hendelser
     .filter((h) =>
@@ -31,7 +31,7 @@ export const getActiveStepFromHendelser = (
         new Date(b.tidspunkt).getTime() - new Date(a.tidspunkt).getTime(),
     );
 
-  if (relevante.length === 0) return AktivtSteg.PUBLISERE;
+  if (relevante.length === 0) return AktivtSteg.KLADD;
 
   const siste = relevante[0].hendelsestype as RekrutteringstreffHendelsestype;
   switch (siste) {
@@ -46,6 +46,6 @@ export const getActiveStepFromHendelser = (
     case RekrutteringstreffHendelsestype.FULLFØR:
       return AktivtSteg.FULLFØRE;
     default:
-      return AktivtSteg.PUBLISERE;
+      return AktivtSteg.KLADD;
   }
 };
