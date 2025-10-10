@@ -1,5 +1,7 @@
 'use client';
 
+import { useNullableRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
+import { useNullableStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import {
   Breadcrumb,
   BreadcrumbEllipsis,
@@ -9,7 +11,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
-import { BriefcaseIcon, PersonIcon } from '@navikt/aksel-icons';
+import { BriefcaseIcon, PersonIcon, ReceptionIcon } from '@navikt/aksel-icons';
 import { usePathname } from 'next/navigation';
 import {
   Fragment,
@@ -32,8 +34,8 @@ export type PathConfig = Record<string, PathConfigEntry>;
 interface AutoBreadcrumbsProps {
   /** Valgfri mapping av path-segmenter -> label/icon. Hvis utelatt brukes defaultPathConfig. */
   pathConfig?: PathConfig;
-  /** Hvis satt, overskriver label på siste segment */
-  overrideLastLabel?: string;
+  /** Bytt ut et segment-navn med en custom label. Eks: ['a1d169be-...','Senior utvikler'] */
+  erstattPath?: [originalSegment: string, nyLabel: string];
   className?: string;
   /** For test / Storybook: bruk denne pathen i stedet for usePathname() */
   forcedPath?: string;
@@ -41,6 +43,10 @@ interface AutoBreadcrumbsProps {
 
 // Standard mapping som tidligere lå i PanelHeader
 export const defaultPathConfig: PathConfig = {
+  rekrutteringstreff: {
+    label: 'Rekrutteringstreff',
+    icon: <ReceptionIcon aria-hidden className='w-4 h-4' />,
+  },
   stilling: {
     label: 'Stillingsoppdrag',
     icon: <BriefcaseIcon aria-hidden className='w-4 h-4' />,
@@ -66,12 +72,11 @@ export const defaultPathConfig: PathConfig = {
     icon: <PersonIcon aria-hidden className='w-4 h-4' />,
   },
   'finn-kandidater': { label: 'Finn kandidater for stilling' },
-  rekrutteringsbistand: { label: 'Rekrutteringsbistand' },
 };
 
 export function AutoBreadcrumbs({
   pathConfig = defaultPathConfig,
-  overrideLastLabel,
+  erstattPath,
   className,
   forcedPath,
 }: AutoBreadcrumbsProps) {
@@ -112,15 +117,39 @@ export function AutoBreadcrumbs({
     const entry = pathConfig[seg];
     const href = '/' + segments.slice(0, i + 1).join('/');
     const isLast = i === segments.length - 1;
+    let label = entry?.label || seg;
+    if (erstattPath && seg === erstattPath[0]) {
+      label = erstattPath[1];
+    }
     return {
       segment: seg,
       href,
       icon: entry?.icon,
-      label:
-        isLast && overrideLastLabel ? overrideLastLabel : entry?.label || seg,
+      label,
+      // Siste segment skal ikke være lenke; ellers følger vi config
       skipLink: isLast || !!entry?.skipLink,
     };
   });
+
+  // // Dynamisk overskriv label for /stilling/<uuid>
+  // if (segments[0] === 'stilling' && segments.length >= 2 && items[1]) {
+  //   const stillingstittel = stillingsCtx?.stillingsData?.stilling?.title;
+  //   if (stillingstittel) {
+  //     items[1].label = stillingstittel;
+  //   }
+  // }
+
+  // // Dynamisk overskriv label for /rekrutteringstreff/<id>
+  // if (
+  //   segments[0] === 'rekrutteringstreff' &&
+  //   segments.length >= 2 &&
+  //   items[1]
+  // ) {
+  //   const treffNavn = (rekTreffCtx as any)?.rekrutteringstreff?.navn;
+  //   if (treffNavn) {
+  //     items[1].label = treffNavn;
+  //   }
+  // }
 
   const visibleItems = useMemo(() => {
     if (!collapsed || items.length <= 2) return items;

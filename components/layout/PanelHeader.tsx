@@ -50,6 +50,7 @@ export default function PanelHeader({
 }: {
   children: ReactNode;
   className?: string;
+
   /** Når satt og vinduet er dynamisk vises en knapp (til venstre for lukk) som navigerer hit i hovedvisning */
   fullskjermUrl?: string;
   fullskjermAriaLabel?: string;
@@ -143,7 +144,7 @@ export interface PanelHeaderSectionProps {
   skjulBrødsmuler?: boolean;
   /** Tittel brukes automatisk som label for siste segment i brødsmuler */
   title?: ReactNode;
-
+  erstattPath?: [originalSegment: string, nyLabel: string];
   subtitle?: ReactNode;
   tabs?: ReactNode;
   meta?: ReactNode;
@@ -169,12 +170,11 @@ export function PanelHeaderSection({
   actionsRight,
   children,
   className,
+  erstattPath,
 }: PanelHeaderSectionProps) {
   const { compact } = useContext(PanelHeaderModeContext);
   const winCtx = useWindowContext();
   // Pathname håndteres nå internt av AutoBreadcrumbs
-
-  // pathConfig flyttet til AutoBreadcrumbs (defaultPathConfig)
 
   const rowClass = cx(
     'flex gap-x-4',
@@ -196,11 +196,7 @@ export function PanelHeaderSection({
         <div className='flex items-center gap-3 min-w-0 flex-1 flex-wrap'>
           {!skjulBrødsmuler && !winCtx?.isDynamic ? (
             <div className='px-4 pt-2 max-w-full'>
-              <AutoBreadcrumbs
-                overrideLastLabel={
-                  typeof title === 'string' ? (title as string) : undefined
-                }
-              />
+              <AutoBreadcrumbs erstattPath={erstattPath} />
             </div>
           ) : (
             title

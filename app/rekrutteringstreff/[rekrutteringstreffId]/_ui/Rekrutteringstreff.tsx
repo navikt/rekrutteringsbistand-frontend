@@ -12,7 +12,6 @@ import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import { useKiLogg } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
-import type { RekrutteringstreffBreadcrumbItem } from '@/app/rekrutteringstreff/_ui/RekrutteringstreffBreadcrumbs';
 import SideScroll from '@/components/SideScroll';
 import Fremdriftspanel from '@/components/fremdriftspanel/Fremdriftspanel';
 import SideLayout from '@/components/layout/SideLayout';
@@ -142,14 +141,6 @@ const Rekrutteringstreff: FC = () => {
     }
     return 'Rekrutteringstreff';
   }, [rekrutteringstreff?.tittel]);
-
-  const breadcrumbs: RekrutteringstreffBreadcrumbItem[] = useMemo(() => {
-    if (!harPublisert && !avlyst) {
-      return [{ label: 'Nytt rekrutteringstreff' }];
-    }
-
-    return [{ label: rekrutteringstreffNavn }];
-  }, [harPublisert, avlyst, rekrutteringstreffNavn]);
 
   const skalViseHeader =
     modus === 'preview-page' ? true : !viserFullskjermForhåndsvisning;
@@ -281,7 +272,7 @@ const Rekrutteringstreff: FC = () => {
         header={
           <RekrutteringstreffHeader
             skalViseHeader={true}
-            breadcrumbs={breadcrumbs}
+            erstattPath={[rekrutteringstreffId, rekrutteringstreffNavn]}
             erIForhåndsvisning={false}
             viserFullskjermForhåndsvisning={true}
             jobbsøkereAntall={jobbsøkere?.length ?? 0}
@@ -316,7 +307,7 @@ const Rekrutteringstreff: FC = () => {
           skalViseHeader ? (
             <RekrutteringstreffHeader
               skalViseHeader={skalViseHeader}
-              breadcrumbs={breadcrumbs}
+              erstattPath={[rekrutteringstreffId, rekrutteringstreffNavn]}
               erIForhåndsvisning={erILesemodus}
               viserFullskjermForhåndsvisning={viserFullskjermForhåndsvisning}
               jobbsøkereAntall={jobbsøkere?.length ?? 0}

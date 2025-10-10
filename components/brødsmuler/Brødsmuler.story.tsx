@@ -4,7 +4,11 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 const meta: Meta<typeof AutoBreadcrumbs> = {
   component: AutoBreadcrumbs,
   argTypes: {
-    overrideLastLabel: { control: 'text' },
+    erstattPath: {
+      control: 'object',
+      description:
+        "Tuple [originalSegment, nyLabel] – erstatter ett segment i path'en",
+    },
   },
 };
 export default meta;
@@ -16,7 +20,7 @@ export const Standard: Story = {
     <AutoBreadcrumbs {...args} forcedPath='/stilling/123' />
   ),
   args: {
-    overrideLastLabel: 'Servitørstilling',
+    erstattPath: ['123', 'Servitørstilling'],
   },
 };
 
@@ -25,7 +29,7 @@ export const UtenOverride: Story = {
     <AutoBreadcrumbs {...args} forcedPath='/kandidat/987654' />
   ),
   args: {
-    overrideLastLabel: undefined,
+    erstattPath: undefined,
   },
 };
 
@@ -63,7 +67,7 @@ export const Width200: Story = {
   ),
   name: 'Ellipsis ved smal bredde (200px)',
   args: {
-    overrideLastLabel: 'Detalj',
+    erstattPath: ['123', 'Detalj'],
   },
   parameters: {
     docs: {

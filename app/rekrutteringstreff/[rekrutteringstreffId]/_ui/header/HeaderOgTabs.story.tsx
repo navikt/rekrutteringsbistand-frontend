@@ -13,7 +13,6 @@ const meta = {
         <RekrutteringstreffHeader
           skalViseHeader
           erIForhåndsvisning={true}
-          breadcrumbs={[{ label: 'Treff', href: '/rekrutteringstreff' }]}
           jobbsøkereAntall={3}
           arbeidsgivereAntall={2}
           lagrerNoe={false}

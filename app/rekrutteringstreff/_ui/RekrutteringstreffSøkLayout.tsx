@@ -1,6 +1,5 @@
 'use client';
 
-import { RekrutteringstreffBreadcrumbs } from './RekrutteringstreffBreadcrumbs';
 import { RekrutteringstreffFilter } from './RekrutteringstreffFilter';
 import {
   opprettRekrutteringstreff,
@@ -55,7 +54,6 @@ const RekrutteringstreffSøkLayout: FC<RekrutteringstreffSøkLayoutProps> = ({
         <div ref={headerRef}>
           <PanelHeader>
             <PanelHeader.Section
-              actionsLeft={<RekrutteringstreffBreadcrumbs />}
               actionsRight={
                 <Button onClick={handleOpprettRekrutteringstreff}>
                   Nytt rekrutteringstreff

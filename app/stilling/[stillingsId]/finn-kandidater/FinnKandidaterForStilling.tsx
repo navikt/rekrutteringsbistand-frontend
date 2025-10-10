@@ -16,7 +16,13 @@ export default function FinnKandidaterForStilling() {
     <SideLayout
       header={
         <PanelHeader>
-          <PanelHeader.Section title={'Finn kandidater for stilling'} />
+          <PanelHeader.Section
+            erstattPath={[
+              stillingsData.stilling.uuid,
+              stillingsData?.stilling?.title,
+            ]}
+            title={'Finn kandidater for stilling'}
+          />
         </PanelHeader>
       }
     >
