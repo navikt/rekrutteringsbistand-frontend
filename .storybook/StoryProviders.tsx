@@ -2,7 +2,9 @@ import { Roller } from '../components/tilgangskontroll/roller';
 import { SidebarProvider } from '../components/ui/sidebar';
 import { ApplikasjonContextProvider } from '../providers/ApplikasjonContext';
 import { UmamiProvider } from '../providers/UmamiContext';
+import { StegviserProvider } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/stegviser/StegviserContext';
 import React from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
 
 /**
  * Global provider-komposisjon for stories.
@@ -30,20 +32,29 @@ const defaultBruker = (roller: Roller[]) => ({
   enheter: [],
 });
 
+const GlobalFormWrapper = ({ children }: { children: React.ReactNode }) => {
+  const methods = useForm();
+  return <FormProvider {...methods}>{children}</FormProvider>;
+};
+
 export const StoryProviders: React.FC<StoryProvidersProps> = ({
   children,
   roller = DEFAULT_ROLLER,
 }) => {
   return (
-    <UmamiProvider>
-      <ApplikasjonContextProvider
-        brukerData={defaultBruker(roller) as any}
-        aktivEnhet={null}
-        aktivBruker={null}
-      >
-        {children}
-      </ApplikasjonContextProvider>
-    </UmamiProvider>
+    <StegviserProvider>
+      <GlobalFormWrapper>
+        <UmamiProvider>
+          <ApplikasjonContextProvider
+            brukerData={defaultBruker(roller) as any}
+            aktivEnhet={null}
+            aktivBruker={null}
+          >
+            {children}
+          </ApplikasjonContextProvider>
+        </UmamiProvider>
+      </GlobalFormWrapper>
+    </StegviserProvider>
   );
 };
 
