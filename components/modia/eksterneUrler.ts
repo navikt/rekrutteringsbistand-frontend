@@ -5,4 +5,4 @@ export const arbeidsrettetOppfølgingUrl =
     ? 'https://veilarbpersonflate.intern.nav.no'
     : 'https://veilarbpersonflate.intern.dev.nav.no';
 
-export const dialogUrl = `${arbeidsrettetOppfølgingUrl}/#visDialog`;
+export const dialogUrl = `${arbeidsrettetOppfølgingUrl}/dialog`;
