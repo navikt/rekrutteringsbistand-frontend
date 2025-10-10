@@ -10,7 +10,8 @@ import {
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/useInnlegg';
 import { oppdaterRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/mutations';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
-import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_contexts/RekrutteringstreffContext';
+import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
+import { AktivtSteg } from '@/app/rekrutteringstreff/_types/constants';
 import { getActiveStepFromHendelser } from '@/app/rekrutteringstreff/_utils/rekrutteringstreff';
 import { RekbisError } from '@/util/rekbisError';
 import { formatInTimeZone } from 'date-fns-tz';
@@ -33,7 +34,7 @@ export const erEditMode = (): boolean => {
 /** Sjekker om treff er publisert (INVITERE eller FULLFØRE steg) */
 export const erPublisert = (treff: any): boolean => {
   const step = getActiveStepFromHendelser(treff?.hendelser);
-  return step === 'INVITERE' || step === 'FULLFØRE';
+  return step === AktivtSteg.INVITERE || step === AktivtSteg.FULLFØRE;
 };
 
 /** Blokkerer autosave når publisert og i edit-mode (med mindre force=true) */

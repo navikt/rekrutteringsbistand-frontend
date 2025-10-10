@@ -6,7 +6,7 @@ import { useInnleggAutosave } from './useAutosave';
 import { useKiAnalyse } from './useKiAnalyse';
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/useInnlegg';
 import { useKiLogg } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
-import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_contexts/RekrutteringstreffContext';
+import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import RikTekstEditor from '@/components/rikteksteditor/RikTekstEditor';
 import { RekbisError } from '@/util/rekbisError';
 import { BodyShort, Label, Skeleton } from '@navikt/ds-react';
@@ -142,7 +142,6 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
             showAnalysis={showAnalysis}
             erRedigeringAvPublisertTreff={erRedigeringAvPublisertTreff}
             onForceSave={onForceSave}
-            variant='innlegg'
             ariaLabel='Analyse av innlegg'
           />
         </>

@@ -1,7 +1,7 @@
 import HeaderActions from './HeaderActions';
 import RekrutteringstreffHeader from './RekrutteringstreffHeader';
 import TabsNav from './TabsNav';
-import { RekrutteringstreffProvider } from '@/app/rekrutteringstreff/_contexts/RekrutteringstreffContext';
+import { RekrutteringstreffProvider } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 // Inert visning av header + navigasjon. Vi mocker kun nødvendige props og context.

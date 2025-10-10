@@ -1,8 +1,8 @@
-import AvlysRekrutteringstreffButton from './AvlysRekrutteringstreffButton';
-import FullførRekrutteringstreffButton from './FullførRekrutteringstreffButton';
-import GjenapneRekrutteringstreffButton from './GjenapneRekrutteringstreffButton';
-import PubliserRekrutteringstreffButton from './PubliserRekrutteringstreffButton';
-import RepubliserRekrutteringstreffButton from './RepubliserRekrutteringstreffButton';
+import AvlysRekrutteringstreffButton from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/header/actions/AvlysRekrutteringstreffButton';
+import FullførRekrutteringstreffButton from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/header/actions/FullførRekrutteringstreffButton';
+import GjenapneRekrutteringstreffButton from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/header/actions/GjenapneRekrutteringstreffButton';
+import PubliserRekrutteringstreffButton from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/header/actions/PubliserRekrutteringstreffButton';
+import RepubliserRekrutteringstreffButton from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/header/actions/RepubliserRekrutteringstreffButton';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 // Publiserings- og statusendringsknapper (subset) inert.

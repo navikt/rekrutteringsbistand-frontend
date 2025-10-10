@@ -1,11 +1,11 @@
-import AvlysRekrutteringstreffButton from '../actions/AvlysRekrutteringstreffButton';
-import FullførRekrutteringstreffButton from '../actions/FullførRekrutteringstreffButton';
-import GjenapneRekrutteringstreffButton from '../actions/GjenapneRekrutteringstreffButton';
-import LagreIRekrutteringstreffButton from '../actions/LagreIRekrutteringstreffButton';
-import PubliserRekrutteringstreffButton from '../actions/PubliserRekrutteringstreffButton';
-import RedigerPublisertButton from '../actions/RedigerPublisertButton';
-import RepubliserRekrutteringstreffButton from '../actions/RepubliserRekrutteringstreffButton';
-import SlettRekrutteringstreffButton from '../actions/SlettRekrutteringstreffButton';
+import LagreIRekrutteringstreffButton from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/actions/LagreIRekrutteringstreffButton';
+import AvlysRekrutteringstreffButton from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/header/actions/AvlysRekrutteringstreffButton';
+import FullførRekrutteringstreffButton from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/header/actions/FullførRekrutteringstreffButton';
+import GjenapneRekrutteringstreffButton from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/header/actions/GjenapneRekrutteringstreffButton';
+import PubliserRekrutteringstreffButton from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/header/actions/PubliserRekrutteringstreffButton';
+import RedigerPublisertButton from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/header/actions/RedigerPublisertButton';
+import RepubliserRekrutteringstreffButton from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/header/actions/RepubliserRekrutteringstreffButton';
+import SlettRekrutteringstreffButton from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/header/actions/SlettRekrutteringstreffButton';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 // Inert samling av ALLE action-knapper. Krever egentlig context + data; vises deaktivert / med dummy verdier.

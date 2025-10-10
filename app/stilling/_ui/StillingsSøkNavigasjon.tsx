@@ -3,7 +3,7 @@ import { StillingsSøkPortefølje } from '@/app/stilling/_util/stillingssøk-typ
 import { useStillingssokTotalData } from '@/app/stilling/store/stillingssokTotalData';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
-import { Button, Chips, Switch } from '@navikt/ds-react';
+import { Button, Chips } from '@navikt/ds-react';
 import { FC } from 'react';
 
 const StillingsSøkNavigasjon: FC = () => {
@@ -13,8 +13,6 @@ const StillingsSøkNavigasjon: FC = () => {
     utenOppdrag,
     setUtenOppdrag,
     formidlinger,
-    visAvbryt,
-    setVisAvbryt,
   } = useStillingsSøkFilter();
 
   useStillingssokTotalData(); // behold hook-kall hvis senere utvidelser
@@ -31,9 +29,14 @@ const StillingsSøkNavigasjon: FC = () => {
       </Button>
       <TilgangskontrollForInnhold
         skjulVarsel
-        kreverEnAvRollene={[
-          Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-        ]}
+        kreverEnAvRollene={
+          formidlinger
+            ? [
+                Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+                Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
+              ]
+            : [Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET]
+        }
       >
         <Button
           variant={
@@ -84,16 +87,6 @@ const StillingsSøkNavigasjon: FC = () => {
                 Med oppdrag
               </Chips.Toggle>
             </Chips>
-          )}
-          {portefølje === StillingsSøkPortefølje.VIS_MINE && (
-            <Switch
-              size='small'
-              key='visAvbryt'
-              checked={visAvbryt}
-              onClick={() => setVisAvbryt(!visAvbryt)}
-            >
-              Vis avbrutte
-            </Switch>
           )}
         </>
       )}

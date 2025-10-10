@@ -8,7 +8,8 @@ import {
   JobbsøkerDTO,
   useJobbsøkere,
 } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
-import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_contexts/RekrutteringstreffContext';
+import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
+import { AktivtSteg } from '@/app/rekrutteringstreff/_types/constants';
 import SWRLaster from '@/components/SWRLaster';
 import { BodyShort, Button, TagProps } from '@navikt/ds-react';
 import { format } from 'date-fns';
@@ -32,7 +33,7 @@ const jobbsøkerTilInviterDto = (
 
 const Jobbsøkere = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
-  const { harPublisert, treff: rekrutteringstreffData } =
+  const { treff: rekrutteringstreffData, activeStep } =
     useRekrutteringstreffData();
   const jobbsøkerHook = useJobbsøkere(rekrutteringstreffId);
   const inviterModalRef = useRef<HTMLDialogElement>(null);
@@ -163,7 +164,7 @@ const Jobbsøkere = () => {
                 )}
               </div>
               <div className='flex items-center gap-2'>
-                {harPublisert && !harAvsluttetInvitasjon && (
+                {activeStep === AktivtSteg.INVITERE && (
                   <Button
                     disabled={valgteSomIkkeErInvitert.length === 0}
                     onClick={() => {
@@ -186,7 +187,7 @@ const Jobbsøkere = () => {
                   const { status, datoLagtTil, lagtTilAv } = getLagtTilData(j);
                   const erDeaktivert = harAvsluttetInvitasjon && !erInvitert(j);
                   const kanInviteres =
-                    harPublisert && !harAvsluttetInvitasjon && !erInvitert(j);
+                    activeStep === AktivtSteg.INVITERE && !erInvitert(j);
 
                   return (
                     <li key={idx}>
@@ -207,7 +208,7 @@ const Jobbsøkere = () => {
                         lagtTilAv={lagtTilAv}
                         status={status?.text}
                         statusVariant={status?.variant}
-                        harPublisert={harPublisert}
+                        aktivtSteg={activeStep}
                         erValgt={valgteJobbsøkere.some(
                           (v) => v.fødselsnummer === j.fødselsnummer,
                         )}

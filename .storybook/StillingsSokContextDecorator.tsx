@@ -23,7 +23,6 @@ export const MockStillingsSokProvider: React.FC<{
   const [publisert, setPublisert] = useState<string[]>([]);
   const [fritekst, setFritekstListe] = useState<string[]>([]);
   const [utenOppdrag, setUtenOppdrag] = useState(false);
-  const [visAvbryt, setVisAvbryt] = useState(false);
 
   const value: IStillingsSøkContext = {
     side,
@@ -52,8 +51,6 @@ export const MockStillingsSokProvider: React.FC<{
     utenOppdrag,
     setUtenOppdrag,
     formidlinger: false,
-    visAvbryt,
-    setVisAvbryt,
   };
   return (
     <MockStillingsSokContext.Provider value={value}>

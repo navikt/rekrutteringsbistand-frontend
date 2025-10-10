@@ -1,4 +1,4 @@
-import { RekrutteringstreffProvider } from '@/app/rekrutteringstreff/_contexts/RekrutteringstreffContext';
+import { RekrutteringstreffProvider } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { StillingsContextMedData } from '@/app/stilling/[stillingsId]/StillingsContext';
 import React, { createContext } from 'react';
 

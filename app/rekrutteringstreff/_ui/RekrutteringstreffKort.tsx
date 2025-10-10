@@ -1,6 +1,7 @@
 'use client';
 
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
+import { AktivtSteg } from '@/app/rekrutteringstreff/_types/constants';
 import { getActiveStepFromHendelser } from '@/app/rekrutteringstreff/_utils/rekrutteringstreff';
 import { CalendarIcon, LocationPinIcon, PersonIcon } from '@navikt/aksel-icons';
 import {
@@ -26,7 +27,8 @@ const StatusTag: FunctionComponent<{ id: string }> = ({ id }) => {
   }
 
   const step = getActiveStepFromHendelser(data?.hendelser);
-  const erPublisert = step === 'INVITERE' || step === 'FULLFØRE';
+  const erPublisert =
+    step === AktivtSteg.INVITERE || step === AktivtSteg.FULLFØRE;
 
   return (
     <Tag size='small' variant={erPublisert ? 'success' : 'warning'}>

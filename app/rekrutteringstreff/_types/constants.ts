@@ -46,7 +46,7 @@ export type AktørType = (typeof AktørType)[keyof typeof AktørType];
 
 // Steg/status for stegviseren på treff
 export const AktivtSteg = {
-  PUBLISERE: 'PUBLISERE',
+  KLADD: 'KLADD',
   INVITERE: 'INVITERE',
   FULLFØRE: 'FULLFØRE',
   AVLYST: 'AVLYST',

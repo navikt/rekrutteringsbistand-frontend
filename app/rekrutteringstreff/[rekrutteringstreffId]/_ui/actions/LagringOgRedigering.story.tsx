@@ -1,6 +1,6 @@
 import LagreIRekrutteringstreffButton from './LagreIRekrutteringstreffButton';
-import RedigerPublisertButton from './RedigerPublisertButton';
-import SlettRekrutteringstreffButton from './SlettRekrutteringstreffButton';
+import RedigerPublisertButton from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/header/actions/RedigerPublisertButton';
+import SlettRekrutteringstreffButton from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/header/actions/SlettRekrutteringstreffButton';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 // Lagring / redigering / sletting (inert)

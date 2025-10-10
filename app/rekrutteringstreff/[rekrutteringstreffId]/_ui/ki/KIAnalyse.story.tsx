@@ -28,7 +28,6 @@ const meta = {
             showAnalysis={true}
             erRedigeringAvPublisertTreff={false}
             onForceSave={() => {}}
-            variant='innlegg'
             ariaLabel='Analyse av innlegget'
           />
         </section>

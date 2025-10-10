@@ -1,10 +1,8 @@
 'use client';
 
-import { RobotFrownIcon, RobotIcon, RobotSmileIcon } from '@navikt/aksel-icons';
+import { RobotFrownIcon } from '@navikt/aksel-icons';
 import { Alert, BodyLong, Button, Skeleton } from '@navikt/ds-react';
 import { FC, useEffect, useMemo, useRef } from 'react';
-
-export type KiAnalyseVariant = 'tittel' | 'innlegg';
 
 type BlockKind = 'none' | 'skeleton' | 'error' | 'text';
 
@@ -16,7 +14,6 @@ interface KiAnalysePanelProps {
   showAnalysis: boolean;
   erRedigeringAvPublisertTreff: boolean;
   onForceSave: () => void;
-  variant: KiAnalyseVariant;
   ariaLabel: string;
 }
 
@@ -28,23 +25,20 @@ const KiAnalysePanel: FC<KiAnalysePanelProps> = ({
   showAnalysis,
   erRedigeringAvPublisertTreff,
   onForceSave,
-  variant,
   ariaLabel,
 }) => {
   const hasAnalyse = !!analyse && !analyseError;
   const bryter = hasAnalyse ? !!(analyse as any)?.bryterRetningslinjer : false;
-  const allowIconFromAnalysis =
-    variant === 'tittel' ? hasAnalyse : hasAnalyse && showAnalysis;
-  const shouldShowIcon = validating || allowIconFromAnalysis || !!analyseError;
+
+  // Only show icon and content when there is a violation
+  const shouldShowIcon = showAnalysis && bryter;
 
   const showTextBlock: BlockKind = useMemo(() => {
     if (validating) return 'skeleton';
-    if (!validating && analyseError) return 'error';
-    if (!validating && hasAnalyse && showAnalysis) {
-      return 'text';
-    }
+    if (analyseError) return 'error';
+    if (showAnalysis && bryter) return 'text';
     return 'none';
-  }, [validating, analyseError, hasAnalyse, showAnalysis]);
+  }, [validating, analyseError, showAnalysis, bryter]);
 
   const skeletonRef = useRef<HTMLDivElement>(null);
   const errorRef = useRef<HTMLDivElement>(null);
@@ -61,29 +55,11 @@ const KiAnalysePanel: FC<KiAnalysePanelProps> = ({
       <div className='flex gap-3 items-start'>
         <div className='inline-flex justify-center items-start w-10 pt-1'>
           {shouldShowIcon ? (
-            validating ? (
-              <RobotIcon aria-hidden fontSize='2em' className='text-gray-700' />
-            ) : analyseError ? (
-              <RobotFrownIcon
-                aria-hidden
-                fontSize='2em'
-                className='text-red-600'
-              />
-            ) : hasAnalyse ? (
-              bryter ? (
-                <RobotFrownIcon
-                  aria-hidden
-                  fontSize='2em'
-                  className='text-red-600'
-                />
-              ) : (
-                <RobotSmileIcon
-                  aria-hidden
-                  fontSize='2em'
-                  className='text-green-800'
-                />
-              )
-            ) : null
+            <RobotFrownIcon
+              aria-hidden
+              fontSize='2em'
+              className='text-red-600'
+            />
           ) : null}
         </div>
 
@@ -130,13 +106,7 @@ const KiAnalysePanel: FC<KiAnalysePanelProps> = ({
                 opacity: 0,
                 animation: 'kiFadeIn 300ms ease-in forwards',
               }}
-              className={
-                bryter
-                  ? 'aksel-error-message p-1'
-                  : variant === 'innlegg'
-                    ? 'text-green-700 p-1'
-                    : 'p-1'
-              }
+              className='aksel-error-message p-1'
             >
               <BodyLong>{(analyse as any)?.begrunnelse}</BodyLong>
             </div>
@@ -144,7 +114,7 @@ const KiAnalysePanel: FC<KiAnalysePanelProps> = ({
         </div>
       </div>
 
-      {hasAnalyse && bryter && !forceSave && (
+      {bryter && !forceSave && (
         <div className='pt-4'>
           <Button variant='secondary' size='small' onClick={onForceSave}>
             {erRedigeringAvPublisertTreff ? 'Bruk likevel' : 'Lagre likevel'}

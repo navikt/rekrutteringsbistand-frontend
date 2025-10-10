@@ -1,6 +1,6 @@
-import AvlysRekrutteringstreffButton from './AvlysRekrutteringstreffButton';
-import FullførRekrutteringstreffButton from './FullførRekrutteringstreffButton';
-import PubliserRekrutteringstreffButton from './PubliserRekrutteringstreffButton';
+import AvlysRekrutteringstreffButton from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/header/actions/AvlysRekrutteringstreffButton';
+import FullførRekrutteringstreffButton from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/header/actions/FullførRekrutteringstreffButton';
+import PubliserRekrutteringstreffButton from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/header/actions/PubliserRekrutteringstreffButton';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 // Handlingsknapper avhenger av API/state. Vi viser dem i inert modus.
