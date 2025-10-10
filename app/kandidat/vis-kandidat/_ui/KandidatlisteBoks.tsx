@@ -1,5 +1,6 @@
 import LeggKandidatTilKandidatliste from './LeggKandidatTilKandidatliste';
 import { useKandidatlisteForEier } from '@/app/api/kandidat/useKandidatlisteForEier';
+import NavigerTilAktivitetsplanenKnapp from '@/app/kandidat/_ui/ActionLinks/NavigerTilAktivitetsplanenKnapp';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import KandidatlisteWrapper from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteWrapper';
 import KandidatVisningSidebar from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatVisningSidebar/KandidatVisningSidebar';
@@ -7,7 +8,6 @@ import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
 import SWRLaster from '@/components/SWRLaster';
 import { Box } from '@navikt/ds-react';
 import { FC, ReactNode } from 'react';
-import NavigerTilAktivitetsplanenKnapp from '@/app/kandidat/_ui/ActionLinks/NavigerTilAktivitetsplanenKnapp';
 
 export interface KandidatlisteBoksProps {
   kandidatnr: string;
@@ -63,7 +63,7 @@ const KandidatlisteBoks: FC<KandidatlisteBoksProps> = ({ kandidatnr }) => {
             <div className='mb-4'>
               <KandidatlisteWrapper>
                 <div className='my-5'>
-                  <NavigerTilAktivitetsplanenKnapp/>
+                  <NavigerTilAktivitetsplanenKnapp />
                 </div>
                 <BoksWrapper>
                   <KandidatVisningSidebar kandidatnr={kandidatnr} />

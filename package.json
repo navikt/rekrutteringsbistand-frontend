@@ -14,7 +14,7 @@
     "formater-kode": "prettier --write .",
     "type-check": "tsc --noEmit",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "rm -rf storybook-static && storybook build"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",
