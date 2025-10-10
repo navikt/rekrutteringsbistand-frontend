@@ -1,0 +1,1 @@
+import"./stillingMock-BtxAEQoL.js";import{S as i}from"./stilling.dto--v9AHxlS.js";import{ai as a,g as n}from"./iframe-CHkTVuiI.js";import{u as r}from"./index-BvQF28vZ.js";const e=t=>`${a.internUrl}/rekrutteringsbistandstilling/${t}`,u=t=>r(t?e(t):null,n(i),{revalidateOnFocus:!1});export{u};
