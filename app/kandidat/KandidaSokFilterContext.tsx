@@ -1,7 +1,6 @@
 'use client';
 
 import { Roller } from '@/components/tilgangskontroll/roller';
-import { UmamiEvent } from '@/components/umami/umamiEvents';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
 import { RekbisError } from '@/util/rekbisError';
