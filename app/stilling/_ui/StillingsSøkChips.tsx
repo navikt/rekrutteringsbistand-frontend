@@ -11,8 +11,8 @@ import {
 } from '@/app/api/pam-geografi/typehead/lokasjoner/usePamGeografi';
 import { storForbokstavString } from '@/app/kandidat/util';
 import { useStillingsSøkFilter } from '@/app/stilling/StillingsSøkContext';
-import FilterChip from '@/components/felles/filter/FilterChip';
-import TømFiltre from '@/components/felles/filter/TømFiltre';
+import FilterChip from '@/components/filter/FilterChip';
+import TømFiltre from '@/components/filter/TømFiltre';
 import { Chips } from '@navikt/ds-react';
 import { FC } from 'react';
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { UmamiEventObject } from '@/components/umami/umamiEvents';
+import { UmamiEventObject } from '@/util/umamiEvents';
 import { logger } from '@navikt/next-logger';
 import { useRouter } from 'next/navigation';
 import { createContext, ReactNode, useContext } from 'react';

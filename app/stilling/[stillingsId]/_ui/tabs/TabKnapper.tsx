@@ -20,7 +20,9 @@ export default function TabKnapper({
     VisningsStatus.ApenForSokere;
   return (
     <div className='flex items-center'>
-      {kanKopierePrinteStilling && <KopierStillingLenke stillingsId={stillingsData.stilling.uuid} />}
+      {kanKopierePrinteStilling && (
+        <KopierStillingLenke stillingsId={stillingsData.stilling.uuid} />
+      )}
       {kanKopierePrinteStilling && <StillingPrint printRef={printRef} />}
       <StillingDropdown />
     </div>

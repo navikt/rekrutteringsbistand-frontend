@@ -2,7 +2,7 @@
 
 import { useKandidatContext } from './KandidatContext';
 import { filtrerbareInnsatsgrupper } from '@/app/kandidat/_ui/innsatsgrupper';
-import TekstMedIkon from '@/components/felles/TekstMedIkon';
+import TekstMedIkon from '@/components/TekstMedIkon';
 import { formaterNorskDato } from '@/util/util';
 import {
   CandleIcon,

@@ -5,7 +5,7 @@ import UtviklerDekoratør from './UtviklerDekoratør';
 import {
   LinkWithTitle,
   useGenerateLinks,
-} from '@/components/felles/modia/genererModiaLenke';
+} from '@/components/modia/genererModiaLenke';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { getMiljø, Miljø } from '@/util/miljø';

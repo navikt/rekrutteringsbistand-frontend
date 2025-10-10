@@ -6,7 +6,7 @@ import {
   hentKandidatensØnskedeSteder,
   hentKandidatensØnskedeYrker,
 } from '@/app/kandidat/util';
-import TekstMedIkon from '@/components/felles/TekstMedIkon';
+import TekstMedIkon from '@/components/TekstMedIkon';
 import { HandShakeHeartIcon, HouseIcon, PinIcon } from '@navikt/aksel-icons';
 import { Box, Checkbox, Heading, Tag } from '@navikt/ds-react';
 import { FC, MouseEvent } from 'react';

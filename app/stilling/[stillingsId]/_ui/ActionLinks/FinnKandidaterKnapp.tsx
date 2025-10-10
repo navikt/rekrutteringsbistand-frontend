@@ -1,6 +1,6 @@
-import LenkeKortMedIkon from '@/components/felles/LenkeKortMedIkon';
-import { UmamiEvent } from '@/components/umami/umamiEvents';
+import LenkeKortMedIkon from '@/components/lenke-kort/LenkeKortMedIkon';
 import { useUmami } from '@/providers/UmamiContext';
+import { UmamiEvent } from '@/util/umamiEvents';
 
 export interface FinnKandidaterKnappProps {
   stillingId: string;

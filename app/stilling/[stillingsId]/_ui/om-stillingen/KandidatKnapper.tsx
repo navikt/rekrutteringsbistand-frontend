@@ -8,9 +8,9 @@ import {
 } from '@/app/stilling/_util/stillingInfoUtil';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
-import { UmamiEvent } from '@/components/umami/umamiEvents';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
+import { UmamiEvent } from '@/util/umamiEvents';
 import { ArrowRightIcon } from '@navikt/aksel-icons';
 import { BodyShort, Box, Loader } from '@navikt/ds-react';
 import { usePathname, useSearchParams } from 'next/navigation';

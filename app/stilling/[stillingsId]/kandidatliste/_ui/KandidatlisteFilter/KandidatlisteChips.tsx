@@ -1,6 +1,6 @@
 import { useKandidatlisteFilterContext } from './KandidatlisteFilterContext';
-import FilterChip from '@/components/felles/filter/FilterChip';
-import TømFiltre from '@/components/felles/filter/TømFiltre';
+import FilterChip from '@/components/filter/FilterChip';
+import TømFiltre from '@/components/filter/TømFiltre';
 import { Chips } from '@navikt/ds-react';
 
 export default function KandidatlisteChips() {

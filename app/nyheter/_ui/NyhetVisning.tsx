@@ -3,7 +3,7 @@ import {
   slettNyhet,
 } from '@/app/api/bruker/nyheter/[...slug]/nyhet-admin';
 import EndreNyhetModal from '@/app/nyheter/_ui/EndreNyhetModal';
-import VisEditorTekst from '@/components/felles/rikteksteditor/VisEditorTekst';
+import VisEditorTekst from '@/components/rikteksteditor/VisEditorTekst';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { formaterNorskDato } from '@/util/util';

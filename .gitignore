@@ -47,3 +47,5 @@ IntelliJ
 node_modules/
 tests/**/*.png
 .vscode
+*storybook.log
+storybook-static

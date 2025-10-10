@@ -1,0 +1,27 @@
+import { Meta } from '@storybook/blocks';
+
+<Meta title='Docs/Storybook Contexts' />
+
+# Storybook kontekster
+
+Denne siden beskriver hvordan vi mocker _StillingsContext_ og _KandidatlisteContext_ i stories.
+
+## Dekoratør
+
+`StillingsOgKandidatlisteDecorator` i `.storybook/ContextDecorators.tsx` kombinerer en mock av stilling (fra `mockBaseStilling`) med en syntetisk kandidatliste.
+
+```tsx
+withStillingsKandidatliste(() => <VelgInternStatus ... />)
+```
+
+For å variere kandidatliste skapes en ny med `createKandidatlisteMock({ antall, status, utfall, lukket })`.
+
+## Designvalg
+
+- Unngår nettverkskall – alt holdes i minne.
+- Minimal shape: kun felter som komponenter faktisk leser.
+- Kan utvides ved behov hvis flere felter etterspørres.
+
+## Neste steg
+
+Vurder å lage tilsvarende decorator for kandidat-søk kontekst når vi trenger stories for søkefiltrene.

@@ -1,8 +1,8 @@
 'use client';
 
 import GiTilbakemelding from './GiTilbakemelding';
-import OpprettMeny from '@/components/felles/opprett/OpprettMeny';
 import UlesteNyheterWrapper from '@/components/layout/sidebar/UlesteNyheterWrapper';
+import OpprettMeny from '@/components/opprett/OpprettMeny';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import {

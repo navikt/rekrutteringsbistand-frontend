@@ -13,10 +13,10 @@ import {
   CVKandidaterSvartNei_IkkeSpurtPåNytt,
 } from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatHendelser/hendelseUtil';
 import { KandidatVisningProps } from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatlisteFilter/useFiltrerteKandidater';
-import { UmamiEvent } from '@/components/umami/umamiEvents';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
 import { RekbisError } from '@/util/rekbisError';
+import { UmamiEvent } from '@/util/umamiEvents';
 import { TasklistIcon } from '@navikt/aksel-icons';
 import {
   Accordion,
