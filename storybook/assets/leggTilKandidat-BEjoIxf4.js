@@ -1,0 +1,1 @@
+import{ac as d,K as e}from"./iframe--aQMagBM.js";const r=a=>`${e.internUrl}/veileder/stilling/${a}/kandidatliste/kandidater`,s=async(a,t)=>{const i=a.map(n=>({kandidatnr:n}));return await d(r(t),i)};export{s as l};

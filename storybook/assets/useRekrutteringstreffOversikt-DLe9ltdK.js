@@ -1,0 +1,1 @@
+import{gH as e,g as r,d as s,o as i,I as t}from"./iframe--aQMagBM.js";import{u as a}from"./index-CuRbE5C3.js";const n=()=>`${e.internUrl}`,o=s(i({id:t(),tittel:t(),beskrivelse:t(),fraTid:t(),tilTid:t(),gateadresse:t(),postnummer:t(),poststed:t(),status:t(),opprettetAvPersonNavident:t(),opprettetAvNavkontorEnhetId:t(),opprettetAvTidspunkt:t()})),f=()=>a(n(),r(o));export{f as u};

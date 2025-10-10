@@ -1,0 +1,1 @@
+import{j as e,L as s}from"./iframe--aQMagBM.js";const t=()=>e.jsx("div",{className:"flex justify-center pt-10",children:e.jsx(s,{size:"xlarge",title:"Laster..."})});t.__docgenInfo={description:"",methods:[],displayName:"Sidelaster"};export{t as S};
