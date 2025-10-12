@@ -97,10 +97,8 @@ const StillingsSøkeresultat: FC<StillingsSøkeresultatProps> = ({
       {(data: any) => {
         return (
           <div className='h-full flex flex-col'>
-            <div className='flex-shrink-0'>
-              <StillingsSøkChips skjulLagreStandard={!!kandidatId} />
-              {antallVisning(data.hits?.total?.value)}
-            </div>
+            <StillingsSøkChips />
+            {antallVisning(data.hits?.total?.value)}
 
             <div className='flex-1 min-h-0'>
               <SideScroll key={filterKey}>

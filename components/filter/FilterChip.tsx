@@ -22,18 +22,21 @@ export interface FilterChipProps {
   type?: string[];
   setVerdi: (verdi: string[]) => void;
   mapVerdiNavn?: (verdi: string) => string;
+  className?: string; // ekstra styling (f.eks. truncate)
 }
 
 const FilterChip: React.FC<FilterChipProps> = ({
   type,
   setVerdi,
   mapVerdiNavn,
+  className,
 }) => {
   if (type) {
     return type.map((verdi, i) => (
       <Chips.Removable
         key={i}
         onClick={() => setVerdi(type.filter((i) => i !== verdi))}
+        className={`whitespace-nowrap leading-none ${className || ''}`.trim()}
       >
         {mapVerdiNavn
           ? formatChipText(mapVerdiNavn(verdi))
