@@ -5,9 +5,9 @@ import {
   useKandidatSøkFilterContext,
 } from './KandidaSokFilterContext';
 import KandidatSøkResultat from './KandidatSøkResultat';
-import KandidatSøkChips from './_ui/KandidatSøkChips';
 import ValgteKontorer from './_ui/ValgteKontorer';
 import KandidatSøkFilter from './kandidat-søk-filter/KandidatSøkFilter';
+import KandidatSøkChips from '@/app/kandidat/_ui/KandidatSøkChips';
 import Arbeidserfaring from '@/app/kandidat/kandidat-søk-filter/_ui/Arbeidserfaring';
 import Arbeidsønsker from '@/app/kandidat/kandidat-søk-filter/_ui/Arbeidsønsker';
 import FritekstSøk from '@/app/kandidat/kandidat-søk-filter/_ui/FritekstSøk';
@@ -185,9 +185,10 @@ const KandidatSøkTabs: FC<KandidatSøkTabsProps> = ({
       {portefølje === KandidatSøkPortefølje.VALGTE_KONTORER && (
         <ValgteKontorer />
       )}
-      <KandidatSøkChips />
+
       <div className='@container/kandidatsøk flex'>
         <div className='flex-grow min-w-0'>
+          <KandidatSøkChips />
           <KandidatSøkResultat
             alleredeLagtTilTreff={alleredeLagtTilTreff}
             alleredeLagtTilKandidatliste={alleredeLagtTilKandidatliste}
