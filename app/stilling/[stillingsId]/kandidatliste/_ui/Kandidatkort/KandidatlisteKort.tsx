@@ -2,7 +2,7 @@ import KandidatCheckbox from './_ui/KandidatCheckbox';
 import KandidatListeKortValg from './_ui/KandidatListeKortValg';
 import KandidatlisteNavn from './_ui/KandidatlisteNavn';
 import { usynligKandidaterSchemaDTO } from '@/app/api/kandidat/schema.zod';
-import KandidatForhåndsvisning from '@/app/kandidat/[kandidatNr]/_ui/KandidatForhåndsvisning';
+import { useNullableStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import { KANDIDATLISTE_COLUMN_LAYOUT } from '@/app/stilling/[stillingsId]/kandidatliste/FiltrertKandidatListeVisning';
 import { KandidatutfallTyper } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
 import { useKandidatlisteContext } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteContext';
@@ -16,6 +16,7 @@ import {
 import { KandidatHendelseInformasjon } from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatHendelser/KandidatHendelser';
 import { KandidatVisningProps } from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatlisteFilter/useFiltrerteKandidater';
 import VelgInternStatus from '@/app/stilling/[stillingsId]/kandidatliste/_ui/VelgInternStatus';
+import VisKandidatModal from '@/components/modal/kandidat/VisKandidatModal';
 import { formaterNorskDato } from '@/util/util';
 import { BodyShort, Box } from '@navikt/ds-react';
 import { FC, MouseEvent, useState } from 'react';
@@ -25,15 +26,15 @@ export interface KandidatListeKortProps {
   usynligKandidat?: usynligKandidaterSchemaDTO;
 }
 
+const kolonneStyling = 'break-words';
+
 const KandidatListeKort: FC<KandidatListeKortProps> = ({
   kandidat,
   usynligKandidat,
 }) => {
-  const kolonneStyling = 'break-words';
-  <div className={kolonneStyling}></div>;
+  const stillingsContext = useNullableStillingsContext();
   const { lukketKandidatliste, kandidatlisteId } = useKandidatlisteContext();
 
-  // const [visKandidatnr, setVisKandidatnr] = useVisKandidatNr();
   const [visKandidatnr, setVisKandidatnr] = useState<string | null>(null);
 
   if (usynligKandidat) {
@@ -116,7 +117,12 @@ const KandidatListeKort: FC<KandidatListeKortProps> = ({
     return (
       <>
         {visKandidatnr && (
-          <KandidatForhåndsvisning
+          <VisKandidatModal
+            tittel={
+              stillingsContext?.stillingsData.stilling.title ??
+              'Viser jobbsøker'
+            }
+            stillingsId={stillingsContext?.stillingsData.stilling.uuid}
             kandidatNr={visKandidatnr}
             onClose={() => setVisKandidatnr(null)}
           />

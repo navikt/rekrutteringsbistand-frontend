@@ -7,6 +7,7 @@ import { statistikkMock } from './mocks/statistikkMock';
 import { StatistikkAPI } from '@/app/api/api-routes';
 import { getAPIwithSchema } from '@/app/api/fetcher';
 import { formaterDatoTilApi } from '@/app/api/foresporsel-om-deling-av-cv/statistikk/useForesporselOmdelingAvCV';
+import { http, HttpResponse } from 'msw';
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
 
@@ -50,5 +51,7 @@ export const useStatistikk = ({
     getAPIwithSchema(statistikkSchema),
   );
 
-export const statistikkMirage = (server: any) =>
-  server.get('/api/statistikk', () => statistikkMock);
+// MSW handler erstatter statistikkMirage
+export const statistikkMSWHandler = http.get(`${StatistikkAPI.internUrl}`, () =>
+  HttpResponse.json(statistikkMock),
+);

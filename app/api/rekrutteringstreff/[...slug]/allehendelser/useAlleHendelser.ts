@@ -1,6 +1,5 @@
 'use client';
 
-import { alleHendelserMock } from './alleHendelserMock';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { getAPIwithSchema } from '@/app/api/fetcher';
 import {
@@ -37,6 +36,3 @@ export type AlleHendelserDTO = z.infer<typeof AlleHendelserSchema>;
 
 export const useAlleHendelser = (id: string) =>
   useSWR(alleHendelserEndepunkt(id), getAPIwithSchema(AlleHendelserSchema));
-
-export const alleHendelserMirage = (server: any) =>
-  server.get(alleHendelserEndepunkt('*'), () => alleHendelserMock());

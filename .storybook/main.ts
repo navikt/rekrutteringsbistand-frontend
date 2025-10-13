@@ -18,6 +18,7 @@ const config: StorybookConfig = {
     '@chromatic-com/storybook',
     '@storybook/addon-docs',
     '@storybook/addon-a11y',
+    'msw-storybook-addon',
   ],
   framework: {
     name: '@storybook/nextjs-vite',

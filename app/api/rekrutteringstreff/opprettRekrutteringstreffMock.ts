@@ -1,8 +1,2 @@
-import { RekrutteringstreffAPI } from '@/app/api/api-routes';
-
-export const rekrutteringstreffMutationsMirage = (server: any) => {
-  server.post(`${RekrutteringstreffAPI.internUrl}`, () => ({
-    id: '1231-1234-1234-1234',
-    tittel: 'Treff uten navn',
-  }));
-};
+// Tidligere duplisert Mirage-handler er erstattet av opprettRekrutteringstreffMSWHandler i mutations.ts
+export {};

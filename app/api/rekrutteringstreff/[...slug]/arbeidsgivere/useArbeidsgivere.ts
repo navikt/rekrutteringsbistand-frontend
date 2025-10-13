@@ -3,6 +3,7 @@
 import { arbeidsgivereMock } from './arbeidsgivereMock';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { getAPIwithSchema } from '@/app/api/fetcher';
+import { http, HttpResponse } from 'msw';
 import useSWR from 'swr';
 import { z } from 'zod';
 
@@ -44,8 +45,7 @@ export const useRekrutteringstreffArbeidsgivere = (id: string) => {
   );
 };
 
-export const rekrutteringstreffArbeidsgivereMirage = (server: any) => {
-  return server.get(rekrutteringstreffArbeidsgivereEndepunkt('*'), () =>
-    arbeidsgivereMock(),
-  );
-};
+export const rekrutteringstreffArbeidsgivereMSWHandler = http.get(
+  `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/arbeidsgiver`,
+  () => HttpResponse.json(arbeidsgivereMock()),
+);

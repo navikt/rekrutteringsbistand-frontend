@@ -4,7 +4,7 @@ import { kiLoggMock } from './kiLoggMock';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { getAPI, putApi } from '@/app/api/fetcher';
 import { logger } from '@navikt/next-logger';
-import { Response } from 'miragejs';
+import { http, HttpResponse } from 'msw';
 import useSWR from 'swr';
 import useSWRMutation from 'swr/mutation';
 import { z } from 'zod';
@@ -153,20 +153,17 @@ export const lagretEndepunkt = (
   id: string | ':id' = ':id',
 ) => `${kiLoggEndepunkt(rekrutteringstreffId)}/${id}/lagret`;
 
-export const listKiLoggMirage = (server: any) => {
-  return server.get(kiLoggEndepunkt(':rekrutteringstreffId'), () => kiLoggMock);
-};
+export const listKiLoggMSWHandler = http.get(
+  kiLoggEndepunkt(':rekrutteringstreffId'),
+  () => HttpResponse.json(kiLoggMock),
+);
 
-export const oppdaterKiLoggManuellMirage = (server: any) => {
-  return server.put(
-    manuellEndepunkt(':rekrutteringstreffId', ':id'),
-    () => new Response(204),
-  );
-};
+export const oppdaterKiLoggManuellMSWHandler = http.put(
+  manuellEndepunkt(':rekrutteringstreffId', ':id'),
+  () => new HttpResponse(null, { status: 204 }),
+);
 
-export const oppdaterKiLoggLagretMirage = (server: any) => {
-  return server.put(
-    lagretEndepunkt(':rekrutteringstreffId', ':id'),
-    () => new Response(204),
-  );
-};
+export const oppdaterKiLoggLagretMSWHandler = http.put(
+  lagretEndepunkt(':rekrutteringstreffId', ':id'),
+  () => new HttpResponse(null, { status: 204 }),
+);

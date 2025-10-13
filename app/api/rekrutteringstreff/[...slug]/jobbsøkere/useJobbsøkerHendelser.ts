@@ -1,6 +1,5 @@
 'use client';
 
-import { jobbsøkerHendelserMock } from './jobbsøkerHendelserMock';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { getAPIwithSchema } from '@/app/api/fetcher';
 import {
@@ -38,11 +37,5 @@ export const useJobbsøkerHendelser = (id: string) => {
   return useSWR(
     jobbsøkerHendelserEndepunkt(id),
     getAPIwithSchema(JobbsøkerHendelserSchema),
-  );
-};
-
-export const jobbsøkerHendelserMirage = (server: any) => {
-  return server.get(jobbsøkerHendelserEndepunkt('*'), () =>
-    jobbsøkerHendelserMock(),
   );
 };

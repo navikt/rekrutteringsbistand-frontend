@@ -3,6 +3,7 @@
  */
 import { KandidatvarselAPI } from '@/app/api/api-routes';
 import { getAPI } from '@/app/api/fetcher';
+import { http, HttpResponse } from 'msw';
 import useSWR, { SWRResponse } from 'swr';
 
 const hentMeldingsmalerEndepunkt = `${KandidatvarselAPI.internUrl}/meldingsmal`;
@@ -60,6 +61,7 @@ const hentMeldingsmalerMock = [
     },
   },
 ];
-export const meldingsmalerMirage = (server: any) => {
-  return server.get(hentMeldingsmalerEndepunkt, () => hentMeldingsmalerMock);
-};
+export const meldingsmalerMSWHandler = http.get(
+  hentMeldingsmalerEndepunkt,
+  () => HttpResponse.json(hentMeldingsmalerMock[0]),
+);

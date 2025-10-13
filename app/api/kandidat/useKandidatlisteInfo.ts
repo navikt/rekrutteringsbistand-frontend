@@ -6,7 +6,7 @@
 import { KandidatAPI } from '@/app/api/api-routes';
 import { getAPIwithSchema } from '@/app/api/fetcher';
 import { StillingsinfoDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
-import { Server } from 'miragejs';
+import { http, HttpResponse } from 'msw';
 import useSWR from 'swr';
 import { z } from 'zod';
 
@@ -40,12 +40,12 @@ export const useKandidatlisteInfo = (
   return kandidatlisteHook;
 };
 
-export const kandidatlisteInfoMirage = (server: Server) => {
-  return server.get(kandidatlisteInfoEndepunkt('*'), () => {
-    return {
+export const kandidatlisteInfoMSWHandler = http.get(
+  kandidatlisteInfoEndepunkt('*'),
+  () =>
+    HttpResponse.json({
       kandidatlisteId: 'kandidatlisteId',
       antallKandidater: 10,
       kandidatlisteStatus: 'ÅPEN',
-    };
-  });
-};
+    }),
+);

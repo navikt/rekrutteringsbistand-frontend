@@ -1,5 +1,5 @@
 import './globals.css';
-import MirageInitializer from '@/providers/MirageInitializer';
+import MSWInitializer from '@/providers/MSWInitializer';
 import RekrutteringsbistandProvider from '@/providers/RekrutteringsbistandProvider';
 import SkyraInit from '@/providers/Skyra_init';
 import { UmamiProvider } from '@/providers/UmamiContext';
@@ -53,7 +53,7 @@ export default async function RootLayout({
 
 const BrukLokalMock = ({ children }: { children: ReactNode }) => {
   if (isLocal) {
-    return <MirageInitializer>{children}</MirageInitializer>;
+    return <MSWInitializer>{children}</MSWInitializer>;
   }
   return children;
 };

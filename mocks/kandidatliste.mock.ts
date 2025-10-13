@@ -108,7 +108,6 @@ function generateMockKandidatlisteKandidater(
   for (let i = 0; i < count; i++) {
     // Example: Incrementing a global counter. Adjust if your seed management is different.
     // It's often better to manage state like this more explicitly if possible.
-    // For Mirage, each request could generate a new seed or use a request-specific one.
     const currentSeed = (globalKandidatSeedCounter || 0) + i + 1;
     const baseKandidatData = getSingleKandidatDataSchema(currentSeed);
     kandidater.push(mapKandidatDataToKandidatListeKandidat(baseKandidatData));

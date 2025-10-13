@@ -48,7 +48,7 @@ src/
 
 ### 🔄 Lokal mock
 
-Vi bruker MirageJS for API-mocking. Se `mirage.ts` og `mocks/` mappen.
+Vi bruker MSW (Mock Service Worker) for API-mocking. Alle handlere ligger samlet i `mocks/handlers.ts` og navngis med suffiks `MSWHandler`. Start dev-server som vanlig (`pnpm dev`) – MSW initialiseres automatisk i browser, og i Storybook via `msw-storybook-addon`.
 
 ### 🎮 API-utvikling
 
@@ -118,7 +118,6 @@ Dette repoet bruker GitHub Copilot for kodegenerering og forslag.
 - SWR
 - Zod
 - Playwright
-- MirageJS
 
 ### 🔧 Nyttige kommandoer
 

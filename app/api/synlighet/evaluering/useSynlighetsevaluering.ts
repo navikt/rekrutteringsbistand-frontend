@@ -5,7 +5,7 @@
  */
 import { SynlighetsevalueringAPI } from '@/app/api/api-routes';
 import { postApiWithSchema } from '@/app/api/fetcher';
-import { Server } from 'miragejs/server';
+import { http, HttpResponse } from 'msw';
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
 
@@ -57,9 +57,10 @@ export const useSynlighetsevaluering = (fødselsnummer: string | null) =>
     (data) => postApiWithSchema(SynlighetsevalueringSchema)(data),
   );
 
-export const synlighetsevalueringMirage = (server: Server) => {
-  server.post(SynlighetsevalueringEndepunkt, () => {
-    return {
+export const synlighetsevalueringMSWHandler = http.post(
+  SynlighetsevalueringEndepunkt,
+  () =>
+    HttpResponse.json({
       harAktivCv: false,
       harJobbprofil: false,
       harSettHjemmel: false,
@@ -70,6 +71,5 @@ export const synlighetsevalueringMirage = (server: Server) => {
       erIkkeSperretAnsatt: true,
       erIkkeDoed: true,
       erFerdigBeregnet: true,
-    };
-  });
-};
+    }),
+);

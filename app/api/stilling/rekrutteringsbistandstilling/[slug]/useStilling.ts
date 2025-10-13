@@ -15,6 +15,7 @@ import {
 import { StillingDataSchema } from './stilling.dto';
 import { StillingAPI } from '@/app/api/api-routes';
 import { getAPIwithSchema } from '@/app/api/fetcher';
+import { http, HttpResponse } from 'msw';
 import useSWR from 'swr';
 
 export const stillingEndepunkt = (stillingsId: string) =>
@@ -30,15 +31,24 @@ export const useStilling = (stillingsId?: string | null) =>
     },
   );
 
-export const stillingMirage = (server: any) => {
-  server.get(stillingEndepunkt('nyStilling'), () => nyStillingMock);
-  server.get(stillingEndepunkt('internStilling'), () => internStillingMock);
-  server.get(stillingEndepunkt('minStilling'), () => mockMinStilling);
-  server.get(stillingEndepunkt('minFormidling'), () => mockFormidling);
-  server.get(stillingEndepunkt('eksternStilling'), () => mockEksternStilling);
-  server.get(
-    stillingEndepunkt('minEksternStilling'),
-    () => mockMinEksternStilling,
-  );
-  server.get(stillingEndepunkt('*'), () => mockBaseStilling);
-};
+export const stillingMSWHandlers = [
+  http.get(stillingEndepunkt('nyStilling'), () =>
+    HttpResponse.json(nyStillingMock),
+  ),
+  http.get(stillingEndepunkt('internStilling'), () =>
+    HttpResponse.json(internStillingMock),
+  ),
+  http.get(stillingEndepunkt('minStilling'), () =>
+    HttpResponse.json(mockMinStilling),
+  ),
+  http.get(stillingEndepunkt('minFormidling'), () =>
+    HttpResponse.json(mockFormidling),
+  ),
+  http.get(stillingEndepunkt('eksternStilling'), () =>
+    HttpResponse.json(mockEksternStilling),
+  ),
+  http.get(stillingEndepunkt('minEksternStilling'), () =>
+    HttpResponse.json(mockMinEksternStilling),
+  ),
+  http.get(stillingEndepunkt('*'), () => HttpResponse.json(mockBaseStilling)),
+];

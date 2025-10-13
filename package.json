@@ -92,7 +92,8 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-storybook": "^9.1.10",
     "husky": "^9.1.7",
-    "miragejs": "0.1.48",
+    "msw": "^2.6.7",
+    "msw-storybook-addon": "^2.0.3",
     "nav-faker": "^3.2.4",
     "pino-pretty": "^13.0.0",
     "prettier": "^3.5.3",
@@ -107,6 +108,12 @@
       "@tailwindcss/oxide",
       "sharp",
       "unrs-resolver"
+    ]
+  },
+  "msw": {
+    "workerDirectory": [
+      "public@",
+      "public"
     ]
   }
 }

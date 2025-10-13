@@ -5,7 +5,10 @@ import TømFiltre, { TømFiltreProps } from './TømFiltre';
 import { storForbokstavString } from '@/app/kandidat/util';
 import { useUmami } from '@/providers/UmamiContext';
 import { UmamiEvent } from '@/util/umamiEvents';
-import { ChevronDownCircleIcon, ChevronUpCircleIcon } from '@navikt/aksel-icons';
+import {
+  ChevronDownCircleIcon,
+  ChevronUpCircleIcon,
+} from '@navikt/aksel-icons';
 import { BodyShort, Button, Chips, Tooltip } from '@navikt/ds-react';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
