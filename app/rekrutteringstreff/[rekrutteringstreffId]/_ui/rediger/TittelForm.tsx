@@ -81,7 +81,8 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
 
       return () => clearTimeout(timer);
     }
-  }, [treff, kiLoggLoading, tittel, harPublisert]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [treff, kiLoggLoading, harPublisert]);
 
   return (
     <section className='space-y-3'>

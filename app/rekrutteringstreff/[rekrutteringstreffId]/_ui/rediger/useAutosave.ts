@@ -62,7 +62,7 @@ export function useAutosave() {
   const { getValues, trigger, formState } = useFormContext<AnyValues>();
 
   const buildFullDto = useCallback(
-    (overstyrKiFeil?: boolean) => {
+    (overstyrKiFeil?: boolean, fieldsToValidate?: string[]) => {
       const formVerdier = getValues();
 
       const fraTid =
@@ -105,6 +105,14 @@ export function useAutosave() {
         skalInkludereTittel =
           skalInkludereTittel && tittelKiSjekket && !harTittelKiFeil;
       }
+      // Hvis specific fields er oppgitt og tittel ikke er i listen, ikke inkluder tittel
+      if (
+        fieldsToValidate &&
+        fieldsToValidate.length > 0 &&
+        !fieldsToValidate.includes('tittel')
+      ) {
+        skalInkludereTittel = false;
+      }
       return {
         ...(skalInkludereTittel && {
           tittel: trimmedTitle.length > 0 ? trimmedTitle : treff?.tittel,
@@ -134,7 +142,10 @@ export function useAutosave() {
       if (!rekrutteringstreffId) return;
       if (skalHindreAutosave(treff, overstyrKiFeil)) return;
 
-      const prebuiltDto: any | undefined = buildFullDto(overstyrKiFeil);
+      const prebuiltDto: any | undefined = buildFullDto(
+        overstyrKiFeil,
+        fieldsToValidate,
+      );
       const dtoKeys = new Set(Object.keys(prebuiltDto ?? {}));
 
       const feltSomSkalValideres: string[] | undefined =
@@ -178,7 +189,7 @@ export function useAutosave() {
         if (endrerPeriode) return;
       }
 
-      const dto = prebuiltDto ?? buildFullDto(overstyrKiFeil);
+      const dto = prebuiltDto ?? buildFullDto(overstyrKiFeil, fieldsToValidate);
       try {
         startLagring('rekrutteringstreff');
         await oppdaterRekrutteringstreff(rekrutteringstreffId, dto);
