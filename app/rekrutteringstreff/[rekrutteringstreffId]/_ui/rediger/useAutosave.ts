@@ -92,16 +92,22 @@ export function useAutosave() {
         typeof formVerdier.tittel === 'string' ? formVerdier.tittel.trim() : '';
       const harTittelFeil = Boolean((formState?.errors as any)?.tittel);
       const harTittelKiFeil = Boolean(formVerdier.tittelKiFeil);
+      const tittelKiSjekket = Boolean((formVerdier as any)?.tittelKiSjekket);
       const harTittelInnhold = Boolean(
         trimmedTitle.length > 0 ||
           (treff?.tittel && treff.tittel.trim().length > 0),
       );
-      const skalInkludereTittel = skalLagreFelt(
+      let skalInkludereTittel = skalLagreFelt(
         harTittelFeil,
         harTittelKiFeil,
         harTittelInnhold,
         overstyrKiFeil,
       );
+      // I kladdmodus skal vi ikke autosave tittel før KI-sjekk er utført og godkjent
+      if (!erPublisert(treff) && !overstyrKiFeil) {
+        skalInkludereTittel =
+          skalInkludereTittel && tittelKiSjekket && !harTittelKiFeil;
+      }
       return {
         ...(skalInkludereTittel && {
           tittel: trimmedTitle.length > 0 ? trimmedTitle : treff?.tittel,
@@ -205,14 +211,21 @@ export function useInnleggAutosave() {
       const formVerdier = getValues();
       const harInnleggFeil = Boolean((formState?.errors as any)?.htmlContent);
       const harInnleggKiFeil = Boolean((formVerdier as any)?.htmlContentKiFeil);
+      const innleggKiSjekket = Boolean(
+        (formVerdier as any)?.htmlContentKiSjekket,
+      );
       const innholdSomSkalLagres = (formVerdier.htmlContent ?? '').toString();
       const harInnleggInnhold = Boolean(innholdSomSkalLagres.trim().length > 0);
-      const skalLagre = skalLagreFelt(
+      let skalLagre = skalLagreFelt(
         harInnleggFeil,
         harInnleggKiFeil,
         harInnleggInnhold,
         overstyrKiFeil,
       );
+      // I kladdmodus skal vi ikke autosave innlegg før KI-sjekk er utført og godkjent
+      if (!erPublisert(treff as any) && !overstyrKiFeil) {
+        skalLagre = skalLagre && innleggKiSjekket && !harInnleggKiFeil;
+      }
 
       if (!skalLagre) return;
 
