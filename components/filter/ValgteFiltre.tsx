@@ -5,7 +5,7 @@ import TømFiltre, { TømFiltreProps } from './TømFiltre';
 import { storForbokstavString } from '@/app/kandidat/util';
 import { useUmami } from '@/providers/UmamiContext';
 import { UmamiEvent } from '@/util/umamiEvents';
-import { ChevronDownIcon } from '@navikt/aksel-icons';
+import { ChevronDownIcon, ChevronUpIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button, Chips } from '@navikt/ds-react';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
@@ -124,8 +124,14 @@ const ValgteFiltre: React.FC<ValgteFilterProps> = ({
         }
         continue;
       }
-      if (countEl)
+      // Oppdater teksten OG tvinger layout før måling
+      if (countEl) {
         countEl.textContent = `+ ${hidden} filter${hidden !== 1 ? 'e' : ''}`;
+      }
+      // Tvinger browser til å re-layout før vi måler
+      if (controlWrapper) {
+        void controlWrapper.offsetHeight; // force reflow
+      }
       // Mål bredden på kontrollwrapper (tekst + knapp + intern gap)
       const controlWidth = controlWrapper?.offsetWidth || 0;
       // Legg til minimal fade-bredde (16px) + padding fra absolutt container (pr-2 = 8px)
@@ -368,7 +374,7 @@ const ValgteFiltre: React.FC<ValgteFilterProps> = ({
               size='small'
               variant='tertiary'
               className='flex-shrink-0'
-              icon={<ChevronDownIcon className='rotate-180' />}
+              icon={<ChevronUpIcon />}
             />
           </div>
         </div>
