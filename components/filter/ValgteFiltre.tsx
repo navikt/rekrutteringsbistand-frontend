@@ -23,11 +23,16 @@ const ValgteFiltre: React.FC<ValgteFilterProps> = ({
   filtre = [],
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [collapsedCount, setCollapsedCount] = useState(0);
+  const [lineHeight, setLineHeight] = useState<number | null>(null);
+  const [reservedWidth, setReservedWidth] = useState(0); // faktisk width av kontroll (gradient + tekst + knapp)
+  const [collapseBtnWidth, setCollapseBtnWidth] = useState(0); // bredde av collapse-knapp i expanded
+
   const containerRef = useRef<HTMLDivElement>(null);
   const measureRef = useRef<HTMLDivElement>(null);
-  const [visibleChipCount, setVisibleChipCount] = useState<number>(0);
+  const chipsRef = useRef<HTMLDivElement>(null);
+  const collapseBtnRef = useRef<HTMLButtonElement>(null);
 
-  // Flatten alle chips til individuelle elementer
   const chips = filtre.flatMap((filter, filterIndex) =>
     (filter.type || []).map((value, i) => {
       const label = filter.mapVerdiNavn
@@ -42,27 +47,15 @@ const ValgteFiltre: React.FC<ValgteFilterProps> = ({
     }),
   );
 
-  // Måle bredder og beregne synlige chips
+  const hiddenCount = Math.max(0, chips.length - collapsedCount);
+  const hasHidden = hiddenCount > 0;
+
+  // Måling av hvor mange chips som får plass i collapsed state
   useLayoutEffect(() => {
-    // Ikke mål hvis expanded - alle chips vises uansett
-    if (isExpanded) {
-      return;
-    }
-
-    if (!containerRef.current || chips.length === 0) {
-      setVisibleChipCount((prev) => (prev !== 0 ? 0 : prev));
-      return;
-    }
-
+    if (!containerRef.current || !measureRef.current) return;
     const containerWidth = containerRef.current.offsetWidth;
-    if (containerWidth === 0) return;
-
+    if (!containerWidth) return;
     const measureEl = measureRef.current;
-    if (!measureEl) return;
-
-    const gapPx = 8;
-    const safetyMargin = 100; // Høy margin for å håndtere lange chip-navn som "Kontinentallsokkelen"
-
     const chipButtons = Array.from(
       measureEl.querySelectorAll<HTMLButtonElement>(
         'button[data-chip-measure]',
@@ -71,127 +64,147 @@ const ValgteFiltre: React.FC<ValgteFilterProps> = ({
     const clearBtn = measureEl.querySelector<HTMLButtonElement>(
       'button[data-clear-all]',
     );
-    const countTextEl = measureEl.querySelector<HTMLButtonElement>(
-      'button[data-count-text]',
+    const controlWrapper = measureEl.querySelector<HTMLDivElement>(
+      'div[data-control-wrapper]',
     );
-    const arrowBtn = measureEl.querySelector<HTMLButtonElement>(
-      'button[data-arrow-button]',
+    const countEl = controlWrapper?.querySelector<HTMLSpanElement>(
+      'span[data-count-text]',
     );
+
+    // Dynamisk gap (flex gap) fra målecontaineren
+    const computed = getComputedStyle(measureEl);
+    const gapValue = parseFloat(computed.columnGap || computed.gap || '0') || 0;
 
     const clearWidth = clearBtn?.offsetWidth || 0;
-    const countTextWidth = countTextEl?.offsetWidth || 90;
-    const arrowWidth = arrowBtn?.offsetWidth || 48;
     const chipWidths = chipButtons.map((b) => b.offsetWidth);
 
-    // Beregn total bredde uten count text og pil
-    let totalWidth = clearWidth;
-    chipWidths.forEach((w, idx) => {
-      totalWidth += (idx > 0 || clearWidth > 0 ? gapPx : 0) + w;
-    });
+    // Lag kumulativ liste inkludert gap mellom chipper (men ikke etter siste)
+    const cumulative: number[] = [];
+    chipWidths.reduce((acc, w, idx) => {
+      const next = acc + w + (idx > 0 || clearWidth > 0 ? gapValue : 0);
+      cumulative.push(next);
+      return next;
+    }, clearWidth);
 
-    // Hvis alt får plass uten count text og pil
-    if (totalWidth + safetyMargin <= containerWidth) {
-      setVisibleChipCount((prev) =>
-        prev !== chips.length ? chips.length : prev,
-      );
+    const totalAll = cumulative[cumulative.length - 1] || clearWidth;
+    if (totalAll <= containerWidth) {
+      if (collapsedCount !== chips.length) setCollapsedCount(chips.length);
+      if (reservedWidth !== 0) setReservedWidth(0);
       return;
     }
 
-    // Beregn hvor mange som får plass med count text og pil
-    // Merk: count text og arrow er i egen div med gap-2 mellom dem
-    const rightSideWidth = countTextWidth + gapPx + arrowWidth + 16; // +16 for pl-4 padding
-    const availableWidth =
-      containerWidth -
-      rightSideWidth -
-      safetyMargin -
-      (clearWidth > 0 ? clearWidth + gapPx : 0) -
-      gapPx * 2; // ekstra gap for sikkerhet
-
-    let usedWidth = 0;
-    let count = 0;
-
-    for (let i = 0; i < chipWidths.length; i++) {
-      const nextWidth = usedWidth + chipWidths[i] + (i > 0 ? gapPx : 0);
-      if (nextWidth <= availableWidth) {
-        usedWidth = nextWidth;
-        count++;
-      } else {
+    let bestCount = 0;
+    let bestReserved = 0;
+    for (let candidate = chips.length; candidate >= 0; candidate--) {
+      const hidden = chips.length - candidate;
+      if (hidden === 0) {
+        const widthChips =
+          candidate === 0 ? clearWidth : cumulative[candidate - 1];
+        if (widthChips <= containerWidth) {
+          bestCount = candidate;
+          bestReserved = 0;
+          break;
+        }
+        continue;
+      }
+      if (countEl)
+        countEl.textContent = `+ ${hidden} filter${hidden !== 1 ? 'e' : ''}`;
+      // Mål bredden på kontrollwrapper (tekst + knapp + intern gap)
+      const controlWidth = controlWrapper?.offsetWidth || 0;
+      // Legg til minimal fade-bredde (16px) + padding fra absolutt container (pr-2 = 8px)
+      const fadeWidth = 16;
+      const paddingRight = 8;
+      const totalControlWidth = controlWidth + fadeWidth + paddingRight;
+      const widthChips =
+        candidate === 0 ? clearWidth : cumulative[candidate - 1];
+      // Inkluder gap mellom siste chip og kontroll
+      const totalWidth =
+        widthChips + (widthChips > 0 ? gapValue : 0) + totalControlWidth;
+      if (totalWidth <= containerWidth) {
+        bestCount = candidate;
+        bestReserved = totalControlWidth;
         break;
       }
     }
 
-    setVisibleChipCount((prev) => (prev !== count ? count : prev));
-  }, [chips, tømFiltreProps, isExpanded]);
+    if (bestCount !== collapsedCount) setCollapsedCount(bestCount);
+    if (bestReserved !== reservedWidth) setReservedWidth(bestReserved);
+  }, [chips, tømFiltreProps, collapsedCount, reservedWidth]);
 
-  // Re-mål ved resize
+  // Måling av høyde + collapse-knapp bredde (for spacer i expanded)
+  useLayoutEffect(() => {
+    const el = chipsRef.current;
+    if (el && !lineHeight) setLineHeight(el.getBoundingClientRect().height);
+
+    // Mål collapse-knapp bredde på forhånd fra measure-container
+    if (collapseBtnWidth === 0 && measureRef.current) {
+      const collapseBtnEl = measureRef.current.querySelector<HTMLButtonElement>(
+        'button[data-collapse-measure]',
+      );
+      if (collapseBtnEl) {
+        const w = collapseBtnEl.offsetWidth + 8; // knapp + pr-2 padding
+        setCollapseBtnWidth(w);
+      }
+    }
+  }, [lineHeight, collapseBtnWidth]);
+
+  // Resize -> remål
   useEffect(() => {
-    let timeoutId: NodeJS.Timeout;
+    let t: NodeJS.Timeout;
     const handler = () => {
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => {
-        setVisibleChipCount(0); // trigger remåling
-      }, 150);
+      clearTimeout(t);
+      t = setTimeout(() => setCollapsedCount(0), 150);
     };
     window.addEventListener('resize', handler);
     return () => {
-      clearTimeout(timeoutId);
+      clearTimeout(t);
       window.removeEventListener('resize', handler);
     };
   }, []);
 
   if (chips.length === 0) return null;
+  const chipsToRender = isExpanded ? chips : chips.slice(0, collapsedCount);
+  const maxHeightStyle = isExpanded
+    ? lineHeight
+      ? `${lineHeight * 8}px`
+      : '600px'
+    : lineHeight
+      ? `${lineHeight}px`
+      : '40px';
 
-  const hiddenCount = Math.max(0, chips.length - visibleChipCount);
-  const hasHidden = hiddenCount > 0;
-  const chipsToRender = isExpanded ? chips : chips.slice(0, visibleChipCount);
+  const chipsPaddingRight = isExpanded ? (collapseBtnWidth || 40) + 16 : 0;
 
   return (
     <div ref={containerRef} className='w-full'>
-      {/* Gjør container relativ slik at toggle kan plasseres absolutt i hjørnet */}
       <div className='flex justify-between relative'>
-        <div className='flex gap-2'>
-          {/* Venstre side: filtre */}
-          <Chips
-            size='small'
-            className={`flex items-center gap-2 flex-1 min-w-0 ${isExpanded ? 'flex-wrap' : 'flex-nowrap overflow-hidden'}`}
-          >
-            {tømFiltreProps && (
-              <div className='flex-shrink-0'>
-                <TømFiltre
-                  {...tømFiltreProps}
-                  data-clear-all='true'
-                  className='flex-shrink-0'
-                />
-              </div>
-            )}
-
-            {!isExpanded &&
-              chipsToRender.map((chip) => (
-                <Chips.Removable
-                  key={chip.key}
-                  onClick={chip.remove}
-                  style={{ whiteSpace: 'nowrap', flexShrink: 0 }}
-                  className='flex-shrink-0'
-                >
-                  {chip.label}
-                </Chips.Removable>
-              ))}
-
-            {/* Alle chips når expanded */}
-            {isExpanded &&
-              chips.map((chip) => (
-                <Chips.Removable
-                  key={chip.key}
-                  onClick={chip.remove}
-                  style={{ whiteSpace: 'nowrap', flexShrink: 0 }}
-                  className='flex-shrink-0'
-                >
-                  {chip.label}
-                </Chips.Removable>
-              ))}
-          </Chips>
-        </div>
-        {/* Målecontainer (skjult) */}
+        <Chips
+          ref={chipsRef as any}
+          size='small'
+          className='flex items-center gap-2 flex-wrap flex-1 min-w-0 transition-all duration-300 ease-in-out overflow-hidden'
+          style={{ maxHeight: maxHeightStyle, paddingRight: chipsPaddingRight }}
+          aria-expanded={isExpanded}
+        >
+          {tømFiltreProps && (
+            <div className='flex-shrink-0'>
+              <TømFiltre
+                {...tømFiltreProps}
+                data-clear-all='true'
+                className='flex-shrink-0'
+              />
+            </div>
+          )}
+          {chipsToRender.map((chip) => (
+            <Chips.Removable
+              key={chip.key}
+              onClick={chip.remove}
+              style={{ whiteSpace: 'nowrap', flexShrink: 0 }}
+              className='flex-shrink-0'
+            >
+              {chip.label}
+            </Chips.Removable>
+          ))}
+        </Chips>
+        {/* Skjult målecontainer */}
         <div
           ref={measureRef}
           className='invisible fixed left-[-9999px] flex items-center gap-2 flex-nowrap'
@@ -216,36 +229,62 @@ const ValgteFiltre: React.FC<ValgteFilterProps> = ({
               {chip.label}
             </Chips.Removable>
           ))}
-
-          {/* Måle-elementer for høyre side */}
-          <span data-count-text className='text-sm whitespace-nowrap'>
-            + 999 filtre
-          </span>
-          <Button
-            variant='tertiary'
-            size='small'
-            data-arrow-button
-            className='flex-shrink-0'
-            icon={<ChevronDownIcon />}
-          />
-        </div>
-        {hasHidden && (
-          <div
-            onClick={() => setIsExpanded(!isExpanded)}
-            className='flex items-center gap-2 flex-shrink-0 absolute top-0 right-0 z-10 pl-4 cursor-pointer'
-          >
-            {!isExpanded && (
-              <span className='text-sm whitespace-nowrap'>
-                {`+ ${hiddenCount} filter${hiddenCount !== 1 ? 'e' : ''}`}
-              </span>
-            )}
+          <div data-control-wrapper className='flex items-center gap-2'>
+            <span data-count-text className='text-s whitespace-nowrap'>
+              + 0 filtre
+            </span>
             <Button
-              variant='tertiary'
+              data-expand-measure
               size='small'
+              variant='tertiary'
               className='flex-shrink-0'
-              aria-label={isExpanded ? 'Skjul filtre' : 'Vis flere filtre'}
+              icon={<ChevronDownIcon />}
+            />
+            <Button
+              data-collapse-measure
+              size='small'
+              variant='tertiary'
+              className='flex-shrink-0'
+              icon={<ChevronDownIcon className='rotate-180' />}
+            />
+          </div>
+        </div>
+        {hasHidden && !isExpanded && (
+          <div
+            className='absolute inset-y-0 right-0 flex items-center justify-end'
+            style={{ width: reservedWidth }}
+          >
+            <div
+              className='absolute inset-0 pointer-events-none'
+              style={{
+                background:
+                  'linear-gradient(to right, rgba(0,0,0,0) 0%, var(--ax-surface-default) 55%)',
+              }}
+            />
+            <div
+              onClick={() => setIsExpanded(true)}
+              className='relative flex items-center gap-2 pr-2 cursor-pointer'
+            >
+              <span className='text-s whitespace-nowrap'>{`+ ${hiddenCount} filte`}</span>
+              <Button
+                size='small'
+                variant='tertiary'
+                aria-label='Vis flere filtre'
+                icon={<ChevronDownIcon className='transition-transform' />}
+              />
+            </div>
+          </div>
+        )}
+        {isExpanded && (
+          <div className='absolute top-0 right-0 pr-2 pt-0'>
+            <Button
+              ref={collapseBtnRef}
+              size='small'
+              variant='tertiary'
+              aria-label='Skjul filtre'
+              onClick={() => setIsExpanded(false)}
               icon={
-                <ChevronDownIcon className={isExpanded ? 'rotate-180' : ''} />
+                <ChevronDownIcon className='rotate-180 transition-transform' />
               }
             />
           </div>
