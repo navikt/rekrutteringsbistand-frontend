@@ -102,7 +102,7 @@ const _kladdHendelser = [
 
 export const rekrutteringstreffMock: RekrutteringstreffDTO = {
   id: 'd6a587cd-8797-4b9a-a68b-575373f16d65',
-  tittel: 'Treffet',
+  tittel: 'Treff uten navn',
   beskrivelse: null,
   fraTid: '2025-10-01T08:00:00+02:00',
   tilTid: '2025-10-01T10:00:00+02:00',
@@ -113,5 +113,5 @@ export const rekrutteringstreffMock: RekrutteringstreffDTO = {
   status: 'Utkast',
   opprettetAvPersonNavident: 'A123456',
   opprettetAvNavkontorEnhetId: '0318',
-  hendelser: _publisertHendelser,
+  hendelser: _kladdHendelser,
 };

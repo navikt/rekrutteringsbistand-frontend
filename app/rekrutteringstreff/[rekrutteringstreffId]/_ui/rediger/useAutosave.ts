@@ -20,33 +20,6 @@ import { useFormContext } from 'react-hook-form';
 
 type AnyValues = Record<string, any>;
 
-const DEFAULT_TITTEL = 'Treff uten navn';
-
-const fokusErPåTittelFelt = (): boolean => {
-  if (typeof document === 'undefined') return false;
-  const activeEl = document.activeElement;
-  if (!activeEl) return false;
-
-  const inputEl = activeEl as HTMLInputElement;
-  return (
-    inputEl.tagName === 'INPUT' &&
-    (inputEl.name === 'tittel' || inputEl.getAttribute('name') === 'tittel')
-  );
-};
-
-const settFokusPåTittelFelt = (): void => {
-  if (typeof document === 'undefined') return;
-
-  const tittelInput = document.querySelector<HTMLInputElement>(
-    'input[name="tittel"]',
-  );
-
-  if (tittelInput) {
-    tittelInput.focus();
-    tittelInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }
-};
-
 export const erEditMode = (): boolean => {
   try {
     return (
@@ -163,27 +136,6 @@ export function useAutosave() {
 
       const prebuiltDto: any | undefined = buildFullDto(overstyrKiFeil);
       const dtoKeys = new Set(Object.keys(prebuiltDto ?? {}));
-
-      // Sjekk om vi er i kladd-modus og tittel mangler eller er default
-      const erIKladdModus = !erPublisert(treff);
-      if (erIKladdModus) {
-        const formVerdier = getValues();
-        const tittel = (formVerdier.tittel ?? '').trim();
-        const tittelMangler = tittel.length === 0 || tittel === DEFAULT_TITTEL;
-
-        // Hvis tittel mangler og bruker ikke fokuserer på tittelfeltet, gi fokus til tittel
-        if (tittelMangler && !fokusErPåTittelFelt()) {
-          settFokusPåTittelFelt();
-          return; // Ikke lagre andre felt før tittel er fylt ut
-        }
-
-        // Hvis tittel har KI-feil og ikke er overstyrt, gi fokus til tittel
-        const tittelKiFeil = (formState.errors as any)?.tittelKiFeil;
-        if (tittelKiFeil && !overstyrKiFeil && !fokusErPåTittelFelt()) {
-          settFokusPåTittelFelt();
-          return; // Ikke lagre før KI-feil er håndtert
-        }
-      }
 
       const feltSomSkalValideres: string[] | undefined =
         fieldsToValidate && fieldsToValidate.length > 0

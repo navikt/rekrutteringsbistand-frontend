@@ -8,7 +8,7 @@ import { useFormFeltMedKiValidering } from './useFormFeltMedKiValidering';
 import { MAX_TITLE_LENGTH } from '@/app/api/rekrutteringstreff/[...slug]/mutations';
 import { XMarkIcon } from '@navikt/aksel-icons';
 import { Button, Detail, Skeleton, TextField, Heading } from '@navikt/ds-react';
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
 const DEFAULT_TITTEL = 'Treff uten navn';
@@ -18,7 +18,7 @@ interface TittelFormProps {
 }
 
 const TittelForm = ({ onUpdated }: TittelFormProps) => {
-  const { treff } = useRekrutteringstreffData();
+  const { treff, harPublisert } = useRekrutteringstreffData();
   const savedTittel = treff ? (treff.tittel ?? null) : undefined;
 
   const {
@@ -63,6 +63,25 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
     });
     inputRef.current?.focus();
   };
+
+  // Sett initial fokus på tittelfeltet i kladd-modus hvis tittel mangler eller er default
+  useEffect(() => {
+    if (!treff || kiLoggLoading) return;
+
+    const erIKladdModus = !harPublisert;
+    const tittelVerdi = (tittel ?? '').trim();
+    const tittelMangler =
+      tittelVerdi.length === 0 || tittelVerdi === DEFAULT_TITTEL;
+
+    if (erIKladdModus && tittelMangler && inputRef.current) {
+      // Sett fokus med en liten delay for å sikre at DOM er klar
+      const timer = setTimeout(() => {
+        inputRef.current?.focus();
+      }, 100);
+
+      return () => clearTimeout(timer);
+    }
+  }, [treff, kiLoggLoading, tittel, harPublisert]);
 
   return (
     <section className='space-y-3'>
