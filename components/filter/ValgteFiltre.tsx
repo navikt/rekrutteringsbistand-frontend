@@ -280,7 +280,8 @@ const ValgteFiltre: React.FC<ValgteFilterProps> = ({
                   setIsExpanded(true);
                   umami.track(UmamiEvent.Generell.åpne_filter_chip_panel_tekst);
                 }}
-                className='cursor-pointer text-s whitespace-nowrap'
+                className='cursor-pointer text-s whitespace-nowrap '
+                style={{ color: 'var(--ax-text-accent-subtle)' }}
               >{`+ ${hiddenCount} filtre`}</span>
               <Button
                 onClick={() => {

@@ -2,7 +2,7 @@ import { byggStandardsokQuery } from './standardSokUtils';
 import { setNyttStandardsøk } from '@/app/api/stilling/standardsok/settStandardsøk';
 import { useUseBrukerStandardSøk } from '@/app/api/stilling/standardsok/useBrukersStandardsøk';
 import { FloppydiskIcon } from '@navikt/aksel-icons';
-import { Button } from '@navikt/ds-react';
+import { Button, Tooltip } from '@navikt/ds-react';
 import { useSearchParams } from 'next/navigation';
 import { useQueryState } from 'nuqs';
 
@@ -27,14 +27,16 @@ export default function LagreStandardsøk() {
     harKunPortefolje;
 
   return (
-    <Button
-      variant='tertiary'
-      disabled={disabled}
-      icon={<FloppydiskIcon />}
-      onClick={async () => {
-        await setNyttStandardsøk(searchString);
-        await brukerStandardSøkData.mutate();
-      }}
-    />
+    <Tooltip content='Lagre nytt standardsøk'>
+      <Button
+        variant='tertiary'
+        disabled={disabled}
+        icon={<FloppydiskIcon />}
+        onClick={async () => {
+          await setNyttStandardsøk(searchString);
+          await brukerStandardSøkData.mutate();
+        }}
+      />
+    </Tooltip>
   );
 }
