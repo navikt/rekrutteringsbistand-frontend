@@ -1,55 +1,60 @@
 'use client';
 
 import { SparklesIcon, ChatExclamationmarkIcon } from '@navikt/aksel-icons';
-import { BodyShort, ReadMore } from '@navikt/ds-react';
+import { BodyShort, ReadMore, Box } from '@navikt/ds-react';
 import { HandHeartIcon } from 'lucide-react';
 import { FC } from 'react';
 
 const KiAnalyse: FC = () => {
   return (
     <div className='space-y-3 ml-2'>
-      <div className='flex items-start gap-2'>
-        <SparklesIcon
-          aria-hidden
-          className='h-5 w-5 shrink-0 self-start mt-0.5'
-        />
-        <div className='space-y-2'>
-          <div className='flex items-center gap-2'>
-            <BodyShort size='small'>
-              Innholdet sjekkes for personopplysninger og diskriminerende
-              innhold av kunstig intelligens (KI) ✨
-            </BodyShort>
+      <Box.New background='neutral-moderate' borderRadius='xlarge' padding='3'>
+        <div className='flex items-start gap-2 mb-3'>
+          <SparklesIcon
+            aria-hidden
+            className='h-5 w-5 shrink-0 self-start mt-0.5'
+          />
+          <div className='space-y-2'>
+            <div className='flex items-center gap-2'>
+              <BodyShort size='small'>
+                Innholdet sjekkes for personopplysninger og diskriminerende
+                innhold av kunstig intelligens (KI) ✨
+              </BodyShort>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className='flex items-start gap-2'>
-        <ChatExclamationmarkIcon
-          aria-hidden
-          className='h-5 w-5 shrink-0 self-start mt-0.5'
-        />
-        <BodyShort size='small'>
-          KI-sjekken tar ikke høyde for retningslinjene for treff.
-          Retningslinjene finner du på{' '}
-          <a href='#' className='underline'>
-            navet
-          </a>
-          .
-        </BodyShort>
-      </div>
+        <div className='flex items-start gap-2 mb-3'>
+          <ChatExclamationmarkIcon
+            aria-hidden
+            className='h-5 w-5 shrink-0 self-start mt-0.5'
+          />
+          <BodyShort size='small'>
+            KI-sjekken tar ikke høyde for retningslinjene for treff.
+            Retningslinjene finner du på{' '}
+            <a href='#' className='underline'>
+              navet
+            </a>
+            .
+          </BodyShort>
+        </div>
 
-      <div className='flex items-start gap-2'>
-        <HandHeartIcon
-          aria-hidden
-          className='h-5 w-5 shrink-0 self-start mt-0.5'
-        />
-        <BodyShort size='small'>
-          KI-sjekken hjelper deg med å vurdere innholdet. Du er ansvarlig for
-          teksten.
-        </BodyShort>
-      </div>
+        <div className='flex items-start gap-2'>
+          <HandHeartIcon
+            aria-hidden
+            className='h-5 w-5 shrink-0 self-start mt-0.5'
+          />
+          <BodyShort size='small'>
+            KI-sjekken hjelper deg med å vurdere innholdet. Du er ansvarlig for
+            teksten.
+          </BodyShort>
+        </div>
+      </Box.New>
 
-      <ReadMore header='Hvordan fungerer KI-sjekken?'>
+      <ReadMore
+        header='Hvordan fungerer KI-sjekken?'
+        className='bg-[var(--ax-bg-accent-moderate)]'
+      >
         <div className='space-y-3'>
           <BodyShort size='small'>
             KI-sjekken er en testversjon. Det betyr at du kan ikke stole på den.
