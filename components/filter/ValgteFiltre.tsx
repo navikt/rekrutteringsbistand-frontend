@@ -6,7 +6,7 @@ import { storForbokstavString } from '@/app/kandidat/util';
 import { useUmami } from '@/providers/UmamiContext';
 import { UmamiEvent } from '@/util/umamiEvents';
 import { ChevronDownIcon, ChevronUpIcon } from '@navikt/aksel-icons';
-import { BodyShort, Button, Chips } from '@navikt/ds-react';
+import { BodyShort, Button, Chips, Tooltip } from '@navikt/ds-react';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 export interface FilterItem {
@@ -84,9 +84,6 @@ const ValgteFiltre: React.FC<ValgteFilterProps> = ({
     const controlWrapper = measureEl.querySelector<HTMLDivElement>(
       'div[data-control-wrapper]',
     );
-    const countEl = controlWrapper?.querySelector<HTMLSpanElement>(
-      'span[data-count-text]',
-    );
 
     // Dynamisk gap (flex gap) fra målecontaineren
     const computed = getComputedStyle(measureEl);
@@ -124,14 +121,7 @@ const ValgteFiltre: React.FC<ValgteFilterProps> = ({
         }
         continue;
       }
-      // Oppdater teksten OG tvinger layout før måling
-      if (countEl) {
-        countEl.textContent = `+ ${hidden} filter${hidden !== 1 ? 'e' : ''}`;
-      }
-      // Tvinger browser til å re-layout før vi måler
-      if (controlWrapper) {
-        void controlWrapper.offsetHeight; // force reflow
-      }
+
       // Mål bredden på kontrollwrapper (tekst + knapp + intern gap)
       const controlWidth = controlWrapper?.offsetWidth || 0;
       // Legg til minimal fade-bredde (16px) + padding fra absolutt container (pr-2 = 8px)
@@ -358,25 +348,6 @@ const ValgteFiltre: React.FC<ValgteFilterProps> = ({
               {chip.label}
             </Chips.Removable>
           ))}
-          <div data-control-wrapper className='flex items-center gap-2'>
-            <span data-count-text className='text-s whitespace-nowrap'>
-              + 0 filtre
-            </span>
-            <Button
-              data-expand-measure
-              size='small'
-              variant='tertiary'
-              className='flex-shrink-0'
-              icon={<ChevronDownIcon />}
-            />
-            <Button
-              data-collapse-measure
-              size='small'
-              variant='tertiary'
-              className='flex-shrink-0'
-              icon={<ChevronUpIcon />}
-            />
-          </div>
         </div>
         {hasHidden && !isExpanded && (
           <div
@@ -391,16 +362,18 @@ const ValgteFiltre: React.FC<ValgteFilterProps> = ({
               }}
             />
             <div className='relative flex items-center gap-2 pr-2 '>
-              <Button
-                onClick={() => {
-                  setIsExpanded(true);
-                  umami.track(UmamiEvent.Generell.åpne_filter_chip_panel);
-                }}
-                size='small'
-                variant='tertiary'
-                aria-label='Vis flere filtre'
-                icon={<ChevronDownIcon className='transition-transform' />}
-              />
+              <Tooltip content='Vis alle aktive filtre'>
+                <Button
+                  onClick={() => {
+                    setIsExpanded(true);
+                    umami.track(UmamiEvent.Generell.åpne_filter_chip_panel);
+                  }}
+                  size='small'
+                  variant='tertiary'
+                  aria-label='Vis flere filtre'
+                  icon={<ChevronDownIcon />}
+                />
+              </Tooltip>
             </div>
           </div>
         )}
@@ -415,9 +388,7 @@ const ValgteFiltre: React.FC<ValgteFilterProps> = ({
                 setIsExpanded(false);
                 umami.track(UmamiEvent.Generell.lukk_filter_chip_panel);
               }}
-              icon={
-                <ChevronDownIcon className='rotate-180 transition-transform' />
-              }
+              icon={<ChevronUpIcon />}
             />
           </div>
         )}
