@@ -3,6 +3,8 @@
 import { formatChipText } from './FilterChip';
 import TømFiltre, { TømFiltreProps } from './TømFiltre';
 import { storForbokstavString } from '@/app/kandidat/util';
+import { useUmami } from '@/providers/UmamiContext';
+import { UmamiEvent } from '@/util/umamiEvents';
 import { ChevronDownIcon } from '@navikt/aksel-icons';
 import { Button, Chips } from '@navikt/ds-react';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
@@ -22,6 +24,8 @@ const ValgteFiltre: React.FC<ValgteFilterProps> = ({
   tømFiltreProps,
   filtre = [],
 }) => {
+  const umami = useUmami();
+
   const [isExpanded, setIsExpanded] = useState(false);
   const [collapsedCount, setCollapsedCount] = useState(0);
   const [lineHeight, setLineHeight] = useState<number | null>(null);
@@ -49,6 +53,15 @@ const ValgteFiltre: React.FC<ValgteFilterProps> = ({
 
   const hiddenCount = Math.max(0, chips.length - collapsedCount);
   const hasHidden = hiddenCount > 0;
+
+  // Track når filterpanelet ekspanderes
+  useEffect(() => {
+    if (isExpanded) {
+      umami.track(UmamiEvent.Generell.åpne_filter_chip_panel);
+    } else {
+      umami.track(UmamiEvent.Generell.lukk_filter_chip_panel);
+    }
+  }, [isExpanded, umami]);
 
   // Måling av hvor mange chips som får plass i collapsed state
   useLayoutEffect(() => {
