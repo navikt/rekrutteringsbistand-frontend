@@ -13,7 +13,7 @@ import SideScroll from '@/components/SideScroll';
 import SkeletonKort from '@/components/layout/SkeletonKort';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { ChevronLeftIcon, ChevronRightIcon } from '@navikt/aksel-icons';
-import { Button } from '@navikt/ds-react';
+import { BodyShort, Button } from '@navikt/ds-react';
 import { FC, useEffect } from 'react';
 
 interface StillingsSøkeresultatProps {
@@ -42,7 +42,7 @@ const StillingsSøkeresultat: FC<StillingsSøkeresultatProps> = ({
 
   const antallVisning = (total: number) => {
     if (!total) {
-      return null;
+      return <BodyShort className='mt-8'>Ingen treff på søk</BodyShort>;
     }
     const treffFra = regnUtFørsteTreffFra(
       filter.side ?? 0,
