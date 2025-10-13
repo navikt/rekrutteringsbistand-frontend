@@ -39,7 +39,6 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
     erRedigeringAvPublisertTreff,
     runValidationAndMaybeSave,
     onGodkjennKiFeil,
-    watchedValue: htmlContent,
     control,
     setValue,
     kiLoggLoading,

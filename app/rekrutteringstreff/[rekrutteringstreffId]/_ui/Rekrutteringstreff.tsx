@@ -43,7 +43,6 @@ const Rekrutteringstreff: FC = () => {
   const { rekrutteringstreffId, lagrerNoe } = useRekrutteringstreffContext();
 
   const {
-    avlyst,
     harPublisert,
     activeStep,
     treff: rekrutteringstreff,
