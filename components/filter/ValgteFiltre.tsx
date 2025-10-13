@@ -3,12 +3,11 @@
 import { formatChipText } from './FilterChip';
 import TømFiltre, { TømFiltreProps } from './TømFiltre';
 import { storForbokstavString } from '@/app/kandidat/util';
-import SideScroll from '@/components/SideScroll';
 import { useUmami } from '@/providers/UmamiContext';
 import { UmamiEvent } from '@/util/umamiEvents';
 import { ChevronDownIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button, Chips } from '@navikt/ds-react';
-import { ReactNode, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 export interface FilterItem {
   type: string[];
@@ -32,6 +31,10 @@ const ValgteFiltre: React.FC<ValgteFilterProps> = ({
   const [lineHeight, setLineHeight] = useState<number | null>(null);
   const [reservedWidth, setReservedWidth] = useState(0); // faktisk width av kontroll (gradient + tekst + knapp)
   const [collapseBtnWidth, setCollapseBtnWidth] = useState(0); // bredde av collapse-knapp i expanded
+  const [isScrolling, setIsScrolling] = useState(false);
+  const [scrollTimeout, setScrollTimeout] = useState<NodeJS.Timeout | null>(
+    null,
+  );
 
   const containerRef = useRef<HTMLDivElement>(null);
   const measureRef = useRef<HTMLDivElement>(null);
@@ -176,6 +179,30 @@ const ValgteFiltre: React.FC<ValgteFilterProps> = ({
     };
   }, []);
 
+  // Scroll handler for scrollbar visibility
+  const handleScroll = () => {
+    setIsScrolling(true);
+
+    if (scrollTimeout) {
+      clearTimeout(scrollTimeout);
+    }
+
+    const timeout = setTimeout(() => {
+      setIsScrolling(false);
+    }, 1000);
+
+    setScrollTimeout(timeout);
+  };
+
+  // Cleanup scroll timeout
+  useEffect(() => {
+    return () => {
+      if (scrollTimeout) {
+        clearTimeout(scrollTimeout);
+      }
+    };
+  }, [scrollTimeout]);
+
   if (chips.length === 0) return null;
   const chipsToRender = isExpanded ? chips : chips.slice(0, collapsedCount);
   const maxHeightStyle = isExpanded
@@ -188,56 +215,118 @@ const ValgteFiltre: React.FC<ValgteFilterProps> = ({
 
   const chipsPaddingRight = isExpanded ? (collapseBtnWidth || 40) + 16 : 0;
 
-  const ScrollWrapper: React.FC<{ children: ReactNode }> = ({ children }) => {
-    if (isExpanded) {
-      return <SideScroll>{children}</SideScroll>;
-    } else {
-      return <>{children}</>;
-    }
-  };
-
   return (
     <div ref={containerRef} className='w-full'>
+      <style jsx>{`
+        .chips-scroll-container::-webkit-scrollbar {
+          width: 16px;
+          height: 16px;
+        }
+        .chips-scroll-container::-webkit-scrollbar-track {
+          background: transparent;
+          margin: 2px;
+        }
+        .chips-scroll-container::-webkit-scrollbar-thumb {
+          background: ${isScrolling
+            ? 'rgba(203, 213, 225, 0.8)'
+            : 'transparent'};
+          border-radius: 8px;
+          border: 4px solid transparent;
+          background-clip: content-box;
+          transition: background 0.3s ease;
+        }
+        .chips-scroll-container:hover::-webkit-scrollbar-thumb {
+          background: rgba(203, 213, 225, 0.8);
+          background-clip: content-box;
+        }
+        .chips-scroll-container::-webkit-scrollbar-thumb:hover {
+          background: rgba(148, 163, 184, 0.9) !important;
+          background-clip: content-box;
+        }
+        .chips-scroll-container::-webkit-scrollbar-corner {
+          background: transparent;
+        }
+
+        .chips-scroll-container {
+          scrollbar-width: thin;
+          scrollbar-color: ${isScrolling
+              ? 'rgba(203, 213, 225, 0.8)'
+              : 'transparent'}
+            transparent;
+          transition: scrollbar-color 0.3s ease;
+        }
+        .chips-scroll-container:hover {
+          scrollbar-color: rgba(203, 213, 225, 0.8) transparent;
+        }
+
+        /* Dark theme */
+        :global(.dark) .chips-scroll-container::-webkit-scrollbar-thumb {
+          background: ${isScrolling ? 'rgba(75, 85, 99, 0.8)' : 'transparent'};
+          background-clip: content-box;
+        }
+        :global(.dark) .chips-scroll-container:hover::-webkit-scrollbar-thumb {
+          background: rgba(75, 85, 99, 0.8);
+          background-clip: content-box;
+        }
+        :global(.dark) .chips-scroll-container::-webkit-scrollbar-thumb:hover {
+          background: rgba(107, 114, 128, 0.9) !important;
+          background-clip: content-box;
+        }
+        :global(.dark) .chips-scroll-container {
+          scrollbar-color: ${isScrolling
+              ? 'rgba(75, 85, 99, 0.8)'
+              : 'transparent'}
+            transparent;
+        }
+        :global(.dark) .chips-scroll-container:hover {
+          scrollbar-color: rgba(75, 85, 99, 0.8) transparent;
+        }
+      `}</style>
       <div className='flex justify-between relative'>
-        <Chips
-          ref={chipsRef as any}
-          size='small'
-          className='flex items-center gap-2 flex-wrap flex-1 min-w-0 transition-all duration-300 ease-in-out '
+        <div
+          className='chips-scroll-container flex-1 min-w-0 transition-all duration-300 ease-in-out overflow-auto'
           style={{
             maxHeight: maxHeightStyle,
             paddingRight: chipsPaddingRight,
           }}
-          aria-expanded={isExpanded}
+          onScroll={handleScroll}
         >
-          {tømFiltreProps && (
-            <div className='flex-shrink-0'>
-              <TømFiltre
-                {...tømFiltreProps}
-                data-clear-all='true'
+          <Chips
+            ref={chipsRef as any}
+            size='small'
+            className='flex items-center gap-2 flex-wrap'
+            aria-expanded={isExpanded}
+          >
+            {tømFiltreProps && (
+              <div className='flex-shrink-0'>
+                <TømFiltre
+                  {...tømFiltreProps}
+                  data-clear-all='true'
+                  className='flex-shrink-0'
+                />
+              </div>
+            )}
+            {chipsToRender.map((chip) => (
+              <Chips.Removable
+                key={chip.key}
+                onClick={chip.remove}
+                style={{ whiteSpace: 'nowrap', flexShrink: 0 }}
                 className='flex-shrink-0'
-              />
-            </div>
-          )}
-          {chipsToRender.map((chip) => (
-            <Chips.Removable
-              key={chip.key}
-              onClick={chip.remove}
-              style={{ whiteSpace: 'nowrap', flexShrink: 0 }}
-              className='flex-shrink-0'
-            >
-              {chip.label}
-            </Chips.Removable>
-          ))}
-          {!isExpanded && (
-            <BodyShort
-              onClick={() => {
-                setIsExpanded(true);
-                umami.track(UmamiEvent.Generell.åpne_filter_chip_panel_tekst);
-              }}
-              className='cursor-pointer text-s whitespace-nowrap text-[var(--ax-text-accent-subtle)]'
-            >{`+ ${hiddenCount} filtre`}</BodyShort>
-          )}
-        </Chips>
+              >
+                {chip.label}
+              </Chips.Removable>
+            ))}
+            {!isExpanded && hiddenCount > 0 && (
+              <BodyShort
+                onClick={() => {
+                  setIsExpanded(true);
+                  umami.track(UmamiEvent.Generell.åpne_filter_chip_panel_tekst);
+                }}
+                className='cursor-pointer text-s whitespace-nowrap text-[var(--ax-text-accent-subtle)]'
+              >{`+ ${hiddenCount} filtre`}</BodyShort>
+            )}
+          </Chips>
+        </div>
         {/* Skjult målecontainer */}
         <div
           ref={measureRef}
