@@ -20,17 +20,6 @@ const sanitizeForComparison = (value: unknown): string => {
     .trim();
 };
 
-/**
- * Hovedhook som håndterer KI-validering og lagring for et form-felt.
- * Brukes av både TittelForm og InnleggForm.
- *
- * Håndterer:
- * - Form state (watch, setValue, getValues)
- * - KI-validering mot backend
- * - Autosave-logikk
- * - Force-save ved KI-feil
- * - Logging av KI-resultater
- */
 export function useFormFeltMedKiValidering({
   feltType,
   fieldName,
@@ -42,7 +31,10 @@ export function useFormFeltMedKiValidering({
   feltType: FeltType;
   fieldName: string;
   savedValue?: string | null;
-  saveCallback: (fieldsToValidate: string[], force?: boolean) => Promise<void>;
+  saveCallback: (
+    fieldsToValidate: string[],
+    overstyrKiFeil?: boolean,
+  ) => Promise<void>;
   onUpdated?: () => void;
   requireHasCheckedToShow?: boolean;
 }) {
@@ -112,11 +104,10 @@ export function useFormFeltMedKiValidering({
     });
   }, [analyse, analyseError, harGodkjentKiFeil, fieldName, setValue]);
 
-  // Wrapper for saveCallback som håndterer feil og kaller onUpdated
   const wrappedSaveCallback = useCallback(
-    async (force?: boolean) => {
+    async (overstyrKiFeil?: boolean) => {
       try {
-        await saveCallback([fieldName], force);
+        await saveCallback([fieldName], overstyrKiFeil);
       } catch (error) {
         new RekbisError({
           message: `Lagring av ${feltType} feilet.`,
@@ -129,7 +120,6 @@ export function useFormFeltMedKiValidering({
     [saveCallback, fieldName, feltType, onUpdated],
   );
 
-  /** Kjører KI-validering og autosave hvis godkjent (ikke i publisert redigeringsmodus) */
   const runValidationAndMaybeSave = useCallback(async () => {
     const feltErGyldig = await triggerRHF(fieldName as any);
     if (!feltErGyldig) return;
@@ -170,11 +160,8 @@ export function useFormFeltMedKiValidering({
         (kiResultat as any)?.bryterRetningslinjer ??
         (analyse as any)?.bryterRetningslinjer;
 
-      const kanLagres = !bryterRetningslinjer;
-
-      // Lagre hvis godkjent (ikke i publisert redigeringsmodus)
-      if (kanLagres && !erRedigeringAvPublisertTreff) {
-        await wrappedSaveCallback(false);
+      if (!bryterRetningslinjer && !erRedigeringAvPublisertTreff) {
+        await wrappedSaveCallback();
 
         if (loggId && setKiLagret) {
           try {
@@ -210,23 +197,12 @@ export function useFormFeltMedKiValidering({
     savedValue,
   ]);
 
-  /**
-   * Godkjenner KI-feil og tvinger lagring.
-   * Kalles kun når bruker eksplisitt klikker "Lagre likevel" eller "Bruk likevel" knappen.
-   *
-   * harGodkjentKiFeil state brukes til:
-   * 1. Skjule rød border (kiErrorBorder)
-   * 2. Skjule KI-feil i form state (enabler publiser-knappen)
-   * 3. I edit-mode: Markere at brukeren har godkjent KI-feilen før republisering
-   */
   const onGodkjennKiFeil = useCallback(async () => {
-    // I edit-mode: Sett flagg og vent på at bruker trykker "Lagre" (republiser)
     if (erRedigeringAvPublisertTreff) {
       setHarGodkjentKiFeil(true);
       return;
     }
 
-    // I kladd-modus: Lagre umiddelbart med force=true
     setHarGodkjentKiFeil(true);
     await wrappedSaveCallback(true);
 

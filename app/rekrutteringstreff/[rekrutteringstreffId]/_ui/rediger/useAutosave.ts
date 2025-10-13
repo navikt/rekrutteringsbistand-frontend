@@ -37,22 +37,23 @@ export const erPublisert = (treff: any): boolean => {
   return step === AktivtSteg.INVITERE || step === AktivtSteg.FULLFØRE;
 };
 
-/** Blokkerer autosave når publisert og i edit-mode (med mindre force=true) */
-export const skalHindreAutosave = (treff: any, force?: boolean): boolean => {
-  if (force) return false;
+export const skalHindreAutosave = (
+  treff: any,
+  overstyrKiFeil?: boolean,
+): boolean => {
+  if (overstyrKiFeil) return false;
   return erPublisert(treff) && erEditMode();
 };
 
-/**
- * Sjekker om et felt skal lagres basert på valideringsstatus.
- * Returnerer true hvis feltet er gyldig ELLER hvis force=true.
- */
 export const skalLagreFelt = (
-  harFeil: boolean,
+  harFormFeil: boolean,
+  harKiFeil: boolean,
   harInnhold: boolean,
-  force?: boolean,
+  overstyrKiFeil?: boolean,
 ): boolean => {
-  return (!harFeil || Boolean(force)) && harInnhold;
+  if (harFormFeil) return false;
+  if (harKiFeil && !overstyrKiFeil) return false;
+  return harInnhold;
 };
 
 /** Autosave av rekrutteringstreff (blokkeres når publisert og i edit-mode) */
@@ -63,7 +64,7 @@ export function useAutosave() {
   const { getValues, trigger, formState } = useFormContext<AnyValues>();
 
   const buildFullDto = useCallback(
-    (opts?: { force?: boolean }) => {
+    (overstyrKiFeil?: boolean) => {
       const formVerdier = getValues();
 
       const fraTid =
@@ -87,18 +88,19 @@ export function useAutosave() {
         treff?.svarfrist ??
         null;
 
-      // Sjekk om tittel skal inkluderes i lagring
       const trimmedTitle =
         typeof formVerdier.tittel === 'string' ? formVerdier.tittel.trim() : '';
       const harTittelFeil = Boolean((formState?.errors as any)?.tittel);
+      const harTittelKiFeil = Boolean(formVerdier.tittelKiFeil);
       const harTittelInnhold = Boolean(
         trimmedTitle.length > 0 ||
           (treff?.tittel && treff.tittel.trim().length > 0),
       );
       const skalInkludereTittel = skalLagreFelt(
         harTittelFeil,
+        harTittelKiFeil,
         harTittelInnhold,
-        opts?.force,
+        overstyrKiFeil,
       );
       return {
         ...(skalInkludereTittel && {
@@ -125,10 +127,10 @@ export function useAutosave() {
   );
 
   const save = useCallback(
-    async (fieldsToValidate?: string[], force?: boolean) => {
+    async (fieldsToValidate?: string[], overstyrKiFeil?: boolean) => {
       if (!rekrutteringstreffId) return;
 
-      if (skalHindreAutosave(treff, force)) {
+      if (skalHindreAutosave(treff, overstyrKiFeil)) {
         return;
       }
 
@@ -136,7 +138,7 @@ export function useAutosave() {
         !fieldsToValidate || fieldsToValidate.length === 0;
 
       let valideringOk = true;
-      if (!force) {
+      if (!overstyrKiFeil) {
         valideringOk = await trigger(
           skalValidereAlleFelder ? undefined : (fieldsToValidate as any),
           {
@@ -146,12 +148,11 @@ export function useAutosave() {
         if (!valideringOk) return;
       }
 
-      // Ikke lagre ved periodefeil (lik eller negativ tid)
       if ((formState?.errors as any)?.root?.type === 'manualPeriod') {
         return;
       }
 
-      const dto = buildFullDto({ force });
+      const dto = buildFullDto(overstyrKiFeil);
       try {
         startLagring('rekrutteringstreff');
         await oppdaterRekrutteringstreff(rekrutteringstreffId, dto);
@@ -187,26 +188,31 @@ export function useInnleggAutosave() {
   }>();
 
   const save = useCallback(
-    async (fieldsToValidate?: string[], force?: boolean) => {
+    async (fieldsToValidate?: string[], overstyrKiFeil?: boolean) => {
       if (!rekrutteringstreffId) return;
 
-      if (skalHindreAutosave(treff as any, force)) {
+      if (skalHindreAutosave(treff as any, overstyrKiFeil)) {
         return;
       }
 
-      // Valider felt hvis spesifisert (med mindre force=true)
-      if (fieldsToValidate && fieldsToValidate.length && !force) {
+      if (fieldsToValidate && fieldsToValidate.length && !overstyrKiFeil) {
         const valideringOk = await trigger(fieldsToValidate as any, {
           shouldFocus: false,
         });
         if (!valideringOk) return;
       }
 
-      // Sjekk om innlegg skal lagres
+      const formVerdier = getValues();
       const harInnleggFeil = Boolean((formState?.errors as any)?.htmlContent);
-      const innholdSomSkalLagres = (getValues('htmlContent') ?? '').toString();
+      const harInnleggKiFeil = Boolean((formVerdier as any)?.htmlContentKiFeil);
+      const innholdSomSkalLagres = (formVerdier.htmlContent ?? '').toString();
       const harInnleggInnhold = Boolean(innholdSomSkalLagres.trim().length > 0);
-      const skalLagre = skalLagreFelt(harInnleggFeil, harInnleggInnhold, force);
+      const skalLagre = skalLagreFelt(
+        harInnleggFeil,
+        harInnleggKiFeil,
+        harInnleggInnhold,
+        overstyrKiFeil,
+      );
 
       if (!skalLagre) return;
 
