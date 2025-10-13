@@ -108,36 +108,37 @@ const StillingsSøkLayout: FC<StillingsSøkProps> = ({
   }
 
   return (
-    <>
-      <div ref={stillingsøkFilterRef}>
-        <StillingsSøkFilter
-          formidlinger={formidlinger}
-          stillingForKandidat={forKandidatNr}
-        />
-      </div>
-      <div className='@container flex'>
-        <div className='flex-grow min-w-0'>
-          <StillingsSøkeresultat
-            kandidatId={forKandidatNr}
-            scrollExcludeRefs={[stillingsøkFilterRef]}
+    <div className='@container flex'>
+      <div className='flex-grow min-w-0'>
+        <div ref={stillingsøkFilterRef}>
+          <StillingsSøkFilter
+            formidlinger={formidlinger}
+            stillingForKandidat={forKandidatNr}
           />
         </div>
-
-        <div className='hidden @[720px]:flex  flex-col  gap-4'>
-          <StillingSøkebar alltidÅpen={false} />
-          <SideScroll>
-            <div className='flex flex-col ml-4 pt-4  max-w-[200px] gap-4'>
-              <MittStandardsøk />
-              <StillingsSøkSortering />
-              {(harArbeidsgiverrettetRolle || formidlinger) && <StatusFilter />}
-              <GeografiFilter />
-              {!formidlinger && <KategoriFilter />}
-              <InkluderingFilter />
-            </div>
-          </SideScroll>
+        <div className='@container flex'>
+          <div className='flex-grow min-w-0'>
+            <StillingsSøkeresultat
+              kandidatId={forKandidatNr}
+              scrollExcludeRefs={[stillingsøkFilterRef]}
+            />
+          </div>
         </div>
       </div>
-    </>
+      <div className='hidden @[720px]:block ml-4 pt-4 max-w-[200px]'>
+        <StillingSøkebar alltidÅpen={false} />
+        <SideScroll>
+          <div className='flex flex-col ml-4 pt-4 max-w-[200px] gap-4'>
+            <MittStandardsøk />
+            <StillingsSøkSortering />
+            {(harArbeidsgiverrettetRolle || formidlinger) && <StatusFilter />}
+            <GeografiFilter />
+            {!formidlinger && <KategoriFilter />}
+            <InkluderingFilter />
+          </div>
+        </SideScroll>
+      </div>
+    </div>
   );
 };
 

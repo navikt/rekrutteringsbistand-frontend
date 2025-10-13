@@ -65,7 +65,7 @@ export default function KandidatSøkChips() {
   }
 
   return (
-    <div className='mt-4 w-full'>
+    <div className='my-2 w-full'>
       <ValgteFiltre
         filtre={filtre}
         tømFiltreProps={

@@ -147,52 +147,92 @@ const ValgteFiltre: React.FC<ValgteFilterProps> = ({
 
   return (
     <div ref={containerRef} className='w-full'>
-      <div className='flex items-start gap-2'>
-        {/* Venstre side: filtre */}
+      {/* Gjør container relativ slik at toggle kan plasseres absolutt i hjørnet */}
+      <div className='flex justify-between relative'>
+        <div className='flex gap-2'>
+          {/* Venstre side: filtre */}
+          <Chips
+            size='small'
+            className={`flex items-center gap-2 flex-1 min-w-0 ${isExpanded ? 'flex-wrap' : 'flex-nowrap overflow-hidden'}`}
+          >
+            {tømFiltreProps && (
+              <div className='flex-shrink-0'>
+                <TømFiltre
+                  {...tømFiltreProps}
+                  data-clear-all='true'
+                  className='flex-shrink-0'
+                />
+              </div>
+            )}
+
+            {!isExpanded &&
+              chipsToRender.map((chip) => (
+                <Chips.Removable
+                  key={chip.key}
+                  onClick={chip.remove}
+                  style={{ whiteSpace: 'nowrap', flexShrink: 0 }}
+                  className='flex-shrink-0'
+                >
+                  {chip.label}
+                </Chips.Removable>
+              ))}
+
+            {/* Alle chips når expanded */}
+            {isExpanded &&
+              chips.map((chip) => (
+                <Chips.Removable
+                  key={chip.key}
+                  onClick={chip.remove}
+                  style={{ whiteSpace: 'nowrap', flexShrink: 0 }}
+                  className='flex-shrink-0'
+                >
+                  {chip.label}
+                </Chips.Removable>
+              ))}
+          </Chips>
+        </div>
+        {/* Målecontainer (skjult) */}
         <div
-          className={`flex items-center gap-2 flex-1 min-w-0 ${isExpanded ? 'flex-wrap' : 'flex-nowrap overflow-hidden'}`}
+          ref={measureRef}
+          className='invisible fixed left-[-9999px] flex items-center gap-2 flex-nowrap'
+          aria-hidden='true'
         >
           {tømFiltreProps && (
             <div className='flex-shrink-0'>
               <TømFiltre
                 {...tømFiltreProps}
-                data-clear-all='true'
+                data-clear-all
                 className='flex-shrink-0'
               />
             </div>
           )}
+          {chips.map((chip) => (
+            <Chips.Removable
+              key={`m-${chip.key}`}
+              data-chip-measure
+              onClick={(e) => e.preventDefault()}
+              className='flex-shrink-0 whitespace-nowrap'
+            >
+              {chip.label}
+            </Chips.Removable>
+          ))}
 
-          {!isExpanded &&
-            chipsToRender.map((chip) => (
-              <Chips.Removable
-                key={chip.key}
-                onClick={chip.remove}
-                style={{ whiteSpace: 'nowrap', flexShrink: 0 }}
-                className='flex-shrink-0'
-              >
-                {chip.label}
-              </Chips.Removable>
-            ))}
-
-          {/* Alle chips når expanded */}
-          {isExpanded &&
-            chips.map((chip) => (
-              <Chips.Removable
-                key={chip.key}
-                onClick={chip.remove}
-                style={{ whiteSpace: 'nowrap', flexShrink: 0 }}
-                className='flex-shrink-0'
-              >
-                {chip.label}
-              </Chips.Removable>
-            ))}
+          {/* Måle-elementer for høyre side */}
+          <span data-count-text className='text-sm whitespace-nowrap'>
+            + 999 filtre
+          </span>
+          <Button
+            variant='tertiary'
+            size='small'
+            data-arrow-button
+            className='flex-shrink-0'
+            icon={<ChevronDownIcon />}
+          />
         </div>
-
-        {/* Høyre side: "+ N filtre" tekst og pil for expand/collapse */}
         {hasHidden && (
           <div
             onClick={() => setIsExpanded(!isExpanded)}
-            className='flex items-center gap-2 flex-shrink-0  relative z-10 pl-4 cursor-pointer'
+            className='flex items-center gap-2 flex-shrink-0 absolute top-0 right-0 z-10 pl-4 cursor-pointer'
           >
             {!isExpanded && (
               <span className='text-sm whitespace-nowrap'>
@@ -210,48 +250,6 @@ const ValgteFiltre: React.FC<ValgteFilterProps> = ({
             />
           </div>
         )}
-      </div>
-
-      {/* Målecontainer (skjult) */}
-      <div
-        ref={measureRef}
-        className='invisible fixed left-[-9999px] flex items-center gap-2 flex-nowrap'
-        aria-hidden='true'
-      >
-        {tømFiltreProps && (
-          <div className='flex-shrink-0'>
-            <TømFiltre
-              {...tømFiltreProps}
-              data-clear-all
-              className='flex-shrink-0'
-            />
-          </div>
-        )}
-        {chips.map((chip) => (
-          <Chips.Removable
-            key={`m-${chip.key}`}
-            data-chip-measure
-            onClick={(e) => e.preventDefault()}
-            className='flex-shrink-0 whitespace-nowrap'
-          >
-            {chip.label}
-          </Chips.Removable>
-        ))}
-
-        {/* Måle-elementer for høyre side */}
-        <span
-          data-count-text
-          className='text-sm text-gray-700 dark:text-gray-300 whitespace-nowrap'
-        >
-          + 999 filtre
-        </span>
-        <Button
-          variant='tertiary'
-          size='small'
-          data-arrow-button
-          className='flex-shrink-0'
-          icon={<ChevronDownIcon />}
-        />
       </div>
     </div>
   );

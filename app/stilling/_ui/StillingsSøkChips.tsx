@@ -120,9 +120,11 @@ export default function StillingsSøkChips() {
   }
 
   return (
-    <ValgteFiltre
-      filtre={filtreItems}
-      tømFiltreProps={{ fjernFritekst: () => filter.setFritekstListe([]) }}
-    />
+    <div className='mt-2'>
+      <ValgteFiltre
+        filtre={filtreItems}
+        tømFiltreProps={{ fjernFritekst: () => filter.setFritekstListe([]) }}
+      />
+    </div>
   );
 }
