@@ -3,11 +3,12 @@
 import { formatChipText } from './FilterChip';
 import TømFiltre, { TømFiltreProps } from './TømFiltre';
 import { storForbokstavString } from '@/app/kandidat/util';
+import SideScroll from '@/components/SideScroll';
 import { useUmami } from '@/providers/UmamiContext';
 import { UmamiEvent } from '@/util/umamiEvents';
 import { ChevronDownIcon } from '@navikt/aksel-icons';
-import { Button, Chips } from '@navikt/ds-react';
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { BodyShort, Button, Chips } from '@navikt/ds-react';
+import { ReactNode, useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 export interface FilterItem {
   type: string[];
@@ -187,14 +188,25 @@ const ValgteFiltre: React.FC<ValgteFilterProps> = ({
 
   const chipsPaddingRight = isExpanded ? (collapseBtnWidth || 40) + 16 : 0;
 
+  const ScrollWrapper: React.FC<{ children: ReactNode }> = ({ children }) => {
+    if (isExpanded) {
+      return <SideScroll>{children}</SideScroll>;
+    } else {
+      return <>{children}</>;
+    }
+  };
+
   return (
     <div ref={containerRef} className='w-full'>
       <div className='flex justify-between relative'>
         <Chips
           ref={chipsRef as any}
           size='small'
-          className='flex items-center gap-2 flex-wrap flex-1 min-w-0 transition-all duration-300 ease-in-out overflow-hidden'
-          style={{ maxHeight: maxHeightStyle, paddingRight: chipsPaddingRight }}
+          className='flex items-center gap-2 flex-wrap flex-1 min-w-0 transition-all duration-300 ease-in-out '
+          style={{
+            maxHeight: maxHeightStyle,
+            paddingRight: chipsPaddingRight,
+          }}
           aria-expanded={isExpanded}
         >
           {tømFiltreProps && (
@@ -216,6 +228,15 @@ const ValgteFiltre: React.FC<ValgteFilterProps> = ({
               {chip.label}
             </Chips.Removable>
           ))}
+          {!isExpanded && (
+            <BodyShort
+              onClick={() => {
+                setIsExpanded(true);
+                umami.track(UmamiEvent.Generell.åpne_filter_chip_panel_tekst);
+              }}
+              className='cursor-pointer text-s whitespace-nowrap text-[var(--ax-text-accent-subtle)]'
+            >{`+ ${hiddenCount} filtre`}</BodyShort>
+          )}
         </Chips>
         {/* Skjult målecontainer */}
         <div
@@ -275,14 +296,6 @@ const ValgteFiltre: React.FC<ValgteFilterProps> = ({
               }}
             />
             <div className='relative flex items-center gap-2 pr-2 '>
-              <span
-                onClick={() => {
-                  setIsExpanded(true);
-                  umami.track(UmamiEvent.Generell.åpne_filter_chip_panel_tekst);
-                }}
-                className='cursor-pointer text-s whitespace-nowrap '
-                style={{ color: 'var(--ax-text-accent-subtle)' }}
-              >{`+ ${hiddenCount} filtre`}</span>
               <Button
                 onClick={() => {
                   setIsExpanded(true);
