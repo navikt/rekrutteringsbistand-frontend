@@ -31,6 +31,9 @@ const lagEventPrefix = <T extends Record<string, string>>(
 
 const Generell = lagEventPrefix(UmamiDomene.Generell, {
   fant_ikke_side: 'Fant ikke side (404)',
+  åpne_filter_chip_panel: 'Åpne filter chip panel',
+  åpne_filter_chip_panel_tekst: 'Åpne filter chip panel via tekst',
+  lukk_filter_chip_panel: 'Lukk filter chip panel',
 });
 
 const Forside = lagEventPrefix(UmamiDomene.Forside, {
