@@ -35,11 +35,11 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
     analyseError,
     validating,
     kiErrorBorder,
-    forceSave,
+    harGodkjentKiFeil,
     showAnalysis,
     erRedigeringAvPublisertTreff,
     runValidationAndMaybeSave,
-    onForceSave,
+    onGodkjennKiFeil,
     watchedValue: tittel,
     control,
     setValue,
@@ -165,10 +165,10 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
             validating={validating}
             analyse={analyse}
             analyseError={analyseError}
-            forceSave={forceSave}
+            harGodkjentKiFeil={harGodkjentKiFeil}
             showAnalysis={showAnalysis}
             erRedigeringAvPublisertTreff={erRedigeringAvPublisertTreff}
-            onForceSave={onForceSave}
+            onGodkjennKiFeil={onGodkjennKiFeil}
             ariaLabel='Analyse av tittel'
           />
         </>

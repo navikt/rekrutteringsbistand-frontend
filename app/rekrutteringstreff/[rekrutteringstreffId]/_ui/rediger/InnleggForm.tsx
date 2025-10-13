@@ -34,11 +34,11 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
     analyseError,
     validating,
     kiErrorBorder,
-    forceSave,
+    harGodkjentKiFeil,
     showAnalysis,
     erRedigeringAvPublisertTreff,
     runValidationAndMaybeSave,
-    onForceSave,
+    onGodkjennKiFeil,
     watchedValue: htmlContent,
     control,
     setValue,
@@ -113,10 +113,10 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
             validating={validating}
             analyse={analyse}
             analyseError={analyseError}
-            forceSave={forceSave}
+            harGodkjentKiFeil={harGodkjentKiFeil}
             showAnalysis={showAnalysis}
             erRedigeringAvPublisertTreff={erRedigeringAvPublisertTreff}
-            onForceSave={onForceSave}
+            onGodkjennKiFeil={onGodkjennKiFeil}
             ariaLabel='Analyse av innlegg'
           />
         </>

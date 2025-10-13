@@ -75,13 +75,13 @@ export function useFormFeltMedKiValidering({
   } = useValiderRekrutteringstreff(rekrutteringstreffId);
 
   const [loggId, setLoggId] = useState<string | null>(null);
-  const [forceSave, setForceSave] = useState(false);
+  const [harGodkjentKiFeil, setHarGodkjentKiFeil] = useState(false);
   const [hasChecked, setHasChecked] = useState(false);
 
   // Reset state når felt-verdien endres
   useEffect(() => {
     setHasChecked(false);
-    setForceSave(false);
+    setHarGodkjentKiFeil(false);
     setLoggId(null);
     resetAnalyse();
     setValue(`${fieldName}KiSjekket` as any, false as any, {
@@ -91,26 +91,26 @@ export function useFormFeltMedKiValidering({
     });
   }, [watchedValue, resetAnalyse, fieldName, setValue]);
 
-  // Sett border-feil hvis KI finner brudd
+  // Sett border-feil hvis KI finner brudd (og bruker ikke har godkjent feilen)
   const kiErrorBorder =
     !!analyse &&
     !analyseError &&
     (analyse as any)?.bryterRetningslinjer &&
-    !forceSave;
+    !harGodkjentKiFeil;
 
-  // Synkroniser KI-feil til form state
+  // Synkroniser KI-feil til form state (skjul feil hvis bruker har godkjent)
   useEffect(() => {
     const feil =
       !!analyse &&
       !analyseError &&
       !!(analyse as any)?.bryterRetningslinjer &&
-      !forceSave;
+      !harGodkjentKiFeil;
     setValue(`${fieldName}KiFeil` as any, feil as any, {
       shouldDirty: false,
       shouldValidate: false,
       shouldTouch: false,
     });
-  }, [analyse, analyseError, forceSave, fieldName, setValue]);
+  }, [analyse, analyseError, harGodkjentKiFeil, fieldName, setValue]);
 
   // Wrapper for saveCallback som håndterer feil og kaller onUpdated
   const wrappedSaveCallback = useCallback(
@@ -170,7 +170,7 @@ export function useFormFeltMedKiValidering({
         (kiResultat as any)?.bryterRetningslinjer ??
         (analyse as any)?.bryterRetningslinjer;
 
-      const kanLagres = !bryterRetningslinjer || forceSave;
+      const kanLagres = !bryterRetningslinjer;
 
       // Lagre hvis godkjent (ikke i publisert redigeringsmodus)
       if (kanLagres && !erRedigeringAvPublisertTreff) {
@@ -202,7 +202,6 @@ export function useFormFeltMedKiValidering({
     getValues,
     validateKI,
     feltType,
-    forceSave,
     erRedigeringAvPublisertTreff,
     wrappedSaveCallback,
     setKiLagret,
@@ -211,14 +210,24 @@ export function useFormFeltMedKiValidering({
     savedValue,
   ]);
 
-  /** Tvinger lagring selv om KI-analyse fant brudd på retningslinjer */
-  const onForceSave = useCallback(async () => {
+  /**
+   * Godkjenner KI-feil og tvinger lagring.
+   * Kalles kun når bruker eksplisitt klikker "Lagre likevel" eller "Bruk likevel" knappen.
+   *
+   * harGodkjentKiFeil state brukes til:
+   * 1. Skjule rød border (kiErrorBorder)
+   * 2. Skjule KI-feil i form state (enabler publiser-knappen)
+   * 3. I edit-mode: Markere at brukeren har godkjent KI-feilen før republisering
+   */
+  const onGodkjennKiFeil = useCallback(async () => {
+    // I edit-mode: Sett flagg og vent på at bruker trykker "Lagre" (republiser)
     if (erRedigeringAvPublisertTreff) {
-      setForceSave(true);
+      setHarGodkjentKiFeil(true);
       return;
     }
 
-    setForceSave(true);
+    // I kladd-modus: Lagre umiddelbart med force=true
+    setHarGodkjentKiFeil(true);
     await wrappedSaveCallback(true);
 
     if (loggId && setKiLagret) {
@@ -246,8 +255,8 @@ export function useFormFeltMedKiValidering({
     analyseError,
     validating,
     kiErrorBorder,
-    forceSave,
-    setForceSave,
+    harGodkjentKiFeil,
+    setHarGodkjentKiFeil,
     loggId,
     hasChecked,
     showAnalysis,
@@ -255,7 +264,7 @@ export function useFormFeltMedKiValidering({
 
     // Callbacks
     runValidationAndMaybeSave,
-    onForceSave,
+    onGodkjennKiFeil,
 
     // Form state
     watchedValue,

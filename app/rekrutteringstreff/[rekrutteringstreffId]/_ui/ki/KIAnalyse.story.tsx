@@ -24,10 +24,10 @@ const meta = {
               bryterRetningslinjer: false,
             }}
             analyseError={undefined}
-            forceSave={false}
+            harGodkjentKiFeil={false}
             showAnalysis={true}
             erRedigeringAvPublisertTreff={false}
-            onForceSave={() => {}}
+            onGodkjennKiFeil={() => {}}
             ariaLabel='Analyse av innlegget'
           />
         </section>
