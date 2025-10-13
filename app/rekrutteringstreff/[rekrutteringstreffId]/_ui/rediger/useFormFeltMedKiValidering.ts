@@ -11,7 +11,6 @@ import { useFormContext, useWatch } from 'react-hook-form';
 
 export type FeltType = 'tittel' | 'innlegg';
 
-/** Fjerner HTML-tags og normaliserer whitespace for sammenligning */
 const sanitizeForComparison = (value: unknown): string => {
   if (value === null || value === undefined) return '';
   return String(value)
@@ -47,7 +46,6 @@ export function useFormFeltMedKiValidering({
     getValues,
     trigger: triggerRHF,
   } = useFormContext();
-
   const { setLagret: setKiLagret, isLoading: kiLoggLoading } = useKiLogg(
     rekrutteringstreffId,
     feltType,
@@ -70,7 +68,6 @@ export function useFormFeltMedKiValidering({
   const [harGodkjentKiFeil, setHarGodkjentKiFeil] = useState(false);
   const [hasChecked, setHasChecked] = useState(false);
 
-  // Reset state når felt-verdien endres
   useEffect(() => {
     setHasChecked(false);
     setHarGodkjentKiFeil(false);
@@ -83,14 +80,12 @@ export function useFormFeltMedKiValidering({
     });
   }, [watchedValue, resetAnalyse, fieldName, setValue]);
 
-  // Sett border-feil hvis KI finner brudd (og bruker ikke har godkjent feilen)
   const kiErrorBorder =
     !!analyse &&
     !analyseError &&
     (analyse as any)?.bryterRetningslinjer &&
     !harGodkjentKiFeil;
 
-  // Synkroniser KI-feil til form state (skjul feil hvis bruker har godkjent)
   useEffect(() => {
     const feil =
       !!analyse &&
@@ -109,10 +104,7 @@ export function useFormFeltMedKiValidering({
       try {
         await saveCallback([fieldName], overstyrKiFeil);
       } catch (error) {
-        new RekbisError({
-          message: `Lagring av ${feltType} feilet.`,
-          error,
-        });
+        new RekbisError({ message: `Lagring av ${feltType} feilet.`, error });
       } finally {
         onUpdated?.();
       }
@@ -129,21 +121,15 @@ export function useFormFeltMedKiValidering({
       typeof feltVerdi === 'string' ? feltVerdi : String(feltVerdi ?? '')
     ).trim();
     const normalisertTekst = sanitizeForComparison(tekstVerdi);
-
     if (!normalisertTekst) return;
 
-    // Sjekk om innholdet er uendret
     if (savedValue !== undefined) {
       const normalisertLagretVerdi = sanitizeForComparison(savedValue);
-      const innholdErUendret = normalisertTekst === normalisertLagretVerdi;
-      if (innholdErUendret) return;
+      if (normalisertTekst === normalisertLagretVerdi) return;
     }
 
     try {
-      const kiResultat = await validateKI({
-        feltType,
-        tekst: tekstVerdi,
-      });
+      const kiResultat = await validateKI({ feltType, tekst: tekstVerdi });
 
       setHasChecked(true);
       setValue(`${fieldName}KiSjekket` as any, true as any, {
@@ -152,9 +138,9 @@ export function useFormFeltMedKiValidering({
         shouldTouch: false,
       });
 
-      const loggId =
+      const loggIdNy =
         (kiResultat as any)?.loggId ?? (analyse as any)?.loggId ?? null;
-      setLoggId(loggId);
+      setLoggId(loggIdNy);
 
       const bryterRetningslinjer =
         (kiResultat as any)?.bryterRetningslinjer ??
@@ -163,12 +149,12 @@ export function useFormFeltMedKiValidering({
       if (!bryterRetningslinjer && !erRedigeringAvPublisertTreff) {
         await wrappedSaveCallback();
 
-        if (loggId && setKiLagret) {
+        if (loggIdNy && setKiLagret) {
           try {
-            await setKiLagret({ id: loggId, lagret: true });
+            await setKiLagret({ id: loggIdNy, lagret: true });
           } catch (error) {
             new RekbisError({
-              message: `Feil ved oppdatering av /lagret for logg ${loggId}.`,
+              message: `Feil ved oppdatering av /lagret for logg ${loggIdNy}.`,
               error,
             });
           }
@@ -200,6 +186,18 @@ export function useFormFeltMedKiValidering({
   const onGodkjennKiFeil = useCallback(async () => {
     if (erRedigeringAvPublisertTreff) {
       setHarGodkjentKiFeil(true);
+      setHasChecked(true);
+      setValue(`${fieldName}KiSjekket` as any, true as any, {
+        shouldDirty: false,
+        shouldValidate: false,
+        shouldTouch: false,
+      });
+      setValue(`${fieldName}KiFeil` as any, false as any, {
+        shouldDirty: false,
+        shouldValidate: false,
+        shouldTouch: false,
+      });
+      onUpdated?.();
       return;
     }
 
@@ -216,7 +214,15 @@ export function useFormFeltMedKiValidering({
         });
       }
     }
-  }, [erRedigeringAvPublisertTreff, wrappedSaveCallback, loggId, setKiLagret]);
+  }, [
+    erRedigeringAvPublisertTreff,
+    wrappedSaveCallback,
+    loggId,
+    setKiLagret,
+    fieldName,
+    setValue,
+    onUpdated,
+  ]);
 
   const bryterRetningslinjerFlag =
     !!analyse && !analyseError && !!(analyse as any)?.bryterRetningslinjer;
@@ -226,7 +232,6 @@ export function useFormFeltMedKiValidering({
     : bryterRetningslinjerFlag;
 
   return {
-    // KI-analyse resultater
     analyse,
     analyseError,
     validating,
@@ -237,12 +242,8 @@ export function useFormFeltMedKiValidering({
     hasChecked,
     showAnalysis,
     erRedigeringAvPublisertTreff,
-
-    // Callbacks
     runValidationAndMaybeSave,
     onGodkjennKiFeil,
-
-    // Form state
     watchedValue,
     control,
     setValue,

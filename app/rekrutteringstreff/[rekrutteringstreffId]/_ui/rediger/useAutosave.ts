@@ -31,7 +31,6 @@ export const erEditMode = (): boolean => {
   }
 };
 
-/** Sjekker om treff er publisert (INVITERE eller FULLFØRE steg) */
 export const erPublisert = (treff: any): boolean => {
   const step = getActiveStepFromHendelser(treff?.hendelser);
   return step === AktivtSteg.INVITERE || step === AktivtSteg.FULLFØRE;
@@ -56,7 +55,6 @@ export const skalLagreFelt = (
   return harInnhold;
 };
 
-/** Autosave av rekrutteringstreff (blokkeres når publisert og i edit-mode) */
 export function useAutosave() {
   const { rekrutteringstreffId, startLagring, stoppLagring } =
     useRekrutteringstreffContext();
@@ -103,7 +101,6 @@ export function useAutosave() {
         harTittelInnhold,
         overstyrKiFeil,
       );
-      // I kladdmodus skal vi ikke autosave tittel før KI-sjekk er utført og godkjent
       if (!erPublisert(treff) && !overstyrKiFeil) {
         skalInkludereTittel =
           skalInkludereTittel && tittelKiSjekket && !harTittelKiFeil;
@@ -135,38 +132,39 @@ export function useAutosave() {
   const save = useCallback(
     async (fieldsToValidate?: string[], overstyrKiFeil?: boolean) => {
       if (!rekrutteringstreffId) return;
+      if (skalHindreAutosave(treff, overstyrKiFeil)) return;
 
-      if (skalHindreAutosave(treff, overstyrKiFeil)) {
-        return;
+      const prebuiltDto: any | undefined = buildFullDto(overstyrKiFeil);
+      const dtoKeys = new Set(Object.keys(prebuiltDto ?? {}));
+
+      const feltSomSkalValideres: string[] | undefined =
+        fieldsToValidate && fieldsToValidate.length > 0
+          ? fieldsToValidate
+          : Array.from(dtoKeys);
+
+      if (!dtoKeys.has('tittel')) {
+        const i = feltSomSkalValideres?.indexOf('tittel') ?? -1;
+        if (i >= 0) feltSomSkalValideres!.splice(i, 1);
       }
 
-      const skalValidereAlleFelder =
-        !fieldsToValidate || fieldsToValidate.length === 0;
-
-      let prebuiltDto: any | undefined;
-      let valideringOk = true;
       if (!overstyrKiFeil) {
-        valideringOk = await trigger(
-          skalValidereAlleFelder ? undefined : (fieldsToValidate as any),
-          {
-            shouldFocus: false,
-          },
+        const valideringOk = await trigger(
+          feltSomSkalValideres?.length
+            ? (feltSomSkalValideres as any)
+            : undefined,
+          { shouldFocus: false },
         );
         if (!valideringOk) {
           const errors = (formState?.errors as any) || {};
           const errorKeys = Object.keys(errors).filter((k) => k !== 'root');
-          const onlyTittelFeil =
-            errorKeys.length > 0 && errorKeys.every((k) => k === 'tittel');
-          if (onlyTittelFeil) {
-            prebuiltDto = buildFullDto(overstyrKiFeil);
-            const inkludererTittel = Object.prototype.hasOwnProperty.call(
-              prebuiltDto,
-              'tittel',
-            );
-            if (inkludererTittel) {
-              return;
-            }
-            // else: allow to proceed (we will still block on manualPeriod below)
+          const relevanteFeil = errorKeys.filter((k) => dtoKeys.has(k));
+          if (
+            relevanteFeil.length === 0 ||
+            (relevanteFeil.length === 1 &&
+              relevanteFeil[0] === 'tittel' &&
+              !dtoKeys.has('tittel'))
+          ) {
+            // ok
           } else {
             return;
           }
@@ -174,7 +172,10 @@ export function useAutosave() {
       }
 
       if ((formState?.errors as any)?.root?.type === 'manualPeriod') {
-        return;
+        const endrerPeriode =
+          (prebuiltDto?.fraTid ?? null) !== (treff?.fraTid ?? null) ||
+          (prebuiltDto?.tilTid ?? null) !== (treff?.tilTid ?? null);
+        if (endrerPeriode) return;
       }
 
       const dto = prebuiltDto ?? buildFullDto(overstyrKiFeil);
@@ -201,7 +202,6 @@ export function useAutosave() {
   return { save };
 }
 
-/** Autosave av innlegg (HTML-innhold) i rekrutteringstreff */
 export function useInnleggAutosave() {
   const { rekrutteringstreffId, startLagring, stoppLagring } =
     useRekrutteringstreffContext();
@@ -215,10 +215,7 @@ export function useInnleggAutosave() {
   const save = useCallback(
     async (fieldsToValidate?: string[], overstyrKiFeil?: boolean) => {
       if (!rekrutteringstreffId) return;
-
-      if (skalHindreAutosave(treff as any, overstyrKiFeil)) {
-        return;
-      }
+      if (skalHindreAutosave(treff as any, overstyrKiFeil)) return;
 
       if (fieldsToValidate && fieldsToValidate.length && !overstyrKiFeil) {
         const valideringOk = await trigger(fieldsToValidate as any, {
@@ -241,11 +238,9 @@ export function useInnleggAutosave() {
         harInnleggInnhold,
         overstyrKiFeil,
       );
-      // I kladdmodus skal vi ikke autosave innlegg før KI-sjekk er utført og godkjent
       if (!erPublisert(treff as any) && !overstyrKiFeil) {
         skalLagre = skalLagre && innleggKiSjekket && !harInnleggKiFeil;
       }
-
       if (!skalLagre) return;
 
       try {
@@ -282,7 +277,6 @@ export function useInnleggAutosave() {
         }
 
         mutate();
-
         setValue('htmlContent', innholdSomSkalLagres, { shouldDirty: false });
       } catch (error) {
         new RekbisError({ message: 'Lagring av innlegg feilet.', error });
