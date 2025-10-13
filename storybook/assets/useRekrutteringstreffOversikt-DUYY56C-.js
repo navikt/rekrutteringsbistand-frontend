@@ -1,0 +1,1 @@
+import{a as e,h5 as r,g as s,l as a,o as i,T as t}from"./iframe-B32qNefX.js";const n=()=>`${r.internUrl}`,o=a(i({id:t(),tittel:t(),beskrivelse:t(),fraTid:t(),tilTid:t(),gateadresse:t(),postnummer:t(),poststed:t(),status:t(),opprettetAvPersonNavident:t(),opprettetAvNavkontorEnhetId:t(),opprettetAvTidspunkt:t()})),u=()=>e(n(),s(o));export{u};
