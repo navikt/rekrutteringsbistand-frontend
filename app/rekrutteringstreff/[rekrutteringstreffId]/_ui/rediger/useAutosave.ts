@@ -43,6 +43,18 @@ export const skalHindreAutosave = (treff: any, force?: boolean): boolean => {
   return erPublisert(treff) && erEditMode();
 };
 
+/**
+ * Sjekker om et felt skal lagres basert på valideringsstatus.
+ * Returnerer true hvis feltet er gyldig ELLER hvis force=true.
+ */
+export const skalLagreFelt = (
+  harFeil: boolean,
+  harInnhold: boolean,
+  force?: boolean,
+): boolean => {
+  return (!harFeil || Boolean(force)) && harInnhold;
+};
+
 /** Autosave av rekrutteringstreff (blokkeres når publisert og i edit-mode) */
 export function useAutosave() {
   const { rekrutteringstreffId, startLagring, stoppLagring } =
@@ -50,57 +62,67 @@ export function useAutosave() {
   const { data: treff, mutate } = useRekrutteringstreff(rekrutteringstreffId);
   const { getValues, trigger, formState } = useFormContext<AnyValues>();
 
-  const buildFullDto = useCallback(() => {
-    const formVerdier = getValues();
+  const buildFullDto = useCallback(
+    (opts?: { force?: boolean }) => {
+      const formVerdier = getValues();
 
-    const fraTid =
-      toIsoUtil(formVerdier.fraDato ?? null, formVerdier.fraTid) ??
-      treff?.fraTid ??
-      null;
+      const fraTid =
+        toIsoUtil(formVerdier.fraDato ?? null, formVerdier.fraTid) ??
+        treff?.fraTid ??
+        null;
 
-    const tilTid =
-      toIsoUtil(
-        formVerdier.tilDato ?? formVerdier.fraDato ?? null,
-        formVerdier.tilTid,
-      ) ??
-      treff?.tilTid ??
-      null;
+      const tilTid =
+        toIsoUtil(
+          formVerdier.tilDato ?? formVerdier.fraDato ?? null,
+          formVerdier.tilTid,
+        ) ??
+        treff?.tilTid ??
+        null;
 
-    const svarfrist =
-      toIsoUtil(formVerdier.svarfristDato ?? null, formVerdier.svarfristTid) ??
-      treff?.svarfrist ??
-      null;
+      const svarfrist =
+        toIsoUtil(
+          formVerdier.svarfristDato ?? null,
+          formVerdier.svarfristTid,
+        ) ??
+        treff?.svarfrist ??
+        null;
 
-    // Bare inkluder tittel dersom den faktisk har innhold og tittel-feltet ikke har valideringsfeil
-    const trimmedTitle =
-      typeof formVerdier.tittel === 'string' ? formVerdier.tittel.trim() : '';
-    const harTittelFeil = Boolean((formState?.errors as any)?.tittel);
-    const skalInkludereTittel =
-      !harTittelFeil &&
-      (trimmedTitle.length > 0 ||
-        (treff?.tittel && treff.tittel.trim().length > 0));
-
-    return {
-      ...(skalInkludereTittel && {
-        tittel: trimmedTitle.length > 0 ? trimmedTitle : treff?.tittel,
-      }),
-      beskrivelse: (formVerdier.beskrivelse ?? treff?.beskrivelse ?? null) as
-        | string
-        | null,
-      fraTid,
-      tilTid,
-      svarfrist,
-      gateadresse: (formVerdier.gateadresse ?? treff?.gateadresse ?? null) as
-        | string
-        | null,
-      postnummer: (formVerdier.postnummer ?? treff?.postnummer ?? null) as
-        | string
-        | null,
-      poststed: (formVerdier.poststed ?? treff?.poststed ?? null) as
-        | string
-        | null,
-    };
-  }, [getValues, treff, formState]);
+      // Sjekk om tittel skal inkluderes i lagring
+      const trimmedTitle =
+        typeof formVerdier.tittel === 'string' ? formVerdier.tittel.trim() : '';
+      const harTittelFeil = Boolean((formState?.errors as any)?.tittel);
+      const harTittelInnhold = Boolean(
+        trimmedTitle.length > 0 ||
+          (treff?.tittel && treff.tittel.trim().length > 0),
+      );
+      const skalInkludereTittel = skalLagreFelt(
+        harTittelFeil,
+        harTittelInnhold,
+        opts?.force,
+      );
+      return {
+        ...(skalInkludereTittel && {
+          tittel: trimmedTitle.length > 0 ? trimmedTitle : treff?.tittel,
+        }),
+        beskrivelse: (formVerdier.beskrivelse ?? treff?.beskrivelse ?? null) as
+          | string
+          | null,
+        fraTid,
+        tilTid,
+        svarfrist,
+        gateadresse: (formVerdier.gateadresse ?? treff?.gateadresse ?? null) as
+          | string
+          | null,
+        postnummer: (formVerdier.postnummer ?? treff?.postnummer ?? null) as
+          | string
+          | null,
+        poststed: (formVerdier.poststed ?? treff?.poststed ?? null) as
+          | string
+          | null,
+      };
+    },
+    [getValues, treff, formState],
+  );
 
   const save = useCallback(
     async (fieldsToValidate?: string[], force?: boolean) => {
@@ -112,21 +134,24 @@ export function useAutosave() {
 
       const skalValidereAlleFelder =
         !fieldsToValidate || fieldsToValidate.length === 0;
-      const valideringOk = await trigger(
-        skalValidereAlleFelder ? undefined : (fieldsToValidate as any),
-        {
-          shouldFocus: false,
-        },
-      );
 
-      if (!valideringOk) return;
+      let valideringOk = true;
+      if (!force) {
+        valideringOk = await trigger(
+          skalValidereAlleFelder ? undefined : (fieldsToValidate as any),
+          {
+            shouldFocus: false,
+          },
+        );
+        if (!valideringOk) return;
+      }
 
       // Ikke lagre ved periodefeil (lik eller negativ tid)
       if ((formState?.errors as any)?.root?.type === 'manualPeriod') {
         return;
       }
 
-      const dto = buildFullDto();
+      const dto = buildFullDto({ force });
       try {
         startLagring('rekrutteringstreff');
         await oppdaterRekrutteringstreff(rekrutteringstreffId, dto);
@@ -157,7 +182,7 @@ export function useInnleggAutosave() {
   const { data: treff } = useRekrutteringstreff(rekrutteringstreffId);
   const { data: innleggListe, mutate } = useInnlegg(rekrutteringstreffId);
   const innlegg = innleggListe?.[0];
-  const { getValues, trigger, setValue } = useFormContext<{
+  const { getValues, trigger, setValue, formState } = useFormContext<{
     htmlContent?: string;
   }>();
 
@@ -169,15 +194,21 @@ export function useInnleggAutosave() {
         return;
       }
 
-      if (fieldsToValidate && fieldsToValidate.length) {
+      // Valider felt hvis spesifisert (med mindre force=true)
+      if (fieldsToValidate && fieldsToValidate.length && !force) {
         const valideringOk = await trigger(fieldsToValidate as any, {
           shouldFocus: false,
         });
         if (!valideringOk) return;
       }
 
+      // Sjekk om innlegg skal lagres
+      const harInnleggFeil = Boolean((formState?.errors as any)?.htmlContent);
       const innholdSomSkalLagres = (getValues('htmlContent') ?? '').toString();
-      if (!innholdSomSkalLagres.trim()) return;
+      const harInnleggInnhold = Boolean(innholdSomSkalLagres.trim().length > 0);
+      const skalLagre = skalLagreFelt(harInnleggFeil, harInnleggInnhold, force);
+
+      if (!skalLagre) return;
 
       try {
         const forfatterNavn =
@@ -231,6 +262,7 @@ export function useInnleggAutosave() {
       setValue,
       treff,
       trigger,
+      formState?.errors,
     ],
   );
 

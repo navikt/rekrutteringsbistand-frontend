@@ -2,32 +2,14 @@
 
 import { erEditMode, erPublisert } from './useAutosave';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
+import { useKiLogg } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
 import { useValiderRekrutteringstreff } from '@/app/api/rekrutteringstreff/kiValidering/useValiderRekrutteringstreff';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { RekbisError } from '@/util/rekbisError';
 import { useEffect, useState, useCallback } from 'react';
-import {
-  UseFormGetValues,
-  UseFormTrigger,
-  UseFormSetValue,
-} from 'react-hook-form';
+import { useFormContext, useWatch } from 'react-hook-form';
 
 export type FeltType = 'tittel' | 'innlegg';
-
-interface UseKiAnalyseParams<FormValues extends Record<string, any>> {
-  feltType: FeltType;
-  fieldName: keyof FormValues & string;
-  watchedValue: any;
-  triggerRHF: UseFormTrigger<FormValues>;
-  getValues: UseFormGetValues<FormValues>;
-  setValue: UseFormSetValue<FormValues>;
-  setKiFeilFieldName: keyof FormValues & string;
-  saveCallback: (force?: boolean) => Promise<void>;
-  setKiLagret?: (args: { id: string; lagret: boolean }) => Promise<void>;
-  requireHasCheckedToShow?: boolean;
-  setKiSjekketFieldName?: keyof FormValues & string;
-  savedValue?: string | null;
-}
 
 /** Fjerner HTML-tags og normaliserer whitespace for sammenligning */
 const sanitizeForComparison = (value: unknown): string => {
@@ -38,26 +20,48 @@ const sanitizeForComparison = (value: unknown): string => {
     .trim();
 };
 
-export function useKiAnalyse<FormValues extends Record<string, any>>(
-  params: UseKiAnalyseParams<FormValues>,
-) {
-  const {
-    feltType,
-    fieldName,
-    watchedValue,
-    triggerRHF,
-    getValues,
-    setValue,
-    setKiFeilFieldName,
-    saveCallback,
-    setKiLagret,
-    requireHasCheckedToShow,
-    setKiSjekketFieldName,
-    savedValue,
-  } = params;
-
+/**
+ * Hovedhook som håndterer KI-validering og lagring for et form-felt.
+ * Brukes av både TittelForm og InnleggForm.
+ *
+ * Håndterer:
+ * - Form state (watch, setValue, getValues)
+ * - KI-validering mot backend
+ * - Autosave-logikk
+ * - Force-save ved KI-feil
+ * - Logging av KI-resultater
+ */
+export function useFormFeltMedKiValidering({
+  feltType,
+  fieldName,
+  savedValue,
+  saveCallback,
+  onUpdated,
+  requireHasCheckedToShow = false,
+}: {
+  feltType: FeltType;
+  fieldName: string;
+  savedValue?: string | null;
+  saveCallback: (fieldsToValidate: string[], force?: boolean) => Promise<void>;
+  onUpdated?: () => void;
+  requireHasCheckedToShow?: boolean;
+}) {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { data: treff } = useRekrutteringstreff(rekrutteringstreffId);
+
+  const {
+    control,
+    setValue,
+    getValues,
+    trigger: triggerRHF,
+  } = useFormContext();
+
+  const { setLagret: setKiLagret, isLoading: kiLoggLoading } = useKiLogg(
+    rekrutteringstreffId,
+    feltType,
+  );
+
+  const watchedValue = useWatch({ control, name: fieldName });
 
   const erRedigeringAvPublisertTreff =
     erPublisert(treff as any) && erEditMode();
@@ -74,38 +78,56 @@ export function useKiAnalyse<FormValues extends Record<string, any>>(
   const [forceSave, setForceSave] = useState(false);
   const [hasChecked, setHasChecked] = useState(false);
 
+  // Reset state når felt-verdien endres
   useEffect(() => {
     setHasChecked(false);
     setForceSave(false);
     setLoggId(null);
     resetAnalyse();
-    if (setKiSjekketFieldName) {
-      setValue(setKiSjekketFieldName as any, false as any, {
-        shouldDirty: false,
-        shouldValidate: false,
-        shouldTouch: false,
-      });
-    }
-  }, [watchedValue, resetAnalyse, setKiSjekketFieldName, setValue]);
+    setValue(`${fieldName}KiSjekket` as any, false as any, {
+      shouldDirty: false,
+      shouldValidate: false,
+      shouldTouch: false,
+    });
+  }, [watchedValue, resetAnalyse, fieldName, setValue]);
 
+  // Sett border-feil hvis KI finner brudd
   const kiErrorBorder =
     !!analyse &&
     !analyseError &&
     (analyse as any)?.bryterRetningslinjer &&
     !forceSave;
 
+  // Synkroniser KI-feil til form state
   useEffect(() => {
     const feil =
       !!analyse &&
       !analyseError &&
       !!(analyse as any)?.bryterRetningslinjer &&
       !forceSave;
-    setValue(setKiFeilFieldName as any, feil as any, {
+    setValue(`${fieldName}KiFeil` as any, feil as any, {
       shouldDirty: false,
       shouldValidate: false,
       shouldTouch: false,
     });
-  }, [analyse, analyseError, forceSave, setKiFeilFieldName, setValue]);
+  }, [analyse, analyseError, forceSave, fieldName, setValue]);
+
+  // Wrapper for saveCallback som håndterer feil og kaller onUpdated
+  const wrappedSaveCallback = useCallback(
+    async (force?: boolean) => {
+      try {
+        await saveCallback([fieldName], force);
+      } catch (error) {
+        new RekbisError({
+          message: `Lagring av ${feltType} feilet.`,
+          error,
+        });
+      } finally {
+        onUpdated?.();
+      }
+    },
+    [saveCallback, fieldName, feltType, onUpdated],
+  );
 
   /** Kjører KI-validering og autosave hvis godkjent (ikke i publisert redigeringsmodus) */
   const runValidationAndMaybeSave = useCallback(async () => {
@@ -120,12 +142,11 @@ export function useKiAnalyse<FormValues extends Record<string, any>>(
 
     if (!normalisertTekst) return;
 
+    // Sjekk om innholdet er uendret
     if (savedValue !== undefined) {
       const normalisertLagretVerdi = sanitizeForComparison(savedValue);
       const innholdErUendret = normalisertTekst === normalisertLagretVerdi;
-      if (innholdErUendret) {
-        return;
-      }
+      if (innholdErUendret) return;
     }
 
     try {
@@ -135,13 +156,11 @@ export function useKiAnalyse<FormValues extends Record<string, any>>(
       });
 
       setHasChecked(true);
-      if (setKiSjekketFieldName) {
-        setValue(setKiSjekketFieldName as any, true as any, {
-          shouldDirty: false,
-          shouldValidate: false,
-          shouldTouch: false,
-        });
-      }
+      setValue(`${fieldName}KiSjekket` as any, true as any, {
+        shouldDirty: false,
+        shouldValidate: false,
+        shouldTouch: false,
+      });
 
       const loggId =
         (kiResultat as any)?.loggId ?? (analyse as any)?.loggId ?? null;
@@ -155,7 +174,7 @@ export function useKiAnalyse<FormValues extends Record<string, any>>(
 
       // Lagre hvis godkjent (ikke i publisert redigeringsmodus)
       if (kanLagres && !erRedigeringAvPublisertTreff) {
-        await saveCallback(false);
+        await wrappedSaveCallback(false);
 
         if (loggId && setKiLagret) {
           try {
@@ -171,13 +190,11 @@ export function useKiAnalyse<FormValues extends Record<string, any>>(
     } catch (error) {
       new RekbisError({ message: 'Validation failed:', error });
       setHasChecked(true);
-      if (setKiSjekketFieldName) {
-        setValue(setKiSjekketFieldName as any, true as any, {
-          shouldDirty: false,
-          shouldValidate: false,
-          shouldTouch: false,
-        });
-      }
+      setValue(`${fieldName}KiSjekket` as any, true as any, {
+        shouldDirty: false,
+        shouldValidate: false,
+        shouldTouch: false,
+      });
     }
   }, [
     triggerRHF,
@@ -187,10 +204,9 @@ export function useKiAnalyse<FormValues extends Record<string, any>>(
     feltType,
     forceSave,
     erRedigeringAvPublisertTreff,
-    saveCallback,
+    wrappedSaveCallback,
     setKiLagret,
     analyse,
-    setKiSjekketFieldName,
     setValue,
     savedValue,
   ]);
@@ -203,7 +219,7 @@ export function useKiAnalyse<FormValues extends Record<string, any>>(
     }
 
     setForceSave(true);
-    await saveCallback(true);
+    await wrappedSaveCallback(true);
 
     if (loggId && setKiLagret) {
       try {
@@ -215,7 +231,7 @@ export function useKiAnalyse<FormValues extends Record<string, any>>(
         });
       }
     }
-  }, [erRedigeringAvPublisertTreff, saveCallback, loggId, setKiLagret]);
+  }, [erRedigeringAvPublisertTreff, wrappedSaveCallback, loggId, setKiLagret]);
 
   const bryterRetningslinjerFlag =
     !!analyse && !analyseError && !!(analyse as any)?.bryterRetningslinjer;
@@ -225,6 +241,7 @@ export function useKiAnalyse<FormValues extends Record<string, any>>(
     : bryterRetningslinjerFlag;
 
   return {
+    // KI-analyse resultater
     analyse,
     analyseError,
     validating,
@@ -235,7 +252,16 @@ export function useKiAnalyse<FormValues extends Record<string, any>>(
     hasChecked,
     showAnalysis,
     erRedigeringAvPublisertTreff,
+
+    // Callbacks
     runValidationAndMaybeSave,
     onForceSave,
+
+    // Form state
+    watchedValue,
+    control,
+    setValue,
+    getValues,
+    kiLoggLoading,
   };
 }

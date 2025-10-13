@@ -3,15 +3,13 @@
 import KiAnalyse from './ki/KiAnalyse';
 import KiAnalysePanel from './ki/KiAnalysePanel';
 import { useInnleggAutosave } from './useAutosave';
-import { useKiAnalyse } from './useKiAnalyse';
+import { useFormFeltMedKiValidering } from './useFormFeltMedKiValidering';
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/useInnlegg';
-import { useKiLogg } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import RikTekstEditor from '@/components/rikteksteditor/RikTekstEditor';
-import { RekbisError } from '@/util/rekbisError';
 import { BodyShort, Label, Skeleton } from '@navikt/ds-react';
 import { useEffect, useState } from 'react';
-import { Controller, useFormContext, useWatch } from 'react-hook-form';
+import { Controller, useFormContext } from 'react-hook-form';
 
 interface InnleggFormProps {
   onUpdated: () => void;
@@ -22,45 +20,14 @@ const EDITOR_WRAPPER_ID = 'rediger-innlegg-htmlcontent-form';
 const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { data: innleggListe, isLoading } = useInnlegg(rekrutteringstreffId);
+  const { formState } = useFormContext();
 
   const innlegg = innleggListe?.[0];
   const savedHtmlContent = innlegg ? (innlegg.htmlContent ?? null) : undefined;
 
-  const {
-    control,
-    setValue,
-    getValues,
-    trigger: triggerRHF,
-    formState: { isDirty },
-  } = useFormContext();
-
   const { save: autosaveInnlegg } = useInnleggAutosave();
 
-  const { setLagret: setKiLagret } = useKiLogg(rekrutteringstreffId, 'innlegg');
-
   const [editorKey, setEditorKey] = useState(Date.now());
-
-  const htmlContent = useWatch({ control, name: 'htmlContent' });
-
-  useEffect(() => {
-    const content = innlegg?.htmlContent ?? '';
-    setValue('htmlContent', content, {
-      shouldDirty: false,
-      shouldTouch: false,
-      shouldValidate: false,
-    });
-    setEditorKey(Date.now());
-  }, [setValue, innlegg?.htmlContent]);
-
-  const saveCallback = async (force?: boolean) => {
-    try {
-      await autosaveInnlegg(['htmlContent'], force);
-    } catch (error) {
-      new RekbisError({ message: 'Lagring av innlegg feilet.', error });
-    } finally {
-      onUpdated?.();
-    }
-  };
 
   const {
     analyse,
@@ -72,25 +39,33 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
     erRedigeringAvPublisertTreff,
     runValidationAndMaybeSave,
     onForceSave,
-  } = useKiAnalyse({
+    watchedValue: htmlContent,
+    control,
+    setValue,
+    kiLoggLoading,
+  } = useFormFeltMedKiValidering({
     feltType: 'innlegg',
     fieldName: 'htmlContent',
-    watchedValue: htmlContent,
-    triggerRHF,
-    getValues,
-    setValue,
-    setKiFeilFieldName: 'innleggKiFeil' as any,
-    saveCallback,
-    setKiLagret,
-    requireHasCheckedToShow: true,
-    setKiSjekketFieldName: 'innleggKiSjekket' as any,
     savedValue: savedHtmlContent,
+    saveCallback: autosaveInnlegg,
+    onUpdated,
+    requireHasCheckedToShow: true,
   });
+
+  useEffect(() => {
+    const content = innlegg?.htmlContent ?? '';
+    setValue('htmlContent', content, {
+      shouldDirty: false,
+      shouldTouch: false,
+      shouldValidate: false,
+    });
+    setEditorKey(Date.now());
+  }, [setValue, innlegg?.htmlContent]);
 
   return (
     <section className='space-y-3'>
-      {isLoading && <Skeleton variant='text' />}
-      {!isLoading && (
+      {(isLoading || kiLoggLoading) && <Skeleton variant='text' />}
+      {!isLoading && !kiLoggLoading && (
         <>
           <div className='space-y-2'>
             <Label htmlFor={EDITOR_WRAPPER_ID}>
@@ -111,7 +86,7 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
               const currentTarget = e.currentTarget;
               setTimeout(async () => {
                 if (!currentTarget.contains(document.activeElement)) {
-                  if (isDirty) {
+                  if (formState.isDirty) {
                     await runValidationAndMaybeSave();
                   }
                 }

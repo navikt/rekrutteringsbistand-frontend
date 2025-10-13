@@ -4,15 +4,12 @@ import { useRekrutteringstreffData } from '../hooks/useRekrutteringstreffData';
 import KiAnalyse from './ki/KiAnalyse';
 import KiAnalysePanel from './ki/KiAnalysePanel';
 import { useAutosave } from './useAutosave';
-import { useKiAnalyse } from './useKiAnalyse';
+import { useFormFeltMedKiValidering } from './useFormFeltMedKiValidering';
 import { MAX_TITLE_LENGTH } from '@/app/api/rekrutteringstreff/[...slug]/mutations';
-import { useKiLogg } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
-import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
-import { RekbisError } from '@/util/rekbisError';
 import { XMarkIcon } from '@navikt/aksel-icons';
 import { Button, Detail, Skeleton, TextField, Heading } from '@navikt/ds-react';
 import React, { useRef } from 'react';
-import { Controller, useFormContext, useWatch } from 'react-hook-form';
+import { Controller, useFormContext } from 'react-hook-form';
 
 const DEFAULT_TITTEL = 'Treff uten navn';
 
@@ -21,42 +18,17 @@ interface TittelFormProps {
 }
 
 const TittelForm = ({ onUpdated }: TittelFormProps) => {
-  const { rekrutteringstreffId } = useRekrutteringstreffContext();
-
   const { treff } = useRekrutteringstreffData();
   const savedTittel = treff ? (treff.tittel ?? null) : undefined;
 
-  const { setLagret: setKiLagret, isLoading } = useKiLogg(
-    rekrutteringstreffId,
-    'tittel',
-  );
-
   const {
-    control,
-    setValue,
-    getValues,
-    trigger: triggerRHF,
     clearErrors,
     formState: { isSubmitting },
   } = useFormContext();
 
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const tittel = useWatch({ control, name: 'tittel' });
-  const tegnIgjen =
-    MAX_TITLE_LENGTH - (typeof tittel === 'string' ? tittel.length : 0);
-
   const { save } = useAutosave();
-
-  const saveCallback = async (force?: boolean) => {
-    try {
-      await save(['tittel'], force);
-    } catch (error) {
-      new RekbisError({ message: 'Lagring av tittel feilet.', error });
-    } finally {
-      onUpdated?.();
-    }
-  };
 
   const {
     analyse,
@@ -68,19 +40,20 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
     erRedigeringAvPublisertTreff,
     runValidationAndMaybeSave,
     onForceSave,
-  } = useKiAnalyse({
+    watchedValue: tittel,
+    control,
+    setValue,
+    kiLoggLoading,
+  } = useFormFeltMedKiValidering({
     feltType: 'tittel',
     fieldName: 'tittel',
-    watchedValue: tittel,
-    triggerRHF,
-    getValues,
-    setValue,
-    setKiFeilFieldName: 'tittelKiFeil' as any,
-    saveCallback,
-    setKiLagret,
-    setKiSjekketFieldName: 'tittelKiSjekket' as any,
     savedValue: savedTittel,
+    saveCallback: save,
+    onUpdated,
   });
+
+  const tegnIgjen =
+    MAX_TITLE_LENGTH - (typeof tittel === 'string' ? tittel.length : 0);
 
   const clear = () => {
     setValue('tittel', '', {
@@ -93,8 +66,8 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
 
   return (
     <section className='space-y-3'>
-      {isLoading && <Skeleton variant='text' />}
-      {!isLoading && (
+      {kiLoggLoading && <Skeleton variant='text' />}
+      {!kiLoggLoading && (
         <>
           <Heading level='2' size='medium'>
             Navn på treffet
