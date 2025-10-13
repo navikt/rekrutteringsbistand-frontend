@@ -5,7 +5,7 @@ import TømFiltre, { TømFiltreProps } from './TømFiltre';
 import { storForbokstavString } from '@/app/kandidat/util';
 import { useUmami } from '@/providers/UmamiContext';
 import { UmamiEvent } from '@/util/umamiEvents';
-import { ChevronDownIcon, ChevronUpIcon } from '@navikt/aksel-icons';
+import { ChevronDownCircleIcon, ChevronUpCircleIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button, Chips, Tooltip } from '@navikt/ds-react';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
@@ -371,7 +371,7 @@ const ValgteFiltre: React.FC<ValgteFilterProps> = ({
                   size='small'
                   variant='tertiary'
                   aria-label='Vis flere filtre'
-                  icon={<ChevronDownIcon />}
+                  icon={<ChevronDownCircleIcon />}
                 />
               </Tooltip>
             </div>
@@ -379,17 +379,19 @@ const ValgteFiltre: React.FC<ValgteFilterProps> = ({
         )}
         {isExpanded && (
           <div className='absolute top-0 right-0 pr-2 pt-0'>
-            <Button
-              ref={collapseBtnRef}
-              size='small'
-              variant='tertiary'
-              aria-label='Skjul filtre'
-              onClick={() => {
-                setIsExpanded(false);
-                umami.track(UmamiEvent.Generell.lukk_filter_chip_panel);
-              }}
-              icon={<ChevronUpIcon />}
-            />
+            <Tooltip content={'Skjul aktive filtre'}>
+              <Button
+                ref={collapseBtnRef}
+                size='small'
+                variant='tertiary'
+                aria-label='Skjul filtre'
+                onClick={() => {
+                  setIsExpanded(false);
+                  umami.track(UmamiEvent.Generell.lukk_filter_chip_panel);
+                }}
+                icon={<ChevronUpCircleIcon />}
+              />
+            </Tooltip>
           </div>
         )}
       </div>

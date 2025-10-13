@@ -39,7 +39,11 @@ const KandidatlisteBoks: FC<KandidatlisteBoksProps> = ({ kandidatnr }) => {
     stillingsData.stillingsinfo?.stillingskategori ===
     Stillingskategori.Jobbmesse
   ) {
-    return null;
+    return (
+      <div className='my-5'>
+        <NavigerTilAktivitetsplanenKnapp />
+      </div>
+    )
   }
 
   if (kandidatlisteLaster) {
