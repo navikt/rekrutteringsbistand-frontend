@@ -7,7 +7,7 @@ import { useFormFeltMedKiValidering } from './useFormFeltMedKiValidering';
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/useInnlegg';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import RikTekstEditor from '@/components/rikteksteditor/RikTekstEditor';
-import { BodyShort, Label, Skeleton } from '@navikt/ds-react';
+import { BodyShort, Detail, Heading, Skeleton, Tag } from '@navikt/ds-react';
 import { useEffect, useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
@@ -63,65 +63,77 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
   }, [setValue, innlegg?.htmlContent]);
 
   return (
-    <section className='space-y-3'>
-      {(isLoading || kiLoggLoading) && <Skeleton variant='text' />}
-      {!isLoading && !kiLoggLoading && (
-        <>
-          <div className='space-y-2'>
-            <Label htmlFor={EDITOR_WRAPPER_ID}>
-              {innlegg ? 'Endre innlegg' : 'Skriv nytt innlegg'}
-            </Label>
-            <BodyShort size='small' textColor='subtle'>
-              Fortell jobbsøkeren om treffet: de unike fordelene, mulighetene,
-              og oppgavene som de vil møte. For eksempel arbeidsgivere,
-              forventninger, læring- og karrieremuligheter.
-            </BodyShort>
-          </div>
+    <>
+      <section className='space-y-3'>
+        <div className='flex items-center gap-2'>
+          <Heading level='2' size='medium'>
+            Introduksjon
+          </Heading>
+          <Tag variant='alt1' size='medium'>
+            KI-støtte
+          </Tag>
+        </div>
+        <Detail className='text-[var(--ax-text-neutral-subtle)]'>
+          Ikke skriv <u>personopplysninger</u> og <u>diskriminerende</u>{' '}
+          innhold.
+        </Detail>
 
-          <div
-            className={`border rounded-lg ${
-              kiErrorBorder ? 'border-red-500' : 'border-gray-300'
-            }`}
-            onBlur={(e) => {
-              const currentTarget = e.currentTarget;
-              setTimeout(async () => {
-                if (!currentTarget.contains(document.activeElement)) {
-                  if (formState.isDirty) {
-                    await runValidationAndMaybeSave();
+        {(isLoading || kiLoggLoading) && <Skeleton variant='text' />}
+        {!isLoading && !kiLoggLoading && (
+          <>
+            <div className='space-y-2'>
+              <BodyShort size='small' textColor='subtle'>
+                Fortell jobbsøkeren om treffet: de unike fordelene, mulighetene,
+                og oppgavene som de vil møte. For eksempel arbeidsgivere,
+                forventninger, læring- og karrieremuligheter.
+              </BodyShort>
+            </div>
+
+            <div
+              className={`border rounded-lg ${
+                kiErrorBorder ? 'border-red-500' : 'border-gray-300'
+              }`}
+              onBlur={(e) => {
+                const currentTarget = e.currentTarget;
+                setTimeout(async () => {
+                  if (!currentTarget.contains(document.activeElement)) {
+                    if (formState.isDirty) {
+                      await runValidationAndMaybeSave();
+                    }
                   }
-                }
-              }, 0);
-            }}
-          >
-            <Controller
-              name='htmlContent'
-              control={control}
-              render={({ field }) => (
-                <RikTekstEditor
-                  key={editorKey}
-                  id={EDITOR_WRAPPER_ID}
-                  tekst={field.value ?? ''}
-                  onChange={field.onChange}
-                />
-              )}
+                }, 0);
+              }}
+            >
+              <Controller
+                name='htmlContent'
+                control={control}
+                render={({ field }) => (
+                  <RikTekstEditor
+                    key={editorKey}
+                    id={EDITOR_WRAPPER_ID}
+                    tekst={field.value ?? ''}
+                    onChange={field.onChange}
+                  />
+                )}
+              />
+            </div>
+
+            <KiAnalyse />
+
+            <KiAnalysePanel
+              validating={validating}
+              analyse={analyse}
+              analyseError={analyseError}
+              harGodkjentKiFeil={harGodkjentKiFeil}
+              showAnalysis={showAnalysis}
+              erRedigeringAvPublisertTreff={erRedigeringAvPublisertTreff}
+              onGodkjennKiFeil={onGodkjennKiFeil}
+              ariaLabel='Analyse av innlegg'
             />
-          </div>
-
-          <KiAnalyse />
-
-          <KiAnalysePanel
-            validating={validating}
-            analyse={analyse}
-            analyseError={analyseError}
-            harGodkjentKiFeil={harGodkjentKiFeil}
-            showAnalysis={showAnalysis}
-            erRedigeringAvPublisertTreff={erRedigeringAvPublisertTreff}
-            onGodkjennKiFeil={onGodkjennKiFeil}
-            ariaLabel='Analyse av innlegg'
-          />
-        </>
-      )}
-    </section>
+          </>
+        )}
+      </section>
+    </>
   );
 };
 
