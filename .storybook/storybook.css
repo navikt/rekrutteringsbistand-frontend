@@ -1,6 +1,6 @@
 /*
   Storybook Dark Mode Overrides (Aksel tokens, ingen !important)
-  Mål: Bruke design tokens og minimere spesifisitet.
+  Mål: Kun style Storybook UI-elementer, aldri generelle HTML-tags som kan blø ned i stories.
 */
 
 html.dark {
@@ -20,45 +20,44 @@ html.dark {
   --sb-pill-bg: var(--ax-surface-subtle);
 }
 
-/* Grunnflate */
+/* Grunnflate - kun Storybook UI containers */
 html.dark body.sb-show-main,
-html.dark .sb-show-main,
-html.dark #storybook-docs .sbdocs-wrapper {
+html.dark .sb-show-main {
   background: var(--sb-bg);
   color: var(--sb-text);
 }
 
-/* Typografi inne i docs */
-html.dark #storybook-docs .sbdocs-wrapper h1,
-html.dark #storybook-docs .sbdocs-wrapper h2,
-html.dark #storybook-docs .sbdocs-wrapper h3,
-html.dark #storybook-docs .sbdocs-wrapper h4,
-html.dark #storybook-docs .sbdocs-wrapper h5,
-html.dark #storybook-docs .sbdocs-wrapper p,
-html.dark #storybook-docs .sbdocs-wrapper td,
-html.dark #storybook-docs .sbdocs-wrapper th,
-html.dark #storybook-docs .sbdocs-wrapper li,
-html.dark #storybook-docs .sbdocs-wrapper span,
-html.dark #storybook-docs .sbdocs-wrapper label {
+html.dark #storybook-docs .sbdocs-wrapper {
+  background: var(--sb-bg);
+}
+
+/* Storybook docs headings - MÅ ha sbdocs prefix */
+html.dark .sbdocs-title,
+html.dark .sbdocs-subtitle,
+html.dark .sbdocs-h1,
+html.dark .sbdocs-h2,
+html.dark .sbdocs-h3 {
   color: var(--sb-text);
 }
 
-/* Lenker */
-html.dark #storybook-docs .sbdocs-wrapper a {
+/* Storybook docs paragraphs - MÅ ha sbdocs prefix */
+html.dark .sbdocs-p {
+  color: var(--sb-text);
+}
+
+/* Storybook lenker - kun de med sbdocs prefix */
+html.dark .sbdocs-a {
   color: var(--sb-action);
 }
-html.dark #storybook-docs .sbdocs-wrapper a:hover {
+html.dark .sbdocs-a:hover {
   text-decoration: underline;
 }
 
-/* Tabeller og ArgTypes */
+/* Tabeller og ArgTypes - kun docblock prefix */
 html.dark .docblock-argstable,
 html.dark .docblock-argstable tbody tr,
 html.dark .docblock-argstable tbody td,
-html.dark .docblock-argstable th,
-html.dark #storybook-docs table,
-html.dark #storybook-docs table td,
-html.dark #storybook-docs table th {
+html.dark .docblock-argstable th {
   background: var(--sb-bg);
   color: var(--sb-text);
   border-color: var(--sb-border);
@@ -68,7 +67,7 @@ html.dark .docblock-argstable td:empty {
   background: transparent;
 }
 
-/* Inline code/pills */
+/* Inline code/pills i argstable */
 html.dark .docblock-argstable td code,
 html.dark .docblock-argstable td .sbdocs code,
 html.dark .docblock-argstable td span[class*='TypeSummary'],
@@ -112,44 +111,48 @@ html.dark div[role='tabpanel'] {
   color: var(--sb-text);
 }
 
-/* Code blocks */
-html.dark pre,
-html.dark code,
-html.dark #storybook-docs pre,
-html.dark #storybook-docs code {
+/* Code blocks - kun i sbdocs context */
+html.dark .sbdocs-pre,
+html.dark .sbdocs-code,
+html.dark #storybook-docs .sbdocs-wrapper pre,
+html.dark #storybook-docs .sbdocs-wrapper code {
   background: var(--sb-code-bg);
   color: var(--sb-text-muted);
   border: 1px solid var(--sb-border);
 }
 
 /* Syntax highlight (enkel token mapping) */
-html.dark pre code .token.comment {
+html.dark .sbdocs-pre code .token.comment {
   color: var(--sb-text-muted);
   opacity: 0.7;
 }
-html.dark pre code .token.keyword {
+html.dark .sbdocs-pre code .token.keyword {
   color: var(--sb-action);
 }
-html.dark pre code .token.string {
+html.dark .sbdocs-pre code .token.string {
   color: var(--sb-success);
 }
-html.dark pre code .token.number {
+html.dark .sbdocs-pre code .token.number {
   color: var(--sb-warning);
 }
 
-/* Inputs */
-html.dark input,
-html.dark select,
-html.dark textarea,
-html.dark button {
+/* Storybook Controls panel - inputs/selects/buttons */
+html.dark .sbdocs-controls input,
+html.dark .sbdocs-controls select,
+html.dark .sbdocs-controls textarea,
+html.dark .sbdocs-controls button,
+html.dark .docblock-argstable input,
+html.dark .docblock-argstable select,
+html.dark .docblock-argstable textarea {
   background: var(--sb-code-bg);
   color: var(--sb-text);
   border: 1px solid var(--sb-border-strong);
 }
-html.dark input:focus,
-html.dark select:focus,
-html.dark textarea:focus,
-html.dark button:focus {
+
+html.dark .sbdocs-controls input:focus,
+html.dark .sbdocs-controls select:focus,
+html.dark .sbdocs-controls textarea:focus,
+html.dark .sbdocs-controls button:focus {
   outline: 1px solid var(--sb-action);
   outline-offset: 0;
 }
@@ -181,31 +184,22 @@ html.dark .sbdocs-preview [role='toolbar'] button:hover {
   background: var(--sb-surface-subtle);
 }
 
-/* Scrollbar (webkit) */
-html.dark ::-webkit-scrollbar-track {
+/* Scrollbar (webkit) - kun i Storybook UI contexts */
+html.dark .sb-show-main::-webkit-scrollbar-track,
+html.dark #storybook-docs::-webkit-scrollbar-track {
   background: var(--sb-bg);
 }
-html.dark ::-webkit-scrollbar-thumb {
+html.dark .sb-show-main::-webkit-scrollbar-thumb,
+html.dark #storybook-docs::-webkit-scrollbar-thumb {
   background: var(--sb-border);
   border-radius: 4px;
 }
-html.dark ::-webkit-scrollbar-thumb:hover {
+html.dark .sb-show-main::-webkit-scrollbar-thumb:hover,
+html.dark #storybook-docs::-webkit-scrollbar-thumb:hover {
   background: var(--sb-border-strong);
 }
 
-/* Fjernet generell border på .docs-story for å ikke påvirke selve story-innholdet */
-
-/* Små inline spans (fallback) */
-html.dark .docblock-argstable td > span:not(:empty) {
-  color: var(--sb-text-muted);
-}
-
-/* Opphev outlines */
-html.dark .docblock-argstable td > span {
-  outline: none;
-}
-
-/* Transparent top toolbar */
+/* Top toolbar */
 html.dark .sb-bar {
   background: var(--sb-bg);
 }
