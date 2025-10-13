@@ -274,12 +274,19 @@ const ValgteFiltre: React.FC<ValgteFilterProps> = ({
                   'linear-gradient(to right, rgba(0,0,0,0) 0%, var(--ax-surface-default) 55%)',
               }}
             />
-            <div
-              onClick={() => setIsExpanded(true)}
-              className='relative flex items-center gap-2 pr-2 cursor-pointer'
-            >
-              <span className='text-s whitespace-nowrap'>{`+ ${hiddenCount} filte`}</span>
+            <div className='relative flex items-center gap-2 pr-2 '>
+              <span
+                onClick={() => {
+                  setIsExpanded(true);
+                  umami.track(UmamiEvent.Generell.åpne_filter_chip_panel_tekst);
+                }}
+                className='cursor-pointer text-s whitespace-nowrap'
+              >{`+ ${hiddenCount} filte`}</span>
               <Button
+                onClick={() => {
+                  setIsExpanded(true);
+                  umami.track(UmamiEvent.Generell.åpne_filter_chip_panel);
+                }}
                 size='small'
                 variant='tertiary'
                 aria-label='Vis flere filtre'
@@ -295,7 +302,10 @@ const ValgteFiltre: React.FC<ValgteFilterProps> = ({
               size='small'
               variant='tertiary'
               aria-label='Skjul filtre'
-              onClick={() => setIsExpanded(false)}
+              onClick={() => {
+                setIsExpanded(false);
+                umami.track(UmamiEvent.Generell.lukk_filter_chip_panel);
+              }}
               icon={
                 <ChevronDownIcon className='rotate-180 transition-transform' />
               }
