@@ -5,7 +5,6 @@ import KandidatOversikt from '@/app/kandidat/vis-kandidat/oversikt-fane/Kandidat
 import { useNullableStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import { Button, Modal } from '@navikt/ds-react';
 import { ModalBody } from '@navikt/ds-react/Modal';
-import NavigerTilAktivitetsplanenKnapp from '@/app/kandidat/_ui/ActionLinks/NavigerTilAktivitetsplanenKnapp';
 
 export interface KandidatForhåndsvisningProps {
   kandidatNr: string;
@@ -32,9 +31,6 @@ export default function KandidatForhåndsvisning({
               <KandidatlisteBoks kandidatnr={kandidatNr} />
             )}
           </KandidatSideLayout>
-          <div className='my-5'>
-            <NavigerTilAktivitetsplanenKnapp />
-          </div>
           <KandidatOversikt />
         </ModalBody>
         <Modal.Footer>
