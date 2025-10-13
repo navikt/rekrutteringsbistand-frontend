@@ -143,6 +143,7 @@ export function useAutosave() {
       const skalValidereAlleFelder =
         !fieldsToValidate || fieldsToValidate.length === 0;
 
+      let prebuiltDto: any | undefined;
       let valideringOk = true;
       if (!overstyrKiFeil) {
         valideringOk = await trigger(
@@ -151,14 +152,32 @@ export function useAutosave() {
             shouldFocus: false,
           },
         );
-        if (!valideringOk) return;
+        if (!valideringOk) {
+          const errors = (formState?.errors as any) || {};
+          const errorKeys = Object.keys(errors).filter((k) => k !== 'root');
+          const onlyTittelFeil =
+            errorKeys.length > 0 && errorKeys.every((k) => k === 'tittel');
+          if (onlyTittelFeil) {
+            prebuiltDto = buildFullDto(overstyrKiFeil);
+            const inkludererTittel = Object.prototype.hasOwnProperty.call(
+              prebuiltDto,
+              'tittel',
+            );
+            if (inkludererTittel) {
+              return;
+            }
+            // else: allow to proceed (we will still block on manualPeriod below)
+          } else {
+            return;
+          }
+        }
       }
 
       if ((formState?.errors as any)?.root?.type === 'manualPeriod') {
         return;
       }
 
-      const dto = buildFullDto(overstyrKiFeil);
+      const dto = prebuiltDto ?? buildFullDto(overstyrKiFeil);
       try {
         startLagring('rekrutteringstreff');
         await oppdaterRekrutteringstreff(rekrutteringstreffId, dto);
