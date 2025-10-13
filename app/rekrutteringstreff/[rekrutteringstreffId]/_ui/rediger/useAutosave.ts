@@ -71,12 +71,14 @@ export function useAutosave() {
       treff?.svarfrist ??
       null;
 
-    // Bare inkluder tittel dersom den faktisk har innhold (API krever min. 1 tegn når feltet er med)
+    // Bare inkluder tittel dersom den faktisk har innhold og tittel-feltet ikke har valideringsfeil
     const trimmedTitle =
       typeof formVerdier.tittel === 'string' ? formVerdier.tittel.trim() : '';
+    const harTittelFeil = Boolean((formState?.errors as any)?.tittel);
     const skalInkludereTittel =
-      trimmedTitle.length > 0 ||
-      (treff?.tittel && treff.tittel.trim().length > 0);
+      !harTittelFeil &&
+      (trimmedTitle.length > 0 ||
+        (treff?.tittel && treff.tittel.trim().length > 0));
 
     return {
       ...(skalInkludereTittel && {
@@ -98,7 +100,7 @@ export function useAutosave() {
         | string
         | null,
     };
-  }, [getValues, treff]);
+  }, [getValues, treff, formState]);
 
   const save = useCallback(
     async (fieldsToValidate?: string[], force?: boolean) => {
