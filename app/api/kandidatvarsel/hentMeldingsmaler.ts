@@ -63,5 +63,5 @@ const hentMeldingsmalerMock = [
 ];
 export const meldingsmalerMSWHandler = http.get(
   hentMeldingsmalerEndepunkt,
-  () => HttpResponse.json(hentMeldingsmalerMock[0]),
+  () => HttpResponse.json(hentMeldingsmalerMock),
 );

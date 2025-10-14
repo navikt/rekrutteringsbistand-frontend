@@ -16,9 +16,27 @@ export default function MSWInitializer({
   useEffect(() => {
     const testMode = process.env.NEXT_PUBLIC_PLAYWRIGHT_TEST_MODE === 'true';
     const skalMocke = isLocal || testMode;
-    const onUnhandled: 'bypass' | 'warn' | 'error' = skalMocke
-      ? 'warn'
-      : 'bypass';
+    // Kun la MSW "fungere" (dvs. gi varsler) for /api-endepunkter.
+    // Andre requests (navigasjon, nextjs RSC, assets, dekoratør, etc.) skal ikke spamme konsoll.
+    // Vi bruker custom onUnhandledRequest i stedet for streng strategi.
+    const apiPathPrefixes = ['/api', '/api/'];
+    const onUnhandled = (req: any, print: any) => {
+      try {
+        const url = new URL(req.url);
+        const pathname = url.pathname;
+        const erApiKall = apiPathPrefixes.some((p) =>
+          p.endsWith('/')
+            ? pathname.startsWith(p)
+            : pathname === p || pathname.startsWith(p + '/'),
+        );
+        if (erApiKall) {
+          // Kun da ønsker vi å få et varsel om at noe mangler en handler
+          print.warning();
+        } // Ellers: stille bypass
+      } catch {
+        // Hvis URL konstruksjon feiler, gjør ingenting (bypass)
+      }
+    };
 
     if (!skalMocke) {
       setReady(true);
