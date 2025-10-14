@@ -1,20 +1,13 @@
 'use client';
 
 import { useRekrutteringstreffData } from '../hooks/useRekrutteringstreffData';
-import KiAnalyse from './ki/KiAnalyse';
+import KiAnalyseIntro from './ki/KiAnalyseIntro';
 import KiAnalysePanel from './ki/KiAnalysePanel';
 import { useAutosave } from './useAutosave';
 import { useFormFeltMedKiValidering } from './useFormFeltMedKiValidering';
 import { MAX_TITLE_LENGTH } from '@/app/api/rekrutteringstreff/[...slug]/mutations';
 import { XMarkIcon } from '@navikt/aksel-icons';
-import {
-  Button,
-  Detail,
-  Skeleton,
-  TextField,
-  Heading,
-  Tag,
-} from '@navikt/ds-react';
+import { Button, Detail, Skeleton, TextField } from '@navikt/ds-react';
 import React, { useRef, useEffect } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
@@ -96,18 +89,7 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
       {kiLoggLoading && <Skeleton variant='text' />}
       {!kiLoggLoading && (
         <>
-          <div className='flex items-center gap-2'>
-            <Heading level='2' size='medium'>
-              Navn på treffet
-            </Heading>
-            <Tag variant='alt1' size='medium'>
-              KI-støtte
-            </Tag>
-          </div>
-          <Detail className='text-[var(--ax-text-neutral-subtle)]'>
-            Ikke skriv <u>personopplysninger</u> og <u>diskriminerende</u>{' '}
-            innhold.
-          </Detail>
+          <KiAnalyseIntro title='Navn på treffet' />
 
           <div className='relative w-full'>
             {tittel && (
@@ -194,8 +176,6 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
           </div>
 
           <Detail className='text-gray-400'>{tegnIgjen} tegn igjen</Detail>
-
-          <KiAnalyse />
 
           <KiAnalysePanel
             validating={validating}

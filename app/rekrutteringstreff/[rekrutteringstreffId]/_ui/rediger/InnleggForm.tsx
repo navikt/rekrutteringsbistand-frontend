@@ -1,13 +1,13 @@
 'use client';
 
-import KiAnalyse from './ki/KiAnalyse';
+import KiAnalyse from './ki/KiAnalyseIntro';
 import KiAnalysePanel from './ki/KiAnalysePanel';
 import { useInnleggAutosave } from './useAutosave';
 import { useFormFeltMedKiValidering } from './useFormFeltMedKiValidering';
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/useInnlegg';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import RikTekstEditor from '@/components/rikteksteditor/RikTekstEditor';
-import { BodyShort, Detail, Heading, Skeleton, Tag } from '@navikt/ds-react';
+import { BodyShort, Skeleton } from '@navikt/ds-react';
 import { useEffect, useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
@@ -64,18 +64,7 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
   return (
     <>
       <section className='space-y-3'>
-        <div className='flex items-center gap-2'>
-          <Heading level='2' size='medium'>
-            Introduksjon
-          </Heading>
-          <Tag variant='alt1' size='medium'>
-            KI-støtte
-          </Tag>
-        </div>
-        <Detail className='text-[var(--ax-text-neutral-subtle)]'>
-          Ikke skriv <u>personopplysninger</u> og <u>diskriminerende</u>{' '}
-          innhold.
-        </Detail>
+        <KiAnalyse title='Introduksjon' />
 
         {(isLoading || kiLoggLoading) && <Skeleton variant='text' />}
         {!isLoading && !kiLoggLoading && (
@@ -116,8 +105,6 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
                 )}
               />
             </div>
-
-            <KiAnalyse />
 
             <KiAnalysePanel
               validating={validating}

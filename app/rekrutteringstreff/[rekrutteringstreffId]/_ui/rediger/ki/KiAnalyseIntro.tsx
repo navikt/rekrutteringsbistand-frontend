@@ -5,12 +5,23 @@ import {
   ChatExclamationmarkIcon,
   HandHeartIcon,
 } from '@navikt/aksel-icons';
-import { BodyShort, ReadMore, Box, Popover, Link } from '@navikt/ds-react';
+import {
+  BodyShort,
+  ReadMore,
+  Box,
+  Popover,
+  Link,
+  Heading,
+  Tag,
+  Detail,
+} from '@navikt/ds-react';
 import { FC, useRef, useState } from 'react';
 
-// Legg til useRef og useState
+interface KiAnalyseIntroProps {
+  title?: string;
+}
 
-const KiAnalyse: FC = () => {
+const KiAnalyseIntro: FC<KiAnalyseIntroProps> = ({ title }) => {
   const [personopplysningerOpen, setPersonopplysningerOpen] = useState(false);
   const [diskriminerendeOpen, setDiskriminerendeOpen] = useState(false);
 
@@ -19,6 +30,22 @@ const KiAnalyse: FC = () => {
 
   return (
     <div className='space-y-3 ml-2'>
+      {title && (
+        <>
+          <div className='flex items-center gap-2'>
+            <Heading level='2' size='medium'>
+              {title}
+            </Heading>
+            <Tag variant='alt1' size='medium'>
+              KI-støtte
+            </Tag>
+          </div>
+          <Detail className='text-[var(--ax-text-neutral-subtle)]'>
+            Ikke skriv <u>personopplysninger</u> og <u>diskriminerende</u>{' '}
+            innhold.
+          </Detail>
+        </>
+      )}
       <Box.New background='neutral-moderate' borderRadius='xlarge' padding='3'>
         <div className='flex items-start gap-2 mb-3'>
           <SparklesIcon
@@ -267,4 +294,4 @@ const KiAnalyse: FC = () => {
   );
 };
 
-export default KiAnalyse;
+export default KiAnalyseIntro;
