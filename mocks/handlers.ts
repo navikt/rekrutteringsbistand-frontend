@@ -20,6 +20,9 @@ import { kandidatvarselMSWHandler } from '@/app/api/kandidatvarsel/kandidatvarse
 import { modiaContextMSWHandler } from '@/app/api/modia/context/setModiaContext';
 import { modiaAktivBrukerMSWHandler } from '@/app/api/modia/context/useModiaAktivBruker';
 import { modiaAktivEnhetMSWHandler } from '@/app/api/modia/context/useModiaAktivEnhet';
+import { aktivBrukerMSWHandler } from '@/app/api/modia/context/v2/aktivbruker/aktivBrukerMSW';
+import { aktivEnhetMSWHandler } from '@/app/api/modia/context/v2/aktivenhet/aktivBrukerMSW';
+import { dekoratørMSWHandler } from '@/app/api/modia/decorator/mocks/dekoratørMSWHandler';
 import { decoratorDataMSWHandler } from '@/app/api/modia/decorator/useDecoratorData';
 import { pamPostdataMSWHandler } from '@/app/api/pam-geografi/postdata/[postnummer]/usePamPostdata';
 import { pamGeografiMSWHandler } from '@/app/api/pam-geografi/typehead/lokasjoner/usePamGeografi';
@@ -117,4 +120,7 @@ export const mswHandlers = [
   ...umamiMSWHandlers,
   ...loggerMSWHandlers,
   modiaContextMSWHandler,
+  aktivEnhetMSWHandler,
+  aktivBrukerMSWHandler,
+  dekoratørMSWHandler,
 ];
