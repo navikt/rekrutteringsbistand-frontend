@@ -17,6 +17,7 @@ import { kandidatlisteInfoMSWHandler } from '@/app/api/kandidat/useKandidatliste
 import { mineKandidatlisterMSWHandler } from '@/app/api/kandidat/useMineKandidatlister';
 import { meldingsmalerMSWHandler } from '@/app/api/kandidatvarsel/hentMeldingsmaler';
 import { kandidatvarselMSWHandler } from '@/app/api/kandidatvarsel/kandidatvarsel';
+import { modiaContextMSWHandler } from '@/app/api/modia/context/setModiaContext';
 import { modiaAktivBrukerMSWHandler } from '@/app/api/modia/context/useModiaAktivBruker';
 import { modiaAktivEnhetMSWHandler } from '@/app/api/modia/context/useModiaAktivEnhet';
 import { decoratorDataMSWHandler } from '@/app/api/modia/decorator/useDecoratorData';
@@ -31,8 +32,8 @@ import {
 import { arbeidsgiverHendelserMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgiverHendelser';
 import { rekrutteringstreffArbeidsgivereMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import {
-  opprettInnleggMSWHandler,
   oppdaterInnleggMSWHandler,
+  opprettInnleggMSWHandler,
 } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/mutations';
 import { inviterJobbsøkereMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/inviterJobbsøkere';
 import {
@@ -58,6 +59,8 @@ import { stillingMSWHandlers } from '@/app/api/stilling/rekrutteringsbistandstil
 import { brukerStandardSøkMSWHandler } from '@/app/api/stilling/standardsok/useBrukersStandardsøk';
 import { stillingssøkMSWHandler } from '@/app/api/stillings-sok/useStillingssøk';
 import { synlighetsevalueringMSWHandler } from '@/app/api/synlighet/evaluering/useSynlighetsevaluering';
+import { loggerMSWHandlers } from '@/mocks/loggerMSW';
+import { umamiMSWHandlers } from '@/mocks/umamiMSW';
 
 export const mswHandlers = [
   brukerMSWHandler,
@@ -111,4 +114,7 @@ export const mswHandlers = [
   opprettInnleggMSWHandler,
   oppdaterInnleggMSWHandler,
   ...statusHendelserMSWHandlers,
+  ...umamiMSWHandlers,
+  ...loggerMSWHandlers,
+  modiaContextMSWHandler,
 ];
