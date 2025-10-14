@@ -51,59 +51,58 @@ const KiAnalyse: FC = () => {
         </div>
       </Box.New>
 
-      <ReadMore
-        header='Hvordan fungerer KI-sjekken?'
-        className='bg-[var(--ax-bg-accent-moderate)]'
-      >
-        <div className='space-y-3'>
-          <BodyShort size='small'>
-            KI-sjekken er en testversjon. Det betyr at du kan ikke stole på den.
-            Den vil kunne overse ord og kontekst den burde reagere på.
-          </BodyShort>
+      <div>
+        <ReadMore header='Hvordan fungerer KI-sjekken?'>
+          <div className='space-y-3'>
+            <BodyShort size='small'>
+              KI-sjekken er en testversjon. Det betyr at du kan ikke stole på
+              den. Den vil kunne overse ord og kontekst den burde reagere på.
+            </BodyShort>
 
-          <div>
-            <br />
-            <BodyShort size='small'>Den sjekker:</BodyShort>
-            <br />
-            <ul className='list-disc ml-5 space-y-1'>
-              <li>
-                <BodyShort size='small'>Diskriminerende ord</BodyShort>
-              </li>
-              <li>
-                <BodyShort size='small'>
-                  Ord og kontekst som kan avsløre personens relasjon til Nav
-                </BodyShort>
-              </li>
-              <li>
-                <BodyShort size='small'>
-                  Ord og kontekst som kan være personopplysninger eller
-                  opplysninger av særlig karakter
-                </BodyShort>
-              </li>
-            </ul>
-          </div>
+            <div>
+              <br />
+              <BodyShort size='small'>Den sjekker:</BodyShort>
+              <br />
+              <ul className='list-disc ml-5 space-y-1'>
+                <li>
+                  <BodyShort size='small'>Diskriminerende ord</BodyShort>
+                </li>
+                <li>
+                  <BodyShort size='small'>
+                    Ord og kontekst som kan avsløre personens relasjon til Nav
+                  </BodyShort>
+                </li>
+                <li>
+                  <BodyShort size='small'>
+                    Ord og kontekst som kan være personopplysninger eller
+                    opplysninger av særlig karakter
+                  </BodyShort>
+                </li>
+              </ul>
+            </div>
 
-          <div>
-            <br />
-            <BodyShort size='small'>Den sjekker ikke:</BodyShort>
-            <br />
-            <ul className='list-disc ml-5 space-y-1'>
-              <li>
-                <BodyShort size='small'>
-                  Om innholdet i rekrutteringstreffet er innenfor alle
-                  retningslinjer
-                </BodyShort>
-              </li>
-              <li>
-                <BodyShort size='small'>
-                  Om det bryter med den juridiske formålsbegrensningen og derfor
-                  kan være et personvernbrudd
-                </BodyShort>
-              </li>
-            </ul>
+            <div>
+              <br />
+              <BodyShort size='small'>Den sjekker ikke:</BodyShort>
+              <br />
+              <ul className='list-disc ml-5 space-y-1'>
+                <li>
+                  <BodyShort size='small'>
+                    Om innholdet i rekrutteringstreffet er innenfor alle
+                    retningslinjer
+                  </BodyShort>
+                </li>
+                <li>
+                  <BodyShort size='small'>
+                    Om det bryter med den juridiske formålsbegrensningen og
+                    derfor kan være et personvernbrudd
+                  </BodyShort>
+                </li>
+              </ul>
+            </div>
           </div>
-        </div>
-      </ReadMore>
+        </ReadMore>
+      </div>
     </div>
   );
 };
