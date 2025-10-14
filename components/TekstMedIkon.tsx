@@ -10,6 +10,12 @@ export interface ITekstMedIkon {
   hideIfEmpty?: boolean;
   splitSubtle?: boolean;
   subtle?: string;
+  /**
+   * Kontroller vertikal justering av ikon i forhold til tekst.
+   * 'top' sikrer at ikonet flukter med første tekstlinje (ønsket for multi-line tekst i kort).
+   * 'center' kan brukes der tidligere oppførsel (vertikal sentrering) er ønsket.
+   */
+  align?: 'top' | 'center';
 }
 
 const TekstMedIkon: React.FC<ITekstMedIkon> = ({
@@ -21,6 +27,7 @@ const TekstMedIkon: React.FC<ITekstMedIkon> = ({
   hideIfEmpty,
   subtle,
   splitSubtle,
+  align = 'top',
 }) => {
   if (hideIfEmpty && !tekst) {
     return null;
@@ -31,7 +38,7 @@ const TekstMedIkon: React.FC<ITekstMedIkon> = ({
 
   return (
     <div
-      className={`flex items-center ${className}`}
+      className={`flex ${align === 'center' ? 'items-center' : 'items-start'} ${className}`}
       title={title}
       aria-label={title || ariaLabel}
     >
