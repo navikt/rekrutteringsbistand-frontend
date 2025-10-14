@@ -13,6 +13,7 @@ import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { RekbisError } from '@/util/rekbisError';
 import { PersonPlusIcon } from '@navikt/aksel-icons';
 import { Button, Checkbox, Link, Loader, Modal, Table } from '@navikt/ds-react';
+import { useRouter } from 'next/navigation';
 import { FC, useRef, useState } from 'react';
 
 interface LagreIRekrutteringstreffButtonProps {
@@ -27,6 +28,7 @@ const LagreIRekrutteringstreffButton: FC<
   const [laster, setLaster] = useState(false);
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
 
+  const router = useRouter();
   const { visVarsel } = useApplikasjonContext();
   const { markerteKandidater, fjernMarkerteKandidater } =
     useKandidatSøkMarkerteContext();
@@ -102,6 +104,11 @@ const LagreIRekrutteringstreffButton: FC<
       });
       fjernMarkerteKandidater();
       skalLukke = true;
+      if (rekrutteringstreffId) {
+        router.push(
+          `/rekrutteringstreff/${rekrutteringstreffId}?visFane=jobbsøkere`,
+        );
+      }
     } catch (error) {
       new RekbisError({
         message: 'Feil ved lagring av kandidater i rekrutteringstreff',
@@ -137,7 +144,7 @@ const LagreIRekrutteringstreffButton: FC<
         loading={laster}
       >
         {rekrutteringstreffId
-          ? 'Legg til markerte kandidater'
+          ? 'Legg til jobbsøkere og fullfør'
           : 'Lagre i rekrutteringstreff'}
       </Button>
 
