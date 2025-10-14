@@ -64,26 +64,6 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
     inputRef.current?.focus();
   };
 
-  // Sett initial fokus på tittelfeltet i kladd-modus hvis tittel mangler eller er default
-  useEffect(() => {
-    if (!treff || kiLoggLoading) return;
-
-    const erIKladdModus = !harPublisert;
-    const tittelVerdi = (tittel ?? '').trim();
-    const tittelMangler =
-      tittelVerdi.length === 0 || tittelVerdi === DEFAULT_TITTEL;
-
-    if (erIKladdModus && tittelMangler && inputRef.current) {
-      // Sett fokus med en liten delay for å sikre at DOM er klar
-      const timer = setTimeout(() => {
-        inputRef.current?.focus();
-      }, 100);
-
-      return () => clearTimeout(timer);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [treff, kiLoggLoading, harPublisert]);
-
   return (
     <section className='space-y-3'>
       {kiLoggLoading && <Skeleton variant='text' />}
