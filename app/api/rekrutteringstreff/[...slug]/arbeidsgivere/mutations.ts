@@ -3,6 +3,7 @@
 import { arbeidsgivereMock } from './arbeidsgivereMock';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { deleteApi, postApi } from '@/app/api/fetcher';
+import { http, HttpResponse } from 'msw';
 
 // DTOs
 export type OpprettArbeidsgiverDTO = {
@@ -36,19 +37,12 @@ export const slettArbeidsgiver = (
     ),
   );
 
-export const arbeidsgiverMutationsMirage = (server: any) => {
-  server.post(
-    rekrutteringstreffArbeidsgiverEndepunkt(
-      'd6a587cd-8797-4b9a-a68b-575373f16d65',
-    ),
-    () => arbeidsgivereMock()[0],
-  );
+export const opprettArbeidsgiverMSWHandler = http.post(
+  `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/arbeidsgiver`,
+  () => HttpResponse.json(arbeidsgivereMock()[0]),
+);
 
-  server.delete(
-    rekrutteringstreffEnkeltArbeidsgiverEndepunkt(
-      'd6a587cd-8797-4b9a-a68b-575373f16d65',
-      '53dbc8c2-fc62-4c1a-a95c-53d97e7e1c01',
-    ),
-    () => undefined,
-  );
-};
+export const slettArbeidsgiverMSWHandler = http.delete(
+  `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/arbeidsgiver/:arbeidsgiverId`,
+  () => new HttpResponse(null, { status: 204 }),
+);

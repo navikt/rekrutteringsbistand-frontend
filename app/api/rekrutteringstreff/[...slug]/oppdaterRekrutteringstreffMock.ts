@@ -1,5 +1,4 @@
 import { RekrutteringstreffUtenHendelserDTO } from './useRekrutteringstreff';
-import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 
 export const oppdaterRekrutteringstreffMock = (
   id: string,
@@ -18,16 +17,4 @@ export const oppdaterRekrutteringstreffMock = (
     opprettetAvPersonNavident: 'A123456',
     opprettetAvNavkontorEnhetId: '0318',
   };
-};
-
-export const rekrutteringstreffSlugMutationsMirage = (server: any) => {
-  server.put(
-    `${RekrutteringstreffAPI.internUrl}/:id`,
-    (_: any, request: any) => {
-      const { id } = request.params;
-      return oppdaterRekrutteringstreffMock(id);
-    },
-  );
-
-  server.delete(`${RekrutteringstreffAPI.internUrl}/:id`, () => undefined);
 };

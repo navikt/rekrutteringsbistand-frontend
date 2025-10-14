@@ -1,6 +1,7 @@
 import { decoratorMock } from './mocks/dekoratørMock';
 import { ModiaDecoratorAPI } from '@/app/api/api-routes';
 import { getAPIwithSchema } from '@/app/api/fetcher';
+import { http, HttpResponse } from 'msw';
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
 
@@ -19,8 +20,9 @@ const decoratorEndepunkt = `${ModiaDecoratorAPI.internUrl}/decorator`;
 export const useDecoratorData = () =>
   useSWRImmutable(decoratorEndepunkt, getAPIwithSchema(decoratorSchema));
 
-export const decoratorDataMirage = (server: any) =>
-  server.get(decoratorEndepunkt, () => {
-    const bruker = localStorage.getItem('DEV-BRUKER') || 'TestIdent';
-    return { ...decoratorMock, ident: bruker };
-  });
+export const decoratorDataMSWHandler = http.get(decoratorEndepunkt, () => {
+  const bruker =
+    (typeof window !== 'undefined' && localStorage.getItem('DEV-BRUKER')) ||
+    'TestIdent';
+  return HttpResponse.json({ ...decoratorMock, ident: bruker });
+});

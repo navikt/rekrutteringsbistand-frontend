@@ -1,4 +1,4 @@
-import KandidatForhåndsvisning from './KandidatForhåndsvisning';
+import VisKandidatModal from '@/components/modal/kandidat/VisKandidatModal';
 import { KandidatMockProvider } from '@/storybook/mocks';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
@@ -9,7 +9,11 @@ const meta = {
   render: () => (
     <KandidatMockProvider>
       <div className='opacity-60 pointer-events-none'>
-        <KandidatForhåndsvisning kandidatNr='kand-1' onClose={() => {}} />
+        <VisKandidatModal
+          tittel={'Tittel input for modal'}
+          kandidatNr='kandidat-arenaKandidatnr-1'
+          onClose={() => {}}
+        />
       </div>
     </KandidatMockProvider>
   ),
@@ -17,4 +21,5 @@ const meta = {
 export default meta;
 
 type Story = StoryObj<typeof meta>;
+
 export const Placeholder: Story = {};

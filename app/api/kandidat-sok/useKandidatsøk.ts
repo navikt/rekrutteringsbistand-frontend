@@ -16,6 +16,7 @@ import {
   lagKandidatsøkstreng,
   stedmappingFraNyttNummer,
 } from '@/util/fylkeOgKommuneMapping';
+import { http, HttpResponse } from 'msw';
 /**
  * Endepunkt /minebrukere
  */
@@ -155,27 +156,19 @@ export const useKandidatsøk = (
   );
 };
 
-export const kandidatSokMirage = (server: any) => {
-  return server.post(kandidatSokEndepunkt('*'), () => {
+export const kandidatSokMSWHandler = http.post(
+  kandidatSokEndepunkt('*'),
+  async () => {
     const mappedKandidater = mockKandidatDataList
       .map(mapToKandidatSokKandidat)
       .filter((k): k is KandidatsokKandidat => k !== null);
-
-    const antallTotalt = mappedKandidater.length;
-
     const kandidatnumreForNavigering = mappedKandidater
-      .map((k) => k.arenaKandidatnr) // arenaKandidatnr is guaranteed here
-      .filter(
-        (arenaKandidatnr): arenaKandidatnr is string =>
-          typeof arenaKandidatnr === 'string',
-      ); // Filter still good practice
-
-    return {
-      kandidater: mappedKandidater, // Return the array of mapped (slimmer) candidate objects
-      navigering: {
-        kandidatnumre: kandidatnumreForNavigering,
-      },
-      antallTotalt: antallTotalt,
-    };
-  });
-};
+      .map((k) => k.arenaKandidatnr)
+      .filter((n): n is string => typeof n === 'string');
+    return HttpResponse.json({
+      kandidater: mappedKandidater,
+      navigering: { kandidatnumre: kandidatnumreForNavigering },
+      antallTotalt: mappedKandidater.length,
+    });
+  },
+);

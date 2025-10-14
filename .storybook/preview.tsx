@@ -1,10 +1,15 @@
 import '../app/globals.css';
+import { mswHandlers } from '../mocks/handlers';
 import { ThemeProvider } from '../providers/ThemeProvider';
 import { MockRekrutteringstreffProvider } from '../storybook/mocks';
 import StoryProviders from './StoryProviders';
 import './storybook.css';
 import '@navikt/ds-css/darkside';
 import type { Preview } from '@storybook/nextjs-vite';
+import { initialize, mswLoader } from 'msw-storybook-addon';
+
+// Init MSW (kun i Storybook). Handlerliste importeres fra mocks/handlers.ts.
+initialize({ onUnhandledRequest: 'bypass' });
 
 const preview: Preview = {
   globalTypes: {
@@ -28,7 +33,9 @@ const preview: Preview = {
     docs: { autodocs: true },
     a11y: { test: 'todo' },
     backgrounds: { disable: true },
+    msw: { handlers: mswHandlers },
   },
+  loaders: [mswLoader],
   decorators: [
     // Base dekoratør: tema + applikasjons/umami + (senere flere globale)
     (Story, context) => {

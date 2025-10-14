@@ -2,34 +2,33 @@ import { KandidatContextProvider } from '@/app/kandidat/vis-kandidat/KandidatCon
 import KandidatSideLayout from '@/app/kandidat/vis-kandidat/KandidatsideLayout';
 import KandidatlisteBoks from '@/app/kandidat/vis-kandidat/_ui/KandidatlisteBoks';
 import KandidatOversikt from '@/app/kandidat/vis-kandidat/oversikt-fane/KandidatOversikt';
-import { useNullableStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import { Button, Modal } from '@navikt/ds-react';
 import { ModalBody } from '@navikt/ds-react/Modal';
 
-export interface KandidatForhåndsvisningProps {
+export interface VisKandidatModalProps {
   kandidatNr: string;
   onClose: () => void;
+  tittel: string;
+  stillingsId?: string;
 }
 
-export default function KandidatForhåndsvisning({
+export default function VisKandidatModal({
   kandidatNr,
   onClose,
-}: KandidatForhåndsvisningProps) {
-  const stilling = useNullableStillingsContext();
-
+  tittel,
+  stillingsId,
+}: VisKandidatModalProps) {
   return (
     <KandidatContextProvider kandidatId={kandidatNr}>
       <Modal
         width={'1280px'}
         open
         onClose={onClose}
-        header={{ heading: stilling?.stillingsData?.stilling?.title ?? '' }}
+        header={{ heading: tittel }}
       >
         <ModalBody>
           <KandidatSideLayout>
-            {stilling?.stillingsId && (
-              <KandidatlisteBoks kandidatnr={kandidatNr} />
-            )}
+            {stillingsId && <KandidatlisteBoks kandidatnr={kandidatNr} />}
           </KandidatSideLayout>
           <KandidatOversikt />
         </ModalBody>

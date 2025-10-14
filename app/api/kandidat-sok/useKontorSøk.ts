@@ -5,6 +5,7 @@
  */
 import { KandidatSøkAPI } from '@/app/api/api-routes';
 import { postApiWithSchema } from '@/app/api/fetcher';
+import { http, HttpResponse } from 'msw';
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
 
@@ -29,8 +30,8 @@ export const useKontorSøk = (søkeTekst: string) =>
     },
   );
 
-export const kontorSøkMirage = (server: any) => {
-  return server.post(kontorSøkEndepunkt, () => [
+export const kontorSøkMSWHandler = http.post(kontorSøkEndepunkt, async () =>
+  HttpResponse.json([
     'Nasjonal oppfølgingsenhet',
     'NAV Kristiansand',
     'NAV Fredrikstad',
@@ -41,5 +42,5 @@ export const kontorSøkMirage = (server: any) => {
     'NAV Lerkendal',
     'NAV Grünerløkka',
     'NAV Bærum',
-  ]);
-};
+  ]),
+);

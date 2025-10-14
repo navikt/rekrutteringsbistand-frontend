@@ -1,19 +1,17 @@
-import test, { expect } from '@playwright/test';
+import { gotoApp } from '@/tests/gotoApp';
+import { expect, test } from '@playwright/test';
 
 // Bruker arbeidsgiverrettet tilgang
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 
 test('Kandidatsøk', async ({ page }) => {
-  await page.goto('http://localhost:1337');
+  await gotoApp(page, '/');
 
   await page.getByRole('button', { name: 'Jobbsøkere' }).click();
 
-  // Vent på at heading vises (implicit retry) i stedet for networkidle
-  const heading = await page.getByLabel('Brødsmulesti').getByText('Jobbsøkere');
-  await expect(heading).toBeVisible();
-
-  // Sikre at loader er borte før vi går videre (Loader har title="Laster...")
-  await expect(page.getByTitle('Laster...')).toHaveCount(0);
+  await expect(
+    page.getByLabel('Brødsmulesti').getByText('Jobbsøkere'),
+  ).toBeVisible();
 
   //filter test
 

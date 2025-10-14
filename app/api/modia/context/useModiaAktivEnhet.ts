@@ -5,7 +5,7 @@
  */
 import { ModiaDecoratorAPI } from '@/app/api/api-routes';
 import { getAPIwithSchema } from '@/app/api/fetcher';
-import { Server } from 'miragejs';
+import { http, HttpResponse } from 'msw';
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
 
@@ -21,8 +21,7 @@ export const useModiaAktivEnhet = () =>
     getAPIwithSchema(ModiaAktivEnhetSchema),
   );
 
-export const modiaAktivEnhetMirage = (server: Server) => {
-  server.get(modiaAktivEnhetEndepunkt, () => {
-    return { aktivEnhet: '1337' };
-  });
-};
+export const modiaAktivEnhetMSWHandler = http.get(
+  modiaAktivEnhetEndepunkt,
+  () => HttpResponse.json({ aktivEnhet: '1337' }),
+);

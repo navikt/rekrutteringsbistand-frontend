@@ -1,6 +1,5 @@
 'use client';
 
-import { innleggMock } from './innleggMock';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { getAPIwithSchema } from '@/app/api/fetcher';
 import useSWR from 'swr';
@@ -31,7 +30,3 @@ export const innleggEndepunkt = (id: string) =>
 
 export const useInnlegg = (id: string) =>
   useSWR(innleggEndepunkt(id), getAPIwithSchema(InnleggListeSchema));
-
-export const innleggMirage = (server: any) => {
-  return server.get(innleggEndepunkt('*'), () => innleggMock);
-};

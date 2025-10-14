@@ -1,12 +1,13 @@
+import { gotoApp } from '@/tests/gotoApp';
 import { visMørkModus } from '@/tests/visMørkModus';
-import test, { expect } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 
 // Bruker arbeidsgiverrettet tilgang
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 
 test.describe(`Stilling test`, () => {
   test('Min stilling', async ({ page }) => {
-    await page.goto('http://localhost:1337/stilling/minStilling');
+    await gotoApp(page, '/stilling/minStilling');
 
     await page.getByRole('tab', { name: 'Om stillingen' }).click();
     await expect(
@@ -34,7 +35,7 @@ test.describe(`Stilling test`, () => {
   });
 
   test('Ikke min stilling', async ({ page }) => {
-    await page.goto('http://localhost:1337/stilling/123');
+    await gotoApp(page, '/stilling/123');
 
     await page.getByRole('tab', { name: 'Om stillingen' }).click();
     await expect(
@@ -63,7 +64,7 @@ test.describe(`Stilling test`, () => {
 
   test.describe(`Min stilling i mørk modus`, () => {
     test.beforeEach(async ({ page }) => {
-      await page.goto('http://localhost:1337/stilling/minStilling');
+      await gotoApp(page, '/stilling/minStilling');
       await expect(
         page.getByRole('tab', { name: 'Om stillingen' }),
       ).toBeVisible({ timeout: 15000 });

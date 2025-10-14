@@ -1,5 +1,6 @@
 import { postApi } from '@/app/api/fetcher';
 import { mockBaseStilling } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/mocks/stillingMock';
+import { http, HttpResponse } from 'msw';
 
 const opprettNyStillingEndepunkt = '/api/stilling/ny-stilling';
 
@@ -29,6 +30,7 @@ export const opprettNyStilling = async (props: OpprettStillingProps) => {
   });
 };
 
-export const opprettNyStillingMirage = (server: any) => {
-  return server.post(opprettNyStillingEndepunkt, () => mockBaseStilling);
-};
+export const opprettNyStillingMSWHandler = http.post(
+  opprettNyStillingEndepunkt,
+  () => HttpResponse.json(mockBaseStilling),
+);

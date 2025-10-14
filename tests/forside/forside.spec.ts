@@ -1,13 +1,13 @@
+import { gotoApp } from '@/tests/gotoApp';
 import { visMørkModus } from '@/tests/visMørkModus';
-import { expect, test } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 
 // Bruker arbeidsgiverrettet tilgang for å teste forsiden
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 
 test.describe(`Forside test`, () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('http://localhost:1337/');
-    await page.waitForLoadState('networkidle');
+    await gotoApp(page, '/');
     // Sørg for at sidebar er åpen slik at knappetekster er synlige
     const toggle = page
       .getByRole('button')

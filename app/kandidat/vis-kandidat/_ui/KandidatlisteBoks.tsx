@@ -43,7 +43,7 @@ const KandidatlisteBoks: FC<KandidatlisteBoksProps> = ({ kandidatnr }) => {
       <div className='my-5'>
         <NavigerTilAktivitetsplanenKnapp />
       </div>
-    )
+    );
   }
 
   if (kandidatlisteLaster) {

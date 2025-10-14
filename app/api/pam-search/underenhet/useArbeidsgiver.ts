@@ -3,6 +3,7 @@
 import { PamSearchAPI } from '@/app/api/api-routes';
 import { getApiWithSchemaEs } from '@/app/api/fetcher';
 import { faker } from '@faker-js/faker/locale/nb_NO';
+import { http, HttpResponse } from 'msw';
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
 
@@ -51,120 +52,49 @@ export const useFinnArbeidsgiver = (søkeord?: string) =>
     (data) => getApiWithSchemaEs(ArbeidsgiverSchemaDTO)(data),
   );
 
-export const arbeidsgiverMirage = (server: any) => {
-  faker.seed(1337);
-  server.get(PamSearchAPI.internUrl + `/underenhet`, () => {
-    return {
+export const arbeidsgiverMSWHandler = http.get(
+  PamSearchAPI.internUrl + `/underenhet`,
+  () => {
+    faker.seed(1337);
+    return HttpResponse.json({
       took: 2,
       timed_out: false,
-      _shards: {
-        total: 3,
-        successful: 3,
-        skipped: 0,
-        failed: 0,
-      },
+      _shards: { total: 3, successful: 3, skipped: 0, failed: 0 },
       hits: {
-        total: {
-          value: 1,
-          relation: 'eq',
-        },
-        max_score: 10.641023,
-        hits: [
-          {
-            _index: 'underenhet20250211',
-            _id: '315414822',
-            _score: 10.641023,
-            _source: {
-              organisasjonsnummer: faker.string.numeric(9),
-              navn: faker.company.name(),
-              organisasjonsform: 'BEDR',
-              antallAnsatte: 3,
-              overordnetEnhet: faker.string.numeric(9),
-              adresse: {
-                land: 'Norge',
-                landkode: 'NO',
-                kommune: faker.location.county(),
-                kommunenummer: faker.string.numeric(4),
-                poststed: faker.location.street(),
-                postnummer: faker.location.zipCode(),
-                adresse: faker.location.streetAddress(),
-              },
-              naringskoder: null,
+        total: { value: 3, relation: 'eq' },
+        max_score: 10.64,
+        hits: Array.from({ length: 3 }).map((_, idx) => ({
+          _index: 'underenhet20250211',
+          _id: `${idx}`,
+          _score: 10.64,
+          _source: {
+            organisasjonsnummer: faker.string.numeric(9),
+            navn: idx === 2 ? 'TEST PLUTSELIG KATT' : faker.company.name(),
+            organisasjonsform: 'BEDR',
+            antallAnsatte: 3,
+            overordnetEnhet: faker.string.numeric(9),
+            adresse: {
+              land: 'Norge',
+              landkode: 'NO',
+              kommune: faker.location.county(),
+              kommunenummer: faker.string.numeric(4),
+              poststed: faker.location.street(),
+              postnummer: faker.location.zipCode(),
+              adresse: faker.location.streetAddress(),
             },
+            naringskoder:
+              idx === 2
+                ? [
+                    {
+                      kode: '86.107',
+                      beskrivelse:
+                        'Rehabilitering- og opptreningsinstitusjoner',
+                    },
+                  ]
+                : null,
           },
-          {
-            _index: 'underenhet20250211',
-            _id: '315414822',
-            _score: 10.641023,
-            _source: {
-              organisasjonsnummer: faker.string.numeric(9),
-              navn: faker.company.name(),
-              organisasjonsform: 'BEDR',
-              antallAnsatte: 3,
-              overordnetEnhet: faker.string.numeric(9),
-              adresse: {
-                land: 'Norge',
-                landkode: 'NO',
-                kommune: faker.location.county(),
-                kommunenummer: faker.string.numeric(4),
-                poststed: faker.location.street(),
-                postnummer: faker.location.zipCode(),
-                adresse: faker.location.streetAddress(),
-              },
-              naringskoder: null,
-            },
-          },
-          {
-            _index: 'underenhet20250211',
-            _id: '315414822',
-            _score: 10.641023,
-            _source: {
-              organisasjonsnummer: faker.string.numeric(9),
-              navn: faker.company.name(),
-              organisasjonsform: 'BEDR',
-              antallAnsatte: 3,
-              overordnetEnhet: faker.string.numeric(9),
-              adresse: {
-                land: 'Norge',
-                landkode: 'NO',
-                kommune: faker.location.county(),
-                kommunenummer: faker.string.numeric(4),
-                poststed: faker.location.street(),
-                postnummer: faker.location.zipCode(),
-                adresse: faker.location.streetAddress(),
-              },
-              naringskoder: null,
-            },
-          },
-          {
-            _index: 'underenhet20250211',
-            _id: '315414822',
-            _score: 10.641023,
-            _source: {
-              organisasjonsnummer: faker.string.numeric(9),
-              navn: 'TEST PLUTSELIG KATT',
-              organisasjonsform: 'BEDR',
-              antallAnsatte: 3,
-              overordnetEnhet: faker.string.numeric(9),
-              adresse: {
-                land: 'Norge',
-                landkode: 'NO',
-                kommune: faker.location.county(),
-                kommunenummer: faker.string.numeric(4),
-                poststed: faker.location.street(),
-                postnummer: faker.location.zipCode(),
-                adresse: faker.location.streetAddress(),
-              },
-              naringskoder: [
-                {
-                  kode: '86.107',
-                  beskrivelse: 'Rehabilitering- og opptreningsinstitusjoner',
-                },
-              ],
-            },
-          },
-        ],
+        })),
       },
-    };
-  });
-};
+    });
+  },
+);

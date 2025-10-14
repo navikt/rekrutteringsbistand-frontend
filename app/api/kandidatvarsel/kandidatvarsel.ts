@@ -1,6 +1,7 @@
 import { KandidatvarselAPI } from '@/app/api/api-routes';
 import { getAPI, postApi } from '@/app/api/fetcher';
 import { RekbisError } from '@/util/rekbisError';
+import { http, HttpResponse } from 'msw';
 import useSWR, { SWRResponse, useSWRConfig } from 'swr';
 import { z } from 'zod';
 
@@ -280,6 +281,7 @@ const smsExampleMock = [
     eksternKanal: null,
   },
 ];
-export const kandidatvarselMirage = (server: any) => {
-  return server.get(varselStillingEndepunkt('*'), () => smsExampleMock);
-};
+export const kandidatvarselMSWHandler = http.get(
+  varselStillingEndepunkt('*'),
+  () => HttpResponse.json(smsExampleMock),
+);
