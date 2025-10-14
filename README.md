@@ -95,6 +95,7 @@ Testresultater: [navikt.github.io/rekrutteringsbistand-frontend](https://navikt.
 Opprett `.env.local`:
 
 ```env
+NEXT_PUBLIC_STILLING_ES_MOCK=true
 STILLING_ES_URI=din_uri
 STILLING_ES_PASSWORD=ditt_passord
 STILLING_ES_USERNAME=ditt_brukernavn
