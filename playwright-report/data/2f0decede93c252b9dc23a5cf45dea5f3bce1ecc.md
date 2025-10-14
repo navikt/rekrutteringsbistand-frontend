@@ -1,0 +1,124 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - button "Open Next.js Dev Tools" [ref=e7] [cursor=pointer]:
+    - img [ref=e8] [cursor=pointer]
+  - alert [ref=e11]
+  - generic [ref=e14]:
+    - banner [ref=e15]:
+      - banner [ref=e16]:
+        - heading "Rekrutteringsbistand - Playwright" [level=1] [ref=e17]:
+          - generic [ref=e18]: Rekrutteringsbistand - Playwright
+        - generic [ref=e19]:
+          - strong [ref=e20]: Playwright Test
+          - generic [ref=e21]: "Bruker: TestIdent"
+          - generic [ref=e22]: "Rolle: Arbeidsgiverrettet"
+        - button "Modia meny" [ref=e24] [cursor=pointer]:
+          - img "Modia meny" [ref=e25] [cursor=pointer]
+        - 'button "Fornavn Etternavn Enhet: NAV Test" [ref=e27] [cursor=pointer]':
+          - generic [ref=e28] [cursor=pointer]:
+            - generic [ref=e29] [cursor=pointer]: Fornavn Etternavn
+            - generic [ref=e30] [cursor=pointer]: "Enhet: NAV Test"
+          - img [ref=e31] [cursor=pointer]
+    - generic [ref=e33]:
+      - generic [ref=e36]:
+        - generic [ref=e38]:
+          - button [pressed] [ref=e39] [cursor=pointer]:
+            - img [ref=e41] [cursor=pointer]
+          - button "Opprett" [ref=e43] [cursor=pointer]:
+            - img [ref=e45] [cursor=pointer]
+            - generic [ref=e47] [cursor=pointer]: Opprett
+        - generic [ref=e48]:
+          - generic [ref=e49]:
+            - link "Oversikt" [ref=e50] [cursor=pointer]:
+              - /url: /
+              - button "Oversikt" [ref=e51] [cursor=pointer]:
+                - img [ref=e53] [cursor=pointer]
+                - generic [ref=e55] [cursor=pointer]: Oversikt
+            - link "Stillingsoppdrag" [ref=e56] [cursor=pointer]:
+              - /url: /stilling?brukStandardsok=true
+              - button "Stillingsoppdrag" [ref=e57] [cursor=pointer]:
+                - img [ref=e59] [cursor=pointer]
+                - generic [ref=e61] [cursor=pointer]: Stillingsoppdrag
+            - link "Etterregistreringer" [ref=e62] [cursor=pointer]:
+              - /url: /etterregistrering
+              - button "Etterregistreringer" [ref=e63] [cursor=pointer]:
+                - img [ref=e65] [cursor=pointer]
+                - generic [ref=e67] [cursor=pointer]: Etterregistreringer
+            - link "Jobbsøkere" [ref=e68] [cursor=pointer]:
+              - /url: /kandidat
+              - button "Jobbsøkere" [active] [ref=e69] [cursor=pointer]:
+                - img [ref=e71] [cursor=pointer]
+                - generic [ref=e73] [cursor=pointer]: Jobbsøkere
+          - generic [ref=e74]:
+            - link "Nyheter" [ref=e76] [cursor=pointer]:
+              - /url: /nyheter
+              - button "Nyheter" [ref=e77] [cursor=pointer]:
+                - img [ref=e79] [cursor=pointer]
+                - generic [ref=e81] [cursor=pointer]: Nyheter
+            - button "Gi tilbakemelding" [ref=e82] [cursor=pointer]:
+              - img [ref=e84] [cursor=pointer]
+              - generic [ref=e86] [cursor=pointer]: Gi tilbakemelding
+            - button "Mørk modus" [ref=e87] [cursor=pointer]:
+              - img [ref=e89] [cursor=pointer]
+              - generic [ref=e91] [cursor=pointer]: Mørk modus
+      - main [ref=e92]:
+        - generic [ref=e104]:
+          - generic [ref=e105]:
+            - generic [ref=e106]:
+              - heading "Ditt Nav-kontor" [level=2] [ref=e107]
+              - paragraph [ref=e108]: NAV Test
+            - generic [ref=e110]:
+              - generic [ref=e111]: Periode
+              - generic [ref=e112]:
+                - combobox "Periode" [ref=e113]:
+                  - option "1. oktober 2025 - 31. oktober 2025" [selected]
+                  - option "1. september 2025 - 30. september 2025"
+                  - option "1. august 2025 - 31. august 2025"
+                  - option "1. juli 2025 - 31. juli 2025"
+                  - option "1. juni 2025 - 30. juni 2025"
+                  - option "1. mai 2025 - 31. mai 2025"
+                  - option "1. april 2025 - 30. april 2025"
+                  - option "1. mars 2025 - 31. mars 2025"
+                  - option "1. februar 2025 - 28. februar 2025"
+                  - option "1. januar 2025 - 31. januar 2025"
+                  - option "1. desember 2024 - 31. desember 2024"
+                  - option "1. november 2024 - 30. november 2024"
+                - img
+          - generic [ref=e114]:
+            - generic [ref=e116]:
+              - generic [ref=e117]:
+                - generic [ref=e118]:
+                  - paragraph [ref=e120]: Antall delt med arbeidsgiver
+                  - generic [ref=e121]: "10"
+                - img [ref=e123]
+              - paragraph [ref=e126]: 5 under 30 år · 1 utenom standardinnsats
+            - generic [ref=e128]:
+              - generic [ref=e129]:
+                - generic [ref=e130]:
+                  - paragraph [ref=e132]: Antall som har fått jobb
+                  - generic [ref=e133]: "10"
+                - img [ref=e135]
+              - paragraph [ref=e138]: 5 under 30 år · 1 utenom standardinnsats
+          - generic [ref=e141]:
+            - generic [ref=e144]:
+              - img [ref=e146]
+              - paragraph [ref=e148]: CV-er godkjent for deling med arbeidsgiver
+            - generic [ref=e149]:
+              - generic [ref=e150]:
+                - generic [ref=e151]: Kandidater spurt om å dele
+                - generic [ref=e152]: "54"
+              - generic [ref=e153]:
+                - generic [ref=e154]: Godkjent
+                - generic [ref=e155]: "12"
+              - generic [ref=e156]:
+                - generic [ref=e157]: Avslått
+                - generic [ref=e158]: "13"
+              - generic [ref=e159]:
+                - generic [ref=e160]: Ikke svart
+                - generic [ref=e161]: "14"
+              - generic [ref=e162]:
+                - generic [ref=e163]: Utløpt
+                - generic [ref=e164]: "15"
+```
