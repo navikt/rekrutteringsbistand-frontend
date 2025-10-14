@@ -5,7 +5,7 @@ import {
   ChatExclamationmarkIcon,
   HandHeartIcon,
 } from '@navikt/aksel-icons';
-import { BodyShort, ReadMore, Box, Popover } from '@navikt/ds-react';
+import { BodyShort, ReadMore, Box, Popover, Link } from '@navikt/ds-react';
 import { FC, useRef, useState } from 'react';
 
 // Legg til useRef og useState
@@ -188,7 +188,11 @@ const KiAnalyse: FC = () => {
           <BodyShort size='small'>
             KI-sjekken tar ikke høyde for retningslinjene for treff.
             Retningslinjene finner du på{' '}
-            <a href='#' className='underline'>
+            <a
+              href='https://www.nav.no'
+              target='_blank'
+              className='underline cursor-pointer'
+            >
               navet
             </a>
             .
