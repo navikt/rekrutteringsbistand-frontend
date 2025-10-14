@@ -52,7 +52,8 @@ export default async function RootLayout({
 }
 
 const BrukLokalMock = ({ children }: { children: ReactNode }) => {
-  if (isLocal) {
+  const testMode = process.env.NEXT_PUBLIC_PLAYWRIGHT_TEST_MODE === 'true';
+  if (isLocal || testMode) {
     return <MSWInitializer>{children}</MSWInitializer>;
   }
   return children;

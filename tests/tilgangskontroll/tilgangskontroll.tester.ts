@@ -1,4 +1,5 @@
 import { Roller } from '@/components/tilgangskontroll/roller';
+import { gotoApp } from '@/tests/gotoApp';
 import { expect, test } from '@playwright/test';
 
 export const testTilgangskontroll = (rolle: Roller) => {
@@ -23,8 +24,7 @@ export const testTilgangskontroll = (rolle: Roller) => {
 
   test.describe(`Tilgangskontroll for ${rolleNavn(rolle)}`, () => {
     test.beforeEach(async ({ page }) => {
-      await page.goto('http://localhost:1337/');
-      await page.waitForLoadState('networkidle');
+      await gotoApp(page, '/');
     });
 
     test('1. Forside', async ({ page }) => {
@@ -73,8 +73,9 @@ export const testTilgangskontroll = (rolle: Roller) => {
       }
 
       // // Filtre
-      await page.goto(
-        'http://localhost:1337/stilling?publisert=intern&statuser=publisert%2Cutl%C3%B8pt%2Cstoppet&fylker=33&kommuner=3301',
+      await gotoApp(
+        page,
+        '/stilling?publisert=intern&statuser=publisert%2Cutl%C3%B8pt%2Cstoppet&fylker=33&kommuner=3301',
       );
 
       // if (ARBEIDSGIVERRETTET) {
@@ -92,7 +93,7 @@ export const testTilgangskontroll = (rolle: Roller) => {
     });
 
     test('3. Stilling', async ({ page }) => {
-      await page.goto('http://localhost:1337/stilling/internStilling');
+      await gotoApp(page, '/stilling/internStilling');
 
       // Viser stilling side
       await expect(page.getByTestId('stilling-side')).toBeVisible();
@@ -126,7 +127,7 @@ export const testTilgangskontroll = (rolle: Roller) => {
     });
 
     test('3.1 Min Stilling', async ({ page }) => {
-      await page.goto('http://localhost:1337/stilling/minStilling');
+      await gotoApp(page, '/stilling/minStilling');
 
       const redigerKnapp = page.getByRole('button', { name: 'Rediger' });
       // const dupliserKnapp = page.getByRole('button', { name: 'Dupliser' });
@@ -155,7 +156,7 @@ export const testTilgangskontroll = (rolle: Roller) => {
     });
 
     test('4. Kandidatsøk', async ({ page }) => {
-      await page.goto('http://localhost:1337/kandidat');
+      await gotoApp(page, '/kandidat');
 
       // Viser kandidatsøk fane
       const kandidatSøkTab = page.getByRole('button', { name: 'Jobbsøkere' });
@@ -222,28 +223,29 @@ export const testTilgangskontroll = (rolle: Roller) => {
     });
 
     test('5. Kandidat', async ({ page }) => {
-      await page.goto('http://localhost:1337/kandidat/PAM012t1avh27');
+      await gotoApp(page, '/kandidat/PAM012t1avh27');
       // Viser kandidat side
-      const oversiktFane = page.getByRole('tab', { name: 'Oversikt' });
+      await page.getByRole('tab', { name: 'Oversikt' }).click();
+      const ikkeTIlgang = page.getByText('Ikke tilgang');
       if (ARBEIDSGIVERRETTET || JOBBSOKERRETTET) {
-        await expect(oversiktFane).toBeVisible();
+        await expect(ikkeTIlgang).toBeHidden();
       }
       if (MODIA) {
-        await expect(oversiktFane).toBeHidden();
+        await expect(ikkeTIlgang).toBeVisible();
       }
 
       // Viser aktivitetfanen inne på kandidat
-      const aktivitetFane = page.getByRole('tab', { name: 'Aktivitet' });
+      await page.getByRole('tab', { name: 'Aktivitet' }).click();
       if (ARBEIDSGIVERRETTET || JOBBSOKERRETTET) {
-        await expect(aktivitetFane).toBeVisible();
+        await expect(ikkeTIlgang).toBeHidden();
       }
       if (MODIA) {
-        await expect(aktivitetFane).toBeHidden();
+        await expect(ikkeTIlgang).toBeVisible();
       }
     });
 
     test('6. Formidlinger', async ({ page }) => {
-      await page.goto('http://localhost:1337/etterregistrering');
+      await gotoApp(page, '/etterregistrering');
 
       // Viser formidlinger
       const formidlinger = await page
@@ -257,9 +259,7 @@ export const testTilgangskontroll = (rolle: Roller) => {
       }
 
       // Kan opprette formidling
-      const etterFormidlingKnapp = page.getByRole('button', {
-        name: 'Opprett etterregistrering',
-      });
+      // const etterFormidlingKnapp = page.getByRole('button', { name: 'Opprett etterregistrering' });
       if (ARBEIDSGIVERRETTET || JOBBSOKERRETTET) {
         await page
           .getByRole('button', { name: 'Opprett', exact: true })
