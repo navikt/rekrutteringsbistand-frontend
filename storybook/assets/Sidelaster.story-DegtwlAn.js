@@ -1,0 +1,1 @@
+import{cl as a}from"./iframe-pQ4IQbGd.js";import"./preload-helper-BWMAHTUm.js";const s={tags:["autodocs"],component:a},e={};e.parameters={...e.parameters,docs:{...e.parameters?.docs,source:{originalSource:"{}",...e.parameters?.docs?.source}}};export{e as Default,s as default};
