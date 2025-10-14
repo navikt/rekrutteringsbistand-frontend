@@ -22,7 +22,6 @@ export const useKandidatListeoversikt = (kandidatId?: string) =>
     getAPIwithSchema(KandidatListeoversiktSchema),
   );
 
-// MSW handler erstatter tidligere kandidatlisteoversiktMirage
 export const kandidatlisteoversiktMSWHandler = http.get(
   `${KandidatAPI.internUrl}/veileder/kandidater/*/listeoversikt`,
   () => HttpResponse.json([]),
