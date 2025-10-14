@@ -16,14 +16,7 @@ import { useFormContext } from 'react-hook-form';
 
 const FinnKandidaterForRekrutteringstreff: FC = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
-  const { watch } = useFormContext<{ tittel?: string }>();
   const router = useRouter();
-
-  const tittel = watch('tittel');
-  const rekrutteringstreffNavn =
-    typeof tittel === 'string' && tittel.trim().length > 0
-      ? tittel.trim()
-      : 'Rekrutteringstreff';
 
   const goBack = () =>
     router.push(
