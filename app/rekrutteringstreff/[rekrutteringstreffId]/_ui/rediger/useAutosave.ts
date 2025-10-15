@@ -105,15 +105,14 @@ export function useAutosave() {
         skalInkludereTittel =
           skalInkludereTittel && tittelKiSjekket && !harTittelKiFeil;
       }
-      // Alltid bruk eksisterende tittel fra treff hvis ny tittel ikke finnes
-      // Dette sikrer at vi aldri sender en tom string til backend
+
       const tittelVerdi =
-        trimmedTitle.length > 0
+        skalInkludereTittel && trimmedTitle.length > 0
           ? trimmedTitle
-          : (treff?.tittel ?? 'Treff uten navn');
+          : treff?.tittel;
 
       return {
-        tittel: tittelVerdi,
+        tittel: tittelVerdi!,
         beskrivelse: (formVerdier.beskrivelse ?? treff?.beskrivelse ?? null) as
           | string
           | null,
