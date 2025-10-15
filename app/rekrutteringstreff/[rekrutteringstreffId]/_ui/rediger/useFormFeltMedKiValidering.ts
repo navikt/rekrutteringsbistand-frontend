@@ -112,7 +112,7 @@ export function useFormFeltMedKiValidering({
     [saveCallback, fieldName, feltType, onUpdated],
   );
 
-  const runValidationAndMaybeSave = useCallback(async () => {
+  const validerMedKiOgLagreVedGodkjenning = useCallback(async () => {
     const feltErGyldig = await triggerRHF(fieldName as any);
     if (!feltErGyldig) return;
 
@@ -242,7 +242,7 @@ export function useFormFeltMedKiValidering({
     hasChecked,
     showAnalysis,
     erRedigeringAvPublisertTreff,
-    runValidationAndMaybeSave,
+    validerMedKiOgLagreVedGodkjenning,
     onGodkjennKiFeil,
     watchedValue,
     control,

@@ -24,7 +24,7 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
   const innlegg = innleggListe?.[0];
   const savedHtmlContent = innlegg ? (innlegg.htmlContent ?? null) : undefined;
 
-  const { save: autosaveInnlegg } = useInnleggAutosave();
+  const { validerOgLagreInnlegg } = useInnleggAutosave();
 
   const [editorKey, setEditorKey] = useState(Date.now());
 
@@ -36,7 +36,7 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
     harGodkjentKiFeil,
     showAnalysis,
     erRedigeringAvPublisertTreff,
-    runValidationAndMaybeSave,
+    validerMedKiOgLagreVedGodkjenning,
     onGodkjennKiFeil,
     control,
     setValue,
@@ -45,7 +45,7 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
     feltType: 'innlegg',
     fieldName: 'htmlContent',
     savedValue: savedHtmlContent,
-    saveCallback: autosaveInnlegg,
+    saveCallback: validerOgLagreInnlegg,
     onUpdated,
     requireHasCheckedToShow: true,
   });
@@ -84,7 +84,7 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
                 const currentTarget = e.currentTarget;
                 setTimeout(async () => {
                   if (!currentTarget.contains(document.activeElement)) {
-                    await runValidationAndMaybeSave();
+                    await validerMedKiOgLagreVedGodkjenning();
                   }
                 }, 0);
               }}

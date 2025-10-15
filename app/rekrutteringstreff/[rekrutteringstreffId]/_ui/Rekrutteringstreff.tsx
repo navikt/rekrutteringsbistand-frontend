@@ -152,8 +152,8 @@ const Rekrutteringstreff: FC = () => {
 
   // Republiser-logikk
   const { getValues, watch, formState } = useFormContext();
-  const { save } = useAutosave();
-  const { save: saveInnlegg } = useInnleggAutosave();
+  const { validerOgLagreRekrutteringstreff } = useAutosave();
+  const { validerOgLagreInnlegg } = useInnleggAutosave();
   const kiTittelLogg = useKiLogg(rekrutteringstreffId, 'tittel');
   const kiInnleggLogg = useKiLogg(rekrutteringstreffId, 'innlegg');
   const { startLagring, stoppLagring } = useRekrutteringstreffContext();
@@ -200,7 +200,7 @@ const Rekrutteringstreff: FC = () => {
   const onRepubliser = useCallback(async () => {
     try {
       startLagring('republiser');
-      await save(undefined, true);
+      await validerOgLagreRekrutteringstreff(undefined, true);
       const values: any = getValues();
       const currentHtml: string = (values?.htmlContent ?? '') as string;
       const backendHtml: string = (innlegg?.[0]?.htmlContent ?? '') as string;
@@ -208,7 +208,7 @@ const Rekrutteringstreff: FC = () => {
         (currentHtml ?? '').trim() !== (backendHtml ?? '').trim() &&
         (currentHtml ?? '').trim().length > 0;
       if (shouldSaveInnlegg) {
-        await saveInnlegg(undefined, true);
+        await validerOgLagreInnlegg(undefined, true);
       }
       await markerSisteKiLoggSomLagret();
       setModus('');
@@ -219,8 +219,8 @@ const Rekrutteringstreff: FC = () => {
   }, [
     startLagring,
     stoppLagring,
-    save,
-    saveInnlegg,
+    validerOgLagreRekrutteringstreff,
+    validerOgLagreInnlegg,
     getValues,
     innlegg,
     markerSisteKiLoggSomLagret,

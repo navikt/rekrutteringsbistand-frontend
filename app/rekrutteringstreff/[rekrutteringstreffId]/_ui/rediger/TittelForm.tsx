@@ -28,7 +28,7 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
 
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const { save } = useAutosave();
+  const { validerOgLagreRekrutteringstreff } = useAutosave();
 
   const {
     analyse,
@@ -38,7 +38,7 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
     harGodkjentKiFeil,
     showAnalysis,
     erRedigeringAvPublisertTreff,
-    runValidationAndMaybeSave,
+    validerMedKiOgLagreVedGodkjenning,
     onGodkjennKiFeil,
     watchedValue: tittel,
     control,
@@ -48,7 +48,7 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
     feltType: 'tittel',
     fieldName: 'tittel',
     savedValue: savedTittel,
-    saveCallback: save,
+    saveCallback: validerOgLagreRekrutteringstreff,
     onUpdated,
   });
 
@@ -121,7 +121,7 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
                       field.onBlur();
                       setTimeout(async () => {
                         if (!validating && !isSubmitting) {
-                          await runValidationAndMaybeSave();
+                          await validerMedKiOgLagreVedGodkjenning();
                         }
                       }, 0);
                     }}
@@ -144,7 +144,7 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
                         e.preventDefault();
                         (async () => {
                           const el = e.currentTarget as HTMLInputElement;
-                          await runValidationAndMaybeSave();
+                          await validerMedKiOgLagreVedGodkjenning();
                           el?.blur();
                         })();
                       }

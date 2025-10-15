@@ -133,7 +133,7 @@ export function useAutosave() {
     [getValues, treff, formState],
   );
 
-  const save = useCallback(
+  const validerOgLagreRekrutteringstreff = useCallback(
     async (fieldsToValidate?: string[], overstyrKiFeil?: boolean) => {
       if (!rekrutteringstreffId) return;
       if (skalHindreAutosave(treff, overstyrKiFeil)) return;
@@ -206,7 +206,7 @@ export function useAutosave() {
     ],
   );
 
-  return { save };
+  return { validerOgLagreRekrutteringstreff };
 }
 
 export function useInnleggAutosave() {
@@ -219,7 +219,7 @@ export function useInnleggAutosave() {
     htmlContent?: string;
   }>();
 
-  const save = useCallback(
+  const validerOgLagreInnlegg = useCallback(
     async (fieldsToValidate?: string[], overstyrKiFeil?: boolean) => {
       if (!rekrutteringstreffId) return;
       if (skalHindreAutosave(treff as any, overstyrKiFeil)) return;
@@ -305,5 +305,5 @@ export function useInnleggAutosave() {
     ],
   );
 
-  return { save };
+  return { validerOgLagreInnlegg };
 }

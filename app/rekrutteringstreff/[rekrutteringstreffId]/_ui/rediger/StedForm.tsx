@@ -15,7 +15,7 @@ const FormFields = {
 
 const StedForm = ({ control }: any) => {
   const { setValue, clearErrors, setError, trigger } = useFormContext();
-  const { save } = useAutosave();
+  const { validerOgLagreRekrutteringstreff } = useAutosave();
   const watchPostnummer = useWatch({ control, name: FormFields.POSTNUMMER });
   const { data: postdata, isLoading } = usePamPostdata(watchPostnummer || '');
 
@@ -56,7 +56,7 @@ const StedForm = ({ control }: any) => {
             error={fieldState.error?.message}
             onBlur={() => {
               field.onBlur();
-              save([FormFields.GATEADRESSE]);
+              validerOgLagreRekrutteringstreff([FormFields.GATEADRESSE]);
             }}
           />
         )}
@@ -84,7 +84,10 @@ const StedForm = ({ control }: any) => {
               }}
               onBlur={() => {
                 field.onBlur();
-                save([FormFields.POSTNUMMER, FormFields.POSTSTED]);
+                validerOgLagreRekrutteringstreff([
+                  FormFields.POSTNUMMER,
+                  FormFields.POSTSTED,
+                ]);
               }}
             />
           )}

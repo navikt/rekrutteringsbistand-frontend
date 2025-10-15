@@ -24,7 +24,7 @@ interface Props {
 
 const TidspunktForm = ({ control }: Props) => {
   const { setValue } = useFormContext();
-  const { save } = useAutosave();
+  const { validerOgLagreRekrutteringstreff } = useAutosave();
 
   const [fraDato, fraTid, tilDato, tilTid] = useWatch({
     control,
@@ -36,7 +36,7 @@ const TidspunktForm = ({ control }: Props) => {
   );
 
   // Bruk nye hooks
-  const { scheduleSave } = useScheduledSave(save, [
+  const { scheduleSave } = useScheduledSave(validerOgLagreRekrutteringstreff, [
     'fraDato',
     'fraTid',
     'tilDato',
