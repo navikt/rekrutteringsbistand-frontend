@@ -1,0 +1,1 @@
+import{a as o,g as r,o as e,T as a}from"./iframe-B2xGUNX-.js";const s=t=>t?`/api/pam-geografi/postdata/${t}`:null,m=e({postkode:a(),by:a(),kommune:e({kommunenummer:a(),navn:a(),fylkesnummer:a(),korrigertNavn:a()}),fylke:e({fylkesnummer:a(),navn:a(),korrigertNavn:a()}),korrigertNavnBy:a()}),k=t=>{const n=t.length===4?t:null;return o(s(n),r(m))};export{k as u};
