@@ -27,12 +27,29 @@ const config: StorybookConfig = {
   },
   staticDirs: ['../public'],
   viteFinal: async (config) => {
-    const basePath = process.env.STORYBOOK_BASE_PATH; // Used for GitHub Pages deployment so assets load under /<repo>/
+    // GitHub Pages hoster under https://<org>.github.io/<repo>/
+    // Vi ønsker at alle Storybook-assets lever under <repo>/storybook/ for å unngå konflikt med appens egne GitHub Pages (hvis noen).
+    // Prioritet:
+    // 1. STORYBOOK_BASE_PATH hvis satt eksplisitt (full verdi f.eks. /rekrutteringsbistand-frontend/storybook/)
+    // 2. Hvis GITHUB_REPOSITORY miljøvariabel finnes (org/repo) -> konstruer /<repo>/storybook/
+    // 3. Fallback: eksisterende config.base (typisk '/')
+    let computedBase = config.base;
+    const explicit = process.env.STORYBOOK_BASE_PATH;
+    if (explicit) {
+      computedBase = explicit;
+    } else if (process.env.GITHUB_REPOSITORY) {
+      const repo = process.env.GITHUB_REPOSITORY.split('/')?.[1];
+      if (repo) {
+        computedBase = `/${repo}/storybook/`;
+      }
+    }
+
+    // Sørg for trailing slash pga Vite asset resolving krav.
+    if (computedBase && !computedBase.endsWith('/')) computedBase += '/';
 
     return {
       ...config,
-      // Vite base path only applied in build (ignored in dev server if undefined)
-      base: basePath || config.base,
+      base: computedBase,
       server: {
         ...config.server,
         hmr: {
