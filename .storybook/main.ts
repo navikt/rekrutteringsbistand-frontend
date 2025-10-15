@@ -19,6 +19,7 @@ const config: StorybookConfig = {
     '@storybook/addon-docs',
     '@storybook/addon-a11y',
     'msw-storybook-addon',
+    '@storybook/addon-queryparams',
   ],
   framework: {
     name: '@storybook/nextjs-vite',

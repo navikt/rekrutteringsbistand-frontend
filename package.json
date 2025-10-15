@@ -75,6 +75,7 @@
     "@playwright/test": "^1.52.0",
     "@storybook/addon-a11y": "^9.1.10",
     "@storybook/addon-docs": "^9.1.10",
+    "@storybook/addon-queryparams": "^9.0.1",
     "@storybook/nextjs-vite": "^9.1.10",
     "@svgr/webpack": "^8.1.0",
     "@tailwindcss/postcss": "^4.1.7",

@@ -30,7 +30,7 @@ export default function KandidatKnapper() {
   const searchParams = useSearchParams();
   const pathname = usePathname();
 
-  const finnStillingAktiv = searchParams.get('finnStilling') !== null; // ?finnStilling (verdi kan være hva som helst)
+  const finnStillingAktiv = searchParams?.get('finnStilling') !== null; // ?finnStilling (verdi kan være hva som helst)
 
   // Kandidatnummer kan komme i path (eks: /kandidat/kandidat-arenaKandidatnr-2) eller i query (?visKandidatnr=PAM012...)
 
