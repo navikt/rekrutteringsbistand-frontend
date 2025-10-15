@@ -68,7 +68,7 @@ export function useAutosaveRekrutteringstreff() {
 
         // Bare blokkér lagring hvis brukeren aktivt endrer tittel OG den har KI-feil
         if (!erPublisert(treff) && endrerTittel) {
-          if (!tittelKiSjekket || tittelKiFeil) {
+          if (tittelKiSjekket && tittelKiFeil) {
             return;
           }
         }
