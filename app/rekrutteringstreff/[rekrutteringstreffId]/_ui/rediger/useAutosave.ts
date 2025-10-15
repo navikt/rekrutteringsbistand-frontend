@@ -105,18 +105,15 @@ export function useAutosave() {
         skalInkludereTittel =
           skalInkludereTittel && tittelKiSjekket && !harTittelKiFeil;
       }
-      // Hvis specific fields er oppgitt og tittel ikke er i listen, ikke inkluder tittel
-      if (
-        fieldsToValidate &&
-        fieldsToValidate.length > 0 &&
-        !fieldsToValidate.includes('tittel')
-      ) {
-        skalInkludereTittel = false;
-      }
+      // Alltid bruk eksisterende tittel fra treff hvis ny tittel ikke finnes
+      // Dette sikrer at vi aldri sender en tom string til backend
+      const tittelVerdi =
+        trimmedTitle.length > 0
+          ? trimmedTitle
+          : (treff?.tittel ?? 'Treff uten navn');
+
       return {
-        ...(skalInkludereTittel && {
-          tittel: trimmedTitle.length > 0 ? trimmedTitle : treff?.tittel,
-        }),
+        tittel: tittelVerdi,
         beskrivelse: (formVerdier.beskrivelse ?? treff?.beskrivelse ?? null) as
           | string
           | null,
