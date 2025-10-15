@@ -1,0 +1,1 @@
+import{h6 as s,j as r,e as n}from"./iframe-D-AjZlUt.js";function a(){const t=s();return r.jsx(n,{size:"small",onClick:()=>{t.push("/stilling?brukStandardsok=true")},children:"Bruk standardsøk"})}a.__docgenInfo={description:"",methods:[],displayName:"MittStandardsøk"};export{a as M};
