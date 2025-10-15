@@ -2,6 +2,7 @@ import { RekrutteringsbistandStillingSchemaDTO } from '@/app/api/stillings-sok/s
 import StillingsTag from '@/app/stilling/_ui/StillingsTag';
 import { visStillingsDataInfo } from '@/app/stilling/_util/stillingInfoUtil';
 import { hentArbeidssted } from '@/app/stilling/_util/stillingssøk-util';
+import VisStillingModal from '@/components/modal/stilling/VisStillingModal';
 // import TekstMedIkon from '@/components/felles/TekstMedIkon';
 // import { formaterNorskDato } from '@/util/util';
 import ArbeidsplassenLogo from '@/public/arbeidsplassen.png';
@@ -15,125 +16,68 @@ import {
 } from '@navikt/aksel-icons';
 import { Box, Heading } from '@navikt/ds-react';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
-import { useQueryState } from 'nuqs';
-import { FC } from 'react';
+import { FC, ReactNode, useState } from 'react';
 
 export interface IStillingsKort {
   stillingData: RekrutteringsbistandStillingSchemaDTO;
+  kandidatId?: string;
 }
 
-const StillingsKort: FC<IStillingsKort> = ({ stillingData }) => {
-  // const { visVarsel } = useApplikasjonContext();
-
-  const router = useRouter();
-  // const { track } = useUmami();
-  const [, setVisStillingId] = useQueryState('visStillingId', {
-    defaultValue: '',
-    clearOnDefault: true,
-  });
-  const [, setVisEtterregistreringId] = useQueryState(
-    'visEtterregistreringId',
-    {
-      defaultValue: '',
-      clearOnDefault: true,
-    },
-  );
-
-  // const [leggerTilKandidatLoading, setLeggerTilKandidatLoading] =
-  //   useState(false);
+const StillingsKort: FC<IStillingsKort> = ({ stillingData, kandidatId }) => {
+  const [visStillingModal, setVisStillingModal] = useState(false);
 
   const stillingsDataInfo = visStillingsDataInfo(stillingData);
 
   const erFormidling = stillingsDataInfo.erFormidling;
   const erDirektemeldt = stillingsDataInfo.erDirektemeldt;
 
-  // const leggTilKandidat = async (kandidatId: string) => {
-  //   track(UmamiEvent.Stilling.forslag_til_stilling_legg_til_kandidat);
-  //   setLeggerTilKandidatLoading(true);
-  //   try {
-  //     await leggTilKandidater([kandidatId], stillingData.stilling.uuid);
-  //     visVarsel({
-  //       tekst: 'Kandidat er lagt til i kandidatliste',
-  //       type: 'success',
-  //     });
-  //   } catch {
-  //     visVarsel({
-  //       tekst: 'Kandidat kunne ikke legges til i kandidatliste',
-  //       type: 'error',
-  //     });
-  //   } finally {
-  //     setLeggerTilKandidatLoading(false);
-  //   }
-  // };
-
-  // const Knapper = (
-  //   <div className='flex flex-row gap-2 items-center'>
-  //     {kandidatId ? (
-  //       erDirektemeldt ? (
-  //         <Button
-  //           loading={leggerTilKandidatLoading}
-  //           size='small'
-  //           variant='tertiary'
-  //           onClick={(e) => {
-  //             e.stopPropagation();
-  //             leggTilKandidat(kandidatId);
-  //           }}
-  //           className='whitespace-nowrap'
-  //         >
-  //           Legg til kandidat
-  //         </Button>
-  //       ) : (
-  //         <Button
-  //           size='small'
-  //           variant='tertiary'
-  //           onClick={(e) => {
-  //             e.stopPropagation();
-  //             router.push(stillingUrl);
-  //           }}
-  //           className='whitespace-nowrap'
-  //         >
-  //           Vis stilling
-  //         </Button>
-  //       )
-  //     ) : (
-  //       <Button
-  //         size='small'
-  //         variant='tertiary'
-  //         className='whitespace-nowrap'
-  //         onClick={(e) => {
-  //           e.stopPropagation();
-  //           router.push(stillingUrl);
-  //         }}
-  //       >
-  //         {erFormidling ? 'Vis etterregistrering' : 'Vis stilling'}
-  //       </Button>
-  //     )}
-  //   </div>
-  // );
+  const ankerWrapper = (children: ReactNode) => {
+    if (kandidatId) {
+      return (
+        <>
+          {visStillingModal && (
+            <VisStillingModal
+              onClose={() => setVisStillingModal(false)}
+              stillingsId={stillingData.stilling.uuid}
+              kandidatId={kandidatId}
+            />
+          )}
+          <div
+            onClick={() => {
+              if (kandidatId) {
+                setVisStillingModal(true);
+              }
+            }}
+            className='p-5 cursor-pointer'
+          >
+            {children}
+          </div>
+        </>
+      );
+    } else {
+      return (
+        <a
+          href={
+            erFormidling
+              ? `/etterregistrering/${stillingData.stilling.uuid}`
+              : `/stilling/${stillingData.stilling.uuid}`
+          }
+        >
+          <div className='p-5'>{children}</div>
+        </a>
+      );
+    }
+  };
 
   return (
     <Box.New
-      padding='4'
-      className={`group ${erFormidling ? '' : 'cursor-pointer '}`}
+      className={`group `}
       background='neutral-softA'
       borderRadius='xlarge'
       data-testid='stillings-kort'
-      // onClick={(e) => {
-      // erFormidling
-      // ? setVisEtterregistreringId(stillingData.stilling.uuid)
-      // : setVisStillingId(stillingData.stilling.uuid)
-      // }}
     >
-      <a
-        href={
-          erFormidling
-            ? `/etterregistrering/${stillingData.stilling.uuid}`
-            : `/stilling/${stillingData.stilling.uuid}`
-        }
-      >
+      {ankerWrapper(
         <div className='flex  items-start min-w-0'>
-          {/* Ikon / avatar */}
           <div className='pr-4'>
             {erDirektemeldt ? (
               // <BriefcaseIcon aria-hidden />
@@ -148,7 +92,7 @@ const StillingsKort: FC<IStillingsKort> = ({ stillingData }) => {
             )}
           </div>
           {/* Innhold */}
-          <div className='flex-1 min-w-0'>
+          <div className={`flex-1 min-w-0 `}>
             {/* Tittel + tag */}
             <div className='flex items-start gap-2 min-w-0'>
               <Heading
@@ -189,8 +133,8 @@ const StillingsKort: FC<IStillingsKort> = ({ stillingData }) => {
               {/* <div className='mt-3 flex justify-end flex-shrink-0'>{Knapper}</div> */}
             </div>
           </div>
-        </div>
-      </a>
+        </div>,
+      )}
     </Box.New>
   );
 };

@@ -33,6 +33,7 @@
     "app/404.js",
     "app/stilling/layout.tsx",
     "tests/formidling/opprett-formidling.spec.ts.disabled",
-    "tests/stilling/vis-stilling/rediger-stilling-validering.spec.ts.disabled"
+    "tests/stilling/vis-stilling/rediger-stilling-validering.spec.ts.disabled",
+    "tsconfig.unused.json"
   ]
 }

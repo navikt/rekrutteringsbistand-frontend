@@ -11,12 +11,14 @@ export interface kandidatinformasjonProps {
   kandidatnr: string;
 }
 
-export const useKandidatinformasjon = (kandidatnr: string) =>
+export const useKandidatinformasjon = (kandidatnr?: string) =>
   useSWRImmutable(
-    {
-      url: kandidatinformasjonEndepunkt,
-      body: { kandidatnr },
-    },
+    kandidatnr
+      ? {
+          url: kandidatinformasjonEndepunkt,
+          body: { kandidatnr },
+        }
+      : null,
     (data) => {
       return postApiWithSchemaEs(KandidatDataSchema)(data);
     },

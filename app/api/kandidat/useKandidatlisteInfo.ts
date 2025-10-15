@@ -5,7 +5,6 @@
  */
 import { KandidatAPI } from '@/app/api/api-routes';
 import { getAPIwithSchema } from '@/app/api/fetcher';
-import { StillingsinfoDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { http, HttpResponse } from 'msw';
 import useSWR from 'swr';
 import { z } from 'zod';
@@ -21,13 +20,9 @@ const KandidatlisteInfoSchema = z.object({
 
 export type KandidatlisteInfoDTO = z.infer<typeof KandidatlisteInfoSchema>;
 
-export const useKandidatlisteInfo = (
-  stillingsInfo?: StillingsinfoDTO | null,
-) => {
+export const useKandidatlisteInfo = (stillingsId?: string | null) => {
   const kandidatlisteHook = useSWR(
-    stillingsInfo?.stillingsid
-      ? kandidatlisteInfoEndepunkt(stillingsInfo.stillingsid)
-      : null,
+    stillingsId ? kandidatlisteInfoEndepunkt(stillingsId) : null,
     getAPIwithSchema(KandidatlisteInfoSchema, { skjulFeilmelding: true }),
     {
       errorRetryCount: 3,

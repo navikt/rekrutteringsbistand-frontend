@@ -14,7 +14,7 @@ const KandidatVisningSidebar: FC<KandidatVisningSidebarProps> = ({
   const kandidat = kandidater.find((k) => k.kandidatnr === kandidatnr);
 
   if (!kandidat) {
-    return null;
+    return <div>Fant ikke kandidat i kandidatliste</div>;
   }
 
   return <KandidatHandlingerForStilling kandidat={kandidat} />;

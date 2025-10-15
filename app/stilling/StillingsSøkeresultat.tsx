@@ -104,7 +104,11 @@ const StillingsSøkeresultat: FC<StillingsSøkeresultatProps> = ({
               <SideScroll key={filterKey}>
                 <div className='flex flex-col gap-1'>
                   {data.hits?.hits?.map((hit: any) => (
-                    <StillingsKort key={hit._id} stillingData={hit._source} />
+                    <StillingsKort
+                      key={hit._id}
+                      stillingData={hit._source}
+                      kandidatId={kandidatId}
+                    />
                   ))}
                 </div>
                 <div className={'flex justify-center items-center'}>

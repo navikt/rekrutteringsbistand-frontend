@@ -118,12 +118,10 @@ const KandidatListeKort: FC<KandidatListeKortProps> = ({
       <>
         {visKandidatnr && (
           <VisKandidatModal
-            tittel={
-              stillingsContext?.stillingsData.stilling.title ??
-              'Viser jobbsøker'
-            }
-            stillingsId={stillingsContext?.stillingsData.stilling.uuid}
-            kandidatNr={visKandidatnr}
+            forKandidatliste={kandidatlisteId}
+            tittel={'Jobbsøker i liste'}
+            stillingsId={stillingsContext!.stillingsData.stilling.uuid!}
+            kandidatId={visKandidatnr}
             onClose={() => setVisKandidatnr(null)}
           />
         )}

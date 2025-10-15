@@ -24,9 +24,9 @@ const KandidatSideLayout: FC<KandidatSideProps> = ({ children }) => {
   const { kandidatData } = useKandidatContext();
 
   return (
-    <>
+    <div className='py-5'>
       <div className='@container/kandidatside '>
-        <Heading size='medium' level='2'>
+        <Heading size='large'>
           {kandidatData.fornavn} {kandidatData.etternavn}
         </Heading>
         <div
@@ -72,7 +72,7 @@ const KandidatSideLayout: FC<KandidatSideProps> = ({ children }) => {
         </div>
       </div>
       {children}
-    </>
+    </div>
   );
 };
 

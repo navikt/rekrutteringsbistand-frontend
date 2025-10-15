@@ -17,8 +17,8 @@ const meta = {
         <Button onClick={() => setOpen(true)}>Vis stilling modal</Button>
         {open && (
           <VisStillingModal
-            tittel={'Tittel input for modal'}
             stillingsId='minStilling'
+            kandidatId='kandidat-123'
             onClose={() => setOpen(false)}
           />
         )}
@@ -30,4 +30,22 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Placeholder: Story = {};
+export const FinnStillingForKandidatModal: Story = {
+  render: () => {
+    const [open, setOpen] = useState(false);
+    return (
+      <div style={{ padding: '1rem' }}>
+        <Button onClick={() => setOpen(true)}>
+          Vis stilling modal (med kandidatId)
+        </Button>
+        {open && (
+          <VisStillingModal
+            stillingsId='minStilling'
+            kandidatId='kandidat-123'
+            onClose={() => setOpen(false)}
+          />
+        )}
+      </div>
+    );
+  },
+};

@@ -1,0 +1,14 @@
+{
+  "exclude": [
+    "node_modules",
+    "**/route.ts",
+    "**/*.story.ts",
+    "**/*.story.tsx",
+    "**/*.stories.ts",
+    "**/*.stories.tsx",
+    "storybook",
+    "storybook-static"
+  ],
+  "extends": "./tsconfig.json",
+  "include": ["app/**/*.ts", "app/**/*.tsx"]
+}

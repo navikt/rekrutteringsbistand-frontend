@@ -7,9 +7,10 @@ import {
   hentKandidatensØnskedeYrker,
 } from '@/app/kandidat/util';
 import TekstMedIkon from '@/components/TekstMedIkon';
+import VisKandidatModal from '@/components/modal/kandidat/VisKandidatModal';
 import { HandShakeHeartIcon, HouseIcon, PinIcon } from '@navikt/aksel-icons';
 import { Box, Checkbox, Heading, Tag } from '@navikt/ds-react';
-import { FC, MouseEvent } from 'react';
+import { FC, MouseEvent, ReactNode, useState } from 'react';
 
 type IKandidatKort = {
   kandidat: KandidatDataSchemaDTO;
@@ -17,7 +18,13 @@ type IKandidatKort = {
   stillingsId?: string;
 };
 
-const KandidatKort: FC<IKandidatKort> = ({ kandidat, alleredeLagtTil }) => {
+const KandidatKort: FC<IKandidatKort> = ({
+  kandidat,
+  alleredeLagtTil,
+  stillingsId,
+}) => {
+  const [visKandidatModal, setVisKandidatModal] = useState(false);
+
   const { markerteKandidater, setMarkert } = useKandidatSøkMarkerteContext();
   const erMarkert = Boolean(
     markerteKandidater?.some((k) => k === kandidat.arenaKandidatnr),
@@ -31,22 +38,40 @@ const KandidatKort: FC<IKandidatKort> = ({ kandidat, alleredeLagtTil }) => {
     e.stopPropagation();
   };
 
-  // const Knapp = (
-  //   <div className='mt-2 flex justify-end self-end' onClick={stopPropagation}>
-  //     {!stillingsId && (
-  //       <div className='flex-end flex flex-col justify-center gap-2 font-bold'>
-  //         <Link
-  //           href={`/kandidat/${kandidat.arenaKandidatnr}?finnStilling=true`}
-  //         >
-  //           <TekstMedIkon ikon={<FileSearchIcon />} tekst='Finn stilling' />
-  //         </Link>
-  //       </div>
-  //     )}
-  //   </div>
-  // );
-
-  // const aktiv = visKandidatnr === kandidat.arenaKandidatnr;
   const aktiv = false;
+
+  const ankerWrapper = (children: ReactNode) => {
+    if (stillingsId) {
+      return (
+        <>
+          {visKandidatModal && (
+            <VisKandidatModal
+              stillingsId={stillingsId}
+              tittel='Jobbsøker for stillingsoppdrag'
+              kandidatId={kandidat.arenaKandidatnr ?? ''}
+              onClose={() => setVisKandidatModal(false)}
+            />
+          )}
+          <div
+            onClick={() => {
+              if (stillingsId) {
+                setVisKandidatModal(true);
+              }
+            }}
+            className='p-5 cursor-pointer'
+          >
+            {children}
+          </div>
+        </>
+      );
+    } else {
+      return (
+        <a href={`/kandidat/${kandidat.arenaKandidatnr}`}>
+          <div className='p-5 '> {children}</div>
+        </a>
+      );
+    }
+  };
 
   return (
     <Box.New
@@ -54,14 +79,13 @@ const KandidatKort: FC<IKandidatKort> = ({ kandidat, alleredeLagtTil }) => {
       // onClick={() => setVisKandidatnr(kandidat?.arenaKandidatnr ?? '')}
       borderRadius='xlarge'
       data-testid='stillings-kort'
-      className={` p-5 cursor-pointer @container/kandidatlistekort flex flex-col min-w-fit
+      className={` @container/kandidatlistekort flex flex-col min-w-fit
           focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--ax-border-focus)]
           ${aktiv ? 'bg-[var(--ax-bg-neutral-moderate-pressed)]' : 'hover:bg-[var(--ax-bg-neutral-moderate-hover)] '}
           ${erLagtTil ? 'border-l-4 border-[var(--ax-border-success)]' : ''}`}
       tabIndex={0}
     >
-      {' '}
-      <a href={`/kandidat/${kandidat.arenaKandidatnr}`}>
+      {ankerWrapper(
         <div className='flex flex-row '>
           <div onClick={stopPropagation}>
             <Checkbox
@@ -111,8 +135,8 @@ const KandidatKort: FC<IKandidatKort> = ({ kandidat, alleredeLagtTil }) => {
               </div>
             </div>
           </div>
-        </div>
-      </a>
+        </div>,
+      )}
     </Box.New>
   );
 };
