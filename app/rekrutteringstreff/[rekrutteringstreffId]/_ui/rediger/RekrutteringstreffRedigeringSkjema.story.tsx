@@ -6,7 +6,7 @@ import StedForm from './StedForm';
 import SvarfristForm from './SvarfristForm';
 import TidspunktForm from './TidspunktForm';
 import TittelForm from './TittelForm';
-import { MockRekrutteringstreffProvider } from '@/storybook/mocks';
+import { MockRekrutteringstreffProvider } from '@/.storybook/mocks';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { FormProvider, useForm } from 'react-hook-form';
 

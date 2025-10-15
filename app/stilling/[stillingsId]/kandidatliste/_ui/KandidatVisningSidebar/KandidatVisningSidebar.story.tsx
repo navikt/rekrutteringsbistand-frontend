@@ -1,5 +1,5 @@
 import KandidatVisningSidebar from './KandidatVisningSidebar';
-import { MockStillingsProvider } from '@/storybook/mocks';
+import { MockStillingsProvider } from '@/.storybook/mocks';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 // Sidebar for kandidatvisning i stilling (inert)

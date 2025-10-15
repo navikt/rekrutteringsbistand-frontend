@@ -1,8 +1,8 @@
 import '../app/globals.css';
 import { mswHandlers } from '../mocks/handlers';
 import { ThemeProvider } from '../providers/ThemeProvider';
-import { MockRekrutteringstreffProvider } from '../storybook/mocks';
 import StoryProviders from './StoryProviders';
+import { MockRekrutteringstreffProvider } from './mocks';
 import './storybook.css';
 import '@navikt/ds-css/darkside';
 import type { Preview } from '@storybook/nextjs-vite';

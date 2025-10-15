@@ -1,6 +1,6 @@
 import { withStillingsKandidatliste } from '@/.storybook/ContextDecorators';
+import { KandidatMockProvider } from '@/.storybook/mocks';
 import VisKandidatModal from '@/components/modal/kandidat/VisKandidatModal';
-import { KandidatMockProvider } from '@/storybook/mocks';
 import { Button } from '@navikt/ds-react';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { useState } from 'react';

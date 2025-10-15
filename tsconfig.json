@@ -34,6 +34,7 @@
     "app/stilling/layout.tsx",
     "tests/formidling/opprett-formidling.spec.ts.disabled",
     "tests/stilling/vis-stilling/rediger-stilling-validering.spec.ts.disabled",
-    "tsconfig.unused.json"
+    "tsconfig.unused.json",
+    ".storybook/mocks.tsx"
   ]
 }

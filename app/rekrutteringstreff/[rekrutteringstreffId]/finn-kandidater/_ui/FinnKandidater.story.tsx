@@ -1,6 +1,6 @@
 import FinnKandidaterForRekrutteringstreff from './FinnKandidaterForRekrutteringstreff';
 import KandidatTilRekrutteringstreff from './KandidatTilRekrutteringstreff';
-import { MockRekrutteringstreffProvider } from '@/storybook/mocks';
+import { MockRekrutteringstreffProvider } from '@/.storybook/mocks';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 // Inert søk etter kandidater til treff.
