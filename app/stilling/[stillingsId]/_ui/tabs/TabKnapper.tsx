@@ -17,7 +17,7 @@ export default function TabKnapper({
   return (
     <div className='flex items-center'>
       {kanKopierePrinteStilling && (
-        <KopierStillingLenke stillingsId={stillingsData.stilling.uuid} />
+        <KopierStillingLenke stillingsData={stillingsData} />
       )}
       {kanKopierePrinteStilling && <StillingPrint printRef={printRef} />}
       <StillingDropdown />
