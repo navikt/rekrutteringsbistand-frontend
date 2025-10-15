@@ -46,11 +46,10 @@ export function useAutosaveInnlegg() {
       if (!harInnleggInnhold) return;
 
       if (harInnleggFeil) return;
-      if (innleggKiFeil) return;
 
-      if (!erPublisert(treff as any)) {
-        if (!innleggKiSjekket || innleggKiFeil) return;
-      }
+      // Blokkér kun hvis KI har sjekket OG funnet feil
+      // (ikke blokker hvis KI ikke har kjørt ennå)
+      if (innleggKiSjekket && innleggKiFeil) return;
 
       await lagre();
     },

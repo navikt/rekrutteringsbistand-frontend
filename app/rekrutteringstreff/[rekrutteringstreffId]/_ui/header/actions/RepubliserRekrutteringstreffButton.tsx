@@ -136,6 +136,8 @@ const RepubliserRekrutteringstreffButton: FC<Props> = ({
   const { getValues, watch, formState } = useFormContext();
   const [endringer, setEndringer] = useState<Endring[]>([]);
 
+  const htmlContent = watch('htmlContent');
+
   useEffect(() => {
     if (!treff) {
       setEndringer([]);
@@ -161,7 +163,7 @@ const RepubliserRekrutteringstreffButton: FC<Props> = ({
     beregnOgOppdater();
     const subscription = watch(beregnOgOppdater);
     return () => subscription.unsubscribe();
-  }, [treff, watch, getValues, innleggHtmlFraBackend]);
+  }, [treff, watch, getValues, innleggHtmlFraBackend, htmlContent]);
 
   const tittelKiSjekket = watch('tittelKiSjekket') ?? false;
   const innleggKiSjekket = watch('innleggKiSjekket') ?? false;
