@@ -146,7 +146,7 @@ export function useFormFeltMedKiValidering({
         (kiResultat as any)?.bryterRetningslinjer ??
         (analyse as any)?.bryterRetningslinjer;
 
-      if (!bryterRetningslinjer && !erRedigeringAvPublisertTreff) {
+      if (!bryterRetningslinjer) {
         await wrappedSaveCallback();
 
         if (loggIdNy && setKiLagret) {

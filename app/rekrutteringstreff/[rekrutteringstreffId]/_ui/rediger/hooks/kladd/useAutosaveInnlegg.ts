@@ -9,11 +9,10 @@ import { useCallback } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 /**
- * Hook for autosave av innlegg (kladd-modus).
+ * Hook for autosave av innlegg.
  *
  * Lagrer automatisk mens brukeren skriver.
  * Respekterer validering (både skjema og KI).
- * Hindrer autosave hvis treffet er publisert og i edit-mode.
  *
  * Brukes av: InnleggForm
  */
@@ -31,7 +30,6 @@ export function useAutosaveInnlegg() {
   const autosave = useCallback(
     async (fieldsToValidate?: string[]) => {
       if (!rekrutteringstreffId) return;
-      if (skalHindreAutosave(treff as any)) return;
 
       if (fieldsToValidate && fieldsToValidate.length) {
         const valideringOk = await trigger(fieldsToValidate as any, {

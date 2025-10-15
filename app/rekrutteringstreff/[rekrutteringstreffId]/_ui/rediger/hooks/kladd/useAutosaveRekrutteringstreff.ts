@@ -11,8 +11,10 @@ import { useFormContext } from 'react-hook-form';
 type AnyValues = Record<string, any>;
 
 /**
- * Hook for autosave (kladd-modus).
+ * Hook for autosave av rekrutteringstreff.
  *
+ * Lagrer automatisk mens brukeren skriver.
+ * Respekterer validering (både skjema og KI).
  */
 export function useAutosaveRekrutteringstreff() {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
@@ -25,7 +27,6 @@ export function useAutosaveRekrutteringstreff() {
   const autosave = useCallback(
     async (fieldsToValidate?: string[]) => {
       if (!rekrutteringstreffId) return;
-      if (skalHindreAutosave(treff)) return;
 
       const valideringOk = await trigger(
         fieldsToValidate && fieldsToValidate.length > 0
