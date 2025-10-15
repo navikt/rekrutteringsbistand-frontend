@@ -71,7 +71,20 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
         <>
           <KiAnalyseIntro title='Navn på treffet' />
 
-          <div className='relative w-full'>
+          <div
+            className='relative w-full'
+            onBlur={(e) => {
+              const currentTarget = e.currentTarget;
+              setTimeout(async () => {
+                const hasFocusLeft = !currentTarget.contains(
+                  document.activeElement,
+                );
+                if (hasFocusLeft && !isSubmitting) {
+                  await validerMedKiOgLagreVedGodkjenning();
+                }
+              }, 0);
+            }}
+          >
             {tittel && (
               <Button
                 type='button'
@@ -86,20 +99,7 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
               </Button>
             )}
 
-            <div
-              className='flex items-start'
-              onBlur={(e) => {
-                const currentTarget = e.currentTarget;
-                setTimeout(async () => {
-                  if (
-                    !currentTarget.contains(document.activeElement) &&
-                    !isSubmitting
-                  ) {
-                    await validerMedKiOgLagreVedGodkjenning();
-                  }
-                }, 0);
-              }}
-            >
+            <div className='flex items-start'>
               <Controller
                 control={control}
                 name='tittel'
