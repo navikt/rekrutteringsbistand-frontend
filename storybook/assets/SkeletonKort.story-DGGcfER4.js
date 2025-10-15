@@ -1,0 +1,1 @@
+import{S as r}from"./SkeletonKort-B5s5aonU.js";import"./iframe-7eHG5h_U.js";import"./preload-helper-BWMAHTUm.js";import"./Skeleton-D8O8zslJ.js";const m={tags:["autodocs"],component:r},o={};o.parameters={...o.parameters,docs:{...o.parameters?.docs,source:{originalSource:"{}",...o.parameters?.docs?.source}}};export{o as Default,m as default};
