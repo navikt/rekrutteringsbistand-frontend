@@ -95,7 +95,6 @@ const KiAnalyseIntro: FC<KiAnalyseIntroProps> = ({ title }) => {
           </div>
         </div>
 
-        {/* Popover for personopplysninger */}
         <Popover
           open={personopplysningerOpen}
           onClose={() => setPersonopplysningerOpen(false)}
