@@ -9,7 +9,7 @@ import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_provider
 import RikTekstEditor from '@/components/rikteksteditor/RikTekstEditor';
 import { BodyShort, Skeleton } from '@navikt/ds-react';
 import { useEffect, useState } from 'react';
-import { Controller, useFormContext } from 'react-hook-form';
+import { Controller } from 'react-hook-form';
 
 interface InnleggFormProps {
   onUpdated: () => void;
@@ -20,7 +20,6 @@ const EDITOR_WRAPPER_ID = 'rediger-innlegg-htmlcontent-form';
 const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { data: innleggListe, isLoading } = useInnlegg(rekrutteringstreffId);
-  const { formState } = useFormContext();
 
   const innlegg = innleggListe?.[0];
   const savedHtmlContent = innlegg ? (innlegg.htmlContent ?? null) : undefined;
@@ -85,9 +84,7 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
                 const currentTarget = e.currentTarget;
                 setTimeout(async () => {
                   if (!currentTarget.contains(document.activeElement)) {
-                    if (formState.isDirty) {
-                      await runValidationAndMaybeSave();
-                    }
+                    await runValidationAndMaybeSave();
                   }
                 }, 0);
               }}
