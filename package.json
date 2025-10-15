@@ -14,7 +14,7 @@
     "test-codegen": "pnpm exec playwright codegen --viewport-size=1920,1080",
     "build": "next build",
     "formater-kode": "prettier --write .",
-    "build-storybook": "rm -rf storybook-static && STORYBOOK_BASE_PATH=/rekrutteringsbistand-frontend/ pnpm build-storybook"
+    "build-storybook": "rm -rf storybook-static && STORYBOOK_BASE_PATH=/rekrutteringsbistand-frontend/ storybook build --output-dir storybook-static"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",
