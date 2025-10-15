@@ -147,7 +147,9 @@ export function useFormFeltMedKiValidering({
         (analyse as any)?.bryterRetningslinjer;
 
       if (!bryterRetningslinjer) {
-        await wrappedSaveCallback();
+        // KI-validering er OK, lagre med overstyrKiFeil=true
+        // (hopper over KI-sjekk i autosave siden vi allerede har validert)
+        await wrappedSaveCallback(true);
 
         if (loggIdNy && setKiLagret) {
           try {

@@ -25,7 +25,7 @@ export function useAutosaveRekrutteringstreff() {
   const { tittelKiFeil, tittelKiSjekket } = useRekrutteringstreffValidering();
 
   const autosave = useCallback(
-    async (fieldsToValidate?: string[]) => {
+    async (fieldsToValidate?: string[], overstyrKiFeil?: boolean) => {
       if (!rekrutteringstreffId) return;
       if (skalHindreAutosave(treff)) return;
 
@@ -54,17 +54,23 @@ export function useAutosaveRekrutteringstreff() {
       // - Hvis tittel er tom → lagrer med eksisterende tittel eller default
       // - Hvis tittel er endret → blokkerer lagring ved KI-feil
       // Resultat: Andre felt (tidspunkt, sted, etc.) kan lagres selv om tittel mangler!
-      const formVerdier = getValues();
-      const trimmedTitle =
-        typeof formVerdier.tittel === 'string' ? formVerdier.tittel.trim() : '';
-      const endrerTittel = Boolean(
-        trimmedTitle.length > 0 && trimmedTitle !== (treff?.tittel ?? ''),
-      );
+      //
+      // overstyrKiFeil=true: Hopp over KI-sjekk (brukes når KI allerede er validert av kallende kode)
+      if (!overstyrKiFeil) {
+        const formVerdier = getValues();
+        const trimmedTitle =
+          typeof formVerdier.tittel === 'string'
+            ? formVerdier.tittel.trim()
+            : '';
+        const endrerTittel = Boolean(
+          trimmedTitle.length > 0 && trimmedTitle !== (treff?.tittel ?? ''),
+        );
 
-      // Bare blokkér lagring hvis brukeren aktivt endrer tittel OG den har KI-feil
-      if (!erPublisert(treff) && endrerTittel) {
-        if (!tittelKiSjekket || tittelKiFeil) {
-          return;
+        // Bare blokkér lagring hvis brukeren aktivt endrer tittel OG den har KI-feil
+        if (!erPublisert(treff) && endrerTittel) {
+          if (!tittelKiSjekket || tittelKiFeil) {
+            return;
+          }
         }
       }
 
