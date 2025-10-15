@@ -86,7 +86,20 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
               </Button>
             )}
 
-            <div className='flex items-start'>
+            <div
+              className='flex items-start'
+              onBlur={(e) => {
+                const currentTarget = e.currentTarget;
+                setTimeout(async () => {
+                  if (
+                    !currentTarget.contains(document.activeElement) &&
+                    !isSubmitting
+                  ) {
+                    await validerMedKiOgLagreVedGodkjenning();
+                  }
+                }, 0);
+              }}
+            >
               <Controller
                 control={control}
                 name='tittel'
@@ -117,13 +130,8 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
                         clearErrors('tittel');
                       }
                     }}
-                    onBlur={async () => {
+                    onBlur={() => {
                       field.onBlur();
-                      setTimeout(async () => {
-                        if (!validating && !isSubmitting) {
-                          await validerMedKiOgLagreVedGodkjenning();
-                        }
-                      }, 0);
                     }}
                     onFocus={() => {
                       const current = field.value;
