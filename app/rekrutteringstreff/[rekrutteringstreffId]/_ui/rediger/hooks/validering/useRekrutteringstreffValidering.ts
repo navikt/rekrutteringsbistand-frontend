@@ -15,7 +15,7 @@ export function useRekrutteringstreffValidering() {
 
   // KI-feil fra form state
   const tittelKiFeil = (watch('tittelKiFeil' as any) as any) ?? false;
-  const innleggKiFeil = (watch('innleggKiFeil' as any) as any) ?? false;
+  const innleggKiFeil = (watch('htmlContentKiFeil' as any) as any) ?? false;
   const harKiFeil = !!tittelKiFeil || !!innleggKiFeil;
 
   // Andre skjemafeil (unntatt root-feil som er for manuelle valideringer)

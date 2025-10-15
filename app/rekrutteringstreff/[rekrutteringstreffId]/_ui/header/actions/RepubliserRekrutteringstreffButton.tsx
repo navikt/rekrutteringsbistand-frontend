@@ -136,8 +136,6 @@ const RepubliserRekrutteringstreffButton: FC<Props> = ({
   const { getValues, watch, formState } = useFormContext();
   const [endringer, setEndringer] = useState<Endring[]>([]);
 
-  const htmlContent = watch('htmlContent');
-
   useEffect(() => {
     if (!treff) {
       setEndringer([]);
@@ -160,15 +158,21 @@ const RepubliserRekrutteringstreffButton: FC<Props> = ({
       });
     };
 
+    // Kjør en gang ved mount/treff endring
     beregnOgOppdater();
-    const subscription = watch(beregnOgOppdater);
+
+    // Subscribe til ALLE form changes (ingen specifikt felt)
+    const subscription = watch(() => {
+      beregnOgOppdater();
+    });
+
     return () => subscription.unsubscribe();
-  }, [treff, watch, getValues, innleggHtmlFraBackend, htmlContent]);
+  }, [treff, watch, getValues, innleggHtmlFraBackend]);
 
   const tittelKiSjekket = watch('tittelKiSjekket') ?? false;
-  const innleggKiSjekket = watch('innleggKiSjekket') ?? false;
+  const innleggKiSjekket = watch('htmlContentKiSjekket') ?? false;
   const tittelKiFeil = watch('tittelKiFeil') ?? false;
-  const innleggKiFeil = watch('innleggKiFeil') ?? false;
+  const innleggKiFeil = watch('htmlContentKiFeil') ?? false;
 
   const harKiFeil = tittelKiFeil || innleggKiFeil;
   const harAndreSkjemafeil = Boolean(
