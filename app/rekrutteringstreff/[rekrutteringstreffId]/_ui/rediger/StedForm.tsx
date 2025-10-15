@@ -1,6 +1,6 @@
 'use client';
 
-import { useAutosave } from './useAutosave';
+import { useAutosaveRekrutteringstreff } from './hooks/kladd/useAutosaveRekrutteringstreff';
 import { usePamPostdata } from '@/app/api/pam-geografi/postdata/[postnummer]/usePamPostdata';
 import { BodyShort, Heading, TextField } from '@navikt/ds-react';
 import { useEffect } from 'react';
@@ -15,7 +15,7 @@ const FormFields = {
 
 const StedForm = ({ control }: any) => {
   const { setValue, clearErrors, setError, trigger } = useFormContext();
-  const { validerOgLagreRekrutteringstreff } = useAutosave();
+  const { autosave } = useAutosaveRekrutteringstreff();
   const watchPostnummer = useWatch({ control, name: FormFields.POSTNUMMER });
   const { data: postdata, isLoading } = usePamPostdata(watchPostnummer || '');
 
@@ -56,7 +56,7 @@ const StedForm = ({ control }: any) => {
             error={fieldState.error?.message}
             onBlur={() => {
               field.onBlur();
-              validerOgLagreRekrutteringstreff([FormFields.GATEADRESSE]);
+              autosave([FormFields.GATEADRESSE]);
             }}
           />
         )}
@@ -84,10 +84,7 @@ const StedForm = ({ control }: any) => {
               }}
               onBlur={() => {
                 field.onBlur();
-                validerOgLagreRekrutteringstreff([
-                  FormFields.POSTNUMMER,
-                  FormFields.POSTSTED,
-                ]);
+                autosave([FormFields.POSTNUMMER, FormFields.POSTSTED]);
               }}
             />
           )}

@@ -1,11 +1,11 @@
 'use client';
 
 import { useRekrutteringstreffData } from '../hooks/useRekrutteringstreffData';
+import { useAutosaveRekrutteringstreff } from './hooks/kladd/useAutosaveRekrutteringstreff';
 import { useFilteredTimeOptions } from './hooks/useFilteredTimeOptions';
 import { useScheduledSave } from './hooks/useScheduledSave';
 import DatoTidRad from './tidspunkt/DatoTidRad';
 import { isGyldigTid, kombinerDatoOgTid } from './tidspunkt/utils';
-import { useAutosave } from './useAutosave';
 import { Heading } from '@navikt/ds-react';
 import { format, parseISO } from 'date-fns';
 import { useEffect } from 'react';
@@ -25,7 +25,7 @@ interface Props {
 }
 
 const SvarfristForm = ({ control }: Props) => {
-  const { validerOgLagreRekrutteringstreff } = useAutosave();
+  const { autosave } = useAutosaveRekrutteringstreff();
   const { setValue } = useFormContext();
 
   const [dato, tid] = useWatch({
@@ -41,7 +41,11 @@ const SvarfristForm = ({ control }: Props) => {
   const { treff } = useRekrutteringstreffData();
 
   // Bruk de nye hooks
-  const { scheduleSave } = useScheduledSave(validerOgLagreRekrutteringstreff, [
+  const { scheduleSave } = useScheduledSave(autosave, [
+    'fraDato',
+    'fraTid',
+    'tilDato',
+    'tilTid',
     'svarfristDato',
     'svarfristTid',
   ]);

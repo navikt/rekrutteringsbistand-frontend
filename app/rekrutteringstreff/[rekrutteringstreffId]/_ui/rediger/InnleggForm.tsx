@@ -1,8 +1,8 @@
 'use client';
 
+import { useAutosaveInnlegg } from './hooks/kladd/useAutosaveInnlegg';
 import KiAnalyse from './ki/KiAnalyseIntro';
 import KiAnalysePanel from './ki/KiAnalysePanel';
-import { useInnleggAutosave } from './useAutosave';
 import { useFormFeltMedKiValidering } from './useFormFeltMedKiValidering';
 import { useInnlegg } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/useInnlegg';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
@@ -24,7 +24,7 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
   const innlegg = innleggListe?.[0];
   const savedHtmlContent = innlegg ? (innlegg.htmlContent ?? null) : undefined;
 
-  const { validerOgLagreInnlegg } = useInnleggAutosave();
+  const { autosave } = useAutosaveInnlegg();
 
   const [editorKey, setEditorKey] = useState(Date.now());
 
@@ -45,7 +45,7 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
     feltType: 'innlegg',
     fieldName: 'htmlContent',
     savedValue: savedHtmlContent,
-    saveCallback: validerOgLagreInnlegg,
+    saveCallback: autosave,
     onUpdated,
     requireHasCheckedToShow: true,
   });

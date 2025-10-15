@@ -1,14 +1,14 @@
 'use client';
 
 import { useRekrutteringstreffData } from '../hooks/useRekrutteringstreffData';
+import { useAutosaveRekrutteringstreff } from './hooks/kladd/useAutosaveRekrutteringstreff';
 import KiAnalyseIntro from './ki/KiAnalyseIntro';
 import KiAnalysePanel from './ki/KiAnalysePanel';
-import { useAutosave } from './useAutosave';
 import { useFormFeltMedKiValidering } from './useFormFeltMedKiValidering';
 import { MAX_TITLE_LENGTH } from '@/app/api/rekrutteringstreff/[...slug]/mutations';
 import { XMarkIcon } from '@navikt/aksel-icons';
 import { Button, Detail, Skeleton, TextField } from '@navikt/ds-react';
-import React, { useRef, useEffect } from 'react';
+import React, { useRef } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
 const DEFAULT_TITTEL = 'Treff uten navn';
@@ -18,7 +18,7 @@ interface TittelFormProps {
 }
 
 const TittelForm = ({ onUpdated }: TittelFormProps) => {
-  const { treff, harPublisert } = useRekrutteringstreffData();
+  const { treff } = useRekrutteringstreffData();
   const savedTittel = treff ? (treff.tittel ?? null) : undefined;
 
   const {
@@ -28,7 +28,7 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
 
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const { validerOgLagreRekrutteringstreff } = useAutosave();
+  const { autosave } = useAutosaveRekrutteringstreff();
 
   const {
     analyse,
@@ -48,7 +48,7 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
     feltType: 'tittel',
     fieldName: 'tittel',
     savedValue: savedTittel,
-    saveCallback: validerOgLagreRekrutteringstreff,
+    saveCallback: autosave,
     onUpdated,
   });
 

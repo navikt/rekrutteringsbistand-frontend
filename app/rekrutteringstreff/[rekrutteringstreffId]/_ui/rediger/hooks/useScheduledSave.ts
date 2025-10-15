@@ -1,4 +1,3 @@
-import type { useAutosave } from '../useAutosave';
 import { useCallback, useEffect, useRef } from 'react';
 
 /**
@@ -6,7 +5,7 @@ import { useCallback, useEffect, useRef } from 'react';
  * Bruker setTimeout(0) for å batche flere endringer i samme event loop.
  */
 export function useScheduledSave(
-  save: ReturnType<typeof useAutosave>['validerOgLagreRekrutteringstreff'],
+  save: (fieldsToValidate?: string[]) => Promise<void>,
   fields: string[],
 ) {
   const timeoutRef = useRef<number | null>(null);
