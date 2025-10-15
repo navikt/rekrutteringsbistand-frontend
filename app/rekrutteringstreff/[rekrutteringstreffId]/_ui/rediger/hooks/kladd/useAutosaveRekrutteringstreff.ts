@@ -27,6 +27,7 @@ export function useAutosaveRekrutteringstreff() {
   const autosave = useCallback(
     async (fieldsToValidate?: string[]) => {
       if (!rekrutteringstreffId) return;
+      if (skalHindreAutosave(treff)) return;
 
       const valideringOk = await trigger(
         fieldsToValidate && fieldsToValidate.length > 0
