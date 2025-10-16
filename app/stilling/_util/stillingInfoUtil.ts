@@ -63,7 +63,7 @@ export const visStillingsDataInfo = (
     visningsStatus = VisningsStatus.UtloptStengtForSokere;
   } else if (
     stillingStatus === StillingsStatus.Inaktiv &&
-    (adminStatus === AdminStatus.Pending || adminStatus === AdminStatus.Done ) &&
+    (adminStatus === AdminStatus.Pending || adminStatus === AdminStatus.Done) &&
     publishedByAdmin !== null
   ) {
     visningsStatus = VisningsStatus.StengtForSokere;
