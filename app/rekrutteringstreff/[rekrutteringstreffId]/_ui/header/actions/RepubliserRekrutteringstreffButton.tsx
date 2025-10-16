@@ -206,12 +206,6 @@ const RepubliserRekrutteringstreffButton: FC<Props> = ({
   const åpneModal = () => !isDisabled && modalRef.current?.showModal();
   const lukkModal = () => modalRef.current?.close();
 
-  const handleBekreft = async () => {
-    if (isDisabled) return;
-    lukkModal();
-    await onBekreft();
-  };
-
   return (
     <>
       <Button
@@ -224,61 +218,69 @@ const RepubliserRekrutteringstreffButton: FC<Props> = ({
         Publiser på nytt
       </Button>
 
-      <Modal
-        ref={modalRef}
-        header={{ heading: 'Følgende endringer vil bli publisert' }}
+      <form
+        onSubmit={async (e) => {
+          e.preventDefault();
+          if (isDisabled) return;
+          lukkModal();
+          await onBekreft();
+        }}
       >
-        <Modal.Body>
-          <div className='space-y-3'>
-            {endringer.length === 0 ? (
-              <BodyLong>Ingen endringer oppdaget.</BodyLong>
-            ) : (
-              <div className='space-y-3'>
-                {endringer.map((endring, idx) => (
-                  <div key={idx} className='border-b pb-2'>
-                    <Label size='small'>{endring.etikett}</Label>
-                    <div className='flex gap-2'>
-                      <BodyShort>Fra:</BodyShort>
-                      <BodyShort className='text-gray-400'>
-                        {endring.gammelVerdi || '—'}
-                      </BodyShort>
+        <Modal
+          ref={modalRef}
+          header={{ heading: 'Følgende endringer vil bli publisert' }}
+        >
+          <Modal.Body>
+            <div className='space-y-3'>
+              {endringer.length === 0 ? (
+                <BodyLong>Ingen endringer oppdaget.</BodyLong>
+              ) : (
+                <div className='space-y-3'>
+                  {endringer.map((endring, idx) => (
+                    <div key={idx} className='border-b pb-2'>
+                      <Label size='small'>{endring.etikett}</Label>
+                      <div className='flex gap-2'>
+                        <BodyShort>Fra:</BodyShort>
+                        <BodyShort className='text-gray-400'>
+                          {endring.gammelVerdi || '—'}
+                        </BodyShort>
+                      </div>
+                      <div className='flex gap-2'>
+                        <BodyShort>Til:</BodyShort>
+                        <BodyShort className='text-gray-400'>
+                          {endring.nyVerdi || '—'}
+                        </BodyShort>
+                      </div>
                     </div>
-                    <div className='flex gap-2'>
-                      <BodyShort>Til:</BodyShort>
-                      <BodyShort className='text-gray-400'>
-                        {endring.nyVerdi || '—'}
-                      </BodyShort>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-            <BodyShort className='text-gray-600'>
-              Inviterte deltakere vil ikke bli informert om endringene på nytt
-              av republiseringen
-            </BodyShort>
-          </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button
-            type='button'
-            variant='primary'
-            size='small'
-            disabled={isDisabled}
-            onClick={handleBekreft}
-          >
-            Publiser på nytt
-          </Button>
-          <Button
-            type='button'
-            variant='secondary'
-            size='small'
-            onClick={lukkModal}
-          >
-            Avbryt
-          </Button>
-        </Modal.Footer>
-      </Modal>
+                  ))}
+                </div>
+              )}
+              <BodyShort className='text-gray-600'>
+                Inviterte deltakere vil ikke bli informert om endringene på nytt
+                av republiseringen
+              </BodyShort>
+            </div>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              type='submit'
+              variant='primary'
+              size='small'
+              disabled={isDisabled}
+            >
+              Publiser på nytt
+            </Button>
+            <Button
+              type='button'
+              variant='secondary'
+              size='small'
+              onClick={lukkModal}
+            >
+              Avbryt
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      </form>
     </>
   );
 };
