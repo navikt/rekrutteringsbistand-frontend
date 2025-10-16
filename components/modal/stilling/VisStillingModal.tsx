@@ -5,8 +5,9 @@ import LeggKandidatTilKandidatliste from '@/app/kandidat/vis-kandidat/_ui/LeggKa
 import SWRLaster from '@/components/SWRLaster';
 import KandidatVisningForModal from '@/components/modal/kandidat/KandidatVisningForModal';
 import StillingVisningForModal from '@/components/modal/stilling/StillingVisningForModal';
-import { Heading, Modal, ToggleGroup } from '@navikt/ds-react';
+import { Button, Heading, Modal, ToggleGroup } from '@navikt/ds-react';
 import { ModalBody } from '@navikt/ds-react/Modal';
+import { ArrowRightIcon } from 'lucide-react';
 import { useQueryState } from 'nuqs';
 import { useState } from 'react';
 
@@ -24,6 +25,7 @@ export default function VisStillingModal({
   });
   const kandidatlisteInfoHook = useKandidatlisteInfo(visStillingsId);
   const [fane, setFane] = useState<string>('stilling');
+
   return (
     <Modal
       closeOnBackdropClick
@@ -32,13 +34,25 @@ export default function VisStillingModal({
       onClose={() => setVisStillingsId('')}
       aria-labelledby='modal-heading'
     >
-      <SWRLaster hooks={[kandidatHook, kandidatlisteInfoHook]}>
+      <SWRLaster hooks={[kandidatHook, kandidatlisteInfoHook]} allowPartialData>
         {(kandidat, kandidatlisteInfo) => {
           return (
             <>
               <Modal.Header>
                 <Heading level='1' size='large' id='modal-heading'>
-                  {'Stillingsoppdrag for jobbsøker'}
+                  <div className='flex justify-between items-center'>
+                    {kandidatId
+                      ? 'Stillingsoppdrag for jobbsøker'
+                      : 'Viser stillingsoppdrag'}
+                    <Button
+                      as='a'
+                      size='small'
+                      href={`/stilling/${visStillingsId}`}
+                      icon={<ArrowRightIcon />}
+                    >
+                      Gå til stilling
+                    </Button>
+                  </div>
                 </Heading>
                 <div className='pt-4 flex justify-between items-center'>
                   {kandidatId && (
