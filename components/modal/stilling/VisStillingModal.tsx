@@ -72,7 +72,8 @@ export default function VisStillingModal({
                   )}
                   <div className='flex gap-2'>
                     {kandidatId &&
-                      kandidatlisteInfo.kandidatlisteStatus ===
+                      kandidatlisteInfo &&
+                      kandidatlisteInfo?.kandidatlisteStatus ===
                         Kandidatlistestatus.Åpen && (
                         <LeggKandidatTilKandidatliste
                           kandidatId={kandidatId}
