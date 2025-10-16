@@ -1,0 +1,1 @@
+import{am as d,an as e}from"./iframe-ByWmnZ4S.js";const r=a=>`${e.internUrl}/veileder/stilling/${a}/kandidatliste/kandidater`,s=async(a,t)=>{const n=a.map(i=>({kandidatnr:i}));return await d(r(t),n)};export{s as l};
