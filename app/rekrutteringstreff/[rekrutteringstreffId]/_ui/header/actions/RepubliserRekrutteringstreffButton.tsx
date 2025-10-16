@@ -134,6 +134,7 @@ const RepubliserRekrutteringstreffButton: FC<Props> = ({
   const modalRef = useRef<HTMLDialogElement>(null);
   const { getValues, watch, formState } = useFormContext();
   const [endringer, setEndringer] = useState<Endring[]>([]);
+  const [endringerVistIModal, setEndringerVistIModal] = useState<Endring[]>([]);
   const [wasSubmitting, setWasSubmitting] = useState(false);
 
   useEffect(() => {
@@ -219,7 +220,13 @@ const RepubliserRekrutteringstreffButton: FC<Props> = ({
     manglerNavn,
   ]);
 
-  const åpneModal = () => !isDisabled && modalRef.current?.showModal();
+  const åpneModal = () => {
+    if (!isDisabled) {
+      // Lagre en kopi av gjeldende endringer som skal vises i modalen
+      setEndringerVistIModal([...endringer]);
+      modalRef.current?.showModal();
+    }
+  };
   const lukkModal = () => modalRef.current?.close();
 
   return (
@@ -242,11 +249,11 @@ const RepubliserRekrutteringstreffButton: FC<Props> = ({
       >
         <Modal.Body>
           <div className='space-y-3'>
-            {endringer.length === 0 ? (
+            {endringerVistIModal.length === 0 ? (
               <BodyLong>Ingen endringer oppdaget.</BodyLong>
             ) : (
               <div className='space-y-3'>
-                {endringer.map((endring, idx) => (
+                {endringerVistIModal.map((endring, idx) => (
                   <div key={idx} className='border-b pb-2'>
                     <Label size='small'>{endring.etikett}</Label>
                     <div className='flex gap-2'>
