@@ -20,10 +20,8 @@ const meta = {
         oppdaterData={() => {}}
       />
       <RepubliserRekrutteringstreffButton
-        disabled
         treff={{}}
         innleggHtmlFraBackend={null}
-        onBekreft={async () => {}}
       />
       <RedigerPublisertButton
         erIForhåndsvisning={false}

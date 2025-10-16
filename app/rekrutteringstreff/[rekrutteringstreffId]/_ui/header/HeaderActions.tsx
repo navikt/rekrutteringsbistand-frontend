@@ -20,8 +20,6 @@ type Props = {
   onBekreftRedigerPublisert: () => void;
   onAvbrytRedigering: () => void;
   onPublisert?: () => void;
-  onRepubliser?: () => Promise<void>;
-  republiserDisabled?: boolean;
 };
 
 const HeaderActions: FC<Props> = ({
@@ -32,8 +30,6 @@ const HeaderActions: FC<Props> = ({
   onBekreftRedigerPublisert,
   onAvbrytRedigering,
   onPublisert,
-  onRepubliser,
-  republiserDisabled,
 }) => {
   const {
     rekrutteringstreffId,
@@ -74,10 +70,8 @@ const HeaderActions: FC<Props> = ({
     return (
       <div className='flex items-center gap-2'>
         <RepubliserRekrutteringstreffButton
-          disabled={republiserDisabled}
           treff={treff}
           innleggHtmlFraBackend={innleggHtmlFraBackend}
-          onBekreft={onRepubliser ?? (async () => {})}
         />
         <Button
           type='button'

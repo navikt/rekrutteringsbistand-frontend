@@ -148,13 +148,12 @@ const Rekrutteringstreff: FC = () => {
   }, [setModus, setFane, scrollToTop]);
 
   // Republiser-logikk
-  const { onRepubliser, republiserDisabled } = useRepubliser(
+  const { onRepubliser } = useRepubliser(
     setModus,
     scrollToTop,
     rekrutteringstreff,
   );
 
-  // Top-level form submit to ensure RHF formState.isSubmitting and native form semantics
   const { handleSubmit } = useFormContext();
   const onSubmit = handleSubmit(async () => {
     await onRepubliser();
@@ -200,8 +199,6 @@ const Rekrutteringstreff: FC = () => {
             onBekreftRedigerPublisert={onBekreftRedigerPublisert}
             onAvbrytRedigering={onAvbrytRedigering}
             onPublisert={onPublisert}
-            onRepubliser={onRepubliser}
-            republiserDisabled={republiserDisabled}
             inTabsContext={false}
           />
         }
@@ -236,8 +233,6 @@ const Rekrutteringstreff: FC = () => {
                 onBekreftRedigerPublisert={onBekreftRedigerPublisert}
                 onAvbrytRedigering={onAvbrytRedigering}
                 onPublisert={onPublisert}
-                onRepubliser={onRepubliser}
-                republiserDisabled={republiserDisabled}
                 inTabsContext={true}
               />
             ) : undefined

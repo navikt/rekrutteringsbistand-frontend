@@ -123,7 +123,5 @@ export function useRepubliser(
     manglerNavn,
   ]);
 
-  const republiserDisabled = harFeil || manglerNavn;
-
-  return { onRepubliser, republiserDisabled };
+  return { onRepubliser };
 }

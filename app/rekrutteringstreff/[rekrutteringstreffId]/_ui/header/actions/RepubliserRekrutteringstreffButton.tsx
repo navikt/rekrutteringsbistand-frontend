@@ -15,10 +15,8 @@ type Endring = {
 };
 
 interface Props {
-  disabled?: boolean;
   treff: any;
   innleggHtmlFraBackend?: string | null;
-  onBekreft: () => Promise<void> | void;
 }
 
 const toIsoLocal = (
@@ -48,6 +46,9 @@ const leggTilEndringHvisUlik = (
   }
 };
 
+/**
+ * Beregner listen over endringer mellom original og nye verdier.
+ */
 const beregnEndringer = (
   verdier: any,
   treff: any,
@@ -55,7 +56,6 @@ const beregnEndringer = (
 ): Endring[] => {
   const endringer: Endring[] = [];
 
-  // Beregn tidspunkter
   const fraTid = toIsoLocal(verdier.fraDato, verdier.fraTid) ?? treff?.fraTid;
   const tilTid =
     toIsoLocal(verdier.tilDato ?? verdier.fraDato, verdier.tilTid) ??
@@ -63,10 +63,8 @@ const beregnEndringer = (
   const svarfrist =
     toIsoLocal(verdier.svarfristDato, verdier.svarfristTid) ?? treff?.svarfrist;
 
-  // Beregn ny tittel
   const tittel = verdier.tittel?.trim() || treff?.tittel || '';
 
-  // Sammenlign alle felter
   leggTilEndringHvisUlik(endringer, 'Tittel', treff?.tittel, tittel);
   leggTilEndringHvisUlik(
     endringer,
@@ -114,7 +112,6 @@ const beregnEndringer = (
     verdier.poststed ?? treff?.poststed,
   );
 
-  // Sjekk om innlegg er endret
   if ((innleggHtmlFraBackend || '') !== (verdier.htmlContent || '')) {
     endringer.push({
       etikett: 'Innlegg',
@@ -126,15 +123,18 @@ const beregnEndringer = (
   return endringer;
 };
 
+/**
+ * Komponent for å republisere et rekrutteringstreff.
+ * Viser en knapp som åpner en modal for bekreftelse av endringer før republisering.
+ */
 const RepubliserRekrutteringstreffButton: FC<Props> = ({
-  disabled,
   treff,
   innleggHtmlFraBackend,
-  onBekreft,
 }) => {
   const modalRef = useRef<HTMLDialogElement>(null);
   const { getValues, watch, formState } = useFormContext();
   const [endringer, setEndringer] = useState<Endring[]>([]);
+  const [wasSubmitting, setWasSubmitting] = useState(false);
 
   useEffect(() => {
     if (!treff) {
@@ -149,7 +149,6 @@ const RepubliserRekrutteringstreffButton: FC<Props> = ({
         treff,
         innleggHtmlFraBackend || '',
       );
-      // Kun oppdater state hvis endringene faktisk er forskjellige
       setEndringer((prev) => {
         if (JSON.stringify(prev) === JSON.stringify(nyeEndringer)) {
           return prev;
@@ -158,16 +157,34 @@ const RepubliserRekrutteringstreffButton: FC<Props> = ({
       });
     };
 
-    // Kjør en gang ved mount/treff endring
     beregnOgOppdater();
 
-    // Subscribe til ALLE form changes (ingen specifikt felt)
+    // Subscribe til ALLE form changes
     const subscription = watch(() => {
       beregnOgOppdater();
     });
 
     return () => subscription.unsubscribe();
   }, [treff, watch, getValues, innleggHtmlFraBackend]);
+
+  // Lukk modal automatisk etter vellykket skjemainnsending.
+  // Vi sporer isSubmitting overgangen for å oppdage når innsendingen fullføres,
+  // så lukker vi modalen kun hvis det ikke er valideringsfeil.
+  // Dette mønsteret er nødvendig fordi:
+  // 1. Modal er utenfor form-elementet (riktig HTML-struktur)
+  // 2. Submit-knappen bruker `form` attributtet (gyldig HTML5 mønster)
+  // 3. Forretningslogikk (useRepubliser) er separert fra UI (denne komponenten)
+  // 4. Vi unngår prop drilling ved å holde lukkModal lokalt i denne komponenten
+  useEffect(() => {
+    if (wasSubmitting && !formState.isSubmitting) {
+      if (!formState.errors || Object.keys(formState.errors).length === 0) {
+        lukkModal();
+      }
+      setWasSubmitting(false);
+    } else if (formState.isSubmitting && !wasSubmitting) {
+      setWasSubmitting(true);
+    }
+  }, [formState.isSubmitting, formState.errors, wasSubmitting]);
 
   const tittelKiSjekket = watch('tittelKiSjekket') ?? false;
   const innleggKiSjekket = watch('htmlContentKiSjekket') ?? false;
@@ -191,9 +208,8 @@ const RepubliserRekrutteringstreffButton: FC<Props> = ({
       (!kreverTittelSjekk || tittelKiSjekket) &&
       (!kreverInnleggSjekk || innleggKiSjekket);
 
-    return disabled || manglerEndring || harFeil || !kiSjekkOk || manglerNavn;
+    return manglerEndring || harFeil || !kiSjekkOk || manglerNavn;
   }, [
-    disabled,
     endringer.length,
     harFeil,
     kreverTittelSjekk,
@@ -208,6 +224,7 @@ const RepubliserRekrutteringstreffButton: FC<Props> = ({
 
   return (
     <>
+      {/* Knapp for å åpne bekreftelsesmodal */}
       <Button
         type='button'
         variant='primary'
@@ -218,6 +235,7 @@ const RepubliserRekrutteringstreffButton: FC<Props> = ({
         Publiser på nytt
       </Button>
 
+      {/* Modal for bekreftelse av endringer før republisering */}
       <Modal
         ref={modalRef}
         header={{ heading: 'Følgende endringer vil bli publisert' }}
@@ -257,10 +275,10 @@ const RepubliserRekrutteringstreffButton: FC<Props> = ({
           <Button
             type='submit'
             form='rekrutteringstreff-form'
-            onClick={lukkModal}
             variant='primary'
             size='small'
             disabled={isDisabled}
+            loading={formState.isSubmitting}
           >
             Publiser på nytt
           </Button>
@@ -269,6 +287,7 @@ const RepubliserRekrutteringstreffButton: FC<Props> = ({
             variant='secondary'
             size='small'
             onClick={lukkModal}
+            disabled={formState.isSubmitting}
           >
             Avbryt
           </Button>
