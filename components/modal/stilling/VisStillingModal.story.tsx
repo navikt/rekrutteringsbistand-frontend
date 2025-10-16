@@ -7,7 +7,6 @@ import React, { useEffect } from 'react';
 // Storyene styrer åpning via søkeparameteren 'visStillingsId'.
 const meta: Meta = {
   tags: ['autodocs'],
-  title: 'App/VisStillingModal',
 };
 export default meta;
 

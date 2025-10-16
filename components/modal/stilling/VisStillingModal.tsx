@@ -44,18 +44,10 @@ export default function VisStillingModal({
                     {kandidatId
                       ? 'Stillingsoppdrag for jobbsøker'
                       : 'Viser stillingsoppdrag'}
-                    <Button
-                      as='a'
-                      size='small'
-                      href={`/stilling/${visStillingsId}`}
-                      icon={<ArrowRightIcon />}
-                    >
-                      Gå til stilling
-                    </Button>
                   </div>
                 </Heading>
                 <div className='pt-4 flex justify-between items-center'>
-                  {kandidatId && (
+                  {kandidatId ? (
                     <ToggleGroup
                       defaultValue={fane}
                       onChange={setFane}
@@ -70,15 +62,27 @@ export default function VisStillingModal({
                         label={`Om ${kandidat.fornavn} ${kandidat.etternavn}`}
                       />
                     </ToggleGroup>
+                  ) : (
+                    <div />
                   )}
-                  {kandidatId &&
-                    kandidatlisteInfo.kandidatlisteStatus ===
-                      Kandidatlistestatus.Åpen && (
-                      <LeggKandidatTilKandidatliste
-                        kandidatId={kandidatId}
-                        stillingId={visStillingsId}
-                      />
-                    )}
+                  <div className='flex gap-2'>
+                    {kandidatId &&
+                      kandidatlisteInfo.kandidatlisteStatus ===
+                        Kandidatlistestatus.Åpen && (
+                        <LeggKandidatTilKandidatliste
+                          kandidatId={kandidatId}
+                          stillingId={visStillingsId}
+                        />
+                      )}
+                    <Button
+                      as='a'
+                      size='small'
+                      href={`/stilling/${visStillingsId}`}
+                      icon={<ArrowRightIcon />}
+                    >
+                      Gå til stilling
+                    </Button>
+                  </div>
                 </div>
               </Modal.Header>
               <ModalBody>
