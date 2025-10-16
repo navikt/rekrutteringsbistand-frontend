@@ -1,4 +1,4 @@
-import { Stillingskategori, StillingsStatus } from '../_ui/stilling-typer';
+import { AdminStatus, Stillingskategori, StillingsStatus } from '../_ui/stilling-typer';
 import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { RekrutteringsbistandStillingSchemaDTO } from '@/app/api/stillings-sok/schema/rekrutteringsbistandStillingSchema.zod';
 import { startOfDay } from 'date-fns';
@@ -34,6 +34,7 @@ export const visStillingsDataInfo = (
   const expires: string | null = stilling.expires ?? null;
   const publishedByAdmin = stilling.publishedByAdmin ?? null;
   const harStillingsinfo = stillingsData.stillingsinfo !== null;
+  const adminStatus = stilling.administration?.status ?? null;
 
   const erUtløpt = () => {
     if (expires === null) {
@@ -62,6 +63,7 @@ export const visStillingsDataInfo = (
     visningsStatus = VisningsStatus.UtloptStengtForSokere;
   } else if (
     stillingStatus === StillingsStatus.Inaktiv &&
+    (adminStatus === AdminStatus.Pending || adminStatus === AdminStatus.Done ) &&
     publishedByAdmin !== null
   ) {
     visningsStatus = VisningsStatus.StengtForSokere;
