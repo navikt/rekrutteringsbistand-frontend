@@ -28,8 +28,9 @@ export const hentAnnonselenke = (visStillingUrl: string, uuid?: string) => (
 );
 
 const KopierStillingLenke: FC<IKopierStillingLenke> = ({ stillingsData }) => {
+  const erDirektemeldtStilling = visStillingsDataInfo(stillingsData).erDirektemeldt;
   const lenke =
-    visStillingsDataInfo(stillingsData).erDirektemeldt
+    erDirektemeldtStilling
       ? hentAnnonselenke(
           visStillingDirektemeldtUrl,
           stillingsData.stilling.uuid,
@@ -48,7 +49,11 @@ const KopierStillingLenke: FC<IKopierStillingLenke> = ({ stillingsData }) => {
       activeText='Lenken er kopiert'
       icon={<LinkIcon aria-hidden />}
       activeIcon={<ThumbUpIcon aria-hidden />}
-      onClick={() => umami.track(UmamiEvent.Stilling.kopier_delingslenke)}
+      onClick={() => (
+        erDirektemeldtStilling
+          ? umami.track(UmamiEvent.Stilling.kopier_delingslenke_direktemeldt)
+          : umami.track(UmamiEvent.Stilling.kopier_delingslenke_arbeidsplassen)
+      )}
     />
   );
 };
