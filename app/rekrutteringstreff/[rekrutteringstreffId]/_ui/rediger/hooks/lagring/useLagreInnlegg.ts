@@ -84,5 +84,5 @@ export function useLagreInnlegg() {
     setValue,
   ]);
 
-  return { lagre };
+  return { lagre, innlegg };
 }

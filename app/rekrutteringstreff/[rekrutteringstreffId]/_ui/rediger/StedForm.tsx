@@ -1,6 +1,6 @@
 'use client';
 
-import { useAutosaveRekrutteringstreff } from './hooks/kladd/useAutosaveRekrutteringstreff';
+import { useAutosaveRekrutteringstreff } from './hooks/kladd/useAutosave';
 import { usePamPostdata } from '@/app/api/pam-geografi/postdata/[postnummer]/usePamPostdata';
 import { BodyShort, Heading, TextField } from '@navikt/ds-react';
 import { useEffect } from 'react';

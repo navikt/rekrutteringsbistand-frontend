@@ -16,7 +16,3 @@ export const erPublisert = (treff: any): boolean => {
   const step = getActiveStepFromHendelser(treff?.hendelser);
   return step === AktivtSteg.INVITERE || step === AktivtSteg.FULLFØRE;
 };
-
-export const skalHindreAutosave = (treff: any): boolean => {
-  return erPublisert(treff) && erEditMode();
-};

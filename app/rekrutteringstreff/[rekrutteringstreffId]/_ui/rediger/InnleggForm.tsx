@@ -1,6 +1,6 @@
 'use client';
 
-import { useAutosaveInnlegg } from './hooks/kladd/useAutosaveInnlegg';
+import { useAutosaveInnlegg } from './hooks/kladd/useAutosave';
 import KiAnalyse from './ki/KiAnalyseIntro';
 import KiAnalysePanel from './ki/KiAnalysePanel';
 import { useFormFeltMedKiValidering } from './useFormFeltMedKiValidering';

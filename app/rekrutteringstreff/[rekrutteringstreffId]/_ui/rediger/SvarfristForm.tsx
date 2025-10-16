@@ -1,7 +1,7 @@
 'use client';
 
 import { useRekrutteringstreffData } from '../hooks/useRekrutteringstreffData';
-import { useAutosaveRekrutteringstreff } from './hooks/kladd/useAutosaveRekrutteringstreff';
+import { useAutosaveRekrutteringstreff } from './hooks/kladd/useAutosave';
 import { useFilteredTimeOptions } from './hooks/useFilteredTimeOptions';
 import { useScheduledSave } from './hooks/useScheduledSave';
 import DatoTidRad from './tidspunkt/DatoTidRad';

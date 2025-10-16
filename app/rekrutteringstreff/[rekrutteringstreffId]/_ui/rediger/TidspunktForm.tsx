@@ -1,6 +1,6 @@
 'use client';
 
-import { useAutosaveRekrutteringstreff } from './hooks/kladd/useAutosaveRekrutteringstreff';
+import { useAutosaveRekrutteringstreff } from './hooks/kladd/useAutosave';
 import { useAutoAdjustEndTime } from './hooks/useAutoAdjustEndTime';
 import { useFilteredTimeOptions } from './hooks/useFilteredTimeOptions';
 import { useScheduledSave } from './hooks/useScheduledSave';
