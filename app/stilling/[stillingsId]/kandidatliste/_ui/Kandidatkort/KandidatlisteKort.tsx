@@ -2,7 +2,6 @@ import KandidatCheckbox from './_ui/KandidatCheckbox';
 import KandidatListeKortValg from './_ui/KandidatListeKortValg';
 import KandidatlisteNavn from './_ui/KandidatlisteNavn';
 import { usynligKandidaterSchemaDTO } from '@/app/api/kandidat/schema.zod';
-import { useNullableStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import { KANDIDATLISTE_COLUMN_LAYOUT } from '@/app/stilling/[stillingsId]/kandidatliste/FiltrertKandidatListeVisning';
 import { KandidatutfallTyper } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
 import { useKandidatlisteContext } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteContext';
@@ -16,7 +15,6 @@ import {
 import { KandidatHendelseInformasjon } from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatHendelser/KandidatHendelser';
 import { KandidatVisningProps } from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatlisteFilter/useFiltrerteKandidater';
 import VelgInternStatus from '@/app/stilling/[stillingsId]/kandidatliste/_ui/VelgInternStatus';
-import VisKandidatModal from '@/components/modal/kandidat/VisKandidatModal';
 import { formaterNorskDato } from '@/util/util';
 import { BodyShort, Box } from '@navikt/ds-react';
 import { useQueryState } from 'nuqs';
@@ -33,9 +31,8 @@ const KandidatListeKort: FC<KandidatListeKortProps> = ({
   kandidat,
   usynligKandidat,
 }) => {
-  const stillingsContext = useNullableStillingsContext();
   const { lukketKandidatliste, kandidatlisteId } = useKandidatlisteContext();
-  const [visKandidatId, setVisKandidatId] = useQueryState('visKandidatId', {
+  const [, setVisKandidatId] = useQueryState('visKandidatId', {
     defaultValue: '',
     clearOnDefault: true,
   });
@@ -119,13 +116,6 @@ const KandidatListeKort: FC<KandidatListeKortProps> = ({
     const aktiv = false;
     return (
       <>
-        {visKandidatId && (
-          <VisKandidatModal
-            forKandidatliste={kandidatlisteId}
-            tittel={'Jobbsøker i liste'}
-            stillingsId={stillingsContext!.stillingsData.stilling.uuid!}
-          />
-        )}
         <Box.New
           onClick={() =>
             !inaktiv ? setVisKandidatId(kandidat?.kandidatnr ?? '') : null

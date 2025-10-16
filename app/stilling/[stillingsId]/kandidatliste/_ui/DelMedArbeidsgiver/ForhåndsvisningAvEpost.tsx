@@ -14,20 +14,33 @@ const ForhåndsvisningAvEpost = ({
 
   const erstattPlaceholders = useCallback(
     (iframe: HTMLIFrameElement | null) => {
-      if (iframe) {
-        const iframeDocument = iframe.contentWindow?.document;
+      if (!iframe) return;
 
-        const tittelElement = iframeDocument?.getElementById('tittel');
-        const stillingstittelElement =
-          iframeDocument?.getElementById('stillingstittel');
-        const avsenderElement = iframeDocument?.getElementById('avsender');
-
-        if (tittelElement)
-          tittelElement.innerText = stillingstittel || 'stilling';
-        if (stillingstittelElement)
-          stillingstittelElement.innerText = stillingstittel || 'stilling';
-        if (avsenderElement) avsenderElement.innerHTML = opprettetAvNavn;
+      let iframeDocument: Document | null | undefined = null;
+      try {
+        // Kaster SecurityError hvis cross-origin
+        iframeDocument =
+          iframe.contentDocument || iframe.contentWindow?.document;
+        // Ekstra verifikasjon: tilgang til body trigger også ev. SecurityError
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+        iframeDocument?.body;
+      } catch {
+        // Cross-origin: Kan ikke manipulere innhold
+        return;
       }
+
+      if (!iframeDocument) return;
+
+      const tittelElement = iframeDocument.getElementById('tittel');
+      const stillingstittelElement =
+        iframeDocument.getElementById('stillingstittel');
+      const avsenderElement = iframeDocument.getElementById('avsender');
+
+      if (tittelElement)
+        tittelElement.textContent = stillingstittel || 'stilling';
+      if (stillingstittelElement)
+        stillingstittelElement.textContent = stillingstittel || 'stilling';
+      if (avsenderElement) avsenderElement.textContent = opprettetAvNavn;
     },
     [opprettetAvNavn, stillingstittel],
   );
@@ -38,16 +51,18 @@ const ForhåndsvisningAvEpost = ({
 
   const handleFerdigLastet = (iframe: HTMLIFrameElement) => {
     iframeRef.current = iframe;
-
     erstattPlaceholders(iframe);
   };
 
+  const src = `${ArbeidsgiverNotifikasjonAPI.internUrl}/template`;
+
   return (
     <iframe
+      ref={iframeRef}
       title='forhåndsvisning'
-      className={`border-border-divider h-[30rem] max-h-full w-full rounded-lg border`}
+      className='border-border-divider h-[30rem] max-h-full w-full rounded-lg border'
       onLoad={(event) => handleFerdigLastet(event.currentTarget)}
-      src={`${ArbeidsgiverNotifikasjonAPI.internUrl}/template`}
+      src={src}
     />
   );
 };
