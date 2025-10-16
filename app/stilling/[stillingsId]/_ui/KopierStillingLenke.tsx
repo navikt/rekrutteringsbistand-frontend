@@ -8,7 +8,6 @@ import { CopyButton } from '@navikt/ds-react';
 import { LinkIcon } from 'lucide-react';
 import { FC } from 'react';
 
-
 export interface IKopierStillingLenke {
   stillingsData: StillingsDataDTO;
 }
@@ -23,22 +22,18 @@ const visStillingArbeidsplassenUrl =
     ? 'https://arbeidsplassen.intern.dev.nav.no/stillinger/stilling'
     : 'https://arbeidsplassen.nav.no/stillinger/stilling';
 
-export const hentAnnonselenke = (visStillingUrl: string, uuid?: string) => (
-  `${visStillingUrl}/${uuid}`
-);
+export const hentAnnonselenke = (visStillingUrl: string, uuid?: string) =>
+  `${visStillingUrl}/${uuid}`;
 
 const KopierStillingLenke: FC<IKopierStillingLenke> = ({ stillingsData }) => {
-  const erDirektemeldtStilling = visStillingsDataInfo(stillingsData).erDirektemeldt;
-  const lenke =
-    erDirektemeldtStilling
-      ? hentAnnonselenke(
-          visStillingDirektemeldtUrl,
-          stillingsData.stilling.uuid,
-        )
-      : hentAnnonselenke(
-          visStillingArbeidsplassenUrl,
-          stillingsData.stilling.uuid,
-        );
+  const erDirektemeldtStilling =
+    visStillingsDataInfo(stillingsData).erDirektemeldt;
+  const lenke = erDirektemeldtStilling
+    ? hentAnnonselenke(visStillingDirektemeldtUrl, stillingsData.stilling.uuid)
+    : hentAnnonselenke(
+        visStillingArbeidsplassenUrl,
+        stillingsData.stilling.uuid,
+      );
   const umami = useUmami();
   return (
     <CopyButton
@@ -49,11 +44,11 @@ const KopierStillingLenke: FC<IKopierStillingLenke> = ({ stillingsData }) => {
       activeText='Lenken er kopiert'
       icon={<LinkIcon aria-hidden />}
       activeIcon={<ThumbUpIcon aria-hidden />}
-      onClick={() => (
+      onClick={() =>
         erDirektemeldtStilling
           ? umami.track(UmamiEvent.Stilling.kopier_delingslenke_direktemeldt)
           : umami.track(UmamiEvent.Stilling.kopier_delingslenke_arbeidsplassen)
-      )}
+      }
     />
   );
 };

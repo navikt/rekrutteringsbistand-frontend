@@ -28,6 +28,7 @@ import { pamPostdataMSWHandler } from '@/app/api/pam-geografi/postdata/[postnumm
 import { pamGeografiMSWHandler } from '@/app/api/pam-geografi/typehead/lokasjoner/usePamGeografi';
 import { stillingsTittelMSWHandler } from '@/app/api/pam-ontologi/stillingsTittel/useStillingsTittel';
 import { arbeidsgiverMSWHandler } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
+import { alleHendelserMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/allehendelser/useAlleHendelser';
 import {
   opprettArbeidsgiverMSWHandler,
   slettArbeidsgiverMSWHandler,
@@ -38,7 +39,10 @@ import {
   oppdaterInnleggMSWHandler,
   opprettInnleggMSWHandler,
 } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/mutations';
+import { innleggMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/innlegg/useInnlegg';
 import { inviterJobbsøkereMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/inviterJobbsøkere';
+import { jobbsøkerHendelserMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkerHendelser';
+import { jobbsøkereMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import {
   oppdaterRekrutteringstreffMSWHandler,
   slettRekrutteringstreffMSWHandler,
@@ -114,8 +118,12 @@ export const mswHandlers = [
   oppdaterKiLoggManuellMSWHandler,
   oppdaterKiLoggLagretMSWHandler,
   inviterJobbsøkereMSWHandler,
+  innleggMSWHandler,
   opprettInnleggMSWHandler,
   oppdaterInnleggMSWHandler,
+  jobbsøkereMSWHandler,
+  jobbsøkerHendelserMSWHandler,
+  alleHendelserMSWHandler,
   ...statusHendelserMSWHandlers,
   ...umamiMSWHandlers,
   ...loggerMSWHandlers,

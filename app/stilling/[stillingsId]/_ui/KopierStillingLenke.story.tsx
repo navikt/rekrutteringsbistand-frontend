@@ -1,9 +1,6 @@
 import KopierStillingLenke from './KopierStillingLenke';
-import {
-  mockBaseStilling,
-} from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/mocks/stillingMock';
+import { mockBaseStilling } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/mocks/stillingMock';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-
 
 const meta = {
   tags: ['autodocs'],
