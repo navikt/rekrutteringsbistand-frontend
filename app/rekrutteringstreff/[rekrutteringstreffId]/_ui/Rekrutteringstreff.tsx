@@ -19,6 +19,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { nb } from 'date-fns/locale/nb';
 import { parseAsString, useQueryState } from 'nuqs';
 import { FC, useCallback, useEffect, useMemo } from 'react';
+import { useFormContext } from 'react-hook-form';
 
 export enum RekrutteringstreffTabs {
   OM_TREFFET = 'om_treffet',
@@ -153,6 +154,12 @@ const Rekrutteringstreff: FC = () => {
     rekrutteringstreff,
   );
 
+  // Top-level form submit to ensure RHF formState.isSubmitting and native form semantics
+  const { handleSubmit } = useFormContext();
+  const onSubmit = handleSubmit(async () => {
+    await onRepubliser();
+  });
+
   const renderStegviser = () => (
     <Stegviser
       onToggleForhåndsvisning={handleToggleForhåndsvisning}
@@ -209,42 +216,44 @@ const Rekrutteringstreff: FC = () => {
   }
 
   return (
-    <Tabs value={fane} onChange={(val) => setFane(val)}>
-      <SideLayout
-        {...layoutProps}
-        header={
-          skalViseHeader ? (
-            <RekrutteringstreffHeader
-              skalViseHeader={skalViseHeader}
-              erstattPath={[rekrutteringstreffId, rekrutteringstreffNavn]}
-              erIForhåndsvisning={erILesemodus}
-              viserFullskjermForhåndsvisning={viserFullskjermForhåndsvisning}
-              jobbsøkereAntall={jobbsøkere?.length ?? 0}
-              arbeidsgivereAntall={arbeidsgivere?.length ?? 0}
-              lagrerNoe={lagrerNoe}
-              lagretTekst={lagretTekst}
-              erPubliseringklar={erPubliseringklar}
-              onToggleForhåndsvisning={handleToggleForhåndsvisning}
-              onBekreftRedigerPublisert={onBekreftRedigerPublisert}
-              onAvbrytRedigering={onAvbrytRedigering}
-              onPublisert={onPublisert}
-              onRepubliser={onRepubliser}
-              republiserDisabled={republiserDisabled}
-              inTabsContext={true}
-            />
-          ) : undefined
-        }
-      >
-        <SideScroll>
-          <div className='space-y-4'>
-            <TabsPanels
-              erIVisning={erILesemodus}
-              onUpdated={rekrutteringstreffHook.mutate}
-            />
-          </div>
-        </SideScroll>
-      </SideLayout>
-    </Tabs>
+    <form id='rekrutteringstreff-form' onSubmit={onSubmit} noValidate>
+      <Tabs value={fane} onChange={(val) => setFane(val)}>
+        <SideLayout
+          {...layoutProps}
+          header={
+            skalViseHeader ? (
+              <RekrutteringstreffHeader
+                skalViseHeader={skalViseHeader}
+                erstattPath={[rekrutteringstreffId, rekrutteringstreffNavn]}
+                erIForhåndsvisning={erILesemodus}
+                viserFullskjermForhåndsvisning={viserFullskjermForhåndsvisning}
+                jobbsøkereAntall={jobbsøkere?.length ?? 0}
+                arbeidsgivereAntall={arbeidsgivere?.length ?? 0}
+                lagrerNoe={lagrerNoe}
+                lagretTekst={lagretTekst}
+                erPubliseringklar={erPubliseringklar}
+                onToggleForhåndsvisning={handleToggleForhåndsvisning}
+                onBekreftRedigerPublisert={onBekreftRedigerPublisert}
+                onAvbrytRedigering={onAvbrytRedigering}
+                onPublisert={onPublisert}
+                onRepubliser={onRepubliser}
+                republiserDisabled={republiserDisabled}
+                inTabsContext={true}
+              />
+            ) : undefined
+          }
+        >
+          <SideScroll>
+            <div className='space-y-4'>
+              <TabsPanels
+                erIVisning={erILesemodus}
+                onUpdated={rekrutteringstreffHook.mutate}
+              />
+            </div>
+          </SideScroll>
+        </SideLayout>
+      </Tabs>
+    </form>
   );
 };
 
