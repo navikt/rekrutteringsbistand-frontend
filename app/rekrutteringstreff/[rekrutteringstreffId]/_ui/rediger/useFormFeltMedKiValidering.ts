@@ -19,13 +19,21 @@ const sanitizeForComparison = (value: unknown): string => {
     .trim();
 };
 
+/**
+ * Hook for skjemafelt med KI-validering av rekrutteringstreff.
+ *
+ * Validerer tekst (tittel/innlegg) mot NAVs retningslinjer ved onBlur.
+ * Viser KI-analyse hvis innholdet bryter retningslinjer, og lar bruker godkjenne.
+ * Lagrer automatisk når validering er OK eller etter godkjenning.
+ *
+ * Brukes i TittelForm og InnleggForm for å sikre regelrett innhold før publisering.
+ */
 export function useFormFeltMedKiValidering({
   feltType,
   fieldName,
   savedValue,
   saveCallback,
   onUpdated,
-  requireHasCheckedToShow = false,
 }: {
   feltType: FeltType;
   fieldName: string;
@@ -35,7 +43,6 @@ export function useFormFeltMedKiValidering({
     overstyrKiFeil?: boolean,
   ) => Promise<void>;
   onUpdated?: () => void;
-  requireHasCheckedToShow?: boolean;
 }) {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { data: treff } = useRekrutteringstreff(rekrutteringstreffId);
@@ -132,11 +139,6 @@ export function useFormFeltMedKiValidering({
       const kiResultat = await validateKI({ feltType, tekst: tekstVerdi });
 
       setHasChecked(true);
-      setValue(`${fieldName}KiSjekket` as any, true as any, {
-        shouldDirty: false,
-        shouldValidate: false,
-        shouldTouch: false,
-      });
 
       const loggIdNy =
         (kiResultat as any)?.loggId ?? (analyse as any)?.loggId ?? null;
@@ -145,6 +147,18 @@ export function useFormFeltMedKiValidering({
       const bryterRetningslinjer =
         (kiResultat as any)?.bryterRetningslinjer ??
         (analyse as any)?.bryterRetningslinjer;
+
+      // setter både KiSjekket and KiFeil flag for å forhindre race condition
+      setValue(`${fieldName}KiSjekket` as any, true as any, {
+        shouldDirty: false,
+        shouldValidate: false,
+        shouldTouch: false,
+      });
+      setValue(`${fieldName}KiFeil` as any, !!bryterRetningslinjer as any, {
+        shouldDirty: false,
+        shouldValidate: false,
+        shouldTouch: false,
+      });
 
       if (!bryterRetningslinjer) {
         // KI-validering er OK, lagre med overstyrKiFeil=true
@@ -229,9 +243,7 @@ export function useFormFeltMedKiValidering({
   const bryterRetningslinjerFlag =
     !!analyse && !analyseError && !!(analyse as any)?.bryterRetningslinjer;
 
-  const showAnalysis = requireHasCheckedToShow
-    ? hasChecked && bryterRetningslinjerFlag
-    : bryterRetningslinjerFlag;
+  const showAnalysis = hasChecked && bryterRetningslinjerFlag;
 
   return {
     analyse,

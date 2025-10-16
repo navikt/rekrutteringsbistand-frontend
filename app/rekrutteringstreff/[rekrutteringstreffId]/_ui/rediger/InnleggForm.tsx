@@ -47,7 +47,6 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
     savedValue: savedHtmlContent,
     saveCallback: autosave,
     onUpdated,
-    requireHasCheckedToShow: true,
   });
 
   useEffect(() => {
