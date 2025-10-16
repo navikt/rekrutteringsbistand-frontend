@@ -17,6 +17,7 @@ import RekrutteringstreffFeatureToggle from '@/components/RekrutteringstreffFeat
 import SWRLaster from '@/components/SWRLaster';
 import SideScroll from '@/components/SideScroll';
 import SkeletonKort from '@/components/layout/SkeletonKort';
+import VisKandidatModal from '@/components/modal/kandidat/VisKandidatModal';
 import { useKandidatNavigeringContext } from '@/providers/KandidatNavigeringContext';
 import { Checkbox, Pagination } from '@navikt/ds-react';
 import { FC, useEffect, useRef } from 'react';
@@ -81,6 +82,12 @@ const KandidatSøkResultat: FC<KandidatSøkResultatProps> = ({
 
         return (
           <>
+            <VisKandidatModal
+              stillingsId={stillingsId}
+              tittel={
+                stillingsId ? 'Jobbsøker for stillingsoppdrag' : 'Jobbsøker'
+              }
+            />
             <div ref={headerRef} className='flex items-center justify-between'>
               <div className='ml-5'>
                 <Checkbox
@@ -114,7 +121,6 @@ const KandidatSøkResultat: FC<KandidatSøkResultatProps> = ({
               <div className='flex flex-col gap-1 pt-2'>
                 {kandidatData.kandidater?.map((kandidat, index) => (
                   <KandidatKort
-                    stillingsId={stillingsId}
                     alleredeLagtTil={
                       alleredeLagtTilKandidatliste ?? alleredeLagtTilTreff
                     }

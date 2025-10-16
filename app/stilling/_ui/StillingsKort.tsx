@@ -2,7 +2,6 @@ import { RekrutteringsbistandStillingSchemaDTO } from '@/app/api/stillings-sok/s
 import StillingsTag from '@/app/stilling/_ui/StillingsTag';
 import { visStillingsDataInfo } from '@/app/stilling/_util/stillingInfoUtil';
 import { hentArbeidssted } from '@/app/stilling/_util/stillingssøk-util';
-import VisStillingModal from '@/components/modal/stilling/VisStillingModal';
 // import TekstMedIkon from '@/components/felles/TekstMedIkon';
 // import { formaterNorskDato } from '@/util/util';
 import ArbeidsplassenLogo from '@/public/arbeidsplassen.png';
@@ -16,7 +15,8 @@ import {
 } from '@navikt/aksel-icons';
 import { Box, Heading } from '@navikt/ds-react';
 import Image from 'next/image';
-import { FC, ReactNode, useState } from 'react';
+import { useQueryState } from 'nuqs';
+import { FC, ReactNode } from 'react';
 
 export interface IStillingsKort {
   stillingData: RekrutteringsbistandStillingSchemaDTO;
@@ -24,8 +24,10 @@ export interface IStillingsKort {
 }
 
 const StillingsKort: FC<IStillingsKort> = ({ stillingData, kandidatId }) => {
-  const [visStillingModal, setVisStillingModal] = useState(false);
-
+  const [, setVisStillingsId] = useQueryState('visStillingsId', {
+    defaultValue: '',
+    clearOnDefault: true,
+  });
   const stillingsDataInfo = visStillingsDataInfo(stillingData);
 
   const erFormidling = stillingsDataInfo.erFormidling;
@@ -35,17 +37,10 @@ const StillingsKort: FC<IStillingsKort> = ({ stillingData, kandidatId }) => {
     if (kandidatId) {
       return (
         <>
-          {visStillingModal && (
-            <VisStillingModal
-              onClose={() => setVisStillingModal(false)}
-              stillingsId={stillingData.stilling.uuid}
-              kandidatId={kandidatId}
-            />
-          )}
           <div
             onClick={() => {
               if (kandidatId) {
-                setVisStillingModal(true);
+                setVisStillingsId(stillingData.stilling.uuid);
               }
             }}
             className='p-5 cursor-pointer'

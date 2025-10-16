@@ -19,7 +19,8 @@ import VelgInternStatus from '@/app/stilling/[stillingsId]/kandidatliste/_ui/Vel
 import VisKandidatModal from '@/components/modal/kandidat/VisKandidatModal';
 import { formaterNorskDato } from '@/util/util';
 import { BodyShort, Box } from '@navikt/ds-react';
-import { FC, MouseEvent, useState } from 'react';
+import { useQueryState } from 'nuqs';
+import { FC, MouseEvent } from 'react';
 
 export interface KandidatListeKortProps {
   kandidat?: KandidatVisningProps;
@@ -34,8 +35,10 @@ const KandidatListeKort: FC<KandidatListeKortProps> = ({
 }) => {
   const stillingsContext = useNullableStillingsContext();
   const { lukketKandidatliste, kandidatlisteId } = useKandidatlisteContext();
-
-  const [visKandidatnr, setVisKandidatnr] = useState<string | null>(null);
+  const [visKandidatId, setVisKandidatId] = useQueryState('visKandidatId', {
+    defaultValue: '',
+    clearOnDefault: true,
+  });
 
   if (usynligKandidat) {
     const fåttJobben =
@@ -116,18 +119,16 @@ const KandidatListeKort: FC<KandidatListeKortProps> = ({
     const aktiv = false;
     return (
       <>
-        {visKandidatnr && (
+        {visKandidatId && (
           <VisKandidatModal
             forKandidatliste={kandidatlisteId}
             tittel={'Jobbsøker i liste'}
             stillingsId={stillingsContext!.stillingsData.stilling.uuid!}
-            kandidatId={visKandidatnr}
-            onClose={() => setVisKandidatnr(null)}
           />
         )}
         <Box.New
           onClick={() =>
-            !inaktiv ? setVisKandidatnr(kandidat?.kandidatnr ?? '') : null
+            !inaktiv ? setVisKandidatId(kandidat?.kandidatnr ?? '') : null
           }
           padding='4'
           background='neutral-softA'

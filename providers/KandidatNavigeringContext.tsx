@@ -33,7 +33,7 @@ export const KandidatNavigeringProvider: React.FC<{
   const [harNesteKandidat, setHarNesteKandidat] = useState<boolean>(false);
   const [harForrigeKandidat, setHarForrigeKandidat] = useState<boolean>(false);
 
-  const [kandidatNr, settKandidatnr] = useQueryState('visKandidatnr', {
+  const [kandidatNr, settKandidatnr] = useQueryState('visKandidatId', {
     defaultValue: '',
     clearOnDefault: true,
   });
@@ -99,6 +99,15 @@ export const KandidatNavigeringProvider: React.FC<{
       {children}
     </KandidatNavigeringContext.Provider>
   );
+};
+
+export const useNullableKandidatNavigeringContext = () => {
+  const context = useContext(KandidatNavigeringContext);
+
+  if (context === undefined) {
+    return null;
+  }
+  return context;
 };
 
 export const useKandidatNavigeringContext = () => {
