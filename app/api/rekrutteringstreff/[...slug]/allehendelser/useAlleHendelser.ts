@@ -9,6 +9,7 @@ import {
   JobbsøkerHendelsestype as JobbsøkerHendelsestypeConst,
   RekrutteringstreffHendelsestype as RekrutteringstreffHendelsestypeConst,
 } from '@/app/rekrutteringstreff/_types/constants';
+import { http, HttpResponse } from 'msw';
 import useSWR from 'swr';
 import { z } from 'zod';
 
@@ -38,5 +39,7 @@ export type AlleHendelserDTO = z.infer<typeof AlleHendelserSchema>;
 export const useAlleHendelser = (id: string) =>
   useSWR(alleHendelserEndepunkt(id), getAPIwithSchema(AlleHendelserSchema));
 
-export const alleHendelserMirage = (server: any) =>
-  server.get(alleHendelserEndepunkt('*'), () => alleHendelserMock());
+export const alleHendelserMSWHandler = http.get(
+  `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/allehendelser`,
+  () => HttpResponse.json(alleHendelserMock()),
+);

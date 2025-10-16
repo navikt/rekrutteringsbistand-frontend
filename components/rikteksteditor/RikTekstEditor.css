@@ -6,7 +6,7 @@
 }
 
 .ProseMirror > * {
-  margin-bottom: 1.25rem; /* --a-spacing-5 equivalent */
+  margin-bottom: 1.25rem; /*--ax-space-20 equivalent */
 }
 
 .ProseMirror > *:last-child {
@@ -14,7 +14,7 @@
 }
 
 .ProseMirror h1 {
-  margin: 1rem 0 1.25rem; /* --a-spacing-4 0 --a-spacing-5 */
+  margin: 1rem 0 1.25rem; /*--ax-space-16 0--ax-space-20 */
   letter-spacing: -0.03em;
   font-weight: 700;
   font-size: 1.875rem;
@@ -22,7 +22,7 @@
 }
 
 .ProseMirror h2 {
-  margin: 1.75rem 0 1rem; /* --a-spacing-7 0 --a-spacing-4 */
+  margin: 1.75rem 0 1rem; /*--ax-space-28 0--ax-space-16 */
   letter-spacing: -0.022em;
   font-weight: 700;
   font-size: 1.5rem;
@@ -30,7 +30,7 @@
 }
 
 .ProseMirror h3 {
-  margin: 1.75rem 0 0.75rem; /* --a-spacing-7 0 --a-spacing-3 */
+  margin: 1.75rem 0 0.75rem; /*--ax-space-28 0--ax-space-12 */
   letter-spacing: -0.019em;
   font-weight: 700;
   font-size: 1.25rem;
@@ -38,7 +38,7 @@
 }
 
 .ProseMirror h4 {
-  margin: 1.75rem 0 0.75rem; /* --a-spacing-7 0 --a-spacing-3 */
+  margin: 1.75rem 0 0.75rem; /*--ax-space-28 0--ax-space-12 */
   letter-spacing: -0.017em;
   font-weight: 700;
   font-size: 1.125rem;
@@ -46,7 +46,7 @@
 }
 
 .ProseMirror p {
-  margin: 0.75rem 0 1.25rem; /* --a-spacing-3 0 --a-spacing-5 */
+  margin: 0.75rem 0 1.25rem; /*--ax-space-12 0--ax-space-20 */
   font-size: 1.125rem;
   line-height: 1.8;
   letter-spacing: -0.011em;
@@ -55,7 +55,7 @@
 .ProseMirror ul,
 .ProseMirror ol {
   padding-left: 1.5rem;
-  margin-bottom: 1.25rem; /* --a-spacing-5 */
+  margin-bottom: 1.25rem; /*--ax-space-20 */
 }
 
 .ProseMirror ul {
@@ -67,11 +67,11 @@
 }
 
 .ProseMirror li {
-  margin-bottom: 0.75rem; /* --a-spacing-3 */
+  margin-bottom: 0.75rem; /*--ax-space-12 */
   font-size: 1.125rem;
   line-height: 1.625;
 }
 
 .ProseMirror li p {
-  margin: 0 0 0.5rem; /* 0 0 --a-spacing-2 */
+  margin: 0 0 0.5rem; /* 0 0--ax-space-8 */
 }

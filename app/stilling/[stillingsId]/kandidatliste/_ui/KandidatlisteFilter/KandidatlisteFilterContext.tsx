@@ -17,7 +17,7 @@ enum KandidatlisteFilterParam {
   SIDE = 'kandidatlisteSide',
   SORTERING = 'kandidatlisteSortering',
   INTERN_STATUS = 'kandidatlsiteInternStatus',
-  VIS_SLETTEDE = 'visSlettedeKanidater',
+  VIS_SLETTEDE = 'visSlettedeKandidater',
   HENDELSE_TYPE = 'kandidatlisteHendelseType',
 }
 
@@ -91,7 +91,7 @@ export const KandidatlisteFilterContextProvider: FC<
 
   const [visSlettede, setVisSlettede] = useQueryState<string>(
     KandidatlisteFilterParam.VIS_SLETTEDE,
-    parseAsString.withDefault('').withOptions({ clearOnDefault: true }),
+    parseAsString.withDefault('false').withOptions({ clearOnDefault: true }),
   );
 
   return (

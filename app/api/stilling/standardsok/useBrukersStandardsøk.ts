@@ -1,5 +1,6 @@
 import { StillingAPI } from '@/app/api/api-routes';
 import { getAPIwithSchema } from '@/app/api/fetcher';
+import { http, HttpResponse } from 'msw';
 import useSWR from 'swr';
 import { z } from 'zod';
 
@@ -26,12 +27,12 @@ export const useUseBrukerStandardSøk = () =>
     },
   );
 
-export const brukerStandardSøkMirage = (server: any) => {
-  return server.get(brukerStandardSøkEndepunkt, () => {
-    return {
+export const brukerStandardSøkMSWHandler = http.get(
+  brukerStandardSøkEndepunkt,
+  () =>
+    HttpResponse.json({
       søk: 'publisert=intern&statuser=publisert%2Cutl%C3%B8pt%2Cstoppet&fylker=33&kommuner=3301',
       navIdent: 'Z993141',
       tidspunkt: '2025-01-22T21:35:39.691808',
-    };
-  });
-};
+    }),
+);

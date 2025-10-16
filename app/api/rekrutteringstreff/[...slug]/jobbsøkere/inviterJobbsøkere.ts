@@ -1,6 +1,7 @@
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { postApi } from '@/app/api/fetcher';
 import { logger } from '@navikt/next-logger';
+import { http, HttpResponse } from 'msw';
 
 const rekrutteringstreffInviterJobbsøkereEndepunkt = (
   rekrutteringstreffId: string,
@@ -27,11 +28,7 @@ export const inviterJobbsøkere = async (
   }
 };
 
-export const inviterJobbsøkereMirage = (server: any) => {
-  server.post(
-    '/api/rekrutteringstreff/:rekrutteringstreffId/jobbsoker/inviter',
-    () => {
-      return {};
-    },
-  );
-};
+export const inviterJobbsøkereMSWHandler = http.post(
+  `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/jobbsoker/inviter`,
+  () => HttpResponse.json({}),
+);

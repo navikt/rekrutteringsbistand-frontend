@@ -2,6 +2,7 @@
 
 import lokasjonerMock from './lokasjoner.mock.json';
 import { getAPIwithSchema } from '@/app/api/fetcher';
+import { http, HttpResponse } from 'msw';
 import { useMemo } from 'react';
 /**
  * Endepunkt /usePamGeografi
@@ -57,7 +58,6 @@ export const usePamGeografi = () => {
   };
 };
 
-export const pamGeografiMirage = (server: any) =>
-  server.get(pamGeografiEndepunkt, () => {
-    return lokasjonerMock;
-  });
+export const pamGeografiMSWHandler = http.get(pamGeografiEndepunkt, () =>
+  HttpResponse.json(lokasjonerMock),
+);

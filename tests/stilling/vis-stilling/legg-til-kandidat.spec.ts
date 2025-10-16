@@ -1,10 +1,12 @@
-import test, { expect } from '@playwright/test';
+// Tillatt dyp relativ import for test fixtures
+// eslint-disable-next-line import/no-restricted-paths
+import { test, expect } from '../../fixtures';
 
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 
 test.describe(`Legg til kandidat knapp `, () => {
-  test('Legg til kandidat', async ({ page }) => {
-    await page.goto('http://localhost:1337/stilling/minStilling');
+  test('Legg til kandidat', async ({ page, gotoApp }) => {
+    await gotoApp('/stilling/minStilling');
     await page
       .locator('span')
       .filter({ hasText: 'Legg til jobbsøkere' })
@@ -22,8 +24,8 @@ test.describe(`Legg til kandidat knapp `, () => {
     ).toBeVisible();
   });
 
-  test('Usynlig kandidat', async ({ page }) => {
-    await page.goto('http://localhost:1337/stilling/minStilling');
+  test('Usynlig kandidat', async ({ page, gotoApp }) => {
+    await gotoApp('/stilling/minStilling');
     await page
       .locator('span')
       .filter({ hasText: 'Legg til jobbsøkere' })
@@ -39,8 +41,8 @@ test.describe(`Legg til kandidat knapp `, () => {
     ).toBeVisible();
   });
 
-  test('Ikke tilgang til kandidat', async ({ page }) => {
-    await page.goto('http://localhost:1337/stilling/minStilling');
+  test('Ikke tilgang til kandidat', async ({ page, gotoApp }) => {
+    await gotoApp('/stilling/minStilling');
     await page
       .locator('span')
       .filter({ hasText: 'Legg til jobbsøkere' })
@@ -59,8 +61,8 @@ test.describe(`Legg til kandidat knapp `, () => {
     ).toBeVisible();
   });
 
-  test('Finner ikke kandidat', async ({ page }) => {
-    await page.goto('http://localhost:1337/stilling/minStilling');
+  test('Finner ikke kandidat', async ({ page, gotoApp }) => {
+    await gotoApp('/stilling/minStilling');
     await page
       .locator('span')
       .filter({ hasText: 'Legg til jobbsøkere' })

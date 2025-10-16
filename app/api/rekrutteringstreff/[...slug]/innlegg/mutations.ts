@@ -3,6 +3,7 @@ import type { InnleggDTO } from './useInnlegg';
 import { InnleggSchema } from './useInnlegg';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { postApi, putApi } from '@/app/api/fetcher';
+import { http, HttpResponse } from 'msw';
 import { z } from 'zod';
 
 // Schemas som kun brukes for mutations
@@ -58,17 +59,12 @@ export const oppdaterInnlegg = async (
   return InnleggResponseDtoSchema.parse(response);
 };
 
-export const opprettInnleggMirage = (server: any) => {
-  server.post('/api/rekrutteringstreff/:rekrutteringstreffId/innlegg', () => {
-    return innleggMock[0];
-  });
-};
+export const opprettInnleggMSWHandler = http.post(
+  `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/innlegg`,
+  () => HttpResponse.json(innleggMock[0]),
+);
 
-export const oppdaterInnleggMirage = (server: any) => {
-  server.put(
-    '/api/rekrutteringstreff/:rekrutteringstreffId/innlegg/:innleggId',
-    () => {
-      return innleggMock[0];
-    },
-  );
-};
+export const oppdaterInnleggMSWHandler = http.put(
+  `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/innlegg/:innleggId`,
+  () => HttpResponse.json(innleggMock[0]),
+);

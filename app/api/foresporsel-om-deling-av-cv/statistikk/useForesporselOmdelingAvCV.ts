@@ -6,6 +6,7 @@
 import { ForespørselDelingAvCvAPI } from '@/app/api/api-routes';
 import { getAPIwithSchema } from '@/app/api/fetcher';
 import { forespørselOmDelingAvCVStatistikkMock } from '@/app/api/foresporsel-om-deling-av-cv/mocks/forespørselStatistikkMock';
+import { http, HttpResponse } from 'msw';
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
 
@@ -52,8 +53,7 @@ export const useForesporselOmdelingAvCV = ({
     getAPIwithSchema(delingAvCVSchema),
   );
 
-export const foresporselOmDelingAvCVStatistikkMirage = (server: any) =>
-  server.get(
-    '/api/foresporsel-om-deling-av-cv/statistikk',
-    () => forespørselOmDelingAvCVStatistikkMock,
-  );
+export const foresporselOmDelingAvCVStatistikkMSWHandler = http.get(
+  '/api/foresporsel-om-deling-av-cv/statistikk',
+  () => HttpResponse.json(forespørselOmDelingAvCVStatistikkMock),
+);

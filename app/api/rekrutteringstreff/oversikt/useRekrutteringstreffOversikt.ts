@@ -6,7 +6,7 @@
 import { rekrutteringstreffOversiktMock } from './useRekrutteringstreffOversiktMock';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { getAPIwithSchema } from '@/app/api/fetcher';
-import { Server } from 'miragejs';
+import { http, HttpResponse } from 'msw';
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
 
@@ -40,9 +40,7 @@ export const useRekrutteringstreffOversikt = () =>
     getAPIwithSchema(RekrutteringstreffOversiktSchema),
   );
 
-export const rekrutteringstreffOversiktMirage = (server: Server) => {
-  return server.get(
-    `${RekrutteringstreffAPI.internUrl}`,
-    () => rekrutteringstreffOversiktMock,
-  );
-};
+export const rekrutteringstreffOversiktMSWHandler = http.get(
+  `${RekrutteringstreffAPI.internUrl}`,
+  () => HttpResponse.json(rekrutteringstreffOversiktMock),
+);

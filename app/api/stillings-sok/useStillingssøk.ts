@@ -10,6 +10,7 @@ import { StillingsSokCombinedSchema } from './schema/stillingsSokCombinedSchema.
 import { StillingsSøkAPI } from '@/app/api/api-routes';
 import { usePamGeografi } from '@/app/api/pam-geografi/typehead/lokasjoner/usePamGeografi';
 import { IStillingsSøkContext } from '@/app/stilling/StillingsSøkContext';
+import { http, HttpResponse, passthrough } from 'msw';
 /**
  * Endepunkt /stilling
  */
@@ -76,11 +77,12 @@ export const useStillingssøk = ({
   return combinedHook;
 };
 
-export const stillingssøkMirage = (server: any) => {
-  server.post(stillingsSokBase, () => ({
+export const stillingssøkMSWHandler = http.post(stillingsSokBase, () => {
+  if (process.env.NEXT_PUBLIC_STILLING_ES_MOCK === 'true') {
+    return passthrough(); // slipper igjennom til ekte backend
+  }
+  return HttpResponse.json({
     hits: mockStillingssøk.hits,
-    antall: {
-      status: { publisert: 0, utløpt: 0, stoppet: 0 },
-    },
-  }));
-};
+    antall: { status: { publisert: 0, utløpt: 0, stoppet: 0 } },
+  });
+});

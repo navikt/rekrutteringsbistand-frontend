@@ -5,7 +5,7 @@
  */
 import { KandidatAPI } from '@/app/api/api-routes';
 import { postApi } from '@/app/api/fetcher';
-import { Server } from 'miragejs/server';
+import { http, HttpResponse } from 'msw';
 
 export const formidleUsynligKandidatEndepunkt = (kandidatlisteId: string) =>
   `${KandidatAPI.internUrl}/veileder/kandidatlister/${kandidatlisteId}/formidlingeravusynligkandidat`;
@@ -27,8 +27,7 @@ export const formidleUsynligKandidat = (
   );
 };
 
-export const formidleUsynligKandidatMirage = (server: Server) => {
-  return server.post(formidleUsynligKandidatEndepunkt('*'), () => ({
-    message: 'Kandidaten er formidlet',
-  }));
-};
+export const formidleUsynligKandidatMSWHandler = http.post(
+  formidleUsynligKandidatEndepunkt(':kandidatlisteId'),
+  () => HttpResponse.json({ message: 'Kandidaten er formidlet' }),
+);

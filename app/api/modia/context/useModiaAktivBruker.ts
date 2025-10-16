@@ -5,7 +5,7 @@
  */
 import { ModiaDecoratorAPI } from '@/app/api/api-routes';
 import { getAPIwithSchema } from '@/app/api/fetcher';
-import { Server } from 'miragejs';
+import { http, HttpResponse } from 'msw';
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
 
@@ -21,8 +21,7 @@ export const useModiaAktivBruker = () =>
     getAPIwithSchema(ModiaAktivBrukerSchema),
   );
 
-export const modiaAktivBrukerMirage = (server: Server) => {
-  server.get(modiaAktivBrukerEndepunkt, () => {
-    return { aktivBruker: '16828397901' };
-  });
-};
+export const modiaAktivBrukerMSWHandler = http.get(
+  modiaAktivBrukerEndepunkt,
+  () => HttpResponse.json({ aktivBruker: '16828397901' }),
+);

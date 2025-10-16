@@ -2,10 +2,7 @@ import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsConte
 import KopierStillingLenke from '@/app/stilling/[stillingsId]/_ui/KopierStillingLenke';
 import StillingPrint from '@/app/stilling/[stillingsId]/_ui/StillingPrint';
 import StillingDropdown from '@/app/stilling/[stillingsId]/_ui/tabs/StillingDropdown';
-import {
-  VisningsStatus,
-  visStillingsDataInfo,
-} from '@/app/stilling/_util/stillingInfoUtil';
+import { StillingsStatus } from '@/app/stilling/_ui/stilling-typer';
 import { RefObject } from 'react';
 
 export default function TabKnapper({
@@ -16,12 +13,11 @@ export default function TabKnapper({
   const { stillingsData } = useStillingsContext();
 
   const kanKopierePrinteStilling =
-    visStillingsDataInfo(stillingsData).visningsStatus ===
-    VisningsStatus.ApenForSokere;
+    stillingsData.stilling.status === StillingsStatus.Aktiv;
   return (
     <div className='flex items-center'>
       {kanKopierePrinteStilling && (
-        <KopierStillingLenke stillingsId={stillingsData.stilling.uuid} />
+        <KopierStillingLenke stillingsData={stillingsData} />
       )}
       {kanKopierePrinteStilling && <StillingPrint printRef={printRef} />}
       <StillingDropdown />

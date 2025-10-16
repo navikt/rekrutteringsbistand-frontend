@@ -1,7 +1,8 @@
 import { byggStandardsokQuery } from './standardSokUtils';
 import { setNyttStandardsøk } from '@/app/api/stilling/standardsok/settStandardsøk';
 import { useUseBrukerStandardSøk } from '@/app/api/stilling/standardsok/useBrukersStandardsøk';
-import { Chips } from '@navikt/ds-react';
+import { FloppydiskIcon } from '@navikt/aksel-icons';
+import { Button, Tooltip } from '@navikt/ds-react';
 import { useSearchParams } from 'next/navigation';
 import { useQueryState } from 'nuqs';
 
@@ -19,27 +20,23 @@ export default function LagreStandardsøk() {
 
   const brukerStandardSøk = searchString === brukerStandardSøkData.data?.søk;
 
-  if (
+  const disabled =
     brukerStandardSøk ||
     searchString.length === 0 ||
-    visKandidatnr ||
-    harKunPortefolje
-  ) {
-    return null;
-  }
+    Boolean(visKandidatnr) ||
+    harKunPortefolje;
 
   return (
-    <Chips.Toggle
-      // variant='tertiary'
-      // aria-describedby='lagre-standardsok-beskrivelse'
-      checkmark={false}
-      variant='neutral'
-      onClick={async () => {
-        await setNyttStandardsøk(searchString);
-        await brukerStandardSøkData.mutate();
-      }}
-    >
-      Lagre som standardsøk
-    </Chips.Toggle>
+    <Tooltip content='Lagre nytt standardsøk'>
+      <Button
+        variant='tertiary'
+        disabled={disabled}
+        icon={<FloppydiskIcon />}
+        onClick={async () => {
+          await setNyttStandardsøk(searchString);
+          await brukerStandardSøkData.mutate();
+        }}
+      />
+    </Tooltip>
   );
 }

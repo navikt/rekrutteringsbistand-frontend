@@ -7,6 +7,7 @@ import {
   AktørType as AktørTypeConst,
   JobbsøkerHendelsestype as JobbsøkerHendelsestypeConst,
 } from '@/app/rekrutteringstreff/_types/constants';
+import { http, HttpResponse } from 'msw';
 import useSWR from 'swr';
 import { z } from 'zod';
 
@@ -41,8 +42,7 @@ export const useJobbsøkerHendelser = (id: string) => {
   );
 };
 
-export const jobbsøkerHendelserMirage = (server: any) => {
-  return server.get(jobbsøkerHendelserEndepunkt('*'), () =>
-    jobbsøkerHendelserMock(),
-  );
-};
+export const jobbsøkerHendelserMSWHandler = http.get(
+  `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/jobbsoker/hendelser`,
+  () => HttpResponse.json(jobbsøkerHendelserMock()),
+);

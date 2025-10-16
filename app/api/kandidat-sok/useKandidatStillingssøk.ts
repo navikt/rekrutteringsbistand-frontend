@@ -3,7 +3,7 @@
 import { KandidatSøkAPI } from '@/app/api/api-routes';
 import { postApiWithSchemaEs } from '@/app/api/fetcher';
 import { getSingleKandidatStillingssøk } from '@/mocks/kandidat.mock';
-import { Server } from 'miragejs';
+import { http, HttpResponse } from 'msw';
 /**
  * Endepunkt /useKandidatStillingssøk
  */
@@ -46,37 +46,25 @@ export const useKandidatStillingssøk = (kandidatId: string | null) =>
       : null,
   );
 
-export const kandidatStillingsSøkMirage = (server: Server) => {
-  return server.post(kandidatStillingssøkEndepunkt, (_, request) => {
-    const body = JSON.parse(request.requestBody);
-    const arenaKandidatnrFromRequest = body.kandidatnr;
-
-    // Handle special test cases if needed
-    if (arenaKandidatnrFromRequest === 'utenTilgang') {
-      return {
+export const kandidatStillingssøkMSWHandler = http.post(
+  kandidatStillingssøkEndepunkt,
+  async ({ request }) => {
+    const raw = await request.json().catch(() => undefined);
+    const kandidatnr = (raw && (raw as any).kandidatnr) as string | undefined;
+    if (!kandidatnr) return new Response(null, { status: 400 });
+    if (kandidatnr === 'utenTilgang') {
+      return HttpResponse.json({
         yrkeJobbonskerObj: [],
         geografiJobbonsker: [],
         kommunenummerstring: null,
         kommuneNavn: null,
-      };
+      });
     }
-
-    // Extract seed from arenaKandidatnr
-    const parts = arenaKandidatnrFromRequest.split('-');
-    const seedString = parts[parts.length - 1];
-    const seed = parseInt(seedString, 10);
-
-    // Get stillingssøk data using the seed
-    const stillingssøkData = getSingleKandidatStillingssøk(seed);
-
-    return {
-      hits: {
-        hits: [
-          {
-            _source: stillingssøkData,
-          },
-        ],
-      },
-    };
-  });
-};
+    const parts = kandidatnr.split('-');
+    const seed = parseInt(parts[parts.length - 1], 10);
+    const stillingssokData = getSingleKandidatStillingssøk(seed);
+    return HttpResponse.json({
+      hits: { hits: [{ _source: stillingssokData }] },
+    });
+  },
+);

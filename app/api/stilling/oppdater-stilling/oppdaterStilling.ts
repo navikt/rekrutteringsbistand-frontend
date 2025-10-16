@@ -2,7 +2,7 @@ import { putApi } from '@/app/api/fetcher';
 import { mockBaseStilling } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/mocks/stillingMock';
 import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { normaliserPropertiesTilStrenger } from '@/app/stilling/_util/normaliserStillingProperties';
-import { Server } from 'miragejs';
+import { http, HttpResponse } from 'msw';
 
 export const oppdaterStillingEndepunkt = '/api/stilling/oppdater-stilling';
 
@@ -50,6 +50,7 @@ export const oppdaterStilling = (
   return putApi(oppdaterStillingEndepunkt, body);
 };
 
-export const oppdaterStillingMirage = (server: Server) => {
-  return server.put(oppdaterStillingEndepunkt, () => mockBaseStilling);
-};
+export const oppdaterStillingMSWHandler = http.put(
+  oppdaterStillingEndepunkt,
+  async () => HttpResponse.json(mockBaseStilling),
+);

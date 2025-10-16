@@ -5,7 +5,7 @@
  */
 import { KandidatAPI } from '@/app/api/api-routes';
 import { getAPIwithSchema } from '@/app/api/fetcher';
-import { Server } from 'miragejs';
+import { http, HttpResponse } from 'msw';
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
 
@@ -43,9 +43,10 @@ export const useMineKandidatlister = (pageNumber: number) =>
     getAPIwithSchema(MineKandidatlisterSchema),
   );
 
-export const mineKandidatlisterMirage = (server: Server) => {
-  server.get(`${KandidatAPI.internUrl}/veileder/kandidatlister`, () => {
-    return {
+export const mineKandidatlisterMSWHandler = http.get(
+  `${KandidatAPI.internUrl}/veileder/kandidatlister`,
+  () =>
+    HttpResponse.json({
       liste: [
         {
           kandidatlisteId: '4e61831a-38e0-4d5b-ab0c-ffda4a0aa729',
@@ -53,10 +54,7 @@ export const mineKandidatlisterMirage = (server: Server) => {
           organisasjonReferanse: '824391122',
           organisasjonNavn: 'TEST.NO',
           stillingId: '3d0a4bec-f7b0-434b-a22e-d681504124e7',
-          opprettetAv: {
-            ident: 'TestIdent',
-            navn: 'F_993141 E_993141',
-          },
+          opprettetAv: { ident: 'TestIdent', navn: 'F_993141 E_993141' },
           opprettetTidspunkt: '2025-02-18T14:55:47.305',
           antallKandidater: 0,
           kanEditere: true,
@@ -69,6 +67,5 @@ export const mineKandidatlisterMirage = (server: Server) => {
         },
       ],
       antall: 88,
-    };
-  });
-};
+    }),
+);

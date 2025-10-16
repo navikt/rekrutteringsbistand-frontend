@@ -1,9 +1,10 @@
-import { expect, test } from '@playwright/test';
+import { gotoApp } from '@/tests/gotoApp';
+import { test, expect } from '@playwright/test';
 
 test('Test inngang fra arbeidsoppfølging hvis personen ikke finnes i rekrutteringsbistand', async ({
   page,
 }) => {
-  await page.goto('http://localhost:1337/personbruker');
+  await gotoApp(page, '/personbruker');
   await expect(
     page.getByRole('heading', { name: 'Personen vises ikke i' }),
   ).toBeVisible();

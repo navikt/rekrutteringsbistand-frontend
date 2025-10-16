@@ -2,6 +2,7 @@
 
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { getAPIwithSchema } from '@/app/api/fetcher';
+import { http, HttpResponse } from 'msw';
 import useSWR from 'swr';
 import { z } from 'zod';
 
@@ -19,13 +20,7 @@ export const useKandidatnummer = (personTreffId: string | null) => {
   return useSWR(swrKey, getAPIwithSchema(KandidatnummerSchema));
 };
 
-export const kandidatnummerMirage = (server: any) => {
-  server.get(
-    `${RekrutteringstreffAPI.internUrl}/jobbsoker/:personTreffId/kandidatnummer`,
-    () => {
-      return {
-        kandidatnummer: 'PAM0123ABCDE',
-      };
-    },
-  );
-};
+export const kandidatnummerMSWHandler = http.get(
+  `${RekrutteringstreffAPI.internUrl}/jobbsoker/:personTreffId/kandidatnummer`,
+  () => HttpResponse.json({ kandidatnummer: 'PAM0123ABCDE' }),
+);

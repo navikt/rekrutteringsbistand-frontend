@@ -4,6 +4,7 @@ import { getAPIwithSchema } from '@/app/api/fetcher';
 import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { RekrutteringsbistandStillingSchemaDTO } from '@/app/api/stillings-sok/schema/rekrutteringsbistandStillingSchema.zod';
 import { mockKandidatliste } from '@/mocks/kandidatliste.mock';
+import { http, HttpResponse } from 'msw';
 import useSWRImmutable from 'swr/immutable';
 
 export const kandidatlisteEndepunkt = (stillingsId?: string) =>
@@ -43,8 +44,7 @@ export const useKandidatlisteForEier = (
   );
 };
 
-export const kandidatlisteMirage = (server: any) => {
-  return server.get(kandidatlisteEndepunkt('*'), () => {
-    return mockKandidatliste;
-  });
-};
+export const kandidatlisteMSWHandler = http.get(
+  `${KandidatAPI.internUrl}/veileder/stilling/*/kandidatliste`,
+  () => HttpResponse.json(mockKandidatliste),
+);

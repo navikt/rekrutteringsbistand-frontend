@@ -6,6 +6,7 @@
 import { ForespørselDelingAvCvAPI } from '@/app/api/api-routes';
 import { getAPIwithSchema } from '@/app/api/fetcher';
 import { generateMockForespurteOmDelingAvCv } from '@/mocks/forespurteOmDelingAvCv.mock';
+import { http, HttpResponse } from 'msw';
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
 
@@ -57,8 +58,7 @@ export const useForespurteOmDelingAvCv = (stillingsId: string) =>
     },
   );
 
-export const foresporselOmDelingAvCVMirage = (server: any) => {
-  server.get(ForespurteOmDelingAvCvEndepunkt('*'), () =>
-    generateMockForespurteOmDelingAvCv(),
-  );
-};
+export const foresporselOmDelingAvCVMSWHandler = http.get(
+  ForespurteOmDelingAvCvEndepunkt('*'),
+  () => HttpResponse.json(generateMockForespurteOmDelingAvCv()),
+);

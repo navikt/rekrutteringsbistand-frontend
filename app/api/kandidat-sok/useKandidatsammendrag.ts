@@ -1,7 +1,7 @@
 import { KandidatSøkAPI } from '@/app/api/api-routes';
 import { postApiWithSchemaEs } from '@/app/api/fetcher';
 import { getSingleKandidatSammendrag } from '@/mocks/kandidat.mock';
-import { Server } from 'miragejs';
+import { http, HttpResponse } from 'msw';
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
 
@@ -41,26 +41,17 @@ export const useKandidatsammendrag = (kandidatnr: string) =>
     },
   );
 
-export const kandidagsammendragMirage = (server: Server) => {
-  return server.post(kandidatsammendragEndepunkt, (_: any, request: any) => {
-    const body = JSON.parse(request.requestBody);
-    const arenaKandidatnrFromRequest = body.kandidatnr;
-
-    // Extract seed from arenaKandidatnr
-    const parts = arenaKandidatnrFromRequest.split('-');
-    const seedString = parts[parts.length - 1];
-    const seed = parseInt(seedString, 10);
-
+export const kandidatsammendragMSWHandler = http.post(
+  kandidatsammendragEndepunkt,
+  async ({ request }) => {
+    const raw = await request.json().catch(() => undefined);
+    const kandidatnr = (raw && (raw as any).kandidatnr) as string | undefined;
+    if (!kandidatnr) return new Response(null, { status: 400 });
+    const parts = kandidatnr.split('-');
+    const seed = parseInt(parts[parts.length - 1], 10);
     const sammendrag = getSingleKandidatSammendrag(seed);
-
-    return {
-      hits: {
-        hits: [
-          {
-            _source: sammendrag,
-          },
-        ],
-      },
-    };
-  });
-};
+    return HttpResponse.json({
+      hits: { hits: [{ _source: sammendrag }] },
+    });
+  },
+);

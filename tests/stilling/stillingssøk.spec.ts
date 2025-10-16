@@ -1,12 +1,13 @@
+import { gotoApp } from '@/tests/gotoApp';
 import { visMørkModus } from '@/tests/visMørkModus';
-import test, { expect } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 
 // Bruker arbeidsgiverrettet tilgang
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 
 test.describe(`Stillingssøk test`, () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('http://localhost:1337/stilling');
+    await gotoApp(page, '/stilling');
     await expect(
       page.getByLabel('Brødsmulesti').getByText('Stillingsoppdrag'),
     ).toBeVisible({ timeout: 15000 });

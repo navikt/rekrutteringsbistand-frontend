@@ -1,9 +1,7 @@
-import darkside from '@navikt/ds-tailwind/darkside-tw3';
 import scrollbar from 'tailwind-scrollbar';
 
 /** @type {import('tailwindcss').Config} */
-export default {
-  presets: [darkside],
+const config = {
   content: [
     './app/**/*.{js,ts,jsx,tsx,mdx,css}',
     './_ui/**/*.{js,ts,jsx,tsx,mdx}',
@@ -15,3 +13,5 @@ export default {
   },
   plugins: [scrollbar({ nocompatible: true })],
 };
+
+export default config;

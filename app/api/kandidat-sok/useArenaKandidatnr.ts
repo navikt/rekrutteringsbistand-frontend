@@ -1,7 +1,7 @@
 import { KandidatSøkAPI } from '@/app/api/api-routes';
 import { postApiWithSchema } from '@/app/api/fetcher';
 import { getSingleKandidatDataSchema } from '@/mocks/kandidat.mock';
-import { Server } from 'miragejs';
+import { http, HttpResponse } from 'msw';
 import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
 
@@ -32,37 +32,31 @@ export const useArenaKandidatnr = (fødselsnummer: string | null) => {
   );
 };
 
-export const arenaKandidatnrMirage = (server: Server) => {
-  server.post(hentArenaKandidatnrEndepunkt, (_, request) => {
-    const body = JSON.parse(request.requestBody);
-    const fodselsnummer = body.fodselsnummer;
+export const arenaKandidatnrMSWHandler = http.post(
+  hentArenaKandidatnrEndepunkt,
+  async ({ request }) => {
+    const raw = await request.json().catch(() => undefined);
+    const fodselsnummer = (raw && (raw as any).fodselsnummer) as
+      | string
+      | undefined;
+    if (!fodselsnummer) return new Response(null, { status: 400 });
 
     if (fodselsnummer === '16828397901') {
-      return { arenaKandidatnr: null };
+      return HttpResponse.json({ arenaKandidatnr: null });
     }
-
     if (fodselsnummer === '16828397900') {
-      return { arenaKandidatnr: 'test-arena-kandidatnr' };
+      return HttpResponse.json({ arenaKandidatnr: 'test-arena-kandidatnr' });
     }
-
-    const parts = fodselsnummer?.split('-');
-
-    // Check if the format is as expected
-    if (parts && parts.length >= 3) {
-      const seedString = parts[parts.length - 1];
-      const seed = parseInt(seedString, 10);
-
-      // Only proceed if we can get a valid seed number
+    const parts = fodselsnummer.split('-');
+    if (parts.length >= 3) {
+      const seed = parseInt(parts[parts.length - 1], 10);
       if (!isNaN(seed)) {
-        // Get the mock data with this seed to ensure consistent values
         const kandidatData = getSingleKandidatDataSchema(seed);
-
-        // Return the arenaKandidatnr from the mock data
-        return {
+        return HttpResponse.json({
           arenaKandidatnr: kandidatData.arenaKandidatnr,
-        };
+        });
       }
     }
-    return null;
-  });
-};
+    return HttpResponse.json(null);
+  },
+);

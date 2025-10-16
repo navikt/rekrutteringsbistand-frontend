@@ -3,6 +3,7 @@
 import { validerRekrutteringstreffMock } from './validerRekrutteringstreffMock';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { postApi } from '@/app/api/fetcher';
+import { http, HttpResponse } from 'msw';
 import useSWRMutation from 'swr/mutation';
 import { z } from 'zod';
 
@@ -47,8 +48,7 @@ export const useValiderRekrutteringstreff = (treffId?: string) =>
     ValiderRekrutteringstreffDto
   >(validerRekrutteringstreffEndepunkt(treffId ?? ':id'), fetcher);
 
-export const validerRekrutteringstreffMirage = (server: any): void => {
-  server.post(validerRekrutteringstreffEndepunkt(':id'), () => {
-    return validerRekrutteringstreffMock();
-  });
-};
+export const validerRekrutteringstreffMSWHandler = http.post(
+  validerRekrutteringstreffEndepunkt(':id'),
+  () => HttpResponse.json(validerRekrutteringstreffMock()),
+);

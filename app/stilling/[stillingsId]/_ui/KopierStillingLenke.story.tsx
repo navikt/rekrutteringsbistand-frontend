@@ -1,4 +1,5 @@
 import KopierStillingLenke from './KopierStillingLenke';
+import { mockBaseStilling } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/mocks/stillingMock';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 const meta = {
@@ -9,5 +10,5 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  args: { stillingsId: '00000000-0000-0000-0000-000000000000' },
+  args: { stillingsData: mockBaseStilling },
 };

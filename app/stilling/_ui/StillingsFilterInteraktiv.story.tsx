@@ -46,7 +46,7 @@ const meta = {
       </section>
       <section className='space-y-2 md:col-span-2'>
         <h4 className='font-semibold text-sm'>Chips</h4>
-        <StillingsSøkChips skjulLagreStandard={true} />
+        <StillingsSøkChips />
       </section>
       <section className='space-y-2'>
         <h4 className='font-semibold text-sm'>Sortering</h4>
