@@ -10,13 +10,14 @@ import formaterMedStoreOgSmåBokstaver from '@/util/tekst';
 import {
   BriefcaseIcon,
   Buildings2Icon,
+  ExternalLinkIcon,
   // PersonIcon,
   PinIcon,
 } from '@navikt/aksel-icons';
-import { Box, Button, Heading } from '@navikt/ds-react';
+import { Box, Heading, Tooltip } from '@navikt/ds-react';
 import Image from 'next/image';
 import { useQueryState } from 'nuqs';
-import { FC } from 'react';
+import { FC, MouseEvent } from 'react';
 
 export interface IStillingsKort {
   stillingData: RekrutteringsbistandStillingSchemaDTO;
@@ -29,7 +30,9 @@ const StillingsKort: FC<IStillingsKort> = ({ stillingData, kandidatId }) => {
     clearOnDefault: true,
   });
   const stillingsDataInfo = visStillingsDataInfo(stillingData);
-
+  const stopAllPropagation = (e: MouseEvent<HTMLElement>): void => {
+    e.stopPropagation();
+  };
   const erFormidling = stillingsDataInfo.erFormidling;
   const erDirektemeldt = stillingsDataInfo.erDirektemeldt;
 
@@ -62,11 +65,31 @@ const StillingsKort: FC<IStillingsKort> = ({ stillingData, kandidatId }) => {
           <div className='flex items-start gap-2 min-w-0'>
             <Heading
               size='small'
-              className='flex-1 min-w-0 truncate pr-2'
+              className='flex-1 min-w-0 pr-2 inline-flex items-center gap-1'
               title={stillingData?.stilling?.tittel || 'Ukjent tittel'}
             >
-              {stillingData?.stilling?.tittel || 'Ukjent tittel'}
+              <span className='truncate min-w-0'>
+                {stillingData?.stilling?.tittel || 'Ukjent tittel'}
+              </span>
+              <Tooltip content='Åpne i ny fane'>
+                <a
+                  onClick={stopAllPropagation}
+                  onPointerDown={stopAllPropagation}
+                  onMouseDown={stopAllPropagation}
+                  onAuxClick={stopAllPropagation}
+                  target='_blank'
+                  href={
+                    erFormidling
+                      ? `/etterregistrering/${stillingData.stilling.uuid}`
+                      : `/stilling/${stillingData.stilling.uuid}`
+                  }
+                  className='flex-shrink-0 inline-flex items-center text-text-subtle hover:text-text-default'
+                >
+                  <ExternalLinkIcon className='shrink-0' />
+                </a>
+              </Tooltip>
             </Heading>
+
             <div className='flex-shrink-0'>
               <StillingsTag stillingsData={stillingData} />
             </div>
@@ -95,21 +118,9 @@ const StillingsKort: FC<IStillingsKort> = ({ stillingData, kandidatId }) => {
                 ) || '-'}
               </span>
             </div>
-            <div className='mt-3 flex justify-end flex-shrink-0'>
-              <a
-                target='_blank'
-                href={
-                  erFormidling
-                    ? `/etterregistrering/${stillingData.stilling.uuid}`
-                    : `/stilling/${stillingData.stilling.uuid}`
-                }
-              >
-                <Button size='small' variant='tertiary'>
-                  {' '}
-                  Åpne i ny fane
-                </Button>
-              </a>
-            </div>
+            {/* <div className='mt-3 flex justify-end flex-shrink-0'>
+            
+            </div> */}
           </div>
         </div>
       </div>

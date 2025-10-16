@@ -7,8 +7,13 @@ import {
   hentKandidatensØnskedeYrker,
 } from '@/app/kandidat/util';
 import TekstMedIkon from '@/components/TekstMedIkon';
-import { HandShakeHeartIcon, HouseIcon, PinIcon } from '@navikt/aksel-icons';
-import { Box, Checkbox, Heading, Tag } from '@navikt/ds-react';
+import {
+  ExternalLinkIcon,
+  HandShakeHeartIcon,
+  HouseIcon,
+  PinIcon,
+} from '@navikt/aksel-icons';
+import { Box, Checkbox, Heading, Tag, Tooltip } from '@navikt/ds-react';
 import { useQueryState } from 'nuqs';
 import { FC, MouseEvent } from 'react';
 
@@ -38,6 +43,10 @@ const KandidatKort: FC<IKandidatKort> = ({ kandidat, alleredeLagtTil }) => {
 
   const kandidatId = kandidat.arenaKandidatnr;
   const aktiv = visKandidatId === kandidatId;
+
+  const stopAllPropagation = (e: MouseEvent<HTMLElement>): void => {
+    e.stopPropagation();
+  };
 
   // const ankerWrapper = (children: ReactNode) => {
   //   if (stillingsId) {
@@ -108,13 +117,32 @@ const KandidatKort: FC<IKandidatKort> = ({ kandidat, alleredeLagtTil }) => {
 
         <div className='flex-grow'>
           <div className='flex justify-between'>
-            <Heading size='small'>
+            <Heading
+              size='small'
+              className='flex-1 min-w-0 pr-2 inline-flex items-center gap-1'
+            >
               <div
                 data-testid={`kandidatkort-lenke-${kandidat.arenaKandidatnr}`}
               >
                 {hentKandidatensNavn(kandidat)}
               </div>
+              {kandidat.arenaKandidatnr && (
+                <Tooltip content='Åpne i ny fane'>
+                  <a
+                    onClick={stopAllPropagation}
+                    onPointerDown={stopAllPropagation}
+                    onMouseDown={stopAllPropagation}
+                    onAuxClick={stopAllPropagation}
+                    target='_blank'
+                    href={'/kandidat/' + kandidat.arenaKandidatnr}
+                    className='flex-shrink-0 inline-flex items-center text-text-subtle hover:text-text-default'
+                  >
+                    <ExternalLinkIcon className='shrink-0' />
+                  </a>
+                </Tooltip>
+              )}
             </Heading>
+
             <Tag variant='neutral' size='small'>
               {kandidat.innsatsgruppe &&
                 alleInnsatsgrupper[kandidat.innsatsgruppe].label}
