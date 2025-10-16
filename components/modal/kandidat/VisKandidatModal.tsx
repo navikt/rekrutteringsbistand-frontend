@@ -41,6 +41,7 @@ export default function VisKandidatModal({
       onClose={() => setVisKandidatId('')}
       aria-labelledby='modal-heading'
       closeOnBackdropClick
+      className='flex flex-col h-[95vh]'
     >
       <SWRLaster hooks={[kandidatHook]}>
         {(kandidat) => {

@@ -28,13 +28,18 @@ export default function VisStillingModal({
 
   return (
     <Modal
+      className='flex flex-col h-[95vh]'
       closeOnBackdropClick
       width={'1280px'}
       open
       onClose={() => setVisStillingsId('')}
       aria-labelledby='modal-heading'
     >
-      <SWRLaster hooks={[kandidatHook, kandidatlisteInfoHook]} allowPartialData>
+      <SWRLaster
+        hooks={[kandidatHook, kandidatlisteInfoHook]}
+        skjulFeilmelding
+        allowPartialData
+      >
         {(kandidat, kandidatlisteInfo) => {
           return (
             <>
