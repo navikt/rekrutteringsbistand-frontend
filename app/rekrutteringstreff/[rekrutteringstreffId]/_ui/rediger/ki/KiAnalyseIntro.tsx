@@ -59,17 +59,8 @@ const KiAnalyseIntro: FC<KiAnalyseIntroProps> = ({ title }) => {
                 <span
                   ref={personopplysningerRef}
                   className='underline cursor-pointer'
-                  onClick={() =>
-                    setPersonopplysningerOpen(!personopplysningerOpen)
-                  }
-                  aria-expanded={personopplysningerOpen}
-                  role='button'
-                  tabIndex={0}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      setPersonopplysningerOpen(!personopplysningerOpen);
-                    }
-                  }}
+                  onMouseEnter={() => setPersonopplysningerOpen(true)}
+                  onMouseLeave={() => setPersonopplysningerOpen(false)}
                 >
                   personopplysninger
                 </span>{' '}
@@ -77,15 +68,8 @@ const KiAnalyseIntro: FC<KiAnalyseIntroProps> = ({ title }) => {
                 <span
                   ref={diskriminerendeRef}
                   className='underline cursor-pointer'
-                  onClick={() => setDiskriminerendeOpen(!diskriminerendeOpen)}
-                  aria-expanded={diskriminerendeOpen}
-                  role='button'
-                  tabIndex={0}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      setDiskriminerendeOpen(!diskriminerendeOpen);
-                    }
-                  }}
+                  onMouseEnter={() => setDiskriminerendeOpen(true)}
+                  onMouseLeave={() => setDiskriminerendeOpen(false)}
                 >
                   diskriminerende
                 </span>{' '}
@@ -149,6 +133,7 @@ const KiAnalyseIntro: FC<KiAnalyseIntroProps> = ({ title }) => {
           open={diskriminerendeOpen}
           onClose={() => setDiskriminerendeOpen(false)}
           anchorEl={diskriminerendeRef.current}
+          className=' max-w-md'
         >
           <Popover.Content>
             <div className='space-y-3'>
