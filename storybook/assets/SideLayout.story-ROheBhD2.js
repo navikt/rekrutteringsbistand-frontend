@@ -1,0 +1,7 @@
+import{j as r}from"./iframe-Bm0iWSAX.js";import{S as a}from"./SideLayout-DVeGg9Z9.js";import"./preload-helper-PPVm8Dsz.js";import"./Fremdriftspanel-CEsD4NMl.js";import"./MaksBredde-BaF2sH9x.js";import"./RekBisKort-D4ewTMce.js";import"./Box-D7jN4NLQ.js";import"./BasePrimitive-DSuUDil5.js";const u={tags:["autodocs"],component:a,render:t=>r.jsx(a,{...t,children:r.jsxs("div",{className:"p-6 space-y-4",children:[r.jsx("p",{children:"Hovedinnhold"}),r.jsx("p",{children:"Flere avsnitt med tekst for å demonstrere layout."})]})}),args:{fremdriftspanel:r.jsx("div",{children:"Innhold i fremdriftspanel"})}},e={args:{}},s={args:{skjulFremdriftspanel:!0}};e.parameters={...e.parameters,docs:{...e.parameters?.docs,source:{originalSource:`{
+  args: {} as any
+} as any`,...e.parameters?.docs?.source}}};s.parameters={...s.parameters,docs:{...s.parameters?.docs,source:{originalSource:`{
+  args: {
+    skjulFremdriftspanel: true
+  } as any
+} as any`,...s.parameters?.docs?.source}}};export{e as MedPanel,s as SkjultPanel,u as default};
