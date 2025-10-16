@@ -2,8 +2,8 @@ import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsConte
 import KopierStillingLenke from '@/app/stilling/[stillingsId]/_ui/KopierStillingLenke';
 import StillingPrint from '@/app/stilling/[stillingsId]/_ui/StillingPrint';
 import StillingDropdown from '@/app/stilling/[stillingsId]/_ui/tabs/StillingDropdown';
-import { RefObject } from 'react';
 import { StillingsStatus } from '@/app/stilling/_ui/stilling-typer';
+import { RefObject } from 'react';
 
 export default function TabKnapper({
   printRef,

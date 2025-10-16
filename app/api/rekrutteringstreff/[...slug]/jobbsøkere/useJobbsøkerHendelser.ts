@@ -1,11 +1,13 @@
 'use client';
 
+import { jobbsøkerHendelserMock } from './jobbsøkerHendelserMock';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { getAPIwithSchema } from '@/app/api/fetcher';
 import {
   AktørType as AktørTypeConst,
   JobbsøkerHendelsestype as JobbsøkerHendelsestypeConst,
 } from '@/app/rekrutteringstreff/_types/constants';
+import { http, HttpResponse } from 'msw';
 import useSWR from 'swr';
 import { z } from 'zod';
 
@@ -39,3 +41,8 @@ export const useJobbsøkerHendelser = (id: string) => {
     getAPIwithSchema(JobbsøkerHendelserSchema),
   );
 };
+
+export const jobbsøkerHendelserMSWHandler = http.get(
+  `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/jobbsoker/hendelser`,
+  () => HttpResponse.json(jobbsøkerHendelserMock()),
+);
