@@ -1,5 +1,5 @@
 import KiLogg from '../kilogg/components/KiLogg';
-import KiAnalyse from '../rediger/ki/KiAnalyse';
+import KiAnalyse from '../rediger/ki/KiAnalyseIntro';
 import KiAnalysePanel from '../rediger/ki/KiAnalysePanel';
 import { MockRekrutteringstreffProvider } from '@/storybook/mocks';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
@@ -24,10 +24,10 @@ const meta = {
               bryterRetningslinjer: false,
             }}
             analyseError={undefined}
-            forceSave={false}
+            harGodkjentKiFeil={false}
             showAnalysis={true}
             erRedigeringAvPublisertTreff={false}
-            onForceSave={() => {}}
+            onGodkjennKiFeil={() => {}}
             ariaLabel='Analyse av innlegget'
           />
         </section>

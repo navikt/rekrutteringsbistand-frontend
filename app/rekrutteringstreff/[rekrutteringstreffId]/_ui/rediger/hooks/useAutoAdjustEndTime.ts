@@ -15,10 +15,10 @@ export function useAutoAdjustEndTime(
 ) {
   const adjustEndTime = useCallback(
     (
-      startDato: Date | null,
-      startTid: string | null,
-      currentEndDato: Date | null,
-      currentEndTid: string | null,
+      startDato: Date | null | undefined,
+      startTid: string | null | undefined,
+      currentEndDato: Date | null | undefined,
+      currentEndTid: string | null | undefined,
       endDatoField: string,
       endTidField: string,
     ) => {
