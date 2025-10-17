@@ -40,7 +40,7 @@ const EtterRegistreringSøkLayout: FC = () => {
       }
     >
       <StillingsSøkFilter formidlinger={true} />
-      <div className='@container flex'>
+      <div className='@container flex contain-layout'>
         <div className='flex-grow min-w-0'>
           <StillingsSøkeresultat />
         </div>

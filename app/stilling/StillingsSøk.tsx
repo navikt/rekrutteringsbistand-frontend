@@ -108,7 +108,7 @@ const StillingsSøkLayout: FC<StillingsSøkProps> = ({
   }
 
   return (
-    <div className='@container flex'>
+    <div className='@container flex contain-layout'>
       <div className='flex-grow min-w-0'>
         <div ref={stillingsøkFilterRef}>
           <StillingsSøkFilter
@@ -116,7 +116,7 @@ const StillingsSøkLayout: FC<StillingsSøkProps> = ({
             stillingForKandidat={forKandidatNr}
           />
         </div>
-        <div className='@container flex'>
+        <div className='@container flex contain-layout'>
           <div className='flex-grow min-w-0'>
             <StillingsSøkeresultat
               kandidatId={forKandidatNr}

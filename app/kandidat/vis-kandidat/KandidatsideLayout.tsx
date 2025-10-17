@@ -25,7 +25,7 @@ const KandidatSideLayout: FC<KandidatSideProps> = ({ children }) => {
 
   return (
     <div className='py-5'>
-      <div className='@container/kandidatside '>
+      <div className='@container/kandidatside contain-layout'>
         <Heading size='large'>
           {kandidatData.fornavn} {kandidatData.etternavn}
         </Heading>

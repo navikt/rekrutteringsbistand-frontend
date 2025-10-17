@@ -28,7 +28,7 @@ const ValgteKontorer: FC = () => {
   };
 
   return (
-    <div ref={portalRef} className='relative'>
+    <div ref={portalRef}>
       <UNSAFE_Combobox
         isLoading={isLoading}
         selectedOptions={valgtKontor}
