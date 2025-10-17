@@ -1,6 +1,9 @@
 import { oppdaterStilling } from '@/app/api/stilling/oppdater-stilling/oppdaterStilling';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
-import { StillingsStatus } from '@/app/stilling/_ui/stilling-typer';
+import {
+  AdminStatus,
+  StillingsStatus,
+} from '@/app/stilling/_ui/stilling-typer';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import {
   CircleSlashIcon,
@@ -28,7 +31,10 @@ export default function EndreSøkeforslag() {
   const [publiserArbeidsplassen, setPubliserArbeidsplassen] = useState(false);
   const [open, setOpen] = useState(false);
 
-  const endreStatus = async (status: StillingsStatus) => {
+  const endreStatus = async (
+    status: StillingsStatus,
+    adminStatus: AdminStatus,
+  ) => {
     setLoading(true);
     try {
       const response = await oppdaterStilling(
@@ -38,6 +44,10 @@ export default function EndreSøkeforslag() {
             ...(stillingsData.stilling as any),
             status: status,
             privacy: publiserArbeidsplassen ? 'SHOW_ALL' : 'INTERNAL_NOT_SHOWN',
+            administration: {
+              ...(stillingsData.stilling.administration as any),
+              status: adminStatus,
+            },
           },
         },
         {
@@ -66,7 +76,9 @@ export default function EndreSøkeforslag() {
           icon={<PauseIcon />}
           size='small'
           className='w-full  mt-4'
-          onClick={() => endreStatus(StillingsStatus.Inaktiv)}
+          onClick={() =>
+            endreStatus(StillingsStatus.Inaktiv, AdminStatus.Pending)
+          }
         >
           Pause søkerforslag
         </Button>
@@ -137,7 +149,9 @@ export default function EndreSøkeforslag() {
           <Modal.Footer>
             <Button
               type='button'
-              onClick={() => endreStatus(StillingsStatus.Aktiv)}
+              onClick={() =>
+                endreStatus(StillingsStatus.Aktiv, AdminStatus.Done)
+              }
             >
               Åpne søkerforslag
             </Button>
