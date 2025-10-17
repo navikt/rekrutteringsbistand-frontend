@@ -24,18 +24,20 @@ export default function RekrutteringstreffForm({
     defaultValues: {},
   });
 
-  const hydratedRef = useRef(false);
+  const lastHydratedIdRef = useRef<string | null>(null);
 
   useEffect(() => {
-    if (!data || hydratedRef.current) return;
-    methods.reset(toDefaults(data));
-    hydratedRef.current = true;
+    if (!data) return;
+    const currentId = data?.id ?? null;
+    if (lastHydratedIdRef.current === currentId) return;
+    methods.reset(tilFormValues(data));
+    lastHydratedIdRef.current = currentId;
   }, [data, methods]);
 
   return <FormProvider {...methods}>{children}</FormProvider>;
 }
 
-function toDefaults(treff: any): OppdaterRekrutteringstreffDTO {
+function tilFormValues(treff: any): OppdaterRekrutteringstreffDTO {
   const fra = treff.fraTid ? parseISO(treff.fraTid) : null;
   const til = treff.tilTid ? parseISO(treff.tilTid) : null;
   const svarfrist = treff.svarfrist ? parseISO(treff.svarfrist) : null;

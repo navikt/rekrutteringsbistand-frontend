@@ -20,7 +20,7 @@ type AnyValues = Record<string, any>;
  * - Andre felt kan fortsatt lagres
  * - Bruker må trykke "Lagre likevel" for å godkjenne og lagre ny verdi
  */
-const skalBlokkereVedKiFeil = (
+const skalStanseAutosavePgaKi = (
   overstyrKiFeil: boolean,
   endrerFelt: boolean,
   kiFeil: boolean,
@@ -28,7 +28,7 @@ const skalBlokkereVedKiFeil = (
 ): boolean => {
   if (overstyrKiFeil) return false;
   if (!endrerFelt) return false;
-  return kiSjekket && kiFeil;
+  return !kiSjekket || kiFeil;
 };
 
 /**
@@ -75,7 +75,7 @@ export function useAutosaveRekrutteringstreff() {
       );
 
       if (
-        skalBlokkereVedKiFeil(
+        skalStanseAutosavePgaKi(
           overstyrKiFeil ?? false,
           endrerTittel,
           tittelKiFeil,
@@ -154,7 +154,7 @@ export function useAutosaveInnlegg() {
       );
 
       if (
-        skalBlokkereVedKiFeil(
+        skalStanseAutosavePgaKi(
           overstyrKiFeil ?? false,
           endrerInnlegg,
           innleggKiFeil,
