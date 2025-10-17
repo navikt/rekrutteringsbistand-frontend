@@ -62,7 +62,7 @@ export default function PanelHeader({
   const hasTabs = childArr.some(
     (c: any) => c && typeof c === 'object' && 'props' in c && c.props?.tabs,
   );
-  const borderCls = 'border-b border-b-[var(--ax-border-neutral-subtle)]';
+
   // Ønsket endring: Tabs skal alltid ligge under original (kompakt) header uten å påvirke høyden.
   // Derfor tvinger vi compact = true uavhengig av om seksjoner har tabs.
   const compact = true;
@@ -130,8 +130,10 @@ export default function PanelHeader({
 
   return (
     <PanelHeaderModeContext.Provider value={{ compact }}>
+      {/* Full bredde med linje */}
+
       <div
-        className={`flex flex-col ${borderCls} ${compact ? (hasTabs ? 'pt-4 pb-0' : 'py-4') : ''} ${className}`}
+        className={` w-full flex flex-col ${compact ? (hasTabs ? 'pt-4 pb-0' : 'py-4') : ''} ${className}`}
       >
         {enhancedChildren}
       </div>
@@ -195,11 +197,11 @@ export function PanelHeaderSection({
       <div className={rowClass}>
         <div className='flex items-center gap-3 min-w-0 flex-1 flex-wrap'>
           {!skjulBrødsmuler && !winCtx?.isDynamic ? (
-            <div className='px-4 pt-2 max-w-full'>
+            <div className='pt-2 max-w-full'>
               <AutoBreadcrumbs erstattPath={erstattPath} />
             </div>
           ) : (
-            title
+            title && <div className='text-lg font-semibold  pt-2'>{title}</div>
           )}
           {subtitle && (
             <div className='min-w-0'>

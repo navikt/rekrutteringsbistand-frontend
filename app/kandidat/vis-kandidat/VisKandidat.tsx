@@ -5,6 +5,7 @@ import FinnStillingForKandidatKnapp from '@/app/kandidat/_ui/ActionLinks/FinnSti
 import NavigerTilAktivitetsplanenKnapp from '@/app/kandidat/_ui/ActionLinks/NavigerTilAktivitetsplanenKnapp';
 import KandidatAktivitet from '@/app/kandidat/vis-kandidat/aktivitet-fane/KandidatAktivitet';
 import KandidatOversikt from '@/app/kandidat/vis-kandidat/oversikt-fane/KandidatOversikt';
+import KandidatIKandidatliste from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatIKandidatliste/KandidatIKandidatliste';
 import SideScroll from '@/components/SideScroll';
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideLayout from '@/components/layout/SideLayout';
@@ -18,7 +19,13 @@ enum Fane {
   AKTIVITET = 'aktivitet',
 }
 
-const VisKandidat = () => {
+export interface VisKandidatProps {
+  kandidatlisteKandidat?: string;
+}
+
+export default function VisKandidat({
+  kandidatlisteKandidat,
+}: VisKandidatProps) {
   // const pathname = usePathname();
   // const { kandidatId } = useKandidatContext();
   // const [visStillingId] = useQueryState('visStillingId', {
@@ -70,6 +77,11 @@ const VisKandidat = () => {
             Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
           ]}
         >
+          {kandidatlisteKandidat && (
+            <KandidatIKandidatliste
+              kandidatlisteKandidat={kandidatlisteKandidat}
+            />
+          )}
           <SideScroll>
             <Tabs.Panel value={Fane.OVERSIKT}>
               <div className='w-full'>
@@ -95,6 +107,4 @@ const VisKandidat = () => {
       </SideLayout>
     </Tabs>
   );
-};
-
-export default VisKandidat;
+}

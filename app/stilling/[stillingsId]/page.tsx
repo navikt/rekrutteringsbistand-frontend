@@ -1,5 +1,6 @@
 'use client';
 
+import LeggKandidatTilKandidatliste from '@/app/kandidat/vis-kandidat/_ui/LeggKandidatTilKandidatliste';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import StillingsutkastMelding from '@/app/stilling/[stillingsId]/_ui/StillingsutkastMelding';
 import FremdriftspanelStilling from '@/app/stilling/[stillingsId]/_ui/fremdriftspanel/FremdriftspanelStilling';
@@ -14,7 +15,7 @@ import { StillingsStatus } from '@/app/stilling/_ui/stilling-typer';
 import { visStillingsDataInfo } from '@/app/stilling/_util/stillingInfoUtil';
 import SideScroll from '@/components/SideScroll';
 import PanelHeader from '@/components/layout/PanelHeader';
-import SideLayout, { SideLayoutMobilTop } from '@/components/layout/SideLayout';
+import SideLayout from '@/components/layout/SideLayout';
 import { Alert, Heading, Tabs } from '@navikt/ds-react';
 import { useQueryState } from 'nuqs';
 import { useRef } from 'react';
@@ -24,13 +25,19 @@ enum StillingFane {
   KANDIDATER = 'kandidater',
 }
 
-export default function StillingsSidePage() {
+export default function StillingsSidePage({
+  kandidatId,
+}: {
+  kandidatId?: string;
+}) {
   const [fane, setFane] = useQueryState('stillingFane', {
     defaultValue: StillingFane.STILLING,
     clearOnDefault: true,
   });
   const { erEier, kandidatlisteInfo, stillingsData, forhåndsvisData } =
     useStillingsContext();
+
+  const kunVisning = kandidatId !== undefined;
 
   const printRef = useRef<HTMLDivElement>(null);
 
@@ -47,6 +54,7 @@ export default function StillingsSidePage() {
     stillingsData?.stilling?.source === 'DIR';
 
   const skjulFremdriftspanel =
+    kunVisning ||
     fane !== StillingFane.STILLING ||
     erUtkast ||
     (stillingsData.stilling.source === 'DIR' && !erEier);
@@ -78,13 +86,30 @@ export default function StillingsSidePage() {
                   stillingsData.stilling.uuid,
                   stillingsData?.stilling?.title,
                 ]}
-                tabs={<StillingTabs />}
+                tabs={
+                  kandidatId ? (
+                    <div className='flex justify-between'>
+                      <StillingTabs />
+                      <div className='shrink-0 mt-3'>
+                        <LeggKandidatTilKandidatliste
+                          kandidatId={kandidatId}
+                          stillingId={stillingsData.stilling.uuid}
+                        />
+                      </div>
+                    </div>
+                  ) : (
+                    <StillingTabs />
+                  )
+                }
                 actionsRight={<TabKnapper printRef={printRef} />}
               />
             </PanelHeader>
           }
-          skjulFremdriftspanel={skjulFremdriftspanel}
-          fremdriftspanel={<SideScroll>{fremdriftsPanel()}</SideScroll>}
+          sidepanel={
+            skjulFremdriftspanel ? undefined : (
+              <SideScroll>{fremdriftsPanel()}</SideScroll>
+            )
+          }
         >
           {ugyldigStilling && !erUtkast && (
             <Alert variant='error'>
@@ -100,17 +125,20 @@ export default function StillingsSidePage() {
           )}
           <Tabs.Panel value={StillingFane.STILLING}>
             <SideScroll>
-              <SideLayoutMobilTop>{fremdriftsPanel(true)}</SideLayoutMobilTop>
+              {/* <SideLayoutMobilTop>{fremdriftsPanel(true)}</SideLayoutMobilTop> */}
               <OmStillingenHeader />
+
               {erUtkast && <StillingsutkastMelding />}
-              <OmStillingen printRef={printRef} />
+              <OmStillingen printRef={printRef} skjulKnapper={kunVisning} />
             </SideScroll>
           </Tabs.Panel>
           {kandidatlisteInfo?.kandidatlisteId && erEier && (
             <>
               <Tabs.Panel value={StillingFane.KANDIDATER}>
                 <KandidatlisteWrapper>
-                  <FiltrertKandidatListeVisning />
+                  <FiltrertKandidatListeVisning
+                    kunVisning={kandidatId !== undefined}
+                  />
                 </KandidatlisteWrapper>
               </Tabs.Panel>
             </>

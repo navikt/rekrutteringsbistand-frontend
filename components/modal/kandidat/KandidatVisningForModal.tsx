@@ -4,7 +4,7 @@ import { KandidatContextProvider } from '@/app/kandidat/vis-kandidat/KandidatCon
 import KandidatSideLayout from '@/app/kandidat/vis-kandidat/KandidatsideLayout';
 import KandidatAktivitet from '@/app/kandidat/vis-kandidat/aktivitet-fane/KandidatAktivitet';
 import KandidatOversikt from '@/app/kandidat/vis-kandidat/oversikt-fane/KandidatOversikt';
-import KandidatVisningSidebar from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatVisningSidebar/KandidatVisningSidebar';
+import KandidatVisningSidebar from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatIKandidatliste/KandidatIKandidatliste';
 import { Box, Button, Tabs } from '@navikt/ds-react';
 import { ArrowRightIcon } from 'lucide-react';
 
@@ -24,7 +24,7 @@ export default function KandidatVisningForModal({
 }: KandidatVisningForModalProps) {
   const kandidatlisteVisning = forKandidatliste ? (
     <Box.New background='default' padding='4' borderRadius='large'>
-      <KandidatVisningSidebar kandidatnr={kandidatId} />
+      <KandidatVisningSidebar kandidatlisteKandidat={kandidatId} />
     </Box.New>
   ) : null;
 

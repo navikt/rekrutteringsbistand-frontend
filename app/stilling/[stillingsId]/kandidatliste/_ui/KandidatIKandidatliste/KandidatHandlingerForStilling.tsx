@@ -1,3 +1,5 @@
+'use client';
+
 import { endreUtfallKandidat } from '@/app/api/kandidat/endreKandidatUtfall';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import { KandidatutfallTyper } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
@@ -72,7 +74,9 @@ const KandidatHandlingerForStilling: FC<KandidatHandlingerForStillingProps> = ({
     <div className='flex flex-col gap-4'>
       <div className='flex justify-between'>
         <div>
-          <div className='mb-2'>{stillingsData.stilling.title}</div>
+          <div className='mb-2'>
+            Kanditatliste for {stillingsData.stilling.title}
+          </div>
           {kandidat.arkivert ? (
             <SlettetTag kandidat={kandidat} />
           ) : (
@@ -98,7 +102,7 @@ const KandidatHandlingerForStilling: FC<KandidatHandlingerForStillingProps> = ({
         !fåttJobben &&
         !cvDeltMedArbeidsgiver &&
         !cvFjernetFraArbeidsgiver && (
-          <div className='grid grid-rows-2 gap-2'>
+          <div className='grid grid-cols-2 gap-2'>
             <DelMedKandidatModal
               markerteKandidater={[kandidat]}
               fjernAllMarkering={() => {}}
@@ -110,19 +114,20 @@ const KandidatHandlingerForStilling: FC<KandidatHandlingerForStillingProps> = ({
         )}
 
       {kandidat.arkivert ? (
-        <EndreArkivertStatusKnapp
-          lukketKandidatliste={lukketKandidatliste}
-          slettet={kandidat.arkivert}
-          modalRef={modalRef}
-        />
-      ) : (
-        <div className='grid grid-cols-2 gap-2 justify-between @3xl:flex @3xl:justify-between'>
-          <SendSmsModal
-            markerteKandidater={[kandidat]}
-            fjernAllMarkering={() => {}}
-            sidebar
+        <div className='flex flex-1 justify-end'>
+          <EndreArkivertStatusKnapp
+            lukketKandidatliste={lukketKandidatliste}
+            slettet={kandidat.arkivert}
+            modalRef={modalRef}
           />
-          <div>
+        </div>
+      ) : (
+        <>
+          <div className='grid grid-cols-2 gap-2'>
+            <SendSmsModal
+              markerteKandidater={[kandidat]}
+              fjernAllMarkering={() => {}}
+            />
             {kandidat.utfall !== KandidatutfallTyper.FATT_JOBBEN ? (
               <RegistrerFåttJobbenKnapp
                 loading={loading}
@@ -136,13 +141,13 @@ const KandidatHandlingerForStilling: FC<KandidatHandlingerForStillingProps> = ({
                 lukketKandidatliste={lukketKandidatliste}
               />
             )}
+            {!cvFjernetFraArbeidsgiver && cvDeltMedArbeidsgiver && (
+              <FjernDelingMedArbeidsgiver
+                kandidatnummer={kandidat.kandidatnr}
+                navKontor={valgtNavKontor?.navKontor ?? null}
+              />
+            )}
           </div>
-          {!cvFjernetFraArbeidsgiver && cvDeltMedArbeidsgiver && (
-            <FjernDelingMedArbeidsgiver
-              kandidatnummer={kandidat.kandidatnr}
-              navKontor={valgtNavKontor?.navKontor ?? null}
-            />
-          )}
           <div className='flex flex-1 justify-end'>
             <EndreArkivertStatusKnapp
               lukketKandidatliste={lukketKandidatliste}
@@ -150,7 +155,7 @@ const KandidatHandlingerForStilling: FC<KandidatHandlingerForStillingProps> = ({
               modalRef={modalRef}
             />
           </div>
-        </div>
+        </>
       )}
       <EndreArkivertStatusModal
         modalRef={modalRef}

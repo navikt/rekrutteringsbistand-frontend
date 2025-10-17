@@ -1,3 +1,5 @@
+'use client';
+
 import { RekbisError } from '@/util/rekbisError';
 import { getSessionStorage, setSessionStorage } from '@/util/sessionStorage';
 import { useQueryState } from 'nuqs';

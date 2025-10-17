@@ -1,3 +1,5 @@
+'use client';
+
 import { KandidatDataSchema } from './schema/cvSchema.zod';
 import { KandidatSøkAPI } from '@/app/api/api-routes';
 import { postApiWithSchemaEs } from '@/app/api/fetcher';

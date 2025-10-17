@@ -2,6 +2,7 @@
 
 import Statistikk from './_ui/Statistikk';
 import PanelHeader from '@/components/layout/PanelHeader';
+import SideInnhold from '@/components/layout/SideInnhold';
 import SideLayout from '@/components/layout/SideLayout';
 
 export default function Forside() {
@@ -9,13 +10,14 @@ export default function Forside() {
     <SideLayout
       header={
         <PanelHeader>
-          <PanelHeader.Section title={'Oversikt'} />
+          <PanelHeader.Section skjulBrødsmuler title={'Oversikt'} />
         </PanelHeader>
       }
     >
-      <div className='mt-5'>
+      <SideInnhold>
+        {' '}
         <Statistikk />
-      </div>
+      </SideInnhold>
     </SideLayout>
   );
 }

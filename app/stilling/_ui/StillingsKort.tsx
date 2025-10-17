@@ -10,13 +10,11 @@ import formaterMedStoreOgSmåBokstaver from '@/util/tekst';
 import {
   BriefcaseIcon,
   Buildings2Icon,
-  ExternalLinkIcon,
   // PersonIcon,
   PinIcon,
 } from '@navikt/aksel-icons';
-import { Box, Heading, Tooltip } from '@navikt/ds-react';
+import { Box, Heading } from '@navikt/ds-react';
 import Image from 'next/image';
-import { useQueryState } from 'nuqs';
 import { FC, MouseEvent } from 'react';
 
 export interface IStillingsKort {
@@ -25,10 +23,10 @@ export interface IStillingsKort {
 }
 
 const StillingsKort: FC<IStillingsKort> = ({ stillingData, kandidatId }) => {
-  const [, setVisStillingsId] = useQueryState('visStillingsId', {
-    defaultValue: '',
-    clearOnDefault: true,
-  });
+  // const [, setVisStillingsId] = useQueryState('visStillingsId', {
+  //   defaultValue: '',
+  //   clearOnDefault: true,
+  // });
   const stillingsDataInfo = visStillingsDataInfo(stillingData);
   const stopAllPropagation = (e: MouseEvent<HTMLElement>): void => {
     e.stopPropagation();
@@ -37,94 +35,94 @@ const StillingsKort: FC<IStillingsKort> = ({ stillingData, kandidatId }) => {
   const erDirektemeldt = stillingsDataInfo.erDirektemeldt;
 
   return (
-    <Box.New
-      className={`group cursor-pointer`}
-      background='neutral-softA'
-      padding='5'
-      borderRadius='xlarge'
-      data-testid='stillings-kort'
-      onClick={() => setVisStillingsId(stillingData.stilling.uuid)}
+    <a
+      href={
+        kandidatId
+          ? `/kandidat/${kandidatId}/finn-stilling/${stillingData.stilling.uuid}`
+          : erFormidling
+            ? `/etterregistrering/${stillingData.stilling.uuid}`
+            : `/stilling/${stillingData.stilling.uuid}`
+      }
     >
-      <div className='flex  items-start min-w-0'>
-        <div className='pr-4'>
-          {erDirektemeldt ? (
-            // <BriefcaseIcon aria-hidden />
-            <Image width={'26'} height={'26'} alt='intern' src={NavLogo} />
-          ) : (
-            <Image
-              width={'26'}
-              height={'26'}
-              alt='arbeidsplassen.no'
-              src={ArbeidsplassenLogo}
-            />
-          )}
-        </div>
-        {/* Innhold */}
-        <div className={`flex-1 min-w-0 `}>
-          {/* Tittel + tag */}
-          <div className='flex items-start gap-2 min-w-0'>
-            <Heading
-              size='small'
-              className='flex-1 min-w-0 pr-2 inline-flex items-center gap-1'
-              title={stillingData?.stilling?.tittel || 'Ukjent tittel'}
-            >
-              <span className='truncate min-w-0'>
-                {stillingData?.stilling?.tittel || 'Ukjent tittel'}
-              </span>
-              <Tooltip content='Åpne i ny fane'>
-                <a
-                  onClick={stopAllPropagation}
-                  onPointerDown={stopAllPropagation}
-                  onMouseDown={stopAllPropagation}
-                  onAuxClick={stopAllPropagation}
-                  target='_blank'
-                  href={
-                    erFormidling
-                      ? `/etterregistrering/${stillingData.stilling.uuid}`
-                      : `/stilling/${stillingData.stilling.uuid}`
-                  }
-                  className='flex-shrink-0 inline-flex items-center text-text-subtle hover:text-text-default'
-                >
-                  <ExternalLinkIcon className='shrink-0' />
-                </a>
-              </Tooltip>
-            </Heading>
-
-            <div className='flex-shrink-0'>
-              <StillingsTag stillingsData={stillingData} />
-            </div>
+      <Box.New
+        className={`group cursor-pointer`}
+        background='neutral-softA'
+        padding='5'
+        borderRadius='xlarge'
+        data-testid='stillings-kort'
+        // onClick={() => setVisStillingsId(stillingData.stilling.uuid)}
+      >
+        <div
+          className='opacity-0 transition-opacity
+                   group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto z-10'
+          onClick={stopAllPropagation}
+          onMouseDown={stopAllPropagation}
+          onPointerDown={stopAllPropagation}
+        ></div>
+        <div className='flex  items-start min-w-0'>
+          <div className='pr-4'>
+            {erDirektemeldt ? (
+              // <BriefcaseIcon aria-hidden />
+              <Image width={'26'} height={'26'} alt='intern' src={NavLogo} />
+            ) : (
+              <Image
+                width={'26'}
+                height={'26'}
+                alt='arbeidsplassen.no'
+                src={ArbeidsplassenLogo}
+              />
+            )}
           </div>
-          {/* Info + knapper */}
-          <div className='flex gap-2 items-start min-w-0'>
-            <div className='text-sm text-text-subtle flex flex-wrap gap-x-4 gap-y-1 flex-1 min-w-0'>
-              <span className='flex items-center gap-1'>
-                <Buildings2Icon aria-hidden className='text-text-subtle' />
-                {stillingData.stilling?.businessName || 'Ukjent bedrift'}
-              </span>
-              <span className='flex items-center gap-1'>
-                <BriefcaseIcon aria-hidden className='text-text-subtle' />
-                {[
-                  stillingData.stilling.properties?.engagementtype,
-                  stillingData.stilling.properties?.extent,
-                ]
-                  .filter(Boolean)
-                  .join(', ') || '-'}
-              </span>
+          {/* Innhold */}
+          <div className={`flex-1 min-w-0 `}>
+            {/* Tittel + tag */}
+            <div className='flex items-start gap-2 min-w-0'>
+              <Heading
+                size='small'
+                className='flex-1 min-w-0 pr-2 inline-flex items-center gap-1'
+                title={stillingData?.stilling?.tittel || 'Ukjent tittel'}
+              >
+                <span className='truncate min-w-0'>
+                  {stillingData?.stilling?.tittel || 'Ukjent tittel'}
+                </span>
+              </Heading>
 
-              <span className='flex items-center gap-1'>
-                <PinIcon aria-hidden className='text-text-subtle' />
-                {formaterMedStoreOgSmåBokstaver(
-                  hentArbeidssted(stillingData.stilling.locations),
-                ) || '-'}
-              </span>
+              <div className='flex-shrink-0'>
+                <StillingsTag stillingsData={stillingData} />
+              </div>
             </div>
-            {/* <div className='mt-3 flex justify-end flex-shrink-0'>
+            {/* Info + knapper */}
+            <div className='flex gap-2 items-start min-w-0'>
+              <div className='text-sm text-text-subtle flex flex-wrap gap-x-4 gap-y-1 flex-1 min-w-0'>
+                <span className='flex items-center gap-1'>
+                  <Buildings2Icon aria-hidden className='text-text-subtle' />
+                  {stillingData.stilling?.businessName || 'Ukjent bedrift'}
+                </span>
+                <span className='flex items-center gap-1'>
+                  <BriefcaseIcon aria-hidden className='text-text-subtle' />
+                  {[
+                    stillingData.stilling.properties?.engagementtype,
+                    stillingData.stilling.properties?.extent,
+                  ]
+                    .filter(Boolean)
+                    .join(', ') || '-'}
+                </span>
+
+                <span className='flex items-center gap-1'>
+                  <PinIcon aria-hidden className='text-text-subtle' />
+                  {formaterMedStoreOgSmåBokstaver(
+                    hentArbeidssted(stillingData.stilling.locations),
+                  ) || '-'}
+                </span>
+              </div>
+              {/* <div className='mt-3 flex justify-end flex-shrink-0'>
             
             </div> */}
+            </div>
           </div>
         </div>
-      </div>
-    </Box.New>
+      </Box.New>
+    </a>
   );
 };
 

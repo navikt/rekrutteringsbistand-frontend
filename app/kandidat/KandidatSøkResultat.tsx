@@ -17,13 +17,11 @@ import RekrutteringstreffFeatureToggle from '@/components/RekrutteringstreffFeat
 import SWRLaster from '@/components/SWRLaster';
 import SideScroll from '@/components/SideScroll';
 import SkeletonKort from '@/components/layout/SkeletonKort';
-import VisKandidatModal from '@/components/modal/kandidat/VisKandidatModal';
 import { useKandidatNavigeringContext } from '@/providers/KandidatNavigeringContext';
 import { Checkbox, Pagination } from '@navikt/ds-react';
 import { FC, useEffect, useRef } from 'react';
 
 interface KandidatSøkResultatProps {
-  type: KandidatSøkPortefølje;
   stillingsId?: string;
   rekrutteringstreffId?: string;
   alleredeLagtTilTreff?: string[];
@@ -31,14 +29,17 @@ interface KandidatSøkResultatProps {
 }
 
 const KandidatSøkResultat: FC<KandidatSøkResultatProps> = ({
-  type,
   stillingsId,
   rekrutteringstreffId,
   alleredeLagtTilTreff,
   alleredeLagtTilKandidatliste,
 }) => {
   const filter = useKandidatSøkFilterContext();
-  const kandidatsøkHook = useKandidatsøk(type, filter);
+  const { portefølje } = useKandidatSøkFilterContext();
+  const kandidatsøkHook = useKandidatsøk(
+    portefølje as KandidatSøkPortefølje,
+    filter,
+  );
   const { setKandidatNavigering } = useKandidatNavigeringContext();
   const headerRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -82,12 +83,6 @@ const KandidatSøkResultat: FC<KandidatSøkResultatProps> = ({
 
         return (
           <>
-            <VisKandidatModal
-              stillingsId={stillingsId}
-              tittel={
-                stillingsId ? 'Jobbsøker for stillingsoppdrag' : 'Jobbsøker'
-              }
-            />
             <div ref={headerRef} className='flex items-center justify-between'>
               <div className='ml-5'>
                 <Checkbox
@@ -121,6 +116,7 @@ const KandidatSøkResultat: FC<KandidatSøkResultatProps> = ({
               <div className='flex flex-col gap-1 pt-2'>
                 {kandidatData.kandidater?.map((kandidat, index) => (
                   <KandidatKort
+                    stillingsId={stillingsId}
                     alleredeLagtTil={
                       alleredeLagtTilKandidatliste ?? alleredeLagtTilTreff
                     }

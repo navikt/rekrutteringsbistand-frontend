@@ -1,4 +1,4 @@
-import KandidatVisningSidebar from './KandidatVisningSidebar';
+import KandidatVisningSidebar from './KandidatIKandidatliste';
 import { MockStillingsProvider } from '@/.storybook/mocks';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
@@ -11,7 +11,7 @@ const meta = {
       <div className='grid md:grid-cols-2 gap-8 opacity-60 pointer-events-none'>
         <section className='space-y-2'>
           <h4 className='text-sm font-semibold'>KandidatVisningSidebar</h4>
-          <KandidatVisningSidebar kandidatnr='kandidat-1' />
+          <KandidatVisningSidebar kandidatlisteKandidat='kandidat-1' />
         </section>
         <section className='space-y-2'>
           <h4 className='text-sm font-semibold'>

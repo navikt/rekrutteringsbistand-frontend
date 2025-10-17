@@ -46,17 +46,15 @@ function generateMockUtfallsendring(): {
 // Function to map KandidatDataSchemaDTO to KandidatListeKandidatDTO
 export function mapKandidatDataToKandidatListeKandidat(
   kandidatData: KandidatDataSchemaDTO,
+  idNummer: number,
   // Pass faker instances if you want to control them from outside or ensure consistency
   // For simplicity, using the file-scoped fakers here.
 ): KandidatListeKandidatDTO {
   const erArkivert = listDecisionFaker.datatype.boolean(0.1); // 10% chance of being archived
 
   return {
-    kandidatId: listDataFaker.string.uuid(),
-    kandidatnr:
-      kandidatData.kandidatnr ||
-      kandidatData.arenaKandidatnr ||
-      `KAN${listDataFaker.string.numeric(8)}`,
+    kandidatId: `kandidat-arenaKandidatnr-${idNummer}`,
+    kandidatnr: `kandidat-aktorId-${idNummer}`,
     status: listDataFaker.helpers.arrayElement(
       Object.values(InternKandidatstatus),
     ),
@@ -102,7 +100,7 @@ export function mapKandidatDataToKandidatListeKandidat(
 }
 
 function generateMockKandidatlisteKandidater(
-  count: number = 10,
+  count: number = 100,
 ): KandidatListeKandidatDTO[] {
   const kandidater: KandidatListeKandidatDTO[] = [];
   for (let i = 0; i < count; i++) {
@@ -110,7 +108,9 @@ function generateMockKandidatlisteKandidater(
     // It's often better to manage state like this more explicitly if possible.
     const currentSeed = (globalKandidatSeedCounter || 0) + i + 1;
     const baseKandidatData = getSingleKandidatDataSchema(currentSeed);
-    kandidater.push(mapKandidatDataToKandidatListeKandidat(baseKandidatData));
+    kandidater.push(
+      mapKandidatDataToKandidatListeKandidat(baseKandidatData, i + 1),
+    );
   }
   // If globalKandidatSeedCounter is indeed global and mutable:
   // if (typeof globalKandidatSeedCounter === 'number') {
@@ -120,7 +120,7 @@ function generateMockKandidatlisteKandidater(
 }
 
 export const mockKandidatliste = {
-  kandidatlisteId: '0bbcde88-9709-4188-87ed-c516ef9868dc',
+  kandidatlisteId: 'minStilling',
   tittel: null,
   organisasjonReferanse: '312113341',
   organisasjonNavn: 'ORDKNAPP BLOMSTRETE TIGER AS',

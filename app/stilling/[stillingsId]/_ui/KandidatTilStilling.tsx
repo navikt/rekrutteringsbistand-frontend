@@ -2,7 +2,8 @@ import { useFinnKandidatForStilling } from './useFinnKandidatForStilling';
 import { Kandidatlistestatus } from '@/app/api/kandidat/schema.zod';
 import { useKandidatlisteForEier } from '@/app/api/kandidat/useKandidatlisteForEier';
 import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
-import KandidatSøkTabs from '@/app/kandidat/KandidatSøkTabs';
+import { useKandidatSøkFilterContext } from '@/app/kandidat/KandidaSokFilterContext';
+import KandidatSøkResultat from '@/app/kandidat/KandidatSøkResultat';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import Sidelaster from '@/components/layout/Sidelaster';
 import { getMiljø, Miljø } from '@/util/miljø';
@@ -18,6 +19,7 @@ export interface KandidatTilStillingProps {
 const KandidatTilStilling: FC<KandidatTilStillingProps> = ({
   stillingsData,
 }) => {
+  const { portefølje } = useKandidatSøkFilterContext();
   const kandidatForStillingData = useFinnKandidatForStilling(stillingsData);
   const router = useRouter();
   const [alleredeLagtTilKandidatliste, setAlleredeLagtTilKandidatliste] =
@@ -125,9 +127,9 @@ const KandidatTilStilling: FC<KandidatTilStillingProps> = ({
               Kandidatliste er lukket, så du kan ikke legge til jobbsøkere.
             </Alert>
           )}
-          <KandidatSøkTabs
-            alleredeLagtTilKandidatliste={alleredeLagtTilKandidatliste}
+          <KandidatSøkResultat
             stillingsId={stillingsData?.stilling?.uuid}
+            alleredeLagtTilKandidatliste={alleredeLagtTilKandidatliste}
           />
         </>
       )}

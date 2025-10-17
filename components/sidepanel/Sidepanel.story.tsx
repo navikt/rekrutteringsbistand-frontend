@@ -1,10 +1,10 @@
-import Fremdriftspanel from './Fremdriftspanel';
+import Sidepanel from './Sidepanel';
 import { BodyShort, Button, Heading, VStack } from '@navikt/ds-react';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 const meta = {
   tags: ['autodocs'],
-  component: Fremdriftspanel,
+  component: Sidepanel,
 
   decorators: [
     (Story) => (
@@ -23,7 +23,7 @@ const meta = {
       </div>
     ),
   ],
-} satisfies Meta<typeof Fremdriftspanel>;
+} satisfies Meta<typeof Sidepanel>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -33,7 +33,7 @@ export const Default: Story = {
     children: (
       <VStack gap='4'>
         <Heading size='medium'>Fremdrift</Heading>
-        <BodyShort>Dette er innholdet i fremdriftspanelet</BodyShort>
+        <BodyShort>Dette er innholdet i Sidepanelet</BodyShort>
       </VStack>
     ),
   },

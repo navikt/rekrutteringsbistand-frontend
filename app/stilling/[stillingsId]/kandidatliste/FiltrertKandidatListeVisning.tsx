@@ -14,12 +14,18 @@ import { useKandidatNavigeringContext } from '@/providers/KandidatNavigeringCont
 import { SortDownIcon, SortUpIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import { useQueryState } from 'nuqs';
-import { useEffect, useRef, type FC } from 'react';
+import { useEffect, useRef } from 'react';
 
 export const KANDIDATLISTE_COLUMN_LAYOUT =
   'grid-cols-1 md:grid-cols-[minmax(10rem,30%)_minmax(6rem,20%)_minmax(10rem,20%)_minmax(5rem,10%)_minmax(10rem,12%)_minmax(1rem,2%)]';
 
-const FiltrertKandidatListeVisning: FC = () => {
+export interface FiltrertKandidatListeVisningProps {
+  kunVisning?: boolean;
+}
+
+export default function FiltrertKandidatListeVisning({
+  kunVisning,
+}: FiltrertKandidatListeVisningProps) {
   const filtrerteKandidater = useFiltrerteKandidater();
   const { kandidatlisteId } = useKandidatlisteContext();
   const { setSortering, sortering } = useKandidatlisteFilterContext();
@@ -163,21 +169,28 @@ const FiltrertKandidatListeVisning: FC = () => {
           stillingsId={stillingsContext!.stillingsData.stilling.uuid!}
         />
       )}
-      <div ref={headerRef}>
-        <KandidatlisteFilterrad />
-        <KandidatlisteHandlingsRad />
-      </div>
+      {!kunVisning && (
+        <div ref={headerRef}>
+          <KandidatlisteFilterrad />
+          <KandidatlisteHandlingsRad />
+        </div>
+      )}
       <SideScroll enableHorizontalScroll>
         <div>
           {tableHeader}
           <div className='grid grid-cols-1 gap-4 p-1'>
             {filtrerteKandidater?.usynligeKandidater?.map((kandidat, index) => (
-              <KandidatListeKort usynligKandidat={kandidat} key={index} />
+              <KandidatListeKort
+                usynligKandidat={kandidat}
+                key={index}
+                kunVisning={kunVisning}
+              />
             ))}
             {filtrerteKandidater?.kandidater?.map((kandidat) => (
               <KandidatListeKort
                 kandidat={kandidat}
                 key={kandidat.kandidatnr}
+                kunVisning={kunVisning}
               />
             ))}
           </div>
@@ -185,6 +198,4 @@ const FiltrertKandidatListeVisning: FC = () => {
       </SideScroll>
     </div>
   );
-};
-
-export default FiltrertKandidatListeVisning;
+}

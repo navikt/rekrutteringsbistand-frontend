@@ -4,41 +4,14 @@ import {
   KandidatSøkPortefølje,
   useKandidatSøkFilterContext,
 } from './KandidaSokFilterContext';
-import KandidatSøkResultat from './KandidatSøkResultat';
 import ValgteKontorer from './_ui/ValgteKontorer';
 import KandidatSøkFilter from './kandidat-søk-filter/KandidatSøkFilter';
-import KandidatSøkChips from '@/app/kandidat/_ui/KandidatSøkChips';
-import Arbeidserfaring from '@/app/kandidat/kandidat-søk-filter/_ui/Arbeidserfaring';
-import Arbeidsønsker from '@/app/kandidat/kandidat-søk-filter/_ui/Arbeidsønsker';
-import FritekstSøk from '@/app/kandidat/kandidat-søk-filter/_ui/FritekstSøk';
-import Førerkort from '@/app/kandidat/kandidat-søk-filter/_ui/Førerkort';
-import Hovedmål from '@/app/kandidat/kandidat-søk-filter/_ui/Hovedmål';
-import Innsatsgrupper from '@/app/kandidat/kandidat-søk-filter/_ui/Innsatsgrupper';
-import KandidatStedSøk from '@/app/kandidat/kandidat-søk-filter/_ui/KandidatStedSøk';
-import Kompetanse from '@/app/kandidat/kandidat-søk-filter/_ui/Kompetanse';
-import PrioriterteMålgrupper from '@/app/kandidat/kandidat-søk-filter/_ui/PrioriterteMålgrupper';
-import Språk from '@/app/kandidat/kandidat-søk-filter/_ui/Språk';
-import Utdanningsnivå from '@/app/kandidat/kandidat-søk-filter/_ui/Utdanningsnivå';
-import SideScroll from '@/components/SideScroll';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { Button } from '@navikt/ds-react';
-import { FC } from 'react';
 
-interface KandidatSøkTabsProps {
-  stillingsId?: string;
-  rekrutteringstreffId?: string;
-  alleredeLagtTilTreff?: string[];
-  alleredeLagtTilKandidatliste?: string[];
-}
-
-const KandidatSøkTabs: FC<KandidatSøkTabsProps> = ({
-  stillingsId,
-  rekrutteringstreffId,
-  alleredeLagtTilTreff,
-  alleredeLagtTilKandidatliste,
-}) => {
+export default function KandidatSøkTabs() {
   const { portefølje, setPortefølje } = useKandidatSøkFilterContext();
   const { valgtNavKontor, brukerData } = useApplikasjonContext();
 
@@ -185,39 +158,6 @@ const KandidatSøkTabs: FC<KandidatSøkTabsProps> = ({
       {portefølje === KandidatSøkPortefølje.VALGTE_KONTORER && (
         <ValgteKontorer />
       )}
-
-      <div className='@container/kandidatsøk flex contain-layout'>
-        <div className='flex-grow min-w-0'>
-          <KandidatSøkChips />
-          <KandidatSøkResultat
-            alleredeLagtTilTreff={alleredeLagtTilTreff}
-            alleredeLagtTilKandidatliste={alleredeLagtTilKandidatliste}
-            type={portefølje as KandidatSøkPortefølje}
-            stillingsId={stillingsId}
-            rekrutteringstreffId={rekrutteringstreffId}
-          />
-        </div>
-
-        <div className='hidden @[720px]:block ml-4 pt-4  max-w-[200px]'>
-          <FritekstSøk />
-          <SideScroll className='mt-4'>
-            <div className='flex flex-col gap-4 '>
-              <Arbeidsønsker />
-              <KandidatStedSøk />
-              <Kompetanse />
-              <Førerkort />
-              <Språk />
-              <Arbeidserfaring />
-              <Hovedmål />
-              <Utdanningsnivå />
-              <PrioriterteMålgrupper />
-              <Innsatsgrupper />
-            </div>
-          </SideScroll>
-        </div>
-      </div>
     </div>
   );
-};
-
-export default KandidatSøkTabs;
+}

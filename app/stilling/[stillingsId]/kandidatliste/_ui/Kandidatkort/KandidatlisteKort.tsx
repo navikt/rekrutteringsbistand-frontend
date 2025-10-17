@@ -2,6 +2,7 @@ import KandidatCheckbox from './_ui/KandidatCheckbox';
 import KandidatListeKortValg from './_ui/KandidatListeKortValg';
 import KandidatlisteNavn from './_ui/KandidatlisteNavn';
 import { usynligKandidaterSchemaDTO } from '@/app/api/kandidat/schema.zod';
+import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import { KANDIDATLISTE_COLUMN_LAYOUT } from '@/app/stilling/[stillingsId]/kandidatliste/FiltrertKandidatListeVisning';
 import { KandidatutfallTyper } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
 import { useKandidatlisteContext } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteContext';
@@ -17,12 +18,12 @@ import { KandidatVisningProps } from '@/app/stilling/[stillingsId]/kandidatliste
 import VelgInternStatus from '@/app/stilling/[stillingsId]/kandidatliste/_ui/VelgInternStatus';
 import { formaterNorskDato } from '@/util/util';
 import { BodyShort, Box } from '@navikt/ds-react';
-import { useQueryState } from 'nuqs';
 import { FC, MouseEvent } from 'react';
 
 export interface KandidatListeKortProps {
   kandidat?: KandidatVisningProps;
   usynligKandidat?: usynligKandidaterSchemaDTO;
+  kunVisning?: boolean;
 }
 
 const kolonneStyling = 'break-words';
@@ -30,12 +31,14 @@ const kolonneStyling = 'break-words';
 const KandidatListeKort: FC<KandidatListeKortProps> = ({
   kandidat,
   usynligKandidat,
+  kunVisning,
 }) => {
   const { lukketKandidatliste, kandidatlisteId } = useKandidatlisteContext();
-  const [, setVisKandidatId] = useQueryState('visKandidatId', {
-    defaultValue: '',
-    clearOnDefault: true,
-  });
+  const { stillingsData } = useStillingsContext();
+  // const [, setVisKandidatId] = useQueryState('visKandidatId', {
+  //   defaultValue: '',
+  //   clearOnDefault: true,
+  // });
 
   if (usynligKandidat) {
     const fåttJobben =
@@ -81,7 +84,7 @@ const KandidatListeKort: FC<KandidatListeKortProps> = ({
         >
           <div className={kolonneStyling}>
             <div className='flex gap-4'>
-              <KandidatCheckbox />
+              {!kunVisning && <KandidatCheckbox />}
               <KandidatlisteNavn usynligKandidat={usynligKandidat} />
             </div>
           </div>
@@ -105,7 +108,7 @@ const KandidatListeKort: FC<KandidatListeKortProps> = ({
   }
 
   const slettet = kandidat?.arkivert;
-  const inaktiv = kandidat?.fodselsnr === null;
+  const inaktiv = kandidat?.fodselsnr === null || kunVisning;
 
   const stopPropagation = (e: MouseEvent) => {
     e.stopPropagation();
@@ -115,11 +118,13 @@ const KandidatListeKort: FC<KandidatListeKortProps> = ({
     // const aktiv = visKandidatnr === kandidat.kandidatnr;
     const aktiv = false;
     return (
-      <>
+      <a
+        href={`/stilling/${stillingsData.stilling.uuid}/kandidatliste/${kandidat.aktørid}`}
+      >
         <Box.New
-          onClick={() =>
-            !inaktiv ? setVisKandidatId(kandidat?.kandidatnr ?? '') : null
-          }
+          // onClick={() =>
+          //   !inaktiv ? setVisKandidatId(kandidat?.kandidatnr ?? '') : null
+          // }
           padding='4'
           background='neutral-softA'
           borderRadius='xlarge'
@@ -135,9 +140,11 @@ const KandidatListeKort: FC<KandidatListeKortProps> = ({
           >
             <div className={`${kolonneStyling} flex flex-col gap-2`}>
               <div className='flex gap-4'>
-                <div onClick={stopPropagation}>
-                  <KandidatCheckbox kandidat={kandidat} slettet={slettet} />
-                </div>
+                {!kunVisning && (
+                  <div onClick={stopPropagation}>
+                    <KandidatCheckbox kandidat={kandidat} slettet={slettet} />
+                  </div>
+                )}
                 <KandidatlisteNavn kandidat={kandidat} slettet={slettet} />
               </div>
             </div>
@@ -168,23 +175,25 @@ const KandidatListeKort: FC<KandidatListeKortProps> = ({
             </div>
             <div className={kolonneStyling} onClick={stopPropagation}>
               <VelgInternStatus
-                lukketKandidatliste={lukketKandidatliste}
+                lukketKandidatliste={lukketKandidatliste || kunVisning === true}
                 kandidatnr={kandidat.kandidatnr}
                 status={kandidat.status}
               />
             </div>
-            <div
-              className={`${kolonneStyling} flex items-center justify-center`}
-              onClick={stopPropagation}
-            >
-              <KandidatListeKortValg
-                kandidat={kandidat}
-                kandidatlisteId={kandidatlisteId}
-              />
-            </div>
+            {!kunVisning && (
+              <div
+                className={`${kolonneStyling} flex items-center justify-center`}
+                onClick={stopPropagation}
+              >
+                <KandidatListeKortValg
+                  kandidat={kandidat}
+                  kandidatlisteId={kandidatlisteId}
+                />
+              </div>
+            )}
           </div>
         </Box.New>
-      </>
+      </a>
     );
   }
 

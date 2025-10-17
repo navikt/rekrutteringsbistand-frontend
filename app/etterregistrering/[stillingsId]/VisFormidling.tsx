@@ -16,7 +16,7 @@ export default function VisFormidling() {
   return (
     <Tabs defaultValue='omStillingen'>
       <SideLayout
-        fremdriftspanel={<FremdriftspanelEtterregistrering />}
+        sidepanel={<FremdriftspanelEtterregistrering />}
         header={
           <PanelHeader>
             <PanelHeader.Section

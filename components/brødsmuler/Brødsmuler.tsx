@@ -1,7 +1,5 @@
 'use client';
 
-import { useNullableRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
-import { useNullableStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import {
   Breadcrumb,
   BreadcrumbEllipsis,

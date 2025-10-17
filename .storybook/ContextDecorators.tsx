@@ -29,7 +29,7 @@ export const createKandidatlisteMock = (opts?: {
   } = opts || {};
   const now = new Date().toISOString();
   const kandidater = Array.from({ length: antall }).map((_, i) => ({
-    kandidatId: `kandidatId`,
+    kandidatId: `kandidat-arenaKandidatnr-${i + 1}`,
     kandidatnr: `kandidat-arenaKandidatnr-${i + 1}`,
     status,
     lagtTilTidspunkt: now,

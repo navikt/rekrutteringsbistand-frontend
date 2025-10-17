@@ -14,9 +14,9 @@ import {
   StillingsStatus,
 } from '@/app/stilling/_ui/stilling-typer';
 import { normaliserPropertiesTilStrenger } from '@/app/stilling/_util/normaliserStillingProperties';
-import SideScroll from '@/components/SideScroll';
 // import ViktigeDatoer from '@/app/stilling/rediger/_ui/ViktigeDatoer';
 import PanelHeader from '@/components/layout/PanelHeader';
+import SideInnhold from '@/components/layout/SideInnhold';
 import SideLayout from '@/components/layout/SideLayout';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -134,12 +134,10 @@ export default function StillingAdmin() {
             )}
           </PanelHeader>
         }
-        fremdriftspanel={
-          <SideScroll>
-            <FremdriftspanelRedigering
-              setForhåndsvis={() => setForhåndsvis(true)}
-            />
-          </SideScroll>
+        sidepanel={
+          <FremdriftspanelRedigering
+            setForhåndsvis={() => setForhåndsvis(true)}
+          />
         }
       >
         {forhåndsvis ? (
@@ -147,13 +145,13 @@ export default function StillingAdmin() {
             <OmStillingen printRef={null} forhåndsvisData />
           </>
         ) : (
-          <SideScroll>
+          <SideInnhold>
             <div className='flex flex-col gap-4'>
               {moduler.map((m) => (
                 <m.Component key={m.key} />
               ))}
             </div>
-          </SideScroll>
+          </SideInnhold>
         )}
       </SideLayout>
     </FormProvider>

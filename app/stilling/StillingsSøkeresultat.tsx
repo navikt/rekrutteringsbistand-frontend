@@ -11,11 +11,9 @@ import { useStillingssokTotalData } from '@/app/stilling/store/stillingssokTotal
 import SWRLaster from '@/components/SWRLaster';
 import SideScroll from '@/components/SideScroll';
 import SkeletonKort from '@/components/layout/SkeletonKort';
-import VisStillingModal from '@/components/modal/stilling/VisStillingModal';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { ChevronLeftIcon, ChevronRightIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button } from '@navikt/ds-react';
-import { useQueryState } from 'nuqs';
 import { FC, useEffect } from 'react';
 
 interface StillingsSøkeresultatProps {
@@ -42,10 +40,10 @@ const StillingsSøkeresultat: FC<StillingsSøkeresultatProps> = ({
     finnStillingerForKandidat,
   });
 
-  const [visStillingsId] = useQueryState('visStillingsId', {
-    defaultValue: '',
-    clearOnDefault: true,
-  });
+  // const [visStillingsId] = useQueryState('visStillingsId', {
+  //   defaultValue: '',
+  //   clearOnDefault: true,
+  // });
 
   const antallVisning = (total: number) => {
     if (!total) {
@@ -104,7 +102,7 @@ const StillingsSøkeresultat: FC<StillingsSøkeresultatProps> = ({
       {(data: any) => {
         return (
           <div className='h-full flex flex-col'>
-            {visStillingsId && <VisStillingModal kandidatId={kandidatId} />}
+            {/* {visStillingsId && <VisStillingModal kandidatId={kandidatId} />} */}
             <StillingsSøkChips />
             {antallVisning(data.hits?.total?.value)}
 

@@ -13,7 +13,7 @@ const meta = {
     </SideLayout>
   ),
   args: {
-    fremdriftspanel: <div>Innhold i fremdriftspanel</div>,
+    sidepanel: <div>Innhold i fremdriftspanel</div>,
   },
 } satisfies Meta<typeof SideLayout>;
 export default meta;
