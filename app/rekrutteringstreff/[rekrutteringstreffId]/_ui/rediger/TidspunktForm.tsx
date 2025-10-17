@@ -1,5 +1,6 @@
 'use client';
 
+import { RekrutteringstreffFormValues } from './RekrutteringstreffForm';
 import { useAutosaveRekrutteringstreff } from './hooks/kladd/useAutosave';
 import { useAutoAdjustEndTime } from './hooks/useAutoAdjustEndTime';
 import { useFilteredTimeOptions } from './hooks/useFilteredTimeOptions';
@@ -9,17 +10,10 @@ import { rekrutteringstreffVarighet } from './tidspunkt/varighet';
 import { BodyShort, Heading } from '@navikt/ds-react';
 import { isSameDay } from 'date-fns';
 import React, { useEffect, useMemo, useState } from 'react';
-import { useFormContext, useWatch } from 'react-hook-form';
-
-type TidspunktFormFields = {
-  fraDato: Date | null;
-  fraTid: string;
-  tilDato: Date | null;
-  tilTid: string;
-};
+import { Control, useFormContext, useWatch } from 'react-hook-form';
 
 interface Props {
-  control: any;
+  control: Control<RekrutteringstreffFormValues>;
 }
 
 const TidspunktForm = ({ control }: Props) => {
@@ -79,7 +73,7 @@ const TidspunktForm = ({ control }: Props) => {
       </div>
 
       <div className='flex flex-col lg:flex-row gap-4'>
-        <DatoTidRad<TidspunktFormFields>
+        <DatoTidRad<RekrutteringstreffFormValues>
           nameDato='fraDato'
           nameTid='fraTid'
           control={control}
@@ -88,7 +82,7 @@ const TidspunktForm = ({ control }: Props) => {
           timeMax='22:59'
         />
 
-        <DatoTidRad<TidspunktFormFields>
+        <DatoTidRad<RekrutteringstreffFormValues>
           label='Til'
           nameDato='tilDato'
           nameTid='tilTid'

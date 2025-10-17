@@ -9,23 +9,31 @@ import { useMemo } from 'react';
  * Negative offsetMinutes = tidspunkter FØR referanse (svarfrist)
  */
 export function useFilteredTimeOptions(
-  targetDate: Date | null,
-  referenceDato: Date | null,
-  referenceTid: string | null,
+  targetDate: Date | null | undefined,
+  referenceDato: Date | null | undefined,
+  referenceTid: string | null | undefined,
   offsetMinutes: number = 15,
 ) {
   return useMemo(() => {
+    // Normaliser undefined til null
+    const normalizedTargetDate = targetDate ?? null;
+    const normalizedReferenceDato = referenceDato ?? null;
+    const normalizedReferenceTid = referenceTid ?? null;
+
     // Ingen filtrering hvis manglende data eller ulike dager
     if (
-      !targetDate ||
-      !referenceDato ||
-      !isGyldigTid(referenceTid) ||
-      !isSameDay(targetDate, referenceDato)
+      !normalizedTargetDate ||
+      !normalizedReferenceDato ||
+      !isGyldigTid(normalizedReferenceTid) ||
+      !isSameDay(normalizedTargetDate, normalizedReferenceDato)
     ) {
       return KLOKKESLETT_OPTIONS;
     }
 
-    const referenceTidspunkt = kombinerDatoOgTid(referenceDato, referenceTid);
+    const referenceTidspunkt = kombinerDatoOgTid(
+      normalizedReferenceDato,
+      normalizedReferenceTid,
+    );
     if (!referenceTidspunkt) return KLOKKESLETT_OPTIONS;
 
     // Beregn grenseverdi - positivt offset = etter, negativt = før
@@ -40,7 +48,7 @@ export function useFilteredTimeOptions(
     const isAfterMode = offsetMinutes > 0;
 
     const filtrert = KLOKKESLETT_OPTIONS.filter((option) => {
-      const kandidat = kombinerDatoOgTid(targetDate, option);
+      const kandidat = kombinerDatoOgTid(normalizedTargetDate, option);
       if (!kandidat) return false;
 
       return isAfterMode

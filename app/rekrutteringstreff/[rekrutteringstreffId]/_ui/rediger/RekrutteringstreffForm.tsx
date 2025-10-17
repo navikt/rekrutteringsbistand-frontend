@@ -1,14 +1,27 @@
 'use client';
 
+import { OppdaterRekrutteringstreffSchema } from '@/app/api/rekrutteringstreff/[...slug]/mutations';
 import {
-  OppdaterRekrutteringstreffDTO,
-  OppdaterRekrutteringstreffSchema,
-} from '@/app/api/rekrutteringstreff/[...slug]/mutations';
-import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
+  RekrutteringstreffDTO,
+  useRekrutteringstreff,
+} from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { format, parseISO } from 'date-fns';
 import { ReactNode, useEffect, useRef } from 'react';
-import { FormProvider, useForm } from 'react-hook-form';
+import { FormProvider, useForm, Resolver } from 'react-hook-form';
+
+export type RekrutteringstreffFormValues = {
+  tittel?: string;
+  gateadresse?: string | null;
+  postnummer?: string | null;
+  poststed?: string | null;
+  fraDato?: Date | null;
+  fraTid?: string;
+  tilDato?: Date | null;
+  tilTid?: string;
+  svarfristDato?: Date | null;
+  svarfristTid?: string;
+};
 
 export default function RekrutteringstreffForm({
   rekrutteringstreffId,
@@ -19,8 +32,10 @@ export default function RekrutteringstreffForm({
 }) {
   const { data } = useRekrutteringstreff(rekrutteringstreffId);
 
-  const methods = useForm<OppdaterRekrutteringstreffDTO>({
-    resolver: zodResolver(OppdaterRekrutteringstreffSchema),
+  const methods = useForm<RekrutteringstreffFormValues>({
+    resolver: zodResolver(
+      OppdaterRekrutteringstreffSchema,
+    ) as unknown as Resolver<RekrutteringstreffFormValues>,
     defaultValues: {},
   });
 
@@ -37,7 +52,9 @@ export default function RekrutteringstreffForm({
   return <FormProvider {...methods}>{children}</FormProvider>;
 }
 
-function tilFormValues(treff: any): OppdaterRekrutteringstreffDTO {
+function tilFormValues(
+  treff: RekrutteringstreffDTO,
+): RekrutteringstreffFormValues {
   const fra = treff.fraTid ? parseISO(treff.fraTid) : null;
   const til = treff.tilTid ? parseISO(treff.tilTid) : null;
   const svarfrist = treff.svarfrist ? parseISO(treff.svarfrist) : null;
@@ -62,5 +79,5 @@ function tilFormValues(treff: any): OppdaterRekrutteringstreffDTO {
 
     svarfristDato,
     svarfristTid: svarfrist ? format(svarfrist, 'HH:mm') : '08:00',
-  } as any;
+  };
 }
