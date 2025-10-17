@@ -5,23 +5,13 @@ import Arbeidsgivere from '../arbeidsgiver/Arbeidsgivere';
 import Hendelser from '../hendelser/Hendelser';
 import Jobbsøkere from '../jobbsøker/Jobbsøkere';
 import KiLogg from '../kilogg/components/KiLogg';
-import RekrutteringstreffRedigering from '../rediger/RekrutteringstreffRedigering';
 import OmTreffet from './OmTreffet';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { Tabs } from '@navikt/ds-react';
 import { FC } from 'react';
 
-interface Props {
-  erIVisning: boolean;
-  onUpdated: () => Promise<any> | void;
-}
-
-const TabsPanels: FC<Props> = ({ erIVisning, onUpdated }) => {
-  if (!erIVisning) {
-    return <RekrutteringstreffRedigering onUpdated={onUpdated} />;
-  }
-
+const TabsPanels: FC = () => {
   return (
     <>
       <Tabs.Panel value={RekrutteringstreffTabs.OM_TREFFET}>

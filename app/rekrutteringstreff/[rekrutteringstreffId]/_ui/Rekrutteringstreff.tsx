@@ -4,6 +4,7 @@ import RekrutteringstreffForhåndsvisning from './forhåndsvisning/Rekrutterings
 import RekrutteringstreffHeader from './header/RekrutteringstreffHeader';
 import { useRekrutteringstreffData } from './hooks/useRekrutteringstreffData';
 import { useSjekklisteStatus } from './hooks/useSjekklisteStatus';
+import RekrutteringstreffRedigering from './rediger/RekrutteringstreffRedigering';
 import { useRepubliser } from './rediger/hooks/republiser/useRepubliser';
 import Stegviser from './stegviser/Stegviser';
 import TabsPanels from './tabs/TabsPanels';
@@ -240,10 +241,13 @@ const Rekrutteringstreff: FC = () => {
         >
           <SideScroll>
             <div className='space-y-4'>
-              <TabsPanels
-                erIVisning={erILesemodus}
-                onUpdated={rekrutteringstreffHook.mutate}
-              />
+              {erILesemodus ? (
+                <TabsPanels />
+              ) : (
+                <RekrutteringstreffRedigering
+                  onUpdated={rekrutteringstreffHook.mutate}
+                />
+              )}
             </div>
           </SideScroll>
         </SideLayout>
