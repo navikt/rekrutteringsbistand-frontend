@@ -1,8 +1,8 @@
 'use client';
 
 import { useUseBrukerStandardSøk } from '@/app/api/stilling/standardsok/useBrukersStandardsøk';
-import StillingsSøkLayout from '@/app/stilling/StillingsSøk';
 import { StillingsSøkProvider } from '@/app/stilling/StillingsSøkContext';
+import StillingsSøkLayout from '@/app/stilling/StillingsSøkLayout';
 import { EKSCLUDERTE_STANDARDSOK_PARAMETERE } from '@/app/stilling/_ui/standardsøk/standardSokUtils';
 import Sidelaster from '@/components/layout/Sidelaster';
 import { useSearchParams } from 'next/navigation';

@@ -428,7 +428,7 @@ const stedmappingRaw = new Map<string, string[]>([
   ['Kvænangen.5546', ['Kvænangen.5429', 'Kvænangen.1943']],
 ]);
 
-export type Sted = {
+type Sted = {
   navn: string;
   nummer: string;
 };

@@ -1,7 +1,7 @@
 'use client';
 
 import { UrlWindowConfig } from './useUrlWindow';
-import WindowLoader from '@/app/_windows/WindowLoader';
+import WindowLoader from '@/app/_experimental/_windows/WindowLoader';
 import { createElement, FC, lazy, Suspense } from 'react';
 
 // Wrapper komponent for stilling
@@ -27,15 +27,15 @@ const StillingWrapper: FC<{ stillingId: string }> = ({ stillingId }) => {
 /**
  * Konfigurasjon for visStillingId vinduet
  */
-export const visStillingWindowConfig: UrlWindowConfig = {
-  urlParam: 'visStillingId',
-  windowId: 'visStillingId',
-  title: 'Vis stilling',
-  position: 'right', // Stillings-vinduer skal havne til høyre
-  allowedPaths: ['/kandidat', '/etterregistrering', '/stilling'],
+export const visEtterregistreringWindowConfig: UrlWindowConfig = {
+  urlParam: 'visEtterregistreringId',
+  windowId: 'visEtterregistreringId',
+  title: 'Vis etterregistrering',
+  position: 'right',
+  allowedPaths: ['/kandidat', '/etterregistrering'],
   createContent: (stillingId: string) => {
     return createElement(StillingWrapper, {
-      key: `stilling-${stillingId}-${Date.now()}`,
+      key: `etterregistrering-${stillingId}-${Date.now()}`,
       stillingId,
     });
   },

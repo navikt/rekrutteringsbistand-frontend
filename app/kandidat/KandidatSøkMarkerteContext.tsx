@@ -1,3 +1,5 @@
+'use client';
+
 import { RekbisError } from '@/util/rekbisError';
 import { createContext, FC, useContext, useState, type ReactNode } from 'react';
 

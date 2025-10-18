@@ -69,10 +69,11 @@ export const defaultPathConfig: PathConfig = {
     label: 'Jobbsøker',
     icon: <PersonIcon aria-hidden className='w-4 h-4' />,
   },
-  'finn-kandidater': { label: 'Finn kandidater for stilling' },
+  'finn-kandidater': { label: 'Finn jobbsøker' },
+  'finn-stilling': { label: 'Finn stilling' },
 };
 
-export function AutoBreadcrumbs({
+function AutoBreadcrumbs({
   pathConfig = defaultPathConfig,
   erstattPath,
   className,

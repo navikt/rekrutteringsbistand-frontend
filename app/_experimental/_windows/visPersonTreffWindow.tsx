@@ -1,7 +1,7 @@
 'use client';
 
 import { UrlWindowConfig } from './useUrlWindow';
-import WindowLoader from '@/app/_windows/WindowLoader';
+import WindowLoader from '@/app/_experimental/_windows/WindowLoader';
 import { createElement, lazy, Suspense } from 'react';
 
 const VisRekrutteringstreffPerson = lazy(

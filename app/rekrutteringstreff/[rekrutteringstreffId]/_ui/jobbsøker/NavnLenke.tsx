@@ -1,4 +1,4 @@
-import WindowLoader from '@/app/_windows/WindowLoader';
+import WindowLoader from '@/app/_experimental/_windows/WindowLoader';
 import VisPerson from '@/app/rekrutteringstreff/[rekrutteringstreffId]/vis-person/_ui/VisPerson';
 import { Modal } from '@navikt/ds-react';
 import { FC, Suspense, useRef } from 'react';

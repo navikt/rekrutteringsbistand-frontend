@@ -1,4 +1,3 @@
-import { useKandidatSøkFilterContext } from '@/app/kandidat/KandidaSokFilterContext';
 import KandidatSøkResultat from '@/app/kandidat/KandidatSøkResultat';
 import KandidatSøkTabs from '@/app/kandidat/KandidatSøkTabs';
 import KandidatSøkChips from '@/app/kandidat/_ui/KandidatSøkChips';
@@ -24,13 +23,28 @@ export interface KandidatSøkLayoutProps {
   alleredeLagtTilKandidatliste?: string[];
 }
 
+export const KandidatSøkSidebar = (
+  <div className='flex flex-col gap-4 '>
+    <FritekstSøk />
+    <Arbeidsønsker />
+    <KandidatStedSøk />
+    <Kompetanse />
+    <Førerkort />
+    <Språk />
+    <Arbeidserfaring />
+    <Hovedmål />
+    <Utdanningsnivå />
+    <PrioriterteMålgrupper />
+    <Innsatsgrupper />
+  </div>
+);
+
 export default function KandidatSøkLayout({
   stillingsId,
   rekrutteringstreffId,
   alleredeLagtTilTreff,
   alleredeLagtTilKandidatliste,
 }: KandidatSøkLayoutProps) {
-  const { portefølje } = useKandidatSøkFilterContext();
   return (
     <SideLayout
       header={
@@ -39,21 +53,7 @@ export default function KandidatSøkLayout({
         </PanelHeader>
       }
       sidepanelBredde='250px'
-      sidepanel={
-        <div className='flex flex-col gap-4 '>
-          <FritekstSøk />
-          <Arbeidsønsker />
-          <KandidatStedSøk />
-          <Kompetanse />
-          <Førerkort />
-          <Språk />
-          <Arbeidserfaring />
-          <Hovedmål />
-          <Utdanningsnivå />
-          <PrioriterteMålgrupper />
-          <Innsatsgrupper />
-        </div>
-      }
+      sidepanel={KandidatSøkSidebar}
     >
       <SideInnhold utenScroll>
         <KandidatSøkTabs />

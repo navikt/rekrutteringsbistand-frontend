@@ -5,7 +5,7 @@ import { finnStillingForKandidatWindow } from './finnStillingForKandidatWindow';
 import { UrlWindowConfig, useUrlWindow } from './useUrlWindow';
 import { visKandidatWindowConfig } from './visKandidatWindow';
 import { visStillingWindowConfig } from './visStillingsoppdrag';
-import { visEtterregistreringWindowConfig } from '@/app/_windows/visEtterregistreringWindow';
+import { visEtterregistreringWindowConfig } from '@/app/_experimental/_windows/visEtterregistreringWindow';
 
 /**
  * Alle URL-vinduer som skal være aktive i applikasjonen.

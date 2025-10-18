@@ -1,7 +1,7 @@
 'use client';
 
 import { UrlWindowConfig } from './useUrlWindow';
-import StillingsSøk from '@/app/stilling/StillingsSøk';
+import StillingsSøk from '@/app/stilling/StillingsSøkLayout';
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideLayout from '@/components/layout/SideLayout';
 import { usePathname } from 'next/navigation';

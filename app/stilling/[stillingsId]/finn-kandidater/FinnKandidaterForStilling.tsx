@@ -1,8 +1,8 @@
 'use client';
 
 import KandidatTilStilling from '../_ui/KandidatTilStilling';
-import { KandidatSøkProvider } from '@/app/kandidat/KandidaSokFilterContext';
-import { KandidatSøkMarkerteContextProvider } from '@/app/kandidat/KandidatSøkMarkerteContext';
+import { KandidatSøkSidebar } from '@/app/kandidat/KandidatSøkLayout';
+import KandidatSøkTabs from '@/app/kandidat/KandidatSøkTabs';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideLayout from '@/components/layout/SideLayout';
@@ -21,10 +21,10 @@ export default function FinnKandidaterForStilling() {
               stillingsData.stilling.uuid,
               stillingsData?.stilling?.title,
             ]}
-            title={'Finn kandidater for stilling'}
           />
         </PanelHeader>
       }
+      sidepanel={KandidatSøkSidebar}
     >
       <TilgangskontrollForInnhold
         kreverEnAvRollene={[
@@ -32,11 +32,10 @@ export default function FinnKandidaterForStilling() {
           Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
         ]}
       >
-        <KandidatSøkProvider>
-          <KandidatSøkMarkerteContextProvider>
-            <KandidatTilStilling stillingsData={stillingsData} />
-          </KandidatSøkMarkerteContextProvider>
-        </KandidatSøkProvider>
+        <div className='pt-5'>
+          <KandidatSøkTabs />
+          <KandidatTilStilling stillingsData={stillingsData} />
+        </div>
       </TilgangskontrollForInnhold>
     </SideLayout>
   );

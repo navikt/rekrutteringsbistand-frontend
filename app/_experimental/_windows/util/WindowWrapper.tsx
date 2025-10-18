@@ -1,5 +1,5 @@
 import { DynamicWindowContext } from './DynamicWindowContext';
-import { useAllUrlWindows } from '@/app/_windows';
+import { useAllUrlWindows } from '@/app/_experimental/_windows';
 import { usePathname } from 'next/navigation';
 import React, {
   useCallback,

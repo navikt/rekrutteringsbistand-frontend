@@ -1,6 +1,6 @@
 'use client';
 
-import { useWindowContext } from '@/app/_windows/util/DynamicWindowContext';
+import { useWindowContext } from '@/app/_experimental/_windows/util/DynamicWindowContext';
 // Brødsmuler er deprecated – vi bygger breadcrumbs direkte her med UI-primitive
 import AutoBreadcrumbs from '@/components/brødsmuler/Brødsmuler';
 import { ExpandIcon, XMarkIcon } from '@navikt/aksel-icons';
