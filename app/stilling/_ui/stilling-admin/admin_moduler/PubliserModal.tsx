@@ -7,16 +7,7 @@ import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
 import { RekbisError } from '@/util/rekbisError';
 import { UmamiEvent } from '@/util/umamiEvents';
-import {
-  BodyLong,
-  Box,
-  Button,
-  Checkbox,
-  Heading,
-  Modal,
-  TextField,
-  ToggleGroup,
-} from '@navikt/ds-react';
+import { BodyLong, Box, Button, Checkbox, Heading, Modal, TextField, ToggleGroup } from '@navikt/ds-react';
 import { format, parse } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
@@ -25,6 +16,17 @@ import { useFormContext } from 'react-hook-form';
 export interface PubliserModalProps {
   disabled: boolean;
 }
+
+export const validerEpost = (
+  epost: string,
+): { erGodkjent: boolean; feilmelding: string } => {
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  return epost === ''
+    ? { erGodkjent: false, feilmelding: 'E-post kan ikke være tom' }
+    : emailRegex.test(epost)
+      ? { erGodkjent: true, feilmelding: '' }
+      : { erGodkjent: false, feilmelding: 'Ugyldig e-postadresse' };
+};
 
 export default function PubliserModal({ disabled }: PubliserModalProps) {
   const { brukerData, valgtNavKontor } = useApplikasjonContext();
@@ -67,7 +69,9 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
   const initSøkemetode: 'email' | 'url' = applicationUrl ? 'url' : 'email';
   const [søkemetode, setSøkemetode] = useState<string>(initSøkemetode);
   const [epost, setEpost] = useState(applicationEmail ?? '');
+  const [epostError, setEpostError] = useState<string>('');
   const [lenke, setLenke] = useState(applicationUrl ?? '');
+  const [lenkeError, setLenkeError] = useState<string>('');
 
   const skjemaDatoTilIso = (dato?: string) => {
     if (!dato) return null;
@@ -95,19 +99,31 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
       // Søkemetode felter
       if (publiserOffentlig) {
         if (søkemetode === 'email') {
-          setValue('stilling.properties.applicationemail', epost || null, {
-            shouldDirty: true,
-          });
-          setValue('stilling.properties.applicationurl', null as any, {
-            shouldDirty: true,
-          });
+          const epostValidering = validerEpost(epost);
+          setEpostError(epostValidering.feilmelding)
+          if (epostValidering.erGodkjent) {
+            setValue('stilling.properties.applicationemail', epost, {
+              shouldDirty: true,
+            });
+            setValue('stilling.properties.applicationurl', null as any, {
+              shouldDirty: true,
+            });
+          } else {
+            return
+          }
         } else {
-          setValue('stilling.properties.applicationurl', lenke || null, {
-            shouldDirty: true,
-          });
-          setValue('stilling.properties.applicationemail', null as any, {
-            shouldDirty: true,
-          });
+          if (lenke.trim() !== '') {
+            setLenkeError('');
+            setValue('stilling.properties.applicationurl', lenke, {
+              shouldDirty: true,
+            });
+            setValue('stilling.properties.applicationemail', null as any, {
+              shouldDirty: true,
+            });
+          } else {
+            setLenkeError('Lenke til søknadsskjema kan ikke være tom');
+            return;
+          }
         }
       }
 
@@ -246,6 +262,7 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
                     <TextField
                       label='E-post'
                       value={epost}
+                      error={epostError}
                       onChange={(e) => setEpost(e.target.value)}
                     />
                   </div>
@@ -255,6 +272,7 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
                     <TextField
                       label='Lenke til søknadsskjema'
                       value={lenke}
+                      error={lenkeError}
                       onChange={(e) => setLenke(e.target.value)}
                     />
                   </div>
@@ -264,7 +282,12 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <Button loading={isLoading} type='button' onClick={håndterPubliser}>
+          <Button
+            loading={isLoading}
+            type='button'
+            onClick={håndterPubliser}
+            //disabled={(publiserOffentlig && epost === '' && lenke === '') || epostError !== ''}
+          >
             Publiser oppdraget
           </Button>
           <Button
