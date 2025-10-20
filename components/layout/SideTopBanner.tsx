@@ -19,7 +19,7 @@ const SideTopBanner = ({
   tittelElementer,
 }: ISideTopBanner) => {
   return (
-    <div className='@container/topBanner w-full flex justify-between pt-[32px] pb-10'>
+    <div className='@container/topBanner contain-layout w-full flex justify-between pt-[32px] pb-10'>
       <div className='flex items-center w-full justify-between flex-col'>
         <div className='flex w-full items-center justify-start gap-8'>
           <div className='w-full'>

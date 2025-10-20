@@ -9,7 +9,7 @@ export default function LegacyNyheter() {
       {nyheter.map((nyhet, index) => (
         <Box.New
           key={index}
-          className='@container/kandidatlistekort mb-4 flex flex-col p-4 min-w-fit'
+          className='@container/kandidatlistekort contain-layout mb-4 flex flex-col p-4 min-w-fit'
           background='neutral-softA'
           borderRadius='xlarge'
           data-testid='stillings-kort'

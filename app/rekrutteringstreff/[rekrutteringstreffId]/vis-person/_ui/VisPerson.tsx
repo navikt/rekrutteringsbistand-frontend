@@ -23,7 +23,7 @@ const VisPerson: FC<VisPersonProps> = ({ personTreffId }) => {
             kandidatId={kandidatnummerData.kandidatnummer}
           >
             <KandidatSideLayout>
-              <div className='@container/kandidat-knapper'>
+              <div className='@container/kandidat-knapper contain-layout'>
                 <div className='my-4'>
                   <NavigerTilAktivitetsplanenKnapp />
                 </div>

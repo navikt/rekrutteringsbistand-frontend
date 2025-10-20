@@ -164,7 +164,7 @@ const KandidatSøkTabs: FC<KandidatSøkTabsProps> = ({
   );
 
   return (
-    <div className='@container'>
+    <div className='@container contain-layout'>
       <div className='flex justify-between flex-col @3xl:flex-row @3xl:gap-0 gap-3 '>
         <div className='flex gap-2 items-center'>
           <AlleKontorer />
@@ -186,7 +186,7 @@ const KandidatSøkTabs: FC<KandidatSøkTabsProps> = ({
         <ValgteKontorer />
       )}
 
-      <div className='@container/kandidatsøk flex'>
+      <div className='@container/kandidatsøk contain-layout flex'>
         <div className='flex-grow min-w-0'>
           <KandidatSøkChips />
           <KandidatSøkResultat
