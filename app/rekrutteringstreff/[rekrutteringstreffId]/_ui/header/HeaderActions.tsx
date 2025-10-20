@@ -1,6 +1,6 @@
 'use client';
 
-import { useRekrutteringstreffData } from '../hooks/useRekrutteringstreffData';
+import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
 import AvlysRekrutteringstreffButton from './actions/AvlysRekrutteringstreffButton';
 import FullførRekrutteringstreffButton from './actions/FullførRekrutteringstreffButton';
 import GjenapneRekrutteringstreffButton from './actions/GjenapneRekrutteringstreffButton';

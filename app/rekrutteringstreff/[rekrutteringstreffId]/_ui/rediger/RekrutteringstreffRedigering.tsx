@@ -1,7 +1,7 @@
 'use client';
 
 import LeggTilArbeidsgiverForm from '../arbeidsgiver/LeggTilArbeidsgiverForm';
-import { useRekrutteringstreffData } from '../hooks/useRekrutteringstreffData';
+import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
 import InnleggForm from './InnleggForm';
 import PraktiskeForhold from './Praktiskeforhold';
 import TittelForm from './TittelForm';

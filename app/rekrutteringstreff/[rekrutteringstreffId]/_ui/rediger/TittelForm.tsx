@@ -1,6 +1,6 @@
 'use client';
 
-import { useRekrutteringstreffData } from '../hooks/useRekrutteringstreffData';
+import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
 import { useAutosaveRekrutteringstreff } from './hooks/kladd/useAutosave';
 import KiAnalyseIntro from './ki/KiAnalyseIntro';
 import KiAnalysePanel from './ki/KiAnalysePanel';

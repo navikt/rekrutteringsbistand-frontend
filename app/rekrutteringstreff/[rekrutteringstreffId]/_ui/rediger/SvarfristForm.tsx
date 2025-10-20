@@ -1,6 +1,6 @@
 'use client';
 
-import { useRekrutteringstreffData } from '../hooks/useRekrutteringstreffData';
+import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
 import { RekrutteringstreffFormValues } from './RekrutteringstreffForm';
 import { useAutosaveRekrutteringstreff } from './hooks/kladd/useAutosave';
 import { useFilteredTimeOptions } from './hooks/useFilteredTimeOptions';

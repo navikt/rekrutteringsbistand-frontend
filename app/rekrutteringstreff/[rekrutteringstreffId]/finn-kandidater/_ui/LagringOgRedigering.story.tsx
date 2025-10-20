@@ -1,22 +1,25 @@
-import LagreIRekrutteringstreffButton from './LagreIRekrutteringstreffButton';
+import LagreIRekrutteringstreffKnapp from './LagreIRekrutteringstreffKnapp';
 import RedigerPublisertButton from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/header/actions/RedigerPublisertButton';
+import SlettRekrutteringstreffButton from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/header/actions/SlettRekrutteringstreffButton';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
-// Duplisert (ryddes ved behov) redigering / lagring subset
+// Lagring / redigering / sletting (inert)
+
 const meta = {
   tags: ['autodocs'],
   render: () => (
-    <div className='flex flex-col gap-3 opacity-60 pointer-events-none'>
+    <div className='flex flex-col gap-3 opacity-60 pointer-events-none max-w-sm'>
+      <LagreIRekrutteringstreffKnapp
+        rekrutteringstreffId='demo'
+        kandidatsokKandidater={[]}
+      />
       <RedigerPublisertButton
         erIForhåndsvisning={false}
         harPublisert={true}
         onToggleForhåndsvisning={() => {}}
         onBekreftRedigerPublisert={() => {}}
       />
-      <LagreIRekrutteringstreffButton
-        rekrutteringstreffId='demo'
-        kandidatsokKandidater={[]}
-      />
+      <SlettRekrutteringstreffButton />
     </div>
   ),
 } satisfies Meta;

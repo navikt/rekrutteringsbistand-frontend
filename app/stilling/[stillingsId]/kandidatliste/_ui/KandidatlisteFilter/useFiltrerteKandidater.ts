@@ -124,7 +124,10 @@ const useFiltrerteKandidater = (): FiltrerteKandidater | null => {
         ?.filter((kandidat) => {
           const fullNavn = `${kandidat.fornavn} ${kandidat.etternavn}`;
           const fødselsnummer = kandidat.fodselsnr;
-          return fullNavn.toLowerCase().includes(fritekstSøk.toLowerCase()) || fødselsnummer === fritekstSøk;
+          return (
+            fullNavn.toLowerCase().includes(fritekstSøk.toLowerCase()) ||
+            fødselsnummer === fritekstSøk
+          );
         })
         ?.filter((kandidat) => {
           if (internStatus.length === 0) return true;
