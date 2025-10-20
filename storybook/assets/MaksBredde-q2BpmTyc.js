@@ -1,0 +1,1 @@
+import{j as a}from"./iframe-C8w3jQxa.js";function r({children:e}){return a.jsx("div",{className:"max-w-[1440px] mx-auto w-full h-full p-5 ",children:e})}r.__docgenInfo={description:"",methods:[],displayName:"MaksBredde",props:{children:{required:!0,tsType:{name:"ReactReactNode",raw:"React.ReactNode"},description:""}}};export{r as M};
