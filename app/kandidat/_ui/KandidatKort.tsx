@@ -54,7 +54,7 @@ const KandidatKort: FC<IKandidatKort> = ({ kandidat, alleredeLagtTil }) => {
       // onClick={() => setVisKandidatnr(kandidat?.arenaKandidatnr ?? '')}
       borderRadius='xlarge'
       data-testid='stillings-kort'
-      className={` p-5 cursor-pointer @container/kandidatlistekort flex flex-col min-w-fit
+      className={` p-5 cursor-pointer @container/kandidatlistekort contain-layout flex flex-col min-w-fit
           focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--ax-border-focus)]
           ${aktiv ? 'bg-[var(--ax-bg-neutral-moderate-pressed)]' : 'hover:bg-[var(--ax-bg-neutral-moderate-hover)] '}
           ${erLagtTil ? 'border-l-4 border-[var(--ax-border-success)]' : ''}`}

@@ -32,7 +32,7 @@ const SideLayout = ({
   return (
     <RekBisKort>
       {header && header}
-      <div className='@container'>
+      <div className='@container contain-layout'>
         {/* Felles innhold + desktop sidepanel */}
         <div className='flex flex-col @2xl:flex-row'>
           <MaksBredde>{children}</MaksBredde>

@@ -49,7 +49,7 @@ const StillingsSøkFilter: FC<{
   }, []);
 
   return (
-    <div className='@container flex flex-row items-center justify-between'>
+    <div className='@container contain-layout flex flex-row items-center justify-between'>
       <StillingsSøkNavigasjon />
       <div className='flex gap-2'>
         <div className='relative' ref={searchRef}>

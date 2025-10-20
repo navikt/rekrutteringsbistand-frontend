@@ -27,7 +27,7 @@ export default function NyhetVisning({ nyhet, refetch }: NyhetVisningProps) {
   };
   return (
     <Box.New
-      className='@container/kandidatlistekort mb-4 flex flex-col p-4 min-w-fit'
+      className='@container/kandidatlistekort contain-layout mb-4 flex flex-col p-4 min-w-fit'
       background='neutral-softA'
       borderRadius='xlarge'
       data-testid='stillings-kort'
