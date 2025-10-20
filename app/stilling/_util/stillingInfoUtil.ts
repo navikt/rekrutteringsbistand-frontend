@@ -1,4 +1,8 @@
-import { AdminStatus, Stillingskategori, StillingsStatus } from '../_ui/stilling-typer';
+import {
+  AdminStatus,
+  Stillingskategori,
+  StillingsStatus,
+} from '../_ui/stilling-typer';
 import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { RekrutteringsbistandStillingSchemaDTO } from '@/app/api/stillings-sok/schema/rekrutteringsbistandStillingSchema.zod';
 import { startOfDay } from 'date-fns';
