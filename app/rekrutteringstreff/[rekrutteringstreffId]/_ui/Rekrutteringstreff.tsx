@@ -27,7 +27,6 @@ export enum RekrutteringstreffTabs {
   JOBBSØKERE = 'jobbsøkere',
   ARBEIDSGIVERE = 'arbeidsgivere',
   HENDELSER = 'hendelser',
-  KI_LOGG = 'ki_logg',
 }
 
 const Rekrutteringstreff: FC = () => {
