@@ -1,4 +1,4 @@
-import LagreIRekrutteringstreffButton from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/actions/LagreIRekrutteringstreffButton';
+import LagreIRekrutteringstreffKnapp from '../../../finn-kandidater/_ui/LagreIRekrutteringstreffKnapp';
 import AvlysRekrutteringstreffButton from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/header/actions/AvlysRekrutteringstreffButton';
 import FullførRekrutteringstreffButton from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/header/actions/FullførRekrutteringstreffButton';
 import GjenapneRekrutteringstreffButton from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/header/actions/GjenapneRekrutteringstreffButton';
@@ -44,7 +44,7 @@ const meta = {
         oppdaterData={() => {}}
       />
       <SlettRekrutteringstreffButton />
-      <LagreIRekrutteringstreffButton
+      <LagreIRekrutteringstreffKnapp
         rekrutteringstreffId='demo'
         kandidatsokKandidater={[]}
       />

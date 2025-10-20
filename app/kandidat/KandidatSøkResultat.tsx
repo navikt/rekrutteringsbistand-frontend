@@ -1,5 +1,6 @@
 'use client';
 
+import LagreIRekrutteringstreffKnapp from '../rekrutteringstreff/[rekrutteringstreffId]/finn-kandidater/_ui/LagreIRekrutteringstreffKnapp';
 import {
   KandidatSøkPortefølje,
   useKandidatSøkFilterContext,
@@ -12,7 +13,6 @@ import {
   KandidatsokKandidat,
   useKandidatsøk,
 } from '@/app/api/kandidat-sok/useKandidatsøk';
-import LagreIRekrutteringstreffButton from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/actions/LagreIRekrutteringstreffButton';
 import RekrutteringstreffFeatureToggle from '@/components/RekrutteringstreffFeatureToggle';
 import SWRLaster from '@/components/SWRLaster';
 import SideScroll from '@/components/SideScroll';
@@ -100,7 +100,7 @@ const KandidatSøkResultat: FC<KandidatSøkResultatProps> = ({
                 )}
                 <RekrutteringstreffFeatureToggle>
                   {!stillingsId && (
-                    <LagreIRekrutteringstreffButton
+                    <LagreIRekrutteringstreffKnapp
                       rekrutteringstreffId={rekrutteringstreffId}
                       kandidatsokKandidater={
                         kandidatData.kandidater as KandidatsokKandidat[]

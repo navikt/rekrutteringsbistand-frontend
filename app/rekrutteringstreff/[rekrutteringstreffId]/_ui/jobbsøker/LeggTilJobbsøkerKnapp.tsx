@@ -1,4 +1,4 @@
-import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/hooks/useRekrutteringstreffData';
+import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { PlusIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';

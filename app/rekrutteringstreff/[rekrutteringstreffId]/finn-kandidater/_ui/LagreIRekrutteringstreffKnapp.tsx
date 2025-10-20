@@ -16,14 +16,15 @@ import { Button, Checkbox, Link, Loader, Modal, Table } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
 import { FC, useRef, useState } from 'react';
 
-interface LagreIRekrutteringstreffButtonProps {
+interface LagreIRekrutteringstreffKnappProps {
   rekrutteringstreffId?: string;
   kandidatsokKandidater: KandidatsokKandidat[];
 }
 
-const LagreIRekrutteringstreffButton: FC<
-  LagreIRekrutteringstreffButtonProps
-> = ({ rekrutteringstreffId, kandidatsokKandidater }) => {
+const LagreIRekrutteringstreffKnapp: FC<LagreIRekrutteringstreffKnappProps> = ({
+  rekrutteringstreffId,
+  kandidatsokKandidater,
+}) => {
   const modalRef = useRef<HTMLDialogElement>(null);
   const [laster, setLaster] = useState(false);
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
@@ -273,4 +274,4 @@ const LagreIRekrutteringstreffButton: FC<
   );
 };
 
-export default LagreIRekrutteringstreffButton;
+export default LagreIRekrutteringstreffKnapp;

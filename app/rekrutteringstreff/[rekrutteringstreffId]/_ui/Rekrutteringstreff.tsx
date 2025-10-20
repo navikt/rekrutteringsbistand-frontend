@@ -2,12 +2,12 @@
 
 import RekrutteringstreffForhåndsvisning from './forhåndsvisning/RekrutteringstreffForhåndsvisning';
 import RekrutteringstreffHeader from './header/RekrutteringstreffHeader';
-import { useRekrutteringstreffData } from './hooks/useRekrutteringstreffData';
-import { useSjekklisteStatus } from './hooks/useSjekklisteStatus';
 import RekrutteringstreffRedigering from './rediger/RekrutteringstreffRedigering';
 import { useRepubliser } from './rediger/hooks/republiser/useRepubliser';
 import Stegviser from './stegviser/Stegviser';
+import { useSjekklisteStatus } from './stegviser/useSjekklisteStatus';
 import TabsPanels from './tabs/TabsPanels';
+import { useRekrutteringstreffData } from './useRekrutteringstreffData';
 import { useAlleHendelser } from '@/app/api/rekrutteringstreff/[...slug]/allehendelser/useAlleHendelser';
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
