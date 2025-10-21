@@ -69,6 +69,7 @@ const HeaderActions: FC<Props> = ({
       activeStep !== AktivtSteg.FULLFØRE
     ) {
       return [
+        <KiLoggLenke key='kilogg' />,
         <RepubliserRekrutteringstreffButton
           key='republiser'
           treff={treff}
@@ -92,13 +93,13 @@ const HeaderActions: FC<Props> = ({
         >
           Avbryt
         </Button>,
-        <KiLoggLenke key='kilogg' />,
       ];
     }
 
     // Edit-modus før publisering
     if (erIEditModus && !harPublisert && activeStep === AktivtSteg.KLADD) {
       return [
+        <KiLoggLenke key='kilogg' />,
         <PubliserRekrutteringstreffButton
           key='publiser'
           erPubliseringklar={erPubliseringklar}
@@ -116,12 +117,12 @@ const HeaderActions: FC<Props> = ({
           Forhåndsvis
         </Button>,
         <SlettRekrutteringstreffButton key='slett' />,
-        <KiLoggLenke key='kilogg' />,
       ];
     }
 
     // Normal view-modus
     return [
+      <KiLoggLenke key='kilogg' />,
       !avlyst && harPublisert && activeStep !== AktivtSteg.FULLFØRE && (
         <RedigerPublisertButton
           key='rediger'
@@ -166,7 +167,6 @@ const HeaderActions: FC<Props> = ({
       activeStep === AktivtSteg.KLADD && (
         <SlettRekrutteringstreffButton key='slett' />
       ),
-      <KiLoggLenke key='kilogg' />,
     ].filter(Boolean);
   };
 
