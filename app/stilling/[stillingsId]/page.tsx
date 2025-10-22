@@ -134,7 +134,7 @@ export default function StillingsSidePage({
             </SideInnhold>
           </Tabs.Panel>
           {kandidatlisteInfo?.kandidatlisteId && erEier && (
-            <>
+            <SideInnhold utenScroll>
               <Tabs.Panel value={StillingFane.KANDIDATER}>
                 <KandidatlisteWrapper>
                   <FiltrertKandidatListeVisning
@@ -142,7 +142,7 @@ export default function StillingsSidePage({
                   />
                 </KandidatlisteWrapper>
               </Tabs.Panel>
-            </>
+            </SideInnhold>
           )}
         </SideLayout>
       </Tabs>

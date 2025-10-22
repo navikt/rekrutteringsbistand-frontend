@@ -38,6 +38,7 @@ const KandidatKort: FC<IKandidatKort> = ({
 
   const stopPropagation = (e: MouseEvent) => {
     e.stopPropagation();
+    e.preventDefault();
   };
 
   const kandidatId = kandidat.arenaKandidatnr;

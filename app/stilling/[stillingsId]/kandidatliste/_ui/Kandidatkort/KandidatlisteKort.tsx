@@ -112,6 +112,7 @@ const KandidatListeKort: FC<KandidatListeKortProps> = ({
 
   const stopPropagation = (e: MouseEvent) => {
     e.stopPropagation();
+    e.preventDefault();
   };
 
   const ankerElement = (children: ReactNode) => {
