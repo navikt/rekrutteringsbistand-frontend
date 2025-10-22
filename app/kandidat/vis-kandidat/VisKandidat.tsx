@@ -77,12 +77,14 @@ export default function VisKandidat({
             Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
           ]}
         >
-          {kandidatlisteKandidat && (
-            <KandidatIKandidatliste
-              kandidatlisteKandidat={kandidatlisteKandidat}
-            />
-          )}
           <SideInnhold>
+            {kandidatlisteKandidat && (
+              <div className='-mt-5'>
+                <KandidatIKandidatliste
+                  kandidatlisteKandidat={kandidatlisteKandidat}
+                />
+              </div>
+            )}
             <Tabs.Panel value={Fane.OVERSIKT}>
               <div className='w-full'>
                 <KandidatSideLayout>
