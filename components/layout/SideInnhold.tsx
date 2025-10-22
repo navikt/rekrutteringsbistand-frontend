@@ -10,11 +10,11 @@ export default function SideInnhold({
   utenScroll,
 }: SideInnholdProps) {
   if (utenScroll) {
-    return <div className={'pt-5 '}>{children}</div>;
+    return <div className={'pt-5 px-5'}>{children}</div>;
   }
   return (
     <SideScroll>
-      <div className={'pt-5 '}>{children}</div>
+      <div className={'pt-5 px-5'}>{children}</div>
     </SideScroll>
   );
 }

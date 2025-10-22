@@ -28,10 +28,9 @@ const SideLayout = ({
   maksBredde = false,
   sidepanel,
   sidepanelBredde,
-  sidepanelKnapp,
 }: ISideLayout) => {
   return (
-    <div className={`@container/sidelayout contain-layout `}>
+    <div className={`@container contain-layout `}>
       <RekBisKort>
         {header && (
           <div className={`${borderCls} w-full`}>
@@ -47,7 +46,11 @@ const SideLayout = ({
           </div>
 
           {sidepanel && (
-            <Sidepanel sidepanelBredde={sidepanelBredde}>{sidepanel}</Sidepanel>
+            <div className='@[720px]:block hidden'>
+              <Sidepanel sidepanelBredde={sidepanelBredde}>
+                {sidepanel}
+              </Sidepanel>
+            </div>
           )}
         </div>
       </RekBisKort>
