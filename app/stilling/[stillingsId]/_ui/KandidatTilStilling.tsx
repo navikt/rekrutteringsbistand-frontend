@@ -2,14 +2,13 @@ import { useFinnKandidatForStilling } from './useFinnKandidatForStilling';
 import { Kandidatlistestatus } from '@/app/api/kandidat/schema.zod';
 import { useKandidatlisteForEier } from '@/app/api/kandidat/useKandidatlisteForEier';
 import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
-import { useKandidatSøkFilterContext } from '@/app/kandidat/KandidaSokFilterContext';
 import KandidatSøkResultat from '@/app/kandidat/KandidatSøkResultat';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import Sidelaster from '@/components/layout/Sidelaster';
 import { getMiljø, Miljø } from '@/util/miljø';
 import { ArrowRightIcon, FilesIcon } from '@navikt/aksel-icons';
 import { Alert, Button, Heading } from '@navikt/ds-react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { FC, useEffect, useState } from 'react';
 
 export interface KandidatTilStillingProps {
@@ -19,8 +18,12 @@ export interface KandidatTilStillingProps {
 const KandidatTilStilling: FC<KandidatTilStillingProps> = ({
   stillingsData,
 }) => {
-  const { portefølje } = useKandidatSøkFilterContext();
-  const kandidatForStillingData = useFinnKandidatForStilling(stillingsData);
+  const searchParams = useSearchParams();
+  const harAndreParametere = searchParams.size > 0;
+  const skalHenteStillingsData = stillingsData && !harAndreParametere;
+  const kandidatForStillingData = useFinnKandidatForStilling(
+    skalHenteStillingsData ? stillingsData : null,
+  );
   const router = useRouter();
   const [alleredeLagtTilKandidatliste, setAlleredeLagtTilKandidatliste] =
     useState<string[]>([]);
@@ -52,7 +55,10 @@ const KandidatTilStilling: FC<KandidatTilStillingProps> = ({
     );
   };
 
-  if (kandidatForStillingData.isLoading || kandidatlisteLaster) {
+  if (
+    (skalHenteStillingsData && kandidatForStillingData.isLoading) ||
+    kandidatlisteLaster
+  ) {
     return <Sidelaster />;
   }
 

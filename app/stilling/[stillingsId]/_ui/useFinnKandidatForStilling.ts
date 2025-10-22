@@ -4,7 +4,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useRef } from 'react';
 
 export const useFinnKandidatForStilling = (
-  stillingsData?: StillingsDataDTO,
+  stillingsData?: StillingsDataDTO | null,
 ) => {
   const kandidatSøkFilter = useKandidatSøkFilterContext();
   const hasSetInitialData = useRef(false);
