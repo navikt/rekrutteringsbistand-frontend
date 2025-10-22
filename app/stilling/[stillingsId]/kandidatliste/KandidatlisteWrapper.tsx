@@ -1,3 +1,5 @@
+'use client';
+
 import { KandidatlisteContextProvider } from './KandidatlisteContext';
 import { KandidatlisteFilterContextProvider } from './_ui/KandidatlisteFilter/KandidatlisteFilterContext';
 import { useForespurteOmDelingAvCv } from '@/app/api/foresporsel-om-deling-av-cv/foresporsler/[...slug]/useForespurteOmDelingAvCv';

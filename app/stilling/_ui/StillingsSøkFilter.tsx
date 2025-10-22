@@ -1,16 +1,9 @@
-import GeografiFilter from './StillingsSøkFilter/GeografiFilter';
-import KategoriFilter from './StillingsSøkFilter/KategoriFilter';
-import StatusFilter from './StillingsSøkFilter/StatusFilter';
 import StillingsSøkNavigasjon from './StillingsSøkNavigasjon';
-import StillingsSøkSortering from './StillingsSøkSortering';
 import { useUseBrukerStandardSøk } from '@/app/api/stilling/standardsok/useBrukersStandardsøk';
-import InkluderingFilter from '@/app/stilling/_ui/StillingsSøkFilter/InkluderingFilter';
-import StillingSøkebar from '@/app/stilling/_ui/StillingsSøkFilter/StillingSøkebar';
-import MittStandardsøk from '@/app/stilling/_ui/standardsøk/MittStandardsøk';
-import AlleFilterKomponent from '@/components/filter/AlleFilterKomponent';
+import { SidepanelTrigger } from '@/components/layout/SidepanelTrigger';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
-import { MagnifyingGlassIcon } from '@navikt/aksel-icons';
+import { FilterIcon, MagnifyingGlassIcon } from '@navikt/aksel-icons';
 import { Box, Button } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState, type FC } from 'react';
@@ -49,7 +42,7 @@ const StillingsSøkFilter: FC<{
   }, []);
 
   return (
-    <div className='@container contain-layout flex flex-row items-center justify-between'>
+    <div className='@container flex flex-row items-center justify-between contain-layout'>
       <StillingsSøkNavigasjon />
       <div className='flex gap-2'>
         <div className='relative' ref={searchRef}>
@@ -72,19 +65,7 @@ const StillingsSøkFilter: FC<{
             </Box.New>
           )}
         </div>
-        <div className='block @[720px]:hidden'>
-          <div className='whitespace-nowrap'>
-            <AlleFilterKomponent>
-              <StillingSøkebar alltidÅpen />
-              <MittStandardsøk />
-              <StillingsSøkSortering />
-              {harArbeidsgiverrettetRolle && !formidlinger && <StatusFilter />}
-              <GeografiFilter />
-              {!formidlinger && <KategoriFilter />}
-              <InkluderingFilter />
-            </AlleFilterKomponent>
-          </div>
-        </div>
+        <SidepanelTrigger icon={<FilterIcon />}>Filtrer</SidepanelTrigger>
       </div>
     </div>
   );

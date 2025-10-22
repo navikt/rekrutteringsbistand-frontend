@@ -154,6 +154,10 @@ const slettet = createMockHit({
 
 const formidling = createMockHit({ id: 'minFormidling', erFormidling: true });
 
+const ekstraStillinger = Array.from({ length: 10 }, (_, i) =>
+  createMockHit({ id: `ekstraStilling${i + 1}` }),
+);
+
 const hits = [
   minStilling,
   minStillingEkstern,
@@ -162,6 +166,7 @@ const hits = [
   ikkePublisert,
   slettet,
   formidling,
+  ...ekstraStillinger,
 ];
 
 export const mockStillingssøk = {

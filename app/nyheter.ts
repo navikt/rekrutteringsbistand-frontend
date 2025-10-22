@@ -2,7 +2,7 @@
  * Nyheter for Rekrutteringsbistand
  */
 
-export interface NyhetDTO {
+interface NyhetDTO {
   dato: string;
   tittel: string;
   beskrivelse: string;

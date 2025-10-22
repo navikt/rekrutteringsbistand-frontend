@@ -19,6 +19,7 @@ const config: StorybookConfig = {
     '@storybook/addon-docs',
     '@storybook/addon-a11y',
     'msw-storybook-addon',
+    '@storybook/addon-queryparams',
   ],
   framework: {
     name: '@storybook/nextjs-vite',
@@ -26,12 +27,12 @@ const config: StorybookConfig = {
   },
   staticDirs: ['../public'],
   viteFinal: async (config) => {
-    const basePath = process.env.STORYBOOK_BASE_PATH; // Used for GitHub Pages deployment so assets load under /<repo>/
+    // const basePath = process.env.STORYBOOK_BASE_PATH; // Used for GitHub Pages deployment so assets load under /<repo>/
 
     return {
       ...config,
-      // Vite base path only applied in build (ignored in dev server if undefined)
-      base: basePath || config.base,
+      // // Vite base path only applied in build (ignored in dev server if undefined)
+      // base: basePath || config.base,
       server: {
         ...config.server,
         hmr: {

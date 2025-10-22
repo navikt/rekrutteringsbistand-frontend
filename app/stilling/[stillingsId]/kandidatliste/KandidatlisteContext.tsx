@@ -1,3 +1,5 @@
+'use client';
+
 import { KandidatVisningProps } from './_ui/KandidatlisteFilter/useFiltrerteKandidater';
 import OrganisasjonsnummerAlert from './_ui/OrganisasjonsnummerAlert';
 import { mapKandidatListeKandidatTilVisning } from './util';

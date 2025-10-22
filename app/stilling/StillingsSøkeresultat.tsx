@@ -10,6 +10,7 @@ import { useStillingssøk } from '@/app/api/stillings-sok/useStillingssøk';
 import { useStillingssokTotalData } from '@/app/stilling/store/stillingssokTotalData';
 import SWRLaster from '@/components/SWRLaster';
 import SideScroll from '@/components/SideScroll';
+import SideInnhold from '@/components/layout/SideInnhold';
 import SkeletonKort from '@/components/layout/SkeletonKort';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { ChevronLeftIcon, ChevronRightIcon } from '@navikt/aksel-icons';
@@ -39,6 +40,11 @@ const StillingsSøkeresultat: FC<StillingsSøkeresultatProps> = ({
     formidlinger: filter.formidlinger,
     finnStillingerForKandidat,
   });
+
+  // const [visStillingsId] = useQueryState('visStillingsId', {
+  //   defaultValue: '',
+  //   clearOnDefault: true,
+  // });
 
   const antallVisning = (total: number) => {
     if (!total) {
@@ -88,15 +94,16 @@ const StillingsSøkeresultat: FC<StillingsSøkeresultatProps> = ({
       hooks={[combinedHook]}
       skeleton={
         <div className='mt-16'>
-          <SideScroll>
+          <SideInnhold>
             <SkeletonKort />
-          </SideScroll>
+          </SideInnhold>
         </div>
       }
     >
       {(data: any) => {
         return (
           <div className='h-full flex flex-col'>
+            {/* {visStillingsId && <VisStillingModal kandidatId={kandidatId} />} */}
             <StillingsSøkChips />
             {antallVisning(data.hits?.total?.value)}
 
@@ -104,7 +111,11 @@ const StillingsSøkeresultat: FC<StillingsSøkeresultatProps> = ({
               <SideScroll key={filterKey}>
                 <div className='flex flex-col gap-1'>
                   {data.hits?.hits?.map((hit: any) => (
-                    <StillingsKort key={hit._id} stillingData={hit._source} />
+                    <StillingsKort
+                      key={hit._id}
+                      stillingData={hit._source}
+                      kandidatId={kandidatId}
+                    />
                   ))}
                 </div>
                 <div className={'flex justify-center items-center'}>

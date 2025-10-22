@@ -36,7 +36,6 @@ const FjernFåttJobbenKnapp: FC<FjernFåttJobbenKnappProps> = ({
       icon={<MinusCircleIcon />}
       variant='tertiary'
       size='small'
-      className='self-center'
       loading={loading}
       onClick={() => endreUtfallForKandidat(KandidatutfallTyper.PRESENTERT)}
     >

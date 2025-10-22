@@ -23,7 +23,6 @@ const RekBisKort: React.FC<RekBisProps> = ({
         background='default'
         className={`flex flex-col w-full h-[calc(100vh-70px)] overflow-hidden ${className}`}
       >
-        {/* Kortet vokser nå naturlig med innholdet og lar siden scrolle. */}
         {children}
       </Box.New>
     </div>

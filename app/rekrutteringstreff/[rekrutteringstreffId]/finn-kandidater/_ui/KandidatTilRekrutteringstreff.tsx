@@ -1,4 +1,5 @@
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
+import KandidatSøkResultat from '@/app/kandidat/KandidatSøkResultat';
 import KandidatSøkTabs from '@/app/kandidat/KandidatSøkTabs';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { FC, useEffect, useState } from 'react';
@@ -24,7 +25,8 @@ const KandidatTilRekrutteringstreff: FC = () => {
 
   return (
     <>
-      <KandidatSøkTabs
+      <KandidatSøkTabs />
+      <KandidatSøkResultat
         alleredeLagtTilTreff={alleredeLagtTilTreff}
         rekrutteringstreffId={rekrutteringstreff?.rekrutteringstreffId}
       />

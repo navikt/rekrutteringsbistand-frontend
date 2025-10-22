@@ -29,8 +29,8 @@ export const createKandidatlisteMock = (opts?: {
   } = opts || {};
   const now = new Date().toISOString();
   const kandidater = Array.from({ length: antall }).map((_, i) => ({
-    kandidatId: `kid-${i + 1}`,
-    kandidatnr: `kandidatnr-${i + 1}`,
+    kandidatId: `kandidat-arenaKandidatnr-${i + 1}`,
+    kandidatnr: `kandidat-arenaKandidatnr-${i + 1}`,
     status,
     lagtTilTidspunkt: now,
     lagtTilAv: { ident: 'Z123456', navn: 'Veileder V Veiledersen' },
@@ -60,7 +60,7 @@ export const createKandidatlisteMock = (opts?: {
   return {
     kandidatlisteId: 'demo-liste',
     tittel: 'Kandidatliste Demo',
-    organisasjonReferanse: '123456789',
+    organisasjonReferanse: '312113341',
     organisasjonNavn: 'MockOrg AS',
     stillingId: stillingsData.stilling.uuid,
     opprettetAv: { ident: 'Z123456', navn: 'Veileder V Veiledersen' },

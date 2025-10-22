@@ -13,8 +13,9 @@ import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import SideScroll from '@/components/SideScroll';
-import Fremdriftspanel from '@/components/fremdriftspanel/Fremdriftspanel';
 import SideLayout from '@/components/layout/SideLayout';
+import Fremdriftspanel from '@/components/sidepanel/Sidepanel';
+import { RekbisError } from '@/util/rekbisError';
 import { Tabs } from '@navikt/ds-react';
 import { formatDistanceToNow } from 'date-fns';
 import { nb } from 'date-fns/locale/nb';

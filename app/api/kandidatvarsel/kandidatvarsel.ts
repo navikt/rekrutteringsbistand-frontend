@@ -1,3 +1,5 @@
+'use client';
+
 import { KandidatvarselAPI } from '@/app/api/api-routes';
 import { getAPI, postApi } from '@/app/api/fetcher';
 import { RekbisError } from '@/util/rekbisError';

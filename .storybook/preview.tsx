@@ -1,15 +1,27 @@
 import '../app/globals.css';
 import { mswHandlers } from '../mocks/handlers';
 import { ThemeProvider } from '../providers/ThemeProvider';
-import { MockRekrutteringstreffProvider } from '../storybook/mocks';
 import StoryProviders from './StoryProviders';
+import { MockRekrutteringstreffProvider } from './mocks';
 import './storybook.css';
 import '@navikt/ds-css/darkside';
 import type { Preview } from '@storybook/nextjs-vite';
 import { initialize, mswLoader } from 'msw-storybook-addon';
 
 // Init MSW (kun i Storybook). Handlerliste importeres fra mocks/handlers.ts.
-initialize({ onUnhandledRequest: 'bypass' });
+// Viktig: Standard (addon) forsøker å registrere service worker på "/mockServiceWorker.js".
+// På GitHub Pages ligger Storybook gjerne under en subpath (f.eks. /rekrutteringsbistand-frontend/),
+// og da vil "/mockServiceWorker.js" peke til organisasjons-roten i stedet for repoet.
+// Vi bruker derfor en RELATIV sti (uten leading slash) slik at den blir korrekt uansett base.
+// (Vite sin base settes i main.ts via STORYBOOK_BASE_PATH.)
+initialize({
+  onUnhandledRequest: 'bypass',
+  serviceWorker: {
+    // Relativ gjør at URLen blir `${window.location.origin}${window.location.pathnameBase}mockServiceWorker.js`.
+    // Fungerer både lokalt (root) og på GitHub Pages (subpath) og i Chromatic.
+    url: 'mockServiceWorker.js',
+  },
+});
 
 const preview: Preview = {
   globalTypes: {

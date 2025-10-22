@@ -1,7 +1,7 @@
 import PubliserModal from './PubliserModal';
 import EndreStillingStatus from './_felles/EndreStillingStatus';
+import { MockStillingsProvider } from '@/.storybook/mocks';
 import { StillingsStatus } from '@/app/stilling/_ui/stilling-typer';
-import { MockStillingsProvider } from '@/storybook/mocks';
 import { PencilWritingIcon } from '@navikt/aksel-icons';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 

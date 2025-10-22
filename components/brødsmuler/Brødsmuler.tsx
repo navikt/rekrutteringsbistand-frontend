@@ -1,6 +1,6 @@
 'use client';
 
-import { useNullableRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
+import { useNullableKandidatContext } from '@/app/kandidat/vis-kandidat/KandidatContext';
 import { useNullableStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import {
   Breadcrumb,
@@ -34,9 +34,9 @@ export type PathConfig = Record<string, PathConfigEntry>;
 interface AutoBreadcrumbsProps {
   /** Valgfri mapping av path-segmenter -> label/icon. Hvis utelatt brukes defaultPathConfig. */
   pathConfig?: PathConfig;
+  className?: string;
   /** Bytt ut et segment-navn med en custom label. Eks: ['a1d169be-...','Senior utvikler'] */
   erstattPath?: [originalSegment: string, nyLabel: string];
-  className?: string;
   /** For test / Storybook: bruk denne pathen i stedet for usePathname() */
   forcedPath?: string;
 }
@@ -71,10 +71,11 @@ export const defaultPathConfig: PathConfig = {
     label: 'Jobbsøker',
     icon: <PersonIcon aria-hidden className='w-4 h-4' />,
   },
-  'finn-kandidater': { label: 'Finn kandidater for stilling' },
+  'finn-kandidater': { label: 'Finn jobbsøker' },
+  'finn-stilling': { label: 'Finn stilling' },
 };
 
-export function AutoBreadcrumbs({
+function AutoBreadcrumbs({
   pathConfig = defaultPathConfig,
   erstattPath,
   className,
@@ -89,6 +90,10 @@ export function AutoBreadcrumbs({
   const [collapsed, setCollapsed] = useState(false);
   const rootRef = useRef<HTMLDivElement | null>(null);
   const measureRef = useRef<HTMLDivElement | null>(null);
+
+  // Hent kontekster
+  const stillingsCtx = useNullableStillingsContext();
+  const kandidatCtx = useNullableKandidatContext();
 
   // Reset collapsed on path change
   useEffect(() => {
@@ -118,9 +123,27 @@ export function AutoBreadcrumbs({
     const href = '/' + segments.slice(0, i + 1).join('/');
     const isLast = i === segments.length - 1;
     let label = entry?.label || seg;
+
+    // Automatisk erstatt stilling UUID med tittel
+    if (
+      stillingsCtx?.stillingsData?.stilling?.uuid === seg &&
+      stillingsCtx.stillingsData?.stilling?.title
+    ) {
+      label = stillingsCtx.stillingsData.stilling.title;
+    }
+
+    // Automatisk erstatt kandidat ID med navn
+    if (
+      kandidatCtx?.kandidatId === seg &&
+      kandidatCtx.kandidatData?.fornavn &&
+      kandidatCtx.kandidatData?.etternavn
+    ) {
+      label = `${kandidatCtx.kandidatData.fornavn} ${kandidatCtx.kandidatData.etternavn}`;
+    }
     if (erstattPath && seg === erstattPath[0]) {
       label = erstattPath[1];
     }
+
     return {
       segment: seg,
       href,
@@ -130,26 +153,6 @@ export function AutoBreadcrumbs({
       skipLink: isLast || !!entry?.skipLink,
     };
   });
-
-  // // Dynamisk overskriv label for /stilling/<uuid>
-  // if (segments[0] === 'stilling' && segments.length >= 2 && items[1]) {
-  //   const stillingstittel = stillingsCtx?.stillingsData?.stilling?.title;
-  //   if (stillingstittel) {
-  //     items[1].label = stillingstittel;
-  //   }
-  // }
-
-  // // Dynamisk overskriv label for /rekrutteringstreff/<id>
-  // if (
-  //   segments[0] === 'rekrutteringstreff' &&
-  //   segments.length >= 2 &&
-  //   items[1]
-  // ) {
-  //   const treffNavn = (rekTreffCtx as any)?.rekrutteringstreff?.navn;
-  //   if (treffNavn) {
-  //     items[1].label = treffNavn;
-  //   }
-  // }
 
   const visibleItems = useMemo(() => {
     if (!collapsed || items.length <= 2) return items;

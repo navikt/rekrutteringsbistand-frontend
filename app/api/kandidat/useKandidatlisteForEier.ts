@@ -1,3 +1,5 @@
+'use client';
+
 import { kandidatlisteSchema } from './schema.zod';
 import { KandidatAPI } from '@/app/api/api-routes';
 import { getAPIwithSchema } from '@/app/api/fetcher';

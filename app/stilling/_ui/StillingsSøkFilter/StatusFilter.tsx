@@ -4,6 +4,7 @@ import { useStillingssøk } from '@/app/api/stillings-sok/useStillingssøk';
 import { useStillingsSøkFilter } from '@/app/stilling/StillingsSøkContext';
 import { VisningsStatus } from '@/app/stilling/_util/stillingInfoUtil';
 import { StillingsSøkPortefølje } from '@/app/stilling/_util/stillingssøk-typer';
+import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
 import { useEffect, useRef } from 'react';
@@ -13,6 +14,7 @@ export interface StatusFilterProps {
 }
 
 export default function StatusFilter({ hideLegend }: StatusFilterProps) {
+  const { harRolle } = useApplikasjonContext();
   const filterCtx = useStillingsSøkFilter();
   const { statuser, setStatuser, portefølje } = filterCtx;
   const {
@@ -43,6 +45,10 @@ export default function StatusFilter({ hideLegend }: StatusFilterProps) {
     }
   };
 
+  const harArbeidsgiverrettetRolle = harRolle([
+    Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+  ]);
+
   const allStatuses: VisningsStatus[] = [
     VisningsStatus.ApenForSokere,
     VisningsStatus.StengtForSokere,
@@ -64,6 +70,9 @@ export default function StatusFilter({ hideLegend }: StatusFilterProps) {
     }
   }, [loading, statuser, setStatuser, filterCtx.formidlinger]);
 
+  if (!harArbeidsgiverrettetRolle) {
+    return null;
+  }
   return (
     <CheckboxGroup legend={hideLegend ? undefined : 'Status'} size='small'>
       <div className='flex flex-col gap-2'>
