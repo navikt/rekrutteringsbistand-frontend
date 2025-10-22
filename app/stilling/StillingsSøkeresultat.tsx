@@ -10,6 +10,7 @@ import { useStillingssøk } from '@/app/api/stillings-sok/useStillingssøk';
 import { useStillingssokTotalData } from '@/app/stilling/store/stillingssokTotalData';
 import SWRLaster from '@/components/SWRLaster';
 import SideScroll from '@/components/SideScroll';
+import SideInnhold from '@/components/layout/SideInnhold';
 import SkeletonKort from '@/components/layout/SkeletonKort';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { ChevronLeftIcon, ChevronRightIcon } from '@navikt/aksel-icons';
@@ -93,9 +94,9 @@ const StillingsSøkeresultat: FC<StillingsSøkeresultatProps> = ({
       hooks={[combinedHook]}
       skeleton={
         <div className='mt-16'>
-          <SideScroll>
+          <SideInnhold>
             <SkeletonKort />
-          </SideScroll>
+          </SideInnhold>
         </div>
       }
     >

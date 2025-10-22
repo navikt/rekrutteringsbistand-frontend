@@ -6,8 +6,8 @@ import NavigerTilAktivitetsplanenKnapp from '@/app/kandidat/_ui/ActionLinks/Navi
 import KandidatAktivitet from '@/app/kandidat/vis-kandidat/aktivitet-fane/KandidatAktivitet';
 import KandidatOversikt from '@/app/kandidat/vis-kandidat/oversikt-fane/KandidatOversikt';
 import KandidatIKandidatliste from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatIKandidatliste/KandidatIKandidatliste';
-import SideScroll from '@/components/SideScroll';
 import PanelHeader from '@/components/layout/PanelHeader';
+import SideInnhold from '@/components/layout/SideInnhold';
 import SideLayout from '@/components/layout/SideLayout';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
@@ -82,7 +82,7 @@ export default function VisKandidat({
               kandidatlisteKandidat={kandidatlisteKandidat}
             />
           )}
-          <SideScroll>
+          <SideInnhold>
             <Tabs.Panel value={Fane.OVERSIKT}>
               <div className='w-full'>
                 <KandidatSideLayout>
@@ -102,7 +102,7 @@ export default function VisKandidat({
                 <KandidatAktivitet />
               </div>
             </Tabs.Panel>
-          </SideScroll>
+          </SideInnhold>
         </TilgangskontrollForInnhold>
       </SideLayout>
     </Tabs>

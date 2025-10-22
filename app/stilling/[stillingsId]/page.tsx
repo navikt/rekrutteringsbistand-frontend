@@ -13,8 +13,8 @@ import FiltrertKandidatListeVisning from '@/app/stilling/[stillingsId]/kandidatl
 import KandidatlisteWrapper from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteWrapper';
 import { StillingsStatus } from '@/app/stilling/_ui/stilling-typer';
 import { visStillingsDataInfo } from '@/app/stilling/_util/stillingInfoUtil';
-import SideScroll from '@/components/SideScroll';
 import PanelHeader from '@/components/layout/PanelHeader';
+import SideInnhold from '@/components/layout/SideInnhold';
 import SideLayout from '@/components/layout/SideLayout';
 import { SidepanelTrigger } from '@/components/layout/SidepanelTrigger';
 import { Alert, Heading, Tabs } from '@navikt/ds-react';
@@ -102,18 +102,14 @@ export default function StillingsSidePage({
                     ) : (
                       <StillingTabs />
                     )}
-                    <SidepanelTrigger>Vis panel</SidepanelTrigger>
+                    <SidepanelTrigger>Vis panel </SidepanelTrigger>
                   </div>
                 }
                 actionsRight={<TabKnapper printRef={printRef} />}
               />
             </PanelHeader>
           }
-          sidepanel={
-            skjulFremdriftspanel ? undefined : (
-              <SideScroll>{fremdriftsPanel()}</SideScroll>
-            )
-          }
+          sidepanel={skjulFremdriftspanel ? undefined : fremdriftsPanel()}
         >
           {ugyldigStilling && !erUtkast && (
             <Alert variant='error'>
@@ -128,13 +124,12 @@ export default function StillingsSidePage({
             </Alert>
           )}
           <Tabs.Panel value={StillingFane.STILLING}>
-            <SideScroll>
+            <SideInnhold>
               {/* <SideLayoutMobilTop>{fremdriftsPanel(true)}</SideLayoutMobilTop> */}
               <OmStillingenHeader />
-
               {erUtkast && <StillingsutkastMelding />}
               <OmStillingen printRef={printRef} skjulKnapper={kunVisning} />
-            </SideScroll>
+            </SideInnhold>
           </Tabs.Panel>
           {kandidatlisteInfo?.kandidatlisteId && erEier && (
             <>
