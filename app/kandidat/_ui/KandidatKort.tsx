@@ -109,20 +109,18 @@ const KandidatKort: FC<IKandidatKort> = ({
         tabIndex={0}
       >
         <div className='flex flex-row '>
-          <div onClick={stopPropagation}>
-            <Checkbox
-              disabled={!kandidat.arenaKandidatnr || erLagtTil}
-              checked={erMarkert || erLagtTil}
-              aria-selected={erMarkert}
-              hideLabel
-              className='-mt-2 mr-4'
-              onChange={() =>
-                kandidat.arenaKandidatnr && setMarkert(kandidat.arenaKandidatnr)
-              }
-            >
-              Checkbox
-            </Checkbox>
-          </div>
+          <Checkbox
+            disabled={!kandidat.arenaKandidatnr || erLagtTil}
+            checked={erMarkert || erLagtTil}
+            aria-selected={erMarkert}
+            hideLabel
+            className='-mt-2 mr-4'
+            onChange={() =>
+              kandidat.arenaKandidatnr && setMarkert(kandidat.arenaKandidatnr)
+            }
+          >
+            Checkbox
+          </Checkbox>
 
           <div className='flex-grow'>
             <div className='flex justify-between'>

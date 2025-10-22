@@ -152,9 +152,7 @@ const KandidatListeKort: FC<KandidatListeKortProps> = ({
           <div className={`${kolonneStyling} flex flex-col gap-2`}>
             <div className='flex gap-4'>
               {!kunVisning && (
-                <div onClick={stopPropagation}>
-                  <KandidatCheckbox kandidat={kandidat} slettet={slettet} />
-                </div>
+                <KandidatCheckbox kandidat={kandidat} slettet={slettet} />
               )}
               <KandidatlisteNavn kandidat={kandidat} slettet={slettet} />
             </div>
