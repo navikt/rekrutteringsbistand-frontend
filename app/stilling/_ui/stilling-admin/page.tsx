@@ -18,6 +18,7 @@ import { normaliserPropertiesTilStrenger } from '@/app/stilling/_util/normaliser
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideInnhold from '@/components/layout/SideInnhold';
 import SideLayout from '@/components/layout/SideLayout';
+import { SidepanelTrigger } from '@/components/layout/SidepanelTrigger';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { MultiplyIcon, TrashIcon } from '@navikt/aksel-icons';
@@ -132,6 +133,9 @@ export default function StillingAdmin() {
                 Avslutt forhåndsvisning
               </Button>
             )}
+            <SidepanelTrigger className='ml-auto'>
+              Vis sidepanel
+            </SidepanelTrigger>
           </PanelHeader>
         }
         sidepanel={

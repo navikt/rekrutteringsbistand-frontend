@@ -1,4 +1,5 @@
 import RekBisKort from '@/components/layout/RekBisKort';
+import { SideLayoutProvider } from '@/components/layout/SideLayoutContext';
 import Sidepanel, {
   SidepanelBreddeProp,
 } from '@/components/sidepanel/Sidepanel';
@@ -6,7 +7,7 @@ import * as React from 'react';
 
 export type ISideLayout = {
   header?: React.ReactNode;
-  sidepanelKnapp?: React.ReactNode;
+  sidepanelTittel?: string;
 
   children: React.ReactNode;
   maksBredde?: boolean;
@@ -28,33 +29,37 @@ const SideLayout = ({
   maksBredde = false,
   sidepanel,
   sidepanelBredde,
+  sidepanelTittel,
 }: ISideLayout) => {
   return (
-    <div className={`@container contain-layout `}>
-      <RekBisKort>
-        {header && (
-          <div className={`${borderCls} w-full`}>
-            <div className={`${maksBredde ? '' : breddeBegrensning}`}>
-              {header}
-            </div>
-          </div>
-        )}
-
-        <div className={`${maksBredde ? '' : breddeBegrensning} flex `}>
-          <div className={sidepanel ? 'flex-1 min-w-0 ' : 'w-full  '}>
-            {children}
-          </div>
-
-          {sidepanel && (
-            <div className='@[720px]:block hidden'>
-              <Sidepanel sidepanelBredde={sidepanelBredde}>
-                {sidepanel}
-              </Sidepanel>
+    <SideLayoutProvider>
+      <div className={`@container/sidelayout contain-layout `}>
+        <RekBisKort>
+          {header && (
+            <div className={`${borderCls} w-full`}>
+              <div className={`${maksBredde ? '' : breddeBegrensning}`}>
+                {header}
+              </div>
             </div>
           )}
-        </div>
-      </RekBisKort>
-    </div>
+
+          <div className={`${maksBredde ? '' : breddeBegrensning} flex `}>
+            <div className={sidepanel ? 'flex-1 min-w-0 ' : 'w-full  '}>
+              {children}
+            </div>
+
+            {sidepanel && (
+              <Sidepanel
+                sidepanelBredde={sidepanelBredde}
+                sidepanelTittel={sidepanelTittel}
+              >
+                {sidepanel}
+              </Sidepanel>
+            )}
+          </div>
+        </RekBisKort>
+      </div>
+    </SideLayoutProvider>
   );
 };
 

@@ -17,6 +17,7 @@ import { OpprettKnapp } from '@/components/opprett/OpprettKnapp';
 export default function EtterregistreringSøkLayout() {
   return (
     <SideLayout
+      sidepanelTittel='Filtrer'
       header={
         <PanelHeader>
           <PanelHeader.Section

@@ -8,8 +8,6 @@ import PanelHeader from '@/components/layout/PanelHeader';
 import SideLayout from '@/components/layout/SideLayout';
 import { Tabs } from '@navikt/ds-react';
 
-// import OmStillingen from '@/app/stilling/[stillingsId]/omStillingen/OmStillingen'
-
 export default function VisFormidling() {
   const { erEier } = useStillingsContext();
 

@@ -63,6 +63,7 @@ const StillingsSøkLayout: FC<StillingsSøkProps> = ({
 
   return (
     <SideLayout
+      sidepanelTittel='Filtrer'
       header={
         <PanelHeader>
           <PanelHeader.Section
@@ -86,7 +87,6 @@ const StillingsSøkLayout: FC<StillingsSøkProps> = ({
           <StillingSøkebar alltidÅpen={false} />
           <MittStandardsøk />
           <StillingsSøkSortering />
-          {/* {(harArbeidsgiverrettetRolle || formidlinger) && <StatusFilter />} */}
           <StatusFilter />
           <GeografiFilter />
           <KategoriFilter />

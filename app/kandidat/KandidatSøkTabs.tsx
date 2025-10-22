@@ -5,10 +5,11 @@ import {
   useKandidatSøkFilterContext,
 } from './KandidaSokFilterContext';
 import ValgteKontorer from './_ui/ValgteKontorer';
-import KandidatSøkFilter from './kandidat-søk-filter/KandidatSøkFilter';
+import { SidepanelTrigger } from '@/components/layout/SidepanelTrigger';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
+import { FilterIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 
 export default function KandidatSøkTabs() {
@@ -152,8 +153,10 @@ export default function KandidatSøkTabs() {
           >
             <VelgKontor />
           </TilgangskontrollForInnhold>
+          <div className='ml-auto'>
+            <SidepanelTrigger icon={<FilterIcon />}>Filtrer</SidepanelTrigger>
+          </div>
         </div>
-        <KandidatSøkFilter />
       </div>
       {portefølje === KandidatSøkPortefølje.VALGTE_KONTORER && (
         <ValgteKontorer />

@@ -16,6 +16,7 @@ import { visStillingsDataInfo } from '@/app/stilling/_util/stillingInfoUtil';
 import SideScroll from '@/components/SideScroll';
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideLayout from '@/components/layout/SideLayout';
+import { SidepanelTrigger } from '@/components/layout/SidepanelTrigger';
 import { Alert, Heading, Tabs } from '@navikt/ds-react';
 import { useQueryState } from 'nuqs';
 import { useRef } from 'react';
@@ -87,19 +88,22 @@ export default function StillingsSidePage({
                   stillingsData?.stilling?.title,
                 ]}
                 tabs={
-                  kandidatId ? (
-                    <div className='flex justify-between'>
-                      <StillingTabs />
-                      <div className='shrink-0 mt-3'>
-                        <LeggKandidatTilKandidatliste
-                          kandidatId={kandidatId}
-                          stillingId={stillingsData.stilling.uuid}
-                        />
+                  <div className='flex justify-between'>
+                    {kandidatId ? (
+                      <div className='flex justify-between'>
+                        <StillingTabs />
+                        <div className='shrink-0 mt-3'>
+                          <LeggKandidatTilKandidatliste
+                            kandidatId={kandidatId}
+                            stillingId={stillingsData.stilling.uuid}
+                          />
+                        </div>
                       </div>
-                    </div>
-                  ) : (
-                    <StillingTabs />
-                  )
+                    ) : (
+                      <StillingTabs />
+                    )}
+                    <SidepanelTrigger>Vis panel</SidepanelTrigger>
+                  </div>
                 }
                 actionsRight={<TabKnapper printRef={printRef} />}
               />

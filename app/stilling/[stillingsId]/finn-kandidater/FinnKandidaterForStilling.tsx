@@ -1,8 +1,8 @@
 'use client';
 
 import KandidatTilStilling from '../_ui/KandidatTilStilling';
-import { KandidatSøkSidebar } from '@/app/kandidat/KandidatSøkLayout';
 import KandidatSøkTabs from '@/app/kandidat/KandidatSøkTabs';
+import KandidatSøkFilter from '@/app/kandidat/kandidat-søk-filter/KandidatSøkFilter';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideLayout from '@/components/layout/SideLayout';
@@ -24,7 +24,9 @@ export default function FinnKandidaterForStilling() {
           />
         </PanelHeader>
       }
-      sidepanel={KandidatSøkSidebar}
+      sidepanelBredde='250px'
+      sidepanelTittel='Filtrer'
+      sidepanel={<KandidatSøkFilter />}
     >
       <TilgangskontrollForInnhold
         kreverEnAvRollene={[

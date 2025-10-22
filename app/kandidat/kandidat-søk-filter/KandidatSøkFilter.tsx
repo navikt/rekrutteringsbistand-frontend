@@ -9,26 +9,19 @@ import PrioriterteMålgrupper from './_ui/PrioriterteMålgrupper';
 import Språk from './_ui/Språk';
 import Utdanningsnivå from './_ui/Utdanningsnivå';
 import Innsatsgrupper from '@/app/kandidat/kandidat-søk-filter/_ui/Innsatsgrupper';
-import AlleFilterKomponent from '@/components/filter/AlleFilterKomponent';
 
 export default function KandidatSøkFilter() {
   return (
-    <div className='flex gap-4 '>
-      <div className='block @[720px]:hidden'>
-        <div className='whitespace-nowrap'>
-          <AlleFilterKomponent>
-            <FritekstSøk />
-            <Arbeidsønsker />
-            <KandidatStedSøk />
-            <Kompetanse />
-            <Førerkort />
-            <Språk />
-            <Arbeidserfaring /> <Hovedmål /> <Utdanningsnivå />
-            <PrioriterteMålgrupper />
-            <Innsatsgrupper />
-          </AlleFilterKomponent>
-        </div>
-      </div>
+    <div className='flex flex-col  gap-4'>
+      <FritekstSøk />
+      <Arbeidsønsker />
+      <KandidatStedSøk />
+      <Kompetanse />
+      <Førerkort />
+      <Språk />
+      <Arbeidserfaring /> <Hovedmål /> <Utdanningsnivå />
+      <PrioriterteMålgrupper />
+      <Innsatsgrupper />
     </div>
   );
 }
