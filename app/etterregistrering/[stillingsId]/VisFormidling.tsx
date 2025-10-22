@@ -5,6 +5,7 @@ import FremdriftspanelEtterregistrering from '@/app/etterregistrering/[stillings
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import OmStillingen from '@/app/stilling/[stillingsId]/_ui/om-stillingen/OmStillingen';
 import PanelHeader from '@/components/layout/PanelHeader';
+import SideInnhold from '@/components/layout/SideInnhold';
 import SideLayout from '@/components/layout/SideLayout';
 import { Tabs } from '@navikt/ds-react';
 
@@ -28,14 +29,16 @@ export default function VisFormidling() {
           </PanelHeader>
         }
       >
-        <Tabs.Panel value='omStillingen'>
-          <OmStillingen printRef={null} />
-        </Tabs.Panel>
-        {erEier && (
-          <Tabs.Panel value='kandidater'>
-            <FormidlingKandidater />
+        <SideInnhold>
+          <Tabs.Panel value='omStillingen'>
+            <OmStillingen printRef={null} />
           </Tabs.Panel>
-        )}
+          {erEier && (
+            <Tabs.Panel value='kandidater'>
+              <FormidlingKandidater />
+            </Tabs.Panel>
+          )}
+        </SideInnhold>
       </SideLayout>
     </Tabs>
   );

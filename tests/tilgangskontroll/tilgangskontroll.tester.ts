@@ -225,7 +225,7 @@ export const testTilgangskontroll = (rolle: Roller) => {
     test('5. Kandidat', async ({ page }) => {
       await gotoApp(page, '/kandidat/PAM012t1avh27');
       // Viser kandidat side
-      await page.getByRole('tab', { name: 'Oversikt' }).click();
+
       const ikkeTIlgang = page.getByText('Ikke tilgang');
       if (ARBEIDSGIVERRETTET || JOBBSOKERRETTET) {
         await expect(ikkeTIlgang).toBeHidden();
@@ -235,7 +235,9 @@ export const testTilgangskontroll = (rolle: Roller) => {
       }
 
       // Viser aktivitetfanen inne på kandidat
-      await page.getByRole('tab', { name: 'Aktivitet' }).click();
+      // Denne blir kun aktuell for WINDOWS
+      // await page.getByRole('tab', { name: 'Aktivitet' }).click();
+
       if (ARBEIDSGIVERRETTET || JOBBSOKERRETTET) {
         await expect(ikkeTIlgang).toBeHidden();
       }
