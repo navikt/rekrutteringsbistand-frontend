@@ -4,7 +4,6 @@ import StillingsSøkeresultat from '@/app/stilling/StillingsSøkeresultat';
 import StillingsSøkFilter from '@/app/stilling/_ui/StillingsSøkFilter';
 import GeografiFilter from '@/app/stilling/_ui/StillingsSøkFilter/GeografiFilter';
 import InkluderingFilter from '@/app/stilling/_ui/StillingsSøkFilter/InkluderingFilter';
-import StatusFilter from '@/app/stilling/_ui/StillingsSøkFilter/StatusFilter';
 import StillingSøkebar from '@/app/stilling/_ui/StillingsSøkFilter/StillingSøkebar';
 import StillingsSøkSortering from '@/app/stilling/_ui/StillingsSøkSortering';
 import MittStandardsøk from '@/app/stilling/_ui/standardsøk/MittStandardsøk';
@@ -33,7 +32,6 @@ export default function EtterregistreringSøkLayout() {
           <StillingSøkebar alltidÅpen={false} />
           <MittStandardsøk />
           <StillingsSøkSortering />
-          <StatusFilter />
           <GeografiFilter />
           <InkluderingFilter />
         </div>
