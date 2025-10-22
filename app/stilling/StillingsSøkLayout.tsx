@@ -20,6 +20,7 @@ import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/Tilgan
 import { Roller } from '@/components/tilgangskontroll/roller';
 import { useUmami } from '@/providers/UmamiContext';
 import { UmamiEvent } from '@/util/umamiEvents';
+import { useSearchParams } from 'next/navigation';
 import { FC, useRef } from 'react';
 
 interface StillingsSøkProps {
@@ -32,11 +33,17 @@ const StillingsSøkLayout: FC<StillingsSøkProps> = ({
   forKandidatNr,
 }) => {
   const { track } = useUmami();
+  const searchParams = useSearchParams();
 
   const stillingsøkFilterRef = useRef<HTMLDivElement>(null);
 
+  // Sjekk om det finnes andre parametere enn den vi forventer
+  const harAndreParametere = searchParams.size > 0;
+
+  const skalHenteKandidatData = forKandidatNr && !harAndreParametere;
+
   const kandidatStillingssøkData = useStillingForKandidat(
-    forKandidatNr ?? null,
+    skalHenteKandidatData ? forKandidatNr : null,
   );
 
   if (forKandidatNr) {
