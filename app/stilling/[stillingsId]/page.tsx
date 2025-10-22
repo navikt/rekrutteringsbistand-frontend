@@ -84,10 +84,6 @@ export default function StillingsSidePage({
               }
             >
               <PanelHeader.Section
-                erstattPath={[
-                  stillingsData.stilling.uuid,
-                  stillingsData?.stilling?.title,
-                ]}
                 tabs={
                   <div className='flex '>
                     {kandidatId ? (

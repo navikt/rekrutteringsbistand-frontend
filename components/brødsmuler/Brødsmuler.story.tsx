@@ -3,13 +3,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 const meta: Meta<typeof AutoBreadcrumbs> = {
   component: AutoBreadcrumbs,
-  argTypes: {
-    erstattPath: {
-      control: 'object',
-      description:
-        "Tuple [originalSegment, nyLabel] – erstatter ett segment i path'en",
-    },
-  },
+  argTypes: {},
 };
 export default meta;
 
@@ -19,18 +13,14 @@ export const Standard: Story = {
   render: (args: any) => (
     <AutoBreadcrumbs {...args} forcedPath='/stilling/123' />
   ),
-  args: {
-    erstattPath: ['123', 'Servitørstilling'],
-  },
+  args: {},
 };
 
 export const UtenOverride: Story = {
   render: (args: any) => (
     <AutoBreadcrumbs {...args} forcedPath='/kandidat/987654' />
   ),
-  args: {
-    erstattPath: undefined,
-  },
+  args: {},
 };
 
 export const MedCustomMapping: Story = {
@@ -66,9 +56,7 @@ export const Width200: Story = {
     </div>
   ),
   name: 'Ellipsis ved smal bredde (200px)',
-  args: {
-    erstattPath: ['123', 'Detalj'],
-  },
+  args: {},
   parameters: {
     docs: {
       description: {

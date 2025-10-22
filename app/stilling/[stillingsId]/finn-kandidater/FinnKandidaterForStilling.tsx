@@ -16,12 +16,7 @@ export default function FinnKandidaterForStilling() {
     <SideLayout
       header={
         <PanelHeader>
-          <PanelHeader.Section
-            erstattPath={[
-              stillingsData.stilling.uuid,
-              stillingsData?.stilling?.title,
-            ]}
-          />
+          <PanelHeader.Section />
         </PanelHeader>
       }
       sidepanelBredde='250px'
