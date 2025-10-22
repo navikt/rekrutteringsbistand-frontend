@@ -3,13 +3,13 @@
 import ControlledDatePicker from './ControlledDatepicker';
 import TimeInput, { KLOKKESLETT_OPTIONS } from './TimeInput';
 import { BodyShort } from '@navikt/ds-react';
-import { Controller, Path } from 'react-hook-form';
+import { Controller, Control, Path } from 'react-hook-form';
 
 type Props<T extends Record<string, unknown>> = {
   label?: string;
   nameDato: Path<T>;
   nameTid: Path<T>;
-  control: any;
+  control: Control<T>;
   disabledDato?: boolean;
   disabledTid?: boolean;
   hideDato?: boolean;
@@ -71,13 +71,16 @@ export default function DatoTidRad<T extends Record<string, unknown>>({
         <Controller
           name={nameDato}
           control={control}
-          render={({ field }) => (
-            <input
-              type='hidden'
-              value={field.value?.toISOString() || ''}
-              onChange={() => {}}
-            />
-          )}
+          render={({ field }) => {
+            const v = field.value as Date | null | undefined;
+            return (
+              <input
+                type='hidden'
+                value={v instanceof Date ? v.toISOString() : ''}
+                onChange={() => {}}
+              />
+            );
+          }}
         />
       )}
 
@@ -85,23 +88,26 @@ export default function DatoTidRad<T extends Record<string, unknown>>({
         name={nameTid}
         control={control}
         rules={{ required: 'Tid er obligatorisk' }}
-        render={({ field, fieldState }) => (
-          <TimeInput
-            value={field.value ?? ''}
-            onChange={field.onChange}
-            label='Klokkeslett'
-            hideLabel={true}
-            error={fieldState.error?.message}
-            disabled={disabledTid}
-            onBlur={() => {
-              field.onBlur();
-              onTidBlur?.();
-            }}
-            className='w-24'
-            options={timeOptions ?? KLOKKESLETT_OPTIONS}
-            maxTime={timeMax}
-          />
-        )}
+        render={({ field, fieldState }) => {
+          const tidValue = typeof field.value === 'string' ? field.value : '';
+          return (
+            <TimeInput
+              value={tidValue}
+              onChange={field.onChange}
+              label='Klokkeslett'
+              hideLabel={true}
+              error={fieldState.error?.message}
+              disabled={disabledTid}
+              onBlur={() => {
+                field.onBlur();
+                onTidBlur?.();
+              }}
+              className='w-24'
+              options={timeOptions ?? KLOKKESLETT_OPTIONS}
+              maxTime={timeMax}
+            />
+          );
+        }}
       />
     </div>
   );

@@ -17,10 +17,8 @@ const meta = {
         oppdaterData={() => {}}
       />
       <RepubliserRekrutteringstreffButton
-        disabled
         treff={{}}
         innleggHtmlFraBackend={null}
-        onBekreft={async () => {}}
       />
       <FullførRekrutteringstreffButton
         rekrutteringstreffId='demo'

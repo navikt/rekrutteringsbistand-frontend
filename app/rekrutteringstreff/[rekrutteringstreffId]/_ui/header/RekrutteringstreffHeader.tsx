@@ -21,8 +21,6 @@ export interface RekrutteringstreffHeaderProps {
   onBekreftRedigerPublisert: () => void;
   onAvbrytRedigering: () => void;
   onPublisert?: () => void;
-  onRepubliser?: () => Promise<void>;
-  republiserDisabled?: boolean;
   inTabsContext?: boolean;
 }
 
@@ -45,8 +43,6 @@ const RekrutteringstreffHeader = forwardRef<
       onBekreftRedigerPublisert,
       onAvbrytRedigering,
       onPublisert,
-      onRepubliser,
-      republiserDisabled,
       inTabsContext = false,
     },
     ref,
@@ -98,8 +94,6 @@ const RekrutteringstreffHeader = forwardRef<
                 onBekreftRedigerPublisert={onBekreftRedigerPublisert}
                 onAvbrytRedigering={onAvbrytRedigering}
                 onPublisert={onPublisert}
-                onRepubliser={onRepubliser}
-                republiserDisabled={republiserDisabled}
               />
             }
           ></PanelHeader.Section>

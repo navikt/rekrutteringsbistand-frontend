@@ -1,6 +1,7 @@
 'use client';
 
 import { useKandidatnummer } from '@/app/api/rekrutteringstreff/[...slug]/utils/useKandidatnummer';
+import NavigerTilAktivitetsplanenKnapp from '@/app/kandidat/_ui/ActionLinks/NavigerTilAktivitetsplanenKnapp';
 import { KandidatContextProvider } from '@/app/kandidat/vis-kandidat/KandidatContext';
 import KandidatSideLayout from '@/app/kandidat/vis-kandidat/KandidatsideLayout';
 import KandidatOversikt from '@/app/kandidat/vis-kandidat/oversikt-fane/KandidatOversikt';
@@ -21,7 +22,13 @@ const VisPerson: FC<VisPersonProps> = ({ personTreffId }) => {
           <KandidatContextProvider
             kandidatId={kandidatnummerData.kandidatnummer}
           >
-            <KandidatSideLayout />
+            <KandidatSideLayout>
+              <div className='@container/kandidat-knapper contain-layout'>
+                <div className='my-4'>
+                  <NavigerTilAktivitetsplanenKnapp />
+                </div>
+              </div>
+            </KandidatSideLayout>
             <KandidatOversikt />
           </KandidatContextProvider>
         ) : (

@@ -1,18 +1,16 @@
 'use client';
 
-import { useRekrutteringstreffData } from '../hooks/useRekrutteringstreffData';
-import KiAnalyse from './ki/KiAnalyse';
+import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
+import { useAutosaveRekrutteringstreff } from './hooks/kladd/useAutosave';
+import KiAnalyseIntro from './ki/KiAnalyseIntro';
 import KiAnalysePanel from './ki/KiAnalysePanel';
-import { useAutosave } from './useAutosave';
-import { useKiAnalyse } from './useKiAnalyse';
+import { useFormFeltMedKiValidering } from './useFormFeltMedKiValidering';
 import { MAX_TITLE_LENGTH } from '@/app/api/rekrutteringstreff/[...slug]/mutations';
-import { useKiLogg } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
-import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { RekbisError } from '@/util/rekbisError';
 import { XMarkIcon } from '@navikt/aksel-icons';
-import { Button, Detail, Skeleton, TextField, Heading } from '@navikt/ds-react';
-import React, { useRef } from 'react';
-import { Controller, useFormContext, useWatch } from 'react-hook-form';
+import { Button, Detail, Skeleton, TextField } from '@navikt/ds-react';
+import React, { useRef, useCallback } from 'react';
+import { Controller, useFormContext } from 'react-hook-form';
 
 const DEFAULT_TITTEL = 'Treff uten navn';
 
@@ -21,66 +19,55 @@ interface TittelFormProps {
 }
 
 const TittelForm = ({ onUpdated }: TittelFormProps) => {
-  const { rekrutteringstreffId } = useRekrutteringstreffContext();
-
   const { treff } = useRekrutteringstreffData();
   const savedTittel = treff ? (treff.tittel ?? null) : undefined;
 
-  const { setLagret: setKiLagret, isLoading } = useKiLogg(
-    rekrutteringstreffId,
-    'tittel',
-  );
-
   const {
-    control,
-    setValue,
-    getValues,
-    trigger: triggerRHF,
     clearErrors,
     formState: { isSubmitting },
   } = useFormContext();
 
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const tittel = useWatch({ control, name: 'tittel' });
-  const tegnIgjen =
-    MAX_TITLE_LENGTH - (typeof tittel === 'string' ? tittel.length : 0);
+  const { autosave } = useAutosaveRekrutteringstreff();
 
-  const { save } = useAutosave();
-
-  const saveCallback = async (force?: boolean) => {
-    try {
-      await save(['tittel'], force);
-    } catch (error) {
-      new RekbisError({ message: 'Lagring av tittel feilet.', error });
-    } finally {
-      onUpdated?.();
-    }
-  };
+  const saveCallback = useCallback(
+    async (fieldsToValidate?: string[], overstyrKiFeil?: boolean) => {
+      try {
+        await autosave(fieldsToValidate, overstyrKiFeil);
+      } catch (error) {
+        new RekbisError({ message: 'Lagring av tittel feilet.', error });
+      } finally {
+        onUpdated?.();
+      }
+    },
+    [autosave, onUpdated],
+  );
 
   const {
     analyse,
     analyseError,
     validating,
     kiErrorBorder,
-    forceSave,
+    harGodkjentKiFeil,
     showAnalysis,
     erRedigeringAvPublisertTreff,
-    runValidationAndMaybeSave,
-    onForceSave,
-  } = useKiAnalyse({
+    validerMedKiOgLagreVedGodkjenning,
+    onGodkjennKiFeil,
+    watchedValue: tittel,
+    control,
+    setValue,
+    kiLoggLoading,
+  } = useFormFeltMedKiValidering({
     feltType: 'tittel',
     fieldName: 'tittel',
-    watchedValue: tittel,
-    triggerRHF,
-    getValues,
-    setValue,
-    setKiFeilFieldName: 'tittelKiFeil' as any,
-    saveCallback,
-    setKiLagret,
-    setKiSjekketFieldName: 'tittelKiSjekket' as any,
     savedValue: savedTittel,
+    saveCallback,
+    onUpdated,
   });
+
+  const tegnIgjen =
+    MAX_TITLE_LENGTH - (typeof tittel === 'string' ? tittel.length : 0);
 
   const clear = () => {
     setValue('tittel', '', {
@@ -93,14 +80,25 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
 
   return (
     <section className='space-y-3'>
-      {isLoading && <Skeleton variant='text' />}
-      {!isLoading && (
+      {kiLoggLoading && <Skeleton variant='text' />}
+      {!kiLoggLoading && (
         <>
-          <Heading level='2' size='medium'>
-            Navn på treffet
-          </Heading>
+          <KiAnalyseIntro title='Navn på treffet' />
 
-          <div className='relative w-full'>
+          <div
+            className='relative w-full'
+            onBlur={(e) => {
+              const currentTarget = e.currentTarget;
+              setTimeout(async () => {
+                const hasFocusLeft = !currentTarget.contains(
+                  document.activeElement,
+                );
+                if (hasFocusLeft && !isSubmitting) {
+                  await validerMedKiOgLagreVedGodkjenning();
+                }
+              }, 0);
+            }}
+          >
             {tittel && (
               <Button
                 type='button'
@@ -146,13 +144,8 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
                         clearErrors('tittel');
                       }
                     }}
-                    onBlur={async () => {
+                    onBlur={() => {
                       field.onBlur();
-                      setTimeout(async () => {
-                        if (!validating && !isSubmitting) {
-                          await runValidationAndMaybeSave();
-                        }
-                      }, 0);
                     }}
                     onFocus={() => {
                       const current = field.value;
@@ -173,7 +166,7 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
                         e.preventDefault();
                         (async () => {
                           const el = e.currentTarget as HTMLInputElement;
-                          await runValidationAndMaybeSave();
+                          await validerMedKiOgLagreVedGodkjenning();
                           el?.blur();
                         })();
                       }
@@ -186,16 +179,14 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
 
           <Detail className='text-gray-400'>{tegnIgjen} tegn igjen</Detail>
 
-          <KiAnalyse />
-
           <KiAnalysePanel
             validating={validating}
             analyse={analyse}
             analyseError={analyseError}
-            forceSave={forceSave}
+            harGodkjentKiFeil={harGodkjentKiFeil}
             showAnalysis={showAnalysis}
             erRedigeringAvPublisertTreff={erRedigeringAvPublisertTreff}
-            onForceSave={onForceSave}
+            onGodkjennKiFeil={onGodkjennKiFeil}
             ariaLabel='Analyse av tittel'
           />
         </>

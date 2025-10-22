@@ -10,10 +10,10 @@ interface KiAnalysePanelProps {
   validating: boolean;
   analyse: any | undefined;
   analyseError: any | undefined;
-  forceSave: boolean;
+  harGodkjentKiFeil: boolean;
   showAnalysis: boolean;
   erRedigeringAvPublisertTreff: boolean;
-  onForceSave: () => void;
+  onGodkjennKiFeil: () => void;
   ariaLabel: string;
 }
 
@@ -21,10 +21,10 @@ const KiAnalysePanel: FC<KiAnalysePanelProps> = ({
   validating,
   analyse,
   analyseError,
-  forceSave,
+  harGodkjentKiFeil,
   showAnalysis,
   erRedigeringAvPublisertTreff,
-  onForceSave,
+  onGodkjennKiFeil,
   ariaLabel,
 }) => {
   const hasAnalyse = !!analyse && !analyseError;
@@ -114,9 +114,9 @@ const KiAnalysePanel: FC<KiAnalysePanelProps> = ({
         </div>
       </div>
 
-      {bryter && !forceSave && (
+      {bryter && !harGodkjentKiFeil && (
         <div className='pt-4'>
-          <Button variant='secondary' size='small' onClick={onForceSave}>
+          <Button variant='secondary' size='small' onClick={onGodkjennKiFeil}>
             {erRedigeringAvPublisertTreff ? 'Bruk likevel' : 'Lagre likevel'}
           </Button>
         </div>

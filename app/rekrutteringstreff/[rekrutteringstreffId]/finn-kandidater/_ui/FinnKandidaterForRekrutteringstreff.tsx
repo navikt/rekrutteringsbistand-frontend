@@ -8,29 +8,20 @@ import PanelHeader from '@/components/layout/PanelHeader';
 import SideLayout from '@/components/layout/SideLayout';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
-import { FC, useMemo } from 'react';
+import { ArrowLeftIcon } from '@navikt/aksel-icons';
+import { Button } from '@navikt/ds-react';
+import { useRouter } from 'next/navigation';
+import { FC } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 const FinnKandidaterForRekrutteringstreff: FC = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
-  const { watch } = useFormContext<{ tittel?: string }>();
+  const router = useRouter();
 
-  const tittel = watch('tittel');
-  const rekrutteringstreffNavn =
-    typeof tittel === 'string' && tittel.trim().length > 0
-      ? tittel.trim()
-      : 'Rekrutteringstreff';
-
-  const breadcrumbs = useMemo(
-    () => [
-      {
-        href: `/rekrutteringstreff/${rekrutteringstreffId}`,
-        label: rekrutteringstreffNavn,
-      },
-      { label: 'Legg til jobbsøker' },
-    ],
-    [rekrutteringstreffId, rekrutteringstreffNavn],
-  );
+  const goBack = () =>
+    router.push(
+      `/rekrutteringstreff/${rekrutteringstreffId}?visFane=jobbsøkere`,
+    );
 
   return (
     <TilgangskontrollForInnhold
@@ -44,7 +35,33 @@ const FinnKandidaterForRekrutteringstreff: FC = () => {
           <SideLayout
             header={
               <PanelHeader>
-                <PanelHeader.Section></PanelHeader.Section>
+                <PanelHeader.Section
+                  skjulBrødsmuler
+                  title={
+                    <div className='flex items-center'>
+                      <Button
+                        variant='tertiary'
+                        size='small'
+                        onClick={goBack}
+                        aria-label='Tilbake'
+                        className='!px-0'
+                        icon={
+                          <ArrowLeftIcon
+                            aria-hidden
+                            className='text-[var(--ax-text-action)]'
+                          />
+                        }
+                      />
+                      <span
+                        aria-hidden
+                        className='mr-3 ml-1 h-4 w-px bg-[var(--ax-border-accent-subtle)]'
+                      />
+                      <span className='text-text-default font-medium'>
+                        Finn og legg til jobbsøkere på oppdraget
+                      </span>
+                    </div>
+                  }
+                ></PanelHeader.Section>
               </PanelHeader>
             }
           >

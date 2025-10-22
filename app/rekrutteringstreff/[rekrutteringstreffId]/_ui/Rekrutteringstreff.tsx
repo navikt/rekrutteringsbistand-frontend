@@ -2,15 +2,15 @@
 
 import RekrutteringstreffForhåndsvisning from './forhåndsvisning/RekrutteringstreffForhåndsvisning';
 import RekrutteringstreffHeader from './header/RekrutteringstreffHeader';
-import { useRekrutteringstreffData } from './hooks/useRekrutteringstreffData';
-import { useSjekklisteStatus } from './hooks/useSjekklisteStatus';
-import { useAutosave, useInnleggAutosave } from './rediger/useAutosave';
+import RekrutteringstreffRedigering from './rediger/RekrutteringstreffRedigering';
+import { useRepubliser } from './rediger/hooks/republiser/useRepubliser';
 import Stegviser from './stegviser/Stegviser';
+import { useSjekklisteStatus } from './stegviser/useSjekklisteStatus';
 import TabsPanels from './tabs/TabsPanels';
+import { useRekrutteringstreffData } from './useRekrutteringstreffData';
 import { useAlleHendelser } from '@/app/api/rekrutteringstreff/[...slug]/allehendelser/useAlleHendelser';
 import { useRekrutteringstreffArbeidsgivere } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
-import { useKiLogg } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import SideScroll from '@/components/SideScroll';
 import SideLayout from '@/components/layout/SideLayout';
@@ -28,7 +28,6 @@ export enum RekrutteringstreffTabs {
   JOBBSØKERE = 'jobbsøkere',
   ARBEIDSGIVERE = 'arbeidsgivere',
   HENDELSER = 'hendelser',
-  KI_LOGG = 'ki_logg',
 }
 
 const Rekrutteringstreff: FC = () => {
@@ -43,11 +42,9 @@ const Rekrutteringstreff: FC = () => {
   const { rekrutteringstreffId, lagrerNoe } = useRekrutteringstreffContext();
 
   const {
-    avlyst,
     harPublisert,
     activeStep,
     treff: rekrutteringstreff,
-    innlegg,
     rekrutteringstreffHook,
   } = useRekrutteringstreffData();
 
@@ -152,97 +149,16 @@ const Rekrutteringstreff: FC = () => {
   }, [setModus, setFane, scrollToTop]);
 
   // Republiser-logikk
-  const { getValues, watch, formState } = useFormContext();
-  const { save } = useAutosave();
-  const { save: saveInnlegg } = useInnleggAutosave();
-  const kiTittelLogg = useKiLogg(rekrutteringstreffId, 'tittel');
-  const kiInnleggLogg = useKiLogg(rekrutteringstreffId, 'innlegg');
-  const { startLagring, stoppLagring } = useRekrutteringstreffContext();
-
-  const markerSisteKiLoggSomLagret = useCallback(async () => {
-    const mark = async (
-      liste:
-        | { id: string; opprettetTidspunkt: string; lagret: boolean }[]
-        | undefined,
-      setLagret?: (arg: { id: string; lagret: boolean }) => Promise<void>,
-    ) => {
-      if (!liste || liste.length === 0 || !setLagret) return;
-
-      const sorted = [...liste].sort(
-        (a, b) =>
-          new Date(b.opprettetTidspunkt).getTime() -
-          new Date(a.opprettetTidspunkt).getTime(),
-      );
-      const siste = sorted[0];
-
-      if (siste && !siste.lagret) {
-        await setLagret({ id: siste.id, lagret: true });
-      }
-    };
-
-    try {
-      const [tittelListe, innleggListe] = await Promise.all([
-        kiTittelLogg.refresh(),
-        kiInnleggLogg.refresh(),
-      ]);
-
-      await Promise.all([
-        mark(tittelListe ?? kiTittelLogg.data, kiTittelLogg.setLagret),
-        mark(innleggListe ?? kiInnleggLogg.data, kiInnleggLogg.setLagret),
-      ]);
-    } catch (error) {
-      new RekbisError({
-        message: 'Kunne ikke oppdatere KI-logg lagret-status:',
-        error,
-      });
-    }
-  }, [kiTittelLogg, kiInnleggLogg]);
-
-  const onRepubliser = useCallback(async () => {
-    try {
-      startLagring('republiser');
-      await save(undefined, true);
-      const values: any = getValues();
-      const currentHtml: string = (values?.htmlContent ?? '') as string;
-      const backendHtml: string = (innlegg?.[0]?.htmlContent ?? '') as string;
-      const shouldSaveInnlegg =
-        (currentHtml ?? '').trim() !== (backendHtml ?? '').trim() &&
-        (currentHtml ?? '').trim().length > 0;
-      if (shouldSaveInnlegg) {
-        await saveInnlegg(undefined, true);
-      }
-      await markerSisteKiLoggSomLagret();
-      setModus('');
-      scrollToTop();
-    } finally {
-      stoppLagring('republiser');
-    }
-  }, [
-    startLagring,
-    stoppLagring,
-    save,
-    saveInnlegg,
-    getValues,
-    innlegg,
-    markerSisteKiLoggSomLagret,
+  const { onRepubliser } = useRepubliser(
     setModus,
     scrollToTop,
-  ]);
-
-  const tittelKiFeil = (watch('tittelKiFeil' as any) as any) ?? false;
-  const innleggKiFeil = (watch('innleggKiFeil' as any) as any) ?? false;
-  const harKiFeil = !!tittelKiFeil || !!innleggKiFeil;
-  const harAndreSkjemafeil = Boolean(
-    formState.errors &&
-      Object.keys(formState.errors).some((key) => key !== 'root'),
+    rekrutteringstreff,
   );
-  const harFeil = harKiFeil || harAndreSkjemafeil;
 
-  const DEFAULT_TITTEL = 'Treff uten navn';
-  const lagretTittel = rekrutteringstreff?.tittel ?? '';
-  const manglerNavn =
-    typeof lagretTittel === 'string' && lagretTittel.trim() === DEFAULT_TITTEL;
-  const republiserDisabled = harFeil || manglerNavn;
+  const { handleSubmit } = useFormContext();
+  const onSubmit = handleSubmit(async () => {
+    await onRepubliser();
+  });
 
   const renderStegviser = () => (
     <Stegviser
@@ -284,8 +200,6 @@ const Rekrutteringstreff: FC = () => {
             onBekreftRedigerPublisert={onBekreftRedigerPublisert}
             onAvbrytRedigering={onAvbrytRedigering}
             onPublisert={onPublisert}
-            onRepubliser={onRepubliser}
-            republiserDisabled={republiserDisabled}
             inTabsContext={false}
           />
         }
@@ -300,42 +214,45 @@ const Rekrutteringstreff: FC = () => {
   }
 
   return (
-    <Tabs value={fane} onChange={(val) => setFane(val)}>
-      <SideLayout
-        {...layoutProps}
-        header={
-          skalViseHeader ? (
-            <RekrutteringstreffHeader
-              skalViseHeader={skalViseHeader}
-              erstattPath={[rekrutteringstreffId, rekrutteringstreffNavn]}
-              erIForhåndsvisning={erILesemodus}
-              viserFullskjermForhåndsvisning={viserFullskjermForhåndsvisning}
-              jobbsøkereAntall={jobbsøkere?.length ?? 0}
-              arbeidsgivereAntall={arbeidsgivere?.length ?? 0}
-              lagrerNoe={lagrerNoe}
-              lagretTekst={lagretTekst}
-              erPubliseringklar={erPubliseringklar}
-              onToggleForhåndsvisning={handleToggleForhåndsvisning}
-              onBekreftRedigerPublisert={onBekreftRedigerPublisert}
-              onAvbrytRedigering={onAvbrytRedigering}
-              onPublisert={onPublisert}
-              onRepubliser={onRepubliser}
-              republiserDisabled={republiserDisabled}
-              inTabsContext={true}
-            />
-          ) : undefined
-        }
-      >
-        <SideScroll>
-          <div className='space-y-4'>
-            <TabsPanels
-              erIVisning={erILesemodus}
-              onUpdated={rekrutteringstreffHook.mutate}
-            />
-          </div>
-        </SideScroll>
-      </SideLayout>
-    </Tabs>
+    <form id='rekrutteringstreff-form' onSubmit={onSubmit} noValidate>
+      <Tabs value={fane} onChange={(val) => setFane(val)}>
+        <SideLayout
+          {...layoutProps}
+          header={
+            skalViseHeader ? (
+              <RekrutteringstreffHeader
+                skalViseHeader={skalViseHeader}
+                erstattPath={[rekrutteringstreffId, rekrutteringstreffNavn]}
+                erIForhåndsvisning={erILesemodus}
+                viserFullskjermForhåndsvisning={viserFullskjermForhåndsvisning}
+                jobbsøkereAntall={jobbsøkere?.length ?? 0}
+                arbeidsgivereAntall={arbeidsgivere?.length ?? 0}
+                lagrerNoe={lagrerNoe}
+                lagretTekst={lagretTekst}
+                erPubliseringklar={erPubliseringklar}
+                onToggleForhåndsvisning={handleToggleForhåndsvisning}
+                onBekreftRedigerPublisert={onBekreftRedigerPublisert}
+                onAvbrytRedigering={onAvbrytRedigering}
+                onPublisert={onPublisert}
+                inTabsContext={true}
+              />
+            ) : undefined
+          }
+        >
+          <SideScroll>
+            <div className='space-y-4'>
+              {erILesemodus ? (
+                <TabsPanels />
+              ) : (
+                <RekrutteringstreffRedigering
+                  onUpdated={rekrutteringstreffHook.mutate}
+                />
+              )}
+            </div>
+          </SideScroll>
+        </SideLayout>
+      </Tabs>
+    </form>
   );
 };
 

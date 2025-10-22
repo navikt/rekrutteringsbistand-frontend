@@ -86,7 +86,7 @@ export default function VisKandidat({
             <Tabs.Panel value={Fane.OVERSIKT}>
               <div className='w-full'>
                 <KandidatSideLayout>
-                  <div className='@container/kandidat-knapper'>
+                  <div className='@container/kandidat-knapper contain-layout'>
                     <div className='grid grid-cols-1 @3xl:grid-cols-2 gap-4 mb-6'>
                       <FinnStillingForKandidatKnapp />
                       <NavigerTilAktivitetsplanenKnapp />

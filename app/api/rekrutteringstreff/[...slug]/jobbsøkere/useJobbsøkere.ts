@@ -1,11 +1,13 @@
 'use client';
 
+import { jobbsøkereMock } from './jobbsøkereMock';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { getAPIwithSchema } from '@/app/api/fetcher';
 import {
   HendelseDTO,
   HendelseSchema,
 } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
+import { http, HttpResponse } from 'msw';
 import useSWR from 'swr';
 import { z } from 'zod';
 
@@ -36,3 +38,8 @@ export const useJobbsøkere = (id?: string) => {
   const key = id ? jobbsøkereEndepunkt(id) : null;
   return useSWR(key, getAPIwithSchema(JobbsøkereSchema));
 };
+
+export const jobbsøkereMSWHandler = http.get(
+  `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/jobbsoker`,
+  () => HttpResponse.json(jobbsøkereMock()),
+);
