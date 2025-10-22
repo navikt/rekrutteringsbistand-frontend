@@ -9,11 +9,9 @@ import KandidatlisteHandlingsRad from './_ui/KandidatlisteHandlingsRad';
 import { useNullableStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import { useKandidatlisteContext } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteContext';
 import SideScroll from '@/components/SideScroll';
-import VisKandidatModal from '@/components/modal/kandidat/VisKandidatModal';
 import { useKandidatNavigeringContext } from '@/providers/KandidatNavigeringContext';
 import { SortDownIcon, SortUpIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
-import { useQueryState } from 'nuqs';
 import { useEffect, useRef } from 'react';
 
 export const KANDIDATLISTE_COLUMN_LAYOUT =
@@ -31,10 +29,10 @@ export default function FiltrertKandidatListeVisning({
   const { setSortering, sortering } = useKandidatlisteFilterContext();
   const { setKandidatNavigering } = useKandidatNavigeringContext();
   const stillingsContext = useNullableStillingsContext();
-  const [visKandidatId] = useQueryState('visKandidatId', {
-    defaultValue: '',
-    clearOnDefault: true,
-  });
+  // const [visKandidatId] = useQueryState('visKandidatId', {
+  //   defaultValue: '',
+  //   clearOnDefault: true,
+  // });
 
   const headerRef = useRef<HTMLDivElement>(null);
 
@@ -162,13 +160,13 @@ export default function FiltrertKandidatListeVisning({
 
   return (
     <div>
-      {visKandidatId && (
+      {/* {visKandidatId && (
         <VisKandidatModal
           forKandidatliste={kandidatlisteId}
           tittel={'Jobbsøker i liste'}
           stillingsId={stillingsContext!.stillingsData.stilling.uuid!}
         />
-      )}
+      )} */}
       {!kunVisning && (
         <div ref={headerRef}>
           <KandidatlisteFilterrad />
