@@ -21,7 +21,7 @@ import SideLayout from '@/components/layout/SideLayout';
 import { SidepanelTrigger } from '@/components/layout/SidepanelTrigger';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { MultiplyIcon, TrashIcon } from '@navikt/aksel-icons';
+import { MultiplyIcon, SidebarRightIcon, TrashIcon } from '@navikt/aksel-icons';
 import { Button, Heading } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -133,7 +133,7 @@ export default function StillingAdmin() {
                 Avslutt forhåndsvisning
               </Button>
             )}
-            <SidepanelTrigger className='ml-auto'>
+            <SidepanelTrigger icon={<SidebarRightIcon />} className='ml-auto'>
               Vis sidepanel
             </SidepanelTrigger>
           </PanelHeader>

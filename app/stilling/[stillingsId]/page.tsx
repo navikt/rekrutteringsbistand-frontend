@@ -17,6 +17,7 @@ import PanelHeader from '@/components/layout/PanelHeader';
 import SideInnhold from '@/components/layout/SideInnhold';
 import SideLayout from '@/components/layout/SideLayout';
 import { SidepanelTrigger } from '@/components/layout/SidepanelTrigger';
+import { SidebarRightIcon } from '@navikt/aksel-icons';
 import { Alert, Heading, Tabs } from '@navikt/ds-react';
 import { useQueryState } from 'nuqs';
 import { useRef } from 'react';
@@ -88,21 +89,26 @@ export default function StillingsSidePage({
                   stillingsData?.stilling?.title,
                 ]}
                 tabs={
-                  <div className='flex justify-between'>
+                  <div className='flex '>
                     {kandidatId ? (
-                      <div className='flex justify-between'>
+                      <>
                         <StillingTabs />
-                        <div className='shrink-0 mt-3'>
+                        <div className='shrink-0 mt-3 ml-auto'>
                           <LeggKandidatTilKandidatliste
                             kandidatId={kandidatId}
                             stillingId={stillingsData.stilling.uuid}
                           />
                         </div>
-                      </div>
+                      </>
                     ) : (
                       <StillingTabs />
                     )}
-                    <SidepanelTrigger>Vis panel </SidepanelTrigger>
+                    <SidepanelTrigger
+                      className='mt-2'
+                      icon={<SidebarRightIcon />}
+                    >
+                      Vis sidepanel
+                    </SidepanelTrigger>
                   </div>
                 }
                 actionsRight={<TabKnapper printRef={printRef} />}

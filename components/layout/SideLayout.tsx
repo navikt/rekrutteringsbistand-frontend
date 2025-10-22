@@ -32,7 +32,7 @@ const SideLayout = ({
   sidepanelTittel,
 }: ISideLayout) => {
   return (
-    <SideLayoutProvider>
+    <SideLayoutProvider hasSidepanel={!!sidepanel}>
       <div className={`@container/sidelayout contain-layout `}>
         <RekBisKort>
           {header && (
