@@ -34,7 +34,7 @@ const Hendelser: FC = () => {
           <RekrutteringstreffHendelseLabel
             hendelseType={h.hendelsestype as RekrutteringstreffHendelsestype}
             icon={
-              h.hendelsestype === RekrutteringstreffHendelsestype.OPPRETT ? (
+              h.hendelsestype === RekrutteringstreffHendelsestype.OPPRETTET ? (
                 <PlusCircleIcon className='text-white' />
               ) : (
                 <PencilIcon className='text-white' />

@@ -19,7 +19,7 @@ interface Props {
 
 const ArbeidsgiverHendelserKort: FC<Props> = ({ arbeidsgiverHendelserDTO }) => {
   const antallLagtTil = arbeidsgiverHendelserDTO.filter(
-    (h) => h.hendelsestype === ArbeidsgiverHendelsestype.OPPRETT,
+    (h) => h.hendelsestype === ArbeidsgiverHendelsestype.OPPRETTET,
   ).length;
 
   const siste5 = arbeidsgiverHendelserDTO.slice(-5);
@@ -56,7 +56,7 @@ const ArbeidsgiverHendelserKort: FC<Props> = ({ arbeidsgiverHendelserDTO }) => {
             <div className='flex flex-wrap gap-2'>
               <ArbeidsgiverHendelseLabel
                 icon={<PlusCircleIcon className='text-white' />}
-                hendelseType={ArbeidsgiverHendelsestype.OPPRETT}
+                hendelseType={ArbeidsgiverHendelsestype.OPPRETTET}
                 antall={antallLagtTil}
               />
             </div>
