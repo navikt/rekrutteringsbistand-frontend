@@ -12,19 +12,19 @@ import { useMemo } from 'react';
 const erInvitert = (j: JobbsøkerDTO) =>
   j.hendelser?.some(
     (h: JobbsøkerHendelseDTO) =>
-      h.hendelsestype === JobbsøkerHendelsestype.INVITER,
+      h.hendelsestype === JobbsøkerHendelsestype.INVITERT,
   ) ?? false;
 
 const harSvarJa = (j: JobbsøkerDTO) =>
   j.hendelser?.some(
     (h: JobbsøkerHendelseDTO) =>
-      h.hendelsestype === JobbsøkerHendelsestype.SVAR_JA_TIL_INVITASJON,
+      h.hendelsestype === JobbsøkerHendelsestype.SVART_JA_TIL_INVITASJON,
   ) ?? false;
 
 const harSvarNei = (j: JobbsøkerDTO) =>
   j.hendelser?.some(
     (h: JobbsøkerHendelseDTO) =>
-      h.hendelsestype === JobbsøkerHendelsestype.SVAR_NEI_TIL_INVITASJON,
+      h.hendelsestype === JobbsøkerHendelsestype.SVART_NEI_TIL_INVITASJON,
   ) ?? false;
 
 export interface InviteringsStatus {
