@@ -138,23 +138,25 @@ export default function KandidatSøkTabs() {
   );
 
   return (
-    <div className='@container contain-layout'>
-      <div className='flex justify-between flex-col @3xl:flex-row @3xl:gap-0 gap-3 '>
-        <div className='flex gap-2 items-center'>
-          <AlleKontorer />
-          <MineBrukere />
-          <MittKontor />
-          <MineKontorer />
-          <TilgangskontrollForInnhold
-            skjulVarsel
-            kreverEnAvRollene={[
-              Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-            ]}
-          >
-            <VelgKontor />
-          </TilgangskontrollForInnhold>
-          <div className='ml-auto'>
-            <SidepanelTrigger icon={<FilterIcon />}>Filtrer</SidepanelTrigger>
+    <div>
+      <div className='@container contain-layout'>
+        <div className='flex justify-between flex-col @3xl:flex-row @3xl:gap-0 gap-3 '>
+          <div className='flex gap-2 items-center'>
+            <AlleKontorer />
+            <MineBrukere />
+            <MittKontor />
+            <MineKontorer />
+            <TilgangskontrollForInnhold
+              skjulVarsel
+              kreverEnAvRollene={[
+                Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
+              ]}
+            >
+              <VelgKontor />
+            </TilgangskontrollForInnhold>
+            <div className='ml-auto'>
+              <SidepanelTrigger icon={<FilterIcon />}>Filtrer</SidepanelTrigger>
+            </div>
           </div>
         </div>
       </div>
