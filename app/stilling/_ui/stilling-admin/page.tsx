@@ -148,7 +148,7 @@ export default function StillingAdmin() {
         {forhåndsvis ? (
           <SideScroll>
             <div className={'px-5'}>
-              <Heading size='large' className={'py-5'}>{stillingsData.stilling.title ?? ''}</Heading>{' '}
+              <Heading size='large' className={'py-5'}>{stillingsData.stilling.title ?? ''}</Heading>
               <OmStillingen printRef={null} forhåndsvisData />
             </div>
           </SideScroll>
