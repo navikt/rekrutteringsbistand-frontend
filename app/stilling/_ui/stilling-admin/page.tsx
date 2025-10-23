@@ -27,6 +27,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import z from 'zod';
+import SideScroll from '@/components/SideScroll';
 
 export type StillingAdminDTO = z.infer<typeof StillingAdminSchema>;
 
@@ -145,9 +146,12 @@ export default function StillingAdmin() {
         }
       >
         {forhåndsvis ? (
-          <>
-            <OmStillingen printRef={null} forhåndsvisData />
-          </>
+          <SideScroll>
+            <div className={'px-5'}>
+              <Heading size='large' className={'py-5'}>{stillingsData.stilling.title ?? ''}</Heading>{' '}
+              <OmStillingen printRef={null} forhåndsvisData />
+            </div>
+          </SideScroll>
         ) : (
           <SideInnhold>
             <div className='flex flex-col gap-4'>
