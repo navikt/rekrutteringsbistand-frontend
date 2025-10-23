@@ -49,7 +49,6 @@
 html,
 body {
   height: 100%;
-  overflow: hidden; /* TODO: Finn ut hvorfor vi trenger denne  */
 }
 
 /* ...existing code... */
