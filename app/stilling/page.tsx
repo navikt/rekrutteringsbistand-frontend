@@ -6,19 +6,15 @@ import StillingsSøkLayout from '@/app/stilling/StillingsSøkLayout';
 import { StillingsContextProvider } from '@/app/stilling/[stillingsId]/StillingsContext';
 import StillingsSidePage from '@/app/stilling/[stillingsId]/page';
 import { EKSCLUDERTE_STANDARDSOK_PARAMETERE } from '@/app/stilling/_ui/standardsøk/standardSokUtils';
-import WindowView from '@/components/WindowView';
 import Sidelaster from '@/components/layout/Sidelaster';
+import WindowView from '@/components/window/WindowView';
 import { useSearchParams } from 'next/navigation';
-import { useQueryState } from 'nuqs';
 import { Suspense, useEffect } from 'react';
 
 export default function StillingsSøkIndex() {
   const searchParams = useSearchParams();
   const brukerStandardSøkData = useUseBrukerStandardSøk();
-  const [visStillingId] = useQueryState('visStillingId', {
-    defaultValue: '',
-    clearOnDefault: true,
-  });
+
   useEffect(() => {
     if (
       searchParams.get('brukStandardsok') !== null &&
@@ -48,8 +44,8 @@ export default function StillingsSøkIndex() {
     <Suspense fallback={<Sidelaster />}>
       <WindowView
         param='visStillingId'
-        window={() => (
-          <StillingsContextProvider stillingsId={visStillingId}>
+        window={(stillingsId) => (
+          <StillingsContextProvider stillingsId={stillingsId}>
             <StillingsSidePage />
           </StillingsContextProvider>
         )}

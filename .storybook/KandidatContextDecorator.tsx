@@ -1,4 +1,4 @@
-import { KandidatContextProvider } from '../app/kandidat/vis-kandidat/KandidatContext';
+import { KandidatContextProvider } from '../app/kandidat/[kandidatNr]/vis-kandidat/KandidatContext';
 import React from 'react';
 
 // Enkel mock: Vi forventer at SWR hook i provider slår feil uten backend.

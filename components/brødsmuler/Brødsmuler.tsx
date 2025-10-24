@@ -1,8 +1,7 @@
 'use client';
 
-import { useNullableKandidatContext } from '@/app/kandidat/vis-kandidat/KandidatContext';
+import { useNullableKandidatContext } from '@/app/kandidat/[kandidatNr]/vis-kandidat/KandidatContext';
 import { useNullableStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
-import { useWindowTile } from '@/components/WindowView';
 import {
   Breadcrumb,
   BreadcrumbEllipsis,
@@ -12,6 +11,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
+import { useWindowTile } from '@/components/window/WindowView';
 import { useThemeProvider } from '@/providers/ThemeProvider';
 import { BriefcaseIcon, PersonIcon, ReceptionIcon } from '@navikt/aksel-icons';
 import { usePathname, useSearchParams } from 'next/navigation';

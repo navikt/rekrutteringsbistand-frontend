@@ -1,9 +1,10 @@
 'use client';
 
 // Brødsmuler er deprecated – vi bygger breadcrumbs direkte her med UI-primitive
-import { useWindowTile } from '@/components/WindowView';
 import AutoBreadcrumbs from '@/components/brødsmuler/Brødsmuler';
-import { Button } from '@navikt/ds-react';
+import { useWindowTile } from '@/components/window/WindowView';
+import { ExpandIcon, XMarkIcon } from '@navikt/aksel-icons';
+import { Button, Tooltip } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
 import { ReactNode, createContext, useContext } from 'react';
 
@@ -168,30 +169,30 @@ export function PanelHeaderSection({
               {meta}
             </div>
           )}
+          {actionsRight && (
+            <div className='flex items-center gap-2'>{actionsRight}</div>
+          )}{' '}
           {tileInfo?.tile === 'detail' && (
             <div className='flex items-center gap-2'>
               {extra?.fullskjermUrl && (
                 <Button
-                  size='small'
-                  variant='secondary'
-                  onClick={() => router.push(extra.fullskjermUrl!)}
-                >
-                  Fullskjerm
-                </Button>
-              )}
-              {tileInfo.close && (
-                <Button
+                  icon={<ExpandIcon />}
                   size='small'
                   variant='tertiary'
-                  onClick={() => tileInfo.close?.()}
-                >
-                  Lukk
-                </Button>
+                  onClick={() => router.push(extra.fullskjermUrl!)}
+                />
+              )}
+              {tileInfo.close && (
+                <Tooltip content='Lukk vindu'>
+                  <Button
+                    icon={<XMarkIcon />}
+                    size='small'
+                    variant='tertiary'
+                    onClick={() => tileInfo.close?.()}
+                  />
+                </Tooltip>
               )}
             </div>
-          )}
-          {actionsRight && (
-            <div className='flex items-center gap-2'>{actionsRight}</div>
           )}
         </div>
       </div>

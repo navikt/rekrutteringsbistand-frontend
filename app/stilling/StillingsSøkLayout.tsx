@@ -2,7 +2,7 @@
 
 import StillingsSøkeresultat from './StillingsSøkeresultat';
 import StillingsSøkFilter from './_ui/StillingsSøkFilter';
-import { useStillingForKandidat } from '@/app/kandidat/vis-kandidat/useStillingForKandidat';
+import { useStillingForKandidat } from '@/app/kandidat/[kandidatNr]/vis-kandidat/useStillingForKandidat';
 import GeografiFilter from '@/app/stilling/_ui/StillingsSøkFilter/GeografiFilter';
 import InkluderingFilter from '@/app/stilling/_ui/StillingsSøkFilter/InkluderingFilter';
 import KategoriFilter from '@/app/stilling/_ui/StillingsSøkFilter/KategoriFilter';

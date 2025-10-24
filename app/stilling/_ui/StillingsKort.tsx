@@ -2,6 +2,7 @@ import { RekrutteringsbistandStillingSchemaDTO } from '@/app/api/stillings-sok/s
 import StillingsTag from '@/app/stilling/_ui/StillingsTag';
 import { visStillingsDataInfo } from '@/app/stilling/_util/stillingInfoUtil';
 import { hentArbeidssted } from '@/app/stilling/_util/stillingssøk-util';
+import WindowAnker from '@/components/window/WindowAnker';
 // import TekstMedIkon from '@/components/felles/TekstMedIkon';
 // import { formaterNorskDato } from '@/util/util';
 import ArbeidsplassenLogo from '@/public/arbeidsplassen.png';
@@ -35,7 +36,12 @@ const StillingsKort: FC<IStillingsKort> = ({ stillingData, kandidatId }) => {
   const erDirektemeldt = stillingsDataInfo.erDirektemeldt;
 
   return (
-    <a
+    <WindowAnker
+      windowRef={
+        erFormidling
+          ? `/etterregistrering?visStillingId=${stillingData.stilling.uuid}`
+          : `/stilling?visStillingId=${stillingData.stilling.uuid}`
+      }
       href={
         kandidatId
           ? `/kandidat/${kandidatId}/finn-stilling/${stillingData.stilling.uuid}`
@@ -122,7 +128,7 @@ const StillingsKort: FC<IStillingsKort> = ({ stillingData, kandidatId }) => {
           </div>
         </div>
       </Box.New>
-    </a>
+    </WindowAnker>
   );
 };
 

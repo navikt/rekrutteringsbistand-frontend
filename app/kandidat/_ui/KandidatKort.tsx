@@ -7,6 +7,7 @@ import {
   hentKandidatensØnskedeYrker,
 } from '@/app/kandidat/util';
 import TekstMedIkon from '@/components/TekstMedIkon';
+import WindowAnker from '@/components/window/WindowAnker';
 import { HandShakeHeartIcon, HouseIcon, PinIcon } from '@navikt/aksel-icons';
 import { Box, Checkbox, Heading, Tag } from '@navikt/ds-react';
 import { FC, MouseEvent } from 'react';
@@ -82,7 +83,14 @@ const KandidatKort: FC<IKandidatKort> = ({
   // };
 
   return (
-    <a
+    <WindowAnker
+      windowRef={
+        stillingsId
+          ? `/stilling/${stillingsId}/finn-kandidater?visKandidatId=${kandidat.arenaKandidatnr}`
+          : kandidat.arenaKandidatnr
+            ? `/kandidat?visKandidatId=${kandidat.arenaKandidatnr}`
+            : '#'
+      }
       href={
         stillingsId
           ? `/stilling/${stillingsId}/finn-kandidater/${kandidat.arenaKandidatnr}`
@@ -176,7 +184,7 @@ const KandidatKort: FC<IKandidatKort> = ({
           </div>
         </div>
       </Box.New>
-    </a>
+    </WindowAnker>
   );
 };
 
