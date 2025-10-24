@@ -1,19 +1,34 @@
 import VelgSvarfrist from './VelgSvarfrist';
 import { useForespurteOmDelingAvCv } from '@/app/api/foresporsel-om-deling-av-cv/foresporsler/[...slug]/useForespurteOmDelingAvCv';
-import { sendForespørselOmDelingAvCv, sendNyForespørselOmDelingAvCv } from '@/app/api/foresporsel-om-deling-av-cv/foresporsler/forespørselOmDelingAvCv';
+import {
+  sendForespørselOmDelingAvCv,
+  sendNyForespørselOmDelingAvCv,
+} from '@/app/api/foresporsel-om-deling-av-cv/foresporsler/forespørselOmDelingAvCv';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import { useKandidatlisteContext } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteContext';
-import { CVAlleredeForespurtDeling, CVkandidaterMedUtløptFrist_IkkeSpurtPåNytt, CVKandidaterSvartJa, CVKandidaterSvartNei_IkkeSpurtPåNytt } from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatHendelser/hendelseUtil';
+import {
+  CVAlleredeForespurtDeling,
+  CVkandidaterMedUtløptFrist_IkkeSpurtPåNytt,
+  CVKandidaterSvartJa,
+  CVKandidaterSvartNei_IkkeSpurtPåNytt,
+} from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatHendelser/hendelseUtil';
 import { KandidatVisningProps } from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatlisteFilter/useFiltrerteKandidater';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
 import { RekbisError } from '@/util/rekbisError';
 import { UmamiEvent } from '@/util/umamiEvents';
 import { TasklistIcon } from '@navikt/aksel-icons';
-import { Accordion, Alert, BodyLong, BodyShort, Button, Modal, Table } from '@navikt/ds-react';
+import {
+  Accordion,
+  Alert,
+  BodyLong,
+  BodyShort,
+  Button,
+  Modal,
+  Table,
+} from '@navikt/ds-react';
 import { endOfDay, format } from 'date-fns';
 import { useState, type FC } from 'react';
-
 
 export interface DelMedKandidatModalProps {
   markerteKandidater: KandidatVisningProps[];
@@ -67,7 +82,10 @@ const DelMedKandidatModal: FC<DelMedKandidatModalProps> = ({
         if (vanlgiDeling.length > 0) {
           await sendForespørselOmDelingAvCv({
             stillingsId: stillingsId,
-            svarfrist: format(endOfDay(svarfrist), "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"),
+            svarfrist: format(
+              endOfDay(svarfrist),
+              "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+            ),
             aktorIder: vanlgiDeling,
             navKontor: valgtNavKontor?.navKontor ?? '',
           });
@@ -81,7 +99,10 @@ const DelMedKandidatModal: FC<DelMedKandidatModalProps> = ({
           const nyeForespørslerPromises = delingPåNytt.map((kandidat) =>
             sendNyForespørselOmDelingAvCv(kandidat.aktørid!, {
               stillingsId: stillingsId,
-              svarfrist: format(endOfDay(svarfrist), "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"),
+              svarfrist: format(
+                endOfDay(svarfrist),
+                "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+              ),
               navKontor: valgtNavKontor?.navKontor ?? '',
             }),
           );
