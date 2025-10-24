@@ -6,7 +6,7 @@ import { KandidatHendelseInformasjon } from './KandidatHendelser';
 import { KandidatForespurtOmDelingSchema } from '@/app/api/foresporsel-om-deling-av-cv/foresporsler/[...slug]/useForespurteOmDelingAvCv';
 import { TilstandPåForespørsel } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
 import { formaterNorskDato } from '@/util/util';
-import { differenceInDays } from 'date-fns';
+import { isBefore } from 'date-fns';
 
 export const mapCVHendele = (
   forespørsel: KandidatForespurtOmDelingSchema,
@@ -15,9 +15,9 @@ export const mapCVHendele = (
     dato: forespørsel.svarfrist,
     visning: 'tall',
   });
-  const dagerTilSvarfrist = forespørsel.svarfrist
-    ? differenceInDays(new Date(forespørsel.svarfrist), new Date())
-    : null;
+  const erFristUtløpt = forespørsel.svarfrist
+    ? isBefore(new Date(forespørsel.svarfrist), new Date())
+    : false;
 
   const defaultData = {
     dato: new Date(forespørsel.deltTidspunkt),
@@ -76,11 +76,7 @@ export const mapCVHendele = (
         ...defaultData,
       };
     case TilstandPåForespørsel.AVBRUTT:
-      if (
-        forespørsel.deltStatus === 'SENDT' &&
-        dagerTilSvarfrist !== null &&
-        dagerTilSvarfrist < 0
-      ) {
+      if (forespørsel.deltStatus === 'SENDT' && erFristUtløpt) {
         return {
           tag: (
             <KandidatHendelseTag
