@@ -1,0 +1,1 @@
+import{ao as d,ap as e}from"./iframe-Cnqf-bcl.js";const r=a=>`${e.internUrl}/veileder/stilling/${a}/kandidatliste/kandidater`,s=async(a,t)=>{const i=a.map(n=>({kandidatnr:n}));return await d(r(t),i)};export{s as l};
