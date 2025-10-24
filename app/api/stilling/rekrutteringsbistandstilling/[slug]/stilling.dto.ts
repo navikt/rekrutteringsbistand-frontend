@@ -95,6 +95,16 @@ export const LocationSchema = z.object({
 });
 
 const LocationListSchema = z.array(LocationSchema);
+
+const NaringskodeSchema = z.object({
+  code: z.string().optional().nullable(),
+  name: z.string().optional().nullable(),
+});
+
+const ArbeidsgiverPropertiesSchema = z.object({
+  nace2: z.array(NaringskodeSchema).optional().nullable()
+});
+
 const ArbeidsgiverSchema = z.object({
   id: z.number().nullable(),
   uuid: z.string().nullable(),
@@ -106,7 +116,7 @@ const ArbeidsgiverSchema = z.object({
   contactList: z.array(ContactSchema).nullable(),
   location: LocationSchema.nullable(),
   locationList: z.array(LocationSchema).nullable(),
-  properties: propertiesSchema.nullable(),
+  properties: ArbeidsgiverPropertiesSchema.nullable(),
   name: z.string().nullable(),
   orgnr: z.string().nullable(),
   status: z.string().nullable(),
