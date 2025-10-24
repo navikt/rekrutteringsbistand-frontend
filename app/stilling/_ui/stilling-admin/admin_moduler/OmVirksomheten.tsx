@@ -87,7 +87,7 @@ export default function OmVirksomheten() {
       antallAnsatte: employer.employees ?? null,
       overordnetEnhet: employer.parentOrgnr ?? null,
       adresse,
-      naringskoder: employer.properties.nace2 ?? null,
+      naringskoder: null,
     };
     return dto;
   };
@@ -106,6 +106,7 @@ export default function OmVirksomheten() {
 
   const setArbeidsgiver = (arbeidsgiver: ArbeidsgiverDTO) => {
     setArbeidsgiverState(arbeidsgiver);
+    console.log("arbeidsgiver", arbeidsgiver)
     const eksisterende = getValues('stilling.employer') ?? ({} as any);
     setValue('stilling.businessName', arbeidsgiver.navn ?? null);
     setValue('stilling.employer', {
