@@ -50,11 +50,13 @@ export const parseWorktime = (worktime: string) => {
 export interface OmStillingenProps {
   forhåndsvisData?: boolean;
   printRef: RefObject<HTMLDivElement | null> | null;
+  skjulKnapper?: boolean;
 }
 
 export default function OmStillingen({
   printRef,
   forhåndsvisData,
+  skjulKnapper,
 }: OmStillingenProps) {
   const { stillingsData, kandidatlisteInfo } = useStillingsContext();
 
@@ -73,7 +75,8 @@ export default function OmStillingen({
 
   return (
     <div data-testid='om-stillingen'>
-      {!forhåndsvisData &&
+      {!skjulKnapper &&
+        !forhåndsvisData &&
         kandidatlisteInfo?.kandidatlisteId &&
         kandidatlisteInfo.kandidatlisteStatus !==
           Kandidatlistestatus.Lukket && <KandidatKnapper />}

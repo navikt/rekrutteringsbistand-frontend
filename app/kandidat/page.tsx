@@ -1,22 +1,15 @@
 'use client';
 
-import KandidatSokLayout from './KandidatSokLayout';
-import KandidatSøkTabs from './KandidatSøkTabs';
-import PanelHeader from '@/components/layout/PanelHeader';
-import SideLayout from '@/components/layout/SideLayout';
+import { KandidatSøkProvider } from '@/app/kandidat/KandidaSokFilterContext';
+import KandidatSøkLayout from '@/app/kandidat/KandidatSøkLayout';
+import { KandidatSøkMarkerteContextProvider } from '@/app/kandidat/KandidatSøkMarkerteContext';
 
 export default function KandidatPage() {
   return (
-    <SideLayout
-      header={
-        <PanelHeader>
-          <PanelHeader.Section />
-        </PanelHeader>
-      }
-    >
-      <KandidatSokLayout>
-        <KandidatSøkTabs />
-      </KandidatSokLayout>
-    </SideLayout>
+    <KandidatSøkProvider>
+      <KandidatSøkMarkerteContextProvider>
+        <KandidatSøkLayout />
+      </KandidatSøkMarkerteContextProvider>
+    </KandidatSøkProvider>
   );
 }

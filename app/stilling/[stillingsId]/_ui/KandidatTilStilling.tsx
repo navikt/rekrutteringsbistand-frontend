@@ -2,13 +2,13 @@ import { useFinnKandidatForStilling } from './useFinnKandidatForStilling';
 import { Kandidatlistestatus } from '@/app/api/kandidat/schema.zod';
 import { useKandidatlisteForEier } from '@/app/api/kandidat/useKandidatlisteForEier';
 import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
-import KandidatSøkTabs from '@/app/kandidat/KandidatSøkTabs';
+import KandidatSøkResultat from '@/app/kandidat/KandidatSøkResultat';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import Sidelaster from '@/components/layout/Sidelaster';
 import { getMiljø, Miljø } from '@/util/miljø';
 import { ArrowRightIcon, FilesIcon } from '@navikt/aksel-icons';
 import { Alert, Button, Heading } from '@navikt/ds-react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { FC, useEffect, useState } from 'react';
 
 export interface KandidatTilStillingProps {
@@ -18,7 +18,12 @@ export interface KandidatTilStillingProps {
 const KandidatTilStilling: FC<KandidatTilStillingProps> = ({
   stillingsData,
 }) => {
-  const kandidatForStillingData = useFinnKandidatForStilling(stillingsData);
+  const searchParams = useSearchParams();
+  const harAndreParametere = searchParams.size > 0;
+  const skalHenteStillingsData = stillingsData && !harAndreParametere;
+  const kandidatForStillingData = useFinnKandidatForStilling(
+    skalHenteStillingsData ? stillingsData : null,
+  );
   const router = useRouter();
   const [alleredeLagtTilKandidatliste, setAlleredeLagtTilKandidatliste] =
     useState<string[]>([]);
@@ -50,7 +55,10 @@ const KandidatTilStilling: FC<KandidatTilStillingProps> = ({
     );
   };
 
-  if (kandidatForStillingData.isLoading || kandidatlisteLaster) {
+  if (
+    (skalHenteStillingsData && kandidatForStillingData.isLoading) ||
+    kandidatlisteLaster
+  ) {
     return <Sidelaster />;
   }
 
@@ -125,9 +133,9 @@ const KandidatTilStilling: FC<KandidatTilStillingProps> = ({
               Kandidatliste er lukket, så du kan ikke legge til jobbsøkere.
             </Alert>
           )}
-          <KandidatSøkTabs
-            alleredeLagtTilKandidatliste={alleredeLagtTilKandidatliste}
+          <KandidatSøkResultat
             stillingsId={stillingsData?.stilling?.uuid}
+            alleredeLagtTilKandidatliste={alleredeLagtTilKandidatliste}
           />
         </>
       )}

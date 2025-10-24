@@ -22,7 +22,6 @@ import { Checkbox, Pagination } from '@navikt/ds-react';
 import { FC, useEffect, useRef } from 'react';
 
 interface KandidatSøkResultatProps {
-  type: KandidatSøkPortefølje;
   stillingsId?: string;
   rekrutteringstreffId?: string;
   alleredeLagtTilTreff?: string[];
@@ -30,14 +29,17 @@ interface KandidatSøkResultatProps {
 }
 
 const KandidatSøkResultat: FC<KandidatSøkResultatProps> = ({
-  type,
   stillingsId,
   rekrutteringstreffId,
   alleredeLagtTilTreff,
   alleredeLagtTilKandidatliste,
 }) => {
   const filter = useKandidatSøkFilterContext();
-  const kandidatsøkHook = useKandidatsøk(type, filter);
+  const { portefølje } = useKandidatSøkFilterContext();
+  const kandidatsøkHook = useKandidatsøk(
+    portefølje as KandidatSøkPortefølje,
+    filter,
+  );
   const { setKandidatNavigering } = useKandidatNavigeringContext();
   const headerRef = useRef<HTMLDivElement>(null);
   useEffect(() => {

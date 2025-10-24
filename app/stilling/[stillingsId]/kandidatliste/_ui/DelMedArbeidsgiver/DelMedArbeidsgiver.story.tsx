@@ -1,6 +1,6 @@
 import DelMedArbeidsgiver from './DelMedArbeidsgiver';
 import ForhåndsvisningAvEpost from './ForhåndsvisningAvEpost';
-import { MockStillingsProvider } from '@/storybook/mocks';
+import { MockStillingsProvider } from '@/.storybook/mocks';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 // Del med arbeidsgiver moduler (inert)

@@ -5,8 +5,9 @@ import FinnStillingForKandidatKnapp from '@/app/kandidat/_ui/ActionLinks/FinnSti
 import NavigerTilAktivitetsplanenKnapp from '@/app/kandidat/_ui/ActionLinks/NavigerTilAktivitetsplanenKnapp';
 import KandidatAktivitet from '@/app/kandidat/vis-kandidat/aktivitet-fane/KandidatAktivitet';
 import KandidatOversikt from '@/app/kandidat/vis-kandidat/oversikt-fane/KandidatOversikt';
-import SideScroll from '@/components/SideScroll';
+import KandidatIKandidatliste from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatIKandidatliste/KandidatIKandidatliste';
 import PanelHeader from '@/components/layout/PanelHeader';
+import SideInnhold from '@/components/layout/SideInnhold';
 import SideLayout from '@/components/layout/SideLayout';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
@@ -18,7 +19,13 @@ enum Fane {
   AKTIVITET = 'aktivitet',
 }
 
-const VisKandidat = () => {
+export interface VisKandidatProps {
+  kandidatlisteKandidat?: string;
+}
+
+export default function VisKandidat({
+  kandidatlisteKandidat,
+}: VisKandidatProps) {
   // const pathname = usePathname();
   // const { kandidatId } = useKandidatContext();
   // const [visStillingId] = useQueryState('visStillingId', {
@@ -70,7 +77,14 @@ const VisKandidat = () => {
             Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
           ]}
         >
-          <SideScroll>
+          <SideInnhold>
+            {kandidatlisteKandidat && (
+              <div className='-mt-5'>
+                <KandidatIKandidatliste
+                  kandidatlisteKandidat={kandidatlisteKandidat}
+                />
+              </div>
+            )}
             <Tabs.Panel value={Fane.OVERSIKT}>
               <div className='w-full'>
                 <KandidatSideLayout>
@@ -90,11 +104,9 @@ const VisKandidat = () => {
                 <KandidatAktivitet />
               </div>
             </Tabs.Panel>
-          </SideScroll>
+          </SideInnhold>
         </TilgangskontrollForInnhold>
       </SideLayout>
     </Tabs>
   );
-};
-
-export default VisKandidat;
+}

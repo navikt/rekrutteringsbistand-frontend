@@ -24,14 +24,14 @@ const jobbsøkerMock = (): JobbsøkerDTO => {
       {
         id: faker.string.uuid(),
         tidspunkt: new Date().toISOString(),
-        hendelsestype: 'OPPRETT',
+        hendelsestype: 'OPPRETTET',
         opprettetAvAktørType: 'ARRANGØR',
         aktørIdentifikasjon: 'testperson',
       },
       {
         id: faker.string.uuid(),
         tidspunkt: new Date().toISOString(),
-        hendelsestype: 'INVITER',
+        hendelsestype: 'INVITERT',
         opprettetAvAktørType: 'ARRANGØR',
         aktørIdentifikasjon: 'testperson',
       },

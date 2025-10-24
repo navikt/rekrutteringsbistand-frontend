@@ -1,4 +1,4 @@
-export enum UmamiDomene {
+enum UmamiDomene {
   Generell = 'Generell',
   Forside = 'Forside',
   Stilling = 'Stilling',

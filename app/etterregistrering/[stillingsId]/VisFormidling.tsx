@@ -5,10 +5,9 @@ import FremdriftspanelEtterregistrering from '@/app/etterregistrering/[stillings
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import OmStillingen from '@/app/stilling/[stillingsId]/_ui/om-stillingen/OmStillingen';
 import PanelHeader from '@/components/layout/PanelHeader';
+import SideInnhold from '@/components/layout/SideInnhold';
 import SideLayout from '@/components/layout/SideLayout';
 import { Tabs } from '@navikt/ds-react';
-
-// import OmStillingen from '@/app/stilling/[stillingsId]/omStillingen/OmStillingen'
 
 export default function VisFormidling() {
   const { erEier } = useStillingsContext();
@@ -16,7 +15,7 @@ export default function VisFormidling() {
   return (
     <Tabs defaultValue='omStillingen'>
       <SideLayout
-        fremdriftspanel={<FremdriftspanelEtterregistrering />}
+        sidepanel={<FremdriftspanelEtterregistrering />}
         header={
           <PanelHeader>
             <PanelHeader.Section
@@ -30,14 +29,16 @@ export default function VisFormidling() {
           </PanelHeader>
         }
       >
-        <Tabs.Panel value='omStillingen'>
-          <OmStillingen printRef={null} />
-        </Tabs.Panel>
-        {erEier && (
-          <Tabs.Panel value='kandidater'>
-            <FormidlingKandidater />
+        <SideInnhold>
+          <Tabs.Panel value='omStillingen'>
+            <OmStillingen printRef={null} />
           </Tabs.Panel>
-        )}
+          {erEier && (
+            <Tabs.Panel value='kandidater'>
+              <FormidlingKandidater />
+            </Tabs.Panel>
+          )}
+        </SideInnhold>
       </SideLayout>
     </Tabs>
   );

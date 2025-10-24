@@ -1,4 +1,3 @@
-import KandidatlisteBoks from './KandidatlisteBoks';
 import LeggKandidatTilKandidatliste from './LeggKandidatTilKandidatliste';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
@@ -22,7 +21,7 @@ const meta = {
         <h4 className='font-semibold text-sm'>
           KandidatlisteBoks (placeholder)
         </h4>
-        <KandidatlisteBoks kandidatnr='demo-kandidat' />
+        {/* <KandidatlisteBoks kandidatnr='demo-kandidat' /> */}
       </section>
     </div>
   ),

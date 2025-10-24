@@ -43,6 +43,7 @@ const KandidatHendelseTagVisning: FC<KandidatHendelseTagProps> = ({
   if (!kandidatHendelse.tag) {
     return null;
   }
+
   return (
     <Tooltip content={kandidatHendelse.tekst ?? ''}>
       <div>

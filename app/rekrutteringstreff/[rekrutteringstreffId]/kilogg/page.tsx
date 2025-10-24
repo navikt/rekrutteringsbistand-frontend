@@ -17,12 +17,11 @@ export default function KiLoggPage() {
       kreverEnAvRollene={[Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER]}
     >
       <SideLayout
-        skjulFremdriftspanel={true}
         header={
           <div className='sticky top-0 z-40 bg-[var(--ax-bg-default)]'>
             <PanelHeader className='bg-transparent'>
               <PanelHeader.Section
-                erstattPath={[rekrutteringstreffId, 'KI Logg']}
+              // erstattPath={[rekrutteringstreffId, 'KI Logg']}
               />
             </PanelHeader>
           </div>

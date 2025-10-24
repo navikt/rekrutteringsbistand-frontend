@@ -17,6 +17,32 @@ const StillingPrint: FC<StillingPrintProps> = ({ printRef }) => {
   const reactToPrintFn = useReactToPrint({
     contentRef: printRef,
     documentTitle: `${stillingsData?.stilling?.title ?? 'Stilling'}`,
+    onBeforePrint: async () => {
+      const currentRef = printRef.current;
+      if (currentRef && stillingsData?.stilling?.title) {
+        // Fjern eksisterende tittel hvis den finnes
+        const existingTitle = currentRef.querySelector('.print-title');
+        if (existingTitle) {
+          existingTitle.remove();
+        }
+
+        // Opprett ny tittel
+        const titleElement = document.createElement('h1');
+        titleElement.className = 'print-title print-only';
+        titleElement.textContent = stillingsData.stilling.title;
+        titleElement.style.cssText = `
+          display: none;
+          margin: 0 0 20px 0;
+          padding: 0;
+          font-size: 24px;
+          font-weight: bold;
+          color: #000;
+        `;
+
+        // Legg til øverst i innholdet
+        currentRef.insertBefore(titleElement, currentRef.firstChild);
+      }
+    },
     pageStyle: `
         @media print {
           .print-only {

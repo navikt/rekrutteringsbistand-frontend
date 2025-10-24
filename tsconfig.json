@@ -24,7 +24,15 @@
     "target": "ES2017",
     "types": ["@navikt/ds-react/types/theme"]
   },
-  "exclude": ["node_modules", ".next"],
+  "exclude": [
+    "node_modules",
+    ".next",
+    "storybook-static",
+    "playwright-report",
+    "test-results",
+    "public@",
+    "public/mockServiceWorker.js"
+  ],
   "include": [
     "next-env.d.ts",
     "**/*.ts",
@@ -33,6 +41,8 @@
     "app/404.js",
     "app/stilling/layout.tsx",
     "tests/formidling/opprett-formidling.spec.ts.disabled",
-    "tests/stilling/vis-stilling/rediger-stilling-validering.spec.ts.disabled"
+    "tests/stilling/vis-stilling/rediger-stilling-validering.spec.ts.disabled",
+    "tsconfig.unused.json",
+    ".storybook/mocks.tsx"
   ]
 }

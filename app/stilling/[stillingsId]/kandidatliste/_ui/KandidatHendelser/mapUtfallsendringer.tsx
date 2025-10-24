@@ -9,11 +9,33 @@ import { KandidatutfallTyper } from '@/app/stilling/[stillingsId]/kandidatliste/
 export const mapUtfallsendringer = (
   utfallseendring: utfallsendringerSchemaDTO,
   cvErBlittDelt: boolean = false,
+  alleUtfallsendringer?: utfallsendringerSchemaDTO[],
+  index?: number,
 ): KandidatHendelseInformasjon => {
   const defaultData = {
     dato: new Date(utfallseendring.tidspunkt),
     raw: utfallseendring,
   };
+
+  // Sjekk om dette er en "fjernet fått jobben" hendelse
+  const fjernetFåttJobben =
+    alleUtfallsendringer &&
+    index === 0 &&
+    alleUtfallsendringer.length >= 2 &&
+    utfallseendring.utfall === KandidatutfallTyper.PRESENTERT &&
+    alleUtfallsendringer[1].utfall === KandidatutfallTyper.FATT_JOBBEN;
+
+  if (fjernetFåttJobben) {
+    return {
+      type: KandidatHendelseType.Fjernet_fått_jobben,
+      ...defaultData,
+      tag: (
+        <KandidatHendelseTag type={KandidatHendelseType.Fjernet_fått_jobben} />
+      ),
+      tekst: '',
+    };
+  }
+
   switch (utfallseendring.utfall) {
     case KandidatutfallTyper.FATT_JOBBEN:
       return {

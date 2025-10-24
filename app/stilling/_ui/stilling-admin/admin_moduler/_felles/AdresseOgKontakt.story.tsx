@@ -1,7 +1,7 @@
 import LeggTilKontaktperson from './LeggTilKontaktperson';
 import VelgKommuneFylkeEllerLand from './VelgKommuneFylkeEllerLand';
 import VelgPoststed from './VelgPoststed';
-import { MockStillingsProvider } from '@/storybook/mocks';
+import { MockStillingsProvider } from '@/.storybook/mocks';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { useForm } from 'react-hook-form';
 

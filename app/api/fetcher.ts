@@ -7,7 +7,7 @@ interface fetchOptions {
   queryParams?: URLSearchParams;
 }
 
-export const getErrorTitle = (statusCode: number): string => {
+const getErrorTitle = (statusCode: number): string => {
   switch (true) {
     case statusCode === 400:
       return 'Ugyldig forespørsel';
@@ -341,7 +341,7 @@ export const putApi = async (
   }
 };
 
-export type postApiProps = {
+type postApiProps = {
   url: string;
   body?: any;
   options?: fetchOptions;

@@ -1,5 +1,5 @@
 import RekrutteringstreffDetalj from './RekrutteringstreffDetalj';
-import { MockRekrutteringstreffProvider } from '@/storybook/mocks';
+import { MockRekrutteringstreffProvider } from '@/.storybook/mocks';
 import { PlusIcon } from '@navikt/aksel-icons';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
