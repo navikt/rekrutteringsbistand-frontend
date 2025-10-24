@@ -6,7 +6,7 @@ import { KandidatHendelseInformasjon } from './KandidatHendelser';
 import { KandidatForespurtOmDelingSchema } from '@/app/api/foresporsel-om-deling-av-cv/foresporsler/[...slug]/useForespurteOmDelingAvCv';
 import { TilstandPåForespørsel } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
 import { formaterNorskDato } from '@/util/util';
-import { isBefore, parseISO,  } from 'date-fns';
+import { isBefore, parseISO } from 'date-fns';
 import { formatInTimeZone } from 'date-fns-tz';
 
 export const mapCVHendele = (
@@ -14,7 +14,7 @@ export const mapCVHendele = (
 ): KandidatHendelseInformasjon => {
   // Svarfrist er zulu tid og er ved midnatt, så må formateres for å vise riktig dato
   const svarfristISOTid = parseISO(forespørsel.svarfrist);
-  const svarFrist = formatInTimeZone(svarfristISOTid, "UTC","dd.MM.yy");
+  const svarFrist = formatInTimeZone(svarfristISOTid, "UTC", "dd.MM.yy");
 
   const erFristUtløpt = forespørsel.svarfrist
     ? isBefore(new Date(forespørsel.svarfrist), new Date())
