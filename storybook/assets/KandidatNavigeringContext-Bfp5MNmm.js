@@ -1,0 +1,1 @@
+import{r as e,w as a}from"./iframe-Bmd04qoj.js";const n=e.createContext(void 0),r=()=>{const t=e.useContext(n);return t===void 0?null:t},o=()=>{const t=e.useContext(n);if(!t)throw new a({message:"useKandidatNavigering must be used within a KandidatNavigeringProvider"});return t};export{r as a,o as u};
