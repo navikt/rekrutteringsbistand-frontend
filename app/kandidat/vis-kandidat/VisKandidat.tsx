@@ -59,7 +59,7 @@ export default function VisKandidat({
     <Tabs value={fane} onChange={(val) => setFane(val)} className=' w-full'>
       <SideLayout
         header={
-          <PanelHeader className='pb-2'>
+          <PanelHeader>
             <PanelHeader.Section
               tabs={
                 <>

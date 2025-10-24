@@ -1,5 +1,5 @@
-import WindowLoader from '@/app/_experimental/_windows/WindowLoader';
 import VisPerson from '@/app/rekrutteringstreff/[rekrutteringstreffId]/vis-person/_ui/VisPerson';
+import Sidelaster from '@/components/layout/Sidelaster';
 import { Modal } from '@navikt/ds-react';
 import { FC, Suspense, useRef } from 'react';
 
@@ -47,13 +47,7 @@ const NavnLenke: FC<NavnLenkeProps> = ({
         header={{ heading: '' }}
       >
         <Modal.Body className='h-[1024px] overflow-auto'>
-          <Suspense
-            fallback={
-              <div className='h-full flex items-center justify-center'>
-                <WindowLoader />
-              </div>
-            }
-          >
+          <Suspense fallback={<Sidelaster />}>
             <VisPerson personTreffId={personTreffId} />
           </Suspense>
         </Modal.Body>

@@ -2,6 +2,7 @@
 
 import { useNullableKandidatContext } from '@/app/kandidat/vis-kandidat/KandidatContext';
 import { useNullableStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
+import { useWindowTile } from '@/components/WindowView';
 import {
   Breadcrumb,
   BreadcrumbEllipsis,
@@ -11,8 +12,9 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
+import { useThemeProvider } from '@/providers/ThemeProvider';
 import { BriefcaseIcon, PersonIcon, ReceptionIcon } from '@navikt/aksel-icons';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import {
   Fragment,
   ReactNode,
@@ -81,12 +83,17 @@ function AutoBreadcrumbs({
   className,
   forcedPath,
 }: AutoBreadcrumbsProps) {
+  const { windowMode } = useThemeProvider();
+  const tileInfo = useWindowTile();
   const livePath = usePathname();
   const pathname =
     forcedPath ||
     livePath ||
     (typeof window !== 'undefined' ? window.location.pathname : '');
   const segments = pathname ? pathname.split('/').filter(Boolean) : [];
+  const searchParams = useSearchParams();
+  const visKandidatId = searchParams?.get('visKandidatId');
+  const visStillingId = searchParams?.get('visStillingId');
   const [collapsed, setCollapsed] = useState(false);
   const rootRef = useRef<HTMLDivElement | null>(null);
   const measureRef = useRef<HTMLDivElement | null>(null);
@@ -94,6 +101,23 @@ function AutoBreadcrumbs({
   // Hent kontekster
   const stillingsCtx = useNullableStillingsContext();
   const kandidatCtx = useNullableKandidatContext();
+
+  // Felles hjelpefunksjoner for å slå opp labels basert på ID
+  const kandidatFullName =
+    kandidatCtx?.kandidatData?.fornavn && kandidatCtx?.kandidatData?.etternavn
+      ? `${kandidatCtx.kandidatData.fornavn} ${kandidatCtx.kandidatData.etternavn}`
+      : undefined;
+  const computeKandidatLabel = (id: string) => {
+    if (kandidatCtx?.kandidatId === id && kandidatFullName)
+      return kandidatFullName;
+    return undefined;
+  };
+  const stillingTitle = stillingsCtx?.stillingsData?.stilling?.title;
+  const computeStillingLabel = (id: string) => {
+    const uuid = stillingsCtx?.stillingsData?.stilling?.uuid;
+    if (uuid === id && stillingTitle) return stillingTitle;
+    return undefined;
+  };
 
   // Reset collapsed on path change
   useEffect(() => {
@@ -116,40 +140,19 @@ function AutoBreadcrumbs({
     return () => ro.disconnect();
   }, [segments.length]);
 
-  // Ikke returner før hooks er opprettet; vi håndterer tom path senere.
-
   const items = segments.map((seg, i) => {
     const entry = pathConfig[seg];
     const href = '/' + segments.slice(0, i + 1).join('/');
     const isLast = i === segments.length - 1;
     let label = entry?.label || seg;
-
-    // Automatisk erstatt stilling UUID med tittel
-    if (
-      stillingsCtx?.stillingsData?.stilling?.uuid === seg &&
-      stillingsCtx.stillingsData?.stilling?.title
-    ) {
-      label = stillingsCtx.stillingsData.stilling.title;
-    }
-
-    // Automatisk erstatt kandidat ID med navn
-    if (
-      kandidatCtx?.kandidatId === seg &&
-      kandidatCtx.kandidatData?.fornavn &&
-      kandidatCtx.kandidatData?.etternavn
-    ) {
-      label = `${kandidatCtx.kandidatData.fornavn} ${kandidatCtx.kandidatData.etternavn}`;
-    }
-    if (erstattPath && seg === erstattPath[0]) {
-      label = erstattPath[1];
-    }
-
+    // Rebruk samme logikk for ID->navn/tittel
+    label = computeStillingLabel(seg) ?? computeKandidatLabel(seg) ?? label;
+    if (erstattPath && seg === erstattPath[0]) label = erstattPath[1];
     return {
       segment: seg,
       href,
       icon: entry?.icon,
       label,
-      // Siste segment skal ikke være lenke; ellers følger vi config
       skipLink: isLast || !!entry?.skipLink,
     };
   });
@@ -164,6 +167,37 @@ function AutoBreadcrumbs({
   }, [collapsed, items]);
   if (!pathname || segments.length === 0) {
     return null;
+  }
+
+  if (windowMode && tileInfo?.tile === 'detail') {
+    const last = items[items.length - 1];
+    // Bruk samme hjelpefunksjoner også for query-param basert visning
+    const labelOverride =
+      (visStillingId && computeStillingLabel(visStillingId)) ||
+      (visKandidatId && computeKandidatLabel(visKandidatId)) ||
+      last.label;
+    // Velg ikon basert på hvilken param som faktisk ga label. Prioritet: stilling > kandidat
+    const iconOverride =
+      (visStillingId &&
+        computeStillingLabel(visStillingId) &&
+        pathConfig['stilling']?.icon) ||
+      (visKandidatId &&
+        computeKandidatLabel(visKandidatId) &&
+        (pathConfig['vis-kandidat']?.icon || pathConfig['kandidat']?.icon)) ||
+      last.icon;
+    return (
+      <div ref={rootRef} className={className}>
+        <Breadcrumb aria-label='Vindusnavn'>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbPage icon={iconOverride}>
+                {labelOverride}
+              </BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+      </div>
+    );
   }
 
   return (

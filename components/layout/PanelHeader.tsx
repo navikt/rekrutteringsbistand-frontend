@@ -1,10 +1,10 @@
 'use client';
 
-import { useWindowContext } from '@/app/_experimental/_windows/util/DynamicWindowContext';
 // Brødsmuler er deprecated – vi bygger breadcrumbs direkte her med UI-primitive
+import { useWindowTile } from '@/components/WindowView';
 import AutoBreadcrumbs from '@/components/brødsmuler/Brødsmuler';
-import { ExpandIcon, XMarkIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
+import { useRouter } from 'next/navigation';
 import { ReactNode, createContext, useContext } from 'react';
 
 /**
@@ -42,20 +42,22 @@ const PanelHeaderModeContext = createContext<{ compact: boolean }>({
   compact: false,
 });
 
+interface PanelHeaderProps {
+  children: ReactNode;
+  className?: string;
+  /** URL som representerer fullskjerm-visning av innholdet i detaljvinduet */
+  fullskjermUrl?: string;
+}
+
+const PanelHeaderExtraContext = createContext<
+  { fullskjermUrl?: string } | undefined
+>(undefined);
+
 export default function PanelHeader({
   children,
   className = '',
   fullskjermUrl,
-  fullskjermAriaLabel = 'Åpne i fullskjerm',
-}: {
-  children: ReactNode;
-  className?: string;
-
-  /** Når satt og vinduet er dynamisk vises en knapp (til venstre for lukk) som navigerer hit i hovedvisning */
-  fullskjermUrl?: string;
-  fullskjermAriaLabel?: string;
-}) {
-  const dynamicCtx = useWindowContext();
+}: PanelHeaderProps) {
   const childArr = (Array.isArray(children) ? children : [children]).filter(
     Boolean,
   );
@@ -67,76 +69,18 @@ export default function PanelHeader({
   // Derfor tvinger vi compact = true uavhengig av om seksjoner har tabs.
   const compact = true;
 
-  // Injiser close-knapp kun for dynamiske vinduer (men uten å påvirke layoutbeslutningen)
-  let enhancedChildren: ReactNode = childArr;
-  if (dynamicCtx?.isDynamic && dynamicCtx.onRequestClose) {
-    const lastIndex = childArr
-      .map((c: any, i) => (c && c.type === PanelHeaderSection ? i : -1))
-      .filter((i) => i >= 0)
-      .pop();
-    if (lastIndex != null) {
-      enhancedChildren = childArr.map((c: any, i) => {
-        if (i !== lastIndex) return c;
-        const existing = c.props?.actionsRight;
-        const already =
-          existing &&
-          (Array.isArray(existing)
-            ? existing.some(
-                (el: any) => el?.props?.['aria-label'] === 'Lukk vindu',
-              )
-            : existing?.props?.['aria-label'] === 'Lukk vindu');
-        if (already) return c;
-        const hasFullscreenAlready =
-          existing &&
-          (Array.isArray(existing)
-            ? existing.some(
-                (el: any) => el?.props?.['aria-label'] === fullskjermAriaLabel,
-              )
-            : existing?.props?.['aria-label'] === fullskjermAriaLabel);
-        return (
-          <PanelHeaderSection
-            key={c.key || `ph-sec-${i}`}
-            {...c.props}
-            actionsRight={
-              <>
-                {existing}
-                {fullskjermUrl && !hasFullscreenAlready && (
-                  <Button
-                    size='small'
-                    variant='tertiary'
-                    aria-label={fullskjermAriaLabel}
-                    icon={<ExpandIcon aria-hidden />}
-                    onClick={() => {
-                      if (typeof window !== 'undefined') {
-                        window.location.assign(fullskjermUrl);
-                      }
-                    }}
-                  />
-                )}
-                <Button
-                  size='small'
-                  variant='tertiary'
-                  aria-label='Lukk vindu'
-                  icon={<XMarkIcon aria-hidden />}
-                  onClick={() => dynamicCtx.onRequestClose?.()}
-                />
-              </>
-            }
-          />
-        );
-      });
-    }
-  }
+  // Dynamisk vinduslogikk fjernet – children brukes direkte
+  const enhancedChildren: ReactNode = childArr;
 
   return (
     <PanelHeaderModeContext.Provider value={{ compact }}>
-      {/* Full bredde med linje */}
-
-      <div
-        className={` w-full flex flex-col ${compact ? (hasTabs ? 'pt-4 pb-0' : 'py-4') : ''} ${className}`}
-      >
-        {enhancedChildren}
-      </div>
+      <PanelHeaderExtraContext.Provider value={{ fullskjermUrl }}>
+        <div
+          className={` w-full flex flex-col ${compact ? (hasTabs ? 'pt-4 pb-0' : 'py-4') : ''} ${className}`}
+        >
+          {enhancedChildren}
+        </div>
+      </PanelHeaderExtraContext.Provider>
     </PanelHeaderModeContext.Provider>
   );
 }
@@ -175,7 +119,9 @@ export function PanelHeaderSection({
   erstattPath,
 }: PanelHeaderSectionProps) {
   const { compact } = useContext(PanelHeaderModeContext);
-  const winCtx = useWindowContext();
+  const extra = useContext(PanelHeaderExtraContext);
+  const tileInfo = useWindowTile();
+  const router = useRouter();
   // Pathname håndteres nå internt av AutoBreadcrumbs
 
   const rowClass = cx(
@@ -196,7 +142,7 @@ export function PanelHeaderSection({
     >
       <div className={rowClass}>
         <div className='flex items-center gap-3 min-w-0 flex-1 flex-wrap'>
-          {!skjulBrødsmuler && !winCtx?.isDynamic ? (
+          {!skjulBrødsmuler ? (
             <div className='pt-2 max-w-full'>
               <AutoBreadcrumbs erstattPath={erstattPath} />
             </div>
@@ -220,6 +166,28 @@ export function PanelHeaderSection({
           {meta && (
             <div className='text-xs text-muted-foreground whitespace-nowrap'>
               {meta}
+            </div>
+          )}
+          {tileInfo?.tile === 'detail' && (
+            <div className='flex items-center gap-2'>
+              {extra?.fullskjermUrl && (
+                <Button
+                  size='small'
+                  variant='secondary'
+                  onClick={() => router.push(extra.fullskjermUrl!)}
+                >
+                  Fullskjerm
+                </Button>
+              )}
+              {tileInfo.close && (
+                <Button
+                  size='small'
+                  variant='tertiary'
+                  onClick={() => tileInfo.close?.()}
+                >
+                  Lukk
+                </Button>
+              )}
             </div>
           )}
           {actionsRight && (
