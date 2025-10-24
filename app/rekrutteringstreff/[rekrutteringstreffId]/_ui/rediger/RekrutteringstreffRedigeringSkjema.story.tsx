@@ -1,12 +1,14 @@
 import InnleggForm from './InnleggForm';
 import Praktiskeforhold from './Praktiskeforhold';
-import RekrutteringstreffForm from './RekrutteringstreffForm';
+import RekrutteringstreffForm, {
+  RekrutteringstreffFormValues,
+} from './RekrutteringstreffForm';
 import RekrutteringstreffRedigering from './RekrutteringstreffRedigering';
 import StedForm from './StedForm';
 import SvarfristForm from './SvarfristForm';
 import TidspunktForm from './TidspunktForm';
 import TittelForm from './TittelForm';
-import { MockRekrutteringstreffProvider } from '@/storybook/mocks';
+import { MockRekrutteringstreffProvider } from '@/.storybook/mocks';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { FormProvider, useForm } from 'react-hook-form';
 
@@ -15,12 +17,18 @@ import { FormProvider, useForm } from 'react-hook-form';
 const meta = {
   tags: ['autodocs'],
   render: () => {
-    const methods = useForm({
+    const methods = useForm<RekrutteringstreffFormValues>({
       defaultValues: {
         tittel: 'Demo treff',
-        startdato: undefined,
-        sluttdato: undefined,
-        svarfrist: undefined,
+        gateadresse: null,
+        postnummer: null,
+        poststed: null,
+        fraDato: null,
+        fraTid: '08:00',
+        tilDato: null,
+        tilTid: '08:00',
+        svarfristDato: null,
+        svarfristTid: '08:00',
       },
     });
     return (

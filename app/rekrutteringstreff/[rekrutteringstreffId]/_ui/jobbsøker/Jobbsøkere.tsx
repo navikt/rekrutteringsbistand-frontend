@@ -1,6 +1,6 @@
 'use client';
 
-import { useRekrutteringstreffData } from '../hooks/useRekrutteringstreffData';
+import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
 import { InviterInternalDto, InviterModal } from './InviterModal';
 import JobbsøkerKort from './JobbsøkerKort';
 import LeggTilJobbsøkerKnapp from './LeggTilJobbsøkerKnapp';

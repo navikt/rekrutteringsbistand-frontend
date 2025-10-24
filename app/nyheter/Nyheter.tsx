@@ -5,8 +5,8 @@ import EndreNyhetModal from '@/app/nyheter/_ui/EndreNyhetModal';
 import LegacyNyheter from '@/app/nyheter/_ui/LegacyNyheter';
 import NyhetVisning from '@/app/nyheter/_ui/NyhetVisning';
 import SWRLaster from '@/components/SWRLaster';
-import SideScroll from '@/components/SideScroll';
 import PanelHeader from '@/components/layout/PanelHeader';
+import SideInnhold from '@/components/layout/SideInnhold';
 import SideLayout from '@/components/layout/SideLayout';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
@@ -36,8 +36,7 @@ const Nyheter: React.FC = () => {
       }
     >
       <div className='flex flex-col gap-4 mb-4'>
-        <SideScroll>
-          {' '}
+        <SideInnhold>
           <SWRLaster hooks={[nyheterHook]}>
             {(nyheterData) => {
               window.localStorage.setItem(
@@ -61,7 +60,7 @@ const Nyheter: React.FC = () => {
             }}
           </SWRLaster>
           <LegacyNyheter />
-        </SideScroll>
+        </SideInnhold>
       </div>
     </SideLayout>
   );

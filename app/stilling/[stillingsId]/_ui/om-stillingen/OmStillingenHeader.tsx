@@ -6,7 +6,7 @@ export default function OmStillingenHeader() {
   const { stillingsData } = useStillingsContext();
   return (
     <div className='py-5'>
-      <Heading size='large'>{stillingsData.stilling.title ?? ''}</Heading>
+      <Heading size='large'>{stillingsData.stilling.title ?? ''}</Heading>{' '}
       <StillingsTag stillingsData={stillingsData} rad />
     </div>
   );

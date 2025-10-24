@@ -1,15 +1,16 @@
 'use client';
 
-import { useRekrutteringstreffData } from '../hooks/useRekrutteringstreffData';
+import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
+import { RekrutteringstreffFormValues } from './RekrutteringstreffForm';
+import { useAutosaveRekrutteringstreff } from './hooks/kladd/useAutosave';
 import { useFilteredTimeOptions } from './hooks/useFilteredTimeOptions';
 import { useScheduledSave } from './hooks/useScheduledSave';
 import DatoTidRad from './tidspunkt/DatoTidRad';
 import { isGyldigTid, kombinerDatoOgTid } from './tidspunkt/utils';
-import { useAutosave } from './useAutosave';
 import { Heading } from '@navikt/ds-react';
 import { format, parseISO } from 'date-fns';
 import { useEffect } from 'react';
-import { useFormContext, useWatch } from 'react-hook-form';
+import { Control, useFormContext, useWatch } from 'react-hook-form';
 
 export type SvarfristFormFields = {
   svarfristDato: Date | null;
@@ -21,11 +22,11 @@ const toHHmm = (iso?: string | null) =>
   iso ? format(parseISO(iso), 'HH:mm') : '';
 
 interface Props {
-  control: any;
+  control: Control<RekrutteringstreffFormValues>;
 }
 
 const SvarfristForm = ({ control }: Props) => {
-  const { save } = useAutosave();
+  const { autosave } = useAutosaveRekrutteringstreff();
   const { setValue } = useFormContext();
 
   const [dato, tid] = useWatch({
@@ -41,7 +42,11 @@ const SvarfristForm = ({ control }: Props) => {
   const { treff } = useRekrutteringstreffData();
 
   // Bruk de nye hooks
-  const { scheduleSave } = useScheduledSave(save, [
+  const { scheduleSave } = useScheduledSave(autosave, [
+    'fraDato',
+    'fraTid',
+    'tilDato',
+    'tilTid',
     'svarfristDato',
     'svarfristTid',
   ]);
@@ -74,8 +79,14 @@ const SvarfristForm = ({ control }: Props) => {
   useEffect(() => {
     if (!fraDato || !isGyldigTid(fraTid)) return;
 
-    const startTidspunkt = kombinerDatoOgTid(fraDato, fraTid);
-    const svarfristTidspunkt = kombinerDatoOgTid(dato ?? null, tid ?? null);
+    const startTidspunkt = kombinerDatoOgTid(
+      (fraDato as Date | null | undefined) ?? null,
+      (fraTid as string | null | undefined) ?? null,
+    );
+    const svarfristTidspunkt = kombinerDatoOgTid(
+      (dato as Date | null | undefined) ?? null,
+      (tid as string | null | undefined) ?? null,
+    );
 
     if (!startTidspunkt || !svarfristTidspunkt) return;
 
@@ -101,7 +112,7 @@ const SvarfristForm = ({ control }: Props) => {
         Svarfrist
       </Heading>
       <div>
-        <DatoTidRad<SvarfristFormFields>
+        <DatoTidRad<RekrutteringstreffFormValues>
           nameDato='svarfristDato'
           nameTid='svarfristTid'
           control={control}

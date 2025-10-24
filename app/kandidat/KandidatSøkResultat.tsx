@@ -1,5 +1,6 @@
 'use client';
 
+import LagreIRekrutteringstreffKnapp from '../rekrutteringstreff/[rekrutteringstreffId]/finn-kandidater/_ui/LagreIRekrutteringstreffKnapp';
 import {
   KandidatSøkPortefølje,
   useKandidatSøkFilterContext,
@@ -12,7 +13,6 @@ import {
   KandidatsokKandidat,
   useKandidatsøk,
 } from '@/app/api/kandidat-sok/useKandidatsøk';
-import LagreIRekrutteringstreffButton from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/actions/LagreIRekrutteringstreffButton';
 import RekrutteringstreffFeatureToggle from '@/components/RekrutteringstreffFeatureToggle';
 import SWRLaster from '@/components/SWRLaster';
 import SideScroll from '@/components/SideScroll';
@@ -22,7 +22,6 @@ import { Checkbox, Pagination } from '@navikt/ds-react';
 import { FC, useEffect, useRef } from 'react';
 
 interface KandidatSøkResultatProps {
-  type: KandidatSøkPortefølje;
   stillingsId?: string;
   rekrutteringstreffId?: string;
   alleredeLagtTilTreff?: string[];
@@ -30,14 +29,17 @@ interface KandidatSøkResultatProps {
 }
 
 const KandidatSøkResultat: FC<KandidatSøkResultatProps> = ({
-  type,
   stillingsId,
   rekrutteringstreffId,
   alleredeLagtTilTreff,
   alleredeLagtTilKandidatliste,
 }) => {
   const filter = useKandidatSøkFilterContext();
-  const kandidatsøkHook = useKandidatsøk(type, filter);
+  const { portefølje } = useKandidatSøkFilterContext();
+  const kandidatsøkHook = useKandidatsøk(
+    portefølje as KandidatSøkPortefølje,
+    filter,
+  );
   const { setKandidatNavigering } = useKandidatNavigeringContext();
   const headerRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -100,7 +102,7 @@ const KandidatSøkResultat: FC<KandidatSøkResultatProps> = ({
                 )}
                 <RekrutteringstreffFeatureToggle>
                   {!stillingsId && (
-                    <LagreIRekrutteringstreffButton
+                    <LagreIRekrutteringstreffKnapp
                       rekrutteringstreffId={rekrutteringstreffId}
                       kandidatsokKandidater={
                         kandidatData.kandidater as KandidatsokKandidat[]

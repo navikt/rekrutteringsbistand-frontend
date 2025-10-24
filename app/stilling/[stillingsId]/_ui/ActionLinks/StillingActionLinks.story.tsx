@@ -1,6 +1,6 @@
 import FinnKandidaterKnapp from './FinnKandidaterKnapp';
 import LeggTilKandidatTilStilling from './LeggTilKandidatTilStilling';
-import { MockStillingsProvider } from '@/storybook/mocks';
+import { MockStillingsProvider } from '@/.storybook/mocks';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 // Inert action links for stilling.

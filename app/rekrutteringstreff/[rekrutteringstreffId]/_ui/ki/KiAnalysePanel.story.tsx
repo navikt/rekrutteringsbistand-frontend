@@ -10,10 +10,10 @@ const meta = {
         validating={false}
         analyse={undefined}
         analyseError={undefined}
-        forceSave={false}
+        harGodkjentKiFeil={false}
         showAnalysis={false}
         erRedigeringAvPublisertTreff={false}
-        onForceSave={() => {}}
+        onGodkjennKiFeil={() => {}}
         ariaLabel='Mock KI Analyse Panel'
       />
     </div>

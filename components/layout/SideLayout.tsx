@@ -1,14 +1,18 @@
-import Fremdriftspanel from '@/components/fremdriftspanel/Fremdriftspanel';
-import MaksBredde from '@/components/layout/MaksBredde';
 import RekBisKort from '@/components/layout/RekBisKort';
+import { SideLayoutProvider } from '@/components/layout/SideLayoutContext';
+import Sidepanel, {
+  SidepanelBreddeProp,
+} from '@/components/sidepanel/Sidepanel';
 import * as React from 'react';
 
 export type ISideLayout = {
   header?: React.ReactNode;
-  skjulFremdriftspanel?: boolean; // Når true skjules alle fremdriftspanel-varianter
-  fremdriftspanel?: React.ReactNode;
-  fremdriftspanelTop?: React.ReactNode;
+  sidepanelTittel?: string;
+
   children: React.ReactNode;
+  maksBredde?: boolean;
+  sidepanel?: React.ReactNode;
+  sidepanelBredde?: SidepanelBreddeProp;
   /** @deprecated Bruk NewProps */
   topBanner?: React.ReactNode | undefined;
   /** @deprecated Bruk NewProps */
@@ -17,34 +21,45 @@ export type ISideLayout = {
   banner?: React.ReactNode;
 };
 
-export const SideLayoutMobilTop = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => <div className='@2xl:hidden'>{children}</div>;
-
+const borderCls = 'border-b border-b-[var(--ax-border-neutral-subtle)]';
+const breddeBegrensning = 'max-w-[1440px] mx-auto w-full h-full';
 const SideLayout = ({
   children,
-  fremdriftspanel,
   header,
-  skjulFremdriftspanel,
+  maksBredde = false,
+  sidepanel,
+  sidepanelBredde,
+  sidepanelTittel,
 }: ISideLayout) => {
   return (
-    <RekBisKort>
-      {header && header}
-      <div className='@container'>
-        {/* Felles innhold + desktop sidepanel */}
-        <div className='flex flex-col @2xl:flex-row'>
-          <MaksBredde>{children}</MaksBredde>
-          {/* Desktop / stor skjerm: sidepanel til høyre */}
-          {!skjulFremdriftspanel && fremdriftspanel && (
-            <div className='hidden @2xl:block'>
-              <Fremdriftspanel>{fremdriftspanel}</Fremdriftspanel>
+    <SideLayoutProvider hasSidepanel={!!sidepanel}>
+      <div className={`@container/sidelayout contain-layout `}>
+        <RekBisKort>
+          {header && (
+            <div className={`${borderCls} w-full`}>
+              <div className={`${maksBredde ? '' : breddeBegrensning}`}>
+                {header}
+              </div>
             </div>
           )}
-        </div>
+
+          <div className={`${maksBredde ? '' : breddeBegrensning} flex `}>
+            <div className={sidepanel ? 'flex-1 min-w-0 ' : 'w-full  '}>
+              {children}
+            </div>
+
+            {sidepanel && (
+              <Sidepanel
+                sidepanelBredde={sidepanelBredde}
+                sidepanelTittel={sidepanelTittel}
+              >
+                {sidepanel}
+              </Sidepanel>
+            )}
+          </div>
+        </RekBisKort>
       </div>
-    </RekBisKort>
+    </SideLayoutProvider>
   );
 };
 

@@ -1,6 +1,6 @@
 import DelMedKandidatModal from './DelMedKandidatModal';
 import VelgSvarfrist from './VelgSvarfrist';
-import { MockStillingsProvider } from '@/storybook/mocks';
+import { MockStillingsProvider } from '@/.storybook/mocks';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 // Del med kandidat moduler (inert)

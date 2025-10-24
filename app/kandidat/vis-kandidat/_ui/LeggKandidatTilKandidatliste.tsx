@@ -55,11 +55,12 @@ const LeggKandidatTilKandidatliste: FC<LeggKandidatTilKandidatlisteProps> = ({
 
   return (
     <Button
+      size='small'
       onClick={leggTilKandidat}
       loading={leggTilKandidatLoading}
       icon={<PlusIcon />}
     >
-      Legg til i listen
+      Legg til i stillingsoppdrag
     </Button>
   );
 };

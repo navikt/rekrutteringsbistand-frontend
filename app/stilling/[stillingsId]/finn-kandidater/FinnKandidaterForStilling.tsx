@@ -1,10 +1,11 @@
 'use client';
 
 import KandidatTilStilling from '../_ui/KandidatTilStilling';
-import { KandidatSøkProvider } from '@/app/kandidat/KandidaSokFilterContext';
-import { KandidatSøkMarkerteContextProvider } from '@/app/kandidat/KandidatSøkMarkerteContext';
+import KandidatSøkTabs from '@/app/kandidat/KandidatSøkTabs';
+import KandidatSøkFilter from '@/app/kandidat/kandidat-søk-filter/KandidatSøkFilter';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import PanelHeader from '@/components/layout/PanelHeader';
+import SideInnhold from '@/components/layout/SideInnhold';
 import SideLayout from '@/components/layout/SideLayout';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
@@ -16,15 +17,12 @@ export default function FinnKandidaterForStilling() {
     <SideLayout
       header={
         <PanelHeader>
-          <PanelHeader.Section
-            erstattPath={[
-              stillingsData.stilling.uuid,
-              stillingsData?.stilling?.title,
-            ]}
-            title={'Finn kandidater for stilling'}
-          />
+          <PanelHeader.Section />
         </PanelHeader>
       }
+      sidepanelBredde='250px'
+      sidepanelTittel='Filtrer'
+      sidepanel={<KandidatSøkFilter />}
     >
       <TilgangskontrollForInnhold
         kreverEnAvRollene={[
@@ -32,11 +30,10 @@ export default function FinnKandidaterForStilling() {
           Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
         ]}
       >
-        <KandidatSøkProvider>
-          <KandidatSøkMarkerteContextProvider>
-            <KandidatTilStilling stillingsData={stillingsData} />
-          </KandidatSøkMarkerteContextProvider>
-        </KandidatSøkProvider>
+        <SideInnhold utenScroll>
+          <KandidatSøkTabs />
+          <KandidatTilStilling stillingsData={stillingsData} />
+        </SideInnhold>
       </TilgangskontrollForInnhold>
     </SideLayout>
   );

@@ -2,7 +2,7 @@ import SlettOppdragModal from './SlettOppdragModal';
 import StillingDropdown from './StillingDropdown';
 import StillingTabs from './StillingTabs';
 import TabKnapper from './TabKnapper';
-import { MockStillingsProvider, dummyRef } from '@/storybook/mocks';
+import { MockStillingsProvider, dummyRef } from '@/.storybook/mocks';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 // Inert oversikt over tabs / modaler.

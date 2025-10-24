@@ -22,10 +22,6 @@ const TabsNav: FC<Props> = ({ jobbsøkereAntall, arbeidsgivereAntall }) => {
         label={`Arbeidsgivere (${arbeidsgivereAntall ?? 0})`}
       />
       <Tabs.Tab value={RekrutteringstreffTabs.HENDELSER} label='Hendelser' />
-      <Tabs.Tab
-        value={RekrutteringstreffTabs.KI_LOGG}
-        label='Ki Logg(Kun admin)'
-      />
     </>
   );
 };

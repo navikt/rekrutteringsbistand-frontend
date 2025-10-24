@@ -3,7 +3,7 @@ import Arbeidsgivere from './Arbeidsgivere';
 import LeggTilArbeidsgiverModal from './LeggTilArbeidsgiverModal';
 import SlettArbeidsgiverModal from './SlettArbeidsgiverModal';
 import VelgArbeidsgiver from './VelgArbeidsgiver';
-import { MockRekrutteringstreffProvider } from '@/storybook/mocks';
+import { MockRekrutteringstreffProvider } from '@/.storybook/mocks';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 // Inert samling (API + context-avhengig); modalene rendres uten åpning.

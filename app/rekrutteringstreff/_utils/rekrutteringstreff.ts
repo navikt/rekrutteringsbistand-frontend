@@ -35,15 +35,15 @@ export const getActiveStepFromHendelser = (
 
   const siste = relevante[0].hendelsestype as RekrutteringstreffHendelsestype;
   switch (siste) {
-    case RekrutteringstreffHendelsestype.AVLYS:
+    case RekrutteringstreffHendelsestype.AVLYST:
       return AktivtSteg.AVLYST;
-    case RekrutteringstreffHendelsestype.AVPUBLISER:
+    case RekrutteringstreffHendelsestype.AVPUBLISERT:
       return AktivtSteg.AVPUBLISERT;
-    case RekrutteringstreffHendelsestype.PUBLISER:
+    case RekrutteringstreffHendelsestype.PUBLISERT:
       return AktivtSteg.INVITERE;
-    case RekrutteringstreffHendelsestype.GJENÅPN:
+    case RekrutteringstreffHendelsestype.GJENÅPNET:
       return AktivtSteg.INVITERE;
-    case RekrutteringstreffHendelsestype.FULLFØR:
+    case RekrutteringstreffHendelsestype.FULLFØRT:
       return AktivtSteg.FULLFØRE;
     default:
       return AktivtSteg.KLADD;

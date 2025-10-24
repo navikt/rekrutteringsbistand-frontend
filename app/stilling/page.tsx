@@ -1,35 +1,47 @@
 'use client';
 
-import StillingsSøk from './StillingsSøk';
-import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
-import PanelHeader from '@/components/layout/PanelHeader';
-import SideLayout from '@/components/layout/SideLayout';
-import { OpprettKnapp } from '@/components/opprett/OpprettKnapp';
-import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
-import { Roller } from '@/components/tilgangskontroll/roller';
+import { useUseBrukerStandardSøk } from '@/app/api/stilling/standardsok/useBrukersStandardsøk';
+import { StillingsSøkProvider } from '@/app/stilling/StillingsSøkContext';
+import StillingsSøkLayout from '@/app/stilling/StillingsSøkLayout';
+import { EKSCLUDERTE_STANDARDSOK_PARAMETERE } from '@/app/stilling/_ui/standardsøk/standardSokUtils';
+import Sidelaster from '@/components/layout/Sidelaster';
+import { useSearchParams } from 'next/navigation';
+import { Suspense, useEffect } from 'react';
 
 export default function StillingsSøkIndex() {
+  const searchParams = useSearchParams();
+  const brukerStandardSøkData = useUseBrukerStandardSøk();
+
+  useEffect(() => {
+    if (
+      searchParams.get('brukStandardsok') !== null &&
+      !brukerStandardSøkData.isLoading
+    ) {
+      const newSearch =
+        brukerStandardSøkData.data?.søk ||
+        'publisert=intern&statuser=publisert';
+
+      const eksludert = EKSCLUDERTE_STANDARDSOK_PARAMETERE;
+      const urlSearchParams = new URLSearchParams(newSearch);
+      eksludert.forEach((param) => {
+        if (urlSearchParams.has(param)) {
+          urlSearchParams.delete(param);
+        }
+      });
+
+      window.history.replaceState(
+        {},
+        '',
+        `${window.location.pathname}?${urlSearchParams.toString()}`,
+      );
+    }
+  }, [searchParams, brukerStandardSøkData]);
+
   return (
-    <SideLayout
-      header={
-        <PanelHeader>
-          <PanelHeader.Section
-            actionsRight={
-              <TilgangskontrollForInnhold
-                skjulVarsel
-                kreverEnAvRollene={[
-                  Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-                  Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_UTVIKLER,
-                ]}
-              >
-                <OpprettKnapp kategori={Stillingskategori.Stilling} />
-              </TilgangskontrollForInnhold>
-            }
-          />
-        </PanelHeader>
-      }
-    >
-      <StillingsSøk />
-    </SideLayout>
+    <Suspense fallback={<Sidelaster />}>
+      <StillingsSøkProvider>
+        <StillingsSøkLayout />
+      </StillingsSøkProvider>
+    </Suspense>
   );
 }

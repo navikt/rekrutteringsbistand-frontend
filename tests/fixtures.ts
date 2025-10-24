@@ -2,7 +2,7 @@
 import { ventTilKlar } from './ventTilKlar';
 import base, { expect } from '@playwright/test';
 
-export type TestFixtures = { gotoApp: (path?: string) => Promise<void> };
+type TestFixtures = { gotoApp: (path?: string) => Promise<void> };
 
 export const test = base.extend<TestFixtures>({
   gotoApp: async ({ page }, use) => {

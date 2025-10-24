@@ -82,7 +82,7 @@ export const StillingsContextMedData: FC<StillingsContextMedDataProps> = ({
   } = useApplikasjonContext();
   const kandidatListeInfoHook = useKandidatlisteInfo(
     stillingsData?.stilling?.publishedByAdmin
-      ? stillingsData?.stillingsinfo
+      ? stillingsData?.stillingsinfo?.stillingsid
       : null,
   );
 

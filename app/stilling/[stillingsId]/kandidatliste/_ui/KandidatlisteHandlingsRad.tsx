@@ -1,3 +1,5 @@
+'use client';
+
 import DelMedArbeidsgiver from './DelMedArbeidsgiver/DelMedArbeidsgiver';
 import DelMedKandidatModal from './DelMedKandidat/DelMedKandidatModal';
 import useFiltrerteKandidater from './KandidatlisteFilter/useFiltrerteKandidater';

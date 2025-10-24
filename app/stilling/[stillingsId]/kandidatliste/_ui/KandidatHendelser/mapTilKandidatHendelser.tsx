@@ -29,8 +29,13 @@ export const mapTilKandidatHendelser = ({
       endring.sendtTilArbeidsgiversKandidatliste,
   );
 
-  const utfallsendringer = kandidat.utfallsendringer?.map((endring) =>
-    mapUtfallsendringer(endring, cvErBlittDelt),
+  const utfallsendringer = kandidat.utfallsendringer?.map((endring, index) =>
+    mapUtfallsendringer(
+      endring,
+      cvErBlittDelt,
+      kandidat.utfallsendringer,
+      index,
+    ),
   );
 
   const cvHendelser = forespørselCvForKandidat?.map((forespørsel) =>

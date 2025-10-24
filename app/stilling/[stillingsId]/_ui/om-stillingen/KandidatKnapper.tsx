@@ -30,7 +30,7 @@ export default function KandidatKnapper() {
   const searchParams = useSearchParams();
   const pathname = usePathname();
 
-  const finnStillingAktiv = searchParams.get('finnStilling') !== null; // ?finnStilling (verdi kan være hva som helst)
+  const finnStillingAktiv = searchParams?.get('finnStilling') !== null; // ?finnStilling (verdi kan være hva som helst)
 
   // Kandidatnummer kan komme i path (eks: /kandidat/kandidat-arenaKandidatnr-2) eller i query (?visKandidatnr=PAM012...)
 
@@ -126,7 +126,7 @@ export default function KandidatKnapper() {
         Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_JOBBSOKERRETTET,
       ]}
     >
-      <div className='@container/kandidat-knapper'>
+      <div className='@container/kandidat-knapper contain-layout'>
         <div className='grid grid-cols-1 @3xl:grid-cols-2 gap-4 mb-6'>
           <FinnKandidaterKnapp stillingId={stillingsData.stilling.uuid} />
           <LeggTilKandidatTilStilling

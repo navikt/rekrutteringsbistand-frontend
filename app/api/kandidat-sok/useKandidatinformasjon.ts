@@ -1,3 +1,5 @@
+'use client';
+
 import { KandidatDataSchema } from './schema/cvSchema.zod';
 import { KandidatSøkAPI } from '@/app/api/api-routes';
 import { postApiWithSchemaEs } from '@/app/api/fetcher';
@@ -11,12 +13,14 @@ export interface kandidatinformasjonProps {
   kandidatnr: string;
 }
 
-export const useKandidatinformasjon = (kandidatnr: string) =>
+export const useKandidatinformasjon = (kandidatnr?: string) =>
   useSWRImmutable(
-    {
-      url: kandidatinformasjonEndepunkt,
-      body: { kandidatnr },
-    },
+    kandidatnr
+      ? {
+          url: kandidatinformasjonEndepunkt,
+          body: { kandidatnr },
+        }
+      : null,
     (data) => {
       return postApiWithSchemaEs(KandidatDataSchema)(data);
     },

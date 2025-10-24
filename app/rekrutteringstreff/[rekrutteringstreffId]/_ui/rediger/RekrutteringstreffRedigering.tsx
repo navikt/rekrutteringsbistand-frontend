@@ -1,7 +1,7 @@
 'use client';
 
 import LeggTilArbeidsgiverForm from '../arbeidsgiver/LeggTilArbeidsgiverForm';
-import { useRekrutteringstreffData } from '../hooks/useRekrutteringstreffData';
+import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
 import InnleggForm from './InnleggForm';
 import PraktiskeForhold from './Praktiskeforhold';
 import TittelForm from './TittelForm';
@@ -53,9 +53,6 @@ const RekrutteringstreffRedigering: FC<RekrutteringstreffRedigeringProps> = ({
         padding='6'
         className='space-y-4'
       >
-        <Heading level='2' size='medium'>
-          Introduksjon
-        </Heading>
         <InnleggForm onUpdated={håndterOppdatert} />
       </Box.New>
 

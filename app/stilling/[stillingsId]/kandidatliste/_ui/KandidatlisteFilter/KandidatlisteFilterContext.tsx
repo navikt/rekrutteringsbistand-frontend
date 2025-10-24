@@ -1,3 +1,5 @@
+'use client';
+
 import { StillingsSøkQueryparam } from '@/app/stilling/_util/stillingssøk-typer';
 import {
   parseAsArrayOf,
