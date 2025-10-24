@@ -171,5 +171,20 @@ export function generateMockForespurteOmDelingAvCv() {
     },
   ];
 
-  return mockData;
+   return {"kandidat-aktorId-24":[
+    {
+      "aktørId": "kandidat-aktorId-24",
+      "stillingsId": "ccb01bbc-00c3-4c3f-be5c-a36f33a3876f",
+      "deltStatus": "SENDT",
+      "deltTidspunkt": "2025-10-20T12:26:24.556",
+      "deltAv": "Z990248",
+      "svarfrist": "2025-10-27T00:59:59.968+01:00",
+      "tilstand": "HAR_VARSLET",
+      "svar": null,
+      "begrunnelseForAtAktivitetIkkeBleOpprettet": null,
+      "navKontor": "0403"
+    }
+  ]}
+  //return mockData;
+
 }
