@@ -7,13 +7,9 @@ import { useThemeProvider } from '@/providers/ThemeProvider';
 import { CogIcon } from '@navikt/aksel-icons';
 import { BodyShort, Box, Heading, Radio, RadioGroup } from '@navikt/ds-react';
 
-enum FargeModus {
-  LYS = 'LYS',
-  MØRK = 'MØRK',
-}
-
 export default function Instillingerpage() {
-  const { darkMode, setDarkMode } = useThemeProvider();
+  const { darkMode, setDarkMode, windowMode, setWindowMode } =
+    useThemeProvider();
   return (
     <SideLayout
       header={
@@ -63,8 +59,8 @@ export default function Instillingerpage() {
 
               <RadioGroup
                 legend='Velg modus'
-                onChange={setDarkMode}
-                value={darkMode}
+                onChange={setWindowMode}
+                value={windowMode}
               >
                 <Radio value={false}>Full side</Radio>
                 <Radio value={true}>Vindu modus</Radio>

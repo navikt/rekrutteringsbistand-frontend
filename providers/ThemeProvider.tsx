@@ -43,13 +43,12 @@ export const ThemeProvider: FC<ThemeProviderProps> = ({
     }
     return false;
   });
-  const [windowMode, setWindowMode] = useState<boolean>(true);
-  // const [windowMode, setWindowMode] = useState<boolean>(() => {
-  //   if (typeof window !== 'undefined') {
-  //     return localStorage.getItem('windowMode') === 'true';
-  //   }
-  //   return false;
-  // });
+  const [windowMode, setWindowMode] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('windowMode') === 'true';
+    }
+    return false;
+  });
 
   useEffect(() => {
     document.documentElement.style.height = '100%';
