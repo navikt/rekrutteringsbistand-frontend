@@ -27,7 +27,12 @@ export default function Instillingerpage() {
     >
       <SideInnhold>
         <div className='flex flex-col gap-4 '>
-          <Box.New background='neutral-soft' className='w-full' padding='4'>
+          <Box.New
+            borderRadius={'large'}
+            background='neutral-soft'
+            className='w-full'
+            padding='4'
+          >
             <div className='grid grid-cols-2 gap-4 '>
               <div>
                 <Heading level='3' size='medium' spacing>
@@ -42,28 +47,45 @@ export default function Instillingerpage() {
                 legend='Velg modus'
                 onChange={setDarkMode}
                 value={darkMode}
+                hideLegend
               >
                 <Radio value={false}>Lys modus</Radio>
                 <Radio value={true}>Mørk modus</Radio>
               </RadioGroup>
             </div>
           </Box.New>
-          <Box.New background='neutral-soft' className='w-full' padding='4'>
+          <Box.New
+            borderRadius={'large'}
+            background='neutral-soft'
+            className='w-full'
+            padding='4'
+          >
             <div className='grid grid-cols-2 gap-4 '>
               <div>
                 <Heading level='3' size='medium' spacing>
-                  Sidevisning
+                  Standardvisning
                 </Heading>
                 <BodyShort>Velg hvordan nytt innhold skal åpne seg.</BodyShort>
               </div>
 
               <RadioGroup
                 legend='Velg modus'
+                hideLegend
                 onChange={setWindowMode}
                 value={windowMode}
               >
-                <Radio value={false}>Full side</Radio>
-                <Radio value={true}>Vindu modus</Radio>
+                <Radio
+                  value={false}
+                  description='Åpner alltid innholdet på en egen side.'
+                >
+                  Full side
+                </Radio>
+                <Radio
+                  value={true}
+                  description='Åpner innholdet på siden av skjermen.'
+                >
+                  Sidevisning
+                </Radio>
               </RadioGroup>
             </div>
           </Box.New>
