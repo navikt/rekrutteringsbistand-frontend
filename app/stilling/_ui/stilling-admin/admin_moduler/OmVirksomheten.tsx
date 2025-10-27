@@ -8,6 +8,7 @@ import { TasklistIcon } from '@navikt/aksel-icons';
 import { Alert, BodyLong, FormSummary, Heading, TextField, UNSAFE_Combobox } from '@navikt/ds-react';
 import { FC, useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
+import { logger } from '@navikt/next-logger';
 
 
 export const ValgtArbeidsgiverVisning: FC<{
@@ -67,6 +68,8 @@ export default function OmVirksomheten() {
   const mapEmployerToArbeidsgiverDTO = (
     employer: any | null | undefined,
   ): ArbeidsgiverDTO | null => {
+    logger.info(`employer i mapEmployerToArbeidsgiverDTO: ${JSON.stringify(employer)}`);
+
     if (!employer) return null;
     const loc = employer.location ?? null;
     const adresse = loc
@@ -105,6 +108,8 @@ export default function OmVirksomheten() {
   const harVærtPublisert = getValues('stilling.firstPublished');
 
   const setArbeidsgiver = (arbeidsgiver: ArbeidsgiverDTO) => {
+    logger.info(`arbeidsgiver i setArbeidsgiver: ${JSON.stringify(arbeidsgiver)}`);
+
     setArbeidsgiverState(arbeidsgiver);
     const eksisterende = getValues('stilling.employer') ?? ({} as any);
     setValue('stilling.businessName', arbeidsgiver.navn ?? null);
