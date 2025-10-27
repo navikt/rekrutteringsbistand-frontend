@@ -1,0 +1,1 @@
+import{j as t}from"./iframe-DX9y8s0p.js";import{P as i}from"./Profilkvalitet-Cv4MZbdD.js";import{G as r}from"./GråBoks-BKLC-sp4.js";const e=({})=>t.jsx("div",{className:"flex flex-col gap-4 mt-4",children:t.jsx(r,{tittel:"Profilkvalitet",children:t.jsx(i,{})})});e.__docgenInfo={description:"",methods:[],displayName:"KandidatOversiktSidebar"};export{e as K};
