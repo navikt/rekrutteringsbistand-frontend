@@ -127,7 +127,7 @@ export const WindowView: React.FC<WindowViewProps> = ({
         }}
         renderTile={(id) => {
           if (id === (tileIds?.main || 'main'))
-            return <WindowTile tile='main'>{children as any}</WindowTile>;
+            return <WindowTile tile='main'>{children}</WindowTile>;
           if (id === (tileIds?.detail || 'detail'))
             return (
               <div className='pl-[6px]'>
@@ -137,7 +137,7 @@ export const WindowView: React.FC<WindowViewProps> = ({
                   paramName={param}
                   paramValue={paramValue as string}
                 >
-                  {window(paramValue as any, close) as any}
+                  {window(paramValue, close) as any}
                 </WindowTile>
               </div>
             );
