@@ -90,7 +90,7 @@ export default function OmVirksomheten() {
       antallAnsatte: employer.employees ?? null,
       overordnetEnhet: employer.parentOrgnr ?? null,
       adresse,
-      naringskoder: null,
+      naringskoder: employer.naringskoder ? employer.naringskoder : null,
     };
     return dto;
   };
