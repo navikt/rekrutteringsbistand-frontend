@@ -27,7 +27,7 @@ import {
   Modal,
   Table,
 } from '@navikt/ds-react';
-import { format } from 'date-fns';
+import { endOfDay, format } from 'date-fns';
 import { useState, type FC } from 'react';
 
 export interface DelMedKandidatModalProps {
@@ -82,7 +82,10 @@ const DelMedKandidatModal: FC<DelMedKandidatModalProps> = ({
         if (vanlgiDeling.length > 0) {
           await sendForespørselOmDelingAvCv({
             stillingsId: stillingsId,
-            svarfrist: format(svarfrist, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"),
+            svarfrist: format(
+              endOfDay(svarfrist),
+              "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+            ),
             aktorIder: vanlgiDeling,
             navKontor: valgtNavKontor?.navKontor ?? '',
           });
@@ -96,7 +99,10 @@ const DelMedKandidatModal: FC<DelMedKandidatModalProps> = ({
           const nyeForespørslerPromises = delingPåNytt.map((kandidat) =>
             sendNyForespørselOmDelingAvCv(kandidat.aktørid!, {
               stillingsId: stillingsId,
-              svarfrist: format(svarfrist, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"),
+              svarfrist: format(
+                endOfDay(svarfrist),
+                "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+              ),
               navKontor: valgtNavKontor?.navKontor ?? '',
             }),
           );

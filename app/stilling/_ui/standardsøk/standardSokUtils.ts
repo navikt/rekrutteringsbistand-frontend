@@ -5,6 +5,7 @@ export const EKSKLUDERTE_STANDARDSOK_PARAMETERE = new Set<string>([
   'utenOppdrag',
   'visStillingId',
   'finnKandidater',
+  'brukStandardsok',
   'finnKandidater',
   'visKandidatId',
 ]);

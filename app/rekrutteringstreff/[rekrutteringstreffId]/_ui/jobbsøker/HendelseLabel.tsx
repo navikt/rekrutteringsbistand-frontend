@@ -14,17 +14,17 @@ interface BaseProps<T extends string> {
 
 export const jobbsøkerLabelTekst = (t: JobbsøkerHendelsestype | string) => {
   switch (t) {
-    case JobbsøkerHendelsestype.OPPRETT:
+    case JobbsøkerHendelsestype.OPPRETTET:
       return 'lagt til';
-    case JobbsøkerHendelsestype.OPPDATER:
+    case JobbsøkerHendelsestype.OPPDATERT:
       return 'oppdatert';
-    case JobbsøkerHendelsestype.SLETT:
+    case JobbsøkerHendelsestype.SLETTET:
       return 'slettet';
-    case JobbsøkerHendelsestype.INVITER:
+    case JobbsøkerHendelsestype.INVITERT:
       return 'invitert';
-    case JobbsøkerHendelsestype.SVAR_JA_TIL_INVITASJON:
+    case JobbsøkerHendelsestype.SVART_JA_TIL_INVITASJON:
       return 'svart ja';
-    case JobbsøkerHendelsestype.SVAR_NEI_TIL_INVITASJON:
+    case JobbsøkerHendelsestype.SVART_NEI_TIL_INVITASJON:
       return 'svart nei';
     default:
       return t.toLowerCase();
@@ -46,11 +46,11 @@ export const JobbsøkerHendelseLabel: FC<
 // 2) Arbeidsgiver
 export const arbeidsgiverLabelTekst = (t: ArbeidsgiverHendelsestype) => {
   switch (t) {
-    case ArbeidsgiverHendelsestype.OPPRETT:
+    case ArbeidsgiverHendelsestype.OPPRETTET:
       return 'lagt til';
-    case ArbeidsgiverHendelsestype.OPPDATER:
+    case ArbeidsgiverHendelsestype.OPPDATERT:
       return 'oppdatert';
-    case ArbeidsgiverHendelsestype.SLETT:
+    case ArbeidsgiverHendelsestype.SLETTET:
       return 'slettet';
     default:
       return '';
@@ -75,23 +75,23 @@ export const rekrutteringstreffLabelTekst = (
   t: RekrutteringstreffHendelsestype,
 ) => {
   switch (t) {
-    case RekrutteringstreffHendelsestype.OPPRETT:
+    case RekrutteringstreffHendelsestype.OPPRETTET:
       return 'lagt til';
-    case RekrutteringstreffHendelsestype.OPPDATER:
+    case RekrutteringstreffHendelsestype.OPPDATERT:
       return 'oppdatert';
-    case RekrutteringstreffHendelsestype.SLETT:
+    case RekrutteringstreffHendelsestype.SLETTET:
       return 'slettet';
-    case RekrutteringstreffHendelsestype.PUBLISER:
+    case RekrutteringstreffHendelsestype.PUBLISERT:
       return 'publisert';
-    case RekrutteringstreffHendelsestype.FULLFØR:
+    case RekrutteringstreffHendelsestype.FULLFØRT:
       return 'fullført';
-    case RekrutteringstreffHendelsestype.AVLYS:
+    case RekrutteringstreffHendelsestype.AVLYST:
       return 'avlyst';
-    case RekrutteringstreffHendelsestype.GJENÅPN: //Kun fullførte treff kan gjenåpnes
+    case RekrutteringstreffHendelsestype.GJENÅPNET: //Kun fullførte treff kan gjenåpnes
       return 'gjenåpnet';
 
     // TODO: Brukes ikke for øyeblikket, men trengs når vi skal stanse for at flere deltakere blir lagt på og treffet er synlig for veiledere
-    case RekrutteringstreffHendelsestype.AVPUBLISER:
+    case RekrutteringstreffHendelsestype.AVPUBLISERT:
       return 'avpublisert';
 
     default:
