@@ -63,7 +63,7 @@ export default function Instillingerpage() {
             <div className='grid grid-cols-2 gap-4 '>
               <div>
                 <Heading level='3' size='medium' spacing>
-                  Standardvisning
+                  Visningsmodus
                 </Heading>
                 <BodyShort>Velg hvordan nytt innhold skal åpne seg.</BodyShort>
               </div>
