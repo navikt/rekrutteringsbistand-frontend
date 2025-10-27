@@ -21,9 +21,9 @@ interface ThemeContextProps {
 
 export const ThemeContext = createContext<ThemeContextProps>({
   darkMode: false,
-  setDarkMode: () => {},
+  setDarkMode: (): void => {},
   windowMode: false,
-  setWindowMode: () => {},
+  setWindowMode: (): void => {},
 });
 
 export interface ThemeProviderProps {
