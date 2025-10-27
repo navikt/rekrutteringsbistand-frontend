@@ -171,7 +171,7 @@ export function PanelHeaderSection({
           )}
           {actionsRight && (
             <div className='flex items-center gap-2'>{actionsRight}</div>
-          )}{' '}
+          )}
           {tileInfo?.tile === 'detail' && (
             <div className='flex items-center gap-2'>
               {extra?.fullskjermUrl && (

@@ -151,7 +151,6 @@ const KandidatListeKort: FC<KandidatListeKortProps> = ({
                 })}
               </BodyShort>
               <BodyShort textColor='subtle'>
-                {' '}
                 {kandidat.lagtTilAv.navn}
               </BodyShort>
             </div>

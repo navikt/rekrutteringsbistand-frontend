@@ -78,8 +78,6 @@ export const ThemeProvider: FC<ThemeProviderProps> = ({
 
   if (!mounted) return null;
 
-  console.log('🎺 windowMode', windowMode);
-
   return (
     <Theme theme={darkMode ? 'dark' : 'light'} hasBackground={false}>
       <ThemeContext.Provider

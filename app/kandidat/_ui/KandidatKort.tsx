@@ -23,11 +23,6 @@ const KandidatKort: FC<IKandidatKort> = ({
   alleredeLagtTil,
   stillingsId,
 }) => {
-  // const [visKandidatId, setVisKandidatId] = useQueryState('visKandidatId', {
-  //   defaultValue: '',
-  //   clearOnDefault: true,
-  // });
-
   const { markerteKandidater, setMarkert } = useKandidatSøkMarkerteContext();
   const erMarkert = Boolean(
     markerteKandidater?.some((k) => k === kandidat.arenaKandidatnr),
