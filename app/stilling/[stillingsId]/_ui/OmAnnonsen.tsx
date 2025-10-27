@@ -8,7 +8,7 @@ export default function OmAnnonsen() {
   const { updated, medium, reference, expires, published, annonsenr } =
     stillingsData?.stilling;
   let { reportee, navIdent } = stillingsData?.stilling?.administration ?? {};
-  if (stillingsData?.stillingsinfo && stillingsData.stilling.source != 'DIR') {
+  if (stillingsData?.stillingsinfo && stillingsData.stilling.source !== 'DIR') {
     navIdent = stillingsData.stillingsinfo.eierNavident;
     reportee = stillingsData.stillingsinfo.eierNavn;
   }
