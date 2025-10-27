@@ -19,16 +19,12 @@ import {
   UNSAFE_Combobox,
 } from '@navikt/ds-react';
 import { useState, type FC } from 'react';
-import { validerEpost } from '@/app/stilling/_ui/stilling-admin/admin_moduler/PubliserModal';
+import { validerEpost } from '@/util/validerEpost';
 
 export interface DelMedArbeidsgiverProps {
   markerteKandidater: KandidatListeKandidatDTO[];
   sidebar?: boolean;
 }
-// export const isValidEmail = (email: string): boolean => {
-//   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-//   return emailRegex.test(email);
-// };
 
 const DelMedArbeidsgiver: FC<DelMedArbeidsgiverProps> = ({
   markerteKandidater,

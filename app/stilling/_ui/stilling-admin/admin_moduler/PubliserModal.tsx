@@ -7,26 +7,17 @@ import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
 import { RekbisError } from '@/util/rekbisError';
 import { UmamiEvent } from '@/util/umamiEvents';
+import { validerEpost } from '@/util/validerEpost';
 import { BodyLong, Box, Button, Checkbox, Heading, Modal, TextField, ToggleGroup } from '@navikt/ds-react';
 import { format, parse } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 
+
 export interface PubliserModalProps {
   disabled: boolean;
 }
-
-export const validerEpost = (
-  epost: string,
-): { erGodkjent: boolean; feilmelding: string } => {
-  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  return epost === ''
-    ? { erGodkjent: false, feilmelding: 'E-post kan ikke være tom' }
-    : emailRegex.test(epost)
-      ? { erGodkjent: true, feilmelding: '' }
-      : { erGodkjent: false, feilmelding: 'Ugyldig e-postadresse' };
-};
 
 export default function PubliserModal({ disabled }: PubliserModalProps) {
   const { brukerData, valgtNavKontor } = useApplikasjonContext();
@@ -79,6 +70,11 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
     const parsed = parse(dato, 'dd.MM.yyyy', new Date());
     return format(parsed, "yyyy-MM-dd'T'HH:mm:ss");
   };
+
+  const nullstillErrorState = () => {
+    setEpostError('');
+    setLenkeError('');
+  }
 
   const håndterPubliser = async () => {
     setIsLoading(true);
@@ -190,7 +186,10 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
       <Button
         size='small'
         disabled={disabled}
-        onClick={() => ref.current?.showModal()}
+        onClick={() => {
+          nullstillErrorState();
+          ref.current?.showModal();
+        }}
       >
         Publiser
       </Button>
@@ -263,6 +262,7 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
                       label='E-post'
                       value={epost}
                       error={epostError}
+                      onInput={() => nullstillErrorState()}
                       onChange={(e) => setEpost(e.target.value)}
                     />
                   </div>
@@ -273,6 +273,7 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
                       label='Lenke til søknadsskjema'
                       value={lenke}
                       error={lenkeError}
+                      onInput={() => nullstillErrorState()}
                       onChange={(e) => setLenke(e.target.value)}
                     />
                   </div>
@@ -286,7 +287,6 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
             loading={isLoading}
             type='button'
             onClick={håndterPubliser}
-            //disabled={(publiserOffentlig && epost === '' && lenke === '') || epostError !== ''}
           >
             Publiser oppdraget
           </Button>

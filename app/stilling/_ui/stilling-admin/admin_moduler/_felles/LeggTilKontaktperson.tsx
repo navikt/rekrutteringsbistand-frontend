@@ -1,9 +1,11 @@
 // Flyttet fra _old/_ui/LeggTilKontaktperson.tsx
 import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { useNullableStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
+import { validerEpost } from '@/util/validerEpost';
+import { validerTelefonnummer } from '@/util/validerTelefonnummer';
 import { PlusIcon, XMarkIcon } from '@navikt/aksel-icons';
 import { BodyLong, Box, Button, TextField } from '@navikt/ds-react';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useFieldArray, useFormContext } from 'react-hook-form';
 
 export default function LeggTilKontaktperson() {
@@ -20,6 +22,8 @@ export default function LeggTilKontaktperson() {
     name: 'stilling.contactList',
   });
   const initializedRef = useRef(false);
+  const [epostError, setEpostError] = useState<string>('');
+  const [tlfError, setTlfError] = useState<string>('');
 
   useEffect(() => {
     if (initializedRef.current) return;
@@ -98,12 +102,26 @@ export default function LeggTilKontaktperson() {
                   return true;
                 },
               })}
-              error={contactErrors?.email?.message as string | undefined}
+              onBlur={() => {
+                const epost = getValues(`${basePath}.email` as const);
+                if (epost) {
+                  const epostValidering = validerEpost(epost);
+                  if (!epostValidering.erGodkjent) {
+                    setEpostError(epostValidering.feilmelding);
+                  }
+                }
+              }}
+              onInput={() => setEpostError('')}
+              error={epostError}
+              // error={contactErrors?.email?.message as string | undefined}
             />
 
             <TextField
               label='Telefonnummer'
               type='tel'
+              maxLength={12}
+              minLength={8}
+              inputMode={'tel'}
               {...register(`${basePath}.phone`, {
                 validate: (value) => {
                   const emailVal = getValues(`${basePath}.email` as const);
@@ -113,7 +131,18 @@ export default function LeggTilKontaktperson() {
                   return true;
                 },
               })}
-              error={contactErrors?.phone?.message as string | undefined}
+              onBlur={() => {
+                const tlf = getValues(`${basePath}.phone` as const);
+                if (tlf) {
+                  const tlfValidering = validerTelefonnummer(tlf);
+                  if (!tlfValidering.erGodkjent) {
+                    setTlfError(tlfValidering.feilmelding);
+                  }
+                }
+              }}
+              onInput={() => setTlfError('')}
+              error={tlfError}
+              // error={contactErrors?.phone?.message as string | undefined}
             />
           </Box.New>
         );
