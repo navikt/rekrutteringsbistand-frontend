@@ -139,7 +139,6 @@ export default function KandidatSøkTabs() {
 
   return (
     <div>
-      {' '}
       {/*Trenger denne div-en for å løse z-index problemer tilknyttet container og combobox*/}
       <div className='@container contain-layout'>
         <div className='flex justify-between flex-col @3xl:flex-row @3xl:gap-0 gap-3 '>

@@ -237,6 +237,7 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
   return (
     <>
       <Button
+        className='text-nowrap'
         disabled={markerteKandidater.length === 0}
         onClick={() => setVisModal(true)}
         size={'small'}

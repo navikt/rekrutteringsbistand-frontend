@@ -35,7 +35,6 @@ export const useStillingssøk = ({
 }: UseStillingssøkParams) => {
   const geografiData = usePamGeografi();
 
-  // const payload = generateElasticSearchQuery({
   const treffPayload = opprettElasticSearchTreffQuery({
     filter,
     eierNavKontorEnhetId,

@@ -1,5 +1,5 @@
 // Riktig sti til komponenten (ligger under vis-kandidat)
-import KandidatNavn from '../vis-kandidat/_ui/KandidatNavn';
+import KandidatNavn from '../[kandidatNr]/vis-kandidat/_ui/KandidatNavn';
 import { withKandidatContext } from '@/.storybook/KandidatContextDecorator';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
