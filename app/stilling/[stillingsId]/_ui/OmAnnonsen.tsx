@@ -7,7 +7,11 @@ export default function OmAnnonsen() {
   const { stillingsData } = useStillingsContext();
   const { updated, medium, reference, expires, published, annonsenr } =
     stillingsData?.stilling;
-  const { reportee, navIdent } = stillingsData?.stilling?.administration ?? {};
+  let { reportee, navIdent } = stillingsData?.stilling?.administration ?? {};
+  if (stillingsData?.stillingsinfo && stillingsData.stilling.source != 'DIR') {
+    navIdent = stillingsData.stillingsinfo.eierNavident;
+    reportee = stillingsData.stillingsinfo.eierNavn;
+  }
 
   return (
     <OmStillingBoks
