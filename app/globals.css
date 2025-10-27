@@ -23,20 +23,35 @@
 }
 
 /* Fjern default margin/padding fra react-mosaic-component for sømløs layout */
-.mosaic-root {
+.mosaic,
+.mosaic-root,
+.mosaic-top,
+.mosaic-drop-target {
   margin: 0 !important;
   padding: 0 !important;
-}
-#windows .mosaic-window {
-  margin: 0 !important; /* biblioteket setter margin for spacing */
-}
-#windows .mosaic-window-toolbar {
-  padding: 0; /* unngå ekstra høyde hvis toolbar beholdes */
-}
-#windows .mosaic-window-body,
-#windows .mosaic-tile {
-  margin: 0 !important;
-  padding: 0 !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+
+  .mosaic-tile {
+    margin: 0 !important;
+  }
+  .mosaic-window {
+    margin: 0 !important;
+  }
+  .mosaic-window-toolbar {
+    display: none !important; /* Skjul toolbar helt */
+    /* ELLER hvis du vil beholde den, bare fjern padding: */
+    /* padding: 0 !important;
+    height: 0 !important; */
+  }
+  .mosaic-window-body {
+    padding: 0 !important;
+    top: 0 !important; /* Fjern offset fra toolbar */
+  }
+  .mosaic-split {
+    margin: 0 !important;
+  }
 }
 
 @layer utilities {

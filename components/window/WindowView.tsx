@@ -130,14 +130,16 @@ export const WindowView: React.FC<WindowViewProps> = ({
             return <WindowTile tile='main'>{children as any}</WindowTile>;
           if (id === (tileIds?.detail || 'detail'))
             return (
-              <WindowTile
-                tile='detail'
-                close={close}
-                paramName={param}
-                paramValue={paramValue as string}
-              >
-                {window(paramValue as any, close) as any}
-              </WindowTile>
+              <div className='pl-[6px]'>
+                <WindowTile
+                  tile='detail'
+                  close={close}
+                  paramName={param}
+                  paramValue={paramValue as string}
+                >
+                  {window(paramValue as any, close) as any}
+                </WindowTile>
+              </div>
             );
           return (
             <div className='p-2 text-xs text-red-600'>Ukjent tile id: {id}</div>
