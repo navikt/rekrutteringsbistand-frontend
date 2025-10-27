@@ -117,6 +117,7 @@ const KandidatListeKort: FC<KandidatListeKortProps> = ({
     const aktiv = false;
     return (
       <WindowAnker
+        disabled={inaktiv}
         windowRef={`/stilling/${stillingsData.stilling.uuid}?stillingFane=kandidater&visKandidatId=${kandidat?.kandidatnr}`}
         href={`/stilling/${stillingsData.stilling.uuid}/kandidatliste/${kandidat?.kandidatnr}`}
       >

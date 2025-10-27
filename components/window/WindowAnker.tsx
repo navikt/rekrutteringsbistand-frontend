@@ -6,6 +6,7 @@ export interface WindowAnkerProps {
   href: string; // Kan være relativ eller full
   windowRef?: string; // Alternativ "intern" referanse
   mode?: 'replace' | 'push'; // Valgfritt: hvordan historikken skal håndteres
+  disabled?: boolean;
 }
 
 export default function WindowAnker({
@@ -13,6 +14,7 @@ export default function WindowAnker({
   href,
   windowRef,
   mode = 'replace',
+  disabled,
 }: WindowAnkerProps) {
   const { windowMode } = useThemeProvider();
 
@@ -67,6 +69,10 @@ export default function WindowAnker({
 
     // Ellers: la normal navigasjon skje
   };
+
+  if (disabled) {
+    return children;
+  }
 
   return (
     <a href={targetHref} onClick={onClick}>
