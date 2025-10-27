@@ -10,6 +10,7 @@ import SideInnhold from '@/components/layout/SideInnhold';
 import SideLayout from '@/components/layout/SideLayout';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
+import { MegaphoneSpeakingIcon } from '@navikt/aksel-icons';
 import * as React from 'react';
 
 const Nyheter: React.FC = () => {
@@ -20,7 +21,12 @@ const Nyheter: React.FC = () => {
       header={
         <PanelHeader>
           <PanelHeader.Section
-            title={'Nyheter'}
+            title={
+              <div className='flex items-center gap-2'>
+                <MegaphoneSpeakingIcon /> Nyheter
+              </div>
+            }
+            skjulBrødsmuler
             actionsRight={
               <TilgangskontrollForInnhold
                 skjulVarsel
