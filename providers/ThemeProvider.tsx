@@ -21,9 +21,9 @@ interface ThemeContextProps {
 
 export const ThemeContext = createContext<ThemeContextProps>({
   darkMode: false,
-  setDarkMode: () => false,
+  setDarkMode: () => {},
   windowMode: false,
-  setWindowMode: () => false,
+  setWindowMode: () => {},
 });
 
 export interface ThemeProviderProps {
@@ -61,6 +61,10 @@ export const ThemeProvider: FC<ThemeProviderProps> = ({
     document.documentElement.classList.toggle('dark', darkMode);
   }, [darkMode]);
 
+  useEffect(() => {
+    localStorage.setItem('windowMode', windowMode.toString());
+  }, [windowMode]);
+
   // Synk når forceDarkMode endres (kontrollert utenfra, f.eks. Storybook)
   useEffect(() => {
     if (forceDarkMode !== undefined && forceDarkMode !== darkMode) {
@@ -73,6 +77,8 @@ export const ThemeProvider: FC<ThemeProviderProps> = ({
   }, []);
 
   if (!mounted) return null;
+
+  console.log('🎺 windowMode', windowMode);
 
   return (
     <Theme theme={darkMode ? 'dark' : 'light'} hasBackground={false}>

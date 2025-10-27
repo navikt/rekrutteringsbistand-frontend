@@ -36,10 +36,6 @@ const KandidatListeKort: FC<KandidatListeKortProps> = ({
 }) => {
   const { lukketKandidatliste, kandidatlisteId } = useKandidatlisteContext();
   const { stillingsData } = useStillingsContext();
-  // const [, setVisKandidatId] = useQueryState('visKandidatId', {
-  //   defaultValue: '',
-  //   clearOnDefault: true,
-  // });
 
   if (usynligKandidat) {
     const fåttJobben =
@@ -125,9 +121,6 @@ const KandidatListeKort: FC<KandidatListeKortProps> = ({
         href={`/stilling/${stillingsData.stilling.uuid}/kandidatliste/${kandidat?.kandidatnr}`}
       >
         <Box.New
-          // onClick={() =>
-          //   !inaktiv ? setVisKandidatId(kandidat?.kandidatnr ?? '') : null
-          // }
           padding='4'
           background='neutral-softA'
           borderRadius='xlarge'
@@ -194,7 +187,6 @@ const KandidatListeKort: FC<KandidatListeKortProps> = ({
             )}
           </div>
         </Box.New>
-        ,
       </WindowAnker>
     );
   }

@@ -24,10 +24,6 @@ export interface IStillingsKort {
 }
 
 const StillingsKort: FC<IStillingsKort> = ({ stillingData, kandidatId }) => {
-  // const [, setVisStillingsId] = useQueryState('visStillingsId', {
-  //   defaultValue: '',
-  //   clearOnDefault: true,
-  // });
   const stillingsDataInfo = visStillingsDataInfo(stillingData);
   const stopAllPropagation = (e: MouseEvent<HTMLElement>): void => {
     e.stopPropagation();
@@ -35,13 +31,22 @@ const StillingsKort: FC<IStillingsKort> = ({ stillingData, kandidatId }) => {
   const erFormidling = stillingsDataInfo.erFormidling;
   const erDirektemeldt = stillingsDataInfo.erDirektemeldt;
 
+  const getWindowRefWithParams = () => {
+    const currentParams = new URLSearchParams(window.location.search);
+    currentParams.set('visStillingId', stillingData.stilling.uuid);
+
+    const basePath = kandidatId
+      ? `/kandidat/${kandidatId}/finn-stilling`
+      : erFormidling
+        ? `/etterregistrering`
+        : `/stilling`;
+
+    return `${basePath}?${currentParams.toString()}`;
+  };
+
   return (
     <WindowAnker
-      windowRef={
-        erFormidling
-          ? `/etterregistrering?visStillingId=${stillingData.stilling.uuid}`
-          : `/stilling?visStillingId=${stillingData.stilling.uuid}`
-      }
+      windowRef={getWindowRefWithParams()}
       href={
         kandidatId
           ? `/kandidat/${kandidatId}/finn-stilling/${stillingData.stilling.uuid}`

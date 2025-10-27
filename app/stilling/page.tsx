@@ -5,7 +5,7 @@ import { StillingsSøkProvider } from '@/app/stilling/StillingsSøkContext';
 import StillingsSøkLayout from '@/app/stilling/StillingsSøkLayout';
 import { StillingsContextProvider } from '@/app/stilling/[stillingsId]/StillingsContext';
 import StillingsSidePage from '@/app/stilling/[stillingsId]/page';
-import { EKSCLUDERTE_STANDARDSOK_PARAMETERE } from '@/app/stilling/_ui/standardsøk/standardSokUtils';
+import { EKSKLUDERTE_STANDARDSOK_PARAMETERE } from '@/app/stilling/_ui/standardsøk/standardSokUtils';
 import Sidelaster from '@/components/layout/Sidelaster';
 import WindowView from '@/components/window/WindowView';
 import { useSearchParams } from 'next/navigation';
@@ -24,7 +24,7 @@ export default function StillingsSøkIndex() {
         brukerStandardSøkData.data?.søk ||
         'publisert=intern&statuser=publisert';
 
-      const eksludert = EKSCLUDERTE_STANDARDSOK_PARAMETERE;
+      const eksludert = EKSKLUDERTE_STANDARDSOK_PARAMETERE;
       const urlSearchParams = new URLSearchParams(newSearch);
       eksludert.forEach((param) => {
         if (urlSearchParams.has(param)) {

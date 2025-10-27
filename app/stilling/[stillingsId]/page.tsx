@@ -1,7 +1,8 @@
 'use client';
 
-import KandidatMedContext from '@/app/kandidat/[kandidatNr]/KandidatMedContext';
 import StillingVisning from '@/app/stilling/[stillingsId]/StillingVisning';
+import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
+import KandidatlisteKandidatIndex from '@/app/stilling/[stillingsId]/kandidatliste/[kandidatId]/page';
 import WindowView from '@/components/window/WindowView';
 
 export interface pageProps {
@@ -9,10 +10,18 @@ export interface pageProps {
 }
 
 export default function FinnStillingPage({ kandidatId }: pageProps) {
+  const { stillingsId } = useStillingsContext();
   return (
     <WindowView
       param='visKandidatId'
-      window={(kandidatNr) => <KandidatMedContext kandidatId={kandidatNr} />}
+      window={(kandidatNr) => (
+        <KandidatlisteKandidatIndex
+          params={{
+            stillingsId: stillingsId,
+            kandidatId: kandidatNr,
+          }}
+        />
+      )}
     >
       <StillingVisning kandidatId={kandidatId} />
     </WindowView>

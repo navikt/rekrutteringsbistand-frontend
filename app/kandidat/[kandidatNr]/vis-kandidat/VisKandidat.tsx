@@ -27,34 +27,12 @@ export interface VisKandidatProps {
 export default function VisKandidat({
   kandidatlisteKandidat,
 }: VisKandidatProps) {
-  // const pathname = usePathname();
   const { kandidatId } = useKandidatContext();
-  // const [visStillingId] = useQueryState('visStillingId', {
-  //   defaultValue: '',
-  //   clearOnDefault: true,
-  // });
+
   const [fane, setFane] = useQueryState('kandidatFane', {
     defaultValue: 'oversikt',
     clearOnDefault: true,
   });
-
-  // const stillingsId = (() => {
-  //   // Først prøv å hente fra search parameter
-  //   // if (visStillingId) {
-  //   //   return visStillingId;
-  //   // }
-
-  //   // Deretter prøv å hente fra path
-  //   if (pathname) {
-  //     const segments = pathname.split('/').filter(Boolean);
-  //     const stillingIndex = segments.indexOf('stilling');
-  //     if (stillingIndex !== -1 && segments[stillingIndex + 1]) {
-  //       return segments[stillingIndex + 1];
-  //     }
-  //   }
-
-  //   return null;
-  // })();
 
   return (
     <Tabs value={fane} onChange={(val) => setFane(val)} className=' w-full'>

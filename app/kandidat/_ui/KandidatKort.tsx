@@ -10,7 +10,7 @@ import TekstMedIkon from '@/components/TekstMedIkon';
 import WindowAnker from '@/components/window/WindowAnker';
 import { HandShakeHeartIcon, HouseIcon, PinIcon } from '@navikt/aksel-icons';
 import { Box, Checkbox, Heading, Tag } from '@navikt/ds-react';
-import { FC, MouseEvent } from 'react';
+import { FC } from 'react';
 
 type IKandidatKort = {
   kandidat: KandidatDataSchemaDTO;
@@ -37,60 +37,25 @@ const KandidatKort: FC<IKandidatKort> = ({
     alleredeLagtTil?.some((k) => k === kandidat.arenaKandidatnr),
   );
 
-  const stopPropagation = (e: MouseEvent) => {
-    e.stopPropagation();
-    e.preventDefault();
-  };
-
   const kandidatId = kandidat.arenaKandidatnr;
   const aktiv = false;
 
-  // const stopAllPropagation = (e: MouseEvent<HTMLElement>): void => {
-  //   e.stopPropagation();
-  // };
+  const getWindowRefWithParams = () => {
+    const currentParams = new URLSearchParams(window.location.search);
+    currentParams.set('visKandidatId', kandidat.arenaKandidatnr || '');
 
-  // const ankerWrapper = (children: ReactNode) => {
-  //   if (stillingsId) {
-  //     return (
-  //       <>
-  // {visKandidatModal && (
-  //   <VisKandidatModal
-  //     stillingsId={stillingsId}
-  //     tittel='Jobbsøker for stillingsoppdrag'
-  //     kandidatId={kandidat.arenaKandidatnr ?? ''}
-  //     onClose={() => setVisKandidatModal(false)}
-  //   />
-  // )}
-  //         <div
-  //           onClick={() => {
-  //             if (stillingsId) {
-  //               setVisKandidatModal(true);
-  //             }
-  //           }}
-  //           className='p-5 cursor-pointer'
-  //         >
-  //           {children}
-  //         </div>
-  //       </>
-  //     );
-  //   } else {
-  //     return (
-  // <a href={`/kandidat/${kandidat.arenaKandidatnr}`}>
-  //   <div className='p-5 '> {children}</div>
-  // </a>
-  //     );
-  //   }
-  // };
+    const basePath = stillingsId
+      ? `/stilling/${stillingsId}/finn-kandidater`
+      : `/kandidat`;
+
+    return kandidat.arenaKandidatnr
+      ? `${basePath}?${currentParams.toString()}`
+      : '#';
+  };
 
   return (
     <WindowAnker
-      windowRef={
-        stillingsId
-          ? `/stilling/${stillingsId}/finn-kandidater?visKandidatId=${kandidat.arenaKandidatnr}`
-          : kandidat.arenaKandidatnr
-            ? `/kandidat?visKandidatId=${kandidat.arenaKandidatnr}`
-            : '#'
-      }
+      windowRef={getWindowRefWithParams()}
       href={
         stillingsId
           ? `/stilling/${stillingsId}/finn-kandidater/${kandidat.arenaKandidatnr}`

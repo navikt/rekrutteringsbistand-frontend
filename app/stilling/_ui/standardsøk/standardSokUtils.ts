@@ -1,10 +1,12 @@
 // Hjelpefunksjoner for å bygge opp query-stringen som representerer et standardsøk.
 // Skal filtrere bort parametere som ikke skal persisteres.
 
-export const EKSCLUDERTE_STANDARDSOK_PARAMETERE = new Set<string>([
+export const EKSKLUDERTE_STANDARDSOK_PARAMETERE = new Set<string>([
   'utenOppdrag',
   'visStillingId',
   'finnKandidater',
+  'finnKandidater',
+  'visKandidatId',
 ]);
 
 export interface StandardsokResultat {
@@ -23,7 +25,7 @@ export function byggStandardsokQuery(
 ): StandardsokResultat {
   const filteredParams = new URLSearchParams();
   searchParams.forEach((value: string, key: string) => {
-    if (!EKSCLUDERTE_STANDARDSOK_PARAMETERE.has(key)) {
+    if (!EKSKLUDERTE_STANDARDSOK_PARAMETERE.has(key)) {
       filteredParams.append(key, value);
     }
   });
