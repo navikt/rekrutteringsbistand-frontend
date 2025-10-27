@@ -9,7 +9,10 @@ import {
   useJobbsøkere,
 } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
-import { AktivtSteg } from '@/app/rekrutteringstreff/_types/constants';
+import {
+  AktivtSteg,
+  JobbsøkerHendelsestype,
+} from '@/app/rekrutteringstreff/_types/constants';
 import SWRLaster from '@/components/SWRLaster';
 import { BodyShort, Button, TagProps } from '@navikt/ds-react';
 import { format } from 'date-fns';
@@ -251,15 +254,15 @@ export const statusInfoForHendelsestype = (
   hendelsestype: string,
 ): StatusInfo | undefined => {
   switch (hendelsestype) {
-    case 'AKTIVITETSKORT_OPPRETTELSE_FEIL':
+    case JobbsøkerHendelsestype.AKTIVITETSKORT_OPPRETTELSE_FEIL:
       return { text: 'Invitasjon feilet', variant: 'error' };
-    case 'SVAR_JA_TIL_INVITASJON':
+    case JobbsøkerHendelsestype.SVART_JA_TIL_INVITASJON:
       return { text: 'Svart ja', variant: 'success' };
-    case 'SVAR_NEI_TIL_INVITASJON':
+    case JobbsøkerHendelsestype.SVART_NEI_TIL_INVITASJON:
       return { text: 'Svart nei', variant: 'neutral' };
-    case 'INVITER':
+    case JobbsøkerHendelsestype.INVITERT:
       return { text: 'Invitert', variant: 'info' };
-    case 'OPPRETT':
+    case JobbsøkerHendelsestype.OPPRETTET:
       return { text: 'Lagt til', variant: 'info' };
     default:
       return undefined;

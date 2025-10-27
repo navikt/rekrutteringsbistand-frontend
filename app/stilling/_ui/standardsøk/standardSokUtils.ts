@@ -5,6 +5,7 @@ export const EKSCLUDERTE_STANDARDSOK_PARAMETERE = new Set<string>([
   'utenOppdrag',
   'visStillingId',
   'finnKandidater',
+  'brukStandardsok',
 ]);
 
 export interface StandardsokResultat {

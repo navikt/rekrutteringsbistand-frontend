@@ -1,4 +1,5 @@
 import type { JobbsøkerDTO } from './useJobbsøkere';
+import { JobbsøkerHendelsestype } from '@/app/rekrutteringstreff/_types/constants';
 import { Faker, en_NG, nb_NO } from '@faker-js/faker';
 import navfaker from 'nav-faker/dist/index';
 
@@ -24,14 +25,14 @@ const jobbsøkerMock = (): JobbsøkerDTO => {
       {
         id: faker.string.uuid(),
         tidspunkt: new Date().toISOString(),
-        hendelsestype: 'OPPRETTET',
+        hendelsestype: JobbsøkerHendelsestype.OPPRETTET,
         opprettetAvAktørType: 'ARRANGØR',
         aktørIdentifikasjon: 'testperson',
       },
       {
         id: faker.string.uuid(),
         tidspunkt: new Date().toISOString(),
-        hendelsestype: 'INVITERT',
+        hendelsestype: JobbsøkerHendelsestype.INVITERT,
         opprettetAvAktørType: 'ARRANGØR',
         aktørIdentifikasjon: 'testperson',
       },
