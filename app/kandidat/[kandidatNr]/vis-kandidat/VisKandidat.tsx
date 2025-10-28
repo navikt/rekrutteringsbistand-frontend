@@ -1,10 +1,11 @@
 'use client';
 
 import KandidatSideLayout from './KandidatsideLayout';
+import { useKandidatContext } from '@/app/kandidat/[kandidatNr]/vis-kandidat/KandidatContext';
+import KandidatAktivitet from '@/app/kandidat/[kandidatNr]/vis-kandidat/aktivitet-fane/KandidatAktivitet';
+import KandidatOversikt from '@/app/kandidat/[kandidatNr]/vis-kandidat/oversikt-fane/KandidatOversikt';
 import FinnStillingForKandidatKnapp from '@/app/kandidat/_ui/ActionLinks/FinnStillingForKandidatKnapp';
 import NavigerTilAktivitetsplanenKnapp from '@/app/kandidat/_ui/ActionLinks/NavigerTilAktivitetsplanenKnapp';
-import KandidatAktivitet from '@/app/kandidat/vis-kandidat/aktivitet-fane/KandidatAktivitet';
-import KandidatOversikt from '@/app/kandidat/vis-kandidat/oversikt-fane/KandidatOversikt';
 import KandidatIKandidatliste from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatIKandidatliste/KandidatIKandidatliste';
 import PanelHeader from '@/components/layout/PanelHeader';
 import SideInnhold from '@/components/layout/SideInnhold';
@@ -26,40 +27,18 @@ export interface VisKandidatProps {
 export default function VisKandidat({
   kandidatlisteKandidat,
 }: VisKandidatProps) {
-  // const pathname = usePathname();
-  // const { kandidatId } = useKandidatContext();
-  // const [visStillingId] = useQueryState('visStillingId', {
-  //   defaultValue: '',
-  //   clearOnDefault: true,
-  // });
+  const { kandidatId } = useKandidatContext();
+
   const [fane, setFane] = useQueryState('kandidatFane', {
     defaultValue: 'oversikt',
     clearOnDefault: true,
   });
 
-  // const stillingsId = (() => {
-  //   // Først prøv å hente fra search parameter
-  //   // if (visStillingId) {
-  //   //   return visStillingId;
-  //   // }
-
-  //   // Deretter prøv å hente fra path
-  //   if (pathname) {
-  //     const segments = pathname.split('/').filter(Boolean);
-  //     const stillingIndex = segments.indexOf('stilling');
-  //     if (stillingIndex !== -1 && segments[stillingIndex + 1]) {
-  //       return segments[stillingIndex + 1];
-  //     }
-  //   }
-
-  //   return null;
-  // })();
-
   return (
     <Tabs value={fane} onChange={(val) => setFane(val)} className=' w-full'>
       <SideLayout
         header={
-          <PanelHeader className='pb-2'>
+          <PanelHeader fullskjermUrl={`/kandidat/${kandidatId}`}>
             <PanelHeader.Section
               tabs={
                 <>

@@ -2,7 +2,7 @@ import TabellRad from './_ui/TabellRad';
 import { kandidatHistorikkSchemaDTO } from '@/app/api/kandidat/schema.zod';
 import { useKandidatListeoversikt } from '@/app/api/kandidat/useKandidatListeoversikt';
 import { useStilling } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/useStilling';
-import { useKandidatContext } from '@/app/kandidat/vis-kandidat/KandidatContext';
+import { useKandidatContext } from '@/app/kandidat/[kandidatNr]/vis-kandidat/KandidatContext';
 import SWRLaster from '@/components/SWRLaster';
 import { Loader, Table } from '@navikt/ds-react';
 import { FC, Fragment } from 'react';

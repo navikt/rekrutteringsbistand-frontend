@@ -1,9 +1,9 @@
+import { KandidatContextProvider } from '@/app/kandidat/[kandidatNr]/vis-kandidat/KandidatContext';
+import KandidatSideLayout from '@/app/kandidat/[kandidatNr]/vis-kandidat/KandidatsideLayout';
+import KandidatAktivitet from '@/app/kandidat/[kandidatNr]/vis-kandidat/aktivitet-fane/KandidatAktivitet';
+import KandidatOversikt from '@/app/kandidat/[kandidatNr]/vis-kandidat/oversikt-fane/KandidatOversikt';
 import FinnStillingForKandidatKnapp from '@/app/kandidat/_ui/ActionLinks/FinnStillingForKandidatKnapp';
 import NavigerTilAktivitetsplanenKnapp from '@/app/kandidat/_ui/ActionLinks/NavigerTilAktivitetsplanenKnapp';
-import { KandidatContextProvider } from '@/app/kandidat/vis-kandidat/KandidatContext';
-import KandidatSideLayout from '@/app/kandidat/vis-kandidat/KandidatsideLayout';
-import KandidatAktivitet from '@/app/kandidat/vis-kandidat/aktivitet-fane/KandidatAktivitet';
-import KandidatOversikt from '@/app/kandidat/vis-kandidat/oversikt-fane/KandidatOversikt';
 import KandidatVisningSidebar from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatIKandidatliste/KandidatIKandidatliste';
 import { Box, Button, Tabs } from '@navikt/ds-react';
 import { ArrowRightIcon } from 'lucide-react';

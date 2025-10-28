@@ -2,6 +2,7 @@ import { RekrutteringsbistandStillingSchemaDTO } from '@/app/api/stillings-sok/s
 import StillingsTag from '@/app/stilling/_ui/StillingsTag';
 import { visStillingsDataInfo } from '@/app/stilling/_util/stillingInfoUtil';
 import { hentArbeidssted } from '@/app/stilling/_util/stillingssøk-util';
+import WindowAnker from '@/components/window/WindowAnker';
 // import TekstMedIkon from '@/components/felles/TekstMedIkon';
 // import { formaterNorskDato } from '@/util/util';
 import ArbeidsplassenLogo from '@/public/arbeidsplassen.png';
@@ -23,10 +24,6 @@ export interface IStillingsKort {
 }
 
 const StillingsKort: FC<IStillingsKort> = ({ stillingData, kandidatId }) => {
-  // const [, setVisStillingsId] = useQueryState('visStillingsId', {
-  //   defaultValue: '',
-  //   clearOnDefault: true,
-  // });
   const stillingsDataInfo = visStillingsDataInfo(stillingData);
   const stopAllPropagation = (e: MouseEvent<HTMLElement>): void => {
     e.stopPropagation();
@@ -34,8 +31,22 @@ const StillingsKort: FC<IStillingsKort> = ({ stillingData, kandidatId }) => {
   const erFormidling = stillingsDataInfo.erFormidling;
   const erDirektemeldt = stillingsDataInfo.erDirektemeldt;
 
+  const getWindowRefWithParams = () => {
+    const currentParams = new URLSearchParams(window.location.search);
+    currentParams.set('visStillingId', stillingData.stilling.uuid);
+
+    const basePath = kandidatId
+      ? `/kandidat/${kandidatId}/finn-stilling`
+      : erFormidling
+        ? `/etterregistrering`
+        : `/stilling`;
+
+    return `${basePath}?${currentParams.toString()}`;
+  };
+
   return (
-    <a
+    <WindowAnker
+      windowRef={getWindowRefWithParams()}
       href={
         kandidatId
           ? `/kandidat/${kandidatId}/finn-stilling/${stillingData.stilling.uuid}`
@@ -122,7 +133,7 @@ const StillingsKort: FC<IStillingsKort> = ({ stillingData, kandidatId }) => {
           </div>
         </div>
       </Box.New>
-    </a>
+    </WindowAnker>
   );
 };
 

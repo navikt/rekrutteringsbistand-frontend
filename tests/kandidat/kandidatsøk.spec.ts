@@ -5,9 +5,7 @@ import { expect, test } from '@playwright/test';
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 
 test('Kandidatsøk', async ({ page }) => {
-  await gotoApp(page, '/');
-
-  await page.getByRole('button', { name: 'Jobbsøkere' }).click();
+  await gotoApp(page, '/kandidat');
 
   await expect(
     page.getByLabel('Brødsmulesti').getByText('Jobbsøkere'),

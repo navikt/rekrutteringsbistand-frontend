@@ -7,9 +7,10 @@ import {
   hentKandidatensØnskedeYrker,
 } from '@/app/kandidat/util';
 import TekstMedIkon from '@/components/TekstMedIkon';
+import WindowAnker from '@/components/window/WindowAnker';
 import { HandShakeHeartIcon, HouseIcon, PinIcon } from '@navikt/aksel-icons';
 import { Box, Checkbox, Heading, Tag } from '@navikt/ds-react';
-import { FC, MouseEvent } from 'react';
+import { FC } from 'react';
 
 type IKandidatKort = {
   kandidat: KandidatDataSchemaDTO;
@@ -22,11 +23,6 @@ const KandidatKort: FC<IKandidatKort> = ({
   alleredeLagtTil,
   stillingsId,
 }) => {
-  // const [visKandidatId, setVisKandidatId] = useQueryState('visKandidatId', {
-  //   defaultValue: '',
-  //   clearOnDefault: true,
-  // });
-
   const { markerteKandidater, setMarkert } = useKandidatSøkMarkerteContext();
   const erMarkert = Boolean(
     markerteKandidater?.some((k) => k === kandidat.arenaKandidatnr),
@@ -36,53 +32,25 @@ const KandidatKort: FC<IKandidatKort> = ({
     alleredeLagtTil?.some((k) => k === kandidat.arenaKandidatnr),
   );
 
-  const stopPropagation = (e: MouseEvent) => {
-    e.stopPropagation();
-    e.preventDefault();
-  };
-
   const kandidatId = kandidat.arenaKandidatnr;
   const aktiv = false;
 
-  // const stopAllPropagation = (e: MouseEvent<HTMLElement>): void => {
-  //   e.stopPropagation();
-  // };
+  const getWindowRefWithParams = () => {
+    const currentParams = new URLSearchParams(window.location.search);
+    currentParams.set('visKandidatId', kandidat.arenaKandidatnr || '');
 
-  // const ankerWrapper = (children: ReactNode) => {
-  //   if (stillingsId) {
-  //     return (
-  //       <>
-  // {visKandidatModal && (
-  //   <VisKandidatModal
-  //     stillingsId={stillingsId}
-  //     tittel='Jobbsøker for stillingsoppdrag'
-  //     kandidatId={kandidat.arenaKandidatnr ?? ''}
-  //     onClose={() => setVisKandidatModal(false)}
-  //   />
-  // )}
-  //         <div
-  //           onClick={() => {
-  //             if (stillingsId) {
-  //               setVisKandidatModal(true);
-  //             }
-  //           }}
-  //           className='p-5 cursor-pointer'
-  //         >
-  //           {children}
-  //         </div>
-  //       </>
-  //     );
-  //   } else {
-  //     return (
-  // <a href={`/kandidat/${kandidat.arenaKandidatnr}`}>
-  //   <div className='p-5 '> {children}</div>
-  // </a>
-  //     );
-  //   }
-  // };
+    const basePath = stillingsId
+      ? `/stilling/${stillingsId}/finn-kandidater`
+      : `/kandidat`;
+
+    return kandidat.arenaKandidatnr
+      ? `${basePath}?${currentParams.toString()}`
+      : '#';
+  };
 
   return (
-    <a
+    <WindowAnker
+      windowRef={getWindowRefWithParams()}
       href={
         stillingsId
           ? `/stilling/${stillingsId}/finn-kandidater/${kandidat.arenaKandidatnr}`
@@ -109,18 +77,28 @@ const KandidatKort: FC<IKandidatKort> = ({
         tabIndex={0}
       >
         <div className='flex flex-row '>
-          <Checkbox
-            disabled={!kandidat.arenaKandidatnr || erLagtTil}
-            checked={erMarkert || erLagtTil}
-            aria-selected={erMarkert}
-            hideLabel
-            className='-mt-2 mr-4'
-            onChange={() =>
-              kandidat.arenaKandidatnr && setMarkert(kandidat.arenaKandidatnr)
-            }
-          >
-            Checkbox
-          </Checkbox>
+          <div>
+            <Checkbox
+              key={`${kandidat.arenaKandidatnr}-${erMarkert}`}
+              disabled={!kandidat.arenaKandidatnr || erLagtTil}
+              checked={erMarkert || erLagtTil}
+              aria-selected={erMarkert}
+              hideLabel
+              className='-mt-2 mr-4'
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+              }}
+              onChange={(e) => {
+                e.stopPropagation();
+                if (kandidat.arenaKandidatnr) {
+                  setMarkert(kandidat.arenaKandidatnr);
+                }
+              }}
+            >
+              Checkbox
+            </Checkbox>
+          </div>
 
           <div className='flex-grow'>
             <div className='flex justify-between'>
@@ -176,7 +154,7 @@ const KandidatKort: FC<IKandidatKort> = ({
           </div>
         </div>
       </Box.New>
-    </a>
+    </WindowAnker>
   );
 };
 

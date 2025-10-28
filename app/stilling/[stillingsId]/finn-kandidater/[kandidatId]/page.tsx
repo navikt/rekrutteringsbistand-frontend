@@ -1,14 +1,9 @@
-import { KandidatContextProvider } from '@/app/kandidat/vis-kandidat/KandidatContext';
-import VisKandidat from '@/app/kandidat/vis-kandidat/VisKandidat';
+import KandidatMedContext from '@/app/kandidat/[kandidatNr]/KandidatMedContext';
 
 export default function KanddidatForStilling({
   params,
 }: {
   params: { kandidatId: string; stillingsId: string };
 }) {
-  return (
-    <KandidatContextProvider kandidatId={params.kandidatId}>
-      <VisKandidat />
-    </KandidatContextProvider>
-  );
+  return <KandidatMedContext kandidatId={params.kandidatId} />;
 }

@@ -1,4 +1,4 @@
-import { useKandidatContext } from '@/app/kandidat/vis-kandidat/KandidatContext';
+import { useKandidatContext } from '@/app/kandidat/[kandidatNr]/vis-kandidat/KandidatContext';
 import { BodyShort } from '@navikt/ds-react';
 
 export default function KandidatNavn() {

@@ -161,6 +161,7 @@ const DelMedKandidatModal: FC<DelMedKandidatModalProps> = ({
   return (
     <>
       <Button
+        className='text-nowrap'
         disabled={markerteKandidater.length === 0}
         onClick={() => setModalErÅpen(true)}
         variant={sidebar ? 'primary' : 'tertiary'}
