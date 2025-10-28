@@ -256,6 +256,10 @@ export const statusInfoForHendelsestype = (
   switch (hendelsestype) {
     case JobbsøkerHendelsestype.AKTIVITETSKORT_OPPRETTELSE_FEIL:
       return { text: 'Invitasjon feilet', variant: 'error' };
+    case JobbsøkerHendelsestype.SVART_JA_TREFF_AVLYST:
+      return { text: 'Treff avlyst', variant: 'warning' };
+    case JobbsøkerHendelsestype.SVART_JA_TREFF_FULLFØRT:
+      return { text: 'Treff fullført', variant: 'success' };
     case JobbsøkerHendelsestype.SVART_JA_TIL_INVITASJON:
       return { text: 'Svart ja', variant: 'success' };
     case JobbsøkerHendelsestype.SVART_NEI_TIL_INVITASJON:

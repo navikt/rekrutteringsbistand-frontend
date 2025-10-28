@@ -26,6 +26,10 @@ export const jobbsøkerLabelTekst = (t: JobbsøkerHendelsestype | string) => {
       return 'svart ja';
     case JobbsøkerHendelsestype.SVART_NEI_TIL_INVITASJON:
       return 'svart nei';
+    case JobbsøkerHendelsestype.SVART_JA_TREFF_AVLYST:
+      return 'treff avlyst';
+    case JobbsøkerHendelsestype.SVART_JA_TREFF_FULLFØRT:
+      return 'treff fullført';
     default:
       return t.toLowerCase();
   }

@@ -3,8 +3,8 @@
 import { arbeidsgivereMock } from './arbeidsgivereMock';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { deleteApi, postApi } from '@/app/api/fetcher';
-import { http, HttpResponse } from 'msw';
 import { NæringskodeDTO } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
+import { http, HttpResponse } from 'msw';
 
 // DTOs
 export type OpprettArbeidsgiverDTO = {
