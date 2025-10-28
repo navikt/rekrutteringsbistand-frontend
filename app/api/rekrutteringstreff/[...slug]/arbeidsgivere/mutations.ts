@@ -4,13 +4,13 @@ import { arbeidsgivereMock } from './arbeidsgivereMock';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
 import { deleteApi, postApi } from '@/app/api/fetcher';
 import { http, HttpResponse } from 'msw';
-import { NaringskodeDTO } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
+import { NæringskodeDTO } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
 
 // DTOs
 export type OpprettArbeidsgiverDTO = {
   organisasjonsnummer: string;
   navn: string;
-  næringskoder: Array<NaringskodeDTO> | null | undefined;
+  næringskoder: Array<NæringskodeDTO> | null | undefined;
 };
 
 const rekrutteringstreffArbeidsgiverEndepunkt = (

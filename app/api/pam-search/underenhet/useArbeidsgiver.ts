@@ -23,7 +23,7 @@ const ArbeidsgiverAdresseSchema = z
   })
   .nullable();
 
-export const NaringskodeSchema = z.object({
+export const NæringskodeSchema = z.object({
   kode: z.string(),
   beskrivelse: z.string(),
 });
@@ -35,11 +35,11 @@ export const ArbeidsgiverSchema = z.object({
   antallAnsatte: z.number().optional().nullable(),
   overordnetEnhet: z.string().optional().nullable(),
   adresse: ArbeidsgiverAdresseSchema,
-  naringskoder: z.array(NaringskodeSchema).optional().nullable(),
+  naringskoder: z.array(NæringskodeSchema).optional().nullable(),
 });
 const ArbeidsgiverSchemaDTO = z.array(ArbeidsgiverSchema);
 
-export type NaringskodeDTO = z.infer<typeof NaringskodeSchema>;
+export type NæringskodeDTO = z.infer<typeof NæringskodeSchema>;
 export type ArbeidsgiverDTO = z.infer<typeof ArbeidsgiverSchema>;
 export type ArbeidsgiverAdresseDTO = z.infer<typeof ArbeidsgiverAdresseSchema>;
 
