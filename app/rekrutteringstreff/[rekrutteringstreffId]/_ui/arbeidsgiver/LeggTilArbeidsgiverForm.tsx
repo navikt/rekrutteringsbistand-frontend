@@ -86,6 +86,7 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({
         await opprettArbeidsgiver(rekrutteringstreffId, {
           organisasjonsnummer: valgt.organisasjonsnummer,
           navn: valgt.navn,
+          næringskoder: valgt.naringskoder
         });
         arbeidsgivereHook.mutate();
         hendelseHook.mutate();
@@ -116,6 +117,7 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({
         await opprettArbeidsgiver(rekrutteringstreffId, {
           organisasjonsnummer: p.organisasjonsnummer,
           navn: p.navn,
+          næringskoder: p.naringskoder
         });
       }
       arbeidsgivereHook.mutate();
