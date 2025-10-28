@@ -1,7 +1,7 @@
 export const validerTelefonnummer = (
   telefonnummer: string,
 ): { erGodkjent: boolean; feilmelding: string } => {
-  const telefonRegex = /^\+?[0-9\s\-()]{7,15}$/;
+  const telefonRegex = /^\+?\d{8,15}$/;
   const formatertTlf = telefonnummer.trim().replace(/\s+/g, "")
   return formatertTlf === ''
     ? { erGodkjent: false, feilmelding: 'Telefonnummer kan ikke være tomt' }

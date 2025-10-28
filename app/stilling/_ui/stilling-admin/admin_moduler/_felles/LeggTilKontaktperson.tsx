@@ -119,8 +119,6 @@ export default function LeggTilKontaktperson() {
             <TextField
               label='Telefonnummer'
               type='tel'
-              maxLength={12}
-              minLength={8}
               inputMode={'tel'}
               {...register(`${basePath}.phone`, {
                 validate: (value) => {
