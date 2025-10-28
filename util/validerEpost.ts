@@ -1,7 +1,7 @@
 export const validerEpost = (
   epost: string,
 ): { erGodkjent: boolean; feilmelding: string } => {
-  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  const emailRegex = /^[\p{L}\p{N}._%+-]+@[\p{L}\p{N}.-]+\.\p{L}{2,}$/u;
   return epost === ''
     ? { erGodkjent: false, feilmelding: 'E-post kan ikke være tom' }
     : emailRegex.test(epost)
