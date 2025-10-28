@@ -97,7 +97,7 @@ export const LocationSchema = z.object({
 const LocationListSchema = z.array(LocationSchema);
 
 const ArbeidsgiverPropertiesSchema = z.object({
-  nace2: z.string().optional().nullable()
+  nace2: z.string().optional().nullable(),
 });
 
 const ArbeidsgiverSchema = z.object({

@@ -1,11 +1,21 @@
-import { ArbeidsgiverDTO, useFinnArbeidsgiver } from '@/app/api/pam-search/underenhet/useArbeidsgiver';
+import {
+  ArbeidsgiverDTO,
+  useFinnArbeidsgiver,
+} from '@/app/api/pam-search/underenhet/useArbeidsgiver';
 import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import LeggTilKontaktperson from '@/app/stilling/_ui/stilling-admin/admin_moduler/_felles/LeggTilKontaktperson';
 import RedigerBoks from '@/app/stilling/_ui/stilling-admin/admin_moduler/_felles/RedigerBoks';
 import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
 import RikTekstEditor from '@/components/rikteksteditor/RikTekstEditor';
 import { TasklistIcon } from '@navikt/aksel-icons';
-import { Alert, BodyLong, FormSummary, Heading, TextField, UNSAFE_Combobox } from '@navikt/ds-react';
+import {
+  Alert,
+  BodyLong,
+  FormSummary,
+  Heading,
+  TextField,
+  UNSAFE_Combobox,
+} from '@navikt/ds-react';
 import { FC, useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 
@@ -86,7 +96,9 @@ export default function OmVirksomheten() {
       antallAnsatte: employer.employees ?? null,
       overordnetEnhet: employer.parentOrgnr ?? null,
       adresse,
-      naringskoder: employer.properties.nace2 ? employer.properties.nace2 : null,
+      naringskoder: employer.properties.nace2
+        ? employer.properties.nace2
+        : null,
     };
     return dto;
   };
@@ -104,7 +116,6 @@ export default function OmVirksomheten() {
   const harVærtPublisert = getValues('stilling.firstPublished');
 
   const setArbeidsgiver = (arbeidsgiver: ArbeidsgiverDTO) => {
-
     setArbeidsgiverState(arbeidsgiver);
     const eksisterende = getValues('stilling.employer') ?? ({} as any);
     setValue('stilling.businessName', arbeidsgiver.navn ?? null);

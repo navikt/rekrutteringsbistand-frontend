@@ -7,6 +7,7 @@ const faker = new Faker({ locale: [nb_NO] });
 const fakerEN = new Faker({ locale: [en_NG] });
 
 const jobbsøkerMock = (): JobbsøkerDTO => {
+  const baseDate = new Date();
   return {
     personTreffId: faker.string.uuid(),
     fødselsnummer: navfaker.personIdentifikator.fødselsnummer(),
@@ -24,15 +25,22 @@ const jobbsøkerMock = (): JobbsøkerDTO => {
     hendelser: [
       {
         id: faker.string.uuid(),
-        tidspunkt: new Date().toISOString(),
+        tidspunkt: new Date(baseDate.getTime()).toISOString(),
         hendelsestype: JobbsøkerHendelsestype.OPPRETTET,
         opprettetAvAktørType: 'ARRANGØR',
         aktørIdentifikasjon: 'testperson',
       },
       {
         id: faker.string.uuid(),
-        tidspunkt: new Date().toISOString(),
+        tidspunkt: new Date(baseDate.getTime() + 1000).toISOString(),
         hendelsestype: JobbsøkerHendelsestype.INVITERT,
+        opprettetAvAktørType: 'ARRANGØR',
+        aktørIdentifikasjon: 'testperson',
+      },
+      {
+        id: faker.string.uuid(),
+        tidspunkt: new Date(baseDate.getTime() + 2000).toISOString(),
+        hendelsestype: JobbsøkerHendelsestype.SVART_JA_TIL_INVITASJON,
         opprettetAvAktørType: 'ARRANGØR',
         aktørIdentifikasjon: 'testperson',
       },
