@@ -1,18 +1,17 @@
 // Flyttet fra _old/_ui/LeggTilKontaktperson.tsx
 import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { useNullableStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
-import { validerEpost } from '@/util/validerEpost';
-import { validerTelefonnummer } from '@/util/validerTelefonnummer';
 import { PlusIcon, XMarkIcon } from '@navikt/aksel-icons';
 import { BodyLong, Box, Button, TextField } from '@navikt/ds-react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { useFieldArray, useFormContext } from 'react-hook-form';
 
 export default function LeggTilKontaktperson() {
   const {
     control,
     register,
-    getValues,
+    trigger,
+    clearErrors,
     formState: { errors },
   } = useFormContext<StillingsDataDTO>();
   const stillingsContext = useNullableStillingsContext();
@@ -22,8 +21,6 @@ export default function LeggTilKontaktperson() {
     name: 'stilling.contactList',
   });
   const initializedRef = useRef(false);
-  const [epostError, setEpostError] = useState<string>('');
-  const [tlfError, setTlfError] = useState<string>('');
 
   useEffect(() => {
     if (initializedRef.current) return;
@@ -94,26 +91,14 @@ export default function LeggTilKontaktperson() {
               label='E-post'
               type='email'
               {...register(`${basePath}.email`, {
-                validate: (value) => {
-                  const phoneVal = getValues(`${basePath}.phone` as const);
-                  if (!value && !phoneVal) {
-                    return 'Fyll inn e-post eller telefon';
-                  }
-                  return true;
+                onBlur: () => {
+                  trigger(`${basePath}.email`);
+                },
+                onChange: () => {
+                  clearErrors(`${basePath}.email`)
                 },
               })}
-              onBlur={() => {
-                const epost = getValues(`${basePath}.email` as const);
-                if (epost) {
-                  const epostValidering = validerEpost(epost);
-                  if (!epostValidering.erGodkjent) {
-                    setEpostError(epostValidering.feilmelding);
-                  }
-                }
-              }}
-              onInput={() => setEpostError('')}
-              error={epostError}
-              // error={contactErrors?.email?.message as string | undefined}
+              error={contactErrors?.email?.message as string | undefined}
             />
 
             <TextField
@@ -121,26 +106,14 @@ export default function LeggTilKontaktperson() {
               type='tel'
               inputMode={'tel'}
               {...register(`${basePath}.phone`, {
-                validate: (value) => {
-                  const emailVal = getValues(`${basePath}.email` as const);
-                  if (!value && !emailVal) {
-                    return 'Fyll inn telefon eller e-post';
-                  }
-                  return true;
+                onBlur: () => {
+                  trigger(`${basePath}.phone`);
+                },
+                onChange: () => {
+                  clearErrors(`${basePath}.phone`)
                 },
               })}
-              onBlur={() => {
-                const tlf = getValues(`${basePath}.phone` as const);
-                if (tlf) {
-                  const tlfValidering = validerTelefonnummer(tlf);
-                  if (!tlfValidering.erGodkjent) {
-                    setTlfError(tlfValidering.feilmelding);
-                  }
-                }
-              }}
-              onInput={() => setTlfError('')}
-              error={tlfError}
-              // error={contactErrors?.phone?.message as string | undefined}
+              error={contactErrors?.phone?.message as string | undefined}
             />
           </Box.New>
         );
