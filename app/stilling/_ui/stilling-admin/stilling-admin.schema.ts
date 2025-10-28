@@ -42,7 +42,7 @@ export const StillingAdminSchema = z
       const nameOk = typeof c?.name === 'string' && c.name.trim().length > 0;
       const titleOk = typeof c?.title === 'string' && c.title.trim().length > 0;
       const emailOk = email.trim().length > 0;
-      const phoneOk = telefonnummer
+      const phoneOk = telefonnummer.length > 0;
 
       if (!nameOk) {
         ctx.addIssue({
