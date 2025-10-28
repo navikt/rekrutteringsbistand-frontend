@@ -131,12 +131,13 @@ export default function OmVirksomheten() {
       properties: {
         nace2:
           (arbeidsgiver.naringskoder &&
-          (arbeidsgiver.naringskoder.map((naringskode) => {
+            JSON.stringify(
+              arbeidsgiver.naringskoder.map((naringskode) => {
                 return {
                   code: naringskode.kode,
                   name: naringskode.beskrivelse,
                 };
-              })
+              }),
             )) ??
           null,
       },
