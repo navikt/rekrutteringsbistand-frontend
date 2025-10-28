@@ -132,19 +132,19 @@ export default function OmVirksomheten() {
             : (arbeidsgiver.adresse?.land ?? 'NORGE'),
         municipal: arbeidsgiver.adresse?.kommune ?? '',
         city: arbeidsgiver.adresse?.poststed ?? '',
-        properties: {
-          nace2:
-            (arbeidsgiver.naringskoder &&
-              JSON.stringify(
-                arbeidsgiver.naringskoder.map((naringskode) => {
-                  return {
-                    code: naringskode.kode,
-                    name: naringskode.beskrivelse,
-                  };
-                }),
-              )) ??
-            null,
-        },
+      },
+      properties: {
+        nace2:
+          (arbeidsgiver.naringskoder &&
+            JSON.stringify(
+              arbeidsgiver.naringskoder.map((naringskode) => {
+                return {
+                  code: naringskode.kode,
+                  name: naringskode.beskrivelse,
+                };
+              }),
+            )) ??
+          null,
       },
     });
     const locationList = getValues('stilling.locationList') ?? [];
