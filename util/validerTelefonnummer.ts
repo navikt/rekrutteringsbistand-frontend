@@ -2,7 +2,7 @@ export const validerTelefonnummer = (
   telefonnummer: string,
 ): { erGodkjent: boolean; feilmelding: string } => {
   const telefonRegex = /^(0047|\+47|47)?[2-9]\d{7}$/;
-  const formatertTlf = telefonnummer.trim().replace(/[^0-9+]/g, "")
+  const formatertTlf = telefonnummer.trim().replace(/[^0-9+]/g, "");
   return formatertTlf === ''
     ? { erGodkjent: false, feilmelding: 'Telefonnummer kan ikke være tomt' }
     : telefonRegex.test(formatertTlf)

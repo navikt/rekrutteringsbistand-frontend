@@ -73,7 +73,7 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
   const nullstillErrorState = () => {
     setEpostError('');
     setLenkeError('');
-  }
+  };
 
   const håndterPubliser = async () => {
     setIsLoading(true);
@@ -95,7 +95,7 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
       if (publiserOffentlig) {
         if (søkemetode === 'email') {
           const epostValidering = validerEpost(epost);
-          setEpostError(epostValidering.feilmelding)
+          setEpostError(epostValidering.feilmelding);
           if (epostValidering.erGodkjent) {
             setValue('stilling.properties.applicationemail', epost, {
               shouldDirty: true,
@@ -104,7 +104,7 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
               shouldDirty: true,
             });
           } else {
-            return
+            return;
           }
         } else {
           if (lenke.trim() !== '') {

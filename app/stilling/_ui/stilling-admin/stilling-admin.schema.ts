@@ -78,7 +78,7 @@ export const StillingAdminSchema = z
             code: 'custom',
             message: epostValidering.feilmelding,
             path: ['stilling', 'contactList', i, 'email'],
-          })
+          });
         }
       }
       if (phoneOk) {
@@ -88,7 +88,7 @@ export const StillingAdminSchema = z
             code: 'custom',
             message: tlfValidering.feilmelding,
             path: ['stilling', 'contactList', i, 'phone'],
-          })
+          });
         }
       }
     });

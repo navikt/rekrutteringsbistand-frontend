@@ -95,7 +95,7 @@ export default function LeggTilKontaktperson() {
                   trigger(`${basePath}.email`);
                 },
                 onChange: () => {
-                  clearErrors(`${basePath}.email`)
+                  clearErrors(`${basePath}.email`);
                 },
               })}
               error={contactErrors?.email?.message as string | undefined}
@@ -110,7 +110,7 @@ export default function LeggTilKontaktperson() {
                   trigger(`${basePath}.phone`);
                 },
                 onChange: () => {
-                  clearErrors(`${basePath}.phone`)
+                  clearErrors(`${basePath}.phone`);
                 },
               })}
               error={contactErrors?.phone?.message as string | undefined}
