@@ -4,6 +4,7 @@ import {
   RekrutteringstreffHendelsestype,
   RelevanteStegHendelser,
 } from '@/app/rekrutteringstreff/_types/constants';
+import { format } from 'date-fns';
 
 export const getActiveStepFromHendelser = (
   hendelser: Pick<HendelseDTO, 'hendelsestype' | 'tidspunkt'>[] | undefined,
@@ -38,4 +39,14 @@ export const getActiveStepFromHendelser = (
     default:
       return AktivtSteg.KLADD;
   }
+};
+
+export const formatterDato = (datoSomStreng: string): string => {
+  const dato = new Date(datoSomStreng);
+  return format(dato, 'dd.MM.yyyy');
+};
+
+export const formatterTidspunkt = (datoSomStreng: string): string => {
+  const dato = new Date(datoSomStreng);
+  return format(dato, 'HH:mm');
 };

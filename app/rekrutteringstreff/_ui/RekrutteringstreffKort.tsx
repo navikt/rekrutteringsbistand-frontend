@@ -1,53 +1,47 @@
 'use client';
 
+import { RekrutteringstreffDTO } from '@/app/api/rekrutteringstreff/oversikt/useRekrutteringstreffOversikt';
 import StatusTag from '@/app/rekrutteringstreff/_ui/StatusTag';
+import {
+  formatterDato,
+  formatterTidspunkt,
+} from '@/app/rekrutteringstreff/_utils/rekrutteringstreff';
 import { CalendarIcon, LocationPinIcon, PersonIcon } from '@navikt/aksel-icons';
 import { BodyShort, Box, Detail, Heading, Link } from '@navikt/ds-react';
 import { FunctionComponent } from 'react';
 
-interface Props {
-  id: string;
-  dato: string;
-  tidspunkt: string;
-  antallArbeidsgivere: number;
-  tittel: string;
-  beskrivelse: string;
-  gateadresse: string;
-  postnummer: string;
-  poststed?: string;
-  stedUrl?: string;
-  opprettetAv: string;
-  opprettetDato: string;
-  navKontor: string;
+interface RekrutteringstreffKortProps {
+  rekrutteringstreff: RekrutteringstreffDTO;
 }
 
-export const RekrutteringstreffKort: FunctionComponent<Props> = ({
-  id,
-  dato,
-  tidspunkt,
-  antallArbeidsgivere,
-  tittel,
-  beskrivelse,
-  gateadresse,
-  postnummer,
-  poststed,
-  stedUrl,
-  opprettetAv,
-  opprettetDato,
-  navKontor,
-}) => {
+export const RekrutteringstreffKort: FunctionComponent<
+  RekrutteringstreffKortProps
+> = ({ rekrutteringstreff }: RekrutteringstreffKortProps) => {
+  const {
+    id,
+    fraTid,
+    tilTid,
+    tittel,
+    beskrivelse,
+    gateadresse,
+    postnummer,
+    poststed,
+    opprettetAvPersonNavident,
+    opprettetAvNavkontorEnhetId,
+    opprettetAvTidspunkt,
+  } = rekrutteringstreff;
+
   return (
     <Box.New className='mb-4 rounded-lg border border-[var(--ax-border-neutral)] p-4'>
       <div className='flex items-start justify-between'>
         <div className='flex items-center gap-2 mb-1'>
-          {dato && (
-            <>
-              <CalendarIcon aria-hidden />
-              <Detail>{dato}</Detail>
-              <Detail>{tidspunkt}</Detail>
-            </>
+          <CalendarIcon aria-hidden />
+          <Detail>{(fraTid && formatterDato(fraTid)) || 'Ukjent dato'}</Detail>
+          {fraTid && tilTid && (
+            <Detail>
+              {formatterTidspunkt(fraTid)} - {formatterTidspunkt(tilTid)}
+            </Detail>
           )}
-          <Detail>{`${antallArbeidsgivere} arbeidsgivere`}</Detail>
         </div>
         <div className='mr-2'>
           <StatusTag id={id} />
@@ -62,23 +56,17 @@ export const RekrutteringstreffKort: FunctionComponent<Props> = ({
       {(gateadresse || poststed || postnummer) && (
         <div className='mb-1 flex items-center gap-2'>
           <LocationPinIcon aria-hidden />
-          {stedUrl ? (
-            <Link href={stedUrl} target='_blank'>
-              {gateadresse}, {postnummer} {poststed}
-            </Link>
-          ) : (
-            <BodyShort>
-              {gateadresse}, {postnummer} {poststed}
-            </BodyShort>
-          )}
+          <BodyShort>
+            {gateadresse}, {postnummer} {poststed}
+          </BodyShort>
         </div>
       )}
 
       <div className='flex items-center gap-2 text-gray-600'>
         <PersonIcon aria-hidden />
-        <Detail className='mr-0.5'>{`Opprettet av ${opprettetAv}`}</Detail>
-        <Detail className='mr-0.5'>{`${opprettetDato}`}</Detail>
-        <Detail>Nav kontor {navKontor}</Detail>
+        <Detail className='mr-0.5'>{`Opprettet av ${opprettetAvPersonNavident}`}</Detail>
+        <Detail className='mr-0.5'>{`${formatterDato(opprettetAvTidspunkt)}`}</Detail>
+        <Detail>Nav kontor {opprettetAvNavkontorEnhetId}</Detail>
       </div>
     </Box.New>
   );
