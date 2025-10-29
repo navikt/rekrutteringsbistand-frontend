@@ -44,18 +44,18 @@ export const RekrutteringstreffFilter: FC = () => {
 
   return (
     <div className='flex mt-4 mb-8'>
-      <div>
-        <Search
-          hideLabel={true}
-          label='Søk i rekrutteringstreff'
-          placeholder='Søk i rekrutteringstreff'
-          variant='primary'
-          value={fritekstSøkTekst}
-          onChange={(e) => setFritekstSøkTekst(e)}
-          // onSearchClick={(e) => console.log(e)}
-        />
-      </div>
       {/* TODO: filtere er skjult for nå - dette skal legges tilbake når vi får implementert backend for søk */}
+      {/*<div>*/}
+      {/*  <Search*/}
+      {/*    hideLabel={true}*/}
+      {/*    label='Søk i rekrutteringstreff'*/}
+      {/*    placeholder='Søk i rekrutteringstreff'*/}
+      {/*    variant='primary'*/}
+      {/*    value={fritekstSøkTekst}*/}
+      {/*    onChange={(e) => setFritekstSøkTekst(e)}*/}
+      {/*    // onSearchClick={(e) => console.log(e)}*/}
+      {/*  />*/}
+      {/*</div>*/}
       {/*<AlleFilterKomponent>*/}
       {/*  <UNSAFE_Combobox*/}
       {/*    isLoading={kompetanseHook.isLoading}*/}
