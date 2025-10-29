@@ -205,7 +205,7 @@ export default function FremdriftspanelRedigering({ setForhåndsvis }: Props) {
               const erTittelUtfylt = typeof kontakt?.title === 'string' && kontakt?.title?.trim().length > 0;
               const epost = kontakt?.email?.trim();
               const telefon = kontakt?.phone?.trim();
-              const erEpostEllerTelefonUtfylt = (typeof epost === 'string' && epost.length > 0)  || (typeof telefon === 'string' && telefon.length > 0);
+              const erEpostEllerTelefonUtfylt = (typeof epost === 'string' && epost.length > 0) || (typeof telefon === 'string' && telefon.length > 0);
               if (!erNavnUtfylt || !erTittelUtfylt || (!erEpostEllerTelefonUtfylt))
                 return false;
               if (epost && !validerEpost(epost).erGodkjent) return false;
