@@ -54,6 +54,7 @@ const StedForm = ({ control }: any) => {
             value={field.value ?? ''}
             label='Gateadresse'
             error={fieldState.error?.message}
+            maxLength={100}
             onBlur={() => {
               field.onBlur();
               autosave([FormFields.GATEADRESSE]);

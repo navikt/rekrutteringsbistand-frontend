@@ -43,7 +43,7 @@ export const RekrutteringstreffFilter: FC = () => {
   const yrkeHook = useUseSugestions(yrkeSøkeTekst, SuggestType.ØnsketYrke);
 
   return (
-    <div className='flex mb-4'>
+    <div className='flex mt-4 mb-8'>
       <div>
         <Search
           hideLabel={true}
