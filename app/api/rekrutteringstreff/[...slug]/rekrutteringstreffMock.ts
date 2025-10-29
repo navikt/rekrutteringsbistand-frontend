@@ -110,7 +110,7 @@ export const rekrutteringstreffMock: RekrutteringstreffDTO = {
   gateadresse: 'Malmøgata 1',
   postnummer: '5555',
   poststed: 'Kristiansand S',
-  status: 'Utkast',
+  status: 'todo tabort',
   opprettetAvPersonNavident: 'A123456',
   opprettetAvNavkontorEnhetId: '0318',
   hendelser: _publisertHendelser,
