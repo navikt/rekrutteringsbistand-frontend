@@ -40,9 +40,13 @@ export const RekrutteringstreffKort: FunctionComponent<Props> = ({
     <Box.New className='mb-4 rounded-lg border border-[var(--ax-border-neutral)] p-4'>
       <div className='flex items-start justify-between'>
         <div className='flex items-center gap-2 mb-1'>
-          <CalendarIcon aria-hidden />
-          <Detail>{dato}</Detail>
-          <Detail>{tidspunkt}</Detail>
+          {dato && (
+            <>
+              <CalendarIcon aria-hidden />
+              <Detail>{dato}</Detail>
+              <Detail>{tidspunkt}</Detail>
+            </>
+          )}
           <Detail>{`${antallArbeidsgivere} arbeidsgivere`}</Detail>
         </div>
         <div className='mr-2'>
@@ -72,8 +76,9 @@ export const RekrutteringstreffKort: FunctionComponent<Props> = ({
 
       <div className='flex items-center gap-2 text-gray-600'>
         <PersonIcon aria-hidden />
-        <Detail>{`Opprettet av ${opprettetAv} ${opprettetDato}`}</Detail>
-        <Detail>{navKontor}</Detail>
+        <Detail className='mr-0.5'>{`Opprettet av ${opprettetAv}`}</Detail>
+        <Detail className='mr-0.5'>{`${opprettetDato}`}</Detail>
+        <Detail>Nav kontor {navKontor}</Detail>
       </div>
     </Box.New>
   );
