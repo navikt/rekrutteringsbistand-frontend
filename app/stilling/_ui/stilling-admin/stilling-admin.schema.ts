@@ -38,10 +38,10 @@ export const StillingAdminSchema = z
 
     contacts.forEach((c, i) => {
       const email = c?.email?.trim() ?? '';
-      const telefonnummer = c?.phone ?? '';
+      const telefonnummer = c?.phone?.trim() ?? '';
       const nameOk = typeof c?.name === 'string' && c.name.trim().length > 0;
       const titleOk = typeof c?.title === 'string' && c.title.trim().length > 0;
-      const emailOk = email.trim().length > 0;
+      const emailOk = email.length > 0;
       const phoneOk = telefonnummer.length > 0;
 
       if (!nameOk) {
