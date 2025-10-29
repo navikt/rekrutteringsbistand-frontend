@@ -201,19 +201,15 @@ export default function FremdriftspanelRedigering({ setForhåndsvis }: Props) {
           return (
             kontakter.length > 0 &&
             kontakter.every((kontakt) => {
-              const navn = kontakt?.name?.trim();
+              const erNavnUtfylt = typeof kontakt?.name === 'string' && kontakt?.name?.trim().length > 0;
+              const erTittelUtfylt = typeof kontakt?.title === 'string' && kontakt?.title?.trim().length > 0;
               const epost = kontakt?.email?.trim();
               const telefon = kontakt?.phone?.trim();
-              const stillingstittel = kontakt?.title?.trim();
-              const felter = [navn, epost, telefon, stillingstittel];
-              const utfylteFelter = felter.filter(
-                (f) => typeof f === 'string' && f.length > 0,
-              ).length;
-              if (utfylteFelter < 3) return false;
-              if (!navn || !stillingstittel || (!epost && !telefon))
+              if (!erNavnUtfylt || !erTittelUtfylt || (!(typeof epost === 'string' && epost.length > 0)  && !(typeof telefon === 'string' && telefon.length > 0)))
                 return false;
               if (epost && !validerEpost(epost).erGodkjent) return false;
-              return !(telefon && !validerTelefonnummer(telefon).erGodkjent);
+              return !telefon || validerTelefonnummer(telefon).erGodkjent;
+
             })
           );
         },
@@ -234,17 +230,12 @@ export default function FremdriftspanelRedigering({ setForhåndsvis }: Props) {
           return (
             steder.length > 0 &&
             steder.every((sted) => {
-              const gateadresse = sted?.address?.trim();
-              const postnummer = sted?.postalCode?.trim();
-              const land = sted?.country?.trim();
-              const fylke = sted?.county?.trim();
-              const kommune = sted?.municipal?.trim();
-              const felter = [gateadresse, postnummer, land, fylke, kommune];
-              const utfylteFelter = felter.filter(
-                (f) => typeof f === 'string' && f.length > 0,
-              ).length;
-              if (utfylteFelter === 0) return false;
-              return (gateadresse && postnummer) || land || fylke || kommune;
+              const erGateadresseUtfylt = typeof sted?.address === 'string' && sted?.address?.trim().length > 0;
+              const erPostnummerUtfylt = typeof sted?.postalCode === 'string' && sted?.postalCode?.trim().length > 0;
+              const erLandUtfylt = typeof sted?.country === 'string' && sted?.country?.trim().length > 0;
+              const erFylkeUtfylt = typeof sted?.county === 'string' && sted?.county?.trim().length > 0;
+              const erKommuneUtfylt = typeof sted?.municipal === 'string' && sted?.municipal?.trim().length > 0;
+              return (erGateadresseUtfylt && erPostnummerUtfylt) || erLandUtfylt || erFylkeUtfylt || erKommuneUtfylt;
             })
           );
         },
