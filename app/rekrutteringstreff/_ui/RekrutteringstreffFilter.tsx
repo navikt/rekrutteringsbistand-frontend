@@ -55,27 +55,28 @@ export const RekrutteringstreffFilter: FC = () => {
           // onSearchClick={(e) => console.log(e)}
         />
       </div>
-      <AlleFilterKomponent>
-        <UNSAFE_Combobox
-          isLoading={kompetanseHook.isLoading}
-          selectedOptions={kompetanse}
-          label='Kompetanse'
-          options={kompetanseHook?.data ?? []}
-          isMultiSelect
-          onToggleSelected={onKompetanseSelected}
-          onChange={(val) => setKompetanseSøkeTekst(val)}
-        />
+      {/* TODO: filtere er skjult for nå - dette skal legges tilbake når vi får implementert backend for søk */}
+      {/*<AlleFilterKomponent>*/}
+      {/*  <UNSAFE_Combobox*/}
+      {/*    isLoading={kompetanseHook.isLoading}*/}
+      {/*    selectedOptions={kompetanse}*/}
+      {/*    label='Kompetanse'*/}
+      {/*    options={kompetanseHook?.data ?? []}*/}
+      {/*    isMultiSelect*/}
+      {/*    onToggleSelected={onKompetanseSelected}*/}
+      {/*    onChange={(val) => setKompetanseSøkeTekst(val)}*/}
+      {/*  />*/}
 
-        <UNSAFE_Combobox
-          isLoading={yrkeHook.isLoading}
-          selectedOptions={yrke}
-          label='Yrke'
-          options={yrkeHook?.data ?? []}
-          isMultiSelect
-          onToggleSelected={onYrkeSelected}
-          onChange={(val) => setYrkeSøkeTekst(val)}
-        />
-      </AlleFilterKomponent>
+      {/*  <UNSAFE_Combobox*/}
+      {/*    isLoading={yrkeHook.isLoading}*/}
+      {/*    selectedOptions={yrke}*/}
+      {/*    label='Yrke'*/}
+      {/*    options={yrkeHook?.data ?? []}*/}
+      {/*    isMultiSelect*/}
+      {/*    onToggleSelected={onYrkeSelected}*/}
+      {/*    onChange={(val) => setYrkeSøkeTekst(val)}*/}
+      {/*  />*/}
+      {/*</AlleFilterKomponent>*/}
     </div>
   );
 };

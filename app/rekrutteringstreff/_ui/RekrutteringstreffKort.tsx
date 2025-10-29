@@ -45,7 +45,7 @@ export const RekrutteringstreffKort: FunctionComponent<Props> = ({
           <Detail>{tidspunkt}</Detail>
           <Detail>{`${antallArbeidsgivere} arbeidsgivere`}</Detail>
         </div>
-        <div className='fixed right-10'>
+        <div className='mr-2'>
           <StatusTag id={id} />
         </div>
       </div>
