@@ -34,7 +34,9 @@ export type RekrutteringstreffOversiktDTO = z.infer<
   typeof RekrutteringstreffOversiktSchema
 >;
 
-export type RekrutteringstreffDTO = z.infer<typeof RekrutteringstreffSchema>;
+export type RekrutteringstreffFraSøkeresultatDTO = z.infer<
+  typeof RekrutteringstreffSchema
+>;
 
 export const useRekrutteringstreffOversikt = () =>
   useSWRImmutable(

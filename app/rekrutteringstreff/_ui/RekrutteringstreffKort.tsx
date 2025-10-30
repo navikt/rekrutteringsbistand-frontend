@@ -1,6 +1,6 @@
 'use client';
 
-import { RekrutteringstreffDTO } from '@/app/api/rekrutteringstreff/oversikt/useRekrutteringstreffOversikt';
+import { RekrutteringstreffFraSøkeresultatDTO } from '@/app/api/rekrutteringstreff/oversikt/useRekrutteringstreffOversikt';
 import StatusTag from '@/app/rekrutteringstreff/_ui/StatusTag';
 import {
   formatterDato,
@@ -11,7 +11,7 @@ import { BodyShort, Box, Detail, Heading, Link } from '@navikt/ds-react';
 import { FunctionComponent } from 'react';
 
 interface RekrutteringstreffKortProps {
-  rekrutteringstreff: RekrutteringstreffDTO;
+  rekrutteringstreff: RekrutteringstreffFraSøkeresultatDTO;
 }
 
 export const RekrutteringstreffKort: FunctionComponent<
