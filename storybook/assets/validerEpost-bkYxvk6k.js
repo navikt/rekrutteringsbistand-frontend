@@ -1,0 +1,1 @@
+const i=t=>{const s=new RegExp("^[\\p{L}\\p{N}._%+-]+@[\\p{L}\\p{N}.-]+\\.\\p{L}{2,}$","u"),e=t.trim();return e===""?{erGodkjent:!1,feilmelding:"E-post kan ikke være tom"}:s.test(e)?{erGodkjent:!0,feilmelding:""}:{erGodkjent:!1,feilmelding:"Ugyldig e-postadresse"}};export{i as v};
