@@ -19,6 +19,7 @@ import {
   UNSAFE_Combobox,
 } from '@navikt/ds-react';
 import { useState, type FC } from 'react';
+import { validerEpost } from '@/util/validerEpost';
 
 export interface DelMedArbeidsgiverProps {
   markerteKandidater: KandidatListeKandidatDTO[];
@@ -66,11 +67,6 @@ const DelMedArbeidsgiver: FC<DelMedArbeidsgiverProps> = ({
       setVisModal(false);
       reFetchKandidatliste();
     });
-  };
-
-  const isValidEmail = (email: string): boolean => {
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    return emailRegex.test(email);
   };
 
   return (
@@ -187,7 +183,7 @@ const DelMedArbeidsgiver: FC<DelMedArbeidsgiverProps> = ({
                     isMultiSelect
                     onToggleSelected={(val, selected) => {
                       if (selected) {
-                        if (isValidEmail(val)) {
+                        if (validerEpost(val).erGodkjent) {
                           setEpost([...epost, val]);
                         }
                       } else {

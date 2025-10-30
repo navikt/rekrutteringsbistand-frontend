@@ -8,6 +8,8 @@ import {
 import PubliserModal from '@/app/stilling/_ui/stilling-admin/admin_moduler/PubliserModal';
 import OpprettEtterregistrering from '@/app/stilling/_ui/stilling-admin/admin_moduler/etterregistrering/OpprettEtterregistrering';
 import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
+import { validerEpost } from '@/util/validerEpost';
+import { validerTelefonnummer } from '@/util/validerTelefonnummer';
 import {
   BellDotIcon,
   BellIcon,
@@ -195,15 +197,22 @@ export default function FremdriftspanelRedigering({ setForhåndsvis }: Props) {
         label: 'Kontaktperson',
         group: 'Om virksomheten',
         isDone: (d) => {
-          const list = d.stilling?.contactList ?? [];
-          if (list.length === 0) return false;
-          if (list.length > 1) return true; // Mer enn én kontaktperson er alltid OK
-          const c = list[0];
-          const fields = [c?.name, c?.email, c?.phone, c?.title];
-          const filled = fields.filter(
-            (v) => typeof v === 'string' && v.trim().length > 0,
-          ).length;
-          return filled >= 3; // Minst tre felter må være utfylt
+          const kontakter = d.stilling?.contactList ?? [];
+          return (
+            kontakter.length > 0 &&
+            kontakter.every((kontakt) => {
+              const erNavnUtfylt = typeof kontakt?.name === 'string' && kontakt?.name?.trim().length > 0;
+              const erTittelUtfylt = typeof kontakt?.title === 'string' && kontakt?.title?.trim().length > 0;
+              const epost = kontakt?.email?.trim();
+              const telefon = kontakt?.phone?.trim();
+              const erEpostEllerTelefonUtfylt = (typeof epost === 'string' && epost.length > 0) || (typeof telefon === 'string' && telefon.length > 0);
+              if (!erNavnUtfylt || !erTittelUtfylt || (!erEpostEllerTelefonUtfylt))
+                return false;
+              if (epost && !validerEpost(epost).erGodkjent) return false;
+              return !telefon || validerTelefonnummer(telefon).erGodkjent;
+
+            })
+          );
         },
       },
       {
@@ -217,7 +226,20 @@ export default function FremdriftspanelRedigering({ setForhåndsvis }: Props) {
         id: 'arbeidssted',
         label: 'Adresse, og/eller land, fylke, eller kommune',
         group: 'Sted',
-        isDone: (d) => (d.stilling?.locationList ?? []).length > 0,
+        isDone: (d) => {
+          const steder = d.stilling?.locationList ?? [];
+          return (
+            steder.length > 0 &&
+            steder.every((sted) => {
+              const erGateadresseUtfylt = typeof sted?.address === 'string' && sted?.address?.trim().length > 0;
+              const erPostnummerUtfylt = typeof sted?.postalCode === 'string' && sted?.postalCode?.trim().length > 0;
+              const erLandUtfylt = typeof sted?.country === 'string' && sted?.country?.trim().length > 0;
+              const erFylkeUtfylt = typeof sted?.county === 'string' && sted?.county?.trim().length > 0;
+              const erKommuneUtfylt = typeof sted?.municipal === 'string' && sted?.municipal?.trim().length > 0;
+              return (erGateadresseUtfylt && erPostnummerUtfylt) || erLandUtfylt || erFylkeUtfylt || erKommuneUtfylt;
+            })
+          );
+        },
       },
       // Viktige datoer
       {
