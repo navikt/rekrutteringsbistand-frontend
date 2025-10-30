@@ -8,6 +8,7 @@ import SWRLaster from '@/components/SWRLaster';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
 import { UmamiEvent } from '@/util/umamiEvents';
+import { validerEpost } from '@/util/validerEpost';
 import { TasklistSendIcon } from '@navikt/aksel-icons';
 import {
   Accordion,
@@ -19,7 +20,6 @@ import {
   UNSAFE_Combobox,
 } from '@navikt/ds-react';
 import { useState, type FC } from 'react';
-import { validerEpost } from '@/util/validerEpost';
 
 export interface DelMedArbeidsgiverProps {
   markerteKandidater: KandidatListeKandidatDTO[];

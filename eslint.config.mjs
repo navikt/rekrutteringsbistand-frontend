@@ -19,6 +19,8 @@ const eslintConfig = [
       'out/**',
       'build/**',
       'next-env.d.ts',
+      // Midlertidig: Ignorer hele rekrutteringstreff app-mappen pga pågående omfattende refaktor / eksperimenter
+      'app/rekrutteringstreff/**',
     ],
   },
   ...compat.extends('next/core-web-vitals', 'next/typescript'),

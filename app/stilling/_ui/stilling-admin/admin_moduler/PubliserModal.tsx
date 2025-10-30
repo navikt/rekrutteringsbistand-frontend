@@ -8,7 +8,16 @@ import { useUmami } from '@/providers/UmamiContext';
 import { RekbisError } from '@/util/rekbisError';
 import { UmamiEvent } from '@/util/umamiEvents';
 import { validerEpost } from '@/util/validerEpost';
-import { BodyLong, Box, Button, Checkbox, Heading, Modal, TextField, ToggleGroup } from '@navikt/ds-react';
+import {
+  BodyLong,
+  Box,
+  Button,
+  Checkbox,
+  Heading,
+  Modal,
+  TextField,
+  ToggleGroup,
+} from '@navikt/ds-react';
 import { format, parse } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
@@ -281,11 +290,7 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <Button
-            loading={isLoading}
-            type='button'
-            onClick={håndterPubliser}
-          >
+          <Button loading={isLoading} type='button' onClick={håndterPubliser}>
             Publiser oppdraget
           </Button>
           <Button

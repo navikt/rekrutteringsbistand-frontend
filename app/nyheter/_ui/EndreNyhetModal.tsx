@@ -9,7 +9,7 @@ import RikTekstEditor from '@/components/rikteksteditor/RikTekstEditor';
 import { RekbisError } from '@/util/rekbisError';
 import { PencilIcon } from '@navikt/aksel-icons';
 import { Button, Modal, TextField } from '@navikt/ds-react';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 
 interface NyhetForm {
@@ -28,6 +28,7 @@ export default function EndreNyhetModal({
 }: EndreNyhetModalProps) {
   const nyhetModalRef = useRef<HTMLDialogElement>(null);
   const [loading, setLoading] = useState(false);
+  const [skalLukke, setSkalLukke] = useState(false);
   const {
     control,
     handleSubmit,
@@ -66,9 +67,17 @@ export default function EndreNyhetModal({
     }
     refetch();
     setLoading(false);
-    nyhetModalRef.current?.close();
-    reset();
+    setSkalLukke(true);
   };
+
+  useEffect(() => {
+    if (skalLukke) {
+      nyhetModalRef.current?.close();
+      reset();
+      const t = setTimeout(() => setSkalLukke(false), 0);
+      return () => clearTimeout(t);
+    }
+  }, [skalLukke, reset]);
 
   return (
     <div>
@@ -134,10 +143,7 @@ export default function EndreNyhetModal({
               loading={loading}
               type='button'
               variant='secondary'
-              onClick={() => {
-                reset();
-                nyhetModalRef.current?.close();
-              }}
+              onClick={() => setSkalLukke(true)}
             >
               Avbryt
             </Button>

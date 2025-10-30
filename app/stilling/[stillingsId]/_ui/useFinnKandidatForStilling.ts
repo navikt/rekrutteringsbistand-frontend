@@ -74,9 +74,7 @@ export const useFinnKandidatForStilling = (
     hasSetInitialData.current = true;
   }, [processedData, searchParams, router, pathname]);
 
-  const isLoading =
-    isDataLoading ||
-    (!hasSetInitialData.current && stillingsData !== undefined);
+  const isLoading = isDataLoading;
 
   return {
     kandidatSøkFilter,

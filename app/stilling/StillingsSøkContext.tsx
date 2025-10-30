@@ -75,6 +75,8 @@ export const StillingsSøkProvider: FC<{
   const [fritekst, setFritekstListe] = useState<string[]>([]);
 
   const setFritekst = (val: string) => {
+    // Unngå å legge til fritekst når brukStandardsok er aktivt
+    if (brukStandardSøk) return;
     setFritekstListe((prevFritekst) => [...prevFritekst, val]);
   };
 
@@ -239,16 +241,13 @@ export const StillingsSøkProvider: FC<{
     };
   };
 
-  useEffect(() => {
-    if (brukStandardSøk) {
-      setFritekstListe([]);
-    }
-  }, [brukStandardSøk]);
+  // Når brukStandardsok er aktivt: eksponer alltid tom fritekst uten å trigge ekstra render via effect
+  const effektiveFritekst = brukStandardSøk ? [] : fritekst;
 
   return (
     <StillingsSøkContext.Provider
       value={{
-        fritekst,
+        fritekst: effektiveFritekst,
         setFritekst: setFritekst,
         setFritekstListe,
         sortering,
