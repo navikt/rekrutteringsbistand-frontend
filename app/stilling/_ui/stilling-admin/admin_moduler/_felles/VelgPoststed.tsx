@@ -77,7 +77,8 @@ const VelgPoststed: FC<VelgPoststedProps> = ({
                 render={({ field }) => (
                   <TextField
                     label='Postnummer'
-                    type='number'
+                    type='text'
+                    inputMode={'numeric'}
                     maxLength={4}
                     {...field}
                     value={field.value || ''}
