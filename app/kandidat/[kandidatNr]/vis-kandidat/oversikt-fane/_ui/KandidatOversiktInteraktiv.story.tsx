@@ -1,4 +1,4 @@
-import { withKandidatContext } from '../../../../../.storybook/KandidatContextDecorator';
+import { withKandidatContext } from '../../../../../../.storybook/KandidatContextDecorator';
 import KandidatBeskrivelse from './KandidatBeskrivelse';
 import KandidatErfaring from './KandidatErfaring';
 import KandidatGodkjenninger from './KandidatGodkjenninger';

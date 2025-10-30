@@ -1,5 +1,5 @@
 import Erfaring from './Erfaring';
-import Detaljer from '@/app/kandidat/vis-kandidat/oversikt-fane/_ui/erfaring/Detaljer';
+import Detaljer from '@/app/kandidat/[kandidatNr]/vis-kandidat/oversikt-fane/_ui/erfaring/Detaljer';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 // Duplisert erfaring/detaljer (ryddes ved behov)

@@ -15,7 +15,6 @@ export default function Forside() {
       }
     >
       <SideInnhold>
-        {' '}
         <Statistikk />
       </SideInnhold>
     </SideLayout>

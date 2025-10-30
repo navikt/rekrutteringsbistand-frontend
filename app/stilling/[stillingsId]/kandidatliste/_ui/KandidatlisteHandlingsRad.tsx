@@ -24,8 +24,9 @@ const KandidatlisteHandlingsRad: FC = () => {
   const filtrerteKandidater = useFiltrerteKandidater();
 
   return (
-    <div className='ml-5 flex gap-4'>
+    <div className='flex flex-row gap-4 items-baseline flex-wrap'>
       <Checkbox
+        className='ml-5 '
         disabled={lukketKandidatliste}
         checked={
           markerteKandidater && markerteKandidater.length === kandidater.length
@@ -56,22 +57,28 @@ const KandidatlisteHandlingsRad: FC = () => {
         </span>
       </Checkbox>
       {!lukketKandidatliste && (
-        <div>
-          <SendSmsModal
-            markerteKandidater={markerteKandidater}
-            fjernAllMarkering={() => setMarkerteKandidater([])}
-          />
+        <>
+          <div>
+            <SendSmsModal
+              markerteKandidater={markerteKandidater}
+              fjernAllMarkering={() => setMarkerteKandidater([])}
+            />
+          </div>
 
           {!erJobbmesse && (
             <>
-              <DelMedKandidatModal
-                markerteKandidater={markerteKandidater}
-                fjernAllMarkering={() => setMarkerteKandidater([])}
-              />
-              <DelMedArbeidsgiver markerteKandidater={markerteKandidater} />
+              <div>
+                <DelMedKandidatModal
+                  markerteKandidater={markerteKandidater}
+                  fjernAllMarkering={() => setMarkerteKandidater([])}
+                />
+              </div>
+              <div>
+                <DelMedArbeidsgiver markerteKandidater={markerteKandidater} />
+              </div>
             </>
           )}
-        </div>
+        </>
       )}
     </div>
   );

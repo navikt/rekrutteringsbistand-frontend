@@ -130,21 +130,15 @@ export const testTilgangskontroll = (rolle: Roller) => {
       await gotoApp(page, '/stilling/minStilling');
 
       const redigerKnapp = page.getByRole('button', { name: 'Rediger' });
-      // const dupliserKnapp = page.getByRole('button', { name: 'Dupliser' });
-      // const avpubliserKnapp = page.getByRole('button', { name: 'Avpubliser' });
       const ferdigstillKnapp = page.getByRole('button', {
         name: 'Fullfør',
       });
 
       if (ARBEIDSGIVERRETTET) {
         await expect(redigerKnapp).toBeVisible();
-        // await expect(dupliserKnapp).toBeVisible();
-        // await expect(avpubliserKnapp).toBeVisible();
         await expect(ferdigstillKnapp).toBeVisible();
       } else {
         await expect(redigerKnapp).toBeHidden();
-        // await expect(dupliserKnapp).toBeHidden();
-        // await expect(avpubliserKnapp).toBeHidden();
         await expect(ferdigstillKnapp).toBeHidden();
       }
 
@@ -261,7 +255,6 @@ export const testTilgangskontroll = (rolle: Roller) => {
       }
 
       // Kan opprette formidling
-      // const etterFormidlingKnapp = page.getByRole('button', { name: 'Opprett etterregistrering' });
       if (ARBEIDSGIVERRETTET || JOBBSOKERRETTET) {
         await page
           .getByRole('button', { name: 'Opprett', exact: true })

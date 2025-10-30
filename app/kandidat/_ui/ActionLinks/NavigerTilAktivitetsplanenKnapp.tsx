@@ -1,7 +1,7 @@
 'use client';
 
+import { useKandidatContext } from '@/app/kandidat/[kandidatNr]/vis-kandidat/KandidatContext';
 import { setModiaBrukerOgNaviger } from '@/app/kandidat/util';
-import { useKandidatContext } from '@/app/kandidat/vis-kandidat/KandidatContext';
 import LenkeKortMedIkon from '@/components/lenke-kort/LenkeKortMedIkon';
 import { getMiljø, Miljø } from '@/util/miljø';
 import { useState } from 'react';

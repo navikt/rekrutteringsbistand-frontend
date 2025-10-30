@@ -6,10 +6,10 @@ export const JobbsøkerHendelsestype = {
   OPPDATERT: 'OPPDATERT',
   SLETTET: 'SLETTET',
   INVITERT: 'INVITERT',
-  MØTT_OPP: 'MØTT_OPP',
-  IKKE_MØTT_OPP: 'IKKE_MØTT_OPP',
   SVART_JA_TIL_INVITASJON: 'SVART_JA_TIL_INVITASJON',
   SVART_NEI_TIL_INVITASJON: 'SVART_NEI_TIL_INVITASJON',
+  SVART_JA_TREFF_AVLYST: 'SVART_JA_TREFF_AVLYST',
+  SVART_JA_TREFF_FULLFØRT: 'SVART_JA_TREFF_FULLFØRT',
   AKTIVITETSKORT_OPPRETTELSE_FEIL: 'AKTIVITETSKORT_OPPRETTELSE_FEIL',
 } as const;
 export type JobbsøkerHendelsestype =
@@ -75,10 +75,10 @@ export const JobbsøkerHendelsestypeLabel: Record<
   [JobbsøkerHendelsestype.OPPDATERT]: 'oppdatert',
   [JobbsøkerHendelsestype.SLETTET]: 'slettet',
   [JobbsøkerHendelsestype.INVITERT]: 'invitert',
-  [JobbsøkerHendelsestype.MØTT_OPP]: 'møtt opp',
-  [JobbsøkerHendelsestype.IKKE_MØTT_OPP]: 'ikke møtt opp',
   [JobbsøkerHendelsestype.SVART_JA_TIL_INVITASJON]: 'svart ja',
   [JobbsøkerHendelsestype.SVART_NEI_TIL_INVITASJON]: 'svart nei',
+  [JobbsøkerHendelsestype.SVART_JA_TREFF_AVLYST]: 'treff avlyst',
+  [JobbsøkerHendelsestype.SVART_JA_TREFF_FULLFØRT]: 'treff fullført',
   [JobbsøkerHendelsestype.AKTIVITETSKORT_OPPRETTELSE_FEIL]:
     'opprettelse feilet',
 };

@@ -5,16 +5,6 @@ import {
   RelevanteStegHendelser,
 } from '@/app/rekrutteringstreff/_types/constants';
 
-/**
- * Finner aktivt steg (1–3 eller status) basert på rekrutteringstreff-hendelser.
- * Logikk:
- * - Siste hendelse bestemmer status.
- * - AVLYS => 'AVLYST'
- * - AVPUBLISER => 'AVPUBLISERT'
- * - FULLFØR => 'FULLFØRE'
- * - PUBLISER eller GJENÅPN => 'INVITERE'
- * - Ingen relevante hendelser => 'PUBLISERE'
- */
 export const getActiveStepFromHendelser = (
   hendelser: Pick<HendelseDTO, 'hendelsestype' | 'tidspunkt'>[] | undefined,
 ): AktivtSteg => {

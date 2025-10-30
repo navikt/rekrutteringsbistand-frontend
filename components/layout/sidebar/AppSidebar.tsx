@@ -16,13 +16,12 @@ import { useThemeProvider } from '@/providers/ThemeProvider';
 import {
   BriefcaseClockIcon,
   BriefcaseIcon,
+  CogIcon,
   HouseIcon,
   MegaphoneSpeakingIcon,
-  MoonIcon,
   PersonTallShortIcon,
   ReceptionIcon,
   SidebarLeftIcon,
-  SunIcon,
 } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import Link from 'next/link';
@@ -179,21 +178,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             /> */}
           </div>
           <GiTilbakemelding />
-          {darkMode ? (
-            <SideHandling
-              onClick={() => setDarkMode(!darkMode)}
-              tekst='Lys modus'
-              ikon={<SunIcon />}
-              kreverRoller={null}
-            />
-          ) : (
-            <SideHandling
-              kreverRoller={null}
-              onClick={() => setDarkMode(!darkMode)}
-              ikon={<MoonIcon />}
-              tekst={'Mørk modus'}
-            />
-          )}
+
+          <SideLenke
+            path={'/instillinger'}
+            tekst='Instillinger'
+            ikon={<CogIcon />}
+            kreverRoller={null}
+          />
         </SidebarGroup>
       </SidebarContent>
     </Sidebar>

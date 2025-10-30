@@ -1,5 +1,5 @@
 import { useKandidatListeoversikt } from '@/app/api/kandidat/useKandidatListeoversikt';
-import { useKandidatContext } from '@/app/kandidat/vis-kandidat/KandidatContext';
+import { useKandidatContext } from '@/app/kandidat/[kandidatNr]/vis-kandidat/KandidatContext';
 import InternStatusTag from '@/app/stilling/[stillingsId]/kandidatliste/_ui/InternStatusTag';
 import SWRLaster from '@/components/SWRLaster';
 import { BodyShort, Button, Link } from '@navikt/ds-react';

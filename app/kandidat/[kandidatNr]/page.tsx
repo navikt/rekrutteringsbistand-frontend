@@ -1,4 +1,4 @@
-import VisKandidat from '@/app/kandidat/vis-kandidat/VisKandidat';
+import VisKandidat from '@/app/kandidat/[kandidatNr]/vis-kandidat/VisKandidat';
 
 export default function KandidatPage() {
   return <VisKandidat />;

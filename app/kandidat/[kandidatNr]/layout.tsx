@@ -1,4 +1,4 @@
-import { KandidatContextProvider } from '@/app/kandidat/vis-kandidat/KandidatContext';
+import { KandidatContextProvider } from '@/app/kandidat/[kandidatNr]/vis-kandidat/KandidatContext';
 import NotFound from '@/app/not-found';
 import { ReactNode } from 'react';
 

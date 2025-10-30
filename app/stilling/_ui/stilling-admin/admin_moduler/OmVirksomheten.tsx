@@ -96,7 +96,7 @@ export default function OmVirksomheten() {
       antallAnsatte: employer.employees ?? null,
       overordnetEnhet: employer.parentOrgnr ?? null,
       adresse,
-      naringskoder: null,
+      naringskoder: employer.properties?.nace2 ?? null,
     };
     return dto;
   };
@@ -136,6 +136,19 @@ export default function OmVirksomheten() {
             : (arbeidsgiver.adresse?.land ?? 'NORGE'),
         municipal: arbeidsgiver.adresse?.kommune ?? '',
         city: arbeidsgiver.adresse?.poststed ?? '',
+      },
+      properties: {
+        nace2:
+          (arbeidsgiver.naringskoder &&
+            JSON.stringify(
+              arbeidsgiver.naringskoder.map((naringskode) => {
+                return {
+                  code: naringskode.kode,
+                  name: naringskode.beskrivelse,
+                };
+              }),
+            )) ??
+          null,
       },
     });
     const locationList = getValues('stilling.locationList') ?? [];

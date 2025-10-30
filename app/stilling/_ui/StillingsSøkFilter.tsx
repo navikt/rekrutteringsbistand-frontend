@@ -1,8 +1,6 @@
 import StillingsSøkNavigasjon from './StillingsSøkNavigasjon';
 import { useUseBrukerStandardSøk } from '@/app/api/stilling/standardsok/useBrukersStandardsøk';
 import { SidepanelTrigger } from '@/components/layout/SidepanelTrigger';
-import { Roller } from '@/components/tilgangskontroll/roller';
-import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { FilterIcon, MagnifyingGlassIcon } from '@navikt/aksel-icons';
 import { Box, Button } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
@@ -13,13 +11,9 @@ const StillingsSøkFilter: FC<{
   stillingForKandidat?: string;
 }> = ({ formidlinger }) => {
   const [showStandardsøk, setShowStandardsøk] = useState<boolean>(false);
-  const { harRolle } = useApplikasjonContext();
   const brukerStandardSøkData = useUseBrukerStandardSøk();
   const searchRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
-  const harArbeidsgiverrettetRolle = harRolle([
-    Roller.AD_GRUPPE_REKRUTTERINGSBISTAND_ARBEIDSGIVERRETTET,
-  ]);
 
   const handleStandardsøkClick = () => {
     setShowStandardsøk(false);
@@ -46,7 +40,7 @@ const StillingsSøkFilter: FC<{
       <StillingsSøkNavigasjon />
       <div className='flex gap-2'>
         <div className='relative' ref={searchRef}>
-          {showStandardsøk && brukerStandardSøkData.data && (
+          {!formidlinger && showStandardsøk && brukerStandardSøkData.data && (
             <Box.New
               background='default'
               className='absolute top-full left-0 right-0 mt-1 rounded-md shadow-lg z-50'

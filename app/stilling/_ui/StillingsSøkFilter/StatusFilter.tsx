@@ -88,10 +88,7 @@ export default function StatusFilter({ hideLegend }: StatusFilterProps) {
           const checked = !!statuser?.includes(status);
           const label =
             status === VisningsStatus.UtloptStengtForSokere ? 'Utløpt' : status;
-          // const onlySelectedApen =
-          //   statuser?.length === 1 &&
-          //   statuser[0] === VisningsStatus.ApenForSokere &&
-          //   status === VisningsStatus.ApenForSokere;
+
           return (
             <Checkbox
               key={status}

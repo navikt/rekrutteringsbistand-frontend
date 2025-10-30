@@ -1,5 +1,5 @@
 import TidslinjeFelt from './TidslinjeFelt';
-import { useKandidatContext } from '@/app/kandidat/vis-kandidat/KandidatContext';
+import { useKandidatContext } from '@/app/kandidat/[kandidatNr]/vis-kandidat/KandidatContext';
 import { Heading } from '@navikt/ds-react';
 import { FC } from 'react';
 

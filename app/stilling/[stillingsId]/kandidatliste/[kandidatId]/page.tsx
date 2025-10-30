@@ -1,5 +1,5 @@
-import { KandidatContextProvider } from '@/app/kandidat/vis-kandidat/KandidatContext';
-import VisKandidat from '@/app/kandidat/vis-kandidat/VisKandidat';
+import { KandidatContextProvider } from '@/app/kandidat/[kandidatNr]/vis-kandidat/KandidatContext';
+import VisKandidat from '@/app/kandidat/[kandidatNr]/vis-kandidat/VisKandidat';
 import KandidatlisteWrapper from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteWrapper';
 
 export interface pageProps {

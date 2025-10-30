@@ -14,7 +14,6 @@ import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøke
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import SideScroll from '@/components/SideScroll';
 import SideLayout from '@/components/layout/SideLayout';
-import Fremdriftspanel from '@/components/sidepanel/Sidepanel';
 import { RekbisError } from '@/util/rekbisError';
 import { Tabs } from '@navikt/ds-react';
 import { formatDistanceToNow } from 'date-fns';
@@ -169,22 +168,9 @@ const Rekrutteringstreff: FC = () => {
 
   const stegviserInnhold = renderStegviser();
 
-  const layoutProps = viserFullskjermForhåndsvisning
-    ? ({
-        skjulFremdriftspanel: true,
-      } as const)
-    : ({
-        skjulFremdriftspanel: false,
-        fremdriftspanelTop: (
-          <Fremdriftspanel>{stegviserInnhold}</Fremdriftspanel>
-        ),
-        fremdriftspanel: <SideScroll>{stegviserInnhold}</SideScroll>,
-      } as const);
-
   if (viserFullskjermForhåndsvisning) {
     return (
       <SideLayout
-        {...layoutProps}
         header={
           <RekrutteringstreffHeader
             skalViseHeader={true}
@@ -217,7 +203,8 @@ const Rekrutteringstreff: FC = () => {
     <form id='rekrutteringstreff-form' onSubmit={onSubmit} noValidate>
       <Tabs value={fane} onChange={(val) => setFane(val)}>
         <SideLayout
-          {...layoutProps}
+          sidepanel={stegviserInnhold}
+          sidepanelBredde='250px'
           header={
             skalViseHeader ? (
               <RekrutteringstreffHeader

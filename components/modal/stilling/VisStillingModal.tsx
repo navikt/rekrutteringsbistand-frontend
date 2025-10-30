@@ -1,7 +1,7 @@
 import { useKandidatinformasjon } from '@/app/api/kandidat-sok/useKandidatinformasjon';
 import { Kandidatlistestatus } from '@/app/api/kandidat/schema.zod';
 import { useKandidatlisteInfo } from '@/app/api/kandidat/useKandidatlisteInfo';
-import LeggKandidatTilKandidatliste from '@/app/kandidat/vis-kandidat/_ui/LeggKandidatTilKandidatliste';
+import LeggKandidatTilKandidatliste from '@/app/kandidat/[kandidatNr]/vis-kandidat/_ui/LeggKandidatTilKandidatliste';
 import SWRLaster from '@/components/SWRLaster';
 import KandidatVisningForModal from '@/components/modal/kandidat/KandidatVisningForModal';
 import StillingVisningForModal from '@/components/modal/stilling/StillingVisningForModal';

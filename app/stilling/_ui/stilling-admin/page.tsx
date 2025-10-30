@@ -145,9 +145,12 @@ export default function StillingAdmin() {
         }
       >
         {forhåndsvis ? (
-          <>
+          <SideInnhold>
+            <Heading size='large' className={'pb-5'}>
+              {stillingsData.stilling.title ?? ''}
+            </Heading>
             <OmStillingen printRef={null} forhåndsvisData />
-          </>
+          </SideInnhold>
         ) : (
           <SideInnhold>
             <div className='flex flex-col gap-4'>

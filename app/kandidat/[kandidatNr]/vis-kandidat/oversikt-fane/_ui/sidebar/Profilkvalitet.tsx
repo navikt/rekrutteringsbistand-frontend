@@ -1,5 +1,5 @@
+import { useKandidatContext } from '@/app/kandidat/[kandidatNr]/vis-kandidat/KandidatContext';
 import { setModiaBrukerOgNaviger } from '@/app/kandidat/util';
-import { useKandidatContext } from '@/app/kandidat/vis-kandidat/KandidatContext';
 import { dialogUrl } from '@/components/modia/eksterneUrler';
 import { ExternalLinkIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button } from '@navikt/ds-react';

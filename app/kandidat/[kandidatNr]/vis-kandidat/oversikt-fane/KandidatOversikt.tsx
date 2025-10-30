@@ -9,7 +9,7 @@ import KandidatSpråk from './_ui/KandidatSpråk';
 import KandidatUtdanning from './_ui/KandidatUtdanning';
 import KandidatØnsker from './_ui/KandidatØnsker';
 import KandidatOversiktSidebar from './_ui/sidebar/KandidatOversiktSidebar';
-import { useKandidatContext } from '@/app/kandidat/vis-kandidat/KandidatContext';
+import { useKandidatContext } from '@/app/kandidat/[kandidatNr]/vis-kandidat/KandidatContext';
 
 export default function KandidatOversikt() {
   const { kandidatData } = useKandidatContext();

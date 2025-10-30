@@ -41,11 +41,6 @@ const StillingsSøkeresultat: FC<StillingsSøkeresultatProps> = ({
     finnStillingerForKandidat,
   });
 
-  // const [visStillingsId] = useQueryState('visStillingsId', {
-  //   defaultValue: '',
-  //   clearOnDefault: true,
-  // });
-
   const antallVisning = (total: number) => {
     if (!total) {
       return <BodyShort className='mt-8'>Ingen treff på søk</BodyShort>;

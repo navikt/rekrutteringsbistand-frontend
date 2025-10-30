@@ -31,7 +31,7 @@ export const brukerStandardSøkMSWHandler = http.get(
   brukerStandardSøkEndepunkt,
   () =>
     HttpResponse.json({
-      søk: 'publisert=intern&statuser=publisert%2Cutl%C3%B8pt%2Cstoppet&fylker=33&kommuner=3301',
+      søk: 'brukStandardsok=true&publisert=intern&statuser=publisert%2Cutl%C3%B8pt%2Cstoppet&fylker=33&kommuner=3301',
       navIdent: 'Z993141',
       tidspunkt: '2025-01-22T21:35:39.691808',
     }),
