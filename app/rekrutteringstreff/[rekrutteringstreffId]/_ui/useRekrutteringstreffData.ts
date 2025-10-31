@@ -23,6 +23,8 @@ export const useRekrutteringstreffData = () => {
 
   const treff = rekrutteringstreffHook.data;
   const hendelser = treff?.hendelser;
+  const fraTid = treff?.fraTid;
+  const tilTid = treff?.tilTid;
 
   const activeStep: AktivtSteg = useMemo(
     () => getActiveStepFromHendelser(hendelser),
@@ -36,14 +38,14 @@ export const useRekrutteringstreffData = () => {
   const { harInvitert } = useInviteringsStatus();
 
   const fraTidspunktHarPassert = useMemo(() => {
-    if (!treff?.fraTid) return false;
-    return new Date(treff.fraTid) < new Date();
-  }, [treff?.fraTid]);
+    if (!fraTid) return false;
+    return new Date(fraTid) < new Date();
+  }, [fraTid]);
 
   const tilTidspunktHarPassert = useMemo(() => {
-    if (!treff?.tilTid) return false;
-    return new Date(treff.tilTid) < new Date();
-  }, [treff?.tilTid]);
+    if (!tilTid) return false;
+    return new Date(tilTid) < new Date();
+  }, [tilTid]);
 
   const innleggHtmlFraBackend = innlegg?.[0]?.htmlContent ?? null;
 

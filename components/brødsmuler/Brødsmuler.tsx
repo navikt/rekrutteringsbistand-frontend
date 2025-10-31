@@ -121,7 +121,11 @@ function AutoBreadcrumbs({
 
   // Reset collapsed on path change
   useEffect(() => {
-    setCollapsed(false);
+    const timer = setTimeout(() => {
+      setCollapsed(false);
+    }, 0);
+
+    return () => clearTimeout(timer);
   }, [pathname]);
 
   useLayoutEffect(() => {

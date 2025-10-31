@@ -1,9 +1,9 @@
 'use client';
 
-import { useRekrutteringstreffData } from '../../useRekrutteringstreffData';
 import { SjekklisteInfo } from './Sjekkliste';
+import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
 import { EyeSlashIcon, TableIcon } from '@navikt/aksel-icons';
-import { BodyShort, Heading, Loader, VStack, HStack } from '@navikt/ds-react';
+import { BodyShort, Heading, HStack, Loader, VStack } from '@navikt/ds-react';
 import { format } from 'date-fns';
 import { nb } from 'date-fns/locale/nb';
 import { useMemo } from 'react';
@@ -12,19 +12,20 @@ const FullføreSteg = () => {
   const { treff: rekrutteringstreff, rekrutteringstreffHook } =
     useRekrutteringstreffData();
   const { isLoading } = rekrutteringstreffHook;
+  const hendelser = rekrutteringstreff?.hendelser;
 
   const fullførHendelse = useMemo(() => {
-    if (!rekrutteringstreff?.hendelser?.length) {
+    if (!hendelser?.length) {
       return undefined;
     }
 
-    return [...rekrutteringstreff.hendelser]
+    return [...hendelser]
       .filter((h) => h.hendelsestype === 'FULLFØR')
       .sort(
         (a, b) =>
           new Date(b.tidspunkt).getTime() - new Date(a.tidspunkt).getTime(),
       )[0];
-  }, [rekrutteringstreff?.hendelser]);
+  }, [hendelser]);
 
   const fullførtAvTekst = useMemo(() => {
     const navn = fullførHendelse?.aktørIdentifikasjon ?? 'Ukjent bruker';

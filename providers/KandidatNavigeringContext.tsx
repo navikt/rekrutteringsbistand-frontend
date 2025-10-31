@@ -44,8 +44,14 @@ export const KandidatNavigeringProvider: React.FC<{
 
   useEffect(() => {
     const index = kandidatNavigering.indexOf(kandidatNr);
-    setHarNesteKandidat(index !== -1 && index < kandidatNavigering.length - 1);
-    setHarForrigeKandidat(index > 0);
+    const timer = setTimeout(() => {
+      setHarNesteKandidat(
+        index !== -1 && index < kandidatNavigering.length - 1,
+      );
+      setHarForrigeKandidat(index > 0);
+    }, 0);
+
+    return () => clearTimeout(timer);
   }, [kandidatNr, kandidatNavigering]);
 
   useEffect(() => {

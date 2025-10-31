@@ -9,7 +9,7 @@ import DatoTidRad from './tidspunkt/DatoTidRad';
 import { rekrutteringstreffVarighet } from './tidspunkt/varighet';
 import { BodyShort, Heading } from '@navikt/ds-react';
 import { isSameDay } from 'date-fns';
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Control, useFormContext, useWatch } from 'react-hook-form';
 
 interface Props {
@@ -50,7 +50,11 @@ const TidspunktForm = ({ control }: Props) => {
 
   useEffect(() => {
     const computed = fraDato && tilDato ? !isSameDay(fraDato, tilDato) : false;
-    setFlereDager((prev) => (prev === computed ? prev : computed));
+    const timer = setTimeout(() => {
+      setFlereDager((prev) => (prev === computed ? prev : computed));
+    }, 0);
+
+    return () => clearTimeout(timer);
   }, [fraDato, tilDato]);
 
   // Auto-juster sluttidspunkt når startidspunkt endres

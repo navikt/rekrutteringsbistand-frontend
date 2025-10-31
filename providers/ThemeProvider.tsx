@@ -67,13 +67,23 @@ export const ThemeProvider: FC<ThemeProviderProps> = ({
 
   // Synk når forceDarkMode endres (kontrollert utenfra, f.eks. Storybook)
   useEffect(() => {
-    if (forceDarkMode !== undefined && forceDarkMode !== darkMode) {
-      setDarkMode(forceDarkMode);
+    if (forceDarkMode === undefined || forceDarkMode === darkMode) {
+      return;
     }
+
+    const timer = setTimeout(() => {
+      setDarkMode(forceDarkMode);
+    }, 0);
+
+    return () => clearTimeout(timer);
   }, [forceDarkMode, darkMode]);
 
   useReactEffect(() => {
-    setMounted(true);
+    const timer = setTimeout(() => {
+      setMounted(true);
+    }, 0);
+
+    return () => clearTimeout(timer);
   }, []);
 
   if (!mounted) return null;

@@ -90,21 +90,25 @@ export const ApplikasjonContextProvider: React.FC<
     );
 
   useEffect(() => {
-    setValgStatetNavKontor((navKontor) => {
-      if (navKontor?.navKontor === aktivEnhet) {
-        return navKontor;
-      }
-      const nyNavKontor = brukerData.enheter.find(
-        (enhet) => enhet.enhetId === aktivEnhet,
-      );
-      if (nyNavKontor) {
-        return {
-          navKontor: nyNavKontor.enhetId,
-          navKontorNavn: nyNavKontor.navn,
-        };
-      }
-      return null;
-    });
+    const timer = setTimeout(() => {
+      setValgStatetNavKontor((navKontor) => {
+        if (navKontor?.navKontor === aktivEnhet) {
+          return navKontor;
+        }
+        const nyNavKontor = brukerData.enheter.find(
+          (enhet) => enhet.enhetId === aktivEnhet,
+        );
+        if (nyNavKontor) {
+          return {
+            navKontor: nyNavKontor.enhetId,
+            navKontorNavn: nyNavKontor.navn,
+          };
+        }
+        return null;
+      });
+    }, 0);
+
+    return () => clearTimeout(timer);
   }, [aktivEnhet, brukerData.enheter]);
 
   return (
