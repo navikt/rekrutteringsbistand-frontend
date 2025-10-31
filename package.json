@@ -30,7 +30,7 @@
     "@navikt/ds-tailwind": "^7.32.1",
     "@navikt/fnrvalidator": "^2.1.5",
     "@navikt/next-logger": "^4.1.5",
-    "@navikt/oasis": "^3.8.0",
+    "@navikt/oasis": "^4.1.0",
     "@navikt/pino-logger": "^4.1.5",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-avatar": "^1.1.9",
