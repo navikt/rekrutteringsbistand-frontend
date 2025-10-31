@@ -5,16 +5,16 @@ import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 const GiTilbakemelding = () => {
-  const buttonRef = useRef<HTMLButtonElement>(null);
   const skyraSurveyRef = useRef<HTMLElement>(null);
   const [openState, setOpenState] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [initialCheckDone, setInitialCheckDone] = useState(false);
   const { open } = useSidebar();
 
   useEffect(() => {
     if (!skyraSurveyRef.current || !openState) {
-      setInitialCheckDone(false);
-      return;
+      const resetId = window.setTimeout(() => setInitialCheckDone(false), 0);
+      return () => window.clearTimeout(resetId);
     }
 
     const checkShadowContent = () => {
@@ -71,8 +71,10 @@ const GiTilbakemelding = () => {
     <>
       <Button
         size='small'
-        ref={buttonRef}
-        onClick={() => setOpenState(!openState)}
+        onClick={(event) => {
+          setAnchorEl(event.currentTarget);
+          setOpenState((prev) => !prev);
+        }}
         aria-expanded={openState}
         variant='tertiary-neutral'
         icon={<PersonChatIcon />}
@@ -85,8 +87,11 @@ const GiTilbakemelding = () => {
         createPortal(
           <Popover
             open={openState}
-            onClose={() => setOpenState(false)}
-            anchorEl={buttonRef.current}
+            onClose={() => {
+              setOpenState(false);
+              setAnchorEl(null);
+            }}
+            anchorEl={anchorEl}
           >
             <Popover.Content className='w-[360px]'>
               {/* @ts-expect-error Ikke typet */}

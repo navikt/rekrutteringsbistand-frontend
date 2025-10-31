@@ -348,7 +348,14 @@ function TimeInput({
       queueScrollIntoView();
     }, [queueScrollIntoView, value]);
 
-  useEffect(() => setInputValue(value ?? ''), [value]);
+  useEffect(() => {
+    const next = value ?? '';
+    const timer = setTimeout(() => {
+      setInputValue(next);
+    }, 0);
+
+    return () => clearTimeout(timer);
+  }, [value]);
 
   useEffect(() => {
     const input = inputRef.current;

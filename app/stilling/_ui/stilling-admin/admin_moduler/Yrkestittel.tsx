@@ -4,27 +4,24 @@ import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsConte
 import { mapJanzzTilKategori } from '@/app/stilling/_ui/stilling-admin/_util/mapJanzz';
 import RedigerBoks from '@/app/stilling/_ui/stilling-admin/admin_moduler/_felles/RedigerBoks';
 import { UNSAFE_Combobox } from '@navikt/ds-react';
-import { useEffect, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 export default function Yrkestittel() {
   const { setValue } = useFormContext<StillingsDataDTO>();
   const { stillingsData } = useStillingsContext();
-  const [valg, setValg] = useState<{ label: string; value: string }[]>([]);
   const [søkeVerdi, setSøkeVerdi] = useState<string>('');
   const hook = useStillingsTittel(søkeVerdi.length > 1 ? søkeVerdi : undefined);
 
-  useEffect(() => {
-    if (hook.data) {
-      const nyeValg =
-        hook.data
-          .filter(
-            (f) => f.styrk08 && f.styrk08.trim() !== '' && f.styrk08 !== '9999',
-          )
-          .map((item) => ({ label: item.label, value: item.label })) ?? [];
-      setValg(nyeValg);
-    }
-  }, [hook.data]);
+  const valg = useMemo(
+    () =>
+      hook.data
+        ?.filter(
+          (f) => f.styrk08 && f.styrk08.trim() !== '' && f.styrk08 !== '9999',
+        )
+        .map((item) => ({ label: item.label, value: item.label })) ?? [],
+    [hook.data],
+  );
 
   return (
     <RedigerBoks tittel='Hva arbeidsgiver leter etter'>

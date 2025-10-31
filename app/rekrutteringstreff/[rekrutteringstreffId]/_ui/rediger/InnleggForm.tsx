@@ -26,7 +26,7 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
 
   const { autosave } = useAutosaveInnlegg();
 
-  const [editorKey, setEditorKey] = useState(Date.now());
+  const [editorKey, setEditorKey] = useState(0);
 
   const {
     analyse,
@@ -56,7 +56,11 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
       shouldTouch: false,
       shouldValidate: false,
     });
-    setEditorKey(Date.now());
+    const timeout = window.setTimeout(() => {
+      setEditorKey((prev) => prev + 1);
+    }, 0);
+
+    return () => window.clearTimeout(timeout);
   }, [setValue, innlegg?.htmlContent]);
 
   return (

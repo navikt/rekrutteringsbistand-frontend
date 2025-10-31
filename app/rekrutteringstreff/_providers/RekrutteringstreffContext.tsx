@@ -4,9 +4,11 @@ import { RekbisError } from '@/util/rekbisError';
 import {
   createContext,
   ReactNode,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 
@@ -41,31 +43,58 @@ export const RekrutteringstreffProvider = ({
     innlegg: 0,
     republiser: 0,
   });
-
-  const startLagring = (nøkkel: Lagringsnøkkel) =>
-    setLagringsTellere((forrige) => ({
-      ...forrige,
-      [nøkkel]: (forrige[nøkkel] || 0) + 1,
-    }));
-
-  const stoppLagring = (nøkkel: Lagringsnøkkel) =>
-    setLagringsTellere((forrige) => ({
-      ...forrige,
-      [nøkkel]: Math.max(0, (forrige[nøkkel] || 1) - 1),
-    }));
-
   const lagrerNoe = Object.values(lagringsTellere).some((antall) => antall > 0);
   const [lagrerSynlig, setLagrerSynlig] = useState(false);
+  const skjulTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Enkel 500ms forsinkelse: vis umiddelbart, skjul etter 500ms
-  useEffect(() => {
-    if (lagrerNoe) {
-      setLagrerSynlig(true);
-    } else {
-      const timer = setTimeout(() => setLagrerSynlig(false), 500);
-      return () => clearTimeout(timer);
+  const clearSkjulTimer = useCallback(() => {
+    if (skjulTimerRef.current) {
+      clearTimeout(skjulTimerRef.current);
+      skjulTimerRef.current = null;
     }
-  }, [lagrerNoe]);
+  }, []);
+
+  const planleggSkjuling = useCallback(() => {
+    clearSkjulTimer();
+    skjulTimerRef.current = setTimeout(() => {
+      setLagrerSynlig(false);
+      skjulTimerRef.current = null;
+    }, 500);
+  }, [clearSkjulTimer]);
+
+  const startLagring = useCallback(
+    (nøkkel: Lagringsnøkkel) => {
+      clearSkjulTimer();
+      setLagrerSynlig(true);
+      setLagringsTellere((forrige) => ({
+        ...forrige,
+        [nøkkel]: (forrige[nøkkel] || 0) + 1,
+      }));
+    },
+    [clearSkjulTimer],
+  );
+
+  const stoppLagring = useCallback(
+    (nøkkel: Lagringsnøkkel) =>
+      setLagringsTellere((forrige) => {
+        const neste = {
+          ...forrige,
+          [nøkkel]: Math.max(0, (forrige[nøkkel] || 1) - 1),
+        };
+
+        const ingenLagring = Object.values(neste).every(
+          (antall) => antall === 0,
+        );
+        if (ingenLagring) {
+          planleggSkjuling();
+        }
+
+        return neste;
+      }),
+    [planleggSkjuling],
+  );
+
+  useEffect(() => () => clearSkjulTimer(), [clearSkjulTimer]);
 
   const kontekstVerdi: RekrutteringstreffContekst = useMemo(
     () => ({
@@ -76,7 +105,14 @@ export const RekrutteringstreffProvider = ({
       startLagring,
       stoppLagring,
     }),
-    [rekrutteringstreffId, lagringsTellere, lagrerNoe, lagrerSynlig],
+    [
+      rekrutteringstreffId,
+      lagringsTellere,
+      lagrerNoe,
+      lagrerSynlig,
+      startLagring,
+      stoppLagring,
+    ],
   );
 
   return (

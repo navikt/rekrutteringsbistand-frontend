@@ -1,0 +1,15 @@
+{
+  "$schema": "https://unpkg.com/knip@4/schema.json",
+  "entry": [
+    "app/**/*.{ts,tsx}",
+    "components/**/*.{ts,tsx}",
+    "providers/**/*.{ts,tsx}"
+  ],
+  "ignore": [
+    "mocks/**",
+    "playwright-report/**",
+    "storybook-static/**",
+    "tests/**",
+    "public/**"
+  ]
+}

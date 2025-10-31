@@ -5,7 +5,7 @@ import {
   toIso,
 } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/rediger/tidspunkt/utils';
 import { BodyLong, BodyShort, Button, Label, Modal } from '@navikt/ds-react';
-import { FC, useEffect, useMemo, useRef, useState } from 'react';
+import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 type Endring = {
@@ -137,10 +137,17 @@ const RepubliserRekrutteringstreffButton: FC<Props> = ({
   const [endringerVistIModal, setEndringerVistIModal] = useState<Endring[]>([]);
   const [wasSubmitting, setWasSubmitting] = useState(false);
 
+  const lukkModal = useCallback(() => {
+    modalRef.current?.close();
+  }, []);
+
   useEffect(() => {
     if (!treff) {
-      setEndringer([]);
-      return;
+      const timer = setTimeout(() => {
+        setEndringer([]);
+      }, 0);
+
+      return () => clearTimeout(timer);
     }
 
     const beregnOgOppdater = () => {
@@ -177,15 +184,26 @@ const RepubliserRekrutteringstreffButton: FC<Props> = ({
   // 3. Forretningslogikk (useRepubliser) er separert fra UI (denne komponenten)
   // 4. Vi unngår prop drilling ved å holde lukkModal lokalt i denne komponenten
   useEffect(() => {
+    let timer: ReturnType<typeof setTimeout> | null = null;
+
     if (wasSubmitting && !formState.isSubmitting) {
       if (!formState.errors || Object.keys(formState.errors).length === 0) {
         lukkModal();
       }
-      setWasSubmitting(false);
+      timer = setTimeout(() => {
+        setWasSubmitting(false);
+      }, 0);
     } else if (formState.isSubmitting && !wasSubmitting) {
-      setWasSubmitting(true);
+      timer = setTimeout(() => {
+        setWasSubmitting(true);
+      }, 0);
     }
-  }, [formState.isSubmitting, formState.errors, wasSubmitting]);
+    return () => {
+      if (timer !== null) {
+        clearTimeout(timer);
+      }
+    };
+  }, [formState.isSubmitting, formState.errors, wasSubmitting, lukkModal]);
 
   const tittelKiSjekket = watch('tittelKiSjekket') ?? false;
   const innleggKiSjekket = watch('htmlContentKiSjekket') ?? false;
@@ -220,14 +238,13 @@ const RepubliserRekrutteringstreffButton: FC<Props> = ({
     manglerNavn,
   ]);
 
-  const åpneModal = () => {
+  const åpneModal = useCallback(() => {
     if (!isDisabled) {
       // Lagre en kopi av gjeldende endringer som skal vises i modalen
       setEndringerVistIModal([...endringer]);
       modalRef.current?.showModal();
     }
-  };
-  const lukkModal = () => modalRef.current?.close();
+  }, [endringer, isDisabled]);
 
   return (
     <>

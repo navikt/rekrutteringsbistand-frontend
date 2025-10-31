@@ -3,13 +3,14 @@ import { setModiaBrukerOgNaviger } from '@/app/kandidat/util';
 import { dialogUrl } from '@/components/modia/eksterneUrler';
 import { ExternalLinkIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button } from '@navikt/ds-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 export default function Profilkvalitet() {
   const { kandidatData } = useKandidatContext();
   const [loading, setLoading] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [manglerFelt, setManglerFelt] = useState<string[]>([]);
+  // Derived profilkvalitet-data beregnes direkte (unngår effekt + setState)
+  let progress = 0;
+  const manglerFelt: string[] = [];
 
   // Ønsket jobbsted
   const harØnsketJobbsted = (kandidatData?.geografiJobbonsker?.length ?? 0) > 0;
@@ -28,47 +29,33 @@ export default function Profilkvalitet() {
     setLoading(false);
   };
 
-  useEffect(() => {
-    if (kandidatData) {
-      let prosent = 0;
-      const mangler: string[] = [];
-      if (harØnsketJobbsted) {
-        prosent += 20;
-      } else {
-        mangler.push('Ønsket jobbsted');
-      }
-      if (harJobbønske) {
-        prosent += 20;
-      } else {
-        mangler.push('Jobbønske');
-      }
-      if (harKompetanse) {
-        prosent += 20;
-      } else {
-        mangler.push('Kompetanse');
-      }
-      if (harSpråk) {
-        prosent += 20;
-      } else {
-        mangler.push('Språk');
-      }
-      if (harBosted) {
-        prosent += 20;
-      } else {
-        mangler.push('Bosted');
-      }
-
-      setProgress(prosent);
-      setManglerFelt(mangler);
+  if (kandidatData) {
+    if (harØnsketJobbsted) {
+      progress += 20;
+    } else {
+      manglerFelt.push('Ønsket jobbsted');
     }
-  }, [
-    kandidatData,
-    harØnsketJobbsted,
-    harJobbønske,
-    harKompetanse,
-    harSpråk,
-    harBosted,
-  ]);
+    if (harJobbønske) {
+      progress += 20;
+    } else {
+      manglerFelt.push('Jobbønske');
+    }
+    if (harKompetanse) {
+      progress += 20;
+    } else {
+      manglerFelt.push('Kompetanse');
+    }
+    if (harSpråk) {
+      progress += 20;
+    } else {
+      manglerFelt.push('Språk');
+    }
+    if (harBosted) {
+      progress += 20;
+    } else {
+      manglerFelt.push('Bosted');
+    }
+  }
 
   return (
     <div>

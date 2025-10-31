@@ -45,7 +45,10 @@ export default function FremdriftspanelRedigering({ setForhåndsvis }: Props) {
   const { watch } = useFormContext<StillingsDataDTO>();
   const data = watch();
 
-  const kategori = data?.stillingsinfo?.stillingskategori;
+  const kategori = useMemo(
+    () => data?.stillingsinfo?.stillingskategori,
+    [data?.stillingsinfo?.stillingskategori],
+  );
 
   // For Formidling ønsker vi 1-til-1 mellom admin-moduler og sjekkliste
   const formidlingModuler = useMemo(
@@ -201,16 +204,25 @@ export default function FremdriftspanelRedigering({ setForhåndsvis }: Props) {
           return (
             kontakter.length > 0 &&
             kontakter.every((kontakt) => {
-              const erNavnUtfylt = typeof kontakt?.name === 'string' && kontakt?.name?.trim().length > 0;
-              const erTittelUtfylt = typeof kontakt?.title === 'string' && kontakt?.title?.trim().length > 0;
+              const erNavnUtfylt =
+                typeof kontakt?.name === 'string' &&
+                kontakt?.name?.trim().length > 0;
+              const erTittelUtfylt =
+                typeof kontakt?.title === 'string' &&
+                kontakt?.title?.trim().length > 0;
               const epost = kontakt?.email?.trim();
               const telefon = kontakt?.phone?.trim();
-              const erEpostEllerTelefonUtfylt = (typeof epost === 'string' && epost.length > 0) || (typeof telefon === 'string' && telefon.length > 0);
-              if (!erNavnUtfylt || !erTittelUtfylt || (!erEpostEllerTelefonUtfylt))
+              const erEpostEllerTelefonUtfylt =
+                (typeof epost === 'string' && epost.length > 0) ||
+                (typeof telefon === 'string' && telefon.length > 0);
+              if (
+                !erNavnUtfylt ||
+                !erTittelUtfylt ||
+                !erEpostEllerTelefonUtfylt
+              )
                 return false;
               if (epost && !validerEpost(epost).erGodkjent) return false;
               return !telefon || validerTelefonnummer(telefon).erGodkjent;
-
             })
           );
         },
@@ -231,12 +243,27 @@ export default function FremdriftspanelRedigering({ setForhåndsvis }: Props) {
           return (
             steder.length > 0 &&
             steder.every((sted) => {
-              const erGateadresseUtfylt = typeof sted?.address === 'string' && sted?.address?.trim().length > 0;
-              const erPostnummerUtfylt = typeof sted?.postalCode === 'string' && sted?.postalCode?.trim().length > 0;
-              const erLandUtfylt = typeof sted?.country === 'string' && sted?.country?.trim().length > 0;
-              const erFylkeUtfylt = typeof sted?.county === 'string' && sted?.county?.trim().length > 0;
-              const erKommuneUtfylt = typeof sted?.municipal === 'string' && sted?.municipal?.trim().length > 0;
-              return (erGateadresseUtfylt && erPostnummerUtfylt) || erLandUtfylt || erFylkeUtfylt || erKommuneUtfylt;
+              const erGateadresseUtfylt =
+                typeof sted?.address === 'string' &&
+                sted?.address?.trim().length > 0;
+              const erPostnummerUtfylt =
+                typeof sted?.postalCode === 'string' &&
+                sted?.postalCode?.trim().length > 0;
+              const erLandUtfylt =
+                typeof sted?.country === 'string' &&
+                sted?.country?.trim().length > 0;
+              const erFylkeUtfylt =
+                typeof sted?.county === 'string' &&
+                sted?.county?.trim().length > 0;
+              const erKommuneUtfylt =
+                typeof sted?.municipal === 'string' &&
+                sted?.municipal?.trim().length > 0;
+              return (
+                (erGateadresseUtfylt && erPostnummerUtfylt) ||
+                erLandUtfylt ||
+                erFylkeUtfylt ||
+                erKommuneUtfylt
+              );
             })
           );
         },

@@ -1,5 +1,5 @@
-import { createSidebarDecorator } from '../../.storybook/StoryProviders';
 import OpprettMeny from './OpprettMeny';
+import { createSidebarDecorator } from '@/.storybook/StoryProviders';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 const meta = {

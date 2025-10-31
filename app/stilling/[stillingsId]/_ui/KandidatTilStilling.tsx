@@ -9,7 +9,7 @@ import { getMiljø, Miljø } from '@/util/miljø';
 import { ArrowRightIcon, FilesIcon } from '@navikt/aksel-icons';
 import { Alert, Button, Heading } from '@navikt/ds-react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { FC, useEffect, useState } from 'react';
+import { FC, useMemo } from 'react';
 
 export interface KandidatTilStillingProps {
   stillingsData?: StillingsDataDTO;
@@ -25,22 +25,16 @@ const KandidatTilStilling: FC<KandidatTilStillingProps> = ({
     skalHenteStillingsData ? stillingsData : null,
   );
   const router = useRouter();
-  const [alleredeLagtTilKandidatliste, setAlleredeLagtTilKandidatliste] =
-    useState<string[]>([]);
   const { erEier, kandidatlisteInfo, kandidatlisteLaster } =
     useStillingsContext();
 
-  // Brukes for å vise eier hvem som allerede er lagt til i kandidatliste
   const kandidatlisteHook = useKandidatlisteForEier(stillingsData, erEier);
-
-  useEffect(() => {
-    if (kandidatlisteHook?.data?.kandidater) {
-      const listeOverValgteKandidater = kandidatlisteHook.data.kandidater
-        .map((kandidat) => kandidat.kandidatnr)
-        .filter((id): id is string => id !== null);
-
-      setAlleredeLagtTilKandidatliste(listeOverValgteKandidater);
-    }
+  const alleredeLagtTilKandidatliste = useMemo(() => {
+    const kandidater = kandidatlisteHook?.data?.kandidater;
+    if (!kandidater) return [] as string[];
+    return kandidater
+      .map((kandidat) => kandidat.kandidatnr)
+      .filter((id): id is string => id !== null);
   }, [kandidatlisteHook?.data?.kandidater]);
 
   const kopierArbeidsplassenLenke = () => {
@@ -69,17 +63,14 @@ const KandidatTilStilling: FC<KandidatTilStillingProps> = ({
           <Heading spacing size='small' level='3'>
             Du kan ikke foreslå kandidater til stillingen
           </Heading>
-
           <p className='mb-4'>
             Stillingsoppdraget ligger på arbeidsplassen.no og brukes ikke av Nav
             til aktivt rekrutteringssamarbeid med arbeidsgiveren.
           </p>
-
           <p className='mb-4'>
             Du kan alltids dele lenken til stillingsoppdraget med jobbsøkeren,
             og be de søke selv.
           </p>
-
           <Button
             variant='secondary-neutral'
             icon={<FilesIcon />}
@@ -87,13 +78,11 @@ const KandidatTilStilling: FC<KandidatTilStillingProps> = ({
           >
             Kopier delingslenke
           </Button>
-
           <p className='mb-4 mt-8'>
             Ønsker du å legge til jobbsøkere må Nav ha inngått avtale med
             arbeidsgiver om å hjelpe dem med rekruttering, og stillingsoppdraget
             må oppdateres. For å gjøre dette må du:
           </p>
-
           <ol className='list-decimal list-inside mb-4 space-y-2'>
             <li>
               Ha tilgangen Arbeidsgiverrettet i Modia rekrutteringsbistand.
@@ -108,12 +97,10 @@ const KandidatTilStilling: FC<KandidatTilStillingProps> = ({
               stillingsoppdrag siden.
             </li>
           </ol>
-
           <p className='mb-6'>
             Har du ikke tilgangen selv kan du høre med en markedskontakt ved
             kontoret ditt om å undersøke videre.
           </p>
-
           <Button
             icon={<ArrowRightIcon />}
             iconPosition='right'
@@ -142,5 +129,4 @@ const KandidatTilStilling: FC<KandidatTilStillingProps> = ({
     </>
   );
 };
-
 export default KandidatTilStilling;

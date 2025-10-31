@@ -4,9 +4,9 @@ import {
   StillingSchemaDTO,
   StillingsinfoSchema,
 } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
-import z from 'zod';
 import { validerEpost } from '@/util/validerEpost';
 import { validerTelefonnummer } from '@/util/validerTelefonnummer';
+import z from 'zod';
 
 const formidlingKandidaterSchema = navnSchema.extend({
   fnr: z.string(),

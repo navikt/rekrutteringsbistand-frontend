@@ -27,6 +27,7 @@ import React, {
   useCallback,
   useContext,
   useEffect,
+  useId,
   useMemo,
   useState,
   type ComponentProps,
@@ -624,6 +625,15 @@ function SidebarMenuBadge({
   );
 }
 
+function deterministicWidthFromId(id: string, min = 50, max = 90) {
+  let hash = 0;
+  for (let i = 0; i < id.length; i += 1) {
+    hash = (hash * 31 + id.charCodeAt(i)) & 0xffffffff;
+  }
+  const range = max - min;
+  return min + (Math.abs(hash) % (range + 1));
+}
+
 function SidebarMenuSkeleton({
   className,
   showIcon = false,
@@ -631,10 +641,10 @@ function SidebarMenuSkeleton({
 }: React.ComponentProps<'div'> & {
   showIcon?: boolean;
 }) {
-  // Random width between 50 to 90%.
+  const skeletonId = useId();
   const width = useMemo(() => {
-    return `${Math.floor(Math.random() * 40) + 50}%`;
-  }, []);
+    return `${deterministicWidthFromId(skeletonId)}%`;
+  }, [skeletonId]);
 
   return (
     <div

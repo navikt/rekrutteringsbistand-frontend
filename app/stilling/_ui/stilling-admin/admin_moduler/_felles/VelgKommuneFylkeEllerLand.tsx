@@ -1,4 +1,3 @@
-// Flyttet fra _old/_ui/VelgKommuneFylkeEllerLand.tsx
 import {
   GeografiType,
   usePamGeografi,
@@ -6,7 +5,7 @@ import {
 import { GeografiDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { storForbokstavString } from '@/app/kandidat/util';
 import { UNSAFE_Combobox } from '@navikt/ds-react';
-import { FC, useEffect, useState } from 'react';
+import { FC, useMemo, useState } from 'react';
 
 interface GeografiDTOmedId extends GeografiDTO {
   id: string;
@@ -23,40 +22,45 @@ const VelgKommuneFylkeEllerLand: FC<VelgKommuneFylkeEllerLandProps> = ({
   fjernLokasjonId,
 }) => {
   const geografi = usePamGeografi();
-  const [muligeValg, setMuligeValg] = useState<string[]>([]);
   const [søkeTekst, setSøkeTekst] = useState<string>('');
   const [isListOpen, setIsListOpen] = useState<boolean>(false);
   const valgteVerdier = lokasjoner;
 
-  useEffect(() => {
-    if (søkeTekst.length > 1) {
-      setMuligeValg([
-        ...(geografi.data
-          ?.filter((g) => g.type === GeografiType.KOMMUNE)
-          .filter((k) =>
-            k.navn.toLowerCase().includes(søkeTekst.toLocaleLowerCase()),
-          )
-          .map((k) => `${storForbokstavString(k.navn)} (kommune)`) ?? []),
-        ...(geografi.data
-          ?.filter((g) => g.type === GeografiType.FYLKE)
-          .filter((f) =>
-            f.navn.toLowerCase().includes(søkeTekst.toLocaleLowerCase()),
-          )
-          .map((f) => `${storForbokstavString(f.navn)} (fylke)`) ?? []),
-        ...(geografi.data
-          ?.filter((g) => g.type === GeografiType.LAND)
-          ?.filter((l) =>
-            l.navn.toLowerCase().includes(søkeTekst.toLocaleLowerCase()),
-          )
-          .map((l) => `${storForbokstavString(l.navn)} (land)`) ?? []),
-      ]);
-    }
-  }, [geografi.data, søkeTekst]);
+  // Derivert liste - ingen setState i effect
+  const muligeValg = useMemo(() => {
+    if (søkeTekst.length <= 1 || !geografi.data) return [];
+    const lower = søkeTekst.toLowerCase();
+    const format = (navn: string, label: string) =>
+      `${storForbokstavString(navn)} (${label})`;
+
+    return [
+      ...geografi.data
+        .filter(
+          (g) =>
+            g.type === GeografiType.KOMMUNE &&
+            g.navn.toLowerCase().includes(lower),
+        )
+        .map((k) => format(k.navn, 'kommune')),
+      ...geografi.data
+        .filter(
+          (g) =>
+            g.type === GeografiType.FYLKE &&
+            g.navn.toLowerCase().includes(lower),
+        )
+        .map((f) => format(f.navn, 'fylke')),
+      ...geografi.data
+        .filter(
+          (g) =>
+            g.type === GeografiType.LAND &&
+            g.navn.toLowerCase().includes(lower),
+        )
+        .map((l) => format(l.navn, 'land')),
+    ];
+  }, [søkeTekst, geografi.data]);
 
   const handleValgtVerdi = (option: string, isSelected: boolean) => {
     const typeMatch = option.match(/\(([^)]+)\)$/);
     const type = typeMatch ? typeMatch[1] : '';
-
     const navn = option.replace(/\s*\([^)]*\)$/, '').trim();
 
     const lokasjon = geografi.data
@@ -83,14 +87,9 @@ const VelgKommuneFylkeEllerLand: FC<VelgKommuneFylkeEllerLandProps> = ({
         const isCountry =
           lokasjon?.lokasjon.land && v.country === lokasjon.lokasjon.land;
 
-        if (type.toLowerCase() === 'kommune') {
-          return isMunicipal;
-        } else if (type.toLowerCase() === 'fylke') {
-          return isCounty;
-        } else if (type.toLowerCase() === 'land') {
-          return isCountry;
-        }
-
+        if (type.toLowerCase() === 'kommune') return isMunicipal;
+        if (type.toLowerCase() === 'fylke') return isCounty;
+        if (type.toLowerCase() === 'land') return isCountry;
         return false;
       });
 
@@ -118,9 +117,9 @@ const VelgKommuneFylkeEllerLand: FC<VelgKommuneFylkeEllerLandProps> = ({
         setIsListOpen(value.length > 0);
         setSøkeTekst(value);
       }}
-      onToggleSelected={(option, isSelected) => {
-        handleValgtVerdi(option, isSelected);
-      }}
+      onToggleSelected={(option, isSelected) =>
+        handleValgtVerdi(option, isSelected)
+      }
       label=''
       description='Du kan velge flere kommuner, fylker eller land'
       options={muligeValg}

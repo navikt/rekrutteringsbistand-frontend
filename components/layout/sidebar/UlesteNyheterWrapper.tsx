@@ -25,9 +25,14 @@ export default function UlesteNyheterWrapper({
           );
           const ulesteNyheter =
             antallLesteFraLocalStorage !== nyheter.data.length;
-
-          setHarUlestNyhet(ulesteNyheter);
+          const id = window.setTimeout(
+            () => setHarUlestNyhet(ulesteNyheter),
+            0,
+          );
+          return () => window.clearTimeout(id);
         }
+        const id = window.setTimeout(() => setHarUlestNyhet(false), 0);
+        return () => window.clearTimeout(id);
       } catch (error) {
         new RekbisError({
           error,
