@@ -148,11 +148,6 @@ export function useRepubliser(
         aktivtSteg === AktivtSteg.INVITERE ||
         aktivtSteg === AktivtSteg.FULLFØRE;
 
-      console.log('kriterier', harEndringer, rekrutteringstreffId, {
-        aktivtSteg,
-        erPublisert,
-      });
-
       if (harEndringer && rekrutteringstreffId && erPublisert) {
         try {
           await registrerEndring(rekrutteringstreffId, {
