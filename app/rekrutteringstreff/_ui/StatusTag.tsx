@@ -1,36 +1,39 @@
-import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
-import { AktivtSteg } from '@/app/rekrutteringstreff/_types/constants';
-import { getActiveStepFromHendelser } from '@/app/rekrutteringstreff/_utils/rekrutteringstreff';
-import { Loader, Tag } from '@navikt/ds-react';
+import { RekrutteringstreffStatus } from '@/app/api/rekrutteringstreff/oversikt/useRekrutteringstreffOversikt';
+import { Tag, TagProps } from '@navikt/ds-react';
 import { FunctionComponent } from 'react';
 
 interface StatusTagProps {
-  id: string;
+  status: RekrutteringstreffStatus;
   className?: string;
 }
 
-const StatusTag: FunctionComponent<StatusTagProps> = ({ id, className }) => {
-  const { data, isLoading, error } = useRekrutteringstreff(id);
-
-  if (isLoading) {
-    return <Loader size='xsmall' title='Laster status' />;
+const getTagVariant = (
+  status: RekrutteringstreffStatus,
+): TagProps['variant'] => {
+  switch (status) {
+    case 'PUBLISERT':
+    case 'FULLFØRT':
+      return 'success';
+    case 'UTKAST':
+      return 'warning';
+    case 'AVLYST':
+    case 'SLETTET':
+      return 'error';
+    default:
+      return 'neutral';
   }
+};
 
-  if (error) {
-    return null;
-  }
+const formatStatus = (status: string) =>
+  status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
 
-  const step = getActiveStepFromHendelser(data?.hendelser);
-  const erPublisert =
-    step === AktivtSteg.INVITERE || step === AktivtSteg.FULLFØRE;
-
+const StatusTag: FunctionComponent<StatusTagProps> = ({
+  status,
+  className,
+}) => {
   return (
-    <Tag
-      size='small'
-      variant={erPublisert ? 'success' : 'warning'}
-      className={className}
-    >
-      {erPublisert ? 'Publisert' : 'Ikke publisert'}
+    <Tag size='small' variant={getTagVariant(status)} className={className}>
+      {formatStatus(status)}
     </Tag>
   );
 };

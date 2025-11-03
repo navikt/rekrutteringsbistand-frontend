@@ -26,6 +26,7 @@ export const RekrutteringstreffKort: FunctionComponent<
     gateadresse,
     postnummer,
     poststed,
+    status,
     opprettetAvPersonNavident,
     opprettetAvNavkontorEnhetId,
     opprettetAvTidspunkt,
@@ -44,7 +45,7 @@ export const RekrutteringstreffKort: FunctionComponent<
           )}
         </div>
         <div className='mr-2'>
-          <StatusTag id={id} />
+          <StatusTag status={status} />
         </div>
       </div>
 
