@@ -103,7 +103,7 @@ export function useRepubliser(
       const nyeVerdier = byggRekrutteringstreffDto();
 
       // 3. Bygg endringer objekt (kun gamle verdier for endrede felt)
-      const endringer: Record<string, string | null> = {};
+      const gamleVerdierForEndringer: Record<string, string | null> = {};
       const felter = [
         'tittel',
         'beskrivelse',
@@ -121,12 +121,12 @@ export function useRepubliser(
           | null;
         const nyVerdi = (nyeVerdier[felt] ?? null) as string | null;
         if (gammelVerdi !== nyVerdi) {
-          endringer[felt] = gammelVerdi;
+          gamleVerdierForEndringer[felt] = gammelVerdi;
         }
       });
 
       if (shouldSaveInnlegg) {
-        endringer.htmlContent = 'Innhold endret';
+        gamleVerdierForEndringer.htmlContent = 'Innhold endret';
       }
 
       // 4. Lagre rekrutteringstreff
@@ -138,7 +138,7 @@ export function useRepubliser(
       }
 
       // 6. Registrer endringshendelse hvis det er endringer
-      const harEndringer = Object.keys(endringer).length > 0;
+      const harEndringer = Object.keys(gamleVerdierForEndringer).length > 0;
 
       // Avled om treffet er publisert fra hendelser
       const aktivtSteg = getActiveStepFromHendelser(
@@ -155,7 +155,9 @@ export function useRepubliser(
 
       if (harEndringer && rekrutteringstreffId && erPublisert) {
         try {
-          await registrerEndring(rekrutteringstreffId, { ...endringer });
+          await registrerEndring(rekrutteringstreffId, {
+            gamleVerdierForEndringer,
+          });
         } catch (error) {
           // Ikke blokker brukerflyt hvis endringsevent feiler
           new RekbisError({
