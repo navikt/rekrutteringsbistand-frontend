@@ -2,26 +2,22 @@ import { usePamGeografi } from '@/app/api/pam-geografi/typehead/lokasjoner/usePa
 import { useKandidatSøkFilterContext } from '@/app/kandidat/KandidaSokFilterContext';
 import { storBokstavSted, storForbokstavString } from '@/app/kandidat/util';
 import { Checkbox, UNSAFE_Combobox } from '@navikt/ds-react';
-import { FC, useEffect, useState } from 'react';
+import { FC, useMemo } from 'react';
 
 export default function KandidatStedSøk() {
   const { ønsketSted, setØnsketSted } = useKandidatSøkFilterContext();
 
-  const [valg, setValg] = useState<string[]>([]);
-
   const geografi = usePamGeografi();
 
-  useEffect(() => {
-    if (geografi.data) {
-      const uniqueValg = geografi.data
-        .filter((geo) => geo.type !== 'LAND')
-        .map(
-          (geoagrafi) =>
-            `${storBokstavSted(geoagrafi.navn)} (${storForbokstavString(geoagrafi.type)})`,
-        );
-
-      setValg(uniqueValg);
-    }
+  const valg = useMemo(() => {
+    if (!geografi.data) return [];
+    return geografi.data
+      .filter((geo) => geo.type !== 'LAND')
+      .map(
+        (geoagrafi) =>
+          `${storBokstavSted(geoagrafi.navn)} (${storForbokstavString(geoagrafi.type)})`,
+      )
+      .sort();
   }, [geografi.data]);
 
   const onOptionSelected = (option: string, isSelected: boolean) => {
@@ -41,7 +37,7 @@ export default function KandidatStedSøk() {
         disabled={geografi.isLoading}
         selectedOptions={ønsketSted}
         label='Ønsket sted'
-        options={valg.sort()}
+        options={valg}
         onToggleSelected={onOptionSelected}
         isMultiSelect
       />

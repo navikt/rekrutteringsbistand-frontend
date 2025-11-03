@@ -90,7 +90,7 @@ const OmTreffet: FC = () => {
   return (
     <div className='space-y-8 max-w-[64rem] mx-auto'>
       <section>
-        <Heading level='1' size='large' className='mb-2'>
+        <Heading level='1' size='large' className='mt-4'>
           {rekrutteringstreff.tittel}
         </Heading>
       </section>

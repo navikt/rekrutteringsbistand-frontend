@@ -16,7 +16,7 @@ import {
   TextField,
   UNSAFE_Combobox,
 } from '@navikt/ds-react';
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 export const ValgtArbeidsgiverVisning: FC<{
@@ -66,13 +66,12 @@ export default function OmVirksomheten() {
   const kategori = watch('stillingsinfo.stillingskategori');
   const erFormidling = kategori === Stillingskategori.Formidling;
 
-  // Sett beskrivelsen til "Etterregistrering" hvis det er formidling
   useEffect(() => {
     if (erFormidling) {
       setValue('stilling.properties.employerdescription', 'Etterregistrering');
     }
   }, [erFormidling, setValue]);
-  // Hjelper: mappe fra stilling.employer (form-format) til ArbeidsgiverDTO (visningsformat)
+
   const mapEmployerToArbeidsgiverDTO = (
     employer: any | null | undefined,
   ): ArbeidsgiverDTO | null => {
@@ -89,7 +88,7 @@ export default function OmVirksomheten() {
           adresse: loc.address ?? '',
         }
       : null;
-    const dto: ArbeidsgiverDTO = {
+    return {
       organisasjonsnummer: employer.orgnr ?? '',
       navn: employer.name ?? '',
       organisasjonsform: employer.orgform ?? '',
@@ -98,23 +97,18 @@ export default function OmVirksomheten() {
       adresse,
       naringskoder: employer.properties?.nace2 ?? null,
     };
-    return dto;
   };
 
-  const [arbeidsgiver, setArbeidsgiverState] = useState<ArbeidsgiverDTO | null>(
-    mapEmployerToArbeidsgiverDTO(getValues('stilling.employer')),
-  );
-
-  // Hold valgt arbeidsgiver i sync når stilling.employer endres i form
+  // Deriver valgt arbeidsgiver direkte fra formverdien (ikke egen state)
   const employerWatch = watch('stilling.employer');
-  useEffect(() => {
-    setArbeidsgiverState(mapEmployerToArbeidsgiverDTO(employerWatch));
-  }, [employerWatch]);
+  const arbeidsgiver = useMemo(
+    () => mapEmployerToArbeidsgiverDTO(employerWatch),
+    [employerWatch],
+  );
 
   const harVærtPublisert = getValues('stilling.firstPublished');
 
   const setArbeidsgiver = (arbeidsgiver: ArbeidsgiverDTO) => {
-    setArbeidsgiverState(arbeidsgiver);
     const eksisterende = getValues('stilling.employer') ?? ({} as any);
     setValue('stilling.businessName', arbeidsgiver.navn ?? null);
     setValue('stilling.employer', {
@@ -141,16 +135,15 @@ export default function OmVirksomheten() {
         nace2:
           (arbeidsgiver.naringskoder &&
             JSON.stringify(
-              arbeidsgiver.naringskoder.map((naringskode) => {
-                return {
-                  code: naringskode.kode,
-                  name: naringskode.beskrivelse,
-                };
-              }),
+              arbeidsgiver.naringskoder.map((naringskode) => ({
+                code: naringskode.kode,
+                name: naringskode.beskrivelse,
+              })),
             )) ??
           null,
       },
     });
+
     const locationList = getValues('stilling.locationList') ?? [];
     if (locationList.length === 0 && arbeidsgiver.adresse) {
       setValue('stilling.locationList', [

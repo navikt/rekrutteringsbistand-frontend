@@ -1,8 +1,8 @@
+import VelgInternStatus from './VelgInternStatus';
 import {
   createKandidatlisteMock,
   withStillingsKandidatliste,
-} from '../../../../../.storybook/ContextDecorators';
-import VelgInternStatus from './VelgInternStatus';
+} from '@/.storybook/ContextDecorators';
 import { InternKandidatstatus } from '@/app/stilling/[stillingsId]/kandidatliste/KandidatTyper';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 

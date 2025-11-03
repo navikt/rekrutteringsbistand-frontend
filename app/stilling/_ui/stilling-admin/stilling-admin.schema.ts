@@ -4,6 +4,8 @@ import {
   StillingSchemaDTO,
   StillingsinfoSchema,
 } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
+import { validerEpost } from '@/util/validerEpost';
+import { validerTelefonnummer } from '@/util/validerTelefonnummer';
 import z from 'zod';
 
 const formidlingKandidaterSchema = navnSchema.extend({
@@ -35,23 +37,23 @@ export const StillingAdminSchema = z
     if (!contacts || contacts.length === 0) return;
 
     contacts.forEach((c, i) => {
+      const email = c?.email?.trim() ?? '';
+      const telefonnummer = c?.phone?.trim() ?? '';
       const nameOk = typeof c?.name === 'string' && c.name.trim().length > 0;
       const titleOk = typeof c?.title === 'string' && c.title.trim().length > 0;
-      const emailOk = typeof c?.email === 'string' && c.email.trim().length > 0;
-      const digits =
-        typeof c?.phone === 'string' ? c.phone.replace(/\D/g, '') : '';
-      const phoneOk = digits.length === 8; // 8 siffer
+      const emailOk = email.length > 0;
+      const phoneOk = telefonnummer.length > 0;
 
       if (!nameOk) {
         ctx.addIssue({
-          code: z.ZodIssueCode.custom,
+          code: 'custom',
           message: 'Navn er påkrevd',
           path: ['stilling', 'contactList', i, 'name'],
         });
       }
       if (!titleOk) {
         ctx.addIssue({
-          code: z.ZodIssueCode.custom,
+          code: 'custom',
           message: 'Tittel er påkrevd',
           path: ['stilling', 'contactList', i, 'title'],
         });
@@ -59,15 +61,35 @@ export const StillingAdminSchema = z
       if (!emailOk && !phoneOk) {
         // Legg samme feilmelding på begge feltene for å gjøre det tydelig i UI
         ctx.addIssue({
-          code: z.ZodIssueCode.custom,
+          code: 'custom',
           message: 'Oppgi e-post eller et gyldig telefonnummer (8 siffer)',
           path: ['stilling', 'contactList', i, 'email'],
         });
         ctx.addIssue({
-          code: z.ZodIssueCode.custom,
+          code: 'custom',
           message: 'Oppgi e-post eller et gyldig telefonnummer (8 siffer)',
           path: ['stilling', 'contactList', i, 'phone'],
         });
+      }
+      if (emailOk) {
+        const epostValidering = validerEpost(email);
+        if (!epostValidering.erGodkjent) {
+          ctx.addIssue({
+            code: 'custom',
+            message: epostValidering.feilmelding,
+            path: ['stilling', 'contactList', i, 'email'],
+          });
+        }
+      }
+      if (phoneOk) {
+        const tlfValidering = validerTelefonnummer(telefonnummer);
+        if (!tlfValidering.erGodkjent) {
+          ctx.addIssue({
+            code: 'custom',
+            message: tlfValidering.feilmelding,
+            path: ['stilling', 'contactList', i, 'phone'],
+          });
+        }
       }
     });
   });

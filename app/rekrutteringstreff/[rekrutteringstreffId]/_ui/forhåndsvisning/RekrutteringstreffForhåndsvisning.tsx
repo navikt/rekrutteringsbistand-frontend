@@ -97,10 +97,11 @@ const RekrutteringstreffForhåndsvisning: FC = () => {
     };
   }, [watched]);
 
+  const htmlContent = watched?.htmlContent;
   const innlegg = useMemo(() => {
-    if (!watched?.htmlContent) return null;
-    return { htmlContent: watched.htmlContent };
-  }, [watched?.htmlContent]);
+    if (!htmlContent) return null;
+    return { htmlContent };
+  }, [htmlContent]);
 
   if (isLoadingArbeidsgivere) {
     return (

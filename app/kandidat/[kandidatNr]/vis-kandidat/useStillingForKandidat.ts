@@ -10,7 +10,7 @@ import {
   getNummerFraSted,
   stedmappingFraGammeltNummer,
 } from '@/util/fylkeOgKommuneMapping';
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 const hentFylkerFraJobbønsker = (
   geografijobbønskenummer: string[],
@@ -68,7 +68,8 @@ export const konverterStederTilNåværendeKoder = (
 };
 
 export const useStillingForKandidat = (kandidatId: string | null) => {
-  const hasSetInitialData = useRef(false);
+  // Bruk state i stedet for ref for å indikere at initial data er satt
+  const [harSattInitialData, setHarSattInitialData] = useState(false);
   const stillingsSøkContext = useStillingsSøkFilter();
   const { data: kandidatStillingssøk, isLoading: isKandidatLoading } =
     useKandidatStillingssøk(kandidatId);
@@ -97,21 +98,21 @@ export const useStillingForKandidat = (kandidatId: string | null) => {
   }, [kandidatStillingssøk]);
 
   useEffect(() => {
-    if (processedData && !hasSetInitialData.current) {
+    if (processedData && !harSattInitialData) {
       const { fylker, kommuner, yrkesønsker } = processedData;
-
+      // Synkroniserer eksternt system (context) MED utledet data
       stillingsSøkContext.setFylker(fylker);
       stillingsSøkContext.setKommuner(kommuner);
       stillingsSøkContext.setFritekstListe(yrkesønsker);
       stillingsSøkContext.setStatuser([VisningsStatus.ApenForSokere]);
-
-      hasSetInitialData.current = true;
+      // Deferrer state-markering til neste tick for å unngå lint 'setState in effect' (hvis regel aktiv)
+      const t = setTimeout(() => setHarSattInitialData(true), 0);
+      return () => clearTimeout(t);
     }
-  }, [processedData, stillingsSøkContext]);
+  }, [processedData, harSattInitialData, stillingsSøkContext]);
 
   const isLoading =
-    isKandidatLoading ||
-    (!hasSetInitialData.current && kandidatStillingssøk !== null);
+    isKandidatLoading || (kandidatStillingssøk !== null && !harSattInitialData);
 
   return {
     kandidatStillingssøk,

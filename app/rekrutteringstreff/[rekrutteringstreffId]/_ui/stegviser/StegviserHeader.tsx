@@ -5,6 +5,28 @@ import { AktivtSteg } from '@/app/rekrutteringstreff/_types/constants';
 import { ProgressBar } from '@navikt/ds-react';
 import { FC } from 'react';
 
+const ProgressMedTeller: FC<{
+  value: number;
+  max: number;
+  ariaLabel: string;
+}> = ({ value, max, ariaLabel }) => {
+  const prosent = max === 0 ? 0 : (value / max) * 100;
+
+  return (
+    <>
+      <ProgressBar
+        value={prosent}
+        size='small'
+        className='mt-2'
+        aria-label={ariaLabel}
+      />
+      <div className='flex justify-end text-sm tabular-nums mt-1'>
+        {value} / {max}
+      </div>
+    </>
+  );
+};
+
 interface Props {
   onToggleForhåndsvisning?: (erIForhåndsvisning: boolean) => void;
   erIForhåndsvisning: boolean;
@@ -18,27 +40,6 @@ const StegviserHeader: FC<Props> = () => {
     antallInviterePunkterFullfort,
     totaltAntallInviterePunkter,
   } = useStegviser();
-
-  const getProsent = (value: number, max: number) =>
-    max === 0 ? 0 : (value / max) * 100;
-
-  const ProgressMedTeller: FC<{
-    value: number;
-    max: number;
-    ariaLabel: string;
-  }> = ({ value, max, ariaLabel }) => (
-    <>
-      <ProgressBar
-        value={getProsent(value, max)}
-        size='small'
-        className='mt-2'
-        aria-label={ariaLabel}
-      />
-      <div className='flex justify-end text-sm tabular-nums mt-1'>
-        {value} / {max}
-      </div>
-    </>
-  );
 
   return (
     <div className='w-full'>

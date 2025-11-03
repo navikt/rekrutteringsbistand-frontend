@@ -1,7 +1,7 @@
 import {
-  useJobbsøkere,
   JobbsøkerDTO,
   JobbsøkerHendelseDTO,
+  useJobbsøkere,
 } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøkere/useJobbsøkere';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
@@ -58,12 +58,13 @@ export const useInviteringsStatus = (): InviteringsStatus => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { data: treff } = useRekrutteringstreff(rekrutteringstreffId);
   const { data: jobbsøkere = [] } = useJobbsøkere(rekrutteringstreffId);
+  const tilTid = treff?.tilTid;
 
   // Sjekk om til-tidspunkt har passert
   const tilTidspunktHarPassert = useMemo(() => {
-    if (!treff?.tilTid) return false;
-    return new Date(treff.tilTid) < new Date();
-  }, [treff?.tilTid]);
+    if (!tilTid) return false;
+    return new Date(tilTid) < new Date();
+  }, [tilTid]);
 
   // Beregn statistikk
   const antallInviterte = useMemo(

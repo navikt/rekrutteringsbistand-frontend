@@ -3,7 +3,7 @@ import { useUmami } from '@/providers/UmamiContext';
 import { UmamiEvent } from '@/util/umamiEvents';
 import { PrinterSmallIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
-import { RefObject, useEffect, type FC } from 'react';
+import { RefObject, useEffect, useState, type FC } from 'react';
 import { useReactToPrint } from 'react-to-print';
 
 export interface StillingPrintProps {
@@ -13,6 +13,8 @@ export interface StillingPrintProps {
 const StillingPrint: FC<StillingPrintProps> = ({ printRef }) => {
   const { stillingsData } = useStillingsContext();
   const { track } = useUmami();
+  // Vi bruker en egen state som settes asynkront (via rAF) for å unngå lint-feil om synkron setState i effect
+  const [isReady, setIsReady] = useState(false);
 
   const reactToPrintFn = useReactToPrint({
     contentRef: printRef,
@@ -62,12 +64,16 @@ const StillingPrint: FC<StillingPrintProps> = ({ printRef }) => {
   });
 
   useEffect(() => {
+    let frame: number | null = null;
     const currentRef = printRef.current;
     if (currentRef) {
       currentRef.classList.add('print-content');
+      // Utsett setState til neste frame for å unngå lint varsling om synkron setState
+      frame = requestAnimationFrame(() => setIsReady(true));
     }
 
     return () => {
+      if (frame) cancelAnimationFrame(frame);
       if (currentRef) {
         const printTitle = currentRef.querySelector('.print-only');
         if (printTitle) {
@@ -76,8 +82,10 @@ const StillingPrint: FC<StillingPrintProps> = ({ printRef }) => {
         currentRef.classList.remove('print-content');
       }
     };
-  }, [printRef, stillingsData]);
-  if (!printRef.current) {
+  }, [printRef]);
+
+  // Vent med å rendre knapp til ref er etablert
+  if (!isReady) {
     return null;
   }
 

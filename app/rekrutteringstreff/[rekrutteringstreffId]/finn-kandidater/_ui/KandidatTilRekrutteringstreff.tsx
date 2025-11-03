@@ -2,25 +2,21 @@ import { useJobbsøkere } from '@/app/api/rekrutteringstreff/[...slug]/jobbsøke
 import KandidatSøkResultat from '@/app/kandidat/KandidatSøkResultat';
 import KandidatSøkTabs from '@/app/kandidat/KandidatSøkTabs';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
-import { FC, useEffect, useState } from 'react';
+import { FC, useMemo } from 'react';
 
 const KandidatTilRekrutteringstreff: FC = () => {
-  const [alleredeLagtTilTreff, setAlleredeLagtTil] = useState<string[]>([]);
-
   const rekrutteringstreff = useRekrutteringstreffContext();
 
   const { data: jobbsøkere } = useJobbsøkere(
     rekrutteringstreff.rekrutteringstreffId as string,
   );
 
-  useEffect(() => {
-    if (jobbsøkere) {
-      const listeOverValgteJobbsøkere = jobbsøkere
-        .map((jobbsøker) => jobbsøker.kandidatnummer)
-        .filter((id): id is string => id !== null);
+  const alleredeLagtTilTreff = useMemo(() => {
+    if (!jobbsøkere) return [];
 
-      setAlleredeLagtTil(listeOverValgteJobbsøkere);
-    }
+    return jobbsøkere
+      .map((jobbsøker) => jobbsøker.kandidatnummer)
+      .filter((id): id is string => id !== null);
   }, [jobbsøkere]);
 
   return (

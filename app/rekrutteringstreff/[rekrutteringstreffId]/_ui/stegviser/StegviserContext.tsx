@@ -3,16 +3,14 @@
 import { useRekrutteringstreffData } from '../useRekrutteringstreffData';
 import { useInviteringsStatus } from './useInviteringsStatus';
 import { useSjekklisteStatus } from './useSjekklisteStatus';
-import { AktivtSteg as AktivtStegConst } from '@/app/rekrutteringstreff/_types/constants';
 import {
   createContext,
-  useState,
-  useContext,
-  useEffect,
   FC,
   ReactNode,
+  useCallback,
+  useContext,
+  useMemo,
 } from 'react';
-import * as React from 'react';
 
 export interface StegviserState {
   activeStep: string;
@@ -41,9 +39,6 @@ const StegviserContext = createContext<StegviserState | undefined>(undefined);
 export const StegviserProvider: FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  // Lokal UI state - aktivt steg
-  const [activeStep, setActiveStep] = useState<string>(AktivtStegConst.KLADD);
-
   // Bruk sentraliserte hooks for all data og beregninger
   const { tilTidspunktHarPassert, activeStep: derivedStep } =
     useRekrutteringstreffData();
@@ -65,27 +60,42 @@ export const StegviserProvider: FC<{ children: ReactNode }> = ({
 
   // Alias for konsistens (brukt i flere komponenter)
   const arrangementtidspunktHarPassert = tilTidspunktHarPassert;
+  const setActiveStep = useCallback((step: string) => {
+    void step; // Lokalt override fjernet; activeStep følger nå backend-state.
+  }, []);
 
-  // Synkroniser lokal activeStep med derived state fra backend
-  useEffect(() => {
-    setActiveStep((prev) => (prev === derivedStep ? prev : derivedStep));
-  }, [derivedStep]);
-
-  const value: StegviserState = {
-    activeStep,
-    setActiveStep,
-    sjekklistePunkterFullfort,
-    totaltAntallSjekklistePunkter,
-    erPubliseringklar,
-    antallInviterePunkterFullfort,
-    totaltAntallInviterePunkter,
-    harInvitert,
-    antallInviterte,
-    antallSvarJa,
-    antallVenterSvar,
-    arrangementtidspunktHarPassert,
-    tiltidspunktHarPassert: tilTidspunktHarPassert,
-  };
+  const value: StegviserState = useMemo(
+    () => ({
+      activeStep: derivedStep,
+      setActiveStep,
+      sjekklistePunkterFullfort,
+      totaltAntallSjekklistePunkter,
+      erPubliseringklar,
+      antallInviterePunkterFullfort,
+      totaltAntallInviterePunkter,
+      harInvitert,
+      antallInviterte,
+      antallSvarJa,
+      antallVenterSvar,
+      arrangementtidspunktHarPassert,
+      tiltidspunktHarPassert: tilTidspunktHarPassert,
+    }),
+    [
+      derivedStep,
+      setActiveStep,
+      sjekklistePunkterFullfort,
+      totaltAntallSjekklistePunkter,
+      erPubliseringklar,
+      antallInviterePunkterFullfort,
+      totaltAntallInviterePunkter,
+      harInvitert,
+      antallInviterte,
+      antallSvarJa,
+      antallVenterSvar,
+      arrangementtidspunktHarPassert,
+      tilTidspunktHarPassert,
+    ],
+  );
 
   return (
     <StegviserContext.Provider value={value}>

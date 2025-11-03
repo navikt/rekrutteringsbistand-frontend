@@ -10,7 +10,8 @@ export default function LeggTilKontaktperson() {
   const {
     control,
     register,
-    getValues,
+    trigger,
+    clearErrors,
     formState: { errors },
   } = useFormContext<StillingsDataDTO>();
   const stillingsContext = useNullableStillingsContext();
@@ -90,12 +91,11 @@ export default function LeggTilKontaktperson() {
               label='E-post'
               type='email'
               {...register(`${basePath}.email`, {
-                validate: (value) => {
-                  const phoneVal = getValues(`${basePath}.phone` as const);
-                  if (!value && !phoneVal) {
-                    return 'Fyll inn e-post eller telefon';
-                  }
-                  return true;
+                onBlur: () => {
+                  trigger(`${basePath}.email`);
+                },
+                onChange: () => {
+                  clearErrors(`${basePath}.email`);
                 },
               })}
               error={contactErrors?.email?.message as string | undefined}
@@ -104,13 +104,13 @@ export default function LeggTilKontaktperson() {
             <TextField
               label='Telefonnummer'
               type='tel'
+              inputMode={'tel'}
               {...register(`${basePath}.phone`, {
-                validate: (value) => {
-                  const emailVal = getValues(`${basePath}.email` as const);
-                  if (!value && !emailVal) {
-                    return 'Fyll inn telefon eller e-post';
-                  }
-                  return true;
+                onBlur: () => {
+                  trigger(`${basePath}.phone`);
+                },
+                onChange: () => {
+                  clearErrors(`${basePath}.phone`);
                 },
               })}
               error={contactErrors?.phone?.message as string | undefined}

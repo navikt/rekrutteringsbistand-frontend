@@ -7,6 +7,7 @@ import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { useUmami } from '@/providers/UmamiContext';
 import { RekbisError } from '@/util/rekbisError';
 import { UmamiEvent } from '@/util/umamiEvents';
+import { validerEpost } from '@/util/validerEpost';
 import {
   BodyLong,
   Box,
@@ -67,13 +68,20 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
   const initSøkemetode: 'email' | 'url' = applicationUrl ? 'url' : 'email';
   const [søkemetode, setSøkemetode] = useState<string>(initSøkemetode);
   const [epost, setEpost] = useState(applicationEmail ?? '');
+  const [epostError, setEpostError] = useState<string>('');
   const [lenke, setLenke] = useState(applicationUrl ?? '');
+  const [lenkeError, setLenkeError] = useState<string>('');
 
   const skjemaDatoTilIso = (dato?: string) => {
     if (!dato) return null;
     // dd.MM.yyyy -> iso uten timezone (lokal 00:00)
     const parsed = parse(dato, 'dd.MM.yyyy', new Date());
     return format(parsed, "yyyy-MM-dd'T'HH:mm:ss");
+  };
+
+  const nullstillErrorState = () => {
+    setEpostError('');
+    setLenkeError('');
   };
 
   const håndterPubliser = async () => {
@@ -95,19 +103,30 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
       // Søkemetode felter
       if (publiserOffentlig) {
         if (søkemetode === 'email') {
-          setValue('stilling.properties.applicationemail', epost || null, {
-            shouldDirty: true,
-          });
-          setValue('stilling.properties.applicationurl', null as any, {
-            shouldDirty: true,
-          });
+          const epostValidering = validerEpost(epost);
+          if (epostValidering.erGodkjent) {
+            setValue('stilling.properties.applicationemail', epost, {
+              shouldDirty: true,
+            });
+            setValue('stilling.properties.applicationurl', null as any, {
+              shouldDirty: true,
+            });
+          } else {
+            setEpostError(epostValidering.feilmelding);
+            return;
+          }
         } else {
-          setValue('stilling.properties.applicationurl', lenke || null, {
-            shouldDirty: true,
-          });
-          setValue('stilling.properties.applicationemail', null as any, {
-            shouldDirty: true,
-          });
+          if (lenke.trim() !== '') {
+            setValue('stilling.properties.applicationurl', lenke, {
+              shouldDirty: true,
+            });
+            setValue('stilling.properties.applicationemail', null as any, {
+              shouldDirty: true,
+            });
+          } else {
+            setLenkeError('Lenke til søknadsskjema kan ikke være tom');
+            return;
+          }
         }
       }
 
@@ -174,7 +193,10 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
       <Button
         size='small'
         disabled={disabled}
-        onClick={() => ref.current?.showModal()}
+        onClick={() => {
+          nullstillErrorState();
+          ref.current?.showModal();
+        }}
       >
         Publiser
       </Button>
@@ -246,6 +268,8 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
                     <TextField
                       label='E-post'
                       value={epost}
+                      error={epostError}
+                      onInput={() => nullstillErrorState()}
                       onChange={(e) => setEpost(e.target.value)}
                     />
                   </div>
@@ -255,6 +279,8 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
                     <TextField
                       label='Lenke til søknadsskjema'
                       value={lenke}
+                      error={lenkeError}
+                      onInput={() => nullstillErrorState()}
                       onChange={(e) => setLenke(e.target.value)}
                     />
                   </div>

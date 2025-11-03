@@ -34,7 +34,7 @@ export const KandidatContextProvider: FC<KandidatContextProviderProps> = ({
     } else {
       setValgtFnr(null);
     }
-  }, [setValgtFnr]);
+  }, [setValgtFnr, kandidatInformasjonHook?.data?.fodselsnummer]);
 
   return (
     <SWRLaster hooks={[kandidatInformasjonHook]}>

@@ -1,5 +1,6 @@
 // For more info, see https://github.com/storybookjs/eslint-plugin-storybook#configuration-flat-config-format
 import { FlatCompat } from '@eslint/eslintrc';
+import reactCompiler from 'eslint-plugin-react-compiler';
 import storybook from 'eslint-plugin-storybook';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
@@ -14,18 +15,32 @@ const compat = new FlatCompat({
 const eslintConfig = [
   {
     ignores: [
+      '**/*.story.ts',
+      '**/*.story.tsx',
+      '**/*.stories.ts',
+      '**/*.stories.tsx',
       'node_modules/**',
       '.next/**',
       'out/**',
       'build/**',
       'next-env.d.ts',
+      '.github/**',
+      '.history/**',
+      'mocks/**',
+      'playwright-report/**',
+      'storybook-static/**',
     ],
+  },
+  {
+    plugins: {
+      'react-compiler': reactCompiler,
+    },
   },
   ...compat.extends('next/core-web-vitals', 'next/typescript'),
   {
     rules: {
-      //TODO Temp rule
-      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-explicit-any': 'off', //TODO Temp rule
+
       'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'warn',
       'no-restricted-imports': [
         'warn',

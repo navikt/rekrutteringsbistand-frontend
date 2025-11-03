@@ -1,21 +1,20 @@
 'use client';
 
 import {
-  SparklesIcon,
   ChatExclamationmarkIcon,
   HandHeartIcon,
+  SparklesIcon,
 } from '@navikt/aksel-icons';
 import {
   BodyShort,
-  ReadMore,
   Box,
-  Popover,
-  Link,
-  Heading,
-  Tag,
   Detail,
+  Heading,
+  Popover,
+  ReadMore,
+  Tag,
 } from '@navikt/ds-react';
-import { FC, useRef, useState } from 'react';
+import { FC, useState } from 'react';
 
 interface KiAnalyseIntroProps {
   title?: string;
@@ -25,8 +24,10 @@ const KiAnalyseIntro: FC<KiAnalyseIntroProps> = ({ title }) => {
   const [personopplysningerOpen, setPersonopplysningerOpen] = useState(false);
   const [diskriminerendeOpen, setDiskriminerendeOpen] = useState(false);
 
-  const personopplysningerRef = useRef<HTMLSpanElement>(null);
-  const diskriminerendeRef = useRef<HTMLSpanElement>(null);
+  const [personopplysningerAnchor, setPersonopplysningerAnchor] =
+    useState<HTMLElement | null>(null);
+  const [diskriminerendeAnchor, setDiskriminerendeAnchor] =
+    useState<HTMLElement | null>(null);
 
   return (
     <div className='space-y-3 ml-2'>
@@ -57,19 +58,29 @@ const KiAnalyseIntro: FC<KiAnalyseIntroProps> = ({ title }) => {
               <BodyShort size='small'>
                 Innholdet sjekkes for{' '}
                 <span
-                  ref={personopplysningerRef}
                   className='underline cursor-pointer'
-                  onMouseEnter={() => setPersonopplysningerOpen(true)}
-                  onMouseLeave={() => setPersonopplysningerOpen(false)}
+                  onMouseEnter={(event) => {
+                    setPersonopplysningerAnchor(event.currentTarget);
+                    setPersonopplysningerOpen(true);
+                  }}
+                  onMouseLeave={() => {
+                    setPersonopplysningerOpen(false);
+                    setPersonopplysningerAnchor(null);
+                  }}
                 >
                   personopplysninger
                 </span>{' '}
                 og{' '}
                 <span
-                  ref={diskriminerendeRef}
                   className='underline cursor-pointer'
-                  onMouseEnter={() => setDiskriminerendeOpen(true)}
-                  onMouseLeave={() => setDiskriminerendeOpen(false)}
+                  onMouseEnter={(event) => {
+                    setDiskriminerendeAnchor(event.currentTarget);
+                    setDiskriminerendeOpen(true);
+                  }}
+                  onMouseLeave={() => {
+                    setDiskriminerendeOpen(false);
+                    setDiskriminerendeAnchor(null);
+                  }}
                 >
                   diskriminerende
                 </span>{' '}
@@ -81,8 +92,11 @@ const KiAnalyseIntro: FC<KiAnalyseIntroProps> = ({ title }) => {
 
         <Popover
           open={personopplysningerOpen}
-          onClose={() => setPersonopplysningerOpen(false)}
-          anchorEl={personopplysningerRef.current}
+          onClose={() => {
+            setPersonopplysningerOpen(false);
+            setPersonopplysningerAnchor(null);
+          }}
+          anchorEl={personopplysningerAnchor}
         >
           <Popover.Content>
             <div className='space-y-3'>
@@ -131,8 +145,11 @@ const KiAnalyseIntro: FC<KiAnalyseIntroProps> = ({ title }) => {
         {/* Popover for diskriminerende */}
         <Popover
           open={diskriminerendeOpen}
-          onClose={() => setDiskriminerendeOpen(false)}
-          anchorEl={diskriminerendeRef.current}
+          onClose={() => {
+            setDiskriminerendeOpen(false);
+            setDiskriminerendeAnchor(null);
+          }}
+          anchorEl={diskriminerendeAnchor}
           className=' max-w-md'
         >
           <Popover.Content>

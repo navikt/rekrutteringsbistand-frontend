@@ -54,6 +54,7 @@ const StedForm = ({ control }: any) => {
             value={field.value ?? ''}
             label='Gateadresse'
             error={fieldState.error?.message}
+            maxLength={100}
             onBlur={() => {
               field.onBlur();
               autosave([FormFields.GATEADRESSE]);
@@ -90,7 +91,7 @@ const StedForm = ({ control }: any) => {
           )}
         />
         <BodyShort
-          className={`pt-8 ${useWatch({ control, name: FormFields.POSTSTED }) ? '' : 'aksel-error-message'}`}
+          className={`pt-8 mt-3 ${useWatch({ control, name: FormFields.POSTSTED }) ? '' : 'aksel-error-message'}`}
         >
           {useWatch({ control, name: FormFields.POSTSTED }) ||
             (watchPostnummer && watchPostnummer.length === 4 && !isLoading

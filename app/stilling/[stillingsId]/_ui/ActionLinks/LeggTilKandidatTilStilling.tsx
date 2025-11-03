@@ -23,8 +23,7 @@ const LeggTilKandidatTilStilling: FC<LeggTilKandidatTilStillingProps> = ({
 }) => {
   const ref = useRef<HTMLDialogElement>(null);
   const { track } = useUmami();
-  const { stillingsData, kandidatlisteInfo, refetchKandidatliste } =
-    useStillingsContext();
+  const { kandidatlisteInfo, refetchKandidatliste } = useStillingsContext();
   const { valgtNavKontor, visVarsel } = useApplikasjonContext();
   const [valgteKandidater, setValgteKandidater] = useState<ValgtKandidatProp[]>(
     [],

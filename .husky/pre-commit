@@ -14,7 +14,5 @@ if [ "$current_branch" = "main" ]; then
   echo "✓ Fortsetter commit til main..."
 fi
 
-pnpm formater-kode
-pnpm type-check
-pnpm lint
+pnpm run "6. Kjør precommit"
 git add .

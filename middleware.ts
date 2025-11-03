@@ -51,6 +51,6 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
 }
 
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
+  matcher: ['/', '/((?!api|_next/static|_next/image|favicon.ico).*)'], // Next 16 kompatibel sti
   missing: [{ type: 'header', key: 'x-path' }],
 };

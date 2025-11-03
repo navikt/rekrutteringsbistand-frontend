@@ -3,8 +3,8 @@
 import type { ArbeidsgivereDTO } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
 import { TrashIcon, XMarkIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button, Modal } from '@navikt/ds-react';
-import { useRef } from 'react';
 import type { ReactNode } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { SWRResponse } from 'swr';
 
 export interface SlettArbeidsgiverModalProps {
@@ -41,72 +41,118 @@ const SlettArbeidsgiverModal = ({
   renderTrigger,
 }: SlettArbeidsgiverModalProps) => {
   const modalRef = useRef<HTMLDialogElement>(null);
+  const [modalAction, setModalAction] = useState<'open' | 'close' | null>(null);
 
-  const closeModal = () => {
-    modalRef.current?.close();
-    onAfterClose?.();
-  };
+  const closeModal = useCallback(() => {
+    setModalAction('close');
+  }, []);
 
-  const handleOpen = () => {
+  const handleOpen = useCallback(() => {
     if (disabled || loading) {
       return;
     }
     onOpen?.();
-    modalRef.current?.showModal();
-  };
+    setModalAction('open');
+  }, [disabled, loading, onOpen]);
 
-  const handleConfirm = async () => {
+  const handleConfirm = useCallback(async () => {
     await Promise.resolve(onConfirm());
     arbeidsgivereHook.mutate();
     closeModal();
-  };
+  }, [onConfirm, arbeidsgivereHook, closeModal]);
 
-  const handleCancel = () => {
+  const handleCancel = useCallback(() => {
     if (loading) {
       return;
     }
     onCancel?.();
     closeModal();
-  };
+  }, [loading, onCancel, closeModal]);
 
-  const icon =
-    variant === 'cross' ? <XMarkIcon aria-hidden /> : <TrashIcon aria-hidden />;
+  const icon = useMemo(
+    () =>
+      variant === 'cross' ? (
+        <XMarkIcon aria-hidden />
+      ) : (
+        <TrashIcon aria-hidden />
+      ),
+    [variant],
+  );
 
   const buttonDisabled = !!loading || !!disabled;
 
-  const defaultTrigger =
-    variant === 'cross' ? (
-      <Button
-        size='xsmall'
-        variant='tertiary'
-        icon={icon}
-        onClick={handleOpen}
-        aria-label={
-          triggerAriaLabel || triggerLabel || 'Fjern arbeidsgiver fra treffet'
-        }
-        disabled={buttonDisabled}
-      />
-    ) : (
-      <Button
-        size='small'
-        variant='tertiary'
-        icon={icon}
-        onClick={handleOpen}
-        disabled={buttonDisabled}
-      >
-        {triggerLabel || 'Slett'}
-      </Button>
-    );
+  useEffect(() => {
+    if (!modalAction) {
+      return;
+    }
+
+    const modal = modalRef.current;
+    const timer = setTimeout(() => {
+      if (!modal) {
+        setModalAction(null);
+        return;
+      }
+
+      if (modalAction === 'open') {
+        modal.showModal();
+      } else {
+        modal.close();
+        onAfterClose?.();
+      }
+
+      setModalAction(null);
+    }, 0);
+
+    return () => clearTimeout(timer);
+  }, [modalAction, onAfterClose]);
+
+  const triggerElement = useMemo(() => {
+    const trigger =
+      variant === 'cross' ? (
+        <Button
+          size='xsmall'
+          variant='tertiary'
+          icon={icon}
+          onClick={handleOpen}
+          aria-label={
+            triggerAriaLabel || triggerLabel || 'Fjern arbeidsgiver fra treffet'
+          }
+          disabled={buttonDisabled}
+        />
+      ) : (
+        <Button
+          size='small'
+          variant='tertiary'
+          icon={icon}
+          onClick={handleOpen}
+          disabled={buttonDisabled}
+        >
+          {triggerLabel || 'Slett'}
+        </Button>
+      );
+
+    if (!renderTrigger) {
+      return trigger;
+    }
+
+    return renderTrigger({
+      button: trigger,
+      open: handleOpen,
+      disabled: buttonDisabled,
+    });
+  }, [
+    renderTrigger,
+    variant,
+    icon,
+    handleOpen,
+    buttonDisabled,
+    triggerAriaLabel,
+    triggerLabel,
+  ]);
 
   return (
     <>
-      {renderTrigger
-        ? renderTrigger({
-            button: defaultTrigger,
-            open: handleOpen,
-            disabled: buttonDisabled,
-          })
-        : defaultTrigger}
+      {triggerElement}
       <Modal ref={modalRef} header={{ heading: 'Slett arbeidsgiver' }}>
         <Modal.Body>
           {navn && (

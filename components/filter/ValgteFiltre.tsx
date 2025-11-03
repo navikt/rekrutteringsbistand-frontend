@@ -104,48 +104,75 @@ const ValgteFiltre: React.FC<ValgteFilterProps> = ({
     }, clearWidth);
 
     const totalAll = cumulative[cumulative.length - 1] || clearWidth;
+
+    let targetCollapsedCount = collapsedCount;
+    let targetReservedWidth = reservedWidth;
+
     if (totalAll <= containerWidth) {
-      if (collapsedCount !== chips.length) setCollapsedCount(chips.length);
-      if (reservedWidth !== 0) setReservedWidth(0);
+      targetCollapsedCount = chips.length;
+      targetReservedWidth = 0;
+    } else {
+      let bestCount = collapsedCount;
+      let bestReserved = reservedWidth;
+      for (let candidate = chips.length; candidate >= 0; candidate--) {
+        const hidden = chips.length - candidate;
+        if (hidden === 0) {
+          const widthChips =
+            candidate === 0 ? clearWidth : cumulative[candidate - 1];
+          if (widthChips <= containerWidth) {
+            bestCount = candidate;
+            bestReserved = 0;
+            break;
+          }
+          continue;
+        }
+
+        // Mål bredden på kontrollwrapper (tekst + knapp + intern gap)
+        const controlWidth = controlWrapper?.offsetWidth || 0;
+        // Legg til minimal fade-bredde (16px) + padding fra absolutt container (pr-2 = 8px)
+        const fadeWidth = 16;
+        const paddingRight = 8;
+        const totalControlWidth = controlWidth + fadeWidth + paddingRight;
+        const widthChips =
+          candidate === 0 ? clearWidth : cumulative[candidate - 1];
+        // Inkluder gap mellom siste chip og kontroll
+        const totalWidth =
+          widthChips + (widthChips > 0 ? gapValue : 0) + totalControlWidth;
+        if (totalWidth <= containerWidth) {
+          bestCount = candidate;
+          bestReserved = totalControlWidth;
+          break;
+        }
+      }
+      targetCollapsedCount = bestCount;
+      targetReservedWidth = bestReserved;
+    }
+
+    if (
+      targetCollapsedCount === collapsedCount &&
+      targetReservedWidth === reservedWidth
+    ) {
       return;
     }
 
-    let bestCount = 0;
-    let bestReserved = 0;
-    for (let candidate = chips.length; candidate >= 0; candidate--) {
-      const hidden = chips.length - candidate;
-      if (hidden === 0) {
-        const widthChips =
-          candidate === 0 ? clearWidth : cumulative[candidate - 1];
-        if (widthChips <= containerWidth) {
-          bestCount = candidate;
-          bestReserved = 0;
-          break;
-        }
-        continue;
+    const frame = window.requestAnimationFrame(() => {
+      if (targetCollapsedCount !== collapsedCount) {
+        setCollapsedCount(targetCollapsedCount);
       }
-
-      // Mål bredden på kontrollwrapper (tekst + knapp + intern gap)
-      const controlWidth = controlWrapper?.offsetWidth || 0;
-      // Legg til minimal fade-bredde (16px) + padding fra absolutt container (pr-2 = 8px)
-      const fadeWidth = 16;
-      const paddingRight = 8;
-      const totalControlWidth = controlWidth + fadeWidth + paddingRight;
-      const widthChips =
-        candidate === 0 ? clearWidth : cumulative[candidate - 1];
-      // Inkluder gap mellom siste chip og kontroll
-      const totalWidth =
-        widthChips + (widthChips > 0 ? gapValue : 0) + totalControlWidth;
-      if (totalWidth <= containerWidth) {
-        bestCount = candidate;
-        bestReserved = totalControlWidth;
-        break;
+      if (targetReservedWidth !== reservedWidth) {
+        setReservedWidth(targetReservedWidth);
       }
-    }
+    });
 
-    if (bestCount !== collapsedCount) setCollapsedCount(bestCount);
-    if (bestReserved !== reservedWidth) setReservedWidth(bestReserved);
-  }, [chips, tømFiltreProps, collapsedCount, reservedWidth]);
+    return () => window.cancelAnimationFrame(frame);
+  }, [
+    chips,
+    tømFiltreProps,
+    collapsedCount,
+    reservedWidth,
+    containerRef,
+    measureRef,
+  ]);
 
   // Måling av høyde + collapse-knapp bredde (for spacer i expanded)
   useLayoutEffect(() => {
