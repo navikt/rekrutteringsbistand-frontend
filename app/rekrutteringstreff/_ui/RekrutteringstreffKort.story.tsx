@@ -17,7 +17,7 @@ const meta = {
       opprettetAvPersonNavident: 'Kari Nordmann',
       opprettetAvTidspunkt: '2025-10-01T17:39:37.322+01:00',
       opprettetAvNavkontorEnhetId: 'NAV Oslo',
-      status: 'Utkast',
+      status: 'UTKAST',
     },
   },
 } satisfies Meta<typeof RekrutteringstreffKort>;
