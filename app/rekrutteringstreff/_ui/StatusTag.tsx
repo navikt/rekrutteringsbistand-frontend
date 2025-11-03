@@ -19,6 +19,8 @@ const getTagVariant = (
     case 'AVLYST':
     case 'SLETTET':
       return 'error';
+    default:
+      return 'neutral';
   }
 };
 
