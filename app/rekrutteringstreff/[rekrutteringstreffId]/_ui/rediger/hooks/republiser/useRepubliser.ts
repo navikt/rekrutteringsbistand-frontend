@@ -155,7 +155,7 @@ export function useRepubliser(
 
       if (harEndringer && rekrutteringstreffId && erPublisert) {
         try {
-          await registrerEndring(rekrutteringstreffId, { endringer });
+          await registrerEndring(rekrutteringstreffId, { ...endringer });
         } catch (error) {
           // Ikke blokker brukerflyt hvis endringsevent feiler
           new RekbisError({
