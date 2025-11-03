@@ -1,14 +1,14 @@
-import { RekrutteringstreffStaus } from '@/app/api/rekrutteringstreff/oversikt/useRekrutteringstreffOversikt';
+import { RekrutteringstreffStatus } from '@/app/api/rekrutteringstreff/oversikt/useRekrutteringstreffOversikt';
 import { Tag, TagProps } from '@navikt/ds-react';
 import { FunctionComponent } from 'react';
 
 interface StatusTagProps {
-  status: RekrutteringstreffStaus;
+  status: RekrutteringstreffStatus;
   className?: string;
 }
 
 const getTagVariant = (
-  status: RekrutteringstreffStaus,
+  status: RekrutteringstreffStatus,
 ): TagProps['variant'] => {
   switch (status) {
     case 'PUBLISERT':

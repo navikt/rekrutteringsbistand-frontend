@@ -13,15 +13,15 @@ import { z } from 'zod';
 export const rekrutteringstreffOversiktEndepunkt = () =>
   `${RekrutteringstreffAPI.internUrl}`;
 
-const RekrutteringstreffStausEnum = z.enum([
+const RekrutteringstreffStatusEnum = z.enum([
   'UTKAST',
   'PUBLISERT',
   'FULLFØRT',
   'AVLYST',
   'SLETTET',
 ]);
-export type RekrutteringstreffStaus = z.infer<
-  typeof RekrutteringstreffStausEnum
+export type RekrutteringstreffStatus = z.infer<
+  typeof RekrutteringstreffStatusEnum
 >;
 
 const RekrutteringstreffSchema = z.object({
@@ -33,7 +33,7 @@ const RekrutteringstreffSchema = z.object({
   gateadresse: z.string(),
   postnummer: z.string(),
   poststed: z.string(),
-  status: RekrutteringstreffStausEnum,
+  status: RekrutteringstreffStatusEnum,
   opprettetAvPersonNavident: z.string(),
   opprettetAvNavkontorEnhetId: z.string(),
   opprettetAvTidspunkt: z.string(),
