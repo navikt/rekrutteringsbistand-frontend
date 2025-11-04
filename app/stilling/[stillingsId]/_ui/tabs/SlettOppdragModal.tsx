@@ -41,6 +41,14 @@ export default function SlettOppdragModal({
     }
   };
 
+  const modalHeaderTekst = omStilling.erFormidling
+    ? 'Vil du slette etterregistreringen?'
+    : 'Vil du slette stillingsoppdraget?';
+
+  const slettKnappTekst = omStilling.erFormidling
+    ? 'Ja, slett registreringen'
+    : 'Ja, slett oppdraget';
+
   const ikkePublisertTekst = (
     <BodyLong>
       Oppdraget er ikke publisert enda, og kan slettes uten problemer.
@@ -48,37 +56,43 @@ export default function SlettOppdragModal({
   );
 
   const etterregistreringTekst = (
-    <VStack gap='6'>
-      <Box.New
-        padding='6'
-        borderRadius='xlarge'
-        borderColor='info-subtleA'
-        background='default'
-      >
-        <VStack gap='4'>
-          <Heading size='small'>
-            Dette skjer når du sletter etterregistreringen
-          </Heading>
+    <>
+      <p>
+        Du skal kun slette registreringen hvis den har feil arbeidsgiver eller
+        feil jobbsøker.
+      </p>
+      <VStack gap='6'>
+        <Box.New
+          padding='6'
+          borderRadius='xlarge'
+          borderColor='info-subtleA'
+          background='neutral-softA'
+        >
+          <VStack gap='4'>
+            <Heading size='small'>
+              Dette skjer når du sletter registreringen:
+            </Heading>
 
-          <div className='flex gap-2 items-center'>
-            <EyeSlashIcon aria-hidden />
-            <BodyLong>
-              Etterregistreringen fjernes for alle i Rekrutteringsbistand.
-            </BodyLong>
-          </div>
-          <div className='flex gap-2 items-center'>
-            <TrashIcon aria-hidden />
-            <BodyLong>Listen over jobbsøkere slettes.</BodyLong>
-          </div>
-          <div className='flex gap-2 items-center'>
-            <CircleSlashIcon aria-hidden />
-            <BodyLong>
-              Du kan ikke lenger gjenåpne etterregistreringen.
-            </BodyLong>
-          </div>
-        </VStack>
-      </Box.New>
-    </VStack>
+            <div className='flex gap-2 items-center'>
+              <EyeSlashIcon aria-hidden />
+              <BodyLong>
+                Registreringen fjernes for alle i Rekrutteringsbistand.
+              </BodyLong>
+            </div>
+            <div className='flex gap-2 items-center'>
+              <TrashIcon aria-hidden />
+              <BodyLong>Listen over jobbsøkere slettes.</BodyLong>
+            </div>
+            <div className='flex gap-2 items-center'>
+              <CircleSlashIcon aria-hidden />
+              <BodyLong>
+                Du kan ikke lenger gjenåpne etterregistreringen.
+              </BodyLong>
+            </div>
+          </VStack>
+        </Box.New>
+      </VStack>
+    </>
   );
 
   return (
@@ -87,7 +101,7 @@ export default function SlettOppdragModal({
         onClose={() => setVisModal(false)}
         open={true}
         header={{
-          heading: 'Vil du slette stillingsoppdraget?',
+          heading: modalHeaderTekst,
           size: 'small',
         }}
         width='medium'
@@ -103,11 +117,11 @@ export default function SlettOppdragModal({
                 padding='6'
                 borderRadius='xlarge'
                 borderColor='info-subtleA'
-                background='default'
+                background='neutral-softA'
               >
                 <VStack gap='4'>
                   <Heading size='small'>
-                    Dette skjer når du sletter oppdraget
+                    Dette skjer når du sletter oppdraget:
                   </Heading>
 
                   <div className='flex gap-2 items-center'>
@@ -137,7 +151,7 @@ export default function SlettOppdragModal({
                 padding='6'
                 borderRadius='xlarge'
                 borderColor='info-subtleA'
-                background='default'
+                background='neutral-softA'
               >
                 <VStack gap='4'>
                   <Heading size='small'>
@@ -176,7 +190,7 @@ export default function SlettOppdragModal({
             onClick={slettStillingClick}
             loading={loading}
           >
-            Slett oppdraget
+            {slettKnappTekst}
           </Button>
           <Button
             type='button'
