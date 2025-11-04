@@ -3,39 +3,34 @@ import { postApi } from '@/app/api/fetcher';
 import { http, HttpResponse } from 'msw';
 import { z } from 'zod';
 
-const FieldSchema = z.object({
-  value: z.string().nullable(),
-  endret: z.boolean(),
+const EndringsfeltSchema = z.object({
+  gammelVerdi: z.string().nullable(),
+  nyVerdi: z.string().nullable(),
 });
 
 const EndringerDtoSchema = z.object({
-  tittel: FieldSchema,
-  beskrivelse: FieldSchema,
-  fraTid: FieldSchema,
-  tilTid: FieldSchema,
-  svarfrist: FieldSchema,
-  gateadresse: FieldSchema,
-  postnummer: FieldSchema,
-  poststed: FieldSchema,
-  htmlContent: FieldSchema,
+  tittel: EndringsfeltSchema.nullable(),
+  beskrivelse: EndringsfeltSchema.nullable(),
+  fraTid: EndringsfeltSchema.nullable(),
+  tilTid: EndringsfeltSchema.nullable(),
+  svarfrist: EndringsfeltSchema.nullable(),
+  gateadresse: EndringsfeltSchema.nullable(),
+  postnummer: EndringsfeltSchema.nullable(),
+  poststed: EndringsfeltSchema.nullable(),
+  innlegg: EndringsfeltSchema.nullable(),
 });
 
-const RegistrerEndringDtoSchema = z.object({
-  gamleVerdierForEndringer: EndringerDtoSchema.nullable(),
-});
-
-export type Field<T> = z.infer<typeof FieldSchema> & { value?: T | null };
+export type Endringsfelt<T> = { gammelVerdi: T | null; nyVerdi: T | null };
 export type EndringerDto = z.infer<typeof EndringerDtoSchema>;
-export type RegistrerEndringDTO = z.infer<typeof RegistrerEndringDtoSchema>;
 
 const rekrutteringstreffEndringerEndepunkt = (rekrutteringstreffId: string) =>
   `${RekrutteringstreffAPI.internUrl}/${rekrutteringstreffId}/endringer`;
 
 export const registrerEndring = async (
   rekrutteringstreffId: string,
-  data: RegistrerEndringDTO,
+  data: EndringerDto,
 ): Promise<void> => {
-  RegistrerEndringDtoSchema.parse(data);
+  EndringerDtoSchema.parse(data);
   await postApi(
     rekrutteringstreffEndringerEndepunkt(rekrutteringstreffId),
     data,

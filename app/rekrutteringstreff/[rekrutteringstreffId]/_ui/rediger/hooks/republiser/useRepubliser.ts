@@ -102,52 +102,51 @@ export function useRepubliser(
       // 2. Bygg DTO for å sammenligne med backend
       const nyeVerdier = byggRekrutteringstreffDto();
 
-      // 3. Bygg endringer objekt med Field<T> struktur - sender alle felt
-      const createField = (
+      // 3. Bygg endringer objekt - kun felt som er endret
+      const createEndringsfelt = (
         gammelVerdi: string | null,
         nyVerdi: string | null,
-      ) => ({
-        value: gammelVerdi,
-        endret: gammelVerdi !== nyVerdi,
-      });
+      ) => {
+        if (gammelVerdi === nyVerdi) return null;
+        return { gammelVerdi, nyVerdi };
+      };
 
-      const gamleVerdierForEndringer = {
-        tittel: createField(
+      const endringer = {
+        tittel: createEndringsfelt(
           rekrutteringstreff?.tittel || null,
           nyeVerdier.tittel || null,
         ),
-        beskrivelse: createField(
+        beskrivelse: createEndringsfelt(
           rekrutteringstreff?.beskrivelse || null,
           nyeVerdier.beskrivelse || null,
         ),
-        fraTid: createField(
+        fraTid: createEndringsfelt(
           rekrutteringstreff?.fraTid || null,
           nyeVerdier.fraTid || null,
         ),
-        tilTid: createField(
+        tilTid: createEndringsfelt(
           rekrutteringstreff?.tilTid || null,
           nyeVerdier.tilTid || null,
         ),
-        svarfrist: createField(
+        svarfrist: createEndringsfelt(
           rekrutteringstreff?.svarfrist || null,
           nyeVerdier.svarfrist || null,
         ),
-        gateadresse: createField(
+        gateadresse: createEndringsfelt(
           rekrutteringstreff?.gateadresse || null,
           nyeVerdier.gateadresse || null,
         ),
-        postnummer: createField(
+        postnummer: createEndringsfelt(
           rekrutteringstreff?.postnummer || null,
           nyeVerdier.postnummer || null,
         ),
-        poststed: createField(
+        poststed: createEndringsfelt(
           rekrutteringstreff?.poststed || null,
           nyeVerdier.poststed || null,
         ),
-        htmlContent: {
-          value: backendHtml,
-          endret: shouldSaveInnlegg,
-        },
+        innlegg: shouldSaveInnlegg
+          ? { gammelVerdi: backendHtml, nyVerdi: currentHtml }
+          : null,
       };
 
       // 4. Lagre rekrutteringstreff
@@ -159,7 +158,7 @@ export function useRepubliser(
       }
 
       // 6. Registrer endringshendelse hvis det er endringer
-      const harEndringer = Object.keys(gamleVerdierForEndringer).length > 0;
+      const harEndringer = Object.values(endringer).some((e) => e !== null);
 
       // Avled om treffet er publisert fra hendelser
       const aktivtSteg = getActiveStepFromHendelser(
@@ -171,9 +170,7 @@ export function useRepubliser(
 
       if (harEndringer && rekrutteringstreffId && erPublisert) {
         try {
-          await registrerEndring(rekrutteringstreffId, {
-            gamleVerdierForEndringer,
-          });
+          await registrerEndring(rekrutteringstreffId, endringer);
         } catch (error) {
           // Ikke blokker brukerflyt hvis endringsevent feiler
           new RekbisError({
