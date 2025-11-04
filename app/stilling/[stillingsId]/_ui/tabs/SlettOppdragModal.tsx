@@ -57,10 +57,10 @@ export default function SlettOppdragModal({
 
   const etterregistreringTekst = (
     <>
-      <p>
+      <BodyLong>
         Du skal kun slette registreringen hvis den har feil arbeidsgiver eller
         feil jobbsøker.
-      </p>
+      </BodyLong>
       <VStack gap='6'>
         <Box.New
           padding='6'
