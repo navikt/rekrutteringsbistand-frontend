@@ -1,17 +1,10 @@
 import { slettStilling } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/slett-stilling';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import { VisningsStatus } from '@/app/stilling/_util/stillingInfoUtil';
-import {
-  CircleSlashIcon,
-  EyeSlashIcon,
-  FileXMarkIcon,
-  PersonCrossIcon,
-  SpeakerSlashIcon,
-  TableIcon,
-  TrashIcon,
-} from '@navikt/aksel-icons';
+import { CircleSlashIcon, EyeSlashIcon, FileXMarkIcon, PersonCrossIcon, SpeakerSlashIcon, TableIcon, TrashIcon } from '@navikt/aksel-icons';
 import {
   BodyLong,
+  BodyShort,
   Box,
   Button,
   Heading,
@@ -19,6 +12,7 @@ import {
   VStack,
 } from '@navikt/ds-react';
 import { useState } from 'react';
+
 
 export interface SlettOppdragModalProps {
   setVisModal: (val: boolean) => void;
@@ -50,18 +44,17 @@ export default function SlettOppdragModal({
     : 'Ja, slett oppdraget';
 
   const ikkePublisertTekst = (
-    <BodyLong>
+    <BodyShort>
       Oppdraget er ikke publisert enda, og kan slettes uten problemer.
-    </BodyLong>
+    </BodyShort>
   );
 
   const etterregistreringTekst = (
     <>
-      <BodyLong>
+      <BodyShort className='pb-2.5'>
         Du skal kun slette registreringen hvis den har feil arbeidsgiver eller
         feil jobbsøker.
-      </BodyLong>
-      <VStack gap='6'>
+      </BodyShort>
         <Box.New
           padding='6'
           borderRadius='xlarge'
@@ -91,7 +84,6 @@ export default function SlettOppdragModal({
             </div>
           </VStack>
         </Box.New>
-      </VStack>
     </>
   );
 
@@ -113,6 +105,9 @@ export default function SlettOppdragModal({
             etterregistreringTekst
           ) : (
             <VStack gap='6'>
+              <BodyShort>
+                Du skal kun slette oppdraget hvis det har feil arbeidsgiver.
+              </BodyShort>
               <Box.New
                 padding='6'
                 borderRadius='xlarge'
