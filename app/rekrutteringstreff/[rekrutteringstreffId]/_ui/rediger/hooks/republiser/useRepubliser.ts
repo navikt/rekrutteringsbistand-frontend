@@ -102,32 +102,53 @@ export function useRepubliser(
       // 2. Bygg DTO for å sammenligne med backend
       const nyeVerdier = byggRekrutteringstreffDto();
 
-      // 3. Bygg endringer objekt (kun gamle verdier for endrede felt)
-      const gamleVerdierForEndringer: Record<string, string | null> = {};
-      const felter = [
-        'tittel',
-        'beskrivelse',
-        'fraTid',
-        'tilTid',
-        'svarfrist',
-        'gateadresse',
-        'postnummer',
-        'poststed',
-      ] as const;
-
-      felter.forEach((felt) => {
-        const gammelVerdi = (rekrutteringstreff?.[felt] ?? null) as
-          | string
-          | null;
-        const nyVerdi = (nyeVerdier[felt] ?? null) as string | null;
-        if (gammelVerdi !== nyVerdi) {
-          gamleVerdierForEndringer[felt] = gammelVerdi;
-        }
+      // 3. Bygg endringer objekt med Field<T> struktur - sender alle felt
+      const createField = (
+        gammelVerdi: string | null,
+        nyVerdi: string | null,
+      ) => ({
+        value: gammelVerdi,
+        endret: gammelVerdi !== nyVerdi,
       });
 
-      if (shouldSaveInnlegg) {
-        gamleVerdierForEndringer.htmlContent = 'Innhold endret';
-      }
+      const gamleVerdierForEndringer = {
+        tittel: createField(
+          rekrutteringstreff?.tittel || null,
+          nyeVerdier.tittel || null,
+        ),
+        beskrivelse: createField(
+          rekrutteringstreff?.beskrivelse || null,
+          nyeVerdier.beskrivelse || null,
+        ),
+        fraTid: createField(
+          rekrutteringstreff?.fraTid || null,
+          nyeVerdier.fraTid || null,
+        ),
+        tilTid: createField(
+          rekrutteringstreff?.tilTid || null,
+          nyeVerdier.tilTid || null,
+        ),
+        svarfrist: createField(
+          rekrutteringstreff?.svarfrist || null,
+          nyeVerdier.svarfrist || null,
+        ),
+        gateadresse: createField(
+          rekrutteringstreff?.gateadresse || null,
+          nyeVerdier.gateadresse || null,
+        ),
+        postnummer: createField(
+          rekrutteringstreff?.postnummer || null,
+          nyeVerdier.postnummer || null,
+        ),
+        poststed: createField(
+          rekrutteringstreff?.poststed || null,
+          nyeVerdier.poststed || null,
+        ),
+        htmlContent: {
+          value: backendHtml,
+          endret: shouldSaveInnlegg,
+        },
+      };
 
       // 4. Lagre rekrutteringstreff
       await lagreRekrutteringstreff();
