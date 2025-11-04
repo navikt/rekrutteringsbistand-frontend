@@ -116,10 +116,6 @@ export function useRepubliser(
           rekrutteringstreff?.tittel || null,
           nyeVerdier.tittel || null,
         ),
-        beskrivelse: createEndringsfelt(
-          rekrutteringstreff?.beskrivelse || null,
-          nyeVerdier.beskrivelse || null,
-        ),
         fraTid: createEndringsfelt(
           rekrutteringstreff?.fraTid || null,
           nyeVerdier.fraTid || null,

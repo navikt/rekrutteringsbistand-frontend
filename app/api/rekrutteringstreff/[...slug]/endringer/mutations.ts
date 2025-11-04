@@ -10,7 +10,6 @@ const EndringsfeltSchema = z.object({
 
 const EndringerDtoSchema = z.object({
   tittel: EndringsfeltSchema.nullable(),
-  beskrivelse: EndringsfeltSchema.nullable(),
   fraTid: EndringsfeltSchema.nullable(),
   tilTid: EndringsfeltSchema.nullable(),
   svarfrist: EndringsfeltSchema.nullable(),
