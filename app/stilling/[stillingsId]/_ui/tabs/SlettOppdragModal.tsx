@@ -47,6 +47,46 @@ export default function SlettOppdragModal({
     </BodyLong>
   );
 
+  const etterregistreringTekst = (
+    <VStack gap='6'>
+      <Box.New
+        padding='6'
+        borderRadius='xlarge'
+        borderColor='info-subtleA'
+        background='default'
+      >
+        <VStack gap='4'>
+          <Heading size='small'>
+            Dette skjer når du sletter etterregistreringen
+          </Heading>
+
+          <div className='flex gap-2'>
+            <EyeSlashIcon aria-hidden />
+            <BodyLong>
+              Etterregistreringen fjernes for alle i Rekrutteringsbistand.
+            </BodyLong>
+          </div>
+          <div className='flex gap-2'>
+            <TrashIcon aria-hidden />
+            <BodyLong>Listen over jobbsøkere slettes.</BodyLong>
+          </div>
+          <div className='flex gap-2'>
+            <CircleSlashIcon aria-hidden />
+            <BodyLong>
+              Du kan ikke lenger gjenåpne etterregistreringen.
+            </BodyLong>
+          </div>
+        </VStack>
+      </Box.New>
+      <Box.New
+        padding='6'
+        borderRadius='xlarge'
+        borderColor='info-subtleA'
+        background='default'
+      ></Box.New>
+    </VStack>
+  );
+
   return (
     <>
       <Modal
@@ -61,6 +101,8 @@ export default function SlettOppdragModal({
         <Modal.Body>
           {omStilling.visningsStatus === VisningsStatus.IkkePublisert ? (
             ikkePublisertTekst
+          ) : omStilling.erFormidling ? (
+            etterregistreringTekst
           ) : (
             <VStack gap='6'>
               <Box.New

@@ -6,12 +6,10 @@ import OmStillingen from '@/app/stilling/[stillingsId]/_ui/om-stillingen/OmStill
 import FremdriftspanelRedigering from '@/app/stilling/_ui/stilling-admin/FremdriftspanelRedigering';
 import { hentModulerForKategori } from '@/app/stilling/_ui/stilling-admin/StillingAdminModuler';
 import AutolagreStilling from '@/app/stilling/_ui/stilling-admin/admin_moduler/AutolagreStilling';
-import EndreStillingStatus from '@/app/stilling/_ui/stilling-admin/admin_moduler/_felles/EndreStillingStatus';
 import { mapTilForm } from '@/app/stilling/_ui/stilling-admin/admin_moduler/mapVerdier';
 import { StillingAdminSchema } from '@/app/stilling/_ui/stilling-admin/stilling-admin.schema';
 import {
   Stillingskategori,
-  StillingsStatus,
 } from '@/app/stilling/_ui/stilling-typer';
 import { normaliserPropertiesTilStrenger } from '@/app/stilling/_util/normaliserStillingProperties';
 // import ViktigeDatoer from '@/app/stilling/rediger/_ui/ViktigeDatoer';
@@ -27,6 +25,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import z from 'zod';
+import SlettOppdragModal from '@/app/stilling/[stillingsId]/_ui/tabs/SlettOppdragModal';
 
 export type StillingAdminDTO = z.infer<typeof StillingAdminSchema>;
 
@@ -35,6 +34,7 @@ export default function StillingAdmin() {
   const { setForhåndsvisData, stillingsData } = useStillingsContext();
   const router = useRouter();
   const [forhåndsvis, setStateForhåndsvis] = useState<boolean>(false);
+  const [visSlettModal, setVisSlettModal] = useState(false);
   const fraArbeidsplassen = stillingsData.stilling.source !== 'DIR';
   const mappetVerdier = mapTilForm(stillingsData);
   const registerForm = useForm<StillingAdminDTO>({
@@ -85,12 +85,10 @@ export default function StillingAdmin() {
         >
           Avbryt
         </Button>
-        <EndreStillingStatus
-          nyStatus={StillingsStatus.Slettet}
-          knappNavn='Slett'
-          knappIkon={<TrashIcon />}
-          tekst={''}
-        />
+        <Button icon={<TrashIcon />} variant='tertiary' onClick={() => setVisSlettModal(true)}>
+          Slett
+        </Button>
+        {visSlettModal && <SlettOppdragModal setVisModal={setVisSlettModal} />}
       </div>
     );
   };
