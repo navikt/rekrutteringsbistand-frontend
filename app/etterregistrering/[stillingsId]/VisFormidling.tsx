@@ -8,6 +8,7 @@ import PanelHeader from '@/components/layout/PanelHeader';
 import SideInnhold from '@/components/layout/SideInnhold';
 import SideLayout from '@/components/layout/SideLayout';
 import { Tabs } from '@navikt/ds-react';
+import StillingDropdown from '@/app/stilling/[stillingsId]/_ui/tabs/StillingDropdown';
 
 export default function VisFormidling() {
   const { erEier } = useStillingsContext();
@@ -25,6 +26,7 @@ export default function VisFormidling() {
                   {erEier && <Tabs.Tab value='kandidater' label='Jobbsøkere' />}
                 </>
               }
+              actionsRight={<StillingDropdown />}
             />
           </PanelHeader>
         }
