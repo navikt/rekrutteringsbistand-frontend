@@ -40,7 +40,7 @@ export function useAutosaveRekrutteringstreff() {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
   const { data: treff } = useRekrutteringstreff(rekrutteringstreffId);
   const { getValues, trigger, formState } = useFormContext<AnyValues>();
-  const { lagre, buildDto } = useLagreRekrutteringstreff();
+  const { lagre, byggRekrutteringstreffDto } = useLagreRekrutteringstreff();
 
   const { tittelKiFeil, tittelKiSjekket } = useRekrutteringstreffValidering();
 
@@ -60,7 +60,7 @@ export function useAutosaveRekrutteringstreff() {
       }
 
       if ((formState?.errors as any)?.root?.type === 'manualPeriod') {
-        const dto = buildDto();
+        const dto = byggRekrutteringstreffDto();
         const endrerPeriode =
           (dto?.fraTid ?? null) !== (treff?.fraTid ?? null) ||
           (dto?.tilTid ?? null) !== (treff?.tilTid ?? null);
@@ -90,7 +90,7 @@ export function useAutosaveRekrutteringstreff() {
     [
       rekrutteringstreffId,
       treff,
-      buildDto,
+      byggRekrutteringstreffDto,
       trigger,
       formState,
       getValues,

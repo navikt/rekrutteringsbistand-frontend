@@ -35,6 +35,7 @@ import {
 } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/mutations';
 import { arbeidsgiverHendelserMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgiverHendelser';
 import { rekrutteringstreffArbeidsgivereMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/arbeidsgivere/useArbeidsgivere';
+import { registrerEndringMSWHandler } from '@/app/api/rekrutteringstreff/[...slug]/endringer/mutations';
 import {
   oppdaterInnleggMSWHandler,
   opprettInnleggMSWHandler,
@@ -124,6 +125,7 @@ export const mswHandlers = [
   jobbsøkereMSWHandler,
   jobbsøkerHendelserMSWHandler,
   alleHendelserMSWHandler,
+  registrerEndringMSWHandler,
   ...statusHendelserMSWHandlers,
   ...umamiMSWHandlers,
   ...loggerMSWHandlers,
