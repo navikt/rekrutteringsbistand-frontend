@@ -21,8 +21,9 @@ export const useRekrutteringstreffData = () => {
   const rekrutteringstreffHook = useRekrutteringstreff(rekrutteringstreffId);
   const { data: innlegg } = useInnlegg(rekrutteringstreffId);
 
-  const treff = rekrutteringstreffHook.data;
-  const hendelser = treff?.hendelser;
+  const treffDataMedHendelser = rekrutteringstreffHook.data;
+  const treff = treffDataMedHendelser?.rekrutteringstreff;
+  const hendelser = treffDataMedHendelser?.hendelser;
   const fraTid = treff?.fraTid;
   const tilTid = treff?.tilTid;
 
