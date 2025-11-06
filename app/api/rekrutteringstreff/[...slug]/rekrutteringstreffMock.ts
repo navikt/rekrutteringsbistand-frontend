@@ -113,7 +113,7 @@ export const rekrutteringstreffMock: RekrutteringstreffDTO = {
     opprettetAvPersonNavident: 'A123456',
     opprettetAvNavkontorEnhetId: '0318',
     antallArbeidsgivere: 3,
-    antallJobsøkere: 4
+    antallJobsøkere: 4,
     },
   hendelser: _publisertHendelser,
 };

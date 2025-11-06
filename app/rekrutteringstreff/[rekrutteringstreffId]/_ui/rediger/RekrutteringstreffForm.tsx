@@ -25,7 +25,6 @@ export type RekrutteringstreffFormValues = {
 export default function RekrutteringstreffForm({
   children,
 }: {
-  rekrutteringstreffId: string;
   children: ReactNode;
 }) {
   const { treff } = useRekrutteringstreffData();

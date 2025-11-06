@@ -15,7 +15,7 @@ export default async function RekrutteringsTreffLayout({
 
   return (
     <RekrutteringstreffProvider rekrutteringstreffId={rekrutteringstreffId}>
-      <RekrutteringstreffForm rekrutteringstreffId={rekrutteringstreffId}>
+      <RekrutteringstreffForm>
         {children}
       </RekrutteringstreffForm>
     </RekrutteringstreffProvider>
