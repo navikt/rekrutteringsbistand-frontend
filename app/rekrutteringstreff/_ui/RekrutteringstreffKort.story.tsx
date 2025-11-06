@@ -18,6 +18,8 @@ const meta = {
       opprettetAvTidspunkt: '2025-10-01T17:39:37.322+01:00',
       opprettetAvNavkontorEnhetId: 'NAV Oslo',
       status: 'UTKAST',
+      antallArbeidsgivere: 5,
+      antallJobsøkere: 7
     },
   },
 } satisfies Meta<typeof RekrutteringstreffKort>;
