@@ -1,7 +1,15 @@
 import { slettStilling } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/slett-stilling';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import { VisningsStatus } from '@/app/stilling/_util/stillingInfoUtil';
-import { CircleSlashIcon, EyeSlashIcon, FileXMarkIcon, PersonCrossIcon, SpeakerSlashIcon, TableIcon, TrashIcon } from '@navikt/aksel-icons';
+import {
+  CircleSlashIcon,
+  EyeSlashIcon,
+  FileXMarkIcon,
+  PersonCrossIcon,
+  SpeakerSlashIcon,
+  TableIcon,
+  TrashIcon,
+} from '@navikt/aksel-icons';
 import {
   BodyLong,
   BodyShort,
@@ -12,7 +20,6 @@ import {
   VStack,
 } from '@navikt/ds-react';
 import { useState } from 'react';
-
 
 export interface SlettOppdragModalProps {
   setVisModal: (val: boolean) => void;
@@ -55,35 +62,35 @@ export default function SlettOppdragModal({
         Du skal kun slette registreringen hvis den har feil arbeidsgiver eller
         feil jobbsøker.
       </BodyShort>
-        <Box.New
-          padding='6'
-          borderRadius='xlarge'
-          borderColor='info-subtleA'
-          background='neutral-softA'
-        >
-          <VStack gap='4'>
-            <Heading size='small'>
-              Dette skjer når du sletter registreringen:
-            </Heading>
+      <Box.New
+        padding='6'
+        borderRadius='xlarge'
+        borderColor='info-subtleA'
+        background='neutral-softA'
+      >
+        <VStack gap='4'>
+          <Heading size='small'>
+            Dette skjer når du sletter registreringen:
+          </Heading>
 
-            <div className='flex gap-2 items-center'>
-              <EyeSlashIcon aria-hidden />
-              <BodyLong>
-                Registreringen fjernes for alle i Rekrutteringsbistand.
-              </BodyLong>
-            </div>
-            <div className='flex gap-2 items-center'>
-              <TrashIcon aria-hidden />
-              <BodyLong>Listen over jobbsøkere slettes.</BodyLong>
-            </div>
-            <div className='flex gap-2 items-center'>
-              <CircleSlashIcon aria-hidden />
-              <BodyLong>
-                Du kan ikke lenger gjenåpne etterregistreringen.
-              </BodyLong>
-            </div>
-          </VStack>
-        </Box.New>
+          <div className='flex gap-2 items-center'>
+            <EyeSlashIcon aria-hidden />
+            <BodyLong>
+              Registreringen fjernes for alle i Rekrutteringsbistand.
+            </BodyLong>
+          </div>
+          <div className='flex gap-2 items-center'>
+            <TrashIcon aria-hidden />
+            <BodyLong>Listen over jobbsøkere slettes.</BodyLong>
+          </div>
+          <div className='flex gap-2 items-center'>
+            <CircleSlashIcon aria-hidden />
+            <BodyLong>
+              Du kan ikke lenger gjenåpne etterregistreringen.
+            </BodyLong>
+          </div>
+        </VStack>
+      </Box.New>
     </>
   );
 

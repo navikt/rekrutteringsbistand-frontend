@@ -1,10 +1,10 @@
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
+import SlettOppdragModal from '@/app/stilling/[stillingsId]/_ui/tabs/SlettOppdragModal';
 import UtkastFigur from '@/public/illustrasjoner/figur-med-verktøy.svg';
 import { TrashIcon } from '@navikt/aksel-icons';
 import { Button, Heading } from '@navikt/ds-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import SlettOppdragModal from '@/app/stilling/[stillingsId]/_ui/tabs/SlettOppdragModal';
 import { useState } from 'react';
 
 export default function StillingsutkastMelding() {
@@ -37,7 +37,11 @@ export default function StillingsutkastMelding() {
         >
           Fortsett å opprette
         </Button>
-        <Button icon={<TrashIcon />} variant='tertiary' onClick={() => setVisSlettModal(true)}>
+        <Button
+          icon={<TrashIcon />}
+          variant='tertiary'
+          onClick={() => setVisSlettModal(true)}
+        >
           Slett
         </Button>
         {visSlettModal && <SlettOppdragModal setVisModal={setVisSlettModal} />}

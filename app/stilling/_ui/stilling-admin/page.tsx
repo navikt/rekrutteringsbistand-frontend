@@ -3,14 +3,13 @@
 import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import OmStillingen from '@/app/stilling/[stillingsId]/_ui/om-stillingen/OmStillingen';
+import SlettOppdragModal from '@/app/stilling/[stillingsId]/_ui/tabs/SlettOppdragModal';
 import FremdriftspanelRedigering from '@/app/stilling/_ui/stilling-admin/FremdriftspanelRedigering';
 import { hentModulerForKategori } from '@/app/stilling/_ui/stilling-admin/StillingAdminModuler';
 import AutolagreStilling from '@/app/stilling/_ui/stilling-admin/admin_moduler/AutolagreStilling';
 import { mapTilForm } from '@/app/stilling/_ui/stilling-admin/admin_moduler/mapVerdier';
 import { StillingAdminSchema } from '@/app/stilling/_ui/stilling-admin/stilling-admin.schema';
-import {
-  Stillingskategori,
-} from '@/app/stilling/_ui/stilling-typer';
+import { Stillingskategori } from '@/app/stilling/_ui/stilling-typer';
 import { normaliserPropertiesTilStrenger } from '@/app/stilling/_util/normaliserStillingProperties';
 // import ViktigeDatoer from '@/app/stilling/rediger/_ui/ViktigeDatoer';
 import PanelHeader from '@/components/layout/PanelHeader';
@@ -25,7 +24,6 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import z from 'zod';
-import SlettOppdragModal from '@/app/stilling/[stillingsId]/_ui/tabs/SlettOppdragModal';
 
 export type StillingAdminDTO = z.infer<typeof StillingAdminSchema>;
 
@@ -85,7 +83,11 @@ export default function StillingAdmin() {
         >
           Avbryt
         </Button>
-        <Button icon={<TrashIcon />} variant='tertiary' onClick={() => setVisSlettModal(true)}>
+        <Button
+          icon={<TrashIcon />}
+          variant='tertiary'
+          onClick={() => setVisSlettModal(true)}
+        >
           Slett
         </Button>
         {visSlettModal && <SlettOppdragModal setVisModal={setVisSlettModal} />}
