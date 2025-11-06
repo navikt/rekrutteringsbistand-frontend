@@ -105,9 +105,13 @@ export const useStillingForKandidat = (kandidatId: string | null) => {
       stillingsSøkContext.setKommuner(kommuner);
       stillingsSøkContext.setFritekstListe(yrkesønsker);
       stillingsSøkContext.setStatuser([VisningsStatus.ApenForSokere]);
+
+      // eslint-disable-next-line
+      setHarSattInitialData(true);
+      // TODO finn en annen løsning her, koden under førte til at den ble rendra uendelig i et tilfelle
       // Deferrer state-markering til neste tick for å unngå lint 'setState in effect' (hvis regel aktiv)
-      const t = setTimeout(() => setHarSattInitialData(true), 0);
-      return () => clearTimeout(t);
+      //   const t = setTimeout(() => setHarSattInitialData(true), 0);
+      //   return () => clearTimeout(t);
     }
   }, [processedData, harSattInitialData, stillingsSøkContext]);
 
