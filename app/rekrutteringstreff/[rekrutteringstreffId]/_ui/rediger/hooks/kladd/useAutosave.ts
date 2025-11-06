@@ -8,6 +8,9 @@ import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/us
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { useCallback, useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
+import {
+  useRekrutteringstreffData
+} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
 
 type AnyValues = Record<string, any>;
 
@@ -38,7 +41,7 @@ const skalStanseAutosavePgaKi = (
  */
 export function useAutosaveRekrutteringstreff() {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
-  const { data: treff } = useRekrutteringstreff(rekrutteringstreffId);
+  const { treff } = useRekrutteringstreffData();
   const { getValues, trigger, formState } = useFormContext<AnyValues>();
   const { lagre, byggRekrutteringstreffDto } = useLagreRekrutteringstreff();
 

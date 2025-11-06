@@ -1,13 +1,15 @@
 'use client';
 
 import { erEditMode, erPublisert } from './hooks/utils';
-import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
 import { useKiLogg } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
 import { useValiderRekrutteringstreff } from '@/app/api/rekrutteringstreff/kiValidering/useValiderRekrutteringstreff';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { RekbisError } from '@/util/rekbisError';
 import { useEffect, useState, useCallback } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
+import {
+  useRekrutteringstreffData
+} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
 
 export type FeltType = 'tittel' | 'innlegg';
 
@@ -45,7 +47,7 @@ export function useFormFeltMedKiValidering({
   onUpdated?: () => void;
 }) {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
-  const { data: treff } = useRekrutteringstreff(rekrutteringstreffId);
+  const { treff } = useRekrutteringstreffData();
 
   const {
     control,
@@ -125,7 +127,7 @@ export function useFormFeltMedKiValidering({
 
     const feltVerdi = getValues(fieldName as any);
     const tekstVerdi = (
-      typeof feltVerdi === 'string' ? feltVerdi : String(feltVerdi ?? '')
+      String(feltVerdi ?? '')
     ).trim();
     const normalisertTekst = sanitizeForComparison(tekstVerdi);
     if (!normalisertTekst) return;
@@ -191,7 +193,6 @@ export function useFormFeltMedKiValidering({
     getValues,
     validateKI,
     feltType,
-    erRedigeringAvPublisertTreff,
     wrappedSaveCallback,
     setKiLagret,
     analyse,

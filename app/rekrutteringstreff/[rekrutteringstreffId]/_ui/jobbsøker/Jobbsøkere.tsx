@@ -36,7 +36,7 @@ const jobbsøkerTilInviterDto = (
 
 const Jobbsøkere = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
-  const { treff: rekrutteringstreffData, activeStep } =
+  const { hendelser, activeStep } =
     useRekrutteringstreffData();
   const jobbsøkerHook = useJobbsøkere(rekrutteringstreffId);
   const inviterModalRef = useRef<HTMLDialogElement>(null);
@@ -51,7 +51,7 @@ const Jobbsøkere = () => {
   >([]);
 
   const harAvsluttetInvitasjon =
-    rekrutteringstreffData?.hendelser?.some(
+    hendelser?.some(
       (h) => h.hendelsestype === 'AVSLUTT_INVITASJON',
     ) ?? false;
 
