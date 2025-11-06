@@ -12,6 +12,8 @@ export const rekrutteringstreffOversiktMock = [
     opprettetAvPersonNavident: 'A123456',
     opprettetAvNavkontorEnhetId: '0318',
     opprettetAvTidspunkt: '2025-08-26T12:00:00+02:00',
+    antallArbeidsgivere: 3,
+    antallJobsøkere: 5,
   },
   {
     id: 'a7f2387c-4354-4a2e-90a2-fff1a1d83dc6',
@@ -26,5 +28,7 @@ export const rekrutteringstreffOversiktMock = [
     opprettetAvPersonNavident: 'A654321',
     opprettetAvNavkontorEnhetId: '1203',
     opprettetAvTidspunkt: '2025-08-25T12:00:00+02:00',
+    antallArbeidsgivere: 5,
+    antallJobsøkere: 10,
   },
 ];
