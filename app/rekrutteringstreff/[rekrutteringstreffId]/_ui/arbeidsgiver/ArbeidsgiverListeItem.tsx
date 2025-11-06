@@ -11,11 +11,7 @@ interface Props {
   actionSlot?: ReactNode;
 }
 
-const ArbeidsgiverListeItem: FC<Props> = ({
-  arbeidsgiver,
-  status,
-  actionSlot,
-}) => {
+const ArbeidsgiverListeItem: FC<Props> = ({ arbeidsgiver, actionSlot }) => {
   const orgnr = arbeidsgiver.organisasjonsnummer;
 
   const { data } = useFinnArbeidsgiver(orgnr);
@@ -32,7 +28,7 @@ const ArbeidsgiverListeItem: FC<Props> = ({
       navn={arbeidsgiver.navn}
       organisasjonsnummer={orgnr}
       adresse={adresse}
-      status={status}
+      status={arbeidsgiver.status}
       actionSlot={actionSlot}
     />
   );

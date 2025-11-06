@@ -1,10 +1,11 @@
+import { storForbokstav } from '@/app/kandidat/util';
 import capitalizeEmployerName from '@/app/stilling/_util/stilling-util';
 import { BodyShort, Box, Heading, Tag } from '@navikt/ds-react';
 import { FC, ReactNode } from 'react';
 
 interface ArbeidsgiverKortProps {
-  organisasjonsnummer?: string;
-  navn?: string;
+  organisasjonsnummer: string;
+  navn: string;
   organisasjonsform?: string;
   antallAnsatte?: number;
   adresse?: ArbeidsgiverAdresse | null;
@@ -68,7 +69,7 @@ const ArbeidsgiverKort: FC<ArbeidsgiverKortProps> = ({
       <div className='ml-2 self-start flex items-center gap-2'>
         {status && (
           <Tag size='medium' variant='info'>
-            {status}
+            {storForbokstav(status)}
           </Tag>
         )}
         {actionSlot}

@@ -22,21 +22,6 @@ const Arbeidsgivere = () => {
     useRekrutteringstreffArbeidsgivere(rekrutteringstreffId);
   const hendelseHook = useArbeidsgiverHendelser(rekrutteringstreffId);
 
-  const getLagtTilData = (arbeidsgiver: ArbeidsgiverDTO) => {
-    const leggTilHendelse = arbeidsgiver.hendelser.find(
-      ({ hendelsestype }: { hendelsestype: string }) =>
-        hendelsestype === 'OPPRETT',
-    );
-    if (leggTilHendelse) {
-      return {
-        status: 'Lagt til',
-      };
-    }
-    return {
-      status: undefined,
-    };
-  };
-
   const [sletterArbeidsgiver, setSletterArbeidsgiver] = useState(false);
 
   const bekreftSlett = async (arbeidsgiver: ArbeidsgiverDTO) => {
@@ -68,15 +53,14 @@ const Arbeidsgivere = () => {
             <BodyShort>Ingen arbeidsgivere lagt til</BodyShort>
           ) : (
             <ul>
-              {arbeidsgivere.map((a, index) => {
-                const { status } = getLagtTilData(a);
+              {arbeidsgivere.map((arbeidsgiver, index) => {
                 const kunEnArbeidsgiver = arbeidsgivere.length === 1;
                 const action = (
                   <SlettArbeidsgiverModal
-                    navn={a.navn}
+                    navn={arbeidsgiver.navn}
                     loading={sletterArbeidsgiver}
                     disabled={kunEnArbeidsgiver || sletterArbeidsgiver}
-                    onConfirm={() => bekreftSlett(a)}
+                    onConfirm={() => bekreftSlett(arbeidsgiver)}
                     arbeidsgivereHook={arbeidsgivereHook}
                     variant='trash'
                     renderTrigger={({ button }) =>
@@ -96,8 +80,7 @@ const Arbeidsgivere = () => {
                 return (
                   <li key={index}>
                     <ArbeidsgiverListeItem
-                      arbeidsgiver={a}
-                      status={status}
+                      arbeidsgiver={arbeidsgiver}
                       actionSlot={action}
                     />
                   </li>
