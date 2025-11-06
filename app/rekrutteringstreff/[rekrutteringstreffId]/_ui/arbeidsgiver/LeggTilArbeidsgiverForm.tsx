@@ -205,7 +205,6 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({
                               adresse:
                                 'TODO: adresse må lagres i backend for å kunne hentes her',
                             }}
-                            status={a.status}
                           />
                           <div className='absolute right-2 top-2'>
                             <SlettArbeidsgiverModal
