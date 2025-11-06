@@ -1,0 +1,1 @@
+import{aZ as s,a_ as t,a$ as i,b0 as o,b1 as e}from"./iframe-CEi1Y25_.js";const u=`${t.internUrl}/suggest`,m=o(e());var c=(function(r){return r[r.ØnsketYrke=0]="ØnsketYrke",r[r.Kompetanse=1]="Kompetanse",r[r.Arbeidserfaring=2]="Arbeidserfaring",r[r.Språk=3]="Språk",r})({});const d=(r,n)=>s(r?{url:u,body:{query:r,type:n}}:null,a=>i(m)(a));export{c as S,d as u};
