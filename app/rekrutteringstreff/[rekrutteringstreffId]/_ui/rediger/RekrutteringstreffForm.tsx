@@ -1,14 +1,13 @@
 'use client';
 
 import { OppdaterRekrutteringstreffSchema } from '@/app/api/rekrutteringstreff/[...slug]/mutations';
-import {
-  RekrutteringstreffDTO,
-  useRekrutteringstreff,
-} from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
+import { RekrutteringstreffDTO } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
+import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { format, parseISO } from 'date-fns';
 import { ReactNode, useEffect, useRef } from 'react';
 import { FormProvider, useForm, Resolver } from 'react-hook-form';
+
 
 export type RekrutteringstreffFormValues = {
   tittel?: string;
@@ -24,13 +23,11 @@ export type RekrutteringstreffFormValues = {
 };
 
 export default function RekrutteringstreffForm({
-  rekrutteringstreffId,
   children,
 }: {
-  rekrutteringstreffId: string;
   children: ReactNode;
 }) {
-  const { data } = useRekrutteringstreff(rekrutteringstreffId);
+  const { treff } = useRekrutteringstreffData();
 
   const methods = useForm<RekrutteringstreffFormValues>({
     resolver: zodResolver(
@@ -42,18 +39,18 @@ export default function RekrutteringstreffForm({
   const lastHydratedIdRef = useRef<string | null>(null);
 
   useEffect(() => {
-    if (!data) return;
-    const currentId = data?.id ?? null;
+    if (!treff) return;
+    const currentId = treff?.id ?? null;
     if (lastHydratedIdRef.current === currentId) return;
-    methods.reset(tilFormValues(data));
+    methods.reset(tilFormValues(treff));
     lastHydratedIdRef.current = currentId;
-  }, [data, methods]);
+  }, [treff, methods]);
 
   return <FormProvider {...methods}>{children}</FormProvider>;
 }
 
 function tilFormValues(
-  treff: RekrutteringstreffDTO,
+  treff: RekrutteringstreffDTO['rekrutteringstreff'],
 ): RekrutteringstreffFormValues {
   const fra = treff.fraTid ? parseISO(treff.fraTid) : null;
   const til = treff.tilTid ? parseISO(treff.tilTid) : null;

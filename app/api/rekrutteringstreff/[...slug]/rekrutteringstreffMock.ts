@@ -1,8 +1,6 @@
 import { RekrutteringstreffDTO } from './useRekrutteringstreff';
-import {
-  RekrutteringstreffHendelsestype,
-  JobbsøkerHendelsestype,
-} from '@/app/rekrutteringstreff/_types/constants';
+import { RekrutteringstreffHendelsestype, JobbsøkerHendelsestype } from '@/app/rekrutteringstreff/_types/constants';
+
 
 const _fullførthendelser = [
   {
@@ -101,17 +99,21 @@ const _kladdHendelser = [
 ];
 
 export const rekrutteringstreffMock: RekrutteringstreffDTO = {
-  id: 'd6a587cd-8797-4b9a-a68b-575373f16d65',
-  tittel: 'Treff med navn',
-  beskrivelse: null,
-  fraTid: '2025-11-01T08:00:00+02:00',
-  tilTid: '2025-11-01T10:00:00+02:00',
-  svarfrist: '2025-11-01T07:00:00+02:00',
-  gateadresse: 'Malmøgata 1',
-  postnummer: '5555',
-  poststed: 'Kristiansand S',
-  status: 'Utkast',
-  opprettetAvPersonNavident: 'A123456',
-  opprettetAvNavkontorEnhetId: '0318',
+  rekrutteringstreff: {
+    id: 'd6a587cd-8797-4b9a-a68b-575373f16d65',
+    tittel: 'Treff med navn',
+    beskrivelse: null,
+    fraTid: '2025-11-01T08:00:00+02:00',
+    tilTid: '2025-11-01T10:00:00+02:00',
+    svarfrist: '2025-11-01T07:00:00+02:00',
+    gateadresse: 'Malmøgata 1',
+    postnummer: '5555',
+    poststed: 'Kristiansand S',
+    status: 'Utkast',
+    opprettetAvPersonNavident: 'A123456',
+    opprettetAvNavkontorEnhetId: '0318',
+    antallArbeidsgivere: 3,
+    antallJobsøkere: 4,
+    },
   hendelser: _publisertHendelser,
 };

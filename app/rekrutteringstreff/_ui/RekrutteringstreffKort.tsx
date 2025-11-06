@@ -30,6 +30,8 @@ export const RekrutteringstreffKort: FunctionComponent<
     opprettetAvPersonNavident,
     opprettetAvNavkontorEnhetId,
     opprettetAvTidspunkt,
+    antallArbeidsgivere,
+    antallJobsøkere,
   } = rekrutteringstreff;
 
   return (
@@ -67,6 +69,8 @@ export const RekrutteringstreffKort: FunctionComponent<
         <PersonIcon aria-hidden />
         <Detail className='mr-0.5'>{`Opprettet av ${opprettetAvPersonNavident}`}</Detail>
         <Detail className='mr-0.5'>{`${formatterDato(opprettetAvTidspunkt)}`}</Detail>
+        <Detail className='mr-0.5'>{`Antall arbeidsgivere: ${antallArbeidsgivere}`}</Detail>
+        <Detail className='mr-0.5'>{`Antall jobbsøkere: ${antallJobsøkere}`}</Detail>
         <Detail>Nav kontor {opprettetAvNavkontorEnhetId}</Detail>
       </div>
     </Box.New>

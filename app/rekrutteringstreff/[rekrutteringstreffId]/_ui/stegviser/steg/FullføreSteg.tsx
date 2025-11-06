@@ -9,10 +9,9 @@ import { nb } from 'date-fns/locale/nb';
 import { useMemo } from 'react';
 
 const FullføreSteg = () => {
-  const { treff: rekrutteringstreff, rekrutteringstreffHook } =
+  const { rekrutteringstreffHook, hendelser } =
     useRekrutteringstreffData();
   const { isLoading } = rekrutteringstreffHook;
-  const hendelser = rekrutteringstreff?.hendelser;
 
   const fullførHendelse = useMemo(() => {
     if (!hendelser?.length) {

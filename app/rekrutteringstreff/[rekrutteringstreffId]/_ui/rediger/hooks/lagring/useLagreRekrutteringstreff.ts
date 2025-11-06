@@ -9,6 +9,9 @@ import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/us
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { useCallback } from 'react';
 import { useFormContext } from 'react-hook-form';
+import {
+  useRekrutteringstreffData
+} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
 
 type AnyValues = Record<string, any>;
 
@@ -22,7 +25,8 @@ type AnyValues = Record<string, any>;
 export function useLagreRekrutteringstreff() {
   const { rekrutteringstreffId, startLagring, stoppLagring } =
     useRekrutteringstreffContext();
-  const { data: treff, mutate } = useRekrutteringstreff(rekrutteringstreffId);
+  const { mutate } = useRekrutteringstreff(rekrutteringstreffId);
+  const { treff } = useRekrutteringstreffData();
   const { getValues } = useFormContext<AnyValues>();
 
   const byggRekrutteringstreffDto =
