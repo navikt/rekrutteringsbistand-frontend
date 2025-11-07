@@ -151,7 +151,12 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
       <Label htmlFor='forhåndsvisning'>
         Meldingen som vil bli sendt til kandidatene
       </Label>
-      <div id='forhåndsvisning' className={'p-4'}>
+      <div id='forhåndsvisning' className={'py-4'}>
+        <Box.New
+          background={'neutral-softA'}
+          borderRadius='large'
+          padding='4'
+        >
         <BodyShort>
           <span>
             {meldingsmaler
@@ -159,6 +164,7 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
               : 'Klarte ikke å hente meldingsmaler'}{' '}
           </span>
         </BodyShort>
+      </Box.New>
       </div>
     </div>
   );
