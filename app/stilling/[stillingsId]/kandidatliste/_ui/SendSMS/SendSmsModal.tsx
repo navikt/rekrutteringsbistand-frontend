@@ -40,11 +40,12 @@ type Props = {
   markerteKandidater: KandidatListeKandidatDTO[];
   fjernAllMarkering: () => void;
   popover?: boolean;
+  knappVariant?: 'secondary' | 'tertiary';
 };
 
 const SendSmsModal: FunctionComponent<Props> = (props) => {
   const { visVarsel } = useApplikasjonContext();
-  const { fjernAllMarkering, markerteKandidater } = props;
+  const { fjernAllMarkering, markerteKandidater, knappVariant } = props;
   const { track } = useUmami();
 
   const { stillingsData } = useStillingsContext();
@@ -140,7 +141,7 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
           }}
         >
           <option value={Meldingsmal.VurdertSomAktuell}>
-            Send stilling til en aktuell kandidat
+            Tips en aktuell kandidat om stilling
           </option>
           <option value={Meldingsmal.FunnetPassendeStilling}>
             Oppfordre kandidat til å søke på stilling
@@ -150,7 +151,12 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
       <Label htmlFor='forhåndsvisning'>
         Meldingen som vil bli sendt til kandidatene
       </Label>
-      <div id='forhåndsvisning' className={'p-4'}>
+      <div id='forhåndsvisning' className={'py-4'}>
+        <Box.New
+          background={'neutral-softA'}
+          borderRadius='large'
+          padding='4'
+        >
         <BodyShort>
           <span>
             {meldingsmaler
@@ -158,6 +164,7 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
               : 'Klarte ikke å hente meldingsmaler'}{' '}
           </span>
         </BodyShort>
+      </Box.New>
       </div>
     </div>
   );
@@ -166,16 +173,16 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
     return (
       <>
         <PopoverModal
-          tittel='Del stilling'
+          tittel='Tips om stilling'
           åpneKnapp={
             <Button
               disabled={markerteKandidater.length === 0}
               onClick={() => setVisModal(true)}
               size={'small'}
-              variant={'secondary'}
-              icon={<ArrowForwardIcon title='Del stilling' />}
+              variant={knappVariant || 'secondary'}
+              icon={<ArrowForwardIcon title='Tips om stilling' />}
             >
-              Del stillingen
+              Tips om stillingen
             </Button>
           }
         >
@@ -192,7 +199,7 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
                 loading={sendSmsLoading}
                 onClick={onSendSms}
               >
-                Send beskjed
+                Send tips
               </Button>
             </div>
           </>
@@ -224,7 +231,7 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
                   loading={sendSmsLoading}
                   onClick={onSendSms}
                 >
-                  Send beskjed
+                  Send tips
                 </Button>
               </div>
             </Box.New>
@@ -241,18 +248,18 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
         disabled={markerteKandidater.length === 0}
         onClick={() => setVisModal(true)}
         size={'small'}
-        variant={'secondary'}
-        icon={<ArrowForwardIcon title='Del stilling' />}
+        variant={knappVariant || 'secondary'}
+        icon={<ArrowForwardIcon title='Tips om stilling' />}
       >
-        Del stillingen
+        Tips om stillingen
       </Button>
       <Modal
         open={visModal}
         className={css.sendSmsModal}
         onClose={() => setVisModal(false)}
-        aria-label={`Del stillingen med ${markerteKandidater.length} kandidater`}
+        aria-label={`Tips ${markerteKandidater.length} kandidater om stillingen`}
         header={{
-          heading: 'Del stillingen',
+          heading: 'Tips om stillingen',
         }}
       >
         <Modal.Body>
@@ -284,7 +291,7 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
                         Fødselsnr.
                       </Table.HeaderCell>
                       <Table.HeaderCell scope='col'>
-                        Kan sende beskjed
+                        Kan sende tips
                       </Table.HeaderCell>
                     </Table.Row>
                   </Table.Header>
@@ -326,7 +333,7 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
             loading={sendSmsLoading}
             onClick={onSendSms}
           >
-            Send beskjed
+            Send tips
           </Button>
           <Button variant='secondary' onClick={() => setVisModal(false)}>
             Avbryt

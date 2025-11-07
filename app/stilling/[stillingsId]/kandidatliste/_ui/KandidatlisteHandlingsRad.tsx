@@ -58,13 +58,6 @@ const KandidatlisteHandlingsRad: FC = () => {
       </Checkbox>
       {!lukketKandidatliste && (
         <>
-          <div>
-            <SendSmsModal
-              markerteKandidater={markerteKandidater}
-              fjernAllMarkering={() => setMarkerteKandidater([])}
-            />
-          </div>
-
           {!erJobbmesse && (
             <>
               <div>
@@ -78,6 +71,13 @@ const KandidatlisteHandlingsRad: FC = () => {
               </div>
             </>
           )}
+          <div>
+            <SendSmsModal
+              markerteKandidater={markerteKandidater}
+              knappVariant={'tertiary'}
+              fjernAllMarkering={() => setMarkerteKandidater([])}
+            />
+          </div>
         </>
       )}
     </div>
