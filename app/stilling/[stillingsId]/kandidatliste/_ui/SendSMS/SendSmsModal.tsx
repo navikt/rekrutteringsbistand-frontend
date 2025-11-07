@@ -250,7 +250,7 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
         open={visModal}
         className={css.sendSmsModal}
         onClose={() => setVisModal(false)}
-        aria-label={`Tips om stillingen til ${markerteKandidater.length} kandidater`}
+        aria-label={`Tips ${markerteKandidater.length} kandidater om stillingen`}
         header={{
           heading: 'Tips om stillingen',
         }}
