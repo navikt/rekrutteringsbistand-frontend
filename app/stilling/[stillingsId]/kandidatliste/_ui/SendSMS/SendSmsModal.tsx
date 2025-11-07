@@ -140,7 +140,7 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
           }}
         >
           <option value={Meldingsmal.VurdertSomAktuell}>
-            Send stilling til en aktuell kandidat
+            Tips en aktuell kandidat om stilling
           </option>
           <option value={Meldingsmal.FunnetPassendeStilling}>
             Oppfordre kandidat til å søke på stilling
@@ -166,16 +166,16 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
     return (
       <>
         <PopoverModal
-          tittel='Del stilling'
+          tittel='Tips om stilling'
           åpneKnapp={
             <Button
               disabled={markerteKandidater.length === 0}
               onClick={() => setVisModal(true)}
               size={'small'}
               variant={'secondary'}
-              icon={<ArrowForwardIcon title='Del stilling' />}
+              icon={<ArrowForwardIcon title='Tips om stilling' />}
             >
-              Del stillingen
+              Tips om stillingen
             </Button>
           }
         >
@@ -192,7 +192,7 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
                 loading={sendSmsLoading}
                 onClick={onSendSms}
               >
-                Send beskjed
+                Send tips
               </Button>
             </div>
           </>
@@ -224,7 +224,7 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
                   loading={sendSmsLoading}
                   onClick={onSendSms}
                 >
-                  Send beskjed
+                  Send tips
                 </Button>
               </div>
             </Box.New>
@@ -242,17 +242,17 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
         onClick={() => setVisModal(true)}
         size={'small'}
         variant={'secondary'}
-        icon={<ArrowForwardIcon title='Del stilling' />}
+        icon={<ArrowForwardIcon title='Tips om stilling' />}
       >
-        Del stillingen
+        Tips om stillingen
       </Button>
       <Modal
         open={visModal}
         className={css.sendSmsModal}
         onClose={() => setVisModal(false)}
-        aria-label={`Del stillingen med ${markerteKandidater.length} kandidater`}
+        aria-label={`Tips om stillingen til ${markerteKandidater.length} kandidater`}
         header={{
-          heading: 'Del stillingen',
+          heading: 'Tips om stillingen',
         }}
       >
         <Modal.Body>
@@ -284,7 +284,7 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
                         Fødselsnr.
                       </Table.HeaderCell>
                       <Table.HeaderCell scope='col'>
-                        Kan sende beskjed
+                        Kan sende tips
                       </Table.HeaderCell>
                     </Table.Row>
                   </Table.Header>
@@ -326,7 +326,7 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
             loading={sendSmsLoading}
             onClick={onSendSms}
           >
-            Send beskjed
+            Send tips
           </Button>
           <Button variant='secondary' onClick={() => setVisModal(false)}>
             Avbryt
