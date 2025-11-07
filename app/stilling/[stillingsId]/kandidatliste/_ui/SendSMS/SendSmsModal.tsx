@@ -40,11 +40,12 @@ type Props = {
   markerteKandidater: KandidatListeKandidatDTO[];
   fjernAllMarkering: () => void;
   popover?: boolean;
+  knappVariant?: 'secondary' | 'tertiary';
 };
 
 const SendSmsModal: FunctionComponent<Props> = (props) => {
   const { visVarsel } = useApplikasjonContext();
-  const { fjernAllMarkering, markerteKandidater } = props;
+  const { fjernAllMarkering, markerteKandidater, knappVariant } = props;
   const { track } = useUmami();
 
   const { stillingsData } = useStillingsContext();
@@ -172,7 +173,7 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
               disabled={markerteKandidater.length === 0}
               onClick={() => setVisModal(true)}
               size={'small'}
-              variant={'secondary'}
+              variant={knappVariant || 'secondary'}
               icon={<ArrowForwardIcon title='Tips om stilling' />}
             >
               Tips om stillingen
@@ -241,7 +242,7 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
         disabled={markerteKandidater.length === 0}
         onClick={() => setVisModal(true)}
         size={'small'}
-        variant={'secondary'}
+        variant={knappVariant || 'secondary'}
         icon={<ArrowForwardIcon title='Tips om stilling' />}
       >
         Tips om stillingen
