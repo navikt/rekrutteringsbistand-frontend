@@ -145,7 +145,7 @@ export default function OmVirksomheten() {
     });
 
     const locationList = getValues('stilling.locationList') ?? [];
-    if (locationList.length === 0 && arbeidsgiver.adresse) {
+    if (locationList.length <= 1 && arbeidsgiver.adresse){
       setValue('stilling.locationList', [
         {
           address: arbeidsgiver.adresse.adresse ?? '',
@@ -157,6 +157,7 @@ export default function OmVirksomheten() {
           country: arbeidsgiver.adresse.land ?? 'Norge',
         },
       ]);
+
     }
   };
 
