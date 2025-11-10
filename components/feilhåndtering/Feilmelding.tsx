@@ -112,7 +112,8 @@ const Feilmelding: React.FC<IFeilmelding> = ({ zodError, error, message }) => {
     <Alert style={{ margin: '1rem' }} variant='error'>
       <BodyShort className='font-bold'>Noe gikk galt!</BodyShort>
       <BodyShort>
-        Ukjent feil ikke håndtert. Rapporter inn via fagsystemsak.
+        {message ??
+          'Ukjent feil ikke håndtert. Rapporter inn via fagsystemsak.'}
       </BodyShort>
     </Alert>
   );
