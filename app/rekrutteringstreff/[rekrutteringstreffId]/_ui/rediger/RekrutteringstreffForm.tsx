@@ -8,7 +8,6 @@ import { format, parseISO } from 'date-fns';
 import { ReactNode, useEffect, useRef } from 'react';
 import { FormProvider, useForm, Resolver } from 'react-hook-form';
 
-
 export type RekrutteringstreffFormValues = {
   tittel?: string;
   gateadresse?: string | null;

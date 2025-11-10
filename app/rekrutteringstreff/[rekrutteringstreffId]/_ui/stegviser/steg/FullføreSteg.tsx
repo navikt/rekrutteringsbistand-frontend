@@ -9,8 +9,7 @@ import { nb } from 'date-fns/locale/nb';
 import { useMemo } from 'react';
 
 const FullføreSteg = () => {
-  const { rekrutteringstreffHook, hendelser } =
-    useRekrutteringstreffData();
+  const { rekrutteringstreffHook, hendelser } = useRekrutteringstreffData();
   const { isLoading } = rekrutteringstreffHook;
 
   const fullførHendelse = useMemo(() => {

@@ -36,8 +36,7 @@ const jobbsøkerTilInviterDto = (
 
 const Jobbsøkere = () => {
   const { rekrutteringstreffId } = useRekrutteringstreffContext();
-  const { hendelser, activeStep } =
-    useRekrutteringstreffData();
+  const { hendelser, activeStep } = useRekrutteringstreffData();
   const jobbsøkerHook = useJobbsøkere(rekrutteringstreffId);
   const inviterModalRef = useRef<HTMLDialogElement>(null);
 
@@ -51,9 +50,7 @@ const Jobbsøkere = () => {
   >([]);
 
   const harAvsluttetInvitasjon =
-    hendelser?.some(
-      (h) => h.hendelsestype === 'AVSLUTT_INVITASJON',
-    ) ?? false;
+    hendelser?.some((h) => h.hendelsestype === 'AVSLUTT_INVITASJON') ?? false;
 
   const handleCheckboxChange = (jobbsøker: JobbsøkerDTO, erValgt: boolean) => {
     if (harAvsluttetInvitasjon && !erInvitert(jobbsøker)) {

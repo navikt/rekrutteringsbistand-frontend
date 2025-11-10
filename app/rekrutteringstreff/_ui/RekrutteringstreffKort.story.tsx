@@ -19,7 +19,7 @@ const meta = {
       opprettetAvNavkontorEnhetId: 'NAV Oslo',
       status: 'UTKAST',
       antallArbeidsgivere: 5,
-      antallJobsøkere: 7
+      antallJobsøkere: 7,
     },
   },
 } satisfies Meta<typeof RekrutteringstreffKort>;

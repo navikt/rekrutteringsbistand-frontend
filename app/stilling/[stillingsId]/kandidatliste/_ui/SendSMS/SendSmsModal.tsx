@@ -152,19 +152,15 @@ const SendSmsModal: FunctionComponent<Props> = (props) => {
         Meldingen som vil bli sendt til kandidatene
       </Label>
       <div id='forhåndsvisning' className={'py-4'}>
-        <Box.New
-          background={'neutral-softA'}
-          borderRadius='large'
-          padding='4'
-        >
-        <BodyShort>
-          <span>
-            {meldingsmaler
-              ? genererMeldingUtenLenke(valgtMal, meldingsmaler)
-              : 'Klarte ikke å hente meldingsmaler'}{' '}
-          </span>
-        </BodyShort>
-      </Box.New>
+        <Box.New background={'neutral-softA'} borderRadius='large' padding='4'>
+          <BodyShort>
+            <span>
+              {meldingsmaler
+                ? genererMeldingUtenLenke(valgtMal, meldingsmaler)
+                : 'Klarte ikke å hente meldingsmaler'}{' '}
+            </span>
+          </BodyShort>
+        </Box.New>
       </div>
     </div>
   );

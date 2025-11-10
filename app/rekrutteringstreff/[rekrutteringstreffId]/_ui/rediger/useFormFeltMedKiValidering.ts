@@ -3,13 +3,11 @@
 import { erEditMode, erPublisert } from './hooks/utils';
 import { useKiLogg } from '@/app/api/rekrutteringstreff/kiValidering/useKiLogg';
 import { useValiderRekrutteringstreff } from '@/app/api/rekrutteringstreff/kiValidering/useValiderRekrutteringstreff';
+import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { RekbisError } from '@/util/rekbisError';
 import { useEffect, useState, useCallback } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
-import {
-  useRekrutteringstreffData
-} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
 
 export type FeltType = 'tittel' | 'innlegg';
 
@@ -126,9 +124,7 @@ export function useFormFeltMedKiValidering({
     if (!feltErGyldig) return;
 
     const feltVerdi = getValues(fieldName as any);
-    const tekstVerdi = (
-      String(feltVerdi ?? '')
-    ).trim();
+    const tekstVerdi = String(feltVerdi ?? '').trim();
     const normalisertTekst = sanitizeForComparison(tekstVerdi);
     if (!normalisertTekst) return;
 
