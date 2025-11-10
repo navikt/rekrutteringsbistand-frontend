@@ -195,6 +195,7 @@ export function PanelHeaderSection({
                     disabled={!navigering.harForrige}
                     icon={<ChevronUpIcon />}
                     onClick={navigering.forrigeKnapp}
+                    aria-label='Forrige kandidat'
                   />
                   <Button
                     size='small'
@@ -202,6 +203,7 @@ export function PanelHeaderSection({
                     icon={<ChevronDownIcon />}
                     disabled={!navigering.harNeste}
                     onClick={navigering.nesteKnapp}
+                    aria-label='Neste kandidat'
                   />
                 </>
               )}
