@@ -32,6 +32,11 @@ export const kandidatinformasjonMSWHandler = http.post(
     const raw = await request.json().catch(() => undefined);
     const kandidatnr = (raw && (raw as any).kandidatnr) as string | undefined;
     if (!kandidatnr) return new Response(null, { status: 400 });
+    if (kandidatnr === 'kandidat-aktorId-3') {
+      return HttpResponse.json({
+        hits: { hits: [] },
+      });
+    }
     const parts = kandidatnr.split('-');
     const seed = parseInt(parts[parts.length - 1], 10);
     const kandidatData = getSingleKandidatDataSchema(seed);

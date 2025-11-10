@@ -104,8 +104,9 @@ export default function FremdriftspanelArbeidsplassen() {
             <div className='flex gap-2'>
               <ArrowForwardIcon aria-hidden className='shrink-0' />
               <BodyShort size='small'>
-                Du kan tipse jobbsøkere via varslingssystemet på nav.no (SMS/Epost),
-                eller ved å kopiere delingslenken og sende den til dem.
+                Du kan tipse jobbsøkere via varslingssystemet på nav.no
+                (SMS/Epost), eller ved å kopiere delingslenken og sende den til
+                dem.
               </BodyShort>
             </div>
             <div className='flex gap-2'>

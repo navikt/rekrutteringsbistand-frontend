@@ -5,12 +5,10 @@ import { useLagreRekrutteringstreff } from '../lagring/useLagreRekrutteringstref
 import { erPublisert, erEditMode } from '../utils';
 import { useRekrutteringstreffValidering } from '../validering/useRekrutteringstreffValidering';
 import { useRekrutteringstreff } from '@/app/api/rekrutteringstreff/[...slug]/useRekrutteringstreff';
+import { useRekrutteringstreffData } from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
 import { useRekrutteringstreffContext } from '@/app/rekrutteringstreff/_providers/RekrutteringstreffContext';
 import { useCallback, useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
-import {
-  useRekrutteringstreffData
-} from '@/app/rekrutteringstreff/[rekrutteringstreffId]/_ui/useRekrutteringstreffData';
 
 type AnyValues = Record<string, any>;
 

@@ -3,7 +3,12 @@
 // Brødsmuler er deprecated – vi bygger breadcrumbs direkte her med UI-primitive
 import AutoBreadcrumbs from '@/components/brødsmuler/Brødsmuler';
 import { useWindowTile } from '@/components/window/WindowView';
-import { ExpandIcon, XMarkIcon } from '@navikt/aksel-icons';
+import {
+  ChevronDownIcon,
+  ChevronUpIcon,
+  ExpandIcon,
+  XMarkIcon,
+} from '@navikt/aksel-icons';
 import { Button, Tooltip } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
 import { ReactNode, createContext, useContext } from 'react';
@@ -43,6 +48,12 @@ const PanelHeaderModeContext = createContext<{ compact: boolean }>({
   compact: false,
 });
 
+interface NavigeringProps {
+  nesteKnapp: () => void;
+  forrigeKnapp: () => void;
+  harNeste?: boolean;
+  harForrige?: boolean;
+}
 interface PanelHeaderProps {
   children: ReactNode;
   className?: string;
@@ -99,6 +110,7 @@ export interface PanelHeaderSectionProps {
   actionsRight?: ReactNode;
   children?: ReactNode;
   className?: string;
+  navigering?: NavigeringProps;
 }
 
 function cx(...parts: Array<string | undefined | false | null>) {
@@ -118,6 +130,7 @@ export function PanelHeaderSection({
   children,
   className,
   erstattPath,
+  navigering,
 }: PanelHeaderSectionProps) {
   const { compact } = useContext(PanelHeaderModeContext);
   const extra = useContext(PanelHeaderExtraContext);
@@ -174,6 +187,26 @@ export function PanelHeaderSection({
           )}
           {tileInfo?.tile === 'detail' && (
             <div className='flex items-center gap-2'>
+              {navigering && (
+                <>
+                  <Button
+                    size='small'
+                    variant='tertiary'
+                    disabled={!navigering.harForrige}
+                    icon={<ChevronUpIcon />}
+                    onClick={navigering.forrigeKnapp}
+                    aria-label='Forrige kandidat'
+                  />
+                  <Button
+                    size='small'
+                    variant='tertiary'
+                    icon={<ChevronDownIcon />}
+                    disabled={!navigering.harNeste}
+                    onClick={navigering.nesteKnapp}
+                    aria-label='Neste kandidat'
+                  />
+                </>
+              )}
               {extra?.fullskjermUrl && (
                 <Button
                   icon={<ExpandIcon />}

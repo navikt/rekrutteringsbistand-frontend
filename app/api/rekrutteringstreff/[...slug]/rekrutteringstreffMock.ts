@@ -1,6 +1,8 @@
 import { RekrutteringstreffDTO } from './useRekrutteringstreff';
-import { RekrutteringstreffHendelsestype, JobbsøkerHendelsestype } from '@/app/rekrutteringstreff/_types/constants';
-
+import {
+  RekrutteringstreffHendelsestype,
+  JobbsøkerHendelsestype,
+} from '@/app/rekrutteringstreff/_types/constants';
 
 const _fullførthendelser = [
   {
@@ -114,6 +116,6 @@ export const rekrutteringstreffMock: RekrutteringstreffDTO = {
     opprettetAvNavkontorEnhetId: '0318',
     antallArbeidsgivere: 3,
     antallJobsøkere: 4,
-    },
+  },
   hendelser: _publisertHendelser,
 };

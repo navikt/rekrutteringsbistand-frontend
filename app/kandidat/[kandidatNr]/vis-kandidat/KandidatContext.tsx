@@ -3,6 +3,7 @@
 import { KandidatDataSchemaDTO } from '@/app/api/kandidat-sok/schema/cvSchema.zod';
 import { useKandidatinformasjon } from '@/app/api/kandidat-sok/useKandidatinformasjon';
 import SWRLaster from '@/components/SWRLaster';
+import Feilmelding from '@/components/feilhåndtering/Feilmelding';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { RekbisError } from '@/util/rekbisError';
 import { createContext, FC, ReactNode, useContext, useEffect } from 'react';
@@ -37,7 +38,15 @@ export const KandidatContextProvider: FC<KandidatContextProviderProps> = ({
   }, [setValgtFnr, kandidatInformasjonHook?.data?.fodselsnummer]);
 
   return (
-    <SWRLaster hooks={[kandidatInformasjonHook]}>
+    <SWRLaster
+      egenFeilmelding={(error) => (
+        <Feilmelding
+          error={error}
+          message={'Fant ikke jobbsøker, er jobbsøker blitt inaktiv?'}
+        />
+      )}
+      hooks={[kandidatInformasjonHook]}
+    >
       {(kandidatData) => {
         if (!kandidatData) {
           return null;

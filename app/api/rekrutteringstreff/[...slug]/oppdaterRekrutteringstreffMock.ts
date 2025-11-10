@@ -17,6 +17,6 @@ export const oppdaterRekrutteringstreffMock = (
     opprettetAvPersonNavident: 'A123456',
     opprettetAvNavkontorEnhetId: '0318',
     antallArbeidsgivere: 4,
-    antallJobsøkere: 7
+    antallJobsøkere: 7,
   };
 };

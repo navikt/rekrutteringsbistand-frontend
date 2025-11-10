@@ -12,6 +12,7 @@ import SideInnhold from '@/components/layout/SideInnhold';
 import SideLayout from '@/components/layout/SideLayout';
 import { TilgangskontrollForInnhold } from '@/components/tilgangskontroll/TilgangskontrollForInnhold';
 import { Roller } from '@/components/tilgangskontroll/roller';
+import { useKandidatNavigeringContext } from '@/providers/KandidatNavigeringContext';
 import { Tabs } from '@navikt/ds-react';
 import { useQueryState } from 'nuqs';
 
@@ -29,6 +30,7 @@ export default function VisKandidat({
 }: VisKandidatProps) {
   const { kandidatId } = useKandidatContext();
 
+  const navigering = useKandidatNavigeringContext();
   const [fane, setFane] = useQueryState('kandidatFane', {
     defaultValue: 'oversikt',
     clearOnDefault: true,
@@ -40,6 +42,12 @@ export default function VisKandidat({
         header={
           <PanelHeader fullskjermUrl={`/kandidat/${kandidatId}`}>
             <PanelHeader.Section
+              navigering={{
+                nesteKnapp: () => navigering.nesteKandidat(),
+                forrigeKnapp: () => navigering.forrigeKandidat(),
+                harNeste: navigering.harNesteKandidat,
+                harForrige: navigering.harForrigeKandidat,
+              }}
               tabs={
                 <>
                   <Tabs.Tab value={Fane.OVERSIKT} label='Oversikt' />
