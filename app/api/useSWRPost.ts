@@ -2,7 +2,7 @@
 
 import {
   fetchOptions,
-  getAPIwithSchema,
+  postApiWithSchema,
   postApiWithSchemaEs,
 } from '@/app/api/fetcher';
 import useSWR, { type SWRConfiguration } from 'swr';
@@ -60,7 +60,11 @@ export function useSWRPost<SchemaType>(
             url: endpoint,
             body,
           })
-        : getAPIwithSchema(schema, config?.fetchOptions)(endpoint)
+        : postApiWithSchema(schema)({
+            url: endpoint,
+            body,
+            options: config?.fetchOptions,
+          })
       : null;
 
   const { nonImmutable, ...swrConfig } = config || {};

@@ -19,6 +19,7 @@ export const useKandidatinformasjon = (kandidatnr?: string) =>
     {
       kandidatnr,
     },
+    { elastic: true },
   );
 
 export const kandidatinformasjonMSWHandler = http.post(

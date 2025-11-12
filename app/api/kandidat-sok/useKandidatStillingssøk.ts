@@ -42,6 +42,7 @@ export const useKandidatStillingssøk = (kandidatId: string | null) =>
     {
       kandidatnr: kandidatId,
     },
+    { elastic: true },
   );
 
 export const kandidatStillingssøkMSWHandler = http.post(

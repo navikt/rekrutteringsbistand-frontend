@@ -30,9 +30,14 @@ export interface KandidatsammendragProps {
 }
 
 export const useKandidatsammendrag = (kandidatnr: string) =>
-  useSWRPost(kandidatsammendragEndepunkt, kandidatsammendragSchema, {
-    kandidatnr,
-  });
+  useSWRPost(
+    kandidatsammendragEndepunkt,
+    kandidatsammendragSchema,
+    {
+      kandidatnr,
+    },
+    { elastic: true },
+  );
 
 export const kandidatsammendragMSWHandler = http.post(
   kandidatsammendragEndepunkt,
