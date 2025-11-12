@@ -23,7 +23,7 @@ export const useKandidatNavn = (fødselsnummer: string | null) =>
   useSWRPost(
     fødselsnummer ? hentNavnEndepunkt : null,
     navnSchema,
-    { fodselsnummer: fødselsnummer },
+    fødselsnummer ? { fodselsnummer: fødselsnummer } : null,
     { fetchOptions: { skjulFeilmelding: [404, 403] } },
   );
 

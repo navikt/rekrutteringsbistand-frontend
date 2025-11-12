@@ -47,9 +47,11 @@ export const useSynlighetsevaluering = (fødselsnummer: string | null) =>
   useSWRPost(
     fødselsnummer ? SynlighetsevalueringEndepunkt : null,
     SynlighetsevalueringSchema,
-    {
-      fnr: fødselsnummer,
-    },
+    fødselsnummer
+      ? {
+          fnr: fødselsnummer,
+        }
+      : null,
   );
 
 export const synlighetsevalueringMSWHandler = http.post(

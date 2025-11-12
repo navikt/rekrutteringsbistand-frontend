@@ -107,6 +107,7 @@ export const useSmserForStilling = (
     SmsArraySchema,
     {
       refreshInterval: 20000, // 20 seconds
+      nonImmutable: true,
     },
   );
 
@@ -136,7 +137,7 @@ export const useSmserForKandidat = ({ fnr }: smserForKandidatRequest) =>
   useSWRPost(
     typeof fnr === 'string' ? varselQueryEndepunkt : null,
     SmsArraySchema,
-    { fnr },
+    typeof fnr === 'string' ? { fnr } : null,
   );
 
 type postSmsTilKandidaterRequest = {
@@ -156,13 +157,7 @@ export const usePostSmsTilKandidater = () => {
     // Oppdater cache for både stilling og kandidat-spørringer
     await Promise.all([
       mutate(varselStillingEndepunkt(stillingId)),
-      mutate(
-        (key) =>
-          key !== null &&
-          typeof key === 'object' &&
-          'url' in key &&
-          key.url === varselQueryEndepunkt,
-      ),
+      mutate((key) => Array.isArray(key) && key[0] === varselQueryEndepunkt),
     ]);
 
     return response;

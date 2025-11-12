@@ -20,7 +20,7 @@ export const useArenaKandidatnr = (fødselsnummer: string | null) =>
   useSWRPost(
     fødselsnummer ? hentArenaKandidatnrEndepunkt : null,
     arenaKandidatnrSchema,
-    { fodselsnummer: fødselsnummer },
+    fødselsnummer ? { fodselsnummer: fødselsnummer } : null,
     { fetchOptions: { skjulFeilmelding: [404, 403] } },
   );
 

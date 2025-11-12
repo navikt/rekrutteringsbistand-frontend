@@ -16,9 +16,11 @@ export const useKandidatinformasjon = (kandidatnr?: string) =>
   useSWRPost(
     kandidatnr ? kandidatinformasjonEndepunkt : null,
     KandidatDataSchema,
-    {
-      kandidatnr,
-    },
+    kandidatnr
+      ? {
+          kandidatnr,
+        }
+      : null,
     { elastic: true },
   );
 

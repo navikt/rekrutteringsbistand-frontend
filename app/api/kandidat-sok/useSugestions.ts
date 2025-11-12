@@ -21,7 +21,13 @@ export enum SuggestType {
 }
 
 export const useUseSugestions = (søkeTekst: string, type: SuggestType) =>
-  useSWRPost(søkeTekst ? sugestionsEndepunkt : null, SugestionsSchema, {
-    query: søkeTekst,
-    type: type,
-  });
+  useSWRPost(
+    søkeTekst ? sugestionsEndepunkt : null,
+    SugestionsSchema,
+    søkeTekst
+      ? {
+          query: søkeTekst,
+          type: type,
+        }
+      : null,
+  );

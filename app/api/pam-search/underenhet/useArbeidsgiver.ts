@@ -46,6 +46,7 @@ export const useFinnArbeidsgiver = (søkeord?: string) =>
   useSWRGet(
     søkeord ? finnArbeidsgiverEndepunkt(søkeord) : null,
     ArbeidsgiverSchemaDTO,
+    { elastic: true },
   );
 
 export const arbeidsgiverMSWHandler = http.get(
