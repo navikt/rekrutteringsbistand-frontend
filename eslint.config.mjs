@@ -29,6 +29,12 @@ const eslintConfig = [
       'mocks/**',
       'playwright-report/**',
       'storybook-static/**',
+      // Tillat direkte SWR-import i våre egne custom hooks
+      'app/api/useSWRGet.ts',
+      'app/api/useSWRPost.ts',
+      'app/api/useSWRPut.ts',
+      'components/SWRLaster.tsx', // Bruker SWRResponse type
+      'providers/RekrutteringsbistandProvider.tsx', // Bruker SWRConfig provider
     ],
   },
   {
@@ -51,6 +57,20 @@ const eslintConfig = [
               group: ['../../**', '../../../**', '../../../../**'],
               message:
                 'Unngå dype relative imports. Bruk alias (f.eks. @/components) der det er mulig.',
+            },
+          ],
+          paths: [
+            {
+              name: 'swr',
+              importNames: ['default', 'useSWR'],
+              message:
+                'Bruk useSWRGet, useSWRPost eller useSWRPut fra @/app/api/ istedenfor direkte import fra swr.',
+            },
+            {
+              name: 'swr/immutable',
+              importNames: ['default', 'useSWRImmutable'],
+              message:
+                'Bruk useSWRGet, useSWRPost eller useSWRPut fra @/app/api/ istedenfor direkte import fra swr/immutable.',
             },
           ],
         },

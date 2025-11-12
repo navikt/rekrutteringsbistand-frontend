@@ -1,9 +1,8 @@
 'use client';
 
 import { PamOntologiAPI } from '@/app/api/api-routes';
-import { getAPIwithSchema } from '@/app/api/fetcher';
+import { useSWRGet } from '@/app/api/useSWRGet';
 import { http, HttpResponse } from 'msw';
-import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
 
 const pamEndepunkt = (søkeord: string) =>
@@ -24,10 +23,7 @@ export const stillingsTittelTreffSchema = z.array(JanzzTittelSchema);
 export type JanzzTittelDTO = z.infer<typeof JanzzTittelSchema>;
 
 export const useStillingsTittel = (søkeOrd?: string) =>
-  useSWRImmutable(
-    søkeOrd ? pamEndepunkt(søkeOrd) : null,
-    getAPIwithSchema(stillingsTittelTreffSchema),
-  );
+  useSWRGet(søkeOrd ? pamEndepunkt(søkeOrd) : null, stillingsTittelTreffSchema);
 
 export const stillingsTittelMSWHandler = http.get(
   PamOntologiAPI.internUrl + `/stillingsTittel`,

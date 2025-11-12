@@ -1,10 +1,12 @@
 'use client';
 
 import { KandidatvarselAPI } from '@/app/api/api-routes';
-import { getAPI, postApi } from '@/app/api/fetcher';
+import { postApi } from '@/app/api/fetcher';
+import { useSWRGet } from '@/app/api/useSWRGet';
+import { useSWRPost } from '@/app/api/useSWRPost';
 import { RekbisError } from '@/util/rekbisError';
 import { http, HttpResponse } from 'msw';
-import useSWR, { SWRResponse, useSWRConfig } from 'swr';
+import { SWRResponse, useSWRConfig } from 'swr';
 import { z } from 'zod';
 
 const varselStillingEndepunkt = (stillingId: string) => {
@@ -95,32 +97,46 @@ const SmsArraySchema = z.array(SmsSchema);
 
 export const useSmserForStilling = (
   stillingId: string | null | undefined,
-): SWRResponse<Record<string, Sms>> =>
-  useSWR(
+): SWRResponse<Record<string, Sms>> => {
+  const {
+    data,
+    mutate: originalMutate,
+    ...rest
+  } = useSWRGet(
     stillingId ? varselStillingEndepunkt(stillingId) : null,
-    async (url: string) => {
-      const rawResponse = await getAPI(url);
-      const parsedResponse = SmsArraySchema.parse(rawResponse);
-      const smser: Record<string, Sms> = {};
-      parsedResponse.forEach((sms) => {
-        smser[sms.mottakerFnr] = sms;
-      });
-      return smser;
-    },
+    SmsArraySchema,
     {
       refreshInterval: 20000, // 20 seconds
     },
   );
 
+  // Transform array til Record<string, Sms>
+  const smser: Record<string, Sms> | undefined = data
+    ? data.reduce(
+        (acc, sms) => {
+          acc[sms.mottakerFnr] = sms;
+          return acc;
+        },
+        {} as Record<string, Sms>,
+      )
+    : undefined;
+
+  const mutate: any = originalMutate;
+
+  return {
+    ...rest,
+    data: smser,
+    mutate,
+  };
+};
+
 type smserForKandidatRequest = { fnr: string | undefined | null };
 
-export const useSmserForKandidat = ({
-  fnr,
-}: smserForKandidatRequest): SWRResponse<Sms[]> =>
-  useSWR(
-    typeof fnr === 'string' ? { url: varselQueryEndepunkt, fnr } : null,
-    async ({ url, fnr }) =>
-      SmsArraySchema.parse(await postApi(url, JSON.stringify({ fnr }))),
+export const useSmserForKandidat = ({ fnr }: smserForKandidatRequest) =>
+  useSWRPost(
+    typeof fnr === 'string' ? varselQueryEndepunkt : null,
+    SmsArraySchema,
+    { fnr },
   );
 
 type postSmsTilKandidaterRequest = {
@@ -132,28 +148,24 @@ export const usePostSmsTilKandidater = () => {
   const { mutate } = useSWRConfig();
 
   return async ({ stillingId, mal, fnr }: postSmsTilKandidaterRequest) => {
-    try {
-      const response = await postApi(varselStillingEndepunkt(stillingId), {
-        mal,
-        fnr,
-      });
+    const response = await postApi(varselStillingEndepunkt(stillingId), {
+      mal,
+      fnr,
+    });
 
-      // Oppdater cache for både stilling og kandidat-spørringer
-      await Promise.all([
-        mutate(varselStillingEndepunkt(stillingId)),
-        mutate(
-          (key) =>
-            key !== null &&
-            typeof key === 'object' &&
-            'url' in key &&
-            key.url === varselQueryEndepunkt,
-        ),
-      ]);
+    // Oppdater cache for både stilling og kandidat-spørringer
+    await Promise.all([
+      mutate(varselStillingEndepunkt(stillingId)),
+      mutate(
+        (key) =>
+          key !== null &&
+          typeof key === 'object' &&
+          'url' in key &&
+          key.url === varselQueryEndepunkt,
+      ),
+    ]);
 
-      return response;
-    } catch (e) {
-      throw e; // La kallet som bruker hooken håndtere feilen
-    }
+    return response;
   };
 };
 

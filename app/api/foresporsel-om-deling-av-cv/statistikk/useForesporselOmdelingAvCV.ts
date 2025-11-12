@@ -4,10 +4,9 @@
  * Endepunkt /delingAvCV
  */
 import { ForespørselDelingAvCvAPI } from '@/app/api/api-routes';
-import { getAPIwithSchema } from '@/app/api/fetcher';
 import { forespørselOmDelingAvCVStatistikkMock } from '@/app/api/foresporsel-om-deling-av-cv/mocks/forespørselStatistikkMock';
+import { useSWRGet } from '@/app/api/useSWRGet';
 import { http, HttpResponse } from 'msw';
-import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
 
 const medNull = (n: number) => (n < 10 ? '0' + n : n);
@@ -42,7 +41,7 @@ export const useForesporselOmdelingAvCV = ({
   fraOgMed,
   tilOgMed,
 }: IuseDelingAvCV) =>
-  useSWRImmutable(
+  useSWRGet(
     foresporselOmdelingAvCVEndepunkt(
       new URLSearchParams({
         fraOgMed: formaterDatoTilApi(fraOgMed),
@@ -50,7 +49,7 @@ export const useForesporselOmdelingAvCV = ({
         navKontor,
       }),
     ),
-    getAPIwithSchema(delingAvCVSchema),
+    delingAvCVSchema,
   );
 
 export const foresporselOmDelingAvCVStatistikkMSWHandler = http.get(

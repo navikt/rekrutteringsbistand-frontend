@@ -1,8 +1,7 @@
 import { KandidatSøkAPI } from '@/app/api/api-routes';
-import { postApiWithSchema } from '@/app/api/fetcher';
+import { useSWRPost } from '@/app/api/useSWRPost';
 import { getSingleKandidatDataSchema } from '@/mocks/kandidat.mock';
 import { http, HttpResponse } from 'msw';
-import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
 
 export enum KandidatKilde {
@@ -20,20 +19,13 @@ export const navnSchema = z.object({
 
 export type Kandidatnavn = z.infer<typeof navnSchema>;
 
-export const useKandidatNavn = (fødselsnummer: string | null) => {
-  return useSWRImmutable(
-    fødselsnummer
-      ? {
-          url: hentNavnEndepunkt,
-          body: { fodselsnummer: fødselsnummer },
-          options: { skjulFeilmelding: [404, 403] },
-        }
-      : null,
-    (data) => {
-      return postApiWithSchema(navnSchema)(data);
-    },
+export const useKandidatNavn = (fødselsnummer: string | null) =>
+  useSWRPost(
+    fødselsnummer ? hentNavnEndepunkt : null,
+    navnSchema,
+    { fodselsnummer: fødselsnummer },
+    { fetchOptions: { skjulFeilmelding: [404, 403] } },
   );
-};
 
 export const kandidatNavnMSWHandler = http.post(
   hentNavnEndepunkt,

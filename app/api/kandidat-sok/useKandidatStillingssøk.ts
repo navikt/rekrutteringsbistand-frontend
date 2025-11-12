@@ -1,13 +1,12 @@
 'use client';
 
 import { KandidatSøkAPI } from '@/app/api/api-routes';
-import { postApiWithSchemaEs } from '@/app/api/fetcher';
+import { useSWRPost } from '@/app/api/useSWRPost';
 import { getSingleKandidatStillingssøk } from '@/mocks/kandidat.mock';
 import { http, HttpResponse } from 'msw';
 /**
  * Endepunkt /useKandidatStillingssøk
  */
-import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
 
 const kandidatStillingssøkEndepunkt = `${KandidatSøkAPI.internUrl}/kandidat-stillingssok`;
@@ -37,13 +36,12 @@ export type KandidatStillingssøkDTO = z.infer<
 >;
 
 export const useKandidatStillingssøk = (kandidatId: string | null) =>
-  useSWRImmutable(kandidatStillingssøkEndepunkt, (url) =>
-    kandidatId
-      ? postApiWithSchemaEs(kandidatStillingssøkDTOSchema)({
-          url,
-          body: { kandidatnr: kandidatId },
-        })
-      : null,
+  useSWRPost(
+    kandidatId ? kandidatStillingssøkEndepunkt : null,
+    kandidatStillingssøkDTOSchema,
+    {
+      kandidatnr: kandidatId,
+    },
   );
 
 export const kandidatStillingssøkMSWHandler = http.post(

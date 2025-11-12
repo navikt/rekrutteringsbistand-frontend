@@ -1,8 +1,8 @@
 'use client';
 
 import { KandidatSøkAPI } from '@/app/api/api-routes';
-import { postApiWithSchema } from '@/app/api/fetcher';
 import { usePamGeografi } from '@/app/api/pam-geografi/typehead/lokasjoner/usePamGeografi';
+import { useSWRPost } from '@/app/api/useSWRPost';
 import {
   IKandidaSokFilterContext,
   KandidatSøkPortefølje,
@@ -20,7 +20,6 @@ import { http, HttpResponse } from 'msw';
 /**
  * Endepunkt /minebrukere
  */
-import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
 
 export const navigeringSchema = z.object({
@@ -139,20 +138,16 @@ export const useKandidatsøk = (
     sortering: kandidatSøkFilter.sortering,
   };
 
-  return useSWRImmutable(
+  return useSWRPost(
     shouldFetch
-      ? {
-          url: kandidatSokEndepunkt(
-            type,
-            kandidatSøkFilter.side,
-            kandidatSøkFilter.sortering,
-          ),
-          body: mapFilterTilpayload,
-        }
+      ? kandidatSokEndepunkt(
+          type,
+          kandidatSøkFilter.side,
+          kandidatSøkFilter.sortering,
+        )
       : null,
-    (data) => {
-      return postApiWithSchema(kandidatSokSchema)(data);
-    },
+    kandidatSokSchema,
+    mapFilterTilpayload,
   );
 };
 

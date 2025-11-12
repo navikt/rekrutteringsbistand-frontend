@@ -4,9 +4,8 @@
  * Endepunkt /useSynlighetsevaluering
  */
 import { SynlighetsevalueringAPI } from '@/app/api/api-routes';
-import { postApiWithSchema } from '@/app/api/fetcher';
+import { useSWRPost } from '@/app/api/useSWRPost';
 import { http, HttpResponse } from 'msw';
-import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
 
 const SynlighetsevalueringEndepunkt = `${SynlighetsevalueringAPI.internUrl}/evaluering`;
@@ -45,16 +44,12 @@ export type SynlighetsevalueringDTO = z.infer<
 >;
 
 export const useSynlighetsevaluering = (fødselsnummer: string | null) =>
-  useSWRImmutable(
-    fødselsnummer
-      ? {
-          url: SynlighetsevalueringEndepunkt,
-          body: {
-            fnr: fødselsnummer,
-          },
-        }
-      : null,
-    (data) => postApiWithSchema(SynlighetsevalueringSchema)(data),
+  useSWRPost(
+    fødselsnummer ? SynlighetsevalueringEndepunkt : null,
+    SynlighetsevalueringSchema,
+    {
+      fnr: fødselsnummer,
+    },
   );
 
 export const synlighetsevalueringMSWHandler = http.post(

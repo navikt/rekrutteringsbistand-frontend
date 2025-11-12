@@ -3,9 +3,8 @@
 /**
  * Endepunkt /usePamPostdata
  */
-import { getAPIwithSchema } from '@/app/api/fetcher';
+import { useSWRGet } from '@/app/api/useSWRGet';
 import { http, HttpResponse } from 'msw';
-import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
 
 const pamPostdataEndepunkt = (postnummer: string | null) =>
@@ -33,9 +32,9 @@ export type PamPostdataDTO = z.infer<typeof PostdataSchema>;
 export const usePamPostdata = (postnummer: string) => {
   const riktigPostnummer = postnummer.length === 4 ? postnummer : null;
 
-  return useSWRImmutable(
-    pamPostdataEndepunkt(riktigPostnummer),
-    getAPIwithSchema(PostdataSchema),
+  return useSWRGet(
+    riktigPostnummer ? pamPostdataEndepunkt(riktigPostnummer) : null,
+    PostdataSchema,
   );
 };
 

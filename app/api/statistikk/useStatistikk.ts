@@ -5,10 +5,9 @@
  */
 import { statistikkMock } from './mocks/statistikkMock';
 import { StatistikkAPI } from '@/app/api/api-routes';
-import { getAPIwithSchema } from '@/app/api/fetcher';
 import { formaterDatoTilApi } from '@/app/api/foresporsel-om-deling-av-cv/statistikk/useForesporselOmdelingAvCV';
+import { useSWRGet } from '@/app/api/useSWRGet';
 import { http, HttpResponse } from 'msw';
-import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
 
 const statistikkEndepunkt = (param?: URLSearchParams) =>
@@ -40,7 +39,7 @@ export const useStatistikk = ({
   fraOgMed,
   tilOgMed,
 }: IuseUtfallsstatistikk) =>
-  useSWRImmutable(
+  useSWRGet(
     statistikkEndepunkt(
       new URLSearchParams({
         fraOgMed: formaterDatoTilApi(fraOgMed),
@@ -48,7 +47,7 @@ export const useStatistikk = ({
         navKontor,
       }),
     ),
-    getAPIwithSchema(statistikkSchema),
+    statistikkSchema,
   );
 
 // MSW handler erstatter statistikkMirage

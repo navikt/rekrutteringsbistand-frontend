@@ -1,6 +1,6 @@
 import SynlighetsEvaluering from './SynlighetsEvaluering';
 import { BodyShort, Box, Button } from '@navikt/ds-react';
-import * as React from 'react';
+import { useState } from 'react';
 
 export interface SynlighetsinfoProps {
   fødselsnummer: string;
@@ -8,7 +8,7 @@ export interface SynlighetsinfoProps {
 
 const Synlighetsinfo: React.FC<SynlighetsinfoProps> = ({ fødselsnummer }) => {
   const [visSynlighetsEvaluering, setVisSynlighetsEvaluering] =
-    React.useState<boolean>(false);
+    useState<boolean>(false);
 
   return (
     <Box.New paddingInline='space-16' paddingBlock='space-12'>

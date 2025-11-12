@@ -2,39 +2,40 @@
  * Endepunkt /api/meldingsmal
  */
 import { KandidatvarselAPI } from '@/app/api/api-routes';
-import { getAPI } from '@/app/api/fetcher';
+import { useSWRGet } from '@/app/api/useSWRGet';
 import { http, HttpResponse } from 'msw';
-import useSWR, { SWRResponse } from 'swr';
+import z from 'zod';
 
 const hentMeldingsmalerEndepunkt = `${KandidatvarselAPI.internUrl}/meldingsmal`;
 
-export type VurdertSomAktuell = {
-  smsTekst: string;
-  epostTittel: string;
-  epostHtmlBody: string;
-};
+const VurdertSomAktuellSchema = z.object({
+  smsTekst: z.string(),
+  epostTittel: z.string(),
+  epostHtmlBody: z.string(),
+});
 
-export type PassendeStilling = {
-  smsTekst: string;
-  epostTittel: string;
-  epostHtmlBody: string;
-};
+const PassendeStillingSchema = z.object({
+  smsTekst: z.string(),
+  epostTittel: z.string(),
+  epostHtmlBody: z.string(),
+});
 
-export type PassendeJobbarrangement = {
-  smsTekst: string;
-  epostTittel: string;
-  epostHtmlBody: string;
-};
+const PassendeJobbarrangementSchema = z.object({
+  smsTekst: z.string(),
+  epostTittel: z.string(),
+  epostHtmlBody: z.string(),
+});
 
-export type MeldingsmalerDTO = {
-  vurdertSomAktuell: VurdertSomAktuell;
-  passendeStilling: PassendeStilling;
-  passendeJobbarrangement: PassendeJobbarrangement;
-};
+const MeldingsmalerDTOSchema = z.object({
+  vurdertSomAktuell: VurdertSomAktuellSchema,
+  passendeStilling: PassendeStillingSchema,
+  passendeJobbarrangement: PassendeJobbarrangementSchema,
+});
 
-export const useHentMeldingsmaler = (): SWRResponse<MeldingsmalerDTO> => {
-  return useSWR<MeldingsmalerDTO>(hentMeldingsmalerEndepunkt, getAPI);
-};
+export type MeldingsmalerDTO = z.infer<typeof MeldingsmalerDTOSchema>;
+
+export const useHentMeldingsmaler = () =>
+  useSWRGet(hentMeldingsmalerEndepunkt, MeldingsmalerDTOSchema);
 
 const hentMeldingsmalerMock = [
   {

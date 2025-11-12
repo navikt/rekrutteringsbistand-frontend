@@ -12,7 +12,6 @@ import {
   SidebarHeader,
   useSidebar,
 } from '@/components/ui/sidebar';
-import { useThemeProvider } from '@/providers/ThemeProvider';
 import {
   BriefcaseClockIcon,
   BriefcaseIcon,
@@ -103,30 +102,7 @@ const SideLenke = (item: NavigasjonItemProps) => {
   );
 };
 
-const SideHandling = (item: NavigasjonHandlingProps) => {
-  const { open } = useSidebar();
-  return (
-    <TilgangskontrollForInnhold
-      key={item.tekst}
-      skjulVarsel
-      kreverEnAvRollene={item.kreverRoller}
-    >
-      <Button
-        size='small'
-        onClick={item.onClick}
-        variant='tertiary-neutral'
-        aria-label={item.tekst}
-        icon={item.ikon}
-        className={open ? 'w-full text-left justify-start' : ''}
-      >
-        {open && item.tekst}
-      </Button>
-    </TilgangskontrollForInnhold>
-  );
-};
-
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { darkMode, setDarkMode } = useThemeProvider();
   const { open, toggleSidebar } = useSidebar();
 
   return (

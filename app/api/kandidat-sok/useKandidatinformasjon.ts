@@ -2,10 +2,9 @@
 
 import { KandidatDataSchema } from './schema/cvSchema.zod';
 import { KandidatSøkAPI } from '@/app/api/api-routes';
-import { postApiWithSchemaEs } from '@/app/api/fetcher';
+import { useSWRPost } from '@/app/api/useSWRPost';
 import { getSingleKandidatDataSchema } from '@/mocks/kandidat.mock';
 import { http, HttpResponse } from 'msw';
-import useSWRImmutable from 'swr/immutable';
 
 const kandidatinformasjonEndepunkt = `${KandidatSøkAPI.internUrl}/lookup-cv`;
 
@@ -14,15 +13,11 @@ export interface kandidatinformasjonProps {
 }
 
 export const useKandidatinformasjon = (kandidatnr?: string) =>
-  useSWRImmutable(
-    kandidatnr
-      ? {
-          url: kandidatinformasjonEndepunkt,
-          body: { kandidatnr },
-        }
-      : null,
-    (data) => {
-      return postApiWithSchemaEs(KandidatDataSchema)(data);
+  useSWRPost(
+    kandidatnr ? kandidatinformasjonEndepunkt : null,
+    KandidatDataSchema,
+    {
+      kandidatnr,
     },
   );
 
