@@ -1,0 +1,222 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - generic [ref=e6] [cursor=pointer]:
+    - button "Open Next.js Dev Tools" [ref=e7] [cursor=pointer]:
+      - img [ref=e8] [cursor=pointer]
+    - generic [ref=e11] [cursor=pointer]:
+      - button "Open issues overlay" [ref=e12] [cursor=pointer]:
+        - generic [ref=e13] [cursor=pointer]:
+          - generic [ref=e14] [cursor=pointer]: "0"
+          - generic [ref=e15] [cursor=pointer]: "1"
+        - generic [ref=e16] [cursor=pointer]: Issue
+      - button "Collapse issues badge" [ref=e17] [cursor=pointer]:
+        - img [ref=e18] [cursor=pointer]
+  - alert [ref=e20]
+  - generic [ref=e23]:
+    - banner [ref=e24]:
+      - banner [ref=e25]:
+        - heading "Rekrutteringsbistand - Playwright" [level=1] [ref=e26]:
+          - generic [ref=e27]: Rekrutteringsbistand - Playwright
+        - generic [ref=e28]:
+          - strong [ref=e29]: Playwright Test
+          - generic [ref=e30]: "Bruker: TestIdent"
+          - generic [ref=e31]: "Rolle: Arbeidsgiverrettet"
+        - button "Modia meny" [ref=e33] [cursor=pointer]:
+          - img "Modia meny" [ref=e34] [cursor=pointer]
+        - 'button "Fornavn Etternavn Enhet: NAV FYA1" [ref=e36] [cursor=pointer]':
+          - generic [ref=e37] [cursor=pointer]:
+            - generic [ref=e38] [cursor=pointer]: Fornavn Etternavn
+            - generic [ref=e39] [cursor=pointer]: "Enhet: NAV FYA1"
+          - img [ref=e40] [cursor=pointer]
+    - generic [ref=e42]:
+      - generic [ref=e45]:
+        - generic [ref=e47]:
+          - button [pressed] [ref=e48] [cursor=pointer]:
+            - img [ref=e50] [cursor=pointer]
+          - button "Opprett" [ref=e52] [cursor=pointer]:
+            - img [ref=e54] [cursor=pointer]
+            - generic [ref=e56] [cursor=pointer]: Opprett
+        - generic [ref=e57]:
+          - generic [ref=e58]:
+            - link "Oversikt" [ref=e59] [cursor=pointer]:
+              - /url: /
+              - button "Oversikt" [ref=e60] [cursor=pointer]:
+                - img [ref=e62] [cursor=pointer]
+                - generic [ref=e64] [cursor=pointer]: Oversikt
+            - link "Stillingsoppdrag" [ref=e65] [cursor=pointer]:
+              - /url: /stilling?brukStandardsok=true
+              - button "Stillingsoppdrag" [ref=e66] [cursor=pointer]:
+                - img [ref=e68] [cursor=pointer]
+                - generic [ref=e70] [cursor=pointer]: Stillingsoppdrag
+            - link "Etterregistreringer" [ref=e71] [cursor=pointer]:
+              - /url: /etterregistrering
+              - button "Etterregistreringer" [ref=e72] [cursor=pointer]:
+                - img [ref=e74] [cursor=pointer]
+                - generic [ref=e76] [cursor=pointer]: Etterregistreringer
+            - link "Jobbsøkere" [ref=e77] [cursor=pointer]:
+              - /url: /kandidat
+              - button "Jobbsøkere" [active] [ref=e78] [cursor=pointer]:
+                - img [ref=e80] [cursor=pointer]
+                - generic [ref=e82] [cursor=pointer]: Jobbsøkere
+          - generic [ref=e83]:
+            - link "Nyheter" [ref=e85] [cursor=pointer]:
+              - /url: /nyheter
+              - button "Nyheter" [ref=e86] [cursor=pointer]:
+                - img [ref=e88] [cursor=pointer]
+                - generic [ref=e90] [cursor=pointer]: Nyheter
+            - button "Gi tilbakemelding" [ref=e91] [cursor=pointer]:
+              - img [ref=e93] [cursor=pointer]
+              - generic [ref=e95] [cursor=pointer]: Gi tilbakemelding
+            - link "Instillinger" [ref=e96] [cursor=pointer]:
+              - /url: /instillinger
+              - button "Instillinger" [ref=e97] [cursor=pointer]:
+                - img [ref=e99] [cursor=pointer]
+                - generic [ref=e101] [cursor=pointer]: Instillinger
+      - main [ref=e102]:
+        - generic [ref=e105]:
+          - navigation "Brødsmulesti" [ref=e114]:
+            - list [ref=e115]:
+              - listitem [ref=e116]:
+                - link "Jobbsøkere" [disabled] [ref=e117]:
+                  - img [ref=e119]
+                  - text: Jobbsøkere
+          - generic [ref=e121]:
+            - generic [ref=e127]:
+              - button "Alle kontorer" [ref=e128] [cursor=pointer]:
+                - generic [ref=e129] [cursor=pointer]: Alle
+              - button "Mine brukere" [ref=e130] [cursor=pointer]:
+                - generic [ref=e131] [cursor=pointer]: Mine
+              - button "Mitt kontor" [ref=e132] [cursor=pointer]:
+                - generic [ref=e133] [cursor=pointer]: Mitt kontor
+              - button "Mine kontorer" [ref=e134] [cursor=pointer]:
+                - generic [ref=e135] [cursor=pointer]: Mine kontorer
+              - button "Valgte kontorer" [ref=e136] [cursor=pointer]:
+                - generic [ref=e137] [cursor=pointer]: Velg kontor
+            - complementary "Sidepanel" [ref=e142]:
+              - generic [ref=e145]:
+                - generic [ref=e146]:
+                  - generic [ref=e147]: Søk
+                  - generic [ref=e148]:
+                    - searchbox "Søk" [ref=e150]
+                    - button "Søk" [ref=e151] [cursor=pointer]:
+                      - img "Søk" [ref=e153] [cursor=pointer]
+                - generic [ref=e155]:
+                  - generic [ref=e156]: Arbeidsønsker
+                  - generic [ref=e158]:
+                    - list [ref=e159]:
+                      - listitem [ref=e160]:
+                        - combobox "Arbeidsønsker" [ref=e161]
+                    - img [ref=e163] [cursor=pointer]
+                - generic [ref=e165]:
+                  - generic [ref=e166]: Ønsket sted
+                  - generic [ref=e168]:
+                    - list [ref=e169]:
+                      - listitem [ref=e170]:
+                        - combobox "Ønsket sted" [ref=e171]
+                    - img [ref=e173] [cursor=pointer]
+                - generic [ref=e175]:
+                  - checkbox "Kandidaten må også bo på ønsket sted" [ref=e177] [cursor=pointer]
+                  - generic [ref=e178] [cursor=pointer]: Kandidaten må også bo på ønsket sted
+                - generic [ref=e179]:
+                  - generic [ref=e180]: Kompetanse
+                  - generic [ref=e182]:
+                    - list [ref=e183]:
+                      - listitem [ref=e184]:
+                        - combobox "Kompetanse" [ref=e185]
+                    - img [ref=e187] [cursor=pointer]
+                - generic [ref=e189]:
+                  - generic [ref=e190]: Førerkort
+                  - generic [ref=e192]:
+                    - list [ref=e193]:
+                      - listitem [ref=e194]:
+                        - combobox "Førerkort" [ref=e195]
+                    - img [ref=e197] [cursor=pointer]
+                - generic [ref=e199]:
+                  - generic [ref=e200]: Språk
+                  - generic [ref=e202]:
+                    - list [ref=e203]:
+                      - listitem [ref=e204]:
+                        - combobox "Språk" [ref=e205]
+                    - img [ref=e207] [cursor=pointer]
+                - generic [ref=e209]:
+                  - generic [ref=e210]: Arbeidserfaring
+                  - generic [ref=e212]:
+                    - list [ref=e213]:
+                      - listitem [ref=e214]:
+                        - combobox "Arbeidserfaring" [ref=e215]
+                    - img [ref=e217] [cursor=pointer]
+                - group "Velg kandidatens mål" [ref=e219]:
+                  - generic [ref=e220]: Velg kandidatens mål
+                  - generic [ref=e221]:
+                    - generic [ref=e222]:
+                      - checkbox "Skaffe arbeid" [ref=e224] [cursor=pointer]
+                      - generic [ref=e225] [cursor=pointer]: Skaffe arbeid
+                    - generic [ref=e226]:
+                      - checkbox "Beholde arbeid" [ref=e228] [cursor=pointer]
+                      - generic [ref=e229] [cursor=pointer]: Beholde arbeid
+                    - generic [ref=e230]:
+                      - checkbox "Øke deltagelse eller mål om arbeid" [ref=e232] [cursor=pointer]
+                      - generic [ref=e233] [cursor=pointer]: Øke deltagelse eller mål om arbeid
+                - group "Utdanningsnivå Velg ett eller flere nivåer" [ref=e234]:
+                  - generic [ref=e235]: Utdanningsnivå
+                  - generic [ref=e236]: Velg ett eller flere nivåer
+                  - generic [ref=e237]:
+                    - generic [ref=e238]:
+                      - checkbox "Videregående" [ref=e240] [cursor=pointer]
+                      - generic [ref=e241] [cursor=pointer]: Videregående
+                    - generic [ref=e242]:
+                      - checkbox "Fagskole" [ref=e244] [cursor=pointer]
+                      - generic [ref=e245] [cursor=pointer]: Fagskole
+                    - generic [ref=e246]:
+                      - checkbox "Universitet/høgskole inntil 4 år" [ref=e248] [cursor=pointer]
+                      - generic [ref=e249] [cursor=pointer]: Universitet/høgskole inntil 4 år
+                    - generic [ref=e250]:
+                      - checkbox "Universitet/høgskole over 4 år" [ref=e252] [cursor=pointer]
+                      - generic [ref=e253] [cursor=pointer]: Universitet/høgskole over 4 år
+                    - generic [ref=e254]:
+                      - checkbox "Doktorgrad (PhD)" [ref=e256] [cursor=pointer]
+                      - generic [ref=e257] [cursor=pointer]: Doktorgrad (PhD)
+                - group "Velg prioriterte målgrupper" [ref=e258]:
+                  - generic [ref=e259]: Velg prioriterte målgrupper
+                  - generic [ref=e260]:
+                    - generic [ref=e261]:
+                      - checkbox "Unge under 30 år" [ref=e263] [cursor=pointer]
+                      - generic [ref=e264] [cursor=pointer]: Unge under 30 år
+                    - generic [ref=e265]:
+                      - checkbox "Senior 50+" [ref=e267] [cursor=pointer]
+                      - generic [ref=e268] [cursor=pointer]: Senior 50+
+                    - generic [ref=e270]:
+                      - generic [ref=e271]:
+                        - checkbox "Har hull i CV-en" [ref=e273] [cursor=pointer]
+                        - generic [ref=e274] [cursor=pointer]: Har hull i CV-en
+                      - button "Hva er hull i CV-en?" [ref=e276] [cursor=pointer]:
+                        - img "Hva er hull i CV-en?" [ref=e277] [cursor=pointer]
+                - group "Velg innsatsgrupper" [ref=e280]:
+                  - generic [ref=e281]: Velg innsatsgrupper
+                  - generic [ref=e282]:
+                    - generic [ref=e283]:
+                      - checkbox "Gode muligheter" [ref=e285] [cursor=pointer]
+                      - generic [ref=e286] [cursor=pointer]: Gode muligheter
+                      - paragraph [ref=e287]: (standard)
+                    - generic [ref=e288]:
+                      - checkbox "Trenger veiledning" [ref=e290] [cursor=pointer]
+                      - generic [ref=e291] [cursor=pointer]: Trenger veiledning
+                      - paragraph [ref=e292]: (situasjonsbestemt)
+                    - generic [ref=e293]:
+                      - checkbox "Trenger veiledning, nedsatt arbeidsevne" [ref=e295] [cursor=pointer]
+                      - generic [ref=e296] [cursor=pointer]: Trenger veiledning, nedsatt arbeidsevne
+                      - paragraph [ref=e297]: (spesielt tilpasset)
+                    - generic [ref=e298]:
+                      - checkbox "Jobbe delvis" [ref=e300] [cursor=pointer]
+                      - generic [ref=e301] [cursor=pointer]: Jobbe delvis
+                      - paragraph [ref=e302]: (delvis varig tilpasset, kun ny løsning)
+                    - generic [ref=e303]:
+                      - checkbox "Liten mulighet til å jobbe" [ref=e305] [cursor=pointer]
+                      - generic [ref=e306] [cursor=pointer]: Liten mulighet til å jobbe
+                      - paragraph [ref=e307]: (varig tilpasset)
+                    - generic [ref=e308]:
+                      - checkbox "Ikke vurdert" [ref=e310] [cursor=pointer]
+                      - generic [ref=e311] [cursor=pointer]: Ikke vurdert
+```
