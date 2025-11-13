@@ -16,6 +16,7 @@ import {
 import { KandidatHendelseInformasjon } from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatHendelser/KandidatHendelser';
 import { KandidatVisningProps } from '@/app/stilling/[stillingsId]/kandidatliste/_ui/KandidatlisteFilter/useFiltrerteKandidater';
 import VelgInternStatus from '@/app/stilling/[stillingsId]/kandidatliste/_ui/VelgInternStatus';
+import ListeKort from '@/components/layout/ListeKort';
 import WindowAnker from '@/components/window/WindowAnker';
 import { formaterNorskDato } from '@/util/util';
 import { BodyShort, Box } from '@navikt/ds-react';
@@ -121,16 +122,9 @@ const KandidatListeKort: FC<KandidatListeKortProps> = ({
         windowRef={`/stilling/${stillingsData.stilling.uuid}?stillingFane=kandidater&visKandidatId=${kandidat?.kandidatnr}`}
         href={`/stilling/${stillingsData.stilling.uuid}/kandidatliste/${kandidat?.kandidatnr}`}
       >
-        <Box.New
-          padding='4'
-          background='neutral-softA'
-          borderRadius='xlarge'
-          data-testid='stillings-kort'
-          className={` min-w-fit 
-          focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--ax-border-focus)]
-          ${!aktiv && !inaktiv ? 'hover:bg-[var(--ax-bg-neutral-moderate-hover)] cursor-pointer ' : ''}
+        <ListeKort
+          className={`          ${!aktiv && !inaktiv ? 'hover:bg-[var(--ax-bg-neutral-moderate-hover)] cursor-pointer ' : ''}
           ${aktiv ? 'bg-[var(--ax-bg-neutral-moderate-pressed)]' : ''}`}
-          tabIndex={0}
         >
           <div
             className={`grid ${KANDIDATLISTE_COLUMN_LAYOUT} gap-x-3 items-center `}
@@ -186,7 +180,7 @@ const KandidatListeKort: FC<KandidatListeKortProps> = ({
               </div>
             )}
           </div>
-        </Box.New>
+        </ListeKort>
       </WindowAnker>
     );
   }

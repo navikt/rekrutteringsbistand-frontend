@@ -7,9 +7,10 @@ import {
   hentKandidatensØnskedeYrker,
 } from '@/app/kandidat/util';
 import TekstMedIkon from '@/components/TekstMedIkon';
+import ListeKort from '@/components/layout/ListeKort';
 import WindowAnker from '@/components/window/WindowAnker';
 import { HandShakeHeartIcon, HouseIcon, PinIcon } from '@navikt/aksel-icons';
-import { Box, Checkbox, Heading, Tag } from '@navikt/ds-react';
+import { Checkbox, Heading, Tag } from '@navikt/ds-react';
 import { FC } from 'react';
 
 type IKandidatKort = {
@@ -33,7 +34,6 @@ const KandidatKort: FC<IKandidatKort> = ({
   );
 
   const kandidatId = kandidat.arenaKandidatnr;
-  const aktiv = false;
 
   const getWindowRefWithParams = () => {
     const currentParams = new URLSearchParams(window.location.search);
@@ -59,22 +59,11 @@ const KandidatKort: FC<IKandidatKort> = ({
             : '#'
       }
     >
-      <Box.New
-        background='neutral-softA'
-        padding='5'
-        // onClick={() =>
-        //   kandidat.arenaKandidatnr
-        //     ? setVisKandidatId(kandidat.arenaKandidatnr)
-        //     : null
-        // }
-        borderRadius='xlarge'
-        data-testid='stillings-kort'
-        className={` @container/kandidatlistekort flex flex-col min-w-fit
-          focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--ax-border-focus)]
+      <ListeKort
+        className={`  flex flex-col min-w-fit
+          focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-[var(--ax-border-focus)]
           ${kandidatId ? 'cursor-pointer' : 'cursor-default'}
-          ${aktiv ? 'bg-[var(--ax-bg-neutral-moderate-pressed)]' : 'hover:bg-[var(--ax-bg-neutral-moderate-hover)] '}
           ${erLagtTil ? 'border-l-4 border-[var(--ax-border-success)]' : ''}`}
-        tabIndex={0}
       >
         <div className='flex flex-row '>
           <div>
@@ -153,7 +142,7 @@ const KandidatKort: FC<IKandidatKort> = ({
             </div>
           </div>
         </div>
-      </Box.New>
+      </ListeKort>
     </WindowAnker>
   );
 };

@@ -2,6 +2,7 @@ import { RekrutteringsbistandStillingSchemaDTO } from '@/app/api/stillings-sok/s
 import StillingsTag from '@/app/stilling/_ui/StillingsTag';
 import { visStillingsDataInfo } from '@/app/stilling/_util/stillingInfoUtil';
 import { hentArbeidssted } from '@/app/stilling/_util/stillingssøk-util';
+import ListeKort from '@/components/layout/ListeKort';
 import WindowAnker from '@/components/window/WindowAnker';
 // import TekstMedIkon from '@/components/felles/TekstMedIkon';
 // import { formaterNorskDato } from '@/util/util';
@@ -14,7 +15,7 @@ import {
   // PersonIcon,
   PinIcon,
 } from '@navikt/aksel-icons';
-import { Box, Heading } from '@navikt/ds-react';
+import { Heading } from '@navikt/ds-react';
 import Image from 'next/image';
 import { FC, MouseEvent } from 'react';
 
@@ -55,14 +56,7 @@ const StillingsKort: FC<IStillingsKort> = ({ stillingData, kandidatId }) => {
             : `/stilling/${stillingData.stilling.uuid}`
       }
     >
-      <Box.New
-        className={`group cursor-pointer`}
-        background='neutral-softA'
-        padding='5'
-        borderRadius='xlarge'
-        data-testid='stillings-kort'
-        // onClick={() => setVisStillingsId(stillingData.stilling.uuid)}
-      >
+      <ListeKort>
         <div
           className='opacity-0 transition-opacity
                    group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto z-10'
@@ -126,13 +120,10 @@ const StillingsKort: FC<IStillingsKort> = ({ stillingData, kandidatId }) => {
                   ) || '-'}
                 </span>
               </div>
-              {/* <div className='mt-3 flex justify-end flex-shrink-0'>
-            
-            </div> */}
             </div>
           </div>
         </div>
-      </Box.New>
+      </ListeKort>
     </WindowAnker>
   );
 };
