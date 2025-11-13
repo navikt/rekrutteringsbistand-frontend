@@ -1,3 +1,6 @@
+import { buildVisningsstatusBool } from './visningsstatusClause';
+import { VisningsStatus } from '@/app/stilling/_util/stillingInfoUtil';
+
 export const maksAntallTreffPerSøk = 20;
 
 export const regnUtFørsteTreffFra = (
@@ -477,42 +480,6 @@ export class ElasticSearchQueryBuilder {
       allFiltersWithoutPortfolio,
     );
 
-    // Hjelpefunksjon for å bygge fritekst should-clauses for et spesifikt felt
-    const buildFritekstShouldClause = (fritekst: string, felt: string) => {
-      if (!fritekst || fritekst.length < 1) return [];
-
-      const feltManSkalSøkeI: string[] = [];
-      if (felt === 'tekstfelter') {
-        feltManSkalSøkeI.push(
-          'stilling.adtext_no^0.5',
-          'stilling.tittel',
-          'stilling.employer.name',
-          'stilling.properties.jobtitle',
-          'stilling.properties.arbeidsplassenoccupation',
-          'stilling.properties.keywords',
-        );
-      } else {
-        feltManSkalSøkeI.push(
-          'stilling.adtext_no^0.5',
-          'stilling.tittel',
-          'stilling.annonsenr',
-          'stilling.employer.name',
-          'stilling.employer.orgnr',
-          'stilling.properties.jobtitle',
-          'stilling.properties.arbeidsplassenoccupation',
-          'stilling.properties.keywords',
-        );
-      }
-
-      return {
-        simple_query_string: {
-          query: fritekst,
-          fields: feltManSkalSøkeI,
-          default_operator: 'and',
-        },
-      };
-    };
-
     // Hvis status er valgt legges dette til kun i geografi-aggregasjonen (område skal ta høyde for valgt status)
     // Status-valg legges i post_filter for treff, men aggregeringer ignorerer post_filter.
     // Vi gjenbruker post_filter-clausen dersom den filtrerer på stilling.status for å få korrekte område-tall.
@@ -546,111 +513,30 @@ export class ElasticSearchQueryBuilder {
                 filters: {
                   filters: {
                     'Ikke publisert': {
-                      bool: {
-                        must: [{ term: { 'stilling.status': 'INACTIVE' } }],
-                        must_not: [
-                          { exists: { field: 'stilling.publishedByAdmin' } },
-                          { term: { 'stilling.status': 'REJECTED' } },
-                          { term: { 'stilling.status': 'DELETED' } },
-                        ],
-                      },
+                      bool: buildVisningsstatusBool(
+                        VisningsStatus.IkkePublisert,
+                      ),
                     },
                     'Åpen for søkere': {
-                      bool: {
-                        must: [
-                          { term: { 'stilling.status': 'ACTIVE' } },
-                          {
-                            term: { 'stilling.administration.status': 'DONE' },
-                          },
-                          { exists: { field: 'stilling.publishedByAdmin' } },
-                          { range: { 'stilling.published': { lte: 'now/d' } } },
-                        ],
-                        must_not: [
-                          { term: { 'stilling.status': 'REJECTED' } },
-                          { term: { 'stilling.status': 'DELETED' } },
-                        ],
-                      },
+                      bool: buildVisningsstatusBool(
+                        VisningsStatus.ApenForSokere,
+                      ),
                     },
                     'Stengt for søkere': {
-                      bool: {
-                        must: [
-                          { term: { 'stilling.status': 'INACTIVE' } },
-                          {
-                            term: { 'stilling.administration.status': 'DONE' },
-                          },
-                          { exists: { field: 'stilling.publishedByAdmin' } },
-                          { range: { 'stilling.published': { lte: 'now/d' } } },
-                        ],
-                        must_not: [
-                          { range: { 'stilling.expires': { lt: 'now/d' } } },
-                          { term: { 'stilling.status': 'REJECTED' } },
-                          { term: { 'stilling.status': 'DELETED' } },
-                        ],
-                      },
+                      bool: buildVisningsstatusBool(
+                        VisningsStatus.StengtForSokere,
+                      ),
                     },
                     'Utløpt - Stengt for søkere': {
-                      bool: {
-                        must: [
-                          { term: { 'stilling.status': 'INACTIVE' } },
-                          { range: { 'stilling.expires': { lt: 'now/d' } } },
-                          {
-                            bool: {
-                              should: [
-                                {
-                                  term: {
-                                    'stilling.administration.status': 'DONE',
-                                  },
-                                },
-                                {
-                                  term: {
-                                    'stilling.administration.status': 'PENDING',
-                                  },
-                                },
-                                {
-                                  bool: {
-                                    must_not: [
-                                      {
-                                        exists: {
-                                          field:
-                                            'stilling.administration.status',
-                                        },
-                                      },
-                                    ],
-                                  },
-                                },
-                              ],
-                              minimum_should_match: 1,
-                            },
-                          },
-                          { exists: { field: 'stilling.publishedByAdmin' } },
-                          { range: { 'stilling.published': { lte: 'now/d' } } },
-                        ],
-                        must_not: [
-                          { term: { 'stilling.status': 'REJECTED' } },
-                          { term: { 'stilling.status': 'DELETED' } },
-                        ],
-                      },
+                      bool: buildVisningsstatusBool(
+                        VisningsStatus.UtloptStengtForSokere,
+                      ),
                     },
                     Fullført: {
-                      bool: {
-                        must: [
-                          { term: { 'stilling.status': 'STOPPED' } },
-                          {
-                            term: { 'stilling.administration.status': 'DONE' },
-                          },
-                          { exists: { field: 'stilling.publishedByAdmin' } },
-                          { range: { 'stilling.published': { lte: 'now/d' } } },
-                        ],
-                        must_not: [
-                          { term: { 'stilling.status': 'REJECTED' } },
-                          { term: { 'stilling.status': 'DELETED' } },
-                        ],
-                      },
+                      bool: buildVisningsstatusBool(VisningsStatus.Fullfort),
                     },
                     Avbrutt: {
-                      bool: {
-                        must: [{ term: { 'stilling.status': 'DELETED' } }],
-                      },
+                      bool: buildVisningsstatusBool(VisningsStatus.Slettet),
                     },
                   },
                 },

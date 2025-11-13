@@ -39,7 +39,7 @@ export default function EndreSøkeforslag() {
   ) => {
     setLoading(true);
     try {
-      const response = await oppdaterStilling(
+      await oppdaterStilling(
         {
           ...stillingsData,
           stilling: {
@@ -59,16 +59,13 @@ export default function EndreSøkeforslag() {
         },
       );
 
-      if (response.stilling.uuid) {
-        refetch?.();
-        await mutate(
-          (key) => Array.isArray(key) && key[0] === StillingsSøkAPI.internUrl,
-          undefined,
-          { revalidate: true },
-        );
-        setOpen(false);
-        router.refresh();
-      }
+      refetch?.();
+      await mutate(
+        (key) => Array.isArray(key) && key[0] === StillingsSøkAPI.internUrl,
+        undefined,
+        { revalidate: true },
+      );
+      setOpen(false);
     } finally {
       setLoading(false);
     }

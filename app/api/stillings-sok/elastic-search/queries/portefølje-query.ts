@@ -1,4 +1,5 @@
 import { ElasticSearchQueryBuilder } from '@/app/api/stillings-sok/elastic-search/elasticSearchQueryBuilder';
+import { adminStatusDonePendingOrMissing } from '@/app/api/stillings-sok/elastic-search/visningsstatusClause';
 import { GenerateElasticSearchQueryParams } from '@/app/api/stillings-sok/opprettElasticSearchQuery';
 import { StillingsSøkPortefølje } from '@/app/stilling/_util/stillingssøk-typer';
 
@@ -33,7 +34,7 @@ export const esPortefølje = (
         { term: { 'stilling.status': 'DELETED' } },
       ],
       must: [
-        { term: { 'stilling.administration.status': 'DONE' } },
+        adminStatusDonePendingOrMissing(),
         { exists: { field: 'stilling.publishedByAdmin' } },
         { range: { 'stilling.published': { lte: 'now/d' } } },
       ],
@@ -96,7 +97,7 @@ export const esPortefølje = (
           { term: { 'stilling.status': 'DELETED' } },
         ],
         must: [
-          { term: { 'stilling.administration.status': 'DONE' } },
+          adminStatusDonePendingOrMissing(),
           { exists: { field: 'stilling.publishedByAdmin' } },
           { range: { 'stilling.published': { lte: 'now/d' } } },
         ],

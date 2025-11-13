@@ -1,14 +1,14 @@
 import { ElasticSearchQueryBuilder } from '@/app/api/stillings-sok/elastic-search/elasticSearchQueryBuilder';
+import {
+  adminStatusDonePendingOrMissing,
+  buildVisningsstatusBool,
+} from '@/app/api/stillings-sok/elastic-search/visningsstatusClause';
 import { GenerateElasticSearchQueryParams } from '@/app/api/stillings-sok/opprettElasticSearchQuery';
 import { VisningsStatus } from '@/app/stilling/_util/stillingInfoUtil';
 
 // Hjelper-funksjon for å lage publisert-kriterier
 const getPublisertKriterier = () => [
-  {
-    term: {
-      'stilling.administration.status': 'DONE',
-    },
-  },
+  adminStatusDonePendingOrMissing(),
   {
     exists: {
       field: 'stilling.publishedByAdmin',
@@ -73,86 +73,35 @@ export const statusQuery = (
   // Åpen for søkere: stilling.status=ACTIVE AND publishedByAdmin exists AND published exists AND administration.status=DONE
   if (statuser.includes(VisningsStatus.ApenForSokere)) {
     postFilterShould.push({
-      bool: {
-        must: [
-          { term: { 'stilling.status': 'ACTIVE' } },
-          { term: { 'stilling.administration.status': 'DONE' } },
-          { exists: { field: 'stilling.publishedByAdmin' } },
-          { range: { 'stilling.published': { lte: 'now/d' } } },
-        ],
-        must_not: [
-          { term: { 'stilling.status': 'REJECTED' } },
-          { term: { 'stilling.status': 'DELETED' } },
-        ],
-      },
+      bool: buildVisningsstatusBool(VisningsStatus.ApenForSokere),
     });
   }
   // Fullført (tidligere stoppet): stilling.status=STOPPED + publiseringskriterier
   if (statuser.includes(VisningsStatus.Fullfort)) {
     postFilterShould.push({
-      bool: {
-        must: [
-          { term: { 'stilling.status': 'STOPPED' } },
-          { term: { 'stilling.administration.status': 'DONE' } },
-          { exists: { field: 'stilling.publishedByAdmin' } },
-          { range: { 'stilling.published': { lte: 'now/d' } } },
-        ],
-        must_not: [
-          { term: { 'stilling.status': 'REJECTED' } },
-          { term: { 'stilling.status': 'DELETED' } },
-        ],
-      },
+      bool: buildVisningsstatusBool(VisningsStatus.Fullfort),
     });
   }
   // Utløpt - Stengt for søkere: stilling.status=INACTIVE + expires < today + publiseringskriterier
   if (statuser.includes(VisningsStatus.UtloptStengtForSokere)) {
     postFilterShould.push({
-      bool: {
-        must: [
-          { term: { 'stilling.status': 'INACTIVE' } },
-          { range: { 'stilling.expires': { lt: 'now/d' } } },
-          { term: { 'stilling.administration.status': 'DONE' } },
-          { exists: { field: 'stilling.publishedByAdmin' } },
-          { range: { 'stilling.published': { lte: 'now/d' } } },
-        ],
-        must_not: [
-          { term: { 'stilling.status': 'REJECTED' } },
-          { term: { 'stilling.status': 'DELETED' } },
-        ],
-      },
+      bool: buildVisningsstatusBool(VisningsStatus.UtloptStengtForSokere),
     });
   }
   if (statuser.includes(VisningsStatus.StengtForSokere)) {
     postFilterShould.push({
-      bool: {
-        must: [
-          { term: { 'stilling.status': 'INACTIVE' } },
-          { term: { 'stilling.administration.status': 'DONE' } },
-          { exists: { field: 'stilling.publishedByAdmin' } },
-          { range: { 'stilling.published': { lte: 'now/d' } } },
-        ],
-        must_not: [
-          { range: { 'stilling.expires': { lt: 'now/d' } } },
-          { term: { 'stilling.status': 'REJECTED' } },
-          { term: { 'stilling.status': 'DELETED' } },
-        ],
-      },
+      bool: buildVisningsstatusBool(VisningsStatus.StengtForSokere),
     });
   }
   if (statuser.includes(VisningsStatus.IkkePublisert)) {
     postFilterShould.push({
-      bool: {
-        must: [{ term: { 'stilling.status': 'INACTIVE' } }],
-        must_not: [
-          { exists: { field: 'stilling.publishedByAdmin' } },
-          { term: { 'stilling.status': 'REJECTED' } },
-          { term: { 'stilling.status': 'DELETED' } },
-        ],
-      },
+      bool: buildVisningsstatusBool(VisningsStatus.IkkePublisert),
     });
   }
   if (statuser.includes(VisningsStatus.Slettet)) {
-    postFilterShould.push({ term: { 'stilling.status': 'DELETED' } });
+    postFilterShould.push({
+      bool: buildVisningsstatusBool(VisningsStatus.Slettet),
+    });
   }
 
   if (postFilterShould.length > 0) {
