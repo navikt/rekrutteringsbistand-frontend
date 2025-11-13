@@ -3,15 +3,13 @@ import { setKandidatlisteStatus } from '@/app/api/kandidat/setKandidatlisteStatu
 import { useKandidatlisteForEier } from '@/app/api/kandidat/useKandidatlisteForEier';
 import { oppdaterStilling } from '@/app/api/stilling/oppdater-stilling/oppdaterStilling';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
-import {
-  Stillingskategori,
-  StillingsStatus,
-} from '@/app/stilling/_ui/stilling-typer';
+import { Stillingskategori, StillingsStatus } from '@/app/stilling/_ui/stilling-typer';
 import SWRLaster from '@/components/SWRLaster';
 import { useApplikasjonContext } from '@/providers/ApplikasjonContext';
 import { RekbisError } from '@/util/rekbisError';
 import { BodyLong, Button, Checkbox, Modal } from '@navikt/ds-react';
 import { useState } from 'react';
+
 
 export default function GjenåpneStillingKnapp() {
   const { stillingsData, refetch, erEier } = useStillingsContext();
@@ -26,26 +24,22 @@ export default function GjenåpneStillingKnapp() {
   const gjenåpne = async (kandidatlisteId: string) => {
     setLoading(true);
     try {
-      await Promise.all([
-        setKandidatlisteStatus(kandidatlisteId, Kandidatlistestatus.Åpen),
-        oppdaterStilling(
-          {
-            ...stillingsData,
-            stilling: {
-              ...stillingsData.stilling,
-              status: StillingsStatus.Aktiv,
-              privacy: publiserArbeidsplassen
-                ? 'SHOW_ALL'
-                : 'INTERNAL_NOT_SHOWN',
-            },
+      await setKandidatlisteStatus(kandidatlisteId, Kandidatlistestatus.Åpen);
+      await oppdaterStilling(
+        {
+          ...stillingsData,
+          stilling: {
+            ...stillingsData.stilling,
+            status: StillingsStatus.Aktiv,
+            privacy: publiserArbeidsplassen ? 'SHOW_ALL' : 'INTERNAL_NOT_SHOWN',
           },
-          {
-            eierNavident: brukerData.ident,
-            eierNavn: brukerData.navn,
-            eierNavKontorEnhetId: valgtNavKontor?.navKontor,
-          },
-        ),
-      ]);
+        },
+        {
+          eierNavident: brukerData.ident,
+          eierNavn: brukerData.navn,
+          eierNavKontorEnhetId: valgtNavKontor?.navKontor,
+        },
+      );
       visVarsel({ type: 'success', tekst: 'Oppdraget gjenåpnet.' });
       refetch?.();
       kandidatlisteForEier.mutate();
