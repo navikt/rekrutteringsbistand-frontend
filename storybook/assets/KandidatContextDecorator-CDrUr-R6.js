@@ -1,0 +1,1 @@
+import{j as d}from"./iframe-Dc0o8n1N.js";import{K as o}from"./KandidatContext-lF_JH8LW.js";const a=t=>d.jsx(o,{kandidatId:"demo-kandidat",children:t()});a.__docgenInfo={description:"",methods:[],displayName:"withKandidatContext"};export{a as w};
