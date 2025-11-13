@@ -41,7 +41,7 @@ const Nyheter: React.FC = () => {
         </PanelHeader>
       }
     >
-      <div className='flex flex-col gap-4 mb-4'>
+      <div className='mb-4 flex flex-col gap-4'>
         <SideInnhold>
           <SWRLaster hooks={[nyheterHook]}>
             {(nyheterData) => {

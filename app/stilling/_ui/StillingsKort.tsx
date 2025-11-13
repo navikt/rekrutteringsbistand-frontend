@@ -58,13 +58,12 @@ const StillingsKort: FC<IStillingsKort> = ({ stillingData, kandidatId }) => {
     >
       <ListeKort>
         <div
-          className='opacity-0 transition-opacity
-                   group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto z-10'
+          className='pointer-events-none z-10 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100'
           onClick={stopAllPropagation}
           onMouseDown={stopAllPropagation}
           onPointerDown={stopAllPropagation}
         ></div>
-        <div className='flex  items-start min-w-0'>
+        <div className='flex min-w-0 items-start'>
           <div className='pr-4'>
             {erDirektemeldt ? (
               // <BriefcaseIcon aria-hidden />
@@ -79,15 +78,15 @@ const StillingsKort: FC<IStillingsKort> = ({ stillingData, kandidatId }) => {
             )}
           </div>
           {/* Innhold */}
-          <div className={`flex-1 min-w-0 `}>
+          <div className={`min-w-0 flex-1`}>
             {/* Tittel + tag */}
-            <div className='flex items-start gap-2 min-w-0'>
+            <div className='flex min-w-0 items-start gap-2'>
               <Heading
                 size='small'
-                className='flex-1 min-w-0 pr-2 inline-flex items-center gap-1'
+                className='inline-flex min-w-0 flex-1 items-center gap-1 pr-2'
                 title={stillingData?.stilling?.tittel || 'Ukjent tittel'}
               >
-                <span className='truncate min-w-0'>
+                <span className='min-w-0 truncate'>
                   {stillingData?.stilling?.tittel || 'Ukjent tittel'}
                 </span>
               </Heading>
@@ -97,8 +96,8 @@ const StillingsKort: FC<IStillingsKort> = ({ stillingData, kandidatId }) => {
               </div>
             </div>
             {/* Info + knapper */}
-            <div className='flex gap-2 items-start min-w-0'>
-              <div className='text-sm text-text-subtle flex flex-wrap gap-x-4 gap-y-1 flex-1 min-w-0'>
+            <div className='flex min-w-0 items-start gap-2'>
+              <div className='text-text-subtle flex min-w-0 flex-1 flex-wrap gap-x-4 gap-y-1 text-sm'>
                 <span className='flex items-center gap-1'>
                   <Buildings2Icon aria-hidden className='text-text-subtle' />
                   {stillingData.stilling?.businessName || 'Ukjent bedrift'}

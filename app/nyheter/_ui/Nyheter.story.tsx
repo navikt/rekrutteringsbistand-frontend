@@ -16,7 +16,7 @@ const mockNyhet: any = {
 const meta = {
   tags: ['autodocs'],
   render: () => (
-    <div className='space-y-10 opacity-60 pointer-events-none'>
+    <div className='pointer-events-none space-y-10 opacity-60'>
       <section className='space-y-2'>
         <h4 className='text-sm font-semibold'>NyhetVisning</h4>
         <NyhetVisning nyhet={mockNyhet} refetch={() => {}} />

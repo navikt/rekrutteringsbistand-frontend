@@ -40,7 +40,7 @@ const VelgInternStatus: FC<VelgInternStatusProps> = ({
 
   return (
     <Dropdown>
-      <div className='flex justify-left'>
+      <div className='justify-left flex'>
         <InternStatusTag status={status} />
         <Button
           disabled={lukketKandidatliste || pending}

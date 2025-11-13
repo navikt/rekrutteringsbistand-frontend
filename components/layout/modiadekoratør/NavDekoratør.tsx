@@ -78,7 +78,7 @@ const NavDekoratør: React.FC = () => {
   };
 
   return (
-    <header className='sticky top-0 z-50  w-full '>
+    <header className='sticky top-0 z-50 w-full'>
       <InternalHeader>
         <InternalHeader.Title as='h1'>{tittel()}</InternalHeader.Title>
         {erLokal && <DevDekoratør />}

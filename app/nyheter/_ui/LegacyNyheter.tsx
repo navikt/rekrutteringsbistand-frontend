@@ -9,13 +9,13 @@ export default function LegacyNyheter() {
       {nyheter.map((nyhet, index) => (
         <Box.New
           key={index}
-          className='@container/kandidatlistekort contain-layout mb-4 flex flex-col p-4 min-w-fit'
+          className='@container/kandidatlistekort mb-4 flex min-w-fit flex-col p-4 contain-layout'
           background='neutral-softA'
           borderRadius='xlarge'
           data-testid='stillings-kort'
         >
           <div className='flex justify-between'>
-            <h1 className='text-2xl font-bold flex gap-2'>{nyhet.tittel}</h1>
+            <h1 className='flex gap-2 text-2xl font-bold'>{nyhet.tittel}</h1>
           </div>
           <BodyShort>{formaterNorskDato({ dato: nyhet.dato })}</BodyShort>
           <div className='my-8'>

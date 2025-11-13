@@ -65,7 +65,7 @@ const FullføreSteg = () => {
             </Heading>
             <VStack gap='3'>
               <HStack gap='3' align='start'>
-                <div className='flex-none w-6 mt-[2px]'>
+                <div className='mt-[2px] w-6 flex-none'>
                   <TableIcon
                     fontSize='1.5rem'
                     aria-hidden
@@ -78,7 +78,7 @@ const FullføreSteg = () => {
                 </BodyShort>
               </HStack>
               <HStack gap='3' align='start'>
-                <div className='flex-none w-6 mt-[2px]'>
+                <div className='mt-[2px] w-6 flex-none'>
                   <EyeSlashIcon
                     fontSize='1.5rem'
                     aria-hidden

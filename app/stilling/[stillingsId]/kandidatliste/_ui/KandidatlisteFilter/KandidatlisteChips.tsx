@@ -9,7 +9,7 @@ export default function KandidatlisteChips() {
   return (
     <div className='relative mt-4 w-full'>
       <Chips>
-        <div className='flex flex-row flex-wrap gap-2  pb-2'>
+        <div className='flex flex-row flex-wrap gap-2 pb-2'>
           {Object.values(filter).some(
             (value) => Array.isArray(value) && value.length > 0,
           ) && <TømFiltre exlude={['stillingFane']} />}

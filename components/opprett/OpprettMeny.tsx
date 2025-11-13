@@ -52,7 +52,7 @@ const OpprettMeny: React.FC = () => {
           <Button
             loading={loading}
             size='small'
-            className=' w-full'
+            className='w-full'
             variant={open ? 'primary' : 'tertiary'}
             icon={<PlusIcon />}
           >

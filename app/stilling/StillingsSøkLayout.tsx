@@ -90,7 +90,7 @@ const StillingsSøkLayout: FC<StillingsSøkProps> = ({
       }
       sidepanelBredde='250px'
       sidepanel={
-        <div className='flex flex-col  gap-4'>
+        <div className='flex flex-col gap-4'>
           <StillingSøkebar alltidÅpen={false} />
           <MittStandardsøk />
           <StillingsSøkSortering />
@@ -103,7 +103,7 @@ const StillingsSøkLayout: FC<StillingsSøkProps> = ({
     >
       <SideInnhold utenScroll>
         <div className='@container flex contain-layout'>
-          <div className='flex-grow min-w-0'>
+          <div className='min-w-0 flex-grow'>
             <div ref={stillingsøkFilterRef}>
               <StillingsSøkFilter
                 formidlinger={formidlinger}
@@ -111,7 +111,7 @@ const StillingsSøkLayout: FC<StillingsSøkProps> = ({
               />
             </div>
             <div className='@container flex contain-layout'>
-              <div className='flex-grow min-w-0'>
+              <div className='min-w-0 flex-grow'>
                 <StillingsSøkeresultat
                   kandidatId={forKandidatNr}
                   scrollExcludeRefs={[stillingsøkFilterRef]}

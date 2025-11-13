@@ -9,7 +9,7 @@ const meta = {
   tags: ['autodocs'],
   render: () => (
     <MockStillingsProvider>
-      <div className='space-y-10 opacity-60 pointer-events-none max-w-2xl'>
+      <div className='pointer-events-none max-w-2xl space-y-10 opacity-60'>
         <section className='space-y-2'>
           <h4 className='text-sm font-semibold'>DelMedArbeidsgiver</h4>
           <DelMedArbeidsgiver markerteKandidater={[]} />

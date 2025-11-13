@@ -94,9 +94,9 @@ const StillingsTag: FC<IStillingTag> = ({ stillingsData, rad }) => {
 
   if (rad) {
     return (
-      <div className='flex flex-rowflex-nowrap overflow-x-auto  h-fit'>
+      <div className='flex-rowflex-nowrap flex h-fit overflow-x-auto'>
         <span className='mr-4 whitespace-nowrap'>{publisertDato} </span>
-        <div className='flex gap-2 flex-col @xl:flex-row'>
+        <div className='flex flex-col gap-2 @xl:flex-row'>
           {venstre}
           {høyre}
         </div>
@@ -105,7 +105,7 @@ const StillingsTag: FC<IStillingTag> = ({ stillingsData, rad }) => {
   }
 
   return (
-    <div className='flex justify-between items-center h-fit'>
+    <div className='flex h-fit items-center justify-between'>
       {venstre}
       {høyre}
     </div>

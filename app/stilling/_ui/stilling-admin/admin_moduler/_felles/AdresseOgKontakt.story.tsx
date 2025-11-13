@@ -24,7 +24,7 @@ export const Oversikt: Story = {};
 function AdresseOgKontaktInnhold() {
   const { control } = useForm();
   return (
-    <div className='grid md:grid-cols-3 gap-8 opacity-60 pointer-events-none'>
+    <div className='pointer-events-none grid gap-8 opacity-60 md:grid-cols-3'>
       <div className='space-y-2'>
         <h4 className='text-sm font-semibold'>VelgPoststed</h4>
         <VelgPoststed

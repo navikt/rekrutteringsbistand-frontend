@@ -34,7 +34,7 @@ const meta = {
     return (
       <MockRekrutteringstreffProvider>
         <FormProvider {...methods}>
-          <div className='space-y-12 opacity-60 pointer-events-none'>
+          <div className='pointer-events-none space-y-12 opacity-60'>
             <section className='space-y-2'>
               <h4 className='text-sm font-semibold'>
                 Hoved (RekrutteringstreffRedigering)
@@ -49,9 +49,9 @@ const meta = {
                 </div>
               </RekrutteringstreffForm>
             </section>
-            <div className='grid md:grid-cols-2 gap-10'>
+            <div className='grid gap-10 md:grid-cols-2'>
               <div className='space-y-4'>
-                <h5 className='text-xs font-semibold uppercase tracking-wide'>
+                <h5 className='text-xs font-semibold tracking-wide uppercase'>
                   Delskjema
                 </h5>
                 <TittelForm onUpdated={() => {}} />
@@ -61,7 +61,7 @@ const meta = {
                 <SvarfristForm control={methods.control} />
               </div>
               <div className='space-y-4'>
-                <h5 className='text-xs font-semibold uppercase tracking-wide'>
+                <h5 className='text-xs font-semibold tracking-wide uppercase'>
                   Innlegg
                 </h5>
                 <InnleggForm onUpdated={() => {}} />

@@ -78,7 +78,7 @@ const KandidatListeKort: FC<KandidatListeKortProps> = ({
         className='min-w-fit'
       >
         <div
-          className={`grid ${KANDIDATLISTE_COLUMN_LAYOUT} gap-x-3 items-center `}
+          className={`grid ${KANDIDATLISTE_COLUMN_LAYOUT} items-center gap-x-3`}
         >
           <div className={kolonneStyling}>
             <div className='flex gap-4'>
@@ -123,11 +123,10 @@ const KandidatListeKort: FC<KandidatListeKortProps> = ({
         href={`/stilling/${stillingsData.stilling.uuid}/kandidatliste/${kandidat?.kandidatnr}`}
       >
         <ListeKort
-          className={`          ${!aktiv && !inaktiv ? 'hover:bg-[var(--ax-bg-neutral-moderate-hover)] cursor-pointer ' : ''}
-          ${aktiv ? 'bg-[var(--ax-bg-neutral-moderate-pressed)]' : ''}`}
+          className={`${!aktiv && !inaktiv ? 'cursor-pointer hover:bg-[var(--ax-bg-neutral-moderate-hover)]' : ''} ${aktiv ? 'bg-[var(--ax-bg-neutral-moderate-pressed)]' : ''}`}
         >
           <div
-            className={`grid ${KANDIDATLISTE_COLUMN_LAYOUT} gap-x-3 items-center `}
+            className={`grid ${KANDIDATLISTE_COLUMN_LAYOUT} items-center gap-x-3`}
           >
             <div className={`${kolonneStyling} flex flex-col gap-2`}>
               <div className='flex gap-4'>
@@ -137,7 +136,7 @@ const KandidatListeKort: FC<KandidatListeKortProps> = ({
                 <KandidatlisteNavn kandidat={kandidat} slettet={slettet} />
               </div>
             </div>
-            <div className={`${kolonneStyling} flex flex-col `}>
+            <div className={`${kolonneStyling} flex flex-col`}>
               <BodyShort>
                 {formaterNorskDato({
                   dato: kandidat.lagtTilTidspunkt,
@@ -148,7 +147,7 @@ const KandidatListeKort: FC<KandidatListeKortProps> = ({
                 {kandidat.lagtTilAv.navn}
               </BodyShort>
             </div>
-            <div className={`${kolonneStyling} flex flex-col `}>
+            <div className={`${kolonneStyling} flex flex-col`}>
               {slettet ? (
                 <SlettetTag kandidat={kandidat} />
               ) : (
@@ -157,7 +156,7 @@ const KandidatListeKort: FC<KandidatListeKortProps> = ({
                 />
               )}
             </div>
-            <div className={`${kolonneStyling} flex flex-col `}>
+            <div className={`${kolonneStyling} flex flex-col`}>
               <div>{kandidat.kandidatHendelser.sisteSms?.tag}</div>
               <div />
             </div>

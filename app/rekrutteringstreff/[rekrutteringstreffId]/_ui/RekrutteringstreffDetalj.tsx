@@ -26,7 +26,7 @@ const RekrutteringstreffDetalj: FC<RekrutteringstreffDetaljerProps> = ({
       marginBlock='2'
       className={className}
     >
-      <div className='flex items-center justify-between mb-4'>
+      <div className='mb-4 flex items-center justify-between'>
         <div className='flex gap-2'>
           {tittelIkon}
           <Heading level={headingLevel} size='small' className='mb-4 text-left'>

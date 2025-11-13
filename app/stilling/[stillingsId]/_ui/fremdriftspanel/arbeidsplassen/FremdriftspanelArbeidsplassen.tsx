@@ -29,7 +29,7 @@ export default function FremdriftspanelArbeidsplassen() {
         <Heading size='xsmall' level='3' className='mb-4'>
           Bruk til rekrutteringsoppdrag
         </Heading>
-        <div className='flex gap-4 flex-col'>
+        <div className='flex flex-col gap-4'>
           <div className='flex gap-2'>
             <HandshakeIcon aria-hidden className='shrink-0' />
             <BodyShort size='small'>
@@ -57,7 +57,7 @@ export default function FremdriftspanelArbeidsplassen() {
       <Heading size='xsmall' level='3' className='mb-4'>
         Annonsen mangler et gyldig organisasjonsnummer.
       </Heading>
-      <div className='flex gap-4 flex-col'>
+      <div className='flex flex-col gap-4'>
         <div className='flex gap-2'>
           <CircleSlashIcon aria-hidden className='shrink-0' />
           <BodyShort size='small'>
@@ -88,7 +88,7 @@ export default function FremdriftspanelArbeidsplassen() {
       <BodyShort size='small' textColor='subtle'>
         den {formaterNorskDato({ dato: stillingsData.stilling.published })}
       </BodyShort>
-      <div className='flex flex-col gap-6 mt-6'>
+      <div className='mt-6 flex flex-col gap-6'>
         {harKandidatliste ? (
           <HarKandidatlisteVisning />
         ) : kanBrukesTilRekrutteringsoppdrag ? (
@@ -100,7 +100,7 @@ export default function FremdriftspanelArbeidsplassen() {
           <Heading size='xsmall' level='3' className='mb-4'>
             Bruk til deling
           </Heading>
-          <div className='flex gap-4 flex-col'>
+          <div className='flex flex-col gap-4'>
             <div className='flex gap-2'>
               <ArrowForwardIcon aria-hidden className='shrink-0' />
               <BodyShort size='small'>

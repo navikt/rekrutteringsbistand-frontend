@@ -11,7 +11,7 @@ const meta = {
   render: () => {
     const [valgte, setValgte] = useState(['heltid', 'Oslo']);
     return (
-      <div className='opacity-60 pointer-events-none space-y-6'>
+      <div className='pointer-events-none space-y-6 opacity-60'>
         <AlleFilterKomponent>
           <Chips>
             <FilterChip type={valgte} setVerdi={setValgte} />

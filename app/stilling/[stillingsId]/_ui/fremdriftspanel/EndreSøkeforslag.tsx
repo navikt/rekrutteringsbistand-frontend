@@ -75,7 +75,7 @@ export default function EndreSøkeforslag() {
           loading={loading}
           icon={<PauseIcon />}
           size='small'
-          className='w-full  mt-4'
+          className='mt-4 w-full'
           onClick={() =>
             endreStatus(StillingsStatus.Inaktiv, AdminStatus.Pending)
           }
@@ -97,7 +97,7 @@ export default function EndreSøkeforslag() {
             Du mottar ikke søkerforslag
           </Heading>
 
-          <div className='flex gap-4 flex-col'>
+          <div className='flex flex-col gap-4'>
             <div className='flex gap-2'>
               <EyeSlashIcon aria-hidden className='shrink-0' />
               <BodyShort size='small'>
@@ -117,7 +117,7 @@ export default function EndreSøkeforslag() {
           loading={loading}
           icon={<PlayIcon />}
           size='small'
-          className='w-full  mt-4'
+          className='mt-4 w-full'
           onClick={() => setOpen(true)}
         >
           Åpne søkerforslag

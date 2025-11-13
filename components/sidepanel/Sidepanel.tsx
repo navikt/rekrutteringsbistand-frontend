@@ -34,7 +34,7 @@ export default function Sidepanel({
       {/* Desktop: Vanlig sidepanel */}
       <aside
         aria-label='Sidepanel'
-        className={`hidden @[720px]/sidelayout:block h-full ${widthClass} border-l border-l-[var(--ax-border-neutral-subtle)]`}
+        className={`hidden h-full @[720px]/sidelayout:block ${widthClass} border-l border-l-[var(--ax-border-neutral-subtle)]`}
       >
         <SideScroll>
           <div className='sticky top-0 w-full p-5'>{children}</div>
@@ -42,9 +42,9 @@ export default function Sidepanel({
       </aside>
 
       {/* Mobil: Sheet */}
-      <div className='@[720px]/sidelayout:hidden block'>
+      <div className='block @[720px]/sidelayout:hidden'>
         <Sheet open={isSheetOpen} onOpenChange={closeSheet}>
-          <SheetContent className='flex flex-col bg-sidebar'>
+          <SheetContent className='bg-sidebar flex flex-col'>
             <SheetHeader className='flex-shrink-0'>
               <SheetTitle>{sidepanelTittel}</SheetTitle>
             </SheetHeader>

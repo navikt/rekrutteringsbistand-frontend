@@ -17,7 +17,7 @@ const KandidatlisteNavn: FC<KandidatlisteNavnProps> = ({
 }) => {
   if (usynligKandidat) {
     return (
-      <div className={`flex flex-col `}>
+      <div className={`flex flex-col`}>
         <BodyShort>
           {storForbokstav(usynligKandidat.etternavn)},{' '}
           {storForbokstav(usynligKandidat.fornavn)}
@@ -33,7 +33,7 @@ const KandidatlisteNavn: FC<KandidatlisteNavnProps> = ({
 
   if (!kandidat?.fodselsnr) {
     return (
-      <div className={`flex flex-col `}>
+      <div className={`flex flex-col`}>
         <BodyShort>
           {kandidat.etternavn}, {kandidat.fornavn}
         </BodyShort>
@@ -44,7 +44,7 @@ const KandidatlisteNavn: FC<KandidatlisteNavnProps> = ({
 
   if (slettet) {
     return (
-      <div className={`flex flex-col `}>
+      <div className={`flex flex-col`}>
         {kandidat.etternavn}, {kandidat.fornavn}
         <BodyShort textColor='subtle'>
           Slettet av {kandidat.arkivertAv?.navn}
@@ -54,7 +54,7 @@ const KandidatlisteNavn: FC<KandidatlisteNavnProps> = ({
   }
 
   return (
-    <div className={`flex flex-col `}>
+    <div className={`flex flex-col`}>
       {kandidat.etternavn}, {kandidat.fornavn}
       <BodyShort textColor='subtle'>f.nr. {kandidat.fodselsnr}</BodyShort>
     </div>

@@ -18,12 +18,12 @@ type Story = StoryObj<typeof meta>;
 export const Standard: Story = {
   render: () => (
     <SidebarProvider>
-      <div className='flex h-[400px] border rounded-md overflow-hidden'>
+      <div className='flex h-[400px] overflow-hidden rounded-md border'>
         <Sidebar>
           <SidebarContent className='p-2'>
             <GiTilbakemelding />
           </SidebarContent>
-          <SidebarFooter className='text-xs text-muted-foreground px-2'>
+          <SidebarFooter className='text-muted-foreground px-2 text-xs'>
             Footer
           </SidebarFooter>
         </Sidebar>

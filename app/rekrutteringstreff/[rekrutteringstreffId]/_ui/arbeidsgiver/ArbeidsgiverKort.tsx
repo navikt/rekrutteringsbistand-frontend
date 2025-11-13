@@ -66,7 +66,7 @@ const ArbeidsgiverKort: FC<ArbeidsgiverKortProps> = ({
           {adresseLinje}
         </BodyShort>
       </div>
-      <div className='ml-2 self-start flex items-center gap-2'>
+      <div className='ml-2 flex items-center gap-2 self-start'>
         {status && (
           <Tag size='medium' variant='info'>
             {storForbokstav(status)}

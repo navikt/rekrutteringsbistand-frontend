@@ -106,7 +106,7 @@ const RekrutteringstreffForhåndsvisning: FC = () => {
   if (isLoadingArbeidsgivere) {
     return (
       <div
-        className='bg-white text-black min-h-screen p-8 space-y-6'
+        className='min-h-screen space-y-6 bg-white p-8 text-black'
         data-theme='light'
       >
         <Skeleton variant='text' width='60%' height={32} />
@@ -121,8 +121,8 @@ const RekrutteringstreffForhåndsvisning: FC = () => {
 
   if (!rekrutteringstreff) {
     return (
-      <div className='bg-white text-black min-h-screen p-8' data-theme='light'>
-        <div className='text-center py-8'>
+      <div className='min-h-screen bg-white p-8 text-black' data-theme='light'>
+        <div className='py-8 text-center'>
           <BodyShort>Kunne ikke laste rekrutteringstreff</BodyShort>
         </div>
       </div>
@@ -181,10 +181,10 @@ const RekrutteringstreffForhåndsvisning: FC = () => {
   }
 
   return (
-    <div className='bg-white text-black min-h-screen' data-theme='light'>
-      <div className='max-w-7xl mx-auto p-2 space-y-6'>
-        <div className='grid grid-cols-1 2xl:grid-cols-6 gap-4 pt-4'>
-          <div className='2xl:col-span-4 space-y-6'>
+    <div className='min-h-screen bg-white text-black' data-theme='light'>
+      <div className='mx-auto max-w-7xl space-y-6 p-2'>
+        <div className='grid grid-cols-1 gap-4 pt-4 2xl:grid-cols-6'>
+          <div className='space-y-6 2xl:col-span-4'>
             <div>
               <Heading level='1' size='large' className='text-gray-900'>
                 {rekrutteringstreff.tittel}
@@ -199,10 +199,10 @@ const RekrutteringstreffForhåndsvisning: FC = () => {
                   <ClockIcon
                     aria-hidden
                     fontSize='1.5rem'
-                    className='text-gray-700 flex-shrink-0'
+                    className='flex-shrink-0 text-gray-700'
                   />
                   <div>
-                    <BodyShort className='text-gray-600 mb-0.5 font-bold'>
+                    <BodyShort className='mb-0.5 font-bold text-gray-600'>
                       Om 6 dager
                     </BodyShort>
                     <BodyShort className='text-gray-900'>
@@ -220,11 +220,11 @@ const RekrutteringstreffForhåndsvisning: FC = () => {
                   <LocationPinIcon
                     aria-hidden
                     fontSize='1.5rem'
-                    className='text-gray-700 flex-shrink-0'
+                    className='flex-shrink-0 text-gray-700'
                   />
                   <div>
                     {rekrutteringstreff.gateadresse && (
-                      <BodyShort className='text-gray-900 font-bold'>
+                      <BodyShort className='font-bold text-gray-900'>
                         {rekrutteringstreff.gateadresse}
                       </BodyShort>
                     )}
@@ -244,17 +244,17 @@ const RekrutteringstreffForhåndsvisning: FC = () => {
               <Heading
                 level='2'
                 size='medium'
-                className='text-gray-900 font-semibold'
+                className='font-semibold text-gray-900'
               >
                 Siste aktivitet
               </Heading>
 
               {/* Om treffet */}
-              <div className='bg-gray-100 p-6 rounded-lg space-y-3'>
+              <div className='space-y-3 rounded-lg bg-gray-100 p-6'>
                 <Heading
                   level='3'
                   size='small'
-                  className='text-gray-900 font-semibold'
+                  className='font-semibold text-gray-900'
                 >
                   Om treffet
                 </Heading>
@@ -279,19 +279,19 @@ const RekrutteringstreffForhåndsvisning: FC = () => {
           </div>
 
           {/* Right column - Svar and Arbeidsgivere */}
-          <div className='2xl:col-span-2 space-y-6'>
+          <div className='space-y-6 2xl:col-span-2'>
             {/* User response box */}
             <div className='space-y-4'>
-              <div className='p-4 rounded-lg space-y-2 bg-[var(--ax-surface-info-subtle,_#E6F0FF)] border border-[var(--ax-border-info-subtle,_#99C2FF)]'>
+              <div className='space-y-2 rounded-lg border border-[var(--ax-border-info-subtle,_#99C2FF)] bg-[var(--ax-surface-info-subtle,_#E6F0FF)] p-4'>
                 <div className='flex items-start justify-between gap-3'>
                   <div className='flex-1'>
-                    <BodyShort className='text-gray-900 flex items-center gap-2'>
+                    <BodyShort className='flex items-center gap-2 text-gray-900'>
                       <span role='img' aria-label='flammer'>
                         🔥🔥🔥
                       </span>
                     </BodyShort>
                     {dagerIgjenTekst && (
-                      <BodyShort className='text-gray-700 font-bold'>
+                      <BodyShort className='font-bold text-gray-700'>
                         {dagerIgjenTekst}
                       </BodyShort>
                     )}
@@ -318,7 +318,7 @@ const RekrutteringstreffForhåndsvisning: FC = () => {
                 <Heading
                   level='2'
                   size='medium'
-                  className='text-gray-900 font-semibold'
+                  className='font-semibold text-gray-900'
                 >
                   Arbeidsgivere
                 </Heading>
@@ -326,12 +326,12 @@ const RekrutteringstreffForhåndsvisning: FC = () => {
                   {arbeidsgivere.map((arbeidsgiver, index) => (
                     <div
                       key={arbeidsgiver.organisasjonsnummer || index}
-                      className='bg-gray-100 p-5 rounded-lg'
+                      className='rounded-lg bg-gray-100 p-5'
                     >
                       <Heading
                         level='3'
                         size='small'
-                        className='text-gray-900 font-semibold mb-1'
+                        className='mb-1 font-semibold text-gray-900'
                       >
                         {arbeidsgiver.navn}
                       </Heading>

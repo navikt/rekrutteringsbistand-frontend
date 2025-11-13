@@ -59,7 +59,7 @@ const DevDekoratør: React.FC = () => {
   }
 
   return (
-    <Box.New background='raised' className='flex  px-2 gap-2'>
+    <Box.New background='raised' className='flex gap-2 px-2'>
       <div className='flex items-center gap-2'>
         <span>
           <strong>Bruker:</strong>{' '}

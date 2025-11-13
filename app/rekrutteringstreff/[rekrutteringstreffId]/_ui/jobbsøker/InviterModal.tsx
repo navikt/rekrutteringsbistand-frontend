@@ -88,19 +88,19 @@ export const InviterModal: React.FC<InviterModalProps> = ({
             </BodyShort>
             <div>
               <HStack
-                className='border-b border-border-subtle pb-2 text-text-subtle'
+                className='border-border-subtle text-text-subtle border-b pb-2'
                 gap='4'
               >
                 <Detail className='flex-1'>Navn og fødselsnummer</Detail>
                 <Detail className='w-70 flex-shrink-0'>Veileder</Detail>
                 <div
                   style={{ width: '48px' }}
-                  className='text-right flex-shrink-0'
+                  className='flex-shrink-0 text-right'
                 >
                   {antall > 1 && <Detail>Fjern</Detail>}
                 </div>
               </HStack>
-              <ul className='space-y-2 mt-2'>
+              <ul className='mt-2 space-y-2'>
                 {inviterInternalDtoer.map((jobbsøker) => (
                   <li key={jobbsøker.fødselsnummer}>
                     <HStack align='center' className='py-2' gap='4'>
@@ -117,7 +117,7 @@ export const InviterModal: React.FC<InviterModalProps> = ({
                       </BodyShort>
                       <div
                         style={{ width: '48px' }}
-                        className='flex justify-end flex-shrink-0'
+                        className='flex flex-shrink-0 justify-end'
                       >
                         {antall > 1 && (
                           <Button
@@ -140,14 +140,14 @@ export const InviterModal: React.FC<InviterModalProps> = ({
           <VStack
             gap='4'
             data-color='bg-bg-subtle'
-            className='bg-bg-subtle p-4 rounded-md'
+            className='bg-bg-subtle rounded-md p-4'
           >
             <Heading level='3' size='small'>
               Dette skjer videre
             </Heading>
             <VStack gap='3'>
               <HStack gap='2' align='start'>
-                <div className='flex-none w-6 mt-[2px]'>
+                <div className='mt-[2px] w-6 flex-none'>
                   <TableIcon fontSize='1.5rem' aria-hidden />
                 </div>
                 <BodyShort className='flex-1'>
@@ -158,7 +158,7 @@ export const InviterModal: React.FC<InviterModalProps> = ({
               </HStack>
 
               <HStack gap='2' align='start'>
-                <div className='flex-none w-6 mt-[2px]'>
+                <div className='mt-[2px] w-6 flex-none'>
                   <BellIcon fontSize='1.5rem' aria-hidden />
                 </div>
                 <BodyShort className='flex-1'>
@@ -168,7 +168,7 @@ export const InviterModal: React.FC<InviterModalProps> = ({
               </HStack>
 
               <HStack gap='2' align='start'>
-                <div className='flex-none w-6 mt-[2px]'>
+                <div className='mt-[2px] w-6 flex-none'>
                   <NewspaperIcon fontSize='1.5rem' aria-hidden />
                 </div>
                 <BodyShort className='flex-1'>
@@ -179,7 +179,7 @@ export const InviterModal: React.FC<InviterModalProps> = ({
               </HStack>
 
               <HStack gap='2' align='start'>
-                <div className='flex-none w-6 mt-[2px]'>
+                <div className='mt-[2px] w-6 flex-none'>
                   <PersonSuitIcon fontSize='1.5rem' aria-hidden />
                 </div>
                 <BodyShort className='flex-1'>

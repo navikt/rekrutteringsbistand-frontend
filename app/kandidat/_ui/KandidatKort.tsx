@@ -60,12 +60,9 @@ const KandidatKort: FC<IKandidatKort> = ({
       }
     >
       <ListeKort
-        className={`  flex flex-col min-w-fit
-          focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-[var(--ax-border-focus)]
-          ${kandidatId ? 'cursor-pointer' : 'cursor-default'}
-          ${erLagtTil ? 'border-l-4 border-[var(--ax-border-success)]' : ''}`}
+        className={`${kandidatId ? 'cursor-pointer' : 'cursor-default'} ${erLagtTil ? 'border-l-4 border-[var(--ax-border-success)]' : ''}`}
       >
-        <div className='flex flex-row '>
+        <div className='flex flex-row'>
           <div>
             <Checkbox
               key={`${kandidat.arenaKandidatnr}-${erMarkert}`}
@@ -93,7 +90,7 @@ const KandidatKort: FC<IKandidatKort> = ({
             <div className='flex justify-between'>
               <Heading
                 size='small'
-                className='flex-1 min-w-0 pr-2 inline-flex items-center gap-1'
+                className='inline-flex min-w-0 flex-1 items-center gap-1 pr-2'
               >
                 <div
                   data-testid={`kandidatkort-lenke-${kandidat.arenaKandidatnr}`}
@@ -123,7 +120,7 @@ const KandidatKort: FC<IKandidatKort> = ({
               </Tag>
             </div>
             <div className='flex w-full justify-between'>
-              <div className='mt-2 flex flex-col @xl:flex-row gap-4'>
+              <div className='mt-2 flex flex-col gap-4 @xl:flex-row'>
                 <TekstMedIkon
                   ikon={<PinIcon />}
                   tekst={hentKandidatensØnskedeSteder(kandidat) ?? '-'}

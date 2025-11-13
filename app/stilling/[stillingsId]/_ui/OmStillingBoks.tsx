@@ -28,7 +28,7 @@ const OmStillingBoks: FC<OmStillingBoksProps> = ({
         </div>
       )}
 
-      <div className='mt-4 grid  grid-cols-1 2xl:grid-cols-3 gap-4'>
+      <div className='mt-4 grid grid-cols-1 gap-4 2xl:grid-cols-3'>
         {gridInnhold}
       </div>
       {innholdTopp && innhold && (

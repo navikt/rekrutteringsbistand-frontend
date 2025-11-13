@@ -50,7 +50,7 @@ export default function ViktigeDatoer({ skjulFrist }: Props) {
       <div className='flex flex-col gap-8'>
         <div className='flex flex-col'>
           <Heading size='small'>Oppstart</Heading>
-          <div className='flex gap-8 items-center'>
+          <div className='flex items-center gap-8'>
             <DatoVelger
               disablePastDates
               key='oppstart'
@@ -83,7 +83,7 @@ export default function ViktigeDatoer({ skjulFrist }: Props) {
         {!skjulFrist && (
           <div className='flex flex-col'>
             <Heading size='small'>Søknadsfrist</Heading>
-            <div className='flex gap-8 items-center'>
+            <div className='flex items-center gap-8'>
               <DatoVelger
                 disablePastDates
                 disabled={søknadsfristSnarest}

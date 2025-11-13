@@ -7,9 +7,9 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 const meta = {
   tags: ['autodocs'],
   render: () => (
-    <div className='space-y-6 max-w-xl opacity-60 pointer-events-none'>
+    <div className='pointer-events-none max-w-xl space-y-6 opacity-60'>
       <section className='space-y-2'>
-        <h4 className='font-semibold text-sm'>
+        <h4 className='text-sm font-semibold'>
           LeggKandidatTilKandidatliste (placeholder)
         </h4>
         <LeggKandidatTilKandidatliste
@@ -18,7 +18,7 @@ const meta = {
         />
       </section>
       <section className='space-y-2'>
-        <h4 className='font-semibold text-sm'>
+        <h4 className='text-sm font-semibold'>
           KandidatlisteBoks (placeholder)
         </h4>
         {/* <KandidatlisteBoks kandidatnr='demo-kandidat' /> */}
