@@ -1,23 +1,11 @@
-import { KandidatContextProvider } from '@/app/kandidat/[kandidatNr]/vis-kandidat/KandidatContext';
-import VisKandidat from '@/app/kandidat/[kandidatNr]/vis-kandidat/VisKandidat';
-import KandidatlisteWrapper from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteWrapper';
+import KandidatlisteKandidatView from '@/app/stilling/[stillingsId]/kandidatliste/KandidatlisteKandidatView';
 
-export interface pageProps {
-  kandidatId: string;
-}
-
-export default function KandidatlisteKandidatIndex({
+export default async function KandidatlisteKandidatIndex({
   params,
 }: {
-  params: { stillingsId?: string; kandidatId: string };
+  params: Promise<{ stillingsId: string; kandidatId: string }>;
 }) {
-  const { kandidatId } = params;
+  const { kandidatId } = await params;
 
-  return (
-    <KandidatlisteWrapper>
-      <KandidatContextProvider kandidatId={kandidatId}>
-        <VisKandidat kandidatlisteKandidat={kandidatId} />
-      </KandidatContextProvider>
-    </KandidatlisteWrapper>
-  );
+  return <KandidatlisteKandidatView kandidatId={kandidatId} />;
 }
