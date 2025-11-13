@@ -576,7 +576,33 @@ export class ElasticSearchQueryBuilder {
                         must: [
                           { term: { 'stilling.status': 'INACTIVE' } },
                           {
-                            term: { 'stilling.administration.status': 'DONE' },
+                            bool: {
+                              should: [
+                                {
+                                  term: {
+                                    'stilling.administration.status': 'DONE',
+                                  },
+                                },
+                                {
+                                  term: {
+                                    'stilling.administration.status': 'PENDING',
+                                  },
+                                },
+                                {
+                                  bool: {
+                                    must_not: [
+                                      {
+                                        exists: {
+                                          field:
+                                            'stilling.administration.status',
+                                        },
+                                      },
+                                    ],
+                                  },
+                                },
+                              ],
+                              minimum_should_match: 1,
+                            },
                           },
                           { exists: { field: 'stilling.publishedByAdmin' } },
                           { range: { 'stilling.published': { lte: 'now/d' } } },
@@ -594,7 +620,33 @@ export class ElasticSearchQueryBuilder {
                           { term: { 'stilling.status': 'INACTIVE' } },
                           { range: { 'stilling.expires': { lt: 'now/d' } } },
                           {
-                            term: { 'stilling.administration.status': 'DONE' },
+                            bool: {
+                              should: [
+                                {
+                                  term: {
+                                    'stilling.administration.status': 'DONE',
+                                  },
+                                },
+                                {
+                                  term: {
+                                    'stilling.administration.status': 'PENDING',
+                                  },
+                                },
+                                {
+                                  bool: {
+                                    must_not: [
+                                      {
+                                        exists: {
+                                          field:
+                                            'stilling.administration.status',
+                                        },
+                                      },
+                                    ],
+                                  },
+                                },
+                              ],
+                              minimum_should_match: 1,
+                            },
                           },
                           { exists: { field: 'stilling.publishedByAdmin' } },
                           { range: { 'stilling.published': { lte: 'now/d' } } },
