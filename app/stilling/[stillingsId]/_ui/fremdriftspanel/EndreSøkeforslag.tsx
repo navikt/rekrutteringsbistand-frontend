@@ -1,3 +1,4 @@
+import { StillingsSøkAPI } from '@/app/api/api-routes';
 import { oppdaterStilling } from '@/app/api/stilling/oppdater-stilling/oppdaterStilling';
 import { useStillingsContext } from '@/app/stilling/[stillingsId]/StillingsContext';
 import {
@@ -22,6 +23,7 @@ import {
 } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { mutate } from 'swr';
 
 export default function EndreSøkeforslag() {
   const { stillingsData, refetch } = useStillingsContext();
@@ -59,6 +61,11 @@ export default function EndreSøkeforslag() {
 
       if (response.stilling.uuid) {
         refetch?.();
+        await mutate(
+          (key) => Array.isArray(key) && key[0] === StillingsSøkAPI.internUrl,
+          undefined,
+          { revalidate: true },
+        );
         setOpen(false);
         router.refresh();
       }

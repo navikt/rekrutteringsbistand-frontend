@@ -576,33 +576,7 @@ export class ElasticSearchQueryBuilder {
                         must: [
                           { term: { 'stilling.status': 'INACTIVE' } },
                           {
-                            bool: {
-                              should: [
-                                {
-                                  term: {
-                                    'stilling.administration.status': 'DONE',
-                                  },
-                                },
-                                {
-                                  term: {
-                                    'stilling.administration.status': 'PENDING',
-                                  },
-                                },
-                                {
-                                  bool: {
-                                    must_not: [
-                                      {
-                                        exists: {
-                                          field:
-                                            'stilling.administration.status',
-                                        },
-                                      },
-                                    ],
-                                  },
-                                },
-                              ],
-                              minimum_should_match: 1,
-                            },
+                            term: { 'stilling.administration.status': 'DONE' },
                           },
                           { exists: { field: 'stilling.publishedByAdmin' } },
                           { range: { 'stilling.published': { lte: 'now/d' } } },
