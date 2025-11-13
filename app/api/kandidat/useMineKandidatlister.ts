@@ -4,9 +4,8 @@
  * Endepunkt /useMineKandidatlister
  */
 import { KandidatAPI } from '@/app/api/api-routes';
-import { getAPIwithSchema } from '@/app/api/fetcher';
+import { useSWRGet } from '@/app/api/useSWRGet';
 import { http, HttpResponse } from 'msw';
-import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
 
 const mineKandidatlisterEndepunkt = (pageNumber?: number) =>
@@ -38,10 +37,7 @@ const MineKandidatlisterSchema = z.object({
 export type MineKandidatlisterDTO = z.infer<typeof MineKandidatlisterSchema>;
 
 export const useMineKandidatlister = (pageNumber: number) =>
-  useSWRImmutable(
-    mineKandidatlisterEndepunkt(pageNumber),
-    getAPIwithSchema(MineKandidatlisterSchema),
-  );
+  useSWRGet(mineKandidatlisterEndepunkt(pageNumber), MineKandidatlisterSchema);
 
 export const mineKandidatlisterMSWHandler = http.get(
   `${KandidatAPI.internUrl}/veileder/kandidatlister`,

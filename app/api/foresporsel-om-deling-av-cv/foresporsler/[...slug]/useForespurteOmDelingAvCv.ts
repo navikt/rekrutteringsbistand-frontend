@@ -4,10 +4,9 @@
  * Endepunkt /useForespurteOmDelingAvCv
  */
 import { ForespørselDelingAvCvAPI } from '@/app/api/api-routes';
-import { getAPIwithSchema } from '@/app/api/fetcher';
+import { useSWRGet } from '@/app/api/useSWRGet';
 import { generateMockForespurteOmDelingAvCv } from '@/mocks/forespurteOmDelingAvCv.mock';
 import { http, HttpResponse } from 'msw';
-import useSWRImmutable from 'swr/immutable';
 import { z } from 'zod';
 
 const ForespurteOmDelingAvCvEndepunkt = (stillingsId: string) => {
@@ -36,7 +35,7 @@ const ForespurtOmDelingSchema = z.object({
   navKontor: z.string(),
 });
 
-const ForespurteOmDelingAvCvSchema = z.record(
+const forespurteOmDelingAvCvSchema = z.record(
   z.string(),
   z.array(ForespurtOmDelingSchema),
 );
@@ -46,13 +45,13 @@ export type KandidatForespurtOmDelingSchema = z.infer<
 >;
 
 export type ForespurteOmDelingAvCvDTO = z.infer<
-  typeof ForespurteOmDelingAvCvSchema
+  typeof forespurteOmDelingAvCvSchema
 >;
 
 export const useForespurteOmDelingAvCv = (stillingsId: string) =>
-  useSWRImmutable(
+  useSWRGet(
     ForespurteOmDelingAvCvEndepunkt(stillingsId),
-    getAPIwithSchema(ForespurteOmDelingAvCvSchema),
+    forespurteOmDelingAvCvSchema,
     {
       refreshInterval: 20000, // 20 seconds
     },

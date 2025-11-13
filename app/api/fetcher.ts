@@ -2,7 +2,7 @@ import { RekbisError } from '@/util/rekbisError';
 import { logger } from '@navikt/next-logger';
 import { z } from 'zod';
 
-interface fetchOptions {
+export interface fetchOptions {
   skjulFeilmelding?: boolean | number | number[]; // bool eller http kode(r)
   queryParams?: URLSearchParams;
 }

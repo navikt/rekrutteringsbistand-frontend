@@ -64,7 +64,7 @@ export default function VisStillingModal({
                       />
                       <ToggleGroup.Item
                         value='jobbsøker'
-                        label={`Om ${kandidat.fornavn} ${kandidat.etternavn}`}
+                        label={`Om ${kandidat?.fornavn} ${kandidat?.etternavn}`}
                       />
                     </ToggleGroup>
                   ) : (

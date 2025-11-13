@@ -1,6 +1,4 @@
-// Tillatt dyp relativ import for test fixtures
-// eslint-disable-next-line import/no-restricted-paths
-import { test, expect } from '../../fixtures';
+import { test, expect } from '@/tests/fixtures';
 
 test.use({ storageState: 'tests/.auth/arbeigsgiverrettet.json' });
 

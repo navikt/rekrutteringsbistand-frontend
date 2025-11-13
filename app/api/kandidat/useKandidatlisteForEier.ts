@@ -2,17 +2,16 @@
 
 import { kandidatlisteSchema } from './schema.zod';
 import { KandidatAPI } from '@/app/api/api-routes';
-import { getAPIwithSchema } from '@/app/api/fetcher';
 import { StillingsDataDTO } from '@/app/api/stilling/rekrutteringsbistandstilling/[slug]/stilling.dto';
 import { RekrutteringsbistandStillingSchemaDTO } from '@/app/api/stillings-sok/schema/rekrutteringsbistandStillingSchema.zod';
+import { useSWRGet } from '@/app/api/useSWRGet';
 import { mockKandidatliste } from '@/mocks/kandidatliste.mock';
 import { http, HttpResponse } from 'msw';
-import useSWRImmutable from 'swr/immutable';
 
 export const kandidatlisteEndepunkt = (stillingsId?: string) =>
   stillingsId
     ? `${KandidatAPI.internUrl}/veileder/stilling/${stillingsId}/kandidatliste`
-    : undefined;
+    : null;
 
 export const useKandidatlisteForEier = (
   stillingsData:
@@ -21,16 +20,17 @@ export const useKandidatlisteForEier = (
     | undefined,
   erEier: boolean | undefined,
 ) => {
-  const kanHenteKandidatliste =
+  const kanHenteKandidatliste: boolean = Boolean(
     erEier &&
-    stillingsData?.stilling.uuid &&
-    stillingsData?.stilling?.publishedByAdmin;
+      stillingsData?.stilling.uuid &&
+      stillingsData?.stilling?.publishedByAdmin,
+  );
 
-  return useSWRImmutable(
+  return useSWRGet(
     kanHenteKandidatliste
       ? kandidatlisteEndepunkt(stillingsData?.stilling.uuid)
       : null,
-    getAPIwithSchema(kandidatlisteSchema, { skjulFeilmelding: true }),
+    kandidatlisteSchema,
     {
       // Unngå uendelig retry ved 404-feil
       shouldRetryOnError: (error) => {
@@ -42,6 +42,7 @@ export const useKandidatlisteForEier = (
       },
       errorRetryCount: 2,
       errorRetryInterval: 5000,
+      fetchOptions: { skjulFeilmelding: true },
     },
   );
 };

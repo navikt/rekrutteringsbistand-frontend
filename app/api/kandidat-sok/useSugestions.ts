@@ -4,8 +4,7 @@
  * Endepunkt /useSugestions
  */
 import { KandidatSøkAPI } from '@/app/api/api-routes';
-import { postApiWithSchema } from '@/app/api/fetcher';
-import useSWRImmutable from 'swr/immutable';
+import { useSWRPost } from '@/app/api/useSWRPost';
 import { z } from 'zod';
 
 const sugestionsEndepunkt = `${KandidatSøkAPI.internUrl}/suggest`;
@@ -21,19 +20,14 @@ export enum SuggestType {
   Språk,
 }
 
-export const useUseSugestions = (søkeTekst: string, type: SuggestType) => {
-  return useSWRImmutable(
+export const useUseSugestions = (søkeTekst: string, type: SuggestType) =>
+  useSWRPost(
+    søkeTekst ? sugestionsEndepunkt : null,
+    SugestionsSchema,
     søkeTekst
       ? {
-          url: sugestionsEndepunkt,
-          body: {
-            query: søkeTekst,
-            type: type,
-          },
+          query: søkeTekst,
+          type: type,
         }
       : null,
-    (data) => {
-      return postApiWithSchema(SugestionsSchema)(data);
-    },
   );
-};

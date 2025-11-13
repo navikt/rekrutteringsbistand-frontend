@@ -1,7 +1,6 @@
 import { StillingAPI } from '@/app/api/api-routes';
-import { getAPIwithSchema } from '@/app/api/fetcher';
+import { useSWRGet } from '@/app/api/useSWRGet';
 import { http, HttpResponse } from 'msw';
-import useSWR from 'swr';
 import { z } from 'zod';
 
 export const brukerStandardSøkEndepunkt = `${StillingAPI.internUrl}/standardsok`;
@@ -15,17 +14,16 @@ const BrukerStandardSøkSchema = z.object({
 export type BrukerStandardSøkDTO = z.infer<typeof BrukerStandardSøkSchema>;
 
 export const useUseBrukerStandardSøk = () =>
-  useSWR(
-    brukerStandardSøkEndepunkt,
-    getAPIwithSchema(BrukerStandardSøkSchema, { skjulFeilmelding: true }),
-    {
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-      refreshInterval: 0,
-      dedupingInterval: 0,
-      shouldRetryOnError: false,
+  useSWRGet(brukerStandardSøkEndepunkt, BrukerStandardSøkSchema, {
+    fetchOptions: {
+      skjulFeilmelding: true,
     },
-  );
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+    refreshInterval: 0,
+    dedupingInterval: 0,
+    shouldRetryOnError: false,
+  });
 
 export const brukerStandardSøkMSWHandler = http.get(
   brukerStandardSøkEndepunkt,
