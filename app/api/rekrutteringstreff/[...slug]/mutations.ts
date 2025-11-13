@@ -29,6 +29,10 @@ export const OppdaterRekrutteringstreffSchema = z.object({
   gateadresse: z.string().nullable().optional(),
   postnummer: z.string().nullable().optional(),
   poststed: z.string().nullable().optional(),
+  kommune: z.string().nullable().optional(),
+  kommunenummer: z.string().nullable().optional(),
+  fylke: z.string().nullable().optional(),
+  fylkesnummer: z.string().nullable().optional(),
 });
 
 export type OppdaterRekrutteringstreffDTO = z.infer<

@@ -62,21 +62,18 @@ export function useLagreRekrutteringstreff() {
 
       return {
         tittel: tittelVerdi,
-        beskrivelse: (formVerdier.beskrivelse ?? treff?.beskrivelse ?? null) as
-          | string
-          | null,
+        beskrivelse: formVerdier.beskrivelse ?? treff?.beskrivelse ?? null,
         fraTid,
         tilTid,
         svarfrist,
-        gateadresse: (formVerdier.gateadresse ?? treff?.gateadresse ?? null) as
-          | string
-          | null,
-        postnummer: (formVerdier.postnummer ?? treff?.postnummer ?? null) as
-          | string
-          | null,
-        poststed: (formVerdier.poststed ?? treff?.poststed ?? null) as
-          | string
-          | null,
+        gateadresse: formVerdier.gateadresse ?? treff?.gateadresse ?? null,
+        postnummer: formVerdier.postnummer ?? treff?.postnummer ?? null,
+        poststed: formVerdier.poststed ?? treff?.poststed ?? null,
+        kommune: formVerdier.kommune ?? treff?.kommune ?? null,
+        kommunenummer:
+          formVerdier.kommunenummer ?? treff?.kommunenummer ?? null,
+        fylke: formVerdier.fylke ?? treff?.fylke ?? null,
+        fylkesnummer: formVerdier.fylkesnummer ?? treff?.fylkesnummer ?? null,
       };
     }, [getValues, treff]);
 
