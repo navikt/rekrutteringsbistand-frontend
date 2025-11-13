@@ -1,49 +1,18 @@
 // For more info, see https://github.com/storybookjs/eslint-plugin-storybook#configuration-flat-config-format
-import { FlatCompat } from '@eslint/eslintrc';
+import nextConfig from 'eslint-config-next/core-web-vitals';
+import nextTypescript from 'eslint-config-next/typescript';
 import reactCompiler from 'eslint-plugin-react-compiler';
 import storybook from 'eslint-plugin-storybook';
-import { dirname } from 'path';
-import { fileURLToPath } from 'url';
+import { defineConfig, globalIgnores } from 'eslint/config';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-});
-
-const eslintConfig = [
-  {
-    ignores: [
-      '**/*.story.ts',
-      '**/*.story.tsx',
-      '**/*.stories.ts',
-      '**/*.stories.tsx',
-      'node_modules/**',
-      '.next/**',
-      'out/**',
-      'build/**',
-      'next-env.d.ts',
-      '.github/**',
-      '.history/**',
-      'mocks/**',
-      'playwright-report/**',
-      'storybook-static/**',
-      // Tillat direkte SWR-import i våre egne custom hooks
-      'app/api/useSWRGet.ts',
-      'app/api/useSWRPost.ts',
-      'app/api/useSWRPut.ts',
-      'components/SWRLaster.tsx', // Bruker SWRResponse type
-      'providers/RekrutteringsbistandProvider.tsx', // Bruker SWRConfig provider
-    ],
-  },
+const eslintConfig = defineConfig([
+  ...nextConfig,
+  ...nextTypescript,
+  ...storybook.configs['flat/recommended'],
   {
     plugins: {
       'react-compiler': reactCompiler,
     },
-  },
-  ...compat.extends('next/core-web-vitals', 'next/typescript'),
-  {
     rules: {
       '@typescript-eslint/no-explicit-any': 'off', //TODO Temp rule
 
@@ -145,7 +114,28 @@ const eslintConfig = [
       ],
     },
   },
-  ...storybook.configs['flat/recommended'],
-];
+  globalIgnores([
+    '**/*.story.ts',
+    '**/*.story.tsx',
+    '**/*.stories.ts',
+    '**/*.stories.tsx',
+    'node_modules/**',
+    '.next/**',
+    'out/**',
+    'build/**',
+    'next-env.d.ts',
+    '.github/**',
+    '.history/**',
+    'mocks/**',
+    'playwright-report/**',
+    'storybook-static/**',
+    // Tillat direkte SWR-import i våre egne custom hooks
+    'app/api/useSWRGet.ts',
+    'app/api/useSWRPost.ts',
+    'app/api/useSWRPut.ts',
+    'components/SWRLaster.tsx', // Bruker SWRResponse type
+    'providers/RekrutteringsbistandProvider.tsx', // Bruker SWRConfig provider
+  ]),
+]);
 
 export default eslintConfig;

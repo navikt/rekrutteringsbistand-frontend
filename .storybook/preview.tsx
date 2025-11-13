@@ -2,6 +2,7 @@ import '../app/globals.css';
 import { mswHandlers } from '../mocks/handlers';
 import { ThemeProvider } from '../providers/ThemeProvider';
 import StoryProviders from './StoryProviders';
+import './local-storage-polyfill';
 import { MockRekrutteringstreffProvider } from './mocks';
 import './storybook.css';
 import '@navikt/ds-css/darkside';
