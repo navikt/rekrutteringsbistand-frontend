@@ -1,0 +1,32 @@
+import{r as a,ao as W,cc as q,cd as A,K as O,j as n}from"./iframe-BovJDKCI.js";import{a as V}from"./KandidatContext-DQ5eW4K8.js";import{B as j,a as v,b as f,c as w,d as S,e as E,f as M}from"./breadcrumb-B0pMEMh4.js";import{S as N}from"./Person-CxAIvHqE.js";import{S as B}from"./Briefcase-CWy-Wmgk.js";import{S as z}from"./Reception-DRc-rrhU.js";const H=a.createContext(void 0);function G(){return a.useContext(H)}const Q={rekrutteringstreff:{label:"Rekrutteringstreff",icon:n.jsx(z,{"aria-hidden":!0,className:"h-4 w-4"})},stilling:{label:"Stillingsoppdrag",icon:n.jsx(B,{"aria-hidden":!0,className:"h-4 w-4"})},stillinger:{label:"Stillinger",icon:n.jsx(B,{"aria-hidden":!0,className:"h-4 w-4"})},etterregistrering:{label:"Etterregistrering",icon:n.jsx(B,{"aria-hidden":!0,className:"h-4 w-4"})},kandidat:{label:"Jobbsøkere",icon:n.jsx(N,{"aria-hidden":!0,className:"h-4 w-4"})},kandidater:{label:"Jobbsøkere",icon:n.jsx(N,{"aria-hidden":!0,className:"h-4 w-4"})},"vis-kandidat":{label:"Jobbsøker",icon:n.jsx(N,{"aria-hidden":!0,className:"h-4 w-4"})},"finn-kandidater":{label:"Finn jobbsøker"},"finn-stilling":{label:"Finn stilling"}};function U({pathConfig:c=Q,erstattPath:b,className:I,forcedPath:F}){const{windowMode:T}=W(),_=G(),$=q(),d=F||$||"",t=d?d.split("/").filter(Boolean):[],P=A(),u=P?.get("visKandidatId"),m=P?.get("visStillingId"),[y,g]=a.useState(!1),l=a.useRef(null),p=a.useRef(null),R=O(),o=V(),L=o?.kandidatData?.fornavn&&o?.kandidatData?.etternavn?`${o.kandidatData.fornavn} ${o.kandidatData.etternavn}`:void 0,k=e=>{if(o?.kandidatId===e&&L)return L},C=R?.stillingsData?.stilling?.title,x=e=>{if(R?.stillingsData?.stilling?.uuid===e&&C)return C};a.useEffect(()=>{const e=setTimeout(()=>{g(!1)},0);return()=>clearTimeout(e)},[d]),a.useLayoutEffect(()=>{if(!l.current)return;const e=new ResizeObserver(()=>{if(!p.current||!l.current)return;const i=p.current.scrollWidth,s=l.current.clientWidth;i>s&&t.length>2?g(!0):g(!1)});return e.observe(l.current),()=>e.disconnect()},[t.length]);const r=t.map((e,i)=>{const s=c[e],J="/"+t.slice(0,i+1).join("/"),K=i===t.length-1;let h=s?.label||e;return h=x(e)??k(e)??h,b&&e===b[0]&&(h=b[1]),{segment:e,href:J,icon:s?.icon,label:h,skipLink:K||!!s?.skipLink}}),D=a.useMemo(()=>!y||r.length<=2?r:[r[0],{segment:"__ellipsis__"},r[r.length-1]],[y,r]);if(!d||t.length===0)return null;if(T&&_?.tile==="detail"){const e=r[r.length-1],i=m&&x(m)||u&&k(u)||e.label,s=m&&x(m)&&c.stilling?.icon||u&&k(u)&&(c["vis-kandidat"]?.icon||c.kandidat?.icon)||e.icon;return n.jsx("div",{ref:l,className:I,children:n.jsx(j,{"aria-label":"Vindusnavn",children:n.jsx(v,{children:n.jsx(f,{children:n.jsx(w,{icon:s,children:i})})})})})}return n.jsxs("div",{ref:l,className:I,children:[n.jsx("div",{ref:p,"aria-hidden":!0,className:"invisible absolute top-0 left-0 h-0 overflow-hidden",children:n.jsx(j,{"aria-label":"Full breadcrumb width measurement",children:n.jsx(v,{children:r.map((e,i)=>n.jsxs(a.Fragment,{children:[i>0&&n.jsx(S,{}),n.jsx(f,{children:e.skipLink?n.jsx(w,{icon:e.icon,children:e.label}):n.jsx(E,{href:e.href,icon:e.icon,children:e.label})})]},`measure-${e.segment}-${i}`))})})}),n.jsx(j,{"aria-label":"Brødsmulesti",children:n.jsx(v,{children:D.map((e,i)=>{const s=i>0;return e.segment==="__ellipsis__"?n.jsxs(a.Fragment,{children:[s&&n.jsx(S,{}),n.jsx(f,{children:n.jsx(M,{})})]},`ellipsis-${i}`):n.jsxs(a.Fragment,{children:[s&&n.jsx(S,{}),n.jsx(f,{children:e.skipLink?n.jsx(w,{icon:e.icon,children:e.label}):n.jsx(E,{href:e.href,icon:e.icon,children:e.label})})]},`bc-${e.segment}-${i}`)})})})]})}U.__docgenInfo={description:"",methods:[],displayName:"AutoBreadcrumbs",props:{pathConfig:{required:!1,tsType:{name:"Record",elements:[{name:"string"},{name:"PathConfigEntry"}],raw:"Record<string, PathConfigEntry>"},description:"Valgfri mapping av path-segmenter -> label/icon. Hvis utelatt brukes defaultPathConfig.",defaultValue:{value:`{
+  rekrutteringstreff: {
+    label: 'Rekrutteringstreff',
+    icon: <ReceptionIcon aria-hidden className='h-4 w-4' />,
+  },
+  stilling: {
+    label: 'Stillingsoppdrag',
+    icon: <BriefcaseIcon aria-hidden className='h-4 w-4' />,
+  },
+  stillinger: {
+    label: 'Stillinger',
+    icon: <BriefcaseIcon aria-hidden className='h-4 w-4' />,
+  },
+  etterregistrering: {
+    label: 'Etterregistrering',
+    icon: <BriefcaseIcon aria-hidden className='h-4 w-4' />,
+  },
+  kandidat: {
+    label: 'Jobbsøkere',
+    icon: <PersonIcon aria-hidden className='h-4 w-4' />,
+  },
+  kandidater: {
+    label: 'Jobbsøkere',
+    icon: <PersonIcon aria-hidden className='h-4 w-4' />,
+  },
+  'vis-kandidat': {
+    label: 'Jobbsøker',
+    icon: <PersonIcon aria-hidden className='h-4 w-4' />,
+  },
+  'finn-kandidater': { label: 'Finn jobbsøker' },
+  'finn-stilling': { label: 'Finn stilling' },
+}`,computed:!1}},className:{required:!1,tsType:{name:"string"},description:""},erstattPath:{required:!1,tsType:{name:"tuple",raw:"[originalSegment: string, nyLabel: string]",elements:[{name:"unknown"},{name:"unknown"}]},description:"Bytt ut et segment-navn med en custom label. Eks: ['a1d169be-...','Senior utvikler']"},forcedPath:{required:!1,tsType:{name:"string"},description:"For test / Storybook: bruk denne pathen i stedet for usePathname()"}}};export{U as A,Q as d,G as u};
