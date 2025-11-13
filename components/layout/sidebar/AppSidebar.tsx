@@ -93,7 +93,7 @@ const SideLenke = (item: NavigasjonItemProps) => {
           aria-current={aktiv ? 'page' : undefined}
           aria-label={item.tekst}
           icon={item.ikon}
-          className={open ? 'w-full text-left justify-start' : ''}
+          className={open ? 'w-full justify-start text-left' : ''}
         >
           {open && item.tekst}
         </Button>
@@ -106,12 +106,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { open, toggleSidebar } = useSidebar();
 
   return (
-    <Sidebar
-      collapsible='icon'
-      variant='sidebar'
-      className='  h-full '
-      {...props}
-    >
+    <Sidebar collapsible='icon' variant='sidebar' className='h-full' {...props}>
       <SidebarHeader>
         <div className='flex items-baseline pt-4'>
           <Button
@@ -122,14 +117,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             icon={
               <SidebarLeftIcon style={{ color: 'var(--ax-text-accent)' }} />
             }
-            className={open ? 'ml-3 mr-4 text-left justify-start' : ''}
+            className={open ? 'mr-4 ml-3 justify-start text-left' : ''}
           />
           {open && <OpprettMeny />}
         </div>
       </SidebarHeader>
       <SidebarContent className=''>
         <SidebarGroup
-          className={`flex flex-col w-full gap-3 ${open ? 'items-start' : 'items-center'}`}
+          className={`flex w-full flex-col gap-3 ${open ? 'items-start' : 'items-center'}`}
         >
           {/* <SidebarGroupLabel>Deg</SidebarGroupLabel> */}
           {navigasjonListe.map((item) => (
@@ -137,10 +132,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           ))}
         </SidebarGroup>
         <SidebarGroup
-          className={`flex flex-col w-full gap-3 mt-auto ${open ? 'items-start' : 'items-center'}`}
+          className={`mt-auto flex w-full flex-col gap-3 ${open ? 'items-start' : 'items-center'}`}
         >
           {/* <SidebarGroupLabel>Annet</SidebarGroupLabel> */}
-          <div className={open ? ' w-full' : ''}>
+          <div className={open ? 'w-full' : ''}>
             <UlesteNyheterWrapper>
               <SideLenke
                 tekst={'Nyheter'}

@@ -9,7 +9,7 @@ const meta = {
   tags: ['autodocs'],
   render: () => (
     <MockStillingsProvider>
-      <div className='flex flex-col gap-4 opacity-60 pointer-events-none max-w-sm'>
+      <div className='pointer-events-none flex max-w-sm flex-col gap-4 opacity-60'>
         <FinnKandidaterKnapp stillingId='stilling-123' />
         <LeggTilKandidatTilStilling
           stillingsId='stilling-123'

@@ -109,7 +109,7 @@ export default function OpprettStillingsoppdrag() {
                 For å kunne bruke annonsen til rekrutteringsoppdrag trenger den
                 :
               </BodyShort>
-              <ul className='list-disc list-inside mb-4'>
+              <ul className='mb-4 list-inside list-disc'>
                 <li>et gyldig organisasjonsnummer.</li>
               </ul>
               <BodyShort>
@@ -127,7 +127,7 @@ export default function OpprettStillingsoppdrag() {
                 ny annonsе.
               </BodyShort>
 
-              <Box.New background='neutral-softA' className=' p-4 rounded-lg'>
+              <Box.New background='neutral-softA' className='rounded-lg p-4'>
                 <VStack gap='2'>
                   <Heading size='medium' level='3'>
                     {stillingstittel}
@@ -174,7 +174,7 @@ export default function OpprettStillingsoppdrag() {
                   </HStack>
 
                   <HStack gap='3' align='start' className='items-start'>
-                    <PersonChatIcon className='mt-1  flex-shrink-0' />
+                    <PersonChatIcon className='mt-1 flex-shrink-0' />
                     <BodyShort className='flex-1'>
                       Du kan be jobbsøkere om samtykke til å dele CVen deres med
                       arbeidsgiveren.

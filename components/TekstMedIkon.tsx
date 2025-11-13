@@ -43,7 +43,7 @@ const TekstMedIkon: React.FC<ITekstMedIkon> = ({
       aria-label={title || ariaLabel}
     >
       {ikon}
-      <div className={splitSubtle ? 'flex flex-col ml-2' : 'flex ml-2 gap-2'}>
+      <div className={splitSubtle ? 'ml-2 flex flex-col' : 'ml-2 flex gap-2'}>
         <span>{tekst ?? '-'}</span>
         {subtle && <BodyShort textColor='subtle'>{subtle}</BodyShort>}
       </div>

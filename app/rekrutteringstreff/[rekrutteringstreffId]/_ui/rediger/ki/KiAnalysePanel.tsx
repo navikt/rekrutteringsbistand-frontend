@@ -52,8 +52,8 @@ const KiAnalysePanel: FC<KiAnalysePanelProps> = ({
 
   return (
     <div className='mt-2'>
-      <div className='flex gap-3 items-start'>
-        <div className='inline-flex justify-center items-start w-10 pt-1'>
+      <div className='flex items-start gap-3'>
+        <div className='inline-flex w-10 items-start justify-center pt-1'>
           {shouldShowIcon ? (
             <RobotFrownIcon
               aria-hidden

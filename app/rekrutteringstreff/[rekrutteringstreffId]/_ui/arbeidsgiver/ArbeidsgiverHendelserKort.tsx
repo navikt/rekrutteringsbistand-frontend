@@ -27,7 +27,7 @@ const ArbeidsgiverHendelserKort: FC<Props> = ({ arbeidsgiverHendelserDTO }) => {
   return (
     <Box.New
       background='neutral-softA'
-      className='mb-4 flex flex-col h-full'
+      className='mb-4 flex h-full flex-col'
       borderColor='neutral-subtleA'
       borderRadius='xlarge'
       borderWidth='1'
@@ -38,8 +38,8 @@ const ArbeidsgiverHendelserKort: FC<Props> = ({ arbeidsgiverHendelserDTO }) => {
       </Heading>
       <div className='min-h-[18rem]'>
         {arbeidsgiverHendelserDTO.length === 0 ? (
-          <div className='p-4 flex flex-col items-center'>
-            <Box.New background='neutral-softA' className='rounded-full mb-2'>
+          <div className='flex flex-col items-center p-4'>
+            <Box.New background='neutral-softA' className='mb-2 rounded-full'>
               <SVGDarkmode
                 light={ArbeidsgiverIkon}
                 dark={ArbeidsgiverDarkIkon}
@@ -66,7 +66,7 @@ const ArbeidsgiverHendelserKort: FC<Props> = ({ arbeidsgiverHendelserDTO }) => {
             </Heading>
 
             {siste5.map((h) => (
-              <div key={h.id} className='flex gap-2 mb-4'>
+              <div key={h.id} className='mb-4 flex gap-2'>
                 <div className='min-w-[10rem]'>
                   <ArbeidsgiverHendelseLabel
                     icon={<PlusCircleIcon className='text-white' />}
@@ -89,7 +89,7 @@ const ArbeidsgiverHendelserKort: FC<Props> = ({ arbeidsgiverHendelserDTO }) => {
           </div>
         )}
       </div>
-      <LeggTilArbeidsgiverKnapp className='w-full mt-auto' />
+      <LeggTilArbeidsgiverKnapp className='mt-auto w-full' />
     </Box.New>
   );
 };

@@ -41,7 +41,7 @@ const VelgPoststed: FC<VelgPoststedProps> = ({
   return (
     <Box.New background='neutral-moderate' padding='3' borderRadius='large'>
       <div>
-        <div className='py-3 flex justify-between'>
+        <div className='flex justify-between py-3'>
           <BodyLong>Adresse {index + 1}</BodyLong>
           <div>
             <Button
@@ -69,7 +69,7 @@ const VelgPoststed: FC<VelgPoststedProps> = ({
             )}
           />
 
-          <div className='flex flex-row gap-4 justify-baseline'>
+          <div className='flex flex-row justify-baseline gap-4'>
             <div className='w-32'>
               <Controller
                 name={`${lokasjonsFelt}.${index}.postalCode`}

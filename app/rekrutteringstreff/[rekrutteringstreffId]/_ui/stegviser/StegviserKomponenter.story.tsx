@@ -8,17 +8,17 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 const meta = {
   tags: ['autodocs'],
   render: () => (
-    <div className='space-y-8 opacity-60 pointer-events-none'>
+    <div className='pointer-events-none space-y-8 opacity-60'>
       <section className='space-y-2'>
-        <h4 className='font-semibold text-sm'>Header</h4>
+        <h4 className='text-sm font-semibold'>Header</h4>
         <StegviserHeader erIForhåndsvisning={false} />
       </section>
       <section className='space-y-2'>
-        <h4 className='font-semibold text-sm'>Publisere steg</h4>
+        <h4 className='text-sm font-semibold'>Publisere steg</h4>
         <PublisereSteg />
       </section>
       <section className='space-y-2'>
-        <h4 className='font-semibold text-sm'>Full stegviser</h4>
+        <h4 className='text-sm font-semibold'>Full stegviser</h4>
         <Stegviser erIForhåndsvisning={false} />
       </section>
     </div>

@@ -308,9 +308,9 @@ const ValgteFiltre: React.FC<ValgteFilterProps> = ({
           scrollbar-color: rgba(75, 85, 99, 0.8) transparent;
         }
       `}</style>
-      <div className='flex justify-between relative'>
+      <div className='relative flex justify-between'>
         <div
-          className='chips-scroll-container flex-1 min-w-0 transition-all duration-300 ease-in-out overflow-auto'
+          className='chips-scroll-container min-w-0 flex-1 overflow-auto transition-all duration-300 ease-in-out'
           style={{
             maxHeight: maxHeightStyle,
             paddingRight: chipsPaddingRight,
@@ -320,7 +320,7 @@ const ValgteFiltre: React.FC<ValgteFilterProps> = ({
           <Chips
             ref={chipsRef as any}
             size='small'
-            className='flex items-center gap-2 flex-wrap'
+            className='flex flex-wrap items-center gap-2'
             aria-expanded={isExpanded}
           >
             {tømFiltreProps && (
@@ -348,7 +348,7 @@ const ValgteFiltre: React.FC<ValgteFilterProps> = ({
                   setIsExpanded(true);
                   umami.track(UmamiEvent.Generell.åpne_filter_chip_panel_tekst);
                 }}
-                className='cursor-pointer text-s whitespace-nowrap text-[var(--ax-text-accent-subtle)]'
+                className='text-s cursor-pointer whitespace-nowrap text-[var(--ax-text-accent-subtle)]'
               >{`+ ${hiddenCount} filtre`}</BodyShort>
             )}
           </Chips>
@@ -356,7 +356,7 @@ const ValgteFiltre: React.FC<ValgteFilterProps> = ({
         {/* Skjult målecontainer */}
         <div
           ref={measureRef}
-          className='invisible fixed left-[-9999px] flex items-center gap-2 flex-nowrap'
+          className='invisible fixed left-[-9999px] flex flex-nowrap items-center gap-2'
           aria-hidden='true'
         >
           {tømFiltreProps && (
@@ -385,13 +385,13 @@ const ValgteFiltre: React.FC<ValgteFilterProps> = ({
             style={{ width: reservedWidth }}
           >
             <div
-              className='absolute inset-0 pointer-events-none'
+              className='pointer-events-none absolute inset-0'
               style={{
                 background:
                   'linear-gradient(to right, rgba(0,0,0,0) 0%, var(--ax-surface-default) 55%)',
               }}
             />
-            <div className='relative flex items-center gap-2 pr-2 '>
+            <div className='relative flex items-center gap-2 pr-2'>
               <Tooltip content='Vis alle aktive filtre'>
                 <Button
                   onClick={() => {
@@ -408,7 +408,7 @@ const ValgteFiltre: React.FC<ValgteFilterProps> = ({
           </div>
         )}
         {isExpanded && (
-          <div className='absolute top-0 right-0 pr-2 pt-0'>
+          <div className='absolute top-0 right-0 pt-0 pr-2'>
             <Tooltip content={'Skjul aktive filtre'}>
               <Button
                 ref={collapseBtnRef}

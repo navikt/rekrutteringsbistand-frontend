@@ -4,7 +4,7 @@ import { FC } from 'react';
 
 const KandidatOversiktSidebar: FC = ({}) => {
   return (
-    <div className={'flex flex-col gap-4 mt-4'}>
+    <div className={'mt-4 flex flex-col gap-4'}>
       <GråBoks tittel='Profilkvalitet'>
         <Profilkvalitet />
       </GråBoks>

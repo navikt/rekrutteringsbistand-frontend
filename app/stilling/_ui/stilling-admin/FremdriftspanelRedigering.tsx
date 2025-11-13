@@ -304,12 +304,12 @@ export default function FremdriftspanelRedigering({ setForhåndsvis }: Props) {
   }
 
   const etterregistreringKnapper = (
-    <div className='flex justify-between items-center pb-3'>
+    <div className='flex items-center justify-between pb-3'>
       <Button
         size='small'
         variant='secondary'
         onClick={setForhåndsvis}
-        className='whitespace-nowrap shrink-0'
+        className='shrink-0 whitespace-nowrap'
       >
         Forhåndsvis
       </Button>
@@ -318,7 +318,7 @@ export default function FremdriftspanelRedigering({ setForhåndsvis }: Props) {
   );
 
   const stillingKnapper = (
-    <div className='flex justify-between items-center pb-3'>
+    <div className='flex items-center justify-between pb-3'>
       <Button size='small' variant='secondary' onClick={setForhåndsvis}>
         Forhåndsvis
       </Button>
@@ -345,7 +345,7 @@ export default function FremdriftspanelRedigering({ setForhåndsvis }: Props) {
             aria-labelledby='progress-bar-label-small'
           />
 
-          <div className=' flex justify-end text-sm tabular-nums'>
+          <div className='flex justify-end text-sm tabular-nums'>
             {doneCount}/{total}
           </div>
         </div>
@@ -369,13 +369,13 @@ export default function FremdriftspanelRedigering({ setForhåndsvis }: Props) {
                   <li key={item.id} className='flex items-start gap-2 text-sm'>
                     <span
                       aria-hidden
-                      className={`mt-[2px] inline-flex h-4 w-4 items-center justify-center rounded-full border ${done ? 'bg-[var(--ax-bg-action-selected)] border-[var(--ax-bg-action-selected)] text-[var(--ax-fg-on-inverted)]' : 'border-[var(--ax-border-neutral-subtle)]'}`}
+                      className={`mt-[2px] inline-flex h-4 w-4 items-center justify-center rounded-full border ${done ? 'border-[var(--ax-bg-action-selected)] bg-[var(--ax-bg-action-selected)] text-[var(--ax-fg-on-inverted)]' : 'border-[var(--ax-border-neutral-subtle)]'}`}
                     >
                       {done && <CheckmarkIcon aria-hidden />}
                     </span>
                     <span
                       className={
-                        done ? 'line-through text-text-subtle' : undefined
+                        done ? 'text-text-subtle line-through' : undefined
                       }
                     >
                       {item.label}
@@ -387,7 +387,7 @@ export default function FremdriftspanelRedigering({ setForhåndsvis }: Props) {
           )}
           {groups.map((group) => (
             <div key={group.name} className='flex flex-col gap-2'>
-              <div className='text-[0.75rem] font-semibold uppercase tracking-wide text-text-subtle mt-2'>
+              <div className='text-text-subtle mt-2 text-[0.75rem] font-semibold tracking-wide uppercase'>
                 {group.name}
               </div>
               <ul className='flex flex-col gap-2'>
@@ -400,13 +400,13 @@ export default function FremdriftspanelRedigering({ setForhåndsvis }: Props) {
                     >
                       <span
                         aria-hidden
-                        className={`mt-[2px] inline-flex h-4 w-4 items-center justify-center rounded-full border ${done ? 'bg-[var(--ax-bg-action-selected)] border-[var(--ax-bg-action-selected)] text-[var(--ax-fg-on-inverted)]' : 'border-[var(--ax-border-neutral-subtle)]'}`}
+                        className={`mt-[2px] inline-flex h-4 w-4 items-center justify-center rounded-full border ${done ? 'border-[var(--ax-bg-action-selected)] bg-[var(--ax-bg-action-selected)] text-[var(--ax-fg-on-inverted)]' : 'border-[var(--ax-border-neutral-subtle)]'}`}
                       >
                         {done && <CheckmarkIcon aria-hidden />}
                       </span>
                       <span
                         className={
-                          done ? 'line-through text-text-subtle' : undefined
+                          done ? 'text-text-subtle line-through' : undefined
                         }
                       >
                         {item.label}
@@ -423,7 +423,7 @@ export default function FremdriftspanelRedigering({ setForhåndsvis }: Props) {
           <Heading size='xsmall' level='3' className='mb-4'>
             Hva skjer etter publisering?
           </Heading>
-          <div className='flex gap-4 flex-col'>
+          <div className='flex flex-col gap-4'>
             <div className='flex gap-2'>
               <EyeIcon aria-hidden className='shrink-0' />
               <BodyShort size='small'>
@@ -455,7 +455,7 @@ export default function FremdriftspanelRedigering({ setForhåndsvis }: Props) {
           <Heading size='xsmall' level='3' className='my-4'>
             For arbeidsgiver
           </Heading>
-          <div className='flex gap-4 flex-col'>
+          <div className='flex flex-col gap-4'>
             <div className='flex gap-2'>
               <BellDotIcon aria-hidden className='shrink-0' />
               <BodyShort size='small'>

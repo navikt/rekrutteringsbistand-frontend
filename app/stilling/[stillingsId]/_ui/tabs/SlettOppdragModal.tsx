@@ -73,17 +73,17 @@ export default function SlettOppdragModal({
             Dette skjer når du sletter registreringen:
           </Heading>
 
-          <div className='flex gap-2 items-center'>
+          <div className='flex items-center gap-2'>
             <EyeSlashIcon aria-hidden />
             <BodyLong>
               Registreringen fjernes for alle i Rekrutteringsbistand.
             </BodyLong>
           </div>
-          <div className='flex gap-2 items-center'>
+          <div className='flex items-center gap-2'>
             <TrashIcon aria-hidden />
             <BodyLong>Listen over jobbsøkere slettes.</BodyLong>
           </div>
-          <div className='flex gap-2 items-center'>
+          <div className='flex items-center gap-2'>
             <CircleSlashIcon aria-hidden />
             <BodyLong>
               Du kan ikke lenger gjenåpne etterregistreringen.
@@ -126,24 +126,24 @@ export default function SlettOppdragModal({
                     Dette skjer når du sletter oppdraget:
                   </Heading>
 
-                  <div className='flex gap-2 items-center'>
+                  <div className='flex items-center gap-2'>
                     <EyeSlashIcon aria-hidden />
                     <BodyLong>
                       Oppdraget fjernes for alle i Rekrutteringsbistand.
                     </BodyLong>
                   </div>
-                  <div className='flex gap-2 items-center'>
+                  <div className='flex items-center gap-2'>
                     <FileXMarkIcon aria-hidden />
                     <BodyLong>
                       Alle delte CVer og saker slettes fra arbeidsgivers
                       min-side.
                     </BodyLong>
                   </div>
-                  <div className='flex gap-2 items-center'>
+                  <div className='flex items-center gap-2'>
                     <TrashIcon aria-hidden />
                     <BodyLong>Listen over jobbsøkere slettes.</BodyLong>
                   </div>
-                  <div className='flex gap-2 items-center'>
+                  <div className='flex items-center gap-2'>
                     <CircleSlashIcon aria-hidden />
                     <BodyLong>Du kan ikke lenger gjenåpne oppdraget.</BodyLong>
                   </div>
@@ -159,20 +159,20 @@ export default function SlettOppdragModal({
                   <Heading size='small'>
                     Har du delt CVer til arbeidsgiver?
                   </Heading>
-                  <div className='flex gap-2 items-center'>
+                  <div className='flex items-center gap-2'>
                     <PersonCrossIcon aria-hidden />
                     <BodyLong>
                       Du kan fjerne CV-ene fra arbeidsgivers liste manuelt.
                     </BodyLong>
                   </div>
-                  <div className='flex gap-2 items-center'>
+                  <div className='flex items-center gap-2'>
                     <TableIcon aria-hidden />
                     <BodyLong>
                       Jobbsøker og veileder vil fremdeles se kortet i
                       aktivitetsplanen med lenke til stillingen.
                     </BodyLong>
                   </div>
-                  <div className='flex gap-2 items-center'>
+                  <div className='flex items-center gap-2'>
                     <SpeakerSlashIcon aria-hidden />
                     <BodyLong>
                       Jobbsøker får ikke beskjed om at stillingsoppdraget er

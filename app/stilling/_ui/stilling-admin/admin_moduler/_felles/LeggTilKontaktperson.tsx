@@ -58,7 +58,7 @@ export default function LeggTilKontaktperson() {
             key={field.id}
             className='flex flex-col gap-3'
           >
-            <div className='py-1 flex justify-between items-start'>
+            <div className='flex items-start justify-between py-1'>
               <BodyLong className='font-semibold'>Kontakt {index + 1}</BodyLong>
               <Button
                 size='small'

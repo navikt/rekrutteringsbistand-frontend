@@ -16,7 +16,7 @@ const AvlystSteg = () => {
         </Heading>
         <VStack gap='3'>
           <HStack gap='3' align='start'>
-            <div className='flex-none w-6 mt-[2px]'>
+            <div className='mt-[2px] w-6 flex-none'>
               <XMarkOctagonIcon
                 fontSize='1.5rem'
                 aria-hidden
@@ -28,7 +28,7 @@ const AvlystSteg = () => {
             </BodyShort>
           </HStack>
           <HStack gap='3' align='start'>
-            <div className='flex-none w-6 mt-[2px]'>
+            <div className='mt-[2px] w-6 flex-none'>
               <XMarkOctagonIcon
                 fontSize='1.5rem'
                 aria-hidden
@@ -40,7 +40,7 @@ const AvlystSteg = () => {
             </BodyShort>
           </HStack>
           <HStack gap='3' align='start'>
-            <div className='flex-none w-6 mt-[2px]'>
+            <div className='mt-[2px] w-6 flex-none'>
               <XMarkOctagonIcon
                 fontSize='1.5rem'
                 aria-hidden
@@ -60,7 +60,7 @@ const AvlystSteg = () => {
         </Heading>
         <VStack gap='3'>
           <HStack gap='3' align='start'>
-            <div className='flex-none w-6 mt-[2px]'>
+            <div className='mt-[2px] w-6 flex-none'>
               <CheckmarkIcon
                 fontSize='1.5rem'
                 aria-hidden
@@ -72,7 +72,7 @@ const AvlystSteg = () => {
             </BodyShort>
           </HStack>
           <HStack gap='3' align='start'>
-            <div className='flex-none w-6 mt-[2px]'>
+            <div className='mt-[2px] w-6 flex-none'>
               <CheckmarkIcon
                 fontSize='1.5rem'
                 aria-hidden
@@ -92,7 +92,7 @@ const AvlystSteg = () => {
         </Heading>
         <VStack gap='3'>
           <HStack gap='3' align='start'>
-            <div className='flex-none w-6 mt-[2px]'>
+            <div className='mt-[2px] w-6 flex-none'>
               <CheckmarkIcon
                 fontSize='1.5rem'
                 aria-hidden
@@ -104,7 +104,7 @@ const AvlystSteg = () => {
             </BodyShort>
           </HStack>
           <HStack gap='3' align='start'>
-            <div className='flex-none w-6 mt-[2px]'>
+            <div className='mt-[2px] w-6 flex-none'>
               <CheckmarkIcon
                 fontSize='1.5rem'
                 aria-hidden

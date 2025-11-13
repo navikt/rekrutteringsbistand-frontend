@@ -47,31 +47,31 @@ interface AutoBreadcrumbsProps {
 export const defaultPathConfig: PathConfig = {
   rekrutteringstreff: {
     label: 'Rekrutteringstreff',
-    icon: <ReceptionIcon aria-hidden className='w-4 h-4' />,
+    icon: <ReceptionIcon aria-hidden className='h-4 w-4' />,
   },
   stilling: {
     label: 'Stillingsoppdrag',
-    icon: <BriefcaseIcon aria-hidden className='w-4 h-4' />,
+    icon: <BriefcaseIcon aria-hidden className='h-4 w-4' />,
   },
   stillinger: {
     label: 'Stillinger',
-    icon: <BriefcaseIcon aria-hidden className='w-4 h-4' />,
+    icon: <BriefcaseIcon aria-hidden className='h-4 w-4' />,
   },
   etterregistrering: {
     label: 'Etterregistrering',
-    icon: <BriefcaseIcon aria-hidden className='w-4 h-4' />,
+    icon: <BriefcaseIcon aria-hidden className='h-4 w-4' />,
   },
   kandidat: {
     label: 'Jobbsøkere',
-    icon: <PersonIcon aria-hidden className='w-4 h-4' />,
+    icon: <PersonIcon aria-hidden className='h-4 w-4' />,
   },
   kandidater: {
     label: 'Jobbsøkere',
-    icon: <PersonIcon aria-hidden className='w-4 h-4' />,
+    icon: <PersonIcon aria-hidden className='h-4 w-4' />,
   },
   'vis-kandidat': {
     label: 'Jobbsøker',
-    icon: <PersonIcon aria-hidden className='w-4 h-4' />,
+    icon: <PersonIcon aria-hidden className='h-4 w-4' />,
   },
   'finn-kandidater': { label: 'Finn jobbsøker' },
   'finn-stilling': { label: 'Finn stilling' },
@@ -210,7 +210,7 @@ function AutoBreadcrumbs({
       <div
         ref={measureRef}
         aria-hidden
-        className='invisible absolute left-0 top-0 h-0 overflow-hidden'
+        className='invisible absolute top-0 left-0 h-0 overflow-hidden'
       >
         <Breadcrumb aria-label='Full breadcrumb width measurement'>
           <BreadcrumbList>

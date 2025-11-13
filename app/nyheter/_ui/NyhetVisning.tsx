@@ -27,14 +27,14 @@ export default function NyhetVisning({ nyhet, refetch }: NyhetVisningProps) {
   };
   return (
     <Box.New
-      className='@container/kandidatlistekort contain-layout mb-4 flex flex-col p-4 min-w-fit'
+      className='@container/kandidatlistekort mb-4 flex min-w-fit flex-col p-4 contain-layout'
       background='neutral-softA'
       borderRadius='xlarge'
       data-testid='stillings-kort'
     >
       <div className='flex justify-between'>
         <div>
-          <h1 className='text-2xl font-bold flex gap-2'>{nyhet.tittel}</h1>
+          <h1 className='flex gap-2 text-2xl font-bold'>{nyhet.tittel}</h1>
           <BodyShort>
             {formaterNorskDato({ dato: nyhet.opprettetDato })}
           </BodyShort>

@@ -94,7 +94,7 @@ export default function FullførStillingKnapp() {
                   background='neutral-soft'
                   className='p-5'
                 >
-                  <BodyLong className=' font-bold'>
+                  <BodyLong className='font-bold'>
                     Dette skjer når du fullfører
                   </BodyLong>
                   <FullførOppdragTekst />

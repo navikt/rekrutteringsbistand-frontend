@@ -23,7 +23,7 @@ const meta = {
     });
 
     return (
-      <div className='space-y-6 opacity-60 pointer-events-none'>
+      <div className='pointer-events-none space-y-6 opacity-60'>
         <TidspunktForm control={control} />
         <SvarfristForm control={control} />
       </div>

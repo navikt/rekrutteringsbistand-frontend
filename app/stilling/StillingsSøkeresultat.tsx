@@ -54,7 +54,7 @@ const StillingsSøkeresultat: FC<StillingsSøkeresultatProps> = ({
     const tilAntall = treffFra + maksAntallTreffPerSøk;
 
     return (
-      <div className='flex items-center py-1.5 justify-end'>
+      <div className='flex items-center justify-end py-1.5'>
         {fraAntall}-{tilAntall < total ? tilAntall : total} av {total}
         <Button
           disabled={filter.side === 1}
@@ -97,12 +97,12 @@ const StillingsSøkeresultat: FC<StillingsSøkeresultatProps> = ({
     >
       {(data: any) => {
         return (
-          <div className='h-full flex flex-col'>
+          <div className='flex h-full flex-col'>
             {/* {visStillingsId && <VisStillingModal kandidatId={kandidatId} />} */}
             <StillingsSøkChips />
             {antallVisning(data.hits?.total?.value)}
 
-            <div className='flex-1 min-h-0'>
+            <div className='min-h-0 flex-1'>
               <SideScroll key={filterKey}>
                 <div className='flex flex-col gap-1'>
                   {data.hits?.hits?.map((hit: any) => (
@@ -113,7 +113,7 @@ const StillingsSøkeresultat: FC<StillingsSøkeresultatProps> = ({
                     />
                   ))}
                 </div>
-                <div className={'flex justify-center items-center'}>
+                <div className={'flex items-center justify-center'}>
                   <StillingsSøkPaginering
                     totaltAntallTreff={data.hits?.total?.value ?? 0}
                   />

@@ -106,7 +106,7 @@ const TittelForm = ({ onUpdated }: TittelFormProps) => {
                 aria-label='Tøm tittel feltet'
                 variant='tertiary'
                 size='small'
-                className='absolute right-2 top-[2rem] -translate-y-1/2 h-8 p-1'
+                className='absolute top-[2rem] right-2 h-8 -translate-y-1/2 p-1'
                 title='Tøm feltet'
               >
                 <XMarkIcon aria-hidden fontSize='1.25rem' />

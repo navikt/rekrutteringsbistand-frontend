@@ -43,32 +43,32 @@ const dummySertifikat = [
 const meta = {
   tags: ['autodocs'],
   render: () => (
-    <div className='grid md:grid-cols-2 gap-8 max-w-[1200px]'>
+    <div className='grid max-w-[1200px] gap-8 md:grid-cols-2'>
       <section className='space-y-2'>
-        <h4 className='font-semibold text-sm'>Beskrivelse</h4>
+        <h4 className='text-sm font-semibold'>Beskrivelse</h4>
         <KandidatBeskrivelse kandidatSammendrag='Engasjert kandidat med fokus på kvalitet og samarbeid.' />
       </section>
       <section className='space-y-2'>
-        <h4 className='font-semibold text-sm'>Kompetanse</h4>
+        <h4 className='text-sm font-semibold'>Kompetanse</h4>
         <KandidatKompetanse kompetanse={dummyKompetanse} />
       </section>
       <section className='space-y-2'>
-        <h4 className='font-semibold text-sm'>Språk</h4>
+        <h4 className='text-sm font-semibold'>Språk</h4>
         <KandidatSpråk språk={dummySpråk} />
       </section>
       <section className='space-y-2'>
-        <h4 className='font-semibold text-sm'>Godkjenninger</h4>
+        <h4 className='text-sm font-semibold'>Godkjenninger</h4>
         <KandidatGodkjenninger
           godkjenninger={dummyGodkjenninger}
           sertifikatObj={dummySertifikat}
         />
       </section>
-      <section className='space-y-2 opacity-60 pointer-events-none md:col-span-2'>
-        <h4 className='font-semibold text-sm'>Erfaring (krever context)</h4>
+      <section className='pointer-events-none space-y-2 opacity-60 md:col-span-2'>
+        <h4 className='text-sm font-semibold'>Erfaring (krever context)</h4>
         <KandidatErfaring />
       </section>
-      <section className='space-y-2 opacity-60 pointer-events-none md:col-span-2'>
-        <h4 className='font-semibold text-sm'>Utdanning (krever context)</h4>
+      <section className='pointer-events-none space-y-2 opacity-60 md:col-span-2'>
+        <h4 className='text-sm font-semibold'>Utdanning (krever context)</h4>
         <KandidatUtdanning />
       </section>
     </div>

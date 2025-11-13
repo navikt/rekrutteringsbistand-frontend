@@ -34,7 +34,7 @@ export const SidepanelTrigger: FC<SidepanelTriggerProps> = ({
 
   return (
     <div
-      className={`@[720px]/sidelayout:hidden block whitespace-nowrap ${className}`}
+      className={`block whitespace-nowrap @[720px]/sidelayout:hidden ${className}`}
     >
       <Button variant={variant} size={size} icon={icon} onClick={openSheet}>
         {children}

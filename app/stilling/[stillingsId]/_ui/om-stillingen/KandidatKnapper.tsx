@@ -75,7 +75,7 @@ export default function KandidatKnapper() {
         role='button'
         tabIndex={0}
         aria-label='Legg til jobbsøkere. Velg og legg til jobbsøkere i stillingen.'
-        className='group flex items-start justify-between gap-4 cursor-pointer outline-none focus:ring-2 focus:ring-focus focus:ring-offset-2'
+        className='group focus:ring-focus flex cursor-pointer items-start justify-between gap-4 outline-none focus:ring-2 focus:ring-offset-2'
         onClick={() =>
           !leggerTilKandidatLoading && leggTilKandidat(kandidatNrFraPath)
         }
@@ -84,8 +84,8 @@ export default function KandidatKnapper() {
         {leggerTilKandidatLoading ? (
           <Loader />
         ) : (
-          <div className='flex gap-3 items-start'>
-            <span className='text-xl leading-none mt-0.5'>➕</span>
+          <div className='flex items-start gap-3'>
+            <span className='mt-0.5 text-xl leading-none'>➕</span>
             <div className='flex flex-col'>
               <BodyShort spacing className='m-0'>
                 Legg jobbsøker til stillingen
@@ -95,7 +95,7 @@ export default function KandidatKnapper() {
         )}
         <ArrowRightIcon
           aria-hidden
-          className='transition-transform group-hover:translate-x-1 mt-1'
+          className='mt-1 transition-transform group-hover:translate-x-1'
         />
       </Box.New>
     );
@@ -127,7 +127,7 @@ export default function KandidatKnapper() {
       ]}
     >
       <div className='@container/kandidat-knapper contain-layout'>
-        <div className='grid grid-cols-1 @3xl:grid-cols-2 gap-4 mb-6'>
+        <div className='mb-6 grid grid-cols-1 gap-4 @3xl:grid-cols-2'>
           <FinnKandidaterKnapp stillingId={stillingsData.stilling.uuid} />
           <LeggTilKandidatTilStilling
             stillingsId={stillingsData.stilling.uuid}

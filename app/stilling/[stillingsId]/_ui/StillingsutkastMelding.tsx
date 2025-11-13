@@ -16,7 +16,7 @@ export default function StillingsutkastMelding() {
     return null;
   }
   return (
-    <div className={'flex flex-col items-center gap-4 self-stretch py-10 px-5'}>
+    <div className={'flex flex-col items-center gap-4 self-stretch px-5 py-10'}>
       <Image
         src={UtkastFigur}
         alt={'En smilende figur med verktøy i hendene'}
@@ -30,7 +30,7 @@ export default function StillingsutkastMelding() {
       <div className={'flex gap-2 pb-5'}>
         <Button
           variant={'primary'}
-          className={'w-72 h-12'}
+          className={'h-12 w-72'}
           onClick={() =>
             router.push(`/stilling/${stillingsData.stilling.uuid}/rediger`)
           }

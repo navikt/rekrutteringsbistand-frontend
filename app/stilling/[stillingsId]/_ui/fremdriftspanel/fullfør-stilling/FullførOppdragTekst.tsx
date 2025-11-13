@@ -9,7 +9,7 @@ export default function FullførOppdragTekst() {
   return (
     <div className='space-y-2'>
       <BodyShort>Oppdraget og annonsen</BodyShort>
-      <div className='flex flex-col gap-3 '>
+      <div className='flex flex-col gap-3'>
         <div className='flex items-center gap-3'>
           <EyeSlashIcon aria-hidden />
           <BodyLong size='small' className='m-0'>

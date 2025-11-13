@@ -17,7 +17,7 @@ const UtviklerDekoratør: React.FC = () => {
   const isStillingSide = pathname.match(/^\/stilling\/[^\/]+$/);
 
   return (
-    <div className='flex items-center ml-4'>
+    <div className='ml-4 flex items-center'>
       Utvikler navkontor:
       <Select
         onChange={(val: React.ChangeEvent<HTMLSelectElement>) => {

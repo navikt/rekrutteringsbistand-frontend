@@ -8,7 +8,7 @@ const meta = {
   tags: ['autodocs'],
   render: () => (
     <MockStillingsProvider>
-      <div className='grid md:grid-cols-2 gap-8 opacity-60 pointer-events-none'>
+      <div className='pointer-events-none grid gap-8 opacity-60 md:grid-cols-2'>
         <section className='space-y-2'>
           <h4 className='text-sm font-semibold'>KandidatVisningSidebar</h4>
           <KandidatVisningSidebar kandidatlisteKandidat='kandidat-1' />

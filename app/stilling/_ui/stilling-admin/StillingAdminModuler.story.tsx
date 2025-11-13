@@ -35,9 +35,9 @@ function AdminFormWrapper({ children }: { children: React.ReactNode }) {
 const meta = {
   tags: ['autodocs'],
   render: () => (
-    <div className='space-y-6 opacity-60 pointer-events-none max-w-[1200px]'>
+    <div className='pointer-events-none max-w-[1200px] space-y-6 opacity-60'>
       <AdminFormWrapper>
-        <div className='grid md:grid-cols-2 gap-6'>
+        <div className='grid gap-6 md:grid-cols-2'>
           <Yrkestittel />
           <OmJobben />
           <AntallStillinger />

@@ -81,14 +81,14 @@ const OmTreffet: FC = () => {
 
   if (!rekrutteringstreff) {
     return (
-      <div className='text-center py-8'>
+      <div className='py-8 text-center'>
         <BodyShort>Kunne ikke laste rekrutteringstreff</BodyShort>
       </div>
     );
   }
 
   return (
-    <div className='space-y-8 max-w-[64rem] mx-auto'>
+    <div className='mx-auto max-w-[64rem] space-y-8'>
       <section>
         <Heading level='1' size='large' className='mt-4'>
           {rekrutteringstreff.tittel}
@@ -107,7 +107,7 @@ const OmTreffet: FC = () => {
           Om treffet
         </Heading>
 
-        <section className='grid grid-cols-1 md:grid-cols-3 gap-4'>
+        <section className='grid grid-cols-1 gap-4 md:grid-cols-3'>
           <TidspunktKort rekrutteringstreff={rekrutteringstreff} />
           <StedKort rekrutteringstreff={rekrutteringstreff} />
           <SvarfristKort rekrutteringstreff={rekrutteringstreff} />
@@ -123,7 +123,7 @@ const OmTreffet: FC = () => {
         )}
       </Box.New>
 
-      <div className='grid grid-cols-1 xl:grid-cols-2 gap-8'>
+      <div className='grid grid-cols-1 gap-8 xl:grid-cols-2'>
         {arbeidsgiverHendelser && (
           <ArbeidsgiverHendelserKort
             arbeidsgiverHendelserDTO={arbeidsgiverHendelser}
@@ -173,7 +173,7 @@ const TidspunktKort: FC<KortProps> = ({ rekrutteringstreff }) => {
     <Box.New className='flex-1' padding='6'>
       <BodyShort
         size='small'
-        className='flex items-center gap-1 mb-2'
+        className='mb-2 flex items-center gap-1'
         textColor='subtle'
       >
         <ClockIcon aria-hidden fontSize='1rem' />
@@ -219,7 +219,7 @@ const StedKort: FC<KortProps> = ({ rekrutteringstreff }) => {
     <Box.New className='flex-1' padding='6'>
       <BodyShort
         size='small'
-        className='flex items-center gap-1 mb-2'
+        className='mb-2 flex items-center gap-1'
         textColor='subtle'
       >
         <LocationPinIcon aria-hidden fontSize='1rem' />
@@ -258,7 +258,7 @@ const SvarfristKort: FC<KortProps> = ({ rekrutteringstreff }) => {
     <Box.New className='flex-1' padding='6'>
       <BodyShort
         size='small'
-        className='flex items-center gap-1 mb-2'
+        className='mb-2 flex items-center gap-1'
         textColor='subtle'
       >
         <CalendarIcon aria-hidden fontSize='1rem' />

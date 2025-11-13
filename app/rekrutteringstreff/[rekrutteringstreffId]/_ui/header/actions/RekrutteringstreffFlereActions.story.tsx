@@ -13,7 +13,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 const meta = {
   tags: ['autodocs'],
   render: () => (
-    <div className='flex flex-col gap-3 max-w-sm opacity-60 pointer-events-none'>
+    <div className='pointer-events-none flex max-w-sm flex-col gap-3 opacity-60'>
       <PubliserRekrutteringstreffButton
         erPubliseringklar={false}
         rekrutteringstreffId='demo'

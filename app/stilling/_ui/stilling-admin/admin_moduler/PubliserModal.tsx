@@ -207,7 +207,7 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
             <Heading size='small' className='mb-2'>
               Dette skjer når du publiserer oppdraget
             </Heading>
-            <ul className='list-disc pl-5 text-sm mb-4'>
+            <ul className='mb-4 list-disc pl-5 text-sm'>
               <li>
                 Stillingsoppdraget blir synlig for Nav-ansatte i
                 rekrutteringsbistand.
@@ -225,7 +225,7 @@ export default function PubliserModal({ disabled }: PubliserModalProps) {
           </Box.New>
 
           <div className='grid gap-6'>
-            <div className='grid md:grid-cols-2 gap-6'>
+            <div className='grid gap-6 md:grid-cols-2'>
               <DatoVelger
                 disablePastDates
                 label='Publiseringsdato'

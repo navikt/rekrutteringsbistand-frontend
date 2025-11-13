@@ -30,7 +30,7 @@ const KandidatSideLayout: FC<KandidatSideProps> = ({ children }) => {
           {kandidatData.fornavn} {kandidatData.etternavn}
         </Heading>
         <div
-          className={'grid @xl/kandidatside:grid-cols-2 grid-cols-1 gap-4 my-4'}
+          className={'my-4 grid grid-cols-1 gap-4 @xl/kandidatside:grid-cols-2'}
         >
           <div>
             <TekstMedIkon

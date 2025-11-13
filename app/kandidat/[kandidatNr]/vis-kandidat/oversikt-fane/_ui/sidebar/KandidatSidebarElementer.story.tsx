@@ -6,7 +6,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 const meta = {
   tags: ['autodocs'],
   render: () => (
-    <div className='flex gap-6 opacity-60 pointer-events-none'>
+    <div className='pointer-events-none flex gap-6 opacity-60'>
       <SisteAktivitet />
       <Profilkvalitet />
     </div>

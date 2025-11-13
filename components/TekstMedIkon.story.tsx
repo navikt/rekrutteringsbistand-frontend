@@ -17,7 +17,7 @@ export const KunTekst: Story = {
 export const MedIkon: Story = {
   args: {
     tekst: 'Med ikon',
-    ikon: <BriefcaseIcon aria-hidden className='w-5 h-5' />,
+    ikon: <BriefcaseIcon aria-hidden className='h-5 w-5' />,
   },
 };
 
@@ -25,7 +25,7 @@ export const SubtleTekst: Story = {
   args: {
     tekst: 'Primær tekst',
     subtle: 'Sekundær informasjon',
-    ikon: <PersonIcon aria-hidden className='w-5 h-5' />,
+    ikon: <PersonIcon aria-hidden className='h-5 w-5' />,
   },
 };
 
@@ -34,7 +34,7 @@ export const SplitLayout: Story = {
     tekst: 'Overtekst',
     subtle: 'Undertekst',
     splitSubtle: true,
-    ikon: <PersonIcon aria-hidden className='w-5 h-5' />,
+    ikon: <PersonIcon aria-hidden className='h-5 w-5' />,
   },
 };
 

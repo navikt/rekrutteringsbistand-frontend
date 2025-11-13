@@ -43,7 +43,7 @@ export const RekrutteringstreffFilter: FC = () => {
   const yrkeHook = useUseSugestions(yrkeSøkeTekst, SuggestType.ØnsketYrke);
 
   return (
-    <div className='flex mt-4 mb-8'>
+    <div className='mt-4 mb-8 flex'>
       {/* TODO: filtere er skjult for nå - dette skal legges tilbake når vi får implementert backend for søk */}
       {/*<div>*/}
       {/*  <Search*/}

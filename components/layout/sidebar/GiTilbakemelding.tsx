@@ -78,7 +78,7 @@ const GiTilbakemelding = () => {
         aria-expanded={openState}
         variant='tertiary-neutral'
         icon={<PersonChatIcon />}
-        className={open ? 'w-full text-left justify-start' : ''}
+        className={open ? 'w-full justify-start text-left' : ''}
       >
         {open && 'Gi tilbakemelding'}
       </Button>
@@ -97,7 +97,7 @@ const GiTilbakemelding = () => {
               {/* @ts-expect-error Ikke typet */}
               <skyra-survey
                 ref={skyraSurveyRef}
-                className='w-full h-full'
+                className='h-full w-full'
                 slug='arbeids-og-velferdsetaten-nav/oversikt'
               >
                 {/* @ts-expect-error Ikke typet */}

@@ -37,7 +37,7 @@ export default function VisKandidat({
   });
 
   return (
-    <Tabs value={fane} onChange={(val) => setFane(val)} className=' w-full'>
+    <Tabs value={fane} onChange={(val) => setFane(val)} className='w-full'>
       <SideLayout
         header={
           <PanelHeader fullskjermUrl={`/kandidat/${kandidatId}`}>
@@ -76,7 +76,7 @@ export default function VisKandidat({
               <div className='w-full'>
                 <KandidatSideLayout>
                   <div className='@container/kandidat-knapper contain-layout'>
-                    <div className='grid grid-cols-1 @3xl:grid-cols-2 gap-4 mb-6'>
+                    <div className='mb-6 grid grid-cols-1 gap-4 @3xl:grid-cols-2'>
                       <FinnStillingForKandidatKnapp />
                       <NavigerTilAktivitetsplanenKnapp />
                     </div>

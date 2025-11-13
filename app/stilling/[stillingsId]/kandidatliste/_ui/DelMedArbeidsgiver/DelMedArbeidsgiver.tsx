@@ -172,7 +172,7 @@ const DelMedArbeidsgiver: FC<DelMedArbeidsgiverProps> = ({
                   </BodyLong>
 
                   <UNSAFE_Combobox
-                    className='my-4 '
+                    className='my-4'
                     allowNewValues
                     label='E-post til arbeidsgiver'
                     options={eposter}
