@@ -113,13 +113,28 @@ const KandidatListeKort: FC<KandidatListeKortProps> = ({
     e.preventDefault();
   };
 
+  const getWindowRefWithParams = () => {
+    const currentParams = new URLSearchParams(window.location.search);
+    currentParams.set('stillingFane', 'kandidater');
+    if (kandidat?.kandidatnr) {
+      currentParams.set('visKandidatId', kandidat.kandidatnr);
+    } else {
+      currentParams.delete('visKandidatId');
+    }
+
+    const basePath = `/stilling/${stillingsData.stilling.uuid}`;
+    const query = currentParams.toString();
+
+    return query ? `${basePath}?${query}` : basePath;
+  };
+
   if (kandidat) {
     // const aktiv = visKandidatnr === kandidat.kandidatnr;
     const aktiv = false;
     return (
       <WindowAnker
         disabled={inaktiv}
-        windowRef={`/stilling/${stillingsData.stilling.uuid}?stillingFane=kandidater&visKandidatId=${kandidat?.kandidatnr}`}
+        windowRef={getWindowRefWithParams()}
         href={`/stilling/${stillingsData.stilling.uuid}/kandidatliste/${kandidat?.kandidatnr}`}
       >
         <ListeKort
