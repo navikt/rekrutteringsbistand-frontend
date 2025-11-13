@@ -59,7 +59,8 @@ export default function EndreSøkeforslag() {
 
       if (response.stilling.uuid) {
         refetch?.();
-        router.push(`/stilling/${response.stilling.uuid}`);
+        setOpen(false);
+        router.refresh();
       }
     } finally {
       setLoading(false);
