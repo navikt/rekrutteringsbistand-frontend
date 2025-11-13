@@ -23,12 +23,13 @@ import {
 } from '@navikt/ds-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { mutate } from 'swr';
+import { useSWRConfig } from 'swr';
 
 export default function EndreSøkeforslag() {
   const { stillingsData, refetch } = useStillingsContext();
   const { valgtNavKontor, brukerData } = useApplikasjonContext();
   const router = useRouter();
+  const { mutate: mutateSWR } = useSWRConfig();
   const [loading, setLoading] = useState(false);
   const [publiserArbeidsplassen, setPubliserArbeidsplassen] = useState(false);
   const [open, setOpen] = useState(false);
@@ -60,12 +61,13 @@ export default function EndreSøkeforslag() {
       );
 
       refetch?.();
-      await mutate(
+      await mutateSWR(
         (key) => Array.isArray(key) && key[0] === StillingsSøkAPI.internUrl,
         undefined,
         { revalidate: true },
       );
       setOpen(false);
+      router.refresh();
     } finally {
       setLoading(false);
     }
