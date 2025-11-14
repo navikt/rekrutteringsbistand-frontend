@@ -2,9 +2,8 @@
 
 import { arbeidsgivereMock } from './arbeidsgivereMock';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
-import { getAPIwithSchema } from '@/app/api/fetcher';
+import { useSWRGet } from '@/app/api/useSWRGet';
 import { http, HttpResponse } from 'msw';
-import useSWR from 'swr';
 import { z } from 'zod';
 
 export const ArbeidsgiverSchema = z.object({
@@ -24,9 +23,9 @@ export const rekrutteringstreffArbeidsgivereEndepunkt = (id: string) =>
   `${RekrutteringstreffAPI.internUrl}/${id}/arbeidsgiver`;
 
 export const useRekrutteringstreffArbeidsgivere = (id: string) => {
-  return useSWR(
+  return useSWRGet(
     rekrutteringstreffArbeidsgivereEndepunkt(id),
-    getAPIwithSchema(ArbeidsgivereSchema),
+    ArbeidsgivereSchema,
   );
 };
 

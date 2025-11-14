@@ -2,7 +2,7 @@
 
 import { alleHendelserMock } from './alleHendelserMock';
 import { RekrutteringstreffAPI } from '@/app/api/api-routes';
-import { getAPIwithSchema } from '@/app/api/fetcher';
+import { useSWRGet } from '@/app/api/useSWRGet';
 import {
   AktørType as AktørTypeConst,
   ArbeidsgiverHendelsestype as ArbeidsgiverHendelsestypeConst,
@@ -10,7 +10,6 @@ import {
   RekrutteringstreffHendelsestype as RekrutteringstreffHendelsestypeConst,
 } from '@/app/rekrutteringstreff/_types/constants';
 import { http, HttpResponse } from 'msw';
-import useSWR from 'swr';
 import { z } from 'zod';
 
 const enumFromConstObject = <T extends Record<string, string>>(obj: T) =>
@@ -37,7 +36,7 @@ export const AlleHendelserSchema = z.array(HendelseSchema);
 export type AlleHendelserDTO = z.infer<typeof AlleHendelserSchema>;
 
 export const useAlleHendelser = (id: string) =>
-  useSWR(alleHendelserEndepunkt(id), getAPIwithSchema(AlleHendelserSchema));
+  useSWRGet(alleHendelserEndepunkt(id), AlleHendelserSchema);
 
 export const alleHendelserMSWHandler = http.get(
   `${RekrutteringstreffAPI.internUrl}/:rekrutteringstreffId/allehendelser`,
