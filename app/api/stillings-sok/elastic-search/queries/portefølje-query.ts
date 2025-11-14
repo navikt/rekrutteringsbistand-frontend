@@ -26,14 +26,13 @@ export const esPortefølje = (
     // Viser kun stillinger med stillingsinfo (har kandidatliste)
     esBuilder.addFilter({ exists: { field: 'stillingsinfo' } });
 
-    //Viser kun publiserte:
+    //Viser kun stillinger som er eller har blitt publisert:
     esBuilder.addBoolFilter({
       must_not: [
         { term: { 'stilling.status': 'REJECTED' } },
         { term: { 'stilling.status': 'DELETED' } },
       ],
       must: [
-        { term: { 'stilling.administration.status': 'DONE' } },
         { exists: { field: 'stilling.publishedByAdmin' } },
         { range: { 'stilling.published': { lte: 'now/d' } } },
       ],
