@@ -1,9 +1,13 @@
 import KandidatMedContext from '@/app/kandidat/[kandidatNr]/KandidatMedContext';
 
-export default function KanddidatForStilling({
+export default async function KandidatForStilling({
   params,
 }: {
-  params: { kandidatId: string; stillingsId: string };
+  params: Promise<{ kandidatId: string; stillingsId: string }>;
 }) {
-  return <KandidatMedContext kandidatId={params.kandidatId} />;
+  const { kandidatId, stillingsId } = await params;
+
+  return (
+    <KandidatMedContext kandidatId={kandidatId} stillingsId={stillingsId} />
+  );
 }
