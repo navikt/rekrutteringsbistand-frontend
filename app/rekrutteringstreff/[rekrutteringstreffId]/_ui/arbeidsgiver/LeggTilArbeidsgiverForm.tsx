@@ -157,7 +157,7 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({
                       organisasjonsnummer={p.organisasjonsnummer}
                       adresse={p.adresse ?? undefined}
                     />
-                    <div className='absolute right-2 top-2'>
+                    <div className='absolute top-2 right-2'>
                       <Button
                         size='xsmall'
                         variant='tertiary'
@@ -206,7 +206,7 @@ const LeggTilArbeidsgiverForm: FC<Props> = ({
                                 'TODO: adresse må lagres i backend for å kunne hentes her',
                             }}
                           />
-                          <div className='absolute right-2 top-2'>
+                          <div className='absolute top-2 right-2'>
                             <SlettArbeidsgiverModal
                               navn={a.navn}
                               loading={sletterArbeidsgiver}

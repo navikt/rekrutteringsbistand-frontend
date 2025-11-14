@@ -37,9 +37,9 @@ export default function DatoTidRad<T extends Record<string, unknown>>({
   timeMax,
 }: Props<T>) {
   return (
-    <div className='flex gap-4 items-start'>
+    <div className='flex items-start gap-4'>
       {label && (
-        <div className='flex items-center min-w-fit mt-3'>
+        <div className='mt-3 flex min-w-fit items-center'>
           <BodyShort size='small'>{label}</BodyShort>
         </div>
       )}

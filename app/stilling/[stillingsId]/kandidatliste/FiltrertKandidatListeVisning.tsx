@@ -161,7 +161,7 @@ export default function FiltrertKandidatListeVisning({
       <SideScroll enableHorizontalScroll>
         <div>
           {tableHeader}
-          <div className='grid grid-cols-1 gap-4 p-1'>
+          <div className='grid grid-cols-1 gap-1 p-1'>
             {filtrerteKandidater?.usynligeKandidater?.map((kandidat, index) => (
               <KandidatListeKort
                 usynligKandidat={kandidat}

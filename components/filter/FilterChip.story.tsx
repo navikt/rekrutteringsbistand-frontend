@@ -10,7 +10,7 @@ const meta = {
   render: () => {
     const [valg, setValg] = useState(['heltid', 'Oslo']);
     return (
-      <div className='opacity-60 pointer-events-none'>
+      <div className='pointer-events-none opacity-60'>
         <Chips>
           <FilterChip type={valg} setVerdi={setValg} />
         </Chips>

@@ -26,26 +26,22 @@ export default function GjenåpneStillingKnapp() {
   const gjenåpne = async (kandidatlisteId: string) => {
     setLoading(true);
     try {
-      await Promise.all([
-        setKandidatlisteStatus(kandidatlisteId, Kandidatlistestatus.Åpen),
-        oppdaterStilling(
-          {
-            ...stillingsData,
-            stilling: {
-              ...stillingsData.stilling,
-              status: StillingsStatus.Aktiv,
-              privacy: publiserArbeidsplassen
-                ? 'SHOW_ALL'
-                : 'INTERNAL_NOT_SHOWN',
-            },
+      await setKandidatlisteStatus(kandidatlisteId, Kandidatlistestatus.Åpen);
+      await oppdaterStilling(
+        {
+          ...stillingsData,
+          stilling: {
+            ...stillingsData.stilling,
+            status: StillingsStatus.Aktiv,
+            privacy: publiserArbeidsplassen ? 'SHOW_ALL' : 'INTERNAL_NOT_SHOWN',
           },
-          {
-            eierNavident: brukerData.ident,
-            eierNavn: brukerData.navn,
-            eierNavKontorEnhetId: valgtNavKontor?.navKontor,
-          },
-        ),
-      ]);
+        },
+        {
+          eierNavident: brukerData.ident,
+          eierNavn: brukerData.navn,
+          eierNavKontorEnhetId: valgtNavKontor?.navKontor,
+        },
+      );
       visVarsel({ type: 'success', tekst: 'Oppdraget gjenåpnet.' });
       refetch?.();
       kandidatlisteForEier.mutate();

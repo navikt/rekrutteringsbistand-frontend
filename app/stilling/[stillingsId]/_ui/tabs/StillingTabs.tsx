@@ -12,7 +12,7 @@ export default function StillingTabs() {
   const { erEier, kandidatlisteInfo } = useStillingsContext();
 
   return (
-    <Tabs.List className='flex w-full justify-between '>
+    <Tabs.List className='flex w-full justify-between'>
       <div>
         <Tabs.Tab value={StillingFane.STILLING} label='Om stillingen' />
         <TilgangskontrollForInnhold

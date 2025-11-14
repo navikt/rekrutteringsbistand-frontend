@@ -25,23 +25,21 @@ export default function FullførStillingKnapp() {
   const avsluttStilling = async (kandidatlisteId: string) => {
     setLoading(true);
     try {
-      await Promise.all([
-        setKandidatlisteStatus(kandidatlisteId, Kandidatlistestatus.Lukket),
-        oppdaterStilling(
-          {
-            ...stillingsData,
-            stilling: {
-              ...stillingsData.stilling,
-              status: StillingsStatus.Stoppet,
-            },
+      await setKandidatlisteStatus(kandidatlisteId, Kandidatlistestatus.Lukket);
+      await oppdaterStilling(
+        {
+          ...stillingsData,
+          stilling: {
+            ...stillingsData.stilling,
+            status: StillingsStatus.Stoppet,
           },
-          {
-            eierNavident: brukerData.ident,
-            eierNavn: brukerData.navn,
-            eierNavKontorEnhetId: valgtNavKontor?.navKontor,
-          },
-        ),
-      ]);
+        },
+        {
+          eierNavident: brukerData.ident,
+          eierNavn: brukerData.navn,
+          eierNavKontorEnhetId: valgtNavKontor?.navKontor,
+        },
+      );
       visVarsel({ type: 'success', tekst: 'Du har nå fullført oppdraget.' });
       refetch?.();
       kandidatlisteForEier.mutate();
@@ -96,7 +94,7 @@ export default function FullførStillingKnapp() {
                   background='neutral-soft'
                   className='p-5'
                 >
-                  <BodyLong className=' font-bold'>
+                  <BodyLong className='font-bold'>
                     Dette skjer når du fullfører
                   </BodyLong>
                   <FullførOppdragTekst />

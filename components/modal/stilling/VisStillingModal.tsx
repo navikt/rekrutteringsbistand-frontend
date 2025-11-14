@@ -28,7 +28,7 @@ export default function VisStillingModal({
 
   return (
     <Modal
-      className='flex flex-col h-[95vh]'
+      className='flex h-[95vh] flex-col'
       closeOnBackdropClick
       width={'1280px'}
       open
@@ -45,13 +45,13 @@ export default function VisStillingModal({
             <>
               <Modal.Header>
                 <Heading level='1' size='large' id='modal-heading'>
-                  <div className='flex justify-between items-center'>
+                  <div className='flex items-center justify-between'>
                     {kandidatId
                       ? 'Stillingsoppdrag for jobbsøker'
                       : 'Viser stillingsoppdrag'}
                   </div>
                 </Heading>
-                <div className='pt-4 flex justify-between items-center'>
+                <div className='flex items-center justify-between pt-4'>
                   {kandidatId ? (
                     <ToggleGroup
                       defaultValue={fane}

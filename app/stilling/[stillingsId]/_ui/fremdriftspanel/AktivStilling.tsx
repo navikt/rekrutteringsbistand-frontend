@@ -41,7 +41,7 @@ export default function AktivStilling({
   } = useStillingsContext();
 
   const delMedArbeidsgiverVisning = erJobbmesse ? null : (
-    <div className='flex flex-col gap-2 w-full'>
+    <div className='flex w-full flex-col gap-2'>
       <Heading size='small' level='2'>
         Del med arbeidsgiver
       </Heading>
@@ -53,7 +53,7 @@ export default function AktivStilling({
         aria-labelledby='progress-bar-label-small'
       />
 
-      <div className=' flex justify-end text-sm tabular-nums'>
+      <div className='flex justify-end text-sm tabular-nums'>
         {antallDelt}/{totalStillinger}
       </div>
     </div>
@@ -67,7 +67,7 @@ export default function AktivStilling({
   );
 
   const visning = (
-    <div className='flex flex-col gap-6 '>
+    <div className='flex flex-col gap-6'>
       <div>
         <Heading size='xsmall' level='3'>
           Sjekkliste
@@ -93,7 +93,7 @@ export default function AktivStilling({
           <Heading size='xsmall' level='3' className='mb-4'>
             Hva skjer etter fullføring?
           </Heading>
-          <div className='flex gap-4 flex-col'>
+          <div className='flex flex-col gap-4'>
             <div className='flex gap-2'>
               <BellIcon aria-hidden className='shrink-0' />
               <BodyShort size='small'>

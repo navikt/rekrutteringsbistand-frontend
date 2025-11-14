@@ -40,14 +40,14 @@ export default function FullførtStilling({
   );
 
   const visning = (
-    <div className='flex flex-col gap-6 mt-6'>
+    <div className='mt-6 flex flex-col gap-6'>
       <div>
         <Heading size='small' level='2'>
           Oppdrag fullført
         </Heading>
         <BodyShort
           size='small'
-          className='text-[var(--ax-text-neutral-subtle)] mt-1'
+          className='mt-1 text-[var(--ax-text-neutral-subtle)]'
         >
           Av {stillingsData.stilling?.administration?.reportee}{' '}
           {formaterNorskDato({
@@ -82,7 +82,7 @@ export default function FullførtStilling({
             <Heading size='xsmall' level='3' className='mb-4'>
               Hva som skjedde bak kulissene
             </Heading>
-            <div className='flex gap-4 flex-col'>
+            <div className='flex flex-col gap-4'>
               <div className='flex gap-2'>
                 <BellIcon aria-hidden className='shrink-0' />
                 <BodyShort size='small'>

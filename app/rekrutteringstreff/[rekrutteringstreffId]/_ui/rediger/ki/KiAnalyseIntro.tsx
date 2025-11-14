@@ -30,7 +30,7 @@ const KiAnalyseIntro: FC<KiAnalyseIntroProps> = ({ title }) => {
     useState<HTMLElement | null>(null);
 
   return (
-    <div className='space-y-3 ml-2'>
+    <div className='ml-2 space-y-3'>
       {title && (
         <>
           <div className='flex items-center gap-2'>
@@ -48,17 +48,17 @@ const KiAnalyseIntro: FC<KiAnalyseIntroProps> = ({ title }) => {
         </>
       )}
       <Box.New background='neutral-moderate' borderRadius='xlarge' padding='3'>
-        <div className='flex items-start gap-2 mb-3'>
+        <div className='mb-3 flex items-start gap-2'>
           <SparklesIcon
             aria-hidden
-            className='h-5 w-5 shrink-0 self-start mt-0.5'
+            className='mt-0.5 h-5 w-5 shrink-0 self-start'
           />
           <div className='space-y-2'>
             <div className='flex items-center gap-2'>
               <BodyShort size='small'>
                 Innholdet sjekkes for{' '}
                 <span
-                  className='underline cursor-pointer'
+                  className='cursor-pointer underline'
                   onMouseEnter={(event) => {
                     setPersonopplysningerAnchor(event.currentTarget);
                     setPersonopplysningerOpen(true);
@@ -72,7 +72,7 @@ const KiAnalyseIntro: FC<KiAnalyseIntroProps> = ({ title }) => {
                 </span>{' '}
                 og{' '}
                 <span
-                  className='underline cursor-pointer'
+                  className='cursor-pointer underline'
                   onMouseEnter={(event) => {
                     setDiskriminerendeAnchor(event.currentTarget);
                     setDiskriminerendeOpen(true);
@@ -103,7 +103,7 @@ const KiAnalyseIntro: FC<KiAnalyseIntroProps> = ({ title }) => {
               <BodyShort weight='semibold'>
                 Eksempler på personopplysninger
               </BodyShort>
-              <ul className='list-disc ml-5 space-y-1'>
+              <ul className='ml-5 list-disc space-y-1'>
                 <li>
                   <BodyShort size='small'>Fullt navn</BodyShort>
                 </li>
@@ -150,7 +150,7 @@ const KiAnalyseIntro: FC<KiAnalyseIntroProps> = ({ title }) => {
             setDiskriminerendeAnchor(null);
           }}
           anchorEl={diskriminerendeAnchor}
-          className=' max-w-md'
+          className='max-w-md'
         >
           <Popover.Content>
             <div className='space-y-3'>
@@ -161,7 +161,7 @@ const KiAnalyseIntro: FC<KiAnalyseIntroProps> = ({ title }) => {
                 <BodyShort size='small' weight='semibold'>
                   Indirekte diskriminering
                 </BodyShort>
-                <ul className='list-disc ml-5 space-y-1 mt-1'>
+                <ul className='mt-1 ml-5 list-disc space-y-1'>
                   <li>
                     <BodyShort size='small'>
                       Formuleringer som ekskluderer, hindrer inkludering eller
@@ -179,7 +179,7 @@ const KiAnalyseIntro: FC<KiAnalyseIntroProps> = ({ title }) => {
                   Formuleringer som fører til usaklig forskjellsbehandling
                   basert på:
                 </BodyShort>
-                <ul className='list-disc ml-5 space-y-1 mt-1'>
+                <ul className='mt-1 ml-5 list-disc space-y-1'>
                   <li>
                     <BodyShort size='small'>
                       kjønn, kjønnsidentitet eller kjønnsuttrykk
@@ -208,10 +208,10 @@ const KiAnalyseIntro: FC<KiAnalyseIntroProps> = ({ title }) => {
           </Popover.Content>
         </Popover>
 
-        <div className='flex items-start gap-2 mb-3'>
+        <div className='mb-3 flex items-start gap-2'>
           <ChatExclamationmarkIcon
             aria-hidden
-            className='h-5 w-5 shrink-0 self-start mt-0.5'
+            className='mt-0.5 h-5 w-5 shrink-0 self-start'
           />
           <BodyShort size='small'>
             KI-sjekken tar ikke høyde for retningslinjene for treff.
@@ -219,7 +219,7 @@ const KiAnalyseIntro: FC<KiAnalyseIntroProps> = ({ title }) => {
             <a
               href='https://www.nav.no'
               target='_blank'
-              className='underline cursor-pointer'
+              className='cursor-pointer underline'
             >
               navet
             </a>
@@ -230,7 +230,7 @@ const KiAnalyseIntro: FC<KiAnalyseIntroProps> = ({ title }) => {
         <div className='flex items-start gap-2'>
           <HandHeartIcon
             aria-hidden
-            className='h-5 w-5 shrink-0 self-start mt-0.5'
+            className='mt-0.5 h-5 w-5 shrink-0 self-start'
           />
           <BodyShort size='small'>
             KI-sjekken hjelper deg med å vurdere innholdet. Du er ansvarlig for
@@ -251,7 +251,7 @@ const KiAnalyseIntro: FC<KiAnalyseIntroProps> = ({ title }) => {
               <br />
               <BodyShort size='small'>Den sjekker:</BodyShort>
               <br />
-              <ul className='list-disc ml-5 space-y-1'>
+              <ul className='ml-5 list-disc space-y-1'>
                 <li>
                   <BodyShort size='small'>Diskriminerende ord</BodyShort>
                 </li>
@@ -273,7 +273,7 @@ const KiAnalyseIntro: FC<KiAnalyseIntroProps> = ({ title }) => {
               <br />
               <BodyShort size='small'>Den sjekker ikke:</BodyShort>
               <br />
-              <ul className='list-disc ml-5 space-y-1'>
+              <ul className='ml-5 list-disc space-y-1'>
                 <li>
                   <BodyShort size='small'>
                     Om innholdet i rekrutteringstreffet er innenfor alle

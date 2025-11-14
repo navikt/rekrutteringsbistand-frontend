@@ -17,8 +17,8 @@ export const SlettetTag = ({
 }) => {
   return (
     <div className={'flex flex-col items-start'}>
-      <Tag variant={'alt2'} size='small' className='inline-flex '>
-        <div className='flex gap-2 items-center'>
+      <Tag variant={'alt2'} size='small' className='inline-flex'>
+        <div className='flex items-center gap-2'>
           <TrashIcon /> Slettet
         </div>
       </Tag>

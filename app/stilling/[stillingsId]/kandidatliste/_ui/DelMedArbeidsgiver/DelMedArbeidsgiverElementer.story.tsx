@@ -8,7 +8,7 @@ const meta = {
   render: () => {
     const mockKandidatliste = createKandidatlisteMock({ antall: 2 });
     return (
-      <div className='opacity-60 pointer-events-none'>
+      <div className='pointer-events-none opacity-60'>
         <DelMedArbeidsgiver markerteKandidater={mockKandidatliste.kandidater} />
       </div>
     );

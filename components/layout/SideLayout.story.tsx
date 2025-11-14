@@ -6,7 +6,7 @@ const meta = {
   component: SideLayout,
   render: (args) => (
     <SideLayout {...args}>
-      <div className='p-6 space-y-4'>
+      <div className='space-y-4 p-6'>
         <p>Hovedinnhold</p>
         <p>Flere avsnitt med tekst for å demonstrere layout.</p>
       </div>

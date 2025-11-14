@@ -14,7 +14,7 @@ const NavigasjonWrapper: React.FC<NavigasjonWrapperProps> = ({ children }) => {
     <div className='[--header-height:calc(--spacing(14))]'>
       <SidebarProvider mobileBehavior='collapse' className='flex flex-col'>
         <NavDekoratør />
-        <div className='flex flex-1 h-[calc(100svh-var(--header-height))]'>
+        <div className='flex h-[calc(100svh-var(--header-height))] flex-1'>
           <AppSidebar />
           <SidebarInset>{children}</SidebarInset>
         </div>

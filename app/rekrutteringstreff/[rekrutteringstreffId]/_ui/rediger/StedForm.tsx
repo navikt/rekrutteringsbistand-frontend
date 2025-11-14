@@ -88,7 +88,7 @@ const StedForm = ({ control }: any) => {
           />
         )}
       />
-      <div className='flex gap-4 items-start'>
+      <div className='flex items-start gap-4'>
         <Controller
           name={FormFields.POSTNUMMER}
           control={control}
@@ -117,7 +117,7 @@ const StedForm = ({ control }: any) => {
           )}
         />
         <BodyShort
-          className={`pt-8 mt-3 ${useWatch({ control, name: FormFields.POSTSTED }) ? '' : 'aksel-error-message'}`}
+          className={`mt-3 pt-8 ${useWatch({ control, name: FormFields.POSTSTED }) ? '' : 'aksel-error-message'}`}
         >
           {useWatch({ control, name: FormFields.POSTSTED }) ||
             (watchPostnummer && watchPostnummer.length === 4 && !isLoading

@@ -15,9 +15,9 @@ export default function KandidatOversikt() {
   const { kandidatData } = useKandidatContext();
 
   return (
-    <div className={`mt-10  mb-8`}>
+    <div className={`mt-10 mb-8`}>
       <div>
-        <div className={`grid gap-x-[3.5rem]  md:flex-row flex-row`}>
+        <div className={`grid flex-row gap-x-[3.5rem] md:flex-row`}>
           <KandidatØnsker />
           <KandidatOversiktDivider />
           <KandidatBeskrivelse kandidatSammendrag={kandidatData.beskrivelse} />
@@ -25,7 +25,7 @@ export default function KandidatOversikt() {
           <KandidatUtdanning /> <KandidatOversiktDivider />
           <KandidatErfaring />
         </div>
-        <div className={`mt-8 grid grid-cols-1 gap-4 `}>
+        <div className={`mt-8 grid grid-cols-1 gap-4`}>
           <KandidatSpråk språk={kandidatData?.sprak} />
           <KandidatGodkjenninger
             godkjenninger={kandidatData?.godkjenninger}

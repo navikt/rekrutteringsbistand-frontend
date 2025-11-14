@@ -102,7 +102,7 @@ const PublisereSteg: FC = () => {
             </Heading>
             <VStack gap='2'>
               <HStack gap='2' align='start'>
-                <div className='flex-none w-6 mt-[2px]'>
+                <div className='mt-[2px] w-6 flex-none'>
                   <EyeIcon
                     fontSize='1.5rem'
                     aria-hidden
@@ -115,7 +115,7 @@ const PublisereSteg: FC = () => {
               </HStack>
 
               <HStack gap='2' align='start'>
-                <div className='flex-none w-6 mt-[2px]'>
+                <div className='mt-[2px] w-6 flex-none'>
                   <PersonGroupIcon
                     fontSize='1.5rem'
                     aria-hidden
@@ -129,7 +129,7 @@ const PublisereSteg: FC = () => {
               </HStack>
 
               <HStack gap='2' align='start'>
-                <div className='flex-none w-6 mt-[2px]'>
+                <div className='mt-[2px] w-6 flex-none'>
                   <TasklistIcon
                     fontSize='1.5rem'
                     aria-hidden
@@ -142,7 +142,7 @@ const PublisereSteg: FC = () => {
               </HStack>
 
               <HStack gap='2' align='start'>
-                <div className='flex-none w-6 mt-[2px]'>
+                <div className='mt-[2px] w-6 flex-none'>
                   <BellIcon
                     fontSize='1.5rem'
                     aria-hidden

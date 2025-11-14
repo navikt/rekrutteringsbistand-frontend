@@ -8,7 +8,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 const meta = {
   tags: ['autodocs'],
   render: () => (
-    <div className='grid md:grid-cols-3 gap-6 opacity-60 pointer-events-none'>
+    <div className='pointer-events-none grid gap-6 opacity-60 md:grid-cols-3'>
       <div className='space-y-2'>
         <h4 className='text-sm font-semibold'>Sidebar (kompositt)</h4>
         <KandidatOversiktSidebar />

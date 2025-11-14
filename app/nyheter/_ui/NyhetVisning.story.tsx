@@ -14,7 +14,7 @@ const mockNyhet: NyheterDTO = {
 const meta = {
   tags: ['autodocs'],
   render: () => (
-    <div className='opacity-60 pointer-events-none'>
+    <div className='pointer-events-none opacity-60'>
       <NyhetVisning nyhet={mockNyhet} refetch={() => {}} />
     </div>
   ),

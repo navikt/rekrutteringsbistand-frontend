@@ -45,9 +45,9 @@ const InngangFraArbop: FC = () => {
         !kandidatnrHook.data.arenaKandidatnr ||
         !synlighetHook.data ||
         !valgtFnr) && (
-        <div className={'mt-4 max-w-2xl m-auto flex flex-col flex-wrap gap-4'}>
-          <div className={'flex-1 flex flex-row gap-8 mt-10 items-center'}>
-            <Heading level='2' size='large' className={'flex-1 w-96'}>
+        <div className={'m-auto mt-4 flex max-w-2xl flex-col flex-wrap gap-4'}>
+          <div className={'mt-10 flex flex-1 flex-row items-center gap-8'}>
+            <Heading level='2' size='large' className={'w-96 flex-1'}>
               Personen vises ikke i rekrutteringsbistand
             </Heading>
             <Image
@@ -77,7 +77,7 @@ const InngangFraArbop: FC = () => {
             pleier ofte å være at de bare mangler jobbprofilen i CVen, så sjekk
             gjerne det først.
           </p>
-          <p className={'text-xl mt-4 font-semibold'}>
+          <p className={'mt-4 text-xl font-semibold'}>
             Jeg har sjekket alt som ble nevnt på Navet, men personen vises
             fortsatt ikke. Hva gjør jeg nå?
           </p>

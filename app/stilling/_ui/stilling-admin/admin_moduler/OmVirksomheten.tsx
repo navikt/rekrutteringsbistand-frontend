@@ -212,7 +212,7 @@ export default function OmVirksomheten() {
             />
           </>
         )}
-        <Heading size='small' className='flex gap-2 items-center'>
+        <Heading size='small' className='flex items-center gap-2'>
           <TasklistIcon className='shrink-0' /> Kontaktpersoner
         </Heading>
         <LeggTilKontaktperson />

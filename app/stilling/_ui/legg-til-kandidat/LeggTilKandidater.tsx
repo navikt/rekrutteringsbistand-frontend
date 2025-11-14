@@ -152,7 +152,7 @@ const LeggTilKandidater: FC<LeggTilKandidaterProps> = ({
       </div>
       {!synlighetSomModal && <Synlighetsinfo fødselsnummer={fødselsnummer} />}{' '}
       <hr />
-      <div className='flex justify-end '>
+      <div className='flex justify-end'>
         <Button
           icon={<PlusCircleIcon />}
           variant='tertiary'

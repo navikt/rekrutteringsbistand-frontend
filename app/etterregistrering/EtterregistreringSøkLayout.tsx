@@ -28,7 +28,7 @@ export default function EtterregistreringSøkLayout() {
       }
       sidepanelBredde='250px'
       sidepanel={
-        <div className='flex flex-col  gap-4'>
+        <div className='flex flex-col gap-4'>
           <StillingSøkebar alltidÅpen={false} />
           <MittStandardsøk />
           <StillingsSøkSortering />

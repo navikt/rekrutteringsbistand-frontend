@@ -37,7 +37,7 @@ export const RekrutteringstreffKort: FunctionComponent<
   return (
     <Box.New className='mb-4 rounded-lg border border-[var(--ax-border-neutral)] p-4'>
       <div className='flex items-start justify-between'>
-        <div className='flex items-center gap-2 mb-1'>
+        <div className='mb-1 flex items-center gap-2'>
           <CalendarIcon aria-hidden />
           <Detail>{(fraTid && formatterDato(fraTid)) || 'Ukjent dato'}</Detail>
           {fraTid && tilTid && (

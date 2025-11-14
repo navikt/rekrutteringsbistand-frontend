@@ -34,7 +34,7 @@ type Story = StoryObj<typeof meta>;
 export const Standard: Story = {
   render: () => (
     <SidebarProvider>
-      <div className='flex h-[480px] w-full border rounded-md overflow-hidden'>
+      <div className='flex h-[480px] w-full overflow-hidden rounded-md border'>
         <Sidebar>
           <SidebarHeader>
             <SidebarInput placeholder='Søk...' />
@@ -74,16 +74,16 @@ export const Standard: Story = {
             </SidebarGroup>
             <SidebarSeparator />
           </SidebarContent>
-          <SidebarFooter className='text-xs text-muted-foreground px-2'>
+          <SidebarFooter className='text-muted-foreground px-2 text-xs'>
             <div>v1.0.0</div>
           </SidebarFooter>
         </Sidebar>
-        <SidebarInset className='p-4 flex flex-col gap-4'>
+        <SidebarInset className='flex flex-col gap-4 p-4'>
           <div className='flex items-center gap-2'>
             <SidebarTrigger />
             <h3 className='font-semibold'>Innhold</h3>
           </div>
-          <p className='text-sm max-w-prose'>
+          <p className='max-w-prose text-sm'>
             Dette er en minimal demonstrasjon av sidebaren. Bruk toggle-knappen
             for å kollapse/utvide og se tooltip oppførsel.
           </p>

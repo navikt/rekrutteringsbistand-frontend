@@ -126,7 +126,7 @@ const KandidatSøkResultat: FC<KandidatSøkResultatProps> = ({
                   />
                 ))}
               </div>
-              <div className={'flex justify-between items-center'}>
+              <div className={'flex items-center justify-between'}>
                 <div>Viser {kandidatData.antallTotalt} treff</div>
 
                 {antallSider > 1 && (

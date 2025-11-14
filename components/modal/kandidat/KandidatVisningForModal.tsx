@@ -31,8 +31,8 @@ export default function KandidatVisningForModal({
   return (
     <KandidatContextProvider kandidatId={kandidatId}>
       {kandidatlisteVisning}
-      <Tabs defaultValue={Fane.OVERSIKT} className=' w-full'>
-        <div className='flex justify-between items-center'>
+      <Tabs defaultValue={Fane.OVERSIKT} className='w-full'>
+        <div className='flex items-center justify-between'>
           <div>
             <Tabs.Tab value={Fane.OVERSIKT} label='Oversikt' />
             <Tabs.Tab value={Fane.AKTIVITET} label='Aktiviteter' />
@@ -50,7 +50,7 @@ export default function KandidatVisningForModal({
         <Tabs.Panel value={Fane.OVERSIKT}>
           <KandidatSideLayout>
             <div className='@container/kandidat-knapper'>
-              <div className='grid grid-cols-1 @3xl:grid-cols-2 gap-4 mb-6'>
+              <div className='mb-6 grid grid-cols-1 gap-4 @3xl:grid-cols-2'>
                 <FinnStillingForKandidatKnapp />
                 <NavigerTilAktivitetsplanenKnapp />
               </div>

@@ -80,7 +80,7 @@ const InnleggForm = ({ onUpdated }: InnleggFormProps) => {
             </div>
 
             <div
-              className={`border rounded-lg ${
+              className={`rounded-lg border ${
                 kiErrorBorder ? 'border-red-500' : 'border-gray-300'
               }`}
               onBlur={(e) => {

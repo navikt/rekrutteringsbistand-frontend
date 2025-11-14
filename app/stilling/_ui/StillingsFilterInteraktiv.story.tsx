@@ -17,47 +17,47 @@ const meta = {
   decorators: [withStillingsSokContext],
   tags: ['autodocs'],
   render: () => (
-    <div className='max-w-[1100px] grid grid-cols-1 md:grid-cols-2 gap-8'>
+    <div className='grid max-w-[1100px] grid-cols-1 gap-8 md:grid-cols-2'>
       <section className='space-y-2 md:col-span-2'>
-        <h4 className='font-semibold text-sm'>
+        <h4 className='text-sm font-semibold'>
           StillingsSøkFilter (kompositt)
         </h4>
         <StillingsSøkFilter />
       </section>
       <section className='space-y-2'>
-        <h4 className='font-semibold text-sm'>Kategori</h4>
+        <h4 className='text-sm font-semibold'>Kategori</h4>
         <KategoriFilter />
       </section>
       <section className='space-y-2'>
-        <h4 className='font-semibold text-sm'>Fylker og kommuner</h4>
+        <h4 className='text-sm font-semibold'>Fylker og kommuner</h4>
         <FylkerOgKommunerFilter geografi={[]} />
       </section>
       <section className='space-y-2'>
-        <h4 className='font-semibold text-sm'>Inkludering</h4>
+        <h4 className='text-sm font-semibold'>Inkludering</h4>
         <InkluderingFilter />
       </section>
       <section className='space-y-2'>
-        <h4 className='font-semibold text-sm'>Status</h4>
+        <h4 className='text-sm font-semibold'>Status</h4>
         <StatusFilter />
       </section>
       <section className='space-y-2'>
-        <h4 className='font-semibold text-sm'>Søkebar</h4>
+        <h4 className='text-sm font-semibold'>Søkebar</h4>
         <StillingSøkebar alltidÅpen={true} />
       </section>
       <section className='space-y-2 md:col-span-2'>
-        <h4 className='font-semibold text-sm'>Chips</h4>
+        <h4 className='text-sm font-semibold'>Chips</h4>
         <StillingsSøkChips />
       </section>
       <section className='space-y-2'>
-        <h4 className='font-semibold text-sm'>Sortering</h4>
+        <h4 className='text-sm font-semibold'>Sortering</h4>
         <StillingsSøkSortering hideLegend />
       </section>
       <section className='space-y-2'>
-        <h4 className='font-semibold text-sm'>Navigasjon</h4>
+        <h4 className='text-sm font-semibold'>Navigasjon</h4>
         <StillingsSøkNavigasjon />
       </section>
       <section className='space-y-2'>
-        <h4 className='font-semibold text-sm'>Paginering</h4>
+        <h4 className='text-sm font-semibold'>Paginering</h4>
         <StillingsSøkPaginering totaltAntallTreff={120} />
       </section>
     </div>

@@ -102,7 +102,7 @@ const KandidatHandlingerForStilling: FC<KandidatHandlingerForStillingProps> = ({
         !fåttJobben &&
         !cvDeltMedArbeidsgiver &&
         !cvFjernetFraArbeidsgiver && (
-          <div className='grid @md:grid-cols-2 grid-cols-1 gap-2'>
+          <div className='grid grid-cols-1 gap-2 @md:grid-cols-2'>
             <DelMedKandidatModal
               markerteKandidater={[kandidat]}
               fjernAllMarkering={() => {}}
@@ -123,7 +123,7 @@ const KandidatHandlingerForStilling: FC<KandidatHandlingerForStillingProps> = ({
         </div>
       ) : (
         <>
-          <div className='grid @md:grid-cols-2 grid-cols-1 gap-2'>
+          <div className='grid grid-cols-1 gap-2 @md:grid-cols-2'>
             <SendSmsModal
               markerteKandidater={[kandidat]}
               fjernAllMarkering={() => {}}

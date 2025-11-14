@@ -12,7 +12,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   render: () => (
     <RekBisKort>
-      <div className='p-6 space-y-2'>
+      <div className='space-y-2 p-6'>
         <p>Innhold inni kortet.</p>
         <p>Scrollhøyde testes hvis innhold blir langt.</p>
       </div>

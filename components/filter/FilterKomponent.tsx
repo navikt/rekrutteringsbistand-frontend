@@ -14,7 +14,7 @@ const FilterKomponent: React.FC<FilterKomponentProps> = ({
   return (
     <ActionMenu>
       <ActionMenu.Trigger>
-        <div className='flex gap-2 aksel-button aksel-button--tertiary aksel-button--medium'>
+        <div className='aksel-button aksel-button--tertiary aksel-button--medium flex gap-2'>
           {tittel} <ChevronDownIcon />
         </div>
       </ActionMenu.Trigger>

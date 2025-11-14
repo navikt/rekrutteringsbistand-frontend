@@ -5,11 +5,11 @@ const meta = {
   tags: ['autodocs'],
   render: () => (
     <div className='space-y-4'>
-      <p className='text-sm text-muted-foreground'>
+      <p className='text-muted-foreground text-sm'>
         Viser inaktiv komponent (krever SWR hook mock for data). Placeholder i
         Storybook.
       </p>
-      <div className='opacity-50 pointer-events-none'>
+      <div className='pointer-events-none opacity-50'>
         <Forespørsler
           navKontor='1234'
           fraOgMed={new Date()}

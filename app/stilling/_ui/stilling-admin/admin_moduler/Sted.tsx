@@ -61,7 +61,7 @@ export default function Sted() {
         </ErrorMessage>
       )}
       {visAdresse && (
-        <div className='flex flex-col gap-6 mt-4'>
+        <div className='mt-4 flex flex-col gap-6'>
           {adresserIndekser.map(({ idx }) => (
             <VelgPoststed
               key={fields[idx].id}
@@ -106,7 +106,7 @@ export default function Sted() {
           />
         </div>
       )}
-      <div className='flex flex-row gap-6 mt-6'>
+      <div className='mt-6 flex flex-row gap-6'>
         <Button
           icon={<PlusCircleIcon />}
           size='small'

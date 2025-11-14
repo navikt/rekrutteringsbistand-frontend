@@ -55,7 +55,7 @@ const JobbsøkerHendelserKort: FC<JobbsøkerHendelserKortProps> = ({
   return (
     <Box.New
       background='neutral-softA'
-      className='mb-4 flex flex-col h-full'
+      className='mb-4 flex h-full flex-col'
       borderColor='neutral-subtleA'
       borderRadius='xlarge'
       borderWidth='1'
@@ -66,8 +66,8 @@ const JobbsøkerHendelserKort: FC<JobbsøkerHendelserKortProps> = ({
       </Heading>
       <div className='min-h-[18rem] flex-1'>
         {antallHendelser === 0 ? (
-          <div className='p-4 flex flex-col items-center'>
-            <Box.New background='neutral-softA' className='rounded-full mb-2'>
+          <div className='flex flex-col items-center p-4'>
+            <Box.New background='neutral-softA' className='mb-2 rounded-full'>
               <SVGDarkmode
                 light={JobbsokerHeartUpIkon}
                 dark={JobbsokerHeartUpDarkIkon}
@@ -146,8 +146,8 @@ const JobbsøkerHendelserKort: FC<JobbsøkerHendelserKortProps> = ({
 
             <div className='mt-4'>
               {siste5Hendelser.map((hendelse) => (
-                <div key={hendelse.id} className='flex flex-wrap gap-2 mb-4'>
-                  <div className='mb-2  min-w-[10rem]'>
+                <div key={hendelse.id} className='mb-4 flex flex-wrap gap-2'>
+                  <div className='mb-2 min-w-[10rem]'>
                     <JobbsøkerHendelseLabel
                       key={hendelse.id}
                       icon={<PlusCircleIcon className='text-white' />}
@@ -179,7 +179,7 @@ const JobbsøkerHendelserKort: FC<JobbsøkerHendelserKortProps> = ({
           </div>
         )}
       </div>
-      <LeggTilJobbsøkerKnapp className='w-full mt-auto' />
+      <LeggTilJobbsøkerKnapp className='mt-auto w-full' />
     </Box.New>
   );
 };

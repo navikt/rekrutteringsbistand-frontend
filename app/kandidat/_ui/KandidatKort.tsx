@@ -7,9 +7,10 @@ import {
   hentKandidatensØnskedeYrker,
 } from '@/app/kandidat/util';
 import TekstMedIkon from '@/components/TekstMedIkon';
+import ListeKort from '@/components/layout/ListeKort';
 import WindowAnker from '@/components/window/WindowAnker';
 import { HandShakeHeartIcon, HouseIcon, PinIcon } from '@navikt/aksel-icons';
-import { Box, Checkbox, Heading, Tag } from '@navikt/ds-react';
+import { Checkbox, Heading, Tag } from '@navikt/ds-react';
 import { FC } from 'react';
 
 type IKandidatKort = {
@@ -33,7 +34,6 @@ const KandidatKort: FC<IKandidatKort> = ({
   );
 
   const kandidatId = kandidat.arenaKandidatnr;
-  const aktiv = false;
 
   const getWindowRefWithParams = () => {
     const currentParams = new URLSearchParams(window.location.search);
@@ -59,24 +59,10 @@ const KandidatKort: FC<IKandidatKort> = ({
             : '#'
       }
     >
-      <Box.New
-        background='neutral-softA'
-        padding='5'
-        // onClick={() =>
-        //   kandidat.arenaKandidatnr
-        //     ? setVisKandidatId(kandidat.arenaKandidatnr)
-        //     : null
-        // }
-        borderRadius='xlarge'
-        data-testid='stillings-kort'
-        className={` @container/kandidatlistekort flex flex-col min-w-fit
-          focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--ax-border-focus)]
-          ${kandidatId ? 'cursor-pointer' : 'cursor-default'}
-          ${aktiv ? 'bg-[var(--ax-bg-neutral-moderate-pressed)]' : 'hover:bg-[var(--ax-bg-neutral-moderate-hover)] '}
-          ${erLagtTil ? 'border-l-4 border-[var(--ax-border-success)]' : ''}`}
-        tabIndex={0}
+      <ListeKort
+        className={`${kandidatId ? 'cursor-pointer' : 'cursor-default'} ${erLagtTil ? 'border-l-4 border-[var(--ax-border-success)]' : ''}`}
       >
-        <div className='flex flex-row '>
+        <div className='flex flex-row'>
           <div>
             <Checkbox
               key={`${kandidat.arenaKandidatnr}-${erMarkert}`}
@@ -104,7 +90,7 @@ const KandidatKort: FC<IKandidatKort> = ({
             <div className='flex justify-between'>
               <Heading
                 size='small'
-                className='flex-1 min-w-0 pr-2 inline-flex items-center gap-1'
+                className='inline-flex min-w-0 flex-1 items-center gap-1 pr-2'
               >
                 <div
                   data-testid={`kandidatkort-lenke-${kandidat.arenaKandidatnr}`}
@@ -134,7 +120,7 @@ const KandidatKort: FC<IKandidatKort> = ({
               </Tag>
             </div>
             <div className='flex w-full justify-between'>
-              <div className='mt-2 flex flex-col @xl:flex-row gap-4'>
+              <div className='mt-2 flex flex-col gap-4 @xl:flex-row'>
                 <TekstMedIkon
                   ikon={<PinIcon />}
                   tekst={hentKandidatensØnskedeSteder(kandidat) ?? '-'}
@@ -153,7 +139,7 @@ const KandidatKort: FC<IKandidatKort> = ({
             </div>
           </div>
         </div>
-      </Box.New>
+      </ListeKort>
     </WindowAnker>
   );
 };

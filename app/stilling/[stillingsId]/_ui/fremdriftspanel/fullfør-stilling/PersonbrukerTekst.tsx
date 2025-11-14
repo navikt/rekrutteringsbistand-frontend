@@ -3,9 +3,9 @@ import { BodyLong, BodyShort } from '@navikt/ds-react';
 
 export default function PersonbrukerTekst() {
   return (
-    <div className='space-y-2 mt-8'>
+    <div className='mt-8 space-y-2'>
       <BodyShort>Personbrukere</BodyShort>
-      <div className='flex flex-col gap-3 '>
+      <div className='flex flex-col gap-3'>
         <div className='flex items-center gap-3'>
           <TableIcon aria-hidden />
           <BodyLong size='small' className='m-0'>

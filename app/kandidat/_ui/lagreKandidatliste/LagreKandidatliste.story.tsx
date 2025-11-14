@@ -9,7 +9,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 const meta = {
   tags: ['autodocs'],
   render: () => (
-    <div className='space-y-8 opacity-60 pointer-events-none max-w-md'>
+    <div className='pointer-events-none max-w-md space-y-8 opacity-60'>
       <KandidatlisteTittel stillingsId='demo-stilling' />
       <LagreIKandidatlisteButton />
       {/* <LagreIKandidatlisteModal onClose={() => {}} /> */}

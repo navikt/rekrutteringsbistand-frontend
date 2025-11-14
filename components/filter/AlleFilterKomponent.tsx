@@ -24,7 +24,7 @@ const AlleFilterKomponent: React.FC<AlleFilterKomponentProps> = ({
         </Button>
       </SheetTrigger>
 
-      <SheetContent className='flex flex-col bg-sidebar'>
+      <SheetContent className='bg-sidebar flex flex-col'>
         <SheetHeader className='flex-shrink-0'>
           <SheetTitle>Filtrer</SheetTitle>
         </SheetHeader>

@@ -33,7 +33,7 @@ export default function KandidatSøkLayout({
       <SideInnhold utenScroll>
         <KandidatSøkTabs />
         <div className='@container/kandidatsøk flex contain-layout'>
-          <div className='flex-grow min-w-0'>
+          <div className='min-w-0 flex-grow'>
             <KandidatSøkChips />
             <KandidatSøkResultat
               alleredeLagtTilTreff={alleredeLagtTilTreff}

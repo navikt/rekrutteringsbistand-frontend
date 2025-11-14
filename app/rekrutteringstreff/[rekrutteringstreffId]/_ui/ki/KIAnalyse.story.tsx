@@ -10,7 +10,7 @@ const meta = {
   tags: ['autodocs'],
   render: () => (
     <MockRekrutteringstreffProvider>
-      <div className='space-y-10 opacity-60 pointer-events-none'>
+      <div className='pointer-events-none space-y-10 opacity-60'>
         <section className='space-y-2'>
           <h4 className='text-sm font-semibold'>KiAnalyse</h4>
           <KiAnalyse />

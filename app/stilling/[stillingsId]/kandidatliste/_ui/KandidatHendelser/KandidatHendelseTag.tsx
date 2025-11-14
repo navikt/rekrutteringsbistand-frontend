@@ -115,7 +115,7 @@ export const KandidatHendelseTag: FC<KandidatHendelseTagProps> = ({
     <Tag
       variant={hendelseVariant(type)}
       icon={hendelseIkon(type)}
-      className='inline-flex '
+      className='inline-flex'
       size='small'
     >
       {type} {dato}
