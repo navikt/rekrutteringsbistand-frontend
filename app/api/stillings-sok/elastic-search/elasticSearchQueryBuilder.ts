@@ -575,9 +575,6 @@ export class ElasticSearchQueryBuilder {
                       bool: {
                         must: [
                           { term: { 'stilling.status': 'INACTIVE' } },
-                          {
-                            term: { 'stilling.administration.status': 'DONE' },
-                          },
                           { exists: { field: 'stilling.publishedByAdmin' } },
                           { range: { 'stilling.published': { lte: 'now/d' } } },
                         ],
@@ -593,9 +590,6 @@ export class ElasticSearchQueryBuilder {
                         must: [
                           { term: { 'stilling.status': 'INACTIVE' } },
                           { range: { 'stilling.expires': { lt: 'now/d' } } },
-                          {
-                            term: { 'stilling.administration.status': 'DONE' },
-                          },
                           { exists: { field: 'stilling.publishedByAdmin' } },
                           { range: { 'stilling.published': { lte: 'now/d' } } },
                         ],
