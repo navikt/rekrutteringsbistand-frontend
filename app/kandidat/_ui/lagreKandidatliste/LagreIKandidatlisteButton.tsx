@@ -22,7 +22,7 @@ const LagreIKandidatlisteMedStillingsId: FC<
   const { track } = useUmami();
   const { erEier, stillingsData, refetchKandidatliste } = useStillingsContext();
 
-  // bruker for å oppdatere eiers kandidatliste med nye kandidater
+  // Brukes for å oppdatere eiers kandidatliste med nye kandidater
   const kandidatlisteForEierHook = useKandidatlisteForEier(
     stillingsData,
     erEier,
@@ -34,7 +34,7 @@ const LagreIKandidatlisteMedStillingsId: FC<
   async function lagreKandidater(kandidater: string[]) {
     if (stillingsId) {
       track(UmamiEvent.Stilling.legg_til_markerte_kandidater, {
-        antallKandidater: markerteKandidater?.length,
+        antallKandidater: kandidater?.length,
         kilde: 'Finn kandidater',
       });
       try {
