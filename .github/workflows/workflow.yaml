@@ -14,7 +14,7 @@ jobs:
       playwright-github-report: true
       dev-vars-path: '.nais/dev-gcp.json'
       prod-vars-path: '.nais/prod-gcp.json'
-      deploy-to-dev-if-branch-name-is: 'navigering-params'
+      deploy-to-dev-if-branch-name-is: 'kommune-og-fylke-for-rekrutteringstreff'
     secrets: inherit
     permissions:
       contents: write
